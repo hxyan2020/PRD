@@ -1,2 +1,4 @@
 opencv-python-headless>=4.8
 pillow>=10.0
+scikit-learn>=1.4
+reportlab>=4.0

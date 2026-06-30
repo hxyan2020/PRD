@@ -17,6 +17,13 @@ def load_image(path: Path) -> np.ndarray:
     return image
 
 
+def _auto_canny(gray: np.ndarray, sigma: float = 0.33) -> np.ndarray:
+    median = float(np.median(gray))
+    lower = int(max(0, (1.0 - sigma) * median))
+    upper = int(min(255, (1.0 + sigma) * median))
+    return cv2.Canny(gray, lower, upper)
+
+
 def to_coloring_page(
     image: np.ndarray,
     *,
@@ -35,6 +42,17 @@ def to_coloring_page(
             shade_factor=0.04,
         )
         page = sketch
+    elif style == "illustration":
+        smooth = cv2.bilateralFilter(image, 9, 75, 75)
+        smooth_gray = cv2.cvtColor(smooth, cv2.COLOR_BGR2GRAY)
+        if blur > 0:
+            if blur % 2 == 0:
+                blur += 1
+            smooth_gray = cv2.medianBlur(smooth_gray, blur)
+        edges = _auto_canny(smooth_gray)
+        kernel = np.ones((2, 2), np.uint8)
+        edges = cv2.dilate(edges, kernel, iterations=1)
+        page = cv2.bitwise_not(edges)
     else:
         if blur > 0:
             if blur % 2 == 0:
@@ -87,9 +105,9 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--style",
-        choices=("outline", "bold", "sketch"),
-        default="outline",
-        help="Line style: outline (default), bold, or sketch",
+        choices=("outline", "bold", "sketch", "illustration"),
+        default="illustration",
+        help="Line style: illustration (default), outline, bold, or sketch",
     )
     parser.add_argument(
         "--detail",
