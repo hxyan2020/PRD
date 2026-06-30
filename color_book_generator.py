@@ -61,13 +61,36 @@ def extract_dominant_colors(img: Image.Image, n_colors: int = 12) -> np.ndarray:
 
 
 def make_coloring_outline(img: Image.Image) -> Image.Image:
-    """Use the source exactly when it is already line art."""
-    from coloring_book import is_line_art, strict_coloring_page
+    """Convert source art to a coloring page without adding texture noise."""
     import cv2
+    import numpy as np
 
+    # 1. Convert to grayscale
     bgr = cv2.cvtColor(np.array(img.convert("RGB")), cv2.COLOR_RGB2BGR)
-    page = strict_coloring_page(bgr)
-    return Image.fromarray(page).convert("RGB")
+    gray = cv2.cvtColor(bgr, cv2.COLOR_BGR2GRAY)
+
+    # 2. Apply a strong median blur to remove texture
+    blurred = cv2.medianBlur(gray, 21)
+
+    # 3. Apply adaptive thresholding
+    thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 51, 5)
+
+    # 4. Clean up noise with morphological operations
+    kernel = np.ones((5,5), np.uint8)
+    cleaned = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+    cleaned = cv2.morphologyEx(cleaned, cv2.MORPH_OPEN, kernel)
+
+    # 5. Apply a slight blur to smooth out the lines
+    smoothed = cv2.GaussianBlur(cleaned, (3, 3), 0)
+
+    # 6. Apply a threshold to make the lines crisp again
+    _, final = cv2.threshold(smoothed, 127, 255, cv2.THRESH_BINARY)
+
+    # 7. Add a thin black border
+    h, w = final.shape
+    cv2.rectangle(final, (0, 0), (w-1, h-1), (0, 0, 0), 2)
+
+    return Image.fromarray(final).convert("RGB")
 
 
 def generate_color_book(
