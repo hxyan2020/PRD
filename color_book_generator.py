@@ -61,21 +61,62 @@ def extract_dominant_colors(img: Image.Image, n_colors: int = 12) -> np.ndarray:
 
 
 def make_coloring_outline(img: Image.Image) -> Image.Image:
-    """Convert a photo or illustration to a black-outline coloring-book page."""
+    """Use the source exactly when it is already line art."""
+    from coloring_book import is_line_art, strict_coloring_page
     import cv2
 
     bgr = cv2.cvtColor(np.array(img.convert("RGB")), cv2.COLOR_RGB2BGR)
-    smooth = cv2.bilateralFilter(bgr, 9, 75, 75)
-    gray = cv2.cvtColor(smooth, cv2.COLOR_BGR2GRAY)
-    gray = cv2.medianBlur(gray, 5)
-    median = float(np.median(gray))
-    lower = int(max(0, 0.67 * median))
-    upper = int(min(255, 1.33 * median))
-    edges = cv2.Canny(gray, lower, upper)
-    kernel = np.ones((2, 2), np.uint8)
-    edges = cv2.dilate(edges, kernel, iterations=1)
-    outline = cv2.bitwise_not(edges)
-    return Image.fromarray(outline).convert("RGB")
+    page = strict_coloring_page(bgr)
+    return Image.fromarray(page).convert("RGB")
+
+
+def generate_color_book(
+    image_path: str,
+    n_colors: int = 12,
+    output_path: str | None = None,
+) -> str:
+    from coloring_book import is_line_art
+    import cv2
+
+    src = Path(image_path)
+    if output_path is None:
+        output_path = str(src.parent / f"{src.stem}_color_book.pdf")
+
+    print(f"Loading image: {image_path}")
+    img = load_image(image_path)
+    bgr = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+    already_line_art = is_line_art(bgr)
+
+    print("Generating coloring-book outline …")
+    outline = make_coloring_outline(img)
+    if already_line_art:
+        print("Detected existing line art — using source exactly (no redrawing).")
+
+    print(f"Building PDF: {output_path}")
+    c = canvas.Canvas(output_path, pagesize=letter)
+    c.setTitle(f"Color Book – {src.name}")
+    c.setAuthor("Color Book Generator")
+
+    add_original_page(c, img, src.name)
+    c.showPage()
+
+    add_outline_page(c, outline)
+    c.showPage()
+
+    if already_line_art:
+        c.save()
+        print(f"Done! 2 pages saved to: {output_path}")
+        return output_path
+
+    print(f"Extracting {n_colors} dominant colors …")
+    dominant = extract_dominant_colors(img, n_colors)
+    add_palette_page(c, dominant, page_num=3)
+    add_individual_swatch_pages(c, dominant, start_page=4)
+
+    c.save()
+    total_pages = 3 + len(dominant)
+    print(f"Done! {total_pages} pages saved to: {output_path}")
+    return output_path
 
 
 def rgb_to_hex(r: int, g: int, b: int) -> str:
@@ -319,51 +360,6 @@ def add_individual_swatch_pages(c: canvas.Canvas, colors: np.ndarray, start_page
         c.drawCentredString(PAGE_W / 2, 20, f"Color Book Generator  •  Page {page_num}")
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
-
-def generate_color_book(
-    image_path: str,
-    n_colors: int = 12,
-    output_path: str | None = None,
-) -> str:
-    src = Path(image_path)
-    if output_path is None:
-        output_path = str(src.parent / f"{src.stem}_color_book.pdf")
-
-    print(f"Loading image: {image_path}")
-    img = load_image(image_path)
-
-    print(f"Extracting {n_colors} dominant colors …")
-    dominant = extract_dominant_colors(img, n_colors)
-
-    print("Generating coloring-book outline …")
-    outline = make_coloring_outline(img)
-
-    print(f"Building PDF: {output_path}")
-    c = canvas.Canvas(output_path, pagesize=letter)
-    c.setTitle(f"Color Book – {src.name}")
-    c.setAuthor("Color Book Generator")
-
-    # Page 1 – original
-    add_original_page(c, img, src.name)
-    c.showPage()
-
-    # Page 2 – outline
-    add_outline_page(c, outline)
-    c.showPage()
-
-    # Page 3 – palette grid
-    add_palette_page(c, dominant, page_num=3)
-
-    # Pages 4+ – individual swatches
-    add_individual_swatch_pages(c, dominant, start_page=4)
-
-    c.save()
-    total_pages = 3 + len(dominant)
-    print(f"Done! {total_pages} pages saved to: {output_path}")
-    return output_path
 
 
 # ---------------------------------------------------------------------------
