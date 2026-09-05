@@ -16,6 +16,7 @@ Every entry has:
 - a dated log of every daily recommendation and Surprise me pick
 - **Add to Spotify** after you authorize your Spotify account (saves to Liked Songs and a private Canon playlist album)
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). The switcher changes menus and buttons only — song titles and catalog notes stay as published.
+- **About** and **Terms of use** (`#about`, `#terms`) describing how the archive is chosen, what is stored in this browser, and how Spotify is used
 
 ## Run
 

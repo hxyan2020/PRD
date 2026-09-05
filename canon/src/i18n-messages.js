@@ -1,3 +1,5 @@
+import { LEGAL } from "./legal-messages.js";
+
 const en = {
   language: "UI language",
   languageNote: "This changes menus and buttons only — song titles stay as they are.",
@@ -1051,4 +1053,13 @@ const pt = {
   "spotify.noId": "Esta gravação não tem id de faixa do Spotify.",
 };
 
-export const MESSAGES = { en, zh, hi, es, fr, ar, bn, pt };
+export const MESSAGES = {
+  en: { ...en, ...LEGAL.en },
+  zh: { ...zh, ...LEGAL.zh },
+  hi: { ...hi, ...LEGAL.hi },
+  es: { ...es, ...LEGAL.es },
+  fr: { ...fr, ...LEGAL.fr },
+  ar: { ...ar, ...LEGAL.ar },
+  bn: { ...bn, ...LEGAL.bn },
+  pt: { ...pt, ...LEGAL.pt },
+};

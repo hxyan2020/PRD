@@ -10,6 +10,8 @@ import {
   t,
 } from "../src/i18n.js";
 import { MESSAGES } from "../src/i18n-messages.js";
+import { LEGAL } from "../src/legal-messages.js";
+import { parseRoute } from "../src/pages.js";
 import { recommendDaily, surprisePick } from "../src/recommend.js";
 import { moodLabel, resolveMoodValue } from "../src/uiText.js";
 
@@ -62,5 +64,19 @@ const zh = (key) => t("zh", key);
 assert.equal(moodLabel("Joyful", zh), "欢快");
 assert.equal(resolveMoodValue("忧郁", zh), "Melancholy");
 assert.equal(resolveMoodValue("Joyful", zh), "Joyful");
+
+assert.deepEqual(parseRoute(""), { page: "home", trackId: "" });
+assert.deepEqual(parseRoute("#t=Q109612965"), { page: "home", trackId: "Q109612965" });
+assert.deepEqual(parseRoute("#about"), { page: "about", trackId: "" });
+assert.deepEqual(parseRoute("terms"), { page: "terms", trackId: "" });
+
+const legalKeys = Object.keys(LEGAL.en).sort();
+assert.ok(legalKeys.includes("aboutTitle"));
+assert.ok(legalKeys.includes("termsTitle"));
+for (const locale of LANGUAGE_IDS) {
+  assert.deepEqual(Object.keys(LEGAL[locale]).sort(), legalKeys, `${locale} legal copy keys`);
+  assert.match(t(locale, "aboutTitle"), /./);
+  assert.match(t(locale, "terms1Body"), /Spotify/);
+}
 
 console.log("i18n tests ok");

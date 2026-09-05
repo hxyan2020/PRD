@@ -13,12 +13,9 @@ import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./reco
 import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
 import { displayEra } from "./i18n.js";
+import { parseRoute } from "./pages.js";
+import { SiteDoc, SiteNav } from "./SitePages.jsx";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
-
-function readHash() {
-  const id = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("t");
-  return id || "";
-}
 
 export default function App() {
   const { locale, t } = useI18n();
@@ -29,7 +26,9 @@ export default function App() {
   const [era, setEra] = useState("All eras");
   const [country, setCountry] = useState("All countries");
   const [sort, setSort] = useState("influence");
-  const [selectedId, setSelectedId] = useState(readHash);
+  const [route, setRoute] = useState(() => parseRoute(window.location.hash));
+  const selectedId = route.page === "home" ? route.trackId : "";
+  const page = route.page;
   const [playingId, setPlayingId] = useState("");
   const [collection, setCollection] = useState(loadCollection);
   const collectedIds = collection.ids;
@@ -55,7 +54,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const onHash = () => setSelectedId(readHash());
+    const onHash = () => setRoute(parseRoute(window.location.hash));
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
@@ -123,7 +122,6 @@ export default function App() {
 
   function openTrack(track, play = false) {
     rememberView(track.id);
-    setSelectedId(track.id);
     window.location.hash = `t=${track.id}`;
     if (play) setPlayingId(track.id);
   }
@@ -168,8 +166,13 @@ export default function App() {
       <header className="mast">
         <div className="mast-brand">
           <p className="eyebrow">{t("archiveEyebrow")}</p>
-          <h1>Canon</h1>
+          <h1>
+            <a className="brand-link" href="#">
+              Canon
+            </a>
+          </h1>
           <p className="lede">{t("lede")}</p>
+          <SiteNav page={page} />
         </div>
         <div className="stats-wrap">
           <dl className="stats" aria-label={t("libraryCounts")}>
@@ -191,6 +194,10 @@ export default function App() {
         </div>
       </header>
 
+      {page !== "home" ? (
+        <SiteDoc page={page} />
+      ) : (
+        <>
       <SpotifyConnect spotify={spotify} />
 
       <DailyRecommend
@@ -277,13 +284,16 @@ export default function App() {
         ))}
       </main>
 
+      <SiteNav page={page} />
+        </>
+      )}
+
       {selected && (
         <aside className="drawer" aria-label={t("detailsFor", { name: selected.name })}>
           <button
             className="close"
             type="button"
             onClick={() => {
-              setSelectedId("");
               window.location.hash = "";
             }}
           >
