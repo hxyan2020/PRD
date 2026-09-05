@@ -59,6 +59,11 @@ npx vercel deploy --temporary --yes
 
 `vercel.json` builds the Vite app and leaves `/hx/` and `/api/hx-viewership` out of the SPA fallback. Add the production origin (with a trailing slash) to your Spotify redirect URIs.
 
+Current anonymous deployment (claim it so it does not expire):
+
+- https://temporary-brisk-teal-v4ptuvb.vercel.app
+- Claim: https://vercel.com/claim-deployment?code=f9f8a958-ff5f-4963-b24b-e02ff977a16d
+
 ## DigitalOcean
 
 App Platform spec: [`.do/app.yaml`](../.do/app.yaml) (Docker image from `canon/Dockerfile`, health check `/hx/health.json`).

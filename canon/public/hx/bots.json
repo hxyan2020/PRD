@@ -9,6 +9,7 @@
       "name": "Canon listening archive",
       "kind": "web",
       "path": "/",
+      "url": "https://temporary-brisk-teal-v4ptuvb.vercel.app",
       "health": "/hx/health.json",
       "viewership": "/#hx-viewership",
       "intervalSeconds": 60,

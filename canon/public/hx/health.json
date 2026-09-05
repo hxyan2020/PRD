@@ -4,6 +4,7 @@
   "status": "ok",
   "archiveSongs": 1000,
   "slug": "canon",
+  "publicUrl": "https://temporary-brisk-teal-v4ptuvb.vercel.app",
   "hx": {
     "monitoring": true,
     "viewership": true,
