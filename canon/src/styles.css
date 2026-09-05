@@ -139,7 +139,7 @@ h1 {
 
 .daily-form {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
   align-items: end;
   margin: 18px 0 12px;
@@ -193,6 +193,23 @@ h1 {
 .mood-chips button.is-on {
   background: var(--brass);
   color: var(--ink);
+}
+
+.daily-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  grid-column: 1 / -1;
+}
+
+.daily-form .ghost {
+  background: transparent;
+  color: var(--paper);
+}
+
+.daily-form .ghost:disabled {
+  opacity: 0.4;
+  cursor: default;
 }
 
 .daily-card {

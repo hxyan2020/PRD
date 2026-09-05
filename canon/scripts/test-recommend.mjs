@@ -88,6 +88,12 @@ assert.equal(japan.track.id, "jpop");
 const jazzOnly = recommendDaily(tracks, { genre: "jazz", mood: "melancholy" }, new Date("2026-09-05Z"));
 assert.equal(jazzOnly.track.id, "jazz");
 
+const day = new Date("2026-09-05T12:00:00Z");
+const first = recommendDaily(tracks, { country: "Ireland" }, day);
+const changed = recommendDaily(tracks, { country: "Japan" }, day);
+assert.equal(first.track.id, "folk");
+assert.equal(changed.track.id, "jpop", "changing country the same day must change the pick");
+
 const folkScore = scoreTrack(tracks[0], { mood: "sad", country: "Ireland" });
 const danceScore = scoreTrack(tracks[1], { mood: "sad", country: "Ireland" });
 assert.ok(folkScore.score > danceScore.score);

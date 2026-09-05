@@ -9,7 +9,7 @@ Every entry has:
 - composer, singer, band, writer, music company, year, country, and genre
 - published Spotify play counts where the industry reports them
 - a short note on why the work belongs in the canon
-- a daily AI recommendation from mood, country, and genre (or from the most streamed titles if those are left blank)
+- a daily AI recommendation from mood, country, and genre (change those anytime; blank fields fall back to the most streamed titles)
 
 ## Run
 

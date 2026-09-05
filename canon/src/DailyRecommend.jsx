@@ -3,11 +3,12 @@ import { formatStreams, primaryArtist } from "./format.js";
 import { MOOD_CHIPS, recommendDaily } from "./recommend.js";
 
 const STORAGE_KEY = "canon.daily.prefs";
+const EMPTY = { mood: "", country: "", genre: "" };
 
 function loadPrefs() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { mood: "", country: "", genre: "" };
+    if (!raw) return { ...EMPTY };
     const parsed = JSON.parse(raw);
     return {
       mood: String(parsed.mood || ""),
@@ -15,7 +16,7 @@ function loadPrefs() {
       genre: String(parsed.genre || ""),
     };
   } catch {
-    return { mood: "", country: "", genre: "" };
+    return { ...EMPTY };
   }
 }
 
@@ -33,26 +34,22 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
     setReady(true);
   }, []);
 
+  const prefs = { mood, country, genre };
   const result = useMemo(() => {
     if (!ready) return null;
-    return recommendDaily(tracks, { mood, country, genre });
+    return recommendDaily(tracks, prefs);
   }, [ready, tracks, mood, country, genre]);
-
-  function persist(next) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  }
 
   function applyPrefs(next) {
     setMood(next.mood);
     setCountry(next.country);
     setGenre(next.genre);
-    persist(next);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
   }
 
   function onSubmit(event) {
     event.preventDefault();
-    persist({ mood, country, genre });
-    setReady(true);
+    applyPrefs(prefs);
   }
 
   const track = result?.track;
@@ -61,6 +58,8 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
     day: "numeric",
     month: "long",
   });
+  const activePrefs = [mood, country, genre].filter(Boolean);
+  const hasPrefs = activePrefs.length > 0;
 
   return (
     <section className="daily" aria-label="Today’s recommendation">
@@ -68,9 +67,9 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
         <p className="eyebrow">Today’s listening · {todayLabel}</p>
         <h2>A new recording each day</h2>
         <p>
-          Key in a mood, country, or genre and the archive’s recommender will match a
-          work from the thousand. Leave the fields blank and it chooses from the most
-          streamed titles. The pick changes with the calendar.
+          Change mood, country, or genre anytime — the match updates at once. Leave
+          the fields blank and Canon chooses from the most streamed titles. The same
+          preferences still rotate to a fresh work each calendar day.
         </p>
         <form className="daily-form" onSubmit={onSubmit}>
           <label>
@@ -78,7 +77,7 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
             <input
               type="text"
               value={mood}
-              onChange={(e) => setMood(e.target.value)}
+              onChange={(e) => applyPrefs({ ...prefs, mood: e.target.value })}
               placeholder="e.g. melancholy, dance, calm"
               list="canon-moods"
             />
@@ -88,7 +87,7 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
             <input
               type="text"
               value={country}
-              onChange={(e) => setCountry(e.target.value)}
+              onChange={(e) => applyPrefs({ ...prefs, country: e.target.value })}
               placeholder="e.g. Japan, Brazil, United Kingdom"
               list="canon-countries"
             />
@@ -98,12 +97,22 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
             <input
               type="text"
               value={genre}
-              onChange={(e) => setGenre(e.target.value)}
+              onChange={(e) => applyPrefs({ ...prefs, genre: e.target.value })}
               placeholder="e.g. jazz, hip-hop, hymn"
               list="canon-genres"
             />
           </label>
-          <button type="submit">Recommend for today</button>
+          <div className="daily-actions">
+            <button type="submit">Update pick</button>
+            <button
+              type="button"
+              className="ghost"
+              onClick={() => applyPrefs({ ...EMPTY })}
+              disabled={!hasPrefs}
+            >
+              Clear preferences
+            </button>
+          </div>
         </form>
         <div className="mood-chips" role="group" aria-label="Mood shortcuts">
           {MOOD_CHIPS.map((chip) => (
@@ -111,7 +120,12 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
               key={chip}
               type="button"
               className={mood.toLowerCase() === chip.toLowerCase() ? "is-on" : ""}
-              onClick={() => applyPrefs({ mood: chip, country, genre })}
+              onClick={() =>
+                applyPrefs({
+                  ...prefs,
+                  mood: mood.toLowerCase() === chip.toLowerCase() ? "" : chip,
+                })
+              }
             >
               {chip}
             </button>
@@ -147,7 +161,11 @@ export default function DailyRecommend({ tracks, countries, genres, onListen }) 
               {track.year || "Year unknown"} · {track.genre} · {formatStreams(track.streams)} plays
             </p>
             <p className="daily-reason">{result.reason}</p>
-            <p className="daily-stamp">Locked for {result.dateKey} until tomorrow’s rotation.</p>
+            <p className="daily-stamp">
+              {hasPrefs
+                ? `Preferences now: ${activePrefs.join(" · ")}. Change them anytime.`
+                : "No preferences set. Add a mood, country, or genre anytime."}
+            </p>
             <div className="card-actions">
               <button type="button" onClick={() => onListen(track)}>
                 Listen

@@ -254,7 +254,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
       mode: "popular",
       dateKey,
       hasPrefs,
-      reason: `No mood, country, or genre was set, so today’s title is drawn from the most streamed recordings in the canon. A different popular work appears each day.`,
+      reason: `No mood, country, or genre was set, so today’s title is drawn from the most streamed recordings in the canon. Change a preference anytime for a matched pick, or wait for tomorrow’s popular rotation.`,
     };
   }
 
@@ -297,7 +297,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
   if (country) bits.push(`country “${country}”`);
   if (genre) bits.push(`genre “${genre}”`);
   const hitText = (chosen.hits || []).slice(0, 3).join(", ");
-  const reason = `Canon’s recommender matched ${bits.join(", ")} to this recording${hitText ? ` (${hitText})` : ""}. The pick rotates daily among the strongest matches.`;
+  const reason = `Canon’s recommender matched ${bits.join(", ")} to this recording${hitText ? ` (${hitText})` : ""}. Change mood, country, or genre anytime for a new match; the same preferences still rotate each day.`;
 
   return { track, mode: "ai", dateKey, hasPrefs, reason };
 }
