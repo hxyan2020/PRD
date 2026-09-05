@@ -42,6 +42,16 @@ const tracks = [
     year: 1790,
     whyShortlisted: "A sacred hymn of faith and peace.",
   },
+  {
+    id: "jpop",
+    name: "Tokyo Lights",
+    genre: "J-pop",
+    genres: ["J-pop"],
+    releaseCountry: "Japan",
+    streams: 100_000,
+    year: 2005,
+    whyShortlisted: "A Japanese pop single.",
+  },
 ];
 
 assert.equal(utcDateKey(new Date("2026-09-05T12:00:00Z")), "2026-09-05");
@@ -71,6 +81,12 @@ assert.equal(dance.track.id, "jazz");
 
 const uk = recommendDaily(tracks, { country: "UK", mood: "spiritual" }, new Date("2026-01-02Z"));
 assert.equal(uk.track.id, "hymn");
+
+const japan = recommendDaily(tracks, { country: "Japan" }, new Date("2026-09-05Z"));
+assert.equal(japan.track.id, "jpop");
+
+const jazzOnly = recommendDaily(tracks, { genre: "jazz", mood: "melancholy" }, new Date("2026-09-05Z"));
+assert.equal(jazzOnly.track.id, "jazz");
 
 const folkScore = scoreTrack(tracks[0], { mood: "sad", country: "Ireland" });
 const danceScore = scoreTrack(tracks[1], { mood: "sad", country: "Ireland" });

@@ -210,6 +210,20 @@ export function scoreTrack(track, { mood = "", country = "", genre = "" } = {}) 
   return { score, hits };
 }
 
+function matchesGenre(track, genreQ) {
+  if (!genreQ) return true;
+  const genreText = normalize([track.genre, ...(track.genres || [])].join(" "));
+  return genreText.includes(genreQ) || containsTerm(genreText, genreQ);
+}
+
+function matchesCountry(track, countryQ) {
+  if (!countryQ) return true;
+  const wanted = expandCountry(countryQ);
+  const countryText = normalize(track.releaseCountry);
+  if (!wanted) return true;
+  return countryText.includes(wanted) || containsTerm(countryText, wanted);
+}
+
 function pickFrom(pool, seed) {
   if (!pool.length) return null;
   const idx = hashString(seed) % pool.length;
@@ -244,9 +258,21 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
     };
   }
 
-  const ranked = list
+  const genreQ = normalize(genre);
+  const byGenre = genreQ ? list.filter((track) => matchesGenre(track, genreQ)) : [];
+  const byCountry = country ? list.filter((track) => matchesCountry(track, country)) : [];
+  const byBoth =
+    genreQ && country
+      ? list.filter((track) => matchesGenre(track, genreQ) && matchesCountry(track, country))
+      : [];
+  const pool =
+    (byBoth.length && byBoth) ||
+    (byGenre.length && byGenre) ||
+    (byCountry.length && byCountry) ||
+    list;
+
+  const ranked = pool
     .map((track) => ({ track, ...scoreTrack(track, { mood, country, genre }) }))
-    .filter((row) => row.score > 0)
     .sort((a, b) => b.score - a.score || (b.track.streams || 0) - (a.track.streams || 0));
 
   if (!ranked.length) {
