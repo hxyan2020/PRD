@@ -4,8 +4,10 @@ import Collections from "./Collections.jsx";
 import DailyRecommend from "./DailyRecommend.jsx";
 import TrackCard from "./TrackCard.jsx";
 import {
+  formatCollectedAt,
   loadCollectedIds,
-  saveCollectedIds,
+  loadCollection,
+  saveCollection,
   toggleCollected,
 } from "./collections.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
@@ -37,7 +39,9 @@ export default function App() {
   const [sort, setSort] = useState("influence");
   const [selectedId, setSelectedId] = useState(readHash);
   const [playingId, setPlayingId] = useState("");
-  const [collectedIds, setCollectedIds] = useState(loadCollectedIds);
+  const [collection, setCollection] = useState(loadCollection);
+  const collectedIds = collection.ids;
+  const collectedAt = collection.collectedAt;
   const [viewedIds, setViewedIds] = useState(() => {
     const collected = loadCollectedIds();
     const viewed = loadViewedIds();
@@ -128,9 +132,9 @@ export default function App() {
 
   function onToggleCollect(id) {
     rememberView(id);
-    setCollectedIds((current) => {
+    setCollection((current) => {
       const next = toggleCollected(current, id);
-      saveCollectedIds(next);
+      saveCollection(next);
       return next;
     });
   }
@@ -192,12 +196,14 @@ export default function App() {
         onListen={(track) => openTrack(track, true)}
         onView={(track) => rememberView(track.id)}
         collectedIds={collectedIds}
+        collectedAt={collectedAt}
         onToggleCollect={onToggleCollect}
       />
 
       <Collections
         tracks={tracks}
         collectedIds={collectedIds}
+        collectedAt={collectedAt}
         selectedId={selectedId}
         onToggleCollect={onToggleCollect}
         onOpen={openTrack}
@@ -252,6 +258,7 @@ export default function App() {
             track={track}
             selected={selectedId === track.id}
             collectedIds={collectedIds}
+            collectedAt={collectedAt}
             onToggleCollect={onToggleCollect}
             onOpen={openTrack}
           />
@@ -316,6 +323,12 @@ export default function App() {
               <dt>Popularity</dt>
               <dd>{formatStreamsFull(selected.streams)}</dd>
             </div>
+            {collectedIds.includes(selected.id) ? (
+              <div>
+                <dt>Collected</dt>
+                <dd>{formatCollectedAt(collectedAt[selected.id])}</dd>
+              </div>
+            ) : null}
           </dl>
           <h3>Why it is shortlisted</h3>
           <p className="why">{selected.whyShortlisted}</p>

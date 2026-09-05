@@ -399,6 +399,14 @@ option {
   margin-top: 8px;
 }
 
+.collected-date {
+  margin: 8px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
 .card-actions {
   display: flex;
   flex-wrap: wrap;

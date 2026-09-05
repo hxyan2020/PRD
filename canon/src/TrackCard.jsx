@@ -1,14 +1,17 @@
 import CollectButton from "./CollectButton.jsx";
+import { formatCollectedAt } from "./collections.js";
 import { formatStreams, primaryArtist } from "./format.js";
 
 export default function TrackCard({
   track,
   selected,
   collectedIds,
+  collectedAt,
   onToggleCollect,
   onOpen,
 }) {
   const collected = collectedIds.includes(track.id);
+  const collectedDate = collected ? formatCollectedAt(collectedAt?.[track.id]) : "";
   return (
     <article className={`card ${selected ? "is-open" : ""} ${collected ? "is-saved" : ""}`}>
       <button className="cover-btn" onClick={() => onOpen(track, true)} type="button">
@@ -23,6 +26,7 @@ export default function TrackCard({
           {track.year || "Year unknown"} · {track.genre}
         </p>
         <p className="plays">{formatStreams(track.streams)} plays</p>
+        {collected ? <p className="collected-date">Collected {collectedDate}</p> : null}
         <div className="card-actions">
           <button type="button" onClick={() => onOpen(track, true)}>
             Listen

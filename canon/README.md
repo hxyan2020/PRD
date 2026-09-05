@@ -10,7 +10,7 @@ Every entry has:
 - published Spotify play counts where the industry reports them
 - a short note on why the work belongs in the canon
 - a daily AI recommendation from mood, country, and genre (change those anytime; blank fields fall back to the most streamed titles)
-- **Collect** to save a recording into your collection (stored in this browser)
+- **Collect** to save a recording into your collection (stored in this browser), with the date you collected it
 - **Surprise me** to hear a different work immediately, without waiting for tomorrow’s rotation
 - header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
 

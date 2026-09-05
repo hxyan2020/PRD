@@ -3,6 +3,7 @@ import TrackCard from "./TrackCard.jsx";
 export default function Collections({
   tracks,
   collectedIds,
+  collectedAt,
   selectedId,
   onToggleCollect,
   onOpen,
@@ -18,7 +19,7 @@ export default function Collections({
         <h2>Collections</h2>
         <p>
           {collected.length
-            ? `${collected.length} recording${collected.length === 1 ? "" : "s"} in your collection. Click Collected to remove one.`
+            ? `${collected.length} recording${collected.length === 1 ? "" : "s"} in your collection, each with the date you saved it. Click Collected to remove one.`
             : "Click Collect on any recording to add it here. Your collection stays in this browser."}
         </p>
       </div>
@@ -30,6 +31,7 @@ export default function Collections({
               track={track}
               selected={selectedId === track.id}
               collectedIds={collectedIds}
+              collectedAt={collectedAt}
               onToggleCollect={onToggleCollect}
               onOpen={onOpen}
             />

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import CollectButton from "./CollectButton.jsx";
+import { formatCollectedAt } from "./collections.js";
 import { formatStreams, primaryArtist } from "./format.js";
 import { MOOD_CHIPS, recommendDaily, surprisePick } from "./recommend.js";
 
@@ -28,6 +29,7 @@ export default function DailyRecommend({
   onListen,
   onView,
   collectedIds,
+  collectedAt,
   onToggleCollect,
 }) {
   const [mood, setMood] = useState("");
@@ -209,6 +211,9 @@ export default function DailyRecommend({
                 ? `Preferences now: ${activePrefs.join(" · ")}. Change them anytime.`
                 : "No preferences set. Add a mood, country, or genre anytime."}
             </p>
+            {collectedIds.includes(track.id) ? (
+              <p className="collected-date">Collected {formatCollectedAt(collectedAt?.[track.id])}</p>
+            ) : null}
             <div className="card-actions">
               <button type="button" onClick={() => onListen(track)}>
                 Listen
