@@ -224,6 +224,11 @@ export default function App() {
           <p className="eyebrow">No. {selected.rank} in the canon</p>
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
+          <p className="drawer-links">
+            <a className="spotify-link" href={selected.spotifyUrl} target="_blank" rel="noreferrer">
+              Open official Spotify link
+            </a>
+          </p>
           <dl className="facts">
             <div>
               <dt>Composer</dt>
