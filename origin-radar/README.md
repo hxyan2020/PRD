@@ -23,6 +23,22 @@ Open [http://localhost:3000](http://localhost:3000).
 - **Storefront prep:** `/storefront` — Generate a listing from a recommendation; SQLite + Shopify CSV
 - Scoring method: `/methodology`
 - Health probe: `/api/health`
+- HX monitor registry: `/api/hx`
+- HX viewership: `GET/POST /api/hx/viewership`
+
+## Deploy
+
+**Vercel (radar UI).** In the Vercel project set Root Directory to `origin-radar`. SQLite is ephemeral on serverless — Generate / queue / storefront persist only for the life of an instance. Set `ORIGIN_RADAR_DB=/tmp/storefront.sqlite`. Claim a temporary deploy with `npx vercel deploy --temporary --yes` from `origin-radar/`.
+
+**DigitalOcean (storefront + Generate).** App spec is `.do/app.yaml`. Connect the GitHub repo, or:
+
+```bash
+doctl apps create --spec .do/app.yaml
+```
+
+The web service uses `origin-radar/Dockerfile`, health-checks `/api/health`, and mounts 1 GiB at `/data` for SQLite.
+
+**HX bots / viewership.** Import `origin-radar/hx-registry.json`. Bots should poll `/api/hx` (monitor list + public origin) and `/api/health` every 60s. Page views POST to `/api/hx/viewership`. This agent cannot register the service in your HX console without HX API credentials.
 
 Set `ALIBABA_1688_APP_KEY`, `ALIBABA_1688_APP_SECRET`, and `ALIBABA_1688_ACCESS_TOKEN` to pull live 1688 offer data on Generate. Without keys, Generate still writes a complete factory listing pack (images downloaded, specs, terms, price tiers, recommended retail zone) to `data/storefront.sqlite`.
 

@@ -34,6 +34,11 @@ export function getDb(file = dbPath()): DatabaseSync {
       updated_at TEXT NOT NULL,
       PRIMARY KEY (slug, action)
     );
+    CREATE TABLE IF NOT EXISTS hx_viewership (
+      path TEXT PRIMARY KEY,
+      hits INTEGER NOT NULL,
+      updated_at TEXT NOT NULL
+    );
   `);
   return instance;
 }
@@ -123,4 +128,26 @@ export function setDeskAction(slug: string, action: DeskActionKind, day: string)
     db.prepare("DELETE FROM desk_state WHERE slug = ? AND action = 'discard'").run(slug);
   }
   return getDeskSnapshot(day);
+}
+
+export function recordView(pathName: string): { path: string; hits: number } {
+  const db = getDb();
+  const now = new Date().toISOString();
+  const clean = pathName.startsWith("/") ? pathName.slice(0, 200) : `/${pathName}`.slice(0, 200);
+  db.prepare(
+    `INSERT INTO hx_viewership (path, hits, updated_at) VALUES (?, 1, ?)
+     ON CONFLICT(path) DO UPDATE SET hits = hits + 1, updated_at = excluded.updated_at`,
+  ).run(clean, now);
+  const row = db.prepare("SELECT path, hits FROM hx_viewership WHERE path = ?").get(clean) as {
+    path: string;
+    hits: number;
+  };
+  return row;
+}
+
+export function viewershipSummary(): { total: number; paths: { path: string; hits: number }[] } {
+  const rows = getDb()
+    .prepare("SELECT path, hits FROM hx_viewership ORDER BY hits DESC")
+    .all() as { path: string; hits: number }[];
+  return { total: rows.reduce((n, r) => n + r.hits, 0), paths: rows };
 }

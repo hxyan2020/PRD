@@ -69,6 +69,13 @@ export default function MethodPage() {
         Collect keeps a shortlist, Discard hides a SKU until tomorrow. State lives in the same SQLite
         file as sourced listings.
       </p>
+      <h2 className="font-serif text-3xl">Deploy and HX monitoring</h2>
+      <p className="text-paper/80">
+        Vercel hosts the radar UI (Root Directory <code>origin-radar</code>). DigitalOcean App Platform
+        (<code>.do/app.yaml</code>) is the persistent host for Generate and SQLite. HX bots should
+        poll <code>/api/health</code> and <code>/api/hx</code>; viewership ingest is{" "}
+        <code>/api/hx/viewership</code>.
+      </p>
       <h2 className="font-serif text-3xl">Generate → database → storefront</h2>
       <p className="text-paper/80">
         On any recommendation, click <strong>Generate listing</strong>. OriginRadar builds a 1688-shaped

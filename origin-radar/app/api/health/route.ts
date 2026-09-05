@@ -7,12 +7,23 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const s = stats();
+  let sourced: number | null = null;
+  try {
+    sourced = listSourced().length;
+  } catch {
+    sourced = null;
+  }
   return NextResponse.json({
     ok: true,
     service: "origin-radar",
+    owner: "HX",
     asOf: CATALOG_AS_OF,
     signals: s.products,
-    sourced: listSourced().length,
+    sourced,
     time: new Date().toISOString(),
+    checks: {
+      catalog: s.products > 0,
+      sqlite: sourced != null,
+    },
   });
 }
