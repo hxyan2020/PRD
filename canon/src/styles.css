@@ -347,6 +347,70 @@ option {
   margin-top: 18px;
 }
 
+.recommend-log {
+  margin: 28px 0 8px;
+  padding: 22px;
+  border: 1px solid rgba(243, 234, 214, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 248, 234, 0.04);
+}
+
+.log-list {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  max-height: 420px;
+  overflow: auto;
+  display: grid;
+  gap: 8px;
+}
+
+.log-row {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid rgba(243, 234, 214, 0.1);
+  border-radius: 14px;
+}
+
+.log-row img,
+.log-cover-fallback {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #1a120c;
+}
+
+.log-row time,
+.log-meta {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.log-title {
+  margin: 2px 0;
+  font-family: "Fraunces", serif;
+}
+
+.log-row button {
+  border: 1px solid rgba(201, 164, 90, 0.45);
+  color: var(--paper);
+  background: transparent;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 .cover-btn {
   position: relative;
   display: block;
@@ -588,7 +652,8 @@ option {
   .daily-form,
   .daily-card,
   .dock,
-  .stats {
+  .stats,
+  .log-row {
     grid-template-columns: 1fr;
   }
 

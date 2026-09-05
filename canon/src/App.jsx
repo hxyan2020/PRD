@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import CollectButton from "./CollectButton.jsx";
 import Collections from "./Collections.jsx";
 import DailyRecommend from "./DailyRecommend.jsx";
+import RecommendLog from "./RecommendLog.jsx";
 import TrackCard from "./TrackCard.jsx";
 import {
   formatCollectedAt,
@@ -11,6 +12,11 @@ import {
   toggleCollected,
 } from "./collections.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
+import {
+  appendRecommendation,
+  loadRecommendLog,
+  saveRecommendLog,
+} from "./recommendLog.js";
 import {
   decadeOf,
   formatStreams,
@@ -49,6 +55,7 @@ export default function App() {
     if (merged.length !== viewed.length) saveViewedIds(merged);
     return merged;
   });
+  const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
 
   useEffect(() => {
     fetch("/catalog.json")
@@ -139,6 +146,15 @@ export default function App() {
     });
   }
 
+  function onRecommend(entry) {
+    setRecommendLog((current) => {
+      const next = appendRecommendation(current, entry);
+      if (next === current) return current;
+      saveRecommendLog(next);
+      return next;
+    });
+  }
+
   if (error) {
     return (
       <div className="boot">
@@ -195,10 +211,13 @@ export default function App() {
         genres={facets.genres}
         onListen={(track) => openTrack(track, true)}
         onView={(track) => rememberView(track.id)}
+        onRecommend={onRecommend}
         collectedIds={collectedIds}
         collectedAt={collectedAt}
         onToggleCollect={onToggleCollect}
       />
+
+      <RecommendLog log={recommendLog} tracks={tracks} onOpen={openTrack} />
 
       <Collections
         tracks={tracks}

@@ -28,6 +28,7 @@ export default function DailyRecommend({
   genres,
   onListen,
   onView,
+  onRecommend,
   collectedIds,
   collectedAt,
   onToggleCollect,
@@ -54,6 +55,21 @@ export default function DailyRecommend({
     return recommendDaily(tracks, prefs);
   }, [ready, tracks, mood, country, genre]);
 
+  useEffect(() => {
+    if (!ready || !daily?.track) return;
+    onRecommend?.({
+      trackId: daily.track.id,
+      name: daily.track.name,
+      artist: primaryArtist(daily.track),
+      coverUrl: daily.track.coverUrl,
+      mode: "daily",
+      kind: daily.mode,
+      mood,
+      country,
+      genre,
+    });
+  }, [ready, daily?.track?.id, daily?.mode, mood, country, genre]);
+
   function applyPrefs(next) {
     setMood(next.mood);
     setCountry(next.country);
@@ -75,6 +91,17 @@ export default function DailyRecommend({
     setSurprise(next);
     if (next.track) {
       setRecentIds((ids) => [next.track.id, ...ids].slice(0, 48));
+      onRecommend?.({
+        trackId: next.track.id,
+        name: next.track.name,
+        artist: primaryArtist(next.track),
+        coverUrl: next.track.coverUrl,
+        mode: "surprise",
+        kind: "surprise",
+        mood,
+        country,
+        genre,
+      });
       onListen(next.track);
       document.getElementById("today-listening")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }

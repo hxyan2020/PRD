@@ -13,6 +13,7 @@ Every entry has:
 - **Collect** to save a recording into your collection (stored in this browser), with the date you collected it
 - **Surprise me** to hear a different work immediately, without waiting for tomorrow’s rotation
 - header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
+- a dated log of every daily recommendation and Surprise me pick
 
 ## Run
 
