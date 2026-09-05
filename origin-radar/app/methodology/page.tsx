@@ -48,6 +48,16 @@ export default function MethodPage() {
         current snapshot is a research-backed desk as of 5 Sep 2026 with a pluggable adapter for
         live refresh. Treat numbers as directional for sourcing, not as a purchase order.
       </p>
+      <h2 className="font-serif text-3xl">Generate → database → storefront</h2>
+      <p className="text-paper/80">
+        On any recommendation, click <strong>Generate listing</strong>. OriginRadar builds a 1688-shaped
+        pack (gallery, HTML description, specifications, factory terms of use, MOQ price tiers) and
+        writes it to SQLite at <code>data/storefront.sqlite</code>, with images under{" "}
+        <code>public/sourced/&lt;slug&gt;/</code>. If <code>ALIBABA_1688_APP_KEY</code>,{" "}
+        <code>ALIBABA_1688_APP_SECRET</code>, and <code>ALIBABA_1688_ACCESS_TOKEN</code> are set, the
+        generator calls <code>alibaba.product.get</code> and overwrites title/images from the live
+        offer. Export Shopify CSV from /storefront when you are ready to stand up the shop.
+      </p>
     </article>
   );
 }

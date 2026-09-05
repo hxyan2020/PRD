@@ -5,6 +5,7 @@ const links = [
   { href: "/heatmap", label: "Search heat" },
   { href: "/social", label: "Social" },
   { href: "/markets", label: "Markets" },
+  { href: "/storefront", label: "Storefront" },
   { href: "/methodology", label: "Method" },
 ];
 
@@ -36,10 +37,10 @@ export function Header() {
           ))}
         </nav>
         <Link
-          href="/markets"
+          href="/storefront"
           className="rounded-full bg-rust px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-ink transition hover:bg-rust-dim"
         >
-          Gap matrix
+          Storefront
         </Link>
       </div>
       <nav className="flex gap-4 overflow-x-auto border-t border-white/5 px-4 py-3 md:hidden">

@@ -19,7 +19,10 @@ Open [http://localhost:3000](http://localhost:3000).
 - Keyword heatmap: `/heatmap`
 - Social desk: `/social`
 - Regional gap matrix: `/markets`
+- **Storefront prep:** `/storefront` — Generate a listing from a recommendation; SQLite + Shopify CSV
 - Scoring method: `/methodology`
+
+Set `ALIBABA_1688_APP_KEY`, `ALIBABA_1688_APP_SECRET`, and `ALIBABA_1688_ACCESS_TOKEN` to pull live 1688 offer data on Generate. Without keys, Generate still writes a complete factory listing pack (images downloaded, specs, terms, price tiers) to `data/storefront.sqlite`.
 
 ## Stack
 

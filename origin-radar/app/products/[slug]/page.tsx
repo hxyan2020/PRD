@@ -7,6 +7,7 @@ import { HeatmapGrid } from "@/components/HeatmapGrid";
 import { MarketTable } from "@/components/MarketTable";
 import { ScoreRing } from "@/components/ScoreRing";
 import { Sparkline } from "@/components/Sparkline";
+import { GenerateButton } from "@/components/GenerateButton";
 
 export function generateStaticParams() {
   return getProducts().map((p) => ({ slug: p.slug }));
@@ -56,14 +57,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
           </div>
-          <a
-            href={searchHref(product)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-8 inline-flex w-fit rounded-full bg-rust px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-ink hover:bg-rust-dim"
-          >
-            Open factory listings
-          </a>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <GenerateButton slug={product.slug} />
+            <a
+              href={searchHref(product)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex rounded-full border border-white/15 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-mist hover:text-paper"
+            >
+              Open factory listings
+            </a>
+          </div>
         </div>
       </header>
 

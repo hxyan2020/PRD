@@ -4,6 +4,7 @@ import type { ScoredProduct } from "@/lib/types";
 import { compact, pct, usd } from "@/lib/format";
 import { RegionPills } from "./RegionPills";
 import { ScoreRing } from "./ScoreRing";
+import { GenerateButton } from "./GenerateButton";
 
 export function OpportunityCard({ product }: { product: ScoredProduct }) {
   const factory = product.factory[0];
@@ -12,11 +13,8 @@ export function OpportunityCard({ product }: { product: ScoredProduct }) {
   const gap = product.whitespaceRegions.length > 0;
 
   return (
-    <Link
-      href={`/products/${product.slug}`}
-      className="panel group flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:border-rust/40"
-    >
-      <div className="relative h-44 overflow-hidden">
+    <article className="panel group flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:border-rust/40">
+      <Link href={`/products/${product.slug}`} className="relative block h-44 overflow-hidden">
         <Image
           src={product.image}
           alt={product.imageAlt}
@@ -33,14 +31,14 @@ export function OpportunityCard({ product }: { product: ScoredProduct }) {
             <span className="chip chip-gold">No retail comps</span>
           )}
         </div>
-      </div>
+      </Link>
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
-          <div>
+          <Link href={`/products/${product.slug}`}>
             <p className="kicker">{product.category}</p>
             <h2 className="mt-1 font-serif text-2xl leading-tight">{product.name}</h2>
             <p className="mt-1 font-mono text-xs text-mist">{product.nameZh}</p>
-          </div>
+          </Link>
           <ScoreRing score={product.score.total} />
         </div>
         <p className="line-clamp-2 text-sm leading-relaxed text-paper/80">{product.summary}</p>
@@ -61,7 +59,8 @@ export function OpportunityCard({ product }: { product: ScoredProduct }) {
             </div>
           </div>
         </div>
+        <GenerateButton slug={product.slug} variant="compact" />
       </div>
-    </Link>
+    </article>
   );
 }

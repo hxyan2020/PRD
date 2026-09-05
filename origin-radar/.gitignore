@@ -4,3 +4,8 @@ out
 *.log
 .DS_Store
 coverage
+tsconfig.tsbuildinfo
+data/*.sqlite
+data/*.sqlite-*
+public/sourced/**
+!public/sourced/.gitkeep
