@@ -8,6 +8,9 @@ import { MarketTable } from "@/components/MarketTable";
 import { ScoreRing } from "@/components/ScoreRing";
 import { Sparkline } from "@/components/Sparkline";
 import { GenerateButton } from "@/components/GenerateButton";
+import { FulfillmentChips } from "@/components/FulfillmentChips";
+import { PriceZoneBar } from "@/components/PriceZoneBar";
+import { logisticsFor } from "@/lib/factory-packs";
 
 export function generateStaticParams() {
   return getProducts().map((p) => ({ slug: p.slug }));
@@ -18,6 +21,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = getProduct(slug);
   if (!product) notFound();
   const factory = product.factory[0];
+  const logistics = logisticsFor(product.slug);
 
   return (
     <article className="space-y-10">
@@ -68,8 +72,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               Open factory listings
             </a>
           </div>
+          <div className="mt-6">
+            <FulfillmentChips logistics={logistics} />
+            <p className="mt-3 text-sm leading-relaxed text-mist">{logistics.customNotes}</p>
+            <p className="mt-1 text-sm leading-relaxed text-mist">{logistics.overseasNotes}</p>
+          </div>
         </div>
       </header>
+
+      <section>
+        <h2 className="mb-4 font-serif text-3xl">Recommended price zone</h2>
+        <p className="mb-4 max-w-2xl text-sm text-paper/75">
+          Floor covers landed cost at a 38% gross. Recommended sits in the target market: whitespace
+          uses category comps, competitive markets shade the average, saturated markets hug the low
+          end. Generate uses the best-region recommended as storefront retail.
+        </p>
+        <PriceZoneBar zones={product.priceZones} highlight={product.bestRegion} />
+        <ul className="mt-4 space-y-2 text-sm text-paper/80">
+          {product.priceZones.map((z) => (
+            <li key={z.region}>{z.rationale}</li>
+          ))}
+        </ul>
+      </section>
 
       <section>
         <h2 className="mb-4 font-serif text-3xl">Factory-direct sources</h2>

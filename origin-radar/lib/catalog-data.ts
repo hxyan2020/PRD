@@ -19,7 +19,7 @@ export const products: ProductInput[] = [
       "Industrial metal clothing rack hidden behind a floor-length curtain. Xiaohongshu’s breakout small-apartment storage system — still rare as a finished kit in North America and Europe.",
     whyNow:
       "Xiaohongshu notes on 货架衣柜 jumped +1,584% in H1 2026. 1688 factories in Foshan and Yiwu are shipping 10w+ units into China’s rental market. Western marketplaces still sell open IKEA-style rails, not the curtain-kit SKU.",
-    image: u("photo-1558997519-83ea9252edf9"),
+    image: u("photo-1631679706909-1844bbd07221"),
     imageAlt: "Open metal clothing rack in a small apartment",
     tags: ["whitespace", "xiaohongshu", "rental"],
     factory: [
@@ -878,7 +878,7 @@ export const products: ProductInput[] = [
       "Handheld blue-light device riding the same curve as red-light therapy, from a much lower competition base. Factory $10–25, retail $50–120.",
     whyNow:
       "Red light is saturated. Search for blue-light acne devices is compounding without the same listing density — a classic ‘second-wave device’ window.",
-    image: u("photo-1616394584738-fc6e612e13b6"),
+    image: u("photo-1487412947147-5cebf100ffc2"),
     imageAlt: "Facial beauty device on a bathroom shelf",
     tags: ["beauty", "devices", "second-wave"],
     factory: [
@@ -1505,7 +1505,7 @@ export const products: ProductInput[] = [
       "The 2025–26 TikTok Shop appliance breakout. Chinese brands already proved product-market fit; NA and EU Amazon are now crowded.",
     whyNow:
       "Useful as a cautionary card: factory is still cheap, but social is at peak and marketplaces are stacked. Better as a bundle add-on than a hero.",
-    image: u("photo-1623065424072-2c0588d1c1f0"),
+    image: u("photo-1559339352-11d035aa65de"),
     imageAlt: "Fresh smoothie in a glass jar",
     tags: ["saturated", "tiktok", "impulse"],
     factory: [
@@ -1626,7 +1626,7 @@ export const products: ProductInput[] = [
       "Lamp + Qi charger. Search spikes around back-to-school and gifting. Easy factory SKU, moderate competition.",
     whyNow:
       "Not a whitespace story. Reliable seasonal cashflow with 45–55% gap if you win a colorway or USB-C GaN version.",
-    image: u("photo-1507473887602-a8cf1394f3b1"),
+    image: u("photo-1513506003901-1e6a229e2d15"),
     imageAlt: "Minimal desk lamp on a workspace",
     tags: ["seasonal", "home-office", "evergreen"],
     factory: [
@@ -1740,7 +1740,7 @@ export const products: ProductInput[] = [
       "USB-C heated lash curler that replaced the metal squeeze tool on TikTok beauty. Strong visual demo, mid competition, easy shipping.",
     whyNow:
       "Beauty-tool TikTok still converts. Factory sub-$6, retail $18–32. Not whitespace, but operationally simple with healthy gap.",
-    image: u("photo-1522335789203-aabd1fc37cf2"),
+    image: u("photo-1522337660859-02fbefca4702"),
     imageAlt: "Makeup tools arranged on a vanity",
     tags: ["beauty", "impulse", "tiktok"],
     factory: [

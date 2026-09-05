@@ -24,6 +24,8 @@ describe("generate listing pipeline", () => {
     expect(product.terms.payment).toMatch(/Alipay/);
     expect(product.priceTiers[0].priceUsd).toBeGreaterThan(0);
     expect(product.variants.length).toBeGreaterThan(1);
+    expect(product.priceZones.length).toBe(3);
+    expect(product.logistics.overseasMode).toBeTruthy();
     expect(product.retailPriceUsd).toBeGreaterThan(product.factoryPriceUsd);
     expect(getSourcedBySlug("rack-wardrobe")?.id).toBe(product.id);
     expect(listSourced()).toHaveLength(1);

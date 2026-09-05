@@ -1,5 +1,6 @@
 import type { ScoredProduct } from "./types";
-import type { FactoryExtras, FactoryTerms, PriceTier, SourcedProduct } from "./storefront-types";
+import type { FactoryExtras, FactoryLogistics, FactoryTerms, PriceTier } from "./storefront-types";
+import { charmPrice, zoneForRegion } from "./price-zone";
 
 const u = (id: string) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1400&q=80`;
@@ -9,7 +10,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045001",
     vendor: "Foshan Linxin Storage Co., Ltd.",
     vendorZh: "佛山市林鑫收纳制品有限公司",
-    gallery: [u("photo-1558997519-83ea9252edf9"), u("photo-1616486338812-3dadae4b4ace"), u("photo-1594026112284-02bb6f3352fe"), u("photo-1616628188550-808682f3926d")],
+    gallery: [u("photo-1631679706909-1844bbd07221"), u("photo-1616486338812-3dadae4b4ace"), u("photo-1594026112284-02bb6f3352fe"), u("photo-1616628188550-808682f3926d")],
     specs: [
       { name: "Frame", value: "20×40mm powder-coated steel" },
       { name: "Curtain", value: "Blackout polyester, machine washable" },
@@ -35,7 +36,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045002",
     vendor: "Zhongshan Enamel Homeware Factory",
     vendorZh: "中山市珐琅家居制品厂",
-    gallery: [u("photo-1556912173-46c336c7fd55"), u("photo-1556911220-e15b29be8c8f"), u("photo-1484154214963-1caa2ea3eda6")],
+    gallery: [u("photo-1556912173-46c336c7fd55"), u("photo-1556911220-e15b29be8c8f"), u("photo-1616486338812-3dadae4b4ace")],
     specs: [
       { name: "Panel", value: "0.6 mm steel + porcelain enamel" },
       { name: "Magnet", value: "Compatible with N35+ neodymium hooks" },
@@ -84,7 +85,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045004",
     vendor: "Guangzhou Baiyun Cosmetics OEM",
     vendorZh: "广州白云区化妆品OEM厂",
-    gallery: [u("photo-1620916566398-39f1143ab7be"), u("photo-1556228720-195a672e8a03"), u("photo-1571781926291-c77da025d1b9")],
+    gallery: [u("photo-1620916566398-39f1143ab7be"), u("photo-1556228720-195a672e8a03"), u("photo-1556228578-8c89e6adf883")],
     specs: [
       { name: "INCI highlight", value: "Sodium DNA (PDRN analog), panthenol, HA" },
       { name: "Fill", value: "2 ml × 10 vials / box" },
@@ -156,7 +157,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045007",
     vendor: "Shenzhen Bao'an Beauty Devices",
     vendorZh: "深圳宝安美容仪器厂",
-    gallery: [u("photo-1616394584738-fc6e612e13b6"), u("photo-1598440947619-2c35fc9aa908"), u("photo-1512496015851-a90fb52ba952")],
+    gallery: [u("photo-1487412947147-5cebf100ffc2"), u("photo-1598440947619-2c35fc9aa908"), u("photo-1556228578-8c89e6adf883")],
     specs: [
       { name: "LED", value: "415 nm blue, 10 min session timer" },
       { name: "Battery", value: "USB-C, 90 min runtime" },
@@ -203,7 +204,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045009",
     vendor: "Shenzhen Huaqiang Imaging OEM",
     vendorZh: "深圳华强北影像OEM",
-    gallery: [u("photo-1526170375885-4d8ecf77b99f"), u("photo-1502920917128-1aa500764cbd"), u("photo-1492691526758-47ac0ecc2a41")],
+    gallery: [u("photo-1526170375885-4d8ecf77b99f"), u("photo-1502920917128-1aa500764cbd"), u("photo-1513506003901-1e6a229e2d15")],
     specs: [
       { name: "Sensor", value: "1080p 30fps CMOS" },
       { name: "Wear", value: "Necklace + magnetic clip" },
@@ -273,7 +274,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045012",
     vendor: "Zhongshan Mini Appliance Co.",
     vendorZh: "中山小家电有限公司",
-    gallery: [u("photo-1623065424072-2c0588d1c1f0"), u("photo-1570197788417-0e82375c9371"), u("photo-1546173159-315724a31696")],
+    gallery: [u("photo-1559339352-11d035aa65de"), u("photo-1570197788417-0e82375c9371"), u("photo-1546173159-315724a31696")],
     specs: [
       { name: "Motor", value: "USB-C, 6 blades" },
       { name: "Jar", value: "350 ml Tritan" },
@@ -295,7 +296,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045013",
     vendor: "Zhongshan Lighting Cluster OEM",
     vendorZh: "中山灯具产业带OEM",
-    gallery: [u("photo-1507473887602-a8cf1394f3b1"), u("photo-1513506003901-1e6a229e2d15"), u("photo-1497366216548-37526070297c")],
+    gallery: [u("photo-1513506003901-1e6a229e2d15"), u("photo-1497366216548-37526070297c"), u("photo-1616486338812-3dadae4b4ace")],
     specs: [
       { name: "Light", value: "LED 3000–5000 K, 3 steps" },
       { name: "Charge", value: "15 W Qi + USB-A" },
@@ -317,7 +318,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045014",
     vendor: "Yiwu Beauty Tools Factory",
     vendorZh: "义乌美妆工具厂",
-    gallery: [u("photo-1522335789203-aabd1fc37cf2"), u("photo-1512496015851-a90fb52ba952"), u("photo-1596462502278-27bfdc403348")],
+    gallery: [u("photo-1522337660859-02fbefca4702"), u("photo-1487412947147-5cebf100ffc2"), u("photo-1596462502278-27bfdc403348")],
     specs: [
       { name: "Heat", value: "PTC, auto-off 8 s" },
       { name: "Power", value: "USB-C" },
@@ -384,6 +385,218 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
   },
 };
 
+const LOGISTICS: Record<string, FactoryLogistics> = {
+  "rack-wardrobe": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 50,
+    customNotes: "Curtain print, frame color, and retail carton from 50 sets. Small logo hangtag from 20.",
+    overseasRecipient: false,
+    overseasMode: "agent-ddp",
+    overseasNotes: "12+ kg / 0.12 CBM — factory will not book a residential overseas address. They truck to your Shenzhen/Ningbo forwarder; agent DDP to NA/EU warehouse.",
+    sampleToOverseas: true,
+    dropshipParcel: false,
+  },
+  "enamel-pegboard": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 100,
+    customNotes: "Pantone enamel, silk-screen logo, hook kit SKU mix from 100 panels.",
+    overseasRecipient: false,
+    overseasMode: "agent-ddp",
+    overseasNotes: "Fragile enamel — factory packs for export but hands off at China port. Agent DDP recommended; no door-to-door from the mill.",
+    sampleToOverseas: true,
+    dropshipParcel: false,
+  },
+  "retractable-laundry-rack": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 30,
+    customNotes: "Manual SKU: color + logo from 30. Electric SKU: voltage + plug + CE/ETL run from 50.",
+    overseasRecipient: false,
+    overseasMode: "agent-ddp",
+    overseasNotes: "Ceiling hardware + optional motor. Factory ships EXW Zhaoqing; agent DDP. Electric SKU needs destination plug/cert — factory cooperates, buyer files.",
+    sampleToOverseas: true,
+    dropshipParcel: false,
+  },
+  "pdrn-ampoule": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 500,
+    customNotes: "Private label formula lock, box, and vial print from 500 boxes. Formula change is a new GMP batch.",
+    overseasRecipient: false,
+    overseasMode: "exw-only",
+    overseasNotes: "Cosmetics: factory will not ship to a consumer overseas address. Buyer (or licensed importer) must file CPNP/FDA and book the lane. Samples can go courier with MSDS.",
+    sampleToOverseas: true,
+    dropshipParcel: false,
+  },
+  "foldable-tpu-bathtub": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 50,
+    customNotes: "Oxford color, logo print, ice-bath vs soak size from 50 pcs.",
+    overseasRecipient: false,
+    overseasMode: "agent-ddp",
+    overseasNotes: "Bulky even folded. Factory loads cartons to your forwarder; DDP via agent. Not a letter-box dropship SKU.",
+    sampleToOverseas: true,
+    dropshipParcel: false,
+  },
+  "sauna-blanket": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 20,
+    customNotes: "Voltage, controller, and logo from 20 pcs. ETL 110V run quoted separately.",
+    overseasRecipient: true,
+    overseasMode: "agent-ddp",
+    overseasNotes: "Factory can consign a sample or small carton to an overseas warehouse via 4PX/YunExpress. Residential DDP for bulk still goes through your agent.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "blue-light-wand": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 100,
+    customNotes: "ABS color, gift box, and CE/FCC mark from 100 pcs. No medical claims on OEM copy.",
+    overseasRecipient: true,
+    overseasMode: "factory-ddp",
+    overseasNotes: "Small parcel: factory quotes Cainiao / 4PX DDP to NA/EU/SEA addresses on 100+ units. Residential dropship after first carton is in a 3PL.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "heated-towel-rail": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 50,
+    customNotes: "Finish, plug standard, and logo from 50. US SKU waits on ETL lot.",
+    overseasRecipient: false,
+    overseasMode: "agent-ddp",
+    overseasNotes: "Mains electrical — factory will not DDP a plug-in heater to a home address. EXW + agent; destination cert is buyer-owned.",
+    sampleToOverseas: true,
+    dropshipParcel: false,
+  },
+  "neck-pov-camera": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 50,
+    customNotes: "Silicone color, box, and firmware splash from 50. Recording-notice card required for EU/NA.",
+    overseasRecipient: true,
+    overseasMode: "factory-ddp",
+    overseasNotes: "Huaqiang OEM will DDP samples and small lots via ePacket-class. Bulk still cheaper as agent DDP to a 3PL.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "collapsible-shower-bucket": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 100,
+    customNotes: "Jacket color and logo from 100 pcs.",
+    overseasRecipient: true,
+    overseasMode: "factory-ddp",
+    overseasNotes: "Light PP — factory routinely DDP cartons to SEA/NA warehouses and can parcel-sample to a residential address.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "hydrogen-bottle": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 50,
+    customNotes: "Tritan color, box, and silent firmware (no therapy claims) from 50.",
+    overseasRecipient: true,
+    overseasMode: "agent-ddp",
+    overseasNotes: "Battery + electrolysis. Samples courier OK. Bulk DDP via agent; some couriers treat SPE/PEM units as dangerous goods — confirm the lane.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "portable-blender-cup": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 100,
+    customNotes: "Color and color-box from 100. Motor tooling is shared — no exclusive housing under 5k.",
+    overseasRecipient: true,
+    overseasMode: "factory-ddp",
+    overseasNotes: "Classic 1688 dropship SKU. Factory DDP to overseas 3PL and can ship individual parcels after you warehouse.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "charging-desk-lamp": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 100,
+    customNotes: "Finish, Qi coil, and box from 100. Qi-certified coil is a paid option.",
+    overseasRecipient: true,
+    overseasMode: "agent-ddp",
+    overseasNotes: "Li-ion + Qi. Factory packs for export; overseas residential DDP via agent. Samples go courier.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "heated-eyelash-curler": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 200,
+    customNotes: "Color, blister vs gift box from 200 pcs.",
+    overseasRecipient: true,
+    overseasMode: "factory-ddp",
+    overseasNotes: "Yiwu factory DDP samples and small lots to NA/EU/SEA addresses. Easy 3PL dropship after first carton.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+  "smart-bidet-seat": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 20,
+    customNotes: "Shape plate, voltage, and logo from 20. UL/ETL 110V is a separate production lot.",
+    overseasRecipient: false,
+    overseasMode: "exw-only",
+    overseasNotes: "5+ kg sanitary electrical. Factory EXW Taizhou only — they will not accept an overseas residential consignee. Agent DDP + GFCI copy required.",
+    sampleToOverseas: true,
+    dropshipParcel: false,
+  },
+  "no-drill-bath-hardware": {
+    oemLogo: true,
+    oemColor: true,
+    oemPackaging: true,
+    customMoq: 100,
+    customNotes: "PVD color and kit mix from 100 sets.",
+    overseasRecipient: true,
+    overseasMode: "factory-ddp",
+    overseasNotes: "Light hardware. Factory DDP cartons to overseas warehouses and will courier a sample set to a residential address.",
+    sampleToOverseas: true,
+    dropshipParcel: true,
+  },
+};
+
+const DEFAULT_LOGISTICS: FactoryLogistics = {
+  oemLogo: true,
+  oemColor: true,
+  oemPackaging: false,
+  customMoq: 100,
+  customNotes: "Logo / color from listed custom MOQ. Confirm each PO.",
+  overseasRecipient: false,
+  overseasMode: "agent-ddp",
+  overseasNotes: "EXW to your China forwarder. International DDP via agent — not in the unit price.",
+  sampleToOverseas: true,
+  dropshipParcel: false,
+};
+
+export function logisticsFor(slug: string): FactoryLogistics {
+  return LOGISTICS[slug] ?? { ...DEFAULT_LOGISTICS };
+}
+
 export function priceTiers(unitUsd: number, unitCny: number, moq: number): PriceTier[] {
   return [
     { minQty: Math.max(1, moq), priceUsd: unitUsd, priceCny: unitCny },
@@ -394,29 +607,41 @@ export function priceTiers(unitUsd: number, unitCny: number, moq: number): Price
 
 export function factoryTerms(product: ScoredProduct, extras: FactoryExtras): FactoryTerms {
   const f = product.factory[0];
+  const log = logisticsFor(product.slug);
+  const ship =
+    log.overseasMode === "factory-ddp"
+      ? `Factory can DDP small lots to an overseas warehouse or (on request) a commercial address. ${log.overseasNotes}`
+      : log.overseasMode === "agent-ddp"
+        ? `EXW ${f.cluster}. Factory trucks to your China forwarder; international DDP is via agent, not in the unit price. ${log.overseasNotes}`
+        : `EXW ${f.cluster} only — factory will not take an overseas consignee. ${log.overseasNotes}`;
+  const customBits = [
+    log.oemLogo ? "logo" : null,
+    log.oemColor ? "color" : null,
+    log.oemPackaging ? "retail box" : null,
+  ].filter(Boolean);
   return {
     moq: f.moq,
     unit: extras.unit,
     leadTime: extras.leadTime,
     payment: "Alipay / T/T. 30% deposit, 70% before shipment. Samples prepaid.",
-    sample: `Sample available; fee often credited against bulk ≥ ${extras.customMoq} ${extras.unit}.`,
+    sample: log.sampleToOverseas
+      ? `Sample ships to an overseas address (buyer pays freight). Fee often credited against bulk ≥ ${log.customMoq} ${extras.unit}.`
+      : `Domestic China sample only. Overseas sample must go through your forwarder.`,
     warranty: extras.warranty,
     returns: "Quality issues within 7 days of receipt with unboxing photos. Cosmetic damage after delivery is not covered unless QC video was requested.",
-    shipping: `EXW ${f.cluster}. Factory can arrange domestic China truck to your forwarder. International DDP via agent — not included in unit price.`,
-    customization: `Logo / color / retail box from ${extras.customMoq} ${extras.unit}. Plain white box below that.`,
+    shipping: ship,
+    customization: customBits.length
+      ? `${customBits.join(" / ")} from ${log.customMoq} ${extras.unit}. ${log.customNotes}`
+      : `No OEM on this mill. ${log.customNotes}`,
     inspection: "SGS / QIMA welcome. Buyer books and pays. Factory cooperates on-site.",
     packing: extras.packing,
   };
 }
 
 export function retailTarget(product: ScoredProduct): { retail: number; compare: number } {
-  const na = product.markets.find((m) => m.region === "na");
-  const retail = na
-    ? !na.exists || na.status === "whitespace"
-      ? na.projectedRetailUsd
-      : na.avgRetailUsd
-    : product.factory[0].unitPriceUsd * 3.2;
-  return { retail: round2(retail), compare: round2(retail * 1.15) };
+  const zone = zoneForRegion(product.priceZones, product.bestRegion);
+  const retail = zone?.recommendedUsd ?? product.factory[0].unitPriceUsd * 3.2;
+  return { retail: charmPrice(retail), compare: charmPrice(retail * 1.15) };
 }
 
 export function descriptionHtml(product: ScoredProduct, extras: FactoryExtras): { en: string; zh: string; plain: string } {

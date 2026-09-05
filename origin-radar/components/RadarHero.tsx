@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { compact } from "@/lib/format";
 import { CATALOG_AS_OF, stats } from "@/lib/catalog";
 
@@ -16,6 +17,20 @@ export function RadarHero() {
           and Europe we flag whitespace, or — if the product already exists — the price gap, seller
           count, and supplier depth.
         </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            href="/queue"
+            className="rounded-full bg-rust px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-ink hover:bg-rust-dim"
+          >
+            Open today&apos;s queue
+          </Link>
+          <Link
+            href="/storefront"
+            className="rounded-full border border-white/15 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-mist hover:text-paper"
+          >
+            Sourced storefront
+          </Link>
+        </div>
       </div>
       <div className="relative mx-auto h-64 w-64">
         <div className="absolute inset-0 rounded-full border border-white/10" />

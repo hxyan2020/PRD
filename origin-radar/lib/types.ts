@@ -98,11 +98,24 @@ export interface ScoreBreakdown {
   total: number;
 }
 
+export interface PriceZone {
+  region: RegionId;
+  factoryUsd: number;
+  landedUsd: number;
+  floorUsd: number;
+  recommendedUsd: number;
+  ceilingUsd: number;
+  grossMarginPct: number;
+  tight: boolean;
+  rationale: string;
+}
+
 export interface ScoredProduct extends ProductInput {
   score: ScoreBreakdown;
   bestRegion: RegionId;
   whitespaceRegions: RegionId[];
   maxMarginPct: number | null;
+  priceZones: PriceZone[];
 }
 
 export const REGION_LABEL: Record<RegionId, string> = {

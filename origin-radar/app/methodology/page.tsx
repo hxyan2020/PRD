@@ -48,6 +48,27 @@ export default function MethodPage() {
         current snapshot is a research-backed desk as of 5 Sep 2026 with a pluggable adapter for
         live refresh. Treat numbers as directional for sourcing, not as a purchase order.
       </p>
+      <h2 className="font-serif text-3xl">Price zone</h2>
+      <p className="text-paper/80">
+        Each market gets a floor / recommended / ceiling. Floor is landed cost divided by 0.62
+        (about 38% gross after freight and duty — ads and returns still come out of that). Whitespace
+        recommended prices use category comps. Competitive markets shade the going average.
+        Saturated markets hug the low end and are often marked tight. Generate writes the
+        best-region recommended price as storefront retail.
+      </p>
+      <h2 className="font-serif text-3xl">Customization and overseas address</h2>
+      <p className="text-paper/80">
+        Every factory pack records whether the mill will do logo / color / retail-box OEM, the custom
+        MOQ, whether a sample can ship to an overseas address, and how export actually works:
+        factory DDP, agent DDP after EXW, or EXW-only (no overseas consignee — typical for cosmetics
+        and heavy sanitary electrical).
+      </p>
+      <h2 className="font-serif text-3xl">Daily queue</h2>
+      <p className="text-paper/80">
+        /queue is the working deck: eight ranked SKUs for the UTC day. Generate sources the listing,
+        Collect keeps a shortlist, Discard hides a SKU until tomorrow. State lives in the same SQLite
+        file as sourced listings.
+      </p>
       <h2 className="font-serif text-3xl">Generate → database → storefront</h2>
       <p className="text-paper/80">
         On any recommendation, click <strong>Generate listing</strong>. OriginRadar builds a 1688-shaped

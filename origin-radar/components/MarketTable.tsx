@@ -7,6 +7,7 @@ export function MarketTable({ product }: { product: ScoredProduct }) {
     <div className="grid gap-4 lg:grid-cols-3">
       {product.markets.map((m) => {
         const gap = !m.exists || m.status === "whitespace";
+        const zone = product.priceZones.find((z) => z.region === m.region);
         return (
           <article key={m.region} className={`panel p-5 ${gap ? "ring-1 ring-gold/40" : ""}`}>
             <div className="flex items-start justify-between gap-3">
@@ -39,6 +40,16 @@ export function MarketTable({ product }: { product: ScoredProduct }) {
                 <dt>Landed cost</dt>
                 <dd className="mt-1 text-lg text-paper">{usd(m.landedCostUsd)}</dd>
               </div>
+              <div>
+                <dt>Price zone</dt>
+                <dd className="mt-1 text-lg text-signal">{zone ? usd(zone.recommendedUsd) : "—"}</dd>
+              </div>
+              <div>
+                <dt>Zone band</dt>
+                <dd className="mt-1 text-lg text-paper">
+                  {zone ? `${usd(zone.floorUsd)}–${usd(zone.ceilingUsd)}` : "—"}
+                </dd>
+              </div>
               <div className="col-span-2">
                 <dt>Price gap (margin)</dt>
                 <dd className={`mt-1 font-serif text-3xl ${gap ? "text-gold" : "text-signal"}`}>
@@ -48,6 +59,7 @@ export function MarketTable({ product }: { product: ScoredProduct }) {
                 </dd>
               </div>
             </dl>
+            {zone ? <p className="mt-3 text-sm leading-relaxed text-mist">{zone.rationale}</p> : null}
             <ul className="mt-4 space-y-1.5 text-sm text-paper/80">
               {m.platforms.map((p) => (
                 <li key={p.name} className="flex justify-between gap-3">

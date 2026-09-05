@@ -3,6 +3,8 @@
 import { useState } from "react";
 import type { SourcedProduct } from "@/lib/storefront-types";
 import { cny, usd } from "@/lib/format";
+import { FulfillmentChips } from "./FulfillmentChips";
+import { PriceZoneBar } from "./PriceZoneBar";
 
 export function StorefrontPreview({ product }: { product: SourcedProduct }) {
   const [tab, setTab] = useState<"customer" | "merchant">("customer");
@@ -132,6 +134,35 @@ export function StorefrontPreview({ product }: { product: SourcedProduct }) {
               </tbody>
             </table>
           </section>
+          {product.priceZones?.length ? (
+            <section className="panel p-5">
+              <h2 className="font-serif text-2xl">Recommended retail zone</h2>
+              <p className="mt-2 text-sm text-mist">
+                Store retail {usd(product.retailPriceUsd)} is the best-region recommended price.
+              </p>
+              <div className="mt-4">
+                <PriceZoneBar
+                  zones={product.priceZones}
+                  highlight={product.priceZones.find((z) => z.recommendedUsd === product.retailPriceUsd)?.region}
+                />
+              </div>
+              <ul className="mt-4 space-y-2 text-sm text-paper/80">
+                {product.priceZones.map((z) => (
+                  <li key={z.region}>{z.rationale}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+          {product.logistics ? (
+            <section className="panel p-5">
+              <h2 className="font-serif text-2xl">Factory customization &amp; overseas</h2>
+              <div className="mt-4">
+                <FulfillmentChips logistics={product.logistics} />
+              </div>
+              <p className="mt-3 text-sm text-paper/80">{product.logistics.customNotes}</p>
+              <p className="mt-2 text-sm text-paper/80">{product.logistics.overseasNotes}</p>
+            </section>
+          ) : null}
           <section className="panel p-5">
             <h2 className="font-serif text-2xl">Specifications</h2>
             <dl className="mt-4 divide-y divide-white/10">

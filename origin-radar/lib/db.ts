@@ -27,6 +27,13 @@ export function getDb(file = dbPath()): DatabaseSync {
       updated_at TEXT NOT NULL
     );
     CREATE INDEX IF NOT EXISTS idx_sourced_slug ON sourced_products(signal_slug);
+    CREATE TABLE IF NOT EXISTS desk_state (
+      slug TEXT NOT NULL,
+      action TEXT NOT NULL,
+      day TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      PRIMARY KEY (slug, action)
+    );
   `);
   return instance;
 }
@@ -82,4 +89,38 @@ export function sourcedSlugMap(): Record<string, string> {
     .prepare("SELECT signal_slug, id FROM sourced_products")
     .all() as { signal_slug: string; id: string }[];
   return Object.fromEntries(rows.map((r) => [r.signal_slug, r.id]));
+}
+
+export type DeskActionKind = "collect" | "discard" | "restore" | "uncollect";
+
+export function getDeskSnapshot(day: string): { collected: string[]; discarded: string[] } {
+  const rows = getDb()
+    .prepare("SELECT slug, action, day FROM desk_state")
+    .all() as { slug: string; action: string; day: string }[];
+  return {
+    collected: rows.filter((r) => r.action === "collect").map((r) => r.slug),
+    discarded: rows.filter((r) => r.action === "discard" && r.day === day).map((r) => r.slug),
+  };
+}
+
+export function setDeskAction(slug: string, action: DeskActionKind, day: string): { collected: string[]; discarded: string[] } {
+  const db = getDb();
+  const now = new Date().toISOString();
+  if (action === "collect") {
+    db.prepare(
+      `INSERT INTO desk_state (slug, action, day, updated_at) VALUES (?, 'collect', '*', ?)
+       ON CONFLICT(slug, action) DO UPDATE SET updated_at=excluded.updated_at`,
+    ).run(slug, now);
+    db.prepare("DELETE FROM desk_state WHERE slug = ? AND action = 'discard'").run(slug);
+  } else if (action === "uncollect") {
+    db.prepare("DELETE FROM desk_state WHERE slug = ? AND action = 'collect'").run(slug);
+  } else if (action === "discard") {
+    db.prepare(
+      `INSERT INTO desk_state (slug, action, day, updated_at) VALUES (?, 'discard', ?, ?)
+       ON CONFLICT(slug, action) DO UPDATE SET day=excluded.day, updated_at=excluded.updated_at`,
+    ).run(slug, day, now);
+  } else if (action === "restore") {
+    db.prepare("DELETE FROM desk_state WHERE slug = ? AND action = 'discard'").run(slug);
+  }
+  return getDeskSnapshot(day);
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 const links = [
+  { href: "/queue", label: "Queue" },
   { href: "/", label: "Radar" },
   { href: "/heatmap", label: "Search heat" },
   { href: "/social", label: "Social" },
@@ -37,10 +38,10 @@ export function Header() {
           ))}
         </nav>
         <Link
-          href="/storefront"
+          href="/queue"
           className="rounded-full bg-rust px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-ink transition hover:bg-rust-dim"
         >
-          Storefront
+          Today&apos;s queue
         </Link>
       </div>
       <nav className="flex gap-4 overflow-x-auto border-t border-white/5 px-4 py-3 md:hidden">

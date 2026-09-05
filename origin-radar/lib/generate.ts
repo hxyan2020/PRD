@@ -7,6 +7,7 @@ import {
   FACTORY_EXTRAS,
   descriptionHtml,
   factoryTerms,
+  logisticsFor,
   priceTiers,
   retailTarget,
 } from "./factory-packs";
@@ -78,14 +79,13 @@ export async function generateListing(
       const dest = path.join(publicDir, rel.replace(/^\//, ""));
       try {
         const dl = await downloadImage(url, dest);
-        images.push({ path: rel, alt: `${signal.name} ${i}`, sourceUrl: url, position: i });
+        images.push({ path: rel, alt: `${signal.name} ${i}`, sourceUrl: url, position: images.length + 1 });
         steps.push({ step: `Image ${i}`, ok: true, detail: `${dl.bytes} bytes from ${new URL(url).hostname}` });
       } catch (err) {
-        images.push({ path: url, alt: `${signal.name} ${i}`, sourceUrl: url, position: i });
         steps.push({
           step: `Image ${i}`,
           ok: false,
-          detail: `Kept remote URL (${err instanceof Error ? err.message : "download failed"}).`,
+          detail: `Skipped (${err instanceof Error ? err.message : "download failed"}).`,
         });
       }
     }
@@ -94,6 +94,10 @@ export async function generateListing(
       images.push({ path: url, alt: `${signal.name} ${idx + 1}`, sourceUrl: url, position: idx + 1 });
     });
     steps.push({ step: "Images", ok: true, detail: "Remote URLs only (download skipped)." });
+  }
+
+  if (downloadImages && images.length === 0) {
+    throw new Error("No gallery images could be downloaded");
   }
 
   const product: SourcedProduct = {
@@ -119,6 +123,8 @@ export async function generateListing(
     retailPriceUsd: retail,
     compareAtUsd: compare,
     factoryPriceUsd: factory.unitPriceUsd,
+    priceZones: signal.priceZones,
+    logistics: logisticsFor(signal.slug),
     variants: extras.variants,
     optionNames: extras.optionNames,
     images,

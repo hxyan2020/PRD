@@ -1,3 +1,5 @@
+import type { PriceZone } from "./types";
+
 export interface SpecRow {
   name: string;
   value: string;
@@ -14,6 +16,21 @@ export interface VariantRow {
   options: Record<string, string>;
   priceUsd: number;
   stock: number;
+}
+
+export type OverseasMode = "factory-ddp" | "agent-ddp" | "exw-only";
+
+export interface FactoryLogistics {
+  oemLogo: boolean;
+  oemColor: boolean;
+  oemPackaging: boolean;
+  customMoq: number;
+  customNotes: string;
+  overseasRecipient: boolean;
+  overseasMode: OverseasMode;
+  overseasNotes: string;
+  sampleToOverseas: boolean;
+  dropshipParcel: boolean;
 }
 
 export interface FactoryTerms {
@@ -60,6 +77,8 @@ export interface SourcedProduct {
   retailPriceUsd: number;
   compareAtUsd: number;
   factoryPriceUsd: number;
+  priceZones: PriceZone[];
+  logistics: FactoryLogistics;
   variants: VariantRow[];
   optionNames: string[];
   images: SourcedImage[];

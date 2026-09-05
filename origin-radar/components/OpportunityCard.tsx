@@ -2,15 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ScoredProduct } from "@/lib/types";
 import { compact, pct, usd } from "@/lib/format";
+import { logisticsFor } from "@/lib/factory-packs";
 import { RegionPills } from "./RegionPills";
 import { ScoreRing } from "./ScoreRing";
 import { GenerateButton } from "./GenerateButton";
+import { FulfillmentChips } from "./FulfillmentChips";
 
 export function OpportunityCard({ product }: { product: ScoredProduct }) {
   const factory = product.factory[0];
   const tiktok = product.social.find((s) => s.platform === "tiktok");
   const xhs = product.social.find((s) => s.platform === "xiaohongshu");
   const gap = product.whitespaceRegions.length > 0;
+  const zone = product.priceZones.find((z) => z.region === product.bestRegion) ?? product.priceZones[0];
+  const log = logisticsFor(product.slug);
 
   return (
     <article className="panel group flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:border-rust/40">
@@ -43,6 +47,14 @@ export function OpportunityCard({ product }: { product: ScoredProduct }) {
         </div>
         <p className="line-clamp-2 text-sm leading-relaxed text-paper/80">{product.summary}</p>
         <RegionPills markets={product.markets} />
+        {zone ? (
+          <p className="font-mono text-[11px] uppercase tracking-wider text-mist">
+            {zone.region.toUpperCase()} price zone {usd(zone.floorUsd)}–{usd(zone.ceilingUsd)} · rec{" "}
+            <span className="text-signal">{usd(zone.recommendedUsd)}</span>
+            {zone.tight ? " · tight" : ""}
+          </p>
+        ) : null}
+        <FulfillmentChips logistics={log} />
         <div className="mt-auto grid grid-cols-3 gap-2 border-t border-white/10 pt-4 font-mono text-[11px] uppercase tracking-wider text-mist">
           <div>
             <div>Factory</div>

@@ -78,6 +78,8 @@ export function toStorefrontJson(products: SourcedProduct[]) {
       vendor: p.vendor,
       factoryPriceUsd: p.factoryPriceUsd,
       retailPriceUsd: p.retailPriceUsd,
+      priceZones: p.priceZones,
+      logistics: p.logistics,
       source: { platform: p.sourcePlatform, offerId: p.sourceOfferId, url: p.sourceUrl, live: p.liveFetch },
       specifications: p.specifications,
       terms: p.terms,

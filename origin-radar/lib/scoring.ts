@@ -1,3 +1,4 @@
+import { priceZonesFor } from "./price-zone";
 import type {
   GapStatus,
   ProductInput,
@@ -133,13 +134,16 @@ export function maxMargin(product: ProductInput): number | null {
 }
 
 export function toScoredProduct(product: ProductInput): ScoredProduct {
-  return {
+  const scored: ScoredProduct = {
     ...product,
     score: scoreProduct(product),
     bestRegion: bestRegion(product),
     whitespaceRegions: whitespaceRegions(product),
     maxMarginPct: maxMargin(product),
+    priceZones: [],
   };
+  scored.priceZones = priceZonesFor(scored);
+  return scored;
 }
 
 export function statusRank(status: GapStatus): number {
