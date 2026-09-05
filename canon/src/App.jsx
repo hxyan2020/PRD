@@ -8,6 +8,7 @@ import {
   saveCollectedIds,
   toggleCollected,
 } from "./collections.js";
+import { loadViewedIds, markViewed, saveViewedIds } from "./viewed.js";
 import {
   decadeOf,
   formatStreams,
@@ -36,7 +37,8 @@ export default function App() {
   const [sort, setSort] = useState("influence");
   const [selectedId, setSelectedId] = useState(readHash);
   const [playingId, setPlayingId] = useState("");
-  const [collectedIds, setCollectedIds] = useState([]);
+  const [collectedIds, setCollectedIds] = useState(loadCollectedIds);
+  const [viewedIds, setViewedIds] = useState(loadViewedIds);
 
   useEffect(() => {
     fetch("/catalog.json")
@@ -49,14 +51,14 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    setCollectedIds(loadCollectedIds());
-  }, []);
-
-  useEffect(() => {
     const onHash = () => setSelectedId(readHash());
     window.addEventListener("hashchange", onHash);
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
+
+  useEffect(() => {
+    if (selectedId) rememberView(selectedId);
+  }, [selectedId]);
 
   const tracks = data?.tracks || [];
   const selected = tracks.find((t) => t.id === selectedId) || null;
@@ -101,13 +103,25 @@ export default function App() {
     return list;
   }, [tracks, query, genre, era, country, sort]);
 
+  function rememberView(id) {
+    if (!id) return;
+    setViewedIds((current) => {
+      const next = markViewed(current, id);
+      if (next === current || next.length === current.length) return current;
+      saveViewedIds(next);
+      return next;
+    });
+  }
+
   function openTrack(track, play = false) {
+    rememberView(track.id);
     setSelectedId(track.id);
     window.location.hash = `t=${track.id}`;
     if (play) setPlayingId(track.id);
   }
 
   function onToggleCollect(id) {
+    rememberView(id);
     setCollectedIds((current) => {
       const next = toggleCollected(current, id);
       saveCollectedIds(next);
@@ -143,24 +157,26 @@ export default function App() {
             singer, writer, or length — only that each still lives on Spotify.
           </p>
         </div>
-        <dl className="stats">
-          <div>
-            <dt>Works</dt>
-            <dd>{data.count}</dd>
-          </div>
-          <div>
-            <dt>Live Spotify links</dt>
-            <dd>{data.count}</dd>
-          </div>
-          <div>
-            <dt>Collected</dt>
-            <dd>{collectedIds.length}</dd>
-          </div>
-          <div>
-            <dt>Updated</dt>
-            <dd>{new Date(data.generatedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</dd>
-          </div>
-        </dl>
+        <div className="stats-wrap">
+          <dl className="stats" aria-label="Library counts">
+            <div>
+              <dt>Songs in archive</dt>
+              <dd>{data.count}</dd>
+            </div>
+            <div>
+              <dt>Viewed</dt>
+              <dd>{viewedIds.length}</dd>
+            </div>
+            <div>
+              <dt>Collected</dt>
+              <dd>{collectedIds.length}</dd>
+            </div>
+          </dl>
+          <p className="stats-note">
+            1,000 songs from the beginning. Viewed and collected count unique
+            titles in this browser.
+          </p>
+        </div>
       </header>
 
       <DailyRecommend
@@ -168,6 +184,7 @@ export default function App() {
         countries={facets.countries}
         genres={facets.genres}
         onListen={(track) => openTrack(track, true)}
+        onView={(track) => rememberView(track.id)}
         collectedIds={collectedIds}
         onToggleCollect={onToggleCollect}
       />

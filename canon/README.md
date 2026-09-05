@@ -12,6 +12,7 @@ Every entry has:
 - a daily AI recommendation from mood, country, and genre (change those anytime; blank fields fall back to the most streamed titles)
 - **Collect** to save a recording into your collection (stored in this browser)
 - **Surprise me** to hear a different work immediately, without waiting for tomorrow’s rotation
+- header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
 
 ## Run
 

@@ -93,11 +93,24 @@ h1 {
   line-height: 1.55;
 }
 
+.stats-wrap {
+  display: grid;
+  gap: 10px;
+}
+
 .stats {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px 24px;
   margin: 0;
+}
+
+.stats-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(243, 234, 214, 0.55);
+  max-width: 42ch;
 }
 
 .stats dt {
@@ -566,7 +579,8 @@ option {
   .daily,
   .daily-form,
   .daily-card,
-  .dock {
+  .dock,
+  .stats {
     grid-template-columns: 1fr;
   }
 

@@ -26,6 +26,7 @@ export default function DailyRecommend({
   countries,
   genres,
   onListen,
+  onView,
   collectedIds,
   onToggleCollect,
 }) {
@@ -79,6 +80,11 @@ export default function DailyRecommend({
 
   const result = surprise || daily;
   const track = result?.track;
+
+  useEffect(() => {
+    if (track?.id) onView?.(track);
+  }, [track?.id, onView]);
+
   const todayLabel = new Date().toLocaleDateString("en-GB", {
     weekday: "long",
     day: "numeric",
