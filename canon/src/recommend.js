@@ -230,6 +230,56 @@ function pickFrom(pool, seed) {
   return pool[idx];
 }
 
+export function candidatePool(tracks, prefs = {}) {
+  const list = Array.isArray(tracks) ? tracks : [];
+  const country = String(prefs.country || "").trim();
+  const genre = String(prefs.genre || "").trim();
+  const genreQ = normalize(genre);
+  const byGenre = genreQ ? list.filter((track) => matchesGenre(track, genreQ)) : [];
+  const byCountry = country ? list.filter((track) => matchesCountry(track, country)) : [];
+  const byBoth =
+    genreQ && country
+      ? list.filter((track) => matchesGenre(track, genreQ) && matchesCountry(track, country))
+      : [];
+  return (byBoth.length && byBoth) || (byGenre.length && byGenre) || (byCountry.length && byCountry) || list;
+}
+
+export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0 } = {}) {
+  const list = Array.isArray(tracks) ? tracks : [];
+  if (!list.length) {
+    return { track: null, mode: "none", reason: "The archive is empty." };
+  }
+
+  const mood = String(prefs.mood || "").trim();
+  const country = String(prefs.country || "").trim();
+  const genre = String(prefs.genre || "").trim();
+  const hasPrefs = Boolean(mood || country || genre);
+  const preferred = hasPrefs ? candidatePool(list, prefs) : list;
+  const exclude = new Set((excludeIds || []).filter(Boolean).map(String));
+
+  function choose(pool) {
+    const open = pool.filter((track) => !exclude.has(track.id));
+    const use = open.length ? open : pool;
+    if (!use.length) return null;
+    return use[hashString(`surprise|${salt}|${use.length}`) % use.length];
+  }
+
+  let track = choose(preferred);
+  if ((!track || exclude.has(track.id)) && preferred !== list) {
+    track = choose(list);
+  }
+
+  const bits = [mood && `mood “${mood}”`, country && `country “${country}”`, genre && `genre “${genre}”`].filter(
+    Boolean
+  );
+  const matchedTaste = hasPrefs && preferred.some((item) => item.id === track?.id);
+  const reason = matchedTaste
+    ? `Surprise: another recording from the canon, still matching ${bits.join(", ")}.`
+    : `Surprise: a different recording from the 1,000-work canon. Click again for another.`;
+
+  return { track, mode: "surprise", hasPrefs, reason };
+}
+
 export function recommendDaily(tracks, prefs = {}, date = new Date()) {
   const list = Array.isArray(tracks) ? tracks : [];
   const mood = String(prefs.mood || "").trim();
@@ -258,18 +308,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
     };
   }
 
-  const genreQ = normalize(genre);
-  const byGenre = genreQ ? list.filter((track) => matchesGenre(track, genreQ)) : [];
-  const byCountry = country ? list.filter((track) => matchesCountry(track, country)) : [];
-  const byBoth =
-    genreQ && country
-      ? list.filter((track) => matchesGenre(track, genreQ) && matchesCountry(track, country))
-      : [];
-  const pool =
-    (byBoth.length && byBoth) ||
-    (byGenre.length && byGenre) ||
-    (byCountry.length && byCountry) ||
-    list;
+  const pool = candidatePool(list, prefs);
 
   const ranked = pool
     .map((track) => ({ track, ...scoreTrack(track, { mood, country, genre }) }))

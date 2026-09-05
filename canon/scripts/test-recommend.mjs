@@ -1,5 +1,11 @@
 import assert from "node:assert/strict";
-import { recommendDaily, scoreTrack, utcDateKey, hashString } from "../src/recommend.js";
+import {
+  recommendDaily,
+  scoreTrack,
+  surprisePick,
+  utcDateKey,
+  hashString,
+} from "../src/recommend.js";
 
 const tracks = [
   {
@@ -97,5 +103,27 @@ assert.equal(changed.track.id, "jpop", "changing country the same day must chang
 const folkScore = scoreTrack(tracks[0], { mood: "sad", country: "Ireland" });
 const danceScore = scoreTrack(tracks[1], { mood: "sad", country: "Ireland" });
 assert.ok(folkScore.score > danceScore.score);
+
+const emptySurprise = surprisePick([], { salt: 1 });
+assert.equal(emptySurprise.track, null);
+
+const firstSurprise = surprisePick(tracks, { excludeIds: ["dance"], salt: 1 });
+assert.ok(firstSurprise.track);
+assert.notEqual(firstSurprise.track.id, "dance");
+assert.equal(firstSurprise.mode, "surprise");
+
+const japanSurprise = surprisePick(tracks, { prefs: { country: "Japan" }, excludeIds: [], salt: 7 });
+assert.equal(japanSurprise.track.id, "jpop");
+
+const seen = new Set();
+let exclude = ["dance"];
+for (let salt = 0; salt < 8; salt += 1) {
+  const pick = surprisePick(tracks, { excludeIds: exclude, salt });
+  assert.ok(pick.track);
+  assert.ok(!exclude.includes(pick.track.id), "surprise must show a new recording");
+  seen.add(pick.track.id);
+  exclude = [pick.track.id, ...exclude].slice(0, 3);
+}
+assert.ok(seen.size >= 2, "repeated Surprise me must cycle through different works");
 
 console.log("recommend tests ok");

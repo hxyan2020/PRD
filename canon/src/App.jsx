@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import CollectButton from "./CollectButton.jsx";
+import Collections from "./Collections.jsx";
 import DailyRecommend from "./DailyRecommend.jsx";
+import TrackCard from "./TrackCard.jsx";
+import {
+  loadCollectedIds,
+  saveCollectedIds,
+  toggleCollected,
+} from "./collections.js";
 import {
   decadeOf,
   formatStreams,
@@ -28,6 +36,7 @@ export default function App() {
   const [sort, setSort] = useState("influence");
   const [selectedId, setSelectedId] = useState(readHash);
   const [playingId, setPlayingId] = useState("");
+  const [collectedIds, setCollectedIds] = useState([]);
 
   useEffect(() => {
     fetch("/catalog.json")
@@ -37,6 +46,10 @@ export default function App() {
       })
       .then(setData)
       .catch((err) => setError(err.message));
+  }, []);
+
+  useEffect(() => {
+    setCollectedIds(loadCollectedIds());
   }, []);
 
   useEffect(() => {
@@ -94,6 +107,14 @@ export default function App() {
     if (play) setPlayingId(track.id);
   }
 
+  function onToggleCollect(id) {
+    setCollectedIds((current) => {
+      const next = toggleCollected(current, id);
+      saveCollectedIds(next);
+      return next;
+    });
+  }
+
   if (error) {
     return (
       <div className="boot">
@@ -132,8 +153,8 @@ export default function App() {
             <dd>{data.count}</dd>
           </div>
           <div>
-            <dt>With play counts</dt>
-            <dd>{tracks.filter((t) => t.streams).length}</dd>
+            <dt>Collected</dt>
+            <dd>{collectedIds.length}</dd>
           </div>
           <div>
             <dt>Updated</dt>
@@ -147,6 +168,16 @@ export default function App() {
         countries={facets.countries}
         genres={facets.genres}
         onListen={(track) => openTrack(track, true)}
+        collectedIds={collectedIds}
+        onToggleCollect={onToggleCollect}
+      />
+
+      <Collections
+        tracks={tracks}
+        collectedIds={collectedIds}
+        selectedId={selectedId}
+        onToggleCollect={onToggleCollect}
+        onOpen={openTrack}
       />
 
       <section className="controls" aria-label="Filter the archive">
@@ -193,31 +224,14 @@ export default function App() {
 
       <main className="grid" aria-label="Catalog">
         {visible.map((track) => (
-          <article
+          <TrackCard
             key={track.id}
-            className={`card ${selectedId === track.id ? "is-open" : ""}`}
-          >
-            <button className="cover-btn" onClick={() => openTrack(track, true)} type="button">
-              <img src={track.coverUrl} alt={`Official album cover for ${track.name}`} loading="lazy" />
-              <span className="rank">#{String(track.rank).padStart(3, "0")}</span>
-            </button>
-            <div className="card-body">
-              <h2>{track.name}</h2>
-              <p className="artist">{primaryArtist(track)}</p>
-              <p className="meta-line">
-                {track.year || "Year unknown"} · {track.genre}
-              </p>
-              <p className="plays">{formatStreams(track.streams)} plays</p>
-              <div className="card-actions">
-                <button type="button" onClick={() => openTrack(track, true)}>
-                  Listen
-                </button>
-                <a href={track.spotifyUrl} target="_blank" rel="noreferrer">
-                  Spotify
-                </a>
-              </div>
-            </div>
-          </article>
+            track={track}
+            selected={selectedId === track.id}
+            collectedIds={collectedIds}
+            onToggleCollect={onToggleCollect}
+            onOpen={openTrack}
+          />
         ))}
       </main>
 
@@ -291,6 +305,11 @@ export default function App() {
             <button type="button" onClick={() => setPlayingId(selected.id)}>
               Stream in player
             </button>
+            <CollectButton
+              id={selected.id}
+              collectedIds={collectedIds}
+              onToggle={onToggleCollect}
+            />
             <a className="spotify-link" href={selected.spotifyUrl} target="_blank" rel="noreferrer">
               Open official Spotify link
             </a>

@@ -168,7 +168,8 @@ h1 {
 }
 
 .daily-form button,
-.mood-chips button {
+.mood-chips button,
+button.surprise {
   border: 1px solid rgba(201, 164, 90, 0.5);
   background: var(--brass);
   color: var(--ink);
@@ -176,6 +177,13 @@ h1 {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.daily-form button.surprise,
+.card-actions button.surprise {
+  background: var(--oxblood);
+  color: var(--paper);
+  border-color: rgba(243, 234, 214, 0.35);
 }
 
 .mood-chips {
@@ -286,6 +294,46 @@ option {
   outline: 1px solid var(--brass);
 }
 
+.card.is-saved {
+  border-color: rgba(201, 164, 90, 0.45);
+}
+
+.collected-mark {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: var(--brass);
+  color: var(--ink);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.collections {
+  margin: 28px 0 8px;
+  padding: 22px;
+  border: 1px solid rgba(243, 234, 214, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 248, 234, 0.04);
+}
+
+.collections-head h2 {
+  font-size: 32px;
+  margin: 0 0 8px;
+}
+
+.collections-head p {
+  color: rgba(243, 234, 214, 0.78);
+  max-width: 62ch;
+  line-height: 1.5;
+}
+
+.collections-grid {
+  margin-top: 18px;
+}
+
 .cover-btn {
   position: relative;
   display: block;
@@ -340,6 +388,7 @@ option {
 
 .card-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
 }
@@ -359,6 +408,24 @@ option {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.card-actions button.is-collected,
+.drawer-actions button.is-collected {
+  background: var(--brass);
+  color: var(--ink);
+}
+
+.drawer-actions button.is-collected {
+  background: var(--oxblood);
+  color: var(--paper);
+  border-color: var(--oxblood);
+}
+
+.card-actions button.surprise {
+  background: var(--oxblood);
+  color: var(--paper);
+  border-color: rgba(243, 234, 214, 0.35);
 }
 
 .drawer {
