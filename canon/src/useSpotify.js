@@ -8,6 +8,7 @@ import {
   getClientId,
   parseCallbackParams,
   saveClientId,
+  searchSpotifyTracks,
   setPendingAdd,
   takePendingAdd,
   trackSavedOnSpotify,
@@ -122,6 +123,31 @@ export function useSpotify() {
     }
   }
 
+  async function searchTracks({ query, market = "", offset = 0, limit = 20 } = {}) {
+    if (!getClientId(undefined, ENV_CLIENT_ID)) {
+      setStatus({ key: "spotify.needClientId" });
+      document.getElementById("spotify-connect")?.scrollIntoView({ behavior: "smooth" });
+      throw new Error("Paste your Spotify client ID, then connect.");
+    }
+    if (!user) {
+      setStatus({ key: "spotify.needConnect" });
+      document.getElementById("spotify-connect")?.scrollIntoView({ behavior: "smooth" });
+      throw new Error("Connect Spotify to stream titles beyond the 1,000-work canon.");
+    }
+    setBusy(true);
+    try {
+      return await searchSpotifyTracks({
+        query,
+        market,
+        offset,
+        limit,
+        envClientId: ENV_CLIENT_ID,
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function checkSaved(track) {
     if (!user || !track?.spotifyId || saved[track.spotifyId] != null) return;
     try {
@@ -144,6 +170,8 @@ export function useSpotify() {
     addTrack,
     addTracks,
     checkSaved,
+    searchTracks,
+    setStatus,
     redirect: typeof window !== "undefined" ? `${window.location.origin}/` : "",
   };
 }

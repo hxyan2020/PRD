@@ -1,3 +1,5 @@
+import { searchTracksPath } from "./beyond.js";
+
 export const TOKEN_KEY = "canon.spotify.tokens";
 export const CLIENT_ID_KEY = "canon.spotify.clientId";
 export const VERIFIER_KEY = "canon.spotify.code_verifier";
@@ -261,6 +263,19 @@ export async function getAccessToken({
   });
   saveTokens(next, storage);
   return next.access_token;
+}
+
+export async function searchSpotifyTracks({
+  query,
+  market = "",
+  offset = 0,
+  limit = 20,
+  ...options
+} = {}) {
+  const token = await getAccessToken(options);
+  if (!token) throw new Error("Connect Spotify first so Canon can search beyond the archive.");
+  const path = searchTracksPath({ query, market, offset, limit });
+  return spotifyRequest(path, { token, fetchFn: options.fetchFn });
 }
 
 async function spotifyRequest(path, { method = "GET", body, token, fetchFn = fetch } = {}) {

@@ -10,6 +10,7 @@ import {
   t,
 } from "../src/i18n.js";
 import { MESSAGES } from "../src/i18n-messages.js";
+import { BEYOND } from "../src/beyond-messages.js";
 import { LEGAL } from "../src/legal-messages.js";
 import { parseRoute } from "../src/pages.js";
 import { recommendDaily, surprisePick } from "../src/recommend.js";
@@ -77,6 +78,13 @@ for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(LEGAL[locale]).sort(), legalKeys, `${locale} legal copy keys`);
   assert.match(t(locale, "aboutTitle"), /./);
   assert.match(t(locale, "terms1Body"), /Spotify/);
+}
+
+const beyondKeys = Object.keys(BEYOND.en).sort();
+assert.ok(beyondKeys.includes("beyondFind"));
+for (const locale of LANGUAGE_IDS) {
+  assert.deepEqual(Object.keys(BEYOND[locale]).sort(), beyondKeys, `${locale} beyond copy keys`);
+  assert.match(t(locale, "beyondTitle"), /./);
 }
 
 console.log("i18n tests ok");

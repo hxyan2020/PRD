@@ -3,6 +3,7 @@ import { formatLoggedAt } from "./recommendLog.js";
 
 function kindLabel(entry, translate) {
   if (entry.mode === "surprise") return translate("logSurprise");
+  if (entry.mode === "beyond" || entry.kind === "beyond") return translate("logBeyond");
   if (entry.kind === "popular") return translate("logDailyPopular");
   if (entry.kind === "ai") return translate("logDailyMatched");
   return translate("logDaily");

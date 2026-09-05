@@ -1,3 +1,4 @@
+import { BEYOND } from "./beyond-messages.js";
 import { LEGAL } from "./legal-messages.js";
 
 const en = {
@@ -1054,12 +1055,12 @@ const pt = {
 };
 
 export const MESSAGES = {
-  en: { ...en, ...LEGAL.en },
-  zh: { ...zh, ...LEGAL.zh },
-  hi: { ...hi, ...LEGAL.hi },
-  es: { ...es, ...LEGAL.es },
-  fr: { ...fr, ...LEGAL.fr },
-  ar: { ...ar, ...LEGAL.ar },
-  bn: { ...bn, ...LEGAL.bn },
-  pt: { ...pt, ...LEGAL.pt },
+  en: { ...en, ...LEGAL.en, ...BEYOND.en },
+  zh: { ...zh, ...LEGAL.zh, ...BEYOND.zh },
+  hi: { ...hi, ...LEGAL.hi, ...BEYOND.hi },
+  es: { ...es, ...LEGAL.es, ...BEYOND.es },
+  fr: { ...fr, ...LEGAL.fr, ...BEYOND.fr },
+  ar: { ...ar, ...LEGAL.ar, ...BEYOND.ar },
+  bn: { ...bn, ...LEGAL.bn, ...BEYOND.bn },
+  pt: { ...pt, ...LEGAL.pt, ...BEYOND.pt },
 };

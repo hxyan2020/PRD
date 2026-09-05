@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import BeyondCanon from "./BeyondCanon.jsx";
 import CollectButton from "./CollectButton.jsx";
 import Collections from "./Collections.jsx";
 import DailyRecommend from "./DailyRecommend.jsx";
@@ -7,7 +8,8 @@ import RecommendLog from "./RecommendLog.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import SpotifyConnect from "./SpotifyConnect.jsx";
 import TrackCard from "./TrackCard.jsx";
-import { formatCollectedAt, loadCollectedIds, loadCollection, saveCollection, toggleCollected } from "./collections.js";
+import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
+import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, formatCollectedAt } from "./collections.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
 import { useSpotify } from "./useSpotify.js";
@@ -41,6 +43,8 @@ export default function App() {
     return merged;
   });
   const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
+  const [listenPrefs, setListenPrefs] = useState({ mood: "", country: "", genre: "" });
+  const [extras, setExtras] = useState(loadExtraTracks);
   const spotify = useSpotify();
 
   useEffect(() => {
@@ -64,8 +68,15 @@ export default function App() {
   }, [selectedId]);
 
   const tracks = data?.tracks || [];
-  const selected = tracks.find((item) => item.id === selectedId) || null;
-  const playing = tracks.find((item) => item.id === playingId) || selected;
+  const extraList = Object.values(extras);
+  const library = useMemo(() => {
+    const byId = new Map();
+    for (const track of tracks) byId.set(track.id, track);
+    for (const track of extraList) if (!byId.has(track.id)) byId.set(track.id, track);
+    return [...byId.values()];
+  }, [tracks, extras]);
+  const selected = library.find((item) => item.id === selectedId) || null;
+  const playing = library.find((item) => item.id === playingId) || selected;
 
   useEffect(() => {
     if (selected) spotify.checkSaved(selected);
@@ -211,12 +222,32 @@ export default function App() {
         collectedAt={collectedAt}
         onToggleCollect={onToggleCollect}
         spotify={spotify}
+        onPrefs={setListenPrefs}
       />
 
-      <RecommendLog log={recommendLog} tracks={tracks} onOpen={openTrack} />
+      <BeyondCanon
+        prefs={listenPrefs}
+        catalog={tracks}
+        selectedId={selectedId}
+        collectedIds={collectedIds}
+        collectedAt={collectedAt}
+        onToggleCollect={onToggleCollect}
+        onOpen={openTrack}
+        onRecommend={onRecommend}
+        spotify={spotify}
+        onExtras={(list) => {
+          setExtras((current) => {
+            const next = mergeExtraTracks(current, list);
+            saveExtraTracks(next);
+            return next;
+          });
+        }}
+      />
+
+      <RecommendLog log={recommendLog} tracks={library} onOpen={openTrack} />
 
       <Collections
-        tracks={tracks}
+        tracks={library}
         collectedIds={collectedIds}
         collectedAt={collectedAt}
         selectedId={selectedId}
@@ -300,7 +331,7 @@ export default function App() {
             {t("close")}
           </button>
           <img className="drawer-cover" src={selected.coverUrl} alt={t("coverAlt", { name: selected.name })} />
-          <p className="eyebrow">{t("canonRank", { n: selected.rank })}</p>
+          <p className="eyebrow">{selected.extra ? t("beyondOutside") : t("canonRank", { n: selected.rank })}</p>
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
           <p className="drawer-links">
@@ -343,7 +374,11 @@ export default function App() {
             </div>
             <div>
               <dt>{t("popularity")}</dt>
-              <dd>{popularityLabel(selected.streams, t)}</dd>
+              <dd>
+                {selected.extra
+                  ? t("spotifyPopularity", { n: selected.popularity || 0 })
+                  : popularityLabel(selected.streams, t)}
+              </dd>
             </div>
             {collectedIds.includes(selected.id) ? (
               <div>
@@ -355,12 +390,20 @@ export default function App() {
             ) : null}
           </dl>
           <h3>{t("whyShortlisted")}</h3>
-          <p className="why">{selected.whyShortlisted}</p>
+          <p className="why">
+            {selected.extra
+              ? listenPrefs.mood || listenPrefs.country || listenPrefs.genre
+                ? t("beyondWhy")
+                : t("beyondWhyPopular")
+              : selected.whyShortlisted}
+          </p>
+          {selected.wikipediaUrl ? (
           <p className="wiki">
             <a href={selected.wikipediaUrl} target="_blank" rel="noreferrer">
               {t("encyclopedia")}
             </a>
           </p>
+          ) : null}
           <div className="card-actions drawer-actions">
             <button type="button" onClick={() => setPlayingId(selected.id)}>
               {t("streamInPlayer")}
@@ -380,7 +423,8 @@ export default function App() {
           <div>
             <p className="dock-title">{playing.name}</p>
             <p className="dock-sub">
-              {artistLabel(playing, t)} · {playsLabel(playing.streams, t)}
+              {artistLabel(playing, t)} ·{" "}
+              {playing.extra ? t("spotifyPopularity", { n: playing.popularity || 0 }) : playsLabel(playing.streams, t)}
             </p>
           </div>
           <a href={playing.spotifyUrl} target="_blank" rel="noreferrer">

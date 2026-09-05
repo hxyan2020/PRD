@@ -18,7 +18,7 @@ export function parseRecommendLog(raw) {
       name: String(item.name || "Unknown recording"),
       artist: String(item.artist || ""),
       coverUrl: String(item.coverUrl || ""),
-      mode: item.mode === "surprise" ? "surprise" : "daily",
+      mode: item.mode === "surprise" ? "surprise" : item.mode === "beyond" ? "beyond" : "daily",
       kind: String(item.kind || item.mode || "daily"),
       mood: String(item.mood || ""),
       country: String(item.country || ""),
@@ -50,7 +50,7 @@ export function appendRecommendation(log, input = {}, now = new Date()) {
   const mood = String(input.mood || "").trim();
   const country = String(input.country || "").trim();
   const genre = String(input.genre || "").trim();
-  const mode = input.mode === "surprise" ? "surprise" : "daily";
+  const mode = input.mode === "surprise" ? "surprise" : input.mode === "beyond" ? "beyond" : "daily";
   const entry = {
     id: `${at}-${trackId}-${mode}-${Math.random().toString(36).slice(2, 8)}`,
     at,

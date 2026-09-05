@@ -419,8 +419,38 @@ option {
   border-radius: 999px;
 }
 
+.beyond {
+  margin: 28px 0 8px;
+  padding: 22px;
+  border: 1px solid rgba(201, 164, 90, 0.28);
+  border-radius: 22px;
+  background: rgba(255, 248, 234, 0.04);
+}
+
+.beyond .daily-actions {
+  margin: 14px 0 8px;
+}
+
+.beyond .ghost {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(201, 164, 90, 0.45);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
 .collections {
   margin: 28px 0 8px;
+  padding: 22px;
+  border: 1px solid rgba(243, 234, 214, 0.1);
+  border-radius: 22px;
+  background: rgba(255, 248, 234, 0.04);
+}
   padding: 22px;
   border: 1px solid rgba(243, 234, 214, 0.1);
   border-radius: 22px;

@@ -54,6 +54,19 @@ const surpriseB = appendRecommendation(
 assert.equal(surpriseB.entries.length, 3, "every Surprise me is logged");
 assert.equal(surpriseB.entries[0].mode, "surprise");
 
+const beyond = appendRecommendation(
+  { entries: [] },
+  { trackId: "ext-1", name: "Outside", mode: "beyond", kind: "beyond" },
+  new Date("2026-09-05T10:00:00Z")
+);
+assert.equal(beyond.entries[0].mode, "beyond");
+const beyondAgain = appendRecommendation(
+  beyond,
+  { trackId: "ext-2", name: "Another", mode: "beyond" },
+  new Date("2026-09-05T10:05:00Z")
+);
+assert.equal(beyondAgain.entries.length, 2, "every beyond stream can be logged");
+
 assert.match(formatLoggedAt("2026-09-05T08:00:00.000Z"), /5 Sept? 2026/);
 
 const memory = {

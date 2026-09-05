@@ -47,6 +47,7 @@ export default function DailyRecommend({
   collectedAt,
   onToggleCollect,
   spotify,
+  onPrefs,
 }) {
   const { locale, t } = useI18n();
   const [mood, setMood] = useState("");
@@ -85,6 +86,10 @@ export default function DailyRecommend({
       genre,
     });
   }, [ready, daily?.track?.id, daily?.mode, mood, country, genre]);
+
+  useEffect(() => {
+    if (ready) onPrefs?.({ mood, country, genre });
+  }, [ready, mood, country, genre]);
 
   function applyPrefs(next) {
     const resolved = {
@@ -187,6 +192,9 @@ export default function DailyRecommend({
             </button>
             <button type="button" className="ghost" onClick={() => applyPrefs({ ...EMPTY })} disabled={!hasPrefs}>
               {t("clearPrefs")}
+            </button>
+            <button type="button" className="ghost" onClick={() => document.getElementById("beyond-canon")?.scrollIntoView({ behavior: "smooth", block: "start" })}>
+              {t("beyondFind")}
             </button>
             {isSurprise && (
               <button type="button" className="ghost" onClick={() => setSurprise(null)}>
