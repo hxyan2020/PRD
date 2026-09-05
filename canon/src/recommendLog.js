@@ -1,3 +1,5 @@
+import { dateTag } from "./i18n.js";
+
 export const RECOMMEND_LOG_KEY = "canon.recommend.log";
 const MAX_ENTRIES = 500;
 
@@ -26,11 +28,11 @@ export function parseRecommendLog(raw) {
   return { entries };
 }
 
-export function formatLoggedAt(iso) {
+export function formatLoggedAt(iso, locale) {
   if (!iso) return "Date not recorded";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "Date not recorded";
-  return date.toLocaleString("en-GB", {
+  return date.toLocaleString(dateTag(locale), {
     day: "numeric",
     month: "short",
     year: "numeric",

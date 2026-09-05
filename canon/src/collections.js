@@ -1,3 +1,5 @@
+import { dateTag } from "./i18n.js";
+
 export const COLLECTION_KEY = "canon.collections";
 
 export function normalizeIds(raw) {
@@ -39,11 +41,11 @@ export function toggleCollected(collection, id, now = new Date()) {
   };
 }
 
-export function formatCollectedAt(iso) {
+export function formatCollectedAt(iso, locale) {
   if (!iso) return "Date not recorded";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "Date not recorded";
-  return date.toLocaleString("en-GB", {
+  return date.toLocaleString(dateTag(locale), {
     day: "numeric",
     month: "short",
     year: "numeric",

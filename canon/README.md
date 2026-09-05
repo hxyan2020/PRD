@@ -15,6 +15,7 @@ Every entry has:
 - header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
 - a dated log of every daily recommendation and Surprise me pick
 - **Add to Spotify** after you authorize your Spotify account (saves to Liked Songs and a private Canon playlist album)
+- UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). The switcher changes menus and buttons only — song titles and catalog notes stay as published.
 
 ## Run
 

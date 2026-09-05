@@ -45,7 +45,7 @@ export function useSpotify() {
             await addTrackToSpotifyAlbum(pending, { envClientId: ENV_CLIENT_ID });
             if (!cancelled) {
               setSaved((current) => ({ ...current, [pending]: true }));
-              setStatus("Added to Liked Songs and your Canon album on Spotify.");
+              setStatus({ key: "spotify.addedAlbum" });
             }
           } catch (err) {
             if (!cancelled) setStatus(err.message);
@@ -79,7 +79,7 @@ export function useSpotify() {
     clearSpotifySession();
     setUser(null);
     setSaved({});
-    setStatus("Disconnected from Spotify.");
+    setStatus({ key: "spotify.disconnected" });
   }
 
   function rememberClientId(id) {
@@ -90,11 +90,11 @@ export function useSpotify() {
   async function addTrack(track) {
     const spotifyId = track?.spotifyId;
     if (!spotifyId) {
-      setStatus("This recording has no Spotify track id.");
+      setStatus({ key: "spotify.noId" });
       return;
     }
     if (!getClientId(undefined, ENV_CLIENT_ID)) {
-      setStatus("Paste your Spotify client ID, then connect.");
+      setStatus({ key: "spotify.needClientId" });
       document.getElementById("spotify-connect")?.scrollIntoView({ behavior: "smooth" });
       return;
     }
@@ -108,7 +108,7 @@ export function useSpotify() {
     try {
       await addTrackToSpotifyAlbum(spotifyId, { envClientId: ENV_CLIENT_ID });
       setSaved((current) => ({ ...current, [spotifyId]: true }));
-      setStatus(`Added “${track.name}” to Liked Songs and your Canon album.`);
+      setStatus({ key: "spotify.addedNamed", params: { name: track.name } });
     } catch (err) {
       setStatus(err.message);
     } finally {

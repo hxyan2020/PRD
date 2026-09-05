@@ -2,36 +2,18 @@ import { useEffect, useMemo, useState } from "react";
 import CollectButton from "./CollectButton.jsx";
 import Collections from "./Collections.jsx";
 import DailyRecommend from "./DailyRecommend.jsx";
+import { LanguageSwitcher, useI18n } from "./I18n.jsx";
 import RecommendLog from "./RecommendLog.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import SpotifyConnect from "./SpotifyConnect.jsx";
 import TrackCard from "./TrackCard.jsx";
-import {
-  formatCollectedAt,
-  loadCollectedIds,
-  loadCollection,
-  saveCollection,
-  toggleCollected,
-} from "./collections.js";
+import { formatCollectedAt, loadCollectedIds, loadCollection, saveCollection, toggleCollected } from "./collections.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
-import {
-  appendRecommendation,
-  loadRecommendLog,
-  saveRecommendLog,
-} from "./recommendLog.js";
+import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
 import { useSpotify } from "./useSpotify.js";
-import {
-  decadeOf,
-  formatStreams,
-  formatStreamsFull,
-  primaryArtist,
-  uniqueSorted,
-} from "./format.js";
-
-function displayCredit(value) {
-  if (!value || value === "—") return "n/a";
-  return value;
-}
+import { decadeOf, uniqueSorted } from "./format.js";
+import { displayEra } from "./i18n.js";
+import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
 
 function readHash() {
   const id = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("t");
@@ -39,6 +21,7 @@ function readHash() {
 }
 
 export default function App() {
+  const { locale, t } = useI18n();
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
@@ -82,37 +65,37 @@ export default function App() {
   }, [selectedId]);
 
   const tracks = data?.tracks || [];
-  const selected = tracks.find((t) => t.id === selectedId) || null;
-  const playing = tracks.find((t) => t.id === playingId) || selected;
+  const selected = tracks.find((item) => item.id === selectedId) || null;
+  const playing = tracks.find((item) => item.id === playingId) || selected;
 
   useEffect(() => {
     if (selected) spotify.checkSaved(selected);
   }, [selectedId, spotify.user]);
 
   const facets = useMemo(() => {
-    const genres = uniqueSorted(tracks.flatMap((t) => (t.genres?.length ? t.genres : [t.genre])));
-    const eras = uniqueSorted(tracks.map((t) => decadeOf(t.year)));
-    const countries = uniqueSorted(tracks.map((t) => t.releaseCountry));
+    const genres = uniqueSorted(tracks.flatMap((item) => (item.genres?.length ? item.genres : [item.genre])));
+    const eras = uniqueSorted(tracks.map((item) => decadeOf(item.year)));
+    const countries = uniqueSorted(tracks.map((item) => item.releaseCountry));
     return { genres, eras, countries };
   }, [tracks]);
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let list = tracks.filter((t) => {
-      if (genre !== "All genres" && t.genre !== genre && !(t.genres || []).includes(genre)) return false;
-      if (era !== "All eras" && decadeOf(t.year) !== era) return false;
-      if (country !== "All countries" && t.releaseCountry !== country) return false;
+    let list = tracks.filter((item) => {
+      if (genre !== "All genres" && item.genre !== genre && !(item.genres || []).includes(genre)) return false;
+      if (era !== "All eras" && decadeOf(item.year) !== era) return false;
+      if (country !== "All countries" && item.releaseCountry !== country) return false;
       if (!q) return true;
       const blob = [
-        t.name,
-        t.composer,
-        t.singer,
-        t.band,
-        t.writer,
-        t.musicCompany,
-        t.genre,
-        t.releaseCountry,
-        String(t.year || ""),
+        item.name,
+        item.composer,
+        item.singer,
+        item.band,
+        item.writer,
+        item.musicCompany,
+        item.genre,
+        item.releaseCountry,
+        String(item.year || ""),
       ]
         .join(" ")
         .toLowerCase();
@@ -166,7 +149,7 @@ export default function App() {
   if (error) {
     return (
       <div className="boot">
-        <p>Canon could not open the archive. {error}</p>
+        <p>{t("loadError", { error })}</p>
       </div>
     );
   }
@@ -175,7 +158,7 @@ export default function App() {
     return (
       <div className="boot">
         <p className="eyebrow">Canon</p>
-        <p>Opening the archive…</p>
+        <p>{t("opening")}</p>
       </div>
     );
   }
@@ -184,32 +167,27 @@ export default function App() {
     <div className={`app ${selected ? "has-drawer" : ""}`}>
       <header className="mast">
         <div className="mast-brand">
-          <p className="eyebrow">A listening archive</p>
+          <p className="eyebrow">{t("archiveEyebrow")}</p>
           <h1>Canon</h1>
-          <p className="lede">
-            {data.subtitle}. One thousand works, no restriction of year, language,
-            singer, writer, or length — only that each still lives on Spotify.
-          </p>
+          <p className="lede">{t("lede")}</p>
         </div>
         <div className="stats-wrap">
-          <dl className="stats" aria-label="Library counts">
+          <dl className="stats" aria-label={t("libraryCounts")}>
             <div>
-              <dt>Songs in archive</dt>
+              <dt>{t("songsInArchive")}</dt>
               <dd>{data.count}</dd>
             </div>
             <div>
-              <dt>Viewed</dt>
+              <dt>{t("viewed")}</dt>
               <dd>{viewedIds.length}</dd>
             </div>
             <div>
-              <dt>Collected</dt>
+              <dt>{t("collected")}</dt>
               <dd>{collectedIds.length}</dd>
             </div>
           </dl>
-          <p className="stats-note">
-            1,000 songs from the beginning. Viewed and collected count unique
-            titles in this browser.
-          </p>
+          <p className="stats-note">{t("statsNote")}</p>
+          <LanguageSwitcher />
         </div>
       </header>
 
@@ -240,49 +218,51 @@ export default function App() {
         spotify={spotify}
       />
 
-      <section className="controls" aria-label="Filter the archive">
+      <section className="controls" aria-label={t("filterArchive")}>
         <input
           className="search"
           type="search"
-          placeholder="Search title, composer, singer, band, writer, label…"
+          placeholder={t("searchPlaceholder")}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <select value={genre} onChange={(e) => setGenre(e.target.value)}>
-          <option>All genres</option>
-          {facets.genres.map((g) => (
-            <option key={g}>{g}</option>
+          <option value="All genres">{t("allGenres")}</option>
+          {facets.genres.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
           ))}
         </select>
         <select value={era} onChange={(e) => setEra(e.target.value)}>
-          <option>All eras</option>
-          {facets.eras.map((g) => (
-            <option key={g}>{g}</option>
+          <option value="All eras">{t("allEras")}</option>
+          {facets.eras.map((item) => (
+            <option key={item} value={item}>
+              {displayEra(item, t)}
+            </option>
           ))}
         </select>
         <select value={country} onChange={(e) => setCountry(e.target.value)}>
-          <option>All countries</option>
-          {facets.countries.map((g) => (
-            <option key={g}>{g}</option>
+          <option value="All countries">{t("allCountries")}</option>
+          {facets.countries.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
           ))}
         </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)}>
-          <option value="influence">Sort: influence</option>
-          <option value="streams">Sort: Spotify plays</option>
-          <option value="year-asc">Sort: oldest</option>
-          <option value="year-desc">Sort: newest</option>
-          <option value="name">Sort: title</option>
+          <option value="influence">{t("sortInfluence")}</option>
+          <option value="streams">{t("sortStreams")}</option>
+          <option value="year-asc">{t("sortOldest")}</option>
+          <option value="year-desc">{t("sortNewest")}</option>
+          <option value="name">{t("sortTitle")}</option>
         </select>
       </section>
 
-      <p className="result-count">
-        Showing {visible.length} of {tracks.length}
-      </p>
-      {visible.length === 0 && (
-        <p className="empty">No recordings match those filters. Clear search or choose All genres.</p>
-      )}
+      <p className="result-count">{t("showing", { n: visible.length, total: tracks.length })}</p>
+      {visible.length === 0 && <p className="empty">{t("emptyFilters")}</p>}
 
-      <main className="grid" aria-label="Catalog">
+      <main className="grid" aria-label={t("catalog")}>
         {visible.map((track) => (
           <TrackCard
             key={track.id}
@@ -298,7 +278,7 @@ export default function App() {
       </main>
 
       {selected && (
-        <aside className="drawer" aria-label={`Details for ${selected.name}`}>
+        <aside className="drawer" aria-label={t("detailsFor", { name: selected.name })}>
           <button
             className="close"
             type="button"
@@ -307,80 +287,78 @@ export default function App() {
               window.location.hash = "";
             }}
           >
-            Close
+            {t("close")}
           </button>
-          <img className="drawer-cover" src={selected.coverUrl} alt={`Official album cover for ${selected.name}`} />
-          <p className="eyebrow">No. {selected.rank} in the canon</p>
+          <img className="drawer-cover" src={selected.coverUrl} alt={t("coverAlt", { name: selected.name })} />
+          <p className="eyebrow">{t("canonRank", { n: selected.rank })}</p>
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
           <p className="drawer-links">
             <a className="spotify-link" href={selected.spotifyUrl} target="_blank" rel="noreferrer">
-              Open official Spotify link
+              {t("openSpotifyLink")}
             </a>
           </p>
           <dl className="facts">
             <div>
-              <dt>Composer</dt>
-              <dd>{displayCredit(selected.composer)}</dd>
+              <dt>{t("composer")}</dt>
+              <dd>{creditLabel(selected.composer, t)}</dd>
             </div>
             <div>
-              <dt>Singer</dt>
-              <dd>{displayCredit(selected.singer)}</dd>
+              <dt>{t("singer")}</dt>
+              <dd>{creditLabel(selected.singer, t)}</dd>
             </div>
             <div>
-              <dt>Band</dt>
-              <dd>{displayCredit(selected.band)}</dd>
+              <dt>{t("band")}</dt>
+              <dd>{creditLabel(selected.band, t)}</dd>
             </div>
             <div>
-              <dt>Writer</dt>
-              <dd>{displayCredit(selected.writer)}</dd>
+              <dt>{t("writer")}</dt>
+              <dd>{creditLabel(selected.writer, t)}</dd>
             </div>
             <div>
-              <dt>Music company</dt>
-              <dd>{displayCredit(selected.musicCompany)}</dd>
+              <dt>{t("musicCompany")}</dt>
+              <dd>{creditLabel(selected.musicCompany, t)}</dd>
             </div>
             <div>
-              <dt>Year of release</dt>
-              <dd>{selected.year || "Not listed"}</dd>
+              <dt>{t("yearOfRelease")}</dt>
+              <dd>{selected.year || t("notListed")}</dd>
             </div>
             <div>
-              <dt>Release country</dt>
-              <dd>{displayCredit(selected.releaseCountry)}</dd>
+              <dt>{t("releaseCountry")}</dt>
+              <dd>{creditLabel(selected.releaseCountry, t)}</dd>
             </div>
             <div>
-              <dt>Genre</dt>
-              <dd>{displayCredit(selected.genre)}</dd>
+              <dt>{t("genre")}</dt>
+              <dd>{creditLabel(selected.genre, t)}</dd>
             </div>
             <div>
-              <dt>Popularity</dt>
-              <dd>{formatStreamsFull(selected.streams)}</dd>
+              <dt>{t("popularity")}</dt>
+              <dd>{popularityLabel(selected.streams, t)}</dd>
             </div>
             {collectedIds.includes(selected.id) ? (
               <div>
-                <dt>Collected</dt>
-                <dd>{formatCollectedAt(collectedAt[selected.id])}</dd>
+                <dt>{t("collected")}</dt>
+                <dd>{formatCollectedAt(collectedAt[selected.id], locale) === "Date not recorded"
+                  ? t("dateNotRecorded")
+                  : formatCollectedAt(collectedAt[selected.id], locale)}</dd>
               </div>
             ) : null}
           </dl>
-          <h3>Why it is shortlisted</h3>
+          <h3>{t("whyShortlisted")}</h3>
           <p className="why">{selected.whyShortlisted}</p>
           <p className="wiki">
             <a href={selected.wikipediaUrl} target="_blank" rel="noreferrer">
-              Encyclopedia source
+              {t("encyclopedia")}
             </a>
           </p>
           <div className="card-actions drawer-actions">
             <button type="button" onClick={() => setPlayingId(selected.id)}>
-              Stream in player
+              {t("streamInPlayer")}
             </button>
-            <CollectButton
-              id={selected.id}
-              collectedIds={collectedIds}
-              onToggle={onToggleCollect}
-            />
+            <CollectButton id={selected.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
             <SpotifyAddButton track={selected} spotify={spotify} />
             <a className="spotify-link" href={selected.spotifyUrl} target="_blank" rel="noreferrer">
-              Open official Spotify link
+              {t("openSpotifyLink")}
             </a>
           </div>
         </aside>
@@ -391,13 +369,15 @@ export default function App() {
           <img src={playing.coverUrl} alt="" />
           <div>
             <p className="dock-title">{playing.name}</p>
-            <p className="dock-sub">{primaryArtist(playing)} · {formatStreams(playing.streams)} plays</p>
+            <p className="dock-sub">
+              {artistLabel(playing, t)} · {playsLabel(playing.streams, t)}
+            </p>
           </div>
           <a href={playing.spotifyUrl} target="_blank" rel="noreferrer">
-            Open in Spotify
+            {t("openInSpotify")}
           </a>
           <iframe
-            title="Now playing"
+            title={t("nowPlaying")}
             src={playing.spotifyEmbedUrl}
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           />

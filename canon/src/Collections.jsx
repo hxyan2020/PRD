@@ -1,3 +1,4 @@
+import { useI18n } from "./I18n.jsx";
 import TrackCard from "./TrackCard.jsx";
 
 export default function Collections({
@@ -9,28 +10,22 @@ export default function Collections({
   onOpen,
   spotify,
 }) {
-  const collected = collectedIds
-    .map((id) => tracks.find((track) => track.id === id))
-    .filter(Boolean);
+  const { t } = useI18n();
+  const collected = collectedIds.map((id) => tracks.find((track) => track.id === id)).filter(Boolean);
 
   return (
-    <section className="collections" id="collections" aria-label="Your collections">
+    <section className="collections" id="collections" aria-label={t("collections")}>
       <div className="collections-head">
-        <p className="eyebrow">Saved by you</p>
-        <h2>Collections</h2>
+        <p className="eyebrow">{t("savedByYou")}</p>
+        <h2>{t("collections")}</h2>
         <p>
           {collected.length
-            ? `${collected.length} recording${collected.length === 1 ? "" : "s"} in your collection, each with the date you saved it. Click Collected to remove one.`
-            : "Click Collect on any recording to add it here. Your collection stays in this browser."}
+            ? t("collectionsCount", { n: collected.length })
+            : t("collectionsEmpty")}
         </p>
         {collected.length > 0 && spotify ? (
-          <button
-            type="button"
-            className="spotify-bulk"
-            disabled={spotify.busy}
-            onClick={() => spotify.addTracks(collected)}
-          >
-            Add collection to Spotify
+          <button type="button" className="spotify-bulk" disabled={spotify.busy} onClick={() => spotify.addTracks(collected)}>
+            {t("addCollectionToSpotify")}
           </button>
         ) : null}
       </div>

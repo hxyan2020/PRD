@@ -1,20 +1,21 @@
+import { useI18n } from "./I18n.jsx";
+import { formatStatus } from "./i18n.js";
+
 export default function SpotifyConnect({ spotify }) {
+  const { locale, t } = useI18n();
   const connected = Boolean(spotify.user);
+  const redirect = spotify.redirect || "http://localhost:5173/";
   return (
-    <section className="spotify-connect" id="spotify-connect" aria-label="Spotify authorization">
+    <section className="spotify-connect" id="spotify-connect" aria-label={t("spotifyAuth")}>
       <div>
-        <p className="eyebrow">Your Spotify</p>
-        <h2>Add recordings to your album</h2>
-        <p>
-          Canon never edits official artist albums. After you authorize Spotify, Add to
-          Spotify saves the track to Liked Songs and to a private playlist named Canon
-          — your album of this archive.
-        </p>
+        <p className="eyebrow">{t("yourSpotify")}</p>
+        <h2>{t("addToAlbum")}</h2>
+        <p>{t("spotifyIntro")}</p>
         {connected ? (
           <p className="spotify-user">
-            Connected as {spotify.user.display_name || spotify.user.id}.{" "}
+            {t("connectedAs", { name: spotify.user.display_name || spotify.user.id })}{" "}
             <button type="button" className="text-btn" onClick={spotify.disconnect}>
-              Disconnect
+              {t("disconnect")}
             </button>
           </p>
         ) : (
@@ -28,25 +29,22 @@ export default function SpotifyConnect({ spotify }) {
             }}
           >
             <label>
-              Spotify client ID
+              {t("spotifyClientId")}
               <input
                 name="clientId"
                 defaultValue={spotify.clientId}
-                placeholder="From developer.spotify.com/dashboard"
+                placeholder={t("spotifyClientPlaceholder")}
                 autoComplete="off"
                 required
               />
             </label>
-            <p className="stats-note">
-              Create a Spotify app, add redirect URI <code>{spotify.redirect || "http://localhost:5173/"}</code>,
-              then paste the client ID and connect. Spotify will ask you to approve access.
-            </p>
+            <p className="stats-note">{t("spotifySetup", { uri: redirect })}</p>
             <button type="submit" disabled={spotify.busy}>
-              {spotify.busy ? "Connecting…" : "Connect Spotify"}
+              {spotify.busy ? t("connecting") : t("connectSpotify")}
             </button>
           </form>
         )}
-        {spotify.status ? <p className="spotify-status">{spotify.status}</p> : null}
+        {spotify.status ? <p className="spotify-status">{formatStatus(locale, spotify.status)}</p> : null}
       </div>
     </section>
   );

@@ -21,7 +21,7 @@ body,
 }
 
 body {
-  font-family: "Outfit", sans-serif;
+  font-family: "Outfit", "Noto Sans", "Noto Sans SC", "Noto Sans Arabic", "Noto Sans Devanagari", "Noto Sans Bengali", sans-serif;
   color: var(--paper);
   background:
     radial-gradient(1200px 600px at 10% -10%, rgba(201, 164, 90, 0.16), transparent 50%),
@@ -46,7 +46,7 @@ h1,
 h2,
 h3,
 .eyebrow {
-  font-family: "Fraunces", serif;
+  font-family: "Fraunces", "Noto Sans SC", "Noto Sans Arabic", "Noto Sans Devanagari", "Noto Sans Bengali", serif;
 }
 
 .boot {
@@ -109,6 +109,32 @@ h1 {
   margin: 0;
   font-size: 13px;
   line-height: 1.45;
+  color: rgba(243, 234, 214, 0.55);
+  max-width: 42ch;
+}
+
+.lang-switcher {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+  margin-top: 4px;
+}
+
+.lang-switcher-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.lang-select {
+  min-width: 180px;
+}
+
+.lang-note {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
   color: rgba(243, 234, 214, 0.55);
   max-width: 42ch;
 }
@@ -313,7 +339,7 @@ option {
 
 .collected-mark {
   position: absolute;
-  right: 10px;
+  inset-inline-end: 10px;
   top: 10px;
   background: var(--brass);
   color: var(--ink);
@@ -520,7 +546,7 @@ option {
 
 .rank {
   position: absolute;
-  left: 10px;
+  inset-inline-start: 10px;
   top: 10px;
   background: rgba(12, 9, 7, 0.72);
   color: var(--brass);
@@ -606,7 +632,7 @@ option {
 .drawer {
   position: fixed;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   width: min(440px, 100vw);
   height: 100vh;
   overflow: auto;
@@ -730,7 +756,7 @@ option {
 
 .close {
   position: absolute;
-  right: 16px;
+  inset-inline-end: 16px;
   top: 16px;
   color: var(--ink);
 }

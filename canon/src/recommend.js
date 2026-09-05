@@ -247,7 +247,7 @@ export function candidatePool(tracks, prefs = {}) {
 export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0 } = {}) {
   const list = Array.isArray(tracks) ? tracks : [];
   if (!list.length) {
-    return { track: null, mode: "none", reason: "The archive is empty." };
+    return { track: null, mode: "none", reasonKey: "empty", reason: "The archive is empty." };
   }
 
   const mood = String(prefs.mood || "").trim();
@@ -277,7 +277,13 @@ export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0 } =
     ? `Surprise: another recording from the canon, still matching ${bits.join(", ")}.`
     : `Surprise: a different recording from the 1,000-work canon. Click again for another.`;
 
-  return { track, mode: "surprise", hasPrefs, reason };
+  return {
+    track,
+    mode: "surprise",
+    hasPrefs,
+    reasonKey: matchedTaste ? "surpriseMatch" : "surprise",
+    reason,
+  };
 }
 
 export function recommendDaily(tracks, prefs = {}, date = new Date()) {
@@ -289,7 +295,14 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
   const hasPrefs = Boolean(mood || country || genre);
 
   if (!list.length) {
-    return { track: null, reason: "The archive is empty.", mode: "none", dateKey, hasPrefs };
+    return {
+      track: null,
+      reason: "The archive is empty.",
+      reasonKey: "empty",
+      mode: "none",
+      dateKey,
+      hasPrefs,
+    };
   }
 
   if (!hasPrefs) {
@@ -304,6 +317,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
       mode: "popular",
       dateKey,
       hasPrefs,
+      reasonKey: "popular",
       reason: `No mood, country, or genre was set, so today’s title is drawn from the most streamed recordings in the canon. Change a preference anytime for a matched pick, or wait for tomorrow’s popular rotation.`,
     };
   }
@@ -320,6 +334,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
       ...fallback,
       mode: "fallback",
       hasPrefs: true,
+      reasonKey: "fallback",
       reason: `No close match for ${[mood && `mood “${mood}”`, country && `country “${country}”`, genre && `genre “${genre}”`].filter(Boolean).join(", ")}, so today’s title falls back to a most-streamed recording.`,
     };
   }
@@ -338,5 +353,5 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
   const hitText = (chosen.hits || []).slice(0, 3).join(", ");
   const reason = `Canon’s recommender matched ${bits.join(", ")} to this recording${hitText ? ` (${hitText})` : ""}. Change mood, country, or genre anytime for a new match; the same preferences still rotate each day.`;
 
-  return { track, mode: "ai", dateKey, hasPrefs, reason };
+  return { track, mode: "ai", dateKey, hasPrefs, reasonKey: "ai", reason };
 }

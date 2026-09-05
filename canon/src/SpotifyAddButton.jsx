@@ -1,4 +1,7 @@
+import { useI18n } from "./I18n.jsx";
+
 export default function SpotifyAddButton({ track, spotify }) {
+  const { t } = useI18n();
   const saved = Boolean(spotify.saved[track.spotifyId]);
   return (
     <button
@@ -7,7 +10,7 @@ export default function SpotifyAddButton({ track, spotify }) {
       disabled={spotify.busy || !track.spotifyId}
       onClick={() => spotify.addTrack(track)}
     >
-      {saved ? "On Spotify" : "Add to Spotify"}
+      {saved ? t("onSpotify") : t("addToSpotify")}
     </button>
   );
 }
