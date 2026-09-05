@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import DailyRecommend from "./DailyRecommend.jsx";
 import {
   decadeOf,
   formatStreams,
@@ -11,6 +12,8 @@ function displayCredit(value) {
   if (!value || value === "—") return "n/a";
   return value;
 }
+
+function readHash() {
   const id = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("t");
   return id || "";
 }
@@ -138,6 +141,13 @@ export default function App() {
           </div>
         </dl>
       </header>
+
+      <DailyRecommend
+        tracks={tracks}
+        countries={facets.countries}
+        genres={facets.genres}
+        onListen={(track) => openTrack(track, true)}
+      />
 
       <section className="controls" aria-label="Filter the archive">
         <input
