@@ -1,4 +1,5 @@
 import CollectButton from "./CollectButton.jsx";
+import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { formatCollectedAt } from "./collections.js";
 import { formatStreams, primaryArtist } from "./format.js";
 
@@ -9,6 +10,7 @@ export default function TrackCard({
   collectedAt,
   onToggleCollect,
   onOpen,
+  spotify,
 }) {
   const collected = collectedIds.includes(track.id);
   const collectedDate = collected ? formatCollectedAt(collectedAt?.[track.id]) : "";
@@ -32,6 +34,7 @@ export default function TrackCard({
             Listen
           </button>
           <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
+          {spotify ? <SpotifyAddButton track={track} spotify={spotify} /> : null}
           <a href={track.spotifyUrl} target="_blank" rel="noreferrer">
             Spotify
           </a>

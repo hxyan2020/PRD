@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import CollectButton from "./CollectButton.jsx";
+import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { formatCollectedAt } from "./collections.js";
 import { formatStreams, primaryArtist } from "./format.js";
 import { MOOD_CHIPS, recommendDaily, surprisePick } from "./recommend.js";
@@ -32,6 +33,7 @@ export default function DailyRecommend({
   collectedIds,
   collectedAt,
   onToggleCollect,
+  spotify,
 }) {
   const [mood, setMood] = useState("");
   const [country, setCountry] = useState("");
@@ -246,6 +248,7 @@ export default function DailyRecommend({
                 Listen
               </button>
               <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
+              {spotify ? <SpotifyAddButton track={track} spotify={spotify} /> : null}
               <button type="button" className="surprise" onClick={surpriseMe}>
                 Surprise me
               </button>

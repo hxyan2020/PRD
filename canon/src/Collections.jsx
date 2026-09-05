@@ -7,6 +7,7 @@ export default function Collections({
   selectedId,
   onToggleCollect,
   onOpen,
+  spotify,
 }) {
   const collected = collectedIds
     .map((id) => tracks.find((track) => track.id === id))
@@ -22,6 +23,16 @@ export default function Collections({
             ? `${collected.length} recording${collected.length === 1 ? "" : "s"} in your collection, each with the date you saved it. Click Collected to remove one.`
             : "Click Collect on any recording to add it here. Your collection stays in this browser."}
         </p>
+        {collected.length > 0 && spotify ? (
+          <button
+            type="button"
+            className="spotify-bulk"
+            disabled={spotify.busy}
+            onClick={() => spotify.addTracks(collected)}
+          >
+            Add collection to Spotify
+          </button>
+        ) : null}
       </div>
       {collected.length > 0 && (
         <div className="grid collections-grid">
@@ -34,6 +45,7 @@ export default function Collections({
               collectedAt={collectedAt}
               onToggleCollect={onToggleCollect}
               onOpen={onOpen}
+              spotify={spotify}
             />
           ))}
         </div>

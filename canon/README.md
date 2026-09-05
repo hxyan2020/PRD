@@ -14,6 +14,7 @@ Every entry has:
 - **Surprise me** to hear a different work immediately, without waiting for tomorrow’s rotation
 - header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
 - a dated log of every daily recommendation and Surprise me pick
+- **Add to Spotify** after you authorize your Spotify account (saves to Liked Songs and a private Canon playlist album)
 
 ## Run
 
@@ -25,6 +26,18 @@ npm run dev
 ```
 
 Open `http://localhost:5173`.
+
+## Spotify authorization
+
+Canon uses Spotify’s Authorization Code + PKCE flow. It never stores a client secret in the browser.
+
+1. Create an app at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard).
+2. Add the redirect URI `http://localhost:5173/` (and your production origin with a trailing slash).
+3. Paste the **Client ID** into Canon’s Connect Spotify form, or set `VITE_SPOTIFY_CLIENT_ID` in `canon/.env`.
+4. Click **Connect Spotify** and approve access.
+5. **Add to Spotify** on any recording saves it to Liked Songs and to a private playlist named **Canon** (your album of this archive). Official artist albums cannot be modified.
+
+In Spotify’s development mode, only users you add to the app can sign in until the app is in extended quota.
 
 ## Ranking
 

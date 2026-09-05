@@ -3,6 +3,8 @@ import CollectButton from "./CollectButton.jsx";
 import Collections from "./Collections.jsx";
 import DailyRecommend from "./DailyRecommend.jsx";
 import RecommendLog from "./RecommendLog.jsx";
+import SpotifyAddButton from "./SpotifyAddButton.jsx";
+import SpotifyConnect from "./SpotifyConnect.jsx";
 import TrackCard from "./TrackCard.jsx";
 import {
   formatCollectedAt,
@@ -17,6 +19,7 @@ import {
   loadRecommendLog,
   saveRecommendLog,
 } from "./recommendLog.js";
+import { useSpotify } from "./useSpotify.js";
 import {
   decadeOf,
   formatStreams,
@@ -56,6 +59,7 @@ export default function App() {
     return merged;
   });
   const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
+  const spotify = useSpotify();
 
   useEffect(() => {
     fetch("/catalog.json")
@@ -80,6 +84,10 @@ export default function App() {
   const tracks = data?.tracks || [];
   const selected = tracks.find((t) => t.id === selectedId) || null;
   const playing = tracks.find((t) => t.id === playingId) || selected;
+
+  useEffect(() => {
+    if (selected) spotify.checkSaved(selected);
+  }, [selectedId, spotify.user]);
 
   const facets = useMemo(() => {
     const genres = uniqueSorted(tracks.flatMap((t) => (t.genres?.length ? t.genres : [t.genre])));
@@ -205,6 +213,8 @@ export default function App() {
         </div>
       </header>
 
+      <SpotifyConnect spotify={spotify} />
+
       <DailyRecommend
         tracks={tracks}
         countries={facets.countries}
@@ -215,6 +225,7 @@ export default function App() {
         collectedIds={collectedIds}
         collectedAt={collectedAt}
         onToggleCollect={onToggleCollect}
+        spotify={spotify}
       />
 
       <RecommendLog log={recommendLog} tracks={tracks} onOpen={openTrack} />
@@ -226,6 +237,7 @@ export default function App() {
         selectedId={selectedId}
         onToggleCollect={onToggleCollect}
         onOpen={openTrack}
+        spotify={spotify}
       />
 
       <section className="controls" aria-label="Filter the archive">
@@ -280,6 +292,7 @@ export default function App() {
             collectedAt={collectedAt}
             onToggleCollect={onToggleCollect}
             onOpen={openTrack}
+            spotify={spotify}
           />
         ))}
       </main>
@@ -365,6 +378,7 @@ export default function App() {
               collectedIds={collectedIds}
               onToggle={onToggleCollect}
             />
+            <SpotifyAddButton track={selected} spotify={spotify} />
             <a className="spotify-link" href={selected.spotifyUrl} target="_blank" rel="noreferrer">
               Open official Spotify link
             </a>
