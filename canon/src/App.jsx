@@ -15,6 +15,8 @@ import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./reco
 import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
 import { displayEra } from "./i18n.js";
+import { hxPathForRoute, recordBotPing, recordVisit, sendHxBeacon } from "./hx.js";
+import { HxMonitor, HxViewership } from "./HxDesk.jsx";
 import { parseRoute } from "./pages.js";
 import { SiteDoc, SiteNav } from "./SitePages.jsx";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
@@ -66,6 +68,22 @@ export default function App() {
   useEffect(() => {
     if (selectedId) rememberView(selectedId);
   }, [selectedId]);
+
+  useEffect(() => {
+    const path = hxPathForRoute(page, selectedId);
+    recordVisit({
+      route: page,
+      origin: window.location.origin,
+      ua: navigator.userAgent,
+      webdriver: Boolean(navigator.webdriver),
+    });
+    void sendHxBeacon({
+      path,
+      host: window.location.host,
+      referer: document.referrer || "",
+    });
+    if (page === "hx-ping") recordBotPing("hx-ping");
+  }, [page, selectedId]);
 
   const tracks = data?.tracks || [];
   const extraList = Object.values(extras);
@@ -205,8 +223,12 @@ export default function App() {
         </div>
       </header>
 
-      {page !== "home" ? (
+      {page === "about" || page === "terms" ? (
         <SiteDoc page={page} />
+      ) : page === "hx-monitor" || page === "hx-ping" ? (
+        <HxMonitor origin={window.location.origin} />
+      ) : page === "hx-viewership" ? (
+        <HxViewership />
       ) : (
         <>
       <SpotifyConnect spotify={spotify} />

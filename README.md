@@ -8,3 +8,5 @@ npm run dev --prefix canon
 ```
 
 The original risk-workflow Python scripts remain at the repository root.
+
+Canon deploy specs live in `canon/vercel.json`, `canon/Dockerfile`, and `.do/app.yaml`. HX bots poll `canon/public/hx/health.json`; page views go to HX viewership as slug `canon`.

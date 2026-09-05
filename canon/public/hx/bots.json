@@ -1,0 +1,18 @@
+{
+  "program": "HX bots monitoring",
+  "owner": "HX",
+  "slug": "canon",
+  "name": "Canon",
+  "targets": [
+    {
+      "id": "canon",
+      "name": "Canon listening archive",
+      "kind": "web",
+      "path": "/",
+      "health": "/hx/health.json",
+      "viewership": "/#hx-viewership",
+      "intervalSeconds": 60,
+      "expect": { "status": "ok", "archiveSongs": 1000 }
+    }
+  ]
+}

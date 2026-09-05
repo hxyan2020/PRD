@@ -2,6 +2,9 @@ export function parseRoute(hash = "") {
   const raw = String(hash || "").replace(/^#/, "");
   if (raw === "about") return { page: "about", trackId: "" };
   if (raw === "terms") return { page: "terms", trackId: "" };
+  if (raw === "hx-monitor" || raw === "hx-bots") return { page: "hx-monitor", trackId: "" };
+  if (raw === "hx-viewership") return { page: "hx-viewership", trackId: "" };
+  if (raw === "hx-ping") return { page: "hx-ping", trackId: "" };
   const id = new URLSearchParams(raw).get("t") || "";
   return { page: "home", trackId: id };
 }
@@ -15,6 +18,7 @@ export const ABOUT_SECTIONS = [
   ["aboutNotTitle", "aboutNotBody"],
   ["aboutDataTitle", "aboutDataBody"],
   ["aboutSourcesTitle", "aboutSourcesBody"],
+  ["aboutHostTitle", "aboutHostBody"],
 ];
 
 export const TERMS_SECTIONS = [

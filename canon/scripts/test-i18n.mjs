@@ -11,6 +11,7 @@ import {
 } from "../src/i18n.js";
 import { MESSAGES } from "../src/i18n-messages.js";
 import { BEYOND } from "../src/beyond-messages.js";
+import { HX } from "../src/hx-messages.js";
 import { LEGAL } from "../src/legal-messages.js";
 import { parseRoute } from "../src/pages.js";
 import { recommendDaily, surprisePick } from "../src/recommend.js";
@@ -70,6 +71,8 @@ assert.deepEqual(parseRoute(""), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#t=Q109612965"), { page: "home", trackId: "Q109612965" });
 assert.deepEqual(parseRoute("#about"), { page: "about", trackId: "" });
 assert.deepEqual(parseRoute("terms"), { page: "terms", trackId: "" });
+assert.deepEqual(parseRoute("#hx-viewership"), { page: "hx-viewership", trackId: "" });
+assert.deepEqual(parseRoute("#hx-monitor"), { page: "hx-monitor", trackId: "" });
 
 const legalKeys = Object.keys(LEGAL.en).sort();
 assert.ok(legalKeys.includes("aboutTitle"));
@@ -85,6 +88,13 @@ assert.ok(beyondKeys.includes("beyondFind"));
 for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(BEYOND[locale]).sort(), beyondKeys, `${locale} beyond copy keys`);
   assert.match(t(locale, "beyondTitle"), /./);
+}
+
+const hxKeys = Object.keys(HX.en).sort();
+assert.ok(hxKeys.includes("hx.monitor.title"));
+for (const locale of LANGUAGE_IDS) {
+  assert.deepEqual(Object.keys(HX[locale]).sort(), hxKeys, `${locale} HX copy keys`);
+  assert.match(t(locale, "hx.views.title"), /./);
 }
 
 console.log("i18n tests ok");

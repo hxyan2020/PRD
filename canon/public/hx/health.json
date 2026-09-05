@@ -1,0 +1,19 @@
+{
+  "service": "canon",
+  "product": "Canon listening archive",
+  "status": "ok",
+  "archiveSongs": 1000,
+  "slug": "canon",
+  "hx": {
+    "monitoring": true,
+    "viewership": true,
+    "collect": "/api/hx-viewership",
+    "bots": ["hx-health", "hx-bots", "hx-viewership"]
+  },
+  "endpoints": {
+    "health": "/hx/health.json",
+    "bots": "/hx/bots.json",
+    "viewership": "/#hx-viewership",
+    "monitor": "/#hx-monitor"
+  }
+}
