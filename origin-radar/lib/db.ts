@@ -9,7 +9,9 @@ let instance: DatabaseSync | null = null;
 let instancePath = "";
 
 export function dbPath(): string {
-  return process.env.ORIGIN_RADAR_DB ?? DEFAULT_DB;
+  if (process.env.ORIGIN_RADAR_DB) return process.env.ORIGIN_RADAR_DB;
+  if (process.env.VERCEL) return "/tmp/origin-radar-storefront.sqlite";
+  return DEFAULT_DB;
 }
 
 export function getDb(file = dbPath()): DatabaseSync {

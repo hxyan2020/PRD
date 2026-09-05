@@ -9,3 +9,5 @@ data/*.sqlite
 data/*.sqlite-*
 public/sourced/**
 !public/sourced/.gitkeep
+.vercel
+.vercel
