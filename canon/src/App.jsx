@@ -7,7 +7,10 @@ import {
   uniqueSorted,
 } from "./format.js";
 
-function readHash() {
+function displayCredit(value) {
+  if (!value || value === "—") return "n/a";
+  return value;
+}
   const id = new URLSearchParams(window.location.hash.replace(/^#/, "")).get("t");
   return id || "";
 }
@@ -232,23 +235,23 @@ export default function App() {
           <dl className="facts">
             <div>
               <dt>Composer</dt>
-              <dd>{selected.composer}</dd>
+              <dd>{displayCredit(selected.composer)}</dd>
             </div>
             <div>
               <dt>Singer</dt>
-              <dd>{selected.singer}</dd>
+              <dd>{displayCredit(selected.singer)}</dd>
             </div>
             <div>
               <dt>Band</dt>
-              <dd>{selected.band}</dd>
+              <dd>{displayCredit(selected.band)}</dd>
             </div>
             <div>
               <dt>Writer</dt>
-              <dd>{selected.writer}</dd>
+              <dd>{displayCredit(selected.writer)}</dd>
             </div>
             <div>
               <dt>Music company</dt>
-              <dd>{selected.musicCompany}</dd>
+              <dd>{displayCredit(selected.musicCompany)}</dd>
             </div>
             <div>
               <dt>Year of release</dt>
@@ -256,11 +259,11 @@ export default function App() {
             </div>
             <div>
               <dt>Release country</dt>
-              <dd>{selected.releaseCountry}</dd>
+              <dd>{displayCredit(selected.releaseCountry)}</dd>
             </div>
             <div>
               <dt>Genre</dt>
-              <dd>{selected.genre}</dd>
+              <dd>{displayCredit(selected.genre)}</dd>
             </div>
             <div>
               <dt>Popularity</dt>
