@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { generateListing } from "./generate";
 import { getSourcedBySlug, listSourced, resetDbForTests } from "./db";
 import { toShopifyCsv } from "./shopify-export";
+import { resolveSourcedPath } from "./sourced-fs";
 
 describe("generate listing pipeline", () => {
   afterEach(() => {
@@ -34,6 +35,12 @@ describe("generate listing pipeline", () => {
     expect(csv).toContain("Handle");
     expect(csv).toContain("rack-wardrobe");
     expect(csv).toContain(String(product.retailPriceUsd));
+  });
+
+  it("rejects path traversal for sourced images", () => {
+    expect(resolveSourcedPath(["rack-wardrobe", "01.jpg"])).toContain("rack-wardrobe");
+    expect(resolveSourcedPath(["..", "etc"])).toBeNull();
+    expect(resolveSourcedPath(["rack-wardrobe", "../x"])).toBeNull();
   });
 
   it("upserts the same signal instead of duplicating", async () => {
