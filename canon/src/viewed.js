@@ -17,6 +17,10 @@ export function markViewed(ids, id) {
   return [key, ...list];
 }
 
+export function mergeViewedWithCollected(viewedIds, collectedIds) {
+  return (collectedIds || []).reduce((ids, id) => markViewed(ids, id), viewedIds || []);
+}
+
 export function loadViewedIds(storage) {
   try {
     const store = storage || globalThis.localStorage;

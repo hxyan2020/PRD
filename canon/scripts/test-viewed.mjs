@@ -3,6 +3,7 @@ import {
   VIEWED_KEY,
   loadViewedIds,
   markViewed,
+  mergeViewedWithCollected,
   saveViewedIds,
 } from "../src/viewed.js";
 
@@ -28,5 +29,10 @@ assert.deepEqual(loadViewedIds(memory), ["alpha", "beta"]);
 
 saveViewedIds(markViewed(loadViewedIds(memory), "gamma"), memory);
 assert.deepEqual(loadViewedIds(memory), ["gamma", "alpha", "beta"]);
+
+assert.deepEqual(
+  mergeViewedWithCollected(["alpha"], ["beta", "alpha"]),
+  ["beta", "alpha"]
+);
 
 console.log("viewed tests ok");

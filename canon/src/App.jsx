@@ -8,7 +8,7 @@ import {
   saveCollectedIds,
   toggleCollected,
 } from "./collections.js";
-import { loadViewedIds, markViewed, saveViewedIds } from "./viewed.js";
+import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import {
   decadeOf,
   formatStreams,
@@ -38,7 +38,13 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(readHash);
   const [playingId, setPlayingId] = useState("");
   const [collectedIds, setCollectedIds] = useState(loadCollectedIds);
-  const [viewedIds, setViewedIds] = useState(loadViewedIds);
+  const [viewedIds, setViewedIds] = useState(() => {
+    const collected = loadCollectedIds();
+    const viewed = loadViewedIds();
+    const merged = mergeViewedWithCollected(viewed, collected);
+    if (merged.length !== viewed.length) saveViewedIds(merged);
+    return merged;
+  });
 
   useEffect(() => {
     fetch("/catalog.json")
