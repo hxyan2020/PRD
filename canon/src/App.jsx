@@ -25,7 +25,7 @@ import CoverImage from "./CoverImage.jsx";
 import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
 import { displayPersonName, splitCredits } from "./portraits.js";
-import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
+import { creditLabel, popularityLabel } from "./uiText.js";
 import BootScreen from "./BootScreen.jsx";
 import BrandMark from "./BrandMark.jsx";
 
@@ -470,15 +470,8 @@ export default function App() {
 
       {playing && (
         <footer className="dock">
-          <CoverImage src={playing.coverUrl} alt="" />
-          <div>
-            <p className="dock-title">{playing.name}</p>
-            <p className="dock-sub">
-              {artistLabel(playing, t)} ·{" "}
-              {playing.extra ? t("spotifyPopularity", { n: playing.popularity || 0 }) : playsLabel(playing.streams, t)}
-            </p>
-          </div>
           <iframe
+            className="dock-frame"
             title={t("nowPlaying")}
             src={playing.spotifyEmbedUrl}
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
