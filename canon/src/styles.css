@@ -1242,7 +1242,7 @@ option {
   .lang-select-wrap,
   .lang-select {
     width: 100%;
-    max-width: 280px;
+    max-width: 100%;
   }
 
   .lang-select {
@@ -1309,6 +1309,11 @@ option {
   .controls {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+  }
+
+  .controls > * {
+    min-width: 0;
+    max-width: 100%;
   }
 
   .controls .search {
