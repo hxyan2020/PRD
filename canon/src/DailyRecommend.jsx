@@ -274,9 +274,6 @@ export default function DailyRecommend({
               <button type="button" className="surprise" onClick={surpriseMe}>
                 {t("surpriseMe")}
               </button>
-              <a href={track.spotifyUrl} target="_blank" rel="noreferrer">
-                Spotify
-              </a>
             </div>
           </div>
           <LyricsPanel track={track} />

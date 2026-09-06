@@ -40,9 +40,6 @@ export default function TrackCard({
           </button>
           <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
           {spotify ? <SpotifyAddButton track={track} spotify={spotify} /> : null}
-          <a href={track.spotifyUrl} target="_blank" rel="noreferrer">
-            Spotify
-          </a>
         </div>
       </div>
     </article>

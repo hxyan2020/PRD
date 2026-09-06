@@ -369,11 +369,6 @@ export default function App() {
           <p className="eyebrow">{selected.extra ? t("beyondOutside") : t("canonRank", { n: selected.rank })}</p>
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
-          <p className="drawer-links">
-            <a className="spotify-link" href={selected.spotifyUrl} target="_blank" rel="noreferrer">
-              {t("openSpotifyLink")}
-            </a>
-          </p>
           <dl className="facts">
             <div>
               <dt>{t("composer")}</dt>
@@ -445,9 +440,6 @@ export default function App() {
             </button>
             <CollectButton id={selected.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
             <SpotifyAddButton track={selected} spotify={spotify} />
-            <a className="spotify-link" href={selected.spotifyUrl} target="_blank" rel="noreferrer">
-              {t("openSpotifyLink")}
-            </a>
           </div>
           <LyricsPanel track={selected} />
         </aside>
@@ -463,9 +455,6 @@ export default function App() {
               {playing.extra ? t("spotifyPopularity", { n: playing.popularity || 0 }) : playsLabel(playing.streams, t)}
             </p>
           </div>
-          <a href={playing.spotifyUrl} target="_blank" rel="noreferrer">
-            {t("openInSpotify")}
-          </a>
           <iframe
             title={t("nowPlaying")}
             src={playing.spotifyEmbedUrl}

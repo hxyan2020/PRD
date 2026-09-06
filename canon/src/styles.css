@@ -979,7 +979,7 @@ option {
   border: 1px solid rgba(201, 164, 90, 0.28);
   border-radius: 18px;
   display: grid;
-  grid-template-columns: 64px 1fr auto minmax(280px, 42%);
+  grid-template-columns: 64px 1fr minmax(280px, 50%);
   gap: 14px;
   align-items: center;
   padding: 10px;
