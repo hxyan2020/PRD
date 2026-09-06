@@ -832,6 +832,44 @@ option {
   color: var(--ink);
 }
 
+.lyrics {
+  margin-top: 1.25rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.lyrics h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.lyrics-status,
+.lyrics-source {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--moss);
+}
+
+.drawer .lyrics-status,
+.drawer .lyrics-source {
+  color: rgba(22, 17, 12, 0.62);
+}
+
+.lyrics-text {
+  margin: 0 0 10px;
+  max-height: 22rem;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-family: "Fraunces", "Noto Sans SC", "Noto Sans Arabic", "Noto Sans Devanagari", "Noto Sans Bengali", serif;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: inherit;
+}
+
+.daily-card .lyrics {
+  grid-column: 1 / -1;
+}
+
 .embed iframe,
 .dock iframe {
   width: 100%;

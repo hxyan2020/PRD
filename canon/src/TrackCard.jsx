@@ -35,6 +35,9 @@ export default function TrackCard({
           <button type="button" onClick={() => onOpen(track, true)}>
             {t("listen")}
           </button>
+          <button type="button" onClick={() => onOpen(track, true)}>
+            {t("lyrics")}
+          </button>
           <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
           {spotify ? <SpotifyAddButton track={track} spotify={spotify} /> : null}
           <a href={track.spotifyUrl} target="_blank" rel="noreferrer">

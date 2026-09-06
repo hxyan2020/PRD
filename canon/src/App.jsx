@@ -7,6 +7,7 @@ import { LanguageSwitcher, useI18n } from "./I18n.jsx";
 import RecommendLog from "./RecommendLog.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import SpotifyConnect from "./SpotifyConnect.jsx";
+import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
 import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
 import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, formatCollectedAt } from "./collections.js";
@@ -437,6 +438,7 @@ export default function App() {
               {t("openSpotifyLink")}
             </a>
           </div>
+          <LyricsPanel track={selected} />
         </aside>
       )}
 

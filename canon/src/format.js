@@ -7,7 +7,7 @@ export function formatStreams(n) {
 }
 
 export function formatStreamsFull(n) {
-  if (n == null || n === 0) return "Spotify has not published a play count for this recording";
+  if (n == null || n === 0) return "Spotify has not published a play count for this Music";
   return `${n.toLocaleString("en-US")} plays on Spotify`;
 }
 

@@ -200,7 +200,7 @@ export function scoreTrack(track, { mood = "", country = "", genre = "" } = {}) 
     }
     if (profile.preferOlder && track.year && track.year < 1985) {
       score += 2;
-      hits.push("older recording");
+      hits.push("older Music");
     }
   }
 
@@ -274,8 +274,8 @@ export function surprisePick(tracks, { prefs = {}, excludeIds = [], salt = 0 } =
   );
   const matchedTaste = hasPrefs && preferred.some((item) => item.id === track?.id);
   const reason = matchedTaste
-    ? `Surprise: another recording from the canon, still matching ${bits.join(", ")}.`
-    : `Surprise: a different recording from the 1,000-work canon. Click again for another.`;
+    ? `Surprise: another Music from the canon, still matching ${bits.join(", ")}.`
+    : `Surprise: a different Music from the 1,000-work canon. Click again for another.`;
 
   return {
     track,
@@ -318,7 +318,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
       dateKey,
       hasPrefs,
       reasonKey: "popular",
-      reason: `No mood, country, or genre was set, so today’s title is drawn from the most streamed recordings in the canon. Change a preference anytime for a matched pick, or wait for tomorrow’s popular rotation.`,
+      reason: `No mood, country, or genre was set, so today’s title is drawn from the most streamed Music in the canon. Change a preference anytime for a matched pick, or wait for tomorrow’s popular rotation.`,
     };
   }
 
@@ -335,7 +335,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
       mode: "fallback",
       hasPrefs: true,
       reasonKey: "fallback",
-      reason: `No close match for ${[mood && `mood “${mood}”`, country && `country “${country}”`, genre && `genre “${genre}”`].filter(Boolean).join(", ")}, so today’s title falls back to a most-streamed recording.`,
+      reason: `No close match for ${[mood && `mood “${mood}”`, country && `country “${country}”`, genre && `genre “${genre}”`].filter(Boolean).join(", ")}, so today’s title falls back to a most-streamed Music.`,
     };
   }
 
@@ -351,7 +351,7 @@ export function recommendDaily(tracks, prefs = {}, date = new Date()) {
   if (country) bits.push(`country “${country}”`);
   if (genre) bits.push(`genre “${genre}”`);
   const hitText = (chosen.hits || []).slice(0, 3).join(", ");
-  const reason = `Canon’s recommender matched ${bits.join(", ")} to this recording${hitText ? ` (${hitText})` : ""}. Change mood, country, or genre anytime for a new match; the same preferences still rotate each day.`;
+  const reason = `Canon’s recommender matched ${bits.join(", ")} to this Music${hitText ? ` (${hitText})` : ""}. Change mood, country, or genre anytime for a new match; the same preferences still rotate each day.`;
 
   return { track, mode: "ai", dateKey, hasPrefs, reasonKey: "ai", reason };
 }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import CollectButton from "./CollectButton.jsx";
 import { useI18n } from "./I18n.jsx";
+import LyricsPanel from "./LyricsPanel.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { dateTag } from "./i18n.js";
 import { MOOD_CHIPS, recommendDaily, surprisePick } from "./recommend.js";
@@ -260,6 +261,14 @@ export default function DailyRecommend({
               <button type="button" onClick={() => onListen(track)}>
                 {t("listen")}
               </button>
+              <button
+                type="button"
+                onClick={() =>
+                  document.querySelector(".daily-card .lyrics")?.scrollIntoView({ behavior: "smooth", block: "start" })
+                }
+              >
+                {t("lyrics")}
+              </button>
               <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
               {spotify ? <SpotifyAddButton track={track} spotify={spotify} /> : null}
               <button type="button" className="surprise" onClick={surpriseMe}>
@@ -270,6 +279,7 @@ export default function DailyRecommend({
               </a>
             </div>
           </div>
+          <LyricsPanel track={track} />
         </article>
       )}
     </section>

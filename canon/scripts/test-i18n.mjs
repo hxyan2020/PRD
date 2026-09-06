@@ -13,6 +13,7 @@ import { MESSAGES } from "../src/i18n-messages.js";
 import { BEYOND } from "../src/beyond-messages.js";
 import { HX } from "../src/hx-messages.js";
 import { LEGAL } from "../src/legal-messages.js";
+import { LYRICS } from "../src/lyrics-messages.js";
 import { parseRoute } from "../src/pages.js";
 import { recommendDaily, surprisePick } from "../src/recommend.js";
 import { moodLabel, resolveMoodValue } from "../src/uiText.js";
@@ -96,5 +97,15 @@ for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(HX[locale]).sort(), hxKeys, `${locale} HX copy keys`);
   assert.match(t(locale, "hx.views.title"), /./);
 }
+
+const lyricsKeys = Object.keys(LYRICS.en).sort();
+assert.ok(lyricsKeys.includes("lyrics"));
+for (const locale of LANGUAGE_IDS) {
+  assert.deepEqual(Object.keys(LYRICS[locale]).sort(), lyricsKeys, `${locale} lyrics copy keys`);
+  assert.match(t(locale, "lyrics"), /./);
+}
+assert.match(t("en", "docTitle"), /1000 Music/);
+assert.match(t("en", "lyricsMissing"), /Music/);
+assert.equal(t("en", "emptyFilters").includes("recordings"), false);
 
 console.log("i18n tests ok");

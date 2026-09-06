@@ -344,7 +344,7 @@ async function ensureCanonPlaylist(options) {
     body: {
       name: PLAYLIST_NAME,
       public: false,
-      description: "Your Canon album — recordings saved from the Canon listening archive.",
+      description: "Your Canon album — Music saved from the Canon listening archive.",
     },
   });
   store.setItem(PLAYLIST_ID_KEY, created.id);
@@ -353,7 +353,7 @@ async function ensureCanonPlaylist(options) {
 
 export async function addTrackToSpotifyAlbum(spotifyId, options = {}) {
   const id = String(spotifyId || "").trim();
-  if (!id) throw new Error("This recording has no Spotify track id.");
+  if (!id) throw new Error("This Music has no Spotify track id.");
   const token = await getAccessToken(options);
   if (!token) throw new Error("Connect Spotify first so Canon can add music to your account.");
   await spotifyRequest(`/me/tracks?ids=${encodeURIComponent(id)}`, {
