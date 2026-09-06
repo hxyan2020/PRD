@@ -1,0 +1,5 @@
+data
+public/sourced
+.next
+node_modules
+*.sqlite

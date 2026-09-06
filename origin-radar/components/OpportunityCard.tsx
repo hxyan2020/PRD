@@ -1,0 +1,78 @@
+import Image from "next/image";
+import Link from "next/link";
+import type { ScoredProduct } from "@/lib/types";
+import { compact, pct, usd } from "@/lib/format";
+import { logisticsFor } from "@/lib/factory-packs";
+import { RegionPills } from "./RegionPills";
+import { ScoreRing } from "./ScoreRing";
+import { GenerateButton } from "./GenerateButton";
+import { FulfillmentChips } from "./FulfillmentChips";
+
+export function OpportunityCard({ product }: { product: ScoredProduct }) {
+  const factory = product.factory[0];
+  const tiktok = product.social.find((s) => s.platform === "tiktok");
+  const xhs = product.social.find((s) => s.platform === "xiaohongshu");
+  const gap = product.whitespaceRegions.length > 0;
+  const zone = product.priceZones.find((z) => z.region === product.bestRegion) ?? product.priceZones[0];
+  const log = logisticsFor(product.slug);
+
+  return (
+    <article className="panel group flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:border-rust/40">
+      <Link href={`/products/${product.slug}`} className="relative block h-44 overflow-hidden">
+        <Image
+          src={product.image}
+          alt={product.imageAlt}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover transition duration-500 group-hover:scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
+        <div className="absolute left-3 top-3 flex gap-2">
+          {gap ? <span className="chip chip-gold">Whitespace</span> : null}
+          {product.maxMarginPct != null ? (
+            <span className="chip chip-signal">Max gap {pct(product.maxMarginPct)}</span>
+          ) : (
+            <span className="chip chip-gold">No retail comps</span>
+          )}
+        </div>
+      </Link>
+      <div className="flex flex-1 flex-col gap-4 p-5">
+        <div className="flex items-start justify-between gap-3">
+          <Link href={`/products/${product.slug}`}>
+            <p className="kicker">{product.category}</p>
+            <h2 className="mt-1 font-serif text-2xl leading-tight">{product.name}</h2>
+            <p className="mt-1 font-mono text-xs text-mist">{product.nameZh}</p>
+          </Link>
+          <ScoreRing score={product.score.total} />
+        </div>
+        <p className="line-clamp-2 text-sm leading-relaxed text-paper/80">{product.summary}</p>
+        <RegionPills markets={product.markets} />
+        {zone ? (
+          <p className="font-mono text-[11px] uppercase tracking-wider text-mist">
+            {zone.region.toUpperCase()} price zone {usd(zone.floorUsd)}–{usd(zone.ceilingUsd)} · rec{" "}
+            <span className="text-signal">{usd(zone.recommendedUsd)}</span>
+            {zone.tight ? " · tight" : ""}
+          </p>
+        ) : null}
+        <FulfillmentChips logistics={log} />
+        <div className="mt-auto grid grid-cols-3 gap-2 border-t border-white/10 pt-4 font-mono text-[11px] uppercase tracking-wider text-mist">
+          <div>
+            <div>Factory</div>
+            <div className="mt-1 text-paper">{usd(factory.unitPriceUsd)}</div>
+          </div>
+          <div>
+            <div>Suppliers</div>
+            <div className="mt-1 text-paper">{compact(factory.supplierCount)}</div>
+          </div>
+          <div>
+            <div>Social 7d</div>
+            <div className="mt-1 text-paper">
+              {compact((tiktok?.views7d ?? 0) + (xhs?.views7d ?? 0))}
+            </div>
+          </div>
+        </div>
+        <GenerateButton slug={product.slug} variant="compact" />
+      </div>
+    </article>
+  );
+}
