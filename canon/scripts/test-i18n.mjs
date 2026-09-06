@@ -1,10 +1,13 @@
 import assert from "node:assert/strict";
 import {
   LANGUAGE_IDS,
+  LANGUAGES,
   applyDocumentLocale,
   dateTag,
   detectLocale,
   interpolate,
+  languageFlagUrl,
+  languageMeta,
   loadLocale,
   saveLocale,
   t,
@@ -17,6 +20,9 @@ import { LYRICS } from "../src/lyrics-messages.js";
 import { parseRoute } from "../src/pages.js";
 import { recommendDaily, surprisePick } from "../src/recommend.js";
 import { moodLabel, resolveMoodValue } from "../src/uiText.js";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 assert.equal(interpolate("Hello {name}", { name: "Canon" }), "Hello Canon");
 assert.equal(interpolate("Hello {name}"), "Hello {name}");
@@ -107,5 +113,19 @@ for (const locale of LANGUAGE_IDS) {
 assert.match(t("en", "docTitle"), /1000 Music/);
 assert.match(t("en", "lyricsMissing"), /Music/);
 assert.equal(t("en", "emptyFilters").includes("recordings"), false);
+
+const flagsDir = join(dirname(fileURLToPath(import.meta.url)), "../public/flags");
+const expectedFlags = { en: "gb", zh: "cn", hi: "in", es: "es", fr: "fr", ar: "sa", bn: "bd", pt: "br" };
+for (const lang of LANGUAGES) {
+  assert.equal(lang.flag, expectedFlags[lang.id], `${lang.id} maps to a national flag icon`);
+  assert.ok(lang.country, `${lang.id} has a country label`);
+  assert.notEqual(lang.native, lang.flag.toUpperCase(), "dropdown labels are not ISO codes");
+  const file = join(flagsDir, `${lang.flag}.svg`);
+  assert.ok(existsSync(file), `${lang.flag}.svg is vendored`);
+  assert.match(readFileSync(file, "utf8"), /<svg[\s>]/i);
+  assert.equal(languageFlagUrl(lang.id), `/flags/${lang.flag}.svg`);
+}
+assert.equal(languageMeta("en").flag, "gb");
+assert.equal(languageMeta("zh").flag, "cn");
 
 console.log("i18n tests ok");

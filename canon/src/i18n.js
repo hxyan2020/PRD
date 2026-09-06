@@ -1,18 +1,19 @@
 import { MESSAGES } from "./i18n-messages.js";
+import { publicUrl } from "./urls.js";
 
 export { MESSAGES };
 
 export const LOCALE_KEY = "canon.ui.locale";
 
 export const LANGUAGES = [
-  { id: "en", native: "English", dir: "ltr", date: "en-GB" },
-  { id: "zh", native: "中文", dir: "ltr", date: "zh-CN" },
-  { id: "hi", native: "हिन्दी", dir: "ltr", date: "hi-IN" },
-  { id: "es", native: "Español", dir: "ltr", date: "es" },
-  { id: "fr", native: "Français", dir: "ltr", date: "fr" },
-  { id: "ar", native: "العربية", dir: "rtl", date: "ar" },
-  { id: "bn", native: "বাংলা", dir: "ltr", date: "bn-BD" },
-  { id: "pt", native: "Português", dir: "ltr", date: "pt-BR" },
+  { id: "en", native: "English", dir: "ltr", date: "en-GB", flag: "gb", country: "United Kingdom" },
+  { id: "zh", native: "中文", dir: "ltr", date: "zh-CN", flag: "cn", country: "China" },
+  { id: "hi", native: "हिन्दी", dir: "ltr", date: "hi-IN", flag: "in", country: "India" },
+  { id: "es", native: "Español", dir: "ltr", date: "es", flag: "es", country: "Spain" },
+  { id: "fr", native: "Français", dir: "ltr", date: "fr", flag: "fr", country: "France" },
+  { id: "ar", native: "العربية", dir: "rtl", date: "ar", flag: "sa", country: "Saudi Arabia" },
+  { id: "bn", native: "বাংলা", dir: "ltr", date: "bn-BD", flag: "bd", country: "Bangladesh" },
+  { id: "pt", native: "Português", dir: "ltr", date: "pt-BR", flag: "br", country: "Brazil" },
 ];
 
 export const LANGUAGE_IDS = LANGUAGES.map((item) => item.id);
@@ -29,6 +30,11 @@ export function dateTag(locale) {
 
 export function languageMeta(locale) {
   return LANGUAGES.find((item) => item.id === locale) || LANGUAGES[0];
+}
+
+export function languageFlagUrl(locale) {
+  const flag = languageMeta(locale).flag || "gb";
+  return publicUrl(`flags/${flag}.svg`);
 }
 
 export function detectLocale(stored, navigatorLanguage = "") {
