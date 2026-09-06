@@ -29,22 +29,23 @@ jobs:
           cache-dependency-path: canon/package-lock.json
       - name: Install and build
         working-directory: canon
-        env:
-          GITHUB_PAGES: "true"
         run: |
           npm ci
           npm test
           npm run build
       - uses: actions/configure-pages@v5
+        continue-on-error: true
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
         with:
           path: canon/dist
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    continue-on-error: true
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

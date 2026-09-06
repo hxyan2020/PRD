@@ -67,8 +67,14 @@ assert.equal(JSON.parse(posted.opts.body).slug, "canon");
 
 assert.equal(publicUrl("catalog.json"), "/catalog.json");
 assert.equal(publicUrl("#about"), "/#about");
-assert.equal(siteUrl({ origin: "http://localhost:5173" }, "/"), "http://localhost:5173/");
-assert.equal(siteUrl({ origin: "https://hxyan2020.github.io" }, "/PRD/"), "https://hxyan2020.github.io/PRD/");
+assert.equal(siteUrl({ origin: "http://localhost:5173", pathname: "/" }), "http://localhost:5173/");
+assert.equal(
+  siteUrl({
+    origin: "https://cdn.jsdelivr.net",
+    pathname: "/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/index.html",
+  }),
+  "https://cdn.jsdelivr.net/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/"
+);
 
 assert.deepEqual(parseRoute("#hx-monitor"), { page: "hx-monitor", trackId: "" });
 assert.deepEqual(parseRoute("#hx-bots"), { page: "hx-monitor", trackId: "" });

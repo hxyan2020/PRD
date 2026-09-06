@@ -49,20 +49,22 @@ Works are drawn from Wikidata items that already carry a Spotify track ID, order
 
 ## Public URL
 
-Permanent site (GitHub Pages, does not expire):
+Permanent public site (jsDelivr CDN of this branch, does not expire):
 
-**https://hxyan2020.github.io/PRD/**
+**https://cdn.jsdelivr.net/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/index.html**
 
-Each push to `main` or this branch rebuilds it. Add `https://hxyan2020.github.io/PRD/` (trailing slash) to your Spotify redirect URIs.
+The built files live in `docs/`. After this branch is merged, the same path on `@main` also works. Add that URL (and `https://hxyan2020.github.io/PRD/` if you later enable GitHub Pages) to your Spotify redirect URIs.
 
-Optional Vercel production (needs a Vercel login, then a stable `*.vercel.app` host):
+GitHub Pages (`https://hxyan2020.github.io/PRD/`) is configured in `.github/workflows/pages.yml`. Turn it on once under repo **Settings → Pages → Source: GitHub Actions**.
+
+Optional Vercel production needs a Vercel login:
 
 ```bash
 cd canon
 npx vercel --prod --yes
 ```
 
-Do not use `vercel deploy --temporary` — those claim links expire.
+Do not use `vercel deploy --temporary` — those claim links expire in about an hour.
 
 ## DigitalOcean
 

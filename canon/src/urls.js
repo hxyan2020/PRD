@@ -11,12 +11,16 @@ export function publicUrl(path = "") {
   return `${base}${trimmed}`;
 }
 
-export function siteUrl(location = globalThis.location, base = basePath()) {
-  const origin = location?.origin || "";
-  const normalized = base.endsWith("/") ? base : `${base}/`;
-  if (!origin) return normalized;
-  if (normalized === "/") return `${origin}/`;
-  return `${origin}${normalized}`;
+export function siteUrl(location = globalThis.location) {
+  if (!location?.origin) return "/";
+  const path = location.pathname || "/";
+  if (path.endsWith("/")) return `${location.origin}${path}`;
+  if (/\/index\.html$/i.test(path)) {
+    return `${location.origin}${path.replace(/index\.html$/i, "")}`;
+  }
+  return `${location.origin}${path.replace(/[^/]+$/, "")}`;
 }
 
+export const CANON_PUBLIC_URL =
+  "https://cdn.jsdelivr.net/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/index.html";
 export const GITHUB_PAGES_URL = "https://hxyan2020.github.io/PRD/";

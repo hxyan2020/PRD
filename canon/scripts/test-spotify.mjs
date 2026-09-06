@@ -63,8 +63,14 @@ assert.match(url, /accounts\.spotify\.com\/authorize/);
 assert.match(url, /code_challenge_method=S256/);
 assert.match(url, /redirect_uri=http%3A%2F%2Flocalhost%3A5173%2F/);
 
-assert.equal(redirectUri({ origin: "http://localhost:5173" }), "http://localhost:5173/");
-assert.equal(siteUrl({ origin: "https://hxyan2020.github.io" }, "/PRD/"), "https://hxyan2020.github.io/PRD/");
+assert.equal(redirectUri({ origin: "http://localhost:5173", pathname: "/" }), "http://localhost:5173/");
+assert.equal(
+  siteUrl({
+    origin: "https://hxyan2020.github.io",
+    pathname: "/PRD/index.html",
+  }),
+  "https://hxyan2020.github.io/PRD/"
+);
 
 assert.equal(
   await codeChallengeFromVerifier("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"),
