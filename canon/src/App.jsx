@@ -21,6 +21,7 @@ import { HxMonitor, HxViewership } from "./HxDesk.jsx";
 import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
 import { SiteDoc, SiteNav } from "./SitePages.jsx";
 import { publicUrl, siteUrl } from "./urls.js";
+import CountryFlagName from "./CountryFlagName.jsx";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
 
 export default function App() {
@@ -396,7 +397,9 @@ export default function App() {
             </div>
             <div>
               <dt>{t("releaseCountry")}</dt>
-              <dd>{creditLabel(selected.releaseCountry, t)}</dd>
+              <dd>
+                <CountryFlagName value={selected.releaseCountry} />
+              </dd>
             </div>
             <div>
               <dt>{t("genre")}</dt>
