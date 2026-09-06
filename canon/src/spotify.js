@@ -1,4 +1,5 @@
 import { searchTracksPath } from "./beyond.js";
+import { siteUrl } from "./urls.js";
 
 export const TOKEN_KEY = "canon.spotify.tokens";
 export const CLIENT_ID_KEY = "canon.spotify.clientId";
@@ -43,8 +44,8 @@ export async function codeChallengeFromVerifier(verifier) {
 }
 
 export function redirectUri(location = globalThis.location) {
-  if (!location) return "";
-  return `${location.origin}/`;
+  if (!location?.origin) return "";
+  return siteUrl(location);
 }
 
 export function getClientId(storage, envId = "") {

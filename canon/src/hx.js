@@ -1,10 +1,17 @@
+import { publicUrl } from "./urls.js";
+
 export const VIEWERSHIP_KEY = "canon.hx.viewership";
 export const PING_KEY = "canon.hx.bots.ping";
-export const HX_BEACON_PATH = "/api/hx-viewership";
 export const HX_SLUG = "canon";
 export const HX_NAME = "Canon";
 export const HX_COLLECT_URL = "http://188.166.214.47:3520/collect";
 const MAX_EVENTS = 400;
+
+export function hxBeaconPath() {
+  return publicUrl("api/hx-viewership");
+}
+
+export const HX_BEACON_PATH = "/api/hx-viewership";
 
 export const HX_BOTS = [
   { id: "hx-health", name: "HX Health", path: "/hx/health.json", interval: "60s" },
@@ -40,21 +47,29 @@ export function viewershipPayload({ path = "/", host = "", referer = "" } = {}) 
   };
 }
 
-export async function sendHxBeacon(details = {}, fetchImpl) {
+export async function sendHxBeacon(details = {}, fetchImpl, location = globalThis.location) {
   const payload = JSON.stringify(viewershipPayload(details));
   const post = fetchImpl || (typeof fetch === "function" ? fetch : null);
   if (!post) return { ok: false, skipped: true };
-  try {
-    const res = await post(HX_BEACON_PATH, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: payload,
-      keepalive: true,
-    });
-    return { ok: Boolean(res?.ok || res?.status === 202) };
-  } catch {
-    return { ok: false };
+  const targets = [hxBeaconPath()];
+  const protocol = location?.protocol || "";
+  if (!(protocol === "https:" && String(HX_COLLECT_URL).startsWith("http:"))) {
+    targets.push(HX_COLLECT_URL);
   }
+  for (const url of targets) {
+    try {
+      const res = await post(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        keepalive: true,
+      });
+      if (res?.ok || res?.status === 202) return { ok: true };
+    } catch {
+      /* try the next target */
+    }
+  }
+  return { ok: false };
 }
 
 export function loadViewership(storage) {

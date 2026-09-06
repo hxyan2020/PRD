@@ -34,7 +34,7 @@ export const LEGAL = {
       "Catalog notes and covers come from public sources used by the archive: Wikidata, Wikipedia page summaries, Spotify oEmbed (track verification and artwork), and published play-count tables. Follow each recording’s encyclopedia and Spotify links for the original records.",
     aboutHostTitle: "Public site, HX bots, and HX viewership",
     aboutHostBody:
-      "Canon is published on Vercel for a public HTTPS URL and can be deployed on DigitalOcean (App Platform or the HX droplet). HX bots monitoring polls /hx/health.json and /hx/bots.json. Each screen you open also sends an anonymous page view (path, host, referer) to HX viewership under the project slug canon.",
+      "Canon’s permanent public site is GitHub Pages. It can also be deployed on Vercel and DigitalOcean. HX bots monitoring polls /hx/health.json and /hx/bots.json. Each screen you open also sends an anonymous page view (path, host, referer) to HX viewership under the project slug canon.",
     termsEyebrow: "Your use of Canon",
     termsTitle: "Terms of use",
     termsUpdated: "Last updated 5 September 2026.",
@@ -99,7 +99,7 @@ export const LEGAL = {
       "目录说明与封面来自档案使用的公开来源：维基数据、维基百科摘要、Spotify oEmbed（曲目校验与封面）以及已公布的播放量表。请通过每首作品的百科与 Spotify 链接查看原始记录。",
     aboutHostTitle: "公开站点、HX 机器人与 HX 浏览",
     aboutHostBody:
-      "Canon 通过 Vercel 提供公开 HTTPS 地址，也可部署到 DigitalOcean（应用平台或 HX 主机）。HX 机器人会轮询 /hx/health.json 与 /hx/bots.json。你打开的每个界面还会把匿名浏览（路径、主机、来源）以 slug canon 发到 HX 浏览统计。",
+      "Canon 的长期公开地址在 GitHub Pages，也可部署到 Vercel 与 DigitalOcean。HX 机器人会轮询 /hx/health.json 与 /hx/bots.json。你打开的每个界面还会把匿名浏览（路径、主机、来源）以 slug canon 发到 HX 浏览统计。",
     termsEyebrow: "使用 Canon",
     termsTitle: "使用条款",
     termsUpdated: "最近更新日期：2026 年 9 月 5 日。",
@@ -163,7 +163,7 @@ export const LEGAL = {
       "कैटलॉग नोट और कवर सार्वजनिक स्रोतों से हैं: विकिडेटा, विकिपीडिया सारांश, Spotify oEmbed (ट्रैक जाँच और कलाकृति), और प्रकाशित प्ले-गणना तालिकाएँ। मूल अभिलेखों के लिए प्रत्येक रिकॉर्डिंग के विश्वकोश और Spotify लिंक देखें।",
     aboutHostTitle: "सार्वजनिक साइट, HX बॉट और HX दर्शक",
     aboutHostBody:
-      "Canon Vercel पर सार्वजनिक HTTPS पता देता है और DigitalOcean पर भी चलाया जा सकता है। HX बॉट /hx/health.json और /hx/bots.json जाँचते हैं। हर स्क्रीन एक अनाम पेज व्यू (path, host, referer) slug canon से HX दर्शक को भी भेजती है।",
+      "Canon की स्थायी सार्वजनिक साइट GitHub Pages है; Vercel और DigitalOcean पर भी चलाया जा सकता है। HX बॉट /hx/health.json और /hx/bots.json जाँचते हैं। हर स्क्रीन एक अनाम पेज व्यू (path, host, referer) slug canon से HX दर्शक को भी भेजती है।",
     termsEyebrow: "Canon का उपयोग",
     termsTitle: "उपयोग की शर्तें",
     termsUpdated: "अंतिम अद्यतन 5 सितंबर 2026।",
@@ -230,7 +230,7 @@ export const LEGAL = {
       "Las notas y portadas del catálogo vienen de fuentes públicas: Wikidata, resúmenes de Wikipedia, oEmbed de Spotify (verificación y arte) y tablas publicadas de reproducciones. Sigue los enlaces enciclopédicos y de Spotify de cada grabación para los registros originales.",
     aboutHostTitle: "Sitio público, bots HX y audiencia HX",
     aboutHostBody:
-      "Canon se publica en Vercel con una URL HTTPS pública y puede desplegarse en DigitalOcean. Los bots HX consultan /hx/health.json y /hx/bots.json. Cada pantalla envía también una vista anónima (ruta, host, referer) a HX viewership con el slug canon.",
+      "El sitio público permanente de Canon es GitHub Pages. También puede desplegarse en Vercel y DigitalOcean. Los bots HX consultan /hx/health.json y /hx/bots.json. Cada pantalla envía también una vista anónima (ruta, host, referer) a HX viewership con el slug canon.",
     termsEyebrow: "Tu uso de Canon",
     termsTitle: "Términos de uso",
     termsUpdated: "Última actualización: 5 de septiembre de 2026.",
@@ -297,7 +297,7 @@ export const LEGAL = {
       "Les notes et pochettes du catalogue viennent de sources publiques : Wikidata, résumés Wikipédia, oEmbed Spotify (vérification et visuel) et tableaux de lectures publiés. Suivez les liens encyclopédiques et Spotify de chaque enregistrement pour les notices d’origine.",
     aboutHostTitle: "Site public, bots HX et audience HX",
     aboutHostBody:
-      "Canon est publié sur Vercel (URL HTTPS publique) et peut être déployé sur DigitalOcean. Les bots HX interrogent /hx/health.json et /hx/bots.json. Chaque écran envoie aussi une vue anonyme (chemin, hôte, referer) à HX viewership sous le slug canon.",
+      "Le site public permanent de Canon est GitHub Pages. Il peut aussi être déployé sur Vercel et DigitalOcean. Les bots HX interrogent /hx/health.json et /hx/bots.json. Chaque écran envoie aussi une vue anonyme (chemin, hôte, referer) à HX viewership sous le slug canon.",
     termsEyebrow: "Votre usage de Canon",
     termsTitle: "Conditions d’utilisation",
     termsUpdated: "Dernière mise à jour : 5 septembre 2026.",
@@ -364,7 +364,7 @@ export const LEGAL = {
       "ملاحظات الفهرس والأغلفة من مصادر عامة: ويكي بيانات، ملخصات ويكيبيديا، oEmbed لـ Spotify (التحقق والغلاف)، وجداول أعداد التشغيل المنشورة. اتبع روابط الموسوعة وSpotify لكل تسجيل للاطلاع على السجلات الأصلية.",
     aboutHostTitle: "الموقع العام وروبوتات HX ومشاهدات HX",
     aboutHostBody:
-      "يُنشر Canon على Vercel بعنوان HTTPS عام ويمكن نشره على DigitalOcean. تراقب روبوتات HX /hx/health.json و /hx/bots.json. وتُرسل كل شاشة مشاهدة مجهولة (المسار والمضيف والمُحيل) إلى HX viewership بالاسم canon.",
+      "الموقع العام الدائم لـ Canon هو GitHub Pages، ويمكن نشره أيضاً على Vercel وDigitalOcean. تراقب روبوتات HX /hx/health.json و /hx/bots.json. وتُرسل كل شاشة مشاهدة مجهولة (المسار والمضيف والمُحيل) إلى HX viewership بالاسم canon.",
     termsEyebrow: "استخدامك لـ Canon",
     termsTitle: "شروط الاستخدام",
     termsUpdated: "آخر تحديث: 5 أيلول/سبتمبر 2026.",
@@ -431,7 +431,7 @@ export const LEGAL = {
       "ক্যাটালগ নোট ও কভার আসে পাবলিক উৎস থেকে: Wikidata, উইকিপিডিয়া সারাংশ, Spotify oEmbed (ট্র্যাক যাচাই ও আর্টওয়ার্ক) এবং প্রকাশিত প্লে-গণনা টেবিল। মূল রেকর্ডের জন্য প্রতিটি রেকর্ডিংয়ের বিশ্বকোষ ও Spotify লিংক অনুসরণ করুন।",
     aboutHostTitle: "পাবলিক সাইট, HX বট ও HX দর্শক",
     aboutHostBody:
-      "Canon Vercel-এ পাবলিক HTTPS URL দেয় এবং DigitalOcean-এও ডিপ্লয় করা যায়। HX বট /hx/health.json ও /hx/bots.json দেখে। প্রতিটি স্ক্রিন বেনামি পেজ ভিউ (path, host, referer) slug canon-এ HX দর্শকেও পাঠায়।",
+      "Canon-এর স্থায়ী পাবলিক সাইট GitHub Pages; Vercel ও DigitalOcean-এও ডিপ্লয় করা যায়। HX বট /hx/health.json ও /hx/bots.json দেখে। প্রতিটি স্ক্রিন বেনামি পেজ ভিউ (path, host, referer) slug canon-এ HX দর্শকেও পাঠায়।",
     termsEyebrow: "Canon ব্যবহার",
     termsTitle: "ব্যবহারের শর্ত",
     termsUpdated: "সর্বশেষ হালনাগাদ ৫ সেপ্টেম্বর ২০২৬।",
@@ -498,7 +498,7 @@ export const LEGAL = {
       "Notas e capas do catálogo vêm de fontes públicas: Wikidata, resumos da Wikipédia, oEmbed do Spotify (verificação e arte) e tabelas publicadas de plays. Siga os links enciclopédicos e do Spotify de cada gravação para os registros originais.",
     aboutHostTitle: "Site público, bots HX e audiência HX",
     aboutHostBody:
-      "A Canon é publicada no Vercel com URL HTTPS pública e pode ser implantada na DigitalOcean. Os bots HX consultam /hx/health.json e /hx/bots.json. Cada tela também envia uma visualização anônima (path, host, referer) ao HX viewership com o slug canon.",
+      "O site público permanente da Canon é o GitHub Pages. Também pode ser implantada no Vercel e na DigitalOcean. Os bots HX consultam /hx/health.json e /hx/bots.json. Cada tela também envia uma visualização anônima (path, host, referer) ao HX viewership com o slug canon.",
     termsEyebrow: "Seu uso da Canon",
     termsTitle: "Termos de uso",
     termsUpdated: "Última atualização: 5 de setembro de 2026.",

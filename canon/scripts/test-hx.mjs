@@ -13,6 +13,7 @@ import {
   sendHxBeacon,
   viewershipPayload,
 } from "../src/hx.js";
+import { publicUrl, siteUrl } from "../src/urls.js";
 import { parseRoute } from "../src/pages.js";
 
 assert.equal(isLikelyBot("Mozilla/5.0"), false);
@@ -63,6 +64,11 @@ assert.equal(result.ok, true);
 assert.equal(posted.url, HX_BEACON_PATH);
 assert.equal(posted.opts.method, "POST");
 assert.equal(JSON.parse(posted.opts.body).slug, "canon");
+
+assert.equal(publicUrl("catalog.json"), "/catalog.json");
+assert.equal(publicUrl("#about"), "/#about");
+assert.equal(siteUrl({ origin: "http://localhost:5173" }, "/"), "http://localhost:5173/");
+assert.equal(siteUrl({ origin: "https://hxyan2020.github.io" }, "/PRD/"), "https://hxyan2020.github.io/PRD/");
 
 assert.deepEqual(parseRoute("#hx-monitor"), { page: "hx-monitor", trackId: "" });
 assert.deepEqual(parseRoute("#hx-bots"), { page: "hx-monitor", trackId: "" });

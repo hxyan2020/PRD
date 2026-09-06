@@ -12,6 +12,7 @@ import {
   setPendingAdd,
   takePendingAdd,
   trackSavedOnSpotify,
+  redirectUri,
 } from "./spotify.js";
 
 const ENV_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID || "";
@@ -172,6 +173,6 @@ export function useSpotify() {
     checkSaved,
     searchTracks,
     setStatus,
-    redirect: typeof window !== "undefined" ? `${window.location.origin}/` : "",
+    redirect: typeof window !== "undefined" ? redirectUri() : "",
   };
 }

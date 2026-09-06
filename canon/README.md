@@ -47,22 +47,22 @@ In Spotify’s development mode, only users you add to the app can sign in until
 
 Works are drawn from Wikidata items that already carry a Spotify track ID, ordered by the number of Wikipedia language editions (a proxy for worldwide cultural memory). Each ID is verified with Spotify’s public oEmbed endpoint before it enters the archive. Play counts are joined from [kworb.net](https://kworb.net/spotify/songs.html) artist and all-time stream tables.
 
-## Public URL (Vercel)
+## Public URL
 
-From `canon/`:
+Permanent site (GitHub Pages, does not expire):
+
+**https://hxyan2020.github.io/PRD/**
+
+Each push to `main` or this branch rebuilds it. Add `https://hxyan2020.github.io/PRD/` (trailing slash) to your Spotify redirect URIs.
+
+Optional Vercel production (needs a Vercel login, then a stable `*.vercel.app` host):
 
 ```bash
-npx vercel deploy --yes
-# or, without a Vercel login:
-npx vercel deploy --temporary --yes
+cd canon
+npx vercel --prod --yes
 ```
 
-`vercel.json` builds the Vite app and leaves `/hx/` and `/api/hx-viewership` out of the SPA fallback. Add the production origin (with a trailing slash) to your Spotify redirect URIs.
-
-Current anonymous deployment (claim it so it does not expire):
-
-- https://temporary-brisk-teal-v4ptuvb.vercel.app
-- Claim: https://vercel.com/claim-deployment?code=f9f8a958-ff5f-4963-b24b-e02ff977a16d
+Do not use `vercel deploy --temporary` — those claim links expire.
 
 ## DigitalOcean
 

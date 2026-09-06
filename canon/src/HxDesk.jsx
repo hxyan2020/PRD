@@ -9,6 +9,12 @@ import {
   loadViewership,
   recordBotPing,
 } from "./hx.js";
+import { publicUrl } from "./urls.js";
+
+function botHref(path) {
+  if (String(path).startsWith("/#")) return publicUrl(path.slice(1));
+  return publicUrl(path);
+}
 
 export function HxMonitor({ origin }) {
   const { t } = useI18n();
@@ -16,7 +22,7 @@ export function HxMonitor({ origin }) {
   const [pings, setPings] = useState(() => loadBotPings());
 
   useEffect(() => {
-    fetch("/hx/health.json", { cache: "no-store" })
+    fetch(publicUrl("hx/health.json"), { cache: "no-store" })
       .then((r) => r.json())
       .then(setHealth)
       .catch(() => setHealth({ status: "down" }));
@@ -41,7 +47,7 @@ export function HxMonitor({ origin }) {
           const last = lastPingFor(bot.id, pings);
           return (
             <li key={bot.id}>
-              <a href={bot.path}>{bot.name}</a>
+              <a href={botHref(bot.path)}>{bot.name}</a>
               <span>
                 {bot.interval} · {t("hx.monitor.last")}:{" "}
                 {last ? new Date(last.at).toLocaleString() : t("hx.monitor.never")}

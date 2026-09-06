@@ -19,6 +19,7 @@ import { hxPathForRoute, recordBotPing, recordVisit, sendHxBeacon } from "./hx.j
 import { HxMonitor, HxViewership } from "./HxDesk.jsx";
 import { parseRoute } from "./pages.js";
 import { SiteDoc, SiteNav } from "./SitePages.jsx";
+import { publicUrl, siteUrl } from "./urls.js";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
 
 export default function App() {
@@ -50,7 +51,7 @@ export default function App() {
   const spotify = useSpotify();
 
   useEffect(() => {
-    fetch("/catalog.json")
+    fetch(publicUrl("catalog.json"))
       .then((r) => {
         if (!r.ok) throw new Error("Catalog failed to load");
         return r.json();
@@ -226,7 +227,7 @@ export default function App() {
       {page === "about" || page === "terms" ? (
         <SiteDoc page={page} />
       ) : page === "hx-monitor" || page === "hx-ping" ? (
-        <HxMonitor origin={window.location.origin} />
+        <HxMonitor origin={siteUrl()} />
       ) : page === "hx-viewership" ? (
         <HxViewership />
       ) : (
