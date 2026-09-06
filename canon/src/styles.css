@@ -648,9 +648,19 @@ button.surprise {
   align-items: start;
 }
 
+.daily-hero-card.daily-card {
+  grid-template-columns: minmax(320px, 1.05fr) minmax(0, 1fr);
+  gap: 28px 36px;
+}
+
 .daily-card .cover-btn {
   border-radius: 14px;
   overflow: hidden;
+}
+
+.daily-hero-card .cover-btn {
+  width: 100%;
+  max-width: none;
 }
 
 .daily-reason,
