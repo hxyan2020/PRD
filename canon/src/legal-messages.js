@@ -16,7 +16,7 @@ export const LEGAL = {
       "Works are drawn from Wikidata items that already carry a Spotify track ID, then ordered by how many Wikipedia language editions mention them — a rough proxy for worldwide cultural memory. Every ID is checked with Spotify’s public oEmbed before it enters the archive. Play counts are joined from published stream tables. The ranking is an editorial device, not a score of artistic worth.",
     aboutDoTitle: "What you can do here",
     aboutDoBody:
-      "The homepage is For you: set mood, country, or genre for a daily recommendation (blank fields fall back to the most streamed titles) and stream more from Spotify beyond the canon. Browse and search the 1,000-work archive from The 1,000 in the menu. Use Surprise me for another work at once; Collect Music in this browser with the date you saved it, then open the Collections page; and keep a dated log of daily picks and surprises on the Recommendation log page. Header counts show the 1,000-song archive plus unique titles you have viewed or collected here.",
+      "The homepage is For you: today’s recommendation with the album cover up front (blank Preferences fall back to the most streamed titles). Set mood, country, or genre on the Preferences page in the menu. Browse and search the 1,000-work archive from The 1,000. Use Surprise me for another work at once; Collect Music in this browser with the date you saved it, then open the Collections page; and keep a dated log of daily picks and surprises on the Recommendation log page. Header counts show the 1,000-song archive plus unique titles you have viewed or collected here.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "Click Add to Spotify to authorize your account. Canon then saves Music to Liked Songs and to a private playlist named Canon — your album of this archive. Official artist albums are never edited. Canon uses Spotify’s Authorization Code with PKCE and does not keep a client secret in the browser. Playback itself is provided by Spotify. Spotify, Wikipedia, Wikidata, and other sources remain independent of this archive.",
@@ -82,7 +82,7 @@ export const LEGAL = {
       "作品来自已带 Spotify 曲目 ID 的维基数据条目，再按维基百科语言版本数量排序——作为世界文化记忆的粗略代理。每条 ID 在进入档案前都经 Spotify 公开 oEmbed 校验。播放量来自已公布的串流表。名次是编辑排序，不是艺术价值打分。",
     aboutDoTitle: "你可以做什么",
     aboutDoBody:
-      "首页是「为你推荐」：按心情、国家或类型获取每日推荐（留空则从播放最多的作品中选），并继续收听档案之外的曲目。菜单里的「一千首」可浏览和搜索档案。用「随机一首」立刻换一首；在此浏览器中收藏并记下日期；并保存带日期的每日与随机记录。页眉统计显示 1,000 首档案，以及你在此浏览或收藏过的不重复曲目。",
+      "首页是「为你推荐」：突出专辑封面的今日推荐（「偏好」留空则从播放最多的作品中选）。在菜单「偏好」中设置心情、国家或类型。菜单里的「一千首」可浏览和搜索档案。用「随机一首」立刻换一首；在此浏览器中收藏并记下日期；并保存带日期的每日与随机记录。页眉统计显示 1,000 首档案，以及你在此浏览或收藏过的不重复曲目。",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "授权 Spotify 后，「加入 Spotify」会把音乐存入已点赞歌曲和名为 Canon 的私人播放列表——也就是你的本档案专辑。官方艺人专辑永不被修改。Canon 使用带 PKCE 的授权码流程，不在浏览器中保存客户端密钥。播放由 Spotify 提供。Spotify、维基百科、维基数据及其他来源均独立于本档案。",
@@ -145,7 +145,7 @@ export const LEGAL = {
       "कृतियाँ उन विकिडेटा मदों से आती हैं जिनमें पहले से Spotify ट्रैक ID है, फिर विकिपीडिया भाषा संस्करणों की संख्या से क्रम में — विश्व सांस्कृतिक स्मृति का मोटा संकेत। संग्रह में आने से पहले हर ID Spotify के सार्वजनिक oEmbed से जाँची जाती है। प्ले संख्या प्रकाशित स्ट्रीम तालिकाओं से जुड़ती है। रैंक संपादकीय क्रम है, कलात्मक मूल्य का अंक नहीं।",
     aboutDoTitle: "यहाँ आप क्या कर सकते हैं",
     aboutDoBody:
-      "आप संग्रह देख और खोज सकते हैं; दैनिक सिफारिश के लिए मूड, देश या विधा चुन सकते हैं (खाली छोड़ने पर सबसे अधिक चले शीर्षक); तुरंत दूसरी कृति के लिए आश्चर्य दिखाएँ; इस ब्राउज़र में तिथि सहित संग्रहित करें; और दैनिक व आश्चर्य का तिथियुक्त लॉग रखें। हेडर में 1,000 गीतों का संग्रह और यहाँ देखे या संग्रहित अनूठे शीर्षक दिखते हैं।",
+      "मुखपृष्ठ «आपके लिए» है: एल्बम कवर के साथ आज की सिफारिश (खाली पसंद सबसे अधिक चले शीर्षक चुनती है)। मेनू की पसंद पर मूड, देश या विधा सेट करें। आप संग्रह देख और खोज सकते हैं; तुरंत दूसरी कृति के लिए आश्चर्य दिखाएँ; इस ब्राउज़र में तिथि सहित संग्रहित करें; और दैनिक व आश्चर्य का तिथियुक्त लॉग रखें। हेडर में 1,000 गीतों का संग्रह और यहाँ देखे या संग्रहित अनूठे शीर्षक दिखते हैं।",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "Spotify अधिकृत करने के बाद, Spotify में जोड़ें संगीत को Liked Songs और Canon नाम की निजी प्लेलिस्ट में सहेजता है — इस संग्रह का आपका एल्बम। आधिकारिक कलाकार एल्बम कभी नहीं बदले जाते। Canon PKCE के साथ Authorization Code इस्तेमाल करता है और ब्राउज़र में क्लाइंट सीक्रेट नहीं रखता। प्लेबैक Spotify देता है। Spotify, विकिपीडिया, विकिडेटा और अन्य स्रोत इस संग्रह से स्वतंत्र हैं।",
@@ -212,7 +212,7 @@ export const LEGAL = {
       "Las obras salen de ítems de Wikidata que ya tienen un ID de pista de Spotify, ordenados por cuántas ediciones lingüísticas de Wikipedia las mencionan: un indicador tosco de memoria cultural mundial. Cada ID se comprueba con el oEmbed público de Spotify antes de entrar al archivo. Las reproducciones se unen desde tablas publicadas. El orden es un recurso editorial, no una nota de valor artístico.",
     aboutDoTitle: "Qué puedes hacer aquí",
     aboutDoBody:
-      "Puedes explorar y buscar el archivo; fijar ánimo, país o género para la recomendación diaria (si los dejas vacíos, salen los más reproducidos); usar Sorpréndeme para otra obra al instante; coleccionar una música en este navegador con la fecha; y guardar un registro fechado de diarias y sorpresas. El encabezado muestra las 1.000 canciones y los títulos únicos que has visto o coleccionado aquí.",
+      "La portada es Para ti: la recomendación de hoy con la portada del álbum al frente (si Preferencias está vacío, salen los más reproducidos). Fija ánimo, país o género en Preferencias, en el menú. Puedes explorar y buscar el archivo desde Las 1.000; usar Sorpréndeme para otra obra al instante; coleccionar una música en este navegador con la fecha; y guardar un registro fechado de diarias y sorpresas. El encabezado muestra las 1.000 canciones y los títulos únicos que has visto o coleccionado aquí.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "Tras autorizar Spotify, Añadir a Spotify guarda la música en Canciones que te gustan y en una lista privada llamada Canon: tu álbum de este archivo. Los álbumes oficiales de artistas no se editan. Canon usa Authorization Code con PKCE y no guarda un secreto de cliente en el navegador. La reproducción la da Spotify. Spotify, Wikipedia, Wikidata y demás fuentes son independientes de este archivo.",
@@ -279,7 +279,7 @@ export const LEGAL = {
       "Les œuvres viennent d’éléments Wikidata qui portent déjà un identifiant de piste Spotify, classés selon le nombre d’éditions linguistiques de Wikipédia — un proxy approximatif de la mémoire culturelle mondiale. Chaque identifiant est vérifié via l’oEmbed public de Spotify avant d’entrer dans l’archive. Les écoutes viennent de tableaux de streams publiés. Le rang est un dispositif éditorial, pas une note de valeur artistique.",
     aboutDoTitle: "Ce que vous pouvez faire ici",
     aboutDoBody:
-      "Vous pouvez parcourir et chercher l’archive ; indiquer humeur, pays ou genre pour la recommandation du jour (les champs vides reprennent les titres les plus écoutés) ; utiliser Surprenez-moi pour une autre œuvre tout de suite ; collectionner une musique dans ce navigateur avec la date ; et tenir un journal daté des choix du jour et des surprises. L’en-tête affiche les 1 000 morceaux plus les titres uniques vus ou collectionnés ici.",
+      "La page d’accueil est Pour vous : la recommandation du jour avec la pochette en avant (Préférences vides = titres les plus écoutés). Réglez humeur, pays ou genre dans Préférences, au menu. Parcourez et cherchez l’archive depuis Les 1 000 ; utilisez Surprenez-moi pour une autre œuvre tout de suite ; collectionnez une musique dans ce navigateur avec la date ; et tenez un journal daté des choix du jour et des surprises. L’en-tête affiche les 1 000 morceaux plus les titres uniques vus ou collectionnés ici.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "Après autorisation, Ajouter à Spotify enregistre le titre dans Titres likés et dans une playlist privée nommée Canon — votre album de cette archive. Les albums officiels d’artistes ne sont jamais modifiés. Canon utilise Authorization Code avec PKCE et ne conserve pas de secret client dans le navigateur. La lecture est fournie par Spotify. Spotify, Wikipédia, Wikidata et les autres sources restent indépendants de cette archive.",
@@ -346,7 +346,7 @@ export const LEGAL = {
       "تُستمد الأعمال من عناصر ويكي بيانات تحمل أصلًا معرّف مقطع Spotify، ثم تُرتَّب بعدد طبعات ويكيبيديا اللغوية — تقريب لذاكرة ثقافية عالمية. يُتحقق من كل معرّف عبر oEmbed العام لـ Spotify قبل دخوله الأرشيف. تُضم أعداد التشغيل من جداول منشورة. الترتيب أداة تحريرية لا درجة للقيمة الفنية.",
     aboutDoTitle: "ماذا يمكنك أن تفعل هنا",
     aboutDoBody:
-      "يمكنك تصفح الأرشيف والبحث فيه؛ وتعيين مزاج أو بلد أو نوع لتوصية يومية (الحقول الفارغة تعود للأكثر تشغيلًا)؛ واستخدام «فاجئني» لعمل آخر فورًا؛ وجمع موسيقى في هذا المتصفح مع تاريخ الحفظ؛ والإبقاء على سجل مؤرخ للاختيارات اليومية والمفاجآت. يعرض الترويسة الألف أغنية والعناوين الفريدة التي شاهدتها أو جمعتها هنا.",
+      "الصفحة الرئيسية «لك»: توصية اليوم مع غلاف الألبوم في المقدمة (التفضيلات الفارغة تعود للأكثر تشغيلًا). عيّن المزاج أو البلد أو النوع في صفحة التفضيلات بالقائمة. يمكنك تصفح الأرشيف والبحث فيه من «الألف»؛ واستخدام «فاجئني» لعمل آخر فورًا؛ وجمع موسيقى في هذا المتصفح مع تاريخ الحفظ؛ والإبقاء على سجل مؤرخ للاختيارات اليومية والمفاجآت. يعرض الترويسة الألف أغنية والعناوين الفريدة التي شاهدتها أو جمعتها هنا.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "بعد تفويض Spotify، يحفظ «أضف إلى Spotify» الموسيقى في الأغاني المعجبة وفي قائمة خاصة اسمها Canon — ألبومك من هذا الأرشيف. لا تُعدَّل ألبومات الفنانين الرسمية. يستخدم Canon رمز التفويض مع PKCE ولا يحتفظ بسر عميل في المتصفح. التشغيل نفسه من Spotify. Spotify وويكيبيديا وويكي بيانات والمصادر الأخرى مستقلة عن هذا الأرشيف.",
@@ -413,7 +413,7 @@ export const LEGAL = {
       "কাজ আসে সেই Wikidata আইটেম থেকে যেগুলিতে আগেই Spotify ট্র্যাক ID আছে, তারপর উইকিপিডিয়া ভাষা সংস্করণের সংখ্যায় সাজানো — বিশ্ব সাংস্কৃতিক স্মৃতির মোটা অনুমান। আর্কাইভে ঢোকার আগে প্রতিটি ID Spotify-এর পাবলিক oEmbed দিয়ে যাচাই হয়। প্লে সংখ্যা প্রকাশিত স্ট্রিম টেবিল থেকে যোগ হয়। র্যাঙ্ক সম্পাদকীয় ক্রম, শিল্পমূল্যের নম্বর নয়।",
     aboutDoTitle: "এখানে আপনি কী করতে পারেন",
     aboutDoBody:
-      "আর্কাইভ ঘুরে দেখতে ও খুঁজতে পারেন; দৈনিক সুপারিশে মুড, দেশ বা ঘরানা দিতে পারেন (খালি রাখলে সবচেয়ে বেশি চলা শিরোনাম); অন্য কাজের জন্য অবাক করুন; এই ব্রাউজারে তারিখসহ সংগ্রহ করুন; এবং দৈনিক ও অবাক করুন-এর তারিখযুক্ত লগ রাখুন। হেডারে ১,০০০ গান এবং এখানে দেখা বা সংগ্রহ করা অনন্য শিরোনাম দেখায়।",
+      "হোমপেজ «আপনার জন্য»: অ্যালবাম কভার সামনে রেখে আজকের সুপারিশ (খালি পছন্দ সবচেয়ে বেশি চলা শিরোনাম নেয়)। মেনুতে পছন্দ থেকে মুড, দেশ বা ঘরানা সেট করুন। আর্কাইভ ঘুরে দেখতে ও খুঁজতে পারেন; অন্য কাজের জন্য অবাক করুন; এই ব্রাউজারে তারিখসহ সংগ্রহ করুন; এবং দৈনিক ও অবাক করুন-এর তারিখযুক্ত লগ রাখুন। হেডারে ১,০০০ গান এবং এখানে দেখা বা সংগ্রহ করা অনন্য শিরোনাম দেখায়।",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "Spotify অনুমোদনের পর, Spotify-তে যোগ সঙ্গীত Liked Songs ও Canon নামের ব্যক্তিগত প্লেলিস্টে রাখে — এই আর্কাইভের আপনার অ্যালবাম। অফিসিয়াল শিল্পী অ্যালবাম কখনও সম্পাদনা হয় না। Canon PKCE সহ Authorization Code ব্যবহার করে এবং ব্রাউজারে ক্লায়েন্ট সিক্রেট রাখে না। প্লেব্যাক Spotify দেয়। Spotify, উইকিপিডিয়া, Wikidata ও অন্য উৎস এই আর্কাইভ থেকে স্বাধীন।",
@@ -480,7 +480,7 @@ export const LEGAL = {
       "As obras vêm de itens do Wikidata que já têm ID de faixa do Spotify, ordenados por quantas edições linguísticas da Wikipédia as mencionam — um sinal tosco de memória cultural mundial. Cada ID é conferido com o oEmbed público do Spotify antes de entrar no arquivo. Os plays vêm de tabelas publicadas. A ordem é um recurso editorial, não uma nota de valor artístico.",
     aboutDoTitle: "O que você pode fazer aqui",
     aboutDoBody:
-      "Você pode percorrer e buscar o arquivo; definir humor, país ou gênero para a recomendação do dia (campos em branco usam as mais tocadas); usar Surpreenda-me para outra obra na hora; colecionar uma música neste navegador com a data; e guardar um registro datado das diárias e surpresas. O cabeçalho mostra as 1.000 músicas e os títulos únicos que você viu ou colecionou aqui.",
+      "A página inicial é Para você: a recomendação de hoje com a capa do álbum em destaque (Preferências em branco usam as mais tocadas). Defina humor, país ou gênero em Preferências, no menu. Percorra e busque o arquivo em As 1.000; use Surpreenda-me para outra obra na hora; colecione uma música neste navegador com a data; e guarde um registro datado das diárias e surpresas. O cabeçalho mostra as 1.000 músicas e os títulos únicos que você viu ou colecionou aqui.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "Depois de autorizar o Spotify, Adicionar ao Spotify salva a música em Músicas curtidas e numa playlist privada chamada Canon — seu álbum deste arquivo. Álbuns oficiais de artistas nunca são editados. A Canon usa Authorization Code com PKCE e não guarda segredo de cliente no navegador. A reprodução é do Spotify. Spotify, Wikipédia, Wikidata e outras fontes são independentes deste arquivo.",

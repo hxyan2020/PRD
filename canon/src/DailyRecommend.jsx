@@ -4,27 +4,10 @@ import { useI18n } from "./I18n.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { dateTag } from "./i18n.js";
-import { displayGenre, displayReleaseCountry } from "./display-labels.js";
-import { MOOD_CHIPS, recommendDaily, surprisePick } from "./recommend.js";
-import { artistLabel, collectedStamp, moodLabel, playsLabel, resolveMoodValue, yearLabel } from "./uiText.js";
-
-const STORAGE_KEY = "canon.daily.prefs";
-const EMPTY = { mood: "", country: "", genre: "" };
-
-function loadPrefs() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { ...EMPTY };
-    const parsed = JSON.parse(raw);
-    return {
-      mood: String(parsed.mood || ""),
-      country: String(parsed.country || ""),
-      genre: String(parsed.genre || ""),
-    };
-  } catch {
-    return { ...EMPTY };
-  }
-}
+import { displayGenre } from "./display-labels.js";
+import { loadListenPrefs } from "./listenPrefs.js";
+import { recommendDaily, surprisePick } from "./recommend.js";
+import { artistLabel, collectedStamp, playsLabel, yearLabel } from "./uiText.js";
 
 function modeLabel(result, translate) {
   if (result?.mode === "surprise") return translate("surprise");
@@ -38,14 +21,8 @@ function reasonText(result, translate) {
   return translate(`reason.${key}`);
 }
 
-export function loadListenPrefs() {
-  return loadPrefs();
-}
-
 export default function DailyRecommend({
   tracks,
-  countries,
-  genres,
   onListen,
   onView,
   onRecommend,
@@ -53,30 +30,23 @@ export default function DailyRecommend({
   collectedAt,
   onToggleCollect,
   spotify,
-  onPrefs,
 }) {
   const { locale, t } = useI18n();
-  const [mood, setMood] = useState("");
-  const [country, setCountry] = useState("");
-  const [genre, setGenre] = useState("");
+  const [prefs, setPrefs] = useState(() => loadListenPrefs());
   const [ready, setReady] = useState(false);
   const [surprise, setSurprise] = useState(null);
   const [salt, setSalt] = useState(0);
   const [recentIds, setRecentIds] = useState([]);
 
   useEffect(() => {
-    const stored = loadPrefs();
-    setMood(stored.mood);
-    setCountry(stored.country);
-    setGenre(stored.genre);
+    setPrefs(loadListenPrefs());
     setReady(true);
   }, []);
 
-  const prefs = { mood, country, genre };
   const daily = useMemo(() => {
     if (!ready) return null;
     return recommendDaily(tracks, prefs);
-  }, [ready, tracks, mood, country, genre]);
+  }, [ready, tracks, prefs]);
 
   useEffect(() => {
     if (!ready || !daily?.track) return;
@@ -87,32 +57,11 @@ export default function DailyRecommend({
       coverUrl: daily.track.coverUrl,
       mode: "daily",
       kind: daily.mode,
-      mood,
-      country,
-      genre,
+      mood: prefs.mood,
+      country: prefs.country,
+      genre: prefs.genre,
     });
-  }, [ready, daily?.track?.id, daily?.mode, mood, country, genre]);
-
-  useEffect(() => {
-    if (ready) onPrefs?.({ mood, country, genre });
-  }, [ready, mood, country, genre]);
-
-  function applyPrefs(next) {
-    const resolved = {
-      ...next,
-      mood: resolveMoodValue(next.mood, t),
-    };
-    setMood(resolved.mood);
-    setCountry(resolved.country);
-    setGenre(resolved.genre);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(resolved));
-    setSurprise(null);
-  }
-
-  function onSubmit(event) {
-    event.preventDefault();
-    applyPrefs(prefs);
-  }
+  }, [ready, daily?.track?.id, daily?.mode, prefs.mood, prefs.country, prefs.genre]);
 
   function surpriseMe() {
     const exclude = [surprise?.track?.id, daily?.track?.id, ...recentIds].filter(Boolean);
@@ -129,17 +78,17 @@ export default function DailyRecommend({
         coverUrl: next.track.coverUrl,
         mode: "surprise",
         kind: "surprise",
-        mood,
-        country,
-        genre,
+        mood: prefs.mood,
+        country: prefs.country,
+        genre: prefs.genre,
       });
       onListen(next.track);
-      document.getElementById("today-listening")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
   const result = surprise || daily;
   const track = result?.track;
+  const { mood, country, genre } = prefs;
 
   useEffect(() => {
     if (track?.id) onView?.(track);
@@ -155,102 +104,16 @@ export default function DailyRecommend({
   const isSurprise = result?.mode === "surprise";
 
   return (
-    <section className="daily" id="today-listening" aria-label={t("todayRecommend")}>
-      <div className="daily-copy">
-        <p className="eyebrow">{t("todayListening", { date: todayLabel })}</p>
-        <h2>{t("newRecordingEachDay")}</h2>
-        <p>{t("dailyIntro")}</p>
-        <form className="daily-form" onSubmit={onSubmit}>
-          <label>
-            {t("mood")}
-            <input
-              type="text"
-              value={mood}
-              onChange={(e) => applyPrefs({ ...prefs, mood: e.target.value })}
-              placeholder={t("moodPlaceholder")}
-              list="canon-moods"
-            />
-          </label>
-          <label>
-            {t("country")}
-            <input
-              type="text"
-              value={country}
-              onChange={(e) => applyPrefs({ ...prefs, country: e.target.value })}
-              placeholder={t("countryPlaceholder")}
-              list="canon-countries"
-            />
-          </label>
-          <label>
-            {t("genreLabel")}
-            <input
-              type="text"
-              value={genre}
-              onChange={(e) => applyPrefs({ ...prefs, genre: e.target.value })}
-              placeholder={t("genrePlaceholder")}
-              list="canon-genres"
-            />
-          </label>
-          <div className="daily-actions">
-            <button type="submit">{t("updatePick")}</button>
-            <button type="button" className="surprise" onClick={surpriseMe}>
-              {t("surpriseMe")}
-            </button>
-            <button type="button" className="ghost" onClick={() => applyPrefs({ ...EMPTY })} disabled={!hasPrefs}>
-              {t("clearPrefs")}
-            </button>
-            <button type="button" className="ghost" onClick={() => document.getElementById("beyond-canon")?.scrollIntoView({ behavior: "smooth", block: "start" })}>
-              {t("beyondFind")}
-            </button>
-            {isSurprise && (
-              <button type="button" className="ghost" onClick={() => setSurprise(null)}>
-                {t("backToToday")}
-              </button>
-            )}
-          </div>
-        </form>
-        <div className="mood-chips" role="group" aria-label={t("moodShortcuts")}>
-          {MOOD_CHIPS.map((chip) => (
-            <button
-              key={chip}
-              type="button"
-              className={mood.toLowerCase() === chip.toLowerCase() ? "is-on" : ""}
-              onClick={() =>
-                applyPrefs({
-                  ...prefs,
-                  mood: mood.toLowerCase() === chip.toLowerCase() ? "" : chip,
-                })
-              }
-            >
-              {moodLabel(chip, t)}
-            </button>
-          ))}
-        </div>
-        <datalist id="canon-moods">
-          {MOOD_CHIPS.map((chip) => (
-            <option key={chip} value={chip} label={moodLabel(chip, t)} />
-          ))}
-        </datalist>
-        <datalist id="canon-countries">
-          {countries.map((item) => (
-            <option key={item} value={item} label={displayReleaseCountry(item, locale, t)} />
-          ))}
-        </datalist>
-        <datalist id="canon-genres">
-          {genres.map((item) => (
-            <option key={item} value={item} label={displayGenre(item, locale)} />
-          ))}
-        </datalist>
-      </div>
-
-      {track && (
-        <article className="daily-card">
+    <section className="daily daily-hero" id="today-listening" aria-label={t("todayRecommend")}>
+      {track ? (
+        <article className="daily-card daily-hero-card">
           <button type="button" className="cover-btn" onClick={() => onListen(track)}>
             <img src={track.coverUrl} alt={t("coverAlt", { name: track.name })} />
           </button>
-          <div>
+          <div className="daily-hero-copy">
+            <p className="eyebrow">{t("todayListening", { date: todayLabel })}</p>
             <p className="eyebrow">{modeLabel(result, t)}</p>
-            <h3>{track.name}</h3>
+            <h2>{track.name}</h2>
             <p className="artist">{artistLabel(track, t)}</p>
             <p className="meta-line">
               {yearLabel(track.year, t)} · {displayGenre(track.genre, locale)} · {playsLabel(track.streams, t)}
@@ -282,10 +145,27 @@ export default function DailyRecommend({
               <button type="button" className="surprise" onClick={surpriseMe}>
                 {t("surpriseMe")}
               </button>
+              {isSurprise ? (
+                <button type="button" className="ghost" onClick={() => setSurprise(null)}>
+                  {t("backToToday")}
+                </button>
+              ) : null}
+              <a className="prefs-link" href="#prefs">
+                {t("changePrefs")}
+              </a>
             </div>
           </div>
           <LyricsPanel track={track} />
         </article>
+      ) : (
+        <div className="daily-copy">
+          <p className="eyebrow">{t("todayListening", { date: todayLabel })}</p>
+          <h2>{t("newRecordingEachDay")}</h2>
+          <p>{t("dailyIntro")}</p>
+          <a className="prefs-link" href="#prefs">
+            {t("changePrefs")}
+          </a>
+        </div>
       )}
     </section>
   );

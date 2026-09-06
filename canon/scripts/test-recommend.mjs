@@ -6,6 +6,7 @@ import {
   utcDateKey,
   hashString,
 } from "../src/recommend.js";
+import { EMPTY_LISTEN_PREFS, loadListenPrefs, saveListenPrefs } from "../src/listenPrefs.js";
 
 const tracks = [
   {
@@ -125,5 +126,18 @@ for (let salt = 0; salt < 8; salt += 1) {
   exclude = [pick.track.id, ...exclude].slice(0, 3);
 }
 assert.ok(seen.size >= 2, "repeated Surprise me must cycle through different works");
+
+const memory = {
+  data: new Map(),
+  getItem(key) {
+    return this.data.has(key) ? this.data.get(key) : null;
+  },
+  setItem(key, value) {
+    this.data.set(key, String(value));
+  },
+};
+assert.deepEqual(loadListenPrefs(memory), EMPTY_LISTEN_PREFS);
+saveListenPrefs({ mood: "Calm", country: "Japan", genre: "jazz" }, memory);
+assert.deepEqual(loadListenPrefs(memory), { mood: "Calm", country: "Japan", genre: "jazz" });
 
 console.log("recommend tests ok");

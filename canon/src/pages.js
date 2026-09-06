@@ -8,6 +8,8 @@ const PAGES = new Set([
   "listen",
   "for-you",
   "beyond",
+  "prefs",
+  "preferences",
   "archive",
   "catalog",
 ]);
@@ -15,6 +17,7 @@ const PAGES = new Set([
 function normalizePage(token) {
   if (token === "history" || token === "recommend-log") return "log";
   if (token === "listen" || token === "for-you" || token === "beyond") return "home";
+  if (token === "preferences") return "prefs";
   if (token === "catalog") return "archive";
   return token;
 }

@@ -4,6 +4,7 @@ import { ABOUT_SECTIONS, TERMS_SECTIONS } from "./pages.js";
 
 const MENU_LINKS = [
   ["", "listenNav"],
+  ["prefs", "prefsNav"],
   ["archive", "archiveNav"],
   ["collections", "collections"],
   ["log", "recommendLog"],

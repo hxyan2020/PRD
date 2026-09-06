@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import BeyondCanon from "./BeyondCanon.jsx";
 import CollectButton from "./CollectButton.jsx";
 import Collections from "./Collections.jsx";
-import DailyRecommend, { loadListenPrefs } from "./DailyRecommend.jsx";
+import DailyRecommend from "./DailyRecommend.jsx";
+import ListenPrefs from "./ListenPrefs.jsx";
+import { loadListenPrefs } from "./listenPrefs.js";
 import { useI18n } from "./I18n.jsx";
 import RecommendLog from "./RecommendLog.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
-import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
+import { loadExtraTracks } from "./beyond.js";
 import { loadCollectedIds, loadCollection, saveCollection, toggleCollected, formatCollectedAt } from "./collections.js";
 import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } from "./viewed.js";
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
@@ -51,8 +52,7 @@ export default function App() {
     return merged;
   });
   const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
-  const [listenPrefs, setListenPrefs] = useState(loadListenPrefs);
-  const [extras, setExtras] = useState(loadExtraTracks);
+  const [extras] = useState(loadExtraTracks);
   const spotify = useSpotify();
 
   useEffect(() => {
@@ -328,12 +328,12 @@ export default function App() {
         <>
           <RecommendLog log={recommendLog} tracks={library} onOpen={openTrack} />
         </>
+      ) : page === "prefs" ? (
+        <ListenPrefs countries={facets.countries} genres={facets.genres} />
       ) : (
         <>
           <DailyRecommend
             tracks={tracks}
-            countries={facets.countries}
-            genres={facets.genres}
             onListen={(track) => openTrack(track, true)}
             onView={(track) => rememberView(track.id)}
             onRecommend={onRecommend}
@@ -341,25 +341,6 @@ export default function App() {
             collectedAt={collectedAt}
             onToggleCollect={onToggleCollect}
             spotify={spotify}
-            onPrefs={setListenPrefs}
-          />
-          <BeyondCanon
-            prefs={listenPrefs}
-            catalog={tracks}
-            selectedId={selectedId}
-            collectedIds={collectedIds}
-            collectedAt={collectedAt}
-            onToggleCollect={onToggleCollect}
-            onOpen={openTrack}
-            onRecommend={onRecommend}
-            spotify={spotify}
-            onExtras={(list) => {
-              setExtras((current) => {
-                const next = mergeExtraTracks(current, list);
-                saveExtraTracks(next);
-                return next;
-              });
-            }}
           />
         </>
       )}
@@ -441,7 +422,7 @@ export default function App() {
           <h3>{t("whyShortlisted")}</h3>
           <p className="why">
             {selected.extra
-              ? listenPrefs.mood || listenPrefs.country || listenPrefs.genre
+              ? loadListenPrefs().mood || loadListenPrefs().country || loadListenPrefs().genre
                 ? t("beyondWhy")
                 : t("beyondWhyPopular")
               : selected.whyShortlisted}

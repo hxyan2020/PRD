@@ -9,15 +9,15 @@ Every entry has:
 - composer, singer, band, writer, music company, year, country, and genre
 - published Spotify play counts where the industry reports them
 - a short note on why the work belongs in the canon
-- a daily AI recommendation from mood, country, and genre on the homepage **For you** (blank fields fall back to the most streamed titles)
+- a daily recommendation on the homepage **For you**, with the album cover up front (blank **Preferences** fall back to the most streamed titles)
+- **Preferences** in the menu (`#prefs`) to set mood, country, and genre
 - **Collect** to save a recording into your collection (stored in this browser), with the date you collected it
 - **Surprise me** to hear a different work immediately, without waiting for tomorrow’s rotation
 - header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
 - a dated log of every daily recommendation and Surprise me pick
 - **Add to Spotify** — clicking it asks you to authorize Spotify (saves to Liked Songs and a private Canon playlist album). There is no client-ID form and no Spotify card on the homepage
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). Language lives in the top menu (on phones, next to the hamburger)
-- **Stream more** from mood, country, and genre beyond the 1,000-work canon, on the same For you homepage (requires Spotify login; titles not in the archive play in the same player)
-- A top **menu**: For you (home), The 1,000 (`#archive` — the 1,000-work catalog), Collections, Recommendation log, About, and Terms of use. Phones use a hamburger icon
+- A top **menu**: For you (home), Preferences, The 1,000 (`#archive` — the 1,000-work catalog), Collections, Recommendation log, About, and Terms of use. Phones use a hamburger icon
 - Anonymous page views go to HX viewership (`slug: canon`). Telegram **HX Bots Dashboard** polls `/hx/health.json` (not in-app tabs)
 
 ## Run
@@ -37,7 +37,7 @@ Canon uses Spotify’s Authorization Code + PKCE flow. It never stores a client 
 
 Operators set `VITE_SPOTIFY_CLIENT_ID` in `canon/.env` (and add redirect URIs in the [Spotify dashboard](https://developer.spotify.com/dashboard): `http://localhost:5173/` plus the production origin with a trailing slash). Rebuild so the client ID is baked in.
 
-Visitors click **Add to Spotify** (or **Stream more** on For you). Spotify asks them to approve access. The track is then saved to Liked Songs and to a private playlist named **Canon**. Official artist albums cannot be modified.
+Visitors click **Add to Spotify**. Spotify asks them to approve access. The track is then saved to Liked Songs and to a private playlist named **Canon**. Official artist albums cannot be modified.
 
 In Spotify’s development mode, only users you add to the app can sign in until the app is in extended quota.
 
