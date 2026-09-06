@@ -1,12 +1,54 @@
+const PAGES = new Set([
+  "about",
+  "terms",
+  "collections",
+  "log",
+  "history",
+  "recommend-log",
+  "hx-monitor",
+  "hx-bots",
+  "hx-viewership",
+  "hx-ping",
+]);
+
+function normalizePage(token) {
+  if (token === "hx-bots") return "hx-monitor";
+  if (token === "history" || token === "recommend-log") return "log";
+  return token;
+}
+
 export function parseRoute(hash = "") {
   const raw = String(hash || "").replace(/^#/, "");
-  if (raw === "about") return { page: "about", trackId: "" };
-  if (raw === "terms") return { page: "terms", trackId: "" };
-  if (raw === "hx-monitor" || raw === "hx-bots") return { page: "hx-monitor", trackId: "" };
-  if (raw === "hx-viewership") return { page: "hx-viewership", trackId: "" };
-  if (raw === "hx-ping") return { page: "hx-ping", trackId: "" };
-  const id = new URLSearchParams(raw).get("t") || "";
-  return { page: "home", trackId: id };
+  if (!raw) return { page: "home", trackId: "" };
+
+  const parts = raw.split("&").filter(Boolean);
+  const head = parts[0] || "";
+  let page = "home";
+  let trackId = "";
+
+  if (head.startsWith("t=")) {
+    trackId = decodeURIComponent(head.slice(2));
+  } else if (PAGES.has(head)) {
+    page = normalizePage(head);
+  }
+
+  for (const part of parts.slice(1)) {
+    if (part.startsWith("t=")) trackId = decodeURIComponent(part.slice(2));
+  }
+
+  if (page === "about" || page === "terms" || page.startsWith("hx-")) trackId = "";
+  return { page, trackId };
+}
+
+export function routeHash(page = "home", trackId = "") {
+  const id = String(trackId || "");
+  const token = page === "home" ? "" : page;
+  if (!token) return id ? `t=${encodeURIComponent(id)}` : "";
+  return id ? `${token}&t=${encodeURIComponent(id)}` : token;
+}
+
+export function pageAllowsTrack(page) {
+  return page === "home" || page === "collections" || page === "log";
 }
 
 export const ABOUT_SECTIONS = [

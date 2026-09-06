@@ -5,6 +5,12 @@ export function SiteNav({ page }) {
   const { t } = useI18n();
   return (
     <nav className="site-nav" aria-label={t("siteNav")}>
+      <a href="#collections" className={page === "collections" ? "is-on" : ""}>
+        {t("collections")}
+      </a>
+      <a href="#log" className={page === "log" ? "is-on" : ""}>
+        {t("recommendLog")}
+      </a>
       <a href="#about" className={page === "about" ? "is-on" : ""}>
         {t("aboutNav")}
       </a>

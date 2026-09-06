@@ -18,7 +18,7 @@ import { decadeOf, uniqueSorted } from "./format.js";
 import { displayEra } from "./i18n.js";
 import { hxPathForRoute, recordBotPing, recordVisit, sendHxBeacon } from "./hx.js";
 import { HxMonitor, HxViewership } from "./HxDesk.jsx";
-import { parseRoute } from "./pages.js";
+import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
 import { SiteDoc, SiteNav } from "./SitePages.jsx";
 import { publicUrl, siteUrl } from "./urls.js";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
@@ -33,7 +33,7 @@ export default function App() {
   const [country, setCountry] = useState("All countries");
   const [sort, setSort] = useState("influence");
   const [route, setRoute] = useState(() => parseRoute(window.location.hash));
-  const selectedId = route.page === "home" ? route.trackId : "";
+  const selectedId = pageAllowsTrack(route.page) ? route.trackId : "";
   const page = route.page;
   const [playingId, setPlayingId] = useState("");
   const [collection, setCollection] = useState(loadCollection);
@@ -153,7 +153,7 @@ export default function App() {
 
   function openTrack(track, play = false) {
     rememberView(track.id);
-    window.location.hash = `t=${track.id}`;
+    window.location.hash = routeHash(page, track.id);
     if (play) setPlayingId(track.id);
   }
 
@@ -217,7 +217,11 @@ export default function App() {
             </div>
             <div>
               <dt>{t("collected")}</dt>
-              <dd>{collectedIds.length}</dd>
+              <dd>
+                <a href="#collections" className="stats-link">
+                  {collectedIds.length}
+                </a>
+              </dd>
             </div>
           </dl>
           <p className="stats-note">{t("statsNote")}</p>
@@ -231,6 +235,25 @@ export default function App() {
         <HxMonitor origin={siteUrl()} />
       ) : page === "hx-viewership" ? (
         <HxViewership />
+      ) : page === "collections" ? (
+        <>
+          <SpotifyConnect spotify={spotify} />
+          <Collections
+            tracks={library}
+            collectedIds={collectedIds}
+            collectedAt={collectedAt}
+            selectedId={selectedId}
+            onToggleCollect={onToggleCollect}
+            onOpen={openTrack}
+            spotify={spotify}
+          />
+          <SiteNav page={page} />
+        </>
+      ) : page === "log" ? (
+        <>
+          <RecommendLog log={recommendLog} tracks={library} onOpen={openTrack} />
+          <SiteNav page={page} />
+        </>
       ) : (
         <>
       <SpotifyConnect spotify={spotify} />
@@ -266,18 +289,6 @@ export default function App() {
             return next;
           });
         }}
-      />
-
-      <RecommendLog log={recommendLog} tracks={library} onOpen={openTrack} />
-
-      <Collections
-        tracks={library}
-        collectedIds={collectedIds}
-        collectedAt={collectedAt}
-        selectedId={selectedId}
-        onToggleCollect={onToggleCollect}
-        onOpen={openTrack}
-        spotify={spotify}
       />
 
       <section className="controls" aria-label={t("filterArchive")}>
@@ -349,7 +360,7 @@ export default function App() {
             className="close"
             type="button"
             onClick={() => {
-              window.location.hash = "";
+              window.location.hash = routeHash(page);
             }}
           >
             {t("close")}
