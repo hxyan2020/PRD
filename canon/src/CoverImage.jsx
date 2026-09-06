@@ -17,7 +17,7 @@ export default function CoverImage({
       style={{ height: "auto" }}
       loading={priority ? "eager" : loading}
       fetchPriority={priority ? "high" : "auto"}
-      decoding={priority ? "async" : "async"}
+      decoding={priority ? "sync" : "async"}
       draggable="false"
     />
   );
