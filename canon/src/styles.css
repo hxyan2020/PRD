@@ -1028,6 +1028,7 @@ option {
 
 .cover-btn img {
   width: 100%;
+  height: auto;
   aspect-ratio: 1;
   object-fit: cover;
   display: block;

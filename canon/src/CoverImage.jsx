@@ -14,9 +14,10 @@ export default function CoverImage({
       alt={alt}
       width="640"
       height="640"
+      style={{ height: "auto" }}
       loading={priority ? "eager" : loading}
       fetchPriority={priority ? "high" : "auto"}
-      decoding={priority ? "sync" : "async"}
+      decoding={priority ? "async" : "async"}
       draggable="false"
     />
   );
