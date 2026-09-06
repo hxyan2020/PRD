@@ -74,7 +74,7 @@ export default function App() {
 
   useEffect(() => {
     if (!data || error) return undefined;
-    const remaining = Math.max(0, 720 - (Date.now() - bootStarted));
+    const remaining = Math.max(0, 1100 - (Date.now() - bootStarted));
     const timer = window.setTimeout(() => setBootReady(true), remaining);
     return () => window.clearTimeout(timer);
   }, [data, error, bootStarted]);
