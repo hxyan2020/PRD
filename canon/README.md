@@ -49,11 +49,11 @@ Works are drawn from Wikidata items that already carry a Spotify track ID, order
 
 ## Public URL
 
-Permanent public site (jsDelivr CDN of this branch, does not expire):
+Permanent public site (GitHack serves the committed `docs/` build as real HTML; it does not expire):
 
-**https://cdn.jsdelivr.net/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/index.html**
+**https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html**
 
-The built files live in `docs/`. After this branch is merged, the same path on `@main` also works. Add that URL (and `https://hxyan2020.github.io/PRD/` if you later enable GitHub Pages) to your Spotify redirect URIs.
+The built files live in `docs/`. jsDelivr cannot host this app because it sends HTML as `text/plain`. After merge, the same path on branch `main` also works. Add that URL (and `https://hxyan2020.github.io/PRD/` if you later enable GitHub Pages) to your Spotify redirect URIs.
 
 GitHub Pages (`https://hxyan2020.github.io/PRD/`) is configured in `.github/workflows/pages.yml`. Turn it on once under repo **Settings → Pages → Source: GitHub Actions**.
 

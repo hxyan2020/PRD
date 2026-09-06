@@ -22,5 +22,5 @@ export function siteUrl(location = globalThis.location) {
 }
 
 export const CANON_PUBLIC_URL =
-  "https://cdn.jsdelivr.net/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/index.html";
+  "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html";
 export const GITHUB_PAGES_URL = "https://hxyan2020.github.io/PRD/";

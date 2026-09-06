@@ -9,7 +9,7 @@
       "name": "Canon listening archive",
       "kind": "web",
       "path": "/",
-      "url": "https://cdn.jsdelivr.net/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/index.html",
+      "url": "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html",
       "health": "/hx/health.json",
       "viewership": "/#hx-viewership",
       "intervalSeconds": 60,

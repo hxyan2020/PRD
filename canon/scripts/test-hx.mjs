@@ -70,10 +70,10 @@ assert.equal(publicUrl("#about"), "/#about");
 assert.equal(siteUrl({ origin: "http://localhost:5173", pathname: "/" }), "http://localhost:5173/");
 assert.equal(
   siteUrl({
-    origin: "https://cdn.jsdelivr.net",
-    pathname: "/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/index.html",
+    origin: "https://raw.githack.com",
+    pathname: "/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html",
   }),
-  "https://cdn.jsdelivr.net/gh/hxyan2020/PRD@cursor/canon-music-streaming-c956/docs/"
+  "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/"
 );
 
 assert.deepEqual(parseRoute("#hx-monitor"), { page: "hx-monitor", trackId: "" });
