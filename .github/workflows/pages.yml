@@ -56,4 +56,4 @@ jobs:
         run: |
           curl -sS -m 10 -X POST "http://188.166.214.47:3520/collect" \
             -H "Content-Type: application/json" \
-            -d '{"slug":"canon","name":"Canon","path":"/PRD/","host":"hxyan2020.github.io","referer":"github-pages-deploy","url":"https://hxyan2020.github.io/PRD/"}'
+            -d '{"slug":"canon","name":"Canon","path":"/PRD/","host":"hxyan2020.github.io","referer":"github-pages-deploy","url":"https://hxyan2020.github.io/PRD/","health":"https://hxyan2020.github.io/PRD/hx/health.json","kind":"external","watch":true}'

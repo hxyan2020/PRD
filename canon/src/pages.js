@@ -5,14 +5,9 @@ const PAGES = new Set([
   "log",
   "history",
   "recommend-log",
-  "hx-monitor",
-  "hx-bots",
-  "hx-viewership",
-  "hx-ping",
 ]);
 
 function normalizePage(token) {
-  if (token === "hx-bots") return "hx-monitor";
   if (token === "history" || token === "recommend-log") return "log";
   return token;
 }
@@ -36,7 +31,7 @@ export function parseRoute(hash = "") {
     if (part.startsWith("t=")) trackId = decodeURIComponent(part.slice(2));
   }
 
-  if (page === "about" || page === "terms" || page.startsWith("hx-")) trackId = "";
+  if (page === "about" || page === "terms") trackId = "";
   return { page, trackId };
 }
 

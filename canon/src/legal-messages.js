@@ -32,9 +32,9 @@ export const LEGAL = {
     aboutSourcesTitle: "Sources",
     aboutSourcesBody:
       "Catalog notes and covers come from public sources used by the archive: Wikidata, Wikipedia page summaries, Spotify oEmbed (track verification and artwork), and published play-count tables. Follow each Music’s encyclopedia and Spotify links for the original records.",
-    aboutHostTitle: "Public site, HX bots, and HX viewership",
+    aboutHostTitle: "Public site",
     aboutHostBody:
-      "Canon’s permanent public site is GitHub Pages. It can also be deployed on Vercel and DigitalOcean. HX bots monitoring polls /hx/health.json and /hx/bots.json. Each screen you open also sends an anonymous page view (path, host, referer) to HX viewership under the project slug canon.",
+      "Canon’s permanent public site is GitHub Pages. It can also be deployed on Vercel and DigitalOcean. Each screen you open sends an anonymous page view (path, host, referer) to operations analytics under the project slug canon.",
     termsEyebrow: "Your use of Canon",
     termsTitle: "Terms of use",
     termsUpdated: "Last updated 5 September 2026.",
@@ -52,7 +52,7 @@ export const LEGAL = {
       "Links, embeds, and Add to Spotify are provided by or through Spotify. Canon never edits official artist albums. Wikipedia, Wikidata, play-count publishers, and Spotify are separate organisations. Their terms, availability, and privacy rules govern those services. Canon is not affiliated with, endorsed by, or a partner of Spotify AB except as a client of public Spotify interfaces you authorize.",
     terms5Title: "5. Information stored here",
     terms5Body:
-      "Canon stores listening preferences, collected titles and dates, viewed titles, recommendation history, interface language, an optional Spotify client ID, HX viewership pings for this device, and tokens from a Spotify login you start, in this browser’s local storage. Clearing site data for this origin removes them. Anonymous page views (path, host, referer) are also sent to HX viewership. This app does not operate a Canon account server and does not require an email address to browse the archive.",
+      "Canon stores listening preferences, collected titles and dates, viewed titles, recommendation history, interface language, an optional Spotify client ID, and tokens from a Spotify login you start, in this browser’s local storage. Clearing site data for this origin removes them. Anonymous page views (path, host, referer) are also sent to operations analytics. This app does not operate a Canon account server and does not require an email address to browse the archive.",
     terms6Title: "6. Intellectual property",
     terms6Body:
       "Music, names, lyrics, artwork, and related rights belong to their owners. Streaming happens through Spotify, not by Canon hosting audio files. Canon’s own interface wording and the editorial arrangement of this shortlist are provided so you can run and use this project. Encyclopedia extracts remain subject to their original licenses.",
@@ -97,9 +97,9 @@ export const LEGAL = {
     aboutSourcesTitle: "来源",
     aboutSourcesBody:
       "目录说明与封面来自档案使用的公开来源：维基数据、维基百科摘要、Spotify oEmbed（曲目校验与封面）以及已公布的播放量表。请通过每首作品的百科与 Spotify 链接查看原始记录。",
-    aboutHostTitle: "公开站点、HX 机器人与 HX 浏览",
+    aboutHostTitle: "公开站点",
     aboutHostBody:
-      "Canon 的长期公开地址在 GitHub Pages，也可部署到 Vercel 与 DigitalOcean。HX 机器人会轮询 /hx/health.json 与 /hx/bots.json。你打开的每个界面还会把匿名浏览（路径、主机、来源）以 slug canon 发到 HX 浏览统计。",
+      "Canon 的长期公开地址在 GitHub Pages，也可部署到 Vercel 与 DigitalOcean。你打开的每个界面会把匿名浏览（路径、主机、来源）以 slug canon 发到运营统计。",
     termsEyebrow: "使用 Canon",
     termsTitle: "使用条款",
     termsUpdated: "最近更新日期：2026 年 9 月 5 日。",
@@ -116,7 +116,7 @@ export const LEGAL = {
       "链接、内嵌播放与「加入 Spotify」由 Spotify 提供或经由其接口。Canon 从不修改官方艺人专辑。维基百科、维基数据、播放量发布方与 Spotify 均为独立组织，其条款、可用性与隐私规则适用于那些服务。除作为你授权的公开 Spotify 接口的客户端外，Canon 与 Spotify AB 无附属、代言或合作关系。",
     terms5Title: "5. 储存在此处的信息",
     terms5Body:
-      "Canon 将聆听偏好、收藏曲目与日期、已浏览曲目、推荐历史、界面语言、可选的 Spotify 客户端 ID、本机 HX 浏览记录，以及你发起登录后的令牌，存在此浏览器的本地存储中。清除本源的站点数据即会删除它们。匿名页面浏览（路径、主机、来源）也会发到 HX 浏览统计。本应用不运营 Canon 账号服务器，浏览档案也不需要电子邮箱。",
+      "Canon 将聆听偏好、收藏曲目与日期、已浏览曲目、推荐历史、界面语言、可选的 Spotify 客户端 ID，以及你发起登录后的令牌，存在此浏览器的本地存储中。清除本源的站点数据即会删除它们。匿名页面浏览（路径、主机、来源）也会发到运营统计。本应用不运营 Canon 账号服务器，浏览档案也不需要电子邮箱。",
     terms6Title: "6. 知识产权",
     terms6Body:
       "音乐、名称、歌词、封面及相关权利属于其权利人。流媒体通过 Spotify 进行，并非由 Canon 托管音频。Canon 自身的界面文案与本短名单的编辑编排供你运行与使用本项目。百科摘录仍受其原始许可约束。",
@@ -161,9 +161,9 @@ export const LEGAL = {
     aboutSourcesTitle: "स्रोत",
     aboutSourcesBody:
       "कैटलॉग नोट और कवर सार्वजनिक स्रोतों से हैं: विकिडेटा, विकिपीडिया सारांश, Spotify oEmbed (ट्रैक जाँच और कलाकृति), और प्रकाशित प्ले-गणना तालिकाएँ। मूल अभिलेखों के लिए प्रत्येक संगीत के विश्वकोश और Spotify लिंक देखें।",
-    aboutHostTitle: "सार्वजनिक साइट, HX बॉट और HX दर्शक",
+    aboutHostTitle: "सार्वजनिक साइट",
     aboutHostBody:
-      "Canon की स्थायी सार्वजनिक साइट GitHub Pages है; Vercel और DigitalOcean पर भी चलाया जा सकता है। HX बॉट /hx/health.json और /hx/bots.json जाँचते हैं। हर स्क्रीन एक अनाम पेज व्यू (path, host, referer) slug canon से HX दर्शक को भी भेजती है।",
+      "Canon की स्थायी सार्वजनिक साइट GitHub Pages है; Vercel और DigitalOcean पर भी चलाया जा सकता है। हर स्क्रीन एक अनाम पेज व्यू (path, host, referer) slug canon से संचालन आँकड़ों को भेजती है।",
     termsEyebrow: "Canon का उपयोग",
     termsTitle: "उपयोग की शर्तें",
     termsUpdated: "अंतिम अद्यतन 5 सितंबर 2026।",
@@ -181,7 +181,7 @@ export const LEGAL = {
       "लिंक, एम्बेड और Spotify में जोड़ें Spotify द्वारा या उसके माध्यम से दिए जाते हैं। Canon आधिकारिक कलाकार एल्बम नहीं बदलता। विकिपीडिया, विकिडेटा, प्ले-गणना प्रकाशक और Spotify अलग संगठन हैं। उनकी शर्तें, उपलब्धता और गोपनीयता उन सेवाओं पर लागू होती हैं। आपके द्वारा अधिकृत सार्वजनिक Spotify इंटरफ़ेस के क्लाइंट के अलावा Canon Spotify AB से संबद्ध, समर्थित या भागीदार नहीं है।",
     terms5Title: "5. यहाँ संग्रहित जानकारी",
     terms5Body:
-      "Canon सुनने की पसंद, संग्रहित शीर्षक और तिथियाँ, देखे शीर्षक, सिफारिश इतिहास, इंटरफ़ेस भाषा, वैकल्पिक Spotify क्लाइंट ID, इस उपकरण के HX दर्शक पिंग, और आपके शुरू किए लॉगिन के टोकन इस ब्राउज़र के लोकल स्टोरेज में रखता है। इस ओरिजिन का साइट डेटा साफ़ करने से वे हट जाते हैं। अनाम पेज व्यू (path, host, referer) HX दर्शक को भी जाते हैं। यह ऐप Canon खाता सर्वर नहीं चलाता और संग्रह देखने के लिए ईमेल नहीं माँगता।",
+      "Canon सुनने की पसंद, संग्रहित शीर्षक और तिथियाँ, देखे शीर्षक, सिफारिश इतिहास, इंटरफ़ेस भाषा, वैकल्पिक Spotify क्लाइंट ID, और आपके शुरू किए लॉगिन के टोकन इस ब्राउज़र के लोकल स्टोरेज में रखता है। इस ओरिजिन का साइट डेटा साफ़ करने से वे हट जाते हैं। अनाम पेज व्यू (path, host, referer) संचालन आँकड़ों को भी जाते हैं। यह ऐप Canon खाता सर्वर नहीं चलाता और संग्रह देखने के लिए ईमेल नहीं माँगता।",
     terms6Title: "6. बौद्धिक संपदा",
     terms6Body:
       "संगीत, नाम, गीत, कलाकृति और संबंधित अधिकार उनके स्वामियों के हैं। स्ट्रीमिंग Spotify के माध्यम से होती है, Canon ऑडियो फ़ाइलें होस्ट नहीं करता। Canon का इंटरफ़ेस पाठ और इस शॉर्टलिस्ट की संपादकीय व्यवस्था इस परियोजना को चलाने और उपयोग करने के लिए है। विश्वकोश अंश मूल लाइसेंस के अधीन रहते हैं।",
@@ -228,9 +228,9 @@ export const LEGAL = {
     aboutSourcesTitle: "Fuentes",
     aboutSourcesBody:
       "Las notas y portadas del catálogo vienen de fuentes públicas: Wikidata, resúmenes de Wikipedia, oEmbed de Spotify (verificación y arte) y tablas publicadas de reproducciones. Sigue los enlaces enciclopédicos y de Spotify de cada música para los registros originales.",
-    aboutHostTitle: "Sitio público, bots HX y audiencia HX",
+    aboutHostTitle: "Sitio público",
     aboutHostBody:
-      "El sitio público permanente de Canon es GitHub Pages. También puede desplegarse en Vercel y DigitalOcean. Los bots HX consultan /hx/health.json y /hx/bots.json. Cada pantalla envía también una vista anónima (ruta, host, referer) a HX viewership con el slug canon.",
+      "El sitio público permanente de Canon es GitHub Pages. También puede desplegarse en Vercel y DigitalOcean. Cada pantalla envía una vista anónima (ruta, host, referer) a las analíticas de operaciones con el slug canon.",
     termsEyebrow: "Tu uso de Canon",
     termsTitle: "Términos de uso",
     termsUpdated: "Última actualización: 5 de septiembre de 2026.",
@@ -248,7 +248,7 @@ export const LEGAL = {
       "Enlaces, incrustaciones y Añadir a Spotify se ofrecen por o a través de Spotify. Canon no edita álbumes oficiales. Wikipedia, Wikidata, quienes publican recuentos y Spotify son organizaciones distintas. Sus términos, disponibilidad y privacidad rigen esos servicios. Canon no está afiliado, respaldado ni es socio de Spotify AB salvo como cliente de las interfaces públicas de Spotify que tú autorizas.",
     terms5Title: "5. Información guardada aquí",
     terms5Body:
-      "Canon guarda preferencias de escucha, títulos coleccionados y fechas, títulos vistos, historial de recomendaciones, idioma de la interfaz, un ID de cliente de Spotify opcional, pings HX de este dispositivo y tokens de un inicio de sesión de Spotify que tú empiezas, en el almacenamiento local de este navegador. Borrar los datos del sitio de este origen los elimina. Las vistas anónimas (ruta, host, referer) también van a HX viewership. Esta app no opera un servidor de cuentas Canon ni pide un correo para explorar el archivo.",
+      "Canon guarda preferencias de escucha, títulos coleccionados y fechas, títulos vistos, historial de recomendaciones, idioma de la interfaz, un ID de cliente de Spotify opcional y tokens de un inicio de sesión de Spotify que tú empiezas, en el almacenamiento local de este navegador. Borrar los datos del sitio de este origen los elimina. Las vistas anónimas (ruta, host, referer) también van a las analíticas de operaciones. Esta app no opera un servidor de cuentas Canon ni pide un correo para explorar el archivo.",
     terms6Title: "6. Propiedad intelectual",
     terms6Body:
       "La música, nombres, letras, arte y derechos relacionados pertenecen a sus dueños. La reproducción ocurre a través de Spotify; Canon no aloja archivos de audio. El texto de la interfaz de Canon y el orden editorial de esta lista se ofrecen para que puedas ejecutar y usar este proyecto. Los extractos enciclopédicos siguen sujetos a sus licencias originales.",
@@ -295,9 +295,9 @@ export const LEGAL = {
     aboutSourcesTitle: "Sources",
     aboutSourcesBody:
       "Les notes et pochettes du catalogue viennent de sources publiques : Wikidata, résumés Wikipédia, oEmbed Spotify (vérification et visuel) et tableaux de lectures publiés. Suivez les liens encyclopédiques et Spotify de chaque musique pour les notices d’origine.",
-    aboutHostTitle: "Site public, bots HX et audience HX",
+    aboutHostTitle: "Site public",
     aboutHostBody:
-      "Le site public permanent de Canon est GitHub Pages. Il peut aussi être déployé sur Vercel et DigitalOcean. Les bots HX interrogent /hx/health.json et /hx/bots.json. Chaque écran envoie aussi une vue anonyme (chemin, hôte, referer) à HX viewership sous le slug canon.",
+      "Le site public permanent de Canon est GitHub Pages. Il peut aussi être déployé sur Vercel et DigitalOcean. Chaque écran envoie une vue anonyme (chemin, hôte, referer) aux statistiques d’exploitation sous le slug canon.",
     termsEyebrow: "Votre usage de Canon",
     termsTitle: "Conditions d’utilisation",
     termsUpdated: "Dernière mise à jour : 5 septembre 2026.",
@@ -315,7 +315,7 @@ export const LEGAL = {
       "Liens, lecteurs intégrés et Ajouter à Spotify sont fournis par ou via Spotify. Canon ne modifie jamais les albums officiels. Wikipédia, Wikidata, les éditeurs de comptes d’écoutes et Spotify sont des organisations distinctes. Leurs conditions, disponibilité et confidentialité régissent ces services. Canon n’est ni affilié, ni cautionné, ni partenaire de Spotify AB, sauf en tant que client des interfaces Spotify publiques que vous autorisez.",
     terms5Title: "5. Informations stockées ici",
     terms5Body:
-      "Canon stocke préférences d’écoute, titres collectionnés et dates, titres consultés, historique des recommandations, langue de l’interface, un ID client Spotify facultatif, les pings HX de cet appareil et les jetons d’une connexion Spotify que vous lancez, dans le stockage local de ce navigateur. Effacer les données du site pour cette origine les supprime. Les vues anonymes (chemin, hôte, referer) partent aussi vers HX viewership. Cette application n’exploite pas de serveur de comptes Canon et n’exige pas d’e-mail pour parcourir l’archive.",
+      "Canon stocke préférences d’écoute, titres collectionnés et dates, titres consultés, historique des recommandations, langue de l’interface, un ID client Spotify facultatif et les jetons d’une connexion Spotify que vous lancez, dans le stockage local de ce navigateur. Effacer les données du site pour cette origine les supprime. Les vues anonymes (chemin, hôte, referer) partent aussi vers les statistiques d’exploitation. Cette application n’exploite pas de serveur de comptes Canon et n’exige pas d’e-mail pour parcourir l’archive.",
     terms6Title: "6. Propriété intellectuelle",
     terms6Body:
       "Musique, noms, paroles, visuels et droits associés appartiennent à leurs titulaires. La lecture passe par Spotify ; Canon n’héberge pas de fichiers audio. Le texte d’interface de Canon et l’agencement éditorial de cette liste sont fournis pour que vous puissiez faire fonctionner et utiliser ce projet. Les extraits encyclopédiques restent soumis à leurs licences d’origine.",
@@ -362,9 +362,9 @@ export const LEGAL = {
     aboutSourcesTitle: "المصادر",
     aboutSourcesBody:
       "ملاحظات الفهرس والأغلفة من مصادر عامة: ويكي بيانات، ملخصات ويكيبيديا، oEmbed لـ Spotify (التحقق والغلاف)، وجداول أعداد التشغيل المنشورة. اتبع روابط الموسوعة وSpotify لكل موسيقى للاطلاع على السجلات الأصلية.",
-    aboutHostTitle: "الموقع العام وروبوتات HX ومشاهدات HX",
+    aboutHostTitle: "الموقع العام",
     aboutHostBody:
-      "الموقع العام الدائم لـ Canon هو GitHub Pages، ويمكن نشره أيضاً على Vercel وDigitalOcean. تراقب روبوتات HX /hx/health.json و /hx/bots.json. وتُرسل كل شاشة مشاهدة مجهولة (المسار والمضيف والمُحيل) إلى HX viewership بالاسم canon.",
+      "الموقع العام الدائم لـ Canon هو GitHub Pages، ويمكن نشره أيضاً على Vercel وDigitalOcean. وتُرسل كل شاشة مشاهدة مجهولة (المسار والمضيف والمُحيل) إلى إحصاءات التشغيل بالاسم canon.",
     termsEyebrow: "استخدامك لـ Canon",
     termsTitle: "شروط الاستخدام",
     termsUpdated: "آخر تحديث: 5 أيلول/سبتمبر 2026.",
@@ -382,7 +382,7 @@ export const LEGAL = {
       "الروابط والتضمين و«أضف إلى Spotify» تُقدَّم من Spotify أو عبره. لا يعدّل Canon ألبومات الفنانين الرسمية. ويكيبيديا وويكي بيانات وناشرو أعداد التشغيل وSpotify منظمات منفصلة. شروطها وتوافرها وخصوصيتها تحكم تلك الخدمات. Canon غير منتسب إلى Spotify AB ولا مصادق عليه منها ولا شريك لها إلا كعميل لواجهات Spotify العامة التي تفوّضها.",
     terms5Title: "5. المعلومات المخزّنة هنا",
     terms5Body:
-      "يخزّن Canon تفضيلات الاستماع والعناوين المجمّعة وتواريخها والعناوين المشاهدة وتاريخ التوصيات ولغة الواجهة ومعرّف عميل Spotify اختياريًا ونبضات HX لهذا الجهاز ورموز تسجيل دخول Spotify الذي تبدأه، في التخزين المحلي لهذا المتصفح. مسح بيانات الموقع لهذا الأصل يحذفها. تُرسل مشاهدات مجهولة (المسار والمضيف والمُحيل) أيضاً إلى HX viewership. لا يشغّل هذا التطبيق خادم حسابات Canon ولا يطلب بريدًا لتصفح الأرشيف.",
+      "يخزّن Canon تفضيلات الاستماع والعناوين المجمّعة وتواريخها والعناوين المشاهدة وتاريخ التوصيات ولغة الواجهة ومعرّف عميل Spotify اختياريًا ورموز تسجيل دخول Spotify الذي تبدأه، في التخزين المحلي لهذا المتصفح. مسح بيانات الموقع لهذا الأصل يحذفها. تُرسل مشاهدات مجهولة (المسار والمضيف والمُحيل) أيضاً إلى إحصاءات التشغيل. لا يشغّل هذا التطبيق خادم حسابات Canon ولا يطلب بريدًا لتصفح الأرشيف.",
     terms6Title: "6. الملكية الفكرية",
     terms6Body:
       "الموسيقى والأسماء والكلمات والأغلفة والحقوق المرتبطة ملك لأصحابها. يتم البث عبر Spotify وليس باستضافة Canon لملفات الصوت. نص واجهة Canon والترتيب التحريري لهذه القائمة مقدَّمان لتشغيل هذا المشروع واستخدامه. تظل مقتطفات الموسوعة خاضعة لتراخيصها الأصلية.",
@@ -429,9 +429,9 @@ export const LEGAL = {
     aboutSourcesTitle: "উৎস",
     aboutSourcesBody:
       "ক্যাটালগ নোট ও কভার আসে পাবলিক উৎস থেকে: Wikidata, উইকিপিডিয়া সারাংশ, Spotify oEmbed (ট্র্যাক যাচাই ও আর্টওয়ার্ক) এবং প্রকাশিত প্লে-গণনা টেবিল। মূল রেকর্ডের জন্য প্রতিটি সঙ্গীতের বিশ্বকোষ ও Spotify লিংক অনুসরণ করুন।",
-    aboutHostTitle: "পাবলিক সাইট, HX বট ও HX দর্শক",
+    aboutHostTitle: "পাবলিক সাইট",
     aboutHostBody:
-      "Canon-এর স্থায়ী পাবলিক সাইট GitHub Pages; Vercel ও DigitalOcean-এও ডিপ্লয় করা যায়। HX বট /hx/health.json ও /hx/bots.json দেখে। প্রতিটি স্ক্রিন বেনামি পেজ ভিউ (path, host, referer) slug canon-এ HX দর্শকেও পাঠায়।",
+      "Canon-এর স্থায়ী পাবলিক সাইট GitHub Pages; Vercel ও DigitalOcean-এও ডিপ্লয় করা যায়। প্রতিটি স্ক্রিন বেনামি পেজ ভিউ (path, host, referer) slug canon-এ অপারেশন পরিসংখ্যানে পাঠায়।",
     termsEyebrow: "Canon ব্যবহার",
     termsTitle: "ব্যবহারের শর্ত",
     termsUpdated: "সর্বশেষ হালনাগাদ ৫ সেপ্টেম্বর ২০২৬।",
@@ -449,7 +449,7 @@ export const LEGAL = {
       "লিংক, এমবেড এবং Spotify-তে যোগ Spotify দিয়ে বা তার মাধ্যমে দেওয়া হয়। Canon অফিসিয়াল শিল্পী অ্যালবাম সম্পাদনা করে না। উইকিপিডিয়া, Wikidata, প্লে-গণনা প্রকাশক ও Spotify আলাদা সংস্থা। তাদের শর্ত, প্রাপ্যতা ও গোপনীয়তা সেই সেবাগুলো নিয়ন্ত্রণ করে। আপনি অনুমোদিত পাবলিক Spotify ইন্টারফেসের ক্লায়েন্ট ছাড়া Canon Spotify AB-এর সহযোগী, সমর্থিত বা অংশীদার নয়।",
     terms5Title: "5. এখানে রাখা তথ্য",
     terms5Body:
-      "Canon শোনার পছন্দ, সংগৃহীত শিরোনাম ও তারিখ, দেখা শিরোনাম, সুপারিশ ইতিহাস, ইন্টারফেস ভাষা, ঐচ্ছিক Spotify ক্লায়েন্ট ID, এই ডিভাইসের HX দর্শক পিং এবং আপনি শুরু করা Spotify লগইনের টোকেন এই ব্রাউজারের লোকাল স্টোরেজে রাখে। এই অরিজিনের সাইট ডেটা মুছলে সেগুলো চলে যায়। বেনামি পেজ ভিউ (path, host, referer) HX দর্শকেও যায়। এই অ্যাপ Canon অ্যাকাউন্ট সার্ভার চালায় না এবং আর্কাইভ দেখতে ইমেইল চায় না।",
+      "Canon শোনার পছন্দ, সংগৃহীত শিরোনাম ও তারিখ, দেখা শিরোনাম, সুপারিশ ইতিহাস, ইন্টারফেস ভাষা, ঐচ্ছিক Spotify ক্লায়েন্ট ID এবং আপনি শুরু করা Spotify লগইনের টোকেন এই ব্রাউজারের লোকাল স্টোরেজে রাখে। এই অরিজিনের সাইট ডেটা মুছলে সেগুলো চলে যায়। বেনামি পেজ ভিউ (path, host, referer) অপারেশন পরিসংখ্যানেও যায়। এই অ্যাপ Canon অ্যাকাউন্ট সার্ভার চালায় না এবং আর্কাইভ দেখতে ইমেইল চায় না।",
     terms6Title: "6. বুদ্ধিবৃত্তিক সম্পত্তি",
     terms6Body:
       "সঙ্গীত, নাম, গানের কথা, আর্টওয়ার্ক ও সংশ্লিষ্ট অধিকার মালিকদের। স্ট্রিমিং হয় Spotify দিয়ে; Canon অডিও ফাইল হোস্ট করে না। Canon-এর ইন্টারফেস লেখা ও এই বাছাইয়ের সম্পাদকীয় বিন্যাস এই প্রকল্প চালানো ও ব্যবহারের জন্য। বিশ্বকোষ উদ্ধৃতি মূল লাইসেন্সের অধীন থাকে।",
@@ -496,9 +496,9 @@ export const LEGAL = {
     aboutSourcesTitle: "Fontes",
     aboutSourcesBody:
       "Notas e capas do catálogo vêm de fontes públicas: Wikidata, resumos da Wikipédia, oEmbed do Spotify (verificação e arte) e tabelas publicadas de plays. Siga os links enciclopédicos e do Spotify de cada música para os registros originais.",
-    aboutHostTitle: "Site público, bots HX e audiência HX",
+    aboutHostTitle: "Site público",
     aboutHostBody:
-      "O site público permanente da Canon é o GitHub Pages. Também pode ser implantada no Vercel e na DigitalOcean. Os bots HX consultam /hx/health.json e /hx/bots.json. Cada tela também envia uma visualização anônima (path, host, referer) ao HX viewership com o slug canon.",
+      "O site público permanente da Canon é o GitHub Pages. Também pode ser implantada no Vercel e na DigitalOcean. Cada tela envia uma visualização anônima (path, host, referer) às análises de operação com o slug canon.",
     termsEyebrow: "Seu uso da Canon",
     termsTitle: "Termos de uso",
     termsUpdated: "Última atualização: 5 de setembro de 2026.",
@@ -516,7 +516,7 @@ export const LEGAL = {
       "Links, embeds e Adicionar ao Spotify são oferecidos pelo ou via Spotify. A Canon nunca edita álbuns oficiais. Wikipédia, Wikidata, quem publica contagens de plays e o Spotify são organizações distintas. Os termos, a disponibilidade e a privacidade deles regem esses serviços. A Canon não é afiliada, endossada nem parceira da Spotify AB, salvo como cliente das interfaces públicas do Spotify que você autoriza.",
     terms5Title: "5. Informações guardadas aqui",
     terms5Body:
-      "A Canon guarda preferências de escuta, títulos colecionados e datas, títulos vistos, histórico de recomendações, idioma da interface, um ID de cliente do Spotify opcional, pings HX deste dispositivo e tokens de um login do Spotify que você inicia, no armazenamento local deste navegador. Limpar os dados do site desta origem os remove. Visualizações anônimas (path, host, referer) também vão ao HX viewership. Este app não opera um servidor de contas Canon e não pede e-mail para navegar no arquivo.",
+      "A Canon guarda preferências de escuta, títulos colecionados e datas, títulos vistos, histórico de recomendações, idioma da interface, um ID de cliente do Spotify opcional e tokens de um login do Spotify que você inicia, no armazenamento local deste navegador. Limpar os dados do site desta origem os remove. Visualizações anônimas (path, host, referer) também vão às análises de operação. Este app não opera um servidor de contas Canon e não pede e-mail para navegar no arquivo.",
     terms6Title: "6. Propriedade intelectual",
     terms6Body:
       "Música, nomes, letras, arte e direitos relacionados pertencem aos seus donos. A reprodução ocorre pelo Spotify; a Canon não hospeda arquivos de áudio. O texto da interface da Canon e o arranjo editorial desta lista existem para você executar e usar este projeto. Extratos enciclopédicos continuam sujeitos às licenças originais.",

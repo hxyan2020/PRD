@@ -17,12 +17,6 @@ export function SiteNav({ page }) {
       <a href="#terms" className={page === "terms" ? "is-on" : ""}>
         {t("termsNav")}
       </a>
-      <a href="#hx-monitor" className={page === "hx-monitor" || page === "hx-ping" ? "is-on" : ""}>
-        {t("hx.nav.monitor")}
-      </a>
-      <a href="#hx-viewership" className={page === "hx-viewership" ? "is-on" : ""}>
-        {t("hx.nav.views")}
-      </a>
       {page !== "home" ? (
         <a href="#" className="site-nav-back">
           {t("backToArchive")}

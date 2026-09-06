@@ -18,7 +18,7 @@ Every entry has:
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). The switcher changes menus and buttons only — song titles and catalog notes stay as published.
 - **Stream more** from mood, country, and genre beyond the 1,000-work canon (requires Spotify login; titles not in the archive play in the same player)
 - **About** and **Terms of use** (`#about`, `#terms`) describing how the archive is chosen, what is stored in this browser, and how Spotify is used
-- **HX bots** (`#hx-monitor`) and **HX viewership** (`#hx-viewership`): health JSON for HX bots monitoring, plus anonymous page views to the HX collector (`slug: canon`)
+- Anonymous page views go to HX viewership (`slug: canon`). Telegram **HX Bots Dashboard** polls `/hx/health.json` (not in-app tabs)
 
 ## Run
 
@@ -78,9 +78,11 @@ On the HX droplet (`188.166.214.47`), serve the nginx image or the Vite `dist` f
 
 ## HX bots monitoring and HX viewership
 
-- Bots poll [`/hx/health.json`](public/hx/health.json) and [`/hx/bots.json`](public/hx/bots.json).
-- The app posts `{ slug: "canon", name: "Canon", path, host, referer }` to `/api/hx-viewership`, which forwards to HX viewership at `http://188.166.214.47:3520/collect`.
-- Register a live host with `node scripts/register-hx.mjs https://your-canon-host`.
+Canon does not ship HX dashboards in the website chrome. Monitoring is the same Telegram + collector stack used by Cocktale, Quant Buffet, and the other droplet apps.
+
+- **HX Bots Dashboard** (Telegram) polls [`/hx/health.json`](public/hx/health.json) and [`/hx/bots.json`](public/hx/bots.json). Live GitHack health: `https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/hx/health.json`.
+- **HX viewership** records anonymous `{ slug: "canon", name: "Canon", path, host, referer }` beacons. The app posts to `/api/hx-viewership`, which forwards to `http://188.166.214.47:3520/collect`. Detail: `http://188.166.214.47:3520/r/uiuehmwkYW7BIUAUiVo-fWbKOHL8BvWq/site/canon`.
+- Register / refresh the collector with `node scripts/register-hx.mjs` (defaults to the GitHack origin). Canon is an external/GitHack host, so droplet nginx will not see it unless you also rsync `docs/` to `/var/www/canon` like Cocktale.
 
 ## Tests
 

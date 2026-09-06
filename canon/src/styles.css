@@ -190,37 +190,6 @@ h1 {
   border-top: 1px solid rgba(243, 234, 214, 0.12);
 }
 
-.hx-desk .stats {
-  margin: 0 0 22px;
-}
-
-.hx-bots,
-.hx-visits {
-  margin: 0 0 18px;
-  padding: 0;
-  list-style: none;
-}
-
-.hx-bots li,
-.hx-visits li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(243, 234, 214, 0.1);
-  color: rgba(243, 234, 214, 0.78);
-  font-size: 14px;
-}
-
-.hx-desk .text-btn {
-  background: none;
-  border: 0;
-  color: var(--brass);
-  padding: 0;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
 .lede {
   max-width: 46ch;
   color: rgba(243, 234, 214, 0.78);

@@ -1,20 +1,27 @@
-import { viewershipPayload } from "../src/hx.js";
+import { HX_COLLECT_URL, HX_PUBLIC_ORIGIN, viewershipPayload } from "../src/hx.js";
 
-const collect = "http://188.166.214.47:3520/collect";
-const origin = process.argv[2] || "";
-const host = origin ? new URL(origin).host : "canon";
+const origin = (process.argv[2] || HX_PUBLIC_ORIGIN).replace(/\/$/, "");
+const host = (() => {
+  try {
+    return new URL(origin).host;
+  } catch {
+    return "canon";
+  }
+})();
+const health = `${origin}/hx/health.json`;
 const payload = {
   ...viewershipPayload({
     path: "/",
     host,
     referer: "canon-register",
+    url: `${origin}/index.html`,
   }),
-  url: origin || "",
-  health: origin ? `${origin.replace(/\/$/, "")}/hx/health.json` : "/hx/health.json",
+  health,
   watch: true,
+  kind: "external",
 };
 
-const res = await fetch(collect, {
+const res = await fetch(HX_COLLECT_URL, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(payload),

@@ -1,5 +1,4 @@
 import { BEYOND } from "./beyond-messages.js";
-import { HX } from "./hx-messages.js";
 import { LEGAL } from "./legal-messages.js";
 import { LYRICS } from "./lyrics-messages.js";
 import { PORTRAITS } from "./portrait-messages.js";
@@ -1058,12 +1057,12 @@ const pt = {
 };
 
 export const MESSAGES = {
-  en: { ...en, ...LEGAL.en, ...BEYOND.en, ...HX.en, ...LYRICS.en, ...PORTRAITS.en },
-  zh: { ...zh, ...LEGAL.zh, ...BEYOND.zh, ...HX.zh, ...LYRICS.zh, ...PORTRAITS.zh },
-  hi: { ...hi, ...LEGAL.hi, ...BEYOND.hi, ...HX.hi, ...LYRICS.hi, ...PORTRAITS.hi },
-  es: { ...es, ...LEGAL.es, ...BEYOND.es, ...HX.es, ...LYRICS.es, ...PORTRAITS.es },
-  fr: { ...fr, ...LEGAL.fr, ...BEYOND.fr, ...HX.fr, ...LYRICS.fr, ...PORTRAITS.fr },
-  ar: { ...ar, ...LEGAL.ar, ...BEYOND.ar, ...HX.ar, ...LYRICS.ar, ...PORTRAITS.ar },
-  bn: { ...bn, ...LEGAL.bn, ...BEYOND.bn, ...HX.bn, ...LYRICS.bn, ...PORTRAITS.bn },
-  pt: { ...pt, ...LEGAL.pt, ...BEYOND.pt, ...HX.pt, ...LYRICS.pt, ...PORTRAITS.pt },
+  en: { ...en, ...LEGAL.en, ...BEYOND.en, ...LYRICS.en, ...PORTRAITS.en },
+  zh: { ...zh, ...LEGAL.zh, ...BEYOND.zh, ...LYRICS.zh, ...PORTRAITS.zh },
+  hi: { ...hi, ...LEGAL.hi, ...BEYOND.hi, ...LYRICS.hi, ...PORTRAITS.hi },
+  es: { ...es, ...LEGAL.es, ...BEYOND.es, ...LYRICS.es, ...PORTRAITS.es },
+  fr: { ...fr, ...LEGAL.fr, ...BEYOND.fr, ...LYRICS.fr, ...PORTRAITS.fr },
+  ar: { ...ar, ...LEGAL.ar, ...BEYOND.ar, ...LYRICS.ar, ...PORTRAITS.ar },
+  bn: { ...bn, ...LEGAL.bn, ...BEYOND.bn, ...LYRICS.bn, ...PORTRAITS.bn },
+  pt: { ...pt, ...LEGAL.pt, ...BEYOND.pt, ...LYRICS.pt, ...PORTRAITS.pt },
 };
