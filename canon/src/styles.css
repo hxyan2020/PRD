@@ -1369,6 +1369,21 @@ option {
 }
 
 @media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card-actions button,
+  .card-actions a {
+    width: auto;
+    flex: 1 1 calc(50% - 8px);
+  }
+
   .facts div {
     grid-template-columns: 1fr;
     gap: 2px;
@@ -1376,5 +1391,10 @@ option {
 
   .facts dt {
     letter-spacing: 0.1em;
+  }
+
+  .drawer-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
 }
