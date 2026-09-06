@@ -135,6 +135,13 @@ for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(LYRICS[locale]).sort(), lyricsKeys, `${locale} lyrics copy keys`);
   assert.match(t(locale, "lyrics"), /./);
 }
+const lyricsPanel = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/LyricsPanel.jsx"), "utf8");
+assert.match(lyricsPanel, /if \(!open \|\| !trackKey\) return null/);
+assert.doesNotMatch(lyricsPanel, /lyricsShow/);
+assert.doesNotMatch(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/DailyRecommend.jsx"), "utf8"),
+  /lyrics-toggle/
+);
 
 const portraitKeys = Object.keys(PORTRAITS.en).sort();
 assert.ok(portraitKeys.includes("songAnecdote"));

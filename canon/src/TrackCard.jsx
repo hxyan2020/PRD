@@ -36,7 +36,7 @@ export default function TrackCard({
           <button type="button" onClick={() => onOpen(track, true)}>
             {t("listen")}
           </button>
-          <button type="button" onClick={() => onOpen(track, true)}>
+          <button type="button" onClick={() => onOpen(track, true, true)}>
             {t("lyrics")}
           </button>
           <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />

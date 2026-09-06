@@ -37,6 +37,7 @@ export default function DailyRecommend({
   const [surprise, setSurprise] = useState(null);
   const [salt, setSalt] = useState(0);
   const [recentIds, setRecentIds] = useState([]);
+  const [lyricsOpen, setLyricsOpen] = useState(false);
 
   useEffect(() => {
     setPrefs(loadListenPrefs());
@@ -94,6 +95,17 @@ export default function DailyRecommend({
     if (track?.id) onView?.(track);
   }, [track?.id, onView]);
 
+  useEffect(() => {
+    setLyricsOpen(false);
+  }, [track?.id]);
+
+  useEffect(() => {
+    if (!lyricsOpen) return undefined;
+    const node = document.getElementById("today-lyrics");
+    node?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return undefined;
+  }, [lyricsOpen]);
+
   const todayLabel = new Date().toLocaleDateString(dateTag(locale), {
     weekday: "long",
     day: "numeric",
@@ -130,14 +142,7 @@ export default function DailyRecommend({
               <button type="button" onClick={() => onListen(track)}>
                 {t("listen")}
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  const toggle = document.querySelector(".daily-card .lyrics-toggle");
-                  if (toggle && toggle.getAttribute("aria-expanded") !== "true") toggle.click();
-                  document.querySelector(".daily-card .lyrics")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                }}
-              >
+              <button type="button" onClick={() => setLyricsOpen(true)}>
                 {t("lyrics")}
               </button>
               <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
@@ -155,7 +160,7 @@ export default function DailyRecommend({
               </a>
             </div>
           </div>
-          <LyricsPanel track={track} />
+          <LyricsPanel id="today-lyrics" track={track} open={lyricsOpen} onClose={() => setLyricsOpen(false)} />
         </article>
       ) : (
         <div className="daily-copy">

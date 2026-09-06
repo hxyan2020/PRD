@@ -56,6 +56,7 @@ export default function App() {
   });
   const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
   const [extras] = useState(loadExtraTracks);
+  const [lyricsOpen, setLyricsOpen] = useState(false);
   const spotify = useSpotify();
 
   useEffect(() => {
@@ -162,10 +163,11 @@ export default function App() {
     });
   }
 
-  function openTrack(track, play = false) {
+  function openTrack(track, play = false, lyrics = false) {
     rememberView(track.id);
     window.location.hash = routeHash(page, track.id);
     if (play) setPlayingId(track.id);
+    setLyricsOpen(Boolean(lyrics));
   }
 
   function onToggleCollect(id) {
@@ -351,6 +353,7 @@ export default function App() {
             className="close"
             type="button"
             onClick={() => {
+              setLyricsOpen(false);
               window.location.hash = routeHash(page);
             }}
           >
@@ -452,10 +455,13 @@ export default function App() {
             <button type="button" onClick={() => setPlayingId(selected.id)}>
               {t("streamInPlayer")}
             </button>
+            <button type="button" onClick={() => setLyricsOpen(true)}>
+              {t("lyrics")}
+            </button>
             <CollectButton id={selected.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
             <SpotifyAddButton track={selected} spotify={spotify} />
           </div>
-          <LyricsPanel track={selected} />
+          <LyricsPanel track={selected} open={lyricsOpen} onClose={() => setLyricsOpen(false)} />
         </aside>
       )}
 

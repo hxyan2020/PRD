@@ -1224,33 +1224,30 @@ option {
   border-top: 1px solid var(--rule);
 }
 
-.lyrics-toggle {
+.lyrics-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  text-align: start;
 }
 
-.lyrics-toggle h3 {
+.lyrics-head h3 {
   margin: 0;
   font-size: 22px;
 }
 
-.lyrics-toggle-hint {
+.lyrics-hide {
   flex: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--brass);
+  font: inherit;
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--brass);
+  cursor: pointer;
 }
 
 .lyrics-body {
@@ -1325,7 +1322,7 @@ option {
   color: rgba(122, 46, 36, 0.82);
 }
 
-.drawer .lyrics-toggle-hint {
+.drawer .lyrics-hide {
   color: rgba(122, 46, 36, 0.72);
 }
 
