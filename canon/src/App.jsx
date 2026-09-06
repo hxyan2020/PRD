@@ -22,11 +22,14 @@ import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
 import { SiteDoc, SiteNav } from "./SitePages.jsx";
 import { publicUrl, siteUrl } from "./urls.js";
 import CountryFlagName from "./CountryFlagName.jsx";
+import PortraitGallery from "./PortraitGallery.jsx";
+import { displayPersonName, splitCredits } from "./portraits.js";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
 
 export default function App() {
   const { locale, t } = useI18n();
   const [data, setData] = useState(null);
+  const [portraits, setPortraits] = useState({ people: {} });
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState("All genres");
@@ -60,6 +63,10 @@ export default function App() {
       })
       .then(setData)
       .catch((err) => setError(err.message));
+    fetch(publicUrl("portraits.json"))
+      .then((r) => (r.ok ? r.json() : { people: {} }))
+      .then((payload) => setPortraits(payload?.people ? payload : { people: {} }))
+      .catch(() => setPortraits({ people: {} }));
   }, []);
 
   useEffect(() => {
@@ -370,6 +377,13 @@ export default function App() {
           <p className="eyebrow">{selected.extra ? t("beyondOutside") : t("canonRank", { n: selected.rank })}</p>
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
+          {selected.anecdote ? (
+            <section className="anecdote-block">
+              <h3>{t("songAnecdote")}</h3>
+              <p className="anecdote-text">{selected.anecdote}</p>
+              <p className="anecdote-kicker">{t("anecdoteNote")}</p>
+            </section>
+          ) : null}
           <dl className="facts">
             <div>
               <dt>{t("composer")}</dt>
@@ -437,6 +451,20 @@ export default function App() {
             </a>
           </p>
           ) : null}
+          {splitCredits(selected.singer).map((name) => (
+            <PortraitGallery
+              key={`singer-${name}`}
+              name={`${t("singerAnecdote")} · ${displayPersonName(name)}`}
+              portrait={portraits.people?.[name]}
+            />
+          ))}
+          {splitCredits(selected.band).map((name) => (
+            <PortraitGallery
+              key={`band-${name}`}
+              name={`${t("bandAnecdote")} · ${displayPersonName(name)}`}
+              portrait={portraits.people?.[name]}
+            />
+          ))}
           <div className="card-actions drawer-actions">
             <button type="button" onClick={() => setPlayingId(selected.id)}>
               {t("streamInPlayer")}

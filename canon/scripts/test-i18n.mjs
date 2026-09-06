@@ -17,6 +17,7 @@ import { BEYOND } from "../src/beyond-messages.js";
 import { HX } from "../src/hx-messages.js";
 import { LEGAL } from "../src/legal-messages.js";
 import { LYRICS } from "../src/lyrics-messages.js";
+import { PORTRAITS } from "../src/portrait-messages.js";
 import { parseRoute, routeHash } from "../src/pages.js";
 import { recommendDaily, surprisePick } from "../src/recommend.js";
 import { moodLabel, resolveMoodValue } from "../src/uiText.js";
@@ -119,6 +120,13 @@ assert.ok(lyricsKeys.includes("lyrics"));
 for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(LYRICS[locale]).sort(), lyricsKeys, `${locale} lyrics copy keys`);
   assert.match(t(locale, "lyrics"), /./);
+}
+
+const portraitKeys = Object.keys(PORTRAITS.en).sort();
+assert.ok(portraitKeys.includes("songAnecdote"));
+for (const locale of LANGUAGE_IDS) {
+  assert.deepEqual(Object.keys(PORTRAITS[locale]).sort(), portraitKeys, `${locale} portrait copy keys`);
+  assert.match(t(locale, "portraitsOf", { name: "Queen" }), /Queen/);
 }
 assert.match(t("en", "docTitle"), /1000 Music/);
 assert.match(t("en", "lyricsMissing"), /Music/);

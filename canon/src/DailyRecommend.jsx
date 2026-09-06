@@ -251,6 +251,7 @@ export default function DailyRecommend({
               {yearLabel(track.year, t)} · {track.genre} · {playsLabel(track.streams, t)}
             </p>
             <p className="daily-reason">{reasonText(result, t)}</p>
+            {track.anecdote ? <p className="anecdote-text">{track.anecdote}</p> : null}
             <p className="daily-stamp">
               {hasPrefs ? t("prefsNow", { prefs: activePrefs.join(" · ") }) : t("noPrefs")}
             </p>

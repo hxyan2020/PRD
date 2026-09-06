@@ -1109,6 +1109,50 @@ option {
   color: var(--oxblood);
 }
 
+.anecdote-block {
+  margin: 0 0 18px;
+}
+
+.anecdote-block h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.anecdote-text {
+  margin: 0 0 8px;
+  line-height: 1.55;
+}
+
+.anecdote-kicker {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(22, 17, 12, 0.5);
+}
+
+.daily-card .anecdote-text {
+  color: rgba(243, 234, 214, 0.78);
+  font-size: 14px;
+}
+
+.portrait-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.portrait-row img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #1a120c;
+}
+
 @media (max-width: 980px) {
   .app {
     padding: 20px 16px 200px;

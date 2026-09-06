@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { splitCredits } from "../src/portraits.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalogPath = path.join(root, "public", "catalog.json");
@@ -68,6 +69,24 @@ assert.ok(missingPerformer < 40, `too many tracks missing performer: ${missingPe
 
 const genres = new Set(raw.tracks.map((t) => t.genre));
 assert.ok(genres.size > 20, "genre diversity");
+
+const portraitsPath = path.join(root, "public", "portraits.json");
+const portraits = JSON.parse(await fs.readFile(portraitsPath, "utf8"));
+assert.ok(portraits.people, "portraits people map");
+let shortPortraits = 0;
+const missingAnecdotes = [];
+for (const track of raw.tracks) {
+  assert.ok(String(track.anecdote || "").length > 40, `missing song anecdote: ${track.name}`);
+  const names = [...splitCredits(track.singer), ...splitCredits(track.band)];
+  for (const name of names) {
+    const person = portraits.people[name];
+    assert.ok(person, `missing portrait record for ${name}`);
+    assert.ok(String(person.anecdote || "").length > 20, `missing anecdote for ${name}`);
+    if (!person.images || person.images.length < 3) shortPortraits += 1;
+  }
+}
+assert.equal(missingAnecdotes.length, 0);
+assert.equal(shortPortraits, 0, `people with fewer than 3 images: ${shortPortraits}`);
 
 console.log("catalog ok");
 console.log(JSON.stringify({
