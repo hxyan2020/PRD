@@ -9,15 +9,15 @@ Every entry has:
 - composer, singer, band, writer, music company, year, country, and genre
 - published Spotify play counts where the industry reports them
 - a short note on why the work belongs in the canon
-- a daily AI recommendation from mood, country, and genre on the **For you** menu page (`#listen`; blank fields fall back to the most streamed titles)
+- a daily AI recommendation from mood, country, and genre on the homepage **For you** (blank fields fall back to the most streamed titles)
 - **Collect** to save a recording into your collection (stored in this browser), with the date you collected it
 - **Surprise me** to hear a different work immediately, without waiting for tomorrow’s rotation
 - header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
 - a dated log of every daily recommendation and Surprise me pick
 - **Add to Spotify** — clicking it asks you to authorize Spotify (saves to Liked Songs and a private Canon playlist album). There is no client-ID form and no Spotify card on the homepage
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). Language lives in the top menu (on phones, next to the hamburger)
-- **Stream more** from mood, country, and genre beyond the 1,000-work canon, on the same **For you** page (requires Spotify login; titles not in the archive play in the same player)
-- A top **menu** for For you, Collections, Recommendation log, About, and Terms of use (`#listen`, `#collections`, `#log`, `#about`, `#terms`) — phones use a hamburger icon; those links are not shown in the homepage hero
+- **Stream more** from mood, country, and genre beyond the 1,000-work canon, on the same For you homepage (requires Spotify login; titles not in the archive play in the same player)
+- A top **menu**: For you (home), The 1,000 (`#archive` — the 1,000-work catalog), Collections, Recommendation log, About, and Terms of use. Phones use a hamburger icon
 - Anonymous page views go to HX viewership (`slug: canon`). Telegram **HX Bots Dashboard** polls `/hx/health.json` (not in-app tabs)
 
 ## Run

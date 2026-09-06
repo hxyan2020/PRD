@@ -3,7 +3,8 @@ import { LanguageSwitcher, useI18n } from "./I18n.jsx";
 import { ABOUT_SECTIONS, TERMS_SECTIONS } from "./pages.js";
 
 const MENU_LINKS = [
-  ["listen", "listenNav"],
+  ["", "listenNav"],
+  ["archive", "archiveNav"],
   ["collections", "collections"],
   ["log", "recommendLog"],
   ["about", "aboutNav"],
@@ -58,11 +59,14 @@ export function SiteMenu({ page }) {
         </button>
       </div>
       <nav id={navId} className="menu-nav" aria-label={t("menu")}>
-        {MENU_LINKS.map(([hash, key]) => (
-          <a key={hash} href={`#${hash}`} className={page === hash ? "is-on" : ""}>
-            {t(key)}
-          </a>
-        ))}
+        {MENU_LINKS.map(([hash, key]) => {
+          const active = hash ? page === hash : page === "home";
+          return (
+            <a key={key} href={hash ? `#${hash}` : "#"} className={active ? "is-on" : ""}>
+              {t(key)}
+            </a>
+          );
+        })}
       </nav>
     </div>
   );

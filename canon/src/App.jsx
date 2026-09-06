@@ -196,7 +196,7 @@ export default function App() {
   return (
     <div className={`app ${selected ? "has-drawer" : ""}`}>
       <SiteMenu page={page} />
-      {spotify.status && page !== "listen" ? (
+      {spotify.status && page !== "home" ? (
         <p className="spotify-status app-spotify-status" role="status">
           {formatStatus(locale, spotify.status)}
         </p>
@@ -216,7 +216,11 @@ export default function App() {
           <dl className="stats" aria-label={t("libraryCounts")}>
             <div>
               <dt>{t("songsInArchive")}</dt>
-              <dd>{data.count}</dd>
+              <dd>
+                <a href="#archive" className="stats-link">
+                  {data.count}
+                </a>
+              </dd>
             </div>
             <div>
               <dt>{t("viewed")}</dt>
@@ -237,57 +241,7 @@ export default function App() {
 
       {page === "about" || page === "terms" ? (
         <SiteDoc page={page} />
-      ) : page === "listen" ? (
-        <>
-          <DailyRecommend
-            tracks={tracks}
-            countries={facets.countries}
-            genres={facets.genres}
-            onListen={(track) => openTrack(track, true)}
-            onView={(track) => rememberView(track.id)}
-            onRecommend={onRecommend}
-            collectedIds={collectedIds}
-            collectedAt={collectedAt}
-            onToggleCollect={onToggleCollect}
-            spotify={spotify}
-            onPrefs={setListenPrefs}
-          />
-          <BeyondCanon
-            prefs={listenPrefs}
-            catalog={tracks}
-            selectedId={selectedId}
-            collectedIds={collectedIds}
-            collectedAt={collectedAt}
-            onToggleCollect={onToggleCollect}
-            onOpen={openTrack}
-            onRecommend={onRecommend}
-            spotify={spotify}
-            onExtras={(list) => {
-              setExtras((current) => {
-                const next = mergeExtraTracks(current, list);
-                saveExtraTracks(next);
-                return next;
-              });
-            }}
-          />
-        </>
-      ) : page === "collections" ? (
-        <>
-          <Collections
-            tracks={library}
-            collectedIds={collectedIds}
-            collectedAt={collectedAt}
-            selectedId={selectedId}
-            onToggleCollect={onToggleCollect}
-            onOpen={openTrack}
-            spotify={spotify}
-          />
-        </>
-      ) : page === "log" ? (
-        <>
-          <RecommendLog log={recommendLog} tracks={library} onOpen={openTrack} />
-        </>
-      ) : (
+      ) : page === "archive" ? (
         <>
       <section className="controls" aria-label={t("filterArchive")}>
         <input
@@ -347,6 +301,56 @@ export default function App() {
           />
         ))}
       </main>
+        </>
+      ) : page === "collections" ? (
+        <>
+          <Collections
+            tracks={library}
+            collectedIds={collectedIds}
+            collectedAt={collectedAt}
+            selectedId={selectedId}
+            onToggleCollect={onToggleCollect}
+            onOpen={openTrack}
+            spotify={spotify}
+          />
+        </>
+      ) : page === "log" ? (
+        <>
+          <RecommendLog log={recommendLog} tracks={library} onOpen={openTrack} />
+        </>
+      ) : (
+        <>
+          <DailyRecommend
+            tracks={tracks}
+            countries={facets.countries}
+            genres={facets.genres}
+            onListen={(track) => openTrack(track, true)}
+            onView={(track) => rememberView(track.id)}
+            onRecommend={onRecommend}
+            collectedIds={collectedIds}
+            collectedAt={collectedAt}
+            onToggleCollect={onToggleCollect}
+            spotify={spotify}
+            onPrefs={setListenPrefs}
+          />
+          <BeyondCanon
+            prefs={listenPrefs}
+            catalog={tracks}
+            selectedId={selectedId}
+            collectedIds={collectedIds}
+            collectedAt={collectedAt}
+            onToggleCollect={onToggleCollect}
+            onOpen={openTrack}
+            onRecommend={onRecommend}
+            spotify={spotify}
+            onExtras={(list) => {
+              setExtras((current) => {
+                const next = mergeExtraTracks(current, list);
+                saveExtraTracks(next);
+                return next;
+              });
+            }}
+          />
         </>
       )}
 

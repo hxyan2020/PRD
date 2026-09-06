@@ -16,7 +16,7 @@ export const LEGAL = {
       "Works are drawn from Wikidata items that already carry a Spotify track ID, then ordered by how many Wikipedia language editions mention them — a rough proxy for worldwide cultural memory. Every ID is checked with Spotify’s public oEmbed before it enters the archive. Play counts are joined from published stream tables. The ranking is an editorial device, not a score of artistic worth.",
     aboutDoTitle: "What you can do here",
     aboutDoBody:
-      "You can browse and search the archive; open For you in the menu for a daily recommendation (set mood, country, or genre, or leave them blank for the most streamed titles) and to stream more from Spotify beyond the canon; use Surprise me for another work at once; Collect Music in this browser with the date you saved it, then open the Collections page; and keep a dated log of daily picks and surprises on the Recommendation log page. Header counts show the 1,000-song archive plus unique titles you have viewed or collected here.",
+      "The homepage is For you: set mood, country, or genre for a daily recommendation (blank fields fall back to the most streamed titles) and stream more from Spotify beyond the canon. Browse and search the 1,000-work archive from The 1,000 in the menu. Use Surprise me for another work at once; Collect Music in this browser with the date you saved it, then open the Collections page; and keep a dated log of daily picks and surprises on the Recommendation log page. Header counts show the 1,000-song archive plus unique titles you have viewed or collected here.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "Click Add to Spotify to authorize your account. Canon then saves Music to Liked Songs and to a private playlist named Canon — your album of this archive. Official artist albums are never edited. Canon uses Spotify’s Authorization Code with PKCE and does not keep a client secret in the browser. Playback itself is provided by Spotify. Spotify, Wikipedia, Wikidata, and other sources remain independent of this archive.",
@@ -82,7 +82,7 @@ export const LEGAL = {
       "作品来自已带 Spotify 曲目 ID 的维基数据条目，再按维基百科语言版本数量排序——作为世界文化记忆的粗略代理。每条 ID 在进入档案前都经 Spotify 公开 oEmbed 校验。播放量来自已公布的串流表。名次是编辑排序，不是艺术价值打分。",
     aboutDoTitle: "你可以做什么",
     aboutDoBody:
-      "你可以浏览和搜索档案；在菜单的「为你推荐」里按心情、国家或类型获取每日推荐（留空则从播放最多的作品中选），并继续收听档案之外的曲目；用「随机一首」立刻换一首；在此浏览器中收藏并记下日期；并保存带日期的每日与随机记录。页眉统计显示 1,000 首档案，以及你在此浏览或收藏过的不重复曲目。",
+      "首页是「为你推荐」：按心情、国家或类型获取每日推荐（留空则从播放最多的作品中选），并继续收听档案之外的曲目。菜单里的「一千首」可浏览和搜索档案。用「随机一首」立刻换一首；在此浏览器中收藏并记下日期；并保存带日期的每日与随机记录。页眉统计显示 1,000 首档案，以及你在此浏览或收藏过的不重复曲目。",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "授权 Spotify 后，「加入 Spotify」会把音乐存入已点赞歌曲和名为 Canon 的私人播放列表——也就是你的本档案专辑。官方艺人专辑永不被修改。Canon 使用带 PKCE 的授权码流程，不在浏览器中保存客户端密钥。播放由 Spotify 提供。Spotify、维基百科、维基数据及其他来源均独立于本档案。",

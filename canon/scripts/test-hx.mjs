@@ -13,7 +13,7 @@ import { parseRoute } from "../src/pages.js";
 
 assert.equal(hxPathForRoute("home", ""), "/");
 assert.equal(hxPathForRoute("home", "Q1"), "/#t=Q1");
-assert.equal(hxPathForRoute("about"), "/#about");
+assert.equal(hxPathForRoute("archive"), "/#archive");
 assert.deepEqual(viewershipPayload({ path: "/#about", host: "example.test" }), {
   slug: HX_SLUG,
   name: HX_NAME,
@@ -49,6 +49,7 @@ assert.deepEqual(parseRoute("#hx-monitor"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#hx-bots"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#hx-viewership"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#hx-ping"), { page: "home", trackId: "" });
-assert.deepEqual(parseRoute("#listen"), { page: "listen", trackId: "" });
+assert.deepEqual(parseRoute("#listen"), { page: "home", trackId: "" });
+assert.deepEqual(parseRoute("#archive"), { page: "archive", trackId: "" });
 
 console.log("hx tests ok");

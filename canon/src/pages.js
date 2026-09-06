@@ -8,11 +8,14 @@ const PAGES = new Set([
   "listen",
   "for-you",
   "beyond",
+  "archive",
+  "catalog",
 ]);
 
 function normalizePage(token) {
   if (token === "history" || token === "recommend-log") return "log";
-  if (token === "for-you" || token === "beyond") return "listen";
+  if (token === "listen" || token === "for-you" || token === "beyond") return "home";
+  if (token === "catalog") return "archive";
   return token;
 }
 
@@ -47,7 +50,7 @@ export function routeHash(page = "home", trackId = "") {
 }
 
 export function pageAllowsTrack(page) {
-  return page === "home" || page === "collections" || page === "log" || page === "listen";
+  return page === "home" || page === "archive" || page === "collections" || page === "log";
 }
 
 export const ABOUT_SECTIONS = [
