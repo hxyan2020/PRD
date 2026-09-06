@@ -958,6 +958,41 @@ option {
   color: inherit;
 }
 
+.lyrics-lines {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  max-height: 28rem;
+  overflow: auto;
+}
+
+.lyrics-lines li {
+  margin: 0 0 0.8em;
+}
+
+.lyrics-lines li.is-blank {
+  margin: 0 0 0.45em;
+  min-height: 0.4em;
+}
+
+.lyrics-orig {
+  margin: 0;
+  font-family: "Fraunces", "Noto Sans SC", "Noto Sans Arabic", "Noto Sans Devanagari", "Noto Sans Bengali", serif;
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+
+.lyrics-tr {
+  margin: 0.2em 0 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: var(--brass);
+}
+
+.drawer .lyrics-tr {
+  color: rgba(122, 46, 36, 0.82);
+}
+
 .daily-card .lyrics {
   grid-column: 1 / -1;
 }

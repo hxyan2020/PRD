@@ -7,6 +7,9 @@ export const LYRICS = {
     lyricsSource: "Shown as published. Source: {source}.",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "Translating lyrics…",
+    lyricsTranslationNote: "Line-by-line translation into {language}.",
+    lyricsTranslationFailed: "A translation could not be loaded.",
   },
   zh: {
     lyrics: "歌词",
@@ -16,6 +19,9 @@ export const LYRICS = {
     lyricsSource: "按原文显示。来源：{source}。",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "正在翻译歌词…",
+    lyricsTranslationNote: "逐行译成{language}。",
+    lyricsTranslationFailed: "无法加载译文。",
   },
   hi: {
     lyrics: "गीत",
@@ -25,6 +31,9 @@ export const LYRICS = {
     lyricsSource: "जैसा प्रकाशित है वैसा दिखाया गया। स्रोत: {source}।",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "गीत अनूदित हो रहे हैं…",
+    lyricsTranslationNote: "{language} में पंक्ति-दर-पंक्ति अनुवाद।",
+    lyricsTranslationFailed: "अनुवाद नहीं आ सका।",
   },
   es: {
     lyrics: "Letra",
@@ -34,6 +43,9 @@ export const LYRICS = {
     lyricsSource: "Se muestra tal como se publicó. Fuente: {source}.",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "Traduciendo la letra…",
+    lyricsTranslationNote: "Traducción línea a línea al {language}.",
+    lyricsTranslationFailed: "No se pudo cargar la traducción.",
   },
   fr: {
     lyrics: "Paroles",
@@ -43,6 +55,9 @@ export const LYRICS = {
     lyricsSource: "Affiché tel que publié. Source : {source}.",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "Traduction des paroles…",
+    lyricsTranslationNote: "Traduction ligne par ligne en {language}.",
+    lyricsTranslationFailed: "La traduction n’a pas pu être chargée.",
   },
   ar: {
     lyrics: "كلمات",
@@ -52,6 +67,9 @@ export const LYRICS = {
     lyricsSource: "تُعرض كما نُشرت. المصدر: {source}.",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "جارٍ ترجمة الكلمات…",
+    lyricsTranslationNote: "ترجمة سطرًا بسطر إلى {language}.",
+    lyricsTranslationFailed: "تعذّر تحميل الترجمة.",
   },
   bn: {
     lyrics: "গানের কথা",
@@ -61,6 +79,9 @@ export const LYRICS = {
     lyricsSource: "প্রকাশিত রূপে দেখানো। উৎস: {source}।",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "গানের কথা অনুবাদ হচ্ছে…",
+    lyricsTranslationNote: "{language}-এ সারি সারি অনুবাদ।",
+    lyricsTranslationFailed: "অনুবাদ আনা যায়নি।",
   },
   pt: {
     lyrics: "Letra",
@@ -70,5 +91,8 @@ export const LYRICS = {
     lyricsSource: "Mostrada como publicada. Fonte: {source}.",
     lyricsSourceLrclib: "LRCLIB",
     lyricsSourceOvh: "lyrics.ovh",
+    lyricsTranslating: "Traduzindo a letra…",
+    lyricsTranslationNote: "Tradução linha a linha para {language}.",
+    lyricsTranslationFailed: "Não foi possível carregar a tradução.",
   },
 };

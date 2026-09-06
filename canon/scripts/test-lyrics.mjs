@@ -105,4 +105,82 @@ assert.equal(ovhOnly.status, "ok");
 assert.equal(ovhOnly.source, "ovh");
 assert.match(ovhOnly.text, /Imagine all the people/);
 
+import {
+  alignTranslatedChunk,
+  chunkLyricLines,
+  detectLyricsLanguage,
+  isSkippableLyricLine,
+  lyricsNeedTranslation,
+  pickTranslatedText,
+  splitLyricLines,
+  translateLyricLines,
+} from "../src/lyrics-translate.js";
+
+assert.equal(detectLyricsLanguage("I've been tryna call you on the phone and I have to tell you"), "en");
+assert.equal(detectLyricsLanguage("Je t'aime pour toujours dans les rues de Paris et je ne peux pas"), "fr");
+assert.equal(detectLyricsLanguage("我爱你 夜空中最亮的星 一直在"), "zh");
+assert.equal(detectLyricsLanguage("أنا أحبك يا ليلى في الليل"), "ar");
+assert.equal(lyricsNeedTranslation("I've been tryna call you on the phone", "en"), false);
+assert.equal(lyricsNeedTranslation("I've been tryna call you on the phone", "zh"), true);
+assert.equal(lyricsNeedTranslation("我爱你 夜空中最亮的星", "zh"), false);
+assert.equal(isSkippableLyricLine("♪"), true);
+assert.equal(isSkippableLyricLine("Yeah"), false);
+assert.equal(isSkippableLyricLine("我爱你"), false);
+
+const lines = splitLyricLines("One\n\nTwo");
+assert.deepEqual(lines, ["One", "", "Two"]);
+const chunks = chunkLyricLines(lines, 3);
+assert.equal(chunks.length, 2);
+assert.equal(chunks[0][0].index, 0);
+assert.equal(chunks[1][0].index, 2);
+
+const aligned = alignTranslatedChunk(
+  [
+    { index: 0, text: "One" },
+    { index: 2, text: "Two" },
+  ],
+  "一\n二"
+);
+assert.equal(aligned[0].translated, "一");
+assert.equal(aligned[1].translated, "二");
+assert.equal(alignTranslatedChunk([{ index: 0, text: "One" }], "uno\ndos"), null);
+
+const hindiPick = pickTranslatedText(
+  {
+    responseData: { translatedText: "I love you", match: 1 },
+    matches: [
+      { translation: "I love you" },
+      { translation: "मैं तुमसे प्यार करता हूँ" },
+    ],
+  },
+  "I love you",
+  "hi"
+);
+assert.match(hindiPick, /प्यार/);
+
+const zhCalls = [];
+const translated = await translateLyricLines("I love you\nI miss you", "zh", {
+  cache: new Map(),
+  fetchFn: async (url) => {
+    zhCalls.push(url);
+    return {
+      ok: true,
+      json: async () => ({ responseData: { translatedText: "我爱你\n我想你" } }),
+    };
+  },
+});
+assert.equal(translated.needed, true);
+assert.deepEqual(translated.translations, ["我爱你", "我想你"]);
+assert.equal(zhCalls.length, 1);
+
+const sameLang = await translateLyricLines("I love you on the phone tonight", "en", { cache: new Map(), fetchFn: async () => { throw new Error("should not fetch"); } });
+assert.equal(sameLang.needed, false);
+
+const failed = await translateLyricLines("I love you\nI miss you", "zh", {
+  cache: new Map(),
+  fetchFn: async () => ({ ok: false, json: async () => ({}) }),
+});
+assert.equal(failed.needed, true);
+assert.deepEqual(failed.translations, ["", ""]);
+
 console.log("lyrics tests ok");
