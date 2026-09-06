@@ -1796,6 +1796,13 @@ option {
     -webkit-overflow-scrolling: touch;
   }
 
+  .drawer::after {
+    content: "";
+    display: block;
+    flex-shrink: 0;
+    height: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+
   .close {
     position: sticky;
     top: 0;
@@ -1827,7 +1834,7 @@ option {
 
   .drawer-actions {
     position: sticky;
-    bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(108px + env(safe-area-inset-bottom, 0px));
     z-index: 3;
     margin: 8px -12px 0;
     padding: 10px 12px 8px;
