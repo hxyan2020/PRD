@@ -146,4 +146,13 @@ for (const lang of LANGUAGES) {
 assert.equal(languageMeta("en").flag, "gb");
 assert.equal(languageMeta("zh").flag, "cn");
 
+const publicDir = join(dirname(fileURLToPath(import.meta.url)), "../public");
+for (const file of ["logo.png", "favicon.svg", "favicon.png", "favicon.ico", "apple-touch-icon.png"]) {
+  assert.ok(existsSync(join(publicDir, file)), `brand asset ${file}`);
+}
+assert.match(readFileSync(join(publicDir, "favicon.svg"), "utf8"), /image\/png;base64/);
+const html = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../index.html"), "utf8");
+assert.match(html, /favicon\.svg/);
+assert.match(html, /apple-touch-icon\.png/);
+
 console.log("i18n tests ok");

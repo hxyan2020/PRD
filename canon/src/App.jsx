@@ -25,6 +25,7 @@ import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
 import { displayPersonName, splitCredits } from "./portraits.js";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
+import BrandMark from "./BrandMark.jsx";
 
 export default function App() {
   const { locale, t } = useI18n();
@@ -194,6 +195,7 @@ export default function App() {
   if (!data) {
     return (
       <div className="boot">
+        <BrandMark className="brand-mark boot-mark" />
         <p className="eyebrow">Canon</p>
         <p>{t("opening")}</p>
       </div>
@@ -207,7 +209,8 @@ export default function App() {
           <p className="eyebrow">{t("archiveEyebrow")}</p>
           <h1>
             <a className="brand-link" href="#">
-              Canon
+              <BrandMark alt="" />
+              <span className="brand-name">Canon</span>
             </a>
           </h1>
           <p className="lede">{t("lede")}</p>
