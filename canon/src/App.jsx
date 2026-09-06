@@ -19,7 +19,7 @@ import { formatStatus } from "./i18n.js";
 import { displayEraLabel, displayGenre, displayReleaseCountry } from "./display-labels.js";
 import { hxPathForRoute, sendHxBeacon } from "./hx.js";
 import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
-import { SiteDoc, SiteMenu } from "./SitePages.jsx";
+import { SiteDoc, SiteFooter, SiteMenu } from "./SitePages.jsx";
 import { publicUrl } from "./urls.js";
 import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
@@ -458,6 +458,8 @@ export default function App() {
           <LyricsPanel track={selected} />
         </aside>
       )}
+
+      <SiteFooter page={page} />
 
       {playing && (
         <footer className="dock">

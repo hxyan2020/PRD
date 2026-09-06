@@ -1276,6 +1276,31 @@ option {
   border-radius: 12px;
 }
 
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0 8px;
+  padding: 18px 4px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.site-footer a {
+  color: rgba(243, 234, 214, 0.5);
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.site-footer a:hover,
+.site-footer a.is-on {
+  color: var(--brass);
+  text-decoration: underline;
+}
+
 .dock {
   position: fixed;
   left: 16px;
@@ -1413,7 +1438,8 @@ option {
   .collections,
   .spotify-connect,
   .recommend-log,
-  .site-doc {
+  .site-doc,
+  .site-footer {
     min-width: 0;
     max-width: 100%;
   }
@@ -1796,6 +1822,18 @@ option {
   .menu-bar {
     margin-bottom: 10px;
     padding-bottom: 8px;
+  }
+
+  .site-footer {
+    gap: 4px 8px;
+    margin-top: 28px;
+  }
+
+  .site-footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 12px;
   }
 
   .grid {

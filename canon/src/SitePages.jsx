@@ -8,6 +8,9 @@ const MENU_LINKS = [
   ["archive", "archiveNav"],
   ["collections", "collections"],
   ["log", "recommendLog"],
+];
+
+const FOOTER_LINKS = [
   ["about", "aboutNav"],
   ["terms", "termsNav"],
 ];
@@ -70,6 +73,19 @@ export function SiteMenu({ page }) {
         })}
       </nav>
     </div>
+  );
+}
+
+export function SiteFooter({ page }) {
+  const { t } = useI18n();
+  return (
+    <nav className="site-footer" aria-label={t("siteNav")}>
+      {FOOTER_LINKS.map(([hash, key]) => (
+        <a key={key} href={`#${hash}`} className={page === hash ? "is-on" : ""}>
+          {t(key)}
+        </a>
+      ))}
+    </nav>
   );
 }
 
