@@ -47,8 +47,11 @@ export function SiteMenu({ page }) {
         aria-label={open ? t("menuClose") : t("menuOpen")}
         onClick={() => setOpen((value) => !value)}
       >
-        <span className="menu-toggle-bars" aria-hidden="true" />
-        {t("menu")}
+        <span className="menu-toggle-bars" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
       </button>
       <nav id={navId} className="menu-nav" aria-label={t("menu")}>
         {MENU_LINKS.map(([hash, key]) => (

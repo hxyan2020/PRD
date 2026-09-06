@@ -165,28 +165,58 @@ h1 {
 .menu-toggle {
   display: none;
   align-items: center;
-  gap: 10px;
-  min-height: 40px;
-  padding: 6px 12px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
   border: 1px solid rgba(201, 164, 90, 0.4);
-  border-radius: 999px;
+  border-radius: 12px;
   background: transparent;
   color: var(--brass);
-  font: inherit;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   cursor: pointer;
 }
 
 .menu-toggle-bars {
-  width: 16px;
-  height: 12px;
+  position: relative;
+  width: 18px;
+  height: 14px;
   display: block;
-  background:
-    linear-gradient(var(--brass), var(--brass)) 0 0 / 16px 2px no-repeat,
-    linear-gradient(var(--brass), var(--brass)) 0 5px / 16px 2px no-repeat,
-    linear-gradient(var(--brass), var(--brass)) 0 10px / 16px 2px no-repeat;
+}
+
+.menu-toggle-bars span {
+  position: absolute;
+  inset-inline-start: 0;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--brass);
+}
+
+.menu-toggle-bars span:nth-child(1) {
+  top: 0;
+}
+
+.menu-toggle-bars span:nth-child(2) {
+  top: 6px;
+}
+
+.menu-toggle-bars span:nth-child(3) {
+  top: 12px;
+}
+
+.menu-bar.is-open .menu-toggle-bars span:nth-child(1) {
+  top: 6px;
+  transform: rotate(45deg);
+}
+
+.menu-bar.is-open .menu-toggle-bars span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-bar.is-open .menu-toggle-bars span:nth-child(3) {
+  top: 6px;
+  transform: rotate(-45deg);
 }
 
 .menu-nav {
