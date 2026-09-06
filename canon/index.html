@@ -3,10 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0c0907" />
     <link rel="icon" href="%BASE_URL%favicon.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon.png" />
     <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="preload" href="%BASE_URL%logo.png" as="image" />
     <title>Canon — 1000 Music that shaped how humans listen</title>
     <meta
       name="description"
@@ -18,9 +20,81 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Noto+Sans:wght@400;500;600&family=Noto+Sans+Arabic:wght@400;500;600&family=Noto+Sans+Bengali:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&family=Outfit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+    <style>
+      html,
+      body,
+      #root {
+        margin: 0;
+        min-height: 100%;
+        background: #0c0907;
+        color: #f3ead6;
+      }
+      .boot {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: grid;
+        place-content: center;
+        place-items: center;
+        text-align: center;
+        padding: 28px 20px;
+      }
+      .boot-stack {
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+      }
+      .boot-mark {
+        display: block;
+        width: min(46vw, 180px);
+        height: auto;
+        border-radius: 32px;
+        box-shadow:
+          0 0 0 1px rgba(201, 164, 90, 0.4),
+          0 18px 50px rgba(0, 0, 0, 0.45),
+          0 0 48px rgba(201, 164, 90, 0.22);
+        animation: boot-pulse 2.4s ease-in-out infinite;
+      }
+      .boot-name {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(44px, 12vw, 80px);
+        font-weight: 600;
+        line-height: 0.9;
+        margin: 0;
+        color: #f3ead6;
+      }
+      @keyframes boot-pulse {
+        50% {
+          box-shadow:
+            0 0 0 1px rgba(201, 164, 90, 0.55),
+            0 18px 50px rgba(0, 0, 0, 0.45),
+            0 0 64px rgba(201, 164, 90, 0.4);
+        }
+      }
+      .boot-kicker {
+        margin: 0;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-size: 11px;
+        color: #c9a45a;
+      }
+      .boot-copy {
+        margin: 8px 0 0;
+        color: rgba(243, 234, 214, 0.72);
+        font-size: 15px;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot" role="status">
+        <div class="boot-stack">
+          <img class="boot-mark" src="%BASE_URL%logo.png" alt="" width="180" height="180" decoding="sync" fetchpriority="high" />
+          <p class="boot-name">Canon</p>
+          <p class="boot-kicker">A listening archive</p>
+          <p class="boot-copy">Opening the archive…</p>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

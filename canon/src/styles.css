@@ -78,9 +78,79 @@ h3,
 
 .boot {
   min-height: 100vh;
+  min-height: 100dvh;
   display: grid;
+  place-content: center;
   place-items: center;
   text-align: center;
+  padding: 28px 20px;
+  padding-top: max(28px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(28px, env(safe-area-inset-bottom, 0px));
+}
+
+.boot-stack {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  max-width: 28rem;
+}
+
+.boot-mark {
+  display: block;
+  width: min(46vw, 180px);
+  height: auto;
+  margin: 0 0 8px;
+  border-radius: 32px;
+  box-shadow:
+    0 0 0 1px rgba(201, 164, 90, 0.4),
+    0 18px 50px rgba(0, 0, 0, 0.45),
+    0 0 48px rgba(201, 164, 90, 0.22);
+}
+
+.boot:not(.is-error) .boot-mark {
+  animation: boot-pulse 2.4s ease-in-out infinite;
+}
+
+.boot-name {
+  font-family: "Fraunces", "Noto Sans SC", "Noto Sans Arabic", "Noto Sans Devanagari", "Noto Sans Bengali", serif;
+  font-size: clamp(44px, 12vw, 80px);
+  font-weight: 600;
+  line-height: 0.9;
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.boot-kicker {
+  margin: 0;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--brass);
+}
+
+.boot-copy {
+  margin: 8px 0 0;
+  color: rgba(243, 234, 214, 0.72);
+  font-size: 15px;
+}
+
+.boot.is-error .boot-copy {
+  color: #f0c7c0;
+}
+
+@keyframes boot-pulse {
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(201, 164, 90, 0.55),
+      0 18px 50px rgba(0, 0, 0, 0.45),
+      0 0 64px rgba(201, 164, 90, 0.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boot:not(.is-error) .boot-mark {
+    animation: none;
+  }
 }
 
 .app {
@@ -139,11 +209,6 @@ h1 {
 
 .brand-name {
   display: block;
-}
-
-.boot-mark {
-  width: 96px;
-  margin: 0 auto 16px;
 }
 
 .menu-bar {

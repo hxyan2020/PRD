@@ -25,6 +25,7 @@ import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
 import { displayPersonName, splitCredits } from "./portraits.js";
 import { artistLabel, creditLabel, playsLabel, popularityLabel } from "./uiText.js";
+import BootScreen from "./BootScreen.jsx";
 import BrandMark from "./BrandMark.jsx";
 
 export default function App() {
@@ -32,6 +33,8 @@ export default function App() {
   const [data, setData] = useState(null);
   const [portraits, setPortraits] = useState({ people: {} });
   const [error, setError] = useState("");
+  const [bootReady, setBootReady] = useState(false);
+  const [bootStarted] = useState(() => Date.now());
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState("All genres");
   const [era, setEra] = useState("All eras");
@@ -68,6 +71,13 @@ export default function App() {
       .then((payload) => setPortraits(payload?.people ? payload : { people: {} }))
       .catch(() => setPortraits({ people: {} }));
   }, []);
+
+  useEffect(() => {
+    if (!data || error) return undefined;
+    const remaining = Math.max(0, 720 - (Date.now() - bootStarted));
+    const timer = window.setTimeout(() => setBootReady(true), remaining);
+    return () => window.clearTimeout(timer);
+  }, [data, error, bootStarted]);
 
   useEffect(() => {
     const onHash = () => setRoute(parseRoute(window.location.hash));
@@ -177,21 +187,11 @@ export default function App() {
   }
 
   if (error) {
-    return (
-      <div className="boot">
-        <p>{t("loadError", { error })}</p>
-      </div>
-    );
+    return <BootScreen error message={t("loadError", { error })} />;
   }
 
-  if (!data) {
-    return (
-      <div className="boot">
-        <BrandMark className="brand-mark boot-mark" />
-        <p className="eyebrow">Canon</p>
-        <p>{t("opening")}</p>
-      </div>
-    );
+  if (!data || !bootReady) {
+    return <BootScreen message={t("opening")} />;
   }
 
   return (

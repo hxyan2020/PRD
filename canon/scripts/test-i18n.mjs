@@ -168,5 +168,10 @@ assert.match(readFileSync(join(publicDir, "favicon.svg"), "utf8"), /image\/png;b
 const html = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../index.html"), "utf8");
 assert.match(html, /favicon\.svg/);
 assert.match(html, /apple-touch-icon\.png/);
+assert.match(html, /logo\.png/);
+assert.match(html, /rel="preload"/);
+assert.match(html, /class="boot"/);
+assert.match(html, /Opening the archive/);
+assert.match(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/BootScreen.jsx"), "utf8"), /boot-mark/);
 
 console.log("i18n tests ok");
