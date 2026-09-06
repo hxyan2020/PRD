@@ -1,15 +1,27 @@
 export const MYMEMORY_GET = "https://api.mymemory.translated.net/get";
-export const TRANSLATE_MAX_CHARS = 450;
+export const GTX_GET = "https://translate.googleapis.com/translate_a/single";
+export const TRANSLATE_MAX_CHARS = 900;
 
 export const TRANSLATE_TARGETS = {
   en: "en",
   zh: "zh-CN",
-  hi: "hi-IN",
+  hi: "hi",
   es: "es",
   fr: "fr",
-  ar: "ar-SA",
-  bn: "bn-IN",
-  pt: "pt-BR",
+  ar: "ar",
+  bn: "bn",
+  pt: "pt",
+};
+
+export const MYMEMORY_TARGETS = {
+  en: "en",
+  zh: "zh-CN",
+  hi: "hi",
+  es: "es",
+  fr: "fr",
+  ar: "ar",
+  bn: "bn",
+  pt: "pt",
 };
 
 const LATIN_MARKERS = {
@@ -106,6 +118,41 @@ export function myMemoryUrl(text, target, source = "Autodetect") {
   return `${MYMEMORY_GET}?${params}`;
 }
 
+export function gtxTarget(locale) {
+  return TRANSLATE_TARGETS[localeRoot(locale)] || "en";
+}
+
+export function gtxSource(text) {
+  const detected = detectLyricsLanguage(text);
+  if (!detected || detected === "und") return "auto";
+  return detected === "zh" ? "zh-CN" : detected;
+}
+
+export function gtxUrl(text, locale, source = "") {
+  const params = new URLSearchParams({
+    client: "gtx",
+    sl: source || gtxSource(text),
+    tl: gtxTarget(locale),
+    dt: "t",
+    q: text,
+  });
+  return `${GTX_GET}?${params}`;
+}
+
+export function parseGtxPayload(payload) {
+  if (!Array.isArray(payload) || !Array.isArray(payload[0])) return "";
+  return payload[0].map((part) => (part && part[0] ? String(part[0]) : "")).join("");
+}
+
+export function isUnusableTranslation(text, original) {
+  const value = String(text || "").trim();
+  if (!value) return true;
+  if (/MYMEMORY WARNING|YOU USED ALL AVAILABLE FREE TRANSLATIONS|INVALID LANGUAGE PAIR|QUERY LENGTH|NO QUERY SPECIFIED/i.test(value)) {
+    return true;
+  }
+  return value === String(original || "").trim();
+}
+
 function scriptHint(locale) {
   const root = localeRoot(locale);
   if (root === "zh") return /[\u3400-\u9fff]/;
@@ -124,12 +171,14 @@ export function pickTranslatedText(payload, original, locale) {
     if (match?.translation) candidates.push(String(match.translation));
   }
   const hint = scriptHint(locale);
+  const usable = (item) => item && !isUnusableTranslation(item, originalText);
   if (hint) {
-    const scripted = candidates.find((item) => hint.test(item) && item.trim() !== originalText);
+    const scripted = candidates.find((item) => hint.test(item) && usable(item));
     if (scripted) return scripted.trim();
+    return "";
   }
-  const changed = candidates.find((item) => item.trim() && item.trim() !== originalText);
-  return (changed || primary || "").trim();
+  const changed = candidates.find((item) => usable(item));
+  return (changed || "").trim();
 }
 
 export function chunkLyricLines(lines, maxChars = TRANSLATE_MAX_CHARS) {
@@ -171,11 +220,35 @@ async function readJson(response) {
   }
 }
 
+function acceptTranslation(text, original, locale) {
+  if (isUnusableTranslation(text, original)) return "";
+  const hint = scriptHint(locale);
+  if (hint && !hint.test(text)) return "";
+  return String(text || "").trim();
+}
+
+async function translateGtx(text, locale, fetchFn) {
+  const payload = await readJson(await fetchFn(gtxUrl(text, locale)).catch(() => null));
+  return acceptTranslation(parseGtxPayload(payload), text, locale);
+}
+
+async function translateMyMemory(text, locale, fetchFn) {
+  const target = MYMEMORY_TARGETS[localeRoot(locale)] || translateTarget(locale);
+  const source = gtxSource(text);
+  const from = source === "zh-CN" ? "zh-CN" : source;
+  const pairs = source === "auto"
+    ? [["Autodetect", target], ["en", target]]
+    : [[from, target], ["Autodetect", target]];
+  for (const [from, to] of pairs) {
+    const payload = await readJson(await fetchFn(myMemoryUrl(text, to, from)).catch(() => null));
+    const translated = pickTranslatedText(payload, text, locale);
+    if (translated) return translated;
+  }
+  return "";
+}
+
 async function translateBlob(text, locale, fetchFn) {
-  const target = translateTarget(locale);
-  const url = myMemoryUrl(text, target);
-  const payload = await readJson(await fetchFn(url).catch(() => null));
-  return pickTranslatedText(payload, text, locale);
+  return (await translateGtx(text, locale, fetchFn)) || (await translateMyMemory(text, locale, fetchFn));
 }
 
 async function translateChunk(chunk, locale, fetchFn) {
@@ -183,12 +256,20 @@ async function translateChunk(chunk, locale, fetchFn) {
   const blob = await translateBlob(joined, locale, fetchFn);
   const aligned = alignTranslatedChunk(chunk, blob);
   if (aligned) return aligned;
-  const out = [];
-  for (const item of chunk) {
-    const translated = await translateBlob(item.text, locale, fetchFn);
-    out.push({ ...item, translated: translated && translated !== item.text ? translated : "" });
+  if (chunk.length === 1) {
+    return [{ ...chunk[0], translated: blob && blob !== chunk[0].text ? blob : "" }];
   }
-  return out;
+  const mid = Math.ceil(chunk.length / 2);
+  const left = await translateChunk(chunk.slice(0, mid), locale, fetchFn);
+  const right = await translateChunk(chunk.slice(mid), locale, fetchFn);
+  return [...left, ...right];
+}
+
+function hasUsableLines(lines, translations) {
+  return (translations || []).some((line, index) => {
+    const translated = String(line || "").trim();
+    return translated && translated !== String(lines[index] || "").trim() && !isUnusableTranslation(translated, lines[index]);
+  });
 }
 
 export async function translateLyricLines(text, locale, { fetchFn = fetch, cache = translateCache } = {}) {
@@ -209,7 +290,7 @@ export async function translateLyricLines(text, locale, { fetchFn = fetch, cache
     for (const item of done) translations[item.index] = item.translated || "";
   }
   const result = { needed: true, lines, translations };
-  cache?.set?.(key, result);
+  if (hasUsableLines(lines, translations)) cache?.set?.(key, result);
   return result;
 }
 

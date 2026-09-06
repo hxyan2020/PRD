@@ -109,8 +109,11 @@ import {
   alignTranslatedChunk,
   chunkLyricLines,
   detectLyricsLanguage,
+  gtxUrl,
   isSkippableLyricLine,
+  isUnusableTranslation,
   lyricsNeedTranslation,
+  parseGtxPayload,
   pickTranslatedText,
   splitLyricLines,
   translateLyricLines,
@@ -123,6 +126,11 @@ assert.equal(detectLyricsLanguage("أنا أحبك يا ليلى في الليل
 assert.equal(lyricsNeedTranslation("I've been tryna call you on the phone", "en"), false);
 assert.equal(lyricsNeedTranslation("I've been tryna call you on the phone", "zh"), true);
 assert.equal(lyricsNeedTranslation("我爱你 夜空中最亮的星", "zh"), false);
+assert.equal(isUnusableTranslation("MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY", "I rise"), true);
+assert.equal(isUnusableTranslation("但我仍会站起来", "But still, I rise"), false);
+assert.equal(parseGtxPayload([[["但我仍会站起来\n别惊讶", "But still, I rise\nDon't be surprised"]]]), "但我仍会站起来\n别惊讶");
+assert.match(gtxUrl("But still, I rise", "zh"), /translate\.googleapis\.com/);
+assert.match(gtxUrl("But still, I rise", "zh"), /tl=zh-CN/);
 assert.equal(isSkippableLyricLine("♪"), true);
 assert.equal(isSkippableLyricLine("Yeah"), false);
 assert.equal(isSkippableLyricLine("我爱你"), false);
@@ -163,15 +171,32 @@ const translated = await translateLyricLines("I love you\nI miss you", "zh", {
   cache: new Map(),
   fetchFn: async (url) => {
     zhCalls.push(url);
+    if (String(url).includes("translate.googleapis.com")) {
+      return {
+        ok: true,
+        json: async () => [[["我爱你\n我想你", "I love you\nI miss you"]]],
+      };
+    }
+    throw new Error(`unexpected ${url}`);
+  },
+});
+assert.equal(translated.needed, true);
+assert.deepEqual(translated.translations, ["我爱你", "我想你"]);
+assert.equal(zhCalls.length, 1);
+
+const memoryFallback = await translateLyricLines("I love you\nI miss you", "zh", {
+  cache: new Map(),
+  fetchFn: async (url) => {
+    if (String(url).includes("translate.googleapis.com")) {
+      return { ok: false, json: async () => ([]) };
+    }
     return {
       ok: true,
       json: async () => ({ responseData: { translatedText: "我爱你\n我想你" } }),
     };
   },
 });
-assert.equal(translated.needed, true);
-assert.deepEqual(translated.translations, ["我爱你", "我想你"]);
-assert.equal(zhCalls.length, 1);
+assert.deepEqual(memoryFallback.translations, ["我爱你", "我想你"]);
 
 const sameLang = await translateLyricLines("I love you on the phone tonight", "en", { cache: new Map(), fetchFn: async () => { throw new Error("should not fetch"); } });
 assert.equal(sameLang.needed, false);
