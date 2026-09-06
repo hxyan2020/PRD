@@ -6,6 +6,8 @@ export const CLIENT_ID_KEY = "canon.spotify.clientId";
 export const VERIFIER_KEY = "canon.spotify.code_verifier";
 export const STATE_KEY = "canon.spotify.state";
 export const PENDING_ADD_KEY = "canon.spotify.pendingAdd";
+export const PENDING_BEYOND_KEY = "canon.spotify.pendingBeyond";
+export const RETURN_HASH_KEY = "canon.spotify.returnHash";
 export const PLAYLIST_ID_KEY = "canon.spotify.playlistId";
 export const PLAYLIST_NAME = "Canon";
 export const SCOPES = [
@@ -118,6 +120,7 @@ export function clearSpotifySession(storage) {
   store?.removeItem?.(TOKEN_KEY);
   store?.removeItem?.(PLAYLIST_ID_KEY);
   store?.removeItem?.(PENDING_ADD_KEY);
+  store?.removeItem?.(PENDING_BEYOND_KEY);
 }
 
 export function setPendingAdd(spotifyId, storage) {
@@ -132,6 +135,33 @@ export function takePendingAdd(storage) {
   const id = String(store?.getItem?.(PENDING_ADD_KEY) || "").trim();
   store?.removeItem?.(PENDING_ADD_KEY);
   return id;
+}
+
+export function setPendingBeyond(on = true, storage) {
+  const store = storage || globalThis.sessionStorage || globalThis.localStorage;
+  if (on) store?.setItem?.(PENDING_BEYOND_KEY, "1");
+  else store?.removeItem?.(PENDING_BEYOND_KEY);
+}
+
+export function takePendingBeyond(storage) {
+  const store = storage || globalThis.sessionStorage || globalThis.localStorage;
+  const on = String(store?.getItem?.(PENDING_BEYOND_KEY) || "").trim() === "1";
+  store?.removeItem?.(PENDING_BEYOND_KEY);
+  return on;
+}
+
+export function rememberReturnHash(location = globalThis.location, storage) {
+  const store = storage || globalThis.sessionStorage;
+  const hash = String(location?.hash || "");
+  if (hash && hash !== "#") store?.setItem?.(RETURN_HASH_KEY, hash);
+  else store?.removeItem?.(RETURN_HASH_KEY);
+}
+
+export function takeReturnHash(storage) {
+  const store = storage || globalThis.sessionStorage;
+  const hash = String(store?.getItem?.(RETURN_HASH_KEY) || "");
+  store?.removeItem?.(RETURN_HASH_KEY);
+  return hash;
 }
 
 export function buildAuthorizeUrl({ clientId, redirect, challenge, state }) {
@@ -155,7 +185,8 @@ export async function beginSpotifyLogin({
   location,
 } = {}) {
   const clientId = getClientId(storage, envClientId);
-  if (!clientId) throw new Error("Add a Spotify client ID before connecting.");
+  if (!clientId) throw new Error("Spotify is not configured on this site.");
+  rememberReturnHash(location, session);
   const verifier = randomString(64);
   const state = randomString(24);
   const store = session || globalThis.sessionStorage;

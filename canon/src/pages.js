@@ -5,10 +5,14 @@ const PAGES = new Set([
   "log",
   "history",
   "recommend-log",
+  "listen",
+  "for-you",
+  "beyond",
 ]);
 
 function normalizePage(token) {
   if (token === "history" || token === "recommend-log") return "log";
+  if (token === "for-you" || token === "beyond") return "listen";
   return token;
 }
 
@@ -43,7 +47,7 @@ export function routeHash(page = "home", trackId = "") {
 }
 
 export function pageAllowsTrack(page) {
-  return page === "home" || page === "collections" || page === "log";
+  return page === "home" || page === "collections" || page === "log" || page === "listen";
 }
 
 export const ABOUT_SECTIONS = [

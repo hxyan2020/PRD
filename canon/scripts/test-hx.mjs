@@ -49,5 +49,6 @@ assert.deepEqual(parseRoute("#hx-monitor"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#hx-bots"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#hx-viewership"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#hx-ping"), { page: "home", trackId: "" });
+assert.deepEqual(parseRoute("#listen"), { page: "listen", trackId: "" });
 
 console.log("hx tests ok");

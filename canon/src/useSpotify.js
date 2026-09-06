@@ -7,10 +7,11 @@ import {
   fetchSpotifyProfile,
   getClientId,
   parseCallbackParams,
-  saveClientId,
   searchSpotifyTracks,
   setPendingAdd,
+  setPendingBeyond,
   takePendingAdd,
+  takeReturnHash,
   trackSavedOnSpotify,
   redirectUri,
 } from "./spotify.js";
@@ -22,7 +23,7 @@ export function useSpotify() {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState({});
-  const [clientId, setClientIdState] = useState(() => getClientId(undefined, ENV_CLIENT_ID));
+  const clientId = getClientId(undefined, ENV_CLIENT_ID);
 
   useEffect(() => {
     let cancelled = false;
@@ -39,6 +40,8 @@ export function useSpotify() {
         url.searchParams.delete("code");
         url.searchParams.delete("state");
         url.searchParams.delete("error");
+        const returnHash = takeReturnHash();
+        if (returnHash) url.hash = returnHash;
         window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
         if (!cancelled && result.error) setStatus(result.error);
         const pending = takePendingAdd();
@@ -71,10 +74,18 @@ export function useSpotify() {
 
   async function connect() {
     setStatus("");
-    await beginSpotifyLogin({
-      envClientId: ENV_CLIENT_ID,
-      location: window.location,
-    });
+    if (!getClientId(undefined, ENV_CLIENT_ID)) {
+      setStatus({ key: "spotify.notConfigured" });
+      return;
+    }
+    try {
+      await beginSpotifyLogin({
+        envClientId: ENV_CLIENT_ID,
+        location: window.location,
+      });
+    } catch (err) {
+      setStatus(err.message || { key: "spotify.notConfigured" });
+    }
   }
 
   function disconnect() {
@@ -84,11 +95,6 @@ export function useSpotify() {
     setStatus({ key: "spotify.disconnected" });
   }
 
-  function rememberClientId(id) {
-    saveClientId(id);
-    setClientIdState(String(id || "").trim());
-  }
-
   async function addTrack(track) {
     const spotifyId = track?.spotifyId;
     if (!spotifyId) {
@@ -96,8 +102,7 @@ export function useSpotify() {
       return;
     }
     if (!getClientId(undefined, ENV_CLIENT_ID)) {
-      setStatus({ key: "spotify.needClientId" });
-      document.getElementById("spotify-connect")?.scrollIntoView({ behavior: "smooth" });
+      setStatus({ key: "spotify.notConfigured" });
       return;
     }
     if (!user) {
@@ -126,14 +131,14 @@ export function useSpotify() {
 
   async function searchTracks({ query, market = "", offset = 0, limit = 20 } = {}) {
     if (!getClientId(undefined, ENV_CLIENT_ID)) {
-      setStatus({ key: "spotify.needClientId" });
-      document.getElementById("spotify-connect")?.scrollIntoView({ behavior: "smooth" });
-      throw new Error("Paste your Spotify client ID, then connect.");
+      setStatus({ key: "spotify.notConfigured" });
+      throw new Error("Spotify is not configured on this site.");
     }
     if (!user) {
+      setPendingBeyond(true);
       setStatus({ key: "spotify.needConnect" });
-      document.getElementById("spotify-connect")?.scrollIntoView({ behavior: "smooth" });
-      throw new Error("Connect Spotify to stream titles beyond the 1,000-work canon.");
+      await connect();
+      throw new Error("Authorize Spotify to stream titles beyond the 1,000-work canon.");
     }
     setBusy(true);
     try {
@@ -165,9 +170,9 @@ export function useSpotify() {
     busy,
     saved,
     clientId,
+    configured: Boolean(clientId),
     connect,
     disconnect,
-    rememberClientId,
     addTrack,
     addTracks,
     checkSaved,

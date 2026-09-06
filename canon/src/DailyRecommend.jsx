@@ -37,6 +37,10 @@ function reasonText(result, translate) {
   return translate(`reason.${key}`);
 }
 
+export function loadListenPrefs() {
+  return loadPrefs();
+}
+
 export default function DailyRecommend({
   tracks,
   countries,
@@ -264,9 +268,11 @@ export default function DailyRecommend({
               </button>
               <button
                 type="button"
-                onClick={() =>
-                  document.querySelector(".daily-card .lyrics")?.scrollIntoView({ behavior: "smooth", block: "start" })
-                }
+                onClick={() => {
+                  const toggle = document.querySelector(".daily-card .lyrics-toggle");
+                  if (toggle && toggle.getAttribute("aria-expanded") !== "true") toggle.click();
+                  document.querySelector(".daily-card .lyrics")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
               >
                 {t("lyrics")}
               </button>

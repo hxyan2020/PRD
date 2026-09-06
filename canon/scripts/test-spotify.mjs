@@ -10,8 +10,12 @@ import {
   parseTokenResponse,
   saveClientId,
   setPendingAdd,
+  setPendingBeyond,
   spotifyTrackUri,
   takePendingAdd,
+  takePendingBeyond,
+  rememberReturnHash,
+  takeReturnHash,
   tokenIsFresh,
   redirectUri,
 } from "../src/spotify.js";
@@ -52,6 +56,25 @@ assert.equal(getClientId(memory, "env-id"), "env-id");
 setPendingAdd("track-1", memory);
 assert.equal(takePendingAdd(memory), "track-1");
 assert.equal(takePendingAdd(memory), "");
+
+const session = {
+  data: new Map(),
+  getItem(key) {
+    return this.data.has(key) ? this.data.get(key) : null;
+  },
+  setItem(key, value) {
+    this.data.set(key, String(value));
+  },
+  removeItem(key) {
+    this.data.delete(key);
+  },
+};
+rememberReturnHash({ hash: "#listen" }, session);
+assert.equal(takeReturnHash(session), "#listen");
+assert.equal(takeReturnHash(session), "");
+setPendingBeyond(true, session);
+assert.equal(takePendingBeyond(session), true);
+assert.equal(takePendingBeyond(session), false);
 
 const url = buildAuthorizeUrl({
   clientId: "cid",

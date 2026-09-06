@@ -1,8 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { LanguageSwitcher, useI18n } from "./I18n.jsx";
 import { ABOUT_SECTIONS, TERMS_SECTIONS } from "./pages.js";
-import { useI18n } from "./I18n.jsx";
 
 const MENU_LINKS = [
+  ["listen", "listenNav"],
   ["collections", "collections"],
   ["log", "recommendLog"],
   ["about", "aboutNav"],
@@ -39,20 +40,23 @@ export function SiteMenu({ page }) {
 
   return (
     <div className={`menu-bar ${open ? "is-open" : ""}`} ref={rootRef}>
-      <button
-        type="button"
-        className="menu-toggle"
-        aria-expanded={open}
-        aria-controls={navId}
-        aria-label={open ? t("menuClose") : t("menuOpen")}
-        onClick={() => setOpen((value) => !value)}
-      >
-        <span className="menu-toggle-bars" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
-      </button>
+      <div className="menu-tools">
+        <LanguageSwitcher compact />
+        <button
+          type="button"
+          className="menu-toggle"
+          aria-expanded={open}
+          aria-controls={navId}
+          aria-label={open ? t("menuClose") : t("menuOpen")}
+          onClick={() => setOpen((value) => !value)}
+        >
+          <span className="menu-toggle-bars" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
+        </button>
+      </div>
       <nav id={navId} className="menu-nav" aria-label={t("menu")}>
         {MENU_LINKS.map(([hash, key]) => (
           <a key={hash} href={`#${hash}`} className={page === hash ? "is-on" : ""}>

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "./I18n.jsx";
+import { formatStatus } from "./i18n.js";
 import TrackCard from "./TrackCard.jsx";
 import {
   buildBeyondQuery,
@@ -7,6 +8,7 @@ import {
   extrasFromSearch,
   marketForCountry,
 } from "./beyond.js";
+import { takePendingBeyond, setPendingBeyond } from "./spotify.js";
 
 export default function BeyondCanon({
   prefs,
@@ -20,7 +22,7 @@ export default function BeyondCanon({
   onRecommend,
   spotify,
 }) {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const [shown, setShown] = useState([]);
   const [offset, setOffset] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -34,12 +36,19 @@ export default function BeyondCanon({
   const activePrefs = [mood, country, genre].filter(Boolean);
   const catalogIds = catalogSpotifyIds(catalog);
 
+  useEffect(() => {
+    if (!spotify?.user || !takePendingBeyond()) return undefined;
+    fetchPage(0, true);
+    return undefined;
+  }, [spotify?.user]);
+
   async function fetchPage(nextOffset, replace) {
     if (!spotify?.user) {
+      setPendingBeyond(true);
       setErrorKey("spotify.needConnect");
       setErrorText("");
       spotify?.setStatus?.({ key: "spotify.needConnect" });
-      document.getElementById("spotify-connect")?.scrollIntoView({ behavior: "smooth" });
+      await spotify?.connect?.();
       return;
     }
     setBusy(true);
@@ -102,6 +111,15 @@ export default function BeyondCanon({
           ) : null}
         </div>
         {!spotify?.user ? <p className="stats-note">{t("beyondNeedSpotify")}</p> : null}
+        {spotify?.user ? (
+          <p className="spotify-user">
+            {t("connectedAs", { name: spotify.user.display_name || spotify.user.id })}{" "}
+            <button type="button" className="text-btn" onClick={spotify.disconnect}>
+              {t("disconnect")}
+            </button>
+          </p>
+        ) : null}
+        {spotify?.status ? <p className="spotify-status">{formatStatus(locale, spotify.status)}</p> : null}
         {errorKey ? <p className="spotify-status">{t(errorKey)}</p> : null}
         {errorText ? <p className="spotify-status">{errorText}</p> : null}
         {tried && shown.length > 0 ? <p className="result-count">{t("beyondCount", { n: shown.length })}</p> : null}

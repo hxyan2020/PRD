@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import BeyondCanon from "./BeyondCanon.jsx";
 import CollectButton from "./CollectButton.jsx";
 import Collections from "./Collections.jsx";
-import DailyRecommend from "./DailyRecommend.jsx";
-import { LanguageSwitcher, useI18n } from "./I18n.jsx";
+import DailyRecommend, { loadListenPrefs } from "./DailyRecommend.jsx";
+import { useI18n } from "./I18n.jsx";
 import RecommendLog from "./RecommendLog.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
-import SpotifyConnect from "./SpotifyConnect.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import TrackCard from "./TrackCard.jsx";
 import { loadExtraTracks, mergeExtraTracks, saveExtraTracks } from "./beyond.js";
@@ -15,7 +14,7 @@ import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } fr
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
 import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
-import { displayEra } from "./i18n.js";
+import { displayEra, formatStatus } from "./i18n.js";
 import { hxPathForRoute, sendHxBeacon } from "./hx.js";
 import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
 import { SiteDoc, SiteMenu } from "./SitePages.jsx";
@@ -51,7 +50,7 @@ export default function App() {
     return merged;
   });
   const [recommendLog, setRecommendLog] = useState(loadRecommendLog);
-  const [listenPrefs, setListenPrefs] = useState({ mood: "", country: "", genre: "" });
+  const [listenPrefs, setListenPrefs] = useState(loadListenPrefs);
   const [extras, setExtras] = useState(loadExtraTracks);
   const spotify = useSpotify();
 
@@ -197,6 +196,11 @@ export default function App() {
   return (
     <div className={`app ${selected ? "has-drawer" : ""}`}>
       <SiteMenu page={page} />
+      {spotify.status && page !== "listen" ? (
+        <p className="spotify-status app-spotify-status" role="status">
+          {formatStatus(locale, spotify.status)}
+        </p>
+      ) : null}
       <header className="mast">
         <div className="mast-brand">
           <p className="eyebrow">{t("archiveEyebrow")}</p>
@@ -228,15 +232,47 @@ export default function App() {
             </div>
           </dl>
           <p className="stats-note">{t("statsNote")}</p>
-          <LanguageSwitcher />
         </div>
       </header>
 
       {page === "about" || page === "terms" ? (
         <SiteDoc page={page} />
+      ) : page === "listen" ? (
+        <>
+          <DailyRecommend
+            tracks={tracks}
+            countries={facets.countries}
+            genres={facets.genres}
+            onListen={(track) => openTrack(track, true)}
+            onView={(track) => rememberView(track.id)}
+            onRecommend={onRecommend}
+            collectedIds={collectedIds}
+            collectedAt={collectedAt}
+            onToggleCollect={onToggleCollect}
+            spotify={spotify}
+            onPrefs={setListenPrefs}
+          />
+          <BeyondCanon
+            prefs={listenPrefs}
+            catalog={tracks}
+            selectedId={selectedId}
+            collectedIds={collectedIds}
+            collectedAt={collectedAt}
+            onToggleCollect={onToggleCollect}
+            onOpen={openTrack}
+            onRecommend={onRecommend}
+            spotify={spotify}
+            onExtras={(list) => {
+              setExtras((current) => {
+                const next = mergeExtraTracks(current, list);
+                saveExtraTracks(next);
+                return next;
+              });
+            }}
+          />
+        </>
       ) : page === "collections" ? (
         <>
-          <SpotifyConnect spotify={spotify} />
           <Collections
             tracks={library}
             collectedIds={collectedIds}
@@ -253,41 +289,6 @@ export default function App() {
         </>
       ) : (
         <>
-      <SpotifyConnect spotify={spotify} />
-
-      <DailyRecommend
-        tracks={tracks}
-        countries={facets.countries}
-        genres={facets.genres}
-        onListen={(track) => openTrack(track, true)}
-        onView={(track) => rememberView(track.id)}
-        onRecommend={onRecommend}
-        collectedIds={collectedIds}
-        collectedAt={collectedAt}
-        onToggleCollect={onToggleCollect}
-        spotify={spotify}
-        onPrefs={setListenPrefs}
-      />
-
-      <BeyondCanon
-        prefs={listenPrefs}
-        catalog={tracks}
-        selectedId={selectedId}
-        collectedIds={collectedIds}
-        collectedAt={collectedAt}
-        onToggleCollect={onToggleCollect}
-        onOpen={openTrack}
-        onRecommend={onRecommend}
-        spotify={spotify}
-        onExtras={(list) => {
-          setExtras((current) => {
-            const next = mergeExtraTracks(current, list);
-            saveExtraTracks(next);
-            return next;
-          });
-        }}
-      />
-
       <section className="controls" aria-label={t("filterArchive")}>
         <input
           className="search"

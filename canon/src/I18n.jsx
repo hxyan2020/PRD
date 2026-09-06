@@ -55,11 +55,14 @@ function FlagImage({ locale, label }) {
   );
 }
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ compact = false } = {}) {
   const { locale, setLocale, t } = useI18n();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
   const current = languageMeta(locale);
+  const labelId = compact ? "ui-language-label-menu" : "ui-language-label";
+  const controlId = compact ? "ui-language-menu-bar" : "ui-language";
+  const listId = compact ? "ui-language-menu-bar-list" : "ui-language-menu";
 
   useEffect(() => {
     if (!open) return undefined;
@@ -78,26 +81,32 @@ export function LanguageSwitcher() {
   }, [open]);
 
   return (
-    <div className="lang-switcher" ref={rootRef}>
-      <span className="lang-switcher-label" id="ui-language-label">
-        {t("language")}
-      </span>
+    <div className={`lang-switcher ${compact ? "is-compact" : ""}`} ref={rootRef}>
+      {compact ? (
+        <span className="visually-hidden" id={labelId}>
+          {t("language")}
+        </span>
+      ) : (
+        <span className="lang-switcher-label" id={labelId}>
+          {t("language")}
+        </span>
+      )}
       <div className="lang-select-wrap">
         <button
           type="button"
           className={`lang-select ${open ? "is-open" : ""}`}
-          id="ui-language"
-          aria-labelledby="ui-language-label"
+          id={controlId}
+          aria-labelledby={labelId}
           aria-haspopup="listbox"
           aria-expanded={open}
-          aria-controls="ui-language-menu"
+          aria-controls={listId}
           onClick={() => setOpen((value) => !value)}
         >
           <FlagImage locale={current.id} label={current.country} />
           <span className="lang-select-name">{current.native}</span>
         </button>
         {open ? (
-          <ul className="lang-menu" id="ui-language-menu" role="listbox" aria-labelledby="ui-language-label">
+          <ul className="lang-menu" id={listId} role="listbox" aria-labelledby={labelId}>
             {LANGUAGES.map((lang) => (
               <li key={lang.id} role="presentation">
                 <button
@@ -118,7 +127,7 @@ export function LanguageSwitcher() {
           </ul>
         ) : null}
       </div>
-      <p className="lang-note">{t("languageNote")}</p>
+      {compact ? null : <p className="lang-note">{t("languageNote")}</p>}
     </div>
   );
 }

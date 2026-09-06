@@ -16,10 +16,10 @@ export const LEGAL = {
       "Works are drawn from Wikidata items that already carry a Spotify track ID, then ordered by how many Wikipedia language editions mention them — a rough proxy for worldwide cultural memory. Every ID is checked with Spotify’s public oEmbed before it enters the archive. Play counts are joined from published stream tables. The ranking is an editorial device, not a score of artistic worth.",
     aboutDoTitle: "What you can do here",
     aboutDoBody:
-      "You can browse and search the archive; set mood, country, or genre for a daily recommendation (blank fields fall back to the most streamed titles); use Surprise me for another work at once; Collect Music in this browser with the date you saved it, then open the Collections page; and keep a dated log of daily picks and surprises on the Recommendation log page. Header counts show the 1,000-song archive plus unique titles you have viewed or collected here.",
+      "You can browse and search the archive; open For you in the menu for a daily recommendation (set mood, country, or genre, or leave them blank for the most streamed titles) and to stream more from Spotify beyond the canon; use Surprise me for another work at once; Collect Music in this browser with the date you saved it, then open the Collections page; and keep a dated log of daily picks and surprises on the Recommendation log page. Header counts show the 1,000-song archive plus unique titles you have viewed or collected here.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "After you authorize Spotify, Add to Spotify saves Music to Liked Songs and to a private playlist named Canon — your album of this archive. Official artist albums are never edited. Canon uses Spotify’s Authorization Code with PKCE and does not keep a client secret in the browser. Playback itself is provided by Spotify. Spotify, Wikipedia, Wikidata, and other sources remain independent of this archive.",
+      "Click Add to Spotify to authorize your account. Canon then saves Music to Liked Songs and to a private playlist named Canon — your album of this archive. Official artist albums are never edited. Canon uses Spotify’s Authorization Code with PKCE and does not keep a client secret in the browser. Playback itself is provided by Spotify. Spotify, Wikipedia, Wikidata, and other sources remain independent of this archive.",
     aboutLangTitle: "Languages",
     aboutLangBody:
       "The interface is available in eight widely spoken languages. Switching language changes menus and buttons only. Song titles, artists, and catalog notes stay as published.",
@@ -52,7 +52,7 @@ export const LEGAL = {
       "Links, embeds, and Add to Spotify are provided by or through Spotify. Canon never edits official artist albums. Wikipedia, Wikidata, play-count publishers, and Spotify are separate organisations. Their terms, availability, and privacy rules govern those services. Canon is not affiliated with, endorsed by, or a partner of Spotify AB except as a client of public Spotify interfaces you authorize.",
     terms5Title: "5. Information stored here",
     terms5Body:
-      "Canon stores listening preferences, collected titles and dates, viewed titles, recommendation history, interface language, an optional Spotify client ID, and tokens from a Spotify login you start, in this browser’s local storage. Clearing site data for this origin removes them. Anonymous page views (path, host, referer) are also sent to operations analytics. This app does not operate a Canon account server and does not require an email address to browse the archive.",
+      "Canon stores listening preferences, collected titles and dates, viewed titles, recommendation history, interface language, and tokens from a Spotify login you start, in this browser’s local storage. Clearing site data for this origin removes them. Anonymous page views (path, host, referer) are also sent to operations analytics. This app does not operate a Canon account server and does not require an email address to browse the archive.",
     terms6Title: "6. Intellectual property",
     terms6Body:
       "Music, names, lyrics, artwork, and related rights belong to their owners. Streaming happens through Spotify, not by Canon hosting audio files. Canon’s own interface wording and the editorial arrangement of this shortlist are provided so you can run and use this project. Encyclopedia extracts remain subject to their original licenses.",
@@ -82,7 +82,7 @@ export const LEGAL = {
       "作品来自已带 Spotify 曲目 ID 的维基数据条目，再按维基百科语言版本数量排序——作为世界文化记忆的粗略代理。每条 ID 在进入档案前都经 Spotify 公开 oEmbed 校验。播放量来自已公布的串流表。名次是编辑排序，不是艺术价值打分。",
     aboutDoTitle: "你可以做什么",
     aboutDoBody:
-      "你可以浏览和搜索档案；按心情、国家或类型获取每日推荐（留空则从播放最多的作品中选）；用「随机一首」立刻换一首；在此浏览器中收藏并记下日期；并保存带日期的每日与随机记录。页眉统计显示 1,000 首档案，以及你在此浏览或收藏过的不重复曲目。",
+      "你可以浏览和搜索档案；在菜单的「为你推荐」里按心情、国家或类型获取每日推荐（留空则从播放最多的作品中选），并继续收听档案之外的曲目；用「随机一首」立刻换一首；在此浏览器中收藏并记下日期；并保存带日期的每日与随机记录。页眉统计显示 1,000 首档案，以及你在此浏览或收藏过的不重复曲目。",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
       "授权 Spotify 后，「加入 Spotify」会把音乐存入已点赞歌曲和名为 Canon 的私人播放列表——也就是你的本档案专辑。官方艺人专辑永不被修改。Canon 使用带 PKCE 的授权码流程，不在浏览器中保存客户端密钥。播放由 Spotify 提供。Spotify、维基百科、维基数据及其他来源均独立于本档案。",
@@ -116,7 +116,7 @@ export const LEGAL = {
       "链接、内嵌播放与「加入 Spotify」由 Spotify 提供或经由其接口。Canon 从不修改官方艺人专辑。维基百科、维基数据、播放量发布方与 Spotify 均为独立组织，其条款、可用性与隐私规则适用于那些服务。除作为你授权的公开 Spotify 接口的客户端外，Canon 与 Spotify AB 无附属、代言或合作关系。",
     terms5Title: "5. 储存在此处的信息",
     terms5Body:
-      "Canon 将聆听偏好、收藏曲目与日期、已浏览曲目、推荐历史、界面语言、可选的 Spotify 客户端 ID，以及你发起登录后的令牌，存在此浏览器的本地存储中。清除本源的站点数据即会删除它们。匿名页面浏览（路径、主机、来源）也会发到运营统计。本应用不运营 Canon 账号服务器，浏览档案也不需要电子邮箱。",
+      "Canon 将聆听偏好、收藏曲目与日期、已浏览曲目、推荐历史、界面语言，以及你发起登录后的令牌，存在此浏览器的本地存储中。清除本源的站点数据即会删除它们。匿名页面浏览（路径、主机、来源）也会发到运营统计。本应用不运营 Canon 账号服务器，浏览档案也不需要电子邮箱。",
     terms6Title: "6. 知识产权",
     terms6Body:
       "音乐、名称、歌词、封面及相关权利属于其权利人。流媒体通过 Spotify 进行，并非由 Canon 托管音频。Canon 自身的界面文案与本短名单的编辑编排供你运行与使用本项目。百科摘录仍受其原始许可约束。",
@@ -181,7 +181,7 @@ export const LEGAL = {
       "लिंक, एम्बेड और Spotify में जोड़ें Spotify द्वारा या उसके माध्यम से दिए जाते हैं। Canon आधिकारिक कलाकार एल्बम नहीं बदलता। विकिपीडिया, विकिडेटा, प्ले-गणना प्रकाशक और Spotify अलग संगठन हैं। उनकी शर्तें, उपलब्धता और गोपनीयता उन सेवाओं पर लागू होती हैं। आपके द्वारा अधिकृत सार्वजनिक Spotify इंटरफ़ेस के क्लाइंट के अलावा Canon Spotify AB से संबद्ध, समर्थित या भागीदार नहीं है।",
     terms5Title: "5. यहाँ संग्रहित जानकारी",
     terms5Body:
-      "Canon सुनने की पसंद, संग्रहित शीर्षक और तिथियाँ, देखे शीर्षक, सिफारिश इतिहास, इंटरफ़ेस भाषा, वैकल्पिक Spotify क्लाइंट ID, और आपके शुरू किए लॉगिन के टोकन इस ब्राउज़र के लोकल स्टोरेज में रखता है। इस ओरिजिन का साइट डेटा साफ़ करने से वे हट जाते हैं। अनाम पेज व्यू (path, host, referer) संचालन आँकड़ों को भी जाते हैं। यह ऐप Canon खाता सर्वर नहीं चलाता और संग्रह देखने के लिए ईमेल नहीं माँगता।",
+      "Canon सुनने की पसंद, संग्रहित शीर्षक और तिथियाँ, देखे शीर्षक, सिफारिश इतिहास, इंटरफ़ेस भाषा, और आपके शुरू किए लॉगिन के टोकन इस ब्राउज़र के लोकल स्टोरेज में रखता है। इस ओरिजिन का साइट डेटा साफ़ करने से वे हट जाते हैं। अनाम पेज व्यू (path, host, referer) संचालन आँकड़ों को भी जाते हैं। यह ऐप Canon खाता सर्वर नहीं चलाता और संग्रह देखने के लिए ईमेल नहीं माँगता।",
     terms6Title: "6. बौद्धिक संपदा",
     terms6Body:
       "संगीत, नाम, गीत, कलाकृति और संबंधित अधिकार उनके स्वामियों के हैं। स्ट्रीमिंग Spotify के माध्यम से होती है, Canon ऑडियो फ़ाइलें होस्ट नहीं करता। Canon का इंटरफ़ेस पाठ और इस शॉर्टलिस्ट की संपादकीय व्यवस्था इस परियोजना को चलाने और उपयोग करने के लिए है। विश्वकोश अंश मूल लाइसेंस के अधीन रहते हैं।",
@@ -248,7 +248,7 @@ export const LEGAL = {
       "Enlaces, incrustaciones y Añadir a Spotify se ofrecen por o a través de Spotify. Canon no edita álbumes oficiales. Wikipedia, Wikidata, quienes publican recuentos y Spotify son organizaciones distintas. Sus términos, disponibilidad y privacidad rigen esos servicios. Canon no está afiliado, respaldado ni es socio de Spotify AB salvo como cliente de las interfaces públicas de Spotify que tú autorizas.",
     terms5Title: "5. Información guardada aquí",
     terms5Body:
-      "Canon guarda preferencias de escucha, títulos coleccionados y fechas, títulos vistos, historial de recomendaciones, idioma de la interfaz, un ID de cliente de Spotify opcional y tokens de un inicio de sesión de Spotify que tú empiezas, en el almacenamiento local de este navegador. Borrar los datos del sitio de este origen los elimina. Las vistas anónimas (ruta, host, referer) también van a las analíticas de operaciones. Esta app no opera un servidor de cuentas Canon ni pide un correo para explorar el archivo.",
+      "Canon guarda preferencias de escucha, títulos coleccionados y fechas, títulos vistos, historial de recomendaciones, idioma de la interfaz y tokens de un inicio de sesión de Spotify que tú empiezas, en el almacenamiento local de este navegador. Borrar los datos del sitio de este origen los elimina. Las vistas anónimas (ruta, host, referer) también van a las analíticas de operaciones. Esta app no opera un servidor de cuentas Canon ni pide un correo para explorar el archivo.",
     terms6Title: "6. Propiedad intelectual",
     terms6Body:
       "La música, nombres, letras, arte y derechos relacionados pertenecen a sus dueños. La reproducción ocurre a través de Spotify; Canon no aloja archivos de audio. El texto de la interfaz de Canon y el orden editorial de esta lista se ofrecen para que puedas ejecutar y usar este proyecto. Los extractos enciclopédicos siguen sujetos a sus licencias originales.",
@@ -315,7 +315,7 @@ export const LEGAL = {
       "Liens, lecteurs intégrés et Ajouter à Spotify sont fournis par ou via Spotify. Canon ne modifie jamais les albums officiels. Wikipédia, Wikidata, les éditeurs de comptes d’écoutes et Spotify sont des organisations distinctes. Leurs conditions, disponibilité et confidentialité régissent ces services. Canon n’est ni affilié, ni cautionné, ni partenaire de Spotify AB, sauf en tant que client des interfaces Spotify publiques que vous autorisez.",
     terms5Title: "5. Informations stockées ici",
     terms5Body:
-      "Canon stocke préférences d’écoute, titres collectionnés et dates, titres consultés, historique des recommandations, langue de l’interface, un ID client Spotify facultatif et les jetons d’une connexion Spotify que vous lancez, dans le stockage local de ce navigateur. Effacer les données du site pour cette origine les supprime. Les vues anonymes (chemin, hôte, referer) partent aussi vers les statistiques d’exploitation. Cette application n’exploite pas de serveur de comptes Canon et n’exige pas d’e-mail pour parcourir l’archive.",
+      "Canon stocke préférences d’écoute, titres collectionnés et dates, titres consultés, historique des recommandations, langue de l’interface et les jetons d’une connexion Spotify que vous lancez, dans le stockage local de ce navigateur. Effacer les données du site pour cette origine les supprime. Les vues anonymes (chemin, hôte, referer) partent aussi vers les statistiques d’exploitation. Cette application n’exploite pas de serveur de comptes Canon et n’exige pas d’e-mail pour parcourir l’archive.",
     terms6Title: "6. Propriété intellectuelle",
     terms6Body:
       "Musique, noms, paroles, visuels et droits associés appartiennent à leurs titulaires. La lecture passe par Spotify ; Canon n’héberge pas de fichiers audio. Le texte d’interface de Canon et l’agencement éditorial de cette liste sont fournis pour que vous puissiez faire fonctionner et utiliser ce projet. Les extraits encyclopédiques restent soumis à leurs licences d’origine.",
@@ -382,7 +382,7 @@ export const LEGAL = {
       "الروابط والتضمين و«أضف إلى Spotify» تُقدَّم من Spotify أو عبره. لا يعدّل Canon ألبومات الفنانين الرسمية. ويكيبيديا وويكي بيانات وناشرو أعداد التشغيل وSpotify منظمات منفصلة. شروطها وتوافرها وخصوصيتها تحكم تلك الخدمات. Canon غير منتسب إلى Spotify AB ولا مصادق عليه منها ولا شريك لها إلا كعميل لواجهات Spotify العامة التي تفوّضها.",
     terms5Title: "5. المعلومات المخزّنة هنا",
     terms5Body:
-      "يخزّن Canon تفضيلات الاستماع والعناوين المجمّعة وتواريخها والعناوين المشاهدة وتاريخ التوصيات ولغة الواجهة ومعرّف عميل Spotify اختياريًا ورموز تسجيل دخول Spotify الذي تبدأه، في التخزين المحلي لهذا المتصفح. مسح بيانات الموقع لهذا الأصل يحذفها. تُرسل مشاهدات مجهولة (المسار والمضيف والمُحيل) أيضاً إلى إحصاءات التشغيل. لا يشغّل هذا التطبيق خادم حسابات Canon ولا يطلب بريدًا لتصفح الأرشيف.",
+      "يخزّن Canon تفضيلات الاستماع والعناوين المجمّعة وتواريخها والعناوين المشاهدة وتاريخ التوصيات ولغة الواجهة ورموز تسجيل دخول Spotify الذي تبدأه، في التخزين المحلي لهذا المتصفح. مسح بيانات الموقع لهذا الأصل يحذفها. تُرسل مشاهدات مجهولة (المسار والمضيف والمُحيل) أيضاً إلى إحصاءات التشغيل. لا يشغّل هذا التطبيق خادم حسابات Canon ولا يطلب بريدًا لتصفح الأرشيف.",
     terms6Title: "6. الملكية الفكرية",
     terms6Body:
       "الموسيقى والأسماء والكلمات والأغلفة والحقوق المرتبطة ملك لأصحابها. يتم البث عبر Spotify وليس باستضافة Canon لملفات الصوت. نص واجهة Canon والترتيب التحريري لهذه القائمة مقدَّمان لتشغيل هذا المشروع واستخدامه. تظل مقتطفات الموسوعة خاضعة لتراخيصها الأصلية.",
@@ -449,7 +449,7 @@ export const LEGAL = {
       "লিংক, এমবেড এবং Spotify-তে যোগ Spotify দিয়ে বা তার মাধ্যমে দেওয়া হয়। Canon অফিসিয়াল শিল্পী অ্যালবাম সম্পাদনা করে না। উইকিপিডিয়া, Wikidata, প্লে-গণনা প্রকাশক ও Spotify আলাদা সংস্থা। তাদের শর্ত, প্রাপ্যতা ও গোপনীয়তা সেই সেবাগুলো নিয়ন্ত্রণ করে। আপনি অনুমোদিত পাবলিক Spotify ইন্টারফেসের ক্লায়েন্ট ছাড়া Canon Spotify AB-এর সহযোগী, সমর্থিত বা অংশীদার নয়।",
     terms5Title: "5. এখানে রাখা তথ্য",
     terms5Body:
-      "Canon শোনার পছন্দ, সংগৃহীত শিরোনাম ও তারিখ, দেখা শিরোনাম, সুপারিশ ইতিহাস, ইন্টারফেস ভাষা, ঐচ্ছিক Spotify ক্লায়েন্ট ID এবং আপনি শুরু করা Spotify লগইনের টোকেন এই ব্রাউজারের লোকাল স্টোরেজে রাখে। এই অরিজিনের সাইট ডেটা মুছলে সেগুলো চলে যায়। বেনামি পেজ ভিউ (path, host, referer) অপারেশন পরিসংখ্যানেও যায়। এই অ্যাপ Canon অ্যাকাউন্ট সার্ভার চালায় না এবং আর্কাইভ দেখতে ইমেইল চায় না।",
+      "Canon শোনার পছন্দ, সংগৃহীত শিরোনাম ও তারিখ, দেখা শিরোনাম, সুপারিশ ইতিহাস, ইন্টারফেস ভাষা এবং আপনি শুরু করা Spotify লগইনের টোকেন এই ব্রাউজারের লোকাল স্টোরেজে রাখে। এই অরিজিনের সাইট ডেটা মুছলে সেগুলো চলে যায়। বেনামি পেজ ভিউ (path, host, referer) অপারেশন পরিসংখ্যানেও যায়। এই অ্যাপ Canon অ্যাকাউন্ট সার্ভার চালায় না এবং আর্কাইভ দেখতে ইমেইল চায় না।",
     terms6Title: "6. বুদ্ধিবৃত্তিক সম্পত্তি",
     terms6Body:
       "সঙ্গীত, নাম, গানের কথা, আর্টওয়ার্ক ও সংশ্লিষ্ট অধিকার মালিকদের। স্ট্রিমিং হয় Spotify দিয়ে; Canon অডিও ফাইল হোস্ট করে না। Canon-এর ইন্টারফেস লেখা ও এই বাছাইয়ের সম্পাদকীয় বিন্যাস এই প্রকল্প চালানো ও ব্যবহারের জন্য। বিশ্বকোষ উদ্ধৃতি মূল লাইসেন্সের অধীন থাকে।",
@@ -516,7 +516,7 @@ export const LEGAL = {
       "Links, embeds e Adicionar ao Spotify são oferecidos pelo ou via Spotify. A Canon nunca edita álbuns oficiais. Wikipédia, Wikidata, quem publica contagens de plays e o Spotify são organizações distintas. Os termos, a disponibilidade e a privacidade deles regem esses serviços. A Canon não é afiliada, endossada nem parceira da Spotify AB, salvo como cliente das interfaces públicas do Spotify que você autoriza.",
     terms5Title: "5. Informações guardadas aqui",
     terms5Body:
-      "A Canon guarda preferências de escuta, títulos colecionados e datas, títulos vistos, histórico de recomendações, idioma da interface, um ID de cliente do Spotify opcional e tokens de um login do Spotify que você inicia, no armazenamento local deste navegador. Limpar os dados do site desta origem os remove. Visualizações anônimas (path, host, referer) também vão às análises de operação. Este app não opera um servidor de contas Canon e não pede e-mail para navegar no arquivo.",
+      "A Canon guarda preferências de escuta, títulos colecionados e datas, títulos vistos, histórico de recomendações, idioma da interface e tokens de um login do Spotify que você inicia, no armazenamento local deste navegador. Limpar os dados do site desta origem os remove. Visualizações anônimas (path, host, referer) também vão às análises de operação. Este app não opera um servidor de contas Canon e não pede e-mail para navegar no arquivo.",
     terms6Title: "6. Propriedade intelectual",
     terms6Body:
       "Música, nomes, letras, arte e direitos relacionados pertencem aos seus donos. A reprodução ocorre pelo Spotify; a Canon não hospeda arquivos de áudio. O texto da interface da Canon e o arranjo editorial desta lista existem para você executar e usar este projeto. Extratos enciclopédicos continuam sujeitos às licenças originais.",

@@ -10,6 +10,8 @@ export const LYRICS = {
     lyricsTranslating: "Translating lyrics…",
     lyricsTranslationNote: "Line-by-line translation into {language}.",
     lyricsTranslationFailed: "A translation could not be loaded.",
+    lyricsShow: "Show lyrics",
+    lyricsHide: "Hide lyrics",
   },
   zh: {
     lyrics: "歌词",
@@ -22,6 +24,8 @@ export const LYRICS = {
     lyricsTranslating: "正在翻译歌词…",
     lyricsTranslationNote: "逐行译成{language}。",
     lyricsTranslationFailed: "无法加载译文。",
+    lyricsShow: "显示歌词",
+    lyricsHide: "收起歌词",
   },
   hi: {
     lyrics: "गीत",
@@ -34,6 +38,8 @@ export const LYRICS = {
     lyricsTranslating: "गीत अनूदित हो रहे हैं…",
     lyricsTranslationNote: "{language} में पंक्ति-दर-पंक्ति अनुवाद।",
     lyricsTranslationFailed: "अनुवाद नहीं आ सका।",
+    lyricsShow: "गीत दिखाएँ",
+    lyricsHide: "गीत छिपाएँ",
   },
   es: {
     lyrics: "Letra",
@@ -46,6 +52,8 @@ export const LYRICS = {
     lyricsTranslating: "Traduciendo la letra…",
     lyricsTranslationNote: "Traducción línea a línea al {language}.",
     lyricsTranslationFailed: "No se pudo cargar la traducción.",
+    lyricsShow: "Mostrar letra",
+    lyricsHide: "Ocultar letra",
   },
   fr: {
     lyrics: "Paroles",
@@ -58,6 +66,8 @@ export const LYRICS = {
     lyricsTranslating: "Traduction des paroles…",
     lyricsTranslationNote: "Traduction ligne par ligne en {language}.",
     lyricsTranslationFailed: "La traduction n’a pas pu être chargée.",
+    lyricsShow: "Afficher les paroles",
+    lyricsHide: "Masquer les paroles",
   },
   ar: {
     lyrics: "كلمات",
@@ -70,6 +80,8 @@ export const LYRICS = {
     lyricsTranslating: "جارٍ ترجمة الكلمات…",
     lyricsTranslationNote: "ترجمة سطرًا بسطر إلى {language}.",
     lyricsTranslationFailed: "تعذّر تحميل الترجمة.",
+    lyricsShow: "إظهار الكلمات",
+    lyricsHide: "إخفاء الكلمات",
   },
   bn: {
     lyrics: "গানের কথা",
@@ -82,6 +94,8 @@ export const LYRICS = {
     lyricsTranslating: "গানের কথা অনুবাদ হচ্ছে…",
     lyricsTranslationNote: "{language}-এ সারি সারি অনুবাদ।",
     lyricsTranslationFailed: "অনুবাদ আনা যায়নি।",
+    lyricsShow: "গানের কথা দেখুন",
+    lyricsHide: "গানের কথা লুকান",
   },
   pt: {
     lyrics: "Letra",
@@ -94,5 +108,7 @@ export const LYRICS = {
     lyricsTranslating: "Traduzindo a letra…",
     lyricsTranslationNote: "Tradução linha a linha para {language}.",
     lyricsTranslationFailed: "Não foi possível carregar a tradução.",
+    lyricsShow: "Mostrar letra",
+    lyricsHide: "Ocultar letra",
   },
 };

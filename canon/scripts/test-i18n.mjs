@@ -41,6 +41,8 @@ for (const locale of LANGUAGE_IDS) {
 
 assert.equal(t("en", "collect"), "Collect");
 assert.equal(t("en", "menu"), "Menu");
+assert.equal(t("en", "listenNav"), "For you");
+assert.equal(t("zh", "listenNav"), "为你推荐");
 assert.equal(t("zh", "menu"), "菜单");
 assert.equal(t("zh", "collect"), "收藏");
 assert.equal(t("ar", "listen"), "استمع");
@@ -86,6 +88,12 @@ assert.deepEqual(parseRoute("#history"), { page: "log", trackId: "" });
 assert.deepEqual(parseRoute("#recommend-log"), { page: "log", trackId: "" });
 assert.deepEqual(parseRoute("#collections&t=Q1"), { page: "collections", trackId: "Q1" });
 assert.deepEqual(parseRoute("#log&t=ext-1"), { page: "log", trackId: "ext-1" });
+assert.deepEqual(parseRoute("#listen"), { page: "listen", trackId: "" });
+assert.deepEqual(parseRoute("#for-you"), { page: "listen", trackId: "" });
+assert.deepEqual(parseRoute("#beyond"), { page: "listen", trackId: "" });
+assert.deepEqual(parseRoute("#listen&t=Q1"), { page: "listen", trackId: "Q1" });
+assert.equal(routeHash("listen"), "listen");
+assert.equal(routeHash("listen", "Q1"), "listen&t=Q1");
 assert.equal(routeHash("home", "Q1"), "t=Q1");
 assert.equal(routeHash("collections"), "collections");
 assert.equal(routeHash("log", "Q1"), "log&t=Q1");
@@ -109,6 +117,7 @@ for (const locale of LANGUAGE_IDS) {
 
 const lyricsKeys = Object.keys(LYRICS.en).sort();
 assert.ok(lyricsKeys.includes("lyrics"));
+assert.ok(lyricsKeys.includes("lyricsShow"));
 for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(LYRICS[locale]).sort(), lyricsKeys, `${locale} lyrics copy keys`);
   assert.match(t(locale, "lyrics"), /./);
