@@ -521,10 +521,15 @@ h1 {
   display: block;
 }
 
+.daily-hero-copy {
+  min-width: 0;
+}
+
 .daily-hero-copy h2 {
   font-size: clamp(28px, 4vw, 48px);
   margin: 0 0 10px;
   line-height: 1.05;
+  overflow-wrap: anywhere;
 }
 
 .daily-hero-copy .artist {
@@ -1398,6 +1403,8 @@ option {
   .daily,
   .daily-copy,
   .daily-card,
+  .daily-hero,
+  .daily-hero-copy,
   .daily-form,
   .controls,
   .grid,
@@ -1418,17 +1425,36 @@ option {
     grid-template-columns: 1fr;
   }
 
+  .mast {
+    gap: 14px;
+    padding-bottom: 16px;
+  }
+
   h1 {
-    font-size: clamp(48px, 16vw, 72px);
-    line-height: 0.86;
+    font-size: clamp(36px, 12vw, 52px);
+    line-height: 0.9;
+    margin: 0 0 8px;
   }
 
   .brand-mark {
-    width: 56px;
+    width: 40px;
   }
 
   .lede {
-    font-size: 15px;
+    font-size: 14px;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .stats-note {
+    display: none;
+  }
+
+  .stats dd {
+    font-size: 22px;
   }
 
   .menu-bar {
@@ -1445,13 +1471,14 @@ option {
   .menu-nav {
     display: none;
     position: absolute;
-    inset-inline-end: 0;
+    inset-inline: 0;
     top: calc(100% - 4px);
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    min-width: min(240px, 100%);
-    max-width: 100%;
+    min-width: 0;
+    width: auto;
+    max-width: none;
     padding: 8px;
     border: 1px solid rgba(201, 164, 90, 0.28);
     border-radius: 16px;
@@ -1484,7 +1511,7 @@ option {
   }
 
   .stats dd {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .lang-select-wrap,
@@ -1526,11 +1553,22 @@ option {
     border-radius: 18px;
   }
 
+  .daily-hero,
+  .daily-prefs {
+    margin-top: 16px;
+    padding: 12px;
+  }
+
   .daily-copy h2,
   .daily-card h3,
+  .daily-hero-copy h2,
   .collections-head h2,
   .spotify-connect h2 {
     font-size: 26px;
+  }
+
+  .daily-hero-copy .artist {
+    font-size: 17px;
   }
 
   .daily-hero-card {
@@ -1538,7 +1576,9 @@ option {
   }
 
   .daily-hero-card .cover-btn {
-    max-width: 100%;
+    width: min(100%, 280px);
+    max-width: 280px;
+    justify-self: center;
   }
 
   .daily-card {
@@ -1548,7 +1588,12 @@ option {
 
   .daily-hero-card.daily-card {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 12px;
+    justify-items: center;
+  }
+
+  .daily-hero-copy {
+    width: 100%;
   }
 
   .daily-card .lyrics {
@@ -1576,7 +1621,7 @@ option {
   }
 
   .mood-chips button {
-    min-height: 40px;
+    min-height: 44px;
     padding: 8px 12px;
   }
 
@@ -1743,6 +1788,15 @@ option {
 }
 
 @media (max-width: 640px) {
+  .app {
+    padding-top: max(10px, env(safe-area-inset-top, 0px));
+  }
+
+  .menu-bar {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }
@@ -1760,6 +1814,10 @@ option {
     max-width: 100%;
   }
 
+  .daily-prefs .daily-actions button {
+    flex: 1 1 100%;
+  }
+
   .facts div {
     grid-template-columns: 1fr;
     gap: 2px;
@@ -1772,5 +1830,11 @@ option {
   .drawer-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .meta-line,
+  .daily-reason,
+  .anecdote-text {
+    overflow-wrap: anywhere;
   }
 }
