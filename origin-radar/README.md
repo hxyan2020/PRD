@@ -26,18 +26,18 @@ Open [http://localhost:3000](http://localhost:3000).
 - HX monitor registry: `/api/hx` (Node host only)
 - HX viewership: `GET/POST /api/hx/viewership` (Node host only)
 
-## Public URL (static, no Vercel claim)
+## Public URL
 
-Anonymous Vercel `--temporary` deploys expire (the claim page shows “This deployment has expired.”). OriginRadar’s radar, queue, generate, and storefront also ship as a **static export** that does not depend on that claim flow.
+Live desk: [https://tidy-cocoa-294.harvis.page](https://tidy-cocoa-294.harvis.page)
+
+This is a static export (`npm run build:static`), not a Vercel claim-deployment. Radar, queue, generate, and storefront run in the browser; Generate / Collect / Discard save to localStorage. Anonymous Vercel `--temporary` deploys expire (the claim page shows “This deployment has expired.”).
 
 ```bash
 cd origin-radar
 npm run build:static   # writes ./out
 ```
 
-On the static desk, Generate / Collect / Discard persist in **browser localStorage** (factory pack + remote gallery URLs). SQLite image download still requires a Node host.
-
-For GitHub Pages (project site `https://hxyan2020.github.io/PRD/`), build with `BASE_PATH=/PRD`. Enable Pages in the repo Settings if it is not on yet — the Actions token cannot turn Pages on for this repository.
+GitHub Pages (after enabling in repo Settings → Pages → `gh-pages` / root): [https://hxyan2020.github.io/PRD/](https://hxyan2020.github.io/PRD/). Actions cannot turn Pages on for this repository.
 
 ## Deploy
 
