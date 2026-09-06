@@ -18,7 +18,7 @@ import { decadeOf, uniqueSorted } from "./format.js";
 import { displayEra } from "./i18n.js";
 import { hxPathForRoute, sendHxBeacon } from "./hx.js";
 import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
-import { SiteDoc, SiteNav } from "./SitePages.jsx";
+import { SiteDoc, SiteMenu } from "./SitePages.jsx";
 import { publicUrl } from "./urls.js";
 import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
@@ -196,6 +196,7 @@ export default function App() {
 
   return (
     <div className={`app ${selected ? "has-drawer" : ""}`}>
+      <SiteMenu page={page} />
       <header className="mast">
         <div className="mast-brand">
           <p className="eyebrow">{t("archiveEyebrow")}</p>
@@ -206,7 +207,6 @@ export default function App() {
             </a>
           </h1>
           <p className="lede">{t("lede")}</p>
-          <SiteNav page={page} />
         </div>
         <div className="stats-wrap">
           <dl className="stats" aria-label={t("libraryCounts")}>
@@ -246,12 +246,10 @@ export default function App() {
             onOpen={openTrack}
             spotify={spotify}
           />
-          <SiteNav page={page} />
         </>
       ) : page === "log" ? (
         <>
           <RecommendLog log={recommendLog} tracks={library} onOpen={openTrack} />
-          <SiteNav page={page} />
         </>
       ) : (
         <>
@@ -348,8 +346,6 @@ export default function App() {
           />
         ))}
       </main>
-
-      <SiteNav page={page} />
         </>
       )}
 

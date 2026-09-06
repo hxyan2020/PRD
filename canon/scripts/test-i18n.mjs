@@ -40,6 +40,8 @@ for (const locale of LANGUAGE_IDS) {
 }
 
 assert.equal(t("en", "collect"), "Collect");
+assert.equal(t("en", "menu"), "Menu");
+assert.equal(t("zh", "menu"), "菜单");
 assert.equal(t("zh", "collect"), "收藏");
 assert.equal(t("ar", "listen"), "استمع");
 assert.match(t("fr", "showing", { n: 12, total: 1000 }), /12/);

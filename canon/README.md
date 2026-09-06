@@ -17,7 +17,7 @@ Every entry has:
 - **Add to Spotify** after you authorize your Spotify account (saves to Liked Songs and a private Canon playlist album)
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). The switcher changes menus and buttons only — song titles and catalog notes stay as published.
 - **Stream more** from mood, country, and genre beyond the 1,000-work canon (requires Spotify login; titles not in the archive play in the same player)
-- **About** and **Terms of use** (`#about`, `#terms`) describing how the archive is chosen, what is stored in this browser, and how Spotify is used
+- A top **menu** for Collections, Recommendation log, About, and Terms of use (`#collections`, `#log`, `#about`, `#terms`) — those links are not shown in the homepage hero
 - Anonymous page views go to HX viewership (`slug: canon`). Telegram **HX Bots Dashboard** polls `/hx/health.json` (not in-app tabs)
 
 ## Run
