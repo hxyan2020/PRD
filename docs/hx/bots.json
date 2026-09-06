@@ -3,15 +3,15 @@
   "owner": "HX",
   "slug": "canon",
   "name": "Canon",
+  "kind": "external",
   "targets": [
     {
       "id": "canon",
-      "name": "Canon listening archive",
+      "name": "Canon",
       "kind": "web",
       "path": "/",
       "url": "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html",
-      "health": "/hx/health.json",
-      "viewership": "/#hx-viewership",
+      "health": "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/hx/health.json",
       "intervalSeconds": 60,
       "expect": { "status": "ok", "archiveSongs": 1000 }
     }

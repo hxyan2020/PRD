@@ -1,20 +1,24 @@
 {
   "service": "canon",
   "product": "Canon listening archive",
+  "name": "Canon",
   "status": "ok",
   "archiveSongs": 1000,
   "slug": "canon",
+  "kind": "external",
   "publicUrl": "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html",
   "hx": {
     "monitoring": true,
     "viewership": true,
-    "collect": "/api/hx-viewership",
-    "bots": ["hx-health", "hx-bots", "hx-viewership"]
+    "collect": "http://188.166.214.47:3520/collect",
+    "telegram": "HX Bots Dashboard"
   },
+  "http": [
+    "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/hx/health.json",
+    "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html"
+  ],
   "endpoints": {
     "health": "/hx/health.json",
-    "bots": "/hx/bots.json",
-    "viewership": "/#hx-viewership",
-    "monitor": "/#hx-monitor"
+    "bots": "/hx/bots.json"
   }
 }
