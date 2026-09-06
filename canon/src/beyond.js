@@ -1,3 +1,5 @@
+import { pickHdCover } from "./cover.js";
+
 export const EXTRA_KEY = "canon.extra.tracks";
 export const EXTRA_PREFIX = "ext-";
 
@@ -121,7 +123,7 @@ export function mapSpotifyTrack(item, prefs = {}) {
   const artists = (item.artists || []).map((artist) => artist.name).filter(Boolean);
   const yearRaw = String(item.album?.release_date || "").slice(0, 4);
   const images = item.album?.images || [];
-  const cover = images[1]?.url || images[0]?.url || "";
+  const cover = pickHdCover(images);
   const spotifyId = String(item.id || "").trim();
   return {
     id: extraId(spotifyId),

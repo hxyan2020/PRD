@@ -11,6 +11,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { hdCoverUrl } from "../src/cover.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -345,7 +346,7 @@ async function oembedFor(spotifyId) {
       return {
         spotifyId,
         title: data.title,
-        coverUrl: data.thumbnail_url,
+        coverUrl: hdCoverUrl(data.thumbnail_url),
         iframeUrl: data.iframe_url || `https://open.spotify.com/embed/track/${spotifyId}`,
       };
     } catch (err) {

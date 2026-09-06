@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import CollectButton from "./CollectButton.jsx";
+import CoverImage from "./CoverImage.jsx";
 import { useI18n } from "./I18n.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
@@ -120,7 +121,7 @@ export default function DailyRecommend({
       {track ? (
         <article className="daily-card daily-hero-card">
           <button type="button" className="cover-btn" onClick={() => onListen(track)}>
-            <img src={track.coverUrl} alt={t("coverAlt", { name: track.name })} />
+            <CoverImage src={track.coverUrl} alt={t("coverAlt", { name: track.name })} priority />
           </button>
           <div className="daily-hero-copy">
             <p className="eyebrow">{t("todayListening", { date: todayLabel })}</p>

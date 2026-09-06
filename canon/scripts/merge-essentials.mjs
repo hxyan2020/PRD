@@ -6,6 +6,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { hdCoverUrl } from "../src/cover.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const UA = "CanonMusicArchive/1.0 (https://github.com/hxyan2020/PRD; educational catalog)";
@@ -53,7 +54,7 @@ async function oembed(id) {
         encodeURIComponent(`https://open.spotify.com/track/${id}`)
     );
     if (!data?.thumbnail_url || !data?.title) return null;
-    return data;
+    return { ...data, thumbnail_url: hdCoverUrl(data.thumbnail_url) };
   } catch {
     return null;
   }
@@ -204,7 +205,7 @@ async function main() {
       spotifyId: item.row.spotifyId,
       spotifyUrl: `https://open.spotify.com/track/${item.row.spotifyId}`,
       spotifyEmbedUrl: `https://open.spotify.com/embed/track/${item.row.spotifyId}?utm_source=generator`,
-      coverUrl: item.oem.thumbnail_url || item.row.coverUrl,
+      coverUrl: hdCoverUrl(item.oem.thumbnail_url || item.row.coverUrl),
       spotifyTitle: item.oem.title,
       streams,
       sitelinks: item.wd?.sitelinks || 12,

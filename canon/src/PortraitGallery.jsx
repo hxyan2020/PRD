@@ -1,3 +1,4 @@
+import { hdCoverUrl } from "./cover.js";
 import { useI18n } from "./I18n.jsx";
 
 export default function PortraitGallery({ name, portrait }) {
@@ -14,7 +15,7 @@ export default function PortraitGallery({ name, portrait }) {
           <ul className="portrait-row">
             {images.map((image) => (
               <li key={image.src}>
-                <img src={image.src} alt={image.alt || name} loading="lazy" />
+                <img src={hdCoverUrl(image.src)} alt={image.alt || name} loading="lazy" />
               </li>
             ))}
           </ul>

@@ -1,3 +1,4 @@
+import { hdCoverUrl } from "./cover.js";
 import { dateTag } from "./i18n.js";
 
 export const RECOMMEND_LOG_KEY = "canon.recommend.log";
@@ -17,7 +18,7 @@ export function parseRecommendLog(raw) {
       trackId,
       name: String(item.name || "Unknown Music"),
       artist: String(item.artist || ""),
-      coverUrl: String(item.coverUrl || ""),
+      coverUrl: hdCoverUrl(item.coverUrl),
       mode: item.mode === "surprise" ? "surprise" : item.mode === "beyond" ? "beyond" : "daily",
       kind: String(item.kind || item.mode || "daily"),
       mood: String(item.mood || ""),
@@ -57,7 +58,7 @@ export function appendRecommendation(log, input = {}, now = new Date()) {
     trackId,
     name: String(input.name || "Unknown Music"),
     artist: String(input.artist || ""),
-    coverUrl: String(input.coverUrl || ""),
+    coverUrl: hdCoverUrl(input.coverUrl),
     mode,
     kind: String(input.kind || mode),
     mood,

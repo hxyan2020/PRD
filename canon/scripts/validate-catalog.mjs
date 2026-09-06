@@ -44,6 +44,8 @@ for (const track of raw.tracks) {
   assert.match(track.spotifyId, /^[0-9A-Za-z]{22}$/, `spotify id ${track.name}`);
   assert.equal(track.spotifyUrl, `https://open.spotify.com/track/${track.spotifyId}`);
   assert.match(track.coverUrl, /^https:\/\//, `cover ${track.name}`);
+  assert.doesNotMatch(track.coverUrl, /ab67616d00001e02|ab67616d00004851/, `low-res cover ${track.name}`);
+  assert.match(track.coverUrl, /ab67616d0000b273/, `hd cover ${track.name}`);
   assert.ok(track.whyShortlisted.length > 40, `shortlist reason too short: ${track.name}`);
   assert.ok(!ids.has(track.id), `duplicate wikidata id ${track.id}`);
   assert.ok(!spotifyIds.has(track.spotifyId), `duplicate spotify id ${track.spotifyId}`);

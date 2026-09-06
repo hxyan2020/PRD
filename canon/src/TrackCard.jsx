@@ -1,4 +1,5 @@
 import CollectButton from "./CollectButton.jsx";
+import CoverImage from "./CoverImage.jsx";
 import { useI18n } from "./I18n.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { artistLabel, collectedStamp, playsLabel, yearLabel } from "./uiText.js";
@@ -18,7 +19,7 @@ export default function TrackCard({
   return (
     <article className={`card ${selected ? "is-open" : ""} ${collected ? "is-saved" : ""}`}>
       <button className="cover-btn" onClick={() => onOpen(track, true)} type="button">
-        <img src={track.coverUrl} alt={t("coverAlt", { name: track.name })} loading="lazy" />
+        <CoverImage src={track.coverUrl} alt={t("coverAlt", { name: track.name })} />
         {track.rank ? <span className="rank">#{String(track.rank).padStart(3, "0")}</span> : null}
         {collected ? <span className="collected-mark">{t("collectedMark")}</span> : null}
       </button>

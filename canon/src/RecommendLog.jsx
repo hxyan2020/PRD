@@ -1,3 +1,4 @@
+import CoverImage from "./CoverImage.jsx";
 import { useI18n } from "./I18n.jsx";
 import { formatLoggedAt } from "./recommendLog.js";
 
@@ -29,7 +30,7 @@ export default function RecommendLog({ log, tracks, onOpen }) {
             return (
               <li key={entry.id} className="log-row">
                 {entry.coverUrl ? (
-                  <img src={entry.coverUrl} alt="" />
+                  <CoverImage src={entry.coverUrl} alt="" />
                 ) : (
                   <span className="log-cover-fallback" aria-hidden="true" />
                 )}

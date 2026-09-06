@@ -1031,6 +1031,13 @@ option {
   aspect-ratio: 1;
   object-fit: cover;
   display: block;
+  image-rendering: auto;
+}
+
+.drawer-cover,
+.dock img,
+.log-row img {
+  image-rendering: auto;
 }
 
 .rank {

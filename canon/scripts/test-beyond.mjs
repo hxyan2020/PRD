@@ -38,7 +38,10 @@ const mapped = mapSpotifyTrack(
     album: {
       name: "After Hours",
       release_date: "2020-03-20",
-      images: [{ url: "https://example.com/cover.jpg" }],
+      images: [
+        { url: "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36", width: 640, height: 640 },
+        { url: "https://image-cdn-fa.spotifycdn.com/image/ab67616d00001e028863bc11d2aa12b54f5aeb36", width: 300, height: 300 },
+      ],
     },
     external_urls: { spotify: "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b" },
   },
@@ -48,6 +51,8 @@ assert.equal(mapped.extra, true);
 assert.equal(mapped.id, "ext-0VjIjW4GlUZAMYd2vXMi3b");
 assert.equal(mapped.year, 2020);
 assert.equal(mapped.genre, "synth-pop");
+assert.match(mapped.coverUrl, /ab67616d0000b273/);
+assert.doesNotMatch(mapped.coverUrl, /ab67616d00001e02/);
 assert.match(mapped.spotifyEmbedUrl, /0VjIjW4GlUZAMYd2vXMi3b/);
 
 const catalogIds = catalogSpotifyIds([{ spotifyId: "in-canon" }, { spotifyId: "" }]);

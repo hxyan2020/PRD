@@ -17,6 +17,7 @@ import {
   uniqueImages,
   titleFitsName,
 } from "../src/portraits.js";
+import { hdCoverUrl } from "../src/cover.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CATALOG_PATH = path.join(ROOT, "public", "catalog.json");
@@ -449,7 +450,7 @@ async function main() {
     for (const item of names) {
       if (!people.has(item.name)) people.set(item.name, item.kind);
       const list = coversByName.get(item.name) || [];
-      if (track.coverUrl && !list.includes(track.coverUrl)) list.push(track.coverUrl);
+      if (track.coverUrl && !list.includes(hdCoverUrl(track.coverUrl))) list.push(hdCoverUrl(track.coverUrl));
       coversByName.set(item.name, list);
     }
   }

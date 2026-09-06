@@ -21,6 +21,7 @@ import { hxPathForRoute, sendHxBeacon } from "./hx.js";
 import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
 import { SiteDoc, SiteFooter, SiteMenu } from "./SitePages.jsx";
 import { publicUrl } from "./urls.js";
+import CoverImage from "./CoverImage.jsx";
 import CountryFlagName from "./CountryFlagName.jsx";
 import PortraitGallery from "./PortraitGallery.jsx";
 import { displayPersonName, splitCredits } from "./portraits.js";
@@ -359,7 +360,7 @@ export default function App() {
           >
             {t("close")}
           </button>
-          <img className="drawer-cover" src={selected.coverUrl} alt={t("coverAlt", { name: selected.name })} />
+          <CoverImage className="drawer-cover" src={selected.coverUrl} alt={t("coverAlt", { name: selected.name })} />
           <p className="eyebrow">{selected.extra ? t("beyondOutside") : t("canonRank", { n: selected.rank })}</p>
           <h2>{selected.name}</h2>
           <p className="spotify-title">{selected.spotifyTitle}</p>
@@ -469,7 +470,7 @@ export default function App() {
 
       {playing && (
         <footer className="dock">
-          <img src={playing.coverUrl} alt="" />
+          <CoverImage src={playing.coverUrl} alt="" />
           <div>
             <p className="dock-title">{playing.name}</p>
             <p className="dock-sub">
