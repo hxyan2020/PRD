@@ -2,6 +2,7 @@ import CollectButton from "./CollectButton.jsx";
 import { useI18n } from "./I18n.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { artistLabel, collectedStamp, playsLabel, yearLabel } from "./uiText.js";
+import { displayGenre } from "./display-labels.js";
 
 export default function TrackCard({
   track,
@@ -25,7 +26,7 @@ export default function TrackCard({
         <h2>{track.name}</h2>
         <p className="artist">{artistLabel(track, t)}</p>
         <p className="meta-line">
-          {yearLabel(track.year, t)} · {track.genre}
+          {yearLabel(track.year, t)} · {displayGenre(track.genre, locale)}
         </p>
         <p className="plays">
           {track.extra ? t("spotifyPopularity", { n: track.popularity || 0 }) : playsLabel(track.streams, t)}

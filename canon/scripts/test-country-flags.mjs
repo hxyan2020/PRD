@@ -10,6 +10,7 @@ import {
   normalizeCountryKey,
   splitReleaseCountries,
 } from "../src/country-flags.js";
+import { displayEraLabel, displayGenre, displayReleaseCountry } from "../src/display-labels.js";
 
 assert.equal(normalizeCountryKey("Austria–Hungary"), "austria-hungary");
 assert.equal(isPlaceholderCountry("Not listed"), true);
@@ -51,4 +52,30 @@ for (const code of [...codes].sort()) {
   assert.match(readFileSync(file, "utf8"), /<svg[\s>]/i);
 }
 
-console.log("country flag tests ok");
+assert.equal(displayReleaseCountry("United States · Canada", "zh"), "美国 · 加拿大");
+assert.equal(displayReleaseCountry("United States · Canada", "en"), "United States · Canada");
+assert.equal(displayReleaseCountry("United Kingdom", "zh"), "英国");
+assert.equal(displayReleaseCountry("South Korea", "zh"), "韩国");
+assert.equal(displayReleaseCountry("France", "fr"), "France");
+assert.equal(
+  displayReleaseCountry("Not listed", "zh", (key) => (key === "notListed" ? "未列出" : key)),
+  "未列出",
+);
+assert.equal(displayGenre("alternative pop", "zh"), "另类流行");
+assert.equal(displayGenre("pop music", "zh"), "流行音乐");
+assert.equal(displayGenre("alternative pop", "en"), "alternative pop");
+assert.equal(displayGenre("hip-hop", "zh"), "嘻哈");
+assert.equal(displayGenre("acid jazz", "zh"), "迷幻酸爵士");
+assert.equal(displayGenre("techno", "zh"), "科技舞曲");
+assert.equal(displayGenre("UK drill · trap music · UK rap", "zh"), "英国钻乐 · 陷阱说唱 · 英国说唱");
+assert.equal(displayEraLabel("2010s", (key) => key, "zh"), "2010年代");
+assert.equal(displayEraLabel("2010s", (key) => key, "fr"), "années 2010");
+assert.equal(displayEraLabel("2010s", (key) => key, "en"), "2010s");
+assert.equal(displayEraLabel("Unknown era", (key) => (key === "unknownEra" ? "未知年代" : key), "zh"), "未知年代");
+
+const leftoverLatin = [];
+for (const genre of [...new Set(catalog.tracks.map((track) => track.genre).filter(Boolean))]) {
+  const label = displayGenre(genre, "zh");
+  if (/[A-Za-z]{3,}/.test(label)) leftoverLatin.push(`${genre} → ${label}`);
+}
+assert.equal(leftoverLatin.length, 0, `untranslated genre labels:\n${leftoverLatin.slice(0, 20).join("\n")}`);

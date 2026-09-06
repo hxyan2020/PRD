@@ -18,6 +18,10 @@ export const LANGUAGES = [
 
 export const LANGUAGE_IDS = LANGUAGES.map((item) => item.id);
 
+export function localeRoot(locale) {
+  return String(locale || "en").toLowerCase().slice(0, 2);
+}
+
 export function interpolate(template, params = {}) {
   return String(template).replace(/\{(\w+)\}/g, (_, key) =>
     params[key] == null ? `{${key}}` : String(params[key])

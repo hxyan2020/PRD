@@ -4,6 +4,7 @@ import { useI18n } from "./I18n.jsx";
 import LyricsPanel from "./LyricsPanel.jsx";
 import SpotifyAddButton from "./SpotifyAddButton.jsx";
 import { dateTag } from "./i18n.js";
+import { displayGenre, displayReleaseCountry } from "./display-labels.js";
 import { MOOD_CHIPS, recommendDaily, surprisePick } from "./recommend.js";
 import { artistLabel, collectedStamp, moodLabel, playsLabel, resolveMoodValue, yearLabel } from "./uiText.js";
 
@@ -232,12 +233,12 @@ export default function DailyRecommend({
         </datalist>
         <datalist id="canon-countries">
           {countries.map((item) => (
-            <option key={item} value={item} />
+            <option key={item} value={item} label={displayReleaseCountry(item, locale, t)} />
           ))}
         </datalist>
         <datalist id="canon-genres">
           {genres.map((item) => (
-            <option key={item} value={item} />
+            <option key={item} value={item} label={displayGenre(item, locale)} />
           ))}
         </datalist>
       </div>
@@ -252,7 +253,7 @@ export default function DailyRecommend({
             <h3>{track.name}</h3>
             <p className="artist">{artistLabel(track, t)}</p>
             <p className="meta-line">
-              {yearLabel(track.year, t)} · {track.genre} · {playsLabel(track.streams, t)}
+              {yearLabel(track.year, t)} · {displayGenre(track.genre, locale)} · {playsLabel(track.streams, t)}
             </p>
             <p className="daily-reason">{reasonText(result, t)}</p>
             {track.anecdote ? <p className="anecdote-text">{track.anecdote}</p> : null}

@@ -1,10 +1,11 @@
 import { countryFlagUrl, flagCodesForReleaseCountry } from "./country-flags.js";
+import { displayReleaseCountry } from "./display-labels.js";
 import { useI18n } from "./I18n.jsx";
 import { creditLabel } from "./uiText.js";
 
 export default function CountryFlagName({ value }) {
-  const { t } = useI18n();
-  const label = creditLabel(value, t);
+  const { locale, t } = useI18n();
+  const label = displayReleaseCountry(value, locale, t) || creditLabel(value, t);
   const codes = flagCodesForReleaseCountry(value);
   if (!codes.length) return label;
   return (

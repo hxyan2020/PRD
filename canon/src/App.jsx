@@ -14,7 +14,8 @@ import { loadViewedIds, markViewed, mergeViewedWithCollected, saveViewedIds } fr
 import { appendRecommendation, loadRecommendLog, saveRecommendLog } from "./recommendLog.js";
 import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
-import { displayEra, formatStatus } from "./i18n.js";
+import { formatStatus } from "./i18n.js";
+import { displayEraLabel, displayGenre, displayReleaseCountry } from "./display-labels.js";
 import { hxPathForRoute, sendHxBeacon } from "./hx.js";
 import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
 import { SiteDoc, SiteMenu } from "./SitePages.jsx";
@@ -251,29 +252,38 @@ export default function App() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <select value={genre} onChange={(e) => setGenre(e.target.value)}>
+        <select value={genre} onChange={(e) => setGenre(e.target.value)} aria-label={t("allGenres")}>
           <option value="All genres">{t("allGenres")}</option>
-          {facets.genres.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
+          {facets.genres.map((item) => {
+            const label = displayGenre(item, locale);
+            return (
+              <option key={item} value={item} label={label}>
+                {label}
+              </option>
+            );
+          })}
         </select>
-        <select value={era} onChange={(e) => setEra(e.target.value)}>
+        <select value={era} onChange={(e) => setEra(e.target.value)} aria-label={t("allEras")}>
           <option value="All eras">{t("allEras")}</option>
-          {facets.eras.map((item) => (
-            <option key={item} value={item}>
-              {displayEra(item, t)}
-            </option>
-          ))}
+          {facets.eras.map((item) => {
+            const label = displayEraLabel(item, t, locale);
+            return (
+              <option key={item} value={item} label={label}>
+                {label}
+              </option>
+            );
+          })}
         </select>
-        <select value={country} onChange={(e) => setCountry(e.target.value)}>
+        <select value={country} onChange={(e) => setCountry(e.target.value)} aria-label={t("allCountries")}>
           <option value="All countries">{t("allCountries")}</option>
-          {facets.countries.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
+          {facets.countries.map((item) => {
+            const label = displayReleaseCountry(item, locale, t);
+            return (
+              <option key={item} value={item} label={label}>
+                {label}
+              </option>
+            );
+          })}
         </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)}>
           <option value="influence">{t("sortInfluence")}</option>
@@ -409,7 +419,7 @@ export default function App() {
             </div>
             <div>
               <dt>{t("genre")}</dt>
-              <dd>{creditLabel(selected.genre, t)}</dd>
+              <dd>{displayGenre(selected.genre, locale) || creditLabel(selected.genre, t)}</dd>
             </div>
             <div>
               <dt>{t("popularity")}</dt>
