@@ -1,7 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import type { DeskActionKind } from "./desk";
 import type { SourcedProduct } from "./storefront-types";
+
+export type { DeskActionKind } from "./desk";
 
 const DEFAULT_DB = path.join(process.cwd(), "data", "storefront.sqlite");
 
@@ -97,8 +100,6 @@ export function sourcedSlugMap(): Record<string, string> {
     .all() as { signal_slug: string; id: string }[];
   return Object.fromEntries(rows.map((r) => [r.signal_slug, r.id]));
 }
-
-export type DeskActionKind = "collect" | "discard" | "restore" | "uncollect";
 
 export function getDeskSnapshot(day: string): { collected: string[]; discarded: string[] } {
   const rows = getDb()

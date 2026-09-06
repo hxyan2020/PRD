@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { applyDeskAction } from "@/lib/client-store";
+import { todayKey, type DeskActionKind } from "@/lib/desk";
+import { tryApiJson } from "@/lib/try-api";
 
 export function DeskButtons({
   slug,
@@ -16,18 +19,21 @@ export function DeskButtons({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function act(action: "collect" | "discard" | "restore" | "uncollect") {
+  async function act(action: DeskActionKind) {
     setBusy(action);
     setError(null);
     try {
-      const res = await fetch("/api/desk", {
+      const res = await tryApiJson("/api/desk", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ slug, action }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Desk update failed");
-      router.refresh();
+      if (res.ok) {
+        router.refresh();
+        return;
+      }
+      if (!res.fallback) throw new Error(res.error ?? "Desk update failed");
+      applyDeskAction(slug, action, todayKey());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Desk update failed");
     } finally {

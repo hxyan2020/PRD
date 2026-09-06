@@ -7,7 +7,7 @@ export function HxViewershipBeacon() {
   const pathname = usePathname();
   useEffect(() => {
     const path = pathname || "/";
-    fetch("/api/hx/viewership", {
+    fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/hx/viewership`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ path }),

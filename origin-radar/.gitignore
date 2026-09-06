@@ -10,4 +10,5 @@ data/*.sqlite-*
 public/sourced/**
 !public/sourced/.gitkeep
 .vercel
-.vercel
+.static-park
+harvis.json

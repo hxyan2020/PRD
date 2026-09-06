@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-type Map = Record<string, string>;
+import { listingSlugMap, saveListing } from "@/lib/client-store";
+import { buildFactoryListing } from "@/lib/listing-pack";
+import { tryApiJson } from "@/lib/try-api";
+import type { SourcedProduct } from "@/lib/storefront-types";
 
 export function GenerateButton({
   slug,
@@ -18,10 +21,11 @@ export function GenerateButton({
   const [existing, setExisting] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/storefront")
-      .then((r) => r.json())
-      .then((d: { slugs?: Map }) => setExisting(d.slugs?.[slug] ?? null))
-      .catch(() => {});
+    const local = listingSlugMap()[slug];
+    if (local) setExisting(local);
+    tryApiJson<{ slugs?: Record<string, string> }>("/api/storefront").then((r) => {
+      if (r.ok && r.data.slugs?.[slug]) setExisting(r.data.slugs[slug]);
+    });
   }, [slug]);
 
   async function onGenerate(e: React.MouseEvent) {
@@ -30,15 +34,21 @@ export function GenerateButton({
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/generate", {
+      const res = await tryApiJson<{ product: SourcedProduct }>("/api/generate", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ slug }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Generate failed");
-      router.push(`/storefront/${data.product.id}`);
-      router.refresh();
+      if (res.ok) {
+        saveListing(res.data.product);
+        router.push(`/storefront/${res.data.product.id}`);
+        router.refresh();
+        return;
+      }
+      if (!res.fallback) throw new Error(res.error ?? "Generate failed");
+      const product = buildFactoryListing(slug);
+      saveListing(product);
+      router.push(`/storefront/${product.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Generate failed");
       setBusy(false);
@@ -47,7 +57,7 @@ export function GenerateButton({
 
   if (existing && !busy) {
     return (
-      <a
+      <Link
         href={`/storefront/${existing}`}
         onClick={(e) => e.stopPropagation()}
         className={
@@ -57,7 +67,7 @@ export function GenerateButton({
         }
       >
         Open sourced listing
-      </a>
+      </Link>
     );
   }
 
@@ -77,7 +87,7 @@ export function GenerateButton({
       </button>
       {busy ? (
         <span className="font-mono text-[10px] uppercase tracking-widest text-mist">
-          1688 pack · images · specs · terms · SQLite
+          1688 pack · images · specs · terms
         </span>
       ) : null}
       {error ? <span className="text-xs text-rose-400">{error}</span> : null}

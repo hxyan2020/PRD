@@ -4,6 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 import { generateListing } from "./generate";
 import { getSourcedBySlug, listSourced, resetDbForTests } from "./db";
+import { buildFactoryListing } from "./listing-pack";
 import { toShopifyCsv } from "./shopify-export";
 import { resolveSourcedPath } from "./sourced-fs";
 
@@ -35,6 +36,16 @@ describe("generate listing pipeline", () => {
     expect(csv).toContain("Handle");
     expect(csv).toContain("rack-wardrobe");
     expect(csv).toContain(String(product.retailPriceUsd));
+    expect(product.id).toBe("rack-wardrobe");
+  });
+
+  it("builds a factory pack without Node I/O for the static desk", () => {
+    const product = buildFactoryListing("rack-wardrobe");
+    expect(product.id).toBe("rack-wardrobe");
+    expect(product.images.length).toBeGreaterThan(0);
+    expect(product.images[0].path.startsWith("https://")).toBe(true);
+    expect(product.specifications.length).toBeGreaterThan(3);
+    expect(product.retailPriceUsd).toBeGreaterThan(product.factoryPriceUsd);
   });
 
   it("rejects path traversal for sourced images", () => {

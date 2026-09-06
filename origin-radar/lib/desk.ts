@@ -2,6 +2,8 @@ import type { ScoredProduct } from "./types";
 
 export const DAILY_QUEUE_SIZE = 8;
 
+export type DeskActionKind = "collect" | "discard" | "restore" | "uncollect";
+
 export function todayKey(date = new Date()): string {
   return date.toISOString().slice(0, 10);
 }

@@ -33,8 +33,9 @@ export function QueueDesk({
         <p className="kicker">Daily review · {day}</p>
         <h1 className="mt-2 font-serif text-5xl">Eight to review today</h1>
         <p className="mt-4 max-w-2xl text-paper/75">
-          Generate pulls the 1688 pack into SQLite. Collect keeps a shortlist. Discard hides a SKU
-          from today&apos;s deck — it can come back tomorrow.
+          Generate pulls the 1688 pack (saved in SQLite on a Node host, or in this browser on the
+          public static desk). Collect keeps a shortlist. Discard hides a SKU from today&apos;s
+          deck — it can come back tomorrow.
         </p>
         <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-mist">
           {review.length} in queue · {collected.length} collected · {Object.keys(sourced).length} sourced

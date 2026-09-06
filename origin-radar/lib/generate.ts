@@ -1,16 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
 import { getProduct } from "./catalog";
 import { upsertSourced } from "./db";
-import {
-  FACTORY_EXTRAS,
-  descriptionHtml,
-  factoryTerms,
-  logisticsFor,
-  priceTiers,
-  retailTarget,
-} from "./factory-packs";
+import { buildFactoryListing } from "./listing-pack";
 import { fetchLiveOffer } from "./source-1688";
 import type { SourcedImage, SourcedProduct } from "./storefront-types";
 
@@ -45,8 +37,6 @@ export async function generateListing(
   const steps: GenerateStep[] = [];
   const signal = getProduct(slug);
   if (!signal) throw new Error(`Unknown signal ${slug}`);
-  const extras = FACTORY_EXTRAS[slug];
-  if (!extras) throw new Error(`No factory pack for ${slug}`);
 
   let live = null;
   if (fetchLive) {
@@ -62,20 +52,19 @@ export async function generateListing(
     steps.push({ step: "1688 API", ok: false, detail: "Skipped (offline generate)." });
   }
 
-  const factory = signal.factory[0];
-  const { retail, compare } = retailTarget(signal);
-  const copy = descriptionHtml(signal, extras);
-  const id = randomUUID();
-  const handle = signal.slug;
-  const imageUrls = [...new Set([...(live?.images ?? []), signal.image, ...extras.gallery])].slice(0, 6);
+  let product = buildFactoryListing(slug, {
+    live: live
+      ? { images: live.images, url: live.url, offerId: live.offerId, titleZh: live.titleZh }
+      : null,
+  });
 
-  const images: SourcedImage[] = [];
   if (downloadImages) {
+    const images: SourcedImage[] = [];
+    const imageUrls = product.images.map((im) => im.sourceUrl);
     let i = 0;
     for (const url of imageUrls) {
       i += 1;
-      const ext = url.includes("unsplash") ? "jpg" : "jpg";
-      const rel = `/sourced/${signal.slug}/${String(i).padStart(2, "0")}.${ext}`;
+      const rel = `/sourced/${signal.slug}/${String(i).padStart(2, "0")}.jpg`;
       const dest = path.join(publicDir, rel.replace(/^\//, ""));
       try {
         const dl = await downloadImage(url, dest);
@@ -89,51 +78,13 @@ export async function generateListing(
         });
       }
     }
+    if (images.length === 0) {
+      throw new Error("No gallery images could be downloaded");
+    }
+    product = { ...product, images };
   } else {
-    imageUrls.forEach((url, idx) => {
-      images.push({ path: url, alt: `${signal.name} ${idx + 1}`, sourceUrl: url, position: idx + 1 });
-    });
     steps.push({ step: "Images", ok: true, detail: "Remote URLs only (download skipped)." });
   }
-
-  if (downloadImages && images.length === 0) {
-    throw new Error("No gallery images could be downloaded");
-  }
-
-  const product: SourcedProduct = {
-    id,
-    signalSlug: signal.slug,
-    status: "ready",
-    sourcePlatform: "1688",
-    sourceUrl: live?.url ?? factory.searchUrl,
-    sourceOfferId: live?.offerId ?? extras.offerId,
-    liveFetch: Boolean(live),
-    title: signal.name,
-    titleZh: live?.titleZh ?? signal.nameZh,
-    handle,
-    vendor: extras.vendor,
-    productType: signal.category,
-    tags: [...signal.tags, "factory-direct", "1688", extras.vendorZh],
-    descriptionHtml: copy.en,
-    descriptionPlain: copy.plain,
-    descriptionZh: copy.zh,
-    specifications: extras.specs,
-    terms: factoryTerms(signal, extras),
-    priceTiers: priceTiers(factory.unitPriceUsd, factory.unitPriceCny, factory.moq),
-    retailPriceUsd: retail,
-    compareAtUsd: compare,
-    factoryPriceUsd: factory.unitPriceUsd,
-    priceZones: signal.priceZones,
-    logistics: logisticsFor(signal.slug),
-    variants: extras.variants,
-    optionNames: extras.optionNames,
-    images,
-    weightGrams: extras.weightGrams,
-    seoTitle: `${signal.name} | OriginRadar storefront draft`,
-    seoDescription: copy.plain.slice(0, 155),
-    generatedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
 
   const saved = upsertSourced(product);
   steps.push({
