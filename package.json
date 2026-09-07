@@ -1,0 +1,10 @@
+{
+  "name": "prd",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix canon",
+    "build": "npm run build --prefix canon",
+    "test": "npm test --prefix canon",
+    "catalog": "npm run catalog --prefix canon"
+  }
+}

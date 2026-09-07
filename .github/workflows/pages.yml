@@ -1,0 +1,59 @@
+name: Deploy Canon to GitHub Pages
+
+on:
+  push:
+    branches: [main, cursor/canon-music-streaming-c956]
+    paths:
+      - "canon/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: canon/package-lock.json
+      - name: Install and build
+        working-directory: canon
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - uses: actions/configure-pages@v5
+        continue-on-error: true
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        continue-on-error: true
+        with:
+          path: canon/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Ping HX viewership
+        run: |
+          curl -sS -m 10 -X POST "http://188.166.214.47:3520/collect" \
+            -H "Content-Type: application/json" \
+            -d '{"slug":"canon","name":"Canon","path":"/PRD/","host":"hxyan2020.github.io","referer":"github-pages-deploy","url":"https://hxyan2020.github.io/PRD/","health":"https://hxyan2020.github.io/PRD/hx/health.json","kind":"external","watch":true}'
