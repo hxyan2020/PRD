@@ -201,7 +201,7 @@ export default function App() {
   return (
     <div className={`app ${selected ? "has-drawer" : ""}`}>
       <SiteMenu page={page} />
-      {spotify.status && page !== "home" ? (
+      {spotify.status ? (
         <p className="spotify-status app-spotify-status" role="status">
           {formatStatus(locale, spotify.status)}
         </p>

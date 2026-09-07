@@ -170,9 +170,18 @@ assert.match(
   /createPortal/,
 );
 assert.match(
-  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),
-  /uniqueImages/,
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/SpotifyAddButton.jsx"), "utf8"),
+  /target="_blank"/,
 );
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/SpotifyAddButton.jsx"), "utf8"),
+  /spotifyOpenUrl/,
+);
+assert.doesNotMatch(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /spotify\.status && page !== "home"/,
+);
+assert.equal(t("en", "spotify.opened"), "Opening this title on Spotify.");
 
 const portraitKeys = Object.keys(PORTRAITS.en).sort();
 assert.ok(portraitKeys.includes("songAnecdote"));

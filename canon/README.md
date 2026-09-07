@@ -15,7 +15,7 @@ Every entry has:
 - **Surprise me** to hear a different work immediately, without waiting for tomorrow’s rotation
 - header counts for the 1,000-song archive, unique titles viewed, and unique titles collected
 - a dated log of every daily recommendation and Surprise me pick
-- **Add to Spotify** — clicking it asks you to authorize Spotify (saves to Liked Songs and a private Canon playlist album). There is no client-ID form and no Spotify card on the homepage
+- **Add to Spotify** — clicking it opens the recording on Spotify. If an operator has set `VITE_SPOTIFY_CLIENT_ID`, the same click can also authorize your account and save the track to Liked Songs and a private Canon playlist. There is no client-ID form and no Spotify card on the homepage
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). Language lives in the top menu (on phones, next to the hamburger)
 - A top **menu**: For you (home), Preferences, The 1,000 (`#archive` — the 1,000-work catalog), Collections, Recommendation log, and My profile (`#profile`). Phones use a hamburger icon. About and Terms of use sit in the footer
 - **My profile** — optional local sign-in, sign-out, and password reset in this browser (no Canon account server; listening does not require an account)
@@ -38,7 +38,7 @@ Canon uses Spotify’s Authorization Code + PKCE flow. It never stores a client 
 
 Operators set `VITE_SPOTIFY_CLIENT_ID` in `canon/.env` (and add redirect URIs in the [Spotify dashboard](https://developer.spotify.com/dashboard): `http://localhost:5173/` plus the production origin with a trailing slash). Rebuild so the client ID is baked in.
 
-Visitors click **Add to Spotify**. Spotify asks them to approve access. The track is then saved to Liked Songs and to a private playlist named **Canon**. Official artist albums cannot be modified.
+Visitors click **Add to Spotify**. That opens the track on Spotify. If `VITE_SPOTIFY_CLIENT_ID` is set, Canon can also ask Spotify for access and save the track to Liked Songs and to a private playlist named **Canon**. Official artist albums cannot be modified.
 
 In Spotify’s development mode, only users you add to the app can sign in until the app is in extended quota.
 

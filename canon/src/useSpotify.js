@@ -6,6 +6,7 @@ import {
   completeSpotifyLogin,
   fetchSpotifyProfile,
   getClientId,
+  openSpotifyTrack,
   parseCallbackParams,
   searchSpotifyTracks,
   setPendingAdd,
@@ -102,7 +103,8 @@ export function useSpotify() {
       return;
     }
     if (!getClientId(undefined, ENV_CLIENT_ID)) {
-      setStatus({ key: "spotify.notConfigured" });
+      const href = openSpotifyTrack(track);
+      setStatus(href ? { key: "spotify.opened" } : { key: "spotify.noId" });
       return;
     }
     if (!user) {

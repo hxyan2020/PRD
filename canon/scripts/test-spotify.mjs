@@ -11,6 +11,8 @@ import {
   saveClientId,
   setPendingAdd,
   setPendingBeyond,
+  spotifyOpenUrl,
+  openSpotifyTrack,
   spotifyTrackUri,
   takePendingAdd,
   takePendingBeyond,
@@ -26,6 +28,18 @@ assert.match(SCOPES, /user-library-modify/);
 assert.match(SCOPES, /playlist-modify-private/);
 assert.equal(spotifyTrackUri("0VjIjW4GlUZAMYd2vXMi3b"), "spotify:track:0VjIjW4GlUZAMYd2vXMi3b");
 assert.equal(spotifyTrackUri(""), "");
+assert.equal(
+  spotifyOpenUrl({ spotifyUrl: "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b", spotifyId: "other" }),
+  "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b"
+);
+assert.equal(spotifyOpenUrl({ spotifyId: "0VjIjW4GlUZAMYd2vXMi3b" }), "https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b");
+assert.equal(spotifyOpenUrl({}), "");
+const opened = [];
+assert.equal(
+  openSpotifyTrack({ spotifyId: "abc" }, (href, target, features) => opened.push({ href, target, features })),
+  "https://open.spotify.com/track/abc"
+);
+assert.deepEqual(opened, [{ href: "https://open.spotify.com/track/abc", target: "_blank", features: "noopener,noreferrer" }]);
 
 assert.deepEqual(parseCallbackParams("?code=abc&state=xyz"), { code: "abc", state: "xyz", error: "" });
 assert.equal(parseCallbackParams("?error=access_denied").error, "access_denied");

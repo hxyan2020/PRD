@@ -71,6 +71,20 @@ export function spotifyTrackUri(spotifyId) {
   return id ? `spotify:track:${id}` : "";
 }
 
+export function spotifyOpenUrl(track) {
+  const direct = String(track?.spotifyUrl || "").trim();
+  if (direct) return direct;
+  const id = String(track?.spotifyId || "").trim();
+  return id ? `https://open.spotify.com/track/${id}` : "";
+}
+
+export function openSpotifyTrack(track, opener = globalThis.open) {
+  const href = spotifyOpenUrl(track);
+  if (!href) return "";
+  opener?.(href, "_blank", "noopener,noreferrer");
+  return href;
+}
+
 export function parseCallbackParams(search) {
   const params = new URLSearchParams(String(search || "").replace(/^\?/, ""));
   return {
