@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
-import { splitCredits } from "../src/portraits.js";
+import { imageKey, splitCredits, uniqueImages } from "../src/portraits.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalogPath = path.join(root, "public", "catalog.json");
@@ -60,7 +60,7 @@ for (const track of raw.tracks) {
 
 assert.equal(covers, 1000);
 assert.equal(spotifyLinks, 1000);
-assert.ok(years > 700, `expected most tracks to have a year, got ${years}`);
+assert.equal(years, 1000, `every track needs a release year, got ${years}`);
 assert.ok(streamCounts > 200, `expected hundreds of Spotify play counts, got ${streamCounts}`);
 
 assert.ok(!raw.tracks.some((t) => /^Q\d+$/.test(t.name)), "unlabeled wikidata ids");
@@ -85,6 +85,10 @@ for (const track of raw.tracks) {
     assert.ok(person, `missing portrait record for ${name}`);
     assert.ok(String(person.anecdote || "").length > 20, `missing anecdote for ${name}`);
     if (!person.images || person.images.length < 3) shortPortraits += 1;
+    const uniq = uniqueImages(person.images || [], 99);
+    assert.equal(uniq.length, (person.images || []).length, `duplicate anecdote images for ${name}`);
+    const keys = new Set((person.images || []).map((image) => imageKey(image.src)));
+    assert.equal(keys.size, (person.images || []).length, `duplicate image keys for ${name}`);
   }
 }
 assert.equal(missingAnecdotes.length, 0);

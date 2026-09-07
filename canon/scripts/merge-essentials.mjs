@@ -115,6 +115,13 @@ function inferArtist(description, extract) {
   return "";
 }
 
+function yearFromText(value) {
+  const m = String(value || "").match(/\b(1[5-9]\d{2}|20[0-2]\d)\b/);
+  if (!m) return null;
+  const year = Number(m[1]);
+  return year >= 1500 && year <= 2026 ? year : null;
+}
+
 function whyFor(track) {
   const bits = [];
   if (track.extract) bits.push(track.extract.split(/(?<=[.!?])\s+/).slice(0, 2).join(" "));
@@ -198,7 +205,7 @@ async function main() {
       band: "—",
       writer: inferred || name,
       musicCompany: "Not listed",
-      year: null,
+      year: yearFromText(item.wd?.description) || yearFromText(item.extract) || null,
       releaseCountry: "Not listed",
       genre: "Essential recording",
       genres: ["Essential recording"],
