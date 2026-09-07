@@ -181,6 +181,18 @@ assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
   /\.drawer-actions a/,
 );
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
+  /\.drawer-actions a:visited/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
+  /-webkit-text-fill-color:\s*var\(--ink\)/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
+  /padding-bottom:\s*calc\(148px/,
+);
 assert.doesNotMatch(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
   /\.drawer-actions \{\s*position:\s*sticky/s,

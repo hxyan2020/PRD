@@ -1284,9 +1284,15 @@ option {
 
 .drawer-actions button,
 .drawer-actions a,
+.drawer-actions a:link,
+.drawer-actions a:visited,
+.drawer-actions a:hover,
+.drawer-actions a:active,
 .drawer .spotify-link {
   color: var(--ink);
-  border-color: rgba(22, 17, 12, 0.35);
+  -webkit-text-fill-color: var(--ink);
+  border-color: rgba(22, 17, 12, 0.55);
+  background: var(--cream);
 }
 
 .lyrics {
@@ -1923,7 +1929,8 @@ body.portrait-lightbox-open {
     padding-top: max(12px, env(safe-area-inset-top, 0px));
     padding-inline-start: max(12px, env(safe-area-inset-left, 0px));
     padding-inline-end: max(12px, env(safe-area-inset-right, 0px));
-    padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(148px + env(safe-area-inset-bottom, 0px));
+    scroll-padding-bottom: calc(148px + env(safe-area-inset-bottom, 0px));
     -webkit-overflow-scrolling: touch;
   }
 
@@ -1964,16 +1971,24 @@ body.portrait-lightbox-open {
     position: static;
     bottom: auto;
     z-index: auto;
-    margin: 18px 0 0;
-    padding: 0;
+    margin-top: auto;
+    margin-bottom: 0;
+    padding: 18px 0 8px;
     background: transparent;
+    flex: none;
   }
 
   .drawer-actions button,
-  .drawer-actions a {
+  .drawer-actions a,
+  .drawer-actions a:link,
+  .drawer-actions a:visited,
+  .drawer .spotify-link {
     flex: 1 1 calc(50% - 8px);
     min-width: 0;
     max-width: 100%;
+    color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
+    border-color: rgba(22, 17, 12, 0.55);
   }
 
   .dock {
@@ -2060,6 +2075,15 @@ body.portrait-lightbox-open {
   .drawer-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    color: var(--ink);
+  }
+
+  .drawer-actions a,
+  .drawer-actions a:link,
+  .drawer-actions a:visited,
+  .drawer .spotify-link {
+    color: var(--ink);
+    -webkit-text-fill-color: var(--ink);
   }
 
   .meta-line,
