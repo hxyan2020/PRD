@@ -1,3 +1,4 @@
+import { AUTH } from "./auth-messages.js";
 import { BEYOND } from "./beyond-messages.js";
 import { LEGAL } from "./legal-messages.js";
 import { LYRICS } from "./lyrics-messages.js";
@@ -1141,12 +1142,12 @@ const pt = {
 };
 
 export const MESSAGES = {
-  en: { ...en, ...LEGAL.en, ...BEYOND.en, ...LYRICS.en, ...PORTRAITS.en },
-  zh: { ...zh, ...LEGAL.zh, ...BEYOND.zh, ...LYRICS.zh, ...PORTRAITS.zh },
-  hi: { ...hi, ...LEGAL.hi, ...BEYOND.hi, ...LYRICS.hi, ...PORTRAITS.hi },
-  es: { ...es, ...LEGAL.es, ...BEYOND.es, ...LYRICS.es, ...PORTRAITS.es },
-  fr: { ...fr, ...LEGAL.fr, ...BEYOND.fr, ...LYRICS.fr, ...PORTRAITS.fr },
-  ar: { ...ar, ...LEGAL.ar, ...BEYOND.ar, ...LYRICS.ar, ...PORTRAITS.ar },
-  bn: { ...bn, ...LEGAL.bn, ...BEYOND.bn, ...LYRICS.bn, ...PORTRAITS.bn },
-  pt: { ...pt, ...LEGAL.pt, ...BEYOND.pt, ...LYRICS.pt, ...PORTRAITS.pt },
+  en: { ...en, ...LEGAL.en, ...BEYOND.en, ...LYRICS.en, ...PORTRAITS.en, ...AUTH.en },
+  zh: { ...zh, ...LEGAL.zh, ...BEYOND.zh, ...LYRICS.zh, ...PORTRAITS.zh, ...AUTH.zh },
+  hi: { ...hi, ...LEGAL.hi, ...BEYOND.hi, ...LYRICS.hi, ...PORTRAITS.hi, ...AUTH.hi },
+  es: { ...es, ...LEGAL.es, ...BEYOND.es, ...LYRICS.es, ...PORTRAITS.es, ...AUTH.es },
+  fr: { ...fr, ...LEGAL.fr, ...BEYOND.fr, ...LYRICS.fr, ...PORTRAITS.fr, ...AUTH.fr },
+  ar: { ...ar, ...LEGAL.ar, ...BEYOND.ar, ...LYRICS.ar, ...PORTRAITS.ar, ...AUTH.ar },
+  bn: { ...bn, ...LEGAL.bn, ...BEYOND.bn, ...LYRICS.bn, ...PORTRAITS.bn, ...AUTH.bn },
+  pt: { ...pt, ...LEGAL.pt, ...BEYOND.pt, ...LYRICS.pt, ...PORTRAITS.pt, ...AUTH.pt },
 };

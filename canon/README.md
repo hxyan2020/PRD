@@ -17,7 +17,8 @@ Every entry has:
 - a dated log of every daily recommendation and Surprise me pick
 - **Add to Spotify** — clicking it asks you to authorize Spotify (saves to Liked Songs and a private Canon playlist album). There is no client-ID form and no Spotify card on the homepage
 - UI in eight widely spoken languages (English, 中文, हिन्दी, Español, Français, العربية, বাংলা, Português). Language lives in the top menu (on phones, next to the hamburger)
-- A top **menu**: For you (home), Preferences, The 1,000 (`#archive` — the 1,000-work catalog), Collections, and Recommendation log. Phones use a hamburger icon. About and Terms of use sit in the footer
+- A top **menu**: For you (home), Preferences, The 1,000 (`#archive` — the 1,000-work catalog), Collections, Recommendation log, and My profile (`#profile`). Phones use a hamburger icon. About and Terms of use sit in the footer
+- **My profile** — optional local sign-in, sign-out, and password reset in this browser (no Canon account server; listening does not require an account)
 - Anonymous page views go to HX viewership (`slug: canon`). Telegram **HX Bots Dashboard** polls `/hx/health.json` (not in-app tabs)
 
 ## Run

@@ -8,6 +8,7 @@ const MENU_LINKS = [
   ["archive", "archiveNav"],
   ["collections", "collections"],
   ["log", "recommendLog"],
+  ["profile", "profileNav"],
 ];
 
 const FOOTER_LINKS = [

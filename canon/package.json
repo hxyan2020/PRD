@@ -10,7 +10,7 @@
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "catalog": "node scripts/build-catalog.mjs && node scripts/merge-essentials.mjs",
     "enrich": "node scripts/enrich-portraits.mjs",
-    "test": "node scripts/test-format.mjs && node scripts/test-cover.mjs && node scripts/test-recommend.mjs && node scripts/test-collections.mjs && node scripts/test-viewed.mjs && node scripts/test-recommend-log.mjs && node scripts/test-spotify.mjs && node scripts/test-beyond.mjs && node scripts/test-i18n.mjs && node scripts/test-hx.mjs && node scripts/test-lyrics.mjs && node scripts/test-country-flags.mjs && node scripts/test-portraits.mjs && node scripts/validate-catalog.mjs"
+    "test": "node scripts/test-format.mjs && node scripts/test-cover.mjs && node scripts/test-recommend.mjs && node scripts/test-collections.mjs && node scripts/test-viewed.mjs && node scripts/test-recommend-log.mjs && node scripts/test-spotify.mjs && node scripts/test-beyond.mjs && node scripts/test-i18n.mjs && node scripts/test-hx.mjs && node scripts/test-lyrics.mjs && node scripts/test-country-flags.mjs && node scripts/test-portraits.mjs && node scripts/test-auth.mjs && node scripts/validate-catalog.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

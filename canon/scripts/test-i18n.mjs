@@ -13,6 +13,7 @@ import {
   t,
 } from "../src/i18n.js";
 import { MESSAGES } from "../src/i18n-messages.js";
+import { AUTH } from "../src/auth-messages.js";
 import { BEYOND } from "../src/beyond-messages.js";
 import { LEGAL } from "../src/legal-messages.js";
 import { LYRICS } from "../src/lyrics-messages.js";
@@ -43,12 +44,14 @@ assert.equal(t("en", "collect"), "Collect");
 assert.equal(t("en", "menu"), "Menu");
 assert.equal(t("en", "listenNav"), "For you");
 assert.equal(t("en", "prefsNav"), "Preferences");
+assert.equal(t("en", "profileNav"), "My profile");
 assert.equal(t("en", "aboutNav"), "About");
 assert.equal(t("en", "termsNav"), "Terms of use");
 assert.equal(t("zh", "aboutNav"), "关于");
 assert.equal(t("zh", "termsNav"), "使用条款");
 assert.equal(t("zh", "listenNav"), "为你推荐");
 assert.equal(t("zh", "prefsNav"), "偏好");
+assert.equal(t("zh", "profileNav"), "我的资料");
 assert.equal(t("zh", "archiveNav"), "一千首");
 assert.equal(t("zh", "menu"), "菜单");
 assert.equal(t("zh", "collect"), "收藏");
@@ -100,6 +103,10 @@ assert.deepEqual(parseRoute("#for-you"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#beyond"), { page: "home", trackId: "" });
 assert.deepEqual(parseRoute("#prefs"), { page: "prefs", trackId: "" });
 assert.deepEqual(parseRoute("#preferences"), { page: "prefs", trackId: "" });
+assert.deepEqual(parseRoute("#profile"), { page: "profile", trackId: "" });
+assert.deepEqual(parseRoute("#account"), { page: "profile", trackId: "" });
+assert.deepEqual(parseRoute("#me"), { page: "profile", trackId: "" });
+assert.equal(routeHash("profile"), "profile");
 assert.deepEqual(parseRoute("#listen&t=Q1"), { page: "home", trackId: "Q1" });
 assert.deepEqual(parseRoute("#archive"), { page: "archive", trackId: "" });
 assert.deepEqual(parseRoute("#catalog"), { page: "archive", trackId: "" });
@@ -135,6 +142,22 @@ for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(LYRICS[locale]).sort(), lyricsKeys, `${locale} lyrics copy keys`);
   assert.match(t(locale, "lyrics"), /./);
 }
+
+const authKeys = Object.keys(AUTH.en).sort();
+assert.ok(authKeys.includes("profileNav"));
+assert.ok(authKeys.includes("profileReset"));
+assert.ok(authKeys.includes("profileSignOut"));
+for (const locale of LANGUAGE_IDS) {
+  assert.deepEqual(Object.keys(AUTH[locale]).sort(), authKeys, `${locale} auth copy keys`);
+  assert.match(t(locale, "profileTitle"), /./);
+}
+assert.equal(t("en", "profileNav"), "My profile");
+assert.match(t("en", "aboutDataBody"), /optional Canon profile/);
+assert.match(t("en", "terms5Body"), /My profile/);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/SitePages.jsx"), "utf8"),
+  /\["profile", "profileNav"\]/,
+);
 const lyricsPanel = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/LyricsPanel.jsx"), "utf8");
 assert.match(lyricsPanel, /if \(!open \|\| !trackKey\) return null/);
 assert.doesNotMatch(lyricsPanel, /lyricsShow/);

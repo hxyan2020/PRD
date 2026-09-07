@@ -12,6 +12,9 @@ const PAGES = new Set([
   "preferences",
   "archive",
   "catalog",
+  "profile",
+  "account",
+  "me",
 ]);
 
 function normalizePage(token) {
@@ -19,6 +22,7 @@ function normalizePage(token) {
   if (token === "listen" || token === "for-you" || token === "beyond") return "home";
   if (token === "preferences") return "prefs";
   if (token === "catalog") return "archive";
+  if (token === "account" || token === "me") return "profile";
   return token;
 }
 

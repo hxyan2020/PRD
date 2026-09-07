@@ -713,6 +713,68 @@ button.surprise {
   cursor: default;
 }
 
+.profile-note,
+.profile-hint {
+  color: rgba(243, 234, 214, 0.62);
+  font-size: 14px;
+  line-height: 1.5;
+  max-width: 54ch;
+}
+
+.profile-hint {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.profile-form {
+  grid-template-columns: 1fr;
+  max-width: 26rem;
+}
+
+.profile-form input[readonly] {
+  opacity: 0.72;
+}
+
+.profile-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 4px;
+}
+
+.profile-modes button {
+  border: 1px solid rgba(201, 164, 90, 0.5);
+  background: transparent;
+  color: var(--paper);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.profile-modes button.is-on {
+  background: var(--brass);
+  color: var(--ink);
+}
+
+.profile-banner {
+  margin: 12px 0 0;
+  max-width: 54ch;
+}
+
+.profile-banner.is-error {
+  color: #f3c4b8;
+}
+
+.profile-banner.is-ok {
+  color: #d7e8c3;
+}
+
 .daily-card {
   display: grid;
   grid-template-columns: 180px 1fr;
@@ -1497,7 +1559,8 @@ option {
   .spotify-connect,
   .recommend-log,
   .site-doc,
-  .site-footer {
+  .site-footer,
+  .profile {
     min-width: 0;
     max-width: 100%;
   }

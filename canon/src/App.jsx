@@ -3,6 +3,7 @@ import CollectButton from "./CollectButton.jsx";
 import Collections from "./Collections.jsx";
 import DailyRecommend from "./DailyRecommend.jsx";
 import ListenPrefs from "./ListenPrefs.jsx";
+import Profile from "./Profile.jsx";
 import { loadListenPrefs } from "./listenPrefs.js";
 import { useI18n } from "./I18n.jsx";
 import RecommendLog from "./RecommendLog.jsx";
@@ -333,6 +334,8 @@ export default function App() {
         </>
       ) : page === "prefs" ? (
         <ListenPrefs countries={facets.countries} genres={facets.genres} />
+      ) : page === "profile" ? (
+        <Profile />
       ) : (
         <>
           <DailyRecommend
