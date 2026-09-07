@@ -48,27 +48,18 @@ Works are drawn from Wikidata items that already carry a Spotify track ID, order
 
 ## Public URL
 
-Permanent public site (GitHack serves the committed `docs/` build as real HTML; it does not expire):
+Permanent public site (Vercel production for project `canon`, does not expire):
 
-**https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html**
+**https://canon-ivory.vercel.app/**
 
-The built files live in `docs/`. jsDelivr cannot host this app because it sends HTML as `text/plain`. After merge, the same path on branch `main` also works. Add that URL (and `https://hxyan2020.github.io/PRD/` if you later enable GitHub Pages) to your Spotify redirect URIs.
+Add that origin with a trailing slash (`https://canon-ivory.vercel.app/`) to your Spotify redirect URIs. The built files also live in `docs/` for GitHack. GitHub Pages (`https://hxyan2020.github.io/PRD/`) is configured in `.github/workflows/pages.yml` if you later turn it on under **Settings → Pages → Source: GitHub Actions**.
 
-GitHub Pages (`https://hxyan2020.github.io/PRD/`) is configured in `.github/workflows/pages.yml`. Turn it on once under repo **Settings → Pages → Source: GitHub Actions**.
-
-Optional **permanent** Vercel production (a logged-in Vercel account, not a temporary claim link):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/hxyan2020/PRD&project-name=canon&root-directory=canon)
-
-Or from this repo:
+Redeploy production:
 
 ```bash
 cd canon
-npx vercel login
 npx vercel --prod --yes
 ```
-
-That assigns a stable `*.vercel.app` hostname (often `canon.vercel.app` or `canon-<username>.vercel.app`). Do not use `vercel deploy --temporary` — those hostnames expire in about an hour until you claim them.
 
 ## DigitalOcean
 
@@ -84,9 +75,9 @@ On the HX droplet (`188.166.214.47`), serve the nginx image or the Vite `dist` f
 
 Canon does not ship HX dashboards in the website chrome. Monitoring is the same Telegram + collector stack used by Cocktale, Quant Buffet, and the other droplet apps.
 
-- **HX Bots Dashboard** (Telegram) polls [`/hx/health.json`](public/hx/health.json) and [`/hx/bots.json`](public/hx/bots.json). Live GitHack health: `https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/hx/health.json`.
+- **HX Bots Dashboard** (Telegram) polls [`/hx/health.json`](public/hx/health.json) and [`/hx/bots.json`](public/hx/bots.json). Live health: `https://canon-ivory.vercel.app/hx/health.json`.
 - **HX viewership** records anonymous `{ slug: "canon", name: "Canon", path, host, referer }` beacons. The app posts to `/api/hx-viewership`, which forwards to `http://188.166.214.47:3520/collect`. Detail: `http://188.166.214.47:3520/r/uiuehmwkYW7BIUAUiVo-fWbKOHL8BvWq/site/canon`.
-- Register / refresh the collector with `node scripts/register-hx.mjs` (defaults to the GitHack origin). Canon is an external/GitHack host, so droplet nginx will not see it unless you also rsync `docs/` to `/var/www/canon` like Cocktale.
+- Register / refresh the collector with `node scripts/register-hx.mjs` (defaults to the Vercel origin).
 
 ## Tests
 

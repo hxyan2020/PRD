@@ -8,7 +8,7 @@ import {
   sendHxBeacon,
   viewershipPayload,
 } from "../src/hx.js";
-import { publicUrl, siteUrl } from "../src/urls.js";
+import { CANON_PUBLIC_URL, publicUrl, siteUrl } from "../src/urls.js";
 import { parseRoute } from "../src/pages.js";
 
 assert.equal(hxPathForRoute("home", ""), "/");
@@ -22,6 +22,12 @@ assert.deepEqual(viewershipPayload({ path: "/#about", host: "example.test" }), {
   referer: "",
 });
 assert.equal(viewershipPayload({ url: `${HX_PUBLIC_ORIGIN}/` }).url, `${HX_PUBLIC_ORIGIN}/`);
+assert.equal(HX_PUBLIC_ORIGIN, "https://canon-ivory.vercel.app");
+assert.equal(CANON_PUBLIC_URL, "https://canon-ivory.vercel.app/");
+assert.equal(
+  siteUrl({ origin: "https://canon-ivory.vercel.app", pathname: "/" }),
+  "https://canon-ivory.vercel.app/"
+);
 
 let posted = null;
 const result = await sendHxBeacon({ path: "/", host: "localhost" }, async (url, opts) => {

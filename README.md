@@ -9,4 +9,4 @@ npm run dev --prefix canon
 
 The original risk-workflow Python scripts remain at the repository root.
 
-Canon’s permanent public site is **https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html**. Deploy specs also live in `canon/vercel.json`, `canon/Dockerfile`, and `.do/app.yaml`. HX bots poll `canon/public/hx/health.json`; page views go to HX viewership as slug `canon`.
+Canon’s permanent public site is **https://canon-ivory.vercel.app/**. Deploy specs also live in `canon/vercel.json`, `canon/Dockerfile`, and `.do/app.yaml`. HX bots poll `canon/public/hx/health.json`; page views go to HX viewership as slug `canon`.

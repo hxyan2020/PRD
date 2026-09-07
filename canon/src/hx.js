@@ -4,8 +4,7 @@ export const HX_SLUG = "canon";
 export const HX_NAME = "Canon";
 export const HX_COLLECT_URL = "http://188.166.214.47:3520/collect";
 export const HX_BEACON_PATH = "/api/hx-viewership";
-export const HX_PUBLIC_ORIGIN =
-  "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs";
+export const HX_PUBLIC_ORIGIN = "https://canon-ivory.vercel.app";
 
 export function hxBeaconPath() {
   return publicUrl("api/hx-viewership");

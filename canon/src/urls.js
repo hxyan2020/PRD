@@ -21,6 +21,5 @@ export function siteUrl(location = globalThis.location) {
   return `${location.origin}${path.replace(/[^/]+$/, "")}`;
 }
 
-export const CANON_PUBLIC_URL =
-  "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html";
+export const CANON_PUBLIC_URL = "https://canon-ivory.vercel.app/";
 export const GITHUB_PAGES_URL = "https://hxyan2020.github.io/PRD/";

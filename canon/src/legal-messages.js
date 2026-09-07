@@ -34,7 +34,7 @@ export const LEGAL = {
       "Catalog notes and covers come from public sources used by the archive: Wikidata, Wikipedia page summaries, Spotify oEmbed (track verification and artwork), and published play-count tables. Follow each Music’s encyclopedia and Spotify links for the original records.",
     aboutHostTitle: "Public site",
     aboutHostBody:
-      "Canon’s permanent public site is GitHub Pages. It can also be deployed on Vercel and DigitalOcean. Each screen you open sends an anonymous page view (path, host, referer) to operations analytics under the project slug canon.",
+      "Canon’s permanent public site is Vercel (https://canon-ivory.vercel.app/). It can also be served from GitHack, GitHub Pages, and DigitalOcean. Each screen you open sends an anonymous page view (path, host, referer) to operations analytics under the project slug canon.",
     termsEyebrow: "Your use of Canon",
     termsTitle: "Terms of use",
     termsUpdated: "Last updated 5 September 2026.",
@@ -99,7 +99,7 @@ export const LEGAL = {
       "目录说明与封面来自档案使用的公开来源：维基数据、维基百科摘要、Spotify oEmbed（曲目校验与封面）以及已公布的播放量表。请通过每首作品的百科与 Spotify 链接查看原始记录。",
     aboutHostTitle: "公开站点",
     aboutHostBody:
-      "Canon 的长期公开地址在 GitHub Pages，也可部署到 Vercel 与 DigitalOcean。你打开的每个界面会把匿名浏览（路径、主机、来源）以 slug canon 发到运营统计。",
+      "Canon 的长期公开地址在 Vercel（https://canon-ivory.vercel.app/），也可从 GitHack、GitHub Pages 与 DigitalOcean 提供。你打开的每个界面会把匿名浏览（路径、主机、来源）以 slug canon 发到运营统计。",
     termsEyebrow: "使用 Canon",
     termsTitle: "使用条款",
     termsUpdated: "最近更新日期：2026 年 9 月 5 日。",
@@ -163,7 +163,7 @@ export const LEGAL = {
       "कैटलॉग नोट और कवर सार्वजनिक स्रोतों से हैं: विकिडेटा, विकिपीडिया सारांश, Spotify oEmbed (ट्रैक जाँच और कलाकृति), और प्रकाशित प्ले-गणना तालिकाएँ। मूल अभिलेखों के लिए प्रत्येक संगीत के विश्वकोश और Spotify लिंक देखें।",
     aboutHostTitle: "सार्वजनिक साइट",
     aboutHostBody:
-      "Canon की स्थायी सार्वजनिक साइट GitHub Pages है; Vercel और DigitalOcean पर भी चलाया जा सकता है। हर स्क्रीन एक अनाम पेज व्यू (path, host, referer) slug canon से संचालन आँकड़ों को भेजती है।",
+      "Canon की स्थायी सार्वजनिक साइट Vercel है (https://canon-ivory.vercel.app/); GitHack, GitHub Pages और DigitalOcean पर भी चलाया जा सकता है। हर स्क्रीन एक अनाम पेज व्यू (path, host, referer) slug canon से संचालन आँकड़ों को भेजती है।",
     termsEyebrow: "Canon का उपयोग",
     termsTitle: "उपयोग की शर्तें",
     termsUpdated: "अंतिम अद्यतन 5 सितंबर 2026।",
@@ -230,7 +230,7 @@ export const LEGAL = {
       "Las notas y portadas del catálogo vienen de fuentes públicas: Wikidata, resúmenes de Wikipedia, oEmbed de Spotify (verificación y arte) y tablas publicadas de reproducciones. Sigue los enlaces enciclopédicos y de Spotify de cada música para los registros originales.",
     aboutHostTitle: "Sitio público",
     aboutHostBody:
-      "El sitio público permanente de Canon es GitHub Pages. También puede desplegarse en Vercel y DigitalOcean. Cada pantalla envía una vista anónima (ruta, host, referer) a las analíticas de operaciones con el slug canon.",
+      "El sitio público permanente de Canon es Vercel (https://canon-ivory.vercel.app/). También puede servirse desde GitHack, GitHub Pages y DigitalOcean. Cada pantalla envía una vista anónima (ruta, host, referer) a las analíticas de operaciones con el slug canon.",
     termsEyebrow: "Tu uso de Canon",
     termsTitle: "Términos de uso",
     termsUpdated: "Última actualización: 5 de septiembre de 2026.",
@@ -297,7 +297,7 @@ export const LEGAL = {
       "Les notes et pochettes du catalogue viennent de sources publiques : Wikidata, résumés Wikipédia, oEmbed Spotify (vérification et visuel) et tableaux de lectures publiés. Suivez les liens encyclopédiques et Spotify de chaque musique pour les notices d’origine.",
     aboutHostTitle: "Site public",
     aboutHostBody:
-      "Le site public permanent de Canon est GitHub Pages. Il peut aussi être déployé sur Vercel et DigitalOcean. Chaque écran envoie une vue anonyme (chemin, hôte, referer) aux statistiques d’exploitation sous le slug canon.",
+      "Le site public permanent de Canon est Vercel (https://canon-ivory.vercel.app/). Il peut aussi être servi depuis GitHack, GitHub Pages et DigitalOcean. Chaque écran envoie une vue anonyme (chemin, hôte, referer) aux statistiques d’exploitation sous le slug canon.",
     termsEyebrow: "Votre usage de Canon",
     termsTitle: "Conditions d’utilisation",
     termsUpdated: "Dernière mise à jour : 5 septembre 2026.",
@@ -364,7 +364,7 @@ export const LEGAL = {
       "ملاحظات الفهرس والأغلفة من مصادر عامة: ويكي بيانات، ملخصات ويكيبيديا، oEmbed لـ Spotify (التحقق والغلاف)، وجداول أعداد التشغيل المنشورة. اتبع روابط الموسوعة وSpotify لكل موسيقى للاطلاع على السجلات الأصلية.",
     aboutHostTitle: "الموقع العام",
     aboutHostBody:
-      "الموقع العام الدائم لـ Canon هو GitHub Pages، ويمكن نشره أيضاً على Vercel وDigitalOcean. وتُرسل كل شاشة مشاهدة مجهولة (المسار والمضيف والمُحيل) إلى إحصاءات التشغيل بالاسم canon.",
+      "الموقع العام الدائم لـ Canon هو Vercel (https://canon-ivory.vercel.app/)، ويمكن تقديمه أيضاً من GitHack وGitHub Pages وDigitalOcean. وتُرسل كل شاشة مشاهدة مجهولة (المسار والمضيف والمُحيل) إلى إحصاءات التشغيل بالاسم canon.",
     termsEyebrow: "استخدامك لـ Canon",
     termsTitle: "شروط الاستخدام",
     termsUpdated: "آخر تحديث: 5 أيلول/سبتمبر 2026.",
@@ -431,7 +431,7 @@ export const LEGAL = {
       "ক্যাটালগ নোট ও কভার আসে পাবলিক উৎস থেকে: Wikidata, উইকিপিডিয়া সারাংশ, Spotify oEmbed (ট্র্যাক যাচাই ও আর্টওয়ার্ক) এবং প্রকাশিত প্লে-গণনা টেবিল। মূল রেকর্ডের জন্য প্রতিটি সঙ্গীতের বিশ্বকোষ ও Spotify লিংক অনুসরণ করুন।",
     aboutHostTitle: "পাবলিক সাইট",
     aboutHostBody:
-      "Canon-এর স্থায়ী পাবলিক সাইট GitHub Pages; Vercel ও DigitalOcean-এও ডিপ্লয় করা যায়। প্রতিটি স্ক্রিন বেনামি পেজ ভিউ (path, host, referer) slug canon-এ অপারেশন পরিসংখ্যানে পাঠায়।",
+      "Canon-এর স্থায়ী পাবলিক সাইট Vercel (https://canon-ivory.vercel.app/); GitHack, GitHub Pages ও DigitalOcean-এও দেওয়া যায়। প্রতিটি স্ক্রিন বেনামি পেজ ভিউ (path, host, referer) slug canon-এ অপারেশন পরিসংখ্যানে পাঠায়।",
     termsEyebrow: "Canon ব্যবহার",
     termsTitle: "ব্যবহারের শর্ত",
     termsUpdated: "সর্বশেষ হালনাগাদ ৫ সেপ্টেম্বর ২০২৬।",
@@ -498,7 +498,7 @@ export const LEGAL = {
       "Notas e capas do catálogo vêm de fontes públicas: Wikidata, resumos da Wikipédia, oEmbed do Spotify (verificação e arte) e tabelas publicadas de plays. Siga os links enciclopédicos e do Spotify de cada música para os registros originais.",
     aboutHostTitle: "Site público",
     aboutHostBody:
-      "O site público permanente da Canon é o GitHub Pages. Também pode ser implantada no Vercel e na DigitalOcean. Cada tela envia uma visualização anônima (path, host, referer) às análises de operação com o slug canon.",
+      "O site público permanente da Canon é o Vercel (https://canon-ivory.vercel.app/). Também pode ser servida no GitHack, GitHub Pages e DigitalOcean. Cada tela envia uma visualização anônima (path, host, referer) às análises de operação com o slug canon.",
     termsEyebrow: "Seu uso da Canon",
     termsTitle: "Termos de uso",
     termsUpdated: "Última atualização: 5 de setembro de 2026.",

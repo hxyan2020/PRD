@@ -6,7 +6,7 @@
   "archiveSongs": 1000,
   "slug": "canon",
   "kind": "external",
-  "publicUrl": "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html",
+  "publicUrl": "https://canon-ivory.vercel.app/",
   "hx": {
     "monitoring": true,
     "viewership": true,
@@ -14,8 +14,8 @@
     "telegram": "HX Bots Dashboard"
   },
   "http": [
-    "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/hx/health.json",
-    "https://raw.githack.com/hxyan2020/PRD/cursor/canon-music-streaming-c956/docs/index.html"
+    "https://canon-ivory.vercel.app/hx/health.json",
+    "https://canon-ivory.vercel.app/"
   ],
   "endpoints": {
     "health": "/hx/health.json",
