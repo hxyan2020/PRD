@@ -153,16 +153,16 @@ export function enlargeImageUrl(src) {
   if (/\/Special:FilePath\//i.test(raw)) {
     try {
       const url = new URL(raw);
-      url.searchParams.set("width", "1280");
+      url.searchParams.set("width", "1920");
       return url.toString();
     } catch {
       return raw;
     }
   }
   if (/upload\.wikimedia\.org\/wikipedia\/.*\/thumb\//i.test(raw)) {
-    return raw.replace(/\/\d+px-/i, "/1280px-");
+    return raw.replace(/\/\d+px-/i, "/1920px-");
   }
-  return raw.replace(/100x100bb|200x200bb|300x300bb/i, "600x600bb");
+  return raw.replace(/100x100bb|200x200bb|300x300bb|600x600bb/i, "1200x1200bb");
 }
 
 function wikiFileName(src) {

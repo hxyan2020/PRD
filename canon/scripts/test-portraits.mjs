@@ -111,7 +111,7 @@ assert.match(sized[0].src, /1280px-/);
 assert.equal(sized[0].alt, "large");
 assert.match(
   enlargeImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/X.jpg/330px-X.jpg"),
-  /1280px-X\.jpg/
+  /1920px-X\.jpg/
 );
 
 const croppedPair = uniqueImages(

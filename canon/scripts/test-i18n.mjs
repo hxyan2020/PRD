@@ -167,7 +167,7 @@ assert.doesNotMatch(
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),
-  /portrait-lightbox/,
+  /createPortal/,
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),

@@ -1,4 +1,5 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { enlargeImageUrl, uniqueImages } from "./portraits.js";
 import { hdCoverUrl } from "./cover.js";
 import { useI18n } from "./I18n.jsx";
@@ -6,6 +7,7 @@ import { useI18n } from "./I18n.jsx";
 export default function PortraitGallery({ name, portrait }) {
   const { t } = useI18n();
   const dialogId = useId();
+  const closeRef = useRef(null);
   const [open, setOpen] = useState(null);
   const images = uniqueImages(portrait?.images || [], 9);
 
@@ -15,10 +17,47 @@ export default function PortraitGallery({ name, portrait }) {
       if (event.key === "Escape") setOpen(null);
     };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.body.classList.add("portrait-lightbox-open");
+    closeRef.current?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previous;
+      document.body.classList.remove("portrait-lightbox-open");
+    };
   }, [open]);
 
   if (!portrait) return null;
+
+  const lightbox =
+    open && typeof document !== "undefined"
+      ? createPortal(
+          <div
+            className="portrait-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={dialogId}
+            onClick={() => setOpen(null)}
+          >
+            <button
+              ref={closeRef}
+              type="button"
+              className="portrait-lightbox-close"
+              onClick={() => setOpen(null)}
+            >
+              {t("closePortrait")}
+            </button>
+            <img
+              id={dialogId}
+              src={enlargeImageUrl(hdCoverUrl(open.src))}
+              alt={open.alt || name}
+              onClick={(event) => event.stopPropagation()}
+            />
+          </div>,
+          document.body
+        )
+      : null;
 
   return (
     <section className="anecdote-block">
@@ -36,32 +75,14 @@ export default function PortraitGallery({ name, portrait }) {
                   onClick={() => setOpen(image)}
                   aria-label={t("expandPortrait", { name: image.alt || name })}
                 >
-                  <img src={hdCoverUrl(image.src)} alt={image.alt || name} loading="lazy" />
+                  <img src={hdCoverUrl(image.src)} alt="" loading="lazy" />
                 </button>
               </li>
             ))}
           </ul>
         </>
       ) : null}
-      {open ? (
-        <div
-          className="portrait-lightbox"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={dialogId}
-          onClick={() => setOpen(null)}
-        >
-          <button type="button" className="portrait-lightbox-close" onClick={() => setOpen(null)}>
-            {t("closePortrait")}
-          </button>
-          <img
-            id={dialogId}
-            src={enlargeImageUrl(hdCoverUrl(open.src))}
-            alt={open.alt || name}
-            onClick={(event) => event.stopPropagation()}
-          />
-        </div>
-      ) : null}
+      {lightbox}
     </section>
   );
 }
