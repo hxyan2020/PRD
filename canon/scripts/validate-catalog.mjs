@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
-import { imageKey, splitCredits, uniqueImages } from "../src/portraits.js";
+import { imageKey, isPlaceholderCredit, splitCredits, uniqueImages } from "../src/portraits.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const catalogPath = path.join(root, "public", "catalog.json");
@@ -65,9 +65,13 @@ assert.ok(streamCounts > 200, `expected hundreds of Spotify play counts, got ${s
 
 assert.ok(!raw.tracks.some((t) => /^Q\d+$/.test(t.name)), "unlabeled wikidata ids");
 const missingPerformer = raw.tracks.filter(
-  (t) => t.singer === "Not listed" && t.band === "Not listed"
+  (t) => isPlaceholderCredit(t.singer) && isPlaceholderCredit(t.band)
 ).length;
-assert.ok(missingPerformer < 40, `too many tracks missing performer: ${missingPerformer}`);
+assert.equal(missingPerformer, 0, `tracks missing performer: ${missingPerformer}`);
+const missingCountry = raw.tracks.filter((t) => isPlaceholderCredit(t.releaseCountry)).length;
+assert.equal(missingCountry, 0, `tracks missing release country: ${missingCountry}`);
+const placeholderGenre = raw.tracks.filter((t) => t.genre === "Essential recording").length;
+assert.equal(placeholderGenre, 0, `tracks still using placeholder genre: ${placeholderGenre}`);
 
 const genres = new Set(raw.tracks.map((t) => t.genre));
 assert.ok(genres.size > 20, "genre diversity");
