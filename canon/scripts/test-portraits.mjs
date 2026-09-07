@@ -79,7 +79,19 @@ assert.equal(searchName("Swedish pop duo Roxette"), "Roxette");
 assert.equal(anecdoteFits("The Weeknd", "Abel Tesfaye, known professionally as the Weeknd"), true);
 assert.equal(
   imageKey("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait.jpg/330px-The_Weeknd_Portrait.jpg"),
-  "the_weeknd_portrait.jpg"
+  "the_weeknd_portrait"
+);
+assert.equal(
+  imageKey("https://commons.wikimedia.org/wiki/Special:FilePath/The_Weeknd_Portrait.jpg?width=800"),
+  imageKey("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait.jpg/1280px-The_Weeknd_Portrait.jpg")
+);
+assert.equal(
+  imageKey("https://commons.wikimedia.org/wiki/Special:FilePath/Dido_listening_(cropped).jpg?width=800"),
+  imageKey("https://commons.wikimedia.org/wiki/Special:FilePath/Dido_listening.jpg?width=800")
+);
+assert.equal(
+  imageKey("https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Dido_2019_%28cropped_2%29.jpg/330px-Dido_2019_%28cropped_2%29.jpg"),
+  imageKey("https://commons.wikimedia.org/wiki/Special:FilePath/Dido_2019_(cropped).jpg?width=800")
 );
 assert.notEqual(
   imageKey("https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/aa/bb/cc/source/600x600bb.jpg"),
@@ -101,5 +113,15 @@ assert.match(
   enlargeImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/X.jpg/330px-X.jpg"),
   /1280px-X\.jpg/
 );
+
+const croppedPair = uniqueImages(
+  [
+    { src: "https://commons.wikimedia.org/wiki/Special:FilePath/Dido_mic_(cropped).jpg?width=800", alt: "crop" },
+    { src: "https://commons.wikimedia.org/wiki/Special:FilePath/Dido_mic.jpg?width=800", alt: "full" },
+    { src: "https://commons.wikimedia.org/wiki/Special:FilePath/Dido_and_Rollo_Armstrong_in_studio.jpg?width=800", alt: "studio" },
+  ],
+  9
+);
+assert.equal(croppedPair.length, 2);
 
 console.log("portrait helper tests ok");

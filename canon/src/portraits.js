@@ -121,7 +121,7 @@ export function uniqueImages(images, limit = 6) {
       order.push(key);
       continue;
     }
-    if (imagePixelHint(src) > imagePixelHint(seen.get(key).src)) {
+    if (imageQuality(src) > imageQuality(seen.get(key).src)) {
       seen.set(key, next);
     }
   }
@@ -129,31 +129,86 @@ export function uniqueImages(images, limit = 6) {
 }
 
 export function imagePixelHint(src) {
-  const wiki = String(src || "").match(/\/(\d+)px-/i);
+  const raw = String(src || "");
+  const wiki = raw.match(/\/(\d+)px-/i);
   if (wiki) return Number(wiki[1]);
-  const box = String(src || "").match(/(\d+)x(\d+)bb/i);
+  const width = raw.match(/[?&]width=(\d+)/i);
+  if (width) return Number(width[1]);
+  const box = raw.match(/(\d+)x(\d+)bb/i);
   if (box) return Number(box[1]);
+  if (/\/Special:FilePath\//i.test(raw)) return 800;
   return 0;
+}
+
+export function imageQuality(src) {
+  let score = imagePixelHint(src);
+  if (/upload\.wikimedia\.org/i.test(src)) score += 40;
+  if (/\bcropped\b/i.test(src)) score += 8;
+  return score;
 }
 
 export function enlargeImageUrl(src) {
   const raw = String(src || "").trim();
   if (!raw) return "";
+  if (/\/Special:FilePath\//i.test(raw)) {
+    try {
+      const url = new URL(raw);
+      url.searchParams.set("width", "1280");
+      return url.toString();
+    } catch {
+      return raw;
+    }
+  }
   if (/upload\.wikimedia\.org\/wikipedia\/.*\/thumb\//i.test(raw)) {
     return raw.replace(/\/\d+px-/i, "/1280px-");
   }
   return raw.replace(/100x100bb|200x200bb|300x300bb/i, "600x600bb");
 }
 
+function wikiFileName(src) {
+  const url = new URL(src, "https://example.com");
+  const pathName = decodeURIComponent(url.pathname);
+  const filePath = pathName.match(/\/Special:FilePath\/(.+)$/i);
+  if (filePath) return filePath[1];
+  const thumb = pathName.match(/\/thumb\/[^/]+\/[^/]+\/([^/]+)\/\d+px-/i);
+  if (thumb) return thumb[1];
+  const original = pathName.match(/\/wikipedia\/[^/]+\/(?:thumb\/)?[0-9a-f]\/[0-9a-f]{2}\/([^/]+)$/i);
+  if (original) return original[1];
+  return pathName.split("/").pop() || "";
+}
+
+function wikiFileStem(fileName) {
+  let stem = String(fileName || "")
+    .toLowerCase()
+    .replace(/^\d+px-/i, "")
+    .replace(/\.[a-z0-9]+$/i, "");
+  let prev = "";
+  while (stem !== prev) {
+    prev = stem;
+    stem = stem
+      .replace(/[_-]?\((?:cropped(?:[^)]*)?|3x4[^)]*|contrast|thumb|crop)\)/g, "")
+      .replace(/[_-]cropped(?:[_\s.-]?\d*)?$/g, "")
+      .replace(/-cropped$/g, "")
+      .replace(/_+$/g, "")
+      .replace(/-+$/g, "");
+  }
+  return stem.replace(/_+/g, "_").replace(/\s+/g, " ").trim();
+}
+
 export function imageKey(src) {
   try {
-    const pathName = new URL(src, "https://example.com").pathname;
-    const base = decodeURIComponent(pathName.split("/").pop() || src);
-    const wiki = base.replace(/^\d+px-/i, "").toLowerCase();
-    if (/^\d+x\d+bb\.[a-z]+$/i.test(wiki) || /^(cover_[a-z]+|picture_[a-z]+)\.[a-z]+$/i.test(wiki)) {
+    const url = new URL(src, "https://example.com");
+    const pathName = url.pathname;
+    const deezer = pathName.match(/\/images\/(?:artist|cover|playlist)\/([a-f0-9]+)\//i);
+    if (deezer) return `deezer:${deezer[1].toLowerCase()}`;
+    const spotify = pathName.match(/ab67616d0000[a-z0-9]+([a-f0-9]{32})/i);
+    if (spotify) return `spotify:${spotify[1].toLowerCase()}`;
+    const fileName = wikiFileName(src);
+    const base = fileName.toLowerCase();
+    if (/^\d+x\d+bb\.[a-z]+$/i.test(base) || /^(cover_[a-z]+|picture_[a-z]+)\.[a-z]+$/i.test(base)) {
       return pathName.toLowerCase();
     }
-    return wiki;
+    return wikiFileStem(fileName) || base;
   } catch {
     return String(src || "").toLowerCase();
   }
