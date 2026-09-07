@@ -56,14 +56,19 @@ The built files live in `docs/`. jsDelivr cannot host this app because it sends 
 
 GitHub Pages (`https://hxyan2020.github.io/PRD/`) is configured in `.github/workflows/pages.yml`. Turn it on once under repo **Settings → Pages → Source: GitHub Actions**.
 
-Optional Vercel production needs a Vercel login:
+Optional **permanent** Vercel production (a logged-in Vercel account, not a temporary claim link):
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/hxyan2020/PRD&project-name=canon&root-directory=canon)
+
+Or from this repo:
 
 ```bash
 cd canon
+npx vercel login
 npx vercel --prod --yes
 ```
 
-Do not use `vercel deploy --temporary` — those claim links expire in about an hour.
+That assigns a stable `*.vercel.app` hostname (often `canon.vercel.app` or `canon-<username>.vercel.app`). Do not use `vercel deploy --temporary` — those hostnames expire in about an hour until you claim them.
 
 ## DigitalOcean
 
