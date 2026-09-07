@@ -182,6 +182,10 @@ assert.doesNotMatch(
   /spotify\.status && page !== "home"/,
 );
 assert.equal(t("en", "spotify.opened"), "Opening this title on Spotify.");
+assert.equal(t("en", "addToSpotify"), "Play on Spotify");
+assert.equal(t("zh", "addToSpotify"), "在 Spotify 播放");
+assert.doesNotMatch(t("en", "aboutSpotifyBody"), /Add to Spotify/);
+assert.match(t("en", "aboutSpotifyBody"), /Play on Spotify/);
 
 const portraitKeys = Object.keys(PORTRAITS.en).sort();
 assert.ok(portraitKeys.includes("songAnecdote"));

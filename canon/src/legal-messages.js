@@ -19,7 +19,7 @@ export const LEGAL = {
       "The homepage is For you: today’s recommendation with the album cover up front (blank Preferences fall back to the most streamed titles). Set mood, country, or genre on the Preferences page in the menu. Browse and search the 1,000-work archive from The 1,000. Use Surprise me for another work at once; Collect Music in this browser with the date you saved it, then open the Collections page; and keep a dated log of daily picks and surprises on the Recommendation log page. On My profile you can create an optional local profile to sign in, sign out, and reset or change your password on this device. Header counts show the 1,000-song archive plus unique titles you have viewed or collected here.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "Click Add to Spotify to authorize your account. Canon then saves Music to Liked Songs and to a private playlist named Canon — your album of this archive. Official artist albums are never edited. Canon uses Spotify’s Authorization Code with PKCE and does not keep a client secret in the browser. Playback itself is provided by Spotify. Spotify, Wikipedia, Wikidata, and other sources remain independent of this archive.",
+      "Click Play on Spotify to open the recording on Spotify. If you authorize your account, Canon can also save Music to Liked Songs and to a private playlist named Canon — your album of this archive. Official artist albums are never edited. Canon uses Spotify’s Authorization Code with PKCE and does not keep a client secret in the browser. Playback itself is provided by Spotify. Spotify, Wikipedia, Wikidata, and other sources remain independent of this archive.",
     aboutLangTitle: "Languages",
     aboutLangBody:
       "The interface is available in eight widely spoken languages. Switching language changes menus and buttons only. Song titles, artists, and catalog notes stay as published.",
@@ -49,7 +49,7 @@ export const LEGAL = {
       "Use Canon for personal listening, study, and collecting. Do not try to disrupt the site, overload its data sources, or copy the catalog wholesale to run a competing service. Do not use Canon to infringe copyright or to bypass Spotify or other rights-holder controls.",
     terms4Title: "4. Spotify and other services",
     terms4Body:
-      "Links, embeds, and Add to Spotify are provided by or through Spotify. Canon never edits official artist albums. Wikipedia, Wikidata, play-count publishers, and Spotify are separate organisations. Their terms, availability, and privacy rules govern those services. Canon is not affiliated with, endorsed by, or a partner of Spotify AB except as a client of public Spotify interfaces you authorize.",
+      "Links, embeds, and Play on Spotify are provided by or through Spotify. Canon never edits official artist albums. Wikipedia, Wikidata, play-count publishers, and Spotify are separate organisations. Their terms, availability, and privacy rules govern those services. Canon is not affiliated with, endorsed by, or a partner of Spotify AB except as a client of public Spotify interfaces you authorize.",
     terms5Title: "5. Information stored here",
     terms5Body:
       "Canon stores listening preferences, collected titles and dates, viewed titles, recommendation history, interface language, an optional local Canon profile (email and a hashed password you set on My profile), and tokens from a Spotify login you start, in this browser’s local storage. Clearing site data for this origin removes them. Password reset happens on My profile in this same browser; Canon cannot send reset emails. Anonymous page views (path, host, referer) are also sent to operations analytics. You can browse the archive without a Canon profile.",
@@ -85,7 +85,7 @@ export const LEGAL = {
       "首页是「为你推荐」：突出专辑封面的今日推荐（「偏好」留空则从播放最多的作品中选）。在菜单「偏好」中设置心情、国家或类型。菜单里的「一千首」可浏览和搜索档案。用「随机一首」立刻换一首；在此浏览器中收藏并记下日期；并保存带日期的每日与随机记录。在「我的资料」可创建可选的本机资料以登录、退出并在此设备重置或更改密码。页眉统计显示 1,000 首档案，以及你在此浏览或收藏过的不重复曲目。",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "授权 Spotify 后，「加入 Spotify」会把音乐存入已点赞歌曲和名为 Canon 的私人播放列表——也就是你的本档案专辑。官方艺人专辑永不被修改。Canon 使用带 PKCE 的授权码流程，不在浏览器中保存客户端密钥。播放由 Spotify 提供。Spotify、维基百科、维基数据及其他来源均独立于本档案。",
+      "点「在 Spotify 播放」会在 Spotify 打开这首作品。授权后，Canon 也可把音乐存入已点赞歌曲和名为 Canon 的私人播放列表——也就是你的本档案专辑。官方艺人专辑永不被修改。Canon 使用带 PKCE 的授权码流程，不在浏览器中保存客户端密钥。播放由 Spotify 提供。Spotify、维基百科、维基数据及其他来源均独立于本档案。",
     aboutLangTitle: "语言",
     aboutLangBody: "界面提供八种使用广泛的语言。切换语言只改变菜单和按钮。歌曲名、艺人与目录说明保持原样。",
     aboutNotTitle: "Canon 不是什么",
@@ -113,7 +113,7 @@ export const LEGAL = {
       "请将 Canon 用于个人聆听、研究与收藏。请勿干扰本站、压垮其数据来源，或整库复制目录以运营竞争服务。请勿用 Canon 侵犯版权，或规避 Spotify 及其他权利人的控制。",
     terms4Title: "4. Spotify 与其他服务",
     terms4Body:
-      "链接、内嵌播放与「加入 Spotify」由 Spotify 提供或经由其接口。Canon 从不修改官方艺人专辑。维基百科、维基数据、播放量发布方与 Spotify 均为独立组织，其条款、可用性与隐私规则适用于那些服务。除作为你授权的公开 Spotify 接口的客户端外，Canon 与 Spotify AB 无附属、代言或合作关系。",
+      "链接、内嵌播放与「在 Spotify 播放」由 Spotify 提供或经由其接口。Canon 从不修改官方艺人专辑。维基百科、维基数据、播放量发布方与 Spotify 均为独立组织，其条款、可用性与隐私规则适用于那些服务。除作为你授权的公开 Spotify 接口的客户端外，Canon 与 Spotify AB 无附属、代言或合作关系。",
     terms5Title: "5. 储存在此处的信息",
     terms5Body:
       "Canon 将聆听偏好、收藏曲目与日期、已浏览曲目、推荐历史、界面语言、可选的本机 Canon 资料（在「我的资料」设置的邮箱与哈希密码），以及你发起登录后的令牌，存在此浏览器的本地存储中。清除本源的站点数据即会删除它们。密码重置在同一浏览器的「我的资料」完成；Canon 无法发送重置邮件。匿名页面浏览（路径、主机、来源）也会发到运营统计。没有 Canon 资料也可以浏览档案。",
@@ -148,7 +148,7 @@ export const LEGAL = {
       "मुखपृष्ठ «आपके लिए» है: एल्बम कवर के साथ आज की सिफारिश (खाली पसंद सबसे अधिक चले शीर्षक चुनती है)। मेनू की पसंद पर मूड, देश या विधा सेट करें। आप संग्रह देख और खोज सकते हैं; तुरंत दूसरी कृति के लिए आश्चर्य दिखाएँ; इस ब्राउज़र में तिथि सहित संग्रहित करें; और दैनिक व आश्चर्य का तिथियुक्त लॉग रखें। मेरी प्रोफ़ाइल पर वैकल्पिक स्थानीय प्रोफ़ाइल बनाकर साइन इन, साइन आउट और इसी डिवाइस पर पासवर्ड रीसेट या बदल सकते हैं। हेडर में 1,000 गीतों का संग्रह और यहाँ देखे या संग्रहित अनूठे शीर्षक दिखते हैं।",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "Spotify अधिकृत करने के बाद, Spotify में जोड़ें संगीत को Liked Songs और Canon नाम की निजी प्लेलिस्ट में सहेजता है — इस संग्रह का आपका एल्बम। आधिकारिक कलाकार एल्बम कभी नहीं बदले जाते। Canon PKCE के साथ Authorization Code इस्तेमाल करता है और ब्राउज़र में क्लाइंट सीक्रेट नहीं रखता। प्लेबैक Spotify देता है। Spotify, विकिपीडिया, विकिडेटा और अन्य स्रोत इस संग्रह से स्वतंत्र हैं।",
+      "Spotify पर चलाएँ कृति को Spotify पर खोलता है। अधिकृत करने के बाद Canon संगीत को Liked Songs और Canon नाम की निजी प्लेलिस्ट में भी सहेज सकता है — इस संग्रह का आपका एल्बम। आधिकारिक कलाकार एल्बम कभी नहीं बदले जाते। Canon PKCE के साथ Authorization Code इस्तेमाल करता है और ब्राउज़र में क्लाइंट सीक्रेट नहीं रखता। प्लेबैक Spotify देता है। Spotify, विकिपीडिया, विकिडेटा और अन्य स्रोत इस संग्रह से स्वतंत्र हैं।",
     aboutLangTitle: "भाषाएँ",
     aboutLangBody:
       "इंटरफ़ेस आठ व्यापक रूप से बोली जाने वाली भाषाओं में है। भाषा बदलने से केवल मेनू और बटन बदलते हैं। गीत के नाम, कलाकार और कैटलॉग नोट जैसे प्रकाशित हैं वैसे रहते हैं।",
@@ -178,7 +178,7 @@ export const LEGAL = {
       "Canon को व्यक्तिगत सुनने, अध्ययन और संग्रह के लिए इस्तेमाल करें। साइट को बाधित न करें, उसके डेटा स्रोतों पर बोझ न डालें, और प्रतिस्पर्धी सेवा चलाने के लिए कैटलॉग की नकल न करें। कॉपीराइट का उल्लंघन या Spotify व अन्य अधिकार नियंत्रणों को बाईपास करने के लिए Canon का उपयोग न करें।",
     terms4Title: "4. Spotify और अन्य सेवाएँ",
     terms4Body:
-      "लिंक, एम्बेड और Spotify में जोड़ें Spotify द्वारा या उसके माध्यम से दिए जाते हैं। Canon आधिकारिक कलाकार एल्बम नहीं बदलता। विकिपीडिया, विकिडेटा, प्ले-गणना प्रकाशक और Spotify अलग संगठन हैं। उनकी शर्तें, उपलब्धता और गोपनीयता उन सेवाओं पर लागू होती हैं। आपके द्वारा अधिकृत सार्वजनिक Spotify इंटरफ़ेस के क्लाइंट के अलावा Canon Spotify AB से संबद्ध, समर्थित या भागीदार नहीं है।",
+      "लिंक, एम्बेड और Spotify पर चलाएँ Spotify द्वारा या उसके माध्यम से दिए जाते हैं। Canon आधिकारिक कलाकार एल्बम नहीं बदलता। विकिपीडिया, विकिडेटा, प्ले-गणना प्रकाशक और Spotify अलग संगठन हैं। उनकी शर्तें, उपलब्धता और गोपनीयता उन सेवाओं पर लागू होती हैं। आपके द्वारा अधिकृत सार्वजनिक Spotify इंटरफ़ेस के क्लाइंट के अलावा Canon Spotify AB से संबद्ध, समर्थित या भागीदार नहीं है।",
     terms5Title: "5. यहाँ संग्रहित जानकारी",
     terms5Body:
       "Canon सुनने की पसंद, संग्रहित शीर्षक और तिथियाँ, देखे शीर्षक, सिफारिश इतिहास, इंटरफ़ेस भाषा, वैकल्पिक स्थानीय Canon प्रोफ़ाइल (मेरी प्रोफ़ाइल पर सेट ईमेल और हैश पासवर्ड), और आपके शुरू किए लॉगिन के टोकन इस ब्राउज़र के लोकल स्टोरेज में रखता है। इस ओरिजिन का साइट डेटा साफ़ करने से वे हट जाते हैं। पासवर्ड रीसेट इसी ब्राउज़र की मेरी प्रोफ़ाइल पर होता है; Canon रीसेट ईमेल नहीं भेज सकता। अनाम पेज व्यू (path, host, referer) संचालन आँकड़ों को भी जाते हैं। बिना Canon प्रोफ़ाइल भी संग्रह देख सकते हैं।",
@@ -215,7 +215,7 @@ export const LEGAL = {
       "La portada es Para ti: la recomendación de hoy con la portada del álbum al frente (si Preferencias está vacío, salen los más reproducidos). Fija ánimo, país o género en Preferencias, en el menú. Puedes explorar y buscar el archivo desde Las 1.000; usar Sorpréndeme para otra obra al instante; coleccionar una música en este navegador con la fecha; y guardar un registro fechado de diarias y sorpresas. En Mi perfil puedes crear un perfil local opcional para entrar, salir y restablecer o cambiar la contraseña en este dispositivo. El encabezado muestra las 1.000 canciones y los títulos únicos que has visto o coleccionado aquí.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "Tras autorizar Spotify, Añadir a Spotify guarda la música en Canciones que te gustan y en una lista privada llamada Canon: tu álbum de este archivo. Los álbumes oficiales de artistas no se editan. Canon usa Authorization Code con PKCE y no guarda un secreto de cliente en el navegador. La reproducción la da Spotify. Spotify, Wikipedia, Wikidata y demás fuentes son independientes de este archivo.",
+      "Reproducir en Spotify abre la grabación en Spotify. Tras autorizar Spotify, Canon también puede guardar la música en Canciones que te gustan y en una lista privada llamada Canon: tu álbum de este archivo. Los álbumes oficiales de artistas no se editan. Canon usa Authorization Code con PKCE y no guarda un secreto de cliente en el navegador. La reproducción la da Spotify. Spotify, Wikipedia, Wikidata y demás fuentes son independientes de este archivo.",
     aboutLangTitle: "Idiomas",
     aboutLangBody:
       "La interfaz está en ocho idiomas de amplio uso. Cambiar el idioma solo cambia menús y botones. Los títulos, artistas y notas del catálogo siguen como se publicaron.",
@@ -245,7 +245,7 @@ export const LEGAL = {
       "Usa Canon para escuchar, estudiar y coleccionar de forma personal. No intentes interrumpir el sitio, saturar sus fuentes de datos ni copiar el catálogo entero para un servicio rival. No uses Canon para infringir derechos de autor ni para eludir controles de Spotify u otros titulares.",
     terms4Title: "4. Spotify y otros servicios",
     terms4Body:
-      "Enlaces, incrustaciones y Añadir a Spotify se ofrecen por o a través de Spotify. Canon no edita álbumes oficiales. Wikipedia, Wikidata, quienes publican recuentos y Spotify son organizaciones distintas. Sus términos, disponibilidad y privacidad rigen esos servicios. Canon no está afiliado, respaldado ni es socio de Spotify AB salvo como cliente de las interfaces públicas de Spotify que tú autorizas.",
+      "Enlaces, incrustaciones y Reproducir en Spotify se ofrecen por o a través de Spotify. Canon no edita álbumes oficiales. Wikipedia, Wikidata, quienes publican recuentos y Spotify son organizaciones distintas. Sus términos, disponibilidad y privacidad rigen esos servicios. Canon no está afiliado, respaldado ni es socio de Spotify AB salvo como cliente de las interfaces públicas de Spotify que tú autorizas.",
     terms5Title: "5. Información guardada aquí",
     terms5Body:
       "Canon guarda preferencias de escucha, títulos coleccionados y fechas, títulos vistos, historial de recomendaciones, idioma de la interfaz, un perfil local opcional (correo y contraseña cifrada que defines en Mi perfil) y tokens de un inicio de sesión de Spotify que tú empiezas, en el almacenamiento local de este navegador. Borrar los datos del sitio de este origen los elimina. El restablecimiento de contraseña ocurre en Mi perfil en este mismo navegador; Canon no puede enviar correos de restablecimiento. Las vistas anónimas (ruta, host, referer) también van a las analíticas de operaciones. Puedes explorar el archivo sin un perfil Canon.",
@@ -282,7 +282,7 @@ export const LEGAL = {
       "La page d’accueil est Pour vous : la recommandation du jour avec la pochette en avant (Préférences vides = titres les plus écoutés). Réglez humeur, pays ou genre dans Préférences, au menu. Parcourez et cherchez l’archive depuis Les 1 000 ; utilisez Surprenez-moi pour une autre œuvre tout de suite ; collectionnez une musique dans ce navigateur avec la date ; et tenez un journal daté des choix du jour et des surprises. Dans Mon profil, vous pouvez créer un profil local facultatif pour vous connecter, vous déconnecter et réinitialiser ou changer le mot de passe sur cet appareil. L’en-tête affiche les 1 000 morceaux plus les titres uniques vus ou collectionnés ici.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "Après autorisation, Ajouter à Spotify enregistre le titre dans Titres likés et dans une playlist privée nommée Canon — votre album de cette archive. Les albums officiels d’artistes ne sont jamais modifiés. Canon utilise Authorization Code avec PKCE et ne conserve pas de secret client dans le navigateur. La lecture est fournie par Spotify. Spotify, Wikipédia, Wikidata et les autres sources restent indépendants de cette archive.",
+      "Écouter sur Spotify ouvre l’enregistrement sur Spotify. Après autorisation, Canon peut aussi enregistrer le titre dans Titres likés et dans une playlist privée nommée Canon — votre album de cette archive. Les albums officiels d’artistes ne sont jamais modifiés. Canon utilise Authorization Code avec PKCE et ne conserve pas de secret client dans le navigateur. La lecture est fournie par Spotify. Spotify, Wikipédia, Wikidata et les autres sources restent indépendants de cette archive.",
     aboutLangTitle: "Langues",
     aboutLangBody:
       "L’interface existe en huit langues largement parlées. Changer de langue ne change que les menus et boutons. Titres, artistes et notes du catalogue restent tels quels.",
@@ -312,7 +312,7 @@ export const LEGAL = {
       "Utilisez Canon pour l’écoute, l’étude et la collection personnelles. N’essayez pas de perturber le site, de saturer ses sources de données, ni de copier le catalogue en gros pour un service concurrent. N’utilisez pas Canon pour enfreindre le droit d’auteur ou contourner les contrôles de Spotify ou d’autres ayants droit.",
     terms4Title: "4. Spotify et autres services",
     terms4Body:
-      "Liens, lecteurs intégrés et Ajouter à Spotify sont fournis par ou via Spotify. Canon ne modifie jamais les albums officiels. Wikipédia, Wikidata, les éditeurs de comptes d’écoutes et Spotify sont des organisations distinctes. Leurs conditions, disponibilité et confidentialité régissent ces services. Canon n’est ni affilié, ni cautionné, ni partenaire de Spotify AB, sauf en tant que client des interfaces Spotify publiques que vous autorisez.",
+      "Liens, lecteurs intégrés et Écouter sur Spotify sont fournis par ou via Spotify. Canon ne modifie jamais les albums officiels. Wikipédia, Wikidata, les éditeurs de comptes d’écoutes et Spotify sont des organisations distinctes. Leurs conditions, disponibilité et confidentialité régissent ces services. Canon n’est ni affilié, ni cautionné, ni partenaire de Spotify AB, sauf en tant que client des interfaces Spotify publiques que vous autorisez.",
     terms5Title: "5. Informations stockées ici",
     terms5Body:
       "Canon stocke préférences d’écoute, titres collectionnés et dates, titres consultés, historique des recommandations, langue de l’interface, un profil local facultatif (e-mail et mot de passe haché défini dans Mon profil) et les jetons d’une connexion Spotify que vous lancez, dans le stockage local de ce navigateur. Effacer les données du site pour cette origine les supprime. La réinitialisation du mot de passe se fait dans Mon profil dans ce même navigateur ; Canon ne peut pas envoyer d’e-mail de réinitialisation. Les vues anonymes (chemin, hôte, referer) partent aussi vers les statistiques d’exploitation. Vous pouvez parcourir l’archive sans profil Canon.",
@@ -349,7 +349,7 @@ export const LEGAL = {
       "الصفحة الرئيسية «لك»: توصية اليوم مع غلاف الألبوم في المقدمة (التفضيلات الفارغة تعود للأكثر تشغيلًا). عيّن المزاج أو البلد أو النوع في صفحة التفضيلات بالقائمة. يمكنك تصفح الأرشيف والبحث فيه من «الألف»؛ واستخدام «فاجئني» لعمل آخر فورًا؛ وجمع موسيقى في هذا المتصفح مع تاريخ الحفظ؛ والإبقاء على سجل مؤرخ للاختيارات اليومية والمفاجآت. في «ملفي» يمكنك إنشاء ملف محلي اختياري لتسجيل الدخول والخروج وإعادة تعيين كلمة المرور أو تغييرها على هذا الجهاز. يعرض الترويسة الألف أغنية والعناوين الفريدة التي شاهدتها أو جمعتها هنا.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "بعد تفويض Spotify، يحفظ «أضف إلى Spotify» الموسيقى في الأغاني المعجبة وفي قائمة خاصة اسمها Canon — ألبومك من هذا الأرشيف. لا تُعدَّل ألبومات الفنانين الرسمية. يستخدم Canon رمز التفويض مع PKCE ولا يحتفظ بسر عميل في المتصفح. التشغيل نفسه من Spotify. Spotify وويكيبيديا وويكي بيانات والمصادر الأخرى مستقلة عن هذا الأرشيف.",
+      "«تشغيل على Spotify» يفتح العمل على Spotify. بعد تفويض Spotify يمكن لـ Canon أيضاً حفظ الموسيقى في الأغاني المعجبة وفي قائمة خاصة اسمها Canon — ألبومك من هذا الأرشيف. لا تُعدَّل ألبومات الفنانين الرسمية. يستخدم Canon رمز التفويض مع PKCE ولا يحتفظ بسر عميل في المتصفح. التشغيل نفسه من Spotify. Spotify وويكيبيديا وويكي بيانات والمصادر الأخرى مستقلة عن هذا الأرشيف.",
     aboutLangTitle: "اللغات",
     aboutLangBody:
       "الواجهة متاحة بثماني لغات واسعة الانتشار. تغيير اللغة يغيّر القوائم والأزرار فقط. تبقى عناوين الأغاني والفنانين وملاحظات الفهرس كما نُشرت.",
@@ -379,7 +379,7 @@ export const LEGAL = {
       "استخدم Canon للاستماع والدراسة والجمع الشخصي. لا تحاول تعطيل الموقع أو إثقال مصادره أو نسخ الفهرس بالجملة لتشغيل خدمة منافسة. لا تستخدم Canon لانتهاك حقوق النشر أو لتجاوز ضوابط Spotify أو غيرهم من أصحاب الحقوق.",
     terms4Title: "4. Spotify وخدمات أخرى",
     terms4Body:
-      "الروابط والتضمين و«أضف إلى Spotify» تُقدَّم من Spotify أو عبره. لا يعدّل Canon ألبومات الفنانين الرسمية. ويكيبيديا وويكي بيانات وناشرو أعداد التشغيل وSpotify منظمات منفصلة. شروطها وتوافرها وخصوصيتها تحكم تلك الخدمات. Canon غير منتسب إلى Spotify AB ولا مصادق عليه منها ولا شريك لها إلا كعميل لواجهات Spotify العامة التي تفوّضها.",
+      "الروابط والتضمين و«تشغيل على Spotify» تُقدَّم من Spotify أو عبره. لا يعدّل Canon ألبومات الفنانين الرسمية. ويكيبيديا وويكي بيانات وناشرو أعداد التشغيل وSpotify منظمات منفصلة. شروطها وتوافرها وخصوصيتها تحكم تلك الخدمات. Canon غير منتسب إلى Spotify AB ولا مصادق عليه منها ولا شريك لها إلا كعميل لواجهات Spotify العامة التي تفوّضها.",
     terms5Title: "5. المعلومات المخزّنة هنا",
     terms5Body:
       "يخزّن Canon تفضيلات الاستماع والعناوين المجمّعة وتواريخها والعناوين المشاهدة وتاريخ التوصيات ولغة الواجهة وملفًا محليًا اختياريًا (البريد وكلمة مرور مُجزَّأة تضبطها في ملفي) ورموز تسجيل دخول Spotify الذي تبدأه، في التخزين المحلي لهذا المتصفح. مسح بيانات الموقع لهذا الأصل يحذفها. إعادة تعيين كلمة المرور تتم في ملفي في هذا المتصفح نفسه؛ لا يستطيع Canon إرسال رسائل إعادة التعيين. تُرسل مشاهدات مجهولة (المسار والمضيف والمُحيل) أيضاً إلى إحصاءات التشغيل. يمكنك تصفح الأرشيف دون ملف Canon.",
@@ -416,7 +416,7 @@ export const LEGAL = {
       "হোমপেজ «আপনার জন্য»: অ্যালবাম কভার সামনে রেখে আজকের সুপারিশ (খালি পছন্দ সবচেয়ে বেশি চলা শিরোনাম নেয়)। মেনুতে পছন্দ থেকে মুড, দেশ বা ঘরানা সেট করুন। আর্কাইভ ঘুরে দেখতে ও খুঁজতে পারেন; অন্য কাজের জন্য অবাক করুন; এই ব্রাউজারে তারিখসহ সংগ্রহ করুন; এবং দৈনিক ও অবাক করুন-এর তারিখযুক্ত লগ রাখুন। আমার প্রোফাইলে ঐচ্ছিক স্থানীয় প্রোফাইল তৈরি করে সাইন ইন, সাইন আউট এবং এই ডিভাইসে পাসওয়ার্ড রিসেট বা বদলাতে পারেন। হেডারে ১,০০০ গান এবং এখানে দেখা বা সংগ্রহ করা অনন্য শিরোনাম দেখায়।",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "Spotify অনুমোদনের পর, Spotify-তে যোগ সঙ্গীত Liked Songs ও Canon নামের ব্যক্তিগত প্লেলিস্টে রাখে — এই আর্কাইভের আপনার অ্যালবাম। অফিসিয়াল শিল্পী অ্যালবাম কখনও সম্পাদনা হয় না। Canon PKCE সহ Authorization Code ব্যবহার করে এবং ব্রাউজারে ক্লায়েন্ট সিক্রেট রাখে না। প্লেব্যাক Spotify দেয়। Spotify, উইকিপিডিয়া, Wikidata ও অন্য উৎস এই আর্কাইভ থেকে স্বাধীন।",
+      "Spotify-তে চালান রেকর্ডিংটি Spotify-তে খোলে। অনুমোদনের পর Canon সঙ্গীত Liked Songs ও Canon নামের ব্যক্তিগত প্লেলিস্টেও রাখতে পারে — এই আর্কাইভের আপনার অ্যালবাম। অফিসিয়াল শিল্পী অ্যালবাম কখনও সম্পাদনা হয় না। Canon PKCE সহ Authorization Code ব্যবহার করে এবং ব্রাউজারে ক্লায়েন্ট সিক্রেট রাখে না। প্লেব্যাক Spotify দেয়। Spotify, উইকিপিডিয়া, Wikidata ও অন্য উৎস এই আর্কাইভ থেকে স্বাধীন।",
     aboutLangTitle: "ভাষা",
     aboutLangBody:
       "ইন্টারফেস আটটি বহুল কথিত ভাষায় পাওয়া যায়। ভাষা বদলালে শুধু মেনু ও বোতাম বদলায়। গানের নাম, শিল্পী ও ক্যাটালগ নোট প্রকাশিত অবস্থায় থাকে।",
@@ -446,7 +446,7 @@ export const LEGAL = {
       "Canon ব্যক্তিগত শোনা, অধ্যয়ন ও সংগ্রহের জন্য ব্যবহার করুন। সাইট ব্যাহত করবেন না, তার ডেটা উৎসে চাপ দেবেন না, প্রতিযোগী সেবার জন্য ক্যাটালগ হুবহু কপি করবেন না। কপিরাইট লঙ্ঘন বা Spotify ও অন্য অধিকার নিয়ন্ত্রণ এড়াতে Canon ব্যবহার করবেন না।",
     terms4Title: "4. Spotify ও অন্য সেবা",
     terms4Body:
-      "লিংক, এমবেড এবং Spotify-তে যোগ Spotify দিয়ে বা তার মাধ্যমে দেওয়া হয়। Canon অফিসিয়াল শিল্পী অ্যালবাম সম্পাদনা করে না। উইকিপিডিয়া, Wikidata, প্লে-গণনা প্রকাশক ও Spotify আলাদা সংস্থা। তাদের শর্ত, প্রাপ্যতা ও গোপনীয়তা সেই সেবাগুলো নিয়ন্ত্রণ করে। আপনি অনুমোদিত পাবলিক Spotify ইন্টারফেসের ক্লায়েন্ট ছাড়া Canon Spotify AB-এর সহযোগী, সমর্থিত বা অংশীদার নয়।",
+      "লিংক, এমবেড এবং Spotify-তে চালান Spotify দিয়ে বা তার মাধ্যমে দেওয়া হয়। Canon অফিসিয়াল শিল্পী অ্যালবাম সম্পাদনা করে না। উইকিপিডিয়া, Wikidata, প্লে-গণনা প্রকাশক ও Spotify আলাদা সংস্থা। তাদের শর্ত, প্রাপ্যতা ও গোপনীয়তা সেই সেবাগুলো নিয়ন্ত্রণ করে। আপনি অনুমোদিত পাবলিক Spotify ইন্টারফেসের ক্লায়েন্ট ছাড়া Canon Spotify AB-এর সহযোগী, সমর্থিত বা অংশীদার নয়।",
     terms5Title: "5. এখানে রাখা তথ্য",
     terms5Body:
       "Canon শোনার পছন্দ, সংগৃহীত শিরোনাম ও তারিখ, দেখা শিরোনাম, সুপারিশ ইতিহাস, ইন্টারফেস ভাষা, ঐচ্ছিক স্থানীয় Canon প্রোফাইল (আমার প্রোফাইলে সেট ইমেইল ও হ্যাশ পাসওয়ার্ড) এবং আপনি শুরু করা Spotify লগইনের টোকেন এই ব্রাউজারের লোকাল স্টোরেজে রাখে। এই অরিজিনের সাইট ডেটা মুছলে সেগুলো চলে যায়। পাসওয়ার্ড রিসেট একই ব্রাউজারের আমার প্রোফাইলে হয়; Canon রিসেট ইমেইল পাঠাতে পারে না। বেনামি পেজ ভিউ (path, host, referer) অপারেশন পরিসংখ্যানেও যায়। Canon প্রোফাইল ছাড়াও আর্কাইভ দেখতে পারেন।",
@@ -483,7 +483,7 @@ export const LEGAL = {
       "A página inicial é Para você: a recomendação de hoje com a capa do álbum em destaque (Preferências em branco usam as mais tocadas). Defina humor, país ou gênero em Preferências, no menu. Percorra e busque o arquivo em As 1.000; use Surpreenda-me para outra obra na hora; colecione uma música neste navegador com a data; e guarde um registro datado das diárias e surpresas. Em Meu perfil você pode criar um perfil local opcional para entrar, sair e redefinir ou alterar a senha neste dispositivo. O cabeçalho mostra as 1.000 músicas e os títulos únicos que você viu ou colecionou aqui.",
     aboutSpotifyTitle: "Spotify",
     aboutSpotifyBody:
-      "Depois de autorizar o Spotify, Adicionar ao Spotify salva a música em Músicas curtidas e numa playlist privada chamada Canon — seu álbum deste arquivo. Álbuns oficiais de artistas nunca são editados. A Canon usa Authorization Code com PKCE e não guarda segredo de cliente no navegador. A reprodução é do Spotify. Spotify, Wikipédia, Wikidata e outras fontes são independentes deste arquivo.",
+      "Reproduzir no Spotify abre a gravação no Spotify. Depois de autorizar o Spotify, a Canon também pode salvar a música em Músicas curtidas e numa playlist privada chamada Canon — seu álbum deste arquivo. Álbuns oficiais de artistas nunca são editados. A Canon usa Authorization Code com PKCE e não guarda segredo de cliente no navegador. A reprodução é do Spotify. Spotify, Wikipédia, Wikidata e outras fontes são independentes deste arquivo.",
     aboutLangTitle: "Idiomas",
     aboutLangBody:
       "A interface existe em oito idiomas muito falados. Trocar o idioma muda só menus e botões. Títulos, artistas e notas do catálogo permanecem como publicados.",
@@ -513,7 +513,7 @@ export const LEGAL = {
       "Use a Canon para ouvir, estudar e colecionar de forma pessoal. Não tente interromper o site, sobrecarregar suas fontes de dados nem copiar o catálogo inteiro para um serviço concorrente. Não use a Canon para infringir direitos autorais nem para contornar controles do Spotify ou de outros titulares.",
     terms4Title: "4. Spotify e outros serviços",
     terms4Body:
-      "Links, embeds e Adicionar ao Spotify são oferecidos pelo ou via Spotify. A Canon nunca edita álbuns oficiais. Wikipédia, Wikidata, quem publica contagens de plays e o Spotify são organizações distintas. Os termos, a disponibilidade e a privacidade deles regem esses serviços. A Canon não é afiliada, endossada nem parceira da Spotify AB, salvo como cliente das interfaces públicas do Spotify que você autoriza.",
+      "Links, embeds e Reproduzir no Spotify são oferecidos pelo ou via Spotify. A Canon nunca edita álbuns oficiais. Wikipédia, Wikidata, quem publica contagens de plays e o Spotify são organizações distintas. Os termos, a disponibilidade e a privacidade deles regem esses serviços. A Canon não é afiliada, endossada nem parceira da Spotify AB, salvo como cliente das interfaces públicas do Spotify que você autoriza.",
     terms5Title: "5. Informações guardadas aqui",
     terms5Body:
       "A Canon guarda preferências de escuta, títulos colecionados e datas, títulos vistos, histórico de recomendações, idioma da interface, um perfil local opcional (e-mail e senha com hash definidos em Meu perfil) e tokens de um login do Spotify que você inicia, no armazenamento local deste navegador. Limpar os dados do site desta origem os remove. A redefinição de senha acontece em Meu perfil neste mesmo navegador; a Canon não pode enviar e-mails de redefinição. Visualizações anônimas (path, host, referer) também vão às análises de operação. Você pode navegar no arquivo sem um perfil Canon.",
