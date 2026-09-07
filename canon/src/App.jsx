@@ -455,6 +455,7 @@ export default function App() {
               portrait={portraits.people?.[name]}
             />
           ))}
+          <LyricsPanel track={selected} open={lyricsOpen} onClose={() => setLyricsOpen(false)} />
           <div className="card-actions drawer-actions">
             <button type="button" onClick={() => setPlayingId(selected.id)}>
               {t("streamInPlayer")}
@@ -465,7 +466,6 @@ export default function App() {
             <CollectButton id={selected.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
             <SpotifyAddButton track={selected} spotify={spotify} />
           </div>
-          <LyricsPanel track={selected} open={lyricsOpen} onClose={() => setLyricsOpen(false)} />
         </aside>
       )}
 

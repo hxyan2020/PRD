@@ -175,7 +175,19 @@ assert.match(
 );
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/SpotifyAddButton.jsx"), "utf8"),
-  /spotifyOpenUrl/,
+  /className="spotify-link"/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
+  /\.drawer-actions a/,
+);
+assert.doesNotMatch(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
+  /\.drawer-actions \{\s*position:\s*sticky/s,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),
+  /LyricsPanel[\s\S]*drawer-actions/s,
 );
 assert.doesNotMatch(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/App.jsx"), "utf8"),

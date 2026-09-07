@@ -8,7 +8,7 @@ export default function SpotifyAddButton({ track, spotify }) {
 
   if (!spotify.configured && href) {
     return (
-      <a href={href} target="_blank" rel="noreferrer">
+      <a className="spotify-link" href={href} target="_blank" rel="noreferrer">
         {t("addToSpotify")}
       </a>
     );
