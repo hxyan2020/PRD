@@ -3,7 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: command === "build" ? "./" : "/",
+  // Nested GitHack/docs build uses relative URLs; Vercel and local serve from `/`.
+  base: process.env.CANON_OUTDIR ? "./" : "/",
   build: {
     outDir: process.env.CANON_OUTDIR || "dist",
     emptyOutDir: true,
