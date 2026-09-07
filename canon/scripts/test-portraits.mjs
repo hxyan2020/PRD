@@ -10,6 +10,7 @@ import {
   splitCredits,
   titleFitsName,
   uniqueImages,
+  enlargeImageUrl,
 } from "../src/portraits.js";
 
 assert.deepEqual(splitCredits("The Weeknd"), ["The Weeknd"]);
@@ -83,6 +84,22 @@ assert.equal(
 assert.notEqual(
   imageKey("https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/aa/bb/cc/source/600x600bb.jpg"),
   imageKey("https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/dd/ee/ff/source/600x600bb.jpg")
+);
+
+const sized = uniqueImages(
+  [
+    { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait.jpg/330px-The_Weeknd_Portrait.jpg", alt: "small" },
+    { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/The_Weeknd_Portrait.jpg/1280px-The_Weeknd_Portrait.jpg", alt: "large" },
+    { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Other.jpg/1280px-Other.jpg", alt: "other" },
+  ],
+  9
+);
+assert.equal(sized.length, 2);
+assert.match(sized[0].src, /1280px-/);
+assert.equal(sized[0].alt, "large");
+assert.match(
+  enlargeImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/X.jpg/330px-X.jpg"),
+  /1280px-X\.jpg/
 );
 
 console.log("portrait helper tests ok");

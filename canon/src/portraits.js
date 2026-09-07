@@ -105,21 +105,44 @@ export function fallbackPersonAnecdote(name, kind) {
 }
 
 export function uniqueImages(images, limit = 6) {
-  const seen = new Set();
-  const out = [];
+  const seen = new Map();
+  const order = [];
   for (const item of images || []) {
     const src = String(item?.src || item || "").trim();
     if (!src) continue;
     const key = imageKey(src);
-    if (!key || seen.has(key)) continue;
-    seen.add(key);
-    out.push({
+    if (!key) continue;
+    const next = {
       src,
       alt: String(item?.alt || "").trim(),
-    });
-    if (out.length >= limit) break;
+    };
+    if (!seen.has(key)) {
+      seen.set(key, next);
+      order.push(key);
+      continue;
+    }
+    if (imagePixelHint(src) > imagePixelHint(seen.get(key).src)) {
+      seen.set(key, next);
+    }
   }
-  return out;
+  return order.slice(0, limit).map((key) => seen.get(key));
+}
+
+export function imagePixelHint(src) {
+  const wiki = String(src || "").match(/\/(\d+)px-/i);
+  if (wiki) return Number(wiki[1]);
+  const box = String(src || "").match(/(\d+)x(\d+)bb/i);
+  if (box) return Number(box[1]);
+  return 0;
+}
+
+export function enlargeImageUrl(src) {
+  const raw = String(src || "").trim();
+  if (!raw) return "";
+  if (/upload\.wikimedia\.org\/wikipedia\/.*\/thumb\//i.test(raw)) {
+    return raw.replace(/\/\d+px-/i, "/1280px-");
+  }
+  return raw.replace(/100x100bb|200x200bb|300x300bb/i, "600x600bb");
 }
 
 export function imageKey(src) {

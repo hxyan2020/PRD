@@ -1,10 +1,25 @@
+import { useEffect, useId, useState } from "react";
+import { enlargeImageUrl, uniqueImages } from "./portraits.js";
 import { hdCoverUrl } from "./cover.js";
 import { useI18n } from "./I18n.jsx";
 
 export default function PortraitGallery({ name, portrait }) {
   const { t } = useI18n();
+  const dialogId = useId();
+  const [open, setOpen] = useState(null);
+  const images = uniqueImages(portrait?.images || [], 9);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (event) => {
+      if (event.key === "Escape") setOpen(null);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
+
   if (!portrait) return null;
-  const images = (portrait.images || []).slice(0, 9);
+
   return (
     <section className="anecdote-block">
       <h3>{name}</h3>
@@ -15,11 +30,37 @@ export default function PortraitGallery({ name, portrait }) {
           <ul className="portrait-row">
             {images.map((image) => (
               <li key={image.src}>
-                <img src={hdCoverUrl(image.src)} alt={image.alt || name} loading="lazy" />
+                <button
+                  type="button"
+                  className="portrait-open"
+                  onClick={() => setOpen(image)}
+                  aria-label={t("expandPortrait", { name: image.alt || name })}
+                >
+                  <img src={hdCoverUrl(image.src)} alt={image.alt || name} loading="lazy" />
+                </button>
               </li>
             ))}
           </ul>
         </>
+      ) : null}
+      {open ? (
+        <div
+          className="portrait-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={dialogId}
+          onClick={() => setOpen(null)}
+        >
+          <button type="button" className="portrait-lightbox-close" onClick={() => setOpen(null)}>
+            {t("closePortrait")}
+          </button>
+          <img
+            id={dialogId}
+            src={enlargeImageUrl(hdCoverUrl(open.src))}
+            alt={open.alt || name}
+            onClick={(event) => event.stopPropagation()}
+          />
+        </div>
       ) : null}
     </section>
   );

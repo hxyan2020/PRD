@@ -165,9 +165,18 @@ assert.doesNotMatch(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/DailyRecommend.jsx"), "utf8"),
   /lyrics-toggle/
 );
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),
+  /portrait-lightbox/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),
+  /uniqueImages/,
+);
 
 const portraitKeys = Object.keys(PORTRAITS.en).sort();
 assert.ok(portraitKeys.includes("songAnecdote"));
+assert.ok(portraitKeys.includes("expandPortrait"));
 for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(PORTRAITS[locale]).sort(), portraitKeys, `${locale} portrait copy keys`);
   assert.match(t(locale, "portraitsOf", { name: "Queen" }), /Queen/);

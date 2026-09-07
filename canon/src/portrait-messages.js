@@ -5,6 +5,8 @@ export const PORTRAITS = {
     bandAnecdote: "Band anecdote",
     portraitsOf: "Iconic images of {name}",
     anecdoteNote: "A short public note — not a full biography.",
+    expandPortrait: "View larger image of {name}",
+    closePortrait: "Close image",
   },
   zh: {
     songAnecdote: "歌曲轶事",
@@ -12,6 +14,8 @@ export const PORTRAITS = {
     bandAnecdote: "乐队轶事",
     portraitsOf: "{name}的标志性影像",
     anecdoteNote: "一则公开短记，并非完整传记。",
+    expandPortrait: "查看{name}的大图",
+    closePortrait: "关闭图片",
   },
   hi: {
     songAnecdote: "गीत की झलक",
@@ -19,6 +23,8 @@ export const PORTRAITS = {
     bandAnecdote: "बैंड की झलक",
     portraitsOf: "{name} की पहचान वाली छवियाँ",
     anecdoteNote: "एक सार्वजनिक संक्षिप्त नोट — पूरी जीवनी नहीं।",
+    expandPortrait: "{name} की बड़ी छवि देखें",
+    closePortrait: "छवि बंद करें",
   },
   es: {
     songAnecdote: "Anécdota de la canción",
@@ -26,6 +32,8 @@ export const PORTRAITS = {
     bandAnecdote: "Anécdota de la banda",
     portraitsOf: "Imágenes icónicas de {name}",
     anecdoteNote: "Una nota pública breve, no una biografía completa.",
+    expandPortrait: "Ver imagen más grande de {name}",
+    closePortrait: "Cerrar imagen",
   },
   fr: {
     songAnecdote: "Anecdote de la chanson",
@@ -33,6 +41,8 @@ export const PORTRAITS = {
     bandAnecdote: "Anecdote du groupe",
     portraitsOf: "Images emblématiques de {name}",
     anecdoteNote: "Une note publique courte — pas une biographie complète.",
+    expandPortrait: "Voir une plus grande image de {name}",
+    closePortrait: "Fermer l’image",
   },
   ar: {
     songAnecdote: "طرفة عن الأغنية",
@@ -40,6 +50,8 @@ export const PORTRAITS = {
     bandAnecdote: "طرفة عن الفرقة",
     portraitsOf: "صور أيقونية لـ {name}",
     anecdoteNote: "ملاحظة عامة قصيرة وليست سيرة كاملة.",
+    expandPortrait: "عرض صورة أكبر لـ {name}",
+    closePortrait: "إغلاق الصورة",
   },
   bn: {
     songAnecdote: "গানের কিসসা",
@@ -47,6 +59,8 @@ export const PORTRAITS = {
     bandAnecdote: "ব্যান্ডের কিসসা",
     portraitsOf: "{name}-এর স্মরণীয় ছবি",
     anecdoteNote: "একটি সংক্ষিপ্ত সর্বজনীন টীকা — পূর্ণ জীবনী নয়।",
+    expandPortrait: "{name}-এর বড় ছবি দেখুন",
+    closePortrait: "ছবি বন্ধ করুন",
   },
   pt: {
     songAnecdote: "Anecdota da canção",
@@ -54,5 +68,7 @@ export const PORTRAITS = {
     bandAnecdote: "Anecdota da banda",
     portraitsOf: "Imagens icônicas de {name}",
     anecdoteNote: "Uma nota pública curta — não é uma biografia completa.",
+    expandPortrait: "Ver imagem maior de {name}",
+    closePortrait: "Fechar imagem",
   },
 };
