@@ -1,0 +1,38 @@
+name: Vantage daily scan
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: vantage
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: vantage/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run scan
+      - name: Commit briefing
+        working-directory: .
+        run: |
+          git config user.name "vantage-scanner"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vantage/data/latest.json
+          if git diff --cached --quiet; then
+            echo "No briefing changes"
+          else
+            git commit -m "chore: daily Vantage Market Intelligence scan"
+            git push
+          fi

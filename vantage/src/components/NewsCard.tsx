@@ -1,0 +1,144 @@
+"use client";
+
+import { entityName, sourceName } from "@/lib/i18n/catalog";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { assetLabel } from "@/lib/i18n/lookups";
+import { useStoryText } from "@/lib/i18n/useStoryText";
+import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
+import type { Entity, NewsItem, RiskTool } from "@/lib/types";
+import { BrandLabelList } from "./BrandLabel";
+import { CountryLabel } from "./CountryLabel";
+import { toolLogoId } from "@/lib/logos";
+
+const CATEGORY_COLOR: Record<string, string> = {
+  listing: "text-[var(--listing)] border-[var(--listing)]/40",
+  product: "text-[var(--feature)] border-[var(--feature)]/40",
+  regulation: "text-[var(--reg)] border-[var(--reg)]/40",
+  risk_tools: "text-[var(--risk)] border-[var(--risk)]/40",
+};
+
+function StoryLine({
+  english,
+  chinese,
+}: {
+  english: string;
+  chinese?: string;
+}) {
+  const { locale, t } = useLocale();
+  const { text, pending } = useStoryText(locale, english, chinese);
+  return (
+    <>
+      {text}
+      {pending ? <span className="ml-2 font-mono text-[11px] text-muted">{t("translating")}</span> : null}
+    </>
+  );
+}
+
+export function NewsCard({
+  item,
+  entities,
+  tools,
+}: {
+  item: NewsItem;
+  entities: Entity[];
+  tools: RiskTool[];
+}) {
+  const { locale, t } = useLocale();
+  const brandEntities = item.entities
+    .map((id) => {
+      const entity = entities.find((entry) => entry.id === id);
+      return entity ? { id: entity.id, name: entityName(entity.id, entity.name, locale) } : null;
+    })
+    .filter(Boolean) as Array<{ id: string; name: string }>;
+  const brandTools = item.riskTools
+    .map((id) => {
+      const tool = tools.find((entry) => entry.id === id);
+      return tool ? { id: toolLogoId(tool.id), name: tool.name } : null;
+    })
+    .filter(Boolean) as Array<{ id: string; name: string }>;
+
+  return (
+    <article className="rounded-xl border border-line bg-panel p-3.5 md:p-5">
+      <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono uppercase tracking-wide md:gap-2">
+        <span className={`rounded-full border px-2 py-0.5 ${CATEGORY_COLOR[item.category]}`}>
+          {categoryLabel(item.category, locale)}
+        </span>
+        {item.sectors.map((sector) => (
+          <span key={sector} className="rounded-full border border-line px-2 py-0.5 text-muted">
+            {sectorLabel(sector, locale)}
+          </span>
+        ))}
+        {item.jurisdictions.slice(0, 2).map((jurisdiction) => (
+          <CountryLabel key={jurisdiction} name={jurisdiction} className="text-muted" />
+        ))}
+        {item.jurisdictions.slice(2, 4).map((jurisdiction) => (
+          <CountryLabel key={jurisdiction} name={jurisdiction} className="hidden text-muted md:inline-flex" />
+        ))}
+      </div>
+
+      <h2 className="mt-3 overflow-visible break-words font-serif text-lg leading-[1.5] text-pretty text-paper sm:text-xl md:text-2xl">
+        <StoryLine english={item.caption} chinese={item.captionZh} />
+      </h2>
+
+      <p className="mt-2 font-mono text-xs text-gold-dim">
+        {t("published")} {formatDateTime(item.publishedAt, locale)}
+      </p>
+
+      {brandEntities.length > 0 && (
+        <p className="mt-2 text-sm text-muted">
+          {t("entitiesLabel")}: <BrandLabelList items={brandEntities} />
+        </p>
+      )}
+
+      <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 break-words text-paper/90">
+        {item.keyPoints.map((point, index) => (
+          <li key={`${item.id}-${index}`}>
+            <StoryLine english={point} chinese={item.keyPointsZh?.[index]} />
+          </li>
+        ))}
+      </ul>
+
+      {item.impact && (
+        <div className="mt-4 rounded-lg border border-gold/20 bg-gold/5 px-3 py-2 text-sm">
+          <p className="font-mono text-[11px] uppercase tracking-wide text-gold">
+            {t("potentialImpact")}
+          </p>
+          <p className="mt-1 text-paper/90">
+            <StoryLine english={item.impact.summary} chinese={item.impact.summaryZh} />
+          </p>
+          {item.impact.assets.length > 0 && (
+            <p className="mt-1 text-muted">
+              {t("assets")}: {item.impact.assets.map((asset) => assetLabel(asset, locale)).join(locale === "zh" ? "、" : ", ")}
+            </p>
+          )}
+        </div>
+      )}
+
+      {brandTools.length > 0 && (
+        <p className="mt-3 text-sm text-muted">
+          {t("riskToolsLabel")}: <BrandLabelList items={brandTools} />
+        </p>
+      )}
+
+      <div className="mt-4 border-t border-line pt-3">
+        <p className="font-mono text-[11px] uppercase tracking-wide text-muted">
+          {t("originalSources")}
+        </p>
+        <ul className="mt-2 space-y-1 text-sm">
+          {item.sources.map((source) => (
+            <li key={source.url}>
+              <a
+                href={source.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-gold underline decoration-gold/30 underline-offset-2 hover:decoration-gold"
+              >
+                {sourceName(source.sourceId, source.name, locale)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </article>
+  );
+}
