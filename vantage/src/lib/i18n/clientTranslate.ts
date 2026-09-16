@@ -41,7 +41,12 @@ async function fetchZh(text: string): Promise<string> {
     responseStatus?: number;
     responseData?: { translatedText?: string };
   };
-  return body.responseStatus === 200 ? body.responseData?.translatedText?.trim() ?? "" : "";
+  const translated =
+    body.responseStatus === 200 ? body.responseData?.translatedText?.trim() ?? "" : "";
+  if (!translated || translated === text) return "";
+  if (!/[\u3400-\u9fff]/.test(translated) && /[A-Za-z]{6,}/.test(text)) return "";
+  if (text.length > 40 && translated.length < 8) return "";
+  return translated;
 }
 
 function pump(): void {

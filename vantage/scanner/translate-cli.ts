@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { buildImpact } from "../src/lib/classify";
+import { repairNewsItems } from "../src/lib/repairNews";
 import type { Briefing } from "../src/lib/types";
 import { attachChinese } from "./localize";
 
@@ -8,6 +9,8 @@ const FILE = path.resolve(__dirname, "../data/latest.json");
 
 async function main() {
   const briefing = JSON.parse(await readFile(FILE, "utf8")) as Briefing;
+  const previous = structuredClone(briefing);
+  briefing.items = repairNewsItems(briefing.items);
   for (const item of briefing.items) {
     item.captionZh ??= "";
     item.keyPointsZh ??= [];
@@ -15,7 +18,7 @@ async function main() {
       item.impact = buildImpact(item.impact.sectors, item.impact.assets);
     }
   }
-  await attachChinese(briefing.items, briefing);
+  await attachChinese(briefing.items, previous);
   await writeFile(FILE, JSON.stringify(briefing, null, 2));
   const done = briefing.items.filter((item) => item.captionZh).length;
   console.log(`Translated captions: ${done}/${briefing.items.length}`);

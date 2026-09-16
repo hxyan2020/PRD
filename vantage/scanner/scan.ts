@@ -22,6 +22,7 @@ import type {
 } from "../src/lib/types";
 import { parseLooseDate } from "../src/lib/dates";
 import { computeScanWindow, inWindow, previousFridayScan } from "../src/lib/window";
+import { repairNewsItems } from "../src/lib/repairNews";
 import { attachChinese } from "./localize";
 
 const ROOT = path.resolve(__dirname, "..");
@@ -320,7 +321,8 @@ export async function runScan(now = new Date()): Promise<Briefing> {
         isRelevant(rawItems[index], item.entities, item.category),
       ),
   );
-  await attachChinese(items, previous);
+  const repaired = repairNewsItems(items);
+  await attachChinese(repaired, previous);
 
   const briefing: Briefing = {
     meta: {
@@ -329,7 +331,7 @@ export async function runScan(now = new Date()): Promise<Briefing> {
       windowLabel: window.label,
       windowStart: window.start.toISOString(),
       windowEnd: window.end.toISOString(),
-      itemCount: items.length,
+      itemCount: repaired.length,
       sourceStats: {
         total: statuses.length,
         healthy: statuses.filter((status) => status.status === "healthy").length,
@@ -337,7 +339,7 @@ export async function runScan(now = new Date()): Promise<Briefing> {
         down: statuses.filter((status) => status.status === "down").length,
       },
     },
-    items,
+    items: repaired,
     sources: statuses.sort((a, b) => a.name.localeCompare(b.name)),
   };
 

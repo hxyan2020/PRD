@@ -4,6 +4,29 @@ import { looksChinese } from "./i18n/locale";
 const ENDPOINT = "https://api.mymemory.translated.net/get";
 const EMAIL = "hxyan.2015@gmail.com";
 
+function chunkForTranslate(text: string, max = 420): string[] {
+  if (text.length <= max) return [text];
+  const chunks: string[] = [];
+  let rest = text;
+  while (rest.length > max) {
+    const slice = rest.slice(0, max);
+    const cut = Math.max(slice.lastIndexOf(". "), slice.lastIndexOf("; "), slice.lastIndexOf(", "));
+    const take = cut > 40 ? slice.slice(0, cut + 1) : slice;
+    chunks.push(take.trim());
+    rest = rest.slice(take.length).trim();
+  }
+  if (rest) chunks.push(rest);
+  return chunks;
+}
+
+function isUsableZh(source: string, translated: string): boolean {
+  if (!translated) return false;
+  if (translated === source) return false;
+  if (!/[\u3400-\u9fff]/.test(translated) && /[A-Za-z]{6,}/.test(source)) return false;
+  if (source.length > 40 && translated.length < 8) return false;
+  return true;
+}
+
 export function translationKey(text: string): string {
   return createHash("sha1").update(text.trim()).digest("hex");
 }
@@ -18,23 +41,29 @@ export async function translateToZh(
   const key = translationKey(trimmed);
   if (cache[key]) return cache[key];
 
-  const url = `${ENDPOINT}?q=${encodeURIComponent(trimmed.slice(0, 450))}&langpair=en|zh-CN&de=${encodeURIComponent(EMAIL)}`;
-  const response = await fetch(url, {
-    headers: { Accept: "application/json" },
-  });
-  if (!response.ok) {
-    throw new Error(`Translate HTTP ${response.status}`);
+  const chunks = chunkForTranslate(trimmed);
+  const parts: string[] = [];
+  for (const chunk of chunks) {
+    const url = `${ENDPOINT}?q=${encodeURIComponent(chunk)}&langpair=en|zh-CN&de=${encodeURIComponent(EMAIL)}`;
+    const response = await fetch(url, {
+      headers: { Accept: "application/json" },
+    });
+    if (!response.ok) {
+      throw new Error(`Translate HTTP ${response.status}`);
+    }
+    const body = (await response.json()) as {
+      responseStatus?: number;
+      responseData?: { translatedText?: string };
+    };
+    const translated = body.responseData?.translatedText?.trim();
+    if (!translated || body.responseStatus !== 200 || !isUsableZh(chunk, translated)) {
+      throw new Error(`Translate rejected: ${body.responseStatus ?? "unknown"}`);
+    }
+    parts.push(translated);
   }
-  const body = (await response.json()) as {
-    responseStatus?: number;
-    responseData?: { translatedText?: string };
-  };
-  const translated = body.responseData?.translatedText?.trim();
-  if (!translated || body.responseStatus !== 200) {
-    throw new Error(`Translate rejected: ${body.responseStatus ?? "unknown"}`);
-  }
-  cache[key] = translated;
-  return translated;
+  const joined = parts.join("");
+  cache[key] = joined;
+  return joined;
 }
 
 export async function translateManyToZh(

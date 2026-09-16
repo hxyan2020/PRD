@@ -58,3 +58,11 @@ a {
   height: 1px;
   background: linear-gradient(90deg, var(--gold), transparent 80%);
 }
+
+article h2,
+article li {
+  overflow: visible;
+  overflow-wrap: break-word;
+  word-break: normal;
+  word-wrap: break-word;
+}

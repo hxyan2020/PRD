@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { isIncompleteZh } from "../src/lib/extract";
 import { translationKey, translateManyToZh } from "../src/lib/translateZh";
 import type { Briefing, NewsItem } from "../src/lib/types";
 
@@ -23,17 +24,26 @@ export async function attachChinese(
 
   for (const item of items) {
     const old = prior.get(item.id);
-    if (old?.caption === item.caption && old.captionZh) item.captionZh = old.captionZh;
-    if (old?.caption === item.caption && old.keyPointsZh?.length) {
-      item.keyPointsZh = old.keyPointsZh;
+    if (old?.caption === item.caption && old.captionZh && !isIncompleteZh(old.captionZh)) {
+      item.captionZh = old.captionZh;
+    }
+    const englishMatches =
+      !!old &&
+      old.keyPoints.length === item.keyPoints.length &&
+      old.keyPoints.every((point, index) => point === item.keyPoints[index]);
+    if (englishMatches && old.keyPointsZh?.length) {
+      item.keyPointsZh = old.keyPointsZh.map((value) =>
+        value && !isIncompleteZh(value) ? value : "",
+      );
     }
   }
 
   const missing = items.flatMap((item) => {
     const texts: string[] = [];
-    if (!item.captionZh) texts.push(item.caption);
+    if (!item.captionZh || isIncompleteZh(item.captionZh)) texts.push(item.caption);
     item.keyPoints.forEach((point, index) => {
-      if (!item.keyPointsZh[index]) texts.push(point);
+      const zh = item.keyPointsZh[index];
+      if (!zh || isIncompleteZh(zh)) texts.push(point);
     });
     return texts;
   });
@@ -43,10 +53,14 @@ export async function attachChinese(
   }
 
   for (const item of items) {
-    if (!item.captionZh) item.captionZh = cache[translationKey(item.caption)] ?? "";
-    item.keyPointsZh = item.keyPoints.map(
-      (point, index) => item.keyPointsZh[index] || cache[translationKey(point)] || "",
-    );
+    if (!item.captionZh || isIncompleteZh(item.captionZh)) {
+      item.captionZh = cache[translationKey(item.caption)] ?? "";
+    }
+    item.keyPointsZh = item.keyPoints.map((point, index) => {
+      const current = item.keyPointsZh[index];
+      if (current && !isIncompleteZh(current)) return current;
+      return cache[translationKey(point)] || "";
+    });
   }
 
   await writeFile(CACHE_FILE, JSON.stringify(cache, null, 2));

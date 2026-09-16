@@ -69,7 +69,7 @@ export function NewsCard({
         ))}
       </div>
 
-      <h2 className="mt-3 font-serif text-2xl leading-snug text-paper">
+      <h2 className="mt-3 overflow-visible break-words font-serif text-xl leading-[1.5] text-pretty text-paper md:text-2xl">
         <StoryLine english={item.caption} chinese={item.captionZh} />
       </h2>
 
@@ -83,7 +83,7 @@ export function NewsCard({
         </p>
       )}
 
-      <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-paper/90">
+      <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 break-words text-paper/90">
         {item.keyPoints.map((point, index) => (
           <li key={`${item.id}-${index}`}>
             <StoryLine english={point} chinese={item.keyPointsZh?.[index]} />

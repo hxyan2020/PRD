@@ -1,35 +1,42 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { isIncompleteZh } from "../extract";
 import { looksChinese, type Locale } from "./locale";
 import { requestZh } from "./clientTranslate";
+
+function usableZh(value?: string): string {
+  const text = value?.trim() ?? "";
+  return text && !isIncompleteZh(text) ? text : "";
+}
 
 export function useStoryText(
   locale: Locale,
   english: string,
   storedZh?: string,
 ): { text: string; pending: boolean } {
-  const [liveZh, setLiveZh] = useState(storedZh ?? "");
+  const readyZh = usableZh(storedZh);
+  const [liveZh, setLiveZh] = useState(readyZh);
 
   useEffect(() => {
-    setLiveZh(storedZh ?? "");
-  }, [english, storedZh]);
+    setLiveZh(readyZh);
+  }, [english, readyZh]);
 
   useEffect(() => {
     if (locale !== "zh") return;
-    if (storedZh || looksChinese(english) || !english.trim()) return;
+    if (readyZh || looksChinese(english) || !english.trim()) return;
     let cancelled = false;
     requestZh(english).then((translated) => {
-      if (!cancelled && translated) setLiveZh(translated);
+      if (!cancelled && usableZh(translated)) setLiveZh(translated);
     });
     return () => {
       cancelled = true;
     };
-  }, [locale, english, storedZh]);
+  }, [locale, english, readyZh]);
 
   if (locale !== "zh") {
     return { text: english, pending: false };
   }
-  const text = liveZh || storedZh || english;
+  const text = liveZh || readyZh || english;
   return { text, pending: text === english && !looksChinese(english) && Boolean(english) };
 }
