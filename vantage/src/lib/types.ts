@@ -51,6 +51,7 @@ export interface DataSource {
   sectors: Array<Sector | "cross">;
   categories: NewsCategory[];
   notes?: string;
+  fallbackUrl?: string;
 }
 
 export interface SourceStatus {

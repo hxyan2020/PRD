@@ -21,6 +21,11 @@ import type {
   SourceStatus,
 } from "../src/lib/types";
 import { parseLooseDate } from "../src/lib/dates";
+import {
+  looksLikeHtml,
+  parseFeedItemDate,
+  sanitizeFeedXml,
+} from "../src/lib/feedParse";
 import { computeScanWindow, inWindow, previousFridayScan } from "../src/lib/window";
 import { clusterNewsItems } from "../src/lib/clusterNews";
 import { repairNewsItems } from "../src/lib/repairNews";
@@ -29,19 +34,27 @@ import { attachChinese } from "./localize";
 const ROOT = path.resolve(__dirname, "..");
 const DATA = path.join(ROOT, "data");
 const USER_AGENT =
-  "VantageMarketIntelligence/1.0 (research desk; hxyan.2015@gmail.com)";
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 VantageMarketIntelligence/1.0";
+const ACCEPT =
+  "application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.1";
 const CONCURRENCY = 8;
-const TIMEOUT_MS = 18_000;
+const TIMEOUT_MS = 25_000;
 
 const parser = new Parser({
   timeout: TIMEOUT_MS,
   headers: {
     "User-Agent": USER_AGENT,
-    Accept:
-      "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
+    Accept: ACCEPT,
+    "Accept-Language": "en-US,en;q=0.9",
   },
   customFields: {
-    item: [["dc:date", "dcDate"], ["updated", "updated"]],
+    item: [
+      ["dc:date", "dcDate"],
+      ["updated", "updated"],
+      ["published", "published"],
+      ["date", "date"],
+    ],
+    feed: [["lastBuildDate", "lastBuildDate"]],
   },
 });
 
@@ -65,18 +78,99 @@ async function loadPreviousBriefing(): Promise<Briefing | null> {
   }
 }
 
-function parseDate(item: {
-  isoDate?: string;
-  pubDate?: string;
-  dcDate?: string;
-  updated?: string;
-}): Date | null {
-  for (const value of [item.isoDate, item.pubDate, item.dcDate, item.updated]) {
-    if (!value) continue;
-    const date = parseLooseDate(value);
-    if (date) return date;
+function parseDate(
+  item: {
+    isoDate?: string;
+    pubDate?: string;
+    dcDate?: string;
+    updated?: string;
+    published?: string;
+    date?: string;
+    link?: string;
+    guid?: string;
+    content?: string;
+    contentSnippet?: string;
+    summary?: string;
+    title?: string;
+  },
+  lastBuildDate: Date | null,
+): Date | null {
+  return parseFeedItemDate(item, lastBuildDate);
+}
+
+async function fetchFeedUrl(
+  url: string,
+  timeoutMs: number,
+): Promise<{ httpStatus: number; body: string; latencyMs: number }> {
+  const started = Date.now();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": USER_AGENT,
+        Accept: ACCEPT,
+        "Accept-Language": "en-US,en;q=0.9",
+      },
+      signal: controller.signal,
+      redirect: "follow",
+    });
+    const body = await response.text();
+    return {
+      httpStatus: response.status,
+      body,
+      latencyMs: Date.now() - started,
+    };
+  } finally {
+    clearTimeout(timer);
   }
-  return null;
+}
+
+async function fetchFeedUrlRetry(url: string) {
+  try {
+    return await fetchFeedUrl(url, TIMEOUT_MS);
+  } catch (error) {
+    const aborted =
+      error instanceof Error && /abort/i.test(error.message || error.name);
+    if (aborted) return fetchFeedUrl(url, TIMEOUT_MS + 12_000);
+    throw error;
+  }
+}
+
+async function parseFeedItems(
+  source: DataSource,
+  body: string,
+): Promise<{ items: RawItem[]; error: string | null }> {
+  if (looksLikeHtml(body)) {
+    return { items: [], error: "Response was HTML, not RSS" };
+  }
+
+  const xml = sanitizeFeedXml(body);
+  const feed = await parser.parseString(xml);
+  const lastBuildDate =
+    parseLooseDate(
+      (feed as { lastBuildDate?: string }).lastBuildDate || feed.pubDate || "",
+    ) ?? null;
+  const items: RawItem[] = [];
+  for (const entry of feed.items ?? []) {
+    const publishedAt = parseDate(entry, lastBuildDate);
+    if (!publishedAt) continue;
+    const title = normalizeTitle(entry.title ?? "");
+    const link = (entry.link || entry.guid || source.homepage).trim();
+    if (!title || !link) continue;
+    items.push({
+      source,
+      title,
+      link,
+      summary: stripHtml(entry.contentSnippet || entry.content || entry.summary || ""),
+      publishedAt,
+    });
+  }
+
+  return {
+    items,
+    error: items.length === 0 ? "Feed parsed but contained no dated items" : null,
+  };
 }
 
 const RELEVANT =
@@ -112,6 +206,46 @@ function isRelevant(
   return RELEVANT.test(`${raw.title} ${raw.summary}`);
 }
 
+async function tryFeed(
+  source: DataSource,
+  url: string,
+): Promise<{
+  items: RawItem[];
+  httpStatus: number | null;
+  latencyMs: number;
+  error: string | null;
+  usedUrl: string;
+}> {
+  try {
+    const fetched = await fetchFeedUrlRetry(url);
+    if (fetched.httpStatus < 200 || fetched.httpStatus >= 300) {
+      return {
+        items: [],
+        httpStatus: fetched.httpStatus,
+        latencyMs: fetched.latencyMs,
+        error: `HTTP ${fetched.httpStatus}`,
+        usedUrl: url,
+      };
+    }
+    const parsed = await parseFeedItems(source, fetched.body);
+    return {
+      items: parsed.items,
+      httpStatus: fetched.httpStatus,
+      latencyMs: fetched.latencyMs,
+      error: parsed.error,
+      usedUrl: url,
+    };
+  } catch (error) {
+    return {
+      items: [],
+      httpStatus: null,
+      latencyMs: 0,
+      error: error instanceof Error ? error.message : String(error),
+      usedUrl: url,
+    };
+  }
+}
+
 async function fetchSource(
   source: DataSource,
 ): Promise<{ status: SourceStatus; items: RawItem[] }> {
@@ -133,64 +267,47 @@ async function fetchSource(
   };
 
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-    const response = await fetch(source.url, {
-      headers: {
-        "User-Agent": USER_AGENT,
-        Accept:
-          "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
-      },
-      signal: controller.signal,
-      redirect: "follow",
-    });
-    clearTimeout(timer);
-
-    const latencyMs = Date.now() - started;
-    const body = await response.text();
-    baseStatus.httpStatus = response.status;
-    baseStatus.latencyMs = latencyMs;
-    baseStatus.lastSourced = new Date().toISOString();
-
-    if (!response.ok) {
-      return {
-        status: {
-          ...baseStatus,
-          status: "down",
-          error: `HTTP ${response.status}`,
-        },
-        items: [],
-      };
+    let result = await tryFeed(source, source.url);
+    if (result.items.length === 0 && source.fallbackUrl) {
+      try {
+        const fallback = await tryFeed(source, source.fallbackUrl);
+        if (fallback.items.length > 0 || !result.error) {
+          result = fallback;
+        } else if (!fallback.error) {
+          result = fallback;
+        } else {
+          result = {
+            ...result,
+            error: `${result.error}; fallback: ${fallback.error}`,
+          };
+        }
+      } catch (error) {
+        const fallbackError =
+          error instanceof Error ? error.message : String(error);
+        result = {
+          ...result,
+          error: `${result.error ?? "Primary feed failed"}; fallback: ${fallbackError}`,
+        };
+      }
     }
 
-    const feed = await parser.parseString(body);
-    const items: RawItem[] = [];
-    for (const entry of feed.items ?? []) {
-      const publishedAt = parseDate(entry);
-      if (!publishedAt) continue;
-      const title = normalizeTitle(entry.title ?? "");
-      const link = (entry.link || entry.guid || source.homepage).trim();
-      if (!title || !link) continue;
-      items.push({
-        source,
-        title,
-        link,
-        summary: stripHtml(entry.contentSnippet || entry.content || entry.summary || ""),
-        publishedAt,
-      });
-    }
-
-    let status: SourceHealth = "healthy";
-    if (items.length === 0) status = "degraded";
+    const health: SourceHealth =
+      result.items.length > 0 ? "healthy" : result.httpStatus && result.httpStatus < 400
+        ? "degraded"
+        : "down";
 
     return {
       status: {
         ...baseStatus,
-        status,
-        itemsFetched: items.length,
-        error: items.length === 0 ? "Feed parsed but contained no dated items" : null,
+        url: result.usedUrl,
+        lastSourced: new Date().toISOString(),
+        status: health,
+        httpStatus: result.httpStatus,
+        latencyMs: result.latencyMs || Date.now() - started,
+        itemsFetched: result.items.length,
+        error: result.items.length === 0 ? result.error : null,
       },
-      items,
+      items: result.items,
     };
   } catch (error) {
     return {
