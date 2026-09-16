@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -19,6 +19,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Enable GitHub Pages
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
+            echo "GitHub Pages is already enabled"
+          else
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/pages" \
+              -H "Accept: application/vnd.github+json" \
+              -f build_type=workflow
+          fi
+      - uses: actions/configure-pages@v5
+        continue-on-error: true
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
