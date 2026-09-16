@@ -1,6 +1,5 @@
 import { createHash } from "node:crypto";
 import { detectSourceLang, langPairToZh, looksUntranslated } from "./i18n/detectLang";
-import { looksChinese } from "./i18n/locale";
 
 const ENDPOINT = "https://api.mymemory.translated.net/get";
 const EMAIL = "hxyan.2015@gmail.com";
@@ -37,7 +36,7 @@ export async function translateToZh(
 ): Promise<string> {
   const trimmed = text.trim();
   if (!trimmed) return "";
-  if (looksChinese(trimmed)) return trimmed;
+  if (detectSourceLang(trimmed) === "zh") return trimmed;
   const key = translationKey(trimmed);
   if (cache[key] && !looksUntranslated(trimmed, cache[key])) return cache[key];
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { detectSourceLang, langPairToZh, looksUntranslated } from "./detectLang";
-import { looksChinese } from "./locale";
 
 const memory = new Map<string, string>();
 const waiters = new Map<string, Array<(value: string) => void>>();
@@ -96,7 +95,7 @@ function pump(): void {
 export function requestZh(text: string): Promise<string> {
   const trimmed = text.trim();
   if (!trimmed) return Promise.resolve("");
-  if (looksChinese(trimmed)) return Promise.resolve(trimmed);
+  if (detectSourceLang(trimmed) === "zh") return Promise.resolve(trimmed);
   const cached = readStore(trimmed);
   if (cached) return Promise.resolve(cached);
   return new Promise((resolve) => {
