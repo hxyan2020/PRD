@@ -12,4 +12,8 @@ python3 -m http.server 8080 --directory docs
 
 Then visit `http://localhost:8080`.
 
+A GitHub Action already publishes `docs/` to the `gh-pages` branch at `/trading-risk-ninja/`. This repository does not have GitHub Pages enabled yet. To put the handbook on a public URL, open **Settings → Pages**, set source to the `gh-pages` branch (root), and the site will be:
+
+https://hxyan2020.github.io/PRD/trading-risk-ninja/
+
 This is a compliance and risk handbook. It is not a guide for committing market abuse. Thresholds are starting priors — retune them on your own tape.

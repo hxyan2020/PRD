@@ -117,10 +117,16 @@ button, input, select { font: inherit; color: inherit; }
   text-transform: uppercase;
   color: var(--amber);
 }
-h1, h2, h3 { font-family: var(--display); letter-spacing: -0.03em; margin: 0 0 12px; }
-h1 { font-size: clamp(40px, 6vw, 76px); line-height: 0.92; }
-h2 { font-size: clamp(28px, 3vw, 40px); }
-h3 { font-size: 22px; }
+h1, h2, h3 {
+  font-family: var(--display);
+  letter-spacing: -0.015em;
+  word-spacing: 0.02em;
+  font-feature-settings: "kern" 1, "liga" 0;
+  margin: 0 0 12px;
+}
+h1 { font-size: clamp(36px, 5.4vw, 68px); line-height: 1.02; }
+h2 { font-size: clamp(26px, 3vw, 38px); line-height: 1.1; }
+h3 { font-size: 22px; letter-spacing: 0; }
 .lede { font-size: 18px; color: #c9d4e0; max-width: 68ch; }
 
 .hero {
