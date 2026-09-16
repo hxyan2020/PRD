@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { detectSourceLang, langPairToZh, looksUntranslated } from "./i18n/detectLang";
 import { looksChinese } from "./i18n/locale";
 
 const ENDPOINT = "https://api.mymemory.translated.net/get";
@@ -21,8 +22,7 @@ function chunkForTranslate(text: string, max = 420): string[] {
 
 function isUsableZh(source: string, translated: string): boolean {
   if (!translated) return false;
-  if (translated === source) return false;
-  if (!/[\u3400-\u9fff]/.test(translated) && /[A-Za-z]{6,}/.test(source)) return false;
+  if (looksUntranslated(source, translated)) return false;
   if (source.length > 40 && translated.length < 8) return false;
   return true;
 }
@@ -39,12 +39,13 @@ export async function translateToZh(
   if (!trimmed) return "";
   if (looksChinese(trimmed)) return trimmed;
   const key = translationKey(trimmed);
-  if (cache[key]) return cache[key];
+  if (cache[key] && !looksUntranslated(trimmed, cache[key])) return cache[key];
 
+  const pair = langPairToZh(detectSourceLang(trimmed));
   const chunks = chunkForTranslate(trimmed);
   const parts: string[] = [];
   for (const chunk of chunks) {
-    const url = `${ENDPOINT}?q=${encodeURIComponent(chunk)}&langpair=en|zh-CN&de=${encodeURIComponent(EMAIL)}`;
+    const url = `${ENDPOINT}?q=${encodeURIComponent(chunk)}&langpair=${encodeURIComponent(pair)}&de=${encodeURIComponent(EMAIL)}`;
     const response = await fetch(url, {
       headers: { Accept: "application/json" },
     });

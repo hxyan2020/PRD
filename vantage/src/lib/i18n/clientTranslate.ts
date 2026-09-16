@@ -1,5 +1,6 @@
 "use client";
 
+import { detectSourceLang, langPairToZh, looksUntranslated } from "./detectLang";
 import { looksChinese } from "./locale";
 
 const memory = new Map<string, string>();
@@ -14,10 +15,11 @@ function cacheKey(text: string): string {
 
 function readStore(text: string): string {
   const hit = memory.get(text);
-  if (hit) return hit;
+  if (hit && !looksUntranslated(text, hit)) return hit;
   if (typeof window === "undefined") return "";
   try {
-    return window.localStorage.getItem(cacheKey(text)) ?? "";
+    const stored = window.localStorage.getItem(cacheKey(text)) ?? "";
+    return stored && !looksUntranslated(text, stored) ? stored : "";
   } catch {
     return "";
   }
@@ -33,20 +35,39 @@ function writeStore(text: string, zh: string): void {
   }
 }
 
+function chunkForClient(text: string, max = 420): string[] {
+  if (text.length <= max) return [text];
+  const chunks: string[] = [];
+  let rest = text;
+  while (rest.length > max) {
+    const slice = rest.slice(0, max);
+    const cut = Math.max(slice.lastIndexOf(". "), slice.lastIndexOf("; "), slice.lastIndexOf(", "));
+    const take = cut > 40 ? slice.slice(0, cut + 1) : slice;
+    chunks.push(take.trim());
+    rest = rest.slice(take.length).trim();
+  }
+  if (rest) chunks.push(rest);
+  return chunks;
+}
+
 async function fetchZh(text: string): Promise<string> {
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0, 450))}&langpair=en|zh-CN&de=${encodeURIComponent("hxyan.2015@gmail.com")}`;
-  const response = await fetch(url);
-  if (!response.ok) return "";
-  const body = (await response.json()) as {
-    responseStatus?: number;
-    responseData?: { translatedText?: string };
-  };
-  const translated =
-    body.responseStatus === 200 ? body.responseData?.translatedText?.trim() ?? "" : "";
-  if (!translated || translated === text) return "";
-  if (!/[\u3400-\u9fff]/.test(translated) && /[A-Za-z]{6,}/.test(text)) return "";
-  if (text.length > 40 && translated.length < 8) return "";
-  return translated;
+  const pair = langPairToZh(detectSourceLang(text));
+  const parts: string[] = [];
+  for (const chunk of chunkForClient(text)) {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunk)}&langpair=${encodeURIComponent(pair)}&de=${encodeURIComponent("hxyan.2015@gmail.com")}`;
+    const response = await fetch(url);
+    if (!response.ok) return "";
+    const body = (await response.json()) as {
+      responseStatus?: number;
+      responseData?: { translatedText?: string };
+    };
+    const translated =
+      body.responseStatus === 200 ? body.responseData?.translatedText?.trim() ?? "" : "";
+    if (!translated || looksUntranslated(chunk, translated)) return "";
+    if (text.length > 40 && translated.length < 8) return "";
+    parts.push(translated);
+  }
+  return parts.join("");
 }
 
 function pump(): void {

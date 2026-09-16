@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { isIncompleteZh } from "../src/lib/extract";
+import { looksUntranslated } from "../src/lib/i18n/detectLang";
 import { translationKey, translateManyToZh } from "../src/lib/translateZh";
 import type { Briefing, NewsItem } from "../src/lib/types";
 
@@ -24,7 +25,12 @@ export async function attachChinese(
 
   for (const item of items) {
     const old = prior.get(item.id);
-    if (old?.caption === item.caption && old.captionZh && !isIncompleteZh(old.captionZh)) {
+    if (
+      old?.caption === item.caption &&
+      old.captionZh &&
+      !isIncompleteZh(old.captionZh) &&
+      !looksUntranslated(item.caption, old.captionZh)
+    ) {
       item.captionZh = old.captionZh;
     }
     const englishMatches =
@@ -32,18 +38,22 @@ export async function attachChinese(
       old.keyPoints.length === item.keyPoints.length &&
       old.keyPoints.every((point, index) => point === item.keyPoints[index]);
     if (englishMatches && old.keyPointsZh?.length) {
-      item.keyPointsZh = old.keyPointsZh.map((value) =>
-        value && !isIncompleteZh(value) ? value : "",
+      item.keyPointsZh = old.keyPointsZh.map((value, index) =>
+        value && !isIncompleteZh(value) && !looksUntranslated(item.keyPoints[index], value)
+          ? value
+          : "",
       );
     }
   }
 
   const missing = items.flatMap((item) => {
     const texts: string[] = [];
-    if (!item.captionZh || isIncompleteZh(item.captionZh)) texts.push(item.caption);
+    if (!item.captionZh || isIncompleteZh(item.captionZh) || looksUntranslated(item.caption, item.captionZh)) {
+      texts.push(item.caption);
+    }
     item.keyPoints.forEach((point, index) => {
       const zh = item.keyPointsZh[index];
-      if (!zh || isIncompleteZh(zh)) texts.push(point);
+      if (!zh || isIncompleteZh(zh) || looksUntranslated(point, zh)) texts.push(point);
     });
     return texts;
   });
@@ -53,12 +63,16 @@ export async function attachChinese(
   }
 
   for (const item of items) {
-    if (!item.captionZh || isIncompleteZh(item.captionZh)) {
+    if (
+      !item.captionZh ||
+      isIncompleteZh(item.captionZh) ||
+      looksUntranslated(item.caption, item.captionZh)
+    ) {
       item.captionZh = cache[translationKey(item.caption)] ?? "";
     }
     item.keyPointsZh = item.keyPoints.map((point, index) => {
       const current = item.keyPointsZh[index];
-      if (current && !isIncompleteZh(current)) return current;
+      if (current && !isIncompleteZh(current) && !looksUntranslated(point, current)) return current;
       return cache[translationKey(point)] || "";
     });
   }

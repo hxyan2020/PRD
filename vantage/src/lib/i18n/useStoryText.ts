@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { isIncompleteZh } from "../extract";
+import { looksUntranslated } from "./detectLang";
 import { looksChinese, type Locale } from "./locale";
 import { requestZh } from "./clientTranslate";
 
-function usableZh(value?: string): string {
+function usableZh(source: string, value?: string): string {
   const text = value?.trim() ?? "";
-  return text && !isIncompleteZh(text) ? text : "";
+  if (!text || isIncompleteZh(text) || looksUntranslated(source, text)) return "";
+  return text;
 }
 
 export function useStoryText(
@@ -15,7 +17,7 @@ export function useStoryText(
   english: string,
   storedZh?: string,
 ): { text: string; pending: boolean } {
-  const readyZh = usableZh(storedZh);
+  const readyZh = usableZh(english, storedZh);
   const [liveZh, setLiveZh] = useState(readyZh);
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export function useStoryText(
     if (readyZh || looksChinese(english) || !english.trim()) return;
     let cancelled = false;
     requestZh(english).then((translated) => {
-      if (!cancelled && usableZh(translated)) setLiveZh(translated);
+      if (!cancelled && usableZh(english, translated)) setLiveZh(translated);
     });
     return () => {
       cancelled = true;

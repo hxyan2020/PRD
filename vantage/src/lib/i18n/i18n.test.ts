@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { detectSourceLang, looksUntranslated } from "./detectLang";
 import { looksChinese, parseLocale } from "./locale";
 import { translate } from "./messages";
 import { entityName, sourceName } from "./catalog";
@@ -14,6 +15,35 @@ describe("locale", () => {
   it("detects Chinese copy", () => {
     assert.equal(looksChinese("每日简报"), true);
     assert.equal(looksChinese("Daily briefing"), false);
+  });
+
+  it("detects Dutch and German source copy", () => {
+    assert.equal(
+      detectSourceLang("Caribisch Nederland: herbeoordeling betrouwbaarheid vervallen, wijzigingen wel direct doorgeven"),
+      "nl",
+    );
+    assert.equal(
+      detectSourceLang("Die Bank of Canada wählt den Reference Pricing Service als Preisquelle für kanadische festverzinsliche Wertpapiere"),
+      "de",
+    );
+    assert.equal(detectSourceLang("Bitcoin loses touch with the Dollar Index"), "en");
+  });
+
+  it("flags leftover foreign words as untranslated Chinese", () => {
+    assert.equal(
+      looksUntranslated(
+        "Bank of Canada kiest de CanDeal service",
+        "加拿大银行kiest de CanDeal服务 ALS PRIJSBRON",
+      ),
+      true,
+    );
+    assert.equal(
+      looksUntranslated(
+        "Bitcoin loses touch with the Dollar Index",
+        "比特币与美元指数失去联系，美国股市领先于美联储。",
+      ),
+      false,
+    );
   });
 });
 
