@@ -54,7 +54,7 @@ const parser = new Parser({
       ["published", "published"],
       ["date", "date"],
     ],
-    feed: [["lastBuildDate", "lastBuildDate"]],
+    feed: ["lastBuildDate"],
   },
 });
 
@@ -148,10 +148,9 @@ async function parseFeedItems(
 
   const xml = sanitizeFeedXml(body);
   const feed = await parser.parseString(xml);
+  const feedMeta = feed as { lastBuildDate?: string; pubDate?: string };
   const lastBuildDate =
-    parseLooseDate(
-      (feed as { lastBuildDate?: string }).lastBuildDate || feed.pubDate || "",
-    ) ?? null;
+    parseLooseDate(feedMeta.lastBuildDate || feedMeta.pubDate || "") ?? null;
   const items: RawItem[] = [];
   for (const entry of feed.items ?? []) {
     const publishedAt = parseDate(entry, lastBuildDate);
