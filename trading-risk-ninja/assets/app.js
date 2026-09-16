@@ -5,8 +5,30 @@
   const nav = document.querySelector(".nav");
   const LANG_KEY = "trn-lang";
 
-  menuBtn.addEventListener("click", () => nav.classList.toggle("open"));
-  nav.addEventListener("click", () => nav.classList.remove("open"));
+  const backdrop = document.querySelector(".nav-backdrop");
+
+  function setMenu(open) {
+    nav.classList.toggle("open", open);
+    document.body.classList.toggle("menu-open", open);
+    if (backdrop) backdrop.hidden = !open;
+    if (menuBtn) {
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      const ui = (window.TRN_UI && TRN_UI[lang]) || {};
+      menuBtn.setAttribute("aria-label", open ? (ui.menuClose || "Close menu") : (ui.menu || "Open menu"));
+    }
+  }
+
+  menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    setMenu(!nav.classList.contains("open"));
+  });
+  nav.addEventListener("click", (e) => {
+    if (e.target.closest("a")) setMenu(false);
+  });
+  if (backdrop) backdrop.addEventListener("click", () => setMenu(false));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setMenu(false);
+  });
 
   const PRODUCTS = {
     cfd: ["spot", "margin", "perps", "futures"],
@@ -527,7 +549,9 @@
       const href = a.getAttribute("href");
       if (navMap[href]) a.textContent = navMap[href];
     });
-    if (menuBtn) menuBtn.setAttribute("aria-label", ui.menu);
+    if (menuBtn) {
+      menuBtn.setAttribute("aria-label", nav.classList.contains("open") ? (ui.menuClose || ui.menu) : ui.menu);
+    }
     const feet = document.querySelectorAll(".foot p");
     if (feet[0]) feet[0].textContent = ui.foot1;
     if (feet[1]) feet[1].textContent = ui.foot2;
@@ -548,6 +572,7 @@
   }
 
   function render() {
+    setMenu(false);
     applyChrome();
     const route = parseHash();
     setActiveNav(route.view);
