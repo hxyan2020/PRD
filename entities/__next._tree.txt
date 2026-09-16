@@ -8,4 +8,4 @@
 :HL["./_next/static/media/caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["./_next/static/media/f112ed7f0b91582f-s.p.2xkduggpvd1-n.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["./_next/static/media/feb57b2dc8f29018-s.p.3qy4m29-cg3o4.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"entities","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"gwy_tzuaEKUQgavMuE88E"}
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"entities","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"FjruZZ0J2qhb-ki-A-Qxa"}
