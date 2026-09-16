@@ -27,7 +27,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Public site (GitHub Pages): [https://hxyan2020.github.io/PRD/](https://hxyan2020.github.io/PRD/)
+Public site: [https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/](https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/)
 
 - `/` daily briefing
 - `/entities` monitored banks, brokers, exchanges
