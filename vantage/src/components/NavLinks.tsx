@@ -12,7 +12,7 @@ const NAV = [
 ];
 
 export function NavLinks() {
-  const pathname = usePathname();
+  const pathname = (usePathname().replace(/\/$/, "") || "/") as string;
 
   return (
     <nav className="flex flex-wrap gap-2">

@@ -25,8 +25,6 @@ export const metadata: Metadata = {
     "Daily briefing on top global banks, brokers, and crypto exchanges: listings, product releases, regulation, and risk tools.",
 };
 
-export const dynamic = "force-dynamic";
-
 export default function RootLayout({
   children,
 }: Readonly<{

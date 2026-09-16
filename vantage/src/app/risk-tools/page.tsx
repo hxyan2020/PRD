@@ -1,14 +1,9 @@
 import { BriefingBoard } from "@/components/BriefingBoard";
-import { parseSector } from "@/lib/filters";
+import { ClientOnly } from "@/components/ClientOnly";
 import { RiskCatalog } from "@/components/RiskCatalog";
 import { loadBriefing, loadEntities, loadRiskTools } from "@/lib/loadData";
 
-export default async function RiskToolsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ sector?: string; q?: string }>;
-}) {
-  const params = await searchParams;
+export default async function RiskToolsPage() {
   const [briefing, catalog, tools] = await Promise.all([
     loadBriefing(),
     loadEntities(),
@@ -27,17 +22,16 @@ export default async function RiskToolsPage({
       </div>
       <RiskCatalog tools={tools} items={briefing?.items ?? []} />
       {briefing && (
-        <BriefingBoard
-          briefing={briefing}
-          entities={catalog.all}
-          tools={tools}
-          title="Risk-tool developments"
-          basePath="/risk-tools"
-          hideCategoryFilters
-          activeCategory="risk_tools"
-          activeSector={parseSector(params.sector)}
-          query={params.q ?? ""}
-        />
+        <ClientOnly>
+          <BriefingBoard
+            briefing={briefing}
+            entities={catalog.all}
+            tools={tools}
+            title="Risk-tool developments"
+            hideCategoryFilters
+            forceCategory="risk_tools"
+          />
+        </ClientOnly>
       )}
     </div>
   );

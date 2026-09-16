@@ -1,13 +1,8 @@
 import { BriefingBoard } from "@/components/BriefingBoard";
-import { parseSector } from "@/lib/filters";
+import { ClientOnly } from "@/components/ClientOnly";
 import { loadBriefing, loadEntities, loadRiskTools } from "@/lib/loadData";
 
-export default async function RegulationPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ sector?: string; q?: string }>;
-}) {
-  const params = await searchParams;
+export default async function RegulationPage() {
   const [briefing, catalog, tools] = await Promise.all([
     loadBriefing(),
     loadEntities(),
@@ -26,17 +21,16 @@ export default async function RegulationPage({
         other major jurisdictions. Each item includes a potential-impact note
         for sector and assets.
       </p>
-      <BriefingBoard
-        briefing={briefing}
-        entities={catalog.all}
-        tools={tools}
-        title="Regulatory watch"
-        basePath="/regulation"
-        hideCategoryFilters
-        activeCategory="regulation"
-        activeSector={parseSector(params.sector)}
-        query={params.q ?? ""}
-      />
+      <ClientOnly>
+        <BriefingBoard
+          briefing={briefing}
+          entities={catalog.all}
+          tools={tools}
+          title="Regulatory watch"
+          hideCategoryFilters
+          forceCategory="regulation"
+        />
+      </ClientOnly>
     </div>
   );
 }

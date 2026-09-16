@@ -1,13 +1,8 @@
 import { BriefingBoard } from "@/components/BriefingBoard";
-import { parseCategory, parseSector } from "@/lib/filters";
+import { ClientOnly } from "@/components/ClientOnly";
 import { loadBriefing, loadEntities, loadRiskTools } from "@/lib/loadData";
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string; sector?: string; q?: string }>;
-}) {
-  const params = await searchParams;
+export default async function HomePage() {
   const [briefing, catalog, tools] = await Promise.all([
     loadBriefing(),
     loadEntities(),
@@ -24,13 +19,8 @@ export default async function HomePage({
   }
 
   return (
-    <BriefingBoard
-      briefing={briefing}
-      entities={catalog.all}
-      tools={tools}
-      activeCategory={parseCategory(params.category)}
-      activeSector={parseSector(params.sector)}
-      query={params.q ?? ""}
-    />
+    <ClientOnly>
+      <BriefingBoard briefing={briefing} entities={catalog.all} tools={tools} />
+    </ClientOnly>
   );
 }

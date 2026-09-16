@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { formatRange } from "@/lib/format";
-import type { Briefing, Entity, NewsCategory, RiskTool, Sector } from "@/lib/types";
+import { parseCategory, parseSector } from "@/lib/filters";
+import type { Briefing, Entity, NewsCategory, RiskTool } from "@/lib/types";
 import { NewsCard } from "./NewsCard";
 
 const CATEGORIES: Array<{ id: "all" | NewsCategory; label: string }> = [
@@ -11,15 +15,15 @@ const CATEGORIES: Array<{ id: "all" | NewsCategory; label: string }> = [
   { id: "risk_tools", label: "Risk tools" },
 ];
 
-const SECTORS: Array<{ id: "all" | Sector; label: string }> = [
-  { id: "all", label: "All sectors" },
-  { id: "banks", label: "Banks" },
-  { id: "brokers", label: "Brokers" },
-  { id: "crypto", label: "Crypto" },
+const SECTORS = [
+  { id: "all" as const, label: "All sectors" },
+  { id: "banks" as const, label: "Banks" },
+  { id: "brokers" as const, label: "Brokers" },
+  { id: "crypto" as const, label: "Crypto" },
 ];
 
 function hrefFor(
-  basePath: string,
+  pathname: string,
   next: { category?: string; sector?: string; q?: string },
 ): string {
   const params = new URLSearchParams();
@@ -27,7 +31,7 @@ function hrefFor(
   if (next.sector && next.sector !== "all") params.set("sector", next.sector);
   if (next.q) params.set("q", next.q);
   const query = params.toString();
-  return query ? `${basePath}?${query}` : basePath;
+  return query ? `${pathname}?${query}` : pathname;
 }
 
 export function BriefingBoard({
@@ -35,22 +39,23 @@ export function BriefingBoard({
   entities,
   tools,
   title = "Daily briefing",
-  basePath = "/",
   hideCategoryFilters = false,
-  activeCategory = "all",
-  activeSector = "all",
-  query = "",
+  forceCategory,
 }: {
   briefing: Briefing;
   entities: Entity[];
   tools: RiskTool[];
   title?: string;
-  basePath?: string;
   hideCategoryFilters?: boolean;
-  activeCategory?: "all" | NewsCategory;
-  activeSector?: "all" | Sector;
-  query?: string;
+  forceCategory?: NewsCategory;
 }) {
+  const params = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+  const activeCategory = forceCategory ?? parseCategory(params.get("category") ?? undefined);
+  const activeSector = parseSector(params.get("sector") ?? undefined);
+  const query = params.get("q") ?? "";
+
   const counts = {
     listing: briefing.items.filter((item) => item.category === "listing").length,
     product: briefing.items.filter((item) => item.category === "product").length,
@@ -113,7 +118,7 @@ export function BriefingBoard({
             {CATEGORIES.map((entry) => (
               <Link
                 key={entry.id}
-                href={hrefFor(basePath, { category: entry.id, sector: activeSector, q: query })}
+                href={hrefFor(pathname, { category: entry.id, sector: activeSector, q: query })}
                 className={`rounded-full border px-3 py-1.5 text-sm ${
                   activeCategory === entry.id
                     ? "border-gold text-gold"
@@ -129,7 +134,7 @@ export function BriefingBoard({
           {SECTORS.map((entry) => (
             <Link
               key={entry.id}
-              href={hrefFor(basePath, { category: activeCategory, sector: entry.id, q: query })}
+              href={hrefFor(pathname, { category: activeCategory, sector: entry.id, q: query })}
               className={`rounded-full border px-3 py-1.5 text-sm ${
                 activeSector === entry.id
                   ? "border-gold text-gold"
@@ -142,13 +147,14 @@ export function BriefingBoard({
         </div>
       </div>
 
-      <form action={basePath} method="get" className="flex gap-2">
-        {activeCategory !== "all" && (
-          <input type="hidden" name="category" value={activeCategory} />
-        )}
-        {activeSector !== "all" && (
-          <input type="hidden" name="sector" value={activeSector} />
-        )}
+      <form
+        className="flex gap-2"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const value = String(new FormData(event.currentTarget).get("q") ?? "");
+          router.push(hrefFor(pathname, { category: activeCategory, sector: activeSector, q: value }));
+        }}
+      >
         <input
           name="q"
           defaultValue={query}
