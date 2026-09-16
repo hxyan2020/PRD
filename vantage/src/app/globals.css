@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0b1016;
+  --panel: #121922;
+  --panel-2: #18212c;
+  --line: #2b3644;
+  --gold: #d4b36a;
+  --gold-dim: #8d7340;
+  --paper: #f3ead6;
+  --muted: #93a0ae;
+  --ok: #4ea37a;
+  --warn: #d4a24c;
+  --down: #c45b5b;
+  --listing: #7eb4d4;
+  --feature: #c49ad4;
+  --reg: #d4a24c;
+  --risk: #d48a6a;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--line);
+  --color-gold: var(--gold);
+  --color-gold-dim: var(--gold-dim);
+  --color-paper: var(--paper);
+  --color-muted: var(--muted);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-down: var(--down);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-newsreader);
+}
+
+html,
+body {
+  background: var(--ink);
+  color: var(--paper);
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-sans), "Segoe UI", sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: rgba(212, 179, 106, 0.28);
+}
+
+.rule {
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent 80%);
+}
