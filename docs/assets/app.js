@@ -3,6 +3,7 @@
   const navLinks = document.querySelectorAll(".nav a");
   const menuBtn = document.querySelector(".menu-btn");
   const nav = document.querySelector(".nav");
+  const LANG_KEY = "trn-lang";
 
   menuBtn.addEventListener("click", () => nav.classList.toggle("open"));
   nav.addEventListener("click", () => nav.classList.remove("open"));
@@ -12,15 +13,56 @@
     crypto: ["tokens", "perps", "tokenised"]
   };
 
+  function detectLang() {
+    try {
+      const saved = localStorage.getItem(LANG_KEY);
+      if (saved === "zh" || saved === "en") return saved;
+    } catch (e) { /* private mode */ }
+    const navLang = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+    return navLang.indexOf("zh") === 0 ? "zh" : "en";
+  }
+
+  let lang = detectLang();
+
+  function t() {
+    const ui = (window.TRN_UI && TRN_UI[lang]) || (window.TRN_UI && TRN_UI.en) || {};
+    return ui;
+  }
+
+  function pack() {
+    if (lang === "zh" && window.TRN_ZH) return TRN_ZH;
+    return window.TRN_EN || window.TRN;
+  }
+
+  function measurePack() {
+    if (lang === "zh" && window.TRN_MEASURES_ZH) return TRN_MEASURES_ZH;
+    return window.TRN_MEASURES_EN || window.TRN_MEASURES || {};
+  }
+
+  function severityPack() {
+    if (lang === "zh" && window.TRN_SEVERITY_ZH) return TRN_SEVERITY_ZH;
+    return window.TRN_SEVERITY_EN || window.TRN_SEVERITY || [];
+  }
+
+  function englishPack() {
+    return window.TRN_EN || window.TRN;
+  }
+
   function allPlaybooks() {
+    const p = pack();
     return [
-      ...TRN.cfd.map((p) => ({ ...p, venue: "cfd" })),
-      ...TRN.crypto.map((p) => ({ ...p, venue: "crypto" }))
+      ...p.cfd.map((x) => ({ ...x, venue: "cfd" })),
+      ...p.crypto.map((x) => ({ ...x, venue: "crypto" }))
     ];
   }
 
   function findPlaybook(id) {
     return allPlaybooks().find((p) => p.id === id);
+  }
+
+  function findEnglishPlaybook(id) {
+    const p = englishPack();
+    return [...p.cfd, ...p.crypto].find((x) => x.id === id);
   }
 
   function parseHash() {
@@ -35,7 +77,7 @@
     navLinks.forEach((a) => {
       const href = a.getAttribute("href");
       const key = href === "#/" ? "home" : href.replace("#/", "");
-      a.classList.toggle("active", key === view || (view === "dossier" && false));
+      a.classList.toggle("active", key === view);
     });
   }
 
@@ -47,8 +89,20 @@
       .replace(/"/g, "&quot;");
   }
 
+  function productLabel(key) {
+    return (t().products && t().products[key]) || key;
+  }
+
+  function severityLabel(key) {
+    return (t().severity && t().severity[key]) || key;
+  }
+
+  function venueTitle(venue) {
+    return venue === "cfd" ? t().cfdTitle : t().cryptoTitle;
+  }
+
   function chips(list) {
-    return `<div class="products">${list.map((x) => `<span>${esc(x)}</span>`).join("")}</div>`;
+    return `<div class="products">${list.map((x) => `<span>${esc(productLabel(x))}</span>`).join("")}</div>`;
   }
 
   function nodeKind(who, action) {
@@ -61,16 +115,25 @@
     return "actor";
   }
 
+  function nodeKindFor(p, step, index) {
+    const en = findEnglishPlaybook(p.id);
+    const src = (en && en.workflow && en.workflow[index]) || step;
+    return nodeKind(src.who, src.action);
+  }
+
   function flowchart(p) {
+    const ui = t();
+    const kinds = ui.kind || {};
     const start = `
       <div class="chart-row">
         <div class="chart-spine"><div class="chart-dot start">IN</div><div class="chart-line"></div></div>
-        <div class="chart-box actor"><span class="who">Start</span><span class="act">${esc(p.name)}</span></div>
-        <div class="chart-tell"><b>Setup</b>${esc(p.summary)}</div>
+        <div class="chart-box actor"><span class="who">${esc(ui.start)}</span><span class="act">${esc(p.name)}</span></div>
+        <div class="chart-tell"><b>${esc(ui.setup)}</b>${esc(p.summary)}</div>
       </div>`;
     const rows = p.workflow.map((s, i) => {
       const last = i === p.workflow.length - 1;
-      const kind = nodeKind(s.who, s.action);
+      const kind = nodeKindFor(p, s, i);
+      const kindLabel = kinds[kind] || kind;
       return `
         <div class="chart-row">
           <div class="chart-spine">
@@ -79,43 +142,44 @@
             ${last ? `<div class="chart-dot end">OUT</div>` : ""}
           </div>
           <div class="chart-box ${kind}">
-            <span class="who">${esc(s.who)} · ${kind}</span>
+            <span class="who">${esc(s.who)} · ${esc(kindLabel)}</span>
             <span class="act">${esc(s.action)}</span>
           </div>
-          <div class="chart-tell"><b>Tape tell</b>${esc(s.tell)}</div>
+          <div class="chart-tell"><b>${esc(ui.tapeTell)}</b>${esc(s.tell)}</div>
         </div>`;
     }).join("");
     return `
       <div class="chart-legend">
-        <span class="actor"><i></i>Actor / predator</span>
-        <span class="system"><i></i>Engine / platform</span>
-        <span class="market"><i></i>Market / victims</span>
-        <span class="house"><i></i>House / issuer / conflict</span>
+        <span class="actor"><i></i>${esc(ui.legendActor)}</span>
+        <span class="system"><i></i>${esc(ui.legendSystem)}</span>
+        <span class="market"><i></i>${esc(ui.legendMarket)}</span>
+        <span class="house"><i></i>${esc(ui.legendHouse)}</span>
       </div>
-      <div class="chart" role="img" aria-label="Workflow flowchart for ${esc(p.name)}">${start}${rows}</div>`;
+      <div class="chart" role="img" aria-label="${esc(ui.flowchart)} — ${esc(p.name)}">${start}${rows}</div>`;
   }
 
   function measuresFor(id, fallback) {
-    const mapped = (window.TRN_MEASURES && TRN_MEASURES[id]) || [];
+    const mapped = measurePack()[id] || [];
     if (mapped.length) return mapped;
     return (fallback || []).map((text) => ({
       text,
       severity: "standing",
-      trigger: "Always on",
-      owner: "Desk",
-      event: "Unmapped"
+      trigger: lang === "zh" ? "常开" : "Always on",
+      owner: lang === "zh" ? "交易台" : "Desk",
+      event: lang === "zh" ? "未映射" : "Unmapped"
     }));
   }
 
   function measureList(id, fallback) {
+    const ui = t();
     const rows = measuresFor(id, fallback);
     const order = ["standing", "elevated", "high", "critical"];
     return order.map((sev) => {
       const items = rows.filter((r) => r.severity === sev);
       if (!items.length) return "";
-      const label = (window.TRN_SEVERITY || []).find((s) => s.id === sev);
+      const label = severityPack().find((s) => s.id === sev);
       return `
-        <h3 style="margin-top:18px">${esc(label ? label.title : sev)} · fires at ${esc(label ? label.when : sev)}</h3>
+        <h3 style="margin-top:18px">${esc(label ? label.title : severityLabel(sev))} · ${esc(ui.firesAt)} ${esc(label ? label.when : sev)}</h3>
         ${items.map((m) => `
           <div class="cm-card">
             <div class="meta">
@@ -129,88 +193,90 @@
   }
 
   function card(p) {
+    const ui = t();
     return `
       <a class="card" href="#/playbook/${p.id}">
         <div class="card-top">
           <span class="code">${esc(p.code)}</span>
-          <span class="badge ${p.severity}">${esc(p.severity)}</span>
+          <span class="badge ${p.severity}">${esc(severityLabel(p.severity))}</span>
         </div>
         <h3>${esc(p.name)}</h3>
         ${chips(p.products)}
         <p>${esc(p.summary)}</p>
-        <span class="more">Open dossier →</span>
+        <span class="more">${esc(ui.openDossier)}</span>
       </a>`;
   }
 
   function home() {
+    const ui = t();
+    const h = ui.home;
+    const p = pack();
     return `
       <section class="hero">
         <div>
-          <div class="kicker">Command centre</div>
-          <h1>See the strike<br>before it lands.</h1>
-          <p class="lede">Surveillance playbooks for CFD brokers and crypto exchanges. Each dossier walks the behaviour, the participants, the exact monitors, the escalation ladder, and the countermeasures.</p>
+          <div class="kicker">${esc(h.kicker)}</div>
+          <h1>${esc(h.title1)}<br>${esc(h.title2)}</h1>
+          <p class="lede">${esc(h.lede)}</p>
         </div>
         <div class="hero-meta">
-          <div><b>CFD</b> spot · margin · perps · futures</div>
-          <div><b>Crypto</b> tokens · perps · tokenised assets</div>
-          <div><b>${TRN.meta.playbooks}</b> dossiers · <b>L0–L5</b> escalation</div>
-          <div>Handbook for surveillance, risk, and compliance — not a how-to for abuse.</div>
+          <div><b>CFD</b> ${esc(h.metaCfd)}</div>
+          <div><b>Crypto</b> ${esc(h.metaCrypto)}</div>
+          <div><b>${p.meta.playbooks}</b> ${esc(h.metaCount)}</div>
+          <div>${esc(h.metaNote)}</div>
         </div>
       </section>
       <section class="doors">
         <a class="door" href="#/cfd">
-          <div class="tag">Venue 01</div>
-          <h2>CFD broker</h2>
-          <p>Last look, B-book conflict, DMA spoofing, stop hunts, marks, funding, and liquidation cascades on leveraged books.</p>
+          <div class="tag">${esc(h.door1Tag)}</div>
+          <h2>${esc(h.door1Title)}</h2>
+          <p>${esc(h.door1Body)}</p>
         </a>
         <a class="door crypto" href="#/crypto">
-          <div class="tag">Venue 02</div>
-          <h2>Crypto exchange</h2>
-          <p>Wash volume, pumps, oracle/mark games, unlock dumps, sandwiches, and tokenised-asset reserve fraud.</p>
+          <div class="tag">${esc(h.door2Tag)}</div>
+          <h2>${esc(h.door2Title)}</h2>
+          <p>${esc(h.door2Body)}</p>
         </a>
       </section>
       <section class="stats">
-        <div class="stat"><b>${TRN.cfd.length}</b><span>CFD dossiers</span></div>
-        <div class="stat"><b>${TRN.crypto.length}</b><span>Crypto dossiers</span></div>
-        <div class="stat"><b>6</b><span>Escalation levels</span></div>
-        <div class="stat"><b>24/7</b><span>Assume the tape never sleeps</span></div>
+        <div class="stat"><b>${p.cfd.length}</b><span>${esc(h.statCfd)}</span></div>
+        <div class="stat"><b>${p.crypto.length}</b><span>${esc(h.statCrypto)}</span></div>
+        <div class="stat"><b>6</b><span>${esc(h.statLevels)}</span></div>
+        <div class="stat"><b>24/7</b><span>${esc(h.stat247)}</span></div>
       </section>
       <section class="section">
-        <h3>How to use this handbook</h3>
+        <h3>${esc(h.howTitle)}</h3>
         <ol class="list">
-          <li>Pick the venue. Filter by product. Open a dossier when the tape rhymes with the summary.</li>
-          <li>Work the workflow backwards: the last step is usually the profit; the first step is usually the map.</li>
-          <li>Copy the parameter table into your rule engine, then retune on two weeks of your own data before you page anyone.</li>
-          <li>Escalate on the L0–L5 ladder. Containment (L4) can outrun the case file (L3) when clients are being liquidated on a bad mark.</li>
-          <li>Countermeasures are product design, not just alerts. If the mark is a single last trade, you will keep hunting ghosts.</li>
-          <li>Open a dossier for the workflow flowchart. Use the Response Map to see which controls fire at standing / warn / breach / cascade.</li>
+          ${h.how.map((item) => `<li>${esc(item)}</li>`).join("")}
         </ol>
       </section>`;
   }
 
   function catalogue(venue) {
-    const pack = venue === "cfd" ? TRN.cfd : TRN.crypto;
-    const title = venue === "cfd" ? "CFD broker" : "Crypto exchange";
-    const lede = venue === "cfd"
-      ? "Behaviours that show up on spot CFDs, margined FX/index books, perpetual CFDs, and dated futures. Several dossiers are really conflicts of the house — last look, B-book routing, house marks — not just client abuse."
-      : "Behaviours on spot tokens, perpetual futures, and tokenised assets (stables, wrappers, gold, T-bills, fund shares). If the token is a balance sheet, start with reserves, not the candle.";
+    const ui = t();
+    const p = pack();
+    const rows = venue === "cfd" ? p.cfd : p.crypto;
+    const title = venueTitle(venue);
+    const lede = venue === "cfd" ? ui.cfdLede : ui.cryptoLede;
     const productSet = PRODUCTS[venue];
+    const tag = venue === "cfd" ? ui.home.door1Tag : ui.home.door2Tag;
     return `
-      <div class="kicker">${venue === "cfd" ? "Venue 01" : "Venue 02"}</div>
-      <h1>${title}</h1>
-      <p class="lede">${lede}</p>
+      <div class="kicker">${esc(tag)}</div>
+      <h1>${esc(title)}</h1>
+      <p class="lede">${esc(lede)}</p>
       <div class="toolbar" data-venue="${venue}">
-        <input class="search" type="search" placeholder="Search behaviours, participants, tools…" />
-        ${productSet.map((p) => `<button class="chip on" data-product="${p}">${p}</button>`).join("")}
-        <button class="sev on" data-sev="critical">Critical</button>
-        <button class="sev on" data-sev="high">High</button>
-        <button class="sev on" data-sev="elevated">Elevated</button>
+        <input class="search" type="search" placeholder="${esc(ui.search)}" />
+        ${productSet.map((key) => `<button class="chip on" data-product="${key}">${esc(productLabel(key))}</button>`).join("")}
+        <button class="sev on" data-sev="critical">${esc(severityLabel("critical"))}</button>
+        <button class="sev on" data-sev="high">${esc(severityLabel("high"))}</button>
+        <button class="sev on" data-sev="elevated">${esc(severityLabel("elevated"))}</button>
       </div>
-      <div class="grid" id="catalogue">${pack.map(card).join("")}</div>`;
+      <div class="grid" id="catalogue">${rows.map((x) => card({ ...x, venue })).join("")}</div>`;
   }
 
   function bindCatalogue(venue) {
-    const pack = venue === "cfd" ? TRN.cfd : TRN.crypto;
+    const ui = t();
+    const p = pack();
+    const rows = venue === "cfd" ? p.cfd : p.crypto;
     const root = document.querySelector(".toolbar");
     const grid = document.getElementById("catalogue");
     const search = root.querySelector(".search");
@@ -219,65 +285,76 @@
       return [...root.querySelectorAll(sel + ".on")].map((b) => b.dataset.product || b.dataset.sev);
     }
 
-    function render() {
+    function renderGrid() {
       const q = search.value.trim().toLowerCase();
       const products = selected(".chip");
       const sevs = selected(".sev");
-      const rows = pack.filter((p) => {
-        const hitProduct = p.products.some((x) => products.includes(x));
-        const hitSev = sevs.includes(p.severity);
-        const blob = [p.name, p.summary, p.why, p.code, ...p.participants.map((x) => x.role)].join(" ").toLowerCase();
+      const hit = rows.filter((item) => {
+        const hitProduct = item.products.some((x) => products.includes(x));
+        const hitSev = sevs.includes(item.severity);
+        const blob = [
+          item.name, item.summary, item.why, item.code,
+          ...(item.participants || []).map((x) => x.role)
+        ].join(" ").toLowerCase();
         const hitQ = !q || blob.includes(q);
         return hitProduct && hitSev && hitQ;
       });
-      grid.innerHTML = rows.length ? rows.map(card).join("") : `<p class="empty">No dossiers match those filters.</p>`;
+      grid.innerHTML = hit.length
+        ? hit.map((x) => card({ ...x, venue })).join("")
+        : `<p class="empty">${esc(ui.empty)}</p>`;
     }
 
     root.addEventListener("click", (e) => {
       const btn = e.target.closest("button");
       if (!btn) return;
       btn.classList.toggle("on");
-      render();
+      renderGrid();
     });
-    search.addEventListener("input", render);
+    search.addEventListener("input", renderGrid);
   }
 
   function dossier(p) {
-    const venueLabel = p.venue === "cfd" ? "CFD broker" : "Crypto exchange";
+    const ui = t();
     const back = p.venue === "cfd" ? "#/cfd" : "#/crypto";
     return `
-      <a class="back" href="${back}">← ${venueLabel}</a>
+      <a class="back" href="${back}">← ${esc(venueTitle(p.venue))}</a>
       <div class="dossier">
         <div class="dossier-head">
           <div>
-            <div class="kicker">${esc(p.code)} · ${esc(p.venue)}</div>
+            <div class="kicker">${esc(p.code)} · ${esc(venueTitle(p.venue))}</div>
             <h1>${esc(p.name)}</h1>
             <p class="lede">${esc(p.summary)}</p>
             ${chips(p.products)}
           </div>
-          <span class="badge ${p.severity}">${esc(p.severity)}</span>
+          <span class="badge ${p.severity}">${esc(severityLabel(p.severity))}</span>
         </div>
         <section class="section">
-          <h3>Why this works on this venue</h3>
+          <h3>${esc(ui.why)}</h3>
           <p>${esc(p.why)}</p>
         </section>
         <section class="section">
-          <h3>Workflow flowchart</h3>
+          <h3>${esc(ui.flowchart)}</h3>
           ${flowchart(p)}
         </section>
         <section class="section">
-          <h3>Participants and incentives</h3>
+          <h3>${esc(ui.people)}</h3>
           <div class="people">
             ${p.participants.map((x) => `<div class="person"><b>${esc(x.role)}</b><span>${esc(x.incentive)}</span></div>`).join("")}
           </div>
         </section>
         <section class="section">
-          <h3>Detection and monitoring</h3>
-          <p class="lede" style="font-size:15px">Tools: ${p.detection.tools.map(esc).join(" · ")}</p>
+          <h3>${esc(ui.detection)}</h3>
+          <p class="lede" style="font-size:15px">${esc(ui.tools)}: ${p.detection.tools.map(esc).join(" · ")}</p>
           <div class="matrix">
             <table>
               <thead>
-                <tr><th>Metric</th><th>Window</th><th>Warn</th><th>Breach</th><th>Notes</th></tr>
+                <tr>
+                  <th>${esc(ui.thMetric)}</th>
+                  <th>${esc(ui.thWindow)}</th>
+                  <th>${esc(ui.thWarn)}</th>
+                  <th>${esc(ui.thBreach)}</th>
+                  <th>${esc(ui.thNotes)}</th>
+                </tr>
               </thead>
               <tbody>
                 ${p.detection.parameters.map((r) => `
@@ -293,7 +370,7 @@
           </div>
         </section>
         <section class="section">
-          <h3>Escalation path</h3>
+          <h3>${esc(ui.escPath)}</h3>
           <div class="escalation">
             ${p.escalation.map((e) => `
               <div class="esc">
@@ -303,20 +380,22 @@
           </div>
         </section>
         <section class="section">
-          <h3>Countermeasures by event severity</h3>
-          <p class="lede" style="font-size:15px">Standing controls stay on. Elevated fires at warn. High fires at confirmed breach. Critical fires when the engine itself is doing harm (bad mark, cascade, missing reserves).</p>
+          <h3>${esc(ui.cmTitle)}</h3>
+          <p class="lede" style="font-size:15px">${esc(ui.cmLede)}</p>
           ${measureList(p.id, p.countermeasures)}
         </section>
       </div>`;
   }
 
   function stack() {
+    const ui = t();
+    const p = pack();
     return `
-      <div class="kicker">Tooling</div>
-      <h1>Detection stack</h1>
-      <p class="lede">${esc(TRN.stack.intro)}</p>
+      <div class="kicker">${esc(ui.stackKicker)}</div>
+      <h1>${esc(ui.stackTitle)}</h1>
+      <p class="lede">${esc(p.stack.intro)}</p>
       <div class="two" style="margin-top:28px">
-        ${TRN.stack.layers.map((l) => `
+        ${p.stack.layers.map((l) => `
           <article class="tool">
             <div class="fit">${esc(l.fit)}</div>
             <h3>${esc(l.name)}</h3>
@@ -324,28 +403,33 @@
           </article>`).join("")}
       </div>
       <section class="section" style="margin-top:16px">
-        <h3>Parameter discipline</h3>
+        <h3>${esc(ui.paramTitle)}</h3>
         <ul class="list">
-          <li>Every warn/breach pair in the dossiers is a <em>starting prior</em>. Fit on two quiet weeks and one stressed week. If your false-positive rate at L1 is above ~30%, you will train analysts to ignore the tape.</li>
-          <li>Always join a news/unlock/econ calendar before L2. The same impulse is ignition on a blank tape and legitimate on NFP.</li>
-          <li>Run OTR, self-match, and funding-share on the beneficial-owner graph, not the login.</li>
-          <li>Marks and last-look clocks are first-class instruments. If they are wrong, every downstream alert is theatre.</li>
+          ${ui.param.map((item) => `<li>${esc(item)}</li>`).join("")}
         </ul>
       </section>`;
   }
 
   function escalation() {
+    const ui = t();
+    const p = pack();
     return `
-      <div class="kicker">Operating model</div>
-      <h1>Escalation ladder</h1>
-      <p class="lede">${esc(TRN.escalationHub.intro)}</p>
+      <div class="kicker">${esc(ui.escKicker)}</div>
+      <h1>${esc(ui.escTitle)}</h1>
+      <p class="lede">${esc(p.escalationHub.intro)}</p>
       <div class="matrix" style="margin:24px 0">
         <table>
           <thead>
-            <tr><th>Level</th><th>SLA</th><th>Owner</th><th>CFD broker</th><th>Crypto exchange</th></tr>
+            <tr>
+              <th>${esc(ui.thLevel)}</th>
+              <th>${esc(ui.thSla)}</th>
+              <th>${esc(ui.thOwner)}</th>
+              <th>${esc(ui.cfdTitle)}</th>
+              <th>${esc(ui.cryptoTitle)}</th>
+            </tr>
           </thead>
           <tbody>
-            ${TRN.escalationHub.steps.map((s) => `
+            ${p.escalationHub.steps.map((s) => `
               <tr>
                 <td><b>${esc(s.lvl)}</b><br>${esc(s.title)}</td>
                 <td>${esc(s.sla)}</td>
@@ -357,15 +441,20 @@
         </table>
       </div>
       <section class="section">
-        <h3>Comms and evidence</h3>
-        <ul class="list">${TRN.escalationHub.comms.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
+        <h3>${esc(ui.commsTitle)}</h3>
+        <ul class="list">${p.escalationHub.comms.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
       </section>
-      <p class="note">If a mark is bad, freeze liquidations before you finish the case narrative. Equity you wipe on a single-venue smash is rarely recoverable in the time it takes to write a tidy L3 memo.</p>`;
+      <p class="note">${esc(ui.escNote)}</p>`;
   }
 
   function responseMap() {
-    const all = allPlaybooks().flatMap((p) => measuresFor(p.id, p.countermeasures).map((m) => ({ ...m, id: p.id, code: p.code, name: p.name, dossier: p.severity })));
-    const bands = (window.TRN_SEVERITY || []).map((s) => `
+    const ui = t();
+    const all = allPlaybooks().flatMap((p) =>
+      measuresFor(p.id, p.countermeasures).map((m) => ({
+        ...m, id: p.id, code: p.code, name: p.name, dossier: p.severity
+      }))
+    );
+    const bands = severityPack().map((s) => `
       <div class="sev-band ${s.id}">
         <div class="fit">${esc(s.when)}</div>
         <h3>${esc(s.title)}</h3>
@@ -377,10 +466,18 @@
       const rows = all.filter((m) => m.severity === sev);
       return `
         <section class="section" style="margin-top:16px">
-          <h3>${esc(sev)} · ${rows.length} controls</h3>
+          <h3>${esc(severityLabel(sev))} · ${rows.length} ${esc(ui.controls)}</h3>
           <div class="matrix">
             <table>
-              <thead><tr><th>Dossier</th><th>Trigger</th><th>Owner</th><th>Event that fires it</th><th>Countermeasure</th></tr></thead>
+              <thead>
+                <tr>
+                  <th>${esc(ui.thDossier)}</th>
+                  <th>${esc(ui.thTrigger)}</th>
+                  <th>${esc(ui.thOwner)}</th>
+                  <th>${esc(ui.thEvent)}</th>
+                  <th>${esc(ui.thMeasure)}</th>
+                </tr>
+              </thead>
               <tbody>
                 ${rows.map((m) => `
                   <tr>
@@ -396,14 +493,62 @@
         </section>`;
     }).join("");
     return `
-      <div class="kicker">Containment</div>
-      <h1>Countermeasure map</h1>
-      <p class="lede">Map every control to the severity of the event that should fire it. Standing stays on. Elevated is warn. High is breach. Critical is cascade — freeze the engine, then write the file.</p>
+      <div class="kicker">${esc(ui.respKicker)}</div>
+      <h1>${esc(ui.respTitle)}</h1>
+      <p class="lede">${esc(ui.respLede)}</p>
       <div class="sev-bands">${bands}</div>
       ${tables}`;
   }
 
+  function applyChrome() {
+    const ui = t();
+    document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+    document.body.classList.toggle("lang-zh", lang === "zh");
+    document.title = lang === "zh"
+      ? "Trading Risk Ninja — 市场操纵监察手册"
+      : "Trading Risk Ninja — Market Manipulation Surveillance Playbooks";
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) {
+      desc.setAttribute("content", lang === "zh"
+        ? "面向 CFD 经纪商与加密交易所的监察手册：操纵行为、流程、参与方、监测参数、升级路径与应对措施。"
+        : "Surveillance playbooks for CFD brokers and crypto exchanges: manipulative behaviours, workflows, participants, detection parameters, escalation, and countermeasures.");
+    }
+    const sub = document.querySelector(".brand-copy em");
+    if (sub) sub.textContent = ui.brandSub;
+    const navMap = {
+      "#/": ui.nav.home,
+      "#/cfd": ui.nav.cfd,
+      "#/crypto": ui.nav.crypto,
+      "#/stack": ui.nav.stack,
+      "#/escalation": ui.nav.escalation,
+      "#/response": ui.nav.response
+    };
+    navLinks.forEach((a) => {
+      const href = a.getAttribute("href");
+      if (navMap[href]) a.textContent = navMap[href];
+    });
+    if (menuBtn) menuBtn.setAttribute("aria-label", ui.menu);
+    const feet = document.querySelectorAll(".foot p");
+    if (feet[0]) feet[0].textContent = ui.foot1;
+    if (feet[1]) feet[1].textContent = ui.foot2;
+    document.querySelectorAll(".lang-switch button").forEach((b) => {
+      const on = b.dataset.lang === lang;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      b.classList.toggle("on", on);
+    });
+  }
+
+  function setLang(next) {
+    if (next !== "en" && next !== "zh") return;
+    if (next === lang) return;
+    lang = next;
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* ignore */ }
+    applyChrome();
+    render();
+  }
+
   function render() {
+    applyChrome();
     const route = parseHash();
     setActiveNav(route.view);
     if (route.view === "home") {
@@ -429,12 +574,19 @@
     }
     if (route.view === "dossier") {
       const p = findPlaybook(route.id);
-      app.innerHTML = p ? dossier(p) : `<p class="empty">Unknown dossier.</p><p><a class="back" href="#/">Back to command</a></p>`;
+      app.innerHTML = p
+        ? dossier(p)
+        : `<p class="empty">${esc(t().unknown)}</p><p><a class="back" href="#/">${esc(t().backHome)}</a></p>`;
       window.scrollTo(0, 0);
       return;
     }
     app.innerHTML = home();
   }
+
+  document.querySelector(".lang-switch").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-lang]");
+    if (btn) setLang(btn.dataset.lang);
+  });
 
   window.addEventListener("hashchange", render);
   render();

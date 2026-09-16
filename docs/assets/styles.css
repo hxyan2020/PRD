@@ -16,9 +16,9 @@
   --ice: #8ec2ff;
   --paper: #f3eee4;
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
-  --sans: "IBM Plex Sans", "Segoe UI", sans-serif;
-  --display: "Syne", "IBM Plex Sans", sans-serif;
-  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --sans: "IBM Plex Sans", "Noto Sans SC", "Segoe UI", sans-serif;
+  --display: "Syne", "Noto Sans SC", "IBM Plex Sans", sans-serif;
+  --mono: "IBM Plex Mono", "Noto Sans SC", ui-monospace, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -96,11 +96,58 @@ button, input, select { font: inherit; color: inherit; }
   white-space: nowrap;
 }
 .nav a.active, .nav a:hover { color: var(--text); }
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.lang-switch {
+  display: flex;
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+}
+.lang-switch button {
+  background: transparent;
+  border: 0;
+  padding: 5px 10px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  cursor: pointer;
+}
+.lang-switch button.on,
+.lang-switch button[aria-pressed="true"] {
+  background: var(--amber-dim);
+  color: var(--paper);
+}
 .menu-btn {
   display: none;
   background: none;
   border: 1px solid var(--line);
   padding: 6px 10px;
+}
+body.lang-zh {
+  --sans: "Noto Sans SC", "IBM Plex Sans", sans-serif;
+  --display: "Noto Sans SC", "Syne", sans-serif;
+}
+body.lang-zh h1,
+body.lang-zh h2,
+body.lang-zh h3 {
+  letter-spacing: 0;
+  font-weight: 700;
+}
+body.lang-zh .nav a,
+body.lang-zh .kicker,
+body.lang-zh .chip,
+body.lang-zh .sev,
+body.lang-zh .badge,
+body.lang-zh .card .more,
+body.lang-zh .brand-copy em,
+body.lang-zh .chart-legend,
+body.lang-zh .cm-card .meta {
+  text-transform: none;
+  letter-spacing: 0.02em;
 }
 
 #app {

@@ -1060,3 +1060,4 @@ window.TRN = {
     ]
   }
 };
+window.TRN_EN = window.TRN;

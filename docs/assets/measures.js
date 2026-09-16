@@ -187,3 +187,5 @@ window.TRN_SEVERITY = [
     apply: "L0/L4 immediately. Liquidation hold beats a tidy L3 memo."
   }
 ];
+window.TRN_MEASURES_EN = window.TRN_MEASURES;
+window.TRN_SEVERITY_EN = window.TRN_SEVERITY;

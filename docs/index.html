@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
@@ -35,7 +35,13 @@
       <a href="#/escalation" data-nav>Escalation</a>
       <a href="#/response" data-nav>Response Map</a>
     </nav>
-    <button class="menu-btn" type="button" aria-label="Open menu">☰</button>
+    <div class="top-actions">
+      <div class="lang-switch" role="group" aria-label="Language / 语言">
+        <button type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+      </div>
+      <button class="menu-btn" type="button" aria-label="Open menu">☰</button>
+    </div>
   </header>
 
   <main id="app"></main>
@@ -45,8 +51,11 @@
     <p>Calibrate every threshold to your venue, liquidity regime, and product calendar. Illustrative parameters are starting points, not regulatory safe harbours.</p>
   </footer>
 
+  <script src="assets/i18n.js"></script>
   <script src="assets/playbooks.js"></script>
+  <script src="assets/playbooks-zh.js"></script>
   <script src="assets/measures.js"></script>
+  <script src="assets/measures-zh.js"></script>
   <script src="assets/app.js"></script>
 </body>
 </html>
