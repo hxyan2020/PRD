@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Newsreader, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { SiteShell } from "@/components/SiteShell";
@@ -36,6 +36,12 @@ export const metadata: Metadata = {
   title: "Vantage Market Intelligence",
   description:
     "Daily briefing on top global banks, brokers, and crypto exchanges: listings, product releases, regulation, and risk tools. English and Chinese.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

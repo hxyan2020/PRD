@@ -56,6 +56,7 @@ export function BriefingBoard({
   }
 
   const counts = {
+    all: briefing.items.length,
     listing: briefing.items.filter((item) => item.category === "listing").length,
     product: briefing.items.filter((item) => item.category === "product").length,
     regulation: briefing.items.filter((item) => item.category === "regulation").length,
@@ -74,13 +75,13 @@ export function BriefingBoard({
 
   return (
     <div className="space-y-6">
-      <section className="rounded-xl border border-line bg-panel-2 p-5">
+      <section className="rounded-xl border border-line bg-panel-2 p-4 md:p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-gold">
               {briefing.meta.windowKind === "weekend" ? t("weekendScan") : t("dailyScan")}
             </p>
-            <h2 className="font-serif text-2xl">{t(titleKey)}</h2>
+            <h2 className="font-serif text-xl md:text-2xl">{t(titleKey)}</h2>
             <p className="mt-1 text-sm text-muted">
               {windowLabel(briefing.meta.windowKind, briefing.meta.windowLabel, locale)}:{" "}
               {formatRange(briefing.meta.windowStart, briefing.meta.windowEnd, locale)}
@@ -112,28 +113,31 @@ export function BriefingBoard({
 
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         {!hideCategoryFilters && (
-          <div className="flex flex-wrap gap-2">
+          <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
             {CATEGORIES.map((entry) => (
               <QueryLink
                 key={entry.id}
                 href={hrefFor({ category: entry.id, sector: activeSector, q: query })}
-                className={`rounded-full border px-3 py-1.5 text-sm ${
+                className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
                   activeCategory === entry.id
                     ? "border-gold text-gold"
                     : "border-line text-muted"
                 }`}
               >
                 {t(entry.label)}
+                <span className="ml-1.5 font-mono text-[11px] tabular-nums opacity-80">
+                  {counts[entry.id]}
+                </span>
               </QueryLink>
             ))}
           </div>
         )}
-        <div className="flex flex-wrap gap-2">
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
           {SECTORS.map((entry) => (
             <QueryLink
               key={entry.id}
               href={hrefFor({ category: activeCategory, sector: entry.id, q: query })}
-              className={`rounded-full border px-3 py-1.5 text-sm ${
+              className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
                 activeSector === entry.id
                   ? "border-gold text-gold"
                   : "border-line text-muted"
@@ -157,9 +161,9 @@ export function BriefingBoard({
           name="q"
           defaultValue={query}
           placeholder={t("searchNews")}
-          className="w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm text-paper outline-none placeholder:text-muted focus:border-gold/50"
+          className="min-w-0 w-full rounded-lg border border-line bg-panel px-3 py-2.5 text-sm text-paper outline-none placeholder:text-muted focus:border-gold/50"
         />
-        <button type="submit" className="rounded-lg border border-gold px-3 text-sm text-gold">
+        <button type="submit" className="shrink-0 rounded-lg border border-gold px-3 text-sm text-gold">
           {t("search")}
         </button>
       </form>

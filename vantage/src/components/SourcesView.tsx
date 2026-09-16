@@ -43,19 +43,19 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-serif text-3xl">{t("sourcesTitle")}</h2>
+        <h2 className="font-serif text-2xl md:text-3xl">{t("sourcesTitle")}</h2>
         <p className="mt-2 max-w-3xl text-sm text-muted">{t("sourcesLede")}</p>
       </div>
       <p className="font-mono text-xs uppercase tracking-wide text-gold">
         {t("showingSources", { n: rows.length })}
         {status && status !== "all" ? ` · ${healthLabel(status, locale)}` : ""}
       </p>
-      <div className="flex flex-wrap gap-2">
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
         {(["all", "healthy", "degraded", "down"] as const).map((entry) => (
           <QueryLink
             key={entry}
             href={href(entry)}
-            className={`rounded-full border px-3 py-1.5 text-sm ${
+            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
               status === entry ? "border-gold text-gold" : "border-line text-muted"
             }`}
           >
@@ -77,7 +77,7 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
           placeholder={t("searchSources")}
           className="w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm outline-none focus:border-gold/50"
         />
-        <button type="submit" className="rounded-lg border border-gold px-3 text-sm text-gold">
+        <button type="submit" className="shrink-0 rounded-lg border border-gold px-3 text-sm text-gold">
           {t("search")}
         </button>
       </form>
@@ -86,13 +86,13 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
           <thead className="bg-panel-2 font-mono text-[11px] uppercase tracking-wide text-muted">
             <tr>
               <th className="px-3 py-2">{t("source")}</th>
-              <th className="px-3 py-2">{t("kind")}</th>
-              <th className="px-3 py-2">{t("jurisdictions")}</th>
-              <th className="px-3 py-2">{t("lastSourced")}</th>
+              <th className="hidden px-3 py-2 md:table-cell">{t("kind")}</th>
+              <th className="hidden px-3 py-2 lg:table-cell">{t("jurisdictions")}</th>
+              <th className="hidden px-3 py-2 lg:table-cell">{t("lastSourced")}</th>
               <th className="px-3 py-2">{t("status")}</th>
-              <th className="px-3 py-2">{t("latency")}</th>
+              <th className="hidden px-3 py-2 md:table-cell">{t("latency")}</th>
               <th className="px-3 py-2">{t("inWindow")}</th>
-              <th className="px-3 py-2">{t("error")}</th>
+              <th className="hidden px-3 py-2 md:table-cell">{t("error")}</th>
             </tr>
           </thead>
           <tbody>
@@ -118,24 +118,24 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
                     {t("feed")}
                   </a>
                 </td>
-                <td className="px-3 py-2 text-muted">{sourceKindLabel(source.kind, locale)}</td>
-                <td className="px-3 py-2 text-muted">
+                <td className="hidden px-3 py-2 text-muted md:table-cell">{sourceKindLabel(source.kind, locale)}</td>
+                <td className="hidden px-3 py-2 text-muted lg:table-cell">
                   <CountryLabelList names={source.jurisdictions} />
                 </td>
-                <td className="px-3 py-2 font-mono text-xs">
+                <td className="hidden px-3 py-2 font-mono text-xs lg:table-cell">
                   {formatDateTime(source.lastSourced, locale)}
                 </td>
                 <td className={`px-3 py-2 font-mono uppercase ${STATUS_CLASS[source.status]}`}>
                   {healthLabel(source.status, locale)}
                 </td>
-                <td className="px-3 py-2 font-mono text-xs">
+                <td className="hidden px-3 py-2 font-mono text-xs md:table-cell">
                   {source.latencyMs != null ? `${source.latencyMs} ms` : "—"}
                 </td>
                 <td className="px-3 py-2 font-mono">
                   {source.itemsInWindow}
                   <span className="text-muted">/{source.itemsFetched}</span>
                 </td>
-                <td className="max-w-xs px-3 py-2 text-xs text-muted">{source.error ?? "—"}</td>
+                <td className="hidden max-w-xs px-3 py-2 text-xs text-muted md:table-cell">{source.error ?? "—"}</td>
               </tr>
             ))}
           </tbody>

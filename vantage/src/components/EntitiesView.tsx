@@ -60,15 +60,15 @@ export function EntitiesView({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-serif text-3xl">{t("entitiesTitle")}</h2>
+        <h2 className="font-serif text-2xl md:text-3xl">{t("entitiesTitle")}</h2>
         <p className="mt-2 max-w-3xl text-sm text-muted">{t("entitiesLede")}</p>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
         {TABS.map((entry) => (
           <QueryLink
             key={entry.id}
             href={href(entry.id)}
-            className={`rounded-full border px-3 py-1.5 text-sm ${
+            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
               tab === entry.id ? "border-gold text-gold" : "border-line text-muted"
             }`}
           >
@@ -94,7 +94,7 @@ export function EntitiesView({
           placeholder={t("searchEntities")}
           className="w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm outline-none focus:border-gold/50"
         />
-        <button type="submit" className="rounded-lg border border-gold px-3 text-sm text-gold">
+        <button type="submit" className="shrink-0 rounded-lg border border-gold px-3 text-sm text-gold">
           {t("search")}
         </button>
       </form>
@@ -104,10 +104,10 @@ export function EntitiesView({
             <tr>
               <th className="px-3 py-2">{t("rank")}</th>
               <th className="px-3 py-2">{t("entity")}</th>
-              <th className="px-3 py-2">{t("hq")}</th>
+              <th className="hidden px-3 py-2 md:table-cell">{t("hq")}</th>
               <th className="px-3 py-2">{t("country")}</th>
               <th className="px-3 py-2">{t("windowHits")}</th>
-              <th className="px-3 py-2">{t("website")}</th>
+              <th className="hidden px-3 py-2 md:table-cell">{t("website")}</th>
             </tr>
           </thead>
           <tbody>
@@ -122,12 +122,12 @@ export function EntitiesView({
                     </div>
                     {entity.notes && <div className="text-xs text-muted">{entity.notes}</div>}
                   </td>
-                  <td className="px-3 py-2 text-muted">{placeLabel(entity.hq, locale)}</td>
+                  <td className="hidden px-3 py-2 text-muted md:table-cell">{placeLabel(entity.hq, locale)}</td>
                   <td className="px-3 py-2 text-muted">
                     <CountryLabel name={entity.country} />
                   </td>
                   <td className="px-3 py-2 font-mono">{hits}</td>
-                  <td className="px-3 py-2">
+                  <td className="hidden px-3 py-2 md:table-cell">
                     <a
                       href={entity.website}
                       target="_blank"

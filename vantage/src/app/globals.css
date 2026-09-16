@@ -40,6 +40,7 @@ body {
   background: var(--ink);
   color: var(--paper);
   min-height: 100%;
+  overflow-x: clip;
 }
 
 body {

@@ -58,7 +58,7 @@ export function NewsCard({
     .filter(Boolean) as Array<{ id: string; name: string }>;
 
   return (
-    <article className="rounded-xl border border-line bg-panel p-5">
+    <article className="rounded-xl border border-line bg-panel p-4 md:p-5">
       <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono uppercase tracking-wide">
         <span className={`rounded-full border px-2 py-0.5 ${CATEGORY_COLOR[item.category]}`}>
           {categoryLabel(item.category, locale)}
@@ -73,7 +73,7 @@ export function NewsCard({
         ))}
       </div>
 
-      <h2 className="mt-3 overflow-visible break-words font-serif text-xl leading-[1.5] text-pretty text-paper md:text-2xl">
+      <h2 className="mt-3 overflow-visible break-words font-serif text-lg leading-[1.5] text-pretty text-paper sm:text-xl md:text-2xl">
         <StoryLine english={item.caption} chinese={item.captionZh} />
       </h2>
 
