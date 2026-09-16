@@ -6,6 +6,7 @@ import { placeLabel } from "@/lib/i18n/lookups";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { CatalogMeta, Entity, NewsItem, Sector } from "@/lib/types";
+import { CountryLabel } from "./CountryLabel";
 import { QueryLink } from "./QueryLink";
 
 const TABS: Array<{ id: Sector; label: MessageKey }> = [
@@ -119,7 +120,9 @@ export function EntitiesView({
                     {entity.notes && <div className="text-xs text-muted">{entity.notes}</div>}
                   </td>
                   <td className="px-3 py-2 text-muted">{placeLabel(entity.hq, locale)}</td>
-                  <td className="px-3 py-2 text-muted">{placeLabel(entity.country, locale)}</td>
+                  <td className="px-3 py-2 text-muted">
+                    <CountryLabel name={entity.country} />
+                  </td>
                   <td className="px-3 py-2 font-mono">{hits}</td>
                   <td className="px-3 py-2">
                     <a

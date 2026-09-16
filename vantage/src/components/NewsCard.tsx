@@ -2,10 +2,11 @@
 
 import { entityName, sourceName } from "@/lib/i18n/catalog";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { placeLabel, assetLabel } from "@/lib/i18n/lookups";
+import { assetLabel } from "@/lib/i18n/lookups";
 import { useStoryText } from "@/lib/i18n/useStoryText";
 import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
 import type { Entity, NewsItem, RiskTool } from "@/lib/types";
+import { CountryLabel } from "./CountryLabel";
 
 const CATEGORY_COLOR: Record<string, string> = {
   listing: "text-[var(--listing)] border-[var(--listing)]/40",
@@ -63,9 +64,7 @@ export function NewsCard({
           </span>
         ))}
         {item.jurisdictions.slice(0, 4).map((jurisdiction) => (
-          <span key={jurisdiction} className="text-muted">
-            {placeLabel(jurisdiction, locale)}
-          </span>
+          <CountryLabel key={jurisdiction} name={jurisdiction} className="text-muted" />
         ))}
       </div>
 

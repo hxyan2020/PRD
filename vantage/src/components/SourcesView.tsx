@@ -3,9 +3,9 @@
 import { formatDateTime, healthLabel, sourceKindLabel } from "@/lib/format";
 import { sourceName } from "@/lib/i18n/catalog";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { placeLabel } from "@/lib/i18n/lookups";
 import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { SourceHealth as Health, SourceStatus } from "@/lib/types";
+import { CountryLabelList } from "./CountryLabel";
 import { QueryLink } from "./QueryLink";
 
 const STATUS_CLASS: Record<Health, string> = {
@@ -120,7 +120,7 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
                 </td>
                 <td className="px-3 py-2 text-muted">{sourceKindLabel(source.kind, locale)}</td>
                 <td className="px-3 py-2 text-muted">
-                  {source.jurisdictions.map((entry) => placeLabel(entry, locale)).join(locale === "zh" ? "、" : ", ")}
+                  <CountryLabelList names={source.jurisdictions} />
                 </td>
                 <td className="px-3 py-2 font-mono text-xs">
                   {formatDateTime(source.lastSourced, locale)}
