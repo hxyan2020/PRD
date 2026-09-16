@@ -255,6 +255,7 @@ h3 { font-size: 22px; letter-spacing: 0; }
 .badge.critical { color: var(--crimson); background: var(--crimson-dim); }
 .badge.high { color: var(--amber); background: var(--amber-dim); }
 .badge.elevated { color: var(--ice); background: rgba(142, 194, 255, 0.12); }
+.badge.standing { color: var(--jade); background: var(--jade-dim); }
 .products { display: flex; flex-wrap: wrap; gap: 6px; }
 .products span {
   font-size: 11px;
@@ -416,8 +417,150 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 
 .empty { color: var(--muted); padding: 40px 0; }
 
+.chart {
+  display: grid;
+  gap: 0;
+  margin: 8px 0 8px;
+}
+.chart-row {
+  display: grid;
+  grid-template-columns: 56px 1fr 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+.chart-spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.chart-dot {
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--amber);
+  background: var(--ink-2);
+  color: var(--amber);
+  font-family: var(--mono);
+  font-size: 10px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+}
+.chart-dot.start, .chart-dot.end {
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+  background: var(--amber-dim);
+}
+.chart-line {
+  width: 1.5px;
+  flex: 1;
+  min-height: 18px;
+  background: var(--line-2);
+}
+.chart-box {
+  border: 1px solid var(--line-2);
+  background: var(--ink-2);
+  padding: 12px 14px;
+  min-height: 72px;
+}
+.chart-box.actor { border-left: 3px solid var(--amber); }
+.chart-box.system { border-left: 3px solid var(--jade); }
+.chart-box.market { border-left: 3px solid var(--ice); }
+.chart-box.house { border-left: 3px solid var(--crimson); }
+.chart-box.decision {
+  clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
+  padding: 16px 22px;
+  border-left: 1px solid var(--line-2);
+  background: rgba(232, 163, 23, 0.08);
+}
+.chart-box .who {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--jade);
+  display: block;
+  margin-bottom: 4px;
+}
+.chart-box .act { font-size: 14px; }
+.chart-tell {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 10px 0;
+  border-top: 1px dashed var(--line);
+}
+.chart-tell b {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  display: block;
+  margin-bottom: 4px;
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin: 0 0 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.chart-legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+.chart-legend .actor i { background: var(--amber); }
+.chart-legend .system i { background: var(--jade); }
+.chart-legend .market i { background: var(--ice); }
+.chart-legend .house i { background: var(--crimson); }
+
+.sev-bands {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin: 16px 0 22px;
+}
+.sev-band {
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+  padding: 14px;
+}
+.sev-band.standing { border-top: 3px solid var(--jade); }
+.sev-band.elevated { border-top: 3px solid var(--ice); }
+.sev-band.high { border-top: 3px solid var(--amber); }
+.sev-band.critical { border-top: 3px solid var(--crimson); }
+.sev-band .fit { margin-bottom: 6px; }
+.sev-band p { margin: 0; color: var(--muted); font-size: 13px; }
+
+.cm-card {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  margin: 8px 0;
+}
+.cm-card .meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.cm-card .meta span { display: block; color: var(--muted); margin-top: 4px; }
+
 @media (max-width: 900px) {
-  .hero, .doors, .stats, .grid, .people, .two, .dossier-head { grid-template-columns: 1fr; }
+  .hero, .doors, .stats, .grid, .people, .two, .dossier-head, .chart-row, .cm-card, .sev-bands { grid-template-columns: 1fr; }
+  .chart-spine { flex-direction: row; min-height: 0; }
+  .chart-line { width: 18px; min-height: 1.5px; height: 1.5px; }
   .nav { display: none; }
   .nav.open {
     display: flex;
