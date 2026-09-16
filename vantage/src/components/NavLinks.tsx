@@ -1,35 +1,36 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { parseView, queryHref, useQueryParams } from "@/lib/queryNav";
+import { QueryLink } from "./QueryLink";
 
 const NAV = [
-  { href: "/", label: "Daily briefing" },
-  { href: "/entities", label: "Entities" },
-  { href: "/regulation", label: "Regulation" },
-  { href: "/risk-tools", label: "Risk tools" },
-  { href: "/sources", label: "Sources & health" },
+  { view: "briefing" as const, label: "Daily briefing" },
+  { view: "entities" as const, label: "Entities" },
+  { view: "regulation" as const, label: "Regulation" },
+  { view: "risk-tools" as const, label: "Risk tools" },
+  { view: "sources" as const, label: "Sources & health" },
 ];
 
 export function NavLinks() {
-  const pathname = (usePathname().replace(/\/$/, "") || "/") as string;
+  const params = useQueryParams();
+  const active = parseView(params.get("view"));
 
   return (
     <nav className="flex flex-wrap gap-2">
       {NAV.map((item) => {
-        const active = pathname === item.href;
+        const href = queryHref({ view: item.view });
         return (
-          <Link
-            key={item.href}
-            href={item.href}
+          <QueryLink
+            key={item.view}
+            href={href}
             className={`rounded-full border px-3 py-1.5 text-sm transition ${
-              active
+              active === item.view
                 ? "border-gold bg-gold/10 text-gold"
                 : "border-line text-muted hover:border-gold/40 hover:text-paper"
             }`}
           >
             {item.label}
-          </Link>
+          </QueryLink>
         );
       })}
     </nav>

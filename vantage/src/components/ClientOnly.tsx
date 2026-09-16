@@ -1,7 +1,12 @@
 "use client";
 
-import { Suspense, type ReactNode } from "react";
+import { useHasMounted } from "@/lib/queryNav";
+import type { ReactNode } from "react";
 
 export function ClientOnly({ children }: { children: ReactNode }) {
-  return <Suspense fallback={<p className="text-muted">Loading desk…</p>}>{children}</Suspense>;
+  const mounted = useHasMounted();
+  if (!mounted) {
+    return <p className="text-muted">Loading desk…</p>;
+  }
+  return <>{children}</>;
 }

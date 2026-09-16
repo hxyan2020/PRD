@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0 --port 3000",
-    "build": "next build",
-    "export": "next build",
+    "build": "next build && node scripts/relativize-export.mjs",
+    "export": "next build && node scripts/relativize-export.mjs",
     "start": "next start --hostname 0.0.0.0 --port 3000",
     "lint": "eslint",
     "scan": "tsx scanner/cli.ts",

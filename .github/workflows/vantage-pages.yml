@@ -22,11 +22,8 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: vantage/package-lock.json
-      - name: Build static site for jsDelivr
+      - name: Build portable static site
         working-directory: vantage
-        env:
-          PUBLIC_BASE_PATH: /gh/hxyan2020/PRD@gh-pages
-          PUBLIC_ASSET_PREFIX: https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages
         run: |
           npm ci
           npm test

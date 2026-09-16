@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { CatalogMeta, Entity, NewsItem, Sector } from "@/lib/types";
+import { QueryLink } from "./QueryLink";
 
 const TABS: Array<{ id: Sector; label: string }> = [
   { id: "banks", label: "Top 50 banks" },
@@ -23,9 +23,7 @@ export function EntitiesView({
   items: NewsItem[];
   meta: CatalogMeta;
 }) {
-  const params = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+  const params = useQueryParams();
   const tab: Sector = isSector(params.get("sector")) ? params.get("sector") as Sector : "banks";
   const query = (params.get("q") ?? "").trim();
   const rankingNote = {
@@ -44,10 +42,11 @@ export function EntitiesView({
     .sort((a, b) => a.rank - b.rank);
 
   function href(nextTab: Sector, nextQuery = query) {
-    const search = new URLSearchParams();
-    search.set("sector", nextTab);
-    if (nextQuery) search.set("q", nextQuery);
-    return `${pathname}?${search.toString()}`;
+    return queryHref({
+      view: "entities",
+      sector: nextTab,
+      q: nextQuery,
+    });
   }
 
   return (
@@ -63,7 +62,7 @@ export function EntitiesView({
       </div>
       <div className="flex flex-wrap gap-2">
         {TABS.map((entry) => (
-          <Link
+          <QueryLink
             key={entry.id}
             href={href(entry.id)}
             className={`rounded-full border px-3 py-1.5 text-sm ${
@@ -71,7 +70,7 @@ export function EntitiesView({
             }`}
           >
             {entry.label}
-          </Link>
+          </QueryLink>
         ))}
       </div>
       <p className="text-sm text-muted">{rankingNote[tab]}</p>
@@ -83,7 +82,7 @@ export function EntitiesView({
         onSubmit={(event) => {
           event.preventDefault();
           const value = String(new FormData(event.currentTarget).get("q") ?? "");
-          router.push(href(tab, value));
+          navigateQuery(href(tab, value));
         }}
       >
         <input

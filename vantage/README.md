@@ -29,11 +29,14 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Public site: [https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/](https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/)
 
-- `/` daily briefing
-- `/entities` monitored banks, brokers, exchanges
-- `/regulation` regulatory slice plus impact notes
-- `/risk-tools` tool catalog plus related news
-- `/sources` every feed, last sourced time, and health
+The export is path-portable (relative `?view=` / `?category=` links and `./_next` assets), so the same files work on localhost, a tunnel root, or the jsDelivr subdirectory.
+
+- `?` daily briefing
+- `?category=product` Features filter (same file; no extra path)
+- `?view=entities` monitored banks, brokers, exchanges
+- `?view=regulation` regulatory slice plus impact notes
+- `?view=risk-tools` tool catalog plus related news
+- `?view=sources` every feed, last sourced time, and health
 
 `npm test` covers scan-window and classification rules.
 

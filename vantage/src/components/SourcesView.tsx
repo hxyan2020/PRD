@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { formatDateTime } from "@/lib/format";
+import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { SourceHealth as Health, SourceStatus } from "@/lib/types";
+import { QueryLink } from "./QueryLink";
 
 const STATUS_CLASS: Record<Health, string> = {
   healthy: "text-ok",
@@ -16,9 +16,7 @@ function isHealth(value: string | null): value is Health {
 }
 
 export function SourcesView({ sources }: { sources: SourceStatus[] }) {
-  const params = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+  const params = useQueryParams();
   const status = isHealth(params.get("status")) ? params.get("status") : "all";
   const query = (params.get("q") ?? "").trim().toLowerCase();
 
@@ -30,11 +28,11 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
   });
 
   function href(nextStatus: string, nextQuery = params.get("q") ?? "") {
-    const search = new URLSearchParams();
-    if (nextStatus !== "all") search.set("status", nextStatus);
-    if (nextQuery) search.set("q", nextQuery);
-    const suffix = search.toString();
-    return suffix ? `${pathname}?${suffix}` : pathname;
+    return queryHref({
+      view: "sources",
+      status: nextStatus,
+      q: nextQuery,
+    });
   }
 
   return (
@@ -53,7 +51,7 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
       </p>
       <div className="flex flex-wrap gap-2">
         {(["all", "healthy", "degraded", "down"] as const).map((entry) => (
-          <Link
+          <QueryLink
             key={entry}
             href={href(entry)}
             className={`rounded-full border px-3 py-1.5 text-sm ${
@@ -61,7 +59,7 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
             }`}
           >
             {entry}
-          </Link>
+          </QueryLink>
         ))}
       </div>
       <form
@@ -69,7 +67,7 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
         onSubmit={(event) => {
           event.preventDefault();
           const value = String(new FormData(event.currentTarget).get("q") ?? "");
-          router.push(href(status ?? "all", value));
+          navigateQuery(href(status ?? "all", value));
         }}
       >
         <input

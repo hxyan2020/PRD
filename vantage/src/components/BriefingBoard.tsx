@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { formatRange } from "@/lib/format";
 import { parseCategory, parseSector } from "@/lib/filters";
+import { formatRange } from "@/lib/format";
+import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { Briefing, Entity, NewsCategory, RiskTool } from "@/lib/types";
 import { NewsCard } from "./NewsCard";
+import { QueryLink } from "./QueryLink";
 
 const CATEGORIES: Array<{ id: "all" | NewsCategory; label: string }> = [
   { id: "all", label: "All" },
@@ -22,18 +22,6 @@ const SECTORS = [
   { id: "crypto" as const, label: "Crypto" },
 ];
 
-function hrefFor(
-  pathname: string,
-  next: { category?: string; sector?: string; q?: string },
-): string {
-  const params = new URLSearchParams();
-  if (next.category && next.category !== "all") params.set("category", next.category);
-  if (next.sector && next.sector !== "all") params.set("sector", next.sector);
-  if (next.q) params.set("q", next.q);
-  const query = params.toString();
-  return query ? `${pathname}?${query}` : pathname;
-}
-
 export function BriefingBoard({
   briefing,
   entities,
@@ -49,12 +37,20 @@ export function BriefingBoard({
   hideCategoryFilters?: boolean;
   forceCategory?: NewsCategory;
 }) {
-  const params = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+  const params = useQueryParams();
+  const view = params.get("view") ?? undefined;
   const activeCategory = forceCategory ?? parseCategory(params.get("category") ?? undefined);
   const activeSector = parseSector(params.get("sector") ?? undefined);
   const query = params.get("q") ?? "";
+
+  function hrefFor(next: { category?: string; sector?: string; q?: string }) {
+    return queryHref({
+      view,
+      category: next.category,
+      sector: next.sector,
+      q: next.q,
+    });
+  }
 
   const counts = {
     listing: briefing.items.filter((item) => item.category === "listing").length,
@@ -116,9 +112,9 @@ export function BriefingBoard({
         {!hideCategoryFilters && (
           <div className="flex flex-wrap gap-2">
             {CATEGORIES.map((entry) => (
-              <Link
+              <QueryLink
                 key={entry.id}
-                href={hrefFor(pathname, { category: entry.id, sector: activeSector, q: query })}
+                href={hrefFor({ category: entry.id, sector: activeSector, q: query })}
                 className={`rounded-full border px-3 py-1.5 text-sm ${
                   activeCategory === entry.id
                     ? "border-gold text-gold"
@@ -126,15 +122,15 @@ export function BriefingBoard({
                 }`}
               >
                 {entry.label}
-              </Link>
+              </QueryLink>
             ))}
           </div>
         )}
         <div className="flex flex-wrap gap-2">
           {SECTORS.map((entry) => (
-            <Link
+            <QueryLink
               key={entry.id}
-              href={hrefFor(pathname, { category: activeCategory, sector: entry.id, q: query })}
+              href={hrefFor({ category: activeCategory, sector: entry.id, q: query })}
               className={`rounded-full border px-3 py-1.5 text-sm ${
                 activeSector === entry.id
                   ? "border-gold text-gold"
@@ -142,7 +138,7 @@ export function BriefingBoard({
               }`}
             >
               {entry.label}
-            </Link>
+            </QueryLink>
           ))}
         </div>
       </div>
@@ -152,7 +148,7 @@ export function BriefingBoard({
         onSubmit={(event) => {
           event.preventDefault();
           const value = String(new FormData(event.currentTarget).get("q") ?? "");
-          router.push(hrefFor(pathname, { category: activeCategory, sector: activeSector, q: value }));
+          navigateQuery(hrefFor({ category: activeCategory, sector: activeSector, q: value }));
         }}
       >
         <input
