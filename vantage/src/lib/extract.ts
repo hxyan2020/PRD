@@ -144,7 +144,7 @@ export function isIncompleteZh(text: string): boolean {
   const value = text.trim();
   if (!value) return true;
   if (/^\d{1,2}\s*[，,]\s*/.test(value)) return true;
-  if (/[.…]+$/.test(value)) return true;
+  if (/(\.\.\.|…)$/.test(value)) return true;
   if (/寻找9月|未来的一天寻找/.test(value)) return true;
   if (/^(作者|advertisement)/i.test(value)) return true;
   return false;

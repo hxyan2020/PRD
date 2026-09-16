@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { isIncompletePoint, keyPoints, stripHtml } from "./extract";
+import { isIncompletePoint, isIncompleteZh, keyPoints, stripHtml } from "./extract";
 import { repairNewsItem } from "./repairNews";
 
 describe("extract", () => {
@@ -53,6 +53,12 @@ describe("extract", () => {
   it("flags cut-off daybook fragments", () => {
     assert.equal(isIncompletePoint("Your day-ahead look for Sept."), true);
     assert.equal(isIncompletePoint("The 12-month test will put a beta version of the central bank currency through payments."), false);
+  });
+
+  it("rejects stub Chinese without flagging a normal sentence period", () => {
+    assert.equal(isIncompleteZh("您未来的一天寻找9月"), true);
+    assert.equal(isIncompleteZh("27 ，在为期12个月的试点中测试测试版数字欧元支付。"), true);
+    assert.equal(isIncompleteZh("比特币与美元指数失去联系，美国股市领先于美联储。"), false);
   });
 });
 
