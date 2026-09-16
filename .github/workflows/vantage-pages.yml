@@ -1,4 +1,4 @@
-name: Deploy Vantage to GitHub Pages
+name: Publish Vantage static site
 
 on:
   push:
@@ -7,55 +7,34 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: vantage-static
   cancel-in-progress: true
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Enable GitHub Pages
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
-            echo "GitHub Pages is already enabled"
-          else
-            gh api --method POST "repos/${GITHUB_REPOSITORY}/pages" \
-              -H "Accept: application/vnd.github+json" \
-              -f build_type=workflow
-          fi
-      - uses: actions/configure-pages@v5
-        continue-on-error: true
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: vantage/package-lock.json
-      - name: Build static site
+      - name: Build static site for jsDelivr
         working-directory: vantage
         env:
-          GITHUB_PAGES: "true"
+          PUBLIC_BASE_PATH: /gh/hxyan2020/PRD@gh-pages
+          PUBLIC_ASSET_PREFIX: https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages
         run: |
           npm ci
           npm test
           npm run build
-      - uses: actions/upload-pages-artifact@v3
+      - name: Publish gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: vantage/out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: vantage/out
+          publish_branch: gh-pages
+          force_orphan: true
