@@ -1,6 +1,6 @@
 "use client";
 
-import { parseCategory, parseSector } from "@/lib/filters";
+import { countNews, itemMatchesFilters, parseCategory, parseSector } from "@/lib/filters";
 import { formatDateTime, formatRange, windowLabel } from "@/lib/format";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n/messages";
@@ -23,6 +23,14 @@ const SECTORS: Array<{ id: "all" | "banks" | "brokers" | "crypto"; label: Messag
   { id: "brokers", label: "brokers" },
   { id: "crypto", label: "crypto" },
 ];
+
+function ChipCount({ value }: { value: number }) {
+  return (
+    <span className="ml-1.5 inline-flex min-w-5 items-center justify-center rounded-full bg-gold/15 px-1.5 font-mono text-xs tabular-nums text-gold">
+      {value}
+    </span>
+  );
+}
 
 export function BriefingBoard({
   briefing,
@@ -55,23 +63,23 @@ export function BriefingBoard({
     });
   }
 
-  const counts = {
-    all: briefing.items.length,
-    listing: briefing.items.filter((item) => item.category === "listing").length,
-    product: briefing.items.filter((item) => item.category === "product").length,
-    regulation: briefing.items.filter((item) => item.category === "regulation").length,
-    risk_tools: briefing.items.filter((item) => item.category === "risk_tools").length,
+  const categoryCounts = {
+    all: countNews(briefing.items, "all", activeSector, query),
+    listing: countNews(briefing.items, "listing", activeSector, query),
+    product: countNews(briefing.items, "product", activeSector, query),
+    regulation: countNews(briefing.items, "regulation", activeSector, query),
+    risk_tools: countNews(briefing.items, "risk_tools", activeSector, query),
+  };
+  const sectorCounts = {
+    all: countNews(briefing.items, activeCategory, "all", query),
+    banks: countNews(briefing.items, activeCategory, "banks", query),
+    brokers: countNews(briefing.items, activeCategory, "brokers", query),
+    crypto: countNews(briefing.items, activeCategory, "crypto", query),
   };
 
-  const items = briefing.items.filter((item) => {
-    if (activeCategory !== "all" && item.category !== activeCategory) return false;
-    if (activeSector !== "all" && !item.sectors.includes(activeSector)) return false;
-    if (query.trim()) {
-      const hay = `${item.caption} ${item.captionZh ?? ""} ${item.keyPoints.join(" ")} ${(item.keyPointsZh ?? []).join(" ")} ${item.jurisdictions.join(" ")}`.toLowerCase();
-      if (!hay.includes(query.trim().toLowerCase())) return false;
-    }
-    return true;
-  });
+  const items = briefing.items.filter((item) =>
+    itemMatchesFilters(item, activeCategory, activeSector, query),
+  );
 
   return (
     <div className="space-y-6">
@@ -107,7 +115,7 @@ export function BriefingBoard({
           </dl>
         </div>
         <p className="mt-3 font-mono text-xs text-muted">
-          {t("lastSourced")} {formatDateTime(briefing.meta.generatedAt, locale)} · {t("listings")} {counts.listing} · {t("features")} {counts.product} · {t("regulation")} {counts.regulation} · {t("riskTools")} {counts.risk_tools}
+          {t("lastSourced")} {formatDateTime(briefing.meta.generatedAt, locale)} · {t("listings")} {categoryCounts.listing} · {t("features")} {categoryCounts.product} · {t("regulation")} {categoryCounts.regulation} · {t("riskTools")} {categoryCounts.risk_tools}
         </p>
       </section>
 
@@ -125,9 +133,7 @@ export function BriefingBoard({
                 }`}
               >
                 {t(entry.label)}
-                <span className="ml-1.5 font-mono text-[11px] tabular-nums opacity-80">
-                  {counts[entry.id]}
-                </span>
+                <ChipCount value={categoryCounts[entry.id]} />
               </QueryLink>
             ))}
           </div>
@@ -144,6 +150,7 @@ export function BriefingBoard({
               }`}
             >
               {t(entry.label)}
+              <ChipCount value={sectorCounts[entry.id]} />
             </QueryLink>
           ))}
         </div>
