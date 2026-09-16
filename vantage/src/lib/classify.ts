@@ -130,15 +130,45 @@ export function inferImpact(
   );
 
   const uniqueAssets = [...new Set(assets)];
-  const sectorLabel = sectors.join(", ");
-  const assetLabel = uniqueAssets.length
+  return buildImpact(sectors, uniqueAssets);
+}
+
+export function buildImpact(sectors: Sector[], uniqueAssets: string[]): Impact {
+  const sectorEn = sectors.join(", ");
+  const sectorZhMap: Record<string, string> = {
+    banks: "银行",
+    brokers: "券商",
+    crypto: "加密交易所",
+  };
+  const sectorZh = sectors.map((sector) => sectorZhMap[sector] ?? sector).join("、");
+  const assetZhMap: Record<string, string> = {
+    BTC: "比特币",
+    ETH: "以太坊",
+    stablecoins: "稳定币",
+    "tokenized assets / RWAs": "代币化资产 / RWA",
+    ETFs: "ETF",
+    "crypto perpetuals": "加密永续合约",
+    options: "期权",
+    futures: "期货",
+    swaps: "互换",
+    "mortgages / MBS": "按揭 / MBS",
+    "government bonds": "国债",
+    equities: "股票",
+    FX: "外汇",
+    commodities: "大宗商品",
+  };
+  const assetEn = uniqueAssets.length
     ? ` Focus assets: ${uniqueAssets.join(", ")}.`
+    : "";
+  const assetZh = uniqueAssets.length
+    ? ` 关注资产：${uniqueAssets.map((asset) => assetZhMap[asset] ?? asset).join("、")}。`
     : "";
 
   return {
     sectors,
     assets: uniqueAssets,
-    summary: `Potential impact on ${sectorLabel}.${assetLabel}`,
+    summary: `Potential impact on ${sectorEn}.${assetEn}`,
+    summaryZh: `对${sectorZh}的潜在影响。${assetZh}`,
   };
 }
 

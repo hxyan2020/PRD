@@ -48,6 +48,7 @@ describe("regulatory impact", () => {
     assert.ok(impact);
     assert.ok(impact.assets.includes("stablecoins"));
     assert.ok(impact.sectors.includes("crypto"));
+    assert.ok(impact.summaryZh.includes("稳定币"));
   });
 
   it("extracts US jurisdiction from SEC copy", () => {

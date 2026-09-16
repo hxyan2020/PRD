@@ -1,43 +1,46 @@
 "use client";
 
 import { parseCategory, parseSector } from "@/lib/filters";
-import { formatRange } from "@/lib/format";
+import { formatDateTime, formatRange, windowLabel } from "@/lib/format";
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import type { MessageKey } from "@/lib/i18n/messages";
 import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { Briefing, Entity, NewsCategory, RiskTool } from "@/lib/types";
 import { NewsCard } from "./NewsCard";
 import { QueryLink } from "./QueryLink";
 
-const CATEGORIES: Array<{ id: "all" | NewsCategory; label: string }> = [
-  { id: "all", label: "All" },
-  { id: "listing", label: "Listings" },
-  { id: "product", label: "Features" },
-  { id: "regulation", label: "Regulation" },
-  { id: "risk_tools", label: "Risk tools" },
+const CATEGORIES: Array<{ id: "all" | NewsCategory; label: MessageKey }> = [
+  { id: "all", label: "all" },
+  { id: "listing", label: "listings" },
+  { id: "product", label: "features" },
+  { id: "regulation", label: "regulation" },
+  { id: "risk_tools", label: "riskTools" },
 ];
 
-const SECTORS = [
-  { id: "all" as const, label: "All sectors" },
-  { id: "banks" as const, label: "Banks" },
-  { id: "brokers" as const, label: "Brokers" },
-  { id: "crypto" as const, label: "Crypto" },
+const SECTORS: Array<{ id: "all" | "banks" | "brokers" | "crypto"; label: MessageKey }> = [
+  { id: "all", label: "allSectors" },
+  { id: "banks", label: "banks" },
+  { id: "brokers", label: "brokers" },
+  { id: "crypto", label: "crypto" },
 ];
 
 export function BriefingBoard({
   briefing,
   entities,
   tools,
-  title = "Daily briefing",
+  titleKey = "dailyBriefing",
   hideCategoryFilters = false,
   forceCategory,
 }: {
   briefing: Briefing;
   entities: Entity[];
   tools: RiskTool[];
-  title?: string;
+  titleKey?: MessageKey;
   hideCategoryFilters?: boolean;
   forceCategory?: NewsCategory;
 }) {
   const params = useQueryParams();
+  const { locale, t } = useLocale();
   const view = params.get("view") ?? undefined;
   const activeCategory = forceCategory ?? parseCategory(params.get("category") ?? undefined);
   const activeSector = parseSector(params.get("sector") ?? undefined);
@@ -63,7 +66,7 @@ export function BriefingBoard({
     if (activeCategory !== "all" && item.category !== activeCategory) return false;
     if (activeSector !== "all" && !item.sectors.includes(activeSector)) return false;
     if (query.trim()) {
-      const hay = `${item.caption} ${item.keyPoints.join(" ")} ${item.jurisdictions.join(" ")}`.toLowerCase();
+      const hay = `${item.caption} ${item.captionZh ?? ""} ${item.keyPoints.join(" ")} ${(item.keyPointsZh ?? []).join(" ")} ${item.jurisdictions.join(" ")}`.toLowerCase();
       if (!hay.includes(query.trim().toLowerCase())) return false;
     }
     return true;
@@ -75,36 +78,35 @@ export function BriefingBoard({
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-gold">
-              {briefing.meta.windowKind === "weekend"
-                ? "Monday weekend report"
-                : "Daily scan"}
+              {briefing.meta.windowKind === "weekend" ? t("weekendScan") : t("dailyScan")}
             </p>
-            <h2 className="font-serif text-2xl">{title}</h2>
+            <h2 className="font-serif text-2xl">{t(titleKey)}</h2>
             <p className="mt-1 text-sm text-muted">
-              {briefing.meta.windowLabel}: {formatRange(briefing.meta.windowStart, briefing.meta.windowEnd)}
+              {windowLabel(briefing.meta.windowKind, briefing.meta.windowLabel, locale)}:{" "}
+              {formatRange(briefing.meta.windowStart, briefing.meta.windowEnd, locale)}
             </p>
           </div>
           <dl className="grid grid-cols-2 gap-x-6 gap-y-1 font-mono text-xs text-muted sm:grid-cols-4">
             <div>
-              <dt>Items</dt>
+              <dt>{t("items")}</dt>
               <dd className="text-paper">{briefing.meta.itemCount}</dd>
             </div>
             <div>
-              <dt>Healthy sources</dt>
+              <dt>{t("healthySources")}</dt>
               <dd className="text-ok">{briefing.meta.sourceStats.healthy}/{briefing.meta.sourceStats.total}</dd>
             </div>
             <div>
-              <dt>Degraded</dt>
+              <dt>{t("degraded")}</dt>
               <dd className="text-warn">{briefing.meta.sourceStats.degraded}</dd>
             </div>
             <div>
-              <dt>Down</dt>
+              <dt>{t("down")}</dt>
               <dd className="text-down">{briefing.meta.sourceStats.down}</dd>
             </div>
           </dl>
         </div>
         <p className="mt-3 font-mono text-xs text-muted">
-          Last sourced {briefing.meta.generatedAt} · Listings {counts.listing} · Features {counts.product} · Regulation {counts.regulation} · Risk tools {counts.risk_tools}
+          {t("lastSourced")} {formatDateTime(briefing.meta.generatedAt, locale)} · {t("listings")} {counts.listing} · {t("features")} {counts.product} · {t("regulation")} {counts.regulation} · {t("riskTools")} {counts.risk_tools}
         </p>
       </section>
 
@@ -121,7 +123,7 @@ export function BriefingBoard({
                     : "border-line text-muted"
                 }`}
               >
-                {entry.label}
+                {t(entry.label)}
               </QueryLink>
             ))}
           </div>
@@ -137,7 +139,7 @@ export function BriefingBoard({
                   : "border-line text-muted"
               }`}
             >
-              {entry.label}
+              {t(entry.label)}
             </QueryLink>
           ))}
         </div>
@@ -154,22 +156,21 @@ export function BriefingBoard({
         <input
           name="q"
           defaultValue={query}
-          placeholder="Filter by caption, key point, or jurisdiction"
+          placeholder={t("searchNews")}
           className="w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm text-paper outline-none placeholder:text-muted focus:border-gold/50"
         />
         <button type="submit" className="rounded-lg border border-gold px-3 text-sm text-gold">
-          Search
+          {t("search")}
         </button>
       </form>
 
       <p className="font-mono text-xs uppercase tracking-wide text-gold">
-        Showing {items.length} stories
+        {t("showingStories", { n: items.length })}
       </p>
 
       {items.length === 0 ? (
         <p className="rounded-xl border border-dashed border-line px-4 py-10 text-center text-muted">
-          No items in this window match the current filters. Sources still ran;
-          check Sources & health for feed status.
+          {t("emptyNews")}
         </p>
       ) : (
         <div className="space-y-4">

@@ -31,6 +31,8 @@ Public site: [https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/](https://cdn.j
 
 The export is path-portable (relative `?view=` / `?category=` links and `./_next` assets), so the same files work on localhost, a tunnel root, or the jsDelivr subdirectory.
 
+Use the EN / 中文 control to switch the whole desk. Chrome, catalogs, and story captions/key points switch together. New scans write Chinese fields into `data/latest.json`; if a story is still English-only, the page translates it when you switch to 中文.
+
 - `?` daily briefing
 - `?category=product` Features filter (same file; no extra path)
 - `?view=entities` monitored banks, brokers, exchanges

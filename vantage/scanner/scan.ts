@@ -22,6 +22,7 @@ import type {
 } from "../src/lib/types";
 import { parseLooseDate } from "../src/lib/dates";
 import { computeScanWindow, inWindow, previousFridayScan } from "../src/lib/window";
+import { attachChinese } from "./localize";
 
 const ROOT = path.resolve(__dirname, "..");
 const DATA = path.join(ROOT, "data");
@@ -54,17 +55,9 @@ async function readJson<T>(file: string): Promise<T> {
   return JSON.parse(await readFile(path.join(DATA, file), "utf8")) as T;
 }
 
-async function loadPreviousFridayScan(): Promise<string | null> {
+async function loadPreviousBriefing(): Promise<Briefing | null> {
   try {
-    const previous = JSON.parse(
-      await readFile(path.join(DATA, "latest.json"), "utf8"),
-    ) as Briefing;
-    return (
-      previousFridayScan(previous.meta.generatedAt) ??
-      (previous.meta.windowKind === "weekend"
-        ? previous.meta.windowStart
-        : null)
-    );
+    return JSON.parse(await readFile(path.join(DATA, "latest.json"), "utf8")) as Briefing;
   } catch {
     return null;
   }
@@ -247,9 +240,11 @@ function toNewsItem(
   return {
     id: createHash("sha1").update(`${raw.link}|${raw.title}`).digest("hex").slice(0, 16),
     caption: raw.title,
+    captionZh: "",
     category,
     sectors,
     keyPoints: keyPoints(raw.title, raw.summary),
+    keyPointsZh: [],
     sources: [
       { name: raw.source.name, url: raw.link, sourceId: raw.source.id },
     ],
@@ -281,7 +276,9 @@ function mergeItems(items: NewsItem[]): NewsItem[] {
     existing.riskTools = [...new Set([...existing.riskTools, ...item.riskTools])];
     if (item.keyPoints.length > existing.keyPoints.length) {
       existing.keyPoints = item.keyPoints;
+      existing.keyPointsZh = item.keyPointsZh;
     }
+    if (!existing.captionZh && item.captionZh) existing.captionZh = item.captionZh;
   }
   return [...byTitle.values()].sort(
     (a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt),
@@ -297,7 +294,10 @@ export async function runScan(now = new Date()): Promise<Briefing> {
     readJson<DataSource[]>("sources.json"),
   ]);
   const entities = [...banks, ...brokers, ...exchanges];
-  const lastFriday = await loadPreviousFridayScan();
+  const previous = await loadPreviousBriefing();
+  const lastFriday =
+    previousFridayScan(previous?.meta.generatedAt) ??
+    (previous?.meta.windowKind === "weekend" ? previous.meta.windowStart : null);
   const window = computeScanWindow(now, lastFriday);
 
   const results = await mapPool(sources, CONCURRENCY, fetchSource);
@@ -320,6 +320,7 @@ export async function runScan(now = new Date()): Promise<Briefing> {
         isRelevant(rawItems[index], item.entities, item.category),
       ),
   );
+  await attachChinese(items, previous);
 
   const briefing: Briefing = {
     meta: {

@@ -73,14 +73,17 @@ export interface Impact {
   sectors: Sector[];
   assets: string[];
   summary: string;
+  summaryZh: string;
 }
 
 export interface NewsItem {
   id: string;
   caption: string;
+  captionZh: string;
   category: NewsCategory;
   sectors: Sector[];
   keyPoints: string[];
+  keyPointsZh: string[];
   sources: Array<{ name: string; url: string; sourceId: string }>;
   publishedAt: string;
   entities: string[];

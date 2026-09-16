@@ -1,6 +1,12 @@
+"use client";
+
+import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { LanguageToggle } from "./LanguageToggle";
 import { NavLinks } from "./NavLinks";
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
+  const { t } = useLocale();
+
   return (
     <div className="min-h-full">
       <header className="border-b border-line bg-panel">
@@ -8,31 +14,24 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="font-mono text-[11px] tracking-[0.28em] text-gold uppercase">
-                Desk note
+                {t("brandKicker")}
               </p>
               <h1 className="font-serif text-3xl leading-tight text-paper md:text-4xl">
-                Vantage Market Intelligence
+                {t("brandTitle")}
               </h1>
-              <p className="mt-1 max-w-2xl text-sm text-muted">
-                Daily coverage of the world&apos;s top 50 banks, 50 brokers, and 50
-                crypto exchanges — listings, product releases, regulation, and
-                risk-tool developments.
-              </p>
+              <p className="mt-1 max-w-2xl text-sm text-muted">{t("brandLede")}</p>
             </div>
-            <p className="font-mono text-[11px] text-muted">
-              Scan window: last 24h · Monday covers since Friday
-            </p>
+            <div className="flex flex-col items-start gap-3 md:items-end">
+              <LanguageToggle />
+              <p className="font-mono text-[11px] text-muted">{t("scanHint")}</p>
+            </div>
           </div>
           <NavLinks />
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-5 py-8">{children}</main>
       <footer className="border-t border-line">
-        <div className="mx-auto max-w-6xl px-5 py-6 text-xs text-muted">
-          Public RSS, official newsrooms, and Google News topic feeds. Source
-          health and last-sourced timestamps are on the Sources page. Not
-          investment advice.
-        </div>
+        <div className="mx-auto max-w-6xl px-5 py-6 text-xs text-muted">{t("footer")}</div>
       </footer>
     </div>
   );

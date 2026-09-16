@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { parseView, useQueryParams } from "@/lib/queryNav";
 import type { Briefing, CatalogMeta, Entity, RiskTool } from "@/lib/types";
 import { BriefingBoard } from "./BriefingBoard";
@@ -20,6 +21,7 @@ export function DeskApp({
 }) {
   const params = useQueryParams();
   const view = parseView(params.get("view"));
+  const { t } = useLocale();
 
   if (view === "entities") {
     return (
@@ -33,7 +35,7 @@ export function DeskApp({
 
   if (view === "sources") {
     if (!briefing) {
-      return <p className="text-muted">No source health yet. Run `npm run scan`.</p>;
+      return <p className="text-muted">{t("noSources")}</p>;
     }
     return <SourcesView sources={briefing.sources} />;
   }
@@ -42,12 +44,8 @@ export function DeskApp({
     return (
       <div className="space-y-8">
         <div>
-          <h2 className="font-serif text-3xl">Risk detection, monitoring, management</h2>
-          <p className="mt-2 max-w-3xl text-sm text-muted">
-            Catalog of major internal and external risk, surveillance, and
-            compliance tools used by banks, brokers, and crypto venues. The
-            briefing below is the latest-scan slice tagged as risk-tool news.
-          </p>
+          <h2 className="font-serif text-3xl">{t("riskTitle")}</h2>
+          <p className="mt-2 max-w-3xl text-sm text-muted">{t("riskLede")}</p>
         </div>
         <RiskCatalog tools={tools} items={briefing?.items ?? []} />
         {briefing && (
@@ -55,7 +53,7 @@ export function DeskApp({
             briefing={briefing}
             entities={entities}
             tools={tools}
-            title="Risk-tool developments"
+            titleKey="riskDevelopments"
             hideCategoryFilters
             forceCategory="risk_tools"
           />
@@ -66,21 +64,16 @@ export function DeskApp({
 
   if (view === "regulation") {
     if (!briefing) {
-      return <p className="text-muted">Run a scan to populate the regulation desk.</p>;
+      return <p className="text-muted">{t("noRegulation")}</p>;
     }
     return (
       <div className="space-y-5">
-        <p className="max-w-3xl text-sm text-muted">
-          Regulatory discussion and rule changes across the United States,
-          Europe, the United Kingdom, Singapore, Japan, Hong Kong, China, and
-          other major jurisdictions. Each item includes a potential-impact note
-          for sector and assets.
-        </p>
+        <p className="max-w-3xl text-sm text-muted">{t("regulationLede")}</p>
         <BriefingBoard
           briefing={briefing}
           entities={entities}
           tools={tools}
-          title="Regulatory watch"
+          titleKey="regulatoryWatch"
           hideCategoryFilters
           forceCategory="regulation"
         />
@@ -91,8 +84,7 @@ export function DeskApp({
   if (!briefing) {
     return (
       <div className="rounded-xl border border-dashed border-line p-8 text-muted">
-        No scan has been written yet. From `vantage/`, run `npm run scan` and
-        refresh this page.
+        {t("noScan")}
       </div>
     );
   }

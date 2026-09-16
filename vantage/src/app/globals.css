@@ -30,9 +30,9 @@
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-down: var(--down);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-geist-sans), var(--font-noto-sans-sc);
   --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-newsreader);
+  --font-serif: var(--font-newsreader), var(--font-noto-serif-sc);
 }
 
 html,
