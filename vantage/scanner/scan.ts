@@ -64,6 +64,7 @@ interface RawItem {
   link: string;
   summary: string;
   publishedAt: Date;
+  fromFallback?: boolean;
 }
 
 async function readJson<T>(file: string): Promise<T> {
@@ -191,6 +192,9 @@ function isRelevant(
   entityIds: string[],
   category: NewsItem["category"],
 ): boolean {
+  if (raw.fromFallback) {
+    return entityIds.length > 0 || RELEVANT.test(`${raw.title} ${raw.summary}`);
+  }
   if (
     raw.source.kind === "regulator" ||
     raw.source.kind === "official_entity" ||
@@ -268,27 +272,21 @@ async function fetchSource(
 
   try {
     let result = await tryFeed(source, source.url);
+    let usedFallback = false;
     if (result.items.length === 0 && source.fallbackUrl) {
-      try {
-        const fallback = await tryFeed(source, source.fallbackUrl);
-        if (fallback.items.length > 0 || !result.error) {
-          result = fallback;
-        } else if (!fallback.error) {
-          result = fallback;
-        } else {
-          result = {
-            ...result,
-            error: `${result.error}; fallback: ${fallback.error}`,
-          };
-        }
-      } catch (error) {
-        const fallbackError =
-          error instanceof Error ? error.message : String(error);
+      const fallback = await tryFeed(source, source.fallbackUrl);
+      if (fallback.items.length > 0) {
+        result = fallback;
+        usedFallback = true;
+      } else {
         result = {
           ...result,
-          error: `${result.error ?? "Primary feed failed"}; fallback: ${fallbackError}`,
+          error: `${result.error ?? "Primary feed failed"}; fallback: ${fallback.error}`,
         };
       }
+    }
+    if (usedFallback) {
+      for (const item of result.items) item.fromFallback = true;
     }
 
     const health: SourceHealth =
@@ -429,7 +427,7 @@ export async function runScan(now = new Date()): Promise<Briefing> {
     result.items
       .filter((item) => inWindow(item.publishedAt, window))
       .sort((a, b) => +b.publishedAt - +a.publishedAt)
-      .slice(0, 25),
+      .slice(0, result.items.some((item) => item.fromFallback) ? 8 : 25),
   );
 
   const items = mergeItems(
