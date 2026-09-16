@@ -58,8 +58,8 @@ export function NewsCard({
     .filter(Boolean) as Array<{ id: string; name: string }>;
 
   return (
-    <article className="rounded-xl border border-line bg-panel p-4 md:p-5">
-      <div className="flex flex-wrap items-center gap-2 text-[11px] font-mono uppercase tracking-wide">
+    <article className="rounded-xl border border-line bg-panel p-3.5 md:p-5">
+      <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono uppercase tracking-wide md:gap-2">
         <span className={`rounded-full border px-2 py-0.5 ${CATEGORY_COLOR[item.category]}`}>
           {categoryLabel(item.category, locale)}
         </span>
@@ -68,8 +68,11 @@ export function NewsCard({
             {sectorLabel(sector, locale)}
           </span>
         ))}
-        {item.jurisdictions.slice(0, 4).map((jurisdiction) => (
+        {item.jurisdictions.slice(0, 2).map((jurisdiction) => (
           <CountryLabel key={jurisdiction} name={jurisdiction} className="text-muted" />
+        ))}
+        {item.jurisdictions.slice(2, 4).map((jurisdiction) => (
+          <CountryLabel key={jurisdiction} name={jurisdiction} className="hidden text-muted md:inline-flex" />
         ))}
       </div>
 

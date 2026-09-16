@@ -1,7 +1,7 @@
 "use client";
 
 import { countNews, itemMatchesFilters, parseCategory, parseSector } from "@/lib/filters";
-import { formatDateTime, formatRange, windowLabel } from "@/lib/format";
+import { formatDate, formatDateTime, formatRange, windowLabel } from "@/lib/format";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
@@ -82,39 +82,45 @@ export function BriefingBoard({
   );
 
   return (
-    <div className="space-y-6">
-      <section className="rounded-xl border border-line bg-panel-2 p-4 md:p-5">
+    <div className="space-y-4 md:space-y-6">
+      <section className="rounded-xl border border-line bg-panel-2 p-3 md:p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-gold">
               {briefing.meta.windowKind === "weekend" ? t("weekendScan") : t("dailyScan")}
             </p>
-            <h2 className="font-serif text-xl md:text-2xl">{t(titleKey)}</h2>
-            <p className="mt-1 text-sm text-muted">
-              {windowLabel(briefing.meta.windowKind, briefing.meta.windowLabel, locale)}:{" "}
-              {formatRange(briefing.meta.windowStart, briefing.meta.windowEnd, locale)}
+            <h2 className="font-serif text-lg md:text-2xl">{t(titleKey)}</h2>
+            <p className="mt-1 text-xs text-muted md:text-sm">
+              <span className="md:hidden">
+                {windowLabel(briefing.meta.windowKind, briefing.meta.windowLabel, locale)}{" "}
+                {formatDate(briefing.meta.windowStart, locale)} – {formatDate(briefing.meta.windowEnd, locale)}
+              </span>
+              <span className="hidden md:inline">
+                {windowLabel(briefing.meta.windowKind, briefing.meta.windowLabel, locale)}:{" "}
+                {formatRange(briefing.meta.windowStart, briefing.meta.windowEnd, locale)}
+              </span>
             </p>
           </div>
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-1 font-mono text-xs text-muted sm:grid-cols-4">
+          <dl className="grid grid-cols-4 gap-2 font-mono text-[11px] text-muted sm:text-xs">
             <div>
               <dt>{t("items")}</dt>
-              <dd className="text-paper">{briefing.meta.itemCount}</dd>
+              <dd className="whitespace-nowrap text-paper">{briefing.meta.itemCount}</dd>
             </div>
             <div>
-              <dt>{t("healthySources")}</dt>
-              <dd className="text-ok">{briefing.meta.sourceStats.healthy}/{briefing.meta.sourceStats.total}</dd>
+              <dt className="truncate">{t("healthySources")}</dt>
+              <dd className="whitespace-nowrap text-ok">{briefing.meta.sourceStats.healthy}/{briefing.meta.sourceStats.total}</dd>
             </div>
             <div>
               <dt>{t("degraded")}</dt>
-              <dd className="text-warn">{briefing.meta.sourceStats.degraded}</dd>
+              <dd className="whitespace-nowrap text-warn">{briefing.meta.sourceStats.degraded}</dd>
             </div>
             <div>
               <dt>{t("down")}</dt>
-              <dd className="text-down">{briefing.meta.sourceStats.down}</dd>
+              <dd className="whitespace-nowrap text-down">{briefing.meta.sourceStats.down}</dd>
             </div>
           </dl>
         </div>
-        <p className="mt-3 font-mono text-xs text-muted">
+        <p className="mt-3 hidden font-mono text-xs text-muted md:block">
           {t("lastSourced")} {formatDateTime(briefing.meta.generatedAt, locale)} · {t("listings")} {categoryCounts.listing} · {t("features")} {categoryCounts.product} · {t("regulation")} {categoryCounts.regulation} · {t("riskTools")} {categoryCounts.risk_tools}
         </p>
       </section>
@@ -157,7 +163,7 @@ export function BriefingBoard({
       </div>
 
       <form
-        className="flex gap-2"
+        className="flex flex-col gap-2 sm:flex-row"
         onSubmit={(event) => {
           event.preventDefault();
           const value = String(new FormData(event.currentTarget).get("q") ?? "");
@@ -170,7 +176,7 @@ export function BriefingBoard({
           placeholder={t("searchNews")}
           className="min-w-0 w-full rounded-lg border border-line bg-panel px-3 py-2.5 text-sm text-paper outline-none placeholder:text-muted focus:border-gold/50"
         />
-        <button type="submit" className="shrink-0 rounded-lg border border-gold px-3 text-sm text-gold">
+        <button type="submit" className="min-h-10 shrink-0 rounded-lg border border-gold px-3 text-sm text-gold sm:min-h-0">
           {t("search")}
         </button>
       </form>

@@ -50,6 +50,8 @@ describe("locale", () => {
 describe("messages", () => {
   it("returns Chinese chrome strings", () => {
     assert.equal(translate("zh", "navBriefing"), "每日简报");
+    assert.equal(translate("zh", "navSourcesShort"), "来源");
+    assert.equal(translate("en", "navSourcesShort"), "Sources");
     assert.equal(translate("zh", "features"), "功能");
     assert.equal(translate("en", "features"), "Features");
   });

@@ -44,8 +44,8 @@ export function DeskApp({
     return (
       <div className="space-y-8">
         <div>
-          <h2 className="font-serif text-3xl">{t("riskTitle")}</h2>
-          <p className="mt-2 max-w-3xl text-sm text-muted">{t("riskLede")}</p>
+          <h2 className="font-serif text-xl md:text-3xl">{t("riskTitle")}</h2>
+          <p className="mt-2 hidden max-w-3xl text-sm text-muted md:block">{t("riskLede")}</p>
         </div>
         <RiskCatalog tools={tools} items={briefing?.items ?? []} />
         {briefing && (
@@ -68,7 +68,7 @@ export function DeskApp({
     }
     return (
       <div className="space-y-5">
-        <p className="max-w-3xl text-sm text-muted">{t("regulationLede")}</p>
+        <p className="hidden max-w-3xl text-sm text-muted md:block">{t("regulationLede")}</p>
         <BriefingBoard
           briefing={briefing}
           entities={entities}

@@ -58,30 +58,31 @@ export function EntitiesView({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 md:space-y-5">
       <div>
-        <h2 className="font-serif text-2xl md:text-3xl">{t("entitiesTitle")}</h2>
-        <p className="mt-2 max-w-3xl text-sm text-muted">{t("entitiesLede")}</p>
+        <h2 className="font-serif text-xl md:text-3xl">{t("entitiesTitle")}</h2>
+        <p className="mt-2 hidden max-w-3xl text-sm text-muted md:block">{t("entitiesLede")}</p>
       </div>
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
+      <div className="flex w-full gap-1.5 md:gap-2">
         {TABS.map((entry) => (
           <QueryLink
             key={entry.id}
             href={href(entry.id)}
-            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
+            className={`inline-flex min-h-10 flex-1 items-center justify-center rounded-full border px-2 text-[13px] md:min-h-0 md:flex-none md:px-3 md:py-2 md:text-sm ${
               tab === entry.id ? "border-gold text-gold" : "border-line text-muted"
             }`}
           >
-            {t(entry.label)}
+            <span className="md:hidden">{t(entry.id === "banks" ? "banks" : entry.id === "brokers" ? "brokers" : "crypto")}</span>
+            <span className="hidden md:inline">{t(entry.label)}</span>
           </QueryLink>
         ))}
       </div>
-      <p className="text-sm text-muted">{notes[tab]}</p>
+      <p className="hidden text-sm text-muted md:block">{notes[tab]}</p>
       <p className="font-mono text-xs uppercase tracking-wide text-gold">
         {t("showingEntities", { n: rows.length, tab: t(TABS.find((entry) => entry.id === tab)!.label) })}
       </p>
       <form
-        className="flex gap-2"
+        className="flex flex-col gap-2 sm:flex-row"
         onSubmit={(event) => {
           event.preventDefault();
           const value = String(new FormData(event.currentTarget).get("q") ?? "");
@@ -92,9 +93,9 @@ export function EntitiesView({
           name="q"
           defaultValue={query}
           placeholder={t("searchEntities")}
-          className="w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm outline-none focus:border-gold/50"
+          className="min-w-0 w-full rounded-lg border border-line bg-panel px-3 py-2.5 text-sm outline-none focus:border-gold/50"
         />
-        <button type="submit" className="shrink-0 rounded-lg border border-gold px-3 text-sm text-gold">
+        <button type="submit" className="min-h-10 shrink-0 rounded-lg border border-gold px-3 text-sm text-gold sm:min-h-0">
           {t("search")}
         </button>
       </form>
@@ -106,7 +107,10 @@ export function EntitiesView({
               <th className="px-3 py-2">{t("entity")}</th>
               <th className="hidden px-3 py-2 md:table-cell">{t("hq")}</th>
               <th className="px-3 py-2">{t("country")}</th>
-              <th className="px-3 py-2">{t("windowHits")}</th>
+              <th className="px-3 py-2">
+                <span className="md:hidden">{t("windowHitsShort")}</span>
+                <span className="hidden md:inline">{t("windowHits")}</span>
+              </th>
               <th className="hidden px-3 py-2 md:table-cell">{t("website")}</th>
             </tr>
           </thead>

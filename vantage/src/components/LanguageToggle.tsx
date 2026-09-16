@@ -12,7 +12,7 @@ export function LanguageToggle() {
           key={entry}
           type="button"
           onClick={() => setLocale(entry)}
-          className={`rounded-full border px-3 py-1.5 font-mono text-xs ${
+          className={`min-h-9 rounded-full border px-2.5 py-1.5 font-mono text-xs md:px-3 ${
             locale === entry
               ? "border-gold bg-gold/10 text-gold"
               : "border-line text-muted hover:border-gold/40 hover:text-paper"

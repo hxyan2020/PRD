@@ -16,9 +16,25 @@ export function formatDateTime(
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
+      hour12: false,
       hourCycle: "h23",
     }).format(date) + " UTC"
   );
+}
+
+export function formatDate(
+  iso: string | null | undefined,
+  locale: Locale = "en",
+): string {
+  if (!iso) return "—";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "—";
+  return new Intl.DateTimeFormat(locale === "zh" ? "zh-CN" : "en-GB", {
+    timeZone: "UTC",
+    year: "numeric",
+    month: locale === "zh" ? "numeric" : "short",
+    day: "2-digit",
+  }).format(date);
 }
 
 export function formatRange(start: string, end: string, locale: Locale = "en"): string {

@@ -41,21 +41,21 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 md:space-y-5">
       <div>
-        <h2 className="font-serif text-2xl md:text-3xl">{t("sourcesTitle")}</h2>
-        <p className="mt-2 max-w-3xl text-sm text-muted">{t("sourcesLede")}</p>
+        <h2 className="font-serif text-xl md:text-3xl">{t("sourcesTitle")}</h2>
+        <p className="mt-2 hidden max-w-3xl text-sm text-muted md:block">{t("sourcesLede")}</p>
       </div>
       <p className="font-mono text-xs uppercase tracking-wide text-gold">
         {t("showingSources", { n: rows.length })}
         {status && status !== "all" ? ` · ${healthLabel(status, locale)}` : ""}
       </p>
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
+      <div className="flex w-full gap-1.5 md:gap-2">
         {(["all", "healthy", "degraded", "down"] as const).map((entry) => (
           <QueryLink
             key={entry}
             href={href(entry)}
-            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
+            className={`inline-flex min-h-10 flex-1 items-center justify-center rounded-full border px-2 text-[13px] md:min-h-0 md:flex-none md:px-3 md:py-2 md:text-sm ${
               status === entry ? "border-gold text-gold" : "border-line text-muted"
             }`}
           >
@@ -64,7 +64,7 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
         ))}
       </div>
       <form
-        className="flex gap-2"
+        className="flex flex-col gap-2 sm:flex-row"
         onSubmit={(event) => {
           event.preventDefault();
           const value = String(new FormData(event.currentTarget).get("q") ?? "");
@@ -75,9 +75,9 @@ export function SourcesView({ sources }: { sources: SourceStatus[] }) {
           name="q"
           defaultValue={params.get("q") ?? ""}
           placeholder={t("searchSources")}
-          className="w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm outline-none focus:border-gold/50"
+          className="min-w-0 w-full rounded-lg border border-line bg-panel px-3 py-2.5 text-sm outline-none focus:border-gold/50"
         />
-        <button type="submit" className="shrink-0 rounded-lg border border-gold px-3 text-sm text-gold">
+        <button type="submit" className="min-h-10 shrink-0 rounded-lg border border-gold px-3 text-sm text-gold sm:min-h-0">
           {t("search")}
         </button>
       </form>
