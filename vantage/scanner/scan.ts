@@ -22,6 +22,7 @@ import type {
 } from "../src/lib/types";
 import { parseLooseDate } from "../src/lib/dates";
 import { computeScanWindow, inWindow, previousFridayScan } from "../src/lib/window";
+import { clusterNewsItems } from "../src/lib/clusterNews";
 import { repairNewsItems } from "../src/lib/repairNews";
 import { attachChinese } from "./localize";
 
@@ -321,7 +322,7 @@ export async function runScan(now = new Date()): Promise<Briefing> {
         isRelevant(rawItems[index], item.entities, item.category),
       ),
   );
-  const repaired = repairNewsItems(items);
+  const repaired = repairNewsItems(clusterNewsItems(items));
   await attachChinese(repaired, previous);
 
   const briefing: Briefing = {
