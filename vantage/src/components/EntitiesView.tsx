@@ -107,7 +107,7 @@ export function EntitiesView({
               <th className="px-3 py-2">{t("entity")}</th>
               <th className="hidden px-3 py-2 md:table-cell">{t("hq")}</th>
               <th className="px-3 py-2">{t("country")}</th>
-              <th className="px-3 py-2">
+              <th className="whitespace-nowrap px-3 py-2">
                 <span className="md:hidden">{t("windowHitsShort")}</span>
                 <span className="hidden md:inline">{t("windowHits")}</span>
               </th>
