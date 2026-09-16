@@ -6,6 +6,7 @@ import { placeLabel } from "@/lib/i18n/lookups";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { CatalogMeta, Entity, NewsItem, Sector } from "@/lib/types";
+import { BrandLabel } from "./BrandLabel";
 import { CountryLabel } from "./CountryLabel";
 import { QueryLink } from "./QueryLink";
 
@@ -116,7 +117,9 @@ export function EntitiesView({
                 <tr key={entity.id} className="border-t border-line">
                   <td className="px-3 py-2 font-mono text-gold">{entity.rank}</td>
                   <td className="px-3 py-2">
-                    <div>{entityName(entity.id, entity.name, locale)}</div>
+                    <div>
+                      <BrandLabel id={entity.id} name={entityName(entity.id, entity.name, locale)} />
+                    </div>
                     {entity.notes && <div className="text-xs text-muted">{entity.notes}</div>}
                   </td>
                   <td className="px-3 py-2 text-muted">{placeLabel(entity.hq, locale)}</td>

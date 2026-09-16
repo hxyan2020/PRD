@@ -6,7 +6,9 @@ import { assetLabel } from "@/lib/i18n/lookups";
 import { useStoryText } from "@/lib/i18n/useStoryText";
 import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
 import type { Entity, NewsItem, RiskTool } from "@/lib/types";
+import { BrandLabelList } from "./BrandLabel";
 import { CountryLabel } from "./CountryLabel";
+import { toolLogoId } from "@/lib/logos";
 
 const CATEGORY_COLOR: Record<string, string> = {
   listing: "text-[var(--listing)] border-[var(--listing)]/40",
@@ -42,15 +44,18 @@ export function NewsCard({
   tools: RiskTool[];
 }) {
   const { locale, t } = useLocale();
-  const names = item.entities
+  const brandEntities = item.entities
     .map((id) => {
       const entity = entities.find((entry) => entry.id === id);
-      return entity ? entityName(entity.id, entity.name, locale) : null;
+      return entity ? { id: entity.id, name: entityName(entity.id, entity.name, locale) } : null;
     })
-    .filter(Boolean) as string[];
-  const toolNames = item.riskTools
-    .map((id) => tools.find((tool) => tool.id === id)?.name)
-    .filter(Boolean) as string[];
+    .filter(Boolean) as Array<{ id: string; name: string }>;
+  const brandTools = item.riskTools
+    .map((id) => {
+      const tool = tools.find((entry) => entry.id === id);
+      return tool ? { id: toolLogoId(tool.id), name: tool.name } : null;
+    })
+    .filter(Boolean) as Array<{ id: string; name: string }>;
 
   return (
     <article className="rounded-xl border border-line bg-panel p-5">
@@ -76,9 +81,9 @@ export function NewsCard({
         {t("published")} {formatDateTime(item.publishedAt, locale)}
       </p>
 
-      {names.length > 0 && (
+      {brandEntities.length > 0 && (
         <p className="mt-2 text-sm text-muted">
-          {t("entitiesLabel")}: {names.join(" · ")}
+          {t("entitiesLabel")}: <BrandLabelList items={brandEntities} />
         </p>
       )}
 
@@ -106,9 +111,9 @@ export function NewsCard({
         </div>
       )}
 
-      {toolNames.length > 0 && (
+      {brandTools.length > 0 && (
         <p className="mt-3 text-sm text-muted">
-          {t("riskToolsLabel")}: {toolNames.join(" · ")}
+          {t("riskToolsLabel")}: <BrandLabelList items={brandTools} />
         </p>
       )}
 

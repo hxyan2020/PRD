@@ -2,8 +2,10 @@
 
 import { toolCategory, toolSummary, toolUse } from "@/lib/i18n/catalog";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { toolLogoId, vendorLogoId } from "@/lib/logos";
 import { sectorLabel } from "@/lib/format";
 import type { NewsItem, RiskTool } from "@/lib/types";
+import { BrandLabel } from "./BrandLabel";
 
 export function RiskCatalog({
   tools,
@@ -23,8 +25,12 @@ export function RiskCatalog({
             <p className="font-mono text-[11px] uppercase tracking-wide text-gold">
               {toolUse(tool.use, locale)} {t("use")} · {toolCategory(tool.category, locale)}
             </p>
-            <h3 className="mt-1 font-serif text-xl">{tool.name}</h3>
-            <p className="text-sm text-muted">{tool.vendor}</p>
+            <h3 className="mt-1 font-serif text-xl">
+              <BrandLabel id={toolLogoId(tool.id)} name={tool.name} size="md" />
+            </h3>
+            <p className="text-sm text-muted">
+              <BrandLabel id={vendorLogoId(tool.vendor)} name={tool.vendor} />
+            </p>
             <p className="mt-2 text-sm leading-6">{toolSummary(tool.id, tool.summary, locale)}</p>
             <p className="mt-3 text-xs text-muted">
               {t("sectors")}: {tool.sectors.map((sector) => sectorLabel(sector, locale)).join(" · ")} · {t("windowHits")}: {hits}
