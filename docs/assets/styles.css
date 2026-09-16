@@ -482,7 +482,11 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 .tool h3 { font-size: 18px; }
 .tool .fit { color: var(--jade); font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
 
-.matrix { overflow-x: auto; }
+.matrix {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
 
 .note {
   border: 1px solid var(--line);
@@ -671,8 +675,9 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 
   .menu-btn { display: grid; }
   .lang-switch button {
-    min-height: 36px;
-    padding: 0 11px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
   }
 
   .nav { display: none; }
@@ -771,12 +776,21 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
   .esc { grid-template-columns: 72px 1fr; gap: 10px; }
   .cm-card { gap: 8px; padding: 12px; }
   .matrix {
+    display: block;
+    width: auto;
+    max-width: 100vw;
     margin: 0 -16px;
-    padding: 0 16px;
+    padding: 0 16px 10px;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
   }
-  table { font-size: 12px; min-width: 860px; }
+  table {
+    width: max-content;
+    min-width: 860px;
+    max-width: none;
+    font-size: 12px;
+  }
   th { white-space: nowrap; }
   th, td { padding: 8px 10px; }
 
