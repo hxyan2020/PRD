@@ -10,6 +10,7 @@ window.TRN_UI = {
       response: "Response Map"
     },
     menu: "Open menu",
+    menuClose: "Close menu",
     langEn: "EN",
     langZh: "中文",
     foot1: "Trading Risk Ninja is a surveillance and compliance handbook. It describes how abusive patterns typically appear in market data so desks can detect and interrupt them. It is not a playbook for committing market abuse.",
@@ -112,6 +113,7 @@ window.TRN_UI = {
       response: "应对图谱"
     },
     menu: "打开菜单",
+    menuClose: "关闭菜单",
     langEn: "EN",
     langZh: "中文",
     foot1: "Trading Risk Ninja 是监察与合规手册。它说明滥用模式通常如何出现在行情与订单数据中，以便交易台发现并打断它们。它不是实施市场滥用的操作指南。",
