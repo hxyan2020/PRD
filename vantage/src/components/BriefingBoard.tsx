@@ -144,6 +144,10 @@ export function BriefingBoard({
         className="w-full rounded-lg border border-line bg-panel px-3 py-2 text-sm text-paper outline-none placeholder:text-muted focus:border-gold/50"
       />
 
+      <p className="font-mono text-xs uppercase tracking-wide text-gold">
+        Showing {items.length} stories
+      </p>
+
       {items.length === 0 ? (
         <p className="rounded-xl border border-dashed border-line px-4 py-10 text-center text-muted">
           No items in this window match the current filters. Sources still ran;
