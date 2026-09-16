@@ -86,13 +86,14 @@ button, input, select { font: inherit; color: inherit; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.nav { display: flex; gap: 22px; }
+.nav { display: flex; gap: 16px; flex-wrap: wrap; justify-content: flex-end; }
 .nav a {
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--muted);
+  white-space: nowrap;
 }
 .nav a.active, .nav a:hover { color: var(--text); }
 .menu-btn {
