@@ -1,7 +1,13 @@
 import { BriefingBoard } from "@/components/BriefingBoard";
+import { parseSector } from "@/lib/filters";
 import { loadBriefing, loadEntities, loadRiskTools } from "@/lib/loadData";
 
-export default async function RegulationPage() {
+export default async function RegulationPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sector?: string; q?: string }>;
+}) {
+  const params = await searchParams;
   const [briefing, catalog, tools] = await Promise.all([
     loadBriefing(),
     loadEntities(),
@@ -25,7 +31,11 @@ export default async function RegulationPage() {
         entities={catalog.all}
         tools={tools}
         title="Regulatory watch"
-        forceCategory="regulation"
+        basePath="/regulation"
+        hideCategoryFilters
+        activeCategory="regulation"
+        activeSector={parseSector(params.sector)}
+        query={params.q ?? ""}
       />
     </div>
   );

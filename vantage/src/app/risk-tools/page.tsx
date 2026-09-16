@@ -1,8 +1,14 @@
 import { BriefingBoard } from "@/components/BriefingBoard";
+import { parseSector } from "@/lib/filters";
 import { RiskCatalog } from "@/components/RiskCatalog";
 import { loadBriefing, loadEntities, loadRiskTools } from "@/lib/loadData";
 
-export default async function RiskToolsPage() {
+export default async function RiskToolsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ sector?: string; q?: string }>;
+}) {
+  const params = await searchParams;
   const [briefing, catalog, tools] = await Promise.all([
     loadBriefing(),
     loadEntities(),
@@ -26,7 +32,11 @@ export default async function RiskToolsPage() {
           entities={catalog.all}
           tools={tools}
           title="Risk-tool developments"
-          forceCategory="risk_tools"
+          basePath="/risk-tools"
+          hideCategoryFilters
+          activeCategory="risk_tools"
+          activeSector={parseSector(params.sector)}
+          query={params.q ?? ""}
         />
       )}
     </div>
