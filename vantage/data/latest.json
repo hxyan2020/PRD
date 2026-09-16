@@ -5,7 +5,7 @@
     "windowLabel": "Last 24 hours",
     "windowStart": "2026-09-15T12:23:51.765Z",
     "windowEnd": "2026-09-16T12:23:51.765Z",
-    "itemCount": 147,
+    "itemCount": 88,
     "sourceStats": {
       "total": 67,
       "healthy": 29,
@@ -46,39 +46,249 @@
       ]
     },
     {
-      "id": "6a9465b29a7aeb93",
-      "caption": "Morning Minute: Clarity Act Vote Falls Short as Democrats All Vote ‘No’",
+      "id": "c283c00a08c27bf8",
+      "caption": "Clarity Act collapse causes crypto turmoil in US",
       "category": "regulation",
       "sectors": [
-        "crypto"
+        "crypto",
+        "banks",
+        "brokers"
       ],
       "keyPoints": [
-        "It should not have come as a surprise given the odds, but crypto majors, alts and memes all sold off anyway in the wake."
+        "U.S. spot bitcoin ETFs shed $450 million, the most since June, as the Senate's failure to advance the Clarity Act sent regulatory-sensitive tokens sharply lower.",
+        "The $450 million withdrawal came as Bitcoin fell 2.5% and the CLARITY Act failed to advance in the Senate, with Fidelity and BlackRock funds leading the outflows.",
+        "XRP sinks 10% as the Clarity Act fails and bitcoin slides toward $76,000.",
+        "Circle and Coinbase shares fell about 10% as the failed Senate vote weighed on crypto-linked equities, with Bitcoin miners and treasury companies also declining.",
+        "Bitcoin price falls to $75.6K September low as global bonds hit multidecade highs.",
+        "With Bitcoin sitting around $76,000, the argument from analysts is that dollar liquidity, not Congress, sets the floor from here.",
+        "Bitcoin Hovers at $76K as Analysts Argue the Fed Matters More Than Clarity Act.",
+        "Polymarket priced the odds of the bill becoming law this year at 12.5% on Tuesday morning, down from 29.5% on Monday afternoon, ahead of a cloture vote scheduled for 2:15 p.m.",
+        "Bitcoin Falls Below $76,000 as Traders Cut CLARITY Act Odds Hours Before Senate Vote.",
+        "Privacy token zcash, meanwhile, is up 130% over 30 days and trades near its all-time highs from 2016."
       ],
       "sources": [
         {
           "name": "Decrypt",
           "url": "https://decrypt.co/378352/morning-minute-clarity-act-vote-falls-short-as-democrats-all-vote-no",
           "sourceId": "decrypt"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378351/bitcoin-hovers-at-76k-as-analysts-argue-the-fed-matters-more-than-clarity-act",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "Finextra",
+          "url": "https://www.finextra.com/newsarticle/48416/clarity-act-collapse-causes-crypto-turmoil-in-us?utm_medium=rssfinextra&utm_source=finextrafeed",
+          "sourceId": "finextra"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/markets/2026/09/16/bitcoin-etfs-shed-usd450-million-as-clarity-act-fails",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/business/2026/09/16/live-updates-zcash-climbs-6-as-majors-slide-ahead-of-fed-rate-decision",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/markets/2026/09/16/bitcoin-s-coinbase-premium-sinks-to-one-month-low-here-s-why",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/markets/bitcoin-coinbase-premium-hits-monthly-low-as-clarity-act-vote-squeezes-us-demand?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/markets/2026/09/16/crypto-bulls-take-a-usd570-million-liquidation-hit-as-clarity-act-fails",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/news/bitcoin-etfs-shed-450m-in-biggest-outflow-since-june?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/markets/2026/09/16/xrp-sinks-10-as-the-clarity-act-fails-and-bitcoin-slides-toward-usd76-000",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/markets/2026-09-15-analysts-downplay-clarity-act-415234",
+          "sourceId": "theblock"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/news/crypto-industry-turns-to-us-regulators-after-clarity-setback?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/news-analysis/2026/09/15/there-were-many-conductors-in-the-derailment-of-the-crypto-industry-s-clarity-act",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/regulation/2026-09-15-this-one-stings-clarity-act-fails-senate-is-cryptos-biggest-regulatory-push-dead-415135",
+          "sourceId": "theblock"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378303/coinbase-crypto-group-midterms-vote-clarity-act",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/markets/crypto-stocks-slide-after-clarity-act-fails-to-advance-in-senate?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/markets/2026/09/15/crypto-stocks-sink-after-senate-rejects-clarity-act",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "Google News — Product / feature launches",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOZFhrLWoxeVFQdTNSai12VFR4MGc2eUo5SDloV21wMnpfa215OE5XZ2Z1VUwxU3M4UzZmSksyTmRyendlOW5jTFFYZE1SOFdybDFCcnl0aWxjcU81Q0wtT2J2c3lPUDlVOXd3SnZod1dGc0hBSzJQcTF6MElheUpHTWdySlEzaXBCWXZ5NVRMaE83U0daUGQ3Ng?oc=5",
+          "sourceId": "gn-features"
+        },
+        {
+          "name": "The Defiant",
+          "url": "https://thedefiant.io/news/regulation/senate-blocks-clarity-act-49-50-with-no-democratic-votes-to-proceed",
+          "sourceId": "thedefiant"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378286/crypto-clarity-act-fails-clear-senate-bitcoin-slides",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/policy/2026/09/15/clarity-act-fails-in-senate-here-is-how-the-crypto-industry-is-reacting",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/regulation/2026-09-15-clarity-act-preliminary-vote-falls-short-in-senate-amid-ethics-fight-over-trumps-crypto-wealth-415010",
+          "sourceId": "theblock"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378283/clarity-act-fails-senate-hurdle",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/policy/2026/09/15/crypto-clarity-act-flames-out-in-failed-u-s-senate-vote",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/news/us-senate-fails-to-advance-clarity-act?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/regulation/2026-09-15-sen-elizabeth-warren-says-she-wants-a-crypto-bill-but-the-clarity-act-just-isnt-it-414869",
+          "sourceId": "theblock"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378268/now-or-never-clarity-act-bitcoin-cynthia-lummis",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/markets/bitcoin-price-falls-to-756k-september-low-as-global-bonds-hit-multidecade-highs?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "The Defiant",
+          "url": "https://thedefiant.io/news/markets/bitcoin-falls-below-76000-clarity-act-odds-senate-vote-sep-15-2026",
+          "sourceId": "thedefiant"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/policy/2026/09/15/crypto-clarity-act-barrels-toward-disappointment-barring-last-minute-senate-turnaround",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378246/democrats-goalposts-clarity-act-key-senate-vote",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378233/bitcoin-sinks-senate-clarity-act-showdown",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/regulation/2026-09-15-senate-republican-lummis-rejects-democratic-counteroffer-clarity-act-vote-414850",
+          "sourceId": "theblock"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/policy/2026/09/15/clarity-act-s-odds-of-passing-plunge-as-republicans-reject-democrats-counter-proposal",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378230/morning-minute-clarity-act-odds-slump-after-democrat-pushback",
+          "sourceId": "decrypt"
+        },
+        {
+          "name": "The Defiant",
+          "url": "https://thedefiant.io/podcasts-and-videos/podcast/will-crypto-get-clarity-senate-votes-today",
+          "sourceId": "thedefiant"
         }
       ],
       "publishedAt": "2026-09-16T12:17:50.000Z",
-      "entities": [],
+      "entities": [
+        "coinbase",
+        "bullish",
+        "fidelity"
+      ],
       "jurisdictions": [
-        "Global"
+        "Global",
+        "United States",
+        "China"
       ],
       "impact": {
         "sectors": [
-          "crypto"
+          "crypto",
+          "banks",
+          "brokers"
         ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
+        "assets": [
+          "BTC",
+          "stablecoins",
+          "equities",
+          "commodities",
+          "futures",
+          "government bonds"
+        ],
+        "summary": "Potential impact on crypto, banks, brokers. Focus assets: BTC, stablecoins, equities, commodities, futures, government bonds.",
+        "summaryZh": "对加密交易所、银行、券商的潜在影响。 关注资产：比特币、稳定币、股票、大宗商品、期货、国债。"
       },
       "riskTools": [],
-      "captionZh": "上午一分钟：透明度法案投票不足，因为民主党人都投了“不”票",
+      "captionZh": "清晰度法案崩溃导致美国加密货币动荡",
       "keyPointsZh": [
-        "考虑到这种可能性，这不应该是一个惊喜，但加密专业， alts和memes无论如何都会在之后卖掉。"
+        "美国现货比特币ETF下跌4.5亿美元，这是自6月以来的最大跌幅，因为参议院未能推进《清晰度法案》，导致监管敏感的代币大幅下跌。",
+        "由于比特币下跌2.5% ， CLARITY法案未能在参议院取得进展，富达和贝莱德基金引领了资金外流，因此提取了4.5亿美元。",
+        "随着《清晰度法案》失败，比特币跌向76,000 $ ， XRP下跌了10%。",
+        "Circle和Coinbase股价下跌约10% ，原因是参议院的失败投票拖累了与加密货币相关的股票，比特币矿工和财政部门也在下跌。",
+        "随着全球债券触及数十年高点，比特币价格跌至9月份的7.56 $低点。",
+        "由于比特币的价格在76,000 $左右，分析师的论点是，美元流动性，而不是国会，从这里开始。",
+        "比特币徘徊在$ 76K ，因为分析师认为美联储比清晰度法案更重要。",
+        "Polymarket将该法案在周二上午成为法律的几率定为12.5% ，低于周一下午的29.5% ，高于定于下午2:15举行的集体投票。",
+        "比特币跌破76,000 $ ，因为交易员在参议院投票前削减了CLARITY ACT赔率。",
+        "与此同时，隐私代币zcash在30天内上涨了130% ，交易量接近2016年的历史高点。"
       ]
     },
     {
@@ -112,44 +322,6 @@
       "captionZh": "Kraken母公司为美国客户部署链上永续期货市场（ KRAKEN ：私有） -寻求Alpha",
       "keyPointsZh": [
         "Kraken母公司为美国客户（ KRAKEN ：私人）部署链上永续期货市场寻求Alpha。"
-      ]
-    },
-    {
-      "id": "26fa9830aae5eec2",
-      "caption": "Bitcoin Hovers at $76K as Analysts Argue the Fed Matters More Than Clarity Act",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "With Bitcoin sitting around $76,000, the argument from analysts is that dollar liquidity, not Congress, sets the floor from here."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378351/bitcoin-hovers-at-76k-as-analysts-argue-the-fed-matters-more-than-clarity-act",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-16T12:12:21.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "比特币徘徊在$ 76K ，因为分析师认为美联储比清晰度法案更重要",
-      "keyPointsZh": [
-        "由于比特币的价格在76,000 $左右，分析师的论点是，美元流动性，而不是国会，从这里开始。"
       ]
     },
     {
@@ -243,68 +415,6 @@
       ]
     },
     {
-      "id": "fc67c9717f8bca5c",
-      "caption": "Bank of Canada kiest de CanDeal Data & Analytics (\"DNA\") Reference Pricing Service als prijsbron voor Canadese vastrentende effecten",
-      "category": "product",
-      "sectors": [
-        "banks",
-        "brokers"
-      ],
-      "keyPoints": [
-        "Bank of Canada kiest de CanDeal Data & Analytics (\"DNA\") Reference Pricing Service als prijsbron voor Canadese vastrentende effecten."
-      ],
-      "sources": [
-        {
-          "name": "PR Newswire Financial Services",
-          "url": "https://www.prnewswire.com/news-releases/bank-of-canada-kiest-de-candeal-data--analytics-dna-reference-pricing-service-als-prijsbron-voor-canadese-vastrentende-effecten-302879608.html",
-          "sourceId": "prnews-fin"
-        }
-      ],
-      "publishedAt": "2026-09-16T12:00:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Canada",
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "加拿大银行选择CanDeal数据与分析（ “DNA” ）参考定价服务作为加拿大固定收益证券的定价来源",
-      "keyPointsZh": [
-        "加拿大银行选择CanDeal数据与分析（ “DNA” ）参考定价服务作为加拿大固定收益证券的定价来源。"
-      ]
-    },
-    {
-      "id": "9c30fff9f7840927",
-      "caption": "Die Bank of Canada wählt den Reference Pricing Service „CanDeal Data & Analytics\" („DNA\") als Preisquelle für kanadische festverzinsliche Wertpapiere",
-      "category": "product",
-      "sectors": [
-        "banks",
-        "brokers"
-      ],
-      "keyPoints": [
-        "Die Bank of Canada wählt den Reference Pricing Service „CanDeal Data & Analytics\" („DNA\") als Preisquelle für kanadische festverzinsliche Wertpapiere."
-      ],
-      "sources": [
-        {
-          "name": "PR Newswire Financial Services",
-          "url": "https://www.prnewswire.com/news-releases/die-bank-of-canada-wahlt-den-reference-pricing-service-candeal-data--analytics-dna-als-preisquelle-fur-kanadische-festverzinsliche-wertpapiere-302878568.html",
-          "sourceId": "prnews-fin"
-        }
-      ],
-      "publishedAt": "2026-09-16T12:00:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Canada",
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "加拿大银行选择参考定价服务“CanDeal数据与分析” （ “DNA” ）作为加拿大固定收益证券的价格来源",
-      "keyPointsZh": [
-        "加拿大银行选择参考定价服务“CanDeal数据和分析” （ “DNA” ）作为加拿大固定收益证券的价格来源。"
-      ]
-    },
-    {
       "id": "b0989f9f629a9379",
       "caption": "Bank of Canada Selects the CanDeal Data & Analytics (\"DNA\") Reference Pricing Service as its pricing source for Canadian fixed income securities",
       "category": "product",
@@ -316,6 +426,16 @@
         "CanDeal Data & Analytics (\"DNA\"), a leading provider of Canadian over-the-counter financial market data solutions, is pleased to announce a multi-year agreement with the Bank of Canada for access to the CanDeal DNA Reference Pricing service."
       ],
       "sources": [
+        {
+          "name": "PR Newswire Financial Services",
+          "url": "https://www.prnewswire.com/news-releases/bank-of-canada-kiest-de-candeal-data--analytics-dna-reference-pricing-service-als-prijsbron-voor-canadese-vastrentende-effecten-302879608.html",
+          "sourceId": "prnews-fin"
+        },
+        {
+          "name": "PR Newswire Financial Services",
+          "url": "https://www.prnewswire.com/news-releases/die-bank-of-canada-wahlt-den-reference-pricing-service-candeal-data--analytics-dna-als-preisquelle-fur-kanadische-festverzinsliche-wertpapiere-302878568.html",
+          "sourceId": "prnews-fin"
+        },
         {
           "name": "PR Newswire Financial Services",
           "url": "https://www.prnewswire.com/news-releases/bank-of-canada-selects-the-candeal-data--analytics-dna-reference-pricing-service-as-its-pricing-source-for-canadian-fixed-income-securities-302877999.html",
@@ -443,13 +563,20 @@
         "crypto"
       ],
       "keyPoints": [
-        "Nearly 99% of ZEC holders voted to reduce block times to 25 seconds, while keeping ZEC issuance and halving schedules unchanged."
+        "Nearly 99% of ZEC holders voted to reduce block times to 25 seconds, while keeping ZEC issuance and halving schedules unchanged.",
+        "Nearly 2.4 million ZEC participated, with 99.9% backing 25-second blocks and 98.9% voting to preserve the network’s existing halving schedule.",
+        "Zcash holders overwhelmingly back faster transactions and bitcoin-style halvings."
       ],
       "sources": [
         {
           "name": "Cointelegraph",
           "url": "https://cointelegraph.com/news/zcash-nu7-poll-faster-blocks-zec-halvings?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
           "sourceId": "cointelegraph"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/tech/2026/09/16/zcash-holders-overwhelmingly-back-faster-transactions-and-bitcoin-style-halvings",
+          "sourceId": "coindesk"
         }
       ],
       "publishedAt": "2026-09-16T11:46:39.000Z",
@@ -461,7 +588,9 @@
       "riskTools": [],
       "captionZh": "Zcash持有者退出25秒区块，投票保留ZEC减半时间表",
       "keyPointsZh": [
-        "近99%的ZEC持有者投票赞成将区块时间减少到25秒，同时保持ZEC发行和减半时间表不变。"
+        "近99%的ZEC持有者投票赞成将区块时间减少到25秒，同时保持ZEC发行和减半时间表不变。",
+        "近240万ZEC参与，其中99.9%支持25秒区块， 98.9%投票支持保留网络现有的减半时间表。",
+        "Zcash持有者绝大多数支持更快的交易和比特币式的减半。"
       ]
     },
     {
@@ -474,13 +603,22 @@
         "brokers"
       ],
       "keyPoints": [
-        "New FCA guidance will help firms understand how the law underpinning the UK's future cryptoasset regime applies to their business."
+        "With applications for authorisation opening from 30 September 2026, firms need this guidance now to help them prepare.",
+        "The regime comes into force on 25 October 2027.",
+        "New FCA guidance will help firms understand how the law underpinning the UK's future cryptoasset regime applies to their business.",
+        "It also sets out which activities may require FCA authorisation.",
+        "Crypto firms get guidance on how the new regime applies."
       ],
       "sources": [
         {
           "name": "Finextra",
           "url": "https://www.finextra.com/pressarticle/110923/fca-issues-guidance-on-the-laws-governing-the-uks-future-crypto-asset-regime?utm_medium=rssfinextra&utm_source=finextrafeed",
           "sourceId": "finextra"
+        },
+        {
+          "name": "UK FCA News",
+          "url": "https://www.fca.org.uk/news/press-releases/crypto-firms-get-guidance-how-new-regime-applies",
+          "sourceId": "fca"
         }
       ],
       "publishedAt": "2026-09-16T11:41:00.000Z",
@@ -496,15 +634,21 @@
           "brokers"
         ],
         "assets": [
-          "futures"
+          "futures",
+          "stablecoins",
+          "government bonds"
         ],
-        "summary": "Potential impact on crypto, banks, brokers. Focus assets: futures.",
-        "summaryZh": "对加密交易所、银行、券商的潜在影响。 关注资产：期货。"
+        "summary": "Potential impact on crypto, banks, brokers. Focus assets: futures, stablecoins, government bonds.",
+        "summaryZh": "对加密交易所、银行、券商的潜在影响。 关注资产：期货、稳定币、国债。"
       },
       "riskTools": [],
       "captionZh": "FCA发布关于英国未来加密资产制度的法律指南",
       "keyPointsZh": [
-        "新的FCA指南将帮助公司了解支持英国未来加密资产制度的法律如何适用于其业务。"
+        "随着授权申请从2026年9月30日开始开放，公司现在需要此指导来帮助他们做好准备。",
+        "该制度于2027年10月25日生效。",
+        "新的FCA指南将帮助公司了解支持英国未来加密资产制度的法律如何适用于其业务。",
+        "它还规定了哪些活动可能需要FCA授权。",
+        "加密公司获得有关如何适用新制度的指导。"
       ]
     },
     {
@@ -512,16 +656,40 @@
       "caption": "Circle launches Arc mainnet with USDC as native gas token",
       "category": "product",
       "sectors": [
-        "crypto"
+        "crypto",
+        "banks"
       ],
       "keyPoints": [
-        "Circle’s Arc mainnet is live with USDC for transaction fees, support for more than 20 fiat stablecoins and links to over 20 blockchains."
+        "Circle’s Arc mainnet is live with USDC for transaction fees, support for more than 20 fiat stablecoins and links to over 20 blockchains.",
+        "The Layer 1 charges gas in USDC and runs proof-of-authority across a permissioned set of 11 institutions plus Circle.",
+        "More than 100 applications are live at launch, with Aave, Morpho and Uniswap anchoring DeFi.",
+        "Circle minted 10 billion ARC tokens this week without committing to a public launch.",
+        "Circle confirmed it completed the genesis mint of 10 billion ARC tokens this week, although a public launch of the token remains undecided.",
+        "Circle launches Arc mainnet with BlackRock and Visa among validators, mints 10 billion ARC tokens.",
+        "The USDC issuer's chain is built for payments, tokenized assets and institutional finance as banks and payment giants pile into the stablecoin market.",
+        "Circle debuts Arc blockchain which Jeremy Allaire calls ‘more consequential’ than USDC.",
+        "Circle Launches Arc Mainnet With BlackRock, DTCC and Visa Producing Blocks."
       ],
       "sources": [
         {
           "name": "Cointelegraph",
           "url": "https://cointelegraph.com/news/circle-arc-mainnet-launch-usdc-native-gas?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
           "sourceId": "cointelegraph"
+        },
+        {
+          "name": "The Defiant",
+          "url": "https://thedefiant.io/news/blockchains/circle-launches-arc-mainnet-with-blackrock-dtcc-and-visa-producing-blocks",
+          "sourceId": "thedefiant"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/business/2026/09/15/circle-debuts-arc-blockchain-which-jeremy-allaire-calls-more-consequential-than-usdc",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/ecosystems/2026-09-16-circle-launches-arc-mainnet-with-blackrock-and-visa-among-validators-mints-10-billion-arc-tokens-415250",
+          "sourceId": "theblock"
         }
       ],
       "publishedAt": "2026-09-16T11:39:44.000Z",
@@ -533,7 +701,15 @@
       "riskTools": [],
       "captionZh": "Circle推出以USDC为原生GAS代币的Arc主网",
       "keyPointsZh": [
-        "Circle的Arc主网与USDC一起上线，收取交易费用，支持20多种法定稳定币，并链接到20多个区块链。"
+        "Circle的Arc主网与USDC一起上线，收取交易费用，支持20多种法定稳定币，并链接到20多个区块链。",
+        "Layer 1在USDC中收取GAS费用，并在经过许可的11个机构和Circle中运行授权证明。",
+        "在发布时有100多个应用程序上线，其中Aave、Morpho和Uniswap锚定DeFi。",
+        "Circle本周铸造了100亿个ARC代币，但没有承诺公开发布。",
+        "Circle证实，它本周完成了100亿ARC代币的起源铸造，尽管代币的公开发布仍未决定。",
+        "Circle在验证者中推出了带有BlackRock和Visa的Arc主网，铸造了100亿个ARC代币。",
+        "随着银行和支付巨头涌入稳定币市场， USDC发行人的链条专为支付、代币化资产和机构融资而构建。",
+        "Circle首次推出Arc区块链， Jeremy Allaire称其比USDC “更重要”。",
+        "Circle推出带有贝莱德、DTCC和Visa生产模块的Arc主网。"
       ]
     },
     {
@@ -546,13 +722,34 @@
         "brokers"
       ],
       "keyPoints": [
-        "Deutsche bank is preparing for the go-live of its digital asset custody business with the first institutional and corporate clients expected to be onboarded later this year, subject to regulatory clearance."
+        "Deutsche bank is preparing for the go-live of its digital asset custody business with the first institutional and corporate clients expected to be onboarded later this year, subject to regulatory clearance.",
+        "The service will support a select range of cryptocurrencies at debut, including bitcoin and ether and stablecoins like USDC and EURC.",
+        "Germany’s largest bank is awaiting regulatory approval to launch institutional custody solutions for Bitcoin, Ether and select stablecoins before expanding into tokenized assets.",
+        "Deutsche Bank awaits regulatory nod to launch institutional crypto custody solutions.",
+        "Deutsche Bank plans to launch European digital asset custody this year, initially supporting bitcoin, ether, and select stablecoins.",
+        "Deutsche Bank plans bitcoin, ether custody for institutional clients in Europe.",
+        "Deutsche Bank close to debuting crypto custody for institutions."
       ],
       "sources": [
         {
           "name": "Finextra",
           "url": "https://www.finextra.com/newsarticle/48417/deutsche-bank-prepares-for-go-live-of-digital-asset-custody?utm_medium=rssfinextra&utm_source=finextrafeed",
           "sourceId": "finextra"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/business/2026/09/16/deutsche-bank-nears-crypto-custody-service-debut-for-institutional-clients",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/news/deutsche-bank-regulatory-nod-institutional-crypto-custody?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/business/2026-09-16-deutsche-bank-plans-bitcoin-ether-custody-for-institutional-clients-in-europe-415251",
+          "sourceId": "theblock"
         }
       ],
       "publishedAt": "2026-09-16T11:29:00.000Z",
@@ -560,13 +757,20 @@
         "db"
       ],
       "jurisdictions": [
-        "Global"
+        "Global",
+        "Germany"
       ],
       "impact": null,
       "riskTools": [],
       "captionZh": "德意志银行准备数字资产托管上线",
       "keyPointsZh": [
-        "德意志银行正在为其数字资产托管业务的正式上线做准备，预计今年晚些时候将迎来首批机构和企业客户，但须经监管部门批准。"
+        "德意志银行正在为其数字资产托管业务的正式上线做准备，预计今年晚些时候将迎来首批机构和企业客户，但须经监管部门批准。",
+        "该服务将在首次亮相时支持一系列精选的加密货币，包括比特币和以太币以及USDC和EURC等稳定币。",
+        "这家德国最大的银行正在等待监管部门批准，为比特币、以太坊和精选稳定币推出机构托管解决方案，然后再扩展到代币化资产。",
+        "德意志银行等待监管部门点头推出机构加密托管解决方案。",
+        "德意志银行计划今年推出欧洲数字资产托管，最初支持比特币、以太币和精选稳定币。",
+        "德意志银行计划为欧洲的机构客户提供比特币、以太坊托管服务。",
+        "德意志银行即将为机构推出加密托管服务。"
       ]
     },
     {
@@ -609,12 +813,29 @@
         "crypto"
       ],
       "keyPoints": [
-        "Global Market | China’s slower loan growth is becoming the new normal: PBOC Governor Pan Gongsheng IndiaIPO."
+        "PBOC Chief Says Slower, Higher-Quality Loan Growth Is China's New Normal finance.biggo.com.",
+        "PBOC governor: Slower credit growth reflects economic upgrading China Daily Global Edition.",
+        "PBOC’s Pan says will rely less on loan growth targets and more on rate tools to guide policy FXStreet."
       ],
       "sources": [
         {
           "name": "Google News — PBOC / CSRC / CBIRC / NFRA",
           "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPS2M2Z0NXRVl4TU9RaHpVaHFiMkRCWEIyV0JZSFdONGllN0pnNVpaMWlodkp1SXVabGUtVWM4aC04dTVTVml3S2lIYVBsdThuWWN5OXhYOEFsUHJyTXlhbXhNU3pabTM5cS1reGFSYUxnT2Y0NjR2TnlRSVdra2NiaTUxX3FJUXNKM0hpQzZGdTFIeFJNRERnWl9kVUZONnNPSkpodjJOZlFoTVNSY2NTWUN1NHdpZVZNR19femcxd3owXy1EcTBHLXJB?oc=5",
+          "sourceId": "china-reg"
+        },
+        {
+          "name": "Google News — PBOC / CSRC / CBIRC / NFRA",
+          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5XSXNCbXpjdVlmVnhqdzA5TzdiOFI1N3h3ZmlyMENKMkNxNzFDWU1HY3A4UWdwc2FiYVFQQ3ZWME5CVURNcG9INzktLU9zdFdTZXhxRzBoOGZMbFlkWHNONnBxbDd3QkEtTXpzYmhXWG9qLW5tZXc?oc=5",
+          "sourceId": "china-reg"
+        },
+        {
+          "name": "Google News — PBOC / CSRC / CBIRC / NFRA",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOa0d4N1dkTEQtMHFlUTdIMG1laGJVMkFmLXF5Ym1zd0JmS3BBZGNJYVpSS0FwU2xQQXQwcmhKZFR6T3BYbVVzZUlmdlFBaDJLb2RqdDlKODQyOW9IOGtsMk1KZkVCMmFBYjlPTFBsZWNBUXBtQVJYbEN5cmpBZDUtX3JR?oc=5",
+          "sourceId": "china-reg"
+        },
+        {
+          "name": "Google News — PBOC / CSRC / CBIRC / NFRA",
+          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPbXZpbDJLOXRVWG9KRC1pZk1abUQyRXVHQ2xDMHNmRDdEZnZKVGhxem1xZ1NmaG5rY2lKWGFFTW5ObU0wQ0Y0UlJjRTFRT2ZyUmFLMy1PVE1xalJVbnNHWWlEekNFLUFvTFNjck1lSmZlUVNKZFhiU2dWMEFXZTlZbzFSQ1FlcHZOLVpUNlFhQ1ByVmlIQXpEN2JqWnFOX0YzMmxNWWR2Q19ma1daQUZLal95YVRkOFVRNWtUQXNQbmxUUC05RjVXRElRV3V1aUk?oc=5",
           "sourceId": "china-reg"
         }
       ],
@@ -636,104 +857,9 @@
       "riskTools": [],
       "captionZh": "全球市场|中国贷款增速放缓正在成为新常态：中国人民银行行长潘公生-印度IPO",
       "keyPointsZh": [
-        "全球市场|中国贷款增速放缓正在成为新常态：中国人民银行行长潘公生印度IPO。"
-      ]
-    },
-    {
-      "id": "c283c00a08c27bf8",
-      "caption": "Clarity Act collapse causes crypto turmoil in US",
-      "category": "regulation",
-      "sectors": [
-        "crypto",
-        "banks",
-        "brokers"
-      ],
-      "keyPoints": [
-        "A US vote on crypto regulation under the Clarity Act was voted down by senators, leading to a bitcoin price crash and a depression in the share price of crypto stocks such as Coinbase and Circle."
-      ],
-      "sources": [
-        {
-          "name": "Finextra",
-          "url": "https://www.finextra.com/newsarticle/48416/clarity-act-collapse-causes-crypto-turmoil-in-us?utm_medium=rssfinextra&utm_source=finextrafeed",
-          "sourceId": "finextra"
-        }
-      ],
-      "publishedAt": "2026-09-16T11:05:00.000Z",
-      "entities": [
-        "coinbase"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto",
-          "banks",
-          "brokers"
-        ],
-        "assets": [
-          "BTC",
-          "stablecoins",
-          "equities",
-          "commodities"
-        ],
-        "summary": "Potential impact on crypto, banks, brokers. Focus assets: BTC, stablecoins, equities, commodities.",
-        "summaryZh": "对加密交易所、银行、券商的潜在影响。 关注资产：比特币、稳定币、股票、大宗商品。"
-      },
-      "riskTools": [],
-      "captionZh": "清晰度法案崩溃导致美国加密货币动荡",
-      "keyPointsZh": [
-        "美国根据“清晰度法案”对加密货币监管的投票被参议员否决，导致比特币价格暴跌， Coinbase和Circle等加密货币股票的股价下跌。"
-      ]
-    },
-    {
-      "id": "7977ddef318d1c4e",
-      "caption": "Crypto firms get guidance on how the new regime applies",
-      "category": "regulation",
-      "sectors": [
-        "crypto",
-        "banks",
-        "brokers"
-      ],
-      "keyPoints": [
-        "New FCA guidance will help firms understand how the law underpinning the UK's future cryptoasset regime applies to their business.",
-        "It also sets out which activities may require FCA authorisation.",
-        "The regime comes into force on 25 October 2027.",
-        "With applications for authorisation opening from 30 September 2026, firms need this guidance now to help them prepare."
-      ],
-      "sources": [
-        {
-          "name": "UK FCA News",
-          "url": "https://www.fca.org.uk/news/press-releases/crypto-firms-get-guidance-how-new-regime-applies",
-          "sourceId": "fca"
-        }
-      ],
-      "publishedAt": "2026-09-16T11:00:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "United Kingdom"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto",
-          "banks",
-          "brokers"
-        ],
-        "assets": [
-          "stablecoins",
-          "futures",
-          "government bonds"
-        ],
-        "summary": "Potential impact on crypto, banks, brokers. Focus assets: stablecoins, futures, government bonds.",
-        "summaryZh": "对加密交易所、银行、券商的潜在影响。 关注资产：稳定币、期货、国债。"
-      },
-      "riskTools": [],
-      "captionZh": "加密公司获得有关如何适用新制度的指导",
-      "keyPointsZh": [
-        "新的FCA指南将帮助公司了解支持英国未来加密资产制度的法律如何适用于其业务。",
-        "它还规定了哪些活动可能需要FCA授权。",
-        "该制度于2027年10月25日生效。",
-        "随着授权申请从2026年9月30日开始开放，公司现在需要此指导来帮助他们做好准备。"
+        "中国人民银行行长表示，更慢、更高质量的贷款增长是中国的新常态finance.biggo.com。",
+        "中国人民银行行长：信贷增长放缓反映了中国日报全球版的经济升级。",
+        "中国人民银行的Pan表示，将减少对贷款增长目标的依赖，更多地依赖利率工具来指导政策FXStreet。"
       ]
     },
     {
@@ -792,240 +918,6 @@
       "captionZh": "Two Prime通过$ 1000万支持的比特币收益率金库进行链上金融推动",
       "keyPointsZh": [
         "两个Prime扩展到链上金融，在Pareto上为机构投资者建立了一个比特币贷款库。"
-      ]
-    },
-    {
-      "id": "4b78f88e0541bbde",
-      "caption": "Bitcoin ETFs shed $450 million as Clarity Act fails",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "U.S. spot bitcoin ETFs shed $450 million, the most since June, as the Senate's failure to advance the Clarity Act sent regulatory-sensitive tokens sharply lower."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/markets/2026/09/16/bitcoin-etfs-shed-usd450-million-as-clarity-act-fails",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:48:44.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "United States",
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "由于《清晰度法案》失败，比特币ETF流失4.5亿美元$",
-      "keyPointsZh": [
-        "美国现货比特币ETF下跌4.5亿美元，这是自6月以来的最大跌幅，因为参议院未能推进《清晰度法案》，导致监管敏感的代币大幅下跌。"
-      ]
-    },
-    {
-      "id": "b80fa0cf82f5660d",
-      "caption": "Deutsche Bank close to debuting crypto custody for institutions",
-      "category": "listing",
-      "sectors": [
-        "banks",
-        "crypto"
-      ],
-      "keyPoints": [
-        "The service will support a select range of cryptocurrencies at debut, including bitcoin and ether and stablecoins like USDC and EURC."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/business/2026/09/16/deutsche-bank-nears-crypto-custody-service-debut-for-institutional-clients",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:46:28.000Z",
-      "entities": [
-        "db"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "德意志银行即将为机构推出加密托管",
-      "keyPointsZh": [
-        "该服务将在首次亮相时支持一系列精选的加密货币，包括比特币和以太币以及USDC和EURC等稳定币。"
-      ]
-    },
-    {
-      "id": "35bbd71a083f4b16",
-      "caption": "Live updates: Bitcoin holds near $76,000 as spot ETFs outflows surged alongside Clarity Act failure",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Privacy token zcash, meanwhile, is up 130% over 30 days and trades near its all-time highs from 2016."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/business/2026/09/16/live-updates-zcash-climbs-6-as-majors-slide-ahead-of-fed-rate-decision",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:37:46.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "实时更新：比特币持有近76,000 $ ，因为现货ETF流出量随着清晰度法案的失败而激增",
-      "keyPointsZh": [
-        "与此同时，隐私代币zcash在30天内上涨了130% ，交易量接近2016年的历史高点。"
-      ]
-    },
-    {
-      "id": "77df61f3ffffb4fc",
-      "caption": "Deutsche Bank awaits regulatory nod to launch institutional crypto custody solutions",
-      "category": "product",
-      "sectors": [
-        "banks",
-        "crypto"
-      ],
-      "keyPoints": [
-        "Germany’s largest bank is awaiting regulatory approval to launch institutional custody solutions for Bitcoin, Ether and select stablecoins before expanding into tokenized assets."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/news/deutsche-bank-regulatory-nod-institutional-crypto-custody?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:33:12.000Z",
-      "entities": [
-        "db"
-      ],
-      "jurisdictions": [
-        "Germany",
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "德意志银行等待监管部门点头推出机构加密托管解决方案",
-      "keyPointsZh": [
-        "这家德国最大的银行正在等待监管部门批准，为比特币、以太坊和精选稳定币推出机构托管解决方案，然后再扩展到代币化资产。"
-      ]
-    },
-    {
-      "id": "e5b284bc4a168b87",
-      "caption": "Circle Launches Arc Mainnet With BlackRock, DTCC and Visa Producing Blocks",
-      "category": "product",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The Layer 1 charges gas in USDC and runs proof-of-authority across a permissioned set of 11 institutions plus Circle.",
-        "More than 100 applications are live at launch, with Aave, Morpho and Uniswap anchoring DeFi.",
-        "Circle minted 10 billion ARC tokens this week without committing to a public launch."
-      ],
-      "sources": [
-        {
-          "name": "The Defiant",
-          "url": "https://thedefiant.io/news/blockchains/circle-launches-arc-mainnet-with-blackrock-dtcc-and-visa-producing-blocks",
-          "sourceId": "thedefiant"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:30:41.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "Circle推出配备贝莱德、DTCC和Visa生产模块的Arc主网",
-      "keyPointsZh": [
-        "Layer 1在USDC中收取GAS费用，并在经过许可的11个机构和Circle中运行授权证明。",
-        "在发布时有100多个应用程序上线，其中Aave、Morpho和Uniswap锚定DeFi。",
-        "Circle本周铸造了100亿个ARC代币，但没有承诺公开发布。"
-      ]
-    },
-    {
-      "id": "a25466f80b7f76ee",
-      "caption": "Circle debuts Arc blockchain which Jeremy Allaire calls ‘more consequential’ than USDC",
-      "category": "listing",
-      "sectors": [
-        "crypto",
-        "banks"
-      ],
-      "keyPoints": [
-        "The USDC issuer's chain is built for payments, tokenized assets and institutional finance as banks and payment giants pile into the stablecoin market."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/business/2026/09/15/circle-debuts-arc-blockchain-which-jeremy-allaire-calls-more-consequential-than-usdc",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:30:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "Circle首次推出Arc区块链， Jeremy Allaire称其比USDC “更重要”",
-      "keyPointsZh": [
-        "随着银行和支付巨头涌入稳定币市场， USDC发行人的链条专为支付、代币化资产和机构融资而构建。"
-      ]
-    },
-    {
-      "id": "d7503e3f4ba77b46",
-      "caption": "Circle launches Arc mainnet with BlackRock and Visa among validators, mints 10 billion ARC tokens",
-      "category": "product",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Circle confirmed it completed the genesis mint of 10 billion ARC tokens this week, although a public launch of the token remains undecided."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/ecosystems/2026-09-16-circle-launches-arc-mainnet-with-blackrock-and-visa-among-validators-mints-10-billion-arc-tokens-415250",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:30:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "Circle在验证者中推出带有BlackRock和Visa的Arc主网，铸造100亿个ARC代币",
-      "keyPointsZh": [
-        "Circle证实，它本周完成了100亿ARC代币的起源铸造，尽管代币的公开发布仍未决定。"
       ]
     },
     {
@@ -1121,38 +1013,6 @@
       ]
     },
     {
-      "id": "3fd8e91370d50c88",
-      "caption": "Deutsche Bank plans bitcoin, ether custody for institutional clients in Europe",
-      "category": "product",
-      "sectors": [
-        "banks",
-        "crypto"
-      ],
-      "keyPoints": [
-        "Deutsche Bank plans to launch European digital asset custody this year, initially supporting bitcoin, ether, and select stablecoins."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/business/2026-09-16-deutsche-bank-plans-bitcoin-ether-custody-for-institutional-clients-in-europe-415251",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-16T10:05:28.000Z",
-      "entities": [
-        "db"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "德意志银行计划为欧洲机构客户提供比特币、以太坊托管服务",
-      "keyPointsZh": [
-        "德意志银行计划今年推出欧洲数字资产托管，最初支持比特币、以太币和精选稳定币。"
-      ]
-    },
-    {
       "id": "88ae0cf5998c6377",
       "caption": "Caribisch Nederland: herbeoordeling betrouwbaarheid vervallen, wijzigingen wel direct doorgeven",
       "category": "regulation",
@@ -1223,87 +1083,6 @@
       ]
     },
     {
-      "id": "476557b83a17ef5d",
-      "caption": "Bitcoin's Coinbase premium sinks to one-month low, here’s why",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Weakening U.S. demand, a setback for the Clarity act and expectations of a fed rate hike weigh on bitcoin."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/markets/2026/09/16/bitcoin-s-coinbase-premium-sinks-to-one-month-low-here-s-why",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T09:57:12.000Z",
-      "entities": [
-        "coinbase"
-      ],
-      "jurisdictions": [
-        "United States",
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "比特币的Coinbase溢价跌至一个月低点，原因如下",
-      "keyPointsZh": [
-        "美国需求疲软、《清晰度法案》遭遇挫折以及对美联储加息的预期对比特币构成压力。"
-      ]
-    },
-    {
-      "id": "3099d03bb7918479",
-      "caption": "Bitcoin Coinbase Premium hits monthly low as CLARITY Act vote squeezes US demand",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Bitcoin exchange demand on Coinbase declined after the US Senate voted against the CLARITY Act, while traders sent BTC to exchanges at an unrealized loss."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/markets/bitcoin-coinbase-premium-hits-monthly-low-as-clarity-act-vote-squeezes-us-demand?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-16T09:55:16.000Z",
-      "entities": [
-        "coinbase"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "随着CLARITY ACT投票挤压美国需求，比特币Coinbase Premium触及月度低点",
-      "keyPointsZh": [
-        "在美国参议院投票反对CLARITY法案后，比特币交易所对Coinbase的需求下降，而交易员以未实现的亏损将比特币发送到交易所。"
-      ]
-    },
-    {
       "id": "d3510234e0ae1ed4",
       "caption": "UK banking technology consultancy GP Tech extends practice to the US market",
       "category": "product",
@@ -1344,13 +1123,34 @@
         "crypto"
       ],
       "keyPoints": [
-        "U.S. prosecutors allege two engineers used confidential Robinhood token listing data to front-run announcements using Hyperliquid perpetual futures."
+        "The former employees allegedly earned more than $50,000 each by trading Hyperliquid perpetuals ahead of Robinhood token listings.",
+        "Two employees allegedly earned more than $50,000 each by trading Hyperliquid perpetual futures before Robinhood announced new token listings.",
+        "According to prosecutors, the two took positions in tokens ahead of Robinhood’s public listing announcements between 2025 and 2026.",
+        "U.S. prosecutors allege two engineers used confidential Robinhood token listing data to front-run announcements using Hyperliquid perpetual futures.",
+        "US charges ex-Robinhood engineers over alleged pre-listing crypto trades.",
+        "DOJ charges Robinhood former engineers with front-running crypto listings on Hyperliquid.",
+        "Robinhood Engineers Charged With Fraud Over Alleged Crypto Listing Trades."
       ],
       "sources": [
         {
           "name": "CoinDesk",
           "url": "https://www.coindesk.com/business/2026/09/16/two-robinhood-engineers-charged-with-insider-trading-using-hyperliquid-perpetuals",
           "sourceId": "coindesk"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/news/robinhood-engineers-hyperliquid-listing-trades-charges?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
+        },
+        {
+          "name": "The Block",
+          "url": "https://www.theblock.co/news/regulation/2026-09-15-doj-charges-robinhood-engineers-front-running-crypto-listings-hyperliquid-414865",
+          "sourceId": "theblock"
+        },
+        {
+          "name": "Decrypt",
+          "url": "https://decrypt.co/378267/robinhood-engineers-charged-fraud-over-crypto-listing-trades",
+          "sourceId": "decrypt"
         }
       ],
       "publishedAt": "2026-09-16T09:42:37.000Z",
@@ -1365,7 +1165,13 @@
       "riskTools": [],
       "captionZh": "两名Robinhood工程师负责使用Hyperliquid永续合约进行内幕交易",
       "keyPointsZh": [
-        "美国检察官指控两名工程师使用机密的Robinhood代币列表数据，使用Hyperliquid永续期货进行前期公告。"
+        "据称，这些前员工通过在Robinhood代币上市之前交易Hyperliquid永续合约，每人赚取超过50,000 $。",
+        "据称，在Robinhood宣布新的代币上市之前，两名员工通过交易Hyperliquid永续期货赚取了超过50,000 $的收入。",
+        "据检察官称，在2025年至2026年Robinhood公开上市公告之前，两人对代币采取了立场。",
+        "美国检察官指控两名工程师使用机密的Robinhood代币列表数据，使用Hyperliquid永续期货进行前期公告。",
+        "美国指控前罗宾汉工程师涉嫌预先上市的加密货币交易。",
+        "美国司法部向Robinhood前工程师收取在Hyperliquid上首次运行的加密货币列表的费用。",
+        "Robinhood工程师因涉嫌加密货币上市交易而被指控欺诈。"
       ]
     },
     {
@@ -1558,16 +1364,24 @@
       "caption": "ECB seeks online merchants for 2027 digital euro pilot",
       "category": "regulation",
       "sectors": [
-        "crypto"
+        "crypto",
+        "banks"
       ],
       "keyPoints": [
-        "Euro-area online and mobile merchants can apply until Oct. 27 to test beta digital euro payments in a 12-month pilot."
+        "Euro-area online and mobile merchants can apply until Oct. 27 to test beta digital euro payments in a 12-month pilot.",
+        "The 12-month test will put a beta version of the central bank currency through online, mobile, in-store and peer-to-peer payments.",
+        "European Central Bank calls for merchants to participate in digital euro pilot."
       ],
       "sources": [
         {
           "name": "Cointelegraph",
           "url": "https://cointelegraph.com/news/ecb-online-merchants-2027-digital-euro-pilot?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
           "sourceId": "cointelegraph"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/policy/2026/09/15/european-central-bank-calls-for-merchants-to-participate-in-digital-euro-pilot",
+          "sourceId": "coindesk"
         }
       ],
       "publishedAt": "2026-09-16T08:36:44.000Z",
@@ -1578,16 +1392,19 @@
       ],
       "impact": {
         "sectors": [
-          "crypto"
+          "crypto",
+          "banks"
         ],
         "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
+        "summary": "Potential impact on crypto, banks.",
+        "summaryZh": "对加密交易所、银行的潜在影响。"
       },
       "riskTools": [],
       "captionZh": "欧洲央行寻求2027年数字欧元试点的在线商家",
       "keyPointsZh": [
-        "欧元区在线和移动商家可以在10月27日之前申请，在为期12个月的试点中测试测试版数字欧元支付。"
+        "欧元区在线和移动商家可以在10月27日之前申请，在为期12个月的试点中测试测试版数字欧元支付。",
+        "为期12个月的测试将通过在线、移动、店内和点对点支付进行中央银行货币的测试版。",
+        "欧洲央行呼吁商家参与数字欧元试点。"
       ]
     },
     {
@@ -1660,13 +1477,19 @@
         "crypto"
       ],
       "keyPoints": [
-        "The Hong Kong-founded exchange blamed a prolonged crypto winter and rising compliance costs, closing the books on a run that began in December 2017."
+        "The Hong Kong-founded exchange blamed a prolonged crypto winter and rising compliance costs, closing the books on a run that began in December 2017.",
+        "CoinEx to Close Exchange on Ninth Anniversary."
       ],
       "sources": [
         {
           "name": "Decrypt",
           "url": "https://decrypt.co/378324/coinex-shutting-down",
           "sourceId": "decrypt"
+        },
+        {
+          "name": "The Defiant",
+          "url": "https://thedefiant.io/news/cefi/coinex-to-close-exchange-on-ninth-anniversary",
+          "sourceId": "thedefiant"
         }
       ],
       "publishedAt": "2026-09-16T08:01:03.000Z",
@@ -1679,7 +1502,8 @@
       "riskTools": [],
       "captionZh": "加密货币交易所CoinEx在九年后关闭，让用户在12月之前提现",
       "keyPointsZh": [
-        "这家成立于香港的交易所指责加密货币寒冬漫长，合规成本不断上升，并从2017年12月开始关闭账簿。"
+        "这家成立于香港的交易所指责加密货币寒冬漫长，合规成本不断上升，并从2017年12月开始关闭账簿。",
+        "CoinEx将在九周年纪念日关闭交易所。"
       ]
     },
     {
@@ -1888,75 +1712,6 @@
       ]
     },
     {
-      "id": "39478fa420d749cc",
-      "caption": "PBOC Chief Says Slower, Higher-Quality Loan Growth Is China's New Normal - finance.biggo.com",
-      "category": "regulation",
-      "sectors": [
-        "banks",
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "PBOC Chief Says Slower, Higher-Quality Loan Growth Is China's New Normal finance.biggo.com."
-      ],
-      "sources": [
-        {
-          "name": "Google News — PBOC / CSRC / CBIRC / NFRA",
-          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5XSXNCbXpjdVlmVnhqdzA5TzdiOFI1N3h3ZmlyMENKMkNxNzFDWU1HY3A4UWdwc2FiYVFQQ3ZWME5CVURNcG9INzktLU9zdFdTZXhxRzBoOGZMbFlkWHNONnBxbDd3QkEtTXpzYmhXWG9qLW5tZXc?oc=5",
-          "sourceId": "china-reg"
-        }
-      ],
-      "publishedAt": "2026-09-16T06:36:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "China"
-      ],
-      "impact": {
-        "sectors": [
-          "banks",
-          "brokers",
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on banks, brokers, crypto.",
-        "summaryZh": "对银行、券商、加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "中国人民银行行长表示，放缓、提高贷款质量是中国的新常态- finance.biggo.com",
-      "keyPointsZh": [
-        "中国人民银行行长表示，更慢、更高质量的贷款增长是中国的新常态finance.biggo.com。"
-      ]
-    },
-    {
-      "id": "3adb239873d1069a",
-      "caption": "Zcash holders overwhelmingly back faster transactions and bitcoin-style halvings",
-      "category": "listing",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Nearly 2.4 million ZEC participated, with 99.9% backing 25-second blocks and 98.9% voting to preserve the network’s existing halving schedule."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/tech/2026/09/16/zcash-holders-overwhelmingly-back-faster-transactions-and-bitcoin-style-halvings",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T05:54:04.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "Zcash持有者绝大多数支持更快的交易和比特币式的减半",
-      "keyPointsZh": [
-        "近240万ZEC参与，其中99.9%支持25秒区块， 98.9%投票支持保留网络现有的减半时间表。"
-      ]
-    },
-    {
       "id": "c9cf45af8f02b9e7",
       "caption": "Here’s what happened in crypto today",
       "category": "listing",
@@ -2016,46 +1771,6 @@
       "captionZh": "跨境经常账户缺口：传统银行业如何使在家工作的出口经济失败",
       "keyPointsZh": [
         "跨境经常账户缺口：传统银行业如何使WFH出口经济失败。"
-      ]
-    },
-    {
-      "id": "8c5105ba2da19c14",
-      "caption": "PBOC governor: Slower credit growth reflects economic upgrading - China Daily Global Edition",
-      "category": "regulation",
-      "sectors": [
-        "banks",
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "PBOC governor: Slower credit growth reflects economic upgrading China Daily Global Edition."
-      ],
-      "sources": [
-        {
-          "name": "Google News — PBOC / CSRC / CBIRC / NFRA",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOa0d4N1dkTEQtMHFlUTdIMG1laGJVMkFmLXF5Ym1zd0JmS3BBZGNJYVpSS0FwU2xQQXQwcmhKZFR6T3BYbVVzZUlmdlFBaDJLb2RqdDlKODQyOW9IOGtsMk1KZkVCMmFBYjlPTFBsZWNBUXBtQVJYbEN5cmpBZDUtX3JR?oc=5",
-          "sourceId": "china-reg"
-        }
-      ],
-      "publishedAt": "2026-09-16T05:38:13.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "China"
-      ],
-      "impact": {
-        "sectors": [
-          "banks",
-          "brokers",
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on banks, brokers, crypto.",
-        "summaryZh": "对银行、券商、加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "中国人民银行行长：信贷增长放缓反映经济升级-中国日报全球版",
-      "keyPointsZh": [
-        "中国人民银行行长：信贷增长放缓反映了中国日报全球版的经济升级。"
       ]
     },
     {
@@ -2158,38 +1873,6 @@
       ]
     },
     {
-      "id": "f7484001f745bfb3",
-      "caption": "US charges ex-Robinhood engineers over alleged pre-listing crypto trades",
-      "category": "listing",
-      "sectors": [
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "The former employees allegedly earned more than $50,000 each by trading Hyperliquid perpetuals ahead of Robinhood token listings."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/news/robinhood-engineers-hyperliquid-listing-trades-charges?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-16T04:48:20.000Z",
-      "entities": [
-        "robinhood"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "美国指控前罗宾汉工程师涉嫌预先上市的加密货币交易",
-      "keyPointsZh": [
-        "据称，这些前员工通过在Robinhood代币上市之前交易Hyperliquid永续合约，每人赚取超过50,000 $。"
-      ]
-    },
-    {
       "id": "6f8f287e9ffa2b69",
       "caption": "China's slower loan growth is the new normal, central bank governor says",
       "category": "regulation",
@@ -2230,49 +1913,6 @@
       ]
     },
     {
-      "id": "3fef503011651de1",
-      "caption": "Crypto longs worth $570 million wiped out as Clarity Act fails",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Bullish crypto futures bets worth millions have been liquidated in 24 hours.",
-        "Bitcoin and ether longs have taken in the most losses."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/markets/2026/09/16/crypto-bulls-take-a-usd570-million-liquidation-hit-as-clarity-act-fails",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T04:07:27.000Z",
-      "entities": [
-        "bullish"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC",
-          "futures"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC, futures.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币、期货。"
-      },
-      "riskTools": [],
-      "captionZh": "由于清晰度法案失败，价值5.7亿美元的加密多头被抹去",
-      "keyPointsZh": [
-        "价值数百万美元的看涨加密期货赌注已在24小时内清算。",
-        "比特币和以太币多头亏损最多。"
-      ]
-    },
-    {
       "id": "04f8b487ecdf4803",
       "caption": "Updates on Tick Size for Multiple USDⓈ-M Perpetual Futures Contracts (2026-09-17) - Binance",
       "category": "listing",
@@ -2306,48 +1946,6 @@
       ]
     },
     {
-      "id": "12efb55d03cb271b",
-      "caption": "Bitcoin ETFs shed $450M in biggest outflow since June",
-      "category": "regulation",
-      "sectors": [
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "The $450 million withdrawal came as Bitcoin fell 2.5% and the CLARITY Act failed to advance in the Senate, with Fidelity and BlackRock funds leading the outflows."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/news/bitcoin-etfs-shed-450m-in-biggest-outflow-since-june?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-16T04:05:39.000Z",
-      "entities": [
-        "fidelity"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "brokers",
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on brokers, crypto. Focus assets: BTC.",
-        "summaryZh": "对券商、加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "自6月以来，比特币ETF流出量最大，为4.5亿美元",
-      "keyPointsZh": [
-        "由于比特币下跌2.5% ， CLARITY法案未能在参议院取得进展，富达和贝莱德基金引领了资金外流，因此提取了4.5亿美元。"
-      ]
-    },
-    {
       "id": "73d50429fac2d148",
       "caption": "Neema launches FX Trading Room for business clients - cfotech.asia",
       "category": "product",
@@ -2376,159 +1974,6 @@
       "captionZh": "Neema为企业客户推出外汇交易室- cfotech.asia",
       "keyPointsZh": [
         "Neema为商业客户cfotech.asia推出外汇交易室。"
-      ]
-    },
-    {
-      "id": "531d19cb07b016d3",
-      "caption": "XRP sinks 10% as the Clarity Act fails and bitcoin slides toward $76,000",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The Senate's 49-50 procedural vote left the crypto market structure bill 11 short of what it needed, and every major token fell."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/markets/2026/09/16/xrp-sinks-10-as-the-clarity-act-fails-and-bitcoin-slides-toward-usd76-000",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-16T03:37:45.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "随着《清晰度法案》失败，比特币跌向76,000 $ ， XRP下跌10%",
-      "keyPointsZh": [
-        "参议院的49-50程序性投票使得加密市场结构法案11没有达到所需的水平，每一个主要的代币都下降了。"
-      ]
-    },
-    {
-      "id": "ddbb06fe6b83b251",
-      "caption": "‘Nothing truly structural’: Analysts downplay Clarity Act defeat as bitcoin, major crypto stocks dip",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Analysts told The Block that the crypto market will continue to move with interest rates and the broader monetary environment."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/markets/2026-09-15-analysts-downplay-clarity-act-415234",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-16T02:48:42.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC",
-          "equities"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC, equities.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币、股票。"
-      },
-      "riskTools": [],
-      "captionZh": "“没有什么真正的结构性” ：分析师淡化了清晰度法案的失败，因为比特币，主要的加密股下跌",
-      "keyPointsZh": [
-        "分析师告诉The Block ，加密市场将继续随利率和更广泛的货币环境而变化。"
-      ]
-    },
-    {
-      "id": "b020716dc7973911",
-      "caption": "Crypto industry turns to US regulators after CLARITY setback",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The CLARITY Act still has a procedural path after Senator Thom Tillis moved to reconsider the failed cloture vote, though industry executives are divided over whether Congress has enough time left."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/news/crypto-industry-turns-to-us-regulators-after-clarity-setback?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-16T02:24:07.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "加密行业在清晰度遭遇挫折后转向美国监管机构",
-      "keyPointsZh": [
-        "在参议员汤姆·蒂利斯（ Thom Tillis ）重新考虑失败的投票后， CLARITY法案仍有程序性路径，尽管行业高管对国会是否还有足够的时间存在分歧。"
-      ]
-    },
-    {
-      "id": "ed7fa67f292912fa",
-      "caption": "PBOC’s Pan says will rely less on loan growth targets and more on rate tools to guide policy - FXStreet",
-      "category": "regulation",
-      "sectors": [
-        "banks",
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "PBOC’s Pan says will rely less on loan growth targets and more on rate tools to guide policy FXStreet."
-      ],
-      "sources": [
-        {
-          "name": "Google News — PBOC / CSRC / CBIRC / NFRA",
-          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPbXZpbDJLOXRVWG9KRC1pZk1abUQyRXVHQ2xDMHNmRDdEZnZKVGhxem1xZ1NmaG5rY2lKWGFFTW5ObU0wQ0Y0UlJjRTFRT2ZyUmFLMy1PVE1xalJVbnNHWWlEekNFLUFvTFNjck1lSmZlUVNKZFhiU2dWMEFXZTlZbzFSQ1FlcHZOLVpUNlFhQ1ByVmlIQXpEN2JqWnFOX0YzMmxNWWR2Q19ma1daQUZLal95YVRkOFVRNWtUQXNQbmxUUC05RjVXRElRV3V1aUk?oc=5",
-          "sourceId": "china-reg"
-        }
-      ],
-      "publishedAt": "2026-09-16T02:18:56.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "China"
-      ],
-      "impact": {
-        "sectors": [
-          "banks",
-          "brokers",
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on banks, brokers, crypto.",
-        "summaryZh": "对银行、券商、加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "中国人民银行的Pan表示，将减少对贷款增长目标的依赖，更多地依赖利率工具来指导政策- FXStreet",
-      "keyPointsZh": [
-        "中国人民银行的Pan表示，将减少对贷款增长目标的依赖，更多地依赖利率工具来指导政策FXStreet。"
       ]
     },
     {
@@ -2657,42 +2102,6 @@
       ]
     },
     {
-      "id": "7f005c5e86ad1e21",
-      "caption": "Inside the last-minute political breakdown that doomed the Clarity Act vote",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Last minute, behind-the-scenes disputes locked in a dismal showing for the market structure legislation the industry pinned its greatest hopes on."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/news-analysis/2026/09/15/there-were-many-conductors-in-the-derailment-of-the-crypto-industry-s-clarity-act",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T21:58:48.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "在最后一刻的政治崩溃中，这场政治崩溃注定了《清晰度法案》的投票",
-      "keyPointsZh": [
-        "最后一分钟，幕后纠纷陷入了令人沮丧的市场结构立法，该行业寄予了最大的希望。"
-      ]
-    },
-    {
       "id": "39ca3a121b1f9806",
       "caption": "Wall Street Bets on Fed Rate Hike: Here's What It Means for Bitcoin, Bonds and Trump",
       "category": "listing",
@@ -2725,42 +2134,6 @@
       ]
     },
     {
-      "id": "9ed0d4bb0f399bed",
-      "caption": "‘This one stings’: Clarity Act fails procedural Senate vote — is crypto’s biggest regulatory push dead?",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "A procedural vote to advance landmark digital asset legislation failed spectacularly on Tuesday, leaving the crypto industry crushed."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/regulation/2026-09-15-this-one-stings-clarity-act-fails-senate-is-cryptos-biggest-regulatory-push-dead-415135",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-15T21:24:18.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "“这一点很刺激” ：《清晰度法案》未能通过参议院的程序性投票—加密货币最大的监管措施是否已经失败？",
-      "keyPointsZh": [
-        "周二，推动具有里程碑意义的数字资产立法的程序性投票引人注目地失败了，使加密行业陷入困境。"
-      ]
-    },
-    {
       "id": "dc592be360307173",
       "caption": "BIS paper finds major gap in Bitcoin onchain transfer estimates",
       "category": "listing",
@@ -2790,115 +2163,53 @@
       ]
     },
     {
-      "id": "87c3aca05025de19",
-      "caption": "Coinbase-Backed Crypto Group Warns of Midterms Payback After Clarity Act Fails",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The Coinbase-backed Stand With Crypto will add senators’ votes to its scorecards as it rallies crypto voters ahead of November’s elections."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378303/coinbase-crypto-group-midterms-vote-clarity-act",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T21:10:06.000Z",
-      "entities": [
-        "coinbase"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "Coinbase支持的加密集团在清晰度法案失败后发出中期回报警告",
-      "keyPointsZh": [
-        "Coinbase支持的Stand With Crypto将为参议员的投票添加到其记分卡中，因为它在11月的选举之前召集了加密选民。"
-      ]
-    },
-    {
-      "id": "8a1d064602649ead",
-      "caption": "Crypto stocks slide after CLARITY Act fails to advance in Senate",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Circle and Coinbase shares fell about 10% as the failed Senate vote weighed on crypto-linked equities, with Bitcoin miners and treasury companies also declining."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/markets/crypto-stocks-slide-after-clarity-act-fails-to-advance-in-senate?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-15T20:37:34.000Z",
-      "entities": [
-        "coinbase"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC",
-          "stablecoins",
-          "government bonds",
-          "equities"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC, stablecoins, government bonds, equities.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币、稳定币、国债、股票。"
-      },
-      "riskTools": [],
-      "captionZh": "加密货币股票在CLARITY法案未能在参议院取得进展后下跌",
-      "keyPointsZh": [
-        "Circle和Coinbase股价下跌约10% ，原因是参议院的失败投票拖累了与加密货币相关的股票，比特币矿工和财政部门也在下跌。"
-      ]
-    },
-    {
       "id": "aa9841cb6586ffa4",
       "caption": "Citing political pressure, Enova pulls Grasshopper deal",
-      "category": "product",
+      "category": "regulation",
       "sectors": [
         "banks",
         "brokers",
         "crypto"
       ],
       "keyPoints": [
-        "American online lending company Enova has pulled the plug on its application to acquire digital business bank Grasshopper, claiming the process is \"susceptible to political pressure and outside advocacy\"."
+        "American online lending company Enova has pulled the plug on its application to acquire digital business bank Grasshopper, claiming the process is \"susceptible to political pressure and outside advocacy\".",
+        "The Chicago-based fintech withdrew its applications from the OCC and Fed, and its CEO decried the absence of “clear standards” for bank licensing, in addition to “political pressure.”.",
+        "Enova scraps Grasshopper deal."
       ],
       "sources": [
         {
           "name": "Finextra",
           "url": "https://www.finextra.com/newsarticle/48411/citing-political-pressure-enova-pulls-grasshopper-deal?utm_medium=rssfinextra&utm_source=finextrafeed",
           "sourceId": "finextra"
+        },
+        {
+          "name": "Banking Dive",
+          "url": "https://www.bankingdive.com/news/enova-withdraw-application-acquire-grasshopper-bank-occ-fed/830423/",
+          "sourceId": "bankingdive"
         }
       ],
       "publishedAt": "2026-09-15T20:29:00.000Z",
       "entities": [],
       "jurisdictions": [
-        "Global"
+        "Global",
+        "United States"
       ],
-      "impact": null,
+      "impact": {
+        "sectors": [
+          "banks",
+          "brokers",
+          "crypto"
+        ],
+        "assets": [],
+        "summary": "Potential impact on banks, brokers, crypto.",
+        "summaryZh": "对银行、券商、加密交易所的潜在影响。"
+      },
       "riskTools": [],
       "captionZh": "以政治压力为由， Enova达成Grasshopper协议",
       "keyPointsZh": [
-        "美国在线贷款公司Enova取消了收购数字商业银行Grasshopper的申请，声称这一过程“容易受到政治压力和外部宣传的影响”。"
+        "美国在线贷款公司Enova取消了收购数字商业银行Grasshopper的申请，声称这一过程“容易受到政治压力和外部宣传的影响”。",
+        "总部位于芝加哥的金融科技公司撤回了OCC和美联储的申请，其首席执行官谴责除了“政治压力”之外，银行牌照缺乏“明确标准”。",
+        "Enova废弃了Grasshopper交易。"
       ]
     },
     {
@@ -2928,48 +2239,6 @@
       "captionZh": "OpenAI的Brockman表示，安全问题已经减缓了其最先进的人工智能工作",
       "keyPointsZh": [
         "格雷格·布罗克曼（ Greg Brockman ）表示，在预发布模型突破沙箱并入侵Hugging Face之后， OpenAI推迟了发布并重新设计了流程。"
-      ]
-    },
-    {
-      "id": "56a3ef512f870ce7",
-      "caption": "Crypto stocks sink after Senate rejects Clarity Act",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Coinbase, Circle and Galaxy lead a broad crypto stock selloff after the U.S. Senate failed to advance a long-awaited market structure bill."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/markets/2026/09/15/crypto-stocks-sink-after-senate-rejects-clarity-act",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T20:03:17.000Z",
-      "entities": [
-        "coinbase"
-      ],
-      "jurisdictions": [
-        "United States",
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "stablecoins",
-          "equities"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: stablecoins, equities.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：稳定币、股票。"
-      },
-      "riskTools": [],
-      "captionZh": "参议院否决《清晰度法案》后，加密货币股票下跌",
-      "keyPointsZh": [
-        "在美国参议院未能推进期待已久的市场结构法案后， Coinbase、Circle和Galaxy引领了广泛的加密股抛售。"
       ]
     },
     {
@@ -3006,80 +2275,6 @@
       ]
     },
     {
-      "id": "5f4021d12e24c4f3",
-      "caption": "Weekly Outlook | A Super Central Bank Week and China's August Economic Data Are Coming; on Monday, Iran will hold talks with Gulf states on the Hormuz Agreement, while the Korea Exchange launches after-hours stock trading; on Wednesday, the CLARI - 富途牛牛",
-      "category": "product",
-      "sectors": [
-        "crypto",
-        "banks",
-        "brokers"
-      ],
-      "keyPoints": [
-        "Weekly Outlook | A Super Central Bank Week and China's August Economic Data Are Coming; on Monday, Iran will hold talks with Gulf states on the Hormuz Agreement, while the Korea Exchange launches after-hours stock trading; on Wednesday, the CLARI 富途牛牛."
-      ],
-      "sources": [
-        {
-          "name": "Google News — Product / feature launches",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOZFhrLWoxeVFQdTNSai12VFR4MGc2eUo5SDloV21wMnpfa215OE5XZ2Z1VUwxU3M4UzZmSksyTmRyendlOW5jTFFYZE1SOFdybDFCcnl0aWxjcU81Q0wtT2J2c3lPUDlVOXd3SnZod1dGc0hBSzJQcTF6MElheUpHTWdySlEzaXBCWXZ5NVRMaE83U0daUGQ3Ng?oc=5",
-          "sourceId": "gn-features"
-        }
-      ],
-      "publishedAt": "2026-09-15T19:56:33.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "China",
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "每周展望|超级央行周和中国8月经济数据即将到来；周一，伊朗将与海湾国家就霍尔木兹协议举行会谈，而韩国交易所将推出盘后股票交易；周三， CLARI - 富途牛牛",
-      "keyPointsZh": [
-        "每周展望|超级央行周和中国8月经济数据即将到来；周一，伊朗将与海湾国家就霍尔木兹协议举行会谈，而韩国交易所将启动盘后股票交易；周三， CLARI富途牛牛。"
-      ]
-    },
-    {
-      "id": "3718c22a4e72e21f",
-      "caption": "Senate Blocks CLARITY Act 49-50 With No Democratic Votes to Proceed",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Cloture on the motion to proceed to H.R.",
-        "3633 fell 11 votes short of the 60 it needed.",
-        "All 49 votes to proceed came from Republicans.",
-        "Collins, Hawley, Moran and Tillis voted no, and Tillis voted no to preserve the right to move to reconsider, which he did a minute after the result was announced."
-      ],
-      "sources": [
-        {
-          "name": "The Defiant",
-          "url": "https://thedefiant.io/news/regulation/senate-blocks-clarity-act-49-50-with-no-democratic-votes-to-proceed",
-          "sourceId": "thedefiant"
-        }
-      ],
-      "publishedAt": "2026-09-15T19:56:20.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "参议院在没有民主党投票的情况下阻止CLARITY第49-50号法案",
-      "keyPointsZh": [
-        "对前往H.R.的动议进行了驳回",
-        "3633票比所需的60票少了11票。",
-        "所有49票来自共和党人。",
-        "柯林斯（ Collins ）、霍利（ Hawley ）、莫兰（ Moran ）和蒂利斯（ Tillis ）投了反对票，而蒂利斯（ Tillis ）则投了反对票，以保留重新考虑的权利，他在结果公布一分钟后就重新考虑"
-      ]
-    },
-    {
       "id": "f58b190deae4142d",
       "caption": "OranjeBTC launches Bitcoin-linked ETF on Brazil's main stock exchange - TradingView",
       "category": "product",
@@ -3111,119 +2306,6 @@
       ]
     },
     {
-      "id": "eb3e437842164735",
-      "caption": "Crypto Reacts: Bitcoin Slides as Clarity Act Fails to Clear Senate Vote",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The Senate fell short of the 60 votes needed to advance the crypto industry's marquee bill Tuesday.",
-        "Bitcoin dropped as the no tally mounted, but the move stopped well short of panic."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378286/crypto-clarity-act-fails-clear-senate-bitcoin-slides",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T19:18:29.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "加密反应：随着清晰度法案未能清除参议院投票，比特币下滑",
-      "keyPointsZh": [
-        "参议院周二没有达到推进加密行业大型法案所需的60票。",
-        "比特币随着无记录的加剧而下跌，但这一举动远未达到恐慌的程度。"
-      ]
-    },
-    {
-      "id": "1f67f0c3a1a5278c",
-      "caption": "Crypto industry reacts after Clarity Act fails Senate vote",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "One of the most crucial U.S. regulations for crypto markets couldn't secure enough support to clear the Senate's final 60-vote hurdle."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/policy/2026/09/15/clarity-act-fails-in-senate-here-is-how-the-crypto-industry-is-reacting",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T19:06:31.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "United States",
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "加密行业在《清晰度法案》未能通过参议院投票后做出反应",
-      "keyPointsZh": [
-        "美国对加密市场最重要的法规之一无法获得足够的支持来清除参议院最后60票的障碍。"
-      ]
-    },
-    {
-      "id": "193806199d3e773a",
-      "caption": "Clarity Act preliminary vote falls short in Senate amid ethics fight over Trump’s crypto wealth",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "An initial vote to try to push the Clarity Act closer to becoming law fell flat amid opposition to President Trump's crypto wealth."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/regulation/2026-09-15-clarity-act-preliminary-vote-falls-short-in-senate-amid-ethics-fight-over-trumps-crypto-wealth-415010",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-15T18:57:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "在围绕特朗普加密财富的道德斗争中，《清晰度法案》在参议院的初步投票不足",
-      "keyPointsZh": [
-        "由于反对特朗普总统的加密财富，试图推动《清晰度法案》更接近成为法律的最初投票失败了。"
-      ]
-    },
-    {
       "id": "c541a0bed8e29dd2",
       "caption": "0x Says Uniswap v4 Hooks Were A Mistake, Hayden Adams Says \"Skill Issue\"",
       "category": "listing",
@@ -3252,42 +2334,6 @@
       "keyPointsZh": [
         "DEX聚合器发现其分析的84,163个钩子中有54.2 ％是恶意的。",
         "Uniswap的创始人兼Paradigm的Dan Robinson表示，故障发生在0x的路由中。"
-      ]
-    },
-    {
-      "id": "f395087ebba0b3e0",
-      "caption": "Clarity Act Stalls in Senate as Crypto Bill Fails to Clear Key Vote",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The crypto market structure bill failed to receive enough votes to advance in the Senate."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378283/clarity-act-fails-senate-hurdle",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T18:54:10.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "由于加密法案未能清除关键投票， CLARITY ACT在参议院停滞不前",
-      "keyPointsZh": [
-        "加密货币市场结构法案未能获得足够的票数在参议院推进。"
       ]
     },
     {
@@ -3331,43 +2377,6 @@
       ]
     },
     {
-      "id": "571519acb0f1b782",
-      "caption": "Crypto Clarity Act flames out in failed U.S. Senate vote",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The years-long effort to set U.S. regulations for crypto markets couldn't muster enough support to make the leap over the Senate's final 60-vote hurdle."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/policy/2026/09/15/crypto-clarity-act-flames-out-in-failed-u-s-senate-vote",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T18:50:58.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "United States",
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "加密清晰度法案在美国参议院投票失败中熄灭",
-      "keyPointsZh": [
-        "多年来为加密市场制定美国法规的努力无法获得足够的支持，无法跨越参议院最后60票的障碍。"
-      ]
-    },
-    {
       "id": "1396f394230df7aa",
       "caption": "The AI Flywheel: Why the Future of Banking Implementations Lies in Compounding Intelligence",
       "category": "product",
@@ -3396,44 +2405,6 @@
       "captionZh": "人工智能飞轮：为什么银行实施的未来在于复合智能",
       "keyPointsZh": [
         "人工智能飞轮：为什么银行实施的未来在于复合智能。"
-      ]
-    },
-    {
-      "id": "af3e2f70003843fb",
-      "caption": "US Senate fails to advance CLARITY Act",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The failed procedural vote leaves the CLARITY Act facing an uncertain future after months of negotiations over crypto oversight and ethics provisions."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/news/us-senate-fails-to-advance-clarity-act?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-15T18:46:51.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "futures"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: futures.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：期货。"
-      },
-      "riskTools": [],
-      "captionZh": "美国参议院未能推进《透明度法案》",
-      "keyPointsZh": [
-        "程序性投票失败，使得CLARITY法案在就加密货币监管和道德条款进行了数月的谈判后，面临着不确定的未来。"
       ]
     },
     {
@@ -3550,13 +2521,20 @@
         "crypto"
       ],
       "keyPoints": [
-        "Michael Weisz will lead Kamino from a new New York headquarters as the DeFi lender is expanding into tokenized assets."
+        "The Solana lending protocol has $1.35 billion in TVL and $1.02 billion in active loans, according to DefiLlama.",
+        "Michael Weisz will lead Kamino from a new New York headquarters as the DeFi lender is expanding into tokenized assets.",
+        "Kamino Names Michael Weisz CEO for US and Institutional Expansion."
       ],
       "sources": [
         {
           "name": "CoinDesk",
           "url": "https://www.coindesk.com/business/2026/09/15/solana-lender-kamino-taps-yieldstreet-co-founder-as-ceo-in-wall-street-expansion",
           "sourceId": "coindesk"
+        },
+        {
+          "name": "The Defiant",
+          "url": "https://thedefiant.io/news/people/kamino-names-michael-weisz-ceo-for-us-and-institutional-expansion",
+          "sourceId": "thedefiant"
         }
       ],
       "publishedAt": "2026-09-15T18:02:05.000Z",
@@ -3569,7 +2547,9 @@
       "riskTools": [],
       "captionZh": "Solana贷款机构Kamino聘请金融科技资深人士Michael Weisz担任首席执行官，推动美国大规模扩张",
       "keyPointsZh": [
-        "Michael Weisz将从新的纽约总部领导Kamino ，因为DeFi贷款机构正在扩展到代币化资产。"
+        "根据DefiLlama的数据， Solana贷款协议有13.5亿美元的TVL和10.2亿美元的活跃贷款。",
+        "Michael Weisz将从新的纽约总部领导Kamino ，因为DeFi贷款机构正在扩展到代币化资产。",
+        "Kamino任命Michael Weisz为美国和机构扩张的首席执行官。"
       ]
     },
     {
@@ -3682,161 +2662,28 @@
       ]
     },
     {
-      "id": "3c371eb8a4f7d51d",
-      "caption": "DOJ charges Robinhood former engineers with front-running crypto listings on Hyperliquid",
-      "category": "listing",
-      "sectors": [
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "According to prosecutors, the two took positions in tokens ahead of Robinhood’s public listing announcements between 2025 and 2026."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/regulation/2026-09-15-doj-charges-robinhood-engineers-front-running-crypto-listings-hyperliquid-414865",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-15T17:50:23.000Z",
-      "entities": [
-        "robinhood"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "美国司法部向Robinhood前工程师收取在Hyperliquid上首次运行的加密货币列表的费用",
-      "keyPointsZh": [
-        "据检察官称，在2025年至2026年Robinhood公开上市公告之前，两人对代币采取了立场。"
-      ]
-    },
-    {
-      "id": "a0336a4a5693b74f",
-      "caption": "Sen. Elizabeth Warren says she wants a crypto bill, but the Clarity Act just isn’t it",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Elizabeth Warren says she remains determined to get a crypto bill signed into law — even if she doesn’t support the current Clarity Act."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/regulation/2026-09-15-sen-elizabeth-warren-says-she-wants-a-crypto-bill-but-the-clarity-act-just-isnt-it-414869",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-15T17:49:30.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "government bonds"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: government bonds.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：国债。"
-      },
-      "riskTools": [],
-      "captionZh": "参议员伊丽莎白·沃伦（ Elizabeth Warren ）表示，她想要一项加密法案，但《清晰度法案》（ Clarity Act ）",
-      "keyPointsZh": [
-        "伊丽莎白·沃伦（ Elizabeth Warren ）表示，即使她不支持当前的《清晰度法案》，她仍然决心将一项加密法案签署为法律。"
-      ]
-    },
-    {
-      "id": "a6db0fe46c90d150",
-      "caption": "Robinhood Engineers Charged With Fraud Over Alleged Crypto Listing Trades",
-      "category": "listing",
-      "sectors": [
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "Two employees allegedly earned more than $50,000 each by trading Hyperliquid perpetual futures before Robinhood announced new token listings."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378267/robinhood-engineers-charged-fraud-over-crypto-listing-trades",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T17:49:23.000Z",
-      "entities": [
-        "robinhood"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "Robinhood工程师因涉嫌加密货币上市交易而被指控欺诈",
-      "keyPointsZh": [
-        "据称，在Robinhood宣布新的代币上市之前，两名员工通过交易Hyperliquid永续期货赚取了超过50,000 $的收入。"
-      ]
-    },
-    {
-      "id": "362e421e2e1dc5be",
-      "caption": "'It's Now or Never' for Clarity Act, Says 'Bitcoin Senator' Lummis",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The Wyoming Republican says the final text hands Democrats more than 120 of their own demands, including sweeping new ethics rules, as the Senate holds a make-or-break cloture vote Tuesday afternoon."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378268/now-or-never-clarity-act-bitcoin-cynthia-lummis",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T17:43:01.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "“比特币参议员” Lummis表示， “现在或永远”代表《清晰度法案》",
-      "keyPointsZh": [
-        "怀俄明州共和党人表示，最终文本向民主党人提出了120多项自己的要求，包括全面的新的道德规则，因为参议院周二下午举行了成败投票。"
-      ]
-    },
-    {
       "id": "638560d39d0a7999",
       "caption": "Binance adds 11 US-listed ETFs to wealth management offering",
       "category": "listing",
       "sectors": [
         "brokers",
-        "crypto"
+        "crypto",
+        "banks"
       ],
       "keyPoints": [
-        "The crypto exchange is expanding its traditional finance offerings with 11 US-listed exchange-traded funds focused on US Treasurys and investment-grade bonds."
+        "The crypto exchange is expanding its traditional finance offerings with 11 US-listed exchange-traded funds focused on US Treasurys and investment-grade bonds.",
+        "Binance adds 11 US-listed ETFs to wealth management offering TradingView."
       ],
       "sources": [
         {
           "name": "Cointelegraph",
           "url": "https://cointelegraph.com/news/binance-adds-11-us-listed-etfs-to-wealth-management-offering?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
           "sourceId": "cointelegraph"
+        },
+        {
+          "name": "Google News — New listings / instruments",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOU2JLa1dsTUprajFvZksycGhWZE9lV3VFdW5Zc3lZcFBnZEx3dW1QSFBzWS1ZbFRpUmdIbHdEa0tydElITWNCMUZHS0lZeEZwQmhfUkt4Y1czRWhqWEsyZVUtVDllTVRnSmVTdWFrZGx1VXZaNXJrZGVKdWZXZkVfTW9jVjdvQXVpcG1rRE02QjJTNGZnc2dTRkRDOWY0czhWaU1JdFhjWEJmdkZfdWJWdkdHQnhlX25XREItbHU1RkFlUQ?oc=5",
+          "sourceId": "gn-listings"
         }
       ],
       "publishedAt": "2026-09-15T17:22:04.000Z",
@@ -3851,39 +2698,7 @@
       "riskTools": [],
       "captionZh": "币安在财富管理产品中新增11只美国上市ETF",
       "keyPointsZh": [
-        "这家加密货币交易所正在扩展其传统金融产品，推出11只在美国上市的交易所交易基金，专注于美国国债和投资级债券。"
-      ]
-    },
-    {
-      "id": "317145cfa6f022e2",
-      "caption": "Binance adds 11 US-listed ETFs to wealth management offering - TradingView",
-      "category": "listing",
-      "sectors": [
-        "crypto",
-        "brokers",
-        "banks"
-      ],
-      "keyPoints": [
-        "Binance adds 11 US-listed ETFs to wealth management offering TradingView."
-      ],
-      "sources": [
-        {
-          "name": "Google News — New listings / instruments",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOU2JLa1dsTUprajFvZksycGhWZE9lV3VFdW5Zc3lZcFBnZEx3dW1QSFBzWS1ZbFRpUmdIbHdEa0tydElITWNCMUZHS0lZeEZwQmhfUkt4Y1czRWhqWEsyZVUtVDllTVRnSmVTdWFrZGx1VXZaNXJrZGVKdWZXZkVfTW9jVjdvQXVpcG1rRE02QjJTNGZnc2dTRkRDOWY0czhWaU1JdFhjWEJmdkZfdWJWdkdHQnhlX25XREItbHU1RkFlUQ?oc=5",
-          "sourceId": "gn-listings"
-        }
-      ],
-      "publishedAt": "2026-09-15T17:22:04.000Z",
-      "entities": [
-        "binance"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "币安在财富管理产品中新增11只美国上市ETF - TradingView",
-      "keyPointsZh": [
+        "这家加密货币交易所正在扩展其传统金融产品，推出11只在美国上市的交易所交易基金，专注于美国国债和投资级债券。",
         "币安为提供TradingView的财富管理增加了11只在美国上市的ETF。"
       ]
     },
@@ -4011,20 +2826,27 @@
       ]
     },
     {
-      "id": "59a95924b57414fa",
-      "caption": "MEV Bot Front-Runs $7.8 Million rsETH Exploit on Ethereum",
+      "id": "f4df4f12221d15b4",
+      "caption": "ETH wallet exploit backfires as MEV bot captures $7.7M, Kelp freezes address",
       "category": "listing",
       "sectors": [
         "crypto"
       ],
       "keyPoints": [
-        "Yoink sent 2,882.37 rsETH to one address after its transaction beat the original attack into the same Ethereum block."
+        "MEV Bot Front-Runs $7.8 Million rsETH Exploit on Ethereum.",
+        "Yoink sent 2,882.37 rsETH to one address after its transaction beat the original attack into the same Ethereum block.",
+        "An MEV bot known as “Yoink” front-ran an attacker attempting to exploit a custom Safe module, capturing the stolen rsETH before Kelp temporarily froze the receiving address."
       ],
       "sources": [
         {
           "name": "The Defiant",
           "url": "https://thedefiant.io/news/hacks/mev-bot-front-runs-7-8-million-rseth-exploit-on-ethereum",
           "sourceId": "thedefiant"
+        },
+        {
+          "name": "Cointelegraph",
+          "url": "https://cointelegraph.com/news/mev-bot-intercepts-77m-in-rseth-from-ethereum-wallet-exploit?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+          "sourceId": "cointelegraph"
         }
       ],
       "publishedAt": "2026-09-15T16:03:00.000Z",
@@ -4034,182 +2856,11 @@
       ],
       "impact": null,
       "riskTools": [],
-      "captionZh": "MEV机器人在以太坊上首次运行$ 780万rsETH漏洞",
+      "captionZh": "以太坊钱包漏洞利用适得其反， MEV机器人捕获了$ 770万， Kelp冻结了地址",
       "keyPointsZh": [
-        "Yoink在其交易将原始攻击击败到相同的以太坊区块后，向一个地址发送了2,882.37 rsETH。"
-      ]
-    },
-    {
-      "id": "e59f289ff7504ffd",
-      "caption": "Bitcoin price falls to $75.6K September low as global bonds hit multidecade highs",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Bitcoin price action weakened over market nerves prior to the Senate CLARITY Act vote, while surging bond yields pressured risk assets across the board."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/markets/bitcoin-price-falls-to-756k-september-low-as-global-bonds-hit-multidecade-highs?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-15T16:02:01.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币。"
-      },
-      "riskTools": [],
-      "captionZh": "随着全球债券触及数十年高点，比特币价格跌至9月低点$ 75.6K",
-      "keyPointsZh": [
-        "在参议院CLARITY法案投票之前，比特币价格走势因市场紧张而减弱，而债券收益率的飙升给风险资产带来了全面的压力。"
-      ]
-    },
-    {
-      "id": "34ed037186bc914d",
-      "caption": "Kamino Names Michael Weisz CEO for US and Institutional Expansion",
-      "category": "listing",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The Solana lending protocol has $1.35 billion in TVL and $1.02 billion in active loans, according to DefiLlama."
-      ],
-      "sources": [
-        {
-          "name": "The Defiant",
-          "url": "https://thedefiant.io/news/people/kamino-names-michael-weisz-ceo-for-us-and-institutional-expansion",
-          "sourceId": "thedefiant"
-        }
-      ],
-      "publishedAt": "2026-09-15T15:59:53.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "Kamino任命Michael Weisz为美国和机构扩张首席执行官",
-      "keyPointsZh": [
-        "根据DefiLlama的数据， Solana贷款协议有13.5亿美元的TVL和10.2亿美元的活跃贷款。"
-      ]
-    },
-    {
-      "id": "acc46f17dc1a6824",
-      "caption": "Bitcoin Falls Below $76,000 as Traders Cut CLARITY Act Odds Hours Before Senate Vote",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Polymarket priced the odds of the bill becoming law this year at 12.5% on Tuesday morning, down from 29.5% on Monday afternoon, ahead of a cloture vote scheduled for 2:15 p.m."
-      ],
-      "sources": [
-        {
-          "name": "The Defiant",
-          "url": "https://thedefiant.io/news/markets/bitcoin-falls-below-76000-clarity-act-odds-senate-vote-sep-15-2026",
-          "sourceId": "thedefiant"
-        }
-      ],
-      "publishedAt": "2026-09-15T15:58:40.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "United States",
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC",
-          "stablecoins"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC, stablecoins.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币、稳定币。"
-      },
-      "riskTools": [],
-      "captionZh": "比特币跌破76,000 $ ，因交易商在参议院投票前数小时削减CLARITY ACT赔率",
-      "keyPointsZh": [
-        "Polymarket将该法案在周二上午成为法律的几率定为12.5% ，低于周一下午的29.5% ，高于定于下午2:15举行的集体投票。"
-      ]
-    },
-    {
-      "id": "bb6efe41f8fb7bb8",
-      "caption": "Enova scraps Grasshopper deal",
-      "category": "regulation",
-      "sectors": [
-        "banks"
-      ],
-      "keyPoints": [
-        "The Chicago-based fintech withdrew its applications from the OCC and Fed, and its CEO decried the absence of “clear standards” for bank licensing, in addition to “political pressure.”."
-      ],
-      "sources": [
-        {
-          "name": "Banking Dive",
-          "url": "https://www.bankingdive.com/news/enova-withdraw-application-acquire-grasshopper-bank-occ-fed/830423/",
-          "sourceId": "bankingdive"
-        }
-      ],
-      "publishedAt": "2026-09-15T15:57:59.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "United States",
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "banks"
-        ],
-        "assets": [],
-        "summary": "Potential impact on banks.",
-        "summaryZh": "对银行的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "Enova废弃Grasshopper优惠",
-      "keyPointsZh": [
-        "总部位于芝加哥的金融科技公司撤回了OCC和美联储的申请，其首席执行官谴责除了“政治压力”之外，银行牌照缺乏“明确标准”。"
-      ]
-    },
-    {
-      "id": "c2848b71757cee0e",
-      "caption": "CoinEx to Close Exchange on Ninth Anniversary",
-      "category": "listing",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "CoinEx to Close Exchange on Ninth Anniversary."
-      ],
-      "sources": [
-        {
-          "name": "The Defiant",
-          "url": "https://thedefiant.io/news/cefi/coinex-to-close-exchange-on-ninth-anniversary",
-          "sourceId": "thedefiant"
-        }
-      ],
-      "publishedAt": "2026-09-15T15:55:59.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "CoinEx将于九周年纪念日关闭交易所",
-      "keyPointsZh": [
-        "CoinEx将在九周年纪念日关闭交易所。"
+        "MEV机器人首次在以太坊上运行$ 780万rsETH漏洞。",
+        "Yoink在其交易将原始攻击击败到相同的以太坊区块后，向一个地址发送了2,882.37 rsETH。",
+        "被称为“Yoink”的MEV机器人前端运行攻击者试图利用自定义安全模块，在Kelp暂时冻结接收地址之前捕获被盗的rsETH。"
       ]
     },
     {
@@ -4253,13 +2904,28 @@
         "crypto"
       ],
       "keyPoints": [
-        "Standard Chartered sees Robinhood Chain as an early sign that tokenization could transform Arbitrum’s economics and drive ARB sharply higher by 2030."
+        "Standard Chartered predicts Arbitrum's ARB to rise 70-fold to $10, citing Robinhood Chain revenue.",
+        "The forecast rests on the 10% cut Arbitrum takes from chains built on its stack — a line that Robinhood Chain created in July and that has fallen 93%.",
+        "Standard Chartered Sets $10 Arbitrum Target on Robinhood and Tokenization Growth.",
+        "Standard Chartered sees Robinhood Chain as an early sign that tokenization could transform Arbitrum’s economics and drive ARB sharply higher by 2030.",
+        "Geoff Kendrick's note calls Arbitrum \"the blockchain for TradFi\" and puts the token at roughly 70 times its current price by the end of the decade.",
+        "The bank expects tokenization to make Arbitrum a favored network for traditional finance, even though ARB holders currently have no direct claim on the fees."
       ],
       "sources": [
         {
           "name": "Cointelegraph",
           "url": "https://cointelegraph.com/news/standard-chartered-arbitrum-arb-price-10-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
           "sourceId": "cointelegraph"
+        },
+        {
+          "name": "CoinDesk",
+          "url": "https://www.coindesk.com/markets/2026/09/15/standard-chartered-expects-arbitrum-s-arb-rising-70-fold-to-usd10-as-robinhood-boosts-its-revenue",
+          "sourceId": "coindesk"
+        },
+        {
+          "name": "The Defiant",
+          "url": "https://thedefiant.io/news/markets/standard-chartered-sets-10-arbitrum-target-on-robinhood-and-tokenization-growth",
+          "sourceId": "thedefiant"
         }
       ],
       "publishedAt": "2026-09-15T15:50:49.000Z",
@@ -4274,43 +2940,12 @@
       "riskTools": [],
       "captionZh": "渣打银行表示，到2030年， Arbitrum的表现可能会优于比特币、以太坊",
       "keyPointsZh": [
-        "渣打银行认为， Robinhood Chain是一个早期迹象，表明代币化可以改变Arbitrum的经济状况，并在2030年之前推动ARB大幅上涨。"
-      ]
-    },
-    {
-      "id": "8b8f3433571d765f",
-      "caption": "Crypto Clarity Act barrels toward disappointment barring last-minute Senate turnaround",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "As the parties dig in their heels, the market structure bill hasn't yet amassed the votes it would need to clear the first Senate hurdle scheduled for Tuesday."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/policy/2026/09/15/crypto-clarity-act-barrels-toward-disappointment-barring-last-minute-senate-turnaround",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T15:50:23.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "《加密清晰度法案》走向失望，除非参议院在最后一刻扭转局面",
-      "keyPointsZh": [
-        "随着各方的深入，市场结构法案尚未积累清除定于周二举行的第一个参议院障碍所需的票数。"
+        "渣打银行援引Robinhood Chain的收入预测， Arbitrum的ARB将增长70倍，达到10 $。",
+        "该预测基于Arbitrum从其堆栈上构建的链中获得的10 ％的削减—这是Robinhood Chain在7月份创建的一条线，已经下降了93 ％。",
+        "渣打银行为Robinhood和代币化增长设定了10 $的仲裁目标。",
+        "渣打银行认为， Robinhood Chain是一个早期迹象，表明代币化可以改变Arbitrum的经济状况，并在2030年之前推动ARB大幅上涨。",
+        "Geoff Kendrick的说明称Arbitrum为“TradFi的区块链” ，到本十年末，该代币的价格大约是其当前价格的70倍。",
+        "该银行预计代币化将使Arbitrum成为传统金融的首选网络，尽管ARB持有者目前没有直接要求收取费用。"
       ]
     },
     {
@@ -4405,251 +3040,6 @@
       ]
     },
     {
-      "id": "f4df4f12221d15b4",
-      "caption": "ETH wallet exploit backfires as MEV bot captures $7.7M, Kelp freezes address",
-      "category": "listing",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "An MEV bot known as “Yoink” front-ran an attacker attempting to exploit a custom Safe module, capturing the stolen rsETH before Kelp temporarily froze the receiving address."
-      ],
-      "sources": [
-        {
-          "name": "Cointelegraph",
-          "url": "https://cointelegraph.com/news/mev-bot-intercepts-77m-in-rseth-from-ethereum-wallet-exploit?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
-          "sourceId": "cointelegraph"
-        }
-      ],
-      "publishedAt": "2026-09-15T15:21:26.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "以太坊钱包漏洞利用适得其反， MEV机器人捕获了$ 770万， Kelp冻结了地址",
-      "keyPointsZh": [
-        "被称为“Yoink”的MEV机器人前端运行攻击者试图利用自定义安全模块，在Kelp暂时冻结接收地址之前捕获被盗的rsETH。"
-      ]
-    },
-    {
-      "id": "be4f724ca3c43890",
-      "caption": "Democrats 'Move the Goalposts' on Clarity Act Hours Before Key Senate Vote",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Democrats are pushing for further concessions as Republicans insist their latest text is their final offer ahead of today’s 60-vote test."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378246/democrats-goalposts-clarity-act-key-senate-vote",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T15:08:07.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "民主党在关键的参议院投票之前的清晰度法案时间内“移动目标”",
-      "keyPointsZh": [
-        "民主党人正在推动进一步的让步，因为共和党人坚持认为他们的最新文本是他们在今天的60票测试之前的最终报价。"
-      ]
-    },
-    {
-      "id": "2589ea2f19ec4f7d",
-      "caption": "Bitcoin Sinks as the Senate's Clarity Act Showdown Looms",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Bitcoin just gave back its entire post-golden-cross rally in one red candle, with a make-or-break Senate vote landing this afternoon and the Fed staring down a rate hike."
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378233/bitcoin-sinks-senate-clarity-act-showdown",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T14:58:57.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [
-          "BTC",
-          "government bonds",
-          "commodities"
-        ],
-        "summary": "Potential impact on crypto. Focus assets: BTC, government bonds, commodities.",
-        "summaryZh": "对加密交易所的潜在影响。 关注资产：比特币、国债、大宗商品。"
-      },
-      "riskTools": [],
-      "captionZh": "随着参议院清晰度法案摊牌的临近，比特币下沉",
-      "keyPointsZh": [
-        "比特币刚刚在一根红蜡烛中回馈了整个黄金十字架后的反弹，参议院今天下午进行了成败投票，美联储盯着加息。"
-      ]
-    },
-    {
-      "id": "5604ccc388724f02",
-      "caption": "Lead Senate Republican Lummis rejects Democratic counteroffer as Clarity Act vote nears",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Hours ahead of an initial vote on the Clarity Act, Senate Republicans are pushing back against a counterproposal from fellow Democrats."
-      ],
-      "sources": [
-        {
-          "name": "The Block",
-          "url": "https://www.theblock.co/news/regulation/2026-09-15-senate-republican-lummis-rejects-democratic-counteroffer-clarity-act-vote-414850",
-          "sourceId": "theblock"
-        }
-      ],
-      "publishedAt": "2026-09-15T14:38:13.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "首席参议院共和党人拉米斯拒绝民主党的反提议，因为清晰度法案的投票接近",
-      "keyPointsZh": [
-        "在对《清晰度法案》进行初步投票前几个小时，参议院共和党人正在反对民主党同僚的反提案。"
-      ]
-    },
-    {
-      "id": "1d23e74dd661e24c",
-      "caption": "European Central Bank calls for merchants to participate in digital euro pilot",
-      "category": "listing",
-      "sectors": [
-        "banks",
-        "crypto"
-      ],
-      "keyPoints": [
-        "The 12-month test will put a beta version of the central bank currency through online, mobile, in-store and peer-to-peer payments."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/policy/2026/09/15/european-central-bank-calls-for-merchants-to-participate-in-digital-euro-pilot",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T14:15:06.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "欧洲央行呼吁商家参与数字欧元试点",
-      "keyPointsZh": [
-        "为期12个月的测试将通过在线、移动、店内和点对点支付进行中央银行货币的测试版。"
-      ]
-    },
-    {
-      "id": "27aa62fd3be30b44",
-      "caption": "Clarity Act's odds of passing plunge as Republicans reject Democrats' counter-proposal",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "Prediction markets sharply marked down the crypto market structure bill’s near-term prospects as negotiations remained stuck hours before a key Senate vote."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/policy/2026/09/15/clarity-act-s-odds-of-passing-plunge-as-republicans-reject-democrats-counter-proposal",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T14:13:44.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "由于共和党人拒绝民主党的反提案， CLARITY ACT通过的几率暴跌",
-      "keyPointsZh": [
-        "预测市场大幅下调了加密市场结构法案的近期前景，因为在参议院关键投票前几个小时谈判仍陷入困境。"
-      ]
-    },
-    {
-      "id": "02f62ff5be9fff97",
-      "caption": "Morning Minute: Clarity Act Odds Slump After Democrat Pushback",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The odds of the Clarity Act passing have fully reversed their recent move, and crypto majors have reversed alongside.",
-        "Is there any hope left for the bill to pass?"
-      ],
-      "sources": [
-        {
-          "name": "Decrypt",
-          "url": "https://decrypt.co/378230/morning-minute-clarity-act-odds-slump-after-democrat-pushback",
-          "sourceId": "decrypt"
-        }
-      ],
-      "publishedAt": "2026-09-15T14:05:47.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "上午一分钟： Clarity Act在民主党人推回后赔率下滑",
-      "keyPointsZh": [
-        "《清晰度法案》通过的可能性已经完全扭转了他们最近的举动，加密货币巨头也与之并驾齐驱。",
-        "法案是否还有通过的希望？"
-      ]
-    },
-    {
       "id": "babb5c7a0d3b76fd",
       "caption": "Truist to exit near-prime auto lending, sell $5.5B in loans",
       "category": "product",
@@ -4737,40 +3127,6 @@
       "captionZh": "波兰能源巨头2.3亿美元石油交易失败的USDT支付功能： FT",
       "keyPointsZh": [
         "Tether的USDT稳定币是一笔失败的石油交易的一部分，据报道，这笔交易在2023年底使一家波兰能源巨头损失了2.3亿美元。"
-      ]
-    },
-    {
-      "id": "633b1c79f5518750",
-      "caption": "Standard Chartered predicts Arbitrum's ARB to rise 70-fold to $10, citing Robinhood Chain revenue",
-      "category": "listing",
-      "sectors": [
-        "banks",
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "The bank expects tokenization to make Arbitrum a favored network for traditional finance, even though ARB holders currently have no direct claim on the fees."
-      ],
-      "sources": [
-        {
-          "name": "CoinDesk",
-          "url": "https://www.coindesk.com/markets/2026/09/15/standard-chartered-expects-arbitrum-s-arb-rising-70-fold-to-usd10-as-robinhood-boosts-its-revenue",
-          "sourceId": "coindesk"
-        }
-      ],
-      "publishedAt": "2026-09-15T13:25:52.000Z",
-      "entities": [
-        "stanchart",
-        "robinhood"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "渣打银行预测， Arbitrum的ARB将增长70倍，达到10 $ ，理由是Robinhood Chain的收入",
-      "keyPointsZh": [
-        "该银行预计代币化将使Arbitrum成为传统金融的首选网络，尽管ARB持有者目前没有直接要求收取费用。"
       ]
     },
     {
@@ -4885,42 +3241,6 @@
       ]
     },
     {
-      "id": "eeabeb0a635f9a23",
-      "caption": "Will crypto get clarity? Senate votes today",
-      "category": "regulation",
-      "sectors": [
-        "crypto"
-      ],
-      "keyPoints": [
-        "The Senate is set to vote on a procedural motion to advance the Digital Asset Market Clarity Act, the major crypto market structure bill, on Tuesday, September 15 — a critical step toward a full floor vote, requiring at least seven non-Republican votes to clear the 60-vote threshold."
-      ],
-      "sources": [
-        {
-          "name": "The Defiant",
-          "url": "https://thedefiant.io/podcasts-and-videos/podcast/will-crypto-get-clarity-senate-votes-today",
-          "sourceId": "thedefiant"
-        }
-      ],
-      "publishedAt": "2026-09-15T13:00:00.000Z",
-      "entities": [],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": {
-        "sectors": [
-          "crypto"
-        ],
-        "assets": [],
-        "summary": "Potential impact on crypto.",
-        "summaryZh": "对加密交易所的潜在影响。"
-      },
-      "riskTools": [],
-      "captionZh": "加密货币会变得清晰吗？今天参议院投票",
-      "keyPointsZh": [
-        "参议院将于9月15日星期二就推进数字资产市场清晰度法案的程序性动议进行投票，该法案是主要的加密市场结构法案，这是朝着全面投票迈出的关键一步，需要至少七个非共和党投票才能清除60票的门槛。"
-      ]
-    },
-    {
       "id": "8c27ff012cc3bed3",
       "caption": "Alcoa Schedules Third Quarter 2026 Earnings Release and Conference Call",
       "category": "product",
@@ -4983,42 +3303,6 @@
       "captionZh": "施瓦布报告每月活动亮点",
       "keyPointsZh": [
         "施瓦布报告每月活动亮点。"
-      ]
-    },
-    {
-      "id": "dc3d7d0c2ae8f73c",
-      "caption": "Standard Chartered Sets $10 Arbitrum Target on Robinhood and Tokenization Growth",
-      "category": "listing",
-      "sectors": [
-        "banks",
-        "brokers",
-        "crypto"
-      ],
-      "keyPoints": [
-        "Geoff Kendrick's note calls Arbitrum \"the blockchain for TradFi\" and puts the token at roughly 70 times its current price by the end of the decade.",
-        "The forecast rests on the 10% cut Arbitrum takes from chains built on its stack — a line that Robinhood Chain created in July and that has fallen 93%."
-      ],
-      "sources": [
-        {
-          "name": "The Defiant",
-          "url": "https://thedefiant.io/news/markets/standard-chartered-sets-10-arbitrum-target-on-robinhood-and-tokenization-growth",
-          "sourceId": "thedefiant"
-        }
-      ],
-      "publishedAt": "2026-09-15T12:27:07.000Z",
-      "entities": [
-        "stanchart",
-        "robinhood"
-      ],
-      "jurisdictions": [
-        "Global"
-      ],
-      "impact": null,
-      "riskTools": [],
-      "captionZh": "渣打银行为Robinhood和代币化增长设定了10 $的仲裁目标",
-      "keyPointsZh": [
-        "Geoff Kendrick的说明称Arbitrum为“TradFi的区块链” ，到本十年末，该代币的价格大约是其当前价格的70倍。",
-        "该预测基于Arbitrum从其堆栈上构建的链中获得的10 ％的削减—这是Robinhood Chain在7月份创建的一条线，已经下降了93 ％。"
       ]
     }
   ],
