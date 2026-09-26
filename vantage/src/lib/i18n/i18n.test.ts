@@ -67,6 +67,10 @@ describe("messages", () => {
     assert.equal(translate("zh", "rankedByImpact"), "按影响与相关度优先");
     assert.equal(translate("en", "vantageImpact"), "Impact on multi-asset brokers (e.g. Vantage)");
     assert.equal(translate("zh", "vantageImpact"), "对多资产交易与券商平台（如 Vantage）的影响");
+    assert.equal(
+      translate("zh", "regulationLede"),
+      "覆盖美国、欧洲、英国、新加坡、日本、香港、中国及其他主要法域的监管讨论与规则变化。每条均附对 Vantage 这类多资产券商平台的影响说明。",
+    );
   });
 
   it("interpolates counts", () => {

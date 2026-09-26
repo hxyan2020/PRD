@@ -93,7 +93,6 @@ export const messages = {
     feed: "feed",
     published: "Published",
     entitiesLabel: "Entities",
-    potentialImpact: "Potential impact",
     vantageImpact: "Impact on multi-asset brokers (e.g. Vantage)",
     assets: "Assets",
     riskToolsLabel: "Risk tools",
@@ -198,7 +197,7 @@ export const messages = {
     noRegulation: "请先运行扫描以填充监管台面。",
     noSources: "尚无来源健康度。请运行 `npm run scan`。",
     regulationLede:
-      "覆盖美国、欧洲、英国、新加坡、日本、香港、中国及其他主要法域的监管讨论与规则变化。每条均附对行业与资产的潜在影响说明。",
+      "覆盖美国、欧洲、英国、新加坡、日本、香港、中国及其他主要法域的监管讨论与规则变化。每条均附对 Vantage 这类多资产券商平台的影响说明。",
     riskTitle: "风险识别、监测与管理",
     riskLede:
       "银行、券商与加密场所常用的内外部风险、监察与合规工具目录。下方简报为本次扫描中标注为风险工具的新闻。",
@@ -233,7 +232,6 @@ export const messages = {
     feed: "源",
     published: "发布",
     entitiesLabel: "相关主体",
-    potentialImpact: "潜在影响",
     vantageImpact: "对多资产交易与券商平台（如 Vantage）的影响",
     assets: "资产",
     riskToolsLabel: "风险工具",
