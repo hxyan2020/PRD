@@ -152,7 +152,7 @@ export function NewsCard({
       )}
 
       <div className="mt-4 rounded-lg border border-line bg-panel-2 px-3 py-2.5 text-sm">
-        <p className="font-mono text-[11px] uppercase tracking-wide text-gold">
+        <p className="font-mono text-[11px] tracking-wide text-gold">
           {t("vantageImpact")}
         </p>
         <p className="mt-1 leading-6 text-paper/90">
