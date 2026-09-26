@@ -25,7 +25,6 @@ jobs:
           publish_dir: ./docs
           destination_dir: trading-risk-ninja
           keep_files: true
-      - name: Permanent URL after Pages is enabled
+      - name: Permanent URL
         run: |
-          echo "After Settings → Pages → Deploy from a branch → gh-pages / (root):" >> "$GITHUB_STEP_SUMMARY"
-          echo "https://hxyan2020.github.io/PRD/trading-risk-ninja/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Live handbook: https://hxyan2020.github.io/PRD/trading-risk-ninja/" >> "$GITHUB_STEP_SUMMARY"
