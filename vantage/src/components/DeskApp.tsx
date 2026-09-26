@@ -5,9 +5,12 @@ import { parseDeskNav, useQueryParams } from "@/lib/queryNav";
 import type { Briefing, CatalogMeta, Entity, RiskTool } from "@/lib/types";
 import { BriefingBoard } from "./BriefingBoard";
 import { CollectionView } from "./CollectionView";
+import { DailyTldr } from "./DailyTldr";
 import { EntitiesView } from "./EntitiesView";
 import { RiskCatalog } from "./RiskCatalog";
 import { SourcesView } from "./SourcesView";
+
+const TLDR_VIEWS = new Set(["briefing", "listing", "product", "regulation", "risk-tools"]);
 
 export function DeskApp({
   briefing,
@@ -23,6 +26,10 @@ export function DeskApp({
   const params = useQueryParams();
   const view = parseDeskNav(params.get("view"), params.get("category"));
   const { t } = useLocale();
+  const tldr =
+    briefing && TLDR_VIEWS.has(view) ? (
+      <DailyTldr items={briefing.items} entities={entities} sources={briefing.sources} />
+    ) : null;
 
   if (view === "collection") {
     return <CollectionView entities={entities} tools={tools} />;
@@ -48,6 +55,7 @@ export function DeskApp({
   if (view === "risk-tools") {
     return (
       <div className="space-y-8">
+        {tldr}
         <div>
           <h2 className="font-serif text-xl md:text-3xl">{t("riskTitle")}</h2>
           <p className="mt-2 hidden max-w-3xl text-sm text-muted md:block">{t("riskLede")}</p>
@@ -72,6 +80,7 @@ export function DeskApp({
     }
     return (
       <div className="space-y-5">
+        {tldr}
         <p className="hidden max-w-3xl text-sm text-muted md:block">{t("regulationLede")}</p>
         <BriefingBoard
           briefing={briefing}
@@ -93,6 +102,9 @@ export function DeskApp({
   }
 
   return (
-    <BriefingBoard briefing={briefing} entities={entities} tools={tools} />
+    <div className="space-y-5">
+      {tldr}
+      <BriefingBoard briefing={briefing} entities={entities} tools={tools} />
+    </div>
   );
 }

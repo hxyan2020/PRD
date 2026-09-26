@@ -1,8 +1,9 @@
 "use client";
 
+import { parseSector } from "@/lib/filters";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n/messages";
-import { storyDeskHref } from "@/lib/queryNav";
+import { parseDeskNav, storyDeskHref, useQueryParams } from "@/lib/queryNav";
 import {
   buildDailyTldr,
   TLDR_CATEGORIES,
@@ -11,6 +12,13 @@ import {
 import type { Entity, NewsCategory, NewsItem, Sector, SourceStatus } from "@/lib/types";
 import { QueryLink } from "./QueryLink";
 import { StoryLine } from "./StoryLine";
+
+const NAV_CATEGORY: Partial<Record<string, NewsCategory>> = {
+  listing: "listing",
+  product: "product",
+  regulation: "regulation",
+  "risk-tools": "risk_tools",
+};
 
 const SECTOR_LABEL: Record<Sector, MessageKey> = {
   banks: "banks",
@@ -35,6 +43,10 @@ export function DailyTldr({
   sources: SourceStatus[];
 }) {
   const { locale, t } = useLocale();
+  const params = useQueryParams();
+  const nav = parseDeskNav(params.get("view"), params.get("category"));
+  const activeSector = parseSector(params.get("sector") ?? undefined);
+  const activeCategory = NAV_CATEGORY[nav];
   const grid = buildDailyTldr(items, { entities, sources });
 
   return (
@@ -48,13 +60,22 @@ export function DailyTldr({
 
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         {TLDR_SECTORS.map((sector) => (
-          <div key={sector} className="rounded-lg border border-line bg-panel px-3 py-3">
+          <div
+            key={sector}
+            className={`rounded-lg border bg-panel px-3 py-3 ${
+              activeSector === sector ? "border-gold" : "border-line"
+            }`}
+          >
             <h3 className="font-serif text-base text-paper md:text-lg">{t(SECTOR_LABEL[sector])}</h3>
             <div className="mt-3 space-y-3">
               {TLDR_CATEGORIES.map((category) => {
                 const stories = grid[sector][category];
+                const focused = activeCategory === category;
                 return (
-                  <div key={category}>
+                  <div
+                    key={category}
+                    className={focused ? "rounded-md bg-gold/10 px-1.5 py-1" : undefined}
+                  >
                     <p className="font-mono text-[11px] tracking-wide text-gold">
                       {t(CATEGORY_LABEL[category])}
                     </p>

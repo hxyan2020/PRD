@@ -7,7 +7,6 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { navigateQuery, queryHref, useQueryParams } from "@/lib/queryNav";
 import type { Briefing, Entity, NewsCategory, RiskTool } from "@/lib/types";
-import { DailyTldr } from "./DailyTldr";
 import { NewsCard } from "./NewsCard";
 import { QueryLink } from "./QueryLink";
 
@@ -119,10 +118,6 @@ export function BriefingBoard({
           {t("lastSourced")} {formatDateTime(briefing.meta.generatedAt, locale)} · {t("listings")} {categoryCounts.listing} · {t("features")} {categoryCounts.product} · {t("regulation")} {categoryCounts.regulation} · {t("riskTools")} {categoryCounts.risk_tools}
         </p>
       </section>
-
-      {!forceCategory && activeCategory === "all" ? (
-        <DailyTldr items={briefing.items} entities={entities} sources={briefing.sources} />
-      ) : null}
 
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
         {SECTORS.map((entry) => (
