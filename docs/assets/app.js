@@ -614,12 +614,12 @@
     const ui = t();
     const back = p.venue === "cfd" ? "#/cfd" : "#/crypto";
     const jumps = [
-      ["sec-why", ui.why],
-      ["sec-flow", ui.flowchart],
-      ["sec-people", ui.people],
-      ["sec-detect", ui.detection],
-      ["sec-esc", ui.escPath],
-      ["sec-cm", ui.cmTitle]
+      ["sec-why", ui.jumpWhy || ui.why],
+      ["sec-flow", ui.jumpFlow || ui.flowchart],
+      ["sec-people", ui.jumpPeople || ui.people],
+      ["sec-detect", ui.jumpDetect || ui.detection],
+      ["sec-esc", ui.jumpEsc || ui.escPath],
+      ["sec-cm", ui.jumpCm || ui.cmTitle]
     ];
     return `
       <a class="back" href="${back}">← ${esc(venueTitle(p.venue))}</a>
