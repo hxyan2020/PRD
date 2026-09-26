@@ -12,8 +12,10 @@ python3 -m http.server 8080 --directory docs
 
 Then visit `http://localhost:8080`. Use the **EN / 中文** toggle in the header to switch the whole handbook — playbooks, measures, escalation, and chrome. The choice is stored in `localStorage`.
 
-A GitHub Action already publishes `docs/` to the `gh-pages` branch at `/trading-risk-ninja/`. This repository does not have GitHub Pages enabled yet. To put the handbook on a public URL, open **Settings → Pages**, set source to the `gh-pages` branch (root), and the site will be:
+Public URL (GitHub Pages):
 
-https://hxyan2020.github.io/PRD/trading-risk-ninja/
+https://hxyan2020.github.io/PRD/
+
+A GitHub Action publishes `docs/` to that Pages site and also copies it to the `gh-pages` branch at `/trading-risk-ninja/`. If the `.github.io` address still 404s, open **Settings → Pages** and set the source to **GitHub Actions**.
 
 This is a compliance and risk handbook. It is not a guide for committing market abuse. Thresholds are starting priors — retune them on your own tape.

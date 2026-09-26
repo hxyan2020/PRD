@@ -8,12 +8,19 @@ on:
     paths:
       - "docs/**"
       - ".github/workflows/pages-trading-risk-ninja.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: trading-risk-ninja-pages
+  cancel-in-progress: false
 
 jobs:
-  publish:
+  publish-branch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,3 +31,23 @@ jobs:
           publish_dir: ./docs
           destination_dir: trading-risk-ninja
           keep_files: true
+
+  deploy-pages:
+    needs: publish-branch
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable and configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Upload Trading Risk Ninja
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deployment
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
