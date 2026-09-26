@@ -58,7 +58,7 @@ export const messages = {
     noRegulation: "Run a scan to populate the regulation desk.",
     noSources: "No source health yet. Run `npm run scan`.",
     regulationLede:
-      "Regulatory discussion and rule changes across the United States, Europe, the United Kingdom, Singapore, Japan, Hong Kong, China, and other major jurisdictions. Each item includes a potential-impact note for sector and assets.",
+      "Regulatory discussion and rule changes across the United States, Europe, the United Kingdom, Singapore, Japan, Hong Kong, China, and other major jurisdictions. Each item includes a note on what it can do to a multi-asset broker such as Vantage.",
     riskTitle: "Risk detection, monitoring, management",
     riskLede:
       "Catalog of major internal and external risk, surveillance, and compliance tools used by banks, brokers, and crypto venues. The briefing below is the latest-scan slice tagged as risk-tool news.",

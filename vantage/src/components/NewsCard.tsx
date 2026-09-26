@@ -2,7 +2,6 @@
 
 import { entityName, sourceName } from "@/lib/i18n/catalog";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { assetLabel } from "@/lib/i18n/lookups";
 import { useStoryText } from "@/lib/i18n/useStoryText";
 import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
 import type { Entity, NewsItem, RiskTool } from "@/lib/types";
@@ -134,22 +133,6 @@ export function NewsCard({
           </li>
         ))}
       </ul>
-
-      {item.impact && (
-        <div className="mt-4 rounded-lg border border-gold/20 bg-gold/5 px-3 py-2 text-sm">
-          <p className="font-mono text-[11px] uppercase tracking-wide text-gold">
-            {t("potentialImpact")}
-          </p>
-          <p className="mt-1 text-paper/90">
-            <StoryLine english={item.impact.summary} chinese={item.impact.summaryZh} />
-          </p>
-          {item.impact.assets.length > 0 && (
-            <p className="mt-1 text-muted">
-              {t("assets")}: {item.impact.assets.map((asset) => assetLabel(asset, locale)).join(locale === "zh" ? "、" : ", ")}
-            </p>
-          )}
-        </div>
-      )}
 
       <div className="mt-4 rounded-lg border border-line bg-panel-2 px-3 py-2.5 text-sm">
         <p className="font-mono text-[11px] tracking-wide text-gold">
