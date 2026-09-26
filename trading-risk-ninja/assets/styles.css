@@ -26,6 +26,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  color-scheme: dark;
 }
 body {
   margin: 0;
@@ -187,7 +188,9 @@ body.lang-zh .brand-copy em,
 body.lang-zh .chart-legend,
 body.lang-zh .diagram-who,
 body.lang-zh .diagram-elabel,
-body.lang-zh .cm-card .meta {
+body.lang-zh .cm-card .meta,
+body.lang-zh .matrix td::before,
+body.lang-zh .dossier-jump button {
   text-transform: none;
   letter-spacing: 0.02em;
 }
@@ -217,7 +220,8 @@ h1, h2, h3 {
 h1 { font-size: clamp(28px, 5.4vw, 68px); line-height: 1.08; overflow-wrap: anywhere; }
 h2 { font-size: clamp(22px, 3vw, 38px); line-height: 1.15; overflow-wrap: anywhere; }
 h3 { font-size: 22px; letter-spacing: 0; overflow-wrap: anywhere; }
-.lede { font-size: 18px; color: #c9d4e0; max-width: 68ch; }
+.lede { font-size: 18px; color: #c9d4e0; max-width: 68ch; overflow-wrap: anywhere; }
+p, .person span, .cm-card, .door p, .card p, .note { overflow-wrap: anywhere; }
 
 .hero {
   display: grid;
@@ -254,7 +258,9 @@ h3 { font-size: 22px; letter-spacing: 0; overflow-wrap: anywhere; }
   clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
   transition: transform 160ms ease, border-color 160ms ease;
 }
-.door:hover { transform: translateY(-3px); border-color: var(--line-2); }
+@media (hover: hover) {
+  .door:hover { transform: translateY(-3px); border-color: var(--line-2); }
+}
 .door .tag { font-family: var(--mono); font-size: 11px; color: var(--jade); letter-spacing: 0.12em; text-transform: uppercase; }
 .door p { color: var(--muted); margin: 10px 0 0; }
 .door.crypto .tag { color: var(--ice); }
@@ -285,12 +291,21 @@ h3 { font-size: 22px; letter-spacing: 0; overflow-wrap: anywhere; }
   align-items: center;
   margin: 8px 0 22px;
 }
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
 .search {
   flex: 1;
   min-width: 220px;
   background: var(--ink-2);
   border: 1px solid var(--line);
   padding: 10px 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 0;
 }
 .chip, .sev {
   border: 1px solid var(--line);
@@ -322,7 +337,9 @@ h3 { font-size: 22px; letter-spacing: 0; overflow-wrap: anywhere; }
   gap: 10px;
   min-height: 230px;
 }
-.card:hover { border-color: var(--line-2); }
+@media (hover: hover) {
+  .card:hover { border-color: var(--line-2); }
+}
 .card-top {
   display: flex;
   justify-content: space-between;
@@ -541,17 +558,31 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 }
 .chart-legend .branch i { background: var(--amber); transform: rotate(45deg); }
 
+.diagram-hint {
+  display: none;
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
 .diagram-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pinch-zoom;
   margin: 0 -4px 18px;
   padding: 4px;
+  scrollbar-width: thin;
+}
+.diagram-scroll.is-wide {
+  padding-bottom: 10px;
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 28px), transparent);
 }
 .diagram {
   display: block;
   max-width: 100%;
   height: auto;
   font-family: var(--sans);
+  user-select: none;
 }
 .diagram-edge {
   fill: none;
@@ -670,6 +701,10 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 }
 .cm-card .meta span { display: block; color: var(--muted); margin-top: 4px; }
 
+.dossier-jump {
+  display: none;
+}
+
 @media (max-width: 900px) {
   .hero, .doors, .grid, .people, .two, .dossier-head, .cm-card { grid-template-columns: 1fr; }
   .stats, .sev-bands { grid-template-columns: 1fr 1fr; }
@@ -683,15 +718,22 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
     padding-left: max(14px, env(safe-area-inset-left));
     padding-right: max(14px, env(safe-area-inset-right));
   }
-  .brand { gap: 8px; min-width: 0; }
+  .brand { gap: 8px; min-width: 0; flex: 1; }
   .brand-copy { min-width: 0; }
   .brand-copy strong {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: normal;
+    overflow: visible;
+  }
+  .brand-copy em {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.04em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .brand-copy em { display: none; }
   .mark svg { width: 24px; height: 24px; }
 
   .menu-btn { display: grid; }
@@ -711,17 +753,23 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
     top: 100%;
     z-index: 21;
     gap: 0;
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
     background: rgba(16, 22, 30, 0.98);
     border-bottom: 1px solid var(--line);
     padding: 8px 14px 14px;
     padding-left: max(14px, env(safe-area-inset-left));
     padding-right: max(14px, env(safe-area-inset-right));
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
     box-shadow: var(--shadow);
   }
   .nav a {
-    font-size: 15px;
+    font-size: 16px;
     letter-spacing: 0.03em;
-    padding: 13px 8px;
+    padding: 14px 8px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
     border-bottom: 1px solid var(--line);
   }
   .nav a:last-child { border-bottom: 0; }
@@ -735,19 +783,19 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
   body.menu-open { overflow: hidden; }
 
   #app {
-    padding: 20px 16px 56px;
+    padding: 16px 16px 56px;
     padding-left: max(16px, env(safe-area-inset-left));
     padding-right: max(16px, env(safe-area-inset-right));
     padding-bottom: max(56px, env(safe-area-inset-bottom));
   }
 
-  h1 { font-size: clamp(26px, 8.2vw, 38px); line-height: 1.14; }
+  h1 { font-size: clamp(24px, 7.6vw, 36px); line-height: 1.16; }
   h2 { font-size: clamp(20px, 6vw, 28px); }
   h3 { font-size: 18px; }
   .lede { font-size: 16px; }
 
   .hero { padding: 4px 0 24px; gap: 18px; }
-  .hero-meta { font-size: 11px; gap: 8px; }
+  .hero-meta { font-size: 12px; gap: 8px; }
   .door {
     min-height: 0;
     padding: 20px;
@@ -762,9 +810,20 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
     min-width: 0;
     font-size: 16px;
     padding: 12px 14px;
+    border-radius: 0;
+  }
+  .filters {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    padding-bottom: 4px;
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 20px), transparent);
   }
   .chip, .sev {
-    min-height: 36px;
+    flex: 0 0 auto;
+    min-height: 40px;
     padding: 8px 12px;
   }
 
@@ -772,35 +831,116 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
     min-height: 0;
     padding: 16px;
   }
+  .card h3 { font-size: 17px; }
 
   .section { padding: 16px; }
+  .section[id] { scroll-margin-top: calc(118px + env(safe-area-inset-top, 0px)); }
   .back { display: inline-block; padding: 8px 0; min-height: 36px; }
   .dossier-head .badge { justify-self: start; width: max-content; }
   .step { grid-template-columns: 56px 1fr; gap: 12px; }
 
-  .diagram-tells { grid-template-columns: 1fr; }
-  .diagram { min-width: 640px; }
-
-  .esc { grid-template-columns: 72px 1fr; gap: 10px; }
-  .cm-card { gap: 8px; padding: 12px; }
-  .matrix {
-    display: block;
-    width: auto;
-    max-width: 100vw;
-    margin: 0 -16px;
-    padding: 0 16px 10px;
+  .dossier-jump {
+    display: flex;
+    gap: 8px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
+    position: sticky;
+    top: calc(64px + env(safe-area-inset-top, 0px));
+    z-index: 12;
+    margin: 0 -16px 14px;
+    padding: 8px 16px;
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    background: rgba(7, 8, 11, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
   }
-  table {
-    width: max-content;
-    min-width: 860px;
-    max-width: none;
+  .dossier-jump button {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    background: var(--ink-2);
+    color: var(--text);
     font-size: 12px;
+    white-space: nowrap;
+    cursor: pointer;
   }
-  th { white-space: nowrap; }
-  th, td { padding: 8px 10px; }
+
+  .diagram-hint { display: block; }
+  .diagram-tells { grid-template-columns: 1fr; }
+  .diagram-tells li {
+    min-height: 44px;
+    padding: 12px;
+  }
+  .diagram {
+    min-width: 0;
+    max-width: none;
+  }
+  .diagram-scroll:not(.is-wide) .diagram {
+    width: 100%;
+    height: auto;
+  }
+  .diagram-who { font-size: 9px; }
+  .diagram-act { font-size: 11px; }
+  .diagram-elabel { font-size: 9px; }
+  .chart-legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+    font-size: 10px;
+  }
+
+  .esc { grid-template-columns: 1fr; gap: 6px; }
+  .esc .lvl { margin-bottom: 2px; }
+  .cm-card { gap: 8px; padding: 12px; }
+  .cm-card .meta span { overflow-wrap: anywhere; }
+
+  .matrix {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+  .matrix table,
+  .matrix thead,
+  .matrix tbody,
+  .matrix tr,
+  .matrix th,
+  .matrix td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+  .matrix thead { display: none; }
+  .matrix tr {
+    background: var(--ink-2);
+    border: 1px solid var(--line);
+    margin: 0 0 10px;
+    padding: 2px 0;
+  }
+  .matrix td {
+    display: grid;
+    grid-template-columns: minmax(5.4rem, 34%) 1fr;
+    gap: 10px;
+    border-bottom: 1px solid var(--line);
+    padding: 9px 12px;
+    overflow-wrap: anywhere;
+  }
+  .matrix td:last-child { border-bottom: 0; }
+  .matrix td::before {
+    content: attr(data-th);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 2px;
+  }
 
   .foot {
     padding: 20px 16px 28px;
@@ -812,8 +952,11 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 
 @media (max-width: 480px) {
   .topbar { gap: 8px; }
-  .brand-copy strong { max-width: 42vw; }
+  .brand-copy strong { font-size: 12px; }
   .door { padding: 16px; clip-path: none; }
   .stat span { font-size: 12px; }
-  .chart-legend { font-size: 10px; gap: 8px 12px; }
+  .sev-bands { grid-template-columns: 1fr; }
+  .chart-legend { font-size: 10px; }
+  .matrix td { grid-template-columns: 1fr; gap: 4px; }
+  .matrix td::before { padding-top: 0; }
 }
