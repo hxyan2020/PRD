@@ -183,12 +183,12 @@
     const spec = (window.TRN_DIAGRAMS && TRN_DIAGRAMS[p.id]) || null;
     const steps = p.workflow || [];
     const stepByN = Object.fromEntries(steps.map((s) => [s.n, s]));
-    const colW = 248;
-    const rowH = 118;
+    const colW = 252;
+    const rowH = 128;
     const padX = 36;
     const padY = 28;
-    const boxW = 208;
-    const boxH = 72;
+    const boxW = 214;
+    const boxH = 82;
     const ioW = 92;
     const ioH = 34;
 
@@ -213,9 +213,9 @@
       const step = stepByN[id];
       const idx = steps.findIndex((s) => s.n === id);
       const kind = isIo ? "io" : nodeKindFor(p, step || {}, idx < 0 ? 0 : idx);
-      const shape = nodeSpec[id].shape || (kind === "decision" ? "decision" : isIo ? "io" : "process");
-      const w = shape === "io" ? ioW : boxW;
-      const h = shape === "decision" ? 86 : shape === "io" ? ioH : boxH;
+      const shape = nodeSpec[id].shape || (isIo ? "io" : "process");
+      const w = shape === "io" ? ioW : shape === "decision" ? 228 : boxW;
+      const h = shape === "decision" ? 100 : shape === "io" ? ioH : boxH;
       placed[id] = {
         id,
         at,
@@ -308,8 +308,8 @@
     const nodeEls = Object.values(placed).map((n) => {
       const kindLabel = n.shape === "io" ? "" : (kinds[n.kind] || n.kind);
       const who = n.shape === "io" ? n.who : `${n.id} · ${n.who}${kindLabel ? " · " + kindLabel : ""}`;
-      const actLines = wrapLabel(n.action, n.shape === "decision" ? 22 : 28, n.shape === "decision" ? 3 : 3);
-      const whoLines = wrapLabel(who, n.shape === "decision" ? 20 : 30, 2);
+      const actLines = wrapLabel(n.action, n.shape === "decision" ? 20 : 30, n.shape === "decision" ? 4 : 3);
+      const whoLines = wrapLabel(who, n.shape === "decision" ? 18 : 32, 1);
       let body;
       if (n.shape === "decision") {
         const cx = n.x + n.w / 2;
