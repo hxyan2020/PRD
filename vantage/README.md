@@ -27,7 +27,9 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Public site: [https://raw.githack.com/hxyan2020/PRD/gh-pages/](https://raw.githack.com/hxyan2020/PRD/gh-pages/)
+Permanent public site: [https://raw.githack.com/hxyan2020/PRD/gh-pages/](https://raw.githack.com/hxyan2020/PRD/gh-pages/)
+
+The first visit shows a raw.githack content notice; open the page and the desk loads. This URL tracks the `gh-pages` branch.
 
 The export is path-portable (relative `?view=` / `?category=` links and `./_next` assets), so the same files work on localhost, a tunnel root, or the jsDelivr subdirectory.
 

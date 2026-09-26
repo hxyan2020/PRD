@@ -13,4 +13,4 @@ npm run scan
 npm run dev
 ```
 
-Public desk: [https://raw.githack.com/hxyan2020/PRD/gh-pages/](https://raw.githack.com/hxyan2020/PRD/gh-pages/)
+Permanent public desk: [https://raw.githack.com/hxyan2020/PRD/gh-pages/](https://raw.githack.com/hxyan2020/PRD/gh-pages/)

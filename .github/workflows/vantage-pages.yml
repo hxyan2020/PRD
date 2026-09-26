@@ -41,4 +41,4 @@ jobs:
           keep_files: true
       - name: Public URL
         run: |
-          echo "Public desk: https://raw.githack.com/hxyan2020/PRD/gh-pages/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Permanent public desk: https://raw.githack.com/hxyan2020/PRD/gh-pages/" >> "$GITHUB_STEP_SUMMARY"
