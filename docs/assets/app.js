@@ -130,7 +130,7 @@
   function nodeKind(who, action) {
     const w = String(who || "").toLowerCase();
     const a = String(action || "");
-    if (/^(if |when a |optional)/i.test(a) || /accept.*reject|reject or requote/i.test(a)) return "decision";
+    if (/^(if |when a )/i.test(a) || /accept.*reject|reject or requote/i.test(a)) return "decision";
     if (/market|victim|retail|outer ring|holder|borrower|adl victim|scavenger/i.test(w)) return "market";
     if (/engine|platform|sys|index|oracle|liq engine|cascade/i.test(w)) return "system";
     if (/broker|b-book|finance|privilege|house|issuer|attestor|custodian|venue \(worst|staff/i.test(w)) return "house";
