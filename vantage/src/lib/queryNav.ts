@@ -9,6 +9,15 @@ export type DeskView =
   | "risk-tools"
   | "sources";
 
+export type DeskNavId =
+  | "briefing"
+  | "listing"
+  | "product"
+  | "regulation"
+  | "risk-tools"
+  | "entities"
+  | "sources";
+
 const LISTENERS = new Set<() => void>();
 
 function currentSearch(): string {
@@ -29,6 +38,28 @@ export function parseView(value: string | null | undefined): DeskView {
     return value;
   }
   return "briefing";
+}
+
+export function parseDeskNav(
+  view: string | null | undefined,
+  category: string | null | undefined,
+): DeskNavId {
+  const parsed = parseView(view);
+  if (parsed !== "briefing") return parsed;
+  if (category === "listing" || category === "product") return category;
+  if (category === "regulation") return "regulation";
+  if (category === "risk_tools") return "risk-tools";
+  return "briefing";
+}
+
+export function navHref(id: DeskNavId, sector?: string | null): string {
+  if (id === "briefing") return queryHref({ sector });
+  if (id === "listing") return queryHref({ category: "listing", sector });
+  if (id === "product") return queryHref({ category: "product", sector });
+  if (id === "regulation") return queryHref({ view: "regulation", sector });
+  if (id === "risk-tools") return queryHref({ view: "risk-tools", sector });
+  if (id === "entities") return queryHref({ view: "entities" });
+  return queryHref({ view: "sources" });
 }
 
 export function queryHref(next: Record<string, string | undefined | null>): string {

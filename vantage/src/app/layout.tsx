@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Newsreader, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
-import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
 import { SiteShell } from "@/components/SiteShell";
+import { countNews } from "@/lib/filters";
+import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
+import { loadBriefing } from "@/lib/loadData";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,11 +46,21 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const briefing = await loadBriefing();
+  const items = briefing?.items ?? [];
+  const navCounts = {
+    all: countNews(items),
+    listing: countNews(items, "listing"),
+    product: countNews(items, "product"),
+    regulation: countNews(items, "regulation"),
+    risk_tools: countNews(items, "risk_tools"),
+  };
+
   return (
     <html
       lang="en"
@@ -56,7 +68,7 @@ export default function RootLayout({
     >
       <body className="min-h-full">
         <LocaleProvider>
-          <SiteShell>{children}</SiteShell>
+          <SiteShell navCounts={navCounts}>{children}</SiteShell>
         </LocaleProvider>
       </body>
     </html>

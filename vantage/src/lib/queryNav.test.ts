@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { parseView, queryHref } from "./queryNav";
+import { navHref, parseDeskNav, parseView, queryHref } from "./queryNav";
 
 describe("queryHref", () => {
   it("builds host-relative query strings without a leading path", () => {
@@ -22,5 +22,26 @@ describe("parseView", () => {
     assert.equal(parseView(null), "briefing");
     assert.equal(parseView("product"), "briefing");
     assert.equal(parseView("risk-tools"), "risk-tools");
+  });
+});
+
+describe("parseDeskNav", () => {
+  it("merges briefing category chips into the same nav ids as the header", () => {
+    assert.equal(parseDeskNav(null, null), "briefing");
+    assert.equal(parseDeskNav(null, "listing"), "listing");
+    assert.equal(parseDeskNav(null, "product"), "product");
+    assert.equal(parseDeskNav(null, "regulation"), "regulation");
+    assert.equal(parseDeskNav(null, "risk_tools"), "risk-tools");
+    assert.equal(parseDeskNav("regulation", "listing"), "regulation");
+    assert.equal(parseDeskNav("entities", null), "entities");
+  });
+});
+
+describe("navHref", () => {
+  it("keeps listings and features on the briefing file", () => {
+    assert.equal(navHref("listing"), "?category=listing");
+    assert.equal(navHref("product", "banks"), "?category=product&sector=banks");
+    assert.equal(navHref("regulation"), "?view=regulation");
+    assert.equal(navHref("briefing"), "?");
   });
 });

@@ -17,6 +17,8 @@ export const messages = {
     navRiskShort: "Risk",
     navSources: "Sources & health",
     navSourcesShort: "Sources",
+    navListingsShort: "Listings",
+    navFeaturesShort: "Features",
     windowHitsShort: "Hits",
     footer:
       "Public RSS, official newsrooms, and Google News topic feeds. Source health and last-sourced timestamps are on the Sources page. Not investment advice.",
@@ -131,6 +133,8 @@ export const messages = {
     navRiskShort: "风险",
     navSources: "来源与健康度",
     navSourcesShort: "来源",
+    navListingsShort: "上市",
+    navFeaturesShort: "功能",
     windowHitsShort: "命中",
     footer:
       "公开 RSS、官方新闻室与 Google 新闻专题源。来源健康度与最近抓取时间见「来源与健康度」。不构成投资建议。",

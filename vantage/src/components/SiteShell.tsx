@@ -2,9 +2,15 @@
 
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { LanguageToggle } from "./LanguageToggle";
-import { NavLinks } from "./NavLinks";
+import { NavLinks, type NavCounts } from "./NavLinks";
 
-export function SiteShell({ children }: { children: React.ReactNode }) {
+export function SiteShell({
+  children,
+  navCounts,
+}: {
+  children: React.ReactNode;
+  navCounts?: NavCounts;
+}) {
   const { t } = useLocale();
 
   return (
@@ -26,7 +32,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
               <p className="hidden font-mono text-[11px] text-muted md:block">{t("scanHint")}</p>
             </div>
           </div>
-          <NavLinks />
+          <NavLinks counts={navCounts} />
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 py-4 md:px-5 md:py-8">

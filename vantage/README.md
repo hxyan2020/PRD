@@ -38,10 +38,11 @@ The export is path-portable (relative `?view=` / `?category=` links and `./_next
 Use the EN / 中文 control to switch the whole desk. Chrome, catalogs, and story captions/key points switch together. New scans write Chinese fields into `data/latest.json`; if a story is still English-only, the page translates it when you switch to 中文.
 
 - `?` daily briefing
-- `?category=product` Features filter (same file; no extra path)
-- `?view=entities` monitored banks, brokers, exchanges
+- `?category=listing` listings
+- `?category=product` features
 - `?view=regulation` regulatory slice plus impact notes
 - `?view=risk-tools` tool catalog plus related news
+- `?view=entities` monitored banks, brokers, exchanges
 - `?view=sources` every feed, last sourced time, and health
 
 `npm test` covers scan-window and classification rules.

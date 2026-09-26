@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { parseView, useQueryParams } from "@/lib/queryNav";
+import { parseDeskNav, useQueryParams } from "@/lib/queryNav";
 import type { Briefing, CatalogMeta, Entity, RiskTool } from "@/lib/types";
 import { BriefingBoard } from "./BriefingBoard";
 import { EntitiesView } from "./EntitiesView";
@@ -20,7 +20,7 @@ export function DeskApp({
   meta: CatalogMeta;
 }) {
   const params = useQueryParams();
-  const view = parseView(params.get("view"));
+  const view = parseDeskNav(params.get("view"), params.get("category"));
   const { t } = useLocale();
 
   if (view === "entities") {
@@ -54,7 +54,6 @@ export function DeskApp({
             entities={entities}
             tools={tools}
             titleKey="riskDevelopments"
-            hideCategoryFilters
             forceCategory="risk_tools"
           />
         )}
@@ -74,7 +73,6 @@ export function DeskApp({
           entities={entities}
           tools={tools}
           titleKey="regulatoryWatch"
-          hideCategoryFilters
           forceCategory="regulation"
         />
       </div>

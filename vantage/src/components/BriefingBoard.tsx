@@ -9,14 +9,6 @@ import type { Briefing, Entity, NewsCategory, RiskTool } from "@/lib/types";
 import { NewsCard } from "./NewsCard";
 import { QueryLink } from "./QueryLink";
 
-const CATEGORIES: Array<{ id: "all" | NewsCategory; label: MessageKey }> = [
-  { id: "all", label: "all" },
-  { id: "listing", label: "listings" },
-  { id: "product", label: "features" },
-  { id: "regulation", label: "regulation" },
-  { id: "risk_tools", label: "riskTools" },
-];
-
 const SECTORS: Array<{ id: "all" | "banks" | "brokers" | "crypto"; label: MessageKey }> = [
   { id: "all", label: "allSectors" },
   { id: "banks", label: "banks" },
@@ -37,14 +29,12 @@ export function BriefingBoard({
   entities,
   tools,
   titleKey = "dailyBriefing",
-  hideCategoryFilters = false,
   forceCategory,
 }: {
   briefing: Briefing;
   entities: Entity[];
   tools: RiskTool[];
   titleKey?: MessageKey;
-  hideCategoryFilters?: boolean;
   forceCategory?: NewsCategory;
 }) {
   const params = useQueryParams();
@@ -125,41 +115,21 @@ export function BriefingBoard({
         </p>
       </section>
 
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        {!hideCategoryFilters && (
-          <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
-            {CATEGORIES.map((entry) => (
-              <QueryLink
-                key={entry.id}
-                href={hrefFor({ category: entry.id, sector: activeSector, q: query })}
-                className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
-                  activeCategory === entry.id
-                    ? "border-gold text-gold"
-                    : "border-line text-muted"
-                }`}
-              >
-                {t(entry.label)}
-                <ChipCount value={categoryCounts[entry.id]} />
-              </QueryLink>
-            ))}
-          </div>
-        )}
-        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
-          {SECTORS.map((entry) => (
-            <QueryLink
-              key={entry.id}
-              href={hrefFor({ category: activeCategory, sector: entry.id, q: query })}
-              className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
-                activeSector === entry.id
-                  ? "border-gold text-gold"
-                  : "border-line text-muted"
-              }`}
-            >
-              {t(entry.label)}
-              <ChipCount value={sectorCounts[entry.id]} />
-            </QueryLink>
-          ))}
-        </div>
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] md:mx-0 md:flex-wrap md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden">
+        {SECTORS.map((entry) => (
+          <QueryLink
+            key={entry.id}
+            href={hrefFor({ category: activeCategory, sector: entry.id, q: query })}
+            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-sm ${
+              activeSector === entry.id
+                ? "border-gold text-gold"
+                : "border-line text-muted"
+            }`}
+          >
+            {t(entry.label)}
+            <ChipCount value={sectorCounts[entry.id]} />
+          </QueryLink>
+        ))}
       </div>
 
       <form
