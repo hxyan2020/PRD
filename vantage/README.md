@@ -29,8 +29,6 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Public site: [https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/index.html](https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/index.html)
 
-GitHub Pages (when enabled): [https://hxyan2020.github.io/PRD/](https://hxyan2020.github.io/PRD/)
-
 The export is path-portable (relative `?view=` / `?category=` links and `./_next` assets), so the same files work on localhost, a tunnel root, or the jsDelivr subdirectory.
 
 Use the EN / 中文 control to switch the whole desk. Chrome, catalogs, and story captions/key points switch together. New scans write Chinese fields into `data/latest.json`; if a story is still English-only, the page translates it when you switch to 中文.
