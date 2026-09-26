@@ -65,6 +65,8 @@ describe("messages", () => {
     assert.equal(translate("zh", "loginToCollect"), "登录后即可将本条新闻加入收藏。");
     assert.equal(translate("en", "rankedByImpact"), "Most impactful and relevant first");
     assert.equal(translate("zh", "rankedByImpact"), "按影响与相关度优先");
+    assert.equal(translate("en", "vantageImpact"), "Impact on multi-asset brokers (e.g. Vantage)");
+    assert.equal(translate("zh", "vantageImpact"), "对多资产交易与券商平台（如 Vantage）的影响");
   });
 
   it("interpolates counts", () => {

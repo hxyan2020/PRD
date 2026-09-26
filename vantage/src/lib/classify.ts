@@ -18,12 +18,12 @@ const REGULATION =
 const RISK =
   /\b(surveillance|market abuse|aml|kyc|kyt|var\b|stress test|risk (management|platform|engine|system|tool)|monitoring tool|chainalysis|elliptic|actimize|aladdin|murex|axiomsl|smarts|validus|world-check|transaction monitoring|sanctions screen)\b/i;
 
-const ASSET_PATTERNS: Array<[RegExp, string]> = [
+export const ASSET_PATTERNS: Array<[RegExp, string]> = [
   [/\bbitcoin|\bbtc\b/i, "BTC"],
   [/\bethereum|\beth\b/i, "ETH"],
   [/\bstablecoin|usdc|usdt|tether|circle/i, "stablecoins"],
   [/\btokeni[sz]ed|rwa\b/i, "tokenized assets / RWAs"],
-  [/\betf\b/i, "ETFs"],
+  [/\betfs?\b/i, "ETFs"],
   [/\bperpetual|perps?\b/i, "crypto perpetuals"],
   [/\boption/i, "options"],
   [/\bfutures?\b/i, "futures"],
@@ -118,19 +118,19 @@ export function inferSectors(
   return merged.length ? merged : ["banks", "brokers", "crypto"];
 }
 
+export function detectAssets(text: string): string[] {
+  return [...new Set(
+    ASSET_PATTERNS.filter(([pattern]) => pattern.test(text)).map(([, label]) => label),
+  )];
+}
+
 export function inferImpact(
   text: string,
   category: NewsCategory,
   sectors: Sector[],
 ): Impact | null {
   if (category !== "regulation") return null;
-
-  const assets = ASSET_PATTERNS.filter(([pattern]) => pattern.test(text)).map(
-    ([, label]) => label,
-  );
-
-  const uniqueAssets = [...new Set(assets)];
-  return buildImpact(sectors, uniqueAssets);
+  return buildImpact(sectors, detectAssets(text));
 }
 
 export function buildImpact(sectors: Sector[], uniqueAssets: string[]): Impact {

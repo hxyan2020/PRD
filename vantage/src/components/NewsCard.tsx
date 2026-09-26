@@ -8,6 +8,7 @@ import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
 import type { Entity, NewsItem, RiskTool } from "@/lib/types";
 import { BrandLabelList } from "./BrandLabel";
 import { CountryLabel } from "./CountryLabel";
+import { deskPlatformImpact } from "@/lib/platformImpact";
 import { useDeskAccount } from "./DeskAccountProvider";
 import { toolLogoId } from "@/lib/logos";
 
@@ -61,6 +62,15 @@ export function NewsCard({
       return tool ? { id: toolLogoId(tool.id), name: tool.name } : null;
     })
     .filter(Boolean) as Array<{ id: string; name: string }>;
+  const namedParties = item.entities
+    .map((id) => {
+      const entity = entities.find((entry) => entry.id === id);
+      return entity
+        ? { nameEn: entity.name, nameZh: entityName(entity.id, entity.name, "zh") }
+        : null;
+    })
+    .filter(Boolean) as Array<{ nameEn: string; nameZh: string }>;
+  const vantageImpact = deskPlatformImpact(item, namedParties);
 
   return (
     <article className="rounded-xl border border-line bg-panel p-3.5 md:p-5">
@@ -140,6 +150,15 @@ export function NewsCard({
           )}
         </div>
       )}
+
+      <div className="mt-4 rounded-lg border border-line bg-panel-2 px-3 py-2.5 text-sm">
+        <p className="font-mono text-[11px] uppercase tracking-wide text-gold">
+          {t("vantageImpact")}
+        </p>
+        <p className="mt-1 leading-6 text-paper/90">
+          <StoryLine english={vantageImpact.summary} chinese={vantageImpact.summaryZh} />
+        </p>
+      </div>
 
       {brandTools.length > 0 && (
         <p className="mt-3 text-sm text-muted">
