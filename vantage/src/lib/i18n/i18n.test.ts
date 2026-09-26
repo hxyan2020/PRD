@@ -56,6 +56,9 @@ describe("messages", () => {
     assert.equal(translate("en", "features"), "Features");
     assert.equal(translate("zh", "navListingsShort"), "上市");
     assert.equal(translate("en", "navFeaturesShort"), "Features");
+    assert.equal(translate("zh", "navCollection"), "收藏");
+    assert.equal(translate("en", "collect"), "Collect");
+    assert.equal(translate("zh", "removeFromCollection"), "移除");
   });
 
   it("interpolates counts", () => {

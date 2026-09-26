@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Newsreader, Noto_Sans_SC, Noto_Serif_SC } from "next/font/google";
+import { DeskAccountProvider } from "@/components/DeskAccountProvider";
 import { SiteShell } from "@/components/SiteShell";
 import { countNews } from "@/lib/filters";
 import { LocaleProvider } from "@/lib/i18n/LocaleProvider";
@@ -68,7 +69,9 @@ export default async function RootLayout({
     >
       <body className="min-h-full">
         <LocaleProvider>
-          <SiteShell navCounts={navCounts}>{children}</SiteShell>
+          <DeskAccountProvider>
+            <SiteShell navCounts={navCounts}>{children}</SiteShell>
+          </DeskAccountProvider>
         </LocaleProvider>
       </body>
     </html>

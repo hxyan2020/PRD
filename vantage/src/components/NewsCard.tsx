@@ -8,6 +8,7 @@ import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
 import type { Entity, NewsItem, RiskTool } from "@/lib/types";
 import { BrandLabelList } from "./BrandLabel";
 import { CountryLabel } from "./CountryLabel";
+import { useDeskAccount } from "./DeskAccountProvider";
 import { toolLogoId } from "@/lib/logos";
 
 const CATEGORY_COLOR: Record<string, string> = {
@@ -38,12 +39,16 @@ export function NewsCard({
   item,
   entities,
   tools,
+  action = "collect",
 }: {
   item: NewsItem;
   entities: Entity[];
   tools: RiskTool[];
+  action?: "collect" | "remove";
 }) {
   const { locale, t } = useLocale();
+  const { session, collect, remove, collected } = useDeskAccount();
+  const saved = collected(item.id);
   const brandEntities = item.entities
     .map((id) => {
       const entity = entities.find((entry) => entry.id === id);
@@ -74,6 +79,28 @@ export function NewsCard({
         {item.jurisdictions.slice(2, 4).map((jurisdiction) => (
           <CountryLabel key={jurisdiction} name={jurisdiction} className="hidden text-muted md:inline-flex" />
         ))}
+        {action === "remove" ? (
+          <button
+            type="button"
+            onClick={() => remove(item.id)}
+            className="ml-auto rounded-full border border-down/50 px-2.5 py-1 text-[11px] normal-case tracking-normal text-down hover:border-down hover:bg-down/10"
+          >
+            {t("removeFromCollection")}
+          </button>
+        ) : (
+          <button
+            type="button"
+            disabled={!session || saved}
+            onClick={() => collect(item)}
+            className={`ml-auto rounded-full border px-2.5 py-1 text-[11px] normal-case tracking-normal ${
+              saved
+                ? "border-gold/40 bg-gold/10 text-gold"
+                : "border-gold text-gold hover:bg-gold/10 disabled:border-line disabled:text-muted"
+            }`}
+          >
+            {saved ? t("collected") : t("collect")}
+          </button>
+        )}
       </div>
 
       <h2 className="mt-3 overflow-visible break-words font-serif text-lg leading-[1.5] text-pretty text-paper sm:text-xl md:text-2xl">

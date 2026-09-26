@@ -22,6 +22,7 @@ describe("parseView", () => {
     assert.equal(parseView(null), "briefing");
     assert.equal(parseView("product"), "briefing");
     assert.equal(parseView("risk-tools"), "risk-tools");
+    assert.equal(parseView("collection"), "collection");
   });
 });
 
@@ -34,6 +35,7 @@ describe("parseDeskNav", () => {
     assert.equal(parseDeskNav(null, "risk_tools"), "risk-tools");
     assert.equal(parseDeskNav("regulation", "listing"), "regulation");
     assert.equal(parseDeskNav("entities", null), "entities");
+    assert.equal(parseDeskNav("collection", null), "collection");
   });
 });
 
@@ -43,5 +45,6 @@ describe("navHref", () => {
     assert.equal(navHref("product", "banks"), "?category=product&sector=banks");
     assert.equal(navHref("regulation"), "?view=regulation");
     assert.equal(navHref("briefing"), "?");
+    assert.equal(navHref("collection"), "?view=collection");
   });
 });

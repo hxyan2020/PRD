@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+import { AccountBar } from "./AccountBar";
 import { LanguageToggle } from "./LanguageToggle";
 import { NavLinks, type NavCounts } from "./NavLinks";
 
@@ -29,6 +30,7 @@ export function SiteShell({
             </div>
             <div className="flex shrink-0 flex-col items-end gap-2">
               <LanguageToggle />
+              <AccountBar />
               <p className="hidden font-mono text-[11px] text-muted md:block">{t("scanHint")}</p>
             </div>
           </div>

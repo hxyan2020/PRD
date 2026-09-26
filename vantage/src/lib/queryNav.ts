@@ -7,7 +7,8 @@ export type DeskView =
   | "entities"
   | "regulation"
   | "risk-tools"
-  | "sources";
+  | "sources"
+  | "collection";
 
 export type DeskNavId =
   | "briefing"
@@ -15,6 +16,7 @@ export type DeskNavId =
   | "product"
   | "regulation"
   | "risk-tools"
+  | "collection"
   | "entities"
   | "sources";
 
@@ -33,7 +35,8 @@ export function parseView(value: string | null | undefined): DeskView {
     value === "entities" ||
     value === "regulation" ||
     value === "risk-tools" ||
-    value === "sources"
+    value === "sources" ||
+    value === "collection"
   ) {
     return value;
   }
@@ -58,6 +61,7 @@ export function navHref(id: DeskNavId, sector?: string | null): string {
   if (id === "product") return queryHref({ category: "product", sector });
   if (id === "regulation") return queryHref({ view: "regulation", sector });
   if (id === "risk-tools") return queryHref({ view: "risk-tools", sector });
+  if (id === "collection") return queryHref({ view: "collection" });
   if (id === "entities") return queryHref({ view: "entities" });
   return queryHref({ view: "sources" });
 }

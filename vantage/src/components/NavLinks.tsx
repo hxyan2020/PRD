@@ -4,6 +4,7 @@ import { parseSector } from "@/lib/filters";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n/messages";
 import { navHref, parseDeskNav, useQueryParams, type DeskNavId } from "@/lib/queryNav";
+import { useDeskAccount } from "./DeskAccountProvider";
 import { QueryLink } from "./QueryLink";
 
 export type NavCounts = {
@@ -12,6 +13,7 @@ export type NavCounts = {
   product: number;
   regulation: number;
   risk_tools: number;
+  collection?: number;
 };
 
 const NAV: Array<{
@@ -25,6 +27,7 @@ const NAV: Array<{
   { id: "product", label: "features", short: "navFeaturesShort", countKey: "product" },
   { id: "regulation", label: "navRegulation", short: "navRegulationShort", countKey: "regulation" },
   { id: "risk-tools", label: "navRisk", short: "navRiskShort", countKey: "risk_tools" },
+  { id: "collection", label: "navCollection", short: "navCollectionShort", countKey: "collection" },
   { id: "entities", label: "navEntities", short: "navEntitiesShort" },
   { id: "sources", label: "navSources", short: "navSourcesShort" },
 ];
@@ -34,12 +37,24 @@ export function NavLinks({ counts }: { counts?: NavCounts }) {
   const active = parseDeskNav(params.get("view"), params.get("category"));
   const sector = parseSector(params.get("sector") ?? undefined);
   const { t } = useLocale();
+  const account = useDeskAccount();
+  const merged: NavCounts = {
+    all: counts?.all ?? 0,
+    listing: counts?.listing ?? 0,
+    product: counts?.product ?? 0,
+    regulation: counts?.regulation ?? 0,
+    risk_tools: counts?.risk_tools ?? 0,
+    collection: account.items.length,
+  };
 
   return (
     <nav className="flex w-full flex-wrap gap-1.5 md:gap-2">
       {NAV.map((item) => {
-        const href = navHref(item.id, item.id === "entities" || item.id === "sources" ? undefined : sector);
-        const count = item.countKey ? counts?.[item.countKey] : undefined;
+        const href = navHref(
+          item.id,
+          item.id === "entities" || item.id === "sources" || item.id === "collection" ? undefined : sector,
+        );
+        const count = item.countKey ? merged[item.countKey] : undefined;
         return (
           <QueryLink
             key={item.id}

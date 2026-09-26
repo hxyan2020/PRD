@@ -4,6 +4,7 @@ import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { parseDeskNav, useQueryParams } from "@/lib/queryNav";
 import type { Briefing, CatalogMeta, Entity, RiskTool } from "@/lib/types";
 import { BriefingBoard } from "./BriefingBoard";
+import { CollectionView } from "./CollectionView";
 import { EntitiesView } from "./EntitiesView";
 import { RiskCatalog } from "./RiskCatalog";
 import { SourcesView } from "./SourcesView";
@@ -22,6 +23,10 @@ export function DeskApp({
   const params = useQueryParams();
   const view = parseDeskNav(params.get("view"), params.get("category"));
   const { t } = useLocale();
+
+  if (view === "collection") {
+    return <CollectionView entities={entities} tools={tools} />;
+  }
 
   if (view === "entities") {
     return (
