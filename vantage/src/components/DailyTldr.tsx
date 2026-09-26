@@ -2,7 +2,6 @@
 
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n/messages";
-import { useStoryText } from "@/lib/i18n/useStoryText";
 import { storyDeskHref } from "@/lib/queryNav";
 import {
   buildDailyTldr,
@@ -11,6 +10,7 @@ import {
 } from "@/lib/tldrNews";
 import type { Entity, NewsCategory, NewsItem, Sector, SourceStatus } from "@/lib/types";
 import { QueryLink } from "./QueryLink";
+import { StoryLine } from "./StoryLine";
 
 const SECTOR_LABEL: Record<Sector, MessageKey> = {
   banks: "banks",
@@ -25,17 +25,6 @@ const CATEGORY_LABEL: Record<NewsCategory, MessageKey> = {
   risk_tools: "riskTools",
 };
 
-function TldrCaption({ item }: { item: NewsItem }) {
-  const { locale, t } = useLocale();
-  const { text, pending } = useStoryText(locale, item.caption, item.captionZh);
-  return (
-    <>
-      <span className="line-clamp-2">{text}</span>
-      {pending ? <span className="ml-1 font-mono text-[11px] text-muted">{t("translating")}</span> : null}
-    </>
-  );
-}
-
 export function DailyTldr({
   items,
   entities,
@@ -45,14 +34,17 @@ export function DailyTldr({
   entities: Entity[];
   sources: SourceStatus[];
 }) {
-  const { t } = useLocale();
+  const { locale, t } = useLocale();
   const grid = buildDailyTldr(items, { entities, sources });
 
   return (
-    <section className="rounded-xl border border-line bg-panel-2 p-3 md:p-5">
-      <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-gold">{t("dailyTldr")}</p>
+    <section
+      lang={locale === "zh" ? "zh-CN" : "en"}
+      className="rounded-xl border border-line bg-panel-2 p-3 md:p-5"
+    >
+      <p className="font-mono text-[11px] tracking-[0.18em] text-gold">{t("dailyTldr")}</p>
       <h2 className="mt-1 font-serif text-lg md:text-2xl">{t("dailyTldrTitle")}</h2>
-      <p className="mt-1 hidden text-sm text-muted md:block">{t("dailyTldrLede")}</p>
+      <p className="mt-1 text-xs text-muted md:text-sm">{t("dailyTldrLede")}</p>
 
       <div className="mt-4 grid gap-3 md:grid-cols-3">
         {TLDR_SECTORS.map((sector) => (
@@ -76,7 +68,9 @@ export function DailyTldr({
                               href={storyDeskHref(item, sector)}
                               className="block rounded-md px-1.5 py-1 text-sm leading-5 text-paper/90 hover:bg-gold/10 hover:text-gold"
                             >
-                              <TldrCaption item={item} />
+                              <span className="line-clamp-2">
+                                <StoryLine english={item.caption} chinese={item.captionZh} />
+                              </span>
                               <span className="mt-0.5 block font-mono text-[11px] text-muted">
                                 {t("tldrReports", { n: item.sources.length })}
                               </span>

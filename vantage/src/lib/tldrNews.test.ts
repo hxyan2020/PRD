@@ -48,6 +48,7 @@ describe("pickTldrStories", () => {
     const listed = story({
       id: "etf",
       caption: "Binance adds 11 US-listed ETFs to wealth management offering",
+      captionZh: "币安在财富管理产品中新增11只美国上市ETF",
       category: "listing",
       sectors: ["crypto", "brokers"],
       entities: ["binance"],
@@ -108,6 +109,7 @@ describe("pickTldrStories", () => {
       picked.map((item) => item.id),
       ["etf", "perp", "spot"],
     );
+    assert.equal(picked[0].captionZh, "币安在财富管理产品中新增11只美国上市ETF");
     assert.ok(tldrStoryScore(listed, { entities }) > tldrStoryScore(corn, { entities }));
   });
 

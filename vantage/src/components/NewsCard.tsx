@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { entityName, sourceName } from "@/lib/i18n/catalog";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { useStoryText } from "@/lib/i18n/useStoryText";
 import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
 import { useQueryParams } from "@/lib/queryNav";
 import { storyAnchorId } from "@/lib/tldrNews";
@@ -13,6 +12,7 @@ import { CountryLabel } from "./CountryLabel";
 import { deskPlatformImpact } from "@/lib/platformImpact";
 import { useDeskAccount } from "./DeskAccountProvider";
 import { toolLogoId } from "@/lib/logos";
+import { StoryLine } from "./StoryLine";
 
 const CATEGORY_COLOR: Record<string, string> = {
   listing: "text-[var(--listing)] border-[var(--listing)]/40",
@@ -20,23 +20,6 @@ const CATEGORY_COLOR: Record<string, string> = {
   regulation: "text-[var(--reg)] border-[var(--reg)]/40",
   risk_tools: "text-[var(--risk)] border-[var(--risk)]/40",
 };
-
-function StoryLine({
-  english,
-  chinese,
-}: {
-  english: string;
-  chinese?: string;
-}) {
-  const { locale, t } = useLocale();
-  const { text, pending } = useStoryText(locale, english, chinese);
-  return (
-    <>
-      {text}
-      {pending ? <span className="ml-2 font-mono text-[11px] text-muted">{t("translating")}</span> : null}
-    </>
-  );
-}
 
 export function NewsCard({
   item,

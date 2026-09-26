@@ -68,6 +68,7 @@ describe("messages", () => {
     assert.equal(translate("en", "dailyTldr"), "Daily TLDR");
     assert.equal(translate("zh", "dailyTldr"), "每日要点");
     assert.equal(translate("zh", "dailyTldrTitle"), "按领域与类别速览");
+    assert.match(translate("zh", "dailyTldrLede"), /银行|券商|加密/);
     assert.equal(translate("zh", "tldrEmpty"), "本窗口暂无");
     assert.equal(translate("en", "tldrReports", { n: 12 }), "12 reports");
     assert.equal(translate("zh", "tldrReports", { n: 12 }), "12 篇报道");
