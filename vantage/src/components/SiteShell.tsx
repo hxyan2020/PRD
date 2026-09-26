@@ -3,6 +3,7 @@
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { AccountBar } from "./AccountBar";
 import { LanguageToggle } from "./LanguageToggle";
+import { LoginModal } from "./LoginModal";
 import { NavLinks, type NavCounts } from "./NavLinks";
 
 export function SiteShell({
@@ -43,6 +44,7 @@ export function SiteShell({
       <footer className="border-t border-line pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="mx-auto max-w-6xl px-4 py-4 text-xs text-muted md:px-5 md:py-6">{t("footer")}</div>
       </footer>
+      <LoginModal />
     </div>
   );
 }

@@ -47,7 +47,7 @@ export function NewsCard({
   action?: "collect" | "remove";
 }) {
   const { locale, t } = useLocale();
-  const { session, collect, remove, collected } = useDeskAccount();
+  const { collect, remove, collected } = useDeskAccount();
   const saved = collected(item.id);
   const brandEntities = item.entities
     .map((id) => {
@@ -90,12 +90,12 @@ export function NewsCard({
         ) : (
           <button
             type="button"
-            disabled={!session || saved}
+            disabled={saved}
             onClick={() => collect(item)}
             className={`ml-auto rounded-full border px-2.5 py-1 text-[11px] normal-case tracking-normal ${
               saved
                 ? "border-gold/40 bg-gold/10 text-gold"
-                : "border-gold text-gold hover:bg-gold/10 disabled:border-line disabled:text-muted"
+                : "border-gold text-gold hover:bg-gold/10"
             }`}
           >
             {saved ? t("collected") : t("collect")}

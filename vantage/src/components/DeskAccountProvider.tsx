@@ -12,8 +12,6 @@ import {
 import {
   addCollectedItem,
   clearSession,
-  CREDENTIALS_SEEN_KEY,
-  DESK_USERNAME,
   emptyCollection,
   isCollected,
   readCollection,
@@ -30,8 +28,10 @@ interface DeskAccountValue {
   ready: boolean;
   session: DeskSession | null;
   items: NewsItem[];
-  showCredentials: boolean;
-  dismissCredentials: () => void;
+  loginOpen: boolean;
+  pendingItem: NewsItem | null;
+  openLogin: (item?: NewsItem) => void;
+  closeLogin: () => void;
   login: (username: string, password: string) => boolean;
   logout: () => void;
   collect: (item: NewsItem) => void;
@@ -45,19 +45,14 @@ export function DeskAccountProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
   const [session, setSession] = useState<DeskSession | null>(null);
   const [items, setItems] = useState<NewsItem[]>([]);
-  const [showCredentials, setShowCredentials] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const [pendingItem, setPendingItem] = useState<NewsItem | null>(null);
 
   useEffect(() => {
     const existing = readSession(window.localStorage);
     if (existing) {
       setSession(existing);
       setItems(readCollection(window.localStorage, existing.username).items);
-      setShowCredentials(window.localStorage.getItem(CREDENTIALS_SEEN_KEY) !== "1");
-    } else {
-      const created = writeSession(window.localStorage, DESK_USERNAME);
-      setSession(created);
-      setItems(readCollection(window.localStorage, DESK_USERNAME).items);
-      setShowCredentials(true);
     }
     setReady(true);
   }, []);
@@ -67,13 +62,31 @@ export function DeskAccountProvider({ children }: { children: ReactNode }) {
     setItems(next);
   }, []);
 
+  const openLogin = useCallback((item?: NewsItem) => {
+    setPendingItem(item ?? null);
+    setLoginOpen(true);
+  }, []);
+
+  const closeLogin = useCallback(() => {
+    setLoginOpen(false);
+    setPendingItem(null);
+  }, []);
+
   const login = useCallback((username: string, password: string) => {
     if (!verifyCredentials(username, password)) return false;
     const next = writeSession(window.localStorage, username);
+    const stored = readCollection(window.localStorage, next.username);
+    const pending = pendingItem;
+    const updated = pending ? addCollectedItem(stored, pending) : stored;
+    if (pending) {
+      writeCollection(window.localStorage, updated);
+    }
     setSession(next);
-    setItems(readCollection(window.localStorage, next.username).items);
+    setItems(updated.items);
+    setLoginOpen(false);
+    setPendingItem(null);
     return true;
-  }, []);
+  }, [pendingItem]);
 
   const logout = useCallback(() => {
     clearSession(window.localStorage);
@@ -83,7 +96,10 @@ export function DeskAccountProvider({ children }: { children: ReactNode }) {
 
   const collect = useCallback(
     (item: NewsItem) => {
-      if (!session) return;
+      if (!session) {
+        openLogin(item);
+        return;
+      }
       const current = {
         ...emptyCollection(session.username),
         items,
@@ -91,7 +107,7 @@ export function DeskAccountProvider({ children }: { children: ReactNode }) {
       const next = addCollectedItem(current, item);
       persistItems(session.username, next.items, next.updatedAt);
     },
-    [items, persistItems, session],
+    [items, openLogin, persistItems, session],
   );
 
   const remove = useCallback(
@@ -107,25 +123,22 @@ export function DeskAccountProvider({ children }: { children: ReactNode }) {
     [items, persistItems, session],
   );
 
-  const dismissCredentials = useCallback(() => {
-    window.localStorage.setItem(CREDENTIALS_SEEN_KEY, "1");
-    setShowCredentials(false);
-  }, []);
-
   const value = useMemo<DeskAccountValue>(
     () => ({
       ready,
       session,
       items,
-      showCredentials,
-      dismissCredentials,
+      loginOpen,
+      pendingItem,
+      openLogin,
+      closeLogin,
       login,
       logout,
       collect,
       remove,
       collected: (itemId: string) => isCollected({ username: session?.username ?? "", items, updatedAt: "" }, itemId),
     }),
-    [collect, dismissCredentials, items, login, logout, ready, remove, session, showCredentials],
+    [closeLogin, collect, items, login, loginOpen, logout, openLogin, pendingItem, ready, remove, session],
   );
 
   return <DeskAccountContext.Provider value={value}>{children}</DeskAccountContext.Provider>;

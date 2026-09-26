@@ -59,6 +59,10 @@ describe("messages", () => {
     assert.equal(translate("zh", "navCollection"), "收藏");
     assert.equal(translate("en", "collect"), "Collect");
     assert.equal(translate("zh", "removeFromCollection"), "移除");
+    assert.equal(translate("en", "browseAsGuest"), "Guest");
+    assert.equal(translate("zh", "browseAsGuest"), "访客");
+    assert.equal(translate("en", "loginToCollect"), "Sign in to save this story to your collection.");
+    assert.equal(translate("zh", "loginToCollect"), "登录后即可将本条新闻加入收藏。");
   });
 
   it("interpolates counts", () => {

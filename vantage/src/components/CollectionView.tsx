@@ -13,13 +13,20 @@ export function CollectionView({
   tools: RiskTool[];
 }) {
   const { t } = useLocale();
-  const { session, items } = useDeskAccount();
+  const { session, items, openLogin } = useDeskAccount();
 
   if (!session) {
     return (
-      <p className="rounded-xl border border-dashed border-line px-4 py-10 text-center text-muted">
-        {t("collectionNeedLogin")}
-      </p>
+      <div className="rounded-xl border border-dashed border-line px-4 py-10 text-center">
+        <p className="text-muted">{t("collectionNeedLogin")}</p>
+        <button
+          type="button"
+          onClick={() => openLogin()}
+          className="mt-4 min-h-9 rounded-full border border-gold px-4 font-mono text-xs text-gold hover:bg-gold/10"
+        >
+          {t("signIn")}
+        </button>
+      </div>
     );
   }
 

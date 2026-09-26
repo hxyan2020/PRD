@@ -66,6 +66,11 @@ describe("desk account", () => {
     assert.equal(verifyCredentials("other", DESK_PASSWORD), false);
   });
 
+  it("starts with no session so a visitor can browse as a guest", () => {
+    const storage = memoryStorage();
+    assert.equal(readSession(storage), null);
+  });
+
   it("persists a session so the next visit stays logged in", () => {
     const storage = memoryStorage();
     const session = writeSession(storage, "Hxyan", new Date("2026-09-26T06:00:00.000Z"));
