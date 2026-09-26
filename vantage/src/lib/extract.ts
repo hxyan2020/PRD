@@ -180,18 +180,30 @@ export function finishPoint(point: string): string {
   return `${balanced}.`;
 }
 
+const QUESTION_LEAD =
+  /^(why|how|what|which|who|whom|whose|would|should|could|can|is|are|do|does|did|will|when|where)\b/i;
+
+export function isQuestionCopy(text: string): boolean {
+  const value = tidyPoint(text).replace(/[.]+$/g, "").trim();
+  if (!value) return false;
+  if (/\?/.test(value)) return true;
+  return QUESTION_LEAD.test(value);
+}
+
 export function keyPoints(title: string, summary: string, max = 4): string[] {
   const cleaned = stripHtml(summary);
   const points = splitSentences(cleaned)
     .map((point) => finishPoint(point))
-    .filter((point) => !isIncompletePoint(point));
+    .filter((point) => !isIncompletePoint(point) && !isQuestionCopy(point));
 
-  if (points.length === 0 && cleaned && !JUNK_POINT.test(cleaned)) {
+  if (points.length === 0 && cleaned && !JUNK_POINT.test(cleaned) && !isQuestionCopy(cleaned)) {
     const fallback = finishPoint(completeSlice(cleaned));
-    if (fallback && !isIncompletePoint(fallback)) points.push(fallback);
+    if (fallback && !isIncompletePoint(fallback) && !isQuestionCopy(fallback)) {
+      points.push(fallback);
+    }
   }
 
-  if (points.length === 0 && title) {
+  if (points.length === 0 && title && !isQuestionCopy(title)) {
     const fromTitle = finishPoint(title.trim());
     if (fromTitle) points.push(fromTitle);
   }
@@ -199,11 +211,15 @@ export function keyPoints(title: string, summary: string, max = 4): string[] {
   return points.slice(0, max);
 }
 
+const PUBLISHER_TAIL =
+  /\s*[-|–—|:]\s*(CoinDesk|Cointelegraph|Reuters|Bloomberg|Finextra|Yahoo(?: Finance)?|Kalkine(?: Media)?|Bitcoin Magazine|CNBC|Forbes|MarketWatch|Barron'?s|The Block|Decrypt|Seeking Alpha|The Motley Fool|Investor'?s Business Daily|The Defiant|Business Insider|TechCrunch|Financial Times|WSJ|Associated Press|AP News)\s*$/i;
+
+export function stripPublisherTail(title: string): string {
+  return stripHtml(title).replace(PUBLISHER_TAIL, "").replace(/\s+/g, " ").trim();
+}
+
 export function normalizeTitle(title: string): string {
-  return stripHtml(title)
-    .replace(/\s*[-|–]\s*(CoinDesk|Cointelegraph|Reuters|Bloomberg|Finextra).*$/i, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  return stripPublisherTail(title);
 }
 
 export function storyKey(title: string, link: string): string {

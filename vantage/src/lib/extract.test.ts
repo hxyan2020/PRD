@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { isIncompletePoint, isIncompleteZh, keyPoints, stripHtml } from "./extract";
+import { isIncompletePoint, isIncompleteZh, isQuestionCopy, keyPoints, stripHtml, stripPublisherTail } from "./extract";
 import { repairNewsItem } from "./repairNews";
 
 describe("extract", () => {
@@ -15,6 +15,15 @@ describe("extract", () => {
 
   it("decodes basic HTML entities", () => {
     assert.equal(stripHtml("A &amp; B"), "A & B");
+  });
+
+  it("strips trailing publisher names and flags question copy", () => {
+    assert.equal(
+      stripPublisherTail("JPMorgan vs. Wells Fargo: Which Bank Stock Has More Upside Potential? - Yahoo Finance"),
+      "JPMorgan vs. Wells Fargo: Which Bank Stock Has More Upside Potential?",
+    );
+    assert.equal(isQuestionCopy("Which Bank Stock Has More Upside Potential?"), true);
+    assert.equal(isQuestionCopy("Monzo launches auto-invest cashback card."), false);
   });
 
   it("does not split on month or U.S. abbreviations", () => {
@@ -42,12 +51,12 @@ describe("extract", () => {
     assert.match(stocks[0], /U\.S\. Senate/);
   });
 
-  it("drops Finextra author stubs and uses the caption instead", () => {
+  it("drops Finextra author stubs and skips a question caption", () => {
     const points = keyPoints(
       "Why institutions are saying yes to stablecoins",
       "Author: A finextra community member.",
     );
-    assert.deepEqual(points, ["Why institutions are saying yes to stablecoins."]);
+    assert.deepEqual(points, []);
   });
 
   it("flags cut-off daybook fragments", () => {

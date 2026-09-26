@@ -1,5 +1,5 @@
 import { buildImpact } from "./classify";
-import { finishPoint, isIncompletePoint } from "./extract";
+import { finishPoint, isIncompletePoint, isQuestionCopy } from "./extract";
 import { detectSourceLang } from "./i18n/detectLang";
 import type { NewsCategory, NewsItem, Sector } from "./types";
 
@@ -185,6 +185,7 @@ function captionScore(item: NewsItem): number {
   if (item.sources.some((source) => ["coindesk", "cointelegraph", "finextra"].includes(source.sourceId))) {
     score += 2;
   }
+  if (isQuestionCopy(title)) score -= 8;
   return score;
 }
 
@@ -201,7 +202,7 @@ function uniquePoints(points: string[], caption: string, max = 8): string[] {
   const kept: string[] = [];
   for (const point of points) {
     const cleaned = finishPoint(point);
-    if (!cleaned || isIncompletePoint(cleaned)) continue;
+    if (!cleaned || isIncompletePoint(cleaned) || isQuestionCopy(cleaned)) continue;
     const norm = normalizePoint(cleaned);
     if (!norm || norm === captionNorm) continue;
     const pointTokens = tokens(cleaned);
@@ -209,7 +210,9 @@ function uniquePoints(points: string[], caption: string, max = 8): string[] {
     kept.push(cleaned);
     if (kept.length >= max) break;
   }
-  if (kept.length === 0 && caption) kept.push(finishPoint(caption));
+  if (kept.length === 0 && caption && !isQuestionCopy(caption)) {
+    kept.push(finishPoint(caption));
+  }
   return kept;
 }
 

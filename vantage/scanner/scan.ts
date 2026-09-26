@@ -436,7 +436,8 @@ export async function runScan(now = new Date()): Promise<Briefing> {
         isRelevant(rawItems[index], item.entities, item.category),
       ),
   );
-  const repaired = repairNewsItems(clusterNewsItems(items));
+  const entityNames = Object.fromEntries(entities.map((entity) => [entity.id, entity.name]));
+  const repaired = repairNewsItems(clusterNewsItems(items), entityNames);
   await attachChinese(repaired, previous);
 
   const briefing: Briefing = {

@@ -2,10 +2,12 @@ import {
   finishPoint,
   isIncompletePoint,
   isIncompleteZh,
+  isQuestionCopy,
   keyPoints,
   shouldMergeSplit,
   tidyPoint,
 } from "./extract";
+import { shapeStoryCopy, type EntityNameMap } from "./storyCopy";
 import type { NewsItem } from "./types";
 
 function mergeAbbreviationSplits(points: string[]): string[] {
@@ -30,7 +32,7 @@ function keepChinese(english: string, chinese: string | undefined): string {
   return value;
 }
 
-export function repairNewsItem(item: NewsItem): NewsItem {
+export function repairNewsItem(item: NewsItem, names: EntityNameMap = {}): NewsItem {
   const previousZh = new Map(
     (item.keyPoints ?? []).map((english, index) => [english, item.keyPointsZh?.[index] ?? ""]),
   );
@@ -45,19 +47,20 @@ export function repairNewsItem(item: NewsItem): NewsItem {
 
   if (points.length === 0) {
     const caption = finishPoint(item.caption.trim());
-    if (caption) points = [caption];
+    if (caption && !isQuestionCopy(caption)) points = [caption];
   }
 
   const captionZh = item.captionZh && !isIncompleteZh(item.captionZh) ? item.captionZh : "";
 
-  return {
+  const repaired: NewsItem = {
     ...item,
     captionZh,
     keyPoints: points,
     keyPointsZh: points.map((point) => keepChinese(point, previousZh.get(point))),
   };
+  return shapeStoryCopy(repaired, names);
 }
 
-export function repairNewsItems(items: NewsItem[]): NewsItem[] {
-  return items.map(repairNewsItem);
+export function repairNewsItems(items: NewsItem[], names: EntityNameMap = {}): NewsItem[] {
+  return items.map((item) => repairNewsItem(item, names));
 }
