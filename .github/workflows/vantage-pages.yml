@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: vantage-static
@@ -28,6 +30,10 @@ jobs:
           npm ci
           npm test
           npm run build
+      - name: Keep existing trading-risk-ninja site
+        run: |
+          git fetch origin gh-pages --depth=1
+          git archive origin/gh-pages trading-risk-ninja | tar -x -C vantage/out
       - name: Publish gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -35,3 +41,30 @@ jobs:
           publish_dir: vantage/out
           publish_branch: gh-pages
           keep_files: true
+      - name: Enable GitHub Pages on gh-pages
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X POST "repos/${GITHUB_REPOSITORY}/pages" \
+            -f build_type=legacy \
+            -f "source[branch]=gh-pages" \
+            -f "source[path]=/" \
+            || gh api -X PUT "repos/${GITHUB_REPOSITORY}/pages" \
+              -f build_type=legacy \
+              -f "source[branch]=gh-pages" \
+              -f "source[path]=/" \
+            || true
+          {
+            echo "Public desk: https://hxyan2020.github.io/PRD/"
+            echo "CDN desk: https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/index.html"
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload GitHub Pages artifact
+        continue-on-error: true
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: vantage/out
+      - name: Deploy GitHub Pages
+        id: deployment
+        continue-on-error: true
+        uses: actions/deploy-pages@v4

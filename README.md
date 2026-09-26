@@ -12,3 +12,5 @@ npm install
 npm run scan
 npm run dev
 ```
+
+Public desk: [https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/index.html](https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/index.html)

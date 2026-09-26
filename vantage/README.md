@@ -27,7 +27,9 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Public site: [https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/](https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/)
+Public site: [https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/index.html](https://cdn.jsdelivr.net/gh/hxyan2020/PRD@gh-pages/index.html)
+
+GitHub Pages (when enabled): [https://hxyan2020.github.io/PRD/](https://hxyan2020.github.io/PRD/)
 
 The export is path-portable (relative `?view=` / `?category=` links and `./_next` assets), so the same files work on localhost, a tunnel root, or the jsDelivr subdirectory.
 
