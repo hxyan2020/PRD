@@ -199,6 +199,8 @@ body.lang-zh .dossier-jump button {
   position: relative;
   z-index: 1;
   max-width: 1240px;
+  width: 100%;
+  min-width: 0;
   margin: 0 auto;
   padding: 36px 28px 80px;
 }
@@ -380,7 +382,14 @@ p, .person span, .cm-card, .door p, .card p, .note { overflow-wrap: anywhere; }
   color: var(--amber);
 }
 
-.dossier { display: grid; gap: 22px; }
+.dossier { display: grid; gap: 22px; min-width: 0; }
+.dossier > *,
+.section,
+.diagram-scroll,
+.matrix {
+  min-width: 0;
+  max-width: 100%;
+}
 .dossier-head {
   display: grid;
   grid-template-columns: 1fr auto;
