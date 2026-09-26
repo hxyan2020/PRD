@@ -67,8 +67,17 @@ describe("messages", () => {
     assert.equal(translate("zh", "rankedByImpact"), "按影响与相关度优先");
     assert.equal(translate("en", "dailyTldr"), "Daily TLDR");
     assert.equal(translate("zh", "dailyTldr"), "每日要点");
+    assert.equal(translate("zh", "dailyTldrTitle"), "按领域与类别速览");
+    assert.equal(translate("zh", "tldrEmpty"), "本窗口暂无");
     assert.equal(translate("en", "tldrReports", { n: 12 }), "12 reports");
     assert.equal(translate("zh", "tldrReports", { n: 12 }), "12 篇报道");
+    assert.equal(translate("zh", "banks"), "银行");
+    assert.equal(translate("zh", "brokers"), "券商");
+    assert.equal(translate("zh", "crypto"), "加密");
+    assert.equal(translate("zh", "listings"), "上市");
+    assert.equal(translate("zh", "features"), "功能");
+    assert.equal(translate("zh", "regulation"), "监管");
+    assert.equal(translate("zh", "riskTools"), "风险工具");
     assert.equal(translate("en", "vantageImpact"), "Impact on multi-asset brokers (e.g. Vantage)");
     assert.equal(translate("zh", "vantageImpact"), "对多资产交易与券商平台（如 Vantage）的影响");
     assert.equal(
