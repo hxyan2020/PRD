@@ -12,15 +12,9 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: trading-risk-ninja-pages
-  cancel-in-progress: false
 
 jobs:
-  publish-branch:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,21 +25,7 @@ jobs:
           publish_dir: ./docs
           destination_dir: trading-risk-ninja
           keep_files: true
-
-  # Runs after you flip Settings → Pages → Source to GitHub Actions.
-  # GITHUB_TOKEN cannot create the Pages site from here (403).
-  deploy-pages:
-    needs: publish-branch
-    if: ${{ vars.TRN_PAGES_ENABLED == 'true' }}
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Permanent URL after Pages is enabled
+        run: |
+          echo "After Settings → Pages → Deploy from a branch → gh-pages / (root):" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://hxyan2020.github.io/PRD/trading-risk-ninja/" >> "$GITHUB_STEP_SUMMARY"
