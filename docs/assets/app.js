@@ -143,6 +143,10 @@
     return nodeKind(src.who, src.action);
   }
 
+  function isNarrow() {
+    return typeof window.matchMedia === "function" && window.matchMedia("(max-width: 720px)").matches;
+  }
+
   function wrapLabel(text, maxChars, maxLines) {
     const s = String(text || "").trim();
     const lines = [];
@@ -150,7 +154,11 @@
     const cjk = /[\u4e00-\u9fff]/.test(s);
     if (cjk) {
       for (let i = 0; i < s.length && lines.length < maxLines; i += maxChars) {
-        lines.push(s.slice(i, i + maxChars));
+        let chunk = s.slice(i, i + maxChars);
+        if (i + maxChars < s.length && lines.length === maxLines - 1) {
+          chunk = chunk.slice(0, Math.max(1, maxChars - 1)) + "…";
+        }
+        lines.push(chunk);
       }
       return lines;
     }
@@ -164,7 +172,13 @@
         cur = next;
       }
     });
-    if (cur && lines.length < maxLines) lines.push(cur);
+    if (cur) {
+      if (lines.length < maxLines) lines.push(cur);
+      else if (lines.length) {
+        const last = lines[lines.length - 1];
+        lines[lines.length - 1] = last.length > 1 ? last.slice(0, last.length - 1) + "…" : "…";
+      }
+    }
     return lines;
   }
 
@@ -183,14 +197,18 @@
     const spec = (window.TRN_DIAGRAMS && TRN_DIAGRAMS[p.id]) || null;
     const steps = p.workflow || [];
     const stepByN = Object.fromEntries(steps.map((s) => [s.n, s]));
-    const colW = 252;
-    const rowH = 128;
-    const padX = 36;
-    const padY = 28;
-    const boxW = 214;
-    const boxH = 82;
-    const ioW = 92;
+    const narrow = isNarrow();
+    const cjk = lang === "zh";
+    const colW = narrow ? 172 : 252;
+    const rowH = narrow ? (cjk ? 120 : 110) : (cjk ? 138 : 128);
+    const padX = narrow ? 14 : 36;
+    const padY = narrow ? 16 : 28;
+    const boxW = narrow ? 154 : 214;
+    const boxH = narrow ? (cjk ? 86 : 76) : (cjk ? 90 : 82);
+    const ioW = narrow ? 76 : 92;
     const ioH = 34;
+    const decW = narrow ? 164 : 228;
+    const decH = narrow ? 92 : 100;
 
     const fallbackNodes = {};
     const fallbackEdges = [];
@@ -214,8 +232,8 @@
       const idx = steps.findIndex((s) => s.n === id);
       const kind = isIo ? "io" : nodeKindFor(p, step || {}, idx < 0 ? 0 : idx);
       const shape = nodeSpec[id].shape || (isIo ? "io" : "process");
-      const w = shape === "io" ? ioW : shape === "decision" ? 228 : boxW;
-      const h = shape === "decision" ? 100 : shape === "io" ? ioH : boxH;
+      const w = shape === "io" ? ioW : shape === "decision" ? decW : boxW;
+      const h = shape === "decision" ? decH : shape === "io" ? ioH : boxH;
       placed[id] = {
         id,
         at,
@@ -241,7 +259,7 @@
       n.x = padX + (n.at[0] - minCol) * colW + (colW - n.w) / 2;
     });
     const hasLoop = edges.some((e) => e.loop || e.from === e.to);
-    const width = padX * 2 + (maxCol - minCol + 1) * colW + (hasLoop ? 96 : 36);
+    const width = padX * 2 + (maxCol - minCol + 1) * colW + (hasLoop ? (narrow ? 72 : 96) : (narrow ? 20 : 36));
     const height = padY * 2 + (maxRow + 1) * rowH;
     const uid = `d-${p.id.replace(/[^a-z0-9-]/gi, "")}`;
 
@@ -307,9 +325,17 @@
 
     const nodeEls = Object.values(placed).map((n) => {
       const kindLabel = n.shape === "io" ? "" : (kinds[n.kind] || n.kind);
-      const who = n.shape === "io" ? n.who : `${n.id} · ${n.who}${kindLabel ? " · " + kindLabel : ""}`;
-      const actLines = wrapLabel(n.action, n.shape === "decision" ? 20 : 30, n.shape === "decision" ? 4 : 3);
-      const whoLines = wrapLabel(who, n.shape === "decision" ? 18 : 32, 1);
+      const who = n.shape === "io"
+        ? n.who
+        : (narrow ? `${n.id} · ${n.who}` : `${n.id} · ${n.who}${kindLabel ? " · " + kindLabel : ""}`);
+      const actMax = n.shape === "decision"
+        ? (cjk ? (narrow ? 7 : 9) : (narrow ? 14 : 20))
+        : (cjk ? (narrow ? 9 : 11) : (narrow ? 20 : 28));
+      const whoMax = n.shape === "decision"
+        ? (cjk ? 8 : 16)
+        : (cjk ? (narrow ? 10 : 14) : 28);
+      const actLines = wrapLabel(n.action, actMax, cjk || n.shape === "decision" ? 4 : 3);
+      const whoLines = wrapLabel(who, whoMax, 1);
       let body;
       if (n.shape === "decision") {
         const cx = n.x + n.w / 2;
@@ -350,8 +376,9 @@
         <span class="loop"><i></i>${esc(ui.legendLoop)}</span>
         <span class="branch"><i></i>${esc(ui.legendBranch)}</span>
       </div>
-      <div class="diagram-scroll">
-        <svg class="diagram" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(ui.flowchart)} — ${esc(p.name)}">
+      <p class="diagram-hint">${esc(ui.diagramHint)}</p>
+      <div class="diagram-scroll" data-diagram-w="${width}">
+        <svg class="diagram" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" preserveAspectRatio="xMinYMin meet" role="img" aria-label="${esc(ui.flowchart)} — ${esc(p.name)}">
           <defs>
             <marker id="${uid}-fwd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
               <path d="M 0 0 L 10 5 L 0 10 z" fill="#8d9aab"/>
@@ -375,9 +402,28 @@
     if (!root) return;
     const svg = root.querySelector(".diagram");
     const tells = app.querySelectorAll(".diagram-tells li");
+    function layoutDiagram() {
+      const w = Number(root.getAttribute("data-diagram-w") || 0);
+      root.classList.toggle("is-wide", w > root.clientWidth + 12);
+    }
+    layoutDiagram();
+    if (typeof ResizeObserver !== "undefined") {
+      const ro = new ResizeObserver(layoutDiagram);
+      ro.observe(root);
+    }
     function pick(id) {
       svg.querySelectorAll(".diagram-node").forEach((n) => n.classList.toggle("on", n.getAttribute("data-node") === id));
       tells.forEach((li) => li.classList.toggle("on", li.getAttribute("data-tell") === id));
+      const g = svg.querySelector(`.diagram-node[data-node="${id}"]`);
+      if (g && root.classList.contains("is-wide") && typeof g.getBBox === "function") {
+        try {
+          const box = g.getBBox();
+          const vb = svg.viewBox.baseVal;
+          const scale = vb.width ? svg.clientWidth / vb.width : 1;
+          const left = box.x * scale - (root.clientWidth - box.width * scale) / 2;
+          root.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+        } catch (err) { /* detached svg */ }
+      }
     }
     svg.addEventListener("click", (e) => {
       const g = e.target.closest(".diagram-node");
@@ -391,6 +437,16 @@
       pick(g.getAttribute("data-node"));
     });
     tells.forEach((li) => li.addEventListener("click", () => pick(li.getAttribute("data-tell"))));
+  }
+
+  function bindDossier() {
+    bindDiagram();
+    app.querySelectorAll("[data-jump]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const el = document.getElementById(btn.getAttribute("data-jump"));
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
   }
 
   function measuresFor(id, fallback) {
@@ -499,11 +555,13 @@
       <h1>${esc(title)}</h1>
       <p class="lede">${esc(lede)}</p>
       <div class="toolbar" data-venue="${venue}">
-        <input class="search" type="search" placeholder="${esc(ui.search)}" />
-        ${productSet.map((key) => `<button class="chip on" data-product="${key}">${esc(productLabel(key))}</button>`).join("")}
-        <button class="sev on" data-sev="critical">${esc(severityLabel("critical"))}</button>
-        <button class="sev on" data-sev="high">${esc(severityLabel("high"))}</button>
-        <button class="sev on" data-sev="elevated">${esc(severityLabel("elevated"))}</button>
+        <input class="search" type="search" enterkeyhint="search" placeholder="${esc(ui.search)}" />
+        <div class="filters" role="group">
+          ${productSet.map((key) => `<button class="chip on" data-product="${key}">${esc(productLabel(key))}</button>`).join("")}
+          <button class="sev on" data-sev="critical">${esc(severityLabel("critical"))}</button>
+          <button class="sev on" data-sev="high">${esc(severityLabel("high"))}</button>
+          <button class="sev on" data-sev="elevated">${esc(severityLabel("elevated"))}</button>
+        </div>
       </div>
       <div class="grid" id="catalogue">${rows.map((x) => card({ ...x, venue })).join("")}</div>`;
   }
@@ -548,11 +606,26 @@
     search.addEventListener("input", renderGrid);
   }
 
+  function td(label, html, cls) {
+    return `<td${cls ? ` class="${cls}"` : ""} data-th="${esc(label)}">${html}</td>`;
+  }
+
   function dossier(p) {
     const ui = t();
     const back = p.venue === "cfd" ? "#/cfd" : "#/crypto";
+    const jumps = [
+      ["sec-why", ui.why],
+      ["sec-flow", ui.flowchart],
+      ["sec-people", ui.people],
+      ["sec-detect", ui.detection],
+      ["sec-esc", ui.escPath],
+      ["sec-cm", ui.cmTitle]
+    ];
     return `
       <a class="back" href="${back}">← ${esc(venueTitle(p.venue))}</a>
+      <nav class="dossier-jump" aria-label="${esc(ui.jump)}">
+        ${jumps.map(([id, label]) => `<button type="button" data-jump="${id}">${esc(label)}</button>`).join("")}
+      </nav>
       <div class="dossier">
         <div class="dossier-head">
           <div>
@@ -563,21 +636,21 @@
           </div>
           <span class="badge ${p.severity}">${esc(severityLabel(p.severity))}</span>
         </div>
-        <section class="section">
+        <section class="section" id="sec-why">
           <h3>${esc(ui.why)}</h3>
           <p>${esc(p.why)}</p>
         </section>
-        <section class="section">
+        <section class="section" id="sec-flow">
           <h3>${esc(ui.flowchart)}</h3>
           ${flowchart(p)}
         </section>
-        <section class="section">
+        <section class="section" id="sec-people">
           <h3>${esc(ui.people)}</h3>
           <div class="people">
             ${p.participants.map((x) => `<div class="person"><b>${esc(x.role)}</b><span>${esc(x.incentive)}</span></div>`).join("")}
           </div>
         </section>
-        <section class="section">
+        <section class="section" id="sec-detect">
           <h3>${esc(ui.detection)}</h3>
           <p class="lede" style="font-size:15px">${esc(ui.tools)}: ${p.detection.tools.map(esc).join(" · ")}</p>
           <div class="matrix">
@@ -594,17 +667,17 @@
               <tbody>
                 ${p.detection.parameters.map((r) => `
                   <tr>
-                    <td>${esc(r.metric)}</td>
-                    <td>${esc(r.window)}</td>
-                    <td class="warn">${esc(r.warn)}</td>
-                    <td class="breach">${esc(r.breach)}</td>
-                    <td>${esc(r.notes)}</td>
+                    ${td(ui.thMetric, esc(r.metric))}
+                    ${td(ui.thWindow, esc(r.window))}
+                    ${td(ui.thWarn, esc(r.warn), "warn")}
+                    ${td(ui.thBreach, esc(r.breach), "breach")}
+                    ${td(ui.thNotes, esc(r.notes))}
                   </tr>`).join("")}
               </tbody>
             </table>
           </div>
         </section>
-        <section class="section">
+        <section class="section" id="sec-esc">
           <h3>${esc(ui.escPath)}</h3>
           <div class="escalation">
             ${p.escalation.map((e) => `
@@ -614,7 +687,7 @@
               </div>`).join("")}
           </div>
         </section>
-        <section class="section">
+        <section class="section" id="sec-cm">
           <h3>${esc(ui.cmTitle)}</h3>
           <p class="lede" style="font-size:15px">${esc(ui.cmLede)}</p>
           ${measureList(p.id, p.countermeasures)}
@@ -666,11 +739,11 @@
           <tbody>
             ${p.escalationHub.steps.map((s) => `
               <tr>
-                <td><b>${esc(s.lvl)}</b><br>${esc(s.title)}</td>
-                <td>${esc(s.sla)}</td>
-                <td>${esc(s.owner)}</td>
-                <td>${esc(s.cfd)}</td>
-                <td>${esc(s.crypto)}</td>
+                ${td(ui.thLevel, `<b>${esc(s.lvl)}</b><br>${esc(s.title)}`)}
+                ${td(ui.thSla, esc(s.sla))}
+                ${td(ui.thOwner, esc(s.owner))}
+                ${td(ui.cfdTitle, esc(s.cfd))}
+                ${td(ui.cryptoTitle, esc(s.crypto))}
               </tr>`).join("")}
           </tbody>
         </table>
@@ -716,11 +789,11 @@
               <tbody>
                 ${rows.map((m) => `
                   <tr>
-                    <td><a href="#/playbook/${esc(m.id)}">${esc(m.code)}</a><br>${esc(m.name)}</td>
-                    <td class="${sev === "critical" || sev === "high" ? "breach" : "warn"}">${esc(m.trigger)}</td>
-                    <td>${esc(m.owner)}</td>
-                    <td>${esc(m.event)}</td>
-                    <td>${esc(m.text)}</td>
+                    ${td(ui.thDossier, `<a href="#/playbook/${esc(m.id)}">${esc(m.code)}</a><br>${esc(m.name)}`)}
+                    ${td(ui.thTrigger, esc(m.trigger), sev === "critical" || sev === "high" ? "breach" : "warn")}
+                    ${td(ui.thOwner, esc(m.owner))}
+                    ${td(ui.thEvent, esc(m.event))}
+                    ${td(ui.thMeasure, esc(m.text))}
                   </tr>`).join("")}
               </tbody>
             </table>
@@ -815,7 +888,7 @@
       app.innerHTML = p
         ? dossier(p)
         : `<p class="empty">${esc(t().unknown)}</p><p><a class="back" href="#/">${esc(t().backHome)}</a></p>`;
-      if (p) bindDiagram();
+      if (p) bindDossier();
       window.scrollTo(0, 0);
       return;
     }
@@ -826,6 +899,15 @@
     const btn = e.target.closest("button[data-lang]");
     if (btn) setLang(btn.dataset.lang);
   });
+
+  if (typeof window.matchMedia === "function") {
+    const mq = window.matchMedia("(max-width: 720px)");
+    const onBreak = () => {
+      if (parseHash().view === "dossier") render();
+    };
+    if (mq.addEventListener) mq.addEventListener("change", onBreak);
+    else if (mq.addListener) mq.addListener(onBreak);
+  }
 
   window.addEventListener("hashchange", render);
   render();
