@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { navHref, parseDeskNav, parseView, queryHref } from "./queryNav";
+import { navHref, parseDeskNav, parseView, queryHref, storyDeskHref } from "./queryNav";
 
 describe("queryHref", () => {
   it("builds host-relative query strings without a leading path", () => {
@@ -46,5 +46,26 @@ describe("navHref", () => {
     assert.equal(navHref("regulation"), "?view=regulation");
     assert.equal(navHref("briefing"), "?");
     assert.equal(navHref("collection"), "?view=collection");
+  });
+});
+
+describe("storyDeskHref", () => {
+  it("opens the matching category or view with the story focused", () => {
+    assert.equal(
+      storyDeskHref({ id: "abc", category: "listing" }, "banks"),
+      "?category=listing&sector=banks&story=abc",
+    );
+    assert.equal(
+      storyDeskHref({ id: "def", category: "product" }, "crypto"),
+      "?category=product&sector=crypto&story=def",
+    );
+    assert.equal(
+      storyDeskHref({ id: "ghi", category: "regulation" }, "brokers"),
+      "?view=regulation&sector=brokers&story=ghi",
+    );
+    assert.equal(
+      storyDeskHref({ id: "jkl", category: "risk_tools" }, "banks"),
+      "?view=risk-tools&sector=banks&story=jkl",
+    );
   });
 });

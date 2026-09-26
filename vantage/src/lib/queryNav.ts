@@ -66,6 +66,22 @@ export function navHref(id: DeskNavId, sector?: string | null): string {
   return queryHref({ view: "sources" });
 }
 
+export function storyDeskHref(
+  item: { id: string; category: string },
+  sector: string,
+): string {
+  if (item.category === "listing") {
+    return queryHref({ category: "listing", sector, story: item.id });
+  }
+  if (item.category === "product") {
+    return queryHref({ category: "product", sector, story: item.id });
+  }
+  if (item.category === "regulation") {
+    return queryHref({ view: "regulation", sector, story: item.id });
+  }
+  return queryHref({ view: "risk-tools", sector, story: item.id });
+}
+
 export function queryHref(next: Record<string, string | undefined | null>): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(next)) {

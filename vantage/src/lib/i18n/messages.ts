@@ -51,6 +51,12 @@ export const messages = {
     searchNews: "Filter by caption, key point, or jurisdiction",
     showingStories: "Showing {n} stories",
     rankedByImpact: "Most impactful and relevant first",
+    dailyTldr: "Daily TLDR",
+    dailyTldrTitle: "Today by domain and category",
+    dailyTldrLede:
+      "Three most impactful, most-reported stories for banks, brokers, and crypto in listings, features, regulation, and risk tools. Open a line to jump to that card.",
+    tldrReports: "{n} reports",
+    tldrEmpty: "No item in this window",
     emptyNews:
       "No items in this window match the current filters. Sources still ran; check Sources & health for feed status.",
     noScan:
@@ -192,6 +198,12 @@ export const messages = {
     searchNews: "按标题、要点或法域筛选",
     showingStories: "显示 {n} 条新闻",
     rankedByImpact: "按影响与相关度优先",
+    dailyTldr: "每日要点",
+    dailyTldrTitle: "按领域与类别速览",
+    dailyTldrLede:
+      "银行、券商、加密三个领域，在上市、功能、监管、风险工具中各取影响最大、报道最多的 3 条。点击即可跳到对应新闻卡片。",
+    tldrReports: "{n} 篇报道",
+    tldrEmpty: "本窗口暂无",
     emptyNews: "当前窗口没有符合筛选的条目。扫描仍已执行；请来源与健康度查看源状态。",
     noScan: "尚未写入扫描结果。在 `vantage/` 运行 `npm run scan` 后刷新本页。",
     noRegulation: "请先运行扫描以填充监管台面。",

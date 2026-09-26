@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import { entityName, sourceName } from "@/lib/i18n/catalog";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { useStoryText } from "@/lib/i18n/useStoryText";
 import { categoryLabel, formatDateTime, sectorLabel } from "@/lib/format";
+import { useQueryParams } from "@/lib/queryNav";
+import { storyAnchorId } from "@/lib/tldrNews";
 import type { Entity, NewsItem, RiskTool } from "@/lib/types";
 import { BrandLabelList } from "./BrandLabel";
 import { CountryLabel } from "./CountryLabel";
@@ -48,7 +51,19 @@ export function NewsCard({
 }) {
   const { locale, t } = useLocale();
   const { collect, remove, collected } = useDeskAccount();
+  const params = useQueryParams();
+  const focused = params.get("story") === item.id;
   const saved = collected(item.id);
+
+  useEffect(() => {
+    if (!focused) return;
+    const node = document.getElementById(storyAnchorId(item.id));
+    if (!node) return;
+    const timer = window.setTimeout(() => {
+      node.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 60);
+    return () => window.clearTimeout(timer);
+  }, [focused, item.id]);
   const brandEntities = item.entities
     .map((id) => {
       const entity = entities.find((entry) => entry.id === id);
@@ -72,7 +87,13 @@ export function NewsCard({
   const vantageImpact = deskPlatformImpact(item, namedParties);
 
   return (
-    <article className="rounded-xl border border-line bg-panel p-3.5 md:p-5">
+    <article
+      id={storyAnchorId(item.id)}
+      tabIndex={-1}
+      className={`scroll-mt-28 rounded-xl border bg-panel p-3.5 md:scroll-mt-52 md:p-5 ${
+        focused ? "border-gold ring-2 ring-gold/50" : "border-line"
+      }`}
+    >
       <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-mono uppercase tracking-wide md:gap-2">
         <span className={`rounded-full border px-2 py-0.5 ${CATEGORY_COLOR[item.category]}`}>
           {categoryLabel(item.category, locale)}

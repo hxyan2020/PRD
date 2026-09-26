@@ -11,7 +11,7 @@ Each scan watches:
 
 Every story shows a caption, key-point bullets, original sources, publish time, and a note on what the item can do to a multi-asset broker such as Vantage (product shelf, pricing, margin, onboarding, compliance). Thin alerts stay marked as background.
 
-Each category lists the most impactful, relevant stories first.
+Each category lists the most impactful, relevant stories first. The daily briefing opens with a TLDR: three stories for each of banks, brokers, and crypto across listings, features, regulation, and risk tools. Click a line to open that news card.
 
 ## Daily window
 
