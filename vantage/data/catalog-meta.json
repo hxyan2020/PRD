@@ -1,0 +1,14 @@
+{
+  "banks": {
+    "ranking": "S&P Global Market Intelligence largest banks by total assets (April 2026), via Wikipedia List of largest banks",
+    "asOf": "2026-04-01"
+  },
+  "brokers": {
+    "ranking": "Global broker / wealth-platform ranking compiled from 2025–2026 reported client assets, account scale, and cross-border market access (Fidelity, Schwab, Vanguard filings; IBKR, Robinhood, and European/Asian platform disclosures)",
+    "asOf": "2026-04-01"
+  },
+  "exchanges": {
+    "ranking": "CoinGecko centralized exchange trust-score rank (liquidity, scale, cybersecurity). Retrieved via CoinGecko API /exchanges",
+    "asOf": "2026-09-16"
+  }
+}
