@@ -63,6 +63,8 @@ describe("messages", () => {
     assert.equal(translate("zh", "browseAsGuest"), "访客");
     assert.equal(translate("en", "loginToCollect"), "Sign in to save this story to your collection.");
     assert.equal(translate("zh", "loginToCollect"), "登录后即可将本条新闻加入收藏。");
+    assert.equal(translate("en", "rankedByImpact"), "Most impactful and relevant first");
+    assert.equal(translate("zh", "rankedByImpact"), "按影响与相关度优先");
   });
 
   it("interpolates counts", () => {

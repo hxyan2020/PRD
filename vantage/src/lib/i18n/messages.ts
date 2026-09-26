@@ -50,6 +50,7 @@ export const messages = {
     search: "Search",
     searchNews: "Filter by caption, key point, or jurisdiction",
     showingStories: "Showing {n} stories",
+    rankedByImpact: "Most impactful and relevant first",
     emptyNews:
       "No items in this window match the current filters. Sources still ran; check Sources & health for feed status.",
     noScan:
@@ -190,6 +191,7 @@ export const messages = {
     search: "搜索",
     searchNews: "按标题、要点或法域筛选",
     showingStories: "显示 {n} 条新闻",
+    rankedByImpact: "按影响与相关度优先",
     emptyNews: "当前窗口没有符合筛选的条目。扫描仍已执行；请来源与健康度查看源状态。",
     noScan: "尚未写入扫描结果。在 `vantage/` 运行 `npm run scan` 后刷新本页。",
     noRegulation: "请先运行扫描以填充监管台面。",

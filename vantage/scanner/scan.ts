@@ -21,6 +21,7 @@ import type {
   SourceStatus,
 } from "../src/lib/types";
 import { parseLooseDate } from "../src/lib/dates";
+import { rankDeskNews } from "../src/lib/rankNews";
 import {
   looksLikeHtml,
   parseFeedItemDate,
@@ -455,7 +456,7 @@ export async function runScan(now = new Date()): Promise<Briefing> {
         down: statuses.filter((status) => status.status === "down").length,
       },
     },
-    items: repaired,
+    items: rankDeskNews(repaired, { entities, sources: statuses }),
     sources: statuses.sort((a, b) => a.name.localeCompare(b.name)),
   };
 

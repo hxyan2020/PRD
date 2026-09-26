@@ -1,6 +1,7 @@
 "use client";
 
 import { countNews, itemMatchesFilters, parseCategory, parseSector } from "@/lib/filters";
+import { rankDeskNews } from "@/lib/rankNews";
 import { formatDate, formatDateTime, formatRange, windowLabel } from "@/lib/format";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import type { MessageKey } from "@/lib/i18n/messages";
@@ -67,8 +68,11 @@ export function BriefingBoard({
     crypto: countNews(briefing.items, activeCategory, "crypto", query),
   };
 
-  const items = briefing.items.filter((item) =>
-    itemMatchesFilters(item, activeCategory, activeSector, query),
+  const items = rankDeskNews(
+    briefing.items.filter((item) =>
+      itemMatchesFilters(item, activeCategory, activeSector, query),
+    ),
+    { entities, sources: briefing.sources },
   );
 
   return (
@@ -152,7 +156,7 @@ export function BriefingBoard({
       </form>
 
       <p className="font-mono text-xs uppercase tracking-wide text-gold">
-        {t("showingStories", { n: items.length })}
+        {t("showingStories", { n: items.length })} · {t("rankedByImpact")}
       </p>
 
       {items.length === 0 ? (
