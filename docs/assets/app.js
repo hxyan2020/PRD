@@ -143,41 +143,254 @@
     return nodeKind(src.who, src.action);
   }
 
+  function wrapLabel(text, maxChars, maxLines) {
+    const s = String(text || "").trim();
+    const lines = [];
+    if (!s) return lines;
+    const cjk = /[\u4e00-\u9fff]/.test(s);
+    if (cjk) {
+      for (let i = 0; i < s.length && lines.length < maxLines; i += maxChars) {
+        lines.push(s.slice(i, i + maxChars));
+      }
+      return lines;
+    }
+    let cur = "";
+    s.split(/\s+/).forEach((w) => {
+      const next = cur ? `${cur} ${w}` : w;
+      if (next.length > maxChars && cur && lines.length < maxLines) {
+        lines.push(cur);
+        cur = w;
+      } else {
+        cur = next;
+      }
+    });
+    if (cur && lines.length < maxLines) lines.push(cur);
+    return lines;
+  }
+
+  function edgeLabel(edge) {
+    if (!edge) return "";
+    return lang === "zh" ? (edge.zh || edge.en || edge.label || "") : (edge.en || edge.label || "");
+  }
+
+  function outCount(edges, id) {
+    return edges.filter((e) => e.from === id).length;
+  }
+
   function flowchart(p) {
     const ui = t();
     const kinds = ui.kind || {};
-    const start = `
-      <div class="chart-row">
-        <div class="chart-spine"><div class="chart-dot start">IN</div><div class="chart-line"></div></div>
-        <div class="chart-box actor"><span class="who">${esc(ui.start)}</span><span class="act">${esc(p.name)}</span></div>
-        <div class="chart-tell"><b>${esc(ui.setup)}</b>${esc(p.summary)}</div>
-      </div>`;
-    const rows = p.workflow.map((s, i) => {
-      const last = i === p.workflow.length - 1;
-      const kind = nodeKindFor(p, s, i);
-      const kindLabel = kinds[kind] || kind;
+    const spec = (window.TRN_DIAGRAMS && TRN_DIAGRAMS[p.id]) || null;
+    const steps = p.workflow || [];
+    const stepByN = Object.fromEntries(steps.map((s) => [s.n, s]));
+    const colW = 248;
+    const rowH = 118;
+    const padX = 36;
+    const padY = 28;
+    const boxW = 208;
+    const boxH = 72;
+    const ioW = 92;
+    const ioH = 34;
+
+    const fallbackNodes = {};
+    const fallbackEdges = [];
+    if (!spec) {
+      fallbackNodes.IN = { at: [1, 0] };
+      steps.forEach((s, i) => {
+        fallbackNodes[s.n] = { at: [1, i + 1] };
+        fallbackEdges.push({ from: i === 0 ? "IN" : steps[i - 1].n, to: s.n });
+      });
+      fallbackNodes.OUT = { at: [1, steps.length + 1] };
+      if (steps.length) fallbackEdges.push({ from: steps[steps.length - 1].n, to: "OUT" });
+    }
+    const nodeSpec = (spec && spec.nodes) || fallbackNodes;
+    const edges = ((spec && spec.edges) || fallbackEdges).map((e) => ({ ...e }));
+
+    const placed = {};
+    Object.keys(nodeSpec).forEach((id) => {
+      const at = nodeSpec[id].at || [1, 1];
+      const isIo = id === "IN" || id === "OUT";
+      const step = stepByN[id];
+      const idx = steps.findIndex((s) => s.n === id);
+      const kind = isIo ? "io" : nodeKindFor(p, step || {}, idx < 0 ? 0 : idx);
+      const shape = nodeSpec[id].shape || (kind === "decision" ? "decision" : isIo ? "io" : "process");
+      const w = shape === "io" ? ioW : boxW;
+      const h = shape === "decision" ? 86 : shape === "io" ? ioH : boxH;
+      placed[id] = {
+        id,
+        at,
+        x: padX + at[0] * colW + (colW - w) / 2,
+        y: padY + at[1] * rowH + (rowH - h) / 2,
+        w,
+        h,
+        kind,
+        shape,
+        step,
+        who: step ? step.who : (id === "IN" ? ui.start : ui.end),
+        action: step ? step.action : (id === "IN" ? p.name : ""),
+        tell: step ? step.tell : (id === "IN" ? p.summary : "")
+      };
+    });
+
+    const cols = Object.values(placed).map((n) => n.at[0]);
+    const rows = Object.values(placed).map((n) => n.at[1]);
+    const minCol = Math.min.apply(null, cols);
+    const maxCol = Math.max.apply(null, cols);
+    const maxRow = Math.max.apply(null, rows);
+    Object.values(placed).forEach((n) => {
+      n.x = padX + (n.at[0] - minCol) * colW + (colW - n.w) / 2;
+    });
+    const hasLoop = edges.some((e) => e.loop || e.from === e.to);
+    const width = padX * 2 + (maxCol - minCol + 1) * colW + (hasLoop ? 96 : 36);
+    const height = padY * 2 + (maxRow + 1) * rowH;
+    const uid = `d-${p.id.replace(/[^a-z0-9-]/gi, "")}`;
+
+    function port(n, side) {
+      const cx = n.x + n.w / 2;
+      const cy = n.y + n.h / 2;
+      if (side === "top") return [cx, n.y];
+      if (side === "bottom") return [cx, n.y + n.h];
+      if (side === "left") return [n.x, cy];
+      return [n.x + n.w, cy];
+    }
+
+    function edgePath(e) {
+      const a = placed[e.from];
+      const b = placed[e.to];
+      if (!a || !b) return "";
+      const self = e.from === e.to || e.loop;
+      if (self && e.from === e.to) {
+        const [sx, sy] = port(a, "right");
+        const r = 22;
+        return `M ${sx} ${sy - 8} C ${sx + r} ${sy - 8}, ${sx + r} ${sy + 8}, ${sx} ${sy + 8}`;
+      }
+      if (self || b.at[1] <= a.at[1]) {
+        const [sx, sy] = port(a, "right");
+        const [tx, ty] = port(b, "right");
+        const bump = 36 + Math.abs(a.at[1] - b.at[1]) * 10;
+        const mx = Math.max(sx, tx) + bump;
+        return `M ${sx} ${sy} C ${mx} ${sy}, ${mx} ${ty}, ${tx} ${ty}`;
+      }
+      if (a.at[0] === b.at[0] && b.at[1] === a.at[1] + 1) {
+        const [sx, sy] = port(a, "bottom");
+        const [tx, ty] = port(b, "top");
+        return `M ${sx} ${sy} L ${tx} ${ty}`;
+      }
+      const [sx, sy] = port(a, "bottom");
+      const [tx, ty] = port(b, "top");
+      const midY = (sy + ty) / 2;
+      return `M ${sx} ${sy} L ${sx} ${midY} L ${tx} ${midY} L ${tx} ${ty}`;
+    }
+
+    function edgeMid(e) {
+      const a = placed[e.from];
+      const b = placed[e.to];
+      if (!a || !b) return [0, 0];
+      if (e.from === e.to) return [a.x + a.w + 28, a.y + a.h / 2 - 14];
+      if (e.loop || b.at[1] <= a.at[1]) {
+        const bump = 36 + Math.abs(a.at[1] - b.at[1]) * 10;
+        return [Math.max(a.x + a.w, b.x + b.w) + bump * 0.55, (a.y + b.y + a.h / 2 + b.h / 2) / 2];
+      }
+      return [(a.x + a.w / 2 + b.x + b.w / 2) / 2, (a.y + a.h + b.y) / 2];
+    }
+
+    const edgeEls = edges.map((e, i) => {
+      const d = edgePath(e);
+      if (!d) return "";
+      const cls = e.loop || e.from === e.to ? "loop" : (outCount(edges, e.from) > 1 ? "branch" : "fwd");
+      const label = edgeLabel(e);
+      const [lx, ly] = edgeMid(e);
       return `
-        <div class="chart-row">
-          <div class="chart-spine">
-            <div class="chart-dot">${esc(s.n)}</div>
-            <div class="chart-line"></div>
-            ${last ? `<div class="chart-dot end">OUT</div>` : ""}
-          </div>
-          <div class="chart-box ${kind}">
-            <span class="who">${esc(s.who)} · ${esc(kindLabel)}</span>
-            <span class="act">${esc(s.action)}</span>
-          </div>
-          <div class="chart-tell"><b>${esc(ui.tapeTell)}</b>${esc(s.tell)}</div>
-        </div>`;
+        <path class="diagram-edge ${cls}" d="${d}" marker-end="url(#${uid}-${cls})" />
+        ${label ? `<text class="diagram-elabel ${cls}" x="${lx}" y="${ly}">${esc(label)}</text>` : ""}`;
     }).join("");
+
+    const nodeEls = Object.values(placed).map((n) => {
+      const kindLabel = n.shape === "io" ? "" : (kinds[n.kind] || n.kind);
+      const who = n.shape === "io" ? n.who : `${n.id} · ${n.who}${kindLabel ? " · " + kindLabel : ""}`;
+      const actLines = wrapLabel(n.action, n.shape === "decision" ? 22 : 28, n.shape === "decision" ? 3 : 3);
+      const whoLines = wrapLabel(who, n.shape === "decision" ? 20 : 30, 2);
+      let body;
+      if (n.shape === "decision") {
+        const cx = n.x + n.w / 2;
+        const cy = n.y + n.h / 2;
+        const pts = `${cx},${n.y} ${n.x + n.w},${cy} ${cx},${n.y + n.h} ${n.x},${cy}`;
+        body = `<polygon class="diagram-shape decision ${n.kind}" points="${pts}" />`;
+      } else if (n.shape === "io") {
+        body = `<rect class="diagram-shape io" x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="${n.h / 2}" />`;
+      } else {
+        body = `<rect class="diagram-shape ${n.kind}" x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="4" />`;
+      }
+      const tx = n.x + n.w / 2;
+      const ty = n.y + (n.shape === "io" ? 22 : 20);
+      const whoT = whoLines.map((ln, i) => `<tspan x="${tx}" dy="${i === 0 ? 0 : 12}">${esc(ln)}</tspan>`).join("");
+      const actT = actLines.map((ln, i) => `<tspan x="${tx}" dy="${i === 0 ? 16 : 14}">${esc(ln)}</tspan>`).join("");
+      return `
+        <g class="diagram-node ${n.kind} ${n.shape}" data-node="${esc(n.id)}" tabindex="0" role="button">
+          <title>${esc(n.who)}${n.action ? " — " + n.action : ""}${n.tell ? " · " + n.tell : ""}</title>
+          ${body}
+          <text class="diagram-who" x="${tx}" y="${ty}">${whoT}</text>
+          ${n.shape === "io" ? "" : `<text class="diagram-act" x="${tx}" y="${ty}">${actT}</text>`}
+        </g>`;
+    }).join("");
+
+    const tells = steps.map((s) => `
+      <li data-tell="${esc(s.n)}">
+        <b>${esc(s.n)}</b>
+        <span class="tell-who">${esc(s.who)}</span>
+        <span class="tell-body">${esc(s.tell)}</span>
+      </li>`).join("");
+
     return `
       <div class="chart-legend">
         <span class="actor"><i></i>${esc(ui.legendActor)}</span>
         <span class="system"><i></i>${esc(ui.legendSystem)}</span>
         <span class="market"><i></i>${esc(ui.legendMarket)}</span>
         <span class="house"><i></i>${esc(ui.legendHouse)}</span>
+        <span class="loop"><i></i>${esc(ui.legendLoop)}</span>
+        <span class="branch"><i></i>${esc(ui.legendBranch)}</span>
       </div>
-      <div class="chart" role="img" aria-label="${esc(ui.flowchart)} — ${esc(p.name)}">${start}${rows}</div>`;
+      <div class="diagram-scroll">
+        <svg class="diagram" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="${esc(ui.flowchart)} — ${esc(p.name)}">
+          <defs>
+            <marker id="${uid}-fwd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8d9aab"/>
+            </marker>
+            <marker id="${uid}-loop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8ec2ff"/>
+            </marker>
+            <marker id="${uid}-branch" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#e8a317"/>
+            </marker>
+          </defs>
+          ${edgeEls}
+          ${nodeEls}
+        </svg>
+      </div>
+      <ol class="diagram-tells" aria-label="${esc(ui.tapeTell)}">${tells}</ol>`;
+  }
+
+  function bindDiagram() {
+    const root = app.querySelector(".diagram-scroll");
+    if (!root) return;
+    const svg = root.querySelector(".diagram");
+    const tells = app.querySelectorAll(".diagram-tells li");
+    function pick(id) {
+      svg.querySelectorAll(".diagram-node").forEach((n) => n.classList.toggle("on", n.getAttribute("data-node") === id));
+      tells.forEach((li) => li.classList.toggle("on", li.getAttribute("data-tell") === id));
+    }
+    svg.addEventListener("click", (e) => {
+      const g = e.target.closest(".diagram-node");
+      if (g) pick(g.getAttribute("data-node"));
+    });
+    svg.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const g = e.target.closest(".diagram-node");
+      if (!g) return;
+      e.preventDefault();
+      pick(g.getAttribute("data-node"));
+    });
+    tells.forEach((li) => li.addEventListener("click", () => pick(li.getAttribute("data-tell"))));
   }
 
   function measuresFor(id, fallback) {
@@ -602,6 +815,7 @@
       app.innerHTML = p
         ? dossier(p)
         : `<p class="empty">${esc(t().unknown)}</p><p><a class="back" href="#/">${esc(t().backHome)}</a></p>`;
+      if (p) bindDiagram();
       window.scrollTo(0, 0);
       return;
     }

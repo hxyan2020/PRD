@@ -41,7 +41,7 @@ window.TRN_UI = {
         "Copy the parameter table into your rule engine, then retune on two weeks of your own data before you page anyone.",
         "Escalate on the L0–L5 ladder. Containment (L4) can outrun the case file (L3) when clients are being liquidated on a bad mark.",
         "Countermeasures are product design, not just alerts. If the mark is a single last trade, you will keep hunting ghosts.",
-        "Open a dossier for the workflow flowchart. Use the Response Map to see which controls fire at standing / warn / breach / cascade."
+        "Open a dossier for the workflow diagram — loops and branches, not a straight line. Use the Response Map to see which controls fire at standing / warn / breach / cascade."
       ]
     },
     cfdTitle: "CFD broker",
@@ -56,14 +56,17 @@ window.TRN_UI = {
     unknown: "Unknown dossier.",
     backHome: "Back to command",
     why: "Why this works on this venue",
-    flowchart: "Workflow flowchart",
+    flowchart: "Workflow diagram",
     start: "Start",
+    end: "End",
     setup: "Setup",
     tapeTell: "Tape tell",
     legendActor: "Actor / predator",
     legendSystem: "Engine / platform",
     legendMarket: "Market / victims",
     legendHouse: "House / issuer / conflict",
+    legendLoop: "Loop / iterate",
+    legendBranch: "Branch (1→many)",
     kind: { actor: "actor", system: "system", market: "market", house: "house", decision: "decision" },
     people: "Participants and incentives",
     detection: "Detection and monitoring",
@@ -144,7 +147,7 @@ window.TRN_UI = {
         "把参数表拷进规则引擎，用两周自有数据校准后再叫人。",
         "按 L0–L5 升级。客户正在被错误标记价强平时，L4 遏制可以跑在 L3 立案前面。",
         "应对措施首先是产品设计，不只是告警。若标记价只是一笔最后成交，你会一直打鬼。",
-        "打开卷宗看流程图。用应对图谱看哪些控件在常开 / 预警 / 突破 / 级联时触发。"
+        "打开卷宗看流程图——有循环和分支，不是一条直线。用应对图谱看哪些控件在常开 / 预警 / 突破 / 级联时触发。"
       ]
     },
     cfdTitle: "CFD 经纪商",
@@ -161,12 +164,15 @@ window.TRN_UI = {
     why: "为何在此场所有效",
     flowchart: "流程详图",
     start: "开始",
+    end: "结束",
     setup: "铺垫",
     tapeTell: "盘口迹象",
     legendActor: "行为方 / 掠食者",
     legendSystem: "引擎 / 平台",
     legendMarket: "市场 / 受害者",
     legendHouse: "公司 / 发行方 / 冲突",
+    legendLoop: "循环 / 迭代",
+    legendBranch: "分支（一对多）",
     kind: { actor: "行为方", system: "引擎", market: "市场", house: "公司", decision: "决策" },
     people: "参与方与动机",
     detection: "监测与侦测",

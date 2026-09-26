@@ -185,6 +185,8 @@ body.lang-zh .badge,
 body.lang-zh .card .more,
 body.lang-zh .brand-copy em,
 body.lang-zh .chart-legend,
+body.lang-zh .diagram-who,
+body.lang-zh .diagram-elabel,
 body.lang-zh .cm-card .meta {
   text-transform: none;
   letter-spacing: 0.02em;
@@ -509,88 +511,6 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 
 .empty { color: var(--muted); padding: 40px 0; }
 
-.chart {
-  display: grid;
-  gap: 0;
-  margin: 8px 0 8px;
-}
-.chart-row {
-  display: grid;
-  grid-template-columns: 56px 1fr 1fr;
-  gap: 16px;
-  align-items: stretch;
-}
-.chart-spine {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.chart-dot {
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid var(--amber);
-  background: var(--ink-2);
-  color: var(--amber);
-  font-family: var(--mono);
-  font-size: 10px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 28px;
-}
-.chart-dot.start, .chart-dot.end {
-  border-radius: 50%;
-  width: 34px;
-  height: 34px;
-  flex-basis: 34px;
-  background: var(--amber-dim);
-}
-.chart-line {
-  width: 1.5px;
-  flex: 1;
-  min-height: 18px;
-  background: var(--line-2);
-}
-.chart-box {
-  border: 1px solid var(--line-2);
-  background: var(--ink-2);
-  padding: 12px 14px;
-  min-height: 72px;
-}
-.chart-box.actor { border-left: 3px solid var(--amber); }
-.chart-box.system { border-left: 3px solid var(--jade); }
-.chart-box.market { border-left: 3px solid var(--ice); }
-.chart-box.house { border-left: 3px solid var(--crimson); }
-.chart-box.decision {
-  clip-path: polygon(8% 0, 92% 0, 100% 50%, 92% 100%, 8% 100%, 0 50%);
-  padding: 16px 22px;
-  border-left: 1px solid var(--line-2);
-  background: rgba(232, 163, 23, 0.08);
-}
-.chart-box .who {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--jade);
-  display: block;
-  margin-bottom: 4px;
-}
-.chart-box .act { font-size: 14px; }
-.chart-tell {
-  color: var(--muted);
-  font-size: 13px;
-  padding: 10px 0;
-  border-top: 1px dashed var(--line);
-}
-.chart-tell b {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--amber);
-  display: block;
-  margin-bottom: 4px;
-}
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
@@ -613,6 +533,107 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
 .chart-legend .system i { background: var(--jade); }
 .chart-legend .market i { background: var(--ice); }
 .chart-legend .house i { background: var(--crimson); }
+.chart-legend .loop i {
+  background: transparent;
+  border: 1.5px dashed var(--ice);
+  width: 12px;
+  height: 8px;
+}
+.chart-legend .branch i { background: var(--amber); transform: rotate(45deg); }
+
+.diagram-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px 18px;
+  padding: 4px;
+}
+.diagram {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  font-family: var(--sans);
+}
+.diagram-edge {
+  fill: none;
+  stroke: var(--line-2);
+  stroke-width: 1.6;
+}
+.diagram-edge.loop {
+  stroke: var(--ice);
+  stroke-dasharray: 5 4;
+}
+.diagram-edge.branch { stroke: var(--amber); }
+.diagram-elabel {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.diagram-elabel.loop { fill: var(--ice); }
+.diagram-elabel.branch { fill: var(--amber); }
+.diagram-shape {
+  fill: var(--ink-2);
+  stroke: var(--line-2);
+  stroke-width: 1.4;
+}
+.diagram-shape.actor { stroke: var(--amber); }
+.diagram-shape.system { stroke: var(--jade); }
+.diagram-shape.market { stroke: var(--ice); }
+.diagram-shape.house { stroke: var(--crimson); }
+.diagram-shape.decision { fill: rgba(232, 163, 23, 0.1); stroke: var(--amber); }
+.diagram-shape.io { fill: var(--amber-dim); stroke: var(--amber); }
+.diagram-node { cursor: pointer; }
+.diagram-node.on .diagram-shape { filter: brightness(1.25); stroke-width: 2.2; }
+.diagram-who {
+  fill: var(--jade);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-anchor: middle;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.diagram-act {
+  fill: var(--text);
+  font-size: 12px;
+  text-anchor: middle;
+  pointer-events: none;
+}
+.diagram-node.io .diagram-who { fill: var(--amber); font-size: 11px; }
+
+.diagram-tells {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.diagram-tells li {
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.diagram-tells li.on { border-color: var(--amber); }
+.diagram-tells b {
+  font-family: var(--mono);
+  color: var(--amber);
+  margin-right: 8px;
+}
+.diagram-tells .tell-who {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--jade);
+}
+.diagram-tells .tell-body {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
 
 .sev-bands {
   display: grid;
@@ -757,21 +778,8 @@ td.breach { color: var(--crimson); font-family: var(--mono); font-size: 12px; }
   .dossier-head .badge { justify-self: start; width: max-content; }
   .step { grid-template-columns: 56px 1fr; gap: 12px; }
 
-  .chart-row {
-    grid-template-columns: 32px 1fr;
-    gap: 10px 12px;
-  }
-  .chart-spine { flex-direction: column; min-height: 0; grid-row: 1 / span 2; }
-  .chart-line { width: 1.5px; min-height: 16px; height: auto; }
-  .chart-dot { width: 26px; height: 26px; flex-basis: 26px; }
-  .chart-dot.start, .chart-dot.end { width: 30px; height: 30px; flex-basis: 30px; }
-  .chart-box { min-height: 0; padding: 10px 12px; }
-  .chart-box.decision {
-    clip-path: none;
-    padding: 10px 12px;
-    border-left: 3px solid var(--amber);
-  }
-  .chart-tell { grid-column: 2; padding-top: 0; }
+  .diagram-tells { grid-template-columns: 1fr; }
+  .diagram { min-width: 640px; }
 
   .esc { grid-template-columns: 72px 1fr; gap: 10px; }
   .cm-card { gap: 8px; padding: 12px; }
