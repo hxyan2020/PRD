@@ -1,35 +1,44 @@
 window.TRN_UI = {
   en: {
-    brandSub: "Surveillance playbooks",
+    brandSub: "Trading Risk Ninja · Surveillance playbooks",
     nav: {
       home: "Command",
       cfd: "CFD Broker",
       crypto: "Crypto Exchange",
       stack: "Detection Stack",
       escalation: "Escalation",
-      response: "Response Map"
+      response: "Response Map",
+      study: "Study Plan"
     },
     menu: "Open menu",
     menuClose: "Close menu",
     langEn: "EN",
     langZh: "中文",
-    foot1: "Trading Risk Ninja is a surveillance and compliance handbook. It describes how abusive patterns typically appear in market data so desks can detect and interrupt them. It is not a playbook for committing market abuse.",
+    foot1: "Risk Champion hosts Trading Risk Ninja — a surveillance and compliance handbook. It describes how abusive patterns typically appear in market data so desks can detect and interrupt them. It is not a playbook for committing market abuse.",
     foot2: "Calibrate every threshold to your venue, liquidity regime, and product calendar. Illustrative parameters are starting points, not regulatory safe harbours.",
+    study: {
+      title: "Six-hour study plan",
+      lede: "Twenty-six weeks. Six hours each. Courseware, AI tutor, and notebook — embedded here without replacing the surveillance playbooks."
+    },
     home: {
       kicker: "Command centre",
       title1: "See the strike",
       title2: "before it lands.",
-      lede: "Surveillance playbooks for CFD brokers and crypto exchanges. Each dossier walks the behaviour, the participants, the exact monitors, the escalation ladder, and the countermeasures.",
+      lede: "Surveillance playbooks for CFD brokers and crypto exchanges. Each dossier walks the behaviour, the participants, the exact monitors, the escalation ladder, and the countermeasures. The Study Plan adds a 26-week path to close trading-risk, product, platform, and AI gaps.",
       metaCfd: "spot · margin · perps · futures",
       metaCrypto: "tokens · perps · tokenised assets",
       metaCount: "dossiers · L0–L5 escalation",
       metaNote: "Handbook for surveillance, risk, and compliance — not a how-to for abuse.",
+      metaStudy: "26 weeks · 6 hours · courseware + notebook",
       door1Tag: "Venue 01",
       door1Title: "CFD broker",
       door1Body: "Last look, B-book conflict, DMA spoofing, stop hunts, marks, funding, and liquidation cascades on leveraged books.",
       door2Tag: "Venue 02",
       door2Title: "Crypto exchange",
       door2Body: "Wash volume, pumps, oracle/mark games, unlock dumps, sandwiches, and tokenised-asset reserve fraud.",
+      door3Tag: "Path 03",
+      door3Title: "6-month study plan",
+      door3Body: "Twenty-six weeks of plain-English courseware, labs, an AI tutor, and a notebook — six hours a week to close the career gaps.",
       statCfd: "CFD dossiers",
       statCrypto: "Crypto dossiers",
       statLevels: "Escalation levels",
@@ -41,7 +50,8 @@ window.TRN_UI = {
         "Copy the parameter table into your rule engine, then retune on two weeks of your own data before you page anyone.",
         "Escalate on the L0–L5 ladder. Containment (L4) can outrun the case file (L3) when clients are being liquidated on a bad mark.",
         "Countermeasures are product design, not just alerts. If the mark is a single last trade, you will keep hunting ghosts.",
-        "Open a dossier for the workflow diagram — loops and branches, not a straight line. Use the Response Map to see which controls fire at standing / warn / breach / cascade."
+        "Open a dossier for the workflow diagram — loops and branches, not a straight line. Use the Response Map to see which controls fire at standing / warn / breach / cascade.",
+        "Use Study Plan for the 26-week career path — courseware, tutor, and notebook sit next to these playbooks, not instead of them."
       ]
     },
     cfdTitle: "CFD broker",
@@ -114,36 +124,45 @@ window.TRN_UI = {
     thMeasure: "Countermeasure"
   },
   zh: {
-    brandSub: "市场监察手册",
+    brandSub: "Trading Risk Ninja · 市场监察手册",
     nav: {
       home: "监察台",
       cfd: "CFD 经纪商",
       crypto: "加密交易所",
       stack: "监察工具体系",
       escalation: "升级路径",
-      response: "应对图谱"
+      response: "应对图谱",
+      study: "学习计划"
     },
     menu: "打开菜单",
     menuClose: "关闭菜单",
     langEn: "EN",
     langZh: "中文",
-    foot1: "Trading Risk Ninja 是市场监察与合规手册。它说明操纵与利益冲突通常如何体现在行情、委托与成交数据中，供交易台侦测并阻断。它不是实施市场滥用的操作指南。",
+    foot1: "Risk Champion 承载 Trading Risk Ninja——市场监察与合规手册。它说明操纵与利益冲突通常如何体现在行情、委托与成交数据中，供交易台侦测并阻断。它不是实施市场滥用的操作指南。",
     foot2: "每条阈值须按交易场所、流动性格局与产品日历校准。示例参数只是起点，不是监管安全港。",
+    study: {
+      title: "六小时学习计划",
+      lede: "二十六周，每周六小时。课程、AI 导师与笔记本嵌在本站，不替代原有监察手册。"
+    },
     home: {
       kicker: "监察总览",
       title1: "看清这一击",
       title2: "发生之前。",
-      lede: "面向 CFD 经纪商与加密交易所的市场监察手册。每份专案覆盖行为模式、参与主体、监测指标、L0–L5 升级与应对措施。",
+      lede: "面向 CFD 经纪商与加密交易所的市场监察手册。每份专案覆盖行为模式、参与主体、监测指标、L0–L5 升级与应对措施。学习计划另提供二十六周路径，补齐交易风险、风险产品、平台与 AI 缺口。",
       metaCfd: "即期 · 保证金 · 永续 · 期货",
       metaCrypto: "代币 · 永续 · 代币化资产",
       metaCount: "份专案 · L0–L5 升级",
       metaNote: "供监察、风险与合规使用 — 不是滥用教程。",
+      metaStudy: "26 周 · 每周 6 小时 · 课程 + 笔记本",
       door1Tag: "场所 01",
       door1Title: "CFD 经纪商",
       door1Body: "Last Look、B-book 利益冲突、DMA 幌骗、扫止损、标记价、资金费率，以及杠杆账户上的连环强平。",
       door2Tag: "场所 02",
       door2Title: "加密交易所",
       door2Body: "对倒量、协同拉砸、预言机/标记价操纵、解锁抛售、三明治攻击，以及代币化资产储备欺诈。",
+      door3Tag: "路径 03",
+      door3Title: "六个月学习计划",
+      door3Body: "二十六周白话课程、实验、AI 导师与笔记本——每周六小时，补齐职业能力缺口。",
       statCfd: "CFD 专案",
       statCrypto: "加密专案",
       statLevels: "升级层级",
@@ -155,7 +174,8 @@ window.TRN_UI = {
         "把参数表写入规则引擎，用两周自有数据校准后再升级值班。",
         "按 L0–L5 升级。客户正被错误标记价强平时，L4 遏制应先于 L3 立案。",
         "应对措施首先是产品设计，不只是告警。若标记价只取最后一笔成交，误报会反复出现。",
-        "打开专案看流程图——含循环与分支，不是一条直线。用应对图谱查看哪些管控措施在常开 / 预警 / 阈值突破 / 级联时触发。"
+        "打开专案看流程图——含循环与分支，不是一条直线。用应对图谱查看哪些管控措施在常开 / 预警 / 阈值突破 / 级联时触发。",
+        "用「学习计划」走二十六周职业路径——课程、导师与笔记本与手册并列，而非替代手册。"
       ]
     },
     cfdTitle: "CFD 经纪商",
