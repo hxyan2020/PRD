@@ -454,12 +454,39 @@ function renderPaths() {
         .map((path) => {
           const scoped = weeksFor(path.id);
           const done = scoped.filter(weekDone).length;
+          const trends = Array.isArray(path.trends) ? path.trends : [];
+          const issues = Array.isArray(path.practitionerIssues) ? path.practitionerIssues : [];
           return `<article class="path-card" id="path-${escapeHtml(path.id)}">
-            <h3>${path.name}</h3>
-            <p class="role">${path.role} · fit ${path.fitNow} now, ${path.fitAfter} if the gaps close</p>
-            <p>${path.summary}</p>
+            <h3>${escapeHtml(path.name)}</h3>
+            <p class="role">${escapeHtml(path.role)} · fit ${path.fitNow} now, ${path.fitAfter} if the gaps close</p>
+            <p>${escapeHtml(path.summary)}</p>
+            ${
+              trends.length
+                ? `<section class="path-syllabus" aria-label="Sector trends">
+              <h4>Latest developments &amp; trends</h4>
+              <ul class="path-syllabus-list">${trends
+                .map((item) => `<li>${escapeHtml(item)}</li>`)
+                .join("")}</ul>
+            </section>`
+                : ""
+            }
+            ${
+              issues.length
+                ? `<section class="path-syllabus" aria-label="Practitioner issues and roadmap">
+              <h4>Top practitioner issues &amp; roadmap</h4>
+              <ul class="path-issue-list">${issues
+                .map(
+                  (item) => `<li>
+                  <p class="path-issue"><strong>Issue.</strong> ${escapeHtml(item.issue || "")}</p>
+                  <p class="path-roadmap"><strong>Roadmap.</strong> ${escapeHtml(item.roadmap || item.solution || "")}</p>
+                </li>`
+                )
+                .join("")}</ul>
+            </section>`
+                : ""
+            }
             <div class="fit-row"><span>Study progress</span><span>${done}/${scoped.length} weeks · ${pct(done, scoped.length)}%</span></div>
-            <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${scoped.length}" aria-valuenow="${done}" aria-label="${path.name} study progress"><span style="width:${pct(done, scoped.length)}%"></span></div>
+            <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${scoped.length}" aria-valuenow="${done}" aria-label="${escapeHtml(path.name)} study progress"><span style="width:${pct(done, scoped.length)}%"></span></div>
             <div class="fit-row"><span>Analysis fit, after two years at Vantage</span><span>${path.fitNow}/100</span></div>
             <div class="bar" aria-hidden="true"><span style="width:${path.fitNow}%"></span></div>
             <div class="fit-row"><span>Target fit after the gaps in this plan</span><span>${path.fitAfter}/100</span></div>
@@ -467,7 +494,7 @@ function renderPaths() {
             ${path.gaps
               .map(
                 (gap) =>
-                  `<div class="gap"><strong>${gap.name}</strong><span class="gap-weeks">Weeks ${gap.weeks.join(", ")}</span></div>`
+                  `<div class="gap"><strong>${escapeHtml(gap.name)}</strong><span class="gap-weeks">Weeks ${gap.weeks.join(", ")}</span></div>`
               )
               .join("")}
             <div class="path-actions"><button type="button" class="text-btn" data-jump="${path.id}">Show these weeks</button></div>
