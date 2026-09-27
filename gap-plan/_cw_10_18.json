@@ -174,7 +174,7 @@
   },
   {
     "n": 12,
-    "goal": "Compute 99% one-day historical and parametric VaR on a seeded two-asset book and know when the two numbers diverge.",
+    "goal": "Compute 99% one-day historical and parametric VaR on a seeded sleeve book with explicit weights, and explain contribution / diversification in language a PM uses.",
     "bigIdea": "Value at Risk (VaR) is a loss threshold: with a stated probability, losses over a horizon should not exceed that number under the model's assumptions. Historical VaR reads the empirical loss distribution from past (or simulated) P&L. Parametric VaR assumes a normal portfolio return and scales volatility by a z-factor. Same book, same day count, different assumptions—so the numbers will not match, and a treasurer deserves a footnote when you pick one.",
     "lessons": [
       {
@@ -204,6 +204,15 @@
         }
       },
       {
+        "title": "Portfolio VaR, weights, and risk contribution",
+        "body": [
+          "Portfolio VaR is not 'the VaR of whatever ticker is loudest.' It needs positions or weights, a loss definition (absolute mark-to-market versus versus-benchmark), and a clear book boundary. Parametric (variance-covariance) VaR makes the correlation assumption explicit; historical VaR makes the return sample explicit. Either way, a PM's first questions are: whose book, what horizon, absolute or active, and what moved since yesterday.",
+          "Risk contribution (component VaR intuition) asks which sleeve drives the portfolio number. You do not need a full Euler allocation engine this week. You do need a practical split: recompute VaR with each sleeve removed or shocked alone, or report parametric stand-alone versus diversified VaR and name the diversification gap. That gap is where PMs over-trust hedges.",
+          "Notebook output should include weights, both VaRs, and a three-line contribution story (sleeve A/B/C). End with whether you would show absolute or active VaR in the PM pack — pick one and say why.",
+          "Close with one sentence a portfolio manager could challenge in the next risk meeting — numbers first, adjectives never."
+        ]
+      },
+      {
         "title": "When the two VaRs diverge—and what you show a treasurer",
         "body": [
           "The two numbers diverge when the empirical loss distribution is not normal: skew, fat tails, or a few dominant crash days. They also diverge when you refresh historical windows but leave Sigma stale, or when options and other non-linear products make delta-normal covariance a cartoon. In linear two-asset equity-like books the gap is often modest; in crisis windows it is the whole story. On this seeded lab book the gap is about two thousand dollars—historical near 29.4k, parametric near 27.4k.",
@@ -218,7 +227,7 @@
       }
     ],
     "lab": {
-      "goal": "Notebook that prints historical and parametric 99% VaR in the required bands with NumPy seed 7.",
+      "goal": "Compute historical and parametric 99% VaR with weights and a sleeve contribution story for a PM.",
       "why": "A VaR you computed beats a VaR you only defined in a meeting.",
       "steps": [
         "Create a notebook or script week12_var.py. Use Python 3 with NumPy only for the core calc.",
@@ -230,7 +239,8 @@
         "Historical VaR: hist = numpy.quantile(losses, 0.99) using the default method. Print hist.",
         "Parametric VaR: Sigma = outer(vols, vols) * C, port_vol = sqrt(weights @ Sigma @ weights), param = 2.326 * port_vol * book. Print param and port_vol.",
         "Assert or manually confirm hist is in [29300, 29450] and param is in [27300, 27450]. Print the seed.",
-        "Save the pnl and losses arrays for week 13 (numpy.save or keep the notebook)."
+        "Save the pnl and losses arrays for week 13 (numpy.save or keep the notebook).",
+        "Print weights for each sleeve/asset. Print a simple contribution story: stand-alone sense or leave-one-out note for each sleeve. State absolute_or_active = 'absolute' or 'active' and why."
       ],
       "expected": [
         "Printed historical 99% VaR between 29,300 and 29,450.",
@@ -357,7 +367,7 @@
   },
   {
     "n": 14,
-    "goal": "Implement EWMA and GARCH(1,1) next-day volatility on the same return series and state what a gap opening does to the forecast.",
+    "goal": "Implement EWMA and GARCH(1,1) next-day volatility, and turn correlation into a factor-risk budget sentence a PM can refuse.",
     "bigIdea": "Volatility clustering means quiet days tend to follow quiet days and wild days tend to follow wild days. EWMA (exponentially weighted moving average) updates variance by blending yesterday's variance with yesterday's squared return using a decay lambda. GARCH(1,1) adds a long-run level: next variance is a weighted mix of a constant, yesterday's squared return, and yesterday's variance. Correlation still enters through the covariance matrix when you move from one asset to a book—wrong correlation wrong risk, even if each vol is perfect.",
     "lessons": [
       {
@@ -389,15 +399,11 @@
       {
         "title": "Factor risk and a risk budget a PM can refuse",
         "body": [
-          "Buy-side portfolio risk is not only ‘vol went up.’ A portfolio manager thinks in factors and budgets: how much of the book’s risk is market beta, rates, credit, commodity, or a digital-asset factor you named yourself. Correlation matrices are the raw material; the deliverable is a risk-budget sentence.",
-          "Practical method inside this week’s hour: pick three synthetic sleeves (for example equity index, rates future, BTC). Estimate or assume pairwise correlations from your EWMA/GARCH work. Attribute variance with a simple one-factor or three-factor story — even a rough β to a market factor plus residual is enough if you write the assumptions.",
-          "Then write the budget: ‘We intend ~60% of standalone variance from market, ~25% from digital-asset idiosyncratic, ~15% from rates; a 10% overrun on digital-asset triggers a PM conversation, not a silent accept.’ That sentence is what buy-side risk owns."
-        ],
-        "example": {
-          "title": "Risk-budget challenge in the weekly meeting",
-          "story": "Your three-sleeve book shows BTC vol spiking. The PM asks whether to cut BTC or hedge with the equity index. The factor view says BTC residual (not equity beta) drove the overrun — an equity hedge would fake comfort and leave the real risk. You propose trimming BTC 20% and leaving the index sleeve alone, with the budget line updated.",
-          "takeaway": "Factor attribution decides the hedge. Hedging the wrong factor is how risk looks busy and still loses the PM’s trust."
-        }
+          "Volatility models forecast how fast things move. Factor risk explains why the book moves together. On a buy-side sleeve book, translate vol and correlation into a factor sentence: market beta, rates sensitivity, credit or crypto factor, and an idiosyncratic bucket. Then assign a risk budget — percent of stand-alone risk or of VaR — that the PM can accept or refuse in one line.",
+          "A useful budget is boring: e.g. '≤50% equity-factor risk, ≤30% crypto-factor risk, ≥20% residual/idiosyncratic, gross exposure ≤2× NAV.' Bad budgets are slogans ('stay diversified') with no number a middle-office report can breach. Your deliverable is one refuse-able sentence plus the three factor exposures you used to justify it.",
+          "When GARCH or EWMA vol jumps after a gap night, say whether the budget still holds or whether the PM must cut the dominant factor before the open. That is portfolio risk work sitting on top of the vol lab — keep both outputs.",
+          "Close with one sentence a portfolio manager could challenge in the next risk meeting — numbers first, adjectives never."
+        ]
       },
       {
         "title": "Gap openings: what close-to-close GARCH cannot see",
@@ -475,6 +481,15 @@
           "A single-name scare chart answers a newspaper question: what if ETH drops 30%. A portfolio-level stress answers a risk-committee question: after correlated moves, hedges, and financing, which sleeve pays. The second needs a book definition, a joint shock or factor path set, and a P&L bridge by sleeve — not a screenshot of one ticker.",
           "When you run Monte Carlo paths, keep a sleeve tag on every revaluation. Print contribution to the 95% loss and to expected shortfall of losses. If one sleeve dominates, say so before you propose a hedge. If contributions flip when you change correlation, that is the finding — write it down before anyone debates the hedge ratio.",
           "For buy-side and multi-asset paths, end with a PM sentence: dominant sleeve, proposed trim or hedge, and what you need confirmed (beta, borrow, venue depth). For Murex, add which risk factors in the engine must be alive for that sleeve contribution to be trustworthy, and which market-data feed would silently zero them."
+        ]
+      },
+      {
+        "title": "Construction under stress: what you cut first",
+        "body": [
+          "Portfolio construction is not a quarterly mean-variance poster. Under stress it is an ordered list: what you cut first, what you hedge, what you finance through, and what you refuse to sell into a gap. Build that list before you run Monte Carlo so the simulation answers a decision, not a curiosity.",
+          "Use sleeve contributions from the Monte Carlo: if crypto dominates 95% loss, the construction response might be reduce gross, tighten beta overlay, or raise cash — each with a different PM conversation. Liquidity add-ons change the order: an asset that looks small in VaR can be first to cut if the add-on says you cannot exit.",
+          "Write a six-line playbook: trigger, first cut, hedge overlay, financing check, PM ask, reopen criteria. Attach it under the headline loss number. Buy-side risk without a playbook is just a colourful histogram. Keep the playbook short enough to read aloud in under thirty seconds.",
+          "Close with one sentence a portfolio manager could challenge in the next risk meeting — numbers first, adjectives never."
         ]
       },
       {
