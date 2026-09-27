@@ -117,9 +117,12 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
   display: flex;
   gap: 8px;
   overflow-x: auto;
+  overflow-y: hidden;
   overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 16px;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
   padding-top: 6px;
   padding-bottom: 10px;
   margin-bottom: 2px;
@@ -273,8 +276,56 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
 .note p { margin: 0 0 8px; }
 .note summary { min-height: 44px; display: flex; align-items: center; font-weight: 600; cursor: pointer; }
 .note details p { margin-top: 8px; }
-.path-card { padding: 14px; }
+.path-card { padding: 14px; scroll-margin-top: 88px; }
 .path-card h3 { margin: 0; font-size: 22px; }
+.path-rail {
+  margin: 8px 0 14px;
+  padding: 10px 0 4px;
+}
+.path-rail-hint {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.path-rail-track {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 4px;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+.path-rail-item {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  display: grid;
+  gap: 2px;
+  min-width: 132px;
+  max-width: 160px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.path-rail-num {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 .role { margin: 4px 0 8px; font-size: 13px; font-weight: 600; }
 .fit-row { display: flex; justify-content: space-between; font-size: 13px; margin-top: 8px; }
 .gap { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); }
