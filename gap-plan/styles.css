@@ -311,6 +311,10 @@ h2.section { margin: 18px 0 8px; font-size: 28px; }
 }
 
 .note-card { padding: 14px; }
+.note-card.is-editing {
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: color-mix(in srgb, var(--soft) 55%, var(--card));
+}
 .note-index, .note-stamp, .note-meta {
   margin: 0;
   color: var(--muted);
@@ -329,6 +333,37 @@ h2.section { margin: 18px 0 8px; font-size: 28px; }
   margin: 0 0 8px;
   line-height: 1.5;
   white-space: pre-wrap;
+}
+.note-edit-label {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.note-edit-caption,
+.note-edit-body {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.note-edit-caption { min-height: 44px; }
+.note-edit-body {
+  min-height: 160px;
+  line-height: 1.5;
+  resize: vertical;
 }
 
 body.tutor-open { overflow: hidden; }

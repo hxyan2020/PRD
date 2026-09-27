@@ -99,6 +99,39 @@
     saveNotes(loadNotes().filter((note) => note.id !== id));
   }
 
+  function updateNote(id, patch = {}) {
+    const notes = loadNotes();
+    const index = notes.findIndex((note) => note.id === id);
+    if (index < 0) throw new Error("That note could not be found.");
+
+    const current = notes[index];
+    const nextText =
+      patch.text !== undefined ? String(patch.text).replace(/\s+/g, " ").trim() : current.text;
+    if (nextText.length < 3) throw new Error("Write a bit more before saving.");
+    if (nextText.length > 4000) throw new Error("That note is too long. Shorten it a little.");
+
+    let nextCaption =
+      patch.caption !== undefined ? String(patch.caption).replace(/\s+/g, " ").trim() : current.caption;
+    if (!nextCaption) {
+      nextCaption = captionFor(nextText, {
+        fromTutor: current.source === "tutor",
+        fromCourseware: current.source === "courseware",
+      });
+    } else {
+      nextCaption = clipCaption(nextCaption, 120);
+    }
+
+    const updated = {
+      ...current,
+      text: nextText,
+      caption: nextCaption,
+      updatedAt: new Date().toISOString(),
+    };
+    notes[index] = updated;
+    saveNotes(notes);
+    return updated;
+  }
+
   function chronologicalNotes() {
     return loadNotes()
       .slice()
@@ -125,40 +158,67 @@
       .replaceAll('"', "&quot;");
   }
 
-  function renderNotebookHtml() {
-    const notes = chronologicalNotes();
-    if (!notes.length) {
-      return `<article class="note">
-        <h2>Notebook</h2>
-        <p>Select any text in the courseware or in the tutor chat, then tap <strong>Note</strong> on the floating bar. Notes are kept in time order on this phone.</p>
-      </article>`;
+  function renderNoteCard(note, index, total, editingId) {
+    const isEditing = editingId === note.id;
+    const stamp = note.updatedAt
+      ? `Saved ${formatStamp(note.createdAt)} · edited ${formatStamp(note.updatedAt)}`
+      : formatStamp(note.createdAt);
+
+    if (isEditing) {
+      return `<article class="note-card is-editing" data-note-id="${escapeHtml(note.id)}">
+          <p class="note-index">Note ${index + 1} of ${total}</p>
+          <p class="note-stamp">${escapeHtml(stamp)}</p>
+          <label class="note-edit-label">Caption
+            <input type="text" class="note-edit-caption" data-edit-caption="${escapeHtml(note.id)}" maxlength="120" value="${escapeHtml(note.caption)}" />
+          </label>
+          <label class="note-edit-label">Note
+            <textarea class="note-edit-body" data-edit-body="${escapeHtml(note.id)}" rows="8" maxlength="4000">${escapeHtml(note.text)}</textarea>
+          </label>
+          <p class="note-meta">${escapeHtml(note.source)}${note.week ? ` · week ${note.week}` : ""}</p>
+          <div class="card-actions">
+            <button type="button" class="finish" data-save-note="${escapeHtml(note.id)}">Save</button>
+            <button type="button" class="text-btn" data-cancel-edit-note="${escapeHtml(note.id)}">Cancel</button>
+          </div>
+        </article>`;
     }
 
-    const cards = notes
-      .map(
-        (note, index) => `<article class="note-card" data-note-id="${escapeHtml(note.id)}">
-          <p class="note-index">Note ${index + 1} of ${notes.length}</p>
-          <p class="note-stamp">${escapeHtml(formatStamp(note.createdAt))}</p>
+    return `<article class="note-card" data-note-id="${escapeHtml(note.id)}">
+          <p class="note-index">Note ${index + 1} of ${total}</p>
+          <p class="note-stamp">${escapeHtml(stamp)}</p>
           <h3 class="note-caption">${escapeHtml(note.caption)}</h3>
           <p class="note-body">${escapeHtml(note.text)}</p>
           <p class="note-meta">${escapeHtml(note.source)}${note.week ? ` · week ${note.week}` : ""}</p>
           <div class="card-actions">
+            <button type="button" class="text-btn" data-edit-note="${escapeHtml(note.id)}">Edit</button>
             <button type="button" class="text-btn" data-copy-note="${escapeHtml(note.id)}">Copy</button>
             <button type="button" class="text-btn" data-delete-note="${escapeHtml(note.id)}">Delete</button>
           </div>
-        </article>`
-      )
+        </article>`;
+  }
+
+  function renderNotebookHtml(editingId = null) {
+    const notes = chronologicalNotes();
+    if (!notes.length) {
+      return `<article class="note">
+        <h2>Notebook</h2>
+        <p>Select any text in the courseware or in the tutor chat, then tap <strong>Note</strong> on the floating bar. Notes are kept in time order on this phone. Tap Edit on any note to change it and save again.</p>
+      </article>`;
+    }
+
+    const cards = notes
+      .map((note, index) => renderNoteCard(note, index, notes.length, editingId))
       .join("");
 
     return `<article class="note">
         <h2>Notebook</h2>
-        <p>${notes.length} note${notes.length === 1 ? "" : "s"}, oldest first. Select text anywhere in the plan or tutor to add more.</p>
+        <p>${notes.length} note${notes.length === 1 ? "" : "s"}, oldest first. Tap Edit to change a caption or body, then Save.</p>
       </article>
       <div class="stack">${cards}</div>`;
   }
 
   window.SixHoursNotebook = {
     addNote,
+    updateNote,
     deleteNote,
     loadNotes,
     chronologicalNotes,

@@ -19,6 +19,7 @@ const state = {
   filter: "all",
   open: new Set(),
   checked: {},
+  editingNoteId: null,
 };
 
 const app = document.querySelector("#app");
@@ -413,8 +414,16 @@ function renderProgress() {
 
 function renderNotebook() {
   app.innerHTML = window.SixHoursNotebook
-    ? window.SixHoursNotebook.renderNotebookHtml()
+    ? window.SixHoursNotebook.renderNotebookHtml(state.editingNoteId)
     : `<article class="note"><p>Notebook failed to load.</p></article>`;
+  if (state.editingNoteId) {
+    const body = app.querySelector(`[data-edit-body="${state.editingNoteId}"]`);
+    body?.focus();
+    if (body) {
+      const end = body.value.length;
+      body.setSelectionRange(end, end);
+    }
+  }
 }
 
 function render(pulse) {
@@ -446,6 +455,7 @@ document.body.addEventListener("click", async (event) => {
   const viewButton = event.target.closest(".tabbar button");
   if (viewButton) {
     state.view = viewButton.dataset.view;
+    if (state.view !== "notebook") state.editingNoteId = null;
     document.querySelector("#tutor-sheet")?.setAttribute("hidden", "");
     document.body.classList.remove("tutor-open");
     render();
@@ -523,6 +533,36 @@ document.body.addEventListener("click", async (event) => {
       showToast("Progress cleared.");
     }
   }
+  const editNote = event.target.closest("[data-edit-note]");
+  if (editNote) {
+    state.editingNoteId = editNote.dataset.editNote;
+    render();
+    return;
+  }
+  const cancelEdit = event.target.closest("[data-cancel-edit-note]");
+  if (cancelEdit) {
+    state.editingNoteId = null;
+    render();
+    return;
+  }
+  const saveNote = event.target.closest("[data-save-note]");
+  if (saveNote) {
+    const id = saveNote.dataset.saveNote;
+    const captionEl = app.querySelector(`[data-edit-caption="${id}"]`);
+    const bodyEl = app.querySelector(`[data-edit-body="${id}"]`);
+    try {
+      const updated = window.SixHoursNotebook.updateNote(id, {
+        caption: captionEl?.value ?? "",
+        text: bodyEl?.value ?? "",
+      });
+      state.editingNoteId = null;
+      render();
+      showToast(`Note saved · ${updated.caption}`);
+    } catch (error) {
+      showToast(error.message || "Could not save that note.");
+    }
+    return;
+  }
   const copyNote = event.target.closest("[data-copy-note]");
   if (copyNote) {
     const id = copyNote.dataset.copyNote;
@@ -538,7 +578,9 @@ document.body.addEventListener("click", async (event) => {
   const deleteNote = event.target.closest("[data-delete-note]");
   if (deleteNote) {
     if (window.confirm("Delete this notebook entry?")) {
-      window.SixHoursNotebook.deleteNote(deleteNote.dataset.deleteNote);
+      const id = deleteNote.dataset.deleteNote;
+      if (state.editingNoteId === id) state.editingNoteId = null;
+      window.SixHoursNotebook.deleteNote(id);
       render();
       showToast("Note deleted.");
     }
