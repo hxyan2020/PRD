@@ -9,6 +9,8 @@ const PATH_LABEL = {
   multi: "Multi-asset",
   pb: "Prime brokerage",
   tpm: "Trading product",
+  tokenised: "Tokenised assets",
+  murex: "Murex risk tech",
   aieng: "AI engineer",
   network: "Industry",
 };
@@ -196,6 +198,20 @@ function renderCourseware(week) {
     .join("");
   const lessonTitlesJson = escapeHtml(JSON.stringify((week.lessons || []).map((l) => l.title)));
   const viz = `<div class="viz-mount" data-lab-viz="${week.n}" data-lessons="${lessonTitlesJson}"></div>`;
+  const lenses = week.pathLenses
+    ? `<section class="block path-lenses">
+        <h3>Path lenses this week</h3>
+        <p class="block-label">Same six hours — sharper angle if you are on these paths</p>
+        <ul class="lens-list">
+          ${Object.entries(week.pathLenses)
+            .map(
+              ([id, text]) =>
+                `<li><span class="tag">${escapeHtml(PATH_LABEL[id] || id)}</span><span>${escapeHtml(text)}</span></li>`
+            )
+            .join("")}
+        </ul>
+      </section>`
+    : "";
   const lab = week.lab
     ? `<section class="block lab-block">
         <h3>Lab · do the work</h3>
@@ -238,6 +254,7 @@ function renderCourseware(week) {
         <ol class="steps">${timeBudget}</ol>
       </section>
       ${lessons}
+      ${lenses}
       ${lab}
       ${write}
       ${industry}
@@ -309,7 +326,10 @@ function renderPlan() {
 }
 
 function renderPaths() {
-  app.innerHTML = `<h2 class="section">Eight paths, two backups</h2>
+  app.innerHTML = `<h2 class="section">Ten paths, two backups</h2>
+    <article class="note">
+      <p>Two foundations reuse this same 26-week calendar: <strong>tokenised / digital-asset institutional risk</strong> and <strong>Murex market &amp; credit risk technology</strong>. Filter a path to see its weeks — nothing is added to the timeline.</p>
+    </article>
     <div class="stack">
       ${state.plan.paths
         .map((path) => {
