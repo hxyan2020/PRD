@@ -260,8 +260,8 @@
   },
   {
     "n": 22,
-    "goal": "Explain repo versus securities loan versus secured loan, haircuts and rehypothecation, compare crypto-venue margin to prime-broker practice in a table, and complete the 1,000,000 bond repo arithmetic including a −5% mark.",
-    "bigIdea": "Prime brokerage and collateral financing are where market risk meets funding and counterparty risk. A repurchase agreement (repo), a securities loan, and a secured cash loan can look similar as \"cash versus security,\" but the legal purpose, who pays which fee, and who can reuse collateral differ. Haircuts create a buffer against price moves; rehypothecation is the reuse of collateral you posted. This week you learn the economic differences in plain English, build a comparison table to crypto-venue margin language you already know, and show the arithmetic by hand.",
+    "goal": "Explain VM versus IM (and SIMM as a sensitivity-based IM), complete the financing/haircut arithmetic, and produce a toy sensitivity→IM worksheet beside the crypto-versus-PB comparison table.",
+    "bigIdea": "Collateral is where market, counterparty, and funding risks meet. Variation margin tracks MTM; initial margin (often SIMM on uncleared portfolios) buffers the close-out window. Repo and rehypothecation change who holds the economics when the call arrives.",
     "lessons": [
       {
         "title": "Repo, securities loan, and secured loan",
@@ -275,6 +275,14 @@
           "story": "A fund holds a liquid government bond and needs cash for a week. In a repo, it sells the bond and agrees to buy it back; the haircut means it receives a bit less than market value in cash. In a securities loan framing, a borrower might need that exact bond to settle a short and will post cash or other collateral. In a secured loan, a bank might lend cash and take a pledge over the bond without calling the trade a repo. Your risk questions stay parallel: how much cash versus collateral, what mark-to-market gap appears if the bond falls, and who is the counterparty.",
           "takeaway": "Name the purpose (cash versus security) before you name the product label."
         }
+      },
+      {
+        "title": "SIMM and IM versus VM: collateral that behaves like a model",
+        "body": [
+          "Variation margin (VM) tracks mark-to-market: when the trade moves against you, you post cash or eligible collateral to bring exposure back toward zero under the CSA. Initial margin (IM) is the extra buffer for the close-out window if your counterparty defaults — it is sized from risk sensitivities, not from today's MTM alone. Uncleared margin rules pushed the industry toward ISDA SIMM: a standardised sensitivity-based IM model with risk classes (interest rates, credit, equity, commodity, FX), buckets, and correlations.",
+          "You do not need a licensed SIMM calculator here. You do need the control story a Murex or collateral practitioner uses: trade sensitivities in, SIMM/IM out, disputes when risk factors or product taxonomies disagree, and the operational path from valuation/risk engine to collateral call. Map this week's repo and haircut arithmetic to three labels: VM-like MTM call, IM-like buffer, haircut on collateral eligibility.",
+          "Lab output should include a tiny sensitivity table (rate DV01, FX delta, equity delta — even if synthetic) and a toy IM score as a weighted sum of absolute sensitivities with made-up weights. Then write one paragraph on what would make that number wrong in production (missing risk class, wrong sign, nested portfolio netting). That paragraph is the Murex risk-tech deliverable for the week."
+        ]
       },
       {
         "title": "Haircuts, margin calls, and rehypothecation",
@@ -304,8 +312,8 @@
       }
     ],
     "lab": {
-      "goal": "Produce an eight-plus-row crypto-versus-PB table and a full repo arithmetic worksheet including the −5% mark.",
-      "why": "Cross-asset risk roles expect you to move between venue margin language and financing/collateral language without mixing the legal labels.",
+      "goal": "Complete financing/haircut arithmetic and a toy SIMM-like IM worksheet with a dispute sentence.",
+      "why": "Murex and collateral stacks fail when IM/VM and financing language are muddled — make them separate outputs.",
       "steps": [
         "Write three short definitions in your own words: repo, securities loan, secured loan—purpose, who needs what, reuse question.",
         "Draft a two-column table with at least eight rows: crypto-venue margin/liquidation versus PB margin, financing, and counterparty exposure. Reuse week-3/4 language on the crypto side.",
@@ -314,12 +322,14 @@
         "Compute 7-day interest at 4% act/365 on that cash.",
         "Mark the bond down 5% and show the margin gap with formulas.",
         "Recompute every figure by hand a second time and confirm a match.",
-        "Name three PB or buy-side risk people; send one note that refers to a row in your table without a job ask."
+        "Name three PB or buy-side risk people; send one note that refers to a row in your table without a job ask.",
+        "Build sensitivities = {rate_dv01, fx_delta, equity_delta} with synthetic numbers. Choose weights, compute toy_im = sum(weight_i * abs(sens_i)). Print VM_vs_IM definitions in two lines. Print one dispute_risk sentence (taxonomy, sign, or missing class)."
       ],
       "expected": [
         "Table with ≥8 rows and your own margin language on the crypto side.",
         "Cash, interest, and 5% mark-down gap with formulas, verified twice.",
-        "One outbound note referencing a table row, logged."
+        "One outbound note referencing a table row, logged.",
+        "Toy IM score, weights, and dispute sentence print clearly."
       ]
     },
     "writeGuide": {
@@ -347,7 +357,7 @@
   },
   {
     "n": 23,
-    "goal": "Shock one synthetic cross-asset book—EURUSD option, BTC perpetual, and the financed bond—with four moves at once, report P&L by sleeve and the margin call, and name the dominant sleeve plus the earlier control that would have caught it first.",
+    "goal": "Shock one synthetic cross-asset book with four moves, report P&L by sleeve and the margin call, name the dominant sleeve, and attach a five-line toy CVA/XVA sketch that you explicitly refuse to over-claim.",
     "bigIdea": "Real books do not get one risk factor at a time. This week you assemble a small cross-asset portfolio with four risk channels—option delta, futures basis (or perpetual funding/price), collateral gap, and counterparty/financing—and apply a joint stress: 10% USD move against the option, 20% BTC move, bond price −3%, and funding +200 basis points. You will see which sleeve dominates the loss and which single control from your earlier weeks would have fired first.",
     "lessons": [
       {
@@ -377,6 +387,14 @@
         }
       },
       {
+        "title": "Talking to the portfolio manager under a joint stress",
+        "body": [
+          "A PM does not want your full Monte Carlo log. They want the dominant sleeve, the P&L and margin numbers, the hedge or trim you recommend, and what you need from them in the next hour. Practice a sixty-second version and a five-minute version. Cut jargon that does not change a decision.",
+          "Bring the financing and counterparty call as separate lines so the PM does not hear 'we lost X' when you mean 'we must post Y'. If the tokenised or multi-asset sleeve drives the loss, say what control should have fired first — threshold, margin tier, or hedge band — and whether that control is desk-owned or platform-owned.",
+          "Log the conversation as: decision asked, answer, plan change. That log becomes week-25 portfolio evidence. If you cannot get a live call, write the three questions and your best-guess answers, labelled as rehearsal, including one question about whether the PM accepts your toy CVA sketch as pedagogy only. Keep the tone factual; do not oversell certainty."
+        ]
+      },
+      {
         "title": "Counterparty and why the call still matters",
         "body": [
           "Cross-asset stress is also a people exercise. If you have not yet held the twenty-minute industry conversation from earlier weeks, hold it now with three prepared questions. Keep the questions concrete: which report opens first when FX, crypto, and financing gap together; whether incident notes force a dominant-factor label; and where funding shocks have mattered as much as price shocks. Log the answers in a few lines you can reuse in the write-up.",
@@ -388,10 +406,18 @@
           "story": "You ask a multi-asset risk manager: (1) When FX, crypto, and financing gap together, which report do you open first? (2) Do you force a single dominant-factor label in the incident note? (3) Where have you seen funding shocks dominate price shocks? You log the answers in six lines.",
           "takeaway": "Industry time this week validates your sleeve story, not your job search."
         }
+      },
+      {
+        "title": "XVA map: CVA, DVA, FVA — what you must not fake",
+        "body": [
+          "XVA is the family of valuation adjustments that turn a risk-free derivative value into a counterparty- and funding-aware value. CVA (credit valuation adjustment) is the adjustment for expected loss from counterparty default, roughly exposure profile times default probability times loss-given-default, discounted. DVA is the symmetric own-credit piece. FVA covers funding costs and benefits when collateral and funding desks disagree with the risk-free discount curve.",
+          "You will not build a production XVA engine in this plan. You will build a practitioner map: which sleeve creates exposure, whether a CSA / IM reduces it, which credit curve or proxy you would need, and which number is valuation versus limit versus capital. That map is what separates a Murex configurator from a market-and-credit risk SME when an FO user says 'the XVA number moved'.",
+          "In this week's joint-shock book, add a five-line XVA appendix: (1) uncollateralised exposure proxy from the worst sleeve, (2) a flat hazard-rate assumption you label as toy, (3) a one-period CVA sketch = EE × PD × LGD, (4) what IM/VM would change, (5) the sentence you will not claim ('this is not a desk XVA'). Keep the arithmetic boring and the ownership clear."
+        ]
       }
     ],
     "lab": {
-      "goal": "Build the synthetic three-sleeve book, apply the four shocks together, and write which sleeve dominates and which earlier control catches first.",
+      "goal": "Joint-stress the book, name the dominant sleeve, and print a toy CVA sketch with non-claims.",
       "why": "PB and multi-asset risk interviews expect you to attribute a messy P&L, not only price one product.",
       "steps": [
         "Define notionals, signs, and starting marks for a EURUSD option sleeve, a BTC perpetual sleeve, and the week-22 financed bond sleeve.",
@@ -400,12 +426,14 @@
         "Compute the margin call / top-up for the financed bond as a separate number.",
         "Sum to a book total; identify the dominant loss sleeve.",
         "Name one control from weeks 3–8 that would have caught the issue first, with a one-sentence reason.",
-        "Hold the 20-minute call or send the thank-you that names a plan change; save notes."
+        "Hold the 20-minute call or send the thank-you that names a plan change; save notes.",
+        "After sleeve P&L, print xva_sketch with keys ee_proxy, pd, lgd, cva_toy=(ee_proxy*pd*lgd), im_vm_effect, will_not_claim. Keep pd/lgd labelled as toy assumptions."
       ],
       "expected": [
         "P&L by sleeve table plus a separate margin-call figure.",
         "A named dominant sleeve and a named earlier control as first catch.",
-        "Call notes or thank-you saved."
+        "Call notes or thank-you saved.",
+        "Toy CVA/XVA sketch prints with will_not_claim."
       ]
     },
     "writeGuide": {

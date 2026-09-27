@@ -463,6 +463,11 @@ function renderPaths() {
   app.innerHTML = `<h2 class="section">${pathCount} paths, two backups</h2>
     <article class="note note-compact">
       <p class="note-lead"><strong>${pathCount}</strong> career paths on one 26-week calendar (incl. Tokenised + Murex). Filter a path to see its weeks — nothing is added to the timeline.</p>
+      <details>
+        <summary>Where FRTB / PFE / SIMM / XVA sit</summary>
+        <p><strong>Murex:</strong> FRTB SA/IMA + ES/backtest (weeks 13, 16), PFE-style exposure (15), SIMM/IM vs VM (22), toy XVA/CVA sketch (23), plus VaR (12) and risk-tech production (9–11).</p>
+        <p>Other paths keep the same calendar with path lenses — open a tagged week and read the path callout under the courseware.</p>
+      </details>
     </article>
     ${pathRail}
     <div class="stack">
@@ -811,7 +816,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=20260927j");
+    const response = await fetch("plan.json?v=20260927k");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);

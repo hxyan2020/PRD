@@ -328,11 +328,11 @@ else:
 
 print("\\nNext: replace this scaffold with the real worksheet from the Steps list.")
 `,
-  13: `# Week 13 lab — Expected shortfall, Kupiec, Christoffersen
-# Live IDE scaffold. Fill TODOs, then Run. Uses the Python stdlib (+ numpy if available).
+  13: `# Week 13 lab — FRTB lenses: ES, SA/IMA, Kupiec / traffic light
+# Live IDE scaffold. Fill TODOs, then Run.
 
 import math, random
-random.seed(13)
+random.seed(7)  # match week-12 construction seed when you regenerate
 
 try:
     import numpy as np
@@ -341,28 +341,51 @@ except Exception:
     HAS_NP = False
     np = None
 
-print("Week 13: Expected shortfall, Kupiec, Christoffersen")
-print("Goal: From the week-12 series, print 97.5% ES, 99% VaR exception count, Kupiec LR, and traffic-light zone.")
+print("Week 13: FRTB lenses + ES/backtest")
 print("HAS_NUMPY =", HAS_NP)
 
-# --- starter numbers (edit me) ---
-seed = 13
-n_paths = 1000
-print(f"seed={seed}  n_paths={n_paths}")
-
-# TODO: implement the lab steps from the courseware above this IDE.
-# Keep prints of every intermediate number the expected-outputs list asks for.
-
+# Toy loss series stand-in (replace with week-12 series)
+n, p = 250, 0.01
 if HAS_NP:
-    rng = np.random.default_rng(seed)
-    x = rng.normal(0, 1, size=n_paths)
-    print("mean≈", float(np.mean(x)), "  p95≈", float(np.quantile(x, 0.95)))
+    rng = np.random.default_rng(7)
+    losses = np.sort(rng.lognormal(mean=9.5, sigma=0.35, size=n))
+    es97_5 = float(np.mean(losses[losses >= np.quantile(losses, 0.975)]))
+    hist99 = float(np.quantile(losses, 0.99))
+    exceptions = int(np.sum(losses > hist99))
 else:
-    x = [random.gauss(0, 1) for _ in range(n_paths)]
-    x_sorted = sorted(x)
-    print("mean≈", sum(x)/len(x), "  p95≈", x_sorted[int(0.95*(len(x)-1))])
+    random.seed(7)
+    losses = sorted(math.exp(random.gauss(9.5, 0.35)) for _ in range(n))
+    q = losses[int(0.975 * (n - 1))]
+    tail = [x for x in losses if x >= q]
+    es97_5 = sum(tail) / len(tail)
+    hist99 = losses[int(0.99 * (n - 1))]
+    exceptions = sum(1 for x in losses if x > hist99)
 
-print("\\nNext: replace this scaffold with the real worksheet from the Steps list.")
+# Kupiec LR (unconditional coverage); edge-safe for x=0
+x = exceptions
+if x == 0:
+    kupiec_lr = -2 * n * math.log(1 - p)
+elif x == n:
+    kupiec_lr = -2 * n * math.log(p)
+else:
+    kupiec_lr = -2 * (
+        (n - x) * math.log((1 - p) / ((n - x) / n)) + x * math.log(p / (x / n))
+    )
+zone = "green" if x <= 4 else "amber" if x <= 9 else "red"
+
+frtb_map = {
+    "sa_idea": "SA = rulebook risk weights / buckets / correlations — not your internal VaR engine.",
+    "ima_idea": "IMA = approved internal ES on modellable factors + PLA/backtest discipline.",
+    "pla_or_nmrf_risk": "PLA fail or NMRF add-on if risk-factor mapping / sparse data breaks the IMA story.",
+}
+
+print("es97_5", round(es97_5, 2))
+print("hist99", round(hist99, 2))
+print("exceptions", x)
+print("kupiec_lr", round(kupiec_lr, 4), "reject_coverage_95", kupiec_lr > 3.84)
+print("zone", zone)
+print("frtb_map", frtb_map)
+print("\\nTODO: swap in the real week-12 loss series; save week13_backtest.json.")
 `,
   14: `# Week 14 lab — EWMA, GARCH(1,1), and correlation
 # Live IDE scaffold. Fill TODOs, then Run. Uses the Python stdlib (+ numpy if available).
@@ -400,8 +423,8 @@ else:
 
 print("\\nNext: replace this scaffold with the real worksheet from the Steps list.")
 `,
-  15: `# Week 15 lab — Monte Carlo, stress, and a liquidity add-on
-# Live IDE scaffold. Fill TODOs, then Run. Uses the Python stdlib (+ numpy if available).
+  15: `# Week 15 lab — Monte Carlo stress, liquidity, PFE-style exposure
+# Live IDE scaffold. Fill TODOs, then Run.
 
 import math, random
 random.seed(15)
@@ -413,28 +436,40 @@ except Exception:
     HAS_NP = False
     np = None
 
-print("Week 15: Monte Carlo, stress, and a liquidity add-on")
-print("Goal: 5000-path Monte Carlo with 95% loss, ES, and a documented non-Almgren–Chriss liquidity penalty.")
+print("Week 15: Monte Carlo + liquidity + PFE-style exposure")
 print("HAS_NUMPY =", HAS_NP)
-
-# --- starter numbers (edit me) ---
-seed = 15
-n_paths = 1000
-print(f"seed={seed}  n_paths={n_paths}")
-
-# TODO: implement the lab steps from the courseware above this IDE.
-# Keep prints of every intermediate number the expected-outputs list asks for.
+counterparty_name = "PrimeBroker-A"  # edit me
+seed, n_paths = 15, 5000
+half_spread, size = 0.0010, 1_000_000  # liquidity add-on = half_spread * size
+print(f"seed={seed} n_paths={n_paths} counterparty={counterparty_name}")
 
 if HAS_NP:
     rng = np.random.default_rng(seed)
-    x = rng.normal(0, 1, size=n_paths)
-    print("mean≈", float(np.mean(x)), "  p95≈", float(np.quantile(x, 0.95)))
+    # Toy: portfolio value change and positive exposure proxy on each path
+    pnl = rng.normal(-5000, 25000, size=n_paths)  # negative = loss
+    value = 20000 + pnl
+    exposure = np.maximum(value, 0.0)
+    losses = -pnl
+    loss95 = float(np.quantile(losses, 0.95))
+    es95 = float(np.mean(losses[losses >= loss95]))
+    pfe95 = float(np.quantile(exposure, 0.95))
 else:
-    x = [random.gauss(0, 1) for _ in range(n_paths)]
-    x_sorted = sorted(x)
-    print("mean≈", sum(x)/len(x), "  p95≈", x_sorted[int(0.95*(len(x)-1))])
+    random.seed(seed)
+    pnl = [random.gauss(-5000, 25000) for _ in range(n_paths)]
+    exposure = [max(20000 + x, 0.0) for x in pnl]
+    losses = sorted(-x for x in pnl)
+    loss95 = losses[int(0.95 * (n_paths - 1))]
+    tail = [L for L in losses if L >= loss95]
+    es95 = sum(tail) / len(tail)
+    exposure_sorted = sorted(exposure)
+    pfe95 = exposure_sorted[int(0.95 * (n_paths - 1))]
 
-print("\\nNext: replace this scaffold with the real worksheet from the Steps list.")
+liquidity_penalty = half_spread * size
+print("loss95", round(loss95, 2), "es95", round(es95, 2))
+print("liquidity_penalty", liquidity_penalty, "(NOT a market-impact model)")
+print("pfe95", round(pfe95, 2), "counterparty_name", counterparty_name)
+print("NOTE: do not add pfe95 into market loss without a separate label.")
+print("\\nTODO: replace toy normals with your true book revaluation paths.")
 `,
   16: `# Week 16 lab — Model validation pack a reviewer can read
 # Live IDE scaffold. Fill TODOs, then Run. Uses the Python stdlib (+ numpy if available).
@@ -562,41 +597,65 @@ for item in ["A 15-row sheet with a score of at least 12/15 after rerun, or an h
 
 print("\\nEdit the values above, re-run, then copy the output into your notebook / write-up.")
 `,
-  22: `# Week 22 lab — Repo, stock borrow, collateral, rehypothecation
-# Structured worksheet you can edit, then Run to print a draft you can paste into Notes.
+  22: `# Week 22 lab — Collateral, SIMM/IM, repo, rehypothecation
+# Structured worksheet + toy SIMM-like IM score.
 
-print("WEEK 22 LAB WORKSHEET")
-print("Goal checklist")
-print('  - Write three short definitions in your own words: repo, securities loan, secured loan—purpose, who needs what, ')
-print('  - Draft a two-column table with at least eight rows: crypto-venue margin/liquidation versus PB margin, financing')
-print('  - Include rows on haircut, margin call or variation margin idea, liquidation or close-out, collateral reuse/rehy')
-print('  - Compute cash received for bond 1,000,000 with 2% haircut.')
-print('  - Compute 7-day interest at 4% act/365 on that cash.')
-print('  - Mark the bond down 5% and show the margin gap with formulas.')
+print("WEEK 22 LAB — financing + SIMM/IM toy")
+bond, haircut, rate, days = 1_000_000, 0.02, 0.04, 7
+cash = bond * (1 - haircut)
+interest = cash * rate * days / 365
+marked = bond * 0.95
+margin_gap = cash - marked  # if positive, financing side feels the gap
+print("cash_received", round(cash, 2))
+print("interest_7d", round(interest, 2))
+print("bond_after_5pct_down", marked, "margin_gap_vs_cash", round(margin_gap, 2))
 
-print("\\nExpected good looks like:")
-for item in ["Table with \\u22658 rows and your own margin language on the crypto side.", "Cash, interest, and 5% mark-down gap with formulas, verified twice.", "One outbound note referencing a table row, logged."]:
-    print("  ✓", item)
+print("\\nVM vs IM (edit the sentences)")
+print("VM: tracks MTM / variation — posts when the trade moves against you.")
+print("IM: close-out buffer — often SIMM on uncleared portfolios from sensitivities.")
 
-print("\\nEdit the values above, re-run, then copy the output into your notebook / write-up.")
+# Toy SIMM-like worksheet (not licensed SIMM)
+sens = {"rate_dv01": 12000.0, "fx_delta": -8000.0, "equity_delta": 5000.0}
+weights = {"rate_dv01": 0.02, "fx_delta": 0.08, "equity_delta": 0.15}
+toy_im = sum(weights[k] * abs(sens[k]) for k in sens)
+dispute_risk = "Wrong product taxonomy / missing risk class can understate IM versus the counterparty calculator."
+print("sensitivities", sens)
+print("weights", weights)
+print("toy_im", round(toy_im, 2))
+print("dispute_risk", dispute_risk)
+print("\\nTODO: finish the 8-row crypto-vs-PB table including an IM/VM row.")
 `,
-  23: `# Week 23 lab — One book, four shocks, one dominant sleeve
-# Structured worksheet you can edit, then Run to print a draft you can paste into Notes.
+  23: `# Week 23 lab — Joint shocks + dominant sleeve + toy CVA/XVA sketch
 
-print("WEEK 23 LAB WORKSHEET")
-print("Goal checklist")
-print('  - Define notionals, signs, and starting marks for a EURUSD option sleeve, a BTC perpetual sleeve, and the week-2')
-print('  - State the four shocks in writing: 10% USD against the option, 20% BTC, bond −3%, funding +200 bps.')
-print('  - Compute scenario P&L for each sleeve with formulas visible. Use delta or full revaluation consistently and say')
-print('  - Compute the margin call / top-up for the financed bond as a separate number.')
-print('  - Sum to a book total; identify the dominant loss sleeve.')
-print('  - Name one control from weeks 3–8 that would have caught the issue first, with a one-sentence reason.')
+print("WEEK 23 LAB — four shocks + XVA sketch")
+sleeves = {
+    "eurusd_option": -180_000,   # edit: scenario P&L
+    "btc_perp": -95_000,
+    "financed_bond": -40_000,
+}
+margin_call = 55_000  # separate from P&L
+book_pnl = sum(sleeves.values())
+dominant = min(sleeves, key=sleeves.get)
+print("pnl_by_sleeve", sleeves)
+print("book_pnl", book_pnl)
+print("margin_call_separate", margin_call)
+print("dominant_sleeve", dominant)
+print("first_catch_control", "Week-3 margin tier / week-4 threshold — edit me")
 
-print("\\nExpected good looks like:")
-for item in ["P&L by sleeve table plus a separate margin-call figure.", "A named dominant sleeve and a named earlier control as first catch.", "Call notes or thank-you saved."]:
-    print("  ✓", item)
-
-print("\\nEdit the values above, re-run, then copy the output into your notebook / write-up.")
+# Toy one-period CVA sketch (NOT a desk XVA)
+ee_proxy = abs(min(0, sleeves["eurusd_option"]))  # positive exposure proxy
+pd, lgd = 0.02, 0.60  # toy
+cva_toy = ee_proxy * pd * lgd
+xva_sketch = {
+    "ee_proxy": ee_proxy,
+    "pd": pd,
+    "lgd": lgd,
+    "cva_toy": cva_toy,
+    "im_vm_effect": "IM/VM would cut ee_proxy before CVA — state your CSA assumption.",
+    "will_not_claim": "This is not a desk XVA; flat PD/LGD are pedagogical.",
+}
+print("xva_sketch", xva_sketch)
+print("\\nTODO: replace stub P&Ls with your four-shock formulas.")
 `,
   24: `# Week 24 lab — The commercial sentence for a risk product
 # Structured worksheet you can edit, then Run to print a draft you can paste into Notes.

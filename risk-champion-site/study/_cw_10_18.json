@@ -259,8 +259,8 @@
   },
   {
     "n": 13,
-    "goal": "Compute 97.5% expected shortfall on the week-12 series, count 99% VaR exceptions, run Kupiec, and assign a Basel traffic-light zone.",
-    "bigIdea": "Expected shortfall (ES) is the average loss given that you are beyond a tail threshold—it asks how bad the bad days are, not only where the threshold sits. Capital rules under FRTB-style thinking lean on ES, but backtesting programs still count VaR exceptions because an exception is a crisp yes/no against a quantile. Kupiec tests whether exception counts match the promised probability; Christoffersen also asks whether exceptions cluster. Classic Basel traffic lights on 250 days at 99% are green 0–4, amber 5–9, red 10 or more.",
+    "goal": "Compute 97.5% expected shortfall and a Kupiec/traffic-light backtest on the week-12 series, and write an FRTB SA-versus-IMA map that ties those numbers to capital and desk evidence language.",
+    "bigIdea": "Expected shortfall asks how bad the bad days are; FRTB decides whether capital listens to an internal ES model (IMA) or a standardised charge (SA). Backtests and P&L attribution decide whether the IMA story survives. This week you compute ES and exceptions, then write the FRTB map a Murex market-risk SME must be able to say aloud.",
     "lessons": [
       {
         "title": "Expected shortfall versus VaR",
@@ -274,6 +274,14 @@
           "story": "From week-12 losses (250 days), let q = quantile(losses, 0.975). ES = mean(losses[losses >= q]). That number will sit above the 97.5% VaR quantile by construction. Print q and ES side by side so you can show the gap between 'threshold' and 'average beyond threshold.'",
           "takeaway": "If you only quote VaR, you are silent about how severe the days past VaR are—that silence is what ES fills."
         }
+      },
+      {
+        "title": "FRTB in plain English: SA, IMA, and why ES shows up",
+        "body": [
+          "The Fundamental Review of the Trading Book (FRTB) is the Basel market-risk capital rewrite most banks still implement in phases. Two calculation tracks matter in interviews and in Murex-adjacent work. The standardised approach (SA) maps positions into risk-factor buckets, applies prescribed risk weights and correlations, and adds a residual risk add-on where products do not fit cleanly. You do not need to memorise every bucket this week; you do need the sentence: SA is a rulebook charge driven by classification and weights, not by your internal VaR engine.",
+          "The internal models approach (IMA) lets a bank use approved internal expected shortfall models on modellable risk factors, with strict backtesting, P&L attribution (PLA), and a capital outcome that can jump when factors are deemed non-modellable (NMRF). That is why week-12 VaR and this week's ES/backtest lab are not academic toys for a Murex market-risk SME — they are the numerics behind the conversation when a desk asks why capital or limits moved after a methodology or market-data change.",
+          "Keep three artefacts in one notebook note: (1) the risk measure and horizon you computed, (2) the exception count / traffic light, (3) one line on what would break an IMA-style story (stale curve, missing risk factor, PLA fail). You are not filing a regulatory return; you are proving you can sit between the engine output and the governance question."
+        ]
       },
       {
         "title": "Exceptions, Kupiec, Christoffersen, traffic lights",
@@ -303,8 +311,8 @@
       }
     ],
     "lab": {
-      "goal": "From the week-12 series, print 97.5% ES, 99% VaR exception count, Kupiec LR, and traffic-light zone.",
-      "why": "You need both a severity number and a backtest count to speak FRTB-aware Trading Risk language.",
+      "goal": "From the week-12 series, print 97.5% ES, 99% VaR exception count, Kupiec LR, traffic-light zone, and a three-bullet FRTB SA/IMA map.",
+      "why": "Murex and Trading Risk conversations after FRTB need both the severity/backtest numerics and the capital-track vocabulary.",
       "steps": [
         "Load the week-12 pnl/losses series (regenerate with seed 7 and the same steps if needed).",
         "Compute es97_5 = mean of losses that are >= numpy.quantile(losses, 0.975). Print it.",
@@ -313,12 +321,14 @@
         "Compare LR to 3.84. Print reject_coverage_95 = LR > 3.84.",
         "Assign zone: green if x<=4, amber if 5<=x<=9, else red. Print x and zone.",
         "Optional: sketch Christoffersen independence by counting transitions exception↔non-exception; print the contingency counts even if you skip the full LR.",
-        "Save outputs to week13_backtest.json with keys es97_5, hist99, exceptions, kupiec_lr, zone."
+        "Save outputs to week13_backtest.json with keys es97_5, hist99, exceptions, kupiec_lr, zone.",
+        "Print an FRTB map block with keys sa_idea, ima_idea, pla_or_nmrf_risk (one sentence each). Save into week13_backtest.json under key frtb_map."
       ],
       "expected": [
         "Notebook prints 97.5% ES, exception count, Kupiec statistic, and traffic-light zone.",
         "Saved JSON or clearly printed block with the same four results.",
-        "A clear statement of the exception inequality (> vs >=)."
+        "A clear statement of the exception inequality (> vs >=).",
+        "FRTB SA/IMA/PLA-or-NMRF sentences print next to the ES/backtest numbers."
       ]
     },
     "writeGuide": {
@@ -377,6 +387,19 @@
         }
       },
       {
+        "title": "Factor risk and a risk budget a PM can refuse",
+        "body": [
+          "Buy-side portfolio risk is not only ‘vol went up.’ A portfolio manager thinks in factors and budgets: how much of the book’s risk is market beta, rates, credit, commodity, or a digital-asset factor you named yourself. Correlation matrices are the raw material; the deliverable is a risk-budget sentence.",
+          "Practical method inside this week’s hour: pick three synthetic sleeves (for example equity index, rates future, BTC). Estimate or assume pairwise correlations from your EWMA/GARCH work. Attribute variance with a simple one-factor or three-factor story — even a rough β to a market factor plus residual is enough if you write the assumptions.",
+          "Then write the budget: ‘We intend ~60% of standalone variance from market, ~25% from digital-asset idiosyncratic, ~15% from rates; a 10% overrun on digital-asset triggers a PM conversation, not a silent accept.’ That sentence is what buy-side risk owns."
+        ],
+        "example": {
+          "title": "Risk-budget challenge in the weekly meeting",
+          "story": "Your three-sleeve book shows BTC vol spiking. The PM asks whether to cut BTC or hedge with the equity index. The factor view says BTC residual (not equity beta) drove the overrun — an equity hedge would fake comfort and leave the real risk. You propose trimming BTC 20% and leaving the index sleeve alone, with the budget line updated.",
+          "takeaway": "Factor attribution decides the hedge. Hedging the wrong factor is how risk looks busy and still loses the PM’s trust."
+        }
+      },
+      {
         "title": "Gap openings: what close-to-close GARCH cannot see",
         "body": [
           "A gap opening is when the next open is far from the previous close—overnight news, a halt, a weekend macro print. A GARCH or EWMA forecast that only saw yesterday's close-to-close return cannot see that gap until the return that includes the gap enters the recursion. Intraday risk, open-auction risk, and jump risk sit outside the model state even when the printed next-day vol looks precise to two decimals.",
@@ -430,8 +453,8 @@
   },
   {
     "n": 15,
-    "goal": "Run a 5,000-path Monte Carlo stress with a simple liquidity add-on (not Almgren–Chriss) and choose one number to show a Head of Risk.",
-    "bigIdea": "Monte Carlo stress means simulating many future paths of market factors, revaluing a book on each path, and reading loss quantiles from the simulated P&L cloud. A liquidity add-on is an extra cost for exiting size when the market is thin; this week you use half-spread times size plus a penalty when exit size exceeds 5% of assumed daily volume—not a full Almgren–Chriss optimal-trading model. Say that limitation out loud in the notebook so nobody thinks you simulated market impact.",
+    "goal": "Run a 5,000-path Monte Carlo stress with a liquidity add-on, and report a PFE-style positive-exposure quantile beside the market-loss number for a named counterparty.",
+    "bigIdea": "Monte Carlo stress builds a P&L cloud; PFE-style thinking builds an exposure cloud. Liquidity add-ons and collateral rules change which number a Head of Risk or CCR lead should see first. This week you compute both and refuse to mix them without labels.",
     "lessons": [
       {
         "title": "Monte Carlo paths for a simple book",
@@ -445,6 +468,22 @@
           "story": "Spot ETH=3000, +50 ETH (150,000); BTC=100,000, +1 BTC (100,000). 5000 paths, ETH vol 5%, BTC vol 4%, ρ=0.7. Also print −30% ETH scenario loss = 45,000.",
           "takeaway": "Always park a dumb scenario number next to Monte Carlo so a Head of Risk can sanity-check the cloud."
         }
+      },
+      {
+        "title": "Portfolio-level stress versus single-name scare charts",
+        "body": [
+          "A single-name scare chart answers a newspaper question: what if ETH drops 30%. A portfolio-level stress answers a risk-committee question: after correlated moves, hedges, and financing, which sleeve pays. The second needs a book definition, a joint shock or factor path set, and a P&L bridge by sleeve — not a screenshot of one ticker.",
+          "When you run Monte Carlo paths, keep a sleeve tag on every revaluation. Print contribution to the 95% loss and to expected shortfall of losses. If one sleeve dominates, say so before you propose a hedge. If contributions flip when you change correlation, that is the finding — write it down before anyone debates the hedge ratio.",
+          "For buy-side and multi-asset paths, end with a PM sentence: dominant sleeve, proposed trim or hedge, and what you need confirmed (beta, borrow, venue depth). For Murex, add which risk factors in the engine must be alive for that sleeve contribution to be trustworthy, and which market-data feed would silently zero them."
+        ]
+      },
+      {
+        "title": "From Monte Carlo paths to PFE-style exposure",
+        "body": [
+          "Potential Future Exposure (PFE) asks a different question from market-risk VaR on a trading book. VaR asks how much mark-to-market you might lose. PFE asks how large a counterparty exposure might become along simulated market paths — typically a high quantile (often 95% or 99%) of the positive exposure distribution at a future date, sometimes summarised across a profile as effective EPE for capital storytelling.",
+          "You can build intuition without a full CCR engine. Simulate market factors, revalue the derivative or financed position on each path, take exposure as max(V, 0) after simple collateral rules if you have them, then read a quantile across paths at a chosen horizon. That number is PFE-like. Expected exposure (EE) is the mean of that positive exposure; EEPE aggregates EE over time with regulatory conventions you can name without implementing every Basel formula.",
+          "For the Murex path, write beside your Monte Carlo market-loss number a second line: exposure quantile at horizon T and whether collateral would have cut it. For the buy-side and tokenised paths, state who the counterparty is (PB, venue, custodian, chain settlement agent) because PFE without a counterparty noun is theatre."
+        ]
       },
       {
         "title": "Liquidity add-on that is not Almgren–Chriss",
@@ -474,8 +513,8 @@
       }
     ],
     "lab": {
-      "goal": "5000-path Monte Carlo with 95% loss, ES, and a documented non-Almgren–Chriss liquidity penalty.",
-      "why": "Stress without an exit cost story understates what it takes to get flat.",
+      "goal": "Run Monte Carlo stress with a liquidity add-on and print a separate PFE-style exposure quantile.",
+      "why": "Market loss, liquidity friction, and counterparty exposure are different management questions — especially on Murex CCR/XVA stacks.",
       "steps": [
         "Create week15_mc_liquidity.py with numpy; set and print a fixed seed (for example 15).",
         "Define book: eth_pos=50, eth_spot=3000, btc_pos=1, btc_spot=100000.",
@@ -484,12 +523,14 @@
         "Compute liquidity_cost per path: half-spread times exit notional plus ADV penalty when exit > 5% of ADV; comment the formulas.",
         "Print 95% loss and ES for market_loss and for total_loss = market_loss + liquidity_cost.",
         "Print the sentence: Liquidity penalty is not Almgren-Chriss.",
-        "Print count of paths with exit > 5% of ADV."
+        "Print count of paths with exit > 5% of ADV.",
+        "Define exposure_t = max(value_t, 0) on each path at a chosen horizon (or at path end). Print pfe95 = quantile(exposure, 0.95) and counterparty_name. Do not add pfe95 into the market-loss total without a label."
       ],
       "expected": [
         "Printed 95% loss and ES with and without liquidity.",
         "Explicit not-Almgren–Chriss statement.",
-        "−30% ETH anchor, 5000 paths, and seed printed."
+        "−30% ETH anchor, 5000 paths, and seed printed.",
+        "PFE-style quantile and counterparty noun print beside market loss / ES / liquidity penalty."
       ]
     },
     "writeGuide": {
@@ -506,14 +547,15 @@
       "prompt": "If the 20-minute call is not yet booked, send one new ask; if booked, write the three questions you will ask.",
       "script": [
         "Ask: 'Would you have 20 minutes for a market-risk practice conversation? I want your view on when Monte Carlo stress should outrank daily VaR in a desk pack.'",
-        "If booked: (1) When do you show MC stress beside VaR? (2) How do you treat liquidity add-ons that are not full impact models? (3) What caveat do you always force onto page 1?"
+        "If booked: (1) When do you show MC stress beside VaR? (2) How do you treat liquidity add-ons that are not full impact models? (3) What caveat do you always force onto page 1?",
+        "If buy-side path: one of your three questions must be how the PM wants portfolio stress results presented (total, by sleeve, or vs budget)."
       ],
       "log": "Send timestamp, or the three written questions saved to week15_call_questions.md."
     }
   },
   {
     "n": 16,
-    "goal": "Write an SR 11-7-style validation pack for the week-12 VaR that a reviewer can open in four pages or fewer.",
+    "goal": "Write an SR 11-7-style validation pack for the week-12 VaR that also answers FRTB-aware questions (PLA, missing factors/NMRF, owners) in four pages or fewer.",
     "bigIdea": "Model risk management means treating models as things that can be wrong in costly ways, not as black boxes that mint truth. Federal Reserve SR 11-7 is supervisory guidance that expects purpose, conceptual soundness, outcomes analysis, and ongoing monitoring—among other practices. You are not becoming a validation team this week; you are writing a pack a validator could open without guessing your intent. Challenger models and named human owners are part of that honesty.",
     "lessons": [
       {
@@ -528,6 +570,14 @@
           "story": "Intended use: demonstrate 99% 1-day VaR on a synthetic 1,000,000 two-asset book for study evidence. Not intended: firm regulatory capital, automated liquidation, or client disclosure. Extending use requires new approval.",
           "takeaway": "A validation pack that claims every use is a pack that validates nothing."
         }
+      },
+      {
+        "title": "IMA evidence: PLA, NMRF, and what a validator asks first",
+        "body": [
+          "Under FRTB IMA, it is not enough to print ES. Supervisors and model risk care about P&L attribution (PLA): whether hypothetical and risk-theoretical P&L line up with the risk factors in the model. They care about non-modellable risk factors (NMRF) that attract stressed capital add-ons when data are too sparse. They care about desk-level eligibility and about whether the backtesting programme matches the capital story.",
+          "Your validation pack this week should therefore reserve a half-page for FRTB-aware questions even if your toy VaR is not an IMA candidate: Which P&L is used for exceptions? Which risk factors are missing from the engine mapping? What would a PLA fail look like in tickets (market data vs enrichment vs calc)? Who can freeze a limit when the traffic light turns amber?",
+          "For Trading Risk and Murex paths, translate each pack section into an owner: desk risk, market risk methodology, risk technology, model validation. One sentence each. If you cannot name an owner, the pack is not ready for a signer."
+        ]
       },
       {
         "title": "Pack contents: data, assumptions, challenger, owner",
