@@ -811,7 +811,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=20260927i");
+    const response = await fetch("plan.json?v=20260927j");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);

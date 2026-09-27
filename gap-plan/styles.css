@@ -1001,8 +1001,10 @@ body.tutor-open { overflow: hidden; }
   .chips-nav-next { right: max(6px, env(safe-area-inset-right)); }
   .chips {
     gap: 6px;
-    padding: 8px 44px 10px;
-    scroll-padding-inline: 44px;
+    padding: 8px 50px 10px;
+    scroll-padding-inline: 50px;
+    /* Keep labels clear of overlay arrows */
+    mask-image: linear-gradient(90deg, transparent 0, #000 46px, #000 calc(100% - 46px), transparent) !important;
   }
   .chips button {
     min-height: 38px;
@@ -1193,13 +1195,15 @@ body.tutor-open { overflow: hidden; }
   flex-shrink: 0;
 }
 .lab-ide-run,
-.lab-ide-reset {
+.lab-ide-reset,
+.lab-ide-fs {
   border: 1px solid var(--line);
   border-radius: 999px;
   padding: 8px 14px;
   font: inherit;
   font-weight: 600;
   cursor: pointer;
+  touch-action: manipulation;
 }
 .lab-ide-run {
   background: var(--accent);
@@ -1210,9 +1214,15 @@ body.tutor-open { overflow: hidden; }
   opacity: 0.6;
   cursor: wait;
 }
-.lab-ide-reset {
+.lab-ide-reset,
+.lab-ide-fs {
   background: transparent;
   color: var(--ink);
+}
+.lab-ide-fs[aria-pressed="true"] {
+  background: var(--soft);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .lab-ide-code {
   width: 100%;
@@ -1229,6 +1239,83 @@ body.tutor-open { overflow: hidden; }
   font-size: 12.5px;
   line-height: 1.45;
   tab-size: 2;
+}
+
+/* CodeMirror Python colouring (brand forest theme — no purple) */
+.lab-ide .CodeMirror {
+  height: auto;
+  min-height: 220px;
+  border: 1px solid #1c2a24;
+  border-radius: 12px;
+  background: #0f1714;
+  color: #e8f2ee;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.lab-ide .CodeMirror-scroll {
+  min-height: 220px;
+  max-height: min(52vh, 480px);
+}
+.lab-ide .CodeMirror-gutters {
+  background: #121c18;
+  border-right: 1px solid #24352e;
+}
+.lab-ide .CodeMirror-linenumber {
+  color: #6d7d74;
+  padding: 0 8px 0 6px;
+}
+.lab-ide .CodeMirror-cursor { border-left: 2px solid #9fd0ba; }
+.lab-ide .CodeMirror-selected { background: rgba(12, 95, 78, 0.35); }
+.lab-ide .cm-s-lab-forest span.cm-comment { color: #7d8a82; font-style: italic; }
+.lab-ide .cm-s-lab-forest span.cm-keyword { color: #6fc49a; font-weight: 600; }
+.lab-ide .cm-s-lab-forest span.cm-builtin { color: #8eb8ff; }
+.lab-ide .cm-s-lab-forest span.cm-string,
+.lab-ide .cm-s-lab-forest span.cm-string-2 { color: #e0a36a; }
+.lab-ide .cm-s-lab-forest span.cm-number { color: #9fd0ba; }
+.lab-ide .cm-s-lab-forest span.cm-def { color: #f0d5a0; }
+.lab-ide .cm-s-lab-forest span.cm-variable { color: #e8f2ee; }
+.lab-ide .cm-s-lab-forest span.cm-variable-2 { color: #c5ddd2; }
+.lab-ide .cm-s-lab-forest span.cm-operator { color: #b7cfc3; }
+.lab-ide .cm-s-lab-forest span.cm-meta { color: #9aa89f; }
+.lab-ide .cm-s-lab-forest span.cm-property { color: #d7ebe2; }
+
+body.lab-ide-fs-open { overflow: hidden; }
+.lab-ide.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  margin: 0;
+  border-radius: 0;
+  border-width: 0;
+  width: 100%;
+  height: 100%;
+  max-height: 100dvh;
+  padding:
+    max(12px, env(safe-area-inset-top))
+    max(14px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom))
+    max(14px, env(safe-area-inset-left));
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto minmax(100px, 22vh);
+  gap: 10px;
+  background: var(--card);
+  box-shadow: none;
+  overflow: hidden;
+}
+.lab-ide.is-fullscreen .lab-ide-hint { display: none; }
+.lab-ide.is-fullscreen .CodeMirror {
+  min-height: 0;
+  height: 100% !important;
+}
+.lab-ide.is-fullscreen .CodeMirror-scroll {
+  min-height: 0;
+  max-height: none;
+}
+.lab-ide.is-fullscreen .lab-ide-out {
+  max-height: none;
+  min-height: 0;
+  height: 100%;
 }
 .lab-ide-out {
   margin: 0;
@@ -1263,12 +1350,25 @@ body.tutor-open { overflow: hidden; }
     min-height: 168px;
     font-size: 16px; /* keep ≥16px to avoid iOS input zoom */
   }
+  .lab-ide .CodeMirror {
+    font-size: 16px; /* avoid iOS focus zoom */
+    min-height: 168px;
+  }
+  .lab-ide .CodeMirror-scroll {
+    min-height: 168px;
+    max-height: min(48vh, 360px);
+  }
   .lab-ide-actions {
     width: 100%;
+    flex-wrap: wrap;
   }
   .lab-ide-run,
-  .lab-ide-reset {
-    flex: 1;
+  .lab-ide-reset,
+  .lab-ide-fs {
+    flex: 1 1 30%;
     min-height: 44px;
+  }
+  .lab-ide.is-fullscreen {
+    grid-template-rows: auto auto minmax(0, 1fr) auto minmax(90px, 28vh);
   }
 }
