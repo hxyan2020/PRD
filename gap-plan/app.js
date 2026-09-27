@@ -159,6 +159,12 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
+function formatText(value) {
+  return window.SixHoursFormulas?.formatCourseText
+    ? window.SixHoursFormulas.formatCourseText(value)
+    : escapeHtml(value);
+}
+
 function pathTags(week) {
   const labels = [
     ...week.paths.map((id) => PATH_LABEL[id] || id),
@@ -175,7 +181,7 @@ function pathTags(week) {
 }
 
 function renderList(items) {
-  return `<ol class="steps">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>`;
+  return `<ol class="steps">${items.map((item) => `<li>${formatText(item)}</li>`).join("")}</ol>`;
 }
 
 function renderCourseware(week) {
@@ -194,12 +200,12 @@ function renderCourseware(week) {
     `<div class="viz-mount" data-viz-week="${week.n}" data-viz-slot="${slot}" aria-label="Interactive diagram"></div>`;
   const lessons = week.lessons
     .map((lesson, index) => {
-      const body = lesson.body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
+      const body = lesson.body.map((paragraph) => `<p>${formatText(paragraph)}</p>`).join("");
       const example = lesson.example
         ? `<div class="example">
             <p class="example-label">Worked example · ${escapeHtml(lesson.example.title)}</p>
-            <p>${escapeHtml(lesson.example.story)}</p>
-            <p class="takeaway"><strong>Takeaway.</strong> ${escapeHtml(lesson.example.takeaway)}</p>
+            <p>${formatText(lesson.example.story)}</p>
+            <p class="takeaway"><strong>Takeaway.</strong> ${formatText(lesson.example.takeaway)}</p>
           </div>`
         : "";
       // slot 0 = after goal; lessons start at slot 1
@@ -212,6 +218,7 @@ function renderCourseware(week) {
     })
     .join("");
   const labSlot = 1 + (week.lessons ? week.lessons.length : 0);
+  const formulaPanel = window.SixHoursFormulas?.renderFormulaPanel?.(week.n) || "";
   const lenses = week.pathLenses
     ? `<section class="block path-lenses">
         <h3>Path lenses this week</h3>
@@ -220,7 +227,7 @@ function renderCourseware(week) {
           ${Object.entries(week.pathLenses)
             .map(
               ([id, text]) =>
-                `<li><span class="tag">${escapeHtml(PATH_LABEL[id] || id)}</span><span>${escapeHtml(text)}</span></li>`
+                `<li><span class="tag">${escapeHtml(PATH_LABEL[id] || id)}</span><span>${formatText(text)}</span></li>`
             )
             .join("")}
         </ul>
@@ -229,8 +236,8 @@ function renderCourseware(week) {
   const lab = week.lab
     ? `<section class="block lab-block">
         <h3>Lab · do the work</h3>
-        <p><strong>Goal.</strong> ${escapeHtml(week.lab.goal)}</p>
-        <p><strong>Why this lab.</strong> ${escapeHtml(week.lab.why)}</p>
+        <p><strong>Goal.</strong> ${formatText(week.lab.goal)}</p>
+        <p><strong>Why this lab.</strong> ${formatText(week.lab.why)}</p>
         <p class="block-label">Steps</p>
         ${renderList(week.lab.steps)}
         <p class="block-label">What good looks like</p>
@@ -242,28 +249,29 @@ function renderCourseware(week) {
   const write = week.writeGuide
     ? `<section class="block">
         <h3>Write</h3>
-        <p>${escapeHtml(week.writeGuide.prompt)}</p>
+        <p>${formatText(week.writeGuide.prompt)}</p>
         <p class="block-label">Cover these points</p>
         ${renderList(week.writeGuide.structure)}
-        <p><strong>Done when.</strong> ${escapeHtml(week.writeGuide.goodLooksLike)}</p>
+        <p><strong>Done when.</strong> ${formatText(week.writeGuide.goodLooksLike)}</p>
       </section>`
     : "";
   const industry = week.industryGuide
     ? `<section class="block">
         <h3>Industry connection</h3>
-        <p>${escapeHtml(week.industryGuide.prompt)}</p>
+        <p>${formatText(week.industryGuide.prompt)}</p>
         <p class="block-label">Use this script</p>
         ${renderList(week.industryGuide.script)}
-        <p><strong>Log after.</strong> ${escapeHtml(week.industryGuide.log)}</p>
+        <p><strong>Log after.</strong> ${formatText(week.industryGuide.log)}</p>
       </section>`
     : "";
   return `<div class="courseware">
       <section class="block goal">
         <h3>This week’s goal</h3>
-        <p>${escapeHtml(week.goal)}</p>
-        <p class="big-idea">${escapeHtml(week.bigIdea)}</p>
+        <p>${formatText(week.goal)}</p>
+        <p class="big-idea">${formatText(week.bigIdea)}</p>
         ${vizSlot(0)}
       </section>
+      ${formulaPanel}
       <section class="block">
         <h3>Six-hour budget</h3>
         <ol class="steps">${timeBudget}</ol>
@@ -490,6 +498,7 @@ function render(pulse) {
   else renderProgress();
   window.SixHoursLabIde?.bindLabIde?.(app);
   window.SixHoursViz?.bindViz?.(app);
+  window.SixHoursFormulas?.typeset?.(app);
 }
 
 function setChecked(week, index, value) {
