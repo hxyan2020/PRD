@@ -3,6 +3,7 @@ import {
   FACTORY_EXTRAS,
   descriptionHtml,
   factoryTerms,
+  galleryFor,
   logisticsFor,
   priceTiers,
   retailTarget,
@@ -31,7 +32,9 @@ export function buildFactoryListing(
   const factory = signal.factory[0];
   const { retail, compare } = retailTarget(signal);
   const copy = descriptionHtml(signal, extras);
-  const imageUrls = [...new Set([...(live?.images ?? []), signal.image, ...extras.gallery])].slice(0, 6);
+  const imageUrls = galleryFor(slug, signal.image).concat(live?.images ?? []).filter(
+    (url, i, all) => all.indexOf(url) === i,
+  ).slice(0, 8);
   const images: SourcedImage[] = imageUrls.map((url, idx) => ({
     path: url,
     alt: `${signal.name} ${idx + 1}`,

@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CATALOG_AS_OF, getProduct, getProducts } from "@/lib/catalog";
@@ -10,7 +9,8 @@ import { Sparkline } from "@/components/Sparkline";
 import { GenerateButton } from "@/components/GenerateButton";
 import { FulfillmentChips } from "@/components/FulfillmentChips";
 import { PriceZoneBar } from "@/components/PriceZoneBar";
-import { logisticsFor } from "@/lib/factory-packs";
+import { ProductGallery } from "@/components/ProductGallery";
+import { galleryFor, logisticsFor } from "@/lib/factory-packs";
 
 export function generateStaticParams() {
   return getProducts().map((p) => ({ slug: p.slug }));
@@ -22,6 +22,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!product) notFound();
   const factory = product.factory[0];
   const logistics = logisticsFor(product.slug);
+  const gallery = galleryFor(product.slug, product.image);
 
   return (
     <article className="space-y-10">
@@ -30,9 +31,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </Link>
 
       <header className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="relative min-h-[280px] overflow-hidden rounded-3xl border border-white/10">
-          <Image src={product.image} alt={product.imageAlt} fill className="object-cover" priority />
-        </div>
+        <ProductGallery images={gallery} alt={product.imageAlt} />
         <div className="flex flex-col">
           <p className="kicker">{product.category}</p>
           <h1 className="mt-2 font-serif text-5xl leading-tight">{product.name}</h1>

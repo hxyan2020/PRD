@@ -42,7 +42,7 @@ describe("generate listing pipeline", () => {
   it("builds a factory pack without Node I/O for the static desk", () => {
     const product = buildFactoryListing("rack-wardrobe");
     expect(product.id).toBe("rack-wardrobe");
-    expect(product.images.length).toBeGreaterThan(0);
+    expect(product.images.length).toBeGreaterThanOrEqual(6);
     expect(product.images[0].path.startsWith("https://")).toBe(true);
     expect(product.specifications.length).toBeGreaterThan(3);
     expect(product.retailPriceUsd).toBeGreaterThan(product.factoryPriceUsd);
