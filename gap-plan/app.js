@@ -195,7 +195,7 @@ function renderCourseware(week) {
     })
     .join("");
   const lab = week.lab
-    ? `<section class="block">
+    ? `<section class="block lab-block">
         <h3>Lab · do the work</h3>
         <p><strong>Goal.</strong> ${escapeHtml(week.lab.goal)}</p>
         <p><strong>Why this lab.</strong> ${escapeHtml(week.lab.why)}</p>
@@ -203,6 +203,7 @@ function renderCourseware(week) {
         ${renderList(week.lab.steps)}
         <p class="block-label">What good looks like</p>
         ${renderList(week.lab.expected)}
+        <div class="lab-ide" data-lab-ide="${week.n}"></div>
       </section>`
     : "";
   const write = week.writeGuide
@@ -436,6 +437,7 @@ function render(pulse) {
   else if (state.view === "paths") renderPaths();
   else if (state.view === "notebook") renderNotebook();
   else renderProgress();
+  window.SixHoursLabIde?.bindLabIde?.(app);
 }
 
 function setChecked(week, index, value) {
