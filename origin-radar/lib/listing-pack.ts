@@ -1,4 +1,5 @@
 import { getProduct } from "./catalog";
+import { primaryFactoryHref } from "./factory-links";
 import {
   FACTORY_EXTRAS,
   descriptionHtml,
@@ -47,7 +48,7 @@ export function buildFactoryListing(
     signalSlug: signal.slug,
     status: "ready",
     sourcePlatform: "1688",
-    sourceUrl: live?.url ?? factory.searchUrl,
+    sourceUrl: live?.url ?? primaryFactoryHref(signal),
     sourceOfferId: live?.offerId ?? extras.offerId,
     liveFetch: Boolean(live),
     title: signal.name,

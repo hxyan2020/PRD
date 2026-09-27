@@ -46,6 +46,9 @@ describe("generate listing pipeline", () => {
     expect(product.images[0].path.startsWith("https://")).toBe(true);
     expect(product.specifications.length).toBeGreaterThan(3);
     expect(product.retailPriceUsd).toBeGreaterThan(product.factoryPriceUsd);
+    expect(product.vendor).toMatch(/Linxin/i);
+    expect(product.sourceUrl).toContain("selloffer");
+    expect(product.sourceUrl).not.toContain("detail.1688.com");
   });
 
   it("rejects path traversal for sourced images", () => {

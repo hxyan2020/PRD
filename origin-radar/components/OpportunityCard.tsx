@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ScoredProduct } from "@/lib/types";
 import { compact, pct, usd } from "@/lib/format";
-import { logisticsFor } from "@/lib/factory-packs";
+import { FACTORY_EXTRAS, logisticsFor } from "@/lib/factory-packs";
 import { RegionPills } from "./RegionPills";
 import { ScoreRing } from "./ScoreRing";
 import { GenerateButton } from "./GenerateButton";
@@ -15,6 +15,7 @@ export function OpportunityCard({ product }: { product: ScoredProduct }) {
   const gap = product.whitespaceRegions.length > 0;
   const zone = product.priceZones.find((z) => z.region === product.bestRegion) ?? product.priceZones[0];
   const log = logisticsFor(product.slug);
+  const mill = FACTORY_EXTRAS[product.slug];
 
   return (
     <article className="panel group flex flex-col overflow-hidden transition hover:-translate-y-0.5 hover:border-rust/40">
@@ -39,9 +40,12 @@ export function OpportunityCard({ product }: { product: ScoredProduct }) {
       <div className="flex flex-1 flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
           <Link href={`/products/${product.slug}`}>
-            <p className="kicker">{product.category}</p>
+            <p className="kicker">{mill?.vendor ?? product.category}</p>
             <h2 className="mt-1 font-serif text-2xl leading-tight">{product.name}</h2>
-            <p className="mt-1 font-mono text-xs text-mist">{product.nameZh}</p>
+            <p className="mt-1 font-mono text-xs text-mist">
+              {product.nameZh}
+              {mill?.vendorZh ? ` · ${mill.vendorZh}` : ""}
+            </p>
           </Link>
           <ScoreRing score={product.score.total} />
         </div>

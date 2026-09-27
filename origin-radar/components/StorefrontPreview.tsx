@@ -52,7 +52,7 @@ export function StorefrontPreview({ product }: { product: SourcedProduct }) {
             </div>
           </div>
           <div>
-            <p className="kicker">{product.productType}</p>
+            <p className="kicker">{product.vendor}</p>
             <h1 className="mt-2 font-serif text-4xl">{product.title}</h1>
             <p className="mt-2 text-mist">{product.titleZh}</p>
             <p className="mt-6 font-serif text-4xl text-signal">{usd(product.retailPriceUsd)}</p>

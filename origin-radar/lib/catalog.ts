@@ -1,4 +1,6 @@
 import { products } from "./catalog-data";
+import { FACTORY_EXTRAS } from "./factory-packs";
+import { attachFactorySearchUrls } from "./factory-links";
 import { toScoredProduct } from "./scoring";
 import type { RegionId, ScoredProduct } from "./types";
 
@@ -8,9 +10,18 @@ let cache: ScoredProduct[] | null = null;
 
 export function getProducts(): ScoredProduct[] {
   if (!cache) {
-    cache = products.map(toScoredProduct).sort((a, b) => b.score.total - a.score.total);
+    cache = products
+      .map((p) => attachFactorySearchUrls(toScoredProduct(p)))
+      .sort((a, b) => b.score.total - a.score.total);
   }
   return cache;
+}
+
+/** Other shortlisted mill SKUs in the same category. */
+export function relatedProducts(slug: string): ScoredProduct[] {
+  const product = getProduct(slug);
+  if (!product) return [];
+  return getProducts().filter((p) => p.slug !== slug && p.category === product.category);
 }
 
 export function getProduct(slug: string): ScoredProduct | undefined {
@@ -35,7 +46,9 @@ export function filterProducts(opts: {
   let list = getProducts().filter((p) => {
     if (category !== "all" && p.category !== category) return false;
     if (q) {
-      const hay = `${p.name} ${p.nameZh} ${p.category} ${p.tags.join(" ")} ${p.summary}`.toLowerCase();
+      const mill = FACTORY_EXTRAS[p.slug];
+      const hay =
+        `${p.name} ${p.nameZh} ${p.category} ${mill?.vendor ?? ""} ${mill?.vendorZh ?? ""} ${p.tags.join(" ")} ${p.summary}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     if (region !== "all") {

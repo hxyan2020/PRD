@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ScoredProduct } from "@/lib/types";
 import { pct, usd } from "@/lib/format";
-import { logisticsFor } from "@/lib/factory-packs";
+import { FACTORY_EXTRAS, logisticsFor } from "@/lib/factory-packs";
 import { DeskButtons } from "./DeskButtons";
 import { FulfillmentChips } from "./FulfillmentChips";
 import { GenerateButton } from "./GenerateButton";
@@ -96,6 +96,7 @@ function QueueRow({
 }) {
   const zone = product.priceZones.find((z) => z.region === product.bestRegion) ?? product.priceZones[0];
   const log = logisticsFor(product.slug);
+  const mill = FACTORY_EXTRAS[product.slug];
   return (
     <article className="panel grid gap-4 p-4 md:grid-cols-[140px_1fr] md:p-5">
       <Link href={`/products/${product.slug}`} className="relative h-28 overflow-hidden rounded-xl md:h-full">
@@ -106,12 +107,15 @@ function QueueRow({
           <div>
             <p className="kicker">
               {index != null ? `#${index} · ` : ""}
-              {product.category}
+              {mill?.vendor ?? product.category}
             </p>
             <Link href={`/products/${product.slug}`}>
               <h2 className="font-serif text-2xl leading-tight">{product.name}</h2>
             </Link>
-            <p className="font-mono text-xs text-mist">{product.nameZh}</p>
+            <p className="font-mono text-xs text-mist">
+              {product.nameZh}
+              {mill?.vendorZh ? ` · ${mill.vendorZh}` : ""}
+            </p>
           </div>
           <ScoreRing score={product.score.total} />
         </div>

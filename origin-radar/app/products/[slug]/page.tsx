@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CATALOG_AS_OF, getProduct, getProducts } from "@/lib/catalog";
-import { compact, cny, pct, searchHref, usd } from "@/lib/format";
+import { CATALOG_AS_OF, getProduct, getProducts, relatedProducts } from "@/lib/catalog";
+import { compact, cny, pct, usd } from "@/lib/format";
 import { HeatmapGrid } from "@/components/HeatmapGrid";
 import { MarketTable } from "@/components/MarketTable";
 import { ScoreRing } from "@/components/ScoreRing";
@@ -10,7 +10,9 @@ import { GenerateButton } from "@/components/GenerateButton";
 import { FulfillmentChips } from "@/components/FulfillmentChips";
 import { PriceZoneBar } from "@/components/PriceZoneBar";
 import { ProductGallery } from "@/components/ProductGallery";
-import { galleryFor, logisticsFor } from "@/lib/factory-packs";
+import { FactoryListingLinks } from "@/components/FactoryListingLinks";
+import { RelatedSignals } from "@/components/RelatedSignals";
+import { FACTORY_EXTRAS, galleryFor, logisticsFor } from "@/lib/factory-packs";
 
 export function generateStaticParams() {
   return getProducts().map((p) => ({ slug: p.slug }));
@@ -23,6 +25,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const factory = product.factory[0];
   const logistics = logisticsFor(product.slug);
   const gallery = galleryFor(product.slug, product.image);
+  const mill = FACTORY_EXTRAS[product.slug];
+  const siblings = relatedProducts(product.slug);
 
   return (
     <article className="space-y-10">
@@ -33,9 +37,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <header className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
         <ProductGallery images={gallery} alt={product.imageAlt} />
         <div className="flex flex-col">
-          <p className="kicker">{product.category}</p>
+          <p className="kicker">{mill?.vendor ?? product.category}</p>
           <h1 className="mt-2 font-serif text-5xl leading-tight">{product.name}</h1>
-          <p className="mt-2 font-mono text-sm text-mist">{product.nameZh}</p>
+          <p className="mt-2 font-mono text-sm text-mist">
+            {product.nameZh}
+            {mill?.vendorZh ? ` · ${mill.vendorZh}` : ""}
+          </p>
           <p className="mt-4 text-base leading-relaxed text-paper/80">{product.summary}</p>
           <p className="mt-4 rounded-2xl border border-rust/30 bg-rust/10 p-4 text-sm leading-relaxed">
             {product.whyNow}
@@ -60,16 +67,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </div>
             </div>
           </div>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-start gap-3">
             <GenerateButton slug={product.slug} />
-            <a
-              href={searchHref(product)}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex rounded-full border border-white/15 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-mist hover:text-paper"
-            >
-              Open factory listings
-            </a>
+            <FactoryListingLinks product={product} />
           </div>
           <div className="mt-6">
             <FulfillmentChips logistics={logistics} />
@@ -133,8 +133,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </table>
         </div>
         <p className="mt-3 text-sm text-mist">
-          Primary 1688 price {usd(factory.unitPriceUsd)} from {compact(factory.supplierCount)}{" "}
-          suppliers ({compact(factory.verifiedFactories)} verified factories).
+          Primary 1688 price {usd(factory.unitPriceUsd)} from {mill?.vendor ?? factory.cluster} ·{" "}
+          {compact(factory.supplierCount)} suppliers ({compact(factory.verifiedFactories)} verified
+          factories). Open factory listings searches this mill’s SKU — not the generic category.
         </p>
       </section>
 
@@ -189,6 +190,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </section>
+
+      <RelatedSignals category={product.category} products={siblings} />
 
       <section>
         <HeatmapGrid products={getProducts()} initialSlug={product.slug} />

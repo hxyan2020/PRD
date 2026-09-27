@@ -1,3 +1,4 @@
+import { primaryFactoryHref } from "./factory-links";
 import type { GapStatus, RegionId, ScoredProduct } from "./types";
 import { REGION_LABEL } from "./types";
 
@@ -50,7 +51,7 @@ export function productHref(slug: string): string {
   return `/products/${slug}`;
 }
 
+/** Primary outbound factory CTA: 1688 selloffer for this mill’s SKU. */
 export function searchHref(product: ScoredProduct): string {
-  const source = product.factory.find((f) => f.platform === "1688") ?? product.factory[0];
-  return source?.searchUrl ?? "#";
+  return primaryFactoryHref(product);
 }
