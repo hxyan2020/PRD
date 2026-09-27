@@ -25,9 +25,87 @@ const state = {
 };
 
 const app = document.querySelector("#app");
+const chipsShell = document.querySelector("#chips-shell");
 const chips = document.querySelector("#chips");
+const chipsPrev = document.querySelector("#chips-prev");
+const chipsNext = document.querySelector("#chips-next");
 const toast = document.querySelector("#toast");
 let toastTimer = 0;
+let chipsScrollBound = false;
+
+function updateChipsScrollState() {
+  if (!chips || chipsShell?.hidden) return;
+  const maxScroll = Math.max(0, chips.scrollWidth - chips.clientWidth);
+  const left = chips.scrollLeft;
+  const canLeft = left > 2;
+  const canRight = left < maxScroll - 2;
+  chips.classList.toggle("can-scroll-left", canLeft);
+  chips.classList.toggle("can-scroll-right", canRight);
+  if (chipsPrev) {
+    chipsPrev.hidden = maxScroll <= 2;
+    chipsPrev.disabled = !canLeft;
+  }
+  if (chipsNext) {
+    chipsNext.hidden = maxScroll <= 2;
+    chipsNext.disabled = !canRight;
+  }
+}
+
+function bindChipsScroll() {
+  if (!chips || chipsScrollBound) return;
+  chipsScrollBound = true;
+  chips.addEventListener("scroll", updateChipsScrollState, { passive: true });
+  chips.addEventListener(
+    "wheel",
+    (event) => {
+      if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+      if (chips.scrollWidth <= chips.clientWidth + 2) return;
+      event.preventDefault();
+      chips.scrollLeft += event.deltaY;
+      updateChipsScrollState();
+    },
+    { passive: false }
+  );
+  let drag = null;
+  let suppressChipClick = false;
+  chips.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    drag = { id: event.pointerId, x: event.clientX, left: chips.scrollLeft, moved: false };
+  });
+  chips.addEventListener("pointermove", (event) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    const dx = event.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < 4) return;
+    drag.moved = true;
+    chips.setPointerCapture?.(event.pointerId);
+    chips.scrollLeft = drag.left - dx;
+    updateChipsScrollState();
+  });
+  const endDrag = (event) => {
+    if (!drag || event.pointerId !== drag.id) return;
+    if (drag.moved) suppressChipClick = true;
+    drag = null;
+  };
+  chips.addEventListener("pointerup", endDrag);
+  chips.addEventListener("pointercancel", endDrag);
+  chips.addEventListener(
+    "click",
+    (event) => {
+      if (!suppressChipClick) return;
+      suppressChipClick = false;
+      event.preventDefault();
+      event.stopPropagation();
+    },
+    true
+  );
+  window.addEventListener("resize", updateChipsScrollState);
+  chipsPrev?.addEventListener("click", () => {
+    chips.scrollBy({ left: -Math.max(160, chips.clientWidth * 0.7), behavior: "smooth" });
+  });
+  chipsNext?.addEventListener("click", () => {
+    chips.scrollBy({ left: Math.max(160, chips.clientWidth * 0.7), behavior: "smooth" });
+  });
+}
 
 function load() {
   try {
@@ -140,14 +218,17 @@ function renderChips() {
   chips.innerHTML = items
     .map(
       ([id, label]) =>
-        `<button type="button" data-filter="${id}" class="${id === state.filter ? "is-on" : ""}"${
-          state.view === "plan" ? "" : " hidden"
-        }>${label}</button>`
+        `<button type="button" data-filter="${id}" class="${id === state.filter ? "is-on" : ""}">${label}</button>`
     )
     .join("");
-  chips.hidden = state.view !== "plan";
+  const onPlan = state.view === "plan";
+  if (chipsShell) chipsShell.hidden = !onPlan;
+  chips.hidden = !onPlan;
+  bindChipsScroll();
   requestAnimationFrame(() => {
-    chips.querySelector(".is-on")?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+    chips.querySelector(".is-on")?.scrollIntoView({ inline: "nearest", block: "nearest", behavior: "smooth" });
+    updateChipsScrollState();
+    requestAnimationFrame(updateChipsScrollState);
   });
 }
 
@@ -677,7 +758,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=20260927d");
+    const response = await fetch("plan.json?v=20260927e");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);

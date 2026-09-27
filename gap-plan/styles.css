@@ -53,7 +53,7 @@ button, summary, label, a { touch-action: manipulation; }
 img, svg, video, canvas { max-width: 100%; height: auto; }
 pre, code, textarea { max-width: 100%; }
 
-.top, .dock, .chips, main { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.top, .dock, .chips-shell, main { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
 .top { padding-top: calc(18px + var(--safe-t)); }
 .build-stamp {
   margin: 0 0 10px;
@@ -122,28 +122,67 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
 }
 .bar.pulse > span { box-shadow: 0 0 0 3px var(--soft); }
 
-.chips {
+.chips-shell {
   position: sticky;
   top: 64px;
   z-index: 4;
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory;
-  scroll-padding-inline: 16px;
-  -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
-  padding-top: 6px;
-  padding-bottom: 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px;
   margin-bottom: 2px;
   background: color-mix(in srgb, var(--bg) 94%, transparent);
   backdrop-filter: blur(10px);
-  scrollbar-width: none;
-  mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 18px), transparent);
 }
-.chips::-webkit-scrollbar { display: none; }
+.chips-shell[hidden] { display: none !important; }
+.chips-nav {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.chips-nav[hidden] { display: none !important; }
+.chips-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.chips {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 8px;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  padding: 6px 2px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 55%, var(--track)) transparent;
+}
+.chips::-webkit-scrollbar { height: 5px; }
+.chips::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent) 55%, var(--track));
+  border-radius: 999px;
+}
+.chips.can-scroll-left {
+  mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 100%);
+}
+.chips.can-scroll-right {
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 16px), transparent);
+}
+.chips.can-scroll-left.can-scroll-right {
+  mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent);
+}
 .chips button, .tabbar button, .text-btn, .finish {
   font: inherit;
   border: 0;
@@ -159,6 +198,8 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
   border: 1px solid var(--line);
   scroll-snap-align: start;
   white-space: nowrap;
+  /* Override global button touch-action so finger swipes can pan the row */
+  touch-action: pan-x;
 }
 .chips button.is-on, .tabbar button.is-on {
   background: var(--accent);
@@ -829,8 +870,16 @@ body.tutor-open { overflow: hidden; }
   }
   .dock-pct { font-size: 24px; }
   .dock-sub { font-size: 12px; margin-top: 6px; }
-  .chips {
+  .chips-shell {
     top: 56px;
+    gap: 2px;
+  }
+  .chips-nav {
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+  }
+  .chips {
     gap: 6px;
     padding-top: 4px;
     padding-bottom: 8px;
