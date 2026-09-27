@@ -252,7 +252,7 @@ function renderPlan() {
     return week.paths.includes(state.filter);
   });
   const intro = `<article class="note">
-      <p>Open a week for the full courseware: plain-English lessons, a worked example, lab steps, a write-up, and an industry ask. Check every box, or tap Finish week. The bar moves only then. Progress stays in this browser.</p>
+      <p>Open a week for the full courseware. Select any text to show an AI button, then open the tutor for a clearer explanation and follow-up questions. Check every box, or tap Finish week. Progress stays in this browser.</p>
       <details>
         <summary>What this 156 hours is for</summary>
         <p>${escapeHtml(state.plan.stance)}</p>
@@ -517,6 +517,19 @@ document.body.addEventListener("change", (event) => {
   const week = state.plan.weeks.find((item) => item.n === weekNumber);
   setChecked(week, index, box.checked);
 });
+
+window.SixHours = {
+  getPlan: () => state.plan,
+  getOpenWeek: () => {
+    if (!state.plan) return null;
+    const open = [...state.open];
+    if (open.length) {
+      const newest = open[open.length - 1];
+      return state.plan.weeks.find((week) => week.n === newest) || null;
+    }
+    return state.plan.weeks.find((week) => week.n === currentWeekNumber()) || null;
+  },
+};
 
 async function main() {
   try {
