@@ -33,8 +33,16 @@ const toast = document.querySelector("#toast");
 let toastTimer = 0;
 let chipsScrollBound = false;
 
+function syncStickyOffsets() {
+  const dock = document.querySelector(".dock");
+  if (!dock || !chipsShell || chipsShell.hidden) return;
+  const height = Math.ceil(dock.getBoundingClientRect().height);
+  chipsShell.style.top = `${Math.max(0, height)}px`;
+}
+
 function updateChipsScrollState() {
   if (!chips || chipsShell?.hidden) return;
+  syncStickyOffsets();
   const maxScroll = Math.max(0, chips.scrollWidth - chips.clientWidth);
   const left = chips.scrollLeft;
   const canLeft = left > 2;
@@ -98,7 +106,10 @@ function bindChipsScroll() {
     },
     true
   );
-  window.addEventListener("resize", updateChipsScrollState);
+  window.addEventListener("resize", () => {
+    syncStickyOffsets();
+    updateChipsScrollState();
+  });
 }
 
 function scrollChipsBy(direction) {
@@ -379,8 +390,12 @@ function renderPlan() {
     if (state.filter === "network") return true;
     return week.paths.includes(state.filter);
   });
-  const intro = `<article class="note">
-      <p>Open a week for the full courseware. Select any text — including tutor answers — to show <strong>AI</strong> or <strong>Note</strong>. Notes keep a timestamp and an auto caption. Check every box, or tap Finish week. Progress stays in this browser.</p>
+  const intro = `<article class="note note-compact">
+      <p class="note-lead">Open a week for courseware. Select text for <strong>AI</strong> or <strong>Note</strong>. Check boxes or Finish week — progress stays in this browser.</p>
+      <details>
+        <summary>How study works</summary>
+        <p>Select any text — including tutor answers — to show <strong>AI</strong> or <strong>Note</strong>. Notes keep a timestamp and an auto caption. Check every box, or tap Finish week.</p>
+      </details>
       <details>
         <summary>What this 156 hours is for</summary>
         <p>${escapeHtml(state.plan.stance)}</p>
@@ -444,9 +459,10 @@ function renderPaths() {
           .join("")}
       </div>
     </div>`;
+  const syllabusOpen = window.matchMedia("(min-width: 720px)").matches ? " open" : "";
   app.innerHTML = `<h2 class="section">${pathCount} paths, two backups</h2>
-    <article class="note">
-      <p>Showing <strong>${pathCount}</strong> career paths from <code>plan.json</code> (including <strong>Tokenised assets</strong> and <strong>Murex risk tech</strong>). Two foundations reuse this same 26-week calendar. Filter a path to see its weeks — nothing is added to the timeline.</p>
+    <article class="note note-compact">
+      <p class="note-lead"><strong>${pathCount}</strong> career paths on one 26-week calendar (incl. Tokenised + Murex). Filter a path to see its weeks — nothing is added to the timeline.</p>
     </article>
     ${pathRail}
     <div class="stack">
@@ -458,22 +474,25 @@ function renderPaths() {
           const issues = Array.isArray(path.practitionerIssues) ? path.practitionerIssues : [];
           return `<article class="path-card" id="path-${escapeHtml(path.id)}">
             <h3>${escapeHtml(path.name)}</h3>
-            <p class="role">${escapeHtml(path.role)} · fit ${path.fitNow} now, ${path.fitAfter} if the gaps close</p>
-            <p>${escapeHtml(path.summary)}</p>
+            <p class="role">${escapeHtml(path.role)} · fit ${path.fitNow}→${path.fitAfter}</p>
+            <p class="path-summary">${escapeHtml(path.summary)}</p>
+            <div class="path-actions path-actions-top"><button type="button" class="text-btn" data-jump="${path.id}">Show these weeks</button></div>
+            <div class="fit-row"><span>Study progress</span><span>${done}/${scoped.length} weeks · ${pct(done, scoped.length)}%</span></div>
+            <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${scoped.length}" aria-valuenow="${done}" aria-label="${escapeHtml(path.name)} study progress"><span style="width:${pct(done, scoped.length)}%"></span></div>
             ${
               trends.length
-                ? `<section class="path-syllabus" aria-label="Sector trends">
-              <h4>Latest developments &amp; trends</h4>
+                ? `<details class="path-syllabus"${syllabusOpen}>
+              <summary>Latest developments &amp; trends</summary>
               <ul class="path-syllabus-list">${trends
                 .map((item) => `<li>${escapeHtml(item)}</li>`)
                 .join("")}</ul>
-            </section>`
+            </details>`
                 : ""
             }
             ${
               issues.length
-                ? `<section class="path-syllabus" aria-label="Practitioner issues and roadmap">
-              <h4>Top practitioner issues &amp; roadmap</h4>
+                ? `<details class="path-syllabus"${syllabusOpen}>
+              <summary>Top practitioner issues &amp; roadmap</summary>
               <ul class="path-issue-list">${issues
                 .map(
                   (item) => `<li>
@@ -482,22 +501,22 @@ function renderPaths() {
                 </li>`
                 )
                 .join("")}</ul>
-            </section>`
+            </details>`
                 : ""
             }
-            <div class="fit-row"><span>Study progress</span><span>${done}/${scoped.length} weeks · ${pct(done, scoped.length)}%</span></div>
-            <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${scoped.length}" aria-valuenow="${done}" aria-label="${escapeHtml(path.name)} study progress"><span style="width:${pct(done, scoped.length)}%"></span></div>
-            <div class="fit-row"><span>Analysis fit, after two years at Vantage</span><span>${path.fitNow}/100</span></div>
-            <div class="bar" aria-hidden="true"><span style="width:${path.fitNow}%"></span></div>
-            <div class="fit-row"><span>Target fit after the gaps in this plan</span><span>${path.fitAfter}/100</span></div>
-            <div class="bar" aria-hidden="true"><span style="width:${path.fitAfter}%"></span></div>
-            ${path.gaps
-              .map(
-                (gap) =>
-                  `<div class="gap"><strong>${escapeHtml(gap.name)}</strong><span class="gap-weeks">Weeks ${gap.weeks.join(", ")}</span></div>`
-              )
-              .join("")}
-            <div class="path-actions"><button type="button" class="text-btn" data-jump="${path.id}">Show these weeks</button></div>
+            <details class="path-syllabus path-fit-details">
+              <summary>Fit scores &amp; study gaps</summary>
+              <div class="fit-row"><span>Analysis fit now</span><span>${path.fitNow}/100</span></div>
+              <div class="bar" aria-hidden="true"><span style="width:${path.fitNow}%"></span></div>
+              <div class="fit-row"><span>Target fit after this plan</span><span>${path.fitAfter}/100</span></div>
+              <div class="bar" aria-hidden="true"><span style="width:${path.fitAfter}%"></span></div>
+              ${path.gaps
+                .map(
+                  (gap) =>
+                    `<div class="gap"><strong>${escapeHtml(gap.name)}</strong><span class="gap-weeks">Weeks ${gap.weeks.join(", ")}</span></div>`
+                )
+                .join("")}
+            </details>
           </article>`;
         })
         .join("")}
@@ -792,7 +811,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=20260927g");
+    const response = await fetch("plan.json?v=20260927h");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);
