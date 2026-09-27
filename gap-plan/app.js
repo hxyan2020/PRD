@@ -7,7 +7,7 @@ const PATH_LABEL = {
   quant: "Quant risk",
   airisk: "AI risk",
   multi: "Multi-asset",
-  pb: "Prime brokerage",
+  pb: "Buy-side risk",
   tpm: "Trading product",
   tokenised: "Tokenised assets",
   murex: "Murex risk tech",
@@ -650,7 +650,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json");
+    const response = await fetch("plan.json?v=buy-side-portfolio");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);
