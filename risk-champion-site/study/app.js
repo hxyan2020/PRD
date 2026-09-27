@@ -146,6 +146,9 @@ function renderChips() {
     )
     .join("");
   chips.hidden = state.view !== "plan";
+  requestAnimationFrame(() => {
+    chips.querySelector(".is-on")?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+  });
 }
 
 function escapeHtml(value) {
@@ -157,10 +160,18 @@ function escapeHtml(value) {
 }
 
 function pathTags(week) {
-  const tags = week.paths.map((id) => `<span class="tag">${PATH_LABEL[id]}</span>`);
-  if (week.aiEngineer) tags.push('<span class="tag">AI engineer</span>');
-  tags.push('<span class="tag">Industry</span>');
-  return tags.join("");
+  const labels = [
+    ...week.paths.map((id) => PATH_LABEL[id] || id),
+    ...(week.aiEngineer ? ["AI engineer"] : []),
+    "Industry",
+  ];
+  const narrow = window.matchMedia("(max-width: 640px)").matches;
+  const shown = narrow ? labels.slice(0, 3) : labels;
+  const extra = labels.length - shown.length;
+  return (
+    shown.map((label) => `<span class="tag">${escapeHtml(label)}</span>`).join("") +
+    (extra > 0 ? `<span class="tag tag-more" title="${escapeHtml(labels.slice(3).join(", "))}">+${extra}</span>` : "")
+  );
 }
 
 function renderList(items) {
