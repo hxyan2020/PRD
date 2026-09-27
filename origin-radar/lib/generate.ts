@@ -64,6 +64,12 @@ export async function generateListing(
     let i = 0;
     for (const url of imageUrls) {
       i += 1;
+      const local = url.startsWith("/") && !url.startsWith("//");
+      if (local) {
+        images.push({ path: url, alt: `${signal.name} ${i}`, sourceUrl: url, position: images.length + 1 });
+        steps.push({ step: `Image ${i}`, ok: true, detail: `Factory listing photo ${url}` });
+        continue;
+      }
       const rel = `/sourced/${signal.slug}/${String(i).padStart(2, "0")}.jpg`;
       const dest = path.join(publicDir, rel.replace(/^\//, ""));
       try {
@@ -83,7 +89,7 @@ export async function generateListing(
     }
     product = { ...product, images };
   } else {
-    steps.push({ step: "Images", ok: true, detail: "Remote URLs only (download skipped)." });
+    steps.push({ step: "Images", ok: true, detail: "Factory listing photos (download skipped)." });
   }
 
   const saved = upsertSourced(product);

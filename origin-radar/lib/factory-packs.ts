@@ -2,24 +2,16 @@ import type { ScoredProduct } from "./types";
 import type { FactoryExtras, FactoryLogistics, FactoryTerms, PriceTier } from "./storefront-types";
 import { charmPrice, zoneForRegion } from "./price-zone";
 
-const u = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1400&q=80`;
+function factoryPhotos(slug: string, count = 8): string[] {
+  return Array.from({ length: count }, (_, i) => `/factory/${slug}/${String(i + 1).padStart(2, "0")}.jpg`);
+}
 
 export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
   "rack-wardrobe": {
     offerId: "768812045001",
     vendor: "Foshan Linxin Storage Co., Ltd.",
     vendorZh: "佛山市林鑫收纳制品有限公司",
-    gallery: [
-      u("photo-1558997519-83ea9252edf8"),
-      u("photo-1551488831-00ddcb6c6bd3"),
-      u("photo-1558769132-cb1aea458c5e"),
-      u("photo-1489987707025-afc232f7ea0f"),
-      u("photo-1441986300917-64674bd600d8"),
-      u("photo-1445205170230-053b83016050"),
-      u("photo-1595428774223-ef52624120d2"),
-      u("photo-1523381210434-271e8be1f52b"),
-    ],
+    gallery: factoryPhotos("rack-wardrobe"),
     specs: [
       { name: "Frame", value: "20×40mm powder-coated steel" },
       { name: "Curtain", value: "Blackout polyester, machine washable" },
@@ -45,14 +37,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045002",
     vendor: "Zhongshan Enamel Homeware Factory",
     vendorZh: "中山市珐琅家居制品厂",
-    gallery: [
-      u("photo-1556912173-46c336c7fd55"),
-      u("photo-1556911220-e15b29be8c8f"),
-      u("photo-1556909114-f6e7ad7d3136"),
-      u("photo-1600585152220-90363fe7e115"),
-      u("photo-1556911220-bff31c812dba"),
-      u("photo-1616486338812-3dadae4b4ace"),
-    ],
+    gallery: factoryPhotos("enamel-pegboard"),
     specs: [
       { name: "Panel", value: "0.6 mm steel + porcelain enamel" },
       { name: "Magnet", value: "Compatible with N35+ neodymium hooks" },
@@ -77,14 +62,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045003",
     vendor: "Zhaoqing Lifting Hardware Co.",
     vendorZh: "肇庆市升降五金有限公司",
-    gallery: [
-      u("photo-1610557892470-55d9e80c0bce"),
-      u("photo-1581578731548-c64695cc6952"),
-      u("photo-1545173168-9f1947eebb7f"),
-      u("photo-1582735689369-4fe89db7114c"),
-      u("photo-1517677208171-0bc6725a3e60"),
-      u("photo-1616628188550-808682f3926d"),
-    ],
+    gallery: factoryPhotos("retractable-laundry-rack"),
     specs: [
       { name: "Type", value: "Hand-crank ceiling mount (motor optional)" },
       { name: "Bars", value: "4 stainless rods, 1.5 m" },
@@ -108,14 +86,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045004",
     vendor: "Guangzhou Baiyun Cosmetics OEM",
     vendorZh: "广州白云区化妆品OEM厂",
-    gallery: [
-      u("photo-1620916566398-39f1143ab7be"),
-      u("photo-1556228720-195a672e8a03"),
-      u("photo-1556228578-8c89e6adf883"),
-      u("photo-1571875257727-256c39da42af"),
-      u("photo-1612817288484-6f916006741a"),
-      u("photo-1571781926291-c477ebfd024b"),
-    ],
+    gallery: factoryPhotos("pdrn-ampoule"),
     specs: [
       { name: "INCI highlight", value: "Sodium DNA (PDRN analog), panthenol, HA" },
       { name: "Fill", value: "2 ml × 10 vials / box" },
@@ -139,14 +110,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045005",
     vendor: "Taizhou Aqua Fold Plastics",
     vendorZh: "台州市折叠加倍塑胶厂",
-    gallery: [
-      u("photo-1507652313519-d4e9174996dd"),
-      u("photo-1584622650111-993a426fbf0a"),
-      u("photo-1600566753190-17f0baa2a6c3"),
-      u("photo-1620626011761-996317b8d101"),
-      u("photo-1590496793929-36417d3117de"),
-      u("photo-1564540583246-934409427776"),
-    ],
+    gallery: factoryPhotos("foldable-tpu-bathtub"),
     specs: [
       { name: "Material", value: "Food-grade TPU inner + Oxford shell" },
       { name: "Capacity", value: "Adult soak ~300 L" },
@@ -170,14 +134,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045006",
     vendor: "Shenzhen Heatwell Electronics",
     vendorZh: "深圳市热维电子有限公司",
-    gallery: [
-      u("photo-1544161515-4ab6ce6db874"),
-      u("photo-1600334129128-685c5582fd35"),
-      u("photo-1540555700478-4be289fbecef"),
-      u("photo-1515377905703-c4788e51af15"),
-      u("photo-1515378791036-0648a3ef77b2"),
-      u("photo-1518611012118-696072aa579a"),
-    ],
+    gallery: factoryPhotos("sauna-blanket"),
     specs: [
       { name: "Heat", value: "Far infrared carbon fiber, 3 zones" },
       { name: "Temp", value: "35–75 °C, auto shutoff" },
@@ -201,14 +158,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045007",
     vendor: "Shenzhen Bao'an Beauty Devices",
     vendorZh: "深圳宝安美容仪器厂",
-    gallery: [
-      u("photo-1487412947147-5cebf100ffc2"),
-      u("photo-1598440947619-2c35fc9aa908"),
-      u("photo-1556228578-8c89e6adf883"),
-      u("photo-1522335789203-aabd1fc54bc9"),
-      u("photo-1522337360788-8b13dee7a37e"),
-      u("photo-1571781926291-c477ebfd024b"),
-    ],
+    gallery: factoryPhotos("blue-light-wand"),
     specs: [
       { name: "LED", value: "415 nm blue, 10 min session timer" },
       { name: "Battery", value: "USB-C, 90 min runtime" },
@@ -231,14 +181,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045008",
     vendor: "Wenzhou Bath Heat Electrical",
     vendorZh: "温州浴热电器有限公司",
-    gallery: [
-      u("photo-1552321554-5fefe8c9ef14"),
-      u("photo-1600566752355-35792bedcfea"),
-      u("photo-1584622781564-1d987f7333c1"),
-      u("photo-1600566753086-00f18fb6b3ea"),
-      u("photo-1620626011761-996317b8d101"),
-      u("photo-1564540583246-934409427776"),
-    ],
+    gallery: factoryPhotos("heated-towel-rail"),
     specs: [
       { name: "Power", value: "Plug-in 80 W, IPX4" },
       { name: "Bars", value: "5 round, 304 stainless or powder coat" },
@@ -262,14 +205,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045009",
     vendor: "Shenzhen Huaqiang Imaging OEM",
     vendorZh: "深圳华强北影像OEM",
-    gallery: [
-      u("photo-1526170375885-4d8ecf77b99f"),
-      u("photo-1502920917128-1aa500764cbd"),
-      u("photo-1516035069371-29a1b244cc32"),
-      u("photo-1495707902641-75cac588d2e9"),
-      u("photo-1510127034890-ba27508e9f1c"),
-      u("photo-1571019614242-c5c5dee9f50b"),
-    ],
+    gallery: factoryPhotos("neck-pov-camera"),
     specs: [
       { name: "Sensor", value: "1080p 30fps CMOS" },
       { name: "Wear", value: "Necklace + magnetic clip" },
@@ -293,14 +229,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045010",
     vendor: "Linyi Foldware Plastics",
     vendorZh: "临沂市折叠塑业",
-    gallery: [
-      u("photo-1478131143081-80f7f84ca84d"),
-      u("photo-1504280390367-361c6d9f38f4"),
-      u("photo-1504851149312-7a075b496cc7"),
-      u("photo-1537905569824-f89f14cceb68"),
-      u("photo-1441974231531-c6227db76b6e"),
-      u("photo-1581578731548-c64695cc6952"),
-    ],
+    gallery: factoryPhotos("collapsible-shower-bucket"),
     specs: [
       { name: "Material", value: "PP + TPE seal, insulated jacket optional" },
       { name: "Volume", value: "40 L soak / camp wash" },
@@ -323,14 +252,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045011",
     vendor: "Yongkang Hydrogen Drinkware",
     vendorZh: "永康市富氢杯厂",
-    gallery: [
-      u("photo-1602143407151-7111542de6e8"),
-      u("photo-1523362628745-0c100150b504"),
-      u("photo-1571019613454-1cb2f99b2d8b"),
-      u("photo-1548839140-29a749e1cf4d"),
-      u("photo-1612817288484-6f916006741a"),
-      u("photo-1571781926291-c477ebfd024b"),
-    ],
+    gallery: factoryPhotos("hydrogen-bottle"),
     specs: [
       { name: "Tech", value: "SPE/PEM electrolysis" },
       { name: "Capacity", value: "420 ml Tritan" },
@@ -353,14 +275,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045012",
     vendor: "Zhongshan Mini Appliance Co.",
     vendorZh: "中山小家电有限公司",
-    gallery: [
-      u("photo-1559339352-11d035aa65de"),
-      u("photo-1570197788417-0e82375c9371"),
-      u("photo-1546173159-315724a31696"),
-      u("photo-1610970881699-44a5587cabec"),
-      u("photo-1571019614242-c5c5dee9f50b"),
-      u("photo-1518611012118-696072aa579a"),
-    ],
+    gallery: factoryPhotos("portable-blender-cup"),
     specs: [
       { name: "Motor", value: "USB-C, 6 blades" },
       { name: "Jar", value: "350 ml Tritan" },
@@ -382,14 +297,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045013",
     vendor: "Zhongshan Lighting Cluster OEM",
     vendorZh: "中山灯具产业带OEM",
-    gallery: [
-      u("photo-1513506003901-1e6a229e2d15"),
-      u("photo-1540932239986-30128078f3c5"),
-      u("photo-1497366811353-6870744d04b2"),
-      u("photo-1524758631624-e2822e304c36"),
-      u("photo-1497366216548-37526070297c"),
-      u("photo-1519710164239-da123dc03ef4"),
-    ],
+    gallery: factoryPhotos("charging-desk-lamp"),
     specs: [
       { name: "Light", value: "LED 3000–5000 K, 3 steps" },
       { name: "Charge", value: "15 W Qi + USB-A" },
@@ -411,14 +319,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045014",
     vendor: "Yiwu Beauty Tools Factory",
     vendorZh: "义乌美妆工具厂",
-    gallery: [
-      u("photo-1522337660859-02fbefca4702"),
-      u("photo-1487412947147-5cebf100ffc2"),
-      u("photo-1596462502278-27bfdc403348"),
-      u("photo-1522335789203-aabd1fc54bc9"),
-      u("photo-1522337360788-8b13dee7a37e"),
-      u("photo-1515377905703-c4788e51af15"),
-    ],
+    gallery: factoryPhotos("heated-eyelash-curler"),
     specs: [
       { name: "Heat", value: "PTC, auto-off 8 s" },
       { name: "Power", value: "USB-C" },
@@ -440,14 +341,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045015",
     vendor: "Taizhou Smart Sanitary OEM",
     vendorZh: "台州智能卫浴OEM",
-    gallery: [
-      u("photo-1584622650111-993a426fbf0a"),
-      u("photo-1552321554-5fefe8c9ef14"),
-      u("photo-1600566753086-00f18fb6b3ea"),
-      u("photo-1620626011761-996317b8d101"),
-      u("photo-1590496793929-36417d3117de"),
-      u("photo-1564540583246-934409427776"),
-    ],
+    gallery: factoryPhotos("smart-bidet-seat"),
     specs: [
       { name: "Fit", value: "Elongated / round adapter plates" },
       { name: "Functions", value: "Rear/front wash, warm seat, night light" },
@@ -470,14 +364,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045016",
     vendor: "Wenzhou Renter Hardware",
     vendorZh: "温州免打孔卫浴五金",
-    gallery: [
-      u("photo-1600566752355-35792bedcfea"),
-      u("photo-1552321554-5fefe8c9ef14"),
-      u("photo-1584622781564-1d987f7333c1"),
-      u("photo-1600566753086-00f18fb6b3ea"),
-      u("photo-1620626011761-996317b8d101"),
-      u("photo-1564540583246-934409427776"),
-    ],
+    gallery: factoryPhotos("no-drill-bath-hardware"),
     specs: [
       { name: "Set", value: "Towel bar, paper holder, 2 hooks, shelf" },
       { name: "Fixing", value: "VHB adhesive + vacuum backup" },
@@ -501,16 +388,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045017",
     vendor: "Foshan Linxin Storage Co., Ltd.",
     vendorZh: "佛山市林鑫收纳制品有限公司",
-    gallery: [
-      u("photo-1551488831-00ddcb6c6bd3"),
-      u("photo-1558769132-cb1aea458c5e"),
-      u("photo-1489987707025-afc232f7ea0f"),
-      u("photo-1441986300917-64674bd600d8"),
-      u("photo-1445205170230-053b83016050"),
-      u("photo-1490481651871-ab68de25d43d"),
-      u("photo-1560243563-062bfc001d68"),
-      u("photo-1523381210434-271e8be1f52b"),
-    ],
+    gallery: factoryPhotos("rolling-garment-rack"),
     specs: [
       { name: "Frame", value: "19 mm powder-coated steel, lockable casters" },
       { name: "Height", value: "160 cm adjustable" },
@@ -536,14 +414,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045018",
     vendor: "Cixi Hole Board Hardware",
     vendorZh: "慈溪市洞洞板五金厂",
-    gallery: [
-      u("photo-1530124566582-a618bc2615dc"),
-      u("photo-1556911220-e15b29be8c8f"),
-      u("photo-1556909114-f6e7ad7d3136"),
-      u("photo-1600585152220-90363fe7e115"),
-      u("photo-1556911220-bff31c812dba"),
-      u("photo-1581092160562-40aa08e78837"),
-    ],
+    gallery: factoryPhotos("steel-pegboard"),
     specs: [
       { name: "Panel", value: "0.8 mm powder-coated steel, 5 mm holes" },
       { name: "Pitch", value: "25 mm grid" },
@@ -568,14 +439,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045019",
     vendor: "Yongkang Polar Fold Plastics",
     vendorZh: "永康市极冻折叠塑胶厂",
-    gallery: [
-      u("photo-1517836357463-d25dfeac3438"),
-      u("photo-1534438327276-14e5300c3a48"),
-      u("photo-1571902943202-507ec2618e8f"),
-      u("photo-1540555700478-4be289fbecef"),
-      u("photo-1600334129128-685c5582fd35"),
-      u("photo-1507652313519-d4e9174996dd"),
-    ],
+    gallery: factoryPhotos("ice-bath-tub"),
     specs: [
       { name: "Material", value: "1.2 mm insulated TPU + Oxford, lid included" },
       { name: "Capacity", value: "Ice plunge ~350 L" },
@@ -600,14 +464,7 @@ export const FACTORY_EXTRAS: Record<string, FactoryExtras> = {
     offerId: "768812045020",
     vendor: "Guangzhou Baiyun Cosmetics OEM",
     vendorZh: "广州白云区化妆品OEM厂",
-    gallery: [
-      u("photo-1596755389378-c31d21fd1273"),
-      u("photo-1616394584738-fc6e612e71b9"),
-      u("photo-1570172619644-dfd03ed5d881"),
-      u("photo-1556228720-195a672e8a03"),
-      u("photo-1571875257727-256c39da42af"),
-      u("photo-1515377905703-c4788e51af15"),
-    ],
+    gallery: factoryPhotos("pdrn-sheet-mask"),
     specs: [
       { name: "INCI highlight", value: "Sodium DNA (PDRN analog), panthenol, HA" },
       { name: "Fill", value: "25 ml essence / sheet, 10 sheets / box" },

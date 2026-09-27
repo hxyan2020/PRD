@@ -9,11 +9,8 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
   },
-  images: isStatic
-    ? { unoptimized: true }
-    : {
-        remotePatterns: [{ protocol: "https", hostname: "images.unsplash.com" }],
-      },
+  // Factory listing JPEGs are vendored in /public/factory; skip the optimizer.
+  images: { unoptimized: true },
   ...(!isStatic
     ? {
         serverExternalPackages: ["node:sqlite"],

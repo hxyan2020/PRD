@@ -1,7 +1,7 @@
 import type { ProductInput } from "./types";
 
-const u = (id: string, extra = "") =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1400&q=80${extra}`;
+const factoryImg = (slug: string, n = 1) =>
+  `/factory/${slug}/${String(n).padStart(2, "0")}.jpg`;
 
 function spark(values: number[]): number[] {
   return values;
@@ -19,8 +19,8 @@ export const products: ProductInput[] = [
       "Industrial metal clothing rack hidden behind a floor-length curtain. Xiaohongshu’s breakout small-apartment storage system — still rare as a finished kit in North America and Europe.",
     whyNow:
       "Xiaohongshu notes on 货架衣柜 jumped +1,584% in H1 2026. Foshan Linxin Storage ships the curtain-kit SKU from the same mill that makes open rolling garment racks — we list that sibling separately. Western marketplaces still sell open IKEA-style rails, not the curtain-kit.",
-    image: u("photo-1558997519-83ea9252edf8"),
-    imageAlt: "Linxin curtain-front wardrobe kit — closed closet cabinet SKU",
+    image: factoryImg("rack-wardrobe"),
+    imageAlt: "Linxin curtain-front wardrobe kit — factory listing photo",
     tags: ["whitespace", "xiaohongshu", "rental"],
     factory: [
       {
@@ -176,8 +176,8 @@ export const products: ProductInput[] = [
       "Full-height magnetic enamel panels that turn a wall into tool-free storage. Exploding on Xiaohongshu as the ‘Lego wall’; almost no branded kits in NA/EU general ecommerce.",
     whyNow:
       "Xiaohongshu new notes on enamel panels +266% in 2026. Zhongshan Enamel Homeware already sells 1.2×2.4m sheets under $18 FOB. Perforated steel 洞洞板 is a different mill SKU — sourced separately from Cixi. Western ‘pegboard’ search is still hobby pegboard, not enamel magnetic systems.",
-    image: u("photo-1556912173-46c336c7fd55"),
-    imageAlt: "Organized wall storage in a compact kitchen",
+    image: factoryImg("enamel-pegboard"),
+    imageAlt: "Zhongshan magnetic enamel wall panel — factory listing photo",
     tags: ["whitespace", "xiaohongshu", "diy"],
     factory: [
       {
@@ -317,8 +317,8 @@ export const products: ProductInput[] = [
       "Hand-crank or motorized ceiling drying rack — default in Chinese and SEA apartments, still a curiosity in North American laundry rooms.",
     whyNow:
       "1688 Guangdong cluster ships these as a staple SKU. Google queries for ‘ceiling clothes drying rack’ are breakout in dense US/UK cities while Amazon listings remain sparse and expensive.",
-    image: u("photo-1610557892470-55d9e80c0bce"),
-    imageAlt: "Laundry hanging in a compact utility room",
+    image: factoryImg("retractable-laundry-rack"),
+    imageAlt: "Zhaoqing ceiling-mount drying rack — factory listing photo",
     tags: ["whitespace", "evergreen", "apartment"],
     factory: [
       {
@@ -454,8 +454,8 @@ export const products: ProductInput[] = [
       "Korean-origin salmon-DNA skincare moving from clinic to drugstore. Search is hot in Singapore and starting to break in the US and UK — China OEM can undercut Korean prestige bottles.",
     whyNow:
       "Google Trends shows a synchronized climb for PDRN cream/toner/mask into 2026. The sheet-mask SKU from the same Baiyun mill is listed separately. SEA already sells ampoules; NA/EU prestige shelves are expensive and thin at the $18–28 mass price.",
-    image: u("photo-1620916566398-39f1143ab7be"),
-    imageAlt: "Dropper skincare bottles on a linen surface",
+    image: factoryImg("pdrn-ampoule"),
+    imageAlt: "Baiyun PDRN repair ampoule vials — factory listing photo",
     tags: ["beauty", "search-breakout", "oem"],
     factory: [
       {
@@ -605,8 +605,8 @@ export const products: ProductInput[] = [
       "TPU portable bathtub that packs to 15cm. Factory $18–30, Amazon soaking-tub comps $80–110. Cold-plunge and small-space bathing are both pulling search up.",
     whyNow:
       "Chinese cross-border sellers already treat this as a 2026 independent-site blue ocean. Soak winter stays on this SKU; the dedicated ice-bath tub is listed separately from Yongkang Polar Fold.",
-    image: u("photo-1507652313519-d4e9174996dd"),
-    imageAlt: "Freestanding soaking tub in a bright bathroom",
+    image: factoryImg("foldable-tpu-bathtub"),
+    imageAlt: "Taizhou foldable TPU soaking tub — factory listing photo",
     tags: ["wellness", "high-margin", "visual"],
     factory: [
       {
@@ -735,8 +735,8 @@ export const products: ProductInput[] = [
       "At-home infrared blanket. Factory $30–60, Western retail $100–200. Search climbed from late 2024 and is holding through 2026.",
     whyNow:
       "Wellness TikTok keeps the demo format alive (zip-up, sweat, weigh-in). Competition is real, but landed-to-retail gap is still one of the widest in the catalog.",
-    image: u("photo-1544161515-4ab6ce6db874"),
-    imageAlt: "Spa treatment room with warm lighting",
+    image: factoryImg("sauna-blanket"),
+    imageAlt: "Heatwell infrared sauna blanket — factory listing photo",
     tags: ["wellness", "high-margin", "tiktok"],
     factory: [
       {
@@ -878,8 +878,8 @@ export const products: ProductInput[] = [
       "Handheld blue-light device riding the same curve as red-light therapy, from a much lower competition base. Factory $10–25, retail $50–120.",
     whyNow:
       "Red light is saturated. Search for blue-light acne devices is compounding without the same listing density — a classic ‘second-wave device’ window.",
-    image: u("photo-1487412947147-5cebf100ffc2"),
-    imageAlt: "Facial beauty device on a bathroom shelf",
+    image: factoryImg("blue-light-wand"),
+    imageAlt: "Bao'an blue-light acne wand — factory listing photo",
     tags: ["beauty", "devices", "second-wave"],
     factory: [
       {
@@ -999,8 +999,8 @@ export const products: ProductInput[] = [
       "Plug-in or hardwired heated towel rack. Amazon sweet spot $80–100 with reported gross over 67%. Factory cost sits far below that.",
     whyNow:
       "Hugo 2026 bathroom category notes heated rails as a comfort SKU with health/comfort demand, not just hardware. Easy demo video: wet towel in, dry towel out.",
-    image: u("photo-1552321554-5fefe8c9ef14"),
-    imageAlt: "Modern bathroom with towel storage",
+    image: factoryImg("heated-towel-rail"),
+    imageAlt: "Wenzhou electric heated towel rail — factory listing photo",
     tags: ["bathroom", "high-margin", "evergreen"],
     factory: [
       {
@@ -1120,8 +1120,8 @@ export const products: ProductInput[] = [
       "Hands-free necklace / magnetic POV cam for cooking, cycling, parenting. Search has climbed with short-form video; listings have not caught the form factor.",
     whyNow:
       "TikTok and YouTube shorts made first-person footage a default language. Cheap Shenzhen CMOS modules make a $29–49 retail possible against GoPro’s $200+.",
-    image: u("photo-1526170375885-4d8ecf77b99f"),
-    imageAlt: "Compact action camera on a desk",
+    image: factoryImg("neck-pov-camera"),
+    imageAlt: "Huaqiang necklace POV camera — factory listing photo",
     tags: ["electronics", "creators", "rising-search"],
     factory: [
       {
@@ -1257,8 +1257,8 @@ export const products: ProductInput[] = [
       "Fold-flat soaking bucket for dorms, camping, and apartments without a tub. 1688 wholesale around ¥15; Western camping retail has not really noticed.",
     whyNow:
       "1688 back-to-school 2026 listings are everywhere. Combines camping, dorm, and ‘no bathtub’ urban living — three channels, one SKU.",
-    image: u("photo-1478131143081-80f7f84ca84d"),
-    imageAlt: "Camping wash setup outdoors",
+    image: factoryImg("collapsible-shower-bucket"),
+    imageAlt: "Linyi collapsible soak bucket — factory listing photo",
     tags: ["whitespace", "low-ticket", "camping"],
     factory: [
       {
@@ -1384,8 +1384,8 @@ export const products: ProductInput[] = [
       "Electrolysis bottle that markets hydrogen-rich water. Steady Google climb, strong demo video, but Amazon is filling in fast.",
     whyNow:
       "Still a 50%+ gap to factory, but social is at peak not rising. Treat as a cashflow SKU, not a whitespace bet.",
-    image: u("photo-1602143407151-7111542de6e8"),
-    imageAlt: "Reusable water bottle on a wooden table",
+    image: factoryImg("hydrogen-bottle"),
+    imageAlt: "Yongkang hydrogen water bottle — factory listing photo",
     tags: ["wellness", "crowded", "tiktok"],
     factory: [
       {
@@ -1505,8 +1505,8 @@ export const products: ProductInput[] = [
       "The 2025–26 TikTok Shop appliance breakout. Chinese brands already proved product-market fit; NA and EU Amazon are now crowded.",
     whyNow:
       "Useful as a cautionary card: factory is still cheap, but social is at peak and marketplaces are stacked. Better as a bundle add-on than a hero.",
-    image: u("photo-1559339352-11d035aa65de"),
-    imageAlt: "Fresh smoothie in a glass jar",
+    image: factoryImg("portable-blender-cup"),
+    imageAlt: "Zhongshan USB blender cup — factory listing photo",
     tags: ["saturated", "tiktok", "impulse"],
     factory: [
       {
@@ -1626,8 +1626,8 @@ export const products: ProductInput[] = [
       "Lamp + Qi charger. Search spikes around back-to-school and gifting. Easy factory SKU, moderate competition.",
     whyNow:
       "Not a whitespace story. Reliable seasonal cashflow with 45–55% gap if you win a colorway or USB-C GaN version.",
-    image: u("photo-1513506003901-1e6a229e2d15"),
-    imageAlt: "Minimal desk lamp on a workspace",
+    image: factoryImg("charging-desk-lamp"),
+    imageAlt: "Zhongshan wireless charging desk lamp — factory listing photo",
     tags: ["seasonal", "home-office", "evergreen"],
     factory: [
       {
@@ -1740,8 +1740,8 @@ export const products: ProductInput[] = [
       "USB-C heated lash curler that replaced the metal squeeze tool on TikTok beauty. Strong visual demo, mid competition, easy shipping.",
     whyNow:
       "Beauty-tool TikTok still converts. Factory sub-$6, retail $18–32. Not whitespace, but operationally simple with healthy gap.",
-    image: u("photo-1522337660859-02fbefca4702"),
-    imageAlt: "Makeup tools arranged on a vanity",
+    image: factoryImg("heated-eyelash-curler"),
+    imageAlt: "Yiwu heated eyelash curler — factory listing photo",
     tags: ["beauty", "impulse", "tiktok"],
     factory: [
       {
@@ -1861,8 +1861,8 @@ export const products: ProductInput[] = [
       "Drop-in bidet lid for existing toilets. $80–150 Western retail, 40%+ reported profit, factory far lower. Heavy, certified, and already known — but still under-penetrated in NA rentals.",
     whyNow:
       "Hugo 2026 bathroom internal notes call out easy-install lids for EU/US rentals. Not sexy social, high intent search.",
-    image: u("photo-1584622650111-993a426fbf0a"),
-    imageAlt: "Modern bathroom interior",
+    image: factoryImg("smart-bidet-seat"),
+    imageAlt: "Taizhou slim electric bidet seat — factory listing photo",
     tags: ["bathroom", "high-intent", "cert-heavy"],
     factory: [
       {
@@ -1992,8 +1992,8 @@ export const products: ProductInput[] = [
       "Adhesive/vacuum matte-black towel bar + hooks + paper holder as a matching set. TikTok rental content loves it; Amazon sells pieces, not cohesive kits at factory prices.",
     whyNow:
       "Social demo is 15 seconds. Factory sets under $8. Matching-finish kits are thinner than single hooks, especially in EU design-led marketplaces.",
-    image: u("photo-1600566752355-35792bedcfea"),
-    imageAlt: "Matte black bathroom fixtures",
+    image: factoryImg("no-drill-bath-hardware"),
+    imageAlt: "Wenzhou no-drill bath hardware set — factory listing photo",
     tags: ["rental", "impulse", "kit"],
     factory: [
       {
@@ -2113,8 +2113,8 @@ export const products: ProductInput[] = [
       "Open powder-coated rolling clothing rack from the same Foshan mill as the curtain-front wardrobe. The IKEA-style rail Western shops already know — factory-direct, not a finished closet kit.",
     whyNow:
       "Linxin’s open 落地衣帽架 is the volume SKU behind 货架衣柜. Amazon/Wayfair already sell similar rails; the mill page is still the cheapest OEM path for private-label color and casters. Shortlisted as a separate product so factory listings hit this SKU, not the curtain kit.",
-    image: u("photo-1551488831-00ddcb6c6bd3"),
-    imageAlt: "Linxin rolling metal garment rack with jackets and a hat",
+    image: factoryImg("rolling-garment-rack"),
+    imageAlt: "Linxin rolling metal garment rack — factory listing photo",
     tags: ["home-storage", "oem", "evergreen"],
     factory: [
       {
@@ -2255,8 +2255,8 @@ export const products: ProductInput[] = [
       "Powder-coated steel hole-board with hook kits — the Xiaohongshu 洞洞板, not the Zhongshan enamel magnetic sheet. Workshop and kitchen wall storage from Cixi hardware mills.",
     whyNow:
       "洞洞板 search on 1688 is a different mill cluster from 珐琅板. Cixi Hole Board Hardware runs 60×90 and 90×120 panels with 5 mm holes; Western listings still mix it with hobby pegboard. Shortlisted next to the enamel SKU so factory CTAs hit this mill.",
-    image: u("photo-1530124566582-a618bc2615dc"),
-    imageAlt: "Cixi steel pegboard wall with hanging tools",
+    image: factoryImg("steel-pegboard"),
+    imageAlt: "Cixi perforated steel pegboard — factory listing photo",
     tags: ["home-storage", "xiaohongshu", "renter"],
     factory: [
       {
@@ -2396,8 +2396,8 @@ export const products: ProductInput[] = [
       "Insulated folding ice-bath from Yongkang Polar Fold — not the Taizhou soak tub. Thicker TPU, drain valve, and a cover built for 3–12 °C plunges in apartments.",
     whyNow:
       "TikTok cold-plunge volume is sitting on the soak-tub SKU. Polar Fold’s 折叠冰浴桶 is the mill that actually quotes ice-bath thickness. Listed separately so factory listings open this mill and this SKU, not the grey soak tub.",
-    image: u("photo-1517836357463-d25dfeac3438"),
-    imageAlt: "Apartment ice-bath training setup — Polar Fold insulated tub SKU",
+    image: factoryImg("ice-bath-tub"),
+    imageAlt: "Polar Fold insulated ice-bath tub — factory listing photo",
     tags: ["wellness", "tiktok", "visual"],
     factory: [
       {
@@ -2537,8 +2537,8 @@ export const products: ProductInput[] = [
       "PDRN-analog sheet mask from Guangzhou Baiyun Cosmetics OEM — the same mill as the ampoule, different fill line. 25 ml essence, private-label pouch, CPNP/FDA on the buyer.",
     whyNow:
       "Google related queries for PDRN cream/toner/mask climbed with the ampoule. Baiyun already runs a 面膜 pouch line; NA/EU still sell Korean prestige sheets at $8–12 each. Shortlisted as its own SKU so factory listings open the mask mill page, not a generic PDRN keyword.",
-    image: u("photo-1596755389378-c31d21fd1273"),
-    imageAlt: "Baiyun PDRN sheet mask on skin — mill pouch SKU",
+    image: factoryImg("pdrn-sheet-mask"),
+    imageAlt: "Baiyun PDRN sheet mask pouch — factory listing photo",
     tags: ["beauty", "search-breakout", "oem"],
     factory: [
       {

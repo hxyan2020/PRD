@@ -43,7 +43,7 @@ describe("generate listing pipeline", () => {
     const product = buildFactoryListing("rack-wardrobe");
     expect(product.id).toBe("rack-wardrobe");
     expect(product.images.length).toBeGreaterThanOrEqual(6);
-    expect(product.images[0].path.startsWith("https://")).toBe(true);
+    expect(product.images[0].path.startsWith("/factory/")).toBe(true);
     expect(product.specifications.length).toBeGreaterThan(3);
     expect(product.retailPriceUsd).toBeGreaterThan(product.factoryPriceUsd);
     expect(product.vendor).toMatch(/Linxin/i);
