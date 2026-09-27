@@ -7,8 +7,10 @@ const PATH_LABEL = {
   quant: "Quant risk",
   airisk: "AI risk",
   multi: "Multi-asset",
-  pb: "Prime brokerage",
+  pb: "Buy-side risk",
   tpm: "Trading product",
+  tokenised: "Tokenised assets",
+  murex: "Murex risk tech",
   aieng: "AI engineer",
   network: "Industry",
 };
@@ -144,6 +146,9 @@ function renderChips() {
     )
     .join("");
   chips.hidden = state.view !== "plan";
+  requestAnimationFrame(() => {
+    chips.querySelector(".is-on")?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+  });
 }
 
 function escapeHtml(value) {
@@ -155,10 +160,18 @@ function escapeHtml(value) {
 }
 
 function pathTags(week) {
-  const tags = week.paths.map((id) => `<span class="tag">${PATH_LABEL[id]}</span>`);
-  if (week.aiEngineer) tags.push('<span class="tag">AI engineer</span>');
-  tags.push('<span class="tag">Industry</span>');
-  return tags.join("");
+  const labels = [
+    ...week.paths.map((id) => PATH_LABEL[id] || id),
+    ...(week.aiEngineer ? ["AI engineer"] : []),
+    "Industry",
+  ];
+  const narrow = window.matchMedia("(max-width: 640px)").matches;
+  const shown = narrow ? labels.slice(0, 3) : labels;
+  const extra = labels.length - shown.length;
+  return (
+    shown.map((label) => `<span class="tag">${escapeHtml(label)}</span>`).join("") +
+    (extra > 0 ? `<span class="tag tag-more" title="${escapeHtml(labels.slice(3).join(", "))}">+${extra}</span>` : "")
+  );
 }
 
 function renderList(items) {
@@ -177,6 +190,8 @@ function renderCourseware(week) {
   const timeBudget = week.sessions
     .map((session) => `<li><strong>${escapeHtml(session.kind)}</strong> · ${session.h.toFixed(1)} h — ${escapeHtml(session.text)}</li>`)
     .join("");
+  const vizSlot = (slot) =>
+    `<div class="viz-mount" data-viz-week="${week.n}" data-viz-slot="${slot}" aria-label="Interactive diagram"></div>`;
   const lessons = week.lessons
     .map((lesson, index) => {
       const body = lesson.body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
@@ -187,15 +202,32 @@ function renderCourseware(week) {
             <p class="takeaway"><strong>Takeaway.</strong> ${escapeHtml(lesson.example.takeaway)}</p>
           </div>`
         : "";
+      // slot 0 = after goal; lessons start at slot 1
       return `<section class="lesson">
           <h3>Lesson ${index + 1}. ${escapeHtml(lesson.title)}</h3>
           ${body}
           ${example}
+          ${vizSlot(index + 1)}
         </section>`;
     })
     .join("");
+  const labSlot = 1 + (week.lessons ? week.lessons.length : 0);
+  const lenses = week.pathLenses
+    ? `<section class="block path-lenses">
+        <h3>Path lenses this week</h3>
+        <p class="block-label">Same six hours — sharper angle if you are on these paths</p>
+        <ul class="lens-list">
+          ${Object.entries(week.pathLenses)
+            .map(
+              ([id, text]) =>
+                `<li><span class="tag">${escapeHtml(PATH_LABEL[id] || id)}</span><span>${escapeHtml(text)}</span></li>`
+            )
+            .join("")}
+        </ul>
+      </section>`
+    : "";
   const lab = week.lab
-    ? `<section class="block">
+    ? `<section class="block lab-block">
         <h3>Lab · do the work</h3>
         <p><strong>Goal.</strong> ${escapeHtml(week.lab.goal)}</p>
         <p><strong>Why this lab.</strong> ${escapeHtml(week.lab.why)}</p>
@@ -203,8 +235,10 @@ function renderCourseware(week) {
         ${renderList(week.lab.steps)}
         <p class="block-label">What good looks like</p>
         ${renderList(week.lab.expected)}
+        ${vizSlot(labSlot)}
+        <div class="lab-ide" data-lab-ide="${week.n}"></div>
       </section>`
-    : "";
+    : `<section class="block">${vizSlot(labSlot)}</section>`;
   const write = week.writeGuide
     ? `<section class="block">
         <h3>Write</h3>
@@ -228,12 +262,14 @@ function renderCourseware(week) {
         <h3>This week’s goal</h3>
         <p>${escapeHtml(week.goal)}</p>
         <p class="big-idea">${escapeHtml(week.bigIdea)}</p>
+        ${vizSlot(0)}
       </section>
       <section class="block">
         <h3>Six-hour budget</h3>
         <ol class="steps">${timeBudget}</ol>
       </section>
       ${lessons}
+      ${lenses}
       ${lab}
       ${write}
       ${industry}
@@ -305,7 +341,11 @@ function renderPlan() {
 }
 
 function renderPaths() {
-  app.innerHTML = `<h2 class="section">Eight paths, two backups</h2>
+  const pathCount = state.plan.paths.length;
+  app.innerHTML = `<h2 class="section">${pathCount} paths, two backups</h2>
+    <article class="note">
+      <p>Showing <strong>${pathCount}</strong> career paths from <code>plan.json</code>. Two foundations reuse this same 26-week calendar: <strong>tokenised / digital-asset institutional risk</strong> and <strong>Murex market &amp; credit risk technology</strong>. Filter a path to see its weeks — nothing is added to the timeline.</p>
+    </article>
     <div class="stack">
       ${state.plan.paths
         .map((path) => {
@@ -436,6 +476,8 @@ function render(pulse) {
   else if (state.view === "paths") renderPaths();
   else if (state.view === "notebook") renderNotebook();
   else renderProgress();
+  window.SixHoursLabIde?.bindLabIde?.(app);
+  window.SixHoursViz?.bindViz?.(app);
 }
 
 function setChecked(week, index, value) {
@@ -613,7 +655,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json");
+    const response = await fetch("plan.json?v=buy-side-portfolio");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);
