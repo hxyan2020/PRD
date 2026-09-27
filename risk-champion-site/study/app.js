@@ -286,6 +286,7 @@ function renderCourseware(week) {
       )
       .join("");
   }
+  const narrow = window.matchMedia("(max-width: 640px)").matches;
   const timeBudget = week.sessions
     .map((session) => `<li><strong>${escapeHtml(session.kind)}</strong> · ${session.h.toFixed(1)} h — ${escapeHtml(session.text)}</li>`)
     .join("");
@@ -301,30 +302,34 @@ function renderCourseware(week) {
             <p class="takeaway"><strong>Takeaway.</strong> ${formatText(lesson.example.takeaway)}</p>
           </div>`
         : "";
-      // slot 0 = after goal; lessons start at slot 1
-      return `<section class="lesson">
-          <h3>Lesson ${index + 1}. ${escapeHtml(lesson.title)}</h3>
-          ${body}
-          ${example}
-          ${vizSlot(index + 1)}
-        </section>`;
+      const openAttr = !narrow || index === 0 ? " open" : "";
+      return `<details class="lesson lesson-fold"${openAttr}>
+          <summary><span class="lesson-fold-title">Lesson ${index + 1}. ${escapeHtml(lesson.title)}</span></summary>
+          <div class="lesson-fold-body">
+            ${body}
+            ${example}
+            ${vizSlot(index + 1)}
+          </div>
+        </details>`;
     })
     .join("");
   const labSlot = 1 + (week.lessons ? week.lessons.length : 0);
   const formulaPanel = window.SixHoursFormulas?.renderFormulaPanel?.(week.n) || "";
   const lenses = week.pathLenses
-    ? `<section class="block path-lenses">
-        <h3>Path lenses this week</h3>
-        <p class="block-label">Same six hours — sharper angle if you are on these paths</p>
-        <ul class="lens-list">
-          ${Object.entries(week.pathLenses)
-            .map(
-              ([id, text]) =>
-                `<li><span class="tag">${escapeHtml(PATH_LABEL[id] || id)}</span><span>${formatText(text)}</span></li>`
-            )
-            .join("")}
-        </ul>
-      </section>`
+    ? `<details class="block path-lenses"${narrow ? "" : " open"}>
+        <summary><span class="lesson-fold-title">Path lenses this week</span></summary>
+        <div class="lesson-fold-body">
+          <p class="block-label">Same six hours — sharper angle if you are on these paths</p>
+          <ul class="lens-list">
+            ${Object.entries(week.pathLenses)
+              .map(
+                ([id, text]) =>
+                  `<li><span class="tag">${escapeHtml(PATH_LABEL[id] || id)}</span><span>${formatText(text)}</span></li>`
+              )
+              .join("")}
+          </ul>
+        </div>
+      </details>`
     : "";
   const lab = week.lab
     ? `<section class="block lab-block" id="lab-week-${week.n}">
@@ -332,44 +337,60 @@ function renderCourseware(week) {
         <p><strong>Goal.</strong> ${formatText(week.lab.goal)}</p>
         <p><strong>Why this lab.</strong> ${formatText(week.lab.why)}</p>
         <p class="lab-ide-jump-wrap"><a class="lab-ide-jump" href="#lab-ide-week-${week.n}">↓ Open live IDE (run code &amp; see results)</a></p>
-        <p class="block-label">Steps</p>
-        ${renderList(week.lab.steps)}
-        <p class="block-label">What good looks like</p>
-        ${renderList(week.lab.expected)}
+        <details class="lab-steps-fold"${narrow ? "" : " open"}>
+          <summary><span class="lesson-fold-title">Steps &amp; what good looks like</span></summary>
+          <div class="lesson-fold-body">
+            <p class="block-label">Steps</p>
+            ${renderList(week.lab.steps)}
+            <p class="block-label">What good looks like</p>
+            ${renderList(week.lab.expected)}
+          </div>
+        </details>
         ${vizSlot(labSlot)}
         <div class="lab-ide" id="lab-ide-week-${week.n}" data-lab-ide="${week.n}"></div>
       </section>`
     : `<section class="block">${vizSlot(labSlot)}</section>`;
   const write = week.writeGuide
-    ? `<section class="block">
-        <h3>Write</h3>
-        <p>${formatText(week.writeGuide.prompt)}</p>
-        <p class="block-label">Cover these points</p>
-        ${renderList(week.writeGuide.structure)}
-        <p><strong>Done when.</strong> ${formatText(week.writeGuide.goodLooksLike)}</p>
-      </section>`
+    ? `<details class="block"${narrow ? "" : " open"}>
+        <summary><span class="lesson-fold-title">Write</span></summary>
+        <div class="lesson-fold-body">
+          <p>${formatText(week.writeGuide.prompt)}</p>
+          <p class="block-label">Cover these points</p>
+          ${renderList(week.writeGuide.structure)}
+          <p><strong>Done when.</strong> ${formatText(week.writeGuide.goodLooksLike)}</p>
+        </div>
+      </details>`
     : "";
   const industry = week.industryGuide
-    ? `<section class="block">
-        <h3>Industry connection</h3>
-        <p>${formatText(week.industryGuide.prompt)}</p>
-        <p class="block-label">Use this script</p>
-        ${renderList(week.industryGuide.script)}
-        <p><strong>Log after.</strong> ${formatText(week.industryGuide.log)}</p>
-      </section>`
+    ? `<details class="block"${narrow ? "" : " open"}>
+        <summary><span class="lesson-fold-title">Industry connection</span></summary>
+        <div class="lesson-fold-body">
+          <p>${formatText(week.industryGuide.prompt)}</p>
+          <p class="block-label">Use this script</p>
+          ${renderList(week.industryGuide.script)}
+          <p><strong>Log after.</strong> ${formatText(week.industryGuide.log)}</p>
+        </div>
+      </details>`
     : "";
+  const courseNav = `<nav class="course-nav" aria-label="Jump in this week">
+      <a href="#goal-week-${week.n}">Goal</a>
+      <a href="#lab-week-${week.n}">Lab</a>
+      <a href="#lab-ide-week-${week.n}">IDE</a>
+      <a href="#checks-week-${week.n}">Checks</a>
+    </nav>`;
   return `<div class="courseware">
-      <section class="block goal">
+      ${courseNav}
+      <section class="block goal" id="goal-week-${week.n}">
         <h3>This week’s goal</h3>
         <p>${formatText(week.goal)}</p>
         <p class="big-idea">${formatText(week.bigIdea)}</p>
         ${vizSlot(0)}
       </section>
       ${formulaPanel}
-      <section class="block">
-        <h3>Six-hour budget</h3>
-        <ol class="steps">${timeBudget}</ol>
-      </section>
+      <details class="block budget-fold"${narrow ? "" : " open"}>
+        <summary><span class="lesson-fold-title">Six-hour budget</span></summary>
+        <div class="lesson-fold-body"><ol class="steps">${timeBudget}</ol></div>
+      </details>
       ${lessons}
       ${lenses}
       ${lab}
@@ -419,15 +440,15 @@ function renderPlan() {
           <p class="meta">${formatRange(state.plan.start, week.n)} · ${escapeHtml(week.block)} · 6 hours · ${partial}/${week.criteria.length} done</p>
           <div class="tags">${pathTags(week)}</div>
           <div class="bar mini" aria-hidden="true"><span style="width:${pct(partial, week.criteria.length)}%"></span></div>
-          <div class="card-actions">
-            <button type="button" class="text-btn" data-toggle="${week.n}">${open ? "Hide courseware" : "Open courseware"}</button>
-            <button type="button" class="finish" data-finish="${week.n}" ${done ? "disabled" : ""}>${done ? "Week finished" : "Finish week"}</button>
+          <div class="card-actions${open ? " is-open" : ""}">
+            <button type="button" class="text-btn" data-toggle="${week.n}">${open ? "Hide" : "Open courseware"}</button>
+            <button type="button" class="finish" data-finish="${week.n}" ${done ? "disabled" : ""}>${done ? "Finished" : "Finish week"}</button>
           </div>
           ${
             open
               ? `<div class="detail">
             ${renderCourseware(week)}
-            <ul class="checks">
+            <ul class="checks" id="checks-week-${week.n}">
               ${week.criteria
                 .map(
                   (criterion, index) => `<li><label>
@@ -624,6 +645,10 @@ function render(pulse) {
   document.querySelectorAll(".tabbar button").forEach((button) => {
     button.classList.toggle("is-on", button.dataset.view === state.view);
   });
+  document.body.classList.toggle(
+    "plan-reading",
+    state.view === "plan" && state.open.size > 0
+  );
   renderChips();
   renderOverall(Boolean(pulse));
   if (state.view === "plan") renderPlan();
@@ -816,7 +841,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=20260927k");
+    const response = await fetch("plan.json?v=20260927m");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);
