@@ -278,7 +278,7 @@ h2.section { margin: 18px 0 8px; font-size: 28px; }
 
 .sel-toolbar {
   position: fixed;
-  z-index: 20;
+  z-index: 50;
   display: flex;
   gap: 6px;
   padding: 4px;
