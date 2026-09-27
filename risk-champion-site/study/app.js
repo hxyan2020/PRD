@@ -342,16 +342,28 @@ function renderPlan() {
 
 function renderPaths() {
   const pathCount = state.plan.paths.length;
+  const pathRail = `<div class="path-rail" role="navigation" aria-label="All ${pathCount} career paths — scroll sideways">
+      <p class="path-rail-hint">Scroll sideways · ${pathCount} paths</p>
+      <div class="path-rail-track">
+        ${state.plan.paths
+          .map(
+            (path, index) =>
+              `<a class="path-rail-item" href="#path-${escapeHtml(path.id)}"><span class="path-rail-num">${index + 1}/${pathCount}</span><span>${escapeHtml(PATH_LABEL[path.id] || path.name)}</span></a>`
+          )
+          .join("")}
+      </div>
+    </div>`;
   app.innerHTML = `<h2 class="section">${pathCount} paths, two backups</h2>
     <article class="note">
-      <p>Showing <strong>${pathCount}</strong> career paths from <code>plan.json</code>. Two foundations reuse this same 26-week calendar: <strong>tokenised / digital-asset institutional risk</strong> and <strong>Murex market &amp; credit risk technology</strong>. Filter a path to see its weeks — nothing is added to the timeline.</p>
+      <p>Showing <strong>${pathCount}</strong> career paths from <code>plan.json</code> (including <strong>Tokenised assets</strong> and <strong>Murex risk tech</strong>). Two foundations reuse this same 26-week calendar. Filter a path to see its weeks — nothing is added to the timeline.</p>
     </article>
+    ${pathRail}
     <div class="stack">
       ${state.plan.paths
         .map((path) => {
           const scoped = weeksFor(path.id);
           const done = scoped.filter(weekDone).length;
-          return `<article class="path-card">
+          return `<article class="path-card" id="path-${escapeHtml(path.id)}">
             <h3>${path.name}</h3>
             <p class="role">${path.role} · fit ${path.fitNow} now, ${path.fitAfter} if the gaps close</p>
             <p>${path.summary}</p>
@@ -655,7 +667,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=buy-side-portfolio");
+    const response = await fetch("plan.json?v=paths-10");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);
