@@ -145,11 +145,102 @@ function renderChips() {
   chips.hidden = state.view !== "plan";
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
 function pathTags(week) {
   const tags = week.paths.map((id) => `<span class="tag">${PATH_LABEL[id]}</span>`);
   if (week.aiEngineer) tags.push('<span class="tag">AI engineer</span>');
   tags.push('<span class="tag">Industry</span>');
   return tags.join("");
+}
+
+function renderList(items) {
+  return `<ol class="steps">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ol>`;
+}
+
+function renderCourseware(week) {
+  if (!week.lessons) {
+    return week.sessions
+      .map(
+        (session) =>
+          `<div class="session"><div class="kind">${escapeHtml(session.kind)}<br>${session.h.toFixed(1)} h</div><div>${escapeHtml(session.text)}</div></div>`
+      )
+      .join("");
+  }
+  const timeBudget = week.sessions
+    .map((session) => `<li><strong>${escapeHtml(session.kind)}</strong> · ${session.h.toFixed(1)} h — ${escapeHtml(session.text)}</li>`)
+    .join("");
+  const lessons = week.lessons
+    .map((lesson, index) => {
+      const body = lesson.body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
+      const example = lesson.example
+        ? `<div class="example">
+            <p class="example-label">Worked example · ${escapeHtml(lesson.example.title)}</p>
+            <p>${escapeHtml(lesson.example.story)}</p>
+            <p class="takeaway"><strong>Takeaway.</strong> ${escapeHtml(lesson.example.takeaway)}</p>
+          </div>`
+        : "";
+      return `<section class="lesson">
+          <h3>Lesson ${index + 1}. ${escapeHtml(lesson.title)}</h3>
+          ${body}
+          ${example}
+        </section>`;
+    })
+    .join("");
+  const lab = week.lab
+    ? `<section class="block">
+        <h3>Lab · do the work</h3>
+        <p><strong>Goal.</strong> ${escapeHtml(week.lab.goal)}</p>
+        <p><strong>Why this lab.</strong> ${escapeHtml(week.lab.why)}</p>
+        <p class="block-label">Steps</p>
+        ${renderList(week.lab.steps)}
+        <p class="block-label">What good looks like</p>
+        ${renderList(week.lab.expected)}
+      </section>`
+    : "";
+  const write = week.writeGuide
+    ? `<section class="block">
+        <h3>Write</h3>
+        <p>${escapeHtml(week.writeGuide.prompt)}</p>
+        <p class="block-label">Cover these points</p>
+        ${renderList(week.writeGuide.structure)}
+        <p><strong>Done when.</strong> ${escapeHtml(week.writeGuide.goodLooksLike)}</p>
+      </section>`
+    : "";
+  const industry = week.industryGuide
+    ? `<section class="block">
+        <h3>Industry connection</h3>
+        <p>${escapeHtml(week.industryGuide.prompt)}</p>
+        <p class="block-label">Use this script</p>
+        ${renderList(week.industryGuide.script)}
+        <p><strong>Log after.</strong> ${escapeHtml(week.industryGuide.log)}</p>
+      </section>`
+    : "";
+  return `<div class="courseware">
+      <section class="block goal">
+        <h3>This week’s goal</h3>
+        <p>${escapeHtml(week.goal)}</p>
+        <p class="big-idea">${escapeHtml(week.bigIdea)}</p>
+      </section>
+      <section class="block">
+        <h3>Six-hour budget</h3>
+        <ol class="steps">${timeBudget}</ol>
+      </section>
+      ${lessons}
+      ${lab}
+      ${write}
+      ${industry}
+      <section class="block">
+        <h3>Mark the week done</h3>
+        <p>Check every box when the evidence exists. The top bar moves only after all three are checked, or when you tap Finish week.</p>
+      </section>
+    </div>`;
 }
 
 function renderPlan() {
@@ -161,12 +252,12 @@ function renderPlan() {
     return week.paths.includes(state.filter);
   });
   const intro = `<article class="note">
-      <p>Check every box in a week, or tap Finish week. The bar at the top moves only then. Progress stays in this browser.</p>
+      <p>Open a week for the full courseware: plain-English lessons, a worked example, lab steps, a write-up, and an industry ask. Check every box, or tap Finish week. The bar moves only then. Progress stays in this browser.</p>
       <details>
         <summary>What this 156 hours is for</summary>
-        <p>${state.plan.stance}</p>
-        <p>${state.plan.hardLimit}</p>
-        <p>${state.plan.privacy}</p>
+        <p>${escapeHtml(state.plan.stance)}</p>
+        <p>${escapeHtml(state.plan.hardLimit)}</p>
+        <p>${escapeHtml(state.plan.privacy)}</p>
       </details>
     </article>`;
   app.innerHTML =
@@ -180,30 +271,25 @@ function renderPlan() {
         return `<article class="card${done ? " is-done" : ""}${week.n === current ? " is-current" : ""}" data-week="${week.n}">
           <p class="week-no">Week ${week.n}${week.n === current ? " · this week" : ""}${done ? " · finished" : ""}</p>
           <div class="card-head">
-            <h2>${week.title}</h2>
+            <h2>${escapeHtml(week.title)}</h2>
           </div>
-          <p class="meta">${formatRange(state.plan.start, week.n)} · ${week.block} · 6 hours · ${partial}/${week.criteria.length} done</p>
+          <p class="meta">${formatRange(state.plan.start, week.n)} · ${escapeHtml(week.block)} · 6 hours · ${partial}/${week.criteria.length} done</p>
           <div class="tags">${pathTags(week)}</div>
           <div class="bar mini" aria-hidden="true"><span style="width:${pct(partial, week.criteria.length)}%"></span></div>
           <div class="card-actions">
-            <button type="button" class="text-btn" data-toggle="${week.n}">${open ? "Hide syllabus" : "Open syllabus"}</button>
+            <button type="button" class="text-btn" data-toggle="${week.n}">${open ? "Hide courseware" : "Open courseware"}</button>
             <button type="button" class="finish" data-finish="${week.n}" ${done ? "disabled" : ""}>${done ? "Week finished" : "Finish week"}</button>
           </div>
           ${
             open
               ? `<div class="detail">
-            ${week.sessions
-              .map(
-                (session) =>
-                  `<div class="session"><div class="kind">${session.kind}<br>${session.h.toFixed(1)} h</div><div>${session.text}</div></div>`
-              )
-              .join("")}
+            ${renderCourseware(week)}
             <ul class="checks">
               ${week.criteria
                 .map(
                   (criterion, index) => `<li><label>
                     <input type="checkbox" data-check="${week.n}:${index}" ${state.checked[key(week, index)] ? "checked" : ""}>
-                    <span>${criterion}</span>
+                    <span>${escapeHtml(criterion)}</span>
                   </label></li>`
                 )
                 .join("")}

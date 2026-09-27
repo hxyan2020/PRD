@@ -154,6 +154,43 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
 .finish[disabled] { opacity: 0.55; }
 .text-btn { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 .detail { margin-top: 12px; display: grid; gap: 10px; }
+.courseware { display: grid; gap: 14px; }
+.block, .lesson, .example {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.block h3, .lesson h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.block p, .lesson p { margin: 0 0 10px; }
+.big-idea {
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--soft);
+}
+.block-label, .example-label {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.steps {
+  margin: 0 0 10px;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 8px;
+}
+.example {
+  margin-top: 4px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--card) 70%, var(--soft));
+}
+.takeaway { margin-bottom: 0 !important; }
 .session {
   display: grid;
   grid-template-columns: 76px 1fr;
