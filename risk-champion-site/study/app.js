@@ -190,6 +190,8 @@ function renderCourseware(week) {
   const timeBudget = week.sessions
     .map((session) => `<li><strong>${escapeHtml(session.kind)}</strong> · ${session.h.toFixed(1)} h — ${escapeHtml(session.text)}</li>`)
     .join("");
+  const vizSlot = (slot) =>
+    `<div class="viz-mount" data-viz-week="${week.n}" data-viz-slot="${slot}" aria-label="Interactive diagram"></div>`;
   const lessons = week.lessons
     .map((lesson, index) => {
       const body = lesson.body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
@@ -200,15 +202,16 @@ function renderCourseware(week) {
             <p class="takeaway"><strong>Takeaway.</strong> ${escapeHtml(lesson.example.takeaway)}</p>
           </div>`
         : "";
+      // slot 0 = after goal; lessons start at slot 1
       return `<section class="lesson">
           <h3>Lesson ${index + 1}. ${escapeHtml(lesson.title)}</h3>
           ${body}
           ${example}
+          ${vizSlot(index + 1)}
         </section>`;
     })
     .join("");
-  const lessonTitlesJson = escapeHtml(JSON.stringify((week.lessons || []).map((l) => l.title)));
-  const viz = `<div class="viz-mount" data-lab-viz="${week.n}" data-lessons="${lessonTitlesJson}"></div>`;
+  const labSlot = 1 + (week.lessons ? week.lessons.length : 0);
   const lenses = week.pathLenses
     ? `<section class="block path-lenses">
         <h3>Path lenses this week</h3>
@@ -232,10 +235,10 @@ function renderCourseware(week) {
         ${renderList(week.lab.steps)}
         <p class="block-label">What good looks like</p>
         ${renderList(week.lab.expected)}
-        ${viz}
+        ${vizSlot(labSlot)}
         <div class="lab-ide" data-lab-ide="${week.n}"></div>
       </section>`
-    : `<section class="block">${viz}</section>`;
+    : `<section class="block">${vizSlot(labSlot)}</section>`;
   const write = week.writeGuide
     ? `<section class="block">
         <h3>Write</h3>
@@ -259,6 +262,7 @@ function renderCourseware(week) {
         <h3>This week’s goal</h3>
         <p>${escapeHtml(week.goal)}</p>
         <p class="big-idea">${escapeHtml(week.bigIdea)}</p>
+        ${vizSlot(0)}
       </section>
       <section class="block">
         <h3>Six-hour budget</h3>
@@ -337,9 +341,10 @@ function renderPlan() {
 }
 
 function renderPaths() {
-  app.innerHTML = `<h2 class="section">Ten paths, two backups</h2>
+  const pathCount = state.plan.paths.length;
+  app.innerHTML = `<h2 class="section">${pathCount} paths, two backups</h2>
     <article class="note">
-      <p>Two foundations reuse this same 26-week calendar: <strong>tokenised / digital-asset institutional risk</strong> and <strong>Murex market &amp; credit risk technology</strong>. Filter a path to see its weeks — nothing is added to the timeline.</p>
+      <p>Showing <strong>${pathCount}</strong> career paths from <code>plan.json</code>. Two foundations reuse this same 26-week calendar: <strong>tokenised / digital-asset institutional risk</strong> and <strong>Murex market &amp; credit risk technology</strong>. Filter a path to see its weeks — nothing is added to the timeline.</p>
     </article>
     <div class="stack">
       ${state.plan.paths
