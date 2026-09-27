@@ -234,16 +234,17 @@ function renderCourseware(week) {
       </section>`
     : "";
   const lab = week.lab
-    ? `<section class="block lab-block">
+    ? `<section class="block lab-block" id="lab-week-${week.n}">
         <h3>Lab · do the work</h3>
         <p><strong>Goal.</strong> ${formatText(week.lab.goal)}</p>
         <p><strong>Why this lab.</strong> ${formatText(week.lab.why)}</p>
+        <p class="lab-ide-jump-wrap"><a class="lab-ide-jump" href="#lab-ide-week-${week.n}">↓ Open live IDE (run code &amp; see results)</a></p>
         <p class="block-label">Steps</p>
         ${renderList(week.lab.steps)}
         <p class="block-label">What good looks like</p>
         ${renderList(week.lab.expected)}
         ${vizSlot(labSlot)}
-        <div class="lab-ide" data-lab-ide="${week.n}"></div>
+        <div class="lab-ide" id="lab-ide-week-${week.n}" data-lab-ide="${week.n}"></div>
       </section>`
     : `<section class="block">${vizSlot(labSlot)}</section>`;
   const write = week.writeGuide
