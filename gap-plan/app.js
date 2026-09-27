@@ -252,7 +252,7 @@ function renderPlan() {
     return week.paths.includes(state.filter);
   });
   const intro = `<article class="note">
-      <p>Open a week for the full courseware. Select any text to show an AI button, then open the tutor for a clearer explanation and follow-up questions. Check every box, or tap Finish week. Progress stays in this browser.</p>
+      <p>Open a week for the full courseware. Select any text — including tutor answers — to show <strong>AI</strong> or <strong>Note</strong>. Notes keep a timestamp and an auto caption. Check every box, or tap Finish week. Progress stays in this browser.</p>
       <details>
         <summary>What this 156 hours is for</summary>
         <p>${escapeHtml(state.plan.stance)}</p>
@@ -397,8 +397,11 @@ function renderProgress() {
       </article>
       <article class="path-card">
         <h3>Backup this browser</h3>
-        <p>Progress lives in local storage on this phone or computer. Copy it out before you clear browser data, then paste it back here.</p>
-        <textarea class="backup" id="backup" spellcheck="false">${JSON.stringify({ checked: state.checked })}</textarea>
+        <p>Progress and notebook notes live in local storage on this phone or computer. Copy them out before you clear browser data, then paste them back here.</p>
+        <textarea class="backup" id="backup" spellcheck="false">${JSON.stringify({
+          checked: state.checked,
+          notes: window.SixHoursNotebook?.loadNotes?.() || [],
+        })}</textarea>
         <div class="card-actions">
           <button type="button" class="finish" id="copy-backup">Copy backup</button>
           <button type="button" class="text-btn" id="restore-backup">Restore</button>
@@ -406,6 +409,12 @@ function renderProgress() {
         </div>
       </article>
     </div>`;
+}
+
+function renderNotebook() {
+  app.innerHTML = window.SixHoursNotebook
+    ? window.SixHoursNotebook.renderNotebookHtml()
+    : `<article class="note"><p>Notebook failed to load.</p></article>`;
 }
 
 function render(pulse) {
@@ -416,6 +425,7 @@ function render(pulse) {
   renderOverall(Boolean(pulse));
   if (state.view === "plan") renderPlan();
   else if (state.view === "paths") renderPaths();
+  else if (state.view === "notebook") renderNotebook();
   else renderProgress();
 }
 
@@ -436,6 +446,8 @@ document.body.addEventListener("click", async (event) => {
   const viewButton = event.target.closest(".tabbar button");
   if (viewButton) {
     state.view = viewButton.dataset.view;
+    document.querySelector("#tutor-sheet")?.setAttribute("hidden", "");
+    document.body.classList.remove("tutor-open");
     render();
     window.scrollTo(0, 0);
     return;
@@ -492,6 +504,9 @@ document.body.addEventListener("click", async (event) => {
       const parsed = JSON.parse(document.querySelector("#backup").value);
       if (!parsed || typeof parsed.checked !== "object") throw new Error("bad");
       state.checked = parsed.checked;
+      if (Array.isArray(parsed.notes)) {
+        localStorage.setItem("six-hours-notebook-v1", JSON.stringify(parsed.notes));
+      }
       save();
       render();
       showToast(`Restored. ${doneWeeks().length} of 26 weeks finished.`);
@@ -508,6 +523,26 @@ document.body.addEventListener("click", async (event) => {
       showToast("Progress cleared.");
     }
   }
+  const copyNote = event.target.closest("[data-copy-note]");
+  if (copyNote) {
+    const id = copyNote.dataset.copyNote;
+    const note = window.SixHoursNotebook?.loadNotes?.().find((item) => item.id === id);
+    if (note) {
+      navigator.clipboard?.writeText(`${note.caption}\n${note.createdAt}\n\n${note.text}`).then(
+        () => showToast("Note copied."),
+        () => showToast("Could not copy. Select the note text manually.")
+      );
+    }
+    return;
+  }
+  const deleteNote = event.target.closest("[data-delete-note]");
+  if (deleteNote) {
+    if (window.confirm("Delete this notebook entry?")) {
+      window.SixHoursNotebook.deleteNote(deleteNote.dataset.deleteNote);
+      render();
+      showToast("Note deleted.");
+    }
+  }
 });
 
 document.body.addEventListener("change", (event) => {
@@ -520,6 +555,8 @@ document.body.addEventListener("change", (event) => {
 
 window.SixHours = {
   getPlan: () => state.plan,
+  getView: () => state.view,
+  refresh: () => render(false),
   getOpenWeek: () => {
     if (!state.plan) return null;
     const open = [...state.open];
