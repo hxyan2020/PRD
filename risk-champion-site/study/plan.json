@@ -45,6 +45,26 @@
             8
           ]
         }
+      ],
+      "trends": [
+        "Real-time and intraday limit frameworks are replacing end-of-day-only monitoring as desks demand faster breach detection and override audit trails.",
+        "Margin and liquidation playbooks are being rewritten for crypto and multi-asset books: basis, funding, and liquidation cascades sit next to classic Greeks.",
+        "Model-risk and threshold governance (why 5% not 3%) is now an interview and committee expectation, not a back-office formality.",
+        "Cross-desk risk aggregation and ‘single book of risk’ views are pushing trading-risk leads to own data lineage and escalation SLAs with platform teams."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Alert noise and slow close-out: too many breaches, weak ownership, and no defensible threshold method.",
+          "roadmap": "Pick one domain, write the threshold rationale, instrument false-positive metrics, and run a four-week close-out experiment with named owners."
+        },
+        {
+          "issue": "Derivatives and margin depth is assumed but rarely evidenced in hiring packets.",
+          "roadmap": "Ship a Greeks/hedge note, a margin/liquidation case, and one finding a Head of Risk can challenge in a live review."
+        },
+        {
+          "issue": "Hand-offs between trading risk, product, and tech blur when incidents span data, model, and desk behaviour.",
+          "roadmap": "Document the escalation path, RACI, and rollback criteria for the domain you own; rehearse one tabletop."
+        }
       ]
     },
     {
@@ -82,6 +102,26 @@
             26
           ]
         }
+      ],
+      "trends": [
+        "Risk product roles are hiring for shipped slices (roadmap, metrics, parameter governance) rather than generic ‘product sense’.",
+        "Parameter change management and simulation/backtest gates before production flips are becoming table stakes for limit and model products.",
+        "AI-assisted investigation and alert triage products are entering risk stacks — with explicit human override and eval requirements.",
+        "Platform + product pairing: event-driven risk services and clear acceptance tests are replacing ticket-driven feature dumps."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Title screens without evidence: PMs struggle to show ownership of a live risk workflow.",
+          "roadmap": "Own one slice end-to-end: problem statement, metrics, acceptance tests, rollout, and a post-launch dashboard."
+        },
+        {
+          "issue": "Parameter changes ship without governance, then fail audit or desk trust.",
+          "roadmap": "Define change types, simulation gates, dual control, and a written rollback; pilot on one parameter family."
+        },
+        {
+          "issue": "Success is measured by launch vanity, not risk outcomes.",
+          "roadmap": "Tie OKRs to breach quality, time-to-close, false-positive rate, and desk adoption — not story points shipped."
+        }
       ]
     },
     {
@@ -115,6 +155,26 @@
           "weeks": [
             20
           ]
+        }
+      ],
+      "trends": [
+        "Event-driven risk pipelines (trade/market/limit streams) and API-first risk services are displacing overnight batch monoliths.",
+        "Observability for risk (freshness, completeness, lag, poison messages) is now a first-class SRE concern alongside OLS/uptime.",
+        "Golden-source and system-of-record debates intensify as desks want intraday truth without double booking.",
+        "Controlled releases, UAT packs, and rollback runbooks are expected for any change that can mute or invent a limit breach."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Silent data gaps: risk looks ‘green’ while feeds are stale or incomplete.",
+          "roadmap": "Define freshness/completeness SLOs, page on breach of those SLOs, and publish a data contract per critical feed."
+        },
+        {
+          "issue": "Release risk: a deploy breaks limit calculation with no fast rollback.",
+          "roadmap": "Ship with feature flags, dual-run where needed, UAT fixtures from real incidents, and a one-page rollback."
+        },
+        {
+          "issue": "Platform work is invisible to hiring managers who want ‘risk outcomes’.",
+          "roadmap": "Frame artifacts as event path, SoR decision, paging rules, and a measured reliability improvement on one workflow."
         }
       ]
     },
@@ -151,6 +211,26 @@
             16
           ]
         }
+      ],
+      "trends": [
+        "FRTB IMA/SA, ES vs VaR narratives, and desk-level P&L attribution pressure remain the regulatory backbone for market-risk quants.",
+        "Liquidity-adjusted and wrong-way aware stress, plus climate/scenario overlays, are expanding beyond classic historical VaR.",
+        "Challenger models, backtesting exceptions, and model-risk packs are scrutinised harder post-volatility spikes.",
+        "Python-first research-to-production paths (with clear validation gates) are preferred over opaque vendor black boxes alone."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Vocabulary without notebooks: candidates cannot recompute VaR/ES or defend a backtest.",
+          "roadmap": "Deliver a computed VaR/ES, backtest pack, one vol model, and a Monte Carlo stress with assumptions written down."
+        },
+        {
+          "issue": "Model risk: no challenger, weak documentation, unclear limits linkage.",
+          "roadmap": "Build a validation pack: scope, assumptions, backtest, challenger lens, and limit mapping for one model family."
+        },
+        {
+          "issue": "Liquidity and concentration ignored until a stress week.",
+          "roadmap": "Add a liquidity-aware stress sleeve and document what breaks first in your sample book."
+        }
       ]
     },
     {
@@ -185,6 +265,26 @@
             20,
             21
           ]
+        }
+      ],
+      "trends": [
+        "Agentic and RAG workflows for alert triage and investigation are moving from pilots to controlled production with eval harnesses.",
+        "Regulators and model-risk teams are extending MRM-like expectations to generative AI: data lineage, hallucination controls, override logs.",
+        "Tool-use sandboxes (read-only risk tools) beat ‘chat that can approve’ — guardrails and least privilege are the product.",
+        "Human-in-the-loop close-out metrics (precision, recall, time-to-resolution) are becoming the acceptance criteria for AI risk systems."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Impressive demos that cannot be defended in a risk committee.",
+          "roadmap": "Ship classification + RAG with citations, refusal rules, eval scores, and a written human override path."
+        },
+        {
+          "issue": "False positives explode when models meet messy alert taxonomies.",
+          "roadmap": "Start with one alert class, measure FP/FN, and only then expand; keep a kill switch."
+        },
+        {
+          "issue": "Unclear ownership between AI eng, risk, and compliance.",
+          "roadmap": "Write RACI for model changes, prompt/tool updates, and production incidents before the second pilot."
         }
       ]
     },
@@ -222,6 +322,26 @@
           "weeks": [
             23
           ]
+        }
+      ],
+      "trends": [
+        "Cross-asset books and ‘portfolio of portfolios’ risk are pushing desks beyond single-asset Greeks into basis, correlation, and liquidity interaction.",
+        "Rates, credit, and commodity sleeves are being risk-managed with shared stress libraries rather than siloed stacks.",
+        "Volatility-surface and smile/skew literacy is expected even outside pure options seats.",
+        "Intraday multi-asset margin and hedge effectiveness reporting is a competitive differentiator for multi-product houses."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Instrument breadth without a coherent cross-asset case.",
+          "roadmap": "Build one multi-asset book narrative: sleeves, hedges, basis breaks, and a portfolio shock that management can follow."
+        },
+        {
+          "issue": "Hedge ratios look fine until correlation regimes shift.",
+          "roadmap": "Document correlation assumptions, a break scenario, and what you do in the first hour of a regime change."
+        },
+        {
+          "issue": "Margin and liquidity treated as afterthoughts to P&L Greeks.",
+          "roadmap": "Add margin/liquidation and funding lenses to the same case you use for Greeks."
         }
       ]
     },
@@ -286,6 +406,26 @@
             26
           ]
         }
+      ],
+      "trends": [
+        "Prime and buy-side risk is converging on portfolio risk budgets, factor exposures, and financing (repo/borrow/haircuts) as one conversation with the PM.",
+        "Post-2020s volatility, hedge funds and asset managers want clearer stress, liquidity ladders, and counterparty concentration views.",
+        "Rehypothecation, collateral optimisation, and wrong-way risk are back in IC and risk-committee packs.",
+        "Buy-side platforms are investing in look-through and multi-strategy aggregation without losing strategy-level ownership."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Financing knowledge without portfolio-risk fluency (or the reverse).",
+          "roadmap": "Pair a financing note (haircuts, borrow, rehypo) with a PM-facing risk budget and factor/stress view on one book."
+        },
+        {
+          "issue": "Stress that PMs dismiss as unrealistic or irrelevant.",
+          "roadmap": "Co-design 2–3 narrative stresses with a PM; show P&L, liquidity, and financing impact together."
+        },
+        {
+          "issue": "Counterparty and collateral risk owned by nobody between PB ops and portfolio risk.",
+          "roadmap": "Map the ownership chain and one escalation path; propose a weekly collateral/concentration digest."
+        }
       ]
     },
     {
@@ -308,6 +448,26 @@
             6,
             24
           ]
+        }
+      ],
+      "trends": [
+        "Trading and financial product managers are expected to speak user vs economic buyer, unit economics, and adoption — not only feature lists.",
+        "Risk-adjacent commercial products (analytics, workflow, data) win when they reduce desk cost-to-serve or capital/friction, not when they ‘AI-wash’.",
+        "Procurement and security review cycles lengthen; proof packs and reference architectures matter earlier.",
+        "Embedded risk controls inside trading products (pre-trade, limits, audit) are a sales requirement at institutional clients."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Building for the loudest user, not the budget holder.",
+          "roadmap": "Write the commercial sentence: user, buyer, cost, adoption metric, and explicit non-claims."
+        },
+        {
+          "issue": "Launch metrics that ignore retention and workflow fit.",
+          "roadmap": "Define adoption and cost-to-serve metrics before build; review them at week 2 and week 6 post-launch."
+        },
+        {
+          "issue": "Over-claiming risk or AI capabilities that compliance will block.",
+          "roadmap": "Keep a ‘will not claim’ list next to the roadmap; validate with risk/compliance early."
         }
       ]
     },
@@ -355,6 +515,26 @@
             25,
             26
           ]
+        }
+      ],
+      "trends": [
+        "Institutional RWA and tokenised fund rails are moving from pilots to custody-, settlement-, and collateral-grade designs with bank and asset-manager sponsors.",
+        "On-chain / off-chain reconciliation, oracle risk, and legal enforceability dominate risk conversations more than token price charts.",
+        "Stablecoin and depeg stress, atomic settlement vs T+N basis, and wallet/custody controls are entering traditional market-risk packs.",
+        "Regulators are clarifying market structure for digital assets; operational resilience and travel-rule/AML controls remain gating."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Treating tokenised products like ‘crypto trading’ instead of institutional market + ops risk.",
+          "roadmap": "Frame the book with custody, settlement finality, SoR, collateral, and classic market-risk lenses side by side."
+        },
+        {
+          "issue": "Basis between tokenised and traditional instruments blows up hedges and margin.",
+          "roadmap": "Document the basis, stress a depeg/settlement delay, and define liquidation and communication playbooks."
+        },
+        {
+          "issue": "Unclear system of record across chain, custodian, and internal ledger.",
+          "roadmap": "Pick SoR per process (position, cash, corporate action), map reconciliations, and page on breaks."
         }
       ]
     },
@@ -410,6 +590,26 @@
             25,
             26
           ]
+        }
+      ],
+      "trends": [
+        "Banks continue FRTB (SA/IMA), ES, and desk-level evidence programmes where Murex sits as calculation and risk-data backbone.",
+        "XVA, SIMM, and PFE/counterparty stacks are under cost and capital pressure — accuracy, performance, and explainability all matter.",
+        "Market-data quality, curve/vol configuration, and risk-factor mapping remain the hidden failure mode behind ‘Murex is wrong’ tickets.",
+        "Risk-tech SMEs who can bridge front-office, market risk, and release discipline are scarcer than pure configurators."
+      ],
+      "practitionerIssues": [
+        {
+          "issue": "Configuration expertise without a capital/methodology story (FRTB, VaR/ES, XVA/SIMM/PFE).",
+          "roadmap": "Produce a pack: one market-risk metric you can explain end-to-end, one counterparty/XVA or SIMM lens, and where Murex artifacts sit in the control chain."
+        },
+        {
+          "issue": "Production incidents blamed on ‘the system’ with no market-data or mapping diagnosis.",
+          "roadmap": "Standardise a triage: market data → risk factors → enrichment → calc → limits; keep a replay fixture per critical desk."
+        },
+        {
+          "issue": "Slow, risky releases for risk calculation changes.",
+          "roadmap": "Dual-run/compare packs, UAT from real tickets, and a rollback note owned jointly with risk and platform."
         }
       ]
     }
