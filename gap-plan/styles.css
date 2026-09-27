@@ -55,6 +55,18 @@ pre, code, textarea { max-width: 100%; }
 
 .top, .dock, .chips, main { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
 .top { padding-top: calc(18px + var(--safe-t)); }
+.build-stamp {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: color-mix(in srgb, var(--soft) 80%, #fff);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+}
 .parent-brand {
   margin: 0 0 8px;
   font-size: 13px;
