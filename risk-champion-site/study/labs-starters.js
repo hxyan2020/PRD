@@ -52,10 +52,19 @@ print(f"ATM approx 0.4*S*sigma*sqrt(T) = {atm_approx:.6f}  (price≈{a[2]:.6f})"
 print("Units: vega = dPrice/dSigma (sigma in absolute units); theta = dPrice/dT per year.")
 `,
   2: `
-# Week 2 lab — realized vol vs RiskMetrics EWMA (λ=0.94)
+# Week 2 lab — portfolio hedge overlay + EWMA vol (λ=0.94)
 import math, random
 
 random.seed(2)
+# Portfolio overlay sentence a PM will fund (edit before you size the hedge)
+overlay = {
+    "factor_removed": "equity beta ~0.8",  # edit
+    "residual_owned": "single-name + basis",  # edit
+    "margin_use": "edit me (cash / IM)",
+    "kill_switch": "edit me (who cuts overlay without a meeting)",
+}
+print("portfolio_overlay", overlay)
+
 # Synthetic geometric path so the lab runs offline; swap for real closes if you have them.
 n_closes = 61
 prices = [100.0]
@@ -85,9 +94,10 @@ for t in range(19, 60):  # 0-based index; window returns[t-19:t+1]
     if t % 5 == 4 or t == 59:
         print(f"{t+1:3d}  {realized:14.6f}  {ewma_ann:12.6f}")
 print("ddof=1 for realized. Annualization: sqrt(252). λ=0.94.")
+print("TODO: attach hedge ratio + residual-risk sentence next to the overlay dict.")
 `,
   3: `
-# Week 3 lab — margin ratio, buffer, liquidation move
+# Week 3 lab — margin as portfolio leverage + liquidation move
 E, N, m = 100.0, 500.0, 0.02
 maintenance = m * N
 margin_ratio = E / N
@@ -103,16 +113,26 @@ buffer2 = adj_eq - maintenance
 liq_move2 = buffer2 / N
 print("Cross haircut on B")
 print(f"  adjEq={adj_eq:.4f}  margin_ratio={margin_ratio2:.4%}  buffer={buffer2:.4f}  liq_move≈{liq_move2:.4%}")
+# Buy-side lens: venue liquidation is a hard stop on portfolio gross
+portfolio_leverage = {
+    "gross_you_can_keep": "edit me (from margin_ratio / buffer)",
+    "what_gets_liquidated": "edit me",
+    "link_to_week4_soft_limit": "venue hard stop ≠ PM soft limit — separate them",
+}
+print("portfolio_leverage", portfolio_leverage)
 print("Assumptions: linear P&L in mark, one position, no fees, no partial liquidation ladder.")
 `,
-  4: `# Week 4 lab — threshold 5% vs 3%
+  4: `# Week 4 lab — PM soft/hard/mandate limits (5% vs 3%)
 # Structured worksheet you can edit, then Run to print a draft you can paste into Notes.
 
-print("WEEK 4 LAB WORKSHEET")
+print("WEEK 4 LAB WORKSHEET — limits a PM will own")
 print("Goal checklist")
 print('  - Control: abnormal price / concentration / liquidation buffer (pick one)')
 print('  - Population: 1000 accounts × 30 days')
+print('  - Classify: soft (yellow) vs hard (red) vs mandate constraint')
 
+limit_class = "soft"  # edit: soft | hard | mandate
+pm_decision = "keep / raise / reinterpret — edit me"
 threshold_low, threshold_high = 0.03, 0.05
 alerts_3, true_3 = 120, 18
 alerts_5, true_5 = 55, 16
@@ -122,8 +142,10 @@ missed_loss_wider = 250_000  # invent consistently; dollars if you widen to 5%
 print("\\nSynthetic table")
 print(f"  3%: alerts/day≈{alerts_3/30:.1f}  true={true_3}  FP≈{fp_3:.1%}  missed_loss_if_widen={missed_loss_wider}")
 print(f"  5%: alerts/day≈{alerts_5/30:.1f}  true={true_5}  FP≈{fp_5:.1%}")
-print("\\nMemo headings: problem · population · definition of true · 3% economics · 5% economics · fatigue · decision")
-print("Finding (draft last line): Request decision to set threshold at ___ because ___.")
+print("limit_class", limit_class)
+print("pm_decision_requested", pm_decision)
+print("\\nMemo headings: problem · population · soft/hard/mandate · 3% economics · 5% economics · fatigue · PM decision")
+print("Finding (draft last line): Request PM decision to ___ because ___.")
 
 print("\\nEdit the values above, re-run, then copy the output into your notebook / write-up.")
 `,
@@ -292,7 +314,7 @@ for item in ["Release plan document with versioned rollback to a prior parameter
 
 print("\\nEdit the values above, re-run, then copy the output into your notebook / write-up.")
 `,
-  12: `# Week 12 lab — Historical and parametric VaR, computed
+  12: `# Week 12 lab — Portfolio VaR + sleeve contribution
 # Live IDE scaffold. Fill TODOs, then Run. Uses the Python stdlib (+ numpy if available).
 
 import math, random
@@ -305,14 +327,18 @@ except Exception:
     HAS_NP = False
     np = None
 
-print("Week 12: Historical and parametric VaR, computed")
-print("Goal: Notebook that prints historical and parametric 99% VaR in the required bands with NumPy seed 7.")
+print("Week 12: Portfolio VaR + sleeve contribution")
+print("Goal: historical + parametric 99% VaR with weights and a PM contribution story.")
 print("HAS_NUMPY =", HAS_NP)
 
 # --- starter numbers (edit me) ---
 seed = 12
 n_paths = 1000
+weights = {"equity": 0.50, "crypto": 0.30, "rates": 0.20}  # edit
+absolute_or_active = "absolute"  # edit: absolute | active
 print(f"seed={seed}  n_paths={n_paths}")
+print("weights", weights)
+print("absolute_or_active", absolute_or_active)
 
 # TODO: implement the lab steps from the courseware above this IDE.
 # Keep prints of every intermediate number the expected-outputs list asks for.
@@ -326,6 +352,13 @@ else:
     x_sorted = sorted(x)
     print("mean≈", sum(x)/len(x), "  p95≈", x_sorted[int(0.95*(len(x)-1))])
 
+contribution_story = {
+    "sleeve_A": "edit — stand-alone / leave-one-out note",
+    "sleeve_B": "edit",
+    "sleeve_C": "edit",
+    "diversification_gap": "edit — stand-alone sum vs diversified VaR",
+}
+print("contribution_story", contribution_story)
 print("\\nNext: replace this scaffold with the real worksheet from the Steps list.")
 `,
   13: `# Week 13 lab — FRTB lenses: ES, SA/IMA, Kupiec / traffic light
@@ -387,7 +420,7 @@ print("zone", zone)
 print("frtb_map", frtb_map)
 print("\\nTODO: swap in the real week-12 loss series; save week13_backtest.json.")
 `,
-  14: `# Week 14 lab — EWMA, GARCH(1,1), and correlation
+  14: `# Week 14 lab — Factor risk budget + EWMA/GARCH
 # Live IDE scaffold. Fill TODOs, then Run. Uses the Python stdlib (+ numpy if available).
 
 import math, random
@@ -400,8 +433,10 @@ except Exception:
     HAS_NP = False
     np = None
 
-print("Week 14: EWMA, GARCH(1,1), and correlation")
-print("Goal: NumPy notebook printing next-day EWMA vol beside GARCH(1,1) vol on the same return series.")
+print("Week 14: Factor risk budget + EWMA/GARCH")
+print("Goal: next-day vols PLUS a refuse-able factor risk-budget sentence for a PM.")
+risk_budget = "≤50% equity-factor, ≤30% crypto-factor, ≥20% idiosyncratic; gross ≤2× NAV"  # edit
+print("risk_budget", risk_budget)
 print("HAS_NUMPY =", HAS_NP)
 
 # --- starter numbers (edit me) ---
@@ -436,12 +471,21 @@ except Exception:
     HAS_NP = False
     np = None
 
-print("Week 15: Monte Carlo + liquidity + PFE-style exposure")
+print("Week 15: Portfolio stress + liquidity + cut-first playbook + PFE-style")
 print("HAS_NUMPY =", HAS_NP)
 counterparty_name = "PrimeBroker-A"  # edit me
 seed, n_paths = 15, 5000
 half_spread, size = 0.0010, 1_000_000  # liquidity add-on = half_spread * size
 print(f"seed={seed} n_paths={n_paths} counterparty={counterparty_name}")
+cut_first_playbook = {
+    "trigger": "edit (e.g. 95% loss or liquidity add-on breach)",
+    "first_cut": "edit sleeve / gross",
+    "hedge_overlay": "edit",
+    "financing_check": "edit",
+    "pm_ask": "edit",
+    "reopen_criteria": "edit",
+}
+print("cut_first_playbook", cut_first_playbook)
 
 if HAS_NP:
     rng = np.random.default_rng(seed)
@@ -597,10 +641,10 @@ for item in ["A 15-row sheet with a score of at least 12/15 after rerun, or an h
 
 print("\\nEdit the values above, re-run, then copy the output into your notebook / write-up.")
 `,
-  22: `# Week 22 lab — Collateral, SIMM/IM, repo, rehypothecation
+  22: `# Week 22 lab — Financing leverage vs PM risk budget + SIMM/IM
 # Structured worksheet + toy SIMM-like IM score.
 
-print("WEEK 22 LAB — financing + SIMM/IM toy")
+print("WEEK 22 LAB — financing + risk-budget bridge + SIMM/IM toy")
 bond, haircut, rate, days = 1_000_000, 0.02, 0.04, 7
 cash = bond * (1 - haircut)
 interest = cash * rate * days / 365
@@ -609,6 +653,15 @@ margin_gap = cash - marked  # if positive, financing side feels the gap
 print("cash_received", round(cash, 2))
 print("interest_7d", round(interest, 2))
 print("bond_after_5pct_down", marked, "margin_gap_vs_cash", round(margin_gap, 2))
+
+financing_vs_budget = {
+    "market_risk_budget_use": "edit (from week 14 factor % or VaR)",
+    "financing_headroom": "edit (cash / IM/VM after haircut move)",
+    "sleeve_cut_if_financing_first": "edit",
+    "who_forces_overnight_cut": "edit",
+    "scenario": "financing forces de-risk before VaR breach — edit numbers",
+}
+print("financing_vs_budget", financing_vs_budget)
 
 print("\\nVM vs IM (edit the sentences)")
 print("VM: tracks MTM / variation — posts when the trade moves against you.")
@@ -623,11 +676,20 @@ print("sensitivities", sens)
 print("weights", weights)
 print("toy_im", round(toy_im, 2))
 print("dispute_risk", dispute_risk)
-print("\\nTODO: finish the 8-row crypto-vs-PB table including an IM/VM row.")
+print("\\nTODO: finish the 8-row crypto-vs-PB table including an IM/VM row + who can force a portfolio cut.")
 `,
-  23: `# Week 23 lab — Joint shocks + dominant sleeve + toy CVA/XVA sketch
+  23: `# Week 23 lab — Construction checklist + joint shocks + PM ask + toy CVA
 
-print("WEEK 23 LAB — four shocks + XVA sketch")
+print("WEEK 23 LAB — construction checklist + four shocks + XVA sketch")
+construction_checklist = {
+    "weights_or_notionals": "edit me",
+    "factor_budget": "edit me (from week 14)",
+    "overlays_on": "edit me",
+    "financing_assumptions": "edit me",
+    "soft_hard_limits": "edit me",
+    "pm_decision_ask": "edit me",
+}
+print("pre_shock_checklist", construction_checklist)
 sleeves = {
     "eurusd_option": -180_000,   # edit: scenario P&L
     "btc_perp": -95_000,

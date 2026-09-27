@@ -83,7 +83,7 @@
   },
   {
     "n": 2,
-    "goal": "Define basis and a one-week futures hedge ratio for a market you can observe publicly, and compute realized versus EWMA volatility on the same return series.",
+    "goal": "Define basis and a one-week futures hedge as a portfolio overlay a PM would fund, and compute realized versus EWMA volatility on the same return series.",
     "bigIdea": "Basis is the difference between the futures (or perpetual) price and the spot price you actually need to hedge; hedge ratios that ignore basis assume the two move one-for-one, which fails in stress. Contango means futures above spot; backwardation means futures below spot; cost of carry links fair forward to financing and storage. Realized volatility looks backward over a window; EWMA volatility (exponentially weighted moving average) weights recent returns more heavily so a shock shows up faster than a long equally weighted window.",
     "lessons": [
       {
@@ -111,6 +111,14 @@
           "story": "A 50 million dollar long basket of 20 stocks is hedged with E-mini notionals. Basket weekly vol 2.5 percent, future weekly vol 2.2 percent, correlation 0.90. Hedge ratio 0.90 × 2.5 / 2.2 ≈ 1.02, so about 51 million of short futures. In a week where one name gaps −30 percent on news while the index is −2 percent, the futures hedge offsets the index piece but the name-specific loss remains. Residual P&L ≈ 0.05 × 50m × (−0.30) if that name was 5 percent of the book: about −750,000 dollars unhedged.",
           "takeaway": "Hedge ratios cancel the factor you measured; they do not cancel the risks you excluded from the regression."
         }
+      },
+      {
+        "title": "Portfolio hedge overlays a PM will actually fund",
+        "body": [
+          "A futures hedge on a single name is a trading-risk exercise. A buy-side hedge is a portfolio overlay: you state the factor you remove (equity beta, rates DV01, BTC beta), the residual the PM still owns, the cash and margin the overlay consumes, and the basis that can make the overlay look wrong in a calm week and disastrous in a gap week.",
+          "Write the overlay as four lines before you size it: (1) what risk you intend to cancel, (2) what you refuse to cancel, (3) how you will measure residual risk tomorrow morning, (4) who can cut the overlay without a meeting. If you cannot fill those four lines, you do not yet have a portfolio hedge — you have a trade idea.",
+          "In the lab memo, put the hedge ratio next to a residual-risk sentence. Example shape: 'Overlay removes ~0.8 equity beta; residual is single-name and basis; margin use is X; kill switch is Y.' That is the language a PM and a risk partner share."
+        ]
       },
       {
         "title": "Realized vol versus EWMA",
@@ -250,7 +258,7 @@
   },
   {
     "n": 4,
-    "goal": "Defend a single control threshold with both a loss argument and a false-positive argument, name an owner, and ask a Head of Risk for one explicit decision.",
+    "goal": "Defend a soft or hard portfolio limit with loss and false-positive arguments, name an owner, and ask a PM (and Head of Risk) for one explicit decision.",
     "bigIdea": "A threshold is a product decision dressed as a number: set it wide and you miss loss; set it tight and you drown the desk in false positives. Value at Risk (VaR) is a loss quantile over a horizon and confidence level; expected shortfall is the average loss beyond that quantile — useful vocabulary, not the whole memo. The four costs of a bad threshold are missed loss, false alerts, slow reaction, and unclear ownership. Your job this week is to write the memo that makes 5 percent versus 3 percent a reasoned choice, not a tribal preference.",
     "lessons": [
       {
@@ -265,6 +273,15 @@
           "story": "Control: alert when one name’s share of account equity exceeds a threshold. At 3%, historical synthetic books of 1,000 accounts show 120 alerts/day, of which analysts dismiss 95 as known market-making inventory. At 5%, alerts fall to 28/day and dismissals fall to 10, but a post-mortem shows two accounts that later lost 15% of equity from a single-name gap would have alerted at 3% two hours earlier and at 5% only after the move had begun. Missed-loss estimate: 2 accounts × 2 hours × average 50k per hour of preventable add-on risk = 200k synthetic. False-positive cost at 3%: roughly 95 × 4 minutes × fully loaded 1.5$/minute ≈ 570$/day of analyst time, plus alert fatigue.",
           "takeaway": "Pick 5% only if you write down the missed-loss story and the fatigue story; otherwise the number is fashion."
         }
+      },
+      {
+        "title": "Soft limits, hard limits, and mandate language",
+        "body": [
+          "Buy-side risk conversations fail when 'limit' means three different things. A soft limit is a yellow light: escalate, explain, maybe trim. A hard limit is a red light: cannot add risk, or must reduce, without a named exception path. A mandate constraint (duration band, gross exposure, liquidity bucket, ESG exclusion) is not a VaR number but it binds the book every day.",
+          "Your threshold memo this week should name which of those three you are defending. Address the finding to a portfolio manager as well as Head of Risk: what decision you need (raise soft limit, keep hard limit, change mandate interpretation), what evidence you bring (loss and false-positive), and what happens if they do nothing for two weeks.",
+          "Borrow the week-3 margin language if helpful: liquidation is a venue hard stop; a PM soft limit is a conversation. Do not pretend they are the same control. Write one sentence that separates them so the meeting cannot blur them.",
+          "Close with one sentence a portfolio manager could challenge in the next risk meeting — numbers first, adjectives never."
+        ]
       },
       {
         "title": "Structure of a threshold memo that survives review",

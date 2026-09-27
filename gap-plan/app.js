@@ -7,7 +7,7 @@ const PATH_LABEL = {
   quant: "Quant risk",
   airisk: "AI risk",
   multi: "Multi-asset",
-  pb: "Buy-side risk",
+  pb: "Portfolio risk",
   tpm: "Trading product",
   tokenised: "Tokenised assets",
   murex: "Murex risk tech",
@@ -485,9 +485,10 @@ function renderPaths() {
     <article class="note note-compact">
       <p class="note-lead"><strong>${pathCount}</strong> career paths on one 26-week calendar (incl. Tokenised + Murex). Filter a path to see its weeks — nothing is added to the timeline.</p>
       <details>
-        <summary>Where FRTB / PFE / SIMM / XVA sit</summary>
+        <summary>Where FRTB / portfolio risk / CCR sit</summary>
         <p><strong>Murex:</strong> FRTB SA/IMA + ES/backtest (weeks 13, 16), PFE-style exposure (15), SIMM/IM vs VM (22), toy XVA/CVA sketch (23), plus VaR (12) and risk-tech production (9–11).</p>
-        <p>Other paths keep the same calendar with path lenses — open a tagged week and read the path callout under the courseware.</p>
+        <p><strong>Portfolio / buy-side:</strong> hedge overlays (2), margin as leverage (3), PM soft/hard limits (4), portfolio VaR &amp; contributions (12), factor risk budget (14), stress playbook (15), financing vs budget (22), construction + PM ask (23).</p>
+        <p>Open a tagged week and read the path callout under the courseware.</p>
       </details>
     </article>
     ${pathRail}
@@ -841,7 +842,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=20260927m");
+    const response = await fetch("plan.json?v=20260927n");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);

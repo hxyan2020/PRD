@@ -285,6 +285,15 @@
         ]
       },
       {
+        "title": "Financing leverage versus the market risk budget",
+        "body": [
+          "Repo, stock borrow, and rehypothecation change the portfolio's true leverage even when the 'risk' screens look calm. Haircuts and margin calls are not only credit-officer problems; they hit the PM's ability to keep factor exposures inside the budget you wrote in week 14.",
+          "Build a simple bridge: market risk budget (VaR or factor %) on one side; financing capacity (cash from repo, IM/VM needs, rehypothecation rights) on the other. Show one scenario where financing forces a de-risk before market VaR breaches. That scenario is the buy-side punchline of the collateral week.",
+          "Keep the crypto-versus-PB table, but add a row the PM cares about: 'Who can force a portfolio cut overnight?' If the answer is unclear, the table is not finished.",
+          "Write the bridge as three numbers and one owner: (a) current factor or VaR use versus budget, (b) cash and IM/VM headroom after a one-notch haircut move, (c) the sleeve you would cut first if financing calls before risk does, and the named person who can order that cut without a committee."
+        ]
+      },
+      {
         "title": "Haircuts, margin calls, and rehypothecation",
         "body": [
           "A haircut is the percentage discount applied so that cash advanced is less than the collateral’s market value, or equivalently so that more collateral is required than the cash. It absorbs ordinary price noise. If the collateral falls enough that the buffer is gone, a margin call asks for more collateral or cash. Write the haircut as a formula in your notes, not only as slang. When you later mark a bond down five percent, you want to see exactly how the prepaid cushion failed.",
@@ -357,9 +366,18 @@
   },
   {
     "n": 23,
-    "goal": "Shock one synthetic cross-asset book with four moves, report P&L by sleeve and the margin call, name the dominant sleeve, and attach a five-line toy CVA/XVA sketch that you explicitly refuse to over-claim.",
+    "goal": "Write a pre-shock construction checklist, shock the synthetic book, report P&L by sleeve and margin call, name the dominant sleeve, and close with a PM decision ask (plus the toy XVA sketch as a non-claim appendix).",
     "bigIdea": "Real books do not get one risk factor at a time. This week you assemble a small cross-asset portfolio with four risk channels—option delta, futures basis (or perpetual funding/price), collateral gap, and counterparty/financing—and apply a joint stress: 10% USD move against the option, 20% BTC move, bond price −3%, and funding +200 basis points. You will see which sleeve dominates the loss and which single control from your earlier weeks would have fired first.",
     "lessons": [
+      {
+        "title": "Portfolio construction checklist before the joint shock",
+        "body": [
+          "Before you shock the three-sleeve book, write the construction intent: target factor mix, gross and net exposure, financing plan, and the hedge overlays that are allowed. Without that intent, 'dominant sleeve' is a post-mortem adjective, not a control failure.",
+          "Checklist (fill before P&L): (1) weights or notionals by sleeve, (2) intended factor budget, (3) overlays on or off, (4) financing/haircut assumptions, (5) soft and hard limits that should have fired, (6) the PM decision you will request if the shock hits. Then run the four shocks and see which checklist line failed first.",
+          "Your week-23 artifact should include that pre-shock checklist above the P&L table. Portfolio risk is the combination of construction, limits, financing, and PM dialogue — not only the colourful loss bars.",
+          "End with one PM ask that is a decision, not a status update — for example raise cash, cut the dominant sleeve, keep the overlay, or request a mandate exception — and name the evidence line (sleeve P&L, margin, or checklist breach) that justifies that ask."
+        ]
+      },
       {
         "title": "Four channels in one book",
         "body": [
