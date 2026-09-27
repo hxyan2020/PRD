@@ -67,6 +67,7 @@ pre, code, textarea { max-width: 100%; }
   letter-spacing: 0.02em;
   line-height: 1.35;
 }
+.build-stamp-short { display: none; }
 .parent-brand {
   margin: 0 0 8px;
   font-size: 13px;
@@ -158,7 +159,8 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
   opacity: 0.35;
   cursor: default;
 }
-.chips-nav:not(:disabled):hover {
+.chips-nav:not(:disabled):hover,
+.chips-nav:not(:disabled):active {
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -339,21 +341,49 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
 .note details p { margin-top: 8px; }
 .path-card { padding: 14px; scroll-margin-top: 88px; }
 .path-card h3 { margin: 0; font-size: 22px; }
+.path-summary { margin: 0 0 10px; }
+.path-actions-top { margin: 0 0 12px; }
 .path-syllabus {
-  margin: 14px 0 12px;
-  padding: 12px 0 0;
+  margin: 10px 0 0;
+  padding: 0;
   border-top: 1px solid var(--line);
 }
-.path-syllabus h4 {
-  margin: 0 0 8px;
+.path-syllabus > summary {
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
   font-family: var(--serif);
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--ink);
+  -webkit-user-select: none;
+  user-select: none;
 }
+.path-syllabus > summary::-webkit-details-marker { display: none; }
+.path-syllabus > summary::after {
+  content: "+";
+  flex: 0 0 auto;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+.path-syllabus[open] > summary::after { content: "–"; }
 .path-syllabus-list,
 .path-issue-list {
-  margin: 0;
+  margin: 0 0 10px;
   padding-left: 1.15em;
   display: grid;
   gap: 8px;
@@ -374,6 +404,16 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
 .path-roadmap {
   margin-top: 4px;
   color: var(--muted);
+}
+.note-compact .note-lead { margin: 0 0 8px; }
+.note-compact details { margin-top: 4px; }
+.note-compact summary {
+  cursor: pointer;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--accent);
 }
 .path-rail {
   margin: 8px 0 14px;
@@ -448,16 +488,21 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
   grid-template-columns: repeat(4, 1fr);
   gap: 4px;
   padding: 8px 8px calc(8px + var(--safe-b));
-  background: color-mix(in srgb, var(--card) 92%, transparent);
+  background: color-mix(in srgb, var(--card) 96%, transparent);
   border-top: 1px solid var(--line);
   backdrop-filter: blur(12px);
-  z-index: 40;
+  z-index: 100;
+  isolation: isolate;
+  pointer-events: auto;
 }
 .tabbar button {
-  min-height: 44px;
+  min-height: 48px;
   border-radius: 12px;
   background: transparent;
   color: var(--ink);
+  touch-action: manipulation;
+  position: relative;
+  z-index: 1;
 }
 .backup {
   width: 100%;
@@ -901,41 +946,71 @@ body.tutor-open { overflow: hidden; }
 @media (max-width: 640px) {
   body {
     font-size: 16px;
-    padding-bottom: calc(72px + var(--safe-b));
+    padding-bottom: calc(78px + var(--safe-b));
   }
-  .top { padding-top: calc(12px + var(--safe-t)); }
+  .top { padding-top: calc(10px + var(--safe-t)); }
+  .build-stamp {
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .build-stamp-full { display: none; }
+  .build-stamp-short { display: inline; }
   .parent-brand { font-size: 12px; margin-bottom: 6px; }
-  h1 { font-size: clamp(30px, 9vw, 36px); line-height: 1; }
-  .lede { margin-top: 8px; font-size: 15px; }
-  .dock {
-    margin-top: 10px;
-    padding-top: 8px;
-    padding-bottom: 8px;
+  .kicker { margin-bottom: 4px; font-size: 11px; }
+  h1 { font-size: clamp(28px, 8vw, 34px); line-height: 1; }
+  .lede {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  .dock-pct { font-size: 24px; }
-  .dock-sub { font-size: 12px; margin-top: 6px; }
+  .dock {
+    margin-top: 8px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+  .dock-pct { font-size: 22px; }
+  .dock-sub {
+    display: none; /* reclaim sticky viewport; hours still in Progress */
+  }
+  .bar { height: 10px; margin-top: 6px; }
+
+  /* Overlay arrows so the chip track uses full width */
   .chips-shell {
-    top: 56px;
-    gap: 2px;
+    position: sticky;
+    top: 48px;
+    display: block;
+    gap: 0;
+    padding-left: max(10px, env(safe-area-inset-left));
+    padding-right: max(10px, env(safe-area-inset-right));
   }
   .chips-nav {
-    width: 40px;
-    height: 40px;
-    font-size: 24px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-55%);
+    width: 34px;
+    height: 34px;
+    font-size: 22px;
+    background: color-mix(in srgb, var(--card) 92%, transparent);
   }
+  .chips-nav-prev { left: max(6px, env(safe-area-inset-left)); }
+  .chips-nav-next { right: max(6px, env(safe-area-inset-right)); }
   .chips {
     gap: 6px;
-    padding-top: 4px;
-    padding-bottom: 8px;
+    padding: 8px 36px 10px;
   }
   .chips button {
-    min-height: 36px;
-    padding: 0 11px;
+    min-height: 38px;
+    padding: 0 12px;
     font-size: 13.5px;
   }
   .card, .note, .path-card, .source { border-radius: 14px; }
   .card { padding: 12px; }
-  .card h2 { font-size: 1.2rem; line-height: 1.2; overflow-wrap: anywhere; }
+  .card h2 { font-size: 1.15rem; line-height: 1.2; overflow-wrap: anywhere; }
   .meta { font-size: 12.5px; }
   .card-actions {
     flex-direction: column;
@@ -943,6 +1018,7 @@ body.tutor-open { overflow: hidden; }
   .card-actions .text-btn,
   .card-actions .finish {
     width: 100%;
+    min-height: 44px;
   }
   .tags { gap: 5px; }
   .session {
@@ -956,31 +1032,44 @@ body.tutor-open { overflow: hidden; }
   .fit-row {
     flex-wrap: wrap;
     gap: 2px 10px;
+    font-size: 13px;
   }
-  .path-card h3 { font-size: 1.2rem; line-height: 1.2; overflow-wrap: anywhere; }
-  .path-actions .text-btn { width: 100%; }
-  h2.section { font-size: 1.45rem; margin: 14px 0 6px; }
+  .path-card { padding: 12px; }
+  .path-card h3 { font-size: 1.15rem; line-height: 1.2; overflow-wrap: anywhere; }
+  .path-summary {
+    font-size: 14.5px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .path-actions .text-btn { width: 100%; min-height: 44px; }
+  .path-syllabus > summary { font-size: 0.98rem; }
+  .path-rail-hint { font-size: 12px; }
+  .path-rail-item { min-height: 40px; padding: 8px 12px; }
+  h2.section { font-size: 1.35rem; margin: 12px 0 6px; }
   .toast {
     left: 12px;
     right: 12px;
-    bottom: calc(70px + var(--safe-b));
+    bottom: calc(78px + var(--safe-b));
     font-size: 14px;
   }
   .tabbar {
     gap: 2px;
-    padding: 6px 6px calc(6px + var(--safe-b));
+    padding: 8px 6px calc(8px + var(--safe-b));
   }
   .tabbar button {
-    min-height: 42px;
+    min-height: 48px;
     font-size: 13px;
-    border-radius: 10px;
+    border-radius: 12px;
   }
   .sel-toolbar {
     max-width: calc(100vw - 16px);
   }
   .sel-btn {
     min-width: 56px;
-    min-height: 40px;
+    min-height: 44px;
   }
   .tutor-panel {
     max-height: min(92vh, 92dvh);
@@ -1010,23 +1099,32 @@ body.tutor-open { overflow: hidden; }
     line-height: 1.4;
   }
   .lab-ide-out {
-    max-height: 200px;
+    max-height: 180px;
     font-size: 12.5px;
   }
   .lab-ide-head {
     flex-direction: column;
+  }
+  .formula-math,
+  .formula-math .katex-display {
+    font-size: 0.95em;
   }
   .viz-readout {
     font-size: 0.75rem;
     overflow-wrap: anywhere;
   }
   .lens-list li { padding: 10px; }
+  main {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
 }
 
 @media (max-width: 380px) {
-  h1 { font-size: 28px; }
+  h1 { font-size: 26px; }
   .chips button { padding: 0 10px; font-size: 13px; }
   .tabbar button { font-size: 12px; letter-spacing: -0.01em; }
+  .chips { padding-left: 32px; padding-right: 32px; }
 }
 
 .lab-ide-jump-wrap { margin: 0 0 12px; }
@@ -1158,10 +1256,11 @@ body.tutor-open { overflow: hidden; }
   .lab-ide {
     padding: 10px;
     border-radius: 12px;
+    scroll-margin-top: 64px;
   }
   .lab-ide-code {
-    min-height: 180px;
-    font-size: 12px;
+    min-height: 168px;
+    font-size: 16px; /* keep ≥16px to avoid iOS input zoom */
   }
   .lab-ide-actions {
     width: 100%;
@@ -1169,5 +1268,6 @@ body.tutor-open { overflow: hidden; }
   .lab-ide-run,
   .lab-ide-reset {
     flex: 1;
+    min-height: 44px;
   }
 }
