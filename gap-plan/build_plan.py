@@ -576,14 +576,25 @@ PATHS = [
     },
     {
         "id": "pb",
-        "name": "Prime Brokerage / Buy-side Risk",
+        "name": "Buy-side / Portfolio Risk (PB & asset manager)",
         "fitNow": 72,
         "fitAfter": 88,
         "role": "Bridge",
-        "summary": "A high-quality TradFi bridge, not the shortest path. Two weeks cover financing, collateral, and a book that includes a repo.",
+        "summary": (
+            "Financing alone is not buy-side risk. Path covers portfolio hedge overlays (2), "
+            "margin as leverage (3), PM soft/hard limits (4), portfolio VaR (12), factor budgets (14), "
+            "stress playbooks (15), financing vs risk budget (22), and construction under joint stress (23)."
+        ),
         "gaps": [
-            {"name": "Repo, stock borrow, haircuts, rehypothecation", "weeks": [22]},
-            {"name": "Counterparty, liquidity, and client-book stress", "weeks": [22, 23]},
+            {"name": "Portfolio hedge overlays, basis, residual risk", "weeks": [2]},
+            {"name": "Margin/leverage and liquidation as portfolio constraints", "weeks": [3]},
+            {"name": "Soft vs hard limits and mandate language with a PM decision", "weeks": [4]},
+            {"name": "Portfolio VaR, weights, and sleeve contribution", "weeks": [12]},
+            {"name": "Factor risk and a refuse-able risk budget", "weeks": [14]},
+            {"name": "Portfolio stress playbook: contributions and what you cut first", "weeks": [15]},
+            {"name": "Financing leverage versus the market risk budget (repo/IM/VM)", "weeks": [22]},
+            {"name": "Construction checklist, joint stress, dominant sleeve, PM ask", "weeks": [15, 23]},
+            {"name": "Buy-side narrative in the portfolio folder", "weeks": [25, 26]},
         ],
     },
     {
