@@ -513,11 +513,10 @@
           <div><b>CFD</b> ${esc(h.metaCfd)}</div>
           <div><b>Crypto</b> ${esc(h.metaCrypto)}</div>
           <div><b>${p.meta.playbooks}</b> ${esc(h.metaCount)}</div>
-          <div><b>Study</b> ${esc(h.metaStudy)}</div>
           <div>${esc(h.metaNote)}</div>
         </div>
       </section>
-      <section class="doors doors-three">
+      <section class="doors">
         <a class="door" href="#/cfd">
           <div class="tag">${esc(h.door1Tag)}</div>
           <h2>${esc(h.door1Title)}</h2>
@@ -527,11 +526,6 @@
           <div class="tag">${esc(h.door2Tag)}</div>
           <h2>${esc(h.door2Title)}</h2>
           <p>${esc(h.door2Body)}</p>
-        </a>
-        <a class="door study" href="#/study">
-          <div class="tag">${esc(h.door3Tag)}</div>
-          <h2>${esc(h.door3Title)}</h2>
-          <p>${esc(h.door3Body)}</p>
         </a>
       </section>
       <section class="stats">
@@ -814,42 +808,19 @@
       ${tables}`;
   }
 
-  function studyView() {
-    const ui = t();
-    const s = ui.study || {};
-    return `
-      <section class="study-shell">
-        <div class="study-intro">
-          <div class="kicker">${esc(ui.nav.study || "Study Plan")}</div>
-          <h1>${esc(s.title || "Six-hour study plan")}</h1>
-          <p class="lede">${esc(s.lede || "")}</p>
-        </div>
-        <iframe
-          class="study-frame"
-          title="${esc(s.title || "Six-hour study plan")}"
-          src="study/index.html"
-          loading="eager"
-        ></iframe>
-      </section>`;
-  }
-
   function applyChrome() {
     const ui = t();
     document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
     document.body.classList.toggle("lang-zh", lang === "zh");
-    const onStudy = parseHash().view === "study";
-    document.body.classList.toggle("study-open", onStudy);
     document.title = lang === "zh"
-      ? (onStudy ? "Risk Champion — 六小时学习计划" : "Risk Champion — Trading Risk Ninja 市场操纵监察手册")
-      : (onStudy ? "Risk Champion — Six-hour study plan" : "Risk Champion — Trading Risk Ninja · Surveillance Playbooks");
+      ? "Trading Risk Ninja — 市场操纵监察手册"
+      : "Trading Risk Ninja — Market Manipulation Surveillance Playbooks";
     const desc = document.querySelector('meta[name="description"]');
     if (desc) {
       desc.setAttribute("content", lang === "zh"
-        ? "Risk Champion：Trading Risk Ninja 监察手册（CFD 与加密）以及二十六周学习计划。"
-        : "Risk Champion: Trading Risk Ninja surveillance playbooks for CFD and crypto, plus a 26-week study plan.");
+        ? "面向 CFD 经纪商与加密交易所的监察手册：操纵行为、流程、参与方、监测参数、升级路径与应对措施。"
+        : "Surveillance playbooks for CFD brokers and crypto exchanges: manipulative behaviours, workflows, participants, detection parameters, escalation, and countermeasures.");
     }
-    const brandStrong = document.querySelector(".brand-copy strong");
-    if (brandStrong) brandStrong.textContent = "Risk Champion";
     const sub = document.querySelector(".brand-copy em");
     if (sub) sub.textContent = ui.brandSub;
     const navMap = {
@@ -858,8 +829,7 @@
       "#/crypto": ui.nav.crypto,
       "#/stack": ui.nav.stack,
       "#/escalation": ui.nav.escalation,
-      "#/response": ui.nav.response,
-      "#/study": ui.nav.study
+      "#/response": ui.nav.response
     };
     navLinks.forEach((a) => {
       const href = a.getAttribute("href");
@@ -911,11 +881,6 @@
     }
     if (route.view === "response") {
       app.innerHTML = responseMap();
-      return;
-    }
-    if (route.view === "study") {
-      app.innerHTML = studyView();
-      window.scrollTo(0, 0);
       return;
     }
     if (route.view === "dossier") {

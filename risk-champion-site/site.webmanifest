@@ -1,0 +1,26 @@
+{
+  "name": "Risk Champion",
+  "short_name": "RiskChampion",
+  "description": "Finance risk playbook — TradFi & crypto, buy-side & sell-side",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f9fb",
+  "theme_color": "#0a1628",
+  "icons": [
+    {
+      "src": "/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

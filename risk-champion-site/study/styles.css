@@ -46,16 +46,8 @@ body {
 
 .top, .dock, .chips, main { padding-left: 16px; padding-right: 16px; }
 .top { padding-top: calc(18px + var(--safe-t)); }
-.parent-brand {
-  margin: 0 0 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-}
-.parent-brand a {
-  color: var(--accent);
-  text-decoration: none;
-}
+.parent-brand { margin: 0 0 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.parent-brand a { color: var(--accent); text-decoration: none; }
 .kicker, .dock-sub, .meta, .kind, .gap-weeks, .source a, .role {
   color: var(--muted);
 }
