@@ -77,20 +77,23 @@
     if (!root || root.dataset.mounted === "1") return;
     root.dataset.mounted = "1";
     const code = codeFor(weekN);
+    root.id = root.id || `lab-ide-week-${weekN}`;
     root.innerHTML = `
+      <p class="lab-ide-kicker">Live IDE · Week ${weekN}</p>
       <div class="lab-ide-head">
         <div>
-          <h4>Live lab IDE</h4>
-          <p class="lab-ide-hint">Python in the browser. Edit, Run, see stdout. Code autosaves for this week.</p>
+          <h4>Run the lab here</h4>
+          <p class="lab-ide-hint">In-browser Python (Pyodide). Edit the starter, tap <strong>Run</strong>, read stdout below. Autosaves on this device.</p>
         </div>
         <div class="lab-ide-actions">
-          <button type="button" class="lab-ide-run">Run</button>
+          <button type="button" class="lab-ide-run">Run code</button>
           <button type="button" class="lab-ide-reset" title="Restore starter template">Reset</button>
         </div>
       </div>
       <label class="sr-only" for="lab-code-${weekN}">Lab code week ${weekN}</label>
       <textarea id="lab-code-${weekN}" class="lab-ide-code" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off">${escapeForTextarea(code)}</textarea>
-      <pre class="lab-ide-out" aria-live="polite">Output appears here after you tap Run.</pre>
+      <p class="lab-ide-out-label">Results</p>
+      <pre class="lab-ide-out" aria-live="polite">Tap <strong>Run code</strong> — first run downloads the Python runtime (once), then prints output here.</pre>
     `;
 
     const ta = root.querySelector(".lab-ide-code");
@@ -165,11 +168,12 @@ sys.stderr = sys.__stderr__
 
   /** Call after a week detail is rendered into the DOM. */
   function bindLabIde(container) {
-    const root = (container || document).querySelector("[data-lab-ide]");
-    if (!root) return;
-    const weekN = Number(root.getAttribute("data-lab-ide"));
-    if (!weekN) return;
-    mountIde(root, weekN);
+    const roots = (container || document).querySelectorAll("[data-lab-ide]");
+    roots.forEach((root) => {
+      const weekN = Number(root.getAttribute("data-lab-ide"));
+      if (!weekN) return;
+      mountIde(root, weekN);
+    });
   }
 
   window.SixHoursLabIde = { bindLabIde, ensurePyodide, starterFor };
