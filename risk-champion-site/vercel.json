@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": true,
+  "rewrites": [
+    { "source": "/study", "destination": "/study/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/study/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    }
+  ]
+}
