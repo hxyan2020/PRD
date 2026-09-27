@@ -527,6 +527,78 @@ body.tutor-open { overflow: hidden; }
   border: 0;
 }
 
+.viz-mount { margin: 12px 0 4px; }
+.viz-panel {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 80% at 0% 0%, color-mix(in srgb, #0c5f4e 10%, transparent), transparent 55%),
+    var(--card);
+}
+.viz-title {
+  margin: 0;
+  font-family: Fraunces, Georgia, serif;
+  font-size: 1.05rem;
+}
+.viz-sub {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+.viz-body { display: grid; gap: 8px; }
+.viz-controls {
+  display: grid;
+  gap: 8px;
+}
+.viz-slider {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.9fr) 1fr auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+}
+.viz-slider input[type="range"] {
+  width: 100%;
+  accent-color: #0c5f4e;
+}
+.viz-slider-val {
+  min-width: 3.2rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  font-weight: 600;
+}
+.viz-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--soft) 65%, #fff);
+}
+.viz-readout {
+  margin: 0;
+  font-size: 0.82rem;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink);
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--soft);
+}
+
+@media (max-width: 640px) {
+  .viz-panel { padding: 10px; }
+  .viz-slider {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+  }
+  .viz-slider span:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 .lab-ide {
   margin-top: 14px;
   display: grid;

@@ -194,6 +194,8 @@ function renderCourseware(week) {
         </section>`;
     })
     .join("");
+  const lessonTitlesJson = escapeHtml(JSON.stringify((week.lessons || []).map((l) => l.title)));
+  const viz = `<div class="viz-mount" data-lab-viz="${week.n}" data-lessons="${lessonTitlesJson}"></div>`;
   const lab = week.lab
     ? `<section class="block lab-block">
         <h3>Lab · do the work</h3>
@@ -203,9 +205,10 @@ function renderCourseware(week) {
         ${renderList(week.lab.steps)}
         <p class="block-label">What good looks like</p>
         ${renderList(week.lab.expected)}
+        ${viz}
         <div class="lab-ide" data-lab-ide="${week.n}"></div>
       </section>`
-    : "";
+    : `<section class="block">${viz}</section>`;
   const write = week.writeGuide
     ? `<section class="block">
         <h3>Write</h3>
@@ -438,6 +441,7 @@ function render(pulse) {
   else if (state.view === "notebook") renderNotebook();
   else renderProgress();
   window.SixHoursLabIde?.bindLabIde?.(app);
+  window.SixHoursViz?.bindViz?.(app);
 }
 
 function setChecked(week, index, value) {
