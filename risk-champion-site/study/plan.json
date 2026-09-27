@@ -4,7 +4,7 @@
   "hoursPerWeek": 6,
   "totalWeeks": 26,
   "totalHours": 156,
-  "stance": "The fit scores are taken as given. This plan does not try to max every path. The main line is trading risk, risk product, and risk platform. Two deep foundations sit beside that line without extending the calendar: Murex market & credit risk / risk technology, and tokenised / digital-asset institutional risk — both reuse the same 26 weeks with a different lens. AI risk, practiced as an AI engineer, is the first backup. Quant risk and multi-asset risk are the second backup. Prime brokerage and generic trading product stay as bridges. The professional moat this plan compounds is institutional market & credit risk × trading risk × digital assets × risk technology/product.",
+  "stance": "The fit scores are taken as given. This plan does not try to max every path. The main line is trading risk, risk product, and risk platform. Two deep foundations sit beside that line without extending the calendar: Murex market & credit risk / risk technology, and tokenised / digital-asset institutional risk — both reuse the same 26 weeks with a different lens. AI risk, practiced as an AI engineer, is the first backup. Quant risk and multi-asset risk are the second backup. Prime brokerage / buy-side portfolio risk is a bridge that now includes portfolio construction, factor risk, hedging, portfolio stress, and PM interaction — mapped onto existing weeks, not extra calendar. Generic trading product stays a narrow slice. The professional moat this plan compounds is institutional market & credit risk × trading risk × digital assets × risk technology/product.",
   "hardLimit": "A five-year formal product-manager title cannot be manufactured in 156 hours. The substitute is the portfolio from weeks 5 to 8 and 24 to 26.",
   "privacy": "Use public documents and synthetic numbers. Do not put employer positions, client names, or live thresholds into the notebooks, the RAG index, or a public repository.",
   "paths": [
@@ -227,11 +227,11 @@
     },
     {
       "id": "pb",
-      "name": "Prime Brokerage / Buy-side Risk",
+      "name": "Prime Brokerage / Buy-side Portfolio Risk",
       "fitNow": 72,
-      "fitAfter": 88,
+      "fitAfter": 90,
       "role": "Bridge",
-      "summary": "A high-quality TradFi bridge, not the shortest path. Two weeks cover financing, collateral, and a book that includes a repo.",
+      "summary": "Financing alone is not buy-side risk. This path adds portfolio construction and risk budgets, factor risk, hedge design, portfolio-level stress, and how you talk to a portfolio manager — still inside the same 26 weeks (tagged onto hedging, VaR, vol/correlation, Monte Carlo, and the cross-asset book).",
       "gaps": [
         {
           "name": "Repo, stock borrow, haircuts, rehypothecation",
@@ -240,10 +240,50 @@
           ]
         },
         {
-          "name": "Counterparty, liquidity, and client-book stress",
+          "name": "Portfolio hedging and basis risk a PM will challenge",
+          "weeks": [
+            2
+          ]
+        },
+        {
+          "name": "Portfolio VaR / covariance risk a book can own",
+          "weeks": [
+            12
+          ]
+        },
+        {
+          "name": "Factor risk, correlation, and a risk-budget sentence",
+          "weeks": [
+            14
+          ]
+        },
+        {
+          "name": "Portfolio construction lens and portfolio-level stress",
+          "weeks": [
+            15,
+            23
+          ]
+        },
+        {
+          "name": "Counterparty, liquidity, and financed-sleeve stress",
           "weeks": [
             22,
             23
+          ]
+        },
+        {
+          "name": "Direct portfolio-manager interaction (limits, stress, hedge)",
+          "weeks": [
+            4,
+            15,
+            23
+          ]
+        },
+        {
+          "name": "Buy-side narrative in the portfolio folder",
+          "weeks": [
+            25,
+            26
           ]
         }
       ]
@@ -498,7 +538,8 @@
       "paths": [
         "trading",
         "multi",
-        "tokenised"
+        "tokenised",
+        "pb"
       ],
       "aiEngineer": false,
       "sessions": [
@@ -594,7 +635,8 @@
           "Definition of basis with your sign convention",
           "Numeric hedge ratio for a 1-week horizon with inputs shown",
           "One assumption that fails in a liquidation cascade",
-          "Residual risk the hedge does not cover"
+          "Residual risk the hedge does not cover",
+          "If you are on the buy-side path: add one paragraph on the portfolio overlay (factor removed, residual left for the PM)."
         ],
         "goodLooksLike": "One to two pages with a formula, a number for h*, and a cascade paragraph a trading-risk manager would not dismiss as hand-waving."
       },
@@ -610,7 +652,8 @@
         "log": "Person, date sent, and whether they replied. Keep it to facts."
       },
       "pathLenses": {
-        "tokenised": "Read basis as tokenised instrument versus underlying / NAV. Write one sentence on when the token trades rich or cheap to the asset and which desk owns the break."
+        "tokenised": "Read basis as tokenised instrument versus underlying / NAV. Write one sentence on when the token trades rich or cheap to the asset and which desk owns the break.",
+        "pb": "Buy-side lens: write the hedge as a portfolio overlay (what beta/factor you remove, what residual the PM still owns, and the basis that can embarrass you in the weekly risk meeting)."
       }
     },
     {
@@ -740,7 +783,8 @@
       "paths": [
         "trading",
         "multi",
-        "tokenised"
+        "tokenised",
+        "pb"
       ],
       "aiEngineer": false,
       "sessions": [
@@ -851,12 +895,14 @@
           "Hi [Name] — I am studying how trading-risk teams defend alert thresholds (false positives versus missed loss).",
           "Could I book 20 minutes in the next six weeks to ask how you document owner and rollback when a threshold changes?",
           "No pitch deck. Two or three questions, then I will stop.",
-          "Thanks, [You]"
+          "Thanks, [You]",
+          "If buy-side path: ask how they prefer risk to escalate a soft-limit breach to the PM — chat, email, or scheduled huddle."
         ],
         "log": "Person, date sent, meeting time if booked, or decline/silence after one week."
       },
       "pathLenses": {
-        "tokenised": "Draft the 5%-versus-3% memo for one digital-asset institutional control (wallet concentration, depeg band, or settlement fail rate) using synthetic counts only."
+        "tokenised": "Draft the 5%-versus-3% memo for one digital-asset institutional control (wallet concentration, depeg band, or settlement fail rate) using synthetic counts only.",
+        "pb": "Buy-side lens: address the threshold memo to a portfolio manager, not only Head of Risk — name the mandate, the soft limit versus hard limit, and the one question you will ask the PM in the 20-minute call."
       }
     },
     {
@@ -1695,7 +1741,8 @@
       "paths": [
         "quant",
         "trading",
-        "murex"
+        "murex",
+        "pb"
       ],
       "aiEngineer": false,
       "sessions": [
@@ -1808,7 +1855,8 @@
         "log": "Either send timestamp + person, or URL + five-line file path."
       },
       "pathLenses": {
-        "murex": "Print both VaRs as numbers you would put next to an FRTB/IMA discussion: method, horizon, confidence, seed."
+        "murex": "Print both VaRs as numbers you would put next to an FRTB/IMA discussion: method, horizon, confidence, seed.",
+        "pb": "Buy-side lens: treat the VaR as portfolio VaR for a small sleeve book. State positions, weights, and whether the number is absolute or vs benchmark; that is what a PM asks first."
       }
     },
     {
@@ -1942,7 +1990,8 @@
       "title": "EWMA, GARCH(1,1), and correlation",
       "paths": [
         "quant",
-        "multi"
+        "multi",
+        "pb"
       ],
       "aiEngineer": false,
       "sessions": [
@@ -2002,6 +2051,19 @@
           }
         },
         {
+          "title": "Factor risk and a risk budget a PM can refuse",
+          "body": [
+            "Buy-side portfolio risk is not only ‘vol went up.’ A portfolio manager thinks in factors and budgets: how much of the book’s risk is market beta, rates, credit, commodity, or a digital-asset factor you named yourself. Correlation matrices are the raw material; the deliverable is a risk-budget sentence.",
+            "Practical method inside this week’s hour: pick three synthetic sleeves (for example equity index, rates future, BTC). Estimate or assume pairwise correlations from your EWMA/GARCH work. Attribute variance with a simple one-factor or three-factor story — even a rough β to a market factor plus residual is enough if you write the assumptions.",
+            "Then write the budget: ‘We intend ~60% of standalone variance from market, ~25% from digital-asset idiosyncratic, ~15% from rates; a 10% overrun on digital-asset triggers a PM conversation, not a silent accept.’ That sentence is what buy-side risk owns."
+          ],
+          "example": {
+            "title": "Risk-budget challenge in the weekly meeting",
+            "story": "Your three-sleeve book shows BTC vol spiking. The PM asks whether to cut BTC or hedge with the equity index. The factor view says BTC residual (not equity beta) drove the overrun — an equity hedge would fake comfort and leave the real risk. You propose trimming BTC 20% and leaving the index sleeve alone, with the budget line updated.",
+            "takeaway": "Factor attribution decides the hedge. Hedging the wrong factor is how risk looks busy and still loses the PM’s trust."
+          }
+        },
+        {
           "title": "Gap openings: what close-to-close GARCH cannot see",
           "body": [
             "A gap opening is when the next open is far from the previous close—overnight news, a halt, a weekend macro print. A GARCH or EWMA forecast that only saw yesterday's close-to-close return cannot see that gap until the return that includes the gap enters the recursion. Intraday risk, open-auction risk, and jump risk sit outside the model state even when the printed next-day vol looks precise to two decimals.",
@@ -2051,6 +2113,9 @@
           "Public path: 'The write-up should flag whether vol is close-to-close; gap openings are outside that state.' Log the URL."
         ],
         "log": "URL or reply text, date, and one sentence on what you learned."
+      },
+      "pathLenses": {
+        "pb": "Buy-side lens: turn the correlation/vol work into one factor-risk sentence (market / rates / crypto beta) and a risk-budget split the PM can reject or accept in one line."
       }
     },
     {
@@ -2061,7 +2126,8 @@
         "quant",
         "multi",
         "tokenised",
-        "murex"
+        "murex",
+        "pb"
       ],
       "aiEngineer": false,
       "sessions": [
@@ -2105,6 +2171,19 @@
             "title": "Synthetic ETH/BTC book",
             "story": "Spot ETH=3000, +50 ETH (150,000); BTC=100,000, +1 BTC (100,000). 5000 paths, ETH vol 5%, BTC vol 4%, ρ=0.7. Also print −30% ETH scenario loss = 45,000.",
             "takeaway": "Always park a dumb scenario number next to Monte Carlo so a Head of Risk can sanity-check the cloud."
+          }
+        },
+        {
+          "title": "Portfolio-level stress versus single-name scare charts",
+          "body": [
+            "Portfolio construction for this plan is light on purpose: you are not building a mean-variance optimiser in six hours. You are proving you can stress the book the PM actually runs — weights, sleeves, a simple construction rule (equal risk, equal weight, or mandate max sleeve %), and a joint shock.",
+            "When you run the Monte Carlo or the scripted stress, report (1) total loss, (2) loss by sleeve, (3) which construction rule concentrated the pain, and (4) one hedge or rebalance that would have cut the 95% loss without inventing Almgren–Chriss.",
+            "That is portfolio-level stress. A heatmap of every ticker without weights is not."
+          ],
+          "example": {
+            "title": "Equal-weight versus risk-budget under the same shock",
+            "story": "Two constructions, same names: equal weight loses on the BTC sleeve; equal-risk (down-weighting BTC vol) loses less at 95% but still fails a liquidity add-on when exit size exceeds your ADV rule. You show both to the PM and recommend equal-risk plus a hard sleeve cap.",
+            "takeaway": "Construction is a control. Stress without a construction rule is a story about names, not about the portfolio."
           }
         },
         {
@@ -2167,13 +2246,15 @@
         "prompt": "If the 20-minute call is not yet booked, send one new ask; if booked, write the three questions you will ask.",
         "script": [
           "Ask: 'Would you have 20 minutes for a market-risk practice conversation? I want your view on when Monte Carlo stress should outrank daily VaR in a desk pack.'",
-          "If booked: (1) When do you show MC stress beside VaR? (2) How do you treat liquidity add-ons that are not full impact models? (3) What caveat do you always force onto page 1?"
+          "If booked: (1) When do you show MC stress beside VaR? (2) How do you treat liquidity add-ons that are not full impact models? (3) What caveat do you always force onto page 1?",
+          "If buy-side path: one of your three questions must be how the PM wants portfolio stress results presented (total, by sleeve, or vs budget)."
         ],
         "log": "Send timestamp, or the three written questions saved to week15_call_questions.md."
       },
       "pathLenses": {
         "murex": "Document the liquidity add-on beside PFE-style exposure thinking: what is market loss versus funding/collateral friction.",
-        "tokenised": "Apply the liquidity add-on to a tokenised sleeve with thin secondary-market ADV; state the rule in one line."
+        "tokenised": "Apply the liquidity add-on to a tokenised sleeve with thin secondary-market ADV; state the rule in one line.",
+        "pb": "Buy-side lens: the Monte Carlo is portfolio-level stress. Show sleeve contributions and the one hedge you would propose before you show a single headline loss number."
       }
     },
     {
@@ -3025,7 +3106,8 @@
       },
       "pathLenses": {
         "murex": "Map haircuts and margin calls to CSA / IM language even while the worksheet stays public-synthetic.",
-        "tokenised": "Add a row for tokenised-collateral or stablecoin margin versus PB cash/stock — who can rehypothecate, who cannot."
+        "tokenised": "Add a row for tokenised-collateral or stablecoin margin versus PB cash/stock — who can rehypothecate, who cannot.",
+        "pb": "Buy-side lens: financing and rehypothecation change the portfolio’s true leverage. Note how a margin call hits the PM’s risk budget, not only the PB credit officer."
       }
     },
     {
@@ -3097,6 +3179,19 @@
           }
         },
         {
+          "title": "Talking to the portfolio manager under a joint stress",
+          "body": [
+            "Prime-brokerage and buy-side risk both end in a conversation with someone who owns P&L. Direct PM interaction is a skill: short facts, one ask, no theatre.",
+            "Script for this week’s call or note: (1) what broke in one sentence, (2) dominant sleeve and % of loss, (3) financing/margin call if any, (4) two options — trim versus hedge — with the factor reason, (5) the decision you need from the PM today, (6) what you will monitor for 48 hours.",
+            "Write the script before you open the chat window. If the PM challenges the hedge, answer with the week-14 factor budget, not with more adjectives."
+          ],
+          "example": {
+            "title": "Five-minute PM huddle",
+            "story": "After the four-shock run, credit-like sleeve is 55% of loss and the financed bond triggers a margin call. You ask the PM either to cut the financed sleeve 30% or to raise the risk budget with an explicit accept from their CIO process. You do not ask them to ‘be careful.’",
+            "takeaway": "PM interaction is a decision request with numbers. Advice without an ask is not risk ownership."
+          }
+        },
+        {
           "title": "Counterparty and why the call still matters",
           "body": [
             "Cross-asset stress is also a people exercise. If you have not yet held the twenty-minute industry conversation from earlier weeks, hold it now with three prepared questions. Keep the questions concrete: which report opens first when FX, crypto, and financing gap together; whether incident notes force a dominant-factor label; and where funding shocks have mattered as much as price shocks. Log the answers in a few lines you can reuse in the write-up.",
@@ -3153,7 +3248,8 @@
       },
       "pathLenses": {
         "murex": "Name which sleeve is credit/CCR-like versus market. The dominant-loss sentence is your SME soundbite.",
-        "tokenised": "Include one tokenised or digital-asset sleeve in the three-sleeve book and say whether it dominates under the joint shocks."
+        "tokenised": "Include one tokenised or digital-asset sleeve in the three-sleeve book and say whether it dominates under the joint shocks.",
+        "pb": "Buy-side lens: end with a PM-ready paragraph — dominant sleeve, proposed hedge or trim, and what you need from the PM (risk budget change vs position cut)."
       }
     },
     {
@@ -3290,7 +3386,8 @@
         "airisk",
         "multi",
         "tokenised",
-        "murex"
+        "murex",
+        "pb"
       ],
       "aiEngineer": true,
       "sessions": [
@@ -3387,7 +3484,8 @@
       },
       "pathLenses": {
         "murex": "Folder must include the VaR notebook, validation pack TOC, and one production-style rollback note.",
-        "tokenised": "Folder must include the threshold memo for a digital-asset control and the tokenised sleeve shock note."
+        "tokenised": "Folder must include the threshold memo for a digital-asset control and the tokenised sleeve shock note.",
+        "pb": "Buy-side lens: folder must include the portfolio stress note (week 23) and one factor/risk-budget line (week 14), not only the repo table."
       }
     },
     {
@@ -3506,7 +3604,8 @@
       },
       "pathLenses": {
         "murex": "Spoken defense: you are deepening Murex market & credit risk SME identity, not claiming a new job title from a bootcamp.",
-        "tokenised": "Spoken defense: institutional risk × digital assets × risk technology — not 'crypto risk' alone."
+        "tokenised": "Spoken defense: institutional risk × digital assets × risk technology — not 'crypto risk' alone.",
+        "pb": "Buy-side lens: spoken defense includes one sentence on how you partner with a PM under stress — evidence, not adjective."
       }
     }
   ],
