@@ -1001,7 +1001,8 @@ body.tutor-open { overflow: hidden; }
   .chips-nav-next { right: max(6px, env(safe-area-inset-right)); }
   .chips {
     gap: 6px;
-    padding: 8px 36px 10px;
+    padding: 8px 44px 10px;
+    scroll-padding-inline: 44px;
   }
   .chips button {
     min-height: 38px;
