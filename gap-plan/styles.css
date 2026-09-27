@@ -137,22 +137,30 @@ h1 { margin: 0; font-size: 42px; line-height: 0.95; }
 .chips-shell[hidden] { display: none !important; }
 .chips-nav {
   flex: 0 0 auto;
-  width: 36px;
-  height: 36px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--line);
   border-radius: 999px;
   background: var(--card);
   color: var(--ink);
   font: inherit;
-  font-size: 22px;
+  font-size: 26px;
   line-height: 1;
   cursor: pointer;
   box-shadow: var(--shadow);
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .chips-nav[hidden] { display: none !important; }
 .chips-nav:disabled {
   opacity: 0.35;
   cursor: default;
+}
+.chips-nav:not(:disabled):hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .chips {
   display: flex;
@@ -875,9 +883,9 @@ body.tutor-open { overflow: hidden; }
     gap: 2px;
   }
   .chips-nav {
-    width: 32px;
-    height: 32px;
-    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
   }
   .chips {
     gap: 6px;

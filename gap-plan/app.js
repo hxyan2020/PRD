@@ -99,12 +99,13 @@ function bindChipsScroll() {
     true
   );
   window.addEventListener("resize", updateChipsScrollState);
-  chipsPrev?.addEventListener("click", () => {
-    chips.scrollBy({ left: -Math.max(160, chips.clientWidth * 0.7), behavior: "smooth" });
-  });
-  chipsNext?.addEventListener("click", () => {
-    chips.scrollBy({ left: Math.max(160, chips.clientWidth * 0.7), behavior: "smooth" });
-  });
+}
+
+function scrollChipsBy(direction) {
+  if (!chips) return;
+  const delta = Math.max(180, Math.round(chips.clientWidth * 0.75)) * direction;
+  chips.scrollBy({ left: delta, behavior: "smooth" });
+  window.setTimeout(updateChipsScrollState, 280);
 }
 
 function load() {
@@ -597,6 +598,12 @@ function setChecked(week, index, value) {
 }
 
 document.body.addEventListener("click", async (event) => {
+  const chipsNav = event.target.closest("[data-chips-nav]");
+  if (chipsNav && !chipsNav.disabled) {
+    event.preventDefault();
+    scrollChipsBy(Number(chipsNav.dataset.chipsNav) || 0);
+    return;
+  }
   const viewButton = event.target.closest(".tabbar button");
   if (viewButton) {
     state.view = viewButton.dataset.view;
@@ -758,7 +765,7 @@ window.SixHours = {
 async function main() {
   try {
     load();
-    const response = await fetch("plan.json?v=20260927e");
+    const response = await fetch("plan.json?v=20260927f");
     if (!response.ok) throw new Error(`plan.json ${response.status}`);
     state.plan = await response.json();
     const start = new Date(`${state.plan.start}T00:00:00`);
