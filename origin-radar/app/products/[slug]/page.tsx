@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProduct, getProducts } from "@/lib/catalog";
+import { CATALOG_AS_OF, getProduct, getProducts } from "@/lib/catalog";
 import { compact, cny, pct, searchHref, usd } from "@/lib/format";
 import { HeatmapGrid } from "@/components/HeatmapGrid";
 import { MarketTable } from "@/components/MarketTable";
@@ -148,17 +148,20 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div>
           <h2 className="mb-4 font-serif text-3xl">Search demand</h2>
           <div className="panel p-5">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="font-mono text-xs text-mist">{product.search.keyword}</p>
-                <p className="font-serif text-4xl">{product.search.globalIndex}</p>
-                <p className="text-sm text-mist">
-                  Global index · {product.search.risingPct > 0 ? "+" : ""}
-                  {product.search.risingPct}% related-query lift
-                </p>
-              </div>
-              <Sparkline values={product.search.sparkline} className="w-40" />
+            <div>
+              <p className="font-mono text-xs text-mist">{product.search.keyword}</p>
+              <p className="font-serif text-4xl">{product.search.globalIndex}</p>
+              <p className="text-sm text-mist">
+                Global index · {product.search.risingPct > 0 ? "+" : ""}
+                {product.search.risingPct}% related-query lift
+              </p>
             </div>
+            <Sparkline
+              values={product.search.sparkline}
+              asOf={CATALOG_AS_OF}
+              labeled
+              className="mt-5 w-full"
+            />
             <div className="mt-4 flex flex-wrap gap-2">
               {product.search.related.map((k) => (
                 <span key={k} className="chip">
