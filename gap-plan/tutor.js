@@ -2,15 +2,6 @@
   const SETTINGS_KEY = "six-hours-tutor-settings-v1";
   const HISTORY_KEY = "six-hours-tutor-history-v1";
 
-  const bubble = document.createElement("button");
-  bubble.type = "button";
-  bubble.id = "sel-ai";
-  bubble.className = "sel-ai";
-  bubble.hidden = true;
-  bubble.setAttribute("aria-label", "Ask AI about this selection");
-  bubble.innerHTML = `<span class="sel-ai-mark" aria-hidden="true">AI</span>`;
-  document.body.appendChild(bubble);
-
   const sheet = document.createElement("div");
   sheet.id = "tutor-sheet";
   sheet.className = "tutor-sheet";
@@ -63,10 +54,8 @@
   const modelEl = sheet.querySelector("#tutor-model");
 
   let pendingSelection = "";
-  let selectionRect = null;
   let conversation = [];
   let busy = false;
-  let hideTimer = 0;
 
   function loadSettings() {
     try {
@@ -296,7 +285,7 @@
     settingsEl.setAttribute("hidden", "");
     sheet.hidden = false;
     document.body.classList.add("tutor-open");
-    hideBubble();
+    window.SixHoursSelection?.hideToolbar?.();
     renderMessages();
     const starter = pendingSelection
       ? `Explain this in plain English, with one concrete risk example: ${pendingSelection}`
@@ -308,60 +297,6 @@
   function closeSheet() {
     sheet.hidden = true;
     document.body.classList.remove("tutor-open");
-  }
-
-  function hideBubble() {
-    bubble.hidden = true;
-  }
-
-  function placeBubble(rect) {
-    const size = 48;
-    const margin = 8;
-    const tabbar = 72;
-    let left = rect.left + rect.width / 2 - size / 2;
-    let top = rect.top - size - margin;
-    if (top < margin + 8) top = rect.bottom + margin;
-    if (top + size > window.innerHeight - tabbar) {
-      top = Math.max(margin, rect.top - size - margin);
-    }
-    left = Math.max(margin, Math.min(left, window.innerWidth - size - margin));
-    bubble.style.left = `${left}px`;
-    bubble.style.top = `${top}px`;
-    bubble.hidden = false;
-  }
-
-  function readSelection() {
-    const selection = window.getSelection();
-    if (!selection || selection.isCollapsed) return null;
-    const text = selection.toString().replace(/\s+/g, " ").trim();
-    if (text.length < 3 || text.length > 800) return null;
-    const anchor = selection.anchorNode;
-    if (!anchor) return null;
-    const node = anchor.nodeType === Node.ELEMENT_NODE ? anchor : anchor.parentElement;
-    if (!node || node.closest("#tutor-sheet") || node.closest("#sel-ai") || node.closest(".tabbar")) {
-      return null;
-    }
-    if (!node.closest("main, .top, .dock, .note, .card, .path-card, .source")) return null;
-    let range;
-    try {
-      range = selection.getRangeAt(0);
-    } catch (_) {
-      return null;
-    }
-    const rect = range.getBoundingClientRect();
-    if (!rect || (rect.width === 0 && rect.height === 0)) return null;
-    return { text, rect };
-  }
-
-  function refreshBubble() {
-    const found = readSelection();
-    if (!found) {
-      hideBubble();
-      return;
-    }
-    pendingSelection = found.text;
-    selectionRect = found.rect;
-    placeBubble(found.rect);
   }
 
   async function ask(text) {
@@ -391,49 +326,6 @@
     busy = false;
     sheet.querySelector("#tutor-send").disabled = false;
   }
-
-  document.addEventListener("selectionchange", () => {
-    clearTimeout(hideTimer);
-    hideTimer = setTimeout(refreshBubble, 120);
-  });
-
-  document.addEventListener(
-    "touchend",
-    () => {
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(refreshBubble, 280);
-    },
-    { passive: true }
-  );
-
-  document.addEventListener(
-    "scroll",
-    () => {
-      if (bubble.hidden) return;
-      const found = readSelection();
-      if (!found) {
-        hideBubble();
-        return;
-      }
-      pendingSelection = found.text;
-      selectionRect = found.rect;
-      placeBubble(found.rect);
-    },
-    { passive: true }
-  );
-
-  bubble.addEventListener("pointerdown", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  });
-
-  bubble.addEventListener("click", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const text = pendingSelection || readSelection()?.text || "";
-    if (!text) return;
-    openSheet(text);
-  });
 
   sheet.addEventListener("click", (event) => {
     if (event.target.closest("[data-tutor-close]")) {
