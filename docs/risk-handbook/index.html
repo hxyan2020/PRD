@@ -171,7 +171,7 @@
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.5</p>
+        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.6</p>
       </div>
       <div class="md-links">
         <a href="en.md">en.md</a>
@@ -187,8 +187,8 @@
     <article class="panel active" role="tabpanel" id="panel-en" aria-labelledby="tab-en" lang="en">
 <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
 <p><strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
-<strong>Scope:</strong> Spot · Cross/Isolated Margin · USDⓈ-M &amp; COIN-M Perpetuals (and dated futures where noted)<br />
-<strong>Version:</strong> 1.5 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
+<strong>Scope:</strong> Full catalogue covers Spot · Margin · Perps; <strong>Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access</strong><br />
+<strong>Version:</strong> 1.6 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
 <blockquote>
 <p>This handbook is the <strong>operating playbook</strong> for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.<br />
 <strong>Thresholds below are illustrative defaults</strong> for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.</p>
@@ -207,8 +207,79 @@
 <li><a href="#9-risk-scenario-diagnostics-rag--time-sequence">Risk scenario diagnostics (RAG + time sequence)</a></li>
 <li><a href="#10-incident-severity--war-room">Incident severity &amp; war room</a></li>
 <li><a href="#11-appendix--glossary--checklists">Appendix — glossary &amp; checklists</a></li>
+<li><a href="#phase-1-operating-scope-labels-used-throughout">Phase 1 operating scope</a></li>
 </ol>
 <hr />
+<h2>Phase 1 operating scope (labels used throughout)</h2>
+<blockquote>
+<p><strong>Phase 1 is live / in-scope now.</strong> Later-phase content stays in this handbook for readiness but is marked <strong><code>[Phase 2+]</code></strong> (or later). Do not enable Phase 2+ flows in production without a formal phase-gate sign-off (Risk <strong>A</strong> + CP + Product).</p>
+</blockquote>
+<h3>Phase 1 — in scope</h3>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Phase 1 rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Products / instruments</strong></td>
+<td><strong>Perpetuals only.</strong> Includes <strong>XAUUSD perps</strong> and <strong>other approved perp contracts</strong>. No Spot trading book and no Margin (cross/isolated) lending book in Phase 1.</td>
+</tr>
+<tr>
+<td><strong>Account opening</strong></td>
+<td><strong>Invite-only</strong> and/or <strong>through brokers</strong> (IB / introducing broker / white-label broker channel). No open public self-serve signup.</td>
+</tr>
+<tr>
+<td><strong>Trading access</strong></td>
+<td>Users may trade only after invite acceptance <strong>or</strong> broker-introduced onboarding is complete and risk/compliance gates clear.</td>
+</tr>
+<tr>
+<td><strong>Primary BUs on critical path</strong></td>
+<td>Futures/Perps Product &amp; Liq Ops · Matching · Risk Engine · Risk Ops · Broker/Invite ops (CP+Product) · Wallet/Settlement as needed for collateral/PnL · Surveillance</td>
+</tr>
+</tbody>
+</table>
+<h3>Phase 1 — out of production (keep playbooks; label only)</h3>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Label</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spot markets, spot listing/delist go-live</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>Playbooks SP-*, LD-05, spot KRIs remain for future</td>
+</tr>
+<tr>
+<td>Margin borrow / LTV / interest</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>MG-* remain for future</td>
+</tr>
+<tr>
+<td>Public retail self-serve onboarding</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>Phase 1 = invite + broker only</td>
+</tr>
+<tr>
+<td>Non-perp products (options, earn, etc. if any)</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>Unless separately gated</td>
+</tr>
+</tbody>
+</table>
+<h3>Phase 1 control implications (operators)</h3>
+<ol>
+<li><strong>Listing / go-live:</strong> only <strong>perp</strong> pipeline (incl. <strong>XAUUSD</strong>) and broker/invite entitlement configs are production-critical.  </li>
+<li><strong>Access control:</strong> reject or hold any account that is neither <strong>invite-redeemed</strong> nor <strong>broker-linked</strong>.  </li>
+<li><strong>KRIs / SOPs:</strong> Spot- and Margin-tagged items are still documented — treat as <strong>dormant</strong> unless a Phase 2+ waiver exists. Prefer Perps + access KRIs in daily MI.  </li>
+<li><strong>XAUUSD perps:</strong> apply full Perps controls (mark/index, funding, leverage brackets, insurance/ADL) plus commodity/FX-hours awareness (session gaps, weekend/holiday liquidity).</li>
+</ol>
 <h2>1. How to use this handbook</h2>
 <table>
 <thead>
@@ -242,6 +313,10 @@
 <td>Listing / Delisting PIC</td>
 <td>Listing BU chapter end-to-end</td>
 </tr>
+<tr>
+<td>Phase 1 PIC / launch crew</td>
+<td><strong>Phase 1 operating scope</strong> + §3.3 Perps + §4.4 + invite/broker SOPs</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Golden rules</strong></p>
@@ -251,6 +326,7 @@
 <li><strong>Instrument-aware</strong> — Spot ≠ Margin ≠ Perps. Controls, liquidation, and insurance differ; do not copy-paste configs.</li>
 <li><strong>Pre-trade / at-trade / post-trade</strong> — every material risk has at least one control in each layer where feasible.</li>
 <li><strong>Client assets first</strong> — wallet/custody and withdrawal integrity outrank revenue features under stress.</li>
+<li><strong>Phase 1 product &amp; access gates</strong> — production trading = <strong>perps only</strong> (incl. <strong>XAUUSD</strong>); accounts = <strong>invite-only or via brokers</strong>. Spot/Margin and public signup remain documented as <strong><code>[Phase 2+]</code></strong>.</li>
 </ol>
 <hr />
 <h2>2. Three lines of defence &amp; role map</h2>
@@ -376,7 +452,10 @@
 <hr />
 <h2>3. Instrument primers (Spot / Margin / Perps)</h2>
 <p>Use this section when configuring limits, writing SOPs, or deciding which admin page applies.</p>
-<h3>3.1 Spot</h3>
+<h3>3.1 Spot <code>[Phase 2+]</code></h3>
+<blockquote>
+<p><strong>Not enabled in Phase 1.</strong> Retain playbook for later phase-gate.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -407,7 +486,10 @@
 </tr>
 </tbody>
 </table>
-<h3>3.2 Margin (Cross &amp; Isolated)</h3>
+<h3>3.2 Margin (Cross &amp; Isolated) <code>[Phase 2+]</code></h3>
+<blockquote>
+<p><strong>Not enabled in Phase 1.</strong> Retain playbook for later phase-gate.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -442,7 +524,10 @@
 </tr>
 </tbody>
 </table>
-<h3>3.3 Perpetual futures (USDⓈ-M / COIN-M)</h3>
+<h3>3.3 Perpetual futures (USDⓈ-M / COIN-M) <code>[Phase 1]</code></h3>
+<blockquote>
+<p><strong>Phase 1 in scope:</strong> approved perps including <strong>XAUUSD perps</strong> and other listed perps. Spot/Margin are off.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -525,6 +610,12 @@
 <td>Cancel/fill ratio, halt count</td>
 <td>Borrow util, liquidation volume, bad debt</td>
 <td>Insurance balance, ADL events, basis, mark–index gap</td>
+</tr>
+<tr>
+<td><strong>Phase label</strong></td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td><strong><code>[Phase 1]</code></strong> (incl. XAUUSD)</td>
 </tr>
 </tbody>
 </table>
@@ -669,7 +760,10 @@
 <li>To Product: new-product conditions / go-live gates  </li>
 </ul>
 <hr />
-<h3>4.2 Spot Product &amp; Trading Ops — PM-SPOT / TO</h3>
+<h3>4.2 Spot Product &amp; Trading Ops — PM-SPOT / TO <code>[Phase 2+]</code></h3>
+<blockquote>
+<p>Phase 1: dormant product surface. Keep halt/listing readiness; do not open spot symbols.</p>
+</blockquote>
 <h4>In scope</h4>
 <ul>
 <li>Spot symbol lifecycle ops (post-listing config)</li>
@@ -789,7 +883,10 @@
 <li>Wallet → TO for deposit-only / withdraw-only modes during incidents  </li>
 </ul>
 <hr />
-<h3>4.3 Margin Product &amp; Credit Ops — PM-MARGIN / RO-CREDIT / TO</h3>
+<h3>4.3 Margin Product &amp; Credit Ops — PM-MARGIN / RO-CREDIT / TO <code>[Phase 2+]</code></h3>
+<blockquote>
+<p>Phase 1: no margin borrow book. Perps margin/liquidation stays under §4.4 / RE.</p>
+</blockquote>
 <h4>In scope</h4>
 <ul>
 <li>Cross &amp; Isolated margin product rules</li>
@@ -923,7 +1020,10 @@
 <li>To Risk: any bad debt &gt; materiality threshold  </li>
 </ul>
 <hr />
-<h3>4.4 Futures / Perps Product &amp; Liquidation Ops — PM-FUT / RO / TO-FUT</h3>
+<h3>4.4 Futures / Perps Product &amp; Liquidation Ops — PM-FUT / RO / TO-FUT <code>[Phase 1 — primary]</code></h3>
+<blockquote>
+<p>Phase 1 critical path: <strong>XAUUSD perps</strong> + other approved perps; invite/broker traders only.</p>
+</blockquote>
 <h4>In scope</h4>
 <ul>
 <li>USDⓈ-M and COIN-M perpetuals (and dated futures if live)</li>
@@ -1426,6 +1526,9 @@
 </table>
 <hr />
 <h3>4.8 Listing, Delisting &amp; Token Due Diligence — LI / RO / CP / Legal</h3>
+<blockquote>
+<p><strong>Phase 1 listing focus:</strong> perp contracts only (e.g. <strong>XAUUSD</strong> and other approved perps). Spot listing/delist SOPs = <strong><code>[Phase 2+]</code></strong>. Margin eligibility (LD-03) = <strong><code>[Phase 2+]</code></strong>.</p>
+</blockquote>
 <h4>In scope</h4>
 <ul>
 <li>New spot pairs, margin eligibility, perp contracts</li>
@@ -1567,6 +1670,7 @@
 <h4>In scope</h4>
 <ul>
 <li>KYC/AML, sanctions, travel rule</li>
+<li><strong>Phase 1 access:</strong> invite-code redemption controls; <strong>broker / IB</strong> introduced accounts; block public self-serve signup</li>
 <li>Trade surveillance (spoofing, layering, wash, insider)</li>
 <li>Market abuse investigations across Spot / Margin / Perps</li>
 <li>Regulatory reporting liaison</li>
@@ -2248,7 +2352,10 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 5. <strong>RE/ME</strong> configs in staging; dry-runs signed.<br />
 6. <strong>WO</strong> deposit/withdraw ready on correct chains.<br />
 7. Soft launch / whitelist if used → hypercare roster 72h.<br />
-8. Only then open public traffic.</p>
+8. Only then open traffic — <strong>Phase 1:</strong> invite/broker cohort only, <strong>not</strong> public signup; <strong>perps only</strong>.</p>
+<blockquote>
+<p><strong>Phase 1 gate note:</strong> production instruments = <strong>perps (incl. XAUUSD)</strong>; access = <strong>ACC-01/ACC-02</strong>. Spot/Margin = <strong><code>[Phase 2+]</code></strong>.</p>
+</blockquote>
 <p><strong>Done when:</strong> Pipeline stage = Live; monitoring KRIs wired; hypercare named.<br />
 <strong>Escalate if:</strong> Traffic detected pre-clear → PL-K12 BREACH, force disable, L3 audit.</p>
 <hr />
@@ -2472,7 +2579,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tbody>
 </table>
 <hr />
-<h4>SP — Spot</h4>
+<h4>SP — Spot <code>[Phase 2+]</code></h4>
 <h5>SP-01 Spot symbol go-live</h5>
 <table>
 <thead>
@@ -2617,7 +2724,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tbody>
 </table>
 <hr />
-<h4>MG — Margin</h4>
+<h4>MG — Margin <code>[Phase 2+]</code></h4>
 <h5>MG-01 Add collateral asset</h5>
 <table>
 <thead>
@@ -2781,7 +2888,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tbody>
 </table>
 <hr />
-<h4>PF — Perps</h4>
+<h4>PF — Perps <code>[Phase 1]</code></h4>
 <h5>PF-01 New perp contract launch</h5>
 <table>
 <thead>
@@ -3643,6 +3750,120 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <h5>ENG-04 Security incident (key/API)</h5>
 <p><strong>When:</strong> compromise / PL-K08 · <strong>Who R:</strong> Security · <strong>A:</strong> CISO · <strong>I:</strong> CRO/CP · <strong>SLA:</strong> kill key ≤2m · <strong>How:</strong> revoke · rotate · user notify · forensic · L3/L4 war room.</p>
 <hr />
+<h4>ACCESS — Phase 1 invite &amp; broker onboarding <code>[Phase 1]</code></h4>
+<h5>ACC-01 Invite-only account open</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>When</strong></td>
+<td>Prospect redeems invite / allowlist code; or ops issues invite</td>
+</tr>
+<tr>
+<td><strong>Who</strong></td>
+<td><strong>R:</strong> Product/Growth ops or Broker desk · <strong>A CP gates:</strong> CP · <strong>A risk entitlements:</strong> RO (limits tier) · <strong>R enable trade:</strong> RE/ENG flags</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>Invite validate ≤1m automated · Manual CP review per policy · Entitlement push ≤15m after clear</td>
+</tr>
+<tr>
+<td><strong>Preconditions</strong></td>
+<td>Phase 1 mode on; invite unused/unexpired; sanctions screen clear</td>
+</tr>
+<tr>
+<td><strong>Systems</strong></td>
+<td>Invite admin · KYC · <code>/admin/compliance/holds</code> · risk limits tier · broker link (if any)</td>
+</tr>
+<tr>
+<td><strong>How</strong></td>
+<td>1) Validate invite. 2) Collect KYC/KYB as required. 3) CP clear. 4) Bind account to invite issuer metadata. 5) Set Phase 1 product entitlement = <strong>perps only</strong>. 6) Enable trading flags. 7) Audit log.</td>
+</tr>
+<tr>
+<td><strong>Done when</strong></td>
+<td>Account can trade approved perps only; spot/margin flags off.</td>
+</tr>
+<tr>
+<td><strong>Escalate if</strong></td>
+<td>Invite abuse / shared codes → CP-02 hold; public signup path found open → L3 disable.</td>
+</tr>
+</tbody>
+</table>
+<h5>ACC-02 Broker-introduced account open</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>When</strong></td>
+<td>Broker/IB submits or links end-client under broker agreement</td>
+</tr>
+<tr>
+<td><strong>Who</strong></td>
+<td><strong>R:</strong> Broker ops · <strong>A:</strong> CP (KYC/KYB of client + broker) · <strong>C:</strong> Legal (broker agreement live) · <strong>A risk:</strong> RO for broker-level limits · <strong>R:</strong> RE entitlements</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>Per broker SLA; no trade before CP+agreement+entitlement</td>
+</tr>
+<tr>
+<td><strong>Preconditions</strong></td>
+<td>Executed broker agreement; broker on allowlist; client KYC complete</td>
+</tr>
+<tr>
+<td><strong>Systems</strong></td>
+<td>Broker portal · master/sub or tagged UID · limit hierarchy</td>
+</tr>
+<tr>
+<td><strong>How</strong></td>
+<td>1) Verify broker status. 2) Onboard client under broker. 3) CP clear client. 4) Apply broker and client limit stacks. 5) Entitlement = Phase 1 perps only. 6) Dual-control if broker credit/vip.</td>
+</tr>
+<tr>
+<td><strong>Done when</strong></td>
+<td>Client trades only via approved path; attribution to broker for surveillance/revenue.</td>
+</tr>
+<tr>
+<td><strong>Escalate if</strong></td>
+<td>Broker agreement lapsed → freeze new accounts; cascade risk on broker book → RO L2/L3.</td>
+</tr>
+</tbody>
+</table>
+<h5>ACC-03 Phase 1 entitlement guard (continuous)</h5>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>When</strong></td>
+<td>Continuous + daily MI; any attempt to enable spot/margin or public signup</td>
+</tr>
+<tr>
+<td><strong>Who</strong></td>
+<td><strong>R monitor:</strong> RO-OPS/ENG · <strong>A:</strong> RO + CP</td>
+</tr>
+<tr>
+<td><strong>How</strong></td>
+<td>Alert if spot/margin symbol enabled; alert if self-serve register open; alert if UID trades without invite/broker tag.</td>
+</tr>
+<tr>
+<td><strong>Done when</strong></td>
+<td>Daily zero exceptions or exceptions ticketed with phase-gate waiver.</td>
+</tr>
+</tbody>
+</table>
 <h2>7. Admin pages &amp; tool catalogue</h2>
 <h3>7.1 Canonical admin map (by domain)</h3>
 <table>
@@ -3718,6 +3939,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </table>
 <blockquote>
 <p>Paths are <strong>logical</strong>. Map them 1:1 to your internal Admin Console / Orion / Risk Portal names without changing ownership.</p>
+<p><strong>Phase 1 admin priority:</strong> <code>/admin/futures/*</code>, <code>/admin/risk*</code>, <code>/admin/engine/*</code>, invite/broker &amp; compliance holds. <code>/admin/spot/*</code> and <code>/admin/margin/*</code> stay configured but <strong>disabled</strong> (<code>[Phase 2+]</code>).</p>
 </blockquote>
 <h3>7.2 Tooling aligned to platform modules</h3>
 <table>
@@ -4716,12 +4938,12 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </table>
 <h3>8.12 Minimum “always on” set (if tooling is constrained)</h3>
 <p>Stand up these first — then expand to full catalogue:</p>
-<ol>
-<li><strong>PF-K01</strong> Mark−index · <strong>PF-K07</strong> Insurance coverage · <strong>PF-K06</strong> Liq burst  </li>
-<li><strong>MG-K01</strong> Borrow util · <strong>MG-K04</strong> Bad debt · <strong>MG-K08</strong> Stable depeg  </li>
-<li><strong>SP-K03</strong> Price dislocation · <strong>SP-K09</strong> Matching latency  </li>
-<li><strong>PL-K01</strong> Hot-wallet buffer · <strong>PL-K06</strong> Mark pipeline lag · <strong>PL-K05</strong> Recon breaks  </li>
-</ol>
+<p><strong>Phase 1 prefer (perps + access + platform):</strong><br />
+1. <strong>PF-K01</strong> Mark−index · <strong>PF-K07</strong> Insurance · <strong>PF-K06</strong> Liq burst · <strong>PF-K03</strong> Funding (incl. <strong>XAUUSD</strong>)<br />
+2. <strong>ACC / access:</strong> invite/broker tag coverage; blocked public signup; entitlement = perps-only<br />
+3. <strong>PL-K01</strong> Hot-wallet buffer · <strong>PL-K06</strong> Mark pipeline lag · <strong>PL-K05</strong> Recon · <strong>SP-K09</strong> Matching latency (shared engine)  </p>
+<p><strong><code>[Phase 2+]</code> dormant until enabled:</strong><br />
+4. <strong>MG-K01 / K04 / K08</strong> · <strong>SP-K03</strong> (spot book) and other Spot/Margin KRIs  </p>
 <hr />
 <h2>9. Risk scenario diagnostics (RAG + time sequence)</h2>
 <p>Use this section when an indicator (or cluster) flips colour. <strong>Never act on colour alone</strong> — reconstruct the <strong>time sequence</strong>, then discriminate causes.</p>
@@ -5853,6 +6075,22 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Scenario family</td>
 <td>Named multi-KRI pattern S1–S12 (§9.4)</td>
 </tr>
+<tr>
+<td>Phase 1</td>
+<td>Production: perps only (incl. XAUUSD); invite-only or broker onboarding</td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td>Documented but not production-enabled (e.g. Spot, Margin, public signup)</td>
+</tr>
+<tr>
+<td>Invite-only</td>
+<td>Account open requires valid invite/allowlist; no public self-serve</td>
+</tr>
+<tr>
+<td>Broker channel</td>
+<td>IB/introducing broker introduced accounts under agreement</td>
+</tr>
 </tbody>
 </table>
 <h3>11.2 BU PIC weekly checklist</h3>
@@ -5866,7 +6104,10 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li>[ ] DR / failover or liquidation dry-run status (monthly at minimum)  </li>
 <li>[ ] Read-across: any Spot issue that should change Margin/Perps params  </li>
 </ul>
-<h3>11.3 Go-live checklist — Perps (summary)</h3>
+<h3>11.3 Go-live checklist — Perps (summary) <code>[Phase 1]</code></h3>
+<blockquote>
+<p>Includes <strong>XAUUSD</strong> and other Phase 1 perps. Confirm invite/broker access (ACC-01/02) before publicising any cohort.</p>
+</blockquote>
 <ul>
 <li>[ ] Contract specs signed (PM + Legal)  </li>
 <li>[ ] Index constituents ≥ policy minimum; <strong>PF-K01/PF-K02</strong> alerts on  </li>
@@ -5879,7 +6120,16 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li>[ ] Hypercare roster 72h  </li>
 <li>[ ] RO-OPS briefed on S2 vs S1 discrimination for this contract  </li>
 </ul>
-<h3>11.4 Go-live checklist — Margin asset</h3>
+<h3>11.3a Go-live checklist — Phase 1 access (invite / broker)</h3>
+<ul>
+<li>[ ] Public self-serve registration <strong>disabled</strong></li>
+<li>[ ] Invite service live; code expiry/reuse rules tested (ACC-01)</li>
+<li>[ ] Broker allowlist + agreements executed; portal/tagging works (ACC-02)</li>
+<li>[ ] Every trade-enabled UID has invite <strong>or</strong> broker attribution</li>
+<li>[ ] Product entitlement = <strong>perps only</strong> (spot/margin flags off)</li>
+<li>[ ] ACC-03 daily exception report subscribed by RO-OPS + CP</li>
+</ul>
+<h3>11.4 Go-live checklist — Margin asset <code>[Phase 2+]</code></h3>
 <ul>
 <li>[ ] Spot market stable ≥ observation window  </li>
 <li>[ ] Haircut/LTV stress-tested (DA); <strong>MG-K05</strong> baseline recorded  </li>
@@ -5889,7 +6139,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li>[ ] Bad-debt ledger mapping ready (<strong>MG-K04</strong>)  </li>
 <li>[ ] Depeg tabletop (S3) completed if stable / soft-peg collateral  </li>
 </ul>
-<h3>11.5 Go-live checklist — Spot</h3>
+<h3>11.5 Go-live checklist — Spot <code>[Phase 2+]</code></h3>
 <ul>
 <li>[ ] Listing diligence complete (LI/RO/CP/Legal)  </li>
 <li>[ ] Wallet deposit/withdraw enabled on correct chain(s); <strong>PL-K01</strong> buffer OK  </li>
@@ -5924,7 +6174,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 <tr>
 <td>Version</td>
-<td>1.5 — Tabbed EN / 简体中文 editions; expanded SOPs</td>
+<td>1.6 — Phase 1 labels: perps (incl. XAUUSD) + invite/broker only</td>
 </tr>
 </tbody>
 </table>
@@ -5936,8 +6186,8 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
     <article class="panel" role="tabpanel" id="panel-zh" aria-labelledby="tab-zh" lang="zh-CN" hidden>
 <h1>加密货币交易所风险管理 — 业务单元（BU）用户手册（简体中文）</h1>
 <p><strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
-<strong>范围：</strong> 现货（Spot）· 全仓/逐仓杠杆（Margin）· U本位/币本位永续合约（Perps；定期合约如有则另注）<br />
-<strong>版本：</strong> 1.5 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
+<strong>范围：</strong> 全量目录含现货·杠杆·永续；<strong>Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入</strong><br />
+<strong>版本：</strong> 1.6 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
 <blockquote>
 <p>本手册为<strong>操作手册</strong>：明确职责边界、分工、SOP、管理后台、指标/阈值/动作、情景诊断与日常工具。不替代法律政策、限额手册或监管申报。<br />
 <strong>下文阈值为一级交易所框架的示意默认值</strong> — 须按《限额手册》校准；未经 RO 双人审批不得直接用于生产。</p>
@@ -5956,8 +6206,79 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li><a href="#中文-9-风险情景诊断红黄绿--时序">风险情景诊断（红黄绿 + 时序）</a></li>
 <li><a href="#中文-10-事件定级与战时指挥">事件定级与战时指挥</a></li>
 <li><a href="#中文-11-附录--术语与检查清单">附录 — 术语与检查清单</a></li>
+<li><a href="#phase-1-运营范围全文标签说明">Phase 1 运营范围</a></li>
 </ol>
 <hr />
+<h2>Phase 1 运营范围（全文标签说明）</h2>
+<blockquote>
+<p><strong>Phase 1 为当前生产范围。</strong> 后续阶段内容保留备战，一律标注 <strong><code>[Phase 2+]</code></strong>（或更晚）。未经正式阶段门禁（风险 <strong>A</strong> + 合规 + 产品）不得在生产开通 Phase 2+ 流程。</p>
+</blockquote>
+<h3>Phase 1 — 范围内</h3>
+<table>
+<thead>
+<tr>
+<th>领域</th>
+<th>Phase 1 规则</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>产品 / 合约</strong></td>
+<td><strong>仅永续（Perps）。</strong> 含 <strong>XAUUSD 永续</strong> 及其他已批准永续合约。Phase 1 <strong>无现货交易簿、无杠杆借贷簿</strong>。</td>
+</tr>
+<tr>
+<td><strong>开户</strong></td>
+<td><strong>仅邀请制</strong> 和/或 <strong>经经纪商（Broker / IB）</strong> 引入。无面向公众的自助开放注册。</td>
+</tr>
+<tr>
+<td><strong>交易准入</strong></td>
+<td>须完成邀请兑换 <strong>或</strong> 经纪商引入入驻，并通过风险/合规门禁后方可交易。</td>
+</tr>
+<tr>
+<td><strong>关键路径 BU</strong></td>
+<td>合约/永续产品与强平 · 撮合 · 风控引擎 · 风险运维 · 邀请/经纪商运营（合规+产品）· 钱包/结算（按需）· 监察</td>
+</tr>
+</tbody>
+</table>
+<h3>Phase 1 — 生产未开（保留手册，仅贴标签）</h3>
+<table>
+<thead>
+<tr>
+<th>领域</th>
+<th>标签</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>现货市场、现货上/下币投产</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>保留 SP-*、LD-05、现货 KRI</td>
+</tr>
+<tr>
+<td>杠杆借款 / LTV / 利息</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>保留 MG-*</td>
+</tr>
+<tr>
+<td>公众自助开户</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>Phase 1 = 邀请 + 经纪商</td>
+</tr>
+<tr>
+<td>非永续产品（期权、理财等，如有）</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>除非另行门禁</td>
+</tr>
+</tbody>
+</table>
+<h3>Phase 1 对操作的含义</h3>
+<ol>
+<li><strong>上币/上线：</strong> 生产关键路径仅为 <strong>永续</strong>（含 <strong>XAUUSD</strong>）与邀请/经纪商权益配置。  </li>
+<li><strong>准入：</strong> 既非邀请兑换、亦非经纪商关联的账户不得开通交易。  </li>
+<li><strong>KRI/SOP：</strong> 现货/杠杆条目仍文档化 — 视为<strong>休眠</strong>，除非有 Phase 2+ 豁免；日报优先永续与准入类指标。  </li>
+<li><strong>XAUUSD 永续：</strong> 适用完整永续控制（标记/指数、资金费、杠杆档、保险/ADL），并关注贵金属时段/节假日流动性与间隙风险。</li>
+</ol>
 <h2>中文 1. 如何使用本手册</h2>
 <table>
 <thead>
@@ -6000,6 +6321,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li><strong>产品差异意识</strong> — 现货 ≠ 杠杆 ≠ 永续。强平、保险金机制不同，禁止照搬配置。  </li>
 <li><strong>盘前 / 盘中 / 盘后</strong> — 重大风险尽量在三层各有控制。  </li>
 <li><strong>客户资产优先</strong> — 压力情境下，钱包/托管与提现完整性高于营收功能。</li>
+<li><strong>Phase 1 产品与准入门禁</strong> — 生产交易 = <strong>仅永续</strong>（含 <strong>XAUUSD</strong>）；开户 = <strong>邀请制或经经纪商</strong>。现货/杠杆与公众注册保留为 <strong><code>[Phase 2+]</code></strong>。</li>
 </ol>
 <hr />
 <h2>中文 2. 三道防线与角色映射</h2>
@@ -6125,7 +6447,10 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <hr />
 <h2>中文 3. 产品入门（现货 / 杠杆 / 永续）</h2>
 <p>配置限额、撰写 SOP、选择管理后台时使用本节。</p>
-<h3>3.1 现货 Spot</h3>
+<h3>3.1 现货 Spot <code>[Phase 2+]</code></h3>
+<blockquote>
+<p><strong>Phase 1 未启用。</strong> 手册保留备战。</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -6156,7 +6481,10 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table>
-<h3>3.2 杠杆 Margin（全仓与逐仓）</h3>
+<h3>3.2 杠杆 Margin（全仓与逐仓） <code>[Phase 2+]</code></h3>
+<blockquote>
+<p><strong>Phase 1 未启用。</strong> 永续保证金/强平见合约章。</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -6191,7 +6519,10 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table>
-<h3>3.3 永续合约 Perps（U 本位 / 币本位）</h3>
+<h3>3.3 永续合约 Perps（U 本位 / 币本位） <code>[Phase 1]</code></h3>
+<blockquote>
+<p><strong>Phase 1 范围内：</strong> 已批准永续，含 <strong>XAUUSD 永续</strong> 及其他永续；现货/杠杆关闭。</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -6275,6 +6606,12 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>借款占用、强平量、坏账</td>
 <td>保险余额、ADL、基差、标记–指数偏离</td>
 </tr>
+<tr>
+<td><strong>阶段标签</strong></td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td><strong><code>[Phase 1]</code></strong>（含 XAUUSD）</td>
+</tr>
 </tbody>
 </table>
 <hr />
@@ -6316,16 +6653,25 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <p><strong>SOP：</strong> RM-01…RM-07（明细见 <strong>中文 §6.7</strong>）— 每日风险包 · WARN/BREACH · 杠杆权限 · 压力目录 · 保险复核 · 停牌建议  </p>
 <p><strong>工具：</strong> 实时风险指标与告警；压力/情景台；风险报告与 CSV；强平与保险看板；交易员权限/杠杆申请（maker–checker）  </p>
 <p><strong>后台：</strong> <code>/admin/risk/limits</code> · <code>alerts</code> · <code>stress</code> · <code>insurance</code> · <code>reports</code> · <code>waivers</code>  </p>
-<h3>4.2 现货产品与交易运维 — PM-SPOT / TO</h3>
+<h3>4.2 现货产品与交易运维 — PM-SPOT / TO <code>[Phase 2+]</code></h3>
+<blockquote>
+<p>Phase 1：休眠。勿开放现货交易对。</p>
+</blockquote>
 <p><strong>范围内：</strong> 现货交易对生命周期（上币后配置）；费率、订单类型、STP、价格保护带；停复牌执行；市场质量 KRI；风险披露文案（会同法务）。<br />
 <strong>范围外：</strong> 杠杆 LTV/利息（杠杆 BU）；永续资金费/保险（合约 BU）；链上托管密钥（钱包）。</p>
 <p><strong>SOP：</strong> SP-01 上线清单 · SP-02 停牌 · SP-03 复牌 · SP-04 价格带/名义上限变更 · SP-05 对倒/自成交移交  </p>
 <p><strong>后台：</strong> <code>/admin/spot/symbols</code> · <code>bands</code> · <code>halt</code> · <code>fees</code> · <code>stp</code></p>
-<h3>4.3 杠杆产品与信用运维 — PM-MARGIN / RO-CREDIT / TO</h3>
+<h3>4.3 杠杆产品与信用运维 — PM-MARGIN / RO-CREDIT / TO <code>[Phase 2+]</code></h3>
+<blockquote>
+<p>Phase 1：无杠杆借贷簿。</p>
+</blockquote>
 <p><strong>范围内：</strong> 全仓/逐仓规则；抵押品白名单、折扣、LTV；借款上限与利率曲线；追加保证金/强平参数；坏账处置；抵押品暴跌+借币挤兑压力。  </p>
 <p><strong>SOP：</strong> MG-01 新增抵押品 · MG-02 折扣/LTV 变更 · MG-03 借款冻结 · MG-04 强制平仓手册 · MG-05 坏账核销/追偿 · MG-06 利率曲线更新  </p>
 <p><strong>后台：</strong> <code>/admin/margin/collateral</code> · <code>ltv</code> · <code>borrow</code> · <code>interest</code> · <code>liquidation</code> · <code>bad-debt</code></p>
-<h3>4.4 合约 / 永续产品与强平运维 — PM-FUT / RO / TO-FUT</h3>
+<h3>4.4 合约 / 永续产品与强平运维 — PM-FUT / RO / TO-FUT <code>[Phase 1 — 主路径]</code></h3>
+<blockquote>
+<p>Phase 1 关键路径：<strong>XAUUSD 永续</strong> + 其他已批永续；仅邀请/经纪商用户。</p>
+</blockquote>
 <p><strong>范围内：</strong> U/币本位永续（及定期合约）；杠杆档与持仓限额；标记价/指数成分与偏离告警；资金费公式与结算；保险基金与 ADL；熔断、冲击缓冲、只减仓。  </p>
 <p><strong>SOP：</strong> PF-01 新合约上线 · PF-02 杠杆档变更 · PF-03 标记–指数偏离响应 · PF-04 极端资金费/暂停 · PF-05 保险赔付复核 · PF-06 ADL 启动复核 · PF-07 停牌/只减仓 · PF-08 指数成分交易所故障  </p>
 <p><strong>后台：</strong> <code>/admin/futures/contracts</code> · <code>leverage</code> · <code>risk-limits</code> · <code>mark-index</code> · <code>funding</code> · <code>insurance</code> · <code>adl</code> · <code>breaker</code></p>
@@ -6343,11 +6689,14 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <p><strong>SOP：</strong> WA-01 热钱包补款 · WA-02 提现排队/慢速模式 · WA-03 链停/重组 · WA-04 错充找回 · WA-05 密钥仪式/轮换 · WA-06 PoR 快照  </p>
 <p><strong>后台：</strong> <code>/admin/wallet/balances</code> · <code>withdraw</code> · <code>deposit</code> · <code>keys</code> · <code>chains</code></p>
 <h3>4.8 上币、下币与代币尽调 — LI / RO / CP / Legal</h3>
+<blockquote>
+<p><strong>Phase 1 上币焦点：</strong> 仅永续（如 <strong>XAUUSD</strong> 及其他已批永续）。现货上/下币 = <strong><code>[Phase 2+]</code></strong>；杠杆资格 LD-03 = <strong><code>[Phase 2+]</code></strong>。</p>
+</blockquote>
 <p><strong>范围内：</strong> 新现货对、杠杆资格、永续合约；合约风险（增发、可升级、暂停、黑名单）；流动性与解锁；种子/监控标签；跨产品下币；更名/迁移/代码冲突。  </p>
 <p><strong>SOP：</strong> LD-01 上币风险意见 · LD-02 种子/监控标签 · LD-03 杠杆资格 · LD-04 永续上线决定 · LD-05/06/07 现货/杠杆/永续下币序列 · LD-08 紧急下币/停牌  </p>
 <p><strong>强制下币顺序：</strong> 风险+法务+合规批准 → <strong>永续</strong>只减仓→平仓/到期→下线 → <strong>杠杆</strong>冻借款→强平还款→移出抵押 → <strong>现货</strong>必要时停牌→关闭交易→提现按 WA SOP → 对外沟通与客服话术。</p>
 <h3>4.9 合规、监察与市场滥用 — CP</h3>
-<p><strong>范围内：</strong> KYC/AML、制裁、旅行规则；监察（幌骗、分层、对倒、内幕）；跨现货/杠杆/永续调查；监管报送；硬冻结（交易/提现/杠杆）。  </p>
+<p><strong>范围内：</strong> KYC/AML、制裁、旅行规则；<strong>Phase 1 准入：</strong> 邀请码兑换控制、<strong>经纪商/IB</strong> 引入账户、阻断公众自助注册；监察（幌骗、分层、对倒、内幕）；跨产品调查；监管报送；硬冻结。  </p>
 <p><strong>SOP：</strong> CP-01 告警分流 · CP-02 账户硬冻结 · CP-03 跨产品滥用复核 · CP-04 监管协查/冻结  </p>
 <p><strong>后台：</strong> <code>/admin/compliance/surveillance</code> · <code>holds</code> · <code>kyb-kyc</code> · <code>sanctions</code></p>
 <h3>4.10–4.12 资金结算、做市、平台工程</h3>
@@ -6756,8 +7105,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table>
-<p><strong>门禁（不可乱序）：</strong> 法务 → 合规 → 上币尽调+风险意见(LD-01) → 产品清单 → RE/ME 演练 → 钱包链就绪 → 白名单/软启 → 超护 72h → 公开流量。<br />
+<p><strong>门禁（不可乱序）：</strong> 法务 → 合规 → 上币尽调+风险意见(LD-01) → 产品清单 → RE/ME 演练 → 钱包链就绪 → 白名单/软启 → 超护 72h → 放量。  </p>
+<blockquote>
+<p><strong>Phase 1 门禁说明：</strong> 生产合约 = <strong>永续（含 XAUUSD）</strong>；准入 = <strong>ACC-01/02（邀请或经纪商）</strong>，非公众注册；现货/杠杆 = <strong><code>[Phase 2+]</code></strong>。
 <strong>升级：</strong> 未放行已有流量 → PL-K12，强制关闭，L3 审计。</p>
+</blockquote>
 <hr />
 <h3>6.7 BU SOP 目录（详细）</h3>
 <h4>RM 风险</h4>
@@ -6770,7 +7122,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li><strong>RM-06 保险动用复核：</strong> 任一赔付/ADL 后 ≤30 分快报；≤1 工作日正式复核；可触发 TS-04/G01/PF-06。  </li>
 <li><strong>RM-07 停牌建议：</strong> RO/RO-OPS ≤5 分给出范围建议并转入 G02。</li>
 </ul>
-<h4>SP 现货</h4>
+<h4>SP 现货 <code>[Phase 2+]</code></h4>
 <ul>
 <li><strong>SP-01 上线：</strong> G06/LD 通过后，PM+TO 按 §11.5 配链/参数/MM/停牌测试/KRI，超护 72h。  </li>
 <li><strong>SP-02 停牌：</strong> TO 提议、RO 批、ME 执行（G02）；默认保持提现。  </li>
@@ -6778,7 +7130,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li><strong>SP-04 价格带/名义：</strong> 走 G01；<code>/admin/spot/bands</code>。  </li>
 <li><strong>SP-05 对倒移交：</strong> ≤30 分交 CP（订单/成交 ID）；可 CP-02；不得静默削弱 STP。</li>
 </ul>
-<h4>MG 杠杆</h4>
+<h4>MG 杠杆 <code>[Phase 2+]</code></h4>
 <ul>
 <li><strong>MG-01 新增抵押：</strong> LD-03 后压测折扣→LTV→借款上限→利率→强平路径测通→启用。  </li>
 <li><strong>MG-02 折扣/LTV：</strong> G01；脱锚紧急 ≤30 分双批。  </li>
@@ -6787,7 +7139,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li><strong>MG-05 坏账：</strong> 定量→追偿→残余核销双控→反哺折扣/缓冲。  </li>
 <li><strong>MG-06 利率曲线：</strong> MG-K07 未清不得推；重大走 G01。</li>
 </ul>
-<h4>PF 永续</h4>
+<h4>PF 永续 <code>[Phase 1]</code></h4>
 <ul>
 <li><strong>PF-01 新合约：</strong> 规格/指数/档位/保险种子/资金费/强平·ADL 演练/撮合/传播/超护（§11.3）。  </li>
 <li><strong>PF-02 杠杆档：</strong> G01 + 超护强平。  </li>
@@ -6830,6 +7182,12 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li><strong>ENG-01~04：</strong> 最小权限赋权；审计不可篡改抽查；管道延迟联动 RE-02/PF-03；密钥/API 失陷 ≤2 分杀钥并 L3/L4。</li>
 </ul>
 <hr />
+<h4>ACCESS — Phase 1 邀请与经纪商开户 <code>[Phase 1]</code></h4>
+<ul>
+<li><strong>ACC-01 邀请制开户：</strong> 校验邀请 → KYC → 合规放行 → 绑定邀请元数据 → 权益=<strong>仅永续</strong> → 开交易开关；发现公众注册入口敞开 → L3。  </li>
+<li><strong>ACC-02 经纪商引入开户：</strong> 经纪商协议有效 → 客户 KYC → 经纪商+客户限额栈 → 权益=仅永续；协议失效则停新开户。  </li>
+<li><strong>ACC-03 权益护栏（持续）：</strong> 监控误开现货/杠杆、自助注册、无邀请/经纪商标签却可交易的 UID；日例外报表给 RO-OPS+合规。</li>
+</ul>
 <h2>中文 7. 管理后台与工具目录</h2>
 <table>
 <thead>
@@ -6904,6 +7262,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </table>
 <p><strong>工具对齐仓内模块：</strong> <code>risk_metrics_monitor.py</code>（实时指标）· <code>trader_rights_workflow.py</code>（杠杆/权限）· <code>stress_testing.py</code> · <code>risk_reporting.py</code> · <code>eod_reconciliation.py</code> · <code>performance_attribution.py</code> · <code>05-use-case-narrative-flowchart.drawio</code></p>
 <p><strong>ACL 原则：</strong> 最小权限；Kill/密钥/制裁覆盖/保险注资/A 级限额双控；变更不可篡改审计；破窗账户限时+自动工单+通知 CRO/CISO；分析尽量用只读副本。</p>
+<blockquote>
+<p><strong>Phase 1 后台优先级：</strong> <code>/admin/futures/*</code>、风险与撮合、邀请/经纪商与合规冻结。<code>/admin/spot/*</code>、<code>/admin/margin/*</code> 可配置但须<strong>关闭</strong>（<code>[Phase 2+]</code>）。</p>
+</blockquote>
 <hr />
 <h2>中文 8. 限额、KRI、阈值、动作与升级</h2>
 <h3>8.1 读法</h3>
@@ -7482,7 +7843,8 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <h3>8.11 报告与证据</h3>
 <p>盘中告警日志 · 每日风险 MI（RAG）· 强平与保险快报 · 钱包挤兑快报 · 周 PIC 认证 · 季阈值校准。</p>
 <h3>8.12 最小必开集</h3>
-<p>PF-K01/K07/K06 · MG-K01/K04/K08 · SP-K03/K09 · PL-K01/K06/K05。</p>
+<p><strong>Phase 1 优先：</strong> PF-K01/K07/K06/K03（含 XAUUSD）· 邀请/经纪商覆盖与仅永续权益 · PL-K01/K06/K05 · SP-K09（共用撮合时延）。<br />
+<strong><code>[Phase 2+]</code> 休眠：</strong> MG-K01/K04/K08 · 现货簿 SP-K03 等。</p>
 <hr />
 <h2>中文 9. 风险情景诊断（红黄绿 + 时序）</h2>
 <p>指标或组合变色时使用。<strong>禁止只看颜色</strong> — 先重建<strong>时序</strong>，再判别原因。</p>
@@ -7847,6 +8209,22 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <td>情景族</td>
 <td>多 KRI 命名模式 S1–S12</td>
 </tr>
+<tr>
+<td>Phase 1</td>
+<td>生产：仅永续（含 XAUUSD）；邀请制或经纪商开户</td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td>已文档化但未投产（如现货、杠杆、公众注册）</td>
+</tr>
+<tr>
+<td>邀请制</td>
+<td>须有效邀请/白名单；无公众自助开户</td>
+</tr>
+<tr>
+<td>经纪商通道</td>
+<td>协议下的 IB/引入经纪商客户</td>
+</tr>
 </tbody>
 </table>
 <h3>11.2 BU PIC 每周清单</h3>
@@ -7860,11 +8238,23 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <li>[ ] 容灾/强平演练状态（至少每月）  </li>
 <li>[ ] 现货问题是否应传导到杠杆/永续参数  </li>
 </ul>
-<h3>11.3 永续上线清单（摘要）</h3>
-<p>合约规格签字；指数成分达标且 PF-K01/02 告警开；杠杆档与限额双批且 PF-K04/05 接通；保险注资且 K07/K08 看板活；资金费封顶测通；强平+ADL 演练签字；撮合与限频；传播与客服；72h 超护；RO-OPS 掌握本合约 S2 vs S1 判别。</p>
-<h3>11.4 杠杆资产上线清单（摘要）</h3>
+<h3>11.3 永续上线清单（摘要） <code>[Phase 1]</code></h3>
+<blockquote>
+<p>含 <strong>XAUUSD</strong> 及其他 Phase 1 永续；对外前确认 ACC-01/02。
+合约规格签字；指数成分达标且 PF-K01/02 告警开；杠杆档与限额双批且 PF-K04/05 接通；保险注资且 K07/K08 看板活；资金费封顶测通；强平+ADL 演练签字；撮合与限频；传播与客服；72h 超护；RO-OPS 掌握本合约 S2 vs S1 判别。</p>
+</blockquote>
+<h3>11.3a Phase 1 准入清单（邀请 / 经纪商）</h3>
+<ul>
+<li>[ ] 公众自助注册<strong>已关闭</strong></li>
+<li>[ ] 邀请服务上线；过期/复用规则已测（ACC-01）</li>
+<li>[ ] 经纪商白名单+协议生效；标签/门户可用（ACC-02）</li>
+<li>[ ] 每一可交易 UID 均有邀请 <strong>或</strong> 经纪商归属</li>
+<li>[ ] 产品权益 = <strong>仅永续</strong>（现货/杠杆关闭）</li>
+<li>[ ] ACC-03 日例外报表已订阅（RO-OPS + 合规）</li>
+</ul>
+<h3>11.4 杠杆资产上线清单（摘要） <code>[Phase 2+]</code></h3>
 <p>现货观察窗达标；折扣/LTV 压测；借款库存与上限及 K01/K09；利率曲线与 K07 对账绿；逐仓+全仓强平路径测通；坏账科目映射；若稳定币抵押则完成 S3 桌面推演。</p>
-<h3>11.5 现货上线清单（摘要）</h3>
+<h3>11.5 现货上线清单（摘要） <code>[Phase 2+]</code></h3>
 <p>尽调完成；正确链充提且 PL-K01 缓冲 OK；tick/lot/带/STP/费率及 K03/K05；做市 SLA 或薄盘披露及 K01/K02；停牌权限测通（K06）。</p>
 <h3>11.6 文档控制</h3>
 <table>
@@ -7893,7 +8283,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 </tr>
 <tr>
 <td>版本</td>
-<td>1.5 — 与英文分栏页签并列；扩展 SOP</td>
+<td>1.6 — Phase 1 标签：仅永续（含 XAUUSD）+ 邀请/经纪商</td>
 </tr>
 </tbody>
 </table>

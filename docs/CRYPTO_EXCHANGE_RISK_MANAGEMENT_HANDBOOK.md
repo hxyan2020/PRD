@@ -9,4 +9,6 @@
 | English | [risk-handbook/en.md](risk-handbook/en.md) |
 | 简体中文 | [risk-handbook/zh-CN.md](risk-handbook/zh-CN.md) |
 
-The previous single-file layout (Chinese as §12 under English) was replaced in **v1.5** by a two-tab viewer plus parallel markdown sources.
+**Phase 1 (production):** Perps only (incl. **XAUUSD**); account open = **invite-only** and/or **via brokers**. Spot / Margin / public signup remain in the handbook labeled **`[Phase 2+]`**.
+
+Version **1.6** — tabbed EN/ZH; Phase 1 labels applied without removing later-phase playbooks.

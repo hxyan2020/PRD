@@ -1,8 +1,8 @@
 # Crypto Exchange Risk Management — BU User Handbook
 
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
-**Scope:** Spot · Cross/Isolated Margin · USDⓈ-M & COIN-M Perpetuals (and dated futures where noted)  
-**Version:** 1.5 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Scope:** Full catalogue covers Spot · Margin · Perps; **Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access**  
+**Version:** 1.6 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
 > This handbook is the **operating playbook** for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.  
 > **Thresholds below are illustrative defaults** for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.
@@ -22,8 +22,39 @@
 9. [Risk scenario diagnostics (RAG + time sequence)](#9-risk-scenario-diagnostics-rag--time-sequence)
 10. [Incident severity & war room](#10-incident-severity--war-room)
 11. [Appendix — glossary & checklists](#11-appendix--glossary--checklists)
+12. [Phase 1 operating scope](#phase-1-operating-scope-labels-used-throughout)
 
 ---
+
+## Phase 1 operating scope (labels used throughout)
+
+> **Phase 1 is live / in-scope now.** Later-phase content stays in this handbook for readiness but is marked **`[Phase 2+]`** (or later). Do not enable Phase 2+ flows in production without a formal phase-gate sign-off (Risk **A** + CP + Product).
+
+### Phase 1 — in scope
+
+| Area | Phase 1 rule |
+|------|----------------|
+| **Products / instruments** | **Perpetuals only.** Includes **XAUUSD perps** and **other approved perp contracts**. No Spot trading book and no Margin (cross/isolated) lending book in Phase 1. |
+| **Account opening** | **Invite-only** and/or **through brokers** (IB / introducing broker / white-label broker channel). No open public self-serve signup. |
+| **Trading access** | Users may trade only after invite acceptance **or** broker-introduced onboarding is complete and risk/compliance gates clear. |
+| **Primary BUs on critical path** | Futures/Perps Product & Liq Ops · Matching · Risk Engine · Risk Ops · Broker/Invite ops (CP+Product) · Wallet/Settlement as needed for collateral/PnL · Surveillance |
+
+### Phase 1 — out of production (keep playbooks; label only)
+
+| Area | Label | Note |
+|------|-------|------|
+| Spot markets, spot listing/delist go-live | **`[Phase 2+]`** | Playbooks SP-*, LD-05, spot KRIs remain for future |
+| Margin borrow / LTV / interest | **`[Phase 2+]`** | MG-* remain for future |
+| Public retail self-serve onboarding | **`[Phase 2+]`** | Phase 1 = invite + broker only |
+| Non-perp products (options, earn, etc. if any) | **`[Phase 2+]`** | Unless separately gated |
+
+### Phase 1 control implications (operators)
+
+1. **Listing / go-live:** only **perp** pipeline (incl. **XAUUSD**) and broker/invite entitlement configs are production-critical.  
+2. **Access control:** reject or hold any account that is neither **invite-redeemed** nor **broker-linked**.  
+3. **KRIs / SOPs:** Spot- and Margin-tagged items are still documented — treat as **dormant** unless a Phase 2+ waiver exists. Prefer Perps + access KRIs in daily MI.  
+4. **XAUUSD perps:** apply full Perps controls (mark/index, funding, leverage brackets, insurance/ADL) plus commodity/FX-hours awareness (session gaps, weekend/holiday liquidity).
+
 
 ## 1. How to use this handbook
 
@@ -35,6 +66,7 @@
 | Eng / SRE (Matching, Risk Engine, Wallet) | Your tech BU chapter + failover SOPs |
 | Compliance / Surveillance | Compliance BU + market-abuse SOPs |
 | Listing / Delisting PIC | Listing BU chapter end-to-end |
+| Phase 1 PIC / launch crew | **Phase 1 operating scope** + §3.3 Perps + §4.4 + invite/broker SOPs |
 
 **Golden rules**
 
@@ -43,6 +75,7 @@
 3. **Instrument-aware** — Spot ≠ Margin ≠ Perps. Controls, liquidation, and insurance differ; do not copy-paste configs.
 4. **Pre-trade / at-trade / post-trade** — every material risk has at least one control in each layer where feasible.
 5. **Client assets first** — wallet/custody and withdrawal integrity outrank revenue features under stress.
+6. **Phase 1 product & access gates** — production trading = **perps only** (incl. **XAUUSD**); accounts = **invite-only or via brokers**. Spot/Margin and public signup remain documented as **`[Phase 2+]`**.
 
 ---
 
@@ -83,7 +116,9 @@
 
 Use this section when configuring limits, writing SOPs, or deciding which admin page applies.
 
-### 3.1 Spot
+### 3.1 Spot `[Phase 2+]`
+
+> **Not enabled in Phase 1.** Retain playbook for later phase-gate.
 
 | Topic | Risk relevance |
 |-------|----------------|
@@ -93,7 +128,9 @@ Use this section when configuring limits, writing SOPs, or deciding which admin 
 | **No liquidation engine** | Client loss is limited to paid amount (except deposit/withdraw errors) |
 | **Admin focus** | Symbol config, fee tiers, STP, halt/resume, ticker metadata |
 
-### 3.2 Margin (Cross & Isolated)
+### 3.2 Margin (Cross & Isolated) `[Phase 2+]`
+
+> **Not enabled in Phase 1.** Retain playbook for later phase-gate.
 
 | Topic | Risk relevance |
 |-------|----------------|
@@ -104,7 +141,9 @@ Use this section when configuring limits, writing SOPs, or deciding which admin 
 | **Key controls** | LTV / margin ratio, borrow caps per asset, interest rate curves, liquidation waterfall, negative-balance auto-repay |
 | **Admin focus** | Collateral tiers, borrow whitelist, LTV brackets, interest config, forced liquidation console |
 
-### 3.3 Perpetual futures (USDⓈ-M / COIN-M)
+### 3.3 Perpetual futures (USDⓈ-M / COIN-M) `[Phase 1]`
+
+> **Phase 1 in scope:** approved perps including **XAUUSD perps** and other listed perps. Spot/Margin are off.
 
 | Topic | Risk relevance |
 |-------|----------------|
@@ -125,6 +164,7 @@ Use this section when configuring limits, writing SOPs, or deciding which admin 
 | Funding | N/A | Interest on borrow | Periodic funding rate |
 | Halt impact | Book frozen | Borrow + liquidations may continue under SOP | Liquidations/funding continue under SOP |
 | Typical KRI | Cancel/fill ratio, halt count | Borrow util, liquidation volume, bad debt | Insurance balance, ADL events, basis, mark–index gap |
+| **Phase label** | **`[Phase 2+]`** | **`[Phase 2+]`** | **`[Phase 1]`** (incl. XAUUSD) |
 
 ---
 
@@ -204,7 +244,9 @@ Each chapter follows the same template:
 
 ---
 
-### 4.2 Spot Product & Trading Ops — PM-SPOT / TO
+### 4.2 Spot Product & Trading Ops — PM-SPOT / TO `[Phase 2+]`
+
+> Phase 1: dormant product surface. Keep halt/listing readiness; do not open spot symbols.
 
 #### In scope
 - Spot symbol lifecycle ops (post-listing config)
@@ -257,7 +299,9 @@ Each chapter follows the same template:
 
 ---
 
-### 4.3 Margin Product & Credit Ops — PM-MARGIN / RO-CREDIT / TO
+### 4.3 Margin Product & Credit Ops — PM-MARGIN / RO-CREDIT / TO `[Phase 2+]`
+
+> Phase 1: no margin borrow book. Perps margin/liquidation stays under §4.4 / RE.
 
 #### In scope
 - Cross & Isolated margin product rules
@@ -314,7 +358,9 @@ Each chapter follows the same template:
 
 ---
 
-### 4.4 Futures / Perps Product & Liquidation Ops — PM-FUT / RO / TO-FUT
+### 4.4 Futures / Perps Product & Liquidation Ops — PM-FUT / RO / TO-FUT `[Phase 1 — primary]`
+
+> Phase 1 critical path: **XAUUSD perps** + other approved perps; invite/broker traders only.
 
 #### In scope
 - USDⓈ-M and COIN-M perpetuals (and dated futures if live)
@@ -524,6 +570,8 @@ Each chapter follows the same template:
 
 ### 4.8 Listing, Delisting & Token Due Diligence — LI / RO / CP / Legal
 
+> **Phase 1 listing focus:** perp contracts only (e.g. **XAUUSD** and other approved perps). Spot listing/delist SOPs = **`[Phase 2+]`**. Margin eligibility (LD-03) = **`[Phase 2+]`**.
+
 #### In scope
 - New spot pairs, margin eligibility, perp contracts
 - Contract risk (mint, upgrade, pause, blacklist)
@@ -584,6 +632,7 @@ Each chapter follows the same template:
 
 #### In scope
 - KYC/AML, sanctions, travel rule
+- **Phase 1 access:** invite-code redemption controls; **broker / IB** introduced accounts; block public self-serve signup
 - Trade surveillance (spoofing, layering, wash, insider)
 - Market abuse investigations across Spot / Margin / Perps
 - Regulatory reporting liaison
@@ -853,7 +902,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 5. **RE/ME** configs in staging; dry-runs signed.  
 6. **WO** deposit/withdraw ready on correct chains.  
 7. Soft launch / whitelist if used → hypercare roster 72h.  
-8. Only then open public traffic.
+8. Only then open traffic — **Phase 1:** invite/broker cohort only, **not** public signup; **perps only**.
+
+> **Phase 1 gate note:** production instruments = **perps (incl. XAUUSD)**; access = **ACC-01/ACC-02**. Spot/Margin = **`[Phase 2+]`**.
 
 **Done when:** Pipeline stage = Live; monitoring KRIs wired; hypercare named.  
 **Escalate if:** Traffic detected pre-clear → PL-K12 BREACH, force disable, L3 audit.
@@ -929,7 +980,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 
 ---
 
-#### SP — Spot
+#### SP — Spot `[Phase 2+]`
 
 ##### SP-01 Spot symbol go-live
 | Field | Detail |
@@ -975,7 +1026,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 
 ---
 
-#### MG — Margin
+#### MG — Margin `[Phase 2+]`
 
 ##### MG-01 Add collateral asset
 | Field | Detail |
@@ -1027,7 +1078,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 
 ---
 
-#### PF — Perps
+#### PF — Perps `[Phase 1]`
 
 ##### PF-01 New perp contract launch
 | Field | Detail |
@@ -1337,6 +1388,41 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 
 ---
 
+#### ACCESS — Phase 1 invite & broker onboarding `[Phase 1]`
+
+##### ACC-01 Invite-only account open
+| Field | Detail |
+|-------|--------|
+| **When** | Prospect redeems invite / allowlist code; or ops issues invite |
+| **Who** | **R:** Product/Growth ops or Broker desk · **A CP gates:** CP · **A risk entitlements:** RO (limits tier) · **R enable trade:** RE/ENG flags |
+| **SLA** | Invite validate ≤1m automated · Manual CP review per policy · Entitlement push ≤15m after clear |
+| **Preconditions** | Phase 1 mode on; invite unused/unexpired; sanctions screen clear |
+| **Systems** | Invite admin · KYC · `/admin/compliance/holds` · risk limits tier · broker link (if any) |
+| **How** | 1) Validate invite. 2) Collect KYC/KYB as required. 3) CP clear. 4) Bind account to invite issuer metadata. 5) Set Phase 1 product entitlement = **perps only**. 6) Enable trading flags. 7) Audit log. |
+| **Done when** | Account can trade approved perps only; spot/margin flags off. |
+| **Escalate if** | Invite abuse / shared codes → CP-02 hold; public signup path found open → L3 disable. |
+
+##### ACC-02 Broker-introduced account open
+| Field | Detail |
+|-------|--------|
+| **When** | Broker/IB submits or links end-client under broker agreement |
+| **Who** | **R:** Broker ops · **A:** CP (KYC/KYB of client + broker) · **C:** Legal (broker agreement live) · **A risk:** RO for broker-level limits · **R:** RE entitlements |
+| **SLA** | Per broker SLA; no trade before CP+agreement+entitlement |
+| **Preconditions** | Executed broker agreement; broker on allowlist; client KYC complete |
+| **Systems** | Broker portal · master/sub or tagged UID · limit hierarchy |
+| **How** | 1) Verify broker status. 2) Onboard client under broker. 3) CP clear client. 4) Apply broker and client limit stacks. 5) Entitlement = Phase 1 perps only. 6) Dual-control if broker credit/vip. |
+| **Done when** | Client trades only via approved path; attribution to broker for surveillance/revenue. |
+| **Escalate if** | Broker agreement lapsed → freeze new accounts; cascade risk on broker book → RO L2/L3. |
+
+##### ACC-03 Phase 1 entitlement guard (continuous)
+| Field | Detail |
+|-------|--------|
+| **When** | Continuous + daily MI; any attempt to enable spot/margin or public signup |
+| **Who** | **R monitor:** RO-OPS/ENG · **A:** RO + CP |
+| **How** | Alert if spot/margin symbol enabled; alert if self-serve register open; alert if UID trades without invite/broker tag. |
+| **Done when** | Daily zero exceptions or exceptions ticketed with phase-gate waiver. |
+
+
 ## 7. Admin pages & tool catalogue
 
 ### 7.1 Canonical admin map (by domain)
@@ -1357,6 +1443,8 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 | Access & audit | `/admin/iam/*`, `/admin/audit/*` | Security / ENG |
 
 > Paths are **logical**. Map them 1:1 to your internal Admin Console / Orion / Risk Portal names without changing ownership.
+
+> **Phase 1 admin priority:** `/admin/futures/*`, `/admin/risk*`, `/admin/engine/*`, invite/broker & compliance holds. `/admin/spot/*` and `/admin/margin/*` stay configured but **disabled** (`[Phase 2+]`).
 
 ### 7.2 Tooling aligned to platform modules
 
@@ -1577,10 +1665,13 @@ Detect (SYS) → Route (WARN|BREACH|KILL)
 
 Stand up these first — then expand to full catalogue:
 
-1. **PF-K01** Mark−index · **PF-K07** Insurance coverage · **PF-K06** Liq burst  
-2. **MG-K01** Borrow util · **MG-K04** Bad debt · **MG-K08** Stable depeg  
-3. **SP-K03** Price dislocation · **SP-K09** Matching latency  
-4. **PL-K01** Hot-wallet buffer · **PL-K06** Mark pipeline lag · **PL-K05** Recon breaks  
+**Phase 1 prefer (perps + access + platform):**  
+1. **PF-K01** Mark−index · **PF-K07** Insurance · **PF-K06** Liq burst · **PF-K03** Funding (incl. **XAUUSD**)  
+2. **ACC / access:** invite/broker tag coverage; blocked public signup; entitlement = perps-only  
+3. **PL-K01** Hot-wallet buffer · **PL-K06** Mark pipeline lag · **PL-K05** Recon · **SP-K09** Matching latency (shared engine)  
+
+**`[Phase 2+]` dormant until enabled:**  
+4. **MG-K01 / K04 / K08** · **SP-K03** (spot book) and other Spot/Margin KRIs  
 
 ---
 
@@ -2034,6 +2125,10 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 | Tier A+ | Materiality band requiring four-eyes |
 | RAG | Red / Amber / Green indicator state (§9) |
 | Scenario family | Named multi-KRI pattern S1–S12 (§9.4) |
+| Phase 1 | Production: perps only (incl. XAUUSD); invite-only or broker onboarding |
+| Phase 2+ | Documented but not production-enabled (e.g. Spot, Margin, public signup) |
+| Invite-only | Account open requires valid invite/allowlist; no public self-serve |
+| Broker channel | IB/introducing broker introduced accounts under agreement |
 
 ### 11.2 BU PIC weekly checklist
 
@@ -2046,7 +2141,9 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 - [ ] DR / failover or liquidation dry-run status (monthly at minimum)  
 - [ ] Read-across: any Spot issue that should change Margin/Perps params  
 
-### 11.3 Go-live checklist — Perps (summary)
+### 11.3 Go-live checklist — Perps (summary) `[Phase 1]`
+
+> Includes **XAUUSD** and other Phase 1 perps. Confirm invite/broker access (ACC-01/02) before publicising any cohort.
 
 - [ ] Contract specs signed (PM + Legal)  
 - [ ] Index constituents ≥ policy minimum; **PF-K01/PF-K02** alerts on  
@@ -2059,7 +2156,16 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 - [ ] Hypercare roster 72h  
 - [ ] RO-OPS briefed on S2 vs S1 discrimination for this contract  
 
-### 11.4 Go-live checklist — Margin asset
+### 11.3a Go-live checklist — Phase 1 access (invite / broker)
+
+- [ ] Public self-serve registration **disabled**
+- [ ] Invite service live; code expiry/reuse rules tested (ACC-01)
+- [ ] Broker allowlist + agreements executed; portal/tagging works (ACC-02)
+- [ ] Every trade-enabled UID has invite **or** broker attribution
+- [ ] Product entitlement = **perps only** (spot/margin flags off)
+- [ ] ACC-03 daily exception report subscribed by RO-OPS + CP
+
+### 11.4 Go-live checklist — Margin asset `[Phase 2+]`
 
 - [ ] Spot market stable ≥ observation window  
 - [ ] Haircut/LTV stress-tested (DA); **MG-K05** baseline recorded  
@@ -2069,7 +2175,7 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 - [ ] Bad-debt ledger mapping ready (**MG-K04**)  
 - [ ] Depeg tabletop (S3) completed if stable / soft-peg collateral  
 
-### 11.5 Go-live checklist — Spot
+### 11.5 Go-live checklist — Spot `[Phase 2+]`
 
 - [ ] Listing diligence complete (LI/RO/CP/Legal)  
 - [ ] Wallet deposit/withdraw enabled on correct chain(s); **PL-K01** buffer OK  
@@ -2085,7 +2191,7 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 | Change control | CRO approve; publish via Risk portal |
 | Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics**; Chinese edition via handbook tabs |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 1.5 — Tabbed EN / 简体中文 editions; expanded SOPs |
+| Version | 1.6 — Phase 1 labels: perps (incl. XAUUSD) + invite/broker only |
 
 ---
 
