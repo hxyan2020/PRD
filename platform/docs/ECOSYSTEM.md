@@ -1,64 +1,160 @@
 # Vantage Ecosystem Adoption Evaluation
 
-**Document ID:** CRMP-ECO-001 · Prototype → Production readiness assessment
+**Document ID:** CRMP-ECO-001 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
 
 ## 1. Executive view
-The CRMP prototype proves the spine (Monitor → AI RCA → second opinion → messenger → intervention → audit). Production adoption into the existing Vantage ecosystem needs shared identity, real LP/trading adapters, hardened AI governance, and a phased rollout — not a big-bang rewrite.
+
+The CRMP demo already proves an end-to-end spine:
+
+**Monitor 2.0 alarm → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit/spine.**
+
+Fully implementing this into the **existing Vantage Markets ecosystem** is not a rewrite of trading platforms. It is a **control-plane product** that must plug into identity, Monitor 2.0, Lark, LP/bridge controls, and admin dual-control — with shadow mode first and write paths last.
+
+| Roll-up | Indicative |
+|---|---|
+| One-time build (Phases A–C) | **~$730k – $1.3M USD** |
+| Ongoing model/ops (Phase D / year) | **~$150k – $300k USD** |
+| Core team at steady state | **~7–11 FTE** (plus part-time Risk Owner / GRC / Ops) |
+| Delivery shape | **4 phases** — foundations → read path → supervised write → model ops |
+
+*Planning envelopes only — not a vendor quote. Finance must re-estimate against SOWs and in-house capacity.*
+
+---
 
 ## 2. Foundations required
-| Foundation | Why | Maturity needed |
+
+| # | Foundation | Why it is required | Current prototype | Target maturity |
+|---|---|---|---|---|
+| F1 | **SSO / IdP + SCIM** (Okta / Azure AD) | Join corporate directories; kill shared demo passwords; enable SoD | Local email/password users | Production |
+| F2 | **Monitor 2.0 bidirectional API** | Live alarm ingest + ticket ack/close write-back | Seeded SQLite + simulate alarms | Production |
+| F3 | **LP / bridge / trading control bus** | Real halt, leverage cut, widen, pause-copy, block account | Deep-links + mock admin refs | Production + dual-control |
+| F4 | **Lark (or Teams) interactive app** | Replace demo messenger; card actions → CRMP APIs | In-app Demo Messenger + outbox mock | Production |
+| F5 | **Secrets vault + env isolation** | Webhooks, model keys, DB, LP credentials | Env/local files | Production |
+| F6 | **Managed DB + HA deploy** | Multi-instance, backups, DR | SQLite single file | Postgres + HA |
+| F7 | **Observability** (metrics/traces/logs) | Spine SLOs, AI latency, false-alarm rate, cost | Console + spine table | Production APM |
+| F8 | **Data residency & retention** | Evidence vault may hold client identifiers | No formal retention | Legal policy + jobs |
+| F9 | **IAM maker ≠ checker** | AI Admin + irreversible interventions | App-level maker/checker | IAM + app |
+| F10 | **AI access blocklist enforcement** | Human-only pages/functions/fields stay human-only | Documented blocklist UI | Runtime enforcement on AI principals |
+| F11 | **Market-intel feed contracts** | 5-min scan needs licensed/news APIs | Heuristic scanner | Vendor feeds + scoring |
+| F12 | **Kill-switches** | Disable auto-skills, intel push, write adapters instantly | Settings flags (partial) | Global + per-adapter |
+
+### Integration map (target)
+
+1. Monitor 2.0 → CRMP (alarms) → dual-AI pack  
+2. CRMP → Lark cards (notify + inline actions)  
+3. Human confirm → Vantage admin / control bus (maker) → Checker approve  
+4. Status write-back → Monitor ticket + Audit + Spine  
+
+---
+
+## 3. Personnel required
+
+| Role | Pilot FTE | Scale FTE | Primary ownership |
+|---|---|---|---|
+| **Product Manager** (Risk Platforms) | 1.0 | 1.0 | Scope, prioritisation, stakeholder alignment, UAT exit |
+| **Risk Owner** (business) | 0.3 | 0.5 | Policy thresholds, accept/reject AI, escalation authority |
+| **Engineering Lead / Architect** | 1.0 | 1.0 | Ecosystem adapters, tenancy, DR design |
+| **Full-stack engineers** | 2.0 | 3–4 | Admin UI, messenger, APIs, Monitor/Lark clients |
+| **Backend / integration engineer** | 1.0 | 1–2 | Control bus, dual-control workflows |
+| **Data / ML engineer** | 1.0 | 1–2 | RAG, primary LLM, **independent challenger**, eval harness |
+| **SRE / Platform** | 0.5 | 1.0 | Deploy, secrets, observability, HA |
+| **Security / GRC** | 0.3 | 0.5 | Blocklist, access reviews, audit evidence packs |
+| **QA / UAT facilitator** | 0.5 | 1.0 | Execute Risk Owner UAT pack; regression |
+| **Ops liaison** | 0.3 | 0.5 | Runbooks for halt / block / widen |
+| **Compliance / Legal** (part-time) | 0.1 | 0.2 | Retention, client data in evidence, AI disclosures |
+
+**Pilot core (approx):** PM + Eng lead + 2 full-stack + 1 ML + 0.5 SRE + 0.5 QA + part-time Risk Owner ≈ **6–7 FTE equivalent**.
+
+---
+
+## 4. Budget (indicative USD)
+
+| Phase | Scope | Band | Notes |
+|---|---|---|---|
+| **A — Harden prototype** | SSO spike or staging auth, hosting, audit export, UAT facilitation, basic observability | **$80k – $150k** | Make demo deployable & reviewable |
+| **B — Ecosystem connect (read path)** | Monitor API, Lark interactive cards, read-only LP/inventory feeds, Postgres migration | **$250k – $450k** | Notify-only; no auto-trade |
+| **C — Supervised write path** | Dual-control adapters (block/halt/leverage/widen/pause-copy), DR, kill-switches | **$400k – $700k** | Highest risk; gated go-live |
+| **D — Model ops (annual)** | Eval harness, challenger diversity, drift/cost monitors, feed licences | **$150k – $300k / yr** | Run-rate after B/C |
+
+| Total | Band |
+|---|---|
+| **Build A+B+C** | **$730k – $1.3M** |
+| **Year-1 all-in (build mid + D mid)** | **≈ $1.0M – $1.5M** |
+
+Exclusions: major LP vendor licence changes, full multi-brand tenancy programme, replacing Monitor 2.0 itself.
+
+---
+
+## 5. Timeline (phased — effort shape, not calendar promises)
+
+Cloud agents and vendors should plan by **dependency phase**, not by fixed week counts:
+
+### Phase A — Foundation lock
+- RACI (Risk / Ops / AI / System) signed  
+- Data classification for evidence vault  
+- Environments (dev/stage/prod) + secrets  
+- UAT pack baseline with Risk Owner  
+
+### Phase B — Read-path production
+- Live Monitor alarms into CRMP  
+- Dual-AI RCA (primary + **independent challenger**) on BREACH/CRITICAL  
+- Lark notify + “open in admin” (actions may still deep-link)  
+- Shadow dashboard: AI suggests, humans act outside write bus  
+
+### Phase C — Supervised write path
+- Maker confirm in messenger/admin → control bus  
+- Checker approval for irreversible controls  
+- Ticket write-back + full audit/spine  
+- Kill-switch drills  
+
+### Phase D — Optimisation
+- Challenger model diversity (separate vendor/prompt)  
+- Market-intel precision / cost SLOs  
+- Multi-entity readiness if required  
+
+**Suggested sequencing rule:** do not start Phase C write adapters until Phase B false-alarm and challenger-disagreement workflows are accepted by Risk Owner.
+
+---
+
+## 6. Shortcomings of the current prototype
+
+| Area | Shortcoming | Production impact |
 |---|---|---|
-| SSO / IdP (Okta/Azure AD) + SCIM | Replace prototype passwords; join Risk/Ops directories | Production |
-| Monitor 2.0 bidirectional API | Alarm ingest + ticket status write-back | Production |
-| LP / bridge / trading control bus | Real halt, leverage, widen, pause-copy | Production with dual-control |
-| Lark (or Teams) app + interactive cards | Replace demo messenger | Production |
-| Secrets vault + env isolation | Webhooks, model keys, DB creds | Production |
-| Observability (metrics/traces/logs) | Spine SLOs, AI latency, false-alarm rate | Production |
-| Data residency & retention policy | Client identifiers in evidence vault | Legal sign-off |
-| Maker/checker + SoD in IAM | AI Admin + interventions | Production |
+| AI | Heuristic skill/RAG/challenger — not production LLM + tool-calling with eval gates | Wrong RCA confidence if scaled as-is |
+| Data | SQLite single-node file | No HA / weak concurrent write |
+| Messenger | In-app demo; Lark delivery mocked | Operators won’t live in CRMP-only chat long-term |
+| Controls | Admin refs / deep-links, not real trading bus | Cannot rely on for true risk containment |
+| Identity | Demo passwords | Failed SoD / audit |
+| Tenancy | Limited multi-brand / entity isolation | Blocks group-wide rollout |
+| Intel | Synthetic/heuristic market scan | Needs licensed sources + scoring |
+| Enforcement | AI blocklist is largely documentary in UI | Must bind to AI service principals |
+| Mobile | Improved, still not native-app grade | OK for web responsive ops |
 
-## 3. Personnel (indicative)
-| Role | FTE (pilot → scale) | Responsibility |
-|---|---|---|
-| Product Manager (Risk Platforms) | 1 → 1 | Scope, UAT, stakeholder alignment |
-| Risk Owner (business) | 0.3 → 0.5 | Policy, acceptance, escalation authority |
-| Engineering lead | 1 → 1 | Architecture, adapters |
-| Full-stack engineers | 2 → 4 | Admin, messenger, APIs |
-| Data / ML engineer | 1 → 2 | RAG, challenger models, eval harness |
-| SRE / Platform | 0.5 → 1 | Deploy, secrets, observability |
-| Security / GRC | 0.3 → 0.5 | Blocklist, access reviews, audit |
-| QA / UAT facilitator | 0.5 → 1 | UAT pack execution |
-| Ops liaison | 0.3 → 0.5 | Control runbooks |
-
-## 4. Budget bands (indicative, USD, not a quote)
-| Phase | Scope | Band |
-|---|---|---|
-| A — Harden prototype | Auth, hosting, audit export, UAT | $80k–$150k |
-| B — Ecosystem connect | Monitor API, Lark cards, read-only LP feeds | $250k–$450k |
-| C — Controlled write path | Dual-control trading actions + DR | $400k–$700k |
-| D — Model ops | Eval, challenger A/B, drift monitors | $150k–$300k / year run |
-
-*Figures are planning envelopes for executive discussion; finance must re-estimate against vendor SOWs.*
-
-## 5. Timeline phases (effort-based, not calendar promises)
-1. **Foundation lock** — SSO, environments, data classification, RACI.
-2. **Read path production** — Live alarms + dual-AI RCA + messenger notify (no auto-trade).
-3. **Supervised write path** — Maker/checker interventions to Vantage admin adapters.
-4. **Optimisation** — Challenger quality, market intel precision, cost controls.
-
-## 6. Shortcomings of current prototype
-- Heuristic AI (not production LLM/tool-calling with eval gates).
-- SQLite single-node persistence.
-- Mock Lark delivery.
-- Sidebar UX weak on small phones without drawer.
-- Limited multi-entity / multi-brand tenancy.
+---
 
 ## 7. Precautions
-- Never grant AI service principals rights on blocklisted fields/pages.
-- Keep irreversible controls human-gated; challenger disagreement ⇒ mandatory review.
-- Separate maker/checker identities in IAM, not only app logic.
-- Run shadow mode (notify-only) before enabling write adapters.
-- Define kill-switch for auto skill execution and market-intel pushes.
-- Legal review before storing client identifiers in evidence excerpts.
-EOF
 
+1. **Never** grant AI service principals rights on blocklisted pages/functions/fields (`/admin/security/ai-access`).  
+2. Irreversible controls stay **human-gated**; second-AI `PARTIAL` / `DISAGREE` ⇒ mandatory human review.  
+3. Maker/checker identities must be separated in **IAM**, not only in application logic.  
+4. Run **shadow mode** (notify-only) before enabling any write adapter.  
+5. Define and test **kill-switches** for auto skill execution, market-intel push, and each write adapter.  
+6. Legal review before persisting client identifiers in evidence excerpts; set retention + redaction jobs.  
+7. Cap AI spend and latency with SLOs; challenger must remain an **independent** decision path (no shared prompt cache with primary).  
+8. Change-control: AI Admin setting changes always require a distinct checker.  
+9. Do not auto-close Monitor tickets from AI alone on BREACH/CRITICAL without Risk Owner policy.  
+10. Rehearse escalation path (Primary → Secondary → Risk Owner → Exec) in UAT before go-live.
+
+---
+
+## 8. Decision checklist for leadership
+
+- [ ] Approve Phase A budget band and name PM + Eng lead  
+- [ ] Confirm Monitor 2.0 API contract owner  
+- [ ] Confirm Lark vs Teams as corporate messenger  
+- [ ] Appoint Risk Owner for UAT exit criteria  
+- [ ] Agree shadow-mode duration before Phase C  
+- [ ] Security sign-off on AI blocklist + SoD model  
+- [ ] Legal sign-off on evidence retention  
+
+**Demo links:** this page · [URL Catalog](/admin/docs/urls) · [UAT Checklist](/admin/docs/uat) · [Improvement Roadmap](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
