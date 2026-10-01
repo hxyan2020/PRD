@@ -1006,6 +1006,86 @@ export const EXTRA_SKILL_SCENARIOS: SkillScenario[] = [
       { action: "flag_for_human_review", description: "Approve rollback", requires_human: true, bu: "RISK_CONTROL" },
     ],
   },
+  {
+    code: "SKILL-MARKET-INTEL",
+    name: "Market intelligence high-impact hits (≥1 / 5m)",
+    description:
+      "External news / social / official publications that can move LP prices on Vantage forex, index, commodity, futures and crypto. Scanner runs every 5 minutes and pushes to oc_market_intelligence.",
+    indicator: {
+      monitor_id: "M2-MKT-INTEL",
+      name: "Market Intelligence High-Impact Hits (5m)",
+      product: "CFD+Crypto",
+      domain: "MARKET_PRICING",
+      warn: 1,
+      breach: 3,
+      unit: "hits/5m",
+      comparator: "gte",
+      why: "≥1 WARN+ intel hit warrants desk awareness and optional pre-widen; ≥3 concurrent hits usually means a macro/geo cluster requiring war-room posture.",
+    },
+    related_indicators: ["M2-EQ-001", "M2-MRG-014", "M2-HEDGE-007", "M2-FEED-003", "M2-VAR-002", "M2-XAU-247"],
+    conditions: { severity_in: ["WARN", "BREACH", "CRITICAL"], min_observed: 1 },
+    fault_areas: [
+      "Unhedged inventory into surprise headline",
+      "Late spread widen / leverage cut",
+      "LP reject storm under news",
+      "Weekend XAUUSD247 gap after geo headlines",
+      "Crypto regulatory headline without leverage cut",
+    ],
+    escalation: {
+      sla_minutes: 10,
+      path: [
+        {
+          after_minutes: 0,
+          team: "Market Intelligence",
+          channel: "oc_market_intelligence",
+          action: "Push formatted card (event, geography, severity, products+direction, timestamp, sources)",
+        },
+        { after_minutes: 5, team: "Risk Control Desk", channel: "oc_risk_control_desk", action: "Pre-widen / inventory check" },
+        { after_minutes: 15, team: "Exec Risk Bridge", channel: "oc_exec_risk_bridge", action: "If CRITICAL geo or ≥3 hits" },
+      ],
+    },
+    corrections: [
+      { action: "lark_notify", bu: "AI", description: "Ensure Market Intelligence messenger group received the card" },
+      { action: "pre_widen_spreads", bu: "RISK_CONTROL", description: "Pre-widen affected Vantage products" },
+      { action: "temp_leverage_cut", bu: "RISK_CONTROL", description: "Session leverage cut on hottest symbols", requires_human: true },
+      { action: "rag_macro_check", bu: "AI", description: "Cross-check RAG + macro calendar vs intel card" },
+    ],
+    past_cases: [
+      {
+        case_id: "CASE-MI-1001",
+        date: "2026-10-01",
+        outcome: "PREVENTED",
+        summary: "FOMC hawkish cluster pushed to messenger; pre-widen before US open avoided cascade.",
+      },
+      {
+        case_id: "CASE-MI-0912",
+        date: "2026-09-12",
+        outcome: "NEAR_MISS",
+        summary: "OPEC rumour hit oil CFDs; intel card arrived 4m before LP rejects rose.",
+      },
+    ],
+    owner_department: "RISK_CONTROL",
+    steps: [
+      {
+        action: "lark_notify",
+        description: "Notify Market Intelligence dedicated group with standard card format",
+        params: { channel: "oc_market_intelligence" },
+        bu: "AI",
+      },
+      { action: "map_products_to_book", description: "Map affected Vantage products to open inventory / hedge coverage", bu: "RISK_CONTROL" },
+      {
+        action: "pre_widen_spreads",
+        description: "Propose pre-widen on products with UP/DOWN direction in intel card",
+        bu: "RISK_CONTROL",
+      },
+      {
+        action: "flag_for_human_review",
+        description: "Approve leverage cut if severity BREACH/CRITICAL or hits ≥3",
+        requires_human: true,
+        bu: "RISK_CONTROL",
+      },
+    ],
+  },
 ];
 
 /** Additional multi-indicator linked timeline scenarios */
@@ -1531,6 +1611,35 @@ export const EXTRA_LINKED_SCENARIOS: LinkedScenario[] = [
     linked_skills: ["SKILL-FUNDING-EXCEPTION", "SKILL-SEGREGATION-GAP", "SKILL-ENTITY-CAPITAL"],
     past_cases: [
       { case_id: "CASE-CHAIN-SEG-0220", date: "2026-02-20", outcome: "PREVENTED", summary: "Top-up within 40m closed gap." },
+    ],
+  },
+  {
+    code: "CHAIN-MKT-INTEL-VOL",
+    name: "Market intel hits → equity / margin heat",
+    description: "High-impact external intel precedes book stress when desks do not pre-widen or cut leverage.",
+    product: "CFD+Crypto",
+    domain: "MARKET_PRICING",
+    severity: "BREACH",
+    sequence: [
+      { t_minutes: 0, monitor_id: "M2-MKT-INTEL", severity: "WARN", signal: "≥1 high-impact intel hit in 5m scan" },
+      { t_minutes: 5, monitor_id: "M2-MKT-INTEL", severity: "BREACH", signal: "≥3 high-impact intel hits" },
+      { t_minutes: 15, monitor_id: "M2-MRG-014", severity: "WARN", signal: "Margin utilisation rising into event" },
+      { t_minutes: 25, monitor_id: "M2-EQ-001", severity: "WARN", signal: "Equity DD if unhedged into move" },
+    ],
+    causes: ["Macro / geo surprise", "No pre-widen", "LP rejects under news", "Copy pile-in"],
+    escalation_plan: [
+      { after_minutes: 0, team: "Market Intelligence", channel: "oc_market_intelligence", action: "Publish card" },
+      { after_minutes: 5, team: "Risk Control Desk", channel: "oc_risk_control_desk", action: "Pre-widen / leverage review" },
+      { after_minutes: 20, team: "Exec Risk Bridge", channel: "oc_exec_risk_bridge", action: "If CRITICAL geo + EQ WARN" },
+    ],
+    corrections: [
+      { action: "pre_widen_spreads", bu: "RISK_CONTROL", description: "Pre-widen affected products" },
+      { action: "temp_leverage_cut", bu: "RISK_CONTROL", description: "Session leverage cut", requires_human: true },
+      { action: "lark_notify", bu: "AI", description: "Keep Market Intelligence group updated" },
+    ],
+    linked_skills: ["SKILL-MARKET-INTEL", "SKILL-MARGIN-SPIKE", "SKILL-EQUITY-DRAWDOWN"],
+    past_cases: [
+      { case_id: "CASE-CHAIN-MI-1001", date: "2026-10-01", outcome: "PREVENTED", summary: "Intel → pre-widen before US open cascade." },
     ],
   },
 ];

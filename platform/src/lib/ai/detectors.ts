@@ -123,6 +123,17 @@ const DETECTORS: DetectorDef[] = [
     breach_threshold: 10,
     comparator: "gte",
   },
+  {
+    code: "DET-MKT-INTEL",
+    name: "Market intelligence high-impact hits",
+    description: "Count of WARN+ market-intel findings in the latest 5-minute scan (news/social/official affecting LP prices).",
+    product: "CFD+CRYPTO",
+    domain_code: "MARKET_PRICING",
+    monitor_id: "M2-MKT-INTEL",
+    warn_threshold: 1,
+    breach_threshold: 3,
+    comparator: "gte",
+  },
 ];
 
 export function seedDetectors(db: Database.Database) {
@@ -174,6 +185,8 @@ export function evaluateDetector(
 /** Prototype: jitter indicator last_value slightly to simulate live ticks. */
 export function sampleDetectorValue(base: number | null, monitorId: string): number {
   const b = base ?? 0;
+  // Market intel is owned by the 5-minute scanner — do not jitter over its hits.
+  if (monitorId === "M2-MKT-INTEL") return b;
   const jitter =
     monitorId.includes("HEDGE") ? (Math.random() - 0.55) * 4 : (Math.random() - 0.35) * Math.max(1, b * 0.08);
   return Math.round((b + jitter) * 100) / 100;

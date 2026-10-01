@@ -10,6 +10,7 @@ import { seedDailyPerformance } from "@/lib/ai/daily";
 import { ensureAiAdminSchema } from "@/lib/ai/admin-schema";
 import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
+import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -730,6 +731,7 @@ const MONITOR_SEED_ROWS: Array<{
   { monitor_id: "M2-CRYPTO-DEP", name: "Crypto Deposits (1h USD)", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 3000000, breach: 8000000, unit: "USD", status: "HEALTHY", last_value: 1100000, tickets: 0 },
   { monitor_id: "M2-ARB-026", name: "Latency Arb Toxicity Score", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 0.5, breach: 0.7, unit: "score", status: "HEALTHY", last_value: 0.18, tickets: 0 },
   { monitor_id: "M2-SWAP-027", name: "Symbols with Swap vs Benchmark Δ", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 5, breach: 10, unit: "symbols", status: "HEALTHY", last_value: 1, tickets: 0 },
+  { monitor_id: "M2-MKT-INTEL", name: "Market Intelligence High-Impact Hits (5m)", domain_code: "MARKET_PRICING", product: "CFD+Crypto", warn: 1, breach: 3, unit: "hits/5m", status: "HEALTHY", last_value: 0, tickets: 0 },
 ];
 
 function ensureExtraMonitors(db: Database.Database) {
@@ -773,6 +775,7 @@ function ensureAiLayer(db: Database.Database) {
   seedAiAdminIfEmpty(db);
   ensureRiskLogSchema(db);
   seedRiskLogIfEmpty(db);
+  ensureMarketIntelSchema(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`
@@ -780,6 +783,16 @@ function ensureAiLayer(db: Database.Database) {
   upsert.run("ai.auto_on_alarm", "true", "Auto-trigger AI analysis when Monitor indicators alarm");
   upsert.run("ai.skill_certainty_only", "true", "Auto-execute skills only when conditions match with certainty");
   upsert.run("detectors.auto_raise_alarms", "true", "Detectors raise Monitor alarms when warn/breach");
+  upsert.run("market_intel.enabled", "true", "Enable 5-minute market intelligence scanner");
+  upsert.run("market_intel.interval_minutes", "5", "Scan cadence in minutes");
+  upsert.run("market_intel.lark_chat_id", "oc_market_intelligence", "Dedicated messenger group for intel pushes");
+  // Avoid static import cycle (scanner → getDb). Seed + scheduler via dynamic import.
+  void import("@/lib/market-intel/scanner")
+    .then(({ seedMarketIntel, startMarketIntelScheduler }) => {
+      seedMarketIntel(db);
+      startMarketIntelScheduler();
+    })
+    .catch((e) => console.error("[market-intel] boot seed failed", e));
 }
 
 export function getDb() {
