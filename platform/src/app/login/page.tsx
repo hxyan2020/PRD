@@ -83,17 +83,17 @@ export default function LoginPage() {
             <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
               {t("shell.language", locale)}
             </div>
-            <div className="flex gap-1" role="group" aria-label={t("shell.language", locale)}>
+            <div className="relative z-10 flex gap-1" role="group" aria-label={t("shell.language", locale)}>
               <button
                 type="button"
-                className={cn("btn !min-h-9 !px-3 text-xs", locale === "en" ? "btn-primary" : "")}
+                className={cn("btn !min-h-9 !px-3 text-xs relative z-10", locale === "en" ? "btn-primary" : "")}
                 onClick={() => pickLang("en")}
               >
                 English
               </button>
               <button
                 type="button"
-                className={cn("btn !min-h-9 !px-3 text-xs", locale === "zh-Hant" ? "btn-primary" : "")}
+                className={cn("btn !min-h-9 !px-3 text-xs relative z-10", locale === "zh-Hant" ? "btn-primary" : "")}
                 onClick={() => pickLang("zh-Hant")}
               >
                 繁體中文
