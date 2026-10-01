@@ -53,6 +53,9 @@ export default function AdminDashboardPage() {
         subtitle="Control plane for roles, teams, data sources, Monitor 2.0 linkage and Lark escalation — foundation for the semi-automated CRMP."
         actions={
           <div className="flex flex-wrap gap-2">
+            <Link className="btn" href="/admin/risk-log">
+              Risk Log
+            </Link>
             <Link className="btn" href="/admin/ai-admin">
               AI Admin
             </Link>

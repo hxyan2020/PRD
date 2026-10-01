@@ -9,6 +9,7 @@ import { seedDetectors } from "@/lib/ai/detectors";
 import { seedDailyPerformance } from "@/lib/ai/daily";
 import { ensureAiAdminSchema } from "@/lib/ai/admin-schema";
 import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
+import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -688,6 +689,8 @@ function ensureAiLayer(db: Database.Database) {
   seedDetectors(db);
   seedDailyPerformance(db);
   seedAiAdminIfEmpty(db);
+  ensureRiskLogSchema(db);
+  seedRiskLogIfEmpty(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`

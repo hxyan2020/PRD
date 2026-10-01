@@ -11,6 +11,7 @@ import {
   Library,
   LineChart,
   MessageSquare,
+  ScrollText,
   Settings,
   Shield,
   SlidersHorizontal,
@@ -24,6 +25,7 @@ import {
 export const NAV_ITEMS = [
   { href: "/admin", label: "Admin Home", icon: LayoutDashboard, permission: "admin.access" },
   { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read" },
+  { href: "/admin/risk-log", label: "Risk Log Analytics", icon: ScrollText, permission: "monitor.read" },
   { href: "/admin/detectors", label: "Detectors", icon: CircuitBoard, permission: "detectors.read" },
   { href: "/admin/alerts", label: "Live Alerts", icon: Bell, permission: "monitor.read" },
   { href: "/admin/ai-analyses", label: "AI Analyses", icon: Brain, permission: "ai.read" },

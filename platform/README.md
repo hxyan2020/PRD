@@ -80,8 +80,18 @@ Auto-trigger also runs on **Monitor 2.0 Sync**.
 | Human gates | `/admin/interventions` |
 | Spine log | `/admin/spine` |
 | Daily dashboard (CFD + crypto) | `/admin/dashboard` |
+| Risk log analytics | `/admin/risk-log` |
 
 Run detectors to sample indicators, raise alarms, and auto-trigger AI. Approve pending actions in Human Intervention. Review CFD vs crypto metrics on Daily Performance.
+
+## Risk Log & Alerts Analytics
+
+`/admin/risk-log` shows:
+- Alerts by risk domain / product / severity
+- Chronological alert records with ack / resolve / human-gate durations
+- Monetary **loss vs prevented** (and exposure) from `alert_impacts`
+- Loophole-prone areas ranked by breach recurrence
+- Unified timeline (alerts + interventions + spine)
 
 ## Still out of scope (production wiring)
 
