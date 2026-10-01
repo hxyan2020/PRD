@@ -2,9 +2,9 @@
 
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
 **Scope:** Spot · Cross/Isolated Margin · USDⓈ-M & COIN-M Perpetuals (and dated futures where noted)  
-**Version:** 1.1 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Version:** 1.2 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
-> This handbook is the **operating playbook** for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.  
+> This handbook is the **operating playbook** for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.  
 > **Thresholds below are illustrative defaults** for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.
 
 ---
@@ -19,8 +19,9 @@
 6. [Global SOPs (shared)](#6-global-sops-shared)
 7. [Admin pages & tool catalogue](#7-admin-pages--tool-catalogue)
 8. [Limits, KRIs, thresholds, actions & escalation](#8-limits-kris-thresholds-actions--escalation)
-9. [Incident severity & war room](#9-incident-severity--war-room)
-10. [Appendix — glossary & checklists](#10-appendix--glossary--checklists)
+9. [Risk scenario diagnostics (RAG + time sequence)](#9-risk-scenario-diagnostics-rag--time-sequence)
+10. [Incident severity & war room](#10-incident-severity--war-room)
+11. [Appendix — glossary & checklists](#11-appendix--glossary--checklists)
 
 ---
 
@@ -29,7 +30,7 @@
 | If you are… | Read first |
 |-------------|------------|
 | New BU PIC | §§2–4 for your BU + §7 tools |
-| Risk Officer / Risk Ops | Full doc; own §8 indicator catalogue & §9 incidents |
+| Risk Officer / Risk Ops | Full doc; own §8 catalogue, §9 scenarios & §10 incidents |
 | Product (Spot / Margin / Futures) | §3 + your product BU chapter + listing SOPs |
 | Eng / SRE (Matching, Risk Engine, Wallet) | Your tech BU chapter + failover SOPs |
 | Compliance / Surveillance | Compliance BU + market-abuse SOPs |
@@ -987,9 +988,423 @@ Stand up these first — then expand to full catalogue:
 
 ---
 
+## 9. Risk scenario diagnostics (RAG + time sequence)
 
+Use this section when an indicator (or cluster) flips colour. **Never act on colour alone** — reconstruct the **time sequence**, then discriminate causes.
 
-## 9. Incident severity & war room
+### 9.1 RAG colour map
+
+| Colour | Maps to §8 | Meaning for diagnostics |
+|--------|------------|-------------------------|
+| **Green (G)** | Below WARN | Healthy *or* silent failure / not computed — confirm data freshness |
+| **Amber (A)** | WARN | Elevated; investigate before it becomes BREACH |
+| **Red (R)** | BREACH / Kill-adjacent | Contain first, then diagnose; assume real until proven data quality |
+
+**Important:** Green is not always “safe”. A green mark feed that is **stale** (see PL-K06) can hide a red economic reality. Always check **last update timestamp** with colour.
+
+### 9.2 Diagnostic method (mandatory order)
+
+```
+1. CLOCK   — Build timeline (T0 first anomaly → Tn now). Note timezone UTC.
+2. SCOPE   — 1 UID / 1 symbol / 1 asset / venue-wide / cross-product?
+3. DATA    — Is the metric fresh? Formula version? Feed failover active?
+4. SINGLE  — Plausible causes for the primary indicator colour (§9.3).
+5. CLUSTER — Which other KRIs moved, and in what order? (§9.4–9.5)
+6. RULE OUT — Eliminate causes inconsistent with sequence or green peers.
+7. ACT     — Contain per §8 actions → escalate per §8.2 → war room if Sev-1/2.
+8. WRITE   — Timeline + ruled-in/out causes in incident ticket.
+```
+
+**Time-sequence grammar (use in tickets):**
+
+| Pattern | Interpretation |
+|---------|----------------|
+| **A → B** | A likely causal precursor of B (seconds–minutes) |
+| **A ≈ B** | Simultaneous / common driver (same second–minute bucket) |
+| **A ↛ B** | A alone usually does *not* produce B; look for third factor |
+| **A then quiet then B** | Two-phase incident (e.g. exploit deposit → later dump) |
+| **Oscillating A/R** | Flip-flopping often = threshold noise, feed flap, or MM restart |
+
+---
+
+### 9.3 Single-indicator scenarios (all plausible causes)
+
+For each key KRI: what **Green / Amber / Red** can mean. Lists are **exhaustive enough for ops triage**, not metaphysical.
+
+#### 9.3.1 Spot — SP-K01 Bid–ask spread
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Normal MM; tight regime; low vol | Depth SP-K02 also G; latency SP-K09 G |
+| **G (false comfort)** | Mid calculation broken (both sides empty → NaN coerced); quoting on wrong tick size | Book empty but spread shows 0; trades failing |
+| **A** | MM widened quotes; vol spike; inventory skew; one-sided flow; partial MM outage; competing venue dislocation pulling quotes | Check MM heartbeat; realized vol; SP-K02 depth |
+| **R** | Full MM disconnect; disorderly market; fat-finger resting orders cleared; halt remnant; API rate-limit starving MM; intentional thin book pre-news | SP-K02 R? SP-K09 R? Recent halt SP-K06? |
+
+**Typical sequences:** `vol spike → A spread → A depth` (market) · `MM process crash → R depth then R spread within seconds` (tech) · `spread R while depth G` (wide but thick — often policy widen, not outage).
+
+#### 9.3.2 Spot — SP-K03 Last vs ref / index deviation
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Price discovery aligned | Mark/index feeds fresh |
+| **G (false)** | Ref feed stale and last follows stale ref; both wrong together | PL-K06 / external venue check |
+| **A** | Transient imbalance; arb lag; bands absorbing; news micro-gap; thin alt | Recovers < 60s? Depth OK? |
+| **R** | Oracle/ref bug; manipulated last prints; wrong symbol mapping; halt on ref venues only; fat-finger print; index constituent failure | Cross-check 3 external venues; SP-K08 wash; PF-K01 if perp listed |
+
+**Sequences:** `external crash ≈ SP-K03 R` (real move) · `SP-K03 R while externals flat` (local book/manip/data) · `PL-K06 A → SP-K03 A` (feed lag artifact).
+
+#### 9.3.3 Spot — SP-K09 Matching latency p99
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Engine healthy | Drop rate ~0 |
+| **A** | Load spike; GC; noisy neighbor; cancel storm start; partial shard hot | Cancel/fill SP-K04; CPU/network |
+| **R** | Shard overload; network partition; bad deploy; infinite cancel loop; DDoS; clock skew | Failover status; recent ME-01 deploy; SP-K04 R |
+
+**Sequences:** `SP-K04 A → SP-K09 A→R` (cancel storm) · `deploy → SP-K09 R alone` (bad release) · `SP-K09 R → SP-K03 A` (stale books / delayed matches).
+
+#### 9.3.4 Margin — MG-K01 Borrow utilisation
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Amply inventoried | Rates normal |
+| **A** | Organic demand; short squeeze forming; inventory withdrawal by lenders; rate still sticky | VIP concentration MG-K09; funding/perp basis PF-K09 |
+| **R** | Squeeze; bank-run on lendable asset; mis-set inventory denomiator; double-count bug; whale borrow | Freeze path; check inventory ledger vs wallet |
+
+**Sequences:** `spot dump → collateral call → rush borrow stable → MG-K01 A/R` · `MG-K01 R with flat markets` (inventory/accounting bug or silent lender exit).
+
+#### 9.3.5 Margin — MG-K02 / proximity to liquidation (user LTV)
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Healthy cushion | — |
+| **A** | Vol against position; interest accrual; haircut unchanged while vol rose (MG-K05); user added leverage | Position PnL vs borrow growth |
+| **R** | Breach maintenance; liq engine should fire | If R but **no liq orders** → RE stuck (critical) |
+
+**Sequences:** `price shock → MG-K02 R → MG-K03 liq notional ↑` (healthy engine) · `MG-K02 R ↛ MG-K03` for >15–30s (engine/pause/feed fail — escalate L3).
+
+#### 9.3.6 Margin — MG-K04 Bad debt
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------|------|
+| **G** | No shortfall | Confirm ledger job ran |
+| **A** | Small gap after liq slip; partial fill; dust | MG-K10 slip |
+| **R** | Gap move through bankruptcy; engine lag; wrong mark; depeged collateral; ADL/insurance analogue missing on margin | MG-K08; PL-K06; insurance analogue |
+
+**Sequences:** `MG-K08 R → MG-K02 R → MG-K03 → MG-K04` (depeg cascade) · `MG-K04 R with MG-K03 G` (accounting/recon bug or manual adjust).
+
+#### 9.3.7 Margin — MG-K08 Stablecoin collateral depeg
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Peg holds | Multi-venue peg |
+| **A** | Soft depeg; liquidity thin; temporary venue dislocation | Redemption queue; TS inventory |
+| **R** | Hard depeg; issuer freeze; exploit; oracle marks wrong stable | On-chain peg; bank/issuer status; PL-K06 |
+
+**Sequences:** `external depeg ≈ MG-K08` (real) · `MG-K08 R → MG-K01 util ↑ (flight) → MG-K03 liqs` · `MG-K08 R while CEX+on-chain G` (local mark bug).
+
+#### 9.3.8 Perps — PF-K01 Mark − index deviation
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Mark tracks index | Constituents live |
+| **G (false)** | Both mark and index stuck on same stale value | PL-K06 timestamp; external spot |
+| **A** | Premium/discount building; funding pressure; thin perp vs spot; skew | PF-K03 funding; PF-K09 basis; depth |
+| **R** | Index broken (venues down); mark formula bug; manip on last used in mark; circuit not engaged; wrong contract multiplier | PF-K02; external index rebuild |
+
+**Sequences:** `PF-K02 A/R → PF-K01 R` (index integrity) · `PF-K01 R ≈ PF-K09 R with PF-K02 G` (real basis stress) · `PL-K06 R → PF-K01 flap` (pipeline).
+
+#### 9.3.9 Perps — PF-K06 Liquidation burst
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Quiet | — |
+| **A** | Vol event; cascade starting; OI high leverage cohort | PF-K11; PF-K10 concentration |
+| **R** | Cascade; wrong marks mass-liq; restart draining queue; attack on mark | PF-K01; insurance PF-K07; engine lag |
+
+**Sequences:** `macro dump → PF-K01 A → PF-K06 A→R → PF-K07 A` (classic) · `PF-K06 R with flat underlying` (bad mark / bug — Sev-1 candidate) · `PF-K06 R → PF-K08 ADL` (insurance insufficient).
+
+#### 9.3.10 Perps — PF-K07 Insurance coverage / PF-K08 ADL
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Fund healthy | — |
+| **A (K07)** | Large payouts; under-seeded listing; slow fee inject | PF-K12 payouts |
+| **R (K07)** | Coverage < floor after bankruptcies | Prepare ADL |
+| **A/R (K08)** | ADL fired / storm | Comms + CP abuse check |
+
+**Sequences:** `PF-K06 R → PF-K12 payouts → PF-K07 A→R → PF-K08` (ordered stress) · `PF-K08 without prior PF-K07 A` (misconfig ADL trigger — investigate urgently).
+
+#### 9.3.11 Perps — PF-K03 Funding vs cap
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Balanced OI / premium | — |
+| **A** | Persistent premium/discount; one-sided retail; arb constrained | PF-K09; withdraw/fiat rails |
+| **R** | Hit clamp; extreme imbalance; formula error; wrong interest component | Predicted vs realized; code version |
+
+**Sequences:** `basis PF-K09 A for hours → PF-K03 A→R` (organic) · `instant PF-K03 R at funding boundary only` (calc bug or clock).
+
+#### 9.3.12 Platform — PL-K01 Hot-wallet buffer / PL-K02 withdraw backlog
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Buffer OK; queue healthy | — |
+| **A** | Outflow surge; cold→hot lag; chain fee spike slowing sends; listing unlock day | On-chain congestion; news |
+| **R** | Run risk; hot drain; signer stuck; chain halt; attack draining hot | WA-02 slow-mode; Security if unexplained |
+
+**Sequences:** `negative news → withdraw spike → PL-K01 A→R → PL-K02 A→R` (run) · `PL-K02 R with PL-K01 G` (signer/chain bottleneck, not balance) · `PL-K04 reorg → credit pause → perceived backlog`.
+
+#### 9.3.13 Platform — PL-K06 Risk / mark pipeline lag
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Fresh marks | Compare wall clock vs event time |
+| **A** | Kafka/consumer lag; GC; dependency slow | Downstream KRIs flap |
+| **R** | Pipeline down; poison message; bad deploy; clock jump | Failover; pause unsafe liqs |
+
+**Sequences:** `PL-K06 R first → many KRIs A/R without external move` (data incident) · `external move then PL-K06 A` (backpressure from load — still dangerous).
+
+#### 9.3.14 Platform — PL-K05 EOD recon break
+
+| Colour | Plausible causes | Quick discriminators |
+|--------|------------------|----------------------|
+| **G** | Books match | Job completed flag |
+| **A** | Timing cut-off; fee rounding; partial fills late | Re-pull broker |
+| **R** | Missing trades; duplicate; wrong account map; venue outage mid-day; fraud | Materiality; maker–checker |
+
+**Sequences:** `intraday ME incident → late PL-K05 R` · `PL-K05 R isolated` (reporting/ETL) vs with client PnL tickets (real breaks).
+
+#### 9.3.15 When Green is the anomaly
+
+Treat **unexpected Green** as a scenario:
+
+| Observation | Plausible causes |
+|-------------|------------------|
+| Major market crash but PF-K01/SP-K03 stay G | Feeds frozen; alert rule disabled; wrong symbol scope; thresholds too loose |
+| MG-K02 all G while MG-K03 liq notional spikes | Liquidating **wrong accounts** / test bleed / shared engine noise |
+| PL-K01 G but users report stuck withdraws | Backlog is chain/signing (PL-K02) not balance; UI status bug |
+| All KRIs G after Sev-1 | Dashboard pointed at staging; ACL showing cached snapshot |
+
+---
+
+### 9.4 Multi-indicator cluster scenarios (with time sequence)
+
+Legend: colours on the **cluster at diagnosis time**; arrows show **required order** to prefer that cause.
+
+#### Scenario family S1 — Real macro / crypto risk-off
+
+| Phase (UTC order) | Cluster | Preferred cause | Rule-outs |
+|-------------------|---------|-----------------|-----------|
+| T0 | External BTC/ETH dump (off-platform) | Macro | — |
+| T0+0–30s | SP-K03 A/R · PF-K09 A · SP-K01 A | Price discovery stress | If externals flat → not S1 |
+| T0+30s–5m | PF-K01 A · PF-K06 A→R · MG-K02 A→R · MG-K03 ↑ | Liquidations organic | — |
+| T0+5–30m | PF-K07 A · MG-K01 A · PL-K01 A | Insurance & borrow & outflows | — |
+| Optional | PF-K08 if insurance thin | ADL | |
+
+**Also green that supports S1:** PL-K06 G (feeds fresh), PF-K02 G (index venues alive).  
+**Escalation:** L2–L3 depending on insurance/ADL; Comms ready.
+
+#### Scenario family S2 — Mark / index data integrity failure
+
+| Phase | Cluster | Preferred cause | Rule-outs |
+|-------|---------|-----------------|-----------|
+| T0 | PL-K06 A/R **or** PF-K02 R | Feed/constituent fail | — |
+| T0+seconds | PF-K01 R · possibly SP-K03 R **without** matching external move | Bad marks | If externals moved same → S1 |
+| T0+1–5m | PF-K06 R (spurious liqs) · MG-K02 R | Engine trusting bad marks | — |
+| Concurrent | SP-K09 may stay G | Not matching overload | Distinguishes from S4 |
+
+**Actions:** Pause risk-increasing + pause liq if policy (RE-02); failover feeds; Sev-1 if mass wrong liqs.  
+**Green peers:** External spot monitors G/flat; chain health G.
+
+#### Scenario family S3 — Stablecoin depeg contagion
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | MG-K08 A→R · external peg break | Depeg |
+| T0+1–10m | MG-K05 A · MG-K02 R on stable-collateral accounts · MG-K03 ↑ | Collateral shock |
+| Parallel | MG-K01 R on other stables/fiat borrows · PF-K09 dislocations on stable pairs | Flight to quality / confusion |
+| T0+10–60m | MG-K04 A/R · PL-K01 A · PF-K07 A if perps margined in stable | Bad debt + run + insurance |
+
+**Rule-out:** MG-K08 R with on-chain+off-venue peg G → local oracle (treat as S2 subclass).
+
+#### Scenario family S4 — Matching / infra overload or bad deploy
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | SP-K09 A→R · often after ME deploy or DDoS ticket | Infra |
+| T0+ | SP-K04 A/R (cancel storm) · SP-K01/02 A (MM can't update) | Secondary market quality |
+| Later | SP-K03 A · PF-K01 A if delayed updates | Stale trading |
+| Usually green | PF-K02 · MG-K08 · PL-K06 may be G early | Distinguishes from S2 |
+
+**Rule-out:** If PL-K06 R leads and SP-K09 G → prefer S2 not S4.
+
+#### Scenario family S5 — MM withdrawal / liquidity hole (single name)
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | SP-K02 R · SP-K01 R on **one** symbol; others G | MM outage / SLA breach |
+| Optional | SP-K03 A on that symbol only | Thin book impact |
+| Green | Platform PL-* G · other symbols G · PF-* G if no perp | Localized |
+
+**Vs manipulation (S7):** S5 often has MM heartbeat down; S7 has SP-K08 / CP scores rising with heartbeats up.
+
+#### Scenario family S6 — Liquidation cascade with insurance stress (perps)
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0→T1 | PF-K11 A · PF-K10 A (crowded) then shock | Positioning fragility |
+| T1 | PF-K01 A · PF-K06 R | Cascade |
+| T2 | PF-K12 R · PF-K07 A→R | Fund drain |
+| T3 | PF-K08 A/R | ADL |
+
+**Time discipline:** If **PF-K08 before PF-K07 A**, suspect ADL misconfig (not “natural” S6).
+
+#### Scenario family S7 — Market abuse / manipulation
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | SP-K08 A/R and/or CP alert · often SP-K04 odd patterns | Abuse |
+| T0+ | SP-K03 R **localized** · PF-K01 may follow if mark uses last | Print paint / stop hunt |
+| Optional | PF-K06 burst on victims · MG-K02 on leveraged victims | Forced flows |
+| Green / mixed | SP-K09 often G · PL-K06 G | Not infra |
+
+**Sequence clue:** Repeated **oscillating** SP-K03 A/R around a UID cluster with SP-K08 ↑.
+
+#### Scenario family S8 — Withdrawal run / custody stress
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | Social/news or competitor failure | Trigger |
+| T0+ | PL-K01 A→R · PL-K02 A→R | Outflow |
+| Parallel | Spot sell pressure SP-K03 A · MG-K01 A · PF-K09 A | Market side-effects |
+| Distinguisher | PL-K08 Security G vs R | Pure run vs compromise |
+
+**If PL-K08 R leads:** treat as security incident (L4) not pure S8.
+
+#### Scenario family S9 — Silent / false-green systemic
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | User tickets / external price move / support spike | Outside signal |
+| T0 | **All primary KRIs G** | Dashboard wrong env; rules disabled; frozen consumers showing last-good |
+| Confirm | PL-K06 timestamp ancient **or** alert manager muted | Data plane lie |
+
+**Action:** Page ENG+RO; do not declare “all clear”.
+
+#### Scenario family S10 — Listing / new-market failure
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | New symbol live | — |
+| T0+minutes | SP-K10 R · SP-K01/02 R · SP-K03 R | Thin + volatile listing |
+| Optional | MG eligibility too early → MG-K03/04 | Premature margin |
+| Optional | Perp day-0 → PF-K01/06 noisy | Index immature (PF-K02) |
+
+**Green elsewhere** supports isolation to the new market.
+
+#### Scenario family S11 — Cross-product arb / basis blowout
+
+| Phase | Cluster | Preferred cause |
+|-------|---------|-----------------|
+| T0 | PF-K09 R · PF-K03 A | Basis/funding stress |
+| Parallel | SP depth OK (SP-K02 G) but perp thin **or** vice versa | One-leg liquidity hole |
+| Optional | PL-K01/withdraw friction blocks arb | Rails / run |
+| Optional | MG-K01 R if spot-leg financed on margin | Capital constraint |
+
+**Vs S2:** PF-K02 G and PL-K06 G required to trust basis reading.
+
+#### Scenario family S12 — Post-incident recovery (colours improving)
+
+| Phase | Cluster | Meaning |
+|-------|---------|---------|
+| Tn | Was R, now A, peers still A | Recovering — keep hypercare |
+| Tn | Primary G but PF-K07 still A | Price OK, **fund not rebuilt** — don't reset leverage yet |
+| Tn | All G except PL-K05 A/R | Market OK, **books not clean** — block settlement |
+
+---
+
+### 9.5 Cluster lookup (symptoms → scenario family)
+
+| You see (approx. order) | Consider first | Then check |
+|-------------------------|----------------|------------|
+| Externals dump → SP/PF price KRIs → liqs → insurance | **S1** | S6 if ADL |
+| PL-K06/PF-K02 first → PF-K01 → spurious liqs | **S2** | Pause liq |
+| MG-K08 first → margin liqs / bad debt | **S3** | Oracle vs real peg |
+| SP-K09/deploy first → spreads/depth | **S4** | Rollback |
+| Single-symbol depth/spread R; rest G | **S5** or **S7** | MM heartbeat vs SP-K08 |
+| Crowding KRIs then liq then insurance then ADL | **S6** | ADL order sanity |
+| SP-K08/CP first | **S7** | Holds |
+| PL-K01/02 lead; security G | **S8** | Slow-mode |
+| PL-K08 or key anomaly leads | **Security / L4** (not pure S8) | — |
+| Everything G amid chaos | **S9** | Timestamps |
+| New listing only | **S10** | Delist / tags |
+| Basis/funding extremes; feeds G | **S11** | Rails / borrow |
+
+---
+
+### 9.6 Worked mini-examples (time-stamped)
+
+#### Example A — Amber alone
+
+`10:00:00Z SP-K01 A on ALT/USDT; SP-K02 G; SP-K09 G; PL-K06 G`
+
+- Plausible: MM intentional widen; mild vol; one LP offline but others fill depth.  
+- Not yet: full outage (depth still G), engine issue (latency G), feed lie (PL-K06 G).  
+- Action: L1 watch 15m; if depth flips A/R → treat as S5.
+
+#### Example B — Red cluster with sequence
+
+```
+14:00:00Z  External USDX peg 0.97 (off-site)
+14:00:05Z  MG-K08 R
+14:00:40Z  MG-K02 R (many UIDs) · MG-K03 A
+14:05:00Z  MG-K04 A · MG-K01 R (USDC borrow)
+14:10:00Z  PL-K01 A
+```
+
+- Diagnosis: **S3** real depeg contagion (not S2 — external peg confirms).  
+- Actions: haircut/borrow freeze; liq capacity; Treasury; L3 bridge.
+
+#### Example C — Same reds, different sequence → different cause
+
+```
+# Case C1
+09:00:00Z  PL-K06 R
+09:00:10Z  PF-K01 R · MG-K08 R (stable mark stuck)
+09:01:00Z  PF-K06 R
+→ Prefer S2 (data). Externals peg still 1.00.
+
+# Case C2
+09:00:00Z  External peg break
+09:00:10Z  MG-K08 R · PF-K01 A
+09:01:00Z  PF-K06 A · PL-K06 G
+→ Prefer S3. Do not pause marks; do adjust haircuts.
+```
+
+#### Example D — Green + Red contradiction
+
+`PF-K06 R (liq burst) + PF-K01 G + PL-K06 G + externals flat`
+
+- Plausible: liq engine bug; wrong contract config; test traffic in prod; ADL/liq bot loop.  
+- Unlikely: honest market cascade (needs price KRIs or externals).  
+- Escalate **L3/Sev-1**; consider RE-02 pause.
+
+---
+
+### 9.7 RO-OPS triage card (print / pinned)
+
+1. Screenshot RAG panel + **timestamps** (not only colours).  
+2. Mark primary indicator + list all A/R within ±15m.  
+3. Draw sequence arrows (T0…Tn).  
+4. Pick family S1–S12 from §9.5; note ruled-out families.  
+5. Execute §8 auto/human actions for primary + cluster.  
+6. Escalation level from worst KRI + family (S2/S8-security/S9 → bias up).  
+7. Paste timeline into ticket before handoff.
+
+---
+
+## 10. Incident severity & war room
 
 | Sev | Definition | War room chair |
 |-----|------------|----------------|
@@ -1000,13 +1415,15 @@ Stand up these first — then expand to full catalogue:
 
 **Standing war-room roles:** Incident Commander · Risk · ME · RE · Wallet · Comms · CP · Scribe  
 
-**Always capture:** timeline, configs touched, orders/liquidations during incident, client impact, permanent fix owner.
+**Always capture:** timeline (§9 clock), configs touched, orders/liquidations during incident, ruled-in scenario family (S1–S12), client impact, permanent fix owner.
+
+**Scenario → severity hints:** S2 spurious mass liqs · S8 with PL-K08 · S9 false-green in crisis → start at **Sev-1** until proven otherwise. S5 single-name MM → often Sev-3. S1 orderly risk-off with insurance G → Sev-2/3 ops mode.
 
 ---
 
-## 10. Appendix — glossary & checklists
+## 11. Appendix — glossary & checklists
 
-### 10.1 Glossary (short)
+### 11.1 Glossary (short)
 
 | Term | Meaning |
 |------|---------|
@@ -1019,18 +1436,21 @@ Stand up these first — then expand to full catalogue:
 | Insurance fund | Backstop for bankrupt liquidations |
 | Reduce-only | Orders that only decrease position |
 | Tier A+ | Materiality band requiring four-eyes |
+| RAG | Red / Amber / Green indicator state (§9) |
+| Scenario family | Named multi-KRI pattern S1–S12 (§9.4) |
 
-### 10.2 BU PIC weekly checklist
+### 11.2 BU PIC weekly checklist
 
 - [ ] Review open WARNs/BREACHes and waivers nearing expiry (ACK SLA breaches noted)  
 - [ ] Confirm admin ACL joiner/mover/leaver tickets closed  
 - [ ] Instrument KRI RAG vs §8 catalogue (Spot SP-K*, Margin MG-K*, Perps PF-K*, Platform PL-K*)  
+- [ ] Spot-check one amber using §9 single-indicator causes + sequence  
 - [ ] Attest weekly PIC pack: false-positive rate + any threshold calib requests  
 - [ ] Upcoming listings/delistings risk opinions scheduled  
 - [ ] DR / failover or liquidation dry-run status (monthly at minimum)  
 - [ ] Read-across: any Spot issue that should change Margin/Perps params  
 
-### 10.3 Go-live checklist — Perps (summary)
+### 11.3 Go-live checklist — Perps (summary)
 
 - [ ] Contract specs signed (PM + Legal)  
 - [ ] Index constituents ≥ policy minimum; **PF-K01/PF-K02** alerts on  
@@ -1041,8 +1461,9 @@ Stand up these first — then expand to full catalogue:
 - [ ] Matching symbol configured; rate limits set  
 - [ ] Comms + support macros  
 - [ ] Hypercare roster 72h  
+- [ ] RO-OPS briefed on S2 vs S1 discrimination for this contract  
 
-### 10.4 Go-live checklist — Margin asset
+### 11.4 Go-live checklist — Margin asset
 
 - [ ] Spot market stable ≥ observation window  
 - [ ] Haircut/LTV stress-tested (DA); **MG-K05** baseline recorded  
@@ -1050,8 +1471,9 @@ Stand up these first — then expand to full catalogue:
 - [ ] Interest curve approved; **MG-K07** recon green  
 - [ ] Liquidation path tested on isolated + cross (**MG-K02/MG-K03**)  
 - [ ] Bad-debt ledger mapping ready (**MG-K04**)  
+- [ ] Depeg tabletop (S3) completed if stable / soft-peg collateral  
 
-### 10.5 Go-live checklist — Spot
+### 11.5 Go-live checklist — Spot
 
 - [ ] Listing diligence complete (LI/RO/CP/Legal)  
 - [ ] Wallet deposit/withdraw enabled on correct chain(s); **PL-K01** buffer OK  
@@ -1059,15 +1481,15 @@ Stand up these first — then expand to full catalogue:
 - [ ] MM SLA live or disclosure if thin book; **SP-K01/SP-K02** wired  
 - [ ] Halt authority tested (**SP-K06**)  
 
-### 10.6 Document control
+### 11.6 Document control
 
 | Item | Value |
 |------|-------|
 | Classification | Internal — Risk Restricted |
 | Change control | CRO approve; publish via Risk portal |
-| Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue** |
+| Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics** |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 1.1 — added full KRI thresholds, actions, escalation, frequency |
+| Version | 1.2 — RAG single/multi-indicator scenarios with time-sequence analysis |
 
 ---
 
