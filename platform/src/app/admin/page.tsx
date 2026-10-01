@@ -59,6 +59,9 @@ export default function AdminDashboardPage() {
             <Link className="btn" href="/admin/docs/urls">
               All URLs
             </Link>
+            <Link className="btn" href="/admin/docs/prd">
+              PRD
+            </Link>
             <Link className="btn" href="/admin/docs/user-guide">
               User Guide
             </Link>
