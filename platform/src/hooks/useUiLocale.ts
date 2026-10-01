@@ -10,7 +10,7 @@ function readLocaleCookie(): UiLocale {
 }
 
 export function useUiLocale() {
-  const [locale, setLocaleState] = useState<UiLocale>("en");
+  const [locale, setLocaleState] = useState<UiLocale>(() => readLocaleCookie());
 
   useEffect(() => {
     setLocaleState(readLocaleCookie());
@@ -19,7 +19,17 @@ export function useUiLocale() {
   function setLocale(next: UiLocale) {
     document.cookie = `${UI_LOCALE_COOKIE}=${encodeURIComponent(next)}; path=/; max-age=31536000; samesite=lax`;
     setLocaleState(next);
+    // Notify other client listeners (e.g. shell + messenger) in the same tab.
+    window.dispatchEvent(new Event("crmp-ui-locale"));
   }
+
+  useEffect(() => {
+    function onLocale() {
+      setLocaleState(readLocaleCookie());
+    }
+    window.addEventListener("crmp-ui-locale", onLocale);
+    return () => window.removeEventListener("crmp-ui-locale", onLocale);
+  }, []);
 
   return { locale, setLocale };
 }

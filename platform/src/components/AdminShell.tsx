@@ -48,6 +48,7 @@ export function AdminShell({
   function setLang(next: UiLocale) {
     document.cookie = `${UI_LOCALE_COOKIE}=${encodeURIComponent(next)}; path=/; max-age=31536000; samesite=lax`;
     setLocale(next);
+    window.dispatchEvent(new Event("crmp-ui-locale"));
     router.refresh();
   }
 
