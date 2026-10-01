@@ -2,9 +2,10 @@
 
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
 **Scope:** Spot · Cross/Isolated Margin · USDⓈ-M & COIN-M Perpetuals (and dated futures where noted)  
-**Version:** 1.0 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Version:** 1.1 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
-> This handbook is the **operating playbook** for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.
+> This handbook is the **operating playbook** for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.  
+> **Thresholds below are illustrative defaults** for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.
 
 ---
 
@@ -17,7 +18,7 @@
 5. [Cross-BU RACI matrix](#5-cross-bu-raci-matrix)
 6. [Global SOPs (shared)](#6-global-sops-shared)
 7. [Admin pages & tool catalogue](#7-admin-pages--tool-catalogue)
-8. [Limits, KRIs & escalation](#8-limits-kris--escalation)
+8. [Limits, KRIs, thresholds, actions & escalation](#8-limits-kris-thresholds-actions--escalation)
 9. [Incident severity & war room](#9-incident-severity--war-room)
 10. [Appendix — glossary & checklists](#10-appendix--glossary--checklists)
 
@@ -28,7 +29,7 @@
 | If you are… | Read first |
 |-------------|------------|
 | New BU PIC | §§2–4 for your BU + §7 tools |
-| Risk Officer / Risk Ops | Full doc; own §8 limits & §9 incidents |
+| Risk Officer / Risk Ops | Full doc; own §8 indicator catalogue & §9 incidents |
 | Product (Spot / Margin / Futures) | §3 + your product BU chapter + listing SOPs |
 | Eng / SRE (Matching, Risk Engine, Wallet) | Your tech BU chapter + failover SOPs |
 | Compliance / Surveillance | Compliance BU + market-abuse SOPs |
@@ -782,34 +783,211 @@ No production traffic before Risk **A** and CP clear.
 
 ---
 
-## 8. Limits, KRIs & escalation
+## 8. Limits, KRIs, thresholds, actions & escalation
 
-### 8.1 Limit types
+### 8.1 How to read the indicator catalogue
+
+Each indicator row uses this schema:
+
+| Column | Meaning |
+|--------|---------|
+| **ID** | Stable code for tickets, alert routing, dashboards |
+| **Indicator** | What is measured |
+| **Freq** | Monitoring / evaluation cadence |
+| **WARN** | Soft threshold → investigate; usually no auto-block |
+| **BREACH** | Hard threshold → mandatory action (auto and/or human) |
+| **Auto action** | System response without waiting for human (where safe) |
+| **Human action** | Required ops/risk steps |
+| **Escalate** | Who is paged and at which ladder level (see §8.2) |
+| **Owner** | Primary BU accountable for response quality |
+
+**Severity mapping:** WARN → typically L1–L2 · BREACH (contained) → L2 · BREACH cascade / fund threat → L3–L4 · Kill-switch class → L4.
+
+**ACK SLAs (RO-OPS):** WARN ≤ 15 min · BREACH ≤ 5 min · Kill / client-asset ≤ 2 min.
+
+**Threshold governance:** changes follow SOP-G01; illustrative numbers marked *calib.* must be replaced by Limit Book values.
+
+### 8.2 Escalation ladder (global)
+
+| Level | Criteria | Notify (page / bridge) | Time-to-bridge |
+|-------|----------|------------------------|----------------|
+| **L1** | Single WARN; data quality suspect; no client impact | RO-OPS | N/A (ticket) |
+| **L2** | Hard BREACH contained to 1 symbol/account class; reversible | RO + BU PIC (+ RE if engine-related) | 15 min |
+| **L3** | Multi-symbol cascade, insurance draw, ADL storm, prolonged halt | CRO + Product PIC + ME + RE + Comms | Immediate |
+| **L4** | Client-fund threat, key/API compromise, exchange-wide halt, wrong marks at scale | ELT · Crisis Comms · Legal · CP · CISO | Immediate + exec bridge |
+
+### 8.3 Limit types
 
 | Type | Meaning | Example |
 |------|---------|---------|
-| Soft (WARN) | Early warning; no auto-block | Perps OI 80% of cap |
-| Hard (BREACH) | Auto-action or mandatory human action | User leverage > bracket → reject order |
-| Kill | Immediate safety stop | Matching kill switch |
-
-### 8.2 Minimum KRI set by instrument
-
-**Spot:** spread vs mid, depth notional, halt count, cancel/fill, deposit–trade–withdraw velocity  
-
-**Margin:** borrow utilisation by asset, avg LTV, liquidation notional, bad-debt daily, interest exceptions  
-
-**Perps:** insurance coverage ratio, ADL count, mark–index deviation, funding percentile, liq burst notional, top-trader concentration  
-
-### 8.3 Escalation ladder
-
-| Level | Criteria (examples) | Notify |
-|-------|---------------------|--------|
-| L1 | Single WARN, data blip | RO-OPS |
-| L2 | Hard BREACH, contained | RO + BU PIC |
-| L3 | Multi-symbol cascade, insurance draw | CRO + Product + ME + RE |
-| L4 | Client-fund threat, key compromise, exchange-wide halt | ELT / Crisis Comms / Legal / CP |
+| Soft (WARN) | Early warning; no auto-block by default | Perps OI ≥ 80% of cap |
+| Hard (BREACH) | Auto-action and/or mandatory human action | User leverage > bracket → reject order |
+| Kill | Immediate safety stop | Matching kill switch; withdraw freeze |
 
 ---
+
+### 8.4 Spot indicators
+
+| ID | Indicator | Freq | WARN | BREACH | Auto action | Human action | Escalate | Owner |
+|----|-----------|------|------|--------|-------------|--------------|----------|-------|
+| **SP-K01** | Bid–ask spread vs 30d median (top pair) | 1s tick / 1m agg | ≥ 3× median for 5m | ≥ 5× median for 2m **or** ≥ 10× any 30s | Widen MM alert; flag symbol | TO verify MM SLA; contact MM; consider band tighten | L1→L2 | Spot TO / MM |
+| **SP-K02** | Book depth notional within ±2% of mid | 1s / 1m | < 50% of SLA depth for 5m | < 25% of SLA for 2m | Page MM bot | TO enforce MM; RO may recommend halt if disorderly | L2 | MM / Spot TO |
+| **SP-K03** | Last vs index/ref mid deviation | 1s | ≥ 2% for 30s (*majors calib.*) | ≥ 5% for 15s **or** ≥ 10% instant | Price-band reject aggressive orders | TO+RO: halt candidate; CP if manip suspected | L2→L3 | Spot TO / RO |
+| **SP-K04** | Cancel / fill ratio (UID or symbol) | 1m | > 50:1 sustained 10m | > 100:1 or API weight abuse | Rate-limit / reject cancels | TO throttle; CP surveillance case | L1→L2 | ME / CP |
+| **SP-K05** | Fat-finger / max notional hit rate | Per order + 5m | > N rejects/UID/5m (*calib.*) | Single order ≥ hard notional cap | Reject order | TO review VIP exception; RO if repeated | L1 | ME / Spot TO |
+| **SP-K06** | Spot trading halt count | Event + daily | ≥ 1 halt/day on majors | ≥ 3 halts/day **or** halt > 60m | — | Post-incident; RO root-cause; Comms | L2→L3 | Spot TO / RO |
+| **SP-K07** | Deposit→trade→withdraw velocity (UID) | Per event / 5m | Unusual pattern vs peer | Travel-rule / AML rule hit | Hold withdraw | CP investigate; WO release only on clear | L2 | CP / WO |
+| **SP-K08** | Self-trade / wash score | 1m / batch | Score ≥ WARN model cut | Score ≥ BREACH cut | STP block / flag | CP case; possible hard hold | L2 | CP |
+| **SP-K09** | Matching latency p99 | 10s | > 2× SLO | > 5× SLO **or** drop rate > 0.1% | Shed non-critical traffic | ME/SRE mitigate; consider halt | L2→L3 | ME / SRE |
+| **SP-K10** | Seed-tag / new listing 24h volatility | 1m | Daily range > policy A | Range > policy B **or** −50% from list | Tighten bands | LI+RO monitoring tag; delist path if fraud | L2 | LI / RO |
+
+**Spot response cheat-sheet**
+
+| Condition | First move | Escalate if |
+|-----------|------------|-------------|
+| Illiquid + wide spread | MM call + SLA ticket | Depth BREACH > 10m → RO halt opinion |
+| Price dislocation vs ref | Band enforce | BREACH → SOP-G02 halt |
+| Wash / spoof pattern | CP hold on UID | Multi-UID ring → L3 + Legal |
+
+---
+
+### 8.5 Margin indicators (Cross & Isolated)
+
+| ID | Indicator | Freq | WARN | BREACH | Auto action | Human action | Escalate | Owner |
+|----|-----------|------|------|--------|-------------|--------------|----------|-------|
+| **MG-K01** | Asset borrow utilisation (borrow / inventory) | 1m | ≥ 80% | ≥ 95% | Raise borrow rate step; throttle new borrows | Freeze borrow (MG-03) if persistent; notify TS | L2 | RO-Credit / TS |
+| **MG-K02** | User margin ratio / LTV vs maintenance | 1s | Within 10% of call line | Crosses liquidation line | Margin call → liquidation engine | TO monitor queue lag; pause only per RE-02 | L1→L2 | RE / TO |
+| **MG-K03** | Platform liquidation notional (5m / 1h) | 1m | > 2× 30d 95th %ile (5m) | > 5× **or** engine lag > 30s | Slow other risk-increasing orders | RO: consider borrow freeze + spot band; RE capacity | L2→L3 | RO / RE |
+| **MG-K04** | Bad debt / negative balance created | Event + daily | Any > $X (*calib.*) | Daily sum > $Y **or** single > $Z | Auto-repay attempt; isolate UID | MG-05 recovery; P&L booking; CRO if Tier A | L2→L3 | RO-Credit / TS |
+| **MG-K05** | Collateral haircut gap vs realized vol | Hourly / daily | Vol regime up 1 tier vs haircut | Stress LTV breach in DA daily run | — | Propose haircut/LTV change (SOP-G01) | L2 | DA / RO-Credit |
+| **MG-K06** | Cross-margin contagion score (acct) | 1m | High HHI + high LTV | Multiple legs near liq | Reduce-only on risk-increasing | TO force partial close if policy allows | L2 | RO-Credit |
+| **MG-K07** | Interest accrual exceptions | Hourly | Mismatch count > 0 | Notional interest break > tol | Block curve change push | TS+ENG recon; halt interest updates | L2 | TS / ENG |
+| **MG-K08** | Stablecoin collateral depeg (mark) | 1s | Peg < 0.995 for 5m | < 0.99 for 2m **or** < 0.98 instant | Haircut step-up; borrow freeze on asset | TS redemption playbook; RO stress | L2→L3 | TS / RO |
+| **MG-K09** | VIP / wholesale borrow concentration | Daily | Top 10 > 40% of asset borrow | Top 10 > 60% **or** single > 25% | Cap new VIP borrow | RO credit review; reduce limits | L2 | RO-Credit |
+| **MG-K10** | Liquidation slip vs bankruptcy price | Per liq + daily | Avg slip > buffer/2 | Slip consumes buffer → bad debt | — | Tune impact buffer; review MM during liq | L2 | RO / DA |
+
+**Margin response cheat-sheet**
+
+| Condition | First move | Escalate if |
+|-----------|------------|-------------|
+| Borrow util BREACH | Rate up + throttle | Still ≥ 95% in 30m → hard freeze |
+| Liq cascade | Protect engine capacity | Lag > 30s → L3; consider spot halt on collateral |
+| Depeg collateral | Haircut + freeze borrow | Peg < 0.98 → L3 + Treasury war room |
+
+---
+
+### 8.6 Perps indicators (USDⓈ-M / COIN-M)
+
+| ID | Indicator | Freq | WARN | BREACH | Auto action | Human action | Escalate | Owner |
+|----|-----------|------|------|--------|-------------|--------------|----------|-------|
+| **PF-K01** | Mark − index deviation | 1s | ≥ 0.5% majors / ≥ 1.5% alts (*calib.*) | ≥ 1.5% majors / ≥ 3% alts sustained 30s **or** spike ≥ 5% | Prefer mark protection; reject manipulative fills per rules | PF-03 playbook; check constituents; reduce-only candidate | L2→L3 | RO / RE / DA |
+| **PF-K02** | Index constituent stale / outlier | 1s | 1 venue stale > 5s | < min venues **or** 2+ stale | Drop bad venue from index | PF-08; RO approve temporary weights | L2 | DA / RE |
+| **PF-K03** | Funding rate (abs) vs cap | Per interval + 1m pred | ≥ 75% of cap | Hit cap **or** predicted next ≥ cap | Clamp funding at cap | PF-04 review; extreme → pause funding (rare, dual) | L2 | PM-FUT / RO |
+| **PF-K04** | Open interest vs OI cap | 1m | ≥ 80% cap | ≥ 100% (block increase) | Reject risk-increasing opens | Bracket/OI review; MM OI check | L2 | RO / TO-FUT |
+| **PF-K05** | User / VIP position notional vs limit | Per order | ≥ 80% limit | ≥ 100% | Reject / reduce-only only | Rights workflow if increase requested | L1→L2 | RE / RO |
+| **PF-K06** | Liquidation notional burst (1m / 5m) | 1s–1m | > 2× 30d 99th %ile | > 5× **or** liq queue lag > 15s | Slow opens; batch liqs per RE config | PF-07 reduce-only; insurance watch | L2→L3 | TO-FUT / RE |
+| **PF-K07** | Insurance fund coverage ratio | 1m / event | < 120% of policy floor stress | < 100% floor **or** single payout > X% of fund | — | PF-05; prepare ADL; CRO inject decision | L3 | RO / TS |
+| **PF-K08** | ADL events | Event | Any ADL | ≥ 3 ADL / hour **or** ADL on majors | Execute ADL queue | PF-06 review; Comms; CP if abuse | L3 | TO-FUT / RO |
+| **PF-K09** | Basis (perp mid − spot mid) | 1m | Outside 30d 95% band | Extreme basis + thin depth | — | Check index; funding; possible reduce-only | L2 | DA / RO |
+| **PF-K10** | Top-N long/short concentration | 5m / daily | Top 10 > 30% OI one side | Top 10 > 50% **or** single > 15% | Tighten UID limits | RO concentration action; CP if squeeze pattern | L2 | RO / CP |
+| **PF-K11** | Leverage tier utilisation (users near max) | 5m | > 20% users in top bracket | > 40% **or** rising fast into stress | — | Consider bracket tighten (SOP-G01) | L2 | RO / PM-FUT |
+| **PF-K12** | Insurance payout / bankruptcy count | Event + daily | Any bankruptcy fill | Payout sum daily > Y | Draw insurance | Accounting + RO challenge MM/liq quality | L2→L3 | RO / TS |
+
+**Perps response cheat-sheet**
+
+| Condition | First move | Escalate if |
+|-----------|------------|-------------|
+| Mark–index BREACH | Validate feeds; drop bad venue | Sustained + liqs firing → reduce-only / halt opens |
+| Insurance < floor | Freeze discretionary risk-ups | ADL armed → L3 bridge |
+| Funding at cap | Clamp; publish reason | Need pause → dual RO+PM + Comms |
+
+---
+
+### 8.7 Cross-cutting / platform indicators
+
+| ID | Indicator | Freq | WARN | BREACH | Auto action | Human action | Escalate | Owner |
+|----|-----------|------|------|--------|-------------|--------------|----------|-------|
+| **PL-K01** | Hot-wallet buffer vs 24h withdraw p95 | 5m | < 150% of p95 | < 100% of p95 | Slow-mode withdraw | WA-01 top-up; WA-02 queue | L2→L3 | WO / TS |
+| **PL-K02** | Withdraw backlog age (p95) | 1m | > 30m | > 2h **or** growing > 1h | — | Capacity / chain check; Comms if broad | L2 | WO |
+| **PL-K03** | Deposit credit lag vs chain finality | 1m | > 2× expected | > 4× **or** silent fail | — | Chain/node incident; stop auto-credit if reorg risk | L2 | WO / SRE |
+| **PL-K04** | Reorg depth detected | Event | Reorg ≥ 1 (non-final) | Reorg affects credited txs | Pause credit on chain | WA-03; possible debit/clawback SOP | L3 | WO / RO |
+| **PL-K05** | EOD recon break notional | Daily + intraday | Any unmatched > tol | > materiality $ (*calib.*) | Block `SettlementReady` | SOP-G05 maker–checker | L2 | TO / TS |
+| **PL-K06** | Risk feed / mark pipeline lag | 10s | Lag > 2s | Lag > 5s **or** gap | RE feed failover | ENG-03; pause liq if marks unsafe | L2→L3 | RE / ENG |
+| **PL-K07** | Admin dual-control bypass / break-glass use | Event | Any use | Use without ticket | Auto-ticket + page | Security+CRO review same day | L3→L4 | Security / CRO |
+| **PL-K08** | API key anomaly / privilege spike | 1m | Score WARN | Score BREACH / confirmed leak | Kill API key | ENG-04; user notify; CP if fraud | L3→L4 | Security |
+| **PL-K09** | Desk / company VaR or DD vs limit | 1m / daily | ≥ 80% limit | ≥ 100% limit | Alert TR+RO; block size-ups if policy | Rights freeze; stress rerun | L2 | RO / TR |
+| **PL-K10** | Stress test: post-shock margin shortfall | Daily + ad hoc | Shortfall in alt scenario | Shortfall in core scenario > appetite | — | Limit tighten proposal; board if persistent | L2→L3 | DA / RO |
+| **PL-K11** | Surveillance open cases aging | Daily | Case > SLA | Case > 2× SLA with open exposure | — | CP escalate; hard hold if needed | L2 | CP |
+| **PL-K12** | Listing pipeline diligence overdue | Daily | > SLA stage time | Live traffic without Risk/CP clear | Block go-live flag | LI stop; audit exception | L2→L3 | LI / RO |
+
+---
+
+### 8.8 Unified account / portfolio-margin indicators (if enabled)
+
+| ID | Indicator | Freq | WARN | BREACH | Auto action | Human action | Escalate | Owner |
+|----|-----------|------|------|--------|-------------|--------------|----------|-------|
+| **PM-K01** | Portfolio margin vs SPAN/IM model gap | Hourly | Gap > 10% | Gap > 25% | Fall back to conservative mode | DA model incident; disable PM feature flag if needed | L3 | DA / RE |
+| **PM-K02** | Cross-product hedge break (spot vs perp) | 1m | Hedge ratio drift WARN | Hedge broken into naked high leverage | Margin call | RO review correlations | L2 | RO / DA |
+
+---
+
+### 8.9 Monitoring frequency summary (by layer)
+
+| Layer | Cadence | Typical indicators | Primary console |
+|-------|---------|--------------------|-----------------|
+| **At-trade / streaming** | Tick–1s | Marks, LTV, bands, kill switches | Risk Engine + Matching |
+| **Near-real-time** | 1–5m | OI, depth, borrow util, liq bursts, wallet buffer | Risk Portal alerts |
+| **Intraday ops** | 15–60m | Concentration, funding pred, backlog age | BU PIC dashboards |
+| **Daily** | UTC cutoff | Bad debt, recon, stress, VaR/DD pack | `risk_reporting.py` / MI pack |
+| **Weekly** | PIC review | KRI RAG, waiver expiry, listing pipeline | Risk committee pre-read |
+| **Monthly / quarterly** | Governance | Threshold calib, model validation, DR/liq dry-run | CRO / Risk Committee |
+
+### 8.10 Alert → action → escalation state machine
+
+```
+Detect (SYS) → Route (WARN|BREACH|KILL)
+    → ACK (RO-OPS within SLA)
+        → Data quality? → fix feed / no-action + note
+        → Real risk?
+            → Auto actions already fired? confirm effectiveness
+            → Human playbook (instrument SOP)
+            → Still open after TTE?
+                → Escalate L+1 (ladder §8.2)
+            → Contained → document + hypercare window
+            → Sev-1/2 → war room (§9) + post-mortem
+```
+
+| Parameter | Default |
+|-----------|---------|
+| Time-to-escalate (TTE) WARN | 30–60 min without containment plan |
+| TTE BREACH | 15 min without containment |
+| TTE Kill / client-asset | 0 (immediate L3/L4) |
+| Hypercare after BREACH | 24h enhanced monitoring |
+| Post-mortem due | 5 business days (Sev-1/2) |
+
+### 8.11 Reporting & evidence pack (per indicator family)
+
+| Deliverable | Freq | Owner | Contents |
+|-------------|------|-------|----------|
+| Intraday alert journal | Continuous | RO-OPS | ACK times, false positives, actions |
+| Daily risk MI pack | Daily | RO | RAG on SP/MG/PF/PL KRIs + open breaches |
+| Liquidation & insurance flash | Event + daily | RO-Credit / Futures | Liq notional, bad debt, insurance, ADL |
+| Wallet run-risk flash | Daily / stress | WO / TS | Buffer vs outflow, slow-mode events |
+| Weekly PIC attestation | Weekly | Each BU PIC | KRIs reviewed; exceptions accepted |
+| Quarterly threshold calib | Quarterly | DA + RO | Backtest hit rates; propose Limit Book edits |
+
+### 8.12 Minimum “always on” set (if tooling is constrained)
+
+Stand up these first — then expand to full catalogue:
+
+1. **PF-K01** Mark−index · **PF-K07** Insurance coverage · **PF-K06** Liq burst  
+2. **MG-K01** Borrow util · **MG-K04** Bad debt · **MG-K08** Stable depeg  
+3. **SP-K03** Price dislocation · **SP-K09** Matching latency  
+4. **PL-K01** Hot-wallet buffer · **PL-K06** Mark pipeline lag · **PL-K05** Recon breaks  
+
+---
+
+
 
 ## 9. Incident severity & war room
 
@@ -844,9 +1022,10 @@ No production traffic before Risk **A** and CP clear.
 
 ### 10.2 BU PIC weekly checklist
 
-- [ ] Review open WARNs/BREACHes and waivers nearing expiry  
+- [ ] Review open WARNs/BREACHes and waivers nearing expiry (ACK SLA breaches noted)  
 - [ ] Confirm admin ACL joiner/mover/leaver tickets closed  
-- [ ] Instrument KRIs green/amber/red with comments  
+- [ ] Instrument KRI RAG vs §8 catalogue (Spot SP-K*, Margin MG-K*, Perps PF-K*, Platform PL-K*)  
+- [ ] Attest weekly PIC pack: false-positive rate + any threshold calib requests  
 - [ ] Upcoming listings/delistings risk opinions scheduled  
 - [ ] DR / failover or liquidation dry-run status (monthly at minimum)  
 - [ ] Read-across: any Spot issue that should change Margin/Perps params  
@@ -854,11 +1033,11 @@ No production traffic before Risk **A** and CP clear.
 ### 10.3 Go-live checklist — Perps (summary)
 
 - [ ] Contract specs signed (PM + Legal)  
-- [ ] Index constituents ≥ policy minimum; deviation alerts on  
-- [ ] Leverage brackets & risk limits dual-approved  
-- [ ] Insurance fund seed per policy  
-- [ ] Funding formula & caps tested in staging  
-- [ ] Liquidation & ADL dry-run signed by RE + RO  
+- [ ] Index constituents ≥ policy minimum; **PF-K01/PF-K02** alerts on  
+- [ ] Leverage brackets & risk limits dual-approved; **PF-K04/PF-K05** wired  
+- [ ] Insurance fund seed per policy; **PF-K07/PF-K08** dashboards live  
+- [ ] Funding formula & caps tested; **PF-K03** clamp verified  
+- [ ] Liquidation & ADL dry-run signed by RE + RO (**PF-K06**)  
 - [ ] Matching symbol configured; rate limits set  
 - [ ] Comms + support macros  
 - [ ] Hypercare roster 72h  
@@ -866,19 +1045,19 @@ No production traffic before Risk **A** and CP clear.
 ### 10.4 Go-live checklist — Margin asset
 
 - [ ] Spot market stable ≥ observation window  
-- [ ] Haircut/LTV stress-tested (DA)  
-- [ ] Borrow inventory & caps set  
-- [ ] Interest curve approved  
-- [ ] Liquidation path tested on isolated + cross  
-- [ ] Bad-debt ledger mapping ready  
+- [ ] Haircut/LTV stress-tested (DA); **MG-K05** baseline recorded  
+- [ ] Borrow inventory & caps set; **MG-K01/MG-K09** alerts on  
+- [ ] Interest curve approved; **MG-K07** recon green  
+- [ ] Liquidation path tested on isolated + cross (**MG-K02/MG-K03**)  
+- [ ] Bad-debt ledger mapping ready (**MG-K04**)  
 
 ### 10.5 Go-live checklist — Spot
 
 - [ ] Listing diligence complete (LI/RO/CP/Legal)  
-- [ ] Wallet deposit/withdraw enabled on correct chain(s)  
-- [ ] Tick/lot/bands/STP/fees configured  
-- [ ] MM SLA live or disclosure if thin book  
-- [ ] Halt authority tested  
+- [ ] Wallet deposit/withdraw enabled on correct chain(s); **PL-K01** buffer OK  
+- [ ] Tick/lot/bands/STP/fees configured; **SP-K03/SP-K05** live  
+- [ ] MM SLA live or disclosure if thin book; **SP-K01/SP-K02** wired  
+- [ ] Halt authority tested (**SP-K06**)  
 
 ### 10.6 Document control
 
@@ -886,8 +1065,9 @@ No production traffic before Risk **A** and CP clear.
 |------|-------|
 | Classification | Internal — Risk Restricted |
 | Change control | CRO approve; publish via Risk portal |
-| Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR |
+| Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue** |
 | Training | Mandatory for all BU PICs within 30 days of role start |
+| Version | 1.1 — added full KRI thresholds, actions, escalation, frequency |
 
 ---
 
