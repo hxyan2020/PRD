@@ -161,13 +161,15 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
         {active ? (
           <>
             <div className="border-b border-[var(--line)] pb-3 mb-3">
-              <button
-                type="button"
-                className="lg:hidden btn !min-h-9 mb-2 text-xs"
-                onClick={() => setMobilePane("list")}
-              >
-                <ArrowLeft size={14} /> Threads
-              </button>
+              <div className="lg:hidden mb-2">
+                <button
+                  type="button"
+                  className="btn !min-h-9 text-xs"
+                  onClick={() => setMobilePane("list")}
+                >
+                  <ArrowLeft size={14} /> Threads
+                </button>
+              </div>
               <div className="flex flex-wrap gap-2 items-center">
                 <SeverityBadge value={active.severity} />
                 <StatusBadge value={active.status} />

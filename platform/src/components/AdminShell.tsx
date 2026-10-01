@@ -161,15 +161,17 @@ export function AdminShell({
         <header className="border-b border-[var(--line)] bg-white/90 backdrop-blur px-3 sm:px-6 py-2.5 sm:py-3 sticky top-0 z-30 pt-[max(0.65rem,var(--safe-top))]">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
-              <button
-                type="button"
-                className="lg:hidden btn px-2.5 py-2"
-                aria-label={copy.menu}
-                aria-expanded={open}
-                onClick={() => setOpen(true)}
-              >
-                <Menu size={18} />
-              </button>
+              <div className="lg:hidden">
+                <button
+                  type="button"
+                  className="btn px-2.5 py-2"
+                  aria-label={copy.menu}
+                  aria-expanded={open}
+                  onClick={() => setOpen(true)}
+                >
+                  <Menu size={18} />
+                </button>
+              </div>
               <div className="min-w-0">
                 <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
                   {copy.headerEyebrow}
