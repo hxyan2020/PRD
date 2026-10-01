@@ -274,12 +274,37 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
 
                 {pending.map((p) => {
                   const detail = JSON.parse(p.detail_json || "{}") as Recommended;
+                  const awaitingChecker = p.status === "AWAITING_CHECKER";
                   return (
-                    <div key={p.id} className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm">
-                      <div className="font-semibold">Confirm: {detail.label || p.action_code}</div>
+                    <div
+                      key={p.id}
+                      className={`rounded-xl border px-3 py-2 text-sm ${
+                        awaitingChecker
+                          ? "border-violet-300 bg-violet-50"
+                          : "border-amber-300 bg-amber-50"
+                      }`}
+                    >
+                      <div className="font-semibold">
+                        {awaitingChecker ? "Checker approval needed: " : "Confirm: "}
+                        {detail.label || p.action_code}
+                      </div>
                       <p className="text-[var(--muted)] mt-1 break-word">{detail.description}</p>
                       <div className="mt-2 action-row">
-                        {confirmId === p.id ? (
+                        {awaitingChecker ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              disabled={busy}
+                              onClick={() => run("checker_approve", { pending_id: p.id })}
+                            >
+                              Checker approve (go live)
+                            </button>
+                            <a className="btn" href={detail.admin_path || "/admin/interventions"}>
+                              Open admin
+                            </a>
+                          </>
+                        ) : confirmId === p.id ? (
                           <>
                             <button
                               type="button"

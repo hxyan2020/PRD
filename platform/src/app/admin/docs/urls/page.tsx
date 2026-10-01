@@ -9,18 +9,43 @@ export default async function UrlsCatalogPage() {
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
 
   const categories = Array.from(new Set(PLATFORM_URLS.map((u) => u.category)));
+  const counts = {
+    pages: PLATFORM_URLS.filter((u) => u.path.startsWith("/admin") || u.path === "/login" || u.path === "/admin").length,
+    apis: PLATFORM_URLS.filter((u) => u.category === "API").length,
+    tables: PLATFORM_URLS.filter((u) => u.category === "DB Tables" || u.category === "Data").length,
+  };
 
   return (
     <div>
       <PageHeader
         title="URL Catalog"
-        subtitle="All admin pages, demo surfaces, APIs and local data paths for the CRMP prototype."
+        subtitle="Admin pages, APIs, local SQLite path, and core DB tables for the CRMP prototype."
         actions={
           <Link className="btn btn-primary" href="/admin/messenger">
             Open Demo Messenger
           </Link>
         }
       />
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4">
+        {[
+          { label: "Admin / auth pages", value: String(counts.pages) },
+          { label: "API routes", value: String(counts.apis) },
+          { label: "Data / tables", value: String(counts.tables) },
+          { label: "Demo inbox", value: "/admin/messenger" },
+        ].map((c) => (
+          <div key={c.label} className="panel p-3 sm:p-4">
+            <div className="text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{c.label}</div>
+            <div className="mt-1 font-semibold text-sm sm:text-base break-word">{c.value}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="panel p-3 sm:p-4 mb-4 text-sm text-[var(--muted)]">
+        Demo Messenger actions: <code>show_evidence</code> · <code>chat</code> · <code>escalate</code> ·{" "}
+        <code>dismiss</code> · <code>close</code> · <code>recommend</code> → double-confirm → Vantage admin ref ·{" "}
+        <code>checker_approve</code> when required.
+      </div>
 
       <div className="space-y-6">
         {categories.map((cat) => (
@@ -38,15 +63,15 @@ export default async function UrlsCatalogPage() {
                 </thead>
                 <tbody>
                   {PLATFORM_URLS.filter((u) => u.category === cat).map((u) => (
-                    <tr key={u.path}>
+                    <tr key={`${u.category}-${u.path}`}>
                       <td className="font-semibold">{u.title}</td>
                       <td>
                         {u.path.startsWith("/") ? (
-                          <Link className="text-teal-800 underline break-all" href={u.path}>
+                          <Link className="text-teal-800 underline break-all" href={u.path.includes("[") ? u.path.replace("[id]", "1") : u.path}>
                             {u.path}
                           </Link>
                         ) : (
-                          <code className="text-xs">{u.path}</code>
+                          <code className="text-xs break-all">{u.path}</code>
                         )}
                       </td>
                       <td className="text-sm text-[var(--muted)]">{u.description}</td>

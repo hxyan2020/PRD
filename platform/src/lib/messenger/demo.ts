@@ -11,7 +11,8 @@ export type MessengerAction =
   | "close"
   | "recommend"
   | "confirm_action"
-  | "cancel_action";
+  | "cancel_action"
+  | "checker_approve";
 
 const RECOMMENDED_ACTIONS = [
   {
@@ -480,7 +481,7 @@ export function messengerAction(input: {
         thread.id,
         "SYSTEM",
         "Maker-Checker",
-        `Next step for Checker: open ${action.admin_path} and approve intervention ${adminRef}.`
+        `Next step: Checker must approve ${adminRef} in this chat (or open ${action.admin_path}). Control is not live until Checker signs off.`
       );
     }
 
@@ -498,6 +499,67 @@ export function messengerAction(input: {
       action: action.code,
       admin_ref: adminRef,
       status: nextStatus,
+    });
+    return getMessengerThread(thread.id);
+  }
+
+  if (input.action === "checker_approve") {
+    if (!input.pending_id) throw new Error("pending_id required");
+    const pending = db
+      .prepare(`SELECT * FROM messenger_pending_actions WHERE id = ? AND thread_id = ?`)
+      .get(input.pending_id, thread.id) as
+      | {
+          id: number;
+          action_code: string;
+          status: string;
+          admin_ref: string | null;
+          confirmed_by: string | null;
+          detail_json: string;
+        }
+      | undefined;
+    if (!pending || pending.status !== "AWAITING_CHECKER") {
+      throw new Error("Nothing awaiting checker approval");
+    }
+    if (pending.confirmed_by && pending.confirmed_by === input.user_name) {
+      throw new Error("Checker must be a different user than the maker who confirmed");
+    }
+    const action = JSON.parse(pending.detail_json) as (typeof RECOMMENDED_ACTIONS)[number] & {
+      checker?: string;
+    };
+    const detailNext = { ...action, checker: input.user_name };
+    db.prepare(
+      `UPDATE messenger_pending_actions
+       SET status = 'DONE', detail_json = ?, updated_at = datetime('now')
+       WHERE id = ?`
+    ).run(JSON.stringify(detailNext), pending.id);
+
+    addMessage(
+      db,
+      thread.id,
+      "ACTION_RESULT",
+      "Vantage Markets Admin",
+      `✅ Checker ${input.user_name} approved ${action.label}.\nControl is live under admin ref ${pending.admin_ref}.\nOpen admin: ${action.admin_path}`,
+      {
+        admin_ref: pending.admin_ref,
+        admin_url: action.admin_path,
+        needs_checker: false,
+        status: "DONE",
+        checker: input.user_name,
+      }
+    );
+    logSpineEvent({
+      stage: "INTERVENTION",
+      title: `Checker approved ${action.label}`,
+      product: "CFD+CRYPTO",
+      ref_type: "messenger_thread",
+      ref_id: thread.thread_id,
+      severity: thread.severity,
+      detail: { admin_ref: pending.admin_ref, action: action.code, checker: input.user_name },
+      actor: input.user_name,
+    });
+    writeAudit({ name: input.user_name }, "MESSENGER_CHECKER_APPROVE", "messenger_thread", thread.thread_id, {
+      action: action.code,
+      admin_ref: pending.admin_ref,
     });
     return getMessengerThread(thread.id);
   }
