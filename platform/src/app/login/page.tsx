@@ -39,24 +39,24 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <section className="relative overflow-hidden bg-[linear-gradient(145deg,#0f2438_0%,#0b6e6a_55%,#c45c26_120%)] text-white p-10 flex flex-col justify-between">
+      <section className="relative overflow-hidden bg-[linear-gradient(145deg,#0f2438_0%,#0b6e6a_55%,#c45c26_120%)] text-white p-6 sm:p-10 flex flex-col justify-between min-h-[42vh] lg:min-h-screen">
         <div>
           <div className="text-xs uppercase tracking-[0.2em] text-teal-100/80">Vantage Markets</div>
-          <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-tight max-w-md">
+          <h1 className="mt-3 sm:mt-4 font-[family-name:var(--font-display)] text-3xl sm:text-4xl leading-tight max-w-md">
             Centralised Risk Management Platform
           </h1>
-          <p className="mt-4 max-w-md text-teal-50/90 text-sm leading-relaxed">
+          <p className="mt-3 sm:mt-4 max-w-md text-teal-50/90 text-sm leading-relaxed">
             Admin control plane for Risk Control, Operations, AI and System — wired to Monitor 2.0
             indicators and Lark escalations across CFD and crypto exchange products.
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="rounded-xl bg-white/10 border border-white/15 p-4">
+        <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-3 text-sm">
+          <div className="rounded-xl bg-white/10 border border-white/15 p-3 sm:p-4">
             <div className="text-teal-100 text-xs uppercase tracking-wide">Upstream</div>
             <div className="mt-1 font-semibold">Monitor 2.0</div>
             <div className="text-teal-50/80 text-xs mt-1">Indicators · Alerts · Tickets</div>
           </div>
-          <div className="rounded-xl bg-white/10 border border-white/15 p-4">
+          <div className="rounded-xl bg-white/10 border border-white/15 p-3 sm:p-4">
             <div className="text-teal-100 text-xs uppercase tracking-wide">Messenger</div>
             <div className="mt-1 font-semibold">Lark</div>
             <div className="text-teal-50/80 text-xs mt-1">Escalation · On-call · ChatOps</div>
@@ -64,9 +64,9 @@ export default function LoginPage() {
         </div>
       </section>
 
-      <section className="flex items-center justify-center p-8">
+      <section className="flex items-center justify-center p-4 sm:p-8 pb-[max(1.5rem,var(--safe-bottom))]">
         <div className="w-full max-w-md">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl">Sign in to Admin</h2>
+          <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl">Sign in to Admin</h2>
           <p className="mt-1 text-sm text-[var(--muted)]">Prototype credentials — select a role persona below.</p>
 
           <form onSubmit={onSubmit} className="mt-6 panel p-5 space-y-4">
@@ -89,12 +89,12 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 action-row">
             {DEMOS.map((d) => (
               <button
                 key={d.email}
                 type="button"
-                className="btn"
+                className="btn flex-1 sm:flex-none"
                 onClick={() => {
                   setEmail(d.email);
                   setPassword(d.password);

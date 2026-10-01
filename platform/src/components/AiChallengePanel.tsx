@@ -65,23 +65,23 @@ export function AiChallengePanel({ challenge }: { challenge: Challenge | null | 
         </div>
       </div>
 
-      <div className="mt-4 grid md:grid-cols-3 gap-3 text-sm">
-        <div className="rounded-xl border border-[var(--line)] p-3">
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+        <div className="rounded-xl border border-[var(--line)] p-3 min-w-0">
           <div className="text-xs uppercase text-[var(--muted)]">Critique of primary RCA</div>
           <ul className="mt-2 space-y-2">
             {critiques.map((c, i) => (
-              <li key={i}>
+              <li key={i} className="break-word">
                 <SeverityBadge value={c.severity === "INFO" ? "INFO" : c.severity} />{" "}
                 <span>{c.point}</span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="rounded-xl border border-[var(--line)] p-3">
+        <div className="rounded-xl border border-[var(--line)] p-3 min-w-0">
           <div className="text-xs uppercase text-[var(--muted)]">Recommended improvements</div>
           <ul className="mt-2 space-y-2">
             {improvements.map((imp, i) => (
-              <li key={i}>
+              <li key={i} className="break-word">
                 <Badge
                   className={
                     imp.priority === "HIGH"
@@ -96,12 +96,12 @@ export function AiChallengePanel({ challenge }: { challenge: Challenge | null | 
             ))}
           </ul>
         </div>
-        <div className="rounded-xl border border-[var(--line)] p-3">
+        <div className="rounded-xl border border-[var(--line)] p-3 min-w-0">
           <div className="text-xs uppercase text-[var(--muted)]">Alternative hypotheses</div>
           {alternatives.length ? (
             <ul className="mt-2 space-y-2">
               {alternatives.map((a, i) => (
-                <li key={i}>
+                <li key={i} className="break-word">
                   <div className="font-semibold">{a.hypothesis}</div>
                   <div className="text-xs text-[var(--muted)]">confidence {a.confidence.toFixed(2)}</div>
                   <div className="mt-1 text-[var(--muted)]">{a.rationale}</div>

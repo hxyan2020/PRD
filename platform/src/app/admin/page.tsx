@@ -84,7 +84,7 @@ export default function AdminDashboardPage() {
         }
       />
 
-      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3">
         <StatCard label="Users" value={counts.users} hint="Across 4 departments" />
         <StatCard label="Teams" value={counts.teams} hint="On-call ready" />
         <StatCard label="Data Sources" value={counts.sources} hint="Internal + external registry" />

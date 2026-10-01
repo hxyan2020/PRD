@@ -107,8 +107,8 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         <AiChallengePanel challenge={challenge} />
       </div>
 
-      <div className="grid xl:grid-cols-2 gap-4">
-        <section className="panel p-4">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
+        <section className="panel p-3 sm:p-4 min-w-0">
           <h2 className="font-[family-name:var(--font-display)] text-lg">Explanations</h2>
           <div className="mt-3 space-y-3">
             {explanations.map((e, i) => (
@@ -151,8 +151,8 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         </section>
       </div>
 
-      <div className="grid xl:grid-cols-2 gap-4 mt-4">
-        <section className="panel p-4">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 mt-4">
+        <section className="panel p-3 sm:p-4 min-w-0">
           <h2 className="font-[family-name:var(--font-display)] text-lg">Actions taken</h2>
           <ul className="mt-3 space-y-2">
             {actions.map((a, i) => (

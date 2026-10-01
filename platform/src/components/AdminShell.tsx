@@ -40,6 +40,11 @@ export function AdminShell({
     setOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    document.body.classList.toggle("nav-open", open);
+    return () => document.body.classList.remove("nav-open");
+  }, [open]);
+
   function setLang(next: UiLocale) {
     document.cookie = `${UI_LOCALE_COOKIE}=${encodeURIComponent(next)}; path=/; max-age=31536000; samesite=lax`;
     setLocale(next);
@@ -51,15 +56,40 @@ export function AdminShell({
     router.refresh();
   }
 
+  const langToggle = (
+    <div className="flex gap-1">
+      <button
+        type="button"
+        className={cn(
+          "rounded-lg px-2.5 py-1.5 border text-[11px] min-h-8",
+          locale === "en" ? "bg-white/15 border-white/30 text-white" : "border-white/15 text-slate-300"
+        )}
+        onClick={() => setLang("en")}
+      >
+        EN
+      </button>
+      <button
+        type="button"
+        className={cn(
+          "rounded-lg px-2.5 py-1.5 border text-[11px] min-h-8",
+          locale === "zh-Hant" ? "bg-white/15 border-white/30 text-white" : "border-white/15 text-slate-300"
+        )}
+        onClick={() => setLang("zh-Hant")}
+      >
+        繁中
+      </button>
+    </div>
+  );
+
   const nav = (
     <>
-      <div>
+      <div className="pr-8 lg:pr-0">
         <div className="text-[0.7rem] uppercase tracking-[0.18em] text-teal-200/80">{copy.brandEyebrow}</div>
         <div className="mt-1 font-[family-name:var(--font-display)] text-xl text-white">{copy.brandTitle}</div>
         <div className="mt-1 text-xs text-slate-300">{copy.brandSub}</div>
       </div>
 
-      <nav className="flex flex-col gap-1 flex-1 overflow-y-auto pr-1">
+      <nav className="flex flex-col gap-0.5 flex-1 overflow-y-auto overscroll-contain pr-1 -mx-1 px-1">
         {NAV_ITEMS.filter((item) => can(item.permission)).map((item) => {
           const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
           const Icon = item.icon;
@@ -68,7 +98,7 @@ export function AdminShell({
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition",
+                "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition min-h-11",
                 active ? "bg-white/12 text-white" : "text-slate-300 hover:bg-white/8 hover:text-white"
               )}
             >
@@ -79,7 +109,7 @@ export function AdminShell({
         })}
       </nav>
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs shrink-0">
         <div className="font-semibold text-white">{user.name}</div>
         <div className="mt-0.5 text-slate-300 break-all">{user.email}</div>
         <div className="mt-2 flex flex-wrap gap-1">
@@ -88,29 +118,11 @@ export function AdminShell({
             <span className="badge border-white/20 bg-white/10 text-slate-100">{user.department_code}</span>
           )}
         </div>
-        <div className="mt-3 flex gap-1">
-          <button
-            type="button"
-            className={cn(
-              "rounded-lg px-2 py-1 border text-[11px]",
-              locale === "en" ? "bg-white/15 border-white/30 text-white" : "border-white/15 text-slate-300"
-            )}
-            onClick={() => setLang("en")}
-          >
-            EN
-          </button>
-          <button
-            type="button"
-            className={cn(
-              "rounded-lg px-2 py-1 border text-[11px]",
-              locale === "zh-Hant" ? "bg-white/15 border-white/30 text-white" : "border-white/15 text-slate-300"
-            )}
-            onClick={() => setLang("zh-Hant")}
-          >
-            繁中
-          </button>
-        </div>
-        <button onClick={logout} className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white">
+        <div className="mt-3">{langToggle}</div>
+        <button
+          onClick={logout}
+          className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10"
+        >
           <LogOut size={14} /> {copy.signOut}
         </button>
       </div>
@@ -118,58 +130,90 @@ export function AdminShell({
   );
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[260px_1fr]">
-      <aside className="hidden lg:flex bg-[var(--sidebar)] text-[var(--sidebar-ink)] px-4 py-5 flex-col gap-6 sticky top-0 h-screen">
+    <div className="min-h-screen lg:grid lg:grid-cols-[260px_minmax(0,1fr)]">
+      <aside className="hidden lg:flex bg-[var(--sidebar)] text-[var(--sidebar-ink)] px-4 py-5 flex-col gap-5 sticky top-0 h-screen pt-[max(1.25rem,var(--safe-top))]">
         {nav}
       </aside>
 
       {open && (
-        <div className="lg:hidden fixed inset-0 z-40">
-          <button type="button" className="absolute inset-0 bg-black/45" aria-label="Close menu" onClick={() => setOpen(false)} />
-          <aside className="relative z-50 h-full w-[min(86vw,300px)] bg-[var(--sidebar)] text-[var(--sidebar-ink)] px-4 py-5 flex flex-col gap-6 shadow-xl overflow-hidden">
+        <div className="lg:hidden fixed inset-0 z-50">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/45"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+          />
+          <aside className="relative z-50 h-full w-[min(88vw,320px)] bg-[var(--sidebar)] text-[var(--sidebar-ink)] px-4 py-5 flex flex-col gap-5 shadow-xl overflow-hidden pt-[max(1.25rem,var(--safe-top))] pb-[max(1rem,var(--safe-bottom))]">
             <button
               type="button"
-              className="absolute right-3 top-3 text-slate-200"
+              className="absolute right-3 top-[max(0.75rem,var(--safe-top))] text-slate-200 min-h-10 min-w-10 inline-flex items-center justify-center"
               aria-label="Close"
               onClick={() => setOpen(false)}
             >
-              <X size={18} />
+              <X size={20} />
             </button>
             {nav}
           </aside>
         </div>
       )}
 
-      <main className="min-w-0">
-        <header className="border-b border-[var(--line)] bg-white/80 backdrop-blur px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-10">
-          <div className="flex items-center justify-between gap-3">
+      <main className="min-w-0 flex flex-col">
+        <header className="border-b border-[var(--line)] bg-white/90 backdrop-blur px-3 sm:px-6 py-2.5 sm:py-3 sticky top-0 z-30 pt-[max(0.65rem,var(--safe-top))]">
+          <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <button
                 type="button"
-                className="lg:hidden btn px-2 py-1.5"
+                className="lg:hidden btn px-2.5 py-2"
                 aria-label={copy.menu}
+                aria-expanded={open}
                 onClick={() => setOpen(true)}
               >
                 <Menu size={18} />
               </button>
               <div className="min-w-0">
-                <div className="text-xs uppercase tracking-[0.14em] text-[var(--muted)]">{copy.headerEyebrow}</div>
-                <div className="font-[family-name:var(--font-display)] text-base sm:text-lg text-[var(--ink)] truncate">
+                <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
+                  {copy.headerEyebrow}
+                </div>
+                <div className="font-[family-name:var(--font-display)] text-sm sm:text-lg text-[var(--ink)] truncate">
                   {copy.headerTitle}
                 </div>
               </div>
             </div>
-            <div className="text-right text-[11px] sm:text-xs text-[var(--muted)] shrink-0">
-              <div>
-                {copy.messenger}: <strong className="text-[var(--ink)]">Lark</strong>
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="hidden sm:block text-right text-[11px] sm:text-xs text-[var(--muted)]">
+                <div>
+                  {copy.messenger}: <strong className="text-[var(--ink)]">Lark</strong>
+                </div>
+                <div>
+                  {copy.indicators}: <strong className="text-[var(--ink)]">Monitor 2.0</strong>
+                </div>
               </div>
-              <div>
-                {copy.indicators}: <strong className="text-[var(--ink)]">Monitor 2.0</strong>
+              <div className="lg:hidden flex gap-1">
+                <button
+                  type="button"
+                  className={cn(
+                    "btn !min-h-9 !px-2 text-[11px]",
+                    locale === "en" ? "btn-primary" : ""
+                  )}
+                  onClick={() => setLang("en")}
+                >
+                  EN
+                </button>
+                <button
+                  type="button"
+                  className={cn(
+                    "btn !min-h-9 !px-2 text-[11px]",
+                    locale === "zh-Hant" ? "btn-primary" : ""
+                  )}
+                  onClick={() => setLang("zh-Hant")}
+                >
+                  繁中
+                </button>
               </div>
             </div>
           </div>
         </header>
-        <div className="p-4 sm:p-6">{children}</div>
+        <div className="p-3 sm:p-6 pb-[max(1rem,var(--safe-bottom))] flex-1 min-w-0">{children}</div>
       </main>
     </div>
   );

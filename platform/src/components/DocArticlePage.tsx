@@ -74,7 +74,7 @@ export function DocArticlePage({
         subtitle={lang === "zh-Hant" ? meta.zhSub : meta.enSub}
       />
 
-      <div className="panel p-4 mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3">
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">{meta.code}</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">v1.0</Badge>
@@ -82,7 +82,7 @@ export function DocArticlePage({
             {lang === "zh-Hant" ? "全部網址" : "All URLs"}
           </Link>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="action-row">
           <Link className={`btn ${lang === "en" ? "btn-primary" : ""}`} href={`${meta.href}?lang=en`}>
             English
           </Link>
@@ -95,7 +95,10 @@ export function DocArticlePage({
         </div>
       </div>
 
-      <article className="panel p-4 sm:p-6 max-w-5xl" dangerouslySetInnerHTML={{ __html: html }} />
+      <article
+        className="panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </div>
   );
 }

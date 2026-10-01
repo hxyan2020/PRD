@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 
 type Thread = {
@@ -53,10 +54,11 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
   const [loaded, setLoaded] = useState(false);
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [mobilePane, setMobilePane] = useState<"list" | "thread">("list");
 
   const active = useMemo(() => threads.find((t) => t.id === activeId) || null, [threads, activeId]);
 
-  async function loadThread(id: number) {
+  async function loadThread(id: number, opts: { openPane?: boolean } = {}) {
     setBusy(true);
     setStatusMsg(null);
     const res = await fetch(`/api/messenger?id=${id}`);
@@ -72,6 +74,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
     setRecommended(data.recommended_actions || []);
     setLoaded(true);
     setConfirmId(null);
+    if (opts.openPane !== false) setMobilePane("thread");
   }
 
   async function run(action: string, extra: Record<string, unknown> = {}) {
@@ -100,7 +103,6 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
     setRecommended(data.recommended_actions || []);
     setConfirmId(null);
     setChat("");
-    // refresh thread list statuses
     const listRes = await fetch("/api/messenger");
     const listData = await listRes.json();
     if (listRes.ok) setThreads(listData.threads || []);
@@ -109,27 +111,31 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
 
   useEffect(() => {
     if (activeId && !loaded) {
-      void loadThread(activeId);
+      void loadThread(activeId, { openPane: false });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId, loaded]);
 
   return (
-    <div className="grid lg:grid-cols-[320px_1fr] gap-4">
-      <section className="panel p-3 flex flex-col min-h-[70vh]">
+    <div className="grid lg:grid-cols-[300px_minmax(0,1fr)] gap-3 sm:gap-4">
+      <section
+        className={`panel p-3 flex flex-col min-h-[60vh] lg:min-h-[70vh] ${
+          mobilePane === "thread" ? "hidden lg:flex" : "flex"
+        }`}
+      >
         <div className="flex items-center justify-between gap-2 mb-3">
-          <h2 className="font-semibold">Channels / threads</h2>
-          <button type="button" className="btn text-xs" disabled={busy} onClick={() => run("sync")}>
+          <h2 className="font-semibold text-sm sm:text-base">Channels / threads</h2>
+          <button type="button" className="btn text-xs !min-h-9" disabled={busy} onClick={() => run("sync")}>
             Sync alerts
           </button>
         </div>
-        <div className="space-y-2 overflow-auto flex-1">
+        <div className="space-y-2 overflow-auto flex-1 -mx-1 px-1">
           {threads.map((t) => (
             <button
               key={t.id}
               type="button"
               onClick={() => void loadThread(t.id)}
-              className={`w-full text-left rounded-xl border px-3 py-2 transition ${
+              className={`w-full text-left rounded-xl border px-3 py-2.5 transition min-h-16 ${
                 activeId === t.id ? "border-teal-400 bg-teal-50" : "border-[var(--line)] hover:bg-slate-50"
               }`}
             >
@@ -137,7 +143,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                 <SeverityBadge value={t.severity} />
                 <StatusBadge value={t.status} />
               </div>
-              <div className="mt-1 text-sm font-semibold line-clamp-2">{t.title}</div>
+              <div className="mt-1 text-sm font-semibold line-clamp-2 break-word">{t.title}</div>
               <div className="text-[11px] text-[var(--muted)] mt-0.5">
                 {t.channel_name} · {t.message_count} msgs
               </div>
@@ -147,26 +153,54 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
         </div>
       </section>
 
-      <section className="panel p-4 flex flex-col min-h-[70vh]">
+      <section
+        className={`panel p-3 sm:p-4 flex flex-col min-h-[70vh] lg:min-h-[70vh] ${
+          mobilePane === "list" ? "hidden lg:flex" : "flex"
+        }`}
+      >
         {active ? (
           <>
             <div className="border-b border-[var(--line)] pb-3 mb-3">
+              <button
+                type="button"
+                className="lg:hidden btn !min-h-9 mb-2 text-xs"
+                onClick={() => setMobilePane("list")}
+              >
+                <ArrowLeft size={14} /> Threads
+              </button>
               <div className="flex flex-wrap gap-2 items-center">
                 <SeverityBadge value={active.severity} />
                 <StatusBadge value={active.status} />
                 <Badge className="bg-slate-100 text-slate-700 border-slate-200">{active.channel_name}</Badge>
                 <Badge className="bg-orange-50 text-orange-900 border-orange-200">{active.thread_id}</Badge>
               </div>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-xl">{active.title}</h2>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <button type="button" className="btn" disabled={busy || active.status !== "OPEN"} onClick={() => run("show_evidence")}>
+              <h2 className="mt-2 font-[family-name:var(--font-display)] text-lg sm:text-xl break-word">
+                {active.title}
+              </h2>
+              <div className="mt-3 action-row">
+                <button
+                  type="button"
+                  className="btn"
+                  disabled={busy || active.status !== "OPEN"}
+                  onClick={() => run("show_evidence")}
+                >
                   Show evidence
                 </button>
-                <button type="button" className="btn" disabled={busy || active.status !== "OPEN"} onClick={() => run("escalate")}>
+                <button
+                  type="button"
+                  className="btn"
+                  disabled={busy || active.status !== "OPEN"}
+                  onClick={() => run("escalate")}
+                >
                   Escalate
                 </button>
-                <button type="button" className="btn" disabled={busy || active.status !== "OPEN"} onClick={() => run("dismiss")}>
-                  Dismiss (false alarm)
+                <button
+                  type="button"
+                  className="btn"
+                  disabled={busy || active.status !== "OPEN"}
+                  onClick={() => run("dismiss")}
+                >
+                  Dismiss
                 </button>
                 <button
                   type="button"
@@ -179,14 +213,14 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto space-y-3 pr-1">
+            <div className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain">
               {messages.map((m) => {
                 const meta = JSON.parse(m.meta_json || "{}") as Record<string, unknown>;
                 const isUser = m.kind === "USER";
                 return (
                   <div
                     key={m.id}
-                    className={`rounded-xl border px-3 py-2 text-sm max-w-[95%] ${
+                    className={`rounded-xl border px-3 py-2 text-sm max-w-full sm:max-w-[95%] ${
                       isUser
                         ? "ml-auto border-teal-200 bg-teal-50"
                         : m.kind === "AI_REPORT"
@@ -199,9 +233,11 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                     <div className="flex flex-wrap gap-2 items-center text-xs text-[var(--muted)]">
                       <Badge className="bg-slate-100 text-slate-700 border-slate-200">{m.kind}</Badge>
                       <span className="font-semibold text-[var(--ink)]">{m.sender}</span>
-                      <span>{m.created_at}</span>
+                      <span className="break-word">{m.created_at}</span>
                     </div>
-                    <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800">{m.body}</pre>
+                    <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800 break-word">
+                      {m.body}
+                    </pre>
                     {typeof meta.admin_url === "string" ? (
                       <a className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
                         Open in admin →
@@ -213,12 +249,12 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
             </div>
 
             {active.status === "OPEN" && (
-              <div className="mt-4 border-t border-[var(--line)] pt-3 space-y-3">
+              <div className="mt-4 border-t border-[var(--line)] pt-3 space-y-3 sticky bottom-0 bg-[var(--panel)] pb-[max(0.25rem,var(--safe-bottom))]">
                 <div>
                   <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)] mb-2">
-                    Recommended actions (besides escalate)
+                    Recommended actions
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="action-row">
                     {recommended.map((a) => (
                       <button
                         key={a.code}
@@ -239,36 +275,43 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                   return (
                     <div key={p.id} className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm">
                       <div className="font-semibold">Confirm: {detail.label || p.action_code}</div>
-                      <p className="text-[var(--muted)] mt-1">{detail.description}</p>
-                      {confirmId === p.id ? (
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            className="btn btn-primary"
-                            disabled={busy}
-                            onClick={() => run("confirm_action", { pending_id: p.id })}
-                          >
-                            Yes, send to Vantage admin
-                          </button>
-                          <button type="button" className="btn" disabled={busy} onClick={() => setConfirmId(null)}>
-                            No, go back
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          <button type="button" className="btn btn-primary" disabled={busy} onClick={() => setConfirmId(p.id)}>
-                            Double-confirm…
-                          </button>
-                          <button
-                            type="button"
-                            className="btn"
-                            disabled={busy}
-                            onClick={() => run("cancel_action", { pending_id: p.id })}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      )}
+                      <p className="text-[var(--muted)] mt-1 break-word">{detail.description}</p>
+                      <div className="mt-2 action-row">
+                        {confirmId === p.id ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              disabled={busy}
+                              onClick={() => run("confirm_action", { pending_id: p.id })}
+                            >
+                              Yes, send to Vantage admin
+                            </button>
+                            <button type="button" className="btn" disabled={busy} onClick={() => setConfirmId(null)}>
+                              No, go back
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              disabled={busy}
+                              onClick={() => setConfirmId(p.id)}
+                            >
+                              Double-confirm…
+                            </button>
+                            <button
+                              type="button"
+                              className="btn"
+                              disabled={busy}
+                              onClick={() => run("cancel_action", { pending_id: p.id })}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -282,13 +325,13 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                   }}
                 >
                   <input
-                    className="flex-1 rounded-xl border border-[var(--line)] px-3 py-2 text-sm"
-                    placeholder="Chatbot: challenge the AI report or add more info…"
+                    className="input flex-1 !rounded-xl"
+                    placeholder="Challenge the AI report or add info…"
                     value={chat}
                     onChange={(e) => setChat(e.target.value)}
                     disabled={busy}
                   />
-                  <button type="submit" className="btn btn-primary" disabled={busy || !chat.trim()}>
+                  <button type="submit" className="btn btn-primary sm:w-auto w-full" disabled={busy || !chat.trim()}>
                     Send
                   </button>
                 </form>
@@ -296,11 +339,13 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
             )}
 
             {statusMsg && (
-              <div className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">{statusMsg}</div>
+              <div className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 break-word">
+                {statusMsg}
+              </div>
             )}
           </>
         ) : (
-          <p className="text-[var(--muted)] text-sm">Select a thread to open the demo messenger.</p>
+          <p className="text-[var(--muted)] text-sm p-2">Select a thread to open the demo messenger.</p>
         )}
       </section>
     </div>

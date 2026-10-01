@@ -74,7 +74,7 @@ export function AiAnalysesBoard({
           <p className="text-sm text-[var(--muted)] mt-1">
             Alarms auto-trigger analysis on Monitor sync. Use these controls to backfill or simulate a new Monitor 2.0 alarm.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3 action-row">
             <button type="button" className="btn btn-primary" disabled={busy} onClick={() => run("analyze_open")}>
               Analyze all open alarms
             </button>
@@ -149,9 +149,9 @@ export function AiAnalysesBoard({
 
       <div className="space-y-3">
         {analyses.map((a) => (
-          <article key={a.id} className="panel p-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
+          <article key={a.id} className="panel p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-start sm:justify-between gap-3">
+              <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap gap-2 items-center">
                   <Badge
                     className={
@@ -183,15 +183,19 @@ export function AiAnalysesBoard({
                     <Badge className="bg-slate-100 text-slate-600 border-slate-200">2nd AI pending</Badge>
                   ) : null}
                 </div>
-                <h2 className="mt-2 font-semibold text-lg">{a.alert_title}</h2>
-                <div className="text-xs text-[var(--muted)] mt-1">
+                <h2 className="mt-2 font-semibold text-base sm:text-lg break-word">{a.alert_title}</h2>
+                <div className="text-xs text-[var(--muted)] mt-1 break-word">
                   {a.analysis_id} · alert {a.monitor_alert_id} · {a.indicator_monitor_id}
                   {a.skill_code ? ` · skill ${a.skill_code}` : ""} · confidence {(a.confidence * 100).toFixed(0)}% ·{" "}
                   {a.created_at}
                 </div>
-                <p className="text-sm mt-2 text-slate-700">{a.summary}</p>
+                <p className="text-sm mt-2 text-slate-700 break-word">{a.summary}</p>
               </div>
-              <a className="btn btn-primary" href={`/admin/ai-analyses/${a.id}`} data-testid={`open-analysis-${a.id}`}>
+              <a
+                className="btn btn-primary w-full sm:w-auto shrink-0"
+                href={`/admin/ai-analyses/${a.id}`}
+                data-testid={`open-analysis-${a.id}`}
+              >
                 Open evidence
               </a>
             </div>
