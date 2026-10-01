@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { decideInterventionAction } from "@/app/admin/interventions/actions";
 
@@ -40,27 +41,35 @@ function parseSkillDetail(raw: string | null | undefined): {
 }
 
 export function InterventionsBoard({ interventions }: { interventions: Intervention[] }) {
+  const router = useRouter();
   const [note, setNote] = useState<Record<number, string>>({});
   const [msg, setMsg] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [, startTransition] = useTransition();
 
-  async function onAction(formData: FormData) {
-    const id = Number(formData.get("id"));
-    const decision = String(formData.get("decision") || "");
-    setMsg(null);
-    setBusyId(id);
-    try {
-      const result = await decideInterventionAction(formData);
-      if (!result?.ok) {
-        setMsg(("error" in result && result.error) || "Failed");
-        return;
+  function makeAction(id: number, decision: "APPROVED" | "REJECTED") {
+    return async (formData: FormData) => {
+      formData.set("id", String(id));
+      formData.set("decision", decision);
+      if (!formData.get("note")) {
+        formData.set("note", note[id] || "");
       }
-      setMsg(`${decision} intervention #${id}`);
-    } catch (e) {
-      setMsg((e as Error).message || "Network error");
-    } finally {
-      setBusyId(null);
-    }
+      setMsg(null);
+      setBusyId(id);
+      try {
+        const result = await decideInterventionAction(formData);
+        if (!result?.ok) {
+          setMsg(("error" in result && result.error) || "Failed");
+          return;
+        }
+        setMsg(`${decision} intervention #${id}`);
+        startTransition(() => router.refresh());
+      } catch (e) {
+        setMsg((e as Error).message || "Network error");
+      } finally {
+        setBusyId(null);
+      }
+    };
   }
 
   return (
@@ -97,10 +106,9 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
             </div>
 
             {i.status === "PENDING" ? (
-              <form action={onAction} className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
+              <form className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
                 <div>
                   <label className="label">Decision note</label>
-                  <input type="hidden" name="id" value={i.id} />
                   <input
                     className="input"
                     name="note"
@@ -111,21 +119,19 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                 </div>
                 <button
                   type="submit"
-                  name="decision"
-                  value="APPROVED"
                   className="btn btn-primary"
                   disabled={busyId === i.id}
                   data-testid={`approve-${i.id}`}
+                  formAction={makeAction(i.id, "APPROVED")}
                 >
                   {busyId === i.id ? "Working…" : "Approve & execute"}
                 </button>
                 <button
                   type="submit"
-                  name="decision"
-                  value="REJECTED"
                   className="btn"
                   disabled={busyId === i.id}
                   data-testid={`reject-${i.id}`}
+                  formAction={makeAction(i.id, "REJECTED")}
                 >
                   Reject
                 </button>
