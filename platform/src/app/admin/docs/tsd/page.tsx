@@ -13,7 +13,11 @@ export default async function TsdPage({
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
 
   const sp = await searchParams;
-  const lang: DocLocale = sp.lang === "zh-Hant" || sp.lang === "zh" ? "zh-Hant" : "en";
+  const rawLang = (sp.lang || "en").toLowerCase();
+  const lang: DocLocale =
+    rawLang === "zh-hant" || rawLang === "zh-tw" || rawLang === "zh" || rawLang === "zh_hant"
+      ? "zh-Hant"
+      : "en";
   const md = readTsdMarkdown(lang);
   const html = markdownToHtml(md);
 
