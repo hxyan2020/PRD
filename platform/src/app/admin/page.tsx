@@ -86,8 +86,8 @@ export default function AdminDashboardPage() {
         <StatCard label="Escalation Routes" value={counts.routes} hint="Severity → team → SLA" />
       </div>
 
-      <div className="mt-6 grid xl:grid-cols-2 gap-4">
-        <section className="panel p-4">
+      <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
+        <section className="panel p-3 sm:p-4 min-w-0">
           <h2 className="font-[family-name:var(--font-display)] text-lg">Department Division</h2>
           <p className="text-sm text-[var(--muted)] mt-1">RACI-aligned ownership for the CRMP spine.</p>
           <div className="mt-4 space-y-3">
@@ -102,7 +102,7 @@ export default function AdminDashboardPage() {
                   <p className="text-sm text-[var(--muted)] mt-1">{d.description}</p>
                   <ul className="mt-2 grid sm:grid-cols-2 gap-1 text-xs text-slate-700">
                     {responsibilities.map((r) => (
-                      <li key={r} className="before:content-['•'] before:mr-1.5 before:text-teal-700">
+                      <li key={r} className="before:content-['•'] before:mr-1.5 before:text-teal-700 break-word">
                         {r}
                       </li>
                     ))}
@@ -113,14 +113,14 @@ export default function AdminDashboardPage() {
           </div>
         </section>
 
-        <section className="panel p-4">
-          <div className="flex items-center justify-between">
+        <section className="panel p-3 sm:p-4 min-w-0">
+          <div className="flex items-center justify-between gap-2">
             <h2 className="font-[family-name:var(--font-display)] text-lg">Latest Monitor 2.0 Alerts</h2>
-            <Link href="/admin/alerts" className="text-sm text-teal-800 font-semibold">
+            <Link href="/admin/alerts" className="text-sm text-teal-800 font-semibold shrink-0">
               View all
             </Link>
           </div>
-          <div className="table-wrap mt-3">
+          <div className="table-wrap mt-3 max-w-full">
             <table className="data">
               <thead>
                 <tr>

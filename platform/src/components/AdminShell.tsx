@@ -213,7 +213,9 @@ export function AdminShell({
             </div>
           </div>
         </header>
-        <div className="p-3 sm:p-6 pb-[max(1rem,var(--safe-bottom))] flex-1 min-w-0">{children}</div>
+        <div className="p-3 sm:p-6 pb-[max(1rem,var(--safe-bottom))] flex-1 min-w-0 max-w-full overflow-x-clip">
+          {children}
+        </div>
       </main>
     </div>
   );

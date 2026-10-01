@@ -39,7 +39,7 @@ body {
   color: var(--ink);
   font-family: var(--font-source), "Segoe UI", sans-serif;
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
   padding-left: var(--safe-left);
   padding-right: var(--safe-right);
 }
@@ -86,7 +86,12 @@ table.data {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
-  min-width: 520px;
+}
+
+@media (min-width: 640px) {
+  table.data {
+    min-width: 480px;
+  }
 }
 
 table.data th {
