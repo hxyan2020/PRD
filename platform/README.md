@@ -52,6 +52,20 @@ Open http://localhost:3000
 
 SQLite file: `platform/data/vantage_risk.db` (created on first boot).
 
-## Next phase (not in this PR)
+## AI analysis + RAG (this phase)
 
-Semi-automated risk detection spine, AI RCA with evidence vault, human intervention console, daily performance dashboard.
+When Monitor 2.0 indicators alarm:
+1. **Skill match (certainty)** — if indicator pattern + conditions match a playbook, AI auto-executes skill steps (mock actions + human gates).
+2. **Otherwise** — retrieve from **RAG knowledge base** + external macro events, generate plausible explanations with evidence, mark `NEEDS_HUMAN`.
+
+### New admin pages
+- `/admin/ai-analyses` — analyses list, simulate alarm, backfill
+- `/admin/ai-analyses/[id]` — explanations, evidence vault, skill run log
+- `/admin/rag` — view / manage / retrieve Vantage business corpus
+- `/admin/skills` — dummy playbooks mapped to indicators
+
+Auto-trigger also runs on **Monitor 2.0 Sync**.
+
+## Next phase
+
+Daily performance dashboard, live detectors over CFD + crypto exchange, real Lark/LP action adapters.

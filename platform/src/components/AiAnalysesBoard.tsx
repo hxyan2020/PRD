@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
@@ -46,14 +45,19 @@ export function AiAnalysesBoard({
       setMsg(data.error || "Failed");
       return;
     }
+    const detailId = data.analysis?.id;
     setMsg(
       action === "analyze_open"
         ? `Ensured AI analysis for ${data.count} open alarm(s)`
         : action === "simulate_alarm"
-          ? `Alarm raised → analysis ${data.analysis?.analysis_id} (${data.analysis?.mode})`
+          ? `Alarm raised → analysis ${data.analysis?.analysis_id} (${data.analysis?.mode}, confidence ${Math.round((data.analysis?.confidence || 0) * 100)}%)`
           : "Done"
     );
     router.refresh();
+    if (action === "simulate_alarm" && detailId) {
+      // Hard navigate so detail is immediately visible
+      window.location.href = `/admin/ai-analyses/${detailId}`;
+    }
   }
 
   return (
