@@ -105,7 +105,15 @@ export function AiAnalysesBoard({
               Simulate EQ drawdown (RAG path)
             </button>
           </div>
-          {msg && <div className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">{msg}</div>}
+          {msg && (
+            <div
+              role="status"
+              data-testid="ai-action-status"
+              className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 sticky top-[72px] z-20"
+            >
+              {msg}
+            </div>
+          )}
         </div>
       )}
 
@@ -138,9 +146,9 @@ export function AiAnalysesBoard({
                 </div>
                 <p className="text-sm mt-2 text-slate-700">{a.summary}</p>
               </div>
-              <Link className="btn btn-primary" href={`/admin/ai-analyses/${a.id}`}>
+              <a className="btn btn-primary" href={`/admin/ai-analyses/${a.id}`} data-testid={`open-analysis-${a.id}`}>
                 Open evidence
-              </Link>
+              </a>
             </div>
           </article>
         ))}
