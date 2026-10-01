@@ -26,7 +26,7 @@ type Intervention = {
 
 // #region agent log
 function agentLog(hypothesisId: string, location: string, message: string, data: Record<string, unknown> = {}) {
-  fetch("/api/_agent_debug", {
+  fetch("/api/agent-debug", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ hypothesisId, location, message, data, timestamp: Date.now() }),
@@ -46,14 +46,26 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
     const approveBtns = typeof document !== "undefined"
       ? document.querySelectorAll('[data-testid^="approve-"]').length
       : -1;
+    const parseOutcomes = interventions.map((i) => {
+      try {
+        JSON.parse(i.skill_detail || "{}");
+        return { id: i.id, status: i.status, parseOk: true as const };
+      } catch (e) {
+        return { id: i.id, status: i.status, parseOk: false as const, err: (e as Error).message };
+      }
+    });
     agentLog("A", "InterventionsBoard.tsx:hydrate", "component mounted (client hydrate)", {
       count: interventions.length,
       pendingCount: pending.length,
       pendingIds: pending.map((p) => p.id),
       approveBtnCount: approveBtns,
-      busyId,
+      parseOutcomes,
     });
-  }, [interventions, busyId]);
+    agentLog("D", "InterventionsBoard.tsx:hydrate:hmr", "post-hydrate interactive probe", {
+      hasBoardAttr: !!document.querySelector('[data-board-hydrated="1"]'),
+      firstApproveDisabled: (document.querySelector('[data-testid^="approve-"]') as HTMLButtonElement | null)?.disabled ?? null,
+    });
+  }, [interventions]);
   // #endregion
 
   async function decide(id: number, decision: "APPROVED" | "REJECTED") {
@@ -104,21 +116,6 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
       setBusyId(null);
     }
   }
-
-  // #region agent log
-  const parseOutcomes = interventions.map((i) => {
-    try {
-      JSON.parse(i.skill_detail || "{}");
-      return { id: i.id, status: i.status, parseOk: true };
-    } catch (e) {
-      return { id: i.id, status: i.status, parseOk: false, err: (e as Error).message };
-    }
-  });
-  agentLog("E", "InterventionsBoard.tsx:render", "render pass parse outcomes", {
-    parseOutcomes,
-    pending: interventions.filter((i) => i.status === "PENDING").map((i) => i.id),
-  });
-  // #endregion
 
   return (
     <div className="space-y-4" data-board-hydrated="1">
