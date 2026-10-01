@@ -59,6 +59,9 @@ export default function AdminDashboardPage() {
             <Link className="btn" href="/admin/ai-admin">
               AI Admin
             </Link>
+            <Link className="btn" href="/admin/security/ai-access">
+              AI Access Security
+            </Link>
             <Link className="btn" href="/admin/detectors">
               Detectors
             </Link>
