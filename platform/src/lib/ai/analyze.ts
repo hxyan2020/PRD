@@ -4,6 +4,11 @@ import { matchSkill } from "@/lib/ai/skills";
 import { retrieveRag } from "@/lib/ai/rag";
 import { logSpineEvent } from "@/lib/ai/spine";
 import { syncInterventionsFromSkillRuns } from "@/lib/ai/intervention";
+import {
+  challengeAnalysisIfNeeded,
+  ensureChallengerSchema,
+  getChallengeForAnalysis,
+} from "@/lib/ai/challenger";
 
 type AlertRow = {
   id: number;
@@ -200,6 +205,7 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
       actor: "ai-engine",
     });
     syncInterventionsFromSkillRuns();
+    challengeAnalysisIfNeeded(dbId);
 
     return getAnalysisBundle(dbId);
   }
@@ -338,12 +344,16 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
     actor: "ai-engine",
   });
   syncInterventionsFromSkillRuns();
+  challengeAnalysisIfNeeded(dbId);
 
   return getAnalysisBundle(dbId);
 }
 
 export function getAnalysisBundle(id: number) {
   const db = getDb();
+  ensureChallengerSchema(db);
+  // Lazy second-opinion for high-severity analyses created before challenger shipped
+  challengeAnalysisIfNeeded(id);
   const analysis = db.prepare(`SELECT * FROM ai_analyses WHERE id = ?`).get(id);
   const evidence = db
     .prepare(`SELECT * FROM ai_analysis_evidence WHERE analysis_id = ? ORDER BY score DESC, id`)
@@ -351,7 +361,8 @@ export function getAnalysisBundle(id: number) {
   const skillRuns = db
     .prepare(`SELECT * FROM ai_skill_runs WHERE analysis_id = ? ORDER BY step_index`)
     .all(id);
-  return { analysis, evidence, skillRuns };
+  const challenge = getChallengeForAnalysis(id) ?? null;
+  return { analysis, evidence, skillRuns, challenge };
 }
 
 export function analyzeOpenAlerts(opts: { force?: boolean } = {}) {

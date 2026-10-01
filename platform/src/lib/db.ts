@@ -11,6 +11,7 @@ import { ensureAiAdminSchema } from "@/lib/ai/admin-schema";
 import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
 import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
+import { ensureChallengerSchema } from "@/lib/ai/challenger";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -776,12 +777,18 @@ function ensureAiLayer(db: Database.Database) {
   ensureRiskLogSchema(db);
   seedRiskLogIfEmpty(db);
   ensureMarketIntelSchema(db);
+  ensureChallengerSchema(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`
   );
   upsert.run("ai.auto_on_alarm", "true", "Auto-trigger AI analysis when Monitor indicators alarm");
   upsert.run("ai.skill_certainty_only", "true", "Auto-execute skills only when conditions match with certainty");
+  upsert.run(
+    "ai.second_opinion_severity",
+    "BREACH",
+    "Minimum alert severity that triggers independent second AI challenger (WARN|BREACH|CRITICAL)"
+  );
   upsert.run("detectors.auto_raise_alarms", "true", "Detectors raise Monitor alarms when warn/breach");
   upsert.run("market_intel.enabled", "true", "Enable 5-minute market intelligence scanner");
   upsert.run("market_intel.interval_minutes", "5", "Scan cadence in minutes");

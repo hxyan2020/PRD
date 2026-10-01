@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { analyzeAlert, analyzeOpenAlerts, createAlarmAndAnalyze, getAnalysisBundle } from "@/lib/ai/analyze";
+import { backfillChallenges } from "@/lib/ai/challenger";
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
@@ -56,6 +57,11 @@ export async function POST(req: Request) {
       observed_value: Number(body.observed_value ?? 0),
     });
     return NextResponse.json({ ok: true, ...bundle });
+  }
+
+  if (body.action === "backfill_challenges") {
+    const results = backfillChallenges(Number(body.limit ?? 40));
+    return NextResponse.json({ ok: true, count: results.length, results });
   }
 
   return NextResponse.json({ error: "Unknown action" }, { status: 400 });

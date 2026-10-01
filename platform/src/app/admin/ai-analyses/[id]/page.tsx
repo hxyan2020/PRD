@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getAnalysisBundle } from "@/lib/ai/analyze";
+import { AiChallengePanel } from "@/components/AiChallengePanel";
 import { PageHeader, Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 
 export default async function AiAnalysisDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -24,7 +25,21 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
     indicator_monitor_id: string;
     created_at: string;
     skill_id: number | null;
+    challenged?: number;
+    challenge_verdict?: string | null;
   };
+  const challenge = bundle.challenge as {
+    challenge_id: string;
+    model_name: string;
+    verdict: string;
+    confidence: number;
+    summary: string;
+    critique_json: string;
+    improvements_json: string;
+    alternatives_json: string;
+    alert_severity: string | null;
+    created_at: string;
+  } | null;
 
   const explanations = JSON.parse(analysis.explanations_json) as Array<Record<string, unknown>>;
   const actions = JSON.parse(analysis.actions_taken_json) as Array<Record<string, unknown>>;
@@ -73,6 +88,23 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         </Badge>
         <Badge className="bg-orange-50 text-orange-900 border-orange-200">{analysis.indicator_monitor_id}</Badge>
         {analysis.needs_human ? <SeverityBadge value="WARN" /> : null}
+        {analysis.challenged ? (
+          <Badge
+            className={
+              analysis.challenge_verdict === "AGREE"
+                ? "bg-emerald-50 text-emerald-900 border-emerald-200"
+                : analysis.challenge_verdict === "DISAGREE"
+                  ? "bg-rose-50 text-rose-900 border-rose-200"
+                  : "bg-amber-50 text-amber-900 border-amber-200"
+            }
+          >
+            2nd AI · {analysis.challenge_verdict || "challenged"}
+          </Badge>
+        ) : null}
+      </div>
+
+      <div className="mb-4">
+        <AiChallengePanel challenge={challenge} />
       </div>
 
       <div className="grid xl:grid-cols-2 gap-4">

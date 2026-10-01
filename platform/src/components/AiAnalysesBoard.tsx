@@ -18,6 +18,8 @@ type Analysis = {
   severity: string;
   skill_code: string | null;
   indicator_monitor_id: string;
+  challenged?: number;
+  challenge_verdict?: string | null;
 };
 
 export function AiAnalysesBoard({
@@ -50,8 +52,12 @@ export function AiAnalysesBoard({
       action === "analyze_open"
         ? `Ensured AI analysis for ${data.count} open alarm(s)`
         : action === "simulate_alarm"
-          ? `Alarm raised → analysis ${data.analysis?.analysis_id} (${data.analysis?.mode}, confidence ${Math.round((data.analysis?.confidence || 0) * 100)}%)`
-          : "Done"
+          ? `Alarm raised → analysis ${data.analysis?.analysis_id} (${data.analysis?.mode}, confidence ${Math.round((data.analysis?.confidence || 0) * 100)}%)${
+              data.challenge ? ` · 2nd AI ${data.challenge.verdict}` : ""
+            }`
+          : action === "backfill_challenges"
+            ? `Second AI challenger backfilled ${data.count} high-severity analysis(es)`
+            : "Done"
     );
     router.refresh();
     if (action === "simulate_alarm" && detailId) {
@@ -104,6 +110,30 @@ export function AiAnalysesBoard({
             >
               Simulate EQ drawdown (RAG path)
             </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() =>
+                run("simulate_alarm", {
+                  monitor_id: "M2-MRG-014",
+                  severity: "CRITICAL",
+                  observed_value: 220,
+                  title: "Simulated margin utilisation CRITICAL",
+                  message: "Book-wide margin utilisation spiked; LP rejects rising. Requires dual-AI RCA.",
+                })
+              }
+            >
+              Simulate CRITICAL (2nd AI challenge)
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() => run("backfill_challenges")}
+            >
+              Backfill 2nd AI challenges
+            </button>
           </div>
           {msg && (
             <div
@@ -136,6 +166,21 @@ export function AiAnalysesBoard({
                   <StatusBadge value={a.status} />
                   {a.needs_human ? (
                     <Badge className="bg-rose-50 text-rose-800 border-rose-200">needs human</Badge>
+                  ) : null}
+                  {a.challenged ? (
+                    <Badge
+                      className={
+                        a.challenge_verdict === "AGREE"
+                          ? "bg-emerald-50 text-emerald-900 border-emerald-200"
+                          : a.challenge_verdict === "DISAGREE"
+                            ? "bg-rose-50 text-rose-900 border-rose-200"
+                            : "bg-amber-50 text-amber-900 border-amber-200"
+                      }
+                    >
+                      2nd AI · {a.challenge_verdict || "challenged"}
+                    </Badge>
+                  ) : a.severity === "BREACH" || a.severity === "CRITICAL" ? (
+                    <Badge className="bg-slate-100 text-slate-600 border-slate-200">2nd AI pending</Badge>
                   ) : null}
                 </div>
                 <h2 className="mt-2 font-semibold text-lg">{a.alert_title}</h2>

@@ -24,7 +24,7 @@ export default async function AiAnalysesPage() {
     <div>
       <PageHeader
         title="AI Analyses"
-        subtitle="Auto-triggered when Monitor 2.0 indicators alarm. Skill path when certain; otherwise RAG + external macro evidence with human review."
+        subtitle="Auto-triggered when Monitor 2.0 indicators alarm. Skill path when certain; otherwise RAG + external macro evidence. BREACH/CRITICAL reports also receive an independent second-AI challenge."
       />
       <AiAnalysesBoard analyses={analyses} canOperate={hasPermission(user.role_code, "ai.operate")} />
     </div>
