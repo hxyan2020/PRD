@@ -1,30 +1,43 @@
 # CRMP UAT 驗收包 — 風險負責人
 
-**文件編號：** CRMP-UAT-001 · 請依序執行，並於稽核備註記錄通過／失敗。
+**文件編號：** CRMP-UAT-001 · **互動示範頁：** [/admin/docs/uat](/admin/docs/uat)
 
-| 序 | 案例 | 步驟 | 負責 BU | 依賴 | 嚴重度 | 通過門檻 |
-|---|---|---|---|---|---|---|
-| 01 | 登入與 RBAC | 以風險負責人登入；Viewer 無法開 AI Admin | System | 種子使用者 | Critical | 角色閘道正確 |
-| 02 | Monitor 同步 | 開啟 Monitor 2.0；確認 EQ/MRG/COPY 指標 | Risk | DB 種子 | Critical | 各域至少 1 指標 |
-| 03 | Skill RCA | AI Analyses → 模擬 COPY breach | AI + Risk | Skills | Critical | Mode=SKILL_MATCH |
-| 04 | 第二 AI | 開啟 BREACH/CRITICAL 詳情 | AI + Risk | Challenger | Critical | 有 verdict 與 ≥1 HIGH 改進 |
-| 05 | WARN 不挑戰 | 模擬 EQ WARN | AI | 門檻=BREACH | High | 無 challenge |
-| 06 | RAG 路徑 | 無技能匹配路徑 | AI | RAG | High | Mode=RAG_REASONING |
-| 07 | Messenger 證據 | Show evidence | Risk | 已連結分析 | High | 聊天出現證據 |
-| 08 | 聊天挑戰 | 輸入不同意 | Risk | 開啟執行緒 | High | needs_human |
-| 09 | 升級 | Escalate 兩次 | Risk | 升級路徑 | High | 步驟前進 |
-| 10 | 排除誤報 | Dismiss | Risk | 開啟執行緒 | Medium | 狀態 DISMISSED |
-| 11 | 結案接受 AI | Close | Risk Owner | 雙 AI 包 | Critical | CLOSED 且證據保留 |
-| 12 | 建議控制確認 | 封鎖帳戶 → 雙重確認 | Ops + Risk | Interventions | Critical | 產生 admin ref |
-| 13 | AI Admin M/C | Maker 提案；不同 Checker 核准 | AI + Risk Owner | 權限 | Critical | 禁止自我核准 |
-| 14 | 市場情報 | 執行掃描 | Risk | 設定啟用 | Medium | 有紀錄 |
-| 15 | AI 黑名單 | 檢查 AI Access Security | System | 黑名單 | High | 列出僅限人類項 |
-| 16 | 稽核與脊柱 | 核對 Audit + Spine | System | 前序案例 | High | 1 分鐘內有對應事件 |
-| 17 | 雙語文件 | 切換繁中 | All | Docs | Low | 兩語皆可渲染 |
-| 18 | 行動裝置煙測 | 寬度 390px | All | CSS | Medium | 主要 CTA 可用 |
+請**依序**執行。Critical 前置未通過前勿跳號。於稽核備註記錄 PASS／FAIL／WAIVE 與證據。
+
+## 時間模型
+- `T+0` = 風險負責人開始 UAT。
+- 各案有建議起始偏移與工期。
+- 全包建議時窗約 **4 小時**（20 案）。
+
+## 摘要矩陣
+
+| 序 | ID | 起始 | 工期 | 嚴重度 | 負責 BU | 依賴 | 標題 |
+|---|---|---|---|---|---|---|---|
+| 01 | UAT-01 | 0m | 10m | Critical | System + 風險負責人 | 種子使用者 | 登入與 RBAC 閘道 |
+| 02 | UAT-02 | 10m | 10m | Critical | Risk | UAT-01 | Monitor 2.0 指標登錄 |
+| 03 | UAT-03 | 20m | 15m | Critical | AI + Risk | UAT-02 | COPY breach 技能 RCA |
+| 04 | UAT-04 | 35m | 15m | Critical | AI + 風險負責人 | UAT-03 | 獨立第二 AI 挑戰者 |
+| 05 | UAT-05 | 50m | 10m | High | AI | 門檻=BREACH | WARN 不觸發挑戰者 |
+| 06 | UAT-06 | 60m | 15m | High | AI + Risk | RAG | RAG 推理路徑 |
+| 07 | UAT-07 | 75m | 10m | High | Risk | Messenger | Messenger — 顯示證據 |
+| 08 | UAT-08 | 85m | 10m | High | 分析師 + 負責人 | UAT-07 | Messenger — 聊天挑戰 |
+| 09 | UAT-09 | 95m | 10m | High | Risk | 升級路徑 | Messenger — 升級 |
+| 10 | UAT-10 | 105m | 8m | Medium | Risk | 可拋棄 WARN | Messenger — 排除誤報 |
+| 11 | UAT-11 | 115m | 10m | Critical | 風險負責人 | 雙 AI 已覆核 | Messenger — 結案接受 AI |
+| 12 | UAT-12 | 125m | 15m | Critical | Ops + 風險負責人 | Interventions | 建議控制＋雙重確認＋Checker |
+| 13 | UAT-13 | 140m | 20m | Critical | AI + 風險負責人 | 兩名不同使用者 | AI Admin Maker ≠ Checker |
+| 14 | UAT-14 | 160m | 15m | Medium | Risk + AI | 情報啟用 | 市場情報 5 分鐘掃描 |
+| 15 | UAT-15 | 175m | 10m | High | System + Security | 黑名單 | AI 存取黑名單覆核 |
+| 16 | UAT-16 | 185m | 15m | High | System | UAT-07–12 | 稽核與脊柱對應 |
+| 17 | UAT-17 | 200m | 10m | Low | All | 文件已發布 | 雙語文件切換 |
+| 18 | UAT-18 | 210m | 15m | Medium | All | 響應式殼層 | 行動裝置煙測 |
+| 19 | UAT-19 | 225m | 10m | Medium | 風險負責人 | UAT-04 | 雙 AI 覆蓋閘道 |
+| 20 | UAT-20 | 235m | 15m | Critical | 風險負責人 | UAT-01–19 | 退出簽核 |
+
+逐步步驟、通過標準與應留證據見互動頁（展開各案）。
 
 ## 退出標準
-- 所有 **Critical** 通過。
-- **High** 未通過不超過 2 項且經風險負責人書面接受。
-- UAT 期間 BREACH/CRITICAL 樣本 100% 附第二 AI。
-EOF
+1. 所有 **Critical** 必須 Pass。  
+2. **High** 豁免不超過 2 項，且須書面風險接受。  
+3. UAT 視窗內 BREACH／CRITICAL **100%** 附第二 AI（UAT-19）。  
+4. 完成 **UAT-20** 簽核（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。
