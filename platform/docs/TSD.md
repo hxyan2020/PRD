@@ -1,13 +1,14 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.1  
+**Version:** 1.2  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
+**Companion:** [PRD](/admin/docs/prd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
 This TSD describes the technical design of the Centralised Risk Management Platform (CRMP) Admin Control Plane.  
-**§8 AI Admin Management Page** is a first-class module specification (UI, API, data model, RBAC, maker/checker).
+**§8 AI Admin** and **§9 Second-AI Challenger** are first-class module specifications.
 
 ---
 
@@ -16,22 +17,25 @@ This TSD describes the technical design of the Centralised Risk Management Platf
 ### 1.1 Purpose
 Provide a single admin control plane where Risk, Ops, AI, and System operators can:
 - Observe Monitor 2.0 indicators / alerts
-- Run AI RCA (skills + RAG)
+- Run AI RCA (skills + RAG) with independent second-AI challenge on high severity
+- Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
-- Review spine logs, risk analytics, and daily performance
+- Review spine logs, risk analytics, market intel, and daily performance
 
 ### 1.2 In scope (prototype)
 - Admin UI + SQLite persistence
-- Detectors → Alarm → AI → Intervention → Spine → Dashboard
+- Detectors → Alarm → AI RCA → Second opinion → Messenger / Intervention → Spine → Dashboard
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
-- Lark channel registry (mock webhooks)
+- Demo Messenger + Lark channel registry (mock webhooks)
+- Market Intelligence 5-minute scanner + outbox
+- Bilingual docs (EN / zh-Hant) and responsive admin shell
 
 ### 1.3 Out of scope (production wiring)
 - Live SSO / IdP
-- Real Lark / oneZero / wallet adapters
-- Production model training cluster
+- Real Lark interactive cards / oneZero / wallet write adapters
+- Production LLM billing + training cluster
 
 ---
 
@@ -41,13 +45,16 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
                                          │
                                          ▼
-                              Human Intervention (gates)
+                              Second-AI Challenger (≥ BREACH)
+                                         │
+                                         ▼
+                    Demo Messenger ◄──► Human Intervention (gates)
                                          │
                                          ▼
                               Spine Log + Risk Log + Daily Dashboard
                                          │
                                          ▼
-                              Lark channels (notify / escalate)
+                         Lark channels / Market Intel outbox (mock)
 ```
 
 **AI Admin** sits beside the runtime spine: it does **not** execute live trading actions; it governs models, playbooks, RAG corpus, and AI parameters under dual control.
@@ -68,16 +75,17 @@ Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
 1. **Detectors** sample indicators (`/admin/detectors`)
 2. **Alarm** opens Monitor alert/ticket
 3. **AI RCA** matches skill or RAG-reasons (`/admin/ai-analyses`)
-4. **Human intervention** approves/rejects gated steps (`/admin/interventions`)
-5. **Spine logging** records stage transitions (`/admin/spine`)
-6. **Daily performance / Risk Log** aggregate outcomes
+4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
+5. **Demo Messenger / Human intervention** triage and gated controls
+6. **Spine logging** records stage transitions (`/admin/spine`)
+7. **Daily performance / Risk Log / Market Intel** aggregate outcomes
 
 ---
 
 ## 4. Data model (core)
 
 ### 4.1 Identity & RBAC
-- `users`, `roles` (permission JSON), `departments`, `teams`
+- `users`, `roles` (permission JSON), `departments`, `teams`, `sessions`
 - Permissions are string codes; `SUPER_ADMIN` has `*`
 
 ### 4.2 Monitoring
@@ -87,10 +95,17 @@ Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
 ### 4.3 AI runtime
 - `ai_skills` (+ `scenario_json`), `risk_scenario_chains`
 - `rag_documents` (+ FTS)
-- `ai_analyses`, `ai_analysis_evidence`, `ai_skill_runs`
+- `ai_analyses` (+ `challenged`, `challenge_verdict`), `ai_analysis_evidence`, `ai_skill_runs`
+- `ai_analysis_challenges` (second-opinion rows)
 - `interventions`, spine tables
 
-### 4.4 AI Admin governance
+### 4.4 Messenger
+- `messenger_threads`, `messenger_messages`, `messenger_pending_actions`
+
+### 4.5 Market intelligence
+- `market_intel_*` scan/findings/outbox tables (see `lib/market-intel/schema.ts`)
+
+### 4.6 AI Admin governance
 See **§8.4** — `ai_change_requests`, `ai_training_runs`, `ai_feedback`, `ai_accuracy_snapshots`, AI keys in `platform_settings`.
 
 ---
@@ -114,9 +129,11 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 | System | Mode in prototype | Notes |
 |---|---|---|
-| Monitor 2.0 | Mirrored tables + sync action | Indicators/alerts/tickets |
-| Lark | Channel registry + mock webhook URLs | Severity routing |
-| LP / Bridge / Wallets | Suggested actions only | Human gate before real adapters |
+| Monitor 2.0 | Mirrored tables + sync / simulate alarm | Indicators/alerts/tickets |
+| Demo Messenger | In-app threads + `/api/messenger` | Evidence, escalate, controls |
+| Lark | Channel registry + mock webhook / intel outbox | Severity routing |
+| Market intel feeds | Heuristic 5-min scanner | Card format i–vi |
+| LP / Bridge / Wallets | Suggested actions + admin deep-links | Human gate before real adapters |
 | Model training | Queued runs + seeded metrics | No GPU cluster in prototype |
 
 ---
@@ -128,15 +145,18 @@ Detailed AI Admin permission matrix: **§8.3**.
 | `/admin` | Home |
 | `/admin/dashboard` | Daily performance |
 | `/admin/risk-log` | Risk log analytics |
+| `/admin/market-intel` | Market intelligence scanner |
 | `/admin/detectors` | Detectors |
 | `/admin/alerts` | Live alerts |
-| `/admin/ai-analyses` | AI RCA runtime |
-| **`/admin/ai-admin`** | **AI Admin management (this TSD §8)** |
+| `/admin/ai-analyses` | AI RCA runtime + second-AI UI |
+| **`/admin/ai-admin`** | **AI Admin management (§8)** |
 | `/admin/interventions` | Human gates |
 | `/admin/spine` | Spine log |
-| `/admin/rag` | RAG corpus (runtime view) |
+| `/admin/rag` | RAG corpus |
 | `/admin/skills` | Skill / scenario playbooks |
-| `/admin/docs/tsd` | This TSD (EN / 繁中) |
+| **`/admin/messenger`** | **Demo Messenger (§11)** |
+| `/admin/security/ai-access` | AI access blocklist |
+| `/admin/docs/prd` · `/user-guide` · `/uat` · `/ecosystem` · `/roadmap` · `/urls` · **`/tsd`** | Product docs (EN / 繁中) |
 | `/admin/monitor-2`, `/admin/lark`, `/admin/escalation`, … | Platform ops |
 
 ---
@@ -354,14 +374,116 @@ AI Engineer (Maker)                API / admin.ts                 Risk Owner (Ch
 
 ---
 
-## 9. Skills & risk scenarios (summary)
+## 9. Independent Second-AI Challenger
 
-Skills store rich `scenario_json`: indicator, thresholds + why, fault areas, escalation, BU corrections, past cases.  
-`risk_scenario_chains` link multi-indicator timelines. See `/admin/skills` and `risk-scenarios-catalog.ts`.
+### 9.1 Purpose
+For alert severities at or above `ai.second_opinion_severity` (default **BREACH**), the platform runs an independent challenger model (`crmp-challenger-v0`) after the primary skill/RAG RCA. The challenger **must not** reuse the primary decision path (separate heuristics / future separate vendor).
+
+**Code:** `platform/src/lib/ai/challenger.ts` · wired from `analyze.ts` after skill/RAG persist.
+
+### 9.2 Trigger
+| Setting | Default | Behaviour |
+|---|---|---|
+| `ai.second_opinion_severity` | `BREACH` | Run when alert severity rank ≥ setting (`WARN` &lt; `BREACH` &lt; `CRITICAL`) |
+
+### 9.3 Outputs
+| Field | Description |
+|---|---|
+| `verdict` | `AGREE` / `PARTIAL` / `DISAGREE` |
+| `critiques` | Material gaps in primary narrative |
+| `improvements` | Prioritised recommendations (`HYPOTHESIS` / `EVIDENCE` / `ACTION` / …) |
+| `alternatives` | Competing hypotheses with confidence |
+
+### 9.4 Persistence & side-effects
+- Table `ai_analysis_challenges` (1:1 with `ai_analyses`)
+- Evidence row type `CHALLENGER`
+- Columns `ai_analyses.challenged`, `challenge_verdict`
+- `PARTIAL` / `DISAGREE` forces `needs_human = 1`
+- Spine stage `AI_RCA` event + audit `AI_SECOND_OPINION`
+- Lazy backfill via `getAnalysisBundle` / `POST /api/ai` action `backfill_challenges`
+
+### 9.5 UI
+- List badges: `2nd AI · {verdict}`
+- Detail panel: `AiChallengePanel`
+- Controls: simulate CRITICAL, backfill challenges
 
 ---
 
-## 10. Deployment (prototype)
+## 10. Skills & risk scenarios (summary)
+
+Skills store rich `scenario_json`: indicator, thresholds + why, fault areas, escalation, BU corrections, past cases.  
+`risk_scenario_chains` link multi-indicator timelines. See `/admin/skills`, `risk-scenarios-catalog.ts`, `risk-scenarios-extra.ts`.
+
+---
+
+## 11. Demo Messenger
+
+### 11.1 Purpose
+In-app Lark-style inbox for alert + AI report threads with inline operator actions. Production transport remains Lark; this module proves UX and audit semantics.
+
+### 11.2 Stack
+| Item | Path |
+|---|---|
+| Page | `/admin/messenger` → `app/admin/messenger/page.tsx` |
+| UI | `components/DemoMessenger.tsx` (mobile master-detail) |
+| API | `GET/POST /api/messenger` |
+| Domain | `lib/messenger/demo.ts` |
+
+### 11.3 Actions
+| Action | Effect |
+|---|---|
+| `show_evidence` | Post vault + challenger summary into thread |
+| `chat` | User note / challenge; disagreement flags `needs_human` |
+| `escalate` | Advance escalation path step |
+| `dismiss` | False alarm → thread DISMISSED, alert CLOSED |
+| `close` | Accept AI → thread CLOSED |
+| `recommend` → `confirm_action` | Double-confirm control → admin_ref (+ checker if required) |
+
+### 11.4 Data
+`messenger_threads`, `messenger_messages`, `messenger_pending_actions` (see §4.4).
+
+---
+
+## 12. Market Intelligence
+
+### 12.1 Purpose
+Five-minute scan of news/social/official signals that can move LP prices; push formatted cards to a dedicated messenger/outbox channel; expose indicator `M2-MKT-INTEL`.
+
+### 12.2 Key modules
+- `lib/market-intel/scanner.ts`, `format.ts`, `schema.ts`
+- UI `/admin/market-intel`
+- Settings: `market_intel.enabled`, `interval_minutes`, `lark_chat_id`
+
+---
+
+## 13. Docs, i18n & responsive shell
+
+| Concern | Design |
+|---|---|
+| Docs | Markdown under `platform/docs/*` rendered via `lib/docs.ts` + `DocArticlePage` |
+| Locales | `en` / `zh-Hant` query `?lang=` |
+| UI chrome i18n | Cookie `crmp_ui_lang`; nav labels in `lib/i18n.ts` |
+| Mobile | `AdminShell` drawer &lt; `lg`; messenger list/thread panes; safe-area CSS |
+
+Interactive UAT board: `/admin/docs/uat` (`UatChecklistBoard` + `lib/docs/uat-cases.ts`).
+
+---
+
+## 14. Key API map (prototype)
+
+| API | Role |
+|---|---|
+| `POST /api/auth/login` | Session cookie `crmp_session` |
+| `GET/POST /api/ai` | Analyses, simulate alarm, `backfill_challenges` |
+| `GET/POST /api/ai-admin` | AI Admin propose/approve/training/feedback |
+| `GET/POST /api/messenger` | Threads + inline actions |
+| `GET/POST /api/lark` | Channel registry / mock notify |
+| `GET/POST /api/market-intel` | Scan / findings / outbox |
+| Other | detectors, escalation, interventions, rag, skills, … |
+
+---
+
+## 15. Deployment (prototype)
 
 ```bash
 cd platform
@@ -372,40 +494,16 @@ npm run dev   # http://localhost:3000
 SQLite path: `platform/data/vantage_risk.db`.  
 Reset: `npm run db:reset` then restart.
 
+Demo logins: see User Guide §1 (e.g. `admin@vantagemarkets.com` / `admin123`).
+
 ---
 
-## 11. Document control
+## 16. Document control
 
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-01 | Initial TSD skeleton |
-| 1.1 | 2026-10-01 | **Added full §8 AI Admin Management Page specification** |
+| 1.1 | 2026-10-01 | Full §8 AI Admin Management Page specification |
+| 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
 
-**Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md)
-
----
-
-## 9. Independent Second-AI Challenger
-
-### 9.1 Purpose
-For alert severities at or above `ai.second_opinion_severity` (default **BREACH**), the platform runs an independent challenger model (`crmp-challenger-v0`) after the primary skill/RAG RCA. The challenger must not reuse the primary decision path.
-
-### 9.2 Outputs
-| Field | Description |
-|---|---|
-| verdict | `AGREE` / `PARTIAL` / `DISAGREE` |
-| critiques | Material gaps in primary narrative |
-| improvements | Prioritised recommendations (HYPOTHESIS/EVIDENCE/ACTION/…) |
-| alternatives | Competing hypotheses with confidence |
-
-### 9.3 Persistence & side-effects
-- Table `ai_analysis_challenges` (1:1 with `ai_analyses`)
-- Evidence row type `CHALLENGER`
-- Columns `ai_analyses.challenged`, `challenge_verdict`
-- `PARTIAL` / `DISAGREE` forces `needs_human = 1`
-- Spine stage `AI_RCA` event + audit `AI_SECOND_OPINION`
-
-### 9.4 UI
-- List badges: `2nd AI · {verdict}`
-- Detail panel: `AiChallengePanel`
-- Controls: simulate CRITICAL, backfill challenges (`POST /api/ai` action `backfill_challenges`)
+**Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
