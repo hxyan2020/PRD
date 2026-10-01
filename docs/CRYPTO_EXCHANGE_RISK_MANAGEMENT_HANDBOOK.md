@@ -2,8 +2,8 @@
 
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
 **Scope:** Spot · Cross/Isolated Margin · USDⓈ-M & COIN-M Perpetuals (and dated futures where noted)  
-**Version:** 1.3 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
-**Languages:** English (below) · [简体中文完整译本](#语言--language)（文末附录）  
+**Version:** 1.4 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Languages:** English (below) · [简体中文完整译本](#语言--language)（文末附录，含同步扩展 SOP）  
 
 > This handbook is the **operating playbook** for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.  
 > **Thresholds below are illustrative defaults** for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.
@@ -17,7 +17,7 @@
 3. [Instrument primers (Spot / Margin / Perps)](#3-instrument-primers-spot--margin--perps)
 4. [BU-by-BU playbooks](#4-bu-by-bu-playbooks)
 5. [Cross-BU RACI matrix](#5-cross-bu-raci-matrix)
-6. [Global SOPs (shared)](#6-global-sops-shared)
+6. [Global SOPs (shared) & detailed runbooks](#6-global-sops-shared--detailed-runbooks)
 7. [Admin pages & tool catalogue](#7-admin-pages--tool-catalogue)
 8. [Limits, KRIs, thresholds, actions & escalation](#8-limits-kris-thresholds-actions--escalation)
 9. [Risk scenario diagnostics (RAG + time sequence)](#9-risk-scenario-diagnostics-rag--time-sequence)
@@ -32,7 +32,7 @@
 | If you are… | Read first |
 |-------------|------------|
 | New BU PIC | §§2–4 for your BU + §7 tools |
-| Risk Officer / Risk Ops | Full doc; own §8 catalogue, §9 scenarios & §10 incidents |
+| Risk Officer / Risk Ops | Full doc; own §6 SOPs, §8 catalogue, §9 scenarios & §10 incidents |
 | Product (Spot / Margin / Futures) | §3 + your product BU chapter + listing SOPs |
 | Eng / SRE (Matching, Risk Engine, Wallet) | Your tech BU chapter + failover SOPs |
 | Compliance / Surveillance | Compliance BU + market-abuse SOPs |
@@ -171,6 +171,8 @@ Each chapter follows the same template:
 #### SOPs
 | ID | Name | Trigger |
 |----|------|---------|
+> Detailed who / when / how / SLA cards: **§6.7** (RM-01…).
+
 | RM-01 | Daily risk MI pack | Every UTC cutoff |
 | RM-02 | Soft-limit WARN response | Alert WARN |
 | RM-03 | Hard-limit BREACH response | Alert BREACH |
@@ -691,55 +693,649 @@ Each chapter follows the same template:
 
 ---
 
-## 6. Global SOPs (shared)
+## 6. Global SOPs (shared) & detailed runbooks
+
+Every SOP card below uses the same fields: **When (trigger)** · **Who** · **SLA** · **Preconditions** · **How** · **Systems** · **Done when** · **Escalate if**.  
+Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
+
+### 6.0 SOP card legend
+
+| Field | Meaning |
+|-------|---------|
+| **When** | Event, schedule, or threshold that starts the SOP |
+| **Who** | R = does the work · A = accountable sign-off · C = consulted · I = informed |
+| **SLA** | Max time to first action / to contain / to close |
+| **Preconditions** | Must be true before acting (else stop and escalate) |
+| **How** | Ordered steps; do not skip dual-control steps |
+| **Systems** | Admin pages / tools / modules |
+| **Done when** | Exit criteria + evidence to attach |
+| **Escalate if** | Conditions that bump L-level / Sev |
+
+---
 
 ### 6.1 SOP-G01 — Limit change (all instruments)
 
-1. Requester opens ticket with instrument (**SPOT / MARGIN / PERP**), symbol/contract, old→new values, rationale, stress impact.  
-2. SYS builds eligibility / impact packet (utilisation, recent breaches, stress delta).  
-3. **Maker (RO)** approves or rejects.  
-4. If Tier A+ (materiality): **Checker (RO2 or CRO)** four-eyes.  
-5. RE promotes config; ME/Product ACK.  
-6. RO-OPS monitors 24h hypercare.  
-7. Ticket closed with config version hash.
+| Field | Detail |
+|-------|--------|
+| **When** | Any proposed change to soft/hard limits, brackets, bands, OI caps, LTV/haircut, borrow caps, VIP multipliers — scheduled calib or ad-hoc stress response |
+| **Who** | **R:** Requester (PM / TO / RO / DA) prepares packet · **A:** RO (Maker) · **Checker A (Tier A+):** RO2 or CRO · **R (deploy):** RE · **C:** ME, Product PIC, CP if retail-impacting · **I:** RO-OPS, Comms if client-visible |
+| **SLA** | Non-urgent: decision ≤ 2 business days · Urgent (active BREACH/cascade): Maker decision ≤ 30 min; Checker ≤ 30 min parallel bridge · Hypercare 24h post-deploy |
+| **Preconditions** | Instrument tagged **SPOT / MARGIN / PERP**; old→new values numeric; stress delta attached (or waiver by CRO); no conflicting open G01 on same key |
+| **Systems** | Ticket · `/admin/risk/limits` · `/admin/risk/waivers` · `/admin/risk-engine/configs` · `stress_testing.py` · `trader_rights_workflow.py` (if rights-linked) |
 
-### 6.2 SOP-G02 — Trading halt (Spot vs Perps)
+**How**
+1. **Requester** opens ticket: instrument, symbol/contract or asset, field name, old→new, rationale, linked KRI/incident, stress screenshot or note “CRO waived stress”.  
+2. **SYS** (or RO-OPS) attaches impact packet: utilisation vs new limit, breaches 30d, concentration, related product spillover.  
+3. **Maker (RO)** reviews: reject / approve / approve-with-conditions (expiry, symbol scope). Records comment.  
+4. If **Tier A+** (notional, leverage max, insurance-related, or policy table): **Checker** different person four-eyes.  
+5. **RE** promotes config in staging → prod; records **config version hash** on ticket.  
+6. **ME / Product** ACK on trading-facing params (bands, symbol flags).  
+7. **RO-OPS** starts 24h hypercare watchlist for linked KRIs.  
+8. Close ticket only when hash + ACKs + hypercare owner named.
 
-| Step | Spot | Perps / Margin |
-|------|------|----------------|
-| 1 | TO proposes; RO approves | TO-FUT / Margin TO proposes; RO approves |
-| 2 | ME halts matching | ME may halt **orders**; liquidations follow RE SOP |
-| 3 | Wallet: usually keep withdraw unless CP/Risk says otherwise | Same; consider borrow freeze (MG-03) |
-| 4 | Comms + support macros | Comms must mention funding/liquidation behaviour |
-| 5 | Resume only with RO + ME + Product | Resume with RO + RE mark-feed healthy |
+**Done when:** Approved decision logged; prod hash matches ticket; no unexplained BREACH in hypercare attributable to change.  
+**Escalate if:** Checker unavailable in urgent path → CRO/delegate; deploy fails → RE rollback + L2; client complaints spike → Comms + L3.
 
-### 6.3 SOP-G03 — Alert ACK (WARN / BREACH)
+---
 
-1. RO-OPS ACKs within SLA (e.g. WARN 15m / BREACH 5m).  
-2. Classify: data quality vs real risk.  
-3. If real BREACH: contain (reduce-only, freeze borrow, halt) per playbook.  
-4. Page BU PIC + CRO for Sev-1.  
-5. Post-mortem within 5 business days for Sev-1/2.
+### 6.2 SOP-G02 — Trading halt / resume (Spot vs Perps / Margin)
 
-### 6.4 SOP-G04 — Maker–checker & segregation
+| Field | Detail |
+|-------|--------|
+| **When** | Disorderly market, oracle/index fail, fat-finger contagion, regulatory order, Sev-1 integrity, cascade per §9 families S1–S4/S7 |
+| **Who** | **Propose R:** TO (Spot) / TO-FUT / Margin TO · **A approve halt:** RO · **Execute R:** ME (matching) + RE (liq mode) · **C:** CP (if abuse/reg), WO (withdraw policy), Comms · **Resume A:** RO + ME (+ RE mark healthy for perps) |
+| **SLA** | Propose→approve ≤ 5 min in Sev-1/2 · ME execute ≤ 2 min after approve · First Comms draft ≤ 10 min · Resume only after written clearance |
+| **Preconditions** | Halt reason code selected; scope (symbol / segment / global) stated; for perps: decision on **orders-only vs include liquidations** |
+| **Systems** | `/admin/spot/halt` · `/admin/futures/breaker` · `/admin/engine/kill` (global only, dual) · `/admin/margin/borrow` · Comms macros |
 
-- Trader cannot approve own leverage/rights.  
-- Config deployer ≠ sole approver for Tier A.  
-- Wallet key ceremony requires multi-party.  
-- Compliance hold removal requires dual control.
+**How — Halt**
+1. On-call **TO** opens bridge; states scope + reason + §9 family guess.  
+2. **RO** approves (or CRO if global).  
+3. **ME** applies halt/kill for scope; confirms no new matches (Spot) / no new risk-increasing orders (Perps as designed).  
+4. **RE:** if perps/margin — follow RE-02 for whether liquidations continue, pause, or reduce-only only.  
+5. **Margin TO:** consider **MG-03** borrow freeze on related collateral.  
+6. **WO:** default **keep withdrawals** unless CP/RO order freeze.  
+7. **Comms** posts status; Perps text must mention funding/liq behaviour.  
+8. Scribe logs timeline on war-room ticket.
+
+**How — Resume**
+1. RO verifies root cause contained; ME health green; for perps **RE** confirms mark/index fresh (PL-K06/PF-K02).  
+2. Dual ACK RO + ME (+ Product PIC).  
+3. Resume in stages: cancel storm check → bands on → normal.  
+4. Hypercare 4h minimum.
+
+**Done when:** Matching state matches intended mode; Comms updated; resume ticket signed.  
+**Escalate if:** Global kill needed → L4 dual-control on `/admin/engine/kill`; wrong marks during halt → Sev-1.
+
+---
+
+### 6.3 SOP-G03 — Alert ACK (WARN / BREACH / KILL)
+
+| Field | Detail |
+|-------|--------|
+| **When** | Any Risk Portal / paging alert on §8 KRIs |
+| **Who** | **R ACK + triage:** RO-OPS · **C:** BU PIC for L2+ · **A escalation:** RO / CRO by ladder · **I:** ENG if data-quality |
+| **SLA** | ACK: WARN ≤15m · BREACH ≤5m · KILL/client-asset ≤2m · Classification note ≤10m after ACK · Containment plan ≤15m on BREACH |
+| **Preconditions** | Alert visible with timestamp; on-call calendar current |
+| **Systems** | `/admin/risk/alerts` · §9 triage card · Pager |
+
+**How**
+1. **ACK** in console (stops re-page per policy).  
+2. Check **data freshness** (PL-K06 / feed TS). If stale → ENG-03 path; tag “data”.  
+3. If real: identify primary KRI + cluster ±15m; pick §9 family.  
+4. Execute linked playbook actions (auto already fired? verify).  
+5. Set escalation L1–L4; page required roles.  
+6. For Sev-1/2: open war room; schedule post-mortem ≤5 business days.
+
+**Done when:** ACK + classification + action log on ticket; owner for next step named.  
+**Escalate if:** ACK SLA missed → auto-page RO; two BREACH without containment → L3.
+
+---
+
+### 6.4 SOP-G04 — Maker–checker & segregation of duties
+
+| Field | Detail |
+|-------|--------|
+| **When** | Always for Tier A+ limit changes, kill switch, key ceremony, sanctions override, insurance injection, hold removal, leverage rights Tier A+ |
+| **Who** | **Maker** initiates · **Checker** different human ID · **SYS** enforces (reject same UID) · **A:** CRO/CISO policy owner |
+| **SLA** | Blocking: no prod mutate until checker done · Break-glass: ≤15m with auto-ticket + CRO/CISO page |
+| **Preconditions** | ACL roles distinct; maker≠checker≠beneficiary trader |
+| **Systems** | IAM · `/admin/audit` · workflow engines |
+
+**How / Rules**
+1. Trader **cannot** approve own leverage/rights (`trader_rights_workflow`).  
+2. RE deployer **cannot** be sole approver on Tier A config.  
+3. Wallet ceremony: ≥2 (prefer 3) key holders + recorded ceremony ID.  
+4. CP hold **removal** needs second CP or RO per policy.  
+5. Any break-glass: time-bound account, auto ticket PL-K07, same-day review.
+
+**Done when:** Audit shows two distinct actor IDs + ticket link.  
+**Escalate if:** Same-ID approval attempted → security incident ENG-04/L3.
+
+---
 
 ### 6.5 SOP-G05 — EOD reconciliation & settlement
 
-1. ENG/SYS match internal confirms vs venue/broker/ledger lines.  
-2. Exceptions owned by Clearing Ops / TO.  
-3. Material notional delta → checker (CO2/RO).  
-4. On approve → `SettlementReady` → TS executes.  
-5. Retain evidence per CP policy.
+| Field | Detail |
+|-------|--------|
+| **When** | Daily at configured UTC cutoff (+ ad-hoc after Sev-1 trading incident) |
+| **Who** | **R match:** ENG/SYS · **R exceptions:** Clearing Ops / TO · **Checker:** CO2 or RO if material · **A settlement:** TS · **C:** CP retention |
+| **SLA** | Match job complete ≤ 60m after cutoff · Material exceptions aged ≤ 4h · Settlement wires only after `SettlementReady` |
+| **Preconditions** | Cutoff complete; feeds available; materiality threshold published |
+| **Systems** | `eod_reconciliation.py` · treasury settlement queue · evidence store |
+
+**How**
+1. SYS runs internal vs ledger/broker/venue match → `ReconLine[]`.  
+2. TO/Clearing assigns each exception owner + action (re-pull, adjust, ticket venue).  
+3. If delta notional > materiality: **maker–checker** before approve.  
+4. On full approve: emit `SettlementReady`.  
+5. **TS** executes settlement; stores bank/on-chain refs.  
+6. Retain pack per CP policy.
+
+**Done when:** Zero critical opens or waived with RO sign-off; TS confirmation IDs attached.  
+**Escalate if:** Unexplained missing trades → L2/L3 + possible trading halt review.
+
+---
 
 ### 6.6 SOP-G06 — New product / instrument approval
 
-Gate order: **Legal → CP → Listing diligence → Risk opinion → Product checklist → RE/ME config → Wallet deposit ready → Soft launch → Hypercare**.  
-No production traffic before Risk **A** and CP clear.
+| Field | Detail |
+|-------|--------|
+| **When** | New spot pair, margin asset, perp contract, or material product feature (portfolio margin, unified account) |
+| **Who** | Gate owners in order below; **A go-live:** Risk (RO) + CP clear · **R coord:** LI or PM |
+| **SLA** | Each gate SLA on listing pipeline board (typ. 2–10 BD per gate) · No “soft launch” without Risk+CP |
+| **Preconditions** | Diligence folder ID; Legal classification draft |
+| **Systems** | `/admin/listing/pipeline` · product checklists §11 · wallet chain enable |
+
+**How (gates — do not reorder)**
+1. **Legal** opinion (instrument type / jurisdiction notes).  
+2. **CP** sanctions/securities/AML flags.  
+3. **LI** diligence pack + **RO** risk opinion (LD-01).  
+4. **Product** go-live checklist (Spot/Margin/Perps §11).  
+5. **RE/ME** configs in staging; dry-runs signed.  
+6. **WO** deposit/withdraw ready on correct chains.  
+7. Soft launch / whitelist if used → hypercare roster 72h.  
+8. Only then open public traffic.
+
+**Done when:** Pipeline stage = Live; monitoring KRIs wired; hypercare named.  
+**Escalate if:** Traffic detected pre-clear → PL-K12 BREACH, force disable, L3 audit.
+
+---
+
+### 6.7 BU SOP catalogue (detailed)
+
+#### RM — Risk Ops
+
+##### RM-01 Daily risk MI pack
+| Field | Detail |
+|-------|--------|
+| **When** | Every UTC cutoff (default 22:00) + ad-hoc on L3 day |
+| **Who** | **R:** SYS assemble · **A:** RO · **C:** PM/TO · **I:** CRO (summary) |
+| **SLA** | Pack published ≤ 90m after cutoff |
+| **How** | 1) Pull strategy/desk/company snapshots + open alerts + stress highlights via `risk_reporting.py`. 2) RAG §8 families. 3) Flag waivers expiring ≤7d. 4) Distribute DL. 5) RO comments exceptions. |
+| **Systems** | `/admin/risk/reports` · `risk_reporting.py` |
+| **Done when** | Email/portal post + RO ACK. **Escalate if** pack >2h late → ENG-03. |
+
+##### RM-02 Soft-limit WARN response
+| Field | Detail |
+|-------|--------|
+| **When** | Any WARN (§8) |
+| **Who** | **R:** RO-OPS · **C:** BU PIC · **A:** RO if persists >TTE |
+| **SLA** | ACK 15m; plan 30–60m |
+| **How** | G03 triage → document cause → watch vs act → if approaching BREACH pre-stage G01/G02. |
+| **Done when** | WARN cleared or upgraded with ticket. |
+
+##### RM-03 Hard-limit BREACH response
+| Field | Detail |
+|-------|--------|
+| **When** | BREACH / Kill-adjacent |
+| **Who** | **R:** RO-OPS + BU PIC · **A:** RO · page CRO if L3+ |
+| **SLA** | ACK 5m; containment 15m |
+| **How** | Contain per instrument (reduce-only / borrow freeze / halt) → verify auto actions → §9 family → war room if Sev-1/2 → post-mortem. |
+| **Done when** | Contained + owner for permanent fix. |
+
+##### RM-04 Leverage / rights increase
+| Field | Detail |
+|-------|--------|
+| **When** | TR/VIP submits buying-power or leverage request |
+| **Who** | **R submit:** TR · **R packet:** SYS · **A Maker:** RO · **Checker:** RO2/PM if Tier A+ · **R push:** ENG/RE |
+| **SLA** | Eligibility packet <5m auto · Maker ≤1 BD (urgent 1h) |
+| **How** | `trader_rights_workflow`: eligibility (Sharpe/DD/VaR/CP hold) → Maker approve/reject → Checker if A+ → enqueue limit update → confirm broker/OMS. |
+| **Done when** | Status APPROVED + limit live. **Escalate if** self-approve attempt. |
+
+##### RM-05 Stress catalogue change
+| Field | Detail |
+|-------|--------|
+| **When** | New scenario, shock size, correlation matrix edit |
+| **Who** | **R:** DA · **A:** RO · **C:** PM · **I:** CRO if core scenarios |
+| **SLA** | Dual sign-off before catalogue publish |
+| **How** | Propose → backtest hit rates → RO+DA sign → version catalogue → link to daily pack. |
+| **Done when** | Version ID on portal. |
+
+##### RM-06 Insurance fund draw review
+| Field | Detail |
+|-------|--------|
+| **When** | Any insurance payout or ADL (PF-K07/K08/K12) |
+| **Who** | **R flash:** TO-FUT · **A review:** RO · **C:** TS accounting · **I:** CRO if >X |
+| **SLA** | Flash ≤30m; formal review ≤1 BD |
+| **How** | Pull payout vs bankruptcy prices → liq quality → MM during event → decide inject (TS-04) / tighten brackets (G01) / ADL review (PF-06). |
+| **Done when** | Review note filed; ledger entries match. |
+
+##### RM-07 Trading halt recommendation
+| Field | Detail |
+|-------|--------|
+| **When** | Gap, oracle fail, cascade, reg ask |
+| **Who** | **R recommend:** RO/RO-OPS · **A decide:** RO · execute via G02 |
+| **SLA** | Recommendation ≤5m on BREACH cascade |
+| **How** | State scope/reason/family → call G02 → stay on bridge until resume criteria set. |
+
+---
+
+#### SP — Spot
+
+##### SP-01 Spot symbol go-live
+| Field | Detail |
+|-------|--------|
+| **When** | Pipeline stage ready post LD-01 / G06 |
+| **Who** | **R:** PM-SPOT + TO · **A:** RO+CP clear already · **C:** WO, MM, ME |
+| **SLA** | Checklist complete same day as scheduled launch window |
+| **How** | Verify wallet chains · tick/lot/bands/STP/fees · MM SLA or disclosure · halt test · KRI wiring SP-K01/02/03/05 · soft launch optional · announce. |
+| **Systems** | `/admin/spot/*` · listing pipeline |
+| **Done when** | §11.5 checklist ticked; hypercare 72h named. |
+
+##### SP-02 Spot trading halt
+| Field | Detail |
+|-------|--------|
+| **When** | Index fail, fat-finger, regulatory, disorderly (SP-K03/K06) |
+| **Who** | **Propose:** TO · **Approve:** RO · **Execute:** ME · **I:** Comms, WO |
+| **SLA** | Execute ≤2m post-approve |
+| **How** | Follow G02 Spot column; reason code; keep withdraw default-on. |
+| **Done when** | Halt state confirmed on `/admin/spot/halt`. |
+
+##### SP-03 Spot resume
+| Field | Detail |
+|-------|--------|
+| **When** | RO+ME clearance after SP-02 |
+| **Who** | **A:** RO+ME · **R:** TO · **C:** Product |
+| **How** | Verify book integrity · bands · MM online · staged resume · 4h hypercare. |
+| **Done when** | Trades flowing; no immediate SP-K03 BREACH. |
+
+##### SP-04 Price band / max notional change
+| Field | Detail |
+|-------|--------|
+| **When** | Vol regime change or incident lesson |
+| **Who** | Via **G01**; **R propose:** TO/PM · **A:** RO |
+| **How** | Impact on fills/MM → G01 → `/admin/spot/bands` promote → hypercare. |
+
+##### SP-05 Wash / self-trade handoff
+| Field | Detail |
+|-------|--------|
+| **When** | SP-K08 or surveillance alert |
+| **Who** | **R handoff:** TO/RO-OPS · **A case:** CP · **C:** ME (STP mode) |
+| **SLA** | Handoff ≤30m; CP triage per CP-01 |
+| **How** | Preserve order/trade IDs → open CP case → consider UID hold CP-02 → no silent STP weaken. |
+
+---
+
+#### MG — Margin
+
+##### MG-01 Add collateral asset
+| Field | Detail |
+|-------|--------|
+| **When** | Post-spot listing + RO opinion for margin eligibility (LD-03) |
+| **Who** | **R:** PM-MARGIN · **A haircut/LTV:** RO-Credit · **C:** DA stress · **I:** TS |
+| **How** | Stress haircut → set LTV brackets → borrow caps → interest mapping → liq path test isolated+cross → enable `/admin/margin/collateral`. |
+| **Done when** | §11.4 checklist done; MG-K05 baseline stored. |
+
+##### MG-02 Haircut / LTV change
+| Field | Detail |
+|-------|--------|
+| **When** | Vol regime, governance, MG-K05 BREACH |
+| **Who** | **G01** path; **A:** RO-Credit |
+| **SLA** | Urgent depeg: ≤30m dual-approve |
+| **How** | DA note → G01 → push RE → notify users if adverse · watch MG-K02/03. |
+
+##### MG-03 Borrow freeze (asset)
+| Field | Detail |
+|-------|--------|
+| **When** | MG-K01 BREACH persistent, depeg S3, inventory crisis |
+| **Who** | **R execute:** TO/RO-Credit · **A:** RO · **I:** TS, Comms |
+| **SLA** | Decision ≤15m on BREACH |
+| **How** | `/admin/margin/borrow` freeze → optional rate max → announce if user-visible → define unfreeze criteria. |
+| **Done when** | New borrows blocked; ticket has unfreeze owner. |
+
+##### MG-04 Forced liquidation runbook
+| Field | Detail |
+|-------|--------|
+| **When** | Cascade / engine lag MG-K03 |
+| **Who** | **R:** TO + RE · **A:** RO · **C:** ME capacity |
+| **How** | Confirm marks fresh → if unsafe RE-02 pause → else ensure liq queue draining → throttle risk-increasing → consider spot bands on collateral → never delete liq history. |
+| **Escalate if** | Lag >30s → L3. |
+
+##### MG-05 Bad debt write-off / recovery
+| Field | Detail |
+|-------|--------|
+| **When** | MG-K04 after shortfall |
+| **Who** | **R case:** RO-Credit · **A P&L:** TS · **Checker:** RO/CRO if Tier A |
+| **How** | Quantify → auto-repay attempts → recover from user → residual write-off dual-control → lessons to haircut/buffer. |
+| **Done when** | Ledger + case closed. |
+
+##### MG-06 Interest curve update
+| Field | Detail |
+|-------|--------|
+| **When** | Funding cost / peg risk / governance |
+| **Who** | **R:** PM-MARGIN/TS · **A:** RO-Credit · block if MG-K07 open |
+| **How** | Propose curve → recon check → G01 if material → `/admin/margin/interest` → monitor exceptions. |
+
+---
+
+#### PF — Perps
+
+##### PF-01 New perp contract launch
+| Field | Detail |
+|-------|--------|
+| **When** | LD-04 + G06 complete |
+| **Who** | **R:** PM-FUT · **A:** RO · **C:** RE/ME/DA/TS |
+| **How** | Specs → index ≥ min venues → brackets/limits dual-approved → insurance seed → funding caps tested → liq+ADL dry-run → matching symbol → Comms → 72h hypercare · §11.3. |
+| **Done when** | Live + PF-K01/02/06/07 dashboards green. |
+
+##### PF-02 Leverage bracket change
+| Field | Detail |
+|-------|--------|
+| **When** | Vol / VIP policy / PF-K11 |
+| **Who** | **G01**; **A:** RO · **R propose:** PM-FUT |
+| **How** | Impact OI/users near cap → approve → `/admin/futures/leverage` → hypercare liqs. |
+
+##### PF-03 Mark–index deviation response
+| Field | Detail |
+|-------|--------|
+| **When** | PF-K01 WARN/BREACH |
+| **Who** | **R:** RO-OPS + RE + DA · **A:** RO · **C:** TO-FUT |
+| **SLA** | BREACH triage ≤5m |
+| **How** | Check PL-K06 & PF-K02 → if data: S2 failover/pause unsafe liq → if real basis: consider reduce-only PF-07 → never “fix” mark without dual RO+DA. |
+| **Done when** | Deviation explained; feed healthy or trading contained. |
+
+##### PF-04 Funding extreme / pause
+| Field | Detail |
+|-------|--------|
+| **When** | PF-K03 near/at cap or oracle fail |
+| **Who** | **R:** PM-FUT · **A pause (rare):** RO+PM dual · **I:** Comms |
+| **How** | Confirm clamp auto → publish reason → pause only if settlement integrity broken → resume with RO ACK. |
+
+##### PF-05 Insurance payout review
+| Field | Detail |
+|-------|--------|
+| **When** | Bankruptcy fill / fund draw |
+| **Who** | See RM-06; **R:** TO-FUT |
+| **How** | Same-day flash → quality of liq → recommend TS-04 inject and/or G01 tighten. |
+
+##### PF-06 ADL activation review
+| Field | Detail |
+|-------|--------|
+| **When** | Any ADL (PF-K08) |
+| **Who** | **R:** TO-FUT · **A:** RO · **C:** CP (abuse) · Comms |
+| **SLA** | Bridge immediate if majors / ≥3 per hour |
+| **How** | Verify insurance was insufficient (order: K07 before K08) → ranking fair → user notices → if misconfig, stop ADL + Sev-1. |
+
+##### PF-07 Perps halt / reduce-only
+| Field | Detail |
+|-------|--------|
+| **When** | Cascade, infra, bad marks |
+| **Who** | G02 Perps column · **RE** sets liq mode |
+| **How** | Prefer reduce-only before full halt when engine healthy · state funding behaviour in Comms. |
+
+##### PF-08 Index constituent outage
+| Field | Detail |
+|-------|--------|
+| **When** | PF-K02 WARN/BREACH |
+| **Who** | **R:** DA/RE · **A temp weights:** RO |
+| **How** | Auto-drop bad venue if policy → if below min venues: protect mark / reduce-only → RO approve temporary weights → restore when venue healthy. |
+
+---
+
+#### ME — Matching
+
+##### ME-01 Engine deploy / rollback
+| Field | Detail |
+|-------|--------|
+| **When** | Scheduled release or hotfix |
+| **Who** | **R:** ENG · **A go/no-go:** ME PIC · **C:** SRE · **I:** TO/RO-OPS |
+| **SLA** | Rollback decision ≤15m on Sev-1 latency/integrity |
+| **How** | Change ticket → canary → watch SP-K09/K04 → rollback procedure rehearsed → post-deploy verify. |
+
+##### ME-02 Matching halt
+| Field | Detail |
+|-------|--------|
+| **When** | Sev-1 integrity / G02 execute |
+| **Who** | **R:** ME · **A:** RO for business halt; dual for global kill |
+| **How** | Scope halt → confirm → notify RE/TO → never leave ambiguous shard states. |
+
+##### ME-03 Dual-site failover
+| Field | Detail |
+|-------|--------|
+| **When** | Primary loss / DR drill |
+| **Who** | **R:** SRE/ME · **A:** ME PIC · **I:** RO, Comms |
+| **How** | Declare incident → drain/failover `/admin/engine/failover` → ME-05 book verify → trading resume per G02 if halted. |
+
+##### ME-04 Cancel storm mitigation
+| Field | Detail |
+|-------|--------|
+| **When** | SP-K04 / rate > SLO |
+| **Who** | **R:** ME · **C:** TO/CP |
+| **How** | Raise rate limits carefully / shed → identify UID storms → CP if abuse → protect latency SLO. |
+
+##### ME-05 Post-incident book rebuild verify
+| Field | Detail |
+|-------|--------|
+| **When** | After failover/halt |
+| **Who** | **R:** ME · **A:** ME PIC · **C:** RE |
+| **How** | Compare book checksums / trade continuity → sign attach to ticket before full resume. |
+
+---
+
+#### RE — Risk engine
+
+##### RE-01 Config promote
+| Field | Detail |
+|-------|--------|
+| **When** | After G01 dual-approval |
+| **Who** | **R:** RE · **A:** RO ticket link mandatory |
+| **How** | Diff configs → staging → prod → hash to ticket → ping RO-OPS hypercare. |
+| **Escalate if** | Promote without ticket → revert + audit. |
+
+##### RE-02 Liquidation engine pause / resume
+| Field | Detail |
+|-------|--------|
+| **When** | Unsafe marks (S2), controlled cascade, maintenance |
+| **Who** | **R:** RE · **A:** RO · **I:** TO-FUT/Margin TO, Comms |
+| **SLA** | Pause ≤2m once RO orders |
+| **How** | `/admin/risk-engine/liq` pause → document why → users may still face risk — Comms honesty → resume only when marks healthy + RO ACK. |
+
+##### RE-03 Mark price feed failover
+| Field | Detail |
+|-------|--------|
+| **When** | PL-K06 / PF-K02 / oracle incident |
+| **Who** | **R:** RE/ENG · **A:** RO if methodology change |
+| **How** | Switch secondary → validate PF-K01 → if both bad: reduce-only/pause liq. |
+
+##### RE-04 Risk state rebuild
+| Field | Detail |
+|-------|--------|
+| **When** | Desync risk vs matching/wallet |
+| **Who** | **R:** RE · **A:** RO · **C:** ME/WO |
+| **How** | Freeze risk-increasing → rebuild from authoritative ledger → recon sample → unfreeze. |
+
+##### RE-05 Portfolio-margin model change
+| Field | Detail |
+|-------|--------|
+| **When** | Model governance / PM-K01 |
+| **Who** | **R:** DA · **A:** RO · **C:** PM · dual G01 |
+| **How** | Parallel run → gap report → feature flag → conservative fallback ready. |
+
+---
+
+#### WA — Wallet
+
+##### WA-01 Hot wallet top-up
+| Field | Detail |
+|-------|--------|
+| **When** | PL-K01 WARN/BREACH or forecast outflow |
+| **Who** | **R:** WO · **A:** policy TS/RO buffer · **C:** Security ceremony if cold move |
+| **SLA** | Start top-up ≤30m on WARN; immediate on BREACH |
+| **How** | Confirm on-chain balances → cold→hot per ceremony rules → verify buffer → log. |
+
+##### WA-02 Withdrawal queue / slow mode
+| Field | Detail |
+|-------|--------|
+| **When** | Run risk, attack, chain congestion, PL-K02 |
+| **Who** | **R:** WO · **A:** RO (+CP if compliance-driven) · **I:** Comms, TS |
+| **SLA** | Slow-mode decision ≤15m on BREACH |
+| **How** | `/admin/wallet/withdraw` slow mode → prioritisation rules → status page → exit criteria (buffer+backlog). |
+
+##### WA-03 Chain halt / reorg
+| Field | Detail |
+|-------|--------|
+| **When** | Node alerts / PL-K04 |
+| **Who** | **R:** WO/SRE · **A:** RO if credits impacted · **C:** CP |
+| **How** | Pause credits on chain → assess depth → clawback SOP if credited reorged → resume with finality policy. |
+
+##### WA-04 Wrong deposit recovery
+| Field | Detail |
+|-------|--------|
+| **When** | User ticket wrong asset/chain/memo |
+| **Who** | **R:** WO · **A:** dual WO/TS for moves · **C:** CP AML |
+| **How** | Verify ownership → recoverability → fee policy → execute → close with txids. |
+
+##### WA-05 Key ceremony / rotation
+| Field | Detail |
+|-------|--------|
+| **When** | Schedule or incident |
+| **Who** | Multi-party WO/Security · **A:** CISO/CRO policy · G04 |
+| **How** | Ceremony runbook → record ID → validate sign path → revoke old material. |
+
+##### WA-06 PoR snapshot
+| Field | Detail |
+|-------|--------|
+| **When** | Periodic / attestation request |
+| **Who** | **R:** WO/TS · **A:** CRO/Finance per policy · **C:** External auditor if any |
+| **How** | Freeze height → liabilities extract → publish/attest → archive. |
+
+---
+
+#### LD — Listing / delisting
+
+##### LD-01 Listing risk opinion
+| Field | Detail |
+|-------|--------|
+| **When** | New asset/contract in pipeline |
+| **Who** | **R:** LI pack · **A opinion:** RO · **C:** CP/Legal |
+| **SLA** | Per pipeline board |
+| **How** | Tokenomics/contract/liquidity/manip history → opinion Approve/Conditional/Reject → conditions become launch checklist. |
+
+##### LD-02 Seed / monitoring tag
+| Field | Detail |
+|-------|--------|
+| **When** | Elevated risk pre/post list |
+| **Who** | **R:** LI · **A:** RO · **I:** Comms/Support |
+| **How** | `/admin/listing/tags` → disclosure → tighter bands optional. |
+
+##### LD-03 Margin eligibility
+| Field | Detail |
+|-------|--------|
+| **When** | After spot stable observation window |
+| **Who** | **A:** RO-Credit · **R:** PM-MARGIN · then MG-01 |
+
+##### LD-04 Perp listing decision
+| Field | Detail |
+|-------|--------|
+| **When** | Demand + risk appetite |
+| **Who** | **A:** RO · **R:** PM-FUT/LI · then PF-01 |
+
+##### LD-05 / LD-06 / LD-07 Delist sequences
+| Field | Detail |
+|-------|--------|
+| **When** | Criteria breach or project failure |
+| **Who** | **A:** LI+RO+CP+Legal · **R execute:** Product TOs + WO |
+| **How (order)** | 1) Approvals. 2) **Perps LD-07:** reduce-only → flatten/settle → delist. 3) **Margin LD-06:** freeze borrow → force repay/liq → remove collateral. 4) **Spot LD-05:** halt if needed → disable trade → withdraw per WA. 5) Comms+support macros. |
+| **SLA** | Notice period per Listing Policy unless LD-08 |
+
+##### LD-08 Emergency delist / halt
+| Field | Detail |
+|-------|--------|
+| **When** | Exploit/fraud/security |
+| **Who** | **A:** CRO/RO + CP + Legal · execute G02/LD immediately |
+| **SLA** | Halt ASAP; formal notes ≤24h |
+| **How** | Safety first: halt/disable deposits → follow compressed LD-05–07 → forensic with Security/CP. |
+
+---
+
+#### CP — Compliance
+
+##### CP-01 Surveillance alert triage
+| Field | Detail |
+|-------|--------|
+| **When** | Surveillance alert |
+| **Who** | **R:** CP analyst · **A:** CP lead · **C:** TO/RO if markets |
+| **SLA** | Per CP SLA table (typ. same day for high severity) |
+| **How** | Replay → classify false/positive → case → link UIDs/products. |
+
+##### CP-02 Account hard hold
+| Field | Detail |
+|-------|--------|
+| **When** | Confirmed suspicion / policy |
+| **Who** | **R:** CP · **A:** CP lead · G04 to remove |
+| **How** | `/admin/compliance/holds` trade/withdraw/leverage as needed → notify Support script → evidence pack. |
+
+##### CP-03 Cross-product abuse review
+| Field | Detail |
+|-------|--------|
+| **When** | Spot+Perps (or margin) pattern |
+| **Who** | **R:** CP · **C:** RO/TO-FUT |
+| **How** | Combined timeline → holds → market impact note to RO. |
+
+##### CP-04 Reg request / freeze
+| Field | Detail |
+|-------|--------|
+| **When** | External lawful order |
+| **Who** | **R:** CP/Legal · **A:** Legal · **I:** CRO |
+| **How** | Authenticate order → freeze scope → acknowledge authority → retain. |
+
+---
+
+#### TS / MM / ENG
+
+##### TS-01 Banking corridor outage
+**When:** partner down · **Who R:** TS · **A:** TS PIC · **How:** divert rails → update deposit/withdraw UX with WO/Comms → RO if liquidity risk · **Done:** corridor restored or alternative live.
+
+##### TS-02 Stablecoin depeg response
+**When:** peg break / MG-K08 · **Who R:** TS+RO · **How:** inventory/redemption · haircut/borrow actions with MG-03 · Comms · S3 family · **Escalate:** hard depeg L3.
+
+##### TS-03 Settlement after EOD recon
+**When:** daily post G05 approve · **Who R/A:** TS · **How:** execute only on `SettlementReady` · attach refs · **Escalate:** never settle on open material breaks.
+
+##### TS-04 Insurance fund injection
+**When:** Board/CRO approved after RM-06 · **Who R:** TS · **A:** CRO · G04 dual · **How:** `/admin/futures/insurance` or treasury transfer · ledger · notify RO.
+
+##### MM-01 SLA breach escalation
+**When:** depth/spread fail SP-K01/02 · **Who R:** MM ops · **C:** TO · **How:** contact MM → enforce agreement → RO halt opinion if disorderly.
+
+##### MM-02 Vol regime quote widen
+**When:** stress · **Who R:** MM · **I:** TO/RO · **How:** widen per playbook · ensure not indistinguishable from outage (heartbeat on).
+
+##### MM-03 Information barrier check
+**When:** new listing / prop overlap · **Who R:** MM+RO+CP · **How:** confirm Chinese walls · log conflicts.
+
+##### ENG-01 Privileged admin access grant
+**When:** joiner/mover · **Who R:** Security/ENG · **A:** BU PIC + Security · **How:** least privilege · time-bound · ticket · quarterly recert.
+
+##### ENG-02 Audit log immutability check
+**When:** periodic · **Who R:** Security · **How:** verify sink integrity · alert on gaps · **Escalate:** gap = L3.
+
+##### ENG-03 Pipeline lag incident
+**When:** PL-K06 / late risk feeds · **Who R:** ENG · **A:** RE/RO for trading impact · **How:** fix consumer → if marks unsafe trigger RE-02/PF-03 · **Done:** lag <WARN.
+
+##### ENG-04 Security incident (key/API)
+**When:** compromise / PL-K08 · **Who R:** Security · **A:** CISO · **I:** CRO/CP · **SLA:** kill key ≤2m · **How:** revoke · rotate · user notify · forensic · L3/L4 war room.
 
 ---
 
@@ -1491,7 +2087,7 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 | Change control | CRO approve; publish via Risk portal |
 | Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics** |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 1.3 — RAG scenarios + appended Simplified Chinese full translation |
+| Version | 1.4 — Expanded SOPs (who / when / how / SLA) + zh update |
 
 ---
 
@@ -1656,7 +2252,7 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 | RO-OPS | 7×24 告警确认、初判、Sev-1/2 升级 |
 | DA | 模型、标记/指数方法论挑战、压力引擎 |
 
-**SOP：** RM-01 每日风险包 · RM-02 软限额 WARN · RM-03 硬限额 BREACH · RM-04 杠杆/权限上调审批 · RM-05 压力目录变更 · RM-06 保险动用复核 · RM-07 停牌建议  
+**SOP：** RM-01…RM-07（明细见 **中文 §6.7**）— 每日风险包 · WARN/BREACH · 杠杆权限 · 压力目录 · 保险复核 · 停牌建议  
 
 **工具：** 实时风险指标与告警；压力/情景台；风险报告与 CSV；强平与保险看板；交易员权限/杠杆申请（maker–checker）  
 
@@ -1758,28 +2354,164 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 
 ---
 
-## 中文 6. 全局 SOP（共用）
+## 中文 6. 全局 SOP（共用）与详细作业手册
 
-### SOP-G01 — 限额变更（全产品）
-提工单（产品类型 SPOT/MARGIN/PERP、标的、旧→新、理由、压力影响）→ 系统生成影响包 → **Maker(RO)** 审批 → A+ 级 **Checker** 四眼 → RE 晋级配置 → ME/产品确认 → RO-OPS 超护 24h → 关闭工单并记录配置哈希。
+每张 SOP 卡片字段统一：**何时触发** · **谁** · **SLA** · **前置条件** · **如何做** · **系统** · **完成标准** · **升级条件**。角色代码见中文 §2.2。
 
-### SOP-G02 — 停牌（现货 vs 永续/杠杆）
-TO 提议、RO 批准 → ME 停撮合（永续可停新开仓，强平按 RE SOP）→ 钱包通常保持提现（除非 CP/风险另令）→ 沟通（永续须说明资金费/强平）→ 复牌须 RO+ME+产品（永续另须标记源健康）。
+### 6.0 字段说明
 
-### SOP-G03 — 告警确认
-RO-OPS：WARN ≤15 分 / BREACH ≤5 分确认 → 区分数据质量 vs 真实风险 → 真实 BREACH：遏制（只减仓/冻借款/停牌）→ Sev-1 呼叫 BU PIC+CRO → Sev-1/2 五个工作日内复盘。
-
-### SOP-G04 — Maker–Checker 与职责分离
-交易员不得自批杠杆；A 级配置部署者不得单独终批；钱包密钥仪式多方；合规解冻双控。
-
-### SOP-G05 — 日终对账与结算
-系统撮合内部确认 vs 账本/券商 → 例外由清算/TO 处理 → 重大差额二审 → 批准后 `SettlementReady` → TS 执行 → 按合规留存证据。
-
-### SOP-G06 — 新产品/新合约准入
-门禁顺序：**法务 → 合规 → 上币尽调 → 风险意见 → 产品清单 → RE/ME 配置 → 钱包充值就绪 → 软启动 → 超护**。风险 **A** 与合规放行前禁止生产流量。
+| 字段 | 含义 |
+|------|------|
+| **何时** | 启动本 SOP 的事件/日程/阈值 |
+| **谁** | R 执行 · A 问责签字 · C 咨询 · I 知会 |
+| **SLA** | 首次动作 / 遏制 / 关闭时限 |
+| **前置** | 不满足则停止并升级 |
+| **如何做** | 有序步骤；双控步骤不可跳过 |
+| **系统** | 后台 / 工具 |
+| **完成** | 退出标准 + 须附件 |
+| **升级** | 抬升 L / Sev 的条件 |
 
 ---
 
+### SOP-G01 — 限额变更（全产品）
+
+| 字段 | 明细 |
+|------|------|
+| **何时** | 软/硬限额、杠杆档、价格带、OI、LTV/折扣、借款上限、VIP 乘数等拟变更（定期校准或事中响应） |
+| **谁** | **R** 申请人（PM/TO/RO/DA）· **A Maker** RO · **A+ Checker** RO2/CRO · **R 部署** RE · **C** ME、产品、零售影响时 CP · **I** RO-OPS；对客可见时传播 |
+| **SLA** | 非紧急 ≤2 个工作日决策；紧急（进行中 BREACH）Maker ≤30 分、Checker ≤30 分；部署后超护 24h |
+| **前置** | 标注 SPOT/MARGIN/PERP；旧→新数值；附压力影响（或 CRO 豁免）；同键无冲突在途 G01 |
+| **系统** | 工单 · `/admin/risk/limits` · `waivers` · `/admin/risk-engine/configs` · `stress_testing.py` |
+
+**如何做：** ① 开工单写清标的/字段/理由/关联 KRI ② 系统附影响包 ③ Maker 批/驳/附条件 ④ A+ 四眼 ⑤ RE 晋级并回写**配置哈希** ⑥ ME/产品 ACK ⑦ RO-OPS 超护 ⑧ 哈希+ACK+超护责任人齐全后关单。  
+**完成：** 生产哈希一致且超护无归因于该变更的异常突破。  
+**升级：** 紧急缺 Checker→CRO；部署失败→回滚+L2；客诉飙升→传播+L3。
+
+### SOP-G02 — 停牌 / 复牌（现货 vs 永续/杠杆）
+
+| 字段 | 明细 |
+|------|------|
+| **何时** | 失序、预言机/指数故障、fat-finger 传染、监管令、完整性 Sev-1、连环强平等 |
+| **谁** | **提议 R** TO / TO-FUT / 杠杆 TO · **批准 A** RO · **执行 R** ME + RE（强平模式）· **C** CP/WO/传播 · **复牌 A** RO+ME（永续另需 RE 标记健康） |
+| **SLA** | Sev-1/2：提议→批准 ≤5 分；批准后执行 ≤2 分；传播初稿 ≤10 分 |
+| **前置** | 原因码+范围；永续须明确**仅停订单 vs 是否含强平** |
+
+**停牌如何做：** 建桥说明范围/原因/情景族 → RO 批 → ME 执行 → RE 按 RE-02 定强平模式 → 杠杆评估 MG-03 → 钱包默认保持提现 → 传播（永续须写资金费/强平）→ 书记员记时间线。  
+**复牌如何做：** 根因已控 + 撮合绿 + 永续标记新鲜 → RO+ME（+产品）双 ACK → 分阶段恢复 → 至少超护 4h。  
+**升级：** 需全局 Kill → L4 双控；停牌期间错标记 → Sev-1。
+
+### SOP-G03 — 告警确认（WARN / BREACH / KILL）
+
+| 字段 | 明细 |
+|------|------|
+| **何时** | §8 任一告警 |
+| **谁** | **R** RO-OPS · **C** L2+ 时 BU PIC · **升级 A** RO/CRO |
+| **SLA** | 确认：WARN≤15 分 · BREACH≤5 分 · Kill/客户资产≤2 分；分类说明确认后≤10 分；BREACH 遏制方案≤15 分 |
+
+**如何做：** 确认 → 查数据新鲜度（陈旧走 ENG-03）→ 真实则定主 KRI+±15m 组合+§9 族 → 核对自动动作 → 定 L 级呼叫 → Sev-1/2 开战时并排复盘（≤5 个工作日）。  
+**升级：** 确认超时自动呼 RO；两次 BREACH 仍无遏制 → L3。
+
+### SOP-G04 — Maker–Checker 与职责分离
+
+| 字段 | 明细 |
+|------|------|
+| **何时** | A+ 限额、Kill、密钥仪式、制裁覆盖、保险注资、解冻、A+ 杠杆权限等 |
+| **谁** | Maker ≠ Checker ≠ 受益交易员；**SYS** 强制；政策 **A** CRO/CISO |
+| **SLA** | 无 Checker 不得变更生产；破窗 ≤15 分且自动工单+呼叫 |
+
+**规则：** 交易员不得自批；RE 部署者不得单独终批 A 级；钱包仪式 ≥2（宜 3）人；合规解冻双控；破窗限时+当日复核。  
+**升级：** 同人自批尝试 → 安全事件 L3。
+
+### SOP-G05 — 日终对账与结算
+
+| 字段 | 明细 |
+|------|------|
+| **何时** | 每日 UTC 日切（重大交易事件后可加做） |
+| **谁** | **R 匹配** ENG/SYS · **R 例外** 清算/TO · **Checker** 重大时 CO2/RO · **A 结算** TS |
+| **SLA** | 日切后 ≤60 分出匹配；重大例外 ≤4h 老化；仅 `SettlementReady` 后打款 |
+
+**如何做：** 跑匹配 → 例外分责 → 超重要性四眼 → 发 SettlementReady → TS 执行并留银行/链上凭证 → 按合规留存。  
+**升级：** 无法解释缺账 → L2/L3，评估停牌。
+
+### SOP-G06 — 新产品 / 新合约准入
+
+| 字段 | 明细 |
+|------|------|
+| **何时** | 新现货对、杠杆资产、永续、重大功能（组合保证金等） |
+| **谁** | 门禁顺序见下；**上线 A** 风险+合规放行；**协调 R** LI 或 PM |
+| **SLA** | 各门禁按流水线看板；无风险+合规不得“软启” |
+
+**门禁（不可乱序）：** 法务 → 合规 → 上币尽调+风险意见(LD-01) → 产品清单 → RE/ME 演练 → 钱包链就绪 → 白名单/软启 → 超护 72h → 公开流量。  
+**升级：** 未放行已有流量 → PL-K12，强制关闭，L3 审计。
+
+---
+
+### 6.7 BU SOP 目录（详细）
+
+#### RM 风险
+- **RM-01 每日风险包：** 日切后 SYS 组装/`risk_reporting.py`，RO 问责，≤90 分发布；含 RAG、临期豁免；迟到 >2h→ENG-03。  
+- **RM-02 WARN：** RO-OPS 15 分确认；30–60 分方案；持续则预演 G01/G02。  
+- **RM-03 BREACH：** 5 分确认、15 分遏制；按产品执行只减仓/冻借款/停牌；定 §9 族；Sev-1/2 战时+复盘。  
+- **RM-04 杠杆/权限上调：** TR 提交→系统资格包→RO Maker→A+ Checker→ENG/RE 推限额；禁自批。  
+- **RM-05 压力目录变更：** DA 提议+回测，RO+DA 双签后发布版本号。  
+- **RM-06 保险动用复核：** 任一赔付/ADL 后 ≤30 分快报；≤1 工作日正式复核；可触发 TS-04/G01/PF-06。  
+- **RM-07 停牌建议：** RO/RO-OPS ≤5 分给出范围建议并转入 G02。
+
+#### SP 现货
+- **SP-01 上线：** G06/LD 通过后，PM+TO 按 §11.5 配链/参数/MM/停牌测试/KRI，超护 72h。  
+- **SP-02 停牌：** TO 提议、RO 批、ME 执行（G02）；默认保持提现。  
+- **SP-03 复牌：** RO+ME 清除；验簿与做市；分阶段；超护 4h。  
+- **SP-04 价格带/名义：** 走 G01；`/admin/spot/bands`。  
+- **SP-05 对倒移交：** ≤30 分交 CP（订单/成交 ID）；可 CP-02；不得静默削弱 STP。
+
+#### MG 杠杆
+- **MG-01 新增抵押：** LD-03 后压测折扣→LTV→借款上限→利率→强平路径测通→启用。  
+- **MG-02 折扣/LTV：** G01；脱锚紧急 ≤30 分双批。  
+- **MG-03 冻借款：** BREACH 后 ≤15 分决策；后台冻结+解冻标准入工单。  
+- **MG-04 强平手册：** 先确认标记；不安全则 RE-02；否则保队列+限增险；延迟 >30s→L3。  
+- **MG-05 坏账：** 定量→追偿→残余核销双控→反哺折扣/缓冲。  
+- **MG-06 利率曲线：** MG-K07 未清不得推；重大走 G01。
+
+#### PF 永续
+- **PF-01 新合约：** 规格/指数/档位/保险种子/资金费/强平·ADL 演练/撮合/传播/超护（§11.3）。  
+- **PF-02 杠杆档：** G01 + 超护强平。  
+- **PF-03 标记偏离：** ≤5 分分流；数据走 S2/切源/暂停不安全强平；真基差可 PF-07；改标记须 RO+DA 双控。  
+- **PF-04 资金费极端：** 确认钳制；暂停结算完整性时才双人暂停并传播。  
+- **PF-05 保险赔付：** 当日快报+质量评估。  
+- **PF-06 ADL：** 确认保险不足在先；排名公允；误触发→停 ADL+Sev-1。  
+- **PF-07 停牌/只减仓：** 引擎健康时优先只减仓；传播说明资金费。  
+- **PF-08 指数成分故障：** 踢坏所；低于最少所数则保护标记/只减仓；临时权重 RO 批。
+
+#### ME / RE / WA
+- **ME-01 发布/回滚：** 金丝雀盯 SP-K09/K04；Sev-1 时 ≤15 分决定回滚。  
+- **ME-02 撮合停机：** 业务停牌 RO 批；全局 Kill 双控。  
+- **ME-03 双活切换：** 宣告→failover→ME-05 验簿→按需 G02 复牌。  
+- **ME-04 撤单风暴：** 限频/降载；滥用交 CP。  
+- **ME-05 验簿：** 校验通过前不得完全复牌。  
+- **RE-01 配置晋级：** 必须挂钩 G01 工单哈希；无单不得晋级。  
+- **RE-02 强平暂停/恢复：** RO 令后 ≤2 分；传播须诚实说明风险；恢复须标记健康+RO ACK。  
+- **RE-03 标记切源：** 切备源验 PF-K01；双源皆坏则只减仓/暂停强平。  
+- **RE-04 状态重建：** 先冻结增险→权威账本重建→抽样对账→解冻。  
+- **RE-05 组合保证金模型：** 并行跑→缺口报告→特性开关→保守回退就绪。  
+- **WA-01 热钱包补款：** WARN ≤30 分启动；BREACH 立即；冷→热按仪式。  
+- **WA-02 慢速提现：** BREACH ≤15 分决策；状态页+退出标准（缓冲+积压）。  
+- **WA-03 链停/重组：** 暂停入账；已入账重组走追回；终局策略恢复。  
+- **WA-04 错充：** 核权→可恢复性→费用政策→双控执行→txid。  
+- **WA-05 密钥仪式：** 多方+仪式 ID+废止旧材料（G04）。  
+- **WA-06 PoR：** 定高→负债提取→披露/鉴证→归档。
+
+#### LD / CP / TS / MM / ENG
+- **LD-01 风险意见：** LI 材料，RO 批/有条件/驳，条件变上线清单。  
+- **LD-02 标签：** 种子/监控；可收紧价格带。  
+- **LD-03/04：** 杠杆资格→MG-01；永续决策→PF-01。  
+- **LD-05/06/07 下币序：** 批准→永续只减仓结清→杠杆冻借强平移除抵押→现货关交易保提现→传播。  
+- **LD-08 紧急：** 安全优先立即停/禁充；24h 内补手续；取证会同安全/合规。  
+- **CP-01~04：** 分流立案；硬冻结双控解除；跨产品时间线；监管令先验真。  
+- **TS-01~04：** 通道切换；脱锚库存/兑付+MG-03；仅 SettlementReady 后结算；保险注资 CRO 双控。  
+- **MM-01~03：** SLA 催办；压力扩价但心跳在；信息隔离检查。  
+- **ENG-01~04：** 最小权限赋权；审计不可篡改抽查；管道延迟联动 RE-02/PF-03；密钥/API 失陷 ≤2 分杀钥并 L3/L4。
+
+---
 ## 中文 7. 管理后台与工具目录
 
 | 域 | 路径前缀 | 主责 BU |
@@ -2118,7 +2850,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；
 | 变更控制 | CRO 批准；经风险门户发布 |
 | 相关产物 | 限额手册、强平政策、保险/ADL 政策、上币政策、BCP/DR、§8 指标目录、§9 情景诊断 |
 | 培训 | 新任 BU PIC 30 日内必修 |
-| 版本 | 1.2 — 含 RAG 单/多指标情景与时序分析；含简体中文译本 |
+| 版本 | 1.4 — 扩展 SOP（谁/何时/如何/SLA）；英中同步 |
 
 ---
 
