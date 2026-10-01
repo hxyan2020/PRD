@@ -152,6 +152,8 @@ Use this section when configuring limits, writing SOPs, or deciding which admin 
 | **Primary risks** | Leverage cascades, insurance fund drain, mark/index manipulation, funding extremes, ADL |
 | **Key controls** | Max leverage by tier, position notional caps, price index multi-exchange, funding caps, insurance fund, ADL queue |
 | **Admin focus** | Leverage brackets, risk limits, funding formula, insurance fund MI, ADL/auto-deleveraging console, circuit breakers |
+| **Phase 1 examples** | **XAUUSD** perpetual and other approved perp symbols only |
+| **Phase 1 extra watch** | Metals/FX session gaps, weekend/holiday liquidity vs crypto 24×7 index hours |
 
 ### 3.4 Instrument comparison (ops cheat sheet)
 
