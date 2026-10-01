@@ -1,7 +1,7 @@
 import { SettingsManager } from "@/components/SettingsManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 
 export default async function SettingsPage() {
@@ -14,10 +14,7 @@ export default async function SettingsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Platform Settings"
-        subtitle="Feature flags and integration endpoints for Monitor 2.0, Lark and AI RCA."
-      />
+      <AdminPageHeader pageKey="settings" />
       <SettingsManager settings={settings} />
     </div>
   );

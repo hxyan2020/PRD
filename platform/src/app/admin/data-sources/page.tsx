@@ -1,7 +1,7 @@
 import { DataSourcesManager } from "@/components/DataSourcesManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 
 export default async function DataSourcesPage() {
@@ -15,10 +15,7 @@ export default async function DataSourcesPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Data Sources Repository"
-        subtitle="Canonical registry of internal platforms and external verification feeds used by detection, AI RCA and human review."
-      />
+      <AdminPageHeader pageKey="data-sources" />
       <DataSourcesManager initialSources={sources} canManage={canManage} />
     </div>
   );

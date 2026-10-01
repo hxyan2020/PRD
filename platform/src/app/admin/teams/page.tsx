@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
-import { PageHeader, DeptBadge } from "@/components/ui";
+import { DeptBadge } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 
 export default function TeamsPage() {
   const teams = getDb()
@@ -21,10 +22,7 @@ export default function TeamsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Teams"
-        subtitle="On-call teams mapped to Lark chats. Escalation routes target these teams as primary / secondary owners."
-      />
+      <AdminPageHeader pageKey="teams" />
       <div className="panel table-wrap">
         <table className="data">
           <thead>

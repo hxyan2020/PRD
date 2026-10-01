@@ -1,7 +1,7 @@
 import { AlertsBoard } from "@/components/AlertsBoard";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 
 export default async function AlertsPage() {
@@ -23,10 +23,7 @@ export default async function AlertsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Live Alerts"
-        subtitle="Operational queue fed by Monitor 2.0. Ack here, escalate via routes, notify Lark."
-      />
+      <AdminPageHeader pageKey="alerts" />
       <AlertsBoard alerts={alerts} canOperate={hasPermission(user.role_code, "monitor.operate")} />
     </div>
   );

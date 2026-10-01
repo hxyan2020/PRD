@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageHeader, Badge } from "@/components/ui";
 import { markdownToHtml, readDocMarkdown, resolveDocLocale, type DocId, type DocLocale } from "@/lib/docs";
+import { getUiLocale } from "@/lib/i18n-server";
 
 const META: Record<
   DocId,
@@ -56,14 +57,15 @@ const META: Record<
   },
 };
 
-export function DocArticlePage({
+export async function DocArticlePage({
   docId,
   langParam,
 }: {
   docId: DocId;
   langParam?: string | null;
 }) {
-  const lang: DocLocale = resolveDocLocale(langParam);
+  const uiLocale = await getUiLocale();
+  const lang: DocLocale = langParam ? resolveDocLocale(langParam) : uiLocale;
   const meta = META[docId];
   const html = markdownToHtml(readDocMarkdown(docId, lang));
 

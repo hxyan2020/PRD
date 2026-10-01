@@ -1,7 +1,7 @@
 import { UsersManager } from "@/components/UsersManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 
 export default async function UsersPage() {
@@ -27,10 +27,7 @@ export default async function UsersPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Users"
-        subtitle="Internal operators across Risk Control, Operations, AI and System. Prototype passwords are shown only in seed docs — production uses SSO."
-      />
+      <AdminPageHeader pageKey="users" />
       <UsersManager initialUsers={users} roles={roles} teams={teams} canManage={canManage} />
     </div>
   );

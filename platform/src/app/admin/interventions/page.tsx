@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { listInterventions } from "@/lib/ai/intervention";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { InterventionsBoard } from "@/components/InterventionsBoard";
 
 export default async function InterventionsPage() {
@@ -12,10 +12,7 @@ export default async function InterventionsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Human Intervention"
-        subtitle="Approve or reject AI/skill actions awaiting human gates. Decisions are logged to the spine and audit trail."
-      />
+      <AdminPageHeader pageKey="interventions" />
       <InterventionsBoard interventions={interventions} />
     </div>
   );

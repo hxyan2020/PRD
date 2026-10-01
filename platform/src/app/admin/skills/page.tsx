@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { listLinkedScenarios, listSkillScenarios, seedSkillsIfEmpty } from "@/lib/ai/skills";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { SkillsScenariosBoard } from "@/components/SkillsScenariosBoard";
 
 export default async function SkillsPage() {
@@ -16,10 +16,7 @@ export default async function SkillsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="AI Skills & Risk Scenarios"
-        subtitle="Indicator thresholds (and why), fault areas, escalation paths, BU correction actions, past detections — plus multi-indicator timeline chains."
-      />
+      <AdminPageHeader pageKey="skills" />
       <SkillsScenariosBoard skills={skills} chains={chains} />
     </div>
   );

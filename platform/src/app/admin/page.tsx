@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
-import { PageHeader, StatCard, SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { StatCard, SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { actionLabel, t } from "@/lib/i18n";
+import { getUiLocale } from "@/lib/i18n-server";
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  const locale = await getUiLocale();
   const db = getDb();
   const counts = {
     users: (db.prepare(`SELECT COUNT(*) AS c FROM users`).get() as { c: number }).c,
@@ -46,56 +50,74 @@ export default function AdminDashboardPage() {
     indicator_name: string;
   }>;
 
+  const actions = (
+    <>
+      <Link className="btn" href="/admin/messenger">
+        {actionLabel("/admin/messenger", locale)}
+      </Link>
+      <Link className="btn" href="/admin/docs/urls">
+        {actionLabel("/admin/docs/urls", locale)}
+      </Link>
+      <Link className="btn" href="/admin/docs/prd">
+        {actionLabel("/admin/docs/prd", locale)}
+      </Link>
+      <Link className="btn" href="/admin/docs/user-guide">
+        {actionLabel("/admin/docs/user-guide", locale)}
+      </Link>
+      <Link className="btn" href="/admin/docs/uat">
+        {actionLabel("/admin/docs/uat", locale)}
+      </Link>
+      <Link className="btn" href="/admin/ai-admin">
+        {actionLabel("/admin/ai-admin", locale)}
+      </Link>
+      <Link className="btn" href="/admin/security/ai-access">
+        {actionLabel("/admin/security/ai-access", locale)}
+      </Link>
+      <Link className="btn btn-primary" href="/admin/dashboard">
+        {actionLabel("/admin/dashboard", locale)}
+      </Link>
+    </>
+  );
+
   return (
     <div>
-      <PageHeader
-        title="Admin Dashboard"
-        subtitle="Control plane for roles, teams, data sources, Monitor 2.0 linkage and Lark escalation — foundation for the semi-automated CRMP."
-        actions={
-          <>
-            <Link className="btn" href="/admin/messenger">
-              Demo Messenger
-            </Link>
-            <Link className="btn" href="/admin/docs/urls">
-              All URLs
-            </Link>
-            <Link className="btn" href="/admin/docs/prd">
-              PRD
-            </Link>
-            <Link className="btn" href="/admin/docs/user-guide">
-              User Guide
-            </Link>
-            <Link className="btn" href="/admin/docs/uat">
-              UAT
-            </Link>
-            <Link className="btn" href="/admin/ai-admin">
-              AI Admin
-            </Link>
-            <Link className="btn" href="/admin/security/ai-access">
-              AI Access Security
-            </Link>
-            <Link className="btn btn-primary" href="/admin/dashboard">
-              Daily Performance
-            </Link>
-          </>
-        }
-      />
+      <AdminPageHeader pageKey="home" actions={actions} />
 
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3">
-        <StatCard label="Users" value={counts.users} hint="Across 4 departments" />
-        <StatCard label="Teams" value={counts.teams} hint="On-call ready" />
-        <StatCard label="Data Sources" value={counts.sources} hint="Internal + external registry" />
-        <StatCard label="Risk Domains" value={counts.domains} hint="CFD + Crypto Exchange" />
-        <StatCard label="Open Alerts" value={counts.openAlerts} hint="Synced from Monitor 2.0" />
-        <StatCard label="Open Tickets" value={counts.openTickets} hint="Tracked cases" />
-        <StatCard label="Lark Channels" value={counts.larkChannels} hint="Messenger routes" />
-        <StatCard label="Escalation Routes" value={counts.routes} hint="Severity → team → SLA" />
+        <StatCard label={t("home.stat.users", locale)} value={counts.users} hint={t("home.stat.usersHint", locale)} />
+        <StatCard label={t("home.stat.teams", locale)} value={counts.teams} hint={t("home.stat.teamsHint", locale)} />
+        <StatCard
+          label={t("home.stat.sources", locale)}
+          value={counts.sources}
+          hint={t("home.stat.sourcesHint", locale)}
+        />
+        <StatCard
+          label={t("home.stat.domains", locale)}
+          value={counts.domains}
+          hint={t("home.stat.domainsHint", locale)}
+        />
+        <StatCard
+          label={t("home.stat.openAlerts", locale)}
+          value={counts.openAlerts}
+          hint={t("home.stat.openAlertsHint", locale)}
+        />
+        <StatCard
+          label={t("home.stat.openTickets", locale)}
+          value={counts.openTickets}
+          hint={t("home.stat.openTicketsHint", locale)}
+        />
+        <StatCard label={t("home.stat.lark", locale)} value={counts.larkChannels} hint={t("home.stat.larkHint", locale)} />
+        <StatCard
+          label={t("home.stat.routes", locale)}
+          value={counts.routes}
+          hint={t("home.stat.routesHint", locale)}
+        />
       </div>
 
       <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
         <section className="panel p-3 sm:p-4 min-w-0">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">Department Division</h2>
-          <p className="text-sm text-[var(--muted)] mt-1">RACI-aligned ownership for the CRMP spine.</p>
+          <h2 className="font-[family-name:var(--font-display)] text-lg">{t("home.deptTitle", locale)}</h2>
+          <p className="text-sm text-[var(--muted)] mt-1">{t("home.deptSub", locale)}</p>
           <div className="mt-4 space-y-3">
             {departments.map((d) => {
               const responsibilities = JSON.parse(d.primary_responsibilities) as string[];
@@ -121,18 +143,18 @@ export default function AdminDashboardPage() {
 
         <section className="panel p-3 sm:p-4 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="font-[family-name:var(--font-display)] text-lg">Latest Monitor 2.0 Alerts</h2>
+            <h2 className="font-[family-name:var(--font-display)] text-lg">{t("home.recentAlerts", locale)}</h2>
             <Link href="/admin/alerts" className="text-sm text-teal-800 font-semibold shrink-0">
-              View all
+              {t("home.viewAll", locale)}
             </Link>
           </div>
           <div className="table-wrap mt-3 max-w-full">
             <table className="data">
               <thead>
                 <tr>
-                  <th>Alert</th>
-                  <th>Severity</th>
-                  <th>Status</th>
+                  <th>{locale === "zh-Hant" ? "警報" : "Alert"}</th>
+                  <th>{locale === "zh-Hant" ? "嚴重度" : "Severity"}</th>
+                  <th>{locale === "zh-Hant" ? "狀態" : "Status"}</th>
                 </tr>
               </thead>
               <tbody>
@@ -157,13 +179,25 @@ export default function AdminDashboardPage() {
           </div>
 
           <div className="mt-4 rounded-xl bg-slate-50 border border-[var(--line)] p-3 text-sm">
-            <div className="font-semibold">Integration spine</div>
+            <div className="font-semibold">{locale === "zh-Hant" ? "整合脊柱" : "Integration spine"}</div>
             <ol className="mt-2 space-y-1 text-[var(--muted)] list-decimal list-inside">
-              <li>Monitor 2.0 emits indicator warning / breach</li>
-              <li>CRMP creates / syncs ticket and attaches evidence</li>
-              <li>Escalation route selects team + Lark channel + SLA</li>
-              <li>AI drafts RCA; human approves intervention</li>
-              <li>Audit log + daily performance dashboard</li>
+              {locale === "zh-Hant" ? (
+                <>
+                  <li>Monitor 2.0 發出指標警告／違規</li>
+                  <li>CRMP 建立／同步工單並附上證據</li>
+                  <li>升級路徑選定團隊＋Lark 頻道＋SLA</li>
+                  <li>AI 草擬根因；人工核准干預</li>
+                  <li>稽核日誌＋每日績效儀表板</li>
+                </>
+              ) : (
+                <>
+                  <li>Monitor 2.0 emits indicator warning / breach</li>
+                  <li>CRMP creates / syncs ticket and attaches evidence</li>
+                  <li>Escalation route selects team + Lark channel + SLA</li>
+                  <li>AI drafts RCA; human approves intervention</li>
+                  <li>Audit log + daily performance dashboard</li>
+                </>
+              )}
             </ol>
           </div>
         </section>

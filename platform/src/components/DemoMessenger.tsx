@@ -4,6 +4,50 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { useUiLocale } from "@/hooks/useUiLocale";
+import { t, type UiLocale } from "@/lib/i18n";
+
+const ACTION_I18N: Record<string, { en: string; "zh-Hant": string; descEn: string; descZh: string }> = {
+  BLOCK_ACCOUNT: {
+    en: "Block user account",
+    "zh-Hant": "封鎖使用者帳戶",
+    descEn: "Freeze login and new orders for flagged account(s).",
+    descZh: "凍結標註帳戶之登入與新訂單。",
+  },
+  HALT_SYMBOL: {
+    en: "Halt trading (symbol)",
+    "zh-Hant": "暫停交易（商品）",
+    descEn: "Temporarily disable new exposure on the stressed symbol.",
+    descZh: "暫時停用受壓商品之新曝險。",
+  },
+  CUT_LEVERAGE: {
+    en: "Cut max leverage",
+    "zh-Hant": "調降最大槓桿",
+    descEn: "Reduce leverage for affected cohort / instrument.",
+    descZh: "降低受影響族群／商品槓桿。",
+  },
+  WIDEN_SPREAD: {
+    en: "Pre-widen spreads",
+    "zh-Hant": "預先擴大點差",
+    descEn: "Widen LP quotes ahead of expected volatility.",
+    descZh: "在預期波動前擴大 LP 報價點差。",
+  },
+  PAUSE_COPY: {
+    en: "Pause copy joining",
+    "zh-Hant": "暫停跟單加入",
+    descEn: "Stop new copiers joining the concentrated provider.",
+    descZh: "停止新跟單者加入過度集中之提供者。",
+  },
+};
+
+function localizeAction(code: string, label: string, description: string, locale: UiLocale) {
+  const hit = ACTION_I18N[code];
+  if (!hit) return { label, description };
+  return {
+    label: hit[locale],
+    description: locale === "zh-Hant" ? hit.descZh : hit.descEn,
+  };
+}
 
 type Thread = {
   id: number;
@@ -44,6 +88,7 @@ type Recommended = {
 
 export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) {
   const router = useRouter();
+  const { locale } = useUiLocale();
   const [threads, setThreads] = useState(initialThreads);
   const [activeId, setActiveId] = useState<number | null>(initialThreads[0]?.id ?? null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -94,7 +139,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
     }
     if (action === "sync") {
       setThreads(data.threads || []);
-      setStatusMsg(`Synced ${data.synced} new alert(s) into messenger`);
+      setStatusMsg(t("msg.synced", locale, { n: data.synced ?? 0 }));
       router.refresh();
       return;
     }
@@ -106,7 +151,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
     const listRes = await fetch("/api/messenger");
     const listData = await listRes.json();
     if (listRes.ok) setThreads(listData.threads || []);
-    setStatusMsg(`Action ${action} completed`);
+    setStatusMsg(t("msg.actionDone", locale, { action }));
   }
 
   useEffect(() => {
@@ -124,9 +169,9 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
         }`}
       >
         <div className="flex items-center justify-between gap-2 mb-3">
-          <h2 className="font-semibold text-sm sm:text-base">Channels / threads</h2>
+          <h2 className="font-semibold text-sm sm:text-base">{t("msg.channels", locale)}</h2>
           <button type="button" className="btn text-xs !min-h-9" disabled={busy} onClick={() => run("sync")}>
-            Sync alerts
+            {t("msg.sync", locale)}
           </button>
         </div>
         <div className="space-y-2 overflow-auto flex-1 -mx-1 px-1">
@@ -149,7 +194,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
               </div>
             </button>
           ))}
-          {!threads.length && <p className="text-sm text-[var(--muted)] p-2">No threads yet. Sync alerts.</p>}
+          {!threads.length && <p className="text-sm text-[var(--muted)] p-2">{t("msg.empty", locale)}</p>}
         </div>
       </section>
 
@@ -167,7 +212,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                   className="btn !min-h-9 text-xs"
                   onClick={() => setMobilePane("list")}
                 >
-                  <ArrowLeft size={14} /> Threads
+                  <ArrowLeft size={14} /> {t("msg.threads", locale)}
                 </button>
               </div>
               <div className="flex flex-wrap gap-2 items-center">
@@ -186,7 +231,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                   disabled={busy || active.status !== "OPEN"}
                   onClick={() => run("show_evidence")}
                 >
-                  Show evidence
+                  {t("msg.showEvidence", locale)}
                 </button>
                 <button
                   type="button"
@@ -194,7 +239,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                   disabled={busy || active.status !== "OPEN"}
                   onClick={() => run("escalate")}
                 >
-                  Escalate
+                  {t("msg.escalate", locale)}
                 </button>
                 <button
                   type="button"
@@ -202,7 +247,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                   disabled={busy || active.status !== "OPEN"}
                   onClick={() => run("dismiss")}
                 >
-                  Dismiss
+                  {t("msg.dismiss", locale)}
                 </button>
                 <button
                   type="button"
@@ -210,7 +255,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                   disabled={busy || active.status !== "OPEN"}
                   onClick={() => run("close")}
                 >
-                  Close (accept AI)
+                  {t("msg.close", locale)}
                 </button>
               </div>
             </div>
@@ -242,7 +287,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                     </pre>
                     {typeof meta.admin_url === "string" ? (
                       <a className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
-                        Open in admin →
+                        {t("msg.openInAdmin", locale)}
                       </a>
                     ) : null}
                   </div>
@@ -254,26 +299,35 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
               <div className="mt-4 border-t border-[var(--line)] pt-3 space-y-3 sticky bottom-0 bg-[var(--panel)] pb-[max(0.25rem,var(--safe-bottom))]">
                 <div>
                   <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)] mb-2">
-                    Recommended actions
+                    {t("msg.recommended", locale)}
                   </div>
                   <div className="action-row">
-                    {recommended.map((a) => (
-                      <button
-                        key={a.code}
-                        type="button"
-                        className="btn text-xs"
-                        disabled={busy}
-                        title={a.description}
-                        onClick={() => run("recommend", { action_code: a.code })}
-                      >
-                        {a.label}
-                      </button>
-                    ))}
+                    {recommended.map((a) => {
+                      const loc = localizeAction(a.code, a.label, a.description, locale);
+                      return (
+                        <button
+                          key={a.code}
+                          type="button"
+                          className="btn text-xs"
+                          disabled={busy}
+                          title={loc.description}
+                          onClick={() => run("recommend", { action_code: a.code })}
+                        >
+                          {loc.label}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 
                 {pending.map((p) => {
                   const detail = JSON.parse(p.detail_json || "{}") as Recommended;
+                  const loc = localizeAction(
+                    p.action_code,
+                    detail.label || p.action_code,
+                    detail.description || "",
+                    locale
+                  );
                   const awaitingChecker = p.status === "AWAITING_CHECKER";
                   return (
                     <div
@@ -285,10 +339,9 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                       }`}
                     >
                       <div className="font-semibold">
-                        {awaitingChecker ? "Checker approval needed: " : "Confirm: "}
-                        {detail.label || p.action_code}
+                        {awaitingChecker ? t("msg.checkerNeeded", locale) : t("msg.confirm", locale)} {loc.label}
                       </div>
-                      <p className="text-[var(--muted)] mt-1 break-word">{detail.description}</p>
+                      <p className="text-[var(--muted)] mt-1 break-word">{loc.description}</p>
                       <div className="mt-2 action-row">
                         {awaitingChecker ? (
                           <>
@@ -298,10 +351,10 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                               disabled={busy}
                               onClick={() => run("checker_approve", { pending_id: p.id })}
                             >
-                              Checker approve (go live)
+                              {t("msg.checkerApprove", locale)}
                             </button>
                             <a className="btn" href={detail.admin_path || "/admin/interventions"}>
-                              Open admin
+                              {t("msg.openAdmin", locale)}
                             </a>
                           </>
                         ) : confirmId === p.id ? (
@@ -312,10 +365,10 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                               disabled={busy}
                               onClick={() => run("confirm_action", { pending_id: p.id })}
                             >
-                              Yes, send to Vantage admin
+                              {t("msg.yesAdmin", locale)}
                             </button>
                             <button type="button" className="btn" disabled={busy} onClick={() => setConfirmId(null)}>
-                              No, go back
+                              {t("msg.noBack", locale)}
                             </button>
                           </>
                         ) : (
@@ -326,7 +379,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                               disabled={busy}
                               onClick={() => setConfirmId(p.id)}
                             >
-                              Double-confirm…
+                              {t("msg.doubleConfirm", locale)}
                             </button>
                             <button
                               type="button"
@@ -334,7 +387,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                               disabled={busy}
                               onClick={() => run("cancel_action", { pending_id: p.id })}
                             >
-                              Cancel
+                              {t("msg.cancel", locale)}
                             </button>
                           </>
                         )}
@@ -353,13 +406,13 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
                 >
                   <input
                     className="input flex-1 !rounded-xl"
-                    placeholder="Challenge the AI report or add info…"
+                    placeholder={t("msg.chatPlaceholder", locale)}
                     value={chat}
                     onChange={(e) => setChat(e.target.value)}
                     disabled={busy}
                   />
                   <button type="submit" className="btn btn-primary sm:w-auto w-full" disabled={busy || !chat.trim()}>
-                    Send
+                    {t("msg.send", locale)}
                   </button>
                 </form>
               </div>
@@ -372,7 +425,7 @@ export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) 
             )}
           </>
         ) : (
-          <p className="text-[var(--muted)] text-sm p-2">Select a thread to open the demo messenger.</p>
+          <p className="text-[var(--muted)] text-sm p-2">{t("msg.select", locale)}</p>
         )}
       </section>
     </div>

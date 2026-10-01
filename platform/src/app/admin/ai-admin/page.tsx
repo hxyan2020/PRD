@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { AiAdminConsole } from "@/components/AiAdminConsole";
 import {
   getAiAdminOverview,
@@ -38,10 +38,7 @@ export default async function AiAdminPage() {
 
   return (
     <div>
-      <PageHeader
-        title="AI Admin"
-        subtitle="Configure AI parameters, training, accuracy history, skills and RAG — with maker/checker dual control before changes apply."
-      />
+      <AdminPageHeader pageKey="ai-admin" />
       <div className="mb-4 text-sm">
         <Link className="underline" href="/admin/docs/tsd?lang=en">
           TSD §8 — AI Admin management page specification

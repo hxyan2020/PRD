@@ -2,7 +2,8 @@ import Link from "next/link";
 import { MonitorActions } from "@/components/MonitorActions";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader, SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -82,10 +83,7 @@ export default async function Monitor2Page({
 
   return (
     <div>
-      <PageHeader
-        title="Monitor 2.0 Integration Hub"
-        subtitle="Existing indicator monitoring platform — warnings, alerts and ticket tracking. CRMP syncs and escalates from here."
-      />
+      <AdminPageHeader pageKey="monitor-2" />
 
       <div className="space-y-4">
         <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">

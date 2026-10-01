@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { AiAccessSecurityBoard } from "@/components/AiAccessSecurityBoard";
 import {
   AI_ACCESS_BLOCKLIST,
@@ -25,10 +25,7 @@ export default async function AiAccessSecurityPage() {
 
   return (
     <div>
-      <PageHeader
-        title="AI Access Blocklist"
-        subtitle="Pages, functions, fields and data that must remain human-authorised only — blocked from AI agents for security."
-      />
+      <AdminPageHeader pageKey="ai-access" />
       <AiAccessSecurityBoard
         items={AI_ACCESS_BLOCKLIST}
         allowed={[...AI_ALLOWED_CAPABILITIES]}

@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
-import { PageHeader, DeptBadge, Badge } from "@/components/ui";
+import { DeptBadge, Badge } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 
 export default function RolesPage() {
   const roles = getDb().prepare(`SELECT * FROM roles ORDER BY id`).all() as Array<{
@@ -13,10 +14,7 @@ export default function RolesPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Roles & Permissions"
-        subtitle="Role-based access for admin functions. Super Admin has wildcard (*). Risk Owner retains intervention and settings authority."
-      />
+      <AdminPageHeader pageKey="roles" />
       <div className="space-y-3">
         {roles.map((r) => {
           const perms = JSON.parse(r.permissions_json) as string[];

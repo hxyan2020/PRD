@@ -1,7 +1,7 @@
 import { EscalationManager } from "@/components/EscalationManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 
 export default async function EscalationPage() {
@@ -33,10 +33,7 @@ export default async function EscalationPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Escalation Routes"
-        subtitle="Severity × domain → primary team → secondary team → Lark channel → SLA → auto-actions → human gate."
-      />
+      <AdminPageHeader pageKey="escalation" />
       <EscalationManager
         routes={routes}
         teams={teams}

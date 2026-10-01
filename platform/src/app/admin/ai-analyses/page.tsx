@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { AiAnalysesBoard } from "@/components/AiAnalysesBoard";
 
 export default async function AiAnalysesPage() {
@@ -22,10 +22,7 @@ export default async function AiAnalysesPage() {
 
   return (
     <div>
-      <PageHeader
-        title="AI Analyses"
-        subtitle="Auto-triggered when Monitor 2.0 indicators alarm. Skill path when certain; otherwise RAG + external macro evidence. BREACH/CRITICAL reports also receive an independent second-AI challenge."
-      />
+      <AdminPageHeader pageKey="ai-analyses" />
       <AiAnalysesBoard analyses={analyses} canOperate={hasPermission(user.role_code, "ai.operate")} />
     </div>
   );

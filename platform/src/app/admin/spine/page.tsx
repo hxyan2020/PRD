@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { listSpineEvents, spineStageCounts } from "@/lib/ai/spine";
-import { PageHeader, Badge, SeverityBadge, StatCard } from "@/components/ui";
+import { Badge, SeverityBadge, StatCard } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 
 const STAGE_ORDER = ["DETECT", "ALARM", "AI_RCA", "SKILL_EXECUTE", "HUMAN_INTERVENTION", "RESOLVED", "DASHBOARD"];
 
@@ -28,10 +29,7 @@ export default async function SpinePage() {
 
   return (
     <div>
-      <PageHeader
-        title="Spine Log"
-        subtitle="End-to-end pipeline trail: Detectors → Alarm → AI RCA → Skill execute → Human intervention → Resolved → Dashboard."
-      />
+      <AdminPageHeader pageKey="spine" />
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-5">
         {STAGE_ORDER.map((s) => (

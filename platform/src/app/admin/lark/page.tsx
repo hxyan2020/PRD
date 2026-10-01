@@ -1,7 +1,7 @@
 import { LarkManager } from "@/components/LarkManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 
 export default async function LarkPage() {
@@ -17,10 +17,7 @@ export default async function LarkPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Lark Integration"
-        subtitle="Company messenger for severity-routed escalations, on-call pages and dual-control approvals."
-      />
+      <AdminPageHeader pageKey="lark" />
       <LarkManager
         channels={channels}
         settings={settings}

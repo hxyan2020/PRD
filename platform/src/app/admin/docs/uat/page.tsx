@@ -4,13 +4,15 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { UatChecklistBoard } from "@/components/UatChecklistBoard";
 import { PageHeader, Badge } from "@/components/ui";
 import { resolveDocLocale } from "@/lib/docs";
+import { getUiLocale } from "@/lib/i18n-server";
 import { uatSummary } from "@/lib/docs/uat-cases";
 
 export default async function UatPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
   const sp = await searchParams;
-  const lang = resolveDocLocale(sp.lang);
+  const ui = await getUiLocale();
+  const lang = sp.lang ? resolveDocLocale(sp.lang) : ui;
   const zh = lang === "zh-Hant";
   const summary = uatSummary();
 

@@ -1,6 +1,7 @@
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader, Badge } from "@/components/ui";
+import { Badge } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 
 export default async function AuditPage() {
@@ -23,10 +24,7 @@ export default async function AuditPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Audit Log"
-        subtitle="Immutable trail of logins, config changes, Monitor 2.0 syncs, Lark tests and ticket actions."
-      />
+      <AdminPageHeader pageKey="audit" />
       <div className="panel table-wrap">
         <table className="data">
           <thead>

@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
-import { PageHeader, DeptBadge } from "@/components/ui";
+import { DeptBadge } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 
 export default function DepartmentsPage() {
   const departments = getDb().prepare(`SELECT * FROM departments ORDER BY id`).all() as Array<{
@@ -22,10 +23,7 @@ export default function DepartmentsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Departments"
-        subtitle="Four owning departments for the CRMP: Risk Control, Operations, AI, and System (admin / infra / LP / bridges / servers)."
-      />
+      <AdminPageHeader pageKey="departments" />
       <div className="grid lg:grid-cols-2 gap-4">
         {departments.map((d) => {
           const responsibilities = JSON.parse(d.primary_responsibilities) as string[];

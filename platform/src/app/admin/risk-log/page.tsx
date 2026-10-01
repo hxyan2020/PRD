@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { RiskLogDashboard } from "@/components/RiskLogDashboard";
 import { getRiskLogDashboard } from "@/lib/ai/risk-log";
 
@@ -21,10 +21,7 @@ export default async function RiskLogPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Risk Log & Alerts Analytics"
-        subtitle="Alerts by category, chronological records, human handling times, monetary loss vs prevented amounts, and loophole-prone areas across CFD + crypto."
-      />
+      <AdminPageHeader pageKey="risk-log" />
       <RiskLogDashboard data={data} />
     </div>
   );

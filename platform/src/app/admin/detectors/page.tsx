@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { DetectorsBoard } from "@/components/DetectorsBoard";
 
 export default async function DetectorsPage() {
@@ -22,10 +22,7 @@ export default async function DetectorsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Detectors"
-        subtitle="First stage of the semi-automated spine — CFD and crypto exchange detectors feeding Monitor alarms and AI RCA."
-      />
+      <AdminPageHeader pageKey="detectors" />
       <DetectorsBoard
         detectors={detectors}
         runs={runs}

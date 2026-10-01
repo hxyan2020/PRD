@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { MarketIntelBoard } from "@/components/MarketIntelBoard";
 import {
   listMarketIntelFindings,
@@ -34,10 +34,7 @@ export default async function MarketIntelPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Market Intelligence"
-        subtitle="5-minute scan of news, social and official channels that can move LP prices on Vantage forex, index, commodity, futures and crypto — pushed to a dedicated messenger group and wired as indicator M2-MKT-INTEL."
-      />
+      <AdminPageHeader pageKey="market-intel" />
       <MarketIntelBoard
         initial={{
           findings: listMarketIntelFindings(80) as React.ComponentProps<typeof MarketIntelBoard>["initial"]["findings"],

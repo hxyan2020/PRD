@@ -2,31 +2,33 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { listMessengerThreads, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
 import { DemoMessenger } from "@/components/DemoMessenger";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import Link from "next/link";
+import { actionLabel } from "@/lib/i18n";
+import { getUiLocale } from "@/lib/i18n-server";
 
 export default async function MessengerDemoPage() {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "lark.read")) redirect("/admin");
+  const locale = await getUiLocale();
 
   syncNewAlertsToMessenger(10);
   const threads = listMessengerThreads() as React.ComponentProps<typeof DemoMessenger>["initialThreads"];
 
   return (
     <div>
-      <PageHeader
-        title="Demo Messenger"
-        subtitle="Prototype Lark-style inbox: alerts + AI reports with inline evidence, chatbot challenge, escalate, dismiss, close, and confirmed control actions into Vantage admin."
+      <AdminPageHeader
+        pageKey="messenger"
         actions={
           <div className="flex flex-wrap gap-2">
             <Link className="btn" href="/admin/docs/urls">
-              All URLs
+              {actionLabel("/admin/docs/urls", locale)}
             </Link>
             <Link className="btn" href="/admin/lark">
-              Lark config
+              {actionLabel("/admin/lark", locale)}
             </Link>
             <Link className="btn" href="/admin/escalation">
-              Escalation routes
+              {actionLabel("/admin/escalation", locale)}
             </Link>
           </div>
         }

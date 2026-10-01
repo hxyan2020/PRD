@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { PageHeader } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { RagManager } from "@/components/RagManager";
 import { listRagDocuments } from "@/lib/ai/rag";
 
@@ -18,10 +18,7 @@ export default async function RagPage() {
 
   return (
     <div>
-      <PageHeader
-        title="RAG Knowledge Base"
-        subtitle="Internal static business corpus for Vantage Markets — policies, products, entities, platforms. Used when AI cannot match a skill with certainty."
-      />
+      <AdminPageHeader pageKey="rag" />
       <RagManager
         initialDocs={docs}
         categories={categories}

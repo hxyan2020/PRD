@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
-import { PageHeader, DeptBadge, Badge } from "@/components/ui";
+import { DeptBadge, Badge } from "@/components/ui";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
 
 export default function RiskDomainsPage() {
   const domains = getDb().prepare(`SELECT * FROM risk_domains ORDER BY priority, name`).all() as Array<{
@@ -16,10 +17,7 @@ export default function RiskDomainsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Risk Domains Under Management"
-        subtitle="Canonical catalogue the CRMP must detect, enrich, escalate and report on — CFD and crypto exchange inclusive."
-      />
+      <AdminPageHeader pageKey="risk-domains" />
       <div className="grid lg:grid-cols-2 gap-3">
         {domains.map((d) => {
           const supporting = JSON.parse(d.supporting_departments_json) as string[];
