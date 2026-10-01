@@ -35,7 +35,8 @@ export function LarkManager({
     webhook_url: "",
   });
 
-  async function testNotify(channelId: number) {
+  async function testNotify(channelId: number, channelName: string) {
+    setMsg(null);
     const res = await fetch("/api/lark", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -46,7 +47,11 @@ export function LarkManager({
       }),
     });
     const data = await res.json();
-    setMsg(data.note || "Sent");
+    if (!res.ok) {
+      setMsg(data.error || "Notify failed");
+      return;
+    }
+    setMsg(`Test notify logged for “${channelName}” — ${data.note || "delivered (mock)"}`);
   }
 
   async function toggle(channel: Channel) {
@@ -85,7 +90,15 @@ export function LarkManager({
         ))}
       </div>
 
-      {msg && <div className="text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">{msg}</div>}
+      {msg && (
+        <div
+          role="status"
+          data-testid="lark-notify-status"
+          className="text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 sticky top-[72px] z-20"
+        >
+          {msg}
+        </div>
+      )}
 
       {canManage && (
         <div className="panel p-4">
@@ -158,10 +171,10 @@ export function LarkManager({
                 <td className="text-xs break-all max-w-[220px]">{c.webhook_url ?? "—"}</td>
                 {canManage && (
                   <td className="space-x-1 whitespace-nowrap">
-                    <button className="btn" onClick={() => testNotify(c.id)}>
+                    <button type="button" className="btn" data-testid={`lark-test-${c.id}`} onClick={() => testNotify(c.id, c.name)}>
                       Test notify
                     </button>
-                    <button className="btn" onClick={() => toggle(c)}>
+                    <button type="button" className="btn" onClick={() => toggle(c)}>
                       {c.enabled ? "Disable" : "Enable"}
                     </button>
                   </td>
