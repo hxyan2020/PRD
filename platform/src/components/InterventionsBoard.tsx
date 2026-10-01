@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { decideInterventionAction } from "@/app/admin/interventions/actions";
 
 type Intervention = {
   id: number;
@@ -29,41 +30,62 @@ function agentLog(hypothesisId: string, location: string, message: string, data:
   fetch("/api/agent-debug", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ hypothesisId, location, message, data, timestamp: Date.now() }),
+    body: JSON.stringify({ hypothesisId, location, message, data, timestamp: Date.now(), runId: "post-fix" }),
   }).catch(() => {});
 }
 // #endregion
+
+function parseSkillDetail(raw: string | null | undefined): {
+  description?: string;
+  params?: Record<string, unknown>;
+} {
+  try {
+    const parsed = JSON.parse(raw || "{}") as unknown;
+    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+      return parsed as { description?: string; params?: Record<string, unknown> };
+    }
+    return {};
+  } catch {
+    return {};
+  }
+}
 
 export function InterventionsBoard({ interventions }: { interventions: Intervention[] }) {
   const router = useRouter();
   const [note, setNote] = useState<Record<number, string>>({});
   const [msg, setMsg] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [pending, startTransition] = useTransition();
+  const noteRef = useRef(note);
+  noteRef.current = note;
 
   // #region agent log
   useEffect(() => {
-    const pending = interventions.filter((x) => x.status === "PENDING");
+    const pendingRows = interventions.filter((x) => x.status === "PENDING");
     const approveBtns = typeof document !== "undefined"
       ? document.querySelectorAll('[data-testid^="approve-"]').length
       : -1;
     const parseOutcomes = interventions.map((i) => {
-      try {
-        JSON.parse(i.skill_detail || "{}");
-        return { id: i.id, status: i.status, parseOk: true as const };
-      } catch (e) {
-        return { id: i.id, status: i.status, parseOk: false as const, err: (e as Error).message };
-      }
+      const detail = parseSkillDetail(i.skill_detail);
+      return {
+        id: i.id,
+        status: i.status,
+        parseOk: true as const,
+        isObject: !!i.skill_detail,
+        hasDescription: typeof detail.description === "string",
+      };
     });
     agentLog("A", "InterventionsBoard.tsx:hydrate", "component mounted (client hydrate)", {
       count: interventions.length,
-      pendingCount: pending.length,
-      pendingIds: pending.map((p) => p.id),
+      pendingCount: pendingRows.length,
+      pendingIds: pendingRows.map((p) => p.id),
       approveBtnCount: approveBtns,
       parseOutcomes,
     });
     agentLog("D", "InterventionsBoard.tsx:hydrate:hmr", "post-hydrate interactive probe", {
       hasBoardAttr: !!document.querySelector('[data-board-hydrated="1"]'),
       firstApproveDisabled: (document.querySelector('[data-testid^="approve-"]') as HTMLButtonElement | null)?.disabled ?? null,
+      formCount: document.querySelectorAll("form[data-intervention-form]").length,
     });
   }, [interventions]);
   // #endregion
@@ -73,41 +95,41 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
     agentLog("B", "InterventionsBoard.tsx:decide:entry", "decide() entered", {
       id,
       decision,
-      noteLen: (note[id] || "").length,
+      noteLen: (noteRef.current[id] || "").length,
       busyId,
+      via: "client",
     });
     // #endregion
     setMsg(null);
     setBusyId(id);
     try {
-      const body = { id, decision, note: note[id] || "" };
+      const fd = new FormData();
+      fd.set("id", String(id));
+      fd.set("decision", decision);
+      fd.set("note", noteRef.current[id] || "");
       // #region agent log
-      agentLog("E", "InterventionsBoard.tsx:decide:beforeFetch", "about to fetch POST /api/interventions", {
-        body,
+      agentLog("E", "InterventionsBoard.tsx:decide:beforeAction", "about to call server action", {
+        id,
+        decision,
       });
       // #endregion
-      const res = await fetch("/api/interventions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json().catch(() => ({}));
+      const result = await decideInterventionAction(fd);
       // #region agent log
-      agentLog("E", "InterventionsBoard.tsx:decide:afterFetch", "fetch completed", {
-        status: res.status,
-        ok: res.ok,
-        dataKeys: data && typeof data === "object" ? Object.keys(data) : [],
+      agentLog("E", "InterventionsBoard.tsx:decide:afterAction", "server action completed", {
+        ok: result?.ok,
+        error: result && "error" in result ? result.error : undefined,
+        status: result && "status" in result ? result.status : undefined,
       });
       // #endregion
-      if (!res.ok) {
-        setMsg(data.error || `Failed (${res.status})`);
+      if (!result?.ok) {
+        setMsg(("error" in result && result.error) || "Failed");
         return;
       }
       setMsg(`${decision} intervention #${id}`);
-      router.refresh();
+      startTransition(() => router.refresh());
     } catch (e) {
       // #region agent log
-      agentLog("E", "InterventionsBoard.tsx:decide:catch", "decide() threw before/during fetch", {
+      agentLog("E", "InterventionsBoard.tsx:decide:catch", "decide() threw", {
         error: (e as Error).message,
       });
       // #endregion
@@ -125,12 +147,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
         </div>
       )}
       {interventions.map((i) => {
-        let detail: { description?: string; params?: Record<string, unknown> } = {};
-        try {
-          detail = JSON.parse(i.skill_detail || "{}") as { description?: string; params?: Record<string, unknown> };
-        } catch {
-          detail = {};
-        }
+        const detail = parseSkillDetail(i.skill_detail);
         return (
           <article key={i.id} className="panel p-4" data-intervention-id={i.id}>
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -156,56 +173,59 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
             </div>
 
             {i.status === "PENDING" ? (
-              <div className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
+              <form
+                data-intervention-form={i.id}
+                className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end"
+                action={decideInterventionAction}
+                onSubmit={(ev) => {
+                  // Prefer client path when React handlers are alive; prevents full-page POST.
+                  const submitter = (ev.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
+                  const decision = (submitter?.value || "") as "APPROVED" | "REJECTED";
+                  if (decision === "APPROVED" || decision === "REJECTED") {
+                    ev.preventDefault();
+                    // #region agent log
+                    agentLog("C", "InterventionsBoard.tsx:form:onSubmit", "form onSubmit intercepted by React", {
+                      id: i.id,
+                      decision,
+                      pending,
+                    });
+                    // #endregion
+                    void decide(i.id, decision);
+                  }
+                }}
+              >
                 <div>
                   <label className="label">Decision note</label>
+                  <input type="hidden" name="id" value={i.id} />
                   <input
                     className="input"
+                    name="note"
                     value={note[i.id] || ""}
                     onChange={(e) => setNote({ ...note, [i.id]: e.target.value })}
                     placeholder="Why approve / reject…"
                   />
                 </div>
                 <button
-                  type="button"
+                  type="submit"
+                  name="decision"
+                  value="APPROVED"
                   className="btn btn-primary"
-                  disabled={busyId === i.id}
+                  disabled={busyId === i.id || pending}
                   data-testid={`approve-${i.id}`}
-                  onClick={(ev) => {
-                    // #region agent log
-                    agentLog("C", "InterventionsBoard.tsx:approve:onClick", "Approve button onClick fired", {
-                      id: i.id,
-                      disabled: busyId === i.id,
-                      targetTag: (ev.target as HTMLElement)?.tagName,
-                      currentTargetTag: (ev.currentTarget as HTMLElement)?.tagName,
-                      defaultPrevented: ev.defaultPrevented,
-                    });
-                    // #endregion
-                    void decide(i.id, "APPROVED");
-                  }}
                 >
                   {busyId === i.id ? "Working…" : "Approve & execute"}
                 </button>
                 <button
-                  type="button"
+                  type="submit"
+                  name="decision"
+                  value="REJECTED"
                   className="btn"
-                  disabled={busyId === i.id}
+                  disabled={busyId === i.id || pending}
                   data-testid={`reject-${i.id}`}
-                  onClick={(ev) => {
-                    // #region agent log
-                    agentLog("C", "InterventionsBoard.tsx:reject:onClick", "Reject button onClick fired", {
-                      id: i.id,
-                      disabled: busyId === i.id,
-                      targetTag: (ev.target as HTMLElement)?.tagName,
-                      defaultPrevented: ev.defaultPrevented,
-                    });
-                    // #endregion
-                    void decide(i.id, "REJECTED");
-                  }}
                 >
                   Reject
                 </button>
-              </div>
+              </form>
             ) : (
               <div className="mt-3 text-sm text-[var(--muted)]">
                 Decided by {i.decided_by_name ?? "—"} at {i.decided_at}
