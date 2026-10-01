@@ -59,17 +59,23 @@ export default function AdminDashboardPage() {
             <Link className="btn" href="/admin/ai-admin">
               AI Admin
             </Link>
+            <Link className="btn" href="/admin/messenger">
+              Demo Messenger
+            </Link>
+            <Link className="btn" href="/admin/docs/urls">
+              All URLs
+            </Link>
+            <Link className="btn" href="/admin/docs/uat">
+              UAT
+            </Link>
+            <Link className="btn" href="/admin/docs/ecosystem">
+              Ecosystem
+            </Link>
+            <Link className="btn" href="/admin/docs/roadmap">
+              Roadmap
+            </Link>
             <Link className="btn" href="/admin/security/ai-access">
               AI Access Security
-            </Link>
-            <Link className="btn" href="/admin/detectors">
-              Detectors
-            </Link>
-            <Link className="btn" href="/admin/interventions">
-              Interventions
-            </Link>
-            <Link className="btn" href="/admin/spine">
-              Spine
             </Link>
             <Link className="btn btn-primary" href="/admin/dashboard">
               Daily Performance

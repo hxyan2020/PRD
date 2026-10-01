@@ -377,3 +377,28 @@ SQLite：`platform/data/vantage_risk.db`。
 | 1.1 | 2026-10-01 | **新增完整 §8 AI Admin 管理頁規格** |
 
 **對應文件：** [English TSD](./TSD.md)
+
+---
+
+## 9. 獨立第二 AI 挑戰者
+
+### 9.1 目的
+當警報嚴重度達到或超過 `ai.second_opinion_severity`（預設 **BREACH**）時，平台在主要 Skill/RAG RCA 之後執行獨立挑戰模型（`crmp-challenger-v0`）。挑戰者不得重用主要決策路徑。
+
+### 9.2 輸出
+| 欄位 | 說明 |
+|---|---|
+| verdict | `AGREE` / `PARTIAL` / `DISAGREE` |
+| critiques | 主要敘事之重大缺口 |
+| improvements | 優先改進建議 |
+| alternatives | 替代假說與信心分數 |
+
+### 9.3 持久化與副作用
+- 資料表 `ai_analysis_challenges`
+- 證據類型 `CHALLENGER`
+- `PARTIAL` / `DISAGREE` 強制 `needs_human = 1`
+- Spine 與稽核事件
+
+### 9.4 介面
+- 列表徽章、詳情面板 `AiChallengePanel`
+- API：`backfill_challenges`

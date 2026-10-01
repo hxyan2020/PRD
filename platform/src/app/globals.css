@@ -139,3 +139,15 @@ table.data tr:hover td {
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+@media (max-width: 640px) {
+  .btn {
+    padding: 0.5rem 0.7rem;
+  }
+
+  table.data th,
+  table.data td {
+    padding: 0.65rem 0.55rem;
+    font-size: 0.8rem;
+  }
+}

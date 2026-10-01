@@ -2,9 +2,9 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { DocArticlePage } from "@/components/DocArticlePage";
 
-export default async function TsdPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
+export default async function PrdPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
   const sp = await searchParams;
-  return <DocArticlePage docId="TSD" langParam={sp.lang} />;
+  return <DocArticlePage docId="PRD" langParam={sp.lang} />;
 }

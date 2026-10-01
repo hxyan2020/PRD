@@ -12,6 +12,7 @@ import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
 import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
+import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -778,6 +779,8 @@ function ensureAiLayer(db: Database.Database) {
   seedRiskLogIfEmpty(db);
   ensureMarketIntelSchema(db);
   ensureChallengerSchema(db);
+  ensureMessengerSchema(db);
+  seedMessengerIfEmpty(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`

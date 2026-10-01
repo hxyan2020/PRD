@@ -382,3 +382,30 @@ Reset: `npm run db:reset` then restart.
 | 1.1 | 2026-10-01 | **Added full §8 AI Admin Management Page specification** |
 
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md)
+
+---
+
+## 9. Independent Second-AI Challenger
+
+### 9.1 Purpose
+For alert severities at or above `ai.second_opinion_severity` (default **BREACH**), the platform runs an independent challenger model (`crmp-challenger-v0`) after the primary skill/RAG RCA. The challenger must not reuse the primary decision path.
+
+### 9.2 Outputs
+| Field | Description |
+|---|---|
+| verdict | `AGREE` / `PARTIAL` / `DISAGREE` |
+| critiques | Material gaps in primary narrative |
+| improvements | Prioritised recommendations (HYPOTHESIS/EVIDENCE/ACTION/…) |
+| alternatives | Competing hypotheses with confidence |
+
+### 9.3 Persistence & side-effects
+- Table `ai_analysis_challenges` (1:1 with `ai_analyses`)
+- Evidence row type `CHALLENGER`
+- Columns `ai_analyses.challenged`, `challenge_verdict`
+- `PARTIAL` / `DISAGREE` forces `needs_human = 1`
+- Spine stage `AI_RCA` event + audit `AI_SECOND_OPINION`
+
+### 9.4 UI
+- List badges: `2nd AI · {verdict}`
+- Detail panel: `AiChallengePanel`
+- Controls: simulate CRITICAL, backfill challenges (`POST /api/ai` action `backfill_challenges`)
