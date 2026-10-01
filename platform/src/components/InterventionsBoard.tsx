@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { decideInterventionAction } from "@/app/admin/interventions/actions";
 
@@ -25,16 +24,6 @@ type Intervention = {
   analysis_id: number;
 };
 
-// #region agent log
-function agentLog(hypothesisId: string, location: string, message: string, data: Record<string, unknown> = {}) {
-  fetch("/api/agent-debug", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ hypothesisId, location, message, data, timestamp: Date.now(), runId: "post-fix" }),
-  }).catch(() => {});
-}
-// #endregion
-
 function parseSkillDetail(raw: string | null | undefined): {
   description?: string;
   params?: Record<string, unknown>;
@@ -51,88 +40,23 @@ function parseSkillDetail(raw: string | null | undefined): {
 }
 
 export function InterventionsBoard({ interventions }: { interventions: Intervention[] }) {
-  const router = useRouter();
   const [note, setNote] = useState<Record<number, string>>({});
   const [msg, setMsg] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
-  const [pending, startTransition] = useTransition();
-  const noteRef = useRef(note);
-  noteRef.current = note;
 
-  // #region agent log
-  useEffect(() => {
-    const pendingRows = interventions.filter((x) => x.status === "PENDING");
-    const approveBtns = typeof document !== "undefined"
-      ? document.querySelectorAll('[data-testid^="approve-"]').length
-      : -1;
-    const parseOutcomes = interventions.map((i) => {
-      const detail = parseSkillDetail(i.skill_detail);
-      return {
-        id: i.id,
-        status: i.status,
-        parseOk: true as const,
-        isObject: !!i.skill_detail,
-        hasDescription: typeof detail.description === "string",
-      };
-    });
-    agentLog("A", "InterventionsBoard.tsx:hydrate", "component mounted (client hydrate)", {
-      count: interventions.length,
-      pendingCount: pendingRows.length,
-      pendingIds: pendingRows.map((p) => p.id),
-      approveBtnCount: approveBtns,
-      parseOutcomes,
-    });
-    agentLog("D", "InterventionsBoard.tsx:hydrate:hmr", "post-hydrate interactive probe", {
-      hasBoardAttr: !!document.querySelector('[data-board-hydrated="1"]'),
-      firstApproveDisabled: (document.querySelector('[data-testid^="approve-"]') as HTMLButtonElement | null)?.disabled ?? null,
-      formCount: document.querySelectorAll("form[data-intervention-form]").length,
-    });
-  }, [interventions]);
-  // #endregion
-
-  async function decide(id: number, decision: "APPROVED" | "REJECTED") {
-    // #region agent log
-    agentLog("B", "InterventionsBoard.tsx:decide:entry", "decide() entered", {
-      id,
-      decision,
-      noteLen: (noteRef.current[id] || "").length,
-      busyId,
-      via: "client",
-    });
-    // #endregion
+  async function onAction(formData: FormData) {
+    const id = Number(formData.get("id"));
+    const decision = String(formData.get("decision") || "");
     setMsg(null);
     setBusyId(id);
     try {
-      const fd = new FormData();
-      fd.set("id", String(id));
-      fd.set("decision", decision);
-      fd.set("note", noteRef.current[id] || "");
-      // #region agent log
-      agentLog("E", "InterventionsBoard.tsx:decide:beforeAction", "about to call server action", {
-        id,
-        decision,
-      });
-      // #endregion
-      const result = await decideInterventionAction(fd);
-      // #region agent log
-      agentLog("E", "InterventionsBoard.tsx:decide:afterAction", "server action completed", {
-        ok: result?.ok,
-        error: result && "error" in result ? result.error : undefined,
-        status: result && "status" in result ? result.status : undefined,
-      });
-      // #endregion
+      const result = await decideInterventionAction(formData);
       if (!result?.ok) {
         setMsg(("error" in result && result.error) || "Failed");
         return;
       }
       setMsg(`${decision} intervention #${id}`);
-      startTransition(() => router.refresh());
     } catch (e) {
-      // #region agent log
-      agentLog("E", "InterventionsBoard.tsx:decide:catch", "decide() threw", {
-        error: (e as Error).message,
-      });
-      // #endregion
       setMsg((e as Error).message || "Network error");
     } finally {
       setBusyId(null);
@@ -140,7 +64,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
   }
 
   return (
-    <div className="space-y-4" data-board-hydrated="1">
+    <div className="space-y-4">
       {msg && (
         <div role="status" className="text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">
           {msg}
@@ -173,27 +97,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
             </div>
 
             {i.status === "PENDING" ? (
-              <form
-                data-intervention-form={i.id}
-                className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end"
-                action={decideInterventionAction}
-                onSubmit={(ev) => {
-                  // Prefer client path when React handlers are alive; prevents full-page POST.
-                  const submitter = (ev.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
-                  const decision = (submitter?.value || "") as "APPROVED" | "REJECTED";
-                  if (decision === "APPROVED" || decision === "REJECTED") {
-                    ev.preventDefault();
-                    // #region agent log
-                    agentLog("C", "InterventionsBoard.tsx:form:onSubmit", "form onSubmit intercepted by React", {
-                      id: i.id,
-                      decision,
-                      pending,
-                    });
-                    // #endregion
-                    void decide(i.id, decision);
-                  }
-                }}
-              >
+              <form action={onAction} className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
                 <div>
                   <label className="label">Decision note</label>
                   <input type="hidden" name="id" value={i.id} />
@@ -210,7 +114,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                   name="decision"
                   value="APPROVED"
                   className="btn btn-primary"
-                  disabled={busyId === i.id || pending}
+                  disabled={busyId === i.id}
                   data-testid={`approve-${i.id}`}
                 >
                   {busyId === i.id ? "Working…" : "Approve & execute"}
@@ -220,7 +124,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                   name="decision"
                   value="REJECTED"
                   className="btn"
-                  disabled={busyId === i.id || pending}
+                  disabled={busyId === i.id}
                   data-testid={`reject-${i.id}`}
                 >
                   Reject
