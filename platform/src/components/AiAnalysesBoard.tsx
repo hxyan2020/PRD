@@ -1,0 +1,151 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+
+type Analysis = {
+  id: number;
+  analysis_id: string;
+  mode: string;
+  confidence: number;
+  summary: string;
+  status: string;
+  needs_human: number;
+  created_at: string;
+  monitor_alert_id: string;
+  alert_title: string;
+  severity: string;
+  skill_code: string | null;
+  indicator_monitor_id: string;
+};
+
+export function AiAnalysesBoard({
+  analyses,
+  canOperate,
+}: {
+  analyses: Analysis[];
+  canOperate: boolean;
+}) {
+  const router = useRouter();
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function run(action: string, body: Record<string, unknown> = {}) {
+    setBusy(true);
+    setMsg(null);
+    const res = await fetch("/api/ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, ...body }),
+    });
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      setMsg(data.error || "Failed");
+      return;
+    }
+    setMsg(
+      action === "analyze_open"
+        ? `Ensured AI analysis for ${data.count} open alarm(s)`
+        : action === "simulate_alarm"
+          ? `Alarm raised → analysis ${data.analysis?.analysis_id} (${data.analysis?.mode})`
+          : "Done"
+    );
+    router.refresh();
+  }
+
+  return (
+    <div className="space-y-4">
+      {canOperate && (
+        <div className="panel p-4">
+          <h3 className="font-semibold">AI pipeline controls</h3>
+          <p className="text-sm text-[var(--muted)] mt-1">
+            Alarms auto-trigger analysis on Monitor sync. Use these controls to backfill or simulate a new Monitor 2.0 alarm.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button type="button" className="btn btn-primary" disabled={busy} onClick={() => run("analyze_open")}>
+              Analyze all open alarms
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() =>
+                run("simulate_alarm", {
+                  monitor_id: "M2-COPY-009",
+                  severity: "BREACH",
+                  observed_value: 33,
+                  title: "Simulated copy concentration breach",
+                  message: "Top signal provider now at 33% of copy equity after viral strategy share.",
+                })
+              }
+            >
+              Simulate COPY breach (skill path)
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() =>
+                run("simulate_alarm", {
+                  monitor_id: "M2-EQ-001",
+                  severity: "WARN",
+                  observed_value: 3.8,
+                  title: "Simulated equity drawdown warn",
+                  message: "Company CFD book drawdown rising through US session after CPI volatility.",
+                })
+              }
+            >
+              Simulate EQ drawdown (RAG path)
+            </button>
+          </div>
+          {msg && <div className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">{msg}</div>}
+        </div>
+      )}
+
+      <div className="space-y-3">
+        {analyses.map((a) => (
+          <article key={a.id} className="panel p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <Badge
+                    className={
+                      a.mode === "SKILL_MATCH"
+                        ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                        : "bg-amber-50 text-amber-900 border-amber-200"
+                    }
+                  >
+                    {a.mode}
+                  </Badge>
+                  <SeverityBadge value={a.severity} />
+                  <StatusBadge value={a.status} />
+                  {a.needs_human ? (
+                    <Badge className="bg-rose-50 text-rose-800 border-rose-200">needs human</Badge>
+                  ) : null}
+                </div>
+                <h2 className="mt-2 font-semibold text-lg">{a.alert_title}</h2>
+                <div className="text-xs text-[var(--muted)] mt-1">
+                  {a.analysis_id} · alert {a.monitor_alert_id} · {a.indicator_monitor_id}
+                  {a.skill_code ? ` · skill ${a.skill_code}` : ""} · confidence {(a.confidence * 100).toFixed(0)}% ·{" "}
+                  {a.created_at}
+                </div>
+                <p className="text-sm mt-2 text-slate-700">{a.summary}</p>
+              </div>
+              <Link className="btn btn-primary" href={`/admin/ai-analyses/${a.id}`}>
+                Open evidence
+              </Link>
+            </div>
+          </article>
+        ))}
+        {!analyses.length && (
+          <div className="panel p-6 text-sm text-[var(--muted)]">
+            No analyses yet. Sync Monitor 2.0 or click “Analyze all open alarms”.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

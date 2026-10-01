@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb, writeAudit } from "@/lib/db";
+import { analyzeOpenAlerts } from "@/lib/ai/analyze";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -68,11 +69,24 @@ export async function POST(req: Request) {
       pulled_alerts: 5,
       pushed_acks: 1,
     });
+    // Auto-trigger AI analysis for open alarms (idempotent unless force)
+    const auto =
+      (
+        getDb().prepare(`SELECT value FROM platform_settings WHERE key = 'ai.auto_on_alarm'`).get() as
+          | { value: string }
+          | undefined
+      )?.value !== "false";
+    let aiCount = 0;
+    if (auto) {
+      const results = analyzeOpenAlerts({ force: false });
+      aiCount = results.length;
+    }
     return NextResponse.json({
       ok: true,
-      message: "Prototype sync with Monitor 2.0 completed",
+      message: `Prototype sync with Monitor 2.0 completed; AI analyses ensured for ${aiCount} open alarm(s)`,
       pulled_alerts: 5,
       pushed_acks: 1,
+      ai_analyses: aiCount,
     });
   }
 

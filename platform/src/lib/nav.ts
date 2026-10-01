@@ -2,19 +2,26 @@ import {
   Activity,
   Bell,
   BookOpen,
+  Brain,
   Building2,
   Database,
   GitBranch,
   LayoutDashboard,
+  Library,
   MessageSquare,
   Settings,
   Shield,
+  Sparkles,
   Users,
   Waypoints,
 } from "lucide-react";
 
 export const NAV_ITEMS = [
   { href: "/admin", label: "Admin Dashboard", icon: LayoutDashboard, permission: "admin.access" },
+  { href: "/admin/alerts", label: "Live Alerts", icon: Bell, permission: "monitor.read" },
+  { href: "/admin/ai-analyses", label: "AI Analyses", icon: Brain, permission: "ai.read" },
+  { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read" },
+  { href: "/admin/skills", label: "AI Skills", icon: Sparkles, permission: "skills.read" },
   { href: "/admin/departments", label: "Departments", icon: Building2, permission: "teams.read" },
   { href: "/admin/teams", label: "Teams", icon: Users, permission: "teams.read" },
   { href: "/admin/roles", label: "Roles & Permissions", icon: Shield, permission: "users.read" },
@@ -26,5 +33,4 @@ export const NAV_ITEMS = [
   { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read" },
   { href: "/admin/audit", label: "Audit Log", icon: BookOpen, permission: "audit.read" },
   { href: "/admin/settings", label: "Platform Settings", icon: Settings, permission: "settings.manage" },
-  { href: "/admin/alerts", label: "Live Alerts", icon: Bell, permission: "monitor.read" },
 ] as const;

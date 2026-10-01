@@ -1,0 +1,157 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getCurrentUser, hasPermission } from "@/lib/auth";
+import { getAnalysisBundle } from "@/lib/ai/analyze";
+import { PageHeader, Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+
+export default async function AiAnalysisDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const user = await getCurrentUser();
+  if (!user || !hasPermission(user.role_code, "ai.read")) redirect("/admin");
+  const { id } = await params;
+  const bundle = getAnalysisBundle(Number(id));
+  if (!bundle.analysis) redirect("/admin/ai-analyses");
+
+  const analysis = bundle.analysis as {
+    id: number;
+    analysis_id: string;
+    mode: string;
+    confidence: number;
+    summary: string;
+    explanations_json: string;
+    actions_taken_json: string;
+    status: string;
+    needs_human: number;
+    indicator_monitor_id: string;
+    created_at: string;
+    skill_id: number | null;
+  };
+
+  const explanations = JSON.parse(analysis.explanations_json) as Array<Record<string, unknown>>;
+  const actions = JSON.parse(analysis.actions_taken_json) as Array<Record<string, unknown>>;
+  const evidence = bundle.evidence as Array<{
+    id: number;
+    evidence_type: string;
+    ref_id: string | null;
+    title: string;
+    excerpt: string;
+    url: string | null;
+    score: number;
+  }>;
+  const skillRuns = bundle.skillRuns as Array<{
+    id: number;
+    step_index: number;
+    action_code: string;
+    status: string;
+    detail_json: string;
+  }>;
+
+  return (
+    <div>
+      <PageHeader
+        title={analysis.analysis_id}
+        subtitle={analysis.summary}
+        actions={
+          <Link className="btn" href="/admin/ai-analyses">
+            Back to list
+          </Link>
+        }
+      />
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        <Badge
+          className={
+            analysis.mode === "SKILL_MATCH"
+              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+              : "bg-amber-50 text-amber-900 border-amber-200"
+          }
+        >
+          {analysis.mode}
+        </Badge>
+        <StatusBadge value={analysis.status} />
+        <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+          confidence {(analysis.confidence * 100).toFixed(0)}%
+        </Badge>
+        <Badge className="bg-orange-50 text-orange-900 border-orange-200">{analysis.indicator_monitor_id}</Badge>
+        {analysis.needs_human ? <SeverityBadge value="WARN" /> : null}
+      </div>
+
+      <div className="grid xl:grid-cols-2 gap-4">
+        <section className="panel p-4">
+          <h2 className="font-[family-name:var(--font-display)] text-lg">Explanations</h2>
+          <div className="mt-3 space-y-3">
+            {explanations.map((e, i) => (
+              <div key={i} className="rounded-xl border border-[var(--line)] p-3">
+                <div className="font-semibold">{String(e.hypothesis)}</div>
+                <div className="text-xs text-[var(--muted)] mt-1">
+                  likelihood {String(e.likelihood)} · confidence {Number(e.confidence || 0).toFixed(2)}
+                </div>
+                <p className="text-sm mt-2 text-slate-700 whitespace-pre-wrap">{String(e.rationale)}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="panel p-4">
+          <h2 className="font-[family-name:var(--font-display)] text-lg">Evidence vault</h2>
+          <div className="mt-3 space-y-3">
+            {evidence.map((ev) => (
+              <div key={ev.id} className="rounded-xl border border-[var(--line)] p-3">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <Badge className="bg-teal-50 text-teal-900 border-teal-200">{ev.evidence_type}</Badge>
+                  <span className="font-semibold text-sm">{ev.title}</span>
+                  <span className="text-xs text-[var(--muted)]">score {ev.score.toFixed(2)}</span>
+                </div>
+                <p className="text-sm mt-2 text-slate-700">{ev.excerpt}</p>
+                <div className="text-xs text-[var(--muted)] mt-1">
+                  {ev.ref_id}
+                  {ev.url ? (
+                    <>
+                      {" · "}
+                      <a className="text-teal-800" href={ev.url} target="_blank" rel="noreferrer">
+                        {ev.url}
+                      </a>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="grid xl:grid-cols-2 gap-4 mt-4">
+        <section className="panel p-4">
+          <h2 className="font-[family-name:var(--font-display)] text-lg">Actions taken</h2>
+          <ul className="mt-3 space-y-2">
+            {actions.map((a, i) => (
+              <li key={i} className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm">
+                <div className="font-semibold">
+                  {String(a.action || a.action_code || `step ${i + 1}`)} · {String(a.status)}
+                </div>
+                <div className="text-[var(--muted)]">{String(a.description || "")}</div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="panel p-4">
+          <h2 className="font-[family-name:var(--font-display)] text-lg">Skill run log</h2>
+          {skillRuns.length ? (
+            <ol className="mt-3 space-y-2">
+              {skillRuns.map((r) => (
+                <li key={r.id} className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm">
+                  <div className="font-semibold">
+                    #{r.step_index + 1} {r.action_code} · {r.status}
+                  </div>
+                  <pre className="text-xs mt-1 text-[var(--muted)] whitespace-pre-wrap">{r.detail_json}</pre>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="text-sm text-[var(--muted)] mt-3">No skill steps (RAG reasoning path).</p>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}

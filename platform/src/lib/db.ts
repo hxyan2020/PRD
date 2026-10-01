@@ -1,6 +1,9 @@
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
+import { ensureAiSchema } from "@/lib/ai/schema";
+import { seedRagIfEmpty } from "@/lib/ai/seed-rag";
+import { seedSkillsIfEmpty } from "@/lib/ai/skills";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -222,6 +225,11 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "settings.manage",
       "risk.intervene",
       "dashboard.full",
+      "rag.read",
+      "rag.manage",
+      "skills.read",
+      "ai.read",
+      "ai.operate",
     ],
   ],
   [
@@ -240,6 +248,10 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "escalation.read",
       "audit.read",
       "dashboard.full",
+      "rag.read",
+      "skills.read",
+      "ai.read",
+      "ai.operate",
     ],
   ],
   [
@@ -259,6 +271,9 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "escalation.read",
       "audit.read",
       "dashboard.ops",
+      "rag.read",
+      "skills.read",
+      "ai.read",
     ],
   ],
   [
@@ -266,7 +281,17 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
     "Operations Analyst",
     "Handles tickets and operational case work.",
     "OPERATIONS",
-    ["admin.access", "sources.read", "monitor.operate", "monitor.read", "lark.read", "teams.read", "dashboard.ops"],
+    [
+      "admin.access",
+      "sources.read",
+      "monitor.operate",
+      "monitor.read",
+      "lark.read",
+      "teams.read",
+      "dashboard.ops",
+      "rag.read",
+      "ai.read",
+    ],
   ],
   [
     "AI_ENGINEER",
@@ -283,6 +308,12 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "teams.read",
       "dashboard.ai",
       "models.manage",
+      "rag.read",
+      "rag.manage",
+      "skills.read",
+      "skills.manage",
+      "ai.read",
+      "ai.operate",
     ],
   ],
   [
@@ -307,6 +338,9 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "audit.read",
       "settings.manage",
       "dashboard.system",
+      "rag.read",
+      "skills.read",
+      "ai.read",
     ],
   ],
   [
@@ -323,6 +357,9 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "lark.read",
       "escalation.read",
       "dashboard.read",
+      "rag.read",
+      "skills.read",
+      "ai.read",
     ],
   ],
 ];
@@ -583,6 +620,8 @@ function seedIfEmpty(db: Database.Database) {
   insertSetting.run("lark.app_id", "cli_mock_vantage_crmp", "Lark app id (prototype)");
   insertSetting.run("lark.enabled", "true", "Enable Lark notifications");
   insertSetting.run("ai.rca_enabled", "true", "AI root-cause analysis on new breaches");
+  insertSetting.run("ai.auto_on_alarm", "true", "Auto-trigger AI analysis when Monitor indicators alarm");
+  insertSetting.run("ai.skill_certainty_only", "true", "Auto-execute skills only when conditions match with certainty");
   insertSetting.run("escalation.default_sla_minutes", "30", "Default SLA when route missing");
   insertSetting.run("products.coverage", "CFD,CryptoExchange", "Products in scope");
 
@@ -595,14 +634,29 @@ function seedIfEmpty(db: Database.Database) {
   insertAudit.run(6, "Noah Wright", "UPDATE_SETTING", "platform_settings", "monitor2.sync_enabled", JSON.stringify({ value: true }));
 }
 
+function ensureAiLayer(db: Database.Database) {
+  ensureAiSchema(db);
+  seedRagIfEmpty(db);
+  seedSkillsIfEmpty(db);
+  // Upsert AI-related settings if missing
+  const upsert = db.prepare(
+    `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+     ON CONFLICT(key) DO NOTHING`
+  );
+  upsert.run("ai.auto_on_alarm", "true", "Auto-trigger AI analysis when Monitor indicators alarm");
+  upsert.run("ai.skill_certainty_only", "true", "Auto-execute skills only when conditions match with certainty");
+}
+
 export function getDb() {
   if (global.__vantageRiskDb) {
+    ensureAiLayer(global.__vantageRiskDb);
     return global.__vantageRiskDb;
   }
   ensureDataDir();
   const db = new Database(DB_PATH);
   createSchema(db);
   seedIfEmpty(db);
+  ensureAiLayer(db);
   global.__vantageRiskDb = db;
   return db;
 }
