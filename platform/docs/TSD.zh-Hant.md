@@ -103,8 +103,10 @@ Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
 | Maker ≠ Checker | 當 `ai.maker_checker_required=true` 時，提案者不可核准自己的變更單 |
 | AI Admin 變更 | 僅能經 `/api/ai-admin` 且具備 propose／approve 權限 |
 | 稽核 | 提案、裁決、回饋、訓練排隊皆 `writeAudit` |
+| **AI 存取封鎖清單** | AI 不得觸及之頁面／功能／欄位／資料 — 見 `/admin/security/ai-access` 與 `lib/security/ai-access-blocklist.ts` |
 
-AI Admin 權限矩陣詳見 **§8.3**。
+AI Admin 權限矩陣詳見 **§8.3**。  
+**僅限人工操作之表面（身分、密鑰、雙人核准、LP／錢包執行、角色寫入）：** 動態清單見 **`/admin/security/ai-access`**。
 
 ---
 

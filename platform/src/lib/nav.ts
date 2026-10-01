@@ -38,6 +38,7 @@ export const NAV_ITEMS = [
   { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read" },
   { href: "/admin/skills", label: "AI Skills", icon: Sparkles, permission: "skills.read" },
   { href: "/admin/docs/tsd", label: "TSD", icon: FileText, permission: "admin.access" },
+  { href: "/admin/security/ai-access", label: "AI Access Security", icon: Shield, permission: "audit.read" },
   { href: "/admin/departments", label: "Departments", icon: Building2, permission: "teams.read" },
   { href: "/admin/teams", label: "Teams", icon: Users, permission: "teams.read" },
   { href: "/admin/roles", label: "Roles & Permissions", icon: Shield, permission: "users.read" },

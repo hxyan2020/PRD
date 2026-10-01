@@ -103,8 +103,10 @@ See **§8.4** — `ai_change_requests`, `ai_training_runs`, `ai_feedback`, `ai_a
 | Maker ≠ Checker | Proposer cannot approve own `ai_change_requests` when `ai.maker_checker_required=true` |
 | AI Admin mutations | Only via `/api/ai-admin` with propose/approve permissions |
 | Audit | `writeAudit` on propose, decide, feedback, training queue |
+| **AI access blocklist** | Pages/functions/fields/data AI must never touch — see `/admin/security/ai-access` and `lib/security/ai-access-blocklist.ts` |
 
-Detailed AI Admin permission matrix: **§8.3**.
+Detailed AI Admin permission matrix: **§8.3**.  
+**Human-only surfaces (identity, secrets, dual-control approve, LP/wallet execute, role writes):** living list on **`/admin/security/ai-access`**.
 
 ---
 

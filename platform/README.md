@@ -66,6 +66,7 @@ When Monitor 2.0 indicators alarm:
 - `/admin/skills` — risk scenarios: indicator + thresholds (why), fault areas, escalation, BU corrections, past cases; linked multi-indicator timeline chains
 - `/admin/market-intel` — **Market Intelligence**: 5-min scan of news/social/official sources affecting LP prices (forex, index, commodity, futures, crypto); pushes to Lark `oc_market_intelligence`; indicator `M2-MKT-INTEL` + skill `SKILL-MARKET-INTEL`
 - `/admin/docs/tsd` — Technical Specification Design (EN + 繁中), including full **AI Admin management page** specs (`docs/TSD.md`)
+- `/admin/security/ai-access` — **AI access blocklist**: pages / functions / fields / data stores blocked from AI; human-authorised only
 
 **Maker / Checker:** AI Engineer proposes (`ai.propose` / `skills.manage` / `rag.manage`). Risk Owner checks (`ai.approve`). Proposer cannot approve their own change.
 
