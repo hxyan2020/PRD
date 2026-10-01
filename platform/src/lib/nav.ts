@@ -1,0 +1,30 @@
+import {
+  Activity,
+  Bell,
+  BookOpen,
+  Building2,
+  Database,
+  GitBranch,
+  LayoutDashboard,
+  MessageSquare,
+  Settings,
+  Shield,
+  Users,
+  Waypoints,
+} from "lucide-react";
+
+export const NAV_ITEMS = [
+  { href: "/admin", label: "Admin Dashboard", icon: LayoutDashboard, permission: "admin.access" },
+  { href: "/admin/departments", label: "Departments", icon: Building2, permission: "teams.read" },
+  { href: "/admin/teams", label: "Teams", icon: Users, permission: "teams.read" },
+  { href: "/admin/roles", label: "Roles & Permissions", icon: Shield, permission: "users.read" },
+  { href: "/admin/users", label: "Users", icon: Users, permission: "users.read" },
+  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read" },
+  { href: "/admin/data-sources", label: "Data Sources", icon: Database, permission: "sources.read" },
+  { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read" },
+  { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read" },
+  { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read" },
+  { href: "/admin/audit", label: "Audit Log", icon: BookOpen, permission: "audit.read" },
+  { href: "/admin/settings", label: "Platform Settings", icon: Settings, permission: "settings.manage" },
+  { href: "/admin/alerts", label: "Live Alerts", icon: Bell, permission: "monitor.read" },
+] as const;
