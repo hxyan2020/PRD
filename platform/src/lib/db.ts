@@ -602,16 +602,20 @@ function seedIfEmpty(db: Database.Database) {
     `INSERT INTO monitor_indicators (monitor_id, name, domain_code, product, threshold_warn, threshold_breach, unit, status, last_value, last_checked_at, ticket_open_count)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)`
   );
-  insertInd.run("M2-EQ-001", "Company Equity Drawdown", "MARKET_PRICING", "CFD", 3, 5, "%", "WARN", 3.4, 1);
-  insertInd.run("M2-MRG-014", "Accounts >90% Margin Utilisation", "CREDIT_CLIENT", "CFD", 50, 100, "count", "BREACH", 128, 2);
-  insertInd.run("M2-LP-022", "LP Reject Rate (oneZero)", "LP_HEDGE", "CFD", 2, 5, "%", "HEALTHY", 0.8, 0);
-  insertInd.run("M2-HEDGE-007", "Hedge Coverage Ratio", "LP_HEDGE", "CFD", 85, 70, "%", "WARN", 82, 1);
-  insertInd.run("M2-XAU-247", "XAUUSD247 Net Exposure", "PRODUCT_CONFIG", "CFD", 10000, 15000, "lots", "HEALTHY", 4200, 0);
-  insertInd.run("M2-CRYPTO-WALLET", "Hot Wallet Float Ratio", "CRYPTO_EXCHANGE", "Crypto", 15, 25, "%", "WARN", 18.2, 1);
-  insertInd.run("M2-CRYPTO-LIQ", "Liquidation Engine Backlog", "CRYPTO_EXCHANGE", "Crypto", 50, 200, "orders", "HEALTHY", 12, 0);
-  insertInd.run("M2-COPY-009", "Top Signal Provider Copier Concentration", "CREDIT_CLIENT", "CFD", 15, 25, "%", "BREACH", 31, 1);
-  insertInd.run("M2-FEED-003", "Stale Quote Symbols", "MARKET_PRICING", "CFD", 3, 10, "symbols", "HEALTHY", 1, 0);
-  insertInd.run("M2-FRAUD-011", "Multi-account Cluster Score", "FRAUD_CONDUCT", "CFD", 0.7, 0.85, "score", "WARN", 0.74, 1);
+  for (const row of MONITOR_SEED_ROWS) {
+    insertInd.run(
+      row.monitor_id,
+      row.name,
+      row.domain_code,
+      row.product,
+      row.warn,
+      row.breach,
+      row.unit,
+      row.status,
+      row.last_value,
+      row.tickets
+    );
+  }
 
   const insertAlert = db.prepare(
     `INSERT INTO monitor_alerts (alert_id, indicator_id, severity, title, message, observed_value, status, monitor20_ticket_id)
@@ -679,11 +683,89 @@ function seedIfEmpty(db: Database.Database) {
   insertAudit.run(6, "Noah Wright", "UPDATE_SETTING", "platform_settings", "monitor2.sync_enabled", JSON.stringify({ value: true }));
 }
 
+const MONITOR_SEED_ROWS: Array<{
+  monitor_id: string;
+  name: string;
+  domain_code: string;
+  product: string;
+  warn: number;
+  breach: number;
+  unit: string;
+  status: string;
+  last_value: number;
+  tickets: number;
+}> = [
+  { monitor_id: "M2-EQ-001", name: "Company Equity Drawdown", domain_code: "MARKET_PRICING", product: "CFD", warn: 3, breach: 5, unit: "%", status: "WARN", last_value: 3.4, tickets: 1 },
+  { monitor_id: "M2-MRG-014", name: "Accounts >90% Margin Utilisation", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 50, breach: 100, unit: "count", status: "BREACH", last_value: 128, tickets: 2 },
+  { monitor_id: "M2-LP-022", name: "LP Reject Rate (oneZero)", domain_code: "LP_HEDGE", product: "CFD", warn: 2, breach: 5, unit: "%", status: "HEALTHY", last_value: 0.8, tickets: 0 },
+  { monitor_id: "M2-HEDGE-007", name: "Hedge Coverage Ratio", domain_code: "LP_HEDGE", product: "CFD", warn: 85, breach: 70, unit: "%", status: "WARN", last_value: 82, tickets: 1 },
+  { monitor_id: "M2-XAU-247", name: "XAUUSD247 Net Exposure", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 10000, breach: 15000, unit: "lots", status: "HEALTHY", last_value: 4200, tickets: 0 },
+  { monitor_id: "M2-CRYPTO-WALLET", name: "Hot Wallet Float Ratio", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 15, breach: 25, unit: "%", status: "WARN", last_value: 18.2, tickets: 1 },
+  { monitor_id: "M2-CRYPTO-LIQ", name: "Liquidation Engine Backlog", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 50, breach: 200, unit: "orders", status: "HEALTHY", last_value: 12, tickets: 0 },
+  { monitor_id: "M2-COPY-009", name: "Top Signal Provider Copier Concentration", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 15, breach: 25, unit: "%", status: "BREACH", last_value: 31, tickets: 1 },
+  { monitor_id: "M2-FEED-003", name: "Stale Quote Symbols", domain_code: "MARKET_PRICING", product: "CFD", warn: 3, breach: 10, unit: "symbols", status: "HEALTHY", last_value: 1, tickets: 0 },
+  { monitor_id: "M2-FRAUD-011", name: "Multi-account Cluster Score", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 0.7, breach: 0.85, unit: "score", status: "WARN", last_value: 0.74, tickets: 1 },
+  { monitor_id: "M2-STOP-018", name: "Stop-out Count (5m window)", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 20, breach: 40, unit: "count/5m", status: "HEALTHY", last_value: 8, tickets: 0 },
+  { monitor_id: "M2-NBP-016", name: "Negative Balance Account Count", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 2, breach: 5, unit: "accounts", status: "HEALTHY", last_value: 0, tickets: 0 },
+  { monitor_id: "M2-SLIP-021", name: "Avg Client Slippage (majors, 15m)", domain_code: "MARKET_PRICING", product: "CFD", warn: 2, breach: 3.5, unit: "pips", status: "HEALTHY", last_value: 0.9, tickets: 0 },
+  { monitor_id: "M2-BRIDGE-LAT", name: "Bridge Fill Latency p95", domain_code: "TECH_INFRA", product: "CFD", warn: 120, breach: 250, unit: "ms", status: "HEALTHY", last_value: 78, tickets: 0 },
+  { monitor_id: "M2-ABOOK-008", name: "A-book Volume Ratio (session)", domain_code: "LP_HEDGE", product: "CFD", warn: 40, breach: 30, unit: "%", status: "HEALTHY", last_value: 52, tickets: 0 },
+  { monitor_id: "M2-VAR-002", name: "1-day VaR Utilisation", domain_code: "MARKET_PRICING", product: "CFD", warn: 85, breach: 95, unit: "%", status: "HEALTHY", last_value: 71, tickets: 0 },
+  { monitor_id: "M2-CORR-004", name: "Corr Matrix Drift vs Baseline", domain_code: "MARKET_PRICING", product: "CFD", warn: 0.2, breach: 0.35, unit: "Δρ", status: "HEALTHY", last_value: 0.11, tickets: 0 },
+  { monitor_id: "M2-GAP-012", name: "Estimated Gap Exposure (USD)", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 1000000, breach: 2000000, unit: "USD", status: "HEALTHY", last_value: 420000, tickets: 0 },
+  { monitor_id: "M2-SPREAD-005", name: "Spread vs Session Median Ratio", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 2, breach: 3, unit: "x", status: "HEALTHY", last_value: 1.1, tickets: 0 },
+  { monitor_id: "M2-LEV-019", name: "New Accounts at Max Leverage (24h)", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 100, breach: 200, unit: "accounts", status: "HEALTHY", last_value: 64, tickets: 0 },
+  { monitor_id: "M2-BONUS-013", name: "Bonus Converted to Cash (24h USD)", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 75000, breach: 150000, unit: "USD", status: "HEALTHY", last_value: 42000, tickets: 0 },
+  { monitor_id: "M2-WD-015", name: "Withdrawal Volume (1h USD)", domain_code: "OPS_PROCESS", product: "CFD+Crypto", warn: 2000000, breach: 5000000, unit: "USD", status: "HEALTHY", last_value: 860000, tickets: 0 },
+  { monitor_id: "M2-FUND-010", name: "Funding Exceptions (1h)", domain_code: "OPS_PROCESS", product: "CFD", warn: 30, breach: 80, unit: "count/h", status: "HEALTHY", last_value: 12, tickets: 0 },
+  { monitor_id: "M2-PAY-017", name: "Payment Fraud Model Score", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 0.65, breach: 0.8, unit: "score", status: "HEALTHY", last_value: 0.41, tickets: 0 },
+  { monitor_id: "M2-WASH-020", name: "Wash/Collusion Detection Score", domain_code: "FRAUD_CONDUCT", product: "CFD+Crypto", warn: 0.55, breach: 0.75, unit: "score", status: "HEALTHY", last_value: 0.22, tickets: 0 },
+  { monitor_id: "M2-API-023", name: "Trading API Error Rate (5m)", domain_code: "TECH_INFRA", product: "CFD+Crypto", warn: 2, breach: 5, unit: "%", status: "HEALTHY", last_value: 0.3, tickets: 0 },
+  { monitor_id: "M2-MODEL-006", name: "Detector Precision (7d rolling)", domain_code: "MODEL_AI", product: "CFD+Crypto", warn: 80, breach: 70, unit: "%", status: "HEALTHY", last_value: 86, tickets: 0 },
+  { monitor_id: "M2-CAP-024", name: "Entity Capital Buffer Ratio", domain_code: "REG_CAPITAL", product: "CFD+Crypto", warn: 20, breach: 15, unit: "%", status: "HEALTHY", last_value: 28, tickets: 0 },
+  { monitor_id: "M2-SEG-025", name: "Client Money Segregation Gap (USD)", domain_code: "REG_CAPITAL", product: "CFD", warn: 50000, breach: 250000, unit: "USD", status: "HEALTHY", last_value: 0, tickets: 0 },
+  { monitor_id: "M2-CRYPTO-ORACLE", name: "Mark Price Oracle Lag", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 1, breach: 2, unit: "seconds", status: "HEALTHY", last_value: 0.2, tickets: 0 },
+  { monitor_id: "M2-CRYPTO-INS", name: "Insurance Fund Daily Drawdown", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 4, breach: 8, unit: "%", status: "HEALTHY", last_value: 0.6, tickets: 0 },
+  { monitor_id: "M2-CRYPTO-OI", name: "Top Account OI Share (per contract)", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 20, breach: 35, unit: "%", status: "HEALTHY", last_value: 12, tickets: 0 },
+  { monitor_id: "M2-CRYPTO-DEP", name: "Crypto Deposits (1h USD)", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 3000000, breach: 8000000, unit: "USD", status: "HEALTHY", last_value: 1100000, tickets: 0 },
+  { monitor_id: "M2-ARB-026", name: "Latency Arb Toxicity Score", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 0.5, breach: 0.7, unit: "score", status: "HEALTHY", last_value: 0.18, tickets: 0 },
+  { monitor_id: "M2-SWAP-027", name: "Symbols with Swap vs Benchmark Δ", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 5, breach: 10, unit: "symbols", status: "HEALTHY", last_value: 1, tickets: 0 },
+];
+
+function ensureExtraMonitors(db: Database.Database) {
+  const upsert = db.prepare(
+    `INSERT INTO monitor_indicators (monitor_id, name, domain_code, product, threshold_warn, threshold_breach, unit, status, last_value, last_checked_at, ticket_open_count)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)
+     ON CONFLICT(monitor_id) DO UPDATE SET
+       name = excluded.name,
+       domain_code = excluded.domain_code,
+       product = excluded.product,
+       threshold_warn = excluded.threshold_warn,
+       threshold_breach = excluded.threshold_breach,
+       unit = excluded.unit`
+  );
+  for (const row of MONITOR_SEED_ROWS) {
+    upsert.run(
+      row.monitor_id,
+      row.name,
+      row.domain_code,
+      row.product,
+      row.warn,
+      row.breach,
+      row.unit,
+      row.status,
+      row.last_value,
+      row.tickets
+    );
+  }
+}
+
 function ensureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
   ensureSpineSchema(db);
   ensureAiAdminSchema(db);
   syncRoles(db);
+  ensureExtraMonitors(db);
   seedRagIfEmpty(db);
   seedSkillsIfEmpty(db);
   seedDetectors(db);

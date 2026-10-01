@@ -46,6 +46,7 @@ export function deptLabel(code: string | null | undefined) {
     OPERATIONS: "Operations",
     AI: "AI",
     SYSTEM: "System",
+    EXEC: "Exec",
   };
   return code ? map[code] ?? code : "—";
 }

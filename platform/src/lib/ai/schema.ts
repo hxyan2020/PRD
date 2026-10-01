@@ -29,7 +29,26 @@ export function ensureAiSchema(db: Database.Database) {
       auto_execute INTEGER NOT NULL DEFAULT 1,
       owner_department TEXT NOT NULL,
       status TEXT NOT NULL DEFAULT 'ACTIVE',
+      scenario_json TEXT NOT NULL DEFAULT '{}',
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS risk_scenario_chains (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT NOT NULL UNIQUE,
+      name TEXT NOT NULL,
+      description TEXT NOT NULL,
+      product TEXT NOT NULL,
+      domain TEXT NOT NULL,
+      severity TEXT NOT NULL,
+      sequence_json TEXT NOT NULL,
+      causes_json TEXT NOT NULL,
+      escalation_json TEXT NOT NULL,
+      corrections_json TEXT NOT NULL,
+      linked_skills_json TEXT NOT NULL,
+      past_cases_json TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'ACTIVE',
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
     CREATE TABLE IF NOT EXISTS external_macro_events (

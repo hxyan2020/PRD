@@ -63,7 +63,7 @@ When Monitor 2.0 indicators alarm:
 - `/admin/ai-analyses/[id]` — explanations, evidence vault, skill run log
 - `/admin/ai-admin` — AI control plane: parameters, training, accuracy/history, propose skills/RAG, **maker/checker** dual control
 - `/admin/rag` — view / manage / retrieve Vantage business corpus
-- `/admin/skills` — dummy playbooks mapped to indicators
+- `/admin/skills` — risk scenarios: indicator + thresholds (why), fault areas, escalation, BU corrections, past cases; linked multi-indicator timeline chains
 
 **Maker / Checker:** AI Engineer proposes (`ai.propose` / `skills.manage` / `rag.manage`). Risk Owner checks (`ai.approve`). Proposer cannot approve their own change.
 
