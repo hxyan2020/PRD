@@ -7,6 +7,8 @@ import { seedRagIfEmpty } from "@/lib/ai/seed-rag";
 import { seedSkillsIfEmpty } from "@/lib/ai/skills";
 import { seedDetectors } from "@/lib/ai/detectors";
 import { seedDailyPerformance } from "@/lib/ai/daily";
+import { ensureAiAdminSchema } from "@/lib/ai/admin-schema";
+import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -230,9 +232,15 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "dashboard.full",
       "rag.read",
       "rag.manage",
+      "rag.approve",
       "skills.read",
+      "skills.manage",
+      "skills.approve",
       "ai.read",
       "ai.operate",
+      "ai.admin",
+      "ai.propose",
+      "ai.approve",
       "detectors.read",
       "detectors.operate",
       "intervene.operate",
@@ -260,6 +268,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "skills.read",
       "ai.read",
       "ai.operate",
+      "ai.admin",
+      "ai.propose",
       "detectors.read",
       "detectors.operate",
       "intervene.operate",
@@ -334,6 +344,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "skills.manage",
       "ai.read",
       "ai.operate",
+      "ai.admin",
+      "ai.propose",
       "detectors.read",
       "detectors.operate",
       "spine.read",
@@ -669,10 +681,13 @@ function seedIfEmpty(db: Database.Database) {
 function ensureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
   ensureSpineSchema(db);
+  ensureAiAdminSchema(db);
+  syncRoles(db);
   seedRagIfEmpty(db);
   seedSkillsIfEmpty(db);
   seedDetectors(db);
   seedDailyPerformance(db);
+  seedAiAdminIfEmpty(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`

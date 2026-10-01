@@ -61,8 +61,11 @@ When Monitor 2.0 indicators alarm:
 ### New admin pages
 - `/admin/ai-analyses` — analyses list, simulate alarm, backfill
 - `/admin/ai-analyses/[id]` — explanations, evidence vault, skill run log
+- `/admin/ai-admin` — AI control plane: parameters, training, accuracy/history, propose skills/RAG, **maker/checker** dual control
 - `/admin/rag` — view / manage / retrieve Vantage business corpus
 - `/admin/skills` — dummy playbooks mapped to indicators
+
+**Maker / Checker:** AI Engineer proposes (`ai.propose` / `skills.manage` / `rag.manage`). Risk Owner checks (`ai.approve`). Proposer cannot approve their own change.
 
 Auto-trigger also runs on **Monitor 2.0 Sync**.
 
