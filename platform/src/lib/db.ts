@@ -2,8 +2,11 @@ import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
 import { ensureAiSchema } from "@/lib/ai/schema";
+import { ensureSpineSchema } from "@/lib/ai/spine-schema";
 import { seedRagIfEmpty } from "@/lib/ai/seed-rag";
 import { seedSkillsIfEmpty } from "@/lib/ai/skills";
+import { seedDetectors } from "@/lib/ai/detectors";
+import { seedDailyPerformance } from "@/lib/ai/daily";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -230,6 +233,11 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "skills.read",
       "ai.read",
       "ai.operate",
+      "detectors.read",
+      "detectors.operate",
+      "intervene.operate",
+      "spine.read",
+      "dashboard.read",
     ],
   ],
   [
@@ -252,6 +260,11 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "skills.read",
       "ai.read",
       "ai.operate",
+      "detectors.read",
+      "detectors.operate",
+      "intervene.operate",
+      "spine.read",
+      "dashboard.read",
     ],
   ],
   [
@@ -274,6 +287,10 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "rag.read",
       "skills.read",
       "ai.read",
+      "detectors.read",
+      "spine.read",
+      "dashboard.read",
+      "intervene.operate",
     ],
   ],
   [
@@ -291,6 +308,9 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "dashboard.ops",
       "rag.read",
       "ai.read",
+      "detectors.read",
+      "spine.read",
+      "dashboard.read",
     ],
   ],
   [
@@ -314,6 +334,11 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "skills.manage",
       "ai.read",
       "ai.operate",
+      "detectors.read",
+      "detectors.operate",
+      "spine.read",
+      "dashboard.read",
+      "intervene.operate",
     ],
   ],
   [
@@ -341,6 +366,10 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "rag.read",
       "skills.read",
       "ai.read",
+      "detectors.read",
+      "detectors.operate",
+      "spine.read",
+      "dashboard.read",
     ],
   ],
   [
@@ -360,6 +389,9 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "rag.read",
       "skills.read",
       "ai.read",
+      "detectors.read",
+      "spine.read",
+      "dashboard.read",
     ],
   ],
 ];
@@ -636,15 +668,18 @@ function seedIfEmpty(db: Database.Database) {
 
 function ensureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
+  ensureSpineSchema(db);
   seedRagIfEmpty(db);
   seedSkillsIfEmpty(db);
-  // Upsert AI-related settings if missing
+  seedDetectors(db);
+  seedDailyPerformance(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`
   );
   upsert.run("ai.auto_on_alarm", "true", "Auto-trigger AI analysis when Monitor indicators alarm");
   upsert.run("ai.skill_certainty_only", "true", "Auto-execute skills only when conditions match with certainty");
+  upsert.run("detectors.auto_raise_alarms", "true", "Detectors raise Monitor alarms when warn/breach");
 }
 
 export function getDb() {

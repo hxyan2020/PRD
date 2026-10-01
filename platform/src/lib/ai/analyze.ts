@@ -2,6 +2,8 @@ import { randomBytes } from "crypto";
 import { getDb, writeAudit } from "@/lib/db";
 import { matchSkill } from "@/lib/ai/skills";
 import { retrieveRag } from "@/lib/ai/rag";
+import { logSpineEvent } from "@/lib/ai/spine";
+import { syncInterventionsFromSkillRuns } from "@/lib/ai/intervention";
 
 type AlertRow = {
   id: number;
@@ -178,6 +180,27 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
       skill: skillMatch.skill.code,
     });
 
+    logSpineEvent({
+      stage: "AI_RCA",
+      title: `Skill match ${skillMatch.skill.code} for ${alert.alert_id}`,
+      product: indicator.product,
+      ref_type: "analysis",
+      ref_id: analysisId,
+      severity: alert.severity,
+      detail: { mode: "SKILL_MATCH", confidence: 1 },
+      actor: "ai-engine",
+    });
+    logSpineEvent({
+      stage: "SKILL_EXECUTE",
+      title: `Executed ${actions.length} steps for ${skillMatch.skill.code}`,
+      product: indicator.product,
+      ref_type: "analysis",
+      ref_id: analysisId,
+      detail: { needs_human: needsHuman },
+      actor: "ai-engine",
+    });
+    syncInterventionsFromSkillRuns();
+
     return getAnalysisBundle(dbId);
   }
 
@@ -231,27 +254,40 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
   const confidence = Math.min(0.92, Math.max(...explanations.map((e) => Number(e.confidence) || 0)));
   const summary = `No certain skill match for ${indicator.monitor_id}. Generated ${explanations.length} plausible explanation(s) from RAG + external macro evidence. Human review required (confidence ${confidence.toFixed(2)} < 1.00).`;
 
-  const actions = [
-    {
-      action: "lark_notify",
-      status: "EXECUTED_MOCK",
-      description: "Posted AI RCA draft to AI Detection Alerts Lark channel",
-    },
-    {
-      action: "flag_for_human_review",
-      status: "AWAITING_HUMAN",
-      description: "Analyst must confirm root cause before intervention",
-    },
-  ];
+  const humanSkill = db
+    .prepare(`SELECT id FROM ai_skills WHERE code = 'SKILL-GENERIC-HUMAN-REVIEW'`)
+    .get() as { id: number } | undefined;
 
   const info = db
     .prepare(
       `INSERT INTO ai_analyses
         (analysis_id, alert_id, indicator_monitor_id, mode, confidence, skill_id, summary, explanations_json, actions_taken_json, status, needs_human, completed_at)
-       VALUES (?, ?, ?, 'RAG_REASONING', ?, NULL, ?, ?, ?, 'NEEDS_HUMAN', 1, datetime('now'))`
+       VALUES (?, ?, ?, 'RAG_REASONING', ?, NULL, ?, ?, '[]', 'NEEDS_HUMAN', 1, datetime('now'))`
     )
-    .run(analysisId, alert.id, indicator.monitor_id, confidence, summary, JSON.stringify(explanations), JSON.stringify(actions));
+    .run(analysisId, alert.id, indicator.monitor_id, confidence, summary, JSON.stringify(explanations));
   const dbId = Number(info.lastInsertRowid);
+
+  const actions = humanSkill
+    ? executeSkillSteps(dbId, humanSkill.id, [
+        {
+          action: "lark_notify",
+          description: "Posted AI RCA draft to AI Detection Alerts Lark channel",
+          params: { channel: "oc_ai_detection_lab" },
+        },
+        {
+          action: "flag_for_human_review",
+          description: "Analyst must confirm root cause before intervention",
+          requires_human: true,
+        },
+      ])
+    : [
+        {
+          action: "flag_for_human_review",
+          status: "AWAITING_HUMAN",
+          description: "Analyst must confirm root cause before intervention",
+        },
+      ];
+  db.prepare(`UPDATE ai_analyses SET actions_taken_json = ? WHERE id = ?`).run(JSON.stringify(actions), dbId);
 
   const ev = db.prepare(
     `INSERT INTO ai_analysis_evidence (analysis_id, evidence_type, ref_id, title, excerpt, url, score)
@@ -290,6 +326,18 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
     rag_hits: ragHits.length,
     macro_hits: macros.length,
   });
+
+  logSpineEvent({
+    stage: "AI_RCA",
+    title: `RAG reasoning for ${alert.alert_id} (confidence ${confidence.toFixed(2)})`,
+    product: indicator.product,
+    ref_type: "analysis",
+    ref_id: analysisId,
+    severity: alert.severity,
+    detail: { mode: "RAG_REASONING", rag_hits: ragHits.length, macro_hits: macros.length },
+    actor: "ai-engine",
+  });
+  syncInterventionsFromSkillRuns();
 
   return getAnalysisBundle(dbId);
 }

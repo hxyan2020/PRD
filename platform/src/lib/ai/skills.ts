@@ -25,6 +25,23 @@ type SkillDef = {
 
 const SKILLS: SkillDef[] = [
   {
+    code: "SKILL-GENERIC-HUMAN-REVIEW",
+    name: "Generic human RCA review",
+    description:
+      "Fallback playbook when no certainty skill matches. Forces human confirmation of AI/RAG explanations before intervention.",
+    indicator_patterns: ["__NEVER_AUTO_MATCH__"],
+    conditions: { severity_in: ["CRITICAL"] },
+    owner_department: "RISK_CONTROL",
+    auto_execute: false,
+    steps: [
+      {
+        action: "flag_for_human_review",
+        description: "Confirm AI/RAG root-cause before acting",
+        requires_human: true,
+      },
+    ],
+  },
+  {
     code: "SKILL-MARGIN-SPIKE",
     name: "Margin utilisation spike playbook",
     description:

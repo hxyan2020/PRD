@@ -66,6 +66,20 @@ When Monitor 2.0 indicators alarm:
 
 Auto-trigger also runs on **Monitor 2.0 Sync**.
 
-## Next phase
+## Semi-automated spine (finalised)
 
-Daily performance dashboard, live detectors over CFD + crypto exchange, real Lark/LP action adapters.
+`Detectors → Alarm → AI RCA (skills / RAG evidence) → Human intervention → Spine logging → Daily performance dashboard`
+
+| Stage | Page |
+|---|---|
+| Detectors | `/admin/detectors` |
+| AI RCA | `/admin/ai-analyses` |
+| Human gates | `/admin/interventions` |
+| Spine log | `/admin/spine` |
+| Daily dashboard (CFD + crypto) | `/admin/dashboard` |
+
+Run detectors to sample indicators, raise alarms, and auto-trigger AI. Approve pending actions in Human Intervention. Review CFD vs crypto metrics on Daily Performance.
+
+## Still out of scope (production wiring)
+
+Real Lark webhooks, live LP disable adapters, production SSO.
