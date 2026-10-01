@@ -2,7 +2,6 @@ import { randomBytes } from "crypto";
 import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
 import { logSpineEvent } from "@/lib/ai/spine";
-import { getAnalysisBundle } from "@/lib/ai/analyze";
 
 export type MessengerAction =
   | "show_evidence"
@@ -284,17 +283,23 @@ export function messengerAction(input: {
       addMessage(db, thread.id, "SYSTEM", "Messenger", "No AI analysis linked — open Live Alerts to investigate.");
       return getMessengerThread(thread.id);
     }
-    const bundle = getAnalysisBundle(thread.analysis_id);
-    const evidence = (bundle.evidence || []) as Array<{
+    const evidence = db
+      .prepare(
+        `SELECT evidence_type, title, excerpt, score FROM ai_analysis_evidence
+         WHERE analysis_id = ? ORDER BY score DESC, id LIMIT 6`
+      )
+      .all(thread.analysis_id) as Array<{
       evidence_type: string;
       title: string;
       excerpt: string;
       score: number;
     }>;
-    const challenge = bundle.challenge as { verdict?: string; summary?: string } | null;
-    const lines = evidence
-      .slice(0, 6)
-      .map((e) => `• [${e.evidence_type}] ${e.title} (score ${Number(e.score).toFixed(2)})\n  ${e.excerpt.slice(0, 160)}`);
+    const challenge = db
+      .prepare(`SELECT verdict, summary FROM ai_analysis_challenges WHERE analysis_id = ?`)
+      .get(thread.analysis_id) as { verdict: string; summary: string } | undefined;
+    const lines = evidence.map(
+      (e) => `• [${e.evidence_type}] ${e.title} (score ${Number(e.score).toFixed(2)})\n  ${String(e.excerpt || "").slice(0, 160)}`
+    );
     addMessage(
       db,
       thread.id,
