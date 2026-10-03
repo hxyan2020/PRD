@@ -1,0 +1,24 @@
+{
+  "service": "canon",
+  "product": "Canon listening archive",
+  "name": "Canon",
+  "status": "ok",
+  "archiveSongs": 1000,
+  "slug": "canon",
+  "kind": "external",
+  "publicUrl": "https://canon-ivory.vercel.app/",
+  "hx": {
+    "monitoring": true,
+    "viewership": true,
+    "collect": "http://188.166.214.47:3520/collect",
+    "telegram": "HX Bots Dashboard"
+  },
+  "http": [
+    "https://canon-ivory.vercel.app/hx/health.json",
+    "https://canon-ivory.vercel.app/"
+  ],
+  "endpoints": {
+    "health": "/hx/health.json",
+    "bots": "/hx/bots.json"
+  }
+}
