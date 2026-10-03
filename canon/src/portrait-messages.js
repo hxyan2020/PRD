@@ -7,6 +7,9 @@ export const PORTRAITS = {
     anecdoteNote: "A short public note — not a full biography.",
     expandPortrait: "View larger image of {name}",
     closePortrait: "Close image",
+    prevPortrait: "Previous image",
+    nextPortrait: "Next image",
+    portraitPosition: "{current} of {total}",
   },
   zh: {
     songAnecdote: "歌曲轶事",
@@ -16,6 +19,9 @@ export const PORTRAITS = {
     anecdoteNote: "一则公开短记，并非完整传记。",
     expandPortrait: "查看{name}的大图",
     closePortrait: "关闭图片",
+    prevPortrait: "上一张",
+    nextPortrait: "下一张",
+    portraitPosition: "{current} / {total}",
   },
   hi: {
     songAnecdote: "गीत की झलक",
@@ -25,6 +31,9 @@ export const PORTRAITS = {
     anecdoteNote: "एक सार्वजनिक संक्षिप्त नोट — पूरी जीवनी नहीं।",
     expandPortrait: "{name} की बड़ी छवि देखें",
     closePortrait: "छवि बंद करें",
+    prevPortrait: "पिछली छवि",
+    nextPortrait: "अगली छवि",
+    portraitPosition: "{current} / {total}",
   },
   es: {
     songAnecdote: "Anécdota de la canción",
@@ -34,6 +43,9 @@ export const PORTRAITS = {
     anecdoteNote: "Una nota pública breve, no una biografía completa.",
     expandPortrait: "Ver imagen más grande de {name}",
     closePortrait: "Cerrar imagen",
+    prevPortrait: "Imagen anterior",
+    nextPortrait: "Imagen siguiente",
+    portraitPosition: "{current} de {total}",
   },
   fr: {
     songAnecdote: "Anecdote de la chanson",
@@ -43,6 +55,9 @@ export const PORTRAITS = {
     anecdoteNote: "Une note publique courte — pas une biographie complète.",
     expandPortrait: "Voir une plus grande image de {name}",
     closePortrait: "Fermer l’image",
+    prevPortrait: "Image précédente",
+    nextPortrait: "Image suivante",
+    portraitPosition: "{current} sur {total}",
   },
   ar: {
     songAnecdote: "طرفة عن الأغنية",
@@ -52,6 +67,9 @@ export const PORTRAITS = {
     anecdoteNote: "ملاحظة عامة قصيرة وليست سيرة كاملة.",
     expandPortrait: "عرض صورة أكبر لـ {name}",
     closePortrait: "إغلاق الصورة",
+    prevPortrait: "الصورة السابقة",
+    nextPortrait: "الصورة التالية",
+    portraitPosition: "{current} من {total}",
   },
   bn: {
     songAnecdote: "গানের কিসসা",
@@ -61,6 +79,9 @@ export const PORTRAITS = {
     anecdoteNote: "একটি সংক্ষিপ্ত সর্বজনীন টীকা — পূর্ণ জীবনী নয়।",
     expandPortrait: "{name}-এর বড় ছবি দেখুন",
     closePortrait: "ছবি বন্ধ করুন",
+    prevPortrait: "আগের ছবি",
+    nextPortrait: "পরের ছবি",
+    portraitPosition: "{current} / {total}",
   },
   pt: {
     songAnecdote: "Anecdota da canção",
@@ -70,5 +91,8 @@ export const PORTRAITS = {
     anecdoteNote: "Uma nota pública curta — não é uma biografia completa.",
     expandPortrait: "Ver imagem maior de {name}",
     closePortrait: "Fechar imagem",
+    prevPortrait: "Imagem anterior",
+    nextPortrait: "Próxima imagem",
+    portraitPosition: "{current} de {total}",
   },
 };

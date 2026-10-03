@@ -239,6 +239,17 @@ assert.match(t("en", "aboutHostBody"), /canon-ivory\.vercel\.app/);
 const portraitKeys = Object.keys(PORTRAITS.en).sort();
 assert.ok(portraitKeys.includes("songAnecdote"));
 assert.ok(portraitKeys.includes("expandPortrait"));
+assert.ok(portraitKeys.includes("prevPortrait"));
+assert.ok(portraitKeys.includes("nextPortrait"));
+assert.ok(portraitKeys.includes("portraitPosition"));
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),
+  /portrait-lightbox-scroller/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),
+  /ArrowLeft/,
+);
 for (const locale of LANGUAGE_IDS) {
   assert.deepEqual(Object.keys(PORTRAITS[locale]).sort(), portraitKeys, `${locale} portrait copy keys`);
   assert.match(t(locale, "portraitsOf", { name: "Queen" }), /Queen/);

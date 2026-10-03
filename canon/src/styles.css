@@ -1603,13 +1603,36 @@ option {
   z-index: 200;
   display: grid;
   place-items: center;
-  padding: 48px 24px 24px;
+  padding: 0;
   background: rgba(8, 6, 4, 0.92);
 }
 
+.portrait-lightbox-scroller {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.portrait-lightbox-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: grid;
+  place-items: center;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  padding: 64px 72px 48px;
+}
+
 .portrait-lightbox img {
-  max-width: min(96vw, 1200px);
-  max-height: min(86vh, 1200px);
+  max-width: min(92vw, 1200px);
+  max-height: min(82vh, 1200px);
   width: auto;
   height: auto;
   object-fit: contain;
@@ -1621,10 +1644,10 @@ body.portrait-lightbox-open {
   overflow: hidden;
 }
 
-.portrait-lightbox-close {
+.portrait-lightbox-close,
+.portrait-lightbox-nav {
   position: absolute;
-  top: max(16px, env(safe-area-inset-top, 0px));
-  inset-inline-end: max(16px, env(safe-area-inset-right, 0px));
+  z-index: 2;
   border: 1px solid rgba(201, 164, 90, 0.5);
   background: var(--brass);
   color: var(--ink);
@@ -1635,6 +1658,54 @@ body.portrait-lightbox-open {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
+}
+
+.portrait-lightbox-close {
+  top: max(16px, env(safe-area-inset-top, 0px));
+  inset-inline-end: max(16px, env(safe-area-inset-right, 0px));
+}
+
+.portrait-lightbox-nav {
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 8.5rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.portrait-lightbox-nav.is-prev {
+  inset-inline-start: max(12px, env(safe-area-inset-left, 0px));
+}
+
+.portrait-lightbox-nav.is-next {
+  inset-inline-end: max(12px, env(safe-area-inset-right, 0px));
+}
+
+.portrait-lightbox-count {
+  position: absolute;
+  z-index: 2;
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: var(--paper);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+@media (max-width: 980px) {
+  .portrait-lightbox-slide {
+    padding: 56px 12px 48px;
+  }
+
+  .portrait-lightbox-nav {
+    max-width: 5.8rem;
+    font-size: 11px;
+    padding: 8px 10px;
+  }
 }
 
 @media (max-width: 980px) {
