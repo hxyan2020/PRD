@@ -1,8 +1,10 @@
 # Crypto Exchange Risk Management — BU User Handbook
 
+**Public URL (no login):** https://hxyan2020.github.io/PRD/risk-handbook/
+
 **Open the handbook (English / 简体中文 tabs):**
 
-→ **[docs/risk-handbook/index.html](risk-handbook/index.html)**
+→ **[docs/risk-handbook/index.html](risk-handbook/index.html)** (repo copy)
 
 | Edition | File |
 |---------|------|
