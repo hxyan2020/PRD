@@ -607,8 +607,9 @@ h1 {
 .daily-copy .prefs-link {
   display: inline-flex;
   margin-top: 14px;
-  border: 1px solid rgba(201, 164, 90, 0.45);
-  color: var(--paper);
+  border: 1px solid var(--brass);
+  background: var(--brass);
+  color: var(--ink);
   text-decoration: none;
   border-radius: 999px;
   padding: 7px 12px;
@@ -673,10 +674,11 @@ button.surprise {
 }
 
 .daily-form button.surprise,
-.card-actions button.surprise {
+.card-actions button.surprise,
+.card-nav-actions .surprise {
   background: var(--oxblood);
   color: var(--paper);
-  border-color: rgba(243, 234, 214, 0.35);
+  border-color: #9a3d31;
 }
 
 .mood-chips {
@@ -1183,6 +1185,50 @@ option {
 
 .card-actions button.surprise {
   background: var(--oxblood);
+  color: var(--paper);
+  border-color: #9a3d31;
+}
+
+.card-nav-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(243, 234, 214, 0.14);
+}
+
+.card-nav-actions button,
+.card-nav-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.card-nav-actions .surprise {
+  background: var(--oxblood);
+  color: var(--paper);
+  border-color: #9a3d31;
+}
+
+.card-nav-actions .prefs-link {
+  background: var(--brass);
+  color: var(--ink);
+  border-color: var(--brass);
+}
+
+.card-nav-actions .ghost {
+  background: transparent;
   color: var(--paper);
   border-color: rgba(243, 234, 214, 0.35);
 }
@@ -1892,6 +1938,8 @@ body.portrait-lightbox-open {
 
   .card-actions button,
   .card-actions a,
+  .card-nav-actions button,
+  .card-nav-actions a,
   .close,
   .spotify-link,
   .log-row button,
@@ -2057,6 +2105,15 @@ body.portrait-lightbox-open {
     flex: 1 1 calc(50% - 8px);
     min-width: 0;
     max-width: 100%;
+  }
+
+  .card-nav-actions button,
+  .card-nav-actions a {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+    max-width: 100%;
+    justify-content: center;
+    text-align: center;
   }
 
   .daily-prefs .daily-actions button {

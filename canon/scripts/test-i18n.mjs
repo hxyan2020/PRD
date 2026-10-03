@@ -166,6 +166,18 @@ assert.doesNotMatch(
   /lyrics-toggle/
 );
 assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/DailyRecommend.jsx"), "utf8"),
+  /card-nav-actions/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
+  /\.card-nav-actions \.prefs-link/,
+);
+assert.match(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/styles.css"), "utf8"),
+  /\.card-nav-actions \.surprise/,
+);
+assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/PortraitGallery.jsx"), "utf8"),
   /createPortal/,
 );

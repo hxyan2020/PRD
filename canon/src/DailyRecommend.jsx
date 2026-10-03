@@ -148,17 +148,19 @@ export default function DailyRecommend({
               </button>
               <CollectButton id={track.id} collectedIds={collectedIds} onToggle={onToggleCollect} />
               {spotify ? <SpotifyAddButton track={track} spotify={spotify} /> : null}
+            </div>
+            <div className="card-nav-actions">
               <button type="button" className="surprise" onClick={surpriseMe}>
                 {t("surpriseMe")}
               </button>
+              <a className="prefs-link" href="#prefs">
+                {t("changePrefs")}
+              </a>
               {isSurprise ? (
                 <button type="button" className="ghost" onClick={() => setSurprise(null)}>
                   {t("backToToday")}
                 </button>
               ) : null}
-              <a className="prefs-link" href="#prefs">
-                {t("changePrefs")}
-              </a>
             </div>
           </div>
           <LyricsPanel id="today-lyrics" track={track} open={lyricsOpen} onClose={() => setLyricsOpen(false)} />
