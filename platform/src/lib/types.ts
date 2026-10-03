@@ -8,7 +8,8 @@ export type RoleCode =
   | "OPS_ANALYST"
   | "AI_ENGINEER"
   | "SYSTEM_ADMIN"
-  | "VIEWER";
+  | "VIEWER"
+  | "PUBLIC_GUEST";
 
 export type SourceCategory =
   | "MARKET_DATA"

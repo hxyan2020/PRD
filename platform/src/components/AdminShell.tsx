@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { NAV_ITEMS } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/lib/types";
-import { LogOut, Menu, X } from "lucide-react";
+import { LogOut, LogIn, Menu, X } from "lucide-react";
 import { UI_LOCALE_COOKIE, navLabel, shellCopy, type UiLocale } from "@/lib/i18n";
 
 function readLocaleCookie(): UiLocale {
@@ -116,17 +116,29 @@ export function AdminShell({
         <div className="mt-0.5 text-slate-300 break-all">{user.email}</div>
         <div className="mt-2 flex flex-wrap gap-1">
           <span className="badge border-teal-400/30 bg-teal-400/10 text-teal-100">{user.role_code}</span>
+          {user.role_code === "PUBLIC_GUEST" && (
+            <span className="badge border-amber-400/30 bg-amber-400/10 text-amber-100">{copy.publicMode}</span>
+          )}
           {user.department_code && (
             <span className="badge border-white/20 bg-white/10 text-slate-100">{user.department_code}</span>
           )}
         </div>
         <div className="mt-3">{langToggle}</div>
-        <button
-          onClick={logout}
-          className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10"
-        >
-          <LogOut size={14} /> {copy.signOut}
-        </button>
+        {user.role_code === "PUBLIC_GUEST" ? (
+          <a
+            href="/login"
+            className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10"
+          >
+            <LogIn size={14} /> {copy.signIn}
+          </a>
+        ) : (
+          <button
+            onClick={logout}
+            className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10"
+          >
+            <LogOut size={14} /> {copy.signOut}
+          </button>
+        )}
       </div>
     </>
   );
@@ -181,6 +193,9 @@ export function AdminShell({
                 <div className="font-[family-name:var(--font-display)] text-sm sm:text-lg text-[var(--ink)] truncate">
                   {copy.headerTitle}
                 </div>
+                {user.role_code === "PUBLIC_GUEST" && (
+                  <div className="text-[10px] sm:text-xs text-teal-800">{copy.publicMode}</div>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">

@@ -4,7 +4,7 @@ import { writeAudit } from "@/lib/db";
 
 export async function POST() {
   const user = await getCurrentUser();
-  if (user) {
+  if (user && user.role_code !== "PUBLIC_GUEST") {
     writeAudit(user, "LOGOUT", "user", String(user.id));
   }
   await destroySession();
