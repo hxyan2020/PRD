@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {
+  candidatePool,
   recommendDaily,
   scoreTrack,
   surprisePick,
@@ -91,6 +92,25 @@ assert.equal(uk.track.id, "hymn");
 
 const japan = recommendDaily(tracks, { country: "Japan" }, new Date("2026-09-05Z"));
 assert.equal(japan.track.id, "jpop");
+
+const combo = {
+  id: "dakiti",
+  name: "Dakiti",
+  genre: "reggaeton",
+  genres: ["reggaeton"],
+  releaseCountry: "Puerto Rico · United States",
+  streams: 200_000,
+};
+const withCombo = [...tracks, combo];
+assert.ok(
+  candidatePool(withCombo, { country: "Puerto Rico" }).some((track) => track.id === "dakiti"),
+  "a multi-country title matches each listed country",
+);
+assert.ok(candidatePool(withCombo, { country: "United States" }).some((track) => track.id === "dakiti"));
+assert.equal(
+  candidatePool(withCombo, { country: "Japan" }).some((track) => track.id === "dakiti"),
+  false,
+);
 
 const jazzOnly = recommendDaily(tracks, { genre: "jazz", mood: "melancholy" }, new Date("2026-09-05Z"));
 assert.equal(jazzOnly.track.id, "jazz");

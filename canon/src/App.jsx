@@ -18,6 +18,7 @@ import { useSpotify } from "./useSpotify.js";
 import { decadeOf, uniqueSorted } from "./format.js";
 import { formatStatus } from "./i18n.js";
 import { displayEraLabel, displayGenre, displayReleaseCountry } from "./display-labels.js";
+import { releaseIncludesCountry, uniqueSingleCountries } from "./country-flags.js";
 import { hxPathForRoute, sendHxBeacon } from "./hx.js";
 import { pageAllowsTrack, parseRoute, routeHash } from "./pages.js";
 import { SiteDoc, SiteFooter, SiteMenu } from "./SitePages.jsx";
@@ -119,7 +120,7 @@ export default function App() {
   const facets = useMemo(() => {
     const genres = uniqueSorted(tracks.flatMap((item) => (item.genres?.length ? item.genres : [item.genre])));
     const eras = uniqueSorted(tracks.map((item) => decadeOf(item.year)));
-    const countries = uniqueSorted(tracks.map((item) => item.releaseCountry));
+    const countries = uniqueSingleCountries(tracks.map((item) => item.releaseCountry));
     return { genres, eras, countries };
   }, [tracks]);
 
@@ -128,7 +129,7 @@ export default function App() {
     let list = tracks.filter((item) => {
       if (genre !== "All genres" && item.genre !== genre && !(item.genres || []).includes(genre)) return false;
       if (era !== "All eras" && decadeOf(item.year) !== era) return false;
-      if (country !== "All countries" && item.releaseCountry !== country) return false;
+      if (country !== "All countries" && !releaseIncludesCountry(item.releaseCountry, country)) return false;
       if (!q) return true;
       const blob = [
         item.name,

@@ -1,3 +1,5 @@
+import { releaseIncludesCountry } from "./country-flags.js";
+
 const MOOD_PROFILES = [
   {
     id: "joyful",
@@ -62,20 +64,6 @@ const MOOD_PROFILES = [
   },
 ];
 
-const COUNTRY_ALIASES = {
-  usa: "united states",
-  us: "united states",
-  america: "united states",
-  uk: "united kingdom",
-  britain: "united kingdom",
-  england: "united kingdom",
-  korea: "south korea",
-  "south korea": "south korea",
-  "north korea": "north korea",
-  nippon: "japan",
-  brasil: "brazil",
-};
-
 export const MOOD_CHIPS = [
   "Joyful",
   "Melancholy",
@@ -128,11 +116,6 @@ function trackBlob(track) {
   );
 }
 
-function expandCountry(raw) {
-  const n = normalize(raw);
-  return COUNTRY_ALIASES[n] || n;
-}
-
 function matchingMoods(moodQuery) {
   const n = normalize(moodQuery);
   if (!n) return [];
@@ -159,7 +142,6 @@ function containsTerm(haystack, term) {
 export function scoreTrack(track, { mood = "", country = "", genre = "" } = {}) {
   const blob = trackBlob(track);
   const genreText = normalize([track.genre, ...(track.genres || [])].join(" "));
-  const countryText = normalize(track.releaseCountry);
   let score = 0;
   const hits = [];
 
@@ -171,12 +153,9 @@ export function scoreTrack(track, { mood = "", country = "", genre = "" } = {}) 
     }
   }
 
-  const countryQ = expandCountry(country);
-  if (countryQ) {
-    if (countryText.includes(countryQ) || blob.includes(countryQ)) {
-      score += 8;
-      hits.push(`origin ${track.releaseCountry || country}`);
-    }
+  if (country && releaseIncludesCountry(track.releaseCountry, country)) {
+    score += 8;
+    hits.push(`origin ${track.releaseCountry || country}`);
   }
 
   const moods = matchingMoods(mood);
@@ -217,11 +196,7 @@ function matchesGenre(track, genreQ) {
 }
 
 function matchesCountry(track, countryQ) {
-  if (!countryQ) return true;
-  const wanted = expandCountry(countryQ);
-  const countryText = normalize(track.releaseCountry);
-  if (!wanted) return true;
-  return countryText.includes(wanted) || containsTerm(countryText, wanted);
+  return releaseIncludesCountry(track.releaseCountry, countryQ);
 }
 
 function pickFrom(pool, seed) {

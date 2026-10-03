@@ -111,6 +111,46 @@ export function splitReleaseCountries(value) {
     .filter(Boolean);
 }
 
+const COUNTRY_ALIASES = {
+  usa: "united states",
+  us: "united states",
+  america: "united states",
+  uk: "united kingdom",
+  britain: "united kingdom",
+  brasil: "brazil",
+};
+
+export function canonicalCountryKey(value) {
+  const key = normalizeCountryKey(value);
+  return COUNTRY_ALIASES[key] || key;
+}
+
+export function uniqueSingleCountries(values) {
+  const seen = new Set();
+  const out = [];
+  for (const value of values || []) {
+    if (isPlaceholderCountry(value)) continue;
+    for (const part of splitReleaseCountries(value)) {
+      if (isPlaceholderCountry(part)) continue;
+      const key = canonicalCountryKey(part);
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(part.trim());
+    }
+  }
+  return out.sort((a, b) => a.localeCompare(b));
+}
+
+export function releaseIncludesCountry(value, country) {
+  const wantedRaw = String(country || "").trim();
+  if (!wantedRaw || /^all countries$/i.test(wantedRaw)) return true;
+  const wanted = splitReleaseCountries(wantedRaw).map(canonicalCountryKey).filter(Boolean);
+  if (!wanted.length) return true;
+  if (isPlaceholderCountry(value)) return false;
+  const have = new Set(splitReleaseCountries(value).map(canonicalCountryKey).filter(Boolean));
+  return wanted.some((key) => have.has(key));
+}
+
 export function codesForCountryName(name) {
   const key = normalizeCountryKey(name);
   if (!key || PLACEHOLDERS.has(key)) return [];

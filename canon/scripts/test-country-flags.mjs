@@ -9,6 +9,8 @@ import {
   isPlaceholderCountry,
   normalizeCountryKey,
   splitReleaseCountries,
+  uniqueSingleCountries,
+  releaseIncludesCountry,
 } from "../src/country-flags.js";
 import { displayEraLabel, displayGenre, displayReleaseCountry } from "../src/display-labels.js";
 
@@ -17,6 +19,16 @@ assert.equal(isPlaceholderCountry("Not listed"), true);
 assert.equal(isPlaceholderCountry("—"), true);
 assert.equal(isPlaceholderCountry("Serbia"), false);
 assert.deepEqual(splitReleaseCountries("Canada · United States"), ["Canada", "United States"]);
+assert.deepEqual(
+  uniqueSingleCountries(["Australia · France", "Australia · United Kingdom", "Brazil", "Not listed"]),
+  ["Australia", "Brazil", "France", "United Kingdom"],
+);
+assert.equal(uniqueSingleCountries(["Australia · France"]).includes("Australia · France"), false);
+assert.equal(releaseIncludesCountry("Australia · France", "Australia"), true);
+assert.equal(releaseIncludesCountry("Australia · France", "France"), true);
+assert.equal(releaseIncludesCountry("Australia · France", "Japan"), false);
+assert.equal(releaseIncludesCountry("United States", "USA"), true);
+assert.equal(releaseIncludesCountry("Ireland", "All countries"), true);
 assert.deepEqual(codesForCountryName("Serbia"), ["rs"]);
 assert.deepEqual(codesForCountryName("United States"), ["us"]);
 assert.deepEqual(codesForCountryName("United Kingdom"), ["gb"]);
@@ -46,6 +58,10 @@ for (const track of catalog.tracks) {
   for (const code of mapped) codes.add(code);
 }
 assert.equal(missing.length, 0, `unmapped release countries:\n${missing.slice(0, 20).join("\n")}`);
+const singles = uniqueSingleCountries(catalog.tracks.map((track) => track.releaseCountry));
+assert.ok(singles.includes("Australia"));
+assert.ok(singles.includes("France"));
+assert.ok(singles.every((name) => !/[·;]/.test(name)), "dropdown countries are single names");
 for (const code of [...codes].sort()) {
   const file = join(flagsDir, `${code}.svg`);
   assert.ok(existsSync(file), `missing flag ${code}.svg`);
