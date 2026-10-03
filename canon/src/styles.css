@@ -662,7 +662,6 @@ h1 {
 }
 
 .daily-form button,
-.mood-chips button,
 button.surprise {
   border: 1px solid rgba(201, 164, 90, 0.5);
   background: var(--brass);
@@ -679,23 +678,6 @@ button.surprise {
   background: var(--oxblood);
   color: var(--paper);
   border-color: #9a3d31;
-}
-
-.mood-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.mood-chips button {
-  background: transparent;
-  color: var(--paper);
-  padding: 6px 10px;
-}
-
-.mood-chips button.is-on {
-  background: var(--brass);
-  color: var(--ink);
 }
 
 .daily-actions {
@@ -1886,11 +1868,6 @@ body.portrait-lightbox-open {
     flex: 1 1 calc(50% - 8px);
     min-width: 0;
     max-width: 100%;
-  }
-
-  .mood-chips button {
-    min-height: 44px;
-    padding: 8px 12px;
   }
 
   .controls {

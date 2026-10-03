@@ -165,6 +165,10 @@ assert.doesNotMatch(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/DailyRecommend.jsx"), "utf8"),
   /lyrics-toggle/
 );
+assert.doesNotMatch(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/ListenPrefs.jsx"), "utf8"),
+  /mood-chips/,
+);
 assert.match(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../src/DailyRecommend.jsx"), "utf8"),
   /card-nav-actions/,

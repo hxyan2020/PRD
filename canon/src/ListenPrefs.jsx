@@ -83,23 +83,6 @@ export default function ListenPrefs({ countries, genres }) {
             </button>
           </div>
         </form>
-        <div className="mood-chips" role="group" aria-label={t("moodShortcuts")}>
-          {MOOD_CHIPS.map((chip) => (
-            <button
-              key={chip}
-              type="button"
-              className={mood.toLowerCase() === chip.toLowerCase() ? "is-on" : ""}
-              onClick={() =>
-                applyPrefs({
-                  ...prefs,
-                  mood: mood.toLowerCase() === chip.toLowerCase() ? "" : chip,
-                })
-              }
-            >
-              {moodLabel(chip, t)}
-            </button>
-          ))}
-        </div>
         <datalist id="canon-moods">
           {MOOD_CHIPS.map((chip) => (
             <option key={chip} value={chip} label={moodLabel(chip, t)} />
