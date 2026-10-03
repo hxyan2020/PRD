@@ -62,6 +62,10 @@ export default async function UrlsCatalogPage() {
         ))}
       </div>
 
+      <div className="panel p-3 sm:p-4 mb-4 text-sm border-teal-200 bg-teal-50 text-teal-950">
+        {t("urls.publicNote", locale)}
+      </div>
+
       <div className="panel p-3 sm:p-4 mb-4 text-sm text-[var(--muted)]">{t("urls.cheat", locale)}</div>
 
       <div className="space-y-6">
@@ -96,11 +100,16 @@ export default async function UrlsCatalogPage() {
                       </td>
                       <td className="text-sm text-[var(--muted)]">{u.description}</td>
                       <td>
-                        {u.permission ? (
-                          <Badge className="bg-slate-100 text-slate-700 border-slate-200">{u.permission}</Badge>
-                        ) : (
-                          "—"
-                        )}
+                        <div className="flex flex-wrap gap-1">
+                          {u.path.startsWith("/") || u.category === "API" ? (
+                            <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                              {locale === "zh-Hant" ? "公開" : "Public"}
+                            </Badge>
+                          ) : null}
+                          {u.permission ? (
+                            <Badge className="bg-slate-100 text-slate-700 border-slate-200">{u.permission}</Badge>
+                          ) : null}
+                        </div>
                       </td>
                     </tr>
                   ))}

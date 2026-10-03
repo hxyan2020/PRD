@@ -239,6 +239,8 @@ const UI: Record<string, Pair> = {
   "shell.messenger": { en: "Messenger", "zh-Hant": "即時通訊" },
   "shell.indicators": { en: "Indicators", "zh-Hant": "指標" },
   "shell.signOut": { en: "Sign out", "zh-Hant": "登出" },
+  "shell.signIn": { en: "Sign in", "zh-Hant": "登入" },
+  "shell.publicMode": { en: "Public prototype", "zh-Hant": "公開原型" },
   "shell.menu": { en: "Menu", "zh-Hant": "選單" },
   "shell.language": { en: "Language", "zh-Hant": "語言" },
 
@@ -303,8 +305,8 @@ const UI: Record<string, Pair> = {
   },
   "login.signIn": { en: "Sign in to Admin", "zh-Hant": "登入管理後台" },
   "login.hint": {
-    en: "Prototype credentials — select a role persona below.",
-    "zh-Hant": "原型帳密 — 請選擇下方角色。",
+    en: "Optional — the admin is public. Sign in only to use a named role persona.",
+    "zh-Hant": "可選 — 管理後台已公開。僅在要以具名角色操作時登入。",
   },
   "login.email": { en: "Email", "zh-Hant": "電子郵件" },
   "login.password": { en: "Password", "zh-Hant": "密碼" },
@@ -316,6 +318,10 @@ const UI: Record<string, Pair> = {
   "urls.apis": { en: "API routes", "zh-Hant": "API 路由" },
   "urls.data": { en: "Data / tables", "zh-Hant": "資料／資料表" },
   "urls.inbox": { en: "Demo inbox", "zh-Hant": "示範收件匣" },
+  "urls.publicNote": {
+    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona.",
+    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。",
+  },
   "urls.cheat": {
     en: "Demo Messenger actions: show_evidence · chat · escalate · dismiss · close · recommend → double-confirm → Vantage admin ref · checker_approve when required.",
     "zh-Hant": "示範 Messenger 動作：顯示證據 · 聊天 · 升級 · 排除 · 結案 · 建議 → 雙重確認 → Vantage 管理參照 · 必要時 Checker 核准。",
@@ -343,6 +349,8 @@ export function shellCopy(locale: UiLocale) {
     messenger: t("shell.messenger", locale),
     indicators: t("shell.indicators", locale),
     signOut: t("shell.signOut", locale),
+    signIn: t("shell.signIn", locale),
+    publicMode: t("shell.publicMode", locale),
     menu: t("shell.menu", locale),
     language: t("shell.language", locale),
   };
