@@ -6,6 +6,7 @@ import { SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { readSearchParams } from "@/lib/static-export";
 
 type Tab = "indicators" | "alerts" | "tickets";
 
@@ -17,7 +18,7 @@ export default async function Monitor2Page({
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "monitor.read")) redirect("/admin");
 
-  const sp = await searchParams;
+  const sp = await readSearchParams(searchParams);
   const tab = (["indicators", "alerts", "tickets"].includes(sp.tab ?? "") ? sp.tab : "indicators") as Tab;
   const canOperate = hasPermission(user.role_code, "monitor.operate");
 

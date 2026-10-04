@@ -1,0 +1,54 @@
+name: Publish CRMP Admin to GitHub Pages
+
+on:
+  push:
+    branches: [cursor/crmp-admin-pages-a935, cursor/public-urls-a935, main]
+    paths:
+      - "platform/**"
+      - ".github/workflows/crmp-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crmp-static
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - name: Build static admin snapshot
+        working-directory: platform
+        env:
+          NEXT_PUBLIC_STATIC_EXPORT: "1"
+          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-admin
+        run: |
+          npm ci
+          npm run build:pages
+      - name: Stage nested Pages folder
+        run: |
+          mkdir -p publish/crmp-admin
+          cp -a platform/out/. publish/crmp-admin/
+          touch publish/crmp-admin/.nojekyll
+      - name: Publish gh-pages (keep sibling sites)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: publish
+          publish_branch: gh-pages
+          keep_files: true
+      - name: Public URL
+        run: |
+          {
+            echo "Permanent CRMP Admin URL"
+            echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
+            echo "- https://hxyan2020.github.io/PRD/crmp-admin/"
+          } >> "$GITHUB_STEP_SUMMARY"

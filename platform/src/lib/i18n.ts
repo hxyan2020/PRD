@@ -319,8 +319,8 @@ const UI: Record<string, Pair> = {
   "urls.data": { en: "Data / tables", "zh-Hant": "資料／資料表" },
   "urls.inbox": { en: "Demo inbox", "zh-Hant": "示範收件匣" },
   "urls.publicNote": {
-    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona.",
-    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。",
+    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. Permanent GitHub Pages URL: https://hxyan2020.github.io/PRD/crmp-admin/admin/",
+    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。永久 GitHub Pages 網址：https://hxyan2020.github.io/PRD/crmp-admin/admin/",
   },
   "urls.cheat": {
     en: "Demo Messenger actions: show_evidence · chat · escalate · dismiss · close · recommend → double-confirm → Vantage admin ref · checker_approve when required.",

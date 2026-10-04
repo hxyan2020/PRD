@@ -43,3 +43,8 @@ next-env.d.ts
 # local sqlite
 /data/*.db
 /data/*.db-*
+
+# static export stashes
+/.api-stash-pages
+/.actions-stash-pages.ts
+/.instrumentation-stash-pages.ts

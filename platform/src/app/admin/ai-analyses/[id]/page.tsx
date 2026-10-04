@@ -2,8 +2,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getAnalysisBundle } from "@/lib/ai/analyze";
+import { getDb } from "@/lib/db";
 import { AiChallengePanel } from "@/components/AiChallengePanel";
 import { PageHeader, Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+
+export function generateStaticParams() {
+  const rows = getDb().prepare(`SELECT id FROM ai_analyses`).all() as Array<{ id: number }>;
+  return rows.map((row) => ({ id: String(row.id) }));
+}
 
 export default async function AiAnalysisDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const user = await getCurrentUser();

@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { randomBytes } from "crypto";
 import { getDb, writeAudit } from "./db";
+import { isStaticExport } from "./static-export";
 import type { SessionUser } from "./types";
 
 const COOKIE = "crmp_session";
@@ -51,6 +52,7 @@ export async function destroySession() {
 }
 
 export async function getCurrentUser(): Promise<SessionUser | null> {
+  if (isStaticExport()) return PUBLIC_GUEST;
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE)?.value;
   if (!token) return PUBLIC_GUEST;

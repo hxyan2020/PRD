@@ -6,6 +6,10 @@ export type UrlEntry = {
   permission?: string;
 };
 
+/** Permanent GitHub Pages URL for CRMP Admin (`/admin`). */
+export const PUBLIC_ADMIN_URL = "https://hxyan2020.github.io/PRD/crmp-admin/admin/";
+export const PUBLIC_ADMIN_ORIGIN = "https://hxyan2020.github.io/PRD/crmp-admin";
+
 export const PLATFORM_URLS: UrlEntry[] = [
   // Auth
   { category: "Auth", title: "Login", path: "/login", description: "Credential login for CRMP Admin" },
