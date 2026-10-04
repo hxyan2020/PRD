@@ -8,15 +8,15 @@ d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","style"]
-0:{"P":null,"b":"0nSzixU7gUi1NeTz88efv","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","Ld5SJDLK1FtGDob5cx4hv",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+0:{"P":null,"b":"78x-xfFx03qX_JmPtVMpI","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","odaqzxQCqgbjvOhrzOr1S",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
 e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-25839a42fc035be8.js","7581","static/chunks/app/admin/layout-9131afe603115429.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T13:37:41.087Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 13:37:43"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 13:37:41"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 13:37:41"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","4040","static/chunks/app/admin/docs/tsd/page-26b6da5b6d8fddbe.js"],""]
-10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","4040","static/chunks/app/admin/docs/tsd/page-26b6da5b6d8fddbe.js"],"DocArticleView"]
-11:T14913,<h1 id="vantage-crmp-technical-specification-design-tsd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage CRMP — Technical Specification Design (TSD)</h1>
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 13:46:57"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T13:46:58.017Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 13:47:00"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 13:46:57"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 13:46:57"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","4040","static/chunks/app/admin/docs/tsd/page-5d35633913211fd4.js"],""]
+10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","4040","static/chunks/app/admin/docs/tsd/page-5d35633913211fd4.js"],"DocArticleView"]
+11:T1d03c,<h1 id="vantage-crmp-technical-specification-design-tsd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage CRMP — Technical Specification Design (TSD)</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-TSD-001  </p>
-<p class="text-sm leading-relaxed my-2"><strong>Version:</strong> 1.3  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Version:</strong> 1.4  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Status:</strong> Prototype / living spec  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Products in scope:</strong> CFD + Crypto Exchange  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Primary stack:</strong> Next.js 15 (App Router), React 19, SQLite (<code class="rounded bg-slate-100 px-1 text-[0.9em]">better-sqlite3</code>), RBAC session auth  </p>
@@ -264,76 +264,271 @@ Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
 
 <h2 id="7-admin-surface-map" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. Admin surface map</h2>
 
+<p class="text-sm leading-relaxed my-2">Source of truth for routes: <code class="rounded bg-slate-100 px-1 text-[0.9em]">NAV_ITEMS</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">NAV_GROUPS</code> in <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/nav.ts</code>. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide.</p>
+
+<h3 id="7-1-shell-not-a-nav-row" class="text-lg font-semibold mt-6 mb-2">7.1 Shell (not a nav row)</h3>
+
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Surface</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Route / store</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Module</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Permission</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Home</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Login</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">app/login/page.tsx</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/demo-session.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">public</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Daily performance</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Language</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">hooks/useUiLocale</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/i18n.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk log analytics</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Unread badges</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_seen_v1</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_extra_v1</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/nav-badges.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market intelligence scanner</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo session</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_demo_session_v1</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">persist named persona on Pages</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Mobile drawer</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">&lt; lg</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code> hamburger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Live alerts</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI RCA runtime + second-AI UI</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI Admin management (§8)</strong></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human gates</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine log</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG corpus</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skill / scenario playbooks</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Demo Messenger (§11)</strong></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI access blocklist</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/user-guide</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/uat</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/ecosystem</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/roadmap</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/urls</code> · <strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/tsd</code></strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Product docs (EN / 繁中)</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code>, …</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform ops</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Brand</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Vantage logo + owner line</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">VantageLogo</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/platform-owner.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 </tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Unread formula: <code class="rounded bg-slate-100 px-1 text-[0.9em]">max(0, mergeNavTotals(server) + extra − seen)</code>. Opening a href writes seen. <code class="rounded bg-slate-100 px-1 text-[0.9em]">bumpNavBadge(href)</code> increments extra. Pages uses <code class="rounded bg-slate-100 px-1 text-[0.9em]">FALLBACK_NAV_TOTALS</code> when SQLite counts are empty.</p>
+
+<h3 id="7-2-pages" class="text-lg font-semibold mt-6 mb-2">7.2 Pages</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Group</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">UI / API</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Permission</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Spec</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">app/admin/page.tsx</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin.access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.1</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DailyDashboardView</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">dashboard.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.2</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RiskLogDashboard</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/ai/risk-log.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">dashboard.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.3</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">MarketIntelBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>§12</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">tabs + <code class="rounded bg-slate-100 px-1 text-[0.9em]">MonitorActions</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/monitor</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.4</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DetectorsBoard</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.5</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AlertsBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.6</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-domains</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">domain cards</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.7</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAnalysesBoard</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/ai</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§9 + §17.8</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAdminConsole</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/ai-admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>§8</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/[code]</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SkillsScenariosBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§10 + §17.9</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/knowledge-tree</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">KnowledgeTreeBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.10</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RagManager</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.11</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">listSpineEvents</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">spine.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.12</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">InterventionsBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">intervene.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.13</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DemoMessenger</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>§11</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">LarkManager</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.14</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">EscalationManager</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.15</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Org</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/departments</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">department cards</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">teams.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Org</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/teams</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">teams table</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">teams.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Org</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">permission chips</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">users.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Org</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UsersManager</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">users.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/data-sources</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DataSourcesManager</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">sources.read</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.17</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAccessSecurityBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">users.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§5 + §17.18</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/audit</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit_logs</code> last 200</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.19</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SettingsManager</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">PATCH /api/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.20</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/{user-guide,prd,tsd,uat,ecosystem,roadmap,urls}</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/docs.ts</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">UatChecklistBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin.access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§13 + §17.21</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Auth</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">persona buttons + form</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">public</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§17.1</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Static export: <code class="rounded bg-slate-100 px-1 text-[0.9em]">next.config</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">output: 'export'</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">basePath: '/PRD/crmp-admin'</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">trailingSlash: true</code>. Client detects <code class="rounded bg-slate-100 px-1 text-[0.9em]">isPublicSnapshot()</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">NEXT_PUBLIC_STATIC_EXPORT</code> and uses demo fallbacks instead of <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code>.</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -1078,6 +1273,8 @@ AI Engineer (Maker)                API / admin.ts                 Risk Owner (Ch
 
 <h2 id="14-key-api-map-prototype" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. Key API map (prototype)</h2>
 
+<p class="text-sm leading-relaxed my-2">Absent on GitHub Pages (static export). UI must degrade: demo session, client intel scan, local settings message.</p>
+
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">API</th>
@@ -1085,7 +1282,11 @@ AI Engineer (Maker)                API / admin.ts                 Risk Owner (Ch
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/login</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Session cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Session cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code>; Pages falls back to <code class="rounded bg-slate-100 px-1 text-[0.9em]">writeDemoSession</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/logout</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Clear cookie</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai</code></td>
@@ -1093,7 +1294,7 @@ AI Engineer (Maker)                API / admin.ts                 Risk Owner (Ch
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai-admin</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin propose/approve/training/feedback</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Propose/approve/training/feedback</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/messenger</code></td>
@@ -1108,8 +1309,32 @@ AI Engineer (Maker)                API / admin.ts                 Risk Owner (Ch
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Scan / findings / outbox</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Other</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">detectors, escalation, interventions, rag, skills, …</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Run all, toggle enabled</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/monitor</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">sync_monitor2</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">ack_alert</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">update_ticket</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Rebuild daily metrics</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">List, retrieve, create, update</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Directory + create/disable</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PATCH /api/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Single key save</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Interventions</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Server action <code class="rounded bg-slate-100 px-1 text-[0.9em]">decideInterventionAction</code> (approve/reject)</td>
 </tr>
 </tbody></table></div>
 
@@ -1133,7 +1358,103 @@ npm run dev   # http://localhost:3000
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="16-document-control" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">16. Document control</h2>
+<h2 id="16-remaining-admin-modules" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">16. Remaining admin modules</h2>
+
+<p class="text-sm leading-relaxed my-2">Modules not fully specified in §8–§13. Behaviour must match the User Guide how-to and PRD §6.4.</p>
+
+<h3 id="16-1-login-session-shell-unread-7-1" class="text-lg font-semibold mt-6 mb-2">16.1 Login, session, shell, unread — §7.1</h3>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Personas: <code class="rounded bg-slate-100 px-1 text-[0.9em]">DEMO_PERSONAS</code> in <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/demo-session.ts</code> (YAN Haixiang first).  </li>
+<li>Localhost: <code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/login</code> sets <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code> <strong>and</strong> writes demo session.  </li>
+<li>Pages / 404/405: skip API, <code class="rounded bg-slate-100 px-1 text-[0.9em]">writeDemoSession</code> only.  </li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code> prefers demo session when <code class="rounded bg-slate-100 px-1 text-[0.9em]">isPublicSnapshot()</code>. Sign out clears both.  </li>
+<li>Nav groups from <code class="rounded bg-slate-100 px-1 text-[0.9em]">NAV_GROUPS</code>. Unread: <code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">bumpNavBadge</code> from Market Intel, Detectors, AI Analyses, Messenger.</li>
+</ul>
+
+<h3 id="16-2-admin-home" class="text-lg font-semibold mt-6 mb-2">16.2 Admin Home</h3>
+
+<p class="text-sm leading-relaxed my-2">SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). <code class="rounded bg-slate-100 px-1 text-[0.9em]">StatCard</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">href</code> to child pages. Owner panel. Messenger permanent URL. Recent 5 alerts.</p>
+
+<h3 id="16-3-daily-performance" class="text-lg font-semibold mt-6 mb-2">16.3 Daily performance</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">getDailyDashboard()</code> → CFD/crypto metric arrays + WARN/BREACH summary. <code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/dashboard</code> refresh.</p>
+
+<h3 id="16-4-risk-log" class="text-lg font-semibold mt-6 mb-2">16.4 Risk log</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">getRiskLogDashboard()</code> aggregates: summary USD/times, <code class="rounded bg-slate-100 px-1 text-[0.9em]">by_category</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">by_domain</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">loopholes</code>, chronological <code class="rounded bg-slate-100 px-1 text-[0.9em]">records</code>. Read-only UI (<code class="rounded bg-slate-100 px-1 text-[0.9em]">RiskLogDashboard</code>).</p>
+
+<h3 id="16-5-monitor-2-0-hub" class="text-lg font-semibold mt-6 mb-2">16.5 Monitor 2.0 hub</h3>
+
+<p class="text-sm leading-relaxed my-2">Query <code class="rounded bg-slate-100 px-1 text-[0.9em]">tab=indicators|alerts|tickets</code>. <code class="rounded bg-slate-100 px-1 text-[0.9em]">MonitorActions</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">sync_monitor2</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">ack_alert</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">update_ticket</code>. Setting <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.base_url</code> displayed.</p>
+
+<h3 id="16-6-detectors" class="text-lg font-semibold mt-6 mb-2">16.6 Detectors</h3>
+
+<p class="text-sm leading-relaxed my-2">Table <code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">detector_runs</code>. <code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/detectors</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">{ raiseAlarms: true }</code> or <code class="rounded bg-slate-100 px-1 text-[0.9em]">{ action: 'toggle' }</code>. Non-HEALTHY results bump nav badges for detectors/alerts/ai-analyses.</p>
+
+<h3 id="16-7-live-alerts" class="text-lg font-semibold mt-6 mb-2">16.7 Live alerts</h3>
+
+<p class="text-sm leading-relaxed my-2">Join <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_alerts</code> × indicators. Sort CRITICAL/BREACH/WARN then time. <code class="rounded bg-slate-100 px-1 text-[0.9em]">ack_alert</code> when <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.operate</code>.</p>
+
+<h3 id="16-8-risk-domains" class="text-lg font-semibold mt-6 mb-2">16.8 Risk domains</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_domains</code> cards: priority, product_coverage, owner_department, supporting_departments_json. Read-only.</p>
+
+<h3 id="16-9-ai-analyses-list-detail" class="text-lg font-semibold mt-6 mb-2">16.9 AI Analyses list/detail</h3>
+
+<p class="text-sm leading-relaxed my-2">List: <code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAnalysesBoard</code> simulate actions <code class="rounded bg-slate-100 px-1 text-[0.9em]">simulate_copy_breach</code>, EQ drawdown, CRITICAL, <code class="rounded bg-slate-100 px-1 text-[0.9em]">backfill_challenges</code>. Detail: <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses/[id]</code> evidence + <code class="rounded bg-slate-100 px-1 text-[0.9em]">AiChallengePanel</code>. See §9.</p>
+
+<h3 id="16-10-skills-board-skill-md-page" class="text-lg font-semibold mt-6 mb-2">16.10 Skills board + SKILL.md page</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SkillsScenariosBoard</code>: search, skills vs chains tabs, <strong>Enter</strong> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/[code]</code> (<code class="rounded bg-slate-100 px-1 text-[0.9em]">finalizeSkill</code> playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: <code class="rounded bg-slate-100 px-1 text-[0.9em]">risk-scenarios-catalog.ts</code> + extras.</p>
+
+<h3 id="16-11-knowledge-tree" class="text-lg font-semibold mt-6 mb-2">16.11 Knowledge tree</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">KnowledgeTreeBoard</code> client SVG (<code class="rounded bg-slate-100 px-1 text-[0.9em]">viewBox</code> width 1120). Trunks: <code class="rounded bg-slate-100 px-1 text-[0.9em]">domains</code> | <code class="rounded bg-slate-100 px-1 text-[0.9em]">chains</code> | <code class="rounded bg-slate-100 px-1 text-[0.9em]">rag</code>. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; <code class="rounded bg-slate-100 px-1 text-[0.9em]">router.push</code> playbook (do not use invalid SVG <code class="rounded bg-slate-100 px-1 text-[0.9em]">&lt;Link&gt;</code>). RAG docs scored from <code class="rounded bg-slate-100 px-1 text-[0.9em]">tags_json</code> + title. Outline mode is the same graph as a nested list.</p>
+
+<h3 id="16-12-rag-corpus" class="text-lg font-semibold mt-6 mb-2">16.12 RAG corpus</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RagManager</code>: category filter, search, retrieve <code class="rounded bg-slate-100 px-1 text-[0.9em]">GET /api/rag?mode=retrieve&amp;q=&amp;limit=6</code>, create/update/retire when <code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code>. FTS via <code class="rounded bg-slate-100 px-1 text-[0.9em]">reindexRagFts</code>. Governed creates should prefer AI Admin CR path (§8.7).</p>
+
+<h3 id="16-13-spine-log" class="text-lg font-semibold mt-6 mb-2">16.13 Spine log</h3>
+
+<p class="text-sm leading-relaxed my-2">Stages: DETECT, ALARM, AI_RCA, SKILL_EXECUTE, HUMAN_INTERVENTION, RESOLVED, DASHBOARD. 24h <code class="rounded bg-slate-100 px-1 text-[0.9em]">StatCard</code> counts + last 150 events.</p>
+
+<h3 id="16-14-interventions" class="text-lg font-semibold mt-6 mb-2">16.14 Interventions</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">listInterventions()</code>. Pending: note + Approve/Reject via <code class="rounded bg-slate-100 px-1 text-[0.9em]">decideInterventionAction</code>. Writes spine + audit. Distinct from AI Admin CRs.</p>
+
+<h3 id="16-15-lark-escalation" class="text-lg font-semibold mt-6 mb-2">16.15 Lark + escalation</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark_channels</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.*</code> settings. <code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation_routes</code> join teams + channel. Messenger <code class="rounded bg-slate-100 px-1 text-[0.9em]">escalate</code> walks primary → secondary → owner → exec using this map.</p>
+
+<h3 id="16-16-organisation" class="text-lg font-semibold mt-6 mb-2">16.16 Organisation</h3>
+
+<p class="text-sm leading-relaxed my-2">Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), roles (<code class="rounded bg-slate-100 px-1 text-[0.9em]">permissions_json</code> chips), users (<code class="rounded bg-slate-100 px-1 text-[0.9em]">UsersManager</code> create/toggle when <code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code>). Seed includes <code class="rounded bg-slate-100 px-1 text-[0.9em]">PLATFORM_OWNER</code>.</p>
+
+<h3 id="16-17-data-sources" class="text-lg font-semibold mt-6 mb-2">16.17 Data sources</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">data_sources</code> registry. <code class="rounded bg-slate-100 px-1 text-[0.9em]">DataSourcesManager</code> CRUD when <code class="rounded bg-slate-100 px-1 text-[0.9em]">sources.manage</code>.</p>
+
+<h3 id="16-18-ai-access-blocklist" class="text-lg font-semibold mt-6 mb-2">16.18 AI access blocklist</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/security/ai-access-blocklist.ts</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_ACCESS_BLOCKLIST</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_ALLOWED_CAPABILITIES</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_SERVICE_ROLE_FORBIDDEN_PERMISSIONS</code>. Read-only board + stats.</p>
+
+<h3 id="16-19-audit-log" class="text-lg font-semibold mt-6 mb-2">16.19 Audit log</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit_logs</code> ORDER BY id DESC LIMIT 200. Actor, action, entity, details_json.</p>
+
+<h3 id="16-20-platform-settings" class="text-lg font-semibold mt-6 mb-2">16.20 Platform settings</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SettingsManager</code> groups by key prefix: <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform.|products.</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation.|detectors.</code>. <code class="rounded bg-slate-100 px-1 text-[0.9em]">PATCH /api/settings</code>. Pages: message “stored in this browser only”.</p>
+
+<h3 id="16-21-docs-renderer" class="text-lg font-semibold mt-6 mb-2">16.21 Docs renderer</h3>
+
+<p class="text-sm leading-relaxed my-2">Markdown <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/docs/*.md</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">*.zh-Hant.md</code>. <code class="rounded bg-slate-100 px-1 text-[0.9em]">markdownToHtml</code>: headings h1–h4, tables, lists, mermaid <code class="rounded bg-slate-100 px-1 text-[0.9em]">graph LR/TD</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">.doc-flow</code>. UAT: <code class="rounded bg-slate-100 px-1 text-[0.9em]">UatChecklistBoard</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">UAT_CASES</code> (45). URL catalog: <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/docs/urls.ts</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">PLATFORM_URLS</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">PUBLIC_ADMIN_URL</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">PUBLIC_MESSENGER_URL</code>.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="17-document-control" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">17. Document control</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -1161,14 +1482,19 @@ npm run dev   # http://localhost:3000
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Public snapshot demo scan, grouped nav, YAN Haixiang owner, Pages login</td>
 </tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Complete §7 surface map; §16 modules for every left-nav page; unread/login/tree/settings groups</td>
+</tr>
 </tbody></table></div>
 
 <p class="text-sm leading-relaxed my-2"><strong>Owner:</strong> YAN Haixiang  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Companion:</strong> <a class="underline" href="./TSD.zh-Hant.md">繁體中文版 TSD</a> · rendered at <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></p>
-12:T13b51,<h1 id="vantage-crmp-技術規格設計-tsd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage CRMP — 技術規格設計（TSD）</h1>
+12:T1c3e8,<h1 id="vantage-crmp-技術規格設計-tsd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage CRMP — 技術規格設計（TSD）</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-TSD-001  </p>
-<p class="text-sm leading-relaxed my-2"><strong>版本：</strong> 1.3  </p>
+<p class="text-sm leading-relaxed my-2"><strong>版本：</strong> 1.4  </p>
 <p class="text-sm leading-relaxed my-2"><strong>狀態：</strong> 原型／持續更新  </p>
 <p class="text-sm leading-relaxed my-2"><strong>產品範圍：</strong> CFD + 加密貨幣交易所  </p>
 <p class="text-sm leading-relaxed my-2"><strong>主要技術棧：</strong> Next.js 15（App Router）、React 19、SQLite（<code class="rounded bg-slate-100 px-1 text-[0.9em]">better-sqlite3</code>）、RBAC Session 驗證  </p>
@@ -1412,76 +1738,271 @@ Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
 
 <h2 id="7-管理介面地圖" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. 管理介面地圖</h2>
 
+<p class="text-sm leading-relaxed my-2">路由真實來源：<code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/nav.ts</code> 的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">NAV_ITEMS</code>＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">NAV_GROUPS</code>。每一列都在本 TSD（本節＋§8–§16）有規格，使用手冊有操作說明。</p>
+
+<h3 id="7-1-殼層-不是導覽列" class="text-lg font-semibold mt-6 mb-2">7.1 殼層（不是導覽列）</h3>
+
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">介面</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">路由／儲存</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">模組</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">權限</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">首頁</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">登入</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">app/login/page.tsx</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/demo-session.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">公開</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">每日績效</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">語言</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">hooks/useUiLocale</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/i18n.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">未讀徽章</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_seen_v1</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_extra_v1</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/nav-badges.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報掃描</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範工作階段</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_demo_session_v1</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Pages 上保持具名角色</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">手機抽屜</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">&lt; lg</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code> 漢堡</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">即時警報</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI RCA 執行期＋第二 AI UI</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI Admin 管理（§8）</strong></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">人工關卡</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine 日誌</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG 語料</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skill／風險情境劇本</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Demo Messenger（§11）</strong></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 存取黑名單</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/user-guide</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/uat</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/ecosystem</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/roadmap</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/urls</code> · <strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/tsd</code></strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">產品文件（英／繁中）</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code>…</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台營運</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">品牌</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Vantage 標誌＋負責人列</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">VantageLogo</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/platform-owner.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">—</td>
 </tr>
 </tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">未讀公式：<code class="rounded bg-slate-100 px-1 text-[0.9em]">max(0, mergeNavTotals(server) + extra − seen)</code>。打開 href 寫入 seen。<code class="rounded bg-slate-100 px-1 text-[0.9em]">bumpNavBadge(href)</code> 增加 extra。Pages 在 SQLite 計數為空時用 <code class="rounded bg-slate-100 px-1 text-[0.9em]">FALLBACK_NAV_TOTALS</code>。</p>
+
+<h3 id="7-2-頁面" class="text-lg font-semibold mt-6 mb-2">7.2 頁面</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分組</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">UI／API</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">權限</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">規格</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">總覽</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">app/admin/page.tsx</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin.access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.2</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DailyDashboardView</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">dashboard.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.3</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RiskLogDashboard</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/ai/risk-log.ts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">dashboard.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.4</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">MarketIntelBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>§12</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分頁＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">MonitorActions</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/monitor</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.5</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DetectorsBoard</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.6</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AlertsBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.7</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-domains</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">領域卡</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.8</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAnalysesBoard</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/ai</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§9＋§16.9</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAdminConsole</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/ai-admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>§8</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/[code]</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SkillsScenariosBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§10＋§16.10</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/knowledge-tree</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">KnowledgeTreeBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.11</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RagManager</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.12</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">listSpineEvents</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">spine.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.13</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">InterventionsBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">intervene.operate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.14</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DemoMessenger</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>§11</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">LarkManager</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.15</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">EscalationManager</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.15</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/departments</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">部門卡</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">teams.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/teams</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">團隊表</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">teams.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">權限晶片</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">users.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UsersManager</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">users.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/data-sources</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DataSourcesManager</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">sources.read</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.17</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAccessSecurityBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">users.read</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§5＋§16.18</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/audit</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit_logs</code> 最近 200</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit.read</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.19</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SettingsManager</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">PATCH /api/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.20</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/{user-guide,prd,tsd,uat,ecosystem,roadmap,urls}</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/docs.ts</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">UatChecklistBoard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin.access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§13＋§16.21</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">驗證</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">角色按鈕＋表單</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">公開</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§16.1</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">靜態匯出：<code class="rounded bg-slate-100 px-1 text-[0.9em]">next.config</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">output: 'export'</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">basePath: '/PRD/crmp-admin'</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">trailingSlash: true</code>。用戶端偵測 <code class="rounded bg-slate-100 px-1 text-[0.9em]">isPublicSnapshot()</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">NEXT_PUBLIC_STATIC_EXPORT</code>，以示範後備代替 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code>。</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -2219,6 +2740,8 @@ AI Engineer（Maker）              API / admin.ts                 Risk Owner（
 
 <h2 id="14-主要-api-地圖-原型" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. 主要 API 地圖（原型）</h2>
 
+<p class="text-sm leading-relaxed my-2">GitHub Pages（靜態匯出）沒有這些 API。UI 必須降級：示範工作階段、用戶端情報掃描、本機設定訊息。</p>
+
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">API</th>
@@ -2226,7 +2749,11 @@ AI Engineer（Maker）              API / admin.ts                 Risk Owner（
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/login</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Session cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Session cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code>；Pages 改走 <code class="rounded bg-slate-100 px-1 text-[0.9em]">writeDemoSession</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/logout</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">清除 cookie</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai</code></td>
@@ -2234,7 +2761,7 @@ AI Engineer（Maker）              API / admin.ts                 Risk Owner（
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai-admin</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 提案／核准／訓練／回饋</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案／核准／訓練／回饋</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/messenger</code></td>
@@ -2246,7 +2773,35 @@ AI Engineer（Maker）              API / admin.ts                 Risk Owner（
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/market-intel</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">掃描／發現／outbox</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">掃描／發現／寄件匣</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">全部執行、切換啟用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/monitor</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">sync_monitor2</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ack_alert</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">update_ticket</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">重建每日指標</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">清單、檢索、新增、更新</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">目錄＋新增／停用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PATCH /api/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">單一鍵儲存</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">干預</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">伺服器動作 <code class="rounded bg-slate-100 px-1 text-[0.9em]">decideInterventionAction</code>（核准／駁回）</td>
 </tr>
 </tbody></table></div>
 
@@ -2270,7 +2825,103 @@ npm run dev   # http://localhost:3000
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="16-文件控制" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">16. 文件控制</h2>
+<h2 id="16-其餘管理模組" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">16. 其餘管理模組</h2>
+
+<p class="text-sm leading-relaxed my-2">§8–§13 未完整寫出的模組。行為必須對齊使用手冊操作說明與 PRD §6.4。</p>
+
+<h3 id="16-1-登入-工作階段-殼層-未讀-7-1" class="text-lg font-semibold mt-6 mb-2">16.1 登入、工作階段、殼層、未讀 — §7.1</h3>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>角色：<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/demo-session.ts</code> 的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">DEMO_PERSONAS</code>（YAN Haixiang 第一）。  </li>
+<li>localhost：<code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/login</code> 設 <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code> <strong>並</strong>寫入示範工作階段。  </li>
+<li>Pages／404／405：略過 API，只 <code class="rounded bg-slate-100 px-1 text-[0.9em]">writeDemoSession</code>。  </li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code> 在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">isPublicSnapshot()</code> 時優先示範工作階段。登出兩者都清。  </li>
+<li>導覽分組來自 <code class="rounded bg-slate-100 px-1 text-[0.9em]">NAV_GROUPS</code>。未讀：<code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code>＋市場情報、偵測器、AI 分析、Messenger 的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">bumpNavBadge</code>。</li>
+</ul>
+
+<h3 id="16-2-管理首頁" class="text-lg font-semibold mt-6 mb-2">16.2 管理首頁</h3>
+
+<p class="text-sm leading-relaxed my-2">SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。<code class="rounded bg-slate-100 px-1 text-[0.9em]">StatCard</code> 的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">href</code> 連到子頁。負責人面板。Messenger 永久網址。最近 5 則警報。</p>
+
+<h3 id="16-3-每日績效" class="text-lg font-semibold mt-6 mb-2">16.3 每日績效</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">getDailyDashboard()</code> → CFD／加密指標陣列＋WARN／BREACH 摘要。<code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/dashboard</code> 重新整理。</p>
+
+<h3 id="16-4-風險日誌" class="text-lg font-semibold mt-6 mb-2">16.4 風險日誌</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">getRiskLogDashboard()</code> 彙總：摘要美元／時間、<code class="rounded bg-slate-100 px-1 text-[0.9em]">by_category</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">by_domain</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">loopholes</code>、時序 <code class="rounded bg-slate-100 px-1 text-[0.9em]">records</code>。唯讀 UI（<code class="rounded bg-slate-100 px-1 text-[0.9em]">RiskLogDashboard</code>）。</p>
+
+<h3 id="16-5-monitor-2-0-中心" class="text-lg font-semibold mt-6 mb-2">16.5 Monitor 2.0 中心</h3>
+
+<p class="text-sm leading-relaxed my-2">查詢 <code class="rounded bg-slate-100 px-1 text-[0.9em]">tab=indicators|alerts|tickets</code>。<code class="rounded bg-slate-100 px-1 text-[0.9em]">MonitorActions</code> 的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">sync_monitor2</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">ack_alert</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">update_ticket</code>。顯示設定 <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.base_url</code>。</p>
+
+<h3 id="16-6-偵測器" class="text-lg font-semibold mt-6 mb-2">16.6 偵測器</h3>
+
+<p class="text-sm leading-relaxed my-2">表 <code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors</code>＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">detector_runs</code>。<code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/detectors</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">{ raiseAlarms: true }</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">{ action: 'toggle' }</code>。非 HEALTHY 結果會增加偵測器／警報／AI 分析的導覽徽章。</p>
+
+<h3 id="16-7-即時警報" class="text-lg font-semibold mt-6 mb-2">16.7 即時警報</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_alerts</code> 聯結指標。排序 CRITICAL／BREACH／WARN 再依時間。有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.operate</code> 時可 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ack_alert</code>。</p>
+
+<h3 id="16-8-風險領域" class="text-lg font-semibold mt-6 mb-2">16.8 風險領域</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_domains</code> 卡片：priority、product_coverage、owner_department、supporting_departments_json。唯讀。</p>
+
+<h3 id="16-9-ai-分析清單-明細" class="text-lg font-semibold mt-6 mb-2">16.9 AI 分析清單／明細</h3>
+
+<p class="text-sm leading-relaxed my-2">清單：<code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAnalysesBoard</code> 模擬動作 <code class="rounded bg-slate-100 px-1 text-[0.9em]">simulate_copy_breach</code>、EQ 回撤、CRITICAL、<code class="rounded bg-slate-100 px-1 text-[0.9em]">backfill_challenges</code>。明細：<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses/[id]</code> 證據＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">AiChallengePanel</code>。見 §9。</p>
+
+<h3 id="16-10-技能看板-skill-md-頁" class="text-lg font-semibold mt-6 mb-2">16.10 技能看板＋SKILL.md 頁</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SkillsScenariosBoard</code>：搜尋、技能 vs 鏈分頁、<strong>進入</strong> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/[code]</code>（<code class="rounded bg-slate-100 px-1 text-[0.9em]">finalizeSkill</code> 劇本：何時用／不用、前置、步驟、證據、停止、成功）。目錄：<code class="rounded bg-slate-100 px-1 text-[0.9em]">risk-scenarios-catalog.ts</code>＋額外。</p>
+
+<h3 id="16-11-知識樹" class="text-lg font-semibold mt-6 mb-2">16.11 知識樹</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">KnowledgeTreeBoard</code> 用戶端 SVG（<code class="rounded bg-slate-100 px-1 text-[0.9em]">viewBox</code> 寬 1120）。樹幹：<code class="rounded bg-slate-100 px-1 text-[0.9em]">domains</code>｜<code class="rounded bg-slate-100 px-1 text-[0.9em]">chains</code>｜<code class="rounded bg-slate-100 px-1 text-[0.9em]">rag</code>。產品篩選 ALL／CFD／Crypto。領域節點換行（5 欄 × 2）。點領域展開技能；點技能填檢視器；<code class="rounded bg-slate-100 px-1 text-[0.9em]">router.push</code> 劇本（不要用無效的 SVG <code class="rounded bg-slate-100 px-1 text-[0.9em]">&lt;Link&gt;</code>）。RAG 文件依 <code class="rounded bg-slate-100 px-1 text-[0.9em]">tags_json</code>＋標題計分。大綱模式是同一張圖的巢狀清單。</p>
+
+<h3 id="16-12-rag-語料" class="text-lg font-semibold mt-6 mb-2">16.12 RAG 語料</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RagManager</code>：分類篩選、搜尋、檢索 <code class="rounded bg-slate-100 px-1 text-[0.9em]">GET /api/rag?mode=retrieve&amp;q=&amp;limit=6</code>，有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code> 可新增／更新／退役。FTS 經 <code class="rounded bg-slate-100 px-1 text-[0.9em]">reindexRagFts</code>。受治理新增應優先走 AI Admin 變更單路徑（§8.7）。</p>
+
+<h3 id="16-13-脊柱日誌" class="text-lg font-semibold mt-6 mb-2">16.13 脊柱日誌</h3>
+
+<p class="text-sm leading-relaxed my-2">階段：DETECT、ALARM、AI_RCA、SKILL_EXECUTE、HUMAN_INTERVENTION、RESOLVED、DASHBOARD。24 小時 <code class="rounded bg-slate-100 px-1 text-[0.9em]">StatCard</code> 計數＋最近 150 事件。</p>
+
+<h3 id="16-14-干預" class="text-lg font-semibold mt-6 mb-2">16.14 干預</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">listInterventions()</code>。待決：備註＋核准／駁回經 <code class="rounded bg-slate-100 px-1 text-[0.9em]">decideInterventionAction</code>。寫入脊柱＋稽核。與 AI Admin 變更單分開。</p>
+
+<h3 id="16-15-lark-升級" class="text-lg font-semibold mt-6 mb-2">16.15 Lark＋升級</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark_channels</code>＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.*</code> 設定。<code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation_routes</code> 聯結團隊＋頻道。Messenger <code class="rounded bg-slate-100 px-1 text-[0.9em]">escalate</code> 依此圖走主 → 次 → 負責人 → 高階。</p>
+
+<h3 id="16-16-組織" class="text-lg font-semibold mt-6 mb-2">16.16 組織</h3>
+
+<p class="text-sm leading-relaxed my-2">部門（職責 JSON）、團隊（Lark chat、值班、member_count）、角色（<code class="rounded bg-slate-100 px-1 text-[0.9em]">permissions_json</code> 晶片）、使用者（有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code> 時 <code class="rounded bg-slate-100 px-1 text-[0.9em]">UsersManager</code> 新增／切換）。種子含 <code class="rounded bg-slate-100 px-1 text-[0.9em]">PLATFORM_OWNER</code>。</p>
+
+<h3 id="16-17-資料來源" class="text-lg font-semibold mt-6 mb-2">16.17 資料來源</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">data_sources</code> 登錄。有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">sources.manage</code> 時 <code class="rounded bg-slate-100 px-1 text-[0.9em]">DataSourcesManager</code> CRUD。</p>
+
+<h3 id="16-18-ai-存取黑名單" class="text-lg font-semibold mt-6 mb-2">16.18 AI 存取黑名單</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/security/ai-access-blocklist.ts</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_ACCESS_BLOCKLIST</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_ALLOWED_CAPABILITIES</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_SERVICE_ROLE_FORBIDDEN_PERMISSIONS</code>。唯讀看板＋統計。</p>
+
+<h3 id="16-19-稽核日誌" class="text-lg font-semibold mt-6 mb-2">16.19 稽核日誌</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">audit_logs</code> ORDER BY id DESC LIMIT 200。執行者、動作、實體、details_json。</p>
+
+<h3 id="16-20-平台設定" class="text-lg font-semibold mt-6 mb-2">16.20 平台設定</h3>
+
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SettingsManager</code> 依鍵前綴分組：<code class="rounded bg-slate-100 px-1 text-[0.9em]">platform.|products.</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation.|detectors.</code>。<code class="rounded bg-slate-100 px-1 text-[0.9em]">PATCH /api/settings</code>。Pages：訊息「僅存在此瀏覽器」。</p>
+
+<h3 id="16-21-文件渲染" class="text-lg font-semibold mt-6 mb-2">16.21 文件渲染</h3>
+
+<p class="text-sm leading-relaxed my-2">Markdown <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/docs/*.md</code>＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">*.zh-Hant.md</code>。<code class="rounded bg-slate-100 px-1 text-[0.9em]">markdownToHtml</code>：標題 h1–h4、表格、清單、mermaid <code class="rounded bg-slate-100 px-1 text-[0.9em]">graph LR/TD</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">.doc-flow</code>。UAT：<code class="rounded bg-slate-100 px-1 text-[0.9em]">UatChecklistBoard</code>＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">UAT_CASES</code>（45）。網址目錄：<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/docs/urls.ts</code> 的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">PLATFORM_URLS</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">PUBLIC_ADMIN_URL</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">PUBLIC_MESSENGER_URL</code>。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="17-文件控制" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">17. 文件控制</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -2297,6 +2948,11 @@ npm run dev   # http://localhost:3000
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">1.3</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">公開快照示範掃描、導覽分組、YAN Haixiang 負責人、Pages 登入</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整 §7 介面地圖；§16 涵蓋左側每一頁；未讀／登入／知識樹／設定分組</td>
 </tr>
 </tbody></table></div>
 

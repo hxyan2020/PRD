@@ -8,18 +8,20 @@ d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","style"]
-0:{"P":null,"b":"0nSzixU7gUi1NeTz88efv","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","J91FOmz0I-2HVHDrHB5lU",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+0:{"P":null,"b":"78x-xfFx03qX_JmPtVMpI","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","cjfS0AC9GGtKy-YNsUjAu",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
 e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-25839a42fc035be8.js","7581","static/chunks/app/admin/layout-9131afe603115429.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T13:37:41.087Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 13:37:43"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 13:37:41"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 13:37:41"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","9613","static/chunks/app/admin/docs/prd/page-11ff01d2a359c9be.js"],""]
-10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","9613","static/chunks/app/admin/docs/prd/page-11ff01d2a359c9be.js"],"DocArticleView"]
-11:T74df,<h1 id="crmp-product-requirements-document-prd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP Product Requirements Document (PRD)</h1>
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 13:46:57"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T13:46:58.017Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 13:47:00"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 13:46:57"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 13:46:57"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","9613","static/chunks/app/admin/docs/prd/page-28720d5c71eb3688.js"],""]
+10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","9613","static/chunks/app/admin/docs/prd/page-28720d5c71eb3688.js"],"DocArticleView"]
+11:Tf0a2,<h1 id="crmp-product-requirements-document-prd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP Product Requirements Document (PRD)</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-PRD-001  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Status:</strong> Prototype / Demo-ready  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Products in scope:</strong> CFD + Crypto Exchange  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Owner:</strong> YAN Haixiang · <strong>Approver:</strong> Risk Owner  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Related:</strong> <a class="underline" href="/admin/docs/tsd">TSD</a> · <a class="underline" href="/admin/docs/user-guide">User Guide</a> · <a class="underline" href="/admin/docs/uat">UAT</a> · <a class="underline" href="/admin/docs/ecosystem">Ecosystem Eval</a></p>
+
+<p class="text-sm leading-relaxed my-2">This PRD is the product contract for <strong>every screen and feature currently in CRMP Admin</strong>. Operator how-tos live in the <a class="underline" href="/admin/docs/user-guide">User Guide</a>. Build detail lives in the <a class="underline" href="/admin/docs/tsd">TSD</a>. Sign-off cases are <a class="underline" href="/admin/docs/uat">UAT-01 … UAT-45</a>.</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -34,6 +36,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <li>Lets operators act in messenger (evidence, escalate, dismiss, close, controls)  </li>
 <li>Enforces maker/checker and keeps AI off human-only surfaces  </li>
 <li>Leaves a single spine + audit trail  </li>
+<li>Gives every desk function a named admin page (home, performance, risk log, intel, org, settings, docs)</li>
 </ul>
 
 <hr class="my-6 border-[var(--line)]" />
@@ -74,12 +77,32 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">G6</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Market awareness</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">5-minute intel scan for LP-moving headlines</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">5-minute intel scan for LP-moving headlines (live on localhost; demo scan on Pages)</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">G7</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Safe AI boundary</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Human-only pages/functions/fields listed and denied to AI</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G8</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Complete admin map</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Every left-nav group/page in §6.4 is shipped and documented</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G9</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Unread awareness</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">New work on Alerts / Analyses / Messenger / Intel / Interventions / Spine / Audit / Monitor / Risk Log / Detectors shows a badge that clears when viewed</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G10</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Public demo</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">GitHub Pages snapshot at <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/</code> walks the desk without 404/405 on login, messenger Open-in-admin, or Scan now</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G11</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Named owner</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform owner YAN Haixiang is a first-class persona; session persists in-browser</td>
 </tr>
 </tbody></table></div>
 
@@ -112,6 +135,10 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Replacing Monitor 2.0</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">CRMP consumes Monitor; does not rebuild it</td>
 </tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production SSO / IdP</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo personas + cookie / localStorage session</td>
+</tr>
 </tbody></table></div>
 
 <hr class="my-6 border-[var(--line)]" />
@@ -123,6 +150,10 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Persona</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Primary jobs</th>
 </tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Platform Owner (YAN Haixiang)</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Own the desk and docs; default login on the public snapshot</td>
+</tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Risk Owner</strong></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Accept/reject AI packs; escalate; approve irreversible controls; run UAT exit</td>
@@ -141,11 +172,11 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>System Admin</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Users/roles, settings, AI access blocklist, audit hygiene</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Users/roles, grouped settings, AI access blocklist, audit hygiene</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Viewer</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Read-only oversight (no AI Admin / operate)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Read-only oversight (no AI Admin operate)</td>
 </tr>
 </tbody></table></div>
 
@@ -175,6 +206,27 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <li>Maker proposes setting/model/policy in AI Admin.  </li>
 <li>Distinct Checker approves.  </li>
 <li>Self-approve is rejected.</li>
+</ol>
+
+<h3 id="5-4-market-intel-on-public-snapshot" class="text-lg font-semibold mt-6 mb-2">5.4 Market intel on public snapshot</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Operator opens Market Intelligence on GitHub Pages.  </li>
+<li><strong>Scan now</strong> runs the client demo scan (same templates as live).  </li>
+<li>Findings, outbox and scan log update locally. No 405.</li>
+</ol>
+
+<h3 id="5-5-knowledge-tree-drill-down" class="text-lg font-semibold mt-6 mb-2">5.5 Knowledge tree drill-down</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Operator opens Knowledge Tree, filter CFD or Crypto if needed.  </li>
+<li>Clicks a domain (e.g. LP_HEDGE) to fan out skills.  </li>
+<li>Clicks a skill; inspector fills; <strong>Enter</strong> opens the SKILL.md playbook.</li>
+</ol>
+
+<h3 id="5-6-unread-badge" class="text-lg font-semibold mt-6 mb-2">5.6 Unread badge</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>A detector run / intel scan / AI simulate creates new work.  </li>
+<li>Left-nav badge increments.  </li>
+<li>Opening that tab stores “seen” and the badge drops to zero for this browser.</li>
 </ol>
 
 <div class="doc-flow doc-flow-h"><div class="doc-flow-node">Monitor alarm</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Primary AI RCA</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Second AI</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Demo Messenger</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Confirmed control</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Checker</div></div>
@@ -264,7 +316,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-13</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Bilingual product docs (EN / zh-Hant)</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD, TSD, User Guide, UAT, Ecosystem toggle works</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD, TSD, User Guide, UAT, Ecosystem, Roadmap toggle works</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-14</td>
@@ -274,12 +326,82 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-15</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Enriched skill risk scenarios / chains</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills board shows scenarios with thresholds &amp; escalation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills board shows scenarios with thresholds &amp; escalation; <strong>Enter</strong> opens <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/{code}</code></td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-16</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">URL catalog for demo navigation</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code> lists admin/API/data paths</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code> lists admin/API/data paths + public Pages URLs</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-21</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin Home snapshot</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Clickable stat cards; owner card; recent alerts; messenger CTA</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-22</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Daily Performance dashboard</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CFD + crypto metric grids; refresh on localhost</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-23</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors run/toggle</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Run all raises alarms + AI RCA; enable/disable persists on localhost</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-24</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Live Alerts ack queue</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">OPEN sorted by severity; Acknowledge mutates status</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-25</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Knowledge Tree visualisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SVG map + outline; domain fan-out; Enter to playbook; RAG trunk</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-26</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Grouped Platform Settings</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-27</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Org directory</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Departments, Teams, Roles (permission chips), Users (incl. YAN Haixiang; add/disable on localhost)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-28</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Escalation routes + Lark registry</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Severity → team → SLA; channel enable; messenger Escalate follows route</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-29</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Unread nav badges</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Badge = max(0, total+extra−seen); clears on view; bumps on new work</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-30</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Login persist on Pages</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Sign in as named persona; session survives refresh; Sign in link under <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code> (no 404)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-31</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Grouped left nav + Vantage logo</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Seven groups; EN/繁中 labels; owner line</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-32</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT interactive pack</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT-01…UAT-45 with why/steps/pass/evidence and screen coverage</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-33</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Data sources registry</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Internal + external catalogue; manage on localhost</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-34</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk domains catalogue</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CFD + crypto domains with owner / supporting BUs</td>
 </tr>
 </tbody></table></div>
 
@@ -308,6 +430,279 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 </tbody></table></div>
 
+<h3 id="6-4-feature-catalogue-every-admin-surface" class="text-lg font-semibold mt-6 mb-2">6.4 Feature catalogue — every admin surface</h3>
+
+<p class="text-sm leading-relaxed my-2">This table <strong>is</strong> the product scope of the admin. If a row is in the left nav, it is in scope for this PRD, the User Guide, the TSD, and UAT.</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Group</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Feature</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Path</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Jobs to be done</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Key acceptance</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin Home</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Orient; jump via cards</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Cards are links; owner visible; messenger CTA</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Daily Performance</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Day-end CFD + crypto picture</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Both product grids; WARN/BREACH counts</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Log Analytics</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Handling time, loss vs prevented, loopholes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Summary + category + domain + records</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market Intelligence</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">LP-moving headlines</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Scan now; Findings; outbox; scan log; Pages demo scan</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Indicators / alerts / tickets</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Three tabs; Sync now on localhost</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Threshold first stage</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Run all; toggle; runs list</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Live Alerts</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Open queue</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ack; severity sort; unread clears</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Domains</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-domains</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ownership catalogue</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Owner + supporting BUs</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Analyses</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RCA + second AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Simulate COPY/EQ/CRITICAL; detail pack</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Dual-control governance</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Seven tabs; maker ≠ checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Skills</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Playbooks + chains</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Enter → SKILL.md page</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Knowledge Tree</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/knowledge-tree</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Visual map</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Map/outline; trunks; Enter</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG Knowledge Base</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Corpus retrieve</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Search, retrieve top-K, create/retire (manage)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine Log</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">End-to-end tape</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Stage counts + event list</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human Intervention</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Runtime checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Approve/Reject + note</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Chat-native triage</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Sync, evidence, chat, escalate, dismiss, close, controls, Open in admin</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark Integration</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Channel registry</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">List + enable; mock notify localhost</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Escalation Routes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Severity → team → SLA</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CRUD localhost; used by Escalate</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Departments</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/departments</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Four BUs with responsibilities</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Teams</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/teams</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">On-call</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Members, Lark chat, rotation</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Roles &amp; Permissions</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RBAC</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Permission chips per role</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Users</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Directory</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">YAN Haixiang present; add/disable manage</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Data Sources</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/data-sources</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Feed registry</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Category + status</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Access Security</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human-only inventory</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Blocklist + allowed + forbidden perms</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Audit Log</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/audit</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Who changed what</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Latest mutations listed</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform Settings</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Flags</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Grouped keys; save</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">User Guide</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/user-guide</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">How to operate</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">EN + zh-Hant; every screen</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Why / what / accept</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">This document</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TSD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">How built</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Surface map complete</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT Checklist</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Sign-off</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">45 cases, interactive</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ecosystem Eval</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/ecosystem</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Adoption</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Phases, budget, risks</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Improvement Roadmap</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/roadmap</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Next</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prioritised items</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">URL Catalog</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Navigation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Pages + APIs + tables</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Shell</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Login</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Named persona</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Persist; Pages path; owner default</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Shell</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Language</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">EN / 繁中</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Nav + docs switch</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Shell</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Unread badges</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">left nav</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">New work</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Increment / clear-on-view</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Shell</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Mobile drawer</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">&lt; lg</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Phone use</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Hamburger; messenger master-detail</td>
+</tr>
+</tbody></table></div>
+
 <hr class="my-6 border-[var(--line)]" />
 
 <h2 id="7-non-functional-requirements" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. Non-functional requirements</h2>
@@ -321,7 +716,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-01</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Latency</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prototype: alarm → dual-AI pack typically &amp;lt; 60s</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prototype: alarm → dual-AI pack typically &lt; 60s</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-02</td>
@@ -353,6 +748,16 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Accessibility (basic)</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Touch targets usable on mobile; critical actions labeled</td>
 </tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-08</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Public snapshot</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Static export under <code class="rounded bg-slate-100 px-1 text-[0.9em]">basePath</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin</code>; no dead <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code> clicks (demo fallbacks)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-09</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Session</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo persona persists in <code class="rounded bg-slate-100 px-1 text-[0.9em]">localStorage</code> + cookie on Pages</td>
+</tr>
 </tbody></table></div>
 
 <hr class="my-6 border-[var(--line)]" />
@@ -366,8 +771,12 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <li><strong>Controls:</strong> Block account → double confirm → admin_ref; checker follow-up when required.  </li>
 <li><strong>AI Admin:</strong> Distinct checker required; self-approve blocked.  </li>
 <li><strong>Coverage:</strong> UAT window BREACH/CRITICAL samples 100% challenged (backfill allowed).  </li>
-<li><strong>Docs:</strong> PRD/TSD/User Guide/UAT/Ecosystem render EN and zh-Hant.  </li>
-<li><strong>Mobile:</strong> Messenger list→thread→back works at ~390px without document overflow.</li>
+<li><strong>Docs:</strong> PRD/TSD/User Guide/UAT/Ecosystem/Roadmap render EN and zh-Hant; User Guide has a how-to for every left-nav page.  </li>
+<li><strong>Mobile:</strong> Messenger list→thread→back works at ~390px without document overflow.  </li>
+<li><strong>Pages:</strong> Login, messenger Open-in-admin, and Market Intel Scan now succeed without 404/405.  </li>
+<li><strong>Knowledge tree:</strong> Domain fan-out + Enter opens a playbook.  </li>
+<li><strong>Unread:</strong> New simulate/scan bumps a badge; opening the tab clears it.  </li>
+<li><strong>Owner login:</strong> YAN Haixiang persona persists after refresh on Pages.</li>
 </ol>
 
 <p class="text-sm leading-relaxed my-2">Formal execution: <a class="underline" href="/admin/docs/uat">UAT Checklist</a> (UAT-01 … UAT-45). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync).</p>
@@ -383,7 +792,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Mean time alarm → dual-AI pack</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">&amp;lt; 60s (prototype)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">&lt; 60s (prototype)</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">% BREACH+ with challenger attached</td>
@@ -404,6 +813,14 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical UAT cases Pass</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Left-nav pages with User Guide how-to</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Public Scan now / Login / Open-in-admin</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0 hard 404/405 on happy path</td>
 </tr>
 </tbody></table></div>
 
@@ -444,6 +861,10 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Data retention for evidence PII</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Legal review before production identifiers</td>
 </tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">GitHub Pages empty DB</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Fallback nav totals + client demo scan + demo session</td>
+</tr>
 </tbody></table></div>
 
 <hr class="my-6 border-[var(--line)]" />
@@ -457,7 +878,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Prototype (now)</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo spine, dual-AI, messenger, docs, UAT pack</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Full admin map, dual-AI, messenger, docs, UAT-01…45, public Pages snapshot</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Phase A</td>
@@ -479,7 +900,34 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="13-approvals" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. Approvals</h2>
+<h2 id="13-traceability" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. Traceability</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Product artefact</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Where</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Operator how-to per page</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">User Guide §6–§12</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Technical module per page</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TSD §7 + §8–§17</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Test case per surface</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT-01…UAT-45 <code class="rounded bg-slate-100 px-1 text-[0.9em]">covers</code> field</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Public and local URLs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">URL Catalog</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="14-approvals" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. Approvals</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -519,13 +967,39 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
 </tr>
 </tbody></table></div>
-12:T71b4,<h1 id="crmp-產品需求文件-prd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 產品需求文件（PRD）</h1>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="15-document-control" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">15. Document control</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Ver</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Date</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Goals G1–G7, FR-01…16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G8–G11; FR-21…34; full admin feature catalogue matching left nav</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>Owner:</strong> YAN Haixiang</p>
+12:Tedb3,<h1 id="crmp-產品需求文件-prd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 產品需求文件（PRD）</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-PRD-001  </p>
 <p class="text-sm leading-relaxed my-2"><strong>狀態：</strong> 原型／可示範  </p>
 <p class="text-sm leading-relaxed my-2"><strong>產品範圍：</strong> CFD + 加密貨幣交易所  </p>
 <p class="text-sm leading-relaxed my-2"><strong>負責人：</strong> YAN Haixiang · <strong>核准人：</strong> 風險負責人  </p>
 <p class="text-sm leading-relaxed my-2"><strong>相關文件：</strong> <a class="underline" href="/admin/docs/tsd">TSD</a> · <a class="underline" href="/admin/docs/user-guide">使用手冊</a> · <a class="underline" href="/admin/docs/uat">UAT</a> · <a class="underline" href="/admin/docs/ecosystem">生態導入評估</a></p>
+
+<p class="text-sm leading-relaxed my-2">本 PRD 是 <strong>CRMP 管理後台目前每一個畫面與功能</strong> 的產品契約。操作說明見 <a class="underline" href="/admin/docs/user-guide">使用手冊</a>。實作細節見 <a class="underline" href="/admin/docs/tsd">TSD</a>。簽核案例見 <a class="underline" href="/admin/docs/uat">UAT-01 … UAT-45</a>。</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -540,6 +1014,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <li>讓操作者在 messenger 完成證據／升級／排除／結案／控制  </li>
 <li>強制 Maker／Checker，並禁止 AI 觸及僅限人類介面  </li>
 <li>留下單一脊柱與稽核軌跡  </li>
+<li>讓每個桌面功能都有具名管理頁（首頁、績效、風險日誌、情報、組織、設定、文件）</li>
 </ul>
 
 <hr class="my-6 border-[var(--line)]" />
@@ -569,29 +1044,49 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">G4</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 設定職責分離</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 變更需 Maker ≠ Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 設定職能分離</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 變更必須 Maker ≠ Checker</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">G5</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Messenger 原生操作</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Messenger 原生作業</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">核心動作不必離開聊天</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">G6</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">市場感知</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">每 5 分鐘掃描可能影響 LP 之情報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每五分鐘情報掃描（localhost 即時；Pages 示範掃描）</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">G7</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">安全 AI 邊界</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅限人類頁面／功能／欄位列冊並拒絕 AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅限人類的頁／功能／欄位列出並對 AI 拒絕</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G8</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整管理地圖</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§6.4 每個左側分組／頁都已交付並寫進文件</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G9</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">未讀感知</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報／分析／Messenger／情報／干預／脊柱／稽核／Monitor／風險日誌／偵測器的新工作顯示徽章，打開後清除</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G10</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">公開示範</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">GitHub Pages 快照 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/</code> 可走完後台，登入、Messenger「在管理後台開啟」、立即掃描不出現 404／405</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G11</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">具名負責人</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台負責人 YAN Haixiang 為一級角色；工作階段留在瀏覽器</td>
 </tr>
 </tbody></table></div>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="3-非目標-本原型" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. 非目標（本原型）</h2>
+<h2 id="3-本原型非目標" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. 本原型非目標</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -599,16 +1094,16 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">理由</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 Lark webhook 投遞</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">以稽核／outbox／站內 Demo Messenger 模擬</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 Lark Webhook 投遞</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">以稽核／寄件匣／應用內示範 Messenger 模擬</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">計費正式 LLM API</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">以啟發式 Skill／RAG／挑戰引擎代替</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">以啟發式技能／RAG／挑戰者引擎代替</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">完整 MT4／MT5／LP 寫入適配</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅深連結＋模擬 admin ref</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅深連結＋模擬管理參照</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">大規模多品牌租戶</td>
@@ -616,7 +1111,11 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">取代 Monitor 2.0</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">CRMP 消費 Monitor，不重建</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CRMP 消費 Monitor，不重建它</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 SSO／IdP</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範角色＋ cookie／localStorage 工作階段</td>
 </tr>
 </tbody></table></div>
 
@@ -630,28 +1129,32 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">主要工作</th>
 </tr></thead><tbody>
 <tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>平台負責人（YAN Haixiang）</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">擁有後台與文件；公開快照預設登入</td>
+</tr>
+<tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>風險負責人</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">接受／拒絕 AI 包；升級；核准不可逆控制；UAT 退出</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">接受／駁回 AI 包；升級；核准不可逆控制；跑 UAT 出口</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>風險分析師</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">分流警報；於 messenger 挑戰 AI；補充脈絡</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分流警報；在 messenger 挑戰 AI；補充脈絡</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>營運主管／分析師</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">提出停牌／封鎖／擴點／暫停跟單；Maker 確認進管理後台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案停交易／封鎖／加寬／暫停跟單；Maker 確認進管理後台</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI 工程師</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills、RAG、偵測器、第二意見門檻、AI Admin 提案</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能、RAG、偵測器、第二意見門檻、AI Admin 提案</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>系統管理員</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者／角色、設定、AI 黑名單、稽核衛生</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者／角色、分組設定、AI 存取黑名單、稽核衛生</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>檢視者</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">唯讀監看（無 AI Admin／操作權）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">唯讀監督（不操作 AI Admin）</td>
 </tr>
 </tbody></table></div>
 
@@ -661,26 +1164,47 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <h3 id="5-1-高嚴重度警報-雙-ai-messenger-結案" class="text-lg font-semibold mt-6 mb-2">5.1 高嚴重度警報 → 雙 AI → messenger 結案</h3>
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Monitor 指標觸發（如跟單集中度）。  </li>
+<li>Monitor 指標越線（例如 COPY 集中度）。  </li>
 <li>CRMP 建立警報＋AI 分析（<code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>）。  </li>
-<li>若嚴重度 ≥ <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>（預設 BREACH），執行 <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp-challenger-v0</code>。  </li>
-<li>分析師於 Demo Messenger <strong>Show evidence</strong>；可選擇以聊天挑戰。  </li>
-<li>風險負責人覆核主分析＋挑戰者後 <strong>Close</strong> 或升級／要求控制。</li>
+<li>若嚴重度 ≥ <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>（預設 BREACH），跑 <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp-challenger-v0</code>。  </li>
+<li>風險分析師打開示範 Messenger 執行緒；<strong>顯示證據</strong>；可選以聊天挑戰。  </li>
+<li>風險負責人審主 AI＋挑戰者；<strong>結案（接受 AI）</strong> 或升級／要求控制。</li>
 </ol>
 
-<h3 id="5-2-控制項雙重確認-checker" class="text-lg font-semibold mt-6 mb-2">5.2 控制項雙重確認＋Checker</h3>
+<h3 id="5-2-控制-雙重確認-checker" class="text-lg font-semibold mt-6 mb-2">5.2 控制：雙重確認＋Checker</h3>
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>操作者選擇建議行動（如封鎖帳戶）。  </li>
-<li>雙重確認 → 模擬 Vantage admin ref＋連結。  </li>
-<li>若需 Checker，於 Interventions／指示路徑核准。  </li>
+<li>操作者選建議動作（例如封鎖使用者帳號）。  </li>
+<li>雙重確認關卡 → 模擬 Vantage 管理參照＋連結。  </li>
+<li>若 <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_checker</code>，Checker 經人工干預／指示路徑核准。  </li>
 <li>稽核＋脊柱記錄 Maker／Checker 結果。</li>
 </ol>
 
 <h3 id="5-3-ai-admin-變更" class="text-lg font-semibold mt-6 mb-2">5.3 AI Admin 變更</h3>
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Maker 於 AI Admin 提出設定／模型／政策。  </li>
-<li>不同 Checker 核准。  </li>
-<li>自我核准被拒絕。</li>
+<li>Maker 在 AI Admin 提案設定／模型／政策。  </li>
+<li>不同的 Checker 核准。  </li>
+<li>自己核准自己被拒絕。</li>
+</ol>
+
+<h3 id="5-4-公開快照上的市場情報" class="text-lg font-semibold mt-6 mb-2">5.4 公開快照上的市場情報</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>操作者在 GitHub Pages 打開市場情報。  </li>
+<li><strong>立即掃描</strong> 跑用戶端示範掃描（與即時同一批模板）。  </li>
+<li>發現、寄件匣、掃描紀錄在本機更新。沒有 405。</li>
+</ol>
+
+<h3 id="5-5-知識樹下鑽" class="text-lg font-semibold mt-6 mb-2">5.5 知識樹下鑽</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>打開知識樹，必要時篩 CFD 或 Crypto。  </li>
+<li>點領域（例如 LP_HEDGE）展開技能。  </li>
+<li>點技能；檢視器填入；<strong>進入</strong> 打開 SKILL.md 劇本。</li>
+</ol>
+
+<h3 id="5-6-未讀徽章" class="text-lg font-semibold mt-6 mb-2">5.6 未讀徽章</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>偵測器執行／情報掃描／AI 模擬產生新工作。  </li>
+<li>左側徽章增加。  </li>
+<li>打開該分頁寫入「已看」，本瀏覽器徽章降為零。</li>
 </ol>
 
 <div class="doc-flow doc-flow-h"><div class="doc-flow-node">Monitor 警報</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">主 AI RCA</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">第二 AI</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">示範 Messenger</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">已確認控制</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Checker</div></div>
@@ -689,107 +1213,177 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <h2 id="6-功能需求" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. 功能需求</h2>
 
-<h3 id="6-1-p0-原型必須" class="text-lg font-semibold mt-6 mb-2">6.1 P0 — 原型必須</h3>
+<h3 id="6-1-p0-原型必須交付" class="text-lg font-semibold mt-6 mb-2">6.1 P0 — 原型必須交付</h3>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">需求</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">驗收摘要</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">驗收草圖</th>
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-01</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">同步／顯示 Monitor 2.0 指標並產生警報</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">EQ／MRG／COPY 可見；可模擬警報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">同步／顯示 Monitor 2.0 指標並拉警報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">看得到 EQ／MRG／COPY；模擬警報可用</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-02</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skill 匹配 RCA 與步驟紀錄</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">COPY breach → <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code>＋技能步驟</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能匹配 RCA 含步驟執行紀錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">COPY 越線 → <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code>＋技能執行步驟</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-03</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能不確定時走 RAG RCA</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能不確定時 RAG RCA</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">EQ 路徑可產出 <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>＋證據</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-04</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">達門檻之獨立第二 AI 挑戰者</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">BREACH／CRITICAL 有面板＋CHALLENGER 證據；WARN 預設跳過</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">BREACH／CRITICAL 顯示面板＋CHALLENGER 證據；WARN 預設略過</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-05</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger：證據／聊天／升級／排除／結案</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">各動作更新執行緒＋稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範 Messenger：證據／聊天／升級／排除／結案</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每個動作變更執行緒＋稽核</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-06</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">建議控制＋雙重確認 → admin ref</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">封鎖／停牌等產生 admin_ref；需要時有 Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">建議控制＋雙重確認 → 管理參照</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">封鎖／停交易等產出 admin_ref；必要時 Checker 註記</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-07</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin Maker ≠ Checker</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">同一使用者不可核准自己的提案</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">同一使用者不能核准自己的提案</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-08</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 存取黑名單（頁面／功能／欄位）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 存取黑名單（頁／功能／欄位）</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">UI 列出僅限人類目標與理由</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-09</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI／messenger／干預事件寫入脊柱＋稽核</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">約 1 分鐘內可對應</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI／messenger／干預事件進脊柱＋稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">約 1 分鐘內可對上</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-10</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">管理介面 RBAC</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Viewer 無法操作 AI Admin</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">檢視者被擋在 AI Admin 操作路徑外</td>
 </tr>
 </tbody></table></div>
 
-<h3 id="6-2-p1-原型應具備" class="text-lg font-semibold mt-6 mb-2">6.2 P1 — 原型應具備</h3>
+<h3 id="6-2-p1-原型應交付" class="text-lg font-semibold mt-6 mb-2">6.2 P1 — 原型應交付</h3>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">需求</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">驗收摘要</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">驗收草圖</th>
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-11</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報 5 分鐘掃描＋outbox 卡片</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">本機可掃描；GitHub Pages 用用戶端示範掃描（不再 405）。發現／寄件匣／掃描紀錄會更新。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報 5 分鐘掃描＋寄件匣卡片格式</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">localhost 可掃；GitHub Pages 用用戶端示範掃描（無 405）。發現／寄件匣／掃描紀錄會更新。</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-12</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌分析</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">頁面呈現風險事件時間軸／分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頁面載入風險事件時間軸／分析</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-13</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">雙語產品文件（英／繁中）</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD、TSD、手冊、UAT、生態可切換</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD、TSD、使用手冊、UAT、生態、路線圖可切換</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-14</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">響應式管理介面</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">390px：抽屜＋messenger 主從；無整頁溢出</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">響應式管理後台（網頁＋手機）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">390px：抽屜＋ messenger 主從；無整頁溢出</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-15</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">強化技能風險情境／鏈</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills 看板含門檻與升級</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">豐富技能風險情境／鏈</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能看板顯示門檻與升級；<strong>進入</strong> 打開 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/{code}</code></td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-16</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範網址目錄</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code> 列出管理／API／資料路徑</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範導覽網址目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code> 列出管理／API／資料路徑＋公開 Pages 網址</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-21</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">管理首頁快照</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">可點數字卡；負責人卡；最近警報；messenger CTA</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-22</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每日績效儀表板</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CFD＋加密指標格；localhost 可重新整理</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-23</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器執行／切換</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">全部執行會拉警報＋AI RCA；localhost 可啟用／停用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-24</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">即時警報確認佇列</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">OPEN 依嚴重度排序；Acknowledge 變更狀態</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-25</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">知識樹視覺化</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SVG 圖＋大綱；領域展開；進入劇本；RAG 幹</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-26</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分組平台設定</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-27</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">部門、團隊、角色（權限晶片）、使用者（含 YAN Haixiang；localhost 可新增／停用）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-28</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">升級路徑＋Lark 登錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">嚴重度 → 團隊 → SLA；頻道啟用；messenger 升級跟隨路徑</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-29</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">未讀導覽徽章</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-30</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Pages 登入保持</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">以具名角色登入；重新整理仍在；登入連結在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code>（無 404）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-31</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分組左側導覽＋Vantage 標誌</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">七組；英／繁中標籤；負責人列</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-32</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT 互動包</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT-01…UAT-45 含為什麼／步驟／通過／證據與畫面覆蓋</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-33</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">資料來源登錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">內部＋外部目錄；localhost 可管理</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-34</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險領域目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CFD＋加密領域含負責／支援 BU</td>
 </tr>
 </tbody></table></div>
 
-<h3 id="6-3-p2-後期-生態階段" class="text-lg font-semibold mt-6 mb-2">6.3 P2 — 後期（生態階段）</h3>
+<h3 id="6-3-p2-之後-生態階段" class="text-lg font-semibold mt-6 mb-2">6.3 P2 — 之後（生態階段）</h3>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -806,11 +1400,284 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-19</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">真實交易控制匯流排（含 dry-run）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">真實交易控制匯流排含 dry-run</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-20</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 LLM＋評測；挑戰者供應商多樣化</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 LLM＋評測架；挑戰者供應商多樣化</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="6-4-功能目錄-每一個管理介面" class="text-lg font-semibold mt-6 mb-2">6.4 功能目錄 — 每一個管理介面</h3>
+
+<p class="text-sm leading-relaxed my-2">此表<strong>就是</strong>管理後台的產品範圍。左側有的列，就在本 PRD、使用手冊、TSD 與 UAT 範圍內。</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分組</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">功能</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">路徑</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">待辦工作</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">關鍵驗收</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">總覽</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">管理首頁</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">定向；用卡片跳轉</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">卡片是連結；看得到負責人；messenger CTA</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每日績效</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">當日 CFD＋加密畫面</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">兩產品格；WARN／BREACH 數</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">處理時間、損失 vs 防損、漏洞</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">摘要＋類別＋領域＋紀錄</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">會移動 LP 的頭條</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">指標／警報／工單</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">三分頁；localhost 立即同步</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">門檻第一階段</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">全部執行；切換；執行清單</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">即時警報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">未結佇列</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">確認；嚴重度排序；未讀清除</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險領域</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-domains</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">權責目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">負責＋支援 BU</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RCA＋第二 AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">模擬 COPY／EQ／CRITICAL；明細包</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 管理</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">雙人治理</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">七個分頁；Maker ≠ Checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 技能</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">劇本＋鏈</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">進入 → SKILL.md 頁</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">知識樹</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/knowledge-tree</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">視覺地圖</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">圖／大綱；樹幹；進入</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG 知識庫</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">語料檢索</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">搜尋、top-K 檢索、新增／退役（管理）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">脊柱日誌</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">端到端膠帶</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段計數＋事件清單</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">人工干預</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">執行期 Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">核准／駁回＋備註</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範 Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">聊天原生分流</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark 整合</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頻道登錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">清單＋啟用；localhost 模擬通知</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">升級路徑</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">嚴重度 → 團隊 → SLA</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">localhost CRUD；升級使用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">部門</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/departments</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">四個 BU 含職責</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">團隊</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/teams</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">值班</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">成員、Lark chat、輪值</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">角色與權限</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RBAC</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每角色權限晶片</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">YAN Haixiang 在；管理可新增／停用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">資料來源</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/data-sources</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">來源登錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分類＋狀態</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 存取安全</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅限人類清單</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">黑名單＋允許＋禁止權限</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">稽核日誌</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/audit</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">誰改了什麼</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">列出最近變更</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台設定</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/settings</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">旗標</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分組鍵；儲存</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用手冊</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/user-guide</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">如何操作</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">英＋繁中；每一畫面</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">為什麼／做什麼／怎麼過</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">本文件</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TSD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">怎麼做的</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整介面地圖</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT 清單</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">簽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">45 案，可互動</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">生態導入評估</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/ecosystem</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">導入</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段、預算、風險</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">改進路線圖</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/roadmap</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">下一步</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">優先項目</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">網址目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">導覽</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頁＋API＋表</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">殼層</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">登入</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">具名角色</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">保持；Pages 路徑；負責人預設</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">殼層</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">語言</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">英／繁中</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">導覽＋文件切換</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">殼層</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">未讀徽章</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">左側</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">新工作</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">增加／打開清除</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">殼層</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">手機抽屜</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">&lt; lg</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">手機使用</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">漢堡；messenger 主從</td>
 </tr>
 </tbody></table></div>
 
@@ -827,56 +1694,70 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-01</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">延遲</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">原型：警報→雙 AI 包通常 &amp;lt; 60 秒</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">原型：警報 → 雙 AI 包通常 &lt; 60 秒</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-02</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">可稽核</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報／分析／messenger／AI Admin 變更須寫稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報／分析／messenger／AI Admin 變更發出稽核</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-03</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">安全</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 主體不得擁有黑名單權限</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 主體不得取得黑名單權限</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-04</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">職責分離</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 強制 M／C；指定控制需 Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">職能分離</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 強制 Maker／Checker；指定控制要 Checker</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-05</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">可用性</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範可用單機 SQLite；正式需 HA（見生態評估）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範單節點 SQLite 可接受；正式需 HA（見生態）</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-06</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">i18n</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">操作文件英＋繁中；導覽可切語言</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">國際化</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">操作文件英＋繁中；UI 導覽語言切換</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-07</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">基本可及性</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">手機觸控目標可用；關鍵動作有標籤</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">基本無障礙</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">手機可點；關鍵動作有標籤</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-08</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">公開快照</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">靜態匯出 <code class="rounded bg-slate-100 px-1 text-[0.9em]">basePath</code> <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin</code>；沒有死掉的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code> 點擊（示範後備）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-09</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">工作階段</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範角色在 Pages 以 <code class="rounded bg-slate-100 px-1 text-[0.9em]">localStorage</code>＋cookie 保持</td>
 </tr>
 </tbody></table></div>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="8-詳細驗收標準-原型閘道" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. 詳細驗收標準（原型閘道）</h2>
+<h2 id="8-詳細驗收標準-原型關卡" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. 詳細驗收標準（原型關卡）</h2>
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li><strong>技能＋挑戰者：</strong> 模擬 COPY BREACH → <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code>＋第二 AI 面板（挑戰時≥1 HIGH 改進）。  </li>
-<li><strong>門檻：</strong> 預設 BREACH 下，純 WARN EQ 模擬<strong>不</strong>建立挑戰。  </li>
-<li><strong>Messenger：</strong> Show evidence 貼出證據庫；Escalate 前進路徑；Dismiss／Close 更新狀態。  </li>
-<li><strong>控制：</strong> 封鎖帳戶→雙重確認→admin_ref；需要時有 Checker 後續。  </li>
-<li><strong>AI Admin：</strong> 需不同 Checker；禁止自我核准。  </li>
-<li><strong>覆蓋：</strong> UAT 視窗 BREACH／CRITICAL 100% 已挑戰（允許回填）。  </li>
-<li><strong>文件：</strong> PRD／TSD／手冊／UAT／生態英繁可渲染。  </li>
-<li><strong>行動：</strong> ~390px messenger 列表→執行緒→返回，無文件級橫向溢出。</li>
+<li><strong>技能＋挑戰者：</strong> 模擬 COPY BREACH → <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code>＋第二 AI 面板，被挑戰時至少 1 項 HIGH 改進。  </li>
+<li><strong>門檻：</strong> 僅 WARN 的 EQ 模擬在預設 BREACH 門檻下<strong>不</strong>建立挑戰。  </li>
+<li><strong>Messenger 路徑：</strong> 顯示證據貼上保險庫；升級前進路徑；排除／結案更新狀態。  </li>
+<li><strong>控制：</strong> 封鎖帳號 → 雙重確認 → admin_ref；必要時 Checker 後續。  </li>
+<li><strong>AI Admin：</strong> 需要不同 Checker；自己核准被擋。  </li>
+<li><strong>覆蓋：</strong> UAT 視窗 BREACH／CRITICAL 樣本 100% 已挑戰（允許回填）。  </li>
+<li><strong>文件：</strong> PRD／TSD／使用手冊／UAT／生態／路線圖英繁皆可渲染；使用手冊對左側每一頁都有操作說明。  </li>
+<li><strong>手機：</strong> Messenger 列表→執行緒→返回在約 390px 可用且無整頁溢出。  </li>
+<li><strong>Pages：</strong> 登入、messenger 在管理後台開啟、市場情報立即掃描不出現 404／405。  </li>
+<li><strong>知識樹：</strong> 領域展開＋進入打開劇本。  </li>
+<li><strong>未讀：</strong> 新模擬／掃描讓徽章增加；打開分頁清除。  </li>
+<li><strong>負責人登入：</strong> YAN Haixiang 角色在 Pages 重新整理後仍在。</li>
 </ol>
 
-<p class="text-sm leading-relaxed my-2">正式執行見：<a class="underline" href="/admin/docs/uat">UAT 清單</a>（UAT-01 … UAT-45）。驗收包涵蓋每一個管理頁與完整 Messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步）。</p>
+<p class="text-sm leading-relaxed my-2">正式執行：<a class="underline" href="/admin/docs/uat">UAT 清單</a>（UAT-01 … UAT-45）。此包覆蓋每一個管理畫面以及完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步）。</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -888,8 +1769,8 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">目標</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報→雙 AI 包平均時間</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">&amp;lt; 60 秒（原型）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報 → 雙 AI 包平均時間</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">&lt; 60 秒（原型）</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">BREACH+ 附挑戰者比例</td>
@@ -900,16 +1781,24 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 變更經不同 Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 變更有不同 Checker</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">僅限人類介面已列入黑名單</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">議定清冊 100%</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">約定清單 100%</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical UAT 通過</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical UAT 案例通過</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">左側頁面有使用手冊說明</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">公開立即掃描／登入／在管理後台開啟</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">快樂路徑 0 個硬 404／405</td>
 </tr>
 </tbody></table></div>
 
@@ -917,13 +1806,13 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <h2 id="10-範圍邊界與依賴" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. 範圍邊界與依賴</h2>
 
-<p class="text-sm leading-relaxed my-2"><strong>依賴：</strong> Monitor 2.0 指標模型；企業 messenger（未來 Lark）；真實控制之 Vantage admin；正式 SSO 之 IdP。  </p>
-<p class="text-sm leading-relaxed my-2"><strong>對外提供：</strong> 風險／營運桌單一控制平面 UI＋稽核脊柱。  </p>
-<p class="text-sm leading-relaxed my-2"><strong>B／C 階段前不在範圍：</strong> 正式 webhook、寫入適配、Postgres HA（見<a class="underline" href="/admin/docs/ecosystem">生態導入評估</a>）。</p>
+<p class="text-sm leading-relaxed my-2"><strong>依賴：</strong> Monitor 2.0 指標模型；未來以 Lark 為企業即時通訊；真實控制靠 Vantage 管理後台；正式 SSO 靠 IdP。  </p>
+<p class="text-sm leading-relaxed my-2"><strong>提供給：</strong> 風險／營運桌單一控制平面 UI＋稽核脊柱。  </p>
+<p class="text-sm leading-relaxed my-2"><strong>B／C 階段前不在範圍：</strong> 即時 Webhook、寫入適配、Postgres HA（見 <a class="underline" href="/admin/docs/ecosystem">生態導入評估</a>）。</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="11-風險與待決問題" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. 風險與待決問題</h2>
+<h2 id="11-風險與未決問題" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. 風險與未決問題</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -932,29 +1821,33 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">啟發式 AI 過度自信</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">高嚴重度強制第二 AI；PARTIAL／DISAGREE → needs_human</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">高嚴重度強制第二 AI；PARTIAL／DISAGREE 標需要人類</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">操作者繞過 messenger</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">保留管理深連結；兩路徑皆稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">保留管理深連結；兩條路都稽核</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">過早自動化寫入</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">控制匯流排前先影子模式（生態階段 C）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">過早自動寫入</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">生態 C 階段控制匯流排前先影子模式</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">企業 messenger 標準？</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">企業標準即時通訊是哪個？</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">假設 Lark；Teams 適配待定</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">證據個資保存</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式識別前先法遵審查</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">證據 PII 保存</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式識別資料前做法務檢視</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">GitHub Pages 空資料庫</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">後備導覽總數＋用戶端示範掃描＋示範工作階段</td>
 </tr>
 </tbody></table></div>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="12-發布計畫-原型-正式" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. 發布計畫（原型 → 正式）</h2>
+<h2 id="12-發行計畫-原型-正式" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. 發行計畫（原型 → 正式）</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -962,30 +1855,57 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">成果</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">原型（現況）</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範脊柱、雙 AI、messenger、文件、UAT 包</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">原型（現在）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整管理地圖、雙 AI、messenger、文件、UAT-01…45、公開 Pages 快照</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 A</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">強化認證／託管／可觀測性</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">A 階段</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">強化驗證／託管／可觀測</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 B</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">B 階段</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">即時 Monitor＋Lark 通知（讀路徑）</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 C</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">監督寫入＋緊急開關</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">C 階段</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">受監督寫入路徑＋緊急開關</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 D</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">模型營運／挑戰者多樣化</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">D 階段</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">模型營運／挑戰者多樣</td>
 </tr>
 </tbody></table></div>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="13-簽核" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. 簽核</h2>
+<h2 id="13-可追溯性" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. 可追溯性</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">產品產物</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">在哪裡</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每頁操作說明</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用手冊 §6–§12</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每頁技術模組</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TSD §7＋§8–§16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每介面測試案例</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT-01…UAT-45 的 <code class="rounded bg-slate-100 px-1 text-[0.9em]">covers</code> 欄</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">公開與本機網址</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">網址目錄</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="14-核准" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. 核准</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -995,7 +1915,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">日期</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台／文件負責人</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台負責人／文件負責人</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">YAN Haixiang</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">具名</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
@@ -1013,18 +1933,42 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">工程負責人</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待填_</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">工程主管</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待定_</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">資安／GRC</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待填_</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待定_</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
 </tr>
 </tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="15-文件控制" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">15. 文件控制</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">版次</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">日期</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">說明</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">目標 G1–G7、FR-01…16</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G8–G11；FR-21…34；對齊左側導覽的完整管理功能目錄</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>負責人：</strong> YAN Haixiang</p>
 5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","P0 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P0 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"10"}]]}],["$","div","P1 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P1 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"6"}]]}],["$","div","Product scope",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Product scope"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"CFD + Crypto"}]]}],["$","div","Acceptance",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Acceptance"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"UAT-01…45"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / demo-ready"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn","href":"/admin/docs/tsd","children":"TSD"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L10",null,{"docId":"PRD","htmlEn":"$11","htmlZh":"$12"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null

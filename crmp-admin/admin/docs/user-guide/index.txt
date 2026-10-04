@@ -8,494 +8,879 @@ d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","style"]
-0:{"P":null,"b":"0nSzixU7gUi1NeTz88efv","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","IKbEpnU1vgVTJPKL0HumW",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+0:{"P":null,"b":"78x-xfFx03qX_JmPtVMpI","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/746684ceb611d3cf.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","UG3voT_jszzjmXA355KyX",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
 e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-25839a42fc035be8.js","7581","static/chunks/app/admin/layout-9131afe603115429.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T13:37:41.087Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 13:37:43"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 13:37:41"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 13:37:41"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 13:37:41"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","8259","static/chunks/app/admin/docs/user-guide/page-1ca74808915833ff.js"],""]
-10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","8259","static/chunks/app/admin/docs/user-guide/page-1ca74808915833ff.js"],"DocArticleView"]
-11:T7e74,<h1 id="crmp-user-guide" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP User Guide</h1>
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 13:46:57"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T13:46:58.017Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 13:47:00"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 13:46:57"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 13:46:57"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 13:46:58"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","8259","static/chunks/app/admin/docs/user-guide/page-e76a83871049986f.js"],""]
+10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-25839a42fc035be8.js","8259","static/chunks/app/admin/docs/user-guide/page-e76a83871049986f.js"],"DocArticleView"]
+11:T10818,<h1 id="crmp-user-guide" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP User Guide</h1>
 
-<p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-UG-001 · <strong>Audience:</strong> Risk Owner, Risk Analyst, Ops, AI Engineer, System Admin  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-UG-001 · <strong>Audience:</strong> anyone who opens the admin desk  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Languages:</strong> English (this page) · <a class="underline" href="/admin/docs/user-guide?lang=zh-Hant">繁體中文</a>  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Docs &amp; platform owner:</strong> YAN Haixiang (<code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code>)</p>
 
-<h2 id="0-what-this-platform-is" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">0. What this platform is</h2>
-
-<p class="text-sm leading-relaxed my-2">Vantage <strong>CRMP Admin</strong> is the control plane that turns Monitor 2.0 alarms into:</p>
-
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>AI root-cause analysis (skill match or RAG)  </li>
-<li>Independent <strong>second-AI challenge</strong> on high severity  </li>
-<li>Messenger-native triage (evidence, escalate, dismiss, close, controls)  </li>
-<li>Maker/checker interventions with audit + spine trail  </li>
-</ol>
-
-<p class="text-sm leading-relaxed my-2">Demo entry: <a class="underline" href="/admin">Admin Home</a> · <a class="underline" href="/admin/docs/urls">URL Catalog</a></p>
+<p class="text-sm leading-relaxed my-2">This handbook is written in everyday language. It covers <strong>every page in the left menu</strong>, plus login, language, unread numbers, and the public GitHub Pages snapshot.</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="1-sign-in-language" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. Sign in &amp; language</h2>
+<h2 id="1-what-this-desk-is" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. What this desk is</h2>
+
+<p class="text-sm leading-relaxed my-2">Vantage <strong>CRMP Admin</strong> is the control room for CFD and crypto risk. Monitor 2.0 raises an alarm. This desk then:</p>
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Open [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login). On the public GitHub Pages snapshot this page lives at <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code> — use the <strong>Sign in</strong> link in the left pane (do not type <code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code> on github.io by itself).  </li>
-<li>Pick a persona button or enter credentials. The account created for you is <strong>YAN Haixiang</strong> (platform owner). The session stays in this browser after you click Sign in.</li>
+<li>Finds a matching skill playbook, or searches the RAG knowledge base if no skill is certain.  </li>
+<li>On high severity (BREACH or CRITICAL), runs a <strong>second, independent AI</strong> that may agree, partly agree, or disagree.  </li>
+<li>Puts the pack into a <strong>Lark-style messenger</strong> so you can show evidence, chat, escalate, dismiss, close, or send a control.  </li>
+<li>Asks a human checker before irreversible controls go live.  </li>
+<li>Writes the whole story into the <strong>Spine Log</strong> and <strong>Audit Log</strong>.</li>
 </ol>
+
+<p class="text-sm leading-relaxed my-2">You do not need to be an engineer to use it. Click the left menu, read the cards, and follow the buttons on the page.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Permanent public demo:</strong> <a class="underline" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/">https://hxyan2020.github.io/PRD/crmp-admin/admin/</a>  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Messenger demo:</strong> <a class="underline" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/">https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/</a>  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Full URL list:</strong> <a class="underline" href="/admin/docs/urls">URL Catalog</a></p>
+
+<p class="text-sm leading-relaxed my-2">On GitHub Pages there is <strong>no live <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code></strong>. You can still walk every screen. Buttons that would save to the server keep a copy in this browser instead. Live writes (real scans, dual-control applies, user create) belong on <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>.</p>
+
+<div class="doc-flow doc-flow-v"><div class="doc-flow-node">Monitor 2.0 alarm</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">CRMP Admin</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">AI RCA plus second AI</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Demo Messenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Human intervention</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Audit plus spine</div></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="2-sign-in-stay-signed-in-switch-language" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. Sign in, stay signed in, switch language</h2>
+
+<h3 id="2-1-open-the-login-page" class="text-lg font-semibold mt-6 mb-2">2.1 Open the login page</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Click <strong>Sign in</strong> in the left pane (safest on GitHub Pages).  </li>
+<li>Or open [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login). On the public snapshot that is <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code> — do not type <code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code> on <code class="rounded bg-slate-100 px-1 text-[0.9em]">github.io</code> without the <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin</code> prefix, or you will get a 404.</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2">The admin is public in this prototype. Sign in only when you want a <strong>named role</strong> (so maker/checker and permissions behave like production).</p>
+
+<h3 id="2-2-accounts-you-can-use" class="text-lg font-semibold mt-6 mb-2">2.2 Accounts you can use</h3>
+
+<p class="text-sm leading-relaxed my-2">Click a <strong>Quick fill demo role</strong> button, or type the email and password, then <strong>Sign in</strong>.</p>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Role</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Who</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Email</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Password</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Use this when</th>
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform Owner</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">You are YAN Haixiang, the named owner of this desk and these docs</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Owner</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.owner@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Approving AI packs and checker steps</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Analyst</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.analyst@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Triage and messenger challenge</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Ops Lead</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ops.lead@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ops123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Proposing halt / block / widen / pause-copy</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Engineer</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.engineer@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills, RAG, detectors, AI Admin proposals</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">System Admin</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">system.admin@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">sys123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Users, settings, audit, AI access blocklist</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Super Admin</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Full demo rights (still cannot self-approve AI Admin when dual control is on)</td>
 </tr>
 </tbody></table></div>
 
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>After login you land on <strong>Admin Home</strong>.  </li>
-<li>Switch UI language with <strong>EN / 繁中</strong> (sidebar on desktop; header on mobile).  </li>
-<li>On phones, use the <strong>hamburger</strong> menu to open navigation.</li>
-</ol>
+<p class="text-sm leading-relaxed my-2">After Sign in you land on <strong>Admin Home</strong>. The name stays in this browser (<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_demo_session_v1</code>). Refreshing the public Pages site does not drop you back to a blank guest. Click <strong>Sign out</strong> in the left pane to clear it.</p>
+
+<h3 id="2-3-language" class="text-lg font-semibold mt-6 mb-2">2.3 Language</h3>
+
+<p class="text-sm leading-relaxed my-2">Use <strong>EN / 繁中</strong> (sidebar on desktop; header on a phone). The choice is stored in the <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code> cookie. Every left-nav label, page title, and product doc can switch. Open a doc with <code class="rounded bg-slate-100 px-1 text-[0.9em]">?lang=zh-Hant</code> if you want to share a Chinese link.</p>
+
+<h3 id="2-4-phones" class="text-lg font-semibold mt-6 mb-2">2.4 Phones</h3>
+
+<p class="text-sm leading-relaxed my-2">Tap the <strong>hamburger</strong> (Menu) to open the left nav. Messenger is list-first: tap a thread, then <strong>Threads</strong> to go back. Language sits in the header.</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="2-daily-path-by-role" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. Daily path by role</h2>
+<h2 id="3-the-left-menu-groups-and-unread-numbers" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. The left menu (groups and unread numbers)</h2>
+
+<p class="text-sm leading-relaxed my-2">The left pane is grouped so you are not staring at one long list:</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Group</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What lives there</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Overview</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin Home</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Monitor &amp; risk</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Daily Performance, Risk Log, Market Intelligence, Monitor 2.0, Detectors, Live Alerts, Risk Domains</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI &amp; knowledge</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Analyses, AI Admin, AI Skills, Knowledge Tree, RAG, Spine Log</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Response</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human Intervention, Demo Messenger, Lark, Escalation Routes</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Organisation</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Departments, Teams, Roles, Users</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Platform</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Data Sources, AI Access Security, Audit Log, Platform Settings</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Docs</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">User Guide, PRD, TSD, UAT, Ecosystem, Roadmap, URL Catalog</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">The Vantage logo sits at the top. Your role badge (and <strong>Public prototype</strong> on GitHub Pages) sit under your name. Owner line: YAN Haixiang.</p>
+
+<h3 id="unread-numbers" class="text-lg font-semibold mt-6 mb-2">Unread numbers</h3>
+
+<p class="text-sm leading-relaxed my-2">Some rows show a <strong>teal badge</strong> (Live Alerts, AI Analyses, Demo Messenger, Market Intelligence, Human Intervention, Spine, Audit, Monitor 2.0, Risk Log, Detectors).</p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>The number is <strong>new things since you last opened that tab</strong> in this browser.  </li>
+<li>Formula: <code class="rounded bg-slate-100 px-1 text-[0.9em]">unread = max(0, (known total + extra bumps) − last seen)</code>.  </li>
+<li>Opening the page <strong>clears</strong> that badge for you (stored in <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_seen_v1</code>).  </li>
+<li>When a scan, detector run, or AI simulate creates new work, the badge <strong>goes up</strong> (<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_extra_v1</code>).  </li>
+<li>On GitHub Pages the first paint uses fallback totals so you still see numbers even if the snapshot database looks empty.</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">The badge is a nudge, not a lock. You can always open the page.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="4-what-each-role-does-every-day" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. What each role does every day</h2>
 
 <h3 id="risk-owner" class="text-lg font-semibold mt-6 mb-2">Risk Owner</h3>
+
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Check <a class="underline" href="/admin/alerts">Live Alerts</a> and <a class="underline" href="/admin/ai-analyses">AI Analyses</a> for BREACH/CRITICAL.  </li>
-<li>Open dual-AI pack; if second AI is <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>/<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code>, do not approve irreversible controls yet.  </li>
-<li>Use <a class="underline" href="/admin/messenger">Demo Messenger</a> to escalate, close (accept AI), or dismiss false alarms.  </li>
-<li>Approve Checker steps on <a class="underline" href="/admin/interventions">Human Intervention</a> when Ops maker-confirmed a control.  </li>
-<li>Run <a class="underline" href="/admin/docs/uat">UAT Checklist</a> when validating a release.</li>
+<li>Open <a class="underline" href="/admin/alerts">Live Alerts</a> and <a class="underline" href="/admin/ai-analyses">AI Analyses</a>. Look for BREACH / CRITICAL.  </li>
+<li>Open the dual-AI pack. If the second AI is <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> or <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code>, do <strong>not</strong> approve an irreversible control yet.  </li>
+<li>In <a class="underline" href="/admin/messenger">Demo Messenger</a>: escalate, <strong>Close (accept AI)</strong>, or <strong>Dismiss</strong> a false alarm.  </li>
+<li>On <a class="underline" href="/admin/interventions">Human Intervention</a>, approve checker steps after Ops has maker-confirmed a control.  </li>
+<li>Run the <a class="underline" href="/admin/docs/uat">UAT Checklist</a> when you sign off a release.</li>
 </ol>
 
 <h3 id="risk-analyst" class="text-lg font-semibold mt-6 mb-2">Risk Analyst</h3>
+
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Triage OPEN alerts → open AI evidence.  </li>
-<li>Challenge or add context via messenger chatbot.  </li>
-<li>Attach notes before escalating to Risk Owner.</li>
+<li>Work the OPEN queue on Live Alerts.  </li>
+<li>Open the AI analysis. Read summary, evidence, and second-AI verdict.  </li>
+<li>In messenger, <strong>Show evidence</strong>, then type in <strong>Chatbot</strong> if you disagree or have extra context.  </li>
+<li>Escalate to Risk Owner when the pack is ready.</li>
 </ol>
 
 <h3 id="ops-lead-analyst" class="text-lg font-semibold mt-6 mb-2">Ops Lead / Analyst</h3>
+
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>From messenger <strong>Recommended actions</strong>, propose block / halt / leverage / widen / pause-copy.  </li>
-<li><strong>Double-confirm</strong> → receive admin ref + link.  </li>
-<li>If status is awaiting checker, ask Risk Owner / designated checker to approve.</li>
+<li>From messenger <strong>Recommended actions</strong>, pick block / halt / cut leverage / pre-widen / pause-copy.  </li>
+<li>Click <strong>Double-confirm…</strong> then <strong>Yes, send to Vantage admin</strong>. You get an admin reference and a link.  </li>
+<li>If the thread says checker is needed, wait for Risk Owner on Human Intervention.</li>
 </ol>
 
 <h3 id="ai-engineer" class="text-lg font-semibold mt-6 mb-2">AI Engineer</h3>
+
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Maintain <a class="underline" href="/admin/skills">AI Skills</a>, <a class="underline" href="/admin/rag">RAG</a>, <a class="underline" href="/admin/detectors">Detectors</a>.  </li>
-<li>Use <a class="underline" href="/admin/ai-admin">AI Admin</a> for settings/models (maker ≠ checker).  </li>
-<li>Tune <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code> (default BREACH) under platform settings / AI Admin.</li>
+<li>Keep <a class="underline" href="/admin/skills">AI Skills</a>, <a class="underline" href="/admin/rag">RAG</a>, and <a class="underline" href="/admin/detectors">Detectors</a> healthy.  </li>
+<li>Propose setting/model/skill/RAG changes on <a class="underline" href="/admin/ai-admin">AI Admin</a>. You cannot approve your own change.  </li>
+<li>Tune <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code> (default BREACH) under AI Admin parameters or Platform Settings.</li>
 </ol>
 
 <h3 id="system-admin" class="text-lg font-semibold mt-6 mb-2">System Admin</h3>
+
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Users, roles, teams, departments, settings.  </li>
-<li>Review <a class="underline" href="/admin/security/ai-access">AI Access Security</a> blocklist.  </li>
-<li>Monitor <a class="underline" href="/admin/audit">Audit Log</a> and <a class="underline" href="/admin/spine">Spine Log</a>.</li>
+<li>Users, roles, teams, departments, grouped settings.  </li>
+<li>Review <a class="underline" href="/admin/security/ai-access">AI Access Security</a> — pages, functions and fields AI must never touch.  </li>
+<li>Watch <a class="underline" href="/admin/audit">Audit Log</a> and <a class="underline" href="/admin/spine">Spine Log</a>.</li>
 </ol>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="3-triage-an-alarm-desk-workflow" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. Triage an alarm (desk workflow)</h2>
+<h2 id="5-the-main-story-alarm-ai-chat-close" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. The main story: alarm → AI → chat → close</h2>
+
+<p class="text-sm leading-relaxed my-2">This is the path you will use most. Later sections explain every other page.</p>
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Open <strong>Live Alerts</strong> or <strong>Monitor 2.0</strong>.  </li>
-<li>Find an <code class="rounded bg-slate-100 px-1 text-[0.9em]">OPEN</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">ACKNOWLEDGED</code> item.  </li>
-<li>Go to <strong>AI Analyses</strong> (or wait for auto-analysis on alarm).  </li>
-<li>Open the analysis → read:  </li>
+<li>A detector or Monitor 2.0 indicator breaches.  </li>
+<li>An <strong>OPEN</strong> alert appears on Live Alerts (and a ticket on Monitor 2.0).  </li>
+<li>AI Analyses gets a pack: <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code> if a playbook fits, otherwise <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>.  </li>
+<li>If severity is BREACH or CRITICAL, a <strong>Second AI</strong> panel appears (<code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code>).  </li>
+<li>Click <strong>Sync alerts</strong> on Demo Messenger so the pack is a chat thread.  </li>
+<li><strong>Show evidence</strong> posts the vault into the thread. Chat if you challenge the story.  </li>
+<li><strong>Escalate</strong>, <strong>Dismiss</strong> (false alarm), or <strong>Close (accept AI)</strong>.  </li>
+<li>For a control: pick a recommended action → double-confirm → checker if required.  </li>
+<li>Confirm the same events in Spine Log and Audit Log.</li>
 </ol>
-<p class="text-sm leading-relaxed my-2">   - Mode (<code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code> vs <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>)  </p>
-<p class="text-sm leading-relaxed my-2">   - Confidence &amp; summary  </p>
-<p class="text-sm leading-relaxed my-2">   - Explanations  </p>
-<p class="text-sm leading-relaxed my-2">   - Evidence vault  </p>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>If severity is <strong>BREACH</strong> or <strong>CRITICAL</strong> (or at/above <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>):  </li>
-</ol>
-<p class="text-sm leading-relaxed my-2">   - Review <strong>Second AI challenger</strong> panel  </p>
-<p class="text-sm leading-relaxed my-2">   - Read critiques, recommended improvements, alternative hypotheses  </p>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Decision rule:  </li>
-</ol>
-<p class="text-sm leading-relaxed my-2">   - Challenger <code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code> → may proceed with playbook under policy  </p>
-<p class="text-sm leading-relaxed my-2">   - <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> → <strong>needs human</strong>; no irreversible control until reviewed  </p>
 
-<p class="text-sm leading-relaxed my-2"><strong>Simulate for demo (AI Analyses page):</strong></p>
-<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li>Simulate COPY breach (skill path)  </li>
-<li>Simulate EQ drawdown (RAG / WARN — challenger usually skipped)  </li>
-<li>Simulate CRITICAL (forces second AI)  </li>
-<li>Backfill 2nd AI challenges  </li>
-</ul>
+<p class="text-sm leading-relaxed my-2"><strong>Demo shortcuts on AI Analyses</strong> (localhost): Simulate COPY breach (skill path), Simulate EQ drawdown (RAG, often WARN so second AI is skipped), Simulate CRITICAL (forces second AI), Backfill 2nd AI challenges.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Decision rule:</strong> <code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code> may follow the playbook under policy. <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> means <strong>needs human</strong> — no irreversible control until a person has read both AIs.</p>
+
+<div class="doc-flow doc-flow-h"><div class="doc-flow-node">Alarm</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Primary AI</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Second AI</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Messenger</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Confirmed control</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Checker</div></div>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="4-demo-messenger" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. Demo Messenger</h2>
+<h2 id="6-overview" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. Overview</h2>
 
-<p class="text-sm leading-relaxed my-2">Path: [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code>](/admin/messenger)</p>
+<h3 id="6-1-admin-home-admin" class="text-lg font-semibold mt-6 mb-2">6.1 Admin Home — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></h3>
 
-<h3 id="layout" class="text-lg font-semibold mt-6 mb-2">Layout</h3>
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The landing page after login. A snapshot of how busy the desk is.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong></p>
+
 <ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li><strong>Desktop:</strong> thread list + chat side-by-side  </li>
-<li><strong>Mobile:</strong> list first → tap thread → detail; use <strong>Threads</strong> to go back  </li>
+<li>Owner card for <strong>YAN Haixiang</strong>, with <strong>Sign in as platform owner</strong>.  </li>
+<li>A Lark-style messenger promo with the permanent GitHub Pages URL and <strong>Open messenger demo</strong>.  </li>
+<li>Clickable count cards: Users, Teams, Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  </li>
+<li>Department division (RACI-style ownership).  </li>
+<li>Recent alerts, with <strong>View all</strong> into Live Alerts.  </li>
+<li>Shortcut buttons: Messenger, URL Catalog, PRD, User Guide, UAT, AI Admin, AI Access, Daily Performance.</li>
 </ul>
 
-<h3 id="inline-actions" class="text-lg font-semibold mt-6 mb-2">Inline actions</h3>
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Use the cards as a map. If Open Alerts is not zero, go there first.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Counts match the other pages. Cards are links, not dead tiles.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="7-monitor-risk" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. Monitor &amp; risk</h2>
+
+<h3 id="7-1-daily-performance-admin-dashboard" class="text-lg font-semibold mt-6 mb-2">7.1 Daily Performance — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> End-of-day CFD and crypto risk picture — the last stage of the spine.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Report date, WARN/BREACH counts for CFD and crypto, then metric cards (value, target, notes, health).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> <strong>Refresh</strong> (localhost) rebuilds live metrics from <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/dashboard</code>. On Pages the numbers are the seeded snapshot.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Both product columns present. Status badges are readable (HEALTHY / WARN / BREACH).</p>
+
+<h3 id="7-2-risk-log-analytics-admin-risk-log" class="text-lg font-semibold mt-6 mb-2">7.2 Risk Log Analytics — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The history book: what fired, how long humans took, money lost vs money prevented, and where loopholes cluster.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Summary tiles: open alerts, loss vs prevented vs exposure, average ack/resolve/handling minutes, SLA breaches, pending vs decided interventions.  </li>
+<li>Tables by category and by domain.  </li>
+<li>Loophole tags (repeat weak spots).  </li>
+<li>Chronological records (alert, ticket, outcome, USD).</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Filter / scan the tables. Follow a row back to Live Alerts or AI Analyses when you need the pack.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Totals add up. Handling times are filled for closed work. Loophole tags are not empty on the seeded demo.</p>
+
+<h3 id="7-3-market-intelligence-admin-market-intel" class="text-lg font-semibold mt-6 mb-2">7.3 Market Intelligence — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> A five-minute look at news, social, official and exchange posts that can move LP prices. Findings feed indicator <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code> and a messenger outbox (Lark group <code class="rounded bg-slate-100 px-1 text-[0.9em]">oc_market_intelligence</code> in production).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Tabs: <strong>Findings</strong>, <strong>Messenger outbox</strong>, <strong>Sources</strong>, <strong>Scan log</strong>. Cards use the i–vi format (what happened, product, why it can move LP, severity, source, suggested next step). Scheduler on/off. Skill playbook link.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong></p>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Turn the feature on in Platform Settings (<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>) if the desk looks idle.  </li>
+<li>Click <strong>Scan now</strong>.  </li>
+<li>Read new Findings, then the outbox, then the scan log.</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2"><strong>GitHub Pages:</strong> there is no <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code>, so <strong>Scan now</strong> runs a <strong>local demo scan</strong> from the same event templates as the live scanner. New cards appear at once and are stored in this browser (<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_mi_demo_v1</code>). Real HTTP scrapes still belong on <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>. You will <strong>not</strong> get a 405 error.</p>
+
+<div class="doc-flow doc-flow-h"><div class="doc-flow-node">Scan now</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Public snapshot?</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Client demo scan</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Live API scan</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Findings plus outbox</div></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Scan finishes with a count. Findings, outbox and scan log all update. The Live Alerts / Market Intelligence unread badge may tick up.</p>
+
+<h3 id="7-4-monitor-2-0-admin-monitor-2" class="text-lg font-semibold mt-6 mb-2">7.4 Monitor 2.0 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The integration hub for the existing indicator platform. CRMP does not replace Monitor 2.0; it syncs from it.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Three tabs:</p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><strong>Indicators</strong> — monitor id, name, domain, product, warn/breach thresholds, last value, open ticket count.  </li>
+<li><strong>Alerts</strong> — the same events as Live Alerts, with Monitor ticket ids.  </li>
+<li><strong>Tickets</strong> — case tracking, assignee, department, Lark message id.</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">A panel shows <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.base_url</code> and <strong>Sync now (prototype)</strong>.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Sync on localhost to refresh mirrored tables. Acknowledge an OPEN alert. Update a ticket status. On Pages, treat this as a read-only catalogue.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Indicators EQ / MRG / COPY (and others) are present. Sync reports how many rows refreshed.</p>
+
+<h3 id="7-5-detectors-admin-detectors" class="text-lg font-semibold mt-6 mb-2">7.5 Detectors — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> Threshold watches that sit in front of Monitor. They are the first stage of the spine.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Each detector: code, product, domain, monitor id, warn/breach, comparator, enabled, last run, last status/value. A recent <strong>runs</strong> list (observed value, severity, linked alert and analysis).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><strong>Run all</strong> (localhost) samples every enabled detector. Warn/breach auto-raise alarms and kick AI RCA. Unread badges on Detectors, Live Alerts and AI Analyses go up.  </li>
+<li><strong>Enable / disable</strong> a single detector.</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> A COPY-style detector can produce a BREACH. Disabled detectors do not fire. Runs appear in Spine as DETECT → ALARM.</p>
+
+<h3 id="7-6-live-alerts-admin-alerts" class="text-lg font-semibold mt-6 mb-2">7.6 Live Alerts — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The operational queue: what is on fire right now.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Cards sorted CRITICAL → BREACH → WARN, newest first. Each card: severity, status, product, domain, title, message, alert id, monitor id, observed value, ticket id, time.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> <strong>Acknowledge</strong> on an OPEN alert if you have operate rights. Then open AI Analyses or Messenger for the pack. The unread badge clears when you visit this page.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> OPEN items are at the top of your day. Ack moves status to ACKNOWLEDGED. Nothing here is a silent drop.</p>
+
+<h3 id="7-7-risk-domains-admin-risk-domains" class="text-lg font-semibold mt-6 mb-2">7.7 Risk Domains — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-domains</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The catalogue of CFD and crypto risk areas (credit, LP hedge, market pricing, crypto exchange, fraud, product config, model/AI, ops, capital, tech).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Cards with priority, code, product coverage, owner department, supporting departments, description.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Read-only in the prototype. Use it to see who owns a domain before you escalate.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Every domain has an owner. Product coverage is CFD, Crypto, or both.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="8-ai-knowledge" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. AI &amp; knowledge</h2>
+
+<h3 id="8-1-ai-analyses-admin-ai-analyses" class="text-lg font-semibold mt-6 mb-2">8.1 AI Analyses — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The RCA workbench. Auto-runs when an alarm fires.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> A list of analyses: mode (<code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code> or <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>), confidence, summary, status, needs-human flag, skill code, indicator, <strong>2nd AI · verdict</strong> badge. Open one id for the full pack: explanations, evidence vault, skill run steps, and the <strong>Second AI challenger</strong> panel (critiques, improvements, alternative hypotheses).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click (demo, localhost).</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Simulate COPY breach — skill path.  </li>
+<li>Simulate EQ drawdown — RAG; WARN usually skips second AI.  </li>
+<li>Simulate CRITICAL — forces second AI.  </li>
+<li>Backfill 2nd AI challenges — attaches challenger rows to older high-severity packs.</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">Click through to the skill playbook or the messenger thread.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Every BREACH/CRITICAL row has a second-AI badge. WARN under the default threshold does not. <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> sets needs-human.</p>
+
+<h3 id="8-2-ai-admin-admin-ai-admin" class="text-lg font-semibold mt-6 mb-2">8.2 AI Admin — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> Governance for AI, <strong>not</strong> the live RCA list. Maker proposes; a <strong>different</strong> person checks.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Tabs.</strong></p>
+
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Action</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Effect</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Tab</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What you do</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">KPIs: analyses, skill-match %, confidence, needs-human, pending interventions, human-agree %, feedback-correct %, pending change requests</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Parameters</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Draft <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.*</code> settings (RCA on/off, auto-on-alarm, min confidence, RAG top-K, second-opinion severity, maker/checker). <strong>Propose</strong> does not apply yet</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker / Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Pending change requests first. Approve or reject with a note. You cannot approve your own</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Propose create/update/disable of a playbook. Applied only after approve</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Propose create/update/retire of a corpus doc</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Training</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Queue a recalibration run (becomes a TRAINING change request)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">History</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Accuracy snapshots (about 14 days)</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Header badges show whether you are Maker, Checker, or both. Risk Owner can be both, but <strong>self-approve is still blocked</strong>.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> A proposed skill stays PENDING until another user approves. After approve it appears on AI Skills. Parameter values on the live desk do not move until APPROVED.</p>
+
+<h3 id="8-3-ai-skills-admin-skills" class="text-lg font-semibold mt-6 mb-2">8.3 AI Skills — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> Playbooks in SKILL.md style: when to use, when not to, prechecks, steps, evidence, stop conditions, success criteria, thresholds and why, fault areas, escalation, BU corrections, past cases.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Search box. Two tabs: <strong>Single-indicator skills</strong> and <strong>Linked timelines</strong> (multi-indicator chains). Cards stay compact (code, name, product, domain, auto vs manual).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> <strong>Enter</strong> opens <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/{code}</code> — the full playbook page (not a tiny card). From there: back to skills, knowledge tree, AI analyses, risk log.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Enter never 404s for a seeded skill. Linked timelines show sequence, causes, linked skills.</p>
+
+<h3 id="8-4-knowledge-tree-admin-knowledge-tree" class="text-lg font-semibold mt-6 mb-2">8.4 Knowledge Tree — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/knowledge-tree</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> A picture of how knowledge hangs together: CRMP → risk domains → skill playbooks, with linked timelines and RAG on the side trunks.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><strong>Tree map</strong> (default) or <strong>Outline</strong>.  </li>
+<li>Product filter: All / CFD / Crypto.  </li>
+<li>Trunk switch: Risk domains, Linked timelines, RAG corpus.  </li>
+<li>Click a <strong>domain</strong> to fan out its skills. Click a <strong>skill</strong> to fill the inspector.  </li>
+<li><strong>Enter</strong> / <strong>Enter full playbook</strong> opens the SKILL.md page.  </li>
+<li>RAG nodes open the RAG library. Docs are matched by tags and title.</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">Domains wrap on two rows so labels stay readable. There is no sideways-only strip of ten tiny boxes.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> LP_HEDGE expands to hedge skills. RAG trunk groups documents by category. Enter navigates; it is not a dead SVG link.</p>
+
+<h3 id="8-5-rag-knowledge-base-admin-rag" class="text-lg font-semibold mt-6 mb-2">8.5 RAG Knowledge Base — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The internal corpus used when a skill is not certain: policies, products, entities, platforms.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Filter by category, search box, document cards (key, title, tags, status, excerpt). A <strong>retrieve</strong> box to try a query (top-K hits with scores). If you can manage: create a doc, edit content, retire.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Retrieve with a phrase like “copy trading concentration gold margin” and confirm hits look relevant. Governed production-like creates should go through AI Admin; this page is the corpus browser.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Retrieve returns ranked hits. Retired docs drop out of search.</p>
+
+<h3 id="8-6-spine-log-admin-spine" class="text-lg font-semibold mt-6 mb-2">8.6 Spine Log — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The end-to-end tape: DETECT → ALARM → AI_RCA → SKILL_EXECUTE → HUMAN_INTERVENTION → RESOLVED → DASHBOARD.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> 24-hour counts per stage, then a timeline of events (id, stage, product, severity, title, actor, time, detail).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Read-only. After you run a detector or close a messenger thread, confirm matching stages appear within about a minute (localhost).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> A COPY breach demo produces DETECT, ALARM, AI_RCA (and SKILL_EXECUTE / HUMAN_INTERVENTION if those ran). No silent gaps on the happy path.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="9-response" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. Response</h2>
+
+<h3 id="9-1-human-intervention-admin-interventions" class="text-lg font-semibold mt-6 mb-2">9.1 Human Intervention — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The checker desk for runtime actions (not AI Admin config). Maker already asked for a control; you approve or reject.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Cards: action code, status, analysis, indicator, alert title/severity, skill step, requested time. Pending items have a note box plus <strong>Approve</strong> and <strong>Reject</strong>.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Type a short reason. Approve to go live (prototype records the decision). Reject to stop. Both write spine + audit.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Pending count matches the home / AI Admin KPI. Decided rows show who and when.</p>
+
+<h3 id="9-2-demo-messenger-admin-messenger" class="text-lg font-semibold mt-6 mb-2">9.2 Demo Messenger — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> In-app Lark-style inbox. Production will use real Lark; this page proves the buttons and the audit trail.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Layout.</strong> Desktop: thread list + chat side by side. Phone: list → tap thread → <strong>Threads</strong> to go back.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Toolbar.</strong> <strong>Sync alerts</strong> pulls new Monitor alarms into threads.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>On an open thread you can:</strong></p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Button</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What it does</th>
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Show evidence</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Posts evidence vault + second-AI summary into the thread</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Posts the evidence vault and second-AI summary into the chat</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Chatbot</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Type to challenge AI or add info; disagreement flags <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Chatbot</strong> (type + Send)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Challenge the AI or add facts. Disagreement flags <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human</code></td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Escalate</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Advances Primary → Secondary → Risk Owner → Exec path</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Moves Primary → Secondary → Risk Owner → Exec along the route</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Dismiss</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">False alarm; closes thread + alert</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">False alarm. Closes the thread and the alert</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Close (accept AI)</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Accepts analysis; closes ticket</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Accepts the analysis and closes the ticket</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Recommended actions</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Block user, halt trading, cut max leverage, pre-widen spreads, pause copy joining</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Double-confirm…</strong> then <strong>Yes, send to Vantage admin</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Creates an admin reference + link (often Interventions)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Checker approve (go live)</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">When the system says a checker is required</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Open in admin</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Jumps to the matching admin page (must stay under <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/</code> on Pages)</td>
 </tr>
 </tbody></table></div>
 
-<h3 id="recommended-controls-below-ai-report" class="text-lg font-semibold mt-6 mb-2">Recommended controls (below AI report)</h3>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Choose e.g. <strong>Block user account</strong>, <strong>Halt trading</strong>, <strong>Cut max leverage</strong>, <strong>Pre-widen spreads</strong>, <strong>Pause copy joining</strong>.  </li>
-<li>Click <strong>Double-confirm…</strong> then <strong>Yes, send to Vantage admin</strong>.  </li>
-<li>Thread shows admin ref + link (e.g. Interventions).  </li>
-<li>If checker required, follow the system message for Checker approval.</li>
-</ol>
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Sync creates threads. Evidence posts a vault, not an empty bubble. Escalate advances the path. Dismiss/Close change statuses. Double-confirm yields an admin_ref. Open in admin does not 404 on GitHub Pages.</p>
 
-<h3 id="sync" class="text-lg font-semibold mt-6 mb-2">Sync</h3>
-<p class="text-sm leading-relaxed my-2">Use <strong>Sync alerts</strong> to pull new Monitor alarms into messenger threads.</p>
+<p class="text-sm leading-relaxed my-2">Permanent URL: <a class="underline" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/">https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/</a></p>
 
-<hr class="my-6 border-[var(--line)]" />
+<h3 id="9-3-lark-integration-admin-lark" class="text-lg font-semibold mt-6 mb-2">9.3 Lark Integration — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code></h3>
 
-<h2 id="5-ai-admin-maker-checker" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. AI Admin (maker / checker)</h2>
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> Channel registry for severity-routed notify, on-call pages, and dual-control pings. Webhooks are mocked in the prototype.</p>
 
-<p class="text-sm leading-relaxed my-2">Path: [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code>](/admin/ai-admin)</p>
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Channel list (name, chat id, purpose, enabled). Lark-related settings (<code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.*</code>).</p>
 
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li><strong>Maker</strong> proposes a setting, model, or policy change.  </li>
-<li>A <strong>different user</strong> with checker permission approves or rejects.  </li>
-<li>Self-approve is blocked by design.  </li>
-<li>Spec reference: TSD §8 (see <a class="underline" href="/admin/docs/tsd">TSD</a>).</li>
-</ol>
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Enable/disable a channel if you have manage rights. Send a mock notify on localhost. On Pages, treat as a directory.</p>
 
-<hr class="my-6 border-[var(--line)]" />
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Market intel, risk, and AI lab channels exist. Disabled channels are not used by escalation routes.</p>
 
-<h2 id="6-market-intelligence" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. Market Intelligence</h2>
+<h3 id="9-4-escalation-routes-admin-escalation" class="text-lg font-semibold mt-6 mb-2">9.4 Escalation Routes — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code></h3>
 
-<p class="text-sm leading-relaxed my-2">Path: [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code>](/admin/market-intel)</p>
+<p class="text-sm leading-relaxed my-2"><strong>What it is.</strong> The map: severity → primary team → secondary team → Lark channel → SLA minutes. Demo Messenger <strong>Escalate</strong> follows this map.</p>
 
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Enablement via settings (<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>).  </li>
-<li>Click <strong>Scan now</strong> (or wait for the 5-minute scheduler on localhost).  </li>
-<li>Review <strong>Findings</strong>, <strong>Messenger outbox</strong>, sources, and scan history.  </li>
-<li>Cards follow the i–vi format and can raise indicator <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code>.</li>
-</ol>
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Route name, severity, domain, teams, channel, SLA, enabled flag.</p>
 
-<p class="text-sm leading-relaxed my-2"><strong>Public GitHub Pages:</strong> there is no <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code> on the snapshot. <strong>Scan now</strong> runs a local demo scan from the same event templates as the live scanner. New findings appear immediately in Findings / outbox / scan log. Live HTTP scrapes still belong on <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>.</p>
+<p class="text-sm leading-relaxed my-2"><strong>What to click.</strong> Create/edit/disable if you have manage rights (localhost). Read the SLA before you escalate a CRITICAL.</p>
 
-<div class="doc-flow doc-flow-h"><div class="doc-flow-node">Scan now</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Event templates</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Findings desk</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Messenger outbox</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">M2-MKT-INTEL</div></div>
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> CRITICAL has a tighter SLA than WARN. Every route has a primary team.</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="7-skills-rag-detectors-risk-log" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. Skills, RAG, detectors, risk log</h2>
+<h2 id="10-organisation" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. Organisation</h2>
+
+<h3 id="10-1-departments-admin-departments" class="text-lg font-semibold mt-6 mb-2">10.1 Departments — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/departments</code></h3>
+
+<p class="text-sm leading-relaxed my-2">Cards for Risk Control, Operations, AI, System: description, team count, user count, primary responsibilities (RACI). Read-only catalogue.</p>
+
+<h3 id="10-2-teams-admin-teams" class="text-lg font-semibold mt-6 mb-2">10.2 Teams — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/teams</code></h3>
+
+<p class="text-sm leading-relaxed my-2">Table: team name, department, members, Lark chat id, on-call rotation, mission. This is who wakes up when a route fires.</p>
+
+<h3 id="10-3-roles-permissions-admin-roles" class="text-lg font-semibold mt-6 mb-2">10.3 Roles &amp; Permissions — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></h3>
+
+<p class="text-sm leading-relaxed my-2">Each role (Risk Owner, Analyst, Ops, AI Engineer, System Admin, Super Admin, Viewer, …) with its permission chips (<code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.approve</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code>, …). Super Admin has <code class="rounded bg-slate-100 px-1 text-[0.9em]">*</code>. Use this page to see why a button is missing for a persona.</p>
+
+<h3 id="10-4-users-admin-users" class="text-lg font-semibold mt-6 mb-2">10.4 Users — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></h3>
+
+<p class="text-sm leading-relaxed my-2">Directory of operators and demo personas, including <strong>YAN Haixiang</strong>. Columns: name, email, role, department, team, status, last login.</p>
+
+<p class="text-sm leading-relaxed my-2">If you have <code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code> (localhost): <strong>Add user</strong> (name, email, password, role, department, team) and toggle ACTIVE / DISABLED. On Pages, creating users is a demo no-op or browser-only.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> YAN Haixiang is present as platform owner. Disabled users cannot be a live maker/checker in the localhost API.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="11-platform" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. Platform</h2>
+
+<h3 id="11-1-data-sources-admin-data-sources" class="text-lg font-semibold mt-6 mb-2">11.1 Data Sources — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/data-sources</code></h3>
+
+<p class="text-sm leading-relaxed my-2">Registry of internal platforms and external verification feeds (category, name, type, status). Manage on localhost if you have <code class="rounded bg-slate-100 px-1 text-[0.9em]">sources.manage</code>. This is the catalogue AI and detectors are allowed to name in evidence.</p>
+
+<h3 id="11-2-ai-access-security-admin-security-ai-access" class="text-lg font-semibold mt-6 mb-2">11.2 AI Access Security — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></h3>
+
+<p class="text-sm leading-relaxed my-2">The <strong>human-only</strong> inventory. AI service accounts must never receive these pages, functions, fields or data (identity writes, secrets, dual-control approve, LP/wallet execute, role writes, session cookies).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>What you see.</strong> Stats, the blocklist (target, reason, severity), allowed AI capabilities, and forbidden permission codes.</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> Approve paths, user/role writes, and trading execute are on the blocklist. The allowed list is narrow (read evidence, draft RCA, retrieve RAG).</p>
+
+<h3 id="11-3-audit-log-admin-audit" class="text-lg font-semibold mt-6 mb-2">11.3 Audit Log — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/audit</code></h3>
+
+<p class="text-sm leading-relaxed my-2">Who did what: time, actor, action, entity, details. Messenger dismiss/close, AI Admin propose/approve, interventions, logins, setting saves should appear here on localhost. Newest 200 rows.</p>
+
+<h3 id="11-4-platform-settings-admin-settings" class="text-lg font-semibold mt-6 mb-2">11.4 Platform Settings — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/settings</code></h3>
+
+<p class="text-sm leading-relaxed my-2">Grouped flags (not one giant alphabetical dump):</p>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Area</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Path</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What to do</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Group</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Keys like</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Skills</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Browse playbooks &amp; enriched risk scenarios / chains</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform identity</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform.*</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">products.*</code></td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG KB</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Internal + external evidence corpus used when skill is uncertain</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.*</code></td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Threshold monitors that raise alarms</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI analysis</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.*</code> (RCA, confidence, second-opinion severity, maker/checker)</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Log</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Analytics timeline of risk events &amp; BU corrections</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market intelligence</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.*</code> (enabled, interval, Lark chat)</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">End-to-end stage log (Detect → AI RCA → Escalation → …)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Messenger / Lark</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.*</code></td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Interventions</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human gates from skill/RAG/messenger actions</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Escalation &amp; SLA</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation.*</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.*</code></td>
 </tr>
 </tbody></table></div>
 
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="8-safety-compliance-habits" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. Safety &amp; compliance habits</h2>
-
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Open <a class="underline" href="/admin/security/ai-access">AI Access Security</a> — AI must not operate human-only pages/functions/fields.  </li>
-<li>Never grant production AI service accounts those rights.  </li>
-<li>Treat messenger dismiss/close as auditable decisions.  </li>
-<li>For BREACH/CRITICAL, keep primary + challenger packs side-by-side before irreversible controls.  </li>
-<li>Verify outcomes in <strong>Audit Log</strong> and <strong>Spine Log</strong>.</li>
-</ol>
+<p class="text-sm leading-relaxed my-2">Edit a value and <strong>Save</strong>. Localhost writes SQLite. GitHub Pages stores the change in this browser only and says so.</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="9-mobile-tips" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. Mobile tips</h2>
+<h2 id="12-docs-in-the-left-menu" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. Docs (in the left menu)</h2>
 
-<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li>Use hamburger nav; language toggle sits in the header.  </li>
-<li>Messenger is master–detail: list → thread → <strong>Threads</strong> back.  </li>
-<li>Primary buttons are full-width; scroll tables horizontally inside panels if needed.  </li>
-<li>Prefer landscape only when reviewing wide docs tables.</li>
-</ul>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="10-quick-links" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. Quick links</h2>
+<p class="text-sm leading-relaxed my-2">All of these toggle <strong>EN / 繁中</strong> like the rest of the desk.</p>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Page</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Path</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What it is</th>
 </tr></thead><tbody>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin Home</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">User Guide</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/user-guide</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">This handbook</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Analyses</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">What we are building and why, with acceptance tests</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market Intelligence</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TSD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">How it is built (architecture, APIs, data model)</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT Checklist</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Interactive 45-case sign-off (UAT-01 … UAT-45): why, steps, pass, evidence, screen coverage</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Ecosystem Eval</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/ecosystem</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">People, budget bands, phases, risks to adopt CRMP for real</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD / TSD</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Improvement Roadmap</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/roadmap</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prioritised follow-ups</td>
 </tr>
 <tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">All URLs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">URL Catalog</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Every admin page, API, and table, plus the public Pages URLs</td>
 </tr>
 </tbody></table></div>
 
+<p class="text-sm leading-relaxed my-2">On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail on the board; coverage chips show which screens each case hits.</p>
+
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="11-every-admin-screen-plain-english" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. Every admin screen (plain English)</h2>
+<h2 id="13-safety-habits-do-these-every-time" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. Safety habits (do these every time)</h2>
 
-<p class="text-sm leading-relaxed my-2">Use this table as the map of what each left-nav group is for. Click the home-page cards to jump to the same places.</p>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Open AI Access Security once per release and confirm the blocklist still matches “humans only”.  </li>
+<li>Never give a production AI service account those rights.  </li>
+<li>Treat messenger <strong>Dismiss</strong> and <strong>Close</strong> as real decisions — they are audited.  </li>
+<li>For BREACH/CRITICAL, keep primary + second AI on screen before any irreversible control.  </li>
+<li>After a control, check <strong>Audit Log</strong> and <strong>Spine Log</strong> for the same ids.  </li>
+<li>Maker and checker must be <strong>two different people</strong> on AI Admin and on designated controls.</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="14-quick-map-of-every-left-nav-page" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. Quick map of every left-nav page</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Group</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Page</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What you do there</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">You come here to…</th>
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin Home</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Counts, departments, recent alerts. Cards are clickable.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">See counts; click cards; jump to messenger or docs</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Daily Performance</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Day-end CFD + crypto risk picture.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Day-end CFD + crypto metrics</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Log Analytics</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Timeline of events, handling time, loss vs prevented.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Timeline, handling time, loss vs prevented, loopholes</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Market Intelligence</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">5-minute news/social scan; Scan now; messenger cards.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Scan news/social; read findings and outbox</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Indicator registry, tickets, sync from the upstream monitor.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Indicators, alerts, tickets; sync from upstream</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Thresholds that raise alarms.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Run or pause threshold monitors</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Live Alerts</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Open queue: ack, escalate, open AI.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ack the open queue</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Domains</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Catalogue of CFD + crypto domains.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">See who owns each risk area</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Analyses</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Primary RCA + second-AI challenge.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Read RCA + second AI; run demo simulates</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker/checker settings, models, skills, RAG.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Propose/approve models, params, skills, RAG</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Skills</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Playbook cards; Enter opens the full SKILL.md page.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Browse playbooks; Enter the full SKILL.md</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Knowledge Tree</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Visual map of domains, skills, RAG.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Visual map of domains, skills, RAG</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG Knowledge Base</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Evidence corpus used when a skill is uncertain.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Search and retrieve evidence docs</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine Log</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detect → AI → escalate → intervene trail.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Follow Detect → … → Dashboard</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Human Intervention</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Approve or reject gates (checker).</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker approve/reject runtime gates</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark-style inbox: evidence, chat, escalate, dismiss, close, controls.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Evidence, chat, escalate, dismiss, close, controls</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark Integration</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Channel registry (mock webhooks in the prototype).</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Channel registry</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Escalation Routes</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Severity → team → SLA.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Severity → team → SLA</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Departments / Teams / Roles / Users</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI, on-call, RBAC, directory (includes YAN Haixiang).</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Departments</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI ownership</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Teams</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">On-call and Lark chat ids</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Roles &amp; Permissions</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RBAC chips</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Users</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Directory, including YAN Haixiang</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Data Sources</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Internal + external registry.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Internal + external registry</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Access Security</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human-only pages/functions/fields.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human-only pages/functions/fields</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Audit Log</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Who changed what.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Who changed what</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform Settings</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Grouped flags (platform, Monitor, AI, market intel, Lark, SLA).</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Grouped flags</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / URL Catalog</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Product and operator documentation.</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Product and operator documents</td>
 </tr>
 </tbody></table></div>
 
-<div class="doc-flow doc-flow-v"><div class="doc-flow-node">Monitor 2.0 alarm</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">CRMP Admin</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">AI RCA + challenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Demo Messenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Human intervention</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Audit + spine</div></div>
-
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="12-document-control" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. Document control</h2>
+<h2 id="15-document-control" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">15. Document control</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -513,471 +898,882 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">All admin screens, public Scan demo, YAN Haixiang owner, login on Pages</td>
 </tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Full how-to for every left-nav page, unread badges, knowledge tree, grouped settings, UAT-01…45</td>
+</tr>
 </tbody></table></div>
 
 <p class="text-sm leading-relaxed my-2"><strong>Owner:</strong> YAN Haixiang</p>
-12:T76af,<h1 id="crmp-使用手冊" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 使用手冊</h1>
+12:T102e5,<h1 id="crmp-使用手冊" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 使用手冊</h1>
 
-<p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-UG-001 · <strong>對象：</strong> 風險負責人、風險分析師、營運、AI 工程師、系統管理員  </p>
+<p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-UG-001 · <strong>對象：</strong> 任何會打開管理後台的人  </p>
 <p class="text-sm leading-relaxed my-2"><strong>語言：</strong> 繁體中文（本頁）· <a class="underline" href="/admin/docs/user-guide?lang=en">English</a>  </p>
 <p class="text-sm leading-relaxed my-2"><strong>文件與平台負責人：</strong> YAN Haixiang（<code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code>）</p>
 
-<h2 id="0-平台是什麼" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">0. 平台是什麼</h2>
-
-<p class="text-sm leading-relaxed my-2">Vantage <strong>CRMP 管理後台</strong> 是風險控制平面，將 Monitor 2.0 警報轉為：</p>
-
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>AI 根因分析（技能匹配或 RAG）  </li>
-<li>高嚴重度下的獨立<strong>第二 AI 挑戰</strong>  </li>
-<li>Messenger 分流（證據、升級、排除、結案、控制項）  </li>
-<li>Maker／Checker 干預，並留下稽核與脊柱軌跡  </li>
-</ol>
-
-<p class="text-sm leading-relaxed my-2">示範入口：<a class="underline" href="/admin">管理首頁</a> · <a class="underline" href="/admin/docs/urls">網址目錄</a></p>
+<p class="text-sm leading-relaxed my-2">這本手冊用白話寫。涵蓋左側選單<strong>每一頁</strong>，以及登入、語言、未讀數字、公開 GitHub Pages 快照。</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="1-登入與語言" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. 登入與語言</h2>
+<h2 id="1-這個後台是做什麼的" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. 這個後台是做什麼的</h2>
+
+<p class="text-sm leading-relaxed my-2">Vantage <strong>CRMP 管理後台</strong> 是 CFD 與加密風險的控制室。Monitor 2.0 發出警報後，這裡會：</p>
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>開啟 [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login)。公開 GitHub Pages 快照上此頁為 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code> — 請用左側 <strong>登入</strong> 連結（不要只在 github.io 根路徑輸入 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>）。  </li>
-<li>點選角色按鈕或輸入帳密。已為你建立 <strong>YAN Haixiang</strong>（平台負責人）帳號；點登入後會留在此瀏覽器。</li>
+<li>找到對應的技能劇本；若不確定，就搜尋 RAG 知識庫。  </li>
+<li>高嚴重度（BREACH 或 CRITICAL）時，再跑一輪<strong>獨立的第二 AI</strong>，可能同意、部分同意或不同意。  </li>
+<li>把整包放進 <strong>Lark 風格 Messenger</strong>，讓你顯示證據、聊天、升級、排除、結案或送出控制。  </li>
+<li>不可逆控制上線前，要有人類 Checker。  </li>
+<li>整段故事寫進<strong>脊柱日誌</strong>與<strong>稽核日誌</strong>。</li>
 </ol>
+
+<p class="text-sm leading-relaxed my-2">不必是工程師。點左側選單、讀卡片、跟畫面上的按鈕走即可。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>永久公開示範：</strong> <a class="underline" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/">https://hxyan2020.github.io/PRD/crmp-admin/admin/</a>  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Messenger 示範：</strong> <a class="underline" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/">https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/</a>  </p>
+<p class="text-sm leading-relaxed my-2"><strong>完整網址：</strong> <a class="underline" href="/admin/docs/urls">網址目錄</a></p>
+
+<p class="text-sm leading-relaxed my-2">GitHub Pages <strong>沒有即時 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code></strong>。每一頁仍可走完。本來要寫進伺服器的按鈕，會改存在這個瀏覽器。真正寫入（即時掃描、雙人核准套用、新增使用者）請用 <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>。</p>
+
+<div class="doc-flow doc-flow-v"><div class="doc-flow-node">Monitor 2.0 警報</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">CRMP 管理後台</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">AI 根因加第二 AI</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">示範 Messenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">人工干預</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">稽核加脊柱</div></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="2-登入-保持登入-切換語言" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. 登入、保持登入、切換語言</h2>
+
+<h3 id="2-1-打開登入頁" class="text-lg font-semibold mt-6 mb-2">2.1 打開登入頁</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>點左側 <strong>登入</strong>（在 GitHub Pages 最穩妥）。  </li>
+<li>或開啟 [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login)。公開快照上是 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code> — 不要只在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">github.io</code> 根路徑打 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>，會 404。</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2">本原型管理後台是公開的。只有要用<strong>具名角色</strong>（讓 Maker／Checker 與權限像正式環境）時才需登入。</p>
+
+<h3 id="2-2-可用帳號" class="text-lg font-semibold mt-6 mb-2">2.2 可用帳號</h3>
+
+<p class="text-sm leading-relaxed my-2">點 <strong>快速填入示範角色</strong>，或自行輸入帳密，再按 <strong>登入</strong>。</p>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">角色</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">身分</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Email</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">密碼</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">什麼時候用</th>
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">平台負責人</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">你是 YAN Haixiang，本後台與文件的具名負責人</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">風險負責人</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.owner@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">核准 AI 包與 Checker 步驟</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">風險分析師</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.analyst@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分流與 Messenger 挑戰</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">營運主管</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ops.lead@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ops123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案停交易／封鎖／加寬／暫停跟單</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 工程師</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.engineer@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能、RAG、偵測器、AI Admin 提案</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">系統管理員</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">system.admin@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">sys123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者、設定、稽核、AI 存取黑名單</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">超級管理員</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin@vantagemarkets.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin123</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整示範權限（雙人管控開啟時仍不能自己核准自己的 AI Admin 變更）</td>
 </tr>
 </tbody></table></div>
 
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>登入後進入 <strong>管理首頁</strong>。  </li>
-<li>以 <strong>EN／繁中</strong> 切換介面語言（桌面在側欄；手機在頂部）。  </li>
-<li>手機請用<strong>漢堡選單</strong>開啟導覽。</li>
-</ol>
+<p class="text-sm leading-relaxed my-2">登入後進入 <strong>管理首頁</strong>。姓名會留在這個瀏覽器（<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_demo_session_v1</code>）。重新整理公開 Pages 不會變回空白訪客。點左側 <strong>登出</strong> 才會清除。</p>
+
+<h3 id="2-3-語言" class="text-lg font-semibold mt-6 mb-2">2.3 語言</h3>
+
+<p class="text-sm leading-relaxed my-2">用 <strong>EN／繁中</strong>（桌面在側欄；手機在頂部）。選擇存在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code> cookie。所有左側標籤、頁標題、產品文件都可切換。若要分享中文連結，文件可加 <code class="rounded bg-slate-100 px-1 text-[0.9em]">?lang=zh-Hant</code>。</p>
+
+<h3 id="2-4-手機" class="text-lg font-semibold mt-6 mb-2">2.4 手機</h3>
+
+<p class="text-sm leading-relaxed my-2">點 <strong>漢堡選單</strong>（選單）打開左側導覽。Messenger 先列表：點執行緒，再按 <strong>執行緒</strong> 返回。語言在頂部。</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="2-依角色的每日路徑" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. 依角色的每日路徑</h2>
+<h2 id="3-左側選單-分組與未讀數字" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. 左側選單（分組與未讀數字）</h2>
 
-<h3 id="風險負責人" class="text-lg font-semibold mt-6 mb-2">風險負責人</h3>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>查看 <a class="underline" href="/admin/alerts">即時警報</a> 與 <a class="underline" href="/admin/ai-analyses">AI 分析</a> 的 BREACH／CRITICAL。  </li>
-<li>開啟雙 AI 包；若第二 AI 為 <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code>，暫勿核准不可逆控制。  </li>
-<li>於 <a class="underline" href="/admin/messenger">Demo Messenger</a> 升級、結案（接受 AI）或排除誤報。  </li>
-<li>Ops Maker 確認控制後，於 <a class="underline" href="/admin/interventions">人工干預</a> 執行 Checker 核准。  </li>
-<li>驗收版本時執行 <a class="underline" href="/admin/docs/uat">UAT 清單</a>。</li>
-</ol>
-
-<h3 id="風險分析師" class="text-lg font-semibold mt-6 mb-2">風險分析師</h3>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>分流 OPEN 警報 → 開啟 AI 證據。  </li>
-<li>以 messenger 聊天機器人挑戰 AI 或補充脈絡。  </li>
-<li>升級至風險負責人前附上備註。</li>
-</ol>
-
-<h3 id="營運主管-分析師" class="text-lg font-semibold mt-6 mb-2">營運主管／分析師</h3>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>於 messenger <strong>建議控制項</strong> 提出封鎖／停牌／槓桿／擴點／暫停跟單。  </li>
-<li><strong>雙重確認</strong> → 取得管理編號與連結。  </li>
-<li>若待 Checker，請風險負責人或指定 Checker 核准。</li>
-</ol>
-
-<h3 id="ai-工程師" class="text-lg font-semibold mt-6 mb-2">AI 工程師</h3>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>維護 <a class="underline" href="/admin/skills">AI 技能</a>、<a class="underline" href="/admin/rag">RAG</a>、<a class="underline" href="/admin/detectors">偵測器</a>。  </li>
-<li>於 <a class="underline" href="/admin/ai-admin">AI 管理</a> 調整設定／模型（Maker ≠ Checker）。  </li>
-<li>調整 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>（預設 BREACH）。</li>
-</ol>
-
-<h3 id="系統管理員" class="text-lg font-semibold mt-6 mb-2">系統管理員</h3>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>使用者、角色、團隊、部門、設定。  </li>
-<li>檢視 <a class="underline" href="/admin/security/ai-access">AI 存取安全</a> 黑名單。  </li>
-<li>監控 <a class="underline" href="/admin/audit">稽核日誌</a> 與 <a class="underline" href="/admin/spine">脊柱日誌</a>。</li>
-</ol>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="3-分流警報-桌面流程" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. 分流警報（桌面流程）</h2>
-
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>開啟 <strong>即時警報</strong> 或 <strong>Monitor 2.0</strong>。  </li>
-<li>找到 <code class="rounded bg-slate-100 px-1 text-[0.9em]">OPEN</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">ACKNOWLEDGED</code> 項目。  </li>
-<li>前往 <strong>AI 分析</strong>（或等待警報自動分析）。  </li>
-<li>開啟分析並閱讀：模式、信心、說明、證據庫。  </li>
-<li>若嚴重度為 <strong>BREACH</strong>／<strong>CRITICAL</strong>（或達到第二意見門檻）：  </li>
-</ol>
-<p class="text-sm leading-relaxed my-2">   - 檢視 <strong>第二 AI 挑戰者</strong> 面板  </p>
-<p class="text-sm leading-relaxed my-2">   - 閱讀批評、改進建議、替代假說  </p>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>決策原則：  </li>
-</ol>
-<p class="text-sm leading-relaxed my-2">   - <code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code> → 可依政策執行劇本  </p>
-<p class="text-sm leading-relaxed my-2">   - <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> → <strong>需要人工</strong>；覆核前不做不可逆控制  </p>
-
-<p class="text-sm leading-relaxed my-2"><strong>示範模擬（AI 分析頁）：</strong></p>
-<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li>模擬 COPY breach（技能路徑）  </li>
-<li>模擬 EQ 回撤（RAG／WARN — 通常不跑挑戰者）  </li>
-<li>模擬 CRITICAL（強制第二 AI）  </li>
-<li>回填第二 AI 挑戰  </li>
-</ul>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="4-demo-messenger" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. Demo Messenger</h2>
-
-<p class="text-sm leading-relaxed my-2">路徑：[<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code>](/admin/messenger)</p>
-
-<h3 id="版面" class="text-lg font-semibold mt-6 mb-2">版面</h3>
-<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li><strong>桌面：</strong> 執行緒列表＋聊天並排  </li>
-<li><strong>手機：</strong> 先列表 → 點進詳情；按 <strong>Threads</strong> 返回  </li>
-</ul>
-
-<h3 id="內嵌操作" class="text-lg font-semibold mt-6 mb-2">內嵌操作</h3>
-<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
-<thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">操作</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">效果</th>
-</tr></thead><tbody>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Show evidence</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">將證據庫與第二 AI 摘要貼入對話</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Chatbot</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">挑戰 AI 或補充資訊；表示不同意會標記 <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Escalate</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">沿 Primary → Secondary → Risk Owner → Exec 前進</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Dismiss</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">誤報；關閉執行緒與警報</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Close (accept AI)</strong></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">接受分析並結案</td>
-</tr>
-</tbody></table></div>
-
-<h3 id="建議控制項-ai-報告下方" class="text-lg font-semibold mt-6 mb-2">建議控制項（AI 報告下方）</h3>
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>選擇如 <strong>封鎖帳戶</strong>、<strong>停牌</strong>、<strong>降低槓桿</strong>、<strong>預先擴點</strong>、<strong>暫停跟單</strong>。  </li>
-<li>點 <strong>Double-confirm…</strong> 再按 <strong>Yes, send to Vantage admin</strong>。  </li>
-<li>對話顯示管理編號與連結。  </li>
-<li>若需 Checker，依系統訊息完成核准。</li>
-</ol>
-
-<h3 id="同步" class="text-lg font-semibold mt-6 mb-2">同步</h3>
-<p class="text-sm leading-relaxed my-2">使用 <strong>Sync alerts</strong> 將新 Monitor 警報拉入 messenger。</p>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="5-ai-admin-maker-checker" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. AI Admin（Maker／Checker）</h2>
-
-<p class="text-sm leading-relaxed my-2">路徑：[<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code>](/admin/ai-admin)</p>
-
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li><strong>Maker</strong> 提出設定／模型／政策變更。  </li>
-<li><strong>不同使用者</strong>以 Checker 權限核准或駁回。  </li>
-<li>設計上禁止自我核准。  </li>
-<li>規格見 TSD §8（<a class="underline" href="/admin/docs/tsd">TSD</a>）。</li>
-</ol>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="6-市場情報" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. 市場情報</h2>
-
-<p class="text-sm leading-relaxed my-2">路徑：[<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code>](/admin/market-intel)</p>
-
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>由設定啟用（<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>）。  </li>
-<li>點 <strong>立即掃描</strong>（本機也會每五分鐘排程）。  </li>
-<li>檢視發現、Messenger outbox、來源與掃描紀錄。  </li>
-<li>卡片採 i–vi 格式，可觸發指標 <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code>。</li>
-</ol>
-
-<p class="text-sm leading-relaxed my-2"><strong>公開 GitHub Pages：</strong> 快照沒有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code>。<strong>立即掃描</strong>會用與正式掃描相同的事件模板做本機示範掃描，發現會立刻出現在「發現／寄件匣／掃描紀錄」。真正 HTTP 抓取仍請在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>。</p>
-
-<div class="doc-flow doc-flow-h"><div class="doc-flow-node">立即掃描</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">事件模板</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">發現工作台</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Messenger 寄件匣</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">M2-MKT-INTEL</div></div>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="7-技能-rag-偵測器-風險日誌" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. 技能、RAG、偵測器、風險日誌</h2>
-
-<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
-<thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">區塊</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">路徑</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">用途</th>
-</tr></thead><tbody>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 技能</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">劇本與強化風險情境／鏈</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG 知識庫</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能不確定時的內外部證據</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">觸發警報的門檻監控</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險事件與 BU 修正時間軸</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">脊柱</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">端到端階段日誌</td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">人工干預</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">來自技能／RAG／messenger 的人工閘道</td>
-</tr>
-</tbody></table></div>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="8-安全與合規習慣" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. 安全與合規習慣</h2>
-
-<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>開啟 <a class="underline" href="/admin/security/ai-access">AI 存取安全</a> — AI 不得操作僅限人類之頁面／功能／欄位。  </li>
-<li>正式環境勿授予 AI 服務帳號上述權限。  </li>
-<li>將 messenger 排除／結案視為可稽核決策。  </li>
-<li>BREACH／CRITICAL 在不可逆控制前並陳主分析與挑戰者包。  </li>
-<li>於 <strong>稽核日誌</strong> 與 <strong>脊柱日誌</strong> 核對結果。</li>
-</ol>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="9-行動裝置提示" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. 行動裝置提示</h2>
-
-<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li>使用漢堡導覽；語言切換在頂部。  </li>
-<li>Messenger 為主從結構：列表 → 執行緒 → <strong>Threads</strong> 返回。  </li>
-<li>主要按鈕為全寬；寬表可在面板內橫向捲動。  </li>
-<li>檢視大型文件表格時可改橫向。</li>
-</ul>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="10-快速連結" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. 快速連結</h2>
-
-<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
-<thead><tr>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">頁面</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
-</tr></thead><tbody>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">管理首頁</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 分析</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 管理</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT 清單</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">生態導入評估</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/ecosystem</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD／TSD</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></td>
-</tr>
-<tr>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">全部網址</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
-</tr>
-</tbody></table></div>
-
-<hr class="my-6 border-[var(--line)]" />
-
-<h2 id="11-全部管理畫面-白話" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. 全部管理畫面（白話）</h2>
-
-<p class="text-sm leading-relaxed my-2">左側導覽依工作流分組。首頁卡片可點進同一頁。</p>
+<p class="text-sm leading-relaxed my-2">左側依組分開，避免一條超長清單：</p>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分組</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">頁面</th>
-<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">你在這裡做什麼</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">裡面有什麼</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>總覽</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">管理首頁</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>監控與風險</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每日績效、風險日誌、市場情報、Monitor 2.0、偵測器、即時警報、風險領域</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI 與知識</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 分析、AI 管理、AI 技能、知識樹、RAG、脊柱日誌</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>應變</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">人工干預、示範 Messenger、Lark、升級路徑</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>組織</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">部門、團隊、角色、使用者</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>平台</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">資料來源、AI 存取安全、稽核日誌、平台設定</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>文件</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用手冊、PRD、TSD、UAT、生態、路線圖、網址目錄</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">最上方是 Vantage 標誌。姓名下方是角色徽章（GitHub Pages 另有 <strong>公開原型</strong>）。負責人：YAN Haixiang。</p>
+
+<h3 id="未讀數字" class="text-lg font-semibold mt-6 mb-2">未讀數字</h3>
+
+<p class="text-sm leading-relaxed my-2">部分列會出現 <strong>青色徽章</strong>（即時警報、AI 分析、示範 Messenger、市場情報、人工干預、脊柱、稽核、Monitor 2.0、風險日誌、偵測器）。</p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>數字是<strong>你上次打開該分頁之後的新事項</strong>（本瀏覽器）。  </li>
+<li>公式：<code class="rounded bg-slate-100 px-1 text-[0.9em]">未讀 = max(0,（已知總數 + 額外增量）− 上次已看）</code>。  </li>
+<li>打開該頁就會<strong>清掉</strong>徽章（存在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_seen_v1</code>）。  </li>
+<li>掃描、偵測器執行、AI 模擬產生新工作時，徽章<strong>會增加</strong>（<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_nav_extra_v1</code>）。  </li>
+<li>GitHub Pages 第一次畫面用後備總數，即使快照資料庫看起來是空的也仍有數字。</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">徽章只是提醒，不是鎖。隨時可以打開該頁。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="4-各角色每天做什麼" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. 各角色每天做什麼</h2>
+
+<h3 id="風險負責人" class="text-lg font-semibold mt-6 mb-2">風險負責人</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>打開 <a class="underline" href="/admin/alerts">即時警報</a> 與 <a class="underline" href="/admin/ai-analyses">AI 分析</a>，找 BREACH／CRITICAL。  </li>
+<li>打開雙 AI 包。若第二 AI 是 <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code>，<strong>先不要</strong>核准不可逆控制。  </li>
+<li>在 <a class="underline" href="/admin/messenger">示範 Messenger</a> 升級、<strong>結案（接受 AI）</strong>，或 <strong>排除</strong> 誤報。  </li>
+<li>Ops 已 Maker 確認控制後，到 <a class="underline" href="/admin/interventions">人工干預</a> 做 Checker。  </li>
+<li>版本驗收時跑 <a class="underline" href="/admin/docs/uat">UAT 清單</a>。</li>
+</ol>
+
+<h3 id="風險分析師" class="text-lg font-semibold mt-6 mb-2">風險分析師</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>處理即時警報的 OPEN 佇列。  </li>
+<li>打開 AI 分析，讀摘要、證據、第二 AI 結論。  </li>
+<li>在 Messenger <strong>顯示證據</strong>，若不同意或有補充就打 <strong>聊天</strong>。  </li>
+<li>包就緒後升級給風險負責人。</li>
+</ol>
+
+<h3 id="營運主管-分析師" class="text-lg font-semibold mt-6 mb-2">營運主管／分析師</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>從 Messenger <strong>建議動作</strong> 選封鎖／停交易／降槓桿／預先加寬／暫停跟單。  </li>
+<li>點 <strong>雙重確認…</strong> 再 <strong>是，送至 Vantage 管理後台</strong>。會得到管理參照與連結。  </li>
+<li>若執行緒說需要 Checker，等風險負責人在人工干預核准。</li>
+</ol>
+
+<h3 id="ai-工程師" class="text-lg font-semibold mt-6 mb-2">AI 工程師</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>維護 <a class="underline" href="/admin/skills">AI 技能</a>、<a class="underline" href="/admin/rag">RAG</a>、<a class="underline" href="/admin/detectors">偵測器</a>。  </li>
+<li>在 <a class="underline" href="/admin/ai-admin">AI 管理</a> 提案設定／模型／技能／RAG。不能核准自己的變更。  </li>
+<li>在 AI 管理參數或平台設定調整 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>（預設 BREACH）。</li>
+</ol>
+
+<h3 id="系統管理員" class="text-lg font-semibold mt-6 mb-2">系統管理員</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>使用者、角色、團隊、部門、分組設定。  </li>
+<li>檢視 <a class="underline" href="/admin/security/ai-access">AI 存取安全</a> — AI 絕不可碰的頁／功能／欄位。  </li>
+<li>監看 <a class="underline" href="/admin/audit">稽核日誌</a> 與 <a class="underline" href="/admin/spine">脊柱日誌</a>。</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="5-主流程-警報-ai-聊天-結案" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. 主流程：警報 → AI → 聊天 → 結案</h2>
+
+<p class="text-sm leading-relaxed my-2">這是最常用的路。後面章節再講其他頁。</p>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>偵測器或 Monitor 2.0 指標越線。  </li>
+<li>即時警報出現 <strong>OPEN</strong>（Monitor 2.0 同時有工單）。  </li>
+<li>AI 分析產生一包：劇本對得上就是 <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code>，否則 <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>。  </li>
+<li>嚴重度是 BREACH 或 CRITICAL 時，出現 <strong>第二 AI</strong> 面板（<code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code>）。  </li>
+<li>在示範 Messenger 點 <strong>同步警報</strong>，讓這包變成聊天執行緒。  </li>
+<li><strong>顯示證據</strong> 把保險庫貼進對話。若要挑戰故事就聊天。  </li>
+<li><strong>升級</strong>、<strong>排除</strong>（誤報）或 <strong>結案（接受 AI）</strong>。  </li>
+<li>若要控制：選建議動作 → 雙重確認 → 必要時 Checker。  </li>
+<li>到脊柱日誌與稽核日誌核對同一批事件。</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2"><strong>AI 分析頁的示範捷徑</strong>（localhost）：模擬 COPY 越線（技能路徑）、模擬 EQ 回撤（RAG，常為 WARN 故略過第二 AI）、模擬 CRITICAL（強制第二 AI）、回填第二 AI 挑戰。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>決策規則：</strong> <code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code> 可依政策走劇本。<code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> 代表 <strong>需要人類</strong> — 兩份 AI 都讀過之前，不要做不可逆控制。</p>
+
+<div class="doc-flow doc-flow-h"><div class="doc-flow-node">警報</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">主 AI</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">第二 AI</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Messenger</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">已確認控制</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Checker</div></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="6-總覽" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. 總覽</h2>
+
+<h3 id="6-1-管理首頁-admin" class="text-lg font-semibold mt-6 mb-2">6.1 管理首頁 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 登入後的落地頁。看後台現在有多忙。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><strong>YAN Haixiang</strong> 負責人卡，以及 <strong>以平台負責人登入</strong>。  </li>
+<li>Lark 風格 Messenger 宣傳、永久 GitHub Pages 網址、<strong>開啟 Messenger 示範</strong>。  </li>
+<li>可點擊的數字卡：使用者、團隊、資料來源、風險領域、未結警報、未結工單、Lark 頻道、升級路徑。每張卡跳到對應頁。  </li>
+<li>部門分工（RACI 風格權責）。  </li>
+<li>最近警報，<strong>查看全部</strong> 進入即時警報。  </li>
+<li>捷徑按鈕：Messenger、網址目錄、PRD、使用手冊、UAT、AI 管理、AI 存取、每日績效。</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 把卡片當地圖。未結警報不是零就先去那裡。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 數字與其他頁一致。卡片是連結，不是死磚。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="7-監控與風險" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. 監控與風險</h2>
+
+<h3 id="7-1-每日績效-admin-dashboard" class="text-lg font-semibold mt-6 mb-2">7.1 每日績效 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 當日結束的 CFD 與加密風險畫面 — 脊柱最後一環。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 報表日、CFD／加密的 WARN／BREACH 數，以及指標卡（數值、目標、備註、健康）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> <strong>重新整理</strong>（localhost）會從 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/dashboard</code> 重建即時指標。Pages 上是種子快照。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 兩個產品欄都在。狀態徽章可讀（HEALTHY／WARN／BREACH）。</p>
+
+<h3 id="7-2-風險日誌分析-admin-risk-log" class="text-lg font-semibold mt-6 mb-2">7.2 風險日誌分析 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 歷史帳：什麼觸發、人處理多久、損失 vs 防損金額、漏洞集中在哪。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>摘要磚：未結警報、損失 vs 防損 vs 曝險、平均確認／結案／人工分鐘、SLA 逾時、待決 vs 已決干預。  </li>
+<li>依類別、依領域的表。  </li>
+<li>漏洞標籤（反覆弱點）。  </li>
+<li>時序紀錄（警報、工單、結果、美元）。</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 篩選／掃表。需要整包時跟列回到即時警報或 AI 分析。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 合計對得上。已結案件有處理時間。示範種子的漏洞標籤不是空的。</p>
+
+<h3 id="7-3-市場情報-admin-market-intel" class="text-lg font-semibold mt-6 mb-2">7.3 市場情報 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 每五分鐘看新聞、社群、官方與交易所貼文，找出可能移動 LP 報價的訊息。發現餵給指標 <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code> 與 Messenger 寄件匣（正式環境 Lark 群 <code class="rounded bg-slate-100 px-1 text-[0.9em]">oc_market_intelligence</code>）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 分頁：<strong>發現</strong>、<strong>Messenger 寄件匣</strong>、<strong>來源</strong>、<strong>掃描紀錄</strong>。卡片用 i–vi 格式（發生什麼、產品、為何可能移動 LP、嚴重度、來源、建議下一步）。排程開／關。技能劇本連結。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong></p>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>若畫面閒置，先在平台設定打開 <code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>。  </li>
+<li>點 <strong>立即掃描</strong>。  </li>
+<li>讀新發現，再看出件匣，再看掃描紀錄。</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2"><strong>GitHub Pages：</strong> 沒有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code>，所以 <strong>立即掃描</strong> 會跑<strong>本機示範掃描</strong>（與正式掃描同一批事件模板）。新卡片立刻出現，存在這個瀏覽器（<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_mi_demo_v1</code>）。真正 HTTP 抓取仍屬 <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>。<strong>不會</strong>出現 405。</p>
+
+<div class="doc-flow doc-flow-h"><div class="doc-flow-node">立即掃描</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">公開快照?</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">用戶端示範掃描</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">即時 API 掃描</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">發現加寄件匣</div></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 掃描結束有筆數。發現、寄件匣、掃描紀錄都更新。即時警報／市場情報未讀徽章可能加一。</p>
+
+<h3 id="7-4-monitor-2-0-admin-monitor-2" class="text-lg font-semibold mt-6 mb-2">7.4 Monitor 2.0 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 既有指標平台的整合中心。CRMP 不取代 Monitor 2.0，只從它同步。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 三個分頁：</p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><strong>指標</strong> — monitor id、名稱、領域、產品、警告／越線門檻、最後數值、未結工單數。  </li>
+<li><strong>警報</strong> — 與即時警報同一批事件，含 Monitor 工單 id。  </li>
+<li><strong>工單</strong> — 案件追蹤、承辦、部門、Lark 訊息 id。</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">面板顯示 <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.base_url</code> 與 <strong>立即同步（原型）</strong>。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 在 localhost 同步以刷新鏡像表。確認 OPEN 警報。更新工單狀態。Pages 上當唯讀目錄。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 看得到 EQ／MRG／COPY 等指標。同步會回報刷新了幾列。</p>
+
+<h3 id="7-5-偵測器-admin-detectors" class="text-lg font-semibold mt-6 mb-2">7.5 偵測器 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 坐在 Monitor 前面的門檻監視。脊柱第一階段。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 每個偵測器：代碼、產品、領域、monitor id、警告／越線、比較子、啟用、上次執行、上次狀態／數值。近期 <strong>執行紀錄</strong>（觀測值、嚴重度、連結的警報與分析）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><strong>全部執行</strong>（localhost）對每個啟用偵測器取樣。警告／越線會自動拉警報並啟動 AI RCA。偵測器、即時警報、AI 分析的未讀徽章會增加。  </li>
+<li><strong>啟用／停用</strong> 單一偵測器。</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> COPY 類偵測器能產出 BREACH。停用的不會開火。脊柱出現 DETECT → ALARM。</p>
+
+<h3 id="7-6-即時警報-admin-alerts" class="text-lg font-semibold mt-6 mb-2">7.6 即時警報 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 營運佇列：現在什麼在燒。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 卡片依 CRITICAL → BREACH → WARN、再依新到舊。每張：嚴重度、狀態、產品、領域、標題、說明、警報 id、monitor id、觀測值、工單 id、時間。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 有操作權時對 OPEN 點 <strong>確認（Acknowledge）</strong>。再到 AI 分析或 Messenger 看整包。進入本頁會清掉未讀徽章。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> OPEN 排在一天的最前面。Ack 後狀態變 ACKNOWLEDGED。沒有默默消失。</p>
+
+<h3 id="7-7-風險領域-admin-risk-domains" class="text-lg font-semibold mt-6 mb-2">7.7 風險領域 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-domains</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> CFD 與加密風險領域目錄（信用、LP 對沖、市場定價、加密交易所、詐欺、產品設定、模型／AI、營運、資本、技術）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 卡片含優先序、代碼、產品覆蓋、負責部門、支援部門、說明。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 原型為唯讀。升級前用來確認誰負責該領域。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 每個領域都有負責人。產品覆蓋是 CFD、Crypto 或兩者。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="8-ai-與知識" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. AI 與知識</h2>
+
+<h3 id="8-1-ai-分析-admin-ai-analyses" class="text-lg font-semibold mt-6 mb-2">8.1 AI 分析 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> RCA 工作台。警報觸發時自動跑。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 分析清單：模式（<code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>）、信心、摘要、狀態、需要人類旗標、技能代碼、指標、<strong>第二 AI · 結論</strong> 徽章。點進一筆看完整包：解釋、證據庫、技能執行步驟、<strong>第二 AI 挑戰者</strong>面板（批評、改進、替代假說）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼（示範，localhost）。</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>模擬 COPY 越線 — 技能路徑。  </li>
+<li>模擬 EQ 回撤 — RAG；WARN 通常略過第二 AI。  </li>
+<li>模擬 CRITICAL — 強制第二 AI。  </li>
+<li>回填第二 AI 挑戰 — 幫較舊的高嚴重度包補上挑戰列。</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">可連到技能劇本或 Messenger 執行緒。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 每筆 BREACH／CRITICAL 都有第二 AI 徽章。預設門檻下 WARN 沒有。<code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> 會設需要人類。</p>
+
+<h3 id="8-2-ai-管理-admin-ai-admin" class="text-lg font-semibold mt-6 mb-2">8.2 AI 管理 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> AI 的治理，<strong>不是</strong>即時 RCA 清單。Maker 提案；<strong>另一個人</strong> Checker。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>分頁。</strong></p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分頁</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">你做什麼</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">總覽</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">KPI：分析數、技能匹配％、信心、需要人類、待決干預、人類同意％、回饋正確％、待決變更單</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">參數</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">起草 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.*</code> 設定（RCA 開／關、警報自動、最低信心、RAG top-K、第二意見嚴重度、Maker／Checker）。<strong>提案</strong>不會立刻套用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker／Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">待決變更單在前。核准或駁回並寫備註。不能核准自己的</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案新增／更新／停用劇本。核准後才套用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案新增／更新／退役語料</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">訓練</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">排隊重新校正（會變成 TRAINING 變更單）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">歷史</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">準確率快照（約 14 天）</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">標題徽章顯示你是 Maker、Checker 或兩者。風險負責人可以兩者都是，但<strong>自己核准自己仍然被擋</strong>。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 提案的技能在另一人核准前維持 PENDING。核准後出現在 AI 技能。即時桌上的參數在 APPROVED 之前不會動。</p>
+
+<h3 id="8-3-ai-技能-admin-skills" class="text-lg font-semibold mt-6 mb-2">8.3 AI 技能 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> SKILL.md 風格劇本：何時用、何時不用、前置檢查、步驟、證據、停止條件、成功標準、門檻與理由、故障區域、升級、BU 矯正、過往案例。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 搜尋框。兩個分頁：<strong>單指標技能</strong> 與 <strong>連結時間鏈</strong>（多指標鏈）。卡片保持精簡（代碼、名稱、產品、領域、自動 vs 人工）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> <strong>進入</strong> 打開 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills/{code}</code> — 完整劇本頁（不是小卡片）。從那裡可回技能、知識樹、AI 分析、風險日誌。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 種子技能的進入不會 404。連結時間鏈看得到順序、原因、連結技能。</p>
+
+<h3 id="8-4-知識樹-admin-knowledge-tree" class="text-lg font-semibold mt-6 mb-2">8.4 知識樹 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/knowledge-tree</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 知識怎麼掛在一起的圖：CRMP → 風險領域 → 技能劇本，側幹是連結時間鏈與 RAG。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong></p>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>預設 <strong>樹狀圖</strong>，或 <strong>大綱</strong>。  </li>
+<li>產品篩選：全部／CFD／Crypto。  </li>
+<li>樹幹切換：風險領域、連結時間鏈、RAG 語料。  </li>
+<li>點<strong>領域</strong>展開技能。點<strong>技能</strong>填入檢視器。  </li>
+<li><strong>進入</strong>／<strong>進入完整劇本</strong> 打開 SKILL.md 頁。  </li>
+<li>RAG 節點打開 RAG 知識庫。文件依標籤與標題匹配。</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">領域排成兩列，標籤保持可讀。不是十個小盒子橫向擠成一條。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> LP_HEDGE 會展開對沖技能。RAG 幹依分類群組文件。進入會導頁，不是失效的 SVG 連結。</p>
+
+<h3 id="8-5-rag-知識庫-admin-rag" class="text-lg font-semibold mt-6 mb-2">8.5 RAG 知識庫 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 技能不確定時用的內部語料：政策、產品、實體、平台。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 依分類篩選、搜尋框、文件卡（鍵、標題、標籤、狀態、摘要）。<strong>檢索</strong>框可試查詢（top-K 命中與分數）。有管理權可新增、改內容、退役。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 用「copy trading concentration gold margin」這類句子檢索，確認命中相關。較像正式環境的新增應走 AI 管理；本頁是語料瀏覽器。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 檢索回傳排序命中。退役文件不再出現在搜尋。</p>
+
+<h3 id="8-6-脊柱日誌-admin-spine" class="text-lg font-semibold mt-6 mb-2">8.6 脊柱日誌 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 端到端膠帶：DETECT → ALARM → AI_RCA → SKILL_EXECUTE → HUMAN_INTERVENTION → RESOLVED → DASHBOARD。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 各階段 24 小時計數，再來事件時間軸（id、階段、產品、嚴重度、標題、執行者、時間、明細）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 唯讀。跑完偵測器或結案 Messenger 後，在 localhost 約一分鐘內核對對應階段出現。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> COPY 越線示範會產出 DETECT、ALARM、AI_RCA（若有執行則含 SKILL_EXECUTE／HUMAN_INTERVENTION）。快樂路徑沒有無聲缺口。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="9-應變" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. 應變</h2>
+
+<h3 id="9-1-人工干預-admin-interventions" class="text-lg font-semibold mt-6 mb-2">9.1 人工干預 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 執行期動作的 Checker 桌（不是 AI 管理設定）。Maker 已要求控制；你核准或駁回。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 卡片：動作代碼、狀態、分析、指標、警報標題／嚴重度、技能步驟、請求時間。待決項有備註框與 <strong>核准</strong>、<strong>駁回</strong>。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 寫一句理由。核准即上線（原型記錄決策）。駁回即停止。兩者都寫脊柱與稽核。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 待決數與首頁／AI 管理 KPI 一致。已決列看得出誰、何時。</p>
+
+<h3 id="9-2-示範-messenger-admin-messenger" class="text-lg font-semibold mt-6 mb-2">9.2 示範 Messenger — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 應用內 Lark 風格收件匣。正式環境會用真 Lark；本頁證明按鈕與稽核軌跡。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>版面。</strong> 桌面：執行緒列表 + 聊天並排。手機：列表 → 點執行緒 → <strong>執行緒</strong> 返回。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>工具列。</strong> <strong>同步警報</strong> 把新 Monitor 警報拉成執行緒。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>打開執行緒後可以：</strong></p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">按鈕</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">做什麼</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>顯示證據</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">把證據庫與第二 AI 摘要貼進聊天</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>聊天</strong>（輸入 + 傳送）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">挑戰 AI 或補充事實。不同意會標 <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>升級</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">沿路徑 Primary → Secondary → 風險負責人 → 高階</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>排除</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">誤報。關閉執行緒與警報</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>結案（接受 AI）</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">接受分析並關閉工單</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>建議動作</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">封鎖使用者、停交易、降最高槓桿、預先加寬點差、暫停跟單加入</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>雙重確認…</strong> 再 <strong>是，送至 Vantage 管理後台</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">產生管理參照 + 連結（常是人工干預）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Checker 核准（上線）</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">系統說需要 Checker 時</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>在管理後台開啟</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">跳到對應管理頁（Pages 上必須留在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/</code> 底下）</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 同步會產生執行緒。證據貼的是保險庫，不是空白泡泡。升級會前進路徑。排除／結案會改狀態。雙重確認產出 admin_ref。在 GitHub Pages「開啟管理後台」不會 404。</p>
+
+<p class="text-sm leading-relaxed my-2">永久網址：<a class="underline" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/">https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/</a></p>
+
+<h3 id="9-3-lark-整合-admin-lark" class="text-lg font-semibold mt-6 mb-2">9.3 Lark 整合 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 依嚴重度通知、值班叫應、雙人核准 ping 的頻道登錄。原型 Webhook 為模擬。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 頻道清單（名稱、chat id、用途、啟用）。Lark 相關設定（<code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.*</code>）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 有管理權可啟用／停用頻道。localhost 可送模擬通知。Pages 上當目錄。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 市場情報、風險、AI 實驗室頻道存在。停用頻道不會被升級路徑使用。</p>
+
+<h3 id="9-4-升級路徑-admin-escalation" class="text-lg font-semibold mt-6 mb-2">9.4 升級路徑 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>這頁是什麼。</strong> 地圖：嚴重度 → 主團隊 → 次團隊 → Lark 頻道 → SLA 分鐘。示範 Messenger <strong>升級</strong> 跟這張地圖走。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 路徑名稱、嚴重度、領域、團隊、頻道、SLA、啟用旗標。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>要點什麼。</strong> 有管理權可在 localhost 新增／編輯／停用。升級 CRITICAL 前先看 SLA。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> CRITICAL 的 SLA 比 WARN 緊。每條路徑都有主團隊。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="10-組織" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. 組織</h2>
+
+<h3 id="10-1-部門-admin-departments" class="text-lg font-semibold mt-6 mb-2">10.1 部門 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/departments</code></h3>
+
+<p class="text-sm leading-relaxed my-2">風險控管、營運、AI、系統的卡片：說明、團隊數、使用者數、主要職責（RACI）。唯讀目錄。</p>
+
+<h3 id="10-2-團隊-admin-teams" class="text-lg font-semibold mt-6 mb-2">10.2 團隊 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/teams</code></h3>
+
+<p class="text-sm leading-relaxed my-2">表：團隊名、部門、成員、Lark chat id、值班輪值、任務。路徑開火時叫醒的就是這些人。</p>
+
+<h3 id="10-3-角色與權限-admin-roles" class="text-lg font-semibold mt-6 mb-2">10.3 角色與權限 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></h3>
+
+<p class="text-sm leading-relaxed my-2">每個角色（風險負責人、分析師、營運、AI 工程師、系統管理員、超級管理員、檢視者…）及其權限晶片（<code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor.read</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.approve</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code>…）。超級管理員有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">*</code>。用這頁理解某個角色為什麼少一顆按鈕。</p>
+
+<h3 id="10-4-使用者-admin-users" class="text-lg font-semibold mt-6 mb-2">10.4 使用者 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></h3>
+
+<p class="text-sm leading-relaxed my-2">操作員與示範角色目錄，含 <strong>YAN Haixiang</strong>。欄位：姓名、email、角色、部門、團隊、狀態、上次登入。</p>
+
+<p class="text-sm leading-relaxed my-2">有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code>（localhost）可 <strong>新增使用者</strong>（姓名、email、密碼、角色、部門、團隊）並切換 ACTIVE／DISABLED。Pages 上新增多半是示範空操作或僅本機瀏覽器。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> YAN Haixiang 以平台負責人存在。停用使用者在 localhost API 不能當即時 Maker／Checker。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="11-平台" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. 平台</h2>
+
+<h3 id="11-1-資料來源-admin-data-sources" class="text-lg font-semibold mt-6 mb-2">11.1 資料來源 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/data-sources</code></h3>
+
+<p class="text-sm leading-relaxed my-2">內部平台與外部驗證來源登錄（分類、名稱、類型、狀態）。localhost 有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">sources.manage</code> 可管理。這是 AI 與偵測器在證據裡可以點名的目錄。</p>
+
+<h3 id="11-2-ai-存取安全-admin-security-ai-access" class="text-lg font-semibold mt-6 mb-2">11.2 AI 存取安全 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></h3>
+
+<p class="text-sm leading-relaxed my-2"><strong>僅限人類</strong> 清單。AI 服務帳號絕不可取得這些頁、功能、欄位或資料（身分寫入、祕密、雙人核准、LP／錢包執行、角色寫入、session cookie）。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong> 統計、黑名單（目標、理由、嚴重度）、允許的 AI 能力、禁止的權限代碼。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> 核准路徑、使用者／角色寫入、交易執行都在黑名單。允許清單很窄（讀證據、起草 RCA、檢索 RAG）。</p>
+
+<h3 id="11-3-稽核日誌-admin-audit" class="text-lg font-semibold mt-6 mb-2">11.3 稽核日誌 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/audit</code></h3>
+
+<p class="text-sm leading-relaxed my-2">誰做了什麼：時間、執行者、動作、實體、明細。localhost 上 Messenger 排除／結案、AI Admin 提案／核准、干預、登入、設定儲存應出現於此。最新 200 列。</p>
+
+<h3 id="11-4-平台設定-admin-settings" class="text-lg font-semibold mt-6 mb-2">11.4 平台設定 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/settings</code></h3>
+
+<p class="text-sm leading-relaxed my-2">分組旗標（不是一大本按字母排）：</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分組</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">例如這些鍵</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台身分</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform.*</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">products.*</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor2.*</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.*</code>（RCA、信心、第二意見嚴重度、Maker／Checker）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.*</code>（啟用、間隔、Lark chat）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Messenger／Lark</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lark.*</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">升級與 SLA</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation.*</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.*</code></td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">改一個值再 <strong>儲存</strong>。localhost 寫入 SQLite。GitHub Pages 只存在這個瀏覽器，並會這樣說明。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="12-文件-左側選單" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. 文件（左側選單）</h2>
+
+<p class="text-sm leading-relaxed my-2">以下都可像其餘後台一樣切 <strong>EN／繁中</strong>。</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">頁</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">路徑</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">這是什麼</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用手冊</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/user-guide</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">本手冊</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">我們在做什麼、為什麼、怎麼算過關</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TSD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">怎麼做的（架構、API、資料模型）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT 清單</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">互動式 45 案簽核（UAT-01 … UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">生態導入評估</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/ecosystem</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">真要導入的人力、預算帶、階段、風險</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">改進路線圖</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/roadmap</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">依優先序的後續</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">網址目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每個管理頁、API、資料表，加上公開 Pages 網址</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fail；覆蓋晶片顯示每案打到哪些畫面。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="13-每次都要做的安全習慣" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. 每次都要做的安全習慣</h2>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>每個版本打開一次 AI 存取安全，確認黑名單仍是「僅限人類」。  </li>
+<li>正式 AI 服務帳號絕不要拿到那些權限。  </li>
+<li>把 Messenger <strong>排除</strong> 與 <strong>結案</strong> 當真正決策 — 會被稽核。  </li>
+<li>BREACH／CRITICAL 時，不可逆控制前主 AI 與第二 AI 都要留在畫面上。  </li>
+<li>控制之後，用同一組 id 核對 <strong>稽核日誌</strong> 與 <strong>脊柱日誌</strong>。  </li>
+<li>AI 管理與指定控制的 Maker 與 Checker 必須是<strong>兩個人</strong>。</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="14-左側每一頁速查" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. 左側每一頁速查</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分組</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">頁</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">來這裡是為了…</th>
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">總覽</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">管理首頁</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">數量、部門、近期警報。卡片可點。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">看數字；點卡片；跳到 Messenger 或文件</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">每日績效</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">當日 CFD＋加密風險圖像。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">當日 CFD＋加密指標</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌分析</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">事件時間軸、處理時間、損失與防損。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">時間軸、處理時間、損失 vs 防損、漏洞</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">五分鐘新聞／社群掃描；立即掃描；Messenger 卡片。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">掃描新聞／社群；讀發現與寄件匣</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">指標登錄、工單、上游同步。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">指標、警報、工單；從上游同步</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">觸發警報的門檻。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">執行或暫停門檻監視</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">即時警報</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">未結佇列：確認、升級、開 AI。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">確認未結佇列</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">風險領域</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">CFD＋加密領域目錄。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">看誰負責每個風險區</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 分析</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">主 RCA＋第二 AI 挑戰。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">讀 RCA＋第二 AI；跑示範模擬</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 管理</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker／Checker 設定、模型、Skills、RAG。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案／核准模型、參數、技能、RAG</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 技能</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">劇本卡片；「進入」開完整 SKILL.md。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">瀏覽劇本；進入完整 SKILL.md</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">知識樹</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">領域、技能、RAG 視覺圖。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">領域、技能、RAG 的視覺地圖</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG 知識庫</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能不確定時的證據語料。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">搜尋與檢索證據文件</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">脊柱日誌</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測 → AI → 升級 → 干預軌跡。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">跟隨 Detect → … → Dashboard</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">人工干預</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">核准或駁回閘道（Checker）。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker 核准／駁回執行期關卡</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">示範 Messenger</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark 風格收件匣。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">證據、聊天、升級、排除、結案、控制</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark 整合</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">頻道登錄（原型為 mock webhook）。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頻道登錄</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">升級路徑</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">嚴重度 → 團隊 → SLA。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">嚴重度 → 團隊 → SLA</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">部門／團隊／角色／使用者</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI、值班、RBAC（含 YAN Haixiang）。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">部門</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI 權責</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">團隊</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">值班與 Lark chat id</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">角色與權限</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RBAC 晶片</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">目錄，含 YAN Haixiang</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">資料來源、AI 存取安全、稽核、設定</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">登錄、黑名單、軌跡、分組旗標。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">資料來源</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">內部＋外部登錄</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 存取安全</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅限人類的頁／功能／欄位</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">稽核日誌</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">誰改了什麼</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台設定</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分組旗標</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用手冊／PRD／TSD／UAT／生態／路線圖／網址</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">產品與操作文件。</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用手冊／PRD／TSD／UAT／生態／路線圖／網址目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">產品與操作文件</td>
 </tr>
 </tbody></table></div>
 
-<div class="doc-flow doc-flow-v"><div class="doc-flow-node">Monitor 2.0 警報</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">CRMP 管理後台</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">AI RCA＋挑戰者</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">示範 Messenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">人工干預</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">稽核＋脊柱</div></div>
-
 <hr class="my-6 border-[var(--line)]" />
 
-<h2 id="12-文件控制" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. 文件控制</h2>
+<h2 id="15-文件控制" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">15. 文件控制</h2>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
 <thead><tr>
@@ -994,6 +1790,11 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">1.3</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">全部管理畫面、公開掃描示範、YAN Haixiang 負責人、Pages 登入</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">左側每一頁完整操作說明、未讀徽章、知識樹、分組設定、UAT-01…45</td>
 </tr>
 </tbody></table></div>
 
