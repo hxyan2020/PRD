@@ -185,11 +185,11 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10＋§16.10 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`、`/api/rag` | `rag.read`／`rag.manage` | §16.12 |
-| AI | `/admin/spine` | `listSpineEvents` | `spine.read` | §16.13 |
+| 應變 | `/admin/messenger` | `DemoMessenger`、`/api/messenger` | `lark.read` | **§11** |
 | 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
-| 應變 | **`/admin/messenger`** | `DemoMessenger`、`/api/messenger` | `lark.read` | **§11** |
-| 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
 | 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
+| 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
+| 應變 | `/admin/spine` | `listSpineEvents` | `spine.read` | §16.13 |
 | 組織 | `/admin/departments` | 部門卡 | `teams.read` | §16.16 |
 | 組織 | `/admin/teams` | 團隊表 | `teams.read` | §16.16 |
 | 組織 | `/admin/roles` | 權限晶片 | `users.read` | §16.16 |

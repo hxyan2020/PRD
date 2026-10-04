@@ -89,12 +89,12 @@ The left pane is grouped so you are not staring at one long list:
 | Group | What lives there |
 |---|---|
 | **Overview** | Admin Home |
-| **Monitor & risk** | Daily Performance, Risk Log, Market Intelligence, Monitor 2.0, Detectors, Live Alerts, Risk Domains |
-| **AI & knowledge** | AI Analyses, AI Admin, AI Skills, Knowledge Tree, RAG, Spine Log |
-| **Response** | Human Intervention, Demo Messenger, Lark, Escalation Routes |
-| **Organisation** | Departments, Teams, Roles, Users |
-| **Platform** | Data Sources, AI Access Security, Audit Log, Platform Settings |
-| **Docs** | User Guide, PRD, TSD, UAT, Ecosystem, Roadmap, URL Catalog |
+| **Monitor & risk** | Daily Performance → Monitor 2.0 → Detectors → Live Alerts → Market Intelligence → Risk Log → Risk Domains |
+| **AI & knowledge** | AI Analyses → AI Skills → Knowledge Tree → RAG → AI Admin |
+| **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark → Spine Log |
+| **Organisation** | Departments → Teams → Users → Roles |
+| **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
+| **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem |
 
 The Vantage logo sits at the top. Your role badge (and **Public prototype** on GitHub Pages) sit under your name. Owner line: YAN Haixiang.
 
@@ -630,31 +630,31 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 |---|---|---|
 | Overview | Admin Home | See counts; click every card and alert row |
 | Monitor & risk | Daily Performance | Day-end CFD + crypto metrics |
-| Monitor & risk | Risk Log Analytics | Timeline, handling time, loss vs prevented, loopholes |
-| Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
 | Monitor & risk | Monitor 2.0 | Indicators, alerts, tickets; sync from upstream |
 | Monitor & risk | Detectors | Run or pause threshold monitors |
 | Monitor & risk | Live Alerts | Ack the open queue |
+| Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
+| Monitor & risk | Risk Log Analytics | Timeline, handling time, loss vs prevented, loopholes |
 | Monitor & risk | Risk Domains | See who owns each risk area |
 | AI & knowledge | AI Analyses | Read RCA + second AI; run demo simulates |
-| AI & knowledge | AI Admin | Propose/approve models, params, skills, RAG |
 | AI & knowledge | AI Skills | Browse playbooks; Enter the full SKILL.md |
 | AI & knowledge | Knowledge Tree | Visual map of domains, skills, RAG |
 | AI & knowledge | RAG Knowledge Base | Search and retrieve evidence docs |
-| AI & knowledge | Spine Log | Follow Detect → … → Dashboard |
-| Response | Human Intervention | Checker approve/reject runtime gates |
+| AI & knowledge | AI Admin | Propose/approve models, params, skills, RAG |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
-| Response | Lark Integration | Channel registry |
+| Response | Human Intervention | Checker approve/reject runtime gates |
 | Response | Escalation Routes | Severity → team → SLA |
+| Response | Lark Integration | Channel registry |
+| Response | Spine Log | Follow Detect → … → Dashboard |
 | Organisation | Departments | RACI ownership |
 | Organisation | Teams | On-call and Lark chat ids |
-| Organisation | Roles & Permissions | RBAC chips |
 | Organisation | Users | Directory, including YAN Haixiang |
+| Organisation | Roles & Permissions | RBAC chips |
 | Platform | Data Sources | Internal + external registry |
-| Platform | AI Access Security | Human-only pages/functions/fields |
-| Platform | Audit Log | Who changed what |
 | Platform | Platform Settings | Grouped flags |
-| Docs | User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / URL Catalog | Product and operator documents |
+| Platform | Audit Log | Who changed what |
+| Platform | AI Access Security | Human-only pages/functions/fields |
+| Docs | User Guide / URL Catalog / UAT / PRD / TSD / Roadmap / Ecosystem | Product and operator documents |
 
 ---
 

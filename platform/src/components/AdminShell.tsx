@@ -188,8 +188,11 @@ export function AdminShell({
           const items = NAV_ITEMS.filter((item) => item.group === group.id && can(item.permission));
           if (!items.length) return null;
           return (
-            <div key={group.id} className="mb-2">
-              <div className="px-3 pt-2 pb-1 text-[10px] uppercase tracking-[0.16em] text-slate-500">
+            <div
+              key={group.id}
+              className="mb-1 mt-1 border-t border-white/15 pt-2 first:mt-0 first:border-t-0 first:pt-0"
+            >
+              <div className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-teal-200/90">
                 {locale === "zh-Hant" ? group["zh-Hant"] : group.en}
               </div>
               {items.map((item) => {

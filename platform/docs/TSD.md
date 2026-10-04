@@ -185,11 +185,11 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §17.9 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §17.10 |
 | AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §17.11 |
-| AI | `/admin/spine` | `listSpineEvents` | `spine.read` | §17.12 |
+| Response | `/admin/messenger` | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
 | Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §17.13 |
-| Response | **`/admin/messenger`** | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
-| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §17.14 |
 | Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §17.15 |
+| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §17.14 |
+| Response | `/admin/spine` | `listSpineEvents` | `spine.read` | §17.12 |
 | Org | `/admin/departments` | department cards | `teams.read` | §17.16 |
 | Org | `/admin/teams` | teams table | `teams.read` | §17.16 |
 | Org | `/admin/roles` | permission chips | `users.read` | §17.16 |
