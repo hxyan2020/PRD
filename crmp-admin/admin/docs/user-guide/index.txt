@@ -7,17 +7,18 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/9b50c290fff8c11a.css","style"]
-0:{"P":null,"b":"91HAMN7ZuuT4c8kQNNIeY","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/9b50c290fff8c11a.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","7MX448Jyc63eHYQ67ClK5",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","2799","static/chunks/2799-fa545746313acb76.js","1351","static/chunks/1351-8a702053b8d62e16.js","94","static/chunks/94-8e4263c98e98f32d.js","7581","static/chunks/app/admin/layout-5d5d73393b1e1a66.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 15:01:07"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 15:01:07"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 15:01:07"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T15:01:07.500Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 15:01:10"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 15:01:07"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 15:01:07"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 15:01:07"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-8e4263c98e98f32d.js","6143","static/chunks/6143-49c2d15237b6dcb4.js","8259","static/chunks/app/admin/docs/user-guide/page-708dbbd52a86ecdb.js"],""]
-10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-8e4263c98e98f32d.js","6143","static/chunks/6143-49c2d15237b6dcb4.js","8259","static/chunks/app/admin/docs/user-guide/page-708dbbd52a86ecdb.js"],"DocArticleView"]
-11:T1807c,<h1 id="crmp-user-guide" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP User Guide</h1>
+:HL["/PRD/crmp-admin/_next/static/css/5413d0718406b99a.css","style"]
+0:{"P":null,"b":"s0o1J1sUpXGzp9VL7Haba","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/5413d0718406b99a.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","gIvGld609M1SDElKtRs2D",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[7255,["6874","static/chunks/6874-fb0d51e396347711.js","2799","static/chunks/2799-1bba5052db352e60.js","1631","static/chunks/1631-0237d80de5ff7549.js","4415","static/chunks/4415-34ea431d808ef24c.js","7581","static/chunks/app/admin/layout-886ceab410146a76.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 16:42:20"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 16:42:21"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 16:42:21"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T16:42:21.028Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 16:42:23"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 16:42:20"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 16:42:20"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-04 16:42:21"},"/admin/detectors":{"count":2,"latestAt":null}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-34ea431d808ef24c.js","2050","static/chunks/2050-b688704f7a998fad.js","8259","static/chunks/app/admin/docs/user-guide/page-5dbf86163e9c0bd5.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-34ea431d808ef24c.js","2050","static/chunks/2050-b688704f7a998fad.js","8259","static/chunks/app/admin/docs/user-guide/page-5dbf86163e9c0bd5.js"],""]
+11:I[803,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-34ea431d808ef24c.js","2050","static/chunks/2050-b688704f7a998fad.js","8259","static/chunks/app/admin/docs/user-guide/page-5dbf86163e9c0bd5.js"],"DocArticleView"]
+12:T18321,<h1 id="crmp-user-guide" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP User Guide</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-UG-001 · <strong>Audience:</strong> anyone who opens the admin desk  </p>
 <p class="text-sm leading-relaxed my-2"><strong>Languages:</strong> English (this page) · <a class="underline" href="/admin/docs/user-guide?lang=zh-Hant">繁體中文</a>  </p>
-<p class="text-sm leading-relaxed my-2"><strong>Docs &amp; platform owner:</strong> YAN Haixiang (<code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code>)</p>
+<p class="text-sm leading-relaxed my-2"><strong>Docs &amp; platform owner:</strong> demo platform owner (<code class="rounded bg-slate-100 px-1 text-[0.9em]">haixiang.yan@hytechc.com</code>)</p>
 
 <p class="text-sm leading-relaxed my-2">This handbook is written in everyday language. It covers <strong>every page in the left menu</strong>, plus login, language, unread numbers, and the public GitHub Pages snapshot.</p>
 
@@ -71,9 +72,9 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform Owner</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">haixiang.yan@hytechc.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan123</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">You are YAN Haixiang, the named owner of this desk and these docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">You are demo platform owner, the named owner of this desk and these docs</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Owner</td>
@@ -126,6 +127,10 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <p class="text-sm leading-relaxed my-2">Tap the <strong>hamburger</strong> (Menu) to open the left nav. Messenger is list-first: tap a thread, then <strong>Threads</strong> to go back. Language sits in the header.</p>
 
+<h3 id="2-5-selection-ai-chatbot" class="text-lg font-semibold mt-6 mb-2">2.5 Selection AI chatbot</h3>
+
+<p class="text-sm leading-relaxed my-2">On any admin page, <strong>select text</strong> (or long-press on a phone). A teal sparkle icon appears next to the highlight. Tap it: a chat drawer explains that passage in this CRMP’s terms (Monitor vs mock Lark, EXECUTED_MOCK, who can approve, which page to open). You can keep asking follow-ups. It is read-only — it cannot approve an intervention or change settings. On GitHub Pages it uses the same grounded glossary (no live LLM required).</p>
+
 <hr class="my-6 border-[var(--line)]" />
 
 <h2 id="3-the-left-menu-groups-and-unread-numbers" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. The left menu (groups and unread numbers)</h2>
@@ -167,7 +172,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 </tbody></table></div>
 
-<p class="text-sm leading-relaxed my-2">The Vantage logo sits at the top. Your role badge (and <strong>Public prototype</strong> on GitHub Pages) sit under your name. Owner line: YAN Haixiang.</p>
+<p class="text-sm leading-relaxed my-2">The Vantage logo sits at the top. Your role badge (and <strong>Public prototype</strong> on GitHub Pages) sit under your name. Owner line: demo platform owner.</p>
 
 <h3 id="unread-numbers" class="text-lg font-semibold mt-6 mb-2">Unread numbers</h3>
 
@@ -267,7 +272,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <p class="text-sm leading-relaxed my-2"><strong>What you see.</strong></p>
 
 <ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li>Owner card for <strong>YAN Haixiang</strong>. The whole card opens Sign in as platform owner.  </li>
+<li>Owner card for <strong>demo platform owner</strong>. The whole card opens Sign in as platform owner.  </li>
 <li>A Lark-style messenger promo. The whole card opens the messenger demo (permanent GitHub Pages URL is on the card).  </li>
 <li>Clickable count cards: Users, Teams, Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  </li>
 <li><strong>Jump to a page</strong> tiles for Daily Performance, Market Intelligence, Monitor 2.0, Live Alerts, AI Analyses, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  </li>
@@ -634,11 +639,11 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <h3 id="10-4-users-admin-users" class="text-lg font-semibold mt-6 mb-2">10.4 Users — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></h3>
 
-<p class="text-sm leading-relaxed my-2">Directory of operators and demo personas, including <strong>YAN Haixiang</strong>. Columns: name, email, role, department, team, status, last login.</p>
+<p class="text-sm leading-relaxed my-2">Directory of operators and demo personas, including <strong>demo platform owner</strong>. Columns: name, email, role, department, team, status, last login.</p>
 
 <p class="text-sm leading-relaxed my-2">If you have <code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code> (localhost): <strong>Add user</strong> (name, email, password, role, department, team) and toggle ACTIVE / DISABLED. On Pages, creating users is a demo no-op or browser-only.</p>
 
-<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> YAN Haixiang is present as platform owner. Disabled users cannot be a live maker/checker in the localhost API.</p>
+<p class="text-sm leading-relaxed my-2"><strong>Good looks like.</strong> demo platform owner is present as platform owner. Disabled users cannot be a live maker/checker in the localhost API.</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -737,7 +742,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Improvement Roadmap</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/roadmap</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prioritised follow-ups</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-01…15 cards: today / build / done-when / skip risk</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">URL Catalog</td>
@@ -874,7 +879,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Users</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">Directory, including YAN Haixiang</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Directory, including demo platform owner</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
@@ -926,7 +931,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">1.3</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">All admin screens, public Scan demo, YAN Haixiang owner, login on Pages</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">All admin screens, public Scan demo, demo platform owner, login on Pages</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">1.5</td>
@@ -935,12 +940,12 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 </tbody></table></div>
 
-<p class="text-sm leading-relaxed my-2"><strong>Owner:</strong> YAN Haixiang</p>
-12:T170da,<h1 id="crmp-使用手冊" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 使用手冊</h1>
+<p class="text-sm leading-relaxed my-2"><strong>Owner:</strong> demo platform owner</p>
+13:T1733d,<h1 id="crmp-使用手冊" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 使用手冊</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-UG-001 · <strong>對象：</strong> 任何會打開管理後台的人  </p>
 <p class="text-sm leading-relaxed my-2"><strong>語言：</strong> 繁體中文（本頁）· <a class="underline" href="/admin/docs/user-guide?lang=en">English</a>  </p>
-<p class="text-sm leading-relaxed my-2"><strong>文件與平台負責人：</strong> YAN Haixiang（<code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code>）</p>
+<p class="text-sm leading-relaxed my-2"><strong>文件與平台負責人：</strong> demo platform owner（<code class="rounded bg-slate-100 px-1 text-[0.9em]">haixiang.yan@hytechc.com</code>）</p>
 
 <p class="text-sm leading-relaxed my-2">這本手冊用白話寫。涵蓋左側選單<strong>每一頁</strong>，以及登入、語言、未讀數字、公開 GitHub Pages 快照。</p>
 
@@ -994,9 +999,9 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr></thead><tbody>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">平台負責人</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">haixiang.yan@hytechc.com</code></td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan123</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">你是 YAN Haixiang，本後台與文件的具名負責人</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">你是 demo platform owner，本後台與文件的具名負責人</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">風險負責人</td>
@@ -1049,6 +1054,10 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <p class="text-sm leading-relaxed my-2">點 <strong>漢堡選單</strong>（選單）打開左側導覽。Messenger 先列表：點執行緒，再按 <strong>執行緒</strong> 返回。語言在頂部。</p>
 
+<h3 id="2-5-劃選-ai-聊天" class="text-lg font-semibold mt-6 mb-2">2.5 劃選 AI 聊天</h3>
+
+<p class="text-sm leading-relaxed my-2">在任何管理頁 <strong>劃選文字</strong>（手機長按）。亮青色火花圖示會出現在選取旁邊。點它：聊天抽屜用本 CRMP 的詞解釋該段（Monitor vs 模擬 Lark、EXECUTED_MOCK、誰能核准、該開哪一頁）。可以繼續追問。唯讀 — 不能核准干預或改設定。GitHub Pages 用同一套接地詞彙（不必線上 LLM）。</p>
+
 <hr class="my-6 border-[var(--line)]" />
 
 <h2 id="3-左側選單-分組與未讀數字" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. 左側選單（分組與未讀數字）</h2>
@@ -1090,7 +1099,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 </tbody></table></div>
 
-<p class="text-sm leading-relaxed my-2">最上方是 Vantage 標誌。姓名下方是角色徽章（GitHub Pages 另有 <strong>公開原型</strong>）。負責人：YAN Haixiang。</p>
+<p class="text-sm leading-relaxed my-2">最上方是 Vantage 標誌。姓名下方是角色徽章（GitHub Pages 另有 <strong>公開原型</strong>）。負責人：demo platform owner。</p>
 
 <h3 id="未讀數字" class="text-lg font-semibold mt-6 mb-2">未讀數字</h3>
 
@@ -1190,7 +1199,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <p class="text-sm leading-relaxed my-2"><strong>會看到什麼。</strong></p>
 
 <ul class="list-disc pl-5 my-2 space-y-1 text-sm">
-<li><strong>YAN Haixiang</strong> 負責人卡。整張卡開啟「以平台負責人登入」。  </li>
+<li><strong>demo platform owner</strong> 負責人卡。整張卡開啟「以平台負責人登入」。  </li>
 <li>Lark 風格 Messenger 宣傳。整張卡開啟 Messenger 示範（卡上有永久 GitHub Pages 網址）。  </li>
 <li>可點擊的數字卡：使用者、團隊、資料來源、風險領域、未結警報、未結工單、Lark 頻道、升級路徑。每張卡跳到對應頁。  </li>
 <li><strong>跳至頁面</strong> 磁磚：每日績效、市場情報、Monitor 2.0、即時警報、AI 分析、AI 技能、知識樹、人工干預、Messenger、設定、使用手冊、PRD。  </li>
@@ -1557,11 +1566,11 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <h3 id="10-4-使用者-admin-users" class="text-lg font-semibold mt-6 mb-2">10.4 使用者 — <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/users</code></h3>
 
-<p class="text-sm leading-relaxed my-2">操作員與示範角色目錄，含 <strong>YAN Haixiang</strong>。欄位：姓名、email、角色、部門、團隊、狀態、上次登入。</p>
+<p class="text-sm leading-relaxed my-2">操作員與示範角色目錄，含 <strong>demo platform owner</strong>。欄位：姓名、email、角色、部門、團隊、狀態、上次登入。</p>
 
 <p class="text-sm leading-relaxed my-2">有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">users.manage</code>（localhost）可 <strong>新增使用者</strong>（姓名、email、密碼、角色、部門、團隊）並切換 ACTIVE／DISABLED。Pages 上新增多半是示範空操作或僅本機瀏覽器。</p>
 
-<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> YAN Haixiang 以平台負責人存在。停用使用者在 localhost API 不能當即時 Maker／Checker。</p>
+<p class="text-sm leading-relaxed my-2"><strong>怎樣算正常。</strong> demo platform owner 以平台負責人存在。停用使用者在 localhost API 不能當即時 Maker／Checker。</p>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -1660,7 +1669,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">改進路線圖</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/roadmap</code></td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">依優先序的後續</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-01…15 卡片：今日／要做／完成標準／不做風險</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">網址目錄</td>
@@ -1797,7 +1806,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">目錄，含 YAN Haixiang</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">目錄，含 demo platform owner</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
@@ -1849,7 +1858,7 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">1.3</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
-<td class="border border-[var(--line)] px-2 py-1.5 align-top">全部管理畫面、公開掃描示範、YAN Haixiang 負責人、Pages 登入</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">全部管理畫面、公開掃描示範、demo platform owner 負責人、Pages 登入</td>
 </tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">1.5</td>
@@ -1858,8 +1867,8 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 </tr>
 </tbody></table></div>
 
-<p class="text-sm leading-relaxed my-2"><strong>負責人：</strong> YAN Haixiang</p>
-5:["$","div",null,{"children":[["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Operator handbook · EN / 繁中"}]]}],["$","p",null,{"className":"text-sm text-[var(--muted)]","children":"Plain-English how-to for every left-nav page: login, unread badges, monitor, AI, messenger, org, settings and docs."}],["$","div",null,{"className":"action-row","children":[["$","$Lf","/admin/messenger",{"className":"btn","href":"/admin/messenger","children":"Messenger"}],["$","$Lf","/admin/ai-analyses",{"className":"btn","href":"/admin/ai-analyses","children":"AI Analyses"}],["$","$Lf","/admin/ai-admin",{"className":"btn","href":"/admin/ai-admin","children":"AI Admin"}],["$","$Lf","/admin/market-intel",{"className":"btn","href":"/admin/market-intel","children":"Market Intel"}],["$","$Lf","/admin/docs/uat",{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf","/admin/docs/urls",{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],["$","$L10",null,{"docId":"USER_GUIDE","htmlEn":"$11","htmlZh":"$12"}]]}]
+<p class="text-sm leading-relaxed my-2"><strong>負責人：</strong> demo platform owner</p>
+5:["$","div",null,{"children":[["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Operator handbook · EN / 繁中"}]]}],["$","p",null,{"className":"text-sm text-[var(--muted)]","children":"Plain-English how-to for every left-nav page: login, unread badges, monitor, AI, messenger, org, settings and docs."}],["$","div",null,{"className":"action-row","children":[["$","$L10","/admin/messenger",{"className":"btn","href":"/admin/messenger","children":"Messenger"}],["$","$L10","/admin/ai-analyses",{"className":"btn","href":"/admin/ai-analyses","children":"AI Analyses"}],["$","$L10","/admin/ai-admin",{"className":"btn","href":"/admin/ai-admin","children":"AI Admin"}],["$","$L10","/admin/market-intel",{"className":"btn","href":"/admin/market-intel","children":"Market Intel"}],["$","$L10","/admin/docs/uat",{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10","/admin/docs/urls",{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],["$","$L11",null,{"docId":"USER_GUIDE","htmlEn":"$12","htmlZh":"$13"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
 8:null
