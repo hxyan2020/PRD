@@ -83,7 +83,7 @@ export function DocArticleView({
       <div className="panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3">
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">{meta.code}</Badge>
-          <Badge className="bg-slate-100 text-slate-700 border-slate-200">v1.3</Badge>
+          <Badge className="bg-slate-100 text-slate-700 border-slate-200">v1.4</Badge>
           <Badge className="bg-orange-50 text-orange-900 border-orange-200">
             {lang === "zh-Hant" ? "負責人 YAN Haixiang" : "Owner YAN Haixiang"}
           </Badge>
