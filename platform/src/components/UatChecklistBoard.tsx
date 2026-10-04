@@ -199,7 +199,7 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
               ? "UAT 視窗內 BREACH／CRITICAL 樣本 100% 附第二 AI（UAT-19）。"
               : "100% of BREACH/CRITICAL samples in the window have second AI (UAT-19)."}
           </li>
-          <li>{zh ? "UAT-20 簽核完成。" : "UAT-20 sign-off completed."}</li>
+          <li>{zh ? "UAT-27 簽核完成。" : "UAT-27 sign-off completed."}</li>
         </ul>
         <div className="mt-3 flex flex-wrap gap-2">
           <SeverityBadge value="CRITICAL" />
