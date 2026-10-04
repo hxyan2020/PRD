@@ -13,7 +13,6 @@
       --tab: #efe8dc;
       --tab-active: #ffffff;
       --accent: #0b6e4f;
-      --accent-2: #b45309;
       --panel: #ffffff;
       --phase1: #ecfdf5;
       --phase2: #fff7ed;
@@ -44,6 +43,10 @@
       background: var(--panel); padding: 6px 10px; border-radius: 6px;
     }
     .md-links a:hover { border-color: var(--accent); }
+    .jump-viz {
+      display: inline-block; margin-top: 8px; background: #14532d; color: #ecfdf5 !important;
+      border-color: #14532d !important; font-weight: 650;
+    }
     .tabs {
       display: flex; gap: 4px; border-bottom: 1px solid var(--line);
       position: sticky; top: 0; z-index: 20; background: linear-gradient(var(--bg), var(--bg) 70%, transparent);
@@ -96,10 +99,10 @@
     .panel ul, .panel ol { padding-left: 1.25rem; }
     .panel li { margin: 0.22rem 0; }
     .viz {
-      margin: 1rem 0 1.4rem; padding: 12px 10px 6px; background: #f8faf9;
+      margin: 0.4rem 0 1.4rem; padding: 12px 10px 6px; background: #f8faf9;
       border: 1px dashed #c9ddd3; border-radius: 10px; overflow-x: auto;
     }
-    .viz .mermaid { display: flex; justify-content: center; }
+    .viz .mermaid { display: flex; justify-content: center; min-height: 4px; }
     .viz svg { max-width: 100%; height: auto; }
     .legend {
       display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 1rem;
@@ -111,21 +114,83 @@
     .chip.g { background: #dcfce7; }
     .chip.a { background: #fef3c7; }
     .chip.r { background: #fee2e2; }
-    @media (max-width: 720px) {
+    .visual-maps { margin: 0.4rem 0 1.6rem; }
+    .visual-maps h2 { margin-top: 0.4rem !important; }
+    .lead-viz { max-width: 72ch; color: #3f3a34; }
+    .board {
+      margin: 0.85rem 0 1.1rem; padding: 14px 14px 16px;
+      background: #f8faf9; border: 1px solid #c9ddd3; border-radius: 12px;
+    }
+    .board-title {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.92rem; font-weight: 700; color: #14532d; margin: 0 0 10px;
+    }
+    .flow-row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0;
+    }
+    .node {
+      background: #ecfdf5; border: 1.5px solid #86efac; border-radius: 8px;
+      padding: 8px 11px; font-size: 0.82rem; line-height: 1.35;
+      font-family: ui-sans-serif, system-ui, "Noto Sans SC", sans-serif;
+      max-width: 13.5rem;
+    }
+    .node small { display: block; margin-top: 4px; color: #3f3a34; font-weight: 400; }
+    .node.off { background: #fff7ed; border-color: #fdba74; color: #9a3412; text-decoration: line-through; }
+    .node.red { background: #fee2e2; border-color: #fca5a5; }
+    .node.amber { background: #fef3c7; border-color: #fcd34d; }
+    .node.green { background: #dcfce7; border-color: #86efac; }
+    .node.navy { background: #e0f2fe; border-color: #7dd3fc; }
+    .arrow {
+      color: #44403c; font-weight: 700;
+      font-family: ui-sans-serif, system-ui, sans-serif;
+    }
+    .arrow.down { display: block; text-align: center; font-size: 0.78rem; margin: 2px 0; }
+    .lane {
+      border: 1px dashed #86efac; border-radius: 10px; padding: 10px; margin: 8px 0;
+      background: #f0fdf4;
+    }
+    .lane.off { border-color: #fdba74; background: #fff7ed; }
+    .lane-label {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+      text-transform: uppercase; color: #166534; margin-bottom: 6px;
+    }
+    .lane.off .lane-label { color: #9a3412; }
+    .muted-note { margin: 6px 0 0; font-size: 0.8rem; color: var(--muted); }
+    .stack { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+    .stack .node { max-width: none; }
+    .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .mermaid-fallback { margin: 1rem 0 0.35rem; }
+    .mermaid-error { color: #9a3412; font-size: 0.8rem; }
+    .viz:has(svg) + .mermaid-fallback, .mermaid-fallback + .viz:has(svg) { }
+    .mermaid-fallback:has(+ .viz svg) { display: none; }
+    .viz:not(:has(svg)) { display: none; }
+    body.js-fail .viz { display: none; }
+    body.js-fail .mermaid-fallback { display: block; }
+    .hero-viz {
+      margin: 0 0 14px; padding: 14px 16px 16px;
+      background: var(--panel); border: 2px solid #86efac; border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(20,83,45,0.08);
+    }
+    .hero-viz h2 { margin: 0 0 6px; font-size: 1.15rem; color: #14532d; }
+    .hero-viz .lead-viz { margin: 0 0 10px; }
+    @media (max-width: 800px) {
+      .viz-grid { grid-template-columns: 1fr; }
       .panel { padding: 16px 12px 28px; border-radius: 0 0 12px 12px; }
       .tabs button { flex: 1; text-align: center; padding: 12px 8px; }
       .panel h1 { font-size: 1.35rem; }
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="shell">
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.7 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.8 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
       </div>
       <div class="md-links">
+        <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
         <a href="en.md">en.md</a>
         <a href="zh-CN.md">zh-CN.md</a>
         <a href="urls.html">all URLs</a>
@@ -139,6 +204,37 @@
       <span class="chip a">Amber</span>
       <span class="chip r">Red</span>
     </div>
+    <section class="hero-viz" id="hero-viz" aria-label="Phase 1 visual map">
+      <h2>Diagram / 示意图 — Phase 1 production</h2>
+      <p class="lead-viz">Always visible above the language tabs. Green = live now. Amber strikethrough = Phase 2+ only.</p>
+      <div class="lane">
+        <div class="lane-label">Live / 当前开通 — invite or broker · perps only（含 XAUUSD）</div>
+        <div class="flow-row">
+          <div class="node">Invite 邀请码</div>
+          <span class="arrow">→</span>
+          <div class="node">Broker / IB 经纪商</div>
+          <span class="arrow">→</span>
+          <div class="node">KYC / CP</div>
+          <span class="arrow">→</span>
+          <div class="node">Perps only 仅永续</div>
+          <span class="arrow">→</span>
+          <div class="node">XAUUSD + approved</div>
+          <span class="arrow">→</span>
+          <div class="node">Matching + RE</div>
+          <span class="arrow">→</span>
+          <div class="node">Liq / 保险 / ADL</div>
+        </div>
+      </div>
+      <div class="lane off">
+        <div class="lane-label">Phase 2+ — not live / 未投产</div>
+        <div class="flow-row">
+          <div class="node off">Spot 现货</div>
+          <div class="node off">Margin 杠杆</div>
+          <div class="node off">Public signup 公众注册</div>
+        </div>
+      </div>
+      <p class="muted-note">More maps sit at the top of each language tab (English: Visual maps · 中文：示意图).</p>
+    </section>
     <div class="tabs" role="tablist" aria-label="Handbook language">
       <button type="button" role="tab" id="tab-en" aria-controls="panel-en" aria-selected="true" data-tab="en">English</button>
       <button type="button" role="tab" id="tab-zh" aria-controls="panel-zh" aria-selected="false" data-tab="zh">简体中文</button>
@@ -148,14 +244,15 @@
 <p><strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
 <strong>Scope:</strong> Full catalogue covers Spot · Margin · Perps; <strong>Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access</strong><br />
 <strong>Public site:</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>All URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>Admin URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
-<strong>Version:</strong> 1.7 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
+<strong>Version:</strong> 1.8 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
 <blockquote>
 <p>This handbook is the <strong>operating playbook</strong> for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.<br />
 <strong>Thresholds below are illustrative defaults</strong> for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.</p>
 </blockquote>
 <hr />
 <h2>Table of contents</h2>
-<ol>
+<ol start="0">
+<li><a href="#visual-maps">Visual maps</a></li>
 <li><a href="#1-how-to-use-this-handbook">How to use this handbook</a></li>
 <li><a href="#2-three-lines-of-defence--role-map">Three lines of defence &amp; role map</a></li>
 <li><a href="#3-instrument-primers-spot--margin--perps">Instrument primers (Spot / Margin / Perps)</a></li>
@@ -169,6 +266,177 @@
 <li><a href="#11-appendix--glossary--checklists">Appendix — glossary &amp; checklists</a></li>
 <li><a href="#phase-1-operating-scope-labels-used-throughout">Phase 1 operating scope</a></li>
 </ol>
+<section class="visual-maps" id="visual-maps">
+  <h2>Visual maps</h2>
+  <p class="lead-viz">These diagrams are drawn in the page itself (no extra click, no CDN). Green = Phase 1 live. Amber strikethrough = Phase 2+ documented only.</p>
+
+  <div class="board">
+    <div class="board-title">1 · Phase 1 production path</div>
+    <div class="lane">
+      <div class="lane-label">Live now — invite or broker only · perps only</div>
+      <div class="flow-row">
+        <div class="node">Invite code</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / CP clear</div>
+        <span class="arrow">→</span>
+        <div class="node">Entitlement: perps only</div>
+        <span class="arrow">→</span>
+        <div class="node">XAUUSD + approved perps</div>
+        <span class="arrow">→</span>
+        <div class="node">Matching + risk engine</div>
+        <span class="arrow">→</span>
+        <div class="node">Liq / insurance / ADL</div>
+      </div>
+      <div class="flow-row">
+        <div class="node">Broker / IB</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / CP clear</div>
+        <span class="muted-note">joins the same path</span>
+      </div>
+    </div>
+    <div class="lane off">
+      <div class="lane-label">Phase 2+ — playbooks kept, not live</div>
+      <div class="flow-row">
+        <div class="node off">Spot book</div>
+        <div class="node off">Margin borrow</div>
+        <div class="node off">Public self-serve signup</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">2 · Three lines of defence</div>
+      <div class="stack">
+        <div class="node navy">1st line — Product / TO / ME / Wallet / Listing / MM<small>Own BAU risk, run controls</small></div>
+        <span class="arrow down">↓ escalate breaches</span>
+        <div class="node">2nd line — Market / Credit / Model Risk + CP + Legal<small>Appetite, challenge, independent monitoring</small></div>
+        <span class="arrow down">↓ material / Sev-1</span>
+        <div class="node amber">CRO / Risk Committee</div>
+        <span class="arrow down">⇢ periodic review from 3rd line</span>
+        <div class="node">3rd line — Internal Audit<small>Independent assurance</small></div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">3 · Perps control chain (Phase 1 primary)</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node navy">Index (multi-venue)</div>
+          <span class="arrow">→</span>
+          <div class="node">Mark price</div>
+        </div>
+        <div class="flow-row">
+          <div class="node navy">Last / mid</div>
+          <span class="arrow">→</span>
+          <div class="node">Matching book</div>
+        </div>
+        <span class="arrow down">↓ both feed margin ratio</span>
+        <div class="node">Margin ratio</div>
+        <div class="flow-row">
+          <div class="node green">Healthy → trade / add risk</div>
+          <div class="node red">Breach → liquidation</div>
+        </div>
+        <div class="flow-row">
+          <div class="node">Insurance fund</div>
+          <span class="arrow">→</span>
+          <div class="node red">Shortfall → ADL queue</div>
+        </div>
+        <p class="muted-note">Stale mark? Fail over per PL-K06 / PF-K02.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">4 · Phase 1 critical-path BUs</div>
+    <div class="flow-row">
+      <div class="node">Invite / Broker + CP</div>
+      <span class="arrow">→</span>
+      <div class="node">Trade-enabled UID</div>
+      <span class="arrow">→</span>
+      <div class="node">Matching (ME)</div>
+      <span class="arrow">→</span>
+      <div class="node">Risk engine (RE)</div>
+      <span class="arrow">→</span>
+      <div class="node">Futures TO / PM</div>
+      <span class="arrow">→</span>
+      <div class="node">RO / RO-OPS</div>
+      <span class="arrow">→</span>
+      <div class="node amber">CRO</div>
+    </div>
+    <p class="muted-note">Wallet (WO) sits on the risk-engine path for collateral / PnL settlement.</p>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">5 · RAG triage</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node green">Green → check timestamp</div>
+        </div>
+        <div class="flow-row">
+          <div class="node amber">Amber WARN → triage 15m</div>
+        </div>
+        <div class="flow-row">
+          <div class="node red">Red BREACH → contain 5m</div>
+        </div>
+        <p class="muted-note">Stale green = family S9 (false-green). Then clock → scope → data → family S1–S12.</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">6 · Escalation ladder</div>
+      <div class="stack">
+        <div class="node">L1 RO-OPS ticket</div>
+        <span class="arrow down">↓</span>
+        <div class="node amber">L2 RO + BU PIC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">L3 CRO + ME + RE + Comms</div>
+        <span class="arrow down">↓</span>
+        <div class="node red">L4 ELT + Legal + CP + CISO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">7 · SOP-G02 halt then resume</div>
+    <div class="flow-row">
+      <div class="node">TO proposes</div>
+      <span class="arrow">→</span>
+      <div class="node">RO approves</div>
+      <span class="arrow">→</span>
+      <div class="node">ME halt matching</div>
+      <span class="arrow">→</span>
+      <div class="node">RE sets liq mode</div>
+      <span class="arrow">→</span>
+      <div class="node">Comms + wallet policy</div>
+    </div>
+    <div class="flow-row">
+      <div class="node red">Root cause open → stay halted</div>
+      <div class="node green">Contained → RO+ME+RE ACK → staged resume + 4h hypercare</div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">8 · Diagnostic order (clock first)</div>
+    <div class="flow-row">
+      <div class="node navy">1 Clock</div>
+      <span class="arrow">→</span>
+      <div class="node navy">2 Scope</div>
+      <span class="arrow">→</span>
+      <div class="node navy">3 Data</div>
+      <span class="arrow">→</span>
+      <div class="node">4 Single KRI</div>
+      <span class="arrow">→</span>
+      <div class="node">5 Cluster</div>
+      <span class="arrow">→</span>
+      <div class="node">6 Rule out</div>
+      <span class="arrow">→</span>
+      <div class="node amber">7 Act</div>
+      <span class="arrow">→</span>
+      <div class="node">8 Write timeline</div>
+    </div>
+  </div>
+</section>
+
 <hr />
 <h2>Phase 1 operating scope (labels used throughout)</h2>
 <blockquote>
@@ -202,19 +470,22 @@
 </tbody>
 </table></div>
 <p><strong>Figure — Phase 1 production scope (what is on vs labelled later)</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  subgraph access [Account open]
-    I[Invite code] --> CP[KYC / CP clear]
-    B[Broker / IB] --> CP
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Invite code</div><span class="arrow">→</span><div class="node">KYC / CP clear</div><span class="arrow">→</span><div class="node">Broker / IB</div><span class="arrow">→</span><div class="node">Entitlement: perps only</div><span class="arrow">→</span><div class="node">XAUUSD + other approved perps</div><span class="arrow">→</span><div class="node">Matching + risk engine</div><span class="arrow">→</span><div class="node">Liq / insurance / ADL</div><span class="arrow">→</span><div class="node">Spot book</div><span class="arrow">→</span><div class="node off">Phase 2+</div><span class="arrow">→</span><div class="node">Margin borrow</div><span class="arrow">→</span><div class="node">Public self-serve signup</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  subgraph access ["Account open"]
+    I["Invite code"] --> CP["KYC / CP clear"]
+    B["Broker / IB"] --> CP
   end
-  CP --> E[Entitlement: perps only]
-  E --> P[XAUUSD + other approved perps]
-  P --> ME[Matching + risk engine]
-  ME --> LIQ[Liq / insurance / ADL]
-  Spot[Spot book] -.-> P2[Phase 2+]
-  Mar[Margin borrow] -.-> P2
-  Pub[Public self-serve signup] -.-> P2
+  CP --> E["Entitlement: perps only"]
+  E --> P["XAUUSD + other approved perps"]
+  P --> ME["Matching + risk engine"]
+  ME --> LIQ["Liq / insurance / ADL"]
+  Spot["Spot book"] -.-> P2["Phase 2+"]
+  Mar["Margin borrow"] -.-> P2
+  Pub["Public self-serve signup"] -.-> P2
 </div></div>
+
 <h3>Phase 1 — out of production (keep playbooks; label only)</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -332,15 +603,18 @@
 </tbody>
 </table></div>
 <p><strong>Figure — Three lines of defence</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  L1[1st line: Product / TO / ME / Wallet / Listing / MM<br/>Own BAU risk, run controls]
-  L2[2nd line: Market / Credit / Model Risk + CP + Legal<br/>Appetite, challenge, independent monitoring]
-  L3[3rd line: Internal Audit<br/>Independent assurance]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">1st line: Product / TO / ME / Wallet / Listing / MM Own BAU risk, run controls</div><span class="arrow">→</span><div class="node">2nd line: Market / Credit / Model Risk + CP + Legal Appetite, challenge, independent monitoring</div><span class="arrow">→</span><div class="node">3rd line: Internal Audit Independent assurance</div><span class="arrow">→</span><div class="node">CRO / Risk Committee</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  L1["1st line: Product / TO / ME / Wallet / Listing / MM<br/>Own BAU risk, run controls"]
+  L2["2nd line: Market / Credit / Model Risk + CP + Legal<br/>Appetite, challenge, independent monitoring"]
+  L3["3rd line: Internal Audit<br/>Independent assurance"]
   L1 -->|escalate breaches| L2
-  L2 -->|material / Sev-1| CRO[CRO / Risk Committee]
+  L2 -->|"material / Sev-1"| CRO["CRO / Risk Committee"]
   L3 -.->|periodic review| L1
   L3 -.->|periodic review| L2
 </div></div>
+
 <h3>2.2 Standard role codes (used in tickets &amp; admin ACLs)</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -551,17 +825,20 @@
 </tbody>
 </table></div>
 <p><strong>Figure — Perps control chain (Phase 1 primary)</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  IDX[Index: multi-venue] --> MARK[Mark price]
-  LAST[Last / mid] --> BOOK[Matching book]
-  MARK --> MR[Margin ratio]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Index: multi-venue</div><span class="arrow">→</span><div class="node">Mark price</div><span class="arrow">→</span><div class="node">Last / mid</div><span class="arrow">→</span><div class="node">Matching book</div><span class="arrow">→</span><div class="node">Margin ratio</div><span class="arrow">→</span><div class="node">Trade / add risk</div><span class="arrow">→</span><div class="node">Liquidation engine</div><span class="arrow">→</span><div class="node">Insurance fund</div><span class="arrow">→</span><div class="node">ADL queue</div><span class="arrow">→</span><div class="node">PL-K06 / PF-K02 failover</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  IDX["Index: multi-venue"] --> MARK["Mark price"]
+  LAST["Last / mid"] --> BOOK["Matching book"]
+  MARK --> MR["Margin ratio"]
   BOOK --> MR
-  MR -->|healthy| OK[Trade / add risk]
-  MR -->|breach| LQ[Liquidation engine]
-  LQ --> INS[Insurance fund]
-  INS -->|shortfall| ADL[ADL queue]
-  MARK -. stale? .-> FEED[PL-K06 / PF-K02 failover]
+  MR -->|healthy| OK["Trade / add risk"]
+  MR -->|breach| LQ["Liquidation engine"]
+  LQ --> INS["Insurance fund"]
+  INS -->|shortfall| ADL["ADL queue"]
+  MARK -. stale? .-> FEED["PL-K06 / PF-K02 failover"]
 </div></div>
+
 <h3>3.4 Instrument comparison (ops cheat sheet)</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -624,33 +901,39 @@
 </tbody>
 </table></div>
 <p><strong>Figure — Instruments vs Phase 1 gate</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  subgraph p1 [Phase 1 ON]
-    Perps[Perps incl. XAUUSD]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Perps incl. XAUUSD</div><span class="arrow">→</span><div class="node">Spot</div><span class="arrow">→</span><div class="node">Cross / Isolated margin</div><span class="arrow">→</span><div class="node">Public signup</div><span class="arrow">→</span><div class="node">User</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  subgraph p1 ["Phase 1 ON"]
+    Perps["Perps incl. XAUUSD"]
   end
-  subgraph p2 [Phase 2+ documented / dormant]
-    Spot[Spot]
-    Margin[Cross / Isolated margin]
-    Public[Public signup]
+  subgraph p2 ["Phase 2+ documented / dormant"]
+    Spot["Spot"]
+    Margin["Cross / Isolated margin"]
+    Public["Public signup"]
   end
-  User[User] -->|invite or broker only| Perps
+  User["User"] -->|invite or broker only| Perps
   User -.->|blocked| Spot
   User -.->|blocked| Margin
   User -.->|blocked| Public
 </div></div>
+
 <hr />
 <h2>4. BU-by-BU playbooks</h2>
 <p>Each chapter follows the same template:</p>
 <p><strong>Figure — Phase 1 critical-path BUs</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  ACC[Invite / Broker + CP] --> UID[Trade-enabled UID]
-  UID --> ME[Matching ME]
-  ME --> RE[Risk engine RE]
-  RE --> FUT[Futures TO / PM]
-  FUT --> RO[RO / RO-OPS]
-  RE --> WO[Wallet WO]
-  RO --> CRO[CRO]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Invite / Broker + CP</div><span class="arrow">→</span><div class="node">Trade-enabled UID</div><span class="arrow">→</span><div class="node">Matching ME</div><span class="arrow">→</span><div class="node">Risk engine RE</div><span class="arrow">→</span><div class="node">Futures TO / PM</div><span class="arrow">→</span><div class="node">RO / RO-OPS</div><span class="arrow">→</span><div class="node">Wallet WO</div><span class="arrow">→</span><div class="node">CRO</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  ACC["Invite / Broker + CP"] --> UID["Trade-enabled UID"]
+  UID --> ME["Matching ME"]
+  ME --> RE["Risk engine RE"]
+  RE --> FUT["Futures TO / PM"]
+  FUT --> RO["RO / RO-OPS"]
+  RE --> WO["Wallet WO"]
+  RO --> CRO["CRO"]
 </div></div>
+
 <ul>
 <li><strong>In scope / out of scope</strong></li>
 <li><strong>Job division</strong></li>
@@ -724,12 +1007,12 @@
 </tr>
 </tbody>
 </table></div>
-<p>| RM-01 | Daily risk MI pack | Every UTC cutoff |
-| RM-02 | Soft-limit WARN response | Alert WARN |
-| RM-03 | Hard-limit BREACH response | Alert BREACH |
-| RM-04 | Leverage / rights increase approval | Trader or VIP request |
-| RM-05 | Stress catalogue change | Model or scenario edit |
-| RM-06 | Insurance fund draw review | Any insurance payout / ADL |
+<p>| RM-01 | Daily risk MI pack | Every UTC cutoff |<br />
+| RM-02 | Soft-limit WARN response | Alert WARN |<br />
+| RM-03 | Hard-limit BREACH response | Alert BREACH |<br />
+| RM-04 | Leverage / rights increase approval | Trader or VIP request |<br />
+| RM-05 | Stress catalogue change | Model or scenario edit |<br />
+| RM-06 | Insurance fund draw review | Any insurance payout / ADL |<br />
 | RM-07 | Trading halt recommendation | Gap, oracle fail, cascade |</p>
 <h4>Useful tools</h4>
 <ul>
@@ -2131,12 +2414,14 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <hr />
 <h3>6.1 SOP-G01 — Limit change (all instruments)</h3>
 <p><strong>Figure — SOP-G01 limit change</strong></p>
-<div class="viz"><div class="mermaid">sequenceDiagram
-  actor Req as Requester
-  participant SYS as SYS / RO-OPS
-  actor RO as Maker RO
-  actor CHK as Checker
-  participant RE as Risk engine
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Requester</div><span class="arrow">→</span><div class="node">SYS / RO-OPS</div><span class="arrow">→</span><div class="node">Maker RO</div><span class="arrow">→</span><div class="node">Checker</div><span class="arrow">→</span><div class="node">Risk engine</div></div></div>
+<div class="viz"><div class="mermaid">
+sequenceDiagram
+  actor Req as "Requester"
+  participant SYS as "SYS / RO-OPS"
+  actor RO as "Maker RO"
+  actor CHK as "Checker"
+  participant RE as "Risk engine"
   Req->>SYS: Ticket old to new + rationale
   SYS->>RO: Impact packet
   RO-->>Req: Reject
@@ -2146,6 +2431,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
   RE->>RE: Promote config + hash
   RE->>SYS: Hypercare 24h
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -2176,7 +2462,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>How</strong>
+<p><strong>How</strong><br />
 1. <strong>Requester</strong> opens ticket: instrument, symbol/contract or asset, field name, old→new, rationale, linked KRI/incident, stress screenshot or note “CRO waived stress”.<br />
 2. <strong>SYS</strong> (or RO-OPS) attaches impact packet: utilisation vs new limit, breaches 30d, concentration, related product spillover.<br />
 3. <strong>Maker (RO)</strong> reviews: reject / approve / approve-with-conditions (expiry, symbol scope). Records comment.<br />
@@ -2190,16 +2476,19 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <hr />
 <h3>6.2 SOP-G02 — Trading halt / resume (Spot vs Perps / Margin)</h3>
 <p><strong>Figure — SOP-G02 halt then resume</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  T[TO proposes] --> RO[RO approves]
-  RO --> ME[ME halt matching]
-  ME --> RE[RE sets liq mode]
-  RE --> COM[Comms + wallet policy]
-  COM --> CLR{Root cause contained?}
-  CLR -->|no| HOLD[Stay halted]
-  CLR -->|yes| ACK[RO + ME + RE ACK]
-  ACK --> RES[Staged resume + 4h hypercare]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">TO proposes</div><span class="arrow">→</span><div class="node">RO approves</div><span class="arrow">→</span><div class="node">ME halt matching</div><span class="arrow">→</span><div class="node">RE sets liq mode</div><span class="arrow">→</span><div class="node">Comms + wallet policy</div><span class="arrow">→</span><div class="node">Stay halted</div><span class="arrow">→</span><div class="node">RO + ME + RE ACK</div><span class="arrow">→</span><div class="node">Staged resume + 4h hypercare</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  T["TO proposes"] --> RO["RO approves"]
+  RO --> ME["ME halt matching"]
+  ME --> RE["RE sets liq mode"]
+  RE --> COM["Comms + wallet policy"]
+  COM --> CLR{"Root cause contained?"}
+  CLR -->|no| HOLD["Stay halted"]
+  CLR -->|yes| ACK["RO + ME + RE ACK"]
+  ACK --> RES["Staged resume + 4h hypercare"]
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -2230,7 +2519,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>How — Halt</strong>
+<p><strong>How — Halt</strong><br />
 1. On-call <strong>TO</strong> opens bridge; states scope + reason + §9 family guess.<br />
 2. <strong>RO</strong> approves (or CRO if global).<br />
 3. <strong>ME</strong> applies halt/kill for scope; confirms no new matches (Spot) / no new risk-increasing orders (Perps as designed).<br />
@@ -2239,7 +2528,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 6. <strong>WO:</strong> default <strong>keep withdrawals</strong> unless CP/RO order freeze.<br />
 7. <strong>Comms</strong> posts status; Perps text must mention funding/liq behaviour.<br />
 8. Scribe logs timeline on war-room ticket.</p>
-<p><strong>How — Resume</strong>
+<p><strong>How — Resume</strong><br />
 1. RO verifies root cause contained; ME health green; for perps <strong>RE</strong> confirms mark/index fresh (PL-K06/PF-K02).<br />
 2. Dual ACK RO + ME (+ Product PIC).<br />
 3. Resume in stages: cancel storm check → bands on → normal.<br />
@@ -2249,16 +2538,19 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <hr />
 <h3>6.3 SOP-G03 — Alert ACK (WARN / BREACH / KILL)</h3>
 <p><strong>Figure — SOP-G03 alert ACK</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  A[Alert WARN / BREACH / KILL] --> ACK[RO-OPS ACK in SLA]
-  ACK --> DQ{Data fresh?}
-  DQ -->|no| ENG[ENG-03 feed fix]
-  DQ -->|yes| FAM[Pick S1-S12 family]
-  FAM --> ACT[Contain per playbook]
-  ACT --> ESC{Contained?}
-  ESC -->|no| L[Escalate L+1 / war room]
-  ESC -->|yes| HC[Hypercare + ticket]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Alert WARN / BREACH / KILL</div><span class="arrow">→</span><div class="node">RO-OPS ACK in SLA</div><span class="arrow">→</span><div class="node">ENG-03 feed fix</div><span class="arrow">→</span><div class="node">Pick S1-S12 family</div><span class="arrow">→</span><div class="node">Contain per playbook</div><span class="arrow">→</span><div class="node">Escalate L+1 / war room</div><span class="arrow">→</span><div class="node">Hypercare + ticket</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  A["Alert WARN / BREACH / KILL"] --> ACK["RO-OPS ACK in SLA"]
+  ACK --> DQ{"Data fresh?"}
+  DQ -->|no| ENG["ENG-03 feed fix"]
+  DQ -->|yes| FAM["Pick S1-S12 family"]
+  FAM --> ACT["Contain per playbook"]
+  ACT --> ESC{"Contained?"}
+  ESC -->|no| L["Escalate L+1 / war room"]
+  ESC -->|yes| HC["Hypercare + ticket"]
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -2289,7 +2581,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>How</strong>
+<p><strong>How</strong><br />
 1. <strong>ACK</strong> in console (stops re-page per policy).<br />
 2. Check <strong>data freshness</strong> (PL-K06 / feed TS). If stale → ENG-03 path; tag “data”.<br />
 3. If real: identify primary KRI + cluster ±15m; pick §9 family.<br />
@@ -2330,7 +2622,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>How / Rules</strong>
+<p><strong>How / Rules</strong><br />
 1. Trader <strong>cannot</strong> approve own leverage/rights (<code>trader_rights_workflow</code>).<br />
 2. RE deployer <strong>cannot</strong> be sole approver on Tier A config.<br />
 3. Wallet ceremony: ≥2 (prefer 3) key holders + recorded ceremony ID.<br />
@@ -2370,7 +2662,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>How</strong>
+<p><strong>How</strong><br />
 1. SYS runs internal vs ledger/broker/venue match → <code>ReconLine[]</code>.<br />
 2. TO/Clearing assigns each exception owner + action (re-pull, adjust, ticket venue).<br />
 3. If delta notional &gt; materiality: <strong>maker–checker</strong> before approve.<br />
@@ -2382,16 +2674,19 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <hr />
 <h3>6.6 SOP-G06 — New product / instrument approval</h3>
 <p><strong>Figure — SOP-G06 new product gates (Phase 1 = perps + invite/broker)</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  Legal[Legal] --> CP[CP]
-  CP --> LI[Listing + RO opinion]
-  LI --> Prod[Product checklist]
-  Prod --> Eng[RE / ME dry-run]
-  Eng --> WO[Wallet ready]
-  WO --> Acc[ACC-01 / ACC-02]
-  Acc --> Live[Perps live]
-  Spot[Spot / Margin] -.-> P2[Phase 2+ hold]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Legal</div><span class="arrow">→</span><div class="node">CP</div><span class="arrow">→</span><div class="node">Listing + RO opinion</div><span class="arrow">→</span><div class="node">Product checklist</div><span class="arrow">→</span><div class="node">RE / ME dry-run</div><span class="arrow">→</span><div class="node">Wallet ready</div><span class="arrow">→</span><div class="node">ACC-01 / ACC-02</div><span class="arrow">→</span><div class="node">Perps live</div><span class="arrow">→</span><div class="node">Spot / Margin</div><span class="arrow">→</span><div class="node off">Phase 2+ hold</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  Legal["Legal"] --> CP["CP"]
+  CP --> LI["Listing + RO opinion"]
+  LI --> Prod["Product checklist"]
+  Prod --> Eng["RE / ME dry-run"]
+  Eng --> WO["Wallet ready"]
+  WO --> Acc["ACC-01 / ACC-02"]
+  Acc --> Live["Perps live"]
+  Spot["Spot / Margin"] -.-> P2["Phase 2+ hold"]
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -2422,7 +2717,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </tr>
 </tbody>
 </table></div>
-<p><strong>How (gates — do not reorder)</strong>
+<p><strong>How (gates — do not reorder)</strong><br />
 1. <strong>Legal</strong> opinion (instrument type / jurisdiction notes).<br />
 2. <strong>CP</strong> sanctions/securities/AML flags.<br />
 3. <strong>LI</strong> diligence pack + <strong>RO</strong> risk opinion (LD-01).<br />
@@ -4468,11 +4763,14 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tbody>
 </table></div>
 <p><strong>Figure — Escalation ladder</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  L1[L1 RO-OPS ticket] --> L2[L2 RO + BU PIC]
-  L2 --> L3[L3 CRO + ME + RE + Comms]
-  L3 --> L4[L4 ELT + Legal + CP + CISO]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">L1 RO-OPS ticket</div><span class="arrow">→</span><div class="node">L2 RO + BU PIC</div><span class="arrow">→</span><div class="node">L3 CRO + ME + RE + Comms</div><span class="arrow">→</span><div class="node">L4 ELT + Legal + CP + CISO</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  L1["L1 RO-OPS ticket"] --> L2["L2 RO + BU PIC"]
+  L2 --> L3["L3 CRO + ME + RE + Comms"]
+  L3 --> L4["L4 ELT + Legal + CP + CISO"]
 </div></div>
+
 <h3>8.3 Limit types</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -5363,15 +5661,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </table></div>
 <p><strong>Important:</strong> Green is not always “safe”. A green mark feed that is <strong>stale</strong> (see PL-K06) can hide a red economic reality. Always check <strong>last update timestamp</strong> with colour.</p>
 <p><strong>Figure — RAG is not the diagnosis</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  G[Green] --> TS[Check timestamp]
-  A[Amber WARN] --> TRI[Triage 15m]
-  R[Red BREACH] --> CON[Contain 5m]
-  TS -->|stale| S9[Family S9 false-green]
-  TS -->|fresh| OK[Healthy or keep watching]
-  TRI --> FAM[Sequence then family]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Green</div><span class="arrow">→</span><div class="node">Check timestamp</div><span class="arrow">→</span><div class="node">Amber WARN</div><span class="arrow">→</span><div class="node">Triage 15m</div><span class="arrow">→</span><div class="node">Red BREACH</div><span class="arrow">→</span><div class="node">Contain 5m</div><span class="arrow">→</span><div class="node">Family S9 false-green</div><span class="arrow">→</span><div class="node">Healthy or keep watching</div><span class="arrow">→</span><div class="node">Sequence then family</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  G["Green"] --> TS["Check timestamp"]
+  A["Amber WARN"] --> TRI["Triage 15m"]
+  R["Red BREACH"] --> CON["Contain 5m"]
+  TS -->|stale| S9["Family S9 false-green"]
+  TS -->|fresh| OK["Healthy or keep watching"]
+  TRI --> FAM["Sequence then family"]
   CON --> FAM
 </div></div>
+
 <h3>9.2 Diagnostic method (mandatory order)</h3>
 <pre><code>1. CLOCK   — Build timeline (T0 first anomaly → Tn now). Note timezone UTC.
 2. SCOPE   — 1 UID / 1 symbol / 1 asset / venue-wide / cross-product?
@@ -5383,15 +5684,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 8. WRITE   — Timeline + ruled-in/out causes in incident ticket.
 </code></pre>
 <p><strong>Figure — Diagnostic order (clock first)</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  C[1 Clock] --> S[2 Scope]
-  S --> D[3 Data]
-  D --> SI[4 Single KRI]
-  SI --> CL[5 Cluster]
-  CL --> X[6 Rule out]
-  X --> ACT[7 Act]
-  ACT --> W[8 Write timeline]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">1 Clock</div><span class="arrow">→</span><div class="node">2 Scope</div><span class="arrow">→</span><div class="node">3 Data</div><span class="arrow">→</span><div class="node">4 Single KRI</div><span class="arrow">→</span><div class="node">5 Cluster</div><span class="arrow">→</span><div class="node">6 Rule out</div><span class="arrow">→</span><div class="node">7 Act</div><span class="arrow">→</span><div class="node">8 Write timeline</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  C["1 Clock"] --> S["2 Scope"]
+  S --> D["3 Data"]
+  D --> SI["4 Single KRI"]
+  SI --> CL["5 Cluster"]
+  CL --> X["6 Rule out"]
+  X --> ACT["7 Act"]
+  ACT --> W["8 Write timeline"]
 </div></div>
+
 <p><strong>Time-sequence grammar (use in tickets):</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -5869,11 +6173,13 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <hr />
 <h3>9.4 Multi-indicator cluster scenarios (with time sequence)</h3>
 <p><strong>Figure — Same reds, different order: S1 vs S2</strong></p>
-<div class="viz"><div class="mermaid">sequenceDiagram
-  participant Ext as External market
-  participant Feed as PL-K06 / PF-K02
-  participant Mark as PF-K01
-  participant Liq as PF-K06
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">External market</div><span class="arrow">→</span><div class="node">PL-K06 / PF-K02</div><span class="arrow">→</span><div class="node">PF-K01</div><span class="arrow">→</span><div class="node">PF-K06</div></div></div>
+<div class="viz"><div class="mermaid">
+sequenceDiagram
+  participant Ext as "External market"
+  participant Feed as "PL-K06 / PF-K02"
+  participant Mark as "PF-K01"
+  participant Liq as "PF-K06"
   Note over Ext,Liq: S1 real risk-off
   Ext->>Mark: Price dump first
   Mark->>Liq: Organic liquidations
@@ -5881,6 +6187,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
   Feed->>Mark: Feed/index fails first
   Mark->>Liq: Spurious liquidations
 </div></div>
+
 <p>Legend: colours on the <strong>cluster at diagnosis time</strong>; arrows show <strong>required order</strong> to prefer that cause.</p>
 <h4>Scenario family S1 — Real macro / crypto risk-off</h4>
 <div class="table-wrap"><table>
@@ -6438,16 +6745,19 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tbody>
 </table></div>
 <p><strong>Figure — War-room seating (Sev-1)</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  IC[Incident Commander]
-  IC --- RO[Risk]
-  IC --- ME[Matching]
-  IC --- RE[Risk engine]
-  IC --- WO[Wallet]
-  IC --- COM[Comms]
-  IC --- CP[Compliance]
-  IC --- SCR[Scribe]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Incident Commander</div><span class="arrow">→</span><div class="node">Risk</div><span class="arrow">→</span><div class="node">Matching</div><span class="arrow">→</span><div class="node">Risk engine</div><span class="arrow">→</span><div class="node">Wallet</div><span class="arrow">→</span><div class="node">Comms</div><span class="arrow">→</span><div class="node">Compliance</div><span class="arrow">→</span><div class="node">Scribe</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  IC["Incident Commander"]
+  IC --- RO["Risk"]
+  IC --- ME["Matching"]
+  IC --- RE["Risk engine"]
+  IC --- WO["Wallet"]
+  IC --- COM["Comms"]
+  IC --- CP["Compliance"]
+  IC --- SCR["Scribe"]
 </div></div>
+
 <p><strong>Standing war-room roles:</strong> Incident Commander · Risk · ME · RE · Wallet · Comms · CP · Scribe  </p>
 <p><strong>Always capture:</strong> timeline (§9 clock), configs touched, orders/liquidations during incident, ruled-in scenario family (S1–S12), client impact, permanent fix owner.</p>
 <p><strong>Scenario → severity hints:</strong> S2 spurious mass liqs · S8 with PL-K08 · S9 false-green in crisis → start at <strong>Sev-1</strong> until proven otherwise. S5 single-name MM → often Sev-3. S1 orderly risk-off with insurance G → Sev-2/3 ops mode.</p>
@@ -6605,7 +6915,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tr>
 <tr>
 <td>Version</td>
-<td>1.7 — Diagrams in EN/ZH; readability pass</td>
+<td>1.8 — Always-on HTML visual maps; local mermaid</td>
 </tr>
 </tbody>
 </table></div>
@@ -6618,14 +6928,15 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <p><strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
 <strong>范围：</strong> 全量目录含现货·杠杆·永续；<strong>Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入</strong><br />
 <strong>公开站点：</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>全部 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>后台 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
-<strong>版本：</strong> 1.7 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
+<strong>版本：</strong> 1.8 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
 <blockquote>
 <p>本手册为<strong>操作手册</strong>：明确职责边界、分工、SOP、管理后台、指标/阈值/动作、情景诊断与日常工具。不替代法律政策、限额手册或监管申报。<br />
 <strong>下文阈值为一级交易所框架的示意默认值</strong> — 须按《限额手册》校准；未经 RO 双人审批不得直接用于生产。</p>
 </blockquote>
 <hr />
 <h2>目录</h2>
-<ol>
+<ol start="0">
+<li><a href="#visual-maps-zh">示意图</a></li>
 <li><a href="#1-如何使用本手册">如何使用本手册</a></li>
 <li><a href="#2-三道防线与角色映射">三道防线与角色映射</a></li>
 <li><a href="#3-产品入门现货--杠杆--永续">产品入门（现货 / 杠杆 / 永续）</a></li>
@@ -6639,6 +6950,177 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <li><a href="#11-附录--术语与检查清单">附录 — 术语与检查清单</a></li>
 <li><a href="#phase-1-运营范围全文标签说明">Phase 1 运营范围</a></li>
 </ol>
+<section class="visual-maps" id="visual-maps-zh">
+  <h2>示意图</h2>
+  <p class="lead-viz">这些图直接画在页面上（无需点击、不依赖外链）。绿色 = Phase 1 已开通。琥珀色删除线 = Phase 2+ 仅文档、未投产。</p>
+
+  <div class="board">
+    <div class="board-title">1 · Phase 1 生产路径</div>
+    <div class="lane">
+      <div class="lane-label">当前开通 — 仅邀请或经纪商 · 仅永续</div>
+      <div class="flow-row">
+        <div class="node">邀请码</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / 合规放行</div>
+        <span class="arrow">→</span>
+        <div class="node">权益：仅永续</div>
+        <span class="arrow">→</span>
+        <div class="node">XAUUSD + 已批永续</div>
+        <span class="arrow">→</span>
+        <div class="node">撮合 + 风控引擎</div>
+        <span class="arrow">→</span>
+        <div class="node">强平 / 保险 / ADL</div>
+      </div>
+      <div class="flow-row">
+        <div class="node">经纪商 / IB</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / 合规放行</div>
+        <span class="muted-note">汇入同一路径</span>
+      </div>
+    </div>
+    <div class="lane off">
+      <div class="lane-label">Phase 2+ — 手册保留，生产未开</div>
+      <div class="flow-row">
+        <div class="node off">现货簿</div>
+        <div class="node off">杠杆借款</div>
+        <div class="node off">公众自助注册</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">2 · 三道防线</div>
+      <div class="stack">
+        <div class="node navy">第一道 — 产品 / TO / 撮合 / 钱包 / 上币 / 做市<small>承担 BAU 风险并执行控制</small></div>
+        <span class="arrow down">↓ 突破升级</span>
+        <div class="node">第二道 — 市场 / 信用 / 模型风险 + 合规 + 法务<small>偏好、挑战、独立监控</small></div>
+        <span class="arrow down">↓ 重大 / Sev-1</span>
+        <div class="node amber">CRO / 风险委员会</div>
+        <span class="arrow down">⇢ 第三道定期复审</span>
+        <div class="node">第三道 — 内部审计<small>独立鉴证</small></div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">3 · 永续控制链（Phase 1 主路径）</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node navy">指数（多所合成）</div>
+          <span class="arrow">→</span>
+          <div class="node">标记价</div>
+        </div>
+        <div class="flow-row">
+          <div class="node navy">最新价 / 中间价</div>
+          <span class="arrow">→</span>
+          <div class="node">撮合簿</div>
+        </div>
+        <span class="arrow down">↓ 共同进入保证金率</span>
+        <div class="node">保证金率</div>
+        <div class="flow-row">
+          <div class="node green">健康 → 可交易 / 可增险</div>
+          <div class="node red">突破 → 强平引擎</div>
+        </div>
+        <div class="flow-row">
+          <div class="node">保险基金</div>
+          <span class="arrow">→</span>
+          <div class="node red">不足 → ADL 队列</div>
+        </div>
+        <p class="muted-note">标记陈旧？按 PL-K06 / PF-K02 切源。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">4 · Phase 1 关键路径 BU</div>
+    <div class="flow-row">
+      <div class="node">邀请 / 经纪商 + 合规</div>
+      <span class="arrow">→</span>
+      <div class="node">可交易 UID</div>
+      <span class="arrow">→</span>
+      <div class="node">撮合（ME）</div>
+      <span class="arrow">→</span>
+      <div class="node">风控引擎（RE）</div>
+      <span class="arrow">→</span>
+      <div class="node">合约 TO / PM</div>
+      <span class="arrow">→</span>
+      <div class="node">RO / RO-OPS</div>
+      <span class="arrow">→</span>
+      <div class="node amber">CRO</div>
+    </div>
+    <p class="muted-note">钱包（WO）挂在风控引擎路径上，负责抵押与盈亏结算。</p>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">5 · 红黄绿分流</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node green">绿 → 先看时间戳</div>
+        </div>
+        <div class="flow-row">
+          <div class="node amber">黄 WARN → 15 分分流</div>
+        </div>
+        <div class="flow-row">
+          <div class="node red">红 BREACH → 5 分遏制</div>
+        </div>
+        <p class="muted-note">陈旧的绿 = 情景族 S9（假绿）。然后时钟 → 范围 → 数据 → 情景族 S1–S12。</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">6 · 升级阶梯</div>
+      <div class="stack">
+        <div class="node">L1 RO-OPS 工单</div>
+        <span class="arrow down">↓</span>
+        <div class="node amber">L2 RO + BU PIC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">L3 CRO + ME + RE + 传播</div>
+        <span class="arrow down">↓</span>
+        <div class="node red">L4 ELT + 法务 + 合规 + CISO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">7 · SOP-G02 停牌后复牌</div>
+    <div class="flow-row">
+      <div class="node">TO 提议</div>
+      <span class="arrow">→</span>
+      <div class="node">RO 批准</div>
+      <span class="arrow">→</span>
+      <div class="node">ME 停撮合</div>
+      <span class="arrow">→</span>
+      <div class="node">RE 定强平模式</div>
+      <span class="arrow">→</span>
+      <div class="node">传播 + 钱包政策</div>
+    </div>
+    <div class="flow-row">
+      <div class="node red">根因未控 → 继续停牌</div>
+      <div class="node green">已遏制 → RO+ME+RE 确认 → 分阶段复牌 + 超护 4h</div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">8 · 诊断顺序（先时钟）</div>
+    <div class="flow-row">
+      <div class="node navy">1 时钟</div>
+      <span class="arrow">→</span>
+      <div class="node navy">2 范围</div>
+      <span class="arrow">→</span>
+      <div class="node navy">3 数据</div>
+      <span class="arrow">→</span>
+      <div class="node">4 单指标</div>
+      <span class="arrow">→</span>
+      <div class="node">5 组合</div>
+      <span class="arrow">→</span>
+      <div class="node">6 排除</div>
+      <span class="arrow">→</span>
+      <div class="node amber">7 行动</div>
+      <span class="arrow">→</span>
+      <div class="node">8 写时间线</div>
+    </div>
+  </div>
+</section>
+
 <hr />
 <h2>Phase 1 运营范围（全文标签说明）</h2>
 <blockquote>
@@ -6672,19 +7154,22 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tbody>
 </table></div>
 <p><strong>图 — Phase 1 生产范围（开通 vs 仅标签）</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  subgraph access [开户]
-    I[邀请码] --> CP[KYC / 合规放行]
-    B[经纪商 / IB] --> CP
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">邀请码</div><span class="arrow">→</span><div class="node">KYC / 合规放行</div><span class="arrow">→</span><div class="node">经纪商 / IB</div><span class="arrow">→</span><div class="node">权益: 仅永续</div><span class="arrow">→</span><div class="node">XAUUSD + 其他已批永续</div><span class="arrow">→</span><div class="node">撮合 + 风控引擎</div><span class="arrow">→</span><div class="node">强平 / 保险 / ADL</div><span class="arrow">→</span><div class="node">现货簿</div><span class="arrow">→</span><div class="node off">Phase 2+</div><span class="arrow">→</span><div class="node">杠杆借款</div><span class="arrow">→</span><div class="node">公众自助注册</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  subgraph access ["开户"]
+    I["邀请码"] --> CP["KYC / 合规放行"]
+    B["经纪商 / IB"] --> CP
   end
-  CP --> E[权益: 仅永续]
-  E --> P[XAUUSD + 其他已批永续]
-  P --> ME[撮合 + 风控引擎]
-  ME --> LIQ[强平 / 保险 / ADL]
-  Spot[现货簿] -.-> P2[Phase 2+]
-  Mar[杠杆借款] -.-> P2
-  Pub[公众自助注册] -.-> P2
+  CP --> E["权益: 仅永续"]
+  E --> P["XAUUSD + 其他已批永续"]
+  P --> ME["撮合 + 风控引擎"]
+  ME --> LIQ["强平 / 保险 / ADL"]
+  Spot["现货簿"] -.-> P2["Phase 2+"]
+  Mar["杠杆借款"] -.-> P2
+  Pub["公众自助注册"] -.-> P2
 </div></div>
+
 <h3>Phase 1 — 生产未开（保留手册，仅贴标签）</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -6798,15 +7283,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tbody>
 </table></div>
 <p><strong>图 — 三道防线</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  L1[第一道: 产品 / TO / 撮合 / 钱包 / 上币 / 做市<br/>承担 BAU 风险并执行控制]
-  L2[第二道: 市场/信用/模型风险 + 合规 + 法务<br/>偏好、挑战、独立监控]
-  L3[第三道: 内部审计<br/>独立鉴证]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">第一道: 产品 / TO / 撮合 / 钱包 / 上币 / 做市 承担 BAU 风险并执行控制</div><span class="arrow">→</span><div class="node">第二道: 市场/信用/模型风险 + 合规 + 法务 偏好、挑战、独立监控</div><span class="arrow">→</span><div class="node">第三道: 内部审计 独立鉴证</div><span class="arrow">→</span><div class="node">CRO / 风险委员会</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  L1["第一道: 产品 / TO / 撮合 / 钱包 / 上币 / 做市<br/>承担 BAU 风险并执行控制"]
+  L2["第二道: 市场/信用/模型风险 + 合规 + 法务<br/>偏好、挑战、独立监控"]
+  L3["第三道: 内部审计<br/>独立鉴证"]
   L1 -->|突破升级| L2
-  L2 -->|重大 / Sev-1| CRO[CRO / 风险委员会]
+  L2 -->|"重大 / Sev-1"| CRO["CRO / 风险委员会"]
   L3 -.->|定期复审| L1
   L3 -.->|定期复审| L2
 </div></div>
+
 <h3>2.2 标准角色代码（工单与后台 ACL）</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -7017,17 +7505,20 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tbody>
 </table></div>
 <p><strong>图 — 永续控制链（Phase 1 主路径）</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  IDX[指数: 多所合成] --> MARK[标记价]
-  LAST[最新价 / 中间价] --> BOOK[撮合簿]
-  MARK --> MR[保证金率]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">指数: 多所合成</div><span class="arrow">→</span><div class="node">标记价</div><span class="arrow">→</span><div class="node">最新价 / 中间价</div><span class="arrow">→</span><div class="node">撮合簿</div><span class="arrow">→</span><div class="node">保证金率</div><span class="arrow">→</span><div class="node">可交易 / 可增险</div><span class="arrow">→</span><div class="node">强平引擎</div><span class="arrow">→</span><div class="node">保险基金</div><span class="arrow">→</span><div class="node">ADL 队列</div><span class="arrow">→</span><div class="node">PL-K06 / PF-K02 切源</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  IDX["指数: 多所合成"] --> MARK["标记价"]
+  LAST["最新价 / 中间价"] --> BOOK["撮合簿"]
+  MARK --> MR["保证金率"]
   BOOK --> MR
-  MR -->|健康| OK[可交易 / 可增险]
-  MR -->|突破| LQ[强平引擎]
-  LQ --> INS[保险基金]
-  INS -->|不足| ADL[ADL 队列]
-  MARK -. 是否陈旧? .-> FEED[PL-K06 / PF-K02 切源]
+  MR -->|健康| OK["可交易 / 可增险"]
+  MR -->|突破| LQ["强平引擎"]
+  LQ --> INS["保险基金"]
+  INS -->|不足| ADL["ADL 队列"]
+  MARK -. 是否陈旧? .-> FEED["PL-K06 / PF-K02 切源"]
 </div></div>
+
 <h3>3.4 产品对比（运维速查）</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -7090,32 +7581,38 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tbody>
 </table></div>
 <p><strong>图 — 产品 vs Phase 1 门禁</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  subgraph p1 [Phase 1 开通]
-    Perps[永续含 XAUUSD]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">永续含 XAUUSD</div><span class="arrow">→</span><div class="node">现货</div><span class="arrow">→</span><div class="node">全仓 / 逐仓杠杆</div><span class="arrow">→</span><div class="node">公众注册</div><span class="arrow">→</span><div class="node">用户</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  subgraph p1 ["Phase 1 开通"]
+    Perps["永续含 XAUUSD"]
   end
-  subgraph p2 [Phase 2+ 文档保留 / 休眠]
-    Spot[现货]
-    Margin[全仓 / 逐仓杠杆]
-    Public[公众注册]
+  subgraph p2 ["Phase 2+ 文档保留 / 休眠"]
+    Spot["现货"]
+    Margin["全仓 / 逐仓杠杆"]
+    Public["公众注册"]
   end
-  User[用户] -->|仅邀请或经纪商| Perps
+  User["用户"] -->|仅邀请或经纪商| Perps
   User -.->|阻断| Spot
   User -.->|阻断| Margin
   User -.->|阻断| Public
 </div></div>
+
 <hr />
 <h2>4. 分 BU 作战手册</h2>
 <p><strong>图 — Phase 1 关键路径 BU</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  ACC[邀请 / 经纪商 + 合规] --> UID[可交易 UID]
-  UID --> ME[撮合]
-  ME --> RE[风控引擎]
-  RE --> FUT[合约 TO / PM]
-  FUT --> RO[RO / RO-OPS]
-  RE --> WO[钱包]
-  RO --> CRO[CRO]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">邀请 / 经纪商 + 合规</div><span class="arrow">→</span><div class="node">可交易 UID</div><span class="arrow">→</span><div class="node">撮合</div><span class="arrow">→</span><div class="node">风控引擎</div><span class="arrow">→</span><div class="node">合约 TO / PM</div><span class="arrow">→</span><div class="node">RO / RO-OPS</div><span class="arrow">→</span><div class="node">钱包</div><span class="arrow">→</span><div class="node">CRO</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  ACC["邀请 / 经纪商 + 合规"] --> UID["可交易 UID"]
+  UID --> ME["撮合"]
+  ME --> RE["风控引擎"]
+  RE --> FUT["合约 TO / PM"]
+  FUT --> RO["RO / RO-OPS"]
+  RE --> WO["钱包"]
+  RO --> CRO["CRO"]
 </div></div>
+
 <p>各章统一模板：<strong>范围内/外 → 分工 → SOP → 工具 → 管理后台 → 交接</strong>。</p>
 <h3>4.1 市场风险与风险运维（第二道）— RO / RO-OPS / CRO</h3>
 <p><strong>范围内：</strong> 全公司风险偏好与限额手册（现货/杠杆/永续）；实时监控；强平/保险/ADL 监督；压力测试目录审批；新产品风险会签；上币风险意见；突破调查、豁免治理、日报。  </p>
@@ -7445,12 +7942,14 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <hr />
 <h3>SOP-G01 — 限额变更（全产品）</h3>
 <p><strong>图 — SOP-G01 限额变更</strong></p>
-<div class="viz"><div class="mermaid">sequenceDiagram
-  actor Req as 申请人
-  participant SYS as 系统 / RO-OPS
-  actor RO as Maker RO
-  actor CHK as Checker
-  participant RE as 风控引擎
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">申请人</div><span class="arrow">→</span><div class="node">系统 / RO-OPS</div><span class="arrow">→</span><div class="node">Maker RO</div><span class="arrow">→</span><div class="node">Checker</div><span class="arrow">→</span><div class="node">风控引擎</div></div></div>
+<div class="viz"><div class="mermaid">
+sequenceDiagram
+  actor Req as "申请人"
+  participant SYS as "系统 / RO-OPS"
+  actor RO as "Maker RO"
+  actor CHK as "Checker"
+  participant RE as "风控引擎"
   Req->>SYS: 工单 旧到新 + 理由
   SYS->>RO: 影响包
   RO-->>Req: 驳回
@@ -7460,6 +7959,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
   RE->>RE: 晋级配置 + 哈希
   RE->>SYS: 超护 24h
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -7495,16 +7995,19 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <strong>升级：</strong> 紧急缺 Checker→CRO；部署失败→回滚+L2；客诉飙升→传播+L3。</p>
 <h3>SOP-G02 — 停牌 / 复牌（现货 vs 永续/杠杆）</h3>
 <p><strong>图 — SOP-G02 停牌后复牌</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  T[TO 提议] --> RO[RO 批准]
-  RO --> ME[ME 停撮合]
-  ME --> RE[RE 定强平模式]
-  RE --> COM[传播 + 钱包政策]
-  COM --> CLR{根因已控?}
-  CLR -->|否| HOLD[继续停牌]
-  CLR -->|是| ACK[RO + ME + RE 确认]
-  ACK --> RES[分阶段复牌 + 超护 4h]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">TO 提议</div><span class="arrow">→</span><div class="node">RO 批准</div><span class="arrow">→</span><div class="node">ME 停撮合</div><span class="arrow">→</span><div class="node">RE 定强平模式</div><span class="arrow">→</span><div class="node">传播 + 钱包政策</div><span class="arrow">→</span><div class="node">继续停牌</div><span class="arrow">→</span><div class="node">RO + ME + RE 确认</div><span class="arrow">→</span><div class="node">分阶段复牌 + 超护 4h</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  T["TO 提议"] --> RO["RO 批准"]
+  RO --> ME["ME 停撮合"]
+  ME --> RE["RE 定强平模式"]
+  RE --> COM["传播 + 钱包政策"]
+  COM --> CLR{"根因已控?"}
+  CLR -->|否| HOLD["继续停牌"]
+  CLR -->|是| ACK["RO + ME + RE 确认"]
+  ACK --> RES["分阶段复牌 + 超护 4h"]
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -7536,16 +8039,19 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <strong>升级：</strong> 需全局 Kill → L4 双控；停牌期间错标记 → Sev-1。</p>
 <h3>SOP-G03 — 告警确认（WARN / BREACH / KILL）</h3>
 <p><strong>图 — SOP-G03 告警确认</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  A[告警 WARN / BREACH / KILL] --> ACK[RO-OPS 按 SLA 确认]
-  ACK --> DQ{数据新鲜?}
-  DQ -->|否| ENG[ENG-03 修管道]
-  DQ -->|是| FAM[选择情景族 S1-S12]
-  FAM --> ACT[按手册遏制]
-  ACT --> ESC{已遏制?}
-  ESC -->|否| L[升 L+1 / 战时]
-  ESC -->|是| HC[超护 + 工单]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">告警 WARN / BREACH / KILL</div><span class="arrow">→</span><div class="node">RO-OPS 按 SLA 确认</div><span class="arrow">→</span><div class="node">ENG-03 修管道</div><span class="arrow">→</span><div class="node">选择情景族 S1-S12</div><span class="arrow">→</span><div class="node">按手册遏制</div><span class="arrow">→</span><div class="node">升 L+1 / 战时</div><span class="arrow">→</span><div class="node">超护 + 工单</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  A["告警 WARN / BREACH / KILL"] --> ACK["RO-OPS 按 SLA 确认"]
+  ACK --> DQ{"数据新鲜?"}
+  DQ -->|否| ENG["ENG-03 修管道"]
+  DQ -->|是| FAM["选择情景族 S1-S12"]
+  FAM --> ACT["按手册遏制"]
+  ACT --> ESC{"已遏制?"}
+  ESC -->|否| L["升 L+1 / 战时"]
+  ESC -->|是| HC["超护 + 工单"]
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -7622,16 +8128,19 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <strong>升级：</strong> 无法解释缺账 → L2/L3，评估停牌。</p>
 <h3>SOP-G06 — 新产品 / 新合约准入</h3>
 <p><strong>图 — SOP-G06 新产品门禁（Phase 1 = 永续 + 邀请/经纪商）</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  Legal[法务] --> CP[合规]
-  CP --> LI[上币 + 风险意见]
-  LI --> Prod[产品清单]
-  Prod --> Eng[RE / ME 演练]
-  Eng --> WO[钱包就绪]
-  WO --> Acc[ACC-01 / ACC-02]
-  Acc --> Live[永续上线]
-  Spot[现货 / 杠杆] -.-> P2[Phase 2+ 冻结]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">法务</div><span class="arrow">→</span><div class="node">合规</div><span class="arrow">→</span><div class="node">上币 + 风险意见</div><span class="arrow">→</span><div class="node">产品清单</div><span class="arrow">→</span><div class="node">RE / ME 演练</div><span class="arrow">→</span><div class="node">钱包就绪</div><span class="arrow">→</span><div class="node">ACC-01 / ACC-02</div><span class="arrow">→</span><div class="node">永续上线</div><span class="arrow">→</span><div class="node">现货 / 杠杆</div><span class="arrow">→</span><div class="node off">Phase 2+ 冻结</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  Legal["法务"] --> CP["合规"]
+  CP --> LI["上币 + 风险意见"]
+  LI --> Prod["产品清单"]
+  Prod --> Eng["RE / ME 演练"]
+  Eng --> WO["钱包就绪"]
+  WO --> Acc["ACC-01 / ACC-02"]
+  Acc --> Live["永续上线"]
+  Spot["现货 / 杠杆"] -.-> P2["Phase 2+ 冻结"]
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -7656,7 +8165,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </table></div>
 <p><strong>门禁（不可乱序）：</strong> 法务 → 合规 → 上币尽调+风险意见(LD-01) → 产品清单 → RE/ME 演练 → 钱包链就绪 → 白名单/软启 → 超护 72h → 放量。  </p>
 <blockquote>
-<p><strong>Phase 1 门禁说明：</strong> 生产合约 = <strong>永续（含 XAUUSD）</strong>；准入 = <strong>ACC-01/02（邀请或经纪商）</strong>，非公众注册；现货/杠杆 = <strong><code>[Phase 2+]</code></strong>。
+<p><strong>Phase 1 门禁说明：</strong> 生产合约 = <strong>永续（含 XAUUSD）</strong>；准入 = <strong>ACC-01/02（邀请或经纪商）</strong>，非公众注册；现货/杠杆 = <strong><code>[Phase 2+]</code></strong>。<br />
 <strong>升级：</strong> 未放行已有流量 → PL-K12，强制关闭，L3 审计。</p>
 </blockquote>
 <hr />
@@ -7923,11 +8432,14 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tbody>
 </table></div>
 <p><strong>图 — 升级阶梯</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  L1[L1 RO-OPS 工单] --> L2[L2 RO + BU PIC]
-  L2 --> L3[L3 CRO + ME + RE + 传播]
-  L3 --> L4[L4 ELT + 法务 + 合规 + CISO]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">L1 RO-OPS 工单</div><span class="arrow">→</span><div class="node">L2 RO + BU PIC</div><span class="arrow">→</span><div class="node">L3 CRO + ME + RE + 传播</div><span class="arrow">→</span><div class="node">L4 ELT + 法务 + 合规 + CISO</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  L1["L1 RO-OPS 工单"] --> L2["L2 RO + BU PIC"]
+  L2 --> L3["L3 CRO + ME + RE + 传播"]
+  L3 --> L4["L4 ELT + 法务 + 合规 + CISO"]
 </div></div>
+
 <h3>8.3 限额类型</h3>
 <p>软（WARN）/ 硬（BREACH）/ Kill（撮合总闸、提现冻结等）。</p>
 <h3>8.4 现货指标（摘要表）</h3>
@@ -8452,15 +8964,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </table></div>
 <p><strong>要点：</strong> 绿不一定安全。标记源<strong>陈旧</strong>却仍显示绿（见 PL-K06）可掩盖真实红灯。看颜色必看<strong>最后更新时间戳</strong>。</p>
 <p><strong>图 — 红黄绿不是结论</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  G[绿] --> TS[先看时间戳]
-  A[黄 WARN] --> TRI[15 分分流]
-  R[红 BREACH] --> CON[5 分遏制]
-  TS -->|陈旧| S9[情景族 S9 假绿]
-  TS -->|新鲜| OK[健康或继续观察]
-  TRI --> FAM[时序后再定族]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">绿</div><span class="arrow">→</span><div class="node">先看时间戳</div><span class="arrow">→</span><div class="node">黄 WARN</div><span class="arrow">→</span><div class="node">15 分分流</div><span class="arrow">→</span><div class="node">红 BREACH</div><span class="arrow">→</span><div class="node">5 分遏制</div><span class="arrow">→</span><div class="node">情景族 S9 假绿</div><span class="arrow">→</span><div class="node">健康或继续观察</div><span class="arrow">→</span><div class="node">时序后再定族</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  G["绿"] --> TS["先看时间戳"]
+  A["黄 WARN"] --> TRI["15 分分流"]
+  R["红 BREACH"] --> CON["5 分遏制"]
+  TS -->|陈旧| S9["情景族 S9 假绿"]
+  TS -->|新鲜| OK["健康或继续观察"]
+  TRI --> FAM["时序后再定族"]
   CON --> FAM
 </div></div>
+
 <h3>9.2 强制诊断顺序</h3>
 <pre><code>1. 时钟  — 建时间线（T0 首异→Tn 现在），统一 UTC
 2. 范围  — 单 UID / 单标的 / 单资产 / 全站 / 跨产品？
@@ -8472,15 +8987,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 8. 记录  — 工单写入时间线 + 采纳/排除原因
 </code></pre>
 <p><strong>图 — 诊断顺序（先时钟）</strong></p>
-<div class="viz"><div class="mermaid">flowchart LR
-  C[1 时钟] --> S[2 范围]
-  S --> D[3 数据]
-  D --> SI[4 单指标]
-  SI --> CL[5 组合]
-  CL --> X[6 排除]
-  X --> ACT[7 行动]
-  ACT --> W[8 写时间线]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">1 时钟</div><span class="arrow">→</span><div class="node">2 范围</div><span class="arrow">→</span><div class="node">3 数据</div><span class="arrow">→</span><div class="node">4 单指标</div><span class="arrow">→</span><div class="node">5 组合</div><span class="arrow">→</span><div class="node">6 排除</div><span class="arrow">→</span><div class="node">7 行动</div><span class="arrow">→</span><div class="node">8 写时间线</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart LR
+  C["1 时钟"] --> S["2 范围"]
+  S --> D["3 数据"]
+  D --> SI["4 单指标"]
+  SI --> CL["5 组合"]
+  CL --> X["6 排除"]
+  X --> ACT["7 行动"]
+  ACT --> W["8 写时间线"]
 </div></div>
+
 <p><strong>时序语法：</strong> <code>A → B</code> 先因后果 · <code>A ≈ B</code> 同时/共同驱动 · <code>A ↛ B</code> 单 A 通常推不出 B · <code>A 静默后 B</code> 两阶段 · <code>A/R 振荡</code> 常为阈值噪声/源抖动/MM 重启。</p>
 <h3>9.3 单指标情景（绿/黄/红可能原因）</h3>
 <h4>现货 SP-K01 价差</h4>
@@ -8541,11 +9059,13 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 危机中全绿 → 看板指到预发环境或缓存快照（S9）。</p>
 <h3>9.4 多指标组合情景族（含时序）</h3>
 <p><strong>图 — 同为红灯、顺序不同: S1 vs S2</strong></p>
-<div class="viz"><div class="mermaid">sequenceDiagram
-  participant Ext as 外盘
-  participant Feed as PL-K06 / PF-K02
-  participant Mark as PF-K01
-  participant Liq as PF-K06
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">外盘</div><span class="arrow">→</span><div class="node">PL-K06 / PF-K02</div><span class="arrow">→</span><div class="node">PF-K01</div><span class="arrow">→</span><div class="node">PF-K06</div></div></div>
+<div class="viz"><div class="mermaid">
+sequenceDiagram
+  participant Ext as "外盘"
+  participant Feed as "PL-K06 / PF-K02"
+  participant Mark as "PF-K01"
+  participant Liq as "PF-K06"
   Note over Ext,Liq: S1 真实风险抛售
   Ext->>Mark: 先跌价
   Mark->>Liq: 有机强平
@@ -8553,6 +9073,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
   Feed->>Mark: 管道/指数先坏
   Mark->>Liq: 虚假强平
 </div></div>
+
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -8760,16 +9281,19 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 </tbody>
 </table></div>
 <p><strong>图 — 战时席位（Sev-1）</strong></p>
-<div class="viz"><div class="mermaid">flowchart TB
-  IC[事件指挥官]
-  IC --- RO[风险]
-  IC --- ME[撮合]
-  IC --- RE[风控引擎]
-  IC --- WO[钱包]
-  IC --- COM[传播]
-  IC --- CP[合规]
-  IC --- SCR[记录员]
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">事件指挥官</div><span class="arrow">→</span><div class="node">风险</div><span class="arrow">→</span><div class="node">撮合</div><span class="arrow">→</span><div class="node">风控引擎</div><span class="arrow">→</span><div class="node">钱包</div><span class="arrow">→</span><div class="node">传播</div><span class="arrow">→</span><div class="node">合规</div><span class="arrow">→</span><div class="node">记录员</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  IC["事件指挥官"]
+  IC --- RO["风险"]
+  IC --- ME["撮合"]
+  IC --- RE["风控引擎"]
+  IC --- WO["钱包"]
+  IC --- COM["传播"]
+  IC --- CP["合规"]
+  IC --- SCR["记录员"]
 </div></div>
+
 <p><strong>战时常设角色：</strong> 事件指挥官 · 风险 · 撮合 · 风控引擎 · 钱包 · 传播 · 合规 · 记录员  </p>
 <p><strong>必须记录：</strong> 时间线（§9 时钟）、改过的配置、期间订单/强平、采纳的情景族（S1–S12）、客户影响、永久修复负责人。  </p>
 <p><strong>情景→定级提示：</strong> S2 大规模错强平 · 带 PL-K08 的 S8 · 危机中 S9 → 先按 <strong>Sev-1</strong>；S5 单币 MM → 常 Sev-3；S1 有序抛售且保险仍绿 → Sev-2/3 运维模式。</p>
@@ -8859,7 +9383,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 </ul>
 <h3>11.3 永续上线清单（摘要） <code>[Phase 1]</code></h3>
 <blockquote>
-<p>含 <strong>XAUUSD</strong> 及其他 Phase 1 永续；对外前确认 ACC-01/02。
+<p>含 <strong>XAUUSD</strong> 及其他 Phase 1 永续；对外前确认 ACC-01/02。<br />
 合约规格签字；指数成分达标且 PF-K01/02 告警开；杠杆档与限额双批且 PF-K04/05 接通；保险注资且 K07/K08 看板活；资金费封顶测通；强平+ADL 演练签字；撮合与限频；传播与客服；72h 超护；RO-OPS 掌握本合约 S2 vs S1 判别。</p>
 </blockquote>
 <h3>11.3a Phase 1 准入清单（邀请 / 经纪商）</h3>
@@ -8902,7 +9426,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 </tr>
 <tr>
 <td>版本</td>
-<td>1.7 — 英中示意图与可读性增强</td>
+<td>1.8 — 页面内置示意图；本地 mermaid</td>
 </tr>
 </tbody>
 </table></div>
@@ -8910,60 +9434,91 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <p><em>本手册（简体）正文结束。工单模板、告警路由与自动化归属见仓库根目录模块及用例叙述流程图。</em></p>
     </article>
   </div>
-  <script type="module">
-    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: "base",
-      securityLevel: "loose",
-      themeVariables: {
-        fontFamily: "Georgia, Source Serif 4, Noto Serif SC, serif",
-        primaryColor: "#ecfdf5",
-        primaryTextColor: "#14532d",
-        primaryBorderColor: "#86efac",
-        lineColor: "#57534e",
-        secondaryColor: "#fff7ed",
-        tertiaryColor: "#f8fafc"
+
+  <script src="./vendor/mermaid.min.js"></script>
+  <script>
+    (function () {
+      document.body.classList.add("js-ok");
+      function initMermaid() {
+        if (typeof mermaid === "undefined") {
+          document.body.classList.remove("js-ok");
+          document.body.classList.add("js-fail");
+          return;
+        }
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: "base",
+          securityLevel: "loose",
+          themeVariables: {
+            fontFamily: "Georgia, Source Serif 4, Noto Serif SC, serif",
+            primaryColor: "#ecfdf5",
+            primaryTextColor: "#14532d",
+            primaryBorderColor: "#86efac",
+            lineColor: "#57534e",
+            secondaryColor: "#fff7ed",
+            tertiaryColor: "#f8fafc"
+          }
+        });
       }
-    });
-    async function draw(root) {
-      const nodes = root.querySelectorAll(".mermaid:not([data-processed])");
-      if (!nodes.length) return;
-      await mermaid.run({ nodes });
-    }
-    const tabs = document.querySelectorAll("[role='tab']");
-    const panels = {
-      en: document.getElementById("panel-en"),
-      zh: document.getElementById("panel-zh")
-    };
-    function activate(key) {
-      tabs.forEach(function (t) {
-        t.setAttribute("aria-selected", t.getAttribute("data-tab") === key ? "true" : "false");
+      async function draw(root) {
+        if (typeof mermaid === "undefined") return;
+        var nodes = root.querySelectorAll(".mermaid:not([data-processed])");
+        if (!nodes.length) return;
+        for (var i = 0; i < nodes.length; i++) {
+          try {
+            await mermaid.run({ nodes: [nodes[i]] });
+          } catch (err) {
+            nodes[i].insertAdjacentHTML(
+              "afterend",
+              '<p class="mermaid-error">Diagram source kept in the always-on board above.</p>'
+            );
+          }
+        }
+      }
+      var tabs = document.querySelectorAll("[role='tab']");
+      var panels = {
+        en: document.getElementById("panel-en"),
+        zh: document.getElementById("panel-zh")
+      };
+      function activate(key) {
+        tabs.forEach(function (t) {
+          t.setAttribute("aria-selected", t.getAttribute("data-tab") === key ? "true" : "false");
+        });
+        Object.keys(panels).forEach(function (k) {
+          var on = k === key;
+          panels[k].classList.toggle("active", on);
+          panels[k].hidden = !on;
+        });
+        try { localStorage.setItem("risk-handbook-tab", key); } catch (e) {}
+        if (history.replaceState) history.replaceState(null, "", "#" + key);
+        draw(panels[key]);
+      }
+      document.querySelector(".tabs").addEventListener("click", function (ev) {
+        var t = ev.target.closest("[role='tab']");
+        if (!t) return;
+        activate(t.getAttribute("data-tab"));
       });
-      Object.keys(panels).forEach(function (k) {
-        const on = k === key;
-        panels[k].classList.toggle("active", on);
-        panels[k].hidden = !on;
+      document.querySelector(".tabs").addEventListener("pointerup", function (ev) {
+        var t = ev.target.closest("[role='tab']");
+        if (!t) return;
+        activate(t.getAttribute("data-tab"));
       });
-      try { localStorage.setItem("risk-handbook-tab", key); } catch (e) {}
-      if (history.replaceState) history.replaceState(null, "", "#" + key);
-      draw(panels[key]);
-    }
-    document.querySelector(".tabs").addEventListener("click", function (ev) {
-      const t = ev.target.closest("[role='tab']");
-      if (!t) return;
-      activate(t.getAttribute("data-tab"));
-    });
-    var initial = "en";
-    if (location.hash === "#zh" || location.hash === "#zh-CN") initial = "zh";
-    else if (location.hash === "#en") initial = "en";
-    else {
-      try {
-        var saved = localStorage.getItem("risk-handbook-tab");
-        if (saved === "en" || saved === "zh") initial = saved;
-      } catch (e) {}
-    }
-    activate(initial);
+      var initial = "en";
+      if (location.hash === "#zh" || location.hash === "#zh-CN") initial = "zh";
+      else if (location.hash === "#en") initial = "en";
+      else {
+        try {
+          var saved = localStorage.getItem("risk-handbook-tab");
+          if (saved === "en" || saved === "zh") initial = saved;
+        } catch (e) {}
+      }
+      try { initMermaid(); } catch (e) {
+        document.body.classList.remove("js-ok");
+        document.body.classList.add("js-fail");
+      }
+      activate(initial);
+    })();
   </script>
+
 </body>
 </html>

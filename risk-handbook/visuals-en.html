@@ -1,0 +1,170 @@
+<section class="visual-maps" id="visual-maps">
+  <h2>Visual maps</h2>
+  <p class="lead-viz">These diagrams are drawn in the page itself (no extra click, no CDN). Green = Phase 1 live. Amber strikethrough = Phase 2+ documented only.</p>
+
+  <div class="board">
+    <div class="board-title">1 · Phase 1 production path</div>
+    <div class="lane">
+      <div class="lane-label">Live now — invite or broker only · perps only</div>
+      <div class="flow-row">
+        <div class="node">Invite code</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / CP clear</div>
+        <span class="arrow">→</span>
+        <div class="node">Entitlement: perps only</div>
+        <span class="arrow">→</span>
+        <div class="node">XAUUSD + approved perps</div>
+        <span class="arrow">→</span>
+        <div class="node">Matching + risk engine</div>
+        <span class="arrow">→</span>
+        <div class="node">Liq / insurance / ADL</div>
+      </div>
+      <div class="flow-row">
+        <div class="node">Broker / IB</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / CP clear</div>
+        <span class="muted-note">joins the same path</span>
+      </div>
+    </div>
+    <div class="lane off">
+      <div class="lane-label">Phase 2+ — playbooks kept, not live</div>
+      <div class="flow-row">
+        <div class="node off">Spot book</div>
+        <div class="node off">Margin borrow</div>
+        <div class="node off">Public self-serve signup</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">2 · Three lines of defence</div>
+      <div class="stack">
+        <div class="node navy">1st line — Product / TO / ME / Wallet / Listing / MM<small>Own BAU risk, run controls</small></div>
+        <span class="arrow down">↓ escalate breaches</span>
+        <div class="node">2nd line — Market / Credit / Model Risk + CP + Legal<small>Appetite, challenge, independent monitoring</small></div>
+        <span class="arrow down">↓ material / Sev-1</span>
+        <div class="node amber">CRO / Risk Committee</div>
+        <span class="arrow down">⇢ periodic review from 3rd line</span>
+        <div class="node">3rd line — Internal Audit<small>Independent assurance</small></div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">3 · Perps control chain (Phase 1 primary)</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node navy">Index (multi-venue)</div>
+          <span class="arrow">→</span>
+          <div class="node">Mark price</div>
+        </div>
+        <div class="flow-row">
+          <div class="node navy">Last / mid</div>
+          <span class="arrow">→</span>
+          <div class="node">Matching book</div>
+        </div>
+        <span class="arrow down">↓ both feed margin ratio</span>
+        <div class="node">Margin ratio</div>
+        <div class="flow-row">
+          <div class="node green">Healthy → trade / add risk</div>
+          <div class="node red">Breach → liquidation</div>
+        </div>
+        <div class="flow-row">
+          <div class="node">Insurance fund</div>
+          <span class="arrow">→</span>
+          <div class="node red">Shortfall → ADL queue</div>
+        </div>
+        <p class="muted-note">Stale mark? Fail over per PL-K06 / PF-K02.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">4 · Phase 1 critical-path BUs</div>
+    <div class="flow-row">
+      <div class="node">Invite / Broker + CP</div>
+      <span class="arrow">→</span>
+      <div class="node">Trade-enabled UID</div>
+      <span class="arrow">→</span>
+      <div class="node">Matching (ME)</div>
+      <span class="arrow">→</span>
+      <div class="node">Risk engine (RE)</div>
+      <span class="arrow">→</span>
+      <div class="node">Futures TO / PM</div>
+      <span class="arrow">→</span>
+      <div class="node">RO / RO-OPS</div>
+      <span class="arrow">→</span>
+      <div class="node amber">CRO</div>
+    </div>
+    <p class="muted-note">Wallet (WO) sits on the risk-engine path for collateral / PnL settlement.</p>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">5 · RAG triage</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node green">Green → check timestamp</div>
+        </div>
+        <div class="flow-row">
+          <div class="node amber">Amber WARN → triage 15m</div>
+        </div>
+        <div class="flow-row">
+          <div class="node red">Red BREACH → contain 5m</div>
+        </div>
+        <p class="muted-note">Stale green = family S9 (false-green). Then clock → scope → data → family S1–S12.</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">6 · Escalation ladder</div>
+      <div class="stack">
+        <div class="node">L1 RO-OPS ticket</div>
+        <span class="arrow down">↓</span>
+        <div class="node amber">L2 RO + BU PIC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">L3 CRO + ME + RE + Comms</div>
+        <span class="arrow down">↓</span>
+        <div class="node red">L4 ELT + Legal + CP + CISO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">7 · SOP-G02 halt then resume</div>
+    <div class="flow-row">
+      <div class="node">TO proposes</div>
+      <span class="arrow">→</span>
+      <div class="node">RO approves</div>
+      <span class="arrow">→</span>
+      <div class="node">ME halt matching</div>
+      <span class="arrow">→</span>
+      <div class="node">RE sets liq mode</div>
+      <span class="arrow">→</span>
+      <div class="node">Comms + wallet policy</div>
+    </div>
+    <div class="flow-row">
+      <div class="node red">Root cause open → stay halted</div>
+      <div class="node green">Contained → RO+ME+RE ACK → staged resume + 4h hypercare</div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">8 · Diagnostic order (clock first)</div>
+    <div class="flow-row">
+      <div class="node navy">1 Clock</div>
+      <span class="arrow">→</span>
+      <div class="node navy">2 Scope</div>
+      <span class="arrow">→</span>
+      <div class="node navy">3 Data</div>
+      <span class="arrow">→</span>
+      <div class="node">4 Single KRI</div>
+      <span class="arrow">→</span>
+      <div class="node">5 Cluster</div>
+      <span class="arrow">→</span>
+      <div class="node">6 Rule out</div>
+      <span class="arrow">→</span>
+      <div class="node amber">7 Act</div>
+      <span class="arrow">→</span>
+      <div class="node">8 Write timeline</div>
+    </div>
+  </div>
+</section>
