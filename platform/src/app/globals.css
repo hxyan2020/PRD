@@ -419,6 +419,11 @@ body.nav-open {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 0.15rem;
+  scrollbar-width: none;
+}
+
+.chip-scroller::-webkit-scrollbar {
+  display: none;
 }
 
 .chip-scroller .btn {
