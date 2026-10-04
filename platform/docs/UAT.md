@@ -801,9 +801,9 @@ graph TD
 **Steps**
 
 1. Open Improvement Roadmap (Docs group).
-2. You should see phases or a list of follow-ups (for example live webhooks, production IdP, write-path controls).
-3. Toggle language if a control exists. Headings should remain understandable.
-4. Note one item that is explicitly out of scope for this UAT window so nobody files it as a Fail.
+2. Scan table lists RM-01…RM-15 with effort, people, dependency and severity.
+3. Open RM-01 (Lark cards): you should see Today / Build / Done when — not a one-line slogan.
+4. Note the UAT out-of-scope line (live trading-bus writes, production IdP) so nobody files those as Fail.
 
 **Pass:** Roadmap page renders with at least one phase and one out-of-scope note.
 **Evidence:** Screenshot of the roadmap.

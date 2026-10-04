@@ -55,8 +55,8 @@ const META: Record<
     code: "CRMP-RM-001",
     enTitle: "Platform Improvement Roadmap",
     zhTitle: "平台改進路線圖",
-    enSub: "Prioritised improvements with effort, people, dependencies and severity.",
-    zhSub: "依優先序的改進項目：工期、人力、依賴與嚴重度。",
+    enSub: "Each item: current prototype, what to build, effort, owners, and done-when — plus a scan table and UAT out-of-scope note.",
+    zhSub: "每一項含現行原型、要做什麼、工期、人力與完成標準 — 另有掃描表與本輪 UAT 範圍外說明。",
     href: "/admin/docs/roadmap",
   },
 };
