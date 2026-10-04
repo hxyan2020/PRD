@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SeverityBadge, StatusBadge, Badge } from "@/components/ui";
 import { cn } from "@/lib/utils";
+import { useT } from "@/hooks/useUiLocale";
 
 type Alert = {
   id: number;
@@ -23,6 +24,7 @@ type Alert = {
 
 export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperate: boolean }) {
   const router = useRouter();
+  const { t } = useT();
   const [hash, setHash] = useState("");
 
   useEffect(() => {
@@ -64,13 +66,14 @@ export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperat
               <h2 className="mt-2 font-semibold text-lg">{a.title}</h2>
               <p className="text-sm text-[var(--muted)] mt-1">{a.message}</p>
               <div className="text-xs text-[var(--muted)] mt-2">
-                {a.alert_id} · {a.monitor_id} · {a.indicator_name} · observed {a.observed_value} ·{" "}
-                ticket {a.monitor20_ticket_id} · {a.created_at}
+                {a.alert_id} · {a.monitor_id} · {a.indicator_name} ·{" "}
+                {t("alerts.observedTicket", { v: String(a.observed_value ?? "—"), ticket: a.monitor20_ticket_id ?? "—" })}{" "}
+                · {a.created_at}
               </div>
             </div>
             {canOperate && a.status === "OPEN" && (
               <button className="btn btn-primary" onClick={() => ack(a.id)}>
-                Acknowledge
+                {t("common.acknowledge")}
               </button>
             )}
           </div>

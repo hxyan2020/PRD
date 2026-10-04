@@ -7,7 +7,7 @@ import type { LinkedScenario, SkillScenario } from "@/lib/ai/scenario-types";
 import { finalizeSkill } from "@/lib/ai/skill-playbook";
 import { CHAIN_ZH } from "@/lib/ai/skill-zh";
 import { useUiLocale } from "@/hooks/useUiLocale";
-import { t } from "@/lib/i18n";
+import { phrase, t } from "@/lib/i18n";
 
 type SkillRow = {
   id: number;
@@ -194,8 +194,8 @@ export function SkillsScenariosBoard({
                       {s.indicator.product} · {s.indicator.domain}
                     </div>
                     <div className="mt-2 tabular-nums">
-                      warn {s.indicator.warn}
-                      {s.indicator.unit} / {locale === "zh-Hant" ? "違規" : "breach"} {s.indicator.breach}
+                      {t("common.warn", locale)} {s.indicator.warn}
+                      {s.indicator.unit} / {t("common.breach", locale)} {s.indicator.breach}
                       {s.indicator.unit} ({s.indicator.comparator})
                     </div>
                     <p className="mt-2 text-[var(--muted)]">{s.indicator.why}</p>
@@ -212,7 +212,7 @@ export function SkillsScenariosBoard({
                   </div>
                   <div className="rounded-xl border border-[var(--line)] p-3">
                     <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
-                      Escalation (SLA {s.escalation.sla_minutes}{locale === "zh-Hant" ? " 分鐘" : "m"})
+                      {t("skill.escalationSla", locale, { n: s.escalation.sla_minutes })}
                     </div>
                     <ol className="mt-2 space-y-1">
                       {s.escalation.path.map((h, i) => (
@@ -275,7 +275,7 @@ export function SkillsScenariosBoard({
                             </Badge>
                           ))
                         ) : (
-                          <span className="text-sm text-[var(--muted)]">{locale === "zh-Hant" ? "無" : "None"}</span>
+                          <span className="text-sm text-[var(--muted)]">{t("common.none", locale)}</span>
                         )}
                       </div>
                     </div>
@@ -347,7 +347,7 @@ export function SkillsScenariosBoard({
                         <span className="font-semibold tabular-nums">T+{ev.t_minutes}m</span>{" "}
                         <Badge className="bg-orange-50 text-orange-900 border-orange-200">{ev.monitor_id}</Badge>{" "}
                         <SeverityBadge value={ev.severity} />
-                        <div className="text-[var(--muted)] mt-0.5">{ev.signal}</div>
+                        <div className="text-[var(--muted)] mt-0.5">{phrase(ev.signal, locale)}</div>
                       </div>
                     </div>
                   ))}
@@ -360,7 +360,7 @@ export function SkillsScenariosBoard({
                   <ul className="mt-2 space-y-1">
                     {data.causes.map((c) => (
                       <li key={c} className="before:content-['•'] before:mr-1.5 before:text-teal-700">
-                        {c}
+                        {phrase(c, locale)}
                       </li>
                     ))}
                   </ul>
@@ -370,8 +370,8 @@ export function SkillsScenariosBoard({
                   <ol className="mt-2 space-y-1">
                     {data.escalation_plan.map((h, i) => (
                       <li key={i}>
-                        <span className="font-medium">T+{h.after_minutes}m</span> · {h.team}
-                        <div className="text-xs text-[var(--muted)]">{h.action}</div>
+                        <span className="font-medium">T+{h.after_minutes}m</span> · {phrase(h.team, locale)}
+                        <div className="text-xs text-[var(--muted)]">{phrase(h.action, locale)}</div>
                       </li>
                     ))}
                   </ol>
@@ -382,8 +382,8 @@ export function SkillsScenariosBoard({
                     {data.corrections.map((c, i) => (
                       <div key={i}>
                         <DeptBadge code={c.bu} />{" "}
-                        <span className="font-semibold">{c.action}</span>
-                        <div className="text-[var(--muted)]">{c.description}</div>
+                        <span className="font-semibold">{phrase(c.action, locale)}</span>
+                        <div className="text-[var(--muted)]">{phrase(c.description, locale)}</div>
                       </div>
                     ))}
                   </div>
@@ -405,14 +405,14 @@ export function SkillsScenariosBoard({
                   {data.past_cases.map((pc) => (
                     <div key={pc.case_id} className="text-sm">
                       <span className="font-semibold">{pc.case_id}</span> · {pc.date} ·{" "}
-                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">{pc.outcome}</Badge>
+                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(pc.outcome, locale)}</Badge>
                       {pc.alert_id && (
                         <>
                           {" "}
                           · <AdminLink className="underline" href="/admin/alerts">{pc.alert_id}</AdminLink>
                         </>
                       )}
-                      <div className="text-[var(--muted)]">{pc.summary}</div>
+                      <div className="text-[var(--muted)]">{phrase(pc.summary, locale)}</div>
                     </div>
                   ))}
                 </div>

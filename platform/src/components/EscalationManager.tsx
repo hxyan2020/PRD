@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { useT } from "@/hooks/useUiLocale";
 
 type Route = {
   id: number;
@@ -32,6 +33,7 @@ export function EscalationManager({
   canManage: boolean;
 }) {
   const router = useRouter();
+  const { t } = useT();
   const [form, setForm] = useState({
     name: "",
     domain_code: domains[0]?.code ?? "CREDIT_CLIENT",
@@ -66,10 +68,10 @@ export function EscalationManager({
     });
     const data = await res.json();
     if (!res.ok) {
-      setMsg(data.error || "Failed");
+      setMsg(data.error || t("common.failed"));
       return;
     }
-    setMsg(`Route #${data.id} created`);
+    setMsg(t("esc.created", { id: data.id }));
     router.refresh();
   }
 
@@ -77,14 +79,14 @@ export function EscalationManager({
     <div className="space-y-4">
       {canManage && (
         <div className="panel p-4">
-          <h3 className="font-semibold">Create escalation route</h3>
+          <h3 className="font-semibold">{t("esc.create")}</h3>
           <div className="mt-3 grid md:grid-cols-3 gap-3">
             <div className="md:col-span-2">
-              <label className="label">Name</label>
+              <label className="label">{t("common.name")}</label>
               <input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div>
-              <label className="label">Severity</label>
+              <label className="label">{t("common.severity")}</label>
               <select
                 className="select"
                 value={form.severity}
@@ -97,7 +99,7 @@ export function EscalationManager({
               </select>
             </div>
             <div>
-              <label className="label">Domain</label>
+              <label className="label">{t("common.domain")}</label>
               <select
                 className="select"
                 value={form.domain_code}
@@ -111,7 +113,7 @@ export function EscalationManager({
               </select>
             </div>
             <div>
-              <label className="label">Primary team</label>
+              <label className="label">{t("esc.primary")}</label>
               <select
                 className="select"
                 value={form.primary_team_id}
@@ -125,13 +127,13 @@ export function EscalationManager({
               </select>
             </div>
             <div>
-              <label className="label">Secondary team</label>
+              <label className="label">{t("esc.secondary")}</label>
               <select
                 className="select"
                 value={form.secondary_team_id}
                 onChange={(e) => setForm({ ...form, secondary_team_id: e.target.value })}
               >
-                <option value="">None</option>
+                <option value="">{t("common.none")}</option>
                 {teams.map((t) => (
                   <option key={t.id} value={t.id}>
                     {t.name}
@@ -140,7 +142,7 @@ export function EscalationManager({
               </select>
             </div>
             <div>
-              <label className="label">Lark channel</label>
+              <label className="label">{t("esc.larkChannel")}</label>
               <select
                 className="select"
                 value={form.lark_channel_id}
@@ -154,7 +156,7 @@ export function EscalationManager({
               </select>
             </div>
             <div>
-              <label className="label">SLA (minutes)</label>
+              <label className="label">{t("esc.slaMin")}</label>
               <input
                 className="input"
                 value={form.sla_minutes}
@@ -164,7 +166,7 @@ export function EscalationManager({
           </div>
           <div className="mt-3 flex gap-3 items-center">
             <button className="btn btn-primary" onClick={create}>
-              Save route
+              {t("esc.save")}
             </button>
             {msg && <span className="text-sm text-[var(--muted)]">{msg}</span>}
           </div>
@@ -175,14 +177,14 @@ export function EscalationManager({
         <table className="data">
           <thead>
             <tr>
-              <th>Route</th>
-              <th>Severity</th>
-              <th>Teams</th>
-              <th>Lark</th>
-              <th>SLA</th>
-              <th>Auto actions</th>
-              <th>Human</th>
-              <th>Status</th>
+              <th>{t("common.route")}</th>
+              <th>{t("common.severity")}</th>
+              <th>{t("org.teams")}</th>
+              <th>{t("common.lark")}</th>
+              <th>{t("common.sla")}</th>
+              <th>{t("common.auto")}</th>
+              <th>{t("common.human")}</th>
+              <th>{t("common.status")}</th>
               {canManage && <th />}
             </tr>
           </thead>
@@ -213,14 +215,14 @@ export function EscalationManager({
                       ))}
                     </div>
                   </td>
-                  <td>{r.requires_human ? "Yes" : "No"}</td>
+                  <td>{r.requires_human ? t("common.yes") : t("common.no")}</td>
                   <td>
                     <StatusBadge value={r.enabled ? "ACTIVE" : "DISABLED"} />
                   </td>
                   {canManage && (
                     <td>
                       <button className="btn" onClick={() => toggle(r)}>
-                        {r.enabled ? "Disable" : "Enable"}
+                        {r.enabled ? t("common.disable") : t("common.enable")}
                       </button>
                     </td>
                   )}

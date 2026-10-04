@@ -6,6 +6,7 @@ import { SkillPlaybookView } from "@/components/SkillPlaybookView";
 import { isStaticExport } from "@/lib/static-export";
 import { AdminLink } from "@/components/AdminLink";
 import { PageHeader } from "@/components/ui";
+import { T } from "@/components/T";
 
 export function generateStaticParams() {
   const params = SKILL_SCENARIOS.map((s) => ({ code: s.code }));
@@ -22,11 +23,11 @@ export default async function SkillDetailPage({ params }: { params: Promise<{ co
     return (
       <div>
         <PageHeader
-          title="Skill not found"
+          title={<T k="skill.notFound" />}
           subtitle={code}
           actions={
             <AdminLink className="btn" href="/admin/skills">
-              Back to skills
+              <T k="skill.back" />
             </AdminLink>
           }
         />

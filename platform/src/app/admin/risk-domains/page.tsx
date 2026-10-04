@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { DeptBadge, Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { T } from "@/components/T";
 
 export default function RiskDomainsPage() {
   const domains = getDb().prepare(`SELECT * FROM risk_domains ORDER BY priority, name`).all() as Array<{
@@ -32,9 +33,9 @@ export default function RiskDomainsPage() {
               </div>
               <p className="mt-2 text-sm text-[var(--muted)]">{d.description}</p>
               <div className="mt-3 flex flex-wrap gap-2 items-center">
-                <span className="text-xs text-[var(--muted)]">Owner</span>
+                <span className="text-xs text-[var(--muted)]"><T k="common.owner" /></span>
                 <DeptBadge code={d.owner_department} />
-                <span className="text-xs text-[var(--muted)] ml-2">Supporting</span>
+                <span className="text-xs text-[var(--muted)] ml-2"><T k="common.supporting" /></span>
                 {supporting.map((s) => (
                   <DeptBadge key={s} code={s} />
                 ))}

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
 import { useUiLocale } from "@/hooks/useUiLocale";
-import { t } from "@/lib/i18n";
+import { navLabel, t } from "@/lib/i18n";
 import { isPublicSnapshot, isStaticExport } from "@/lib/static-export";
 import { runClientMarketIntelScan } from "@/lib/market-intel/demo-scan";
 import { bumpNavBadge } from "@/lib/nav-badges";
@@ -198,16 +198,20 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       }
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setErr(data.error || `Failed (${res.status})`);
+        setErr(data.error || t("mi.failed", locale, { err: res.status }));
         return;
       }
       if (data.ok === false) {
-        setErr(data.reason || data.error || "Scan skipped");
+        setErr(data.reason || data.error || t("mi.skipped", locale));
         return;
       }
       setMsg(
         data.scan_id
-          ? `Scan ${data.scan_id}: ${data.findings_new} new → ${data.findings_pushed} pushed to messenger`
+          ? t("mi.liveScan", locale, {
+              id: data.scan_id,
+              n: data.findings_new,
+              pushed: data.findings_pushed,
+            })
           : "OK"
       );
       bumpNavBadge("/admin/market-intel", Number(data.findings_new) || 1);
@@ -263,9 +267,9 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
         <StatCard label={t("mi.findings", locale)} value={findings.length} hint={`${highImpact} ${t("mi.highImpact", locale)}`} />
         <StatCard
-          label="Indicator M2-MKT-INTEL"
+          label={t("mi.indicator", locale)}
           value={indicator?.last_value ?? "—"}
-          hint={`warn ${indicator?.threshold_warn ?? 1} / breach ${indicator?.threshold_breach ?? 3}`}
+          hint={t("mi.warnBreach", locale, { w: indicator?.threshold_warn ?? 1, b: indicator?.threshold_breach ?? 3 })}
         />
         <StatCard label={t("mi.sources", locale)} value={sources.length} hint={enabled ? t("mi.schedOn", locale) : t("mi.schedOff", locale)} />
         <StatCard
@@ -282,10 +286,10 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
           <span>{indicator.name}</span>
           <StatusBadge value={indicator.status} />
           <Link className="underline text-xs" href="/admin/monitor-2">
-            Monitor 2.0
+            {navLabel("/admin/monitor-2", locale, "Monitor 2.0")}
           </Link>
           <Link className="underline text-xs" href="/admin/lark">
-            Lark channels
+            {t("mi.larkChannels", locale)}
           </Link>
         </div>
       )}
@@ -331,28 +335,28 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
                     <SeverityBadge value={f.severity} />
                     <Badge className="bg-slate-100 text-slate-700 border-slate-200">{f.geography}</Badge>
                     {f.pushed_to_lark ? (
-                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">pushed</Badge>
+                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">{t("mi.pushed", locale)}</Badge>
                     ) : null}
                   </div>
                 </div>
                 <div className="mt-3 grid md:grid-cols-2 gap-3 text-sm">
                   <div>
-                    <div className="text-xs uppercase text-[var(--muted)]">(iv) Products & direction</div>
+                    <div className="text-xs uppercase text-[var(--muted)]">{t("mi.productsDir", locale)}</div>
                     <ul className="mt-1 space-y-1">
                       {products.map((p, i) => (
                         <li key={i}>
                           <span className="font-medium">{p.product}</span> · {p.asset_class} ·{" "}
                           {p.direction === "UP"
-                            ? "price up"
+                            ? t("mi.priceUp", locale)
                             : p.direction === "DOWN"
-                              ? "price down"
-                              : "volatile"}
+                              ? t("mi.priceDown", locale)
+                              : t("mi.volatile", locale)}
                         </li>
                       ))}
                     </ul>
                   </div>
                   <div>
-                    <div className="text-xs uppercase text-[var(--muted)]">(vi) Sources</div>
+                    <div className="text-xs uppercase text-[var(--muted)]">{t("mi.sourcesN", locale)}</div>
                     <ul className="mt-1 space-y-1">
                       {findingSources.map((s, i) => (
                         <li key={i}>
@@ -369,7 +373,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
             );
           })}
           {!findings.length && (
-            <div className="panel p-6 text-sm text-[var(--muted)]">No findings yet — run Scan now.</div>
+            <div className="panel p-6 text-sm text-[var(--muted)]">{t("mi.empty", locale)}</div>
           )}
         </div>
       )}
@@ -377,8 +381,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       {tab === "messenger" && (
         <div className="space-y-3">
           <p className="text-sm text-[var(--muted)]">
-            Dedicated group format: (i) event (ii) geography (iii) severity (iv) products+direction (v)
-            timestamp (vi) sources with links.
+            {t("mi.formatHint", locale)}
           </p>
           {outbox.map((o) => (
             <article key={o.id} className="panel p-4">
@@ -405,10 +408,10 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs uppercase text-[var(--muted)] border-b border-[var(--line)]">
-                <th className="p-3">Source</th>
-                <th className="p-3">Channel</th>
-                <th className="p-3">Asset classes</th>
-                <th className="p-3">Last scraped</th>
+                <th className="p-3">{t("common.source", locale)}</th>
+                <th className="p-3">{t("common.channel", locale)}</th>
+                <th className="p-3">{t("mi.assetClasses", locale)}</th>
+                <th className="p-3">{t("mi.lastScraped", locale)}</th>
               </tr>
             </thead>
             <tbody>
@@ -439,13 +442,13 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs uppercase text-[var(--muted)] border-b border-[var(--line)]">
-                <th className="p-3">Scan</th>
-                <th className="p-3">Trigger</th>
-                <th className="p-3">Sources</th>
-                <th className="p-3">New</th>
-                <th className="p-3">Pushed</th>
-                <th className="p-3">High-impact</th>
-                <th className="p-3">Status</th>
+                <th className="p-3">{t("mi.scan", locale)}</th>
+                <th className="p-3">{t("mi.trigger", locale)}</th>
+                <th className="p-3">{t("mi.sources", locale)}</th>
+                <th className="p-3">{t("mi.new", locale)}</th>
+                <th className="p-3">{t("mi.tabMessenger", locale)}</th>
+                <th className="p-3">{t("mi.highImpactCol", locale)}</th>
+                <th className="p-3">{t("common.status", locale)}</th>
               </tr>
             </thead>
             <tbody>

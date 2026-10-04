@@ -45,7 +45,7 @@ export default async function AiAdminPage() {
         </Link>
         {" · "}
         <Link className="underline" href="/admin/docs/tsd?lang=zh-Hant">
-          繁中規格
+          TSD §8 — AI 管理頁規格
         </Link>
       </div>
       <AiAdminConsole

@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { T } from "@/components/T";
 
 export default function TeamsPage() {
   const teams = getDb()
@@ -27,12 +28,12 @@ export default function TeamsPage() {
         <table className="data">
           <thead>
             <tr>
-              <th>Team</th>
-              <th>Department</th>
-              <th>Members</th>
-              <th>Lark Chat</th>
-              <th>On-call</th>
-              <th>Mission</th>
+              <th><T k="common.team" /></th>
+              <th><T k="common.department" /></th>
+              <th><T k="common.members" /></th>
+              <th><T k="org.larkChat" /></th>
+              <th><T k="org.onCall" /></th>
+              <th><T k="common.mission" /></th>
             </tr>
           </thead>
           <tbody>

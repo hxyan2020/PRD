@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, StatusBadge, StatCard } from "@/components/ui";
+import { useT } from "@/hooks/useUiLocale";
 
 type Metric = {
   product: string;
@@ -32,16 +33,17 @@ export function DailyDashboardView({
   };
 }) {
   const router = useRouter();
+  const { t } = useT();
   const [msg, setMsg] = useState<string | null>(null);
 
   async function refresh() {
     const res = await fetch("/api/dashboard", { method: "POST" });
     const data = await res.json();
     if (!res.ok) {
-      setMsg(data.error || "Refresh failed");
+      setMsg(data.error || t("dash.refreshFailed"));
       return;
     }
-    setMsg(`Refreshed ${data.date} · ${data.metrics} live metrics`);
+    setMsg(t("dash.refreshed", { date: data.date, n: data.metrics }));
     router.refresh();
   }
 
@@ -64,7 +66,7 @@ export function DailyDashboardView({
                 {m.unit ? <span className="text-sm font-normal text-[var(--muted)] ml-1">{m.unit}</span> : null}
               </div>
               <div className="text-xs text-[var(--muted)] mt-1">
-                {m.target != null ? `target ${m.target}${m.unit ?? ""} · ` : ""}
+                {m.target != null ? `${t("dash.target", { n: `${m.target}${m.unit ?? ""}` })} · ` : ""}
                 {m.notes ?? ""}
               </div>
             </div>
@@ -78,14 +80,12 @@ export function DailyDashboardView({
     <div className="space-y-4">
       <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Report date</div>
+          <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("dash.reportDate")}</div>
           <div className="font-semibold text-lg">{reportDate}</div>
-          <p className="text-sm text-[var(--muted)] mt-1">
-            Daily performance across CFD book and crypto exchange — refreshed from live detectors / Monitor / interventions.
-          </p>
+          <p className="text-sm text-[var(--muted)] mt-1">{t("dash.intro")}</p>
         </div>
         <button type="button" className="btn btn-primary" onClick={refresh}>
-          Refresh live metrics
+          {t("dash.refresh")}
         </button>
       </div>
       {msg && (
@@ -95,15 +95,15 @@ export function DailyDashboardView({
       )}
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatCard label="CFD WARN" value={summary.cfd_warn} />
-        <StatCard label="CFD BREACH" value={summary.cfd_breach} />
-        <StatCard label="Crypto WARN" value={summary.crypto_warn} />
-        <StatCard label="Crypto BREACH" value={summary.crypto_breach} />
+        <StatCard label={t("dash.cfdWarn")} value={summary.cfd_warn} />
+        <StatCard label={t("dash.cfdBreach")} value={summary.cfd_breach} />
+        <StatCard label={t("dash.cryptoWarn")} value={summary.crypto_warn} />
+        <StatCard label={t("dash.cryptoBreach")} value={summary.crypto_breach} />
       </div>
 
       <div className="grid xl:grid-cols-2 gap-4">
-        <MetricGrid title="CFD book" rows={cfd} product="CFD" />
-        <MetricGrid title="Crypto exchange" rows={crypto} product="CRYPTO" />
+        <MetricGrid title={t("dash.cfdBook")} rows={cfd} product="CFD" />
+        <MetricGrid title={t("dash.cryptoEx")} rows={crypto} product="CRYPTO" />
       </div>
     </div>
   );

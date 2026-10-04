@@ -56,7 +56,7 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
           </div>
         </div>
         <div className="panel p-3">
-          <div className="text-[10px] uppercase text-[var(--muted)]">Critical / High</div>
+          <div className="text-[10px] uppercase text-[var(--muted)]">{zh ? "危急／高" : "Critical / High"}</div>
           <div className="font-semibold text-lg tabular-nums">
             {summary.bySev.Critical} / {summary.bySev.High}
           </div>

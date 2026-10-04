@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard } from "@/components/ui";
 import type { AiBlockItem, BlockCategory } from "@/lib/security/ai-access-blocklist";
+import { useT } from "@/hooks/useUiLocale";
 
 export function AiAccessSecurityBoard({
   items,
@@ -26,6 +27,7 @@ export function AiAccessSecurityBoard({
   };
 }) {
   const [cat, setCat] = useState<BlockCategory | "ALL">("ALL");
+  const { t } = useT();
   const [q, setQ] = useState("");
   const [sev, setSev] = useState<"ALL" | "CRITICAL" | "HIGH" | "MEDIUM">("ALL");
 
@@ -42,17 +44,12 @@ export function AiAccessSecurityBoard({
   return (
     <div className="space-y-4">
       <div className="panel p-4">
-        <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">Security policy</div>
-        <p className="text-sm mt-1 max-w-4xl">
-          The following pages, functions, fields and data stores are <strong>blocked from AI access</strong> and
-          may only be used by authorised human operators under RBAC. AI may analyse, recommend and propose —
-          it must not self-approve, touch secrets, rewrite roles, or execute irreversible trading/custody
-          controls.
-        </p>
+        <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("sec.policy")}</div>
+        <p className="text-sm mt-1 max-w-4xl">{t("sec.intro")}</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
-          <Badge className="bg-rose-50 text-rose-900 border-rose-200">AI blocked</Badge>
-          <Badge className="bg-amber-50 text-amber-900 border-amber-200">Human authorised only</Badge>
-          <Badge className="bg-teal-50 text-teal-900 border-teal-200">Maker ≠ Checker enforced</Badge>
+          <Badge className="bg-rose-50 text-rose-900 border-rose-200">{t("sec.aiBlocked")}</Badge>
+          <Badge className="bg-amber-50 text-amber-900 border-amber-200">{t("sec.humanOnly")}</Badge>
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200">{t("sec.makerChecker")}</Badge>
           <Link className="underline" href="/admin/roles">
             Roles & permissions
           </Link>
@@ -66,20 +63,20 @@ export function AiAccessSecurityBoard({
       </div>
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatCard label="Blocked items" value={stats.total} hint={`${stats.critical} CRITICAL`} />
-        <StatCard label="Pages" value={stats.pages} hint={`${stats.functions} functions`} />
-        <StatCard label="Fields" value={stats.fields} hint={`${stats.data} data stores`} />
-        <StatCard label="HIGH+" value={stats.critical + stats.high} hint={`${stats.medium} MEDIUM`} />
+        <StatCard label={t("sec.blockedItems")} value={stats.total} hint={`${stats.critical} CRITICAL`} />
+        <StatCard label={t("sec.pages")} value={stats.pages} hint={t("sec.functions", { n: stats.functions })} />
+        <StatCard label={t("sec.fields")} value={stats.fields} hint={t("sec.dataStores", { n: stats.data })} />
+        <StatCard label={t("sec.highPlus")} value={stats.critical + stats.high} hint={`${stats.medium} MEDIUM`} />
       </div>
 
       <div className="panel p-3 flex flex-wrap gap-2 items-end">
         <div className="flex-1 min-w-[200px]">
-          <label className="label">Search</label>
+          <label className="label">{t("common.search")}</label>
           <input
             className="input"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Page, function, field, reason…"
+            placeholder={t("sec.searchPh")}
           />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -111,13 +108,13 @@ export function AiAccessSecurityBoard({
               </div>
               <div className="flex flex-wrap gap-2">
                 <SeverityBadge value={i.severity} />
-                <Badge className="bg-rose-50 text-rose-900 border-rose-200">AI: {i.ai_may}</Badge>
+                <Badge className="bg-rose-50 text-rose-900 border-rose-200">{t("sec.aiMay", { may: i.ai_may })}</Badge>
               </div>
             </div>
             <p className="text-sm mt-2">{i.reason}</p>
             <div className="mt-3 grid md:grid-cols-2 gap-3 text-sm">
               <div>
-                <div className="text-xs uppercase text-[var(--muted)]">Authorised human roles</div>
+                <div className="text-xs uppercase text-[var(--muted)]">{t("sec.roles")}</div>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {i.human_roles.map((r) => (
                     <Badge key={r} className="bg-slate-100 text-slate-700 border-slate-200">
@@ -127,7 +124,7 @@ export function AiAccessSecurityBoard({
                 </div>
               </div>
               <div>
-                <div className="text-xs uppercase text-[var(--muted)]">Required permissions</div>
+                <div className="text-xs uppercase text-[var(--muted)]">{t("sec.perms")}</div>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {i.required_permissions.map((p) => (
                     <Badge key={p} className="bg-orange-50 text-orange-900 border-orange-200">
@@ -141,15 +138,13 @@ export function AiAccessSecurityBoard({
           </article>
         ))}
         {!filtered.length && (
-          <div className="panel p-6 text-sm text-[var(--muted)]">No items match this filter.</div>
+          <div className="panel p-6 text-sm text-[var(--muted)]">{t("sec.empty")}</div>
         )}
       </div>
 
       <div className="panel p-4">
-        <h3 className="font-[family-name:var(--font-display)] text-xl">AI service role — forbidden permissions</h3>
-        <p className="text-sm text-[var(--muted)] mt-1">
-          Any dedicated AI / automation service account must never be granted these permission codes.
-        </p>
+        <h3 className="font-[family-name:var(--font-display)] text-xl">{t("sec.forbidden")}</h3>
+        <p className="text-sm text-[var(--muted)] mt-1">{t("sec.forbiddenHint")}</p>
         <div className="mt-3 flex flex-wrap gap-1">
           {forbiddenPermissions.map((p) => (
             <Badge key={p} className="bg-rose-50 text-rose-900 border-rose-200">
@@ -160,10 +155,8 @@ export function AiAccessSecurityBoard({
       </div>
 
       <div className="panel p-4">
-        <h3 className="font-[family-name:var(--font-display)] text-xl">What AI may still do</h3>
-        <p className="text-sm text-[var(--muted)] mt-1">
-          Contrasting allow-list — still subject to RBAC and human gates where marked.
-        </p>
+        <h3 className="font-[family-name:var(--font-display)] text-xl">{t("sec.allow")}</h3>
+        <p className="text-sm text-[var(--muted)] mt-1">{t("sec.allowHint")}</p>
         <div className="mt-3 space-y-2">
           {allowed.map((a) => (
             <div key={a.name} className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm">

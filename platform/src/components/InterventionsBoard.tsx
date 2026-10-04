@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
 import { decideInterventionAction } from "@/app/admin/interventions/actions";
+import { useT } from "@/hooks/useUiLocale";
 
 type Intervention = {
   id: number;
@@ -43,6 +44,7 @@ function parseSkillDetail(raw: string | null | undefined): {
 
 export function InterventionsBoard({ interventions }: { interventions: Intervention[] }) {
   const router = useRouter();
+  const { t } = useT();
   const [note, setNote] = useState<Record<number, string>>({});
   const [msg, setMsg] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
@@ -60,13 +62,18 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
       try {
         const result = await decideInterventionAction(formData);
         if (!result?.ok) {
-          setMsg(("error" in result && result.error) || "Failed");
+          setMsg(("error" in result && result.error) || t("common.failed"));
           return;
         }
-        setMsg(`${decision} intervention #${id}`);
+        setMsg(
+          t("intv.decidedStatus", {
+            decision: decision === "APPROVED" ? t("intv.approved") : t("intv.rejected"),
+            id,
+          })
+        );
         startTransition(() => router.refresh());
       } catch (e) {
-        setMsg((e as Error).message || "Network error");
+        setMsg((e as Error).message || t("common.networkError"));
       } finally {
         setBusyId(null);
       }
@@ -96,26 +103,26 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                   {i.action_code} · {i.alert_title}
                 </h2>
                 <div className="text-xs text-[var(--muted)] mt-1">
-                  #{i.id} · {i.analysis_code} · {i.indicator_monitor_id} · step {i.step_index + 1} · requested{" "}
-                  {i.requested_at}
+                  #{i.id} · {i.analysis_code} · {i.indicator_monitor_id} ·{" "}
+                  {t("intv.stepRequested", { step: i.step_index + 1, at: i.requested_at })}
                 </div>
                 <p className="text-sm mt-2 text-slate-700">{detail.description || i.summary}</p>
               </div>
               <AdminLink className="btn" href={`/admin/ai-analyses/${i.analysis_id}`}>
-                Evidence
+                {t("common.evidence")}
               </AdminLink>
             </div>
 
             {i.status === "PENDING" ? (
               <form className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
                 <div>
-                  <label className="label">Decision note</label>
+                  <label className="label">{t("intv.note")}</label>
                   <input
                     className="input"
                     name="note"
                     value={note[i.id] || ""}
                     onChange={(e) => setNote({ ...note, [i.id]: e.target.value })}
-                    placeholder="Why approve / reject…"
+                    placeholder={t("intv.notePh")}
                   />
                 </div>
                 <button
@@ -125,7 +132,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                   data-testid={`approve-${i.id}`}
                   formAction={makeAction(i.id, "APPROVED")}
                 >
-                  {busyId === i.id ? "Working…" : "Approve & execute"}
+                  {busyId === i.id ? t("common.working") : t("intv.approve")}
                 </button>
                 <button
                   type="submit"
@@ -134,12 +141,12 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                   data-testid={`reject-${i.id}`}
                   formAction={makeAction(i.id, "REJECTED")}
                 >
-                  Reject
+                  {t("common.reject")}
                 </button>
               </form>
             ) : (
               <div className="mt-3 text-sm text-[var(--muted)]">
-                Decided by {i.decided_by_name ?? "—"} at {i.decided_at}
+                {t("intv.decided", { who: i.decided_by_name ?? "—", at: i.decided_at ?? "—" })}
                 {i.decision_note ? ` — ${i.decision_note}` : ""}
               </div>
             )}
@@ -148,7 +155,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
       })}
       {!interventions.length && (
         <div className="panel p-6 text-sm text-[var(--muted)]">
-          No interventions queued. Run detectors or AI analyses that produce human-gated skill steps.
+          {t("intv.empty")}
         </div>
       )}
     </div>

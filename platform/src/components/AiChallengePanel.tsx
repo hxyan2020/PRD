@@ -1,4 +1,7 @@
+"use client";
+
 import { Badge, SeverityBadge } from "@/components/ui";
+import { useT } from "@/hooks/useUiLocale";
 
 type Challenge = {
   challenge_id: string;
@@ -14,14 +17,12 @@ type Challenge = {
 };
 
 export function AiChallengePanel({ challenge }: { challenge: Challenge | null | undefined }) {
+  const { t } = useT();
   if (!challenge) {
     return (
       <section className="panel p-4">
-        <h2 className="font-[family-name:var(--font-display)] text-lg">Second AI challenger</h2>
-        <p className="text-sm text-[var(--muted)] mt-2">
-          Not run — challenger activates for alerts at or above{" "}
-          <code className="text-xs">ai.second_opinion_severity</code> (default BREACH).
-        </p>
+        <h2 className="font-[family-name:var(--font-display)] text-lg">{t("ch.second")}</h2>
+        <p className="text-sm text-[var(--muted)] mt-2">{t("ch.notRun")}</p>
       </section>
     );
   }
@@ -53,8 +54,8 @@ export function AiChallengePanel({ challenge }: { challenge: Challenge | null | 
     <section className="panel p-4 border-teal-200">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">Independent model</div>
-          <h2 className="font-[family-name:var(--font-display)] text-lg">Second AI challenger</h2>
+          <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("ch.independent")}</div>
+          <h2 className="font-[family-name:var(--font-display)] text-lg">{t("ch.second")}</h2>
           <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{challenge.summary}</p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -67,7 +68,7 @@ export function AiChallengePanel({ challenge }: { challenge: Challenge | null | 
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
         <div className="rounded-xl border border-[var(--line)] p-3 min-w-0">
-          <div className="text-xs uppercase text-[var(--muted)]">Critique of primary RCA</div>
+          <div className="text-xs uppercase text-[var(--muted)]">{t("ch.critique")}</div>
           <ul className="mt-2 space-y-2">
             {critiques.map((c, i) => (
               <li key={i} className="break-word">
@@ -78,7 +79,7 @@ export function AiChallengePanel({ challenge }: { challenge: Challenge | null | 
           </ul>
         </div>
         <div className="rounded-xl border border-[var(--line)] p-3 min-w-0">
-          <div className="text-xs uppercase text-[var(--muted)]">Recommended improvements</div>
+          <div className="text-xs uppercase text-[var(--muted)]">{t("ch.improvements")}</div>
           <ul className="mt-2 space-y-2">
             {improvements.map((imp, i) => (
               <li key={i} className="break-word">
@@ -97,24 +98,24 @@ export function AiChallengePanel({ challenge }: { challenge: Challenge | null | 
           </ul>
         </div>
         <div className="rounded-xl border border-[var(--line)] p-3 min-w-0">
-          <div className="text-xs uppercase text-[var(--muted)]">Alternative hypotheses</div>
+          <div className="text-xs uppercase text-[var(--muted)]">{t("ch.alternatives")}</div>
           {alternatives.length ? (
             <ul className="mt-2 space-y-2">
               {alternatives.map((a, i) => (
                 <li key={i} className="break-word">
                   <div className="font-semibold">{a.hypothesis}</div>
-                  <div className="text-xs text-[var(--muted)]">confidence {a.confidence.toFixed(2)}</div>
+                  <div className="text-xs text-[var(--muted)]">{t("common.confidence")} {a.confidence.toFixed(2)}</div>
                   <div className="mt-1 text-[var(--muted)]">{a.rationale}</div>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-[var(--muted)] mt-2">None — primary narrative accepted.</p>
+            <p className="text-[var(--muted)] mt-2">{t("ch.none")}</p>
           )}
         </div>
       </div>
       <div className="text-xs text-[var(--muted)] mt-3">
-        Challenger confidence {(challenge.confidence * 100).toFixed(0)}% · {challenge.created_at}
+        {t("ch.confLine", { pct: (challenge.confidence * 100).toFixed(0), at: challenge.created_at })}
       </div>
     </section>
   );

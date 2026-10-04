@@ -281,14 +281,14 @@ export function AdminShell({
           <button
             type="button"
             className="absolute inset-0 bg-black/45"
-            aria-label="Close menu"
+            aria-label={copy.menu}
             onClick={() => setOpen(false)}
           />
           <aside className="relative z-50 h-full w-[min(88vw,320px)] bg-[var(--sidebar)] text-[var(--sidebar-ink)] px-4 py-5 flex flex-col gap-5 shadow-xl overflow-hidden pt-[max(1.25rem,var(--safe-top))] pb-[max(1rem,var(--safe-bottom))]">
             <button
               type="button"
               className="absolute right-3 top-[max(0.75rem,var(--safe-top))] text-slate-200 min-h-10 min-w-10 inline-flex items-center justify-center"
-              aria-label="Close"
+              aria-label={copy.menu}
               onClick={() => setOpen(false)}
             >
               <X size={20} />

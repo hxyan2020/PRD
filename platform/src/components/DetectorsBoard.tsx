@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, StatusBadge, SeverityBadge } from "@/components/ui";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { useT } from "@/hooks/useUiLocale";
 
 type Detector = {
   id: number;
@@ -43,6 +44,7 @@ export function DetectorsBoard({
   canOperate: boolean;
 }) {
   const router = useRouter();
+  const { t } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -57,11 +59,11 @@ export function DetectorsBoard({
     const data = await res.json();
     setBusy(false);
     if (!res.ok) {
-      setMsg(data.error || "Failed");
+      setMsg(data.error || t("common.failed"));
       return;
     }
     const alarms = (data.results || []).filter((r: { status: string }) => r.status !== "HEALTHY").length;
-    setMsg(`Ran ${data.results?.length ?? 0} detectors · ${alarms} warn/breach (alarms auto → AI RCA)`);
+    setMsg(t("det.ran", { n: data.results?.length ?? 0, alarms }));
     if (alarms > 0) {
       bumpNavBadge("/admin/detectors", alarms);
       bumpNavBadge("/admin/alerts", alarms);
@@ -83,14 +85,12 @@ export function DetectorsBoard({
     <div className="space-y-4">
       <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-semibold">Detector engine</h3>
-          <p className="text-sm text-[var(--muted)] mt-1">
-            Samples CFD + crypto indicators, evaluates thresholds, raises Monitor alarms, and triggers the AI spine.
-          </p>
+          <h3 className="font-semibold">{t("det.engine")}</h3>
+          <p className="text-sm text-[var(--muted)] mt-1">{t("det.intro")}</p>
         </div>
         {canOperate && (
           <button type="button" className="btn btn-primary" disabled={busy} onClick={runAll}>
-            {busy ? "Running…" : "Run all detectors"}
+            {busy ? t("det.running") : t("det.runAll")}
           </button>
         )}
       </div>
@@ -104,12 +104,12 @@ export function DetectorsBoard({
         <table className="data">
           <thead>
             <tr>
-              <th>Detector</th>
-              <th>Product</th>
-              <th>Monitor</th>
-              <th>Thresholds</th>
-              <th>Last</th>
-              <th>Status</th>
+              <th>{t("common.detector")}</th>
+              <th>{t("common.product")}</th>
+              <th>{t("common.monitor")}</th>
+              <th>{t("common.thresholds")}</th>
+              <th>{t("common.last")}</th>
+              <th>{t("common.status")}</th>
               {canOperate && <th />}
             </tr>
           </thead>
@@ -126,11 +126,11 @@ export function DetectorsBoard({
                 </td>
                 <td className="text-sm">{d.monitor_id}</td>
                 <td className="text-sm tabular-nums">
-                  {d.comparator} warn {d.warn_threshold} / breach {d.breach_threshold}
+                  {d.comparator} {t("common.warn")} {d.warn_threshold} / {t("common.breach")} {d.breach_threshold}
                 </td>
                 <td className="text-sm">
                   <div className="tabular-nums">{d.last_value ?? "—"}</div>
-                  <div className="text-xs text-[var(--muted)]">{d.last_run_at ?? "never"}</div>
+                  <div className="text-xs text-[var(--muted)]">{d.last_run_at ?? t("common.never")}</div>
                 </td>
                 <td>
                   <StatusBadge value={d.last_status} />
@@ -138,7 +138,7 @@ export function DetectorsBoard({
                 {canOperate && (
                   <td>
                     <button type="button" className="btn" onClick={() => toggle(d)}>
-                      {d.enabled ? "Disable" : "Enable"}
+                      {d.enabled ? t("common.disable") : t("common.enable")}
                     </button>
                   </td>
                 )}
@@ -149,16 +149,16 @@ export function DetectorsBoard({
       </div>
 
       <div className="panel p-4">
-        <h3 className="font-semibold">Recent detector runs</h3>
+        <h3 className="font-semibold">{t("det.recent")}</h3>
         <div className="table-wrap mt-3">
           <table className="data">
             <thead>
               <tr>
-                <th>When</th>
-                <th>Detector</th>
-                <th>Observed</th>
-                <th>Status</th>
-                <th>Alert / Analysis</th>
+                <th>{t("common.when")}</th>
+                <th>{t("common.detector")}</th>
+                <th>{t("common.observed")}</th>
+                <th>{t("common.status")}</th>
+                <th>{t("det.alertAnalysis")}</th>
               </tr>
             </thead>
             <tbody>
@@ -171,7 +171,7 @@ export function DetectorsBoard({
                     <SeverityBadge value={r.severity} />
                   </td>
                   <td className="text-xs">
-                    alert {r.alert_id ?? "—"} · analysis {r.analysis_id ?? "—"}
+                    {t("det.alertLine", { alert: r.alert_id ?? "—", analysis: r.analysis_id ?? "—" })}
                   </td>
                 </tr>
               ))}

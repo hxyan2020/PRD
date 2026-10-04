@@ -1,5 +1,5 @@
 import type { SkillScenario } from "@/lib/ai/scenario-types";
-import type { UiLocale } from "@/lib/i18n";
+import { phrase, type UiLocale } from "@/lib/i18n";
 import { SKILL_ZH } from "@/lib/ai/skill-zh";
 
 /** Full operator playbook — catalog fields plus SKILL.md-style sections. */
@@ -225,17 +225,52 @@ export function finalizeSkill(s: SkillScenario, locale: UiLocale = "en"): SkillP
     locale === "zh-Hant" && zh?.corrections?.length
       ? s.corrections.map((c, i) => ({
           ...c,
-          description: zh.corrections?.[i] || c.description,
+          action: phrase(c.action, locale),
+          description: zh.corrections?.[i] || phrase(c.description, locale),
         }))
-      : s.corrections;
+      : locale === "zh-Hant"
+        ? s.corrections.map((c) => ({
+            ...c,
+            action: phrase(c.action, locale),
+            description: phrase(c.description, locale),
+          }))
+        : s.corrections;
 
   const steps =
     locale === "zh-Hant" && zh?.steps?.length
       ? s.steps.map((st, i) => ({
           ...st,
-          description: zh.steps?.[i] || st.description,
+          action: phrase(st.action, locale),
+          description: zh.steps?.[i] || phrase(st.description, locale),
         }))
-      : s.steps;
+      : locale === "zh-Hant"
+        ? s.steps.map((st) => ({
+            ...st,
+            action: phrase(st.action, locale),
+            description: phrase(st.description, locale),
+          }))
+        : s.steps;
+
+  const escalation =
+    locale === "zh-Hant"
+      ? {
+          ...s.escalation,
+          path: s.escalation.path.map((h) => ({
+            ...h,
+            team: phrase(h.team, locale),
+            action: phrase(h.action, locale),
+          })),
+        }
+      : s.escalation;
+
+  const past_cases =
+    locale === "zh-Hant"
+      ? s.past_cases.map((pc) => ({
+          ...pc,
+          outcome: phrase(pc.outcome, locale),
+          summary: phrase(pc.summary, locale),
+        }))
+      : s.past_cases;
 
   return {
     ...s,
@@ -244,7 +279,14 @@ export function finalizeSkill(s: SkillScenario, locale: UiLocale = "en"): SkillP
     fault_areas,
     corrections,
     steps,
-    indicator: { ...s.indicator, name: indicatorName, why },
+    past_cases,
+    escalation,
+    indicator: {
+      ...s.indicator,
+      name: indicatorName,
+      why,
+      domain: phrase(s.indicator.domain, locale),
+    },
     when_to_use,
     when_not_to_use,
     prechecks,

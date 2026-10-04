@@ -117,8 +117,8 @@ export function SkillPlaybookView({
             {s.indicator.product} · {s.indicator.domain}
           </div>
           <div className="mt-2 tabular-nums">
-            {zh ? "警告" : "warn"} {s.indicator.warn}
-            {s.indicator.unit} / {zh ? "違規" : "breach"} {s.indicator.breach}
+            {t("common.warn", locale)} {s.indicator.warn}
+            {s.indicator.unit} / {t("common.breach", locale)} {s.indicator.breach}
             {s.indicator.unit} ({s.indicator.comparator})
           </div>
           <p className="mt-2 text-[var(--muted)]">{s.indicator.why}</p>
@@ -196,7 +196,7 @@ export function SkillPlaybookView({
               </Badge>
             ))
           ) : (
-            <span className="text-sm text-[var(--muted)]">{zh ? "無" : "None"}</span>
+            <span className="text-sm text-[var(--muted)]">{t("common.none", locale)}</span>
           )}
         </div>
       </Section>

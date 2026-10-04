@@ -6,6 +6,7 @@ import { getDb } from "@/lib/db";
 import { isStaticExport } from "@/lib/static-export";
 import { AiChallengePanel } from "@/components/AiChallengePanel";
 import { PageHeader, Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { T } from "@/components/T";
 
 export async function generateStaticParams() {
   try {
@@ -27,11 +28,11 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
       return (
         <div>
           <PageHeader
-            title="Analysis snapshot"
-            subtitle="This analysis id is not in the published static snapshot."
+            title={<T k="ai.snapshot" />}
+            subtitle={<T k="ai.snapshotSub" />}
             actions={
               <Link className="btn" href="/admin/ai-analyses">
-                Back to list
+                <T k="common.back" />
               </Link>
             }
           />
@@ -96,7 +97,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         subtitle={analysis.summary}
         actions={
           <Link className="btn" href="/admin/ai-analyses">
-            Back to list
+            <T k="common.back" />
           </Link>
         }
       />
@@ -113,7 +114,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         </Badge>
         <StatusBadge value={analysis.status} />
         <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-          confidence {(analysis.confidence * 100).toFixed(0)}%
+          <T k="common.confidence" /> {(analysis.confidence * 100).toFixed(0)}%
         </Badge>
         <Badge className="bg-orange-50 text-orange-900 border-orange-200">{analysis.indicator_monitor_id}</Badge>
         {analysis.needs_human ? <SeverityBadge value="WARN" /> : null}
@@ -127,7 +128,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
                   : "bg-amber-50 text-amber-900 border-amber-200"
             }
           >
-            2nd AI · {analysis.challenge_verdict || "challenged"}
+            <T k="ai.challenged" vars={{ verdict: analysis.challenge_verdict || "challenged" }} />
           </Badge>
         ) : null}
       </div>
@@ -138,13 +139,13 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
         <section className="panel p-3 sm:p-4 min-w-0">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">Explanations</h2>
+          <h2 className="font-[family-name:var(--font-display)] text-lg"><T k="ai.explanations" /></h2>
           <div className="mt-3 space-y-3">
             {explanations.map((e, i) => (
               <div key={i} className="rounded-xl border border-[var(--line)] p-3">
                 <div className="font-semibold">{String(e.hypothesis)}</div>
                 <div className="text-xs text-[var(--muted)] mt-1">
-                  likelihood {String(e.likelihood)} · confidence {Number(e.confidence || 0).toFixed(2)}
+                  <T k="ai.likelihood" /> {String(e.likelihood)} · <T k="common.confidence" /> {Number(e.confidence || 0).toFixed(2)}
                 </div>
                 <p className="text-sm mt-2 text-slate-700 whitespace-pre-wrap">{String(e.rationale)}</p>
               </div>
@@ -153,14 +154,14 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         </section>
 
         <section className="panel p-4">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">Evidence vault</h2>
+          <h2 className="font-[family-name:var(--font-display)] text-lg"><T k="ai.evidenceVault" /></h2>
           <div className="mt-3 space-y-3">
             {evidence.map((ev) => (
               <div key={ev.id} className="rounded-xl border border-[var(--line)] p-3">
                 <div className="flex flex-wrap gap-2 items-center">
                   <Badge className="bg-teal-50 text-teal-900 border-teal-200">{ev.evidence_type}</Badge>
                   <span className="font-semibold text-sm">{ev.title}</span>
-                  <span className="text-xs text-[var(--muted)]">score {ev.score.toFixed(2)}</span>
+                  <span className="text-xs text-[var(--muted)]"><T k="common.score" /> {ev.score.toFixed(2)}</span>
                 </div>
                 <p className="text-sm mt-2 text-slate-700">{ev.excerpt}</p>
                 <div className="text-xs text-[var(--muted)] mt-1">
@@ -182,7 +183,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 mt-4">
         <section className="panel p-3 sm:p-4 min-w-0">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">Actions taken</h2>
+          <h2 className="font-[family-name:var(--font-display)] text-lg"><T k="ai.actionsTaken" /></h2>
           <ul className="mt-3 space-y-2">
             {actions.map((a, i) => (
               <li key={i} className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm">
@@ -196,7 +197,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         </section>
 
         <section className="panel p-4">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">Skill run log</h2>
+          <h2 className="font-[family-name:var(--font-display)] text-lg"><T k="ai.skillRunLog" /></h2>
           {skillRuns.length ? (
             <ol className="mt-3 space-y-2">
               {skillRuns.map((r) => (
@@ -209,7 +210,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
               ))}
             </ol>
           ) : (
-            <p className="text-sm text-[var(--muted)] mt-3">No skill steps (RAG reasoning path).</p>
+            <p className="text-sm text-[var(--muted)] mt-3"><T k="ai.noSkillSteps" /></p>
           )}
         </section>
       </div>

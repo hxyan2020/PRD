@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { deptLabelI18n, type UiLocale } from "@/lib/i18n";
 
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
@@ -40,13 +41,6 @@ export function statusClass(status: string) {
   }
 }
 
-export function deptLabel(code: string | null | undefined) {
-  const map: Record<string, string> = {
-    RISK_CONTROL: "Risk Control",
-    OPERATIONS: "Operations",
-    AI: "AI",
-    SYSTEM: "System",
-    EXEC: "Exec",
-  };
-  return code ? map[code] ?? code : "—";
+export function deptLabel(code: string | null | undefined, locale: UiLocale = "en") {
+  return deptLabelI18n(code, locale);
 }

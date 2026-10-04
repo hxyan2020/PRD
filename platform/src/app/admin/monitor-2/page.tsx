@@ -4,6 +4,7 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { T } from "@/components/T";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { readSearchParams } from "@/lib/static-export";
@@ -76,10 +77,10 @@ export default async function Monitor2Page({
     .prepare(`SELECT value FROM platform_settings WHERE key = 'monitor2.base_url'`)
     .get() as { value: string } | undefined;
 
-  const tabs: Array<{ key: Tab; label: string }> = [
-    { key: "indicators", label: "Indicators" },
-    { key: "alerts", label: "Alerts" },
-    { key: "tickets", label: "Tickets" },
+  const tabs: Array<{ key: Tab; labelKey: string }> = [
+    { key: "indicators", labelKey: "m2.tabIndicators" },
+    { key: "alerts", labelKey: "m2.tabAlerts" },
+    { key: "tickets", labelKey: "m2.tabTickets" },
   ];
 
   return (
@@ -89,7 +90,7 @@ export default async function Monitor2Page({
       <div className="space-y-4">
         <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Upstream platform</div>
+            <div className="text-xs uppercase tracking-wide text-[var(--muted)]"><T k="m2.upstream" /></div>
             <a
               href={setting?.value ?? "#"}
               className="font-semibold text-teal-800 break-all"
@@ -99,13 +100,13 @@ export default async function Monitor2Page({
               {setting?.value}
             </a>
             <p className="text-sm text-[var(--muted)] mt-1">
-              Bi-directional sync of indicators, alerts and tickets. Human actions in CRMP write back acknowledgements.
+              <T k="m2.hint" />
             </p>
           </div>
           {canOperate && <MonitorActions mode="sync" />}
         </div>
 
-        <div className="flex gap-2" role="tablist" aria-label="Monitor 2.0 sections">
+        <div className="flex gap-2" role="tablist" aria-label="Monitor 2.0">
           {tabs.map((t) => (
             <Link
               key={t.key}
@@ -115,7 +116,7 @@ export default async function Monitor2Page({
               data-testid={`monitor-tab-${t.key}`}
               className={cn("btn", tab === t.key && "btn-primary")}
             >
-              {t.label}
+              <T k={t.labelKey} />
             </Link>
           ))}
         </div>
@@ -125,13 +126,13 @@ export default async function Monitor2Page({
             <table className="data">
               <thead>
                 <tr>
-                  <th>Indicator</th>
-                  <th>Domain</th>
-                  <th>Product</th>
-                  <th>Last</th>
-                  <th>Warn / Breach</th>
-                  <th>Status</th>
-                  <th>Open tickets</th>
+                  <th><T k="common.indicator" /></th>
+                  <th><T k="common.domain" /></th>
+                  <th><T k="common.product" /></th>
+                  <th><T k="common.last" /></th>
+                  <th><T k="m2.warnBreach" /></th>
+                  <th><T k="common.status" /></th>
+                  <th><T k="common.openTickets" /></th>
                 </tr>
               </thead>
               <tbody>
@@ -166,10 +167,10 @@ export default async function Monitor2Page({
             <table className="data">
               <thead>
                 <tr>
-                  <th>Alert</th>
-                  <th>Severity</th>
-                  <th>Status</th>
-                  <th>Monitor ticket</th>
+                  <th><T k="common.alert" /></th>
+                  <th><T k="common.severity" /></th>
+                  <th><T k="common.status" /></th>
+                  <th><T k="m2.monitorTicket" /></th>
                   {canOperate && <th />}
                 </tr>
               </thead>
@@ -205,12 +206,12 @@ export default async function Monitor2Page({
             <table className="data">
               <thead>
                 <tr>
-                  <th>Ticket</th>
-                  <th>Severity</th>
-                  <th>Status</th>
-                  <th>Assignee</th>
-                  <th>Dept</th>
-                  <th>Lark msg</th>
+                  <th><T k="common.ticket" /></th>
+                  <th><T k="common.severity" /></th>
+                  <th><T k="common.status" /></th>
+                  <th><T k="common.assignee" /></th>
+                  <th><T k="common.department" /></th>
+                  <th><T k="m2.larkMsg" /></th>
                   {canOperate && <th />}
                 </tr>
               </thead>
@@ -227,7 +228,7 @@ export default async function Monitor2Page({
                     <td>
                       <StatusBadge value={t.status} />
                     </td>
-                    <td>{t.assignee_name ?? "Unassigned"}</td>
+                    <td>{t.assignee_name ?? <T k="common.unassigned" />}</td>
                     <td>
                       <DeptBadge code={t.department_code} />
                     </td>

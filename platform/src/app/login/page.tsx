@@ -80,7 +80,7 @@ export default function LoginPage() {
           <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl">{t("login.signIn", locale)}</h2>
           <p className="mt-1 text-sm text-[var(--muted)]">{t("login.hint", locale)}</p>
           <Link href="/admin" className="btn btn-primary mt-4 w-full justify-center">
-            {locale === "zh-Hant" ? "無需登入，進入後台" : "Enter admin without signing in"}
+            {t("common.enterNoSignIn", locale)}
           </Link>
           <div className="mt-6">
             <LoginForm />

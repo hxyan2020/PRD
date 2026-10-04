@@ -1,3 +1,5 @@
+import { EXTRA_UI, PHRASES_ZH, STAGE_LABELS, STATUS_LABELS } from "@/lib/i18n-extra";
+
 export type UiLocale = "en" | "zh-Hant";
 
 export const UI_LOCALE_COOKIE = "crmp_ui_lang";
@@ -452,6 +454,7 @@ const UI: Record<string, Pair> = {
   "tree.hubSub": { en: "knowledge tree", "zh-Hant": "知識樹" },
 
   "nav.unread": { en: "unread", "zh-Hant": "未讀" },
+  ...EXTRA_UI,
 };
 
 export function parseUiLocale(raw?: string | null): UiLocale {
@@ -500,4 +503,30 @@ export function t(key: string, locale: UiLocale, vars?: Record<string, string | 
 
 export function actionLabel(href: string, locale: UiLocale) {
   return navLabel(href, locale, href);
+}
+
+export function deptLabelI18n(code: string | null | undefined, locale: UiLocale = "en") {
+  if (!code) return "—";
+  const key = `dept.${code}`;
+  if (UI[key]) return t(key, locale);
+  return code;
+}
+
+export function statusLabel(value: string, locale: UiLocale = "en") {
+  const pair = STATUS_LABELS[value];
+  if (!pair) return value;
+  return pair[locale] || pair.en;
+}
+
+export function stageLabel(stage: string, locale: UiLocale = "en") {
+  const pair = STAGE_LABELS[stage];
+  if (!pair) return stage;
+  return pair[locale] || pair.en;
+}
+
+/** Translate a known English operational phrase; unknown text is left as-is. */
+export function phrase(text: string | null | undefined, locale: UiLocale = "en") {
+  if (!text) return "";
+  if (locale !== "zh-Hant") return text;
+  return PHRASES_ZH[text] || text;
 }

@@ -6,6 +6,7 @@ import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { useT } from "@/hooks/useUiLocale";
 
 type Analysis = {
   id: number;
@@ -33,6 +34,7 @@ export function AiAnalysesBoard({
   canOperate: boolean;
 }) {
   const router = useRouter();
+  const { t } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -47,20 +49,21 @@ export function AiAnalysesBoard({
     const data = await res.json();
     setBusy(false);
     if (!res.ok) {
-      setMsg(data.error || "Failed");
+      setMsg(data.error || t("common.failed"));
       return;
     }
     const detailId = data.analysis?.id;
+    const pct = Math.round((data.analysis?.confidence || 0) * 100);
     setMsg(
       action === "analyze_open"
-        ? `Ensured AI analysis for ${data.count} open alarm(s)`
+        ? t("ai.ensured", { n: data.count })
         : action === "simulate_alarm"
-          ? `Alarm raised → analysis ${data.analysis?.analysis_id} (${data.analysis?.mode}, confidence ${Math.round((data.analysis?.confidence || 0) * 100)}%)${
-              data.challenge ? ` · 2nd AI ${data.challenge.verdict}` : ""
+          ? `${t("ai.alarmRaised", { id: data.analysis?.analysis_id, mode: data.analysis?.mode, pct })}${
+              data.challenge ? ` · ${t("ai.challenged", { verdict: data.challenge.verdict })}` : ""
             }`
           : action === "backfill_challenges"
-            ? `Second AI challenger backfilled ${data.count} high-severity analysis(es)`
-            : "Done"
+            ? t("ai.backfilled", { n: data.count })
+            : t("ai.done")
     );
     router.refresh();
     if (action === "simulate_alarm") {
@@ -82,13 +85,11 @@ export function AiAnalysesBoard({
     <div className="space-y-4">
       {canOperate && (
         <div className="panel p-4">
-          <h3 className="font-semibold">AI pipeline controls</h3>
-          <p className="text-sm text-[var(--muted)] mt-1">
-            Alarms auto-trigger analysis on Monitor sync. Use these controls to backfill or simulate a new Monitor 2.0 alarm.
-          </p>
+          <h3 className="font-semibold">{t("ai.pipeline")}</h3>
+          <p className="text-sm text-[var(--muted)] mt-1">{t("ai.pipelineIntro")}</p>
           <div className="mt-3 action-row">
             <button type="button" className="btn btn-primary" disabled={busy} onClick={() => run("analyze_open")}>
-              Analyze all open alarms
+              {t("ai.analyzeOpen")}
             </button>
             <button
               type="button"
@@ -104,7 +105,7 @@ export function AiAnalysesBoard({
                 })
               }
             >
-              Simulate COPY breach (skill path)
+              {t("ai.simCopy")}
             </button>
             <button
               type="button"
@@ -120,7 +121,7 @@ export function AiAnalysesBoard({
                 })
               }
             >
-              Simulate EQ drawdown (RAG path)
+              {t("ai.simEq")}
             </button>
             <button
               type="button"
@@ -136,7 +137,7 @@ export function AiAnalysesBoard({
                 })
               }
             >
-              Simulate CRITICAL (2nd AI challenge)
+              {t("ai.simCrit")}
             </button>
             <button
               type="button"
@@ -144,7 +145,7 @@ export function AiAnalysesBoard({
               disabled={busy}
               onClick={() => run("backfill_challenges")}
             >
-              Backfill 2nd AI challenges
+              {t("ai.backfill")}
             </button>
           </div>
           {msg && (
@@ -177,7 +178,7 @@ export function AiAnalysesBoard({
                   <SeverityBadge value={a.severity} />
                   <StatusBadge value={a.status} />
                   {a.needs_human ? (
-                    <Badge className="bg-rose-50 text-rose-800 border-rose-200">needs human</Badge>
+                    <Badge className="bg-rose-50 text-rose-800 border-rose-200">{t("common.needsHuman")}</Badge>
                   ) : null}
                   {a.challenged ? (
                     <Badge
@@ -189,16 +190,16 @@ export function AiAnalysesBoard({
                             : "bg-amber-50 text-amber-900 border-amber-200"
                       }
                     >
-                      2nd AI · {a.challenge_verdict || "challenged"}
+                      {t("ai.challenged", { verdict: a.challenge_verdict || "challenged" })}
                     </Badge>
                   ) : a.severity === "BREACH" || a.severity === "CRITICAL" ? (
-                    <Badge className="bg-slate-100 text-slate-600 border-slate-200">2nd AI pending</Badge>
+                    <Badge className="bg-slate-100 text-slate-600 border-slate-200">{t("ai.pending2nd")}</Badge>
                   ) : null}
                 </div>
                 <h2 className="mt-2 font-semibold text-base sm:text-lg break-word">{a.alert_title}</h2>
                 <div className="text-xs text-[var(--muted)] mt-1 break-word">
-                  {a.analysis_id} · alert {a.monitor_alert_id} · {a.indicator_monitor_id}
-                  {a.skill_code ? ` · skill ${a.skill_code}` : ""} · confidence {(a.confidence * 100).toFixed(0)}% ·{" "}
+                  {a.analysis_id} · {t("common.alert")} {a.monitor_alert_id} · {a.indicator_monitor_id}
+                  {a.skill_code ? ` · ${a.skill_code}` : ""} · {t("common.confidence")} {(a.confidence * 100).toFixed(0)}% ·{" "}
                   {a.created_at}
                 </div>
                 <p className="text-sm mt-2 text-slate-700 break-word">{a.summary}</p>
@@ -207,14 +208,14 @@ export function AiAnalysesBoard({
                 className="btn btn-primary w-full sm:w-auto shrink-0"
                 href={`/admin/ai-analyses/${a.id}`}
               >
-                Open evidence
+                {t("ai.openEvidence")}
               </AdminLink>
             </div>
           </article>
         ))}
         {!analyses.length && (
           <div className="panel p-6 text-sm text-[var(--muted)]">
-            No analyses yet. Sync Monitor 2.0 or click “Analyze all open alarms”.
+            {t("ai.empty")}
           </div>
         )}
       </div>

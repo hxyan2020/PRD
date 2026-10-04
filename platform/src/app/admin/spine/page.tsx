@@ -2,8 +2,9 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { listSpineEvents, spineStageCounts } from "@/lib/ai/spine";
-import { Badge, SeverityBadge, StatCard } from "@/components/ui";
+import { Badge, SeverityBadge, StatCard, StageLabel } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { T } from "@/components/T";
 
 const STAGE_ORDER = ["DETECT", "ALARM", "AI_RCA", "SKILL_EXECUTE", "HUMAN_INTERVENTION", "RESOLVED", "DASHBOARD"];
 
@@ -33,7 +34,7 @@ export default async function SpinePage() {
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-5">
         {STAGE_ORDER.map((s) => (
-          <StatCard key={s} label={`${s} (24h)`} value={counts[s] ?? 0} />
+          <StatCard key={s} label={<StageLabel stage={s} hours />} value={counts[s] ?? 0} />
         ))}
       </div>
 
@@ -41,7 +42,7 @@ export default async function SpinePage() {
         <div className="flex flex-wrap gap-2 items-center text-sm">
           {STAGE_ORDER.map((s, i) => (
             <span key={s} className="inline-flex items-center gap-2">
-              <Badge className="bg-teal-50 text-teal-900 border-teal-200">{s}</Badge>
+              <Badge className="bg-teal-50 text-teal-900 border-teal-200"><StageLabel stage={s} /></Badge>
               {i < STAGE_ORDER.length - 1 ? <span className="text-[var(--muted)]">→</span> : null}
             </span>
           ))}
@@ -52,13 +53,13 @@ export default async function SpinePage() {
         <table className="data">
           <thead>
             <tr>
-              <th>When</th>
-              <th>Stage</th>
-              <th>Title</th>
-              <th>Product</th>
-              <th>Severity</th>
-              <th>Actor</th>
-              <th>Ref</th>
+              <th><T k="common.when" /></th>
+              <th><T k="common.stage" /></th>
+              <th><T k="common.title" /></th>
+              <th><T k="common.product" /></th>
+              <th><T k="common.severity" /></th>
+              <th><T k="common.actor" /></th>
+              <th><T k="common.ref" /></th>
             </tr>
           </thead>
           <tbody>
@@ -66,7 +67,7 @@ export default async function SpinePage() {
               <tr key={e.id}>
                 <td className="text-sm whitespace-nowrap">{e.created_at}</td>
                 <td>
-                  <Badge className="bg-slate-100 text-slate-700 border-slate-200">{e.stage}</Badge>
+                  <Badge className="bg-slate-100 text-slate-700 border-slate-200"><StageLabel stage={e.stage} /></Badge>
                 </td>
                 <td>
                   <div className="font-medium">{e.title}</div>

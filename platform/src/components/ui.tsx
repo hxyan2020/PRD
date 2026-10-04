@@ -1,15 +1,20 @@
+"use client";
+
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 import { cn, deptLabel, severityClass, statusClass } from "@/lib/utils";
+import { stageLabel, statusLabel } from "@/lib/i18n";
+import { useUiLocale } from "@/hooks/useUiLocale";
 
 export function PageHeader({
   title,
   subtitle,
   actions,
 }: {
-  title: string;
-  subtitle?: string;
-  actions?: React.ReactNode;
+  title: ReactNode;
+  subtitle?: ReactNode;
+  actions?: ReactNode;
 }) {
   return (
     <div className="mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
@@ -37,13 +42,13 @@ export function StatCard({
   tone = "default",
   cta,
 }: {
-  label: React.ReactNode;
+  label: ReactNode;
   value: string | number;
-  hint?: React.ReactNode;
+  hint?: ReactNode;
   href?: string;
   icon?: LucideIcon;
   tone?: "default" | "alert";
-  cta?: React.ReactNode;
+  cta?: ReactNode;
 }) {
   const alert = tone === "alert";
   const inner = (
@@ -101,13 +106,24 @@ export function Badge({ children, className }: { children: React.ReactNode; clas
 }
 
 export function SeverityBadge({ value }: { value: string }) {
-  return <Badge className={severityClass(value)}>{value}</Badge>;
+  const { locale } = useUiLocale();
+  return <Badge className={severityClass(value)}>{statusLabel(value, locale)}</Badge>;
 }
 
 export function StatusBadge({ value }: { value: string }) {
-  return <Badge className={statusClass(value)}>{value}</Badge>;
+  const { locale } = useUiLocale();
+  return <Badge className={statusClass(value)}>{statusLabel(value, locale)}</Badge>;
 }
 
 export function DeptBadge({ code }: { code: string | null | undefined }) {
-  return <Badge className="bg-slate-100 text-slate-700 border-slate-200">{deptLabel(code)}</Badge>;
+  const { locale } = useUiLocale();
+  return (
+    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{deptLabel(code, locale)}</Badge>
+  );
+}
+
+export function StageLabel({ stage, hours }: { stage: string; hours?: boolean }) {
+  const { locale } = useUiLocale();
+  const label = stageLabel(stage, locale);
+  return <>{hours ? (locale === "zh-Hant" ? `${label}（24 小時）` : `${label} (24h)`) : label}</>;
 }

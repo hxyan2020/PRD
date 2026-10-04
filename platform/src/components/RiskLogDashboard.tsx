@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
+import { navLabel } from "@/lib/i18n";
+import { useT } from "@/hooks/useUiLocale";
 
 type Dashboard = {
   summary: {
@@ -97,12 +99,12 @@ type Dashboard = {
 };
 
 const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "categories", label: "By category" },
-  { id: "records", label: "Chronological log" },
-  { id: "handling", label: "Handling time" },
-  { id: "money", label: "Loss vs prevented" },
-  { id: "loopholes", label: "Loophole areas" },
+  { id: "overview", labelKey: "rl.overview" },
+  { id: "categories", labelKey: "rl.categories" },
+  { id: "records", labelKey: "rl.records" },
+  { id: "handling", labelKey: "rl.handling" },
+  { id: "money", labelKey: "rl.money" },
+  { id: "loopholes", labelKey: "rl.loopholes" },
 ] as const;
 
 function usd(n: number | null | undefined) {
@@ -122,6 +124,7 @@ function mins(n: number | null | undefined) {
 
 export function RiskLogDashboard({ data }: { data: Dashboard }) {
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("overview");
+  const { t, locale } = useT();
   const [filter, setFilter] = useState("ALL");
   const [q, setQ] = useState("");
 
@@ -144,14 +147,14 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
+        {TABS.map((tabBtn) => (
           <button
-            key={t.id}
+            key={tabBtn.id}
             type="button"
-            className={`btn ${tab === t.id ? "btn-primary" : ""}`}
-            onClick={() => setTab(t.id)}
+            className={`btn ${tab === tabBtn.id ? "btn-primary" : ""}`}
+            onClick={() => setTab(tabBtn.id)}
           >
-            {t.label}
+            {t(tabBtn.labelKey)}
           </button>
         ))}
       </div>
@@ -159,38 +162,38 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
       {tab === "overview" && (
         <div className="space-y-4">
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-            <StatCard label="Alerts (all)" value={data.summary.alerts_total} hint={`${data.summary.open_alerts} open/acked`} />
-            <StatCard label="Est. loss" value={usd(data.summary.total_loss_usd)} hint={`${data.summary.loss_events} loss events`} />
+            <StatCard label={t("rl.alertsAll")} value={data.summary.alerts_total} hint={t("rl.openAcked", { n: data.summary.open_alerts })} />
+            <StatCard label={t("rl.estLoss")} value={usd(data.summary.total_loss_usd)} hint={t("rl.lossEvents", { n: data.summary.loss_events })} />
             <StatCard
-              label="Prevented"
+              label={t("rl.prevented")}
               value={usd(data.summary.total_prevented_usd)}
-              hint={`${data.summary.prevented_events} prevented · ${data.summary.near_miss_events} near-miss`}
+              hint={t("rl.preventedHint", { p: data.summary.prevented_events, nm: data.summary.near_miss_events })}
             />
             <StatCard
-              label="Net (loss − prevented)"
+              label={t("rl.net")}
               value={usd(data.summary.net_risk_usd)}
-              hint={`Exposure ${usd(data.summary.total_exposure_usd)}`}
+              hint={t("rl.exposure", { n: usd(data.summary.total_exposure_usd) })}
             />
-            <StatCard label="Avg ack time" value={mins(data.summary.avg_ack_minutes)} hint={`${data.summary.sla_breach_count} SLA breaches`} />
-            <StatCard label="Avg resolve time" value={mins(data.summary.avg_resolve_minutes)} />
-            <StatCard label="Avg human gate" value={mins(data.summary.avg_human_handling_minutes)} hint="Intervention request → decision" />
+            <StatCard label={t("rl.avgAck")} value={mins(data.summary.avg_ack_minutes)} hint={t("rl.slaBreaches", { n: data.summary.sla_breach_count })} />
+            <StatCard label={t("rl.avgResolve")} value={mins(data.summary.avg_resolve_minutes)} />
+            <StatCard label={t("rl.avgHuman")} value={mins(data.summary.avg_human_handling_minutes)} hint={t("rl.intvHint")} />
             <StatCard
-              label="Human queue"
+              label={t("rl.humanQueue")}
               value={`${data.summary.pending_interventions} / ${data.summary.decided_interventions + data.summary.pending_interventions}`}
-              hint="Pending / total interventions"
+              hint={t("rl.pendingTotal")}
             />
           </div>
 
           <div className="panel p-4">
-            <h3 className="font-semibold">Alerts by risk domain</h3>
-            <p className="text-sm text-[var(--muted)] mt-1">Where volume and breaches concentrate.</p>
+            <h3 className="font-semibold">{t("rl.byDomain")}</h3>
+            <p className="text-sm text-[var(--muted)] mt-1">{t("rl.byDomainHint")}</p>
             <div className="mt-4 space-y-3">
               {data.by_domain.map((d) => (
                 <div key={d.category}>
                   <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                     <div className="font-medium">{d.category_name}</div>
                     <div className="text-[var(--muted)]">
-                      {d.alert_count} alerts · {d.breach_count} breach · {d.breach_rate_pct}% breach rate
+                      {t("rl.domainLine", { n: d.alert_count, b: d.breach_count, pct: d.breach_rate_pct })}
                     </div>
                   </div>
                   <div className="mt-1 h-2 rounded-full bg-slate-100 overflow-hidden">
@@ -200,7 +203,7 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                     />
                   </div>
                   <div className="mt-1 text-xs text-[var(--muted)]">
-                    Loss {usd(d.loss_usd)} · Prevented {usd(d.prevented_usd)} · Exposure {usd(d.exposure_usd)}
+                    {t("rl.lossPrevExp", { loss: usd(d.loss_usd), prev: usd(d.prevented_usd), exp: usd(d.exposure_usd) })}
                   </div>
                 </div>
               ))}
@@ -214,13 +217,13 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
           <table className="data">
             <thead>
               <tr>
-                <th>Category</th>
-                <th>Product</th>
-                <th>Severity</th>
-                <th>Alerts</th>
-                <th>Open</th>
-                <th>Loss</th>
-                <th>Prevented</th>
+                <th>{t("common.category")}</th>
+                <th>{t("common.product")}</th>
+                <th>{t("common.severity")}</th>
+                <th>{t("rl.alerts")}</th>
+                <th>{t("rl.open")}</th>
+                <th>{t("rl.loss")}</th>
+                <th>{t("rl.prevented")}</th>
               </tr>
             </thead>
             <tbody>
@@ -251,7 +254,7 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
         <div className="space-y-3">
           <div className="panel p-3 flex flex-wrap gap-2 items-end">
             <div>
-              <label className="label">Domain</label>
+              <label className="label">{t("common.domain")}</label>
               <select className="input" value={filter} onChange={(e) => setFilter(e.target.value)}>
                 {domains.map((d) => (
                   <option key={d} value={d}>
@@ -261,12 +264,12 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
               </select>
             </div>
             <div className="flex-1 min-w-[200px]">
-              <label className="label">Search</label>
+              <label className="label">{t("common.search")}</label>
               <input
                 className="input"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Alert id, title, loophole…"
+                placeholder={t("rl.searchPh")}
               />
             </div>
           </div>
@@ -281,7 +284,7 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                     <Badge className="bg-orange-50 text-orange-900 border-orange-200">{r.product}</Badge>
                     <Badge className="bg-teal-50 text-teal-900 border-teal-200">{r.category_name}</Badge>
                     {r.sla_breached && (
-                      <Badge className="bg-rose-50 text-rose-900 border-rose-200">SLA breach</Badge>
+                      <Badge className="bg-rose-50 text-rose-900 border-rose-200">{t("rl.slaBreach")}</Badge>
                     )}
                   </div>
                   <h3 className="mt-2 font-semibold text-lg">
@@ -295,11 +298,11 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                   {r.impact_notes && <p className="text-sm mt-1 text-[var(--muted)]">{r.impact_notes}</p>}
                 </div>
                 <div className="text-sm space-y-1 text-right">
-                  <div>Ack {mins(r.ack_minutes)}</div>
-                  <div>Resolve {mins(r.resolve_minutes)}</div>
-                  <div>Human gate {mins(r.human_handling_minutes)}</div>
-                  <div className="tabular-nums">Loss {usd(r.estimated_loss_usd)}</div>
-                  <div className="tabular-nums">Prevented {usd(r.prevented_loss_usd)}</div>
+                  <div>{t("rl.ack")} {mins(r.ack_minutes)}</div>
+                  <div>{t("rl.resolve")} {mins(r.resolve_minutes)}</div>
+                  <div>{t("rl.humanGate")} {mins(r.human_handling_minutes)}</div>
+                  <div className="tabular-nums">{t("rl.loss")} {usd(r.estimated_loss_usd)}</div>
+                  <div className="tabular-nums">{t("rl.prevented")} {usd(r.prevented_loss_usd)}</div>
                   {r.loophole_tag && (
                     <Badge className="bg-amber-50 text-amber-900 border-amber-200">{r.loophole_tag}</Badge>
                   )}
@@ -308,7 +311,7 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
             </article>
           ))}
           {!filteredRecords.length && (
-            <div className="panel p-6 text-sm text-[var(--muted)]">No records match filters.</div>
+            <div className="panel p-6 text-sm text-[var(--muted)]">{t("rl.empty")}</div>
           )}
         </div>
       )}
@@ -316,25 +319,25 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
       {tab === "handling" && (
         <div className="space-y-4">
           <div className="grid sm:grid-cols-3 gap-3">
-            <StatCard label="Average ack" value={mins(data.summary.avg_ack_minutes)} hint="Alert created → acknowledged" />
-            <StatCard label="Average resolve" value={mins(data.summary.avg_resolve_minutes)} hint="Ticket created → resolved" />
+            <StatCard label={t("rl.avgAckTitle")} value={mins(data.summary.avg_ack_minutes)} hint={t("rl.avgAckHint")} />
+            <StatCard label={t("rl.avgResTitle")} value={mins(data.summary.avg_resolve_minutes)} hint={t("rl.avgResHint")} />
             <StatCard
-              label="Average human handling"
+              label={t("rl.avgHumTitle")}
               value={mins(data.summary.avg_human_handling_minutes)}
-              hint="Intervention requested → decided"
+              hint={t("rl.avgHumHint")}
             />
           </div>
           <div className="panel table-wrap">
             <table className="data">
               <thead>
                 <tr>
-                  <th>When</th>
-                  <th>Alert</th>
-                  <th>Category</th>
-                  <th>Ack</th>
-                  <th>Resolve</th>
-                  <th>Human</th>
-                  <th>SLA</th>
+                  <th>{t("common.when")}</th>
+                  <th>{t("common.alert")}</th>
+                  <th>{t("common.category")}</th>
+                  <th>{t("rl.ack")}</th>
+                  <th>{t("rl.resolve")}</th>
+                  <th>{t("common.human")}</th>
+                  <th>{t("common.sla")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -351,7 +354,7 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                     <td className="tabular-nums">{mins(r.human_handling_minutes)}</td>
                     <td>
                       {r.sla_breached ? (
-                        <Badge className="bg-rose-50 text-rose-900 border-rose-200">BREACH {r.sla_minutes}m</Badge>
+                        <Badge className="bg-rose-50 text-rose-900 border-rose-200">{t("rl.breachNm", { n: r.sla_minutes ?? 0 })}</Badge>
                       ) : (
                         <span className="text-sm text-[var(--muted)]">{r.sla_minutes ? `${r.sla_minutes}m` : "—"}</span>
                       )}
@@ -367,11 +370,11 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
       {tab === "money" && (
         <div className="space-y-4">
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-            <StatCard label="Total loss" value={usd(data.summary.total_loss_usd)} />
-            <StatCard label="Total prevented" value={usd(data.summary.total_prevented_usd)} />
-            <StatCard label="Exposure covered" value={usd(data.summary.total_exposure_usd)} />
+            <StatCard label={t("rl.totalLoss")} value={usd(data.summary.total_loss_usd)} />
+            <StatCard label={t("rl.totalPrev")} value={usd(data.summary.total_prevented_usd)} />
+            <StatCard label={t("rl.expCovered")} value={usd(data.summary.total_exposure_usd)} />
             <StatCard
-              label="Prevention ratio"
+              label={t("rl.prevRatio")}
               value={
                 data.summary.total_prevented_usd + data.summary.total_loss_usd > 0
                   ? `${Math.round(
@@ -380,20 +383,20 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                     )}%`
                   : "—"
               }
-              hint="Prevented ÷ (prevented + loss)"
+              hint={t("rl.prevRatioHint")}
             />
           </div>
           <div className="panel table-wrap">
             <table className="data">
               <thead>
                 <tr>
-                  <th>Alert</th>
-                  <th>Outcome</th>
-                  <th>Category</th>
-                  <th>Loss</th>
-                  <th>Prevented</th>
-                  <th>Exposure</th>
-                  <th>Notes</th>
+                  <th>{t("common.alert")}</th>
+                  <th>{t("rl.outcome")}</th>
+                  <th>{t("common.category")}</th>
+                  <th>{t("rl.loss")}</th>
+                  <th>{t("rl.prevented")}</th>
+                  <th>{t("rl.expCovered")}</th>
+                  <th>{t("common.notes")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -422,23 +425,21 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
       {tab === "loopholes" && (
         <div className="space-y-4">
           <div className="panel p-4">
-            <h3 className="font-semibold">Areas more subject to loopholes</h3>
-            <p className="text-sm text-[var(--muted)] mt-1">
-              Ranked by breach incidents, recurrence, and residual loss after controls.
-            </p>
+            <h3 className="font-semibold">{t("rl.loopTitle")}</h3>
+            <p className="text-sm text-[var(--muted)] mt-1">{t("rl.loopHint")}</p>
           </div>
           <div className="panel table-wrap">
             <table className="data">
               <thead>
                 <tr>
-                  <th>Loophole / gap</th>
-                  <th>Domain</th>
-                  <th>Product</th>
-                  <th>Incidents</th>
-                  <th>Breaches</th>
-                  <th>Avg ack</th>
-                  <th>Loss</th>
-                  <th>Prevented</th>
+                  <th>{t("rl.loopGap")}</th>
+                  <th>{t("common.domain")}</th>
+                  <th>{t("common.product")}</th>
+                  <th>{t("rl.incidents")}</th>
+                  <th>{t("rl.breaches")}</th>
+                  <th>{t("rl.avgAckTitle")}</th>
+                  <th>{t("rl.loss")}</th>
+                  <th>{t("rl.prevented")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -463,8 +464,8 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
           </div>
 
           <div className="panel p-4">
-            <h3 className="font-semibold">Unified chronological stream</h3>
-            <p className="text-sm text-[var(--muted)] mt-1">Alerts + interventions + spine events.</p>
+            <h3 className="font-semibold">{t("rl.chrono")}</h3>
+            <p className="text-sm text-[var(--muted)] mt-1">{t("rl.chronoHint")}</p>
             <div className="mt-3 space-y-2 max-h-[480px] overflow-auto">
               {data.timeline.map((t, idx) => (
                 <div
@@ -485,9 +486,9 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
           </div>
 
           <p className="text-sm text-[var(--muted)]">
-            Related: <Link className="underline" href="/admin/alerts">Live Alerts</Link> ·{" "}
-            <Link className="underline" href="/admin/spine">Spine Log</Link> ·{" "}
-            <Link className="underline" href="/admin/audit">Audit Log</Link>
+            {t("rl.related")} <Link className="underline" href="/admin/alerts">{navLabel("/admin/alerts", locale, "Live Alerts")}</Link> ·{" "}
+            <Link className="underline" href="/admin/spine">{navLabel("/admin/spine", locale, "Spine Log")}</Link> ·{" "}
+            <Link className="underline" href="/admin/audit">{navLabel("/admin/audit", locale, "Audit Log")}</Link>
           </p>
         </div>
       )}

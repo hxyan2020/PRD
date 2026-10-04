@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isStaticExport, publicAdminHref } from "@/lib/static-export";
 import { VantageLogo } from "@/components/VantageLogo";
+import { T } from "@/components/T";
 
 export default function HomePage() {
   if (!isStaticExport()) redirect("/admin");
@@ -13,7 +14,7 @@ export default function HomePage() {
         <VantageLogo inverted markClassName="h-16 w-16 mx-auto" className="justify-center" />
         <p className="mt-4">
           <Link className="text-white underline" href="/admin">
-            Open CRMP Admin
+            <T k="common.openAdmin" />
           </Link>
         </p>
       </div>
