@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
+import { Phrase } from "@/components/Phrase";
 
 export default function TeamsPage() {
   const teams = getDb()
@@ -39,7 +40,7 @@ export default function TeamsPage() {
           <tbody>
             {teams.map((t) => (
               <tr key={t.id}>
-                <td className="font-semibold">{t.name}</td>
+                <td className="font-semibold"><Phrase>{t.name}</Phrase></td>
                 <td>
                   <DeptBadge code={t.department_code} />
                 </td>
@@ -47,8 +48,8 @@ export default function TeamsPage() {
                 <td>
                   <code className="text-xs bg-slate-100 px-1.5 py-0.5 rounded">{t.lark_chat_id}</code>
                 </td>
-                <td className="text-sm">{t.on_call_rotation}</td>
-                <td className="text-sm text-[var(--muted)] max-w-md">{t.mission}</td>
+                <td className="text-sm"><Phrase>{t.on_call_rotation}</Phrase></td>
+                <td className="text-sm text-[var(--muted)] max-w-md"><Phrase>{t.mission}</Phrase></td>
               </tr>
             ))}
           </tbody>

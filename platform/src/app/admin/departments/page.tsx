@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
+import { Phrase } from "@/components/Phrase";
 
 export default function DepartmentsPage() {
   const departments = getDb().prepare(`SELECT * FROM departments ORDER BY id`).all() as Array<{
@@ -32,8 +33,8 @@ export default function DepartmentsPage() {
             <article key={d.id} className="panel p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="font-[family-name:var(--font-display)] text-xl">{d.name}</h2>
-                  <p className="mt-1 text-sm text-[var(--muted)]">{d.description}</p>
+                  <h2 className="font-[family-name:var(--font-display)] text-xl"><Phrase>{d.name}</Phrase></h2>
+                  <p className="mt-1 text-sm text-[var(--muted)]"><Phrase>{d.description}</Phrase></p>
                 </div>
                 <DeptBadge code={d.code} />
               </div>
@@ -51,7 +52,7 @@ export default function DepartmentsPage() {
               <ul className="mt-2 space-y-1.5 text-sm">
                 {responsibilities.map((r) => (
                   <li key={r} className="rounded-lg bg-slate-50 border border-[var(--line)] px-3 py-2">
-                    {r}
+                    <Phrase>{r}</Phrase>
                   </li>
                 ))}
               </ul>

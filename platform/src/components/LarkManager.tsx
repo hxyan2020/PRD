@@ -26,7 +26,7 @@ export function LarkManager({
   canManage: boolean;
 }) {
   const router = useRouter();
-  const { t } = useT();
+  const { t, phrase } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
@@ -87,7 +87,7 @@ export function LarkManager({
           <div key={s.key} className="rounded-xl border border-[var(--line)] p-3">
             <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{s.key}</div>
             <div className="font-semibold mt-1 break-all">{s.value}</div>
-            <div className="text-xs text-[var(--muted)] mt-1">{s.description}</div>
+            <div className="text-xs text-[var(--muted)] mt-1">{phrase(s.description)}</div>
           </div>
         ))}
       </div>
@@ -157,9 +157,9 @@ export function LarkManager({
             {channels.map((c) => (
               <tr key={c.id}>
                 <td>
-                  <div className="font-semibold">{c.name}</div>
+                  <div className="font-semibold">{phrase(c.name)}</div>
                   <div className="text-xs text-[var(--muted)]">{c.chat_id}</div>
-                  <div className="text-sm mt-1">{c.purpose}</div>
+                  <div className="text-sm mt-1">{phrase(c.purpose)}</div>
                 </td>
                 <td>
                   <DeptBadge code={c.department_code} />

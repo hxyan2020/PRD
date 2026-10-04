@@ -24,7 +24,7 @@ type Alert = {
 
 export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperate: boolean }) {
   const router = useRouter();
-  const { t } = useT();
+  const { t, phrase } = useT();
   const [hash, setHash] = useState("");
 
   useEffect(() => {
@@ -60,13 +60,13 @@ export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperat
               <div className="flex flex-wrap gap-2 items-center">
                 <SeverityBadge value={a.severity} />
                 <StatusBadge value={a.status} />
-                <Badge className="bg-slate-100 text-slate-700 border-slate-200">{a.product}</Badge>
-                <Badge className="bg-teal-50 text-teal-900 border-teal-200">{a.domain_code}</Badge>
+                <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(a.product)}</Badge>
+                <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(a.domain_code)}</Badge>
               </div>
-              <h2 className="mt-2 font-semibold text-lg">{a.title}</h2>
-              <p className="text-sm text-[var(--muted)] mt-1">{a.message}</p>
+              <h2 className="mt-2 font-semibold text-lg">{phrase(a.title)}</h2>
+              <p className="text-sm text-[var(--muted)] mt-1">{phrase(a.message)}</p>
               <div className="text-xs text-[var(--muted)] mt-2">
-                {a.alert_id} · {a.monitor_id} · {a.indicator_name} ·{" "}
+                {a.alert_id} · {a.monitor_id} · {phrase(a.indicator_name)} ·{" "}
                 {t("alerts.observedTicket", { v: String(a.observed_value ?? "—"), ticket: a.monitor20_ticket_id ?? "—" })}{" "}
                 · {a.created_at}
               </div>

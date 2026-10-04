@@ -134,7 +134,7 @@ export function AiAdminConsole({
   };
 }) {
   const router = useRouter();
-  const { t, locale } = useT();
+  const { t, locale, phrase } = useT();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("overview");
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -306,7 +306,7 @@ export function AiAdminConsole({
             <div key={p.key} className="panel p-4 grid md:grid-cols-[1fr_220px_auto] gap-3 items-end">
               <div>
                 <div className="font-semibold">{p.key}</div>
-                <div className="text-sm text-[var(--muted)] mt-1">{p.description}</div>
+                <div className="text-sm text-[var(--muted)] mt-1">{phrase(p.description)}</div>
                 <div className="text-xs text-[var(--muted)] mt-1">{t("adm.live", { v: p.value })}</div>
               </div>
               <div>
@@ -512,8 +512,8 @@ export function AiAdminConsole({
               <article key={s.id} className="panel p-4 flex flex-wrap justify-between gap-3">
                 <div>
                   <div className="text-xs text-[var(--muted)]">{s.code}</div>
-                  <div className="font-semibold">{s.name}</div>
-                  <div className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{s.description}</div>
+                  <div className="font-semibold">{phrase(s.name)}</div>
+                  <div className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{phrase(s.description)}</div>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {(JSON.parse(s.indicator_patterns_json || "[]") as string[]).map((p) => (
                       <Badge key={p} className="bg-orange-50 text-orange-900 border-orange-200">

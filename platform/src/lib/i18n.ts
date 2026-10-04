@@ -528,5 +528,7 @@ export function stageLabel(stage: string, locale: UiLocale = "en") {
 export function phrase(text: string | null | undefined, locale: UiLocale = "en") {
   if (!text) return "";
   if (locale !== "zh-Hant") return text;
-  return PHRASES_ZH[text] || text;
+  if (PHRASES_ZH[text]) return PHRASES_ZH[text];
+  const pretty = text.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return PHRASES_ZH[pretty] || text;
 }

@@ -27,7 +27,7 @@ export function AiAccessSecurityBoard({
   };
 }) {
   const [cat, setCat] = useState<BlockCategory | "ALL">("ALL");
-  const { t } = useT();
+  const { t, phrase } = useT();
   const [q, setQ] = useState("");
   const [sev, setSev] = useState<"ALL" | "CRITICAL" | "HIGH" | "MEDIUM">("ALL");
 
@@ -89,7 +89,7 @@ export function AiAccessSecurityBoard({
         <div className="flex flex-wrap gap-2">
           {(["ALL", "CRITICAL", "HIGH", "MEDIUM"] as const).map((s) => (
             <button key={s} type="button" className={`btn ${sev === s ? "btn-primary" : ""}`} onClick={() => setSev(s)}>
-              {s}
+              {s === "ALL" ? t("common.all") : t(`uat.${s.toLowerCase()}`)}
             </button>
           ))}
         </div>
@@ -101,9 +101,9 @@ export function AiAccessSecurityBoard({
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <div className="text-xs text-[var(--muted)]">
-                  {i.id} · {i.category}
+                  {i.id} · {phrase(i.category)}
                 </div>
-                <h3 className="font-[family-name:var(--font-display)] text-lg">{i.name}</h3>
+                <h3 className="font-[family-name:var(--font-display)] text-lg">{phrase(i.name)}</h3>
                 <code className="text-xs text-[var(--muted)] break-all">{i.target}</code>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -111,14 +111,14 @@ export function AiAccessSecurityBoard({
                 <Badge className="bg-rose-50 text-rose-900 border-rose-200">{t("sec.aiMay", { may: i.ai_may })}</Badge>
               </div>
             </div>
-            <p className="text-sm mt-2">{i.reason}</p>
+            <p className="text-sm mt-2">{phrase(i.reason)}</p>
             <div className="mt-3 grid md:grid-cols-2 gap-3 text-sm">
               <div>
                 <div className="text-xs uppercase text-[var(--muted)]">{t("sec.roles")}</div>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {i.human_roles.map((r) => (
                     <Badge key={r} className="bg-slate-100 text-slate-700 border-slate-200">
-                      {r}
+                      {phrase(r)}
                     </Badge>
                   ))}
                 </div>
@@ -160,7 +160,7 @@ export function AiAccessSecurityBoard({
         <div className="mt-3 space-y-2">
           {allowed.map((a) => (
             <div key={a.name} className="rounded-lg border border-[var(--line)] px-3 py-2 text-sm">
-              <div className="font-semibold">{a.name}</div>
+              <div className="font-semibold">{phrase(a.name)}</div>
               <div className="text-[var(--muted)]">{a.target}</div>
               <Badge className="mt-1 bg-teal-50 text-teal-900 border-teal-200">{a.permission}</Badge>
             </div>

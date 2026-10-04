@@ -27,6 +27,7 @@ import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
 import { EnZh } from "@/components/EnZh";
+import { Phrase } from "@/components/Phrase";
 import { SignInOwnerCard } from "@/components/SignInOwnerCard";
 import { PUBLIC_MESSENGER_URL } from "@/lib/static-export";
 import { cn } from "@/lib/utils";
@@ -299,7 +300,7 @@ export default async function AdminDashboardPage() {
                 >
                   <span className={cn("absolute left-0 top-0 h-full w-1", dest.stripe)} aria-hidden />
                   <div className="flex items-center justify-between gap-2 pl-2">
-                    <div className="font-semibold">{d.name}</div>
+                    <div className="font-semibold"><Phrase>{d.name}</Phrase></div>
                     <div className="flex items-center gap-2">
                       <DeptBadge code={d.code} />
                       <ChevronRight
@@ -308,11 +309,11 @@ export default async function AdminDashboardPage() {
                       />
                     </div>
                   </div>
-                  <p className="text-sm text-[var(--muted)] mt-1 pl-2">{d.description}</p>
+                  <p className="text-sm text-[var(--muted)] mt-1 pl-2"><Phrase>{d.description}</Phrase></p>
                   <ul className="mt-2 grid sm:grid-cols-2 gap-1 text-xs text-slate-700 pl-2">
                     {responsibilities.map((r) => (
                       <li key={r} className="before:content-['•'] before:mr-1.5 before:text-teal-700 break-word">
-                        {r}
+                        <Phrase>{r}</Phrase>
                       </li>
                     ))}
                   </ul>
@@ -346,9 +347,9 @@ export default async function AdminDashboardPage() {
                   className="group flex items-start gap-3 px-3 py-3 hover:bg-slate-50 transition"
                 >
                   <div className="min-w-0 flex-1">
-                    <div className="font-medium">{a.title}</div>
+                    <div className="font-medium"><Phrase>{a.title}</Phrase></div>
                     <div className="text-xs text-[var(--muted)] mt-0.5">
-                      {a.alert_id} · {a.indicator_name}
+                      {a.alert_id} · <Phrase>{a.indicator_name}</Phrase>
                     </div>
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       <SeverityBadge value={a.severity} />

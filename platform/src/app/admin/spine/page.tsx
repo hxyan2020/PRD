@@ -5,6 +5,7 @@ import { listSpineEvents, spineStageCounts } from "@/lib/ai/spine";
 import { Badge, SeverityBadge, StatCard, StageLabel } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
+import { Phrase } from "@/components/Phrase";
 
 const STAGE_ORDER = ["DETECT", "ALARM", "AI_RCA", "SKILL_EXECUTE", "HUMAN_INTERVENTION", "RESOLVED", "DASHBOARD"];
 
@@ -70,7 +71,7 @@ export default async function SpinePage() {
                   <Badge className="bg-slate-100 text-slate-700 border-slate-200"><StageLabel stage={e.stage} /></Badge>
                 </td>
                 <td>
-                  <div className="font-medium">{e.title}</div>
+                  <div className="font-medium"><Phrase>{e.title}</Phrase></div>
                   <div className="text-xs text-[var(--muted)]">{e.event_id}</div>
                 </td>
                 <td>{e.product ?? "—"}</td>

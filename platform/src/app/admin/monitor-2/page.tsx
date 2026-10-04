@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
+import { Phrase } from "@/components/Phrase";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { readSearchParams } from "@/lib/static-export";
@@ -139,10 +140,10 @@ export default async function Monitor2Page({
                 {indicators.map((i) => (
                   <tr key={i.id}>
                     <td>
-                      <div className="font-medium">{i.name}</div>
+                      <div className="font-medium"><Phrase>{i.name}</Phrase></div>
                       <div className="text-xs text-[var(--muted)]">{i.monitor_id}</div>
                     </td>
-                    <td className="text-sm">{i.domain_code}</td>
+                    <td className="text-sm"><Phrase>{i.domain_code}</Phrase></td>
                     <td>{i.product}</td>
                     <td className="tabular-nums">
                       {i.last_value}
@@ -178,11 +179,11 @@ export default async function Monitor2Page({
                 {alerts.map((a) => (
                   <tr key={a.id}>
                     <td>
-                      <div className="font-medium">{a.title}</div>
+                      <div className="font-medium"><Phrase>{a.title}</Phrase></div>
                       <div className="text-xs text-[var(--muted)]">
-                        {a.alert_id} · {a.monitor_id} · {a.indicator_name}
+                        {a.alert_id} · {a.monitor_id} · <Phrase>{a.indicator_name}</Phrase>
                       </div>
-                      <div className="text-sm mt-1">{a.message}</div>
+                      <div className="text-sm mt-1"><Phrase>{a.message}</Phrase></div>
                     </td>
                     <td>
                       <SeverityBadge value={a.severity} />
@@ -219,7 +220,7 @@ export default async function Monitor2Page({
                 {tickets.map((t) => (
                   <tr key={t.id}>
                     <td>
-                      <div className="font-medium">{t.title}</div>
+                      <div className="font-medium"><Phrase>{t.title}</Phrase></div>
                       <div className="text-xs text-[var(--muted)]">{t.ticket_id}</div>
                     </td>
                     <td>

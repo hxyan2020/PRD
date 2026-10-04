@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DeptBadge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
-import { deptLabelI18n } from "@/lib/i18n";
+import { deptLabelI18n, phrase } from "@/lib/i18n";
 
 type UserRow = {
   id: number;
@@ -107,7 +107,7 @@ export function UsersManager({
               >
                 {roleOptions.map((r) => (
                   <option key={r.code} value={r.code}>
-                    {r.name}
+                    {phrase(r.name, locale)}
                   </option>
                 ))}
               </select>
@@ -132,9 +132,9 @@ export function UsersManager({
                 value={form.team_id}
                 onChange={(e) => setForm({ ...form, team_id: e.target.value })}
               >
-                {teams.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {phrase(team.name, locale)}
                   </option>
                 ))}
               </select>
@@ -169,11 +169,11 @@ export function UsersManager({
                   <div className="font-medium">{u.name}</div>
                   <div className="text-xs text-[var(--muted)]">{u.email}</div>
                 </td>
-                <td>{u.role_code}</td>
+                <td>{phrase(u.role_code, locale)}</td>
                 <td>
                   <DeptBadge code={u.department_code} />
                 </td>
-                <td>{u.team_name ?? "—"}</td>
+                <td>{u.team_name ? phrase(u.team_name, locale) : "—"}</td>
                 <td>
                   <StatusBadge value={u.status} />
                 </td>

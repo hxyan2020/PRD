@@ -8,7 +8,7 @@ import { SKILL_SCENARIOS, LINKED_SCENARIOS } from "@/lib/ai/risk-scenarios-catal
 import { finalizeSkill } from "@/lib/ai/skill-playbook";
 import { CHAIN_ZH } from "@/lib/ai/skill-zh";
 import { useUiLocale } from "@/hooks/useUiLocale";
-import { t, type UiLocale } from "@/lib/i18n";
+import { t, phrase, type UiLocale } from "@/lib/i18n";
 
 type RagDoc = {
   doc_key: string;
@@ -41,8 +41,8 @@ function domainFill(code: string) {
   return DOMAIN_COLOR[code] || "#10233a";
 }
 
-function prettyDomain(code: string) {
-  return code.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+function prettyDomain(code: string, locale: UiLocale) {
+  return phrase(code, locale);
 }
 
 function shortSkill(code: string) {
@@ -364,7 +364,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     key={n.code}
                     x={n.x}
                     y={n.y}
-                    label={prettyDomain(n.code)}
+                    label={prettyDomain(n.code, locale)}
                     sub={`${n.count} ${t("tree.skills", locale)}`}
                     fill={n.fill}
                     active={activeDomain === n.code}
@@ -682,7 +682,7 @@ function Inspector({
           <p>{t("tree.inspectorEmpty", locale)}</p>
           {domain ? (
             <p className="mt-2">
-              {prettyDomain(domain)} · {t("tree.skillsInDomain", locale)}
+              {prettyDomain(domain, locale)} · {t("tree.skillsInDomain", locale)}
             </p>
           ) : null}
         </div>

@@ -2,6 +2,7 @@ import { getDb } from "@/lib/db";
 import { DeptBadge, Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
+import { Phrase } from "@/components/Phrase";
 
 export default function RiskDomainsPage() {
   const domains = getDb().prepare(`SELECT * FROM risk_domains ORDER BY priority, name`).all() as Array<{
@@ -26,12 +27,12 @@ export default function RiskDomainsPage() {
             <article key={d.id} className="panel p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-xs text-[var(--muted)]">P{d.priority} · {d.code}</div>
-                  <h2 className="font-[family-name:var(--font-display)] text-lg mt-0.5">{d.name}</h2>
+                  <div className="text-xs text-[var(--muted)]">P{d.priority} · <Phrase>{d.code}</Phrase></div>
+                  <h2 className="font-[family-name:var(--font-display)] text-lg mt-0.5"><Phrase>{d.name}</Phrase></h2>
                 </div>
-                <Badge className="bg-orange-50 text-orange-900 border-orange-200">{d.product_coverage}</Badge>
+                <Badge className="bg-orange-50 text-orange-900 border-orange-200"><Phrase>{d.product_coverage}</Phrase></Badge>
               </div>
-              <p className="mt-2 text-sm text-[var(--muted)]">{d.description}</p>
+              <p className="mt-2 text-sm text-[var(--muted)]"><Phrase>{d.description}</Phrase></p>
               <div className="mt-3 flex flex-wrap gap-2 items-center">
                 <span className="text-xs text-[var(--muted)]"><T k="common.owner" /></span>
                 <DeptBadge code={d.owner_department} />

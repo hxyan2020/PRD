@@ -44,7 +44,7 @@ export function DetectorsBoard({
   canOperate: boolean;
 }) {
   const router = useRouter();
-  const { t } = useT();
+  const { t, phrase } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -117,12 +117,12 @@ export function DetectorsBoard({
             {detectors.map((d) => (
               <tr key={d.id}>
                 <td>
-                  <div className="font-semibold">{d.name}</div>
+                  <div className="font-semibold">{phrase(d.name)}</div>
                   <div className="text-xs text-[var(--muted)]">{d.code}</div>
-                  <div className="text-sm mt-1">{d.description}</div>
+                  <div className="text-sm mt-1">{phrase(d.description)}</div>
                 </td>
                 <td>
-                  <Badge className="bg-orange-50 text-orange-900 border-orange-200">{d.product}</Badge>
+                  <Badge className="bg-orange-50 text-orange-900 border-orange-200">{phrase(d.product)}</Badge>
                 </td>
                 <td className="text-sm">{d.monitor_id}</td>
                 <td className="text-sm tabular-nums">

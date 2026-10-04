@@ -124,7 +124,7 @@ function mins(n: number | null | undefined) {
 
 export function RiskLogDashboard({ data }: { data: Dashboard }) {
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("overview");
-  const { t, locale } = useT();
+  const { t, locale, phrase } = useT();
   const [filter, setFilter] = useState("ALL");
   const [q, setQ] = useState("");
 
@@ -191,7 +191,7 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
               {data.by_domain.map((d) => (
                 <div key={d.category}>
                   <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                    <div className="font-medium">{d.category_name}</div>
+                    <div className="font-medium">{phrase(d.category_name)}</div>
                     <div className="text-[var(--muted)]">
                       {t("rl.domainLine", { n: d.alert_count, b: d.breach_count, pct: d.breach_rate_pct })}
                     </div>
@@ -230,11 +230,11 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
               {data.by_category.map((r, idx) => (
                 <tr key={`${r.category}-${r.product}-${r.severity}-${idx}`}>
                   <td>
-                    <div className="font-medium">{r.category_name}</div>
-                    <div className="text-xs text-[var(--muted)]">{r.category}</div>
+                    <div className="font-medium">{phrase(r.category_name)}</div>
+                    <div className="text-xs text-[var(--muted)]">{phrase(r.category)}</div>
                   </td>
                   <td>
-                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{r.product}</Badge>
+                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{phrase(r.product)}</Badge>
                   </td>
                   <td>
                     <SeverityBadge value={r.severity} />
@@ -280,22 +280,22 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                   <div className="flex flex-wrap gap-2 items-center">
                     <SeverityBadge value={r.severity} />
                     <StatusBadge value={r.status} />
-                    {r.outcome && <Badge className="bg-slate-100 text-slate-700 border-slate-200">{r.outcome}</Badge>}
-                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{r.product}</Badge>
-                    <Badge className="bg-teal-50 text-teal-900 border-teal-200">{r.category_name}</Badge>
+                    {r.outcome && <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(r.outcome)}</Badge>}
+                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{phrase(r.product)}</Badge>
+                    <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(r.category_name)}</Badge>
                     {r.sla_breached && (
                       <Badge className="bg-rose-50 text-rose-900 border-rose-200">{t("rl.slaBreach")}</Badge>
                     )}
                   </div>
                   <h3 className="mt-2 font-semibold text-lg">
-                    {r.alert_id} · {r.title}
+                    {r.alert_id} · {phrase(r.title)}
                   </h3>
                   <div className="text-xs text-[var(--muted)] mt-1">
-                    {r.created_at} · {r.monitor_id} · {r.indicator_name}
-                    {r.ticket_id ? ` · ticket ${r.ticket_id} (${r.ticket_status})` : ""}
+                    {r.created_at} · {r.monitor_id} · {phrase(r.indicator_name)}
+                    {r.ticket_id ? ` · ${t("common.ticket")} ${r.ticket_id} (${phrase(r.ticket_status)})` : ""}
                   </div>
-                  <p className="text-sm mt-2 text-slate-700">{r.message}</p>
-                  {r.impact_notes && <p className="text-sm mt-1 text-[var(--muted)]">{r.impact_notes}</p>}
+                  <p className="text-sm mt-2 text-slate-700">{phrase(r.message)}</p>
+                  {r.impact_notes && <p className="text-sm mt-1 text-[var(--muted)]">{phrase(r.impact_notes)}</p>}
                 </div>
                 <div className="text-sm space-y-1 text-right">
                   <div>{t("rl.ack")} {mins(r.ack_minutes)}</div>
@@ -346,9 +346,9 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                     <td className="text-sm whitespace-nowrap">{r.created_at}</td>
                     <td>
                       <div className="font-medium">{r.alert_id}</div>
-                      <div className="text-xs text-[var(--muted)]">{r.title}</div>
+                      <div className="text-xs text-[var(--muted)]">{phrase(r.title)}</div>
                     </td>
-                    <td className="text-sm">{r.category_name}</td>
+                    <td className="text-sm">{phrase(r.category_name)}</td>
                     <td className="tabular-nums">{mins(r.ack_minutes)}</td>
                     <td className="tabular-nums">{mins(r.resolve_minutes)}</td>
                     <td className="tabular-nums">{mins(r.human_handling_minutes)}</td>
@@ -404,16 +404,16 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                   <tr key={r.id}>
                     <td>
                       <div className="font-medium">{r.alert_id}</div>
-                      <div className="text-xs text-[var(--muted)]">{r.title}</div>
+                      <div className="text-xs text-[var(--muted)]">{phrase(r.title)}</div>
                     </td>
                     <td>
                       <StatusBadge value={r.outcome || "OPEN"} />
                     </td>
-                    <td className="text-sm">{r.category_name}</td>
+                    <td className="text-sm">{phrase(r.category_name)}</td>
                     <td className="tabular-nums">{usd(r.estimated_loss_usd)}</td>
                     <td className="tabular-nums">{usd(r.prevented_loss_usd)}</td>
                     <td className="tabular-nums">{usd(r.exposure_usd)}</td>
-                    <td className="text-sm text-[var(--muted)] max-w-xs">{r.impact_notes}</td>
+                    <td className="text-sm text-[var(--muted)] max-w-xs">{phrase(r.impact_notes)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -473,9 +473,9 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                   className="flex flex-wrap items-center gap-2 rounded-lg border border-[var(--line)] px-3 py-2 text-sm"
                 >
                   <span className="text-xs text-[var(--muted)] whitespace-nowrap">{t.at}</span>
-                  <Badge className="bg-slate-100 text-slate-700 border-slate-200">{t.kind}</Badge>
+                  <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(t.kind)}</Badge>
                   <SeverityBadge value={t.severity || "INFO"} />
-                  <span className="font-medium">{t.title}</span>
+                  <span className="font-medium">{phrase(t.title)}</span>
                   <span className="text-xs text-[var(--muted)]">{t.ref}</span>
                   {t.category && (
                     <Badge className="bg-teal-50 text-teal-900 border-teal-200">{t.category}</Badge>

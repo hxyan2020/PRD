@@ -39,7 +39,7 @@ export function DataSourcesManager({
   canManage: boolean;
 }) {
   const [sources, setSources] = useState(initialSources);
-  const { t, locale } = useT();
+  const { t, locale, phrase } = useT();
   const [category, setCategory] = useState("ALL");
   const [q, setQ] = useState("");
   const [form, setForm] = useState({
@@ -104,7 +104,7 @@ export function DataSourcesManager({
           <select className="select" value={category} onChange={(e) => setCategory(e.target.value)}>
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {c === "ALL" ? t("common.all") : phrase(c)}
               </option>
             ))}
           </select>
@@ -150,7 +150,7 @@ export function DataSourcesManager({
               >
                 {CATEGORIES.filter((c) => c !== "ALL").map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {phrase(c)}
                   </option>
                 ))}
               </select>
@@ -201,18 +201,18 @@ export function DataSourcesManager({
                     <a className="text-xs text-teal-800 break-all" href={s.url} target="_blank" rel="noreferrer">
                       {s.url}
                     </a>
-                    <div className="text-xs text-[var(--muted)] mt-1">{s.description}</div>
-                    {s.notes && <div className="text-xs mt-1 text-slate-600">{t("src.note")}: {s.notes}</div>}
+                    <div className="text-xs text-[var(--muted)] mt-1">{phrase(s.description)}</div>
+                    {s.notes && <div className="text-xs mt-1 text-slate-600">{t("src.note")}: {phrase(s.notes)}</div>}
                   </td>
                   <td>
-                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{s.category}</Badge>
+                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(s.category)}</Badge>
                   </td>
                   <td>
                     <DeptBadge code={s.owner_department} />
                   </td>
                   <td className="text-sm">
-                    <div>{s.auth_type}</div>
-                    <div className="text-xs text-[var(--muted)]">{s.refresh_cadence ?? "—"}</div>
+                    <div>{phrase(s.auth_type)}</div>
+                    <div className="text-xs text-[var(--muted)]">{s.refresh_cadence ? phrase(s.refresh_cadence) : "—"}</div>
                   </td>
                   <td>
                     <StatusBadge value={s.status} />

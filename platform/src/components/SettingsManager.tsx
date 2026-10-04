@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { isPublicSnapshot } from "@/lib/static-export";
 import { useUiLocale } from "@/hooks/useUiLocale";
+import { phrase } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 type Setting = {
@@ -266,7 +267,7 @@ export function SettingsManager({ settings }: { settings: Setting[] }) {
                     <div className="font-semibold">{keyLabel(s.key, zh)}</div>
                     <div className="text-[11px] font-mono text-[var(--muted)] mt-0.5 break-all">{s.key}</div>
                     {s.description ? (
-                      <div className="text-sm text-[var(--muted)] mt-1">{s.description}</div>
+                      <div className="text-sm text-[var(--muted)] mt-1">{phrase(s.description, locale)}</div>
                     ) : null}
                     <div className="text-xs text-[var(--muted)] mt-1">
                       {zh ? "更新於" : "Updated"} {s.updated_at}

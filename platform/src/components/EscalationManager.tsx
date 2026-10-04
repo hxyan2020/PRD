@@ -33,7 +33,7 @@ export function EscalationManager({
   canManage: boolean;
 }) {
   const router = useRouter();
-  const { t } = useT();
+  const { t, phrase } = useT();
   const [form, setForm] = useState({
     name: "",
     domain_code: domains[0]?.code ?? "CREDIT_CLIENT",
@@ -107,7 +107,7 @@ export function EscalationManager({
               >
                 {domains.map((d) => (
                   <option key={d.code} value={d.code}>
-                    {d.name}
+                    {phrase(d.name)}
                   </option>
                 ))}
               </select>
@@ -119,9 +119,9 @@ export function EscalationManager({
                 value={form.primary_team_id}
                 onChange={(e) => setForm({ ...form, primary_team_id: e.target.value })}
               >
-                {teams.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
+                {teams.map((teamRow) => (
+                  <option key={teamRow.id} value={teamRow.id}>
+                    {phrase(teamRow.name)}
                   </option>
                 ))}
               </select>
@@ -134,9 +134,9 @@ export function EscalationManager({
                 onChange={(e) => setForm({ ...form, secondary_team_id: e.target.value })}
               >
                 <option value="">{t("common.none")}</option>
-                {teams.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
+                {teams.map((teamRow) => (
+                  <option key={teamRow.id} value={teamRow.id}>
+                    {phrase(teamRow.name)}
                   </option>
                 ))}
               </select>
@@ -150,7 +150,7 @@ export function EscalationManager({
               >
                 {channels.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.name}
+                    {phrase(c.name)}
                   </option>
                 ))}
               </select>
@@ -194,23 +194,23 @@ export function EscalationManager({
               return (
                 <tr key={r.id}>
                   <td>
-                    <div className="font-semibold">{r.name}</div>
-                    <div className="text-xs text-[var(--muted)]">{r.domain_code}</div>
+                    <div className="font-semibold">{phrase(r.name)}</div>
+                    <div className="text-xs text-[var(--muted)]">{phrase(r.domain_code)}</div>
                   </td>
                   <td>
                     <SeverityBadge value={r.severity} />
                   </td>
                   <td className="text-sm">
-                    <div>{r.primary_team}</div>
-                    <div className="text-xs text-[var(--muted)]">{r.secondary_team ?? "—"}</div>
+                    <div>{phrase(r.primary_team)}</div>
+                    <div className="text-xs text-[var(--muted)]">{r.secondary_team ? phrase(r.secondary_team) : "—"}</div>
                   </td>
-                  <td className="text-sm">{r.lark_channel ?? "—"}</td>
+                  <td className="text-sm">{r.lark_channel ? phrase(r.lark_channel) : "—"}</td>
                   <td className="tabular-nums">{r.sla_minutes}m</td>
                   <td>
                     <div className="flex flex-wrap gap-1">
                       {actions.map((a) => (
                         <Badge key={a} className="bg-slate-100 text-slate-700 border-slate-200">
-                          {a}
+                          {phrase(a)}
                         </Badge>
                       ))}
                     </div>

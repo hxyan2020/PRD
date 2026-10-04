@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db";
 import { Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
+import { Phrase } from "@/components/Phrase";
 import { redirect } from "next/navigation";
 
 export default async function AuditPage() {
@@ -43,10 +44,10 @@ export default async function AuditPage() {
                 <td className="text-sm whitespace-nowrap">{l.created_at}</td>
                 <td>{l.actor_name ?? <T k="common.system" />}</td>
                 <td>
-                  <Badge className="bg-teal-50 text-teal-900 border-teal-200">{l.action}</Badge>
+                  <Badge className="bg-teal-50 text-teal-900 border-teal-200"><Phrase>{l.action}</Phrase></Badge>
                 </td>
                 <td className="text-sm">
-                  {l.entity_type}
+                  <Phrase>{l.entity_type}</Phrase>
                   {l.entity_id ? ` / ${l.entity_id}` : ""}
                 </td>
                 <td className="text-xs break-all max-w-xl text-[var(--muted)]">{l.details_json}</td>
