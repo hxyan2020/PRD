@@ -6,163 +6,115 @@
   <title>Crypto Exchange Risk Management Handbook / 加密货币交易所风险管理手册</title>
   <style>
     :root {
-      --bg: #f6f4ef;
-      --ink: #1a1a1a;
-      --muted: #5c5c5c;
-      --line: #d9d2c5;
-      --tab: #efeae0;
+      --bg: #f4f1ea;
+      --ink: #1c1916;
+      --muted: #5b564e;
+      --line: #ddd4c6;
+      --tab: #efe8dc;
       --tab-active: #ffffff;
       --accent: #0b6e4f;
+      --accent-2: #b45309;
       --panel: #ffffff;
+      --phase1: #ecfdf5;
+      --phase2: #fff7ed;
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+      font-family: "Source Serif 4", "Iowan Old Style", Palatino, "Songti SC", "Noto Serif SC", Georgia, serif;
       color: var(--ink);
       background:
-        radial-gradient(1200px 500px at 10% -10%, #e7efe8 0%, transparent 55%),
-        radial-gradient(900px 400px at 100% 0%, #f0e6d8 0%, transparent 50%),
+        radial-gradient(1100px 480px at 8% -8%, #dcefe4 0%, transparent 55%),
+        radial-gradient(900px 420px at 100% 0%, #f3e4d3 0%, transparent 50%),
         var(--bg);
-      line-height: 1.55;
+      line-height: 1.62;
     }
-    .shell {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 24px 20px 64px;
-    }
+    .shell { max-width: 1160px; margin: 0 auto; padding: 20px 18px 72px; }
     header.top {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px 24px;
-      align-items: end;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      display: flex; flex-wrap: wrap; gap: 12px 24px;
+      align-items: end; justify-content: space-between; margin-bottom: 14px;
     }
-    header.top h1 {
-      font-size: 1.35rem;
-      margin: 0;
-      letter-spacing: 0.01em;
-      max-width: 40rem;
-    }
-    header.top p {
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-size: 0.92rem;
-    }
-    .md-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.78rem;
-    }
+    header.top h1 { font-size: 1.32rem; margin: 0; max-width: 42rem; }
+    header.top p { margin: 6px 0 0; color: var(--muted); font-size: 0.92rem; }
+    header.top a { color: var(--accent); }
+    .md-links { display: flex; gap: 8px; flex-wrap: wrap; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.76rem; }
     .md-links a {
-      color: var(--accent);
-      text-decoration: none;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      padding: 6px 10px;
-      border-radius: 6px;
+      color: var(--accent); text-decoration: none; border: 1px solid var(--line);
+      background: var(--panel); padding: 6px 10px; border-radius: 6px;
     }
     .md-links a:hover { border-color: var(--accent); }
     .tabs {
-      display: flex;
-      gap: 4px;
-      border-bottom: 1px solid var(--line);
-      margin: 8px 0 0;
-      position: relative;
-      z-index: 5;
+      display: flex; gap: 4px; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 20; background: linear-gradient(var(--bg), var(--bg) 70%, transparent);
+      padding-top: 6px;
     }
     .tabs button {
-      appearance: none;
-      -webkit-appearance: none;
-      border: 1px solid transparent;
-      border-bottom: none;
-      background: var(--tab);
-      color: var(--muted);
-      padding: 12px 18px;
-      font: inherit;
-      font-size: 0.95rem;
-      cursor: pointer;
-      border-radius: 10px 10px 0 0;
-      position: relative;
-      z-index: 6;
-      touch-action: manipulation;
+      appearance: none; border: 1px solid transparent; border-bottom: none;
+      background: var(--tab); color: var(--muted); padding: 12px 18px;
+      font: inherit; font-size: 0.95rem; cursor: pointer;
+      border-radius: 10px 10px 0 0; touch-action: manipulation;
     }
     .tabs button[aria-selected="true"] {
-      background: var(--tab-active);
-      color: var(--ink);
-      border-color: var(--line);
-      font-weight: 600;
-      box-shadow: 0 -1px 0 var(--tab-active);
-      top: 1px;
-    }
-    .tabs button:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
+      background: var(--tab-active); color: var(--ink); border-color: var(--line);
+      font-weight: 650;
     }
     .panel {
-      display: none;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 0 12px 12px 12px;
-      padding: 28px 28px 40px;
-      box-shadow: 0 10px 30px rgba(26, 26, 26, 0.04);
-      position: relative;
-      z-index: 1;
+      display: none; background: var(--panel); border: 1px solid var(--line);
+      border-radius: 0 12px 12px 12px; padding: 28px 30px 48px;
+      box-shadow: 0 12px 36px rgba(28,25,22,0.05);
     }
     .panel.active { display: block; }
-    .panel h1 { font-size: 1.75rem; margin-top: 0; }
+    .panel h1 { font-size: 1.7rem; margin-top: 0; line-height: 1.25; }
     .panel h2 {
-      font-size: 1.35rem;
-      margin-top: 2rem;
-      padding-top: 0.6rem;
-      border-top: 1px solid var(--line);
+      font-size: 1.32rem; margin-top: 2.1rem; padding: 0.55rem 0 0.15rem 0.75rem;
+      border-left: 4px solid var(--accent); border-top: 0; background: linear-gradient(90deg, #f3faf6, transparent 70%);
     }
-    .panel h3 { font-size: 1.1rem; margin-top: 1.4rem; }
-    .panel h4, .panel h5 { font-size: 1rem; }
-    .panel table {
-      border-collapse: collapse;
-      width: 100%;
-      font-size: 0.88rem;
-      margin: 0.8rem 0 1.2rem;
-      overflow-x: auto;
-      display: block;
-    }
-    .panel th, .panel td {
-      border: 1px solid var(--line);
-      padding: 6px 8px;
-      vertical-align: top;
-      text-align: left;
-    }
-    .panel th { background: #f3efe6; }
+    .panel h3 { font-size: 1.08rem; margin-top: 1.5rem; color: #143d30; }
+    .panel h4, .panel h5 { font-size: 1rem; margin-top: 1.2rem; }
+    .panel p { max-width: 78ch; }
+    .table-wrap { overflow-x: auto; margin: 0.85rem 0 1.25rem; border: 1px solid var(--line); border-radius: 8px; }
+    .panel table { border-collapse: collapse; width: 100%; font-size: 0.86rem; margin: 0; display: table; }
+    .panel th, .panel td { border-bottom: 1px solid var(--line); border-right: 1px solid #efe8dc; padding: 7px 9px; vertical-align: top; text-align: left; }
+    .panel tr:last-child td { border-bottom: 0; }
+    .panel th { background: #f6f0e6; font-weight: 650; position: sticky; top: 0; }
+    .panel tr:nth-child(even) td { background: #fbfaf7; }
     .panel code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      font-size: 0.84em;
-      background: #f3efe6;
-      padding: 0.1em 0.35em;
-      border-radius: 4px;
+      font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.84em;
+      background: #f3efe6; padding: 0.12em 0.38em; border-radius: 4px;
     }
     .panel pre {
-      background: #1e2430;
-      color: #e8eef7;
-      padding: 12px 14px;
-      border-radius: 8px;
-      overflow-x: auto;
-      font-size: 0.82rem;
+      background: #1e2430; color: #e8eef7; padding: 12px 14px; border-radius: 8px;
+      overflow-x: auto; font-size: 0.82rem;
     }
     .panel pre code { background: transparent; color: inherit; padding: 0; }
     .panel blockquote {
-      margin: 1rem 0;
-      padding: 0.2rem 0 0.2rem 1rem;
-      border-left: 3px solid var(--accent);
-      color: var(--muted);
+      margin: 1rem 0; padding: 0.55rem 0.9rem; border-left: 4px solid var(--accent);
+      background: var(--phase1); color: #1f2933; border-radius: 0 8px 8px 0;
     }
-    .panel hr { border: 0; border-top: 1px solid var(--line); margin: 1.5rem 0; }
+    .panel hr { border: 0; border-top: 1px solid var(--line); margin: 1.6rem 0; }
+    .panel ul, .panel ol { padding-left: 1.25rem; }
+    .panel li { margin: 0.22rem 0; }
+    .viz {
+      margin: 1rem 0 1.4rem; padding: 12px 10px 6px; background: #f8faf9;
+      border: 1px dashed #c9ddd3; border-radius: 10px; overflow-x: auto;
+    }
+    .viz .mermaid { display: flex; justify-content: center; }
+    .viz svg { max-width: 100%; height: auto; }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 1rem;
+      font-size: 0.82rem;
+    }
+    .chip { border-radius: 999px; padding: 3px 10px; border: 1px solid var(--line); background: #fff; }
+    .chip.p1 { background: var(--phase1); border-color: #86efac; }
+    .chip.p2 { background: var(--phase2); border-color: #fdba74; }
+    .chip.g { background: #dcfce7; }
+    .chip.a { background: #fef3c7; }
+    .chip.r { background: #fee2e2; }
     @media (max-width: 720px) {
-      .panel { padding: 18px 14px 28px; border-radius: 0 0 12px 12px; }
+      .panel { padding: 16px 12px 28px; border-radius: 0 0 12px 12px; }
       .tabs button { flex: 1; text-align: center; padding: 12px 8px; }
+      .panel h1 { font-size: 1.35rem; }
     }
   </style>
 </head>
@@ -171,7 +123,7 @@
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.6 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.7 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
       </div>
       <div class="md-links">
         <a href="en.md">en.md</a>
@@ -180,18 +132,23 @@
         <a href="admin/">admin URLs</a>
       </div>
     </header>
-
+    <div class="legend">
+      <span class="chip p1">Phase 1 = perps + invite/broker</span>
+      <span class="chip p2">Phase 2+ = documented, not live</span>
+      <span class="chip g">Green</span>
+      <span class="chip a">Amber</span>
+      <span class="chip r">Red</span>
+    </div>
     <div class="tabs" role="tablist" aria-label="Handbook language">
       <button type="button" role="tab" id="tab-en" aria-controls="panel-en" aria-selected="true" data-tab="en">English</button>
       <button type="button" role="tab" id="tab-zh" aria-controls="panel-zh" aria-selected="false" data-tab="zh">简体中文</button>
     </div>
-
     <article class="panel active" role="tabpanel" id="panel-en" aria-labelledby="tab-en" lang="en">
 <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
 <p><strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
 <strong>Scope:</strong> Full catalogue covers Spot · Margin · Perps; <strong>Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access</strong><br />
 <strong>Public site:</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>All URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>Admin URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
-<strong>Version:</strong> 1.6 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
+<strong>Version:</strong> 1.7 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
 <blockquote>
 <p>This handbook is the <strong>operating playbook</strong> for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.<br />
 <strong>Thresholds below are illustrative defaults</strong> for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.</p>
@@ -218,7 +175,7 @@
 <p><strong>Phase 1 is live / in-scope now.</strong> Later-phase content stays in this handbook for readiness but is marked <strong><code>[Phase 2+]</code></strong> (or later). Do not enable Phase 2+ flows in production without a formal phase-gate sign-off (Risk <strong>A</strong> + CP + Product).</p>
 </blockquote>
 <h3>Phase 1 — in scope</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Area</th>
@@ -243,9 +200,23 @@
 <td>Futures/Perps Product &amp; Liq Ops · Matching · Risk Engine · Risk Ops · Broker/Invite ops (CP+Product) · Wallet/Settlement as needed for collateral/PnL · Surveillance</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>Figure — Phase 1 production scope (what is on vs labelled later)</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  subgraph access [Account open]
+    I[Invite code] --> CP[KYC / CP clear]
+    B[Broker / IB] --> CP
+  end
+  CP --> E[Entitlement: perps only]
+  E --> P[XAUUSD + other approved perps]
+  P --> ME[Matching + risk engine]
+  ME --> LIQ[Liq / insurance / ADL]
+  Spot[Spot book] -.-> P2[Phase 2+]
+  Mar[Margin borrow] -.-> P2
+  Pub[Public self-serve signup] -.-> P2
+</div></div>
 <h3>Phase 1 — out of production (keep playbooks; label only)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Area</th>
@@ -275,7 +246,7 @@
 <td>Unless separately gated</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>Phase 1 control implications (operators)</h3>
 <ol>
 <li><strong>Listing / go-live:</strong> only <strong>perp</strong> pipeline (incl. <strong>XAUUSD</strong>) and broker/invite entitlement configs are production-critical.  </li>
@@ -284,7 +255,7 @@
 <li><strong>XAUUSD perps:</strong> apply full Perps controls (mark/index, funding, leverage brackets, insurance/ADL) plus commodity/FX-hours awareness (session gaps, weekend/holiday liquidity).</li>
 </ol>
 <h2>1. How to use this handbook</h2>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>If you are…</th>
@@ -321,7 +292,7 @@
 <td><strong>Phase 1 operating scope</strong> + §3.3 Perps + §4.4 + invite/broker SOPs</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Golden rules</strong></p>
 <ol>
 <li><strong>No silent limit changes</strong> — every hard limit change is ticketed, dual-approved, and audited.</li>
@@ -334,7 +305,7 @@
 <hr />
 <h2>2. Three lines of defence &amp; role map</h2>
 <h3>2.1 Lines of defence</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Line</th>
@@ -359,9 +330,19 @@
 <td>Independent assurance of design &amp; operating effectiveness</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>Figure — Three lines of defence</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  L1[1st line: Product / TO / ME / Wallet / Listing / MM<br/>Own BAU risk, run controls]
+  L2[2nd line: Market / Credit / Model Risk + CP + Legal<br/>Appetite, challenge, independent monitoring]
+  L3[3rd line: Internal Audit<br/>Independent assurance]
+  L1 -->|escalate breaches| L2
+  L2 -->|material / Sev-1| CRO[CRO / Risk Committee]
+  L3 -.->|periodic review| L1
+  L3 -.->|periodic review| L2
+</div></div>
 <h3>2.2 Standard role codes (used in tickets &amp; admin ACLs)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Code</th>
@@ -451,7 +432,7 @@
 <td>Proprietary / VIP</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h2>3. Instrument primers (Spot / Margin / Perps)</h2>
 <p>Use this section when configuring limits, writing SOPs, or deciding which admin page applies.</p>
@@ -459,7 +440,7 @@
 <blockquote>
 <p><strong>Not enabled in Phase 1.</strong> Retain playbook for later phase-gate.</p>
 </blockquote>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Topic</th>
@@ -488,12 +469,12 @@
 <td>Symbol config, fee tiers, STP, halt/resume, ticker metadata</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>3.2 Margin (Cross &amp; Isolated) <code>[Phase 2+]</code></h3>
 <blockquote>
 <p><strong>Not enabled in Phase 1.</strong> Retain playbook for later phase-gate.</p>
 </blockquote>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Topic</th>
@@ -526,12 +507,12 @@
 <td>Collateral tiers, borrow whitelist, LTV brackets, interest config, forced liquidation console</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>3.3 Perpetual futures (USDⓈ-M / COIN-M) <code>[Phase 1]</code></h3>
 <blockquote>
 <p><strong>Phase 1 in scope:</strong> approved perps including <strong>XAUUSD perps</strong> and other listed perps. Spot/Margin are off.</p>
 </blockquote>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Topic</th>
@@ -568,9 +549,21 @@
 <td>Metals/FX session gaps, weekend/holiday liquidity vs crypto 24×7 index hours</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>Figure — Perps control chain (Phase 1 primary)</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  IDX[Index: multi-venue] --> MARK[Mark price]
+  LAST[Last / mid] --> BOOK[Matching book]
+  MARK --> MR[Margin ratio]
+  BOOK --> MR
+  MR -->|healthy| OK[Trade / add risk]
+  MR -->|breach| LQ[Liquidation engine]
+  LQ --> INS[Insurance fund]
+  INS -->|shortfall| ADL[ADL queue]
+  MARK -. stale? .-> FEED[PL-K06 / PF-K02 failover]
+</div></div>
 <h3>3.4 Instrument comparison (ops cheat sheet)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Dimension</th>
@@ -629,10 +622,35 @@
 <td><strong><code>[Phase 1]</code></strong> (incl. XAUUSD)</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>Figure — Instruments vs Phase 1 gate</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  subgraph p1 [Phase 1 ON]
+    Perps[Perps incl. XAUUSD]
+  end
+  subgraph p2 [Phase 2+ documented / dormant]
+    Spot[Spot]
+    Margin[Cross / Isolated margin]
+    Public[Public signup]
+  end
+  User[User] -->|invite or broker only| Perps
+  User -.->|blocked| Spot
+  User -.->|blocked| Margin
+  User -.->|blocked| Public
+</div></div>
 <hr />
 <h2>4. BU-by-BU playbooks</h2>
 <p>Each chapter follows the same template:</p>
+<p><strong>Figure — Phase 1 critical-path BUs</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  ACC[Invite / Broker + CP] --> UID[Trade-enabled UID]
+  UID --> ME[Matching ME]
+  ME --> RE[Risk engine RE]
+  RE --> FUT[Futures TO / PM]
+  FUT --> RO[RO / RO-OPS]
+  RE --> WO[Wallet WO]
+  RO --> CRO[CRO]
+</div></div>
 <ul>
 <li><strong>In scope / out of scope</strong></li>
 <li><strong>Job division</strong></li>
@@ -659,7 +677,7 @@
 <li>KYC onboarding decisions (CP) — except when risk-holds apply</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -688,9 +706,9 @@
 <td>Models, mark/index methodology challenge, stress engines</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -705,7 +723,7 @@
 <td></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>| RM-01 | Daily risk MI pack | Every UTC cutoff |
 | RM-02 | Soft-limit WARN response | Alert WARN |
 | RM-03 | Hard-limit BREACH response | Alert BREACH |
@@ -722,7 +740,7 @@
 <li>Limit request / trader-rights workflow (maker–checker)</li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -762,7 +780,7 @@
 <td>CRO/RO dual</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Handoffs</h4>
 <ul>
 <li>To ME/TO: halt/resume recommendations  </li>
@@ -790,7 +808,7 @@
 <li>On-chain custody keys (Wallet)</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -811,9 +829,9 @@
 <td>Depth SLAs, MM agreement breaches</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -848,7 +866,7 @@
 <td>Surveillance alert</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Useful tools</h4>
 <ul>
 <li>Spot order-book health dashboard</li>
@@ -857,7 +875,7 @@
 <li>Market quality report (spread, depth @ 1%/2%)</li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -886,7 +904,7 @@
 <td>Self-trade prevention modes</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Handoffs</h4>
 <ul>
 <li>Listing → Spot PM for go-live  </li>
@@ -913,7 +931,7 @@
 <li>Spot-only symbol listing (Listing / Spot)</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -938,9 +956,9 @@
 <td>Interest accrual accounting, bad-debt booking</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -980,7 +998,7 @@
 <td>Funding cost / peg risk</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Useful tools</h4>
 <ul>
 <li>Margin utilisation heat map (by asset)</li>
@@ -990,7 +1008,7 @@
 <li>EOD recon for loans vs ledger</li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -1023,7 +1041,7 @@
 <td>Cases, recovery, P&amp;L booking</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Handoffs</h4>
 <ul>
 <li>To Futures: shared collateral / unified account design changes  </li>
@@ -1050,7 +1068,7 @@
 <li>Margin borrow interest (Margin BU)</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -1079,9 +1097,9 @@
 <td>Engine params push after approval</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1131,7 +1149,7 @@
 <td>Venue down</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Useful tools</h4>
 <ul>
 <li>Mark vs index vs last price monitor</li>
@@ -1143,7 +1161,7 @@
 <li>Stress: spot shock → perp equity → margin shortfall</li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -1184,7 +1202,7 @@
 <td>Circuit breaker &amp; impact buffer</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Handoffs</h4>
 <ul>
 <li>To ME: halt matching while liquidations drain under SOP  </li>
@@ -1207,7 +1225,7 @@
 <li>Custody keys (Wallet)</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -1228,9 +1246,9 @@
 <td>Incident fix, rollback</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1265,7 +1283,7 @@
 <td>After failover</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Useful tools</h4>
 <ul>
 <li>Matching latency &amp; drop dashboards</li>
@@ -1274,7 +1292,7 @@
 <li>Kill-switch panel</li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -1303,7 +1321,7 @@
 <td>Site preference, drain</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Handoffs</h4>
 <ul>
 <li>TO / Risk approve business halt reasons  </li>
@@ -1324,7 +1342,7 @@
 <li>Setting appetite numbers without RO approval</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -1345,9 +1363,9 @@
 <td>Performance &amp; data pipelines</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1382,7 +1400,7 @@
 <td>Model governance</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Useful tools</h4>
 <ul>
 <li>Config versioning &amp; diff viewer</li>
@@ -1391,7 +1409,7 @@
 <li>Repo modules: <code>risk_metrics_monitor.py</code>, <code>stress_testing.py</code>, <code>trader_rights_workflow.py</code></li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -1416,7 +1434,7 @@
 <td>What-if liquidation</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>4.7 Wallet, Custody &amp; Withdrawals — WO / TS / SRE</h3>
 <h4>In scope</h4>
@@ -1433,7 +1451,7 @@
 <li>Token fundamental diligence (Listing) — except contract deposit/withdraw technical review</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -1454,9 +1472,9 @@
 <td>HSM/MPC controls, access</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1496,7 +1514,7 @@
 <td>Periodic / attestation</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Useful tools</h4>
 <ul>
 <li>Wallet balance vs ledger recon (<code>eod_reconciliation.py</code> pattern)</li>
@@ -1505,7 +1523,7 @@
 <li>Address allowlist / whitelist admin for VIP</li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -1534,7 +1552,7 @@
 <td>Enable/disable network</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>4.8 Listing, Delisting &amp; Token Due Diligence — LI / RO / CP / Legal</h3>
 <blockquote>
@@ -1554,7 +1572,7 @@
 <li>Insurance fund sizing (Risk owns policy)</li>
 </ul>
 <h4>Job division</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Role</th>
@@ -1583,9 +1601,9 @@
 <td>Go-live product checklist</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1635,7 +1653,7 @@
 <td>Exploit / fraud</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Useful tools</h4>
 <ul>
 <li>Diligence checklist workspace</li>
@@ -1644,7 +1662,7 @@
 <li>Cross-venue liquidity &amp; manipulation screens</li>
 </ul>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -1669,7 +1687,7 @@
 <td>Rebrand / contract swap</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Delist sequencing (mandatory order)</strong><br />
 1. Risk + Legal + CP approve<br />
 2. <strong>Perps:</strong> reduce-only → flatten / expiry SOP → delist contract<br />
@@ -1692,7 +1710,7 @@
 <li>Setting economic leverage brackets (RO) — CP can impose hard holds</li>
 </ul>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1722,9 +1740,9 @@
 <td>External order</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Admin pages</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Page</th>
@@ -1749,7 +1767,7 @@
 <td>Screening overrides (dual control)</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>4.10 Treasury, Settlement &amp; Banking — TS</h3>
 <h4>In scope</h4>
@@ -1761,7 +1779,7 @@
 <li>Stablecoin inventory &amp; redemption playbooks</li>
 </ul>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1791,7 +1809,7 @@
 <td>Board/CRO approved</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Admin pages</h4>
 <p>| <code>/admin/treasury/balances</code>, <code>/admin/treasury/settlement</code>, <code>/admin/treasury/stablecoins</code></p>
 <hr />
@@ -1803,7 +1821,7 @@
 <li>Cross-venue arb inventory risk if MM is internal/affiliated (Chinese walls with Risk)</li>
 </ul>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1828,7 +1846,7 @@
 <td>New listing / prop overlap</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h4>Admin pages</h4>
 <p>| <code>/admin/mm/sla</code>, <code>/admin/mm/inventory</code>, <code>/admin/mm/agreements</code></p>
 <hr />
@@ -1841,7 +1859,7 @@
 <li>Model &amp; report automation (<code>risk_reporting.py</code>, recon, stress)</li>
 </ul>
 <h4>SOPs</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1871,11 +1889,11 @@
 <td>Compromise</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h2>5. Cross-BU RACI matrix</h2>
 <p><strong>R</strong> = Responsible · <strong>A</strong> = Accountable · <strong>C</strong> = Consulted · <strong>I</strong> = Informed</p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Activity</th>
@@ -2062,13 +2080,13 @@
 <td>I</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h2>6. Global SOPs (shared) &amp; detailed runbooks</h2>
 <p>Every SOP card below uses the same fields: <strong>When (trigger)</strong> · <strong>Who</strong> · <strong>SLA</strong> · <strong>Preconditions</strong> · <strong>How</strong> · <strong>Systems</strong> · <strong>Done when</strong> · <strong>Escalate if</strong>.<br />
 Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <h3>6.0 SOP card legend</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2109,10 +2127,26 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Conditions that bump L-level / Sev</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>6.1 SOP-G01 — Limit change (all instruments)</h3>
-<table>
+<p><strong>Figure — SOP-G01 limit change</strong></p>
+<div class="viz"><div class="mermaid">sequenceDiagram
+  actor Req as Requester
+  participant SYS as SYS / RO-OPS
+  actor RO as Maker RO
+  actor CHK as Checker
+  participant RE as Risk engine
+  Req->>SYS: Ticket old to new + rationale
+  SYS->>RO: Impact packet
+  RO-->>Req: Reject
+  RO->>CHK: Approve if Tier A+
+  CHK->>RE: Four-eyes OK
+  RO->>RE: Approve if below Tier A
+  RE->>RE: Promote config + hash
+  RE->>SYS: Hypercare 24h
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2141,7 +2175,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Ticket · <code>/admin/risk/limits</code> · <code>/admin/risk/waivers</code> · <code>/admin/risk-engine/configs</code> · <code>stress_testing.py</code> · <code>trader_rights_workflow.py</code> (if rights-linked)</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>How</strong>
 1. <strong>Requester</strong> opens ticket: instrument, symbol/contract or asset, field name, old→new, rationale, linked KRI/incident, stress screenshot or note “CRO waived stress”.<br />
 2. <strong>SYS</strong> (or RO-OPS) attaches impact packet: utilisation vs new limit, breaches 30d, concentration, related product spillover.<br />
@@ -2155,7 +2189,18 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <strong>Escalate if:</strong> Checker unavailable in urgent path → CRO/delegate; deploy fails → RE rollback + L2; client complaints spike → Comms + L3.</p>
 <hr />
 <h3>6.2 SOP-G02 — Trading halt / resume (Spot vs Perps / Margin)</h3>
-<table>
+<p><strong>Figure — SOP-G02 halt then resume</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  T[TO proposes] --> RO[RO approves]
+  RO --> ME[ME halt matching]
+  ME --> RE[RE sets liq mode]
+  RE --> COM[Comms + wallet policy]
+  COM --> CLR{Root cause contained?}
+  CLR -->|no| HOLD[Stay halted]
+  CLR -->|yes| ACK[RO + ME + RE ACK]
+  ACK --> RES[Staged resume + 4h hypercare]
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2184,7 +2229,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>/admin/spot/halt</code> · <code>/admin/futures/breaker</code> · <code>/admin/engine/kill</code> (global only, dual) · <code>/admin/margin/borrow</code> · Comms macros</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>How — Halt</strong>
 1. On-call <strong>TO</strong> opens bridge; states scope + reason + §9 family guess.<br />
 2. <strong>RO</strong> approves (or CRO if global).<br />
@@ -2203,7 +2248,18 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <strong>Escalate if:</strong> Global kill needed → L4 dual-control on <code>/admin/engine/kill</code>; wrong marks during halt → Sev-1.</p>
 <hr />
 <h3>6.3 SOP-G03 — Alert ACK (WARN / BREACH / KILL)</h3>
-<table>
+<p><strong>Figure — SOP-G03 alert ACK</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  A[Alert WARN / BREACH / KILL] --> ACK[RO-OPS ACK in SLA]
+  ACK --> DQ{Data fresh?}
+  DQ -->|no| ENG[ENG-03 feed fix]
+  DQ -->|yes| FAM[Pick S1-S12 family]
+  FAM --> ACT[Contain per playbook]
+  ACT --> ESC{Contained?}
+  ESC -->|no| L[Escalate L+1 / war room]
+  ESC -->|yes| HC[Hypercare + ticket]
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2232,7 +2288,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>/admin/risk/alerts</code> · §9 triage card · Pager</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>How</strong>
 1. <strong>ACK</strong> in console (stops re-page per policy).<br />
 2. Check <strong>data freshness</strong> (PL-K06 / feed TS). If stale → ENG-03 path; tag “data”.<br />
@@ -2244,7 +2300,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <strong>Escalate if:</strong> ACK SLA missed → auto-page RO; two BREACH without containment → L3.</p>
 <hr />
 <h3>6.4 SOP-G04 — Maker–checker &amp; segregation of duties</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2273,7 +2329,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>IAM · <code>/admin/audit</code> · workflow engines</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>How / Rules</strong>
 1. Trader <strong>cannot</strong> approve own leverage/rights (<code>trader_rights_workflow</code>).<br />
 2. RE deployer <strong>cannot</strong> be sole approver on Tier A config.<br />
@@ -2284,7 +2340,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <strong>Escalate if:</strong> Same-ID approval attempted → security incident ENG-04/L3.</p>
 <hr />
 <h3>6.5 SOP-G05 — EOD reconciliation &amp; settlement</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2313,7 +2369,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>eod_reconciliation.py</code> · treasury settlement queue · evidence store</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>How</strong>
 1. SYS runs internal vs ledger/broker/venue match → <code>ReconLine[]</code>.<br />
 2. TO/Clearing assigns each exception owner + action (re-pull, adjust, ticket venue).<br />
@@ -2325,7 +2381,18 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <strong>Escalate if:</strong> Unexplained missing trades → L2/L3 + possible trading halt review.</p>
 <hr />
 <h3>6.6 SOP-G06 — New product / instrument approval</h3>
-<table>
+<p><strong>Figure — SOP-G06 new product gates (Phase 1 = perps + invite/broker)</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  Legal[Legal] --> CP[CP]
+  CP --> LI[Listing + RO opinion]
+  LI --> Prod[Product checklist]
+  Prod --> Eng[RE / ME dry-run]
+  Eng --> WO[Wallet ready]
+  WO --> Acc[ACC-01 / ACC-02]
+  Acc --> Live[Perps live]
+  Spot[Spot / Margin] -.-> P2[Phase 2+ hold]
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2354,7 +2421,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>/admin/listing/pipeline</code> · product checklists §11 · wallet chain enable</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>How (gates — do not reorder)</strong>
 1. <strong>Legal</strong> opinion (instrument type / jurisdiction notes).<br />
 2. <strong>CP</strong> sanctions/securities/AML flags.<br />
@@ -2373,7 +2440,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <h3>6.7 BU SOP catalogue (detailed)</h3>
 <h4>RM — Risk Ops</h4>
 <h5>RM-01 Daily risk MI pack</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2406,9 +2473,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Email/portal post + RO ACK. <strong>Escalate if</strong> pack &gt;2h late → ENG-03.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RM-02 Soft-limit WARN response</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2437,9 +2504,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>WARN cleared or upgraded with ticket.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RM-03 Hard-limit BREACH response</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2468,9 +2535,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Contained + owner for permanent fix.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RM-04 Leverage / rights increase</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2499,9 +2566,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Status APPROVED + limit live. <strong>Escalate if</strong> self-approve attempt.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RM-05 Stress catalogue change</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2530,9 +2597,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Version ID on portal.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RM-06 Insurance fund draw review</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2561,9 +2628,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Review note filed; ledger entries match.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RM-07 Trading halt recommendation</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2588,11 +2655,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>State scope/reason/family → call G02 → stay on bridge until resume criteria set.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>SP — Spot <code>[Phase 2+]</code></h4>
 <h5>SP-01 Spot symbol go-live</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2625,9 +2692,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>§11.5 checklist ticked; hypercare 72h named.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>SP-02 Spot trading halt</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2656,9 +2723,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Halt state confirmed on <code>/admin/spot/halt</code>.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>SP-03 Spot resume</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2683,9 +2750,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Trades flowing; no immediate SP-K03 BREACH.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>SP-04 Price band / max notional change</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2706,9 +2773,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Impact on fills/MM → G01 → <code>/admin/spot/bands</code> promote → hypercare.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>SP-05 Wash / self-trade handoff</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2733,11 +2800,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Preserve order/trade IDs → open CP case → consider UID hold CP-02 → no silent STP weaken.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>MG — Margin <code>[Phase 2+]</code></h4>
 <h5>MG-01 Add collateral asset</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2762,9 +2829,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>§11.4 checklist done; MG-K05 baseline stored.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>MG-02 Haircut / LTV change</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2789,9 +2856,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>DA note → G01 → push RE → notify users if adverse · watch MG-K02/03.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>MG-03 Borrow freeze (asset)</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2820,9 +2887,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>New borrows blocked; ticket has unfreeze owner.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>MG-04 Forced liquidation runbook</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2847,9 +2914,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Lag &gt;30s → L3.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>MG-05 Bad debt write-off / recovery</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2874,9 +2941,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Ledger + case closed.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>MG-06 Interest curve update</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2897,11 +2964,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Propose curve → recon check → G01 if material → <code>/admin/margin/interest</code> → monitor exceptions.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>PF — Perps <code>[Phase 1]</code></h4>
 <h5>PF-01 New perp contract launch</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2926,9 +2993,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Live + PF-K01/02/06/07 dashboards green.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>PF-02 Leverage bracket change</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2949,9 +3016,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Impact OI/users near cap → approve → <code>/admin/futures/leverage</code> → hypercare liqs.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>PF-03 Mark–index deviation response</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -2980,9 +3047,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Deviation explained; feed healthy or trading contained.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>PF-04 Funding extreme / pause</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3003,9 +3070,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Confirm clamp auto → publish reason → pause only if settlement integrity broken → resume with RO ACK.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>PF-05 Insurance payout review</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3026,9 +3093,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Same-day flash → quality of liq → recommend TS-04 inject and/or G01 tighten.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>PF-06 ADL activation review</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3053,9 +3120,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Verify insurance was insufficient (order: K07 before K08) → ranking fair → user notices → if misconfig, stop ADL + Sev-1.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>PF-07 Perps halt / reduce-only</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3076,9 +3143,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Prefer reduce-only before full halt when engine healthy · state funding behaviour in Comms.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>PF-08 Index constituent outage</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3099,11 +3166,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Auto-drop bad venue if policy → if below min venues: protect mark / reduce-only → RO approve temporary weights → restore when venue healthy.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>ME — Matching</h4>
 <h5>ME-01 Engine deploy / rollback</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3128,9 +3195,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Change ticket → canary → watch SP-K09/K04 → rollback procedure rehearsed → post-deploy verify.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>ME-02 Matching halt</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3151,9 +3218,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Scope halt → confirm → notify RE/TO → never leave ambiguous shard states.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>ME-03 Dual-site failover</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3174,9 +3241,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Declare incident → drain/failover <code>/admin/engine/failover</code> → ME-05 book verify → trading resume per G02 if halted.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>ME-04 Cancel storm mitigation</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3197,9 +3264,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Raise rate limits carefully / shed → identify UID storms → CP if abuse → protect latency SLO.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>ME-05 Post-incident book rebuild verify</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3220,11 +3287,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Compare book checksums / trade continuity → sign attach to ticket before full resume.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>RE — Risk engine</h4>
 <h5>RE-01 Config promote</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3249,9 +3316,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Promote without ticket → revert + audit.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RE-02 Liquidation engine pause / resume</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3276,9 +3343,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>/admin/risk-engine/liq</code> pause → document why → users may still face risk — Comms honesty → resume only when marks healthy + RO ACK.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RE-03 Mark price feed failover</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3299,9 +3366,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Switch secondary → validate PF-K01 → if both bad: reduce-only/pause liq.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RE-04 Risk state rebuild</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3322,9 +3389,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Freeze risk-increasing → rebuild from authoritative ledger → recon sample → unfreeze.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>RE-05 Portfolio-margin model change</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3345,11 +3412,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Parallel run → gap report → feature flag → conservative fallback ready.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>WA — Wallet</h4>
 <h5>WA-01 Hot wallet top-up</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3374,9 +3441,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Confirm on-chain balances → cold→hot per ceremony rules → verify buffer → log.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>WA-02 Withdrawal queue / slow mode</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3401,9 +3468,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>/admin/wallet/withdraw</code> slow mode → prioritisation rules → status page → exit criteria (buffer+backlog).</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>WA-03 Chain halt / reorg</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3424,9 +3491,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Pause credits on chain → assess depth → clawback SOP if credited reorged → resume with finality policy.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>WA-04 Wrong deposit recovery</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3447,9 +3514,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Verify ownership → recoverability → fee policy → execute → close with txids.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>WA-05 Key ceremony / rotation</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3470,9 +3537,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Ceremony runbook → record ID → validate sign path → revoke old material.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>WA-06 PoR snapshot</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3493,11 +3560,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Freeze height → liabilities extract → publish/attest → archive.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>LD — Listing / delisting</h4>
 <h5>LD-01 Listing risk opinion</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3522,9 +3589,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Tokenomics/contract/liquidity/manip history → opinion Approve/Conditional/Reject → conditions become launch checklist.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>LD-02 Seed / monitoring tag</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3545,9 +3612,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>/admin/listing/tags</code> → disclosure → tighter bands optional.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>LD-03 Margin eligibility</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3564,9 +3631,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><strong>A:</strong> RO-Credit · <strong>R:</strong> PM-MARGIN · then MG-01</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>LD-04 Perp listing decision</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3583,9 +3650,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><strong>A:</strong> RO · <strong>R:</strong> PM-FUT/LI · then PF-01</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>LD-05 / LD-06 / LD-07 Delist sequences</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3610,9 +3677,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Notice period per Listing Policy unless LD-08</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>LD-08 Emergency delist / halt</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3637,11 +3704,11 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Safety first: halt/disable deposits → follow compressed LD-05–07 → forensic with Security/CP.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>CP — Compliance</h4>
 <h5>CP-01 Surveillance alert triage</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3666,9 +3733,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Replay → classify false/positive → case → link UIDs/products.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>CP-02 Account hard hold</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3689,9 +3756,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td><code>/admin/compliance/holds</code> trade/withdraw/leverage as needed → notify Support script → evidence pack.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>CP-03 Cross-product abuse review</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3712,9 +3779,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Combined timeline → holds → market impact note to RO.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>CP-04 Reg request / freeze</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3735,7 +3802,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Authenticate order → freeze scope → acknowledge authority → retain.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h4>TS / MM / ENG</h4>
 <h5>TS-01 Banking corridor outage</h5>
@@ -3763,7 +3830,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <hr />
 <h4>ACCESS — Phase 1 invite &amp; broker onboarding <code>[Phase 1]</code></h4>
 <h5>ACC-01 Invite-only account open</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3804,9 +3871,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Invite abuse / shared codes → CP-02 hold; public signup path found open → L3 disable.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>ACC-02 Broker-introduced account open</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3847,9 +3914,9 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Broker agreement lapsed → freeze new accounts; cascade risk on broker book → RO L2/L3.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h5>ACC-03 Phase 1 entitlement guard (continuous)</h5>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Field</th>
@@ -3874,12 +3941,12 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>Daily zero exceptions or exceptions ticketed with phase-gate waiver.</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h2>7. Admin pages &amp; tool catalogue</h2>
 <h3>7.1 Canonical admin map (by domain)</h3>
 <p><strong>URL sheet (all full links):</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html<br />
 <strong>Admin catalogue:</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/</p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Domain</th>
@@ -3962,14 +4029,14 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <td>MM</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <blockquote>
 <p><strong>Vercel:</strong> this handbook is <strong>not</strong> on Vercel. <code>https://prd.vercel.app/</code> is a different product (LeadShark MVP PRD).<br />
 These GitHub Pages URLs are <strong>public documentation stubs</strong> of the admin catalogue (not a live exchange). Map the same paths 1:1 onto the internal Admin Console when it exists.</p>
 <p><strong>Phase 1 admin priority:</strong> futures, risk, engine, wallet, invite/broker &amp; compliance. Spot and margin URLs exist as stubs but stay <strong>disabled</strong> in production (<code>[Phase 2+]</code>).</p>
 </blockquote>
 <h4>7.1.1 Every admin page (full URL)</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -4254,9 +4321,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/agreements/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/agreements/</a></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>7.2 Tooling aligned to platform modules</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Need</th>
@@ -4301,7 +4368,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>All PICs (training)</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>7.3 ACL principles for admin pages</h3>
 <ol>
 <li><strong>Least privilege</strong> by role code.  </li>
@@ -4314,7 +4381,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <h2>8. Limits, KRIs, thresholds, actions &amp; escalation</h2>
 <h3>8.1 How to read the indicator catalogue</h3>
 <p>Each indicator row uses this schema:</p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Column</th>
@@ -4359,12 +4426,12 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Primary BU accountable for response quality</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Severity mapping:</strong> WARN → typically L1–L2 · BREACH (contained) → L2 · BREACH cascade / fund threat → L3–L4 · Kill-switch class → L4.</p>
 <p><strong>ACK SLAs (RO-OPS):</strong> WARN ≤ 15 min · BREACH ≤ 5 min · Kill / client-asset ≤ 2 min.</p>
 <p><strong>Threshold governance:</strong> changes follow SOP-G01; illustrative numbers marked <em>calib.</em> must be replaced by Limit Book values.</p>
 <h3>8.2 Escalation ladder (global)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Level</th>
@@ -4399,9 +4466,15 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Immediate + exec bridge</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>Figure — Escalation ladder</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  L1[L1 RO-OPS ticket] --> L2[L2 RO + BU PIC]
+  L2 --> L3[L3 CRO + ME + RE + Comms]
+  L3 --> L4[L4 ELT + Legal + CP + CISO]
+</div></div>
 <h3>8.3 Limit types</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Type</th>
@@ -4426,10 +4499,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Matching kill switch; withdraw freeze</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>8.4 Spot indicators</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -4555,9 +4628,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>LI / RO</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Spot response cheat-sheet</strong></p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Condition</th>
@@ -4582,10 +4655,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Multi-UID ring → L3 + Legal</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>8.5 Margin indicators (Cross &amp; Isolated)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -4711,9 +4784,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>RO / DA</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Margin response cheat-sheet</strong></p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Condition</th>
@@ -4738,10 +4811,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Peg &lt; 0.98 → L3 + Treasury war room</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>8.6 Perps indicators (USDⓈ-M / COIN-M)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -4889,9 +4962,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>RO / TS</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Perps response cheat-sheet</strong></p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Condition</th>
@@ -4916,10 +4989,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Need pause → dual RO+PM + Comms</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>8.7 Cross-cutting / platform indicators</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -5067,10 +5140,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>LI / RO</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>8.8 Unified account / portfolio-margin indicators (if enabled)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -5108,10 +5181,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>RO / DA</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>8.9 Monitoring frequency summary (by layer)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Layer</th>
@@ -5158,7 +5231,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>CRO / Risk Committee</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>8.10 Alert → action → escalation state machine</h3>
 <pre><code>Detect (SYS) → Route (WARN|BREACH|KILL)
     → ACK (RO-OPS within SLA)
@@ -5171,7 +5244,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
             → Contained → document + hypercare window
             → Sev-1/2 → war room (§9) + post-mortem
 </code></pre>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Parameter</th>
@@ -5200,9 +5273,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>5 business days (Sev-1/2)</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>8.11 Reporting &amp; evidence pack (per indicator family)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Deliverable</th>
@@ -5249,7 +5322,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Backtest hit rates; propose Limit Book edits</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>8.12 Minimum “always on” set (if tooling is constrained)</h3>
 <p>Stand up these first — then expand to full catalogue:</p>
 <p><strong>Phase 1 prefer (perps + access + platform):</strong><br />
@@ -5262,7 +5335,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <h2>9. Risk scenario diagnostics (RAG + time sequence)</h2>
 <p>Use this section when an indicator (or cluster) flips colour. <strong>Never act on colour alone</strong> — reconstruct the <strong>time sequence</strong>, then discriminate causes.</p>
 <h3>9.1 RAG colour map</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5287,8 +5360,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Contain first, then diagnose; assume real until proven data quality</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Important:</strong> Green is not always “safe”. A green mark feed that is <strong>stale</strong> (see PL-K06) can hide a red economic reality. Always check <strong>last update timestamp</strong> with colour.</p>
+<p><strong>Figure — RAG is not the diagnosis</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  G[Green] --> TS[Check timestamp]
+  A[Amber WARN] --> TRI[Triage 15m]
+  R[Red BREACH] --> CON[Contain 5m]
+  TS -->|stale| S9[Family S9 false-green]
+  TS -->|fresh| OK[Healthy or keep watching]
+  TRI --> FAM[Sequence then family]
+  CON --> FAM
+</div></div>
 <h3>9.2 Diagnostic method (mandatory order)</h3>
 <pre><code>1. CLOCK   — Build timeline (T0 first anomaly → Tn now). Note timezone UTC.
 2. SCOPE   — 1 UID / 1 symbol / 1 asset / venue-wide / cross-product?
@@ -5299,8 +5382,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 7. ACT     — Contain per §8 actions → escalate per §8.2 → war room if Sev-1/2.
 8. WRITE   — Timeline + ruled-in/out causes in incident ticket.
 </code></pre>
+<p><strong>Figure — Diagnostic order (clock first)</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  C[1 Clock] --> S[2 Scope]
+  S --> D[3 Data]
+  D --> SI[4 Single KRI]
+  SI --> CL[5 Cluster]
+  CL --> X[6 Rule out]
+  X --> ACT[7 Act]
+  ACT --> W[8 Write timeline]
+</div></div>
 <p><strong>Time-sequence grammar (use in tickets):</strong></p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Pattern</th>
@@ -5329,12 +5422,12 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Flip-flopping often = threshold noise, feed flap, or MM restart</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>9.3 Single-indicator scenarios (all plausible causes)</h3>
 <p>For each key KRI: what <strong>Green / Amber / Red</strong> can mean. Lists are <strong>exhaustive enough for ops triage</strong>, not metaphysical.</p>
 <h4>9.3.1 Spot — SP-K01 Bid–ask spread</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5364,10 +5457,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>SP-K02 R? SP-K09 R? Recent halt SP-K06?</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Typical sequences:</strong> <code>vol spike → A spread → A depth</code> (market) · <code>MM process crash → R depth then R spread within seconds</code> (tech) · <code>spread R while depth G</code> (wide but thick — often policy widen, not outage).</p>
 <h4>9.3.2 Spot — SP-K03 Last vs ref / index deviation</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5397,10 +5490,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Cross-check 3 external venues; SP-K08 wash; PF-K01 if perp listed</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>external crash ≈ SP-K03 R</code> (real move) · <code>SP-K03 R while externals flat</code> (local book/manip/data) · <code>PL-K06 A → SP-K03 A</code> (feed lag artifact).</p>
 <h4>9.3.3 Spot — SP-K09 Matching latency p99</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5425,10 +5518,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Failover status; recent ME-01 deploy; SP-K04 R</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>SP-K04 A → SP-K09 A→R</code> (cancel storm) · <code>deploy → SP-K09 R alone</code> (bad release) · <code>SP-K09 R → SP-K03 A</code> (stale books / delayed matches).</p>
 <h4>9.3.4 Margin — MG-K01 Borrow utilisation</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5453,10 +5546,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Freeze path; check inventory ledger vs wallet</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>spot dump → collateral call → rush borrow stable → MG-K01 A/R</code> · <code>MG-K01 R with flat markets</code> (inventory/accounting bug or silent lender exit).</p>
 <h4>9.3.5 Margin — MG-K02 / proximity to liquidation (user LTV)</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5481,10 +5574,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>If R but <strong>no liq orders</strong> → RE stuck (critical)</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>price shock → MG-K02 R → MG-K03 liq notional ↑</code> (healthy engine) · <code>MG-K02 R ↛ MG-K03</code> for &gt;15–30s (engine/pause/feed fail — escalate L3).</p>
 <h4>9.3.6 Margin — MG-K04 Bad debt</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5509,10 +5602,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>MG-K08; PL-K06; insurance analogue</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>MG-K08 R → MG-K02 R → MG-K03 → MG-K04</code> (depeg cascade) · <code>MG-K04 R with MG-K03 G</code> (accounting/recon bug or manual adjust).</p>
 <h4>9.3.7 Margin — MG-K08 Stablecoin collateral depeg</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5537,10 +5630,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>On-chain peg; bank/issuer status; PL-K06</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>external depeg ≈ MG-K08</code> (real) · <code>MG-K08 R → MG-K01 util ↑ (flight) → MG-K03 liqs</code> · <code>MG-K08 R while CEX+on-chain G</code> (local mark bug).</p>
 <h4>9.3.8 Perps — PF-K01 Mark − index deviation</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5570,10 +5663,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>PF-K02; external index rebuild</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>PF-K02 A/R → PF-K01 R</code> (index integrity) · <code>PF-K01 R ≈ PF-K09 R with PF-K02 G</code> (real basis stress) · <code>PL-K06 R → PF-K01 flap</code> (pipeline).</p>
 <h4>9.3.9 Perps — PF-K06 Liquidation burst</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5598,10 +5691,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>PF-K01; insurance PF-K07; engine lag</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>macro dump → PF-K01 A → PF-K06 A→R → PF-K07 A</code> (classic) · <code>PF-K06 R with flat underlying</code> (bad mark / bug — Sev-1 candidate) · <code>PF-K06 R → PF-K08 ADL</code> (insurance insufficient).</p>
 <h4>9.3.10 Perps — PF-K07 Insurance coverage / PF-K08 ADL</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5631,10 +5724,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Comms + CP abuse check</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>PF-K06 R → PF-K12 payouts → PF-K07 A→R → PF-K08</code> (ordered stress) · <code>PF-K08 without prior PF-K07 A</code> (misconfig ADL trigger — investigate urgently).</p>
 <h4>9.3.11 Perps — PF-K03 Funding vs cap</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5659,10 +5752,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Predicted vs realized; code version</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>basis PF-K09 A for hours → PF-K03 A→R</code> (organic) · <code>instant PF-K03 R at funding boundary only</code> (calc bug or clock).</p>
 <h4>9.3.12 Platform — PL-K01 Hot-wallet buffer / PL-K02 withdraw backlog</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5687,10 +5780,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>WA-02 slow-mode; Security if unexplained</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>negative news → withdraw spike → PL-K01 A→R → PL-K02 A→R</code> (run) · <code>PL-K02 R with PL-K01 G</code> (signer/chain bottleneck, not balance) · <code>PL-K04 reorg → credit pause → perceived backlog</code>.</p>
 <h4>9.3.13 Platform — PL-K06 Risk / mark pipeline lag</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5715,10 +5808,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Failover; pause unsafe liqs</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>PL-K06 R first → many KRIs A/R without external move</code> (data incident) · <code>external move then PL-K06 A</code> (backpressure from load — still dangerous).</p>
 <h4>9.3.14 Platform — PL-K05 EOD recon break</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Colour</th>
@@ -5743,11 +5836,11 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Materiality; maker–checker</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequences:</strong> <code>intraday ME incident → late PL-K05 R</code> · <code>PL-K05 R isolated</code> (reporting/ETL) vs with client PnL tickets (real breaks).</p>
 <h4>9.3.15 When Green is the anomaly</h4>
 <p>Treat <strong>unexpected Green</strong> as a scenario:</p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Observation</th>
@@ -5772,12 +5865,25 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Dashboard pointed at staging; ACL showing cached snapshot</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>9.4 Multi-indicator cluster scenarios (with time sequence)</h3>
+<p><strong>Figure — Same reds, different order: S1 vs S2</strong></p>
+<div class="viz"><div class="mermaid">sequenceDiagram
+  participant Ext as External market
+  participant Feed as PL-K06 / PF-K02
+  participant Mark as PF-K01
+  participant Liq as PF-K06
+  Note over Ext,Liq: S1 real risk-off
+  Ext->>Mark: Price dump first
+  Mark->>Liq: Organic liquidations
+  Note over Ext,Liq: S2 bad marks
+  Feed->>Mark: Feed/index fails first
+  Mark->>Liq: Spurious liquidations
+</div></div>
 <p>Legend: colours on the <strong>cluster at diagnosis time</strong>; arrows show <strong>required order</strong> to prefer that cause.</p>
 <h4>Scenario family S1 — Real macro / crypto risk-off</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase (UTC order)</th>
@@ -5818,11 +5924,11 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Also green that supports S1:</strong> PL-K06 G (feeds fresh), PF-K02 G (index venues alive).<br />
 <strong>Escalation:</strong> L2–L3 depending on insurance/ADL; Comms ready.</p>
 <h4>Scenario family S2 — Mark / index data integrity failure</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -5857,11 +5963,11 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Distinguishes from S4</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Actions:</strong> Pause risk-increasing + pause liq if policy (RE-02); failover feeds; Sev-1 if mass wrong liqs.<br />
 <strong>Green peers:</strong> External spot monitors G/flat; chain health G.</p>
 <h4>Scenario family S3 — Stablecoin depeg contagion</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -5891,10 +5997,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Bad debt + run + insurance</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Rule-out:</strong> MG-K08 R with on-chain+off-venue peg G → local oracle (treat as S2 subclass).</p>
 <h4>Scenario family S4 — Matching / infra overload or bad deploy</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -5924,10 +6030,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Distinguishes from S2</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Rule-out:</strong> If PL-K06 R leads and SP-K09 G → prefer S2 not S4.</p>
 <h4>Scenario family S5 — MM withdrawal / liquidity hole (single name)</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -5952,10 +6058,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Localized</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Vs manipulation (S7):</strong> S5 often has MM heartbeat down; S7 has SP-K08 / CP scores rising with heartbeats up.</p>
 <h4>Scenario family S6 — Liquidation cascade with insurance stress (perps)</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -5985,10 +6091,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>ADL</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Time discipline:</strong> If <strong>PF-K08 before PF-K07 A</strong>, suspect ADL misconfig (not “natural” S6).</p>
 <h4>Scenario family S7 — Market abuse / manipulation</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -6018,10 +6124,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Not infra</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Sequence clue:</strong> Repeated <strong>oscillating</strong> SP-K03 A/R around a UID cluster with SP-K08 ↑.</p>
 <h4>Scenario family S8 — Withdrawal run / custody stress</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -6051,10 +6157,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Pure run vs compromise</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>If PL-K08 R leads:</strong> treat as security incident (L4) not pure S8.</p>
 <h4>Scenario family S9 — Silent / false-green systemic</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -6079,10 +6185,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Data plane lie</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Action:</strong> Page ENG+RO; do not declare “all clear”.</p>
 <h4>Scenario family S10 — Listing / new-market failure</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -6112,10 +6218,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Index immature (PF-K02)</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Green elsewhere</strong> supports isolation to the new market.</p>
 <h4>Scenario family S11 — Cross-product arb / basis blowout</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -6145,10 +6251,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Capital constraint</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Vs S2:</strong> PF-K02 G and PL-K06 G required to trust basis reading.</p>
 <h4>Scenario family S12 — Post-incident recovery (colours improving)</h4>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Phase</th>
@@ -6173,10 +6279,10 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Market OK, <strong>books not clean</strong> — block settlement</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>9.5 Cluster lookup (symptoms → scenario family)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>You see (approx. order)</th>
@@ -6246,7 +6352,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>Rails / borrow</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>9.6 Worked mini-examples (time-stamped)</h3>
 <h4>Example A — Amber alone</h4>
@@ -6300,7 +6406,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </ol>
 <hr />
 <h2>10. Incident severity &amp; war room</h2>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Sev</th>
@@ -6330,14 +6436,25 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>On-call</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>Figure — War-room seating (Sev-1)</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  IC[Incident Commander]
+  IC --- RO[Risk]
+  IC --- ME[Matching]
+  IC --- RE[Risk engine]
+  IC --- WO[Wallet]
+  IC --- COM[Comms]
+  IC --- CP[Compliance]
+  IC --- SCR[Scribe]
+</div></div>
 <p><strong>Standing war-room roles:</strong> Incident Commander · Risk · ME · RE · Wallet · Comms · CP · Scribe  </p>
 <p><strong>Always capture:</strong> timeline (§9 clock), configs touched, orders/liquidations during incident, ruled-in scenario family (S1–S12), client impact, permanent fix owner.</p>
 <p><strong>Scenario → severity hints:</strong> S2 spurious mass liqs · S8 with PL-K08 · S9 false-green in crisis → start at <strong>Sev-1</strong> until proven otherwise. S5 single-name MM → often Sev-3. S1 orderly risk-off with insurance G → Sev-2/3 ops mode.</p>
 <hr />
 <h2>11. Appendix — glossary &amp; checklists</h2>
 <h3>11.1 Glossary (short)</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Term</th>
@@ -6406,7 +6523,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>IB/introducing broker introduced accounts under agreement</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>11.2 BU PIC weekly checklist</h3>
 <ul>
 <li>[ ] Review open WARNs/BREACHes and waivers nearing expiry (ACK SLA breaches noted)  </li>
@@ -6462,7 +6579,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <li>[ ] Halt authority tested (<strong>SP-K06</strong>)  </li>
 </ul>
 <h3>11.6 Document control</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>Item</th>
@@ -6488,21 +6605,20 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 </tr>
 <tr>
 <td>Version</td>
-<td>1.6 — Phase 1 labels: perps (incl. XAUUSD) + invite/broker only</td>
+<td>1.7 — Diagrams in EN/ZH; readability pass</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <p><em>End of English handbook. Simplified Chinese full translation follows.</em></p>
 <hr />
     </article>
-
     <article class="panel" role="tabpanel" id="panel-zh" aria-labelledby="tab-zh" lang="zh-CN" hidden>
 <h1>加密货币交易所风险管理 — 业务单元（BU）用户手册</h1>
 <p><strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
 <strong>范围：</strong> 全量目录含现货·杠杆·永续；<strong>Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入</strong><br />
 <strong>公开站点：</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>全部 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>后台 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
-<strong>版本：</strong> 1.6 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
+<strong>版本：</strong> 1.7 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
 <blockquote>
 <p>本手册为<strong>操作手册</strong>：明确职责边界、分工、SOP、管理后台、指标/阈值/动作、情景诊断与日常工具。不替代法律政策、限额手册或监管申报。<br />
 <strong>下文阈值为一级交易所框架的示意默认值</strong> — 须按《限额手册》校准；未经 RO 双人审批不得直接用于生产。</p>
@@ -6529,7 +6645,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <p><strong>Phase 1 为当前生产范围。</strong> 后续阶段内容保留备战，一律标注 <strong><code>[Phase 2+]</code></strong>（或更晚）。未经正式阶段门禁（风险 <strong>A</strong> + 合规 + 产品）不得在生产开通 Phase 2+ 流程。</p>
 </blockquote>
 <h3>Phase 1 — 范围内</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>领域</th>
@@ -6554,9 +6670,23 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>合约/永续产品与强平 · 撮合 · 风控引擎 · 风险运维 · 邀请/经纪商运营（合规+产品）· 钱包/结算（按需）· 监察</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>图 — Phase 1 生产范围（开通 vs 仅标签）</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  subgraph access [开户]
+    I[邀请码] --> CP[KYC / 合规放行]
+    B[经纪商 / IB] --> CP
+  end
+  CP --> E[权益: 仅永续]
+  E --> P[XAUUSD + 其他已批永续]
+  P --> ME[撮合 + 风控引擎]
+  ME --> LIQ[强平 / 保险 / ADL]
+  Spot[现货簿] -.-> P2[Phase 2+]
+  Mar[杠杆借款] -.-> P2
+  Pub[公众自助注册] -.-> P2
+</div></div>
 <h3>Phase 1 — 生产未开（保留手册，仅贴标签）</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>领域</th>
@@ -6586,7 +6716,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>除非另行门禁</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>Phase 1 对操作的含义</h3>
 <ol>
 <li><strong>上币/上线：</strong> 生产关键路径仅为 <strong>永续</strong>（含 <strong>XAUUSD</strong>）与邀请/经纪商权益配置。  </li>
@@ -6595,7 +6725,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <li><strong>XAUUSD 永续：</strong> 适用完整永续控制（标记/指数、资金费、杠杆档、保险/ADL），并关注贵金属时段/节假日流动性与间隙风险。</li>
 </ol>
 <h2>1. 如何使用本手册</h2>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>如果你是…</th>
@@ -6628,7 +6758,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>上币 BU 章全文</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>铁律</strong></p>
 <ol>
 <li><strong>禁止静默改限额</strong> — 每一笔硬限额变更须工单、双人审批、可审计。  </li>
@@ -6641,7 +6771,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <hr />
 <h2>2. 三道防线与角色映射</h2>
 <h3>2.1 三道防线</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>防线</th>
@@ -6666,9 +6796,19 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>对设计与运行有效性做独立鉴证</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>图 — 三道防线</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  L1[第一道: 产品 / TO / 撮合 / 钱包 / 上币 / 做市<br/>承担 BAU 风险并执行控制]
+  L2[第二道: 市场/信用/模型风险 + 合规 + 法务<br/>偏好、挑战、独立监控]
+  L3[第三道: 内部审计<br/>独立鉴证]
+  L1 -->|突破升级| L2
+  L2 -->|重大 / Sev-1| CRO[CRO / 风险委员会]
+  L3 -.->|定期复审| L1
+  L3 -.->|定期复审| L2
+</div></div>
 <h3>2.2 标准角色代码（工单与后台 ACL）</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>代码</th>
@@ -6758,7 +6898,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>自营 / VIP</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h2>3. 产品入门（现货 / 杠杆 / 永续）</h2>
 <p>配置限额、撰写 SOP、选择管理后台时使用本节。</p>
@@ -6766,7 +6906,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <blockquote>
 <p><strong>Phase 1 未启用。</strong> 手册保留备战。</p>
 </blockquote>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>主题</th>
@@ -6795,12 +6935,12 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>交易对配置、费率档、STP、停复牌、行情元数据</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>3.2 杠杆 Margin（全仓与逐仓） <code>[Phase 2+]</code></h3>
 <blockquote>
 <p><strong>Phase 1 未启用。</strong> 永续保证金/强平见合约章。</p>
 </blockquote>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>主题</th>
@@ -6833,12 +6973,12 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>抵押品档位、借款白名单、LTV 档、利率、强制平仓台</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>3.3 永续合约 Perps（U 本位 / 币本位） <code>[Phase 1]</code></h3>
 <blockquote>
 <p><strong>Phase 1 范围内：</strong> 已批准永续，含 <strong>XAUUSD 永续</strong> 及其他永续；现货/杠杆关闭。</p>
 </blockquote>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>主题</th>
@@ -6875,9 +7015,21 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>贵金属/外汇时段间隙、周末节假日流动性 vs 加密 24×7 指数交易时段</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>图 — 永续控制链（Phase 1 主路径）</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  IDX[指数: 多所合成] --> MARK[标记价]
+  LAST[最新价 / 中间价] --> BOOK[撮合簿]
+  MARK --> MR[保证金率]
+  BOOK --> MR
+  MR -->|健康| OK[可交易 / 可增险]
+  MR -->|突破| LQ[强平引擎]
+  LQ --> INS[保险基金]
+  INS -->|不足| ADL[ADL 队列]
+  MARK -. 是否陈旧? .-> FEED[PL-K06 / PF-K02 切源]
+</div></div>
 <h3>3.4 产品对比（运维速查）</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>维度</th>
@@ -6936,14 +7088,39 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td><strong><code>[Phase 1]</code></strong>（含 XAUUSD）</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>图 — 产品 vs Phase 1 门禁</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  subgraph p1 [Phase 1 开通]
+    Perps[永续含 XAUUSD]
+  end
+  subgraph p2 [Phase 2+ 文档保留 / 休眠]
+    Spot[现货]
+    Margin[全仓 / 逐仓杠杆]
+    Public[公众注册]
+  end
+  User[用户] -->|仅邀请或经纪商| Perps
+  User -.->|阻断| Spot
+  User -.->|阻断| Margin
+  User -.->|阻断| Public
+</div></div>
 <hr />
 <h2>4. 分 BU 作战手册</h2>
+<p><strong>图 — Phase 1 关键路径 BU</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  ACC[邀请 / 经纪商 + 合规] --> UID[可交易 UID]
+  UID --> ME[撮合]
+  ME --> RE[风控引擎]
+  RE --> FUT[合约 TO / PM]
+  FUT --> RO[RO / RO-OPS]
+  RE --> WO[钱包]
+  RO --> CRO[CRO]
+</div></div>
 <p>各章统一模板：<strong>范围内/外 → 分工 → SOP → 工具 → 管理后台 → 交接</strong>。</p>
 <h3>4.1 市场风险与风险运维（第二道）— RO / RO-OPS / CRO</h3>
 <p><strong>范围内：</strong> 全公司风险偏好与限额手册（现货/杠杆/永续）；实时监控；强平/保险/ADL 监督；压力测试目录审批；新产品风险会签；上币风险意见；突破调查、豁免治理、日报。  </p>
 <p><strong>范围外：</strong> 撮合日常调优（ME）；热钱包签名作业（WO）；KYC 准入决定（CP）— 风险冻结除外。</p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>角色</th>
@@ -6972,7 +7149,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>模型、标记/指数方法论挑战、压力引擎</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>SOP：</strong> RM-01…RM-07（明细见 <strong>§6.7</strong>）— 每日风险包 · WARN/BREACH · 杠杆权限 · 压力目录 · 保险复核 · 停牌建议  </p>
 <p><strong>工具：</strong> 实时风险指标与告警；压力/情景台；风险报告与 CSV；强平与保险看板；交易员权限/杠杆申请（maker–checker）  </p>
 <p><strong>后台：</strong> <code>/admin/risk/limits</code> · <code>alerts</code> · <code>stress</code> · <code>insurance</code> · <code>reports</code> · <code>waivers</code>  </p>
@@ -7031,7 +7208,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <hr />
 <h2>5. 跨 BU RACI 矩阵</h2>
 <p><strong>R</strong> 执行 · <strong>A</strong> 问责 · <strong>C</strong> 咨询 · <strong>I</strong> 知会  </p>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>活动</th>
@@ -7218,12 +7395,12 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>I</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h2>6. 全局 SOP（共用）与详细作业手册</h2>
 <p>每张 SOP 卡片字段统一：<strong>何时触发</strong> · <strong>谁</strong> · <strong>SLA</strong> · <strong>前置条件</strong> · <strong>如何做</strong> · <strong>系统</strong> · <strong>完成标准</strong> · <strong>升级条件</strong>。角色代码见§2.2。</p>
 <h3>6.0 字段说明</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>字段</th>
@@ -7264,10 +7441,26 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>抬升 L / Sev 的条件</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <h3>SOP-G01 — 限额变更（全产品）</h3>
-<table>
+<p><strong>图 — SOP-G01 限额变更</strong></p>
+<div class="viz"><div class="mermaid">sequenceDiagram
+  actor Req as 申请人
+  participant SYS as 系统 / RO-OPS
+  actor RO as Maker RO
+  actor CHK as Checker
+  participant RE as 风控引擎
+  Req->>SYS: 工单 旧到新 + 理由
+  SYS->>RO: 影响包
+  RO-->>Req: 驳回
+  RO->>CHK: A+ 级送四眼
+  CHK->>RE: 四眼通过
+  RO->>RE: 低于 A 级直接批
+  RE->>RE: 晋级配置 + 哈希
+  RE->>SYS: 超护 24h
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>字段</th>
@@ -7296,12 +7489,23 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>工单 · <code>/admin/risk/limits</code> · <code>waivers</code> · <code>/admin/risk-engine/configs</code> · <code>stress_testing.py</code></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>如何做：</strong> ① 开工单写清标的/字段/理由/关联 KRI ② 系统附影响包 ③ Maker 批/驳/附条件 ④ A+ 四眼 ⑤ RE 晋级并回写<strong>配置哈希</strong> ⑥ ME/产品 ACK ⑦ RO-OPS 超护 ⑧ 哈希+ACK+超护责任人齐全后关单。<br />
 <strong>完成：</strong> 生产哈希一致且超护无归因于该变更的异常突破。<br />
 <strong>升级：</strong> 紧急缺 Checker→CRO；部署失败→回滚+L2；客诉飙升→传播+L3。</p>
 <h3>SOP-G02 — 停牌 / 复牌（现货 vs 永续/杠杆）</h3>
-<table>
+<p><strong>图 — SOP-G02 停牌后复牌</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  T[TO 提议] --> RO[RO 批准]
+  RO --> ME[ME 停撮合]
+  ME --> RE[RE 定强平模式]
+  RE --> COM[传播 + 钱包政策]
+  COM --> CLR{根因已控?}
+  CLR -->|否| HOLD[继续停牌]
+  CLR -->|是| ACK[RO + ME + RE 确认]
+  ACK --> RES[分阶段复牌 + 超护 4h]
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>字段</th>
@@ -7326,12 +7530,23 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>原因码+范围；永续须明确<strong>仅停订单 vs 是否含强平</strong></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>停牌如何做：</strong> 建桥说明范围/原因/情景族 → RO 批 → ME 执行 → RE 按 RE-02 定强平模式 → 杠杆评估 MG-03 → 钱包默认保持提现 → 传播（永续须写资金费/强平）→ 书记员记时间线。<br />
 <strong>复牌如何做：</strong> 根因已控 + 撮合绿 + 永续标记新鲜 → RO+ME（+产品）双 ACK → 分阶段恢复 → 至少超护 4h。<br />
 <strong>升级：</strong> 需全局 Kill → L4 双控；停牌期间错标记 → Sev-1。</p>
 <h3>SOP-G03 — 告警确认（WARN / BREACH / KILL）</h3>
-<table>
+<p><strong>图 — SOP-G03 告警确认</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  A[告警 WARN / BREACH / KILL] --> ACK[RO-OPS 按 SLA 确认]
+  ACK --> DQ{数据新鲜?}
+  DQ -->|否| ENG[ENG-03 修管道]
+  DQ -->|是| FAM[选择情景族 S1-S12]
+  FAM --> ACT[按手册遏制]
+  ACT --> ESC{已遏制?}
+  ESC -->|否| L[升 L+1 / 战时]
+  ESC -->|是| HC[超护 + 工单]
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>字段</th>
@@ -7352,11 +7567,11 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>确认：WARN≤15 分 · BREACH≤5 分 · Kill/客户资产≤2 分；分类说明确认后≤10 分；BREACH 遏制方案≤15 分</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>如何做：</strong> 确认 → 查数据新鲜度（陈旧走 ENG-03）→ 真实则定主 KRI+±15m 组合+§9 族 → 核对自动动作 → 定 L 级呼叫 → Sev-1/2 开战时并排复盘（≤5 个工作日）。<br />
 <strong>升级：</strong> 确认超时自动呼 RO；两次 BREACH 仍无遏制 → L3。</p>
 <h3>SOP-G04 — Maker–Checker 与职责分离</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>字段</th>
@@ -7377,11 +7592,11 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>无 Checker 不得变更生产；破窗 ≤15 分且自动工单+呼叫</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>规则：</strong> 交易员不得自批；RE 部署者不得单独终批 A 级；钱包仪式 ≥2（宜 3）人；合规解冻双控；破窗限时+当日复核。<br />
 <strong>升级：</strong> 同人自批尝试 → 安全事件 L3。</p>
 <h3>SOP-G05 — 日终对账与结算</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>字段</th>
@@ -7402,11 +7617,22 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>日切后 ≤60 分出匹配；重大例外 ≤4h 老化；仅 <code>SettlementReady</code> 后打款</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>如何做：</strong> 跑匹配 → 例外分责 → 超重要性四眼 → 发 SettlementReady → TS 执行并留银行/链上凭证 → 按合规留存。<br />
 <strong>升级：</strong> 无法解释缺账 → L2/L3，评估停牌。</p>
 <h3>SOP-G06 — 新产品 / 新合约准入</h3>
-<table>
+<p><strong>图 — SOP-G06 新产品门禁（Phase 1 = 永续 + 邀请/经纪商）</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  Legal[法务] --> CP[合规]
+  CP --> LI[上币 + 风险意见]
+  LI --> Prod[产品清单]
+  Prod --> Eng[RE / ME 演练]
+  Eng --> WO[钱包就绪]
+  WO --> Acc[ACC-01 / ACC-02]
+  Acc --> Live[永续上线]
+  Spot[现货 / 杠杆] -.-> P2[Phase 2+ 冻结]
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>字段</th>
@@ -7427,7 +7653,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>各门禁按流水线看板；无风险+合规不得“软启”</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>门禁（不可乱序）：</strong> 法务 → 合规 → 上币尽调+风险意见(LD-01) → 产品清单 → RE/ME 演练 → 钱包链就绪 → 白名单/软启 → 超护 72h → 放量。  </p>
 <blockquote>
 <p><strong>Phase 1 门禁说明：</strong> 生产合约 = <strong>永续（含 XAUUSD）</strong>；准入 = <strong>ACC-01/02（邀请或经纪商）</strong>，非公众注册；现货/杠杆 = <strong><code>[Phase 2+]</code></strong>。
@@ -7519,7 +7745,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <p><strong>Vercel：</strong> 本手册<strong>没有</strong>部署在 Vercel。<code>https://prd.vercel.app/</code> 是另一个产品（LeadShark MVP PRD）。<br />
 下列 GitHub Pages 地址为<strong>公开文档桩页面</strong>（不是真实交易所后台）。</p>
 </blockquote>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>域</th>
@@ -7602,7 +7828,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>MM</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>逐页完整 URL 见 <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a> 与 <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/</a>。</p>
 <p><strong>ACL 原则：</strong> 最小权限；Kill/密钥/制裁覆盖/保险注资/A 级限额双控；变更不可篡改审计；破窗账户限时+自动工单+通知 CRO/CISO；分析尽量用只读副本。</p>
 <blockquote>
@@ -7611,7 +7837,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <hr />
 <h2>8. 限额、KRI、阈值、动作与升级</h2>
 <h3>8.1 读法</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>列</th>
@@ -7656,11 +7882,11 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>响应质量主责 BU</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>确认 SLA（RO-OPS）：</strong> WARN ≤15 分 · BREACH ≤5 分 · Kill/客户资产 ≤2 分。<br />
 阈值变更走 SOP-G01；标 <em>calib.</em> 须替换为《限额手册》数值。</p>
 <h3>8.2 升级阶梯</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>级别</th>
@@ -7695,11 +7921,17 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>立即+高管桥</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>图 — 升级阶梯</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  L1[L1 RO-OPS 工单] --> L2[L2 RO + BU PIC]
+  L2 --> L3[L3 CRO + ME + RE + 传播]
+  L3 --> L4[L4 ELT + 法务 + 合规 + CISO]
+</div></div>
 <h3>8.3 限额类型</h3>
 <p>软（WARN）/ 硬（BREACH）/ Kill（撮合总闸、提现冻结等）。</p>
 <h3>8.4 现货指标（摘要表）</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -7825,9 +8057,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>LI/RO</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>8.5 杠杆指标（摘要表）</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -7953,9 +8185,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>RO/DA</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>8.6 永续指标（摘要表）</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -8103,9 +8335,9 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>RO/TS</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>8.7 平台横切指标（摘要）</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -8175,7 +8407,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>无风险/合规放行却有流量 → 阻断上线</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>8.8 组合保证金（如启用）</h3>
 <p><strong>PM-K01</strong> 模型缺口 &gt;25% → 保守模式/关特性；<strong>PM-K02</strong> 现货–永续对冲破裂 → 追加保证金。</p>
 <h3>8.9 监控频率分层</h3>
@@ -8192,7 +8424,7 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <h2>9. 风险情景诊断（红黄绿 + 时序）</h2>
 <p>指标或组合变色时使用。<strong>禁止只看颜色</strong> — 先重建<strong>时序</strong>，再判别原因。</p>
 <h3>9.1 RAG 颜色映射</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>颜色</th>
@@ -8217,8 +8449,18 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td>先遏制再诊断；在证明是数据问题前按真实风险处理</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>要点：</strong> 绿不一定安全。标记源<strong>陈旧</strong>却仍显示绿（见 PL-K06）可掩盖真实红灯。看颜色必看<strong>最后更新时间戳</strong>。</p>
+<p><strong>图 — 红黄绿不是结论</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  G[绿] --> TS[先看时间戳]
+  A[黄 WARN] --> TRI[15 分分流]
+  R[红 BREACH] --> CON[5 分遏制]
+  TS -->|陈旧| S9[情景族 S9 假绿]
+  TS -->|新鲜| OK[健康或继续观察]
+  TRI --> FAM[时序后再定族]
+  CON --> FAM
+</div></div>
 <h3>9.2 强制诊断顺序</h3>
 <pre><code>1. 时钟  — 建时间线（T0 首异→Tn 现在），统一 UTC
 2. 范围  — 单 UID / 单标的 / 单资产 / 全站 / 跨产品？
@@ -8229,6 +8471,16 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 7. 行动  — 按 §8 遏制 → §8.2 升级 → 必要时战时
 8. 记录  — 工单写入时间线 + 采纳/排除原因
 </code></pre>
+<p><strong>图 — 诊断顺序（先时钟）</strong></p>
+<div class="viz"><div class="mermaid">flowchart LR
+  C[1 时钟] --> S[2 范围]
+  S --> D[3 数据]
+  D --> SI[4 单指标]
+  SI --> CL[5 组合]
+  CL --> X[6 排除]
+  X --> ACT[7 行动]
+  ACT --> W[8 写时间线]
+</div></div>
 <p><strong>时序语法：</strong> <code>A → B</code> 先因后果 · <code>A ≈ B</code> 同时/共同驱动 · <code>A ↛ B</code> 单 A 通常推不出 B · <code>A 静默后 B</code> 两阶段 · <code>A/R 振荡</code> 常为阈值噪声/源抖动/MM 重启。</p>
 <h3>9.3 单指标情景（绿/黄/红可能原因）</h3>
 <h4>现货 SP-K01 价差</h4>
@@ -8288,7 +8540,20 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 危机中全绿 → 看板指到预发环境或缓存快照（S9）。</p>
 <h3>9.4 多指标组合情景族（含时序）</h3>
-<table>
+<p><strong>图 — 同为红灯、顺序不同: S1 vs S2</strong></p>
+<div class="viz"><div class="mermaid">sequenceDiagram
+  participant Ext as 外盘
+  participant Feed as PL-K06 / PF-K02
+  participant Mark as PF-K01
+  participant Liq as PF-K06
+  Note over Ext,Liq: S1 真实风险抛售
+  Ext->>Mark: 先跌价
+  Mark->>Liq: 有机强平
+  Note over Ext,Liq: S2 错标记
+  Feed->>Mark: 管道/指数先坏
+  Mark->>Liq: 虚假强平
+</div></div>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>族</th>
@@ -8371,9 +8636,9 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <td>分项恢复含义不同</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>9.5 症状 → 情景族速查</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>大致顺序所见</th>
@@ -8443,7 +8708,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <td>通道/借款</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>9.6 时序工作示例</h3>
 <p><strong>例 A — 单独黄：</strong> <code>SP-K01 黄，深度/时延/管道绿</code> → 多为有意扩价或轻波动；深度若转红再按 S5。  </p>
 <p><strong>例 B — 红组合：</strong> 外盘 USDX 0.97 → MG-K08 红 → 多户 MG-K02/03 → 坏账与借款占用 → 热钱包黄 → <strong>判 S3</strong>，冻借款/调折扣，L3。  </p>
@@ -8463,7 +8728,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 </ol>
 <hr />
 <h2>10. 事件定级与战时指挥</h2>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>定级</th>
@@ -8493,14 +8758,25 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <td>值班</td>
 </tr>
 </tbody>
-</table>
+</table></div>
+<p><strong>图 — 战时席位（Sev-1）</strong></p>
+<div class="viz"><div class="mermaid">flowchart TB
+  IC[事件指挥官]
+  IC --- RO[风险]
+  IC --- ME[撮合]
+  IC --- RE[风控引擎]
+  IC --- WO[钱包]
+  IC --- COM[传播]
+  IC --- CP[合规]
+  IC --- SCR[记录员]
+</div></div>
 <p><strong>战时常设角色：</strong> 事件指挥官 · 风险 · 撮合 · 风控引擎 · 钱包 · 传播 · 合规 · 记录员  </p>
 <p><strong>必须记录：</strong> 时间线（§9 时钟）、改过的配置、期间订单/强平、采纳的情景族（S1–S12）、客户影响、永久修复负责人。  </p>
 <p><strong>情景→定级提示：</strong> S2 大规模错强平 · 带 PL-K08 的 S8 · 危机中 S9 → 先按 <strong>Sev-1</strong>；S5 单币 MM → 常 Sev-3；S1 有序抛售且保险仍绿 → Sev-2/3 运维模式。</p>
 <hr />
 <h2>11. 附录 — 术语与检查清单</h2>
 <h3>11.1 术语</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>术语</th>
@@ -8569,7 +8845,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <td>协议下的 IB/引入经纪商客户</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <h3>11.2 BU PIC 每周清单</h3>
 <ul>
 <li>[ ] 复核未关闭 WARN/BREACH 与临期豁免（含确认超时）  </li>
@@ -8600,7 +8876,7 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 <h3>11.5 现货上线清单（摘要） <code>[Phase 2+]</code></h3>
 <p>尽调完成；正确链充提且 PL-K01 缓冲 OK；tick/lot/带/STP/费率及 K03/K05；做市 SLA 或薄盘披露及 K01/K02；停牌权限测通（K06）。</p>
 <h3>11.6 文档控制</h3>
-<table>
+<div class="table-wrap"><table>
 <thead>
 <tr>
 <th>项</th>
@@ -8626,56 +8902,68 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；<br />
 </tr>
 <tr>
 <td>版本</td>
-<td>1.6 — Phase 1 标签：仅永续（含 XAUUSD）+ 邀请/经纪商</td>
+<td>1.7 — 英中示意图与可读性增强</td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <hr />
 <p><em>本手册（简体）正文结束。工单模板、告警路由与自动化归属见仓库根目录模块及用例叙述流程图。</em></p>
     </article>
   </div>
-  <script>
-    (function () {
-      const tabs = document.querySelectorAll('[role="tab"]');
-      const panels = {
-        en: document.getElementById('panel-en'),
-        zh: document.getElementById('panel-zh')
-      };
-      function activate(key) {
-        tabs.forEach(function (t) {
-          const on = t.getAttribute('data-tab') === key;
-          t.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-        Object.keys(panels).forEach(function (k) {
-          const on = k === key;
-          panels[k].classList.toggle('active', on);
-          panels[k].hidden = !on;
-        });
-        try { localStorage.setItem('risk-handbook-tab', key); } catch (e) {}
-        if (history.replaceState) {
-          history.replaceState(null, '', '#' + key);
-        }
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "base",
+      securityLevel: "loose",
+      themeVariables: {
+        fontFamily: "Georgia, Source Serif 4, Noto Serif SC, serif",
+        primaryColor: "#ecfdf5",
+        primaryTextColor: "#14532d",
+        primaryBorderColor: "#86efac",
+        lineColor: "#57534e",
+        secondaryColor: "#fff7ed",
+        tertiaryColor: "#f8fafc"
       }
-      var tablist = document.querySelector('.tabs');
-      function onTabActivate(ev) {
-        var t = ev.target && ev.target.closest ? ev.target.closest('[role="tab"]') : null;
-        if (!t || !tablist.contains(t)) return;
-        ev.preventDefault();
-        activate(t.getAttribute('data-tab'));
-      }
-      tablist.addEventListener('click', onTabActivate);
-      tablist.addEventListener('pointerup', onTabActivate);
-      var initial = 'en';
-      if (location.hash === '#zh' || location.hash === '#zh-CN') initial = 'zh';
-      else if (location.hash === '#en') initial = 'en';
-      else {
-        try {
-          var saved = localStorage.getItem('risk-handbook-tab');
-          if (saved === 'en' || saved === 'zh') initial = saved;
-        } catch (e) {}
-      }
-      activate(initial);
-    })();
+    });
+    async function draw(root) {
+      const nodes = root.querySelectorAll(".mermaid:not([data-processed])");
+      if (!nodes.length) return;
+      await mermaid.run({ nodes });
+    }
+    const tabs = document.querySelectorAll("[role='tab']");
+    const panels = {
+      en: document.getElementById("panel-en"),
+      zh: document.getElementById("panel-zh")
+    };
+    function activate(key) {
+      tabs.forEach(function (t) {
+        t.setAttribute("aria-selected", t.getAttribute("data-tab") === key ? "true" : "false");
+      });
+      Object.keys(panels).forEach(function (k) {
+        const on = k === key;
+        panels[k].classList.toggle("active", on);
+        panels[k].hidden = !on;
+      });
+      try { localStorage.setItem("risk-handbook-tab", key); } catch (e) {}
+      if (history.replaceState) history.replaceState(null, "", "#" + key);
+      draw(panels[key]);
+    }
+    document.querySelector(".tabs").addEventListener("click", function (ev) {
+      const t = ev.target.closest("[role='tab']");
+      if (!t) return;
+      activate(t.getAttribute("data-tab"));
+    });
+    var initial = "en";
+    if (location.hash === "#zh" || location.hash === "#zh-CN") initial = "zh";
+    else if (location.hash === "#en") initial = "en";
+    else {
+      try {
+        var saved = localStorage.getItem("risk-handbook-tab");
+        if (saved === "en" || saved === "zh") initial = saved;
+      } catch (e) {}
+    }
+    activate(initial);
   </script>
 </body>
 </html>
