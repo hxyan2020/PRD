@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { UatChecklistBoard } from "@/components/UatChecklistBoard";
 import { PageHeader, Badge } from "@/components/ui";
+import { VantageMark } from "@/components/VantageLogo";
 import { resolveDocLocale } from "@/lib/docs";
 import { getUiLocale } from "@/lib/i18n-server";
 import { uatSummary } from "@/lib/docs/uat-cases";
@@ -43,6 +44,7 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
 
       <div className="panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex flex-wrap gap-2 items-center">
+          <VantageMark className="h-8 w-8" />
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-UAT-001</Badge>
           <Badge className="bg-rose-50 text-rose-900 border-rose-200">
             Critical × {summary.bySev.Critical}

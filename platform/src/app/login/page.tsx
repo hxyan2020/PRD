@@ -17,9 +17,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <section className="relative overflow-hidden bg-[linear-gradient(145deg,#0f2438_0%,#0b6e6a_55%,#c45c26_120%)] text-white p-6 sm:p-10 flex flex-col justify-between min-h-[42vh] lg:min-h-screen">
+      <section className="relative overflow-hidden bg-[#044855] text-white p-6 sm:p-10 flex flex-col justify-between min-h-[42vh] lg:min-h-screen">
         <div>
-          <VantageLogo inverted markClassName="h-12 w-12" />
+          <VantageLogo inverted markClassName="h-16 w-16 sm:h-20 sm:w-20" />
           <h1 className="mt-3 sm:mt-4 font-[family-name:var(--font-display)] text-3xl sm:text-4xl leading-tight max-w-md">
             {t("login.title", locale)}
           </h1>
@@ -70,6 +70,9 @@ export default function LoginPage() {
                 繁體中文
               </button>
             </div>
+          </div>
+          <div className="lg:hidden mb-4">
+            <VantageLogo markClassName="h-10 w-10" />
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl">{t("login.signIn", locale)}</h2>
           <p className="mt-1 text-sm text-[var(--muted)]">{t("login.hint", locale)}</p>

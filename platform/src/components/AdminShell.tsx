@@ -179,7 +179,9 @@ export function AdminShell({
   const nav = (
     <>
       <div className="pr-8 lg:pr-0">
-        <VantageLogo inverted showWordmark markClassName="h-9 w-9" />
+        <Link href="/admin" className="inline-flex" onClick={() => setOpen(false)}>
+          <VantageLogo inverted showWordmark markClassName="h-10 w-10" />
+        </Link>
         <div className="mt-2 text-xs text-slate-300">{copy.brandSub}</div>
       </div>
 
@@ -312,9 +314,9 @@ export function AdminShell({
                 </button>
               </div>
               <div className="min-w-0">
-                <div className="hidden sm:flex items-center gap-2">
+                <Link href="/admin" className="flex items-center gap-2 min-w-0">
                   <VantageLogo markClassName="h-8 w-8" showWordmark={false} />
-                  <div>
+                  <div className="min-w-0">
                     <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
                       {copy.headerEyebrow}
                     </div>
@@ -322,13 +324,7 @@ export function AdminShell({
                       {copy.headerTitle}
                     </div>
                   </div>
-                </div>
-                <div className="sm:hidden text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
-                  {copy.headerEyebrow}
-                </div>
-                <div className="sm:hidden font-[family-name:var(--font-display)] text-sm text-[var(--ink)] truncate">
-                  {copy.headerTitle}
-                </div>
+                </Link>
                 {sessionUser.role_code === "PUBLIC_GUEST" && (
                   <div className="text-[10px] sm:text-xs text-teal-800">{copy.publicMode}</div>
                 )}

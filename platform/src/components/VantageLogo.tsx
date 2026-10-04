@@ -1,3 +1,21 @@
+/** Official Vantage Markets mark (teal square, white chevron, orange triangle). */
+export function VantageMark({ className = "h-8 w-8" }: { className?: string }) {
+  return (
+    <svg
+      className={`block shrink-0 rounded-lg ${className}`}
+      viewBox="0 0 447 447"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Vantage Markets"
+    >
+      <title>Vantage Markets</title>
+      <rect width="447" height="447" fill="#044855" />
+      <path d="M120 128h50l78 144-25 46Z" fill="#ffffff" />
+      <path d="M191 127h136L260 251V169Z" fill="#e45729" />
+    </svg>
+  );
+}
+
 export function VantageLogo({
   className = "",
   markClassName = "h-8 w-8",
@@ -10,26 +28,15 @@ export function VantageLogo({
   inverted?: boolean;
 }) {
   const ink = inverted ? "#f4f7fb" : "#10233a";
-  const teal = inverted ? "#5eead4" : "#0b6e6a";
-  const accent = inverted ? "#fb923c" : "#c45c26";
+  const teal = inverted ? "#99f6e4" : "#0b6e6a";
   return (
-    <div className={`inline-flex items-center gap-2 min-w-0 ${className}`}>
-      <svg
-        className={markClassName}
-        viewBox="0 0 48 48"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-hidden="true"
-      >
-        <rect x="1" y="1" width="46" height="46" rx="12" fill={inverted ? "#0f2438" : "#10233a"} />
-        <path d="M10 16h8.2L24 34l5.8-18H38L24 42 10 16Z" fill={teal} />
-        <path d="M16.5 8h15L24 22 16.5 8Z" fill={accent} />
-      </svg>
+    <div className={`inline-flex items-center gap-2.5 min-w-0 ${className}`}>
+      <VantageMark className={markClassName} />
       {showWordmark ? (
-        <span className="leading-tight">
+        <span className="leading-tight min-w-0">
           <span
             className="block text-[10px] uppercase tracking-[0.14em]"
-            style={{ color: inverted ? "#99f6e4" : "#0b6e6a" }}
+            style={{ color: teal }}
           >
             Vantage Markets
           </span>

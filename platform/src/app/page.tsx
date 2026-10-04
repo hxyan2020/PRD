@@ -1,18 +1,22 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isStaticExport, publicAdminHref } from "@/lib/static-export";
+import { VantageLogo } from "@/components/VantageLogo";
 
 export default function HomePage() {
   if (!isStaticExport()) redirect("/admin");
   const href = publicAdminHref("/admin/");
   return (
-    <main className="min-h-screen grid place-items-center p-8">
+    <main className="min-h-screen grid place-items-center p-8 bg-[#044855] text-white">
       <meta httpEquiv="refresh" content={`0;url=${href}`} />
-      <p>
-        <Link className="text-teal-800 underline" href="/admin">
-          Open CRMP Admin
-        </Link>
-      </p>
+      <div className="text-center">
+        <VantageLogo inverted markClassName="h-16 w-16 mx-auto" className="justify-center" />
+        <p className="mt-4">
+          <Link className="text-white underline" href="/admin">
+            Open CRMP Admin
+          </Link>
+        </p>
+      </div>
     </main>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { VantageMark } from "@/components/VantageLogo";
 import { AdminLink } from "@/components/AdminLink";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
@@ -340,7 +341,10 @@ export function DemoMessenger({
         }`}
       >
         <div className="flex items-center justify-between gap-2 mb-3">
-          <h2 className="font-semibold text-sm sm:text-base">{t("msg.channels", locale)}</h2>
+          <div className="flex items-center gap-2 min-w-0">
+            <VantageMark className="h-7 w-7" />
+            <h2 className="font-semibold text-sm sm:text-base">{t("msg.channels", locale)}</h2>
+          </div>
           <button type="button" className="btn text-xs !min-h-9" disabled={busy} onClick={() => run("sync")}>
             {t("msg.sync", locale)}
           </button>
