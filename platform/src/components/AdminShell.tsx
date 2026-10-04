@@ -9,7 +9,7 @@ import type { SessionUser } from "@/lib/types";
 import { LogOut, LogIn, Menu, X } from "lucide-react";
 import { UI_LOCALE_COOKIE, navLabel, shellCopy, type UiLocale } from "@/lib/i18n";
 import { VantageLogo } from "@/components/VantageLogo";
-import { clearDemoSession, readDemoSession } from "@/lib/demo-session";
+import { DEMO_SESSION_EVENT, clearDemoSession, defaultPersona, loginHref, readDemoSession, signInPersona } from "@/lib/demo-session";
 import { isPublicSnapshot } from "@/lib/static-export";
 import { ownerLine } from "@/lib/platform-owner";
 import {
@@ -59,15 +59,20 @@ export function AdminShell({
   const copy = shellCopy(locale);
 
   useEffect(() => {
+    function applyDemo() {
+      const demo = readDemoSession();
+      if (demo && (user.role_code === "PUBLIC_GUEST" || user.id === 0)) {
+        setSessionUser(demo);
+      } else {
+        setSessionUser(user);
+      }
+    }
     setLocale(readLocaleCookie());
     setSeen(readJsonRecord(NAV_SEEN_KEY));
     setExtra(readJsonRecord(NAV_EXTRA_KEY));
-    const demo = readDemoSession();
-    if (demo && (user.role_code === "PUBLIC_GUEST" || user.id === 0)) {
-      setSessionUser(demo);
-    } else {
-      setSessionUser(user);
-    }
+    applyDemo();
+    window.addEventListener(DEMO_SESSION_EVENT, applyDemo);
+    return () => window.removeEventListener(DEMO_SESSION_EVENT, applyDemo);
   }, [user]);
 
   useEffect(() => {
@@ -137,7 +142,12 @@ export function AdminShell({
     if (!isPublicSnapshot()) {
       await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
     }
-    router.push("/login");
+    router.push("/admin");
+    router.refresh();
+  }
+
+  async function signInHere() {
+    await signInPersona(defaultPersona());
     router.refresh();
   }
 
@@ -231,9 +241,18 @@ export function AdminShell({
         <div className="mt-2 text-[10px] text-slate-400">{ownerLine(locale)}</div>
         <div className="mt-3">{langToggle}</div>
         {sessionUser.role_code === "PUBLIC_GUEST" ? (
-          <Link href="/login" className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10">
-            <LogIn size={14} /> {copy.signIn}
-          </Link>
+          <div className="mt-3 space-y-1">
+            <button
+              type="button"
+              onClick={signInHere}
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10"
+            >
+              <LogIn size={14} /> {copy.signIn}
+            </button>
+            <a href={loginHref()} className="block text-[11px] text-slate-400 hover:text-white min-h-8">
+              {locale === "zh-Hant" ? "其他角色…" : "Other roles…"}
+            </a>
+          </div>
         ) : (
           <button
             onClick={logout}

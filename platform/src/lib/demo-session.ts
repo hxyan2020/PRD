@@ -1,8 +1,10 @@
 import { PLATFORM_OWNER } from "@/lib/platform-owner";
 import type { RoleCode, DepartmentCode, SessionUser } from "@/lib/types";
+import { isPublicSnapshot, publicBasePath } from "@/lib/static-export";
 
 export const DEMO_SESSION_KEY = "crmp_demo_session_v1";
 export const DEMO_SESSION_COOKIE = "crmp_demo_session";
+export const DEMO_SESSION_EVENT = "crmp-demo-session";
 
 export type DemoPersona = {
   email: string;
@@ -14,7 +16,25 @@ export type DemoPersona = {
   labelZh: string;
 };
 
+/** Cursor / GitHub owner of this desk — signed-in identity for Haixiang Yan. */
+export const PERSONAL_ACCOUNT = {
+  email: "hxyan.2015@gmail.com",
+  password: PLATFORM_OWNER.password,
+  name: "Haixiang Yan",
+  role_code: "SUPER_ADMIN" as const,
+  department_code: "RISK_CONTROL" as const,
+};
+
 export const DEMO_PERSONAS: DemoPersona[] = [
+  {
+    email: PERSONAL_ACCOUNT.email,
+    password: PERSONAL_ACCOUNT.password,
+    name: PERSONAL_ACCOUNT.name,
+    role_code: PERSONAL_ACCOUNT.role_code,
+    department_code: PERSONAL_ACCOUNT.department_code,
+    labelEn: "Haixiang Yan",
+    labelZh: "Haixiang Yan",
+  },
   {
     email: PLATFORM_OWNER.email,
     password: PLATFORM_OWNER.password,
@@ -89,6 +109,16 @@ export function findPersona(email: string, password: string) {
   );
 }
 
+export function defaultPersona() {
+  return DEMO_PERSONAS[0];
+}
+
+function cookiePath() {
+  if (typeof window === "undefined") return "/";
+  if (window.location.pathname.includes("/PRD/crmp-admin")) return "/PRD/crmp-admin";
+  return "/";
+}
+
 export function readDemoSession(): SessionUser | null {
   if (typeof window === "undefined") return null;
   try {
@@ -105,11 +135,45 @@ export function readDemoSession(): SessionUser | null {
 export function writeDemoSession(user: SessionUser) {
   if (typeof window === "undefined") return;
   localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(user));
-  document.cookie = `${DEMO_SESSION_COOKIE}=1; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
+  document.cookie = `${DEMO_SESSION_COOKIE}=1; path=${cookiePath()}; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
+  window.dispatchEvent(new Event(DEMO_SESSION_EVENT));
 }
 
 export function clearDemoSession() {
   if (typeof window === "undefined") return;
   localStorage.removeItem(DEMO_SESSION_KEY);
-  document.cookie = `${DEMO_SESSION_COOKIE}=; path=/; max-age=0; samesite=lax`;
+  document.cookie = `${DEMO_SESSION_COOKIE}=; path=${cookiePath()}; max-age=0; samesite=lax`;
+  window.dispatchEvent(new Event(DEMO_SESSION_EVENT));
+}
+
+/** Login lives under `/admin` so GitHub Pages never 404s (root `/login` leaves the snapshot). */
+export function loginHref() {
+  const suffix = "/admin/login";
+  if (typeof window !== "undefined") {
+    if (isPublicSnapshot()) {
+      const base = publicBasePath() || "/PRD/crmp-admin";
+      return `${base}${suffix}/`;
+    }
+    return suffix;
+  }
+  if (isPublicSnapshot() || process.env.NEXT_PUBLIC_STATIC_EXPORT === "1") {
+    const base = publicBasePath() || "/PRD/crmp-admin";
+    return `${base}${suffix}/`;
+  }
+  return suffix;
+}
+
+export async function signInPersona(persona: DemoPersona) {
+  writeDemoSession(personaToUser(persona));
+  if (typeof window === "undefined" || isPublicSnapshot()) return true;
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: persona.email, password: persona.password }),
+    });
+    return res.ok || res.status === 404 || res.status === 405;
+  } catch {
+    return true;
+  }
 }

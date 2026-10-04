@@ -13,7 +13,8 @@ export const PUBLIC_MESSENGER_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/messenger/`;
 
 export const PLATFORM_URLS: UrlEntry[] = [
   // Auth
-  { category: "Auth", title: "Login", path: "/login", description: "Credential login for CRMP Admin" },
+  { category: "Auth", title: "Login", path: "/login", description: "Full-page credential login (bookmark). Prefer /admin/login from the desk." },
+  { category: "Auth", title: "Admin Login", path: "/admin/login", description: "Sign in inside the admin shell — never 404s on GitHub Pages" },
   { category: "API", title: "Auth Login", path: "/api/auth/login", description: "POST email/password → session cookie" },
   { category: "API", title: "Auth Me", path: "/api/auth/me", description: "GET current session user" },
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },

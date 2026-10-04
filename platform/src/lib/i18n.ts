@@ -51,6 +51,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "點任何卡片即可開啟對應頁面 — 計數、部門、警報、Messenger 示範與其他功能。",
     },
   },
+  login: {
+    title: { en: "Sign in", "zh-Hant": "登入" },
+    subtitle: {
+      en: "Use Haixiang Yan or another demo role. The session stays in this browser after refresh.",
+      "zh-Hant": "使用 Haixiang Yan 或其他示範角色。重新整理後工作階段仍會保留。",
+    },
+  },
   dashboard: {
     title: { en: "Daily Performance Dashboard", "zh-Hant": "每日績效儀表板" },
     subtitle: {

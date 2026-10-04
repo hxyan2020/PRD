@@ -27,7 +27,7 @@ import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
 import { EnZh } from "@/components/EnZh";
-import { PLATFORM_OWNER } from "@/lib/platform-owner";
+import { SignInOwnerCard } from "@/components/SignInOwnerCard";
 import { PUBLIC_MESSENGER_URL } from "@/lib/static-export";
 import { cn } from "@/lib/utils";
 
@@ -134,25 +134,7 @@ export default async function AdminDashboardPage() {
       <AdminPageHeader pageKey="home" actions={actions} />
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 mb-4">
-        <Link
-          href="/login"
-          className="panel card-link group p-4 flex items-center justify-between gap-3"
-        >
-          <div className="min-w-0">
-            <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
-              <EnZh en={PLATFORM_OWNER.titleEn} zh={PLATFORM_OWNER.titleZh} />
-            </div>
-            <div className="font-semibold text-lg mt-0.5">{PLATFORM_OWNER.name}</div>
-            <div className="text-sm text-[var(--muted)] break-word">{PLATFORM_OWNER.email}</div>
-            <div className="mt-2 text-xs font-semibold text-teal-800">
-              <EnZh en="Sign in as platform owner" zh="以平台負責人登入" />
-            </div>
-          </div>
-          <ChevronRight
-            className="h-5 w-5 shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-teal-700"
-            aria-hidden
-          />
-        </Link>
+        <SignInOwnerCard />
 
         <Link
           href="/admin/messenger"

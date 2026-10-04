@@ -542,6 +542,7 @@ function seedIfEmpty(db: Database.Database) {
   insertUser.run("admin@vantagemarkets.com", "Platform Admin", "admin123", "SUPER_ADMIN", null, null);
   insertUser.run("viewer@vantagemarkets.com", "Board Viewer", "view123", "VIEWER", null, null);
   insertUser.run("yan.haixiang@vantagemarkets.com", "YAN Haixiang", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
+  insertUser.run("hxyan.2015@gmail.com", "Haixiang Yan", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
 
   const insertSource = db.prepare(
     `INSERT INTO data_sources (name, category, url, description, owner_department, auth_type, refresh_cadence, status, tags_json, notes)
@@ -769,20 +770,33 @@ function ensureExtraMonitors(db: Database.Database) {
   }
 }
 
-function ensurePlatformOwner(db: Database.Database) {
+function ensureUser(
+  db: Database.Database,
+  email: string,
+  name: string,
+  password: string,
+  role: string,
+  department: string | null,
+  teamId: number | null
+) {
   const existing = db
     .prepare(`SELECT id FROM users WHERE lower(email) = lower(?)`)
-    .get("yan.haixiang@vantagemarkets.com") as { id: number } | undefined;
+    .get(email) as { id: number } | undefined;
   if (!existing) {
     db.prepare(
       `INSERT INTO users (email, name, password, role_code, department_code, team_id, status)
        VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE')`
-    ).run("yan.haixiang@vantagemarkets.com", "YAN Haixiang", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
+    ).run(email, name, password, role, department, teamId);
   } else {
     db.prepare(
-      `UPDATE users SET name = ?, role_code = ?, department_code = ?, status = 'ACTIVE' WHERE id = ?`
-    ).run("YAN Haixiang", "SUPER_ADMIN", "RISK_CONTROL", existing.id);
+      `UPDATE users SET name = ?, password = ?, role_code = ?, department_code = ?, status = 'ACTIVE' WHERE id = ?`
+    ).run(name, password, role, department, existing.id);
   }
+}
+
+function ensurePlatformOwner(db: Database.Database) {
+  ensureUser(db, "yan.haixiang@vantagemarkets.com", "YAN Haixiang", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
+  ensureUser(db, "hxyan.2015@gmail.com", "Haixiang Yan", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
 }
 
 function ensureAiLayer(db: Database.Database) {

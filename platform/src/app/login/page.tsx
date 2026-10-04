@@ -1,87 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { VantageLogo } from "@/components/VantageLogo";
-import { DEMO_PERSONAS, findPersona, personaToUser, writeDemoSession } from "@/lib/demo-session";
-import { isPublicSnapshot } from "@/lib/static-export";
 import { ownerLine } from "@/lib/platform-owner";
+import { LoginForm } from "@/components/LoginForm";
 
 export default function LoginPage() {
-  const router = useRouter();
   const { locale, setLocale } = useUiLocale();
-  const [email, setEmail] = useState(DEMO_PERSONAS[0].email);
-  const [password, setPassword] = useState(DEMO_PERSONAS[0].password);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   function pickLang(next: UiLocale) {
     setLocale(next);
-  }
-
-  function persistPersona(emailValue: string, passwordValue: string) {
-    const persona = findPersona(emailValue, passwordValue);
-    if (!persona) return false;
-    writeDemoSession(personaToUser(persona));
-    return true;
-  }
-
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    if (isPublicSnapshot()) {
-      if (!persistPersona(email, password)) {
-        setLoading(false);
-        setError(t("login.failed", locale));
-        return;
-      }
-      setLoading(false);
-      router.push("/admin");
-      router.refresh();
-      return;
-    }
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      if (res.status === 404 || res.status === 405) {
-        if (!persistPersona(email, password)) {
-          setLoading(false);
-          setError(t("login.failed", locale));
-          return;
-        }
-        setLoading(false);
-        router.push("/admin");
-        router.refresh();
-        return;
-      }
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        setLoading(false);
-        setError(data.error || t("login.failed", locale));
-        return;
-      }
-      persistPersona(email, password);
-      setLoading(false);
-      router.push("/admin");
-      router.refresh();
-    } catch {
-      if (!persistPersona(email, password)) {
-        setLoading(false);
-        setError(t("login.failed", locale));
-        return;
-      }
-      setLoading(false);
-      router.push("/admin");
-      router.refresh();
-    }
   }
 
   return (
@@ -145,48 +76,8 @@ export default function LoginPage() {
           <Link href="/admin" className="btn btn-primary mt-4 w-full justify-center">
             {locale === "zh-Hant" ? "無需登入，進入後台" : "Enter admin without signing in"}
           </Link>
-
-          <form onSubmit={onSubmit} className="mt-6 panel p-5 space-y-4">
-            <div>
-              <label className="label">{t("login.email", locale)}</label>
-              <input className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div>
-              <label className="label">{t("login.password", locale)}</label>
-              <input
-                className="input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            {error && (
-              <div className="text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">{error}</div>
-            )}
-            <button className="btn btn-primary w-full justify-center" disabled={loading}>
-              {loading
-                ? locale === "zh-Hant"
-                  ? "登入中…"
-                  : "Signing in…"
-                : t("login.submit", locale)}
-            </button>
-          </form>
-
-          <div className="mt-3 text-xs text-[var(--muted)]">{t("login.demoRoles", locale)}</div>
-          <div className="mt-2 action-row">
-            {DEMO_PERSONAS.map((d) => (
-              <button
-                key={d.email}
-                type="button"
-                className="btn flex-1 sm:flex-none"
-                onClick={() => {
-                  setEmail(d.email);
-                  setPassword(d.password);
-                }}
-              >
-                {locale === "zh-Hant" ? d.labelZh : d.labelEn}
-              </button>
-            ))}
+          <div className="mt-6">
+            <LoginForm />
           </div>
         </div>
       </section>

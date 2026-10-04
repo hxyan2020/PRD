@@ -42,7 +42,7 @@ graph TD
 ### 2.1 Open the login page
 
 1. Click **Sign in** in the left pane (safest on GitHub Pages).  
-2. Or open [`/login`](/login). On the public snapshot that is `/PRD/crmp-admin/login/` — do not type `/login` on `github.io` without the `/PRD/crmp-admin` prefix, or you will get a 404.
+2. Or open [`/admin/login`](/admin/login) (safest). The old [`/login`](/login) page still exists, but on GitHub Pages you must use `/PRD/crmp-admin/login/` or `/PRD/crmp-admin/admin/login/` — plain `github.io/login` is a 404.
 
 The admin is public in this prototype. Sign in only when you want a **named role** (so maker/checker and permissions behave like production).
 

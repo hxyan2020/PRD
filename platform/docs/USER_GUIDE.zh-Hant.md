@@ -42,7 +42,7 @@ graph TD
 ### 2.1 打開登入頁
 
 1. 點左側 **登入**（在 GitHub Pages 最穩妥）。  
-2. 或開啟 [`/login`](/login)。公開快照上是 `/PRD/crmp-admin/login/` — 不要只在 `github.io` 根路徑打 `/login`，會 404。
+2. 或開啟 [`/admin/login`](/admin/login)（最穩）。舊的 [`/login`](/login) 仍在，但 GitHub Pages 要用 `/PRD/crmp-admin/login/` 或 `/PRD/crmp-admin/admin/login/` — 只打 `github.io/login` 會 404。
 
 本原型管理後台是公開的。只有要用**具名角色**（讓 Maker／Checker 與權限像正式環境）時才需登入。
 
