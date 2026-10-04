@@ -326,15 +326,21 @@ CSS = r"""
 """
 
 JS = r"""
-  <script src="./vendor/mermaid.min.js"></script>
+  <script src="./vendor/mermaid.min.js" defer></script>
   <script>
     (function () {
       document.body.classList.add("js-ok");
+      var tabs = document.querySelectorAll("[role='tab']");
+      var panels = {
+        en: document.getElementById("panel-en"),
+        zh: document.getElementById("panel-zh")
+      };
+      var mermaidReady = false;
       function initMermaid() {
         if (typeof mermaid === "undefined") {
           document.body.classList.remove("js-ok");
           document.body.classList.add("js-fail");
-          return;
+          return false;
         }
         mermaid.initialize({
           startOnLoad: false,
@@ -350,27 +356,22 @@ JS = r"""
             tertiaryColor: "#f8fafc"
           }
         });
+        mermaidReady = true;
+        return true;
       }
       async function draw(root) {
-        if (typeof mermaid === "undefined") return;
+        if (!mermaidReady && typeof mermaid !== "undefined") initMermaid();
+        if (!mermaidReady) return;
         var nodes = root.querySelectorAll(".mermaid:not([data-processed])");
         if (!nodes.length) return;
         for (var i = 0; i < nodes.length; i++) {
           try {
             await mermaid.run({ nodes: [nodes[i]] });
           } catch (err) {
-            nodes[i].insertAdjacentHTML(
-              "afterend",
-              '<p class="mermaid-error">Diagram source kept in the always-on board above.</p>'
-            );
+            nodes[i].setAttribute("data-failed", "1");
           }
         }
       }
-      var tabs = document.querySelectorAll("[role='tab']");
-      var panels = {
-        en: document.getElementById("panel-en"),
-        zh: document.getElementById("panel-zh")
-      };
       function activate(key) {
         tabs.forEach(function (t) {
           t.setAttribute("aria-selected", t.getAttribute("data-tab") === key ? "true" : "false");
@@ -382,14 +383,9 @@ JS = r"""
         });
         try { localStorage.setItem("risk-handbook-tab", key); } catch (e) {}
         if (history.replaceState) history.replaceState(null, "", "#" + key);
-        draw(panels[key]);
+        setTimeout(function () { draw(panels[key]); }, 0);
       }
       document.querySelector(".tabs").addEventListener("click", function (ev) {
-        var t = ev.target.closest("[role='tab']");
-        if (!t) return;
-        activate(t.getAttribute("data-tab"));
-      });
-      document.querySelector(".tabs").addEventListener("pointerup", function (ev) {
         var t = ev.target.closest("[role='tab']");
         if (!t) return;
         activate(t.getAttribute("data-tab"));
@@ -403,11 +399,13 @@ JS = r"""
           if (saved === "en" || saved === "zh") initial = saved;
         } catch (e) {}
       }
-      try { initMermaid(); } catch (e) {
-        document.body.classList.remove("js-ok");
-        document.body.classList.add("js-fail");
-      }
       activate(initial);
+      window.addEventListener("load", function () {
+        try { initMermaid(); draw(panels[initial]); } catch (e) {
+          document.body.classList.remove("js-ok");
+          document.body.classList.add("js-fail");
+        }
+      });
     })();
   </script>
 """
