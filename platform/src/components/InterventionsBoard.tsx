@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { AdminLink } from "@/components/AdminLink";
 import { decideInterventionAction } from "@/app/admin/interventions/actions";
 
 type Intervention = {
@@ -100,9 +101,9 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                 </div>
                 <p className="text-sm mt-2 text-slate-700">{detail.description || i.summary}</p>
               </div>
-              <a className="btn" href={`/admin/ai-analyses/${i.analysis_id}`}>
+              <AdminLink className="btn" href={`/admin/ai-analyses/${i.analysis_id}`}>
                 Evidence
-              </a>
+              </AdminLink>
             </div>
 
             {i.status === "PENDING" ? (

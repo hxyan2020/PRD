@@ -12,6 +12,7 @@ import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
 import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
+import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -779,6 +780,7 @@ function ensureAiLayer(db: Database.Database) {
   seedRiskLogIfEmpty(db);
   ensureMarketIntelSchema(db);
   ensureChallengerSchema(db);
+  seedAiAnalysesIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
   const upsert = db.prepare(

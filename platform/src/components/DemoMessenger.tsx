@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { AdminLink } from "@/components/AdminLink";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
 
@@ -450,9 +451,9 @@ export function DemoMessenger({
                       {m.body}
                     </pre>
                     {typeof meta.admin_url === "string" ? (
-                      <a className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
+                      <AdminLink className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
                         {t("msg.openInAdmin", locale)}
-                      </a>
+                      </AdminLink>
                     ) : null}
                   </div>
                 );
@@ -517,9 +518,9 @@ export function DemoMessenger({
                             >
                               {t("msg.checkerApprove", locale)}
                             </button>
-                            <a className="btn" href={detail.admin_path || "/admin/interventions"}>
+                            <AdminLink className="btn" href={detail.admin_path || "/admin/interventions"}>
                               {t("msg.openAdmin", locale)}
-                            </a>
+                            </AdminLink>
                           </>
                         ) : confirmId === p.id ? (
                           <>

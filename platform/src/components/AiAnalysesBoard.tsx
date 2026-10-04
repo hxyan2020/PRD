@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { AdminLink } from "@/components/AdminLink";
+import { publicAdminHref } from "@/lib/static-export";
 
 type Analysis = {
   id: number;
@@ -62,7 +64,7 @@ export function AiAnalysesBoard({
     router.refresh();
     if (action === "simulate_alarm" && detailId) {
       // Hard navigate so detail is immediately visible
-      window.location.href = `/admin/ai-analyses/${detailId}`;
+      window.location.href = publicAdminHref(`/admin/ai-analyses/${detailId}`);
     }
   }
 
@@ -191,13 +193,12 @@ export function AiAnalysesBoard({
                 </div>
                 <p className="text-sm mt-2 text-slate-700 break-word">{a.summary}</p>
               </div>
-              <a
+              <AdminLink
                 className="btn btn-primary w-full sm:w-auto shrink-0"
                 href={`/admin/ai-analyses/${a.id}`}
-                data-testid={`open-analysis-${a.id}`}
               >
                 Open evidence
-              </a>
+              </AdminLink>
             </div>
           </article>
         ))}

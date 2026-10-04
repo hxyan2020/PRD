@@ -190,6 +190,45 @@ export function seedMessengerIfEmpty(db: Database.Database = getDb()) {
   }
 }
 
+function lookupAnalysis(
+  db: Database.Database,
+  alertDbId?: number | null
+): {
+  id: number;
+  analysis_id: string;
+  summary: string | null;
+  mode: string | null;
+  challenge_verdict: string | null;
+} | undefined {
+  if (alertDbId) {
+    const hit = db
+      .prepare(
+        `SELECT id, analysis_id, summary, mode, challenge_verdict FROM ai_analyses WHERE alert_id = ? ORDER BY id DESC LIMIT 1`
+      )
+      .get(alertDbId) as
+      | {
+          id: number;
+          analysis_id: string;
+          summary: string | null;
+          mode: string | null;
+          challenge_verdict: string | null;
+        }
+      | undefined;
+    if (hit) return hit;
+  }
+  return db
+    .prepare(`SELECT id, analysis_id, summary, mode, challenge_verdict FROM ai_analyses ORDER BY id LIMIT 1`)
+    .get() as
+    | {
+        id: number;
+        analysis_id: string;
+        summary: string | null;
+        mode: string | null;
+        challenge_verdict: string | null;
+      }
+    | undefined;
+}
+
 function addDemoAiReport(
   db: Database.Database,
   tid: number,
@@ -200,25 +239,37 @@ function addDemoAiReport(
     summary: string | null;
     mode: string | null;
     challenge_verdict: string | null;
+    id?: number;
   }
 ) {
-  if (a.analysis_db_id && a.summary) {
+  const linked =
+    a.analysis_db_id && a.summary
+      ? {
+          id: a.analysis_db_id,
+          analysis_id: a.analysis_id || `AIA-${a.analysis_db_id}`,
+          summary: a.summary,
+          mode: a.mode,
+          challenge_verdict: a.challenge_verdict,
+        }
+      : lookupAnalysis(db, a.id ?? null);
+  if (linked) {
     addMessage(
       db,
       tid,
       "AI_REPORT",
       "CRMP AI",
-      `🤖 AI Report ${a.analysis_id}\nMode: ${a.mode}\n${a.summary}${
-        a.challenge_verdict ? `\nSecond AI: ${a.challenge_verdict}` : ""
+      `🤖 AI Report ${linked.analysis_id}\nMode: ${linked.mode || "RAG"}\n${linked.summary || a.title}${
+        linked.challenge_verdict ? `\nSecond AI: ${linked.challenge_verdict}` : ""
       }`,
       {
-        analysis_db_id: a.analysis_db_id,
-        analysis_id: a.analysis_id,
-        mode: a.mode,
-        challenge_verdict: a.challenge_verdict,
-        admin_url: `/admin/ai-analyses/${a.analysis_db_id}`,
+        analysis_db_id: linked.id,
+        analysis_id: linked.analysis_id,
+        mode: linked.mode,
+        challenge_verdict: linked.challenge_verdict,
+        admin_url: `/admin/ai-analyses/${linked.id}`,
       }
     );
+    db.prepare(`UPDATE messenger_threads SET analysis_id = ? WHERE id = ?`).run(linked.id, tid);
     return;
   }
   addMessage(
@@ -315,6 +366,44 @@ export function ensureMessengerDemoMessages(db: Database.Database = getDb()) {
     }
     if (!kinds.includes("ESCALATION")) {
       addDemoEscalation(db, thread.id, thread.severity);
+    }
+  }
+  relinkMessengerToAnalyses(db);
+}
+
+function relinkMessengerToAnalyses(db: Database.Database) {
+  const analyses = db
+    .prepare(`SELECT id, analysis_id, alert_id, summary, mode, challenge_verdict FROM ai_analyses ORDER BY id`)
+    .all() as Array<{
+    id: number;
+    analysis_id: string;
+    alert_id: number;
+    summary: string | null;
+    mode: string | null;
+    challenge_verdict: string | null;
+  }>;
+  if (!analyses.length) return;
+  const byAlert = new Map(analyses.map((row) => [row.alert_id, row]));
+  const threads = db
+    .prepare(`SELECT id, alert_id FROM messenger_threads`)
+    .all() as Array<{ id: number; alert_id: number | null }>;
+  for (const thread of threads) {
+    const linked = (thread.alert_id != null ? byAlert.get(thread.alert_id) : undefined) || analyses[0];
+    db.prepare(`UPDATE messenger_threads SET analysis_id = ? WHERE id = ?`).run(linked.id, thread.id);
+    const msgs = db
+      .prepare(`SELECT id, meta_json FROM messenger_messages WHERE thread_id = ? AND kind = 'AI_REPORT'`)
+      .all(thread.id) as Array<{ id: number; meta_json: string }>;
+    for (const msg of msgs) {
+      let meta: Record<string, unknown> = {};
+      try {
+        meta = JSON.parse(msg.meta_json || "{}") as Record<string, unknown>;
+      } catch {
+        meta = {};
+      }
+      meta.admin_url = `/admin/ai-analyses/${linked.id}`;
+      meta.analysis_db_id = linked.id;
+      meta.analysis_id = linked.analysis_id;
+      db.prepare(`UPDATE messenger_messages SET meta_json = ? WHERE id = ?`).run(JSON.stringify(meta), msg.id);
     }
   }
 }

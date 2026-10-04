@@ -14,7 +14,8 @@ export function publicBasePath() {
 
 export function publicAdminHref(path = "/admin/") {
   const base = publicBasePath();
-  const suffix = path.startsWith("/") ? path : `/${path}`;
+  let suffix = path.startsWith("/") ? path : `/${path}`;
+  if (isStaticExport() && !suffix.endsWith("/")) suffix += "/";
   return `${base}${suffix}`;
 }
 

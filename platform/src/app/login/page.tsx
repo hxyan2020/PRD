@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -102,9 +103,9 @@ export default function LoginPage() {
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-xl sm:text-2xl">{t("login.signIn", locale)}</h2>
           <p className="mt-1 text-sm text-[var(--muted)]">{t("login.hint", locale)}</p>
-          <a href="/admin" className="btn btn-primary mt-4 w-full justify-center">
+          <Link href="/admin" className="btn btn-primary mt-4 w-full justify-center">
             {locale === "zh-Hant" ? "無需登入，進入後台" : "Enter admin without signing in"}
-          </a>
+          </Link>
 
           <form onSubmit={onSubmit} className="mt-6 panel p-5 space-y-4">
             <div>
