@@ -1,0 +1,353 @@
+1:"$Sreact.fragment"
+2:I[7555,[],""]
+3:I[1295,[],""]
+6:I[9665,[],"OutletBoundary"]
+9:I[9665,[],"ViewportBoundary"]
+b:I[9665,[],"MetadataBoundary"]
+d:I[6614,[],""]
+:HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","style"]
+0:{"P":null,"b":"hL198RKb7_iXdt2VcT-rS","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","3UQ3OvQ44TY1JlaLJPMMJ",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["874","static/chunks/874-6287e72e26c459e6.js","354","static/chunks/354-16ba5d678753dbfc.js","94","static/chunks/94-3cffbcaa7e0ff5f4.js","581","static/chunks/app/admin/layout-8d004261a886d0e8.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","259","static/chunks/app/admin/docs/user-guide/page-cf8011418fb9f51d.js"],""]
+5:["$","div",null,{"children":[["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Operator handbook · EN / 繁中"}]]}],["$","p",null,{"className":"text-sm text-[var(--muted)]","children":"Role-based walkthrough for login, alert triage, dual-AI, Demo Messenger, maker/checker, and safety habits."}],["$","div",null,{"className":"action-row","children":[["$","$Lf","/admin/messenger",{"className":"btn","href":"/admin/messenger","children":"Messenger"}],["$","$Lf","/admin/ai-analyses",{"className":"btn","href":"/admin/ai-analyses","children":"AI Analyses"}],["$","$Lf","/admin/ai-admin",{"className":"btn","href":"/admin/ai-admin","children":"AI Admin"}],["$","$Lf","/admin/market-intel",{"className":"btn","href":"/admin/market-intel","children":"Market Intel"}],["$","$Lf","/admin/docs/uat",{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf","/admin/docs/urls",{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],"$L10"]}]
+11:T51c8,<h1 id="crmp-user-guide" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP User Guide</h1>
+
+<p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-UG-001 · <strong>Audience:</strong> Risk Owner, Risk Analyst, Ops, AI Engineer, System Admin  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Languages:</strong> English (this page) · <a class="underline" href="/admin/docs/user-guide?lang=zh-Hant">繁體中文</a></p>
+
+<h2 id="0-what-this-platform-is" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">0. What this platform is</h2>
+
+<p class="text-sm leading-relaxed my-2">Vantage <strong>CRMP Admin</strong> is the control plane that turns Monitor 2.0 alarms into:</p>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>AI root-cause analysis (skill match or RAG)  </li>
+<li>Independent <strong>second-AI challenge</strong> on high severity  </li>
+<li>Messenger-native triage (evidence, escalate, dismiss, close, controls)  </li>
+<li>Maker/checker interventions with audit + spine trail  </li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2">Demo entry: <a class="underline" href="/admin">Admin Home</a> · <a class="underline" href="/admin/docs/urls">URL Catalog</a></p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="1-sign-in-language" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. Sign in &amp; language</h2>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Open [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login).  </li>
+<li>Pick a persona button or enter credentials:</li>
+</ol>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Role</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Email</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Password</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Owner</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.owner@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk123</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Analyst</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.analyst@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk123</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ops Lead</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ops.lead@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ops123</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Engineer</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.engineer@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai123</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">System Admin</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">system.admin@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">sys123</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Super Admin</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">admin123</code></td>
+</tr>
+</tbody></table></div>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>After login you land on <strong>Admin Home</strong>.  </li>
+<li>Switch UI language with <strong>EN / 繁中</strong> (sidebar on desktop; header on mobile).  </li>
+<li>On phones, use the <strong>hamburger</strong> menu to open navigation.</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="2-daily-path-by-role" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. Daily path by role</h2>
+
+<h3 id="risk-owner" class="text-lg font-semibold mt-6 mb-2">Risk Owner</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Check <a class="underline" href="/admin/alerts">Live Alerts</a> and <a class="underline" href="/admin/ai-analyses">AI Analyses</a> for BREACH/CRITICAL.  </li>
+<li>Open dual-AI pack; if second AI is <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>/<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code>, do not approve irreversible controls yet.  </li>
+<li>Use <a class="underline" href="/admin/messenger">Demo Messenger</a> to escalate, close (accept AI), or dismiss false alarms.  </li>
+<li>Approve Checker steps on <a class="underline" href="/admin/interventions">Human Intervention</a> when Ops maker-confirmed a control.  </li>
+<li>Run <a class="underline" href="/admin/docs/uat">UAT Checklist</a> when validating a release.</li>
+</ol>
+
+<h3 id="risk-analyst" class="text-lg font-semibold mt-6 mb-2">Risk Analyst</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Triage OPEN alerts → open AI evidence.  </li>
+<li>Challenge or add context via messenger chatbot.  </li>
+<li>Attach notes before escalating to Risk Owner.</li>
+</ol>
+
+<h3 id="ops-lead-analyst" class="text-lg font-semibold mt-6 mb-2">Ops Lead / Analyst</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>From messenger <strong>Recommended actions</strong>, propose block / halt / leverage / widen / pause-copy.  </li>
+<li><strong>Double-confirm</strong> → receive admin ref + link.  </li>
+<li>If status is awaiting checker, ask Risk Owner / designated checker to approve.</li>
+</ol>
+
+<h3 id="ai-engineer" class="text-lg font-semibold mt-6 mb-2">AI Engineer</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Maintain <a class="underline" href="/admin/skills">AI Skills</a>, <a class="underline" href="/admin/rag">RAG</a>, <a class="underline" href="/admin/detectors">Detectors</a>.  </li>
+<li>Use <a class="underline" href="/admin/ai-admin">AI Admin</a> for settings/models (maker ≠ checker).  </li>
+<li>Tune <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code> (default BREACH) under platform settings / AI Admin.</li>
+</ol>
+
+<h3 id="system-admin" class="text-lg font-semibold mt-6 mb-2">System Admin</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Users, roles, teams, departments, settings.  </li>
+<li>Review <a class="underline" href="/admin/security/ai-access">AI Access Security</a> blocklist.  </li>
+<li>Monitor <a class="underline" href="/admin/audit">Audit Log</a> and <a class="underline" href="/admin/spine">Spine Log</a>.</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="3-triage-an-alarm-desk-workflow" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. Triage an alarm (desk workflow)</h2>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Open <strong>Live Alerts</strong> or <strong>Monitor 2.0</strong>.  </li>
+<li>Find an <code class="rounded bg-slate-100 px-1 text-[0.9em]">OPEN</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">ACKNOWLEDGED</code> item.  </li>
+<li>Go to <strong>AI Analyses</strong> (or wait for auto-analysis on alarm).  </li>
+<li>Open the analysis → read:  </li>
+</ol>
+<p class="text-sm leading-relaxed my-2">   - Mode (<code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code> vs <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>)  </p>
+<p class="text-sm leading-relaxed my-2">   - Confidence &amp; summary  </p>
+<p class="text-sm leading-relaxed my-2">   - Explanations  </p>
+<p class="text-sm leading-relaxed my-2">   - Evidence vault  </p>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>If severity is <strong>BREACH</strong> or <strong>CRITICAL</strong> (or at/above <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>):  </li>
+</ol>
+<p class="text-sm leading-relaxed my-2">   - Review <strong>Second AI challenger</strong> panel  </p>
+<p class="text-sm leading-relaxed my-2">   - Read critiques, recommended improvements, alternative hypotheses  </p>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Decision rule:  </li>
+</ol>
+<p class="text-sm leading-relaxed my-2">   - Challenger <code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code> → may proceed with playbook under policy  </p>
+<p class="text-sm leading-relaxed my-2">   - <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> → <strong>needs human</strong>; no irreversible control until reviewed  </p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Simulate for demo (AI Analyses page):</strong></p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Simulate COPY breach (skill path)  </li>
+<li>Simulate EQ drawdown (RAG / WARN — challenger usually skipped)  </li>
+<li>Simulate CRITICAL (forces second AI)  </li>
+<li>Backfill 2nd AI challenges  </li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="4-demo-messenger" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. Demo Messenger</h2>
+
+<p class="text-sm leading-relaxed my-2">Path: [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code>](/admin/messenger)</p>
+
+<h3 id="layout" class="text-lg font-semibold mt-6 mb-2">Layout</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><strong>Desktop:</strong> thread list + chat side-by-side  </li>
+<li><strong>Mobile:</strong> list first → tap thread → detail; use <strong>Threads</strong> to go back  </li>
+</ul>
+
+<h3 id="inline-actions" class="text-lg font-semibold mt-6 mb-2">Inline actions</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Action</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Effect</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Show evidence</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Posts evidence vault + second-AI summary into the thread</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Chatbot</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Type to challenge AI or add info; disagreement flags <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Escalate</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Advances Primary → Secondary → Risk Owner → Exec path</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Dismiss</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">False alarm; closes thread + alert</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Close (accept AI)</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Accepts analysis; closes ticket</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="recommended-controls-below-ai-report" class="text-lg font-semibold mt-6 mb-2">Recommended controls (below AI report)</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Choose e.g. <strong>Block user account</strong>, <strong>Halt trading</strong>, <strong>Cut max leverage</strong>, <strong>Pre-widen spreads</strong>, <strong>Pause copy joining</strong>.  </li>
+<li>Click <strong>Double-confirm…</strong> then <strong>Yes, send to Vantage admin</strong>.  </li>
+<li>Thread shows admin ref + link (e.g. Interventions).  </li>
+<li>If checker required, follow the system message for Checker approval.</li>
+</ol>
+
+<h3 id="sync" class="text-lg font-semibold mt-6 mb-2">Sync</h3>
+<p class="text-sm leading-relaxed my-2">Use <strong>Sync alerts</strong> to pull new Monitor alarms into messenger threads.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="5-ai-admin-maker-checker" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. AI Admin (maker / checker)</h2>
+
+<p class="text-sm leading-relaxed my-2">Path: [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code>](/admin/ai-admin)</p>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li><strong>Maker</strong> proposes a setting, model, or policy change.  </li>
+<li>A <strong>different user</strong> with checker permission approves or rejects.  </li>
+<li>Self-approve is blocked by design.  </li>
+<li>Spec reference: TSD §8 (see <a class="underline" href="/admin/docs/tsd">TSD</a>).</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="6-market-intelligence" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. Market Intelligence</h2>
+
+<p class="text-sm leading-relaxed my-2">Path: [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code>](/admin/market-intel)</p>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Enablement via settings (<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>).  </li>
+<li>Scanner runs about every <strong>5 minutes</strong> (or use Run scan).  </li>
+<li>Review <strong>Findings</strong>, <strong>Messenger outbox</strong>, sources, and scan history.  </li>
+<li>Cards follow the i–vi format and can raise indicator <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code>.</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="7-skills-rag-detectors-risk-log" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. Skills, RAG, detectors, risk log</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Area</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Path</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What to do</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Skills</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Browse playbooks &amp; enriched risk scenarios / chains</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG KB</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Internal + external evidence corpus used when skill is uncertain</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Threshold monitors that raise alarms</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Log</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Analytics timeline of risk events &amp; BU corrections</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">End-to-end stage log (Detect → AI RCA → Escalation → …)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Interventions</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human gates from skill/RAG/messenger actions</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="8-safety-compliance-habits" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. Safety &amp; compliance habits</h2>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Open <a class="underline" href="/admin/security/ai-access">AI Access Security</a> — AI must not operate human-only pages/functions/fields.  </li>
+<li>Never grant production AI service accounts those rights.  </li>
+<li>Treat messenger dismiss/close as auditable decisions.  </li>
+<li>For BREACH/CRITICAL, keep primary + challenger packs side-by-side before irreversible controls.  </li>
+<li>Verify outcomes in <strong>Audit Log</strong> and <strong>Spine Log</strong>.</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="9-mobile-tips" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. Mobile tips</h2>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Use hamburger nav; language toggle sits in the header.  </li>
+<li>Messenger is master–detail: list → thread → <strong>Threads</strong> back.  </li>
+<li>Primary buttons are full-width; scroll tables horizontally inside panels if needed.  </li>
+<li>Prefer landscape only when reviewing wide docs tables.</li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="10-quick-links" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. Quick links</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Page</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin Home</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Analyses</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market Intelligence</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UAT Checklist</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ecosystem Eval</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/ecosystem</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD / TSD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">All URLs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
+</tr>
+</tbody></table></div>
+10:["$","div",null,{"children":[["$","div",null,{"className":"mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between","children":[["$","div",null,{"className":"min-w-0","children":[["$","h1",null,{"className":"font-[family-name:var(--font-display)] text-xl sm:text-2xl tracking-tight break-word","children":"User Guide"}],["$","p",null,{"className":"mt-1 text-sm text-[var(--muted)] max-w-3xl break-word","children":"Operator handbook for Risk, Ops, AI and System admins."}]]}],null]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"v1.0"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide?lang=en","children":"English"}],["$","$Lf",null,{"className":"btn ","href":"/admin/docs/user-guide?lang=zh-Hant","children":"繁體中文"}]]}]]}],["$","article",null,{"className":"panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word","dangerouslySetInnerHTML":{"__html":"$11"}}]]}]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
+7:null
+8:null
+c:[["$","title","0",{"children":"Vantage CRMP Admin"}],["$","meta","1",{"name":"description","content":"Centralised Risk Management Platform — Admin Control Plane"}],["$","link","2",{"rel":"icon","href":"/PRD/crmp-admin/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]

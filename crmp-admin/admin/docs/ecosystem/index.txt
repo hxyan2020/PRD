@@ -1,0 +1,427 @@
+1:"$Sreact.fragment"
+2:I[7555,[],""]
+3:I[1295,[],""]
+6:I[9665,[],"OutletBoundary"]
+9:I[9665,[],"ViewportBoundary"]
+b:I[9665,[],"MetadataBoundary"]
+d:I[6614,[],""]
+:HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","style"]
+0:{"P":null,"b":"hL198RKb7_iXdt2VcT-rS","p":"/PRD/crmp-admin","c":["","admin","docs","ecosystem",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["ecosystem",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["ecosystem",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","7CK7WTtl9sNSHpbIpNTle",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["874","static/chunks/874-6287e72e26c459e6.js","354","static/chunks/354-16ba5d678753dbfc.js","94","static/chunks/94-3cffbcaa7e0ff5f4.js","581","static/chunks/app/admin/layout-8d004261a886d0e8.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","739","static/chunks/app/admin/docs/ecosystem/page-8376f6ddda57ea86.js"],""]
+5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div",null,{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Build budget (A–C)"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base tabular-nums break-word","children":"$$730k–$1.3M"}]]}],["$","div",null,{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Annual run (D)"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base tabular-nums","children":"$$150k–$300k"}]]}],["$","div",null,{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Steady-state team"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base","children":"~7–11 FTE"}]]}],["$","div",null,{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Delivery phases"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base","children":"4 phases"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:justify-between","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-ECO-001"}],["$","span",null,{"className":"badge bg-amber-50 text-amber-900 border-amber-200","children":"Planning pack (not a quote)"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT checklist"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/roadmap","children":"Roadmap"}],["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],"$L10"]}]
+11:T64fc,<h1 id="vantage-ecosystem-adoption-evaluation" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage Ecosystem Adoption Evaluation</h1>
+
+<p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-ECO-001 · <strong>Status:</strong> Executive planning pack · <strong>Scope:</strong> CFD + Crypto CRMP prototype → production</p>
+
+<h2 id="1-executive-view" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. Executive view</h2>
+
+<p class="text-sm leading-relaxed my-2">The CRMP demo already proves an end-to-end spine:</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Monitor 2.0 alarm → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit/spine.</strong></p>
+
+<p class="text-sm leading-relaxed my-2">Fully implementing this into the <strong>existing Vantage Markets ecosystem</strong> is not a rewrite of trading platforms. It is a <strong>control-plane product</strong> that must plug into identity, Monitor 2.0, Lark, LP/bridge controls, and admin dual-control — with shadow mode first and write paths last.</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Roll-up</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Indicative</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">One-time build (Phases A–C)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>~$730k – $1.3M USD</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ongoing model/ops (Phase D / year)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>~$150k – $300k USD</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Core team at steady state</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>~7–11 FTE</strong> (plus part-time Risk Owner / GRC / Ops)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Delivery shape</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>4 phases</strong> — foundations → read path → supervised write → model ops</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">*Planning envelopes only — not a vendor quote. Finance must re-estimate against SOWs and in-house capacity.*</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="2-foundations-required" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. Foundations required</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">#</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Foundation</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Why it is required</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Current prototype</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Target maturity</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F1</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>SSO / IdP + SCIM</strong> (Okta / Azure AD)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Join corporate directories; kill shared demo passwords; enable SoD</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Local email/password users</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F2</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Monitor 2.0 bidirectional API</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Live alarm ingest + ticket ack/close write-back</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Seeded SQLite + simulate alarms</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F3</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>LP / bridge / trading control bus</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Real halt, leverage cut, widen, pause-copy, block account</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Deep-links + mock admin refs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production + dual-control</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Lark (or Teams) interactive app</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Replace demo messenger; card actions → CRMP APIs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">In-app Demo Messenger + outbox mock</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F5</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Secrets vault + env isolation</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Webhooks, model keys, DB, LP credentials</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Env/local files</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F6</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Managed DB + HA deploy</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Multi-instance, backups, DR</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SQLite single file</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Postgres + HA</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F7</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Observability</strong> (metrics/traces/logs)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine SLOs, AI latency, false-alarm rate, cost</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Console + spine table</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production APM</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F8</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Data residency &amp; retention</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Evidence vault may hold client identifiers</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No formal retention</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Legal policy + jobs</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F9</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>IAM maker ≠ checker</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin + irreversible interventions</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">App-level maker/checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">IAM + app</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F10</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI access blocklist enforcement</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human-only pages/functions/fields stay human-only</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Documented blocklist UI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Runtime enforcement on AI principals</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F11</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Market-intel feed contracts</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">5-min scan needs licensed/news APIs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Heuristic scanner</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Vendor feeds + scoring</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">F12</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Kill-switches</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Disable auto-skills, intel push, write adapters instantly</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Settings flags (partial)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Global + per-adapter</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="integration-map-target" class="text-lg font-semibold mt-6 mb-2">Integration map (target)</h3>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Monitor 2.0 → CRMP (alarms) → dual-AI pack  </li>
+<li>CRMP → Lark cards (notify + inline actions)  </li>
+<li>Human confirm → Vantage admin / control bus (maker) → Checker approve  </li>
+<li>Status write-back → Monitor ticket + Audit + Spine  </li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="3-personnel-required" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. Personnel required</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Role</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Pilot FTE</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Scale FTE</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Primary ownership</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Product Manager</strong> (Risk Platforms)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Scope, prioritisation, stakeholder alignment, UAT exit</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Risk Owner</strong> (business)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.3</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.5</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Policy thresholds, accept/reject AI, escalation authority</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Engineering Lead / Architect</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Ecosystem adapters, tenancy, DR design</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Full-stack engineers</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">3–4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin UI, messenger, APIs, Monitor/Lark clients</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Backend / integration engineer</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1–2</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Control bus, dual-control workflows</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Data / ML engineer</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1–2</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG, primary LLM, <strong>independent challenger</strong>, eval harness</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>SRE / Platform</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.5</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Deploy, secrets, observability, HA</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Security / GRC</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.3</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.5</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Blocklist, access reviews, audit evidence packs</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>QA / UAT facilitator</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.5</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Execute Risk Owner UAT pack; regression</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Ops liaison</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.3</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.5</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Runbooks for halt / block / widen</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Compliance / Legal</strong> (part-time)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.1</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">0.2</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Retention, client data in evidence, AI disclosures</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>Pilot core (approx):</strong> PM + Eng lead + 2 full-stack + 1 ML + 0.5 SRE + 0.5 QA + part-time Risk Owner ≈ <strong>6–7 FTE equivalent</strong>.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="4-budget-indicative-usd" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. Budget (indicative USD)</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Phase</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Scope</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Band</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>A — Harden prototype</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SSO spike or staging auth, hosting, audit export, UAT facilitation, basic observability</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>$80k – $150k</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Make demo deployable &amp; reviewable</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>B — Ecosystem connect (read path)</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor API, Lark interactive cards, read-only LP/inventory feeds, Postgres migration</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>$250k – $450k</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Notify-only; no auto-trade</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>C — Supervised write path</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Dual-control adapters (block/halt/leverage/widen/pause-copy), DR, kill-switches</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>$400k – $700k</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Highest risk; gated go-live</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>D — Model ops (annual)</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Eval harness, challenger diversity, drift/cost monitors, feed licences</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>$150k – $300k / yr</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Run-rate after B/C</td>
+</tr>
+</tbody></table></div>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Total</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Band</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Build A+B+C</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>$730k – $1.3M</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Year-1 all-in (build mid + D mid)</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>≈ $1.0M – $1.5M</strong></td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Exclusions: major LP vendor licence changes, full multi-brand tenancy programme, replacing Monitor 2.0 itself.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="5-timeline-phased-effort-shape-not-calendar-promises" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. Timeline (phased — effort shape, not calendar promises)</h2>
+
+<p class="text-sm leading-relaxed my-2">Cloud agents and vendors should plan by <strong>dependency phase</strong>, not by fixed week counts:</p>
+
+<h3 id="phase-a-foundation-lock" class="text-lg font-semibold mt-6 mb-2">Phase A — Foundation lock</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>RACI (Risk / Ops / AI / System) signed  </li>
+<li>Data classification for evidence vault  </li>
+<li>Environments (dev/stage/prod) + secrets  </li>
+<li>UAT pack baseline with Risk Owner  </li>
+</ul>
+
+<h3 id="phase-b-read-path-production" class="text-lg font-semibold mt-6 mb-2">Phase B — Read-path production</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Live Monitor alarms into CRMP  </li>
+<li>Dual-AI RCA (primary + <strong>independent challenger</strong>) on BREACH/CRITICAL  </li>
+<li>Lark notify + “open in admin” (actions may still deep-link)  </li>
+<li>Shadow dashboard: AI suggests, humans act outside write bus  </li>
+</ul>
+
+<h3 id="phase-c-supervised-write-path" class="text-lg font-semibold mt-6 mb-2">Phase C — Supervised write path</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Maker confirm in messenger/admin → control bus  </li>
+<li>Checker approval for irreversible controls  </li>
+<li>Ticket write-back + full audit/spine  </li>
+<li>Kill-switch drills  </li>
+</ul>
+
+<h3 id="phase-d-optimisation" class="text-lg font-semibold mt-6 mb-2">Phase D — Optimisation</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Challenger model diversity (separate vendor/prompt)  </li>
+<li>Market-intel precision / cost SLOs  </li>
+<li>Multi-entity readiness if required  </li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2"><strong>Suggested sequencing rule:</strong> do not start Phase C write adapters until Phase B false-alarm and challenger-disagreement workflows are accepted by Risk Owner.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="6-shortcomings-of-the-current-prototype" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. Shortcomings of the current prototype</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Area</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Shortcoming</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Production impact</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Heuristic skill/RAG/challenger — not production LLM + tool-calling with eval gates</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Wrong RCA confidence if scaled as-is</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Data</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SQLite single-node file</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No HA / weak concurrent write</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">In-app demo; Lark delivery mocked</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Operators won’t live in CRMP-only chat long-term</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Controls</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin refs / deep-links, not real trading bus</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Cannot rely on for true risk containment</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Identity</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo passwords</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Failed SoD / audit</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Tenancy</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Limited multi-brand / entity isolation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Blocks group-wide rollout</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Intel</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Synthetic/heuristic market scan</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Needs licensed sources + scoring</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Enforcement</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI blocklist is largely documentary in UI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Must bind to AI service principals</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Mobile</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Improved, still not native-app grade</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">OK for web responsive ops</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="7-precautions" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. Precautions</h2>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li><strong>Never</strong> grant AI service principals rights on blocklisted pages/functions/fields (<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code>).  </li>
+<li>Irreversible controls stay <strong>human-gated</strong>; second-AI <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> ⇒ mandatory human review.  </li>
+<li>Maker/checker identities must be separated in <strong>IAM</strong>, not only in application logic.  </li>
+<li>Run <strong>shadow mode</strong> (notify-only) before enabling any write adapter.  </li>
+<li>Define and test <strong>kill-switches</strong> for auto skill execution, market-intel push, and each write adapter.  </li>
+<li>Legal review before persisting client identifiers in evidence excerpts; set retention + redaction jobs.  </li>
+<li>Cap AI spend and latency with SLOs; challenger must remain an <strong>independent</strong> decision path (no shared prompt cache with primary).  </li>
+<li>Change-control: AI Admin setting changes always require a distinct checker.  </li>
+<li>Do not auto-close Monitor tickets from AI alone on BREACH/CRITICAL without Risk Owner policy.  </li>
+<li>Rehearse escalation path (Primary → Secondary → Risk Owner → Exec) in UAT before go-live.</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="8-decision-checklist-for-leadership" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. Decision checklist for leadership</h2>
+
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>[ ] Approve Phase A budget band and name PM + Eng lead  </li>
+<li>[ ] Confirm Monitor 2.0 API contract owner  </li>
+<li>[ ] Confirm Lark vs Teams as corporate messenger  </li>
+<li>[ ] Appoint Risk Owner for UAT exit criteria  </li>
+<li>[ ] Agree shadow-mode duration before Phase C  </li>
+<li>[ ] Security sign-off on AI blocklist + SoD model  </li>
+<li>[ ] Legal sign-off on evidence retention  </li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2"><strong>Demo links:</strong> this page · <a class="underline" href="/admin/docs/urls">URL Catalog</a> · <a class="underline" href="/admin/docs/uat">UAT Checklist</a> · <a class="underline" href="/admin/docs/roadmap">Improvement Roadmap</a> · <a class="underline" href="/admin/messenger">Demo Messenger</a></p>
+10:["$","div",null,{"children":[["$","div",null,{"className":"mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between","children":[["$","div",null,{"className":"min-w-0","children":[["$","h1",null,{"className":"font-[family-name:var(--font-display)] text-xl sm:text-2xl tracking-tight break-word","children":"Vantage Ecosystem Adoption Evaluation"}],["$","p",null,{"className":"mt-1 text-sm text-[var(--muted)] max-w-3xl break-word","children":"Foundations, people, budget bands, timeline phases, risks and precautions."}]]}],null]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-ECO-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"v1.0"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/ecosystem?lang=en","children":"English"}],["$","$Lf",null,{"className":"btn ","href":"/admin/docs/ecosystem?lang=zh-Hant","children":"繁體中文"}]]}]]}],["$","article",null,{"className":"panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word","dangerouslySetInnerHTML":{"__html":"$11"}}]]}]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
+7:null
+8:null
+c:[["$","title","0",{"children":"Vantage CRMP Admin"}],["$","meta","1",{"name":"description","content":"Centralised Risk Management Platform — Admin Control Plane"}],["$","link","2",{"rel":"icon","href":"/PRD/crmp-admin/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]

@@ -1,0 +1,182 @@
+1:"$Sreact.fragment"
+2:I[7555,[],""]
+3:I[1295,[],""]
+6:I[9665,[],"OutletBoundary"]
+9:I[9665,[],"ViewportBoundary"]
+b:I[9665,[],"MetadataBoundary"]
+d:I[6614,[],""]
+:HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","style"]
+0:{"P":null,"b":"hL198RKb7_iXdt2VcT-rS","p":"/PRD/crmp-admin","c":["","admin","docs","roadmap",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["roadmap",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["roadmap",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","qIQmd-foWRev8Z2A7LdVA",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["874","static/chunks/874-6287e72e26c459e6.js","354","static/chunks/354-16ba5d678753dbfc.js","94","static/chunks/94-3cffbcaa7e0ff5f4.js","581","static/chunks/app/admin/layout-8d004261a886d0e8.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","731","static/chunks/app/admin/docs/roadmap/page-515f55ca4de61a56.js"],""]
+10:T2865,<h1 id="platform-improvement-roadmap" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Platform Improvement Roadmap</h1>
+
+<p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-RM-001 · Prioritised backlog after current prototype</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Effort</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">People</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Dependencies</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Severity</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Production Lark interactive cards (buttons → CRMP actions)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">L</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2 FE + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark app approval</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Replaces demo messenger transport</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-02</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Real Monitor 2.0 webhook + ticket write-back</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">L</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor API contract</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Close loop on dismiss/close</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-03</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">LLM primary RCA with tool-calling + eval harness</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">XL</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 ML + 2 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prompt vault, spend caps</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Keep challenger independent</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Challenger model diversity (separate vendor/prompt)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 ML</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-03</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Reduce correlated failure</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-05</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SSO + SCIM user provisioning</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 BE + Security</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">IdP</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Retire shared demo passwords</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-06</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Postgres + multi-instance deploy</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 SRE + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Infra</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Leave SQLite</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-07</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Mobile nav drawer + touch-first messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 FE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Design tokens</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Web+mobile optimisation</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-08</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Full admin i18n (UI strings EN/zh-Hant)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 FE + PM</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Message catalog</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs already bilingual</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-09</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Intervention adapters (halt/leverage/block) with dry-run</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">L</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2 BE + Ops</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Trading control bus</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker mandatory</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-10</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Evidence redaction &amp; retention jobs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 BE + GRC</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Legal policy</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PII in excerpts</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-11</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Shadow-mode dashboard (AI suggest only)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 FE + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine metrics</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Pre-write rollout</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-12</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Automated UAT smoke in CI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 QA + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Seed DB</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Gate PRs</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-13</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Multi-brand tenancy</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">XL</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Arch + 2 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Org model</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Later phase</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-14</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Cost/latency SLO alerts on AI path</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SRE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Observability</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Pair with RM-03</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-15</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Richer market-intel source scoring</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 DS + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Vendor feeds</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Cut noise</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>Effort key:</strong> S = small vertical slice · M = multi-day module · L = cross-team module · XL = programme-sized</p>
+
+<h2 id="suggested-sequencing" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">Suggested sequencing</h2>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>RM-05, RM-06, RM-02 (foundations)</li>
+<li>RM-01, RM-07, RM-11 (operator UX)</li>
+<li>RM-09 with kill-switch (write path)</li>
+<li>RM-03 + RM-04 + RM-14 (model quality)</li>
+<li>RM-08, RM-10, RM-12, RM-15 (harden &amp; scale)</li>
+</ol>
+<p class="text-sm leading-relaxed my-2">EOF</p>
+
+5:["$","div",null,{"children":[["$","div",null,{"className":"mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between","children":[["$","div",null,{"className":"min-w-0","children":[["$","h1",null,{"className":"font-[family-name:var(--font-display)] text-xl sm:text-2xl tracking-tight break-word","children":"Platform Improvement Roadmap"}],["$","p",null,{"className":"mt-1 text-sm text-[var(--muted)] max-w-3xl break-word","children":"Prioritised improvements with effort, people, dependencies and severity."}]]}],null]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-RM-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"v1.0"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/roadmap?lang=en","children":"English"}],["$","$Lf",null,{"className":"btn ","href":"/admin/docs/roadmap?lang=zh-Hant","children":"繁體中文"}]]}]]}],["$","article",null,{"className":"panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word","dangerouslySetInnerHTML":{"__html":"$10"}}]]}]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
+7:null
+8:null
+c:[["$","title","0",{"children":"Vantage CRMP Admin"}],["$","meta","1",{"name":"description","content":"Centralised Risk Management Platform — Admin Control Plane"}],["$","link","2",{"rel":"icon","href":"/PRD/crmp-admin/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]

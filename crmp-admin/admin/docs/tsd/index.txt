@@ -1,0 +1,1150 @@
+1:"$Sreact.fragment"
+2:I[7555,[],""]
+3:I[1295,[],""]
+6:I[9665,[],"OutletBoundary"]
+9:I[9665,[],"ViewportBoundary"]
+b:I[9665,[],"MetadataBoundary"]
+d:I[6614,[],""]
+:HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","style"]
+0:{"P":null,"b":"hL198RKb7_iXdt2VcT-rS","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/151a062c6e380941.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","-seb6a-FcifJia2MpQThu",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["874","static/chunks/874-6287e72e26c459e6.js","354","static/chunks/354-16ba5d678753dbfc.js","94","static/chunks/94-3cffbcaa7e0ff5f4.js","581","static/chunks/app/admin/layout-8d004261a886d0e8.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","40","static/chunks/app/admin/docs/tsd/page-82451b8df5aa2f15.js"],""]
+5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.2"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"16"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],"$L10"]}]
+11:T13de0,<h1 id="vantage-crmp-technical-specification-design-tsd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage CRMP — Technical Specification Design (TSD)</h1>
+
+<p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-TSD-001  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Version:</strong> 1.2  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Status:</strong> Prototype / living spec  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Products in scope:</strong> CFD + Crypto Exchange  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Primary stack:</strong> Next.js 15 (App Router), React 19, SQLite (<code class="rounded bg-slate-100 px-1 text-[0.9em]">better-sqlite3</code>), RBAC session auth  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Companion:</strong> <a class="underline" href="/admin/docs/prd">PRD</a> · <a class="underline" href="/admin/docs/user-guide">User Guide</a> · <a class="underline" href="/admin/docs/uat">UAT</a></p>
+
+<p class="text-sm leading-relaxed my-2">This TSD describes the technical design of the Centralised Risk Management Platform (CRMP) Admin Control Plane.  </p>
+<p class="text-sm leading-relaxed my-2"><strong>§8 AI Admin</strong> and <strong>§9 Second-AI Challenger</strong> are first-class module specifications.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="1-purpose-scope" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. Purpose &amp; scope</h2>
+
+<h3 id="1-1-purpose" class="text-lg font-semibold mt-6 mb-2">1.1 Purpose</h3>
+<p class="text-sm leading-relaxed my-2">Provide a single admin control plane where Risk, Ops, AI, and System operators can:</p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Observe Monitor 2.0 indicators / alerts</li>
+<li>Run AI RCA (skills + RAG) with independent second-AI challenge on high severity</li>
+<li>Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)</li>
+<li>Enforce human gates on high-impact actions</li>
+<li>Govern AI configuration via maker/checker</li>
+<li>Review spine logs, risk analytics, market intel, and daily performance</li>
+</ul>
+
+<h3 id="1-2-in-scope-prototype" class="text-lg font-semibold mt-6 mb-2">1.2 In scope (prototype)</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Admin UI + SQLite persistence</li>
+<li>Detectors → Alarm → AI RCA → Second opinion → Messenger / Intervention → Spine → Dashboard</li>
+<li>AI Admin governance (parameters, skills, RAG, training, accuracy)</li>
+<li>Risk scenario playbooks and linked timeline chains</li>
+<li>Demo Messenger + Lark channel registry (mock webhooks)</li>
+<li>Market Intelligence 5-minute scanner + outbox</li>
+<li>Bilingual docs (EN / zh-Hant) and responsive admin shell</li>
+</ul>
+
+<h3 id="1-3-out-of-scope-production-wiring" class="text-lg font-semibold mt-6 mb-2">1.3 Out of scope (production wiring)</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Live SSO / IdP</li>
+<li>Real Lark interactive cards / oneZero / wallet write adapters</li>
+<li>Production LLM billing + training cluster</li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="2-system-context" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. System context</h2>
+
+<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>
+Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
+
+                                         │
+
+                                         ▼
+
+                              Second-AI Challenger (≥ BREACH)
+
+                                         │
+
+                                         ▼
+
+                    Demo Messenger ◄──► Human Intervention (gates)
+
+                                         │
+
+                                         ▼
+
+                              Spine Log + Risk Log + Daily Dashboard
+
+                                         │
+
+                                         ▼
+
+                         Lark channels / Market Intel outbox (mock)
+
+</code></pre>
+
+<p class="text-sm leading-relaxed my-2"><strong>AI Admin</strong> sits beside the runtime spine: it does <strong>not</strong> execute live trading actions; it governs models, playbooks, RAG corpus, and AI parameters under dual control.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="3-architecture-overview" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. Architecture overview</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Layer</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Responsibility</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Key paths</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI (App Router)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RBAC-gated admin pages</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/admin/**</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Client consoles</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Interactive tabs / forms</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/components/*</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">API routes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">JSON mutations + reads</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/api/**</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Domain libs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Business logic</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/*</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/db.ts</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/auth.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Persistence</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SQLite file</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/data/vantage_risk.db</code></td>
+</tr>
+</tbody></table></div>
+
+<h3 id="3-1-runtime-spine-stages" class="text-lg font-semibold mt-6 mb-2">3.1 Runtime spine stages</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li><strong>Detectors</strong> sample indicators (<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code>)</li>
+<li><strong>Alarm</strong> opens Monitor alert/ticket</li>
+<li><strong>AI RCA</strong> matches skill or RAG-reasons (<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code>)</li>
+<li><strong>Second-AI Challenger</strong> runs when severity ≥ threshold (<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp-challenger-v0</code>)</li>
+<li><strong>Demo Messenger / Human intervention</strong> triage and gated controls</li>
+<li><strong>Spine logging</strong> records stage transitions (<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code>)</li>
+<li><strong>Daily performance / Risk Log / Market Intel</strong> aggregate outcomes</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="4-data-model-core" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. Data model (core)</h2>
+
+<h3 id="4-1-identity-rbac" class="text-lg font-semibold mt-6 mb-2">4.1 Identity &amp; RBAC</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">users</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">roles</code> (permission JSON), <code class="rounded bg-slate-100 px-1 text-[0.9em]">departments</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">teams</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">sessions</code></li>
+<li>Permissions are string codes; <code class="rounded bg-slate-100 px-1 text-[0.9em]">SUPER_ADMIN</code> has <code class="rounded bg-slate-100 px-1 text-[0.9em]">*</code></li>
+</ul>
+
+<h3 id="4-2-monitoring" class="text-lg font-semibold mt-6 mb-2">4.2 Monitoring</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_indicators</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_alerts</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_tickets</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_domains</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation_routes</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lark_channels</code></li>
+</ul>
+
+<h3 id="4-3-ai-runtime" class="text-lg font-semibold mt-6 mb-2">4.3 AI runtime</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_skills</code> (+ <code class="rounded bg-slate-100 px-1 text-[0.9em]">scenario_json</code>), <code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_scenario_chains</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag_documents</code> (+ FTS)</li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analyses</code> (+ <code class="rounded bg-slate-100 px-1 text-[0.9em]">challenged</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">challenge_verdict</code>), <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analysis_evidence</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_skill_runs</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analysis_challenges</code> (second-opinion rows)</li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">interventions</code>, spine tables</li>
+</ul>
+
+<h3 id="4-4-messenger" class="text-lg font-semibold mt-6 mb-2">4.4 Messenger</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_threads</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_messages</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_pending_actions</code></li>
+</ul>
+
+<h3 id="4-5-market-intelligence" class="text-lg font-semibold mt-6 mb-2">4.5 Market intelligence</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel_*</code> scan/findings/outbox tables (see <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/market-intel/schema.ts</code>)</li>
+</ul>
+
+<h3 id="4-6-ai-admin-governance" class="text-lg font-semibold mt-6 mb-2">4.6 AI Admin governance</h3>
+<p class="text-sm leading-relaxed my-2">See <strong>§8.4</strong> — <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_change_requests</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_training_runs</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_feedback</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_accuracy_snapshots</code>, AI keys in <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings</code>.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="5-security-rbac-summary" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. Security &amp; RBAC (summary)</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Concern</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Rule</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Page access</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">getCurrentUser()</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">hasPermission(role, code)</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker ≠ Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Proposer cannot approve own <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_change_requests</code> when <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.maker_checker_required=true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin mutations</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Only via <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/ai-admin</code> with propose/approve permissions</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Audit</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">writeAudit</code> on propose, decide, feedback, training queue</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI access blocklist</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Pages/functions/fields/data AI must never touch — see <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code> and <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/security/ai-access-blocklist.ts</code></td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Detailed AI Admin permission matrix: <strong>§8.3</strong>.  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Human-only surfaces (identity, secrets, dual-control approve, LP/wallet execute, role writes):</strong> living list on <strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></strong>.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="6-integration-points" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. Integration points</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">System</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Mode in prototype</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Mirrored tables + sync / simulate alarm</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Indicators/alerts/tickets</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">In-app threads + <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Evidence, escalate, controls</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Channel registry + mock webhook / intel outbox</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Severity routing</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market intel feeds</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Heuristic 5-min scanner</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Card format i–vi</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">LP / Bridge / Wallets</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Suggested actions + admin deep-links</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human gate before real adapters</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Model training</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Queued runs + seeded metrics</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No GPU cluster in prototype</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="7-admin-surface-map" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. Admin surface map</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Module</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Home</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Daily performance</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk log analytics</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market intelligence scanner</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Live alerts</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI RCA runtime + second-AI UI</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI Admin management (§8)</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human gates</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine log</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG corpus</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skill / scenario playbooks</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Demo Messenger (§11)</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI access blocklist</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/user-guide</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/uat</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/ecosystem</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/roadmap</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/urls</code> · <strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/tsd</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Product docs (EN / 繁中)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code>, …</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform ops</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="8-ai-admin-management-page-full-specification" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. AI Admin Management Page — full specification</h2>
+
+<h3 id="8-1-purpose" class="text-lg font-semibold mt-6 mb-2">8.1 Purpose</h3>
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code> is the <strong>AI control plane</strong>. Operators use it to:</p>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Observe AI health KPIs and accuracy history</li>
+<li>Propose changes to AI parameters, skills, and RAG documents</li>
+<li>Approve/reject those changes under <strong>maker/checker dual control</strong></li>
+<li>Queue training / recalibration runs</li>
+<li>Label RCA quality feedback (CORRECT / INCORRECT / PARTIAL)</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2">It is <strong>governance</strong>, not the live RCA workbench (<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code>) and not the intervention desk (<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code>).</p>
+
+<h3 id="8-2-route-components" class="text-lg font-semibold mt-6 mb-2">8.2 Route &amp; components</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Item</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Spec</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Page route</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET /admin/ai-admin</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/admin/ai-admin/page.tsx</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI component</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAdminConsole</code> (<code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/components/AiAdminConsole.tsx</code>) client console</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">API</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai-admin</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/api/ai-admin/route.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Domain logic</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/admin.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Schema</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/admin-schema.ts</code> via <code class="rounded bg-slate-100 px-1 text-[0.9em]">ensureAiAdminSchema</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Seed</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">seedAiAdminIfEmpty</code> (params, training runs, accuracy snapshots, demo CRs)</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-3-access-control" class="text-lg font-semibold mt-6 mb-2">8.3 Access control</h3>
+
+<h4 id="8-3-1-page-view-any-of" class="text-base font-semibold mt-4 mb-1">8.3.1 Page view (any of)</h4>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.read</code></li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">Unauthorized users redirect to <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code>.</p>
+
+<h4 id="8-3-2-maker-propose-any-of" class="text-base font-semibold mt-4 mb-1">8.3.2 Maker (propose) — any of</h4>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.propose</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code></li>
+</ul>
+
+<h4 id="8-3-3-checker-approve-reject-any-of" class="text-base font-semibold mt-4 mb-1">8.3.3 Checker (approve/reject) — any of</h4>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.approve</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.approve</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.approve</code></li>
+</ul>
+
+<h4 id="8-3-4-role-mapping-prototype" class="text-base font-semibold mt-4 mb-1">8.3.4 Role mapping (prototype)</h4>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Role</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">View AI Admin</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Maker</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Checker</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_ENGINEER</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Proposes skills/RAG/params/training</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RISK_OWNER</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes*</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Primary checker; may also propose</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RISK_ANALYST</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Propose + operate feedback</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SUPER_ADMIN</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Yes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Full; still blocked from self-approve when maker≠checker enforced</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">OPS_LEAD</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">SYSTEM_ADMIN</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Limited / via perms</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Per ROLE_DEFS</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Per ROLE_DEFS</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">See <code class="rounded bg-slate-100 px-1 text-[0.9em]">ROLE_DEFS</code> in <code class="rounded bg-slate-100 px-1 text-[0.9em]">db.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">VIEWER</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No (unless granted)</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Read-only elsewhere</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">\* Risk Owner has both propose and approve; self-approval of own CR is still rejected.</p>
+
+<h4 id="8-3-5-maker-checker-rule" class="text-base font-semibold mt-4 mb-1">8.3.5 Maker ≠ Checker rule</h4>
+<p class="text-sm leading-relaxed my-2">When <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings.ai.maker_checker_required != "false"</code>:</p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">decideChangeRequest</code> throws if <code class="rounded bg-slate-100 px-1 text-[0.9em]">proposed_by === decided_by</code></li>
+<li>UI should only show Approve/Reject to checkers who are not the proposer</li>
+</ul>
+
+<h3 id="8-4-data-model" class="text-lg font-semibold mt-6 mb-2">8.4 Data model</h3>
+
+<h4 id="8-4-1-ai-change-requests" class="text-base font-semibold mt-4 mb-1">8.4.1 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_change_requests</code></h4>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Column</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Type</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">id</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">INTEGER PK</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">request_id</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT UNIQUE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">e.g. <code class="rounded bg-slate-100 px-1 text-[0.9em]">CR-A1B2C3D4</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">entity_type</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PARAM</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">TRAINING</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">action</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DISABLE</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RETIRE</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">…</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">title</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">summary</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human-readable</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">payload_json</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">After-state / create payload</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">before_json</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT NULL</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prior state for diffs</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">status</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PENDING</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">APPROVED</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">REJECTED</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">proposed_by</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">proposed_at</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FK / timestamp</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">decided_by</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">decided_at</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">decision_note</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FK / timestamp / TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker</td>
+</tr>
+</tbody></table></div>
+
+<h4 id="8-4-2-ai-training-runs" class="text-base font-semibold mt-4 mb-1">8.4.2 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_training_runs</code></h4>
+<p class="text-sm leading-relaxed my-2">Tracks queued/running/completed recalibrations: <code class="rounded bg-slate-100 px-1 text-[0.9em]">run_id</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">model_name</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">dataset_label</code>, metrics (<code class="rounded bg-slate-100 px-1 text-[0.9em]">accuracy</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">precision_score</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">recall_score</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">f1_score</code>), <code class="rounded bg-slate-100 px-1 text-[0.9em]">samples</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">status</code>, timestamps, <code class="rounded bg-slate-100 px-1 text-[0.9em]">created_by</code>.</p>
+
+<h4 id="8-4-3-ai-feedback" class="text-base font-semibold mt-4 mb-1">8.4.3 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_feedback</code></h4>
+<p class="text-sm leading-relaxed my-2">Per-analysis labels: <code class="rounded bg-slate-100 px-1 text-[0.9em]">CORRECT</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">INCORRECT</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>, optional note, <code class="rounded bg-slate-100 px-1 text-[0.9em]">rated_by</code>.</p>
+
+<h4 id="8-4-4-ai-accuracy-snapshots" class="text-base font-semibold mt-4 mb-1">8.4.4 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_accuracy_snapshots</code></h4>
+<p class="text-sm leading-relaxed my-2">Daily rollup: skill-match rate, human-agree rate, feedback-correct rate, analyses total, intervention approved/rejected counts. Overview refresh upserts <code class="rounded bg-slate-100 px-1 text-[0.9em]">date('now')</code> live snapshot.</p>
+
+<h4 id="8-4-5-governed-parameters-platform-settings-keys" class="text-base font-semibold mt-4 mb-1">8.4.5 Governed parameters (<code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings</code> keys)</h4>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Key</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Purpose</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Default (seed)</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.rca_enabled</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Master RCA switch</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.auto_on_alarm</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Auto-trigger RCA on alarm</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.skill_certainty_only</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Auto-exec skills only on certainty match</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.min_confidence</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Min confidence before auto-complete</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">0.55</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.rag_top_k</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Top-K RAG docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">6</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Severities for challenger AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">BREACH</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.maker_checker_required</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Enforce dual control</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.auto_raise_alarms</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors raise Monitor alarms</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Only keys starting with <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.</code> or <code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.auto_raise_alarms</code> may be applied via AI Admin PARAM changes.</p>
+
+<h3 id="8-5-ui-specification-tabs" class="text-lg font-semibold mt-6 mb-2">8.5 UI specification (tabs)</h3>
+
+<p class="text-sm leading-relaxed my-2">Console tabs (client state):</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Tab ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Label</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Functions</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">overview</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">KPI cards: analyses total, skill-match %, avg confidence, needs-human, interventions pending, human-agree %, feedback-correct %, pending CRs. Recent analyses list with feedback labels.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">params</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Parameters</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Editable drafts for AI settings; <strong>Propose</strong> creates PARAM CR (does not apply immediately).</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">changes</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker / Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">List CRs (PENDING first). Checker Approve / Reject with note. Shows maker name, before/after payload. Pending count badge on tab.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">List skills; form to <strong>propose CREATE</strong> skill (code, name, description, indicator patterns, owner dept, human step). Actual apply on approve. Link out to <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code> for scenario board.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">List documents (excerpt); form to <strong>propose CREATE</strong> RAG doc; apply on approve (+ FTS reindex).</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">training</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Training</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">List runs + metrics; form to <strong>queue training</strong> (creates TRAINING CR).</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">history</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">History &amp; accuracy</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Accuracy snapshot table (14 days).</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Header badges show current <code class="rounded bg-slate-100 px-1 text-[0.9em]">role_code</code>, <strong>Maker</strong>, and/or <strong>Checker</strong> capability.</p>
+
+<h3 id="8-6-api-specification" class="text-lg font-semibold mt-6 mb-2">8.6 API specification</h3>
+
+<h4 id="8-6-1-get-api-ai-admin" class="text-base font-semibold mt-4 mb-1">8.6.1 <code class="rounded bg-slate-100 px-1 text-[0.9em]">GET /api/ai-admin</code></h4>
+<p class="text-sm leading-relaxed my-2">Query:</p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">tab</code> = <code class="rounded bg-slate-100 px-1 text-[0.9em]">overview</code> (default) \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">params</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">changes</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">training</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">skills</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">rag</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">status</code> (optional, for changes filter)</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">Auth: view permissions (§8.3.1).  </p>
+<p class="text-sm leading-relaxed my-2">Default response includes <code class="rounded bg-slate-100 px-1 text-[0.9em]">{ overview, params, changes, training, skills, rag, roles }</code>.</p>
+
+<h4 id="8-6-2-post-api-ai-admin" class="text-base font-semibold mt-4 mb-1">8.6.2 <code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/ai-admin</code></h4>
+<p class="text-sm leading-relaxed my-2">JSON body with <code class="rounded bg-slate-100 px-1 text-[0.9em]">action</code>:</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left"><code class="rounded bg-slate-100 px-1 text-[0.9em]">action</code></th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Permission</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Effect</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Generic CR insert</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose_param</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PARAM UPDATE CR for <code class="rounded bg-slate-100 px-1 text-[0.9em]">key</code>/<code class="rounded bg-slate-100 px-1 text-[0.9em]">value</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose_skill</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.manage</code> or <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.propose</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SKILL CREATE/UPDATE/… CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose_rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code> or <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.propose</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG CREATE/UPDATE/… CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">decide</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">APPROVED</code> applies payload; <code class="rounded bg-slate-100 px-1 text-[0.9em]">REJECTED</code> closes CR. Enforces maker≠checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">queue_training</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TRAINING CREATE CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">feedback</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.operate</code> or <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Insert <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_feedback</code> row</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Error model: <code class="rounded bg-slate-100 px-1 text-[0.9em]">{ error: string }</code> with HTTP 400/403.</p>
+
+<h3 id="8-7-apply-semantics-on-approved" class="text-lg font-semibold mt-6 mb-2">8.7 Apply semantics (on APPROVED)</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">entity_type</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">action</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Apply behaviour</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PARAM</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Update <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings.value</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Insert <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_skills</code> ACTIVE</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Patch fields (name, patterns, steps, status, …)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DISABLE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">status='DISABLED'</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Insert doc + <code class="rounded bg-slate-100 px-1 text-[0.9em]">reindexRagFts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Content/status update + reindex</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RETIRE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">status='RETIRED'</code> + reindex</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">TRAINING</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Insert <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_training_runs</code> QUEUED</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Unsupported pairs throw and leave CR undecided (transactional expectation for production: wrap apply+status update).</p>
+
+<h3 id="8-8-audit-events" class="text-lg font-semibold mt-6 mb-2">8.8 Audit events</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Event</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">When</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_CHANGE_PROPOSED</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker submits CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_CHANGE_APPROVED</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_CHANGE_REJECTED</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker decides</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_FEEDBACK</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Feedback label submitted</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-9-non-functional-requirements" class="text-lg font-semibold mt-6 mb-2">8.9 Non-functional requirements</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">NFR</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Spec</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Latency</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Page SSR + client tabs; API mutations &lt; 500ms p95 in prototype</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Durability</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SQLite WAL; audit trail retained</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Safety</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">No direct apply of PARAM/SKILL/RAG without CR when maker/checker required</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Separation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Runtime interventions remain on <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Observability</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview KPIs + accuracy snapshots</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-10-ux-acceptance-criteria" class="text-lg font-semibold mt-6 mb-2">8.10 UX / acceptance criteria</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>AI Engineer can open AI Admin and propose a skill; CR appears PENDING.</li>
+<li>Same AI Engineer <strong>cannot</strong> approve that CR (error: maker/checker).</li>
+<li>Risk Owner can approve; skill becomes ACTIVE and visible on <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code>.</li>
+<li>Parameter propose does not change live value until APPROVED.</li>
+<li>Training queue creates CR then TRAINING run on approve.</li>
+<li>Overview shows pending CR count and accuracy history.</li>
+<li>Feedback labels persist and affect feedback-correct rate.</li>
+</ol>
+
+<h3 id="8-11-sequence-propose-skill-happy-path" class="text-lg font-semibold mt-6 mb-2">8.11 Sequence — propose skill (happy path)</h3>
+
+<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>
+AI Engineer (Maker)                API / admin.ts                 Risk Owner (Checker)
+
+       │ propose_skill                  │                                │
+
+       ├───────────────────────────────►│ insert PENDING CR              │
+
+       │◄──────── request_id ───────────┤                                │
+
+       │                                │                                │
+
+       │                                │◄──── decide APPROVED ──────────┤
+
+       │                                │ applyChange SKILL/CREATE       │
+
+       │                                │ audit AI_CHANGE_APPROVED       │
+
+       │                                ├──────── ok + applied ─────────►│
+
+</code></pre>
+
+<h3 id="8-12-related-pages" class="text-lg font-semibold mt-6 mb-2">8.12 Related pages</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Page</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Relationship</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Runtime playbook / scenario board (post-approve view)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Corpus browser; create/update should prefer AI Admin CR path for governed changes</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Consumes skills/RAG/params governed here</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human gates for <strong>runtime</strong> actions (not config CRs)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Defines permissions listed in §8.3</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-13-future-enhancements-not-yet-required" class="text-lg font-semibold mt-6 mb-2">8.13 Future enhancements (not yet required)</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Diff UI for <code class="rounded bg-slate-100 px-1 text-[0.9em]">before_json</code> vs <code class="rounded bg-slate-100 px-1 text-[0.9em]">payload_json</code></li>
+<li>Mandatory dual approval for CRITICAL severity param changes</li>
+<li>Webhook notify Lark <code class="rounded bg-slate-100 px-1 text-[0.9em]">oc_ai_detection_lab</code> on PENDING CR</li>
+<li>Export CR pack for compliance</li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="9-independent-second-ai-challenger" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. Independent Second-AI Challenger</h2>
+
+<h3 id="9-1-purpose" class="text-lg font-semibold mt-6 mb-2">9.1 Purpose</h3>
+<p class="text-sm leading-relaxed my-2">For alert severities at or above <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code> (default <strong>BREACH</strong>), the platform runs an independent challenger model (<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp-challenger-v0</code>) after the primary skill/RAG RCA. The challenger <strong>must not</strong> reuse the primary decision path (separate heuristics / future separate vendor).</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>Code:</strong> <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/challenger.ts</code> · wired from <code class="rounded bg-slate-100 px-1 text-[0.9em]">analyze.ts</code> after skill/RAG persist.</p>
+
+<h3 id="9-2-trigger" class="text-lg font-semibold mt-6 mb-2">9.2 Trigger</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Setting</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Default</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Behaviour</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">BREACH</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Run when alert severity rank ≥ setting (<code class="rounded bg-slate-100 px-1 text-[0.9em]">WARN</code> &amp;lt; <code class="rounded bg-slate-100 px-1 text-[0.9em]">BREACH</code> &amp;lt; <code class="rounded bg-slate-100 px-1 text-[0.9em]">CRITICAL</code>)</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="9-3-outputs" class="text-lg font-semibold mt-6 mb-2">9.3 Outputs</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Field</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Description</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">verdict</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">critiques</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Material gaps in primary narrative</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">improvements</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prioritised recommendations (<code class="rounded bg-slate-100 px-1 text-[0.9em]">HYPOTHESIS</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">EVIDENCE</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">ACTION</code> / …)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">alternatives</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Competing hypotheses with confidence</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="9-4-persistence-side-effects" class="text-lg font-semibold mt-6 mb-2">9.4 Persistence &amp; side-effects</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>Table <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analysis_challenges</code> (1:1 with <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analyses</code>)</li>
+<li>Evidence row type <code class="rounded bg-slate-100 px-1 text-[0.9em]">CHALLENGER</code></li>
+<li>Columns <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analyses.challenged</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">challenge_verdict</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> forces <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human = 1</code></li>
+<li>Spine stage <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_RCA</code> event + audit <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_SECOND_OPINION</code></li>
+<li>Lazy backfill via <code class="rounded bg-slate-100 px-1 text-[0.9em]">getAnalysisBundle</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/ai</code> action <code class="rounded bg-slate-100 px-1 text-[0.9em]">backfill_challenges</code></li>
+</ul>
+
+<h3 id="9-5-ui" class="text-lg font-semibold mt-6 mb-2">9.5 UI</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>List badges: <code class="rounded bg-slate-100 px-1 text-[0.9em]">2nd AI · {verdict}</code></li>
+<li>Detail panel: <code class="rounded bg-slate-100 px-1 text-[0.9em]">AiChallengePanel</code></li>
+<li>Controls: simulate CRITICAL, backfill challenges</li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="10-skills-risk-scenarios-summary" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. Skills &amp; risk scenarios (summary)</h2>
+
+<p class="text-sm leading-relaxed my-2">Skills store rich <code class="rounded bg-slate-100 px-1 text-[0.9em]">scenario_json</code>: indicator, thresholds + why, fault areas, escalation, BU corrections, past cases.  </p>
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_scenario_chains</code> link multi-indicator timelines. See <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">risk-scenarios-catalog.ts</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">risk-scenarios-extra.ts</code>.</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="11-demo-messenger" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. Demo Messenger</h2>
+
+<h3 id="11-1-purpose" class="text-lg font-semibold mt-6 mb-2">11.1 Purpose</h3>
+<p class="text-sm leading-relaxed my-2">In-app Lark-style inbox for alert + AI report threads with inline operator actions. Production transport remains Lark; this module proves UX and audit semantics.</p>
+
+<h3 id="11-2-stack" class="text-lg font-semibold mt-6 mb-2">11.2 Stack</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Item</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Path</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Page</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">app/admin/messenger/page.tsx</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">components/DemoMessenger.tsx</code> (mobile master-detail)</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">API</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/messenger</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Domain</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/messenger/demo.ts</code></td>
+</tr>
+</tbody></table></div>
+
+<h3 id="11-3-actions" class="text-lg font-semibold mt-6 mb-2">11.3 Actions</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Action</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Effect</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">show_evidence</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Post vault + challenger summary into thread</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">chat</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">User note / challenge; disagreement flags <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">escalate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Advance escalation path step</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">dismiss</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">False alarm → thread DISMISSED, alert CLOSED</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">close</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Accept AI → thread CLOSED</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">recommend</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">confirm_action</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Double-confirm control → admin_ref (+ checker if required)</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="11-4-data" class="text-lg font-semibold mt-6 mb-2">11.4 Data</h3>
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_threads</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_messages</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_pending_actions</code> (see §4.4).</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="12-market-intelligence" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. Market Intelligence</h2>
+
+<h3 id="12-1-purpose" class="text-lg font-semibold mt-6 mb-2">12.1 Purpose</h3>
+<p class="text-sm leading-relaxed my-2">Five-minute scan of news/social/official signals that can move LP prices; push formatted cards to a dedicated messenger/outbox channel; expose indicator <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code>.</p>
+
+<h3 id="12-2-key-modules" class="text-lg font-semibold mt-6 mb-2">12.2 Key modules</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/market-intel/scanner.ts</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">format.ts</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">schema.ts</code></li>
+<li>UI <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></li>
+<li>Settings: <code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">interval_minutes</code>, <code class="rounded bg-slate-100 px-1 text-[0.9em]">lark_chat_id</code></li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="13-docs-i18n-responsive-shell" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. Docs, i18n &amp; responsive shell</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Concern</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Design</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Markdown under <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/docs/*</code> rendered via <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/docs.ts</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">DocArticlePage</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Locales</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">en</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">zh-Hant</code> query <code class="rounded bg-slate-100 px-1 text-[0.9em]">?lang=</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI chrome i18n</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code>; nav labels in <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/i18n.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Mobile</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code> drawer &amp;lt; <code class="rounded bg-slate-100 px-1 text-[0.9em]">lg</code>; messenger list/thread panes; safe-area CSS</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">Interactive UAT board: <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code> (<code class="rounded bg-slate-100 px-1 text-[0.9em]">UatChecklistBoard</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/docs/uat-cases.ts</code>).</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="14-key-api-map-prototype" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. Key API map (prototype)</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">API</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Role</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Session cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Analyses, simulate alarm, <code class="rounded bg-slate-100 px-1 text-[0.9em]">backfill_challenges</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai-admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin propose/approve/training/feedback</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Threads + inline actions</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Channel registry / mock notify</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Scan / findings / outbox</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Other</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">detectors, escalation, interventions, rag, skills, …</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="15-deployment-prototype" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">15. Deployment (prototype)</h2>
+
+<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>
+cd platform
+
+npm install
+
+npm run dev   # http://localhost:3000
+
+</code></pre>
+
+<p class="text-sm leading-relaxed my-2">SQLite path: <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/data/vantage_risk.db</code>.  </p>
+<p class="text-sm leading-relaxed my-2">Reset: <code class="rounded bg-slate-100 px-1 text-[0.9em]">npm run db:reset</code> then restart.</p>
+
+<p class="text-sm leading-relaxed my-2">Demo logins: see User Guide §1 (e.g. <code class="rounded bg-slate-100 px-1 text-[0.9em]">admin@vantagemarkets.com</code> / <code class="rounded bg-slate-100 px-1 text-[0.9em]">admin123</code>).</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="16-document-control" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">16. Document control</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Ver</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Date</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Initial TSD skeleton</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.1</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Full §8 AI Admin Management Page specification</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.2</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>Companion:</strong> <a class="underline" href="./TSD.zh-Hant.md">繁體中文版 TSD</a> · rendered at <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></p>
+10:["$","div",null,{"children":[["$","div",null,{"className":"mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between","children":[["$","div",null,{"className":"min-w-0","children":[["$","h1",null,{"className":"font-[family-name:var(--font-display)] text-xl sm:text-2xl tracking-tight break-word","children":"Technical Specification Design (TSD)"}],["$","p",null,{"className":"mt-1 text-sm text-[var(--muted)] max-w-3xl break-word","children":"Architecture, data model, AI Admin, second-AI challenger, APIs."}]]}],null]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-TSD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"v1.0"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/tsd?lang=en","children":"English"}],["$","$Lf",null,{"className":"btn ","href":"/admin/docs/tsd?lang=zh-Hant","children":"繁體中文"}]]}]]}],["$","article",null,{"className":"panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word","dangerouslySetInnerHTML":{"__html":"$11"}}]]}]
+a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
+7:null
+8:null
+c:[["$","title","0",{"children":"Vantage CRMP Admin"}],["$","meta","1",{"name":"description","content":"Centralised Risk Management Platform — Admin Control Plane"}],["$","link","2",{"rel":"icon","href":"/PRD/crmp-admin/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]
