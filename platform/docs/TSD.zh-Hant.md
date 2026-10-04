@@ -186,7 +186,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 平台 | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5＋§16.18 |
 | 平台 | `/admin/audit` | `audit_logs` 最近 200 | `audit.read` | §16.19 |
 | 平台 | `/admin/settings` | `SettingsManager`、`PATCH /api/settings` | `settings.manage` | §16.20 |
-| 文件 | `/admin/docs/{user-guide,prd,tsd,uat,ecosystem,roadmap,urls}` | `lib/docs.ts`、`UatChecklistBoard` | `admin.access` | §13＋§16.21 |
+| 文件 | `/admin/docs/user-guide` · `/admin/docs/prd` · `/admin/docs/tsd` · `/admin/docs/uat` · `/admin/docs/ecosystem` · `/admin/docs/roadmap` · `/admin/docs/urls` | `lib/docs.ts`、`UatChecklistBoard` | `admin.access` | §13＋§16.21 |
 | 驗證 | `/login` | 角色按鈕＋表單 | 公開 | §16.1 |
 
 靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-admin'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。
@@ -598,7 +598,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `SkillsScenariosBoard`：搜尋、技能 vs 鏈分頁、**進入** → `/admin/skills/[code]`（`finalizeSkill` 劇本：何時用／不用、前置、步驟、證據、停止、成功）。目錄：`risk-scenarios-catalog.ts`＋額外。
 
-### 16.11 知識樹
+### 16.11 Knowledge Tree（知識樹）
 
 `KnowledgeTreeBoard` 用戶端 SVG（`viewBox` 寬 1120）。樹幹：`domains`｜`chains`｜`rag`。產品篩選 ALL／CFD／Crypto。領域節點換行（5 欄 × 2）。點領域展開技能；點技能填檢視器；`router.push` 劇本（不要用無效的 SVG `<Link>`）。RAG 文件依 `tags_json`＋標題計分。大綱模式是同一張圖的巢狀清單。
 

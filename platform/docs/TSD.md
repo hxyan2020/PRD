@@ -195,7 +195,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §17.18 |
 | Platform | `/admin/audit` | `audit_logs` last 200 | `audit.read` | §17.19 |
 | Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §17.20 |
-| Docs | `/admin/docs/{user-guide,prd,tsd,uat,ecosystem,roadmap,urls}` | `lib/docs.ts`, `UatChecklistBoard` | `admin.access` | §13 + §17.21 |
+| Docs | `/admin/docs/user-guide` · `/admin/docs/prd` · `/admin/docs/tsd` · `/admin/docs/uat` · `/admin/docs/ecosystem` · `/admin/docs/roadmap` · `/admin/docs/urls` | `lib/docs.ts`, `UatChecklistBoard` | `admin.access` | §13 + §16.21 |
 | Auth | `/login` | persona buttons + form | public | §17.1 |
 
 Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`.
@@ -612,7 +612,7 @@ List: `AiAnalysesBoard` simulate actions `simulate_copy_breach`, EQ drawdown, CR
 
 `SkillsScenariosBoard`: search, skills vs chains tabs, **Enter** → `/admin/skills/[code]` (`finalizeSkill` playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: `risk-scenarios-catalog.ts` + extras.
 
-### 16.11 Knowledge tree
+### 16.11 Knowledge Tree
 
 `KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook (do not use invalid SVG `<Link>`). RAG docs scored from `tags_json` + title. Outline mode is the same graph as a nested list.
 
