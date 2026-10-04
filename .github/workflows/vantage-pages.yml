@@ -2,7 +2,7 @@ name: Publish Vantage static site
 
 on:
   push:
-    branches: [cursor/vantage-market-intelligence-1a73, main]
+    branches: [cursor/vantage-market-intelligence-1a73, cursor/fix-mi-desk-a935, main]
   workflow_dispatch:
 
 permissions:
@@ -24,14 +24,18 @@ jobs:
           cache-dependency-path: vantage/package-lock.json
       - name: Build portable static site
         working-directory: vantage
+        env:
+          NEXT_PUBLIC_BASE_PATH: /PRD
         run: |
           npm ci
           npm test
           npm run build
-      - name: Keep existing trading-risk-ninja site
+          python3 scripts/rewrite-nested-pages-prefix.py --self-test
+      - name: Keep sibling GitHub Pages sites
         run: |
           git fetch origin gh-pages --depth=1
-          git archive origin/gh-pages trading-risk-ninja | tar -x -C vantage/out
+          git archive origin/gh-pages gap-plan trading-risk-ninja risk-handbook risk-champion-site | tar -x -C vantage/out
+          python3 vantage/scripts/rewrite-nested-pages-prefix.py vantage/out/risk-champion-site --prefix /PRD/risk-champion-site
       - name: Publish gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -41,4 +45,18 @@ jobs:
           keep_files: true
       - name: Public URL
         run: |
-          echo "Permanent public desk: https://raw.githack.com/hxyan2020/PRD/gh-pages/" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "Public URLs"
+            echo "- Home: https://hxyan2020.github.io/PRD/"
+            echo "- Desk: https://hxyan2020.github.io/PRD/desk/"
+            echo "- Entities: https://hxyan2020.github.io/PRD/entities/"
+            echo "- Regulation: https://hxyan2020.github.io/PRD/regulation/"
+            echo "- Risk tools: https://hxyan2020.github.io/PRD/risk-tools/"
+            echo "- Sources: https://hxyan2020.github.io/PRD/sources/"
+            echo "- Gap plan: https://hxyan2020.github.io/PRD/gap-plan/"
+            echo "- Trading Risk Ninja: https://hxyan2020.github.io/PRD/trading-risk-ninja/"
+            echo "- Risk handbook: https://hxyan2020.github.io/PRD/risk-handbook/"
+            echo "- Risk Champion: https://hxyan2020.github.io/PRD/risk-champion-site/"
+            echo "- Champion demos: https://hxyan2020.github.io/PRD/risk-champion-site/demos/"
+            echo "- Champion study: https://hxyan2020.github.io/PRD/risk-champion-site/study/"
+          } >> "$GITHUB_STEP_SUMMARY"
