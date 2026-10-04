@@ -9,6 +9,7 @@ import type { SessionUser } from "@/lib/types";
 import { LogOut, LogIn, Menu, X } from "lucide-react";
 import { UI_LOCALE_COOKIE, navLabel, shellCopy, type UiLocale } from "@/lib/i18n";
 import { VantageLogo } from "@/components/VantageLogo";
+import { SelectionChatbot } from "@/components/SelectionChatbot";
 import { DEMO_SESSION_EVENT, clearDemoSession, defaultPersona, loginHref, readDemoSession, signInPersona } from "@/lib/demo-session";
 import { isPublicSnapshot } from "@/lib/static-export";
 import { ownerLine } from "@/lib/platform-owner";
@@ -361,6 +362,7 @@ export function AdminShell({
         <div className="p-3 sm:p-6 pb-[max(1rem,var(--safe-bottom))] flex-1 min-w-0 max-w-full overflow-x-clip">
           {children}
         </div>
+        <SelectionChatbot />
       </main>
     </div>
   );

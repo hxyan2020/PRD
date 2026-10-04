@@ -80,6 +80,10 @@ Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is store
 
 Tap the **hamburger** (Menu) to open the left nav. Messenger is list-first: tap a thread, then **Threads** to go back. Language sits in the header.
 
+### 2.5 Selection AI chatbot
+
+On any admin page, **select text** (or long-press on a phone). A teal sparkle icon appears next to the highlight. Tap it: a chat drawer explains that passage in this CRMP’s terms (Monitor vs mock Lark, EXECUTED_MOCK, who can approve, which page to open). You can keep asking follow-ups. It is read-only — it cannot approve an intervention or change settings. On GitHub Pages it uses the same grounded glossary (no live LLM required).
+
 ---
 
 ## 3. The left menu (groups and unread numbers)

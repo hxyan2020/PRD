@@ -199,7 +199,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 平台 | `/admin/audit` | `audit_logs` 最近 200 | `audit.read` | §16.19 |
 | 平台 | `/admin/settings` | `SettingsManager`、`PATCH /api/settings` | `settings.manage` | §16.20 |
 | 文件 | `/admin/docs/user-guide` · `/admin/docs/prd` · `/admin/docs/tsd` · `/admin/docs/uat` · `/admin/docs/ecosystem` · `/admin/docs/roadmap` · `/admin/docs/urls` | `lib/docs.ts`、`UatChecklistBoard` | `admin.access` | §13＋§16.21 |
-| 驗證 | `/login` | 角色按鈕＋表單 | 公開 | §16.1 |
+| 殼層 | `SelectionChatbot`（劃選文字 → 火花 → 聊天） | `lib/ai/desk-chat.ts`、`POST /api/ai-chat` | 公開／`ai.read` | §12 |
 
 靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-admin'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。
 
