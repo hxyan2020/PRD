@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ChevronDown, ChevronRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Send, Sparkles } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { VantageMark } from "@/components/VantageLogo";
 import { AdminLink } from "@/components/AdminLink";
@@ -545,26 +545,31 @@ export function DemoMessenger({
       >
         {active ? (
           <>
-            <div className="border-b border-[var(--line)] pb-3 mb-3 shrink-0">
-              <div className="lg:hidden mb-2">
+            <div className="border-b border-[var(--line)] pb-2 mb-2 shrink-0">
+              <div className="flex items-center gap-2 min-w-0">
                 <button
                   type="button"
-                  className="btn !min-h-11 text-xs"
+                  className="btn !min-h-11 !px-2.5 lg:hidden shrink-0"
                   onClick={() => setMobilePane("list")}
                 >
-                  <ArrowLeft size={14} /> {t("msg.threads", locale)}
+                  <ArrowLeft size={16} />
+                  <span className="sr-only">{t("msg.threads", locale)}</span>
                 </button>
-              </div>
-              <div className="flex flex-wrap gap-2 items-center">
-                <SeverityBadge value={active.severity} />
-                <StatusBadge value={active.status} />
-                <Badge className="bg-slate-100 text-slate-700 border-slate-200">{active.channel_name}</Badge>
-                <Badge className="bg-orange-50 text-orange-900 border-orange-200">{active.thread_id}</Badge>
+                <div className="flex flex-wrap gap-1.5 items-center min-w-0">
+                  <SeverityBadge value={active.severity} />
+                  <StatusBadge value={active.status} />
+                  <span className="hidden sm:inline-flex">
+                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{active.channel_name}</Badge>
+                  </span>
+                  <span className="hidden sm:inline-flex">
+                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{active.thread_id}</Badge>
+                  </span>
+                </div>
               </div>
               <h2 className="mt-2 font-[family-name:var(--font-display)] text-base sm:text-xl break-word line-clamp-2">
                 {active.title}
               </h2>
-              <div className="mt-3 action-row">
+              <div className="mt-2 chip-scroller">
                 <button
                   type="button"
                   className="btn"
@@ -665,9 +670,9 @@ export function DemoMessenger({
             </div>
 
             {active.status === "OPEN" && (
-              <div className="mt-3 border-t border-[var(--line)] pt-3 space-y-3 shrink-0 bg-[var(--panel)] pb-[max(0.15rem,var(--safe-bottom))]">
+              <div className="mt-2 border-t border-[var(--line)] pt-2 space-y-2 shrink-0 bg-[var(--panel)] pb-[max(0.35rem,var(--safe-bottom))]">
                 <div>
-                  <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)] mb-2">
+                  <div className="hidden sm:block text-xs uppercase tracking-[0.1em] text-[var(--muted)] mb-2">
                     {t("msg.recommended", locale)}
                   </div>
                   <div className="chip-scroller">
@@ -780,15 +785,21 @@ export function DemoMessenger({
                     onChange={(e) => setChat(e.target.value)}
                     disabled={busy}
                   />
-                  <button type="submit" className="btn btn-primary shrink-0 !min-h-11 px-4" disabled={busy || !chat.trim()}>
-                    {t("msg.send", locale)}
+                  <button
+                    type="submit"
+                    className="btn btn-primary shrink-0 !min-h-11 !px-3 sm:!px-4"
+                    disabled={busy || !chat.trim()}
+                    aria-label={t("msg.send", locale)}
+                  >
+                    <Send size={16} className="sm:hidden" aria-hidden />
+                    <span className="hidden sm:inline">{t("msg.send", locale)}</span>
                   </button>
                 </form>
               </div>
             )}
 
             {statusMsg && (
-              <div className="mt-2 text-xs sm:text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 break-word shrink-0">
+              <div className="mt-2 text-xs sm:text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 break-word shrink-0 line-clamp-2">
                 {statusMsg}
               </div>
             )}

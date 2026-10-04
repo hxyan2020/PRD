@@ -62,10 +62,18 @@ export function SelectionChatbot() {
       setFab(null);
       return;
     }
+    const vw = window.innerWidth;
+    const vh = window.visualViewport?.height ?? window.innerHeight;
+    const size = 44;
+    const pad = 8;
+    const bottomReserve = 88;
+    let x = rect.right + 6;
+    let y = rect.bottom + 8;
+    if (y + size > vh - bottomReserve) y = rect.top - size - 8;
     const next: Fab = {
       text,
-      x: clamp(rect.right + 6, 8, window.innerWidth - 52),
-      y: clamp(rect.top - 8, 8, window.innerHeight - 52),
+      x: clamp(x, pad, vw - size - pad),
+      y: clamp(y, pad, vh - size - bottomReserve),
     };
     pending.current = next;
     setFab(next);
@@ -189,8 +197,16 @@ export function SelectionChatbot() {
       ) : null}
 
       {open ? (
-        <div className="fixed z-[80] inset-x-0 bottom-0 sm:inset-x-auto sm:right-3 sm:bottom-3 sm:w-[min(100vw-1.5rem,420px)]">
-          <section className="flex flex-col bg-white border border-[var(--line)] shadow-2xl rounded-t-2xl sm:rounded-2xl max-h-[min(78vh,640px)] min-h-[min(52vh,420px)] pb-[max(0.5rem,var(--safe-bottom))]">
+        <div className="fixed z-[80] inset-0">
+          <button
+            type="button"
+            className="absolute inset-0 bg-slate-900/35 sm:bg-slate-900/10"
+            aria-label={zh ? "關閉" : "Close"}
+            onClick={close}
+          />
+          <div className="absolute inset-x-0 bottom-0 sm:inset-x-auto sm:right-3 sm:bottom-3 sm:w-[min(100vw-1.5rem,420px)]">
+          <section className="flex flex-col bg-white border border-[var(--line)] shadow-2xl rounded-t-2xl sm:rounded-2xl max-h-[min(72dvh,640px)] min-h-[min(46dvh,360px)] pb-[max(0.5rem,var(--safe-bottom))]">
+            <div className="sm:hidden mx-auto mt-2 h-1 w-10 rounded-full bg-slate-200" aria-hidden />
             <header className="flex items-start justify-between gap-2 px-3 py-2.5 border-b border-[var(--line)]">
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 text-sm font-semibold">
@@ -271,6 +287,7 @@ export function SelectionChatbot() {
               </button>
             </form>
           </section>
+          </div>
         </div>
       ) : null}
     </div>

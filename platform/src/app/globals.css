@@ -391,13 +391,24 @@ body.nav-open {
 
 @media (max-width: 639px) {
   .messenger-page {
-    height: calc(100dvh - var(--header-h) - 0.75rem);
+    height: calc(100dvh - var(--header-h));
+    margin: -0.75rem -0.75rem 0;
+    width: calc(100% + 1.5rem);
+  }
+  .messenger-page > .shrink-0 {
+    display: none;
   }
   .messenger-page h1 + p {
     display: none;
   }
   .messenger-page .page-actions {
     display: none !important;
+  }
+  .messenger-shell > .panel {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
   }
 }
 
