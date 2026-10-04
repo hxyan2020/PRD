@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { deptLabel, severityClass, statusClass } from "@/lib/utils";
+import { ChevronRight, type LucideIcon } from "lucide-react";
+import { cn, deptLabel, severityClass, statusClass } from "@/lib/utils";
 
 export function PageHeader({
   title,
@@ -32,22 +33,62 @@ export function StatCard({
   value,
   hint,
   href,
+  icon: Icon,
+  tone = "default",
+  cta,
 }: {
   label: React.ReactNode;
   value: string | number;
   hint?: React.ReactNode;
   href?: string;
+  icon?: LucideIcon;
+  tone?: "default" | "alert";
+  cta?: React.ReactNode;
 }) {
+  const alert = tone === "alert";
   const inner = (
     <>
-      <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{label}</div>
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          {Icon ? (
+            <span
+              className={cn(
+                "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                alert ? "bg-orange-50 text-orange-700" : "bg-teal-50 text-teal-800"
+              )}
+            >
+              <Icon className="h-4 w-4" aria-hidden />
+            </span>
+          ) : null}
+          <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{label}</div>
+        </div>
+        {href ? (
+          <ChevronRight
+            className="h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-teal-700"
+            aria-hidden
+          />
+        ) : null}
+      </div>
       <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
-      {hint && <div className="mt-1 text-xs text-[var(--muted)]">{hint}</div>}
+      {(hint || (href && cta)) && (
+        <div className="mt-1 flex items-end justify-between gap-2">
+          {hint ? <div className="text-xs text-[var(--muted)]">{hint}</div> : <span />}
+          {href && cta ? (
+            <div className="text-xs font-semibold text-teal-800 whitespace-nowrap">{cta}</div>
+          ) : null}
+        </div>
+      )}
     </>
   );
   if (href) {
     return (
-      <Link href={href} className="panel p-4 block hover:border-teal-300 hover:shadow-sm transition">
+      <Link
+        href={href}
+        className={cn(
+          "panel card-link group p-4 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/40",
+          alert && "border-orange-200"
+        )}
+      >
         {inner}
       </Link>
     );

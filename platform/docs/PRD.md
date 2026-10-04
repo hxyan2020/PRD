@@ -214,7 +214,7 @@ graph LR
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
 | FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs |
-| FR-21 | Admin Home snapshot | Clickable stat cards; owner card; recent alerts; messenger CTA |
+| FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps) |
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
 | FR-23 | Detectors run/toggle | Run all raises alarms + AI RCA; enable/disable persists on localhost |
 | FR-24 | Live Alerts ack queue | OPEN sorted by severity; Acknowledge mutates status |
@@ -244,7 +244,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 
 | Group | Feature | Path | Jobs to be done | Key acceptance |
 |---|---|---|---|---|
-| Overview | Admin Home | `/admin` | Orient; jump via cards | Cards are links; owner visible; messenger CTA |
+| Overview | Admin Home | `/admin` | Orient; jump via cards | Every card/row is a link; owner visible; messenger CTA |
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Handling time, loss vs prevented, loopholes | Summary + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |

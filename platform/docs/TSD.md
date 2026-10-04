@@ -592,7 +592,7 @@ Modules not fully specified in §8–§13. Behaviour must match the User Guide h
 
 ### 16.2 Admin Home
 
-SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). `StatCard` `href` to child pages. Owner panel. Messenger permanent URL. Recent 5 alerts.
+SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). Every tile is a `Link`: `StatCard` `href` (with icon + Open), owner → `/login`, messenger hero → `/admin/messenger`, jump grid, department cards to working pages (alerts / interventions / AI analyses / settings), recent alerts to `/admin/alerts#{alert_id}`, spine steps to monitor / alerts / escalation / AI / dashboard. `AlertsBoard` honours the hash.
 
 ### 16.3 Daily performance
 

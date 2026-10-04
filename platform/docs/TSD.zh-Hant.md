@@ -588,7 +588,7 @@ SQLite：`platform/data/vantage_risk.db`。
 
 ### 16.2 管理首頁
 
-SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。`StatCard` 的 `href` 連到子頁。負責人面板。Messenger 永久網址。最近 5 則警報。
+SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／AI 分析／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`AlertsBoard` 會對 hash 醒目顯示。
 
 ### 16.3 每日績效
 

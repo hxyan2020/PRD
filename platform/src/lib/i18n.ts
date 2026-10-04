@@ -47,8 +47,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "管理儀表板",
     },
     subtitle: {
-      en: "Control plane for roles, teams, data sources, Monitor 2.0 linkage and Lark escalation — foundation for the semi-automated CRMP.",
-      "zh-Hant": "角色、團隊、資料來源、Monitor 2.0 與 Lark 升級之控制平面 — 半自動化 CRMP 基礎。",
+      en: "Click any card to open its page — counts, departments, alerts, the messenger demo, and the rest of the desk.",
+      "zh-Hant": "點任何卡片即可開啟對應頁面 — 計數、部門、警報、Messenger 示範與其他功能。",
     },
   },
   dashboard: {
@@ -275,6 +275,13 @@ const UI: Record<string, Pair> = {
   },
   "home.recentAlerts": { en: "Recent Alerts", "zh-Hant": "最近警報" },
   "home.viewAll": { en: "View all", "zh-Hant": "查看全部" },
+  "home.open": { en: "Open", "zh-Hant": "開啟" },
+  "home.openPage": { en: "Open page", "zh-Hant": "開啟頁面" },
+  "home.jumpTitle": { en: "Jump to a page", "zh-Hant": "跳至頁面" },
+  "home.jumpSub": {
+    en: "Shortcuts into the rest of the desk. Every tile is a link.",
+    "zh-Hant": "通往其餘功能的捷徑。每塊磁磚都是連結。",
+  },
 
   "msg.channels": { en: "Channels / threads", "zh-Hant": "頻道／執行緒" },
   "msg.sync": { en: "Sync alerts", "zh-Hant": "同步警報" },

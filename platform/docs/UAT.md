@@ -542,7 +542,7 @@ graph TD
 1. Open Admin Home.
 2. Read the platform owner line (YAN Haixiang / yan.haixiang@vantagemarkets.com) on the home panel and in the left-pane footer.
 3. Click these stat cards and confirm the destination: Users, Teams, Data Sources, Risk Domains, Open Alerts (Live Alerts), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.
-4. Use the shortcut buttons (Demo Messenger, URL Catalog, PRD, User Guide, UAT, Daily Performance, AI Admin, AI Access Security). None should 404.
+4. Click a department card (should open that team’s working page), a recent-alert row (Live Alerts, that alarm highlighted), and a jump tile. Header shortcuts: Demo Messenger, User Guide, Daily Performance. None should 404.
 5. If you are still a public visitor, the guest banner and Sign in control should be visible; after login they should change.
 
 **Pass:** Every Home card/shortcut that claims a page actually opens it; owner attribution is visible.

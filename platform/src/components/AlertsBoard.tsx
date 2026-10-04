@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SeverityBadge, StatusBadge, Badge } from "@/components/ui";
+import { cn } from "@/lib/utils";
 
 type Alert = {
   id: number;
@@ -21,6 +23,18 @@ type Alert = {
 
 export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperate: boolean }) {
   const router = useRouter();
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    const apply = () => setHash(window.location.hash.replace(/^#/, ""));
+    apply();
+    window.addEventListener("hashchange", apply);
+    if (window.location.hash) {
+      const id = window.location.hash.replace(/^#/, "");
+      document.getElementById(id)?.scrollIntoView({ block: "start" });
+    }
+    return () => window.removeEventListener("hashchange", apply);
+  }, []);
 
   async function ack(id: number) {
     await fetch("/api/monitor", {
@@ -34,7 +48,11 @@ export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperat
   return (
     <div className="space-y-3">
       {alerts.map((a) => (
-        <article key={a.id} className="panel p-4">
+        <article
+          key={a.id}
+          id={a.alert_id}
+          className={cn("panel p-4 scroll-mt-24", hash === a.alert_id && "ring-2 ring-teal-600/40 border-teal-300")}
+        >
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <div className="flex flex-wrap gap-2 items-center">

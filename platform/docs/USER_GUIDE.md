@@ -201,12 +201,14 @@ graph TD
 
 **What you see.**
 
-- Owner card for **YAN Haixiang**, with **Sign in as platform owner**.  
-- A Lark-style messenger promo with the permanent GitHub Pages URL and **Open messenger demo**.  
+- Owner card for **YAN Haixiang**. The whole card opens Sign in as platform owner.  
+- A Lark-style messenger promo. The whole card opens the messenger demo (permanent GitHub Pages URL is on the card).  
 - Clickable count cards: Users, Teams, Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  
-- Department division (RACI-style ownership).  
-- Recent alerts, with **View all** into Live Alerts.  
-- Shortcut buttons: Messenger, URL Catalog, PRD, User Guide, UAT, AI Admin, AI Access, Daily Performance.
+- **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Live Alerts, AI Analyses, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
+- Department division. Each department card opens that team’s working page (Risk Control → Live Alerts, Operations → Human Intervention, AI → AI Analyses, System → Settings). **View all** opens the Departments directory.  
+- Recent alerts. Each row opens that alarm on Live Alerts. **View all** lists every alarm.  
+- Integration spine steps. Each step opens the matching page (Monitor 2.0, Live Alerts, Escalation, AI Analyses, Daily Performance). **Spine log** opens the tape.  
+- Header shortcuts: Messenger, User Guide, Daily Performance.
 
 **What to click.** Use the cards as a map. If Open Alerts is not zero, go there first.
 
@@ -626,7 +628,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 
 | Group | Page | You come here to… |
 |---|---|---|
-| Overview | Admin Home | See counts; click cards; jump to messenger or docs |
+| Overview | Admin Home | See counts; click every card and alert row |
 | Monitor & risk | Daily Performance | Day-end CFD + crypto metrics |
 | Monitor & risk | Risk Log Analytics | Timeline, handling time, loss vs prevented, loopholes |
 | Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
