@@ -3,7 +3,7 @@
 **读者：** 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管  
 **范围：** 全量目录含现货·杠杆·永续；**Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入**  
 **公开站点：** https://hxyan2020.github.io/PRD/risk-handbook/ · **全部 URL：** https://hxyan2020.github.io/PRD/risk-handbook/urls.html · **后台 URL：** https://hxyan2020.github.io/PRD/risk-handbook/admin/  
-**版本：** 1.7 · **归属：** 首席风险官（第二道防线）· **审阅周期：** 每季度或重大事件后  
+**版本：** 1.8 · **归属：** 首席风险官（第二道防线）· **审阅周期：** 每季度或重大事件后  
 
 > 本手册为**操作手册**：明确职责边界、分工、SOP、管理后台、指标/阈值/动作、情景诊断与日常工具。不替代法律政策、限额手册或监管申报。  
 > **下文阈值为一级交易所框架的示意默认值** — 须按《限额手册》校准；未经 RO 双人审批不得直接用于生产。
@@ -12,6 +12,7 @@
 
 ## 目录
 
+0. [示意图](#visual-maps-zh)
 1. [如何使用本手册](#1-如何使用本手册)
 2. [三道防线与角色映射](#2-三道防线与角色映射)
 3. [产品入门（现货 / 杠杆 / 永续）](#3-产品入门现货--杠杆--永续)
@@ -45,17 +46,17 @@
 
 ```mermaid
 flowchart LR
-  subgraph access [开户]
-    I[邀请码] --> CP[KYC / 合规放行]
-    B[经纪商 / IB] --> CP
+  subgraph access ["开户"]
+    I["邀请码"] --> CP["KYC / 合规放行"]
+    B["经纪商 / IB"] --> CP
   end
-  CP --> E[权益: 仅永续]
-  E --> P[XAUUSD + 其他已批永续]
-  P --> ME[撮合 + 风控引擎]
-  ME --> LIQ[强平 / 保险 / ADL]
-  Spot[现货簿] -.-> P2[Phase 2+]
-  Mar[杠杆借款] -.-> P2
-  Pub[公众自助注册] -.-> P2
+  CP --> E["权益: 仅永续"]
+  E --> P["XAUUSD + 其他已批永续"]
+  P --> ME["撮合 + 风控引擎"]
+  ME --> LIQ["强平 / 保险 / ADL"]
+  Spot["现货簿"] -.-> P2["Phase 2+"]
+  Mar["杠杆借款"] -.-> P2
+  Pub["公众自助注册"] -.-> P2
 ```
 
 ### Phase 1 — 生产未开（保留手册，仅贴标签）
@@ -112,11 +113,11 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  L1[第一道: 产品 / TO / 撮合 / 钱包 / 上币 / 做市<br/>承担 BAU 风险并执行控制]
-  L2[第二道: 市场/信用/模型风险 + 合规 + 法务<br/>偏好、挑战、独立监控]
-  L3[第三道: 内部审计<br/>独立鉴证]
+  L1["第一道: 产品 / TO / 撮合 / 钱包 / 上币 / 做市<br/>承担 BAU 风险并执行控制"]
+  L2["第二道: 市场/信用/模型风险 + 合规 + 法务<br/>偏好、挑战、独立监控"]
+  L3["第三道: 内部审计<br/>独立鉴证"]
   L1 -->|突破升级| L2
-  L2 -->|重大 / Sev-1| CRO[CRO / 风险委员会]
+  L2 -->|"重大 / Sev-1"| CRO["CRO / 风险委员会"]
   L3 -.->|定期复审| L1
   L3 -.->|定期复审| L2
 ```
@@ -192,15 +193,15 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  IDX[指数: 多所合成] --> MARK[标记价]
-  LAST[最新价 / 中间价] --> BOOK[撮合簿]
-  MARK --> MR[保证金率]
+  IDX["指数: 多所合成"] --> MARK["标记价"]
+  LAST["最新价 / 中间价"] --> BOOK["撮合簿"]
+  MARK --> MR["保证金率"]
   BOOK --> MR
-  MR -->|健康| OK[可交易 / 可增险]
-  MR -->|突破| LQ[强平引擎]
-  LQ --> INS[保险基金]
-  INS -->|不足| ADL[ADL 队列]
-  MARK -. 是否陈旧? .-> FEED[PL-K06 / PF-K02 切源]
+  MR -->|健康| OK["可交易 / 可增险"]
+  MR -->|突破| LQ["强平引擎"]
+  LQ --> INS["保险基金"]
+  INS -->|不足| ADL["ADL 队列"]
+  MARK -. 是否陈旧? .-> FEED["PL-K06 / PF-K02 切源"]
 ```
 
 ### 3.4 产品对比（运维速查）
@@ -221,15 +222,15 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  subgraph p1 [Phase 1 开通]
-    Perps[永续含 XAUUSD]
+  subgraph p1 ["Phase 1 开通"]
+    Perps["永续含 XAUUSD"]
   end
-  subgraph p2 [Phase 2+ 文档保留 / 休眠]
-    Spot[现货]
-    Margin[全仓 / 逐仓杠杆]
-    Public[公众注册]
+  subgraph p2 ["Phase 2+ 文档保留 / 休眠"]
+    Spot["现货"]
+    Margin["全仓 / 逐仓杠杆"]
+    Public["公众注册"]
   end
-  User[用户] -->|仅邀请或经纪商| Perps
+  User["用户"] -->|仅邀请或经纪商| Perps
   User -.->|阻断| Spot
   User -.->|阻断| Margin
   User -.->|阻断| Public
@@ -244,13 +245,13 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  ACC[邀请 / 经纪商 + 合规] --> UID[可交易 UID]
-  UID --> ME[撮合]
-  ME --> RE[风控引擎]
-  RE --> FUT[合约 TO / PM]
-  FUT --> RO[RO / RO-OPS]
-  RE --> WO[钱包]
-  RO --> CRO[CRO]
+  ACC["邀请 / 经纪商 + 合规"] --> UID["可交易 UID"]
+  UID --> ME["撮合"]
+  ME --> RE["风控引擎"]
+  RE --> FUT["合约 TO / PM"]
+  FUT --> RO["RO / RO-OPS"]
+  RE --> WO["钱包"]
+  RO --> CRO["CRO"]
 ```
 
 各章统一模板：**范围内/外 → 分工 → SOP → 工具 → 管理后台 → 交接**。
@@ -405,11 +406,11 @@ flowchart LR
 
 ```mermaid
 sequenceDiagram
-  actor Req as 申请人
-  participant SYS as 系统 / RO-OPS
-  actor RO as Maker RO
-  actor CHK as Checker
-  participant RE as 风控引擎
+  actor Req as "申请人"
+  participant SYS as "系统 / RO-OPS"
+  actor RO as "Maker RO"
+  actor CHK as "Checker"
+  participant RE as "风控引擎"
   Req->>SYS: 工单 旧到新 + 理由
   SYS->>RO: 影响包
   RO-->>Req: 驳回
@@ -439,14 +440,14 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-  T[TO 提议] --> RO[RO 批准]
-  RO --> ME[ME 停撮合]
-  ME --> RE[RE 定强平模式]
-  RE --> COM[传播 + 钱包政策]
-  COM --> CLR{根因已控?}
-  CLR -->|否| HOLD[继续停牌]
-  CLR -->|是| ACK[RO + ME + RE 确认]
-  ACK --> RES[分阶段复牌 + 超护 4h]
+  T["TO 提议"] --> RO["RO 批准"]
+  RO --> ME["ME 停撮合"]
+  ME --> RE["RE 定强平模式"]
+  RE --> COM["传播 + 钱包政策"]
+  COM --> CLR{"根因已控?"}
+  CLR -->|否| HOLD["继续停牌"]
+  CLR -->|是| ACK["RO + ME + RE 确认"]
+  ACK --> RES["分阶段复牌 + 超护 4h"]
 ```
 
 | 字段 | 明细 |
@@ -467,14 +468,14 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  A[告警 WARN / BREACH / KILL] --> ACK[RO-OPS 按 SLA 确认]
-  ACK --> DQ{数据新鲜?}
-  DQ -->|否| ENG[ENG-03 修管道]
-  DQ -->|是| FAM[选择情景族 S1-S12]
-  FAM --> ACT[按手册遏制]
-  ACT --> ESC{已遏制?}
-  ESC -->|否| L[升 L+1 / 战时]
-  ESC -->|是| HC[超护 + 工单]
+  A["告警 WARN / BREACH / KILL"] --> ACK["RO-OPS 按 SLA 确认"]
+  ACK --> DQ{"数据新鲜?"}
+  DQ -->|否| ENG["ENG-03 修管道"]
+  DQ -->|是| FAM["选择情景族 S1-S12"]
+  FAM --> ACT["按手册遏制"]
+  ACT --> ESC{"已遏制?"}
+  ESC -->|否| L["升 L+1 / 战时"]
+  ESC -->|是| HC["超护 + 工单"]
 ```
 
 | 字段 | 明细 |
@@ -515,14 +516,14 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  Legal[法务] --> CP[合规]
-  CP --> LI[上币 + 风险意见]
-  LI --> Prod[产品清单]
-  Prod --> Eng[RE / ME 演练]
-  Eng --> WO[钱包就绪]
-  WO --> Acc[ACC-01 / ACC-02]
-  Acc --> Live[永续上线]
-  Spot[现货 / 杠杆] -.-> P2[Phase 2+ 冻结]
+  Legal["法务"] --> CP["合规"]
+  CP --> LI["上币 + 风险意见"]
+  LI --> Prod["产品清单"]
+  Prod --> Eng["RE / ME 演练"]
+  Eng --> WO["钱包就绪"]
+  WO --> Acc["ACC-01 / ACC-02"]
+  Acc --> Live["永续上线"]
+  Spot["现货 / 杠杆"] -.-> P2["Phase 2+ 冻结"]
 ```
 
 | 字段 | 明细 |
@@ -675,9 +676,9 @@ flowchart LR
 
 ```mermaid
 flowchart TB
-  L1[L1 RO-OPS 工单] --> L2[L2 RO + BU PIC]
-  L2 --> L3[L3 CRO + ME + RE + 传播]
-  L3 --> L4[L4 ELT + 法务 + 合规 + CISO]
+  L1["L1 RO-OPS 工单"] --> L2["L2 RO + BU PIC"]
+  L2 --> L3["L3 CRO + ME + RE + 传播"]
+  L3 --> L4["L4 ELT + 法务 + 合规 + CISO"]
 ```
 
 ### 8.3 限额类型
@@ -786,12 +787,12 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  G[绿] --> TS[先看时间戳]
-  A[黄 WARN] --> TRI[15 分分流]
-  R[红 BREACH] --> CON[5 分遏制]
-  TS -->|陈旧| S9[情景族 S9 假绿]
-  TS -->|新鲜| OK[健康或继续观察]
-  TRI --> FAM[时序后再定族]
+  G["绿"] --> TS["先看时间戳"]
+  A["黄 WARN"] --> TRI["15 分分流"]
+  R["红 BREACH"] --> CON["5 分遏制"]
+  TS -->|陈旧| S9["情景族 S9 假绿"]
+  TS -->|新鲜| OK["健康或继续观察"]
+  TRI --> FAM["时序后再定族"]
   CON --> FAM
 ```
 
@@ -813,13 +814,13 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-  C[1 时钟] --> S[2 范围]
-  S --> D[3 数据]
-  D --> SI[4 单指标]
-  SI --> CL[5 组合]
-  CL --> X[6 排除]
-  X --> ACT[7 行动]
-  ACT --> W[8 写时间线]
+  C["1 时钟"] --> S["2 范围"]
+  S --> D["3 数据"]
+  D --> SI["4 单指标"]
+  SI --> CL["5 组合"]
+  CL --> X["6 排除"]
+  X --> ACT["7 行动"]
+  ACT --> W["8 写时间线"]
 ```
 
 **时序语法：** `A → B` 先因后果 · `A ≈ B` 同时/共同驱动 · `A ↛ B` 单 A 通常推不出 B · `A 静默后 B` 两阶段 · `A/R 振荡` 常为阈值噪声/源抖动/MM 重启。
@@ -882,10 +883,10 @@ MG-K02 全绿却 MG-K03 飙升 → 可能强平错户/测试流量；
 
 ```mermaid
 sequenceDiagram
-  participant Ext as 外盘
-  participant Feed as PL-K06 / PF-K02
-  participant Mark as PF-K01
-  participant Liq as PF-K06
+  participant Ext as "外盘"
+  participant Feed as "PL-K06 / PF-K02"
+  participant Mark as "PF-K01"
+  participant Liq as "PF-K06"
   Note over Ext,Liq: S1 真实风险抛售
   Ext->>Mark: 先跌价
   Mark->>Liq: 有机强平
@@ -964,14 +965,14 @@ sequenceDiagram
 
 ```mermaid
 flowchart TB
-  IC[事件指挥官]
-  IC --- RO[风险]
-  IC --- ME[撮合]
-  IC --- RE[风控引擎]
-  IC --- WO[钱包]
-  IC --- COM[传播]
-  IC --- CP[合规]
-  IC --- SCR[记录员]
+  IC["事件指挥官"]
+  IC --- RO["风险"]
+  IC --- ME["撮合"]
+  IC --- RE["风控引擎"]
+  IC --- WO["钱包"]
+  IC --- COM["传播"]
+  IC --- CP["合规"]
+  IC --- SCR["记录员"]
 ```
 
 **战时常设角色：** 事件指挥官 · 风险 · 撮合 · 风控引擎 · 钱包 · 传播 · 合规 · 记录员  
@@ -1043,7 +1044,7 @@ flowchart TB
 | 变更控制 | CRO 批准；经风险门户发布 |
 | 相关产物 | 限额手册、强平政策、保险/ADL 政策、上币政策、BCP/DR、§8 指标目录、§9 情景诊断 |
 | 培训 | 新任 BU PIC 30 日内必修 |
-| 版本 | 1.7 — 英中示意图与可读性增强 |
+| 版本 | 1.8 — 页面内置示意图；本地 mermaid |
 
 ---
 

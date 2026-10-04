@@ -1,0 +1,170 @@
+<section class="visual-maps" id="visual-maps-zh">
+  <h2>示意图</h2>
+  <p class="lead-viz">这些图直接画在页面上（无需点击、不依赖外链）。绿色 = Phase 1 已开通。琥珀色删除线 = Phase 2+ 仅文档、未投产。</p>
+
+  <div class="board">
+    <div class="board-title">1 · Phase 1 生产路径</div>
+    <div class="lane">
+      <div class="lane-label">当前开通 — 仅邀请或经纪商 · 仅永续</div>
+      <div class="flow-row">
+        <div class="node">邀请码</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / 合规放行</div>
+        <span class="arrow">→</span>
+        <div class="node">权益：仅永续</div>
+        <span class="arrow">→</span>
+        <div class="node">XAUUSD + 已批永续</div>
+        <span class="arrow">→</span>
+        <div class="node">撮合 + 风控引擎</div>
+        <span class="arrow">→</span>
+        <div class="node">强平 / 保险 / ADL</div>
+      </div>
+      <div class="flow-row">
+        <div class="node">经纪商 / IB</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / 合规放行</div>
+        <span class="muted-note">汇入同一路径</span>
+      </div>
+    </div>
+    <div class="lane off">
+      <div class="lane-label">Phase 2+ — 手册保留，生产未开</div>
+      <div class="flow-row">
+        <div class="node off">现货簿</div>
+        <div class="node off">杠杆借款</div>
+        <div class="node off">公众自助注册</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">2 · 三道防线</div>
+      <div class="stack">
+        <div class="node navy">第一道 — 产品 / TO / 撮合 / 钱包 / 上币 / 做市<small>承担 BAU 风险并执行控制</small></div>
+        <span class="arrow down">↓ 突破升级</span>
+        <div class="node">第二道 — 市场 / 信用 / 模型风险 + 合规 + 法务<small>偏好、挑战、独立监控</small></div>
+        <span class="arrow down">↓ 重大 / Sev-1</span>
+        <div class="node amber">CRO / 风险委员会</div>
+        <span class="arrow down">⇢ 第三道定期复审</span>
+        <div class="node">第三道 — 内部审计<small>独立鉴证</small></div>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">3 · 永续控制链（Phase 1 主路径）</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node navy">指数（多所合成）</div>
+          <span class="arrow">→</span>
+          <div class="node">标记价</div>
+        </div>
+        <div class="flow-row">
+          <div class="node navy">最新价 / 中间价</div>
+          <span class="arrow">→</span>
+          <div class="node">撮合簿</div>
+        </div>
+        <span class="arrow down">↓ 共同进入保证金率</span>
+        <div class="node">保证金率</div>
+        <div class="flow-row">
+          <div class="node green">健康 → 可交易 / 可增险</div>
+          <div class="node red">突破 → 强平引擎</div>
+        </div>
+        <div class="flow-row">
+          <div class="node">保险基金</div>
+          <span class="arrow">→</span>
+          <div class="node red">不足 → ADL 队列</div>
+        </div>
+        <p class="muted-note">标记陈旧？按 PL-K06 / PF-K02 切源。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">4 · Phase 1 关键路径 BU</div>
+    <div class="flow-row">
+      <div class="node">邀请 / 经纪商 + 合规</div>
+      <span class="arrow">→</span>
+      <div class="node">可交易 UID</div>
+      <span class="arrow">→</span>
+      <div class="node">撮合（ME）</div>
+      <span class="arrow">→</span>
+      <div class="node">风控引擎（RE）</div>
+      <span class="arrow">→</span>
+      <div class="node">合约 TO / PM</div>
+      <span class="arrow">→</span>
+      <div class="node">RO / RO-OPS</div>
+      <span class="arrow">→</span>
+      <div class="node amber">CRO</div>
+    </div>
+    <p class="muted-note">钱包（WO）挂在风控引擎路径上，负责抵押与盈亏结算。</p>
+  </div>
+
+  <div class="viz-grid">
+    <div class="board">
+      <div class="board-title">5 · 红黄绿分流</div>
+      <div class="stack">
+        <div class="flow-row">
+          <div class="node green">绿 → 先看时间戳</div>
+        </div>
+        <div class="flow-row">
+          <div class="node amber">黄 WARN → 15 分分流</div>
+        </div>
+        <div class="flow-row">
+          <div class="node red">红 BREACH → 5 分遏制</div>
+        </div>
+        <p class="muted-note">陈旧的绿 = 情景族 S9（假绿）。然后时钟 → 范围 → 数据 → 情景族 S1–S12。</p>
+      </div>
+    </div>
+    <div class="board">
+      <div class="board-title">6 · 升级阶梯</div>
+      <div class="stack">
+        <div class="node">L1 RO-OPS 工单</div>
+        <span class="arrow down">↓</span>
+        <div class="node amber">L2 RO + BU PIC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">L3 CRO + ME + RE + 传播</div>
+        <span class="arrow down">↓</span>
+        <div class="node red">L4 ELT + 法务 + 合规 + CISO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">7 · SOP-G02 停牌后复牌</div>
+    <div class="flow-row">
+      <div class="node">TO 提议</div>
+      <span class="arrow">→</span>
+      <div class="node">RO 批准</div>
+      <span class="arrow">→</span>
+      <div class="node">ME 停撮合</div>
+      <span class="arrow">→</span>
+      <div class="node">RE 定强平模式</div>
+      <span class="arrow">→</span>
+      <div class="node">传播 + 钱包政策</div>
+    </div>
+    <div class="flow-row">
+      <div class="node red">根因未控 → 继续停牌</div>
+      <div class="node green">已遏制 → RO+ME+RE 确认 → 分阶段复牌 + 超护 4h</div>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">8 · 诊断顺序（先时钟）</div>
+    <div class="flow-row">
+      <div class="node navy">1 时钟</div>
+      <span class="arrow">→</span>
+      <div class="node navy">2 范围</div>
+      <span class="arrow">→</span>
+      <div class="node navy">3 数据</div>
+      <span class="arrow">→</span>
+      <div class="node">4 单指标</div>
+      <span class="arrow">→</span>
+      <div class="node">5 组合</div>
+      <span class="arrow">→</span>
+      <div class="node">6 排除</div>
+      <span class="arrow">→</span>
+      <div class="node amber">7 行动</div>
+      <span class="arrow">→</span>
+      <div class="node">8 写时间线</div>
+    </div>
+  </div>
+</section>
