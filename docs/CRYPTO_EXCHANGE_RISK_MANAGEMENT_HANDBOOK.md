@@ -14,6 +14,6 @@
 
 **Vercel:** this handbook is not deployed on Vercel. `https://prd.vercel.app/` is a different product.
 
-**v1.8** puts always-on visual maps at the top of the public handbook (HTML/CSS, no CDN).
+**v1.9** adds a beginner briefing and spells out SOP steps in plain language (English and 简体中文).
 
 **Phase 1:** Perps only (incl. XAUUSD); invite-only and/or brokers. Spot/Margin/public signup = `[Phase 2+]`.
