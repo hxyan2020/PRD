@@ -3,7 +3,7 @@
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
 **Scope:** Full catalogue covers Spot · Margin · Perps; **Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access**  
 **Public site:** https://hxyan2020.github.io/PRD/risk-handbook/ · **All URLs:** https://hxyan2020.github.io/PRD/risk-handbook/urls.html · **Admin URLs:** https://hxyan2020.github.io/PRD/risk-handbook/admin/  
-**Version:** 1.9 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Version:** 2.0 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
 > This handbook is the **operating playbook**: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does **not** replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.  
 > **Numbers in this handbook are teaching examples.** Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.
@@ -158,6 +158,21 @@ When several lights turn red, **order matters**. Example: if our **price feed di
 3. Sit with RO-OPS for one alert from ACK to close.  
 4. Practice saying a halt request in one breath: *symbol, reason, orders-only or include liquidations, who already knows.*  
 5. Do not change a limit, a mark source, or a kill switch until you have watched one G01 and one G04 (two-person check) as a **reader**.
+
+### Worked example — 03:00, one red light (no background needed)
+
+You are on RO-OPS. Pager: **PF-K01 BREACH** on **XAUUSD**. You have never traded gold.
+
+1. **ACK within 5 minutes** (G03). That only means “I saw it.” It does not fix gold.
+2. **Look at the timestamp** on the number (PL-K06 / PF-K02). If the clock is old, this may be a fake red or a fake green — go ENG-03. Do not liquidate or halt on a stale clock.
+3. **Look outside our exchange.** Is gold actually moving on other venues?  
+   - Outside calm, we are screaming → likely **S2** (our fair-price feed is wrong). Pause unsafe liquidations (RE-02), fail over the feed (RE-03).  
+   - Outside also dumping, our feed healthy → likely **S1** (real market). Prefer **reduce-only** (PF-07) over a full halt if matching is healthy.
+4. Say on the bridge, in one breath: *“XAUUSD, PF-K01 red, I think S2, liquidations paused, Comms not posted yet.”*
+5. Do **not** rewrite the mark formula to make the chart pretty. Do **not** close the alert because “it flickered back to green.”
+6. Full recipe: **PF-03**. Detective chapter: **§9**.
+
+That is the whole job of a first night: **see, timestamp, outside world, contain, name the family, write it down.**
 
 ---
 
@@ -353,7 +368,15 @@ flowchart TB
 
 ## 4. BU-by-BU playbooks
 
-Each chapter follows the same template:
+Each chapter follows the same template so one team does not write a novel while another dumps three acronyms:
+
+- **In scope / out of scope** — should this incident land on you?
+- **Job division** — who on your team clicks
+- **SOPs** — numbered recipes; the full how-to is in **§6.7**
+- **Tools / admin pages** — where to look, where to change
+- **Handoffs** — who you pass the baton to
+
+**In plain English:** a “BU” is one business unit (futures product, matching, wallet, …). A “PIC” is the named owner. Tickets and admin access hang off those names. You do not need to be a trader. You do need to know whether this chapter is yours, and the first SOP to open when something breaks.
 
 
 **Figure — Phase 1 critical-path BUs**
@@ -368,13 +391,6 @@ flowchart LR
   RE --> WO["Wallet WO"]
   RO --> CRO["CRO"]
 ```
-
-- **In scope / out of scope**
-- **Job division**
-- **SOPs (named)**
-- **Useful tools**
-- **Admin pages**
-- **Handoffs**
 
 ---
 
@@ -860,6 +876,8 @@ flowchart LR
 
 ### 4.10 Treasury, Settlement & Banking — TS
 
+**In plain English:** Treasury owns **the firm's money and pipes** (banks, stablecoin inventory, cash in the insurance fund) — not whether a customer's trade made a profit. If the end-of-day books do not match, they must **not** send a payment.
+
 #### In scope
 - Fiat corridors, banking concentration
 - Corporate treasury (not client trading risk)
@@ -876,11 +894,13 @@ flowchart LR
 | TS-04 | Insurance fund injection | Board/CRO approved |
 
 #### Admin pages
-| `/admin/treasury/balances`, `/admin/treasury/settlement`, `/admin/treasury/stablecoins`
+`/admin/treasury/balances` · `/admin/treasury/settlement` · `/admin/treasury/stablecoins`
 
 ---
 
 ### 4.11 Liquidity / Market Making Ops — MM
+
+**In plain English:** a market maker is paid (or contracted) to keep a **buy price and a sell price** on the book so other people can trade. If the gap between those prices suddenly explodes, or the book is empty, first ask “is the maker still alive (heartbeat)?” before you decide the whole market crashed.
 
 #### In scope
 - MM agreement SLAs (depth, spread, uptime) for Spot & Perps
@@ -895,11 +915,13 @@ flowchart LR
 | MM-03 | Conflict / information barrier check | New listing / prop overlap |
 
 #### Admin pages
-| `/admin/mm/sla`, `/admin/mm/inventory`, `/admin/mm/agreements`
+`/admin/mm/sla` · `/admin/mm/inventory` · `/admin/mm/agreements`
 
 ---
 
 ### 4.12 Platform Engineering, Security & Data — ENG / SRE / Security / DA
+
+**In plain English:** they keep the pipes, the keys to admin pages, and the audit log that cannot be rewritten. Every green/red number on a risk screen comes through their pipelines. If the pipeline is late, a green light can be a lie.
 
 #### In scope
 - Secure SDLC, access control, audit logs for all admin pages
@@ -911,7 +933,7 @@ flowchart LR
 | ID | Name | Trigger |
 |----|------|---------|
 | ENG-01 | Privileged admin access grant | Joiner/mover |
-| ENG-02 | Audit log immuntability check | Periodic |
+| ENG-02 | Audit log immutability check | Periodic |
 | ENG-03 | Pipeline lag incident | Risk feed late |
 | ENG-04 | Security incident (key/API) | Compromise |
 
@@ -1203,514 +1225,577 @@ flowchart LR
 
 ### 6.7 BU SOP catalogue (detailed)
 
+This section is the **desk-level recipes**. Global G01–G06 above are the shared skeleton (change a limit, halt a market, ACK an alert, two-person control, end-of-day books, open a new product). Each card below is one job a named team actually runs.
+
+**If you have never done this work**
+
+1. Find your team's prefix: **RM** = risk ops, **PF** = perps (today's live product), **ACC** = invite/broker access, **ME** = matching engine, **RE** = risk/liquidation engine, **WA** = wallet, **SP** = spot `[Phase 2+]`, **MG** = margin lending `[Phase 2+]`.
+2. Read **What this is** first. If you cannot explain the job in one sentence to a new colleague, do not start clicking.
+3. Read **When**. If that event has not happened, this recipe is not yours yet — do not improvise a similar-looking action.
+4. Then **How**, in order. A sentence marked *Why* is the reason the previous step exists, not decoration.
+5. Do not close the ticket until **Done when** is true. Attach the evidence listed. A closed ticket with no screenshot/hash/ACK is an audit failure.
+6. If a field is blank or a screen is missing, **stop and ask RO-OPS**. Inventing a step at 03:00 is how wrong liquidations start.
+
+**Phase 1 people:** read **RM, PF, ACC, ME, RE, WA** first. Spot (SP) and Margin (MG) cards stay here so you can study them; do not enable those products.
+
+---
+
 #### RM — Risk Ops
 
+These are the jobs the 24×7 risk desk actually does. “MI pack” means management information — a snapshot of whether we are inside our risk appetite.
+
 ##### RM-01 Daily risk MI pack
+
+**What this is:** every day we print a picture of “are we safe?” so the next shift and the CRO do not start from a blank page. It is a newspaper, not a trade.
+
 | Field | Detail |
 |-------|--------|
-| **When** | Every UTC cutoff (default 22:00) + ad-hoc on L3 day |
-| **Who** | **R:** SYS assemble · **A:** RO · **C:** PM/TO · **I:** CRO (summary) |
-| **SLA** | Pack published ≤ 90m after cutoff |
-| **How** | 1) Pull strategy/desk/company snapshots + open alerts + stress highlights via `risk_reporting.py`. 2) RAG §8 families. 3) Flag waivers expiring ≤7d. 4) Distribute DL. 5) RO comments exceptions. |
+| **When** | Every UTC cutoff (default 22:00) and again on any L3 day |
+| **Who** | **R:** system assembles · **A:** RO reads and comments · **C:** PM/TO on exceptions · **I:** CRO (summary) |
+| **SLA** | Pack published ≤ 90 minutes after cutoff |
 | **Systems** | `/admin/risk/reports` · `risk_reporting.py` |
-| **Done when** | Email/portal post + RO ACK. **Escalate if** pack >2h late → ENG-03. |
+
+**How (do not skip)**
+1. Confirm the cutoff actually finished (matching, risk engine, wallet feeds have a timestamp at or after cutoff). *Why:* a pack built on a stuck feed looks green and is a lie (family S9).
+2. Run `risk_reporting.py` (or the portal job) so it pulls: desk/company snapshots, every still-open WARN/BREACH, stress-test highlights, waivers expiring in 7 days.
+3. Paint each §8 family red/amber/green **and write the feed timestamp next to the colour**.
+4. Send to the distribution list. The RO writes a short comment on every amber/red — silence is not a review.
+5. ACK in the portal. If the pack is >2 hours late, that is **ENG-03** (pipeline), not “we were busy.”
+
+**Done when:** email/portal post exists and an RO has ACK'd. **Escalate if:** pack >2h late → ENG-03; numbers contradict the live alert console → treat as data incident, do not “fix the PDF.”
 
 ##### RM-02 Soft-limit WARN response
+
+**What this is:** a yellow light. Something is off. You have minutes, not hours. WARN is **not** permission to ignore until red.
+
 | Field | Detail |
 |-------|--------|
-| **When** | Any WARN (§8) |
-| **Who** | **R:** RO-OPS · **C:** BU PIC · **A:** RO if persists >TTE |
-| **SLA** | ACK 15m; plan 30–60m |
-| **How** | G03 triage → document cause → watch vs act → if approaching BREACH pre-stage G01/G02. |
-| **Done when** | WARN cleared or upgraded with ticket. |
+| **When** | Any WARN on §8 |
+| **Who** | **R:** RO-OPS · **C:** the BU PIC for that product · **A:** RO if it lasts beyond time-to-escalate |
+| **SLA** | ACK 15 min; a written plan in 30–60 min |
+
+**How**
+1. ACK in the console (SOP-G03). *Why:* ACK stops the pager from shouting at the next person so you can think.
+2. Check the timestamp (PL-K06 / PF-K02). Stale yellow → ENG-03, do not change limits.
+3. Write one sentence: “this looks like S? because …”. List other KRIs that moved in ±15 minutes.
+4. Decide **watch** (stay on the desk, name a re-check time) or **act** (open a G01/G02/PF-* draft *now*). If the number is walking toward BREACH, pre-stage the next SOP while it is still yellow. *Why:* finding a Checker at red is slower than finding them at yellow.
+5. Leave the WARN ticket open until the colour is green **or** you have upgraded it.
+
+**Done when:** WARN cleared or upgraded with a ticket. **Escalate if:** two WARNs on the same family with no plan → treat as L2.
 
 ##### RM-03 Hard-limit BREACH response
+
+**What this is:** a red light. The safety margin is gone. Contain first; write the essay later.
+
 | Field | Detail |
 |-------|--------|
-| **When** | BREACH / Kill-adjacent |
-| **Who** | **R:** RO-OPS + BU PIC · **A:** RO · page CRO if L3+ |
-| **SLA** | ACK 5m; containment 15m |
-| **How** | Contain per instrument (reduce-only / borrow freeze / halt) → verify auto actions → §9 family → war room if Sev-1/2 → post-mortem. |
-| **Done when** | Contained + owner for permanent fix. |
+| **When** | BREACH or anything next to Kill |
+| **Who** | **R:** RO-OPS + the product BU PIC · **A:** RO · page CRO if L3+ |
+| **SLA** | ACK 5 min; containment 15 min |
+
+**How**
+1. ACK (G03). Say on the bridge: scope, KRI id, best §9 family guess.
+2. **Contain by product, immediately:** perps → prefer reduce-only (PF-07); margin `[Phase 2+]` → consider borrow freeze (MG-03); spot `[Phase 2+]` → consider halt (G02). *Why:* the engine will keep matching unless someone changes the mode.
+3. Check whether the **automatic** action in the §8 table actually fired. If it should have and did not, that is a **second** incident (engine), not a footnote.
+4. Set L1–L4 using §8.2. Sev-1/2 → war room (§10). Do not debug alone on client-asset issues.
+5. Keep the BREACH open until containment has an owner for the permanent fix. Clicking “close alert” is not containment.
+
+**Done when:** contained + named owner for the permanent fix. **Escalate if:** 15 min with no containment → L3 automatically.
 
 ##### RM-04 Leverage / rights increase
+
+**What this is:** a trader or VIP asks to borrow more risk (higher leverage, higher position cap). This is **not** a customer-service favour. It is a credit decision.
+
 | Field | Detail |
 |-------|--------|
-| **When** | TR/VIP submits buying-power or leverage request |
-| **Who** | **R submit:** TR · **R packet:** SYS · **A Maker:** RO · **Checker:** RO2/PM if Tier A+ · **R push:** ENG/RE |
-| **SLA** | Eligibility packet <5m auto · Maker ≤1 BD (urgent 1h) |
-| **How** | `trader_rights_workflow`: eligibility (Sharpe/DD/VaR/CP hold) → Maker approve/reject → Checker if A+ → enqueue limit update → confirm broker/OMS. |
-| **Done when** | Status APPROVED + limit live. **Escalate if** self-approve attempt. |
+| **When** | TR/VIP submits a buying-power or leverage request |
+| **Who** | **R submit:** trader · **R packet:** system · **A Maker:** RO · **Checker:** RO2/PM if Tier A+ · **R push:** ENG/RE |
+| **SLA** | Eligibility packet <5 min auto · Maker ≤1 business day (urgent 1h) |
+
+**How**
+1. Trader submits in `trader_rights_workflow` (never in private chat as the only record).
+2. System builds an eligibility packet: recent PnL/drawdown, open CP holds, current utilisation, any unpaid bad debt. *Why:* a winning month is not a reason to ignore a compliance freeze.
+3. RO (Maker) approves, rejects, or approves with a smaller number and an expiry date. Write the reason.
+4. If Tier A+ (large notional / max leverage), a **different human** must Checker. Same login is rejected. *Why:* G04 — one stolen laptop must not raise the ceiling.
+5. Only then RE/ENG pushes the new cap. Paste the config hash on the ticket.
+6. Confirm the trader's broker/OMS actually shows the new cap before you tell the trader “done.”
+
+**Done when:** status APPROVED and the live limit matches the ticket. **Escalate if:** anyone tries to approve their own UID → security incident, not a UI bug.
 
 ##### RM-05 Stress catalogue change
+
+**What this is:** we keep a list of “what if gold gaps 8% overnight / what if the stablecoin breaks.” Changing that list changes which disasters we pretend to survive.
+
 | Field | Detail |
 |-------|--------|
-| **When** | New scenario, shock size, correlation matrix edit |
-| **Who** | **R:** DA · **A:** RO · **C:** PM · **I:** CRO if core scenarios |
-| **SLA** | Dual sign-off before catalogue publish |
-| **How** | Propose → backtest hit rates → RO+DA sign → version catalogue → link to daily pack. |
-| **Done when** | Version ID on portal. |
+| **When** | New scenario, shock size, or correlation matrix |
+| **Who** | **R:** DA (quant) · **A:** RO · **C:** PM · **I:** CRO if a core scenario |
+| **SLA** | Dual sign-off before the catalogue is published |
+
+**How**
+1. DA proposes the shock in writing (which prices move, by how much, over how many minutes).
+2. Backtest: would this have lit up on the last three real stress days? If never, the shock may be toy; if always, it may be too tight to be useful.
+3. RO + DA both sign. Publish a **version number**. A catalogue with no version is unpublished.
+4. Link the version into the daily MI pack (RM-01) so tomorrow's desk uses the new list.
+
+**Done when:** version ID is on the portal.
 
 ##### RM-06 Insurance fund draw review
+
+**What this is:** the insurance fund is the pool that pays when a liquidation still leaves a hole. Any payout (or ADL) is a near-miss on client money.
+
 | Field | Detail |
 |-------|--------|
-| **When** | Any insurance payout or ADL (PF-K07/K08/K12) |
-| **Who** | **R flash:** TO-FUT · **A review:** RO · **C:** TS accounting · **I:** CRO if >X |
-| **SLA** | Flash ≤30m; formal review ≤1 BD |
-| **How** | Pull payout vs bankruptcy prices → liq quality → MM during event → decide inject (TS-04) / tighten brackets (G01) / ADL review (PF-06). |
-| **Done when** | Review note filed; ledger entries match. |
+| **When** | Any insurance payout or ADL (PF-K07 / K08 / K12) |
+| **Who** | **R flash:** TO-FUT · **A review:** RO · **C:** TS accounting · **I:** CRO if above the published size |
+| **SLA** | Flash note ≤30 min; formal review ≤1 business day |
+
+**How**
+1. Within 30 min: how much was paid, at what mark, was the book thick, did liquidations run on time? One page, UTC timestamps.
+2. Within 1 business day: reconcile the ledger vs the engine. Mismatch → L2/L3, do not “plug” the difference.
+3. Decide: inject more money (TS-04), tighten leverage (G01), or review ADL (PF-06) if ADL fired.
+4. File the note where the next RO-OPS can find it at 03:00.
+
+**Done when:** review note filed and ledger entries match.
 
 ##### RM-07 Trading halt recommendation
+
+**What this is:** Risk can *recommend* a halt. Matching actually *does* it (G02). A recommendation sitting in chat is not a halt.
+
 | Field | Detail |
 |-------|--------|
-| **When** | Gap, oracle fail, cascade, reg ask |
-| **Who** | **R recommend:** RO/RO-OPS · **A decide:** RO · execute via G02 |
-| **SLA** | Recommendation ≤5m on BREACH cascade |
-| **How** | State scope/reason/family → call G02 → stay on bridge until resume criteria set. |
+| **When** | Price gap, oracle/index failure, liquidation cascade, or a regulator asks |
+| **Who** | **R recommend:** RO / RO-OPS · **A decide:** RO · execute via **G02** |
+| **SLA** | Recommendation ≤5 min on a BREACH cascade |
+
+**How**
+1. On the bridge, say four things: **scope** (one symbol / segment / global), **reason code**, **§9 family**, **orders-only vs include liquidations**.
+2. Hand to G02. Stay on the bridge until resume criteria are written down. *Why:* the person who resumes may not have been on the first call.
 
 ---
 
 #### SP — Spot `[Phase 2+]`
 
+> Phase 1: these recipes are **study material**. Do not enable a spot symbol.
+
 ##### SP-01 Spot symbol go-live
+
+**What this is:** turning a listed token into a live order book people can trade. A listing opinion (LD-01) is not the same as “the button is green.”
+
 | Field | Detail |
 |-------|--------|
-| **When** | Pipeline stage ready post LD-01 / G06 |
-| **Who** | **R:** PM-SPOT + TO · **A:** RO+CP clear already · **C:** WO, MM, ME |
-| **SLA** | Checklist complete same day as scheduled launch window |
-| **How** | Verify wallet chains · tick/lot/bands/STP/fees · MM SLA or disclosure · halt test · KRI wiring SP-K01/02/03/05 · soft launch optional · announce. |
-| **Systems** | `/admin/spot/*` · listing pipeline |
-| **Done when** | §11.5 checklist ticked; hypercare 72h named. |
+| **When** | Pipeline stage ready after LD-01 / G06 |
+| **Who** | **R:** PM-SPOT + TO · **A:** RO+CP already cleared · **C:** WO, MM, ME |
+| **SLA** | Checklist complete the same day as the advertised launch window |
+
+**How**
+1. Confirm wallet deposit/withdraw on the **correct chain** (wrong chain = customer money in a hole).
+2. Set tick size, lot size, price bands, STP, fees. *Why:* a 0.00000001 tick on a $60,000 coin lets people spam the book.
+3. Confirm a market-maker SLA **or** a public “thin book” disclosure. Silence is not a disclosure.
+4. Test halt (SP-02 path) on staging. If you cannot halt, you cannot launch.
+5. Wire KRIs SP-K01/02/03/05. Name the 72h hypercare roster.
+6. Announce only after the flags are live.
+
+**Done when:** §11.5 ticked; hypercare named.
 
 ##### SP-02 Spot trading halt
-| Field | Detail |
-|-------|--------|
-| **When** | Index fail, fat-finger, regulatory, disorderly (SP-K03/K06) |
-| **Who** | **Propose:** TO · **Approve:** RO · **Execute:** ME · **I:** Comms, WO |
-| **SLA** | Execute ≤2m post-approve |
-| **How** | Follow G02 Spot column; reason code; keep withdraw default-on. |
-| **Done when** | Halt state confirmed on `/admin/spot/halt`. |
+
+**What this is:** stop matching buys and sells on a spot pair. Default: **keep withdrawals on** so this does not look like a bank run.
+
+Follow **G02** (Spot column). TO proposes, RO approves, ME executes ≤2 min, Comms posts. Reason code on the ticket.
+
+**Done when:** `/admin/spot/halt` shows the intended state.
 
 ##### SP-03 Spot resume
-| Field | Detail |
-|-------|--------|
-| **When** | RO+ME clearance after SP-02 |
-| **Who** | **A:** RO+ME · **R:** TO · **C:** Product |
-| **How** | Verify book integrity · bands · MM online · staged resume · 4h hypercare. |
-| **Done when** | Trades flowing; no immediate SP-K03 BREACH. |
+
+**What this is:** turning the pair back on without printing a fake price into an empty book.
+
+**How**
+1. RO+ME confirm the root cause is gone (not “it looks quieter”).
+2. Check book integrity and that the market maker is actually quoting.
+3. Resume in stages (narrow bands → normal). Hypercare 4 hours.
 
 ##### SP-04 Price band / max notional change
-| Field | Detail |
-|-------|--------|
-| **When** | Vol regime change or incident lesson |
-| **Who** | Via **G01**; **R propose:** TO/PM · **A:** RO |
-| **How** | Impact on fills/MM → G01 → `/admin/spot/bands` promote → hypercare. |
+
+A **band** is a fence: the engine rejects an order whose price is too far from the reference. Changing it is a **G01** limit change (two people if Tier A+), then `/admin/spot/bands`, then watch SP-K03.
 
 ##### SP-05 Wash / self-trade handoff
-| Field | Detail |
-|-------|--------|
-| **When** | SP-K08 or surveillance alert |
-| **Who** | **R handoff:** TO/RO-OPS · **A case:** CP · **C:** ME (STP mode) |
-| **SLA** | Handoff ≤30m; CP triage per CP-01 |
-| **How** | Preserve order/trade IDs → open CP case → consider UID hold CP-02 → no silent STP weaken. |
+
+**What this is:** two orders from the “same economic owner” trading with each other to fake volume. You are not the detective — Compliance is. Your job is to **hand off evidence fast** and not silently weaken STP (self-trade prevention).
+
+**How:** freeze the order/trade IDs → open a CP case ≤30 min → consider CP-02 hold → do **not** “turn STP down so the client can trade.”
 
 ---
 
 #### MG — Margin `[Phase 2+]`
 
+> Phase 1: no lending book. Do not confuse this with **perps margin** (collateral on futures), which lives under PF / RE.
+
+**Plain English:** the user deposits coins, **borrows** (usually stablecoins), buys more coins, and pays interest. If the coins fall, we **force-sell**. **Isolated** = only that position can die. **Cross** = the whole account's collateral can be eaten.
+
 ##### MG-01 Add collateral asset
-| Field | Detail |
-|-------|--------|
-| **When** | Post-spot listing + RO opinion for margin eligibility (LD-03) |
-| **Who** | **R:** PM-MARGIN · **A haircut/LTV:** RO-Credit · **C:** DA stress · **I:** TS |
-| **How** | Stress haircut → set LTV brackets → borrow caps → interest mapping → liq path test isolated+cross → enable `/admin/margin/collateral`. |
-| **Done when** | §11.4 checklist done; MG-K05 baseline stored. |
+
+**How**
+1. After LD-03, DA stress-tests a **haircut** (we count $100 of a jumpy coin as e.g. $70). *Why:* the coin can fall while we are still selling it.
+2. Set LTV (loan-to-value) brackets, borrow caps, interest curve.
+3. Dry-run liquidation on isolated **and** cross. Enable only then.
 
 ##### MG-02 Haircut / LTV change
-| Field | Detail |
-|-------|--------|
-| **When** | Vol regime, governance, MG-K05 BREACH |
-| **Who** | **G01** path; **A:** RO-Credit |
-| **SLA** | Urgent depeg: ≤30m dual-approve |
-| **How** | DA note → G01 → push RE → notify users if adverse · watch MG-K02/03. |
+
+G01 path. Urgent depeg: dual-approve ≤30 min. Tell users if the change is adverse (they can be liquidated by a parameter change). Watch MG-K02/03.
 
 ##### MG-03 Borrow freeze (asset)
-| Field | Detail |
-|-------|--------|
-| **When** | MG-K01 BREACH persistent, depeg S3, inventory crisis |
-| **Who** | **R execute:** TO/RO-Credit · **A:** RO · **I:** TS, Comms |
-| **SLA** | Decision ≤15m on BREACH |
-| **How** | `/admin/margin/borrow` freeze → optional rate max → announce if user-visible → define unfreeze criteria. |
-| **Done when** | New borrows blocked; ticket has unfreeze owner. |
+
+**What this is:** stop **new** loans of an asset (e.g. USDT) so a short squeeze or depeg cannot drain inventory. Existing loans still exist.
+
+**How:** `/admin/margin/borrow` freeze → optional max rate → announce if user-visible → **write the unfreeze criteria on the ticket** (otherwise the freeze lives forever).
 
 ##### MG-04 Forced liquidation runbook
-| Field | Detail |
-|-------|--------|
-| **When** | Cascade / engine lag MG-K03 |
-| **Who** | **R:** TO + RE · **A:** RO · **C:** ME capacity |
-| **How** | Confirm marks fresh → if unsafe RE-02 pause → else ensure liq queue draining → throttle risk-increasing → consider spot bands on collateral → never delete liq history. |
-| **Escalate if** | Lag >30s → L3. |
+
+**How**
+1. Confirm marks are fresh. Rotten marks → **RE-02 pause**. Liquidating on a wrong price is taking user money.
+2. If marks are good: keep the queue draining; throttle risk-increasing orders; never delete liquidation history.
+3. Lag >30s → L3 (the engine is behind the market).
 
 ##### MG-05 Bad debt write-off / recovery
-| Field | Detail |
-|-------|--------|
-| **When** | MG-K04 after shortfall |
-| **Who** | **R case:** RO-Credit · **A P&L:** TS · **Checker:** RO/CRO if Tier A |
-| **How** | Quantify → auto-repay attempts → recover from user → residual write-off dual-control → lessons to haircut/buffer. |
-| **Done when** | Ledger + case closed. |
+
+After a shortfall: quantify → try auto-repay → chase the user → residual write-off needs two people → feed the lesson back into haircut/buffer. TS books the P&L; this is not a “rounding” chat message.
 
 ##### MG-06 Interest curve update
-| Field | Detail |
-|-------|--------|
-| **When** | Funding cost / peg risk / governance |
-| **Who** | **R:** PM-MARGIN/TS · **A:** RO-Credit · block if MG-K07 open |
-| **How** | Propose curve → recon check → G01 if material → `/admin/margin/interest` → monitor exceptions. |
+
+Do not push a new rate curve while MG-K07 (accrual exceptions) is red — you will compound the error. Material changes go through G01.
 
 ---
 
 #### PF — Perps `[Phase 1]`
 
+**This is today's live path.** Read every card. A perpetual (“perp”) is a contract that tracks a price (Bitcoin, gold vs US dollar, …) and **never expires**. Users post collateral, go long or short with leverage. We use a **mark price** (fair price from an index of other venues) to decide profit/loss and liquidation — **not** the last print on our book.
+
 ##### PF-01 New perp contract launch
+
+**What this is:** putting a new contract (for example another metal pair, or a new BTC perp) in front of invite/broker users. Skipping a checkbox here is how you launch with no insurance or a one-venue index.
+
 | Field | Detail |
 |-------|--------|
 | **When** | LD-04 + G06 complete |
-| **Who** | **R:** PM-FUT · **A:** RO · **C:** RE/ME/DA/TS |
-| **How** | Specs → index ≥ min venues → brackets/limits dual-approved → insurance seed → funding caps tested → liq+ADL dry-run → matching symbol → Comms → 72h hypercare · §11.3. |
-| **Done when** | Live + PF-K01/02/06/07 dashboards green. |
+| **Who** | **R:** PM-FUT · **A:** RO · **C:** RE / ME / DA / TS |
+| **How** | Walk §11.3 **out loud** with a second person. Specs signed; index has the minimum number of venues and PF-K01/K02 alerts on; leverage brackets dual-approved; insurance seed in the wallet; funding cap tested; liquidation + ADL dry-run signed; matching symbol + rate limits; support scripts that mention funding and liq; 72h named hypercare; RO-OPS can explain S2 (bad mark) vs S1 (real dump) for **this** symbol. |
+| **Done when** | Live, and PF-K01/02/06/07 dashboards are green **with fresh timestamps**. Missing one item = do not launch. |
 
 ##### PF-02 Leverage bracket change
-| Field | Detail |
-|-------|--------|
-| **When** | Vol / VIP policy / PF-K11 |
-| **Who** | **G01**; **A:** RO · **R propose:** PM-FUT |
-| **How** | Impact OI/users near cap → approve → `/admin/futures/leverage` → hypercare liqs. |
+
+**What this is:** “maximum leverage for this contract / this notional size.” Raising it lets users lose their collateral faster. This is G01, not a product experiment.
+
+**How**
+1. Count how many users sit near the cap and how much open interest would jump.
+2. G01 dual-control → `/admin/futures/leverage` → 24h hypercare **watching liquidation count** (PF-K06). *Why:* a “small” bracket change is a common Sev-level mistake.
 
 ##### PF-03 Mark–index deviation response
+
+**What this is:** the most important perps alarm. **Mark** should stay near **index** (the average of other exchanges). If they split, either the world moved (basis) or **our number is wrong** (we may liquidate healthy users).
+
 | Field | Detail |
 |-------|--------|
 | **When** | PF-K01 WARN/BREACH |
 | **Who** | **R:** RO-OPS + RE + DA · **A:** RO · **C:** TO-FUT |
-| **SLA** | BREACH triage ≤5m |
-| **How** | Check PL-K06 & PF-K02 → if data: S2 failover/pause unsafe liq → if real basis: consider reduce-only PF-07 → never “fix” mark without dual RO+DA. |
-| **Done when** | Deviation explained; feed healthy or trading contained. |
+| **SLA** | BREACH triage ≤5 min |
+
+**How (say this on the bridge)**
+1. **Clock:** when did PF-K01 move? Did **PL-K06** (pipeline lag) or **PF-K02** (a venue in the index went stale) move *first*? *Why:* first-mover tells S2 (data) from S1 (real market).
+2. Look at **external** venues (the real gold/BTC market). If they are calm and we are screaming, believe S2.
+3. **If data (S2):** fail over the feed (RE-03). If marks are unsafe, **pause liquidations** (RE-02) and consider reduce-only (PF-07). Tell Comms: “liquidations paused because the fair price feed is unhealthy,” not “the market is closed.”
+4. **If real basis:** the index is honest; our book is just far away. Consider reduce-only. Do **not** rewrite the mark formula to make the chart pretty.
+5. Any formula change is **dual RO+DA**. There is no “fix it now, ticket later.”
+
+**Done when:** the deviation is explained, and either the feed is healthy or trading is contained. **Escalate if:** liquidations already ran on a suspected bad mark → Sev-1.
 
 ##### PF-04 Funding extreme / pause
-| Field | Detail |
-|-------|--------|
-| **When** | PF-K03 near/at cap or oracle fail |
-| **Who** | **R:** PM-FUT · **A pause (rare):** RO+PM dual · **I:** Comms |
-| **How** | Confirm clamp auto → publish reason → pause only if settlement integrity broken → resume with RO ACK. |
+
+**What this is:** every 1 or 8 hours (as designed), longs pay shorts or the reverse, so the perp cannot float away from the real price forever. A **cap** (clamp) stops the rate from becoming infinite. Users complaining that funding is “expensive” is **not** a reason to switch it off.
+
+**How**
+1. Confirm the cap actually applied (PF-K03). If it did, the system worked.
+2. Pause **settlement** only if integrity is broken (wrong formula, double-pay). Dual RO+PM, and Comms must say funding is paused.
+3. Resume with an RO ACK.
 
 ##### PF-05 Insurance payout review
-| Field | Detail |
-|-------|--------|
-| **When** | Bankruptcy fill / fund draw |
-| **Who** | See RM-06; **R:** TO-FUT |
-| **How** | Same-day flash → quality of liq → recommend TS-04 inject and/or G01 tighten. |
+
+Same-day flash: bankruptcy price, were liquidations on time, was a market maker present? Numbers that do not match the ledger → escalate. Then RM-06 / possible TS-04 inject.
 
 ##### PF-06 ADL activation review
-| Field | Detail |
-|-------|--------|
-| **When** | Any ADL (PF-K08) |
-| **Who** | **R:** TO-FUT · **A:** RO · **C:** CP (abuse) · Comms |
-| **SLA** | Bridge immediate if majors / ≥3 per hour |
-| **How** | Verify insurance was insufficient (order: K07 before K08) → ranking fair → user notices → if misconfig, stop ADL + Sev-1. |
+
+**What this is:** Auto-Deleveraging. When insurance cannot pay a hole, we cut **winning opposite positions**. It feels unfair to winners. It is the last safety valve.
+
+**How**
+1. Prove insurance was **actually** insufficient (PF-K07 should have gone amber/red **before** PF-K08). If ADL fired first, the trigger is misconfigured → **stop ADL + Sev-1**.
+2. Check the ranking was the published rule (usually highest leverage / highest profit first — follow the live policy).
+3. User notices go out. CP looks for abuse if the pattern is odd.
 
 ##### PF-07 Perps halt / reduce-only
-| Field | Detail |
-|-------|--------|
-| **When** | Cascade, infra, bad marks |
-| **Who** | G02 Perps column · **RE** sets liq mode |
-| **How** | Prefer reduce-only before full halt when engine healthy · state funding behaviour in Comms. |
+
+**Reduce-only** means: you may **close** or shrink a position, you may **not** make it bigger. Prefer this over a full halt when the matching engine is healthy. Full halt follows G02. Comms **must** say whether funding and liquidations are still running.
 
 ##### PF-08 Index constituent outage
-| Field | Detail |
-|-------|--------|
-| **When** | PF-K02 WARN/BREACH |
-| **Who** | **R:** DA/RE · **A temp weights:** RO |
-| **How** | Auto-drop bad venue if policy → if below min venues: protect mark / reduce-only → RO approve temporary weights → restore when venue healthy. |
+
+The index is an average of several outside venues. If one venue dies or prints nonsense, **drop it** (policy). If too few venues remain, **protect the mark** and go reduce-only / pause liq. Temporary weights need an RO signature. Do not “just use Binance only” without that signature — one venue is easy to manipulate.
 
 ---
 
 #### ME — Matching
 
+**Plain English:** the matching engine is the program that turns a buy order and a sell order into a trade. If it is wrong, every price and every liquidation that used that price is wrong. Treat it like a nuclear control room: small, dual-controlled switches.
+
 ##### ME-01 Engine deploy / rollback
-| Field | Detail |
-|-------|--------|
-| **When** | Scheduled release or hotfix |
-| **Who** | **R:** ENG · **A go/no-go:** ME PIC · **C:** SRE · **I:** TO/RO-OPS |
-| **SLA** | Rollback decision ≤15m on Sev-1 latency/integrity |
-| **How** | Change ticket → canary → watch SP-K09/K04 → rollback procedure rehearsed → post-deploy verify. |
+
+**How**
+1. Change ticket with what will be different and how to roll back (rehearsed, not “we think we remember”).
+2. Canary (tiny slice of traffic) first. Watch latency SP-K09 and cancel ratio SP-K04.
+3. If Sev-1 latency or integrity: rollback decision ≤15 min. Heroic hotfixes during a red book are how you get a second incident.
 
 ##### ME-02 Matching halt
-| Field | Detail |
-|-------|--------|
-| **When** | Sev-1 integrity / G02 execute |
-| **Who** | **R:** ME · **A:** RO for business halt; dual for global kill |
-| **How** | Scope halt → confirm → notify RE/TO → never leave ambiguous shard states. |
+
+Business halt (G02) needs RO approval. **Global kill** (the whole venue) is two people on `/admin/engine/kill`. Confirm the effect (no new matches) and tell RE so liquidations are not running on a frozen book by accident. Never leave one shard trading and another halted without saying so.
 
 ##### ME-03 Dual-site failover
-| Field | Detail |
-|-------|--------|
-| **When** | Primary loss / DR drill |
-| **Who** | **R:** SRE/ME · **A:** ME PIC · **I:** RO, Comms |
-| **How** | Declare incident → drain/failover `/admin/engine/failover` → ME-05 book verify → trading resume per G02 if halted. |
+
+Declare the incident → drain/failover on `/admin/engine/failover` → **ME-05** prove the book is the same book → resume via G02 if you halted. A failover without a book checksum is a rumour.
 
 ##### ME-04 Cancel storm mitigation
-| Field | Detail |
-|-------|--------|
-| **When** | SP-K04 / rate > SLO |
-| **Who** | **R:** ME · **C:** TO/CP |
-| **How** | Raise rate limits carefully / shed → identify UID storms → CP if abuse → protect latency SLO. |
+
+Too many cancel messages starve real trades. Raise rate limits **carefully** or shed load; if one UID is the storm, hand to CP (abuse). Protect the latency SLO; do not “open the firehose so VIPs are happy.”
 
 ##### ME-05 Post-incident book rebuild verify
-| Field | Detail |
-|-------|--------|
-| **When** | After failover/halt |
-| **Who** | **R:** ME · **A:** ME PIC · **C:** RE |
-| **How** | Compare book checksums / trade continuity → sign attach to ticket before full resume. |
+
+Compare book checksums and trade continuity. **Sign the comparison on the ticket before full resume.** *Why:* resuming into a reconstructed garbage book prints fake prices and fake liquidations.
 
 ---
 
 #### RE — Risk engine
 
+**Plain English:** this program continuously asks “if price jumps, does this user still have enough collateral?” It computes **margin ratio**, **bankruptcy price**, and it **starts liquidation**. A wrong config here is more dangerous than a wrong blog post — it moves money.
+
 ##### RE-01 Config promote
-| Field | Detail |
-|-------|--------|
-| **When** | After G01 dual-approval |
-| **Who** | **R:** RE · **A:** RO ticket link mandatory |
-| **How** | Diff configs → staging → prod → hash to ticket → ping RO-OPS hypercare. |
-| **Escalate if** | Promote without ticket → revert + audit. |
+
+**How**
+1. Only promote with a **G01 ticket id** and a diff you can read.
+2. Staging first, then production. Paste the **config hash** back on the ticket.
+3. Ping RO-OPS to start 24h hypercare.
+4. Promote without a ticket → **revert + audit**. There is no “emergency paste into prod.”
 
 ##### RE-02 Liquidation engine pause / resume
-| Field | Detail |
-|-------|--------|
-| **When** | Unsafe marks (S2), controlled cascade, maintenance |
-| **Who** | **R:** RE · **A:** RO · **I:** TO-FUT/Margin TO, Comms |
-| **SLA** | Pause ≤2m once RO orders |
-| **How** | `/admin/risk-engine/liq` pause → document why → users may still face risk — Comms honesty → resume only when marks healthy + RO ACK. |
+
+**What this is:** stop the robot that force-closes users. You do this when the **price it is using is unsafe**, not because users are complaining they got liquidated fairly.
+
+**How**
+1. RO orders it. RE hits pause on `/admin/risk-engine/liq` ≤2 min.
+2. Comms tells the truth: users may **still be at risk**; we stopped the robot because the ruler is broken.
+3. Resume **only** when marks are fresh **and** RO ACKs in writing.
 
 ##### RE-03 Mark price feed failover
-| Field | Detail |
-|-------|--------|
-| **When** | PL-K06 / PF-K02 / oracle incident |
-| **Who** | **R:** RE/ENG · **A:** RO if methodology change |
-| **How** | Switch secondary → validate PF-K01 → if both bad: reduce-only/pause liq. |
+
+Switch to the secondary source, then watch PF-K01. If **both** sources are bad: reduce-only and/or pause liq. Do not average two rotten numbers and call it fine.
 
 ##### RE-04 Risk state rebuild
-| Field | Detail |
-|-------|--------|
-| **When** | Desync risk vs matching/wallet |
-| **Who** | **R:** RE · **A:** RO · **C:** ME/WO |
-| **How** | Freeze risk-increasing → rebuild from authoritative ledger → recon sample → unfreeze. |
+
+When risk-engine balances disagree with matching or wallet: **freeze risk-increasing orders** → rebuild from the authoritative ledger → sample-recon → unfreeze. Never rebuild while users can still open new leverage.
 
 ##### RE-05 Portfolio-margin model change
-| Field | Detail |
-|-------|--------|
-| **When** | Model governance / PM-K01 |
-| **Who** | **R:** DA · **A:** RO · **C:** PM · dual G01 |
-| **How** | Parallel run → gap report → feature flag → conservative fallback ready. |
+
+If unified account / portfolio margin is on: run the new model **in parallel** (shadow) → publish the gap report → feature flag → keep a conservative fallback. This is dual G01. Phase 1: usually off.
 
 ---
 
 #### WA — Wallet
 
+**Plain English:** this is where coins actually sit. **Hot** wallet = connected to the internet, pays withdrawals, must not hold more than a buffer. **Cold** = slower, more people, ceremony. A “top-up” is moving coins cold → hot so genuine withdrawals still pay. A “slow mode” is paying withdrawals slower so a panic does not empty the hot wallet.
+
 ##### WA-01 Hot wallet top-up
-| Field | Detail |
-|-------|--------|
-| **When** | PL-K01 WARN/BREACH or forecast outflow |
-| **Who** | **R:** WO · **A:** policy TS/RO buffer · **C:** Security ceremony if cold move |
-| **SLA** | Start top-up ≤30m on WARN; immediate on BREACH |
-| **How** | Confirm on-chain balances → cold→hot per ceremony rules → verify buffer → log. |
+
+**How**
+1. Confirm **on-chain** balances (not only the internal screen). *Why:* the screen can lag; the chain is the money.
+2. WARN: start the cold→hot move ≤30 min. BREACH: start immediately.
+3. Follow the key ceremony (WA-05 / G04). Log the txid on the ticket. Verify the buffer is actually back above policy.
 
 ##### WA-02 Withdrawal queue / slow mode
-| Field | Detail |
-|-------|--------|
-| **When** | Run risk, attack, chain congestion, PL-K02 |
-| **Who** | **R:** WO · **A:** RO (+CP if compliance-driven) · **I:** Comms, TS |
-| **SLA** | Slow-mode decision ≤15m on BREACH |
-| **How** | `/admin/wallet/withdraw` slow mode → prioritisation rules → status page → exit criteria (buffer+backlog). |
+
+**How**
+1. BREACH on backlog or run-risk: decide slow mode ≤15 min.
+2. Turn it on at `/admin/wallet/withdraw`. Write the **priority rules** (who gets paid first) and the **exit criteria** (buffer + backlog ages).
+3. Status page for users. Hiding a queue creates a worse run.
 
 ##### WA-03 Chain halt / reorg
-| Field | Detail |
-|-------|--------|
-| **When** | Node alerts / PL-K04 |
-| **Who** | **R:** WO/SRE · **A:** RO if credits impacted · **C:** CP |
-| **How** | Pause credits on chain → assess depth → clawback SOP if credited reorged → resume with finality policy. |
+
+A **reorg** is the blockchain rewriting recent blocks. Credits on a block that disappeared were never real. Pause crediting that chain, measure depth, claw back if we already credited, resume only with the finality policy (how many confirmations).
 
 ##### WA-04 Wrong deposit recovery
-| Field | Detail |
-|-------|--------|
-| **When** | User ticket wrong asset/chain/memo |
-| **Who** | **R:** WO · **A:** dual WO/TS for moves · **C:** CP AML |
-| **How** | Verify ownership → recoverability → fee policy → execute → close with txids. |
+
+User sent the wrong asset, wrong chain, or missing memo. Verify they own the sending address → is recovery even possible → fee policy → **two people** to move funds → close with txids. CP checks AML. This is not “just send it back.”
 
 ##### WA-05 Key ceremony / rotation
-| Field | Detail |
-|-------|--------|
-| **When** | Schedule or incident |
-| **Who** | Multi-party WO/Security · **A:** CISO/CRO policy · G04 |
-| **How** | Ceremony runbook → record ID → validate sign path → revoke old material. |
+
+Two (prefer three) people, a ceremony ID written down, old keys destroyed or logged as revoked. G04 applies. A photo of a seed phrase in chat is an incident.
 
 ##### WA-06 PoR snapshot
-| Field | Detail |
-|-------|--------|
-| **When** | Periodic / attestation request |
-| **Who** | **R:** WO/TS · **A:** CRO/Finance per policy · **C:** External auditor if any |
-| **How** | Freeze height → liabilities extract → publish/attest → archive. |
+
+Proof of Reserves: pick a block height, extract liabilities, publish/attest, archive. CRO/Finance per policy. Do not run this as a marketing screenshot without the liability side.
 
 ---
 
 #### LD — Listing / delisting
 
+**Plain English:** listing = allowing a market. Delisting = taking it away in a **fixed order** so we do not leave a futures contract live on a token that no longer has a spot price, or leave loans open on a coin we are about to disable.
+
 ##### LD-01 Listing risk opinion
-| Field | Detail |
-|-------|--------|
-| **When** | New asset/contract in pipeline |
-| **Who** | **R:** LI pack · **A opinion:** RO · **C:** CP/Legal |
-| **SLA** | Per pipeline board |
-| **How** | Tokenomics/contract/liquidity/manip history → opinion Approve/Conditional/Reject → conditions become launch checklist. |
+
+LI builds the diligence pack (who issued it, can they freeze accounts, unlocks, manipulation history). RO writes **Approve / Conditional / Reject**. Conditions become the go-live checklist — they are not polite suggestions.
 
 ##### LD-02 Seed / monitoring tag
-| Field | Detail |
-|-------|--------|
-| **When** | Elevated risk pre/post list |
-| **Who** | **R:** LI · **A:** RO · **I:** Comms/Support |
-| **How** | `/admin/listing/tags` → disclosure → tighter bands optional. |
 
-##### LD-03 Margin eligibility
-| Field | Detail |
-|-------|--------|
-| **When** | After spot stable observation window |
-| **Who** | **A:** RO-Credit · **R:** PM-MARGIN · then MG-01 |
+A public warning tag (“seed”, “monitoring”). Optional tighter bands. Support and Comms must see the same tag the user sees.
 
-##### LD-04 Perp listing decision
-| Field | Detail |
-|-------|--------|
-| **When** | Demand + risk appetite |
-| **Who** | **A:** RO · **R:** PM-FUT/LI · then PF-01 |
+##### LD-03 Margin eligibility `[Phase 2+]`
+
+After the coin has been calm on spot, RO-Credit may allow it as collateral → then MG-01.
+
+##### LD-04 Perp listing decision `[Phase 1]`
+
+Demand + risk appetite → RO says yes → **PF-01**. Phase 1: this is the live listing path (XAUUSD and other approved perps).
 
 ##### LD-05 / LD-06 / LD-07 Delist sequences
-| Field | Detail |
-|-------|--------|
-| **When** | Criteria breach or project failure |
-| **Who** | **A:** LI+RO+CP+Legal · **R execute:** Product TOs + WO |
-| **How (order)** | 1) Approvals. 2) **Perps LD-07:** reduce-only → flatten/settle → delist. 3) **Margin LD-06:** freeze borrow → force repay/liq → remove collateral. 4) **Spot LD-05:** halt if needed → disable trade → withdraw per WA. 5) Comms+support macros. |
-| **SLA** | Notice period per Listing Policy unless LD-08 |
+
+**Mandatory order** (do not skip because “spot is the real product”):
+1. Risk + Legal + CP approve.
+2. **Perps (LD-07):** reduce-only → flatten or wait expiry → delist the contract.
+3. **Margin (LD-06, Phase 2+):** freeze borrow → force repay/liquidate → remove collateral.
+4. **Spot (LD-05, Phase 2+):** halt if needed → disable trading → withdrawals follow WA.
+5. Comms + support macros.
 
 ##### LD-08 Emergency delist / halt
-| Field | Detail |
-|-------|--------|
-| **When** | Exploit/fraud/security |
-| **Who** | **A:** CRO/RO + CP + Legal · execute G02/LD immediately |
-| **SLA** | Halt ASAP; formal notes ≤24h |
-| **How** | Safety first: halt/disable deposits → follow compressed LD-05–07 → forensic with Security/CP. |
+
+Exploit, fraud, stolen-mint. **Safety first:** halt and disable deposits immediately. Fill in the paperwork within 24h. Forensics with Security/CP. Do not wait for a tidy project call.
 
 ---
 
 #### CP — Compliance
 
+**Plain English:** Compliance decides *who is allowed to trade* and whether someone is **abusing** the market. Risk decides *how much leverage*. Do not mix those jobs. A **hard hold** is a lock on trade, withdraw, and/or leverage.
+
 ##### CP-01 Surveillance alert triage
-| Field | Detail |
-|-------|--------|
-| **When** | Surveillance alert |
-| **Who** | **R:** CP analyst · **A:** CP lead · **C:** TO/RO if markets |
-| **SLA** | Per CP SLA table (typ. same day for high severity) |
-| **How** | Replay → classify false/positive → case → link UIDs/products. |
+
+Open the alert → decide false/positive → open a case → link UIDs and products. Same-day for high severity. You are building a timeline, not a vibe.
 
 ##### CP-02 Account hard hold
-| Field | Detail |
-|-------|--------|
-| **When** | Confirmed suspicion / policy |
-| **Who** | **R:** CP · **A:** CP lead · G04 to remove |
-| **How** | `/admin/compliance/holds` trade/withdraw/leverage as needed → notify Support script → evidence pack. |
+
+Put the hold on `/admin/compliance/holds`. Tell Support which script to read to the user. **Removing** a hold needs a second person (G04). Putting a hold on can be fast; taking it off is the dangerous direction.
 
 ##### CP-03 Cross-product abuse review
-| Field | Detail |
-|-------|--------|
-| **When** | Spot+Perps (or margin) pattern |
-| **Who** | **R:** CP · **C:** RO/TO-FUT |
-| **How** | Combined timeline → holds → market impact note to RO. |
+
+Someone may be buying spot and dumping perps (or the reverse). Build **one** timeline across products. Tell RO if it is moving the mark. Holds as needed.
 
 ##### CP-04 Reg request / freeze
-| Field | Detail |
-|-------|--------|
-| **When** | External lawful order |
-| **Who** | **R:** CP/Legal · **A:** Legal · **I:** CRO |
-| **How** | Authenticate order → freeze scope → acknowledge authority → retain. |
+
+An outside authority asks to freeze. **Authenticate the order first** (forgery is a thing). Freeze the stated scope, acknowledge, retain. Legal is Accountable. Do not expand the freeze “to be helpful.”
 
 ---
 
 #### TS / MM / ENG
 
 ##### TS-01 Banking corridor outage
-**When:** partner down · **Who R:** TS · **A:** TS PIC · **How:** divert rails → update deposit/withdraw UX with WO/Comms → RO if liquidity risk · **Done:** corridor restored or alternative live.
+
+A bank or payment partner is down. Divert to another rail, update deposit/withdraw wording with WO/Comms, tell RO if this creates a liquidity hole. Done when the corridor or an alternative is actually live.
 
 ##### TS-02 Stablecoin depeg response
-**When:** peg break / MG-K08 · **Who R:** TS+RO · **How:** inventory/redemption · haircut/borrow actions with MG-03 · Comms · S3 family · **Escalate:** hard depeg L3.
+
+The “$1 coin” is no longer $1. Confirm on **external** markets (S3) vs our oracle being wrong (S2). Inventory and redemption, haircut/borrow with MG-03 `[Phase 2+]`, Comms. Hard depeg → L3.
 
 ##### TS-03 Settlement after EOD recon
-**When:** daily post G05 approve · **Who R/A:** TS · **How:** execute only on `SettlementReady` · attach refs · **Escalate:** never settle on open material breaks.
+
+Pay **only** after `SettlementReady` (G05). Attach bank/txid refs. Never settle on an open material break — that is how we pay twice.
 
 ##### TS-04 Insurance fund injection
-**When:** Board/CRO approved after RM-06 · **Who R:** TS · **A:** CRO · G04 dual · **How:** `/admin/futures/insurance` or treasury transfer · ledger · notify RO.
+
+Move company money into the insurance pool after RM-06 + CRO. Dual control (G04). Ledger it. Tell RO. This is not a silent wallet drift.
 
 ##### MM-01 SLA breach escalation
-**When:** depth/spread fail SP-K01/02 · **Who R:** MM ops · **C:** TO · **How:** contact MM → enforce agreement → RO halt opinion if disorderly.
+
+Market makers promised to keep a bid and an offer near each other. If depth/spread fail (SP-K01/02), call them, enforce the contract, ask RO for a halt if the book is disorderly.
 
 ##### MM-02 Vol regime quote widen
-**When:** stress · **Who R:** MM · **I:** TO/RO · **How:** widen per playbook · ensure not indistinguishable from outage (heartbeat on).
+
+In a storm they may legally widen. They must keep a **heartbeat** (quotes still updating). Silent empty book is an outage (S5), not “vol.”
 
 ##### MM-03 Information barrier check
-**When:** new listing / prop overlap · **Who R:** MM+RO+CP · **How:** confirm Chinese walls · log conflicts.
+
+If we have an affiliated desk, they must not see customer flow. Log the check when listing or when prop overlap appears.
 
 ##### ENG-01 Privileged admin access grant
-**When:** joiner/mover · **Who R:** Security/ENG · **A:** BU PIC + Security · **How:** least privilege · time-bound · ticket · quarterly recert.
+
+Joiner/mover: least privilege, time-bound, ticketed, recertified quarterly. BU PIC + Security both sign. Admin pages in this handbook are dangerous; access is not a souvenir.
 
 ##### ENG-02 Audit log immutability check
-**When:** periodic · **Who R:** Security · **How:** verify sink integrity · alert on gaps · **Escalate:** gap = L3.
+
+Periodically prove nobody can edit history. A gap is L3 — you have lost the court record.
 
 ##### ENG-03 Pipeline lag incident
-**When:** PL-K06 / late risk feeds · **Who R:** ENG · **A:** RE/RO for trading impact · **How:** fix consumer → if marks unsafe trigger RE-02/PF-03 · **Done:** lag <WARN.
+
+Risk numbers are late (PL-K06). Fix the consumer. If marks are unsafe, trigger RE-02 / PF-03 **before** you finish the Kubernetes ticket. Done when lag < WARN.
 
 ##### ENG-04 Security incident (key/API)
-**When:** compromise / PL-K08 · **Who R:** Security · **A:** CISO · **I:** CRO/CP · **SLA:** kill key ≤2m · **How:** revoke · rotate · user notify · forensic · L3/L4 war room.
+
+Compromised key: **kill it ≤2 min**, rotate, notify, forensics, L3/L4 war room. CRO/CISO/CP informed. Speed beats a perfect write-up.
 
 ---
 
 #### ACCESS — Phase 1 invite & broker onboarding `[Phase 1]`
 
+**Plain English:** in Phase 1 a person **cannot** create an account from the public website. They need an **invite code** or a **broker** (a firm that already signed a contract with us). After identity checks (KYC = know your customer), they may trade **perps only**. Spot and margin flags stay off. If you find a public “register” button working, that is an **L3 incident**, not a growth win.
+
 ##### ACC-01 Invite-only account open
+
 | Field | Detail |
 |-------|--------|
-| **When** | Prospect redeems invite / allowlist code; or ops issues invite |
-| **Who** | **R:** Product/Growth ops or Broker desk · **A CP gates:** CP · **A risk entitlements:** RO (limits tier) · **R enable trade:** RE/ENG flags |
-| **SLA** | Invite validate ≤1m automated · Manual CP review per policy · Entitlement push ≤15m after clear |
+| **When** | Someone redeems an invite / allowlist code, or ops issues one |
+| **Who** | **R:** Product/Growth ops · **A CP:** identity gates · **A risk entitlements:** RO · **R enable trade:** RE/ENG flags |
+| **SLA** | Invite validate ≤1 min automated · Manual CP review per policy · Entitlement push ≤15 min after clear |
 | **Preconditions** | Phase 1 mode on; invite unused/unexpired; sanctions screen clear |
-| **Systems** | Invite admin · KYC · `/admin/compliance/holds` · risk limits tier · broker link (if any) |
-| **How** | 1) Validate invite. 2) Collect KYC/KYB as required. 3) CP clear. 4) Bind account to invite issuer metadata. 5) Set Phase 1 product entitlement = **perps only**. 6) Enable trading flags. 7) Audit log. |
-| **Done when** | Account can trade approved perps only; spot/margin flags off. |
-| **Escalate if** | Invite abuse / shared codes → CP-02 hold; public signup path found open → L3 disable. |
+| **Systems** | Invite admin · KYC · `/admin/compliance/holds` · risk limits tier |
+
+**How (why each step exists)**
+1. **Validate the invite.** Unused, unexpired, not obviously shared. *Why:* a leaked code is a public signup in disguise.
+2. **Collect KYC/KYB** (who they are; if a company, who owns it).
+3. **CP clears.** Until this, the account is a folder, not a trader.
+4. **Bind metadata:** which invite, whom it came from, when. *Why:* later surveillance and broker revenue need this tag; you will not remember.
+5. **Set product entitlement = perps only.** Explicitly confirm spot and margin flags are **off**.
+6. Enable trading flags. Audit log.
+7. Spot-check: can they open an approved perp? Can they **not** open a spot order?
+
+**Done when:** they can trade approved perps only. **Escalate if:** invite abuse → CP-02 hold; public signup path found open → **L3 disable the path first**, then hunt UIDs already created.
 
 ##### ACC-02 Broker-introduced account open
-| Field | Detail |
-|-------|--------|
-| **When** | Broker/IB submits or links end-client under broker agreement |
-| **Who** | **R:** Broker ops · **A:** CP (KYC/KYB of client + broker) · **C:** Legal (broker agreement live) · **A risk:** RO for broker-level limits · **R:** RE entitlements |
-| **SLA** | Per broker SLA; no trade before CP+agreement+entitlement |
-| **Preconditions** | Executed broker agreement; broker on allowlist; client KYC complete |
-| **Systems** | Broker portal · master/sub or tagged UID · limit hierarchy |
-| **How** | 1) Verify broker status. 2) Onboard client under broker. 3) CP clear client. 4) Apply broker and client limit stacks. 5) Entitlement = Phase 1 perps only. 6) Dual-control if broker credit/vip. |
-| **Done when** | Client trades only via approved path; attribution to broker for surveillance/revenue. |
-| **Escalate if** | Broker agreement lapsed → freeze new accounts; cascade risk on broker book → RO L2/L3. |
+
+**What this is:** a signed introducing broker brings an end-client. The client still needs KYC. Limits are the **tighter** of (broker book limit, client limit).
+
+**How**
+1. Verify the broker agreement is **live** (not expired, not suspended).
+2. Onboard the client under that broker tag.
+3. CP clears the client.
+4. Apply **both** limit stacks; the engine must use the stricter one. *Why:* a tiny client under a huge broker must not inherit the broker's cap.
+5. Entitlement = Phase 1 perps only. Dual-control any broker credit/VIP.
+6. If the agreement lapses: **stop new accounts**. Existing accounts follow the contract + a risk opinion — do not pretend you did not notice.
+
+**Done when:** client trades only on the approved path; surveillance can attribute them to the broker.
 
 ##### ACC-03 Phase 1 entitlement guard (continuous)
-| Field | Detail |
-|-------|--------|
-| **When** | Continuous + daily MI; any attempt to enable spot/margin or public signup |
-| **Who** | **R monitor:** RO-OPS/ENG · **A:** RO + CP |
-| **How** | Alert if spot/margin symbol enabled; alert if self-serve register open; alert if UID trades without invite/broker tag. |
-| **Done when** | Daily zero exceptions or exceptions ticketed with phase-gate waiver. |
+
+**What this is:** the daily “is the front door still locked?” check.
+
+**How**
+1. Alert if any UID has spot or margin enabled.
+2. Alert if self-serve register is open.
+3. Alert if a UID can place an order with **no** invite and **no** broker tag.
+4. Daily report to RO-OPS + CP. Zero exceptions, or exceptions ticketed with a **phase-gate waiver** (not a Slack emoji).
+
+**Done when:** daily zero exceptions or every exception has a waiver ticket.
 
 
 ## 7. Admin pages & tool catalogue
@@ -2639,7 +2724,7 @@ If a word is not here, search this page; many terms are defined in [If you are n
 | Change control | CRO approve; publish via Risk portal |
 | Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics**; Chinese edition via handbook tabs |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 1.9 — Plain-language beginner briefing; fuller SOP how-to |
+| Version | 2.0 — Beginner SOP cards for every BU; numbered how + why in both languages |
 
 ---
 
