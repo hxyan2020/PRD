@@ -65,7 +65,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "User Guide", path: "/admin/docs/user-guide", description: "Operator handbook (EN/ZH)", permission: "admin.access" },
   { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack", permission: "admin.access" },
   { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
-  { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "Next-wave platform improvements", permission: "admin.access" },
+  { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
   { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths", permission: "admin.access" },
 
   // APIs

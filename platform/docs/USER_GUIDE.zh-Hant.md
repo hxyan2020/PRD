@@ -606,7 +606,7 @@ graph LR
 | TSD | `/admin/docs/tsd` | 怎麼做的（架構、API、資料模型） |
 | UAT 清單 | `/admin/docs/uat` | 互動式 45 案簽核（UAT-01 … UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋 |
 | 生態導入評估 | `/admin/docs/ecosystem` | 真要導入的人力、預算帶、階段、風險 |
-| 改進路線圖 | `/admin/docs/roadmap` | 依優先序的後續 |
+| 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
 | 網址目錄 | `/admin/docs/urls` | 每個管理頁、API、資料表，加上公開 Pages 網址 |
 
 UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fail；覆蓋晶片顯示每案打到哪些畫面。

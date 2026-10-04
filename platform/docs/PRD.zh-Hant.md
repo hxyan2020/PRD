@@ -275,7 +275,7 @@ graph LR
 | 文件 | TSD | `/admin/docs/tsd` | 怎麼做的 | 完整介面地圖 |
 | 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 45 案，可互動 |
 | 文件 | 生態導入評估 | `/admin/docs/ecosystem` | 導入 | 階段、預算、風險 |
-| 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | 優先項目 |
+| 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | RM-01…15：今日／要做／完成標準 |
 | 文件 | 網址目錄 | `/admin/docs/urls` | 導覽 | 頁＋API＋表 |
 | 殼層 | 登入 | `/login` | 具名角色 | 保持；Pages 路徑；負責人預設 |
 | 殼層 | 語言 | cookie `crmp_ui_lang` | 英／繁中 | 導覽＋文件切換 |

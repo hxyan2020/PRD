@@ -2,7 +2,7 @@
 
 **文件編號：** CRMP-RM-001 · 現行 CRMP 原型之後的優先待辦  
 **讀者：** 風險負責人、平台負責人、工程、GRC  
-**讀法：** 上表是掃描視圖。每個 `RM-xx` 寫明 **今日原型行為**、**要做什麼**、**完成標準**，方便 UAT 分清示範與正式環境。
+**讀法：** 管理頁 `/admin/docs/roadmap` 是操作員視圖（可展開卡片）。本檔是可列印對本。每個 `RM-xx` 寫明 **今日原型**、**要做什麼**、**完成標準**、**程式落點**、**不做的風險**。
 
 本原型已能走通脊柱：**Monitor 警報 → AI 根因（技能／RAG）→ 第二 AI 挑戰 → Messenger → Maker／Checker → 稽核／脊柱**。本表要補上會讓正式台面失敗的缺口：模擬 Lark、種子 Monitor、啟發式 AI、SQLite、共用示範密碼、只記日誌的「執行」。
 
@@ -34,10 +34,10 @@
 
 ## 建議順序
 
-1. **基礎：** RM-05、RM-06、RM-02 — 身分、耐久儲存、即時警報。  
-2. **操作體驗：** RM-01、RM-07、RM-11 — 人在 Lark 工作，並能跑影子模式。  
-3. **寫路徑（最後）：** RM-09＋全域緊急開關 — 等風險負責人接受影子誤報率。  
-4. **模型品質：** RM-03＋RM-04＋RM-14。  
+1. **基礎：** RM-05、RM-06、RM-02 — 身分、耐久儲存、即時警報。
+2. **操作體驗：** RM-01、RM-07、RM-11 — 人在 Lark 工作，並能跑影子模式。
+3. **寫路徑（最後）：** RM-09＋全域緊急開關 — 等風險負責人接受影子誤報率。
+4. **模型品質：** RM-03＋RM-04＋RM-14。
 5. **強化與擴充：** RM-08、RM-10、RM-12、RM-15。RM-13 屬後期計畫。
 
 規則：在 B 階段誤報與挑戰者 `DISAGREE` 流程被接受前，**不要**打開 RM-09 寫入適配。
@@ -48,11 +48,34 @@
 
 **嚴重度：** Critical · **工期：** L · **人力：** 2 前端 + 1 後端 · **依賴：** Lark（或 Teams）應用核准、機器人憑證進密鑰庫。
 
-**今日。** [示範 Messenger](/admin/messenger) 是站內 Lark 風格收件匣。[Lark 整合](/admin/lark) 存頻道（`oc_risk_control_desk` 等），Webhook 為 **模擬** 網址。`POST /api/lark` 的 `test_notify` 只寫稽核並回 `mock: true` — 不會真的發到 Lark。
+### 為何要做
 
-**要做。** 註冊正式 Lark 應用。每個 CRMP `chat_id` 對到真實聊天室。對 ALERT／AI_REPORT／ESCALATION 發 **卡片**，按鈕：確認、升級、排除（誤報）、結案（接受 AI）、確認動作（Maker）、Checker 核准。按鈕以操作員 SSO 身分呼叫 CRMP API，再更新脊柱與稽核。
+值班不會一直開著 CRMP 分頁。若唯一可用收件匣是站內示範，違規卡片到不了真正被呼叫的台面。
 
-**完成標準。** 測試 Monitor 指標違規會在風險控管台聊天室出卡；點 Ack 會把 CRMP 警報標成 `ACKNOWLEDGED` 並回寫 Monitor 工單（搭配 RM-02）；點人工關卡動作會走 Maker／Checker，不會靜默執行。示範 Messenger 可留作除錯台。
+### 今日原型
+
+[示範 Messenger](/admin/messenger) 是 CRMP 內的 Lark 風格收件匣。[Lark 整合](/admin/lark) 存模擬 Webhook。沒有任何訊息發到真實 Lark。
+
+- 種子頻道：`oc_risk_control_desk`、`oc_ops_funding_recon`、`oc_ai_detection_lab`、`oc_trading_infra`、`oc_crypto_exchange_risk`、`oc_exec_risk_bridge`。
+- Webhook 為模擬網址（`https://open.larksuite.com/hook/mock-risk-desk` 等）。`POST /api/lark` 的 `test_notify` 寫稽核 `LARK_TEST_NOTIFY` 並回 `{ mock: true }`。
+- 設定 `lark.app_id` = `cli_mock_vantage_crmp`。示範 Messenger 已有確認／升級／排除／結案／Maker／Checker — 全部只寫本機 SQLite（`lib/messenger/demo.ts`、`LarkManager.tsx`）。
+
+### 要做
+
+1. 註冊正式 Lark 應用；app id／密鑰／加密金鑰進密鑰庫（廢除 `cli_mock_vantage_crmp`）。
+2. 每個 CRMP `chat_id` 對到真實聊天室。對 ALERT／AI_REPORT／ESCALATION 發**卡片**。
+3. 按鈕：確認、升級、排除（誤報）、結案（接受 AI）、確認動作（Maker）、Checker 核准。
+4. 按鈕以操作員 SSO 身分呼叫 CRMP，再更新脊柱與稽核。人工關卡動作不得靜默執行。
+
+### 完成標準
+
+- 測試 Monitor 違規會在風險控管台聊天室出卡。
+- 點 Ack 把 CRMP 警報標成 `ACKNOWLEDGED`，並回寫 Monitor 工單（搭配 RM-02）。
+- 點人工關卡動作會走 Maker／Checker。示範 Messenger 可留作除錯台。
+
+### 不做的風險
+
+操作員要顧兩個收件匣；Lark 上的 Ack 回不到 CRMP；SLA 時鐘說謊。
 
 ---
 
@@ -60,11 +83,30 @@
 
 **嚴重度：** Critical · **工期：** L · **人力：** 2 後端 · **依賴：** Monitor 2.0 API 契約負責人。
 
-**今日。** [Monitor 2.0](/admin/monitor-2) 是種子 SQLite 目錄（`M2-MRG-014`、`M2-EQ-001` 等）。同步／確認／工單「進行中」是打本機列的原型 POST。沒有入站 webhook，也不呼叫 `monitor.vantagemarkets.internal`。
+### 為何要做
 
-**要做。** 入站：Monitor 推送警告／違規（指標、觀測值、工單、嚴重度）→ CRMP 更新 `monitor_indicators`／`monitor_alerts`／`monitor_tickets` 並觸發 AI RCA。出站：CRMP 的 Ack、排除、結案、承辦人變更 **PATCH Monitor 工單**。重放／冪等鍵，避免重複分析。對 Monitor 沙盒做契約測試。
+今日目錄是種子。示範同步假裝拉了 5 筆警報。正式台面一個班次就會和 Monitor 分叉。
 
-**完成標準。** 沙盒違規在 SLA 內產生 CRMP 警報＋分析；在 CRMP 或 Lark 確認後，Monitor 側顯示已確認；CRMP **不會**僅憑 AI 就關閉 BREACH／CRITICAL 工單（風險負責人政策）。
+### 今日原型
+
+[Monitor 2.0](/admin/monitor-2) 是種子 SQLite 目錄（`M2-MRG-014`、`M2-EQ-001`、工單 `TKT-88421`…）。`POST /api/monitor` 的 `ack_alert`／`update_ticket`／`sync_monitor2` 打本機列。`sync_monitor2` 稽核 `pulled_alerts: 5` — 不對 `monitor.vantagemarkets.internal` 發 HTTP。旗標 `monitor2.sync_enabled` 不會外呼。
+
+### 要做
+
+1. 入站：Monitor 推送警告／違規 → CRMP 更新 `monitor_indicators`／`monitor_alerts`／`monitor_tickets` 並觸發 AI RCA。
+2. 出站：CRMP 的 Ack、排除、結案、承辦人變更 **PATCH Monitor 工單**。
+3. 重放／冪等鍵，避免重複分析。
+4. 對 Monitor 沙盒做契約測試。
+
+### 完成標準
+
+- 沙盒違規在 SLA 內產生 CRMP 警報＋分析。
+- 在 CRMP 或 Lark 確認後，Monitor 側顯示已確認。
+- CRMP **不會**僅憑 AI 就關閉 BREACH／CRITICAL 工單。
+
+### 不做的風險
+
+兩本工單；CRMP 結案後 Monitor 仍在呼叫；AI 分析打在過期種子列上。
 
 ---
 
@@ -72,35 +114,89 @@
 
 **嚴重度：** High · **工期：** XL · **人力：** 1 ML + 2 後端 · **依賴：** Prompt 庫、花費上限、RM-02 即時警報當標註。
 
-**今日。** `lib/ai/analyze.ts` **啟發式匹配技能**（`matchSkill`）或檢索 RAG。技能步驟存成 `EXECUTED_MOCK`／`AWAITING_HUMAN`。技能命中時信心可到 1.0。沒有線上模型、工具、離線評測集。
+### 為何要做
 
-**要做。** 主 RCA 模型＋**工具**：取指標快照、相關監控、RAG `top_k`、市場情報、未結工單、宏觀日曆。僅在匹配器 **與** 模型都同意時走技能路徑。評測架：歷史標註案例（跟單集中、LP 拒單、熱錢包浮額、權益回撤），打假設品質、證據引用、不安全動作率。Prompt 版本走 AI 管理 Maker／Checker。
+啟發式 `matchSkill` 可能因用詞重疊就把信心打到 1.0。一旦 RM-09 能寫入，這就不安全。
 
-**完成標準。** 留出測試包上技能精確率達約定門檻（起步 80%）；沒有人工關卡的不可逆建議 = 0；每筆 RCA 至少引用一筆證據庫。挑戰者（RM-04）維持 **獨立** 行程。
+### 今日原型
+
+`lib/ai/analyze.ts` 匹配技能（`lib/ai/skills.ts` 的 `matchSkill`）或檢索 RAG。非人工步驟存 `EXECUTED_MOCK`；人工步驟 `AWAITING_HUMAN`。`POST /api/ai` 分析不呼叫線上模型。種子分析看起來已經完成。
+
+### 要做
+
+1. 主 RCA 模型＋**工具**：指標快照、相關監控、RAG `top_k`、市場情報、未結工單、宏觀日曆。
+2. 僅在匹配器 **與** 模型都同意時走技能路徑。
+3. 評測架：歷史標註案例（跟單集中、LP 拒單、熱錢包浮額、權益回撤）。
+4. Prompt 版本走 [AI 管理](/admin/ai-admin) Maker／Checker。
+
+### 完成標準
+
+- 留出測試包技能精確率達約定門檻（起步 80%）。
+- 沒有人工關卡的不可逆建議 = 0。
+- 每筆 RCA 至少引用一筆證據庫。挑戰者（RM-04）維持 **獨立** 行程。
+
+### 不做的風險
+
+一旦適配存在，錯誤的高確定技能會自動排隊停商品／槓桿；品質無法回歸。
 
 ---
 
-## RM-04 — 挑戰模型多樣化
+## RM-04 — 挑戰者使用獨立供應商／提示
 
 **嚴重度：** High · **工期：** M · **人力：** 1 ML · **依賴：** RM-03。
 
-**今日。** [AI 分析](/admin/ai-analyses) 已對 BREACH／CRITICAL 跑第二 AI（`ai.second_opinion_severity`）。`lib/ai/challenger.ts` 是 **第二套啟發式**（共訊號檢查、信心上限）。同一程式庫、沒有第二供應商、沒有隔離 Prompt 快取。
+### 為何要做
 
-**要做。** 獨立模型（不同供應商 **或** 隔離端點＋提示）。不與主 RCA 共用工具結果快取。裁決維持 `AGREE`／`PARTIAL`／`DISAGREE`。`DISAGREE` 或 `PARTIAL` **阻止**自動技能執行，強制人工干預。分析上記兩個模型 id 與 token 成本。
+今日「第二 AI」是同一程式庫裡的另一套啟發式。用詞 bug 可以同時騙過兩邊。
 
-**完成標準。** 測試注入（主路徑宣稱技能確定、饋送其實過期）時挑戰者 100% 給 `DISAGREE` 或 `PARTIAL`；風險負責人可依裁決篩選；花費出現在 RM-14。
+### 今日原型
+
+[AI 分析](/admin/ai-analyses) 已對 BREACH／CRITICAL 跑第二 AI（`ai.second_opinion_severity`，預設 BREACH）。`lib/ai/challenger.ts` 是第二套啟發式。表 `ai_analysis_challenges` 存 `AGREE`／`PARTIAL`／`DISAGREE` — 由規則填入，不是供應商。
+
+### 要做
+
+1. 獨立模型：不同供應商 **或** 隔離端點＋提示。不與主 RCA 共用工具結果快取。
+2. 裁決維持 `AGREE`／`PARTIAL`／`DISAGREE`。`DISAGREE` 或 `PARTIAL` **阻止**自動技能執行。
+3. 分析上記兩個模型 id 與 token 成本（供 RM-14）。
+
+### 完成標準
+
+- 注入（主路徑宣稱技能確定、饋送其實過期）時 100% 給 `DISAGREE` 或 `PARTIAL`。
+- 風險負責人可依裁決篩選；花費出現在 RM-14。
+
+### 不做的風險
+
+相關的錯誤確定；沒人挑戰的停商品建議。
 
 ---
 
 ## RM-05 — SSO + SCIM 使用者佈建
 
-**嚴重度：** Critical · **工期：** M · **人力：** 1 後端 + 資安 · **依賴：** 企業 IdP（Okta／Entra ID）。
+**嚴重度：** Critical · **工期：** M · **人力：** 1 後端 + 資安 · **依賴：** 企業 IdP（Okta／Entra ID）。**本輪 UAT 範圍外。**
 
-**今日。** 登入是 **示範角色**（`risk.owner@…`／`risk123`，加上具名平台負責人）。工作階段用 Cookie。[使用者](/admin/users) 是本機目錄。共用密碼過不了職責分離與稽核。
+### 為何要做
 
-**要做。** OIDC／SAML SSO。SCIM（或 JIT）從 IdP 建立／停用使用者。IdP 群組對 CRMP 角色（`RISK_OWNER`、`OPS_LEAD` 等）。測試／正式環境廢除示範密碼。Maker ≠ Checker 用 **IdP 身分** 執行，不只應用內旗標。緊急 `SUPER_ADMIN` 放密鑰庫，使用需雙人核准。
+共用示範密碼過不了職責分離。知道 `risk123` 的人可以同時當風險負責人和唯讀訪客。
 
-**完成標準。** 風險 IdP 群組新人可免本機密碼登入；離職者在 SCIM SLA 內停用；測試環境不能再用 `risk123` 登入。
+### 今日原型
+
+`POST /api/auth/login` 是電子郵件＋密碼 Cookie 工作階段。角色：`risk.owner@vantagemarkets.com`／`risk123`，加上具名平台負責人（`yan123`）。[使用者](/admin/users) 是 `lib/db.ts` 種子的本機目錄。Maker ≠ Checker 是應用內旗標，不是 IdP 身分。
+
+### 要做
+
+1. OIDC／SAML SSO。SCIM（或 JIT）從 IdP 建立／停用使用者。
+2. IdP 群組對 CRMP 角色。測試／正式環境廢除示範密碼。
+3. Maker ≠ Checker 用 **IdP 身分** 執行。緊急 `SUPER_ADMIN` 放密鑰庫，使用需雙人核准。
+
+### 完成標準
+
+- 風險 IdP 群組新人可免本機密碼登入。
+- 離職者在 SCIM SLA 內停用。
+- 測試環境不能再用 `risk123` 登入。
+
+### 不做的風險
+
+密碼共用；離職者仍握 `SUPER_ADMIN`；Maker／Checker 是演戲。
 
 ---
 
@@ -108,59 +204,144 @@
 
 **嚴重度：** High · **工期：** M · **人力：** 1 SRE + 1 後端 · **依賴：** 託管 Postgres、證據物件儲存。
 
-**今日。** 持久化是 **一個 SQLite 檔**（`platform/data/vantage_risk.db`、`better-sqlite3`）。示範夠用；無 HA、併寫弱、GitHub Pages 不能寫庫。
+### 為何要做
 
-**要做。** Postgres（WAL、備份、PITR）。應用無狀態（至少 2 實例）。先原表遷移（警報、分析、脊柱、稽核、RAG 另覓 FTS）。健康／就緒探針。正式環境不要默默回退 SQLite。
+單一 SQLite 檔示範夠用。併寫、GitHub Pages、故障轉移不夠。
 
-**完成標準。** 偵測器執行中殺掉一個應用實例，脊柱事件不丟；從備份還原演練符合系統管理員簽下的 RPO／RTO。
+### 今日原型
+
+持久化是 `platform/data/vantage_risk.db`（`better-sqlite3`）。github.io 靜態匯出不能寫庫。`npm run db:reset` 會刪檔。RAG 用 SQLite FTS。
+
+### 要做
+
+1. Postgres（WAL、備份、PITR）。應用無狀態（至少 2 實例）。
+2. 先原表遷移（警報、分析、脊柱、稽核、RAG）。
+3. 健康／就緒探針。正式環境不要默默回退 SQLite。
+
+### 完成標準
+
+- 偵測器執行中殺掉一個應用實例，脊柱事件不丟。
+- 從備份還原演練符合系統管理員簽下的 RPO／RTO。
+
+### 不做的風險
+
+部署時默默丟資料；Pages 示範和「那套」CRMP 分叉。
 
 ---
 
-## RM-07 — 行動導覽抽屜＋觸控 Messenger
+## RM-07 — 觸控優先後台＋Messenger
 
 **嚴重度：** Medium · **工期：** S · **人力：** 1 前端 · **依賴：** 既有 design tokens。
 
-**今日。** 後台已有 **抽屜** 與部分 `min-h-11`／安全區，但密表格、Messenger 執行緒、雙重確認表對拇指仍不友善。值班常在美盤用手機開 CRMP。
+### 為何要做
 
-**要做。** 375px 走通：登入、首頁、警報、Messenger 執行緒（確認／升級／確認動作）、干預核准／駁回。44px 熱區、主動作不橫向裁切、輸入列固定、語言切換搆得到。Messenger 卡片直向堆疊；證據用抽屜而非窄欄。
+美盤值班常用手機開 CRMP。密表格與被裁切的卡片會讓人漏按 Ack。
 
-**完成標準。** 真機 UAT：打開違規執行緒、Ack、打開人工關卡動作、完成 Maker 確認，不必捏合縮放。CI 自動截 375px（搭配 RM-12）。
+### 今日原型
+
+後台已有抽屜與部分 `min-h-11`／安全區。Messenger 執行緒與雙重確認表仍偏桌面。
+
+### 要做
+
+1. 375px 走通：登入、首頁、警報、Messenger 執行緒、干預核准／駁回。
+2. 44px 熱區、主動作不橫向裁切、輸入列固定、語言切換搆得到。
+3. Messenger 卡片直向堆疊；證據用抽屜。
+
+### 完成標準
+
+- 真機 UAT 完成 Maker 確認，不必捏合縮放。
+- CI 自動截 375px（搭配 RM-12）。
+
+### 不做的風險
+
+夜間違規因為按鈕在畫面外而 Ack 太晚。
 
 ---
 
 ## RM-08 — 補完管理介面 i18n（EN／繁中）
 
-**嚴重度：** Medium · **工期：** M · **人力：** 1 前端 + PM · **依賴：** 字串目錄；PM 審風險用詞。
+**嚴重度：** Medium · **工期：** M · **人力：** 1 前端 + PM · **依賴：** 字串目錄；PM 風險用詞表。
 
-**今日。** 殼層、頁標題、徽章與大量 phrase 已覆蓋多數 chrome。剩下的英文多半是 **編號、電子郵件、權限碼**（刻意保留），以及部分證據／AI 敘事與文件表。
+### 為何要做
 
-**要做。** 登錄所有操作員可見字串（含 AI 摘要模板、UAT 案例 chrome、路線圖／文件表）。代碼（`M2-MRG-014`、`SUPER_ADMIN`）維持拉丁字母。詞彙表：違規／警告／危急一致。截圖閘道：技能、警報、Messenger、設定切到繁中。
+港／台值班讀繁中。中英混雜看起來未完成，也容易漏掉嚴重度用詞。
 
-**完成標準。** 15 個高流量頁的繁中掃過，沒有殘留英文 **chrome**（標題、按鈕、空狀態、錯誤）。種子營運用名要嘛有 overlay，要嘛標成「代碼」。
+### 今日原型
+
+`useUiLocale`＋Cookie `crmp_ui_lang`、`t()`／`phrase()` 已覆蓋多數 chrome。剩下的英文多半是編號、電子郵件、權限碼（刻意保留），以及部分 AI／證據字串與文件表。代碼（`M2-MRG-014`、`SUPER_ADMIN`）維持拉丁字母。詞彙：違規／警告／危急。
+
+### 要做
+
+1. 登錄所有操作員可見字串（AI 摘要模板、UAT chrome、文件表）。
+2. 截圖閘道：技能、警報、Messenger、設定切到繁中。
+
+### 完成標準
+
+- 15 個高流量頁的繁中掃過，沒有殘留英文 **chrome**。
+- 種子營運用名要嘛有 overlay，要嘛標成「代碼」。
+
+### 不做的風險
+
+值班漏掉「危急」，因為按鈕仍是英文（代碼可保留拉丁字母）。
 
 ---
 
-## RM-09 — 干預適配（停商品／槓桿／封鎖）含 dry-run
+## RM-09 — 真實控制適配（停商品／槓桿／A-book／暫停出金）
 
-**嚴重度：** Critical · **工期：** L · **人力：** 2 後端 + Ops · **依賴：** Vantage 交易／LP 控制匯流排；RM-05 身分；緊急開關。
+**嚴重度：** Critical · **工期：** L · **人力：** 2 後端 + Ops · **依賴：** 交易／LP 控制匯流排；RM-05；緊急開關。**本輪 UAT 範圍外。**
 
-**今日。** [人工干預](/admin/interventions) 佇列帶 `requires_human` 的技能步驟。核准只寫脊柱／稽核並標已執行 — **不會**呼叫停用 LP、停商品、組別槓桿、跟單上限或暫停出金。代碼存 `EXECUTED_MOCK`。
+### 為何要做
 
-**要做。** 依動作適配：`suggest_symbol_halt`、`suggest_lp_disable`、`group_leverage_tighten`、`pause_new_copies`、`pause_large_withdrawals`、`suggest_abook_increase` 等。**Dry-run** 回傳實際控制 payload 與受影響商品／帳戶。正式執行必須 Maker **且** Checker（不同 SSO 使用者）。平台設定裡有全域與逐適配緊急開關。這些權限 **永不** 授給 AI 服務角色（[AI 存取安全](/admin/security/ai-access)）。
+今日核准只寫脊柱／稽核。把 `EXECUTED_MOCK` 當成已防損，是最危險的示範誤解。
 
-**完成標準。** 測試環境 dry-run「停止過期報價商品」列出風險負責人預期的商品；在 **測試帳簿** 上真實執行可在交易後台看到並完整稽核；緊急開關能在下一請求擋住後續 live。
+### 今日原型
+
+[人工干預](/admin/interventions)：`decideIntervention()` 設 `EXECUTED_AFTER_APPROVAL`，**不呼叫**券商。`analyze.ts` 非人工步驟為 `EXECUTED_MOCK`。目錄動作：`suggest_symbol_halt`、`suggest_lp_disable`、`group_leverage_tighten`、`pause_new_copies`、`pause_large_withdrawals`、`suggest_abook_increase`。[AI 存取安全](/admin/security/ai-access) 已把停商品／只平倉列為 AI 角色禁區。
+
+### 要做
+
+1. 依動作適配；**dry-run** 回傳實際控制 payload 與受影響商品／帳戶。
+2. 正式執行必須 Maker **且** Checker（不同 SSO 使用者）。
+3. 平台設定裡有全域與逐適配緊急開關。這些權限永不授給 AI 服務角色。
+
+### 完成標準
+
+- 測試 dry-run「停止過期報價商品」列出風險負責人預期的商品。
+- 在 **測試帳簿** 上真實執行可在交易後台看到並完整稽核。
+- 緊急開關能在下一請求擋住後續 live。
+
+### 不做的風險
+
+以為已經防損；或之後半接線的適配在沒有雙人控制時打出去。
 
 ---
 
-## RM-10 — 證據遮罩與保存作業
+## RM-10 — 證據遮罩＋保存作業
 
 **嚴重度：** High · **工期：** M · **人力：** 1 後端 + GRC · **依賴：** 證據庫資料分類（法遵）。
 
-**今日。** 分析把解釋、證據片段、Messenger 摘錄存在 SQLite，可能含帳戶數、提供者名、錢包比例。沒有 TTL、自動遮罩、法律保全旗標。
+### 為何要做
 
-**要做。** 欄位分類（公開指標 vs 客戶識別 vs 員工個資）。預設 UI 遮罩登入帳號、支付工具、錢包地址；完整 payload 僅限授權角色＋原因碼。保存作業：例如 WARN 證據 90 天，BREACH／CRITICAL／法律保全較長。給監管的匯出包。
+分析可能嵌入帳戶數、提供者名、錢包比例。永久保存會被 GRC 抓。
 
-**完成標準。** GRC 抽 20 筆測試分析，預設畫面沒有原始客戶登入或錢包地址；保存演練報表列出將清除的項目；清除寫入稽核。
+### 今日原型
+
+`ai_analyses` 把摘要與證據片段存在 SQLite。Messenger 摘錄會留下。沒有 TTL、自動遮罩、法律保全旗標。
+
+### 要做
+
+1. 欄位分類（公開指標 vs 客戶識別 vs 員工個資）。預設 UI 遮罩登入帳號、支付工具、錢包地址。
+2. 保存作業（例如 WARN 90 天；BREACH／CRITICAL／法律保全較長）＋將清除項目的演練報表。
+3. 給監管的匯出包。完整 payload 僅限授權角色＋原因碼。
+
+### 完成標準
+
+- GRC 抽 20 筆測試分析，預設畫面沒有原始客戶登入或錢包地址。
+- 保存演練列出將清除的項目；清除寫入稽核。
+
+### 不做的風險
+
+RCA 摘錄殘留 KYC；刪除請求沒有答案。
 
 ---
 
@@ -168,59 +349,138 @@
 
 **嚴重度：** Medium · **工期：** S · **人力：** 1 前端 + 1 後端 · **依賴：** 脊柱指標；自動執行緊急開關。
 
-**今日。** 已有 `ai.skill_certainty_only` 與 Maker／Checker，但 **沒有單一畫面** 寫著「目前影子：AI 建議 X、人類做了 Y、寫入關閉」。容易把示範 mock 執行當成真實防損。
+### 為何要做
 
-**要做。** 每日績效／風險日誌的 **影子** 模式（或橫幅）。強制關閉自動技能執行。儀表板：建議 vs 人類決策、確認時長、挑戰者異議率、本來會寫入的動作（只計數、不送出）。離開影子需風險負責人＋系統管理員（雙重控制）。
+沒有單一畫面，高管分不清示範 mock 執行與真實防損。
 
-**完成標準。** 測試預設即影子；風險負責人能給高管看一週建議 vs 實作，且 RM-09 適配一次都沒打出；離開影子是已稽核的變更單。
+### 今日原型
+
+已有 `ai.skill_certainty_only`（預設 true）與 `ai.maker_checker_required`，但 [每日績效](/admin/dashboard)／[風險日誌](/admin/risk-log) **沒有**「目前影子」橫幅。
+
+### 要做
+
+1. 影子模式（或橫幅）。強制關閉自動技能執行。
+2. 儀表板：建議 vs 人類決策、確認時長、挑戰者 `DISAGREE` 率、本來會寫入的計數（不送出）。
+3. 離開影子＝風險負責人＋系統管理員，已稽核變更單。
+
+### 完成標準
+
+- 測試預設即影子；一週建議 vs 實作且 RM-09 適配一次都沒打出。
+- 離開影子是已稽核的變更單。
+
+### 不做的風險
+
+台面還以為是示範時，有人打開了 RM-09。
 
 ---
 
-## RM-12 — CI 自動化 UAT 煙測
+## RM-12 — 每次 PR 的 CI UAT 煙測
 
 **嚴重度：** Medium · **工期：** S · **人力：** 1 QA + 1 後端 · **依賴：** CI 內種子庫。
 
-**今日。** [UAT 清單](/admin/docs/uat) 是給風險負責人的長篇 **人工** 包（UAT-01…）。沒有流水線在每次 PR 重放危急案例。
+### 為何要做
 
-**要做。** 對 Critical／High 做無頭煙測：角色登入、首頁計數、跑偵測器、確認警報、存在 AI 分析、Messenger 執行緒有 ALERT＋AI_REPORT、干預佇列、技能頁繁中標題、路線圖可渲染。斷言失敗即擋 PR。人工 UAT 包留給判斷題（RCA 品質）。
+風險負責人包又長又人工。兩個 UAT 視窗之間會進回歸。
 
-**完成標準。** 故意弄壞（例如技能頁標題）會讓 CI 失敗；Critical 清單在約定牆鐘時間內跑完。
+### 今日原型
+
+[UAT 清單](/admin/docs/uat) 是 `lib/docs/uat-cases.ts`（UAT-01…）。沒有流水線在每次 PR 重放危急案例。
+
+### 要做
+
+無頭煙測：角色登入、首頁計數、跑偵測器、確認警報、存在 AI 分析、Messenger 有 ALERT＋AI_REPORT、干預佇列、技能頁繁中標題、本路線圖可渲染。斷言失敗即擋 PR。人工包留給 RCA 品質判斷。
+
+### 完成標準
+
+- 故意弄壞（例如技能頁標題）會讓 CI 失敗。
+- Critical 清單在約定牆鐘時間內跑完。
+
+### 不做的風險
+
+UAT 當天又發現登入 404、分析列表是空的。
 
 ---
 
 ## RM-13 — 多品牌／實體租戶
 
-**嚴重度：** Medium · **工期：** XL · **人力：** 架構 + 2 後端 · **依賴：** 組織／實體模型；後期。
+**嚴重度：** Medium · **工期：** XL · **人力：** 架構 + 2 後端 · **依賴：** 組織／實體模型；先完成 RM-05、RM-06。
 
-**今日。** 單一種子 CRMP：CFD＋加密混在一起，ASIC／FCA／VFSC 只是 **參考來源**，不是隔離帳簿。角色是全域的。
+### 為何要做
 
-**要做。** 租戶＝法律實體（或品牌）。警報、RAG、技能包（槓桿上限依實體而異）、Lark 路由、稽核匯出隔離。跨實體高管視圖只讀彙總。RM-05／RM-06 完成前不要開工。
+槓桿上限與揭露依實體而異。全域角色過不了雙牌照稽核。
 
-**完成標準。** VFSC 使用者不能確認 FCA 實體工單；高管角色能在有標籤的彙總裡看兩邊；UAT 有兩套種子。
+### 今日原型
+
+單一種子 CRMP：CFD＋加密混在一起。ASIC／FCA／VFSC 只是 **參考來源**，不是隔離帳簿。角色是全域的。
+
+### 要做
+
+租戶＝法律實體（或品牌）。警報、RAG、技能包、Lark 路由、稽核匯出隔離。跨實體高管視圖只讀彙總。兩套 UAT 種子（VFSC vs FCA）。
+
+### 完成標準
+
+- VFSC 使用者不能確認 FCA 實體工單。
+- 高管角色能在有標籤的彙總裡看兩邊。
+
+### 不做的風險
+
+Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 
 ---
 
-## RM-14 — AI 路徑成本／延遲 SLO 告警
+## RM-14 — AI 成本／延遲 SLO 告警
 
 **嚴重度：** Medium · **工期：** S · **人力：** SRE · **依賴：** 可觀測性堆疊；搭配 RM-03。
 
-**今日。** 有脊柱時間戳；沒有 token 成本、RCA p95 延遲、預算警報。提示迴圈失控會看不見。
+### 為何要做
 
-**要做。** 指標：RCA 延遲 p50／p95、挑戰者延遲、各模型進出 token、每筆分析美元、錯誤率。SLO 例如（不含人工關卡）p95 RCA 15 秒內、每日 AI 花費上限。告警到交易基礎設施＋AI 偵測實驗室。供應商掛掉時緊急降級為只走技能。
+沒有成本／延遲，壞 Prompt 就是無上限帳單和卡住的台面。
 
-**完成標準。** 測試環境 50 筆併發警報能畫在儀表板；超過美元上限會叫應值班，並停止新的非危急呼叫。
+### 今日原型
+
+[脊柱日誌](/admin/spine) 有時間戳。沒有 token 成本、RCA p95 延遲、花費上限警報。
+
+### 要做
+
+指標：RCA p50／p95、挑戰者延遲、各模型進出 token、每筆分析美元、錯誤率。SLO 示例：不含人工關卡 p95 RCA 15 秒內；每日 AI 花費上限。告警到交易基礎設施＋AI 偵測實驗室。供應商掛掉時降級為只走技能。
+
+### 完成標準
+
+- 測試環境 50 筆併發警報能畫在儀表板。
+- 超過美元上限會叫應值班，並停止新的非危急呼叫。
+
+### 不做的風險
+
+花費默默爆掉；RCA 慢過 SLA 卻沒人被叫。
 
 ---
 
-## RM-15 — 更完整的市場情報來源評分
+## RM-15 — 有評分的市場情報來源（授權饋送）
 
 **嚴重度：** Medium · **工期：** M · **人力：** 1 資料科學 + 1 後端 · **依賴：** 授權新聞／官方／社群合約。
 
-**今日。** [市場情報](/admin/market-intel) 跑 **五分鐘啟發式掃描**（`EVENT_TEMPLATES`、種子來源）。發現可以是合成的。指標 `M2-MKT-INTEL` 計命中。沒有來源信任分、跨電訊除重、授權稽核。
+### 為何要做
 
-**要做。** 接入合約電訊＋官方日曆＋選定社群。依來源類型、交叉印證數、商品命中、地理評分。五分鐘桶內用指紋除重。只有 WARN 以上 **經印證** 的命中才累加 `M2-MKT-INTEL`。推送格式維持（i）–（vi）進 `oc_market_intelligence`。
+模板標題會訓練台面去反應假催化。指標計數也會說謊。
 
-**完成標準。** 已知 CPI 公布從至少 2 個授權源接入、除重成一筆、評為高、指標不雙計；單則未印證社群貼文不會違規。
+### 今日原型
+
+[市場情報](/admin/market-intel) 每五分鐘輪轉 `EVENT_TEMPLATES`（`lib/market-intel/scanner.ts`，Pages 用 `demo-scan.ts`）。種子 `MARKET_INTEL_SOURCES` — 發現可以是合成的。指標 `M2-MKT-INTEL` 計命中。推送格式（i）–（vi）進 `oc_market_intelligence`。
+
+### 要做
+
+1. 接入合約電訊＋官方日曆＋選定社群。
+2. 依來源類型、交叉印證數、商品命中、地理評分。五分鐘桶內用指紋除重。
+3. 只有 WARN 以上 **經印證** 的命中才累加 `M2-MKT-INTEL`。
+
+### 完成標準
+
+- 已知 CPI 公布從至少 2 個授權源接入、除重成一筆、評為高、指標不雙計。
+- 單則未印證社群貼文不會違規。
+
+### 不做的風險
+
+合成「非農意外」呼叫台面；真實公布被漏掉或被雙計。
 
 ---
 

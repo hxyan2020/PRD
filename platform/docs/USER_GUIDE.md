@@ -606,7 +606,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
 | UAT Checklist | `/admin/docs/uat` | Interactive 45-case sign-off (UAT-01 … UAT-45): why, steps, pass, evidence, screen coverage |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
-| Improvement Roadmap | `/admin/docs/roadmap` | Prioritised follow-ups |
+| Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs |
 
 On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail on the board; coverage chips show which screens each case hits.

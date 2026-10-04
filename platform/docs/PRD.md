@@ -275,7 +275,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Docs | TSD | `/admin/docs/tsd` | How built | Surface map complete |
 | Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 45 cases, interactive |
 | Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
-| Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | Prioritised items |
+| Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | RM-01…15: today / build / done-when |
 | Docs | URL Catalog | `/admin/docs/urls` | Navigation | Pages + APIs + tables |
 | Shell | Login | `/login` | Named persona | Persist; Pages path; owner default |
 | Shell | Language | cookie `crmp_ui_lang` | EN / 繁中 | Nav + docs switch |
