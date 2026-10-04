@@ -147,6 +147,307 @@ def wrap_tables(html_body: str) -> str:
     ).replace("</table>", "</table></div>")
 
 
+PAGES = "https://hxyan2020.github.io/PRD/risk-handbook"
+GLOBAL_HASHES = {"hero-viz", "en", "zh", "zh-CN", "tab-en", "tab-zh", "panel-en", "panel-zh"}
+
+SOP_TOKEN = (
+    r"(?:SOP-)?(?:G0[1-6]|RM-0[1-7]|SP-0[1-5]|MG-0[1-6]|PF-0[1-8]|"
+    r"ME-0[1-5]|RE-0[1-5]|WA-0[1-6]|LD-0[1-8]|CP-0[1-4]|TS-0[1-4]|"
+    r"MM-0[1-3]|ENG-0[1-4]|ACC-0[1-3])"
+)
+KRI_TOKEN = r"(?:SP|MG|PF|PL|PM)-K\d{2}"
+SEC_FALLBACK = {
+    "6.1": "sop-g01",
+    "6.2": "sop-g02",
+    "6.3": "sop-g03",
+    "6.4": "sop-g04",
+    "6.5": "sop-g05",
+    "6.6": "sop-g06",
+}
+
+
+def github_slug(text: str) -> str:
+    """GitHub-style heading slug: drop punctuation, each space becomes '-'."""
+    text = re.sub(r"<[^>]+>", "", text)
+    text = html.unescape(text).strip().lower()
+    out: list[str] = []
+    for ch in text:
+        if ch.isspace():
+            out.append("-")
+        elif ch == "_" or ch == "-" or ch.isalnum():
+            out.append(ch)
+    return "".join(out).strip("-")
+
+
+def sop_id(token: str) -> str:
+    t = token.upper().replace("SOP-", "")
+    if t.startswith("G"):
+        return "sop-" + t.lower()
+    return t.lower()
+
+
+def section_id(num: str) -> str:
+    return "sec-" + num.lower().replace(".", "-")
+
+
+def admin_href(path: str) -> str:
+    path = path.strip().rstrip("*").rstrip("/")
+    if not path.startswith("/admin"):
+        return ""
+    return f"{PAGES}{path}/"
+
+
+def _split_protected(html_body: str, pattern: str):
+    parts: list[tuple[bool, str]] = []
+    last = 0
+    for m in re.finditer(pattern, html_body, flags=re.I | re.S):
+        if m.start() > last:
+            parts.append((False, html_body[last:m.start()]))
+        parts.append((True, m.group(0)))
+        last = m.end()
+    if last < len(html_body):
+        parts.append((False, html_body[last:]))
+    return parts
+
+
+def map_outside(html_body: str, skip_re: str, fn) -> str:
+    out = []
+    for protected, chunk in _split_protected(html_body, skip_re):
+        out.append(chunk if protected else fn(chunk))
+    return "".join(out)
+
+
+def add_heading_ids(html_body: str, prefix: str) -> tuple[str, set[str]]:
+    ids: set[str] = set()
+
+    def claim(raw: str) -> str:
+        ident = f"{prefix}-{raw}"
+        if ident not in ids:
+            ids.add(ident)
+            return ident
+        n = 2
+        while f"{ident}-{n}" in ids:
+            n += 1
+        ids.add(f"{ident}-{n}")
+        return f"{ident}-{n}"
+
+    def heading2(m: re.Match[str]) -> str:
+        level, inner = m.group(1), m.group(2)
+        plain = html.unescape(re.sub(r"<[^>]+>", "", inner))
+        aliases: list[str] = []
+        slug = github_slug(plain)
+        if slug:
+            aliases.append(claim(slug))
+        sm = re.match(r"\s*(\d+(?:\.\d+[a-z]?)*)(?:\.\s|\s|$)", plain)
+        if sm and sm.group(1):
+            aliases.append(claim(section_id(sm.group(1))))
+        for tok in re.findall(SOP_TOKEN, plain, flags=re.I):
+            aliases.append(claim(sop_id(tok)))
+        for tok in re.findall(KRI_TOKEN, plain, flags=re.I):
+            aliases.append(claim(tok.lower()))
+        for tok in re.findall(r"\bS(?:[1-9]|1[0-2])\b", plain, flags=re.I):
+            aliases.append(claim(tok.lower()))
+        seen: list[str] = []
+        for a in aliases:
+            if a not in seen:
+                seen.append(a)
+        if not seen:
+            return m.group(0)
+        primary = seen[0]
+        spans = "".join(
+            f'<span class="alias" id="{html.escape(a, quote=True)}"></span>'
+            for a in seen[1:]
+        )
+        return f'<h{level} id="{html.escape(primary, quote=True)}">{spans}{inner}</h{level}>'
+
+    html_body = re.sub(r"<h([1-6])>(.*?)</h\1>", heading2, html_body, flags=re.S)
+
+    def prefix_id(m: re.Match[str]) -> str:
+        ident = m.group(1)
+        if ident in GLOBAL_HASHES:
+            ids.add(ident)
+            return m.group(0)
+        if ident.startswith(f"{prefix}-"):
+            ids.add(ident)
+            return m.group(0)
+        new = claim(ident)
+        return f'id="{html.escape(new, quote=True)}"'
+
+    html_body = re.sub(r'\bid="([^"]+)"', prefix_id, html_body)
+    return html_body, ids
+
+
+def add_cell_ids(html_body: str, prefix: str, ids: set[str]) -> str:
+    def maybe(token: str, inner: str, original: str) -> str:
+        ident = f"{prefix}-{token.lower()}"
+        if ident in ids:
+            return original
+        ids.add(ident)
+        return f'<td id="{ident}">{inner}</td>'
+
+    def kri_cell(m: re.Match[str]) -> str:
+        token = m.group(2)
+        inner = f"{m.group(1) or ''}{token}{m.group(3) or ''}"
+        return maybe(token, inner, m.group(0))
+
+    html_body = re.sub(
+        rf"<td>(<strong>)?({KRI_TOKEN})(</strong>)?</td>",
+        kri_cell,
+        html_body,
+        flags=re.I,
+    )
+
+    def fam_cell(m: re.Match[str]) -> str:
+        token = m.group(2)
+        inner = f"{m.group(1) or ''}{token}{m.group(3) or ''}"
+        return maybe(token, inner, m.group(0))
+
+    html_body = re.sub(
+        r"<td>(<strong>)?(S(?:[1-9]|1[0-2]))(</strong>)?</td>",
+        fam_cell,
+        html_body,
+        flags=re.I,
+    )
+    return html_body
+
+
+def link_admin_code(html_body: str) -> str:
+    def one_code(m: re.Match[str]) -> str:
+        inner = m.group(1)
+        if "<a " in inner:
+            return m.group(0)
+        pieces = []
+        last = 0
+        for pm in re.finditer(r"/admin/[a-z0-9/*._-]*", inner, flags=re.I):
+            pieces.append(inner[last:pm.start()])
+            href = admin_href(pm.group(0))
+            if href:
+                pieces.append(
+                    f'<a class="ext" href="{html.escape(href, quote=True)}" target="_blank" rel="noopener">{pm.group(0)}</a>'
+                )
+            else:
+                pieces.append(pm.group(0))
+            last = pm.end()
+        if not last:
+            return m.group(0)
+        pieces.append(inner[last:])
+        return "<code>" + "".join(pieces) + "</code>"
+
+    return re.sub(r"<code>(.*?)</code>", one_code, html_body, flags=re.S)
+
+
+def link_bare_urls(chunk: str) -> str:
+    def url(m: re.Match[str]) -> str:
+        raw = m.group(0)
+        trail = ""
+        while raw and raw[-1] in ".,;:)]":
+            trail = raw[-1] + trail
+            raw = raw[:-1]
+        extra = ""
+        if "hxyan2020.github.io" not in raw and "github.com/hxyan2020" not in raw:
+            extra = ' target="_blank" rel="noopener"'
+        return f'<a class="ext" href="{html.escape(raw, quote=True)}"{extra}>{raw}</a>{trail}'
+
+    return re.sub(r"https?://[^\s<>\"']+", url, chunk)
+
+
+def link_xrefs(chunk: str, prefix: str, ids: set[str]) -> str:
+    def has(raw: str) -> str | None:
+        ident = f"{prefix}-{raw}"
+        return ident if ident in ids else None
+
+    def wrap(label: str, ident: str) -> str:
+        return f'<a class="xref" href="#{html.escape(ident, quote=True)}">{label}</a>'
+
+    def sop(m: re.Match[str]) -> str:
+        ident = has(sop_id(m.group(0)))
+        return wrap(m.group(0), ident) if ident else m.group(0)
+
+    chunk = re.sub(rf"\b{SOP_TOKEN}\b", sop, chunk)
+
+    def kri(m: re.Match[str]) -> str:
+        token = m.group(1)
+        rest = m.group(2) or ""
+        ident = has(token.lower())
+        out = wrap(token, ident) if ident else token
+        base = token[: token.upper().rfind("K") + 1]
+        for part in rest.split("/")[1:]:
+            digits = re.search(r"\d{2}", part)
+            if not digits:
+                out += "/" + part
+                continue
+            other = base + digits.group(0)
+            oid = has(other.lower())
+            piece = "/" + part
+            out += wrap(piece, oid) if oid else piece
+        return out
+
+    chunk = re.sub(rf"\b({KRI_TOKEN})((?:/K?\d{{2}})*)", kri, chunk, flags=re.I)
+
+    def resolve_section(num: str) -> str | None:
+        ident = has(section_id(num))
+        if not ident and num in SEC_FALLBACK:
+            ident = has(SEC_FALLBACK[num])
+        if not ident and "." in num:
+            ident = has(section_id(num.split(".")[0]))
+        return ident
+
+    def section(m: re.Match[str]) -> str:
+        ident = resolve_section(m.group(1))
+        return wrap(m.group(0), ident) if ident else m.group(0)
+
+    chunk = re.sub(
+        r"§{1,2}(\d+(?:\.\d+[a-z]?)*)(?:\s*[–-]\s*§{0,2}\d+(?:\.\d+[a-z]?)*)?",
+        section,
+        chunk,
+    )
+
+    def family(m: re.Match[str]) -> str:
+        ident = has(m.group(0).lower())
+        return wrap(m.group(0), ident) if ident else m.group(0)
+
+    chunk = re.sub(r"\bS(?:[1-9]|1[0-2])\b", family, chunk)
+    return chunk
+
+
+SKIP_XREF = (
+    r"(<a\b[^>]*>.*?</a>|<pre\b[^>]*>.*?</pre>|<code\b[^>]*>.*?</code>|"
+    r"<h[1-6][^>]*>.*?</h[1-6]>|<script\b[^>]*>.*?</script>|"
+    r"<div class=\"mermaid\"[^>]*>.*?</div>|<div class=\"viz\"[^>]*>.*?</div>|"
+    r"<[^>]+>)"
+)
+SKIP_URL = (
+    r"(<a\b[^>]*>.*?</a>|<pre\b[^>]*>.*?</pre>|<script\b[^>]*>.*?</script>|"
+    r"<div class=\"mermaid\"[^>]*>.*?</div>|<div class=\"viz\"[^>]*>.*?</div>|"
+    r"<[^>]+>)"
+)
+
+
+def rewrite_hash_hrefs(html_body: str, prefix: str, ids: set[str]) -> str:
+    def href(m: re.Match[str]) -> str:
+        target = m.group(1)
+        if target in GLOBAL_HASHES or target.startswith(f"{prefix}-"):
+            return m.group(0)
+        prefixed = f"{prefix}-{target}"
+        if prefixed in ids:
+            return f'href="#{prefixed}"'
+        return m.group(0)
+
+    return re.sub(r'href="#([^"]+)"', href, html_body)
+
+
+def decorate_panel(html_body: str, prefix: str) -> str:
+    html_body, ids = add_heading_ids(html_body, prefix)
+    html_body = add_cell_ids(html_body, prefix, ids)
+    html_body = link_admin_code(html_body)
+    html_body = map_outside(html_body, SKIP_URL, link_bare_urls)
+    html_body = map_outside(
+        html_body, SKIP_XREF, lambda chunk: link_xrefs(chunk, prefix, ids)
+    )
+    html_body = rewrite_hash_hrefs(html_body, prefix, ids)
+    return html_body
+
+
 CSS = r"""
     :root {
       --bg: #f3f0ea;
@@ -248,6 +549,12 @@ CSS = r"""
     .panel hr { border: 0; border-top: 1px solid var(--line); margin: 1.6rem 0; }
     .panel ul, .panel ol { padding-left: 1.25rem; }
     .panel li { margin: 0.22rem 0; }
+    .panel a { color: var(--accent); text-underline-offset: 2px; }
+    .panel a.xref { font-weight: 600; }
+    .panel a.ext { word-break: break-word; }
+    .panel a:hover { color: #2a3b34; }
+    .alias { display: block; position: relative; top: -8px; height: 0; overflow: hidden; }
+    .panel h2, .panel h3, .panel h4, .panel h5, .panel td[id], .panel [id] { scroll-margin-top: 56px; }
     .viz {
       margin: 0.4rem 0 1.4rem; padding: 12px 10px 6px; background: #f6f3ee;
       border: 1px dashed #d0c8bb; border-radius: 10px; overflow-x: auto;
@@ -379,7 +686,7 @@ JS = r"""
           }
         }
       }
-      function activate(key) {
+      function activate(key, hash) {
         tabs.forEach(function (t) {
           t.setAttribute("aria-selected", t.getAttribute("data-tab") === key ? "true" : "false");
         });
@@ -389,24 +696,48 @@ JS = r"""
           panels[k].hidden = !on;
         });
         try { localStorage.setItem("risk-handbook-tab", key); } catch (e) {}
-        if (history.replaceState) history.replaceState(null, "", "#" + key);
+        var next = hash || ("#" + key);
+        if (history.replaceState) history.replaceState(null, "", next);
         setTimeout(function () { draw(panels[key]); }, 0);
+      }
+      function tabFromHash(h) {
+        h = (h || "").replace(/^#/, "");
+        if (h.indexOf("zh") === 0) return "zh";
+        if (h.indexOf("en") === 0) return "en";
+        return "";
       }
       document.querySelector(".tabs").addEventListener("click", function (ev) {
         var t = ev.target.closest("[role='tab']");
         if (!t) return;
         activate(t.getAttribute("data-tab"));
       });
+      document.addEventListener("click", function (ev) {
+        var a = ev.target.closest("a[href^='#']");
+        if (!a) return;
+        var id = a.getAttribute("href").slice(1);
+        var tab = tabFromHash(id);
+        if (tab) activate(tab, "#" + id);
+        var el = document.getElementById(id);
+        if (el) {
+          ev.preventDefault();
+          setTimeout(function () { el.scrollIntoView({ block: "start", behavior: "smooth" }); }, 0);
+        }
+      });
       var initial = "en";
-      if (location.hash === "#zh" || location.hash === "#zh-CN") initial = "zh";
-      else if (location.hash === "#en") initial = "en";
+      var hashTab = tabFromHash(location.hash);
+      if (hashTab) initial = hashTab;
+      else if (location.hash === "#zh-CN") initial = "zh";
       else {
         try {
           var saved = localStorage.getItem("risk-handbook-tab");
           if (saved === "en" || saved === "zh") initial = saved;
         } catch (e) {}
       }
-      activate(initial);
+      activate(initial, location.hash && location.hash.length > 1 ? location.hash : "#" + initial);
+      if (location.hash && location.hash.length > 1) {
+        var target = document.getElementById(location.hash.slice(1));
+        if (target) setTimeout(function () { target.scrollIntoView({ block: "start" }); }, 50);
+      }
       window.addEventListener("load", function () {
         try { initMermaid(); draw(panels[initial]); } catch (e) {
           document.body.classList.remove("js-ok");
@@ -430,7 +761,7 @@ TEMPLATE = """<!DOCTYPE html>
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v2.0 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>加密货币交易所风险管理 — 业务单元用户手册 · v2.1 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
       </div>
       <div class="md-links">
         <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
@@ -515,23 +846,27 @@ def bump_version(path: pathlib.Path, note: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
-def render_lang(md_path: pathlib.Path, vis_path: pathlib.Path, toc_title: str, anchor: str) -> str:
+def render_lang(
+    md_path: pathlib.Path,
+    vis_path: pathlib.Path,
+    toc_title: str,
+    anchor: str,
+    prefix: str,
+) -> str:
     md = md_path.read_text(encoding="utf-8")
     vis = vis_path.read_text(encoding="utf-8")
     md = add_toc_item(md, toc_title, anchor)
     md = inject_visuals(md, vis)
     md = convert_mermaid_fences(md)
     body = wrap_tables(md_to_html(md))
-    return body
+    return decorate_panel(body, prefix)
 
 
 def main() -> None:
     quote_source_file(EN_MD)
     quote_source_file(ZH_MD)
-    bump_version(EN_MD, "Always-on HTML visual maps; local mermaid")
-    bump_version(ZH_MD, "页面内置示意图；本地 mermaid")
-    en = render_lang(EN_MD, VIS_EN, "Visual maps", "visual-maps")
-    zh = render_lang(ZH_MD, VIS_ZH, "示意图", "visual-maps-zh")
+    en = render_lang(EN_MD, VIS_EN, "Visual maps", "visual-maps", "en")
+    zh = render_lang(ZH_MD, VIS_ZH, "示意图", "visual-maps-zh", "zh")
     OUT.write_text(TEMPLATE.format(css=CSS, js=JS, en=en, zh=zh), encoding="utf-8")
     print(f"wrote {OUT} ({OUT.stat().st_size} bytes)")
 

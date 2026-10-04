@@ -2,8 +2,8 @@
 
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
 **Scope:** Full catalogue covers Spot · Margin · Perps; **Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access**  
-**Public site:** https://hxyan2020.github.io/PRD/risk-handbook/ · **All URLs:** https://hxyan2020.github.io/PRD/risk-handbook/urls.html · **Admin URLs:** https://hxyan2020.github.io/PRD/risk-handbook/admin/  
-**Version:** 2.0 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Public site:** [https://hxyan2020.github.io/PRD/risk-handbook/](https://hxyan2020.github.io/PRD/risk-handbook/) · **All URLs:** [https://hxyan2020.github.io/PRD/risk-handbook/urls.html](https://hxyan2020.github.io/PRD/risk-handbook/urls.html) · **Admin URLs:** [https://hxyan2020.github.io/PRD/risk-handbook/admin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/)  
+**Version:** 2.1 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
 > This handbook is the **operating playbook**: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does **not** replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.  
 > **Numbers in this handbook are teaching examples.** Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.
@@ -188,7 +188,7 @@ That is the whole job of a first night: **see, timestamp, outside world, contain
 | Listing / Delisting PIC | Listing BU chapter end-to-end |
 | Phase 1 PIC / launch crew | **Phase 1 operating scope** + [If you are new](#if-you-are-new-to-exchange-risk) + §3.3 Perps + §4.4 + invite/broker SOPs |
 
-If a section number looks like “§6.2”, it means “chapter 6, SOP G02 (trading halt)”. Codes like **PF-K01** are indicator IDs you can paste into a ticket. Codes like **SOP-G01** are procedures. You do not have to memorise them; search this page.
+If a section number looks like “§6.2”, it means “chapter 6, SOP G02 (trading halt)”. Codes like **PF-K01** are indicator IDs you can paste into a ticket. Codes like **SOP-G01** are procedures. You do not have to memorise them; on this page they are **clickable** and jump to that card.
 
 **Golden rules** (why they exist)
 
@@ -1802,8 +1802,8 @@ Compromised key: **kill it ≤2 min**, rotate, notify, forensics, L3/L4 war room
 
 ### 7.1 Canonical admin map (by domain)
 
-**URL sheet (all full links):** https://hxyan2020.github.io/PRD/risk-handbook/urls.html  
-**Admin catalogue:** https://hxyan2020.github.io/PRD/risk-handbook/admin/
+**URL sheet (all full links):** [https://hxyan2020.github.io/PRD/risk-handbook/urls.html](https://hxyan2020.github.io/PRD/risk-handbook/urls.html)  
+**Admin catalogue:** [https://hxyan2020.github.io/PRD/risk-handbook/admin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/)
 
 | Domain | Logical path | Full public URL (GitHub Pages) | Primary BU |
 |--------|--------------|--------------------------------|------------|
@@ -1829,61 +1829,61 @@ Compromised key: **kill it ≤2 min**, rotate, notify, forensics, L3/L4 war room
 
 | Phase | Path | Full public URL |
 |-------|------|-----------------|
-| Phase 1 | `/admin/risk/limits` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/limits/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/limits/) |
-| Phase 1 | `/admin/risk/alerts` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/alerts/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/alerts/) |
-| Phase 1 | `/admin/risk/stress` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/stress/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/stress/) |
-| Phase 1 | `/admin/risk/insurance` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/insurance/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/insurance/) |
-| Phase 1 | `/admin/risk/reports` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/reports/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/reports/) |
-| Phase 1 | `/admin/risk/waivers` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/waivers/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/waivers/) |
-| Phase 1 | `/admin/risk-engine/configs` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/configs/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/configs/) |
-| Phase 1 | `/admin/risk-engine/liq` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/liq/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/liq/) |
-| Phase 1 | `/admin/risk-engine/feeds` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/feeds/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/feeds/) |
-| Phase 1 | `/admin/risk-engine/sim` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/sim/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/sim/) |
-| Phase 1 | `/admin/futures/contracts` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/contracts/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/contracts/) |
-| Phase 1 | `/admin/futures/leverage` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/leverage/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/leverage/) |
-| Phase 1 | `/admin/futures/risk-limits` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/risk-limits/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/risk-limits/) |
-| Phase 1 | `/admin/futures/mark-index` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/mark-index/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/mark-index/) |
-| Phase 1 | `/admin/futures/funding` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/funding/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/funding/) |
-| Phase 1 | `/admin/futures/insurance` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/insurance/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/insurance/) |
-| Phase 1 | `/admin/futures/adl` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/adl/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/adl/) |
-| Phase 1 | `/admin/futures/breaker` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/breaker/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/breaker/) |
-| Phase 1 | `/admin/engine/status` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/status/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/status/) |
-| Phase 1 | `/admin/engine/kill` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/kill/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/kill/) |
-| Phase 1 | `/admin/engine/rate-limits` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/rate-limits/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/rate-limits/) |
-| Phase 1 | `/admin/engine/stp` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/stp/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/stp/) |
-| Phase 1 | `/admin/engine/failover` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/failover/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/failover/) |
-| Phase 1 | `/admin/wallet/balances` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/balances/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/balances/) |
-| Phase 1 | `/admin/wallet/withdraw` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/withdraw/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/withdraw/) |
-| Phase 1 | `/admin/wallet/deposit` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/deposit/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/deposit/) |
-| Phase 1 | `/admin/wallet/keys` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/keys/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/keys/) |
-| Phase 1 | `/admin/wallet/chains` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/chains/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/chains/) |
-| Phase 1 | `/admin/compliance/surveillance` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/surveillance/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/surveillance/) |
-| Phase 1 | `/admin/compliance/holds` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/holds/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/holds/) |
-| Phase 1 | `/admin/compliance/kyb-kyc` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/kyb-kyc/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/kyb-kyc/) |
-| Phase 1 | `/admin/compliance/sanctions` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/sanctions/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/sanctions/) |
-| Phase 1 | `/admin/listing/pipeline` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/pipeline/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/pipeline/) |
-| Phase 1 | `/admin/listing/tags` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/tags/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/tags/) |
-| Phase 1 | `/admin/listing/delist` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/delist/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/delist/) |
-| Phase 1 | `/admin/listing/migrations` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/migrations/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/migrations/) |
-| Phase 1 | `/admin/treasury/balances` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/balances/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/balances/) |
-| Phase 1 | `/admin/treasury/settlement` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/settlement/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/settlement/) |
-| Phase 1 | `/admin/treasury/stablecoins` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/stablecoins/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/stablecoins/) |
-| Phase 1 | `/admin/iam/` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/iam](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/iam) |
-| Phase 1 | `/admin/audit/` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/audit](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/audit) |
-| Phase 2+ | `/admin/spot/symbols` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/symbols/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/symbols/) |
-| Phase 2+ | `/admin/spot/bands` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/bands/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/bands/) |
-| Phase 2+ | `/admin/spot/halt` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/halt/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/halt/) |
-| Phase 2+ | `/admin/spot/fees` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/fees/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/fees/) |
-| Phase 2+ | `/admin/spot/stp` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/stp/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/stp/) |
-| Phase 2+ | `/admin/margin/collateral` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/collateral/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/collateral/) |
-| Phase 2+ | `/admin/margin/ltv` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/ltv/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/ltv/) |
-| Phase 2+ | `/admin/margin/borrow` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/borrow/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/borrow/) |
-| Phase 2+ | `/admin/margin/interest` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/interest/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/interest/) |
-| Phase 2+ | `/admin/margin/liquidation` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/liquidation/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/liquidation/) |
-| Phase 2+ | `/admin/margin/bad-debt` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/bad-debt/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/bad-debt/) |
-| Phase 2+ | `/admin/mm/sla` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/sla/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/sla/) |
-| Phase 2+ | `/admin/mm/inventory` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/inventory/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/inventory/) |
-| Phase 2+ | `/admin/mm/agreements` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/agreements/](https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/agreements/) |
+| Phase 1 | `/admin/risk/limits` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/limits/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/limits/) |
+| Phase 1 | `/admin/risk/alerts` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/alerts/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/alerts/) |
+| Phase 1 | `/admin/risk/stress` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/stress/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/stress/) |
+| Phase 1 | `/admin/risk/insurance` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/insurance/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/insurance/) |
+| Phase 1 | `/admin/risk/reports` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/reports/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/reports/) |
+| Phase 1 | `/admin/risk/waivers` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/waivers/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/waivers/) |
+| Phase 1 | `/admin/risk-engine/configs` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/configs/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/configs/) |
+| Phase 1 | `/admin/risk-engine/liq` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/liq/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/liq/) |
+| Phase 1 | `/admin/risk-engine/feeds` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/feeds/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/feeds/) |
+| Phase 1 | `/admin/risk-engine/sim` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/sim/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/sim/) |
+| Phase 1 | `/admin/futures/contracts` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/contracts/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/contracts/) |
+| Phase 1 | `/admin/futures/leverage` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/leverage/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/leverage/) |
+| Phase 1 | `/admin/futures/risk-limits` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/risk-limits/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/risk-limits/) |
+| Phase 1 | `/admin/futures/mark-index` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/mark-index/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/mark-index/) |
+| Phase 1 | `/admin/futures/funding` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/funding/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/funding/) |
+| Phase 1 | `/admin/futures/insurance` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/insurance/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/insurance/) |
+| Phase 1 | `/admin/futures/adl` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/adl/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/adl/) |
+| Phase 1 | `/admin/futures/breaker` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/breaker/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/breaker/) |
+| Phase 1 | `/admin/engine/status` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/status/](https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/status/) |
+| Phase 1 | `/admin/engine/kill` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/kill/](https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/kill/) |
+| Phase 1 | `/admin/engine/rate-limits` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/rate-limits/](https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/rate-limits/) |
+| Phase 1 | `/admin/engine/stp` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/stp/](https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/stp/) |
+| Phase 1 | `/admin/engine/failover` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/failover/](https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/failover/) |
+| Phase 1 | `/admin/wallet/balances` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/balances/](https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/balances/) |
+| Phase 1 | `/admin/wallet/withdraw` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/withdraw/](https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/withdraw/) |
+| Phase 1 | `/admin/wallet/deposit` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/deposit/](https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/deposit/) |
+| Phase 1 | `/admin/wallet/keys` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/keys/](https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/keys/) |
+| Phase 1 | `/admin/wallet/chains` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/chains/](https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/chains/) |
+| Phase 1 | `/admin/compliance/surveillance` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/surveillance/](https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/surveillance/) |
+| Phase 1 | `/admin/compliance/holds` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/holds/](https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/holds/) |
+| Phase 1 | `/admin/compliance/kyb-kyc` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/kyb-kyc/](https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/kyb-kyc/) |
+| Phase 1 | `/admin/compliance/sanctions` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/sanctions/](https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/sanctions/) |
+| Phase 1 | `/admin/listing/pipeline` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/pipeline/](https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/pipeline/) |
+| Phase 1 | `/admin/listing/tags` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/tags/](https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/tags/) |
+| Phase 1 | `/admin/listing/delist` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/delist/](https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/delist/) |
+| Phase 1 | `/admin/listing/migrations` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/migrations/](https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/migrations/) |
+| Phase 1 | `/admin/treasury/balances` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/balances/](https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/balances/) |
+| Phase 1 | `/admin/treasury/settlement` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/settlement/](https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/settlement/) |
+| Phase 1 | `/admin/treasury/stablecoins` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/stablecoins/](https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/stablecoins/) |
+| Phase 1 | `/admin/iam/` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/iam](https://hxyan2020.github.io/PRD/risk-handbook/admin/iam) |
+| Phase 1 | `/admin/audit/` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/audit](https://hxyan2020.github.io/PRD/risk-handbook/admin/audit) |
+| Phase 2+ | `/admin/spot/symbols` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/symbols/](https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/symbols/) |
+| Phase 2+ | `/admin/spot/bands` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/bands/](https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/bands/) |
+| Phase 2+ | `/admin/spot/halt` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/halt/](https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/halt/) |
+| Phase 2+ | `/admin/spot/fees` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/fees/](https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/fees/) |
+| Phase 2+ | `/admin/spot/stp` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/stp/](https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/stp/) |
+| Phase 2+ | `/admin/margin/collateral` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/collateral/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/collateral/) |
+| Phase 2+ | `/admin/margin/ltv` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/ltv/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/ltv/) |
+| Phase 2+ | `/admin/margin/borrow` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/borrow/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/borrow/) |
+| Phase 2+ | `/admin/margin/interest` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/interest/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/interest/) |
+| Phase 2+ | `/admin/margin/liquidation` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/liquidation/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/liquidation/) |
+| Phase 2+ | `/admin/margin/bad-debt` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/bad-debt/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/bad-debt/) |
+| Phase 2+ | `/admin/mm/sla` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/) |
+| Phase 2+ | `/admin/mm/inventory` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/) |
+| Phase 2+ | `/admin/mm/agreements` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/) |
 
 ### 7.2 Tooling aligned to platform modules
 
@@ -2724,7 +2724,7 @@ If a word is not here, search this page; many terms are defined in [If you are n
 | Change control | CRO approve; publish via Risk portal |
 | Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics**; Chinese edition via handbook tabs |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 2.0 — Beginner SOP cards for every BU; numbered how + why in both languages |
+| Version | 2.1 — Clickable in-doc SOP / KRI / § / scenario links; admin and public URLs in both languages |
 
 ---
 
