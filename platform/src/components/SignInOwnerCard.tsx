@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { EnZh } from "@/components/EnZh";
 import { VantageMark } from "@/components/VantageLogo";
 import { PLATFORM_OWNER } from "@/lib/platform-owner";
-import { defaultPersona, readDemoSession, signInPersona } from "@/lib/demo-session";
+import { DEMO_PERSONAS, readDemoSession, signInPersona } from "@/lib/demo-session";
 import { useEffect, useState } from "react";
 
 /** Owner card on Admin Home — signs in immediately, never leaves `/admin`. */
@@ -21,7 +21,8 @@ export function SignInOwnerCard() {
 
   async function onSignIn() {
     setBusy(true);
-    await signInPersona(defaultPersona());
+    const owner = DEMO_PERSONAS.find((p) => p.email === PLATFORM_OWNER.email) ?? DEMO_PERSONAS[0];
+    await signInPersona(owner);
     setSignedIn(true);
     setBusy(false);
     router.refresh();
@@ -40,8 +41,8 @@ export function SignInOwnerCard() {
           <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
             <EnZh en={PLATFORM_OWNER.titleEn} zh={PLATFORM_OWNER.titleZh} />
           </div>
-          <div className="font-semibold text-lg mt-0.5">{defaultPersona().name}</div>
-          <div className="text-sm text-[var(--muted)] break-word">{defaultPersona().email}</div>
+          <div className="font-semibold text-lg mt-0.5">{PLATFORM_OWNER.name}</div>
+          <div className="text-sm text-[var(--muted)] break-word">{PLATFORM_OWNER.email}</div>
           <div className="mt-2 text-xs font-semibold text-teal-800">
             {signedIn ? (
               <EnZh en="Signed in — session stays in this browser" zh="已登入 — 工作階段保留在此瀏覽器" />

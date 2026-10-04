@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { EnZh } from "@/components/EnZh";
+import { OwnerIdentityPanel } from "@/components/OwnerIdentityPanel";
 
 export default async function UrlsCatalogPage() {
   const user = await getCurrentUser();
@@ -51,6 +52,7 @@ export default async function UrlsCatalogPage() {
             </Link>
         }
       />
+      <OwnerIdentityPanel />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4">
         {[

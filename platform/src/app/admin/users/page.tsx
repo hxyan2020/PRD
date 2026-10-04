@@ -2,6 +2,7 @@ import { UsersManager } from "@/components/UsersManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { OwnerIdentityPanel } from "@/components/OwnerIdentityPanel";
 import { redirect } from "next/navigation";
 
 export default async function UsersPage() {
@@ -28,6 +29,7 @@ export default async function UsersPage() {
   return (
     <div>
       <AdminPageHeader pageKey="users" />
+      <OwnerIdentityPanel />
       <UsersManager initialUsers={users} roles={roles} teams={teams} canManage={canManage} />
     </div>
   );

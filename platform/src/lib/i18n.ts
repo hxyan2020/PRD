@@ -54,8 +54,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   login: {
     title: { en: "Sign in", "zh-Hant": "登入" },
     subtitle: {
-      en: "Use Haixiang Yan or another demo role. The session stays in this browser after refresh.",
-      "zh-Hant": "使用 Haixiang Yan 或其他示範角色。重新整理後工作階段仍會保留。",
+      en: "Use YAN Haixiang (docs & platform owner) or another demo role. The session stays in this browser after refresh.",
+      "zh-Hant": "使用 YAN Haixiang（文件與平台負責人）或其他示範角色。重新整理後工作階段仍會保留。",
     },
   },
   dashboard: {
@@ -201,8 +201,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   users: {
     title: { en: "Users", "zh-Hant": "使用者" },
     subtitle: {
-      en: "Directory of operators and demo personas.",
-      "zh-Hant": "操作員與示範角色目錄。",
+      en: "Directory of operators and demo personas, including docs & platform owner YAN Haixiang.",
+      "zh-Hant": "操作員與示範角色目錄，含文件與平台負責人 YAN Haixiang。",
     },
   },
   "risk-domains": {
@@ -229,8 +229,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   settings: {
     title: { en: "Platform Settings", "zh-Hant": "平台設定" },
     subtitle: {
-      en: "Feature flags, AI thresholds and integration toggles.",
-      "zh-Hant": "功能旗標、AI 門檻與整合開關。",
+      en: "Feature flags, AI thresholds, integration toggles. Platform and docs owner: YAN Haixiang.",
+      "zh-Hant": "功能旗標、AI 門檻與整合開關。平台與文件負責人：YAN Haixiang。",
     },
   },
   urls: {
@@ -336,8 +336,8 @@ const UI: Record<string, Pair> = {
   },
   "login.signIn": { en: "Sign in to Admin", "zh-Hant": "登入管理後台" },
   "login.hint": {
-    en: "Optional — the admin is public. Sign in only to use a named role persona.",
-    "zh-Hant": "可選 — 管理後台已公開。僅在要以具名角色操作時登入。",
+    en: "Optional — the admin is public. Sign in as YAN Haixiang (docs & platform owner) or another named role.",
+    "zh-Hant": "可選 — 管理後台已公開。可以 YAN Haixiang（文件與平台負責人）或其他具名角色登入。",
   },
   "login.email": { en: "Email", "zh-Hant": "電子郵件" },
   "login.password": { en: "Password", "zh-Hant": "密碼" },

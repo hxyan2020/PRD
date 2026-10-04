@@ -16,33 +16,33 @@ export type DemoPersona = {
   labelZh: string;
 };
 
-/** Cursor / GitHub owner of this desk — signed-in identity for Haixiang Yan. */
+/** GitHub / Cursor login — same person as the named docs & platform owner. */
 export const PERSONAL_ACCOUNT = {
-  email: "hxyan.2015@gmail.com",
+  email: PLATFORM_OWNER.githubEmail,
   password: PLATFORM_OWNER.password,
-  name: "Haixiang Yan",
-  role_code: "SUPER_ADMIN" as const,
-  department_code: "RISK_CONTROL" as const,
+  name: PLATFORM_OWNER.name,
+  role_code: PLATFORM_OWNER.role_code,
+  department_code: PLATFORM_OWNER.department_code,
 };
 
 export const DEMO_PERSONAS: DemoPersona[] = [
-  {
-    email: PERSONAL_ACCOUNT.email,
-    password: PERSONAL_ACCOUNT.password,
-    name: PERSONAL_ACCOUNT.name,
-    role_code: PERSONAL_ACCOUNT.role_code,
-    department_code: PERSONAL_ACCOUNT.department_code,
-    labelEn: "Haixiang Yan",
-    labelZh: "Haixiang Yan",
-  },
   {
     email: PLATFORM_OWNER.email,
     password: PLATFORM_OWNER.password,
     name: PLATFORM_OWNER.name,
     role_code: PLATFORM_OWNER.role_code,
     department_code: PLATFORM_OWNER.department_code,
-    labelEn: "Platform Owner",
-    labelZh: "平台負責人",
+    labelEn: "YAN Haixiang",
+    labelZh: "YAN Haixiang",
+  },
+  {
+    email: PERSONAL_ACCOUNT.email,
+    password: PERSONAL_ACCOUNT.password,
+    name: PERSONAL_ACCOUNT.name,
+    role_code: PERSONAL_ACCOUNT.role_code,
+    department_code: PERSONAL_ACCOUNT.department_code,
+    labelEn: "GitHub / Cursor",
+    labelZh: "GitHub／Cursor",
   },
   {
     email: "risk.owner@vantagemarkets.com",

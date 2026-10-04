@@ -14,6 +14,7 @@ import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
 import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
+import { PLATFORM_OWNER } from "@/lib/platform-owner";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -541,8 +542,8 @@ function seedIfEmpty(db: Database.Database) {
   insertUser.run("system.admin@vantagemarkets.com", "Noah Wright", "sys123", "SYSTEM_ADMIN", "SYSTEM", 5);
   insertUser.run("admin@vantagemarkets.com", "Platform Admin", "admin123", "SUPER_ADMIN", null, null);
   insertUser.run("viewer@vantagemarkets.com", "Board Viewer", "view123", "VIEWER", null, null);
-  insertUser.run("yan.haixiang@vantagemarkets.com", "YAN Haixiang", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
-  insertUser.run("hxyan.2015@gmail.com", "Haixiang Yan", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
+  insertUser.run(PLATFORM_OWNER.email, PLATFORM_OWNER.name, PLATFORM_OWNER.password, PLATFORM_OWNER.role_code, PLATFORM_OWNER.department_code, 1);
+  insertUser.run(PLATFORM_OWNER.githubEmail, PLATFORM_OWNER.name, PLATFORM_OWNER.password, PLATFORM_OWNER.role_code, PLATFORM_OWNER.department_code, 1);
 
   const insertSource = db.prepare(
     `INSERT INTO data_sources (name, category, url, description, owner_department, auth_type, refresh_cadence, status, tags_json, notes)
@@ -670,9 +671,9 @@ function seedIfEmpty(db: Database.Database) {
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)`
   );
   insertSetting.run("platform.name", "Vantage CRMP", "Centralised Risk Management Platform");
-  insertSetting.run("platform.owner_name", "YAN Haixiang", "Named platform and documentation owner");
-  insertSetting.run("platform.owner_email", "yan.haixiang@vantagemarkets.com", "Platform owner contact");
-  insertSetting.run("platform.docs_owner", "YAN Haixiang", "Owner of PRD, TSD, User Guide and UAT packs");
+  insertSetting.run("platform.owner_name", PLATFORM_OWNER.name, "Named platform and documentation owner");
+  insertSetting.run("platform.owner_email", PLATFORM_OWNER.email, "Platform owner contact");
+  insertSetting.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");
   insertSetting.run("monitor2.base_url", "https://monitor.vantagemarkets.internal/2.0", "Monitor 2.0 base URL");
   insertSetting.run("monitor2.sync_enabled", "true", "Bi-directional alert/ticket sync");
   insertSetting.run("lark.app_id", "cli_mock_vantage_crmp", "Lark app id (prototype)");
@@ -795,8 +796,31 @@ function ensureUser(
 }
 
 function ensurePlatformOwner(db: Database.Database) {
-  ensureUser(db, "yan.haixiang@vantagemarkets.com", "YAN Haixiang", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
-  ensureUser(db, "hxyan.2015@gmail.com", "Haixiang Yan", "yan123", "SUPER_ADMIN", "RISK_CONTROL", 1);
+  ensureUser(
+    db,
+    PLATFORM_OWNER.email,
+    PLATFORM_OWNER.name,
+    PLATFORM_OWNER.password,
+    PLATFORM_OWNER.role_code,
+    PLATFORM_OWNER.department_code,
+    1
+  );
+  ensureUser(
+    db,
+    PLATFORM_OWNER.githubEmail,
+    PLATFORM_OWNER.name,
+    PLATFORM_OWNER.password,
+    PLATFORM_OWNER.role_code,
+    PLATFORM_OWNER.department_code,
+    1
+  );
+  const put = db.prepare(
+    `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value, description = excluded.description, updated_at = datetime('now')`
+  );
+  put.run("platform.owner_name", PLATFORM_OWNER.name, "Named platform and documentation owner");
+  put.run("platform.owner_email", PLATFORM_OWNER.email, "Platform owner contact");
+  put.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");
 }
 
 function ensureAiLayer(db: Database.Database) {
@@ -832,9 +856,9 @@ function ensureAiLayer(db: Database.Database) {
   upsert.run("market_intel.enabled", "true", "Enable 5-minute market intelligence scanner");
   upsert.run("market_intel.interval_minutes", "5", "Scan cadence in minutes");
   upsert.run("market_intel.lark_chat_id", "oc_market_intelligence", "Dedicated messenger group for intel pushes");
-  upsert.run("platform.owner_name", "YAN Haixiang", "Named platform and documentation owner");
-  upsert.run("platform.owner_email", "yan.haixiang@vantagemarkets.com", "Platform owner contact");
-  upsert.run("platform.docs_owner", "YAN Haixiang", "Owner of PRD, TSD, User Guide and UAT packs");
+  upsert.run("platform.owner_name", PLATFORM_OWNER.name, "Named platform and documentation owner");
+  upsert.run("platform.owner_email", PLATFORM_OWNER.email, "Platform owner contact");
+  upsert.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");
   ensurePlatformOwner(db);
   // Avoid static import cycle (scanner → getDb). Seed + scheduler via dynamic import.
   const skipScheduler =

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PageHeader, Badge } from "@/components/ui";
 import { VantageMark } from "@/components/VantageLogo";
+import { OwnerBadge } from "@/components/OwnerBadge";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import type { DocId, DocLocale } from "@/lib/docs";
 
@@ -86,9 +87,7 @@ export function DocArticleView({
           <VantageMark className="h-8 w-8" />
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">{meta.code}</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">v1.5</Badge>
-          <Badge className="bg-orange-50 text-orange-900 border-orange-200">
-            {lang === "zh-Hant" ? "負責人 YAN Haixiang" : "Owner YAN Haixiang"}
-          </Badge>
+          <OwnerBadge />
           <Link className="btn" href="/admin/docs/urls">
             {lang === "zh-Hant" ? "全部網址" : "All URLs"}
           </Link>
