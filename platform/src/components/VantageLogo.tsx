@@ -1,18 +1,19 @@
 /** Official Vantage Markets mark (teal square, white chevron, orange triangle). */
 export function VantageMark({ className = "h-8 w-8" }: { className?: string }) {
   return (
-    <svg
-      className={`block shrink-0 rounded-lg ${className}`}
-      viewBox="0 0 447 447"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-label="Vantage Markets"
-    >
-      <title>Vantage Markets</title>
-      <rect width="447" height="447" fill="#044855" />
-      <path d="M120 128h50l78 144-25 46Z" fill="#ffffff" />
-      <path d="M191 127h136L260 251V169Z" fill="#e45729" />
-    </svg>
+    <span className={`vantage-mark ${className}`}>
+      <svg
+        viewBox="0 0 447 447"
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label="Vantage Markets"
+      >
+        <title>Vantage Markets</title>
+        <rect width="447" height="447" fill="#044855" />
+        <path d="M120 128h50l78 144-25 46Z" fill="#ffffff" />
+        <path d="M191 127h136L260 251V169Z" fill="#e45729" />
+      </svg>
+    </span>
   );
 }
 
@@ -34,10 +35,7 @@ export function VantageLogo({
       <VantageMark className={markClassName} />
       {showWordmark ? (
         <span className="leading-tight min-w-0">
-          <span
-            className="block text-[10px] uppercase tracking-[0.14em]"
-            style={{ color: teal }}
-          >
+          <span className="block text-[10px] uppercase tracking-[0.14em]" style={{ color: teal }}>
             Vantage Markets
           </span>
           <span

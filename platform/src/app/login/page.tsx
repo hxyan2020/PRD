@@ -17,7 +17,10 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <section className="relative overflow-hidden bg-[#044855] text-white p-6 sm:p-10 flex flex-col justify-between min-h-[42vh] lg:min-h-screen">
+      <section
+        className="relative overflow-hidden text-white p-6 sm:p-10 flex flex-col justify-between min-h-[42vh] lg:min-h-screen"
+        style={{ backgroundColor: "#044855" }}
+      >
         <div>
           <VantageLogo inverted markClassName="h-16 w-16 sm:h-20 sm:w-20" />
           <h1 className="mt-3 sm:mt-4 font-[family-name:var(--font-display)] text-3xl sm:text-4xl leading-tight max-w-md">

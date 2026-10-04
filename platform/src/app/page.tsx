@@ -7,7 +7,7 @@ export default function HomePage() {
   if (!isStaticExport()) redirect("/admin");
   const href = publicAdminHref("/admin/");
   return (
-    <main className="min-h-screen grid place-items-center p-8 bg-[#044855] text-white">
+    <main className="min-h-screen grid place-items-center p-8 text-white" style={{ backgroundColor: "#044855" }}>
       <meta httpEquiv="refresh" content={`0;url=${href}`} />
       <div className="text-center">
         <VantageLogo inverted markClassName="h-16 w-16 mx-auto" className="justify-center" />
