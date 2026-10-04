@@ -116,7 +116,7 @@ export function markdownToHtml(md: string): string {
       }
     }
     const arrow = isH ? "→" : "↓";
-    const wrap = isH ? "flex-row flex-wrap" : "flex-col";
+    const wrap = isH ? "doc-flow-h" : "doc-flow-v";
     const items = order
       .map((id, i) => {
         const node = `<div class="doc-flow-node">${inline(nodes.get(id) || id)}</div>`;
@@ -124,7 +124,7 @@ export function markdownToHtml(md: string): string {
         return `${node}<div class="doc-flow-arrow" aria-hidden="true">${arrow}</div>`;
       })
       .join("");
-    return `<div class="doc-flow ${wrap} items-center justify-start gap-2 my-4">${items}</div>`;
+    return `<div class="doc-flow ${wrap}">${items}</div>`;
   }
 
   let mermaidBuf: string[] | null = null;

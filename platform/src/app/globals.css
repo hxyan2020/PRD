@@ -245,6 +245,16 @@ body.nav-open {
 
 .doc-flow {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.doc-flow-h {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.doc-flow-v {
+  flex-direction: column;
 }
 .doc-flow-node {
   background: #f0fdfa;
@@ -263,6 +273,8 @@ body.nav-open {
   font-weight: 700;
   padding: 0.2rem;
 }
+
+@media (min-width: 1024px) {
   .input,
   .select,
   .textarea {
