@@ -3,7 +3,7 @@
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
 **Scope:** Full catalogue covers Spot · Margin · Perps; **Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access**  
 **Public site:** https://hxyan2020.github.io/PRD/risk-handbook/ · **All URLs:** https://hxyan2020.github.io/PRD/risk-handbook/urls.html · **Admin URLs:** https://hxyan2020.github.io/PRD/risk-handbook/admin/  
-**Version:** 1.6 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Version:** 1.7 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
 > This handbook is the **operating playbook** for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.  
 > **Thresholds below are illustrative defaults** for a Tier-1 exchange risk framework — calibrate to your Limit Book; do not copy into production without RO dual-approval.
@@ -39,6 +39,24 @@
 | **Account opening** | **Invite-only** and/or **through brokers** (IB / introducing broker / white-label broker channel). No open public self-serve signup. |
 | **Trading access** | Users may trade only after invite acceptance **or** broker-introduced onboarding is complete and risk/compliance gates clear. |
 | **Primary BUs on critical path** | Futures/Perps Product & Liq Ops · Matching · Risk Engine · Risk Ops · Broker/Invite ops (CP+Product) · Wallet/Settlement as needed for collateral/PnL · Surveillance |
+
+
+**Figure — Phase 1 production scope (what is on vs labelled later)**
+
+```mermaid
+flowchart LR
+  subgraph access [Account open]
+    I[Invite code] --> CP[KYC / CP clear]
+    B[Broker / IB] --> CP
+  end
+  CP --> E[Entitlement: perps only]
+  E --> P[XAUUSD + other approved perps]
+  P --> ME[Matching + risk engine]
+  ME --> LIQ[Liq / insurance / ADL]
+  Spot[Spot book] -.-> P2[Phase 2+]
+  Mar[Margin borrow] -.-> P2
+  Pub[Public self-serve signup] -.-> P2
+```
 
 ### Phase 1 — out of production (keep playbooks; label only)
 
@@ -89,6 +107,20 @@
 | **1st** | Product BUs, Trading Ops, Matching Eng, Wallet Ops, Listing, Market Making Ops | Own risk in BAU; operate controls; escalate breaches |
 | **2nd** | Market Risk, Credit/Liquidation Risk, Model Risk, Compliance, Legal | Set appetite & policy; challenge; independent monitoring |
 | **3rd** | Internal Audit | Independent assurance of design & operating effectiveness |
+
+
+**Figure — Three lines of defence**
+
+```mermaid
+flowchart TB
+  L1[1st line: Product / TO / ME / Wallet / Listing / MM<br/>Own BAU risk, run controls]
+  L2[2nd line: Market / Credit / Model Risk + CP + Legal<br/>Appetite, challenge, independent monitoring]
+  L3[3rd line: Internal Audit<br/>Independent assurance]
+  L1 -->|escalate breaches| L2
+  L2 -->|material / Sev-1| CRO[CRO / Risk Committee]
+  L3 -.->|periodic review| L1
+  L3 -.->|periodic review| L2
+```
 
 ### 2.2 Standard role codes (used in tickets & admin ACLs)
 
@@ -156,6 +188,22 @@ Use this section when configuring limits, writing SOPs, or deciding which admin 
 | **Phase 1 examples** | **XAUUSD** perpetual and other approved perp symbols only |
 | **Phase 1 extra watch** | Metals/FX session gaps, weekend/holiday liquidity vs crypto 24×7 index hours |
 
+
+**Figure — Perps control chain (Phase 1 primary)**
+
+```mermaid
+flowchart TB
+  IDX[Index: multi-venue] --> MARK[Mark price]
+  LAST[Last / mid] --> BOOK[Matching book]
+  MARK --> MR[Margin ratio]
+  BOOK --> MR
+  MR -->|healthy| OK[Trade / add risk]
+  MR -->|breach| LQ[Liquidation engine]
+  LQ --> INS[Insurance fund]
+  INS -->|shortfall| ADL[ADL queue]
+  MARK -. stale? .-> FEED[PL-K06 / PF-K02 failover]
+```
+
 ### 3.4 Instrument comparison (ops cheat sheet)
 
 | Dimension | Spot | Margin | Perps |
@@ -169,11 +217,44 @@ Use this section when configuring limits, writing SOPs, or deciding which admin 
 | Typical KRI | Cancel/fill ratio, halt count | Borrow util, liquidation volume, bad debt | Insurance balance, ADL events, basis, mark–index gap |
 | **Phase label** | **`[Phase 2+]`** | **`[Phase 2+]`** | **`[Phase 1]`** (incl. XAUUSD) |
 
+
+**Figure — Instruments vs Phase 1 gate**
+
+```mermaid
+flowchart TB
+  subgraph p1 [Phase 1 ON]
+    Perps[Perps incl. XAUUSD]
+  end
+  subgraph p2 [Phase 2+ documented / dormant]
+    Spot[Spot]
+    Margin[Cross / Isolated margin]
+    Public[Public signup]
+  end
+  User[User] -->|invite or broker only| Perps
+  User -.->|blocked| Spot
+  User -.->|blocked| Margin
+  User -.->|blocked| Public
+```
+
 ---
 
 ## 4. BU-by-BU playbooks
 
 Each chapter follows the same template:
+
+
+**Figure — Phase 1 critical-path BUs**
+
+```mermaid
+flowchart LR
+  ACC[Invite / Broker + CP] --> UID[Trade-enabled UID]
+  UID --> ME[Matching ME]
+  ME --> RE[Risk engine RE]
+  RE --> FUT[Futures TO / PM]
+  FUT --> RO[RO / RO-OPS]
+  RE --> WO[Wallet WO]
+  RO --> CRO[CRO]
+```
 
 - **In scope / out of scope**
 - **Job division**
@@ -765,6 +846,26 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 
 ### 6.1 SOP-G01 — Limit change (all instruments)
 
+
+**Figure — SOP-G01 limit change**
+
+```mermaid
+sequenceDiagram
+  actor Req as Requester
+  participant SYS as SYS / RO-OPS
+  actor RO as Maker RO
+  actor CHK as Checker
+  participant RE as Risk engine
+  Req->>SYS: Ticket old to new + rationale
+  SYS->>RO: Impact packet
+  RO-->>Req: Reject
+  RO->>CHK: Approve if Tier A+
+  CHK->>RE: Four-eyes OK
+  RO->>RE: Approve if below Tier A
+  RE->>RE: Promote config + hash
+  RE->>SYS: Hypercare 24h
+```
+
 | Field | Detail |
 |-------|--------|
 | **When** | Any proposed change to soft/hard limits, brackets, bands, OI caps, LTV/haircut, borrow caps, VIP multipliers — scheduled calib or ad-hoc stress response |
@@ -789,6 +890,21 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 ---
 
 ### 6.2 SOP-G02 — Trading halt / resume (Spot vs Perps / Margin)
+
+
+**Figure — SOP-G02 halt then resume**
+
+```mermaid
+flowchart LR
+  T[TO proposes] --> RO[RO approves]
+  RO --> ME[ME halt matching]
+  ME --> RE[RE sets liq mode]
+  RE --> COM[Comms + wallet policy]
+  COM --> CLR{Root cause contained?}
+  CLR -->|no| HOLD[Stay halted]
+  CLR -->|yes| ACK[RO + ME + RE ACK]
+  ACK --> RES[Staged resume + 4h hypercare]
+```
 
 | Field | Detail |
 |-------|--------|
@@ -820,6 +936,21 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 ---
 
 ### 6.3 SOP-G03 — Alert ACK (WARN / BREACH / KILL)
+
+
+**Figure — SOP-G03 alert ACK**
+
+```mermaid
+flowchart TB
+  A[Alert WARN / BREACH / KILL] --> ACK[RO-OPS ACK in SLA]
+  ACK --> DQ{Data fresh?}
+  DQ -->|no| ENG[ENG-03 feed fix]
+  DQ -->|yes| FAM[Pick S1-S12 family]
+  FAM --> ACT[Contain per playbook]
+  ACT --> ESC{Contained?}
+  ESC -->|no| L[Escalate L+1 / war room]
+  ESC -->|yes| HC[Hypercare + ticket]
+```
 
 | Field | Detail |
 |-------|--------|
@@ -888,6 +1019,21 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.
 ---
 
 ### 6.6 SOP-G06 — New product / instrument approval
+
+
+**Figure — SOP-G06 new product gates (Phase 1 = perps + invite/broker)**
+
+```mermaid
+flowchart LR
+  Legal[Legal] --> CP[CP]
+  CP --> LI[Listing + RO opinion]
+  LI --> Prod[Product checklist]
+  Prod --> Eng[RE / ME dry-run]
+  Eng --> WO[Wallet ready]
+  WO --> Acc[ACC-01 / ACC-02]
+  Acc --> Live[Perps live]
+  Spot[Spot / Margin] -.-> P2[Phase 2+ hold]
+```
 
 | Field | Detail |
 |-------|--------|
@@ -1568,6 +1714,16 @@ Each indicator row uses this schema:
 | **L3** | Multi-symbol cascade, insurance draw, ADL storm, prolonged halt | CRO + Product PIC + ME + RE + Comms | Immediate |
 | **L4** | Client-fund threat, key/API compromise, exchange-wide halt, wrong marks at scale | ELT · Crisis Comms · Legal · CP · CISO | Immediate + exec bridge |
 
+
+**Figure — Escalation ladder**
+
+```mermaid
+flowchart TB
+  L1[L1 RO-OPS ticket] --> L2[L2 RO + BU PIC]
+  L2 --> L3[L3 CRO + ME + RE + Comms]
+  L3 --> L4[L4 ELT + Legal + CP + CISO]
+```
+
 ### 8.3 Limit types
 
 | Type | Meaning | Example |
@@ -1756,6 +1912,20 @@ Use this section when an indicator (or cluster) flips colour. **Never act on col
 
 **Important:** Green is not always “safe”. A green mark feed that is **stale** (see PL-K06) can hide a red economic reality. Always check **last update timestamp** with colour.
 
+
+**Figure — RAG is not the diagnosis**
+
+```mermaid
+flowchart LR
+  G[Green] --> TS[Check timestamp]
+  A[Amber WARN] --> TRI[Triage 15m]
+  R[Red BREACH] --> CON[Contain 5m]
+  TS -->|stale| S9[Family S9 false-green]
+  TS -->|fresh| OK[Healthy or keep watching]
+  TRI --> FAM[Sequence then family]
+  CON --> FAM
+```
+
 ### 9.2 Diagnostic method (mandatory order)
 
 ```
@@ -1767,6 +1937,20 @@ Use this section when an indicator (or cluster) flips colour. **Never act on col
 6. RULE OUT — Eliminate causes inconsistent with sequence or green peers.
 7. ACT     — Contain per §8 actions → escalate per §8.2 → war room if Sev-1/2.
 8. WRITE   — Timeline + ruled-in/out causes in incident ticket.
+```
+
+
+**Figure — Diagnostic order (clock first)**
+
+```mermaid
+flowchart LR
+  C[1 Clock] --> S[2 Scope]
+  S --> D[3 Data]
+  D --> SI[4 Single KRI]
+  SI --> CL[5 Cluster]
+  CL --> X[6 Rule out]
+  X --> ACT[7 Act]
+  ACT --> W[8 Write timeline]
 ```
 
 **Time-sequence grammar (use in tickets):**
@@ -1943,6 +2127,23 @@ Treat **unexpected Green** as a scenario:
 ---
 
 ### 9.4 Multi-indicator cluster scenarios (with time sequence)
+
+
+**Figure — Same reds, different order: S1 vs S2**
+
+```mermaid
+sequenceDiagram
+  participant Ext as External market
+  participant Feed as PL-K06 / PF-K02
+  participant Mark as PF-K01
+  participant Liq as PF-K06
+  Note over Ext,Liq: S1 real risk-off
+  Ext->>Mark: Price dump first
+  Mark->>Liq: Organic liquidations
+  Note over Ext,Liq: S2 bad marks
+  Feed->>Mark: Feed/index fails first
+  Mark->>Liq: Spurious liquidations
+```
 
 Legend: colours on the **cluster at diagnosis time**; arrows show **required order** to prefer that cause.
 
@@ -2167,6 +2368,21 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 | Sev-3 | Degraded feature, single-market issue | BU PIC |
 | Sev-4 | Cosmetic / minor | On-call |
 
+
+**Figure — War-room seating (Sev-1)**
+
+```mermaid
+flowchart TB
+  IC[Incident Commander]
+  IC --- RO[Risk]
+  IC --- ME[Matching]
+  IC --- RE[Risk engine]
+  IC --- WO[Wallet]
+  IC --- COM[Comms]
+  IC --- CP[Compliance]
+  IC --- SCR[Scribe]
+```
+
 **Standing war-room roles:** Incident Commander · Risk · ME · RE · Wallet · Comms · CP · Scribe  
 
 **Always capture:** timeline (§9 clock), configs touched, orders/liquidations during incident, ruled-in scenario family (S1–S12), client impact, permanent fix owner.
@@ -2258,7 +2474,7 @@ Legend: colours on the **cluster at diagnosis time**; arrows show **required ord
 | Change control | CRO approve; publish via Risk portal |
 | Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics**; Chinese edition via handbook tabs |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 1.6 — Phase 1 labels: perps (incl. XAUUSD) + invite/broker only |
+| Version | 1.7 — Diagrams in EN/ZH; readability pass |
 
 ---
 
