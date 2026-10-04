@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { cn, deptLabel, severityClass, statusClass } from "@/lib/utils";
 import { stageLabel, statusLabel } from "@/lib/i18n";
 import { useUiLocale } from "@/hooks/useUiLocale";
@@ -38,7 +38,7 @@ export function StatCard({
   value,
   hint,
   href,
-  icon: Icon,
+  icon,
   tone = "default",
   cta,
 }: {
@@ -46,7 +46,7 @@ export function StatCard({
   value: string | number;
   hint?: ReactNode;
   href?: string;
-  icon?: LucideIcon;
+  icon?: ReactNode;
   tone?: "default" | "alert";
   cta?: ReactNode;
 }) {
@@ -55,14 +55,14 @@ export function StatCard({
     <>
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
-          {Icon ? (
+          {icon ? (
             <span
               className={cn(
-                "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg [&>svg]:h-4 [&>svg]:w-4",
                 alert ? "bg-orange-50 text-orange-700" : "bg-teal-50 text-teal-800"
               )}
             >
-              <Icon className="h-4 w-4" aria-hidden />
+              {icon}
             </span>
           ) : null}
           <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{label}</div>

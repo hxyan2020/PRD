@@ -171,7 +171,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3">
         <StatCard
           href="/admin/users"
-          icon={Users}
+          icon={<Users aria-hidden />}
           label={<T k="home.stat.users" />}
           value={counts.users}
           hint={<T k="home.stat.usersHint" />}
@@ -179,7 +179,7 @@ export default async function AdminDashboardPage() {
         />
         <StatCard
           href="/admin/teams"
-          icon={Users}
+          icon={<Users aria-hidden />}
           label={<T k="home.stat.teams" />}
           value={counts.teams}
           hint={<T k="home.stat.teamsHint" />}
@@ -187,7 +187,7 @@ export default async function AdminDashboardPage() {
         />
         <StatCard
           href="/admin/data-sources"
-          icon={Database}
+          icon={<Database aria-hidden />}
           label={<T k="home.stat.sources" />}
           value={counts.sources}
           hint={<T k="home.stat.sourcesHint" />}
@@ -195,7 +195,7 @@ export default async function AdminDashboardPage() {
         />
         <StatCard
           href="/admin/risk-domains"
-          icon={Waypoints}
+          icon={<Waypoints aria-hidden />}
           label={<T k="home.stat.domains" />}
           value={counts.domains}
           hint={<T k="home.stat.domainsHint" />}
@@ -203,7 +203,7 @@ export default async function AdminDashboardPage() {
         />
         <StatCard
           href="/admin/alerts"
-          icon={Bell}
+          icon={<Bell aria-hidden />}
           tone={counts.openAlerts > 0 ? "alert" : "default"}
           label={<T k="home.stat.openAlerts" />}
           value={counts.openAlerts}
@@ -212,7 +212,7 @@ export default async function AdminDashboardPage() {
         />
         <StatCard
           href="/admin/monitor-2"
-          icon={Ticket}
+          icon={<Ticket aria-hidden />}
           label={<T k="home.stat.openTickets" />}
           value={counts.openTickets}
           hint={<T k="home.stat.openTicketsHint" />}
@@ -220,7 +220,7 @@ export default async function AdminDashboardPage() {
         />
         <StatCard
           href="/admin/lark"
-          icon={MessageSquare}
+          icon={<MessageSquare aria-hidden />}
           label={<T k="home.stat.lark" />}
           value={counts.larkChannels}
           hint={<T k="home.stat.larkHint" />}
@@ -228,7 +228,7 @@ export default async function AdminDashboardPage() {
         />
         <StatCard
           href="/admin/escalation"
-          icon={GitBranch}
+          icon={<GitBranch aria-hidden />}
           label={<T k="home.stat.routes" />}
           value={counts.routes}
           hint={<T k="home.stat.routesHint" />}
