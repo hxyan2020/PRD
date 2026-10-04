@@ -18,34 +18,43 @@ export default async function MessengerDemoPage() {
   const threads = inbox.threads as React.ComponentProps<typeof DemoMessenger>["initialThreads"];
 
   return (
-    <div>
-      <AdminPageHeader
-        pageKey="messenger"
-        actions={
-          <div className="flex flex-wrap gap-2">
-            <Link className="btn" href="/admin/docs/urls">
-              <ActionLabel href="/admin/docs/urls" />
-            </Link>
-            <Link className="btn" href="/admin/lark">
-              <ActionLabel href="/admin/lark" />
-            </Link>
-            <Link className="btn" href="/admin/escalation">
-              <ActionLabel href="/admin/escalation" />
-            </Link>
-          </div>
-        }
-      />
-      <p className="mb-3 text-sm text-[var(--muted)]">
-        <T k="msg.larkDemoHint" />{" "}
-        <a className="text-teal-800 underline break-all" href={PUBLIC_MESSENGER_URL}>
-          {PUBLIC_MESSENGER_URL}
-        </a>
-      </p>
-      <DemoMessenger
-        initialThreads={threads}
-        initialCatalog={inbox.catalog as React.ComponentProps<typeof DemoMessenger>["initialCatalog"]}
-        staticMode={staticMode}
-      />
+    <div className="messenger-page">
+      <div className="shrink-0">
+        <AdminPageHeader
+          pageKey="messenger"
+          actions={
+            <div className="hidden sm:flex flex-wrap gap-2">
+              <Link className="btn" href="/admin/docs/urls">
+                <ActionLabel href="/admin/docs/urls" />
+              </Link>
+              <Link className="btn" href="/admin/lark">
+                <ActionLabel href="/admin/lark" />
+              </Link>
+              <Link className="btn" href="/admin/escalation">
+                <ActionLabel href="/admin/escalation" />
+              </Link>
+            </div>
+          }
+        />
+        <p className="mb-3 text-sm text-[var(--muted)]">
+          <span className="sm:hidden">
+            <T k="msg.larkDemoHintShort" />
+          </span>
+          <span className="hidden sm:inline">
+            <T k="msg.larkDemoHint" />{" "}
+          </span>
+          <a className="text-teal-800 underline break-all hidden sm:inline" href={PUBLIC_MESSENGER_URL}>
+            {PUBLIC_MESSENGER_URL}
+          </a>
+        </p>
+      </div>
+      <div className="flex-1 min-h-0">
+        <DemoMessenger
+          initialThreads={threads}
+          initialCatalog={inbox.catalog as React.ComponentProps<typeof DemoMessenger>["initialCatalog"]}
+          staticMode={staticMode}
+        />
+      </div>
     </div>
   );
 }

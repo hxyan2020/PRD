@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Sparkles } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { VantageMark } from "@/components/VantageLogo";
 import { AdminLink } from "@/components/AdminLink";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { THINKING_ACTIONS, thinkingSteps } from "@/lib/messenger/thinking";
 
 const ACTION_I18N: Record<string, { en: string; "zh-Hant": string; descEn: string; descZh: string }> = {
   BLOCK_ACCOUNT: {
@@ -50,6 +51,10 @@ function localizeAction(code: string, label: string, description: string, locale
     label: hit[locale],
     description: locale === "zh-Hant" ? hit.descZh : hit.descEn,
   };
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 type Thread = {
@@ -95,6 +100,96 @@ type InboxPack = {
   recommended_actions: Recommended[];
 };
 
+type LiveThink = {
+  steps: string[];
+  visible: number;
+};
+
+function stamp() {
+  return new Date().toISOString().replace("T", " ").slice(0, 19);
+}
+
+let msgSeq = 0;
+
+function makeMessage(kind: string, sender: string, body: string, meta: Record<string, unknown> = {}): Message {
+  const now = Date.now();
+  msgSeq += 1;
+  return {
+    id: now + msgSeq,
+    msg_id: `${kind === "THINKING" ? "THINK" : "MSG"}-DEMO-${now}-${msgSeq}`,
+    kind,
+    sender,
+    body,
+    meta_json: JSON.stringify(meta),
+    created_at: stamp(),
+  };
+}
+
+function ThinkingCard({
+  steps,
+  visible,
+  running,
+  elapsedMs,
+  expanded,
+  onToggle,
+  locale,
+}: {
+  steps: string[];
+  visible: number;
+  running: boolean;
+  elapsedMs?: number;
+  expanded?: boolean;
+  onToggle?: () => void;
+  locale: UiLocale;
+}) {
+  const shown = running ? steps.slice(0, Math.max(visible, 0)) : steps;
+  const seconds = Math.max(1, Math.round((elapsedMs || 0) / 1000));
+  return (
+    <div className="rounded-xl border border-teal-200 bg-gradient-to-b from-teal-50 to-white px-3 py-2 text-sm max-w-full sm:max-w-[95%]">
+      <button
+        type="button"
+        className="flex w-full items-center gap-2 text-left min-h-11"
+        onClick={running ? undefined : onToggle}
+        aria-expanded={running ? true : Boolean(expanded)}
+        aria-label={running ? t("msg.thinking", locale) : expanded ? t("msg.hideThoughts", locale) : t("msg.showThoughts", locale)}
+      >
+        {running ? (
+          <span className="flex gap-1 shrink-0" aria-hidden>
+            <span className="think-dot" />
+            <span className="think-dot" />
+            <span className="think-dot" />
+          </span>
+        ) : expanded ? (
+          <ChevronDown size={16} className="shrink-0 text-teal-800" />
+        ) : (
+          <ChevronRight size={16} className="shrink-0 text-teal-800" />
+        )}
+        <Sparkles size={14} className="shrink-0 text-teal-800" />
+        <span className="font-semibold text-teal-950">
+          {running ? t("msg.thinking", locale) : t("msg.thoughtFor", locale, { s: seconds })}
+        </span>
+      </button>
+      {(running || expanded) && shown.length > 0 && (
+        <ol className="mt-1.5 mb-1 space-y-1.5 pl-0.5">
+          {shown.map((step, i) => {
+            const current = running && i === visible - 1;
+            const done = !running || i < visible - 1;
+            return (
+              <li key={`${i}-${step}`} className="think-step flex gap-2 text-[13px] leading-snug text-slate-700">
+                <span className={`mt-0.5 shrink-0 ${done ? "text-teal-700" : "text-teal-500"}`}>{done ? "✓" : "›"}</span>
+                <span>
+                  {step}
+                  {current ? <span className="think-cursor" /> : null}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </div>
+  );
+}
+
 export function DemoMessenger({
   initialThreads,
   initialCatalog = {},
@@ -119,8 +214,27 @@ export function DemoMessenger({
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const [mobilePane, setMobilePane] = useState<"list" | "thread">("list");
+  const [liveThink, setLiveThink] = useState<LiveThink | null>(null);
+  const [openThoughts, setOpenThoughts] = useState<Record<string, boolean>>({});
 
-  const active = useMemo(() => threads.find((t) => t.id === activeId) || null, [threads, activeId]);
+  const packRef = useRef({ messages, pending, recommended, activeId });
+  packRef.current = { messages, pending, recommended, activeId };
+  const runGen = useRef(0);
+  const lockRef = useRef(false);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const active = useMemo(() => threads.find((row) => row.id === activeId) || null, [threads, activeId]);
+
+  useEffect(() => {
+    runGen.current += 1;
+    setLiveThink(null);
+  }, [activeId]);
+
+  useEffect(() => {
+    const node = listRef.current;
+    if (!node) return;
+    node.scrollTop = node.scrollHeight;
+  }, [messages, liveThink, pending]);
 
   function applyPack(id: number, pack: InboxPack, opts: { openPane?: boolean } = {}) {
     setActiveId(id);
@@ -161,41 +275,52 @@ export function DemoMessenger({
     );
   }
 
-  function appendLocal(
-    kind: string,
-    sender: string,
-    body: string,
-    extra: { status?: string; action_code?: string } = {}
-  ) {
-    if (!activeId) return;
-    const msg: Message = {
-      id: Date.now(),
-      msg_id: `MSG-DEMO-${Date.now()}`,
-      kind,
-      sender,
-      body,
-      meta_json: "{}",
-      created_at: new Date().toISOString().replace("T", " ").slice(0, 19),
+  function commitPack(nextMessages: Message[], nextPending: Pending[], extra: { status?: string } = {}) {
+    const id = packRef.current.activeId;
+    if (!id) return;
+    packRef.current = {
+      ...packRef.current,
+      messages: nextMessages,
+      pending: nextPending,
     };
-    const nextMessages = [...messages, msg];
-    let nextPending = pending;
     setMessages(nextMessages);
+    setPending(nextPending);
     setThreads((prev) =>
       prev.map((thread) =>
-        thread.id === activeId
+        thread.id === id
           ? {
               ...thread,
-              last_body: body,
-              message_count: thread.message_count + 1,
+              last_body: nextMessages[nextMessages.length - 1]?.body || thread.last_body,
+              message_count: nextMessages.filter((m) => m.kind !== "THINKING").length,
               status: extra.status || thread.status,
             }
           : thread
       )
     );
+    setCatalog((prev) => ({
+      ...prev,
+      [id]: {
+        messages: nextMessages,
+        pending: nextPending,
+        recommended_actions: packRef.current.recommended,
+      },
+    }));
+  }
+
+  function appendLocal(
+    kind: string,
+    sender: string,
+    body: string,
+    extra: { status?: string; action_code?: string; meta?: Record<string, unknown> } = {}
+  ) {
+    if (!packRef.current.activeId) return;
+    const msg = makeMessage(kind, sender, body, extra.meta || {});
+    const nextMessages = [...packRef.current.messages, msg];
+    let nextPending = packRef.current.pending;
     if (kind === "ACTION_PROPOSAL") {
       const code = extra.action_code || "WIDEN_SPREAD";
       nextPending = [
-        ...pending,
+        ...packRef.current.pending,
         {
           id: Date.now(),
           action_code: code,
@@ -207,123 +332,145 @@ export function DemoMessenger({
           }),
         },
       ];
-      setPending(nextPending);
     }
-    setCatalog((prev) => ({
-      ...prev,
-      [activeId]: {
-        messages: nextMessages,
-        pending: nextPending,
-        recommended_actions: recommended,
-      },
-    }));
+    commitPack(nextMessages, nextPending, extra);
+  }
+
+  async function playThinking(action: string, extra: Record<string, unknown> = {}) {
+    const gen = runGen.current;
+    const steps = thinkingSteps(action, locale, extra);
+    const startedAt = Date.now();
+    setLiveThink({ steps, visible: 0 });
+    await sleep(180);
+    for (let i = 0; i < steps.length; i += 1) {
+      if (gen !== runGen.current) return null;
+      setLiveThink({ steps, visible: i + 1 });
+      await sleep(500 + i * 70);
+    }
+    await sleep(260);
+    if (gen !== runGen.current) return null;
+    const elapsedMs = Date.now() - startedAt;
+    setLiveThink(null);
+    return { steps, elapsedMs };
+  }
+
+  function mergeThought(serverMsgs: Message[], thought: Message, action: string, prev: Message[]) {
+    const durable = prev.filter((m) => m.kind !== "THINKING" && !String(m.msg_id).startsWith("MSG-DEMO-"));
+    const prevIds = new Set(durable.map((m) => m.msg_id));
+    const firstNew = serverMsgs.findIndex((m) => !prevIds.has(m.msg_id));
+    const insertAt = firstNew === -1 ? serverMsgs.length : firstNew;
+    if (action === "chat") {
+      const head = serverMsgs.slice(0, insertAt);
+      const tail = serverMsgs.slice(insertAt);
+      const userMsg = tail[0];
+      return [...head, ...(userMsg ? [userMsg] : []), thought, ...tail.slice(userMsg ? 1 : 0)];
+    }
+    return [...serverMsgs.slice(0, insertAt), thought, ...serverMsgs.slice(insertAt)];
   }
 
   async function run(action: string, extra: Record<string, unknown> = {}) {
     if (!activeId && action !== "sync") return;
-    if (staticMode) {
-      if (action === "sync") {
-        setStatusMsg(t("msg.synced", locale, { n: 0 }));
-        return;
-      }
-      if (action === "show_evidence") {
-        appendLocal(
-          "EVIDENCE",
-          "Evidence Vault",
-          "📎 Evidence pack (demo)\n• [MONITOR] Margin utilisation >90% for 128 accounts\n• [BOOK] Copy-equity concentration 31%\n• [RAG] Prior US-open breach playbook"
-        );
-      } else if (action === "escalate") {
-        appendLocal(
-          "ESCALATION",
-          "Escalation Engine",
-          "⬆️ Escalated to Risk Owner (step 2/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge"
-        );
-      } else if (action === "dismiss") {
-        appendLocal("SYSTEM", "Public visitor", "❎ Dismissed as false alarm. Alert closed.", { status: "DISMISSED" });
-      } else if (action === "close") {
-        appendLocal("SYSTEM", "Public visitor", "✅ Closed — AI analysis accepted.", { status: "CLOSED" });
-      } else if (action === "chat") {
-        const text = String(extra.text || "").trim();
-        if (!text) return;
-        const now = Date.now();
-        const userMsg: Message = {
-          id: now,
-          msg_id: `MSG-DEMO-${now}`,
-          kind: "USER",
-          sender: "Public visitor",
-          body: text,
-          meta_json: "{}",
-          created_at: new Date().toISOString().replace("T", " ").slice(0, 19),
-        };
-        const botMsg: Message = {
-          ...userMsg,
-          id: now + 1,
-          msg_id: `MSG-DEMO-${now + 1}`,
-          kind: "CHATBOT",
-          sender: "CRMP Chatbot",
-          body: "💬 Noted. Attached to the demo thread for Risk Desk review.",
-        };
-        const nextMessages = [...messages, userMsg, botMsg];
-        setMessages(nextMessages);
-        setThreads((prev) =>
-          prev.map((thread) =>
-            thread.id === activeId
-              ? { ...thread, last_body: botMsg.body, message_count: thread.message_count + 2 }
-              : thread
-          )
-        );
-        setCatalog((prev) => ({
-          ...prev,
-          [activeId]: { messages: nextMessages, pending, recommended_actions: recommended },
-        }));
-        setChat("");
-      } else if (action === "recommend") {
-        appendLocal(
-          "ACTION_PROPOSAL",
-          "Action Advisor",
-          `⚙️ Proposed: ${String(extra.action_code || "WIDEN_SPREAD")}\nPlease double-confirm before sending to Vantage Markets admin.`,
-          { action_code: String(extra.action_code || "WIDEN_SPREAD") }
-        );
-      } else {
-        appendLocal("SYSTEM", "Messenger", `Demo action ${action} recorded (static snapshot — no live Lark API).`);
-      }
-      setStatusMsg(t("msg.actionDone", locale, { action }));
-      setConfirmId(null);
-      if (action === "escalate" || action === "sync") bumpNavBadge("/admin/messenger", 1);
-      if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
-      return;
-    }
+    if (lockRef.current && action !== "sync") return;
+    if (action === "chat" && !String(extra.text || "").trim()) return;
+
+    const gen = runGen.current;
+    lockRef.current = true;
     setBusy(true);
     setStatusMsg(null);
-    const res = await fetch("/api/messenger", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action, thread_id: activeId, ...extra }),
-    });
-    const data = await res.json();
-    setBusy(false);
-    if (!res.ok) {
-      setStatusMsg(data.error || "Action failed");
-      return;
+
+    let thought: { steps: string[]; elapsedMs: number } | null = null;
+    try {
+      if (THINKING_ACTIONS.has(action)) {
+        if (action === "chat") {
+          appendLocal("USER", "Public visitor", String(extra.text || "").trim());
+          setChat("");
+        }
+        thought = await playThinking(action, extra);
+        if (!thought || gen !== runGen.current) return;
+        appendLocal("THINKING", "CRMP AI", thought.steps.join("\n"), {
+          meta: { elapsed_ms: thought.elapsedMs, action, steps: thought.steps },
+        });
+      }
+
+      if (staticMode) {
+        if (action === "sync") {
+          setStatusMsg(t("msg.synced", locale, { n: 0 }));
+          return;
+        }
+        if (action === "show_evidence") {
+          appendLocal(
+            "EVIDENCE",
+            "Evidence Vault",
+            "📎 Evidence pack (demo)\n• [MONITOR] Margin utilisation >90% for 128 accounts\n• [BOOK] Copy-equity concentration 31%\n• [RAG] Prior US-open breach playbook"
+          );
+        } else if (action === "escalate") {
+          appendLocal(
+            "ESCALATION",
+            "Escalation Engine",
+            "⬆️ Escalated to Risk Owner (step 2/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge"
+          );
+        } else if (action === "dismiss") {
+          appendLocal("SYSTEM", "Public visitor", "❎ Dismissed as false alarm. Alert closed.", { status: "DISMISSED" });
+        } else if (action === "close") {
+          appendLocal("SYSTEM", "Public visitor", "✅ Closed — AI analysis accepted.", { status: "CLOSED" });
+        } else if (action === "chat") {
+          appendLocal("CHATBOT", "CRMP Chatbot", "💬 Noted. Attached to the demo thread for Risk Desk review.");
+        } else if (action === "recommend") {
+          appendLocal(
+            "ACTION_PROPOSAL",
+            "Action Advisor",
+            `⚙️ Proposed: ${String(extra.action_code || "WIDEN_SPREAD")}\nPlease double-confirm before sending to Vantage Markets admin.`,
+            { action_code: String(extra.action_code || "WIDEN_SPREAD") }
+          );
+        } else if (action !== "sync") {
+          appendLocal("SYSTEM", "Messenger", `Demo action ${action} recorded (static snapshot — no live Lark API).`);
+        }
+        setStatusMsg(t("msg.actionDone", locale, { action }));
+        setConfirmId(null);
+        if (action === "escalate" || action === "sync") bumpNavBadge("/admin/messenger", 1);
+        if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
+        return;
+      }
+
+      const snapshot = packRef.current.messages;
+      const localThought = [...snapshot].reverse().find((m) => m.kind === "THINKING");
+      const res = await fetch("/api/messenger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, thread_id: activeId, ...extra }),
+      });
+      const data = await res.json();
+      if (gen !== runGen.current) return;
+      if (!res.ok) {
+        setStatusMsg(data.error || "Action failed");
+        return;
+      }
+      if (action === "sync") {
+        setThreads(data.threads || []);
+        setStatusMsg(t("msg.synced", locale, { n: data.synced ?? 0 }));
+        bumpNavBadge("/admin/messenger", Number(data.synced) || 1);
+        router.refresh();
+        return;
+      }
+      const serverMsgs: Message[] = data.messages || [];
+      const nextMessages =
+        thought && localThought ? mergeThought(serverMsgs, localThought, action, snapshot) : serverMsgs;
+      setMessages(nextMessages);
+      setPending(data.pending || []);
+      setRecommended(data.recommended_actions || []);
+      setConfirmId(null);
+      setChat("");
+      const listRes = await fetch("/api/messenger");
+      const listData = await listRes.json();
+      if (gen !== runGen.current) return;
+      if (listRes.ok) setThreads(listData.threads || []);
+      setStatusMsg(t("msg.actionDone", locale, { action }));
+      if (action === "escalate") bumpNavBadge("/admin/messenger", 1);
+      if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
+    } finally {
+      lockRef.current = false;
+      setBusy(false);
     }
-    if (action === "sync") {
-      setThreads(data.threads || []);
-      setStatusMsg(t("msg.synced", locale, { n: data.synced ?? 0 }));
-      bumpNavBadge("/admin/messenger", Number(data.synced) || 1);
-      router.refresh();
-      return;
-    }
-    setMessages(data.messages || []);
-    setPending(data.pending || []);
-    setRecommended(data.recommended_actions || []);
-    setConfirmId(null);
-    setChat("");
-    const listRes = await fetch("/api/messenger");
-    const listData = await listRes.json();
-    if (listRes.ok) setThreads(listData.threads || []);
-    setStatusMsg(t("msg.actionDone", locale, { action }));
-    if (action === "escalate") bumpNavBadge("/admin/messenger", 1);
-    if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
   }
 
   useEffect(() => {
@@ -334,9 +481,9 @@ export function DemoMessenger({
   }, [activeId, loaded]);
 
   return (
-    <div className="grid lg:grid-cols-[300px_minmax(0,1fr)] gap-3 sm:gap-4">
+    <div className="messenger-shell grid lg:grid-cols-[minmax(240px,300px)_minmax(0,1fr)] gap-3 sm:gap-4">
       <section
-        className={`panel p-3 flex flex-col min-h-[60vh] lg:min-h-[70vh] ${
+        className={`panel p-3 flex flex-col min-h-0 ${
           mobilePane === "thread" ? "hidden lg:flex" : "flex"
         }`}
       >
@@ -345,27 +492,27 @@ export function DemoMessenger({
             <VantageMark className="h-7 w-7" />
             <h2 className="font-semibold text-sm sm:text-base">{t("msg.channels", locale)}</h2>
           </div>
-          <button type="button" className="btn text-xs !min-h-9" disabled={busy} onClick={() => run("sync")}>
+          <button type="button" className="btn text-xs !min-h-11" disabled={busy} onClick={() => void run("sync")}>
             {t("msg.sync", locale)}
           </button>
         </div>
-        <div className="space-y-2 overflow-auto flex-1 -mx-1 px-1">
-          {threads.map((t) => (
+        <div className="space-y-2 overflow-auto flex-1 min-h-0 -mx-1 px-1 overscroll-contain">
+          {threads.map((row) => (
             <button
-              key={t.id}
+              key={row.id}
               type="button"
-              onClick={() => void loadThread(t.id)}
+              onClick={() => void loadThread(row.id)}
               className={`w-full text-left rounded-xl border px-3 py-2.5 transition min-h-16 ${
-                activeId === t.id ? "border-teal-400 bg-teal-50" : "border-[var(--line)] hover:bg-slate-50"
+                activeId === row.id ? "border-teal-400 bg-teal-50" : "border-[var(--line)] hover:bg-slate-50"
               }`}
             >
               <div className="flex flex-wrap gap-1.5 items-center">
-                <SeverityBadge value={t.severity} />
-                <StatusBadge value={t.status} />
+                <SeverityBadge value={row.severity} />
+                <StatusBadge value={row.status} />
               </div>
-              <div className="mt-1 text-sm font-semibold line-clamp-2 break-word">{t.title}</div>
+              <div className="mt-1 text-sm font-semibold line-clamp-2 break-word">{row.title}</div>
               <div className="text-[11px] text-[var(--muted)] mt-0.5">
-                {t.channel_name} · {t.message_count} msgs
+                {row.channel_name} · {row.message_count} msgs
               </div>
             </button>
           ))}
@@ -374,17 +521,17 @@ export function DemoMessenger({
       </section>
 
       <section
-        className={`panel p-3 sm:p-4 flex flex-col min-h-[70vh] lg:min-h-[70vh] ${
+        className={`panel p-3 sm:p-4 flex flex-col min-h-0 ${
           mobilePane === "list" ? "hidden lg:flex" : "flex"
         }`}
       >
         {active ? (
           <>
-            <div className="border-b border-[var(--line)] pb-3 mb-3">
+            <div className="border-b border-[var(--line)] pb-3 mb-3 shrink-0">
               <div className="lg:hidden mb-2">
                 <button
                   type="button"
-                  className="btn !min-h-9 text-xs"
+                  className="btn !min-h-11 text-xs"
                   onClick={() => setMobilePane("list")}
                 >
                   <ArrowLeft size={14} /> {t("msg.threads", locale)}
@@ -396,7 +543,7 @@ export function DemoMessenger({
                 <Badge className="bg-slate-100 text-slate-700 border-slate-200">{active.channel_name}</Badge>
                 <Badge className="bg-orange-50 text-orange-900 border-orange-200">{active.thread_id}</Badge>
               </div>
-              <h2 className="mt-2 font-[family-name:var(--font-display)] text-lg sm:text-xl break-word">
+              <h2 className="mt-2 font-[family-name:var(--font-display)] text-base sm:text-xl break-word line-clamp-2">
                 {active.title}
               </h2>
               <div className="mt-3 action-row">
@@ -404,7 +551,7 @@ export function DemoMessenger({
                   type="button"
                   className="btn"
                   disabled={busy || active.status !== "OPEN"}
-                  onClick={() => run("show_evidence")}
+                  onClick={() => void run("show_evidence")}
                 >
                   {t("msg.showEvidence", locale)}
                 </button>
@@ -412,7 +559,7 @@ export function DemoMessenger({
                   type="button"
                   className="btn"
                   disabled={busy || active.status !== "OPEN"}
-                  onClick={() => run("escalate")}
+                  onClick={() => void run("escalate")}
                 >
                   {t("msg.escalate", locale)}
                 </button>
@@ -420,7 +567,7 @@ export function DemoMessenger({
                   type="button"
                   className="btn"
                   disabled={busy || active.status !== "OPEN"}
-                  onClick={() => run("dismiss")}
+                  onClick={() => void run("dismiss")}
                 >
                   {t("msg.dismiss", locale)}
                 </button>
@@ -428,20 +575,40 @@ export function DemoMessenger({
                   type="button"
                   className="btn btn-primary"
                   disabled={busy || active.status !== "OPEN"}
-                  onClick={() => run("close")}
+                  onClick={() => void run("close")}
                 >
                   {t("msg.close", locale)}
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain">
+            <div ref={listRef} className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain min-h-0">
               {messages.map((m) => {
+                if (m.kind === "THINKING") {
+                  const meta = JSON.parse(m.meta_json || "{}") as {
+                    elapsed_ms?: number;
+                    steps?: string[];
+                  };
+                  const steps = Array.isArray(meta.steps) && meta.steps.length ? meta.steps : m.body.split("\n").filter(Boolean);
+                  const expanded = Boolean(openThoughts[m.msg_id]);
+                  return (
+                    <ThinkingCard
+                      key={m.msg_id}
+                      steps={steps}
+                      visible={steps.length}
+                      running={false}
+                      elapsedMs={meta.elapsed_ms}
+                      expanded={expanded}
+                      onToggle={() => setOpenThoughts((prev) => ({ ...prev, [m.msg_id]: !prev[m.msg_id] }))}
+                      locale={locale}
+                    />
+                  );
+                }
                 const meta = JSON.parse(m.meta_json || "{}") as Record<string, unknown>;
                 const isUser = m.kind === "USER";
                 return (
                   <div
-                    key={m.id}
+                    key={m.msg_id}
                     className={`rounded-xl border px-3 py-2 text-sm max-w-full sm:max-w-[95%] ${
                       isUser
                         ? "ml-auto border-teal-200 bg-teal-50"
@@ -468,25 +635,33 @@ export function DemoMessenger({
                   </div>
                 );
               })}
+              {liveThink ? (
+                <ThinkingCard
+                  steps={liveThink.steps}
+                  visible={liveThink.visible}
+                  running
+                  locale={locale}
+                />
+              ) : null}
             </div>
 
             {active.status === "OPEN" && (
-              <div className="mt-4 border-t border-[var(--line)] pt-3 space-y-3 sticky bottom-0 bg-[var(--panel)] pb-[max(0.25rem,var(--safe-bottom))]">
+              <div className="mt-3 border-t border-[var(--line)] pt-3 space-y-3 shrink-0 bg-[var(--panel)] pb-[max(0.15rem,var(--safe-bottom))]">
                 <div>
                   <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)] mb-2">
                     {t("msg.recommended", locale)}
                   </div>
-                  <div className="action-row">
+                  <div className="action-row max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:-mx-1 max-sm:px-1 max-sm:pb-1">
                     {recommended.map((a) => {
                       const loc = localizeAction(a.code, a.label, a.description, locale);
                       return (
                         <button
                           key={a.code}
                           type="button"
-                          className="btn text-xs"
+                          className="btn text-xs max-sm:shrink-0"
                           disabled={busy}
                           title={loc.description}
-                          onClick={() => run("recommend", { action_code: a.code })}
+                          onClick={() => void run("recommend", { action_code: a.code })}
                         >
                           {loc.label}
                         </button>
@@ -524,7 +699,7 @@ export function DemoMessenger({
                               type="button"
                               className="btn btn-primary"
                               disabled={busy}
-                              onClick={() => run("checker_approve", { pending_id: p.id })}
+                              onClick={() => void run("checker_approve", { pending_id: p.id })}
                             >
                               {t("msg.checkerApprove", locale)}
                             </button>
@@ -538,7 +713,7 @@ export function DemoMessenger({
                               type="button"
                               className="btn btn-primary"
                               disabled={busy}
-                              onClick={() => run("confirm_action", { pending_id: p.id })}
+                              onClick={() => void run("confirm_action", { pending_id: p.id })}
                             >
                               {t("msg.yesAdmin", locale)}
                             </button>
@@ -560,7 +735,7 @@ export function DemoMessenger({
                               type="button"
                               className="btn"
                               disabled={busy}
-                              onClick={() => run("cancel_action", { pending_id: p.id })}
+                              onClick={() => void run("cancel_action", { pending_id: p.id })}
                             >
                               {t("msg.cancel", locale)}
                             </button>
@@ -572,7 +747,7 @@ export function DemoMessenger({
                 })}
 
                 <form
-                  className="flex flex-col sm:flex-row gap-2"
+                  className="flex gap-2"
                   onSubmit={(e) => {
                     e.preventDefault();
                     if (!chat.trim()) return;
@@ -580,13 +755,13 @@ export function DemoMessenger({
                   }}
                 >
                   <input
-                    className="input flex-1 !rounded-xl"
+                    className="input flex-1 !rounded-xl !min-h-11"
                     placeholder={t("msg.chatPlaceholder", locale)}
                     value={chat}
                     onChange={(e) => setChat(e.target.value)}
                     disabled={busy}
                   />
-                  <button type="submit" className="btn btn-primary sm:w-auto w-full" disabled={busy || !chat.trim()}>
+                  <button type="submit" className="btn btn-primary shrink-0 !min-h-11 px-4" disabled={busy || !chat.trim()}>
                     {t("msg.send", locale)}
                   </button>
                 </form>
@@ -594,7 +769,7 @@ export function DemoMessenger({
             )}
 
             {statusMsg && (
-              <div className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 break-word">
+              <div className="mt-2 text-xs sm:text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 break-word shrink-0">
                 {statusMsg}
               </div>
             )}

@@ -314,6 +314,10 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "挑戰 AI 報告或補充資訊…",
   },
   "msg.send": { en: "Send", "zh-Hant": "傳送" },
+  "msg.thinking": { en: "CRMP is thinking", "zh-Hant": "CRMP 思考中" },
+  "msg.thoughtFor": { en: "Thought for {s}s", "zh-Hant": "思考了 {s} 秒" },
+  "msg.showThoughts": { en: "Show reasoning", "zh-Hant": "顯示推理過程" },
+  "msg.hideThoughts": { en: "Hide reasoning", "zh-Hant": "隱藏推理過程" },
   "msg.select": { en: "Select a thread to open the demo messenger.", "zh-Hant": "選擇執行緒以開啟示範 Messenger。" },
   "msg.openInAdmin": { en: "Open in admin →", "zh-Hant": "在管理後台開啟 →" },
   "msg.actionDone": { en: "Action {action} completed", "zh-Hant": "動作 {action} 已完成" },
@@ -321,6 +325,10 @@ const UI: Record<string, Pair> = {
   "msg.larkDemoHint": {
     en: "Lark-style demo inbox (no live Lark API). Open a thread to see the Monitor alert, AI report, and escalation message. Permanent URL:",
     "zh-Hant": "Lark 風格示範收件匣（無需正式 Lark API）。開啟執行緒即可看到 Monitor 警報、AI 報告與升級訊息。永久網址：",
+  },
+  "msg.larkDemoHintShort": {
+    en: "Lark-style demo inbox — open a thread for alerts, AI reports and escalations.",
+    "zh-Hant": "Lark 風格示範收件匣 — 開啟執行緒查看警報、AI 報告與升級。",
   },
   "home.larkDemo": {
     en: "See alerts, AI reports and escalations in the Lark-style messenger demo.",
