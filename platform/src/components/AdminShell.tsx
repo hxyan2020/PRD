@@ -269,13 +269,21 @@ export function AdminShell({
                 </button>
               </div>
               <div className="min-w-0">
-                <div className="hidden sm:block">
-                  <VantageLogo markClassName="h-8 w-8" />
+                <div className="hidden sm:flex items-center gap-2">
+                  <VantageLogo markClassName="h-8 w-8" showWordmark={false} />
+                  <div>
+                    <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
+                      {copy.headerEyebrow}
+                    </div>
+                    <div className="font-[family-name:var(--font-display)] text-sm sm:text-base text-[var(--ink)] truncate">
+                      {copy.headerTitle}
+                    </div>
+                  </div>
                 </div>
                 <div className="sm:hidden text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
                   {copy.headerEyebrow}
                 </div>
-                <div className="font-[family-name:var(--font-display)] text-sm sm:text-base text-[var(--ink)] truncate">
+                <div className="sm:hidden font-[family-name:var(--font-display)] text-sm text-[var(--ink)] truncate">
                   {copy.headerTitle}
                 </div>
                 {sessionUser.role_code === "PUBLIC_GUEST" && (

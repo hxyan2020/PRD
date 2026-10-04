@@ -26,11 +26,17 @@ export function VantageLogo({
         <path d="M16.5 8h15L24 22 16.5 8Z" fill={accent} />
       </svg>
       {showWordmark ? (
-        <span className="min-w-0 leading-tight">
-          <span className="block text-[10px] uppercase tracking-[0.16em]" style={{ color: inverted ? "#99f6e4" : "#0b6e6a" }}>
+        <span className="leading-tight">
+          <span
+            className="block text-[10px] uppercase tracking-[0.14em]"
+            style={{ color: inverted ? "#99f6e4" : "#0b6e6a" }}
+          >
             Vantage Markets
           </span>
-          <span className="block font-[family-name:var(--font-display)] text-base truncate" style={{ color: ink }}>
+          <span
+            className="block font-[family-name:var(--font-display)] text-sm"
+            style={{ color: ink }}
+          >
             CRMP Admin
           </span>
         </span>
