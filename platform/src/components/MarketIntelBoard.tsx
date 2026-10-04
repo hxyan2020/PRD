@@ -1,12 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t } from "@/lib/i18n";
-import { isStaticExport } from "@/lib/static-export";
+import { isPublicSnapshot, isStaticExport } from "@/lib/static-export";
+import { runClientMarketIntelScan } from "@/lib/market-intel/demo-scan";
+
+const MI_STORE = "crmp_mi_demo_v1";
 
 type Finding = {
   id: number;
@@ -65,42 +68,118 @@ type Indicator = {
   unit: string;
 } | null;
 
-export function MarketIntelBoard({
-  initial,
-}: {
-  initial: {
-    findings: Finding[];
-    scans: Scan[];
-    sources: Source[];
-    outbox: Outbox[];
-    indicator: Indicator;
-    settings: Array<{ key: string; value: string }>;
-  };
-}) {
+type BoardState = {
+  findings: Finding[];
+  scans: Scan[];
+  sources: Source[];
+  outbox: Outbox[];
+  indicator: Indicator;
+  settings: Array<{ key: string; value: string }>;
+};
+
+export function MarketIntelBoard({ initial }: { initial: BoardState }) {
   const router = useRouter();
   const { locale } = useUiLocale();
-  const staticMode = isStaticExport();
+  const [snapshot, setSnapshot] = useState(isStaticExport());
   const [tab, setTab] = useState<"findings" | "messenger" | "sources" | "scans">("findings");
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [findings, setFindings] = useState(initial.findings);
+  const [scans, setScans] = useState(initial.scans);
+  const [sources, setSources] = useState(initial.sources);
+  const [outbox, setOutbox] = useState(initial.outbox);
+  const [indicator, setIndicator] = useState(initial.indicator);
+  const [settings, setSettings] = useState(initial.settings);
   const [openMsg, setOpenMsg] = useState<number | null>(initial.outbox[0]?.id ?? null);
 
-  const enabled =
-    initial.settings.find((s) => s.key === "market_intel.enabled")?.value !== "false";
+  useEffect(() => {
+    const publicHost = isPublicSnapshot();
+    if (publicHost) setSnapshot(true);
+    try {
+      const raw = localStorage.getItem(MI_STORE);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as Partial<BoardState>;
+      if (Array.isArray(saved.findings) && saved.findings.length) setFindings(saved.findings);
+      if (Array.isArray(saved.scans) && saved.scans.length) setScans(saved.scans);
+      if (Array.isArray(saved.outbox) && saved.outbox.length) setOutbox(saved.outbox);
+      if (Array.isArray(saved.sources) && saved.sources.length) setSources(saved.sources);
+      if (saved.indicator) setIndicator(saved.indicator);
+      if (Array.isArray(saved.settings) && saved.settings.length) setSettings(saved.settings);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!snapshot) return;
+    try {
+      localStorage.setItem(
+        MI_STORE,
+        JSON.stringify({ findings, scans, sources, outbox, indicator, settings })
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [snapshot, findings, scans, sources, outbox, indicator, settings]);
+
+  const enabled = settings.find((s) => s.key === "market_intel.enabled")?.value !== "false";
 
   const highImpact = useMemo(
-    () => initial.findings.filter((f) => ["WARN", "BREACH", "CRITICAL"].includes(f.severity)).length,
-    [initial.findings]
+    () => findings.filter((f) => ["WARN", "BREACH", "CRITICAL"].includes(f.severity)).length,
+    [findings]
   );
+
+  function applyDemoScan() {
+    const demo = runClientMarketIntelScan({
+      sourceCount: sources.length || 17,
+      existingFindingIds: findings.map((f) => f.finding_id),
+      trigger: "MANUAL",
+    });
+    setFindings((prev) => [...demo.findings, ...prev]);
+    setScans((prev) => [...demo.scans, ...prev]);
+    setOutbox((prev) => [...demo.outbox, ...prev]);
+    setSources((prev) =>
+      prev.map((s) => ({ ...s, last_scraped_at: new Date().toISOString() }))
+    );
+    if (indicator) {
+      const hits = demo.high_impact_count;
+      let status = indicator.status;
+      if (hits >= indicator.threshold_breach) status = "BREACH";
+      else if (hits >= indicator.threshold_warn) status = "WARN";
+      else status = "HEALTHY";
+      setIndicator({ ...indicator, last_value: hits, status });
+    }
+    setTab("findings");
+    setMsg(
+      t("mi.demoScan", locale, {
+        scan_id: demo.scan_id,
+        n: demo.findings_new,
+        pushed: demo.findings_pushed,
+      })
+    );
+  }
+
+  function toggleEnabledLocal() {
+    const next = !enabled;
+    setSettings((prev) => {
+      const has = prev.some((s) => s.key === "market_intel.enabled");
+      if (!has) return [...prev, { key: "market_intel.enabled", value: next ? "true" : "false" }];
+      return prev.map((s) =>
+        s.key === "market_intel.enabled" ? { ...s, value: next ? "true" : "false" } : s
+      );
+    });
+    setMsg(next ? t("mi.schedOn", locale) : t("mi.schedOff", locale));
+  }
 
   async function post(body: Record<string, unknown>) {
     setBusy(true);
     setMsg(null);
     setErr(null);
     try {
-      if (staticMode) {
-        setMsg(t("mi.staticScan", locale));
+      if (snapshot || isPublicSnapshot()) {
+        if (body.action === "toggle_enabled") toggleEnabledLocal();
+        else applyDemoScan();
         return;
       }
       const res = await fetch("/api/market-intel", {
@@ -108,6 +187,12 @@ export function MarketIntelBoard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      if (res.status === 404 || res.status === 405) {
+        setSnapshot(true);
+        if (body.action === "toggle_enabled") toggleEnabledLocal();
+        else applyDemoScan();
+        return;
+      }
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setErr(data.error || `Failed (${res.status})`);
@@ -123,8 +208,10 @@ export function MarketIntelBoard({
           : "OK"
       );
       router.refresh();
-    } catch (error) {
-      setErr(error instanceof Error ? error.message : "Scan failed");
+    } catch {
+      setSnapshot(true);
+      if (body.action === "toggle_enabled") toggleEnabledLocal();
+      else applyDemoScan();
     } finally {
       setBusy(false);
     }
@@ -169,26 +256,26 @@ export function MarketIntelBoard({
       </div>
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatCard label={t("mi.findings", locale)} value={initial.findings.length} hint={`${highImpact} ${t("mi.highImpact", locale)}`} />
+        <StatCard label={t("mi.findings", locale)} value={findings.length} hint={`${highImpact} ${t("mi.highImpact", locale)}`} />
         <StatCard
           label="Indicator M2-MKT-INTEL"
-          value={initial.indicator?.last_value ?? "—"}
-          hint={`warn ${initial.indicator?.threshold_warn ?? 1} / breach ${initial.indicator?.threshold_breach ?? 3}`}
+          value={indicator?.last_value ?? "—"}
+          hint={`warn ${indicator?.threshold_warn ?? 1} / breach ${indicator?.threshold_breach ?? 3}`}
         />
-        <StatCard label={t("mi.sources", locale)} value={initial.sources.length} hint={enabled ? t("mi.schedOn", locale) : t("mi.schedOff", locale)} />
+        <StatCard label={t("mi.sources", locale)} value={sources.length} hint={enabled ? t("mi.schedOn", locale) : t("mi.schedOff", locale)} />
         <StatCard
           label={t("mi.pushes", locale)}
-          value={initial.outbox.length}
+          value={outbox.length}
           hint="oc_market_intelligence"
         />
       </div>
 
-      {initial.indicator && (
+      {indicator && (
         <div className="panel p-3 flex flex-wrap gap-2 items-center text-sm">
           <span className="text-xs uppercase text-[var(--muted)]">{t("mi.live", locale)}</span>
-          <Badge className="bg-orange-50 text-orange-900 border-orange-200">{initial.indicator.monitor_id}</Badge>
-          <span>{initial.indicator.name}</span>
-          <StatusBadge value={initial.indicator.status} />
+          <Badge className="bg-orange-50 text-orange-900 border-orange-200">{indicator.monitor_id}</Badge>
+          <span>{indicator.name}</span>
+          <StatusBadge value={indicator.status} />
           <Link className="underline text-xs" href="/admin/monitor-2">
             Monitor 2.0
           </Link>
@@ -220,13 +307,13 @@ export function MarketIntelBoard({
 
       {tab === "findings" && (
         <div className="space-y-3">
-          {initial.findings.map((f) => {
+          {findings.map((f) => {
             const products = JSON.parse(f.products_json || "[]") as Array<{
               product: string;
               asset_class: string;
               direction: string;
             }>;
-            const sources = JSON.parse(f.sources_json || "[]") as Array<{ name: string; url: string }>;
+            const findingSources = JSON.parse(f.sources_json || "[]") as Array<{ name: string; url: string }>;
             return (
               <article key={f.id} className="panel p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">
@@ -262,7 +349,7 @@ export function MarketIntelBoard({
                   <div>
                     <div className="text-xs uppercase text-[var(--muted)]">(vi) Sources</div>
                     <ul className="mt-1 space-y-1">
-                      {sources.map((s, i) => (
+                      {findingSources.map((s, i) => (
                         <li key={i}>
                           <a className="underline" href={s.url} target="_blank" rel="noreferrer">
                             {s.name}
@@ -276,7 +363,7 @@ export function MarketIntelBoard({
               </article>
             );
           })}
-          {!initial.findings.length && (
+          {!findings.length && (
             <div className="panel p-6 text-sm text-[var(--muted)]">No findings yet — run Scan now.</div>
           )}
         </div>
@@ -288,7 +375,7 @@ export function MarketIntelBoard({
             Dedicated group format: (i) event (ii) geography (iii) severity (iv) products+direction (v)
             timestamp (vi) sources with links.
           </p>
-          {initial.outbox.map((o) => (
+          {outbox.map((o) => (
             <article key={o.id} className="panel p-4">
               <button type="button" className="w-full text-left" onClick={() => setOpenMsg(openMsg === o.id ? null : o.id)}>
                 <div className="flex flex-wrap gap-2 items-center text-sm">
@@ -320,7 +407,7 @@ export function MarketIntelBoard({
               </tr>
             </thead>
             <tbody>
-              {initial.sources.map((s) => (
+              {sources.map((s) => (
                 <tr key={s.source_key} className="border-b border-[var(--line)]">
                   <td className="p-3">
                     <div className="font-medium">{s.name}</div>
@@ -357,7 +444,7 @@ export function MarketIntelBoard({
               </tr>
             </thead>
             <tbody>
-              {initial.scans.map((s) => (
+              {scans.map((s) => (
                 <tr key={s.scan_id} className="border-b border-[var(--line)]">
                   <td className="p-3">
                     <div className="font-medium">{s.scan_id}</div>

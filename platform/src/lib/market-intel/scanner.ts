@@ -78,6 +78,76 @@ export function seedMarketIntel(db = getDb()) {
     "true",
     "When high-impact findings arrive, update M2-MKT-INTEL and raise alarm"
   );
+
+  seedDemoFindingsIfEmpty(db);
+}
+
+/** Bake a few findings into SSG / first load so Scan is not an empty 0-count desk. */
+export function seedDemoFindingsIfEmpty(db = getDb()) {
+  const count = db.prepare(`SELECT COUNT(*) AS c FROM market_intel_findings`).get() as { c: number };
+  if (count.c > 0) return;
+
+  const ts = new Date().toISOString();
+  const insertFinding = db.prepare(
+    `INSERT INTO market_intel_findings
+     (finding_id, event_title, event_summary, geography, severity, products_json, directions_json,
+      sources_json, asset_classes_json, fingerprint, scanned_at, pushed_to_lark, lark_message_id, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 'PUSHED')`
+  );
+  const insertOutbox = db.prepare(
+    `INSERT INTO market_intel_lark_outbox (finding_id, channel_chat_id, formatted_message, delivered, mock, delivered_at)
+     VALUES (?, ?, ?, 1, 1, datetime('now'))`
+  );
+  const insertScan = db.prepare(
+    `INSERT INTO market_intel_scans
+     (scan_id, started_at, finished_at, sources_checked, findings_new, findings_pushed, high_impact_count, status, trigger_mode, detail_json)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 'COMPLETED', 'SEED', ?)`
+  );
+
+  const picked = EVENT_TEMPLATES.slice(0, 3);
+  let high = 0;
+  for (const c of picked) {
+    const findingId = newId("MIF");
+    const fp = fingerprint(c.fingerprint_seed, `seed|${c.event_title}`);
+    if (c.severity === "WARN" || c.severity === "BREACH" || c.severity === "CRITICAL") high += 1;
+    const message = formatMarketIntelMessage({
+      finding_id: findingId,
+      event_title: c.event_title,
+      event_summary: c.event_summary,
+      geography: c.geography,
+      severity: c.severity,
+      products: c.products,
+      timestamp: ts,
+      sources: c.source_urls,
+    });
+    insertFinding.run(
+      findingId,
+      c.event_title,
+      c.event_summary,
+      c.geography,
+      c.severity,
+      JSON.stringify(c.products),
+      JSON.stringify(c.products.map((p) => ({ product: p.product, direction: p.direction }))),
+      JSON.stringify(c.source_urls),
+      JSON.stringify(c.asset_classes),
+      fp,
+      ts,
+      `om_mi_${findingId.toLowerCase()}`
+    );
+    insertOutbox.run(findingId, LARK_CHAT_ID, message);
+  }
+  insertScan.run(
+    newId("MIS"),
+    ts,
+    ts,
+    MARKET_INTEL_SOURCES.length,
+    picked.length,
+    picked.length,
+    high,
+    JSON.stringify({ seed: true })
+  );
+
+  db.prepare(`UPDATE market_intel_sources SET last_scraped_at = datetime('now')`).run();
 }
 
 /** Prototype scrape: try lightweight HTTP HEAD/GET on a few sources; always enrich with templates. */
