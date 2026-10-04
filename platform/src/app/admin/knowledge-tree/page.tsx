@@ -12,12 +12,22 @@ export default async function KnowledgeTreePage() {
   if (!isStaticExport() && (!user || !hasPermission(user.role_code, "rag.read"))) redirect("/admin");
   const db = getDb();
   seedSkillsIfEmpty(db);
-  const docs = listRagDocuments(db).map((d) => ({
-    doc_key: d.doc_key,
-    title: d.title,
-    category: d.category,
-    product_scope: d.product_scope,
-  }));
+  const docs = listRagDocuments(db).map((d) => {
+    let tags: string[] = [];
+    try {
+      const parsed = JSON.parse(d.tags_json || "[]") as unknown;
+      if (Array.isArray(parsed)) tags = parsed.map(String);
+    } catch {
+      tags = [];
+    }
+    return {
+      doc_key: d.doc_key,
+      title: d.title,
+      category: d.category,
+      product_scope: d.product_scope,
+      tags,
+    };
+  });
 
   return (
     <div>

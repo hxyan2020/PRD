@@ -415,9 +415,27 @@ const UI: Record<string, Pair> = {
   "tree.chains": { en: "Linked timelines", "zh-Hant": "連結時間鏈" },
   "tree.rag": { en: "RAG corpus", "zh-Hant": "RAG 語料" },
   "tree.hint": {
-    en: "Click a skill to Enter the full playbook, or a document to open the RAG library.",
-    "zh-Hant": "點技能以進入完整劇本，或點文件以開啟 RAG 知識庫。",
+    en: "This map is the knowledge tree: CRMP → risk domains → skill playbooks, with linked timelines and RAG documents on the side branches. Click a node to inspect it; Enter opens the source page.",
+    "zh-Hant": "這張圖就是知識樹：CRMP → 風險領域 → 技能劇本，側枝為連結時間鏈與 RAG 文件。點節點可檢視；「進入」打開來源頁。",
   },
+  "tree.map": { en: "Tree map", "zh-Hant": "樹狀圖" },
+  "tree.outline": { en: "Outline", "zh-Hant": "大綱" },
+  "tree.allProducts": { en: "All products", "zh-Hant": "全部產品" },
+  "tree.clickNode": {
+    en: "Click a domain to fan out its skills. Click a skill to inspect; Enter opens the SKILL.md playbook. Switch to Linked timelines or RAG corpus for the other trunks.",
+    "zh-Hant": "點領域展開技能。點技能可檢視；「進入」打開 SKILL.md 劇本。切換「連結時間鏈」或「RAG 語料」看另外兩幹。",
+  },
+  "tree.enter": { en: "Enter", "zh-Hant": "進入" },
+  "tree.enterPlaybook": { en: "Enter full playbook", "zh-Hant": "進入完整劇本" },
+  "tree.inspector": { en: "Selected node", "zh-Hant": "選中節點" },
+  "tree.inspectorEmpty": {
+    en: "Click a skill, timeline or RAG category on the tree. The node details and links land here.",
+    "zh-Hant": "在樹上點技能、時間鏈或 RAG 分類，詳情與連結會顯示於此。",
+  },
+  "tree.skillsInDomain": { en: "skills in this domain", "zh-Hant": "此領域技能" },
+  "tree.openRag": { en: "Open RAG library", "zh-Hant": "開啟 RAG 知識庫" },
+  "tree.linkedSkills": { en: "Linked skills", "zh-Hant": "連結技能" },
+  "tree.hubSub": { en: "knowledge tree", "zh-Hant": "知識樹" },
 
   "nav.unread": { en: "unread", "zh-Hant": "未讀" },
 };
