@@ -294,6 +294,15 @@ const UI: Record<string, Pair> = {
   "msg.openInAdmin": { en: "Open in admin →", "zh-Hant": "在管理後台開啟 →" },
   "msg.actionDone": { en: "Action {action} completed", "zh-Hant": "動作 {action} 已完成" },
   "msg.synced": { en: "Synced {n} new alert(s) into messenger", "zh-Hant": "已同步 {n} 則新警報至 Messenger" },
+  "msg.larkDemoHint": {
+    en: "Lark-style demo inbox (no live Lark API). Open a thread to see the Monitor alert, AI report, and escalation message. Permanent URL:",
+    "zh-Hant": "Lark 風格示範收件匣（無需正式 Lark API）。開啟執行緒即可看到 Monitor 警報、AI 報告與升級訊息。永久網址：",
+  },
+  "home.larkDemo": {
+    en: "See alerts, AI reports and escalations in the Lark-style messenger demo.",
+    "zh-Hant": "在 Lark 風格 Messenger 示範中查看警報、AI 報告與升級訊息。",
+  },
+  "home.larkDemoCta": { en: "Open messenger demo", "zh-Hant": "開啟 Messenger 示範" },
 
   "login.title": {
     en: "Centralised Risk Management Platform",
@@ -319,8 +328,8 @@ const UI: Record<string, Pair> = {
   "urls.data": { en: "Data / tables", "zh-Hant": "資料／資料表" },
   "urls.inbox": { en: "Demo inbox", "zh-Hant": "示範收件匣" },
   "urls.publicNote": {
-    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. Permanent GitHub Pages URL: https://hxyan2020.github.io/PRD/crmp-admin/admin/",
-    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。永久 GitHub Pages 網址：https://hxyan2020.github.io/PRD/crmp-admin/admin/",
+    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. Permanent GitHub Pages URL: https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark messenger demo: https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
+    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。永久 GitHub Pages 網址：https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark Messenger 示範：https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
   },
   "urls.cheat": {
     en: "Demo Messenger actions: show_evidence · chat · escalate · dismiss · close · recommend → double-confirm → Vantage admin ref · checker_approve when required.",

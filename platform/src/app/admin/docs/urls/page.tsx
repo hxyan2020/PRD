@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PLATFORM_URLS, PUBLIC_ADMIN_URL } from "@/lib/docs/urls";
+import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL } from "@/lib/docs/urls";
 import { Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { t } from "@/lib/i18n";
@@ -67,6 +67,11 @@ export default async function UrlsCatalogPage() {
         <p className="mt-2">
           <a className="text-teal-900 underline break-all" href={PUBLIC_ADMIN_URL}>
             {PUBLIC_ADMIN_URL}
+          </a>
+        </p>
+        <p className="mt-2">
+          <a className="text-teal-900 underline break-all" href={PUBLIC_MESSENGER_URL}>
+            {PUBLIC_MESSENGER_URL}
           </a>
         </p>
       </div>

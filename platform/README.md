@@ -23,6 +23,8 @@ Open http://localhost:3000/admin
 
 Permanent public URL (GitHub Pages): [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)
 
+Lark-style messenger demo (alerts + AI report + escalation, no live Lark API): [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)
+
 The Pages snapshot is a static export of the admin UI (browseable without login). Local `npm run dev` still serves the live SQLite APIs at http://localhost:3000/admin.
 
 ### Demo logins

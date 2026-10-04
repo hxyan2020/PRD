@@ -14,7 +14,7 @@ export type MessengerAction =
   | "cancel_action"
   | "checker_approve";
 
-const RECOMMENDED_ACTIONS = [
+export const RECOMMENDED_ACTIONS = [
   {
     code: "BLOCK_ACCOUNT",
     label: "Block user account",
@@ -120,32 +120,39 @@ export function seedMessengerIfEmpty(db: Database.Database = getDb()) {
   const count = (db.prepare(`SELECT COUNT(*) AS c FROM messenger_threads`).get() as { c: number }).c;
   if (count > 0) return;
 
-  const alerts = db
-    .prepare(
-      `SELECT a.id, a.alert_id, a.severity, a.title, a.message, a.status, i.monitor_id, i.name AS indicator_name,
-              an.id AS analysis_db_id, an.analysis_id, an.summary, an.mode, an.challenge_verdict
-       FROM monitor_alerts a
-       JOIN monitor_indicators i ON i.id = a.indicator_id
-       LEFT JOIN ai_analyses an ON an.alert_id = a.id
-       WHERE a.severity IN ('WARN','BREACH','CRITICAL')
-       ORDER BY a.id DESC
-       LIMIT 8`
-    )
-    .all() as Array<{
-    id: number;
-    alert_id: string;
-    severity: string;
-    title: string;
-    message: string;
-    status: string;
-    monitor_id: string;
-    indicator_name: string;
-    analysis_db_id: number | null;
-    analysis_id: string | null;
-    summary: string | null;
-    mode: string | null;
-    challenge_verdict: string | null;
-  }>;
+  const alerts = (() => {
+    try {
+      return db
+        .prepare(
+          `SELECT a.id, a.alert_id, a.severity, a.title, a.message, a.status, i.monitor_id, i.name AS indicator_name,
+                  an.id AS analysis_db_id, an.analysis_id, an.summary, an.mode, an.challenge_verdict
+           FROM monitor_alerts a
+           JOIN monitor_indicators i ON i.id = a.indicator_id
+           LEFT JOIN ai_analyses an ON an.alert_id = a.id
+           WHERE a.severity IN ('WARN','BREACH','CRITICAL')
+           ORDER BY a.id DESC
+           LIMIT 8`
+        )
+        .all() as Array<{
+        id: number;
+        alert_id: string;
+        severity: string;
+        title: string;
+        message: string;
+        status: string;
+        monitor_id: string;
+        indicator_name: string;
+        analysis_db_id: number | null;
+        analysis_id: string | null;
+        summary: string | null;
+        mode: string | null;
+        challenge_verdict: string | null;
+      }>;
+    } catch (error) {
+      console.warn("[messenger] seed alerts query failed", error);
+      return [];
+    }
+  })();
 
   for (const a of alerts) {
     const threadId = newId("THR");
@@ -174,30 +181,172 @@ export function seedMessengerIfEmpty(db: Database.Database = getDb()) {
       { alert_id: a.alert_id, monitor_id: a.monitor_id }
     );
 
-    if (a.analysis_db_id && a.summary) {
+    addDemoAiReport(db, tid, a);
+    addDemoEscalation(db, tid, a.severity);
+  }
+
+  if (!alerts.length) {
+    seedSyntheticMessengerThread(db);
+  }
+}
+
+function addDemoAiReport(
+  db: Database.Database,
+  tid: number,
+  a: {
+    title: string;
+    analysis_db_id: number | null;
+    analysis_id: string | null;
+    summary: string | null;
+    mode: string | null;
+    challenge_verdict: string | null;
+  }
+) {
+  if (a.analysis_db_id && a.summary) {
+    addMessage(
+      db,
+      tid,
+      "AI_REPORT",
+      "CRMP AI",
+      `🤖 AI Report ${a.analysis_id}\nMode: ${a.mode}\n${a.summary}${
+        a.challenge_verdict ? `\nSecond AI: ${a.challenge_verdict}` : ""
+      }`,
+      {
+        analysis_db_id: a.analysis_db_id,
+        analysis_id: a.analysis_id,
+        mode: a.mode,
+        challenge_verdict: a.challenge_verdict,
+        admin_url: `/admin/ai-analyses/${a.analysis_db_id}`,
+      }
+    );
+    return;
+  }
+  addMessage(
+    db,
+    tid,
+    "AI_REPORT",
+    "CRMP AI",
+    `🤖 AI Report AIA-DEMO\nMode: RAG\nPrimary RCA: ${a.title} matches a Credit & Client Risk pattern (session-open utilisation / concentration).\nRecommended: page Risk Desk, attach evidence, hold irreversible controls for checker.\nSecond AI: AGREE`,
+    { analysis_id: "AIA-DEMO", admin_url: "/admin/ai-analyses" }
+  );
+}
+
+function addDemoEscalation(db: Database.Database, tid: number, severity: string) {
+  const target = severity === "CRITICAL" ? "Exec Risk Bridge" : "Risk Control Desk";
+  addMessage(
+    db,
+    tid,
+    "ESCALATION",
+    "Escalation Engine",
+    `⬆️ Escalated to ${target} (step 1/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge\nLark: posted to oc_risk_control_desk (demo — no live webhook)`,
+    { target, step: 0, mock: true }
+  );
+}
+
+function seedSyntheticMessengerThread(db: Database.Database) {
+  const threadId = newId("THR");
+  const info = db
+    .prepare(
+      `INSERT INTO messenger_threads
+        (thread_id, channel_name, title, severity, status, alert_id, analysis_id, escalation_step)
+       VALUES (?, ?, ?, ?, 'OPEN', NULL, NULL, 1)`
+    )
+    .run(threadId, "Risk Critical Bridge", "Margin utilisation spike", "BREACH");
+  const tid = Number(info.lastInsertRowid);
+  addMessage(
+    db,
+    tid,
+    "ALERT",
+    "Monitor 2.0",
+    "🚨 BREACH · Accounts >90% Margin Utilisation (M2-MRG-014)\n128 accounts above 90% margin utilisation during US open.\nAlert: ALT-1001",
+    { alert_id: "ALT-1001", monitor_id: "M2-MRG-014" }
+  );
+  addDemoAiReport(db, tid, {
+    title: "Margin utilisation spike",
+    analysis_db_id: null,
+    analysis_id: null,
+    summary: null,
+    mode: null,
+    challenge_verdict: null,
+  });
+  addDemoEscalation(db, tid, "BREACH");
+}
+
+function threadKinds(db: Database.Database, threadDbId: number) {
+  return (
+    db.prepare(`SELECT DISTINCT kind FROM messenger_messages WHERE thread_id = ?`).all(threadDbId) as Array<{
+      kind: string;
+    }>
+  ).map((row) => row.kind);
+}
+
+/** Guarantee every thread shows Alert + AI report + Escalation for the Lark demo. */
+export function ensureMessengerDemoMessages(db: Database.Database = getDb()) {
+  ensureMessengerSchema(db);
+  seedMessengerIfEmpty(db);
+  const threads = db
+    .prepare(`SELECT id, title, severity FROM messenger_threads`)
+    .all() as Array<{ id: number; title: string; severity: string }>;
+  if (!threads.length) {
+    seedSyntheticMessengerThread(db);
+    return;
+  }
+  for (const thread of threads) {
+    const kinds = threadKinds(db, thread.id);
+    if (!kinds.includes("ALERT")) {
       addMessage(
         db,
-        tid,
-        "AI_REPORT",
-        "CRMP AI",
-        `🤖 AI Report ${a.analysis_id}\nMode: ${a.mode}\n${a.summary}${
-          a.challenge_verdict ? `\nSecond AI: ${a.challenge_verdict}` : ""
-        }`,
-        {
-          analysis_db_id: a.analysis_db_id,
-          analysis_id: a.analysis_id,
-          mode: a.mode,
-          challenge_verdict: a.challenge_verdict,
-          admin_url: `/admin/ai-analyses/${a.analysis_db_id}`,
-        }
+        thread.id,
+        "ALERT",
+        "Monitor 2.0",
+        `🚨 ${thread.severity} · ${thread.title}\nSynced from Monitor 2.0 into the Lark-style demo inbox.`,
+        { mock: true }
       );
     }
+    if (!kinds.includes("AI_REPORT")) {
+      addDemoAiReport(db, thread.id, {
+        title: thread.title,
+        analysis_db_id: null,
+        analysis_id: null,
+        summary: null,
+        mode: null,
+        challenge_verdict: null,
+      });
+    }
+    if (!kinds.includes("ESCALATION")) {
+      addDemoEscalation(db, thread.id, thread.severity);
+    }
   }
+}
+
+export type MessengerInboxPack = {
+  messages: unknown[];
+  pending: unknown[];
+  recommended_actions: typeof RECOMMENDED_ACTIONS;
+};
+
+export function listMessengerInbox() {
+  ensureMessengerSchema();
+  seedMessengerIfEmpty();
+  ensureMessengerDemoMessages();
+  const threads = listMessengerThreads() as Array<{ id: number }>;
+  const catalog: Record<number, MessengerInboxPack> = {};
+  for (const thread of threads) {
+    const full = getMessengerThread(thread.id);
+    if (!full) continue;
+    catalog[thread.id] = {
+      messages: full.messages,
+      pending: full.pending,
+      recommended_actions: full.recommended_actions,
+    };
+  }
+  return { threads, catalog };
 }
 
 export function listMessengerThreads() {
   ensureMessengerSchema();
   seedMessengerIfEmpty();
+  ensureMessengerDemoMessages();
   return getDb()
     .prepare(
       `SELECT t.*,

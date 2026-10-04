@@ -797,10 +797,12 @@ function ensureAiLayer(db: Database.Database) {
   upsert.run("market_intel.interval_minutes", "5", "Scan cadence in minutes");
   upsert.run("market_intel.lark_chat_id", "oc_market_intelligence", "Dedicated messenger group for intel pushes");
   // Avoid static import cycle (scanner → getDb). Seed + scheduler via dynamic import.
+  const skipScheduler =
+    process.env.NEXT_PUBLIC_STATIC_EXPORT === "1" || process.env.STATIC_EXPORT === "1";
   void import("@/lib/market-intel/scanner")
     .then(({ seedMarketIntel, startMarketIntelScheduler }) => {
       seedMarketIntel(db);
-      startMarketIntelScheduler();
+      if (!skipScheduler) startMarketIntelScheduler();
     })
     .catch((e) => console.error("[market-intel] boot seed failed", e));
 }

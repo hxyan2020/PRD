@@ -83,6 +83,22 @@ export default async function AdminDashboardPage() {
     <div>
       <AdminPageHeader pageKey="home" actions={actions} />
 
+      <section className="panel p-3 sm:p-4 mb-4">
+        <div className="font-semibold">{t("home.larkDemo", locale)}</div>
+        <p className="text-sm text-[var(--muted)] mt-1">
+          {locale === "zh-Hant"
+            ? "永久網址（GitHub Pages）"
+            : "Permanent URL (GitHub Pages)"}
+          {": "}
+          <a className="text-teal-800 underline break-all" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/">
+            https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/
+          </a>
+        </p>
+        <Link className="btn btn-primary mt-3 inline-flex" href="/admin/messenger">
+          {t("home.larkDemoCta", locale)}
+        </Link>
+      </section>
+
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3">
         <StatCard label={t("home.stat.users", locale)} value={counts.users} hint={t("home.stat.usersHint", locale)} />
         <StatCard label={t("home.stat.teams", locale)} value={counts.teams} hint={t("home.stat.teamsHint", locale)} />

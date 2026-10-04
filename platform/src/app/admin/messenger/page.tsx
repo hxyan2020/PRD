@@ -1,19 +1,22 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { listMessengerThreads, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
+import { listMessengerInbox, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
 import { DemoMessenger } from "@/components/DemoMessenger";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import Link from "next/link";
-import { actionLabel } from "@/lib/i18n";
+import { actionLabel, t } from "@/lib/i18n";
 import { getUiLocale } from "@/lib/i18n-server";
+import { isStaticExport, PUBLIC_MESSENGER_URL } from "@/lib/static-export";
 
 export default async function MessengerDemoPage() {
   const user = await getCurrentUser();
-  if (!user || !hasPermission(user.role_code, "lark.read")) redirect("/admin");
+  if (!isStaticExport() && (!user || !hasPermission(user.role_code, "lark.read"))) redirect("/admin");
   const locale = await getUiLocale();
+  const staticMode = isStaticExport();
 
-  syncNewAlertsToMessenger(10);
-  const threads = listMessengerThreads() as React.ComponentProps<typeof DemoMessenger>["initialThreads"];
+  if (!staticMode) syncNewAlertsToMessenger(10);
+  const inbox = listMessengerInbox();
+  const threads = inbox.threads as React.ComponentProps<typeof DemoMessenger>["initialThreads"];
 
   return (
     <div>
@@ -33,7 +36,17 @@ export default async function MessengerDemoPage() {
           </div>
         }
       />
-      <DemoMessenger initialThreads={threads} />
+      <p className="mb-3 text-sm text-[var(--muted)]">
+        {t("msg.larkDemoHint", locale)}{" "}
+        <a className="text-teal-800 underline break-all" href={PUBLIC_MESSENGER_URL}>
+          {PUBLIC_MESSENGER_URL}
+        </a>
+      </p>
+      <DemoMessenger
+        initialThreads={threads}
+        initialCatalog={inbox.catalog as React.ComponentProps<typeof DemoMessenger>["initialCatalog"]}
+        staticMode={staticMode}
+      />
     </div>
   );
 }

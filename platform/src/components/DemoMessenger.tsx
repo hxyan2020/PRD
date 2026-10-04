@@ -86,44 +86,208 @@ type Recommended = {
   needs_checker: boolean;
 };
 
-export function DemoMessenger({ initialThreads }: { initialThreads: Thread[] }) {
+type InboxPack = {
+  messages: Message[];
+  pending: Pending[];
+  recommended_actions: Recommended[];
+};
+
+export function DemoMessenger({
+  initialThreads,
+  initialCatalog = {},
+  staticMode = false,
+}: {
+  initialThreads: Thread[];
+  initialCatalog?: Record<number, InboxPack>;
+  staticMode?: boolean;
+}) {
   const router = useRouter();
   const { locale } = useUiLocale();
   const [threads, setThreads] = useState(initialThreads);
+  const [catalog, setCatalog] = useState<Record<number, InboxPack>>(initialCatalog);
   const [activeId, setActiveId] = useState<number | null>(initialThreads[0]?.id ?? null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [pending, setPending] = useState<Pending[]>([]);
-  const [recommended, setRecommended] = useState<Recommended[]>([]);
+  const firstPack = initialThreads[0] ? initialCatalog[initialThreads[0].id] : undefined;
+  const [messages, setMessages] = useState<Message[]>(firstPack?.messages || []);
+  const [pending, setPending] = useState<Pending[]>(firstPack?.pending || []);
+  const [recommended, setRecommended] = useState<Recommended[]>(firstPack?.recommended_actions || []);
   const [chat, setChat] = useState("");
   const [busy, setBusy] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(Boolean(firstPack?.messages?.length));
   const [confirmId, setConfirmId] = useState<number | null>(null);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const [mobilePane, setMobilePane] = useState<"list" | "thread">("list");
 
   const active = useMemo(() => threads.find((t) => t.id === activeId) || null, [threads, activeId]);
 
+  function applyPack(id: number, pack: InboxPack, opts: { openPane?: boolean } = {}) {
+    setActiveId(id);
+    setMessages(pack.messages || []);
+    setPending(pack.pending || []);
+    setRecommended(pack.recommended_actions || []);
+    setLoaded(true);
+    setConfirmId(null);
+    if (opts.openPane !== false) setMobilePane("thread");
+  }
+
   async function loadThread(id: number, opts: { openPane?: boolean } = {}) {
+    if (staticMode && catalog[id]) {
+      applyPack(id, catalog[id], opts);
+      return;
+    }
     setBusy(true);
     setStatusMsg(null);
     const res = await fetch(`/api/messenger?id=${id}`);
     const data = await res.json();
     setBusy(false);
     if (!res.ok) {
+      if (catalog[id]) {
+        applyPack(id, catalog[id], opts);
+        return;
+      }
       setStatusMsg(data.error || "Failed to load thread");
       return;
     }
-    setActiveId(id);
-    setMessages(data.messages || []);
-    setPending(data.pending || []);
-    setRecommended(data.recommended_actions || []);
-    setLoaded(true);
-    setConfirmId(null);
-    if (opts.openPane !== false) setMobilePane("thread");
+    applyPack(
+      id,
+      {
+        messages: data.messages || [],
+        pending: data.pending || [],
+        recommended_actions: data.recommended_actions || [],
+      },
+      opts
+    );
+  }
+
+  function appendLocal(
+    kind: string,
+    sender: string,
+    body: string,
+    extra: { status?: string; action_code?: string } = {}
+  ) {
+    if (!activeId) return;
+    const msg: Message = {
+      id: Date.now(),
+      msg_id: `MSG-DEMO-${Date.now()}`,
+      kind,
+      sender,
+      body,
+      meta_json: "{}",
+      created_at: new Date().toISOString().replace("T", " ").slice(0, 19),
+    };
+    const nextMessages = [...messages, msg];
+    let nextPending = pending;
+    setMessages(nextMessages);
+    setThreads((prev) =>
+      prev.map((thread) =>
+        thread.id === activeId
+          ? {
+              ...thread,
+              last_body: body,
+              message_count: thread.message_count + 1,
+              status: extra.status || thread.status,
+            }
+          : thread
+      )
+    );
+    if (kind === "ACTION_PROPOSAL") {
+      const code = extra.action_code || "WIDEN_SPREAD";
+      nextPending = [
+        ...pending,
+        {
+          id: Date.now(),
+          action_code: code,
+          status: "AWAITING_CONFIRM",
+          detail_json: JSON.stringify({
+            label: code,
+            description: body,
+            admin_path: "/admin/interventions",
+          }),
+        },
+      ];
+      setPending(nextPending);
+    }
+    setCatalog((prev) => ({
+      ...prev,
+      [activeId]: {
+        messages: nextMessages,
+        pending: nextPending,
+        recommended_actions: recommended,
+      },
+    }));
   }
 
   async function run(action: string, extra: Record<string, unknown> = {}) {
     if (!activeId && action !== "sync") return;
+    if (staticMode) {
+      if (action === "sync") {
+        setStatusMsg(t("msg.synced", locale, { n: 0 }));
+        return;
+      }
+      if (action === "show_evidence") {
+        appendLocal(
+          "EVIDENCE",
+          "Evidence Vault",
+          "📎 Evidence pack (demo)\n• [MONITOR] Margin utilisation >90% for 128 accounts\n• [BOOK] Copy-equity concentration 31%\n• [RAG] Prior US-open breach playbook"
+        );
+      } else if (action === "escalate") {
+        appendLocal(
+          "ESCALATION",
+          "Escalation Engine",
+          "⬆️ Escalated to Risk Owner (step 2/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge"
+        );
+      } else if (action === "dismiss") {
+        appendLocal("SYSTEM", "Public visitor", "❎ Dismissed as false alarm. Alert closed.", { status: "DISMISSED" });
+      } else if (action === "close") {
+        appendLocal("SYSTEM", "Public visitor", "✅ Closed — AI analysis accepted.", { status: "CLOSED" });
+      } else if (action === "chat") {
+        const text = String(extra.text || "").trim();
+        if (!text) return;
+        const now = Date.now();
+        const userMsg: Message = {
+          id: now,
+          msg_id: `MSG-DEMO-${now}`,
+          kind: "USER",
+          sender: "Public visitor",
+          body: text,
+          meta_json: "{}",
+          created_at: new Date().toISOString().replace("T", " ").slice(0, 19),
+        };
+        const botMsg: Message = {
+          ...userMsg,
+          id: now + 1,
+          msg_id: `MSG-DEMO-${now + 1}`,
+          kind: "CHATBOT",
+          sender: "CRMP Chatbot",
+          body: "💬 Noted. Attached to the demo thread for Risk Desk review.",
+        };
+        const nextMessages = [...messages, userMsg, botMsg];
+        setMessages(nextMessages);
+        setThreads((prev) =>
+          prev.map((thread) =>
+            thread.id === activeId
+              ? { ...thread, last_body: botMsg.body, message_count: thread.message_count + 2 }
+              : thread
+          )
+        );
+        setCatalog((prev) => ({
+          ...prev,
+          [activeId]: { messages: nextMessages, pending, recommended_actions: recommended },
+        }));
+        setChat("");
+      } else if (action === "recommend") {
+        appendLocal(
+          "ACTION_PROPOSAL",
+          "Action Advisor",
+          `⚙️ Proposed: ${String(extra.action_code || "WIDEN_SPREAD")}\nPlease double-confirm before sending to Vantage Markets admin.`,
+          { action_code: String(extra.action_code || "WIDEN_SPREAD") }
+        );
+      } else {
+        appendLocal("SYSTEM", "Messenger", `Demo action ${action} recorded (static snapshot — no live Lark API).`);
+      }
+      setStatusMsg(t("msg.actionDone", locale, { action }));
+      setConfirmId(null);
+      return;
+    }
     setBusy(true);
     setStatusMsg(null);
     const res = await fetch("/api/messenger", {
