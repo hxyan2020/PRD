@@ -222,6 +222,7 @@ export function DemoMessenger({
   const runGen = useRef(0);
   const lockRef = useRef(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   const active = useMemo(() => threads.find((row) => row.id === activeId) || null, [threads, activeId]);
 
@@ -233,8 +234,17 @@ export function DemoMessenger({
   useEffect(() => {
     const node = listRef.current;
     if (!node) return;
-    node.scrollTop = node.scrollHeight;
-  }, [messages, liveThink, pending]);
+    const scroll = () => {
+      node.scrollTop = node.scrollHeight;
+    };
+    scroll();
+    const frame = window.requestAnimationFrame(scroll);
+    const timer = window.setTimeout(scroll, 80);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [messages, liveThink, pending, statusMsg]);
 
   function applyPack(id: number, pack: InboxPack, opts: { openPane?: boolean } = {}) {
     setActiveId(id);
@@ -359,13 +369,21 @@ export function DemoMessenger({
     const prevIds = new Set(durable.map((m) => m.msg_id));
     const firstNew = serverMsgs.findIndex((m) => !prevIds.has(m.msg_id));
     const insertAt = firstNew === -1 ? serverMsgs.length : firstNew;
+    const olderThoughts = prev.filter((m) => m.kind === "THINKING" && m.msg_id !== thought.msg_id);
+    let merged: Message[];
     if (action === "chat") {
       const head = serverMsgs.slice(0, insertAt);
       const tail = serverMsgs.slice(insertAt);
       const userMsg = tail[0];
-      return [...head, ...(userMsg ? [userMsg] : []), thought, ...tail.slice(userMsg ? 1 : 0)];
+      merged = [...head, ...(userMsg ? [userMsg] : []), thought, ...tail.slice(userMsg ? 1 : 0)];
+    } else {
+      merged = [...serverMsgs.slice(0, insertAt), thought, ...serverMsgs.slice(insertAt)];
     }
-    return [...serverMsgs.slice(0, insertAt), thought, ...serverMsgs.slice(insertAt)];
+    const idx = merged.findIndex((m) => m.msg_id === thought.msg_id);
+    if (idx >= 0 && olderThoughts.length) {
+      return [...merged.slice(0, idx), ...olderThoughts, ...merged.slice(idx)];
+    }
+    return merged;
   }
 
   async function run(action: string, extra: Record<string, unknown> = {}) {
@@ -582,7 +600,7 @@ export function DemoMessenger({
               </div>
             </div>
 
-            <div ref={listRef} className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain min-h-0">
+            <div ref={listRef} className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain min-h-[12rem]">
               {messages.map((m) => {
                 if (m.kind === "THINKING") {
                   const meta = JSON.parse(m.meta_json || "{}") as {
@@ -643,6 +661,7 @@ export function DemoMessenger({
                   locale={locale}
                 />
               ) : null}
+              <div ref={bottomRef} className="h-px w-full shrink-0" />
             </div>
 
             {active.status === "OPEN" && (
@@ -651,7 +670,7 @@ export function DemoMessenger({
                   <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)] mb-2">
                     {t("msg.recommended", locale)}
                   </div>
-                  <div className="action-row max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:-mx-1 max-sm:px-1 max-sm:pb-1">
+                  <div className="chip-scroller">
                     {recommended.map((a) => {
                       const loc = localizeAction(a.code, a.label, a.description, locale);
                       return (

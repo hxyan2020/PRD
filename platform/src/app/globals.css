@@ -390,9 +390,28 @@ body.nav-open {
 }
 
 @media (max-width: 639px) {
+  .messenger-page {
+    height: calc(100dvh - var(--header-h) - 0.75rem);
+  }
   .messenger-page h1 + p {
     display: none;
   }
+  .messenger-page .page-actions {
+    display: none !important;
+  }
+}
+
+.chip-scroller {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.15rem;
+}
+
+.chip-scroller .btn {
+  flex: 0 0 auto !important;
 }
 
 .messenger-shell {
