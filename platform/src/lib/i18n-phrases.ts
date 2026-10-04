@@ -96,6 +96,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "AI Engineer on-call": "AI 工程師值班",
   "System Admin → Infra Lead": "系統管理員 → 基礎設施主管",
   "Crypto Risk Analyst → Risk Owner": "加密風險分析師 → 風險負責人",
+  Operations: "營運",
+  System: "系統",
   Ops: "營運",
   "Infra + Credit": "基礎設施＋信貸",
   "Crypto Risk": "加密風險",
