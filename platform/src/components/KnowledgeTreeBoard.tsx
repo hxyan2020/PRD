@@ -148,10 +148,6 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
       ? chains.filter((c) => c.domain === activeDomain)
       : [];
 
-  const childCount =
-    trunk === "domains" ? domainSkills.length : trunk === "chains" ? chains.length : ragByCat.length;
-  const H = 292 + Math.min(220, Math.ceil(Math.max(childCount, 1) / 4) * 78);
-
   const root = { x: W / 2, y: 38 };
   const trunks: { id: Trunk; x: number; y: number; label: string; count: number }[] = [
     { id: "domains", x: 220, y: 128, label: t("tree.domains", locale), count: domains.length },
@@ -159,20 +155,23 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
     { id: "rag", x: 900, y: 128, label: t("tree.rag", locale), count: ragDocs.length },
   ];
 
+  const domainCols = Math.min(5, Math.max(domains.length, 1));
+  const domainRows = Math.ceil((domains.length || 1) / domainCols) || 1;
   const domainNodes = domains.map(([code, list], i) => {
-    const n = domains.length || 1;
-    const gap = Math.min(108, (W - 80) / n);
-    const x = 40 + gap / 2 + i * gap;
-    return { code, count: list.length, x, y: 228, fill: domainFill(code) };
+    const col = i % domainCols;
+    const row = Math.floor(i / domainCols);
+    const gap = (W - 72) / domainCols;
+    return { code, count: list.length, x: 36 + gap / 2 + col * gap, y: 214 + row * 62, fill: domainFill(code) };
   });
 
+  const skillOriginY = 214 + domainRows * 62 + 52;
   const skillNodes = domainSkills.slice(0, 16).map((s, i) => {
-    const cols = Math.min(4, domainSkills.length);
+    const cols = Math.min(4, Math.max(domainSkills.length, 1));
     const col = i % cols;
     const row = Math.floor(i / cols);
     const gap = 250;
     const start = (W - (cols - 1) * gap) / 2;
-    return { skill: s, x: start + col * gap, y: 338 + row * 78 };
+    return { skill: s, x: start + col * gap, y: skillOriginY + row * 78 };
   });
 
   const chainNodes = chains.slice(0, 12).map((c, i) => {
@@ -181,14 +180,26 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
     const row = Math.floor(i / cols);
     const gap = 340;
     const start = (W - (cols - 1) * gap) / 2;
-    return { chain: c, x: start + col * gap, y: 228 + row * 72 };
+    return { chain: c, x: start + col * gap, y: 220 + row * 76 };
   });
 
+  const ragCols = Math.min(4, Math.max(ragByCat.length, 1));
   const ragNodes = ragByCat.map(([cat, list], i) => {
-    const n = ragByCat.length || 1;
-    const gap = Math.min(160, (W - 80) / n);
-    return { cat, count: list.length, x: 40 + gap / 2 + i * gap, y: 228 };
+    const col = i % ragCols;
+    const row = Math.floor(i / ragCols);
+    const gap = (W - 80) / ragCols;
+    return { cat, count: list.length, x: 40 + gap / 2 + col * gap, y: 220 + row * 70 };
   });
+
+  const skillRows = Math.ceil(Math.max(Math.min(domainSkills.length, 16), 1) / 4);
+  const chainRows = Math.ceil(Math.min(chains.length, 12) / 3);
+  const ragRows = Math.ceil((ragByCat.length || 1) / ragCols);
+  const H =
+    trunk === "chains"
+      ? 220 + chainRows * 76 + 48
+      : trunk === "rag"
+        ? 220 + ragRows * 70 + 48
+        : skillOriginY + skillRows * 78 + 36;
 
   function pickDomain(code: string) {
     setTrunk("domains");
@@ -287,7 +298,12 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                 skillNodes.map((n) => (
                   <path
                     key={`ds-${n.skill.code}`}
-                    d={linkPath(domainNodes.find((d) => d.code === activeDomain)?.x || 220, 250, n.x, n.y - 20)}
+                    d={linkPath(
+                      domainNodes.find((d) => d.code === activeDomain)?.x || 220,
+                      (domainNodes.find((d) => d.code === activeDomain)?.y || 214) + 22,
+                      n.x,
+                      n.y - 20
+                    )}
                     fill="none"
                     stroke={skillCode === n.skill.code ? domainFill(activeDomain || "") : "#d7dee7"}
                     strokeWidth={skillCode === n.skill.code ? 2 : 1.1}
@@ -353,6 +369,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     fill={n.fill}
                     active={activeDomain === n.code}
                     compact
+                    wide
                     onClick={() => pickDomain(n.code)}
                   />
                 ))}
@@ -403,6 +420,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     sub={`${n.count}`}
                     fill={ragCat === n.cat ? "#0f766e" : "#0b6e6a"}
                     compact
+                    wide
                     active={ragCat === n.cat}
                     onClick={() => setRagCat(n.cat)}
                   />
