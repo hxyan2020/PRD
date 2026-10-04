@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { deptLabel, severityClass, statusClass } from "@/lib/utils";
 
 export function PageHeader({
@@ -30,18 +31,28 @@ export function StatCard({
   label,
   value,
   hint,
+  href,
 }: {
   label: React.ReactNode;
   value: string | number;
   hint?: React.ReactNode;
+  href?: string;
 }) {
-  return (
-    <div className="panel p-4">
+  const inner = (
+    <>
       <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{label}</div>
       <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
       {hint && <div className="mt-1 text-xs text-[var(--muted)]">{hint}</div>}
-    </div>
+    </>
   );
+  if (href) {
+    return (
+      <Link href={href} className="panel p-4 block hover:border-teal-300 hover:shadow-sm transition">
+        {inner}
+      </Link>
+    );
+  }
+  return <div className="panel p-4">{inner}</div>;
 }
 
 export function Badge({ children, className }: { children: React.ReactNode; className?: string }) {

@@ -3,11 +3,15 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NAV_ITEMS } from "@/lib/nav";
+import { NAV_GROUPS, NAV_ITEMS } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import type { SessionUser } from "@/lib/types";
 import { LogOut, LogIn, Menu, X } from "lucide-react";
 import { UI_LOCALE_COOKIE, navLabel, shellCopy, type UiLocale } from "@/lib/i18n";
+import { VantageLogo } from "@/components/VantageLogo";
+import { clearDemoSession, readDemoSession } from "@/lib/demo-session";
+import { isPublicSnapshot } from "@/lib/static-export";
+import { ownerLine } from "@/lib/platform-owner";
 
 const SEEN_KEY = "crmp_nav_seen_v1";
 
@@ -58,13 +62,20 @@ export function AdminShell({
   const [open, setOpen] = useState(false);
   const [locale, setLocale] = useState<UiLocale>("en");
   const [seen, setSeen] = useState<Record<string, number>>({});
+  const [sessionUser, setSessionUser] = useState(user);
   const can = (perm: string) => permissions.includes("*") || permissions.includes(perm);
   const copy = shellCopy(locale);
 
   useEffect(() => {
     setLocale(readLocaleCookie());
     setSeen(readSeen());
-  }, []);
+    const demo = readDemoSession();
+    if (demo && (user.role_code === "PUBLIC_GUEST" || user.id === 0)) {
+      setSessionUser(demo);
+    } else {
+      setSessionUser(user);
+    }
+  }, [user]);
 
   useEffect(() => {
     setOpen(false);
@@ -96,7 +107,10 @@ export function AdminShell({
   }
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    clearDemoSession();
+    if (!isPublicSnapshot()) {
+      await fetch("/api/auth/logout", { method: "POST" }).catch(() => null);
+    }
     router.push("/login");
     router.refresh();
   }
@@ -129,68 +143,76 @@ export function AdminShell({
   const nav = (
     <>
       <div className="pr-8 lg:pr-0">
-        <div className="text-[0.7rem] uppercase tracking-[0.18em] text-teal-200/80">{copy.brandEyebrow}</div>
-        <div className="mt-1 font-[family-name:var(--font-display)] text-xl text-white">{copy.brandTitle}</div>
-        <div className="mt-1 text-xs text-slate-300">{copy.brandSub}</div>
+        <VantageLogo inverted showWordmark markClassName="h-9 w-9" />
+        <div className="mt-2 text-xs text-slate-300">{copy.brandSub}</div>
       </div>
 
       <nav className="flex flex-col gap-0.5 flex-1 overflow-y-auto overscroll-contain pr-1 -mx-1 px-1">
-        {NAV_ITEMS.filter((item) => can(item.permission)).map((item) => {
-          const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
-          const Icon = item.icon;
-          const snap = navEvents[item.href];
-          const viewed = seen[item.href];
-          const unread =
-            snap && viewed === undefined
-              ? snap.count
-              : snap
-                ? Math.max(0, snap.count - (viewed || 0))
-                : 0;
-          const showBadge = unread > 0 && !navKey(item.href, pathname);
+        {NAV_GROUPS.map((group) => {
+          const items = NAV_ITEMS.filter((item) => item.group === group.id && can(item.permission));
+          if (!items.length) return null;
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition min-h-11",
-                active ? "bg-white/12 text-white" : "text-slate-300 hover:bg-white/8 hover:text-white"
-              )}
-            >
-              <Icon size={16} className="shrink-0" />
-              <span className="leading-snug flex-1">{navLabel(item.href, locale, item.label)}</span>
-              {showBadge ? (
-                <span
-                  className="ml-auto min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-[10px] font-semibold text-white inline-flex items-center justify-center tabular-nums"
-                  aria-label={`${unread} unread`}
-                >
-                  {unread > 99 ? "99+" : unread}
-                </span>
-              ) : null}
-            </Link>
+            <div key={group.id} className="mb-2">
+              <div className="px-3 pt-2 pb-1 text-[10px] uppercase tracking-[0.16em] text-slate-500">
+                {locale === "zh-Hant" ? group["zh-Hant"] : group.en}
+              </div>
+              {items.map((item) => {
+                const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+                const Icon = item.icon;
+                const snap = navEvents[item.href];
+                const viewed = seen[item.href];
+                const unread =
+                  snap && viewed === undefined
+                    ? snap.count
+                    : snap
+                      ? Math.max(0, snap.count - (viewed || 0))
+                      : 0;
+                const showBadge = unread > 0 && !navKey(item.href, pathname);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm transition min-h-10",
+                      active ? "bg-white/12 text-white" : "text-slate-300 hover:bg-white/8 hover:text-white"
+                    )}
+                  >
+                    <Icon size={16} className="shrink-0" />
+                    <span className="leading-snug flex-1">{navLabel(item.href, locale, item.label)}</span>
+                    {showBadge ? (
+                      <span
+                        className="ml-auto min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-[10px] font-semibold text-white inline-flex items-center justify-center tabular-nums"
+                        aria-label={`${unread} unread`}
+                      >
+                        {unread > 99 ? "99+" : unread}
+                      </span>
+                    ) : null}
+                  </Link>
+                );
+              })}
+            </div>
           );
         })}
       </nav>
 
       <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs shrink-0">
-        <div className="font-semibold text-white">{user.name}</div>
-        <div className="mt-0.5 text-slate-300 break-all">{user.email}</div>
+        <div className="font-semibold text-white">{sessionUser.name}</div>
+        <div className="mt-0.5 text-slate-300 break-all">{sessionUser.email}</div>
         <div className="mt-2 flex flex-wrap gap-1">
-          <span className="badge border-teal-400/30 bg-teal-400/10 text-teal-100">{user.role_code}</span>
-          {user.role_code === "PUBLIC_GUEST" && (
+          <span className="badge border-teal-400/30 bg-teal-400/10 text-teal-100">{sessionUser.role_code}</span>
+          {sessionUser.role_code === "PUBLIC_GUEST" && (
             <span className="badge border-amber-400/30 bg-amber-400/10 text-amber-100">{copy.publicMode}</span>
           )}
-          {user.department_code && (
-            <span className="badge border-white/20 bg-white/10 text-slate-100">{user.department_code}</span>
+          {sessionUser.department_code && (
+            <span className="badge border-white/20 bg-white/10 text-slate-100">{sessionUser.department_code}</span>
           )}
         </div>
+        <div className="mt-2 text-[10px] text-slate-400">{ownerLine(locale)}</div>
         <div className="mt-3">{langToggle}</div>
-        {user.role_code === "PUBLIC_GUEST" ? (
-          <a
-            href="/login"
-            className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10"
-          >
+        {sessionUser.role_code === "PUBLIC_GUEST" ? (
+          <Link href="/login" className="mt-3 inline-flex items-center gap-1.5 text-slate-300 hover:text-white min-h-10">
             <LogIn size={14} /> {copy.signIn}
-          </a>
+          </Link>
         ) : (
           <button
             onClick={logout}
@@ -247,13 +269,16 @@ export function AdminShell({
                 </button>
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] sm:text-xs uppercase tracking-[0.14em] text-[var(--muted)]">
+                <div className="hidden sm:block">
+                  <VantageLogo markClassName="h-8 w-8" />
+                </div>
+                <div className="sm:hidden text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">
                   {copy.headerEyebrow}
                 </div>
-                <div className="font-[family-name:var(--font-display)] text-sm sm:text-lg text-[var(--ink)] truncate">
+                <div className="font-[family-name:var(--font-display)] text-sm sm:text-base text-[var(--ink)] truncate">
                   {copy.headerTitle}
                 </div>
-                {user.role_code === "PUBLIC_GUEST" && (
+                {sessionUser.role_code === "PUBLIC_GUEST" && (
                   <div className="text-[10px] sm:text-xs text-teal-800">{copy.publicMode}</div>
                 )}
               </div>
@@ -270,20 +295,14 @@ export function AdminShell({
               <div className="lg:hidden flex gap-1">
                 <button
                   type="button"
-                  className={cn(
-                    "btn !min-h-9 !px-2 text-[11px]",
-                    locale === "en" ? "btn-primary" : ""
-                  )}
+                  className={cn("btn !min-h-9 !px-2 text-[11px]", locale === "en" ? "btn-primary" : "")}
                   onClick={() => setLang("en")}
                 >
                   EN
                 </button>
                 <button
                   type="button"
-                  className={cn(
-                    "btn !min-h-9 !px-2 text-[11px]",
-                    locale === "zh-Hant" ? "btn-primary" : ""
-                  )}
+                  className={cn("btn !min-h-9 !px-2 text-[11px]", locale === "zh-Hant" ? "btn-primary" : "")}
                   onClick={() => setLang("zh-Hant")}
                 >
                   繁中

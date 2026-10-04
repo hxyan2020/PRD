@@ -243,7 +243,26 @@ body.nav-open {
   }
 }
 
-@media (min-width: 1024px) {
+.doc-flow {
+  display: flex;
+}
+.doc-flow-node {
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  color: #134e4a;
+  border-radius: 12px;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  max-width: 16rem;
+  text-align: center;
+}
+.doc-flow-arrow {
+  color: #0b6e6a;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.2rem;
+}
   .input,
   .select,
   .textarea {

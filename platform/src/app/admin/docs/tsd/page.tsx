@@ -16,7 +16,7 @@ export default async function TsdPage({ searchParams }: { searchParams: Promise<
   const zh = lang === "zh-Hant";
 
   const cards = [
-    { label: zh ? "文件版次" : "Document version", value: "v1.2" },
+    { label: zh ? "文件版次" : "Document version", value: "v1.3" },
     { label: zh ? "章節" : "Sections", value: "16" },
     { label: zh ? "核心模組" : "Core modules", value: zh ? "挑戰者 · Messenger · 市場情報" : "Challenger · Messenger · Market Intel" },
     { label: zh ? "技術棧" : "Stack", value: "Next.js 15 + SQLite" },

@@ -1,10 +1,11 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.2  
+**版本：** 1.3  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
+**負責人：** YAN Haixiang  
 **相關文件：** [PRD](/admin/docs/prd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
 本 TSD 描述中央風險管理平台（CRMP）管理控制平面之技術設計。  
@@ -445,9 +446,25 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 每五分鐘掃描可能影響 LP 報價之新聞／社群／官方訊號；推送格式化卡片至專用 outbox；暴露指標 `M2-MKT-INTEL`。
 
 ### 12.2 主要模組
-- `lib/market-intel/scanner.ts`、`format.ts`、`schema.ts`
+- `lib/market-intel/scanner.ts`、`format.ts`、`schema.ts`、`demo-scan.ts`
 - UI `/admin/market-intel`
 - 設定：`market_intel.enabled`、`interval_minutes`、`lark_chat_id`
+
+### 12.3 公開快照（GitHub Pages）
+Pages 沒有 Next.js API。`POST /api/market-intel` 會回 **405**。工作台因此：
+1. 偵測 `github.io`／`/PRD/crmp-admin`／`NEXT_PUBLIC_STATIC_EXPORT`。
+2. 以與正式掃描相同的 `EVENT_TEMPLATES` 執行 `runClientMarketIntelScan()`。
+3. 在本機狀態更新發現、寄件匣、掃描紀錄與 `M2-MKT-INTEL`（存 `localStorage`）。
+4. SSG 時先種三筆發現，避免第一次畫面是 0。
+
+```mermaid
+graph LR
+  Click[立即掃描] --> Detect[公開快照?]
+  Detect --> Demo[用戶端示範掃描]
+  Detect --> Api[POST /api/market-intel]
+  Demo --> Desk[發現＋寄件匣]
+  Api --> Desk
+```
 
 ---
 
@@ -499,5 +516,7 @@ SQLite：`platform/data/vantage_risk.db`。
 | 1.0 | 2026-10-01 | 初版骨架 |
 | 1.1 | 2026-10-01 | 完整 §8 AI Admin 管理頁規格 |
 | 1.2 | 2026-10-01 | §9 挑戰者、§11 Messenger、§12 市場情報、文件／i18n／行動、重編號 |
+| 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、YAN Haixiang 負責人、Pages 登入 |
 
+**負責人：** YAN Haixiang  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

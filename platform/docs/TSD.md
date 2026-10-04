@@ -1,10 +1,11 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.2  
+**Version:** 1.3  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
+**Owner:** YAN Haixiang  
 **Companion:** [PRD](/admin/docs/prd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
 This TSD describes the technical design of the Centralised Risk Management Platform (CRMP) Admin Control Plane.  
@@ -78,6 +79,15 @@ Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
 4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
 5. **Demo Messenger / Human intervention** triage and gated controls
 6. **Spine logging** records stage transitions (`/admin/spine`)
+
+```mermaid
+graph TD
+  Detectors[Detectors] --> Alarm[Monitor alarm]
+  Alarm --> RCA[AI RCA]
+  RCA --> Challenger[Second AI]
+  Challenger --> Messenger[Messenger / intervention]
+  Messenger --> Spine[Spine + audit]
+```
 7. **Daily performance / Risk Log / Market Intel** aggregate outcomes
 
 ---
@@ -450,9 +460,25 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 Five-minute scan of news/social/official signals that can move LP prices; push formatted cards to a dedicated messenger/outbox channel; expose indicator `M2-MKT-INTEL`.
 
 ### 12.2 Key modules
-- `lib/market-intel/scanner.ts`, `format.ts`, `schema.ts`
+- `lib/market-intel/scanner.ts`, `format.ts`, `schema.ts`, `demo-scan.ts`
 - UI `/admin/market-intel`
 - Settings: `market_intel.enabled`, `interval_minutes`, `lark_chat_id`
+
+### 12.3 Public snapshot (GitHub Pages)
+Pages has no Next.js API routes. `POST /api/market-intel` would return **405**. The desk therefore:
+1. Detects `github.io` / `/PRD/crmp-admin` / `NEXT_PUBLIC_STATIC_EXPORT`.
+2. Runs `runClientMarketIntelScan()` from the same `EVENT_TEMPLATES` as the live scanner.
+3. Updates Findings, outbox, scan log and `M2-MKT-INTEL` in local state (persisted in `localStorage`).
+4. Seeds three findings at SSG time so the first paint is not empty.
+
+```mermaid
+graph LR
+  Click[Scan now] --> Detect[Public snapshot?]
+  Detect --> Demo[Client demo scan]
+  Detect --> Api[POST /api/market-intel]
+  Demo --> Desk[Findings + outbox]
+  Api --> Desk
+```
 
 ---
 
@@ -505,5 +531,7 @@ Demo logins: see User Guide §1 (e.g. `admin@vantagemarkets.com` / `admin123`).
 | 1.0 | 2026-10-01 | Initial TSD skeleton |
 | 1.1 | 2026-10-01 | Full §8 AI Admin Management Page specification |
 | 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
+| 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, YAN Haixiang owner, Pages login |
 
+**Owner:** YAN Haixiang  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

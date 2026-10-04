@@ -86,19 +86,74 @@ export function markdownToHtml(md: string): string {
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a class="underline" href="$2">$1</a>');
 
+  function mermaidToHtml(src: string): string {
+    const nodes = new Map<string, string>();
+    const order: string[] = [];
+    const dirMatch = /^\s*(?:graph|flowchart)\s+(LR|RL|TD|TB|BT)/im.exec(src);
+    const dir = dirMatch?.[1] || "TD";
+    const isH = dir === "LR" || dir === "RL";
+    for (const raw of src.split("\n")) {
+      const line = raw.trim();
+      if (!line || /^(graph|flowchart)\b/i.test(line)) continue;
+      const nodeRe = /([A-Za-z0-9_]+)(?:\[([^\]]+)\]|\(([^\)]+)\))/g;
+      let m: RegExpExecArray | null;
+      while ((m = nodeRe.exec(line))) {
+        const id = m[1];
+        const label = m[2] || m[3] || id;
+        if (!nodes.has(id)) order.push(id);
+        nodes.set(id, label);
+      }
+      const edgeRe = /([A-Za-z0-9_]+)\s*-+>\s*([A-Za-z0-9_]+)/g;
+      while ((m = edgeRe.exec(line))) {
+        if (!nodes.has(m[1])) {
+          order.push(m[1]);
+          nodes.set(m[1], m[1]);
+        }
+        if (!nodes.has(m[2])) {
+          order.push(m[2]);
+          nodes.set(m[2], m[2]);
+        }
+      }
+    }
+    const arrow = isH ? "→" : "↓";
+    const wrap = isH ? "flex-row flex-wrap" : "flex-col";
+    const items = order
+      .map((id, i) => {
+        const node = `<div class="doc-flow-node">${inline(nodes.get(id) || id)}</div>`;
+        if (i === order.length - 1) return node;
+        return `${node}<div class="doc-flow-arrow" aria-hidden="true">${arrow}</div>`;
+      })
+      .join("");
+    return `<div class="doc-flow ${wrap} items-center justify-start gap-2 my-4">${items}</div>`;
+  }
+
+  let mermaidBuf: string[] | null = null;
+
   for (const raw of lines) {
     const line = raw;
 
     if (line.startsWith("```")) {
       flushTable();
       closeLists();
-      if (!inCode) {
-        inCode = true;
-        out.push('<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>');
+      if (!inCode && mermaidBuf === null) {
+        const lang = line.slice(3).trim().toLowerCase();
+        if (lang === "mermaid") {
+          mermaidBuf = [];
+        } else {
+          inCode = true;
+          out.push('<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>');
+        }
+      } else if (mermaidBuf) {
+        out.push(mermaidToHtml(mermaidBuf.join("\n")));
+        mermaidBuf = null;
       } else {
         inCode = false;
         out.push("</code></pre>");
       }
+      continue;
+    }
+    if (mermaidBuf) {
+      mermaidBuf.push(line);
       continue;
     }
     if (inCode) {
@@ -185,6 +240,7 @@ export function markdownToHtml(md: string): string {
 
   flushTable();
   closeLists();
+  if (mermaidBuf) out.push(mermaidToHtml(mermaidBuf.join("\n")));
   if (inCode) out.push("</code></pre>");
   return out.join("\n");
 }

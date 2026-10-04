@@ -16,6 +16,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/interventions": { en: "Human Intervention", "zh-Hant": "人工干預" },
   "/admin/spine": { en: "Spine Log", "zh-Hant": "脊柱日誌" },
   "/admin/rag": { en: "RAG Knowledge Base", "zh-Hant": "RAG 知識庫" },
+  "/admin/skills": { en: "AI Skills", "zh-Hant": "AI 技能" },
   "/admin/knowledge-tree": { en: "Knowledge Tree", "zh-Hant": "知識樹" },
   "/admin/docs/tsd": { en: "TSD", "zh-Hant": "技術規格 TSD" },
   "/admin/docs/prd": { en: "PRD", "zh-Hant": "產品需求 PRD" },
@@ -392,6 +393,10 @@ const UI: Record<string, Pair> = {
   "mi.staticScan": {
     en: "GitHub Pages is a read-only snapshot, so live Scan cannot call /api. Demo scan recorded from seeded findings — run Scan on localhost:3000/admin/market-intel for a live pass.",
     "zh-Hant": "GitHub Pages 為唯讀快照，無法呼叫 /api 做即時掃描。已用種子發現記錄示範掃描 — 請在 localhost:3000/admin/market-intel 執行即時掃描。",
+  },
+  "mi.demoScan": {
+    en: "Scan {scan_id}: {n} new finding(s) → {pushed} pushed to messenger. Public snapshot uses a local demo scan (GitHub Pages has no /api).",
+    "zh-Hant": "掃描 {scan_id}：{n} 筆新發現 → {pushed} 筆已推送至 Messenger。公開快照使用本機示範掃描（GitHub Pages 沒有 /api）。",
   },
   "mi.findings": { en: "Findings (loaded)", "zh-Hant": "已載入發現" },
   "mi.highImpact": { en: "high-impact", "zh-Hant": "高影響" },

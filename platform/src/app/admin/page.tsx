@@ -83,6 +83,19 @@ export default async function AdminDashboardPage() {
     <div>
       <AdminPageHeader pageKey="home" actions={actions} />
 
+      <section className="panel p-3 sm:p-4 mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
+            <EnZh en="Platform owner" zh="平台負責人" />
+          </div>
+          <div className="font-semibold">YAN Haixiang</div>
+          <div className="text-sm text-[var(--muted)]">yan.haixiang@vantagemarkets.com</div>
+        </div>
+        <Link className="btn" href="/login">
+          <EnZh en="Sign in as platform owner" zh="以平台負責人登入" />
+        </Link>
+      </section>
+
       <section className="panel p-3 sm:p-4 mb-4">
         <div className="font-semibold"><T k="home.larkDemo" /></div>
         <p className="text-sm text-[var(--muted)] mt-1">
@@ -98,34 +111,61 @@ export default async function AdminDashboardPage() {
       </section>
 
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3">
-        <StatCard label={<T k="home.stat.users" />} value={counts.users} hint={<T k="home.stat.usersHint" />} />
-        <StatCard label={<T k="home.stat.teams" />} value={counts.teams} hint={<T k="home.stat.teamsHint" />} />
+        <StatCard href="/admin/users" label={<T k="home.stat.users" />} value={counts.users} hint={<T k="home.stat.usersHint" />} />
+        <StatCard href="/admin/teams" label={<T k="home.stat.teams" />} value={counts.teams} hint={<T k="home.stat.teamsHint" />} />
         <StatCard
+          href="/admin/data-sources"
           label={<T k="home.stat.sources" />}
           value={counts.sources}
           hint={<T k="home.stat.sourcesHint" />}
         />
         <StatCard
+          href="/admin/risk-domains"
           label={<T k="home.stat.domains" />}
           value={counts.domains}
           hint={<T k="home.stat.domainsHint" />}
         />
         <StatCard
+          href="/admin/alerts"
           label={<T k="home.stat.openAlerts" />}
           value={counts.openAlerts}
           hint={<T k="home.stat.openAlertsHint" />}
         />
         <StatCard
+          href="/admin/monitor-2"
           label={<T k="home.stat.openTickets" />}
           value={counts.openTickets}
           hint={<T k="home.stat.openTicketsHint" />}
         />
-        <StatCard label={<T k="home.stat.lark" />} value={counts.larkChannels} hint={<T k="home.stat.larkHint" />} />
+        <StatCard href="/admin/lark" label={<T k="home.stat.lark" />} value={counts.larkChannels} hint={<T k="home.stat.larkHint" />} />
         <StatCard
+          href="/admin/escalation"
           label={<T k="home.stat.routes" />}
           value={counts.routes}
           hint={<T k="home.stat.routesHint" />}
         />
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
+        {[
+          { href: "/admin/market-intel", en: "Market Intelligence", zh: "市場情報" },
+          { href: "/admin/skills", en: "AI Skills", zh: "AI 技能" },
+          { href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析" },
+          { href: "/admin/knowledge-tree", en: "Knowledge Tree", zh: "知識樹" },
+          { href: "/admin/settings", en: "Settings", zh: "平台設定" },
+          { href: "/admin/docs/user-guide", en: "User Guide", zh: "使用手冊" },
+          { href: "/admin/docs/prd", en: "PRD", zh: "PRD" },
+          { href: "/admin/docs/tsd", en: "TSD", zh: "TSD" },
+        ].map((c) => (
+          <Link key={c.href} href={c.href} className="panel p-3 hover:border-teal-300 transition">
+            <div className="text-sm font-semibold">
+              <EnZh en={c.en} zh={c.zh} />
+            </div>
+            <div className="text-xs text-teal-800 mt-1">
+              <EnZh en="Open page" zh="開啟頁面" />
+            </div>
+          </Link>
+        ))}
       </div>
 
       <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
@@ -137,10 +177,10 @@ export default async function AdminDashboardPage() {
               const responsibilities = JSON.parse(d.primary_responsibilities) as string[];
               return (
                 <div key={d.code} className="rounded-xl border border-[var(--line)] p-3">
-                  <div className="flex items-center justify-between gap-2">
+                  <Link href="/admin/departments" className="flex items-center justify-between gap-2">
                     <div className="font-semibold">{d.name}</div>
                     <DeptBadge code={d.code} />
-                  </div>
+                  </Link>
                   <p className="text-sm text-[var(--muted)] mt-1">{d.description}</p>
                   <ul className="mt-2 grid sm:grid-cols-2 gap-1 text-xs text-slate-700">
                     {responsibilities.map((r) => (

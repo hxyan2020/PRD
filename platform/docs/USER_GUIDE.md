@@ -1,7 +1,8 @@
 # CRMP User Guide
 
 **Document ID:** CRMP-UG-001 · **Audience:** Risk Owner, Risk Analyst, Ops, AI Engineer, System Admin  
-**Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)
+**Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
+**Docs & platform owner:** YAN Haixiang (`yan.haixiang@vantagemarkets.com`)
 
 ## 0. What this platform is
 
@@ -18,11 +19,12 @@ Demo entry: [Admin Home](/admin) · [URL Catalog](/admin/docs/urls)
 
 ## 1. Sign in & language
 
-1. Open [`/login`](/login).  
-2. Pick a persona button or enter credentials:
+1. Open [`/login`](/login). On the public GitHub Pages snapshot this page lives at `/PRD/crmp-admin/login/` — use the **Sign in** link in the left pane (do not type `/login` on github.io by itself).  
+2. Pick a persona button or enter credentials. The account created for you is **YAN Haixiang** (platform owner). The session stays in this browser after you click Sign in.
 
 | Role | Email | Password |
 |---|---|---|
+| Platform Owner | `yan.haixiang@vantagemarkets.com` | `yan123` |
 | Risk Owner | `risk.owner@vantagemarkets.com` | `risk123` |
 | Risk Analyst | `risk.analyst@vantagemarkets.com` | `risk123` |
 | Ops Lead | `ops.lead@vantagemarkets.com` | `ops123` |
@@ -136,9 +138,19 @@ Path: [`/admin/ai-admin`](/admin/ai-admin)
 Path: [`/admin/market-intel`](/admin/market-intel)
 
 1. Enablement via settings (`market_intel.enabled`).  
-2. Scanner runs about every **5 minutes** (or use Run scan).  
+2. Click **Scan now** (or wait for the 5-minute scheduler on localhost).  
 3. Review **Findings**, **Messenger outbox**, sources, and scan history.  
 4. Cards follow the i–vi format and can raise indicator `M2-MKT-INTEL`.
+
+**Public GitHub Pages:** there is no `/api` on the snapshot. **Scan now** runs a local demo scan from the same event templates as the live scanner. New findings appear immediately in Findings / outbox / scan log. Live HTTP scrapes still belong on `localhost:3000`.
+
+```mermaid
+graph LR
+  Scan[Scan now] --> Templates[Event templates]
+  Templates --> Findings[Findings desk]
+  Findings --> Outbox[Messenger outbox]
+  Findings --> Indicator[M2-MKT-INTEL]
+```
 
 ---
 
@@ -187,3 +199,56 @@ Path: [`/admin/market-intel`](/admin/market-intel)
 | Ecosystem Eval | `/admin/docs/ecosystem` |
 | PRD / TSD | `/admin/docs/prd` · `/admin/docs/tsd` |
 | All URLs | `/admin/docs/urls` |
+
+---
+
+## 11. Every admin screen (plain English)
+
+Use this table as the map of what each left-nav group is for. Click the home-page cards to jump to the same places.
+
+| Group | Page | What you do there |
+|---|---|---|
+| Overview | Admin Home | Counts, departments, recent alerts. Cards are clickable. |
+| Monitor & risk | Daily Performance | Day-end CFD + crypto risk picture. |
+| Monitor & risk | Risk Log Analytics | Timeline of events, handling time, loss vs prevented. |
+| Monitor & risk | Market Intelligence | 5-minute news/social scan; Scan now; messenger cards. |
+| Monitor & risk | Monitor 2.0 | Indicator registry, tickets, sync from the upstream monitor. |
+| Monitor & risk | Detectors | Thresholds that raise alarms. |
+| Monitor & risk | Live Alerts | Open queue: ack, escalate, open AI. |
+| Monitor & risk | Risk Domains | Catalogue of CFD + crypto domains. |
+| AI & knowledge | AI Analyses | Primary RCA + second-AI challenge. |
+| AI & knowledge | AI Admin | Maker/checker settings, models, skills, RAG. |
+| AI & knowledge | AI Skills | Playbook cards; Enter opens the full SKILL.md page. |
+| AI & knowledge | Knowledge Tree | Visual map of domains, skills, RAG. |
+| AI & knowledge | RAG Knowledge Base | Evidence corpus used when a skill is uncertain. |
+| AI & knowledge | Spine Log | Detect → AI → escalate → intervene trail. |
+| Response | Human Intervention | Approve or reject gates (checker). |
+| Response | Demo Messenger | Lark-style inbox: evidence, chat, escalate, dismiss, close, controls. |
+| Response | Lark Integration | Channel registry (mock webhooks in the prototype). |
+| Response | Escalation Routes | Severity → team → SLA. |
+| Organisation | Departments / Teams / Roles / Users | RACI, on-call, RBAC, directory (includes YAN Haixiang). |
+| Platform | Data Sources | Internal + external registry. |
+| Platform | AI Access Security | Human-only pages/functions/fields. |
+| Platform | Audit Log | Who changed what. |
+| Platform | Platform Settings | Grouped flags (platform, Monitor, AI, market intel, Lark, SLA). |
+| Docs | User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / URL Catalog | Product and operator documentation. |
+
+```mermaid
+graph TD
+  Monitor[Monitor 2.0 alarm] --> Desk[CRMP Admin]
+  Desk --> AI[AI RCA + challenger]
+  AI --> Msg[Demo Messenger]
+  Msg --> Human[Human intervention]
+  Human --> Audit[Audit + spine]
+```
+
+---
+
+## 12. Document control
+
+| Ver | Date | Notes |
+|---|---|---|
+| 1.0 | 2026-10-01 | Operator handbook |
+| 1.3 | 2026-10-04 | All admin screens, public Scan demo, YAN Haixiang owner, login on Pages |
+
+**Owner:** YAN Haixiang

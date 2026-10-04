@@ -3,7 +3,7 @@
 **Document ID:** CRMP-PRD-001  
 **Status:** Prototype / Demo-ready  
 **Products in scope:** CFD + Crypto Exchange  
-**Owner:** Risk Platforms PM · **Approver:** Risk Owner  
+**Owner:** YAN Haixiang · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
 ---
@@ -80,6 +80,15 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 2. Distinct Checker approves.  
 3. Self-approve is rejected.
 
+```mermaid
+graph LR
+  Alarm[Monitor alarm] --> RCA[Primary AI RCA]
+  RCA --> Challenge[Second AI]
+  Challenge --> Messenger[Demo Messenger]
+  Messenger --> Control[Confirmed control]
+  Control --> Checker[Checker]
+```
+
 ---
 
 ## 6. Functional requirements
@@ -103,7 +112,7 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 
 | ID | Requirement | Acceptance sketch |
 |---|---|---|
-| FR-11 | Market intel 5-min scan + outbox card format | Scan runs; findings/outbox or empty-scan logged |
+| FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
 | FR-12 | Risk Log analytics | Page loads timeline / analytics for risk events |
 | FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem toggle works |
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |
@@ -199,7 +208,8 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-20).
 
 | Role | Name | Decision | Date |
 |---|---|---|---|
-| Risk Owner | _TBD_ | | |
-| Risk Platforms PM | _TBD_ | | |
+| Platform owner / docs owner | YAN Haixiang | Named | 2026-10-04 |
+| Risk Owner | Alex Chen (demo) | Demo persona | |
+| Risk Platforms PM | YAN Haixiang | Named | 2026-10-04 |
 | Engineering Lead | _TBD_ | | |
 | Security / GRC | _TBD_ | | |

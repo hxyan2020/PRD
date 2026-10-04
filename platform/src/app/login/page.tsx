@@ -6,20 +6,16 @@ import Link from "next/link";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
-
-const DEMOS = [
-  { email: "risk.owner@vantagemarkets.com", password: "risk123", labelEn: "Risk Owner", labelZh: "風險負責人" },
-  { email: "ops.lead@vantagemarkets.com", password: "ops123", labelEn: "Ops Lead", labelZh: "營運主管" },
-  { email: "ai.engineer@vantagemarkets.com", password: "ai123", labelEn: "AI Engineer", labelZh: "AI 工程師" },
-  { email: "system.admin@vantagemarkets.com", password: "sys123", labelEn: "System Admin", labelZh: "系統管理員" },
-  { email: "admin@vantagemarkets.com", password: "admin123", labelEn: "Super Admin", labelZh: "超級管理員" },
-];
+import { VantageLogo } from "@/components/VantageLogo";
+import { DEMO_PERSONAS, findPersona, personaToUser, writeDemoSession } from "@/lib/demo-session";
+import { isPublicSnapshot } from "@/lib/static-export";
+import { ownerLine } from "@/lib/platform-owner";
 
 export default function LoginPage() {
   const router = useRouter();
   const { locale, setLocale } = useUiLocale();
-  const [email, setEmail] = useState(DEMOS[0].email);
-  const [password, setPassword] = useState(DEMOS[0].password);
+  const [email, setEmail] = useState(DEMO_PERSONAS[0].email);
+  const [password, setPassword] = useState(DEMO_PERSONAS[0].password);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,34 +23,77 @@ export default function LoginPage() {
     setLocale(next);
   }
 
+  function persistPersona(emailValue: string, passwordValue: string) {
+    const persona = findPersona(emailValue, passwordValue);
+    if (!persona) return false;
+    writeDemoSession(personaToUser(persona));
+    return true;
+  }
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    setLoading(false);
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error || t("login.failed", locale));
+    if (isPublicSnapshot()) {
+      if (!persistPersona(email, password)) {
+        setLoading(false);
+        setError(t("login.failed", locale));
+        return;
+      }
+      setLoading(false);
+      router.push("/admin");
+      router.refresh();
       return;
     }
-    router.push("/admin");
-    router.refresh();
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (res.status === 404 || res.status === 405) {
+        if (!persistPersona(email, password)) {
+          setLoading(false);
+          setError(t("login.failed", locale));
+          return;
+        }
+        setLoading(false);
+        router.push("/admin");
+        router.refresh();
+        return;
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setLoading(false);
+        setError(data.error || t("login.failed", locale));
+        return;
+      }
+      persistPersona(email, password);
+      setLoading(false);
+      router.push("/admin");
+      router.refresh();
+    } catch {
+      if (!persistPersona(email, password)) {
+        setLoading(false);
+        setError(t("login.failed", locale));
+        return;
+      }
+      setLoading(false);
+      router.push("/admin");
+      router.refresh();
+    }
   }
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       <section className="relative overflow-hidden bg-[linear-gradient(145deg,#0f2438_0%,#0b6e6a_55%,#c45c26_120%)] text-white p-6 sm:p-10 flex flex-col justify-between min-h-[42vh] lg:min-h-screen">
         <div>
-          <div className="text-xs uppercase tracking-[0.2em] text-teal-100/80">Vantage Markets</div>
+          <VantageLogo inverted markClassName="h-12 w-12" />
           <h1 className="mt-3 sm:mt-4 font-[family-name:var(--font-display)] text-3xl sm:text-4xl leading-tight max-w-md">
             {t("login.title", locale)}
           </h1>
           <p className="mt-3 sm:mt-4 max-w-md text-teal-50/90 text-sm leading-relaxed">{t("login.blurb", locale)}</p>
+          <p className="mt-3 text-xs text-teal-100/80">{ownerLine(locale)}</p>
         </div>
         <div className="mt-6 grid grid-cols-2 gap-2 sm:gap-3 text-sm">
           <div className="rounded-xl bg-white/10 border border-white/15 p-3 sm:p-4">
@@ -135,7 +174,7 @@ export default function LoginPage() {
 
           <div className="mt-3 text-xs text-[var(--muted)]">{t("login.demoRoles", locale)}</div>
           <div className="mt-2 action-row">
-            {DEMOS.map((d) => (
+            {DEMO_PERSONAS.map((d) => (
               <button
                 key={d.email}
                 type="button"

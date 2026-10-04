@@ -3,7 +3,7 @@
 **文件編號：** CRMP-PRD-001  
 **狀態：** 原型／可示範  
 **產品範圍：** CFD + 加密貨幣交易所  
-**負責人：** 風險平台產品經理 · **核准人：** 風險負責人  
+**負責人：** YAN Haixiang · **核准人：** 風險負責人  
 **相關文件：** [TSD](/admin/docs/tsd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [生態導入評估](/admin/docs/ecosystem)
 
 ---
@@ -80,6 +80,15 @@ Vantage Markets 的 CFD 與加密風險橫跨 Monitor 2.0 指標、各桌與即�
 2. 不同 Checker 核准。  
 3. 自我核准被拒絕。
 
+```mermaid
+graph LR
+  Alarm[Monitor 警報] --> RCA[主 AI RCA]
+  RCA --> Challenge[第二 AI]
+  Challenge --> Messenger[示範 Messenger]
+  Messenger --> Control[已確認控制]
+  Control --> Checker[Checker]
+```
+
 ---
 
 ## 6. 功能需求
@@ -103,7 +112,7 @@ Vantage Markets 的 CFD 與加密風險橫跨 Monitor 2.0 指標、各桌與即�
 
 | ID | 需求 | 驗收摘要 |
 |---|---|---|
-| FR-11 | 市場情報 5 分鐘掃描＋outbox 卡片 | 可掃描；有發現／outbox 或空掃描紀錄 |
+| FR-11 | 市場情報 5 分鐘掃描＋outbox 卡片 | 本機可掃描；GitHub Pages 用用戶端示範掃描（不再 405）。發現／寄件匣／掃描紀錄會更新。 |
 | FR-12 | 風險日誌分析 | 頁面呈現風險事件時間軸／分析 |
 | FR-13 | 雙語產品文件（英／繁中） | PRD、TSD、手冊、UAT、生態可切換 |
 | FR-14 | 響應式管理介面 | 390px：抽屜＋messenger 主從；無整頁溢出 |
@@ -199,7 +208,8 @@ Vantage Markets 的 CFD 與加密風險橫跨 Monitor 2.0 指標、各桌與即�
 
 | 角色 | 姓名 | 決策 | 日期 |
 |---|---|---|---|
-| 風險負責人 | _待填_ | | |
-| 風險平台 PM | _待填_ | | |
+| 平台／文件負責人 | YAN Haixiang | 具名 | 2026-10-04 |
+| 風險負責人 | Alex Chen（示範） | 示範角色 | |
+| 風險平台 PM | YAN Haixiang | 具名 | 2026-10-04 |
 | 工程負責人 | _待填_ | | |
 | 資安／GRC | _待填_ | | |
