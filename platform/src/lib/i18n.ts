@@ -229,8 +229,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   settings: {
     title: { en: "Platform Settings", "zh-Hant": "平台設定" },
     subtitle: {
-      en: "Feature flags, AI thresholds, integration toggles. Platform and docs owner: YAN Haixiang.",
-      "zh-Hant": "功能旗標、AI 門檻與整合開關。平台與文件負責人：YAN Haixiang。",
+      en: "Parameters grouped by identity, monitoring, AI, messenger and escalation.",
+      "zh-Hant": "參數依身分、監控、AI、Messenger 與升級分組。",
     },
   },
   urls: {
