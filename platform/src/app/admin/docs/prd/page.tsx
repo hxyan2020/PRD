@@ -19,7 +19,7 @@ export default async function PrdPage({ searchParams }: { searchParams: Promise<
     { label: zh ? "P0 需求" : "P0 requirements", value: "10" },
     { label: zh ? "P1 需求" : "P1 requirements", value: "6" },
     { label: zh ? "產品範圍" : "Product scope", value: "CFD + Crypto" },
-    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…20" },
+    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…45" },
   ];
 
   return (

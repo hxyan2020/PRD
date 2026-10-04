@@ -155,7 +155,7 @@ graph LR
 7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem render EN and zh-Hant.  
 8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.
 
-Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-20).
+Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync).
 
 ---
 

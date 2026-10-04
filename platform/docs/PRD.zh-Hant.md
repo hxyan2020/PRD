@@ -155,7 +155,7 @@ graph LR
 7. **文件：** PRD／TSD／手冊／UAT／生態英繁可渲染。  
 8. **行動：** ~390px messenger 列表→執行緒→返回，無文件級橫向溢出。
 
-正式執行見：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-20）。
+正式執行見：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-45）。驗收包涵蓋每一個管理頁與完整 Messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步）。
 
 ---
 

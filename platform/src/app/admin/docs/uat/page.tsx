@@ -23,8 +23,8 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
         title={zh ? "UAT 驗收清單（風險負責人）" : "UAT Checklist (Risk Owner)"}
         subtitle={
           zh
-            ? `共 ${summary.count} 案 · 建議時窗約 ${Math.ceil(summary.windowEndMin / 60)} 小時 · 依序執行並記錄通過標準與證據。`
-            : `${summary.count} sequenced cases · ~${Math.ceil(summary.windowEndMin / 60)}h suggested window · step-by-step with BU, dependency, severity, pass thresholds.`
+            ? `共 ${summary.count} 案 · 建議時窗約 ${Math.ceil(summary.windowEndMin / 60)} 小時 · 白話步驟涵蓋每個管理頁與 Messenger 迴路。`
+            : `${summary.count} sequenced cases · ~${Math.ceil(summary.windowEndMin / 60)}h suggested window · plain-English steps covering every admin screen and the messenger loop.`
         }
         actions={
           <>
