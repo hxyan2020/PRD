@@ -3,7 +3,7 @@
 **Document ID:** CRMP-PRD-001  
 **Status:** Prototype / Demo-ready  
 **Products in scope:** CFD + Crypto Exchange  
-**Owner:** YAN Haixiang · **Approver:** Risk Owner  
+**Owner:** demo platform owner · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
 This PRD is the product contract for **every screen and feature currently in CRMP Admin**. Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-45](/admin/docs/uat).
@@ -47,7 +47,7 @@ graph LR
 | G8 | Complete admin map | Every left-nav group/page in §6.4 is shipped and documented |
 | G9 | Unread awareness | New work on Alerts / Analyses / Messenger / Intel / Interventions / Spine / Audit / Monitor / Risk Log / Detectors shows a badge that clears when viewed |
 | G10 | Public demo | GitHub Pages snapshot at `/PRD/crmp-admin/` walks the desk without 404/405 on login, messenger Open-in-admin, or Scan now |
-| G11 | Named owner | Platform owner YAN Haixiang is a first-class persona; session persists in-browser |
+| G11 | Named owner | Platform owner demo platform owner is a first-class persona; session persists in-browser |
 
 ---
 
@@ -68,7 +68,7 @@ graph LR
 
 | Persona | Primary jobs |
 |---|---|
-| **Platform Owner (YAN Haixiang)** | Own the desk and docs; default login on the public snapshot |
+| **Platform Owner (demo platform owner)** | Own the desk and docs; default login on the public snapshot |
 | **Risk Owner** | Accept/reject AI packs; escalate; approve irreversible controls; run UAT exit |
 | **Risk Analyst** | Triage alerts; challenge AI in messenger; add context |
 | **Ops Lead / Analyst** | Propose halt/block/widen/pause-copy; maker-confirm into admin |
@@ -220,7 +220,7 @@ graph LR
 | FR-24 | Live Alerts ack queue | OPEN sorted by severity; Acknowledge mutates status |
 | FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG trunk |
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
-| FR-27 | Org directory | Departments, Teams, Roles (permission chips), Users (incl. YAN Haixiang; add/disable on localhost) |
+| FR-27 | Org directory | Departments, Teams, Roles (permission chips), Users (incl. demo platform owner; add/disable on localhost) |
 | FR-28 | Escalation routes + Lark registry | Severity → team → SLA; channel enable; messenger Escalate follows route |
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
@@ -265,7 +265,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Organisation | Departments | `/admin/departments` | RACI | Four BUs with responsibilities |
 | Organisation | Teams | `/admin/teams` | On-call | Members, Lark chat, rotation |
 | Organisation | Roles & Permissions | `/admin/roles` | RBAC | Permission chips per role |
-| Organisation | Users | `/admin/users` | Directory | YAN Haixiang present; add/disable manage |
+| Organisation | Users | `/admin/users` | Directory | demo platform owner present; add/disable manage |
 | Platform | Data Sources | `/admin/data-sources` | Feed registry | Category + status |
 | Platform | AI Access Security | `/admin/security/ai-access` | Human-only inventory | Blocklist + allowed + forbidden perms |
 | Platform | Audit Log | `/admin/audit` | Who changed what | Latest mutations listed |
@@ -313,7 +313,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 9. **Pages:** Login, messenger Open-in-admin, and Market Intel Scan now succeed without 404/405.  
 10. **Knowledge tree:** Domain fan-out + Enter opens a playbook.  
 11. **Unread:** New simulate/scan bumps a badge; opening the tab clears it.  
-12. **Owner login:** YAN Haixiang persona persists after refresh on Pages.
+12. **Owner login:** demo platform owner persona persists after refresh on Pages.
 
 Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync).
 
@@ -382,9 +382,9 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 
 | Role | Name | Decision | Date |
 |---|---|---|---|
-| Platform owner / docs owner | YAN Haixiang | Named | 2026-10-04 |
+| Platform owner / docs owner | demo platform owner | Named | 2026-10-04 |
 | Risk Owner | Alex Chen (demo) | Demo persona | |
-| Risk Platforms PM | YAN Haixiang | Named | 2026-10-04 |
+| Risk Platforms PM | demo platform owner | Named | 2026-10-04 |
 | Engineering Lead | _TBD_ | | |
 | Security / GRC | _TBD_ | | |
 
@@ -397,4 +397,4 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | 1.0 | 2026-10-01 | Goals G1–G7, FR-01…16 |
 | 1.5 | 2026-10-04 | Journey and SoD flowcharts for every P0 path |
 
-**Owner:** YAN Haixiang
+**Owner:** demo platform owner

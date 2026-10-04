@@ -5,7 +5,7 @@
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
-**負責人：** YAN Haixiang  
+**負責人：** demo platform owner  
 **相關文件：** [PRD](/admin/docs/prd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
 本 TSD 描述中央風險管理平台（CRMP）管理控制平面之技術設計。  
@@ -580,7 +580,7 @@ SQLite：`platform/data/vantage_risk.db`。
 
 ### 16.1 登入、工作階段、殼層、未讀 — §7.1
 
-- 角色：`lib/demo-session.ts` 的 `DEMO_PERSONAS`（YAN Haixiang 第一）。  
+- 角色：`lib/demo-session.ts` 的 `DEMO_PERSONAS`（demo platform owner 第一）。  
 - localhost：`POST /api/auth/login` 設 `crmp_session` **並**寫入示範工作階段。  
 - Pages／404／405：略過 API，只 `writeDemoSession`。  
 - `AdminShell` 在 `isPublicSnapshot()` 時優先示範工作階段。登出兩者都清。  
@@ -675,8 +675,8 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.0 | 2026-10-01 | 初版骨架 |
 | 1.1 | 2026-10-01 | 完整 §8 AI Admin 管理頁規格 |
 | 1.2 | 2026-10-01 | §9 挑戰者、§11 Messenger、§12 市場情報、文件／i18n／行動、重編號 |
-| 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、YAN Haixiang 負責人、Pages 登入 |
+| 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、demo platform owner 負責人、Pages 登入 |
 | 1.5 | 2026-10-04 | TSD 流程圖與序列圖；mermaid 改 SVG 渲染 |
 
-**負責人：** YAN Haixiang  
+**負責人：** demo platform owner  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

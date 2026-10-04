@@ -14,7 +14,7 @@ import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
 import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
-import { PLATFORM_OWNER } from "@/lib/platform-owner";
+import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -543,7 +543,9 @@ function seedIfEmpty(db: Database.Database) {
   insertUser.run("admin@vantagemarkets.com", "Platform Admin", "admin123", "SUPER_ADMIN", null, null);
   insertUser.run("viewer@vantagemarkets.com", "Board Viewer", "view123", "VIEWER", null, null);
   insertUser.run(PLATFORM_OWNER.email, PLATFORM_OWNER.name, PLATFORM_OWNER.password, PLATFORM_OWNER.role_code, PLATFORM_OWNER.department_code, 1);
-  insertUser.run(PLATFORM_OWNER.githubEmail, PLATFORM_OWNER.name, PLATFORM_OWNER.password, PLATFORM_OWNER.role_code, PLATFORM_OWNER.department_code, 1);
+  if (PLATFORM_OWNER.githubEmail.toLowerCase() !== PLATFORM_OWNER.email.toLowerCase()) {
+    insertUser.run(PLATFORM_OWNER.githubEmail, PLATFORM_OWNER.name, PLATFORM_OWNER.password, PLATFORM_OWNER.role_code, PLATFORM_OWNER.department_code, 1);
+  }
 
   const insertSource = db.prepare(
     `INSERT INTO data_sources (name, category, url, description, owner_department, auth_type, refresh_cadence, status, tags_json, notes)
@@ -796,6 +798,18 @@ function ensureUser(
 }
 
 function ensurePlatformOwner(db: Database.Database) {
+  for (const former of FORMER_OWNER_EMAILS) {
+    if (former.toLowerCase() === PLATFORM_OWNER.email.toLowerCase()) continue;
+    const dest = db
+      .prepare(`SELECT id FROM users WHERE lower(email) = lower(?)`)
+      .get(PLATFORM_OWNER.email) as { id: number } | undefined;
+    const src = db
+      .prepare(`SELECT id FROM users WHERE lower(email) = lower(?)`)
+      .get(former) as { id: number } | undefined;
+    if (src && !dest) {
+      db.prepare(`UPDATE users SET email = ? WHERE id = ?`).run(PLATFORM_OWNER.email, src.id);
+    }
+  }
   ensureUser(
     db,
     PLATFORM_OWNER.email,
@@ -805,15 +819,17 @@ function ensurePlatformOwner(db: Database.Database) {
     PLATFORM_OWNER.department_code,
     1
   );
-  ensureUser(
-    db,
-    PLATFORM_OWNER.githubEmail,
-    PLATFORM_OWNER.name,
-    PLATFORM_OWNER.password,
-    PLATFORM_OWNER.role_code,
-    PLATFORM_OWNER.department_code,
-    1
-  );
+  if (PLATFORM_OWNER.githubEmail.toLowerCase() !== PLATFORM_OWNER.email.toLowerCase()) {
+    ensureUser(
+      db,
+      PLATFORM_OWNER.githubEmail,
+      PLATFORM_OWNER.name,
+      PLATFORM_OWNER.password,
+      PLATFORM_OWNER.role_code,
+      PLATFORM_OWNER.department_code,
+      1
+    );
+  }
   const put = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO UPDATE SET value = excluded.value, description = excluded.description, updated_at = datetime('now')`

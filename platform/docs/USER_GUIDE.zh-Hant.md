@@ -2,7 +2,7 @@
 
 **文件編號：** CRMP-UG-001 · **對象：** 任何會打開管理後台的人  
 **語言：** 繁體中文（本頁）· [English](/admin/docs/user-guide?lang=en)  
-**文件與平台負責人：** YAN Haixiang（`yan.haixiang@vantagemarkets.com`）
+**文件與平台負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 
 這本手冊用白話寫。涵蓋左側選單**每一頁**，以及登入、語言、未讀數字、公開 GitHub Pages 快照。
 
@@ -52,7 +52,7 @@ graph TD
 
 | 身分 | Email | 密碼 | 什麼時候用 |
 |---|---|---|---|
-| 平台負責人 | `yan.haixiang@vantagemarkets.com` | `yan123` | 你是 YAN Haixiang，本後台與文件的具名負責人 |
+| 平台負責人 | `haixiang.yan@hytechc.com` | `yan123` | 你是 demo platform owner，本後台與文件的具名負責人 |
 | 風險負責人 | `risk.owner@vantagemarkets.com` | `risk123` | 核准 AI 包與 Checker 步驟 |
 | 風險分析師 | `risk.analyst@vantagemarkets.com` | `risk123` | 分流與 Messenger 挑戰 |
 | 營運主管 | `ops.lead@vantagemarkets.com` | `ops123` | 提案停交易／封鎖／加寬／暫停跟單 |
@@ -96,7 +96,7 @@ graph TD
 | **平台** | 資料來源 → 平台設定 → 稽核日誌 → AI 存取安全 |
 | **文件** | 使用手冊 → 網址目錄 → UAT → PRD → TSD → 路線圖 → 生態 |
 
-最上方是 Vantage 標誌。姓名下方是角色徽章（GitHub Pages 另有 **公開原型**）。負責人：YAN Haixiang。
+最上方是 Vantage 標誌。姓名下方是角色徽章（GitHub Pages 另有 **公開原型**）。負責人：demo platform owner。
 
 ### 未讀數字
 
@@ -201,7 +201,7 @@ graph TD
 
 **會看到什麼。**
 
-- **YAN Haixiang** 負責人卡。整張卡開啟「以平台負責人登入」。  
+- **demo platform owner** 負責人卡。整張卡開啟「以平台負責人登入」。  
 - Lark 風格 Messenger 宣傳。整張卡開啟 Messenger 示範（卡上有永久 GitHub Pages 網址）。  
 - 可點擊的數字卡：使用者、團隊、資料來源、風險領域、未結警報、未結工單、Lark 頻道、升級路徑。每張卡跳到對應頁。  
 - **跳至頁面** 磁磚：每日績效、市場情報、Monitor 2.0、即時警報、AI 分析、AI 技能、知識樹、人工干預、Messenger、設定、使用手冊、PRD。  
@@ -552,11 +552,11 @@ graph LR
 
 ### 10.4 使用者 — `/admin/users`
 
-操作員與示範角色目錄，含 **YAN Haixiang**。欄位：姓名、email、角色、部門、團隊、狀態、上次登入。
+操作員與示範角色目錄，含 **demo platform owner**。欄位：姓名、email、角色、部門、團隊、狀態、上次登入。
 
 有 `users.manage`（localhost）可 **新增使用者**（姓名、email、密碼、角色、部門、團隊）並切換 ACTIVE／DISABLED。Pages 上新增多半是示範空操作或僅本機瀏覽器。
 
-**怎樣算正常。** YAN Haixiang 以平台負責人存在。停用使用者在 localhost API 不能當即時 Maker／Checker。
+**怎樣算正常。** demo platform owner 以平台負責人存在。停用使用者在 localhost API 不能當即時 Maker／Checker。
 
 ---
 
@@ -648,7 +648,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 應變 | 脊柱日誌 | 跟隨 Detect → … → Dashboard |
 | 組織 | 部門 | RACI 權責 |
 | 組織 | 團隊 | 值班與 Lark chat id |
-| 組織 | 使用者 | 目錄，含 YAN Haixiang |
+| 組織 | 使用者 | 目錄，含 demo platform owner |
 | 組織 | 角色與權限 | RBAC 晶片 |
 | 平台 | 資料來源 | 內部＋外部登錄 |
 | 平台 | 平台設定 | 分組旗標 |
@@ -663,7 +663,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 版次 | 日期 | 說明 |
 |---|---|---|
 | 1.0 | 2026-10-01 | 操作手冊 |
-| 1.3 | 2026-10-04 | 全部管理畫面、公開掃描示範、YAN Haixiang 負責人、Pages 登入 |
+| 1.3 | 2026-10-04 | 全部管理畫面、公開掃描示範、demo platform owner 負責人、Pages 登入 |
 | 1.5 | 2026-10-04 | 登入、未讀、RCA、Messenger、Maker／Checker、情報掃描、知識樹、脊柱流程圖 |
 
-**負責人：** YAN Haixiang
+**負責人：** demo platform owner

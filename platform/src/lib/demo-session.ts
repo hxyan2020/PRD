@@ -1,4 +1,4 @@
-import { PLATFORM_OWNER } from "@/lib/platform-owner";
+import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
 import type { RoleCode, DepartmentCode, SessionUser } from "@/lib/types";
 import { isPublicSnapshot, publicBasePath } from "@/lib/static-export";
 
@@ -32,8 +32,8 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     name: PLATFORM_OWNER.name,
     role_code: PLATFORM_OWNER.role_code,
     department_code: PLATFORM_OWNER.department_code,
-    labelEn: "YAN Haixiang",
-    labelZh: "YAN Haixiang",
+    labelEn: "demo platform owner",
+    labelZh: "示範平台負責人",
   },
   {
     email: PERSONAL_ACCOUNT.email,
@@ -104,9 +104,16 @@ export function personaToUser(p: DemoPersona, id = 9001): SessionUser {
 }
 
 export function findPersona(email: string, password: string) {
-  return DEMO_PERSONAS.find(
-    (p) => p.email.toLowerCase() === email.trim().toLowerCase() && p.password === password
-  );
+  const needle = email.trim().toLowerCase();
+  const hit = DEMO_PERSONAS.find((p) => p.email.toLowerCase() === needle && p.password === password);
+  if (hit) return hit;
+  if (
+    FORMER_OWNER_EMAILS.some((e) => e.toLowerCase() === needle) &&
+    password === PLATFORM_OWNER.password
+  ) {
+    return DEMO_PERSONAS[0];
+  }
+  return undefined;
 }
 
 export function defaultPersona() {

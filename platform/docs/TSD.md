@@ -5,7 +5,7 @@
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
-**Owner:** YAN Haixiang  
+**Owner:** demo platform owner  
 **Companion:** [PRD](/admin/docs/prd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
 This TSD describes the technical design of the Centralised Risk Management Platform (CRMP) Admin Control Plane.  
@@ -584,7 +584,7 @@ Modules not fully specified in §8–§13. Behaviour must match the User Guide h
 
 ### 16.1 Login, session, shell, unread — §7.1
 
-- Personas: `DEMO_PERSONAS` in `lib/demo-session.ts` (YAN Haixiang first).  
+- Personas: `DEMO_PERSONAS` in `lib/demo-session.ts` (demo platform owner first).  
 - Localhost: `POST /api/auth/login` sets `crmp_session` **and** writes demo session.  
 - Pages / 404/405: skip API, `writeDemoSession` only.  
 - `AdminShell` prefers demo session when `isPublicSnapshot()`. Sign out clears both.  
@@ -679,8 +679,8 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–
 | 1.0 | 2026-10-01 | Initial TSD skeleton |
 | 1.1 | 2026-10-01 | Full §8 AI Admin Management Page specification |
 | 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
-| 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, YAN Haixiang owner, Pages login |
+| 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, demo platform owner, Pages login |
 | 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
 
-**Owner:** YAN Haixiang  
+**Owner:** demo platform owner  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

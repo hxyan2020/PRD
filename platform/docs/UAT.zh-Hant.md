@@ -71,7 +71,7 @@ graph TD
 | 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | 平台設定已分組（不是扁平清單） | Platform Settings |
 | 41 | UAT-41 | 446m | 10m | Medium | AI + Risk | UAT-06; RAG seeded | RAG 知識庫 — 瀏覽 AI 引用的語料 | RAG Knowledge Base |
 | 42 | UAT-42 | 456m | 8m | Low | All | Docs published | 改進路線圖可讀 | Improvement Roadmap |
-| 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | 公開快照 — 登入可用並維持 YAN Haixiang | Login, Admin Home |
+| 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | 公開快照 — 登入可用並維持 demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — 結案後重新整理仍保持關閉 | Demo Messenger |
 | 45 | UAT-45 | 484m | 15m | Critical | Risk Owner | UAT-01–44 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
 
@@ -535,12 +535,12 @@ graph TD
 - **嚴重度：** Medium · **負責：** System + Risk Owner · **依賴：** UAT-01 · **建議：** T+301m / 10m
 - **涵蓋：** Admin Home, Daily Performance, Users, URL Catalog
 - **為何測：** 首頁是整張桌的地圖。卡片失效或沒有負責人會讓原型看起來沒人管。
-- **目的：** 點進首頁數字卡確認開到正確頁；負責人列為 YAN Haixiang。
+- **目的：** 點進首頁數字卡確認開到正確頁；負責人列為 demo platform owner。
 
 **步驟**
 
 1. 開啟管理首頁。
-2. 首頁面板與左側頁尾可見平台負責人 YAN Haixiang／yan.haixiang@vantagemarkets.com。
+2. 首頁面板與左側頁尾可見平台負責人 demo platform owner／haixiang.yan@hytechc.com。
 3. 點這些數字卡並確認目的地：使用者、團隊、資料來源、風險領域、即時警報、Monitor 2.0、Lark 頻道、升級路徑。
 4. 點一張部門卡（應開該組工作頁）、一列最近警報（即時警報，該筆醒目）、一塊跳轉磁磚。頁首捷徑：示範 Messenger、使用手冊、每日績效。皆不可 404。
 5. 若仍是公開訪客，應看到訪客橫幅與登入；登入後應改變。
@@ -733,7 +733,7 @@ graph TD
 
 1. 開啟部門。每項應有代碼、名稱與一行職責（首頁 RACI）。
 2. 開啟團隊。確認隸屬部門，並列成員或人數。
-3. 開啟使用者。找到 risk.owner@… 與 viewer@…（若有 yan.haixiang@…）。角色必須不同。
+3. 開啟使用者。找到 risk.owner@… 與 viewer@…（若有 haixiang.yan@…）。角色必須不同。
 4. 開啟角色與權限。確認 RISK_OWNER 可進後台、VIEWER 不能操作 AI Admin——這是 UAT-01 背後的政策。
 5. 首頁使用者／團隊數字應與剛數的大致相符。
 
@@ -808,23 +808,23 @@ graph TD
 **通過：** 路線圖有至少一個階段與一項範圍外說明。
 **證據：** 路線圖截圖。
 
-### UAT-43 — 公開快照 — 登入可用並維持 YAN Haixiang
+### UAT-43 — 公開快照 — 登入可用並維持 demo platform owner
 
 - **嚴重度：** Critical · **負責：** System + Platform owner · **依賴：** Public snapshot or local login · **建議：** T+464m / 10m
 - **涵蓋：** Login, Admin Home
 - **為何測：** 線上 github.io 的登入曾經 404。平台負責人必須能在快照上保持登入。
-- **目的：** 從公開訪客橫幅登入不 404，重新整理後仍是 YAN Haixiang。
+- **目的：** 從公開訪客橫幅登入不 404，重新整理後仍是 demo platform owner。
 
 **步驟**
 
 1. 若在 https://hxyan2020.github.io/PRD/crmp-admin/admin/，登入前左側應為 Public visitor／PUBLIC_GUEST。
 2. 點登入。必須落到 /PRD/crmp-admin/login/ 的表單，絕不是 github.io/login，也不可 404。
-3. 以 yan.haixiang@vantagemarkets.com / yan123 登入。首頁應顯示 YAN Haixiang，不是訪客。
-4. 重新整理後仍是 YAN Haixiang。再到示範 Messenger 再回來，名字不可變回訪客。
+3. 以 haixiang.yan@hytechc.com / yan123 登入。首頁應顯示 demo platform owner，不是訪客。
+4. 重新整理後仍是 demo platform owner。再到示範 Messenger 再回來，名字不可變回訪客。
 5. 本機同一帳號應對著即時 API 可用；可讀的 401 仍算失敗。
 
-**通過：** 登入網址含 basePath；快照工作階段顯示 YAN Haixiang 且重整後仍在。
-**證據：** ／login 網址列＋重整後首頁顯示 YAN Haixiang。
+**通過：** 登入網址含 basePath；快照工作階段顯示 demo platform owner 且重整後仍在。
+**證據：** ／login 網址列＋重整後首頁顯示 demo platform owner。
 
 ### UAT-44 — Messenger — 結案後重新整理仍保持關閉
 
@@ -856,7 +856,7 @@ graph TD
 1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
 3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）通過。
-4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 YAN Haixiang（或授權風險負責人）。
+4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交给 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 
 **通過：** 已簽署決策；Critical 100% Pass；High 豁免≤2。

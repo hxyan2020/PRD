@@ -2,7 +2,7 @@
 
 **Document ID:** CRMP-UG-001 · **Audience:** anyone who opens the admin desk  
 **Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
-**Docs & platform owner:** YAN Haixiang (`yan.haixiang@vantagemarkets.com`)
+**Docs & platform owner:** demo platform owner (`haixiang.yan@hytechc.com`)
 
 This handbook is written in everyday language. It covers **every page in the left menu**, plus login, language, unread numbers, and the public GitHub Pages snapshot.
 
@@ -52,7 +52,7 @@ Click a **Quick fill demo role** button, or type the email and password, then **
 
 | Who | Email | Password | Use this when |
 |---|---|---|---|
-| Platform Owner | `yan.haixiang@vantagemarkets.com` | `yan123` | You are YAN Haixiang, the named owner of this desk and these docs |
+| Platform Owner | `haixiang.yan@hytechc.com` | `yan123` | You are demo platform owner, the named owner of this desk and these docs |
 | Risk Owner | `risk.owner@vantagemarkets.com` | `risk123` | Approving AI packs and checker steps |
 | Risk Analyst | `risk.analyst@vantagemarkets.com` | `risk123` | Triage and messenger challenge |
 | Ops Lead | `ops.lead@vantagemarkets.com` | `ops123` | Proposing halt / block / widen / pause-copy |
@@ -96,7 +96,7 @@ The left pane is grouped so you are not staring at one long list:
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
 | **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem |
 
-The Vantage logo sits at the top. Your role badge (and **Public prototype** on GitHub Pages) sit under your name. Owner line: YAN Haixiang.
+The Vantage logo sits at the top. Your role badge (and **Public prototype** on GitHub Pages) sit under your name. Owner line: demo platform owner.
 
 ### Unread numbers
 
@@ -201,7 +201,7 @@ graph TD
 
 **What you see.**
 
-- Owner card for **YAN Haixiang**. The whole card opens Sign in as platform owner.  
+- Owner card for **demo platform owner**. The whole card opens Sign in as platform owner.  
 - A Lark-style messenger promo. The whole card opens the messenger demo (permanent GitHub Pages URL is on the card).  
 - Clickable count cards: Users, Teams, Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  
 - **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Live Alerts, AI Analyses, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
@@ -552,11 +552,11 @@ Each role (Risk Owner, Analyst, Ops, AI Engineer, System Admin, Super Admin, Vie
 
 ### 10.4 Users — `/admin/users`
 
-Directory of operators and demo personas, including **YAN Haixiang**. Columns: name, email, role, department, team, status, last login.
+Directory of operators and demo personas, including **demo platform owner**. Columns: name, email, role, department, team, status, last login.
 
 If you have `users.manage` (localhost): **Add user** (name, email, password, role, department, team) and toggle ACTIVE / DISABLED. On Pages, creating users is a demo no-op or browser-only.
 
-**Good looks like.** YAN Haixiang is present as platform owner. Disabled users cannot be a live maker/checker in the localhost API.
+**Good looks like.** demo platform owner is present as platform owner. Disabled users cannot be a live maker/checker in the localhost API.
 
 ---
 
@@ -648,7 +648,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Response | Spine Log | Follow Detect → … → Dashboard |
 | Organisation | Departments | RACI ownership |
 | Organisation | Teams | On-call and Lark chat ids |
-| Organisation | Users | Directory, including YAN Haixiang |
+| Organisation | Users | Directory, including demo platform owner |
 | Organisation | Roles & Permissions | RBAC chips |
 | Platform | Data Sources | Internal + external registry |
 | Platform | Platform Settings | Grouped flags |
@@ -663,7 +663,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-01 | Operator handbook |
-| 1.3 | 2026-10-04 | All admin screens, public Scan demo, YAN Haixiang owner, login on Pages |
+| 1.3 | 2026-10-04 | All admin screens, public Scan demo, demo platform owner, login on Pages |
 | 1.5 | 2026-10-04 | Flowcharts for login, unread, RCA path, messenger, maker/checker, intel scan, knowledge tree, spine |
 
-**Owner:** YAN Haixiang
+**Owner:** demo platform owner

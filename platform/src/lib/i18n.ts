@@ -56,8 +56,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   login: {
     title: { en: "Sign in", "zh-Hant": "登入" },
     subtitle: {
-      en: "Use YAN Haixiang (docs & platform owner) or another demo role. The session stays in this browser after refresh.",
-      "zh-Hant": "使用 YAN Haixiang（文件與平台負責人）或其他示範角色。重新整理後工作階段仍會保留。",
+      en: "Use demo platform owner or another demo role. The session stays in this browser after refresh.",
+      "zh-Hant": "使用示範平台負責人或其他示範角色。重新整理後工作階段仍會保留。",
     },
   },
   dashboard: {
@@ -203,8 +203,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   users: {
     title: { en: "Users", "zh-Hant": "使用者" },
     subtitle: {
-      en: "Directory of operators and demo personas, including docs & platform owner YAN Haixiang.",
-      "zh-Hant": "操作員與示範角色目錄，含文件與平台負責人 YAN Haixiang。",
+      en: "Directory of operators and demo personas, including demo platform owner.",
+      "zh-Hant": "操作員與示範角色目錄，含示範平台負責人。",
     },
   },
   "risk-domains": {
@@ -338,8 +338,8 @@ const UI: Record<string, Pair> = {
   },
   "login.signIn": { en: "Sign in to Admin", "zh-Hant": "登入管理後台" },
   "login.hint": {
-    en: "Optional — the admin is public. Sign in as YAN Haixiang (docs & platform owner) or another named role.",
-    "zh-Hant": "可選 — 管理後台已公開。可以 YAN Haixiang（文件與平台負責人）或其他具名角色登入。",
+    en: "Optional — the admin is public. Sign in as demo platform owner or another named role.",
+    "zh-Hant": "可選 — 管理後台已公開。可以示範平台負責人或其他具名角色登入。",
   },
   "login.email": { en: "Email", "zh-Hant": "電子郵件" },
   "login.password": { en: "Password", "zh-Hant": "密碼" },

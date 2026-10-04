@@ -71,7 +71,7 @@ graph TD
 | 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | Platform settings are grouped (not a flat dump) | Platform Settings |
 | 41 | UAT-41 | 446m | 10m | Medium | AI + Risk | UAT-06; RAG seeded | RAG Knowledge Base — browse the corpus the AI cites | RAG Knowledge Base |
 | 42 | UAT-42 | 456m | 8m | Low | All | Docs published | Improvement roadmap is readable | Improvement Roadmap |
-| 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | Public snapshot — Sign in works and stays on YAN Haixiang | Login, Admin Home |
+| 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | Public snapshot — Sign in works and stays on demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — closed threads stay closed after refresh | Demo Messenger |
 | 45 | UAT-45 | 484m | 15m | Critical | Risk Owner | UAT-01–44 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
@@ -535,12 +535,12 @@ graph TD
 - **Severity:** Medium · **BU:** System + Risk Owner · **Depends:** UAT-01 · **Window:** T+301m / 10m
 - **Covers:** Admin Home, Daily Performance, Users, URL Catalog
 - **Why:** Home is the map of the desk. Dead cards and a missing owner make the prototype look unowned.
-- **Goal:** Click through Home stats and confirm they open the right pages; owner line names YAN Haixiang.
+- **Goal:** Click through Home stats and confirm they open the right pages; owner line names demo platform owner.
 
 **Steps**
 
 1. Open Admin Home.
-2. Read the platform owner line (YAN Haixiang / yan.haixiang@vantagemarkets.com) on the home panel and in the left-pane footer.
+2. Read the platform owner line (demo platform owner / haixiang.yan@hytechc.com) on the home panel and in the left-pane footer.
 3. Click these stat cards and confirm the destination: Users, Teams, Data Sources, Risk Domains, Open Alerts (Live Alerts), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.
 4. Click a department card (should open that team’s working page), a recent-alert row (Live Alerts, that alarm highlighted), and a jump tile. Header shortcuts: Demo Messenger, User Guide, Daily Performance. None should 404.
 5. If you are still a public visitor, the guest banner and Sign in control should be visible; after login they should change.
@@ -733,7 +733,7 @@ graph TD
 
 1. Open Departments. Each department should have a code, name and a one-line responsibility (the RACI you saw on Home).
 2. Open Teams. Confirm teams belong to departments and list members or a count.
-3. Open Users. Find risk.owner@vantagemarkets.com and viewer@vantagemarkets.com (and, if present, yan.haixiang@vantagemarkets.com). Roles must differ.
+3. Open Users. Find risk.owner@vantagemarkets.com and viewer@vantagemarkets.com (and, if present, haixiang.yan@hytechc.com). Roles must differ.
 4. Open Roles & Permissions. Confirm RISK_OWNER can enter admin and VIEWER cannot operate AI Admin — this is the policy behind UAT-01.
 5. Home Users/Teams counts should match what you just counted (allowing for seed size).
 
@@ -808,23 +808,23 @@ graph TD
 **Pass:** Roadmap page renders with at least one phase and one out-of-scope note.
 **Evidence:** Screenshot of the roadmap.
 
-### UAT-43 — Public snapshot — Sign in works and stays on YAN Haixiang
+### UAT-43 — Public snapshot — Sign in works and stays on demo platform owner
 
 - **Severity:** Critical · **BU:** System + Platform owner · **Depends:** Public snapshot or local login · **Window:** T+464m / 10m
 - **Covers:** Login, Admin Home
 - **Why:** The live github.io Sign in used to 404. The platform owner must be able to stay logged in on the snapshot.
-- **Goal:** From the public guest banner, Sign in without 404 and remain signed in as YAN Haixiang after a refresh.
+- **Goal:** From the public guest banner, Sign in without 404 and remain signed in as demo platform owner after a refresh.
 
 **Steps**
 
 1. If you are on https://hxyan2020.github.io/PRD/crmp-admin/admin/, confirm the left pane says Public visitor / PUBLIC_GUEST before login.
 2. Click Sign in. You must land on a Sign in form under /PRD/crmp-admin/login/ — never github.io/login and never 404.
-3. Sign in as yan.haixiang@vantagemarkets.com / yan123 (platform owner). Admin Home should show YAN Haixiang, not Public visitor.
-4. Refresh the page. You should still be YAN Haixiang (demo session persist). Navigate to Demo Messenger and back; the name must not reset to guest.
+3. Sign in as haixiang.yan@hytechc.com / yan123 (platform owner). Admin Home should show demo platform owner, not Public visitor.
+4. Refresh the page. You should still be demo platform owner (demo session persist). Navigate to Demo Messenger and back; the name must not reset to guest.
 5. On localhost the same accounts should work against the live API; a 401 with a readable error is a Fail.
 
-**Pass:** Sign in URL is basePath-safe; session shows YAN Haixiang and survives refresh on the snapshot.
-**Evidence:** URL-bar screenshot of /login plus Home showing YAN Haixiang after refresh.
+**Pass:** Sign in URL is basePath-safe; session shows demo platform owner and survives refresh on the snapshot.
+**Evidence:** URL-bar screenshot of /login plus Home showing demo platform owner after refresh.
 
 ### UAT-44 — Messenger — closed threads stay closed after refresh
 
@@ -856,7 +856,7 @@ graph TD
 1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
 3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), and public Sign in (UAT-43) passed.
-4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name YAN Haixiang (or the delegated Risk Owner).
+4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 
 **Pass:** Signed decision recorded; Critical 100% Pass; High waivers ≤2 if any.

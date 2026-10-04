@@ -3,7 +3,7 @@
 **文件編號：** CRMP-PRD-001  
 **狀態：** 原型／可示範  
 **產品範圍：** CFD + 加密貨幣交易所  
-**負責人：** YAN Haixiang · **核准人：** 風險負責人  
+**負責人：** demo platform owner · **核准人：** 風險負責人  
 **相關文件：** [TSD](/admin/docs/tsd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [生態導入評估](/admin/docs/ecosystem)
 
 本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-45](/admin/docs/uat)。
@@ -47,7 +47,7 @@ graph LR
 | G8 | 完整管理地圖 | §6.4 每個左側分組／頁都已交付並寫進文件 |
 | G9 | 未讀感知 | 警報／分析／Messenger／情報／干預／脊柱／稽核／Monitor／風險日誌／偵測器的新工作顯示徽章，打開後清除 |
 | G10 | 公開示範 | GitHub Pages 快照 `/PRD/crmp-admin/` 可走完後台，登入、Messenger「在管理後台開啟」、立即掃描不出現 404／405 |
-| G11 | 具名負責人 | 平台負責人 YAN Haixiang 為一級角色；工作階段留在瀏覽器 |
+| G11 | 具名負責人 | 平台負責人 demo platform owner 為一級角色；工作階段留在瀏覽器 |
 
 ---
 
@@ -68,7 +68,7 @@ graph LR
 
 | 角色 | 主要工作 |
 |---|---|
-| **平台負責人（YAN Haixiang）** | 擁有後台與文件；公開快照預設登入 |
+| **平台負責人（demo platform owner）** | 擁有後台與文件；公開快照預設登入 |
 | **風險負責人** | 接受／駁回 AI 包；升級；核准不可逆控制；跑 UAT 出口 |
 | **風險分析師** | 分流警報；在 messenger 挑戰 AI；補充脈絡 |
 | **營運主管／分析師** | 提案停交易／封鎖／加寬／暫停跟單；Maker 確認進管理後台 |
@@ -220,7 +220,7 @@ graph LR
 | FR-24 | 即時警報確認佇列 | OPEN 依嚴重度排序；Acknowledge 變更狀態 |
 | FR-25 | 知識樹視覺化 | SVG 圖＋大綱；領域展開；進入劇本；RAG 幹 |
 | FR-26 | 分組平台設定 | 六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器 |
-| FR-27 | 組織目錄 | 部門、團隊、角色（權限晶片）、使用者（含 YAN Haixiang；localhost 可新增／停用） |
+| FR-27 | 組織目錄 | 部門、團隊、角色（權限晶片）、使用者（含 demo platform owner；localhost 可新增／停用） |
 | FR-28 | 升級路徑＋Lark 登錄 | 嚴重度 → 團隊 → SLA；頻道啟用；messenger 升級跟隨路徑 |
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
@@ -265,7 +265,7 @@ graph LR
 | 組織 | 部門 | `/admin/departments` | RACI | 四個 BU 含職責 |
 | 組織 | 團隊 | `/admin/teams` | 值班 | 成員、Lark chat、輪值 |
 | 組織 | 角色與權限 | `/admin/roles` | RBAC | 每角色權限晶片 |
-| 組織 | 使用者 | `/admin/users` | 目錄 | YAN Haixiang 在；管理可新增／停用 |
+| 組織 | 使用者 | `/admin/users` | 目錄 | demo platform owner 在；管理可新增／停用 |
 | 平台 | 資料來源 | `/admin/data-sources` | 來源登錄 | 分類＋狀態 |
 | 平台 | AI 存取安全 | `/admin/security/ai-access` | 僅限人類清單 | 黑名單＋允許＋禁止權限 |
 | 平台 | 稽核日誌 | `/admin/audit` | 誰改了什麼 | 列出最近變更 |
@@ -313,7 +313,7 @@ graph LR
 9. **Pages：** 登入、messenger 在管理後台開啟、市場情報立即掃描不出現 404／405。  
 10. **知識樹：** 領域展開＋進入打開劇本。  
 11. **未讀：** 新模擬／掃描讓徽章增加；打開分頁清除。  
-12. **負責人登入：** YAN Haixiang 角色在 Pages 重新整理後仍在。
+12. **負責人登入：** demo platform owner 角色在 Pages 重新整理後仍在。
 
 正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-45）。此包覆蓋每一個管理畫面以及完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步）。
 
@@ -382,9 +382,9 @@ graph LR
 
 | 角色 | 姓名 | 決策 | 日期 |
 |---|---|---|---|
-| 平台負責人／文件負責人 | YAN Haixiang | 具名 | 2026-10-04 |
+| 平台負責人／文件負責人 | demo platform owner | 具名 | 2026-10-04 |
 | 風險負責人 | Alex Chen（示範） | 示範角色 | |
-| 風險平台 PM | YAN Haixiang | 具名 | 2026-10-04 |
+| 風險平台 PM | demo platform owner | 具名 | 2026-10-04 |
 | 工程主管 | _待定_ | | |
 | 資安／GRC | _待定_ | | |
 
@@ -397,4 +397,4 @@ graph LR
 | 1.0 | 2026-10-01 | 目標 G1–G7、FR-01…16 |
 | 1.5 | 2026-10-04 | 各旅程與職能分離流程圖 |
 
-**負責人：** YAN Haixiang
+**負責人：** demo platform owner
