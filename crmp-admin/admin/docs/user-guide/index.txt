@@ -7,16 +7,17 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","style"]
-0:{"P":null,"b":"NpCRY5smTQIKI1ld97LYz","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","S6Kn3YHGqbbBZ6R3WjyH2",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-1858fe6244e64264.js","7581","static/chunks/app/admin/layout-e278f05cdab9108c.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 12:54:30"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 12:54:30"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 12:54:30"},"/admin/market-intel":{"count":0,"latestAt":null},"/admin/interventions":{"count":0,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 12:54:33"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 12:54:30"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 12:54:30"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-1858fe6244e64264.js","8259","static/chunks/app/admin/docs/user-guide/page-f62a7031c3ef02b4.js"],""]
-10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-1858fe6244e64264.js","8259","static/chunks/app/admin/docs/user-guide/page-f62a7031c3ef02b4.js"],"DocArticleView"]
-11:T51c8,<h1 id="crmp-user-guide" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP User Guide</h1>
+:HL["/PRD/crmp-admin/_next/static/css/5d6a77cbc0ab2ddc.css","style"]
+0:{"P":null,"b":"v1miMX7wqUGstLDy-UKCx","p":"/PRD/crmp-admin","c":["","admin","docs","user-guide",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["user-guide",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/5d6a77cbc0ab2ddc.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["user-guide",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","sHnc4AaM6H8-99GYGyUhz",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-0dc9008e84613d0c.js","7581","static/chunks/app/admin/layout-0424253f35096a1a.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 13:08:31"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 13:08:31"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 13:08:31"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-04T13:08:31.300Z"},"/admin/interventions":{"count":0,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-04 13:08:34"},"/admin/audit":{"count":3,"latestAt":"2026-10-04 13:08:31"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 13:08:31"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-0dc9008e84613d0c.js","8259","static/chunks/app/admin/docs/user-guide/page-1ca74808915833ff.js"],""]
+10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-0dc9008e84613d0c.js","8259","static/chunks/app/admin/docs/user-guide/page-1ca74808915833ff.js"],"DocArticleView"]
+11:T7e74,<h1 id="crmp-user-guide" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP User Guide</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-UG-001 · <strong>Audience:</strong> Risk Owner, Risk Analyst, Ops, AI Engineer, System Admin  </p>
-<p class="text-sm leading-relaxed my-2"><strong>Languages:</strong> English (this page) · <a class="underline" href="/admin/docs/user-guide?lang=zh-Hant">繁體中文</a></p>
+<p class="text-sm leading-relaxed my-2"><strong>Languages:</strong> English (this page) · <a class="underline" href="/admin/docs/user-guide?lang=zh-Hant">繁體中文</a>  </p>
+<p class="text-sm leading-relaxed my-2"><strong>Docs &amp; platform owner:</strong> YAN Haixiang (<code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code>)</p>
 
 <h2 id="0-what-this-platform-is" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">0. What this platform is</h2>
 
@@ -36,8 +37,8 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <h2 id="1-sign-in-language" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. Sign in &amp; language</h2>
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>Open [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login).  </li>
-<li>Pick a persona button or enter credentials:</li>
+<li>Open [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login). On the public GitHub Pages snapshot this page lives at <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code> — use the <strong>Sign in</strong> link in the left pane (do not type <code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code> on github.io by itself).  </li>
+<li>Pick a persona button or enter credentials. The account created for you is <strong>YAN Haixiang</strong> (platform owner). The session stays in this browser after you click Sign in.</li>
 </ol>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
@@ -46,6 +47,11 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Email</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Password</th>
 </tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform Owner</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan123</code></td>
+</tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Owner</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.owner@vantagemarkets.com</code></td>
@@ -230,10 +236,14 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
 <li>Enablement via settings (<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>).  </li>
-<li>Scanner runs about every <strong>5 minutes</strong> (or use Run scan).  </li>
+<li>Click <strong>Scan now</strong> (or wait for the 5-minute scheduler on localhost).  </li>
 <li>Review <strong>Findings</strong>, <strong>Messenger outbox</strong>, sources, and scan history.  </li>
 <li>Cards follow the i–vi format and can raise indicator <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code>.</li>
 </ol>
+
+<p class="text-sm leading-relaxed my-2"><strong>Public GitHub Pages:</strong> there is no <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code> on the snapshot. <strong>Scan now</strong> runs a local demo scan from the same event templates as the live scanner. New findings appear immediately in Findings / outbox / scan log. Live HTTP scrapes still belong on <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>.</p>
+
+<div class="doc-flow doc-flow-h"><div class="doc-flow-node">Scan now</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Event templates</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Findings desk</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Messenger outbox</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">M2-MKT-INTEL</div></div>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -346,10 +356,171 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
 </tr>
 </tbody></table></div>
-12:T4e45,<h1 id="crmp-使用手冊" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 使用手冊</h1>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="11-every-admin-screen-plain-english" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. Every admin screen (plain English)</h2>
+
+<p class="text-sm leading-relaxed my-2">Use this table as the map of what each left-nav group is for. Click the home-page cards to jump to the same places.</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Group</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Page</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">What you do there</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Admin Home</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Counts, departments, recent alerts. Cards are clickable.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Daily Performance</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Day-end CFD + crypto risk picture.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Log Analytics</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Timeline of events, handling time, loss vs prevented.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Market Intelligence</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">5-minute news/social scan; Scan now; messenger cards.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Indicator registry, tickets, sync from the upstream monitor.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detectors</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Thresholds that raise alarms.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Live Alerts</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Open queue: ack, escalate, open AI.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor &amp; risk</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Risk Domains</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Catalogue of CFD + crypto domains.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Analyses</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Primary RCA + second-AI challenge.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker/checker settings, models, skills, RAG.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Skills</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Playbook cards; Enter opens the full SKILL.md page.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Knowledge Tree</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Visual map of domains, skills, RAG.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG Knowledge Base</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Evidence corpus used when a skill is uncertain.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI &amp; knowledge</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine Log</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Detect → AI → escalate → intervene trail.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human Intervention</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Approve or reject gates (checker).</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark-style inbox: evidence, chat, escalate, dismiss, close, controls.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark Integration</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Channel registry (mock webhooks in the prototype).</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Response</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Escalation Routes</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Severity → team → SLA.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Organisation</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Departments / Teams / Roles / Users</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI, on-call, RBAC, directory (includes YAN Haixiang).</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Data Sources</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Internal + external registry.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Access Security</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Human-only pages/functions/fields.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Audit Log</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Who changed what.</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Platform Settings</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Grouped flags (platform, Monitor, AI, market intel, Lark, SLA).</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Docs</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / URL Catalog</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Product and operator documentation.</td>
+</tr>
+</tbody></table></div>
+
+<div class="doc-flow doc-flow-v"><div class="doc-flow-node">Monitor 2.0 alarm</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">CRMP Admin</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">AI RCA + challenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Demo Messenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Human intervention</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">Audit + spine</div></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="12-document-control" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. Document control</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Ver</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Date</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Notes</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Operator handbook</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.3</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">All admin screens, public Scan demo, YAN Haixiang owner, login on Pages</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>Owner:</strong> YAN Haixiang</p>
+12:T76af,<h1 id="crmp-使用手冊" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 使用手冊</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-UG-001 · <strong>對象：</strong> 風險負責人、風險分析師、營運、AI 工程師、系統管理員  </p>
-<p class="text-sm leading-relaxed my-2"><strong>語言：</strong> 繁體中文（本頁）· <a class="underline" href="/admin/docs/user-guide?lang=en">English</a></p>
+<p class="text-sm leading-relaxed my-2"><strong>語言：</strong> 繁體中文（本頁）· <a class="underline" href="/admin/docs/user-guide?lang=en">English</a>  </p>
+<p class="text-sm leading-relaxed my-2"><strong>文件與平台負責人：</strong> YAN Haixiang（<code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code>）</p>
 
 <h2 id="0-平台是什麼" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">0. 平台是什麼</h2>
 
@@ -369,8 +540,8 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <h2 id="1-登入與語言" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. 登入與語言</h2>
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
-<li>開啟 [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login)。  </li>
-<li>點選角色按鈕或輸入帳密：</li>
+<li>開啟 [<code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>](/login)。公開 GitHub Pages 快照上此頁為 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/PRD/crmp-admin/login/</code> — 請用左側 <strong>登入</strong> 連結（不要只在 github.io 根路徑輸入 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/login</code>）。  </li>
+<li>點選角色按鈕或輸入帳密。已為你建立 <strong>YAN Haixiang</strong>（平台負責人）帳號；點登入後會留在此瀏覽器。</li>
 </ol>
 
 <div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
@@ -379,6 +550,11 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Email</th>
 <th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">密碼</th>
 </tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台負責人</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan.haixiang@vantagemarkets.com</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">yan123</code></td>
+</tr>
 <tr>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top">風險負責人</td>
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk.owner@vantagemarkets.com</code></td>
@@ -557,10 +733,14 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 
 <ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
 <li>由設定啟用（<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>）。  </li>
-<li>約每 <strong>5 分鐘</strong> 掃描（或手動 Run scan）。  </li>
+<li>點 <strong>立即掃描</strong>（本機也會每五分鐘排程）。  </li>
 <li>檢視發現、Messenger outbox、來源與掃描紀錄。  </li>
 <li>卡片採 i–vi 格式，可觸發指標 <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code>。</li>
 </ol>
+
+<p class="text-sm leading-relaxed my-2"><strong>公開 GitHub Pages：</strong> 快照沒有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api</code>。<strong>立即掃描</strong>會用與正式掃描相同的事件模板做本機示範掃描，發現會立刻出現在「發現／寄件匣／掃描紀錄」。真正 HTTP 抓取仍請在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">localhost:3000</code>。</p>
+
+<div class="doc-flow doc-flow-h"><div class="doc-flow-node">立即掃描</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">事件模板</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">發現工作台</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">Messenger 寄件匣</div><div class="doc-flow-arrow" aria-hidden="true">→</div><div class="doc-flow-node">M2-MKT-INTEL</div></div>
 
 <hr class="my-6 border-[var(--line)]" />
 
@@ -673,6 +853,151 @@ f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code></td>
 </tr>
 </tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="11-全部管理畫面-白話" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. 全部管理畫面（白話）</h2>
+
+<p class="text-sm leading-relaxed my-2">左側導覽依工作流分組。首頁卡片可點進同一頁。</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分組</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">頁面</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">你在這裡做什麼</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">總覽</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">管理首頁</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">數量、部門、近期警報。卡片可點。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每日績效</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">當日 CFD＋加密風險圖像。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">事件時間軸、處理時間、損失與防損。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">五分鐘新聞／社群掃描；立即掃描；Messenger 卡片。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">指標登錄、工單、上游同步。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">觸發警報的門檻。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">即時警報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">未結佇列：確認、升級、開 AI。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監控與風險</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險領域</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CFD＋加密領域目錄。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">主 RCA＋第二 AI 挑戰。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 管理</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker／Checker 設定、模型、Skills、RAG。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 技能</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">劇本卡片；「進入」開完整 SKILL.md。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">知識樹</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">領域、技能、RAG 視覺圖。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG 知識庫</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能不確定時的證據語料。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 與知識</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">脊柱日誌</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測 → AI → 升級 → 干預軌跡。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">人工干預</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">核准或駁回閘道（Checker）。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範 Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark 風格收件匣。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark 整合</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頻道登錄（原型為 mock webhook）。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">應變</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">升級路徑</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">嚴重度 → 團隊 → SLA。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">部門／團隊／角色／使用者</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RACI、值班、RBAC（含 YAN Haixiang）。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">資料來源、AI 存取安全、稽核、設定</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">登錄、黑名單、軌跡、分組旗標。</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用手冊／PRD／TSD／UAT／生態／路線圖／網址</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">產品與操作文件。</td>
+</tr>
+</tbody></table></div>
+
+<div class="doc-flow doc-flow-v"><div class="doc-flow-node">Monitor 2.0 警報</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">CRMP 管理後台</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">AI RCA＋挑戰者</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">示範 Messenger</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">人工干預</div><div class="doc-flow-arrow" aria-hidden="true">↓</div><div class="doc-flow-node">稽核＋脊柱</div></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="12-文件控制" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. 文件控制</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">版次</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">日期</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">說明</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">操作手冊</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.3</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">全部管理畫面、公開掃描示範、YAN Haixiang 負責人、Pages 登入</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>負責人：</strong> YAN Haixiang</p>
 5:["$","div",null,{"children":[["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-UG-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Operator handbook · EN / 繁中"}]]}],["$","p",null,{"className":"text-sm text-[var(--muted)]","children":"Role-based walkthrough for login, alert triage, dual-AI, Demo Messenger, maker/checker, and safety habits."}],["$","div",null,{"className":"action-row","children":[["$","$Lf","/admin/messenger",{"className":"btn","href":"/admin/messenger","children":"Messenger"}],["$","$Lf","/admin/ai-analyses",{"className":"btn","href":"/admin/ai-analyses","children":"AI Analyses"}],["$","$Lf","/admin/ai-admin",{"className":"btn","href":"/admin/ai-admin","children":"AI Admin"}],["$","$Lf","/admin/market-intel",{"className":"btn","href":"/admin/market-intel","children":"Market Intel"}],["$","$Lf","/admin/docs/uat",{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf","/admin/docs/urls",{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}]]}],["$","$L10",null,{"docId":"USER_GUIDE","htmlEn":"$11","htmlZh":"$12"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
