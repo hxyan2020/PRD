@@ -2,11 +2,11 @@
   "cleanUrls": true,
   "trailingSlash": true,
   "rewrites": [
-    { "source": "/study", "destination": "/study/index.html" }
+    { "source": "/study", "destination": "/PRD/risk-champion-site/study/index.html" }
   ],
   "headers": [
     {
-      "source": "/study/(.*)",
+      "source": "/PRD/risk-champion-site/study/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     }
   ]

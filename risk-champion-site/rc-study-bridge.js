@@ -2,9 +2,9 @@
   function studyHref() {
     const path = location.pathname || "/";
     const m = path.match(/^(.*?\/risk-champion-site)(?:\/|$)/);
-    if (m) return m[1].replace(/\/$/, "") + "/study/";
+    if (m) return m[1].replace(/\/$/, "") + "/PRD/risk-champion-site/study/";
     // Local static / Vercel root deploy
-    return "/study/";
+    return "/PRD/risk-champion-site/study/";
   }
 
   function ensureNavLink(nav) {
