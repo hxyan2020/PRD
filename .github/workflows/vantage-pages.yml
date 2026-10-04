@@ -2,7 +2,7 @@ name: Publish Vantage static site
 
 on:
   push:
-    branches: [cursor/vantage-market-intelligence-1a73, main]
+    branches: [cursor/vantage-market-intelligence-1a73, cursor/fix-mi-desk-a935, main]
   workflow_dispatch:
 
 permissions:
@@ -24,6 +24,8 @@ jobs:
           cache-dependency-path: vantage/package-lock.json
       - name: Build portable static site
         working-directory: vantage
+        env:
+          NEXT_PUBLIC_BASE_PATH: /PRD
         run: |
           npm ci
           npm test
@@ -41,4 +43,5 @@ jobs:
           keep_files: true
       - name: Public URL
         run: |
-          echo "Permanent public desk: https://raw.githack.com/hxyan2020/PRD/gh-pages/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Public desk: https://hxyan2020.github.io/PRD/desk/" >> "$GITHUB_STEP_SUMMARY"
+          echo "Home: https://hxyan2020.github.io/PRD/" >> "$GITHUB_STEP_SUMMARY"

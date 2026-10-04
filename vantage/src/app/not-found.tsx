@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 
 export default function NotFound() {
@@ -9,9 +10,9 @@ export default function NotFound() {
       <p className="font-serif text-2xl">{t("notFound")}</p>
       <p className="mt-2 text-sm text-muted">
         {t("notFoundHint")}
-        <a className="mx-1 text-gold underline decoration-gold/30" href="./">
+        <Link className="mx-1 text-gold underline decoration-gold/30" href="/desk/">
           {t("backHome")}
-        </a>
+        </Link>
         .
       </p>
     </div>

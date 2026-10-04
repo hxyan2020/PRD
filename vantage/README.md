@@ -35,17 +35,15 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-Permanent public site: [https://raw.githack.com/hxyan2020/PRD/gh-pages/](https://raw.githack.com/hxyan2020/PRD/gh-pages/)
+Permanent public site: [https://hxyan2020.github.io/PRD/desk/](https://hxyan2020.github.io/PRD/desk/)
 
-The first visit may show a raw.githack notice; open the page and the desk loads. This URL tracks the `gh-pages` branch. GitHub Pages on `hxyan2020.github.io/PRD` is not enabled on this repository. jsDelivr serves `index.html` as plain text, so that CDN listing is not the app.
+Also: [https://hxyan2020.github.io/PRD/](https://hxyan2020.github.io/PRD/)
 
-A Cloudflare Worker host lives in `public-host/` for a cleaner `*.workers.dev` hostname after that account is claimed.
-
-The export is path-portable (relative `?view=` / `?category=` links and `./_next` assets).
+GitHub Pages serves the `gh-pages` branch at the `/PRD` project path. Nested routes (`/desk/`, `/regulation/`, …) load CSS/JS from `/PRD/_next/`.
 
 Use the EN / 中文 control to switch the whole desk. Chrome, catalogs, story copy, and the Vantage impact note switch together.
 
-- `?` daily briefing
+- `/desk/` or `?` daily briefing
 - `?category=listing` listings
 - `?category=product` features
 - `?view=regulation` regulatory slice
