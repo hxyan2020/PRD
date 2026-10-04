@@ -446,6 +446,7 @@ export function shellCopy(locale: UiLocale) {
     publicMode: t("shell.publicMode", locale),
     menu: t("shell.menu", locale),
     language: t("shell.language", locale),
+    unread: t("nav.unread", locale),
   };
 }
 

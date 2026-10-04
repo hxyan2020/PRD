@@ -7,6 +7,7 @@ import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
+import { bumpNavBadge } from "@/lib/nav-badges";
 
 const ACTION_I18N: Record<string, { en: string; "zh-Hant": string; descEn: string; descZh: string }> = {
   BLOCK_ACCOUNT: {
@@ -287,6 +288,8 @@ export function DemoMessenger({
       }
       setStatusMsg(t("msg.actionDone", locale, { action }));
       setConfirmId(null);
+      if (action === "escalate" || action === "sync") bumpNavBadge("/admin/messenger", 1);
+      if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
       return;
     }
     setBusy(true);
@@ -305,6 +308,7 @@ export function DemoMessenger({
     if (action === "sync") {
       setThreads(data.threads || []);
       setStatusMsg(t("msg.synced", locale, { n: data.synced ?? 0 }));
+      bumpNavBadge("/admin/messenger", Number(data.synced) || 1);
       router.refresh();
       return;
     }
@@ -317,6 +321,8 @@ export function DemoMessenger({
     const listData = await listRes.json();
     if (listRes.ok) setThreads(listData.threads || []);
     setStatusMsg(t("msg.actionDone", locale, { action }));
+    if (action === "escalate") bumpNavBadge("/admin/messenger", 1);
+    if (action === "confirm_action") bumpNavBadge("/admin/interventions", 1);
   }
 
   useEffect(() => {

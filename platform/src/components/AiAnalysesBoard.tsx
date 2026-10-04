@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
 import { publicAdminHref } from "@/lib/static-export";
+import { bumpNavBadge } from "@/lib/nav-badges";
 
 type Analysis = {
   id: number;
@@ -62,6 +63,15 @@ export function AiAnalysesBoard({
             : "Done"
     );
     router.refresh();
+    if (action === "simulate_alarm") {
+      bumpNavBadge("/admin/alerts", 1);
+      bumpNavBadge("/admin/ai-analyses", 1);
+      bumpNavBadge("/admin/spine", 1);
+    } else if (action === "analyze_open") {
+      bumpNavBadge("/admin/ai-analyses", Number(data.count) || 1);
+    } else if (action === "backfill_challenges") {
+      bumpNavBadge("/admin/ai-analyses", Number(data.count) || 1);
+    }
     if (action === "simulate_alarm" && detailId) {
       // Hard navigate so detail is immediately visible
       window.location.href = publicAdminHref(`/admin/ai-analyses/${detailId}`);

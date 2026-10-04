@@ -1,4 +1,5 @@
 import type Database from "better-sqlite3";
+import { FALLBACK_NAV_TOTALS } from "@/lib/nav-badges";
 
 export type NavEventSnapshot = Record<string, { count: number; latestAt: string | null }>;
 
@@ -9,6 +10,16 @@ function scalar(db: Database.Database, sql: string): { c: number; ts: string | n
   } catch {
     return { c: 0, ts: null };
   }
+}
+
+function withFallback(snap: NavEventSnapshot): NavEventSnapshot {
+  const out: NavEventSnapshot = { ...snap };
+  for (const [href, count] of Object.entries(FALLBACK_NAV_TOTALS)) {
+    if (!out[href] || out[href].count <= 0) {
+      out[href] = { count, latestAt: out[href]?.latestAt ?? null };
+    }
+  }
+  return out;
 }
 
 /** Open / recent event counts used as unread badges on the left nav. */
@@ -36,8 +47,13 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     db,
     `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM monitor_tickets WHERE status NOT IN ('RESOLVED','CLOSED')`
   );
+  const riskLog = scalar(db, `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM alert_impacts`);
+  const detectors = scalar(
+    db,
+    `SELECT COUNT(*) AS c, MAX(last_run_at) AS ts FROM detectors WHERE last_status IN ('WARN','BREACH')`
+  );
 
-  return {
+  return withFallback({
     "/admin/alerts": { count: alerts.c, latestAt: alerts.ts },
     "/admin/ai-analyses": { count: analyses.c, latestAt: analyses.ts },
     "/admin/messenger": { count: messenger.c, latestAt: messenger.ts },
@@ -46,5 +62,7 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     "/admin/spine": { count: spine.c, latestAt: spine.ts },
     "/admin/audit": { count: audit.c, latestAt: audit.ts },
     "/admin/monitor-2": { count: tickets.c, latestAt: tickets.ts },
-  };
+    "/admin/risk-log": { count: riskLog.c, latestAt: riskLog.ts },
+    "/admin/detectors": { count: detectors.c, latestAt: detectors.ts },
+  });
 }

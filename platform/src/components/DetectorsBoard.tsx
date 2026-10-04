@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, StatusBadge, SeverityBadge } from "@/components/ui";
+import { bumpNavBadge } from "@/lib/nav-badges";
 
 type Detector = {
   id: number;
@@ -61,6 +62,11 @@ export function DetectorsBoard({
     }
     const alarms = (data.results || []).filter((r: { status: string }) => r.status !== "HEALTHY").length;
     setMsg(`Ran ${data.results?.length ?? 0} detectors · ${alarms} warn/breach (alarms auto → AI RCA)`);
+    if (alarms > 0) {
+      bumpNavBadge("/admin/detectors", alarms);
+      bumpNavBadge("/admin/alerts", alarms);
+      bumpNavBadge("/admin/ai-analyses", alarms);
+    }
     router.refresh();
   }
 

@@ -8,6 +8,7 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 import { t } from "@/lib/i18n";
 import { isPublicSnapshot, isStaticExport } from "@/lib/static-export";
 import { runClientMarketIntelScan } from "@/lib/market-intel/demo-scan";
+import { bumpNavBadge } from "@/lib/nav-badges";
 
 const MI_STORE = "crmp_mi_demo_v1";
 
@@ -158,6 +159,8 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
         pushed: demo.findings_pushed,
       })
     );
+    bumpNavBadge("/admin/market-intel", demo.findings_new);
+    bumpNavBadge("/admin/messenger", demo.findings_pushed);
   }
 
   function toggleEnabledLocal() {
@@ -207,6 +210,8 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
           ? `Scan ${data.scan_id}: ${data.findings_new} new → ${data.findings_pushed} pushed to messenger`
           : "OK"
       );
+      bumpNavBadge("/admin/market-intel", Number(data.findings_new) || 1);
+      bumpNavBadge("/admin/messenger", Number(data.findings_pushed) || 0);
       router.refresh();
     } catch {
       setSnapshot(true);
