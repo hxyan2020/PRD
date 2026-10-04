@@ -194,7 +194,7 @@
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.9 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>加密货币交易所风险管理 — 业务单元用户手册 · v2.0 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
       </div>
       <div class="md-links">
         <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
@@ -251,7 +251,7 @@
 <p><strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
 <strong>Scope:</strong> Full catalogue covers Spot · Margin · Perps; <strong>Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access</strong><br />
 <strong>Public site:</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>All URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>Admin URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
-<strong>Version:</strong> 1.9 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
+<strong>Version:</strong> 2.0 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
 <blockquote>
 <p>This handbook is the <strong>operating playbook</strong>: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does <strong>not</strong> replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.<br />
 <strong>Numbers in this handbook are teaching examples.</strong> Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.</p>
@@ -683,6 +683,19 @@ flowchart LR
 <li>Practice saying a halt request in one breath: <em>symbol, reason, orders-only or include liquidations, who already knows.</em>  </li>
 <li>Do not change a limit, a mark source, or a kill switch until you have watched one G01 and one G04 (two-person check) as a <strong>reader</strong>.</li>
 </ol>
+<h3>Worked example — 03:00, one red light (no background needed)</h3>
+<p>You are on RO-OPS. Pager: <strong>PF-K01 BREACH</strong> on <strong>XAUUSD</strong>. You have never traded gold.</p>
+<ol>
+<li><strong>ACK within 5 minutes</strong> (G03). That only means “I saw it.” It does not fix gold.</li>
+<li><strong>Look at the timestamp</strong> on the number (PL-K06 / PF-K02). If the clock is old, this may be a fake red or a fake green — go ENG-03. Do not liquidate or halt on a stale clock.</li>
+<li><strong>Look outside our exchange.</strong> Is gold actually moving on other venues?<br />
+   - Outside calm, we are screaming → likely <strong>S2</strong> (our fair-price feed is wrong). Pause unsafe liquidations (RE-02), fail over the feed (RE-03).<br />
+   - Outside also dumping, our feed healthy → likely <strong>S1</strong> (real market). Prefer <strong>reduce-only</strong> (PF-07) over a full halt if matching is healthy.</li>
+<li>Say on the bridge, in one breath: <em>“XAUUSD, PF-K01 red, I think S2, liquidations paused, Comms not posted yet.”</em></li>
+<li>Do <strong>not</strong> rewrite the mark formula to make the chart pretty. Do <strong>not</strong> close the alert because “it flickered back to green.”</li>
+<li>Full recipe: <strong>PF-03</strong>. Detective chapter: <strong>§9</strong>.</li>
+</ol>
+<p>That is the whole job of a first night: <strong>see, timestamp, outside world, contain, name the family, write it down.</strong></p>
 <hr />
 <h2>1. How to use this handbook</h2>
 <div class="table-wrap"><table>
@@ -1095,7 +1108,15 @@ flowchart TB
 
 <hr />
 <h2>4. BU-by-BU playbooks</h2>
-<p>Each chapter follows the same template:</p>
+<p>Each chapter follows the same template so one team does not write a novel while another dumps three acronyms:</p>
+<ul>
+<li><strong>In scope / out of scope</strong> — should this incident land on you?</li>
+<li><strong>Job division</strong> — who on your team clicks</li>
+<li><strong>SOPs</strong> — numbered recipes; the full how-to is in <strong>§6.7</strong></li>
+<li><strong>Tools / admin pages</strong> — where to look, where to change</li>
+<li><strong>Handoffs</strong> — who you pass the baton to</li>
+</ul>
+<p><strong>In plain English:</strong> a “BU” is one business unit (futures product, matching, wallet, …). A “PIC” is the named owner. Tickets and admin access hang off those names. You do not need to be a trader. You do need to know whether this chapter is yours, and the first SOP to open when something breaks.</p>
 <p><strong>Figure — Phase 1 critical-path BUs</strong></p>
 <div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Invite / Broker + CP</div><span class="arrow">→</span><div class="node">Trade-enabled UID</div><span class="arrow">→</span><div class="node">Matching ME</div><span class="arrow">→</span><div class="node">Risk engine RE</div><span class="arrow">→</span><div class="node">Futures TO / PM</div><span class="arrow">→</span><div class="node">RO / RO-OPS</div><span class="arrow">→</span><div class="node">Wallet WO</div><span class="arrow">→</span><div class="node">CRO</div></div></div>
 <div class="viz"><div class="mermaid">
@@ -1109,14 +1130,6 @@ flowchart LR
   RO --> CRO["CRO"]
 </div></div>
 
-<ul>
-<li><strong>In scope / out of scope</strong></li>
-<li><strong>Job division</strong></li>
-<li><strong>SOPs (named)</strong></li>
-<li><strong>Useful tools</strong></li>
-<li><strong>Admin pages</strong></li>
-<li><strong>Handoffs</strong></li>
-</ul>
 <hr />
 <h3>4.1 Market Risk &amp; Risk Ops (2nd line) — RO / RO-OPS / CRO</h3>
 <h4>In scope</h4>
@@ -2229,6 +2242,7 @@ flowchart LR
 </table></div>
 <hr />
 <h3>4.10 Treasury, Settlement &amp; Banking — TS</h3>
+<p><strong>In plain English:</strong> Treasury owns <strong>the firm's money and pipes</strong> (banks, stablecoin inventory, cash in the insurance fund) — not whether a customer's trade made a profit. If the end-of-day books do not match, they must <strong>not</strong> send a payment.</p>
 <h4>In scope</h4>
 <ul>
 <li>Fiat corridors, banking concentration</li>
@@ -2270,9 +2284,10 @@ flowchart LR
 </tbody>
 </table></div>
 <h4>Admin pages</h4>
-<p>| <code>/admin/treasury/balances</code>, <code>/admin/treasury/settlement</code>, <code>/admin/treasury/stablecoins</code></p>
+<p><code>/admin/treasury/balances</code> · <code>/admin/treasury/settlement</code> · <code>/admin/treasury/stablecoins</code></p>
 <hr />
 <h3>4.11 Liquidity / Market Making Ops — MM</h3>
+<p><strong>In plain English:</strong> a market maker is paid (or contracted) to keep a <strong>buy price and a sell price</strong> on the book so other people can trade. If the gap between those prices suddenly explodes, or the book is empty, first ask “is the maker still alive (heartbeat)?” before you decide the whole market crashed.</p>
 <h4>In scope</h4>
 <ul>
 <li>MM agreement SLAs (depth, spread, uptime) for Spot &amp; Perps</li>
@@ -2307,9 +2322,10 @@ flowchart LR
 </tbody>
 </table></div>
 <h4>Admin pages</h4>
-<p>| <code>/admin/mm/sla</code>, <code>/admin/mm/inventory</code>, <code>/admin/mm/agreements</code></p>
+<p><code>/admin/mm/sla</code> · <code>/admin/mm/inventory</code> · <code>/admin/mm/agreements</code></p>
 <hr />
 <h3>4.12 Platform Engineering, Security &amp; Data — ENG / SRE / Security / DA</h3>
+<p><strong>In plain English:</strong> they keep the pipes, the keys to admin pages, and the audit log that cannot be rewritten. Every green/red number on a risk screen comes through their pipelines. If the pipeline is late, a green light can be a lie.</p>
 <h4>In scope</h4>
 <ul>
 <li>Secure SDLC, access control, audit logs for all admin pages</li>
@@ -2334,7 +2350,7 @@ flowchart LR
 </tr>
 <tr>
 <td>ENG-02</td>
-<td>Audit log immuntability check</td>
+<td>Audit log immutability check</td>
 <td>Periodic</td>
 </tr>
 <tr>
@@ -2926,8 +2942,22 @@ flowchart LR
 <strong>Escalate if:</strong> Traffic is detected before clear → PL-K12 BREACH, force disable, L3 audit.</p>
 <hr />
 <h3>6.7 BU SOP catalogue (detailed)</h3>
+<p>This section is the <strong>desk-level recipes</strong>. Global G01–G06 above are the shared skeleton (change a limit, halt a market, ACK an alert, two-person control, end-of-day books, open a new product). Each card below is one job a named team actually runs.</p>
+<p><strong>If you have never done this work</strong></p>
+<ol>
+<li>Find your team's prefix: <strong>RM</strong> = risk ops, <strong>PF</strong> = perps (today's live product), <strong>ACC</strong> = invite/broker access, <strong>ME</strong> = matching engine, <strong>RE</strong> = risk/liquidation engine, <strong>WA</strong> = wallet, <strong>SP</strong> = spot <code>[Phase 2+]</code>, <strong>MG</strong> = margin lending <code>[Phase 2+]</code>.</li>
+<li>Read <strong>What this is</strong> first. If you cannot explain the job in one sentence to a new colleague, do not start clicking.</li>
+<li>Read <strong>When</strong>. If that event has not happened, this recipe is not yours yet — do not improvise a similar-looking action.</li>
+<li>Then <strong>How</strong>, in order. A sentence marked <em>Why</em> is the reason the previous step exists, not decoration.</li>
+<li>Do not close the ticket until <strong>Done when</strong> is true. Attach the evidence listed. A closed ticket with no screenshot/hash/ACK is an audit failure.</li>
+<li>If a field is blank or a screen is missing, <strong>stop and ask RO-OPS</strong>. Inventing a step at 03:00 is how wrong liquidations start.</li>
+</ol>
+<p><strong>Phase 1 people:</strong> read <strong>RM, PF, ACC, ME, RE, WA</strong> first. Spot (SP) and Margin (MG) cards stay here so you can study them; do not enable those products.</p>
+<hr />
 <h4>RM — Risk Ops</h4>
+<p>These are the jobs the 24×7 risk desk actually does. “MI pack” means management information — a snapshot of whether we are inside our risk appetite.</p>
 <h5>RM-01 Daily risk MI pack</h5>
+<p><strong>What this is:</strong> every day we print a picture of “are we safe?” so the next shift and the CRO do not start from a blank page. It is a newspaper, not a trade.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -2938,31 +2968,31 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>Every UTC cutoff (default 22:00) + ad-hoc on L3 day</td>
+<td>Every UTC cutoff (default 22:00) and again on any L3 day</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> SYS assemble · <strong>A:</strong> RO · <strong>C:</strong> PM/TO · <strong>I:</strong> CRO (summary)</td>
+<td><strong>R:</strong> system assembles · <strong>A:</strong> RO reads and comments · <strong>C:</strong> PM/TO on exceptions · <strong>I:</strong> CRO (summary)</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Pack published ≤ 90m after cutoff</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>1) Pull strategy/desk/company snapshots + open alerts + stress highlights via <code>risk_reporting.py</code>. 2) RAG §8 families. 3) Flag waivers expiring ≤7d. 4) Distribute DL. 5) RO comments exceptions.</td>
+<td>Pack published ≤ 90 minutes after cutoff</td>
 </tr>
 <tr>
 <td><strong>Systems</strong></td>
 <td><code>/admin/risk/reports</code> · <code>risk_reporting.py</code></td>
 </tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Email/portal post + RO ACK. <strong>Escalate if</strong> pack &gt;2h late → ENG-03.</td>
-</tr>
 </tbody>
 </table></div>
+<p><strong>How (do not skip)</strong><br />
+1. Confirm the cutoff actually finished (matching, risk engine, wallet feeds have a timestamp at or after cutoff). <em>Why:</em> a pack built on a stuck feed looks green and is a lie (family S9).<br />
+2. Run <code>risk_reporting.py</code> (or the portal job) so it pulls: desk/company snapshots, every still-open WARN/BREACH, stress-test highlights, waivers expiring in 7 days.<br />
+3. Paint each §8 family red/amber/green <strong>and write the feed timestamp next to the colour</strong>.<br />
+4. Send to the distribution list. The RO writes a short comment on every amber/red — silence is not a review.<br />
+5. ACK in the portal. If the pack is &gt;2 hours late, that is <strong>ENG-03</strong> (pipeline), not “we were busy.”</p>
+<p><strong>Done when:</strong> email/portal post exists and an RO has ACK'd. <strong>Escalate if:</strong> pack &gt;2h late → ENG-03; numbers contradict the live alert console → treat as data incident, do not “fix the PDF.”</p>
 <h5>RM-02 Soft-limit WARN response</h5>
+<p><strong>What this is:</strong> a yellow light. Something is off. You have minutes, not hours. WARN is <strong>not</strong> permission to ignore until red.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -2973,27 +3003,27 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>Any WARN (§8)</td>
+<td>Any WARN on §8</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> RO-OPS · <strong>C:</strong> BU PIC · <strong>A:</strong> RO if persists &gt;TTE</td>
+<td><strong>R:</strong> RO-OPS · <strong>C:</strong> the BU PIC for that product · <strong>A:</strong> RO if it lasts beyond time-to-escalate</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>ACK 15m; plan 30–60m</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>G03 triage → document cause → watch vs act → if approaching BREACH pre-stage G01/G02.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>WARN cleared or upgraded with ticket.</td>
+<td>ACK 15 min; a written plan in 30–60 min</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How</strong><br />
+1. ACK in the console (SOP-G03). <em>Why:</em> ACK stops the pager from shouting at the next person so you can think.<br />
+2. Check the timestamp (PL-K06 / PF-K02). Stale yellow → ENG-03, do not change limits.<br />
+3. Write one sentence: “this looks like S? because …”. List other KRIs that moved in ±15 minutes.<br />
+4. Decide <strong>watch</strong> (stay on the desk, name a re-check time) or <strong>act</strong> (open a G01/G02/PF-<em> draft </em>now<em>). If the number is walking toward BREACH, pre-stage the next SOP while it is still yellow. </em>Why:<em> finding a Checker at red is slower than finding them at yellow.<br />
+5. Leave the WARN ticket open until the colour is green </em><em>or</em>* you have upgraded it.</p>
+<p><strong>Done when:</strong> WARN cleared or upgraded with a ticket. <strong>Escalate if:</strong> two WARNs on the same family with no plan → treat as L2.</p>
 <h5>RM-03 Hard-limit BREACH response</h5>
+<p><strong>What this is:</strong> a red light. The safety margin is gone. Contain first; write the essay later.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3004,27 +3034,27 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>BREACH / Kill-adjacent</td>
+<td>BREACH or anything next to Kill</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> RO-OPS + BU PIC · <strong>A:</strong> RO · page CRO if L3+</td>
+<td><strong>R:</strong> RO-OPS + the product BU PIC · <strong>A:</strong> RO · page CRO if L3+</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>ACK 5m; containment 15m</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Contain per instrument (reduce-only / borrow freeze / halt) → verify auto actions → §9 family → war room if Sev-1/2 → post-mortem.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Contained + owner for permanent fix.</td>
+<td>ACK 5 min; containment 15 min</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How</strong><br />
+1. ACK (G03). Say on the bridge: scope, KRI id, best §9 family guess.<br />
+2. <strong>Contain by product, immediately:</strong> perps → prefer reduce-only (PF-07); margin <code>[Phase 2+]</code> → consider borrow freeze (MG-03); spot <code>[Phase 2+]</code> → consider halt (G02). <em>Why:</em> the engine will keep matching unless someone changes the mode.<br />
+3. Check whether the <strong>automatic</strong> action in the §8 table actually fired. If it should have and did not, that is a <strong>second</strong> incident (engine), not a footnote.<br />
+4. Set L1–L4 using §8.2. Sev-1/2 → war room (§10). Do not debug alone on client-asset issues.<br />
+5. Keep the BREACH open until containment has an owner for the permanent fix. Clicking “close alert” is not containment.</p>
+<p><strong>Done when:</strong> contained + named owner for the permanent fix. <strong>Escalate if:</strong> 15 min with no containment → L3 automatically.</p>
 <h5>RM-04 Leverage / rights increase</h5>
+<p><strong>What this is:</strong> a trader or VIP asks to borrow more risk (higher leverage, higher position cap). This is <strong>not</strong> a customer-service favour. It is a credit decision.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3035,27 +3065,28 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>TR/VIP submits buying-power or leverage request</td>
+<td>TR/VIP submits a buying-power or leverage request</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R submit:</strong> TR · <strong>R packet:</strong> SYS · <strong>A Maker:</strong> RO · <strong>Checker:</strong> RO2/PM if Tier A+ · <strong>R push:</strong> ENG/RE</td>
+<td><strong>R submit:</strong> trader · <strong>R packet:</strong> system · <strong>A Maker:</strong> RO · <strong>Checker:</strong> RO2/PM if Tier A+ · <strong>R push:</strong> ENG/RE</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Eligibility packet &lt;5m auto · Maker ≤1 BD (urgent 1h)</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td><code>trader_rights_workflow</code>: eligibility (Sharpe/DD/VaR/CP hold) → Maker approve/reject → Checker if A+ → enqueue limit update → confirm broker/OMS.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Status APPROVED + limit live. <strong>Escalate if</strong> self-approve attempt.</td>
+<td>Eligibility packet &lt;5 min auto · Maker ≤1 business day (urgent 1h)</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How</strong><br />
+1. Trader submits in <code>trader_rights_workflow</code> (never in private chat as the only record).<br />
+2. System builds an eligibility packet: recent PnL/drawdown, open CP holds, current utilisation, any unpaid bad debt. <em>Why:</em> a winning month is not a reason to ignore a compliance freeze.<br />
+3. RO (Maker) approves, rejects, or approves with a smaller number and an expiry date. Write the reason.<br />
+4. If Tier A+ (large notional / max leverage), a <strong>different human</strong> must Checker. Same login is rejected. <em>Why:</em> G04 — one stolen laptop must not raise the ceiling.<br />
+5. Only then RE/ENG pushes the new cap. Paste the config hash on the ticket.<br />
+6. Confirm the trader's broker/OMS actually shows the new cap before you tell the trader “done.”</p>
+<p><strong>Done when:</strong> status APPROVED and the live limit matches the ticket. <strong>Escalate if:</strong> anyone tries to approve their own UID → security incident, not a UI bug.</p>
 <h5>RM-05 Stress catalogue change</h5>
+<p><strong>What this is:</strong> we keep a list of “what if gold gaps 8% overnight / what if the stablecoin breaks.” Changing that list changes which disasters we pretend to survive.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3066,27 +3097,26 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>New scenario, shock size, correlation matrix edit</td>
+<td>New scenario, shock size, or correlation matrix</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> DA · <strong>A:</strong> RO · <strong>C:</strong> PM · <strong>I:</strong> CRO if core scenarios</td>
+<td><strong>R:</strong> DA (quant) · <strong>A:</strong> RO · <strong>C:</strong> PM · <strong>I:</strong> CRO if a core scenario</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Dual sign-off before catalogue publish</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Propose → backtest hit rates → RO+DA sign → version catalogue → link to daily pack.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Version ID on portal.</td>
+<td>Dual sign-off before the catalogue is published</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How</strong><br />
+1. DA proposes the shock in writing (which prices move, by how much, over how many minutes).<br />
+2. Backtest: would this have lit up on the last three real stress days? If never, the shock may be toy; if always, it may be too tight to be useful.<br />
+3. RO + DA both sign. Publish a <strong>version number</strong>. A catalogue with no version is unpublished.<br />
+4. Link the version into the daily MI pack (RM-01) so tomorrow's desk uses the new list.</p>
+<p><strong>Done when:</strong> version ID is on the portal.</p>
 <h5>RM-06 Insurance fund draw review</h5>
+<p><strong>What this is:</strong> the insurance fund is the pool that pays when a liquidation still leaves a hole. Any payout (or ADL) is a near-miss on client money.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3097,27 +3127,26 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>Any insurance payout or ADL (PF-K07/K08/K12)</td>
+<td>Any insurance payout or ADL (PF-K07 / K08 / K12)</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R flash:</strong> TO-FUT · <strong>A review:</strong> RO · <strong>C:</strong> TS accounting · <strong>I:</strong> CRO if &gt;X</td>
+<td><strong>R flash:</strong> TO-FUT · <strong>A review:</strong> RO · <strong>C:</strong> TS accounting · <strong>I:</strong> CRO if above the published size</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Flash ≤30m; formal review ≤1 BD</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Pull payout vs bankruptcy prices → liq quality → MM during event → decide inject (TS-04) / tighten brackets (G01) / ADL review (PF-06).</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Review note filed; ledger entries match.</td>
+<td>Flash note ≤30 min; formal review ≤1 business day</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How</strong><br />
+1. Within 30 min: how much was paid, at what mark, was the book thick, did liquidations run on time? One page, UTC timestamps.<br />
+2. Within 1 business day: reconcile the ledger vs the engine. Mismatch → L2/L3, do not “plug” the difference.<br />
+3. Decide: inject more money (TS-04), tighten leverage (G01), or review ADL (PF-06) if ADL fired.<br />
+4. File the note where the next RO-OPS can find it at 03:00.</p>
+<p><strong>Done when:</strong> review note filed and ledger entries match.</p>
 <h5>RM-07 Trading halt recommendation</h5>
+<p><strong>What this is:</strong> Risk can <em>recommend</em> a halt. Matching actually <em>does</em> it (G02). A recommendation sitting in chat is not a halt.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3128,25 +3157,28 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>Gap, oracle fail, cascade, reg ask</td>
+<td>Price gap, oracle/index failure, liquidation cascade, or a regulator asks</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R recommend:</strong> RO/RO-OPS · <strong>A decide:</strong> RO · execute via G02</td>
+<td><strong>R recommend:</strong> RO / RO-OPS · <strong>A decide:</strong> RO · execute via <strong>G02</strong></td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Recommendation ≤5m on BREACH cascade</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>State scope/reason/family → call G02 → stay on bridge until resume criteria set.</td>
+<td>Recommendation ≤5 min on a BREACH cascade</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How</strong><br />
+1. On the bridge, say four things: <strong>scope</strong> (one symbol / segment / global), <strong>reason code</strong>, <strong>§9 family</strong>, <strong>orders-only vs include liquidations</strong>.<br />
+2. Hand to G02. Stay on the bridge until resume criteria are written down. <em>Why:</em> the person who resumes may not have been on the first call.</p>
 <hr />
 <h4>SP — Spot <code>[Phase 2+]</code></h4>
+<blockquote>
+<p>Phase 1: these recipes are <strong>study material</strong>. Do not enable a spot symbol.</p>
+</blockquote>
 <h5>SP-01 Spot symbol go-live</h5>
+<p><strong>What this is:</strong> turning a listed token into a live order book people can trade. A listing opinion (LD-01) is not the same as “the button is green.”</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3157,305 +3189,71 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>Pipeline stage ready post LD-01 / G06</td>
+<td>Pipeline stage ready after LD-01 / G06</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> PM-SPOT + TO · <strong>A:</strong> RO+CP clear already · <strong>C:</strong> WO, MM, ME</td>
+<td><strong>R:</strong> PM-SPOT + TO · <strong>A:</strong> RO+CP already cleared · <strong>C:</strong> WO, MM, ME</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Checklist complete same day as scheduled launch window</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Verify wallet chains · tick/lot/bands/STP/fees · MM SLA or disclosure · halt test · KRI wiring SP-K01/02/03/05 · soft launch optional · announce.</td>
-</tr>
-<tr>
-<td><strong>Systems</strong></td>
-<td><code>/admin/spot/*</code> · listing pipeline</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>§11.5 checklist ticked; hypercare 72h named.</td>
+<td>Checklist complete the same day as the advertised launch window</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How</strong><br />
+1. Confirm wallet deposit/withdraw on the <strong>correct chain</strong> (wrong chain = customer money in a hole).<br />
+2. Set tick size, lot size, price bands, STP, fees. <em>Why:</em> a 0.00000001 tick on a $60,000 coin lets people spam the book.<br />
+3. Confirm a market-maker SLA <strong>or</strong> a public “thin book” disclosure. Silence is not a disclosure.<br />
+4. Test halt (SP-02 path) on staging. If you cannot halt, you cannot launch.<br />
+5. Wire KRIs SP-K01/02/03/05. Name the 72h hypercare roster.<br />
+6. Announce only after the flags are live.</p>
+<p><strong>Done when:</strong> §11.5 ticked; hypercare named.</p>
 <h5>SP-02 Spot trading halt</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Index fail, fat-finger, regulatory, disorderly (SP-K03/K06)</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>Propose:</strong> TO · <strong>Approve:</strong> RO · <strong>Execute:</strong> ME · <strong>I:</strong> Comms, WO</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Execute ≤2m post-approve</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Follow G02 Spot column; reason code; keep withdraw default-on.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Halt state confirmed on <code>/admin/spot/halt</code>.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> stop matching buys and sells on a spot pair. Default: <strong>keep withdrawals on</strong> so this does not look like a bank run.</p>
+<p>Follow <strong>G02</strong> (Spot column). TO proposes, RO approves, ME executes ≤2 min, Comms posts. Reason code on the ticket.</p>
+<p><strong>Done when:</strong> <code>/admin/spot/halt</code> shows the intended state.</p>
 <h5>SP-03 Spot resume</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>RO+ME clearance after SP-02</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>A:</strong> RO+ME · <strong>R:</strong> TO · <strong>C:</strong> Product</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Verify book integrity · bands · MM online · staged resume · 4h hypercare.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Trades flowing; no immediate SP-K03 BREACH.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> turning the pair back on without printing a fake price into an empty book.</p>
+<p><strong>How</strong><br />
+1. RO+ME confirm the root cause is gone (not “it looks quieter”).<br />
+2. Check book integrity and that the market maker is actually quoting.<br />
+3. Resume in stages (narrow bands → normal). Hypercare 4 hours.</p>
 <h5>SP-04 Price band / max notional change</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Vol regime change or incident lesson</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td>Via <strong>G01</strong>; <strong>R propose:</strong> TO/PM · <strong>A:</strong> RO</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Impact on fills/MM → G01 → <code>/admin/spot/bands</code> promote → hypercare.</td>
-</tr>
-</tbody>
-</table></div>
+<p>A <strong>band</strong> is a fence: the engine rejects an order whose price is too far from the reference. Changing it is a <strong>G01</strong> limit change (two people if Tier A+), then <code>/admin/spot/bands</code>, then watch SP-K03.</p>
 <h5>SP-05 Wash / self-trade handoff</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>SP-K08 or surveillance alert</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R handoff:</strong> TO/RO-OPS · <strong>A case:</strong> CP · <strong>C:</strong> ME (STP mode)</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Handoff ≤30m; CP triage per CP-01</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Preserve order/trade IDs → open CP case → consider UID hold CP-02 → no silent STP weaken.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> two orders from the “same economic owner” trading with each other to fake volume. You are not the detective — Compliance is. Your job is to <strong>hand off evidence fast</strong> and not silently weaken STP (self-trade prevention).</p>
+<p><strong>How:</strong> freeze the order/trade IDs → open a CP case ≤30 min → consider CP-02 hold → do <strong>not</strong> “turn STP down so the client can trade.”</p>
 <hr />
 <h4>MG — Margin <code>[Phase 2+]</code></h4>
+<blockquote>
+<p>Phase 1: no lending book. Do not confuse this with <strong>perps margin</strong> (collateral on futures), which lives under PF / RE.</p>
+</blockquote>
+<p><strong>Plain English:</strong> the user deposits coins, <strong>borrows</strong> (usually stablecoins), buys more coins, and pays interest. If the coins fall, we <strong>force-sell</strong>. <strong>Isolated</strong> = only that position can die. <strong>Cross</strong> = the whole account's collateral can be eaten.</p>
 <h5>MG-01 Add collateral asset</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Post-spot listing + RO opinion for margin eligibility (LD-03)</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> PM-MARGIN · <strong>A haircut/LTV:</strong> RO-Credit · <strong>C:</strong> DA stress · <strong>I:</strong> TS</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Stress haircut → set LTV brackets → borrow caps → interest mapping → liq path test isolated+cross → enable <code>/admin/margin/collateral</code>.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>§11.4 checklist done; MG-K05 baseline stored.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>How</strong><br />
+1. After LD-03, DA stress-tests a <strong>haircut</strong> (we count $100 of a jumpy coin as e.g. $70). <em>Why:</em> the coin can fall while we are still selling it.<br />
+2. Set LTV (loan-to-value) brackets, borrow caps, interest curve.<br />
+3. Dry-run liquidation on isolated <strong>and</strong> cross. Enable only then.</p>
 <h5>MG-02 Haircut / LTV change</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Vol regime, governance, MG-K05 BREACH</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>G01</strong> path; <strong>A:</strong> RO-Credit</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Urgent depeg: ≤30m dual-approve</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>DA note → G01 → push RE → notify users if adverse · watch MG-K02/03.</td>
-</tr>
-</tbody>
-</table></div>
+<p>G01 path. Urgent depeg: dual-approve ≤30 min. Tell users if the change is adverse (they can be liquidated by a parameter change). Watch MG-K02/03.</p>
 <h5>MG-03 Borrow freeze (asset)</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>MG-K01 BREACH persistent, depeg S3, inventory crisis</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R execute:</strong> TO/RO-Credit · <strong>A:</strong> RO · <strong>I:</strong> TS, Comms</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Decision ≤15m on BREACH</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td><code>/admin/margin/borrow</code> freeze → optional rate max → announce if user-visible → define unfreeze criteria.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>New borrows blocked; ticket has unfreeze owner.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> stop <strong>new</strong> loans of an asset (e.g. USDT) so a short squeeze or depeg cannot drain inventory. Existing loans still exist.</p>
+<p><strong>How:</strong> <code>/admin/margin/borrow</code> freeze → optional max rate → announce if user-visible → <strong>write the unfreeze criteria on the ticket</strong> (otherwise the freeze lives forever).</p>
 <h5>MG-04 Forced liquidation runbook</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Cascade / engine lag MG-K03</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> TO + RE · <strong>A:</strong> RO · <strong>C:</strong> ME capacity</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Confirm marks fresh → if unsafe RE-02 pause → else ensure liq queue draining → throttle risk-increasing → consider spot bands on collateral → never delete liq history.</td>
-</tr>
-<tr>
-<td><strong>Escalate if</strong></td>
-<td>Lag &gt;30s → L3.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>How</strong><br />
+1. Confirm marks are fresh. Rotten marks → <strong>RE-02 pause</strong>. Liquidating on a wrong price is taking user money.<br />
+2. If marks are good: keep the queue draining; throttle risk-increasing orders; never delete liquidation history.<br />
+3. Lag &gt;30s → L3 (the engine is behind the market).</p>
 <h5>MG-05 Bad debt write-off / recovery</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>MG-K04 after shortfall</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R case:</strong> RO-Credit · <strong>A P&amp;L:</strong> TS · <strong>Checker:</strong> RO/CRO if Tier A</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Quantify → auto-repay attempts → recover from user → residual write-off dual-control → lessons to haircut/buffer.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Ledger + case closed.</td>
-</tr>
-</tbody>
-</table></div>
+<p>After a shortfall: quantify → try auto-repay → chase the user → residual write-off needs two people → feed the lesson back into haircut/buffer. TS books the P&L; this is not a “rounding” chat message.</p>
 <h5>MG-06 Interest curve update</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Funding cost / peg risk / governance</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> PM-MARGIN/TS · <strong>A:</strong> RO-Credit · block if MG-K07 open</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Propose curve → recon check → G01 if material → <code>/admin/margin/interest</code> → monitor exceptions.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Do not push a new rate curve while MG-K07 (accrual exceptions) is red — you will compound the error. Material changes go through G01.</p>
 <hr />
 <h4>PF — Perps <code>[Phase 1]</code></h4>
+<p><strong>This is today's live path.</strong> Read every card. A perpetual (“perp”) is a contract that tracks a price (Bitcoin, gold vs US dollar, …) and <strong>never expires</strong>. Users post collateral, go long or short with leverage. We use a <strong>mark price</strong> (fair price from an index of other venues) to decide profit/loss and liquidation — <strong>not</strong> the last print on our book.</p>
 <h5>PF-01 New perp contract launch</h5>
+<p><strong>What this is:</strong> putting a new contract (for example another metal pair, or a new BTC perp) in front of invite/broker users. Skipping a checkbox here is how you launch with no insurance or a one-venue index.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3470,42 +3268,25 @@ flowchart LR
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> PM-FUT · <strong>A:</strong> RO · <strong>C:</strong> RE/ME/DA/TS</td>
+<td><strong>R:</strong> PM-FUT · <strong>A:</strong> RO · <strong>C:</strong> RE / ME / DA / TS</td>
 </tr>
 <tr>
 <td><strong>How</strong></td>
-<td>Specs → index ≥ min venues → brackets/limits dual-approved → insurance seed → funding caps tested → liq+ADL dry-run → matching symbol → Comms → 72h hypercare · §11.3.</td>
+<td>Walk §11.3 <strong>out loud</strong> with a second person. Specs signed; index has the minimum number of venues and PF-K01/K02 alerts on; leverage brackets dual-approved; insurance seed in the wallet; funding cap tested; liquidation + ADL dry-run signed; matching symbol + rate limits; support scripts that mention funding and liq; 72h named hypercare; RO-OPS can explain S2 (bad mark) vs S1 (real dump) for <strong>this</strong> symbol.</td>
 </tr>
 <tr>
 <td><strong>Done when</strong></td>
-<td>Live + PF-K01/02/06/07 dashboards green.</td>
+<td>Live, and PF-K01/02/06/07 dashboards are green <strong>with fresh timestamps</strong>. Missing one item = do not launch.</td>
 </tr>
 </tbody>
 </table></div>
 <h5>PF-02 Leverage bracket change</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Vol / VIP policy / PF-K11</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>G01</strong>; <strong>A:</strong> RO · <strong>R propose:</strong> PM-FUT</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Impact OI/users near cap → approve → <code>/admin/futures/leverage</code> → hypercare liqs.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> “maximum leverage for this contract / this notional size.” Raising it lets users lose their collateral faster. This is G01, not a product experiment.</p>
+<p><strong>How</strong><br />
+1. Count how many users sit near the cap and how much open interest would jump.<br />
+2. G01 dual-control → <code>/admin/futures/leverage</code> → 24h hypercare <strong>watching liquidation count</strong> (PF-K06). <em>Why:</em> a “small” bracket change is a common Sev-level mistake.</p>
 <h5>PF-03 Mark–index deviation response</h5>
+<p><strong>What this is:</strong> the most important perps alarm. <strong>Mark</strong> should stay near <strong>index</strong> (the average of other exchanges). If they split, either the world moved (basis) or <strong>our number is wrong</strong> (we may liquidate healthy users).</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3524,799 +3305,151 @@ flowchart LR
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>BREACH triage ≤5m</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Check PL-K06 &amp; PF-K02 → if data: S2 failover/pause unsafe liq → if real basis: consider reduce-only PF-07 → never “fix” mark without dual RO+DA.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Deviation explained; feed healthy or trading contained.</td>
+<td>BREACH triage ≤5 min</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How (say this on the bridge)</strong><br />
+1. <strong>Clock:</strong> when did PF-K01 move? Did <strong>PL-K06</strong> (pipeline lag) or <strong>PF-K02</strong> (a venue in the index went stale) move <em>first</em>? <em>Why:</em> first-mover tells S2 (data) from S1 (real market).<br />
+2. Look at <strong>external</strong> venues (the real gold/BTC market). If they are calm and we are screaming, believe S2.<br />
+3. <strong>If data (S2):</strong> fail over the feed (RE-03). If marks are unsafe, <strong>pause liquidations</strong> (RE-02) and consider reduce-only (PF-07). Tell Comms: “liquidations paused because the fair price feed is unhealthy,” not “the market is closed.”<br />
+4. <strong>If real basis:</strong> the index is honest; our book is just far away. Consider reduce-only. Do <strong>not</strong> rewrite the mark formula to make the chart pretty.<br />
+5. Any formula change is <strong>dual RO+DA</strong>. There is no “fix it now, ticket later.”</p>
+<p><strong>Done when:</strong> the deviation is explained, and either the feed is healthy or trading is contained. <strong>Escalate if:</strong> liquidations already ran on a suspected bad mark → Sev-1.</p>
 <h5>PF-04 Funding extreme / pause</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>PF-K03 near/at cap or oracle fail</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> PM-FUT · <strong>A pause (rare):</strong> RO+PM dual · <strong>I:</strong> Comms</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Confirm clamp auto → publish reason → pause only if settlement integrity broken → resume with RO ACK.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> every 1 or 8 hours (as designed), longs pay shorts or the reverse, so the perp cannot float away from the real price forever. A <strong>cap</strong> (clamp) stops the rate from becoming infinite. Users complaining that funding is “expensive” is <strong>not</strong> a reason to switch it off.</p>
+<p><strong>How</strong><br />
+1. Confirm the cap actually applied (PF-K03). If it did, the system worked.<br />
+2. Pause <strong>settlement</strong> only if integrity is broken (wrong formula, double-pay). Dual RO+PM, and Comms must say funding is paused.<br />
+3. Resume with an RO ACK.</p>
 <h5>PF-05 Insurance payout review</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Bankruptcy fill / fund draw</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td>See RM-06; <strong>R:</strong> TO-FUT</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Same-day flash → quality of liq → recommend TS-04 inject and/or G01 tighten.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Same-day flash: bankruptcy price, were liquidations on time, was a market maker present? Numbers that do not match the ledger → escalate. Then RM-06 / possible TS-04 inject.</p>
 <h5>PF-06 ADL activation review</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Any ADL (PF-K08)</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> TO-FUT · <strong>A:</strong> RO · <strong>C:</strong> CP (abuse) · Comms</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Bridge immediate if majors / ≥3 per hour</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Verify insurance was insufficient (order: K07 before K08) → ranking fair → user notices → if misconfig, stop ADL + Sev-1.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> Auto-Deleveraging. When insurance cannot pay a hole, we cut <strong>winning opposite positions</strong>. It feels unfair to winners. It is the last safety valve.</p>
+<p><strong>How</strong><br />
+1. Prove insurance was <strong>actually</strong> insufficient (PF-K07 should have gone amber/red <strong>before</strong> PF-K08). If ADL fired first, the trigger is misconfigured → <strong>stop ADL + Sev-1</strong>.<br />
+2. Check the ranking was the published rule (usually highest leverage / highest profit first — follow the live policy).<br />
+3. User notices go out. CP looks for abuse if the pattern is odd.</p>
 <h5>PF-07 Perps halt / reduce-only</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Cascade, infra, bad marks</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td>G02 Perps column · <strong>RE</strong> sets liq mode</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Prefer reduce-only before full halt when engine healthy · state funding behaviour in Comms.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>Reduce-only</strong> means: you may <strong>close</strong> or shrink a position, you may <strong>not</strong> make it bigger. Prefer this over a full halt when the matching engine is healthy. Full halt follows G02. Comms <strong>must</strong> say whether funding and liquidations are still running.</p>
 <h5>PF-08 Index constituent outage</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>PF-K02 WARN/BREACH</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> DA/RE · <strong>A temp weights:</strong> RO</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Auto-drop bad venue if policy → if below min venues: protect mark / reduce-only → RO approve temporary weights → restore when venue healthy.</td>
-</tr>
-</tbody>
-</table></div>
+<p>The index is an average of several outside venues. If one venue dies or prints nonsense, <strong>drop it</strong> (policy). If too few venues remain, <strong>protect the mark</strong> and go reduce-only / pause liq. Temporary weights need an RO signature. Do not “just use Binance only” without that signature — one venue is easy to manipulate.</p>
 <hr />
 <h4>ME — Matching</h4>
+<p><strong>Plain English:</strong> the matching engine is the program that turns a buy order and a sell order into a trade. If it is wrong, every price and every liquidation that used that price is wrong. Treat it like a nuclear control room: small, dual-controlled switches.</p>
 <h5>ME-01 Engine deploy / rollback</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Scheduled release or hotfix</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> ENG · <strong>A go/no-go:</strong> ME PIC · <strong>C:</strong> SRE · <strong>I:</strong> TO/RO-OPS</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Rollback decision ≤15m on Sev-1 latency/integrity</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Change ticket → canary → watch SP-K09/K04 → rollback procedure rehearsed → post-deploy verify.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>How</strong><br />
+1. Change ticket with what will be different and how to roll back (rehearsed, not “we think we remember”).<br />
+2. Canary (tiny slice of traffic) first. Watch latency SP-K09 and cancel ratio SP-K04.<br />
+3. If Sev-1 latency or integrity: rollback decision ≤15 min. Heroic hotfixes during a red book are how you get a second incident.</p>
 <h5>ME-02 Matching halt</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Sev-1 integrity / G02 execute</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> ME · <strong>A:</strong> RO for business halt; dual for global kill</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Scope halt → confirm → notify RE/TO → never leave ambiguous shard states.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Business halt (G02) needs RO approval. <strong>Global kill</strong> (the whole venue) is two people on <code>/admin/engine/kill</code>. Confirm the effect (no new matches) and tell RE so liquidations are not running on a frozen book by accident. Never leave one shard trading and another halted without saying so.</p>
 <h5>ME-03 Dual-site failover</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Primary loss / DR drill</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> SRE/ME · <strong>A:</strong> ME PIC · <strong>I:</strong> RO, Comms</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Declare incident → drain/failover <code>/admin/engine/failover</code> → ME-05 book verify → trading resume per G02 if halted.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Declare the incident → drain/failover on <code>/admin/engine/failover</code> → <strong>ME-05</strong> prove the book is the same book → resume via G02 if you halted. A failover without a book checksum is a rumour.</p>
 <h5>ME-04 Cancel storm mitigation</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>SP-K04 / rate &gt; SLO</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> ME · <strong>C:</strong> TO/CP</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Raise rate limits carefully / shed → identify UID storms → CP if abuse → protect latency SLO.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Too many cancel messages starve real trades. Raise rate limits <strong>carefully</strong> or shed load; if one UID is the storm, hand to CP (abuse). Protect the latency SLO; do not “open the firehose so VIPs are happy.”</p>
 <h5>ME-05 Post-incident book rebuild verify</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>After failover/halt</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> ME · <strong>A:</strong> ME PIC · <strong>C:</strong> RE</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Compare book checksums / trade continuity → sign attach to ticket before full resume.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Compare book checksums and trade continuity. <strong>Sign the comparison on the ticket before full resume.</strong> <em>Why:</em> resuming into a reconstructed garbage book prints fake prices and fake liquidations.</p>
 <hr />
 <h4>RE — Risk engine</h4>
+<p><strong>Plain English:</strong> this program continuously asks “if price jumps, does this user still have enough collateral?” It computes <strong>margin ratio</strong>, <strong>bankruptcy price</strong>, and it <strong>starts liquidation</strong>. A wrong config here is more dangerous than a wrong blog post — it moves money.</p>
 <h5>RE-01 Config promote</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>After G01 dual-approval</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> RE · <strong>A:</strong> RO ticket link mandatory</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Diff configs → staging → prod → hash to ticket → ping RO-OPS hypercare.</td>
-</tr>
-<tr>
-<td><strong>Escalate if</strong></td>
-<td>Promote without ticket → revert + audit.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>How</strong><br />
+1. Only promote with a <strong>G01 ticket id</strong> and a diff you can read.<br />
+2. Staging first, then production. Paste the <strong>config hash</strong> back on the ticket.<br />
+3. Ping RO-OPS to start 24h hypercare.<br />
+4. Promote without a ticket → <strong>revert + audit</strong>. There is no “emergency paste into prod.”</p>
 <h5>RE-02 Liquidation engine pause / resume</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Unsafe marks (S2), controlled cascade, maintenance</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> RE · <strong>A:</strong> RO · <strong>I:</strong> TO-FUT/Margin TO, Comms</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Pause ≤2m once RO orders</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td><code>/admin/risk-engine/liq</code> pause → document why → users may still face risk — Comms honesty → resume only when marks healthy + RO ACK.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> stop the robot that force-closes users. You do this when the <strong>price it is using is unsafe</strong>, not because users are complaining they got liquidated fairly.</p>
+<p><strong>How</strong><br />
+1. RO orders it. RE hits pause on <code>/admin/risk-engine/liq</code> ≤2 min.<br />
+2. Comms tells the truth: users may <strong>still be at risk</strong>; we stopped the robot because the ruler is broken.<br />
+3. Resume <strong>only</strong> when marks are fresh <strong>and</strong> RO ACKs in writing.</p>
 <h5>RE-03 Mark price feed failover</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>PL-K06 / PF-K02 / oracle incident</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> RE/ENG · <strong>A:</strong> RO if methodology change</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Switch secondary → validate PF-K01 → if both bad: reduce-only/pause liq.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Switch to the secondary source, then watch PF-K01. If <strong>both</strong> sources are bad: reduce-only and/or pause liq. Do not average two rotten numbers and call it fine.</p>
 <h5>RE-04 Risk state rebuild</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Desync risk vs matching/wallet</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> RE · <strong>A:</strong> RO · <strong>C:</strong> ME/WO</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Freeze risk-increasing → rebuild from authoritative ledger → recon sample → unfreeze.</td>
-</tr>
-</tbody>
-</table></div>
+<p>When risk-engine balances disagree with matching or wallet: <strong>freeze risk-increasing orders</strong> → rebuild from the authoritative ledger → sample-recon → unfreeze. Never rebuild while users can still open new leverage.</p>
 <h5>RE-05 Portfolio-margin model change</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Model governance / PM-K01</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> DA · <strong>A:</strong> RO · <strong>C:</strong> PM · dual G01</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Parallel run → gap report → feature flag → conservative fallback ready.</td>
-</tr>
-</tbody>
-</table></div>
+<p>If unified account / portfolio margin is on: run the new model <strong>in parallel</strong> (shadow) → publish the gap report → feature flag → keep a conservative fallback. This is dual G01. Phase 1: usually off.</p>
 <hr />
 <h4>WA — Wallet</h4>
+<p><strong>Plain English:</strong> this is where coins actually sit. <strong>Hot</strong> wallet = connected to the internet, pays withdrawals, must not hold more than a buffer. <strong>Cold</strong> = slower, more people, ceremony. A “top-up” is moving coins cold → hot so genuine withdrawals still pay. A “slow mode” is paying withdrawals slower so a panic does not empty the hot wallet.</p>
 <h5>WA-01 Hot wallet top-up</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>PL-K01 WARN/BREACH or forecast outflow</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> WO · <strong>A:</strong> policy TS/RO buffer · <strong>C:</strong> Security ceremony if cold move</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Start top-up ≤30m on WARN; immediate on BREACH</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Confirm on-chain balances → cold→hot per ceremony rules → verify buffer → log.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>How</strong><br />
+1. Confirm <strong>on-chain</strong> balances (not only the internal screen). <em>Why:</em> the screen can lag; the chain is the money.<br />
+2. WARN: start the cold→hot move ≤30 min. BREACH: start immediately.<br />
+3. Follow the key ceremony (WA-05 / G04). Log the txid on the ticket. Verify the buffer is actually back above policy.</p>
 <h5>WA-02 Withdrawal queue / slow mode</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Run risk, attack, chain congestion, PL-K02</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> WO · <strong>A:</strong> RO (+CP if compliance-driven) · <strong>I:</strong> Comms, TS</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Slow-mode decision ≤15m on BREACH</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td><code>/admin/wallet/withdraw</code> slow mode → prioritisation rules → status page → exit criteria (buffer+backlog).</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>How</strong><br />
+1. BREACH on backlog or run-risk: decide slow mode ≤15 min.<br />
+2. Turn it on at <code>/admin/wallet/withdraw</code>. Write the <strong>priority rules</strong> (who gets paid first) and the <strong>exit criteria</strong> (buffer + backlog ages).<br />
+3. Status page for users. Hiding a queue creates a worse run.</p>
 <h5>WA-03 Chain halt / reorg</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Node alerts / PL-K04</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> WO/SRE · <strong>A:</strong> RO if credits impacted · <strong>C:</strong> CP</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Pause credits on chain → assess depth → clawback SOP if credited reorged → resume with finality policy.</td>
-</tr>
-</tbody>
-</table></div>
+<p>A <strong>reorg</strong> is the blockchain rewriting recent blocks. Credits on a block that disappeared were never real. Pause crediting that chain, measure depth, claw back if we already credited, resume only with the finality policy (how many confirmations).</p>
 <h5>WA-04 Wrong deposit recovery</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>User ticket wrong asset/chain/memo</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> WO · <strong>A:</strong> dual WO/TS for moves · <strong>C:</strong> CP AML</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Verify ownership → recoverability → fee policy → execute → close with txids.</td>
-</tr>
-</tbody>
-</table></div>
+<p>User sent the wrong asset, wrong chain, or missing memo. Verify they own the sending address → is recovery even possible → fee policy → <strong>two people</strong> to move funds → close with txids. CP checks AML. This is not “just send it back.”</p>
 <h5>WA-05 Key ceremony / rotation</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Schedule or incident</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td>Multi-party WO/Security · <strong>A:</strong> CISO/CRO policy · G04</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Ceremony runbook → record ID → validate sign path → revoke old material.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Two (prefer three) people, a ceremony ID written down, old keys destroyed or logged as revoked. G04 applies. A photo of a seed phrase in chat is an incident.</p>
 <h5>WA-06 PoR snapshot</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Periodic / attestation request</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> WO/TS · <strong>A:</strong> CRO/Finance per policy · <strong>C:</strong> External auditor if any</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Freeze height → liabilities extract → publish/attest → archive.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Proof of Reserves: pick a block height, extract liabilities, publish/attest, archive. CRO/Finance per policy. Do not run this as a marketing screenshot without the liability side.</p>
 <hr />
 <h4>LD — Listing / delisting</h4>
+<p><strong>Plain English:</strong> listing = allowing a market. Delisting = taking it away in a <strong>fixed order</strong> so we do not leave a futures contract live on a token that no longer has a spot price, or leave loans open on a coin we are about to disable.</p>
 <h5>LD-01 Listing risk opinion</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>New asset/contract in pipeline</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> LI pack · <strong>A opinion:</strong> RO · <strong>C:</strong> CP/Legal</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Per pipeline board</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Tokenomics/contract/liquidity/manip history → opinion Approve/Conditional/Reject → conditions become launch checklist.</td>
-</tr>
-</tbody>
-</table></div>
+<p>LI builds the diligence pack (who issued it, can they freeze accounts, unlocks, manipulation history). RO writes <strong>Approve / Conditional / Reject</strong>. Conditions become the go-live checklist — they are not polite suggestions.</p>
 <h5>LD-02 Seed / monitoring tag</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Elevated risk pre/post list</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> LI · <strong>A:</strong> RO · <strong>I:</strong> Comms/Support</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td><code>/admin/listing/tags</code> → disclosure → tighter bands optional.</td>
-</tr>
-</tbody>
-</table></div>
-<h5>LD-03 Margin eligibility</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>After spot stable observation window</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>A:</strong> RO-Credit · <strong>R:</strong> PM-MARGIN · then MG-01</td>
-</tr>
-</tbody>
-</table></div>
-<h5>LD-04 Perp listing decision</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Demand + risk appetite</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>A:</strong> RO · <strong>R:</strong> PM-FUT/LI · then PF-01</td>
-</tr>
-</tbody>
-</table></div>
+<p>A public warning tag (“seed”, “monitoring”). Optional tighter bands. Support and Comms must see the same tag the user sees.</p>
+<h5>LD-03 Margin eligibility <code>[Phase 2+]</code></h5>
+<p>After the coin has been calm on spot, RO-Credit may allow it as collateral → then MG-01.</p>
+<h5>LD-04 Perp listing decision <code>[Phase 1]</code></h5>
+<p>Demand + risk appetite → RO says yes → <strong>PF-01</strong>. Phase 1: this is the live listing path (XAUUSD and other approved perps).</p>
 <h5>LD-05 / LD-06 / LD-07 Delist sequences</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Criteria breach or project failure</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>A:</strong> LI+RO+CP+Legal · <strong>R execute:</strong> Product TOs + WO</td>
-</tr>
-<tr>
-<td><strong>How (order)</strong></td>
-<td>1) Approvals. 2) <strong>Perps LD-07:</strong> reduce-only → flatten/settle → delist. 3) <strong>Margin LD-06:</strong> freeze borrow → force repay/liq → remove collateral. 4) <strong>Spot LD-05:</strong> halt if needed → disable trade → withdraw per WA. 5) Comms+support macros.</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Notice period per Listing Policy unless LD-08</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>Mandatory order</strong> (do not skip because “spot is the real product”):<br />
+1. Risk + Legal + CP approve.<br />
+2. <strong>Perps (LD-07):</strong> reduce-only → flatten or wait expiry → delist the contract.<br />
+3. <strong>Margin (LD-06, Phase 2+):</strong> freeze borrow → force repay/liquidate → remove collateral.<br />
+4. <strong>Spot (LD-05, Phase 2+):</strong> halt if needed → disable trading → withdrawals follow WA.<br />
+5. Comms + support macros.</p>
 <h5>LD-08 Emergency delist / halt</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Exploit/fraud/security</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>A:</strong> CRO/RO + CP + Legal · execute G02/LD immediately</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Halt ASAP; formal notes ≤24h</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Safety first: halt/disable deposits → follow compressed LD-05–07 → forensic with Security/CP.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Exploit, fraud, stolen-mint. <strong>Safety first:</strong> halt and disable deposits immediately. Fill in the paperwork within 24h. Forensics with Security/CP. Do not wait for a tidy project call.</p>
 <hr />
 <h4>CP — Compliance</h4>
+<p><strong>Plain English:</strong> Compliance decides <em>who is allowed to trade</em> and whether someone is <strong>abusing</strong> the market. Risk decides <em>how much leverage</em>. Do not mix those jobs. A <strong>hard hold</strong> is a lock on trade, withdraw, and/or leverage.</p>
 <h5>CP-01 Surveillance alert triage</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Surveillance alert</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> CP analyst · <strong>A:</strong> CP lead · <strong>C:</strong> TO/RO if markets</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Per CP SLA table (typ. same day for high severity)</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Replay → classify false/positive → case → link UIDs/products.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Open the alert → decide false/positive → open a case → link UIDs and products. Same-day for high severity. You are building a timeline, not a vibe.</p>
 <h5>CP-02 Account hard hold</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Confirmed suspicion / policy</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> CP · <strong>A:</strong> CP lead · G04 to remove</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td><code>/admin/compliance/holds</code> trade/withdraw/leverage as needed → notify Support script → evidence pack.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Put the hold on <code>/admin/compliance/holds</code>. Tell Support which script to read to the user. <strong>Removing</strong> a hold needs a second person (G04). Putting a hold on can be fast; taking it off is the dangerous direction.</p>
 <h5>CP-03 Cross-product abuse review</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Spot+Perps (or margin) pattern</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> CP · <strong>C:</strong> RO/TO-FUT</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Combined timeline → holds → market impact note to RO.</td>
-</tr>
-</tbody>
-</table></div>
+<p>Someone may be buying spot and dumping perps (or the reverse). Build <strong>one</strong> timeline across products. Tell RO if it is moving the mark. Holds as needed.</p>
 <h5>CP-04 Reg request / freeze</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>External lawful order</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> CP/Legal · <strong>A:</strong> Legal · <strong>I:</strong> CRO</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Authenticate order → freeze scope → acknowledge authority → retain.</td>
-</tr>
-</tbody>
-</table></div>
+<p>An outside authority asks to freeze. <strong>Authenticate the order first</strong> (forgery is a thing). Freeze the stated scope, acknowledge, retain. Legal is Accountable. Do not expand the freeze “to be helpful.”</p>
 <hr />
 <h4>TS / MM / ENG</h4>
 <h5>TS-01 Banking corridor outage</h5>
-<p><strong>When:</strong> partner down · <strong>Who R:</strong> TS · <strong>A:</strong> TS PIC · <strong>How:</strong> divert rails → update deposit/withdraw UX with WO/Comms → RO if liquidity risk · <strong>Done:</strong> corridor restored or alternative live.</p>
+<p>A bank or payment partner is down. Divert to another rail, update deposit/withdraw wording with WO/Comms, tell RO if this creates a liquidity hole. Done when the corridor or an alternative is actually live.</p>
 <h5>TS-02 Stablecoin depeg response</h5>
-<p><strong>When:</strong> peg break / MG-K08 · <strong>Who R:</strong> TS+RO · <strong>How:</strong> inventory/redemption · haircut/borrow actions with MG-03 · Comms · S3 family · <strong>Escalate:</strong> hard depeg L3.</p>
+<p>The “$1 coin” is no longer $1. Confirm on <strong>external</strong> markets (S3) vs our oracle being wrong (S2). Inventory and redemption, haircut/borrow with MG-03 <code>[Phase 2+]</code>, Comms. Hard depeg → L3.</p>
 <h5>TS-03 Settlement after EOD recon</h5>
-<p><strong>When:</strong> daily post G05 approve · <strong>Who R/A:</strong> TS · <strong>How:</strong> execute only on <code>SettlementReady</code> · attach refs · <strong>Escalate:</strong> never settle on open material breaks.</p>
+<p>Pay <strong>only</strong> after <code>SettlementReady</code> (G05). Attach bank/txid refs. Never settle on an open material break — that is how we pay twice.</p>
 <h5>TS-04 Insurance fund injection</h5>
-<p><strong>When:</strong> Board/CRO approved after RM-06 · <strong>Who R:</strong> TS · <strong>A:</strong> CRO · G04 dual · <strong>How:</strong> <code>/admin/futures/insurance</code> or treasury transfer · ledger · notify RO.</p>
+<p>Move company money into the insurance pool after RM-06 + CRO. Dual control (G04). Ledger it. Tell RO. This is not a silent wallet drift.</p>
 <h5>MM-01 SLA breach escalation</h5>
-<p><strong>When:</strong> depth/spread fail SP-K01/02 · <strong>Who R:</strong> MM ops · <strong>C:</strong> TO · <strong>How:</strong> contact MM → enforce agreement → RO halt opinion if disorderly.</p>
+<p>Market makers promised to keep a bid and an offer near each other. If depth/spread fail (SP-K01/02), call them, enforce the contract, ask RO for a halt if the book is disorderly.</p>
 <h5>MM-02 Vol regime quote widen</h5>
-<p><strong>When:</strong> stress · <strong>Who R:</strong> MM · <strong>I:</strong> TO/RO · <strong>How:</strong> widen per playbook · ensure not indistinguishable from outage (heartbeat on).</p>
+<p>In a storm they may legally widen. They must keep a <strong>heartbeat</strong> (quotes still updating). Silent empty book is an outage (S5), not “vol.”</p>
 <h5>MM-03 Information barrier check</h5>
-<p><strong>When:</strong> new listing / prop overlap · <strong>Who R:</strong> MM+RO+CP · <strong>How:</strong> confirm Chinese walls · log conflicts.</p>
+<p>If we have an affiliated desk, they must not see customer flow. Log the check when listing or when prop overlap appears.</p>
 <h5>ENG-01 Privileged admin access grant</h5>
-<p><strong>When:</strong> joiner/mover · <strong>Who R:</strong> Security/ENG · <strong>A:</strong> BU PIC + Security · <strong>How:</strong> least privilege · time-bound · ticket · quarterly recert.</p>
+<p>Joiner/mover: least privilege, time-bound, ticketed, recertified quarterly. BU PIC + Security both sign. Admin pages in this handbook are dangerous; access is not a souvenir.</p>
 <h5>ENG-02 Audit log immutability check</h5>
-<p><strong>When:</strong> periodic · <strong>Who R:</strong> Security · <strong>How:</strong> verify sink integrity · alert on gaps · <strong>Escalate:</strong> gap = L3.</p>
+<p>Periodically prove nobody can edit history. A gap is L3 — you have lost the court record.</p>
 <h5>ENG-03 Pipeline lag incident</h5>
-<p><strong>When:</strong> PL-K06 / late risk feeds · <strong>Who R:</strong> ENG · <strong>A:</strong> RE/RO for trading impact · <strong>How:</strong> fix consumer → if marks unsafe trigger RE-02/PF-03 · <strong>Done:</strong> lag &lt;WARN.</p>
+<p>Risk numbers are late (PL-K06). Fix the consumer. If marks are unsafe, trigger RE-02 / PF-03 <strong>before</strong> you finish the Kubernetes ticket. Done when lag &lt; WARN.</p>
 <h5>ENG-04 Security incident (key/API)</h5>
-<p><strong>When:</strong> compromise / PL-K08 · <strong>Who R:</strong> Security · <strong>A:</strong> CISO · <strong>I:</strong> CRO/CP · <strong>SLA:</strong> kill key ≤2m · <strong>How:</strong> revoke · rotate · user notify · forensic · L3/L4 war room.</p>
+<p>Compromised key: <strong>kill it ≤2 min</strong>, rotate, notify, forensics, L3/L4 war room. CRO/CISO/CP informed. Speed beats a perfect write-up.</p>
 <hr />
 <h4>ACCESS — Phase 1 invite &amp; broker onboarding <code>[Phase 1]</code></h4>
+<p><strong>Plain English:</strong> in Phase 1 a person <strong>cannot</strong> create an account from the public website. They need an <strong>invite code</strong> or a <strong>broker</strong> (a firm that already signed a contract with us). After identity checks (KYC = know your customer), they may trade <strong>perps only</strong>. Spot and margin flags stay off. If you find a public “register” button working, that is an <strong>L3 incident</strong>, not a growth win.</p>
 <h5>ACC-01 Invite-only account open</h5>
 <div class="table-wrap"><table>
 <thead>
@@ -4328,15 +3461,15 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>Prospect redeems invite / allowlist code; or ops issues invite</td>
+<td>Someone redeems an invite / allowlist code, or ops issues one</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> Product/Growth ops or Broker desk · <strong>A CP gates:</strong> CP · <strong>A risk entitlements:</strong> RO (limits tier) · <strong>R enable trade:</strong> RE/ENG flags</td>
+<td><strong>R:</strong> Product/Growth ops · <strong>A CP:</strong> identity gates · <strong>A risk entitlements:</strong> RO · <strong>R enable trade:</strong> RE/ENG flags</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Invite validate ≤1m automated · Manual CP review per policy · Entitlement push ≤15m after clear</td>
+<td>Invite validate ≤1 min automated · Manual CP review per policy · Entitlement push ≤15 min after clear</td>
 </tr>
 <tr>
 <td><strong>Preconditions</strong></td>
@@ -4344,92 +3477,37 @@ flowchart LR
 </tr>
 <tr>
 <td><strong>Systems</strong></td>
-<td>Invite admin · KYC · <code>/admin/compliance/holds</code> · risk limits tier · broker link (if any)</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>1) Validate invite. 2) Collect KYC/KYB as required. 3) CP clear. 4) Bind account to invite issuer metadata. 5) Set Phase 1 product entitlement = <strong>perps only</strong>. 6) Enable trading flags. 7) Audit log.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Account can trade approved perps only; spot/margin flags off.</td>
-</tr>
-<tr>
-<td><strong>Escalate if</strong></td>
-<td>Invite abuse / shared codes → CP-02 hold; public signup path found open → L3 disable.</td>
+<td>Invite admin · KYC · <code>/admin/compliance/holds</code> · risk limits tier</td>
 </tr>
 </tbody>
 </table></div>
+<p><strong>How (why each step exists)</strong><br />
+1. <strong>Validate the invite.</strong> Unused, unexpired, not obviously shared. <em>Why:</em> a leaked code is a public signup in disguise.<br />
+2. <strong>Collect KYC/KYB</strong> (who they are; if a company, who owns it).<br />
+3. <strong>CP clears.</strong> Until this, the account is a folder, not a trader.<br />
+4. <strong>Bind metadata:</strong> which invite, whom it came from, when. <em>Why:</em> later surveillance and broker revenue need this tag; you will not remember.<br />
+5. <strong>Set product entitlement = perps only.</strong> Explicitly confirm spot and margin flags are <strong>off</strong>.<br />
+6. Enable trading flags. Audit log.<br />
+7. Spot-check: can they open an approved perp? Can they <strong>not</strong> open a spot order?</p>
+<p><strong>Done when:</strong> they can trade approved perps only. <strong>Escalate if:</strong> invite abuse → CP-02 hold; public signup path found open → <strong>L3 disable the path first</strong>, then hunt UIDs already created.</p>
 <h5>ACC-02 Broker-introduced account open</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Broker/IB submits or links end-client under broker agreement</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R:</strong> Broker ops · <strong>A:</strong> CP (KYC/KYB of client + broker) · <strong>C:</strong> Legal (broker agreement live) · <strong>A risk:</strong> RO for broker-level limits · <strong>R:</strong> RE entitlements</td>
-</tr>
-<tr>
-<td><strong>SLA</strong></td>
-<td>Per broker SLA; no trade before CP+agreement+entitlement</td>
-</tr>
-<tr>
-<td><strong>Preconditions</strong></td>
-<td>Executed broker agreement; broker on allowlist; client KYC complete</td>
-</tr>
-<tr>
-<td><strong>Systems</strong></td>
-<td>Broker portal · master/sub or tagged UID · limit hierarchy</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>1) Verify broker status. 2) Onboard client under broker. 3) CP clear client. 4) Apply broker and client limit stacks. 5) Entitlement = Phase 1 perps only. 6) Dual-control if broker credit/vip.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Client trades only via approved path; attribution to broker for surveillance/revenue.</td>
-</tr>
-<tr>
-<td><strong>Escalate if</strong></td>
-<td>Broker agreement lapsed → freeze new accounts; cascade risk on broker book → RO L2/L3.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> a signed introducing broker brings an end-client. The client still needs KYC. Limits are the <strong>tighter</strong> of (broker book limit, client limit).</p>
+<p><strong>How</strong><br />
+1. Verify the broker agreement is <strong>live</strong> (not expired, not suspended).<br />
+2. Onboard the client under that broker tag.<br />
+3. CP clears the client.<br />
+4. Apply <strong>both</strong> limit stacks; the engine must use the stricter one. <em>Why:</em> a tiny client under a huge broker must not inherit the broker's cap.<br />
+5. Entitlement = Phase 1 perps only. Dual-control any broker credit/VIP.<br />
+6. If the agreement lapses: <strong>stop new accounts</strong>. Existing accounts follow the contract + a risk opinion — do not pretend you did not notice.</p>
+<p><strong>Done when:</strong> client trades only on the approved path; surveillance can attribute them to the broker.</p>
 <h5>ACC-03 Phase 1 entitlement guard (continuous)</h5>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Detail</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>When</strong></td>
-<td>Continuous + daily MI; any attempt to enable spot/margin or public signup</td>
-</tr>
-<tr>
-<td><strong>Who</strong></td>
-<td><strong>R monitor:</strong> RO-OPS/ENG · <strong>A:</strong> RO + CP</td>
-</tr>
-<tr>
-<td><strong>How</strong></td>
-<td>Alert if spot/margin symbol enabled; alert if self-serve register open; alert if UID trades without invite/broker tag.</td>
-</tr>
-<tr>
-<td><strong>Done when</strong></td>
-<td>Daily zero exceptions or exceptions ticketed with phase-gate waiver.</td>
-</tr>
-</tbody>
-</table></div>
+<p><strong>What this is:</strong> the daily “is the front door still locked?” check.</p>
+<p><strong>How</strong><br />
+1. Alert if any UID has spot or margin enabled.<br />
+2. Alert if self-serve register is open.<br />
+3. Alert if a UID can place an order with <strong>no</strong> invite and <strong>no</strong> broker tag.<br />
+4. Daily report to RO-OPS + CP. Zero exceptions, or exceptions ticketed with a <strong>phase-gate waiver</strong> (not a Slack emoji).</p>
+<p><strong>Done when:</strong> daily zero exceptions or every exception has a waiver ticket.</p>
 <h2>7. Admin pages &amp; tool catalogue</h2>
 <h3>7.1 Canonical admin map (by domain)</h3>
 <p><strong>URL sheet (all full links):</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html<br />
@@ -7162,7 +6240,7 @@ flowchart TB
 </tr>
 <tr>
 <td>Version</td>
-<td>1.9 — Plain-language beginner briefing; fuller SOP how-to</td>
+<td>2.0 — Beginner SOP cards for every BU; numbered how + why in both languages</td>
 </tr>
 </tbody>
 </table></div>
@@ -7175,7 +6253,7 @@ flowchart TB
 <p><strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
 <strong>范围：</strong> 全量目录含现货·杠杆·永续；<strong>Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入</strong><br />
 <strong>公开站点：</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>全部 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>后台 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
-<strong>版本：</strong> 1.9 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
+<strong>版本：</strong> 2.0 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
 <blockquote>
 <p>本手册是<strong>操作说明书</strong>：谁负责什么、工作怎么分、每道手续怎么做、用哪块屏幕、看哪些数字、出问题时先做什么。它<strong>不能</strong>代替法律政策、《限额手册》（已签字的真实数字）或监管申报。<br />
 <strong>文中数字是教学示例。</strong> 投产前必须从《限额手册》抄录现行值，并经两名风险官批准。</p>
@@ -7607,6 +6685,19 @@ flowchart LR
 <li>练习一口气说停牌：<strong>标的、原因、只停订单还是含强平、谁已经知道。</strong>  </li>
 <li>在作为<strong>旁观者</strong>看过一次 G01 和一次 G04（双人）之前，不要自己改限额、切标记源或按 Kill。</li>
 </ol>
+<h3>例题 — 凌晨三点，一盏红灯（不需要交易背景）</h3>
+<p>你在 RO-OPS 值班。寻呼：<strong>XAUUSD</strong> 上 <strong>PF-K01 红灯</strong>。你从来没交易过黄金。</p>
+<ol>
+<li><strong>5 分钟内确认</strong>（G03）。这只表示“我看见了”，并不等于黄金修好了。</li>
+<li><strong>看这只数字的时间戳</strong>（PL-K06 / PF-K02）。时钟是旧的，可能是假红或假绿 — 走 ENG-03。不要拿陈旧时钟去强平或停牌。</li>
+<li><strong>看交易所外面。</strong> 黄金在其他场所是不是也在动？<br />
+   - 外面平静、我们在尖叫 → 多半是 <strong>S2</strong>（公允价喂价错了）。暂停不安全的强平（RE-02），切源（RE-03）。<br />
+   - 外面也在砸、我们的喂价健康 → 多半是 <strong>S1</strong>（真市场）。引擎还健康时优先 <strong>只减仓</strong>（PF-07），而不是一关了之。</li>
+<li>桥上一口气说：<em>“XAUUSD，PF-K01 红，我判 S2，强平已暂停，传播还没发。”</em></li>
+<li><strong>不要</strong>为了让图好看去改标记公式。<strong>不要</strong>因为“又闪回绿了”就关告警。</li>
+<li>完整食谱：<strong>PF-03</strong>。侦探章：<strong>§9</strong>。</li>
+</ol>
+<p>第一晚的全部工作就是：<strong>看见、看时间戳、看外面、遏制、给情景族起名、写下来。</strong></p>
 <hr />
 <h2>1. 如何使用本手册</h2>
 <div class="table-wrap"><table>
@@ -8032,10 +7123,34 @@ flowchart LR
   RO --> CRO["CRO"]
 </div></div>
 
-<p>各章统一模板：<strong>范围内/外 → 分工 → SOP → 工具 → 管理后台 → 交接</strong>。</p>
+<p>每一章用同一套模板，避免有的团队写小说、有的团队只丢三个缩写：</p>
+<ul>
+<li><strong>范围内 / 范围外</strong> — 出了事该不该找你们</li>
+<li><strong>分工</strong> — 组里谁点按钮</li>
+<li><strong>SOP</strong> — 编号食谱，细节在 <strong>§6.7</strong></li>
+<li><strong>工具 / 管理后台</strong> — 去哪看、去哪改</li>
+<li><strong>交接</strong> — 做完要递给谁</li>
+</ul>
+<p><strong>人话：</strong> “BU”就是一个业务单元（合约产品、撮合、钱包……）。“PIC”是负责人的名字。工单和后台权限都挂在这些名字上。你不必会交易，但必须知道：这章是不是你的、以及出了事第一份 SOP 叫什么。</p>
+<hr />
 <h3>4.1 市场风险与风险运维（第二道）— RO / RO-OPS / CRO</h3>
-<p><strong>范围内：</strong> 全公司风险偏好与限额手册（现货/杠杆/永续）；实时监控；强平/保险/ADL 监督；压力测试目录审批；新产品风险会签；上币风险意见；突破调查、豁免治理、日报。  </p>
-<p><strong>范围外：</strong> 撮合日常调优（ME）；热钱包签名作业（WO）；KYC 准入决定（CP）— 风险冻结除外。</p>
+<p><strong>人话：</strong> 开店的人（第一道）不能既当裁判又给自己打分。这一章是裁判席：他们写“能亏多少”、看灯、在灯红时叫停。他们<strong>不</strong>去操作撮合引擎或热钱包密钥。</p>
+<h4>范围内</h4>
+<ul>
+<li>全公司风险偏好与限额手册（现货 / 杠杆 / 永续）</li>
+<li>实时监控：集中度、杠杆占用、台级指标</li>
+<li>强平 / 保险 / ADL 的独立监督（挑战第一道）</li>
+<li>压力测试与情景目录审批</li>
+<li>新产品会签；上币风险意见</li>
+<li>突破调查、豁免治理、每日风险包</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>撮合日常调优（ME）</li>
+<li>热钱包签名作业（WO）</li>
+<li>KYC 准入决定（CP）— 风险冻结除外</li>
+</ul>
+<h4>分工</h4>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -8066,62 +7181,615 @@ flowchart LR
 </tr>
 </tbody>
 </table></div>
-<p><strong>SOP：</strong> RM-01…RM-07（明细见 <strong>§6.7</strong>）— 每日风险包 · WARN/BREACH · 杠杆权限 · 压力目录 · 保险复核 · 停牌建议  </p>
-<p><strong>工具：</strong> 实时风险指标与告警；压力/情景台；风险报告与 CSV；强平与保险看板；交易员权限/杠杆申请（maker–checker）  </p>
-<p><strong>后台：</strong> <code>/admin/risk/limits</code> · <code>alerts</code> · <code>stress</code> · <code>insurance</code> · <code>reports</code> · <code>waivers</code>  </p>
+<h4>SOP</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>名称</th>
+<th>何时启动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RM-01</td>
+<td>每日风险包</td>
+<td>每个 UTC 日切</td>
+</tr>
+<tr>
+<td>RM-02</td>
+<td>黄灯 WARN 响应</td>
+<td>告警 WARN</td>
+</tr>
+<tr>
+<td>RM-03</td>
+<td>红灯 BREACH 响应</td>
+<td>告警 BREACH</td>
+</tr>
+<tr>
+<td>RM-04</td>
+<td>杠杆/权限上调</td>
+<td>交易员或 VIP 申请</td>
+</tr>
+<tr>
+<td>RM-05</td>
+<td>压力目录变更</td>
+<td>模型或情景被改</td>
+</tr>
+<tr>
+<td>RM-06</td>
+<td>保险动用复核</td>
+<td>任一保险赔付 / ADL</td>
+</tr>
+<tr>
+<td>RM-07</td>
+<td>停牌建议</td>
+<td>缺口、预言机坏、连环</td>
+</tr>
+</tbody>
+</table></div>
+<p>明细谁/何时/怎么做/SLA：<strong>§6.7</strong>。</p>
+<h4>工具</h4>
+<ul>
+<li>实时风险指标与告警</li>
+<li>压力/情景台</li>
+<li>风险报告与 CSV</li>
+<li>强平与保险看板</li>
+<li>交易员权限/杠杆申请（maker–checker）</li>
+</ul>
+<h4>后台</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>页面</th>
+<th>干什么</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/admin/risk/limits</code></td>
+<td>按产品与 VIP 档的软/硬阈值</td>
+<td>RO + checker</td>
+</tr>
+<tr>
+<td><code>/admin/risk/alerts</code></td>
+<td>确认 / 分派 / 升级</td>
+<td>RO-OPS</td>
+</tr>
+<tr>
+<td><code>/admin/risk/stress</code></td>
+<td>跑情景、发布目录</td>
+<td>RO + DA</td>
+</tr>
+<tr>
+<td><code>/admin/risk/insurance</code></td>
+<td>基金余额、赔付、ADL 日志</td>
+<td>RO（信用）</td>
+</tr>
+<tr>
+<td><code>/admin/risk/reports</code></td>
+<td>调度每日/每周包</td>
+<td>RO</td>
+</tr>
+<tr>
+<td><code>/admin/risk/waivers</code></td>
+<td>带到期日的临时限额豁免</td>
+<td>CRO/RO 双控</td>
+</tr>
+</tbody>
+</table></div>
+<h4>交接</h4>
+<ul>
+<li>给 ME/TO：停/复牌建议</li>
+<li>给 RE：已批准限额配置</li>
+<li>给合规：突破期间疑似操纵</li>
+<li>给产品：新产品条件 / 上线门禁</li>
+</ul>
+<hr />
 <h3>4.2 现货产品与交易运维 — PM-SPOT / TO <code>[Phase 2+]</code></h3>
 <blockquote>
-<p>Phase 1：休眠。勿开放现货交易对。</p>
+<p>Phase 1：休眠。保留停牌/上币预案，<strong>不要打开现货交易对</strong>。</p>
 </blockquote>
-<p><strong>范围内：</strong> 现货交易对生命周期（上币后配置）；费率、订单类型、STP、价格保护带；停复牌执行；市场质量 KRI；风险披露文案（会同法务）。<br />
-<strong>范围外：</strong> 杠杆 LTV/利息（杠杆 BU）；永续资金费/保险（合约 BU）；链上托管密钥（钱包）。</p>
-<p><strong>SOP：</strong> SP-01 上线清单 · SP-02 停牌 · SP-03 复牌 · SP-04 价格带/名义上限变更 · SP-05 对倒/自成交移交  </p>
-<p><strong>后台：</strong> <code>/admin/spot/symbols</code> · <code>bands</code> · <code>halt</code> · <code>fees</code> · <code>stp</code></p>
+<p><strong>人话：</strong> 现货就是客户付全款买币或卖已有的币。没有借款，也没有强平机器人。风险来自假盘、fat-finger、垃圾币和充提。</p>
+<h4>范围内</h4>
+<ul>
+<li>上币后的交易对生命周期配置</li>
+<li>费率、订单类型、STP、价格保护带</li>
+<li>现货停复牌执行（会同风险/撮合）</li>
+<li>市场质量 KRI（价差、深度、撤单比）</li>
+<li>风险披露文案（会同法务）</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>杠杆 LTV / 借款利息（杠杆 BU）</li>
+<li>永续资金费 / 保险（合约 BU）</li>
+<li>链上托管密钥（钱包）</li>
+</ul>
+<h4>分工</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>现货 PM</td>
+<td>产品规则、费率实验、对客风险披露</td>
+</tr>
+<tr>
+<td>TO</td>
+<td>停复牌执行、交易对开关、VIP 下单例外</td>
+</tr>
+<tr>
+<td>做市对接</td>
+<td>深度 SLA、做市协议违约</td>
+</tr>
+</tbody>
+</table></div>
+<h4>SOP</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>名称</th>
+<th>何时启动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SP-01</td>
+<td>现货上线清单</td>
+<td>新上币</td>
+</tr>
+<tr>
+<td>SP-02</td>
+<td>现货停牌</td>
+<td>指数坏 / fat-finger / 监管</td>
+</tr>
+<tr>
+<td>SP-03</td>
+<td>现货复牌</td>
+<td>RO + ME 放行</td>
+</tr>
+<tr>
+<td>SP-04</td>
+<td>价格带/名义上限变更</td>
+<td>波动体制变化</td>
+</tr>
+<tr>
+<td>SP-05</td>
+<td>对倒/自成交移交</td>
+<td>监察告警</td>
+</tr>
+</tbody>
+</table></div>
+<h4>后台</h4>
+<p><code>/admin/spot/symbols</code> · <code>bands</code> · <code>halt</code> · <code>fees</code> · <code>stp</code></p>
+<h4>交接</h4>
+<ul>
+<li>上币 → 现货 PM 做上线</li>
+<li>风险 → TO 的停牌权</li>
+<li>钱包 → 事件中仅充/仅提模式</li>
+</ul>
+<hr />
 <h3>4.3 杠杆产品与信用运维 — PM-MARGIN / RO-CREDIT / TO <code>[Phase 2+]</code></h3>
 <blockquote>
-<p>Phase 1：无杠杆借贷簿。</p>
+<p>Phase 1：无杠杆借贷簿。永续里的保证金/强平仍归 §4.4 与风控引擎。</p>
 </blockquote>
-<p><strong>范围内：</strong> 全仓/逐仓规则；抵押品白名单、折扣、LTV；借款上限与利率曲线；追加保证金/强平参数；坏账处置；抵押品暴跌+借币挤兑压力。  </p>
-<p><strong>SOP：</strong> MG-01 新增抵押品 · MG-02 折扣/LTV 变更 · MG-03 借款冻结 · MG-04 强制平仓手册 · MG-05 坏账核销/追偿 · MG-06 利率曲线更新  </p>
-<p><strong>后台：</strong> <code>/admin/margin/collateral</code> · <code>ltv</code> · <code>borrow</code> · <code>interest</code> · <code>liquidation</code> · <code>bad-debt</code></p>
+<p><strong>人话：</strong> 客户向平台借钱买更多资产并付利息。资产跌了，贷款可能超过抵押，于是强制卖出。<strong>逐仓</strong>只连坐那一个仓；<strong>全仓</strong>会吃掉整个账户。</p>
+<h4>范围内</h4>
+<ul>
+<li>全仓 / 逐仓规则</li>
+<li>抵押品白名单、折扣、LTV</li>
+<li>借款上限与利率曲线</li>
+<li>追加保证金 / 强平参数与话术</li>
+<li>坏账处置</li>
+<li>抵押暴跌 + 借币挤兑压力</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>永续持仓限额（合约）</li>
+<li>仅现货的上币（上币 / 现货）</li>
+</ul>
+<h4>分工</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>杠杆 PM</td>
+<td>产品形态（全仓/逐仓）、特性开关</td>
+</tr>
+<tr>
+<td>RO-Credit</td>
+<td>折扣、LTV、借款上限、强平缓冲</td>
+</tr>
+<tr>
+<td>TO</td>
+<td>强制平仓作业、冻借款</td>
+</tr>
+<tr>
+<td>资金</td>
+<td>利息计提会计、坏账入账</td>
+</tr>
+</tbody>
+</table></div>
+<h4>SOP</h4>
+<p>MG-01 新增抵押 · MG-02 折扣/LTV · MG-03 冻借款 · MG-04 强制平仓手册 · MG-05 坏账 · MG-06 利率曲线</p>
+<h4>后台</h4>
+<p><code>/admin/margin/collateral</code> · <code>ltv</code> · <code>borrow</code> · <code>interest</code> · <code>liquidation</code> · <code>bad-debt</code></p>
+<h4>交接</h4>
+<ul>
+<li>给合约：共享抵押 / 统一账户设计变更</li>
+<li>给钱包：下币时还款与提现顺序</li>
+<li>给风险：超过重要性的坏账</li>
+</ul>
+<hr />
 <h3>4.4 合约 / 永续产品与强平运维 — PM-FUT / RO / TO-FUT <code>[Phase 1 — 主路径]</code></h3>
 <blockquote>
 <p>Phase 1 关键路径：<strong>XAUUSD 永续</strong> + 其他已批永续；仅邀请/经纪商客户。</p>
 </blockquote>
 <p><strong>人话：</strong> 这是你们<strong>今天真正在跑的产品</strong>。标记价、杠杆、资金费、保险、ADL 出问题，先看本章和风控引擎（§4.6）。即使你不是“合约岗”也请读。</p>
-<p><strong>范围内：</strong> U/币本位永续（及定期合约）；杠杆档与持仓限额；标记价/指数成分与偏离告警；资金费公式与结算；保险基金与 ADL；熔断、冲击缓冲、只减仓。  </p>
-<p><strong>SOP：</strong> PF-01 新合约上线 · PF-02 杠杆档变更 · PF-03 标记–指数偏离响应 · PF-04 极端资金费/暂停 · PF-05 保险赔付复核 · PF-06 ADL 启动复核 · PF-07 停牌/只减仓 · PF-08 指数成分交易所故障  </p>
-<p><strong>后台：</strong> <code>/admin/futures/contracts</code> · <code>leverage</code> · <code>risk-limits</code> · <code>mark-index</code> · <code>funding</code> · <code>insurance</code> · <code>adl</code> · <code>breaker</code></p>
+<p>永续 = 跟踪一个价格、没有到期日的合约。客户交抵押，可杠杆做多或做空。每隔几小时多空之间结一笔<strong>资金费</strong>，免得合约永远偏离真价。强平看的是<strong>标记价</strong>（公允价），不是最新成交。</p>
+<h4>范围内</h4>
+<ul>
+<li>U 本位 / 币本位永续（及若已上线的定期合约）</li>
+<li>杠杆档、持仓与名义限额</li>
+<li>标记价 / 指数成分与偏离告警</li>
+<li>资金费公式、封顶、结算作业</li>
+<li>保险基金政策作业；ADL 配置</li>
+<li>熔断、冲击缓冲、只减仓</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>现货撮合公平性（ME；引擎可能共用）</li>
+<li>现货上币尽调（上币组）</li>
+</ul>
+<h4>分工</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>合约 PM</td>
+<td>合约规格、资金费设计、对客说明</td>
+</tr>
+<tr>
+<td>TO-FUT</td>
+<td>盘中盯盘、只减仓/停牌提议、保险/ADL 快报</td>
+</tr>
+<tr>
+<td>RO</td>
+<td>杠杆档与限额批准、标记方法论</td>
+</tr>
+<tr>
+<td>RE</td>
+<td>强平引擎、配置晋级</td>
+</tr>
+</tbody>
+</table></div>
+<h4>SOP</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>名称</th>
+<th>何时启动</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PF-01</td>
+<td>新合约上线</td>
+<td>LD-04 + G06</td>
+</tr>
+<tr>
+<td>PF-02</td>
+<td>杠杆档变更</td>
+<td>波动 / VIP 政策</td>
+</tr>
+<tr>
+<td>PF-03</td>
+<td>标记–指数偏离</td>
+<td>PF-K01</td>
+</tr>
+<tr>
+<td>PF-04</td>
+<td>极端资金费 / 暂停</td>
+<td>PF-K03</td>
+</tr>
+<tr>
+<td>PF-05</td>
+<td>保险赔付复核</td>
+<td>破产成交</td>
+</tr>
+<tr>
+<td>PF-06</td>
+<td>ADL 启动复核</td>
+<td>任一 ADL</td>
+</tr>
+<tr>
+<td>PF-07</td>
+<td>停牌 / 只减仓</td>
+<td>连环、基础设施、错标记</td>
+</tr>
+<tr>
+<td>PF-08</td>
+<td>指数成分故障</td>
+<td>PF-K02</td>
+</tr>
+</tbody>
+</table></div>
+<h4>工具</h4>
+<p>标记/指数健康、保险与 ADL 日志、强平队列、资金费预测</p>
+<h4>后台</h4>
+<p><code>/admin/futures/contracts</code> · <code>leverage</code> · <code>risk-limits</code> · <code>mark-index</code> · <code>funding</code> · <code>insurance</code> · <code>adl</code> · <code>breaker</code></p>
+<h4>交接</h4>
+<ul>
+<li>给 ME：停撮合时强平按 SOP 排空</li>
+<li>给风险：保险覆盖率低于政策地板 → Sev-1</li>
+<li>给合规：疑似指数操纵</li>
+</ul>
+<hr />
 <h3>4.5 撮合引擎与交易核心 — ME / SRE / ENG</h3>
-<p><strong>范围内：</strong> 撮合正确性、时延 SLO、公平性；容灾双活一致性；Kill switch、断线撤单、STP；容量（撤单风暴、强平洪峰）；分片与限频。  </p>
-<p><strong>SOP：</strong> ME-01 发布/回滚 · ME-02 撮合停机 · ME-03 双活切换 · ME-04 撤单风暴抑制 · ME-05 故障后订单簿校验  </p>
-<p><strong>后台：</strong> <code>/admin/engine/status</code> · <code>kill</code> · <code>rate-limits</code> · <code>stp</code> · <code>failover</code></p>
+<p><strong>人话：</strong> 这台程序把买单和卖单配成成交。它错了，价格错、强平也错。开关很小，必须双人。</p>
+<h4>范围内</h4>
+<ul>
+<li>撮合正确性、时延 SLO、公平性</li>
+<li>容灾 / 双活一致性</li>
+<li>Kill switch、断线撤单、STP</li>
+<li>容量（撤单风暴、强平洪峰）</li>
+<li>分片与限频</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>经济风险偏好（风险）</li>
+<li>托管密钥（钱包）</li>
+</ul>
+<h4>分工</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ME PIC</td>
+<td>撮合规则、发布说明、配置归属</td>
+</tr>
+<tr>
+<td>SRE</td>
+<td>可用性、容灾演练、容量</td>
+</tr>
+<tr>
+<td>工程值班</td>
+<td>故障修复、回滚</td>
+</tr>
+</tbody>
+</table></div>
+<h4>SOP</h4>
+<p>ME-01 发布/回滚 · ME-02 撮合停机 · ME-03 双活切换 · ME-04 撤单风暴 · ME-05 故障后验簿</p>
+<h4>后台</h4>
+<p><code>/admin/engine/status</code> · <code>kill</code> · <code>rate-limits</code> · <code>stp</code> · <code>failover</code></p>
+<h4>交接</h4>
+<ul>
+<li>TO / 风险批准业务停牌原因</li>
+<li>通知 RE，让强平暂停/恢复与撮合状态一致</li>
+</ul>
+<hr />
 <h3>4.6 风控引擎、清算与强平系统 — RE / DA</h3>
-<p><strong>范围内：</strong> 保证金率、破产价、强平引擎；盘中限额执行；已批准配置推送生产；风险状态与撮合/钱包对账；统一账户/组合保证金（如已上线）。  </p>
-<p><strong>SOP：</strong> RE-01 配置晋级 · RE-02 强平引擎暂停/恢复 · RE-03 标记价源切换 · RE-04 风险状态重建 · RE-05 组合保证金模型变更  </p>
-<p><strong>后台：</strong> <code>/admin/risk-engine/configs</code> · <code>liq</code> · <code>feeds</code> · <code>sim</code><br />
+<p><strong>人话：</strong> 这台程序不停问“价格若跳，抵押还够不够？”它算保证金率、破产价，并启动强平。这里配错会直接动客户的钱。</p>
+<h4>范围内</h4>
+<ul>
+<li>保证金率、破产价、强平引擎</li>
+<li>盘中限额执行（含盘前检查，如适用）</li>
+<li>已批准配置推送生产</li>
+<li>风险状态与撮合 / 钱包对账</li>
+<li>统一账户 / 组合保证金（如已上线）</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>未经 RO 批准自行设定偏好数字</li>
+</ul>
+<h4>分工</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RE PIC</td>
+<td>引擎配置部署、特性开关</td>
+</tr>
+<tr>
+<td>DA</td>
+<td>公式正确性、回测</td>
+</tr>
+<tr>
+<td>ENG</td>
+<td>性能与数据管道</td>
+</tr>
+</tbody>
+</table></div>
+<h4>SOP</h4>
+<p>RE-01 配置晋级 · RE-02 强平暂停/恢复 · RE-03 标记切源 · RE-04 风险状态重建 · RE-05 组合保证金模型变更</p>
+<h4>后台</h4>
+<p><code>/admin/risk-engine/configs</code> · <code>liq</code> · <code>feeds</code> · <code>sim</code><br />
 <strong>仓内模块：</strong> <code>risk_metrics_monitor.py</code> · <code>stress_testing.py</code> · <code>trader_rights_workflow.py</code></p>
+<hr />
 <h3>4.7 钱包、托管与提现 — WO / TS / SRE</h3>
-<p><strong>范围内：</strong> 热/温/冷/MPC 密钥作业；充值归属、旅行规则、提现筛查挂钩；终局性与重组、错链处理；提现流动性缓冲（挤兑风险）；储备证明支持。  </p>
-<p><strong>SOP：</strong> WA-01 热钱包补款 · WA-02 提现排队/慢速模式 · WA-03 链停/重组 · WA-04 错充找回 · WA-05 密钥仪式/轮换 · WA-06 PoR 快照  </p>
-<p><strong>后台：</strong> <code>/admin/wallet/balances</code> · <code>withdraw</code> · <code>deposit</code> · <code>keys</code> · <code>chains</code></p>
+<p><strong>人话：</strong> 币真正躺在这里。热钱包连网、付提现；冷钱包更慢、更多人。缓冲不够，真实客户会提不出来；缓冲太多，被盗损失更大。</p>
+<h4>范围内</h4>
+<ul>
+<li>热 / 温 / 冷 / MPC 密钥作业</li>
+<li>充值归属、旅行规则、提现筛查挂钩</li>
+<li>终局性、重组、错链手册</li>
+<li>提现流动性缓冲（挤兑风险）</li>
+<li>储备证明 / 负债对账支持</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>交易限额政策（风险）</li>
+<li>代币基本面尽调（上币）— 合约充提技术评审除外</li>
+</ul>
+<h4>分工</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WO</td>
+<td>托管作业手册、地址作业</td>
+</tr>
+<tr>
+<td>TS</td>
+<td>与风险共同定法币+加密缓冲政策</td>
+</tr>
+<tr>
+<td>SRE/安全</td>
+<td>HSM/MPC、访问控制</td>
+</tr>
+</tbody>
+</table></div>
+<h4>SOP</h4>
+<p>WA-01 热钱包补款 · WA-02 提现排队/慢速模式 · WA-03 链停/重组 · WA-04 错充找回 · WA-05 密钥仪式 · WA-06 PoR 快照</p>
+<h4>后台</h4>
+<p><code>/admin/wallet/balances</code> · <code>withdraw</code> · <code>deposit</code> · <code>keys</code> · <code>chains</code></p>
+<hr />
 <h3>4.8 上币、下币与代币尽调 — LI / RO / CP / Legal</h3>
 <blockquote>
 <p><strong>Phase 1 上币焦点：</strong> 仅永续（如 <strong>XAUUSD</strong> 及其他已批永续）。现货上/下币 = <strong><code>[Phase 2+]</code></strong>；杠杆资格 LD-03 = <strong><code>[Phase 2+]</code></strong>。</p>
 </blockquote>
-<p><strong>范围内：</strong> 新现货对、杠杆资格、永续合约；合约风险（增发、可升级、暂停、黑名单）；流动性与解锁；种子/监控标签；跨产品下币；更名/迁移/代码冲突。  </p>
-<p><strong>SOP：</strong> LD-01 上币风险意见 · LD-02 种子/监控标签 · LD-03 杠杆资格 · LD-04 永续上线决定 · LD-05/06/07 现货/杠杆/永续下币序列 · LD-08 紧急下币/停牌  </p>
-<p><strong>强制下币顺序：</strong> 风险+法务+合规批准 → <strong>永续</strong>只减仓→平仓/到期→下线 → <strong>杠杆</strong>冻借款→强平还款→移出抵押 → <strong>现货</strong>必要时停牌→关闭交易→提现按 WA SOP → 对外沟通与客服话术。</p>
-<h3>4.9 合规、监察与市场滥用 — CP</h3>
-<p><strong>范围内：</strong> KYC/AML、制裁、旅行规则；<strong>Phase 1 准入：</strong> 邀请码兑换控制、<strong>经纪商/IB</strong> 引入账户、阻断公众自助注册；监察（幌骗、分层、对倒、内幕）；跨产品调查；监管报送；硬冻结。  </p>
-<p><strong>SOP：</strong> CP-01 告警分流 · CP-02 账户硬冻结 · CP-03 跨产品滥用复核 · CP-04 监管协查/冻结  </p>
-<p><strong>后台：</strong> <code>/admin/compliance/surveillance</code> · <code>holds</code> · <code>kyb-kyc</code> · <code>sanctions</code></p>
-<h3>4.10–4.12 资金结算、做市、平台工程</h3>
+<p><strong>人话：</strong> 上币 = 允许一个市场存在。下币必须按固定顺序，免得永续还开着、现货价已经没了。</p>
+<h4>范围内</h4>
 <ul>
-<li><strong>TS：</strong> 法币通道、银行集中度、日终结算、保险/SAFU 现金管理、稳定币库存与兑付。SOP：TS-01~04。后台：<code>/admin/treasury/*</code>  </li>
-<li><strong>MM：</strong> 做市 SLA、库存与逆向选择、信息隔离。SOP：MM-01~03。后台：<code>/admin/mm/*</code>  </li>
-<li><strong>ENG/SRE/安全/DA：</strong> 安全开发生命周期、审计日志、风险数据管道、漏洞赏金。SOP：ENG-01~04  </li>
+<li>新现货对、杠杆资格、永续合约</li>
+<li>合约风险（增发、可升级、暂停、黑名单）</li>
+<li>流动性与解锁；种子/监控标签</li>
+<li>跨产品下币</li>
+<li>更名 / 迁移 / 代码冲突</li>
 </ul>
+<h4>范围外</h4>
+<ul>
+<li>上线后费率微调（产品）</li>
+<li>保险基金规模政策（风险）</li>
+</ul>
+<h4>分工</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角色</th>
+<th>负责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LI</td>
+<td>尽调包、项目对接</td>
+</tr>
+<tr>
+<td>RO</td>
+<td>风险意见（市场/信用/操纵）</td>
+</tr>
+<tr>
+<td>CP</td>
+<td>制裁 / 证券分类红旗</td>
+</tr>
+<tr>
+<td>法务</td>
+<td>法律形式意见</td>
+</tr>
+<tr>
+<td>各产品 PM</td>
+<td>上线产品清单</td>
+</tr>
+</tbody>
+</table></div>
+<h4>SOP</h4>
+<p>LD-01 风险意见 · LD-02 种子/监控标签 · LD-03 杠杆资格 · LD-04 永续上线决定 · LD-05/06/07 现货/杠杆/永续下币 · LD-08 紧急下币/停牌</p>
+<p><strong>强制下币顺序：</strong> 风险+法务+合规批准 → <strong>永续</strong>只减仓→平仓/到期→下线 → <strong>杠杆</strong>冻借款→强平还款→移出抵押 → <strong>现货</strong>必要时停牌→关闭交易→提现按 WA SOP → 对外沟通与客服话术。</p>
+<h4>后台</h4>
+<p><code>/admin/listing/pipeline</code> · <code>tags</code> · <code>delist</code> · <code>migrations</code></p>
+<hr />
+<h3>4.9 合规、监察与市场滥用 — CP</h3>
+<p><strong>人话：</strong> 合规决定谁可以交易、有没有人在滥用市场。风险决定能加多少杠杆。两份工作不要混。Phase 1 还管邀请码和经纪商通道——公众自助注册必须是关的。</p>
+<h4>范围内</h4>
+<ul>
+<li>KYC/AML、制裁、旅行规则</li>
+<li><strong>Phase 1 准入：</strong> 邀请码兑换、经纪商/IB 引入账户、阻断公众自助注册</li>
+<li>监察（幌骗、分层、对倒、内幕）</li>
+<li>跨产品市场滥用调查</li>
+<li>监管报送</li>
+<li>阻断杠杆 / 提现 / 交易的硬冻结</li>
+</ul>
+<h4>范围外</h4>
+<ul>
+<li>设定经济杠杆档（RO）— 合规可以下硬冻结</li>
+</ul>
+<h4>SOP</h4>
+<p>CP-01 告警分流 · CP-02 账户硬冻结 · CP-03 跨产品滥用复核 · CP-04 监管协查/冻结</p>
+<h4>后台</h4>
+<p><code>/admin/compliance/surveillance</code> · <code>holds</code> · <code>kyb-kyc</code> · <code>sanctions</code></p>
+<hr />
+<h3>4.10 资金、结算与银行 — TS</h3>
+<p><strong>人话：</strong> 资金部管的是<strong>公司的钱和通道</strong>（银行、稳定币库存、保险基金现金），不是客户那笔交易赚不赚钱。日终账没对平，他们不能打款。</p>
+<h4>范围内</h4>
+<ul>
+<li>法币通道、银行集中度</li>
+<li>公司资金（不是客户交易风险）</li>
+<li>对账批准后的结算</li>
+<li>政策下的保险 / SAFU 现金管理</li>
+<li>稳定币库存与兑付手册</li>
+</ul>
+<h4>SOP</h4>
+<p>TS-01 通道中断 · TS-02 稳定币脱锚 · TS-03 日终后结算 · TS-04 保险注资</p>
+<h4>后台</h4>
+<p><code>/admin/treasury/balances</code> · <code>settlement</code> · <code>stablecoins</code></p>
+<hr />
+<h3>4.11 流动性 / 做市运维 — MM</h3>
+<p><strong>人话：</strong> 做市商按合同在买卖两边挂单，让别人能成交。价差突然拉宽、深度突然没了，先问他们是不是还活着（心跳），再问是不是市场真崩了。</p>
+<h4>范围内</h4>
+<ul>
+<li>现货与永续的做市 SLA（深度、价差、在线）</li>
+<li>库存与逆向选择监控</li>
+<li>若做市是内部/关联：与风险的信息隔离</li>
+</ul>
+<h4>SOP</h4>
+<p>MM-01 SLA 催办 · MM-02 波动市扩价 · MM-03 信息隔离检查</p>
+<h4>后台</h4>
+<p><code>/admin/mm/sla</code> · <code>inventory</code> · <code>agreements</code></p>
+<hr />
+<h3>4.12 平台工程、安全与数据 — ENG / SRE / Security / DA</h3>
+<p><strong>人话：</strong> 他们修管道、管权限、保证审计日志改不了。风险看板的数字都从他们的管道来。管道晚了，绿灯可能是假的。</p>
+<h4>范围内</h4>
+<ul>
+<li>安全开发、所有后台页的访问控制与审计日志</li>
+<li>喂给风险的数据管道（标记、仓位、成交）</li>
+<li>漏洞赏金 / 渗透修复跟踪</li>
+<li>模型与报告自动化（<code>risk_reporting.py</code>、对账、压力）</li>
+</ul>
+<h4>SOP</h4>
+<p>ENG-01 特权赋权 · ENG-02 审计日志抽查 · ENG-03 管道延迟 · ENG-04 密钥/API 失陷</p>
 <hr />
 <h2>5. 跨 BU RACI 矩阵</h2>
 <p><strong>怎么读这张表（不需要背景）</strong></p>
@@ -8133,7 +7801,6 @@ flowchart LR
 </ul>
 <p>例子：改<strong>永续杠杆档</strong>时，合约产品是 <strong>R</strong>（起草新档），风控引擎是 <strong>R</strong>（推配置），风险是 <strong>A</strong>（说准），若影响零售则合规是 <strong>C</strong>。</p>
 <p><strong>R</strong> = 执行 · <strong>A</strong> = 问责 · <strong>C</strong> = 咨询 · <strong>I</strong> = 知会</p>
-<p><strong>R</strong> 执行 · <strong>A</strong> 问责 · <strong>C</strong> 咨询 · <strong>I</strong> 知会  </p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -8324,7 +7991,9 @@ flowchart LR
 </table></div>
 <hr />
 <h2>6. 全局 SOP（共用）与详细作业手册</h2>
-<p>每张 SOP 卡片字段统一：<strong>何时触发</strong> · <strong>谁</strong> · <strong>SLA</strong> · <strong>前置条件</strong> · <strong>如何做</strong> · <strong>系统</strong> · <strong>完成标准</strong> · <strong>升级条件</strong>。角色代码见§2.2。</p>
+<p>上面是共用骨架。业务单元自己的食谱（PF-<em>、ACC-</em>……）在 §6.7。</p>
+<p>如果从来没跑过：先读 <a href="#怎么读一份-sop">怎么读一份 SOP</a>。然后打开那份 SOP，先看 <strong>何时</strong>（轮到你了吗？），再看 <strong>前置</strong>（现在允许开始吗？），再看 <strong>如何做</strong>。</p>
+<p>每张 SOP 卡片字段统一：<strong>何时触发</strong> · <strong>谁</strong> · <strong>SLA</strong> · <strong>前置条件</strong> · <strong>如何做</strong> · <strong>系统</strong> · <strong>完成标准</strong> · <strong>升级条件</strong>。角色代码见§2.2。工单系统除非另注，均为风险/运维工单。</p>
 <h3>6.0 字段说明</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -8651,82 +8320,567 @@ flowchart LR
 </blockquote>
 <hr />
 <h3>6.7 BU SOP 目录（详细）</h3>
-<h4>RM 风险</h4>
-<p>这些是风险值班每天真正会碰到的手续。下面每条都写成“何时 / 怎么做 / 做完长什么样”，避免只记口诀。</p>
-<ul>
-<li><strong>RM-01 每日风险包：</strong> <strong>何时：</strong> 每个 UTC 日切（默认 22:00），L3 当天再加做。<strong>怎么做：</strong> 系统用 <code>risk_reporting.py</code> 把策略/台/公司快照、未关闭告警、压力要点拼成一包；按 §8 给各家族涂红黄绿；标出 7 天内到期的豁免；发给邮件组；RO 对例外写评语。<strong>做完：</strong> 门户/邮件已发且 RO 点过确认。<strong>超时 &gt;2h</strong> 当管道事件（ENG-03），不是“晚一点也行”。  </li>
-<li><strong>RM-02 WARN：</strong> <strong>何时：</strong> 任一黄灯。<strong>怎么做：</strong> 按 G03 先确认 → 写下可能原因 → 决定“继续盯”还是“现在动” → 若正在逼近红灯，预先打开 G01/G02 草稿，免得红灯来了才找人。<strong>SLA：</strong> 15 分确认，30–60 分有方案。  </li>
-<li><strong>RM-03 BREACH：</strong> <strong>何时：</strong> 红灯或接近 Kill。<strong>怎么做：</strong> 按产品立刻遏制（永续优先只减仓；杠杆冻借款；现货考虑停牌）→ 核对应自动动作打没打出 → 选定 §9 族 → Sev-1/2 则开战时。<strong>SLA：</strong> 5 分确认，15 分遏制。没有遏制方案不要把告警点掉。  </li>
-<li><strong>RM-04 杠杆/权限上调：</strong> 交易员或 VIP <strong>提交申请</strong> → 系统自动出资格包（收益、回撤、风控冻结等）→ RO 当 Maker 批或驳 → A+ 再要 Checker → 工程/风控引擎才推限额。<strong>禁止自己批自己。</strong>  </li>
-<li><strong>RM-05 压力目录变更：</strong> 量化提出新冲击或相关矩阵 → 回测命中率 → RO+量化双签 → 发布带版本号的目录 → 挂进每日包。没版本号等于没发布。  </li>
-<li><strong>RM-06 保险动用复核：</strong> 任一保险赔付或 ADL 之后：<strong>30 分内</strong>快报（赔了多少、价格是否可信、当时簿好不好）→ <strong>1 个工作日内</strong>正式复核 → 可能接着注资（TS-04）、收杠杆档（G01）或查 ADL 是否误触发（PF-06）。  </li>
-<li><strong>RM-07 停牌建议：</strong> 缺口、预言机坏、连环、监管开口时，RO/RO-OPS 在 <strong>5 分钟内</strong>给出范围建议并转入 G02。建议本身不是停牌；没有 G02 执行就还没停。</li>
-</ul>
-<h4>PF 永续 <code>[Phase 1]</code>（今天的主路径，请读完）</h4>
-<ul>
-<li><strong>PF-01 新合约上线：</strong> 按 §11.3 一张张勾：合约规格签字、指数成分够数且告警开、杠杆档双批、保险种子到位、资金费封顶测过、强平+ADL 演练签字、撮合与限频、客服话术、72h 超护名单、RO-OPS 知道这条合约怎么区分 S2（错标记）和 S1（真下跌）。缺一项就不上。  </li>
-<li><strong>PF-02 改杠杆档：</strong> 走完整 G01，超护期内盯强平量。把最高杠杆当玩具调是 Sev 级失误。  </li>
-<li><strong>PF-03 标记偏离：</strong> <strong>5 分钟内分流。</strong> 先问：是数据坏了（S2：切源、必要时暂停不安全强平）还是真基差（可走 PF-07 只减仓）？<strong>改标记公式必须 RO+量化双控</strong>，没有“先改再补单”。  </li>
-<li><strong>PF-04 资金费极端：</strong> 先确认封顶/钳制是否生效。只有结算完整性已经坏了，才允许双人暂停资金费结算，并且传播必须写明。不要因为客户抱怨费率高就私自关。  </li>
-<li><strong>PF-05 保险赔付：</strong> 当天快报：破产价、强平是否及时、做市是否在。数字对不上账就升级。  </li>
-<li><strong>PF-06 ADL：</strong> 先证明保险<strong>真的不够</strong>。再看减仓排名是否公允。若像误触发：立刻停 ADL 并升 Sev-1。ADL 是最后手段，不是日常工具。  </li>
-<li><strong>PF-07 停牌 / 只减仓：</strong> 引擎还健康时，<strong>优先只减仓</strong>（允许减仓、禁止加仓），而不是一关了之。传播必须说明资金费还在不在抽。引擎不健康则转 G02。  </li>
-<li><strong>PF-08 指数成分故障：</strong> 把坏掉的外盘踢出指数。剩下的源少于政策最少家数 → 保护标记并只减仓/暂停强平。临时改权重必须 RO 批。</li>
-</ul>
-<h4>ACCESS — Phase 1 邀请与经纪商开户 <code>[Phase 1]</code></h4>
-<ul>
-<li><strong>ACC-01 邀请制开户（逐步）：</strong> ① 系统校验邀请码仍有效、未被滥用 ② 客户完成 KYC ③ 合规放行 ④ 账户打上邀请元数据（谁邀请的、何时）⑤ 产品权益写成<strong>仅永续</strong> ⑥ 这才打开交易开关。若发现公众自助注册入口是开的 → <strong>L3</strong>，先关入口再查已放出的 UID。  </li>
-<li><strong>ACC-02 经纪商引入：</strong> ① 经纪商协议仍有效 ② 客户 KYC ③ 经纪商限额与客户限额叠在一起（取更严）④ 权益=仅永续。协议一失效：停<strong>新开户</strong>，已开户按协议与风险意见处理，不要假装没看见。  </li>
-<li><strong>ACC-03 权益护栏（每天）：</strong> 扫：误开了现货/杠杆的 UID、自助注册漏网、没有邀请/经纪商标签却能下单的 UID。日报给 RO-OPS + 合规。这是 Phase 1 的“门有没有锁”检查。</li>
-</ul>
+<p>上面 G01–G06 是<strong>全公司共用骨架</strong>（改限额、停牌、确认告警、双人控制、日终对账、新产品开门）。下面每一张卡片，是某个具名团队真正会跑的一份作业。</p>
+<p><strong>如果你从来没干过这类工作</strong></p>
+<ol>
+<li>先找自己的前缀：<strong>RM</strong> = 风险运维，<strong>PF</strong> = 永续（今天的生产），<strong>ACC</strong> = 邀请/经纪商准入，<strong>ME</strong> = 撮合引擎，<strong>RE</strong> = 风控/强平引擎，<strong>WA</strong> = 钱包，<strong>SP</strong> = 现货 <code>[Phase 2+]</code>，<strong>MG</strong> = 杠杆借贷 <code>[Phase 2+]</code>。</li>
+<li>先读 <strong>这份 SOP 干什么</strong>。若不能用一句话讲给新同事听，不要开始点按钮。</li>
+<li>再读 <strong>何时</strong>。那件事没发生，这份食谱就还没轮到你——不要“看着像”就自己发明步骤。</li>
+<li>然后按 <strong>如何做</strong> 的编号走。标了 <em>为什么</em> 的句子不是装饰，是上一步存在的理由。</li>
+<li><strong>完成标准</strong> 没满足就不要关单。没有截图 / 哈希 / 确认的关单，审计上算失败。</li>
+<li>哪一格是空的、哪块屏找不到，<strong>停下问风险运维</strong>。凌晨三点自己编步骤，是错杀用户的典型入口。</li>
+</ol>
+<p><strong>Phase 1 的人：</strong> 先读完 <strong>RM、PF、ACC、ME、RE、WA</strong>。现货（SP）和杠杆（MG）留着预习，不要去开通那些产品。</p>
+<hr />
+<h4>RM 风险运维</h4>
+<p>这是 7×24 风险台每天会碰到的手续。“MI 包”= 管理信息，一张“我们还在不在风险偏好里”的快照。</p>
+<h5>RM-01 每日风险包</h5>
+<p><strong>这份 SOP 干什么：</strong> 每天印一张“我们安全吗”的报纸，让下一班和 CRO 不要从白纸开始。这不是交易。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>每个 UTC 日切（默认 22:00）；L3 当天再加做</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> 系统拼装 · <strong>A</strong> RO 阅读并写评语 · <strong>C</strong> 例外时 PM/TO · <strong>I</strong> CRO（摘要）</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>日切后 ≤90 分发出</td>
+</tr>
+<tr>
+<td><strong>系统</strong></td>
+<td><code>/admin/risk/reports</code> · <code>risk_reporting.py</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做（不要跳）</strong><br />
+1. 确认日切真的完成了（撮合、风控引擎、钱包喂价的时间戳 ≥ 日切）。<em>为什么：</em> 卡死的喂价拼出来的包会是假绿（情景族 S9）。<br />
+2. 跑 <code>risk_reporting.py</code>（或门户任务），拉：各台/公司快照、未关闭 WARN/BREACH、压力测试要点、7 天内到期的豁免。<br />
+3. 按 §8 给各家族涂红黄绿，<strong>颜色旁边写喂价时间戳</strong>。<br />
+4. 发给邮件组。RO 对每一盏黄/红写一句评语——沉默不算审阅。<br />
+5. 在门户确认。包晚了超过 2 小时，按 <strong>ENG-03</strong>（管道）处理，不是“我们忙”。</p>
+<p><strong>完成：</strong> 邮件/门户已发且 RO 点过确认。<strong>升级：</strong> 晚 &gt;2h → ENG-03；数字和实时告警台打架 → 当数据事件，不要“先改 PDF”。</p>
+<h5>RM-02 WARN（黄灯）响应</h5>
+<p><strong>这份 SOP 干什么：</strong> 黄灯。有不对。你有的是分钟不是小时。黄灯<strong>不是</strong>“等到红再管”的许可证。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>§8 任一黄灯</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> RO-OPS · <strong>C</strong> 对应产品 BU PIC · <strong>A</strong> 超时未处理则 RO</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>15 分确认；30–60 分有书面方案</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做</strong><br />
+1. 在控制台确认（SOP-G03）。<em>为什么：</em> 确认能止住寻呼风暴，让你有空思考。<br />
+2. 看时间戳（PL-K06 / PF-K02）。陈旧的黄 → ENG-03，不要改限额。<br />
+3. 写一句：“这像 S?，因为……”。列出 ±15 分钟内动过的其他 KRI。<br />
+4. 决定 <strong>盯</strong>（留下一个复查时刻）还是 <strong>动</strong>（现在就开 G01/G02/PF-<em> 草稿）。数字在往红走，就在还黄的时候把下一步 SOP 预开好。</em>为什么：* 红灯再找 Checker 来不及。<br />
+5. 颜色变绿或已经升级之前，黄灯工单不要关。</p>
+<p><strong>完成：</strong> 黄灯消除或已升级并有工单。<strong>升级：</strong> 同一家族两盏黄灯还没方案 → 当 L2。</p>
+<h5>RM-03 BREACH（红灯）响应</h5>
+<p><strong>这份 SOP 干什么：</strong> 红灯。安全垫没了。先遏制，再写文章。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>红灯或接近 Kill</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> RO-OPS + 产品 BU PIC · <strong>A</strong> RO · L3+ 呼叫 CRO</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>5 分确认；15 分遏制</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做</strong><br />
+1. 确认（G03）。桥上说清：范围、KRI 编号、你猜的 §9 情景族。<br />
+2. <strong>立刻按产品遏制：</strong> 永续优先只减仓（PF-07）；杠杆 <code>[Phase 2+]</code> 考虑冻借款（MG-03）；现货 <code>[Phase 2+]</code> 考虑停牌（G02）。<em>为什么：</em> 没人改模式，引擎会继续撮合。<br />
+3. 核对应自动动作打没打出。该打没打，是<strong>第二起</strong>事件（引擎），不是脚注。<br />
+4. 按 §8.2 定 L1–L4。Sev-1/2 → 战时（§10）。客户资产不要一个人抠。<br />
+5. 遏制有了永久修复负责人之前，不要点“关闭告警”。关告警 ≠ 遏制。</p>
+<p><strong>完成：</strong> 已遏制 + 永久修复有名字。<strong>升级：</strong> 15 分仍无遏制 → 自动 L3。</p>
+<h5>RM-04 杠杆 / 权限上调</h5>
+<p><strong>这份 SOP 干什么：</strong> 交易员或 VIP 想借更多风险（更高杠杆、更大仓位上限）。这不是客服人情，是一笔信用决定。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>TR/VIP 提交购买力或杠杆申请</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R 提交</strong> 交易员 · <strong>R 资格包</strong> 系统 · <strong>A Maker</strong> RO · <strong>Checker</strong> A+ 时 RO2/PM · <strong>R 推送</strong> ENG/RE</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>资格包自动 &lt;5 分 · Maker ≤1 个工作日（紧急 1h）</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做</strong><br />
+1. 在 <code>trader_rights_workflow</code> 提交（私聊不能当唯一记录）。<br />
+2. 系统出资格包：近期盈亏/回撤、合规冻结、当前占用、未结坏账。<em>为什么：</em> 这个月赚了钱，也不能无视合规冻结。<br />
+3. RO（Maker）批 / 驳 / 批一个更小的数字并写到期日。理由要写下来。<br />
+4. A+ 级必须另一个人 Checker。同一登录会被拒。<em>为什么：</em> G04——一台被盗电脑不能单独加天花板。<br />
+5. 然后 RE/ENG 才推新上限，配置哈希贴回工单。<br />
+6. 告诉交易员“好了”之前，确认其经纪商/OMS 已经显示新上限。</p>
+<p><strong>完成：</strong> 状态 APPROVED 且线上限额与工单一致。<strong>升级：</strong> 有人试图批自己的 UID → 安全事件，不是界面故障。</p>
+<h5>RM-05 压力目录变更</h5>
+<p><strong>这份 SOP 干什么：</strong> 我们有一份“如果黄金隔夜跳 8% / 如果稳定币脱锚”的清单。改这份清单，等于改我们假装能活过哪些灾难。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>新情景、冲击幅度、相关矩阵</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> 量化 DA · <strong>A</strong> RO · <strong>C</strong> PM · <strong>I</strong> 核心情景则 CRO</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>发布前必须双签</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做</strong><br />
+1. 量化书面写清：哪些价格动、动多少、几分钟内。<br />
+2. 回测：过去三次真压力日它会不会亮？从不亮可能是玩具；总亮可能紧到没用。<br />
+3. RO+量化双签。发布带<strong>版本号</strong>。没版本号等于没发布。<br />
+4. 挂进每日包（RM-01），让明天值班用新清单。</p>
+<p><strong>完成：</strong> 门户上有版本号。</p>
+<h5>RM-06 保险动用复核</h5>
+<p><strong>这份 SOP 干什么：</strong> 保险基金是强平仍留下窟窿时用来填的钱池。任何赔付（或 ADL）都是客户资金的一次擦枪走火。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>任一保险赔付或 ADL（PF-K07 / K08 / K12）</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R 快报</strong> TO-FUT · <strong>A 复核</strong> RO · <strong>C</strong> 资金会计 · <strong>I</strong> 超过公布金额则 CRO</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>30 分内快报；1 个工作日内正式复核</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做</strong><br />
+1. 30 分内：赔了多少、当时标记价、簿厚不厚、强平及不及时。一页纸，UTC 时间戳。<br />
+2. 1 个工作日内：账本对引擎。对不上 → L2/L3，不要“抹平”。<br />
+3. 决定：注资（TS-04）、收杠杆（G01）、或查 ADL 是否误触发（PF-06）。<br />
+4. 把笔记放到下一班 RO-OPS 凌晨三点找得到的地方。</p>
+<p><strong>完成：</strong> 复核笔记已归档且账实相符。</p>
+<h5>RM-07 停牌建议</h5>
+<p><strong>这份 SOP 干什么：</strong> 风险可以<em>建议</em>停牌。真正执行的是撮合（G02）。聊天里的建议不是停牌。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>缺口、预言机/指数故障、连环强平、或监管开口</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R 建议</strong> RO / RO-OPS · <strong>A 决定</strong> RO · 执行走 <strong>G02</strong></td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>红灯连环时建议 ≤5 分</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做</strong><br />
+1. 桥上说四件事：<strong>范围</strong>（单标的 / 板块 / 全局）、<strong>原因码</strong>、<strong>§9 情景族</strong>、<strong>只停订单还是含强平</strong>。<br />
+2. 交给 G02。留在桥上直到复牌标准写下来。<em>为什么：</em> 复牌的人可能没赶上第一通电话。</p>
+<hr />
 <h4>SP 现货 <code>[Phase 2+]</code></h4>
-<ul>
-<li><strong>SP-01 上线：</strong> G06/LD 通过后，PM+TO 按 §11.5 配链/参数/MM/停牌测试/KRI，超护 72h。  </li>
-<li><strong>SP-02 停牌：</strong> TO 提议、RO 批、ME 执行（G02）；默认保持提现。  </li>
-<li><strong>SP-03 复牌：</strong> RO+ME 清除；验簿与做市；分阶段；超护 4h。  </li>
-<li><strong>SP-04 价格带/名义：</strong> 走 G01；<code>/admin/spot/bands</code>。  </li>
-<li><strong>SP-05 对倒移交：</strong> ≤30 分交 CP（订单/成交 ID）；可 CP-02；不得静默削弱 STP。</li>
-</ul>
+<blockquote>
+<p>Phase 1：这些是<strong>预习材料</strong>。不要打开现货交易对。</p>
+</blockquote>
+<h5>SP-01 现货上线</h5>
+<p><strong>这份 SOP 干什么：</strong> 把一个已尽调的币变成大家能买卖的订单簿。上币意见（LD-01）不等于“按钮已经是绿的”。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>LD-01 / G06 后门禁到齐</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> 现货 PM + TO · <strong>A</strong> 风险+合规已放行 · <strong>C</strong> 钱包、做市、撮合</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>对外宣布的上线窗口当天清单勾完</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做</strong><br />
+1. 确认<strong>正确链</strong>的充提（错链 = 客户钱掉进洞）。<br />
+2. 配最小变动价、手数、价格带、STP、费率。<em>为什么：</em> 6 万美金的币若 tick 是 0.00000001，有人会拿来刷簿。<br />
+3. 做市 SLA <strong>或</strong>公开“薄盘”披露。沉默不是披露。<br />
+4. 预发测停牌。停不了就不要上。<br />
+5. 接通 SP-K01/02/03/05。点名 72h 超护。<br />
+6. 开关真的亮了再宣布。</p>
+<p><strong>完成：</strong> §11.5 勾完；超护有名字。</p>
+<h5>SP-02 现货停牌</h5>
+<p>停止该交易对的买卖撮合。默认<strong>保持提现</strong>，免得看起来像挤兑。跟 <strong>G02</strong> 现货列：TO 提议、RO 批、ME ≤2 分执行、传播发状态。原因码写进工单。</p>
+<p><strong>完成：</strong> <code>/admin/spot/halt</code> 状态与意图一致。</p>
+<h5>SP-03 现货复牌</h5>
+<p>不要对着空簿打印假价格。RO+ME 确认根因已消失（不是“看起来安静了”）→ 验簿、做市确实在报价 → 分阶段打开（先窄带）→ 超护 4 小时。</p>
+<h5>SP-04 价格带 / 名义上限</h5>
+<p>价格带是篱笆：离参考价太远的订单会被拒。改它走 <strong>G01</strong>（A+ 要两个人），然后 <code>/admin/spot/bands</code>，再盯 SP-K03。</p>
+<h5>SP-05 对倒 / 自成交移交</h5>
+<p><strong>这份 SOP 干什么：</strong> 同一经济主体左右手成交刷量。你不是侦探——合规才是。你的工作是<strong>尽快交证据</strong>，并且不要偷偷把 STP（自成交防护）调松。</p>
+<p><strong>如何做：</strong> 保全订单/成交 ID → ≤30 分开合规案 → 可考虑 CP-02 冻结 → <strong>禁止</strong>“把 STP 调弱好让客户成交”。</p>
+<hr />
 <h4>MG 杠杆 <code>[Phase 2+]</code></h4>
-<ul>
-<li><strong>MG-01 新增抵押：</strong> LD-03 后压测折扣→LTV→借款上限→利率→强平路径测通→启用。  </li>
-<li><strong>MG-02 折扣/LTV：</strong> G01；脱锚紧急 ≤30 分双批。  </li>
-<li><strong>MG-03 冻借款：</strong> BREACH 后 ≤15 分决策；后台冻结+解冻标准入工单。  </li>
-<li><strong>MG-04 强平手册：</strong> 先确认标记；不安全则 RE-02；否则保队列+限增险；延迟 &gt;30s→L3。  </li>
-<li><strong>MG-05 坏账：</strong> 定量→追偿→残余核销双控→反哺折扣/缓冲。  </li>
-<li><strong>MG-06 利率曲线：</strong> MG-K07 未清不得推；重大走 G01。</li>
-</ul>
-<h4>ME / RE / WA</h4>
-<ul>
-<li><strong>ME-01 发布/回滚：</strong> 金丝雀盯 SP-K09/K04；Sev-1 时 ≤15 分决定回滚。  </li>
-<li><strong>ME-02 撮合停机：</strong> 业务停牌 RO 批；全局 Kill 双控。  </li>
-<li><strong>ME-03 双活切换：</strong> 宣告→failover→ME-05 验簿→按需 G02 复牌。  </li>
-<li><strong>ME-04 撤单风暴：</strong> 限频/降载；滥用交 CP。  </li>
-<li><strong>ME-05 验簿：</strong> 校验通过前不得完全复牌。  </li>
-<li><strong>RE-01 配置晋级：</strong> 必须挂钩 G01 工单哈希；无单不得晋级。  </li>
-<li><strong>RE-02 强平暂停/恢复：</strong> RO 令后 ≤2 分；传播须诚实说明风险；恢复须标记健康+RO ACK。  </li>
-<li><strong>RE-03 标记切源：</strong> 切备源验 PF-K01；双源皆坏则只减仓/暂停强平。  </li>
-<li><strong>RE-04 状态重建：</strong> 先冻结增险→权威账本重建→抽样对账→解冻。  </li>
-<li><strong>RE-05 组合保证金模型：</strong> 并行跑→缺口报告→特性开关→保守回退就绪。  </li>
-<li><strong>WA-01 热钱包补款：</strong> WARN ≤30 分启动；BREACH 立即；冷→热按仪式。  </li>
-<li><strong>WA-02 慢速提现：</strong> BREACH ≤15 分决策；状态页+退出标准（缓冲+积压）。  </li>
-<li><strong>WA-03 链停/重组：</strong> 暂停入账；已入账重组走追回；终局策略恢复。  </li>
-<li><strong>WA-04 错充：</strong> 核权→可恢复性→费用政策→双控执行→txid。  </li>
-<li><strong>WA-05 密钥仪式：</strong> 多方+仪式 ID+废止旧材料（G04）。  </li>
-<li><strong>WA-06 PoR：</strong> 定高→负债提取→披露/鉴证→归档。</li>
-</ul>
-<h4>LD / CP / TS / MM / ENG</h4>
-<ul>
-<li><strong>LD-01 风险意见：</strong> LI 材料，RO 批/有条件/驳，条件变上线清单。  </li>
-<li><strong>LD-02 标签：</strong> 种子/监控；可收紧价格带。  </li>
-<li><strong>LD-03/04：</strong> 杠杆资格→MG-01；永续决策→PF-01。  </li>
-<li><strong>LD-05/06/07 下币序：</strong> 批准→永续只减仓结清→杠杆冻借强平移除抵押→现货关交易保提现→传播。  </li>
-<li><strong>LD-08 紧急：</strong> 安全优先立即停/禁充；24h 内补手续；取证会同安全/合规。  </li>
-<li><strong>CP-01~04：</strong> 分流立案；硬冻结双控解除；跨产品时间线；监管令先验真。  </li>
-<li><strong>TS-01~04：</strong> 通道切换；脱锚库存/兑付+MG-03；仅 SettlementReady 后结算；保险注资 CRO 双控。  </li>
-<li><strong>MM-01~03：</strong> SLA 催办；压力扩价但心跳在；信息隔离检查。  </li>
-<li><strong>ENG-01~04：</strong> 最小权限赋权；审计不可篡改抽查；管道延迟联动 RE-02/PF-03；密钥/API 失陷 ≤2 分杀钥并 L3/L4。</li>
-</ul>
+<blockquote>
+<p>Phase 1：没有借贷簿。不要把这里的“保证金”和永续里的抵押搞混——永续走 PF / RE。</p>
+</blockquote>
+<p><strong>人话：</strong> 客户抵押币，<strong>借入</strong>（多为稳定币），买更多币，付利息。币跌了就<strong>强制卖掉</strong>。<strong>逐仓</strong>只连坐那一个仓；<strong>全仓</strong>会吃掉整个账户的抵押。</p>
+<h5>MG-01 新增抵押品</h5>
+<p><strong>如何做</strong><br />
+1. LD-03 之后，量化压测<strong>折扣</strong>（一张爱跳的币面值 100，我们可能只当 70）。<em>为什么：</em> 还没卖掉它可能先跌。<br />
+2. 设 LTV 档、借款上限、利率曲线。<br />
+3. 逐仓和全仓的强平路径都演练过，才启用。</p>
+<h5>MG-02 折扣 / LTV 变更</h5>
+<p>走 G01。脱锚紧急：≤30 分双批。对客不利（可能因参数变化被强平）必须告知。盯 MG-K02/03。</p>
+<h5>MG-03 冻借款</h5>
+<p><strong>这份 SOP 干什么：</strong> 停止某资产的<strong>新借</strong>（例如 USDT），避免轧空或脱锚抽干库存。已经借出去的还在。</p>
+<p><strong>如何做：</strong> <code>/admin/margin/borrow</code> 冻结 → 可选拉满利率 → 对客可见则公告 → <strong>把解冻标准写进工单</strong>（否则冻结会永远挂着）。</p>
+<h5>MG-04 强制平仓手册</h5>
+<p><strong>如何做</strong><br />
+1. 先确认标记新鲜。标记烂了 → <strong>RE-02 暂停</strong>。按错价强平等于抢用户的钱。<br />
+2. 标记好：保队列在排、限增险、永远不要删强平历史。<br />
+3. 延迟 &gt;30 秒 → L3（引擎已经落后于市场）。</p>
+<h5>MG-05 坏账核销 / 追偿</h5>
+<p>缺口出现后：定量 → 自动还款 → 追用户 → 残余核销必须两个人 → 教训回流到折扣/缓冲。资金入账；这不是聊天里的“四舍五入”。</p>
+<h5>MG-06 利率曲线更新</h5>
+<p>MG-K07（计提例外）还红时不要推新曲线——会把错误利滚利。重大变更走 G01。</p>
+<hr />
+<h4>PF 永续 <code>[Phase 1]</code></h4>
+<p><strong>这是今天真正在跑的路径。请读完每一张。</strong> 永续（perp）跟踪某个价格（比特币、黄金兑美元……）且<strong>永不到期</strong>。客户交抵押，杠杆做多或做空。盈亏和强平看的是<strong>标记价</strong>（多家外盘合成的公允价），<strong>不是</strong>我们簿上最新一笔成交。</p>
+<h5>PF-01 新合约上线</h5>
+<p><strong>这份 SOP 干什么：</strong> 把一份新合约（例如另一个金属对，或新的 BTC 永续）放到邀请/经纪商客户面前。漏勾一项，就是没保险或只有一家指数源就上线。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>LD-04 + G06 完成</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> 合约 PM · <strong>A</strong> RO · <strong>C</strong> RE / ME / DA / TS</td>
+</tr>
+<tr>
+<td><strong>如何做</strong></td>
+<td>两个人对着 §11.3 <strong>读出声来</strong>：规格签字；指数成分够数且 PF-K01/K02 告警开；杠杆档双批；保险种子到位；资金费封顶测过；强平+ADL 演练签字；撮合标的与限频；客服话术写清资金费/强平；72h 超护点名；RO-OPS 能讲清<strong>这一标的</strong>如何区分 S2（错标记）和 S1（真下跌）。</td>
+</tr>
+<tr>
+<td><strong>完成</strong></td>
+<td>已上线，且 PF-K01/02/06/07 看板为绿<strong>并带新鲜时间戳</strong>。缺一项就不上。</td>
+</tr>
+</tbody>
+</table></div>
+<h5>PF-02 改杠杆档</h5>
+<p><strong>这份 SOP 干什么：</strong> “这个合约 / 这一档名义最高能加几倍杠杆”。往上调，等于让用户更快亏光抵押。这是 G01，不是产品实验。</p>
+<p><strong>如何做</strong><br />
+1. 数一数有多少用户贴着上限、持仓量会跳多少。<br />
+2. G01 双控 → <code>/admin/futures/leverage</code> → 24h 超护<strong>盯强平量</strong>（PF-K06）。<em>为什么：</em> “只是小小改一档”是常见的 Sev 级失误。</p>
+<h5>PF-03 标记–指数偏离响应</h5>
+<p><strong>这份 SOP 干什么：</strong> 永续最重要的闹钟。<strong>标记</strong>应贴近<strong>指数</strong>（其他交易所均价）。两者裂开，要么世界真动了（基差），要么<strong>我们的数字错了</strong>（可能错杀健康用户）。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>PF-K01 黄/红</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> RO-OPS + RE + 量化 · <strong>A</strong> RO · <strong>C</strong> TO-FUT</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>红灯分流 ≤5 分</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做（桥上先说这些）</strong><br />
+1. <strong>时钟：</strong> PF-K01 何时动的？<strong>PL-K06</strong>（管道延迟）或 <strong>PF-K02</strong>（指数某所陈旧）是不是<em>先</em>动？<em>为什么：</em> 谁先动，用来区分 S2（数据）和 S1（真市场）。<br />
+2. 看<strong>外盘</strong>（真实黄金/BTC 市场）。外面平静我们在尖叫，就信 S2。<br />
+3. <strong>若是数据（S2）：</strong> 切源（RE-03）。标记不安全则<strong>暂停强平</strong>（RE-02），考虑只减仓（PF-07）。对传播说：“公允价喂价不健康，强平已暂停”，不要说“市场关闭了”。<br />
+4. <strong>若是真基差：</strong> 指数诚实，只是我们的簿离得远。可只减仓。<strong>禁止</strong>为了让图好看去改标记公式。<br />
+5. 任何公式变更必须 <strong>RO+量化双控</strong>。没有“先改再补单”。</p>
+<p><strong>完成：</strong> 偏离有解释，且喂价已健康或交易已遏制。<strong>升级：</strong> 疑似错标记上已经跑过强平 → Sev-1。</p>
+<h5>PF-04 资金费极端 / 暂停</h5>
+<p><strong>这份 SOP 干什么：</strong> 每隔 1 或 8 小时（按设计），多头付给空头或反过来，免得永续永远漂离真价。<strong>封顶（钳制）</strong>不让费率变成无穷大。客户抱怨“费率贵”<strong>不是</strong>关掉它的理由。</p>
+<p><strong>如何做</strong><br />
+1. 确认封顶真的生效了（PF-K03）。生效了说明系统在干活。<br />
+2. 只有结算完整性坏了（公式错、付了两遍）才允许暂停结算。RO+产品双人，传播必须写明资金费已暂停。<br />
+3. 恢复须 RO 确认。</p>
+<h5>PF-05 保险赔付复核</h5>
+<p>当天快报：破产价、强平及不及时、做市在不在。数字对不上账就升级。然后 RM-06 / 可能 TS-04 注资。</p>
+<h5>PF-06 ADL 启动复核</h5>
+<p><strong>这份 SOP 干什么：</strong> 自动减仓。保险填不起窟窿时，从<strong>盈利的对手仓</strong>上减。赢家会觉得不公平。这是最后一道阀门。</p>
+<p><strong>如何做</strong><br />
+1. 先证明保险<strong>真的不够</strong>（PF-K07 应在 PF-K08 <strong>之前</strong>变黄/红）。若 ADL 先响，触发配错 → <strong>立刻停 ADL + Sev-1</strong>。<br />
+2. 核对减仓排名是否为已公布规则（常见是高杠杆/高盈利优先——以现行政策为准）。<br />
+3. 对客通知发出。模式古怪则合规查滥用。</p>
+<h5>PF-07 停牌 / 只减仓</h5>
+<p><strong>只减仓</strong> = 可以平仓或把仓变小，<strong>不能</strong>变大。引擎还健康时，优先只减仓而不是一关了之。全停走 G02。传播<strong>必须</strong>说明资金费和强平还在不在跑。</p>
+<h5>PF-08 指数成分故障</h5>
+<p>指数是多家外盘的平均。一家死了或乱报价，按政策<strong>踢掉</strong>。剩下的少于最少家数 → <strong>保护标记</strong>并只减仓/暂停强平。临时改权重要 RO 签字。没有签字就“只用某一家”等于把操纵入口开成单点。</p>
+<hr />
+<h4>ME 撮合</h4>
+<p><strong>人话：</strong> 撮合引擎是把一笔买单和一笔卖单变成成交的程序。它错了，所有用那个价格算的盈亏和强平都会错。把它当成控制室：开关很小，必须双人。</p>
+<h5>ME-01 发布 / 回滚</h5>
+<p><strong>如何做</strong><br />
+1. 变更工单写清会不一样的地方、以及怎么回滚（演练过的，不是“我们记得”）。<br />
+2. 先金丝雀（很小一部分流量）。盯时延 SP-K09 和撤单比 SP-K04。<br />
+3. Sev-1 时延或完整性：≤15 分决定回滚。红簿上逞英雄打热修复，是第二起事件的温床。</p>
+<h5>ME-02 撮合停机</h5>
+<p>业务停牌（G02）要 RO 批。<strong>全局 Kill</strong>（整站）是 <code>/admin/engine/kill</code> 上两个人。确认效果（不再成交）并通知 RE，避免冻结的簿上强平还在跑。不要让一个分片在交易、另一个已停，却不说出来。</p>
+<h5>ME-03 双活切换</h5>
+<p>宣告事件 → <code>/admin/engine/failover</code> 引流/切换 → <strong>ME-05</strong> 证明订单簿还是同一本 → 若已停牌则按 G02 复牌。没有校验和的切换只是传闻。</p>
+<h5>ME-04 撤单风暴抑制</h5>
+<p>撤单太多会饿死真成交。小心加限频或降载；若是单一 UID 在刷，交合规（滥用）。保护时延 SLO；不要“为了 VIP 高兴把水管开到最大”。</p>
+<h5>ME-05 故障后验簿</h5>
+<p>对比订单簿校验和与成交连续性。<strong>完全复牌前把对比结果签在工单上。</strong> <em>为什么：</em> 对着重建出来的垃圾簿复牌，会打印假价格和假强平。</p>
+<hr />
+<h4>RE 风控引擎</h4>
+<p><strong>人话：</strong> 这个程序不停问“价格若跳，这个用户抵押还够不够？”它算<strong>保证金率</strong>、<strong>破产价</strong>，并<strong>启动强平</strong>。这里配错比博客写错危险——它在动真金。</p>
+<h5>RE-01 配置晋级</h5>
+<p><strong>如何做</strong><br />
+1. 必须带着 <strong>G01 工单号</strong> 和一份能读懂的 diff。<br />
+2. 先预发再生产。<strong>配置哈希</strong>贴回工单。<br />
+3. 呼叫 RO-OPS 开 24h 超护。<br />
+4. 没有工单就晋级 → <strong>回滚 + 审计</strong>。没有“紧急直接贴进生产”。</p>
+<h5>RE-02 强平引擎暂停 / 恢复</h5>
+<p><strong>这份 SOP 干什么：</strong> 停掉强制平仓的机器人。做这件事是因为<strong>它用的价格不安全</strong>，不是因为用户抱怨“被公平地强平了”。</p>
+<p><strong>如何做</strong><br />
+1. RO 下令。RE 在 <code>/admin/risk-engine/liq</code> ≤2 分暂停。<br />
+2. 传播说真话：用户<strong>仍可能有风险</strong>；我们停机器人是因为尺子坏了。<br />
+3. <strong>只有</strong>标记新鲜 <strong>且</strong> RO 书面确认，才能恢复。</p>
+<h5>RE-03 标记价源切换</h5>
+<p>切到备源，然后看 PF-K01。<strong>两个源都坏：</strong> 只减仓和/或暂停强平。不要把两个烂数字平均一下就当没事。</p>
+<h5>RE-04 风险状态重建</h5>
+<p>风控余额和撮合/钱包对不上：先<strong>冻结增险订单</strong> → 从权威账本重建 → 抽样对账 → 再解冻。用户还能新开杠杆的时候不要重建。</p>
+<h5>RE-05 组合保证金模型变更</h5>
+<p>若统一账户/组合保证金已开：新模型先<strong>并行影子跑</strong> → 出缺口报告 → 特性开关 → 保留保守回退。双人 G01。Phase 1：通常关。</p>
+<hr />
+<h4>WA 钱包</h4>
+<p><strong>人话：</strong> 币真正躺在这里。<strong>热钱包</strong> = 连着网，付提现，不能存超过缓冲。<strong>冷钱包</strong> = 更慢、更多人、有仪式。“补款”= 把币从冷搬到热，让真实提现还能付。“慢速模式”= 提现变慢，免得恐慌抽干热钱包。</p>
+<h5>WA-01 热钱包补款</h5>
+<p><strong>如何做</strong><br />
+1. 确认<strong>链上</strong>余额（不要只看内部屏）。<em>为什么：</em> 屏会滞后；链才是钱。<br />
+2. 黄灯：≤30 分启动冷→热。红灯：立刻启动。<br />
+3. 走密钥仪式（WA-05 / G04）。txid 记工单。确认缓冲真的回到政策以上。</p>
+<h5>WA-02 提现排队 / 慢速模式</h5>
+<p><strong>如何做</strong><br />
+1. 积压或挤兑风险红灯：≤15 分决定慢速模式。<br />
+2. 在 <code>/admin/wallet/withdraw</code> 打开。写下<strong>优先级规则</strong>（谁先拿到钱）和<strong>退出标准</strong>（缓冲 + 积压年龄）。<br />
+3. 状态页告知用户。藏起队列只会让挤兑更糟。</p>
+<h5>WA-03 链停 / 重组</h5>
+<p><strong>重组</strong>是区块链改写最近几块。已经消失的块上的入账从来不是真的。暂停该链入账、量深度、若已入账则追回，按终局政策（要多少确认）再恢复。</p>
+<h5>WA-04 错充找回</h5>
+<p>用户发错资产、错链、或缺 memo。先核他是否拥有发送地址 → 能不能找回 → 费用政策 → <strong>两个人</strong>才能动资金 → 用 txid 关单。合规查反洗钱。这不是“退回去就行”。</p>
+<h5>WA-05 密钥仪式 / 轮换</h5>
+<p>至少两人（宜三人），写下仪式 ID，旧密钥销毁或登记作废。适用 G04。种子词拍照发聊天 = 事件。</p>
+<h5>WA-06 储备证明快照</h5>
+<p>选一个区块高度，提取负债，披露/鉴证，归档。按政策由 CRO/财务签。没有负债侧的截图不能当营销。</p>
+<hr />
+<h4>LD 上币 / 下币</h4>
+<p><strong>人话：</strong> 上币 = 允许一个市场存在。下币 = 按<strong>固定顺序</strong>拿走它，免得代币没了现货价永续还开着，或我们正要关掉的币上还挂着贷款。</p>
+<h5>LD-01 上币风险意见</h5>
+<p>上币组做尽调包（谁发行、能不能冻账户、解锁、操纵史）。RO 写 <strong>批准 / 有条件 / 驳回</strong>。条件变成上线清单——不是客气建议。</p>
+<h5>LD-02 种子 / 监控标签</h5>
+<p>对客警告标签。可选收紧价格带。客服和传播必须和用户看到同一套标签。</p>
+<h5>LD-03 杠杆资格 <code>[Phase 2+]</code></h5>
+<p>现货观察期平静后，信用风险才允许它当抵押 → 然后 MG-01。</p>
+<h5>LD-04 永续上线决定 <code>[Phase 1]</code></h5>
+<p>需求 + 风险偏好 → RO 说准 → <strong>PF-01</strong>。Phase 1：这是活的上币路径（XAUUSD 及其他已批永续）。</p>
+<h5>LD-05 / LD-06 / LD-07 下币顺序</h5>
+<p><strong>强制顺序</strong>（不能因为“现货才是正业”而跳）：<br />
+1. 风险 + 法务 + 合规批准。<br />
+2. <strong>永续（LD-07）：</strong> 只减仓 → 平掉或等到期 → 下线合约。<br />
+3. <strong>杠杆（LD-06，Phase 2+）：</strong> 冻借款 → 强制还款/强平 → 移出抵押。<br />
+4. <strong>现货（LD-05，Phase 2+）：</strong> 必要时停牌 → 关交易 → 提现按 WA。<br />
+5. 传播 + 客服话术。</p>
+<h5>LD-08 紧急下币 / 停牌</h5>
+<p>漏洞、欺诈、被盗增发。<strong>安全优先：</strong> 立刻停牌并禁充。24 小时内补手续。会同安全/合规取证。不要等一场体面的项目会。</p>
+<hr />
+<h4>CP 合规</h4>
+<p><strong>人话：</strong> 合规决定<em>谁可以交易</em>、以及有没有人在<strong>滥用</strong>市场。风险决定<em>能加多少杠杆</em>。两份工作不要混。<strong>硬冻结</strong>是给交易、提现和/或杠杆上锁。</p>
+<h5>CP-01 监察告警分流</h5>
+<p>打开告警 → 判误报/属实 → 立案 → 挂上 UID 和产品。高严重度当天处理。你在建时间线，不是靠感觉。</p>
+<h5>CP-02 账户硬冻结</h5>
+<p>在 <code>/admin/compliance/holds</code> 上锁。告诉客服读哪份话术。<strong>解除</strong>冻结需要第二个人（G04）。加上可以快；拿掉才是危险方向。</p>
+<h5>CP-03 跨产品滥用复核</h5>
+<p>有人可能现货买、永续砸（或反过来）。跨产品做<strong>一条</strong>时间线。若在带动标记，告诉风险。按需冻结。</p>
+<h5>CP-04 监管协查 / 冻结</h5>
+<p>外部当局要求冻结。<strong>先鉴别令函真伪</strong>（伪造是存在的）。按载明范围冻、回函、留存。法务问责。不要为了“帮忙”扩大冻结范围。</p>
+<hr />
+<h4>TS / MM / ENG</h4>
+<h5>TS-01 银行通道中断</h5>
+<p>银行或支付伙伴挂了。切到别的轨，和钱包/传播一起改充提文案；若造成流动性空洞则告诉风险。完成 = 原通道或备通道真的活着。</p>
+<h5>TS-02 稳定币脱锚响应</h5>
+<p>“1 美元的币”不再是 1 美元。先确认是<strong>外盘</strong>真脱锚（S3）还是我们预言机错了（S2）。库存与兑付，折扣/借款走 MG-03 <code>[Phase 2+]</code>，传播。硬脱锚 → L3。</p>
+<h5>TS-03 日终对账后结算</h5>
+<p><strong>只有</strong> <code>SettlementReady</code>（G05）之后才打款。附银行/txid。重大差异还开着就结算 = 可能打两遍钱。</p>
+<h5>TS-04 保险基金注资</h5>
+<p>RM-06 + CRO 之后把公司的钱打进保险池。双控（G04）。入账。告诉风险。这不是钱包里无声的漂移。</p>
+<h5>MM-01 SLA 违约催办</h5>
+<p>做市商答应在买卖两边都挂单。深度/价差挂了（SP-K01/02），就打电话、执行合同；簿乱则请风险考虑停牌。</p>
+<h5>MM-02 波动市扩价</h5>
+<p>风暴里他们可以按协议扩价，但必须有<strong>心跳</strong>（报价还在更新）。静默空簿是停机（S5），不是“波动”。</p>
+<h5>MM-03 信息隔离检查</h5>
+<p>若有关联自营台，不能看见客户流向。上币或出现自营重叠时把检查记下来。</p>
+<h5>ENG-01 特权后台赋权</h5>
+<p>入职/转岗：最小权限、限时、有工单、每季再认证。BU PIC + 安全都要签。本手册里的后台页是危险的；权限不是纪念品。</p>
+<h5>ENG-02 审计日志不可篡改抽查</h5>
+<p>定期证明没人能改历史。缺口 = L3——法庭记录丢了。</p>
+<h5>ENG-03 管道延迟事件</h5>
+<p>风险数字晚了（PL-K06）。修消费者。若标记不安全，<strong>先</strong>触发 RE-02 / PF-03，再去写完 Kubernetes 工单。完成 = 延迟回到黄灯以下。</p>
+<h5>ENG-04 安全事件（密钥 / API）</h5>
+<p>密钥失陷：<strong>≤2 分杀掉</strong>，轮换，通知，取证，L3/L4 战时。告知 CRO/CISO/合规。速度比完美报告重要。</p>
+<hr />
+<h4>ACCESS — Phase 1 邀请与经纪商开户 <code>[Phase 1]</code></h4>
+<p><strong>人话：</strong> Phase 1 不能从官网自己注册。必须有<strong>邀请码</strong>，或由已签约的<strong>经纪商</strong>带来。做完身份核验（KYC = 了解你的客户）之后，也<strong>只能交易永续</strong>。现货和杠杆开关保持关。若发现公众“注册”按钮是开的，那是 <strong>L3 事件</strong>，不是增长业绩。</p>
+<h5>ACC-01 邀请制开户</h5>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>明细</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>何时</strong></td>
+<td>有人兑换邀请/白名单码，或运营发出一张</td>
+</tr>
+<tr>
+<td><strong>谁</strong></td>
+<td><strong>R</strong> 产品/增长运营 · <strong>A 合规</strong> 身份门禁 · <strong>A 风险权益</strong> RO · <strong>R 打开交易</strong> RE/ENG 标志</td>
+</tr>
+<tr>
+<td><strong>SLA</strong></td>
+<td>邀请校验自动 ≤1 分 · 人工合规按政策 · 放行后权益推送 ≤15 分</td>
+</tr>
+<tr>
+<td><strong>前置</strong></td>
+<td>Phase 1 模式开；邀请未用未过期；制裁筛查通过</td>
+</tr>
+<tr>
+<td><strong>系统</strong></td>
+<td>邀请后台 · KYC · <code>/admin/compliance/holds</code> · 风险限额档</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>如何做（每步为什么）</strong><br />
+1. <strong>校验邀请。</strong> 未用、未过期、不像被转发滥用。<em>为什么：</em> 泄露的码等于伪装成邀请的公众注册。<br />
+2. <strong>收集 KYC/KYB</strong>（他是谁；若是公司，谁拥有）。<br />
+3. <strong>合规放行。</strong> 在此之前账户只是一个文件夹，不是交易员。<br />
+4. <strong>绑定元数据：</strong> 哪张邀请、谁发的、何时。<em>为什么：</em> 以后监察和经纪商分润都靠这个标签，你不会记得。<br />
+5. <strong>产品权益 = 仅永续。</strong> 明确确认现货和杠杆标志是<strong>关</strong>的。<br />
+6. 打开交易开关。写审计日志。<br />
+7. 抽查：能开已批永续吗？<strong>不能</strong>开出现货单吗？</p>
+<p><strong>完成：</strong> 只能交易已批永续。<strong>升级：</strong> 邀请被滥用 → CP-02 冻结；发现公众注册入口开着 → <strong>先 L3 关掉入口</strong>，再清已经放出的 UID。</p>
+<h5>ACC-02 经纪商引入开户</h5>
+<p><strong>这份 SOP 干什么：</strong> 已签约的介绍经纪商带来终端客户。客户仍然要 KYC。限额取（经纪商簿限额，客户限额）里<strong>更严</strong>的那个。</p>
+<p><strong>如何做</strong><br />
+1. 确认经纪商协议<strong>仍有效</strong>（没过期、没被暂停）。<br />
+2. 在该经纪商标签下开户。<br />
+3. 合规放行该客户。<br />
+4. 两套限额都套上；引擎必须用更严的。<em>为什么：</em> 挂在大经纪商下的小客户，不能继承经纪商的大帽子。<br />
+5. 权益 = Phase 1 仅永续。经纪商授信/VIP 走双控。<br />
+6. 协议失效：先停<strong>新开户</strong>。已开户按协议 + 风险意见处理——不要假装没看见。</p>
+<p><strong>完成：</strong> 客户只走批准路径交易；监察能把他归因到经纪商。</p>
+<h5>ACC-03 Phase 1 权益护栏（每天）</h5>
+<p><strong>这份 SOP 干什么：</strong> 每天问一次“大门还锁着吗”。</p>
+<p><strong>如何做</strong><br />
+1. 任何 UID 被打开现货或杠杆 → 告警。<br />
+2. 自助注册若开着 → 告警。<br />
+3. 没有邀请也没有经纪商标签却能下单 → 告警。<br />
+4. 日报给 RO-OPS + 合规。零例外，或例外必须挂<strong>阶段门禁豁免</strong>工单（不是 Slack 一个表情）。</p>
+<p><strong>完成：</strong> 每日零例外，或每条例外都有豁免工单。</p>
 <h2>7. 管理后台与工具目录</h2>
 <h3>7.1 规范管理后台映射（含完整 URL）</h3>
 <p><strong>完整 URL 表：</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html<br />
@@ -8926,7 +9080,34 @@ flowchart TB
 </div></div>
 
 <h3>8.3 限额类型</h3>
-<p>软（WARN）/ 硬（BREACH）/ Kill（撮合总闸、提现冻结等）。</p>
+<p>限额不是“感觉今天该紧一点”，而是写在《限额手册》里的政策选择。三种要分清：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>人话</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>软（WARN）</td>
+<td>早警告；默认不自动阻断。你仍须确认。</td>
+<td>永续持仓量 ≥ 上限的 80%</td>
+</tr>
+<tr>
+<td>硬（BREACH）</td>
+<td>系统及/或人<em>必须</em>行动。</td>
+<td>用户杠杆超过其档位 → 拒单</td>
+</tr>
+<tr>
+<td>Kill</td>
+<td>立刻停机。永远两个人。</td>
+<td>撮合总闸；提现冻结</td>
+</tr>
+</tbody>
+</table></div>
+<p>软还是硬，以《限额手册》为准，不以当天心情为准。</p>
 <h3>8.4 现货指标（摘要表）</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -9333,6 +9514,34 @@ flowchart TB
 </tr>
 </tbody>
 </table></div>
+<p><strong>永续值班速查（不需要会交易）</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>看见什么</th>
+<th>先做什么</th>
+<th>升级如果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>标记–指数红灯</td>
+<td>先看喂价新不新；坏所踢出指数</td>
+<td>还在红且强平已开火 → 只减仓 / 停开仓</td>
+</tr>
+<tr>
+<td>保险低于政策地板</td>
+<td>冻结“再加点风险”的 discretionary 操作</td>
+<td>ADL 已上膛 → L3 建桥</td>
+</tr>
+<tr>
+<td>资金费顶格</td>
+<td>确认钳制生效；对外说明原因</td>
+<td>需要暂停结算 → RO+产品双人 + 传播</td>
+</tr>
+</tbody>
+</table></div>
+<p>表里的数字是<strong>教学例子</strong>。投产前从《限额手册》抄真值。</p>
 <h3>8.7 平台横切指标（摘要）</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -9406,14 +9615,128 @@ flowchart TB
 </tbody>
 </table></div>
 <h3>8.8 组合保证金（如启用）</h3>
-<p><strong>PM-K01</strong> 模型缺口 &gt;25% → 保守模式/关特性；<strong>PM-K02</strong> 现货–永续对冲破裂 → 追加保证金。</p>
+<p>组合保证金 = 系统把同一账户里现货和永续的对冲算在一起，要求的抵押可以更少。Phase 1 通常关着。若打开：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>在量什么</th>
+<th>坏了怎么办</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PM-K01</strong></td>
+<td>模型算出来的保证金 vs 更保守的分腿加总，缺口 &gt;25%</td>
+<td>切保守模式或关特性；这是模型风险，不是“用户该加仓”</td>
+</tr>
+<tr>
+<td><strong>PM-K02</strong></td>
+<td>现货–永续对冲破裂（两边不再互相抵消）</td>
+<td>追加保证金；当作对冲已经不存在</td>
+</tr>
+</tbody>
+</table></div>
 <h3>8.9 监控频率分层</h3>
-<p>流式（tick–1s）→ 近实时（1–5m）→ 盘中（15–60m）→ 日切 MI 包 → 周 PIC 认证 → 季校准。</p>
+<p>不是每只灯都要每秒盯。分层是为了让值班知道“这盏灯几分钟才允许亮一次”。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>层</th>
+<th>多久看</th>
+<th>典型例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>流式</td>
+<td>每笔～1 秒</td>
+<td>标记–指数偏离、强平队列</td>
+</tr>
+<tr>
+<td>近实时</td>
+<td>1–5 分</td>
+<td>持仓量占用、借款占用</td>
+</tr>
+<tr>
+<td>盘中</td>
+<td>15–60 分</td>
+<td>集中度、VIP 使用</td>
+</tr>
+<tr>
+<td>日切</td>
+<td>每个 UTC 日切</td>
+<td>风险 MI 包、对账</td>
+</tr>
+<tr>
+<td>每周</td>
+<td>PIC 认证</td>
+<td>误报率、临期豁免</td>
+</tr>
+<tr>
+<td>每季</td>
+<td>校准</td>
+<td>把教学阈值换成《限额手册》真值</td>
+</tr>
+</tbody>
+</table></div>
 <h3>8.10 告警状态机</h3>
-<p>检测 → WARN|BREACH|KILL 路由 → SLA 内确认 → 数据质量？→ 真实风险则核对自动动作有效性 → 产品 SOP 人工遏制 → 超时升 L+1 → 遏制后超护 → Sev-1/2 进战时与复盘。<br />
-<strong>默认 TTE：</strong> WARN 30–60 分无方案；BREACH 15 分；Kill/客户资产 0（立即 L3/L4）；超护 24h；复盘 5 个工作日。</p>
+<p>把告警想成一条流水线，不要从中间跳进去：</p>
+<ol>
+<li><strong>检测</strong> — 系统算出一只灯该黄或该红。  </li>
+<li><strong>路由</strong> — WARN / BREACH / KILL 走不同 SLA。  </li>
+<li><strong>确认</strong> — 人在 SLA 内点“我看见了”。  </li>
+<li><strong>数据质量？</strong> — 时间戳陈旧则修管道（ENG-03），不要拿陈旧数字去强平或停牌。  </li>
+<li><strong>真风险</strong> — 核对应自动动作打没打出。  </li>
+<li><strong>人工遏制</strong> — 按产品 SOP（永续 PF-* 等）。  </li>
+<li><strong>超时</strong> — 升 L+1，自动叫下一个人。  </li>
+<li><strong>超护</strong> — 遏制之后还要盯，通常 24 小时。  </li>
+<li><strong>复盘</strong> — Sev-1/2 五个工作日内，趁还记得。</li>
+</ol>
+<p><strong>默认处理时限：</strong> 黄灯 30–60 分还没方案；红灯 15 分；Kill/客户资产 = 立刻 L3/L4；超护 24h；复盘 5 个工作日。</p>
 <h3>8.11 报告与证据</h3>
-<p>盘中告警日志 · 每日风险 MI（RAG）· 强平与保险快报 · 钱包挤兑快报 · 周 PIC 认证 · 季阈值校准。</p>
+<p>出事之后别人会问“你当时看见了什么”。没有附件的关单等于没做。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>产物</th>
+<th>何时</th>
+<th>必须有什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>盘中告警日志</td>
+<td>每次确认</td>
+<td>时间戳、KRI 编号、情景族猜测</td>
+</tr>
+<tr>
+<td>每日风险 MI</td>
+<td>每个日切</td>
+<td>红黄绿 + 喂价时间戳 + RO 评语</td>
+</tr>
+<tr>
+<td>强平与保险快报</td>
+<td>任一赔付/ADL</td>
+<td>金额、标记价、簿厚不厚</td>
+</tr>
+<tr>
+<td>钱包挤兑快报</td>
+<td>提现积压红灯</td>
+<td>缓冲、积压年龄、慢速模式是否开</td>
+</tr>
+<tr>
+<td>周 PIC 认证</td>
+<td>每周</td>
+<td>未关黄/红、临期豁免、误报</td>
+</tr>
+<tr>
+<td>季阈值校准</td>
+<td>每季</td>
+<td>G01 工单把例子换成真值</td>
+</tr>
+</tbody>
+</table></div>
 <h3>8.12 最小必开集</h3>
 <p><strong>Phase 1 优先：</strong> PF-K01/K07/K06/K03（含 XAUUSD）· 邀请/经纪商覆盖与仅永续权益 · PL-K01/K06/K05 · SP-K09（共用撮合时延）。<br />
 <strong><code>[Phase 2+]</code> 休眠：</strong> MG-K01/K04/K08 · 现货簿 SP-K03 等。</p>
@@ -9940,10 +10263,26 @@ flowchart TB
 <li>[ ] 产品权益 = <strong>仅永续</strong>（现货/杠杆关闭）</li>
 <li>[ ] ACC-03 日例外报表已订阅（RO-OPS + 合规）</li>
 </ul>
-<h3>11.4 杠杆资产上线清单（摘要） <code>[Phase 2+]</code></h3>
-<p>现货观察窗达标；折扣/LTV 压测；借款库存与上限及 K01/K09；利率曲线与 K07 对账绿；逐仓+全仓强平路径测通；坏账科目映射；若稳定币抵押则完成 S3 桌面推演。</p>
-<h3>11.5 现货上线清单（摘要） <code>[Phase 2+]</code></h3>
-<p>尽调完成；正确链充提且 PL-K01 缓冲 OK；tick/lot/带/STP/费率及 K03/K05；做市 SLA 或薄盘披露及 K01/K02；停牌权限测通（K06）。</p>
+<h3>11.4 杠杆资产上线清单 <code>[Phase 2+]</code></h3>
+<p>Phase 1 不用勾这个。以后若开借贷，缺一项就不要让客户借。</p>
+<ul>
+<li>[ ] 现货观察窗达标（这枚币在现货上已经安静过一段时间）  </li>
+<li>[ ] 折扣 / LTV 经过压力测试（我们故意假设它大跌）  </li>
+<li>[ ] 借款库存与上限接通；<strong>MG-K01 / MG-K09</strong> 能看  </li>
+<li>[ ] 利率曲线与 <strong>MG-K07</strong> 对账为绿（别在算错利息时上线）  </li>
+<li>[ ] 逐仓 <strong>和</strong> 全仓的强平路径都演练过  </li>
+<li>[ ] 坏账会计科目已映射（窟窿出现时知道记哪）  </li>
+<li>[ ] 若抵押是稳定币：做过 S3（脱锚）桌面推演  </li>
+</ul>
+<h3>11.5 现货上线清单 <code>[Phase 2+]</code></h3>
+<p>Phase 1 不用勾这个。</p>
+<ul>
+<li>[ ] 上币尽调完成（LI / RO / CP / 法务）  </li>
+<li>[ ] 正确链的充提已开；<strong>PL-K01</strong> 缓冲够  </li>
+<li>[ ] 最小变动价 / 手数 / 价格带 / STP / 费率已配；<strong>SP-K03 / SP-K05</strong> 已接通  </li>
+<li>[ ] 做市 SLA 已生效，或已公开披露“薄盘”；<strong>SP-K01 / SP-K02</strong> 已接通  </li>
+<li>[ ] 停牌权限测过（<strong>SP-K06</strong>）— 停不了就不要上  </li>
+</ul>
 <h3>11.6 文档控制</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -9971,7 +10310,7 @@ flowchart TB
 </tr>
 <tr>
 <td>版本</td>
-<td>1.9 — 零基础说明；SOP 步骤写清为什么</td>
+<td>2.0 — 各 BU SOP 写成编号步骤并解释为什么；中英对齐</td>
 </tr>
 </tbody>
 </table></div>
