@@ -31,9 +31,9 @@ export function StatCard({
   value,
   hint,
 }: {
-  label: string;
+  label: React.ReactNode;
   value: string | number;
-  hint?: string;
+  hint?: React.ReactNode;
 }) {
   return (
     <div className="panel p-4">

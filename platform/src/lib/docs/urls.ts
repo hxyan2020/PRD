@@ -37,7 +37,9 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "Human Intervention", path: "/admin/interventions", description: "Human gates from skill/RAG actions", permission: "intervene.operate" },
   { category: "AI", title: "Spine Log", path: "/admin/spine", description: "End-to-end event spine", permission: "spine.read" },
   { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus", permission: "rag.read" },
-  { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios", permission: "skills.read" },
+  { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page", permission: "skills.read" },
+  { category: "AI", title: "Skill playbook detail", path: "/admin/skills/[code]", description: "Full when-to-use / prechecks / evidence / stop / success playbook for one skill", permission: "skills.read" },
+  { category: "AI", title: "Knowledge Tree", path: "/admin/knowledge-tree", description: "Visual map of domains, skills, linked timelines and RAG documents", permission: "rag.read" },
   { category: "AI", title: "AI Access Security", path: "/admin/security/ai-access", description: "Human-only pages/functions/fields blocklist", permission: "audit.read" },
 
   // Messenger

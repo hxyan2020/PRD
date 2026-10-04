@@ -2,11 +2,11 @@ import Link from "next/link";
 import { getDb } from "@/lib/db";
 import { StatCard, SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
-import { actionLabel, t } from "@/lib/i18n";
-import { getUiLocale } from "@/lib/i18n-server";
+import { T } from "@/components/T";
+import { ActionLabel } from "@/components/ActionLabel";
+import { EnZh } from "@/components/EnZh";
 
 export default async function AdminDashboardPage() {
-  const locale = await getUiLocale();
   const db = getDb();
   const counts = {
     users: (db.prepare(`SELECT COUNT(*) AS c FROM users`).get() as { c: number }).c,
@@ -53,28 +53,28 @@ export default async function AdminDashboardPage() {
   const actions = (
     <>
       <Link className="btn" href="/admin/messenger">
-        {actionLabel("/admin/messenger", locale)}
+        <ActionLabel href="/admin/messenger" />
       </Link>
       <Link className="btn" href="/admin/docs/urls">
-        {actionLabel("/admin/docs/urls", locale)}
+        <ActionLabel href="/admin/docs/urls" />
       </Link>
       <Link className="btn" href="/admin/docs/prd">
-        {actionLabel("/admin/docs/prd", locale)}
+        <ActionLabel href="/admin/docs/prd" />
       </Link>
       <Link className="btn" href="/admin/docs/user-guide">
-        {actionLabel("/admin/docs/user-guide", locale)}
+        <ActionLabel href="/admin/docs/user-guide" />
       </Link>
       <Link className="btn" href="/admin/docs/uat">
-        {actionLabel("/admin/docs/uat", locale)}
+        <ActionLabel href="/admin/docs/uat" />
       </Link>
       <Link className="btn" href="/admin/ai-admin">
-        {actionLabel("/admin/ai-admin", locale)}
+        <ActionLabel href="/admin/ai-admin" />
       </Link>
       <Link className="btn" href="/admin/security/ai-access">
-        {actionLabel("/admin/security/ai-access", locale)}
+        <ActionLabel href="/admin/security/ai-access" />
       </Link>
       <Link className="btn btn-primary" href="/admin/dashboard">
-        {actionLabel("/admin/dashboard", locale)}
+        <ActionLabel href="/admin/dashboard" />
       </Link>
     </>
   );
@@ -84,56 +84,54 @@ export default async function AdminDashboardPage() {
       <AdminPageHeader pageKey="home" actions={actions} />
 
       <section className="panel p-3 sm:p-4 mb-4">
-        <div className="font-semibold">{t("home.larkDemo", locale)}</div>
+        <div className="font-semibold"><T k="home.larkDemo" /></div>
         <p className="text-sm text-[var(--muted)] mt-1">
-          {locale === "zh-Hant"
-            ? "永久網址（GitHub Pages）"
-            : "Permanent URL (GitHub Pages)"}
+          <EnZh en="Permanent URL (GitHub Pages)" zh="永久網址（GitHub Pages）" />
           {": "}
           <a className="text-teal-800 underline break-all" href="https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/">
             https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/
           </a>
         </p>
         <Link className="btn btn-primary mt-3 inline-flex" href="/admin/messenger">
-          {t("home.larkDemoCta", locale)}
+          <T k="home.larkDemoCta" />
         </Link>
       </section>
 
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3">
-        <StatCard label={t("home.stat.users", locale)} value={counts.users} hint={t("home.stat.usersHint", locale)} />
-        <StatCard label={t("home.stat.teams", locale)} value={counts.teams} hint={t("home.stat.teamsHint", locale)} />
+        <StatCard label={<T k="home.stat.users" />} value={counts.users} hint={<T k="home.stat.usersHint" />} />
+        <StatCard label={<T k="home.stat.teams" />} value={counts.teams} hint={<T k="home.stat.teamsHint" />} />
         <StatCard
-          label={t("home.stat.sources", locale)}
+          label={<T k="home.stat.sources" />}
           value={counts.sources}
-          hint={t("home.stat.sourcesHint", locale)}
+          hint={<T k="home.stat.sourcesHint" />}
         />
         <StatCard
-          label={t("home.stat.domains", locale)}
+          label={<T k="home.stat.domains" />}
           value={counts.domains}
-          hint={t("home.stat.domainsHint", locale)}
+          hint={<T k="home.stat.domainsHint" />}
         />
         <StatCard
-          label={t("home.stat.openAlerts", locale)}
+          label={<T k="home.stat.openAlerts" />}
           value={counts.openAlerts}
-          hint={t("home.stat.openAlertsHint", locale)}
+          hint={<T k="home.stat.openAlertsHint" />}
         />
         <StatCard
-          label={t("home.stat.openTickets", locale)}
+          label={<T k="home.stat.openTickets" />}
           value={counts.openTickets}
-          hint={t("home.stat.openTicketsHint", locale)}
+          hint={<T k="home.stat.openTicketsHint" />}
         />
-        <StatCard label={t("home.stat.lark", locale)} value={counts.larkChannels} hint={t("home.stat.larkHint", locale)} />
+        <StatCard label={<T k="home.stat.lark" />} value={counts.larkChannels} hint={<T k="home.stat.larkHint" />} />
         <StatCard
-          label={t("home.stat.routes", locale)}
+          label={<T k="home.stat.routes" />}
           value={counts.routes}
-          hint={t("home.stat.routesHint", locale)}
+          hint={<T k="home.stat.routesHint" />}
         />
       </div>
 
       <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
         <section className="panel p-3 sm:p-4 min-w-0">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">{t("home.deptTitle", locale)}</h2>
-          <p className="text-sm text-[var(--muted)] mt-1">{t("home.deptSub", locale)}</p>
+          <h2 className="font-[family-name:var(--font-display)] text-lg"><T k="home.deptTitle" /></h2>
+          <p className="text-sm text-[var(--muted)] mt-1"><T k="home.deptSub" /></p>
           <div className="mt-4 space-y-3">
             {departments.map((d) => {
               const responsibilities = JSON.parse(d.primary_responsibilities) as string[];
@@ -159,18 +157,18 @@ export default async function AdminDashboardPage() {
 
         <section className="panel p-3 sm:p-4 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <h2 className="font-[family-name:var(--font-display)] text-lg">{t("home.recentAlerts", locale)}</h2>
+            <h2 className="font-[family-name:var(--font-display)] text-lg"><T k="home.recentAlerts" /></h2>
             <Link href="/admin/alerts" className="text-sm text-teal-800 font-semibold shrink-0">
-              {t("home.viewAll", locale)}
+              <T k="home.viewAll" />
             </Link>
           </div>
           <div className="table-wrap mt-3 max-w-full">
             <table className="data">
               <thead>
                 <tr>
-                  <th>{locale === "zh-Hant" ? "警報" : "Alert"}</th>
-                  <th>{locale === "zh-Hant" ? "嚴重度" : "Severity"}</th>
-                  <th>{locale === "zh-Hant" ? "狀態" : "Status"}</th>
+                  <th><EnZh en="Alert" zh="警報" /></th>
+                  <th><EnZh en="Severity" zh="嚴重度" /></th>
+                  <th><EnZh en="Status" zh="狀態" /></th>
                 </tr>
               </thead>
               <tbody>
@@ -195,25 +193,28 @@ export default async function AdminDashboardPage() {
           </div>
 
           <div className="mt-4 rounded-xl bg-slate-50 border border-[var(--line)] p-3 text-sm">
-            <div className="font-semibold">{locale === "zh-Hant" ? "整合脊柱" : "Integration spine"}</div>
+            <div className="font-semibold"><EnZh en="Integration spine" zh="整合脊柱" /></div>
             <ol className="mt-2 space-y-1 text-[var(--muted)] list-decimal list-inside">
-              {locale === "zh-Hant" ? (
-                <>
-                  <li>Monitor 2.0 發出指標警告／違規</li>
-                  <li>CRMP 建立／同步工單並附上證據</li>
-                  <li>升級路徑選定團隊＋Lark 頻道＋SLA</li>
-                  <li>AI 草擬根因；人工核准干預</li>
-                  <li>稽核日誌＋每日績效儀表板</li>
-                </>
-              ) : (
-                <>
-                  <li>Monitor 2.0 emits indicator warning / breach</li>
-                  <li>CRMP creates / syncs ticket and attaches evidence</li>
-                  <li>Escalation route selects team + Lark channel + SLA</li>
-                  <li>AI drafts RCA; human approves intervention</li>
-                  <li>Audit log + daily performance dashboard</li>
-                </>
-              )}
+              <EnZh
+                en={
+                  <>
+                    <li>Monitor 2.0 emits indicator warning / breach</li>
+                    <li>CRMP creates / syncs ticket and attaches evidence</li>
+                    <li>Escalation route selects team + Lark channel + SLA</li>
+                    <li>AI drafts RCA; human approves intervention</li>
+                    <li>Audit log + daily performance dashboard</li>
+                  </>
+                }
+                zh={
+                  <>
+                    <li>Monitor 2.0 發出指標警告／違規</li>
+                    <li>CRMP 建立／同步工單並附上證據</li>
+                    <li>升級路徑選定團隊＋Lark 頻道＋SLA</li>
+                    <li>AI 草擬根因；人工核准干預</li>
+                    <li>稽核日誌＋每日績效儀表板</li>
+                  </>
+                }
+              />
             </ol>
           </div>
         </section>

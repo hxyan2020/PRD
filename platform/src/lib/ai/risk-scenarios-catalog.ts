@@ -57,6 +57,41 @@ const BASE_SKILL_SCENARIOS: SkillScenario[] = [
       },
     ],
     owner_department: "RISK_CONTROL",
+    owner_role: "Risk Owner / Credit Desk",
+    when_to_use: [
+      "Use when M2-MRG-014 shows ≥100 accounts above 90% margin utilisation (BREACH), or ≥50 as a staffing WARN that is still climbing.",
+      "Prefer this skill over generic RCA when copy concentration or stop-out velocity is also moving — that is a credit cascade, not a one-off VIP.",
+      "Trigger from a live Monitor alert or messenger ALERT card, not from a historic dashboard print.",
+    ],
+    when_not_to_use: [
+      "Do not tighten group leverage on a single test book, contest account, or known UAT print.",
+      "Do not treat an isolated VIP override as a cascade — check copy overlap first.",
+      "Do not skip the economic calendar: NFP/FOMC/CPI within ±60 minutes is often organic vol, not toxic flow.",
+      "Do not auto-execute irreversible leverage cuts; the human gate is mandatory.",
+    ],
+    prechecks: [
+      "Confirm M2-MRG-014 last_checked is within 2 minutes and observed_value is still ≥ warn.",
+      "Check M2-FEED-003 — stale quotes can fake a margin spike.",
+      "Check M2-COPY-009 — if one provider dominates, this is a linked timeline.",
+      "Confirm a live OPEN alert exists before paging Exec.",
+    ],
+    evidence_to_collect: [
+      "Monitor snapshot for M2-MRG-014 (observed vs warn 50 / breach 100).",
+      "Top copy-provider overlap table for stressed logins.",
+      "Messenger ALERT + AI_REPORT + challenger verdict.",
+      "Macro calendar window ±60 minutes.",
+    ],
+    stop_conditions: [
+      "Stop paging if utilisation falls below 50 accounts for 15 minutes and no linked BREACH remains.",
+      "Abort leverage tighten if second AI DISAGREEs and Risk Owner has not overridden.",
+      "Do not proceed while feed health is independently in BREACH — fix quotes first.",
+    ],
+    success_criteria: [
+      "Named Credit Desk owner within 15 minutes SLA.",
+      "Copy-overlap check recorded on the spine even if the result is 'none'.",
+      "Any leverage tighten has maker + checker (or Risk Owner) in audit.",
+      "Looks like CASE-MRG-1001: cascade contained, residual risk accepted in writing if any.",
+    ],
     steps: [
       { action: "lark_notify", description: "Notify Credit & Client Risk", params: { channel: "oc_credit_client_risk" }, bu: "RISK_CONTROL" },
       { action: "check_copy_overlap", description: "Check margin spike vs top copy providers", bu: "RISK_CONTROL" },

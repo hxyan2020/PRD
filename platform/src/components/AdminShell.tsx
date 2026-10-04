@@ -9,6 +9,32 @@ import type { SessionUser } from "@/lib/types";
 import { LogOut, LogIn, Menu, X } from "lucide-react";
 import { UI_LOCALE_COOKIE, navLabel, shellCopy, type UiLocale } from "@/lib/i18n";
 
+const SEEN_KEY = "crmp_nav_seen_v1";
+
+type NavEvents = Record<string, { count: number; latestAt: string | null }>;
+
+function readSeen(): Record<string, number> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(SEEN_KEY) || "{}") as Record<string, number>;
+  } catch {
+    return {};
+  }
+}
+
+function writeSeen(next: Record<string, number>) {
+  try {
+    localStorage.setItem(SEEN_KEY, JSON.stringify(next));
+  } catch {
+    /* ignore */
+  }
+}
+
+function navKey(href: string, pathname: string) {
+  if (href === "/admin") return pathname === "/admin" || pathname === "/admin/";
+  return pathname === href || pathname.startsWith(`${href}/`) || pathname.startsWith(href);
+}
+
 function readLocaleCookie(): UiLocale {
   if (typeof document === "undefined") return "en";
   const m = document.cookie.match(new RegExp(`(?:^|; )${UI_LOCALE_COOKIE}=([^;]*)`));
@@ -19,26 +45,43 @@ function readLocaleCookie(): UiLocale {
 export function AdminShell({
   user,
   permissions,
+  navEvents = {},
   children,
 }: {
   user: SessionUser;
   permissions: string[];
+  navEvents?: NavEvents;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [locale, setLocale] = useState<UiLocale>("en");
+  const [seen, setSeen] = useState<Record<string, number>>({});
   const can = (perm: string) => permissions.includes("*") || permissions.includes(perm);
   const copy = shellCopy(locale);
 
   useEffect(() => {
     setLocale(readLocaleCookie());
+    setSeen(readSeen());
   }, []);
 
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    const hits = Object.keys(navEvents).filter((href) => navKey(href, pathname));
+    if (!hits.length) return;
+    setSeen((prev) => {
+      const next = { ...prev };
+      for (const href of hits) {
+        next[href] = navEvents[href]?.count ?? 0;
+      }
+      writeSeen(next);
+      return next;
+    });
+  }, [pathname, navEvents]);
 
   useEffect(() => {
     document.body.classList.toggle("nav-open", open);
@@ -95,6 +138,15 @@ export function AdminShell({
         {NAV_ITEMS.filter((item) => can(item.permission)).map((item) => {
           const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
           const Icon = item.icon;
+          const snap = navEvents[item.href];
+          const viewed = seen[item.href];
+          const unread =
+            snap && viewed === undefined
+              ? snap.count
+              : snap
+                ? Math.max(0, snap.count - (viewed || 0))
+                : 0;
+          const showBadge = unread > 0 && !navKey(item.href, pathname);
           return (
             <Link
               key={item.href}
@@ -105,7 +157,15 @@ export function AdminShell({
               )}
             >
               <Icon size={16} className="shrink-0" />
-              <span className="leading-snug">{navLabel(item.href, locale, item.label)}</span>
+              <span className="leading-snug flex-1">{navLabel(item.href, locale, item.label)}</span>
+              {showBadge ? (
+                <span
+                  className="ml-auto min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-[10px] font-semibold text-white inline-flex items-center justify-center tabular-nums"
+                  aria-label={`${unread} unread`}
+                >
+                  {unread > 99 ? "99+" : unread}
+                </span>
+              ) : null}
             </Link>
           );
         })}

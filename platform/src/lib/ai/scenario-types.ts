@@ -61,6 +61,14 @@ export type SkillScenario = {
   }>;
   owner_department: string;
   auto_execute?: boolean;
+  /** Optional SKILL.md-style sections; filled by finalizeSkill when omitted. */
+  when_to_use?: string[];
+  when_not_to_use?: string[];
+  prechecks?: string[];
+  evidence_to_collect?: string[];
+  stop_conditions?: string[];
+  success_criteria?: string[];
+  owner_role?: string;
 };
 
 export type TimelineEvent = {

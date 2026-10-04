@@ -4,13 +4,12 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL } from "@/lib/docs/urls";
 import { Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
-import { t } from "@/lib/i18n";
-import { getUiLocale } from "@/lib/i18n-server";
+import { T } from "@/components/T";
+import { EnZh } from "@/components/EnZh";
 
 export default async function UrlsCatalogPage() {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
-  const locale = await getUiLocale();
 
   const categories = Array.from(new Set(PLATFORM_URLS.map((u) => u.category)));
   const counts = {
@@ -19,43 +18,48 @@ export default async function UrlsCatalogPage() {
     tables: PLATFORM_URLS.filter((u) => u.category === "DB Tables" || u.category === "Data").length,
   };
 
-  const categoryLabel = (cat: string) => {
-    if (locale !== "zh-Hant") return cat;
-    const map: Record<string, string> = {
-      Auth: "驗證",
-      Home: "首頁",
-      Risk: "風險",
-      AI: "AI",
-      Messenger: "Messenger",
-      Org: "組織",
-      System: "系統",
-      Docs: "文件",
-      API: "API",
-      Data: "資料",
-      "DB Tables": "資料表",
-    };
-    return map[cat] || cat;
-  };
+  const categoryLabel = (cat: string) => (
+    <EnZh
+      en={cat}
+      zh={
+        (
+          {
+            Auth: "驗證",
+            Home: "首頁",
+            Risk: "風險",
+            AI: "AI",
+            Messenger: "Messenger",
+            Org: "組織",
+            System: "系統",
+            Docs: "文件",
+            API: "API",
+            Data: "資料",
+            "DB Tables": "資料表",
+          } as Record<string, string>
+        )[cat] || cat
+      }
+    />
+  );
 
   return (
     <div>
       <AdminPageHeader
         pageKey="urls"
         actions={
-          <Link className="btn btn-primary" href="/admin/messenger">
-            {t("common.openMessenger", locale)}
-          </Link>
+            <Link className="btn btn-primary" href="/admin/messenger">
+              <T k="common.openMessenger" />
+            </Link>
         }
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4">
         {[
-          { label: t("urls.pages", locale), value: String(counts.pages) },
-          { label: t("urls.apis", locale), value: String(counts.apis) },
-          { label: t("urls.data", locale), value: String(counts.tables) },
-          { label: t("urls.inbox", locale), value: "/admin/messenger" },
+          { label: <T k="urls.pages" />, value: String(counts.pages), key: "pages" },
+          { label: <T k="urls.apis" />, value: String(counts.apis), key: "apis" },
+          { label: <T k="urls.data" />, value: String(counts.tables), key: "data" },
+          { label: <T k="urls.inbox" />, value: "/admin/messenger", key: "inbox" },
         ].map((c) => (
-          <div key={c.label} className="panel p-3 sm:p-4">
+          <div key={c.key} className="panel p-3 sm:p-4">
             <div className="text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{c.label}</div>
             <div className="mt-1 font-semibold text-sm sm:text-base break-word">{c.value}</div>
           </div>
@@ -63,7 +67,7 @@ export default async function UrlsCatalogPage() {
       </div>
 
       <div className="panel p-3 sm:p-4 mb-4 text-sm border-teal-200 bg-teal-50 text-teal-950">
-        <p>{t("urls.publicNote", locale)}</p>
+        <p><T k="urls.publicNote" /></p>
         <p className="mt-2">
           <a className="text-teal-900 underline break-all" href={PUBLIC_ADMIN_URL}>
             {PUBLIC_ADMIN_URL}
@@ -76,7 +80,7 @@ export default async function UrlsCatalogPage() {
         </p>
       </div>
 
-      <div className="panel p-3 sm:p-4 mb-4 text-sm text-[var(--muted)]">{t("urls.cheat", locale)}</div>
+      <div className="panel p-3 sm:p-4 mb-4 text-sm text-[var(--muted)]"><T k="urls.cheat" /></div>
 
       <div className="space-y-6">
         {categories.map((cat) => (
@@ -86,10 +90,10 @@ export default async function UrlsCatalogPage() {
               <table className="data">
                 <thead>
                   <tr>
-                    <th>{locale === "zh-Hant" ? "名稱" : "Title"}</th>
-                    <th>{locale === "zh-Hant" ? "路徑" : "Path"}</th>
-                    <th>{locale === "zh-Hant" ? "說明" : "Description"}</th>
-                    <th>{locale === "zh-Hant" ? "權限" : "Permission"}</th>
+                    <th><EnZh en="Title" zh="名稱" /></th>
+                    <th><EnZh en="Path" zh="路徑" /></th>
+                    <th><EnZh en="Description" zh="說明" /></th>
+                    <th><EnZh en="Permission" zh="權限" /></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -100,7 +104,7 @@ export default async function UrlsCatalogPage() {
                         {u.path.startsWith("/") ? (
                           <Link
                             className="text-teal-800 underline break-all"
-                            href={u.path.includes("[") ? u.path.replace("[id]", "1") : u.path}
+                            href={u.path.includes("[") ? u.path.replace("[id]", "1").replace("[code]", "SKILL-ABOOK-RATIO") : u.path}
                           >
                             {u.path}
                           </Link>
@@ -113,7 +117,7 @@ export default async function UrlsCatalogPage() {
                         <div className="flex flex-wrap gap-1">
                           {u.path.startsWith("/") || u.category === "API" ? (
                             <Badge className="bg-teal-50 text-teal-900 border-teal-200">
-                              {locale === "zh-Hant" ? "公開" : "Public"}
+                              <EnZh en="Public" zh="公開" />
                             </Badge>
                           ) : null}
                           {u.permission ? (

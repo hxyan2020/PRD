@@ -1,6 +1,8 @@
 import type Database from "better-sqlite3";
 import { LINKED_SCENARIOS, SKILL_SCENARIOS } from "@/lib/ai/risk-scenarios-catalog";
 import type { SkillScenario } from "@/lib/ai/scenario-types";
+import { finalizeSkill, type SkillPlaybook } from "@/lib/ai/skill-playbook";
+import type { UiLocale } from "@/lib/i18n";
 
 export function ensureSkillScenarioColumns(db: Database.Database) {
   const cols = db.prepare(`PRAGMA table_info(ai_skills)`).all() as Array<{ name: string }>;
@@ -137,6 +139,62 @@ export function listLinkedScenarios(db: Database.Database) {
     linked_skills_json: string;
     past_cases_json: string;
   }>;
+}
+
+export function getSkillByCode(code: string) {
+  return SKILL_SCENARIOS.find((s) => s.code === code) || null;
+}
+
+export function getSkillPlaybook(code: string, locale: UiLocale = "en"): SkillPlaybook | null {
+  const catalog = getSkillByCode(code);
+  if (catalog) return finalizeSkill(catalog, locale);
+  return null;
+}
+
+export function getSkillPlaybookFromRow(row: {
+  code: string;
+  name: string;
+  description: string;
+  indicator_patterns_json: string;
+  conditions_json: string;
+  steps_json: string;
+  auto_execute: number;
+  owner_department: string;
+  scenario_json: string;
+}): SkillPlaybook {
+  try {
+    const parsed = JSON.parse(row.scenario_json || "{}") as SkillScenario;
+    if (parsed?.indicator?.monitor_id) return finalizeSkill(parsed);
+  } catch {
+    /* fall through */
+  }
+  const catalog = SKILL_SCENARIOS.find((s) => s.code === row.code);
+  if (catalog) return finalizeSkill(catalog);
+  return finalizeSkill({
+    code: row.code,
+    name: row.name,
+    description: row.description,
+    indicator: {
+      monitor_id: (JSON.parse(row.indicator_patterns_json || "[]") as string[])[0] || "?",
+      name: row.name,
+      product: "CFD",
+      domain: row.owner_department,
+      warn: 0,
+      breach: 0,
+      unit: "",
+      comparator: "gte",
+      why: row.description,
+    },
+    related_indicators: [],
+    conditions: JSON.parse(row.conditions_json || "{}"),
+    fault_areas: [],
+    escalation: { sla_minutes: 30, path: [] },
+    corrections: [],
+    past_cases: [],
+    steps: JSON.parse(row.steps_json || "[]"),
+    owner_department: row.owner_department,
+    auto_execute: !!row.auto_execute,
+  });
 }
 
 export function matchSkill(

@@ -238,7 +238,8 @@ export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"
      VALUES (?, ?, 'RUNNING', ?)`
   ).run(scanId, started, opts.trigger || "SCHEDULE");
 
-  const { checked, candidates } = await scrapeCandidates();
+  try {
+    const { checked, candidates } = await scrapeCandidates();
   let findingsNew = 0;
   let findingsPushed = 0;
   let highImpact = 0;
@@ -308,7 +309,11 @@ export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"
     .get() as { c: number; top_title: string | null };
   const indicatorHits = windowHit.c || highImpact;
   const indicatorTitle = windowHit.top_title || topTitle || "n/a";
-  updateIndicatorAndMaybeAlarm(indicatorHits, indicatorTitle);
+  try {
+    updateIndicatorAndMaybeAlarm(indicatorHits, indicatorTitle);
+  } catch (alarmErr) {
+    console.error("[market-intel] indicator/alarm update failed", alarmErr);
+  }
 
   logSpineEvent({
     stage: "DETECT",
@@ -343,14 +348,28 @@ export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"
     { checked, findingsNew, findingsPushed, highImpact, trigger: opts.trigger || "SCHEDULE" }
   );
 
-  return {
-    ok: true,
-    scan_id: scanId,
-    sources_checked: checked,
-    findings_new: findingsNew,
-    findings_pushed: findingsPushed,
-    high_impact_count: indicatorHits,
-  };
+    return {
+      ok: true,
+      scan_id: scanId,
+      sources_checked: checked,
+      findings_new: findingsNew,
+      findings_pushed: findingsPushed,
+      high_impact_count: indicatorHits,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[market-intel] scan failed", error);
+    try {
+      db.prepare(
+        `UPDATE market_intel_scans
+         SET finished_at = datetime('now'), status = 'FAILED', detail_json = ?
+         WHERE scan_id = ?`
+      ).run(JSON.stringify({ error: message }), scanId);
+    } catch {
+      /* ignore */
+    }
+    return { ok: false, scan_id: scanId, error: message };
+  }
 }
 
 export function startMarketIntelScheduler() {

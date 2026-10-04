@@ -4,6 +4,9 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
+import { useUiLocale } from "@/hooks/useUiLocale";
+import { t } from "@/lib/i18n";
+import { isStaticExport } from "@/lib/static-export";
 
 type Finding = {
   id: number;
@@ -75,6 +78,8 @@ export function MarketIntelBoard({
   };
 }) {
   const router = useRouter();
+  const { locale } = useUiLocale();
+  const staticMode = isStaticExport();
   const [tab, setTab] = useState<"findings" | "messenger" | "sources" | "scans">("findings");
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -94,6 +99,10 @@ export function MarketIntelBoard({
     setMsg(null);
     setErr(null);
     try {
+      if (staticMode) {
+        setMsg(t("mi.staticScan", locale));
+        return;
+      }
       const res = await fetch("/api/market-intel", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,12 +113,18 @@ export function MarketIntelBoard({
         setErr(data.error || `Failed (${res.status})`);
         return;
       }
+      if (data.ok === false) {
+        setErr(data.reason || data.error || "Scan skipped");
+        return;
+      }
       setMsg(
         data.scan_id
           ? `Scan ${data.scan_id}: ${data.findings_new} new → ${data.findings_pushed} pushed to messenger`
           : "OK"
       );
       router.refresh();
+    } catch (error) {
+      setErr(error instanceof Error ? error.message : "Scan failed");
     } finally {
       setBusy(false);
     }
@@ -121,18 +136,13 @@ export function MarketIntelBoard({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">
-              LP price-moving intelligence
+              {t("mi.eyebrow", locale)}
             </div>
-            <p className="text-sm mt-1 max-w-3xl">
-              Scrapes news, social, official and exchange publications every{" "}
-              <strong>5 minutes</strong> for forex, index, commodity, futures and crypto. Findings push to
-              Lark group <code className="text-xs">oc_market_intelligence</code> in the standard card format,
-              and feed indicator <Badge className="bg-orange-50 text-orange-900 border-orange-200">M2-MKT-INTEL</Badge>.
-            </p>
+            <p className="text-sm mt-1 max-w-3xl">{t("mi.intro", locale)}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" className="btn btn-primary" disabled={busy} onClick={() => post({ action: "scan_now" })}>
-              {busy ? "Scanning…" : "Scan now"}
+              {busy ? t("mi.scanning", locale) : t("mi.scan", locale)}
             </button>
             <button
               type="button"
@@ -140,10 +150,10 @@ export function MarketIntelBoard({
               disabled={busy}
               onClick={() => post({ action: "toggle_enabled", enabled: !enabled })}
             >
-              {enabled ? "Disable scheduler" : "Enable scheduler"}
+              {enabled ? t("mi.disable", locale) : t("mi.enable", locale)}
             </button>
-            <Link className="btn" href="/admin/skills">
-              Skill playbook
+            <Link className="btn" href="/admin/skills/SKILL-MARKET-INTEL">
+              {t("mi.playbook", locale)}
             </Link>
           </div>
         </div>
@@ -159,15 +169,15 @@ export function MarketIntelBoard({
       </div>
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatCard label="Findings (loaded)" value={initial.findings.length} hint={`${highImpact} high-impact`} />
+        <StatCard label={t("mi.findings", locale)} value={initial.findings.length} hint={`${highImpact} ${t("mi.highImpact", locale)}`} />
         <StatCard
           label="Indicator M2-MKT-INTEL"
           value={initial.indicator?.last_value ?? "—"}
           hint={`warn ${initial.indicator?.threshold_warn ?? 1} / breach ${initial.indicator?.threshold_breach ?? 3}`}
         />
-        <StatCard label="Sources" value={initial.sources.length} hint={enabled ? "Scheduler ON" : "Scheduler OFF"} />
+        <StatCard label={t("mi.sources", locale)} value={initial.sources.length} hint={enabled ? t("mi.schedOn", locale) : t("mi.schedOff", locale)} />
         <StatCard
-          label="Messenger pushes"
+          label={t("mi.pushes", locale)}
           value={initial.outbox.length}
           hint="oc_market_intelligence"
         />
@@ -175,7 +185,7 @@ export function MarketIntelBoard({
 
       {initial.indicator && (
         <div className="panel p-3 flex flex-wrap gap-2 items-center text-sm">
-          <span className="text-xs uppercase text-[var(--muted)]">Live indicator</span>
+          <span className="text-xs uppercase text-[var(--muted)]">{t("mi.live", locale)}</span>
           <Badge className="bg-orange-50 text-orange-900 border-orange-200">{initial.indicator.monitor_id}</Badge>
           <span>{initial.indicator.name}</span>
           <StatusBadge value={initial.indicator.status} />
@@ -191,10 +201,10 @@ export function MarketIntelBoard({
       <div className="flex flex-wrap gap-2">
         {(
           [
-            ["findings", "Findings"],
-            ["messenger", "Messenger outbox"],
-            ["sources", "Sources"],
-            ["scans", "Scan log"],
+            ["findings", t("mi.tabFindings", locale)],
+            ["messenger", t("mi.tabMessenger", locale)],
+            ["sources", t("mi.tabSources", locale)],
+            ["scans", t("mi.tabScans", locale)],
           ] as const
         ).map(([id, label]) => (
           <button
