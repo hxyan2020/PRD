@@ -2,6 +2,7 @@
 
 **读者：** 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管  
 **范围：** 全量目录含现货·杠杆·永续；**Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入**  
+**公开站点：** https://hxyan2020.github.io/PRD/risk-handbook/ · **全部 URL：** https://hxyan2020.github.io/PRD/risk-handbook/urls.html · **后台 URL：** https://hxyan2020.github.io/PRD/risk-handbook/admin/  
 **版本：** 1.6 · **归属：** 首席风险官（第二道防线）· **审阅周期：** 每季度或重大事件后  
 
 > 本手册为**操作手册**：明确职责边界、分工、SOP、管理后台、指标/阈值/动作、情景诊断与日常工具。不替代法律政策、限额手册或监管申报。  
@@ -465,29 +466,36 @@
 
 ## 7. 管理后台与工具目录
 
-| 域 | 路径前缀 | 主责 BU |
-|----|----------|---------|
-| 风险限额与告警 | `/admin/risk/*` | RO / RO-OPS |
-| 风控引擎 | `/admin/risk-engine/*` | RE |
-| 现货 | `/admin/spot/*` | 现货 PM / TO |
-| 杠杆 | `/admin/margin/*` | 杠杆 PM / RO-Credit |
-| 合约/永续 | `/admin/futures/*` | 合约 PM / TO-FUT |
-| 撮合 | `/admin/engine/*` | ME / SRE |
-| 钱包 | `/admin/wallet/*` | WO |
-| 上币 | `/admin/listing/*` | LI |
-| 合规 | `/admin/compliance/*` | CP |
-| 资金 | `/admin/treasury/*` | TS |
-| 做市 | `/admin/mm/*` | MM |
-| 权限与审计 | `/admin/iam/*`, `/admin/audit/*` | 安全 / ENG |
+### 7.1 规范管理后台映射（含完整 URL）
 
-**工具对齐仓内模块：** `risk_metrics_monitor.py`（实时指标）· `trader_rights_workflow.py`（杠杆/权限）· `stress_testing.py` · `risk_reporting.py` · `eod_reconciliation.py` · `performance_attribution.py` · `05-use-case-narrative-flowchart.drawio`
+**完整 URL 表：** https://hxyan2020.github.io/PRD/risk-handbook/urls.html  
+**后台目录：** https://hxyan2020.github.io/PRD/risk-handbook/admin/
+
+> **Vercel：** 本手册**没有**部署在 Vercel。`https://prd.vercel.app/` 是另一个产品（LeadShark MVP PRD）。  
+> 下列 GitHub Pages 地址为**公开文档桩页面**（不是真实交易所后台）。
+
+| 域 | 逻辑路径 | 完整公开 URL（GitHub Pages） | 主责 BU |
+|----|----------|------------------------------|---------|
+| 风险限额与告警 | `/admin/risk/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/) | RO / RO-OPS |
+| 风控引擎 | `/admin/risk-engine/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/](https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/) | RE |
+| 合约/永续 `[Phase 1]` | `/admin/futures/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/](https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/) | 合约 PM / TO-FUT |
+| 撮合 | `/admin/engine/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/](https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/) | ME / SRE |
+| 钱包 | `/admin/wallet/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/](https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/) | WO |
+| 上币 | `/admin/listing/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/](https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/) | LI |
+| 合规 | `/admin/compliance/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/](https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/) | CP |
+| 资金 | `/admin/treasury/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/](https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/) | TS |
+| 权限与审计 | `/admin/iam/*`, `/admin/audit/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/](https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/) · [https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/](https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/) | 安全 / ENG |
+| 现货 `[Phase 2+]` | `/admin/spot/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/](https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/) | 现货 PM / TO |
+| 杠杆 `[Phase 2+]` | `/admin/margin/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/) | 杠杆 PM / RO-Credit |
+| 做市 `[Phase 2+]` | `/admin/mm/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/) | MM |
+
+逐页完整 URL 见 [https://hxyan2020.github.io/PRD/risk-handbook/urls.html](https://hxyan2020.github.io/PRD/risk-handbook/urls.html) 与 [https://hxyan2020.github.io/PRD/risk-handbook/admin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/)。
 
 **ACL 原则：** 最小权限；Kill/密钥/制裁覆盖/保险注资/A 级限额双控；变更不可篡改审计；破窗账户限时+自动工单+通知 CRO/CISO；分析尽量用只读副本。
 
-> **Phase 1 后台优先级：** `/admin/futures/*`、风险与撮合、邀请/经纪商与合规冻结。`/admin/spot/*`、`/admin/margin/*` 可配置但须**关闭**（`[Phase 2+]`）。
+> **Phase 1 后台优先级：** `/admin/futures/*`、风险与撮合、邀请/经纪商与合规冻结。`/admin/spot/*`、`/admin/margin/*` 文档桩仍在，生产须**关闭**（`[Phase 2+]`）。
 
 ---
-
 ## 8. 限额、KRI、阈值、动作与升级
 
 ### 8.1 读法

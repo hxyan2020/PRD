@@ -1,5 +1,5 @@
 # Crypto Exchange Risk Handbook (public)
 
-Public site: https://hxyan2020.github.io/PRD/risk-handbook/
-
-Tabs: English | 简体中文
+- Handbook: https://hxyan2020.github.io/PRD/risk-handbook/
+- All URLs: https://hxyan2020.github.io/PRD/risk-handbook/urls.html
+- Admin URLs: https://hxyan2020.github.io/PRD/risk-handbook/admin/

@@ -171,11 +171,13 @@
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.6 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a></p>
+        <p>加密货币交易所风险管理 — 业务单元用户手册 · v1.6 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
       </div>
       <div class="md-links">
         <a href="en.md">en.md</a>
         <a href="zh-CN.md">zh-CN.md</a>
+        <a href="urls.html">all URLs</a>
+        <a href="admin/">admin URLs</a>
       </div>
     </header>
 
@@ -188,6 +190,7 @@
 <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
 <p><strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
 <strong>Scope:</strong> Full catalogue covers Spot · Margin · Perps; <strong>Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access</strong><br />
+<strong>Public site:</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>All URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>Admin URLs:</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
 <strong>Version:</strong> 1.6 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
 <blockquote>
 <p>This handbook is the <strong>operating playbook</strong> for who owns what, how work is divided, standard operating procedures (SOPs), consoles/admin pages, indicators/thresholds/actions, scenario diagnostics, and day-to-day tools. It does not replace legal policy, limit books, or regulatory filings.<br />
@@ -3874,11 +3877,14 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 </table>
 <h2>7. Admin pages &amp; tool catalogue</h2>
 <h3>7.1 Canonical admin map (by domain)</h3>
+<p><strong>URL sheet (all full links):</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html<br />
+<strong>Admin catalogue:</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/</p>
 <table>
 <thead>
 <tr>
 <th>Domain</th>
-<th>Base path</th>
+<th>Logical path</th>
+<th>Full public URL (GitHub Pages)</th>
 <th>Primary BU</th>
 </tr>
 </thead>
@@ -3886,69 +3892,369 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <tr>
 <td>Risk limits &amp; alerts</td>
 <td><code>/admin/risk/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/">https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/</a></td>
 <td>RO / RO-OPS</td>
 </tr>
 <tr>
 <td>Risk engine</td>
 <td><code>/admin/risk-engine/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/">https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/</a></td>
 <td>RE</td>
-</tr>
-<tr>
-<td>Spot</td>
-<td><code>/admin/spot/*</code></td>
-<td>Spot PM / TO</td>
-</tr>
-<tr>
-<td>Margin</td>
-<td><code>/admin/margin/*</code></td>
-<td>Margin PM / RO-Credit</td>
 </tr>
 <tr>
 <td>Futures/Perps</td>
 <td><code>/admin/futures/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/">https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/</a></td>
 <td>Futures PM / TO-FUT</td>
 </tr>
 <tr>
 <td>Matching engine</td>
 <td><code>/admin/engine/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/">https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/</a></td>
 <td>ME / SRE</td>
 </tr>
 <tr>
 <td>Wallet</td>
 <td><code>/admin/wallet/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/">https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/</a></td>
 <td>WO</td>
 </tr>
 <tr>
 <td>Listing</td>
 <td><code>/admin/listing/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/">https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/</a></td>
 <td>LI</td>
 </tr>
 <tr>
 <td>Compliance</td>
 <td><code>/admin/compliance/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/">https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/</a></td>
 <td>CP</td>
 </tr>
 <tr>
 <td>Treasury</td>
 <td><code>/admin/treasury/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/">https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/</a></td>
 <td>TS</td>
 </tr>
 <tr>
-<td>Market making</td>
-<td><code>/admin/mm/*</code></td>
-<td>MM</td>
+<td>Access &amp; audit</td>
+<td><code>/admin/iam/* , /admin/audit/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/">https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/">https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/</a></td>
+<td>Security / ENG</td>
 </tr>
 <tr>
-<td>Access &amp; audit</td>
-<td><code>/admin/iam/*</code>, <code>/admin/audit/*</code></td>
-<td>Security / ENG</td>
+<td>Spot <code>[Phase 2+]</code></td>
+<td><code>/admin/spot/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/">https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/</a></td>
+<td>Spot PM / TO</td>
+</tr>
+<tr>
+<td>Margin <code>[Phase 2+]</code></td>
+<td><code>/admin/margin/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/</a></td>
+<td>Margin PM / RO-Credit</td>
+</tr>
+<tr>
+<td>Market making <code>[Phase 2+]</code></td>
+<td><code>/admin/mm/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/">https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/</a></td>
+<td>MM</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>Paths are <strong>logical</strong>. Map them 1:1 to your internal Admin Console / Orion / Risk Portal names without changing ownership.</p>
-<p><strong>Phase 1 admin priority:</strong> <code>/admin/futures/*</code>, <code>/admin/risk*</code>, <code>/admin/engine/*</code>, invite/broker &amp; compliance holds. <code>/admin/spot/*</code> and <code>/admin/margin/*</code> stay configured but <strong>disabled</strong> (<code>[Phase 2+]</code>).</p>
+<p><strong>Vercel:</strong> this handbook is <strong>not</strong> on Vercel. <code>https://prd.vercel.app/</code> is a different product (LeadShark MVP PRD).<br />
+These GitHub Pages URLs are <strong>public documentation stubs</strong> of the admin catalogue (not a live exchange). Map the same paths 1:1 onto the internal Admin Console when it exists.</p>
+<p><strong>Phase 1 admin priority:</strong> futures, risk, engine, wallet, invite/broker &amp; compliance. Spot and margin URLs exist as stubs but stay <strong>disabled</strong> in production (<code>[Phase 2+]</code>).</p>
 </blockquote>
+<h4>7.1.1 Every admin page (full URL)</h4>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Path</th>
+<th>Full public URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk/limits</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/limits/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/limits/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk/alerts</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/alerts/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/alerts/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk/stress</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/stress/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/stress/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk/insurance</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/insurance/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/insurance/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk/reports</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/reports/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/reports/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk/waivers</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/waivers/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk/waivers/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk-engine/configs</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/configs/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/configs/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk-engine/liq</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/liq/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/liq/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk-engine/feeds</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/feeds/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/feeds/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/risk-engine/sim</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/sim/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/risk-engine/sim/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/contracts</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/contracts/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/contracts/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/leverage</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/leverage/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/leverage/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/risk-limits</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/risk-limits/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/risk-limits/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/mark-index</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/mark-index/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/mark-index/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/funding</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/funding/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/funding/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/insurance</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/insurance/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/insurance/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/adl</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/adl/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/adl/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/futures/breaker</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/breaker/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/futures/breaker/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/engine/status</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/status/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/status/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/engine/kill</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/kill/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/kill/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/engine/rate-limits</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/rate-limits/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/rate-limits/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/engine/stp</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/stp/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/stp/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/engine/failover</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/failover/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/engine/failover/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/wallet/balances</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/balances/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/balances/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/wallet/withdraw</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/withdraw/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/withdraw/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/wallet/deposit</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/deposit/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/deposit/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/wallet/keys</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/keys/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/keys/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/wallet/chains</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/chains/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/wallet/chains/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/compliance/surveillance</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/surveillance/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/surveillance/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/compliance/holds</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/holds/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/holds/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/compliance/kyb-kyc</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/kyb-kyc/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/kyb-kyc/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/compliance/sanctions</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/sanctions/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/compliance/sanctions/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/listing/pipeline</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/pipeline/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/pipeline/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/listing/tags</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/tags/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/tags/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/listing/delist</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/delist/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/delist/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/listing/migrations</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/migrations/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/listing/migrations/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/treasury/balances</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/balances/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/balances/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/treasury/settlement</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/settlement/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/settlement/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/treasury/stablecoins</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/stablecoins/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/treasury/stablecoins/</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/iam/</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/iam">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/iam</a></td>
+</tr>
+<tr>
+<td>Phase 1</td>
+<td><code>/admin/audit/</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/audit">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/audit</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/spot/symbols</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/symbols/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/symbols/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/spot/bands</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/bands/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/bands/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/spot/halt</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/halt/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/halt/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/spot/fees</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/fees/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/fees/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/spot/stp</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/stp/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/spot/stp/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/margin/collateral</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/collateral/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/collateral/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/margin/ltv</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/ltv/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/ltv/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/margin/borrow</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/borrow/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/borrow/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/margin/interest</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/interest/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/interest/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/margin/liquidation</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/liquidation/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/liquidation/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/margin/bad-debt</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/bad-debt/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/margin/bad-debt/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/mm/sla</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/sla/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/sla/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/mm/inventory</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/inventory/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/inventory/</a></td>
+</tr>
+<tr>
+<td>Phase 2+</td>
+<td><code>/admin/mm/agreements</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/agreements/">https://hxyan2020.github.io/PRD/risk-handbook/admin/admin/mm/agreements/</a></td>
+</tr>
+</tbody>
+</table>
 <h3>7.2 Tooling aligned to platform modules</h3>
 <table>
 <thead>
@@ -6195,6 +6501,7 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <h1>加密货币交易所风险管理 — 业务单元（BU）用户手册</h1>
 <p><strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
 <strong>范围：</strong> 全量目录含现货·杠杆·永续；<strong>Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入</strong><br />
+<strong>公开站点：</strong> https://hxyan2020.github.io/PRD/risk-handbook/ · <strong>全部 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html · <strong>后台 URL：</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/<br />
 <strong>版本：</strong> 1.6 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
 <blockquote>
 <p>本手册为<strong>操作手册</strong>：明确职责边界、分工、SOP、管理后台、指标/阈值/动作、情景诊断与日常工具。不替代法律政策、限额手册或监管申报。<br />
@@ -7205,11 +7512,19 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <li><strong>ACC-03 权益护栏（持续）：</strong> 监控误开现货/杠杆、自助注册、无邀请/经纪商标签却可交易的 UID；日例外报表给 RO-OPS+合规。</li>
 </ul>
 <h2>7. 管理后台与工具目录</h2>
+<h3>7.1 规范管理后台映射（含完整 URL）</h3>
+<p><strong>完整 URL 表：</strong> https://hxyan2020.github.io/PRD/risk-handbook/urls.html<br />
+<strong>后台目录：</strong> https://hxyan2020.github.io/PRD/risk-handbook/admin/</p>
+<blockquote>
+<p><strong>Vercel：</strong> 本手册<strong>没有</strong>部署在 Vercel。<code>https://prd.vercel.app/</code> 是另一个产品（LeadShark MVP PRD）。<br />
+下列 GitHub Pages 地址为<strong>公开文档桩页面</strong>（不是真实交易所后台）。</p>
+</blockquote>
 <table>
 <thead>
 <tr>
 <th>域</th>
-<th>路径前缀</th>
+<th>逻辑路径</th>
+<th>完整公开 URL（GitHub Pages）</th>
 <th>主责 BU</th>
 </tr>
 </thead>
@@ -7217,69 +7532,81 @@ Role codes: see §2.2. Ticket system = Risk/Ops ticket unless noted.</p>
 <tr>
 <td>风险限额与告警</td>
 <td><code>/admin/risk/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/">https://hxyan2020.github.io/PRD/risk-handbook/admin/risk/</a></td>
 <td>RO / RO-OPS</td>
 </tr>
 <tr>
 <td>风控引擎</td>
 <td><code>/admin/risk-engine/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/">https://hxyan2020.github.io/PRD/risk-handbook/admin/risk-engine/</a></td>
 <td>RE</td>
 </tr>
 <tr>
-<td>现货</td>
-<td><code>/admin/spot/*</code></td>
-<td>现货 PM / TO</td>
-</tr>
-<tr>
-<td>杠杆</td>
-<td><code>/admin/margin/*</code></td>
-<td>杠杆 PM / RO-Credit</td>
-</tr>
-<tr>
-<td>合约/永续</td>
+<td>合约/永续 <code>[Phase 1]</code></td>
 <td><code>/admin/futures/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/">https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/</a></td>
 <td>合约 PM / TO-FUT</td>
 </tr>
 <tr>
 <td>撮合</td>
 <td><code>/admin/engine/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/">https://hxyan2020.github.io/PRD/risk-handbook/admin/engine/</a></td>
 <td>ME / SRE</td>
 </tr>
 <tr>
 <td>钱包</td>
 <td><code>/admin/wallet/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/">https://hxyan2020.github.io/PRD/risk-handbook/admin/wallet/</a></td>
 <td>WO</td>
 </tr>
 <tr>
 <td>上币</td>
 <td><code>/admin/listing/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/">https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/</a></td>
 <td>LI</td>
 </tr>
 <tr>
 <td>合规</td>
 <td><code>/admin/compliance/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/">https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/</a></td>
 <td>CP</td>
 </tr>
 <tr>
 <td>资金</td>
 <td><code>/admin/treasury/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/">https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/</a></td>
 <td>TS</td>
-</tr>
-<tr>
-<td>做市</td>
-<td><code>/admin/mm/*</code></td>
-<td>MM</td>
 </tr>
 <tr>
 <td>权限与审计</td>
 <td><code>/admin/iam/*</code>, <code>/admin/audit/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/">https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/">https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/</a></td>
 <td>安全 / ENG</td>
+</tr>
+<tr>
+<td>现货 <code>[Phase 2+]</code></td>
+<td><code>/admin/spot/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/">https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/</a></td>
+<td>现货 PM / TO</td>
+</tr>
+<tr>
+<td>杠杆 <code>[Phase 2+]</code></td>
+<td><code>/admin/margin/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/</a></td>
+<td>杠杆 PM / RO-Credit</td>
+</tr>
+<tr>
+<td>做市 <code>[Phase 2+]</code></td>
+<td><code>/admin/mm/*</code></td>
+<td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/">https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/</a></td>
+<td>MM</td>
 </tr>
 </tbody>
 </table>
-<p><strong>工具对齐仓内模块：</strong> <code>risk_metrics_monitor.py</code>（实时指标）· <code>trader_rights_workflow.py</code>（杠杆/权限）· <code>stress_testing.py</code> · <code>risk_reporting.py</code> · <code>eod_reconciliation.py</code> · <code>performance_attribution.py</code> · <code>05-use-case-narrative-flowchart.drawio</code></p>
+<p>逐页完整 URL 见 <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a> 与 <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/</a>。</p>
 <p><strong>ACL 原则：</strong> 最小权限；Kill/密钥/制裁覆盖/保险注资/A 级限额双控；变更不可篡改审计；破窗账户限时+自动工单+通知 CRO/CISO；分析尽量用只读副本。</p>
 <blockquote>
-<p><strong>Phase 1 后台优先级：</strong> <code>/admin/futures/*</code>、风险与撮合、邀请/经纪商与合规冻结。<code>/admin/spot/*</code>、<code>/admin/margin/*</code> 可配置但须<strong>关闭</strong>（<code>[Phase 2+]</code>）。</p>
+<p><strong>Phase 1 后台优先级：</strong> <code>/admin/futures/*</code>、风险与撮合、邀请/经纪商与合规冻结。<code>/admin/spot/*</code>、<code>/admin/margin/*</code> 文档桩仍在，生产须<strong>关闭</strong>（<code>[Phase 2+]</code>）。</p>
 </blockquote>
 <hr />
 <h2>8. 限额、KRI、阈值、动作与升级</h2>
