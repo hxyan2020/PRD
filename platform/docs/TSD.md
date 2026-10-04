@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.4  
+**Version:** 1.5  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -42,20 +42,15 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 
 ## 2. System context
 
-```
-Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
-                                         │
-                                         ▼
-                              Second-AI Challenger (≥ BREACH)
-                                         │
-                                         ▼
-                    Demo Messenger ◄──► Human Intervention (gates)
-                                         │
-                                         ▼
-                              Spine Log + Risk Log + Daily Dashboard
-                                         │
-                                         ▼
-                         Lark channels / Market Intel outbox (mock)
+```mermaid
+graph TD
+  Mon[Monitor 2.0 plus Detectors] --> Alarm[Alarms]
+  Alarm --> Rca[AI RCA Skills or RAG]
+  Rca --> Ch[Second AI challenger]
+  Ch --> Msg[Demo Messenger]
+  Msg --> Gate[Human intervention]
+  Gate --> Spine[Spine Risk Log Dashboard]
+  Spine --> Out[Lark plus intel outbox]
 ```
 
 **AI Admin** sits beside the runtime spine: it does **not** execute live trading actions; it governs models, playbooks, RAG corpus, and AI parameters under dual control.
@@ -71,6 +66,14 @@ Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
 | API routes | JSON mutations + reads | `platform/src/app/api/**` |
 | Domain libs | Business logic | `platform/src/lib/ai/*`, `lib/db.ts`, `lib/auth.ts` |
 | Persistence | SQLite file | `platform/data/vantage_risk.db` |
+
+```mermaid
+graph LR
+  UI[Admin UI] --> API[API routes]
+  API --> Domain[Domain libs]
+  Domain --> DB[SQLite]
+```
+
 
 ### 3.1 Runtime spine stages
 1. **Detectors** sample indicators (`/admin/detectors`)
@@ -386,16 +389,15 @@ Unsupported pairs throw and leave CR undecided (transactional expectation for pr
 
 ### 8.11 Sequence — propose skill (happy path)
 
-```
-AI Engineer (Maker)                API / admin.ts                 Risk Owner (Checker)
-       │ propose_skill                  │                                │
-       ├───────────────────────────────►│ insert PENDING CR              │
-       │◄──────── request_id ───────────┤                                │
-       │                                │                                │
-       │                                │◄──── decide APPROVED ──────────┤
-       │                                │ applyChange SKILL/CREATE       │
-       │                                │ audit AI_CHANGE_APPROVED       │
-       │                                ├──────── ok + applied ─────────►│
+```mermaid
+sequenceDiagram
+  participant Maker as AI Engineer
+  participant API as admin.ts
+  participant Checker as Risk Owner
+  Maker->>API: propose skill
+  API-->>Maker: PENDING request id
+  Checker->>API: decide APPROVED
+  API-->>Checker: skill CREATE applied
 ```
 
 ### 8.12 Related pages
@@ -426,6 +428,18 @@ For alert severities at or above `ai.second_opinion_severity` (default **BREACH*
 | Setting | Default | Behaviour |
 |---|---|---|
 | `ai.second_opinion_severity` | `BREACH` | Run when alert severity rank ≥ setting (`WARN` &lt; `BREACH` &lt; `CRITICAL`) |
+
+```mermaid
+graph TD
+  Rca[Primary RCA persisted] --> Cmp{Severity at threshold?}
+  Cmp -->|No| Skip[Skip challenger]
+  Cmp -->|Yes| Run[crmp-challenger-v0]
+  Run --> V{Verdict}
+  V -->|AGREE| Pack[Attach challenge pack]
+  V -->|PARTIAL or DISAGREE| Human[needs human equals 1]
+  Human --> Pack
+```
+
 
 ### 9.3 Outputs
 | Field | Description |
@@ -503,11 +517,11 @@ Pages has no Next.js API routes. `POST /api/market-intel` would return **405**. 
 4. Seeds three findings at SSG time so the first paint is not empty.
 
 ```mermaid
-graph LR
-  Click[Scan now] --> Detect[Public snapshot?]
-  Detect --> Demo[Client demo scan]
-  Detect --> Api[POST /api/market-intel]
-  Demo --> Desk[Findings + outbox]
+graph TD
+  Click[Scan now] --> Detect{Public snapshot?}
+  Detect -->|Yes| Demo[Client demo scan]
+  Detect -->|No| Api[POST market-intel]
+  Demo --> Desk[Findings plus outbox]
   Api --> Desk
 ```
 
@@ -654,7 +668,7 @@ Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), r
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–h4, tables, lists, mermaid `graph LR/TD` → `.doc-flow`. UAT: `UatChecklistBoard` + `UAT_CASES` (45). URL catalog: `lib/docs/urls.ts` `PLATFORM_URLS`, `PUBLIC_ADMIN_URL`, `PUBLIC_MESSENGER_URL`.
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–h4, tables, lists, mermaid `graph` / `flowchart` / `sequenceDiagram` → SVG (`.doc-diagram`, `lib/docs-mermaid.ts`). UAT: `UatChecklistBoard` + `UAT_CASES` (45). URL catalog: `lib/docs/urls.ts` `PLATFORM_URLS`, `PUBLIC_ADMIN_URL`, `PUBLIC_MESSENGER_URL`.
 
 ---
 
@@ -666,7 +680,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–
 | 1.1 | 2026-10-01 | Full §8 AI Admin Management Page specification |
 | 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
 | 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, YAN Haixiang owner, Pages login |
-| 1.4 | 2026-10-04 | Complete §7 surface map; §16 modules for every left-nav page; unread/login/tree/settings groups |
+| 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
 
 **Owner:** YAN Haixiang  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

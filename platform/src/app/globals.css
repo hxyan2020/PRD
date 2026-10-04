@@ -243,6 +243,19 @@ body.nav-open {
   }
 }
 
+.doc-diagram {
+  overflow-x: auto;
+  margin: 1rem 0;
+  padding: 0.35rem 0;
+}
+.doc-diagram svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
 .doc-flow {
   display: flex;
   align-items: center;

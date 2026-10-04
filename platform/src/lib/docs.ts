@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { mermaidToHtml } from "./docs-mermaid";
 
 const DOCS_DIR = path.join(process.cwd(), "docs");
 
@@ -85,47 +86,6 @@ export function markdownToHtml(md: string): string {
       .replace(/`([^`]+)`/g, '<code class="rounded bg-slate-100 px-1 text-[0.9em]">$1</code>')
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a class="underline" href="$2">$1</a>');
-
-  function mermaidToHtml(src: string): string {
-    const nodes = new Map<string, string>();
-    const order: string[] = [];
-    const dirMatch = /^\s*(?:graph|flowchart)\s+(LR|RL|TD|TB|BT)/im.exec(src);
-    const dir = dirMatch?.[1] || "TD";
-    const isH = dir === "LR" || dir === "RL";
-    for (const raw of src.split("\n")) {
-      const line = raw.trim();
-      if (!line || /^(graph|flowchart)\b/i.test(line)) continue;
-      const nodeRe = /([A-Za-z0-9_]+)(?:\[([^\]]+)\]|\(([^\)]+)\))/g;
-      let m: RegExpExecArray | null;
-      while ((m = nodeRe.exec(line))) {
-        const id = m[1];
-        const label = m[2] || m[3] || id;
-        if (!nodes.has(id)) order.push(id);
-        nodes.set(id, label);
-      }
-      const edgeRe = /([A-Za-z0-9_]+)\s*-+>\s*([A-Za-z0-9_]+)/g;
-      while ((m = edgeRe.exec(line))) {
-        if (!nodes.has(m[1])) {
-          order.push(m[1]);
-          nodes.set(m[1], m[1]);
-        }
-        if (!nodes.has(m[2])) {
-          order.push(m[2]);
-          nodes.set(m[2], m[2]);
-        }
-      }
-    }
-    const arrow = isH ? "→" : "↓";
-    const wrap = isH ? "doc-flow-h" : "doc-flow-v";
-    const items = order
-      .map((id, i) => {
-        const node = `<div class="doc-flow-node">${inline(nodes.get(id) || id)}</div>`;
-        if (i === order.length - 1) return node;
-        return `${node}<div class="doc-flow-arrow" aria-hidden="true">${arrow}</div>`;
-      })
-      .join("");
-    return `<div class="doc-flow ${wrap}">${items}</div>`;
-  }
 
   let mermaidBuf: string[] | null = null;
 

@@ -1,7 +1,7 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.4  
+**版本：** 1.5  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -42,20 +42,15 @@
 
 ## 2. 系統脈絡
 
-```
-Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
-                                      │
-                                      ▼
-                           第二 AI 挑戰者（≥ BREACH）
-                                      │
-                                      ▼
-                 Demo Messenger ◄──► 人工介入（Human Intervention）
-                                      │
-                                      ▼
-                           Spine 日誌 + Risk Log + 每日儀表板
-                                      │
-                                      ▼
-                      Lark 頻道／市場情報 outbox（模擬）
+```mermaid
+graph TD
+  Mon[Monitor 2.0 加偵測器] --> Alarm[警報]
+  Alarm --> Rca[AI RCA Skills 或 RAG]
+  Rca --> Ch[第二 AI 挑戰者]
+  Ch --> Msg[示範 Messenger]
+  Msg --> Gate[人工干預]
+  Gate --> Spine[脊柱風險日誌儀表板]
+  Spine --> Out[Lark 加情報寄件匣]
 ```
 
 **AI Admin** 位於執行期 Spine 旁側：不直接執行交易動作；在雙人管控下治理模型、劇本、RAG 語料與 AI 參數。
@@ -72,6 +67,14 @@ Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
 | 領域邏輯 | 業務規則 | `platform/src/lib/ai/*`、`lib/db.ts`、`lib/auth.ts` |
 | 持久化 | SQLite 檔 | `platform/data/vantage_risk.db` |
 
+```mermaid
+graph LR
+  UI[管理 UI] --> API[API 路由]
+  API --> Domain[領域邏輯]
+  Domain --> DB[SQLite]
+```
+
+
 ### 3.1 執行期 Spine 階段
 1. **Detectors** 採樣指標（`/admin/detectors`）
 2. **Alarm** 建立 Monitor 警報／工單
@@ -79,6 +82,15 @@ Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
 4. **第二 AI 挑戰者** 於嚴重度達門檻時執行（`crmp-challenger-v0`）
 5. **Demo Messenger／人工介入** 分流與關卡控制
 6. **Spine 日誌** 記錄階段轉換（`/admin/spine`）
+
+```mermaid
+graph TD
+  Detectors[偵測器] --> Alarm[Monitor 警報]
+  Alarm --> RCA[AI RCA]
+  RCA --> Challenger[第二 AI]
+  Challenger --> Messenger[Messenger 加干預]
+  Messenger --> Spine[脊柱加稽核]
+```
 7. **每日績效／Risk Log／市場情報** 彙總結果
 
 ---
@@ -373,15 +385,15 @@ JSON `action`：
 
 ### 8.11 序列 — 提案 Skill（成功路徑）
 
-```
-AI Engineer（Maker）              API / admin.ts                 Risk Owner（Checker）
-       │ propose_skill                  │                                │
-       ├───────────────────────────────►│ 插入 PENDING CR                │
-       │◄──────── request_id ───────────┤                                │
-       │                                │◄──── decide APPROVED ──────────┤
-       │                                │ applyChange SKILL/CREATE       │
-       │                                │ 稽核 AI_CHANGE_APPROVED        │
-       │                                ├──────── ok + applied ─────────►│
+```mermaid
+sequenceDiagram
+  participant Maker as AI 工程師
+  participant API as admin.ts
+  participant Checker as 風險負責人
+  Maker->>API: 提案技能
+  API-->>Maker: PENDING 單號
+  Checker->>API: 核准 APPROVED
+  API-->>Checker: 技能 CREATE 已套用
 ```
 
 ### 8.12 相關頁面
@@ -412,6 +424,18 @@ AI Engineer（Maker）              API / admin.ts                 Risk Owner（
 | 設定 | 預設 | 行為 |
 |---|---|---|
 | `ai.second_opinion_severity` | `BREACH` | 警報嚴重度等級 ≥ 設定時執行（`WARN` &lt; `BREACH` &lt; `CRITICAL`） |
+
+```mermaid
+graph TD
+  Rca[主 RCA 已寫入] --> Cmp{嚴重度達門檻?}
+  Cmp -->|否| Skip[略過挑戰者]
+  Cmp -->|是| Run[crmp-challenger-v0]
+  Run --> V{結論}
+  V -->|AGREE| Pack[附上挑戰包]
+  V -->|PARTIAL 或 DISAGREE| Human[needs human 等於 1]
+  Human --> Pack
+```
+
 
 ### 9.3 輸出
 | 欄位 | 說明 |
@@ -489,11 +513,11 @@ Pages 沒有 Next.js API。`POST /api/market-intel` 會回 **405**。工作台�
 4. SSG 時先種三筆發現，避免第一次畫面是 0。
 
 ```mermaid
-graph LR
-  Click[立即掃描] --> Detect[公開快照?]
-  Detect --> Demo[用戶端示範掃描]
-  Detect --> Api[POST /api/market-intel]
-  Demo --> Desk[發現＋寄件匣]
+graph TD
+  Click[立即掃描] --> Detect{公開快照?}
+  Detect -->|是| Demo[用戶端示範掃描]
+  Detect -->|否| Api[POST market-intel]
+  Demo --> Desk[發現加寄件匣]
   Api --> Desk
 ```
 
@@ -640,7 +664,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph LR/TD` → `.doc-flow`。UAT：`UatChecklistBoard`＋`UAT_CASES`（45）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（45）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`。
 
 ---
 
@@ -652,7 +676,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.1 | 2026-10-01 | 完整 §8 AI Admin 管理頁規格 |
 | 1.2 | 2026-10-01 | §9 挑戰者、§11 Messenger、§12 市場情報、文件／i18n／行動、重編號 |
 | 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、YAN Haixiang 負責人、Pages 登入 |
-| 1.4 | 2026-10-04 | 完整 §7 介面地圖；§16 涵蓋左側每一頁；未讀／登入／知識樹／設定分組 |
+| 1.5 | 2026-10-04 | TSD 流程圖與序列圖；mermaid 改 SVG 渲染 |
 
 **負責人：** YAN Haixiang  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

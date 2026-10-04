@@ -22,6 +22,15 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 - Leaves a single spine + audit trail  
 - Gives every desk function a named admin page (home, performance, risk log, intel, org, settings, docs)
 
+```mermaid
+graph LR
+  Mon[Monitor 2.0] --> Crmp[CRMP Admin]
+  Crmp --> Lark[Demo Messenger]
+  Crmp --> Admin[Vantage admin refs]
+  Crmp --> Audit[Spine plus audit]
+```
+
+
 ---
 
 ## 2. Goals
@@ -78,31 +87,94 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 4. Risk Analyst opens Demo Messenger thread; **Show evidence**; optionally challenges via chatbot.  
 5. Risk Owner reviews primary + challenger; **Close (accept AI)** or escalates / requests control.
 
+```mermaid
+graph TD
+  Breach[Indicator breach] --> Pack[Alert plus AI pack]
+  Pack --> Dual{Severity at BREACH?}
+  Dual -->|Yes| Ch[Second AI]
+  Dual -->|No| Msg[Messenger]
+  Ch --> Msg
+  Msg --> Close[Close accept AI]
+```
+
+
 ### 5.2 Control with double confirm + checker
 1. Operator selects recommended action (e.g. Block user account).  
 2. Double-confirm gate → mock Vantage admin ref + link.  
 3. If `needs_checker`, Checker approves via Interventions / instructed path.  
 4. Audit + Spine record maker/checker outcome.
 
+```mermaid
+graph TD
+  Act[Recommended action] --> DC{Double confirm?}
+  DC -->|No| Stop[Stay in chat]
+  DC -->|Yes| Ref[Admin ref]
+  Ref --> Ck{Needs checker?}
+  Ck -->|Yes| Int[Interventions]
+  Ck -->|No| Done[Audited live]
+  Int --> Done
+```
+
+
 ### 5.3 AI Admin change
 1. Maker proposes setting/model/policy in AI Admin.  
 2. Distinct Checker approves.  
 3. Self-approve is rejected.
+
+```mermaid
+sequenceDiagram
+  participant Maker
+  participant API
+  participant Checker
+  Maker->>API: propose change
+  API-->>Maker: PENDING
+  Maker->>API: self-approve
+  API-->>Maker: rejected
+  Checker->>API: approve
+  API-->>Checker: applied
+```
+
 
 ### 5.4 Market intel on public snapshot
 1. Operator opens Market Intelligence on GitHub Pages.  
 2. **Scan now** runs the client demo scan (same templates as live).  
 3. Findings, outbox and scan log update locally. No 405.
 
+```mermaid
+graph TD
+  Scan[Scan now] --> Q{GitHub Pages?}
+  Q -->|Yes| Demo[Client demo scan]
+  Q -->|No| Live[POST API scan]
+  Demo --> Cards[Findings plus outbox]
+  Live --> Cards
+```
+
+
 ### 5.5 Knowledge tree drill-down
 1. Operator opens Knowledge Tree, filter CFD or Crypto if needed.  
 2. Clicks a domain (e.g. LP_HEDGE) to fan out skills.  
 3. Clicks a skill; inspector fills; **Enter** opens the SKILL.md playbook.
 
+```mermaid
+graph TD
+  Tree[Knowledge Tree] --> Filter[CFD or Crypto filter]
+  Filter --> Dom[Click a domain]
+  Dom --> Skill[Click a skill]
+  Skill --> Enter[Enter SKILL.md]
+```
+
+
 ### 5.6 Unread badge
 1. A detector run / intel scan / AI simulate creates new work.  
 2. Left-nav badge increments.  
 3. Opening that tab stores “seen” and the badge drops to zero for this browser.
+
+```mermaid
+graph LR
+  Event[New work] --> Extra[Badge plus extra]
+  Extra --> View[Open the tab]
+  View --> Seen[Seen equals total]
+```
 
 ```mermaid
 graph LR
@@ -323,6 +395,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-01 | Goals G1–G7, FR-01…16 |
-| 1.4 | 2026-10-04 | G8–G11; FR-21…34; full admin feature catalogue matching left nav |
+| 1.5 | 2026-10-04 | Journey and SoD flowcharts for every P0 path |
 
 **Owner:** YAN Haixiang

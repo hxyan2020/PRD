@@ -15,6 +15,16 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 
 Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home, Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Detectors, Live Alerts, Risk Domains, AI Analyses, AI Admin, Skills, Knowledge Tree, RAG, Spine, Human Intervention, Lark, Escalation Routes, Departments / Teams / Roles / Users, Data Sources, AI Access, Audit, Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / URL Catalog, login, and unread badges.
 
+```mermaid
+graph TD
+  Login[UAT-01 login] --> Mon[Monitor plus detectors]
+  Mon --> AI[Skill then second AI]
+  AI --> Msg[Messenger loop]
+  Msg --> Gate[Checker plus audit]
+  Gate --> Docs[Docs and remaining screens]
+```
+
+
 ## Summary matrix
 
 | Seq | ID | T+ start | Dur | Severity | Responsible BU | Dependency | Title | Covers |

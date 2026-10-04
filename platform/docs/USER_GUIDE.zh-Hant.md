@@ -62,6 +62,16 @@ graph TD
 
 登入後進入 **管理首頁**。姓名會留在這個瀏覽器（`crmp_demo_session_v1`）。重新整理公開 Pages 不會變回空白訪客。點左側 **登出** 才會清除。
 
+```mermaid
+graph TD
+  Click[點登入] --> Where{GitHub Pages 快照?}
+  Where -->|是| Demo[在此瀏覽器保存具名角色]
+  Where -->|否| Api[伺服器 session cookie]
+  Demo --> Home[進入管理首頁]
+  Api --> Home
+```
+
+
 ### 2.3 語言
 
 用 **EN／繁中**（桌面在側欄；手機在頂部）。選擇存在 `crmp_ui_lang` cookie。所有左側標籤、頁標題、產品文件都可切換。若要分享中文連結，文件可加 `?lang=zh-Hant`。
@@ -99,6 +109,13 @@ graph TD
 - GitHub Pages 第一次畫面用後備總數，即使快照資料庫看起來是空的也仍有數字。
 
 徽章只是提醒，不是鎖。隨時可以打開該頁。
+
+```mermaid
+graph TD
+  New[新掃描模擬或警報] --> Bump[左側徽章增加]
+  Bump --> Open[打開該分頁]
+  Open --> Zero[此瀏覽器徽章歸零]
+```
 
 ---
 
@@ -158,12 +175,20 @@ graph TD
 **決策規則：** `AGREE` 可依政策走劇本。`PARTIAL`／`DISAGREE` 代表 **需要人類** — 兩份 AI 都讀過之前，不要做不可逆控制。
 
 ```mermaid
-graph LR
-  Alarm[警報] --> RCA[主 AI]
-  RCA --> Second[第二 AI]
-  Second --> Chat[Messenger]
-  Chat --> Control[已確認控制]
-  Control --> Checker[Checker]
+graph TD
+  Det[偵測器或 Monitor 越線] --> Alert[OPEN 警報]
+  Alert --> Skill{劇本確定?}
+  Skill -->|是| SM[SKILL MATCH]
+  Skill -->|否| RAG[RAG 推論]
+  SM --> Sev{BREACH 或 CRITICAL?}
+  RAG --> Sev
+  Sev -->|是| Second[第二 AI]
+  Sev -->|否| Msg[示範 Messenger]
+  Second --> Msg
+  Msg --> Act{你要做什麼?}
+  Act -->|結案或排除| Done[結案加稽核]
+  Act -->|送出控制| Gate[雙重確認再 Checker]
+  Gate --> Done
 ```
 
 ---
@@ -231,10 +256,10 @@ graph LR
 **GitHub Pages：** 沒有 `/api`，所以 **立即掃描** 會跑**本機示範掃描**（與正式掃描同一批事件模板）。新卡片立刻出現，存在這個瀏覽器（`crmp_mi_demo_v1`）。真正 HTTP 抓取仍屬 `localhost:3000`。**不會**出現 405。
 
 ```mermaid
-graph LR
-  Scan[立即掃描] --> Public[公開快照?]
-  Public --> Demo[用戶端示範掃描]
-  Public --> Api[即時 API 掃描]
+graph TD
+  Scan[立即掃描] --> Q{公開快照?}
+  Q -->|是| Demo[用戶端示範掃描]
+  Q -->|否| Api[即時 API 掃描]
   Demo --> Desk[發現加寄件匣]
   Api --> Desk
 ```
@@ -331,6 +356,20 @@ graph LR
 
 **怎樣算正常。** 提案的技能在另一人核准前維持 PENDING。核准後出現在 AI 技能。即時桌上的參數在 APPROVED 之前不會動。
 
+```mermaid
+sequenceDiagram
+  participant Maker
+  participant API
+  participant Checker
+  Maker->>API: 提案技能
+  API-->>Maker: PENDING 變更單
+  Maker->>API: 核准自己的單
+  API-->>Maker: 擋下自己核准
+  Checker->>API: 核准
+  API-->>Checker: 技能已 ACTIVE
+```
+
+
 ### 8.3 AI 技能 — `/admin/skills`
 
 **這頁是什麼。** SKILL.md 風格劇本：何時用、何時不用、前置檢查、步驟、證據、停止條件、成功標準、門檻與理由、故障區域、升級、BU 矯正、過往案例。
@@ -356,6 +395,15 @@ graph LR
 
 領域排成兩列，標籤保持可讀。不是十個小盒子橫向擠成一條。
 
+```mermaid
+graph TD
+  Hub[CRMP 知識樹] --> Dom[風險領域]
+  Dom --> Sk[技能劇本]
+  Hub --> Ch[連結時間鏈]
+  Hub --> Rag[RAG 語料]
+  Sk --> Enter[進入完整 SKILL.md]
+```
+
 **怎樣算正常。** LP_HEDGE 會展開對沖技能。RAG 幹依分類群組文件。進入會導頁，不是失效的 SVG 連結。
 
 ### 8.5 RAG 知識庫 — `/admin/rag`
@@ -378,6 +426,17 @@ graph LR
 
 **怎樣算正常。** COPY 越線示範會產出 DETECT、ALARM、AI_RCA（若有執行則含 SKILL_EXECUTE／HUMAN_INTERVENTION）。快樂路徑沒有無聲缺口。
 
+```mermaid
+graph LR
+  D[DETECT] --> A[ALARM]
+  A --> R[AI RCA]
+  R --> S[SKILL EXECUTE]
+  S --> H[HUMAN INTERVENTION]
+  H --> X[RESOLVED]
+  X --> Dash[DASHBOARD]
+```
+
+
 ---
 
 ## 9. 應變
@@ -391,6 +450,18 @@ graph LR
 **要點什麼。** 寫一句理由。核准即上線（原型記錄決策）。駁回即停止。兩者都寫脊柱與稽核。
 
 **怎樣算正常。** 待決數與首頁／AI 管理 KPI 一致。已決列看得出誰、何時。
+
+```mermaid
+graph TD
+  Pick[選建議動作] --> Confirm{雙重確認?}
+  Confirm -->|否| Stay[留在執行緒]
+  Confirm -->|是| Ref[管理參照]
+  Ref --> Need{需要 Checker?}
+  Need -->|否| Live[記錄為上線]
+  Need -->|是| Desk[人工干預]
+  Desk -->|核准或駁回| Live
+```
+
 
 ### 9.2 示範 Messenger — `/admin/messenger`
 
@@ -418,6 +489,21 @@ graph LR
 
 永久網址：[https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)
 
+```mermaid
+graph TD
+  Sync[同步警報] --> Thread[打開執行緒]
+  Thread --> Ev[顯示證據]
+  Thread --> Chat[聊天]
+  Thread --> Esc[升級]
+  Thread --> Dec{接受 AI?}
+  Dec -->|是| Close[結案]
+  Dec -->|誤報| Dismiss[排除]
+  Dec -->|需要控制| Rec[建議動作]
+  Rec --> DC[雙重確認]
+  DC --> Admin[管理參照]
+```
+
+
 ### 9.3 Lark 整合 — `/admin/lark`
 
 **這頁是什麼。** 依嚴重度通知、值班叫應、雙人核准 ping 的頻道登錄。原型 Webhook 為模擬。
@@ -437,6 +523,14 @@ graph LR
 **要點什麼。** 有管理權可在 localhost 新增／編輯／停用。升級 CRITICAL 前先看 SLA。
 
 **怎樣算正常。** CRITICAL 的 SLA 比 WARN 緊。每條路徑都有主團隊。
+
+```mermaid
+graph LR
+  P[主團隊] --> Sec[次團隊]
+  Sec --> RO[風險負責人]
+  RO --> Ex[高階]
+```
+
 
 ---
 
@@ -568,6 +662,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 |---|---|---|
 | 1.0 | 2026-10-01 | 操作手冊 |
 | 1.3 | 2026-10-04 | 全部管理畫面、公開掃描示範、YAN Haixiang 負責人、Pages 登入 |
-| 1.4 | 2026-10-04 | 左側每一頁完整操作說明、未讀徽章、知識樹、分組設定、UAT-01…45 |
+| 1.5 | 2026-10-04 | 登入、未讀、RCA、Messenger、Maker／Checker、情報掃描、知識樹、脊柱流程圖 |
 
 **負責人：** YAN Haixiang

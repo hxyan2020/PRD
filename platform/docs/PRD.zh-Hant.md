@@ -22,6 +22,15 @@ Vantage Markets 的 CFD 與加密風險橫跨 Monitor 2.0 指標、各桌與即�
 - 留下單一脊柱與稽核軌跡  
 - 讓每個桌面功能都有具名管理頁（首頁、績效、風險日誌、情報、組織、設定、文件）
 
+```mermaid
+graph LR
+  Mon[Monitor 2.0] --> Crmp[CRMP 管理後台]
+  Crmp --> Lark[示範 Messenger]
+  Crmp --> Admin[Vantage 管理參照]
+  Crmp --> Audit[脊柱加稽核]
+```
+
+
 ---
 
 ## 2. 目標
@@ -78,31 +87,94 @@ Vantage Markets 的 CFD 與加密風險橫跨 Monitor 2.0 指標、各桌與即�
 4. 風險分析師打開示範 Messenger 執行緒；**顯示證據**；可選以聊天挑戰。  
 5. 風險負責人審主 AI＋挑戰者；**結案（接受 AI）** 或升級／要求控制。
 
+```mermaid
+graph TD
+  Breach[指標越線] --> Pack[警報加 AI 包]
+  Pack --> Dual{嚴重度達 BREACH?}
+  Dual -->|是| Ch[第二 AI]
+  Dual -->|否| Msg[Messenger]
+  Ch --> Msg
+  Msg --> Close[結案接受 AI]
+```
+
+
 ### 5.2 控制：雙重確認＋Checker
 1. 操作者選建議動作（例如封鎖使用者帳號）。  
 2. 雙重確認關卡 → 模擬 Vantage 管理參照＋連結。  
 3. 若 `needs_checker`，Checker 經人工干預／指示路徑核准。  
 4. 稽核＋脊柱記錄 Maker／Checker 結果。
 
+```mermaid
+graph TD
+  Act[建議動作] --> DC{雙重確認?}
+  DC -->|否| Stop[留在聊天]
+  DC -->|是| Ref[管理參照]
+  Ref --> Ck{需要 Checker?}
+  Ck -->|是| Int[人工干預]
+  Ck -->|否| Done[已稽核上線]
+  Int --> Done
+```
+
+
 ### 5.3 AI Admin 變更
 1. Maker 在 AI Admin 提案設定／模型／政策。  
 2. 不同的 Checker 核准。  
 3. 自己核准自己被拒絕。
+
+```mermaid
+sequenceDiagram
+  participant Maker
+  participant API
+  participant Checker
+  Maker->>API: 提案變更
+  API-->>Maker: PENDING
+  Maker->>API: 自己核准
+  API-->>Maker: 拒絕
+  Checker->>API: 核准
+  API-->>Checker: 已套用
+```
+
 
 ### 5.4 公開快照上的市場情報
 1. 操作者在 GitHub Pages 打開市場情報。  
 2. **立即掃描** 跑用戶端示範掃描（與即時同一批模板）。  
 3. 發現、寄件匣、掃描紀錄在本機更新。沒有 405。
 
+```mermaid
+graph TD
+  Scan[立即掃描] --> Q{GitHub Pages?}
+  Q -->|是| Demo[用戶端示範掃描]
+  Q -->|否| Live[POST API 掃描]
+  Demo --> Cards[發現加寄件匣]
+  Live --> Cards
+```
+
+
 ### 5.5 知識樹下鑽
 1. 打開知識樹，必要時篩 CFD 或 Crypto。  
 2. 點領域（例如 LP_HEDGE）展開技能。  
 3. 點技能；檢視器填入；**進入** 打開 SKILL.md 劇本。
 
+```mermaid
+graph TD
+  Tree[知識樹] --> Filter[CFD 或 Crypto 篩選]
+  Filter --> Dom[點領域]
+  Dom --> Skill[點技能]
+  Skill --> Enter[進入 SKILL.md]
+```
+
+
 ### 5.6 未讀徽章
 1. 偵測器執行／情報掃描／AI 模擬產生新工作。  
 2. 左側徽章增加。  
 3. 打開該分頁寫入「已看」，本瀏覽器徽章降為零。
+
+```mermaid
+graph LR
+  Event[新工作] --> Extra[徽章加增量]
+  Extra --> View[打開分頁]
+  View --> Seen[已看等於總數]
+```
 
 ```mermaid
 graph LR
@@ -323,6 +395,6 @@ graph LR
 | 版次 | 日期 | 說明 |
 |---|---|---|
 | 1.0 | 2026-10-01 | 目標 G1–G7、FR-01…16 |
-| 1.4 | 2026-10-04 | G8–G11；FR-21…34；對齊左側導覽的完整管理功能目錄 |
+| 1.5 | 2026-10-04 | 各旅程與職能分離流程圖 |
 
 **負責人：** YAN Haixiang

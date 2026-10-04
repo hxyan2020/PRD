@@ -62,6 +62,16 @@ Click a **Quick fill demo role** button, or type the email and password, then **
 
 After Sign in you land on **Admin Home**. The name stays in this browser (`crmp_demo_session_v1`). Refreshing the public Pages site does not drop you back to a blank guest. Click **Sign out** in the left pane to clear it.
 
+```mermaid
+graph TD
+  Click[Click Sign in] --> Where{GitHub Pages snapshot?}
+  Where -->|Yes| Demo[Save named persona in this browser]
+  Where -->|No| Api[Server session cookie]
+  Demo --> Home[Land on Admin Home]
+  Api --> Home
+```
+
+
 ### 2.3 Language
 
 Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is stored in the `crmp_ui_lang` cookie. Every left-nav label, page title, and product doc can switch. Open a doc with `?lang=zh-Hant` if you want to share a Chinese link.
@@ -99,6 +109,13 @@ Some rows show a **teal badge** (Live Alerts, AI Analyses, Demo Messenger, Marke
 - On GitHub Pages the first paint uses fallback totals so you still see numbers even if the snapshot database looks empty.
 
 The badge is a nudge, not a lock. You can always open the page.
+
+```mermaid
+graph TD
+  New[New scan simulate or alarm] --> Bump[Left-nav badge goes up]
+  Bump --> Open[You open that tab]
+  Open --> Zero[Badge goes to zero in this browser]
+```
 
 ---
 
@@ -158,12 +175,20 @@ This is the path you will use most. Later sections explain every other page.
 **Decision rule:** `AGREE` may follow the playbook under policy. `PARTIAL` / `DISAGREE` means **needs human** — no irreversible control until a person has read both AIs.
 
 ```mermaid
-graph LR
-  Alarm[Alarm] --> RCA[Primary AI]
-  RCA --> Second[Second AI]
-  Second --> Chat[Messenger]
-  Chat --> Control[Confirmed control]
-  Control --> Checker[Checker]
+graph TD
+  Det[Detector or Monitor breach] --> Alert[OPEN alert]
+  Alert --> Skill{Playbook certain?}
+  Skill -->|Yes| SM[SKILL MATCH]
+  Skill -->|No| RAG[RAG reasoning]
+  SM --> Sev{BREACH or CRITICAL?}
+  RAG --> Sev
+  Sev -->|Yes| Second[Second AI]
+  Sev -->|No| Msg[Demo Messenger]
+  Second --> Msg
+  Msg --> Act{What do you do?}
+  Act -->|Close or dismiss| Done[Closed plus audit]
+  Act -->|Send a control| Gate[Double confirm then checker]
+  Gate --> Done
 ```
 
 ---
@@ -231,10 +256,10 @@ graph LR
 **GitHub Pages:** there is no `/api`, so **Scan now** runs a **local demo scan** from the same event templates as the live scanner. New cards appear at once and are stored in this browser (`crmp_mi_demo_v1`). Real HTTP scrapes still belong on `localhost:3000`. You will **not** get a 405 error.
 
 ```mermaid
-graph LR
-  Scan[Scan now] --> Public[Public snapshot?]
-  Public --> Demo[Client demo scan]
-  Public --> Api[Live API scan]
+graph TD
+  Scan[Scan now] --> Q{Public snapshot?}
+  Q -->|Yes| Demo[Client demo scan]
+  Q -->|No| Api[Live API scan]
   Demo --> Desk[Findings plus outbox]
   Api --> Desk
 ```
@@ -331,6 +356,20 @@ Header badges show whether you are Maker, Checker, or both. Risk Owner can be bo
 
 **Good looks like.** A proposed skill stays PENDING until another user approves. After approve it appears on AI Skills. Parameter values on the live desk do not move until APPROVED.
 
+```mermaid
+sequenceDiagram
+  participant Maker
+  participant API
+  participant Checker
+  Maker->>API: propose skill
+  API-->>Maker: PENDING change request
+  Maker->>API: approve own request
+  API-->>Maker: blocked self-approve
+  Checker->>API: approve
+  API-->>Checker: skill is ACTIVE
+```
+
+
 ### 8.3 AI Skills — `/admin/skills`
 
 **What it is.** Playbooks in SKILL.md style: when to use, when not to, prechecks, steps, evidence, stop conditions, success criteria, thresholds and why, fault areas, escalation, BU corrections, past cases.
@@ -356,6 +395,15 @@ Header badges show whether you are Maker, Checker, or both. Risk Owner can be bo
 
 Domains wrap on two rows so labels stay readable. There is no sideways-only strip of ten tiny boxes.
 
+```mermaid
+graph TD
+  Hub[CRMP knowledge tree] --> Dom[Risk domains]
+  Dom --> Sk[Skill playbooks]
+  Hub --> Ch[Linked timelines]
+  Hub --> Rag[RAG corpus]
+  Sk --> Enter[Enter full SKILL.md]
+```
+
 **Good looks like.** LP_HEDGE expands to hedge skills. RAG trunk groups documents by category. Enter navigates; it is not a dead SVG link.
 
 ### 8.5 RAG Knowledge Base — `/admin/rag`
@@ -378,6 +426,17 @@ Domains wrap on two rows so labels stay readable. There is no sideways-only stri
 
 **Good looks like.** A COPY breach demo produces DETECT, ALARM, AI_RCA (and SKILL_EXECUTE / HUMAN_INTERVENTION if those ran). No silent gaps on the happy path.
 
+```mermaid
+graph LR
+  D[DETECT] --> A[ALARM]
+  A --> R[AI RCA]
+  R --> S[SKILL EXECUTE]
+  S --> H[HUMAN INTERVENTION]
+  H --> X[RESOLVED]
+  X --> Dash[DASHBOARD]
+```
+
+
 ---
 
 ## 9. Response
@@ -391,6 +450,18 @@ Domains wrap on two rows so labels stay readable. There is no sideways-only stri
 **What to click.** Type a short reason. Approve to go live (prototype records the decision). Reject to stop. Both write spine + audit.
 
 **Good looks like.** Pending count matches the home / AI Admin KPI. Decided rows show who and when.
+
+```mermaid
+graph TD
+  Pick[Pick a recommended action] --> Confirm{Double confirm?}
+  Confirm -->|No| Stay[Stay in the thread]
+  Confirm -->|Yes| Ref[Admin reference]
+  Ref --> Need{Checker required?}
+  Need -->|No| Live[Recorded as live]
+  Need -->|Yes| Desk[Human Intervention]
+  Desk -->|Approve or reject| Live
+```
+
 
 ### 9.2 Demo Messenger — `/admin/messenger`
 
@@ -418,6 +489,21 @@ Domains wrap on two rows so labels stay readable. There is no sideways-only stri
 
 Permanent URL: [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)
 
+```mermaid
+graph TD
+  Sync[Sync alerts] --> Thread[Open a thread]
+  Thread --> Ev[Show evidence]
+  Thread --> Chat[Chatbot]
+  Thread --> Esc[Escalate]
+  Thread --> Dec{Accept the AI?}
+  Dec -->|Yes| Close[Close]
+  Dec -->|False alarm| Dismiss[Dismiss]
+  Dec -->|Need a control| Rec[Recommended action]
+  Rec --> DC[Double confirm]
+  DC --> Admin[Admin ref]
+```
+
+
 ### 9.3 Lark Integration — `/admin/lark`
 
 **What it is.** Channel registry for severity-routed notify, on-call pages, and dual-control pings. Webhooks are mocked in the prototype.
@@ -437,6 +523,14 @@ Permanent URL: [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](htt
 **What to click.** Create/edit/disable if you have manage rights (localhost). Read the SLA before you escalate a CRITICAL.
 
 **Good looks like.** CRITICAL has a tighter SLA than WARN. Every route has a primary team.
+
+```mermaid
+graph LR
+  P[Primary team] --> Sec[Secondary team]
+  Sec --> RO[Risk Owner]
+  RO --> Ex[Exec]
+```
+
 
 ---
 
@@ -568,6 +662,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 |---|---|---|
 | 1.0 | 2026-10-01 | Operator handbook |
 | 1.3 | 2026-10-04 | All admin screens, public Scan demo, YAN Haixiang owner, login on Pages |
-| 1.4 | 2026-10-04 | Full how-to for every left-nav page, unread badges, knowledge tree, grouped settings, UAT-01…45 |
+| 1.5 | 2026-10-04 | Flowcharts for login, unread, RCA path, messenger, maker/checker, intel scan, knowledge tree, spine |
 
 **Owner:** YAN Haixiang
