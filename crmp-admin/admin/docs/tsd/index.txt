@@ -7,12 +7,12 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/f23d2e2f353cbbf8.css","style"]
-0:{"P":null,"b":"L4pjWc92B3sSZdtr7KyGL","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/f23d2e2f353cbbf8.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","qdnEXYNbghb6blRk-GFj8",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[3925,["874","static/chunks/874-6287e72e26c459e6.js","354","static/chunks/354-16ba5d678753dbfc.js","94","static/chunks/94-3cffbcaa7e0ff5f4.js","581","static/chunks/app/admin/layout-8d004261a886d0e8.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","40","static/chunks/app/admin/docs/tsd/page-82451b8df5aa2f15.js"],""]
-5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.2"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"16"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],"$L10"]}]
+:HL["/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","style"]
+0:{"P":null,"b":"W1sVdR1P0p1PZAUxpfrx-","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","k4WJW3AsMoxrc4ju7-IdA",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-1858fe6244e64264.js","7581","static/chunks/app/admin/layout-e278f05cdab9108c.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/market-intel":{"count":0,"latestAt":null},"/admin/interventions":{"count":0,"latestAt":null},"/admin/spine":{"count":0,"latestAt":null},"/admin/audit":{"count":3,"latestAt":"2026-10-04 12:53:30"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 12:53:30"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-1858fe6244e64264.js","4040","static/chunks/app/admin/docs/tsd/page-1cf2cc6bb0168837.js"],""]
+10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-1858fe6244e64264.js","4040","static/chunks/app/admin/docs/tsd/page-1cf2cc6bb0168837.js"],"DocArticleView"]
 11:T13de0,<h1 id="vantage-crmp-technical-specification-design-tsd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage CRMP — Technical Specification Design (TSD)</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-TSD-001  </p>
@@ -1143,7 +1143,1126 @@ npm run dev   # http://localhost:3000
 </tbody></table></div>
 
 <p class="text-sm leading-relaxed my-2"><strong>Companion:</strong> <a class="underline" href="./TSD.zh-Hant.md">繁體中文版 TSD</a> · rendered at <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></p>
-10:["$","div",null,{"children":[["$","div",null,{"className":"mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between","children":[["$","div",null,{"className":"min-w-0","children":[["$","h1",null,{"className":"font-[family-name:var(--font-display)] text-xl sm:text-2xl tracking-tight break-word","children":"Technical Specification Design (TSD)"}],["$","p",null,{"className":"mt-1 text-sm text-[var(--muted)] max-w-3xl break-word","children":"Architecture, data model, AI Admin, second-AI challenger, APIs."}]]}],null]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-TSD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"v1.0"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/tsd?lang=en","children":"English"}],["$","$Lf",null,{"className":"btn ","href":"/admin/docs/tsd?lang=zh-Hant","children":"繁體中文"}]]}]]}],["$","article",null,{"className":"panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word","dangerouslySetInnerHTML":{"__html":"$11"}}]]}]
+12:T132a7,<h1 id="vantage-crmp-技術規格設計-tsd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Vantage CRMP — 技術規格設計（TSD）</h1>
+
+<p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-TSD-001  </p>
+<p class="text-sm leading-relaxed my-2"><strong>版本：</strong> 1.2  </p>
+<p class="text-sm leading-relaxed my-2"><strong>狀態：</strong> 原型／持續更新  </p>
+<p class="text-sm leading-relaxed my-2"><strong>產品範圍：</strong> CFD + 加密貨幣交易所  </p>
+<p class="text-sm leading-relaxed my-2"><strong>主要技術棧：</strong> Next.js 15（App Router）、React 19、SQLite（<code class="rounded bg-slate-100 px-1 text-[0.9em]">better-sqlite3</code>）、RBAC Session 驗證  </p>
+<p class="text-sm leading-relaxed my-2"><strong>相關文件：</strong> <a class="underline" href="/admin/docs/prd">PRD</a> · <a class="underline" href="/admin/docs/user-guide">使用手冊</a> · <a class="underline" href="/admin/docs/uat">UAT</a></p>
+
+<p class="text-sm leading-relaxed my-2">本 TSD 描述中央風險管理平台（CRMP）管理控制平面之技術設計。  </p>
+<p class="text-sm leading-relaxed my-2"><strong>§8 AI Admin</strong> 與 <strong>§9 第二 AI 挑戰者</strong>為一級模組規格。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="1-目的與範圍" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. 目的與範圍</h2>
+
+<h3 id="1-1-目的" class="text-lg font-semibold mt-6 mb-2">1.1 目的</h3>
+<p class="text-sm leading-relaxed my-2">提供單一管理控制平面，讓風險、營運、AI、系統人員可以：</p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>監看 Monitor 2.0 指標／警報</li>
+<li>執行 AI 根因分析（Skills + RAG），並於高嚴重度執行獨立第二 AI 挑戰</li>
+<li>於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）</li>
+<li>對高影響動作強制人工關卡</li>
+<li>以 Maker/Checker 治理 AI 設定</li>
+<li>檢視 Spine、風險分析、市場情報與每日績效</li>
+</ul>
+
+<h3 id="1-2-原型範圍內" class="text-lg font-semibold mt-6 mb-2">1.2 原型範圍內</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>管理 UI + SQLite 持久化</li>
+<li>Detectors → Alarm → AI RCA → 第二意見 → Messenger／Intervention → Spine → Dashboard</li>
+<li>AI Admin 治理（參數、Skills、RAG、訓練、準確率）</li>
+<li>風險情境劇本與多指標時間鏈</li>
+<li>Demo Messenger + Lark 頻道登錄（模擬 Webhook）</li>
+<li>市場情報 5 分鐘掃描與 outbox</li>
+<li>雙語文件（英／繁中）與響應式管理殼層</li>
+</ul>
+
+<h3 id="1-3-原型範圍外-正式接線" class="text-lg font-semibold mt-6 mb-2">1.3 原型範圍外（正式接線）</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>正式 SSO／IdP</li>
+<li>真實 Lark 互動卡片／oneZero／錢包寫入適配</li>
+<li>正式 LLM 計費與訓練叢集</li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="2-系統脈絡" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. 系統脈絡</h2>
+
+<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>
+Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
+
+                                      │
+
+                                      ▼
+
+                           第二 AI 挑戰者（≥ BREACH）
+
+                                      │
+
+                                      ▼
+
+                 Demo Messenger ◄──► 人工介入（Human Intervention）
+
+                                      │
+
+                                      ▼
+
+                           Spine 日誌 + Risk Log + 每日儀表板
+
+                                      │
+
+                                      ▼
+
+                      Lark 頻道／市場情報 outbox（模擬）
+
+</code></pre>
+
+<p class="text-sm leading-relaxed my-2"><strong>AI Admin</strong> 位於執行期 Spine 旁側：不直接執行交易動作；在雙人管控下治理模型、劇本、RAG 語料與 AI 參數。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="3-架構總覽" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. 架構總覽</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">層級</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">職責</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">主要路徑</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI（App Router）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RBAC 控管管理頁</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/admin/**</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">前端主控台</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">互動分頁／表單</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/components/*</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">API</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">JSON 讀寫</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/api/**</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">領域邏輯</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">業務規則</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/*</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/db.ts</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/auth.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">持久化</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SQLite 檔</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/data/vantage_risk.db</code></td>
+</tr>
+</tbody></table></div>
+
+<h3 id="3-1-執行期-spine-階段" class="text-lg font-semibold mt-6 mb-2">3.1 執行期 Spine 階段</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li><strong>Detectors</strong> 採樣指標（<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code>）</li>
+<li><strong>Alarm</strong> 建立 Monitor 警報／工單</li>
+<li><strong>AI RCA</strong> 匹配 Skill 或 RAG 推論（<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code>）</li>
+<li><strong>第二 AI 挑戰者</strong> 於嚴重度達門檻時執行（<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp-challenger-v0</code>）</li>
+<li><strong>Demo Messenger／人工介入</strong> 分流與關卡控制</li>
+<li><strong>Spine 日誌</strong> 記錄階段轉換（<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code>）</li>
+<li><strong>每日績效／Risk Log／市場情報</strong> 彙總結果</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="4-資料模型-核心" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. 資料模型（核心）</h2>
+
+<h3 id="4-1-身分與-rbac" class="text-lg font-semibold mt-6 mb-2">4.1 身分與 RBAC</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">users</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">roles</code>（權限 JSON）、<code class="rounded bg-slate-100 px-1 text-[0.9em]">departments</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">teams</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">sessions</code></li>
+<li>權限為字串代碼；<code class="rounded bg-slate-100 px-1 text-[0.9em]">SUPER_ADMIN</code> 擁有 <code class="rounded bg-slate-100 px-1 text-[0.9em]">*</code></li>
+</ul>
+
+<h3 id="4-2-監控" class="text-lg font-semibold mt-6 mb-2">4.2 監控</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_indicators</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_alerts</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">monitor_tickets</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_domains</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">escalation_routes</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lark_channels</code></li>
+</ul>
+
+<h3 id="4-3-ai-執行期" class="text-lg font-semibold mt-6 mb-2">4.3 AI 執行期</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_skills</code>（含 <code class="rounded bg-slate-100 px-1 text-[0.9em]">scenario_json</code>）、<code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_scenario_chains</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag_documents</code>（含 FTS）</li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analyses</code>（含 <code class="rounded bg-slate-100 px-1 text-[0.9em]">challenged</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">challenge_verdict</code>）、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analysis_evidence</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_skill_runs</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analysis_challenges</code>（第二意見）</li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">interventions</code>、Spine 相關表</li>
+</ul>
+
+<h3 id="4-4-messenger" class="text-lg font-semibold mt-6 mb-2">4.4 Messenger</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_threads</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_messages</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">messenger_pending_actions</code></li>
+</ul>
+
+<h3 id="4-5-市場情報" class="text-lg font-semibold mt-6 mb-2">4.5 市場情報</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel_*</code> 掃描／發現／outbox 表（見 <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/market-intel/schema.ts</code>）</li>
+</ul>
+
+<h3 id="4-6-ai-admin-治理" class="text-lg font-semibold mt-6 mb-2">4.6 AI Admin 治理</h3>
+<p class="text-sm leading-relaxed my-2">見 <strong>§8.4</strong> — <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_change_requests</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_training_runs</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_feedback</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_accuracy_snapshots</code>，以及 <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings</code> 中的 AI 鍵值。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="5-安全與-rbac-摘要" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. 安全與 RBAC（摘要）</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">議題</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">規則</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頁面存取</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">getCurrentUser()</code> + <code class="rounded bg-slate-100 px-1 text-[0.9em]">hasPermission(role, code)</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker ≠ Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">當 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.maker_checker_required=true</code> 時，提案者不可核准自己的變更單</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 變更</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅能經 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/ai-admin</code> 且具備 propose／approve 權限</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案、裁決、回饋、訓練排隊皆 <code class="rounded bg-slate-100 px-1 text-[0.9em]">writeAudit</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI 存取封鎖清單</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 不得觸及之頁面／功能／欄位／資料 — 見 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code> 與 <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/security/ai-access-blocklist.ts</code></td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">AI Admin 權限矩陣詳見 <strong>§8.3</strong>。  </p>
+<p class="text-sm leading-relaxed my-2"><strong>僅限人工操作之表面（身分、密鑰、雙人核准、LP／錢包執行、角色寫入）：</strong> 動態清單見 <strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></strong>。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="6-整合點" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. 整合點</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">系統</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">原型模式</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">說明</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">鏡像表 + 同步／模擬警報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">指標／警報／工單</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">站內執行緒 + <code class="rounded bg-slate-100 px-1 text-[0.9em]">/api/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">證據、升級、控制</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頻道登錄 + 模擬 Webhook／情報 outbox</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">依嚴重度路由</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報來源</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">啟發式 5 分鐘掃描</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">卡片格式 i–vi</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">LP／Bridge／錢包</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">建議動作 + 管理深連結</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">真實適配前需人工關卡</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">模型訓練</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">排隊執行 + 種子指標</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">原型無 GPU 叢集</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="7-管理介面地圖" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. 管理介面地圖</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">URL</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">模組</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">首頁</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/dashboard</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每日績效</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/risk-log</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌分析</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報掃描</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/detectors</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/alerts</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">即時警報</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI RCA 執行期＋第二 AI UI</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI Admin 管理（§8）</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">人工關卡</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/spine</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine 日誌</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG 語料</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skill／風險情境劇本</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>Demo Messenger（§11）</strong></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/security/ai-access</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 存取黑名單</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/prd</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/user-guide</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/uat</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/ecosystem</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/roadmap</code> · <code class="rounded bg-slate-100 px-1 text-[0.9em]">/urls</code> · <strong><code class="rounded bg-slate-100 px-1 text-[0.9em]">/tsd</code></strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">產品文件（英／繁中）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/monitor-2</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/lark</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/escalation</code>…</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">平台營運</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="8-ai-admin-管理頁-完整規格" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. AI Admin 管理頁 — 完整規格</h2>
+
+<h3 id="8-1-目的" class="text-lg font-semibold mt-6 mb-2">8.1 目的</h3>
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-admin</code> 為 <strong>AI 控制平面</strong>。操作人員用它來：</p>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>監看 AI 健康 KPI 與準確率歷史</li>
+<li>提案變更 AI 參數、Skills、RAG 文件</li>
+<li>在 <strong>Maker/Checker 雙人管控</strong> 下核准／駁回變更</li>
+<li>排隊訓練／重新校正工作</li>
+<li>標註 RCA 品質回饋（CORRECT／INCORRECT／PARTIAL）</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2">此頁是<strong>治理</strong>，不是即時 RCA 工作台（<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code>），也不是介入櫃檯（<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code>）。</p>
+
+<h3 id="8-2-路由與元件" class="text-lg font-semibold mt-6 mb-2">8.2 路由與元件</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">項目</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">規格</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頁面路由</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET /admin/ai-admin</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/admin/ai-admin/page.tsx</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI 元件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AiAdminConsole</code>（<code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/components/AiAdminConsole.tsx</code>）客戶端主控台</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">API</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai-admin</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/app/api/ai-admin/route.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">領域邏輯</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/admin.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Schema</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/admin-schema.ts</code>（<code class="rounded bg-slate-100 px-1 text-[0.9em]">ensureAiAdminSchema</code>）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">種子資料</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">seedAiAdminIfEmpty</code>（參數、訓練、準確率快照、示範變更單）</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-3-存取控制" class="text-lg font-semibold mt-6 mb-2">8.3 存取控制</h3>
+
+<h4 id="8-3-1-頁面檢視-符合任一即可" class="text-base font-semibold mt-4 mb-1">8.3.1 頁面檢視（符合任一即可）</h4>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.read</code></li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">未授權使用者重導向 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin</code>。</p>
+
+<h4 id="8-3-2-maker-提案-符合任一即可" class="text-base font-semibold mt-4 mb-1">8.3.2 Maker（提案）— 符合任一即可</h4>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.propose</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">settings.manage</code></li>
+</ul>
+
+<h4 id="8-3-3-checker-核准-駁回-符合任一即可" class="text-base font-semibold mt-4 mb-1">8.3.3 Checker（核准／駁回）— 符合任一即可</h4>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.approve</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.approve</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.approve</code></li>
+</ul>
+
+<h4 id="8-3-4-角色對照-原型" class="text-base font-semibold mt-4 mb-1">8.3.4 角色對照（原型）</h4>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">角色</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">檢視 AI Admin</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Maker</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">Checker</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">說明</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_ENGINEER</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">否</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案 Skills／RAG／參數／訓練</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RISK_OWNER</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是*</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">主要 Checker；亦可提案</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RISK_ANALYST</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">否</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提案 + 回饋操作</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SUPER_ADMIN</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">是</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整權限；啟用雙人制時仍不可自核</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">OPS_LEAD</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">SYSTEM_ADMIN</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">依權限</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">依 ROLE_DEFS</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">依 ROLE_DEFS</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">見 <code class="rounded bg-slate-100 px-1 text-[0.9em]">db.ts</code> 之 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ROLE_DEFS</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">VIEWER</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">否（除非另授）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">否</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">否</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">其他頁唯讀</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">\* Risk Owner 同時具備提案與核准；仍不可核准自己的變更單。</p>
+
+<h4 id="8-3-5-maker-checker-規則" class="text-base font-semibold mt-4 mb-1">8.3.5 Maker ≠ Checker 規則</h4>
+<p class="text-sm leading-relaxed my-2">當 <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings.ai.maker_checker_required != "false"</code>：</p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>若 <code class="rounded bg-slate-100 px-1 text-[0.9em]">proposed_by === decided_by</code>，<code class="rounded bg-slate-100 px-1 text-[0.9em]">decideChangeRequest</code> 拋錯</li>
+<li>UI 僅應對非提案者之 Checker 顯示核准／駁回</li>
+</ul>
+
+<h3 id="8-4-資料模型" class="text-lg font-semibold mt-6 mb-2">8.4 資料模型</h3>
+
+<h4 id="8-4-1-ai-change-requests" class="text-base font-semibold mt-4 mb-1">8.4.1 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_change_requests</code></h4>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">欄位</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">型別</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">說明</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">id</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">INTEGER PK</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">request_id</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT UNIQUE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">如 <code class="rounded bg-slate-100 px-1 text-[0.9em]">CR-A1B2C3D4</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">entity_type</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PARAM</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">TRAINING</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">action</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DISABLE</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RETIRE</code> 等</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">title</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">summary</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">人讀說明</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">payload_json</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">變更後／建立內容</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">before_json</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT NULL</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">變更前狀態（diff）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">status</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PENDING</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">APPROVED</code> \</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">REJECTED</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">proposed_by</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">proposed_at</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FK／時間</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">decided_by</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">decided_at</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">decision_note</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FK／時間／TEXT</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker</td>
+</tr>
+</tbody></table></div>
+
+<h4 id="8-4-2-ai-training-runs" class="text-base font-semibold mt-4 mb-1">8.4.2 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_training_runs</code></h4>
+<p class="text-sm leading-relaxed my-2">追蹤排隊／執行中／完成之重新校正：<code class="rounded bg-slate-100 px-1 text-[0.9em]">run_id</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">model_name</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">dataset_label</code>、指標（<code class="rounded bg-slate-100 px-1 text-[0.9em]">accuracy</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">precision_score</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">recall_score</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">f1_score</code>）、<code class="rounded bg-slate-100 px-1 text-[0.9em]">samples</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">status</code>、時間戳、<code class="rounded bg-slate-100 px-1 text-[0.9em]">created_by</code>。</p>
+
+<h4 id="8-4-3-ai-feedback" class="text-base font-semibold mt-4 mb-1">8.4.3 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_feedback</code></h4>
+<p class="text-sm leading-relaxed my-2">每筆分析標籤：<code class="rounded bg-slate-100 px-1 text-[0.9em]">CORRECT</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">INCORRECT</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>，可附註記、<code class="rounded bg-slate-100 px-1 text-[0.9em]">rated_by</code>。</p>
+
+<h4 id="8-4-4-ai-accuracy-snapshots" class="text-base font-semibold mt-4 mb-1">8.4.4 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_accuracy_snapshots</code></h4>
+<p class="text-sm leading-relaxed my-2">每日彙總：Skill 匹配率、人工同意率、回饋正確率、分析總數、介入核准／駁回數。Overview 重新整理時會 upsert 當日 live 快照。</p>
+
+<h4 id="8-4-5-受治理參數-platform-settings-鍵" class="text-base font-semibold mt-4 mb-1">8.4.5 受治理參數（<code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings</code> 鍵）</h4>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">鍵</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">用途</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">預設（種子）</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.rca_enabled</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RCA 總開關</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.auto_on_alarm</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報時自動觸發 RCA</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.skill_certainty_only</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅在確定匹配時自動執行 Skill</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.min_confidence</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">自動完成最低信心度</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">0.55</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.rag_top_k</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG Top-K</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">6</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">觸發第二意見 AI 的嚴重度</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">BREACH</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.maker_checker_required</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">強制雙人管控</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.auto_raise_alarms</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測器是否產生 Monitor 警報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">true</code></td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">僅 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.*</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">detectors.auto_raise_alarms</code> 可經 AI Admin PARAM 變更套用。</p>
+
+<h3 id="8-5-ui-規格-分頁" class="text-lg font-semibold mt-6 mb-2">8.5 UI 規格（分頁）</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">分頁 ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">標籤</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">功能</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">overview</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">KPI：分析總數、Skill 匹配%、平均信心、需人工、待介入、人工同意%、回饋正確%、待決 CR；近期分析與回饋</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">params</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Parameters</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 設定草稿；<strong>Propose</strong> 建立 PARAM CR（不立即生效）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">changes</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker / Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CR 清單（PENDING 優先）。Checker 核准／駁回並填註記；顯示 Maker、before/after；分頁顯示待決數</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skill 清單；表單<strong>提案建立</strong> Skill；核准後才套用；可連至 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code> 情境板</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件清單（摘要）；表單提案建立；核准後套用並重建 FTS</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">training</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Training</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">訓練執行清單與指標；表單排隊訓練（建立 TRAINING CR）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">history</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">History &amp; accuracy</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">準確率快照表（14 日）</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">頁首徽章顯示目前 <code class="rounded bg-slate-100 px-1 text-[0.9em]">role_code</code>、<strong>Maker</strong> 與／或 <strong>Checker</strong> 能力。</p>
+
+<h3 id="8-6-api-規格" class="text-lg font-semibold mt-6 mb-2">8.6 API 規格</h3>
+
+<h4 id="8-6-1-get-api-ai-admin" class="text-base font-semibold mt-4 mb-1">8.6.1 <code class="rounded bg-slate-100 px-1 text-[0.9em]">GET /api/ai-admin</code></h4>
+<p class="text-sm leading-relaxed my-2">查詢參數：</p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">tab</code> = <code class="rounded bg-slate-100 px-1 text-[0.9em]">overview</code>（預設）\| <code class="rounded bg-slate-100 px-1 text-[0.9em]">params</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">changes</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">training</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">skills</code> \| <code class="rounded bg-slate-100 px-1 text-[0.9em]">rag</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">status</code>（可選，篩選變更單）</li>
+</ul>
+
+<p class="text-sm leading-relaxed my-2">驗證：§8.3.1 檢視權限。  </p>
+<p class="text-sm leading-relaxed my-2">預設回應含 <code class="rounded bg-slate-100 px-1 text-[0.9em]">{ overview, params, changes, training, skills, rag, roles }</code>。</p>
+
+<h4 id="8-6-2-post-api-ai-admin" class="text-base font-semibold mt-4 mb-1">8.6.2 <code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/ai-admin</code></h4>
+<p class="text-sm leading-relaxed my-2">JSON <code class="rounded bg-slate-100 px-1 text-[0.9em]">action</code>：</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left"><code class="rounded bg-slate-100 px-1 text-[0.9em]">action</code></th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">權限</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">效果</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">通用 CR 寫入</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose_param</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PARAM UPDATE CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose_skill</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">skills.manage</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.propose</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SKILL CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">propose_rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">rag.manage</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.propose</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RAG CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">decide</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">APPROVED</code> 套用；<code class="rounded bg-slate-100 px-1 text-[0.9em]">REJECTED</code> 結案；強制 Maker≠Checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">queue_training</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">TRAINING CREATE CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">feedback</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.operate</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">寫入 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_feedback</code></td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">錯誤：<code class="rounded bg-slate-100 px-1 text-[0.9em]">{ error: string }</code>，HTTP 400／403。</p>
+
+<h3 id="8-7-核准後套用語意" class="text-lg font-semibold mt-6 mb-2">8.7 核准後套用語意</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">entity_type</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">action</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">行為</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">PARAM</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">更新 <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform_settings.value</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">插入 ACTIVE <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_skills</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">更新欄位</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">DISABLE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">status='DISABLED'</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">插入文件 + <code class="rounded bg-slate-100 px-1 text-[0.9em]">reindexRagFts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">UPDATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">內容／狀態更新 + 重建索引</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">RETIRE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">status='RETIRED'</code> + 重建索引</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">TRAINING</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">CREATE</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">插入 QUEUED <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_training_runs</code></td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-8-稽核事件" class="text-lg font-semibold mt-6 mb-2">8.8 稽核事件</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">事件</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">時機</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_CHANGE_PROPOSED</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Maker 提交 CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_CHANGE_APPROVED</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_CHANGE_REJECTED</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Checker 裁決</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_FEEDBACK</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提交回饋標籤</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-9-非功能需求" class="text-lg font-semibold mt-6 mb-2">8.9 非功能需求</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">NFR</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">規格</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">延遲</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SSR + 客戶端分頁；原型突變 API p95 &lt; 500ms</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">耐久性</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SQLite WAL；稽核保留</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">安全</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">啟用雙人制時 PARAM／SKILL／RAG 不可直接套用</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分離</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">執行期介入仍在 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">可觀測性</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Overview KPI + 準確率快照</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-10-驗收標準" class="text-lg font-semibold mt-6 mb-2">8.10 驗收標準</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>AI Engineer 可開啟 AI Admin 並提案 Skill；CR 為 PENDING。</li>
+<li>同一 AI Engineer <strong>不可</strong>核准該 CR（Maker/Checker 錯誤）。</li>
+<li>Risk Owner 可核准；Skill 變 ACTIVE 並出現於 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code>。</li>
+<li>參數提案在 APPROVED 前不改即時值。</li>
+<li>訓練排隊先建 CR，核准後建立 TRAINING run。</li>
+<li>Overview 顯示待決 CR 數與準確率歷史。</li>
+<li>回饋標籤持久化並影響回饋正確率。</li>
+</ol>
+
+<h3 id="8-11-序列-提案-skill-成功路徑" class="text-lg font-semibold mt-6 mb-2">8.11 序列 — 提案 Skill（成功路徑）</h3>
+
+<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>
+AI Engineer（Maker）              API / admin.ts                 Risk Owner（Checker）
+
+       │ propose_skill                  │                                │
+
+       ├───────────────────────────────►│ 插入 PENDING CR                │
+
+       │◄──────── request_id ───────────┤                                │
+
+       │                                │◄──── decide APPROVED ──────────┤
+
+       │                                │ applyChange SKILL/CREATE       │
+
+       │                                │ 稽核 AI_CHANGE_APPROVED        │
+
+       │                                ├──────── ok + applied ─────────►│
+
+</code></pre>
+
+<h3 id="8-12-相關頁面" class="text-lg font-semibold mt-6 mb-2">8.12 相關頁面</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">頁面</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">關係</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">核准後之劇本／情境板</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/rag</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">語料瀏覽；受治理變更應走 AI Admin CR</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/ai-analyses</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">消費此處治理之 Skills／RAG／參數</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/interventions</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>執行期</strong>動作關卡（非設定 CR）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/roles</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">定義 §8.3 權限</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="8-13-後續強化-尚未必做" class="text-lg font-semibold mt-6 mb-2">8.13 後續強化（尚未必做）</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">before_json</code> vs <code class="rounded bg-slate-100 px-1 text-[0.9em]">payload_json</code> Diff UI</li>
+<li>CRITICAL 參數變更強制雙重核准</li>
+<li>PENDING CR 通知 Lark <code class="rounded bg-slate-100 px-1 text-[0.9em]">oc_ai_detection_lab</code></li>
+<li>匯出 CR 包供合規</li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="9-獨立第二-ai-挑戰者" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. 獨立第二 AI 挑戰者</h2>
+
+<h3 id="9-1-目的" class="text-lg font-semibold mt-6 mb-2">9.1 目的</h3>
+<p class="text-sm leading-relaxed my-2">當警報嚴重度達到或超過 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>（預設 <strong>BREACH</strong>）時，平台在主要 Skill/RAG RCA 之後執行獨立挑戰模型（<code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp-challenger-v0</code>）。挑戰者<strong>不得</strong>重用主要決策路徑。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>程式：</strong> <code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/src/lib/ai/challenger.ts</code> · 於 <code class="rounded bg-slate-100 px-1 text-[0.9em]">analyze.ts</code> 持久化後掛接。</p>
+
+<h3 id="9-2-觸發" class="text-lg font-semibold mt-6 mb-2">9.2 觸發</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">設定</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">預設</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">行為</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">BREACH</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報嚴重度等級 ≥ 設定時執行（<code class="rounded bg-slate-100 px-1 text-[0.9em]">WARN</code> &amp;lt; <code class="rounded bg-slate-100 px-1 text-[0.9em]">BREACH</code> &amp;lt; <code class="rounded bg-slate-100 px-1 text-[0.9em]">CRITICAL</code>）</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="9-3-輸出" class="text-lg font-semibold mt-6 mb-2">9.3 輸出</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">欄位</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">說明</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">verdict</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AGREE</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">critiques</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">主要敘事之重大缺口</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">improvements</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">優先改進建議</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">alternatives</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">替代假說與信心分數</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="9-4-持久化與副作用" class="text-lg font-semibold mt-6 mb-2">9.4 持久化與副作用</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>資料表 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analysis_challenges</code>（與 <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai_analyses</code> 1:1）</li>
+<li>證據類型 <code class="rounded bg-slate-100 px-1 text-[0.9em]">CHALLENGER</code></li>
+<li>欄位 <code class="rounded bg-slate-100 px-1 text-[0.9em]">challenged</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">challenge_verdict</code></li>
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">PARTIAL</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">DISAGREE</code> 強制 <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human = 1</code></li>
+<li>Spine <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_RCA</code> 事件＋稽核 <code class="rounded bg-slate-100 px-1 text-[0.9em]">AI_SECOND_OPINION</code></li>
+<li>可經 <code class="rounded bg-slate-100 px-1 text-[0.9em]">backfill_challenges</code> 回填</li>
+</ul>
+
+<h3 id="9-5-介面" class="text-lg font-semibold mt-6 mb-2">9.5 介面</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>列表徽章：<code class="rounded bg-slate-100 px-1 text-[0.9em]">2nd AI · {verdict}</code></li>
+<li>詳情面板：<code class="rounded bg-slate-100 px-1 text-[0.9em]">AiChallengePanel</code></li>
+<li>控制：模擬 CRITICAL、回填挑戰</li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="10-skills-與風險情境-摘要" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. Skills 與風險情境（摘要）</h2>
+
+<p class="text-sm leading-relaxed my-2">Skills 儲存完整 <code class="rounded bg-slate-100 px-1 text-[0.9em]">scenario_json</code>：指標、門檻與理由、故障區域、升級路徑、BU 矯正、歷史案件。  </p>
+<p class="text-sm leading-relaxed my-2"><code class="rounded bg-slate-100 px-1 text-[0.9em]">risk_scenario_chains</code> 連結多指標時間線。見 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/skills</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">risk-scenarios-catalog.ts</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">risk-scenarios-extra.ts</code>。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="11-demo-messenger" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. Demo Messenger</h2>
+
+<h3 id="11-1-目的" class="text-lg font-semibold mt-6 mb-2">11.1 目的</h3>
+<p class="text-sm leading-relaxed my-2">站內 Lark 風格收件匣，承載警報＋AI 報告執行緒與內嵌操作。正式傳輸仍為 Lark；本模組驗證 UX 與稽核語意。</p>
+
+<h3 id="11-2-技術棧" class="text-lg font-semibold mt-6 mb-2">11.2 技術棧</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">項目</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">路徑</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頁面</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/messenger</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">components/DemoMessenger.tsx</code>（手機主從）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">API</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/messenger</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">領域</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/messenger/demo.ts</code></td>
+</tr>
+</tbody></table></div>
+
+<h3 id="11-3-動作" class="text-lg font-semibold mt-6 mb-2">11.3 動作</h3>
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">動作</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">效果</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">show_evidence</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">貼上證據庫＋挑戰摘要</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">chat</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者備註／挑戰；不同意標記 <code class="rounded bg-slate-100 px-1 text-[0.9em]">needs_human</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">escalate</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">升級路徑前進一步</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">dismiss</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">誤報 → DISMISSED／警報關閉</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">close</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">接受 AI → CLOSED</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">recommend</code> → <code class="rounded bg-slate-100 px-1 text-[0.9em]">confirm_action</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">雙重確認控制 → admin_ref（必要時 Checker）</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="11-4-資料" class="text-lg font-semibold mt-6 mb-2">11.4 資料</h3>
+<p class="text-sm leading-relaxed my-2">見 §4.4。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="12-市場情報" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. 市場情報</h2>
+
+<h3 id="12-1-目的" class="text-lg font-semibold mt-6 mb-2">12.1 目的</h3>
+<p class="text-sm leading-relaxed my-2">每五分鐘掃描可能影響 LP 報價之新聞／社群／官方訊號；推送格式化卡片至專用 outbox；暴露指標 <code class="rounded bg-slate-100 px-1 text-[0.9em]">M2-MKT-INTEL</code>。</p>
+
+<h3 id="12-2-主要模組" class="text-lg font-semibold mt-6 mb-2">12.2 主要模組</h3>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li><code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/market-intel/scanner.ts</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">format.ts</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">schema.ts</code></li>
+<li>UI <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/market-intel</code></li>
+<li>設定：<code class="rounded bg-slate-100 px-1 text-[0.9em]">market_intel.enabled</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">interval_minutes</code>、<code class="rounded bg-slate-100 px-1 text-[0.9em]">lark_chat_id</code></li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="13-文件-i18n-與響應式殼層" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. 文件、i18n 與響應式殼層</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">議題</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">設計</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/docs/*</code> Markdown，經 <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/docs.ts</code>＋<code class="rounded bg-slate-100 px-1 text-[0.9em]">DocArticlePage</code> 渲染</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">語系</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">en</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">zh-Hant</code> 查詢參數 <code class="rounded bg-slate-100 px-1 text-[0.9em]">?lang=</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI 語系</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_ui_lang</code>；導覽字串於 <code class="rounded bg-slate-100 px-1 text-[0.9em]">lib/i18n.ts</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">行動裝置</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">AdminShell</code> 抽屜 &amp;lt; <code class="rounded bg-slate-100 px-1 text-[0.9em]">lg</code>；messenger 主從；safe-area CSS</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2">互動 UAT 看板：<code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/uat</code>。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="14-主要-api-地圖-原型" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">14. 主要 API 地圖（原型）</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">API</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">角色</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">POST /api/auth/login</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Session cookie <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp_session</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分析、模擬警報、<code class="rounded bg-slate-100 px-1 text-[0.9em]">backfill_challenges</code></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/ai-admin</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 提案／核准／訓練／回饋</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/messenger</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">執行緒＋內嵌動作</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/lark</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頻道登錄／模擬通知</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">GET/POST /api/market-intel</code></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">掃描／發現／outbox</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="15-部署-原型" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">15. 部署（原型）</h2>
+
+<pre class="my-3 overflow-x-auto rounded-lg bg-slate-900 text-slate-100 p-3 text-xs"><code>
+cd platform
+
+npm install
+
+npm run dev   # http://localhost:3000
+
+</code></pre>
+
+<p class="text-sm leading-relaxed my-2">SQLite：<code class="rounded bg-slate-100 px-1 text-[0.9em]">platform/data/vantage_risk.db</code>。  </p>
+<p class="text-sm leading-relaxed my-2">重置：<code class="rounded bg-slate-100 px-1 text-[0.9em]">npm run db:reset</code> 後重啟。</p>
+
+<p class="text-sm leading-relaxed my-2">示範帳號見使用手冊 §1（例如 <code class="rounded bg-slate-100 px-1 text-[0.9em]">admin@vantagemarkets.com</code>／<code class="rounded bg-slate-100 px-1 text-[0.9em]">admin123</code>）。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="16-文件控制" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">16. 文件控制</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">版次</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">日期</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">說明</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">初版骨架</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.1</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整 §8 AI Admin 管理頁規格</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1.2</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2026-10-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">§9 挑戰者、§11 Messenger、§12 市場情報、文件／i18n／行動、重編號</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>對應文件：</strong> <a class="underline" href="./TSD.md">English TSD</a> · 渲染於 <code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/tsd</code></p>
+5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.2"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"16"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L10",null,{"docId":"TSD","htmlEn":"$11","htmlZh":"$12"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
 8:null

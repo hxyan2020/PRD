@@ -7,12 +7,12 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/f23d2e2f353cbbf8.css","style"]
-0:{"P":null,"b":"L4pjWc92B3sSZdtr7KyGL","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/f23d2e2f353cbbf8.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","dcOuLFCfpjUTwJmQT9Q_G",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[3925,["874","static/chunks/874-6287e72e26c459e6.js","354","static/chunks/354-16ba5d678753dbfc.js","94","static/chunks/94-3cffbcaa7e0ff5f4.js","581","static/chunks/app/admin/layout-8d004261a886d0e8.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","613","static/chunks/app/admin/docs/prd/page-0757185801697308.js"],""]
-5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","P0 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P0 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"10"}]]}],["$","div","P1 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P1 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"6"}]]}],["$","div","Product scope",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Product scope"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"CFD + Crypto"}]]}],["$","div","Acceptance",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Acceptance"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"UAT-01…20"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / demo-ready"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn","href":"/admin/docs/tsd","children":"TSD"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],"$L10"]}]
+:HL["/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","style"]
+0:{"P":null,"b":"W1sVdR1P0p1PZAUxpfrx-","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","-cC5trCoGl7mm7Ow3KHWB",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-1858fe6244e64264.js","7581","static/chunks/app/admin/layout-e278f05cdab9108c.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/market-intel":{"count":0,"latestAt":null},"/admin/interventions":{"count":0,"latestAt":null},"/admin/spine":{"count":0,"latestAt":null},"/admin/audit":{"count":3,"latestAt":"2026-10-04 12:53:30"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 12:53:30"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[6874,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-1858fe6244e64264.js","9613","static/chunks/app/admin/docs/prd/page-5a0a2ca93b14c633.js"],""]
+10:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-1858fe6244e64264.js","9613","static/chunks/app/admin/docs/prd/page-5a0a2ca93b14c633.js"],"DocArticleView"]
 11:T703d,<h1 id="crmp-product-requirements-document-prd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP Product Requirements Document (PRD)</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-PRD-001  </p>
@@ -511,7 +511,505 @@ f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","613","static/chunks/app
 <td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
 </tr>
 </tbody></table></div>
-10:["$","div",null,{"children":[["$","div",null,{"className":"mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between","children":[["$","div",null,{"className":"min-w-0","children":[["$","h1",null,{"className":"font-[family-name:var(--font-display)] text-xl sm:text-2xl tracking-tight break-word","children":"Product Requirements Document (PRD)"}],["$","p",null,{"className":"mt-1 text-sm text-[var(--muted)] max-w-3xl break-word","children":"Goals, personas, scope, acceptance criteria for the CRMP prototype."}]]}],null]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"v1.0"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/prd?lang=en","children":"English"}],["$","$Lf",null,{"className":"btn ","href":"/admin/docs/prd?lang=zh-Hant","children":"繁體中文"}]]}]]}],["$","article",null,{"className":"panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word","dangerouslySetInnerHTML":{"__html":"$11"}}]]}]
+12:T6d1e,<h1 id="crmp-產品需求文件-prd" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">CRMP 產品需求文件（PRD）</h1>
+
+<p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-PRD-001  </p>
+<p class="text-sm leading-relaxed my-2"><strong>狀態：</strong> 原型／可示範  </p>
+<p class="text-sm leading-relaxed my-2"><strong>產品範圍：</strong> CFD + 加密貨幣交易所  </p>
+<p class="text-sm leading-relaxed my-2"><strong>負責人：</strong> 風險平台產品經理 · <strong>核准人：</strong> 風險負責人  </p>
+<p class="text-sm leading-relaxed my-2"><strong>相關文件：</strong> <a class="underline" href="/admin/docs/tsd">TSD</a> · <a class="underline" href="/admin/docs/user-guide">使用手冊</a> · <a class="underline" href="/admin/docs/uat">UAT</a> · <a class="underline" href="/admin/docs/ecosystem">生態導入評估</a></p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="1-問題陳述" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">1. 問題陳述</h2>
+
+<p class="text-sm leading-relaxed my-2">Vantage Markets 的 CFD 與加密風險橫跨 Monitor 2.0 指標、各桌與即時通訊升級。現況「警報 → 根因 → 行動」分散：分析師重複重建脈絡、AI 建議缺乏獨立挑戰、不可逆控制難以端到端稽核。</p>
+
+<p class="text-sm leading-relaxed my-2"><strong>我們需要集中式風險管理平面，能夠：</strong></p>
+<ul class="list-disc pl-5 my-2 space-y-1 text-sm">
+<li>將 Monitor 警報轉為可解釋 AI RCA  </li>
+<li>以獨立第二 AI 挑戰高嚴重度 RCA  </li>
+<li>讓操作者在 messenger 完成證據／升級／排除／結案／控制  </li>
+<li>強制 Maker／Checker，並禁止 AI 觸及僅限人類介面  </li>
+<li>留下單一脊柱與稽核軌跡  </li>
+</ul>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="2-目標" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">2. 目標</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">#</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">目標</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">可衡量結果</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G1</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">單一脊柱</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">偵測→分析→挑戰→升級→干預→稽核可在脊柱日誌看見</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G2</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">確定性路由</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">已知技能確定時自動執行；否則 RAG＋人工覆核</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G3</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">高嚴重度雙 AI</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">BREACH／CRITICAL 分析 100% 附第二 AI 挑戰</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G4</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 設定職責分離</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 變更需 Maker ≠ Checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G5</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Messenger 原生操作</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">核心動作不必離開聊天</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G6</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場感知</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">每 5 分鐘掃描可能影響 LP 之情報</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">G7</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">安全 AI 邊界</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅限人類頁面／功能／欄位列冊並拒絕 AI</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="3-非目標-本原型" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">3. 非目標（本原型）</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">非目標</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">理由</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 Lark webhook 投遞</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">以稽核／outbox／站內 Demo Messenger 模擬</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">計費正式 LLM API</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">以啟發式 Skill／RAG／挑戰引擎代替</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">完整 MT4／MT5／LP 寫入適配</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅深連結＋模擬 admin ref</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">大規模多品牌租戶</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">單一示範租戶</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">取代 Monitor 2.0</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CRMP 消費 Monitor，不重建</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="4-角色與待辦工作" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">4. 角色與待辦工作</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">角色</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">主要工作</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>風險負責人</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">接受／拒絕 AI 包；升級；核准不可逆控制；UAT 退出</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>風險分析師</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">分流警報；於 messenger 挑戰 AI；補充脈絡</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>營運主管／分析師</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">提出停牌／封鎖／擴點／暫停跟單；Maker 確認進管理後台</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>AI 工程師</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills、RAG、偵測器、第二意見門檻、AI Admin 提案</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>系統管理員</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">使用者／角色、設定、AI 黑名單、稽核衛生</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><strong>檢視者</strong></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">唯讀監看（無 AI Admin／操作權）</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="5-使用者旅程-快樂路徑" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">5. 使用者旅程（快樂路徑）</h2>
+
+<h3 id="5-1-高嚴重度警報-雙-ai-messenger-結案" class="text-lg font-semibold mt-6 mb-2">5.1 高嚴重度警報 → 雙 AI → messenger 結案</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Monitor 指標觸發（如跟單集中度）。  </li>
+<li>CRMP 建立警報＋AI 分析（<code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code> 或 <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>）。  </li>
+<li>若嚴重度 ≥ <code class="rounded bg-slate-100 px-1 text-[0.9em]">ai.second_opinion_severity</code>（預設 BREACH），執行 <code class="rounded bg-slate-100 px-1 text-[0.9em]">crmp-challenger-v0</code>。  </li>
+<li>分析師於 Demo Messenger <strong>Show evidence</strong>；可選擇以聊天挑戰。  </li>
+<li>風險負責人覆核主分析＋挑戰者後 <strong>Close</strong> 或升級／要求控制。</li>
+</ol>
+
+<h3 id="5-2-控制項雙重確認-checker" class="text-lg font-semibold mt-6 mb-2">5.2 控制項雙重確認＋Checker</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>操作者選擇建議行動（如封鎖帳戶）。  </li>
+<li>雙重確認 → 模擬 Vantage admin ref＋連結。  </li>
+<li>若需 Checker，於 Interventions／指示路徑核准。  </li>
+<li>稽核＋脊柱記錄 Maker／Checker 結果。</li>
+</ol>
+
+<h3 id="5-3-ai-admin-變更" class="text-lg font-semibold mt-6 mb-2">5.3 AI Admin 變更</h3>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>Maker 於 AI Admin 提出設定／模型／政策。  </li>
+<li>不同 Checker 核准。  </li>
+<li>自我核准被拒絕。</li>
+</ol>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="6-功能需求" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">6. 功能需求</h2>
+
+<h3 id="6-1-p0-原型必須" class="text-lg font-semibold mt-6 mb-2">6.1 P0 — 原型必須</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">需求</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">驗收摘要</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">同步／顯示 Monitor 2.0 指標並產生警報</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">EQ／MRG／COPY 可見；可模擬警報</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-02</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skill 匹配 RCA 與步驟紀錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">COPY breach → <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code>＋技能步驟</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-03</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">技能不確定時走 RAG RCA</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">EQ 路徑可產出 <code class="rounded bg-slate-100 px-1 text-[0.9em]">RAG_REASONING</code>＋證據</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">達門檻之獨立第二 AI 挑戰者</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">BREACH／CRITICAL 有面板＋CHALLENGER 證據；WARN 預設跳過</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-05</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Demo Messenger：證據／聊天／升級／排除／結案</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">各動作更新執行緒＋稽核</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-06</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">建議控制＋雙重確認 → admin ref</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">封鎖／停牌等產生 admin_ref；需要時有 Checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-07</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin Maker ≠ Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">同一使用者不可核准自己的提案</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-08</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 存取黑名單（頁面／功能／欄位）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">UI 列出僅限人類目標與理由</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-09</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI／messenger／干預事件寫入脊柱＋稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">約 1 分鐘內可對應</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-10</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">管理介面 RBAC</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Viewer 無法操作 AI Admin</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="6-2-p1-原型應具備" class="text-lg font-semibold mt-6 mb-2">6.2 P1 — 原型應具備</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">需求</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">驗收摘要</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-11</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報 5 分鐘掃描＋outbox 卡片</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">可掃描；有發現／outbox 或空掃描紀錄</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-12</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險日誌分析</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">頁面呈現風險事件時間軸／分析</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-13</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">雙語產品文件（英／繁中）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PRD、TSD、手冊、UAT、生態可切換</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-14</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">響應式管理介面</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">390px：抽屜＋messenger 主從；無整頁溢出</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-15</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">強化技能風險情境／鏈</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Skills 看板含門檻與升級</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-16</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範網址目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"><code class="rounded bg-slate-100 px-1 text-[0.9em]">/admin/docs/urls</code> 列出管理／API／資料路徑</td>
+</tr>
+</tbody></table></div>
+
+<h3 id="6-3-p2-後期-生態階段" class="text-lg font-semibold mt-6 mb-2">6.3 P2 — 後期（生態階段）</h3>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">需求</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-17</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 Lark 互動卡片</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-18</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 雙向工單回寫</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-19</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">真實交易控制匯流排（含 dry-run）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">FR-20</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 LLM＋評測；挑戰者供應商多樣化</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="7-非功能需求" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">7. 非功能需求</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">領域</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">需求</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">延遲</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">原型：警報→雙 AI 包通常 &amp;lt; 60 秒</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-02</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">可稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報／分析／messenger／AI Admin 變更須寫稽核</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-03</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">安全</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 主體不得擁有黑名單權限</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">職責分離</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 強制 M／C；指定控制需 Checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-05</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">可用性</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範可用單機 SQLite；正式需 HA（見生態評估）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-06</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">i18n</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">操作文件英＋繁中；導覽可切語言</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">NFR-07</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">基本可及性</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">手機觸控目標可用；關鍵動作有標籤</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="8-詳細驗收標準-原型閘道" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">8. 詳細驗收標準（原型閘道）</h2>
+
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li><strong>技能＋挑戰者：</strong> 模擬 COPY BREACH → <code class="rounded bg-slate-100 px-1 text-[0.9em]">SKILL_MATCH</code>＋第二 AI 面板（挑戰時≥1 HIGH 改進）。  </li>
+<li><strong>門檻：</strong> 預設 BREACH 下，純 WARN EQ 模擬<strong>不</strong>建立挑戰。  </li>
+<li><strong>Messenger：</strong> Show evidence 貼出證據庫；Escalate 前進路徑；Dismiss／Close 更新狀態。  </li>
+<li><strong>控制：</strong> 封鎖帳戶→雙重確認→admin_ref；需要時有 Checker 後續。  </li>
+<li><strong>AI Admin：</strong> 需不同 Checker；禁止自我核准。  </li>
+<li><strong>覆蓋：</strong> UAT 視窗 BREACH／CRITICAL 100% 已挑戰（允許回填）。  </li>
+<li><strong>文件：</strong> PRD／TSD／手冊／UAT／生態英繁可渲染。  </li>
+<li><strong>行動：</strong> ~390px messenger 列表→執行緒→返回，無文件級橫向溢出。</li>
+</ol>
+
+<p class="text-sm leading-relaxed my-2">正式執行見：<a class="underline" href="/admin/docs/uat">UAT 清單</a>（UAT-01 … UAT-20）。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="9-成功指標-試點" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">9. 成功指標（試點）</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">指標</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">目標</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">警報→雙 AI 包平均時間</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">&amp;lt; 60 秒（原型）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">BREACH+ 附挑戰者比例</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">誤報排除已稽核</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI Admin 變更經不同 Checker</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">僅限人類介面已列入黑名單</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">議定清冊 100%</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical UAT 通過</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">100%</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="10-範圍邊界與依賴" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">10. 範圍邊界與依賴</h2>
+
+<p class="text-sm leading-relaxed my-2"><strong>依賴：</strong> Monitor 2.0 指標模型；企業 messenger（未來 Lark）；真實控制之 Vantage admin；正式 SSO 之 IdP。  </p>
+<p class="text-sm leading-relaxed my-2"><strong>對外提供：</strong> 風險／營運桌單一控制平面 UI＋稽核脊柱。  </p>
+<p class="text-sm leading-relaxed my-2"><strong>B／C 階段前不在範圍：</strong> 正式 webhook、寫入適配、Postgres HA（見<a class="underline" href="/admin/docs/ecosystem">生態導入評估</a>）。</p>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="11-風險與待決問題" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">11. 風險與待決問題</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">風險／問題</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">緩解</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">啟發式 AI 過度自信</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">高嚴重度強制第二 AI；PARTIAL／DISAGREE → needs_human</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">操作者繞過 messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">保留管理深連結；兩路徑皆稽核</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">過早自動化寫入</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">控制匯流排前先影子模式（生態階段 C）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">企業 messenger 標準？</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">假設 Lark；Teams 適配待定</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">證據個資保存</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式識別前先法遵審查</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="12-發布計畫-原型-正式" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">12. 發布計畫（原型 → 正式）</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">階段</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">成果</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">原型（現況）</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">示範脊柱、雙 AI、messenger、文件、UAT 包</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 A</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">強化認證／託管／可觀測性</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 B</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">即時 Monitor＋Lark 通知（讀路徑）</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 C</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">監督寫入＋緊急開關</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">階段 D</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">模型營運／挑戰者多樣化</td>
+</tr>
+</tbody></table></div>
+
+<hr class="my-6 border-[var(--line)]" />
+
+<h2 id="13-簽核" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">13. 簽核</h2>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">角色</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">姓名</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">決策</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">日期</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險負責人</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待填_</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">風險平台 PM</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待填_</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">工程負責人</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待填_</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">資安／GRC</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">_待填_</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top"></td>
+</tr>
+</tbody></table></div>
+5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","P0 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P0 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"10"}]]}],["$","div","P1 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P1 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"6"}]]}],["$","div","Product scope",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Product scope"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"CFD + Crypto"}]]}],["$","div","Acceptance",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Acceptance"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"UAT-01…20"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / demo-ready"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn","href":"/admin/docs/tsd","children":"TSD"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L10",null,{"docId":"PRD","htmlEn":"$11","htmlZh":"$12"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
 8:null

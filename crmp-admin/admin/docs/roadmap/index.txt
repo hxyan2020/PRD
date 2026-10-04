@@ -7,11 +7,11 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/f23d2e2f353cbbf8.css","style"]
-0:{"P":null,"b":"L4pjWc92B3sSZdtr7KyGL","p":"/PRD/crmp-admin","c":["","admin","docs","roadmap",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["roadmap",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/f23d2e2f353cbbf8.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["roadmap",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","7O9jZ8ZQwWBGwx2COQwN5",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[3925,["874","static/chunks/874-6287e72e26c459e6.js","354","static/chunks/354-16ba5d678753dbfc.js","94","static/chunks/94-3cffbcaa7e0ff5f4.js","581","static/chunks/app/admin/layout-8d004261a886d0e8.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","731","static/chunks/app/admin/docs/roadmap/page-515f55ca4de61a56.js"],""]
+:HL["/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","style"]
+0:{"P":null,"b":"W1sVdR1P0p1PZAUxpfrx-","p":"/PRD/crmp-admin","c":["","admin","docs","roadmap",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["roadmap",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/9d34f727efa6228f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["roadmap",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","EjYYTONAxcjwXamV32rOz",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[3925,["6874","static/chunks/6874-de040d47c28add30.js","5802","static/chunks/5802-b4944551b1ee7123.js","94","static/chunks/94-1858fe6244e64264.js","7581","static/chunks/app/admin/layout-e278f05cdab9108c.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/ai-analyses":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/messenger":{"count":5,"latestAt":"2026-10-04 12:53:30"},"/admin/market-intel":{"count":0,"latestAt":null},"/admin/interventions":{"count":0,"latestAt":null},"/admin/spine":{"count":0,"latestAt":null},"/admin/audit":{"count":3,"latestAt":"2026-10-04 12:53:30"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-04 12:53:30"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[803,["6874","static/chunks/6874-de040d47c28add30.js","94","static/chunks/94-1858fe6244e64264.js","3731","static/chunks/app/admin/docs/roadmap/page-33d471c41469577d.js"],"DocArticleView"]
 10:T2865,<h1 id="platform-improvement-roadmap" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">Platform Improvement Roadmap</h1>
 
 <p class="text-sm leading-relaxed my-2"><strong>Document ID:</strong> CRMP-RM-001 · Prioritised backlog after current prototype</p>
@@ -175,7 +175,168 @@ f:I[6874,["874","static/chunks/874-6287e72e26c459e6.js","731","static/chunks/app
 </ol>
 <p class="text-sm leading-relaxed my-2">EOF</p>
 
-5:["$","div",null,{"children":[["$","div",null,{"className":"mb-4 sm:mb-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between","children":[["$","div",null,{"className":"min-w-0","children":[["$","h1",null,{"className":"font-[family-name:var(--font-display)] text-xl sm:text-2xl tracking-tight break-word","children":"Platform Improvement Roadmap"}],["$","p",null,{"className":"mt-1 text-sm text-[var(--muted)] max-w-3xl break-word","children":"Prioritised improvements with effort, people, dependencies and severity."}]]}],null]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","span",null,{"className":"badge bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-RM-001"}],["$","span",null,{"className":"badge bg-slate-100 text-slate-700 border-slate-200","children":"v1.0"}],["$","$Lf",null,{"className":"btn","href":"/admin/docs/urls","children":"All URLs"}]]}],["$","div",null,{"className":"action-row","children":[["$","$Lf",null,{"className":"btn btn-primary","href":"/admin/docs/roadmap?lang=en","children":"English"}],["$","$Lf",null,{"className":"btn ","href":"/admin/docs/roadmap?lang=zh-Hant","children":"繁體中文"}]]}]]}],["$","article",null,{"className":"panel p-3 sm:p-6 max-w-5xl overflow-x-auto break-word","dangerouslySetInnerHTML":{"__html":"$10"}}]]}]
+11:T2710,<h1 id="平台改進路線圖" class="font-[family-name:var(--font-display)] text-3xl mt-2 mb-4">平台改進路線圖</h1>
+
+<p class="text-sm leading-relaxed my-2"><strong>文件編號：</strong> CRMP-RM-001 · 現行原型之後的優先待辦</p>
+
+<div class="overflow-x-auto my-3"><table class="w-full text-sm border-collapse">
+<thead><tr>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">ID</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">項目</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">工期</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">人力</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">依賴</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">嚴重度</th>
+<th class="border border-[var(--line)] bg-slate-50 px-2 py-1.5 text-left">備註</th>
+</tr></thead><tbody>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-01</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">正式 Lark 互動卡片</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">L</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2 FE + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Lark 應用核准</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">取代 demo 傳輸</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-02</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Monitor 2.0 webhook + 工單回寫</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">L</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">API 契約</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">關閉／排除閉環</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-03</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">LLM 主 RCA＋工具呼叫＋評測</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">XL</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 ML + 2 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Prompt／預算</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">挑戰者保持獨立</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-04</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">挑戰模型多樣化</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 ML</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-03</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">降低相關失敗</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-05</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SSO + SCIM</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 BE + 資安</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">IdP</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">淘汰示範密碼</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-06</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Postgres＋多實例</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 SRE + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">基礎建設</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">離開 SQLite</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-07</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">行動導覽抽屜＋觸控 messenger</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 FE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Design tokens</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">網頁＋行動優化</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-08</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">管理介面完整 i18n</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 FE + PM</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">字串目錄</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">文件已雙語</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-09</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">干預適配（停牌／槓桿／封鎖）含 dry-run</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">L</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">2 BE + Ops</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">交易控制匯流排</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Critical</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">強制 Checker</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-10</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">證據遮罩與保存作業</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 BE + GRC</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">法遵政策</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">High</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">摘要中的 PII</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-11</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">影子模式儀表板</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 FE + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Spine 指標</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">寫入前階段</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-12</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">CI 自動化 UAT 煙測</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 QA + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Seed DB</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">PR 閘道</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-13</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">多品牌租戶</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">XL</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">架構 + 2 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">組織模型</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">後期</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-14</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">AI 路徑成本／延遲 SLO</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">S</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">SRE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">可觀測性</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">搭配 RM-03</td>
+</tr>
+<tr>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">RM-15</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">市場情報來源評分</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">M</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">1 DS + 1 BE</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">供應源</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">Medium</td>
+<td class="border border-[var(--line)] px-2 py-1.5 align-top">降噪</td>
+</tr>
+</tbody></table></div>
+
+<p class="text-sm leading-relaxed my-2"><strong>工期鍵：</strong> S 小切片 · M 多日模組 · L 跨團隊 · XL 計畫級</p>
+
+<h2 id="建議順序" class="font-[family-name:var(--font-display)] text-2xl mt-8 mb-3">建議順序</h2>
+<ol class="list-decimal pl-5 my-2 space-y-1 text-sm">
+<li>RM-05、RM-06、RM-02（基礎）</li>
+<li>RM-01、RM-07、RM-11（操作體驗）</li>
+<li>RM-09＋緊急開關（寫路徑）</li>
+<li>RM-03＋RM-04＋RM-14（模型品質）</li>
+<li>RM-08、RM-10、RM-12、RM-15（強化與擴充）</li>
+</ol>
+<p class="text-sm leading-relaxed my-2">EOF</p>5:["$","$Lf",null,{"docId":"ROADMAP","htmlEn":"$10","htmlZh":"$11"}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
 8:null
