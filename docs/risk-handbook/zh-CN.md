@@ -2,8 +2,8 @@
 
 **读者：** 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管  
 **范围：** 全量目录含现货·杠杆·永续；**Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入**  
-**公开站点：** https://hxyan2020.github.io/PRD/risk-handbook/ · **全部 URL：** https://hxyan2020.github.io/PRD/risk-handbook/urls.html · **后台 URL：** https://hxyan2020.github.io/PRD/risk-handbook/admin/  
-**版本：** 2.0 · **归属：** 首席风险官（第二道防线）· **审阅周期：** 每季度或重大事件后  
+**公开站点：** [https://hxyan2020.github.io/PRD/risk-handbook/](https://hxyan2020.github.io/PRD/risk-handbook/) · **全部 URL：** [https://hxyan2020.github.io/PRD/risk-handbook/urls.html](https://hxyan2020.github.io/PRD/risk-handbook/urls.html) · **后台 URL：** [https://hxyan2020.github.io/PRD/risk-handbook/admin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/)  
+**版本：** 2.1 · **归属：** 首席风险官（第二道防线）· **审阅周期：** 每季度或重大事件后  
 
 > 本手册是**操作说明书**：谁负责什么、工作怎么分、每道手续怎么做、用哪块屏幕、看哪些数字、出问题时先做什么。它**不能**代替法律政策、《限额手册》（已签字的真实数字）或监管申报。  
 > **文中数字是教学示例。** 投产前必须从《限额手册》抄录现行值，并经两名风险官批准。
@@ -188,7 +188,7 @@ Phase 1 停在永续。生产上还没有“现货买完币再提出去”这条
 | 上币 / 下币 PIC | 上币 BU 章全文 |
 | Phase 1 负责人 / 上线组 | **Phase 1 运营范围** + [零基础说明](#零基础说明) + §3.3 永续 + §4.4 + 邀请/经纪商 SOP |
 
-“§6.2”表示第 6 章的 SOP-G02（停牌）。**PF-K01** 这类是指标编号，可直接贴进工单。**SOP-G01** 这类是手续编号。不必背，用本页搜索即可。
+“§6.2”表示第 6 章的 SOP-G02（停牌）。**PF-K01** 这类是指标编号，可直接贴进工单。**SOP-G01** 这类是手续编号。不必背：本页里这些编号是**可点击**的，会跳到对应卡片。
 
 **铁律**（为什么要有）
 
@@ -1635,8 +1635,8 @@ RM-06 + CRO 之后把公司的钱打进保险池。双控（G04）。入账。�
 
 ### 7.1 规范管理后台映射（含完整 URL）
 
-**完整 URL 表：** https://hxyan2020.github.io/PRD/risk-handbook/urls.html  
-**后台目录：** https://hxyan2020.github.io/PRD/risk-handbook/admin/
+**完整 URL 表：** [https://hxyan2020.github.io/PRD/risk-handbook/urls.html](https://hxyan2020.github.io/PRD/risk-handbook/urls.html)  
+**后台目录：** [https://hxyan2020.github.io/PRD/risk-handbook/admin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/)
 
 > **Vercel：** 本手册**没有**部署在 Vercel。`https://prd.vercel.app/` 是另一个产品（LeadShark MVP PRD）。  
 > 下列 GitHub Pages 地址为**公开文档桩页面**（不是真实交易所后台）。
@@ -2169,7 +2169,7 @@ Phase 1 不用勾这个。
 | 变更控制 | CRO 批准；经风险门户发布 |
 | 相关产物 | 限额手册、强平政策、保险/ADL 政策、上币政策、BCP/DR、§8 指标目录、§9 情景诊断 |
 | 培训 | 新任 BU PIC 30 日内必修 |
-| 版本 | 2.0 — 各 BU SOP 写成编号步骤并解释为什么；中英对齐 |
+| 版本 | 2.1 — 文内 SOP / KRI / § / 情景编号可点击跳转；后台与公开 URL 中英均可点 |
 
 ---
 
