@@ -37,9 +37,21 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Permanent public site: [https://hxyan2020.github.io/PRD/desk/](https://hxyan2020.github.io/PRD/desk/)
 
-Also: [https://hxyan2020.github.io/PRD/](https://hxyan2020.github.io/PRD/)
+Also:
 
-GitHub Pages serves the `gh-pages` branch at the `/PRD` project path. Nested routes (`/desk/`, `/regulation/`, …) load CSS/JS from `/PRD/_next/`.
+- [https://hxyan2020.github.io/PRD/](https://hxyan2020.github.io/PRD/)
+- [https://hxyan2020.github.io/PRD/entities/](https://hxyan2020.github.io/PRD/entities/)
+- [https://hxyan2020.github.io/PRD/regulation/](https://hxyan2020.github.io/PRD/regulation/)
+- [https://hxyan2020.github.io/PRD/risk-tools/](https://hxyan2020.github.io/PRD/risk-tools/)
+- [https://hxyan2020.github.io/PRD/sources/](https://hxyan2020.github.io/PRD/sources/)
+- [https://hxyan2020.github.io/PRD/gap-plan/](https://hxyan2020.github.io/PRD/gap-plan/)
+- [https://hxyan2020.github.io/PRD/trading-risk-ninja/](https://hxyan2020.github.io/PRD/trading-risk-ninja/)
+- [https://hxyan2020.github.io/PRD/risk-handbook/](https://hxyan2020.github.io/PRD/risk-handbook/)
+- [https://hxyan2020.github.io/PRD/risk-champion-site/](https://hxyan2020.github.io/PRD/risk-champion-site/)
+- [https://hxyan2020.github.io/PRD/risk-champion-site/demos/](https://hxyan2020.github.io/PRD/risk-champion-site/demos/)
+- [https://hxyan2020.github.io/PRD/risk-champion-site/study/](https://hxyan2020.github.io/PRD/risk-champion-site/study/)
+
+GitHub Pages serves the `gh-pages` branch at the `/PRD` project path. Nested Market Intelligence routes (`/desk/`, `/regulation/`, …) load CSS/JS from `/PRD/_next/`. Risk Champion loads CSS/JS from `/PRD/risk-champion-site/_next/`.
 
 Use the EN / 中文 control to switch the whole desk. Chrome, catalogs, story copy, and the Vantage impact note switch together.
 
@@ -58,7 +70,7 @@ Use the EN / 中文 control to switch the whole desk. Chrome, catalogs, story co
 
 `.github/workflows/vantage-daily-scan.yml` runs `npm run scan` at 06:00 UTC and commits `data/latest.json` on the desk branch.
 
-`.github/workflows/vantage-pages.yml` publishes `vantage/out` to `gh-pages` and keeps `trading-risk-ninja`.
+`.github/workflows/vantage-pages.yml` publishes `vantage/out` to `gh-pages` and keeps sibling sites (`gap-plan`, `trading-risk-ninja`, `risk-handbook`, `risk-champion-site`). Risk Champion HTML/CSS/JS is rewritten so `/_next/` assets load under `/PRD/risk-champion-site/`.
 
 ## Ranking sources
 
