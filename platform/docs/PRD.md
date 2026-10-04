@@ -6,6 +6,8 @@
 **Owner:** YAN Haixiang · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
+This PRD is the product contract for **every screen and feature currently in CRMP Admin**. Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-45](/admin/docs/uat).
+
 ---
 
 ## 1. Problem statement
@@ -18,6 +20,7 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 - Lets operators act in messenger (evidence, escalate, dismiss, close, controls)  
 - Enforces maker/checker and keeps AI off human-only surfaces  
 - Leaves a single spine + audit trail  
+- Gives every desk function a named admin page (home, performance, risk log, intel, org, settings, docs)
 
 ---
 
@@ -30,8 +33,12 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 | G3 | Dual-AI on high severity | 100% of BREACH/CRITICAL analyses have second-AI challenge |
 | G4 | SoD on AI config | AI Admin changes require maker ≠ checker |
 | G5 | Messenger-native ops | Operators can triage without leaving chat for core actions |
-| G6 | Market awareness | 5-minute intel scan for LP-moving headlines |
+| G6 | Market awareness | 5-minute intel scan for LP-moving headlines (live on localhost; demo scan on Pages) |
 | G7 | Safe AI boundary | Human-only pages/functions/fields listed and denied to AI |
+| G8 | Complete admin map | Every left-nav group/page in §6.4 is shipped and documented |
+| G9 | Unread awareness | New work on Alerts / Analyses / Messenger / Intel / Interventions / Spine / Audit / Monitor / Risk Log / Detectors shows a badge that clears when viewed |
+| G10 | Public demo | GitHub Pages snapshot at `/PRD/crmp-admin/` walks the desk without 404/405 on login, messenger Open-in-admin, or Scan now |
+| G11 | Named owner | Platform owner YAN Haixiang is a first-class persona; session persists in-browser |
 
 ---
 
@@ -44,6 +51,7 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 | Full MT4/MT5/LP write adapters | Deep-links + mock admin refs only |
 | Multi-brand tenancy at scale | Single demo tenancy |
 | Replacing Monitor 2.0 | CRMP consumes Monitor; does not rebuild it |
+| Production SSO / IdP | Demo personas + cookie / localStorage session |
 
 ---
 
@@ -51,12 +59,13 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 
 | Persona | Primary jobs |
 |---|---|
+| **Platform Owner (YAN Haixiang)** | Own the desk and docs; default login on the public snapshot |
 | **Risk Owner** | Accept/reject AI packs; escalate; approve irreversible controls; run UAT exit |
 | **Risk Analyst** | Triage alerts; challenge AI in messenger; add context |
 | **Ops Lead / Analyst** | Propose halt/block/widen/pause-copy; maker-confirm into admin |
 | **AI Engineer** | Skills, RAG, detectors, second-opinion threshold, AI Admin proposals |
-| **System Admin** | Users/roles, settings, AI access blocklist, audit hygiene |
-| **Viewer** | Read-only oversight (no AI Admin / operate) |
+| **System Admin** | Users/roles, grouped settings, AI access blocklist, audit hygiene |
+| **Viewer** | Read-only oversight (no AI Admin operate) |
 
 ---
 
@@ -79,6 +88,21 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 1. Maker proposes setting/model/policy in AI Admin.  
 2. Distinct Checker approves.  
 3. Self-approve is rejected.
+
+### 5.4 Market intel on public snapshot
+1. Operator opens Market Intelligence on GitHub Pages.  
+2. **Scan now** runs the client demo scan (same templates as live).  
+3. Findings, outbox and scan log update locally. No 405.
+
+### 5.5 Knowledge tree drill-down
+1. Operator opens Knowledge Tree, filter CFD or Crypto if needed.  
+2. Clicks a domain (e.g. LP_HEDGE) to fan out skills.  
+3. Clicks a skill; inspector fills; **Enter** opens the SKILL.md playbook.
+
+### 5.6 Unread badge
+1. A detector run / intel scan / AI simulate creates new work.  
+2. Left-nav badge increments.  
+3. Opening that tab stores “seen” and the badge drops to zero for this browser.
 
 ```mermaid
 graph LR
@@ -114,10 +138,24 @@ graph LR
 |---|---|---|
 | FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
 | FR-12 | Risk Log analytics | Page loads timeline / analytics for risk events |
-| FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem toggle works |
+| FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap toggle works |
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |
-| FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation |
-| FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths |
+| FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
+| FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs |
+| FR-21 | Admin Home snapshot | Clickable stat cards; owner card; recent alerts; messenger CTA |
+| FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
+| FR-23 | Detectors run/toggle | Run all raises alarms + AI RCA; enable/disable persists on localhost |
+| FR-24 | Live Alerts ack queue | OPEN sorted by severity; Acknowledge mutates status |
+| FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG trunk |
+| FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
+| FR-27 | Org directory | Departments, Teams, Roles (permission chips), Users (incl. YAN Haixiang; add/disable on localhost) |
+| FR-28 | Escalation routes + Lark registry | Severity → team → SLA; channel enable; messenger Escalate follows route |
+| FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
+| FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
+| FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
+| FR-32 | UAT interactive pack | UAT-01…UAT-45 with why/steps/pass/evidence and screen coverage |
+| FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
+| FR-34 | Risk domains catalogue | CFD + crypto domains with owner / supporting BUs |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -128,19 +166,65 @@ graph LR
 | FR-19 | Real trading control bus with dry-run |
 | FR-20 | Production LLM + eval harness; diversified challenger vendor |
 
+### 6.4 Feature catalogue — every admin surface
+
+This table **is** the product scope of the admin. If a row is in the left nav, it is in scope for this PRD, the User Guide, the TSD, and UAT.
+
+| Group | Feature | Path | Jobs to be done | Key acceptance |
+|---|---|---|---|---|
+| Overview | Admin Home | `/admin` | Orient; jump via cards | Cards are links; owner visible; messenger CTA |
+| Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
+| Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Handling time, loss vs prevented, loopholes | Summary + category + domain + records |
+| Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
+| Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Indicators / alerts / tickets | Three tabs; Sync now on localhost |
+| Monitor & risk | Detectors | `/admin/detectors` | Threshold first stage | Run all; toggle; runs list |
+| Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Ack; severity sort; unread clears |
+| Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership catalogue | Owner + supporting BUs |
+| AI & knowledge | AI Analyses | `/admin/ai-analyses` | RCA + second AI | Simulate COPY/EQ/CRITICAL; detail pack |
+| AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control governance | Seven tabs; maker ≠ checker |
+| AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md page |
+| AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; trunks; Enter |
+| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Search, retrieve top-K, create/retire (manage) |
+| AI & knowledge | Spine Log | `/admin/spine` | End-to-end tape | Stage counts + event list |
+| Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note |
+| Response | Demo Messenger | `/admin/messenger` | Chat-native triage | Sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
+| Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
+| Response | Escalation Routes | `/admin/escalation` | Severity → team → SLA | CRUD localhost; used by Escalate |
+| Organisation | Departments | `/admin/departments` | RACI | Four BUs with responsibilities |
+| Organisation | Teams | `/admin/teams` | On-call | Members, Lark chat, rotation |
+| Organisation | Roles & Permissions | `/admin/roles` | RBAC | Permission chips per role |
+| Organisation | Users | `/admin/users` | Directory | YAN Haixiang present; add/disable manage |
+| Platform | Data Sources | `/admin/data-sources` | Feed registry | Category + status |
+| Platform | AI Access Security | `/admin/security/ai-access` | Human-only inventory | Blocklist + allowed + forbidden perms |
+| Platform | Audit Log | `/admin/audit` | Who changed what | Latest mutations listed |
+| Platform | Platform Settings | `/admin/settings` | Flags | Grouped keys; save |
+| Docs | User Guide | `/admin/docs/user-guide` | How to operate | EN + zh-Hant; every screen |
+| Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document |
+| Docs | TSD | `/admin/docs/tsd` | How built | Surface map complete |
+| Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 45 cases, interactive |
+| Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
+| Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | Prioritised items |
+| Docs | URL Catalog | `/admin/docs/urls` | Navigation | Pages + APIs + tables |
+| Shell | Login | `/login` | Named persona | Persist; Pages path; owner default |
+| Shell | Language | cookie `crmp_ui_lang` | EN / 繁中 | Nav + docs switch |
+| Shell | Unread badges | left nav | New work | Increment / clear-on-view |
+| Shell | Mobile drawer | `< lg` | Phone use | Hamburger; messenger master-detail |
+
 ---
 
 ## 7. Non-functional requirements
 
 | ID | Area | Requirement |
 |---|---|---|
-| NFR-01 | Latency | Prototype: alarm → dual-AI pack typically &lt; 60s |
+| NFR-01 | Latency | Prototype: alarm → dual-AI pack typically < 60s |
 | NFR-02 | Auditability | Mutations to alerts/analyses/messenger/AI Admin emit audit |
 | NFR-03 | Security | AI principals must not receive blocklisted rights |
 | NFR-04 | SoD | Maker/checker enforced for AI Admin; checker for designated controls |
 | NFR-05 | Availability | Demo single-node SQLite acceptable; production needs HA (see Ecosystem) |
 | NFR-06 | i18n | Operator docs EN + zh-Hant; UI nav language toggle |
 | NFR-07 | Accessibility (basic) | Touch targets usable on mobile; critical actions labeled |
+| NFR-08 | Public snapshot | Static export under `basePath` `/PRD/crmp-admin`; no dead `/api` clicks (demo fallbacks) |
+| NFR-09 | Session | Demo persona persists in `localStorage` + cookie on Pages |
 
 ---
 
@@ -152,8 +236,12 @@ graph LR
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  
 5. **AI Admin:** Distinct checker required; self-approve blocked.  
 6. **Coverage:** UAT window BREACH/CRITICAL samples 100% challenged (backfill allowed).  
-7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem render EN and zh-Hant.  
-8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.
+7. **Docs:** PRD/TSD/User Guide/UAT/Ecosystem/Roadmap render EN and zh-Hant; User Guide has a how-to for every left-nav page.  
+8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.  
+9. **Pages:** Login, messenger Open-in-admin, and Market Intel Scan now succeed without 404/405.  
+10. **Knowledge tree:** Domain fan-out + Enter opens a playbook.  
+11. **Unread:** New simulate/scan bumps a badge; opening the tab clears it.  
+12. **Owner login:** YAN Haixiang persona persists after refresh on Pages.
 
 Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync).
 
@@ -163,12 +251,14 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 
 | Metric | Target |
 |---|---|
-| Mean time alarm → dual-AI pack | &lt; 60s (prototype) |
+| Mean time alarm → dual-AI pack | < 60s (prototype) |
 | % BREACH+ with challenger attached | 100% |
 | False-alarm dismissals audited | 100% |
 | AI Admin changes with distinct checker | 100% |
 | Human-only surfaces documented in blocklist | 100% of agreed inventory |
 | Critical UAT cases Pass | 100% |
+| Left-nav pages with User Guide how-to | 100% |
+| Public Scan now / Login / Open-in-admin | 0 hard 404/405 on happy path |
 
 ---
 
@@ -189,6 +279,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | Premature write automation | Shadow mode before control bus (ecosystem Phase C) |
 | Which messenger is corporate standard? | Lark assumed; Teams adapter TBD |
 | Data retention for evidence PII | Legal review before production identifiers |
+| GitHub Pages empty DB | Fallback nav totals + client demo scan + demo session |
 
 ---
 
@@ -196,7 +287,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 
 | Stage | Outcome |
 |---|---|
-| Prototype (now) | Demo spine, dual-AI, messenger, docs, UAT pack |
+| Prototype (now) | Full admin map, dual-AI, messenger, docs, UAT-01…45, public Pages snapshot |
 | Phase A | Harden auth/hosting/observability |
 | Phase B | Live Monitor + Lark notify (read path) |
 | Phase C | Supervised write path + kill-switches |
@@ -204,7 +295,18 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 
 ---
 
-## 13. Approvals
+## 13. Traceability
+
+| Product artefact | Where |
+|---|---|
+| Operator how-to per page | User Guide §6–§12 |
+| Technical module per page | TSD §7 + §8–§17 |
+| Test case per surface | UAT-01…UAT-45 `covers` field |
+| Public and local URLs | URL Catalog |
+
+---
+
+## 14. Approvals
 
 | Role | Name | Decision | Date |
 |---|---|---|---|
@@ -213,3 +315,14 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | Risk Platforms PM | YAN Haixiang | Named | 2026-10-04 |
 | Engineering Lead | _TBD_ | | |
 | Security / GRC | _TBD_ | | |
+
+---
+
+## 15. Document control
+
+| Ver | Date | Notes |
+|---|---|---|
+| 1.0 | 2026-10-01 | Goals G1–G7, FR-01…16 |
+| 1.4 | 2026-10-04 | G8–G11; FR-21…34; full admin feature catalogue matching left nav |
+
+**Owner:** YAN Haixiang

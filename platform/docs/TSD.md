@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.3  
+**Version:** 1.4  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -150,24 +150,55 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 ## 7. Admin surface map
 
-| URL | Module |
-|---|---|
-| `/admin` | Home |
-| `/admin/dashboard` | Daily performance |
-| `/admin/risk-log` | Risk log analytics |
-| `/admin/market-intel` | Market intelligence scanner |
-| `/admin/detectors` | Detectors |
-| `/admin/alerts` | Live alerts |
-| `/admin/ai-analyses` | AI RCA runtime + second-AI UI |
-| **`/admin/ai-admin`** | **AI Admin management (§8)** |
-| `/admin/interventions` | Human gates |
-| `/admin/spine` | Spine log |
-| `/admin/rag` | RAG corpus |
-| `/admin/skills` | Skill / scenario playbooks |
-| **`/admin/messenger`** | **Demo Messenger (§11)** |
-| `/admin/security/ai-access` | AI access blocklist |
-| `/admin/docs/prd` · `/user-guide` · `/uat` · `/ecosystem` · `/roadmap` · `/urls` · **`/tsd`** | Product docs (EN / 繁中) |
-| `/admin/monitor-2`, `/admin/lark`, `/admin/escalation`, … | Platform ops |
+Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide.
+
+### 7.1 Shell (not a nav row)
+
+| Surface | Route / store | Module | Permission |
+|---|---|---|---|
+| Login | `/login` | `app/login/page.tsx`, `lib/demo-session.ts` | public |
+| Language | cookie `crmp_ui_lang` | `hooks/useUiLocale`, `lib/i18n.ts` | — |
+| Unread badges | `crmp_nav_seen_v1` / `crmp_nav_extra_v1` | `AdminShell`, `lib/nav-badges.ts` | — |
+| Demo session | `crmp_demo_session_v1` | persist named persona on Pages | — |
+| Mobile drawer | `< lg` | `AdminShell` hamburger | — |
+| Brand | Vantage logo + owner line | `VantageLogo`, `lib/platform-owner.ts` | — |
+
+Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a href writes seen. `bumpNavBadge(href)` increments extra. Pages uses `FALLBACK_NAV_TOTALS` when SQLite counts are empty.
+
+### 7.2 Pages
+
+| Group | URL | UI / API | Permission | Spec |
+|---|---|---|---|---|
+| Overview | `/admin` | `app/admin/page.tsx` | `admin.access` | §17.1 |
+| Monitor | `/admin/dashboard` | `DailyDashboardView`, `GET/POST /api/dashboard` | `dashboard.read` | §17.2 |
+| Monitor | `/admin/risk-log` | `RiskLogDashboard`, `lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §17.3 |
+| Monitor | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
+| Monitor | `/admin/monitor-2` | tabs + `MonitorActions`, `/api/monitor` | `monitor.read` / `monitor.operate` | §17.4 |
+| Monitor | `/admin/detectors` | `DetectorsBoard`, `/api/detectors` | `detectors.read` | §17.5 |
+| Monitor | `/admin/alerts` | `AlertsBoard` | `monitor.read` / `monitor.operate` | §17.6 |
+| Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §17.7 |
+| AI | `/admin/ai-analyses` | `AiAnalysesBoard`, `/api/ai` | `ai.read` / `ai.operate` | §9 + §17.8 |
+| AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
+| AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §17.9 |
+| AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §17.10 |
+| AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §17.11 |
+| AI | `/admin/spine` | `listSpineEvents` | `spine.read` | §17.12 |
+| Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §17.13 |
+| Response | **`/admin/messenger`** | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
+| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §17.14 |
+| Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §17.15 |
+| Org | `/admin/departments` | department cards | `teams.read` | §17.16 |
+| Org | `/admin/teams` | teams table | `teams.read` | §17.16 |
+| Org | `/admin/roles` | permission chips | `users.read` | §17.16 |
+| Org | `/admin/users` | `UsersManager`, `/api/users` | `users.read` / `users.manage` | §17.16 |
+| Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §17.17 |
+| Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §17.18 |
+| Platform | `/admin/audit` | `audit_logs` last 200 | `audit.read` | §17.19 |
+| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §17.20 |
+| Docs | `/admin/docs/{user-guide,prd,tsd,uat,ecosystem,roadmap,urls}` | `lib/docs.ts`, `UatChecklistBoard` | `admin.access` | §13 + §17.21 |
+| Auth | `/login` | persona buttons + form | public | §17.1 |
+
+Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`.
 
 ---
 
@@ -497,15 +528,24 @@ Interactive UAT board: `/admin/docs/uat` (`UatChecklistBoard` + `lib/docs/uat-ca
 
 ## 14. Key API map (prototype)
 
+Absent on GitHub Pages (static export). UI must degrade: demo session, client intel scan, local settings message.
+
 | API | Role |
 |---|---|
-| `POST /api/auth/login` | Session cookie `crmp_session` |
+| `POST /api/auth/login` | Session cookie `crmp_session`; Pages falls back to `writeDemoSession` |
+| `POST /api/auth/logout` | Clear cookie |
 | `GET/POST /api/ai` | Analyses, simulate alarm, `backfill_challenges` |
-| `GET/POST /api/ai-admin` | AI Admin propose/approve/training/feedback |
+| `GET/POST /api/ai-admin` | Propose/approve/training/feedback |
 | `GET/POST /api/messenger` | Threads + inline actions |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
-| Other | detectors, escalation, interventions, rag, skills, … |
+| `GET/POST /api/detectors` | Run all, toggle enabled |
+| `GET/POST /api/monitor` | `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `POST /api/dashboard` | Rebuild daily metrics |
+| `GET/POST /api/rag` | List, retrieve, create, update |
+| `GET/POST /api/users` | Directory + create/disable |
+| `PATCH /api/settings` | Single key save |
+| Interventions | Server action `decideInterventionAction` (approve/reject) |
 
 ---
 
@@ -524,7 +564,101 @@ Demo logins: see User Guide §1 (e.g. `admin@vantagemarkets.com` / `admin123`).
 
 ---
 
-## 16. Document control
+## 16. Remaining admin modules
+
+Modules not fully specified in §8–§13. Behaviour must match the User Guide how-to and PRD §6.4.
+
+### 16.1 Login, session, shell, unread — §7.1
+
+- Personas: `DEMO_PERSONAS` in `lib/demo-session.ts` (YAN Haixiang first).  
+- Localhost: `POST /api/auth/login` sets `crmp_session` **and** writes demo session.  
+- Pages / 404/405: skip API, `writeDemoSession` only.  
+- `AdminShell` prefers demo session when `isPublicSnapshot()`. Sign out clears both.  
+- Nav groups from `NAV_GROUPS`. Unread: `AdminShell` + `bumpNavBadge` from Market Intel, Detectors, AI Analyses, Messenger.
+
+### 16.2 Admin Home
+
+SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). `StatCard` `href` to child pages. Owner panel. Messenger permanent URL. Recent 5 alerts.
+
+### 16.3 Daily performance
+
+`getDailyDashboard()` → CFD/crypto metric arrays + WARN/BREACH summary. `POST /api/dashboard` refresh.
+
+### 16.4 Risk log
+
+`getRiskLogDashboard()` aggregates: summary USD/times, `by_category`, `by_domain`, `loopholes`, chronological `records`. Read-only UI (`RiskLogDashboard`).
+
+### 16.5 Monitor 2.0 hub
+
+Query `tab=indicators|alerts|tickets`. `MonitorActions` `sync_monitor2` / `ack_alert` / `update_ticket`. Setting `monitor2.base_url` displayed.
+
+### 16.6 Detectors
+
+Table `detectors` + `detector_runs`. `POST /api/detectors` `{ raiseAlarms: true }` or `{ action: 'toggle' }`. Non-HEALTHY results bump nav badges for detectors/alerts/ai-analyses.
+
+### 16.7 Live alerts
+
+Join `monitor_alerts` × indicators. Sort CRITICAL/BREACH/WARN then time. `ack_alert` when `monitor.operate`.
+
+### 16.8 Risk domains
+
+`risk_domains` cards: priority, product_coverage, owner_department, supporting_departments_json. Read-only.
+
+### 16.9 AI Analyses list/detail
+
+List: `AiAnalysesBoard` simulate actions `simulate_copy_breach`, EQ drawdown, CRITICAL, `backfill_challenges`. Detail: `/admin/ai-analyses/[id]` evidence + `AiChallengePanel`. See §9.
+
+### 16.10 Skills board + SKILL.md page
+
+`SkillsScenariosBoard`: search, skills vs chains tabs, **Enter** → `/admin/skills/[code]` (`finalizeSkill` playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: `risk-scenarios-catalog.ts` + extras.
+
+### 16.11 Knowledge tree
+
+`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook (do not use invalid SVG `<Link>`). RAG docs scored from `tags_json` + title. Outline mode is the same graph as a nested list.
+
+### 16.12 RAG corpus
+
+`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`, create/update/retire when `rag.manage`. FTS via `reindexRagFts`. Governed creates should prefer AI Admin CR path (§8.7).
+
+### 16.13 Spine log
+
+Stages: DETECT, ALARM, AI_RCA, SKILL_EXECUTE, HUMAN_INTERVENTION, RESOLVED, DASHBOARD. 24h `StatCard` counts + last 150 events.
+
+### 16.14 Interventions
+
+`listInterventions()`. Pending: note + Approve/Reject via `decideInterventionAction`. Writes spine + audit. Distinct from AI Admin CRs.
+
+### 16.15 Lark + escalation
+
+`lark_channels` + `lark.*` settings. `escalation_routes` join teams + channel. Messenger `escalate` walks primary → secondary → owner → exec using this map.
+
+### 16.16 Organisation
+
+Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), roles (`permissions_json` chips), users (`UsersManager` create/toggle when `users.manage`). Seed includes `PLATFORM_OWNER`.
+
+### 16.17 Data sources
+
+`data_sources` registry. `DataSourcesManager` CRUD when `sources.manage`.
+
+### 16.18 AI access blocklist
+
+`lib/security/ai-access-blocklist.ts` → `AI_ACCESS_BLOCKLIST`, `AI_ALLOWED_CAPABILITIES`, `AI_SERVICE_ROLE_FORBIDDEN_PERMISSIONS`. Read-only board + stats.
+
+### 16.19 Audit log
+
+`audit_logs` ORDER BY id DESC LIMIT 200. Actor, action, entity, details_json.
+
+### 16.20 Platform settings
+
+`SettingsManager` groups by key prefix: `platform.|products.`, `monitor2.`, `ai.`, `market_intel.`, `lark.`, `escalation.|detectors.`. `PATCH /api/settings`. Pages: message “stored in this browser only”.
+
+### 16.21 Docs renderer
+
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–h4, tables, lists, mermaid `graph LR/TD` → `.doc-flow`. UAT: `UatChecklistBoard` + `UAT_CASES` (45). URL catalog: `lib/docs/urls.ts` `PLATFORM_URLS`, `PUBLIC_ADMIN_URL`, `PUBLIC_MESSENGER_URL`.
+
+---
+
+## 17. Document control
 
 | Ver | Date | Notes |
 |---|---|---|
@@ -532,6 +666,7 @@ Demo logins: see User Guide §1 (e.g. `admin@vantagemarkets.com` / `admin123`).
 | 1.1 | 2026-10-01 | Full §8 AI Admin Management Page specification |
 | 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
 | 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, YAN Haixiang owner, Pages login |
+| 1.4 | 2026-10-04 | Complete §7 surface map; §16 modules for every left-nav page; unread/login/tree/settings groups |
 
 **Owner:** YAN Haixiang  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
