@@ -1,6 +1,6 @@
 # 平台改進路線圖
 
-已交付台面打磨（分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
+已交付台面打磨（即時警報與追蹤命名；偵測器合併至 Monitor 2.0；分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾、手機卡片列表）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
 
 **文件編號：** CRMP-RM-001 · 現行 CRMP 原型之後的優先待辦  
 **讀者：** 風險負責人、平台負責人、工程、GRC  
@@ -36,7 +36,7 @@
 
 ## 建議順序
 
-1. **基礎：** RM-05、RM-06、RM-02 — 身分、耐久儲存、即時警報。
+1. **基礎：** RM-05、RM-06、RM-02 — 身分、耐久儲存、即時警報與追蹤串流。
 2. **操作體驗：** RM-01、RM-07、RM-11 — 人在 Lark 工作，並能跑影子模式。
 3. **寫路徑（最後）：** RM-09＋全域緊急開關 — 等風險負責人接受影子誤報率。
 4. **模型品質：** RM-03＋RM-04＋RM-14。
@@ -91,7 +91,7 @@
 
 ### 今日原型
 
-[Monitor 2.0](/admin/monitor-2) 是種子 SQLite 目錄（`M2-MRG-014`、`M2-EQ-001`、工單 `TKT-88421`…）。`POST /api/monitor` 的 `ack_alert`／`update_ticket`／`sync_monitor2` 打本機列。`sync_monitor2` 稽核 `pulled_alerts: 5` — 不對 `monitor.vantagemarkets.internal` 發 HTTP。旗標 `monitor2.sync_enabled` 不會外呼。
+[Monitor 2.0](/admin/monitor-2) 是種子 SQLite **指標＋偵測器登錄**（`M2-MRG-014`、`M2-EQ-001`、工單 `TKT-88421`…），含全部執行／同步／暫停。未結警報在 [即時警報與追蹤](/admin/alerts)（`/admin/detectors` 轉址至此 — 左側無偵測器列）。`POST /api/monitor` 的 `run_detectors`／`toggle_pause`／`update_thresholds`／`ack_alert`／`update_ticket`／`sync_monitor2` 打本機列。`sync_monitor2` 稽核 `pulled_alerts: 5` — 不對 `monitor.vantagemarkets.internal` 發 HTTP。旗標 `monitor2.sync_enabled` 不會外呼。
 
 ### 要做
 
@@ -241,7 +241,7 @@
 
 ### 今日原型
 
-後台已有抽屜與部分 `min-h-11`／安全區。Messenger 執行緒與雙重確認表仍偏桌面。
+後台已有抽屜、Messenger 列表→執行緒，以及 Monitor 2.0／升級／資料來源／風險日誌／稽核的手機卡片（`sm:hidden`）。雙重確認表與部分寬板仍偏桌面。
 
 ### 要做
 
@@ -499,3 +499,14 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 | RM-12 | [UAT 清單](/admin/docs/uat) |
 | RM-15 | [市場情報](/admin/market-intel) |
 | 預算／人力 | [生態導入評估](/admin/docs/ecosystem) |
+
+---
+
+## 文件控制
+
+| 版次 | 日期 | 說明 |
+|---|---|---|
+| 1.7 | 2026-10-05 | 日常打磨：稽核分頁＋回滾、ESC-DEFAULT、BU 與團隊、開放議題／進度 |
+| 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；RM-02／RM-12 今日事實；手機卡片列表 |
+
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

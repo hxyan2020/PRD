@@ -43,8 +43,8 @@ export const ROADMAP_PHASES: Array<{
     id: "foundations",
     order: 1,
     ids: ["RM-05", "RM-06", "RM-02"],
-    en: "Foundations — identity, durable store, live alarms",
-    zh: "基礎 — 身分、耐久儲存、即時警報",
+    en: "Foundations — identity, durable store, live Realtime Alert stream",
+    zh: "基礎 — 身分、耐久儲存、即時警報與追蹤串流",
   },
   {
     id: "operator-ux",
@@ -158,7 +158,8 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
     ],
     codebase: [
-      "POST /api/monitor ack_alert | update_ticket | sync_monitor2",
+      "POST /api/monitor run_detectors | toggle_pause | update_thresholds | sync_monitor2 | ack_alert | update_ticket",
+      "Unified indicator+detector UI on /admin/monitor-2; open queue on /admin/alerts (Realtime Alert & Tracker)",
       "sync_monitor2 audits pulled_alerts: 5 — no HTTP to Monitor",
       "monitor2.base_url = https://monitor.vantagemarkets.internal/2.0",
       "Seeded M2-MRG-014, M2-EQ-001, TKT-88421…",
@@ -167,11 +168,11 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       title: "Real Monitor 2.0 webhook + ticket write-back",
       operatorGets: "A dismiss/close in CRMP (or Lark) updates the upstream Monitor ticket — and live breaches create CRMP alerts.",
       why: "Today the catalogue is a seed. Demo sync pretends to pull 5 alerts. A live desk would diverge from Monitor within one shift.",
-      today: "Monitor 2.0 is a seeded SQLite catalogue. Sync / Ack / ticket Progress are local POSTs.",
+      today: "Monitor 2.0 is a seeded SQLite indicator + detector registry (Run all / Sync / Pause). Open alerts live on Realtime Alert & Tracker. Sync / Ack / ticket updates are local POSTs.",
       todayFacts: [
         "No inbound webhook. monitor2.sync_enabled is a flag only.",
-        "Ack updates monitor_alerts.status = ACKNOWLEDGED locally; it does not PATCH Monitor.",
-        "Tickets such as TKT-88421 (margin spike) exist only in vantage_risk.db.",
+        "Ack on Realtime Alert & Tracker updates monitor_alerts.status = ACKNOWLEDGED locally; it does not PATCH Monitor.",
+        "Tickets such as TKT-88421 (margin spike) exist only in vantage_risk.db. /admin/detectors redirects to Monitor 2.0 (not left-nav).",
       ],
       build: [
         "Inbound: Monitor posts warn/breach (indicator id, observed, ticket id, severity) → CRMP upserts monitor_indicators / monitor_alerts / monitor_tickets and triggers AI RCA.",
@@ -190,11 +191,11 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       title: "真實 Monitor 2.0 webhook + 工單回寫",
       operatorGets: "在 CRMP（或 Lark）排除／結案會更新上游 Monitor 工單；真實違規會產生 CRMP 警報。",
       why: "今日目錄是種子。示範同步假裝拉了 5 筆警報。正式台面一個班次就會和 Monitor 分叉。",
-      today: "Monitor 2.0 是種子 SQLite 目錄。同步／確認／工單進度是打本機列的 POST。",
+      today: "Monitor 2.0 是種子 SQLite 指標＋偵測器登錄（全部執行／同步／暫停）。未結警報在即時警報與追蹤。同步／確認／工單更新是打本機列的 POST。",
       todayFacts: [
         "沒有入站 webhook。monitor2.sync_enabled 只是旗標。",
-        "Ack 只把本機 monitor_alerts.status 設為 ACKNOWLEDGED，不會 PATCH Monitor。",
-        "工單如 TKT-88421（保證金飆升）只存在 vantage_risk.db。",
+        "在即時警報與追蹤 Ack 只把本機 monitor_alerts.status 設為 ACKNOWLEDGED，不會 PATCH Monitor。",
+        "工單如 TKT-88421（保證金飆升）只存在 vantage_risk.db。`/admin/detectors` 轉址 Monitor 2.0（左側無偵測器列）。",
       ],
       build: [
         "入站：Monitor 推送警告／違規（指標、觀測值、工單、嚴重度）→ CRMP 更新 monitor_indicators／monitor_alerts／monitor_tickets 並觸發 AI RCA。",
@@ -486,7 +487,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       title: "Touch-first admin + messenger",
       operatorGets: "On a phone: open a BREACH thread, ack, complete maker confirm without pinch-zoom.",
       why: "US-session on-call opens CRMP from a phone. Dense tables and clipped cards miss Ack.",
-      today: "A nav drawer and some 44px-ish targets exist. Messenger threads and confirm sheets are still desktop-first.",
+      today: "Nav drawer, messenger list→thread, and mobile card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit exist. Confirm sheets and some wide boards are still desktop-first.",
       todayFacts: [
         "Login, home, alerts, messenger, interventions are the 375px must-pass set.",
         "Language toggle and composer must stay reachable above the keyboard.",
@@ -507,7 +508,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       title: "觸控優先後台＋Messenger",
       operatorGets: "用手機打開違規執行緒、Ack、完成 Maker 確認，不必捏合縮放。",
       why: "美盤值班常用手機開 CRMP。密表格與被裁切的卡片會讓人漏按 Ack。",
-      today: "已有導覽抽屜與部分接近 44px 的熱區。Messenger 執行緒與確認表仍偏桌面。",
+      today: "已有導覽抽屜、Messenger 列表→執行緒，以及 Monitor 2.0／升級／資料來源／風險日誌／稽核的手機卡片。確認表與部分寬板仍偏桌面。",
       todayFacts: [
         "375px 必過：登入、首頁、警報、Messenger、干預。",
         "語言切換與輸入列必須在鍵盤上方搆得到。",
@@ -795,7 +796,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       why: "The Risk Owner pack is long and manual. Regressions land between UAT windows.",
       today: "UAT Checklist is a sequenced script (UAT-01…). Nothing replays Critical cases in CI.",
       todayFacts: [
-        "Smoke should cover: login personas, home stats, detectors run, alert ack, AI analysis exists, messenger ALERT+AI_REPORT, intervention queue, 繁中 title on skills, this roadmap renders.",
+        "Smoke should cover: login personas, home stats, Monitor 2.0 Run all, alert ack on Realtime Alert & Tracker, AI analysis exists, messenger ALERT+AI_REPORT, intervention queue, 繁中 title on skills, this roadmap renders.",
         "Keep the human pack for judgement calls.",
       ],
       build: [
@@ -814,7 +815,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       why: "風險負責人包又長又人工。兩個 UAT 視窗之間會進回歸。",
       today: "UAT 清單是依序劇本（UAT-01…）。沒有流水線在每次 PR 重放危急案例。",
       todayFacts: [
-        "煙測應涵蓋：角色登入、首頁計數、跑偵測器、確認警報、存在 AI 分析、Messenger 有 ALERT＋AI_REPORT、干預佇列、技能頁繁中標題、本路線圖可渲染。",
+        "煙測應涵蓋：角色登入、首頁計數、Monitor 2.0 執行全部指標、在即時警報與追蹤確認警報、存在 AI 分析、Messenger 有 ALERT＋AI_REPORT、干預佇列、技能頁繁中標題、本路線圖可渲染。",
         "人工包留給判斷題。",
       ],
       build: [

@@ -4,7 +4,7 @@
 **Audience:** Risk Owner, Platform Owner, engineering, GRC  
 **How to read:** the admin page `/admin/docs/roadmap` is the operator view (expandable cards). This file is the printable twin. Each `RM-xx` states **today’s prototype**, **what to build**, **done-when**, **where in the code**, and **skip risk**.
 
-This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit + home spine**. Shipped desk polish (grouped AI pipeline, MonitorCode, RAG leaves, ESC-DEFAULT + dimension coefficients, BU and Teams, first/second-line AI Admin, editable Roles, audit CRMP / Vantage Markets Admin tabs + Roll back) is tracked as BAU docs; **programme open issues** with ETAs/BU live in [Open Issues](/admin/docs/open-issues) / [Progress Tracker](/admin/docs/progress). Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, and logged-only “executions”.
+This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit + home spine**. Shipped desk polish (Realtime Alert & Tracker naming; Detectors merged into Monitor 2.0; grouped AI pipeline; MonitorCode; RAG leaves; ESC-DEFAULT + dimension coefficients; BU and Teams; first/second-line AI Admin; editable Roles; audit CRMP / Vantage Markets Admin tabs + Roll back; mobile card lists) is tracked as BAU docs; **programme open issues** with ETAs/BU live in [Open Issues](/admin/docs/open-issues) / [Progress Tracker](/admin/docs/progress). Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, and logged-only “executions”.
 
 **Effort key:** S = one vertical slice · M = multi-day module · L = cross-team module · XL = programme-sized
 
@@ -34,7 +34,7 @@ This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) 
 
 ## Suggested sequencing
 
-1. **Foundations:** RM-05, RM-06, RM-02 — identity, durable store, live alarms.
+1. **Foundations:** RM-05, RM-06, RM-02 — identity, durable store, live Realtime Alert stream.
 2. **Operator UX:** RM-01, RM-07, RM-11 — people work in Lark and can run shadow.
 3. **Write path (last):** RM-09 with a global kill-switch — only after Risk Owner accepts shadow false-alarm rates.
 4. **Model quality:** RM-03 + RM-04 + RM-14.
@@ -89,7 +89,7 @@ Today the catalogue is a seed. Demo sync pretends to pull 5 alerts. A live desk 
 
 ### Today
 
-[Monitor 2.0](/admin/monitor-2) is a seeded SQLite catalogue (`M2-MRG-014`, `M2-EQ-001`, tickets `TKT-88421`…). `POST /api/monitor` `ack_alert` / `update_ticket` / `sync_monitor2` hit local rows. `sync_monitor2` audits `pulled_alerts: 5` — no HTTP to `monitor.vantagemarkets.internal`. Flag `monitor2.sync_enabled` does not call out.
+[Monitor 2.0](/admin/monitor-2) is a seeded SQLite **indicator + detector registry** (`M2-MRG-014`, `M2-EQ-001`, tickets `TKT-88421`…) with Run all / Sync / Pause. Open alarms live on [Realtime Alert & Tracker](/admin/alerts) (`/admin/detectors` redirects here — not left-nav). `POST /api/monitor` `run_detectors` / `toggle_pause` / `update_thresholds` / `ack_alert` / `update_ticket` / `sync_monitor2` hit local rows. `sync_monitor2` audits `pulled_alerts: 5` — no HTTP to `monitor.vantagemarkets.internal`. Flag `monitor2.sync_enabled` does not call out.
 
 ### Build
 
@@ -239,7 +239,7 @@ US-session on-call opens CRMP from a phone. Dense tables and clipped cards miss 
 
 ### Today
 
-Admin has a drawer and some `min-h-11` / safe-area padding. Messenger threads and dual-confirm sheets are still desktop-first.
+Admin has a drawer, messenger list→thread, and mobile card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit (`sm:hidden` cards). Dual-confirm sheets and some wide boards are still desktop-first.
 
 ### Build
 
@@ -497,3 +497,14 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 | RM-12 | [UAT Checklist](/admin/docs/uat) |
 | RM-15 | [Market Intelligence](/admin/market-intel) |
 | Budget / FTE | [Ecosystem Eval](/admin/docs/ecosystem) |
+
+---
+
+## Document control
+
+| Ver | Date | Notes |
+|---|---|---|
+| 1.7 | 2026-10-05 | BAU polish: audit tabs + rollback, ESC-DEFAULT, BU and Teams, Open Issues / Progress |
+| 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; RM-02/RM-12 today facts; mobile card lists noted |
+
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
