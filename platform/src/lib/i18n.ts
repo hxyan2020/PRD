@@ -114,8 +114,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   interventions: {
     title: { en: "Human Intervention", "zh-Hant": "人工干預" },
     subtitle: {
-      en: "Approve or reject AI/skill actions awaiting human gates. Samples show actioner email. Decisions are logged to the spine and audit trail.",
-      "zh-Hant": "核准或駁回待人工關卡之 AI／Skill 動作。樣本顯示操作者信箱。決策寫入脊柱與稽核軌跡。",
+      en: "Approve or reject AI/skill human gates. Cards show ticket, timestamp, severity, action, and actioner email. Decisions go to spine + audit.",
+      "zh-Hant": "核准或駁回 AI／Skill 人工關卡。卡片顯示工單、時間戳、嚴重度、動作與執行者信箱。決策寫入脊柱與稽核。",
     },
   },
   spine: {

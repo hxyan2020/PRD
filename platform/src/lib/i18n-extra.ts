@@ -262,6 +262,23 @@ export const EXTRA_UI: Record<string, Pair> = {
     en: "No interventions queued. Run the AI pipeline (Analyze open or simulate an alarm) so skill steps with human gates appear here.",
     "zh-Hant": "目前沒有待處理干預。請執行 AI 管線（分析未結案或模擬警報），產出含人工關卡的技能步驟後會出現在此。",
   },
+  "intv.samplesTitle": { en: "Sample human gates", "zh-Hant": "人工關卡樣本" },
+  "intv.samplesHint": {
+    en: "Each card shows ticket, alert, timestamp, severity, action performed, and actioner email (when decided). Pending rows await a Risk Owner / Analyst.",
+    "zh-Hant": "每張卡片顯示工單、警報、時間戳、嚴重度、已執行動作，以及執行者信箱（已裁決時）。待處理列等待風險負責人／分析師。",
+  },
+  "intv.ticket": { en: "Ticket", "zh-Hant": "工單" },
+  "intv.alertId": { en: "Alert / ticket ref", "zh-Hant": "警報／工單編號" },
+  "intv.timestamp": { en: "Timestamp", "zh-Hant": "時間戳" },
+  "intv.actionPerformed": { en: "Action performed", "zh-Hant": "已執行動作" },
+  "intv.actioner": { en: "Actioner (email)", "zh-Hant": "執行者（信箱）" },
+  "intv.awaitingActioner": { en: "Awaiting Risk Owner / Analyst", "zh-Hant": "待風險負責人／分析師" },
+  "intv.step": { en: "Skill step", "zh-Hant": "技能步驟" },
+  "intv.demoSample": { en: "Demo sample", "zh-Hant": "示範樣本" },
+  "intv.sampleReadonly": {
+    en: "Demo sample is read-only. Run Analyze open on Realtime Alert to enqueue a live human gate.",
+    "zh-Hant": "示範樣本為唯讀。請在即時警報執行「分析未結案」以產生真實人工關卡。",
+  },
 
   "dash.reportDate": { en: "Report date", "zh-Hant": "報告日期" },
   "dash.intro": {

@@ -1,6 +1,7 @@
 import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
 import { logSpineEvent } from "@/lib/ai/spine";
+import { INTERVENTION_DEMO_SAMPLES } from "@/lib/ai/intervention-samples";
 
 /** Seed sample human interventions (PENDING + decided) when the queue is empty. */
 export function seedInterventionsIfEmpty(db: Database.Database = getDb()) {
@@ -212,6 +213,7 @@ export function syncInterventionsFromSkillRuns() {
 
 export function listInterventions(status?: string) {
   const db = getDb();
+  seedInterventionsIfEmpty(db);
   syncInterventionsFromSkillRuns();
   let sql = `
     SELECT i.*,
@@ -223,15 +225,18 @@ export function listInterventions(status?: string) {
            r.step_index,
            u.name AS decided_by_name,
            u.email AS decided_by_email,
-           al.title AS alert_title,
-           al.severity AS alert_severity,
+           COALESCE(al.title, a.summary, i.action_code) AS alert_title,
+           COALESCE(al.severity, 'WARN') AS alert_severity,
+           COALESCE(al.alert_id, a.analysis_id) AS alert_id,
+           COALESCE(t.ticket_id, al.monitor20_ticket_id, '—') AS ticket_id,
            m.name AS indicator_name,
-           m.product AS product_hint
+           COALESCE(m.product, 'CFD') AS product_hint
     FROM interventions i
     JOIN ai_analyses a ON a.id = i.analysis_id
     JOIN ai_skill_runs r ON r.id = i.skill_run_id
-    JOIN monitor_alerts al ON al.id = a.alert_id
-    JOIN monitor_indicators m ON m.id = al.indicator_id
+    LEFT JOIN monitor_alerts al ON al.id = a.alert_id
+    LEFT JOIN monitor_tickets t ON t.alert_id = al.id
+    LEFT JOIN monitor_indicators m ON m.id = al.indicator_id
     LEFT JOIN users u ON u.id = i.decided_by
   `;
   const params: string[] = [];
@@ -241,8 +246,14 @@ export function listInterventions(status?: string) {
   }
   sql += ` ORDER BY
     CASE i.status WHEN 'PENDING' THEN 0 WHEN 'APPROVED' THEN 1 ELSE 2 END,
-    i.id DESC`;
-  return db.prepare(sql).all(...params);
+    i.id DESC
+    LIMIT 80`;
+  const rows = db.prepare(sql).all(...params) as Array<Record<string, unknown>>;
+  if (rows.length > 0) return rows;
+
+  // Static export / empty DB fallback — curated samples with ticket + actioner email
+  if (status) return INTERVENTION_DEMO_SAMPLES.filter((s) => s.status === status);
+  return INTERVENTION_DEMO_SAMPLES;
 }
 
 export function decideIntervention(input: {
