@@ -58,17 +58,19 @@ function parseFlowchart(src: string): { dir: "TD" | "LR"; nodes: FlowNode[]; edg
     const line = raw.trim();
     if (!line || /^(graph|flowchart)\b/i.test(line) || line.startsWith("%%")) continue;
 
-    const nodeRe = /([A-Za-z][A-Za-z0-9_]*)\s*(?:\["([^"]+)"\]|\[([^\]]+)\]|\("([^"]+)"\)|\(([^)]+)\)|\{"([^"]+)"\}|\{([^}]+)\})/g;
+    // Supports rect [label], stadium ([label]) / (label), diamond {label}, and quoted variants.
+    const nodeRe =
+      /([A-Za-z][A-Za-z0-9_]*)\s*(?:\["([^"]+)"\]|\[([^\]]+)\]|\(\["([^"]+)"\]\)|\(\[([^\]]+)\]\)|\("([^"]+)"\)|\(([^)]+)\)|\{"([^"]+)"\}|\{([^}]+)\})/g;
     let m: RegExpExecArray | null;
     while ((m = nodeRe.exec(line))) {
       const id = m[1];
-      const label = m[2] || m[3] || m[4] || m[5] || m[6] || m[7] || id;
-      const shape: NodeShape = m[6] || m[7] ? "diamond" : m[4] || m[5] ? "round" : "rect";
+      const label = m[2] || m[3] || m[4] || m[5] || m[6] || m[7] || m[8] || m[9] || id;
+      const shape: NodeShape = m[8] || m[9] ? "diamond" : m[4] || m[5] || m[6] || m[7] ? "round" : "rect";
       ensure(id, label, shape);
     }
 
     const edgeRe =
-      /([A-Za-z][A-Za-z0-9_]*)(?:\[[^\]]*\]|\([^)]*\)|\{[^}]*\})?\s*(?:--+|==+)\s*>\s*(?:\|([^|]+)\|)?\s*([A-Za-z][A-Za-z0-9_]*)/g;
+      /([A-Za-z][A-Za-z0-9_]*)(?:\[[^\]]*\]|\(\[[^\]]*\]\)|\([^)]*\)|\{[^}]*\})?\s*(?:--+|==+)\s*>\s*(?:\|([^|]+)\|)?\s*([A-Za-z][A-Za-z0-9_]*)/g;
     // Walk the line so chained edges (`A --> B --> C`) and labelled shapes
     // (`A[Start] --> B{Decision}`) each emit a link — including the first hop.
     let searchFrom = 0;
