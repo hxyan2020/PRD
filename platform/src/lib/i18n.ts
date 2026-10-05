@@ -240,8 +240,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   urls: {
     title: { en: "URL Catalog", "zh-Hant": "網址目錄" },
     subtitle: {
-      en: "Admin pages, APIs, local SQLite path, and core DB tables for the CRMP prototype.",
-      "zh-Hant": "CRMP 原型之管理頁、API、本機 SQLite 路徑與核心資料表。",
+      en: "Admin pages (incl. redirects: Detectors→Monitor 2.0, AI Analyses→Realtime Alert, Spine→Home, Teams→BU and Teams), APIs, SQLite path, and core DB tables.",
+      "zh-Hant": "管理頁（含轉址：偵測器→Monitor 2.0、AI 分析→即時警報與追蹤、脊柱→首頁、團隊→BU 與團隊）、API、SQLite 路徑與核心資料表。",
     },
   },
 };
