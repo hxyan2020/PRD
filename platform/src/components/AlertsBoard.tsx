@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SeverityBadge, StatusBadge, Badge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
 import { cn } from "@/lib/utils";
 import { useT } from "@/hooks/useUiLocale";
 
@@ -65,10 +66,19 @@ export function AlertsBoard({ alerts, canOperate }: { alerts: Alert[]; canOperat
               </div>
               <h2 className="mt-2 font-semibold text-lg">{phrase(a.title)}</h2>
               <p className="text-sm text-[var(--muted)] mt-1">{phrase(a.message)}</p>
-              <div className="text-xs text-[var(--muted)] mt-2">
-                {a.alert_id} · {a.monitor_id} · {phrase(a.indicator_name)} ·{" "}
-                {t("alerts.observedTicket", { v: String(a.observed_value ?? "—"), ticket: a.monitor20_ticket_id ?? "—" })}{" "}
-                · {a.created_at}
+              <div className="text-xs text-[var(--muted)] mt-2 flex flex-wrap items-center gap-x-1 gap-y-1">
+                <span>{a.alert_id}</span>
+                <span>·</span>
+                <MonitorCode id={a.monitor_id} name={a.indicator_name} tone="inline" />
+                <span>· {phrase(a.indicator_name)}</span>
+                <span>
+                  ·{" "}
+                  {t("alerts.observedTicket", {
+                    v: String(a.observed_value ?? "—"),
+                    ticket: a.monitor20_ticket_id ?? "—",
+                  })}{" "}
+                  · {a.created_at}
+                </span>
               </div>
             </div>
             {canOperate && a.status === "OPEN" && (

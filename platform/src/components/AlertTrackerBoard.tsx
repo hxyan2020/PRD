@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, Copy, ExternalLink } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { MonitorCode } from "@/components/MonitorCode";
 import { AlertTrackerFilters } from "@/components/AlertTrackerFilters";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
@@ -426,12 +427,14 @@ export function AlertTrackerCard({
           </div>
           <h2 className="mt-2 font-semibold text-lg">{phrase(pack.title)}</h2>
           <p className="text-sm text-[var(--muted)] mt-1">{phrase(pack.message)}</p>
-          <div className="text-xs text-[var(--muted)] mt-2">
-            {pack.alert_id}
-            {pack.ticket_id ? ` · ${pack.ticket_id}` : ""} · {pack.monitor_id} · {phrase(pack.indicator_name)}
-            {pack.poc ? ` · ${t("tracker.poc")}: ${pack.poc.name}` : ` · ${t("tracker.noPoc")}`}
-            {" · "}
-            {pack.created_at}
+          <div className="text-xs text-[var(--muted)] mt-2 flex flex-wrap items-center gap-x-1 gap-y-1">
+            <span>{pack.alert_id}</span>
+            {pack.ticket_id ? <span>· {pack.ticket_id}</span> : null}
+            <span>·</span>
+            <MonitorCode id={pack.monitor_id} name={pack.indicator_name} tone="inline" />
+            <span>· {phrase(pack.indicator_name)}</span>
+            {pack.poc ? <span>· {t("tracker.poc")}: {pack.poc.name}</span> : <span>· {t("tracker.noPoc")}</span>}
+            <span>· {pack.created_at}</span>
           </div>
         </div>
         <div className="flex shrink-0 items-start gap-2">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
 import { navLabel } from "@/lib/i18n";
 import { useT } from "@/hooks/useUiLocale";
 
@@ -760,8 +761,10 @@ export function AiAdminConsole({
                       </Badge>
                     )}
                   </div>
-                  <h3 className="mt-2 font-semibold">
-                    {a.analysis_id} · {a.indicator_monitor_id}
+                  <h3 className="mt-2 font-semibold flex flex-wrap items-center gap-x-1 gap-y-1">
+                    <span>{a.analysis_id}</span>
+                    <span>·</span>
+                    <MonitorCode id={a.indicator_monitor_id} tone="inline" />
                   </h3>
                   <div className="text-xs text-[var(--muted)]">
                     conf {(a.confidence ?? 0).toFixed(2)} · {a.created_at}

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Badge, DeptBadge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { MonitorCode } from "@/components/MonitorCode";
 import type { LinkedScenario, SkillScenario } from "@/lib/ai/scenario-types";
 import { finalizeSkill } from "@/lib/ai/skill-playbook";
 import { CHAIN_ZH } from "@/lib/ai/skill-zh";
@@ -174,9 +175,7 @@ export function SkillsScenariosBoard({
                   <div className="flex flex-wrap gap-2 items-center">
                     <DeptBadge code={s.owner_department} />
                     <StatusBadge value={row.status} />
-                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">
-                      {s.indicator.monitor_id}
-                    </Badge>
+                    <MonitorCode id={s.indicator.monitor_id} name={s.indicator.name} unit={s.indicator.unit} />
                     <Badge className="bg-teal-50 text-teal-900 border-teal-200">
                       {s.auto_execute === false ? t("skill.manual", locale) : t("skill.auto", locale)}
                     </Badge>
@@ -269,11 +268,7 @@ export function SkillsScenariosBoard({
                       </div>
                       <div className="mt-2 flex flex-wrap gap-1">
                         {s.related_indicators.length ? (
-                          s.related_indicators.map((id) => (
-                            <Badge key={id} className="bg-orange-50 text-orange-900 border-orange-200">
-                              {id}
-                            </Badge>
-                          ))
+                          s.related_indicators.map((id) => <MonitorCode key={id} id={id} />)
                         ) : (
                           <span className="text-sm text-[var(--muted)]">{t("common.none", locale)}</span>
                         )}
@@ -345,7 +340,7 @@ export function SkillsScenariosBoard({
                       <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-teal-600" />
                       <div className="text-sm">
                         <span className="font-semibold tabular-nums">T+{ev.t_minutes}m</span>{" "}
-                        <Badge className="bg-orange-50 text-orange-900 border-orange-200">{ev.monitor_id}</Badge>{" "}
+                        <MonitorCode id={ev.monitor_id} />{" "}
                         <SeverityBadge value={ev.severity} />
                         <div className="text-[var(--muted)] mt-0.5">{phrase(ev.signal, locale)}</div>
                       </div>

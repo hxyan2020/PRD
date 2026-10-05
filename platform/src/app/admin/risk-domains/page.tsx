@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { getDb } from "@/lib/db";
 import { DeptBadge, Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { MonitorCode } from "@/components/MonitorCode";
 import { T } from "@/components/T";
 import { Phrase } from "@/components/Phrase";
 import { EnZh } from "@/components/EnZh";
@@ -60,35 +60,6 @@ function PriorityPill({ priority }: { priority: number }) {
   );
 }
 
-function IndicatorChip({
-  id,
-  meta,
-}: {
-  id: string;
-  meta?: IndicatorRow;
-}) {
-  const status = meta?.status || "HEALTHY";
-  const statusCls =
-    status === "BREACH"
-      ? "border-rose-300 bg-rose-50 text-rose-900"
-      : status === "WARN"
-        ? "border-amber-300 bg-amber-50 text-amber-950"
-        : "border-teal-200 bg-teal-50 text-teal-900";
-  return (
-    <Link
-      href={`/admin/monitor-2#${encodeURIComponent(id)}`}
-      className={cn(
-        "inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 text-[11px] font-mono hover:underline",
-        statusCls
-      )}
-      title={meta ? `${meta.name} · ${status}` : id}
-    >
-      {id}
-      {meta?.unit ? <span className="font-sans opacity-70">· {meta.unit}</span> : null}
-    </Link>
-  );
-}
-
 function ScenarioCard({
   scenario,
   indicators,
@@ -105,9 +76,19 @@ function ScenarioCard({
             <EnZh en={scenario.name.en} zh={scenario.name.zh} />
           </div>
           <div className="mt-1 flex flex-wrap gap-1">
-            {scenario.primary_indicators.map((id) => (
-              <IndicatorChip key={id} id={id} meta={indicators.get(id)} />
-            ))}
+            {scenario.primary_indicators.map((id) => {
+              const meta = indicators.get(id);
+              return (
+                <MonitorCode
+                  key={id}
+                  id={id}
+                  name={meta?.name}
+                  unit={meta?.unit}
+                  status={meta?.status}
+                  tone="status"
+                />
+              );
+            })}
           </div>
         </div>
         <span className="text-xs text-[var(--muted)] group-open:hidden shrink-0">
@@ -149,9 +130,19 @@ function ScenarioCard({
               <EnZh en="Related Monitor 2.0 indicators" zh="相關 Monitor 2.0 指標" />
             </div>
             <div className="mt-1.5 flex flex-wrap gap-1">
-              {scenario.related_indicators.map((id) => (
-                <IndicatorChip key={id} id={id} meta={indicators.get(id)} />
-              ))}
+              {scenario.related_indicators.map((id) => {
+                const meta = indicators.get(id);
+                return (
+                  <MonitorCode
+                    key={id}
+                    id={id}
+                    name={meta?.name}
+                    unit={meta?.unit}
+                    status={meta?.status}
+                    tone="status"
+                  />
+                );
+              })}
             </div>
           </div>
         ) : null}
@@ -235,7 +226,14 @@ function DomainCard({
           </div>
           <div className="flex flex-wrap gap-1">
             {domainIndicators.map((i) => (
-              <IndicatorChip key={i.monitor_id} id={i.monitor_id} meta={i} />
+              <MonitorCode
+                key={i.monitor_id}
+                id={i.monitor_id}
+                name={i.name}
+                unit={i.unit}
+                status={i.status}
+                tone="status"
+              />
             ))}
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { MonitorCode } from "@/components/MonitorCode";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { useT } from "@/hooks/useUiLocale";
@@ -196,10 +197,15 @@ export function AiAnalysesBoard({
                   ) : null}
                 </div>
                 <h2 className="mt-2 font-semibold text-base sm:text-lg break-word">{a.alert_title}</h2>
-                <div className="text-xs text-[var(--muted)] mt-1 break-word">
-                  {a.analysis_id} · {t("common.alert")} {a.monitor_alert_id} · {a.indicator_monitor_id}
-                  {a.skill_code ? ` · ${a.skill_code}` : ""} · {t("common.confidence")} {(a.confidence * 100).toFixed(0)}% ·{" "}
-                  {a.created_at}
+                <div className="text-xs text-[var(--muted)] mt-1 break-word flex flex-wrap items-center gap-x-1 gap-y-1">
+                  <span>{a.analysis_id}</span>
+                  <span>· {t("common.alert")} {a.monitor_alert_id}</span>
+                  <span>·</span>
+                  <MonitorCode id={a.indicator_monitor_id} tone="inline" />
+                  {a.skill_code ? <span>· {a.skill_code}</span> : null}
+                  <span>
+                    · {t("common.confidence")} {(a.confidence * 100).toFixed(0)}% · {a.created_at}
+                  </span>
                 </div>
                 <p className="text-sm mt-2 text-slate-700 break-word">{a.summary}</p>
               </div>

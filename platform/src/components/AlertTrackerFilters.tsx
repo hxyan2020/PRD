@@ -11,6 +11,7 @@ import {
   uniqueDomains,
 } from "@/lib/alert-filters";
 import type { AlertTrackerPack } from "@/lib/alert-tracker";
+import { MonitorCode } from "@/components/MonitorCode";
 import { useT } from "@/hooks/useUiLocale";
 
 export function AlertTrackerFilters({
@@ -147,8 +148,9 @@ export function AlertTrackerFilters({
             className="flex items-center gap-2 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-2.5 py-1.5"
             data-testid="alert-filter-monitor"
           >
-            <span>
-              {t("alerts.filterMonitor")} <span className="font-semibold">{filters.monitorId}</span>
+            <span className="inline-flex flex-wrap items-center gap-1.5">
+              {t("alerts.filterMonitor")}
+              <MonitorCode id={filters.monitorId} />
             </span>
             <button
               type="button"

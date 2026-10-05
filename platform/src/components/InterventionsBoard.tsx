@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { MonitorCode } from "@/components/MonitorCode";
 import { decideInterventionAction } from "@/app/admin/interventions/actions";
 import { useT } from "@/hooks/useUiLocale";
 
@@ -102,9 +103,15 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                 <h2 className="mt-2 font-semibold text-lg">
                   {i.action_code} · {i.alert_title}
                 </h2>
-                <div className="text-xs text-[var(--muted)] mt-1">
-                  #{i.id} · {i.analysis_code} · {i.indicator_monitor_id} ·{" "}
-                  {t("intv.stepRequested", { step: i.step_index + 1, at: i.requested_at })}
+                <div className="text-xs text-[var(--muted)] mt-1 flex flex-wrap items-center gap-x-1 gap-y-1">
+                  <span>
+                    #{i.id} · {i.analysis_code}
+                  </span>
+                  <span>·</span>
+                  <MonitorCode id={i.indicator_monitor_id} tone="inline" />
+                  <span>
+                    · {t("intv.stepRequested", { step: i.step_index + 1, at: i.requested_at })}
+                  </span>
                 </div>
                 <p className="text-sm mt-2 text-slate-700">{detail.description || i.summary}</p>
               </div>

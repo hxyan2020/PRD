@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, StatusBadge, SeverityBadge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { useT } from "@/hooks/useUiLocale";
 
@@ -123,7 +124,9 @@ export function DetectorsBoard({
                 <td>
                   <Badge className="bg-orange-50 text-orange-900 border-orange-200">{phrase(d.product)}</Badge>
                 </td>
-                <td className="text-sm">{d.monitor_id}</td>
+                <td className="text-sm">
+                  <MonitorCode id={d.monitor_id} name={d.name} />
+                </td>
                 <td className="text-sm tabular-nums">
                   {d.comparator} {t("common.warn")} {d.warn_threshold} / {t("common.breach")} {d.breach_threshold}
                 </td>

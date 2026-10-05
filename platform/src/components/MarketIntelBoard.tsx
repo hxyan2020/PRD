@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, StatCard, StatusBadge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
 import { SourceBrandMark } from "@/components/SourceBrandMark";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { navLabel, t } from "@/lib/i18n";
@@ -419,7 +420,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       {indicator && (
         <div className="panel p-3 flex flex-wrap gap-2 items-center text-sm">
           <span className="text-xs uppercase text-[var(--muted)]">{t("mi.live", locale)}</span>
-          <Badge className="bg-orange-50 text-orange-900 border-orange-200">{indicator.monitor_id}</Badge>
+          <MonitorCode id={indicator.monitor_id} name={indicator.name} status={indicator.status} />
           <span>{indicator.name}</span>
           <StatusBadge value={indicator.status} />
           <Link className="underline text-xs" href="/admin/monitor-2#M2-MKT-INTEL">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
 import { RiskLogCharts, type HistoryDay } from "@/components/RiskLogCharts";
+import { MonitorCode } from "@/components/MonitorCode";
 import type { AlertTrackerPack } from "@/lib/alert-tracker";
 import { navLabel } from "@/lib/i18n";
 import { useT } from "@/hooks/useUiLocale";
@@ -338,9 +339,16 @@ export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; 
                   <h3 className="mt-2 font-semibold text-lg">
                     {r.alert_id} · {phrase(r.title)}
                   </h3>
-                  <div className="text-xs text-[var(--muted)] mt-1">
-                    {r.created_at} · {r.monitor_id} · {phrase(r.indicator_name)}
-                    {r.ticket_id ? ` · ${t("common.ticket")} ${r.ticket_id} (${phrase(r.ticket_status)})` : ""}
+                  <div className="text-xs text-[var(--muted)] mt-1 flex flex-wrap items-center gap-x-1 gap-y-1">
+                    <span>{r.created_at}</span>
+                    <span>·</span>
+                    <MonitorCode id={r.monitor_id} name={r.indicator_name} tone="inline" />
+                    <span>· {phrase(r.indicator_name)}</span>
+                    {r.ticket_id ? (
+                      <span>
+                        · {t("common.ticket")} {r.ticket_id} ({phrase(r.ticket_status)})
+                      </span>
+                    ) : null}
                   </div>
                   <p className="text-sm mt-2 text-slate-700">{phrase(r.message)}</p>
                   {r.impact_notes && <p className="text-sm mt-1 text-[var(--muted)]">{phrase(r.impact_notes)}</p>}

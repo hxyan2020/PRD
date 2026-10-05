@@ -10,6 +10,7 @@ export type IndicatorCombo = {
 
 export type IndicatorMeta = {
   monitor_id: string;
+  name: string;
   description: string;
   risk_scenarios: string[];
   combinations: IndicatorCombo[];
@@ -95,6 +96,61 @@ const FALLBACK_DESCRIPTION: Record<string, string> = {
   "M2-CHARGEBACK": "Payment chargebacks and disputes in the last 24 hours.",
   "M2-IB-PAYOUT": "Anomaly score on introducing-broker rebate payout patterns.",
   "M2-COPY-CHURN": "Net percentage of copy followers exiting a top provider in one hour.",
+  "M2-CROSS-BOOK": "Cross-book contagion score when CFD and crypto domains alarm together.",
+  "M2-VENDOR-OUT": "Count of critical vendors (LP, bridge, feed, payment) currently degraded.",
+  "M2-COMPLAINT": "Client complaint tickets raised in the last 24 hours.",
+};
+
+const FALLBACK_NAME: Record<string, string> = {
+  "M2-EQ-001": "Company Equity Drawdown",
+  "M2-MRG-014": "Accounts >90% Margin Utilisation",
+  "M2-LP-022": "LP Reject Rate (oneZero)",
+  "M2-HEDGE-007": "Hedge Coverage Ratio",
+  "M2-XAU-247": "XAUUSD247 Net Exposure",
+  "M2-CRYPTO-WALLET": "Hot Wallet Float Ratio",
+  "M2-CRYPTO-LIQ": "Liquidation Engine Backlog",
+  "M2-COPY-009": "Top Signal Provider Copier Concentration",
+  "M2-FEED-003": "Stale Quote Symbols",
+  "M2-FRAUD-011": "Multi-account Cluster Score",
+  "M2-STOP-018": "Stop-out Count (5m window)",
+  "M2-NBP-016": "Negative Balance Account Count",
+  "M2-SLIP-021": "Avg Client Slippage (majors, 15m)",
+  "M2-BRIDGE-LAT": "Bridge Fill Latency p95",
+  "M2-ABOOK-008": "A-book Volume Ratio (session)",
+  "M2-VAR-002": "1-day VaR Utilisation",
+  "M2-CORR-004": "Corr Matrix Drift vs Baseline",
+  "M2-GAP-012": "Estimated Gap Exposure (USD)",
+  "M2-SPREAD-005": "Spread vs Session Median Ratio",
+  "M2-LEV-019": "New Accounts at Max Leverage (24h)",
+  "M2-BONUS-013": "Bonus Converted to Cash (24h USD)",
+  "M2-WD-015": "Withdrawal Volume (1h USD)",
+  "M2-FUND-010": "Funding Exceptions (1h)",
+  "M2-PAY-017": "Payment Fraud Model Score",
+  "M2-WASH-020": "Wash/Collusion Detection Score",
+  "M2-API-023": "Trading API Error Rate (5m)",
+  "M2-MODEL-006": "Detector Precision (7d rolling)",
+  "M2-CAP-024": "Entity Capital Buffer Ratio",
+  "M2-SEG-025": "Client Money Segregation Gap (USD)",
+  "M2-CRYPTO-ORACLE": "Mark Price Oracle Lag",
+  "M2-CRYPTO-INS": "Insurance Fund Daily Drawdown",
+  "M2-CRYPTO-OI": "Top Account OI Share (per contract)",
+  "M2-CRYPTO-DEP": "Crypto Deposits (1h USD)",
+  "M2-ARB-026": "Latency Arb Toxicity Score",
+  "M2-SWAP-027": "Symbols with Swap vs Benchmark Δ",
+  "M2-MKT-INTEL": "Market Intelligence High-Impact Hits (5m)",
+  "M2-PERP-BASIS": "Perp Mark–Index Basis",
+  "M2-FUNDING-RATE": "Perp Funding Rate Abs (8h)",
+  "M2-STABLE-EXP": "Stablecoin Depeg Exposure (USD)",
+  "M2-MT-DISC": "Trading Platform Disconnect Rate",
+  "M2-RECON-BRK": "Reconciliation Breaks (open)",
+  "M2-KILL-COUNT": "Active Symbol Kill-Switches",
+  "M2-NEWS-GROSS": "Gross Notional into Tier-1 News (USD)",
+  "M2-CHARGEBACK": "Payment Chargebacks (24h)",
+  "M2-IB-PAYOUT": "IB Rebate Anomaly Score",
+  "M2-COPY-CHURN": "Copy Follower Net Exit (1h)",
+  "M2-CROSS-BOOK": "Cross-book Contagion Score",
+  "M2-VENDOR-OUT": "Critical Vendor Degraded Count",
+  "M2-COMPLAINT": "Client Complaint Velocity (24h)",
 };
 
 function frequencyFor(monitorId: string, unit: string | null | undefined) {
@@ -114,12 +170,16 @@ function buildIndex() {
     const id = skill.indicator.monitor_id;
     const existing = byId.get(id) || {
       monitor_id: id,
+      name: skill.indicator.name || FALLBACK_NAME[id] || id,
       description: skill.indicator.why || skill.description,
       risk_scenarios: [],
       combinations: [],
       frequency: DEFAULT_FREQ.en,
       frequency_zh: DEFAULT_FREQ.zh,
     };
+    if (!existing.name || existing.name === id) {
+      existing.name = skill.indicator.name || FALLBACK_NAME[id] || id;
+    }
     if (!existing.description) existing.description = skill.description;
     const scenarioLine = skill.name;
     if (!existing.risk_scenarios.includes(scenarioLine)) existing.risk_scenarios.push(scenarioLine);
@@ -146,6 +206,7 @@ function buildIndex() {
     for (const id of unique) {
       const existing = byId.get(id) || {
         monitor_id: id,
+        name: FALLBACK_NAME[id] || id,
         description: FALLBACK_DESCRIPTION[id] || linked.description,
         risk_scenarios: [],
         combinations: [],
@@ -182,6 +243,7 @@ export function getIndicatorMeta(
   if (base) {
     return {
       ...base,
+      name: opts?.name || base.name || FALLBACK_NAME[monitorId] || monitorId,
       description: base.description || FALLBACK_DESCRIPTION[monitorId] || opts?.name || monitorId,
       risk_scenarios: base.risk_scenarios.slice(0, 5),
       combinations: base.combinations.slice(0, 4),
@@ -191,10 +253,18 @@ export function getIndicatorMeta(
   }
   return {
     monitor_id: monitorId,
-    description: FALLBACK_DESCRIPTION[monitorId] || `Monitors ${opts?.name || monitorId} against configured warn/breach thresholds.`,
+    name: opts?.name || FALLBACK_NAME[monitorId] || monitorId,
+    description:
+      FALLBACK_DESCRIPTION[monitorId] ||
+      `Monitors ${opts?.name || monitorId} against configured warn/breach thresholds.`,
     risk_scenarios: ["Threshold breach on this indicator"],
     combinations: [],
     frequency: freq.en,
     frequency_zh: freq.zh,
   };
+}
+
+/** True when a string looks like a Monitor 2.0 indicator id. */
+export function isMonitorCode(value: string | null | undefined): boolean {
+  return !!value && /^M2-[A-Z0-9-]+$/i.test(value.trim());
 }

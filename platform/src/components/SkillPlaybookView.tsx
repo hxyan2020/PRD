@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { AdminLink } from "@/components/AdminLink";
 import { Badge, DeptBadge, StatusBadge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
 import { finalizeSkill, type SkillPlaybook } from "@/lib/ai/skill-playbook";
 import type { SkillScenario } from "@/lib/ai/scenario-types";
 import { useUiLocale } from "@/hooks/useUiLocale";
@@ -69,7 +70,7 @@ export function SkillPlaybookView({
         <div className="mt-3 flex flex-wrap gap-2">
           <DeptBadge code={s.owner_department} />
           <StatusBadge value={status} />
-          <Badge className="bg-orange-50 text-orange-900 border-orange-200">{s.indicator.monitor_id}</Badge>
+          <MonitorCode id={s.indicator.monitor_id} name={s.indicator.name} unit={s.indicator.unit} />
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">
             {s.auto_execute === false ? t("skill.manual", locale) : t("skill.auto", locale)}
           </Badge>
@@ -190,11 +191,7 @@ export function SkillPlaybookView({
       <Section k="skill.related" locale={locale}>
         <div className="flex flex-wrap gap-1">
           {s.related_indicators.length ? (
-            s.related_indicators.map((id) => (
-              <Badge key={id} className="bg-orange-50 text-orange-900 border-orange-200">
-                {id}
-              </Badge>
-            ))
+            s.related_indicators.map((id) => <MonitorCode key={id} id={id} />)
           ) : (
             <span className="text-sm text-[var(--muted)]">{t("common.none", locale)}</span>
           )}

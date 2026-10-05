@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MonitorActions } from "@/components/MonitorActions";
+import { MonitorCode } from "@/components/MonitorCode";
 import { IndicatorThresholdEditor } from "@/components/IndicatorThresholdEditor";
 import { IndicatorPauseToggle, MonitorRunAllButton } from "@/components/MonitorEngineActions";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
@@ -168,7 +169,9 @@ export default async function Monitor2Page({
                   >
                     <td className="min-w-[11rem]">
                       <div className="font-medium"><Phrase>{i.name}</Phrase></div>
-                      <div className="text-xs text-[var(--muted)]">{i.monitor_id}</div>
+                      <div className="mt-0.5">
+                        <MonitorCode id={i.monitor_id} name={i.name} unit={i.unit} />
+                      </div>
                       {i.detector_code ? (
                         <div className="text-[11px] text-[var(--muted)] mt-0.5">
                           <T k="m2.detectorCode" /> · {i.detector_code}
@@ -239,13 +242,7 @@ export default async function Monitor2Page({
                               </div>
                               <div className="mt-1 flex flex-wrap gap-1">
                                 {c.partners.map((p) => (
-                                  <Link
-                                    key={p}
-                                    href={`#${p}`}
-                                    className="text-[11px] font-semibold text-teal-800 underline"
-                                  >
-                                    {p}
-                                  </Link>
+                                  <MonitorCode key={p} id={p} />
                                 ))}
                               </div>
                             </div>
@@ -319,9 +316,7 @@ export default async function Monitor2Page({
                     <tr key={r.id}>
                       <td className="text-sm whitespace-nowrap">{r.created_at}</td>
                       <td className="text-xs font-semibold">
-                        <Link href={`#${r.monitor_id}`} className="text-teal-800 underline">
-                          {r.monitor_id}
-                        </Link>
+                        <MonitorCode id={r.monitor_id} tone="inline" />
                       </td>
                       <td className="text-sm">{r.detector_code}</td>
                       <td className="tabular-nums">{r.observed_value}</td>

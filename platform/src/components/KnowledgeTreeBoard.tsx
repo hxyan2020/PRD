@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminLink } from "@/components/AdminLink";
 import { Badge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
 import { SKILL_SCENARIOS, LINKED_SCENARIOS } from "@/lib/ai/risk-scenarios-catalog";
 import { finalizeSkill } from "@/lib/ai/skill-playbook";
 import { CHAIN_ZH } from "@/lib/ai/skill-zh";
@@ -611,7 +612,11 @@ function Inspector({
           <h2 className="font-[family-name:var(--font-display)] text-lg leading-snug">{playbook.name}</h2>
           <div className="flex flex-wrap gap-1.5">
             <Badge className="bg-teal-50 text-teal-900 border-teal-200">{playbook.code}</Badge>
-            <Badge className="bg-slate-100 text-slate-700 border-slate-200">{playbook.indicator.monitor_id}</Badge>
+            <MonitorCode
+              id={playbook.indicator.monitor_id}
+              name={playbook.indicator.name}
+              unit={playbook.indicator.unit}
+            />
             <Badge className="bg-orange-50 text-orange-900 border-orange-200">{playbook.indicator.product}</Badge>
           </div>
           <p className="text-sm text-[var(--muted)]">{playbook.description}</p>
@@ -731,7 +736,9 @@ function Outline({
                               {s.code}
                             </AdminLink>
                             <span className="text-[var(--muted)]"> — {s.name}</span>
-                            <span className="ml-2 text-[10px] uppercase tracking-wide text-slate-500">{s.indicator.monitor_id}</span>
+                            <span className="ml-2">
+                              <MonitorCode id={s.indicator.monitor_id} name={s.indicator.name} />
+                            </span>
                           </li>
                         );
                       })}

@@ -7,6 +7,7 @@ import { isStaticExport } from "@/lib/static-export";
 import { AiChallengePanel } from "@/components/AiChallengePanel";
 import { AiImprovementPanel } from "@/components/AiImprovementPanel";
 import { PageHeader, Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
 import { T } from "@/components/T";
 import type { ImprovementReview } from "@/lib/ai/improvement-model";
 
@@ -119,7 +120,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         <Badge className="bg-slate-100 text-slate-700 border-slate-200">
           <T k="common.confidence" /> {(analysis.confidence * 100).toFixed(0)}%
         </Badge>
-        <Badge className="bg-orange-50 text-orange-900 border-orange-200">{analysis.indicator_monitor_id}</Badge>
+        <MonitorCode id={analysis.indicator_monitor_id} />
         {analysis.needs_human ? <SeverityBadge value="WARN" /> : null}
         {analysis.challenged ? (
           <Badge
