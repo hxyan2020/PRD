@@ -211,8 +211,11 @@ export function SelectionChatbot() {
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 text-sm font-semibold">
                   <Sparkles className="h-4 w-4 text-teal-700" aria-hidden />
-                  {zh ? "劃選 AI 助理" : "Selection AI"}
+                  {zh ? "CRMP 劃選助理" : "CRMP desk assistant"}
                 </div>
+                <p className="mt-0.5 text-[11px] text-[var(--muted)]">
+                  {zh ? "後台用途／已建功能 · 外匯 CFD 與加密交易所風控" : "Admin purpose & build · FX CFD and crypto-exchange RM"}
+                </p>
                 {selection ? (
                   <p className="mt-1 text-[11px] text-[var(--muted)] line-clamp-2 break-word">
                     {zh ? "針對：" : "About: "}
