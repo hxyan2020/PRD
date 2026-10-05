@@ -198,8 +198,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   roles: {
     title: { en: "Roles & Permissions", "zh-Hant": "角色與權限" },
     subtitle: {
-      en: "RBAC matrix plus detailed owns / does / does-not / escalation for each CRMP role.",
-      "zh-Hant": "RBAC 矩陣，並附各 CRMP 角色之擁有／日常／不做／升級細節。",
+      en: "Editable RBAC matrix — name, description, BU, and permission pills (users.manage). AI cannot edit roles.",
+      "zh-Hant": "可編輯 RBAC 矩陣 — 名稱、說明、BU 與權限標籤（需 users.manage）。AI 不可編輯角色。",
     },
   },
   users: {

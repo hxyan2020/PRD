@@ -427,14 +427,14 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
 ];
 
 function syncRoles(db: Database.Database) {
+  // Seed new roles; do NOT overwrite permissions_json on conflict so human edits persist.
   const upsert = db.prepare(
     `INSERT INTO roles (code, name, description, department_code, permissions_json)
      VALUES (?, ?, ?, ?, ?)
      ON CONFLICT(code) DO UPDATE SET
        name = excluded.name,
        description = excluded.description,
-       department_code = excluded.department_code,
-       permissions_json = excluded.permissions_json`
+       department_code = excluded.department_code`
   );
   for (const [code, name, description, department, perms] of ROLE_DEFS) {
     upsert.run(code, name, description, department, JSON.stringify(perms));

@@ -12,6 +12,7 @@ export const EXTRA_UI: Record<string, Pair> = {
   "common.paused": { en: "Paused", "zh-Hant": "已暫停" },
   "common.clear": { en: "Clear", "zh-Hant": "清除" },
   "common.save": { en: "Save", "zh-Hant": "儲存" },
+  "common.saving": { en: "Saving…", "zh-Hant": "儲存中…" },
   "common.cancel": { en: "Cancel", "zh-Hant": "取消" },
   "common.failed": { en: "Failed", "zh-Hant": "失敗" },
   "common.none": { en: "None", "zh-Hant": "無" },
