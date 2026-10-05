@@ -457,7 +457,161 @@ export function EscalationManager({
         </div>
       )}
 
-      <div className="panel table-wrap" data-testid="esc-dimensions-table">
+      <ul className="space-y-2 sm:hidden" data-testid="esc-dimensions-mobile">
+        {routes.map((r) => {
+          const c = parseCoefficients(r.coefficients_json);
+          const def = isDefault(r);
+          const involved = parseInvolved(r.involved_teams_json);
+          const teamLabels = [
+            phrase(r.primary_team),
+            r.secondary_team ? phrase(r.secondary_team) : null,
+            ...involved.map((x) => phrase(x)),
+          ].filter(Boolean) as string[];
+          const editing = editId === r.id;
+          return (
+            <li
+              key={r.id}
+              className={`panel p-3 space-y-2 ${def ? "border-amber-200 bg-amber-50/40" : ""}`}
+              data-testid={def ? "esc-default-row-mobile" : `esc-row-mobile-${r.route_code || r.id}`}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-1">
+                    <code className="font-semibold text-sm break-all">{r.route_code || `ESC-${r.id}`}</code>
+                    {def && (
+                      <Badge className="bg-amber-100 text-amber-950 border-amber-300">
+                        {zh ? "預設" : "DEFAULT"}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="text-[11px] text-[var(--muted)] mt-0.5">{phrase(r.domain_code)}</div>
+                </div>
+                <SeverityBadge value={r.severity} />
+              </div>
+              <div className="text-sm space-y-1">
+                <div>
+                  <span className="text-[var(--muted)]">{zh ? "涉入團隊" : "Teams"}:</span>{" "}
+                  {teamLabels.join(" · ") || "—"}
+                </div>
+                <div>
+                  <span className="text-[var(--muted)]">{zh ? "情境" : "Scenario"}:</span>{" "}
+                  {r.risk_scenario ? phrase(r.risk_scenario) : "—"}
+                </div>
+                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs tabular-nums">
+                  <span>
+                    {zh ? "待處理" : "Pending"}: {r.pending_minutes_threshold != null ? `${r.pending_minutes_threshold}m` : "—"}
+                  </span>
+                  <span>
+                    {zh ? "需人工" : "Human"}: {r.requires_human ? t("common.yes") : t("common.no")}
+                  </span>
+                  <span>
+                    SLA: {r.sla_minutes > 0 ? `${r.sla_minutes}m` : `${defaultSlaMinutes}m*`}
+                  </span>
+                </div>
+                {r.lark_channel ? (
+                  <div className="text-xs">
+                    <span className="text-[var(--muted)]">{t("common.lark")}:</span> {phrase(r.lark_channel)}
+                  </div>
+                ) : null}
+              </div>
+              {editing ? (
+                <div className="space-y-2 rounded-lg border border-[var(--line)] bg-white p-2 text-xs">
+                  {COEFF_KEYS.map((k) => (
+                    <label key={k.key} className="flex items-center justify-between gap-2">
+                      <span>{zh ? k.zh : k.en}</span>
+                      <input
+                        className="input w-20"
+                        type="number"
+                        step="0.1"
+                        value={coeffs[k.key]}
+                        onChange={(e) => setCoeffs({ ...coeffs, [k.key]: Number(e.target.value) || 0 })}
+                      />
+                    </label>
+                  ))}
+                  <div>
+                    <label className="label">{zh ? "風險情境" : "Risk scenario"}</label>
+                    <input
+                      className="input"
+                      value={editMeta.risk_scenario}
+                      onChange={(e) => setEditMeta({ ...editMeta, risk_scenario: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="label">{zh ? "待處理門檻（分）" : "Pending threshold (min)"}</label>
+                    <input
+                      className="input"
+                      value={editMeta.pending_minutes_threshold}
+                      onChange={(e) =>
+                        setEditMeta({ ...editMeta, pending_minutes_threshold: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <label className="label">{zh ? "涉入團隊（逗號）" : "Involved teams (comma)"}</label>
+                    <input
+                      className="input"
+                      value={editMeta.involved_teams}
+                      onChange={(e) => setEditMeta({ ...editMeta, involved_teams: e.target.value })}
+                    />
+                  </div>
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={editMeta.requires_human}
+                      onChange={(e) => setEditMeta({ ...editMeta, requires_human: e.target.checked })}
+                    />
+                    {zh ? "需人工干預" : "Need human"}
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" className="btn btn-primary" onClick={() => saveEdit(r)}>
+                      {t("common.save")}
+                    </button>
+                    <button type="button" className="btn" onClick={() => setEditId(null)}>
+                      {t("common.cancel")}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-xs tabular-nums space-y-0.5" data-testid={`esc-coeffs-mobile-${r.route_code || r.id}`}>
+                  {COEFF_KEYS.map((k) => (
+                    <div key={k.key}>
+                      {zh ? k.zh : k.en}: <strong>{c[k.key]}</strong>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                <StatusBadge value={r.enabled ? "ACTIVE" : "DISABLED"} />
+                {canManage && (
+                  <div className="flex flex-wrap gap-1">
+                    {def ? (
+                      <span className="text-[11px] text-amber-900">
+                        {zh ? "預設 · 不可停用" : "Default · locked on"}
+                      </span>
+                    ) : (
+                      <button type="button" className="btn text-xs" onClick={() => toggle(r)}>
+                        {r.enabled ? t("common.disable") : t("common.enable")}
+                      </button>
+                    )}
+                    {!editing && (
+                      <button
+                        type="button"
+                        className="btn text-xs"
+                        onClick={() => openEdit(r)}
+                        data-testid={`esc-edit-mobile-${r.id}`}
+                      >
+                        {zh ? "編輯維度／係數" : "Edit dims / coeffs"}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="panel table-wrap hidden sm:block overflow-x-auto" data-testid="esc-dimensions-table">
         <table className="data">
           <thead>
             <tr>

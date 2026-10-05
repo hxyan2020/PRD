@@ -262,41 +262,78 @@ export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; 
       {tab === "history" && <RiskLogCharts history={data.history || []} />}
 
       {tab === "categories" && (
-        <div className="panel table-wrap">
-          <table className="data">
-            <thead>
-              <tr>
-                <th>{t("common.category")}</th>
-                <th>{t("common.product")}</th>
-                <th>{t("common.severity")}</th>
-                <th>{t("rl.alerts")}</th>
-                <th>{t("rl.open")}</th>
-                <th>{t("rl.loss")}</th>
-                <th>{t("rl.prevented")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.by_category.map((r, idx) => (
-                <tr key={`${r.category}-${r.product}-${r.severity}-${idx}`}>
-                  <td>
+        <>
+          <ul className="space-y-2 sm:hidden" data-testid="risk-log-categories-mobile">
+            {data.by_category.map((r, idx) => (
+              <li
+                key={`${r.category}-${r.product}-${r.severity}-${idx}`}
+                className="panel p-3 space-y-2"
+              >
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
                     <div className="font-medium">{phrase(r.category_name)}</div>
                     <div className="text-xs text-[var(--muted)]">{phrase(r.category)}</div>
-                  </td>
-                  <td>
-                    <Badge className="bg-orange-50 text-orange-900 border-orange-200">{phrase(r.product)}</Badge>
-                  </td>
-                  <td>
-                    <SeverityBadge value={r.severity} />
-                  </td>
-                  <td className="tabular-nums">{r.alert_count}</td>
-                  <td className="tabular-nums">{r.open_count}</td>
-                  <td className="tabular-nums">{usd(r.loss_usd)}</td>
-                  <td className="tabular-nums">{usd(r.prevented_usd)}</td>
+                  </div>
+                  <SeverityBadge value={r.severity} />
+                </div>
+                <Badge className="bg-orange-50 text-orange-900 border-orange-200">{phrase(r.product)}</Badge>
+                <div className="grid grid-cols-2 gap-2 text-sm tabular-nums">
+                  <div>
+                    <span className="text-[var(--muted)] text-xs">{t("rl.alerts")}</span>
+                    <div className="font-semibold">{r.alert_count}</div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)] text-xs">{t("rl.open")}</span>
+                    <div className="font-semibold">{r.open_count}</div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)] text-xs">{t("rl.loss")}</span>
+                    <div>{usd(r.loss_usd)}</div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)] text-xs">{t("rl.prevented")}</span>
+                    <div>{usd(r.prevented_usd)}</div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="panel table-wrap hidden sm:block overflow-x-auto">
+            <table className="data">
+              <thead>
+                <tr>
+                  <th>{t("common.category")}</th>
+                  <th>{t("common.product")}</th>
+                  <th>{t("common.severity")}</th>
+                  <th>{t("rl.alerts")}</th>
+                  <th>{t("rl.open")}</th>
+                  <th>{t("rl.loss")}</th>
+                  <th>{t("rl.prevented")}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {data.by_category.map((r, idx) => (
+                  <tr key={`${r.category}-${r.product}-${r.severity}-${idx}`}>
+                    <td>
+                      <div className="font-medium">{phrase(r.category_name)}</div>
+                      <div className="text-xs text-[var(--muted)]">{phrase(r.category)}</div>
+                    </td>
+                    <td>
+                      <Badge className="bg-orange-50 text-orange-900 border-orange-200">{phrase(r.product)}</Badge>
+                    </td>
+                    <td>
+                      <SeverityBadge value={r.severity} />
+                    </td>
+                    <td className="tabular-nums">{r.alert_count}</td>
+                    <td className="tabular-nums">{r.open_count}</td>
+                    <td className="tabular-nums">{usd(r.loss_usd)}</td>
+                    <td className="tabular-nums">{usd(r.prevented_usd)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {tab === "records" && (
@@ -383,7 +420,37 @@ export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; 
               hint={t("rl.avgHumHint")}
             />
           </div>
-          <div className="panel table-wrap">
+          <ul className="space-y-2 sm:hidden" data-testid="risk-log-handling-mobile">
+            {data.records.map((r) => (
+              <li key={r.id} className="panel p-3 space-y-2 text-sm">
+                <div className="text-xs text-[var(--muted)]">{r.created_at}</div>
+                <div className="font-medium">{r.alert_id}</div>
+                <div className="text-xs text-[var(--muted)]">{phrase(r.title)}</div>
+                <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(r.category_name)}</Badge>
+                <div className="grid grid-cols-2 gap-2 tabular-nums text-xs">
+                  <div>
+                    {t("rl.ack")}: {mins(r.ack_minutes)}
+                  </div>
+                  <div>
+                    {t("rl.resolve")}: {mins(r.resolve_minutes)}
+                  </div>
+                  <div>
+                    {t("common.human")}: {mins(r.human_handling_minutes)}
+                  </div>
+                  <div>
+                    {r.sla_breached ? (
+                      <Badge className="bg-rose-50 text-rose-900 border-rose-200">
+                        {t("rl.breachNm", { n: r.sla_minutes ?? 0 })}
+                      </Badge>
+                    ) : (
+                      <span className="text-[var(--muted)]">{r.sla_minutes ? `${r.sla_minutes}m` : "—"}</span>
+                    )}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="panel table-wrap hidden sm:block overflow-x-auto">
             <table className="data">
               <thead>
                 <tr>
@@ -442,7 +509,35 @@ export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; 
               hint={t("rl.prevRatioHint")}
             />
           </div>
-          <div className="panel table-wrap">
+          <ul className="space-y-2 sm:hidden" data-testid="risk-log-money-mobile">
+            {data.records.map((r) => (
+              <li key={r.id} className="panel p-3 space-y-2 text-sm">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="font-medium">{r.alert_id}</div>
+                    <div className="text-xs text-[var(--muted)]">{phrase(r.title)}</div>
+                  </div>
+                  <StatusBadge value={r.outcome || "OPEN"} />
+                </div>
+                <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(r.category_name)}</Badge>
+                <div className="grid grid-cols-2 gap-2 tabular-nums text-xs">
+                  <div>
+                    {t("rl.loss")}: {usd(r.estimated_loss_usd)}
+                  </div>
+                  <div>
+                    {t("rl.prevented")}: {usd(r.prevented_loss_usd)}
+                  </div>
+                  <div className="col-span-2">
+                    {t("rl.expCovered")}: {usd(r.exposure_usd)}
+                  </div>
+                </div>
+                {r.impact_notes ? (
+                  <p className="text-xs text-[var(--muted)]">{phrase(r.impact_notes)}</p>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+          <div className="panel table-wrap hidden sm:block overflow-x-auto">
             <table className="data">
               <thead>
                 <tr>
@@ -484,7 +579,36 @@ export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; 
             <h3 className="font-semibold">{t("rl.loopTitle")}</h3>
             <p className="text-sm text-[var(--muted)] mt-1">{t("rl.loopHint")}</p>
           </div>
-          <div className="panel table-wrap">
+          <ul className="space-y-2 sm:hidden" data-testid="risk-log-loopholes-mobile">
+            {data.loopholes.map((l, idx) => (
+              <li
+                key={`${l.loophole_tag}-${l.domain_code}-${l.product}-${idx}`}
+                className="panel p-3 space-y-2 text-sm"
+              >
+                <Badge className="bg-amber-50 text-amber-900 border-amber-200">{l.loophole_tag}</Badge>
+                <div className="text-xs text-[var(--muted)]">{l.category_name}</div>
+                <Badge className="bg-orange-50 text-orange-900 border-orange-200">{l.product}</Badge>
+                <div className="grid grid-cols-2 gap-2 tabular-nums text-xs">
+                  <div>
+                    {t("rl.incidents")}: {l.incidents}
+                  </div>
+                  <div>
+                    {t("rl.breaches")}: {l.breach_incidents}
+                  </div>
+                  <div>
+                    {t("rl.avgAckTitle")}: {mins(l.avg_ack_minutes)}
+                  </div>
+                  <div>
+                    {t("rl.loss")}: {usd(l.loss_usd)}
+                  </div>
+                  <div className="col-span-2">
+                    {t("rl.prevented")}: {usd(l.prevented_usd)}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="panel table-wrap hidden sm:block overflow-x-auto">
             <table className="data">
               <thead>
                 <tr>

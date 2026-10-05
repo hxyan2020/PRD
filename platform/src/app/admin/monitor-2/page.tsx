@@ -137,7 +137,83 @@ export default async function Monitor2Page({
           )}
         </div>
 
-        <div className="panel table-wrap" data-testid="monitor-indicators-table">
+        <ul className="space-y-2 sm:hidden" data-testid="monitor-indicators-mobile">
+          {indicators.map((i) => {
+            const meta = getIndicatorMeta(i.monitor_id, { unit: i.unit, name: i.name });
+            const unit = i.unit ? ` ${i.unit}` : "";
+            const paused = !!i.paused;
+            return (
+              <li
+                key={i.id}
+                id={`${i.monitor_id}-mobile`}
+                className={`panel p-3 space-y-2 ${paused ? "opacity-60" : ""}`}
+                data-testid={`monitor-indicator-mobile-${i.monitor_id}`}
+              >
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium">
+                      <Phrase>{i.name}</Phrase>
+                    </div>
+                    <MonitorCode id={i.monitor_id} name={i.name} unit={i.unit} />
+                  </div>
+                  <StatusBadge value={paused ? "IDLE" : i.status} />
+                </div>
+                <p className="text-sm text-[var(--muted)]">
+                  <Phrase>{meta.description}</Phrase>
+                </p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                    <Phrase>{i.domain_code}</Phrase>
+                  </Badge>
+                  <Badge className="bg-orange-50 text-orange-900 border-orange-200">{i.product}</Badge>
+                  {paused ? (
+                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                      <T k="m2.pausedNoAi" />
+                    </Badge>
+                  ) : null}
+                </div>
+                <div className="text-xs tabular-nums">
+                  <T k="m2.currentValue" />: {i.last_value}
+                  {unit}
+                </div>
+                <IndicatorThresholdEditor
+                  indicatorId={i.id}
+                  monitorId={i.monitor_id}
+                  warn={i.threshold_warn}
+                  breach={i.threshold_breach}
+                  unit={i.unit}
+                  canOperate={canOperate}
+                />
+                <div className="text-xs text-[var(--muted)]">
+                  <EnZh en={meta.frequency} zh={meta.frequency_zh} />
+                  {i.last_checked_at || i.detector_last_run_at ? (
+                    <>
+                      {" · "}
+                      <T k="m2.lastRefreshed" />: {i.last_checked_at || i.detector_last_run_at}
+                    </>
+                  ) : null}
+                </div>
+                {i.ticket_open_count > 0 ? (
+                  <Link
+                    href={`/admin/alerts?monitor_id=${encodeURIComponent(i.monitor_id)}`}
+                    className="text-sm font-semibold text-teal-800 underline tabular-nums"
+                  >
+                    <T k="common.openTickets" />: {i.ticket_open_count}
+                  </Link>
+                ) : (
+                  <span className="text-xs text-[var(--muted)]">
+                    <T k="common.openTickets" />: 0
+                  </span>
+                )}
+                {canOperate ? (
+                  <IndicatorPauseToggle indicatorId={i.id} monitorId={i.monitor_id} paused={paused} />
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="panel table-wrap hidden sm:block overflow-x-auto" data-testid="monitor-indicators-table">
           <table className="data">
             <thead>
               <tr>
@@ -292,7 +368,31 @@ export default async function Monitor2Page({
 
         <div className="panel p-4" data-testid="monitor-recent-runs">
           <h3 className="font-semibold"><T k="m2.recentRuns" /></h3>
-          <div className="table-wrap mt-3">
+          <ul className="mt-3 space-y-2 sm:hidden" data-testid="monitor-runs-mobile">
+            {runs.length === 0 ? (
+              <li className="text-sm text-[var(--muted)] py-2">
+                <T k="common.none" />
+              </li>
+            ) : (
+              runs.map((r) => (
+                <li key={r.id} className="rounded-lg border border-[var(--line)] bg-slate-50/80 px-3 py-2 text-sm space-y-1">
+                  <div className="text-xs text-[var(--muted)]">{r.created_at}</div>
+                  <MonitorCode id={r.monitor_id} tone="inline" />
+                  <div className="text-xs">{r.detector_code}</div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="tabular-nums">
+                      <T k="common.observed" />: {r.observed_value}
+                    </span>
+                    <SeverityBadge value={r.severity || r.status} />
+                  </div>
+                  <div className="text-xs">
+                    <T k="det.alertLine" vars={{ alert: r.alert_id ?? "—", analysis: r.analysis_id ?? "—" }} />
+                  </div>
+                </li>
+              ))
+            )}
+          </ul>
+          <div className="table-wrap mt-3 hidden sm:block overflow-x-auto">
             <table className="data">
               <thead>
                 <tr>

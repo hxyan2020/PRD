@@ -109,7 +109,7 @@ export function DataSourcesManager({
             ))}
           </select>
         </div>
-        <div className="flex-1 min-w-[220px]">
+        <div className="flex-1 min-w-0 basis-full sm:basis-auto sm:min-w-[12rem]">
           <label className="label">{t("common.search")}</label>
           <input
             className="input"
@@ -178,7 +178,54 @@ export function DataSourcesManager({
         </div>
       )}
 
-      <div className="panel table-wrap">
+      <ul className="space-y-2 sm:hidden" data-testid="data-sources-mobile">
+        {filtered.map((s) => {
+          const tags = JSON.parse(s.tags_json || "[]") as string[];
+          return (
+            <li key={s.id} className="panel p-3 space-y-2">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold break-words">{s.name}</div>
+                  <a className="text-xs text-teal-800 break-all" href={s.url} target="_blank" rel="noreferrer">
+                    {s.url}
+                  </a>
+                </div>
+                <StatusBadge value={s.status} />
+              </div>
+              <p className="text-xs text-[var(--muted)]">{phrase(s.description)}</p>
+              {s.notes ? (
+                <p className="text-xs text-slate-600">
+                  {t("src.note")}: {phrase(s.notes)}
+                </p>
+              ) : null}
+              <div className="flex flex-wrap gap-1.5">
+                <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(s.category)}</Badge>
+                <DeptBadge code={s.owner_department} />
+              </div>
+              <div className="text-xs text-[var(--muted)]">
+                {phrase(s.auth_type)}
+                {s.refresh_cadence ? ` · ${phrase(s.refresh_cadence)}` : ""}
+              </div>
+              {tags.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {tags.map((tag) => (
+                    <Badge key={tag} className="bg-teal-50 text-teal-900 border-teal-200">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              {canManage && (
+                <button type="button" className="btn text-xs w-full sm:w-auto" onClick={() => toggleStatus(s)}>
+                  {s.status === "ACTIVE" ? t("common.disable") : t("common.enable")}
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="panel table-wrap hidden sm:block overflow-x-auto">
         <table className="data">
           <thead>
             <tr>

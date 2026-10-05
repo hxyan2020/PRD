@@ -535,7 +535,7 @@ export function messengerAction(input: {
         thread.id,
         "SYSTEM",
         "Messenger",
-        zh ? "尚未連結 AI 分析 — 請開啟即時警報調查。" : "No AI analysis linked — open Live Alerts to investigate."
+        zh ? "尚未連結 AI 分析 — 請開啟 Realtime Alert & Tracker 調查。" : "No AI analysis linked — open Realtime Alert & Tracker to investigate."
       );
       return getMessengerThread(thread.id);
     }
