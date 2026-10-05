@@ -12,16 +12,23 @@
   var lastSelection = "";
   var lastLang = "en";
   var busy = false;
+  var selectTimer = null;
 
   var css = [
-    "#rh-ai-root{position:relative;z-index:80;font-family:ui-sans-serif,system-ui,'Noto Sans SC',sans-serif}",
-    "#rh-ai-spark{position:absolute;display:none;height:36px;padding:0 10px;gap:4px;border-radius:999px;border:1px solid #8f9d90;background:#dce4db;color:#3a433d;box-shadow:0 6px 18px rgba(28,25,22,.16);cursor:pointer;align-items:center;justify-content:center;z-index:90;font-size:12px;font-weight:750;letter-spacing:.02em}",
+    "#rh-ai-root{z-index:10000;font-family:ui-sans-serif,system-ui,'Noto Sans SC',sans-serif}",
+    "#rh-ai-spark{position:absolute;display:none;height:36px;padding:0 10px;gap:4px;border-radius:999px;border:1px solid #8f9d90;background:#dce4db;color:#3a433d;box-shadow:0 6px 18px rgba(28,25,22,.16);cursor:pointer;align-items:center;justify-content:center;z-index:90;font-size:12px;font-weight:750;letter-spacing:.02em;-webkit-tap-highlight-color:transparent}",
     "#rh-ai-spark svg{width:16px;height:16px;display:block}",
     "#rh-ai-spark:hover{background:#cfd9ce}",
-    "#rh-ai-fab{position:fixed;right:18px;bottom:18px;z-index:85;width:48px;height:48px;border-radius:999px;border:1px solid #8f9d90;background:#3f5348;color:#f6f3ee;cursor:pointer;box-shadow:0 10px 24px rgba(28,25,22,.18);display:flex;align-items:center;justify-content:center}",
+    "#rh-ai-selbar{position:fixed;top:max(8px,env(safe-area-inset-top,0px));left:10px;right:10px;z-index:2147483000;display:none;align-items:center;gap:8px;min-height:48px;padding:10px 12px;border-radius:12px;background:#3f5348;color:#f6f3ee;box-shadow:0 10px 28px rgba(28,25,22,.28);font-size:15px;font-weight:700;line-height:1.25;cursor:pointer;-webkit-tap-highlight-color:transparent}",
+    "#rh-ai-selbar.open{display:flex}",
+    "#rh-ai-selbar svg{width:20px;height:20px;flex:none}",
+    "#rh-ai-selbar-text{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
+    "#rh-ai-selbar-go{flex:none;background:#dce4db;color:#1c1916;border-radius:999px;padding:7px 12px;font-size:13px;font-weight:800}",
+    "#rh-ai-fab{position:fixed;right:14px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:120;width:52px;height:52px;border-radius:999px;border:1px solid #8f9d90;background:#3f5348;color:#f6f3ee;cursor:pointer;box-shadow:0 10px 24px rgba(28,25,22,.18);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}",
     "#rh-ai-fab svg{width:22px;height:22px}",
     "#rh-ai-fab:hover{background:#2f4038}",
-    "#rh-ai-panel{position:fixed;right:16px;bottom:76px;width:min(420px,calc(100vw - 24px));height:min(640px,calc(100vh - 100px));background:#fffcf7;border:1px solid #d8d0c4;border-radius:14px;box-shadow:0 18px 48px rgba(28,25,22,.18);display:none;flex-direction:column;overflow:hidden;z-index:95}",
+    "#rh-ai-panel{position:fixed;right:16px;bottom:76px;width:min(420px,calc(100vw - 24px));height:min(640px,calc(100vh - 100px));background:#fffcf7;border:1px solid #d8d0c4;border-radius:14px;box-shadow:0 18px 48px rgba(28,25,22,.18);display:none;flex-direction:column;overflow:hidden;z-index:2147483001}",
+    "@media (max-width:800px),(pointer:coarse){#rh-ai-spark{display:none !important}#rh-ai-fab{bottom:calc(80px + env(safe-area-inset-bottom,0px));width:56px;height:56px}#rh-ai-panel{left:0;right:0;bottom:0;width:100%;height:min(88vh,720px);max-height:calc(100vh - 12px);border-radius:16px 16px 0 0}}",
     "#rh-ai-panel.open{display:flex}",
     "#rh-ai-panel header{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #d8d0c4;background:#f3efe6}",
     "#rh-ai-panel header strong{font-size:.92rem;flex:1}",
@@ -69,6 +76,7 @@
     root.id = "rh-ai-root";
     root.innerHTML =
       '<button type="button" id="rh-ai-spark" title="Ask AI / 问 AI" aria-label="Ask AI about selection">' + sparkSvg + "<span>AI</span></button>" +
+      '<button type="button" id="rh-ai-selbar" aria-label="Ask AI about selected text">' + sparkSvg + '<span id="rh-ai-selbar-text">Ask AI</span><span id="rh-ai-selbar-go">Ask AI</span></button>' +
       '<button type="button" id="rh-ai-fab" title="Risk handbook AI" aria-label="Open handbook AI">' + sparkSvg + "</button>" +
       '<aside id="rh-ai-panel" aria-label="Handbook AI chat">' +
         "<header>" +
@@ -131,8 +139,8 @@
       .then(function (data) {
         index = data;
         document.getElementById("rh-ai-hint").textContent = t(
-          "Select any handbook text for an explanation. Then keep chatting.",
-          "选中手册中的文字会出现 AI 图标，点开后可继续追问。"
+          "On a phone: select text, then tap the green Ask AI bar at the top. Or tap the round AI button.",
+          "手机：选中文字后点顶部绿色「问 AI」条，或点右下角圆形按钮。"
         );
       })
       .catch(function () {
@@ -144,27 +152,88 @@
       });
   }
 
+  function isCoarsePointer() {
+    try {
+      return window.matchMedia && (window.matchMedia("(pointer: coarse)").matches || window.matchMedia("(max-width: 800px)").matches);
+    } catch (e) {
+      return "ontouchstart" in window;
+    }
+  }
+
+  function hideSelectionChrome() {
+    var spark = document.getElementById("rh-ai-spark");
+    var bar = document.getElementById("rh-ai-selbar");
+    if (spark) spark.style.display = "none";
+    if (bar) bar.classList.remove("open");
+  }
+
+  function placeSelectionChrome(text) {
+    if (!text) {
+      hideSelectionChrome();
+      return;
+    }
+    var panel = document.getElementById("rh-ai-panel");
+    if (panel && panel.classList.contains("open")) {
+      hideSelectionChrome();
+      return;
+    }
+    lastSelection = text;
+    lastLang = currentLang();
+    var bar = document.getElementById("rh-ai-selbar");
+    var label = document.getElementById("rh-ai-selbar-text");
+    var go = document.getElementById("rh-ai-selbar-go");
+    var shown = text.length > 48 ? text.slice(0, 46) + "…" : text;
+    if (label) label.textContent = t("Ask AI: ", "问 AI：") + shown;
+    if (go) go.textContent = t("Ask AI", "问 AI");
+    if (bar) bar.classList.add("open");
+    var spark = document.getElementById("rh-ai-spark");
+    if (!spark || isCoarsePointer()) return;
+    var sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    var rect = sel.getRangeAt(0).getBoundingClientRect();
+    var top = rect.bottom + 8;
+    if (top + 40 > window.innerHeight) top = Math.max(8, rect.top - 44);
+    spark.style.display = "flex";
+    spark.style.position = "fixed";
+    spark.style.left = Math.min(window.innerWidth - 56, Math.max(8, rect.right + 6)) + "px";
+    spark.style.top = Math.max(8, top) + "px";
+  }
+
+  function syncSelection() {
+    var text = readSelection();
+    if (!text) hideSelectionChrome();
+    else placeSelectionChrome(text);
+  }
+
   function bind() {
     var spark = document.getElementById("rh-ai-spark");
-    document.addEventListener("mouseup", onSelectEnd);
-    document.addEventListener("touchend", onSelectEnd, { passive: true });
-    document.addEventListener("mousedown", function (ev) {
-      if (ev.target.closest && ev.target.closest("#rh-ai-spark")) {
-        ev.preventDefault();
-        return;
-      }
-      if (!ev.target.closest || !ev.target.closest("#rh-ai-spark")) {
-        if (!ev.target.closest("#rh-ai-panel")) spark.style.display = "none";
-      }
+    var bar = document.getElementById("rh-ai-selbar");
+    document.addEventListener("selectionchange", function () {
+      clearTimeout(selectTimer);
+      selectTimer = setTimeout(syncSelection, 220);
     });
-    spark.addEventListener("mousedown", function (ev) { ev.preventDefault(); ev.stopPropagation(); });
-    spark.addEventListener("click", function (ev) {
+    document.addEventListener("mouseup", function (ev) {
+      if (ev.target && ev.target.closest && ev.target.closest("#rh-ai-root")) return;
+      clearTimeout(selectTimer);
+      selectTimer = setTimeout(syncSelection, 80);
+    });
+    document.addEventListener("touchend", function (ev) {
+      if (ev.target && ev.target.closest && ev.target.closest("#rh-ai-root")) return;
+      clearTimeout(selectTimer);
+      selectTimer = setTimeout(syncSelection, 320);
+    }, { passive: true });
+    function askFromSelection(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       var sel = lastSelection || readSelection();
       if (sel) openExplain(sel);
-    });
+    }
+    spark.addEventListener("pointerdown", function (ev) { ev.preventDefault(); ev.stopPropagation(); });
+    spark.addEventListener("click", askFromSelection);
+    bar.addEventListener("pointerdown", function (ev) { ev.preventDefault(); ev.stopPropagation(); });
+    bar.addEventListener("click", askFromSelection);
     document.getElementById("rh-ai-fab").addEventListener("click", function () {
+      hideSelectionChrome();
       openPanel(false);
     });
     document.getElementById("rh-ai-close").addEventListener("click", function () {
@@ -212,32 +281,15 @@
     return text;
   }
 
-  function onSelectEnd(ev) {
-    if (ev && ev.target && ev.target.closest && ev.target.closest("#rh-ai-root")) return;
-    setTimeout(function () {
-      var text = readSelection();
-      var spark = document.getElementById("rh-ai-spark");
-      if (!text) {
-        spark.style.display = "none";
-        return;
-      }
-      lastSelection = text;
-      lastLang = currentLang();
-      var sel = window.getSelection();
-      var rect = sel.getRangeAt(0).getBoundingClientRect();
-      spark.style.display = "flex";
-      spark.style.position = "fixed";
-      spark.style.left = Math.min(window.innerWidth - 48, Math.max(8, rect.right + 6)) + "px";
-      spark.style.top = Math.max(8, rect.top - 10) + "px";
-    }, 10);
-  }
-
   function openPanel(fromSelection) {
     var panel = document.getElementById("rh-ai-panel");
     panel.classList.add("open");
-    document.getElementById("rh-ai-spark").style.display = "none";
+    hideSelectionChrome();
     if (!messages.length) greet();
-    if (!fromSelection) document.getElementById("rh-ai-input").focus();
+    if (!fromSelection) {
+      var input = document.getElementById("rh-ai-input");
+      if (input && !isCoarsePointer()) input.focus();
+    }
   }
 
   function greet() {
@@ -608,7 +660,7 @@
       sel.removeAllRanges();
       sel.addRange(range);
       lastSelection = phrase;
-      onSelectEnd({});
+      syncSelection();
       return true;
     }
     return false;
