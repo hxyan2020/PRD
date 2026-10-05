@@ -92,7 +92,8 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - **BU:** System · **Depends:** docs owner; FE · **ETA:** 2026-Q4 BAU
 
 ### OI-12 — Evidence retention & audit export
-- [ ] Retention jobs, redaction, auditor export beyond Audit Log + home spine counts  
+- [ ] Retention jobs, redaction, auditor export beyond Audit Log (CRMP / Vantage Markets Admin plane split + Roll back) + home spine counts  
+- [x] Prototype audit plane split: CRMP logs vs Vantage Markets Admin logs; `POST /api/audit/rollback` when before-state snapshot exists  
 - **BU:** GRC · **Depends:** Legal; OI-06; Postgres · **ETA:** 2027-Q4
 
 ### OI-13 — Bidirectional Monitor ticket write-back *(delayed)*
@@ -101,12 +102,13 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 
 ### OI-14 — Prototype AI desk features — UAT window
 - [x] First/second-line AI Admin · grouped pipeline + rank note · intervention actioner email  
-- [x] RAG `propose_rag` blocklist · ESC-DEFAULT + skill binds · knowledge-tree RAG leaves · MonitorCode tooltips  
+- [x] RAG `propose_rag` human-gate · ESC-DEFAULT + dimension coefficients + skill binds · knowledge-tree RAG leaves · MonitorCode tooltips  
+- [x] Editable Roles (`/admin/roles` · `/api/roles`) · audit plane split + Roll back  
 - [ ] Formal UAT sign-off (OI-09)  
 - **BU:** AI · **ETA:** 2026-10 / 11 UAT
 
 ### OI-15 — Docs & URL catalog BAU
-- [ ] Keep User Guide / PRD / TSD / UAT / Roadmap / Ecosystem / Open Issues / Progress / URLs aligned with nav (no Spine Log tab; BU and Teams; Risk Domains P0–P3; Risk Log 90d)  
+- [ ] Keep User Guide / PRD / TSD / UAT / Roadmap / Ecosystem / Open Issues / Progress / URLs aligned with nav (no Spine Log tab; BU and Teams; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs)  
 - **BU:** All · **ETA:** Ongoing → 2027-12
 
 ---
@@ -116,5 +118,6 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-05 | Initial open-issues pack wired into admin docs |
+| 1.1 | 2026-10-05 | Audit plane split + rollback; editable Roles; escalation dimensions noted |
 
-**Owner:** demo platform owner · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)

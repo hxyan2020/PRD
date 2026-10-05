@@ -25,13 +25,16 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 | OI-09 | P1 | RO | Risk Owner | 已啟動 | 2026-Q4／2027-Q1 | 風險負責人 UAT 出口＋政策門檻 |
 | OI-10 | P2 | Pricing | Pricing | 已規劃 | 2027-Q3 | LP／定價饋送契約 |
 | OI-11 | P2 | Platform | System | 進行中 | 2026-Q4 | 管理後台 UX 打磨 |
-| OI-12 | P1 | GRC | GRC | 已規劃 | 2027-Q4 | 證據保存、遮罩與稽核匯出 |
+| OI-12 | P1 | GRC | GRC | 已規劃 | 2027-Q4 | 證據保存、遮罩與稽核匯出（原型已分流 CRMP／Vantage Markets 管理日誌＋回滾） |
 | OI-13 | P1 | Monitor | Monitor | 延期 | 2027-Q3 | Monitor 工單雙向回寫 |
-| OI-14 | P2 | AI | AI | UAT | 2026-10／11 | 原型 AI 台面功能 — UAT |
+| OI-14 | P2 | AI | AI | UAT | 2026-10／11 | 原型 AI 台面功能 — UAT（含可編輯角色、稽核平面分流） |
 | OI-15 | P3 | Product | All | 日常 | 持續→2027-12 | 文件與網址目錄跟上後台 |
+
+已交付（原型）：稽核 **CRMP 日誌**／**Vantage Markets 管理日誌**兩分頁＋`POST /api/audit/rollback`；可編輯角色（`/admin/roles` · `/api/roles`）；升級維度 × 係數與 ESC-DEFAULT；首頁脊柱階段計數（無脊柱日誌分頁）；BU 與團隊合併。
 
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-05 | 初版開放議題包接入管理文件 |
+| 1.1 | 2026-10-05 | 稽核平面分流＋回滾；可編輯角色；升級維度 |
 
-**負責人：** 示範平台負責人
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

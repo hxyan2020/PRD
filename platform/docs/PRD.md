@@ -201,8 +201,8 @@ graph LR
 | FR-06 | Recommended controls + double-confirm → admin ref | Block/halt/etc. produce admin_ref; checker note when required |
 | FR-07 | AI Admin maker ≠ checker | Same user cannot approve own proposal |
 | FR-08 | AI access blocklist (pages/functions/fields) | UI lists human-only targets with reasons |
-| FR-09 | Spine + Audit for AI/messenger/intervention events | Events correlatable within ~1 minute |
-| FR-10 | RBAC for admin surfaces | Viewer blocked from AI Admin operate paths |
+| FR-09 | Home spine + Audit for AI/messenger/intervention events | Events correlatable within ~1 minute; Spine Log tab removed |
+| FR-10 | RBAC for admin surfaces | Viewer blocked from AI Admin operate paths; Roles page editable via `/api/roles` |
 
 ### 6.2 P1 — should ship in prototype
 
@@ -221,8 +221,9 @@ graph LR
 | FR-24 | Live Alerts ack queue | Open-only queue; Acknowledge mutates status; button to Risk Log for closed tickets |
 | FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG document leaves with deep links |
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
-| FR-27 | Org directory | Combined BU and Teams hub, Roles (permission chips), Users (incl. demo platform owner; add/disable on localhost) |
-| FR-28 | Escalation routes + Lark registry | Severity → team → SLA; ESC-DEFAULT catch-all; skill binds one path; channel enable |
+| FR-27 | Org directory | Combined BU and Teams hub (`/admin/departments`), editable Roles (`/admin/roles` · `/api/roles`), Users (incl. demo platform owner / haixiang.yan@hytechc.com) |
+| FR-28 | Escalation routes + Lark registry | Dimensions × coefficients; ESC-DEFAULT catch-all; skill binds one route code; no Path name column; channel enable |
+| FR-36 | Audit plane split + rollback | `/admin/audit` CRMP logs vs Vantage Markets Admin logs tabs; Roll back restores before-state via `POST /api/audit/rollback` |
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
@@ -258,17 +259,17 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag; maker ≠ checker |
 | AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md; one escalation bind |
 | AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
-| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | AI write blocked; human / propose_rag |
+| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |
 | Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
 | Response | Demo Messenger | `/admin/messenger` | Chat-native triage | Sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
 | Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
-| Response | Escalation Routes | `/admin/escalation` | Severity → team → SLA | CRUD localhost; used by Escalate |
+| Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT; skill binds one path; no Path name column |
 | Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |
-| Organisation | Roles & Permissions | `/admin/roles` | RBAC | Permission chips per role |
-| Organisation | Users | `/admin/users` | Directory | demo platform owner present; add/disable manage |
+| Organisation | Roles & Permissions | `/admin/roles` | Editable RBAC | `/api/roles`; permission chips + charters |
+| Organisation | Users | `/admin/users` | Directory | demo platform owner / haixiang.yan@hytechc.com; add/disable manage |
 | Platform | Data Sources | `/admin/data-sources` | Feed registry | Category + status |
 | Platform | AI Access Security | `/admin/security/ai-access` | Human-only inventory | Blocklist + allowed + forbidden perms |
-| Platform | Audit Log | `/admin/audit` | Who changed what | Latest mutations listed |
+| Platform | Audit Log | `/admin/audit` | CRMP vs Vantage Markets Admin planes | Two tabs; Roll back via before-state snapshot |
 | Platform | Platform Settings | `/admin/settings` | Flags | Grouped keys; save |
 | Docs | User Guide | `/admin/docs/user-guide` | How to operate | EN + zh-Hant; every screen |
 | Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document |
@@ -399,6 +400,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 |---|---|---|
 | 1.0 | 2026-10-01 | Goals G1–G7, FR-01…16 |
 | 1.6 | 2026-10-05 | Spine on home; BU and Teams; line1/2 AI Admin; propose_rag; ESC-DEFAULT; Open Issues / Progress |
+| 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + rollback; editable Roles; escalation dimensions × coefficients |
 | 1.5 | 2026-10-04 | Journey and SoD flowcharts for every P0 path |
 
-**Owner:** demo platform owner
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -838,7 +838,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     dependsZh: "組織／實體模型；先完成 RM-05、RM-06",
     phase: "harden",
     screens: [
-      { href: "/admin/departments", en: "Departments", zh: "部門" },
+      { href: "/admin/departments", en: "BU and Teams", zh: "BU 與團隊" },
       { href: "/admin/data-sources", en: "Data Sources", zh: "資料來源" },
     ],
     codebase: [

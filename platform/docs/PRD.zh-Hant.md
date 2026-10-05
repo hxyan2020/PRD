@@ -37,7 +37,7 @@ graph LR
 
 | # | 目標 | 可衡量結果 |
 |---|---|---|
-| G1 | 單一脊柱 | 偵測→分析→挑戰→升級→干預→稽核可在脊柱日誌看見 |
+| G1 | 單一脊柱 | 偵測→分析→挑戰→升級→干預→稽核可在管理首頁脊柱（階段工單計數；脊柱日誌分頁已移除）看見 |
 | G2 | 確定性路由 | 已知技能確定時自動執行；否則 RAG＋人工覆核 |
 | G3 | 高嚴重度雙 AI | BREACH／CRITICAL 分析 100% 附第二 AI 挑戰 |
 | G4 | AI 設定職能分離 | AI Admin 變更必須 Maker ≠ Checker |
@@ -201,7 +201,7 @@ graph LR
 | FR-06 | 建議控制＋雙重確認 → 管理參照 | 封鎖／停交易等產出 admin_ref；必要時 Checker 註記 |
 | FR-07 | AI Admin Maker ≠ Checker | 同一使用者不能核准自己的提案 |
 | FR-08 | AI 存取黑名單（頁／功能／欄位） | UI 列出僅限人類目標與理由 |
-| FR-09 | AI／messenger／干預事件進脊柱＋稽核 | 約 1 分鐘內可對上 |
+| FR-09 | AI／messenger／干預事件進首頁脊柱＋稽核 | 約 1 分鐘內可對上；脊柱日誌分頁已移除 |
 | FR-10 | 管理介面 RBAC | 檢視者被擋在 AI Admin 操作路徑外 |
 
 ### 6.2 P1 — 原型應交付
@@ -220,8 +220,9 @@ graph LR
 | FR-24 | 即時警報確認佇列 | OPEN 依嚴重度排序；Acknowledge 變更狀態 |
 | FR-25 | 知識樹視覺化 | SVG 圖＋大綱；領域展開；進入劇本；RAG 幹 |
 | FR-26 | 分組平台設定 | 六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器 |
-| FR-27 | 組織目錄 | 部門、團隊、角色（權限晶片）、使用者（含 demo platform owner；localhost 可新增／停用） |
-| FR-28 | 升級路徑＋Lark 登錄 | 嚴重度 → 團隊 → SLA；頻道啟用；messenger 升級跟隨路徑 |
+| FR-27 | 組織目錄 | BU 與團隊合併中心（`/admin/departments`）、可編輯角色（`/admin/roles` · `/api/roles`）、使用者（含 demo platform owner／haixiang.yan@hytechc.com） |
+| FR-28 | 升級路徑＋Lark 登錄 | 維度 × 係數；ESC-DEFAULT 兜底；技能綁一條路徑代碼；無「路徑」名稱欄；頻道啟用 |
+| FR-36 | 稽核平面分流＋回滾 | `/admin/audit` CRMP 日誌 vs Vantage Markets 管理日誌分頁；回滾經 `POST /api/audit/rollback` 還原變更前快照 |
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
@@ -245,7 +246,7 @@ graph LR
 
 | 分組 | 功能 | 路徑 | 待辦工作 | 關鍵驗收 |
 |---|---|---|---|---|
-| 總覽 | 管理首頁 | `/admin` | 定向；用卡片跳轉 | 每張卡／列皆為連結；看得到負責人；messenger CTA |
+| 總覽 | 管理首頁 | `/admin` | 定向；用卡片跳轉；脊柱階段計數 | 每張卡／列皆為連結；脊柱視覺；messenger CTA |
 | 監控與風險 | 每日績效 | `/admin/dashboard` | 當日 CFD＋加密畫面 | 兩產品格；WARN／BREACH 數 |
 | 監控與風險 | 風險日誌分析 | `/admin/risk-log` | 處理時間、損失 vs 防損、漏洞 | 摘要＋類別＋領域＋紀錄 |
 | 監控與風險 | 市場情報 | `/admin/market-intel` | 會移動 LP 的頭條 | 立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描 |
@@ -257,19 +258,17 @@ graph LR
 | AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理 | 七個分頁；Maker ≠ Checker |
 | AI 與知識 | AI 技能 | `/admin/skills` | 劇本＋鏈 | 進入 → SKILL.md 頁 |
 | AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；樹幹；進入 |
-| AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 搜尋、top-K 檢索、新增／退役（管理） |
-| AI 與知識 | 脊柱日誌 | `/admin/spine` | 端到端膠帶 | 階段計數＋事件清單 |
-| 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註 |
+| AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
+| 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註；樣本顯示操作者信箱 |
 | 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流 | 同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟 |
 | 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；localhost 模擬通知 |
-| 應變 | 升級路徑 | `/admin/escalation` | 嚴重度 → 團隊 → SLA | localhost CRUD；升級使用 |
-| 組織 | 部門 | `/admin/departments` | RACI | 四個 BU 含職責 |
-| 組織 | 團隊 | `/admin/teams` | 值班 | 成員、Lark chat、輪值 |
-| 組織 | 角色與權限 | `/admin/roles` | RBAC | 每角色權限晶片 |
-| 組織 | 使用者 | `/admin/users` | 目錄 | demo platform owner 在；管理可新增／停用 |
+| 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
+| 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
+| 組織 | 角色與權限 | `/admin/roles` | 可編輯 RBAC | `/api/roles`；權限晶片＋章程 |
+| 組織 | 使用者 | `/admin/users` | 目錄 | demo platform owner／haixiang.yan@hytechc.com；管理可新增／停用 |
 | 平台 | 資料來源 | `/admin/data-sources` | 來源登錄 | 分類＋狀態 |
 | 平台 | AI 存取安全 | `/admin/security/ai-access` | 僅限人類清單 | 黑名單＋允許＋禁止權限 |
-| 平台 | 稽核日誌 | `/admin/audit` | 誰改了什麼 | 列出最近變更 |
+| 平台 | 稽核日誌 | `/admin/audit` | CRMP／Vantage Markets 管理兩平面 | 兩個分頁；回滾還原變更前快照 |
 | 平台 | 平台設定 | `/admin/settings` | 旗標 | 分組鍵；儲存 |
 | 文件 | 使用手冊 | `/admin/docs/user-guide` | 如何操作 | 英＋繁中；每一畫面 |
 | 文件 | PRD | `/admin/docs/prd` | 為什麼／做什麼／怎麼過 | 本文件 |
@@ -277,6 +276,8 @@ graph LR
 | 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 45 案，可互動 |
 | 文件 | 生態導入評估 | `/admin/docs/ecosystem` | 導入 | 階段、預算、風險 |
 | 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | RM-01…15：今日／要做／完成標準 |
+| 文件 | 開放議題 | `/admin/docs/open-issues` | 計畫缺口 | ETA、BU、依賴 → 2027 |
+| 文件 | 進度追蹤 | `/admin/docs/progress` | 時間軸看板 | X＝議題 Y＝現在→2027 |
 | 文件 | 網址目錄 | `/admin/docs/urls` | 導覽 | 頁＋API＋表 |
 | 殼層 | 登入 | `/login` | 具名角色 | 保持；Pages 路徑；負責人預設 |
 | 殼層 | 語言 | cookie `crmp_ui_lang` | 英／繁中 | 導覽＋文件切換 |
@@ -398,7 +399,7 @@ graph LR
 | 1.0 | 2026-10-01 | 目標 G1–G7、FR-01…16 |
 | 1.5 | 2026-10-04 | 各旅程與職能分離流程圖 |
 
-**負責人：** demo platform owner
-
-
 | 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、AI 一線／二線、propose_rag、ESC-DEFAULT、開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色；升級維度 × 係數 |
+
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

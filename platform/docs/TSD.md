@@ -22,7 +22,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
-- Review spine logs, risk analytics, market intel, and daily performance
+- Review home spine stage ticket counts, risk analytics, market intel, and daily performance
 
 ### 1.2 In scope (prototype)
 - Admin UI + SQLite persistence
@@ -81,7 +81,7 @@ graph LR
 3. **AI RCA** matches skill or RAG-reasons (`/admin/ai-analyses`)
 4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
 5. **Demo Messenger / Human intervention** triage and gated controls
-6. **Spine logging** records stage transitions (`/admin/spine`)
+6. **Home spine** records stage transitions with ticket counts on Admin Home (`/admin`; `/admin/spine` redirects — Spine Log tab removed)
 
 ```mermaid
 graph TD
@@ -89,7 +89,7 @@ graph TD
   Alarm --> RCA[AI RCA]
   RCA --> Challenger[Second AI]
   Challenger --> Messenger[Messenger / intervention]
-  Messenger --> Spine[Spine + audit]
+  Messenger --> Spine[Home spine + audit]
 ```
 7. **Daily performance / Risk Log / Market Intel** aggregate outcomes
 
@@ -189,16 +189,16 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §17.13 |
 | Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §17.15 |
 | Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §17.14 |
-| Response | `/admin/spine` | `listSpineEvents` | `spine.read` | §17.12 |
-| Org | `/admin/departments` | department cards | `teams.read` | §17.16 |
-| Org | `/admin/teams` | teams table | `teams.read` | §17.16 |
-| Org | `/admin/roles` | permission chips | `users.read` | §17.16 |
-| Org | `/admin/users` | `UsersManager`, `/api/users` | `users.read` / `users.manage` | §17.16 |
-| Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §17.17 |
-| Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §17.18 |
-| Platform | `/admin/audit` | `audit_logs` last 200 | `audit.read` | §17.19 |
-| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §17.20 |
-| Docs | `/admin/docs/user-guide` · `/admin/docs/prd` · `/admin/docs/tsd` · `/admin/docs/uat` · `/admin/docs/ecosystem` · `/admin/docs/roadmap` · `/admin/docs/urls` | `lib/docs.ts`, `UatChecklistBoard` | `admin.access` | §13 + §16.21 |
+| Response | `/admin/spine` | redirects → Admin Home spine counts | `spine.read` | §16.13 |
+| Org | `/admin/departments` | **BU and Teams** combined hub | `teams.read` | §16.16 |
+| Org | `/admin/teams` | redirects → `/admin/departments` | `teams.read` | §16.16 |
+| Org | `/admin/roles` | editable RBAC · `/api/roles` | `users.read` / `users.manage` | §16.16 |
+| Org | `/admin/users` | `UsersManager`, `/api/users` | `users.read` / `users.manage` | §16.16 |
+| Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §16.17 |
+| Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §16.18 |
+| Platform | `/admin/audit` | `AuditBoard` — CRMP / Vantage Markets Admin tabs + Roll back | `audit.read` | §16.19 |
+| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §16.20 |
+| Docs | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`, boards | `admin.access` | §13 + §16.21 |
 | Shell | `SelectionChatbot` (select text → sparkle → chat) | `lib/ai/desk-chat.ts`, `POST /api/ai-chat` | public / `ai.read` | §12 |
 
 Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`.
@@ -632,7 +632,7 @@ List merged into Realtime Alert (`AlertTrackerBoard`) with **grouped AI pipeline
 
 ### 16.12 RAG corpus
 
-`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`. **AI write blocklist** — AI service actors cannot POST/PATCH; humans with `rag.manage` or AI Admin `propose_rag` maker-checker. FTS via `reindexRagFts`.
+`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`. **Human-gate:** pages/fields AI cannot edit escalate to human — AI service actors cannot POST/PATCH; humans with `rag.manage` or AI Admin `propose_rag` maker-checker. FTS via `reindexRagFts`.
 
 ### 16.13 Spine (on Admin Home)
 
@@ -644,11 +644,11 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.15 Lark + escalation
 
-`lark_channels` + `lark.*` settings. `escalation_routes` join teams + channel. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one path (`skill-escalation-map.ts`); unbound → ESC-DEFAULT. Coefficients / default SLA settings supported.
+`lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
 
 ### 16.16 Organisation
 
-**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). Roles (`permissions_json` chips), users (`UsersManager`). Seed includes `PLATFORM_OWNER`.
+**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`). Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
 
 ### 16.17 Data sources
 
@@ -660,7 +660,14 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.19 Audit log
 
-`audit_logs` ORDER BY id DESC LIMIT 200. Actor, action, entity, details_json.
+`AuditBoard` partitions `audit_logs` into two tabs via `classifyAuditPlane` (`lib/audit.ts`):
+
+| Tab | Contents |
+|---|---|
+| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
+| **Vantage Markets Admin logs** | Other admin pages — restrict user rights, pull transaction data, triggered Lark messages, BU POC risk-incident responses, settings / org / RAG |
+
+Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
 
 ### 16.20 Platform settings
 
@@ -682,6 +689,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, demo platform owner, Pages login |
 | 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
 | 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
+| 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
 
-**Owner:** demo platform owner  
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

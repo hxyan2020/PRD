@@ -22,11 +22,11 @@
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
 - 對高影響動作強制人工關卡
 - 以 Maker/Checker 治理 AI 設定
-- 檢視 Spine、風險分析、市場情報與每日績效
+- 檢視首頁脊柱階段工單計數、風險分析、市場情報與每日績效
 
 ### 1.2 原型範圍內
 - 管理 UI + SQLite 持久化
-- Detectors → Alarm → AI RCA → 第二意見 → Messenger／Intervention → Spine → Dashboard
+- Detectors → Alarm → AI RCA → 第二意見 → Messenger／Intervention → 首頁脊柱 → Dashboard
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
@@ -81,7 +81,7 @@ graph LR
 3. **AI RCA** 匹配 Skill 或 RAG 推論（`/admin/ai-analyses`）
 4. **第二 AI 挑戰者** 於嚴重度達門檻時執行（`crmp-challenger-v0`）
 5. **Demo Messenger／人工介入** 分流與關卡控制
-6. **Spine 日誌** 記錄階段轉換（`/admin/spine`）
+6. **首頁脊柱** 記錄階段轉換與工單計數（`/admin`；`/admin/spine` 轉址 — 脊柱日誌分頁已移除）
 
 ```mermaid
 graph TD
@@ -189,16 +189,16 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
 | 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
-| 應變 | `/admin/spine` | `listSpineEvents` | `spine.read` | §16.13 |
-| 組織 | `/admin/departments` | 部門卡 | `teams.read` | §16.16 |
-| 組織 | `/admin/teams` | 團隊表 | `teams.read` | §16.16 |
-| 組織 | `/admin/roles` | 權限晶片 | `users.read` | §16.16 |
+| 應變 | `/admin/spine` | 轉址 → 管理首頁脊柱計數 | `spine.read` | §16.13 |
+| 組織 | `/admin/departments` | **BU 與團隊**合併中心 | `teams.read` | §16.16 |
+| 組織 | `/admin/teams` | 轉址 → `/admin/departments` | `teams.read` | §16.16 |
+| 組織 | `/admin/roles` | 可編輯 RBAC · `/api/roles` | `users.read`／`users.manage` | §16.16 |
 | 組織 | `/admin/users` | `UsersManager`、`/api/users` | `users.read`／`users.manage` | §16.16 |
 | 平台 | `/admin/data-sources` | `DataSourcesManager` | `sources.read`／`.manage` | §16.17 |
 | 平台 | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5＋§16.18 |
-| 平台 | `/admin/audit` | `audit_logs` 最近 200 | `audit.read` | §16.19 |
+| 平台 | `/admin/audit` | `AuditBoard` — CRMP／Vantage Markets 管理分頁＋回滾 | `audit.read` | §16.19 |
 | 平台 | `/admin/settings` | `SettingsManager`、`PATCH /api/settings` | `settings.manage` | §16.20 |
-| 文件 | `/admin/docs/user-guide` · `/admin/docs/prd` · `/admin/docs/tsd` · `/admin/docs/uat` · `/admin/docs/ecosystem` · `/admin/docs/roadmap` · `/admin/docs/urls` | `lib/docs.ts`、`UatChecklistBoard` | `admin.access` | §13＋§16.21 |
+| 文件 | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
 | 殼層 | `SelectionChatbot`（劃選文字 → 火花 → 聊天） | `lib/ai/desk-chat.ts`、`POST /api/ai-chat` | 公開／`ai.read` | §12 |
 
 靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-admin'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。
@@ -628,23 +628,23 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.12 RAG 語料
 
-`RagManager`：分類篩選、搜尋、檢索 `GET /api/rag?mode=retrieve&q=&limit=6`，有 `rag.manage` 可新增／更新／退役。FTS 經 `reindexRagFts`。受治理新增應優先走 AI Admin 變更單路徑（§8.7）。
+`RagManager`：分類篩選、搜尋、檢索 `GET /api/rag?mode=retrieve&q=&limit=6`。**人工閘道：** AI 不能編輯的頁／欄位升級給人類 — AI 服務角色不可 POST／PATCH；具 `rag.manage` 的人類或 AI Admin `propose_rag` Maker-Checker。FTS 經 `reindexRagFts`。
 
 ### 16.13 脊柱（管理首頁）
 
-階段：DETECT、ALARM、AI_RCA、SKILL_EXECUTE、HUMAN_INTERVENTION、RESOLVED、DASHBOARD。24 小時 `StatCard` 計數＋最近 150 事件。
+專屬脊柱日誌左側分頁已移除。階段 DETECT…DASHBOARD 顯示於管理首頁 `HomeSpineViz`，含**階段工單計數**（`spineStageCounts`）。`/admin/spine` 轉址至 `/admin`。
 
 ### 16.14 干預
 
-`listInterventions()`。待決：備註＋核准／駁回經 `decideInterventionAction`。寫入脊柱＋稽核。與 AI Admin 變更單分開。
+`listInterventions()`。待決：備註＋核准／駁回經 `decideInterventionAction`。樣本顯示**操作者信箱**。寫入脊柱＋稽核。與 AI Admin 變更單分開。
 
 ### 16.15 Lark＋升級
 
-`lark_channels`＋`lark.*` 設定。`escalation_routes` 聯結團隊＋頻道。Messenger `escalate` 依此圖走主 → 次 → 負責人 → 高階。
+`lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
 
 ### 16.16 組織
 
-部門（職責 JSON）、團隊（Lark chat、值班、member_count）、角色（`permissions_json` 晶片）、使用者（有 `users.manage` 時 `UsersManager` 新增／切換）。種子含 `PLATFORM_OWNER`。
+**BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。部門（職責 JSON）嵌套團隊（Lark chat、值班、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
 
 ### 16.17 資料來源
 
@@ -656,7 +656,14 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.19 稽核日誌
 
-`audit_logs` ORDER BY id DESC LIMIT 200。執行者、動作、實體、details_json。
+`AuditBoard` 經 `classifyAuditPlane`（`lib/audit.ts`）將 `audit_logs` 分為兩個分頁：
+
+| 分頁 | 內容 |
+|---|---|
+| **CRMP 日誌** | 本 CRMP 管理介面內變更 — 警報、AI、技能、升級、干預、Messenger |
+| **Vantage Markets 管理日誌** | 其他管理頁 — 限制權限、拉取交易、觸發 Lark、BU POC 風險事件回應、設定／組織／RAG |
+
+兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
 
 ### 16.20 平台設定
 
@@ -678,7 +685,8 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、demo platform owner 負責人、Pages 登入 |
 | 1.5 | 2026-10-04 | TSD 流程圖與序列圖；mermaid 改 SVG 渲染 |
 
-**負責人：** demo platform owner  
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
 
 | 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |

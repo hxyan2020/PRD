@@ -157,7 +157,7 @@ graph TD
 
 1. Users, roles, **BU and Teams**, grouped settings.  
 2. Review [AI Access Security](/admin/security/ai-access) — pages, functions and fields AI must never touch (includes RAG write blocklist / `propose_rag`).  
-3. Watch [Audit Log](/admin/audit) and the **home spine** stage ticket counts on Admin Home (`/admin/spine` redirects here).
+3. Watch [Audit Log](/admin/audit) (CRMP / Vantage Markets Admin tabs + Roll back) and the **home spine** stage ticket counts on Admin Home (`/admin/spine` redirects here).
 
 ---
 
@@ -419,11 +419,11 @@ graph TD
 
 **What it is.** The internal corpus used when a skill is not certain: policies, products, entities, platforms.
 
-**What you see.** Filter by category, search box, document cards (key, title, tags, status, excerpt). A **retrieve** box to try a query (top-K hits with scores). An **AI write block** banner: AI service actors cannot mutate the corpus — humans with `rag.manage` write, or AI Admin **`propose_rag`** for maker-checker.
+**What you see.** Filter by category, search box, document cards (key, title, tags, status, excerpt). A **retrieve** box to try a query (top-K hits with scores). An **AI write block / human-gate** banner: pages and corpus fields AI cannot edit escalate to a human — humans with `rag.manage` write, or AI Admin **`propose_rag`** for maker-checker.
 
 **What to click.** Retrieve with a phrase like “copy trading concentration gold margin” and confirm hits look relevant. Production-like creates should go through AI Admin `propose_rag`; this page is the corpus browser (and human write when permitted).
 
-**Good looks like.** Retrieve returns ranked hits. Retired docs drop out of search. AI cannot POST/PATCH `/api/rag` as a service actor.
+**Good looks like.** Retrieve returns ranked hits. Retired docs drop out of search. AI cannot POST/PATCH `/api/rag` as a service actor; blocked edits surface as a human gate.
 
 ### 8.6 Spine on Admin Home — `/admin` ( `/admin/spine` redirects )
 
@@ -525,13 +525,13 @@ graph TD
 
 ### 9.4 Escalation Routes — `/admin/escalation`
 
-**What it is.** The map: severity → primary team → secondary team → Lark channel → SLA minutes. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** path (coefficients / skill binds); unbound skills fall back to ESC-DEFAULT.
+**What it is.** Paths are defined by **dimensions** (severity, involved teams, risk scenario, pending time, need human intervention) with editable **coefficients**. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** route code; unbound skills fall back to ESC-DEFAULT. There is **no separate Path name column** — the route code plus dimensions identify the path.
 
-**What you see.** Route name, route code (including `ESC-DEFAULT`), severity, domain, teams, channel, SLA, default flag, enabled.
+**What you see.** Route code (including `ESC-DEFAULT`), dimension fields, coefficient editors, teams, channel, SLA, default flag, enabled.
 
-**What to click.** Create/edit/disable if you have manage rights (localhost). Read the SLA before you escalate a CRITICAL. Confirm the catch-all default exists.
+**What to click.** Create/edit/disable if you have manage rights (localhost). Edit dimension coefficients. Confirm the catch-all default exists. On Skills, confirm each playbook binds exactly one path.
 
-**Good looks like.** CRITICAL has a tighter SLA than WARN. Every route has a primary team. Exotic / unmatched events still resolve via ESC-DEFAULT.
+**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code.
 
 ```mermaid
 graph LR
@@ -549,9 +549,9 @@ graph LR
 
 **Combined hub.** Risk Control, Operations, AI, and System BUs with nested on-call teams. Expand a BU for mandate / Owns / Accountable / Collaborates / Out of scope / Escalates to, plus team mission and rotation (editable when authorised). There is no separate Teams left-nav tab.
 
-### 10.2 Roles & Permissions — `/admin/roles`
+### 10.2 Roles & Permissions — `/admin/roles` (editable)
 
-Each role (Risk Owner, Analyst, Ops, AI Engineer, System Admin, Super Admin, Viewer, …) with its permission chips (`monitor.read`, `ai.approve`, `settings.manage`, …). Super Admin has `*`. Use this page to see why a button is missing for a persona.
+**Editable** RBAC matrix at `/admin/roles` (API: `GET/POST /api/roles`). Each role (Risk Owner, Analyst, Ops, AI Engineer, System Admin, Super Admin, Viewer, …) shows name, description, BU, permission chips (`monitor.read`, `ai.approve`, `settings.manage`, …), plus Owns / Day-to-day / Does not / Escalates to. Super Admin has `*`. Operators with `users.manage` can update roles; AI actors are blocked. Use this page to see why a button is missing for a persona.
 
 ### 10.3 Users — `/admin/users`
 
@@ -579,7 +579,14 @@ The **human-only** inventory. AI service accounts must never receive these pages
 
 ### 11.3 Audit Log — `/admin/audit`
 
-Who did what: time, actor, action, entity, details. Messenger dismiss/close, AI Admin propose/approve, interventions, logins, setting saves should appear here on localhost. Newest 200 rows.
+Two tabs:
+
+| Tab | What it records |
+|---|---|
+| **CRMP logs** | All changes done inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
+| **Vantage Markets Admin logs** | Changes on other admin pages — restrict user rights, pull transaction data, triggered Lark messages, received risk incident response by BU POC, settings / org / RAG |
+
+Each row: time, actor, action, entity, details. Both tabs have a **Roll back** button — restores the before-state snapshot when available (`POST /api/audit/rollback`). Newest rows per plane.
 
 ### 11.4 Platform Settings — `/admin/settings`
 
@@ -646,14 +653,14 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
-| Response | Escalation Routes | Severity → team → SLA; ESC-DEFAULT catch-all |
+| Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
 | Response | Lark Integration | Channel registry |
-| Organisation | BU and Teams | Combined BU RACI + nested on-call teams |
-| Organisation | Users | Directory, including demo platform owner |
-| Organisation | Roles & Permissions | RBAC chips |
+| Organisation | BU and Teams | Combined BU RACI + nested on-call teams (`/admin/departments`) |
+| Organisation | Users | Directory, including demo platform owner / haixiang.yan@hytechc.com |
+| Organisation | Roles & Permissions | Editable RBAC (`/api/roles`) |
 | Platform | Data Sources | Internal + external registry |
 | Platform | Platform Settings | Grouped flags |
-| Platform | Audit Log | Who changed what |
+| Platform | Audit Log | CRMP vs Vantage Markets Admin tabs + Roll back |
 | Platform | AI Access Security | Human-only pages/functions/fields |
 | Docs | User Guide / URLs / UAT / PRD / TSD / Roadmap / Ecosystem / Open Issues / Progress | Product and operator documents |
 
@@ -667,5 +674,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.3 | 2026-10-04 | All admin screens, public Scan demo, demo platform owner, login on Pages |
 | 1.5 | 2026-10-04 | Flowcharts for login, unread, RCA path, messenger, maker/checker, intel scan, knowledge tree, spine |
 | 1.6 | 2026-10-05 | Spine on home; BU and Teams; AI line1/2; propose_rag; ESC-DEFAULT; Open Issues / Progress |
+| 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles; escalation dimensions × coefficients |
 
-**Owner:** demo platform owner
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -13,7 +13,7 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home, Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Detectors, Live Alerts, Risk Domains, AI Analyses, AI Admin, Skills, Knowledge Tree, RAG, Human Intervention, Lark, Escalation Routes, BU and Teams / Roles / Users, Data Sources, AI Access, Audit, Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Detectors, Live Alerts, Risk Domains, AI Analyses, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -345,22 +345,22 @@ graph TD
 **Pass:** Blocklist UI lists human-only items with reason text; at least one sensitive field example is present.
 **Evidence:** Screenshot of blocklist rows; counts of page/function/field items.
 
-### UAT-16 — Audit Log and Spine tell the same story as messenger
+### UAT-16 — Audit Log and home spine tell the same story as messenger
 
 - **Severity:** High · **BU:** System · **Depends:** UAT-07 through UAT-12 performed · **Window:** T+181m / 15m
 - **Covers:** Audit Log, Admin Home spine
 - **Why:** If chat actions vanish from the audit trail, we cannot reconstruct a decision after the fact.
-- **Goal:** Match at least one escalate and one control-confirm from messenger to Spine and/or Audit.
+- **Goal:** Match at least one escalate and one control-confirm from messenger to home spine and/or Audit; confirm the two audit tabs and Roll back affordance.
 
 **Steps**
 
-1. Open Audit Log. Look for recent rows whose action looks like MESSENGER_* or AI_* (escalate, dismiss, close, confirm).
-2. Open Spine Log. Look for stages such as AI_RCA, ESCALATION, INTERVENTION.
+1. Open Audit Log. Confirm two tabs: **CRMP logs** and **Vantage Markets Admin logs**. Messenger escalate/dismiss/close and AI actions should land under CRMP logs; rights / settings / RAG / Lark under Vantage Markets Admin logs.
+2. On Admin Home, open the integration spine (stage ticket counts — there is no Spine Log tab). Look for stages such as AI_RCA, ESCALATION / HUMAN_INTERVENTION.
 3. Pick one messenger escalate and one “send to admin” confirm from earlier cases. Find matching timestamps (within about one minute) and reference ids.
-4. You should be able to explain in one sentence: “this chat action became that spine/audit row”.
+4. On a row with a before-state snapshot, confirm **Roll back** is available (`POST /api/audit/rollback`). You should be able to explain in one sentence: “this chat action became that spine/audit row”.
 
-**Pass:** At least one escalate and one control confirm visible in Audit and/or Spine with matching refs.
-**Evidence:** Event ids; screenshot pair Audit + Spine.
+**Pass:** At least one escalate and one control confirm visible in Audit and/or home spine with matching refs; both audit tabs render; Roll back button present where snapshot exists.
+**Evidence:** Event ids; screenshot pair Audit tabs + Admin Home spine.
 
 ### UAT-17 — English and Traditional Chinese documentation both render
 
@@ -528,7 +528,7 @@ graph TD
 2. Point at the AI_REPORT bubble. Open it in admin. Say whether this was a skill playbook or RAG reasoning.
 3. If BREACH/CRITICAL, point at the 2nd AI verdict (AGREE / DISAGREE / MIXED).
 4. Run Show evidence, then Escalate once. On a disposable WARN you may Dismiss; on a reviewed BREACH you may Close.
-5. Open Spine Log and Audit Log and find the matching events. Describe them in ordinary language, not only raw codes.
+5. Open Admin Home spine and Audit Log (CRMP logs tab) and find the matching events. Describe them in ordinary language, not only raw codes.
 
 **Pass:** Operator can explain the loop without Lark API credentials; spine/audit show the same case.
 **Evidence:** Notes of thread id, analysis id, spine event ids.
@@ -717,35 +717,34 @@ graph TD
 - **Severity:** Medium · **BU:** Risk · **Depends:** UAT-09 · **Window:** T+405m / 8m
 - **Covers:** Escalation Routes
 - **Why:** Messenger Escalate is only trustworthy if the path is a configured object with SLA, not free text.
-- **Goal:** Open Escalation Routes and confirm named paths, steps, teams and SLAs that match what Escalate printed.
+- **Goal:** Open Escalation Routes and confirm dimension-defined paths (ESC-DEFAULT catch-all), coefficients, and that skills bind one route code — no separate Path name column.
 
 **Steps**
 
 1. Open Escalation Routes.
-2. Find a enabled route used by the demo (often a four-step path ending at Risk Owner / Exec).
-3. Write down: route name, step count, first team, last team, SLA minutes.
-4. Compare with the ESCALATION bubble from UAT-09. Names should match in spirit (desk → credit → owner → exec).
+2. Confirm rows are defined by dimensions (severity, involved teams, risk scenario, pending threshold, need-human) with editable coefficients — not a free-text Path name column.
+3. Find `ESC-DEFAULT` (catch-all for unmatched / exotic events) and at least one enabled non-default route with SLA.
+4. Compare with the ESCALATION bubble from UAT-09. Route codes / teams should match in spirit (desk → credit → owner → exec).
 
-**Pass:** At least one enabled multi-step route with SLA; matches the messenger escalate text.
-**Evidence:** Screenshot of the route plus the messenger ESCALATION bubble.
+**Pass:** ESC-DEFAULT present; at least one enabled dimension-based route with coefficients + SLA; no Path name column; matches messenger escalate text.
+**Evidence:** Screenshot of the dimensions table plus the messenger ESCALATION bubble.
 
-### UAT-38 — Organisation — departments, teams, users and roles
+### UAT-38 — Organisation — BU and Teams, users and roles
 
 - **Severity:** Medium · **BU:** System + Risk Owner · **Depends:** UAT-01 · **Window:** T+413m / 15m
 - **Covers:** BU and Teams, Users, Roles & Permissions
-- **Why:** RACI, on-call and RBAC all come from these four pages. Empty org data makes Home counts a lie.
-- **Goal:** Walk Departments → Teams → Users → Roles and confirm seeded people, including the Risk Owner and a Viewer.
+- **Why:** RACI, on-call and RBAC all come from these org pages. Empty org data makes Home counts a lie.
+- **Goal:** Walk BU and Teams → Users → editable Roles and confirm seeded people, including the Risk Owner, Viewer, and platform owner.
 
 **Steps**
 
-1. Open Departments. Each department should have a code, name and a one-line responsibility (the RACI you saw on Home).
-2. Open Teams. Confirm teams belong to departments and list members or a count.
-3. Open Users. Find risk.owner@vantagemarkets.com and viewer@vantagemarkets.com (and, if present, haixiang.yan@hytechc.com). Roles must differ.
-4. Open Roles & Permissions. Confirm RISK_OWNER can enter admin and VIEWER cannot operate AI Admin — this is the policy behind UAT-01.
-5. Home Users/Teams counts should match what you just counted (allowing for seed size).
+1. Open BU and Teams (`/admin/departments`). Each BU should show mandate plus Owns / Accountable / Collaborates / Out of scope / Escalates to, with nested on-call teams (no separate Teams nav tab).
+2. Open Users. Find risk.owner@vantagemarkets.com and viewer@vantagemarkets.com (and haixiang.yan@hytechc.com as demo platform owner). Roles must differ.
+3. Open Roles & Permissions. Confirm the matrix is **editable** (name / description / BU / permission pills via `/api/roles`), RISK_OWNER can enter admin, and VIEWER cannot operate AI Admin — this is the policy behind UAT-01.
+4. Home Users/Teams counts should match what you just counted (allowing for seed size).
 
-**Pass:** Four org pages populated; Risk Owner and Viewer exist with different roles; Home counts are in the same ballpark.
-**Evidence:** Screenshots of Users and Roles highlighting the two test accounts.
+**Pass:** BU and Teams + Users + editable Roles populated; Risk Owner, Viewer, and platform owner exist with different roles; Home counts are in the same ballpark.
+**Evidence:** Screenshots of Users and Roles highlighting the test accounts.
 
 ### UAT-39 — Data sources registry (internal and external)
 
@@ -786,16 +785,16 @@ graph TD
 - **Severity:** Medium · **BU:** AI + Risk · **Depends:** UAT-06; RAG seeded · **Window:** T+446m / 10m
 - **Covers:** RAG Knowledge Base
 - **Why:** If evidence says “see document X” but the library is empty, the RCA is theatre.
-- **Goal:** Open RAG Knowledge Base, find at least two documents, and open one body or summary.
+- **Goal:** Open RAG Knowledge Base, find at least two documents, confirm the AI write human-gate, and open one body or summary.
 
 **Steps**
 
 1. Open RAG Knowledge Base (AI & knowledge).
-2. You should see a list or cards of documents (policies, playbooks, market notes).
+2. You should see a list or cards of documents (policies, playbooks, market notes) and an AI write block / human-gate banner (pages AI cannot edit escalate to human / `propose_rag`).
 3. Open one document (or expand it). Confirm a title and some body/summary text, not only a filename.
 4. If search exists, search for a word you saw in a UAT-06 evidence row and confirm a hit or a clear no-results state.
 
-**Pass:** At least two documents visible; one opens with readable text.
+**Pass:** At least two documents visible; human-gate / AI write block visible; one opens with readable text.
 **Evidence:** Screenshot of the library plus one open document.
 
 ### UAT-42 — Improvement roadmap is readable

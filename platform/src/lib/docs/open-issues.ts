@@ -356,14 +356,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Evidence retention, redaction & audit export",
       detail:
-        "Evidence vault and intervention samples may hold account identifiers. Need retention jobs, redaction policy, and auditor-ready export — beyond the current Audit Log + home spine counts.",
+        "Evidence vault and intervention samples may hold account identifiers. Need retention jobs, redaction policy, and auditor-ready export — beyond the current Audit Log (CRMP / Vantage Markets Admin plane split + Roll back) + home spine counts.",
       dependencies: "Legal policy; OI-06 identity; Postgres migration",
       eta: "2027-Q4",
     },
     zh: {
       title: "證據保存、遮罩與稽核匯出",
       detail:
-        "證據庫與干預樣本可能含帳戶識別碼。需保存工作、遮罩政策與稽核就緒匯出 — 超越現行稽核日誌＋首頁脊柱計數。",
+        "證據庫與干預樣本可能含帳戶識別碼。需保存工作、遮罩政策與稽核就緒匯出 — 超越現行稽核日誌（CRMP／Vantage Markets 管理平面分流＋回滾）＋首頁脊柱計數。",
       dependencies: "法務政策；OI-06 身分；Postgres 遷移",
       eta: "2027-Q4",
     },
@@ -402,14 +402,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Prototype AI desk features — UAT window",
       detail:
-        "Shipped for UAT: first/second-line AI Admin, grouped pipeline buttons + rank note, human intervention actioner email, RAG propose_rag blocklist, ESC-DEFAULT + skill binds, knowledge-tree RAG leaves, MonitorCode tooltips. Formal UAT sign-off still open (OI-09).",
+        "Shipped for UAT: first/second-line AI Admin, grouped pipeline + rank note, intervention actioner email, RAG propose_rag human-gate, ESC-DEFAULT + dimension coefficients + skill binds, knowledge-tree RAG leaves, MonitorCode tooltips, editable Roles (/api/roles), audit plane split (CRMP / Vantage Markets Admin) + Roll back. Formal UAT sign-off still open (OI-09).",
       dependencies: "UAT-01…45; Risk Owner calendar",
       eta: "2026-10 / 2026-11 UAT",
     },
     zh: {
       title: "原型 AI 台面功能 — UAT 窗口",
       detail:
-        "已交付供 UAT：一線／二線 AI 管理、分組管線按鈕＋排序說明、人工干預操作者信箱、RAG propose_rag 封鎖、ESC-DEFAULT＋技能綁定、知識樹 RAG 葉、MonitorCode 提示。正式 UAT 簽核仍開放（OI-09）。",
+        "已交付供 UAT：一線／二線 AI 管理、分組管線＋排序說明、干預操作者信箱、RAG propose_rag 人工閘道、ESC-DEFAULT＋維度係數＋技能綁定、知識樹 RAG 葉、MonitorCode 提示、可編輯角色（/api/roles）、稽核平面分流（CRMP／Vantage Markets 管理）＋回滾。正式 UAT 簽核仍開放（OI-09）。",
       dependencies: "UAT-01…45；風險負責人行程",
       eta: "2026-10／2026-11 UAT",
     },
@@ -425,14 +425,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress Tracker, and URL catalog must track nav reality (no Spine Log tab; BU and Teams combined; Risk Domains P0–P3; Risk Log 90d).",
+        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress Tracker, and URL catalog must track nav reality (no Spine Log tab; BU and Teams combined; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度追蹤與網址目錄須追蹤導覽實況（無脊柱日誌分頁；BU 與團隊合併；風險領域 P0–P3；風險日誌 90 天）。",
+        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度追蹤與網址目錄須追蹤導覽實況（無脊柱日誌分頁；BU 與團隊合併；風險領域 P0–P3；風險日誌 90 天；稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },

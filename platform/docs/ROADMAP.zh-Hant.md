@@ -1,12 +1,12 @@
 # 平台改進路線圖
 
-已交付台面打磨（分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT、BU 與團隊、一線／二線 AI 管理）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
+已交付台面打磨（分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
 
 **文件編號：** CRMP-RM-001 · 現行 CRMP 原型之後的優先待辦  
 **讀者：** 風險負責人、平台負責人、工程、GRC  
 **讀法：** 管理頁 `/admin/docs/roadmap` 是操作員視圖（可展開卡片）。本檔是可列印對本。每個 `RM-xx` 寫明 **今日原型**、**要做什麼**、**完成標準**、**程式落點**、**不做的風險**。
 
-本原型已能走通脊柱：**Monitor 警報 → AI 根因（技能／RAG）→ 第二 AI 挑戰 → Messenger → Maker／Checker → 稽核／脊柱**。本表要補上會讓正式台面失敗的缺口：模擬 Lark、種子 Monitor、啟發式 AI、SQLite、共用示範密碼、只記日誌的「執行」。
+本原型已能走通脊柱：**Monitor 警報 → AI 根因（技能／RAG）→ 第二 AI 挑戰 → Messenger → Maker／Checker → 稽核／首頁脊柱**。本表要補上會讓正式台面失敗的缺口：模擬 Lark、種子 Monitor、啟發式 AI、SQLite、共用示範密碼、只記日誌的「執行」。
 
 **工期鍵：** S 一個垂直切片 · M 多日模組 · L 跨團隊 · XL 計畫級
 
@@ -440,7 +440,7 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 
 ### 今日原型
 
-[脊柱日誌](/admin/spine) 有時間戳。沒有 token 成本、RCA p95 延遲、花費上限警報。
+[管理首頁脊柱](/admin)（`/admin/spine` 轉址）有階段工單計數與時間戳。沒有 token 成本、RCA p95 延遲、花費上限警報。
 
 ### 要做
 

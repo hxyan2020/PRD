@@ -6,6 +6,8 @@ Progress view of every open issue (**X = issue row**, **Y = timeline now → end
 
 Statuses: Planned · Started · WIP · Delayed · UAT · Go live · BAU.
 
+Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back), editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined.
+
 ```mermaid
 gantt
   title CRMP open issues (tentative)
@@ -39,5 +41,6 @@ Interactive SVG/table: `/admin/docs/progress` (data: `platform/src/lib/docs/open
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-05 | Progress tracker wired into admin docs |
+| 1.1 | 2026-10-05 | Note audit plane split + Roles / escalation desk facts as BAU |
 
-**Owner:** demo platform owner · **中文:** [PROGRESS.zh-Hant.md](./PROGRESS.zh-Hant.md)
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [PROGRESS.zh-Hant.md](./PROGRESS.zh-Hant.md)

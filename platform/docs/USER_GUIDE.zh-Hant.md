@@ -157,7 +157,7 @@ graph TD
 
 1. 使用者、角色、**BU 與團隊**、分組設定。  
 2. 檢視 [AI 存取安全](/admin/security/ai-access) — AI 絕不可碰的頁／功能／欄位（含 RAG 寫入封鎖／`propose_rag`）。  
-3. 監看 [稽核日誌](/admin/audit) 與管理首頁的 **首頁脊柱** 階段工單計數（`/admin/spine` 會轉址至此）。
+3. 監看 [稽核日誌](/admin/audit)（CRMP／Vantage Markets 管理分頁＋回滾）與管理首頁的 **首頁脊柱** 階段工單計數（`/admin/spine` 會轉址至此）。
 
 ---
 
@@ -418,11 +418,11 @@ graph TD
 
 **這頁是什麼。** 技能不確定時用的內部語料：政策、產品、實體、平台。
 
-**會看到什麼。** 依分類篩選、搜尋框、文件卡（鍵、標題、標籤、狀態、摘要）。**檢索**框可試查詢（top-K 命中與分數）。**AI 寫入封鎖**橫幅：AI 服務角色不可變更語料 — 具 `rag.manage` 的人類可寫，或經 AI Admin **`propose_rag`** 走 Maker-Checker。
+**會看到什麼。** 依分類篩選、搜尋框、文件卡（鍵、標題、標籤、狀態、摘要）。**檢索**框可試查詢（top-K 命中與分數）。**AI 寫入封鎖／人工閘道**橫幅：AI 不能編輯的頁與語料欄位會升級給人類 — 具 `rag.manage` 的人類可寫，或經 AI Admin **`propose_rag`** 走 Maker-Checker。
 
 **要點什麼。** 用「copy trading concentration gold margin」這類句子檢索，確認命中相關。正式新增應走 `propose_rag`；本頁是語料瀏覽器（授權人類可寫）。
 
-**怎樣算正常。** 檢索回傳排序命中。退役文件不再出現在搜尋。AI 服務角色不可 POST／PATCH `/api/rag`。
+**怎樣算正常。** 檢索回傳排序命中。退役文件不再出現在搜尋。AI 服務角色不可 POST／PATCH `/api/rag`；被封鎖的編輯會以人工閘道呈現。
 
 ### 8.6 首頁脊柱 — `/admin`（`/admin/spine` 轉址）
 
@@ -524,13 +524,13 @@ graph TD
 
 ### 9.4 升級路徑 — `/admin/escalation`
 
-**這頁是什麼。** 地圖：嚴重度 → 主團隊 → 次團隊 → Lark 頻道 → SLA 分鐘。示範 Messenger **升級** 跟這張地圖走。每個警報一定有路徑：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。每個技能綁定**一條**路徑；未綁定者回落 ESC-DEFAULT。
+**這頁是什麼。** 路徑由**維度**定義（嚴重度、涉入團隊、風險情境、待處理時間、是否需人工干預），各因子有可編輯**係數**。示範 Messenger **升級** 跟這張地圖走。每個警報一定有路徑：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。每個技能綁定**一條**路徑代碼；未綁定者回落 ESC-DEFAULT。**已移除獨立「路徑」名稱欄** — 以路徑代碼＋維度識別。
 
-**會看到什麼。** 路徑名稱、路徑代碼（含 `ESC-DEFAULT`）、嚴重度、領域、團隊、頻道、SLA、預設旗標、啟用。
+**會看到什麼。** 路徑代碼（含 `ESC-DEFAULT`）、維度欄位、係數編輯、團隊、頻道、SLA、預設旗標、啟用。
 
-**要點什麼。** 有管理權可在 localhost 新增／編輯／停用。確認兜底預設存在。
+**要點什麼。** 有管理權可在 localhost 新增／編輯／停用。編輯維度係數。確認兜底預設存在。在技能頁確認每個劇本只綁一條路徑。
 
-**怎樣算正常。** CRITICAL 的 SLA 比 WARN 緊。未匹配事件仍經 ESC-DEFAULT 落地。
+**怎樣算正常。** CRITICAL 的 SLA 比 WARN 緊。未匹配事件仍經 ESC-DEFAULT 落地。技能頁沒有自由文字「路徑」欄 — 只有綁定的路徑代碼。
 
 ```mermaid
 graph LR
@@ -548,9 +548,9 @@ graph LR
 
 **合併中心。** Risk／Ops／AI／System BU 與嵌套值班團隊。展開可看任務／擁有／負責／協作／範圍外／升級至，以及團隊任務與輪值（授權後可編輯）。左側不再有獨立「團隊」分頁。
 
-### 10.2 角色與權限 — `/admin/roles`
+### 10.2 角色與權限 — `/admin/roles`（可編輯）
 
-每個角色（風險負責人、分析師、營運、AI 工程師、系統管理員、超級管理員、檢視者…）及其權限晶片（`monitor.read`、`ai.approve`、`settings.manage`…）。超級管理員有 `*`。用這頁理解某個角色為什麼少一顆按鈕。
+**可編輯** RBAC 矩陣（`/admin/roles`；API：`GET/POST /api/roles`）。每個角色顯示名稱、說明、BU、權限晶片（`monitor.read`、`ai.approve`、`settings.manage`…），以及擁有／日常／不做／升級至。超級管理員有 `*`。有 `users.manage` 可更新角色；AI 執行者禁止寫入。用這頁理解某個角色為什麼少一顆按鈕。
 
 ### 10.3 使用者 — `/admin/users`
 
@@ -578,7 +578,14 @@ graph LR
 
 ### 11.3 稽核日誌 — `/admin/audit`
 
-誰做了什麼：時間、執行者、動作、實體、明細。localhost 上 Messenger 排除／結案、AI Admin 提案／核准、干預、登入、設定儲存應出現於此。最新 200 列。
+兩個分頁：
+
+| 分頁 | 記錄內容 |
+|---|---|
+| **CRMP 日誌** | 本 CRMP 管理介面內的所有變更 — 警報、AI、技能、升級、干預、Messenger |
+| **Vantage Markets 管理日誌** | 其他管理頁面的變更 — 限制使用者權限、拉取交易資料、觸發 Lark 訊息、接收 BU POC 風險事件回應、設定／組織／RAG |
+
+每列：時間、執行者、動作、實體、明細。兩個分頁皆有**回滾**按鈕 — 有變更前快照時可還原（`POST /api/audit/rollback`）。
 
 ### 11.4 平台設定 — `/admin/settings`
 
@@ -641,18 +648,18 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 監控與風險 | 風險領域 | P0–P3 情境掛 Monitor 2.0 |
 | AI 與知識 | AI 技能 | 瀏覽劇本；進入完整 SKILL.md；一條升級綁定 |
 | AI 與知識 | 知識樹 | 領域、技能、RAG 文件葉＋深連結 |
-| AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖 — `propose_rag` |
+| AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖／人工閘道 — `propose_rag` |
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
 | 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、控制 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
-| 應變 | 升級路徑 | 嚴重度 → 團隊 → SLA；ESC-DEFAULT |
+| 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 應變 | Lark 整合 | 頻道登錄 |
-| 組織 | BU 與團隊 | 合併 BU RACI＋嵌套值班團隊 |
-| 組織 | 使用者 | 目錄，含 demo platform owner |
-| 組織 | 角色與權限 | RBAC 晶片 |
+| 組織 | BU 與團隊 | 合併 BU RACI＋嵌套值班團隊（`/admin/departments`） |
+| 組織 | 使用者 | 目錄，含 demo platform owner／haixiang.yan@hytechc.com |
+| 組織 | 角色與權限 | 可編輯 RBAC（`/api/roles`） |
 | 平台 | 資料來源 | 內部＋外部登錄 |
 | 平台 | 平台設定 | 分組旗標 |
-| 平台 | 稽核日誌 | 誰改了什麼 |
+| 平台 | 稽核日誌 | CRMP／Vantage Markets 管理兩分頁＋回滾 |
 | 平台 | AI 存取安全 | 僅限人類的頁／功能／欄位 |
 | 文件 | 使用手冊／網址／UAT／PRD／TSD／路線圖／生態／開放議題／進度 | 產品與操作文件 |
 
@@ -666,5 +673,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 1.3 | 2026-10-04 | 全部管理畫面、公開掃描示範、demo platform owner 負責人、Pages 登入 |
 | 1.5 | 2026-10-04 | 登入、未讀、RCA、Messenger、Maker／Checker、情報掃描、知識樹、脊柱流程圖 |
 | 1.6 | 2026-10-05 | 首頁脊柱；BU 與團隊；AI 一線／二線；propose_rag；ESC-DEFAULT；開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色；升級維度 × 係數 |
 
-**負責人：** demo platform owner
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

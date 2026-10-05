@@ -6,9 +6,9 @@
 
 The CRMP demo already proves an end-to-end spine:
 
-**Monitor 2.0 alarm → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit + home spine.**
+**Monitor 2.0 alarm → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit (CRMP / Vantage Markets Admin plane split + Roll back) + home spine stage counts.**
 
-Programme gaps and tentative ETAs live in [Open Issues](/admin/docs/open-issues) and [Progress Tracker](/admin/docs/progress) (Monitor still adding indicators; CRMP initial design; tech/resource plan open).
+Programme gaps and tentative ETAs live in [Open Issues](/admin/docs/open-issues) and [Progress Tracker](/admin/docs/progress) (Monitor still adding indicators; CRMP initial design; tech/resource plan open). Platform owner: demo platform owner / `haixiang.yan@hytechc.com`.
 
 Fully implementing this into the **existing Vantage Markets ecosystem** is not a rewrite of trading platforms. It is a **control-plane product** that must plug into identity, Monitor 2.0, Lark, LP/bridge controls, and admin dual-control — with shadow mode first and write paths last.
 

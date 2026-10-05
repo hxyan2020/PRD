@@ -8,9 +8,9 @@
 
 CRMP 示範已驗證端到端脊柱：
 
-**Monitor 2.0 警報 → AI RCA（Skill/RAG）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核／脊柱。**
+**Monitor 2.0 警報 → AI RCA（Skill/RAG）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核（CRMP／Vantage Markets 管理平面分流＋回滾）／首頁脊柱階段計數。**
 
-正式導入既有 **Vantage Markets 生態** 不是重寫交易平台，而是打造可接上身分、Monitor 2.0、Lark、LP／橋接控制與後台雙重控制的**風險控制平面**——先影子模式，後寫入路徑。
+正式導入既有 **Vantage Markets 生態** 不是重寫交易平台，而是打造可接上身分、Monitor 2.0、Lark、LP／橋接控制與後台雙重控制的**風險控制平面**——先影子模式，後寫入路徑。平台負責人：demo platform owner／`haixiang.yan@hytechc.com`。
 
 | 彙總 | 概估 |
 |---|---|

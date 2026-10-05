@@ -37,7 +37,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "AI Admin", path: "/admin/ai-admin", description: "First-line + second-line AI Admin cards, maker/checker, propose_rag, training & accuracy", permission: "ai.admin" },
   { category: "AI", title: "Human Intervention", path: "/admin/interventions", description: "Human gates from skill/RAG actions — samples show actioner email", permission: "intervene.operate" },
   { category: "AI", title: "Spine (redirect → Home)", path: "/admin/spine", description: "Redirects to Admin Home — stage ticket counts live on the home spine viz (dedicated Spine Log tab removed)", permission: "spine.read" },
-  { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus (AI write blocked — human / propose_rag maker-checker)", permission: "rag.read" },
+  { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus — AI write blocked (human-gate: pages AI cannot edit escalate to human / propose_rag maker-checker)", permission: "rag.read" },
   { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page; each skill binds one escalation path (ESC-DEFAULT fallback)", permission: "skills.read" },
   { category: "AI", title: "Skill playbook detail", path: "/admin/skills/[code]", description: "Full when-to-use / prechecks / evidence / stop / success playbook for one skill", permission: "skills.read" },
   { category: "AI", title: "Knowledge Tree", path: "/admin/knowledge-tree", description: "Visual map of domains, skills, linked timelines and RAG document leaves with deep links", permission: "rag.read" },
@@ -46,20 +46,20 @@ export const PLATFORM_URLS: UrlEntry[] = [
   // Messenger
   { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox with inline actions", permission: "lark.read" },
   { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
-  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Severity → team → SLA paths; catch-all ESC-DEFAULT + coefficients; skill binds one path", permission: "escalation.read" },
+  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; skill binds one route code; no separate Path name column", permission: "escalation.read" },
 
   // Org
-  { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation)", permission: "teams.read" },
+  { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation); former Departments + Teams", permission: "teams.read" },
   { category: "Org", title: "Teams (redirect)", path: "/admin/teams", description: "Redirects to combined BU and Teams hub", permission: "teams.read" },
-  { category: "Org", title: "Roles & Permissions (editable)", path: "/admin/roles", description: "Editable RBAC matrix — name, description, BU, permission pills; users.manage; AI blocked", permission: "users.read" },
+  { category: "Org", title: "Roles & Permissions (editable)", path: "/admin/roles", description: "Editable RBAC matrix — name, description, BU, permission pills + owns/does/does-not/escalation charters; POST /api/roles; users.manage; AI blocked", permission: "users.read" },
   { category: "API", title: "Roles API", path: "/api/roles", description: "GET roles + catalog; POST update_role (users.manage; AI actors forbidden)", permission: "users.read" },
-  { category: "Org", title: "Roles & Permissions", path: "/admin/roles", description: "RBAC matrix plus owns / does / does-not / escalation charters", permission: "users.read" },
   { category: "Org", title: "Users", path: "/admin/users", description: "User directory", permission: "users.read" },
   { category: "API", title: "Org API", path: "/api/org", description: "Departments + teams read; update_team for mission / on-call", permission: "teams.read" },
 
   // System
   { category: "System", title: "Data Sources", path: "/admin/data-sources", description: "Internal/external source registry", permission: "sources.read" },
-  { category: "System", title: "Audit Log", path: "/admin/audit", description: "Immutable admin audit trail", permission: "audit.read" },
+  { category: "System", title: "Audit Log", path: "/admin/audit", description: "Two tabs — CRMP logs (alerts/AI/skills/escalation/interventions/messenger) and Vantage Markets Admin logs (rights, transaction pulls, Lark, BU POC responses, settings/org/RAG); Roll back via before-state snapshot", permission: "audit.read" },
+  { category: "API", title: "Audit Rollback API", path: "/api/audit/rollback", description: "POST { audit_id } restores before-state snapshot when available (audit.read + manage)", permission: "audit.read" },
   { category: "System", title: "Platform Settings", path: "/admin/settings", description: "Feature flags & thresholds", permission: "settings.manage" },
 
   // Docs
