@@ -316,13 +316,13 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 ### 7.7 Risk Domains — `/admin/risk-domains`
 
-**What it is.** The catalogue of CFD and crypto risk areas (credit, LP hedge, market pricing, crypto exchange, fraud, product config, model/AI, ops, capital, tech).
+**What it is.** The catalogue of CFD and crypto risk areas — original domains plus **Firm-wide Systemic & Contagion (P0)**, **Third-party & Vendor Dependency (P3)**, and **Reputation & Client Communications (P3)**. Each domain breaks into concrete risk scenarios.
 
-**What you see.** Cards with priority, code, product coverage, owner department, supporting departments, description.
+**What you see.** Coloured priority pills (**P0** rose, **P1** orange, **P2** amber, **P3** slate), code, product coverage, owner / supporting BUs, owned Monitor 2.0 indicator chips, and expandable scenarios with plain-English **How it works**, **Participants**, **Impacts**, plus primary and related Monitor 2.0 links.
 
-**What to click.** Read-only in the prototype. Use it to see who owns a domain before you escalate.
+**What to click.** Expand a scenario. Click any `M2-*` chip to jump to Monitor 2.0 anchored on that indicator.
 
-**Good looks like.** Every domain has an owner. Product coverage is CFD, Crypto, or both.
+**Good looks like.** Every domain has an owner. Every scenario lists at least one Monitor 2.0 indicator. Product coverage is CFD, Crypto, or both.
 
 ---
 

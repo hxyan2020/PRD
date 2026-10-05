@@ -60,7 +60,7 @@ graph TD
 | 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | Risk Log Analytics — what actually moved P&L / clients | Risk Log Analytics |
 | 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Live Alerts list | Live Alerts — read the queue and acknowledge one | Live Alerts |
 | 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | Detectors — run the pack and see WARN/BREACH land | Detectors, Live Alerts, AI Analyses |
-| 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | Risk domains catalogue | Risk Domains |
+| 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | Risk domains catalogue with P0–P3 scenarios | Risk Domains |
 | 33 | UAT-33 | 361m | 12m | High | Risk | UAT-07 | Messenger inbox — channels, kinds and Sync | Demo Messenger |
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — other recommended actions and cancel | Demo Messenger, Human Intervention |
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | Human Intervention queue (the admin side of messenger controls) | Human Intervention |
@@ -623,22 +623,24 @@ graph TD
 **Pass:** Detector registry populated; localhost run completes; WARN/BREACH (if any) show up downstream.
 **Evidence:** Screenshot of detector table plus a downstream alert/analysis if one fired.
 
-### UAT-32 — Risk domains catalogue
+### UAT-32 — Risk domains catalogue with P0–P3 scenarios
 
 - **Severity:** Low · **BU:** Risk · **Depends:** UAT-01 · **Window:** T+353m / 8m
 - **Covers:** Risk Domains
-- **Why:** Every alarm is tagged with a domain. If the catalogue is empty, RACI on Home is fiction.
-- **Goal:** Open Risk Domains and confirm each domain has a code, name and a responsible team/department.
+- **Why:** Every alarm is tagged with a domain. Domains must break into concrete scenarios hooked to Monitor 2.0 indicators — otherwise RACI and telemetry are fiction.
+- **Goal:** Open Risk Domains; confirm P0–P3 colours, detailed scenarios, and Monitor 2.0 indicator links.
 
 **Steps**
 
 1. Open Risk Domains.
-2. Confirm a non-empty list (examples you may see: MARKET_PRICING, CREDIT_CLIENT, LP_HEDGE, COPY).
-3. Pick one domain and write: code, name, who owns it.
-4. From Home, the Risk Domains stat card should have landed here.
+2. Confirm domains include the original set plus SYSTEMIC_FIRM (P0), THIRD_PARTY_VENDOR (P3), REPUTATION_COMMS (P3).
+3. Confirm priority pills use distinct colours: P0 rose, P1 orange, P2 amber, P3 slate.
+4. Expand one scenario under Credit & Client Risk (e.g. margin utilisation). Read How it works, Participants, Impacts.
+5. Click a primary indicator chip (e.g. M2-MRG-014) and confirm it opens Monitor 2.0 anchored to that monitor.
+6. From Home, the Risk Domains stat card should land here.
 
-**Pass:** At least five domains listed with an owner; page reachable from Home.
-**Evidence:** Screenshot of the domain list with one owner highlighted.
+**Pass:** ≥13 domains with owners; scenarios show P0–P3 colours; every expanded scenario lists Monitor 2.0 chips that navigate correctly.
+**Evidence:** Screenshot of an expanded scenario with coloured priority and indicator chips.
 
 ### UAT-33 — Messenger inbox — channels, kinds and Sync
 

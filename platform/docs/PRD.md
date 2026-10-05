@@ -253,7 +253,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Indicators / alerts / tickets | Three tabs; Sync now on localhost |
 | Monitor & risk | Detectors | `/admin/detectors` | Threshold first stage | Run all; toggle; runs list |
 | Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Open-only; ack; severity sort; button to Risk Log closed tickets |
-| Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership catalogue | Owner + supporting BUs |
+| Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership + P0–P3 scenarios linked to Monitor 2.0 | Expand scenario; click M2-* chip |
 | AI & knowledge | AI Analyses | `/admin/ai-analyses` | RCA + second AI | Simulate COPY/EQ/CRITICAL; detail pack |
 | AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control governance | Seven tabs; maker ≠ checker |
 | AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md page |

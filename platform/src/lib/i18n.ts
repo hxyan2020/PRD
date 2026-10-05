@@ -210,8 +210,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "risk-domains": {
     title: { en: "Risk Domains", "zh-Hant": "風險領域" },
     subtitle: {
-      en: "Two visual spheres: CFD book vs crypto Exchange — owner, supporting BUs and coverage.",
-      "zh-Hant": "兩個視覺圈：CFD 帳簿對加密交易所 — 負責人、支援 BU 與覆蓋範圍。",
+      en: "CFD vs Exchange spheres with P0–P3 coloured scenarios, plain-English detail, and every scenario hooked to Monitor 2.0 indicators.",
+      "zh-Hant": "CFD 對交易所兩圈：P0–P3 色標情境、白話說明，且每則情境皆掛上 Monitor 2.0 指標。",
     },
   },
   "data-sources": {

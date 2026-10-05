@@ -29,7 +29,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Redirects to Monitor 2.0 — detectors merged into indicator registry", permission: "detectors.read" },
   { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + AI RCA, gates, POC/RO; closed tickets move to Risk Log Analytics", permission: "monitor.read" },
   { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry, thresholds, sampling runs & sync", permission: "monitor.read" },
-  { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domain catalogue", permission: "monitor.read" },
+  { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0", permission: "monitor.read" },
 
   // AI
   { category: "AI", title: "AI Analyses (redirect)", path: "/admin/ai-analyses", description: "Redirects to Realtime Alert & Tracker", permission: "ai.read" },

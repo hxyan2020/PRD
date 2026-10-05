@@ -60,7 +60,7 @@ graph TD
 | 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | 風險日誌分析 — 實際動到損益／客戶的是什麼 | Risk Log Analytics |
 | 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Live Alerts list | 即時警報 — 讀佇列並確認一則 | Live Alerts |
 | 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | 偵測器 — 跑完整包並看到 WARN／BREACH 落地 | Detectors, Live Alerts, AI Analyses |
-| 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | 風險領域目錄 | Risk Domains |
+| 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | 風險領域目錄（含 P0–P3 情境） | Risk Domains |
 | 33 | UAT-33 | 361m | 12m | High | Risk | UAT-07 | Messenger 收件匣 — 頻道、訊息種類與同步 | Demo Messenger |
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — 其他建議動作與取消 | Demo Messenger, Human Intervention |
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | 人工介入佇列（Messenger 控制的管理端） | Human Intervention |
@@ -623,22 +623,24 @@ graph TD
 **通過：** 登錄有資料；本機執行完成；若有 WARN／BREACH 會出現在下游。
 **證據：** 偵測器表截圖；若觸發則附下游警報／分析。
 
-### UAT-32 — 風險領域目錄
+### UAT-32 — 風險領域目錄（含 P0–P3 情境）
 
 - **嚴重度：** Low · **負責：** Risk · **依賴：** UAT-01 · **建議：** T+353m / 8m
 - **涵蓋：** Risk Domains
-- **為何測：** 每則警報都打領域標籤。目錄是空的，首頁 RACI 就是假的。
-- **目的：** 開啟風險領域，確認每項有代碼、名稱與負責團隊／部門。
+- **為何測：** 每則警報都打領域標籤。領域必須拆成掛上 Monitor 2.0 指標的具體情境，否則 RACI 與遙測都是假的。
+- **目的：** 開啟風險領域；確認 P0–P3 色標、詳細情境與 Monitor 2.0 指標連結。
 
 **步驟**
 
 1. 開啟風險領域。
-2. 列表非空（可能見到 MARKET_PRICING、CREDIT_CLIENT、LP_HEDGE、COPY）。
-3. 挑一項記下代碼、名稱、誰負責。
-4. 從首頁風險領域數字卡應能進到這裡。
+2. 確認除原有領域外，還有 SYSTEMIC_FIRM（P0）、THIRD_PARTY_VENDOR（P3）、REPUTATION_COMMS（P3）。
+3. 確認優先級色標不同：P0 玫紅、P1 橘、P2 琥珀、P3 石板灰。
+4. 展開信貸與客戶風險下一則情境（例如保證金使用率），閱讀運作方式、參與者、影響。
+5. 點一顆主指標晶片（例如 M2-MRG-014），確認進到 Monitor 2.0 並錨定該指標。
+6. 從首頁風險領域數字卡應能進到這裡。
 
-**通過：** 至少五個領域含負責人；可從首頁到達。
-**證據：** 領域列表截圖並標出一位負責人。
+**通過：** ≥13 個領域含負責人；情境有 P0–P3 色標；展開後每則列出可正確導航的 Monitor 2.0 晶片。
+**證據：** 展開情境截圖，含色標優先級與指標晶片。
 
 ### UAT-33 — Messenger 收件匣 — 頻道、訊息種類與同步
 

@@ -40,6 +40,21 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Matching, liquidations, wallet float, market integrity.": "撮合、強平、錢包浮額、市場完整性。",
   "Margin, stop-out, concentration, toxic flow, copy-trade cascade.":
     "保證金、強平、集中度、有毒流量、跟單連鎖。",
+  SYSTEMIC_FIRM: "全公司系統性",
+  "Firm-wide Systemic & Contagion": "全公司系統性與傳染",
+  "Cross-book equity, VaR, kill-switches and news-window contagion that can hit CFD and exchange together.":
+    "跨帳簿權益、VaR、熔斷與新聞窗口傳染，可同時打到 CFD 與交易所。",
+  THIRD_PARTY_VENDOR: "第三方與供應商",
+  "Third-party & Vendor Dependency": "第三方與供應商依賴",
+  "LP, bridge, data vendor, payment and IB rails that fail outside Vantage-owned stack.":
+    "LP、橋接、資料商、支付與 IB 等落在 Vantage 自有堆疊之外的故障。",
+  REPUTATION_COMMS: "聲譽與客戶通訊",
+  "Reputation & Client Communications": "聲譽與客戶通訊",
+  "Complaint velocity, chargeback optics and trust damage during incidents.":
+    "事故期間的投訴速度、退單觀感與信任損害。",
+  "Cross-book Contagion Score": "跨帳簿傳染分數",
+  "Critical Vendor Degraded Count": "關鍵供應商降級數",
+  "Client Complaint Velocity (24h)": "客戶投訴速度（24 小時）",
   OTHER: "其他",
   "CFD + Crypto": "CFD＋加密",
   "CFD+Crypto": "CFD＋加密",

@@ -754,6 +754,60 @@ function ensureExtraMonitors(db: Database.Database) {
       row.tickets
     );
   }
+  // Lazy import avoids circular init with scenario modules that only need getDb later.
+  const { EXTRA_MONITOR_SEED_ROWS } = require("@/lib/ai/risk-domain-scenarios") as typeof import("@/lib/ai/risk-domain-scenarios");
+  for (const row of EXTRA_MONITOR_SEED_ROWS) {
+    upsert.run(
+      row.monitor_id,
+      row.name,
+      row.domain_code,
+      row.product,
+      row.warn,
+      row.breach,
+      row.unit,
+      row.status,
+      row.last_value,
+      row.tickets
+    );
+  }
+}
+
+function ensureExtraRiskDomains(db: Database.Database) {
+  const { EXTRA_RISK_DOMAINS } = require("@/lib/ai/risk-domain-scenarios") as typeof import("@/lib/ai/risk-domain-scenarios");
+  const upsert = db.prepare(
+    `INSERT INTO risk_domains (code, name, description, owner_department, supporting_departments_json, product_coverage, priority)
+     VALUES (?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(code) DO UPDATE SET
+       name = excluded.name,
+       description = excluded.description,
+       owner_department = excluded.owner_department,
+       supporting_departments_json = excluded.supporting_departments_json,
+       product_coverage = excluded.product_coverage,
+       priority = excluded.priority`
+  );
+  for (const d of EXTRA_RISK_DOMAINS) {
+    upsert.run(
+      d.code,
+      d.name,
+      d.description,
+      d.owner_department,
+      d.supporting_departments_json,
+      d.product_coverage,
+      d.priority
+    );
+  }
+  // Keep original domains active; gently rebalance a few priorities for P0–P3 colouring.
+  const touch = db.prepare(`UPDATE risk_domains SET priority = ? WHERE code = ?`);
+  touch.run(1, "MARKET_PRICING");
+  touch.run(1, "CREDIT_CLIENT");
+  touch.run(1, "LP_HEDGE");
+  touch.run(1, "CRYPTO_EXCHANGE");
+  touch.run(1, "FRAUD_CONDUCT");
+  touch.run(1, "TECH_INFRA");
+  touch.run(1, "REG_CAPITAL");
+  touch.run(2, "PRODUCT_CONFIG");
+  touch.run(2, "OPS_PROCESS");
+  touch.run(2, "MODEL_AI");
 }
 
 function ensureUser(
@@ -836,6 +890,7 @@ function ensureAiLayer(db: Database.Database) {
   syncRoles(db);
   syncDepartments(db);
   ensureMonitorIndicatorColumns(db);
+  ensureExtraRiskDomains(db);
   ensureExtraMonitors(db);
   seedRagIfEmpty(db);
   seedSkillsIfEmpty(db);

@@ -227,7 +227,7 @@ graph LR
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
 | FR-32 | UAT 互動包 | UAT-01…UAT-45 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
-| FR-34 | 風險領域目錄 | CFD＋加密領域含負責／支援 BU |
+| FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 
 ### 6.3 P2 — 之後（生態階段）
@@ -252,7 +252,7 @@ graph LR
 | 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 指標／警報／工單 | 三分頁；localhost 立即同步 |
 | 監控與風險 | 偵測器 | `/admin/detectors` | 門檻第一階段 | 全部執行；切換；執行清單 |
 | 監控與風險 | 即時警報 | `/admin/alerts` | 未結佇列 | 確認；嚴重度排序；未讀清除 |
-| 監控與風險 | 風險領域 | `/admin/risk-domains` | 權責目錄 | 負責＋支援 BU |
+| 監控與風險 | 風險領域 | `/admin/risk-domains` | 權責＋P0–P3 情境對應 Monitor 2.0 | 展開情境；點 M2-* 晶片 |
 | AI 與知識 | AI 分析 | `/admin/ai-analyses` | RCA＋第二 AI | 模擬 COPY／EQ／CRITICAL；明細包 |
 | AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理 | 七個分頁；Maker ≠ Checker |
 | AI 與知識 | AI 技能 | `/admin/skills` | 劇本＋鏈 | 進入 → SKILL.md 頁 |
