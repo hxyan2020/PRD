@@ -42,5 +42,6 @@ Interactive SVG/table: `/admin/docs/progress` (data: `platform/src/lib/docs/open
 |---|---|---|
 | 1.0 | 2026-10-05 | Progress tracker wired into admin docs |
 | 1.1 | 2026-10-05 | Note audit plane split + Roles / escalation desk facts as BAU |
+| 1.2 | 2026-10-05 | BAU note: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11/13/14 detail sync with Ecosystem v1.8 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [PROGRESS.zh-Hant.md](./PROGRESS.zh-Hant.md)

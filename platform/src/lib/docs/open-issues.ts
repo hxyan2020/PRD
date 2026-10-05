@@ -333,14 +333,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Admin UX polish — mobile + docs parity",
       detail:
-        "Nav drawer, table overflow, and docs (Open Issues / Progress Tracker) must stay aligned with shipped features: grouped AI pipeline, spine on home, BU and Teams hub, Risk Log 90d charts, P0–P3 domains.",
+        "Shipped: nav drawer, messenger list→thread, mobile card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit. Open: confirm-sheet 375px pass, remaining wide-board overflow, docs parity with Realtime Alert & Tracker + Monitor registry nav.",
       dependencies: "Docs owners; FE capacity; i18n catalog",
       eta: "2026-Q4 BAU",
     },
     zh: {
       title: "管理後台 UX 打磨 — 行動＋文件對齊",
       detail:
-        "導覽抽屜、表格溢出與文件（開放議題／進度追蹤）須與已交付功能對齊：分組 AI 管線、首頁脊柱、BU 與團隊中心、風險日誌 90 天圖、P0–P3 領域。",
+        "已交付：導覽抽屜、Messenger 列表→執行緒、Monitor 2.0／升級／資料來源／風險日誌／稽核手機卡片。開放：確認表 375px、其餘寬板溢出、文件與即時警報與追蹤＋Monitor 登錄選單對齊。",
       dependencies: "文件負責人；前端產能；i18n 目錄",
       eta: "2026-Q4 日常",
     },
@@ -379,14 +379,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Bidirectional Monitor ticket write-back",
       detail:
-        "Dismiss/close in CRMP must update upstream Monitor tickets. Currently delayed pending Monitor API contract and resource plan (OI-01, OI-03).",
+        "Ack/dismiss/close on Realtime Alert & Tracker must PATCH upstream Monitor tickets. Today those actions only update local SQLite (sync_monitor2 audits pulled_alerts: 5 — no live HTTP). Delayed pending Monitor API contract and resource plan (OI-01, OI-03).",
       dependencies: "Monitor write API; OI-01 indicator stability",
       eta: "2027-Q3 (slipped from 2027-Q1)",
     },
     zh: {
       title: "Monitor 工單雙向回寫",
       detail:
-        "CRMP 排除／結案須更新上游 Monitor 工單。目前因 Monitor API 契約與資源規劃（OI-01、OI-03）延期。",
+        "在即時警報與追蹤 Ack／排除／結案須 PATCH 上游 Monitor 工單。今日只改本機 SQLite（sync_monitor2 稽核 pulled_alerts: 5 — 無真實 HTTP）。因 Monitor API 契約與資源規劃（OI-01、OI-03）延期。",
       dependencies: "Monitor 寫入 API；OI-01 指標穩定",
       eta: "2027-Q3（自 2027-Q1 延後）",
     },
@@ -402,14 +402,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Prototype AI desk features — UAT window",
       detail:
-        "Shipped for UAT: first/second-line AI Admin, grouped pipeline + rank note, intervention actioner email, RAG propose_rag human-gate, ESC-DEFAULT + dimension coefficients + skill binds, knowledge-tree RAG leaves, MonitorCode tooltips, editable Roles (/api/roles), audit plane split (CRMP / Vantage Markets Admin) + Roll back. Formal UAT sign-off still open (OI-09).",
+        "Shipped for UAT: Realtime Alert & Tracker (AI Analyses list redirect), Detectors merged into Monitor 2.0, first/second-line AI Admin, grouped pipeline + rank note, intervention actioner email, RAG propose_rag human-gate, ESC-DEFAULT + dimension coefficients + skill binds, knowledge-tree RAG leaves, MonitorCode tooltips, editable Roles (/api/roles), audit plane split (CRMP / Vantage Markets Admin) + Roll back. Formal UAT sign-off still open (OI-09).",
       dependencies: "UAT-01…45; Risk Owner calendar",
       eta: "2026-10 / 2026-11 UAT",
     },
     zh: {
       title: "原型 AI 台面功能 — UAT 窗口",
       detail:
-        "已交付供 UAT：一線／二線 AI 管理、分組管線＋排序說明、干預操作者信箱、RAG propose_rag 人工閘道、ESC-DEFAULT＋維度係數＋技能綁定、知識樹 RAG 葉、MonitorCode 提示、可編輯角色（/api/roles）、稽核平面分流（CRMP／Vantage Markets 管理）＋回滾。正式 UAT 簽核仍開放（OI-09）。",
+        "已交付供 UAT：即時警報與追蹤（AI 分析列表轉址）、偵測器併入 Monitor 2.0、一線／二線 AI 管理、分組管線＋排序說明、干預操作者信箱、RAG propose_rag 人工閘道、ESC-DEFAULT＋維度係數＋技能綁定、知識樹 RAG 葉、MonitorCode 提示、可編輯角色（/api/roles）、稽核平面分流（CRMP／Vantage Markets 管理）＋回滾。正式 UAT 簽核仍開放（OI-09）。",
       dependencies: "UAT-01…45；風險負責人行程",
       eta: "2026-10／2026-11 UAT",
     },

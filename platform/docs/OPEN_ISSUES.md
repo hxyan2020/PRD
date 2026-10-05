@@ -88,7 +88,9 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - **BU:** Pricing · **Depends:** vendor RFPs; Data Sources · **ETA:** 2027-Q3
 
 ### OI-11 — Admin UX polish
-- [ ] Mobile nav drawer, table overflow, docs parity with shipped features  
+- [x] Nav drawer, messenger list→thread, mobile card lists (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit)  
+- [ ] Confirm-sheet 375px pass + remaining wide-board overflow  
+- [ ] Docs parity with Realtime Alert & Tracker + Monitor registry nav  
 - **BU:** System · **Depends:** docs owner; FE · **ETA:** 2026-Q4 BAU
 
 ### OI-12 — Evidence retention & audit export
@@ -97,10 +99,11 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - **BU:** GRC · **Depends:** Legal; OI-06; Postgres · **ETA:** 2027-Q4
 
 ### OI-13 — Bidirectional Monitor ticket write-back *(delayed)*
-- [ ] Dismiss/close in CRMP updates upstream Monitor tickets  
+- [ ] Ack/dismiss/close on Realtime Alert & Tracker PATCHes upstream Monitor tickets (today: local SQLite only; `sync_monitor2` audits `pulled_alerts: 5` — no live HTTP)  
 - **BU:** Monitor · **Depends:** Monitor write API; OI-01 · **ETA:** 2027-Q3 (slipped)
 
 ### OI-14 — Prototype AI desk features — UAT window
+- [x] Realtime Alert & Tracker (AI Analyses list → `/admin/alerts`) · Detectors merged into Monitor 2.0  
 - [x] First/second-line AI Admin · grouped pipeline + rank note · intervention actioner email  
 - [x] RAG `propose_rag` human-gate · ESC-DEFAULT + dimension coefficients + skill binds · knowledge-tree RAG leaves · MonitorCode tooltips  
 - [x] Editable Roles (`/admin/roles` · `/api/roles`) · audit plane split + Roll back  
@@ -119,5 +122,6 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 |---|---|---|
 | 1.0 | 2026-10-05 | Initial open-issues pack wired into admin docs |
 | 1.1 | 2026-10-05 | Audit plane split + rollback; editable Roles; escalation dimensions noted |
+| 1.2 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11 mobile cards; OI-13 local-only ack; Ecosystem v1.8 aligned |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)
