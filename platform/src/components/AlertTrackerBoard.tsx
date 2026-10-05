@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronDown, Copy, ExternalLink } from "lucide-react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
+import { AlertTrackerFilters } from "@/components/AlertTrackerFilters";
 import { publicAdminHref } from "@/lib/static-export";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { useT } from "@/hooks/useUiLocale";
 import { cn } from "@/lib/utils";
+import {
+  DEFAULT_ALERT_FILTERS,
+  filterAndSortAlerts,
+  type AlertFilterState,
+} from "@/lib/alert-filters";
 import type { AlertTrackerPack, TrackerEvent, TrackerGate, TrackerPerson } from "@/lib/alert-tracker";
 
 function gateClass(code: TrackerGate["code"]) {
@@ -459,16 +465,26 @@ export function AlertTrackerBoard({
   packs,
   canOperate,
   canOperateAi,
+  initialMonitorId = "",
 }: {
   packs: AlertTrackerPack[];
   canOperate: boolean;
   canOperateAi: boolean;
+  initialMonitorId?: string;
 }) {
   const router = useRouter();
   const { t } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [hash, setHash] = useState("");
+  const [filters, setFilters] = useState<AlertFilterState>({
+    ...DEFAULT_ALERT_FILTERS,
+    monitorId: initialMonitorId,
+  });
+
+  useEffect(() => {
+    setFilters((prev) => ({ ...prev, monitorId: initialMonitorId || prev.monitorId }));
+  }, [initialMonitorId]);
 
   useEffect(() => {
     const apply = () => {
@@ -484,6 +500,8 @@ export function AlertTrackerBoard({
     window.addEventListener("hashchange", apply);
     return () => window.removeEventListener("hashchange", apply);
   }, []);
+
+  const visiblePacks = useMemo(() => filterAndSortAlerts(packs, filters), [packs, filters]);
 
   async function run(action: string, body: Record<string, unknown> = {}) {
     setBusy(true);
@@ -598,7 +616,20 @@ export function AlertTrackerBoard({
         </div>
       )}
 
-      <AlertTrackerList packs={packs} canOperate={canOperate} openId={hash} />
+      <AlertTrackerFilters
+        packs={packs}
+        filters={filters}
+        onChange={setFilters}
+        resultCount={visiblePacks.length}
+      />
+
+      {visiblePacks.length === 0 ? (
+        <div className="panel p-6 text-sm text-[var(--muted)]" data-testid="alert-filters-empty">
+          {packs.length === 0 ? t("tracker.empty") : t("alerts.noneMatch")}
+        </div>
+      ) : (
+        <AlertTrackerList packs={visiblePacks} canOperate={canOperate} openId={hash} />
+      )}
     </div>
   );
 }
