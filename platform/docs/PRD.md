@@ -45,7 +45,7 @@ graph LR
 | G6 | Market awareness | 5-minute intel scan for LP-moving headlines (live on localhost; demo scan on Pages) |
 | G7 | Safe AI boundary | Human-only pages/functions/fields listed and denied to AI |
 | G8 | Complete admin map | Every left-nav group/page in §6.4 is shipped and documented |
-| G9 | Unread awareness | New work on Alerts / Analyses / Messenger / Intel / Interventions / Spine / Audit / Monitor / Risk Log / Detectors shows a badge that clears when viewed |
+| G9 | Unread awareness | New work on Realtime Alert & Tracker / Messenger / Intel / Interventions / home spine / Audit / Monitor 2.0 / Risk Log shows a badge that clears when viewed |
 | G10 | Public demo | GitHub Pages snapshot at `/PRD/crmp-admin/` walks the desk without 404/405 on login, messenger Open-in-admin, or Scan now |
 | G11 | Named owner | Platform owner demo platform owner is a first-class persona; session persists in-browser |
 
@@ -210,15 +210,15 @@ graph LR
 |---|---|---|
 | FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
 | FR-12 | Risk Log analytics | Overview lists closed tracker cards (ticket closed, AI analysis, AI/BU action logs, mandated solution) plus 90-day historical charts (backfilled), timeline / loss vs prevented |
-| FR-24 | Live Alerts ack queue | Open-only queue; Acknowledge mutates status; button to Risk Log for closed tickets |
+| FR-24 | Realtime Alert & Tracker ack queue | Open-only queue; grouped AI pipeline; Acknowledge mutates status; closed tickets → Risk Log |
 | FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap toggle works |
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
 | FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs |
 | FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps) |
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
-| FR-23 | Detectors run/toggle | Run all raises alarms + AI RCA; enable/disable persists on localhost |
-| FR-24 | Live Alerts ack queue | Open-only queue; Acknowledge mutates status; button to Risk Log for closed tickets |
+| FR-23 | Monitor 2.0 registry (indicators + detectors) | Run all / Sync / Pause; recent runs; enable-disable persists on localhost (`/admin/detectors` redirects here) |
+| FR-24 | Realtime Alert & Tracker ack queue | Open-only queue; grouped AI pipeline; Acknowledge mutates status; closed tickets → Risk Log |
 | FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG document leaves with deep links |
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
 | FR-27 | Org directory | Combined BU and Teams hub (`/admin/departments`), editable Roles (`/admin/roles` · `/api/roles`), Users (incl. demo platform owner / haixiang.yan@hytechc.com) |
@@ -251,12 +251,12 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
-| Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Indicators / alerts / tickets | Three tabs; Sync now on localhost |
-| Monitor & risk | Detectors | `/admin/detectors` | Threshold first stage | Run all; toggle; runs list |
-| Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Grouped AI pipeline; MonitorCode tooltips; open-only; ack |
+| Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Unified indicator + detector registry | Run all / Sync / Pause; recent runs; open alerts link → Realtime Alert & Tracker (no Alerts/Tickets tabs) |
+| Monitor & risk | Detectors (redirect) | `/admin/detectors` | Bookmarks only | Not in left nav — redirects to Monitor 2.0 |
+| Monitor & risk | Realtime Alert & Tracker | `/admin/alerts` | Open queue + grouped AI pipeline | MonitorCode tooltips; open-only; ack; `/admin/ai-analyses` list redirects here |
 | Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership + P0–P3 scenarios linked to Monitor 2.0 | Expand scenario; click M2-* chip |
-| AI & knowledge | AI Analyses | `/admin/ai-analyses` → alerts | RCA + second AI on Realtime Alert | Grouped pipeline + rank note; MonitorCode; detail pack |
-| AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag; maker ≠ checker |
+| AI & knowledge | AI Analyses (redirect) | `/admin/ai-analyses` → `/admin/alerts` | List merged into Realtime Alert & Tracker | Grouped pipeline + rank note; detail pack at `/admin/ai-analyses/[id]` |
+| AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag human-gate; maker ≠ checker |
 | AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md; one escalation bind |
 | AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |

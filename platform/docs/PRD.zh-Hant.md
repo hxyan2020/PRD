@@ -45,7 +45,7 @@ graph LR
 | G6 | 市場感知 | 每五分鐘情報掃描（localhost 即時；Pages 示範掃描） |
 | G7 | 安全 AI 邊界 | 僅限人類的頁／功能／欄位列出並對 AI 拒絕 |
 | G8 | 完整管理地圖 | §6.4 每個左側分組／頁都已交付並寫進文件 |
-| G9 | 未讀感知 | 警報／分析／Messenger／情報／干預／脊柱／稽核／Monitor／風險日誌／偵測器的新工作顯示徽章，打開後清除 |
+| G9 | 未讀感知 | 即時警報與追蹤／Messenger／情報／干預／首頁脊柱／稽核／Monitor 2.0／風險日誌的新工作顯示徽章，打開後清除 |
 | G10 | 公開示範 | GitHub Pages 快照 `/PRD/crmp-admin/` 可走完後台，登入、Messenger「在管理後台開啟」、立即掃描不出現 404／405 |
 | G11 | 具名負責人 | 平台負責人 demo platform owner 為一級角色；工作階段留在瀏覽器 |
 
@@ -216,8 +216,8 @@ graph LR
 | FR-16 | 示範導覽網址目錄 | `/admin/docs/urls` 列出管理／API／資料路徑＋公開 Pages 網址 |
 | FR-21 | 管理首頁快照 | 每張卡／列皆為連結（數字、負責人、Messenger、跳轉、部門、最近警報、脊柱步驟） |
 | FR-22 | 每日績效儀表板 | CFD＋加密指標格；localhost 可重新整理 |
-| FR-23 | 偵測器執行／切換 | 全部執行會拉警報＋AI RCA；localhost 可啟用／停用 |
-| FR-24 | 即時警報確認佇列 | OPEN 依嚴重度排序；Acknowledge 變更狀態 |
+| FR-23 | Monitor 2.0 登錄（指標＋偵測器） | 全部執行／同步／暫停；近期執行；localhost 可啟用／停用（`/admin/detectors` 轉址至此） |
+| FR-24 | 即時警報與追蹤確認佇列 | 僅 OPEN；分組 AI 管線；Acknowledge 變更狀態；已關閉 → 風險日誌 |
 | FR-25 | 知識樹視覺化 | SVG 圖＋大綱；領域展開；進入劇本；RAG 幹 |
 | FR-26 | 分組平台設定 | 六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器 |
 | FR-27 | 組織目錄 | BU 與團隊合併中心（`/admin/departments`）、可編輯角色（`/admin/roles` · `/api/roles`）、使用者（含 demo platform owner／haixiang.yan@hytechc.com） |
@@ -250,12 +250,12 @@ graph LR
 | 監控與風險 | 每日績效 | `/admin/dashboard` | 當日 CFD＋加密畫面 | 兩產品格；WARN／BREACH 數 |
 | 監控與風險 | 風險日誌分析 | `/admin/risk-log` | 處理時間、損失 vs 防損、漏洞 | 摘要＋類別＋領域＋紀錄 |
 | 監控與風險 | 市場情報 | `/admin/market-intel` | 會移動 LP 的頭條 | 立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描 |
-| 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 指標／警報／工單 | 三分頁；localhost 立即同步 |
-| 監控與風險 | 偵測器 | `/admin/detectors` | 門檻第一階段 | 全部執行；切換；執行清單 |
-| 監控與風險 | 即時警報 | `/admin/alerts` | 未結佇列 | 確認；嚴重度排序；未讀清除 |
+| 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 統一指標＋偵測器登錄 | 全部執行／同步／暫停；近期執行；未結警報連至即時警報與追蹤（無警報／工單分頁） |
+| 監控與風險 | 偵測器（轉址） | `/admin/detectors` | 僅書籤 | 左側無此列 — 轉址 Monitor 2.0 |
+| 監控與風險 | 即時警報與追蹤 | `/admin/alerts` | 未結佇列＋分組 AI 管線 | MonitorCode 提示；僅 OPEN；確認；`/admin/ai-analyses` 列表轉址至此 |
 | 監控與風險 | 風險領域 | `/admin/risk-domains` | 權責＋P0–P3 情境對應 Monitor 2.0 | 展開情境；點 M2-* 晶片 |
-| AI 與知識 | AI 分析 | `/admin/ai-analyses` | RCA＋第二 AI | 模擬 COPY／EQ／CRITICAL；明細包 |
-| AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理 | 七個分頁；Maker ≠ Checker |
+| AI 與知識 | AI 分析（轉址） | `/admin/ai-analyses` → `/admin/alerts` | 列表併入即時警報與追蹤 | 分組管線＋排序說明；明細包在 `/admin/ai-analyses/[id]` |
+| AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理＋第一／第二線卡片 | 七個分頁；propose_rag 人工閘道；Maker ≠ Checker |
 | AI 與知識 | AI 技能 | `/admin/skills` | 劇本＋鏈 | 進入 → SKILL.md 頁 |
 | AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；樹幹；進入 |
 | AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |

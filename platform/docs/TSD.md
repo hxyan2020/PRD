@@ -26,7 +26,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 
 ### 1.2 In scope (prototype)
 - Admin UI + SQLite persistence
-- Detectors → Alarm → AI RCA → Second opinion → Messenger / Intervention → Spine → Dashboard
+- Monitor 2.0 (indicator + detector registry) → Alarm → AI RCA → Second opinion → Messenger / Intervention → home spine → Dashboard
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
@@ -44,7 +44,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0 plus Detectors] --> Alarm[Alarms]
+  Mon[Monitor 2.0 unified registry] --> Alarm[Alarms]
   Alarm --> Rca[AI RCA Skills or RAG]
   Rca --> Ch[Second AI challenger]
   Ch --> Msg[Demo Messenger]
@@ -76,16 +76,16 @@ graph LR
 
 
 ### 3.1 Runtime spine stages
-1. **Detectors** sample indicators (`/admin/detectors`)
+1. **Monitor 2.0** runs detector sampling on the unified indicator + detector registry (`/admin/monitor-2`; `/admin/detectors` redirects)
 2. **Alarm** opens Monitor alert/ticket
-3. **AI RCA** matches skill or RAG-reasons (`/admin/ai-analyses`)
+3. **AI RCA** matches skill or RAG-reasons (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`)
 4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
 5. **Demo Messenger / Human intervention** triage and gated controls
 6. **Home spine** records stage transitions with ticket counts on Admin Home (`/admin`; `/admin/spine` redirects — Spine Log tab removed)
 
 ```mermaid
 graph TD
-  Detectors[Detectors] --> Alarm[Monitor alarm]
+  M2[Monitor 2.0 registry] --> Alarm[Monitor alarm]
   Alarm --> RCA[AI RCA]
   RCA --> Challenger[Second AI]
   Challenger --> Messenger[Messenger / intervention]
@@ -153,7 +153,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 ## 7. Admin surface map
 
-Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide.
+Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§16) and has an operator how-to in the User Guide.
 
 ### 7.1 Shell (not a nav row)
 
@@ -172,23 +172,23 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 
 | Group | URL | UI / API | Permission | Spec |
 |---|---|---|---|---|
-| Overview | `/admin` | `app/admin/page.tsx` | `admin.access` | §17.1 |
-| Monitor | `/admin/dashboard` | `DailyDashboardView`, `GET/POST /api/dashboard` | `dashboard.read` | §17.2 |
-| Monitor | `/admin/risk-log` | `RiskLogDashboard`, `lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §17.3 |
+| Overview | `/admin` | `app/admin/page.tsx` | `admin.access` | §16.2 |
+| Monitor | `/admin/dashboard` | `DailyDashboardView`, `GET/POST /api/dashboard` | `dashboard.read` | §16.3 |
+| Monitor | `/admin/risk-log` | `RiskLogDashboard`, `lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §16.4 |
 | Monitor | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
-| Monitor | `/admin/monitor-2` | tabs + `MonitorActions`, `/api/monitor` | `monitor.read` / `monitor.operate` | §17.4 |
-| Monitor | `/admin/detectors` | `DetectorsBoard`, `/api/detectors` | `detectors.read` | §17.5 |
-| Monitor | `/admin/alerts` | `AlertsBoard` | `monitor.read` / `monitor.operate` | §17.6 |
-| Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §17.7 |
-| AI | `/admin/ai-analyses` | `AiAnalysesBoard`, `/api/ai` | `ai.read` / `ai.operate` | §9 + §17.8 |
+| Monitor | `/admin/monitor-2` | unified registry + `MonitorActions`, `/api/monitor`, `/api/detectors` | `monitor.read` / `monitor.operate` | §16.5 |
+| Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
+| Monitor | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
+| Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
+| AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
-| AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §17.9 |
-| AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §17.10 |
-| AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §17.11 |
+| AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §16.10 |
+| AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
+| AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §16.12 |
 | Response | `/admin/messenger` | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
-| Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §17.13 |
-| Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §17.15 |
-| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §17.14 |
+| Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
+| Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §16.15 |
+| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §16.15 |
 | Response | `/admin/spine` | redirects → Admin Home spine counts | `spine.read` | §16.13 |
 | Org | `/admin/departments` | **BU and Teams** combined hub | `teams.read` | §16.16 |
 | Org | `/admin/teams` | redirects → `/admin/departments` | `teams.read` | §16.16 |
@@ -588,11 +588,11 @@ Modules not fully specified in §8–§13. Behaviour must match the User Guide h
 - Localhost: `POST /api/auth/login` sets `crmp_session` **and** writes demo session.  
 - Pages / 404/405: skip API, `writeDemoSession` only.  
 - `AdminShell` prefers demo session when `isPublicSnapshot()`. Sign out clears both.  
-- Nav groups from `NAV_GROUPS`. Unread: `AdminShell` + `bumpNavBadge` from Market Intel, Detectors, AI Analyses, Messenger.
+- Nav groups from `NAV_GROUPS`. Unread: `AdminShell` + `bumpNavBadge` from Market Intel, Monitor 2.0, Realtime Alert & Tracker, Messenger.
 
 ### 16.2 Admin Home
 
-SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). Every tile is a `Link`: `StatCard` `href` (with icon + Open), owner → `/login`, messenger hero → `/admin/messenger`, jump grid, department cards to working pages (alerts / interventions / AI analyses / settings), recent alerts to `/admin/alerts#{alert_id}`, spine steps to monitor / alerts / escalation / AI / dashboard. `AlertsBoard` honours the hash.
+SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). Every tile is a `Link`: `StatCard` `href` (with icon + Open), owner → `/login`, messenger hero → `/admin/messenger`, jump grid, department cards to working pages (alerts / interventions / settings), recent alerts to `/admin/alerts#{alert_id}`, spine steps to monitor / alerts / escalation / AI / dashboard. `AlertTrackerBoard` honours the hash.
 
 ### 16.3 Daily performance
 
@@ -602,17 +602,17 @@ SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, 
 
 `getRiskLogDashboard()` aggregates: summary USD/times, `by_category`, `by_domain`, `loopholes`, chronological `records`. Read-only UI (`RiskLogDashboard`).
 
-### 16.5 Monitor 2.0 hub
+### 16.5 Monitor 2.0 hub (unified indicator + detector registry)
 
-Query `tab=indicators|alerts|tickets`. `MonitorActions` `sync_monitor2` / `ack_alert` / `update_ticket`. Setting `monitor2.base_url` displayed.
+Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). APIs: `POST /api/monitor` (`sync_monitor2`, …) and `POST /api/detectors` `{ raiseAlarms: true }` or `{ action: 'toggle' }`. Table `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`.
 
-### 16.6 Detectors
+### 16.6 Detectors URL (redirect)
 
-Table `detectors` + `detector_runs`. `POST /api/detectors` `{ raiseAlarms: true }` or `{ action: 'toggle' }`. Non-HEALTHY results bump nav badges for detectors/alerts/ai-analyses.
+Bookmarks only: `/admin/detectors` → `/admin/monitor-2`. See §16.5 for run/toggle/recent runs.
 
-### 16.7 Live alerts
+### 16.7 Realtime Alert & Tracker
 
-Join `monitor_alerts` × indicators. Sort CRITICAL/BREACH/WARN then time. `ack_alert` when `monitor.operate`.
+`AlertTrackerBoard`: join `monitor_alerts` × indicators. Open cards only; sort CRITICAL/BREACH/WARN then time. **Grouped AI pipeline** controls + rank note; `MonitorCode` tooltips on M2-* codes. `/admin/ai-analyses` list redirects here. `ack_alert` when `monitor.operate`. Closed tickets leave this queue for Risk Log.
 
 ### 16.8 Risk domains
 

@@ -26,7 +26,7 @@
 
 ### 1.2 原型範圍內
 - 管理 UI + SQLite 持久化
-- Detectors → Alarm → AI RCA → 第二意見 → Messenger／Intervention → 首頁脊柱 → Dashboard
+- Monitor 2.0（指標＋偵測器登錄）→ Alarm → AI RCA → 第二意見 → Messenger／Intervention → 首頁脊柱 → Dashboard
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
@@ -44,7 +44,7 @@
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0 加偵測器] --> Alarm[警報]
+  Mon[Monitor 2.0 統一登錄] --> Alarm[警報]
   Alarm --> Rca[AI RCA Skills 或 RAG]
   Rca --> Ch[第二 AI 挑戰者]
   Ch --> Msg[示範 Messenger]
@@ -76,16 +76,16 @@ graph LR
 
 
 ### 3.1 執行期 Spine 階段
-1. **Detectors** 採樣指標（`/admin/detectors`）
+1. **Monitor 2.0** 在統一指標＋偵測器登錄上執行採樣（`/admin/monitor-2`；`/admin/detectors` 轉址）
 2. **Alarm** 建立 Monitor 警報／工單
-3. **AI RCA** 匹配 Skill 或 RAG 推論（`/admin/ai-analyses`）
+3. **AI RCA** 匹配 Skill 或 RAG 推論（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`）
 4. **第二 AI 挑戰者** 於嚴重度達門檻時執行（`crmp-challenger-v0`）
 5. **Demo Messenger／人工介入** 分流與關卡控制
 6. **首頁脊柱** 記錄階段轉換與工單計數（`/admin`；`/admin/spine` 轉址 — 脊柱日誌分頁已移除）
 
 ```mermaid
 graph TD
-  Detectors[偵測器] --> Alarm[Monitor 警報]
+  M2[Monitor 2.0 登錄] --> Alarm[Monitor 警報]
   Alarm --> RCA[AI RCA]
   RCA --> Challenger[第二 AI]
   Challenger --> Messenger[Messenger 加干預]
@@ -176,11 +176,11 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/dashboard` | `DailyDashboardView`、`GET/POST /api/dashboard` | `dashboard.read` | §16.3 |
 | 監控 | `/admin/risk-log` | `RiskLogDashboard`、`lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §16.4 |
 | 監控 | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
-| 監控 | `/admin/monitor-2` | 分頁＋`MonitorActions`、`/api/monitor` | `monitor.read`／`monitor.operate` | §16.5 |
-| 監控 | `/admin/detectors` | `DetectorsBoard`、`/api/detectors` | `detectors.read` | §16.6 |
-| 監控 | `/admin/alerts` | `AlertsBoard` | `monitor.read`／`monitor.operate` | §16.7 |
+| 監控 | `/admin/monitor-2` | 統一登錄＋`MonitorActions`、`/api/monitor`、`/api/detectors` | `monitor.read`／`monitor.operate` | §16.5 |
+| 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
+| 監控 | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
-| AI | `/admin/ai-analyses` | `AiAnalysesBoard`、`/api/ai` | `ai.read`／`ai.operate` | §9＋§16.9 |
+| AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10＋§16.10 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
@@ -584,11 +584,11 @@ SQLite：`platform/data/vantage_risk.db`。
 - localhost：`POST /api/auth/login` 設 `crmp_session` **並**寫入示範工作階段。  
 - Pages／404／405：略過 API，只 `writeDemoSession`。  
 - `AdminShell` 在 `isPublicSnapshot()` 時優先示範工作階段。登出兩者都清。  
-- 導覽分組來自 `NAV_GROUPS`。未讀：`AdminShell`＋市場情報、偵測器、AI 分析、Messenger 的 `bumpNavBadge`。
+- 導覽分組來自 `NAV_GROUPS`。未讀：`AdminShell`＋市場情報、Monitor 2.0、即時警報與追蹤、Messenger 的 `bumpNavBadge`。
 
 ### 16.2 管理首頁
 
-SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／AI 分析／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`AlertsBoard` 會對 hash 醒目顯示。
+SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`AlertTrackerBoard` 會對 hash 醒目顯示。
 
 ### 16.3 每日績效
 
@@ -598,17 +598,17 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `getRiskLogDashboard()` 彙總：摘要美元／時間、`by_category`、`by_domain`、`loopholes`、時序 `records`。唯讀 UI（`RiskLogDashboard`）。
 
-### 16.5 Monitor 2.0 中心
+### 16.5 Monitor 2.0 中心（統一指標＋偵測器登錄）
 
-查詢 `tab=indicators|alerts|tickets`。`MonitorActions` 的 `sync_monitor2`／`ack_alert`／`update_ticket`。顯示設定 `monitor2.base_url`。
+單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**全部執行**／**同步**／**暫停**；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。API：`POST /api/monitor`、`POST /api/detectors`。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。
 
-### 16.6 偵測器
+### 16.6 偵測器網址（轉址）
 
-表 `detectors`＋`detector_runs`。`POST /api/detectors` `{ raiseAlarms: true }` 或 `{ action: 'toggle' }`。非 HEALTHY 結果會增加偵測器／警報／AI 分析的導覽徽章。
+僅書籤：`/admin/detectors` → `/admin/monitor-2`。執行／切換／近期執行見 §16.5。
 
-### 16.7 即時警報
+### 16.7 即時警報與追蹤
 
-`monitor_alerts` 聯結指標。排序 CRITICAL／BREACH／WARN 再依時間。有 `monitor.operate` 時可 `ack_alert`。
+`AlertTrackerBoard`：`monitor_alerts` 聯結指標。僅未結卡片；排序 CRITICAL／BREACH／WARN 再依時間。**分組 AI 管線**控制＋排序說明；M2-* 為 `MonitorCode` 提示。`/admin/ai-analyses` 列表轉址至此。有 `monitor.operate` 時可 `ack_alert`。已關閉工單離開此佇列進風險日誌。
 
 ### 16.8 風險領域
 
@@ -616,7 +616,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.9 AI 分析清單／明細
 
-清單：`AiAnalysesBoard` 模擬動作 `simulate_copy_breach`、EQ 回撤、CRITICAL、`backfill_challenges`。明細：`/admin/ai-analyses/[id]` 證據＋`AiChallengePanel`。見 §9。
+清單併入即時警報與追蹤（`AlertTrackerBoard`）：**分組 AI 管線**＋排序說明；localhost 五顆示範按鈕（分析未結／模擬技能／RAG／危急／補跑第二 AI）。M2-* 為 `MonitorCode` 提示／連結。明細：`/admin/ai-analyses/[id]`＋`AiChallengePanel`。AI 管理總覽有**第一／第二線**卡片（`ai.line1.*`／`ai.line2.*`）。見 §9。
 
 ### 16.10 技能看板＋SKILL.md 頁
 
