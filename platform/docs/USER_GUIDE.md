@@ -79,7 +79,7 @@ Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is store
 
 ### 2.4 Phones
 
-Tap the **hamburger** (Menu) to open the left nav. Messenger is list-first: tap a thread, then **Threads** to go back. Language sits in the header.
+Tap the **hamburger** (Menu) to open the left nav. Messenger is list-first: tap a thread, then **Threads** to go back. Language sits in the header. Tables on Monitor 2.0, Realtime Alert & Tracker, and Audit scroll sideways when needed; the selection AI chatbot (below) also works with a long-press highlight.
 
 ### 2.5 Selection AI chatbot
 
@@ -94,8 +94,8 @@ The left pane is grouped so you are not staring at one long list:
 | Group | What lives there |
 |---|---|
 | **Overview** | Admin Home (includes spine stage ticket counts) |
-| **Monitor & risk** | Daily Performance → Monitor 2.0 → Live Alerts → Market Intelligence → Risk Log → Risk Domains |
-| **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert) |
+| **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Risk Log → Risk Domains |
+| **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
 | **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
@@ -105,12 +105,12 @@ The Vantage logo sits at the top. Your role badge (and **Public prototype** on G
 
 ### Unread numbers
 
-Some rows show a **teal badge** (Live Alerts, Demo Messenger, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
+Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
 
 - The number is **new things since you last opened that tab** in this browser.  
 - Formula: `unread = max(0, (known total + extra bumps) − last seen)`.  
 - Opening the page **clears** that badge for you (stored in `crmp_nav_seen_v1`).  
-- When a scan, detector run, or AI simulate creates new work, the badge **goes up** (`crmp_nav_extra_v1`).  
+- When a scan, detector run on Monitor 2.0, or AI simulate creates new work, the badge **goes up** (`crmp_nav_extra_v1`).  
 - On GitHub Pages the first paint uses fallback totals so you still see numbers even if the snapshot database looks empty.
 
 The badge is a nudge, not a lock. You can always open the page.
@@ -128,7 +128,7 @@ graph TD
 
 ### Risk Owner
 
-1. Open [Live Alerts](/admin/alerts) and [AI Analyses](/admin/ai-analyses). Look for BREACH / CRITICAL.  
+1. Open [Realtime Alert & Tracker](/admin/alerts). Look for BREACH / CRITICAL (expand the card for the AI pack; detail packs stay at `/admin/ai-analyses/[id]` — the list URL redirects here).  
 2. Open the dual-AI pack. If the second AI is `PARTIAL` or `DISAGREE`, do **not** approve an irreversible control yet.  
 3. In [Demo Messenger](/admin/messenger): escalate, **Close (accept AI)**, or **Dismiss** a false alarm.  
 4. On [Human Intervention](/admin/interventions), approve checker steps after Ops has maker-confirmed a control.  
@@ -136,8 +136,8 @@ graph TD
 
 ### Risk Analyst
 
-1. Work the OPEN queue on Live Alerts.  
-2. Open the AI analysis. Read summary, evidence, and second-AI verdict.  
+1. Work the OPEN queue on Realtime Alert & Tracker.  
+2. Expand the card / open the AI analysis. Read summary, evidence, and second-AI verdict.  
 3. In messenger, **Show evidence**, then type in **Chatbot** if you disagree or have extra context.  
 4. Escalate to Risk Owner when the pack is ready.
 
@@ -149,7 +149,7 @@ graph TD
 
 ### AI Engineer
 
-1. Keep [AI Skills](/admin/skills), [RAG](/admin/rag), and [Detectors](/admin/detectors) healthy.  
+1. Keep [AI Skills](/admin/skills), [RAG](/admin/rag), and the indicator/detector registry on [Monitor 2.0](/admin/monitor-2) healthy (`/admin/detectors` redirects there).  
 2. Propose setting/model/skill/RAG changes on [AI Admin](/admin/ai-admin). You cannot approve your own change.  
 3. Tune `ai.second_opinion_severity` (default BREACH) under AI Admin parameters or Platform Settings.
 
@@ -165,9 +165,9 @@ graph TD
 
 This is the path you will use most. Later sections explain every other page.
 
-1. A detector or Monitor 2.0 indicator breaches.  
-2. An **OPEN** alert appears on Live Alerts (and a ticket on Monitor 2.0).  
-3. AI Analyses gets a pack: `SKILL_MATCH` if a playbook fits, otherwise `RAG_REASONING`. Every analysis also opens a **How to improve** panel (data source, dormant indicator health, missing reasoning, new skill pattern, tighten limit X→Y, manual response time) with a chatbot to pull data, add facts, challenge, and regenerate until you mark it satisfactory.  
+1. A detector run or Monitor 2.0 indicator breaches.  
+2. An **OPEN** alert appears on Realtime Alert & Tracker (open-ticket count on Monitor 2.0 links here).  
+3. Realtime Alert & Tracker gets an AI pack: `SKILL_MATCH` if a playbook fits, otherwise `RAG_REASONING`. Every analysis also opens a **How to improve** panel (data source, dormant indicator health, missing reasoning, new skill pattern, tighten limit X→Y, manual response time) with a chatbot to pull data, add facts, challenge, and regenerate until you mark it satisfactory.  
 4. If severity is BREACH or CRITICAL, a **Second AI** panel appears (`AGREE` / `PARTIAL` / `DISAGREE`).  
 5. Click **Sync alerts** on Demo Messenger so the pack is a chat thread.  
 6. **Show evidence** posts the vault into the thread. Chat if you challenge the story.  
@@ -209,8 +209,8 @@ graph TD
 - Owner card for **demo platform owner**. The whole card opens Sign in as platform owner.  
 - A Lark-style messenger promo. The whole card opens the messenger demo (permanent GitHub Pages URL is on the card).  
 - Clickable count cards: Users, Teams (opens **BU and Teams**), Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  
-- **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Live Alerts, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
-- Recent alerts. Each row opens that alarm on Live Alerts. **View all** lists every alarm.  
+- **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Realtime Alert & Tracker, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
+- Recent alerts. Each row opens that alarm on Realtime Alert & Tracker. **View all** lists every alarm.  
 - **Integration spine** with **stage ticket counts** (Detect → Alarm → AI RCA → Skill → Human → Resolved → Dashboard). Each step opens the matching page. There is **no separate Spine Log tab** — `/admin/spine` redirects here.  
 - Header shortcuts: Messenger, User Guide, Daily Performance.
 
@@ -273,46 +273,38 @@ graph TD
   Api --> Desk
 ```
 
-**Good looks like.** Scan finishes with a count. Findings, outbox and scan log all update. The Live Alerts / Market Intelligence unread badge may tick up.
+**Good looks like.** Scan finishes with a count. Findings, outbox and scan log all update. The Realtime Alert & Tracker / Market Intelligence unread badge may tick up.
 
 ### 7.4 Monitor 2.0 — `/admin/monitor-2`
 
-**What it is.** The integration hub for the existing indicator platform. CRMP does not replace Monitor 2.0; it syncs from it.
+**What it is.** The integration hub for the existing indicator platform **and** the detector registry. CRMP does not replace Monitor 2.0; it syncs from it. Detectors are no longer a separate left-nav page.
 
-**What you see.** Three tabs:
+**What you see.**
 
-- **Indicators** — monitor id, name, domain, product, warn/breach thresholds, last value, open ticket count.  
-- **Alerts** — the same events as Live Alerts, with Monitor ticket ids.  
-- **Tickets** — case tracking, assignee, department, Lark message id.
+- Upstream panel: `monitor2.base_url`, a note that detectors are merged here, and that **alerts / tickets live on Realtime Alert & Tracker**.  
+- **Run all** (samples every enabled detector; warn/breach auto-raise alarms and kick AI RCA) and **Sync now (prototype)** when you have operate rights.  
+- One **indicator + detector** table: name, `M2-*` MonitorCode, detector code / comparator, description, domain, product, editable warn/breach, sampling frequency, risk scenarios, combinations (sequence / together), status, last refreshed, open-ticket count (links to Realtime Alert filtered by monitor id), and **Pause** (paused indicators skip AI).  
+- **Recent runs** — observed value, severity, linked alert and analysis.
 
-A panel shows `monitor2.base_url` and **Sync now (prototype)**.
+Legacy `?tab=alerts` / `?tab=tickets` deep-links bounce to Realtime Alert & Tracker.
 
-**What to click.** Sync on localhost to refresh mirrored tables. Acknowledge an OPEN alert. Update a ticket status. On Pages, treat this as a read-only catalogue.
+**What to click.** **Run all** or Sync on localhost. Pause a noisy indicator. Click an open-ticket count or `M2-*` chip. On Pages, treat the catalogue as read-oriented (no live `/api`).
 
-**Good looks like.** Indicators EQ / MRG / COPY (and others) are present. Sync reports how many rows refreshed.
+**Good looks like.** Indicators EQ / MRG / COPY (and others) are present with detector codes. Run all can produce a BREACH and tick Realtime Alert / Monitor 2.0 badges. Paused rows show IDLE and do not fire AI. Home spine DETECT → ALARM moves after a real run.
 
-### 7.5 Detectors — `/admin/detectors`
+### 7.5 Detectors URL — `/admin/detectors` (redirect)
 
-**What it is.** Threshold watches that sit in front of Monitor. They are the first stage of the spine.
+**Bookmarks only.** `/admin/detectors` redirects to [Monitor 2.0](/admin/monitor-2). There is **no Detectors row** in the left nav. Run sampling, thresholds, pause, and recent runs on Monitor 2.0; open alarms on Realtime Alert & Tracker.
 
-**What you see.** Each detector: code, product, domain, monitor id, warn/breach, comparator, enabled, last run, last status/value. A recent **runs** list (observed value, severity, linked alert and analysis).
+### 7.6 Realtime Alert & Tracker — `/admin/alerts`
 
-**What to click.**
+**What it is.** The operational queue: what is still open right now, plus the **grouped AI pipeline** controls. Closed tickets leave this page and land in Risk Log Analytics. The AI Analyses list URL (`/admin/ai-analyses`) redirects here; per-analysis evidence packs stay at `/admin/ai-analyses/[id]`.
 
-- **Run all** (localhost) samples every enabled detector. Warn/breach auto-raise alarms and kick AI RCA. Unread badges on Detectors, Live Alerts and AI Analyses go up.  
-- **Enable / disable** a single detector.
+**What you see.** Open cards only, sorted CRITICAL → BREACH → WARN, newest first. Each card: severity, status, product, domain, title, message, alert id, `M2-*` MonitorCode (tooltip → Monitor 2.0), observed value, ticket id, time. Expand for AI RCA, how-to-improve, second-AI verdict, POC, gates, escalation and action log. Localhost also shows the five demo AI buttons (analyze open / simulate skill / RAG / CRITICAL / backfill 2nd AI).
 
-**Good looks like.** A COPY-style detector can produce a BREACH. Disabled detectors do not fire. Runs appear in Spine as DETECT → ALARM.
+**What to click.** **Acknowledge** on an OPEN alert if you have operate rights. Expand the card or open the analysis detail for the pack; use Messenger for evidence and controls. Use **View closed alerts in Risk Log Analytics** to read tickets that already closed. The unread badge clears when you visit this page.
 
-### 7.6 Live Alerts — `/admin/alerts`
-
-**What it is.** The operational queue: what is still open right now. Closed tickets leave this page and land in Risk Log Analytics.
-
-**What you see.** Open cards only, sorted CRITICAL → BREACH → WARN, newest first. Each card: severity, status, product, domain, title, message, alert id, monitor id, observed value, ticket id, time. Expand for AI RCA, POC, gates, escalation and action log.
-
-**What to click.** **Acknowledge** on an OPEN alert if you have operate rights. Then open AI Analyses or Messenger for the pack. Use **View closed alerts in Risk Log Analytics** to read tickets that already closed. The unread badge clears when you visit this page.
-
-**Good looks like.** Only still-open items. Ack moves status to ACKNOWLEDGED. Closed work is not mixed into this queue.
+**Good looks like.** Only still-open items. Ack moves status to ACKNOWLEDGED. Closed work is not mixed into this queue. BREACH/CRITICAL show a second-AI badge when challenged.
 
 ### 7.7 Risk Domains — `/admin/risk-domains`
 
@@ -328,11 +320,11 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 ## 8. AI & knowledge
 
-### 8.1 AI Analyses — merged into `/admin/alerts` (detail `/admin/ai-analyses/[id]`)
+### 8.1 AI Analyses — merged into Realtime Alert & Tracker (detail `/admin/ai-analyses/[id]`)
 
-**What it is.** The RCA workbench is merged into **Realtime Alert & Tracker**. `/admin/ai-analyses` redirects there. Per-analysis evidence packs stay at `/admin/ai-analyses/[id]`.
+**What it is.** The RCA workbench is merged into **Realtime Alert & Tracker** (`/admin/alerts`). `/admin/ai-analyses` redirects there — it is **not** a left-nav page. Per-analysis evidence packs stay at `/admin/ai-analyses/[id]`.
 
-**What you see on Realtime Alert.** A **grouped AI pipeline controls** panel (with rank/ordering note) and five working buttons, then open tracker cards. `M2-*` monitor ids are **MonitorCode** chips — hover for tooltip, click to open Monitor 2.0 anchored on that indicator. Expand a card for mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, **2nd AI · verdict**, the **how to improve** panel (chatbot: Pull data / Add fact / Challenge / Regenerate / Mark satisfactory), and the action log.
+**What you see on Realtime Alert & Tracker.** A **grouped AI pipeline controls** panel (with rank/ordering note) and five working buttons, then open tracker cards. `M2-*` monitor ids are **MonitorCode** chips — hover for tooltip, click to open Monitor 2.0 anchored on that indicator. Expand a card for mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, **2nd AI · verdict**, the **how to improve** panel (chatbot: Pull data / Add fact / Challenge / Regenerate / Mark satisfactory), and the action log.
 
 **What to click (demo, localhost).**
 
@@ -431,7 +423,7 @@ graph TD
 
 **What you see.** Per-stage counts (open work + 24h activity) and latest event titles; each step links to the matching page.
 
-**What to click.** Read-only orientation. After you run a detector or close a messenger thread, confirm matching stages move on localhost.
+**What to click.** Read-only orientation. After you **Run all** on Monitor 2.0 or close a messenger thread, confirm matching stages move on localhost.
 
 **Good looks like.** A COPY breach demo moves Detect / Alarm / AI RCA counts. No silent gaps on the happy path.
 
@@ -567,7 +559,7 @@ If you have `users.manage` (localhost): **Add user** (name, email, password, rol
 
 ### 11.1 Data Sources — `/admin/data-sources`
 
-Registry of internal platforms and external verification feeds (category, name, type, status). Manage on localhost if you have `sources.manage`. This is the catalogue AI and detectors are allowed to name in evidence.
+Registry of internal platforms and external verification feeds (category, name, type, status). Manage on localhost if you have `sources.manage`. This is the catalogue AI and Monitor 2.0 detectors are allowed to name in evidence.
 
 ### 11.2 AI Access Security — `/admin/security/ai-access`
 
@@ -642,8 +634,8 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 |---|---|---|
 | Overview | Admin Home | See counts; home spine stage ticket counts; click every card and alert row |
 | Monitor & risk | Daily Performance | Day-end CFD + crypto metrics |
-| Monitor & risk | Monitor 2.0 | Indicators, alerts, tickets; sync from upstream; M2-* deep links |
-| Monitor & risk | Live Alerts | Ack the open queue; grouped AI pipeline; MonitorCode tooltips |
+| Monitor & risk | Monitor 2.0 | Unified indicator + detector registry; Run all / Sync / Pause; recent runs; M2-* deep links (alerts → Realtime Alert) |
+| Monitor & risk | Realtime Alert & Tracker | Ack the open queue; grouped AI pipeline; MonitorCode tooltips; AI Analyses list redirects here |
 | Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
 | Monitor & risk | Risk Log Analytics | 90-day charts, closed packs, loss vs prevented, loopholes |
 | Monitor & risk | Risk Domains | P0–P3 scenarios hooked to Monitor 2.0 |
@@ -675,5 +667,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.5 | 2026-10-04 | Flowcharts for login, unread, RCA path, messenger, maker/checker, intel scan, knowledge tree, spine |
 | 1.6 | 2026-10-05 | Spine on home; BU and Teams; AI line1/2; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles; escalation dimensions × coefficients |
+| 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors merged into Monitor 2.0 (redirect); AI Analyses list not left-nav; Monitor hub = indicator+detector table (no Alerts/Tickets tabs); mobile polish note |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
