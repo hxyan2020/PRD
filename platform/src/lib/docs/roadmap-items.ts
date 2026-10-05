@@ -155,7 +155,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     phase: "foundations",
     screens: [
       { href: "/admin/monitor-2", en: "Monitor 2.0", zh: "Monitor 2.0" },
-      { href: "/admin/alerts", en: "Live Alerts", zh: "即時警報" },
+      { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
     ],
     codebase: [
       "POST /api/monitor ack_alert | update_ticket | sync_monitor2",
@@ -220,7 +220,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     dependsZh: "Prompt 庫、花費上限；RM-02 即時警報當標註",
     phase: "model-quality",
     screens: [
-      { href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析" },
+      { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
       { href: "/admin/ai-admin", en: "AI Admin", zh: "AI 管理" },
       { href: "/admin/skills", en: "AI Skills", zh: "AI 技能" },
       { href: "/admin/rag", en: "RAG Knowledge Base", zh: "RAG 知識庫" },
@@ -287,7 +287,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     dependsEn: "RM-03 (primary must be a real model first)",
     dependsZh: "RM-03（主路徑須先是真實模型）",
     phase: "model-quality",
-    screens: [{ href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析" }],
+    screens: [{ href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" }],
     codebase: [
       "lib/ai/challenger.ts — second heuristic, same repo",
       "ai.second_opinion_severity (default BREACH)",
@@ -474,7 +474,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     phase: "operator-ux",
     screens: [
       { href: "/admin/messenger", en: "Demo Messenger", zh: "示範 Messenger" },
-      { href: "/admin/alerts", en: "Live Alerts", zh: "即時警報" },
+      { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
       { href: "/admin/interventions", en: "Human Intervention", zh: "人工干預" },
     ],
     codebase: [
@@ -536,7 +536,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     phase: "harden",
     screens: [
       { href: "/admin/skills", en: "AI Skills", zh: "AI 技能" },
-      { href: "/admin/alerts", en: "Live Alerts", zh: "即時警報" },
+      { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
       { href: "/admin/settings", en: "Platform Settings", zh: "平台設定" },
     ],
     codebase: [
@@ -661,7 +661,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     dependsZh: "證據庫資料分類（法遵）",
     phase: "harden",
     screens: [
-      { href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析" },
+      { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
       { href: "/admin/audit", en: "Audit Log", zh: "稽核日誌" },
     ],
     codebase: [

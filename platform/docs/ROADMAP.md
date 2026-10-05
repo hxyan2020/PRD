@@ -151,7 +151,7 @@ Today the “second AI” is another heuristic in the same codebase. A wording b
 
 ### Today
 
-[AI Analyses](/admin/ai-analyses) already run a second-AI panel for BREACH/CRITICAL (`ai.second_opinion_severity`, default BREACH). `lib/ai/challenger.ts` is a second heuristic (co-signal checks, confidence cap). Table `ai_analysis_challenges` stores `AGREE` / `PARTIAL` / `DISAGREE` — populated by rules, not a vendor.
+[Realtime Alert & Tracker](/admin/alerts) (and detail packs at `/admin/ai-analyses/[id]`) already run a second-AI panel for BREACH/CRITICAL (`ai.second_opinion_severity`, default BREACH). `lib/ai/challenger.ts` is a second heuristic (co-signal checks, confidence cap). Table `ai_analysis_challenges` stores `AGREE` / `PARTIAL` / `DISAGREE` — populated by rules, not a vendor.
 
 ### Build
 
@@ -388,7 +388,7 @@ The Risk Owner pack is long and manual. Regressions land between UAT windows.
 
 ### Build
 
-Headless smoke: login personas, home stats, detectors run, alert ack, AI analysis exists, messenger ALERT+AI_REPORT, intervention queue, 繁中 title on skills, this roadmap renders. Fail the PR on assertion miss. Keep the human pack for RCA-quality judgement.
+Headless smoke: login personas, home stats, Monitor 2.0 Run all, alert ack on Realtime Alert & Tracker, AI analysis exists, messenger ALERT+AI_REPORT, intervention queue, 繁中 title on skills, this roadmap renders. Fail the PR on assertion miss. Keep the human pack for RCA-quality judgement.
 
 ### Done when
 
@@ -489,8 +489,8 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 | Roadmap | Related admin / docs |
 |---|---|
 | RM-01 | [Demo Messenger](/admin/messenger) · [Lark](/admin/lark) |
-| RM-02 | [Monitor 2.0](/admin/monitor-2) · [Live Alerts](/admin/alerts) |
-| RM-03 / RM-04 | [AI Analyses](/admin/ai-analyses) · [AI Admin](/admin/ai-admin) |
+| RM-02 | [Monitor 2.0](/admin/monitor-2) · [Realtime Alert & Tracker](/admin/alerts) |
+| RM-03 / RM-04 | [Realtime Alert & Tracker](/admin/alerts) · [AI Admin](/admin/ai-admin) |
 | RM-05 | [Users](/admin/users) · [Roles](/admin/roles) |
 | RM-09 | [Human Intervention](/admin/interventions) · [AI Access Security](/admin/security/ai-access) |
 | RM-11 | [Daily Performance](/admin/dashboard) · [Risk Log](/admin/risk-log) |

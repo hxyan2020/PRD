@@ -153,7 +153,7 @@
 
 ### 今日原型
 
-[AI 分析](/admin/ai-analyses) 已對 BREACH／CRITICAL 跑第二 AI（`ai.second_opinion_severity`，預設 BREACH）。`lib/ai/challenger.ts` 是第二套啟發式。表 `ai_analysis_challenges` 存 `AGREE`／`PARTIAL`／`DISAGREE` — 由規則填入，不是供應商。
+[即時警報與追蹤](/admin/alerts)（明細包在 `/admin/ai-analyses/[id]`）已對 BREACH／CRITICAL 跑第二 AI（`ai.second_opinion_severity`，預設 BREACH）。`lib/ai/challenger.ts` 是第二套啟發式。表 `ai_analysis_challenges` 存 `AGREE`／`PARTIAL`／`DISAGREE` — 由規則填入，不是供應商。
 
 ### 要做
 
@@ -390,7 +390,7 @@ RCA 摘錄殘留 KYC；刪除請求沒有答案。
 
 ### 要做
 
-無頭煙測：角色登入、首頁計數、跑偵測器、確認警報、存在 AI 分析、Messenger 有 ALERT＋AI_REPORT、干預佇列、技能頁繁中標題、本路線圖可渲染。斷言失敗即擋 PR。人工包留給 RCA 品質判斷。
+無頭煙測：角色登入、首頁計數、Monitor 2.0 全部執行、在即時警報與追蹤確認警報、存在 AI 分析、Messenger 有 ALERT＋AI_REPORT、干預佇列、技能頁繁中標題、本路線圖可渲染。斷言失敗即擋 PR。人工包留給 RCA 品質判斷。
 
 ### 完成標準
 
@@ -491,8 +491,8 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 | 路線圖 | 相關管理頁／文件 |
 |---|---|
 | RM-01 | [示範 Messenger](/admin/messenger) · [Lark](/admin/lark) |
-| RM-02 | [Monitor 2.0](/admin/monitor-2) · [即時警報](/admin/alerts) |
-| RM-03／RM-04 | [AI 分析](/admin/ai-analyses) · [AI 管理](/admin/ai-admin) |
+| RM-02 | [Monitor 2.0](/admin/monitor-2) · [即時警報與追蹤](/admin/alerts) |
+| RM-03／RM-04 | [即時警報與追蹤](/admin/alerts) · [AI 管理](/admin/ai-admin) |
 | RM-05 | [使用者](/admin/users) · [角色](/admin/roles) |
 | RM-09 | [人工干預](/admin/interventions) · [AI 存取安全](/admin/security/ai-access) |
 | RM-11 | [每日績效](/admin/dashboard) · [風險日誌](/admin/risk-log) |

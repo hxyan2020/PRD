@@ -425,14 +425,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress Tracker, and URL catalog must track nav reality (no Spine Log tab; BU and Teams combined; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles).",
+        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress Tracker, and URL catalog must track nav reality (Realtime Alert & Tracker naming; Detectors merged into Monitor 2.0; AI Analyses list redirect; no Spine Log tab; BU and Teams combined; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度追蹤與網址目錄須追蹤導覽實況（無脊柱日誌分頁；BU 與團隊合併；風險領域 P0–P3；風險日誌 90 天；稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色）。",
+        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度追蹤與網址目錄須追蹤導覽實況（即時警報與追蹤命名；偵測器併入 Monitor 2.0；AI 分析列表轉址；無脊柱日誌分頁；BU 與團隊合併；風險領域 P0–P3；風險日誌 90 天；稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },

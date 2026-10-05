@@ -6,7 +6,7 @@ Progress view of every open issue (**X = issue row**, **Y = timeline now → end
 
 Statuses: Planned · Started · WIP · Delayed · UAT · Go live · BAU.
 
-Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back), editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined.
+Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back), editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker** left-nav naming (`/admin/alerts`), Detectors merged into **Monitor 2.0** (`/admin/detectors` redirect).
 
 ```mermaid
 gantt

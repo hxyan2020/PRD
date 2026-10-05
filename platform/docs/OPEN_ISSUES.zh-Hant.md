@@ -30,7 +30,7 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 | OI-14 | P2 | AI | AI | UAT | 2026-10／11 | 原型 AI 台面功能 — UAT（含可編輯角色、稽核平面分流） |
 | OI-15 | P3 | Product | All | 日常 | 持續→2027-12 | 文件與網址目錄跟上後台 |
 
-已交付（原型）：稽核 **CRMP 日誌**／**Vantage Markets 管理日誌**兩分頁＋`POST /api/audit/rollback`；可編輯角色（`/admin/roles` · `/api/roles`）；升級維度 × 係數與 ESC-DEFAULT；首頁脊柱階段計數（無脊柱日誌分頁）；BU 與團隊合併。
+已交付（原型）：稽核 **CRMP 日誌**／**Vantage Markets 管理日誌**兩分頁＋`POST /api/audit/rollback`；可編輯角色（`/admin/roles` · `/api/roles`）；升級維度 × 係數與 ESC-DEFAULT；首頁脊柱階段計數（無脊柱日誌分頁）；BU 與團隊合併；左側**即時警報與追蹤**；偵測器併入 Monitor 2.0（`/admin/detectors` 轉址）；AI 分析列表轉址即時警報與追蹤。
 
 | Ver | Date | Notes |
 |---|---|---|

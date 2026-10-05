@@ -108,7 +108,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - **BU:** AI · **ETA:** 2026-10 / 11 UAT
 
 ### OI-15 — Docs & URL catalog BAU
-- [ ] Keep User Guide / PRD / TSD / UAT / Roadmap / Ecosystem / Open Issues / Progress / URLs aligned with nav (no Spine Log tab; BU and Teams; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs)  
+- [ ] Keep User Guide / PRD / TSD / UAT / Roadmap / Ecosystem / Open Issues / Progress / URLs aligned with nav (Realtime Alert & Tracker naming; Detectors → Monitor 2.0; AI Analyses list redirect; no Spine Log tab; BU and Teams; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs + Roll back)  
 - **BU:** All · **ETA:** Ongoing → 2027-12
 
 ---

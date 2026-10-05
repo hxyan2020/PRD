@@ -6,7 +6,7 @@
 
 狀態：已規劃 · 已啟動 · 進行中 · 延期 · UAT · 上線 · 日常。
 
-已交付台面事實（日常，不另開長條）：稽核平面分流（**CRMP 日誌**／**Vantage Markets 管理日誌**＋回滾）、可編輯角色、升級維度 × 係數＋ESC-DEFAULT、首頁脊柱階段工單計數（無脊柱日誌分頁）、BU 與團隊合併。
+已交付台面事實（日常，不另開長條）：稽核平面分流（**CRMP 日誌**／**Vantage Markets 管理日誌**＋回滾）、可編輯角色、升級維度 × 係數＋ESC-DEFAULT、首頁脊柱階段工單計數（無脊柱日誌分頁）、BU 與團隊合併、左側**即時警報與追蹤**（`/admin/alerts`）、偵測器併入 **Monitor 2.0**（`/admin/detectors` 轉址）。
 
 互動 SVG／表格：`/admin/docs/progress`（資料：`platform/src/lib/docs/open-issues.ts`）。明細見 [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md) 與英文甘特 [PROGRESS.md](./PROGRESS.md)。
 
