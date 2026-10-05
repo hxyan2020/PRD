@@ -183,7 +183,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       else status = "HEALTHY";
       setIndicator({ ...indicator, last_value: hits, status });
     }
-    setTab("findings");
+    goTab("findings");
     setMsg(
       t("mi.demoScan", locale, {
         scan_id: demo.scan_id,
