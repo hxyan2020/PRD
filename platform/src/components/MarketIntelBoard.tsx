@@ -361,7 +361,7 @@ export function MarketIntelBoard({
             </div>
             <p className="text-sm mt-1 max-w-3xl">{t("mi.intro", locale)}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="action-row w-full sm:w-auto">
             <button type="button" className="btn btn-primary" disabled={busy} onClick={() => post({ action: "scan_now" })}>
               {busy ? t("mi.scanning", locale) : t("mi.scan", locale)}
             </button>
