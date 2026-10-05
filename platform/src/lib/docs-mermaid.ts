@@ -68,11 +68,20 @@ function parseFlowchart(src: string): { dir: "TD" | "LR"; nodes: FlowNode[]; edg
     }
 
     const edgeRe =
-      /([A-Za-z][A-Za-z0-9_]*)\s*(?:--+|==+)\s*>\s*(?:\|([^|]+)\|)?\s*([A-Za-z][A-Za-z0-9_]*)/g;
-    while ((m = edgeRe.exec(line))) {
+      /([A-Za-z][A-Za-z0-9_]*)(?:\[[^\]]*\]|\([^)]*\)|\{[^}]*\})?\s*(?:--+|==+)\s*>\s*(?:\|([^|]+)\|)?\s*([A-Za-z][A-Za-z0-9_]*)/g;
+    // Walk the line so chained edges (`A --> B --> C`) and labelled shapes
+    // (`A[Start] --> B{Decision}`) each emit a link — including the first hop.
+    let searchFrom = 0;
+    while (searchFrom < line.length) {
+      edgeRe.lastIndex = searchFrom;
+      m = edgeRe.exec(line);
+      if (!m) break;
       ensure(m[1]);
       ensure(m[3]);
       edges.push({ from: m[1], to: m[3], label: (m[2] || "").trim() });
+      // Restart at the destination id so the next hop can use it as source.
+      const toIdStart = m.index + m[0].length - m[3].length;
+      searchFrom = toIdStart > searchFrom ? toIdStart : m.index + 1;
     }
   }
 
