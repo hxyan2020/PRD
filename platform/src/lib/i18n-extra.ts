@@ -72,6 +72,7 @@ export const EXTRA_UI: Record<string, Pair> = {
   "common.actor": { en: "Actor", "zh-Hant": "操作者" },
   "common.entity": { en: "Entity", "zh-Hant": "實體" },
   "common.details": { en: "Details", "zh-Hant": "詳情" },
+  "rag.fromTree": { en: "From knowledge tree", "zh-Hant": "來自知識樹" },
   "audit.tabCrmp": { en: "CRMP logs", "zh-Hant": "CRMP 日誌" },
   "audit.tabVantage": {
     en: "Vantage Markets Admin logs",
