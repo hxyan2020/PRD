@@ -100,67 +100,111 @@ export function AuditBoard({ logs }: { logs: AuditLogRow[] }) {
         {message ? <p className="text-sm text-teal-900">{message}</p> : null}
       </div>
 
-      <div className="panel table-wrap">
-        <table className="data">
-          <thead>
-            <tr>
-              <th>{t("common.when", locale)}</th>
-              <th>{t("common.actor", locale)}</th>
-              <th>{t("common.actions", locale)}</th>
-              <th>{t("common.entity", locale)}</th>
-              <th>{t("common.details", locale)}</th>
-              <th>{t("audit.rollback", locale)}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visible.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-sm text-[var(--muted)]">
-                  {t("audit.empty", locale)}
-                </td>
-              </tr>
-            ) : (
-              visible.map((l) => {
-                const details = parseAuditDetails(l.details_json);
-                const can = canRollbackAudit(l.action, details);
-                const tip = can ? undefined : rollbackUnavailableReason(l.action, details, locale);
-                const displayDetails = { ...details };
-                delete displayDetails.plane;
-                return (
-                  <tr key={l.id} data-testid={`audit-row-${l.id}`}>
-                    <td className="text-sm whitespace-nowrap">{l.created_at}</td>
-                    <td>{l.actor_name ?? t("common.system", locale)}</td>
-                    <td>
-                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">
-                        <Phrase>{l.action}</Phrase>
-                      </Badge>
-                    </td>
-                    <td className="text-sm">
-                      <Phrase>{l.entity_type}</Phrase>
-                      {l.entity_id ? ` / ${l.entity_id}` : ""}
-                    </td>
-                    <td className="text-xs break-all max-w-xl text-[var(--muted)]">
-                      {JSON.stringify(displayDetails)}
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        className="btn text-xs"
-                        disabled={!can || busyId === l.id || pending}
-                        title={tip}
-                        onClick={() => onRollback(l)}
-                        data-testid={`audit-rollback-${l.id}`}
-                      >
-                        {busyId === l.id ? t("common.working", locale) : t("audit.rollback", locale)}
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+      {visible.length === 0 ? (
+        <div className="panel p-4 text-sm text-[var(--muted)]">{t("audit.empty", locale)}</div>
+      ) : (
+        <>
+          <ul className="space-y-2 sm:hidden" data-testid="audit-mobile-list">
+            {visible.map((l) => {
+              const details = parseAuditDetails(l.details_json);
+              const can = canRollbackAudit(l.action, details);
+              const tip = can ? undefined : rollbackUnavailableReason(l.action, details, locale);
+              const displayDetails = { ...details };
+              delete displayDetails.plane;
+              return (
+                <li
+                  key={l.id}
+                  className="panel p-3 space-y-2"
+                  data-testid={`audit-row-${l.id}`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="text-xs text-[var(--muted)]">{l.created_at}</div>
+                      <div className="text-sm font-medium truncate">
+                        {l.actor_name ?? t("common.system", locale)}
+                      </div>
+                    </div>
+                    <Badge className="bg-teal-50 text-teal-900 border-teal-200 shrink-0">
+                      <Phrase>{l.action}</Phrase>
+                    </Badge>
+                  </div>
+                  <div className="text-sm">
+                    <Phrase>{l.entity_type}</Phrase>
+                    {l.entity_id ? ` / ${l.entity_id}` : ""}
+                  </div>
+                  <pre className="text-[11px] break-all whitespace-pre-wrap text-[var(--muted)] max-h-24 overflow-auto">
+                    {JSON.stringify(displayDetails)}
+                  </pre>
+                  <button
+                    type="button"
+                    className="btn text-xs w-full"
+                    disabled={!can || busyId === l.id || pending}
+                    title={tip}
+                    onClick={() => onRollback(l)}
+                    data-testid={`audit-rollback-${l.id}`}
+                  >
+                    {busyId === l.id ? t("common.working", locale) : t("audit.rollback", locale)}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+
+          <div className="panel table-wrap hidden sm:block">
+            <table className="data">
+              <thead>
+                <tr>
+                  <th>{t("common.when", locale)}</th>
+                  <th>{t("common.actor", locale)}</th>
+                  <th>{t("common.actions", locale)}</th>
+                  <th>{t("common.entity", locale)}</th>
+                  <th>{t("common.details", locale)}</th>
+                  <th>{t("audit.rollback", locale)}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visible.map((l) => {
+                  const details = parseAuditDetails(l.details_json);
+                  const can = canRollbackAudit(l.action, details);
+                  const tip = can ? undefined : rollbackUnavailableReason(l.action, details, locale);
+                  const displayDetails = { ...details };
+                  delete displayDetails.plane;
+                  return (
+                    <tr key={l.id} data-testid={`audit-row-${l.id}`}>
+                      <td className="text-sm whitespace-nowrap">{l.created_at}</td>
+                      <td>{l.actor_name ?? t("common.system", locale)}</td>
+                      <td>
+                        <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                          <Phrase>{l.action}</Phrase>
+                        </Badge>
+                      </td>
+                      <td className="text-sm">
+                        <Phrase>{l.entity_type}</Phrase>
+                        {l.entity_id ? ` / ${l.entity_id}` : ""}
+                      </td>
+                      <td className="text-xs break-all max-w-xl text-[var(--muted)]">
+                        {JSON.stringify(displayDetails)}
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn text-xs"
+                          disabled={!can || busyId === l.id || pending}
+                          title={tip}
+                          onClick={() => onRollback(l)}
+                          data-testid={`audit-rollback-${l.id}`}
+                        >
+                          {busyId === l.id ? t("common.working", locale) : t("audit.rollback", locale)}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 }
