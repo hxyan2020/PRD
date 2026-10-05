@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
@@ -22,19 +22,30 @@ export function RagManager({
   initialDocs,
   categories,
   canManage,
+  highlightDocKey,
 }: {
   initialDocs: Doc[];
   categories: string[];
   canManage: boolean;
+  highlightDocKey?: string | null;
 }) {
   const router = useRouter();
   const { t } = useT();
   const [docs, setDocs] = useState(initialDocs);
   const [category, setCategory] = useState("ALL");
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(highlightDocKey || "");
   const [retrieveQ, setRetrieveQ] = useState("copy trading concentration gold margin");
   const [hits, setHits] = useState<Doc[] | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [focusKey, setFocusKey] = useState(highlightDocKey || "");
+
+  useEffect(() => {
+    if (!highlightDocKey) return;
+    setFocusKey(highlightDocKey);
+    setQ(highlightDocKey);
+    const el = document.getElementById(`rag-doc-${highlightDocKey}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [highlightDocKey]);
   const [form, setForm] = useState({
     doc_key: "",
     title: "",
@@ -244,8 +255,14 @@ export function RagManager({
       <div className="space-y-3">
         {filtered.map((d) => {
           const tags = JSON.parse(d.tags_json || "[]") as string[];
+          const focused = focusKey === d.doc_key;
           return (
-            <article key={d.id} className="panel p-4">
+            <article
+              key={d.id}
+              id={`rag-doc-${d.doc_key}`}
+              className={`panel p-4 ${focused ? "ring-2 ring-teal-500 border-teal-300" : ""}`}
+              data-testid={focused ? "rag-doc-highlight" : undefined}
+            >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="flex flex-wrap gap-2 items-center">
@@ -253,6 +270,11 @@ export function RagManager({
                     <Badge className="bg-teal-50 text-teal-900 border-teal-200">{d.category}</Badge>
                     <Badge className="bg-slate-100 text-slate-700 border-slate-200">{d.product_scope}</Badge>
                     <StatusBadge value={d.status} />
+                    {focused ? (
+                      <Badge className="bg-amber-50 text-amber-950 border-amber-200">
+                        {t("rag.fromTree")}
+                      </Badge>
+                    ) : null}
                   </div>
                   <div className="text-xs text-[var(--muted)] mt-1">
                     {d.doc_key}

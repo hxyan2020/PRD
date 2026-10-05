@@ -6,6 +6,7 @@ import { AdminLink } from "@/components/AdminLink";
 import { Badge } from "@/components/ui";
 import { MonitorCode } from "@/components/MonitorCode";
 import { SKILL_SCENARIOS, LINKED_SCENARIOS } from "@/lib/ai/risk-scenarios-catalog";
+import { resolveDocsForSkill } from "@/lib/ai/skill-rag-map";
 import { finalizeSkill } from "@/lib/ai/skill-playbook";
 import { CHAIN_ZH } from "@/lib/ai/skill-zh";
 import { useUiLocale } from "@/hooks/useUiLocale";
@@ -57,35 +58,8 @@ function productMatch(product: string, filter: ProductFilter) {
   return p.includes("CRYPTO");
 }
 
-function docsForSkill(skill: (typeof SKILL_SCENARIOS)[number], docs: RagDoc[]): RagDoc[] {
-  const blob = `${skill.code} ${skill.name} ${skill.description} ${skill.indicator.domain} ${skill.indicator.product} ${skill.indicator.name}`.toLowerCase();
-  const tokens = new Set(blob.split(/[^a-z0-9]+/).filter((t) => t.length > 3));
-  if (/MARGIN|COPY|CREDIT/.test(skill.code)) {
-    tokens.add("margin");
-    tokens.add("copy");
-    tokens.add("credit");
-  }
-  if (/LP|HEDGE|ABOOK/.test(skill.code)) {
-    tokens.add("hedge");
-    tokens.add("lp");
-  }
-  if (/CRYPTO|WALLET/.test(skill.code)) {
-    tokens.add("crypto");
-    tokens.add("wallet");
-  }
-  if (/XAU|GOLD/.test(skill.code)) tokens.add("gold");
-  if (/FRAUD|BONUS|WASH/.test(skill.code)) tokens.add("fraud");
-  return docs
-    .map((d) => {
-      const hay = `${d.title} ${d.category} ${d.product_scope} ${d.tags.join(" ")}`.toLowerCase();
-      let score = 0;
-      for (const tok of tokens) if (hay.includes(tok)) score += 1;
-      return { d, score };
-    })
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5)
-    .map((x) => x.d);
+function ragDocHref(docKey: string) {
+  return `/admin/rag?doc=${encodeURIComponent(docKey)}`;
 }
 
 function linkPath(x1: number, y1: number, x2: number, y2: number) {
@@ -102,7 +76,8 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
   const [domain, setDomain] = useState<string | null>("CREDIT_CLIENT");
   const [skillCode, setSkillCode] = useState<string | null>("SKILL-MARGIN-SPIKE");
   const [chainCode, setChainCode] = useState<string | null>(null);
-  const [ragCat, setRagCat] = useState<string | null>(null);
+  const [ragCat, setRagCat] = useState<string | null>("RISK_POLICY");
+  const [ragDocKey, setRagDocKey] = useState<string | null>(null);
 
   const skills = useMemo(
     () => SKILL_SCENARIOS.filter((s) => productMatch(s.indicator.product, filter)),
@@ -142,12 +117,16 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
   const selectedSkill = skills.find((s) => s.code === skillCode) || null;
   const selectedChain = chains.find((c) => c.code === chainCode) || null;
   const domainSkills = domains.find(([d]) => d === activeDomain)?.[1] || [];
-  const relatedDocs = selectedSkill ? docsForSkill(selectedSkill, ragDocs) : [];
+  const relatedDocs = selectedSkill ? resolveDocsForSkill(selectedSkill, ragDocs) : [];
   const relatedChains = selectedSkill
     ? chains.filter((c) => c.linked_skills.includes(selectedSkill.code))
     : activeDomain
       ? chains.filter((c) => c.domain === activeDomain)
       : [];
+  const activeRagCat =
+    ragCat && ragByCat.some(([c]) => c === ragCat) ? ragCat : ragByCat[0]?.[0] || null;
+  const categoryDocs = activeRagCat ? ragByCat.find(([c]) => c === activeRagCat)?.[1] || [] : [];
+  const selectedRagDoc = ragDocs.find((d) => d.doc_key === ragDocKey) || null;
 
   const root = { x: W / 2, y: 38 };
   const trunks: { id: Trunk; x: number; y: number; label: string; count: number }[] = [
@@ -192,14 +171,25 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
     return { cat, count: list.length, x: 40 + gap / 2 + col * gap, y: 220 + row * 70 };
   });
 
+  const ragDocOriginY = 220 + Math.ceil((ragByCat.length || 1) / ragCols) * 70 + 48;
+  const ragDocNodes = categoryDocs.slice(0, 12).map((d, i) => {
+    const cols = Math.min(3, Math.max(categoryDocs.length, 1));
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const gap = 340;
+    const start = (W - (cols - 1) * gap) / 2;
+    return { doc: d, x: start + col * gap, y: ragDocOriginY + row * 64 };
+  });
+
   const skillRows = Math.ceil(Math.max(Math.min(domainSkills.length, 16), 1) / 4);
   const chainRows = Math.ceil(Math.min(chains.length, 12) / 3);
   const ragRows = Math.ceil((ragByCat.length || 1) / ragCols);
+  const ragDocRows = Math.ceil(Math.min(categoryDocs.length, 12) / 3) || 0;
   const H =
     trunk === "chains"
       ? 220 + chainRows * 76 + 48
       : trunk === "rag"
-        ? 220 + ragRows * 70 + 48
+        ? ragDocOriginY + ragDocRows * 64 + 48
         : skillOriginY + skillRows * 78 + 36;
 
   function pickDomain(code: string) {
@@ -328,8 +318,25 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     key={`tr-${n.cat}`}
                     d={linkPath(900, 150, n.x, n.y - 18)}
                     fill="none"
-                    stroke={ragCat === n.cat ? "#0f766e" : "#d7dee7"}
-                    strokeWidth={ragCat === n.cat ? 2 : 1.1}
+                    stroke={activeRagCat === n.cat ? "#0f766e" : "#d7dee7"}
+                    strokeWidth={activeRagCat === n.cat ? 2 : 1.1}
+                  />
+                ))}
+
+              {trunk === "rag" &&
+                activeRagCat &&
+                ragDocNodes.map((n) => (
+                  <path
+                    key={`rd-${n.doc.doc_key}`}
+                    d={linkPath(
+                      ragNodes.find((r) => r.cat === activeRagCat)?.x || 900,
+                      (ragNodes.find((r) => r.cat === activeRagCat)?.y || 220) + 18,
+                      n.x,
+                      n.y - 16
+                    )}
+                    fill="none"
+                    stroke={ragDocKey === n.doc.doc_key ? "#0f766e" : "#d7dee7"}
+                    strokeWidth={ragDocKey === n.doc.doc_key ? 2 : 1}
                   />
                 ))}
 
@@ -354,7 +361,10 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                   onClick={() => {
                     setTrunk(tr.id);
                     setSkillCode(null);
+                    setChainCode(null);
                     if (tr.id === "domains" && !domain && domains[0]) setDomain(domains[0][0]);
+                    if (tr.id === "rag" && !ragCat && ragByCat[0]) setRagCat(ragByCat[0][0]);
+                    if (tr.id !== "rag") setRagDocKey(null);
                   }}
                 />
               ))}
@@ -419,11 +429,30 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     y={n.y}
                     label={n.cat.replace(/_/g, " ")}
                     sub={`${n.count}`}
-                    fill={ragCat === n.cat ? "#0f766e" : "#0b6e6a"}
+                    fill={activeRagCat === n.cat ? "#0f766e" : "#0b6e6a"}
                     compact
                     wide
-                    active={ragCat === n.cat}
-                    onClick={() => setRagCat(n.cat)}
+                    active={activeRagCat === n.cat}
+                    onClick={() => {
+                      setRagCat(n.cat);
+                      setRagDocKey(null);
+                    }}
+                  />
+                ))}
+
+              {trunk === "rag" &&
+                ragDocNodes.map((n) => (
+                  <HubNode
+                    key={n.doc.doc_key}
+                    x={n.x}
+                    y={n.y}
+                    label={n.doc.title.length > 28 ? `${n.doc.title.slice(0, 27)}…` : n.doc.title}
+                    sub={n.doc.doc_key}
+                    fill={ragDocKey === n.doc.doc_key ? "#047857" : "#115e59"}
+                    compact
+                    wide
+                    active={ragDocKey === n.doc.doc_key}
+                    onClick={() => setRagDocKey(n.doc.doc_key)}
                   />
                 ))}
             </svg>
@@ -438,8 +467,9 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
             chain={selectedChain}
             relatedChains={relatedChains}
             relatedDocs={relatedDocs}
-            ragCat={ragCat}
-            ragDocs={ragCat ? ragByCat.find(([c]) => c === ragCat)?.[1] || [] : []}
+            ragCat={activeRagCat}
+            ragDocs={categoryDocs}
+            selectedDoc={selectedRagDoc}
           />
         </div>
       ) : (
@@ -590,6 +620,7 @@ function Inspector({
   relatedDocs,
   ragCat,
   ragDocs,
+  selectedDoc,
 }: {
   locale: UiLocale;
   trunk: Trunk;
@@ -600,6 +631,7 @@ function Inspector({
   relatedDocs: RagDoc[];
   ragCat: string | null;
   ragDocs: RagDoc[];
+  selectedDoc: RagDoc | null;
 }) {
   const playbook = skill ? finalizeSkill(skill, locale) : null;
   const chainZh = chain && locale === "zh-Hant" ? CHAIN_ZH[chain.code] : undefined;
@@ -607,7 +639,28 @@ function Inspector({
   return (
     <aside className="panel p-4 min-h-[280px]">
       <div className="text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">{t("tree.inspector", locale)}</div>
-      {playbook ? (
+      {selectedDoc && trunk === "rag" ? (
+        <div className="mt-2 space-y-3">
+          <h2 className="font-[family-name:var(--font-display)] text-lg leading-snug">{selectedDoc.title}</h2>
+          <div className="flex flex-wrap gap-1.5">
+            <Badge className="bg-emerald-50 text-emerald-900 border-emerald-200">{selectedDoc.category}</Badge>
+            <Badge className="bg-slate-100 text-slate-700 border-slate-200">{selectedDoc.product_scope}</Badge>
+          </div>
+          <div className="text-xs font-mono text-[var(--muted)]">{selectedDoc.doc_key}</div>
+          {selectedDoc.tags.length ? (
+            <div className="flex flex-wrap gap-1">
+              {selectedDoc.tags.slice(0, 8).map((tag) => (
+                <Badge key={tag} className="bg-teal-50 text-teal-900 border-teal-200 text-[10px]">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          ) : null}
+          <AdminLink href={ragDocHref(selectedDoc.doc_key)} className="btn btn-primary text-xs">
+            {t("tree.openDoc", locale)}
+          </AdminLink>
+        </div>
+      ) : playbook ? (
         <div className="mt-2 space-y-3">
           <h2 className="font-[family-name:var(--font-display)] text-lg leading-snug">{playbook.name}</h2>
           <div className="flex flex-wrap gap-1.5">
@@ -637,11 +690,11 @@ function Inspector({
           ) : null}
           {relatedDocs.length ? (
             <div>
-              <div className="text-xs uppercase text-[var(--muted)] mb-1">{t("tree.rag", locale)}</div>
+              <div className="text-xs uppercase text-[var(--muted)] mb-1">{t("tree.linkedDocs", locale)}</div>
               <ul className="text-sm space-y-1">
                 {relatedDocs.map((d) => (
                   <li key={d.doc_key}>
-                    <AdminLink href="/admin/rag" className="text-teal-800 underline">
+                    <AdminLink href={ragDocHref(d.doc_key)} className="text-teal-800 underline">
                       {d.title}
                     </AdminLink>
                   </li>
@@ -668,10 +721,11 @@ function Inspector({
       ) : trunk === "rag" ? (
         <div className="mt-2 space-y-3">
           <h2 className="font-[family-name:var(--font-display)] text-lg">{ragCat || t("tree.rag", locale)}</h2>
+          <p className="text-xs text-[var(--muted)]">{t("tree.ragCatHint", locale)}</p>
           <ul className="text-sm space-y-1.5">
-            {(ragDocs.length ? ragDocs : []).map((d) => (
+            {ragDocs.map((d) => (
               <li key={d.doc_key}>
-                <AdminLink href="/admin/rag" className="text-teal-800 underline">
+                <AdminLink href={ragDocHref(d.doc_key)} className="text-teal-800 underline">
                   {d.title}
                 </AdminLink>
                 <div className="text-xs text-[var(--muted)]">{d.product_scope}</div>
@@ -773,7 +827,7 @@ function Outline({
                 <ul className="mt-1 space-y-1">
                   {list.map((d) => (
                     <li key={d.doc_key} className="text-sm">
-                      <AdminLink href="/admin/rag" className="text-teal-800 underline">
+                      <AdminLink href={ragDocHref(d.doc_key)} className="text-teal-800 underline">
                         {d.title}
                       </AdminLink>
                     </li>
