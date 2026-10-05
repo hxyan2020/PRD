@@ -391,18 +391,32 @@ export function createAlarmAndAnalyze(input: {
   if (!ind) throw new Error(`Unknown indicator ${input.monitor_id}`);
 
   const alertIdStr = `ALT-${Date.now().toString().slice(-6)}`;
+  const ticketId = `TKT-${Date.now().toString().slice(-5)}`;
   const info = db
     .prepare(
       `INSERT INTO monitor_alerts (alert_id, indicator_id, severity, title, message, observed_value, status, monitor20_ticket_id)
        VALUES (?, ?, ?, ?, ?, ?, 'OPEN', ?)`
     )
-    .run(alertIdStr, ind.id, input.severity, input.title, input.message, input.observed_value, `TKT-${Date.now().toString().slice(-5)}`);
+    .run(alertIdStr, ind.id, input.severity, input.title, input.message, input.observed_value, ticketId);
 
   db.prepare(
     `UPDATE monitor_indicators SET status = ?, last_value = ?, last_checked_at = datetime('now'), ticket_open_count = ticket_open_count + 1 WHERE id = ?`
   ).run(input.severity === "INFO" ? "HEALTHY" : input.severity, input.observed_value, ind.id);
 
   const alertDbId = Number(info.lastInsertRowid);
+  const assignee = db
+    .prepare(
+      `SELECT id, department_code FROM users
+       WHERE status = 'ACTIVE' AND role_code IN ('RISK_ANALYST','RISK_OWNER','OPS_LEAD')
+       ORDER BY CASE role_code WHEN 'RISK_ANALYST' THEN 0 WHEN 'RISK_OWNER' THEN 1 ELSE 2 END, id
+       LIMIT 1`
+    )
+    .get() as { id: number; department_code: string | null } | undefined;
+  db.prepare(
+    `INSERT INTO monitor_tickets (ticket_id, alert_id, title, status, severity, assignee_user_id, department_code)
+     VALUES (?, ?, ?, 'OPEN', ?, ?, ?)`
+  ).run(ticketId, alertDbId, input.title, input.severity, assignee?.id ?? null, assignee?.department_code ?? null);
+
   writeAudit({ name: "Monitor 2.0" }, "ALARM_RAISED", "monitor_alert", alertIdStr, input);
   return { ...analyzeAlert(alertDbId, { force: true }), monitor_alert_id: alertIdStr };
 }

@@ -259,7 +259,7 @@ export function listAlertTrackerPacks(
         }
       | undefined;
 
-    const poc: TrackerPerson | null = ticket?.assignee_name
+    let poc: TrackerPerson | null = ticket?.assignee_name
       ? {
           name: ticket.assignee_name,
           role: ticket.assignee_role || "ASSIGNEE",
@@ -267,6 +267,21 @@ export function listAlertTrackerPacks(
           team: ticket.team_name,
         }
       : null;
+    if (!poc && esc?.primary_team) {
+      const desk = db
+        .prepare(
+          `SELECT u.name, u.role_code, u.email, tm.name AS team_name
+           FROM users u JOIN teams tm ON tm.id = u.team_id
+           WHERE tm.name = ? AND u.status = 'ACTIVE'
+           ORDER BY u.id LIMIT 1`
+        )
+        .get(esc.primary_team) as
+        | { name: string; role_code: string; email: string; team_name: string | null }
+        | undefined;
+      if (desk) {
+        poc = { name: desk.name, role: desk.role_code, email: desk.email, team: desk.team_name };
+      }
+    }
 
     const gate = gateFor({
       alertStatus: a.status,
