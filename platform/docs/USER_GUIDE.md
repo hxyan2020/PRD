@@ -239,14 +239,15 @@ graph TD
 **What you see.**
 
 - Summary tiles: open alerts, loss vs prevented vs exposure, average ack/resolve/handling minutes, SLA breaches, pending vs decided interventions.  
+- **Historical charts (90 days)** on Overview / Historical charts — alerts & open book, loss vs prevented, handling latency. Days before the live demo window are backfilled so the series reads as a full quarter.  
 - **Closed alerts & tickets** on Overview — the same tracker cards as Realtime Alert, but only after the ticket is closed: realtime status (ticket closed), AI analysis, AI/BU action logs, and the final solution mandated by AI or the business-unit POC.  
 - Tables by category and by domain.  
 - Loophole tags (repeat weak spots).  
 - Chronological records (alert, ticket, outcome, USD).
 
-**What to click.** Expand a closed card for the full pack. Filter / scan the tables. Open work still lives on Realtime Alert.
+**What to click.** Read the charts, then expand a closed card for the full pack. Filter / scan the tables. Open work still lives on Realtime Alert.
 
-**Good looks like.** Closed cards show ticket-closed, an AI report, a BU/AI action log, and a mandated solution. Totals add up. Handling times are filled for closed work. Loophole tags are not empty on the seeded demo.
+**Good looks like.** Charts span ~90 days (not a flat spike on one day). Closed cards show ticket-closed, an AI report, a BU/AI action log, and a mandated solution. Totals add up. Handling times are filled for closed work. Loophole tags are not empty on the seeded demo.
 
 ### 7.3 Market Intelligence — `/admin/market-intel`
 

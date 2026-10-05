@@ -1,4 +1,10 @@
 import type Database from "better-sqlite3";
+import {
+  ensureRiskLogHistory,
+  ensureRiskLogHistorySchema,
+  listRiskLogHistory,
+  riskLogHistoryTotals,
+} from "@/lib/ai/risk-log-history";
 
 // Avoid circular import with db.ts (which calls ensure/seed from this module).
 function db() {
@@ -22,6 +28,7 @@ export function ensureRiskLogSchema(db: Database.Database) {
       FOREIGN KEY (alert_id) REFERENCES monitor_alerts(id)
     );
   `);
+  ensureRiskLogHistorySchema(db);
 }
 
 function minutesBetween(start: string | null, end: string | null): number | null {
@@ -327,6 +334,7 @@ export function getRiskLogDashboard() {
   const database = db();
   ensureRiskLogSchema(database);
   seedRiskLogIfEmpty(database);
+  ensureRiskLogHistory(database);
 
   const byCategory = database
     .prepare(
@@ -506,6 +514,9 @@ export function getRiskLogDashboard() {
     )
     .all();
 
+  const history = listRiskLogHistory(database);
+  const history_totals = riskLogHistoryTotals(history);
+
   return {
     summary: {
       alerts_total: (
@@ -525,6 +536,8 @@ export function getRiskLogDashboard() {
     loopholes,
     records,
     timeline,
+    history,
+    history_totals,
   };
 }
 

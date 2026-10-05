@@ -70,8 +70,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "risk-log": {
     title: { en: "Risk Log & Alerts Analytics", "zh-Hant": "風險日誌與警報分析" },
     subtitle: {
-      en: "Closed tickets land here with the same tracker pack as Realtime Alert — ticket-closed status, AI analysis, AI/BU action logs, mandated solution — plus category, handling time, loss vs prevented, and loophole areas.",
-      "zh-Hant": "已關閉工單以與即時警報相同的追蹤包落地於此 — 工單已關閉狀態、AI 分析、AI／各 BU 動作紀錄、核定方案 — 另含類別、處理時間、損失 vs 防損與漏洞領域。",
+      en: "Closed tickets land here with the same tracker pack as Realtime Alert — ticket-closed status, AI analysis, AI/BU action logs, mandated solution — plus 90-day historical charts (backfilled), category, handling time, loss vs prevented, and loophole areas.",
+      "zh-Hant": "已關閉工單以與即時警報相同的追蹤包落地於此 — 工單已關閉狀態、AI 分析、AI／各 BU 動作紀錄、核定方案 — 另含 90 天歷史圖表（已回填）、類別、處理時間、損失 vs 防損與漏洞領域。",
     },
   },
   "market-intel": {

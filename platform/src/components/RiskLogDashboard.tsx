@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
+import { RiskLogCharts, type HistoryDay } from "@/components/RiskLogCharts";
 import type { AlertTrackerPack } from "@/lib/alert-tracker";
 import { navLabel } from "@/lib/i18n";
 import { useT } from "@/hooks/useUiLocale";
@@ -98,10 +99,21 @@ type Dashboard = {
     category: string;
     product: string;
   }>;
+  history: HistoryDay[];
+  history_totals?: {
+    days: number;
+    alerts_raised: number;
+    breaches: number;
+    loss_usd: number;
+    prevented_usd: number;
+    backfilled_days: number;
+    live_days: number;
+  };
 };
 
 const TABS = [
   { id: "overview", labelKey: "rl.overview" },
+  { id: "history", labelKey: "rl.history" },
   { id: "categories", labelKey: "rl.categories" },
   { id: "records", labelKey: "rl.records" },
   { id: "handling", labelKey: "rl.handling" },
@@ -204,6 +216,8 @@ export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; 
             />
           </div>
 
+          <RiskLogCharts history={data.history || []} />
+
           <div className="panel p-4">
             <h3 className="font-semibold">{t("rl.byDomain")}</h3>
             <p className="text-sm text-[var(--muted)] mt-1">{t("rl.byDomainHint")}</p>
@@ -243,6 +257,8 @@ export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; 
           </div>
         </div>
       )}
+
+      {tab === "history" && <RiskLogCharts history={data.history || []} />}
 
       {tab === "categories" && (
         <div className="panel table-wrap">

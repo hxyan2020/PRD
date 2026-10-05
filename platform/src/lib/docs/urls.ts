@@ -111,7 +111,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "DB Tables", title: "interventions / spine_events", path: "tables:interventions,spine_events", description: "Human gates and end-to-end spine" },
   { category: "DB Tables", title: "ai_change_requests / training / feedback", path: "tables:ai_change_requests,ai_training_runs,ai_feedback,ai_accuracy_snapshots", description: "AI Admin maker/checker + quality" },
   { category: "DB Tables", title: "market_intel_*", path: "tables:market_intel_sources,findings,scans,lark_outbox", description: "Market intelligence scanner + outbox" },
-  { category: "DB Tables", title: "daily_performance / alert_impacts", path: "tables:daily_performance,alert_impacts", description: "Dashboard + risk-log analytics" },
+  { category: "DB Tables", title: "daily_performance / alert_impacts / risk_log_daily", path: "tables:daily_performance,alert_impacts,risk_log_daily", description: "Dashboard + risk-log analytics + 90-day historical series" },
   { category: "DB Tables", title: "audit_logs / platform_settings / data_sources", path: "tables:audit_logs,platform_settings,data_sources", description: "Audit trail, flags, source registry" },
   { category: "DB Tables", title: "admin_doc_edits", path: "tables:admin_doc_edits", description: "In-admin edits to TSD/PRD/UG/Ecosystem/UAT/Roadmap/URL catalog overlays" },
 ];

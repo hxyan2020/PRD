@@ -209,7 +209,7 @@ graph LR
 | ID | Requirement | Acceptance sketch |
 |---|---|---|
 | FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
-| FR-12 | Risk Log analytics | Overview lists closed tracker cards (ticket closed, AI analysis, AI/BU action logs, mandated solution) plus timeline / loss vs prevented |
+| FR-12 | Risk Log analytics | Overview lists closed tracker cards (ticket closed, AI analysis, AI/BU action logs, mandated solution) plus 90-day historical charts (backfilled), timeline / loss vs prevented |
 | FR-24 | Live Alerts ack queue | Open-only queue; Acknowledge mutates status; button to Risk Log for closed tickets |
 | FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap toggle works |
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |

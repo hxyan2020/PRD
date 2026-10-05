@@ -573,19 +573,19 @@ graph TD
 
 - **Severity:** Medium · **BU:** Risk · **Depends:** UAT-02 · **Window:** T+321m / 10m
 - **Covers:** Risk Log Analytics
-- **Why:** Alarms without impact are noise. This page is where we judge whether a breach hurt anyone — and read the closed tracker pack.
-- **Goal:** Open Risk Log Analytics Overview and confirm closed-ticket cards (status, AI analysis, BU/AI action log, mandated solution) plus impact rows with product/domain context.
+- **Why:** Alarms without impact are noise. This page is where we judge whether a breach hurt anyone — and read the closed tracker pack, with a full-quarter historical view.
+- **Goal:** Open Risk Log Analytics Overview and confirm 90-day historical charts (backfilled), closed-ticket cards (status, AI analysis, BU/AI action log, mandated solution), plus impact rows with product/domain context.
 
 **Steps**
 
 1. Open Risk Log Analytics (Overview).
-2. You should see summary tiles, domain bars, and a Closed alerts & tickets list — not a blank white page.
-3. Expand one closed card. Write down: ticket-closed status, the AI analysis summary, at least one AI or BU action-log line, and the mandated final solution (who mandated it).
-4. Confirm the same alert id is not still sitting on Realtime Alert as an open card.
-5. If filters exist on other tabs (product, domain, date), change one filter and confirm the list updates or shows a sensible empty state.
+2. You should see summary tiles, **historical charts spanning ~90 days** (alerts/open book, loss vs prevented, handling latency — not a flat single-day spike), domain bars, and a Closed alerts & tickets list — not a blank white page.
+3. Optionally open the Historical charts tab and confirm the same series.
+4. Expand one closed card. Write down: ticket-closed status, the AI analysis summary, at least one AI or BU action-log line, and the mandated final solution (who mandated it).
+5. Confirm the same alert id is not still sitting on Realtime Alert as an open card.
 
-**Pass:** Overview shows closed tracker cards with ticket-closed + AI + action log + mandated solution; at least one card can be explained in plain English.
-**Evidence:** Screenshot of Risk Log Overview with one closed card expanded.
+**Pass:** Overview shows ~90-day charts plus closed tracker cards with ticket-closed + AI + action log + mandated solution; at least one card can be explained in plain English.
+**Evidence:** Screenshot of Risk Log Overview showing historical charts and one closed card expanded.
 
 ### UAT-30 — Live Alerts — read the queue and acknowledge one
 
