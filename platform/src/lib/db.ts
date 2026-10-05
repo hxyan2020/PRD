@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import { classifyAuditPlane } from "@/lib/audit";
 import fs from "fs";
 import path from "path";
 import { ensureAiSchema } from "@/lib/ai/schema";
@@ -1060,11 +1061,14 @@ export function writeAudit(
   action: string,
   entityType: string,
   entityId: string | null,
-  details: Record<string, unknown> = {}
+  details: Record<string, unknown> = {},
+  opts?: { plane?: "crmp" | "vantage" }
 ) {
   const db = getDb();
+  const plane = opts?.plane ?? classifyAuditPlane(action, entityType);
+  const payload = { ...details, plane };
   db.prepare(
     `INSERT INTO audit_logs (actor_user_id, actor_name, action, entity_type, entity_id, details_json)
      VALUES (?, ?, ?, ?, ?, ?)`
-  ).run(actor?.id ?? null, actor?.name ?? "system", action, entityType, entityId, JSON.stringify(details));
+  ).run(actor?.id ?? null, actor?.name ?? "system", action, entityType, entityId, JSON.stringify(payload));
 }

@@ -72,8 +72,8 @@ export async function POST(req: Request) {
     }
     const db = getDb();
     const row = db
-      .prepare(`SELECT id, monitor_id FROM monitor_indicators WHERE id = ?`)
-      .get(indicatorId) as { id: number; monitor_id: string } | undefined;
+      .prepare(`SELECT id, monitor_id, paused FROM monitor_indicators WHERE id = ?`)
+      .get(indicatorId) as { id: number; monitor_id: string; paused: number } | undefined;
     if (!row) {
       return NextResponse.json({ error: "Indicator not found" }, { status: 404 });
     }
@@ -81,6 +81,8 @@ export async function POST(req: Request) {
     db.prepare(`UPDATE detectors SET enabled = ? WHERE monitor_id = ?`).run(paused ? 0 : 1, row.monitor_id);
     writeAudit(user, paused ? "PAUSE_INDICATOR" : "RESUME_INDICATOR", "monitor_indicator", row.monitor_id, {
       indicator_id: indicatorId,
+      before: { paused: row.paused },
+      after: { paused },
       paused: !!paused,
     });
     return NextResponse.json({ ok: true, paused: !!paused });
@@ -105,8 +107,12 @@ export async function POST(req: Request) {
     }
     const db = getDb();
     const row = db
-      .prepare(`SELECT id, monitor_id FROM monitor_indicators WHERE id = ?`)
-      .get(indicatorId) as { id: number; monitor_id: string } | undefined;
+      .prepare(
+        `SELECT id, monitor_id, threshold_warn, threshold_breach FROM monitor_indicators WHERE id = ?`
+      )
+      .get(indicatorId) as
+      | { id: number; monitor_id: string; threshold_warn: number; threshold_breach: number }
+      | undefined;
     if (!row) {
       return NextResponse.json({ error: "Indicator not found" }, { status: 404 });
     }
@@ -123,6 +129,8 @@ export async function POST(req: Request) {
     ).run(warn, breach, row.monitor_id);
     writeAudit(user, "UPDATE_THRESHOLDS", "monitor_indicator", row.monitor_id, {
       indicator_id: indicatorId,
+      before: { threshold_warn: row.threshold_warn, threshold_breach: row.threshold_breach },
+      after: { threshold_warn: warn, threshold_breach: breach },
       threshold_warn: warn,
       threshold_breach: breach,
     });

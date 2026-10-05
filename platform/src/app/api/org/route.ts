@@ -30,13 +30,24 @@ export async function POST(req: Request) {
 
   if (body.action === "update_team") {
     if (!body.id) return NextResponse.json({ error: "id required" }, { status: 400 });
+    const prev = db
+      .prepare(`SELECT id, mission, on_call_rotation FROM teams WHERE id = ?`)
+      .get(body.id) as { id: number; mission: string | null; on_call_rotation: string | null } | undefined;
+    if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
     db.prepare(
       `UPDATE teams
        SET mission = COALESCE(?, mission),
            on_call_rotation = COALESCE(?, on_call_rotation)
        WHERE id = ?`
     ).run(body.mission ?? null, body.on_call_rotation ?? null, body.id);
-    writeAudit(user, "UPDATE_TEAM", "team", String(body.id), body);
+    writeAudit(user, "UPDATE_TEAM", "team", String(body.id), {
+      before: { mission: prev.mission, on_call_rotation: prev.on_call_rotation },
+      after: {
+        mission: body.mission ?? prev.mission,
+        on_call_rotation: body.on_call_rotation ?? prev.on_call_rotation,
+      },
+      ...body,
+    });
     return NextResponse.json({ ok: true });
   }
 

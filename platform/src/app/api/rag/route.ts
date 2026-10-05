@@ -109,9 +109,7 @@ export async function PATCH(req: Request) {
     | undefined;
   if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  upsertRagDocument(getDb(), {
-    id: existing.id,
-    doc_key: existing.doc_key,
+  const after = {
     title: body.title ?? existing.title,
     category: body.category ?? existing.category,
     product_scope: body.product_scope ?? existing.product_scope,
@@ -119,7 +117,24 @@ export async function PATCH(req: Request) {
     source_ref: body.source_ref ?? existing.source_ref ?? undefined,
     tags: body.tags ?? (JSON.parse(existing.tags_json) as string[]),
     status: body.status ?? existing.status,
+  };
+  upsertRagDocument(getDb(), {
+    id: existing.id,
+    doc_key: existing.doc_key,
+    ...after,
   });
-  writeAudit(user, "RAG_UPDATE", "rag_document", String(body.id), body);
+  writeAudit(user, "RAG_UPDATE", "rag_document", String(body.id), {
+    before: {
+      title: existing.title,
+      category: existing.category,
+      product_scope: existing.product_scope,
+      content: existing.content,
+      source_ref: existing.source_ref,
+      tags: JSON.parse(existing.tags_json) as string[],
+      status: existing.status,
+    },
+    after,
+    ...body,
+  });
   return NextResponse.json({ ok: true });
 }

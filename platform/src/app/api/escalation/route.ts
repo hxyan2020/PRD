@@ -33,13 +33,38 @@ export async function POST(req: Request) {
   const db = getDb();
 
   if (body.action === "toggle") {
-    db.prepare(`UPDATE escalation_routes SET enabled = ? WHERE id = ?`).run(body.enabled ? 1 : 0, body.id);
-    writeAudit(user, "TOGGLE_ESCALATION_ROUTE", "escalation_route", String(body.id), body);
+    const prev = db
+      .prepare(`SELECT id, enabled FROM escalation_routes WHERE id = ?`)
+      .get(body.id) as { id: number; enabled: number } | undefined;
+    if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const enabled = body.enabled ? 1 : 0;
+    db.prepare(`UPDATE escalation_routes SET enabled = ? WHERE id = ?`).run(enabled, body.id);
+    writeAudit(user, "TOGGLE_ESCALATION_ROUTE", "escalation_route", String(body.id), {
+      before: { enabled: prev.enabled },
+      after: { enabled },
+      id: body.id,
+      enabled: !!body.enabled,
+    });
     return NextResponse.json({ ok: true });
   }
 
   if (body.action === "update") {
     if (!body.id) return NextResponse.json({ error: "id required" }, { status: 400 });
+    const prev = db
+      .prepare(
+        `SELECT id, coefficients_json, risk_scenario, involved_teams_json, pending_minutes_threshold
+         FROM escalation_routes WHERE id = ?`
+      )
+      .get(body.id) as
+      | {
+          id: number;
+          coefficients_json: string;
+          risk_scenario: string | null;
+          involved_teams_json: string | null;
+          pending_minutes_threshold: number | null;
+        }
+      | undefined;
+    if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
     const coeffs = body.coefficients || DEFAULT_ESCALATION_COEFFICIENTS;
     db.prepare(
       `UPDATE escalation_routes
@@ -55,7 +80,21 @@ export async function POST(req: Request) {
       body.pending_minutes_threshold ?? null,
       body.id
     );
-    writeAudit(user, "UPDATE_ESCALATION_ROUTE", "escalation_route", String(body.id), body);
+    writeAudit(user, "UPDATE_ESCALATION_ROUTE", "escalation_route", String(body.id), {
+      before: {
+        coefficients_json: prev.coefficients_json,
+        risk_scenario: prev.risk_scenario,
+        involved_teams_json: prev.involved_teams_json,
+        pending_minutes_threshold: prev.pending_minutes_threshold,
+      },
+      after: {
+        coefficients: coeffs,
+        risk_scenario: body.risk_scenario ?? prev.risk_scenario,
+        involved_teams: body.involved_teams ?? null,
+        pending_minutes_threshold: body.pending_minutes_threshold ?? prev.pending_minutes_threshold,
+      },
+      ...body,
+    });
     return NextResponse.json({ ok: true });
   }
 
@@ -87,6 +126,8 @@ export async function POST(req: Request) {
       body.risk_scenario || null,
       JSON.stringify(body.involved_teams || [])
     );
-  writeAudit(user, "CREATE_ESCALATION_ROUTE", "escalation_route", String(info.lastInsertRowid), body);
+  writeAudit(user, "CREATE_ESCALATION_ROUTE", "escalation_route", String(info.lastInsertRowid), {
+    after: body,
+  });
   return NextResponse.json({ ok: true, id: info.lastInsertRowid });
 }

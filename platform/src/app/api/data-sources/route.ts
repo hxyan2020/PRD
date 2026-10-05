@@ -65,16 +65,29 @@ export async function PATCH(req: Request) {
   }
   const body = await req.json();
   if (!body.id) return NextResponse.json({ error: "id required" }, { status: 400 });
-  getDb()
-    .prepare(
-      `UPDATE data_sources SET
-         status = COALESCE(?, status),
-         notes = COALESCE(?, notes),
-         refresh_cadence = COALESCE(?, refresh_cadence),
-         updated_at = datetime('now')
-       WHERE id = ?`
-    )
-    .run(body.status ?? null, body.notes ?? null, body.refresh_cadence ?? null, body.id);
-  writeAudit(user, "UPDATE_DATA_SOURCE", "data_source", String(body.id), body);
+  const db = getDb();
+  const prev = db
+    .prepare(`SELECT id, status, notes, refresh_cadence FROM data_sources WHERE id = ?`)
+    .get(body.id) as
+    | { id: number; status: string; notes: string | null; refresh_cadence: string | null }
+    | undefined;
+  if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  db.prepare(
+    `UPDATE data_sources SET
+       status = COALESCE(?, status),
+       notes = COALESCE(?, notes),
+       refresh_cadence = COALESCE(?, refresh_cadence),
+       updated_at = datetime('now')
+     WHERE id = ?`
+  ).run(body.status ?? null, body.notes ?? null, body.refresh_cadence ?? null, body.id);
+  writeAudit(user, "UPDATE_DATA_SOURCE", "data_source", String(body.id), {
+    before: { status: prev.status, notes: prev.notes, refresh_cadence: prev.refresh_cadence },
+    after: {
+      status: body.status ?? prev.status,
+      notes: body.notes ?? prev.notes,
+      refresh_cadence: body.refresh_cadence ?? prev.refresh_cadence,
+    },
+    ...body,
+  });
   return NextResponse.json({ ok: true });
 }

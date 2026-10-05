@@ -224,8 +224,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   audit: {
     title: { en: "Audit Log", "zh-Hant": "稽核日誌" },
     subtitle: {
-      en: "Immutable trail of admin and messenger mutations.",
-      "zh-Hant": "管理與 Messenger 變更之不可變軌跡。",
+      en: "CRMP ops trail and Vantage Markets Admin trail, with rollback for reversible config changes.",
+      "zh-Hant": "CRMP 營運軌跡與 Vantage Markets 管理軌跡；可逆設定變更可回滾。",
     },
   },
   settings: {

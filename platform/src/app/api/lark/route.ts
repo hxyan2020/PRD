@@ -34,8 +34,16 @@ export async function POST(req: Request) {
   }
 
   if (body.action === "toggle_channel") {
-    getDb().prepare(`UPDATE lark_channels SET enabled = ? WHERE id = ?`).run(body.enabled ? 1 : 0, body.channel_id);
+    const db = getDb();
+    const prev = db
+      .prepare(`SELECT id, enabled FROM lark_channels WHERE id = ?`)
+      .get(body.channel_id) as { id: number; enabled: number } | undefined;
+    if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    const enabled = body.enabled ? 1 : 0;
+    db.prepare(`UPDATE lark_channels SET enabled = ? WHERE id = ?`).run(enabled, body.channel_id);
     writeAudit(user, "TOGGLE_LARK_CHANNEL", "lark_channel", String(body.channel_id), {
+      before: { enabled: prev.enabled },
+      after: { enabled },
       enabled: body.enabled,
     });
     return NextResponse.json({ ok: true });
