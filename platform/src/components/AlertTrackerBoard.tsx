@@ -253,7 +253,15 @@ function AlertTrackerFacts({
       <Fact label={t("tracker.escalation")}>
         {pack.escalation ? (
           <div className="space-y-1.5">
-            <div className="font-semibold">{phrase(pack.escalation.route_name)}</div>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="font-semibold">{phrase(pack.escalation.route_name)}</div>
+              {pack.escalation.route_code ? (
+                <code className="text-xs text-[var(--muted)]">{pack.escalation.route_code}</code>
+              ) : null}
+              {pack.escalation.is_default || pack.escalation.match_kind === "default" ? (
+                <Badge className="bg-amber-100 text-amber-950 border-amber-300">{t("tracker.defaultEsc")}</Badge>
+              ) : null}
+            </div>
             <div className="text-xs text-[var(--muted)]">
               {t("common.sla")} {pack.escalation.sla_minutes} {t("common.minutes")}
               {pack.escalation.requires_human ? ` · ${t("common.needsHuman")}` : ""}
@@ -578,7 +586,7 @@ export function AlertTrackerBoard({
       router.refresh();
       if (action === "simulate_alarm") {
         bumpNavBadge("/admin/alerts", 1);
-        bumpNavBadge("/admin/spine", 1);
+        bumpNavBadge("/admin/alerts", 1);
         const alertKey = data.monitor_alert_id as string | undefined;
         if (alertKey) {
           window.location.hash = alertKey;
@@ -599,6 +607,7 @@ export function AlertTrackerBoard({
         <div className="panel p-4" data-testid="ai-pipeline-controls">
           <h3 className="font-semibold">{t("ai.pipeline")}</h3>
           <p className="text-sm text-[var(--muted)] mt-1">{t("ai.pipelineIntro")}</p>
+          <p className="text-xs text-[var(--muted)] mt-1">{t("ai.pipelineRankNote")}</p>
           <div className="mt-3 action-row">
             <button
               type="button"
@@ -612,58 +621,6 @@ export function AlertTrackerBoard({
             <button
               type="button"
               className="btn"
-              data-testid="ai-btn-sim-copy"
-              disabled={busy}
-              onClick={() =>
-                run("simulate_alarm", {
-                  monitor_id: "M2-COPY-009",
-                  severity: "BREACH",
-                  observed_value: 33,
-                  title: "Simulated copy concentration breach",
-                  message: "Top signal provider now at 33% of copy equity after viral strategy share.",
-                })
-              }
-            >
-              {t("ai.simCopy")}
-            </button>
-            <button
-              type="button"
-              className="btn"
-              data-testid="ai-btn-sim-eq"
-              disabled={busy}
-              onClick={() =>
-                run("simulate_alarm", {
-                  monitor_id: "M2-EQ-001",
-                  severity: "WARN",
-                  observed_value: 3.8,
-                  prefer_rag: true,
-                  title: "Simulated equity drawdown warn",
-                  message: "Company CFD book drawdown rising through US session after CPI volatility.",
-                })
-              }
-            >
-              {t("ai.simEq")}
-            </button>
-            <button
-              type="button"
-              className="btn"
-              data-testid="ai-btn-sim-crit"
-              disabled={busy}
-              onClick={() =>
-                run("simulate_alarm", {
-                  monitor_id: "M2-MRG-014",
-                  severity: "CRITICAL",
-                  observed_value: 220,
-                  title: "Simulated margin utilisation CRITICAL",
-                  message: "Book-wide margin utilisation spiked; LP rejects rising. Requires dual-AI RCA.",
-                })
-              }
-            >
-              {t("ai.simCrit")}
-            </button>
-            <button
-              type="button"
-              className="btn"
               data-testid="ai-btn-backfill"
               disabled={busy}
               onClick={() => run("backfill_challenges")}
@@ -671,6 +628,63 @@ export function AlertTrackerBoard({
               {t("ai.backfill")}
             </button>
           </div>
+          <details className="mt-3 rounded-lg border border-[var(--border)] bg-[var(--panel-2,#f8fafc)] px-3 py-2">
+            <summary className="cursor-pointer text-sm font-medium select-none">{t("ai.demoSims")}</summary>
+            <div className="mt-2 action-row">
+              <button
+                type="button"
+                className="btn"
+                data-testid="ai-btn-sim-copy"
+                disabled={busy}
+                onClick={() =>
+                  run("simulate_alarm", {
+                    monitor_id: "M2-COPY-009",
+                    severity: "BREACH",
+                    observed_value: 33,
+                    title: "Simulated copy concentration breach",
+                    message: "Top signal provider now at 33% of copy equity after viral strategy share.",
+                  })
+                }
+              >
+                {t("ai.simCopy")}
+              </button>
+              <button
+                type="button"
+                className="btn"
+                data-testid="ai-btn-sim-eq"
+                disabled={busy}
+                onClick={() =>
+                  run("simulate_alarm", {
+                    monitor_id: "M2-EQ-001",
+                    severity: "WARN",
+                    observed_value: 3.8,
+                    prefer_rag: true,
+                    title: "Simulated equity drawdown warn",
+                    message: "Company CFD book drawdown rising through US session after CPI volatility.",
+                  })
+                }
+              >
+                {t("ai.simEq")}
+              </button>
+              <button
+                type="button"
+                className="btn"
+                data-testid="ai-btn-sim-crit"
+                disabled={busy}
+                onClick={() =>
+                  run("simulate_alarm", {
+                    monitor_id: "M2-MRG-014",
+                    severity: "CRITICAL",
+                    observed_value: 220,
+                    title: "Simulated margin utilisation CRITICAL",
+                    message: "Book-wide margin utilisation spiked; LP rejects rising. Requires dual-AI RCA.",
+                  })
+                }
+              >
+                {t("ai.simCrit")}
+              </button>
+            </div>
+          </details>
           {msg && (
             <div
               role="status"
@@ -683,7 +697,8 @@ export function AlertTrackerBoard({
         </div>
       ) : (
         <div className="panel p-4 text-sm text-[var(--muted)]" data-testid="ai-pipeline-locked">
-          {t("ai.pipelineLocked")}
+          <p>{t("ai.pipelineLocked")}</p>
+          <p className="mt-2 text-xs">{t("ai.pipelineRankNote")}</p>
         </div>
       )}
 

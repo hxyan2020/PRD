@@ -14,6 +14,7 @@ import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
 import { ensureImprovementSchema } from "@/lib/ai/improvement";
 import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
+import { seedInterventionsIfEmpty } from "@/lib/ai/intervention";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
 import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
 import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
@@ -883,6 +884,106 @@ function ensureMonitorIndicatorColumns(db: Database.Database) {
   }
 }
 
+/** Escalation route codes, default catch-all, and dimension coefficients. */
+function ensureEscalationSchema(db: Database.Database) {
+  const cols = db.prepare(`PRAGMA table_info(escalation_routes)`).all() as Array<{ name: string }>;
+  const names = new Set(cols.map((c) => c.name));
+  if (!names.has("route_code")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN route_code TEXT`);
+  }
+  if (!names.has("is_default")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN is_default INTEGER NOT NULL DEFAULT 0`);
+  }
+  if (!names.has("coefficients_json")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN coefficients_json TEXT NOT NULL DEFAULT '{}'`);
+  }
+  if (!names.has("risk_scenario")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN risk_scenario TEXT`);
+  }
+  if (!names.has("involved_teams_json")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN involved_teams_json TEXT NOT NULL DEFAULT '[]'`);
+  }
+  if (!names.has("pending_minutes_threshold")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN pending_minutes_threshold INTEGER`);
+  }
+
+  const defaultCoeffs = JSON.stringify({
+    severity: 1.0,
+    involved_teams: 1.0,
+    risk_scenario: 1.0,
+    pending_time: 1.0,
+    need_human_intervention: 1.0,
+  });
+
+  const codeMap: Array<{ name: string; code: string; scenario: string }> = [
+    { name: "Margin breach → Risk Desk", code: "ESC-MARGIN-BREACH", scenario: "margin_cascade" },
+    { name: "LP reject storm", code: "ESC-LP-REJECT", scenario: "lp_reject_storm" },
+    { name: "Hot wallet float", code: "ESC-WALLET-FLOAT", scenario: "wallet_float" },
+    { name: "Copy concentration", code: "ESC-COPY-CONC", scenario: "copy_concentration" },
+    { name: "Feed stale quotes", code: "ESC-FEED-STALE", scenario: "stale_feed" },
+    { name: "Funding exception surge", code: "ESC-FUNDING", scenario: "funding_exception" },
+    { name: "Model drift CRITICAL", code: "ESC-MODEL-DRIFT", scenario: "model_drift" },
+  ];
+  const setCode = db.prepare(
+    `UPDATE escalation_routes
+     SET route_code = COALESCE(NULLIF(route_code, ''), ?),
+         coefficients_json = CASE WHEN coefficients_json IS NULL OR coefficients_json = '' OR coefficients_json = '{}' THEN ? ELSE coefficients_json END,
+         risk_scenario = COALESCE(risk_scenario, ?)
+     WHERE name = ?`
+  );
+  for (const row of codeMap) {
+    setCode.run(row.code, defaultCoeffs, row.scenario, row.name);
+  }
+
+  const existingDefault = db
+    .prepare(
+      `SELECT id FROM escalation_routes WHERE is_default = 1 OR route_code = 'ESC-DEFAULT' OR domain_code = '*' LIMIT 1`
+    )
+    .get() as { id: number } | undefined;
+  if (!existingDefault) {
+    const riskTeam = db
+      .prepare(`SELECT id FROM teams WHERE department_code = 'RISK_CONTROL' ORDER BY id LIMIT 1`)
+      .get() as { id: number } | undefined;
+    const lark = db
+      .prepare(`SELECT id FROM lark_channels WHERE enabled = 1 ORDER BY id LIMIT 1`)
+      .get() as { id: number } | undefined;
+    const primaryId = riskTeam?.id ?? 1;
+    const defaultSlaRow = db
+      .prepare(`SELECT value FROM platform_settings WHERE key = 'escalation.default_sla_minutes'`)
+      .get() as { value: string } | undefined;
+    const sla = Number(defaultSlaRow?.value) || 30;
+    db.prepare(
+      `INSERT INTO escalation_routes
+        (name, domain_code, severity, primary_team_id, secondary_team_id, lark_channel_id, sla_minutes,
+         auto_actions_json, requires_human, enabled, route_code, is_default, coefficients_json, risk_scenario, involved_teams_json, pending_minutes_threshold)
+       VALUES (?, '*', 'ANY', ?, NULL, ?, ?, ?, 1, 1, 'ESC-DEFAULT', 1, ?, 'exotic_or_unmatched', '[]', ?)`
+    ).run(
+      "Default catch-all (exotic / unmatched)",
+      primaryId,
+      lark?.id ?? null,
+      sla,
+      JSON.stringify(["create_ticket", "lark_notify", "ai_rca"]),
+      defaultCoeffs,
+      sla
+    );
+  } else {
+    db.prepare(
+      `UPDATE escalation_routes
+       SET is_default = 1,
+           route_code = COALESCE(NULLIF(route_code, ''), 'ESC-DEFAULT'),
+           coefficients_json = CASE WHEN coefficients_json IS NULL OR coefficients_json = '' OR coefficients_json = '{}' THEN ? ELSE coefficients_json END
+       WHERE id = ?`
+    ).run(defaultCoeffs, existingDefault.id);
+  }
+
+  const upsert = db.prepare(
+    `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+     ON CONFLICT(key) DO NOTHING`
+  );
+  upsert.run("escalation.default_sla_minutes", "30", "Default SLA when route missing");
+  upsert.run("escalation.default_route_code", "ESC-DEFAULT", "Catch-all escalation path for unmatched / exotic events");
+}
+
 function ensureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
   ensureSpineSchema(db);
@@ -890,6 +991,7 @@ function ensureAiLayer(db: Database.Database) {
   syncRoles(db);
   syncDepartments(db);
   ensureMonitorIndicatorColumns(db);
+  ensureEscalationSchema(db);
   ensureExtraRiskDomains(db);
   ensureExtraMonitors(db);
   seedRagIfEmpty(db);
@@ -903,6 +1005,7 @@ function ensureAiLayer(db: Database.Database) {
   ensureChallengerSchema(db);
   ensureImprovementSchema(db);
   seedAiAnalysesIfEmpty(db);
+  seedInterventionsIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
   ensureDocEditsSchema(db);
@@ -917,6 +1020,8 @@ function ensureAiLayer(db: Database.Database) {
     "BREACH",
     "Minimum alert severity that triggers independent second AI challenger (WARN|BREACH|CRITICAL)"
   );
+  upsert.run("ai.line1.model", "crmp-rca-v0", "First-line AI model for RCA / skill match / RAG reasoning");
+  upsert.run("ai.line2.model", "crmp-challenger-v0", "Second-line AI challenger model that challenges first-line output");
   upsert.run("detectors.auto_raise_alarms", "true", "Detectors raise Monitor alarms when warn/breach");
   upsert.run("market_intel.enabled", "true", "Enable 5-minute market intelligence scanner");
   upsert.run("market_intel.interval_minutes", "5", "Scan cadence in minutes");

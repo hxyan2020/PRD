@@ -187,7 +187,11 @@ export const EXTRA_UI: Record<string, Pair> = {
   "tracker.ro": { en: "Risk Owner", "zh-Hant": "風險負責人" },
   "tracker.roFallback": { en: "Risk Owner", "zh-Hant": "風險負責人" },
   "tracker.escalation": { en: "Escalation path", "zh-Hant": "升級路徑" },
-  "tracker.noEscalation": { en: "No matching escalation route for this domain / severity.", "zh-Hant": "此領域／嚴重度沒有對應升級路徑。" },
+  "tracker.noEscalation": {
+    en: "No escalation route matched — unexpected; default catch-all should always apply.",
+    "zh-Hant": "沒有對應升級路徑 — 異常；預設路徑應永遠套用。",
+  },
+  "tracker.defaultEsc": { en: "Default path (unmatched / exotic)", "zh-Hant": "預設路徑（未匹配／特殊）" },
   "tracker.primary": { en: "Primary", "zh-Hant": "主責" },
   "tracker.timeline": { en: "Timeline", "zh-Hant": "時間軸" },
   "tracker.aiReport": { en: "AI analysis report", "zh-Hant": "AI 分析報告" },
@@ -236,12 +240,13 @@ export const EXTRA_UI: Record<string, Pair> = {
   "intv.notePh": { en: "Why approve / reject…", "zh-Hant": "核准／駁回原因…" },
   "intv.approve": { en: "Approve & execute", "zh-Hant": "核准並執行" },
   "intv.decided": { en: "Decided by {who} at {at}", "zh-Hant": "由 {who} 於 {at} 裁決" },
+  "intv.decidedByEmail": { en: "Actioner: {email}", "zh-Hant": "執行者：{email}" },
   "intv.decidedStatus": { en: "{decision} intervention #{id}", "zh-Hant": "干預 #{id} 已{decision}" },
   "intv.approved": { en: "Approved", "zh-Hant": "核准" },
   "intv.rejected": { en: "Rejected", "zh-Hant": "駁回" },
   "intv.empty": {
-    en: "No interventions queued. Run detectors or AI analyses that produce human-gated skill steps.",
-    "zh-Hant": "目前沒有待處理干預。請執行會產出人工關卡步驟的偵測器或 AI 分析。",
+    en: "No interventions queued. Run the AI pipeline (Analyze open or simulate an alarm) so skill steps with human gates appear here.",
+    "zh-Hant": "目前沒有待處理干預。請執行 AI 管線（分析未結案或模擬警報），產出含人工關卡的技能步驟後會出現在此。",
   },
 
   "dash.reportDate": { en: "Report date", "zh-Hant": "報告日期" },
@@ -276,6 +281,11 @@ export const EXTRA_UI: Record<string, Pair> = {
     en: "Merged from AI Analyses into Realtime Alert & Tracker. Alarms auto-trigger RCA plus a how-to-improve review. Use these controls to backfill or simulate a new Monitor 2.0 alarm.",
     "zh-Hant": "已自 AI 分析合併到即時警報與追蹤。警報會自動觸發根因分析與「如何改進」審查。可用這些控制補跑或模擬新的 Monitor 2.0 警報。",
   },
+  "ai.pipelineRankNote": {
+    en: "Actions not available to your rank are hidden. Escalate to Risk Owner / AI Engineer when you need Analyze, backfill, or simulate.",
+    "zh-Hant": "你職級無法使用的操作會被隱藏。需要分析、補跑或模擬時，請升級至風險負責人／AI 工程師。",
+  },
+  "ai.demoSims": { en: "Demo / simulations", "zh-Hant": "示範／模擬" },
   "ai.pipelineLocked": {
     en: "AI pipeline controls need the ai.operate permission. Switch to Risk Owner, Risk Analyst, AI Engineer, or Super Admin to run simulates and backfills.",
     "zh-Hant": "AI 管線控制需要 ai.operate 權限。請切換為風險負責人、風險分析師、AI 工程師或超級管理員以執行模擬與補跑。",
@@ -478,6 +488,37 @@ export const EXTRA_UI: Record<string, Pair> = {
   "rag.sourceRef": { en: "Source ref", "zh-Hant": "來源參照" },
   "rag.publish": { en: "Publish to RAG", "zh-Hant": "發布至 RAG" },
   "rag.searchPh": { en: "Search corpus…", "zh-Hant": "搜尋語料…" },
+  "rag.aiBlockTitle": {
+    en: "AI write block — human / maker-checker only",
+    "zh-Hant": "AI 寫入封鎖 — 僅人類／Maker-Checker",
+  },
+  "rag.aiBlockBody": {
+    en: "AI service actors cannot create, update, or retire RAG documents via /admin/rag or POST/PATCH /api/rag. Escalate to a human with rag.manage, or propose via AI Admin (propose_rag) for dual-control approval.",
+    "zh-Hant": "AI 服務角色不可透過 /admin/rag 或 POST/PATCH /api/rag 建立、更新或退役 RAG 文件。請升級給具 rag.manage 的人類，或經 AI 管理（propose_rag）走 Maker-Checker 雙重控管。",
+  },
+  "rag.aiAdminLink": { en: "Open AI Admin proposals", "zh-Hant": "開啟 AI 管理提案" },
+  "rag.securityLink": { en: "AI Access Security", "zh-Hant": "AI 存取安全" },
+
+  "esc.coeffs": { en: "Coefficients / weights", "zh-Hant": "係數／權重" },
+  "esc.defaultBadge": { en: "DEFAULT path", "zh-Hant": "預設路徑" },
+  "esc.matchOrder": {
+    en: "Match order: exact domain+severity → domain wild → default (ESC-DEFAULT). Every alert gets a path.",
+    "zh-Hant": "比對順序：精確領域＋嚴重度 → 領域萬用 → 預設（ESC-DEFAULT）。每個警報一定有路徑。",
+  },
+  "esc.skillBind": { en: "Bound escalation path", "zh-Hant": "綁定升級路徑" },
+  "esc.skillBindHint": {
+    en: "Each skill binds exactly one escalation path code. Unbound skills use the default path.",
+    "zh-Hant": "每個技能綁定恰好一條升級路徑代碼。未綁定時使用預設路徑。",
+  },
+
+  "sec.ragCallout": {
+    en: "RAG write is human-gated",
+    "zh-Hant": "RAG 寫入由人類把關",
+  },
+  "sec.ragCalloutBody": {
+    en: "PAGE-RAG and FN-RAG-WRITE block AI from mutating the corpus. AI may retrieve and propose_rag only; humans with rag.manage (or checker rag.approve) apply changes.",
+    "zh-Hant": "PAGE-RAG 與 FN-RAG-WRITE 封鎖 AI 變更語料。AI 僅可檢索與 propose_rag；具 rag.manage 的人類（或 Checker 的 rag.approve）才套用變更。",
+  },
 
   "src.register": { en: "Register data source", "zh-Hant": "登錄資料來源" },
   "src.url": { en: "URL", "zh-Hant": "網址" },
@@ -536,6 +577,35 @@ export const EXTRA_UI: Record<string, Pair> = {
   "adm.submitted": { en: "Submitted {what}", "zh-Hant": "已送出 {what}" },
   "adm.analyses": { en: "Analyses", "zh-Hant": "分析" },
   "adm.histRca": { en: "Historical RCA records", "zh-Hant": "歷史根因分析紀錄" },
+  "adm.line1": { en: "First-line AI", "zh-Hant": "一線 AI" },
+  "adm.line1Title": { en: "RCA · skill match · RAG reasoning", "zh-Hant": "根因 · 技能匹配 · RAG 推理" },
+  "adm.line1Hint": {
+    en: "Primary analysis path that drafts root cause, matches playbooks, and retrieves RAG evidence.",
+    "zh-Hant": "草擬根因、匹配技能手冊並檢索 RAG 證據的主要分析路徑。",
+  },
+  "adm.line1ParamsHint": {
+    en: "Tune first-line model, confidence gate, RAG top-K and skill certainty.",
+    "zh-Hant": "調整一線模型、信心門檻、RAG Top-K 與技能確定性。",
+  },
+  "adm.line2": { en: "Second-line AI", "zh-Hant": "二線 AI" },
+  "adm.line2Title": { en: "Challenges and corrects first-line output", "zh-Hant": "挑戰並校正一線輸出" },
+  "adm.line2Hint": {
+    en: "Independent challenger that scores AGREE / PARTIAL / DISAGREE on high-severity packs.",
+    "zh-Hant": "獨立挑戰者，對高嚴重度分析給出 AGREE／PARTIAL／DISAGREE。",
+  },
+  "adm.line2ParamsHint": {
+    en: "Tune challenger model and the severity threshold that triggers second opinion.",
+    "zh-Hant": "調整挑戰者模型與觸發第二意見的嚴重度門檻。",
+  },
+  "adm.secondOpinionSev": { en: "ai.second_opinion_severity", "zh-Hant": "ai.second_opinion_severity" },
+  "adm.skillMatchCount": { en: "Skill-match count", "zh-Hant": "技能匹配筆數" },
+  "adm.ragCount": { en: "RAG reasoning count", "zh-Hant": "RAG 推理筆數" },
+  "adm.ragCountHint": { en: "Analyses in RAG_REASONING mode", "zh-Hant": "模式為 RAG_REASONING 的分析" },
+  "adm.challengeRate": { en: "Challenge rate", "zh-Hant": "挑戰率" },
+  "adm.challengeRateHint": { en: "{n} challenged analyses", "zh-Hant": "{n} 筆已挑戰分析" },
+  "adm.verdictAgree": { en: "AGREE", "zh-Hant": "AGREE" },
+  "adm.verdictPartial": { en: "PARTIAL", "zh-Hant": "PARTIAL" },
+  "adm.verdictDisagree": { en: "DISAGREE", "zh-Hant": "DISAGREE" },
   "adm.skillMatch": { en: "Skill-match rate", "zh-Hant": "技能匹配率" },
   "adm.skillMatchHint": { en: "Share of analyses with certainty skill", "zh-Hant": "具確定技能之分析佔比" },
   "adm.humanAgree": { en: "Human agree rate", "zh-Hant": "人工同意率" },

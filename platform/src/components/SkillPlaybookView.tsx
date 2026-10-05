@@ -1,13 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
-import { AdminLink } from "@/components/AdminLink";
-import { Badge, DeptBadge, StatusBadge } from "@/components/ui";
-import { MonitorCode } from "@/components/MonitorCode";
 import { finalizeSkill, type SkillPlaybook } from "@/lib/ai/skill-playbook";
 import type { SkillScenario } from "@/lib/ai/scenario-types";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { t, type UiLocale } from "@/lib/i18n";
+import { escalationRouteForSkill } from "@/lib/ai/skill-escalation-map";
+import { AdminLink } from "@/components/AdminLink";
+import { Badge, DeptBadge, StatusBadge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
+import { useMemo } from "react";
 
 function Section({
   k,
@@ -48,6 +49,10 @@ export function SkillPlaybookView({
   const { locale } = useUiLocale();
   const s: SkillPlaybook = useMemo(() => finalizeSkill(scenario, locale), [scenario, locale]);
   const zh = locale === "zh-Hant";
+  const escRouteCode = escalationRouteForSkill(s.code, {
+    domain: s.indicator.domain,
+  });
+  const isDefaultEsc = escRouteCode === "ESC-DEFAULT";
 
   return (
     <article className="space-y-4">
@@ -128,6 +133,21 @@ export function SkillPlaybookView({
           <Bullets items={s.fault_areas} />
         </Section>
         <Section k="skill.escalation" locale={locale}>
+          <div className="rounded-lg border border-teal-200 bg-teal-50/50 px-3 py-2 mb-3">
+            <div className="text-xs uppercase tracking-wide text-teal-900">{t("esc.skillBind", locale)}</div>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <code className="text-sm font-semibold">{escRouteCode}</code>
+              {isDefaultEsc ? (
+                <Badge className="bg-amber-100 text-amber-950 border-amber-300">
+                  {zh ? "預設路徑" : "DEFAULT"}
+                </Badge>
+              ) : null}
+              <AdminLink href="/admin/escalation" className="text-xs underline text-teal-900">
+                {zh ? "開啟升級路徑" : "Open escalation routes"}
+              </AdminLink>
+            </div>
+            <p className="text-xs text-[var(--muted)] mt-1">{t("esc.skillBindHint", locale)}</p>
+          </div>
           <div className="text-xs text-[var(--muted)] mb-2">
             SLA {s.escalation.sla_minutes}
             {zh ? " 分鐘" : "m"}

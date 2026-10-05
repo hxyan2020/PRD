@@ -49,6 +49,8 @@ export type SkillScenario = {
   escalation: {
     sla_minutes: number;
     path: EscalationHop[];
+    /** Bound escalation_routes.route_code — exactly one path per skill */
+    route_code?: string;
   };
   corrections: CorrectionAction[];
   past_cases: PastCase[];

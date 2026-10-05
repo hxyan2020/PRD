@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { getImprovementForAnalysis, type ImprovementReview } from "@/lib/ai/improvement";
+import { matchEscalationRoute } from "@/lib/escalation/match";
 
 export type TrackerPerson = { name: string; role: string; email?: string | null; team?: string | null };
 
@@ -23,6 +24,7 @@ export type TrackerAnalysis = {
 };
 
 export type TrackerEscalation = {
+  route_code?: string;
   route_name: string;
   sla_minutes: number;
   primary_team: string;
@@ -30,6 +32,8 @@ export type TrackerEscalation = {
   lark_channel: string | null;
   auto_actions: string[];
   requires_human: boolean;
+  match_kind?: "exact" | "domain_wild" | "default";
+  is_default?: boolean;
 };
 
 export type TrackerEvent = {
@@ -300,30 +304,22 @@ export function listAlertTrackerPacks(
       impact = undefined;
     }
 
-    const esc = db
-      .prepare(
-        `SELECT r.name AS route_name, r.sla_minutes, r.auto_actions_json, r.requires_human,
-                t1.name AS primary_team, t2.name AS secondary_team, c.name AS lark_channel
-         FROM escalation_routes r
-         JOIN teams t1 ON t1.id = r.primary_team_id
-         LEFT JOIN teams t2 ON t2.id = r.secondary_team_id
-         LEFT JOIN lark_channels c ON c.id = r.lark_channel_id
-         WHERE r.enabled = 1 AND r.domain_code = ?
-         ORDER BY CASE r.severity
-           WHEN ? THEN 0 WHEN 'CRITICAL' THEN 1 WHEN 'BREACH' THEN 2 ELSE 3 END
-         LIMIT 1`
-      )
-      .get(a.domain_code, a.severity) as
-      | {
-          route_name: string;
-          sla_minutes: number;
-          auto_actions_json: string;
-          requires_human: number;
-          primary_team: string;
-          secondary_team: string | null;
-          lark_channel: string | null;
+    // Match order: exact domain+severity → domain wild → default catch-all (every alert gets a path).
+    const matched = matchEscalationRoute(db, a.domain_code, a.severity);
+    const esc = matched
+      ? {
+          route_code: matched.route_code,
+          route_name: matched.name,
+          sla_minutes: matched.sla_minutes,
+          auto_actions_json: matched.auto_actions_json,
+          requires_human: matched.requires_human,
+          primary_team: matched.primary_team,
+          secondary_team: matched.secondary_team,
+          lark_channel: matched.lark_channel,
+          match_kind: matched.match_kind,
+          is_default: Boolean(matched.is_default) || matched.match_kind === "default",
         }
-      | undefined;
+      : undefined;
 
     let poc: TrackerPerson | null = ticket?.assignee_name
       ? {
@@ -504,6 +500,7 @@ export function listAlertTrackerPacks(
       analysis,
       escalation: esc
         ? {
+            route_code: esc.route_code,
             route_name: esc.route_name,
             sla_minutes: esc.sla_minutes,
             primary_team: esc.primary_team,
@@ -511,6 +508,8 @@ export function listAlertTrackerPacks(
             lark_channel: esc.lark_channel,
             auto_actions: parseJsonArray(esc.auto_actions_json),
             requires_human: Boolean(esc.requires_human),
+            match_kind: esc.match_kind,
+            is_default: esc.is_default,
           }
         : null,
       timeline,

@@ -9,6 +9,7 @@ import { finalizeSkill } from "@/lib/ai/skill-playbook";
 import { CHAIN_ZH } from "@/lib/ai/skill-zh";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase, t } from "@/lib/i18n";
+import { escalationRouteForSkill } from "@/lib/ai/skill-escalation-map";
 
 type SkillRow = {
   id: number;
@@ -212,6 +213,12 @@ export function SkillsScenariosBoard({
                   <div className="rounded-xl border border-[var(--line)] p-3">
                     <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
                       {t("skill.escalationSla", locale, { n: s.escalation.sla_minutes })}
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                      <span className="text-xs text-[var(--muted)]">{t("esc.skillBind", locale)}</span>
+                      <code className="font-semibold">
+                        {escalationRouteForSkill(s.code, { domain: s.indicator.domain })}
+                      </code>
                     </div>
                     <ol className="mt-2 space-y-1">
                       {s.escalation.path.map((h, i) => (

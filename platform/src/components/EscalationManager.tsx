@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
+import {
+  DEFAULT_ESCALATION_COEFFICIENTS,
+  parseCoefficients,
+  type EscalationCoefficients,
+} from "@/lib/escalation/match";
 
 type Route = {
   id: number;
@@ -17,7 +22,21 @@ type Route = {
   auto_actions_json: string;
   requires_human: number;
   enabled: number;
+  route_code?: string | null;
+  is_default?: number;
+  coefficients_json?: string | null;
+  risk_scenario?: string | null;
+  involved_teams_json?: string | null;
+  pending_minutes_threshold?: number | null;
 };
+
+const COEFF_KEYS: Array<{ key: keyof EscalationCoefficients; en: string; zh: string }> = [
+  { key: "severity", en: "Severity", zh: "嚴重度" },
+  { key: "involved_teams", en: "Involved teams", zh: "涉入團隊" },
+  { key: "risk_scenario", en: "Risk scenario", zh: "風險情境" },
+  { key: "pending_time", en: "Pending time", zh: "待處理時間" },
+  { key: "need_human_intervention", en: "Need human intervention", zh: "需人工干預" },
+];
 
 export function EscalationManager({
   routes,
@@ -25,15 +44,18 @@ export function EscalationManager({
   channels,
   domains,
   canManage,
+  defaultSlaMinutes = 30,
 }: {
   routes: Route[];
   teams: Array<{ id: number; name: string }>;
   channels: Array<{ id: number; name: string }>;
   domains: Array<{ code: string; name: string }>;
   canManage: boolean;
+  defaultSlaMinutes?: number;
 }) {
   const router = useRouter();
-  const { t, phrase } = useT();
+  const { t, phrase, locale } = useT();
+  const zh = locale === "zh-Hant";
   const [form, setForm] = useState({
     name: "",
     domain_code: domains[0]?.code ?? "CREDIT_CLIENT",
@@ -41,9 +63,14 @@ export function EscalationManager({
     primary_team_id: String(teams[0]?.id ?? 1),
     secondary_team_id: "",
     lark_channel_id: String(channels[0]?.id ?? 1),
-    sla_minutes: "15",
+    sla_minutes: String(defaultSlaMinutes),
+    route_code: "",
+    risk_scenario: "",
   });
   const [msg, setMsg] = useState<string | null>(null);
+  const [editId, setEditId] = useState<number | null>(null);
+  const [coeffs, setCoeffs] = useState<EscalationCoefficients>({ ...DEFAULT_ESCALATION_COEFFICIENTS });
+  const [editMeta, setEditMeta] = useState({ risk_scenario: "", pending_minutes_threshold: "", involved_teams: "" });
 
   async function toggle(r: Route) {
     await fetch("/api/escalation", {
@@ -63,7 +90,8 @@ export function EscalationManager({
         primary_team_id: Number(form.primary_team_id),
         secondary_team_id: form.secondary_team_id ? Number(form.secondary_team_id) : null,
         lark_channel_id: form.lark_channel_id ? Number(form.lark_channel_id) : null,
-        sla_minutes: Number(form.sla_minutes),
+        sla_minutes: Number(form.sla_minutes) || defaultSlaMinutes,
+        coefficients: DEFAULT_ESCALATION_COEFFICIENTS,
       }),
     });
     const data = await res.json();
@@ -75,8 +103,66 @@ export function EscalationManager({
     router.refresh();
   }
 
+  function openEdit(r: Route) {
+    setEditId(r.id);
+    setCoeffs(parseCoefficients(r.coefficients_json));
+    let teamsList: string[] = [];
+    try {
+      teamsList = JSON.parse(r.involved_teams_json || "[]") as string[];
+    } catch {
+      teamsList = [];
+    }
+    setEditMeta({
+      risk_scenario: r.risk_scenario || "",
+      pending_minutes_threshold: r.pending_minutes_threshold != null ? String(r.pending_minutes_threshold) : "",
+      involved_teams: teamsList.join(", "),
+    });
+  }
+
+  async function saveEdit(r: Route) {
+    const res = await fetch("/api/escalation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "update",
+        id: r.id,
+        coefficients: coeffs,
+        risk_scenario: editMeta.risk_scenario || null,
+        pending_minutes_threshold: editMeta.pending_minutes_threshold
+          ? Number(editMeta.pending_minutes_threshold)
+          : null,
+        involved_teams: editMeta.involved_teams
+          .split(",")
+          .map((x) => x.trim())
+          .filter(Boolean),
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      setMsg(data.error || t("common.failed"));
+      return;
+    }
+    setEditId(null);
+    setMsg(zh ? "已儲存係數" : "Coefficients saved");
+    router.refresh();
+  }
+
   return (
     <div className="space-y-4">
+      <div className="panel p-4 border-teal-200 bg-teal-50/40">
+        <div className="text-xs uppercase tracking-[0.12em] text-teal-900">
+          {zh ? "比對順序" : "Match order"}
+        </div>
+        <p className="text-sm mt-1 text-teal-950">
+          {zh
+            ? "精確領域＋嚴重度 → 領域萬用嚴重度 → 預設路徑（ESC-DEFAULT）。每個警報一定有升級路徑；缺 SLA 時使用 escalation.default_sla_minutes。"
+            : "Exact domain+severity → domain wild severity → default path (ESC-DEFAULT). Every alert gets a route; missing SLA uses escalation.default_sla_minutes."}
+        </p>
+        <p className="text-xs text-[var(--muted)] mt-2">
+          {zh ? `預設 SLA：${defaultSlaMinutes} 分鐘` : `Default SLA: ${defaultSlaMinutes} minutes`}
+        </p>
+      </div>
+
       {canManage && (
         <div className="panel p-4">
           <h3 className="font-semibold">{t("esc.create")}</h3>
@@ -84,6 +170,15 @@ export function EscalationManager({
             <div className="md:col-span-2">
               <label className="label">{t("common.name")}</label>
               <input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            </div>
+            <div>
+              <label className="label">{zh ? "路徑代碼" : "Route code"}</label>
+              <input
+                className="input"
+                value={form.route_code}
+                onChange={(e) => setForm({ ...form, route_code: e.target.value })}
+                placeholder="ESC-…"
+              />
             </div>
             <div>
               <label className="label">{t("common.severity")}</label>
@@ -96,6 +191,7 @@ export function EscalationManager({
                 <option>WARN</option>
                 <option>BREACH</option>
                 <option>CRITICAL</option>
+                <option>ANY</option>
               </select>
             </div>
             <div>
@@ -110,7 +206,16 @@ export function EscalationManager({
                     {phrase(d.name)}
                   </option>
                 ))}
+                <option value="*">* ({zh ? "預設／萬用" : "default / wild"})</option>
               </select>
+            </div>
+            <div>
+              <label className="label">{zh ? "風險情境" : "Risk scenario"}</label>
+              <input
+                className="input"
+                value={form.risk_scenario}
+                onChange={(e) => setForm({ ...form, risk_scenario: e.target.value })}
+              />
             </div>
             <div>
               <label className="label">{t("esc.primary")}</label>
@@ -177,12 +282,12 @@ export function EscalationManager({
         <table className="data">
           <thead>
             <tr>
-              <th>{t("common.route")}</th>
+              <th>{zh ? "升級路徑" : "Escalation path"}</th>
               <th>{t("common.severity")}</th>
               <th>{t("org.teams")}</th>
               <th>{t("common.lark")}</th>
               <th>{t("common.sla")}</th>
-              <th>{t("common.auto")}</th>
+              <th>{zh ? "係數" : "Coefficients"}</th>
               <th>{t("common.human")}</th>
               <th>{t("common.status")}</th>
               {canManage && <th />}
@@ -191,11 +296,23 @@ export function EscalationManager({
           <tbody>
             {routes.map((r) => {
               const actions = JSON.parse(r.auto_actions_json || "[]") as string[];
+              const c = parseCoefficients(r.coefficients_json);
+              const isDefault = Boolean(r.is_default) || r.domain_code === "*" || r.route_code === "ESC-DEFAULT";
               return (
-                <tr key={r.id}>
+                <tr key={r.id} className={isDefault ? "bg-amber-50/60" : undefined}>
                   <td>
-                    <div className="font-semibold">{phrase(r.name)}</div>
-                    <div className="text-xs text-[var(--muted)]">{phrase(r.domain_code)}</div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="font-semibold">{phrase(r.name)}</div>
+                      {isDefault && (
+                        <Badge className="bg-amber-100 text-amber-950 border-amber-300">
+                          {zh ? "預設路徑" : "DEFAULT"}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-xs text-[var(--muted)] font-mono">
+                      {r.route_code || `ESC-${r.id}`} · {phrase(r.domain_code)}
+                      {r.risk_scenario ? ` · ${r.risk_scenario}` : ""}
+                    </div>
                   </td>
                   <td>
                     <SeverityBadge value={r.severity} />
@@ -205,15 +322,75 @@ export function EscalationManager({
                     <div className="text-xs text-[var(--muted)]">{r.secondary_team ? phrase(r.secondary_team) : "—"}</div>
                   </td>
                   <td className="text-sm">{r.lark_channel ? phrase(r.lark_channel) : "—"}</td>
-                  <td className="tabular-nums">{r.sla_minutes}m</td>
-                  <td>
-                    <div className="flex flex-wrap gap-1">
-                      {actions.map((a) => (
-                        <Badge key={a} className="bg-slate-100 text-slate-700 border-slate-200">
-                          {phrase(a)}
-                        </Badge>
-                      ))}
-                    </div>
+                  <td className="tabular-nums">{r.sla_minutes > 0 ? `${r.sla_minutes}m` : `${defaultSlaMinutes}m*`}</td>
+                  <td className="text-xs tabular-nums">
+                    {editId === r.id ? (
+                      <div className="space-y-2 min-w-[220px]">
+                        {COEFF_KEYS.map((k) => (
+                          <label key={k.key} className="flex items-center justify-between gap-2">
+                            <span>{zh ? k.zh : k.en}</span>
+                            <input
+                              className="input w-20"
+                              type="number"
+                              step="0.1"
+                              value={coeffs[k.key]}
+                              onChange={(e) =>
+                                setCoeffs({ ...coeffs, [k.key]: Number(e.target.value) || 0 })
+                              }
+                            />
+                          </label>
+                        ))}
+                        <div>
+                          <label className="label">{zh ? "風險情境" : "Risk scenario"}</label>
+                          <input
+                            className="input"
+                            value={editMeta.risk_scenario}
+                            onChange={(e) => setEditMeta({ ...editMeta, risk_scenario: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <label className="label">{zh ? "待處理門檻（分）" : "Pending threshold (min)"}</label>
+                          <input
+                            className="input"
+                            value={editMeta.pending_minutes_threshold}
+                            onChange={(e) =>
+                              setEditMeta({ ...editMeta, pending_minutes_threshold: e.target.value })
+                            }
+                          />
+                        </div>
+                        <div>
+                          <label className="label">{zh ? "涉入團隊（逗號）" : "Involved teams (comma)"}</label>
+                          <input
+                            className="input"
+                            value={editMeta.involved_teams}
+                            onChange={(e) => setEditMeta({ ...editMeta, involved_teams: e.target.value })}
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <button type="button" className="btn btn-primary" onClick={() => saveEdit(r)}>
+                            {t("common.save")}
+                          </button>
+                          <button type="button" className="btn" onClick={() => setEditId(null)}>
+                            {t("common.cancel")}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-0.5">
+                        {COEFF_KEYS.map((k) => (
+                          <div key={k.key}>
+                            {zh ? k.zh : k.en}: {c[k.key]}
+                          </div>
+                        ))}
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {actions.map((a) => (
+                            <Badge key={a} className="bg-slate-100 text-slate-700 border-slate-200">
+                              {phrase(a)}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </td>
                   <td>{r.requires_human ? t("common.yes") : t("common.no")}</td>
                   <td>
@@ -221,9 +398,16 @@ export function EscalationManager({
                   </td>
                   {canManage && (
                     <td>
-                      <button className="btn" onClick={() => toggle(r)}>
-                        {r.enabled ? t("common.disable") : t("common.enable")}
-                      </button>
+                      <div className="flex flex-col gap-1">
+                        <button className="btn" onClick={() => toggle(r)}>
+                          {r.enabled ? t("common.disable") : t("common.enable")}
+                        </button>
+                        {editId !== r.id && (
+                          <button className="btn" onClick={() => openEdit(r)}>
+                            {zh ? "編輯係數" : "Edit coeffs"}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   )}
                 </tr>
