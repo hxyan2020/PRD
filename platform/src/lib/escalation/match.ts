@@ -60,59 +60,88 @@ function rowSelect() {
      WHERE r.enabled = 1`;
 }
 
+function withSla(
+  row: Omit<MatchedEscalationRoute, "match_kind">,
+  kind: MatchedEscalationRoute["match_kind"],
+  defaultSla: number
+): MatchedEscalationRoute {
+  return {
+    ...row,
+    sla_minutes: row.sla_minutes > 0 ? row.sla_minutes : defaultSla,
+    match_kind: kind,
+  };
+}
+
 /**
- * Match order: exact domain+severity → domain with wild severity → default route.
- * Every alert must get a path. When SLA is missing/zero, use escalation.default_sla_minutes.
+ * Match order: exact domain+severity → domain with wild severity → ESC-DEFAULT catch-all.
+ * Every alert MUST get a path (exotic / unmatched → default). Never returns null.
+ * When SLA is missing/zero, use escalation.default_sla_minutes.
  */
 export function matchEscalationRoute(
   db: Database.Database,
   domainCode: string,
   severity: string
-): MatchedEscalationRoute | null {
+): MatchedEscalationRoute {
   const defaultSla = parseDefaultSla(db);
   const select = rowSelect();
+  const domain = (domainCode || "").trim() || "UNKNOWN";
+  const sev = (severity || "").trim() || "WARN";
 
   const exact = db
     .prepare(`${select} AND r.domain_code = ? AND upper(r.severity) = upper(?) ORDER BY r.id LIMIT 1`)
-    .get(domainCode, severity) as Omit<MatchedEscalationRoute, "match_kind"> | undefined;
-  if (exact) {
-    return {
-      ...exact,
-      sla_minutes: exact.sla_minutes > 0 ? exact.sla_minutes : defaultSla,
-      match_kind: "exact",
-    };
-  }
+    .get(domain, sev) as Omit<MatchedEscalationRoute, "match_kind"> | undefined;
+  if (exact) return withSla(exact, "exact", defaultSla);
 
   const domainWild = db
     .prepare(
       `${select} AND r.domain_code = ? AND (r.severity = '*' OR upper(r.severity) = 'ANY' OR upper(r.severity) = 'DEFAULT')
        ORDER BY r.id LIMIT 1`
     )
-    .get(domainCode) as Omit<MatchedEscalationRoute, "match_kind"> | undefined;
-  if (domainWild) {
-    return {
-      ...domainWild,
-      sla_minutes: domainWild.sla_minutes > 0 ? domainWild.sla_minutes : defaultSla,
-      match_kind: "domain_wild",
-    };
-  }
+    .get(domain) as Omit<MatchedEscalationRoute, "match_kind"> | undefined;
+  if (domainWild) return withSla(domainWild, "domain_wild", defaultSla);
 
+  // Prefer enabled default; if someone disabled ESC-DEFAULT, still use it so no event is pathless.
   const fallback = db
     .prepare(
-      `${select} AND (r.is_default = 1 OR r.domain_code = '*' OR r.domain_code = 'DEFAULT' OR r.route_code = ?)
-       ORDER BY CASE WHEN r.is_default = 1 THEN 0 WHEN r.route_code = ? THEN 1 ELSE 2 END, r.id
+      `SELECT r.id, COALESCE(NULLIF(r.route_code, ''), ?) AS route_code,
+              r.name, r.domain_code, r.severity, r.sla_minutes, r.auto_actions_json, r.requires_human,
+              COALESCE(r.is_default, 0) AS is_default,
+              COALESCE(r.coefficients_json, '{}') AS coefficients_json,
+              t1.name AS primary_team, t2.name AS secondary_team, c.name AS lark_channel
+       FROM escalation_routes r
+       JOIN teams t1 ON t1.id = r.primary_team_id
+       LEFT JOIN teams t2 ON t2.id = r.secondary_team_id
+       LEFT JOIN lark_channels c ON c.id = r.lark_channel_id
+       WHERE r.is_default = 1 OR r.domain_code = '*' OR r.domain_code = 'DEFAULT' OR r.route_code = ?
+       ORDER BY CASE WHEN r.is_default = 1 AND r.enabled = 1 THEN 0
+                     WHEN r.route_code = ? AND r.enabled = 1 THEN 1
+                     WHEN r.is_default = 1 THEN 2
+                     ELSE 3 END, r.id
        LIMIT 1`
     )
-    .get(DEFAULT_ROUTE_CODE, DEFAULT_ROUTE_CODE) as Omit<MatchedEscalationRoute, "match_kind"> | undefined;
-  if (fallback) {
-    return {
-      ...fallback,
-      sla_minutes: fallback.sla_minutes > 0 ? fallback.sla_minutes : defaultSla,
-      match_kind: "default",
-    };
-  }
+    .get(DEFAULT_ROUTE_CODE, DEFAULT_ROUTE_CODE, DEFAULT_ROUTE_CODE) as
+    | Omit<MatchedEscalationRoute, "match_kind">
+    | undefined;
+  if (fallback) return withSla(fallback, "default", defaultSla);
 
-  return null;
+  // Last resort synthetic path — must never leave an event without escalation.
+  const anyTeam = db.prepare(`SELECT name FROM teams ORDER BY id LIMIT 1`).get() as { name: string } | undefined;
+  return {
+    id: 0,
+    route_code: DEFAULT_ROUTE_CODE,
+    name: "Default catch-all (exotic / unmatched)",
+    domain_code: "*",
+    severity: "ANY",
+    sla_minutes: defaultSla,
+    auto_actions_json: JSON.stringify(["create_ticket", "lark_notify", "ai_rca"]),
+    requires_human: 1,
+    primary_team: anyTeam?.name || "Risk Control Desk",
+    secondary_team: null,
+    lark_channel: "Risk Desk",
+    is_default: 1,
+    coefficients_json: JSON.stringify(DEFAULT_ESCALATION_COEFFICIENTS),
+    match_kind: "default",
+  };
 }
 
 export function parseCoefficients(raw: string | null | undefined): EscalationCoefficients {

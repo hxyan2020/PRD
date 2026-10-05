@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
 import {
   DEFAULT_ESCALATION_COEFFICIENTS,
+  DEFAULT_ROUTE_CODE,
   parseCoefficients,
   type EscalationCoefficients,
 } from "@/lib/escalation/match";
@@ -71,14 +72,56 @@ export function EscalationManager({
   const [editId, setEditId] = useState<number | null>(null);
   const [coeffs, setCoeffs] = useState<EscalationCoefficients>({ ...DEFAULT_ESCALATION_COEFFICIENTS });
   const [editMeta, setEditMeta] = useState({ risk_scenario: "", pending_minutes_threshold: "", involved_teams: "" });
+  const [probe, setProbe] = useState<{
+    domain: string;
+    severity: string;
+    result: string | null;
+  }>({ domain: "EXOTIC_EVENT", severity: "WARN", result: null });
+
+  const defaultRoute = useMemo(
+    () =>
+      routes.find(
+        (r) => Boolean(r.is_default) || r.route_code === DEFAULT_ROUTE_CODE || r.domain_code === "*"
+      ) || null,
+    [routes]
+  );
+
+  function isDefault(r: Route) {
+    return Boolean(r.is_default) || r.domain_code === "*" || r.route_code === DEFAULT_ROUTE_CODE;
+  }
 
   async function toggle(r: Route) {
-    await fetch("/api/escalation", {
+    if (isDefault(r) && r.enabled) {
+      setMsg(zh ? "不可停用預設路徑 ESC-DEFAULT" : "Cannot disable ESC-DEFAULT");
+      return;
+    }
+    const res = await fetch("/api/escalation", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "toggle", id: r.id, enabled: !r.enabled }),
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setMsg(data.error || t("common.failed"));
+      return;
+    }
     router.refresh();
+  }
+
+  async function probeMatch() {
+    const res = await fetch(
+      `/api/escalation?match=1&domain=${encodeURIComponent(probe.domain)}&severity=${encodeURIComponent(probe.severity)}`
+    );
+    const data = await res.json();
+    if (!res.ok || !data.matched) {
+      setProbe((p) => ({ ...p, result: zh ? "比對失敗" : "Match failed" }));
+      return;
+    }
+    const m = data.matched;
+    setProbe((p) => ({
+      ...p,
+      result: `${m.route_code} · ${m.match_kind} · ${m.name} · SLA ${m.sla_minutes}m → ${m.primary_team}`,
+    }));
   }
 
   async function create() {
@@ -149,6 +192,84 @@ export function EscalationManager({
 
   return (
     <div className="space-y-4">
+      <div
+        className="panel p-4 border-amber-300 bg-amber-50/50 space-y-3"
+        data-testid="esc-default-panel"
+      >
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <div className="text-xs uppercase tracking-[0.12em] text-amber-950">
+              {zh ? "預設升級路徑（兜底）" : "Default escalation path (catch-all)"}
+            </div>
+            <h3 className="font-semibold text-lg mt-1 text-amber-950">
+              {defaultRoute ? phrase(defaultRoute.name) : "Default catch-all (exotic / unmatched)"}
+            </h3>
+            <p className="text-sm mt-1 text-amber-950 max-w-3xl">
+              {zh
+                ? "當沒有明確升級路徑時（尤其是異常／罕見事件），一律走 ESC-DEFAULT。比對順序：精確領域＋嚴重度 → 領域萬用 → 預設路徑。每個警報一定有路徑，不可停用此預設。"
+                : "When no clear path matches — especially exotic / rare events — always use ESC-DEFAULT. Match order: exact domain+severity → domain wild → default. Every alert gets a path; this default cannot be disabled."}
+            </p>
+          </div>
+          <Badge className="bg-amber-200 text-amber-950 border-amber-400 text-sm px-3 py-1">
+            {DEFAULT_ROUTE_CODE}
+          </Badge>
+        </div>
+        <div className="flex flex-wrap gap-3 text-sm">
+          <div>
+            <span className="text-[var(--muted)]">{zh ? "主責團隊" : "Primary"}:</span>{" "}
+            {defaultRoute ? phrase(defaultRoute.primary_team) : "—"}
+          </div>
+          <div>
+            <span className="text-[var(--muted)]">SLA:</span>{" "}
+            {defaultRoute?.sla_minutes || defaultSlaMinutes}m
+          </div>
+          <div>
+            <span className="text-[var(--muted)]">Lark:</span>{" "}
+            {defaultRoute?.lark_channel ? phrase(defaultRoute.lark_channel) : "—"}
+          </div>
+          <div>
+            <span className="text-[var(--muted)]">{zh ? "情境" : "Scenario"}:</span>{" "}
+            {defaultRoute?.risk_scenario || "exotic_or_unmatched"}
+          </div>
+        </div>
+        <div className="rounded-xl border border-amber-200 bg-white/80 p-3">
+          <div className="text-xs font-semibold text-amber-950 mb-2">
+            {zh ? "測試異常事件比對" : "Probe exotic event match"}
+          </div>
+          <div className="flex flex-wrap gap-2 items-end">
+            <div>
+              <label className="label">{zh ? "領域" : "Domain"}</label>
+              <input
+                className="input w-44"
+                value={probe.domain}
+                onChange={(e) => setProbe({ ...probe, domain: e.target.value })}
+              />
+            </div>
+            <div>
+              <label className="label">{t("common.severity")}</label>
+              <select
+                className="select"
+                value={probe.severity}
+                onChange={(e) => setProbe({ ...probe, severity: e.target.value })}
+              >
+                <option>INFO</option>
+                <option>WARN</option>
+                <option>BREACH</option>
+                <option>CRITICAL</option>
+              </select>
+            </div>
+            <button type="button" className="btn btn-primary" onClick={probeMatch} data-testid="esc-probe-match">
+              {zh ? "比對" : "Match"}
+            </button>
+            {probe.result && (
+              <span className="text-sm font-mono text-amber-950" data-testid="esc-probe-result">
+                {probe.result}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="panel p-4 border-teal-200 bg-teal-50/40">
         <div className="text-xs uppercase tracking-[0.12em] text-teal-900">
           {zh ? "比對順序" : "Match order"}
@@ -297,13 +418,17 @@ export function EscalationManager({
             {routes.map((r) => {
               const actions = JSON.parse(r.auto_actions_json || "[]") as string[];
               const c = parseCoefficients(r.coefficients_json);
-              const isDefault = Boolean(r.is_default) || r.domain_code === "*" || r.route_code === "ESC-DEFAULT";
+              const def = isDefault(r);
               return (
-                <tr key={r.id} className={isDefault ? "bg-amber-50/60" : undefined}>
+                <tr
+                  key={r.id}
+                  className={def ? "bg-amber-50/60" : undefined}
+                  data-testid={def ? "esc-default-row" : `esc-row-${r.route_code || r.id}`}
+                >
                   <td>
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="font-semibold">{phrase(r.name)}</div>
-                      {isDefault && (
+                      {def && (
                         <Badge className="bg-amber-100 text-amber-950 border-amber-300">
                           {zh ? "預設路徑" : "DEFAULT"}
                         </Badge>
@@ -399,9 +524,15 @@ export function EscalationManager({
                   {canManage && (
                     <td>
                       <div className="flex flex-col gap-1">
-                        <button className="btn" onClick={() => toggle(r)}>
-                          {r.enabled ? t("common.disable") : t("common.enable")}
-                        </button>
+                        {def ? (
+                          <span className="text-[11px] text-amber-900">
+                            {zh ? "預設 · 不可停用" : "Default · locked on"}
+                          </span>
+                        ) : (
+                          <button className="btn" onClick={() => toggle(r)}>
+                            {r.enabled ? t("common.disable") : t("common.enable")}
+                          </button>
+                        )}
                         {editId !== r.id && (
                           <button className="btn" onClick={() => openEdit(r)}>
                             {zh ? "編輯係數" : "Edit coeffs"}

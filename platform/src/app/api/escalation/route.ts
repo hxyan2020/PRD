@@ -1,14 +1,39 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb, writeAudit } from "@/lib/db";
-import { DEFAULT_ESCALATION_COEFFICIENTS } from "@/lib/escalation/match";
+import {
+  DEFAULT_ESCALATION_COEFFICIENTS,
+  DEFAULT_ROUTE_CODE,
+  matchEscalationRoute,
+} from "@/lib/escalation/match";
 
-export async function GET() {
+function isDefaultRoute(row: {
+  is_default?: number | null;
+  route_code?: string | null;
+  domain_code?: string | null;
+}) {
+  return (
+    Boolean(row.is_default) ||
+    row.route_code === DEFAULT_ROUTE_CODE ||
+    row.domain_code === "*" ||
+    row.domain_code === "DEFAULT"
+  );
+}
+
+export async function GET(req: Request) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "escalation.read")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-  const routes = getDb()
+  const db = getDb();
+  const url = new URL(req.url);
+  if (url.searchParams.get("match") === "1") {
+    const domain = url.searchParams.get("domain") || "EXOTIC";
+    const severity = url.searchParams.get("severity") || "WARN";
+    const matched = matchEscalationRoute(db, domain, severity);
+    return NextResponse.json({ matched });
+  }
+  const routes = db
     .prepare(
       `SELECT r.*,
               pt.name AS primary_team,
@@ -34,9 +59,23 @@ export async function POST(req: Request) {
 
   if (body.action === "toggle") {
     const prev = db
-      .prepare(`SELECT id, enabled FROM escalation_routes WHERE id = ?`)
-      .get(body.id) as { id: number; enabled: number } | undefined;
+      .prepare(`SELECT id, enabled, is_default, route_code, domain_code FROM escalation_routes WHERE id = ?`)
+      .get(body.id) as
+      | {
+          id: number;
+          enabled: number;
+          is_default: number;
+          route_code: string | null;
+          domain_code: string;
+        }
+      | undefined;
     if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    if (isDefaultRoute(prev) && !body.enabled) {
+      return NextResponse.json(
+        { error: "Cannot disable ESC-DEFAULT — every event must have an escalation path." },
+        { status: 400 }
+      );
+    }
     const enabled = body.enabled ? 1 : 0;
     db.prepare(`UPDATE escalation_routes SET enabled = ? WHERE id = ?`).run(enabled, body.id);
     writeAudit(user, "TOGGLE_ESCALATION_ROUTE", "escalation_route", String(body.id), {
@@ -103,6 +142,10 @@ export async function POST(req: Request) {
     .get() as { value: string } | undefined;
   const defaultSla = Number(defaultSlaRow?.value) || 30;
 
+  const wantDefault = Boolean(body.is_default) || body.domain_code === "*" || body.route_code === DEFAULT_ROUTE_CODE;
+  if (wantDefault) {
+    db.prepare(`UPDATE escalation_routes SET is_default = 0`).run();
+  }
   const info = db
     .prepare(
       `INSERT INTO escalation_routes
@@ -120,10 +163,10 @@ export async function POST(req: Request) {
       body.sla_minutes || defaultSla,
       JSON.stringify(body.auto_actions || ["create_ticket", "lark_notify"]),
       body.requires_human === false ? 0 : 1,
-      body.route_code || null,
-      body.is_default ? 1 : 0,
+      body.route_code || (wantDefault ? DEFAULT_ROUTE_CODE : null),
+      wantDefault ? 1 : 0,
       JSON.stringify(body.coefficients || DEFAULT_ESCALATION_COEFFICIENTS),
-      body.risk_scenario || null,
+      body.risk_scenario || (wantDefault ? "exotic_or_unmatched" : null),
       JSON.stringify(body.involved_teams || [])
     );
   writeAudit(user, "CREATE_ESCALATION_ROUTE", "escalation_route", String(info.lastInsertRowid), {

@@ -575,10 +575,14 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Feed stale quotes": "過期報價饋送",
   "Funding exception surge": "資金例外暴增",
   "Model drift CRITICAL": "模型漂移危急",
+  "Default catch-all (exotic / unmatched)": "預設兜底（異常／未匹配）",
+  exotic_or_unmatched: "異常／未匹配",
   create_ticket: "建立工單",
   ai_rca: "AI 根因分析",
   page_oncall: "叫應值班",
   disable_detector_shadow: "停用影子偵測器",
+  suggest_disable_lp: "建議停用 LP",
+  lark_notify: "Lark 通知",
 
   // Lark purposes
   "Primary risk escalations and interventions": "主要風險升級與干預",

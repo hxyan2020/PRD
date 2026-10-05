@@ -2,6 +2,7 @@ import { randomBytes } from "crypto";
 import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
 import { logSpineEvent } from "@/lib/ai/spine";
+import { matchEscalationRoute } from "@/lib/escalation/match";
 
 export type MessengerAction =
   | "show_evidence"
@@ -476,34 +477,24 @@ export function getMessengerThread(threadDbId: number) {
   return { thread, messages, pending, recommended_actions: RECOMMENDED_ACTIONS };
 }
 
-function getEscalationPath(severity: string) {
+function getEscalationPath(severity: string, domainCode?: string | null) {
   const db = getDb();
-  const route = db
-    .prepare(
-      `SELECT er.*, t1.name AS primary_team, t2.name AS secondary_team, lc.name AS channel_name
-       FROM escalation_routes er
-       LEFT JOIN teams t1 ON t1.id = er.primary_team_id
-       LEFT JOIN teams t2 ON t2.id = er.secondary_team_id
-       LEFT JOIN lark_channels lc ON lc.id = er.lark_channel_id
-       WHERE er.enabled = 1 AND er.severity = ?
-       ORDER BY er.id LIMIT 1`
-    )
-    .get(severity) as
-    | {
-        primary_team: string | null;
-        secondary_team: string | null;
-        channel_name: string | null;
-        sla_minutes: number;
-      }
-    | undefined;
-
+  // Always resolve via match order (exact → domain wild → ESC-DEFAULT). No event is pathless.
+  const route = matchEscalationRoute(db, domainCode || "UNKNOWN", severity);
   const steps = [
-    route?.primary_team || "Primary on-call",
-    route?.secondary_team || "Secondary / Risk Desk",
+    route.primary_team || "Primary on-call",
+    route.secondary_team || "Secondary / Risk Desk",
     "Risk Owner",
     "Exec Risk Bridge",
   ];
-  return { steps, sla_minutes: route?.sla_minutes ?? 30, channel: route?.channel_name || "Risk Desk" };
+  return {
+    steps,
+    sla_minutes: route.sla_minutes,
+    channel: route.lark_channel || "Risk Desk",
+    route_code: route.route_code,
+    match_kind: route.match_kind,
+    route_name: route.name,
+  };
 }
 
 export function messengerAction(input: {
@@ -589,20 +580,43 @@ export function messengerAction(input: {
   }
 
   if (input.action === "escalate") {
-    const path = getEscalationPath(thread.severity);
+    let domainCode: string | null = null;
+    if (thread.alert_id) {
+      const alert = db
+        .prepare(
+          `SELECT mi.domain_code AS domain_code
+           FROM monitor_alerts a
+           LEFT JOIN monitor_indicators mi ON mi.id = a.indicator_id
+           WHERE a.id = ?`
+        )
+        .get(thread.alert_id) as { domain_code: string | null } | undefined;
+      domainCode = alert?.domain_code || null;
+    }
+    const path = getEscalationPath(thread.severity, domainCode);
     const nextStep = Math.min(thread.escalation_step + 1, path.steps.length - 1);
     const target = path.steps[nextStep];
     db.prepare(`UPDATE messenger_threads SET escalation_step = ?, updated_at = datetime('now') WHERE id = ?`).run(
       nextStep,
       thread.id
     );
+    const defaultNote =
+      path.match_kind === "default"
+        ? `\nRoute: ${path.route_code} (DEFAULT catch-all — exotic / unmatched)`
+        : `\nRoute: ${path.route_code} (${path.match_kind})`;
     addMessage(
       db,
       thread.id,
       "ESCALATION",
       "Escalation Engine",
-      `⬆️ Escalated to ${target} (step ${nextStep + 1}/${path.steps.length})\nChannel: ${path.channel} · SLA ${path.sla_minutes}m\nPath: ${path.steps.join(" → ")}`,
-      { target, step: nextStep, path: path.steps }
+      `⬆️ Escalated to ${target} (step ${nextStep + 1}/${path.steps.length})\nChannel: ${path.channel} · SLA ${path.sla_minutes}m${defaultNote}\nPath: ${path.steps.join(" → ")}`,
+      {
+        target,
+        step: nextStep,
+        path: path.steps,
+        route_code: path.route_code,
+        match_kind: path.match_kind,
+        route_name: path.route_name,
+      }
     );
     logSpineEvent({
       stage: "ESCALATION",
@@ -611,12 +625,14 @@ export function messengerAction(input: {
       ref_type: "messenger_thread",
       ref_id: thread.thread_id,
       severity: thread.severity,
-      detail: { step: nextStep, target },
+      detail: { step: nextStep, target, route_code: path.route_code, match_kind: path.match_kind },
       actor: input.user_name,
     });
     writeAudit({ name: input.user_name }, "MESSENGER_ESCALATE", "messenger_thread", thread.thread_id, {
       target,
       step: nextStep,
+      route_code: path.route_code,
+      match_kind: path.match_kind,
     });
     return getMessengerThread(thread.id);
   }

@@ -304,22 +304,20 @@ export function listAlertTrackerPacks(
       impact = undefined;
     }
 
-    // Match order: exact domain+severity → domain wild → default catch-all (every alert gets a path).
+    // Match order: exact domain+severity → domain wild → ESC-DEFAULT (every alert gets a path).
     const matched = matchEscalationRoute(db, a.domain_code, a.severity);
-    const esc = matched
-      ? {
-          route_code: matched.route_code,
-          route_name: matched.name,
-          sla_minutes: matched.sla_minutes,
-          auto_actions_json: matched.auto_actions_json,
-          requires_human: matched.requires_human,
-          primary_team: matched.primary_team,
-          secondary_team: matched.secondary_team,
-          lark_channel: matched.lark_channel,
-          match_kind: matched.match_kind,
-          is_default: Boolean(matched.is_default) || matched.match_kind === "default",
-        }
-      : undefined;
+    const esc = {
+      route_code: matched.route_code,
+      route_name: matched.name,
+      sla_minutes: matched.sla_minutes,
+      auto_actions_json: matched.auto_actions_json,
+      requires_human: matched.requires_human,
+      primary_team: matched.primary_team,
+      secondary_team: matched.secondary_team,
+      lark_channel: matched.lark_channel,
+      match_kind: matched.match_kind,
+      is_default: Boolean(matched.is_default) || matched.match_kind === "default",
+    };
 
     let poc: TrackerPerson | null = ticket?.assignee_name
       ? {

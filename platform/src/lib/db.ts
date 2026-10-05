@@ -968,10 +968,20 @@ function ensureEscalationSchema(db: Database.Database) {
       sla
     );
   } else {
+    // Keep exactly one catch-all: force-enable, pin route_code/name/domain, clear other defaults.
+    db.prepare(`UPDATE escalation_routes SET is_default = 0 WHERE id != ?`).run(existingDefault.id);
     db.prepare(
       `UPDATE escalation_routes
        SET is_default = 1,
-           route_code = COALESCE(NULLIF(route_code, ''), 'ESC-DEFAULT'),
+           enabled = 1,
+           route_code = 'ESC-DEFAULT',
+           domain_code = '*',
+           severity = CASE WHEN severity IS NULL OR severity = '' THEN 'ANY' ELSE severity END,
+           name = CASE
+             WHEN name IS NULL OR name = '' OR name LIKE 'Default%' THEN 'Default catch-all (exotic / unmatched)'
+             ELSE name
+           END,
+           risk_scenario = COALESCE(NULLIF(risk_scenario, ''), 'exotic_or_unmatched'),
            coefficients_json = CASE WHEN coefficients_json IS NULL OR coefficients_json = '' OR coefficients_json = '{}' THEN ? ELSE coefficients_json END
        WHERE id = ?`
     ).run(defaultCoeffs, existingDefault.id);
