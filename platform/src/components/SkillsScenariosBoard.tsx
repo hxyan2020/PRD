@@ -210,15 +210,24 @@ export function SkillsScenariosBoard({
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-xl border border-[var(--line)] p-3">
-                    <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
-                      {t("skill.escalationSla", locale, { n: s.escalation.sla_minutes })}
+                  <div
+                    className="rounded-xl border border-teal-200 bg-teal-50/40 p-3"
+                    data-testid={`skill-esc-bind-${s.code}`}
+                  >
+                    <div className="text-xs uppercase tracking-wide text-teal-900">
+                      {t("esc.skillBindTitle", locale)}
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
                       <span className="text-xs text-[var(--muted)]">{t("esc.skillBind", locale)}</span>
-                      <code className="font-semibold">
+                      <code className="font-semibold px-1.5 py-0.5 rounded bg-white border border-teal-200">
                         {escalationRouteForSkill(s.code, { domain: s.indicator.domain })}
                       </code>
+                      <Badge className="bg-teal-100 text-teal-950 border-teal-300 text-[10px]">
+                        {locale === "zh-Hant" ? "唯一" : "1 only"}
+                      </Badge>
+                    </div>
+                    <div className="mt-2 text-xs text-[var(--muted)]">
+                      {t("skill.escalationSla", locale, { n: s.escalation.sla_minutes })}
                     </div>
                     <ol className="mt-2 space-y-1">
                       {s.escalation.path.map((h, i) => (

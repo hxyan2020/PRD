@@ -116,7 +116,56 @@ export function SkillPlaybookView({
         </ol>
       </Section>
 
-      <div className="grid md:grid-cols-3 gap-3 text-sm">
+      <div
+        className="rounded-xl border border-teal-300 bg-teal-50/40 p-4"
+        data-testid="skill-escalation-bind"
+      >
+        <div className="text-xs uppercase tracking-[0.12em] text-teal-900">
+          {t("esc.skillBindTitle", locale)}
+        </div>
+        <p className="text-sm mt-1 text-teal-950 max-w-3xl">{t("esc.skillBindHint", locale)}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="text-xs text-[var(--muted)]">{t("esc.skillBind", locale)}</span>
+          <code className="text-base font-semibold px-2 py-1 rounded bg-white border border-teal-200">
+            {escRouteCode}
+          </code>
+          {isDefaultEsc ? (
+            <Badge className="bg-amber-100 text-amber-950 border-amber-300">
+              {zh ? "預設路徑" : "DEFAULT"}
+            </Badge>
+          ) : (
+            <Badge className="bg-teal-100 text-teal-950 border-teal-300">
+              {zh ? "唯一綁定" : "1 of 1"}
+            </Badge>
+          )}
+          <AdminLink href="/admin/escalation" className="btn text-xs">
+            {zh ? "開啟升級路徑維度" : "Open escalation dimensions"}
+          </AdminLink>
+        </div>
+        <div className="mt-3 grid sm:grid-cols-2 gap-3 text-sm">
+          <div>
+            <div className="text-xs text-[var(--muted)] mb-1">
+              SLA {s.escalation.sla_minutes}
+              {zh ? " 分鐘 · 技能內升級階梯" : "m · in-skill ladder"}
+            </div>
+            <ol className="space-y-1">
+              {s.escalation.path.map((h, i) => (
+                <li key={i}>
+                  <span className="font-medium">T+{h.after_minutes}m</span> · {h.team} · {h.action}
+                  <div className="text-xs text-[var(--muted)]">{h.channel}</div>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div className="rounded-lg border border-teal-200 bg-white/70 px-3 py-2 text-xs text-[var(--muted)]">
+            {zh
+              ? "此技能觸發的風險事件一律經上方路徑代碼升級，不可省略、不可同時綁多條。"
+              : "Risk events from this skill always escalate via the route code above — never omitted, never multi-bound."}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-3 text-sm">
         <Section k="skill.indicator" locale={locale}>
           <div className="font-semibold">{s.indicator.name}</div>
           <div className="text-xs text-[var(--muted)]">
@@ -131,35 +180,6 @@ export function SkillPlaybookView({
         </Section>
         <Section k="skill.faults" locale={locale}>
           <Bullets items={s.fault_areas} />
-        </Section>
-        <Section k="skill.escalation" locale={locale}>
-          <div className="rounded-lg border border-teal-200 bg-teal-50/50 px-3 py-2 mb-3">
-            <div className="text-xs uppercase tracking-wide text-teal-900">{t("esc.skillBind", locale)}</div>
-            <div className="mt-1 flex flex-wrap items-center gap-2">
-              <code className="text-sm font-semibold">{escRouteCode}</code>
-              {isDefaultEsc ? (
-                <Badge className="bg-amber-100 text-amber-950 border-amber-300">
-                  {zh ? "預設路徑" : "DEFAULT"}
-                </Badge>
-              ) : null}
-              <AdminLink href="/admin/escalation" className="text-xs underline text-teal-900">
-                {zh ? "開啟升級路徑" : "Open escalation routes"}
-              </AdminLink>
-            </div>
-            <p className="text-xs text-[var(--muted)] mt-1">{t("esc.skillBindHint", locale)}</p>
-          </div>
-          <div className="text-xs text-[var(--muted)] mb-2">
-            SLA {s.escalation.sla_minutes}
-            {zh ? " 分鐘" : "m"}
-          </div>
-          <ol className="space-y-1 text-sm">
-            {s.escalation.path.map((h, i) => (
-              <li key={i}>
-                <span className="font-medium">T+{h.after_minutes}m</span> · {h.team} · {h.action}
-                <div className="text-xs text-[var(--muted)]">{h.channel}</div>
-              </li>
-            ))}
-          </ol>
         </Section>
       </div>
 

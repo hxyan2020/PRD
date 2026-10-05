@@ -916,25 +916,110 @@ function ensureEscalationSchema(db: Database.Database) {
     need_human_intervention: 1.0,
   });
 
-  const codeMap: Array<{ name: string; code: string; scenario: string }> = [
-    { name: "Margin breach → Risk Desk", code: "ESC-MARGIN-BREACH", scenario: "margin_cascade" },
-    { name: "LP reject storm", code: "ESC-LP-REJECT", scenario: "lp_reject_storm" },
-    { name: "Hot wallet float", code: "ESC-WALLET-FLOAT", scenario: "wallet_float" },
-    { name: "Copy concentration", code: "ESC-COPY-CONC", scenario: "copy_concentration" },
-    { name: "Feed stale quotes", code: "ESC-FEED-STALE", scenario: "stale_feed" },
-    { name: "Funding exception surge", code: "ESC-FUNDING", scenario: "funding_exception" },
-    { name: "Model drift CRITICAL", code: "ESC-MODEL-DRIFT", scenario: "model_drift" },
+  const codeMap: Array<{
+    name: string;
+    code: string;
+    scenario: string;
+    pending: number;
+    teams: string[];
+    coeffs: Record<string, number>;
+  }> = [
+    {
+      name: "Margin breach → Risk Desk",
+      code: "ESC-MARGIN-BREACH",
+      scenario: "margin_cascade",
+      pending: 15,
+      teams: ["Risk Control Desk", "Credit Desk"],
+      coeffs: { severity: 1.4, involved_teams: 1.1, risk_scenario: 1.3, pending_time: 1.2, need_human_intervention: 1.5 },
+    },
+    {
+      name: "LP reject storm",
+      code: "ESC-LP-REJECT",
+      scenario: "lp_reject_storm",
+      pending: 10,
+      teams: ["Trading Infra", "Risk Control Desk"],
+      coeffs: { severity: 1.5, involved_teams: 1.2, risk_scenario: 1.4, pending_time: 1.3, need_human_intervention: 1.4 },
+    },
+    {
+      name: "Hot wallet float",
+      code: "ESC-WALLET-FLOAT",
+      scenario: "wallet_float",
+      pending: 20,
+      teams: ["Crypto Exchange Risk", "System"],
+      coeffs: { severity: 1.3, involved_teams: 1.2, risk_scenario: 1.5, pending_time: 1.1, need_human_intervention: 1.5 },
+    },
+    {
+      name: "Copy concentration",
+      code: "ESC-COPY-CONC",
+      scenario: "copy_concentration",
+      pending: 30,
+      teams: ["Credit Desk", "Risk Control Desk"],
+      coeffs: { severity: 1.2, involved_teams: 1.0, risk_scenario: 1.3, pending_time: 1.0, need_human_intervention: 1.2 },
+    },
+    {
+      name: "Feed stale quotes",
+      code: "ESC-FEED-STALE",
+      scenario: "stale_feed",
+      pending: 10,
+      teams: ["Trading Infra", "Pricing"],
+      coeffs: { severity: 1.4, involved_teams: 1.1, risk_scenario: 1.2, pending_time: 1.4, need_human_intervention: 1.3 },
+    },
+    {
+      name: "Funding exception surge",
+      code: "ESC-FUNDING",
+      scenario: "funding_exception",
+      pending: 45,
+      teams: ["Operations", "Risk Control Desk"],
+      coeffs: { severity: 1.1, involved_teams: 1.0, risk_scenario: 1.1, pending_time: 1.2, need_human_intervention: 1.1 },
+    },
+    {
+      name: "Model drift CRITICAL",
+      code: "ESC-MODEL-DRIFT",
+      scenario: "model_drift",
+      pending: 20,
+      teams: ["AI Detection Lab", "Risk Control Desk"],
+      coeffs: { severity: 1.5, involved_teams: 1.1, risk_scenario: 1.4, pending_time: 1.2, need_human_intervention: 1.5 },
+    },
   ];
   const setCode = db.prepare(
     `UPDATE escalation_routes
      SET route_code = COALESCE(NULLIF(route_code, ''), ?),
-         coefficients_json = CASE WHEN coefficients_json IS NULL OR coefficients_json = '' OR coefficients_json = '{}' THEN ? ELSE coefficients_json END,
-         risk_scenario = COALESCE(risk_scenario, ?)
-     WHERE name = ?`
+         coefficients_json = ?,
+         risk_scenario = COALESCE(NULLIF(risk_scenario, ''), ?),
+         pending_minutes_threshold = COALESCE(pending_minutes_threshold, ?),
+         involved_teams_json = CASE WHEN involved_teams_json IS NULL OR involved_teams_json = '' OR involved_teams_json = '[]' THEN ? ELSE involved_teams_json END
+     WHERE name = ? OR route_code = ?`
   );
   for (const row of codeMap) {
-    setCode.run(row.code, defaultCoeffs, row.scenario, row.name);
+    // Curated dimension coefficients — human may edit later via Escalation UI.
+    setCode.run(
+      row.code,
+      JSON.stringify(row.coeffs),
+      row.scenario,
+      row.pending,
+      JSON.stringify(row.teams),
+      row.name,
+      row.code
+    );
   }
+  // Default catch-all coefficients (balanced).
+  db.prepare(
+    `UPDATE escalation_routes
+     SET coefficients_json = ?,
+         pending_minutes_threshold = COALESCE(pending_minutes_threshold, 30),
+         involved_teams_json = CASE WHEN involved_teams_json IS NULL OR involved_teams_json = '' OR involved_teams_json = '[]'
+           THEN ? ELSE involved_teams_json END
+     WHERE is_default = 1 OR route_code = 'ESC-DEFAULT'`
+  ).run(
+    JSON.stringify({
+      severity: 1.0,
+      involved_teams: 1.0,
+      risk_scenario: 1.0,
+      pending_time: 1.2,
+      need_human_intervention: 1.3,
+    }),
+    JSON.stringify(["Risk Control Desk", "Ops Lead"])
+  );
 
   const existingDefault = db
     .prepare(

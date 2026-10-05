@@ -562,10 +562,14 @@ export const EXTRA_UI: Record<string, Pair> = {
     en: "Match order: exact domain+severity → domain wild → default (ESC-DEFAULT). Every alert gets a path.",
     "zh-Hant": "比對順序：精確領域＋嚴重度 → 領域萬用 → 預設（ESC-DEFAULT）。每個警報一定有路徑。",
   },
-  "esc.skillBind": { en: "Bound escalation path", "zh-Hant": "綁定升級路徑" },
+  "esc.skillBind": { en: "Bound escalation path (one only)", "zh-Hant": "綁定升級路徑（唯一）" },
   "esc.skillBindHint": {
-    en: "Each skill binds exactly one escalation path code. Unbound skills use the default path.",
-    "zh-Hant": "每個技能綁定恰好一條升級路徑代碼。未綁定時使用預設路徑。",
+    en: "Each skill calls exactly one escalation path defined under Escalation Routes. No risk event is left without a path — unbound skills use ESC-DEFAULT.",
+    "zh-Hant": "每個技能呼叫且僅呼叫一條在「升級路徑」定義的路徑。所有風險事件必有升級路徑——未綁定技能使用 ESC-DEFAULT。",
+  },
+  "esc.skillBindTitle": {
+    en: "Escalation path — one and only one",
+    "zh-Hant": "升級路徑 — 唯一綁定",
   },
 
   "sec.ragCallout": {

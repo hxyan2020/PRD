@@ -91,7 +91,7 @@ export async function POST(req: Request) {
     if (!body.id) return NextResponse.json({ error: "id required" }, { status: 400 });
     const prev = db
       .prepare(
-        `SELECT id, coefficients_json, risk_scenario, involved_teams_json, pending_minutes_threshold
+        `SELECT id, coefficients_json, risk_scenario, involved_teams_json, pending_minutes_threshold, requires_human
          FROM escalation_routes WHERE id = ?`
       )
       .get(body.id) as
@@ -101,22 +101,31 @@ export async function POST(req: Request) {
           risk_scenario: string | null;
           involved_teams_json: string | null;
           pending_minutes_threshold: number | null;
+          requires_human: number;
         }
       | undefined;
     if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
     const coeffs = body.coefficients || DEFAULT_ESCALATION_COEFFICIENTS;
+    const requiresHuman =
+      body.requires_human === undefined || body.requires_human === null
+        ? prev.requires_human
+        : body.requires_human
+          ? 1
+          : 0;
     db.prepare(
       `UPDATE escalation_routes
        SET coefficients_json = ?,
            risk_scenario = COALESCE(?, risk_scenario),
            involved_teams_json = COALESCE(?, involved_teams_json),
-           pending_minutes_threshold = COALESCE(?, pending_minutes_threshold)
+           pending_minutes_threshold = COALESCE(?, pending_minutes_threshold),
+           requires_human = ?
        WHERE id = ?`
     ).run(
       JSON.stringify(coeffs),
       body.risk_scenario ?? null,
       body.involved_teams ? JSON.stringify(body.involved_teams) : null,
       body.pending_minutes_threshold ?? null,
+      requiresHuman,
       body.id
     );
     writeAudit(user, "UPDATE_ESCALATION_ROUTE", "escalation_route", String(body.id), {
@@ -125,12 +134,14 @@ export async function POST(req: Request) {
         risk_scenario: prev.risk_scenario,
         involved_teams_json: prev.involved_teams_json,
         pending_minutes_threshold: prev.pending_minutes_threshold,
+        requires_human: prev.requires_human,
       },
       after: {
         coefficients: coeffs,
         risk_scenario: body.risk_scenario ?? prev.risk_scenario,
         involved_teams: body.involved_teams ?? null,
         pending_minutes_threshold: body.pending_minutes_threshold ?? prev.pending_minutes_threshold,
+        requires_human: requiresHuman,
       },
       ...body,
     });
@@ -150,8 +161,8 @@ export async function POST(req: Request) {
     .prepare(
       `INSERT INTO escalation_routes
         (name, domain_code, severity, primary_team_id, secondary_team_id, lark_channel_id, sla_minutes,
-         auto_actions_json, requires_human, enabled, route_code, is_default, coefficients_json, risk_scenario, involved_teams_json)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)`
+         auto_actions_json, requires_human, enabled, route_code, is_default, coefficients_json, risk_scenario, involved_teams_json, pending_minutes_threshold)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?)`
     )
     .run(
       body.name,
@@ -167,7 +178,10 @@ export async function POST(req: Request) {
       wantDefault ? 1 : 0,
       JSON.stringify(body.coefficients || DEFAULT_ESCALATION_COEFFICIENTS),
       body.risk_scenario || (wantDefault ? "exotic_or_unmatched" : null),
-      JSON.stringify(body.involved_teams || [])
+      JSON.stringify(body.involved_teams || []),
+      body.pending_minutes_threshold != null && body.pending_minutes_threshold !== ""
+        ? Number(body.pending_minutes_threshold)
+        : null
     );
   writeAudit(user, "CREATE_ESCALATION_ROUTE", "escalation_route", String(info.lastInsertRowid), {
     after: body,
