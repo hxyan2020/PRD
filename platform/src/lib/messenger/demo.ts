@@ -3,6 +3,7 @@ import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
 import { logSpineEvent } from "@/lib/ai/spine";
 import { matchEscalationRoute } from "@/lib/escalation/match";
+import type { UiLocale } from "@/lib/i18n";
 
 export type MessengerAction =
   | "show_evidence"
@@ -504,9 +505,15 @@ export function messengerAction(input: {
   text?: string;
   action_code?: string;
   pending_id?: number;
+  locale?: UiLocale;
 }) {
   ensureMessengerSchema();
   const db = getDb();
+  const zh = input.locale === "zh-Hant";
+  const actorEvidence = zh ? "證據庫" : "Evidence Vault";
+  const actorEscalation = zh ? "升級引擎" : "Escalation Engine";
+  const actorAdvisor = zh ? "動作顧問" : "Action Advisor";
+  const actorBot = zh ? "CRMP 聊天機器人" : "CRMP Chatbot";
   const thread = db.prepare(`SELECT * FROM messenger_threads WHERE id = ?`).get(input.thread_id) as
     | {
         id: number;
@@ -523,7 +530,13 @@ export function messengerAction(input: {
 
   if (input.action === "show_evidence") {
     if (!thread.analysis_id) {
-      addMessage(db, thread.id, "SYSTEM", "Messenger", "No AI analysis linked — open Live Alerts to investigate.");
+      addMessage(
+        db,
+        thread.id,
+        "SYSTEM",
+        "Messenger",
+        zh ? "尚未連結 AI 分析 — 請開啟即時警報調查。" : "No AI analysis linked — open Live Alerts to investigate."
+      );
       return getMessengerThread(thread.id);
     }
     const evidence = db
@@ -547,10 +560,14 @@ export function messengerAction(input: {
       db,
       thread.id,
       "EVIDENCE",
-      "Evidence Vault",
-      `📎 Evidence pack for analysis #${thread.analysis_id}\n${lines.join("\n")}${
-        challenge?.verdict ? `\n\nSecond AI (${challenge.verdict}): ${challenge.summary}` : ""
-      }`,
+      actorEvidence,
+      zh
+        ? `📎 分析 #${thread.analysis_id} 證據包\n${lines.join("\n")}${
+            challenge?.verdict ? `\n\n第二 AI（${challenge.verdict}）：${challenge.summary}` : ""
+          }`
+        : `📎 Evidence pack for analysis #${thread.analysis_id}\n${lines.join("\n")}${
+            challenge?.verdict ? `\n\nSecond AI (${challenge.verdict}): ${challenge.summary}` : ""
+          }`,
       { analysis_id: thread.analysis_id, admin_url: `/admin/ai-analyses/${thread.analysis_id}` }
     );
     writeAudit({ name: input.user_name }, "MESSENGER_SHOW_EVIDENCE", "messenger_thread", thread.thread_id, {});
@@ -562,19 +579,22 @@ export function messengerAction(input: {
     if (!text) throw new Error("Message required");
     addMessage(db, thread.id, "USER", input.user_name, text);
     const lower = text.toLowerCase();
-    let reply =
-      "Noted. I've attached your note to the case. Risk Desk can use this when reviewing the AI report.";
-    if (/disagree|wrong|challenge|incorrect|false/.test(lower)) {
-      reply =
-        "Challenge recorded. I've flagged the AI analysis for human review and asked the second challenger path to be considered before any irreversible control.";
+    let reply = zh
+      ? "已記錄。已將您的備註附加至案件，風險台覆核 AI 報告時可使用。"
+      : "Noted. I've attached your note to the case. Risk Desk can use this when reviewing the AI report.";
+    if (/disagree|wrong|challenge|incorrect|false|不同意|挑戰|錯誤/.test(lower) || /不同意|挑戰|錯誤/.test(text)) {
+      reply = zh
+        ? "已記錄挑戰。已標記 AI 分析需人工覆核，並要求在不可逆控制前考慮第二挑戰者路徑。"
+        : "Challenge recorded. I've flagged the AI analysis for human review and asked the second challenger path to be considered before any irreversible control.";
       if (thread.analysis_id) {
         db.prepare(`UPDATE ai_analyses SET needs_human = 1 WHERE id = ?`).run(thread.analysis_id);
       }
-    } else if (/more info|context|add|update/.test(lower)) {
-      reply =
-        "Additional context saved on the thread. It will appear in the next Risk Owner review pack alongside primary + challenger RCA.";
+    } else if (/more info|context|add|update|補充|更多|更新/.test(lower) || /補充|更多資訊|更新/.test(text)) {
+      reply = zh
+        ? "已將額外脈絡存入執行緒。下次風險負責人覆核包會連同主 RCA 與挑戰者一併呈現。"
+        : "Additional context saved on the thread. It will appear in the next Risk Owner review pack alongside primary + challenger RCA.";
     }
-    addMessage(db, thread.id, "CHATBOT", "CRMP Chatbot", `💬 ${reply}`, { in_reply_to: text });
+    addMessage(db, thread.id, "CHATBOT", actorBot, `💬 ${reply}`, { in_reply_to: text });
     writeAudit({ name: input.user_name }, "MESSENGER_CHAT", "messenger_thread", thread.thread_id, { text });
     return getMessengerThread(thread.id);
   }
@@ -599,16 +619,21 @@ export function messengerAction(input: {
       nextStep,
       thread.id
     );
-    const defaultNote =
-      path.match_kind === "default"
+    const defaultNote = zh
+      ? path.match_kind === "default"
+        ? `\n路徑：${path.route_code}（預設兜底 — 異常／未匹配）`
+        : `\n路徑：${path.route_code}（${path.match_kind}）`
+      : path.match_kind === "default"
         ? `\nRoute: ${path.route_code} (DEFAULT catch-all — exotic / unmatched)`
         : `\nRoute: ${path.route_code} (${path.match_kind})`;
     addMessage(
       db,
       thread.id,
       "ESCALATION",
-      "Escalation Engine",
-      `⬆️ Escalated to ${target} (step ${nextStep + 1}/${path.steps.length})\nChannel: ${path.channel} · SLA ${path.sla_minutes}m${defaultNote}\nPath: ${path.steps.join(" → ")}`,
+      actorEscalation,
+      zh
+        ? `⬆️ 已升級至 ${target}（步驟 ${nextStep + 1}/${path.steps.length}）\n頻道：${path.channel} · SLA ${path.sla_minutes} 分鐘${defaultNote}\n升級鏈：${path.steps.join(" → ")}`
+        : `⬆️ Escalated to ${target} (step ${nextStep + 1}/${path.steps.length})\nChannel: ${path.channel} · SLA ${path.sla_minutes}m${defaultNote}\nPath: ${path.steps.join(" → ")}`,
       {
         target,
         step: nextStep,
@@ -649,7 +674,9 @@ export function messengerAction(input: {
       thread.id,
       "SYSTEM",
       input.user_name,
-      "❎ Dismissed as false alarm. Alert closed. No further controls applied."
+      zh
+        ? "❎ 已排除為誤報。警報已關閉。未再套用控制。"
+        : "❎ Dismissed as false alarm. Alert closed. No further controls applied."
     );
     writeAudit({ name: input.user_name }, "MESSENGER_DISMISS", "messenger_thread", thread.thread_id, {});
     return getMessengerThread(thread.id);
@@ -667,7 +694,9 @@ export function messengerAction(input: {
       thread.id,
       "SYSTEM",
       input.user_name,
-      "✅ Closed — AI analysis accepted. Ticket closed; dual-AI pack retained in evidence vault."
+      zh
+        ? "✅ 已結案 — 接受 AI 分析。工單已關閉；雙 AI 包保留於證據庫。"
+        : "✅ Closed — AI analysis accepted. Ticket closed; dual-AI pack retained in evidence vault."
     );
     writeAudit({ name: input.user_name }, "MESSENGER_CLOSE", "messenger_thread", thread.thread_id, {});
     return getMessengerThread(thread.id);
@@ -687,8 +716,10 @@ export function messengerAction(input: {
       db,
       thread.id,
       "ACTION_PROPOSAL",
-      "Action Advisor",
-      `⚙️ Proposed: ${action.label}\n${action.description}\nPlease double-confirm before sending to Vantage Markets admin.`,
+      actorAdvisor,
+      zh
+        ? `⚙️ 建議：${action.label}\n${action.description}\n送至 Vantage Markets 管理後台前請雙重確認。`
+        : `⚙️ Proposed: ${action.label}\n${action.description}\nPlease double-confirm before sending to Vantage Markets admin.`,
       { pending_id: Number(info.lastInsertRowid), action }
     );
     return getMessengerThread(thread.id);
@@ -699,7 +730,13 @@ export function messengerAction(input: {
     db.prepare(
       `UPDATE messenger_pending_actions SET status = 'CANCELLED', updated_at = datetime('now') WHERE id = ? AND thread_id = ?`
     ).run(input.pending_id, thread.id);
-    addMessage(db, thread.id, "SYSTEM", input.user_name, "Cancelled pending control action.");
+    addMessage(
+      db,
+      thread.id,
+      "SYSTEM",
+      input.user_name,
+      zh ? "已取消待確認控制動作。" : "Cancelled pending control action."
+    );
     return getMessengerThread(thread.id);
   }
 

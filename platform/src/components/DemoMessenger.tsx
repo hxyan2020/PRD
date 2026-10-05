@@ -322,7 +322,7 @@ export function DemoMessenger({
         applyPack(id, catalog[id], opts);
         return;
       }
-      setStatusMsg(data.error || "Failed to load thread");
+      setStatusMsg(data.error || t("msg.failedThread", locale));
       return;
     }
     applyPack(
@@ -451,17 +451,27 @@ export function DemoMessenger({
     try {
       if (THINKING_ACTIONS.has(action)) {
         if (action === "chat") {
-          appendLocal("USER", "Public visitor", String(extra.text || "").trim());
+          appendLocal(
+            "USER",
+            locale === "zh-Hant" ? "公開訪客" : "Public visitor",
+            String(extra.text || "").trim()
+          );
           setChat("");
         }
         thought = await playThinking(action, extra);
         if (!thought || gen !== runGen.current) return;
-        appendLocal("THINKING", "CRMP AI", thought.steps.join("\n"), {
+        appendLocal("THINKING", locale === "zh-Hant" ? "CRMP AI" : "CRMP AI", thought.steps.join("\n"), {
           meta: { elapsed_ms: thought.elapsedMs, action, steps: thought.steps },
         });
       }
 
       if (staticMode) {
+        const zh = locale === "zh-Hant";
+        const actorVisitor = zh ? "公開訪客" : "Public visitor";
+        const actorEvidence = zh ? "證據庫" : "Evidence Vault";
+        const actorEscalation = zh ? "升級引擎" : "Escalation Engine";
+        const actorAdvisor = zh ? "動作顧問" : "Action Advisor";
+        const actorBot = zh ? "CRMP 聊天機器人" : "CRMP Chatbot";
         if (action === "sync") {
           setStatusMsg(t("msg.synced", locale, { n: 0 }));
           return;
@@ -469,30 +479,59 @@ export function DemoMessenger({
         if (action === "show_evidence") {
           appendLocal(
             "EVIDENCE",
-            "Evidence Vault",
-            "📎 Evidence pack (demo)\n• [MONITOR] Margin utilisation >90% for 128 accounts\n• [BOOK] Copy-equity concentration 31%\n• [RAG] Prior US-open breach playbook"
+            actorEvidence,
+            zh
+              ? "📎 證據包（示範）\n• [MONITOR] 128 帳戶保證金使用率 >90%\n• [BOOK] 跟單權益集中度 31%\n• [RAG] 先前美盤開盤違規劇本"
+              : "📎 Evidence pack (demo)\n• [MONITOR] Margin utilisation >90% for 128 accounts\n• [BOOK] Copy-equity concentration 31%\n• [RAG] Prior US-open breach playbook"
           );
         } else if (action === "escalate") {
           appendLocal(
             "ESCALATION",
-            "Escalation Engine",
-            "⬆️ Escalated to Risk Owner (step 2/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge"
+            actorEscalation,
+            zh
+              ? "⬆️ 已升級至風險負責人（步驟 2/4）\n頻道：風險控管台 · SLA 15 分鐘\n路徑：風險控管台 → 信貸與客戶風險 → 風險負責人 → 高管風險橋"
+              : "⬆️ Escalated to Risk Owner (step 2/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge"
           );
         } else if (action === "dismiss") {
-          appendLocal("SYSTEM", "Public visitor", "❎ Dismissed as false alarm. Alert closed.", { status: "DISMISSED" });
+          appendLocal(
+            "SYSTEM",
+            actorVisitor,
+            zh ? "❎ 已排除為誤報。警報已關閉。" : "❎ Dismissed as false alarm. Alert closed.",
+            { status: "DISMISSED" }
+          );
         } else if (action === "close") {
-          appendLocal("SYSTEM", "Public visitor", "✅ Closed — AI analysis accepted.", { status: "CLOSED" });
+          appendLocal(
+            "SYSTEM",
+            actorVisitor,
+            zh ? "✅ 已結案 — 接受 AI 分析。" : "✅ Closed — AI analysis accepted.",
+            { status: "CLOSED" }
+          );
         } else if (action === "chat") {
-          appendLocal("CHATBOT", "CRMP Chatbot", "💬 Noted. Attached to the demo thread for Risk Desk review.");
+          appendLocal(
+            "CHATBOT",
+            actorBot,
+            zh
+              ? "💬 已記錄。已附加至示範執行緒供風險台審閱。"
+              : "💬 Noted. Attached to the demo thread for Risk Desk review."
+          );
         } else if (action === "recommend") {
+          const code = String(extra.action_code || "WIDEN_SPREAD");
           appendLocal(
             "ACTION_PROPOSAL",
-            "Action Advisor",
-            `⚙️ Proposed: ${String(extra.action_code || "WIDEN_SPREAD")}\nPlease double-confirm before sending to Vantage Markets admin.`,
-            { action_code: String(extra.action_code || "WIDEN_SPREAD") }
+            actorAdvisor,
+            zh
+              ? `⚙️ 建議：${code}\n送至 Vantage Markets 管理後台前請雙重確認。`
+              : `⚙️ Proposed: ${code}\nPlease double-confirm before sending to Vantage Markets admin.`,
+            { action_code: code }
           );
         } else if (action !== "sync") {
-          appendLocal("SYSTEM", "Messenger", `Demo action ${action} recorded (static snapshot — no live Lark API).`);
+          appendLocal(
+            "SYSTEM",
+            "Messenger",
+            zh
+              ? `示範動作 ${action} 已記錄（靜態快照 — 無即時 Lark API）。`
+              : `Demo action ${action} recorded (static snapshot — no live Lark API).`
+          );
         }
         setStatusMsg(t("msg.actionDone", locale, { action }));
         setConfirmId(null);
@@ -511,7 +550,7 @@ export function DemoMessenger({
       const data = await res.json();
       if (gen !== runGen.current) return;
       if (!res.ok) {
-        setStatusMsg(data.error || "Action failed");
+        setStatusMsg(data.error || t("msg.actionFailed", locale));
         return;
       }
       if (action === "sync") {

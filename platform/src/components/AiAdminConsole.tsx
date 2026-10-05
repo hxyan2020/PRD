@@ -193,10 +193,14 @@ export function AiAdminConsole({
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setErr(data.error || `Failed (${res.status})`);
+      setErr(data.error || t("adm.failedDetail", { err: String(res.status) }));
       return null;
     }
-    setMsg(data.request_id ? `Submitted ${data.request_id}` : data.status || "OK");
+    setMsg(
+      data.request_id
+        ? t("adm.submitted", { what: String(data.request_id) })
+        : data.status || t("common.ok")
+    );
     router.refresh();
     return data;
   }

@@ -446,8 +446,6 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Handle client funding cases": "處理客戶資金案件",
   "RISK_OWNER when infra failure creates book or wallet risk":
     "基礎設施故障造成帳簿或錢包風險時升級至 RISK_OWNER",
-  "SUPER_ADMIN on privilege, data-loss or multi-system outage":
-    "權限、資料遺失或多系統中斷時升級至 SUPER_ADMIN",
   "Infra, LP endpoints, bridges, servers and platform config.": "基礎設施、LP 端點、橋接、伺服器與平台設定。",
   VIEWER: "檢視者",
   Viewer: "檢視者",
@@ -593,6 +591,38 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "CRITICAL only — exec visibility": "僅危急 — 高管可見",
   "AI Detection Alerts": "AI 偵測警報",
   "Executive Risk Bridge": "風險執行橋",
+
+  // Intervention demo samples + messenger actors
+  "Public visitor": "公開訪客",
+  "Evidence Vault": "證據庫",
+  "Escalation Engine": "升級引擎",
+  "Action Advisor": "動作顧問",
+  "CRMP Chatbot": "CRMP 聊天機器人",
+  "Margin utilisation spike — Risk Owner must accept RCA before live controls.":
+    "保證金使用率暴衝 — 風險負責人須接受 RCA 後才可下實控。",
+  "Approve or reject leverage / close-only controls after margin cascade RCA.":
+    "保證金連鎖 RCA 後，核准或駁回槓桿／只平倉控制。",
+  "Copy concentration BREACH — pause new copiers pending Risk Owner gate.":
+    "跟單集中度違規 — 暫停新跟單，待風險負責人關卡。",
+  "Pause new copy joins on the top signal provider until concentration falls below warn.":
+    "暫停頭部訊號提供者的新跟單，直至集中度低於警告。",
+  "Copy provider concentration breach": "跟單提供者集中度違規",
+  "Leverage cut executed after human approval.": "人工核准後已執行槓桿下調。",
+  "Cut max leverage for accounts above 90% utilisation on XAUUSD / majors.":
+    "對 XAUUSD／主要商品上使用率 >90% 帳戶調降最大槓桿。",
+  "Approved after confirming LP reject rate was healthy; cut max leverage on stressed cohort.":
+    "已確認 LP 拒單率健康後核准；下調受壓族群最大槓桿。",
+  "Symbol halt rejected after feed-quality check.": "饋送品質檢查後駁回商品停牌。",
+  "Halt new exposure on symbol until feed integrity restored.": "饋送完整性恢復前，停止該商品新曝險。",
+  "Rejected — stale quote print on M2-FEED-003, not book risk. Keep symbol open.":
+    "駁回 — M2-FEED-003 為過期報價，非帳簿風險。維持商品開放。",
+  "Stale / crossed quotes": "過期／交叉報價",
+  "LP route disabled after dual-control approval.": "雙重控管核准後已停用 LP 路徑。",
+  "Disable stressed LP route and fail over hedge capacity.": "停用受壓 LP 路徑並容錯切換對沖產能。",
+  "Approved temporary LP disable after oneZero reject spike; System on-call notified.":
+    "oneZero 拒單暴衝後核准暫時停用 LP；已通知系統值班。",
+  "LP reject rate breach": "LP 拒單率違規",
+  "See conditions JSON": "見條件 JSON",
 
   // Audit / spine
   SEED_DATABASE: "種子資料庫",

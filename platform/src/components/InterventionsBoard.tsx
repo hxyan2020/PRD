@@ -5,6 +5,7 @@ import { useMemo, useState, useTransition } from "react";
 import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { AdminLink } from "@/components/AdminLink";
 import { MonitorCode } from "@/components/MonitorCode";
+import { Phrase } from "@/components/Phrase";
 import { decideInterventionAction } from "@/app/admin/interventions/actions";
 import { INTERVENTION_DEMO_SAMPLES } from "@/lib/ai/intervention-samples";
 import { useT } from "@/hooks/useUiLocale";
@@ -142,7 +143,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                   <Badge className="bg-teal-50 text-teal-900 border-teal-200">{i.mode}</Badge>
                 </div>
                 <h2 className="mt-2 font-semibold text-lg">
-                  {i.action_code} · {i.alert_title}
+                  {i.action_code} · <Phrase>{i.alert_title}</Phrase>
                 </h2>
                 <div className="mt-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 rounded-xl border border-[var(--line)] bg-slate-50/70 px-3 py-3">
                   <Meta label={t("intv.ticket")}>{i.ticket_id || "—"}</Meta>
@@ -172,7 +173,9 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                     {t("intv.stepRequested", { step: i.step_index + 1, at: i.requested_at })}
                   </Meta>
                 </div>
-                <p className="text-sm mt-3 text-slate-700">{detail.description || i.summary}</p>
+                <p className="text-sm mt-3 text-slate-700">
+                  <Phrase>{detail.description || i.summary}</Phrase>
+                </p>
               </div>
               {!usingFallback && i.analysis_id < 9000 ? (
                 <AdminLink className="btn shrink-0" href={`/admin/ai-analyses/${i.analysis_id}`}>
@@ -225,7 +228,12 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                     : i.decided_by_name ?? "—",
                   at: i.decided_at ?? "—",
                 })}
-                {i.decision_note ? ` — ${i.decision_note}` : ""}
+                {i.decision_note ? (
+                  <>
+                    {" — "}
+                    <Phrase>{i.decision_note}</Phrase>
+                  </>
+                ) : null}
               </div>
             )}
           </article>

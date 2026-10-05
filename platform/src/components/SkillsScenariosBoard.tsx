@@ -41,7 +41,7 @@ type ChainRow = {
   past_cases_json: string;
 };
 
-function parseScenario(raw: string, fallback: SkillRow): SkillScenario | null {
+function parseScenario(raw: string, fallback: SkillRow, locale: "en" | "zh-Hant" = "en"): SkillScenario | null {
   try {
     const s = JSON.parse(raw || "{}") as SkillScenario;
     if (s?.indicator?.monitor_id) return s;
@@ -63,7 +63,7 @@ function parseScenario(raw: string, fallback: SkillRow): SkillScenario | null {
       breach: 0,
       unit: "",
       comparator: "gte",
-      why: "See conditions JSON",
+      why: locale === "zh-Hant" ? "見條件 JSON" : "See conditions JSON",
     },
     related_indicators: [],
     conditions: JSON.parse(fallback.conditions_json || "{}"),
@@ -93,7 +93,7 @@ export function SkillsScenariosBoard({
     () =>
       skills
         .map((s) => {
-          const parsed = parseScenario(s.scenario_json, s);
+          const parsed = parseScenario(s.scenario_json, s, locale);
           return parsed ? { row: s, scenario: finalizeSkill(parsed, locale) } : null;
         })
         .filter((x): x is { row: SkillRow; scenario: ReturnType<typeof finalizeSkill> } => !!x),

@@ -261,6 +261,66 @@ export const SKILL_ZH: Record<string, SkillZh> = {
       "與保證金或權益警告同時出現時，視為連結時間鏈。",
     ],
   },
+  "SKILL-PERP-BASIS": {
+    name: "永續標記－指數基差（≥60 bps）",
+    description: "永續合約標記價與指數偏離 — 強平公平性與保險基金風險。",
+    why: "基差 ≥60 bps 表示標記脫離指數；強制平倉不公，保險基金易失血。",
+    indicator_name: "永續標記－指數基差",
+  },
+  "SKILL-FUNDING-EXTREME": {
+    name: "永續資金費率極端（≥0.5%／8h）",
+    description: "極端資金費率擠壓單邊，可能觸發強平與 OI 流失。",
+    why: "8 小時絕對資金費率 ≥0.5% 屬擠壓行情；庫存與強平積壓常在一小時內跟進。",
+    indicator_name: "永續資金費率絕對值（8 小時）",
+  },
+  "SKILL-STABLE-DEPEG": {
+    name: "穩定幣庫存脫鉤曝險（≥$2m）",
+    description: "穩定幣脫鉤時房屋庫存承壓 — 託管與出金公平性。",
+    why: "脫鉤曝險 ≥200 萬美元時需同步處理託管浮額與出金佇列。",
+    indicator_name: "穩定幣脫鉤曝險（美元）",
+  },
+  "SKILL-PLATFORM-DISCONNECT": {
+    name: "交易平台斷線率（≥5%）",
+    description: "基礎設施中斷使客戶無法管理部位，轉為信貸連鎖。",
+    why: "斷線 ≥5% 時客戶無法平倉／加保，保證金與權益漂移加速。",
+    indicator_name: "交易平台斷線率",
+  },
+  "SKILL-RECON-BREAKS": {
+    name: "對帳差異（≥20）",
+    description: "營運對帳差異上升，可能演成分隔與資本壓力。",
+    why: "≥20 筆未解差異不可只當作業工單，需對齊客戶資金路徑。",
+    indicator_name: "未解對帳差異數",
+  },
+  "SKILL-SYMBOL-HALTS": {
+    name: "作用中商品熔斷（≥5）",
+    description: "多商品熔斷同時作用，對沖與客戶公平性受影響。",
+    why: "≥5 個作用中熔斷通常代表饋送或流動性系統性問題。",
+    indicator_name: "作用中商品熔斷數",
+  },
+  "SKILL-NEWS-GROSS": {
+    name: "一級新聞前名目（≥$120m）",
+    description: "一級宏觀窗口前過大名目，缺口／負餘額風險上升。",
+    why: "新聞前名目 ≥1.2 億美元需預先拉闊與風控台值班。",
+    indicator_name: "一級新聞前名目（美元）",
+  },
+  "SKILL-CHARGEBACK-SPIKE": {
+    name: "支付退單（≥40／24h）",
+    description: "入金濫用演成收單行退單與營運資金壓力。",
+    why: "24 小時退單 ≥40 筆需對齊詐欺分數與出金佇列。",
+    indicator_name: "支付退單（24 小時）",
+  },
+  "SKILL-IB-REBATE-ANOMALY": {
+    name: "IB 返佣異常分數（≥0.8）",
+    description: "循環 IB 經濟叠加對倒與贈金套現跡象。",
+    why: "分數 ≥0.8 幾乎確定異常返佣環，需凍結相關 IB 結算。",
+    indicator_name: "IB 返佣異常分數",
+  },
+  "SKILL-COPY-CHURN": {
+    name: "跟單淨流失（≥25%／1h）",
+    description: "跟隨者恐慌離場，經集中度與保證金打到公司權益。",
+    why: "1 小時淨流失 ≥25% 需分階段平倉與暫停新跟單。",
+    indicator_name: "跟單淨流失（1 小時）",
+  },
 };
 
 export const CHAIN_ZH: Record<string, { name: string; description: string }> = {
@@ -379,5 +439,45 @@ export const CHAIN_ZH: Record<string, { name: string; description: string }> = {
   "CHAIN-MKT-INTEL-VOL": {
     name: "市場情報命中 → 權益／保證金升溫",
     description: "外部新聞對齊內部風險指標。",
+  },
+  "CHAIN-PERP-BASIS-ORACLE": {
+    name: "預言機延遲 → 基差 → 強平 → 保險",
+    description: "加密標記價格完整性失效，串聯預言機、基差、強平引擎與保險基金。",
+  },
+  "CHAIN-FUNDING-SQUEEZE": {
+    name: "極端資金費率 → OI 集中 → 強平積壓",
+    description: "資金費率擠壓把 OI 擠向單邊，壓垮強平引擎。",
+  },
+  "CHAIN-STABLE-CUSTODY": {
+    name: "穩定幣脫鉤曝險 → 熱錢包浮額 → 出金",
+    description: "穩定幣壓力同時打擊託管浮額與出金公平性。",
+  },
+  "CHAIN-PLATFORM-CREDIT": {
+    name: "平台斷線 → API 錯誤 → 強平 → 權益",
+    description: "基礎設施中斷使客戶無法管理部位，轉為信貸連鎖。",
+  },
+  "CHAIN-NEWS-GROSS-GAP": {
+    name: "情報＋新聞名目 → 點差 → 強平 → 缺口 USD",
+    description: "一級宏觀窗口叠加過大名目，演成缺口／負餘額事件。",
+  },
+  "CHAIN-RECON-SEGREGATION": {
+    name: "對帳差異 → 分隔缺口 → 資本緩衝",
+    description: "營運對帳債務轉為監管客戶資金與資本壓力。",
+  },
+  "CHAIN-IB-FRAUD-RING": {
+    name: "IB 返佣異常 → 對倒 → 贈金 → 出金",
+    description: "循環 IB 經濟叠加對倒與贈金套現。",
+  },
+  "CHAIN-COPY-PANIC-UNWIND": {
+    name: "跟單流失 → 集中度 → 保證金 → 權益",
+    description: "跟隨者恐慌離場，經集中度與保證金打到公司權益。",
+  },
+  "CHAIN-KILL-FEED-HEDGE": {
+    name: "過期饋送 → 熔斷 → 對沖／LP 壓力",
+    description: "饋送健康觸發停牌，對沖覆蓋斷裂並推高 LP 拒單。",
+  },
+  "CHAIN-CHARGEBACK-FUNDING": {
+    name: "支付詐欺 → 退單 → 入金例外 → 出金",
+    description: "入金濫用變成收單行退單與營運資金壓力。",
   },
 };

@@ -238,7 +238,9 @@ export function EscalationManager({
             {defaultRoute ? phrase(defaultRoute.primary_team) : "—"}
           </div>
           <div>
-            <span className="text-[var(--muted)]">SLA:</span> {defaultRoute?.sla_minutes || defaultSlaMinutes}m
+            <span className="text-[var(--muted)]">{zh ? "SLA：" : "SLA:"}</span>{" "}
+            {defaultRoute?.sla_minutes || defaultSlaMinutes}
+            {zh ? " 分鐘" : "m"}
           </div>
           <div>
             <span className="text-[var(--muted)]">{zh ? "情境" : "Scenario"}:</span>{" "}

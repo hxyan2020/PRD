@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
+import { getUiLocale } from "@/lib/i18n-server";
 import {
   getMessengerThread,
   listMessengerThreads,
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, threads: listMessengerThreads() });
   }
 
+  const locale = await getUiLocale();
   const detail = messengerAction({
     thread_id: Number(body.thread_id),
     action: body.action as MessengerAction,
@@ -47,6 +49,7 @@ export async function POST(req: Request) {
     text: body.text,
     action_code: body.action_code,
     pending_id: body.pending_id ? Number(body.pending_id) : undefined,
+    locale,
   });
   return NextResponse.json({ ok: true, ...detail });
 }

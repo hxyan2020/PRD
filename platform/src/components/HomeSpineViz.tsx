@@ -17,6 +17,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { EnZh } from "@/components/EnZh";
+import { useUiLocale } from "@/hooks/useUiLocale";
 import { cn } from "@/lib/utils";
 
 export type SpineStepStat = {
@@ -58,6 +59,7 @@ function iconFor(id: string): IconKey {
 }
 
 export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
+  const { locale } = useUiLocale();
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(true);
   const step = steps[active] ?? steps[0];
@@ -79,7 +81,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
     <section
       className="panel relative mt-4 overflow-hidden p-3 sm:p-4"
       data-testid="home-spine-viz"
-      aria-label="Integration spine"
+      aria-label={locale === "zh-Hant" ? "整合脊柱" : "Integration spine"}
     >
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(13,148,136,0.12),transparent_55%),linear-gradient(135deg,#f8fafc_0%,#ffffff_45%,#f0fdfa_100%)]"
