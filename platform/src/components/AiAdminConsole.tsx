@@ -21,6 +21,8 @@ type Overview = {
   kpis: {
     analyses_total: number;
     skill_match_rate: number;
+    skill_match_count?: number;
+    rag_count?: number;
     avg_confidence: number;
     needs_human: number;
     interventions_pending: number;
@@ -28,6 +30,16 @@ type Overview = {
     feedback_correct_rate: number;
     feedback_total: number;
     pending_change_requests: number;
+    challenged_count?: number;
+    challenge_rate?: number;
+    challenge_agree?: number;
+    challenge_partial?: number;
+    challenge_disagree?: number;
+  };
+  line_settings?: {
+    line1_model: string;
+    line2_model: string;
+    second_opinion_severity: string;
   };
   accuracy_history: Array<{
     snapshot_date: string;
@@ -242,13 +254,70 @@ export function AiAdminConsole({
 
       {tab === "overview" && (
         <div className="space-y-4">
+          <div className="grid lg:grid-cols-2 gap-3">
+            <section className="panel p-4 space-y-3" data-testid="ai-line1-card">
+              <div>
+                <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("adm.line1")}</div>
+                <h3 className="font-semibold text-lg mt-1">{t("adm.line1Title")}</h3>
+                <p className="text-sm text-[var(--muted)] mt-1">{t("adm.line1Hint")}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                  {t("adm.model")}: {initial.overview.line_settings?.line1_model ?? "crmp-rca-v0"}
+                </Badge>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <StatCard
+                  label={t("adm.skillMatchCount")}
+                  value={initial.overview.kpis.skill_match_count ?? 0}
+                  hint={t("adm.skillMatchHint")}
+                />
+                <StatCard
+                  label={t("adm.ragCount")}
+                  value={initial.overview.kpis.rag_count ?? 0}
+                  hint={t("adm.ragCountHint")}
+                />
+                <StatCard
+                  label={t("adm.skillMatch")}
+                  value={pct(initial.overview.kpis.skill_match_rate)}
+                />
+                <StatCard
+                  label={t("adm.avgConf")}
+                  value={(initial.overview.kpis.avg_confidence || 0).toFixed(2)}
+                />
+              </div>
+            </section>
+            <section className="panel p-4 space-y-3" data-testid="ai-line2-card">
+              <div>
+                <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("adm.line2")}</div>
+                <h3 className="font-semibold text-lg mt-1">{t("adm.line2Title")}</h3>
+                <p className="text-sm text-[var(--muted)] mt-1">{t("adm.line2Hint")}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <Badge className="bg-amber-50 text-amber-900 border-amber-200">
+                  {t("adm.model")}: {initial.overview.line_settings?.line2_model ?? "crmp-challenger-v0"}
+                </Badge>
+                <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                  {t("adm.secondOpinionSev")}:{" "}
+                  {initial.overview.line_settings?.second_opinion_severity ?? "BREACH"}
+                </Badge>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <StatCard
+                  label={t("adm.challengeRate")}
+                  value={pct(initial.overview.kpis.challenge_rate ?? 0)}
+                  hint={t("adm.challengeRateHint", {
+                    n: initial.overview.kpis.challenged_count ?? 0,
+                  })}
+                />
+                <StatCard label={t("adm.verdictAgree")} value={initial.overview.kpis.challenge_agree ?? 0} />
+                <StatCard label={t("adm.verdictPartial")} value={initial.overview.kpis.challenge_partial ?? 0} />
+                <StatCard label={t("adm.verdictDisagree")} value={initial.overview.kpis.challenge_disagree ?? 0} />
+              </div>
+            </section>
+          </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
             <StatCard label={t("adm.analyses")} value={initial.overview.kpis.analyses_total} hint={t("adm.histRca")} />
-            <StatCard
-              label={t("adm.skillMatch")}
-              value={pct(initial.overview.kpis.skill_match_rate)}
-              hint={t("adm.skillMatchHint")}
-            />
             <StatCard
               label={t("adm.humanAgree")}
               value={pct(initial.overview.kpis.human_agree_rate)}
@@ -258,10 +327,6 @@ export function AiAdminConsole({
               label={t("adm.feedbackAcc")}
               value={pct(initial.overview.kpis.feedback_correct_rate)}
               hint={t("adm.ratings", { n: initial.overview.kpis.feedback_total })}
-            />
-            <StatCard
-              label={t("adm.avgConf")}
-              value={(initial.overview.kpis.avg_confidence || 0).toFixed(2)}
             />
             <StatCard label={t("common.needsHuman")} value={initial.overview.kpis.needs_human} />
             <StatCard label={t("adm.pendingInt")} value={initial.overview.kpis.interventions_pending} />
@@ -303,6 +368,24 @@ export function AiAdminConsole({
 
       {tab === "params" && (
         <div className="space-y-3">
+          <div className="grid md:grid-cols-2 gap-3">
+            <div className="panel p-3 text-sm">
+              <div className="font-semibold">{t("adm.line1")}</div>
+              <p className="text-[var(--muted)] mt-1">{t("adm.line1ParamsHint")}</p>
+              <ul className="mt-2 space-y-1 text-xs font-mono">
+                <li>ai.line1.model</li>
+                <li>ai.min_confidence · ai.rag_top_k · ai.skill_certainty_only</li>
+              </ul>
+            </div>
+            <div className="panel p-3 text-sm">
+              <div className="font-semibold">{t("adm.line2")}</div>
+              <p className="text-[var(--muted)] mt-1">{t("adm.line2ParamsHint")}</p>
+              <ul className="mt-2 space-y-1 text-xs font-mono">
+                <li>ai.line2.model</li>
+                <li>ai.second_opinion_severity</li>
+              </ul>
+            </div>
+          </div>
           {initial.params.map((p) => (
             <div key={p.key} className="panel p-4 grid md:grid-cols-[1fr_220px_auto] gap-3 items-end">
               <div>

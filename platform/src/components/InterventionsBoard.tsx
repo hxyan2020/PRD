@@ -22,6 +22,7 @@ type Intervention = {
   skill_detail: string;
   step_index: number;
   decided_by_name: string | null;
+  decided_by_email?: string | null;
   alert_title: string;
   alert_severity: string;
   product_hint: string;
@@ -112,8 +113,15 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
                   <span>
                     · {t("intv.stepRequested", { step: i.step_index + 1, at: i.requested_at })}
                   </span>
+                  <span>· {i.alert_severity}</span>
                 </div>
                 <p className="text-sm mt-2 text-slate-700">{detail.description || i.summary}</p>
+                {i.decided_by_email && (
+                  <p className="text-xs text-[var(--muted)] mt-1" data-testid={`actioner-email-${i.id}`}>
+                    {t("intv.decidedByEmail", { email: i.decided_by_email })}
+                    {i.decided_by_name ? ` (${i.decided_by_name})` : ""}
+                  </p>
+                )}
               </div>
               <AdminLink className="btn" href={`/admin/ai-analyses/${i.analysis_id}`}>
                 {t("common.evidence")}
@@ -153,7 +161,12 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
               </form>
             ) : (
               <div className="mt-3 text-sm text-[var(--muted)]">
-                {t("intv.decided", { who: i.decided_by_name ?? "—", at: i.decided_at ?? "—" })}
+                {t("intv.decided", {
+                  who: i.decided_by_email
+                    ? `${i.decided_by_name ?? "—"} <${i.decided_by_email}>`
+                    : i.decided_by_name ?? "—",
+                  at: i.decided_at ?? "—",
+                })}
                 {i.decision_note ? ` — ${i.decision_note}` : ""}
               </div>
             )}
@@ -161,7 +174,7 @@ export function InterventionsBoard({ interventions }: { interventions: Intervent
         );
       })}
       {!interventions.length && (
-        <div className="panel p-6 text-sm text-[var(--muted)]">
+        <div className="panel p-6 text-sm text-[var(--muted)]" data-testid="interventions-empty">
           {t("intv.empty")}
         </div>
       )}

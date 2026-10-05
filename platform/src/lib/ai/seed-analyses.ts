@@ -46,6 +46,13 @@ export function seedAiAnalysesIfEmpty(db: Database.Database) {
        alternatives_json, primary_mode, alert_severity)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   );
+  const insertSkillRun = db.prepare(
+    `INSERT INTO ai_skill_runs (analysis_id, skill_id, step_index, action_code, status, detail_json)
+     VALUES (?, ?, ?, ?, ?, ?)`
+  );
+  const skill = db.prepare(`SELECT id FROM ai_skills WHERE status='ACTIVE' ORDER BY id LIMIT 1`).get() as
+    | { id: number }
+    | undefined;
 
   alerts.forEach((alert, idx) => {
     const analysisCode = `AIA-DEMO-${String(idx + 1).padStart(3, "0")}`;
@@ -127,7 +134,7 @@ export function seedAiAnalysesIfEmpty(db: Database.Database) {
       insertChallenge.run(
         analysisDbId,
         `CHL-DEMO-${String(idx + 1).padStart(3, "0")}`,
-        "crmp-challenger-demo",
+        "crmp-challenger-v0",
         verdict,
         verdict === "AGREE" ? 0.81 : 0.66,
         verdict === "AGREE"
@@ -155,6 +162,34 @@ export function seedAiAnalysesIfEmpty(db: Database.Database) {
         ]),
         mode,
         alert.severity
+      );
+    }
+
+    // Human-gated skill run so interventions seed has AWAITING_HUMAN rows
+    if (skill) {
+      insertSkillRun.run(
+        analysisDbId,
+        skill.id,
+        0,
+        "lark_notify",
+        "EXECUTED_MOCK",
+        JSON.stringify({
+          description: "Posted RCA draft to Risk Control Desk (demo messenger / mock Lark).",
+          mock: true,
+        })
+      );
+      insertSkillRun.run(
+        analysisDbId,
+        skill.id,
+        1,
+        "flag_for_human_review",
+        "AWAITING_HUMAN",
+        JSON.stringify({
+          description: "Risk Owner must accept or challenge this RCA before live controls.",
+          params: { analysis: analysisCode, severity: alert.severity },
+          mock: true,
+          note: "Requires human approval before real execution.",
+        })
       );
     }
   });
