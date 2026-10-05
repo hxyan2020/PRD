@@ -153,7 +153,7 @@ GLOBAL_HASHES = {"hero-viz", "en", "zh", "zh-CN", "tab-en", "tab-zh", "panel-en"
 SOP_TOKEN = (
     r"(?:SOP-)?(?:G0[1-6]|RM-0[1-7]|SP-0[1-5]|MG-0[1-6]|PF-0[1-8]|"
     r"ME-0[1-5]|RE-0[1-5]|WA-0[1-6]|LD-0[1-8]|CP-0[1-4]|TS-0[1-4]|"
-    r"MM-0[1-3]|ENG-0[1-4]|ACC-0[1-3])"
+    r"MM-0[1-3]|ENG-0[1-4]|ACC-0[1-4])"
 )
 KRI_TOKEN = r"(?:SP|MG|PF|PL|PM)-K\d{2}"
 SEC_FALLBACK = {
@@ -761,7 +761,7 @@ TEMPLATE = """<!DOCTYPE html>
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v2.1 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.2 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
       </div>
       <div class="md-links">
         <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
@@ -772,42 +772,46 @@ TEMPLATE = """<!DOCTYPE html>
       </div>
     </header>
     <div class="legend">
-      <span class="chip p1">Phase 1 = perps + invite/broker</span>
+      <span class="chip p1">Phase 1 = V-Exchange perps (green)</span>
       <span class="chip p2">Phase 2+ = documented, not live</span>
       <span class="chip g">Green</span>
       <span class="chip a">Amber</span>
       <span class="chip r">Red</span>
     </div>
     <section class="hero-viz" id="hero-viz" aria-label="Phase 1 visual map">
-      <h2>Diagram / 示意图 — Phase 1 production</h2>
-      <p class="lead-viz">Always visible above the language tabs. Green = live now. Amber strikethrough = Phase 2+ only.</p>
+      <h2>Diagram / 示意图 — Finprime V-Exchange Phase 1</h2>
+      <p class="lead-viz">Always visible above the language tabs. Green = live now (永续合约 · 永续账户 · 撮合/风控/清结算). Amber strikethrough = Phase 2+ only.</p>
       <div class="lane">
-        <div class="lane-label">Live / 当前开通 — invite or broker · perps only（含 XAUUSD）</div>
+        <div class="lane-label">Live / 当前开通 — 2B broker · institution · MM · 2C via broker · perps only</div>
         <div class="flow-row">
-          <div class="node">Invite 邀请码</div>
+          <div class="node">2C user 终端用户</div>
           <span class="arrow">→</span>
-          <div class="node">Broker / IB 经纪商</div>
+          <div class="node">Broker 接入<small>Vantage / 白标</small></div>
           <span class="arrow">→</span>
-          <div class="node">KYC / CP</div>
+          <div class="node">KYC · Open Account</div>
           <span class="arrow">→</span>
-          <div class="node">Perps only 仅永续</div>
+          <div class="node green">Perp Account<small>USD/USDT</small></div>
           <span class="arrow">→</span>
-          <div class="node">XAUUSD + approved</div>
-          <span class="arrow">→</span>
-          <div class="node">Matching + RE</div>
-          <span class="arrow">→</span>
-          <div class="node">Liq / 保险 / ADL</div>
+          <div class="node green">Matching + Risk + Clearing</div>
+        </div>
+        <div class="flow-row">
+          <div class="node">Institution 机构直连<small>API only</small></div>
+          <div class="node">MM 做市商接入</div>
+          <span class="muted-note">2B offline open · same green perp stack</span>
         </div>
       </div>
       <div class="lane off">
         <div class="lane-label">Phase 2+ — not live / 未投产</div>
         <div class="flow-row">
           <div class="node off">Spot 现货</div>
-          <div class="node off">Margin 杠杆</div>
-          <div class="node off">Public signup 公众注册</div>
+          <div class="node off">USD Margin 逐仓+全仓</div>
+          <div class="node off">Cross-ccy / 组合保证金</div>
+          <div class="node off">Options 期权</div>
+          <div class="node off">Wealth 理财</div>
+          <div class="node off">Public 2C signup</div>
         </div>
       </div>
-      <p class="muted-note">More maps sit at the top of each language tab (English: Visual maps · 中文：示意图).</p>
+      <p class="muted-note">Funding rails: user deposit → MT account / X-fund → USD/USDT transfer into Perp Account. More maps sit at the top of each language tab.</p>
     </section>
     <div class="tabs" role="tablist" aria-label="Handbook language">
       <button type="button" role="tab" id="tab-en" aria-controls="panel-en" aria-selected="true" data-tab="en">English</button>

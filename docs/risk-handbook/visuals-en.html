@@ -1,44 +1,100 @@
 <section class="visual-maps" id="visual-maps">
   <h2>Visual maps</h2>
-  <p class="lead-viz">These diagrams are drawn in the page itself (no extra click, no CDN). Green = Phase 1 live. Amber strikethrough = Phase 2+ documented only.</p>
+  <p class="lead-viz">Finprime <strong>V-Exchange</strong> (ADGM / Mauritius entity; matching + clearing + risk). Green = Phase 1 live. Amber strikethrough = Phase 2+ documented only.</p>
 
   <div class="board">
-    <div class="board-title">1 · Phase 1 production path</div>
+    <div class="board-title">1 · V-Exchange product map</div>
     <div class="lane">
-      <div class="lane-label">Live now — invite or broker only · perps only</div>
+      <div class="lane-label">Phase 1 live — green</div>
       <div class="flow-row">
-        <div class="node">Invite code</div>
+        <div class="node green">Perpetual contracts 永续合约<small>incl. XAUUSD + other approved perps</small></div>
         <span class="arrow">→</span>
-        <div class="node">KYC / CP clear</div>
+        <div class="node green">Perp Account<small>USD / USDT only</small></div>
         <span class="arrow">→</span>
-        <div class="node">Entitlement: perps only</div>
-        <span class="arrow">→</span>
-        <div class="node">XAUUSD + approved perps</div>
-        <span class="arrow">→</span>
-        <div class="node">Matching + risk engine</div>
-        <span class="arrow">→</span>
-        <div class="node">Liq / insurance / ADL</div>
-      </div>
-      <div class="flow-row">
-        <div class="node">Broker / IB</div>
-        <span class="arrow">→</span>
-        <div class="node">KYC / CP clear</div>
-        <span class="muted-note">joins the same path</span>
+        <div class="node green">Matching · Open/Hold/Close<small>Risk &amp; liquidation · Clearing</small></div>
       </div>
     </div>
     <div class="lane off">
-      <div class="lane-label">Phase 2+ — playbooks kept, not live</div>
+      <div class="lane-label">Phase 2+ — playbooks kept, switches off</div>
       <div class="flow-row">
-        <div class="node off">Spot book</div>
-        <div class="node off">Margin borrow</div>
-        <div class="node off">Public self-serve signup</div>
+        <div class="node off">Spot</div>
+        <div class="node off">USD Margin isolated + cross</div>
+        <div class="node off">Cross-ccy margin</div>
+        <div class="node off">Portfolio margin</div>
+        <div class="node off">Options</div>
+        <div class="node off">Wealth / 理财</div>
+        <div class="node off">Public 2C self-serve</div>
       </div>
     </div>
   </div>
 
+  <div class="board">
+    <div class="board-title">2 · Access layers (2B / 2C)</div>
+    <div class="lane">
+      <div class="lane-label">2B — offline account open onto V-Exchange</div>
+      <div class="flow-row">
+        <div class="node">Broker 接入<small>Vantage sub-brands · external WL / API</small></div>
+        <div class="node">Institutional direct<small>HF / HNW · API only</small></div>
+        <div class="node">MM 接入<small>partner liquidity</small></div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lane-label">2C — terminal users do not self-serve; they enter through a broker</div>
+      <div class="flow-row">
+        <div class="node navy">2C end user</div>
+        <span class="arrow">→</span>
+        <div class="node">Broker 接入</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / Open Account</div>
+        <span class="arrow">→</span>
+        <div class="node green">Perp Account</div>
+      </div>
+      <p class="muted-note">No public website registration. A UID with no broker, institution, or MM tag that can trade is an L3 incident.</p>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">3 · 2C trading lifecycle (Phase 1 rails)</div>
+    <div class="flow-row">
+      <div class="stack">
+        <div class="lane-label">Stage 1 Onboarding</div>
+        <div class="node">KYC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">Open Account 开户</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 2 Funding (USD/USDT only)</div>
+        <div class="node">User deposit 入金</div>
+        <span class="arrow down">↓</span>
+        <div class="flow-row">
+          <div class="node">MT account</div>
+          <div class="node">X-fund</div>
+        </div>
+        <span class="arrow down">↓ transfer USD/USDT</span>
+        <div class="node green">Perp Account 永续账户</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 3 Trade (green)</div>
+        <div class="node green">Matching engine<small>Open / Hold / Close</small></div>
+        <span class="arrow down">↓</span>
+        <div class="node green">Risk &amp; liquidation</div>
+        <span class="arrow down">↓</span>
+        <div class="node green">Clearing &amp; settlement</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 4 Withdrawal</div>
+        <div class="node">User withdraw 出金</div>
+      </div>
+    </div>
+    <p class="muted-note">MT ↔ X-fund can transfer. Only USD/USDT may move into the perp account. Spot/margin wallets stay off.</p>
+  </div>
+
   <div class="viz-grid">
     <div class="board">
-      <div class="board-title">2 · Three lines of defence</div>
+      <div class="board-title">4 · Three lines of defence</div>
       <div class="stack">
         <div class="node navy">1st line — Product / TO / ME / Wallet / Listing / MM<small>Own BAU risk, run controls</small></div>
         <span class="arrow down">↓ escalate breaches</span>
@@ -50,7 +106,7 @@
       </div>
     </div>
     <div class="board">
-      <div class="board-title">3 · Perps control chain (Phase 1 primary)</div>
+      <div class="board-title">5 · Perps control chain (Phase 1 primary)</div>
       <div class="stack">
         <div class="flow-row">
           <div class="node navy">Index (multi-venue)</div>
@@ -79,11 +135,13 @@
   </div>
 
   <div class="board">
-    <div class="board-title">4 · Phase 1 critical-path BUs</div>
+    <div class="board-title">6 · Phase 1 critical-path BUs</div>
     <div class="flow-row">
-      <div class="node">Invite / Broker + CP</div>
+      <div class="node">Broker / Inst / MM + CP</div>
       <span class="arrow">→</span>
-      <div class="node">Trade-enabled UID</div>
+      <div class="node">Open Account</div>
+      <span class="arrow">→</span>
+      <div class="node green">Perp Account</div>
       <span class="arrow">→</span>
       <div class="node">Matching (ME)</div>
       <span class="arrow">→</span>
@@ -95,12 +153,12 @@
       <span class="arrow">→</span>
       <div class="node amber">CRO</div>
     </div>
-    <p class="muted-note">Wallet (WO) sits on the risk-engine path for collateral / PnL settlement.</p>
+    <p class="muted-note">Wallet (WO) + Treasury (TS) sit on MT / X-fund / deposit-withdraw rails. Clearing is inside Stage 3 with RE.</p>
   </div>
 
   <div class="viz-grid">
     <div class="board">
-      <div class="board-title">5 · RAG triage</div>
+      <div class="board-title">7 · RAG triage</div>
       <div class="stack">
         <div class="flow-row">
           <div class="node green">Green → check timestamp</div>
@@ -115,7 +173,7 @@
       </div>
     </div>
     <div class="board">
-      <div class="board-title">6 · Escalation ladder</div>
+      <div class="board-title">8 · Escalation ladder</div>
       <div class="stack">
         <div class="node">L1 RO-OPS ticket</div>
         <span class="arrow down">↓</span>
@@ -129,7 +187,7 @@
   </div>
 
   <div class="board">
-    <div class="board-title">7 · SOP-G02 halt then resume</div>
+    <div class="board-title">9 · SOP-G02 halt then resume</div>
     <div class="flow-row">
       <div class="node">TO proposes</div>
       <span class="arrow">→</span>
@@ -148,7 +206,7 @@
   </div>
 
   <div class="board">
-    <div class="board-title">8 · Diagnostic order (clock first)</div>
+    <div class="board-title">10 · Diagnostic order (clock first)</div>
     <div class="flow-row">
       <div class="node navy">1 Clock</div>
       <span class="arrow">→</span>
