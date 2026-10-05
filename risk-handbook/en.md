@@ -4,11 +4,12 @@
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
 **Scope:** Full catalogue covers Spot · USD Margin · cross-ccy margin · portfolio margin · Options · Wealth · Perps; **Phase 1 production (green) = Perpetual contracts + Perp Account (USD/USDT) + matching / risk & liquidation / clearing**. Access = 2B broker / institution / MM; 2C end users enter **through a broker** (no public self-serve).  
 **Public site:** [https://hxyan2020.github.io/PRD/risk-handbook/](https://hxyan2020.github.io/PRD/risk-handbook/) · **All URLs:** [https://hxyan2020.github.io/PRD/risk-handbook/urls.html](https://hxyan2020.github.io/PRD/risk-handbook/urls.html) · **Admin URLs:** [https://hxyan2020.github.io/PRD/risk-handbook/admin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/)  
-**Version:** 2.3 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Version:** 2.4 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
 > This handbook is the **operating playbook**: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does **not** replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.  
 > **Numbers in this handbook are teaching examples.** Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.  
-> **Edit both languages:** [Edit English / 简体中文](edit.html) — browser editor for `en.md` and `zh-CN.md` (drafts in this browser; download to commit).
+> **Edit both languages:** [Edit English / 简体中文](edit.html) — browser editor for `en.md` and `zh-CN.md` (drafts in this browser; download to commit).  
+> **Ask AI:** select any text — a sparkle icon appears; click it to explain that passage, then keep chatting. Floating button (bottom-right) also opens the bot.
 
 ---
 
@@ -220,6 +221,7 @@ That is the whole job of a first night: **see, timestamp, outside world, contain
 | Listing / Delisting PIC | Listing BU chapter end-to-end |
 | Phase 1 PIC / launch crew | **Phase 1 operating scope** + [If you are new](#if-you-are-new-to-exchange-risk) + §3.3 Perps + §4.4 + ACC (broker / institution / MM) |
 | Handbook editor (EN / 简体中文) | [edit.html](edit.html) — edit `en.md` and `zh-CN.md`, save drafts, download both |
+| Ask AI about a term | Select the text → click the sparkle → chat. Or tap the bottom-right AI button. |
 
 If a section number looks like “§6.2”, it means “chapter 6, SOP G02 (trading halt)”. Codes like **PF-K01** are indicator IDs you can paste into a ticket. Codes like **SOP-G01** are procedures. You do not have to memorise them; on this page they are **clickable** and jump to that card.
 
@@ -2783,7 +2785,7 @@ If a word is not here, search this page; many terms are defined in [If you are n
 | Change control | CRO approve; publish via Risk portal |
 | Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics**; Chinese edition via handbook tabs |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 2.3 — both English and Chinese sources editable in-browser (`edit.html`); V-Exchange Phase 1 map |
+| Version | 2.4 — select-to-explain AI chatbot (handbook + Cursor V-Exchange decisions); both languages editable |
 
 ---
 
