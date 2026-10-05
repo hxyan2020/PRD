@@ -247,6 +247,7 @@ const DETECTORS: DetectorDef[] = [
 ];
 
 export function seedDetectors(db: Database.Database) {
+  // Preserve warn/breach on conflict — synced from Monitor 2.0 threshold edits.
   const upsert = db.prepare(
     `INSERT INTO detectors
       (code, name, description, product, domain_code, monitor_id, warn_threshold, breach_threshold, comparator, enabled)
@@ -257,8 +258,6 @@ export function seedDetectors(db: Database.Database) {
        product = excluded.product,
        domain_code = excluded.domain_code,
        monitor_id = excluded.monitor_id,
-       warn_threshold = excluded.warn_threshold,
-       breach_threshold = excluded.breach_threshold,
        comparator = excluded.comparator`
   );
   for (const d of DETECTORS) {

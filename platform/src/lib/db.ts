@@ -728,6 +728,7 @@ const MONITOR_SEED_ROWS: Array<{
 ];
 
 function ensureExtraMonitors(db: Database.Database) {
+  // Do not overwrite warn/breach on conflict — operators edit those live in Monitor 2.0.
   const upsert = db.prepare(
     `INSERT INTO monitor_indicators (monitor_id, name, domain_code, product, threshold_warn, threshold_breach, unit, status, last_value, last_checked_at, ticket_open_count)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)
@@ -735,8 +736,6 @@ function ensureExtraMonitors(db: Database.Database) {
        name = excluded.name,
        domain_code = excluded.domain_code,
        product = excluded.product,
-       threshold_warn = excluded.threshold_warn,
-       threshold_breach = excluded.threshold_breach,
        unit = excluded.unit`
   );
   for (const row of MONITOR_SEED_ROWS) {
