@@ -64,6 +64,39 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  if (action === "update_thresholds") {
+    const indicatorId = Number(body.indicator_id);
+    const warn = Number(body.threshold_warn);
+    const breach = Number(body.threshold_breach);
+    if (!Number.isFinite(indicatorId) || !Number.isFinite(warn) || !Number.isFinite(breach)) {
+      return NextResponse.json({ error: "Invalid thresholds" }, { status: 400 });
+    }
+    const db = getDb();
+    const row = db
+      .prepare(`SELECT id, monitor_id FROM monitor_indicators WHERE id = ?`)
+      .get(indicatorId) as { id: number; monitor_id: string } | undefined;
+    if (!row) {
+      return NextResponse.json({ error: "Indicator not found" }, { status: 404 });
+    }
+    db.prepare(
+      `UPDATE monitor_indicators
+       SET threshold_warn = ?, threshold_breach = ?, last_checked_at = datetime('now')
+       WHERE id = ?`
+    ).run(warn, breach, indicatorId);
+    // Keep linked detector thresholds in sync when present
+    db.prepare(
+      `UPDATE detectors
+       SET warn_threshold = ?, breach_threshold = ?
+       WHERE monitor_id = ?`
+    ).run(warn, breach, row.monitor_id);
+    writeAudit(user, "UPDATE_THRESHOLDS", "monitor_indicator", row.monitor_id, {
+      indicator_id: indicatorId,
+      threshold_warn: warn,
+      threshold_breach: breach,
+    });
+    return NextResponse.json({ ok: true });
+  }
+
   if (action === "sync_monitor2") {
     writeAudit(user, "SYNC_MONITOR2", "integration", "monitor2", {
       pulled_alerts: 5,

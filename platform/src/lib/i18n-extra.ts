@@ -296,6 +296,10 @@ export const EXTRA_UI: Record<string, Pair> = {
     en: "Warn / breach — alarm fires when exceeded",
     "zh-Hant": "警告／違規 — 超過即觸發警報",
   },
+  "m2.thresholdInvalid": {
+    en: "Enter valid warn and breach numbers",
+    "zh-Hant": "請輸入有效的警告與違規數值",
+  },
   "m2.filteredByIndicator": { en: "Tickets filtered by indicator", "zh-Hant": "已依指標篩選工單" },
   "m2.clearFilter": { en: "Clear filter", "zh-Hant": "清除篩選" },
   "m2.noTickets": { en: "No tickets for this filter.", "zh-Hant": "此篩選下沒有工單。" },

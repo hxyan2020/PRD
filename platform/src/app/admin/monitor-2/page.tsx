@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { MonitorActions } from "@/components/MonitorActions";
+import { IndicatorThresholdEditor } from "@/components/IndicatorThresholdEditor";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { SeverityBadge, StatusBadge, DeptBadge, Badge } from "@/components/ui";
@@ -144,7 +145,7 @@ export default async function Monitor2Page({
                   <th><T k="m2.description" /></th>
                   <th><T k="common.domain" /></th>
                   <th><T k="common.product" /></th>
-                  <th><T k="common.thresholds" /></th>
+                  <th><T k="m2.warnBreach" /></th>
                   <th><T k="m2.frequency" /></th>
                   <th><T k="m2.riskScenarios" /></th>
                   <th><T k="m2.combinations" /></th>
@@ -172,15 +173,15 @@ export default async function Monitor2Page({
                       </td>
                       <td className="text-sm whitespace-nowrap"><Phrase>{i.domain_code}</Phrase></td>
                       <td className="whitespace-nowrap">{i.product}</td>
-                      <td className="text-sm min-w-[8rem]">
-                        <div className="font-semibold tabular-nums">
-                          {i.threshold_warn}
-                          {unit} / {i.threshold_breach}
-                          {unit}
-                        </div>
-                        <div className="text-[11px] text-[var(--muted)] mt-0.5 leading-snug">
-                          <T k="m2.thresholdHint" />
-                        </div>
+                      <td>
+                        <IndicatorThresholdEditor
+                          indicatorId={i.id}
+                          monitorId={i.monitor_id}
+                          warn={i.threshold_warn}
+                          breach={i.threshold_breach}
+                          unit={i.unit}
+                          canOperate={canOperate}
+                        />
                       </td>
                       <td className="text-sm whitespace-nowrap">
                         <EnZh en={meta.frequency} zh={meta.frequency_zh} />
