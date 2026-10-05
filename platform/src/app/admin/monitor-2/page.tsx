@@ -2,26 +2,29 @@ import Link from "next/link";
 import { MonitorActions } from "@/components/MonitorActions";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { SeverityBadge, StatusBadge, DeptBadge, Badge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { Phrase } from "@/components/Phrase";
+import { EnZh } from "@/components/EnZh";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { readSearchParams } from "@/lib/static-export";
+import { getIndicatorMeta } from "@/lib/monitor-indicator-meta";
 
 type Tab = "indicators" | "alerts" | "tickets";
 
 export default async function Monitor2Page({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; monitor_id?: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "monitor.read")) redirect("/admin");
 
   const sp = await readSearchParams(searchParams);
   const tab = (["indicators", "alerts", "tickets"].includes(sp.tab ?? "") ? sp.tab : "indicators") as Tab;
+  const filterMonitorId = (sp.monitor_id || "").trim();
   const canOperate = hasPermission(user.role_code, "monitor.operate");
 
   const db = getDb();
@@ -36,6 +39,7 @@ export default async function Monitor2Page({
     unit: string | null;
     status: string;
     last_value: number | null;
+    last_checked_at: string | null;
     ticket_open_count: number;
   }>;
   const alerts = db
@@ -59,9 +63,11 @@ export default async function Monitor2Page({
   }>;
   const tickets = db
     .prepare(
-      `SELECT t.*, u.name AS assignee_name
+      `SELECT t.*, u.name AS assignee_name, i.monitor_id AS monitor_id
        FROM monitor_tickets t
        LEFT JOIN users u ON u.id = t.assignee_user_id
+       LEFT JOIN monitor_alerts a ON a.id = t.alert_id
+       LEFT JOIN monitor_indicators i ON i.id = a.indicator_id
        ORDER BY t.updated_at DESC`
     )
     .all() as Array<{
@@ -73,10 +79,15 @@ export default async function Monitor2Page({
     department_code: string | null;
     assignee_name: string | null;
     lark_message_id: string | null;
+    monitor_id: string | null;
   }>;
   const setting = db
     .prepare(`SELECT value FROM platform_settings WHERE key = 'monitor2.base_url'`)
     .get() as { value: string } | undefined;
+
+  const visibleTickets = filterMonitorId
+    ? tickets.filter((t) => t.monitor_id === filterMonitorId || t.title.includes(filterMonitorId))
+    : tickets;
 
   const tabs: Array<{ key: Tab; labelKey: string }> = [
     { key: "indicators", labelKey: "m2.tabIndicators" },
@@ -91,7 +102,9 @@ export default async function Monitor2Page({
       <div className="space-y-4">
         <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-xs uppercase tracking-wide text-[var(--muted)]"><T k="m2.upstream" /></div>
+            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+              <T k="m2.upstream" />
+            </div>
             <a
               href={setting?.value ?? "#"}
               className="font-semibold text-teal-800 break-all"
@@ -123,41 +136,127 @@ export default async function Monitor2Page({
         </div>
 
         {tab === "indicators" && (
-          <div className="panel table-wrap">
+          <div className="panel table-wrap" data-testid="monitor-indicators-table">
             <table className="data">
               <thead>
                 <tr>
                   <th><T k="common.indicator" /></th>
+                  <th><T k="m2.description" /></th>
                   <th><T k="common.domain" /></th>
                   <th><T k="common.product" /></th>
-                  <th><T k="common.last" /></th>
-                  <th><T k="m2.warnBreach" /></th>
+                  <th><T k="common.thresholds" /></th>
+                  <th><T k="m2.frequency" /></th>
+                  <th><T k="m2.riskScenarios" /></th>
+                  <th><T k="m2.combinations" /></th>
                   <th><T k="common.status" /></th>
+                  <th><T k="m2.lastRefreshed" /></th>
                   <th><T k="common.openTickets" /></th>
                 </tr>
               </thead>
               <tbody>
-                {indicators.map((i) => (
-                  <tr key={i.id}>
-                    <td>
-                      <div className="font-medium"><Phrase>{i.name}</Phrase></div>
-                      <div className="text-xs text-[var(--muted)]">{i.monitor_id}</div>
-                    </td>
-                    <td className="text-sm"><Phrase>{i.domain_code}</Phrase></td>
-                    <td>{i.product}</td>
-                    <td className="tabular-nums">
-                      {i.last_value}
-                      {i.unit ? ` ${i.unit}` : ""}
-                    </td>
-                    <td className="text-sm tabular-nums">
-                      {i.threshold_warn} / {i.threshold_breach}
-                    </td>
-                    <td>
-                      <StatusBadge value={i.status} />
-                    </td>
-                    <td>{i.ticket_open_count}</td>
-                  </tr>
-                ))}
+                {indicators.map((i) => {
+                  const meta = getIndicatorMeta(i.monitor_id, { unit: i.unit, name: i.name });
+                  const unit = i.unit ? ` ${i.unit}` : "";
+                  return (
+                    <tr key={i.id} id={i.monitor_id} data-testid={`monitor-indicator-${i.monitor_id}`}>
+                      <td className="min-w-[11rem]">
+                        <div className="font-medium"><Phrase>{i.name}</Phrase></div>
+                        <div className="text-xs text-[var(--muted)]">{i.monitor_id}</div>
+                        <div className="text-xs text-[var(--muted)] mt-1 tabular-nums">
+                          <T k="m2.currentValue" />: {i.last_value}
+                          {unit}
+                        </div>
+                      </td>
+                      <td className="text-sm max-w-[14rem]">
+                        <Phrase>{meta.description}</Phrase>
+                      </td>
+                      <td className="text-sm whitespace-nowrap"><Phrase>{i.domain_code}</Phrase></td>
+                      <td className="whitespace-nowrap">{i.product}</td>
+                      <td className="text-sm min-w-[8rem]">
+                        <div className="font-semibold tabular-nums">
+                          {i.threshold_warn}
+                          {unit} / {i.threshold_breach}
+                          {unit}
+                        </div>
+                        <div className="text-[11px] text-[var(--muted)] mt-0.5 leading-snug">
+                          <T k="m2.thresholdHint" />
+                        </div>
+                      </td>
+                      <td className="text-sm whitespace-nowrap">
+                        <EnZh en={meta.frequency} zh={meta.frequency_zh} />
+                      </td>
+                      <td className="text-sm min-w-[12rem]">
+                        {meta.risk_scenarios.length ? (
+                          <ul className="list-disc pl-4 space-y-0.5">
+                            {meta.risk_scenarios.map((s) => (
+                              <li key={s}><Phrase>{s}</Phrase></li>
+                            ))}
+                          </ul>
+                        ) : (
+                          "—"
+                        )}
+                      </td>
+                      <td className="text-sm min-w-[13rem]">
+                        {meta.combinations.length ? (
+                          <div className="space-y-2">
+                            {meta.combinations.map((c) => (
+                              <div key={c.code} className="rounded-lg border border-[var(--line)] bg-slate-50/80 px-2 py-1.5">
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                  <Badge
+                                    className={
+                                      c.mode === "sequence"
+                                        ? "bg-teal-50 text-teal-900 border-teal-200"
+                                        : "bg-amber-50 text-amber-900 border-amber-200"
+                                    }
+                                  >
+                                    {c.mode === "sequence" ? (
+                                      <T k="m2.comboSequence" />
+                                    ) : (
+                                      <T k="m2.comboTogether" />
+                                    )}
+                                  </Badge>
+                                  <span className="font-medium text-xs"><Phrase>{c.name}</Phrase></span>
+                                </div>
+                                <div className="mt-1 flex flex-wrap gap-1">
+                                  {c.partners.map((p) => (
+                                    <Link
+                                      key={p}
+                                      href={`#${p}`}
+                                      className="text-[11px] font-semibold text-teal-800 underline"
+                                    >
+                                      {p}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-[var(--muted)]"><T k="m2.noCombo" /></span>
+                        )}
+                      </td>
+                      <td>
+                        <StatusBadge value={i.status} />
+                      </td>
+                      <td className="text-xs whitespace-nowrap tabular-nums">
+                        {i.last_checked_at || "—"}
+                      </td>
+                      <td>
+                        {i.ticket_open_count > 0 ? (
+                          <Link
+                            href={`/admin/monitor-2?tab=tickets&monitor_id=${encodeURIComponent(i.monitor_id)}`}
+                            className="font-semibold text-teal-800 underline tabular-nums"
+                            data-testid={`monitor-tickets-link-${i.monitor_id}`}
+                          >
+                            {i.ticket_open_count}
+                          </Link>
+                        ) : (
+                          <span className="tabular-nums text-[var(--muted)]">0</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -203,51 +302,75 @@ export default async function Monitor2Page({
         )}
 
         {tab === "tickets" && (
-          <div className="panel table-wrap">
-            <table className="data">
-              <thead>
-                <tr>
-                  <th><T k="common.ticket" /></th>
-                  <th><T k="common.severity" /></th>
-                  <th><T k="common.status" /></th>
-                  <th><T k="common.assignee" /></th>
-                  <th><T k="common.department" /></th>
-                  <th><T k="m2.larkMsg" /></th>
-                  {canOperate && <th />}
-                </tr>
-              </thead>
-              <tbody>
-                {tickets.map((t) => (
-                  <tr key={t.id}>
-                    <td>
-                      <div className="font-medium"><Phrase>{t.title}</Phrase></div>
-                      <div className="text-xs text-[var(--muted)]">{t.ticket_id}</div>
-                    </td>
-                    <td>
-                      <SeverityBadge value={t.severity} />
-                    </td>
-                    <td>
-                      <StatusBadge value={t.status} />
-                    </td>
-                    <td>{t.assignee_name ?? <T k="common.unassigned" />}</td>
-                    <td>
-                      <DeptBadge code={t.department_code} />
-                    </td>
-                    <td className="text-xs">{t.lark_message_id ?? "—"}</td>
-                    {canOperate && (
-                      <td className="space-x-1">
-                        {t.status !== "RESOLVED" && (
-                          <MonitorActions mode="ticket" ticketId={t.id} status="IN_PROGRESS" label="Progress" />
-                        )}
-                        {t.status !== "RESOLVED" && (
-                          <MonitorActions mode="ticket" ticketId={t.id} status="RESOLVED" label="Resolve" />
-                        )}
-                      </td>
-                    )}
+          <div className="space-y-3">
+            {filterMonitorId ? (
+              <div className="panel p-3 text-sm flex flex-wrap items-center justify-between gap-2" data-testid="monitor-ticket-filter">
+                <div>
+                  <T k="m2.filteredByIndicator" />{" "}
+                  <span className="font-semibold">{filterMonitorId}</span>
+                  <span className="text-[var(--muted)]"> · {visibleTickets.length}</span>
+                </div>
+                <Link href="/admin/monitor-2?tab=tickets" className="text-teal-800 font-semibold underline">
+                  <T k="m2.clearFilter" />
+                </Link>
+              </div>
+            ) : null}
+            <div className="panel table-wrap">
+              <table className="data">
+                <thead>
+                  <tr>
+                    <th><T k="common.ticket" /></th>
+                    <th><T k="common.indicator" /></th>
+                    <th><T k="common.severity" /></th>
+                    <th><T k="common.status" /></th>
+                    <th><T k="common.assignee" /></th>
+                    <th><T k="common.department" /></th>
+                    <th><T k="m2.larkMsg" /></th>
+                    {canOperate && <th />}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {visibleTickets.length === 0 ? (
+                    <tr>
+                      <td colSpan={canOperate ? 8 : 7} className="text-sm text-[var(--muted)] py-6">
+                        <T k="m2.noTickets" />
+                      </td>
+                    </tr>
+                  ) : (
+                    visibleTickets.map((t) => (
+                      <tr key={t.id}>
+                        <td>
+                          <div className="font-medium"><Phrase>{t.title}</Phrase></div>
+                          <div className="text-xs text-[var(--muted)]">{t.ticket_id}</div>
+                        </td>
+                        <td className="text-xs font-semibold text-teal-900">{t.monitor_id || "—"}</td>
+                        <td>
+                          <SeverityBadge value={t.severity} />
+                        </td>
+                        <td>
+                          <StatusBadge value={t.status} />
+                        </td>
+                        <td>{t.assignee_name ?? <T k="common.unassigned" />}</td>
+                        <td>
+                          <DeptBadge code={t.department_code} />
+                        </td>
+                        <td className="text-xs">{t.lark_message_id ?? "—"}</td>
+                        {canOperate && (
+                          <td className="space-x-1">
+                            {t.status !== "RESOLVED" && (
+                              <MonitorActions mode="ticket" ticketId={t.id} status="IN_PROGRESS" label="Progress" />
+                            )}
+                            {t.status !== "RESOLVED" && (
+                              <MonitorActions mode="ticket" ticketId={t.id} status="RESOLVED" label="Resolve" />
+                            )}
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
