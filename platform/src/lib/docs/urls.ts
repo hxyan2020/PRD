@@ -70,7 +70,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
   { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
   { category: "Docs", title: "Open Issues", path: "/admin/docs/open-issues", description: "18-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product) — ETA, dependencies, detailed ticks; Monitor still adding indicators; CRMP initial design", permission: "admin.access" },
-  { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "Interactive board: X=issues, Y=timeline now→end-2027, status + BU labels", permission: "admin.access" },
+  { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "X = open issues (columns), Y = timeline now→end-2027 (rows); status colours; responsible BU on every column", permission: "admin.access" },
   { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths", permission: "admin.access" },
 
   // APIs

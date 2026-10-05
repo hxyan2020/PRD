@@ -76,8 +76,8 @@ const META: Record<
     code: "CRMP-PT-001",
     enTitle: "Progress Tracker",
     zhTitle: "進度追蹤",
-    enSub: "X = issues, Y = timeline now → end-2027; status and responsible BU on every bar.",
-    zhSub: "X＝議題、Y＝時間軸現在→2027 年底；每條標示狀態與負責 BU。",
+    enSub: "X = open issues (columns), Y = timeline now → end-2027; status colours; responsible BU on every column.",
+    zhSub: "X＝開放議題（欄）、Y＝時間軸現在→2027 年底；狀態色塊；每欄標示負責 BU。",
     href: "/admin/docs/progress",
   },
 };

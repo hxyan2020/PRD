@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-05T21:32:31.000Z | Progress Tracker v1.4: X = open issues (columns), Y = timeline now→end-2027; BU on every column; status + BU filters; mobile cards |
 | 2026-10-05T21:28:17.000Z | Open Issues v1.3: detailed per-BU checklists (18 issues); OI-16 observability, OI-17 kill-switches, OI-18 tenancy; board renders checklist lines; Progress gantt updated |
 | 2026-10-05T21:13:47.000Z | Ecosystem Eval v1.8 + Open Issues/Progress v1.2 fact sync; mobile cards for Users + Open Issues board; Realtime Alert filters 2-col on 375px |
 | 2026-10-05T20:48:10.000Z | Nav truth pack: User Guide 1.8; URL catalog / UAT / PRD / TSD / Roadmap / Open Issues / Progress aligned to Realtime Alert & Tracker + Detectors→Monitor 2.0; mobile cards for Monitor 2.0, Escalation, Data Sources, Risk Log tabs; messenger “Live Alerts” copy fixed |
