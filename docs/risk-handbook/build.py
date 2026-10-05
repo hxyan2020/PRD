@@ -17,6 +17,7 @@ ZH_MD = ROOT / "zh-CN.md"
 VIS_EN = ROOT / "visuals-en.html"
 VIS_ZH = ROOT / "visuals-zh.html"
 OUT = ROOT / "index.html"
+AI_INDEX = ROOT / "ai-index.json"
 
 FENCE = re.compile(r"```mermaid\n(.*?)```", re.S)
 SUBGRAPH = re.compile(r"(subgraph\s+\S+\s*)\[(?!\")([^\]]+)\]")
@@ -746,6 +747,7 @@ JS = r"""
       });
     })();
   </script>
+  <script src="./ai-chat.js" defer></script>
 """
 
 TEMPLATE = """<!DOCTYPE html>
@@ -761,7 +763,7 @@ TEMPLATE = """<!DOCTYPE html>
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.3 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/edit.html">edit EN / 简体中文</a></p>
+        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.4 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/edit.html">edit EN / 简体中文</a></p>
       </div>
       <div class="md-links">
         <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
@@ -851,6 +853,175 @@ def bump_version(path: pathlib.Path, note: str) -> None:
     path.write_text(text, encoding="utf-8")
 
 
+BRIEFING_EN = """
+Cursor conversation (this handbook's design decisions, Oct 2026):
+A crypto-exchange risk head asked for a BU PIC operating handbook covering Spot, Margin, and Perps: scope, job split, SOPs, tools, admin pages, KRIs, RAG scenario diagnostics. English and Simplified Chinese are two tabs, beginner-readable, with clickable SOP/KRI/section links and muted diagrams.
+Venue is Finprime V-Exchange (ADGM / Mauritius). Green boxes on the architecture map are Phase 1: perpetual contracts (including XAUUSD), Perp Account funded only in USD/USDT, matching (open/hold/close), risk & liquidation, clearing & settlement. 2B access is offline: Broker (Vantage sub-brands and external white-label/API), institutional direct (HF/HNW, API only), MM liquidity partners. 2C terminal users enter through a broker — no public self-serve signup. Funding: user deposit → MT account and/or X-fund → USD/USDT transfer into the Perp Account; then trade; then withdraw. MT ↔ X-fund may transfer.
+Invite-only is NOT the Phase 1 front door. ACCESS SOPs: ACC-01 broker/sub-brand 2C; ACC-02 institutional API-only; ACC-03 daily entitlement and USD/USDT rail guard; ACC-04 MM. Public 2C register open = L3.
+Phase 2+ stays in the book labelled, not deleted: Spot, USD Margin isolated+cross, cross-ccy margin, portfolio margin, options, wealth, public signup. Spot/Margin MM SLAs for spot books stay Phase 2+; perps MM is Phase 1.
+Both languages are editable in edit.html (browser drafts + download). Handbook numbers are teaching examples; live values live in the Limit Book. Three lines of defence, RACI, maker-checker, G01–G06, KRIs WARN/BREACH, scenarios S1–S12.
+""".strip()
+
+BRIEFING_ZH = """
+Cursor 会话（本手册设计结论，2026年10月）：
+风险负责人要求一份给 BU PIC 用的操作手册，覆盖现货、杠杆、永续：范围、分工、SOP、工具、后台、KRI、红黄绿情景诊断。中英两个标签页，给没有交易背景的人读，SOP/KRI/章节可点击，示意图用哑光配色。
+场所是 Finprime V-Exchange（ADGM / 毛里求斯）。架构图绿色 = Phase 1：永续合约（含 XAUUSD）、永续账户仅 USD/USDT 入金、撮合（开/持/平）、风控与强平、清结算。2B 线下开户：经纪商（Vantage 子品牌与外部白标/API）、机构直连（对冲基金/HNW，仅 API）、做市商。2C 终端用户必须经经纪商进入，无公众自助注册。资金：用户入金 → MT 账户和/或 X-fund → 仅 USD/USDT 划入永续账户 → 交易 → 出金。MT 与 X-fund 可互转。
+Phase 1 正门不是邀请码。ACCESS：ACC-01 经纪商/子品牌 2C；ACC-02 机构仅 API；ACC-03 每日权益与 USD/USDT 轨道护栏；ACC-04 做市商。公众注册开着 = L3。
+Phase 2+ 仍写在手册里并贴标签，不删除：现货、USD 杠杆逐仓+全仓、跨币种保证金、组合保证金、期权、理财、公众注册。
+中英都可在 edit.html 编辑（浏览器草稿 + 下载）。文中数字是教学示例，真值在《限额手册》。三道防线、RACI、双人控制、G01–G06、KRI 黄/红、情景族 S1–S12。
+""".strip()
+
+
+def _clean_chunk_text(text: str) -> str:
+    text = re.sub(r"```[\s\S]*?```", " ", text)
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
+
+
+def _section_chunks(md: str, lang: str) -> list[dict]:
+    parts = re.split(r"(?m)^(#{1,5} .+)$", md)
+    chunks: list[dict] = []
+    preamble = _clean_chunk_text(parts[0] if parts else "")
+    if preamble:
+        chunks.append(
+            {
+                "id": f"{lang}-preamble",
+                "lang": lang,
+                "kind": "section",
+                "title": "Preamble" if lang == "en" else "文首",
+                "text": preamble[:1600],
+            }
+        )
+    i = 1
+    n = 0
+    while i + 1 < len(parts):
+        title = re.sub(r"^#+\s+", "", parts[i]).strip()
+        body = _clean_chunk_text(parts[i] + "\n" + parts[i + 1])
+        i += 2
+        if len(body) < 40:
+            continue
+        if len(body) <= 1600:
+            chunks.append(
+                {
+                    "id": f"{lang}-{n}",
+                    "lang": lang,
+                    "kind": "section",
+                    "title": title,
+                    "text": body,
+                }
+            )
+            n += 1
+            continue
+        step = 1400
+        for start in range(0, len(body), step):
+            piece = body[start : start + step + 80]
+            chunks.append(
+                {
+                    "id": f"{lang}-{n}",
+                    "lang": lang,
+                    "kind": "section",
+                    "title": title,
+                    "text": piece,
+                }
+            )
+            n += 1
+    return chunks
+
+
+def _two_col_term_chunks(md: str, lang: str) -> list[dict]:
+    """Turn 2-column markdown tables (glossary, primers) into one chunk per term."""
+    skip_heads = {
+        "term",
+        "name",
+        "if you are…",
+        "if you are...",
+        "phase",
+        "domain",
+        "术语",
+        "名称",
+        "若你是…",
+        "阶段",
+    }
+    chunks: list[dict] = []
+    n = 0
+    for term, defn in re.findall(r"^\| ([^|\n]+) \| ([^|\n]+) \|\s*$", md, re.M):
+        term, defn = term.strip(), defn.strip()
+        if not term or not defn:
+            continue
+        if re.match(r"^[-:\s]+$", term + defn):
+            continue
+        if term.lower() in skip_heads:
+            continue
+        if len(defn) < 18 or len(term) > 90:
+            continue
+        title = re.sub(r"[*_`]", "", term).strip()
+        chunks.append(
+            {
+                "id": f"{lang}-term-{n}",
+                "lang": lang,
+                "kind": "glossary",
+                "title": title[:80],
+                "text": f"{title}: {_clean_chunk_text(defn)}",
+            }
+        )
+        n += 1
+    return chunks
+
+
+def write_ai_index() -> None:
+    import json
+
+    en_md = EN_MD.read_text(encoding="utf-8")
+    zh_md = ZH_MD.read_text(encoding="utf-8")
+    chunks = [
+        {
+            "id": "brief-en",
+            "lang": "en",
+            "kind": "briefing",
+            "title": "Cursor conversation & V-Exchange Phase 1 decisions",
+            "text": BRIEFING_EN,
+        },
+        {
+            "id": "brief-zh",
+            "lang": "zh",
+            "kind": "briefing",
+            "title": "Cursor 会话与 V-Exchange Phase 1 结论",
+            "text": BRIEFING_ZH,
+        },
+        {
+            "id": "g-perp-en",
+            "lang": "en",
+            "kind": "glossary",
+            "title": "Perp Account",
+            "text": "Perp Account: the Phase 1 trading account on V-Exchange. Only USD/USDT may be transferred in (from an MT account or X-fund). Matching, risk/liquidation, and clearing see this account. Product entitlement is perps only (including XAUUSD). Spot, USD margin, options, and wealth flags stay off.",
+        },
+        {
+            "id": "g-perp-zh",
+            "lang": "zh",
+            "kind": "glossary",
+            "title": "永续账户",
+            "text": "永续账户（Perp Account）：V-Exchange Phase 1 交易账户。只允许从 MT 账户或 X-fund 转入 USD/USDT。撮合、风控/强平、清结算只看见这个账户。产品权益仅永续（含 XAUUSD）。现货、USD 杠杆、期权、理财开关保持关。",
+        },
+    ]
+    chunks.extend(_section_chunks(en_md, "en"))
+    chunks.extend(_section_chunks(zh_md, "zh"))
+    chunks.extend(_two_col_term_chunks(en_md, "en"))
+    chunks.extend(_two_col_term_chunks(zh_md, "zh"))
+    payload = {
+        "version": "2.4",
+        "briefing_en": BRIEFING_EN,
+        "briefing_zh": BRIEFING_ZH,
+        "chunks": chunks,
+    }
+    AI_INDEX.write_text(
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
+    print(f"wrote {AI_INDEX} ({AI_INDEX.stat().st_size} bytes, {len(chunks)} chunks)")
+
+
 def render_lang(
     md_path: pathlib.Path,
     vis_path: pathlib.Path,
@@ -870,6 +1041,7 @@ def render_lang(
 def main() -> None:
     quote_source_file(EN_MD)
     quote_source_file(ZH_MD)
+    write_ai_index()
     en = render_lang(EN_MD, VIS_EN, "Visual maps", "visual-maps", "en")
     zh = render_lang(ZH_MD, VIS_ZH, "示意图", "visual-maps-zh", "zh")
     OUT.write_text(TEMPLATE.format(css=CSS, js=JS, en=en, zh=zh), encoding="utf-8")
