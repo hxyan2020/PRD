@@ -251,13 +251,14 @@ graph TD
 
 **What it is.** A five-minute look at news, social, official and exchange posts that can move LP prices. Findings feed indicator `M2-MKT-INTEL` and a messenger outbox (Lark group `oc_market_intelligence` in production).
 
-**What you see.** Tabs: **Findings**, **Messenger outbox**, **Sources**, **Scan log**. Cards use the i–vi format (what happened, product, why it can move LP, severity, source, suggested next step). Scheduler on/off. Skill playbook link.
+**What you see.** After the four summary cards: **past hour** and **past 24 hours** headline events, then a **sentiment barometer** for core Vantage CFD instruments (forex, metals/energy, indices, crypto). Tabs: **Findings**, **Messenger outbox**, **Sources**, **Scan log**. Cards use the i–vi format (what happened, product, why it can move LP, severity, source, suggested next step). Scheduler on/off. Skill playbook link.
 
 **What to click.**
 
 1. Turn the feature on in Platform Settings (`market_intel.enabled`) if the desk looks idle.  
-2. Click **Scan now**.  
-3. Read new Findings, then the outbox, then the scan log.
+2. Read the pulse cards (hour / 24h) and the instrument barometer. Click a headline to jump to that finding; click a symbol to filter findings to that product.  
+3. Click **Scan now**.  
+4. Read new Findings, then the outbox, then the scan log.
 
 **GitHub Pages:** there is no `/api`, so **Scan now** runs a **local demo scan** from the same event templates as the live scanner. New cards appear at once and are stored in this browser (`crmp_mi_demo_v1`). Real HTTP scrapes still belong on `localhost:3000`. You will **not** get a 405 error.
 

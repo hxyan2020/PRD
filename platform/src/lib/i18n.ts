@@ -77,8 +77,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "market-intel": {
     title: { en: "Market Intelligence", "zh-Hant": "市場情報" },
     subtitle: {
-      en: "5-minute scan of news, social and official channels that can move LP prices — pushed to messenger and wired as indicator M2-MKT-INTEL.",
-      "zh-Hant": "每五分鐘掃描可能影響 LP 報價之新聞／社群／官方頻道 — 推送至 Messenger，指標為 M2-MKT-INTEL。",
+      en: "Hour / 24h headlines plus a sentiment barometer for core Vantage instruments — then news, social and official channels that can move LP prices (M2-MKT-INTEL).",
+      "zh-Hant": "一小時／24 小時頭條，加上 Vantage 主要商品情緒氣壓計 — 再掃描可能影響 LP 報價的新聞／社群／官方頻道（M2-MKT-INTEL）。",
     },
   },
   detectors: {

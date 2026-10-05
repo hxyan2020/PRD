@@ -316,10 +316,11 @@ graph TD
 **Steps**
 
 1. Open Market Intelligence.
-2. Click Scan now.
-3. On localhost: a success line with a scan_id should appear even if zero new findings (duplicates in the 5-minute bucket are OK). If a source times out, the scan still finishes or shows a plain-English error — not a silent fail.
-4. On the GitHub Pages snapshot: Scan now must explain that the snapshot is read-only and still show seeded findings. It must not sit on HTTP 405/404 from a missing /api.
-5. Open the Findings tab and the Messenger outbox tab. Cards should still render (headline, product, severity).
+2. Confirm the pulse panel: a past-hour headline, a past-24h headline, and sentiment bars for core Vantage instruments (EURUSD, XAUUSD, NAS100, BTCUSD and the rest of the desk book).
+3. Click Scan now.
+4. On localhost: a success line with a scan_id should appear even if zero new findings (duplicates in the 5-minute bucket are OK). If a source times out, the scan still finishes or shows a plain-English error — not a silent fail.
+5. On the GitHub Pages snapshot: Scan now must explain that the snapshot is read-only and still show seeded findings. It must not sit on HTTP 405/404 from a missing /api. Pulse windows may be anchored to the latest finding if the snapshot is older than 24h.
+6. Open the Findings tab and the Messenger outbox tab. Cards should still render (headline, product, severity). Clicking a pulse headline should jump to that finding.
 
 **Pass:** Scan produces a scan_id locally, or a clear snapshot message on Pages; the board never stays on “Failed”.
 **Evidence:** scan_id or snapshot message; screenshot of findings or the empty-scan log.

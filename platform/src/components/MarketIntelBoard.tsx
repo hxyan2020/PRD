@@ -11,6 +11,8 @@ import { isPublicSnapshot, isStaticExport } from "@/lib/static-export";
 import { runClientMarketIntelScan } from "@/lib/market-intel/demo-scan";
 import { resolveSourceHealth } from "@/lib/market-intel/source-brand";
 import { bumpNavBadge } from "@/lib/nav-badges";
+import { MarketIntelPulse } from "@/components/MarketIntelPulse";
+import { findingMentionsSymbol } from "@/lib/market-intel/pulse";
 
 const MI_STORE = "crmp_mi_demo_v1";
 
@@ -120,6 +122,8 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
   const [indicator, setIndicator] = useState(initial.indicator);
   const [settings, setSettings] = useState(initial.settings);
   const [openMsg, setOpenMsg] = useState<number | null>(initial.outbox[0]?.id ?? null);
+  const [focusFinding, setFocusFinding] = useState<string | null>(null);
+  const [productFilter, setProductFilter] = useState<string | null>(null);
 
   useEffect(() => {
     const publicHost = isPublicSnapshot();
@@ -157,6 +161,29 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
     () => findings.filter((f) => ["WARN", "BREACH", "CRITICAL"].includes(f.severity)).length,
     [findings]
   );
+
+  const visibleFindings = useMemo(() => {
+    if (!productFilter) return findings;
+    return findings.filter((f) => findingMentionsSymbol(f.products_json, productFilter));
+  }, [findings, productFilter]);
+
+  function openFinding(findingId: string | null) {
+    setProductFilter(null);
+    setFocusFinding(findingId);
+    goTab("findings");
+  }
+
+  function openSymbol(symbol: string) {
+    setFocusFinding(null);
+    setProductFilter((prev) => (prev === symbol ? null : symbol));
+    goTab("findings");
+  }
+
+  useEffect(() => {
+    if (tab !== "findings" || !focusFinding) return;
+    const el = document.getElementById(`mi-finding-${focusFinding}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [tab, focusFinding]);
 
   function applyDemoScan() {
     const demo = runClientMarketIntelScan({
@@ -328,6 +355,13 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
         />
       </div>
 
+      <MarketIntelPulse
+        findings={findings}
+        onOpenFinding={openFinding}
+        onOpenSymbol={openSymbol}
+        activeSymbol={productFilter}
+      />
+
       {indicator && (
         <div className="panel p-3 flex flex-wrap gap-2 items-center text-sm">
           <span className="text-xs uppercase text-[var(--muted)]">{t("mi.live", locale)}</span>
@@ -366,7 +400,15 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
 
       {tab === "findings" && (
         <div className="space-y-3">
-          {findings.map((f) => {
+          {productFilter ? (
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span>{t("mi.filterSymbol", locale, { symbol: productFilter })}</span>
+              <button type="button" className="btn" onClick={() => setProductFilter(null)}>
+                {t("mi.clearFilter", locale)}
+              </button>
+            </div>
+          ) : null}
+          {visibleFindings.map((f) => {
             const products = JSON.parse(f.products_json || "[]") as Array<{
               product: string;
               asset_class: string;
@@ -374,7 +416,14 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
             }>;
             const findingSources = JSON.parse(f.sources_json || "[]") as Array<{ name: string; url: string }>;
             return (
-              <article key={f.id} className="panel p-4">
+              <article
+                key={f.id}
+                id={`mi-finding-${f.finding_id}`}
+                data-testid={`mi-finding-${f.finding_id}`}
+                className={`panel p-4 ${
+                  focusFinding === f.finding_id ? "ring-2 ring-teal-600/40 border-teal-400" : ""
+                }`}
+              >
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
                     <div className="text-xs text-[var(--muted)]">{f.finding_id}</div>
@@ -422,7 +471,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
               </article>
             );
           })}
-          {!findings.length && (
+          {!visibleFindings.length && (
             <div className="panel p-6 text-sm text-[var(--muted)]">{t("mi.empty", locale)}</div>
           )}
         </div>
