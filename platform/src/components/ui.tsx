@@ -118,7 +118,7 @@ export function StatusBadge({ value }: { value: string }) {
 export function DeptBadge({ code }: { code: string | null | undefined }) {
   const { locale } = useUiLocale();
   return (
-    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{deptLabel(code, locale)}</Badge>
+    <Badge className="bg-slate-100 text-slate-700 border-slate-200 whitespace-nowrap shrink-0">{deptLabel(code, locale)}</Badge>
   );
 }
 
