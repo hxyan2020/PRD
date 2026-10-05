@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.5  
+**Version:** 1.8  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -142,7 +142,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 | System | Mode in prototype | Notes |
 |---|---|---|
-| Monitor 2.0 | Mirrored tables + sync / simulate alarm | Indicators/alerts/tickets |
+| Monitor 2.0 | Mirrored tables + sync / Run all / simulate | Indicator + detector registry on `/admin/monitor-2`; open alerts/tickets on Realtime Alert & Tracker |
 | Demo Messenger | In-app threads + `/api/messenger` | Evidence, escalate, controls |
 | Lark | Channel registry + mock webhook / intel outbox | Severity routing |
 | Market intel feeds | Heuristic 5-min scanner | Card format i–vi |
@@ -178,7 +178,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
 | Monitor | `/admin/monitor-2` | unified registry + `MonitorActions`, `/api/monitor`, `/api/detectors` | `monitor.read` / `monitor.operate` | §16.5 |
 | Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
-| Monitor | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
+| Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -215,7 +215,7 @@ Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, 
 4. Queue training / recalibration runs
 5. Label RCA quality feedback (CORRECT / INCORRECT / PARTIAL)
 
-It is **governance**, not the live RCA workbench (`/admin/ai-analyses`) and not the intervention desk (`/admin/interventions`).
+It is **governance**, not the live RCA workbench (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`) and not the intervention desk (`/admin/interventions`).
 
 ### 8.2 Route & components
 
@@ -553,10 +553,16 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/messenger` | Threads + inline actions |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
-| `GET/POST /api/detectors` | Run all, toggle enabled |
-| `GET/POST /api/monitor` | `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `GET/POST /api/detectors` | Legacy detector CRUD / run (UI on Monitor 2.0) |
+| `GET/POST /api/escalation` | Routes + dimension coefficients + ESC-DEFAULT probe |
+| `GET/POST /api/roles` | Editable RBAC (`update_role`; AI actors forbidden) |
+| `GET/POST /api/org` | Departments + teams; `update_team` mission / on-call |
+| `POST /api/audit/rollback` | Restore before-state snapshot by `audit_id` |
+| `GET/POST /api/ai-improve` | How-to-improve review chat |
+| `POST /api/ai-chat` | Desk selection chatbot |
 | `POST /api/dashboard` | Rebuild daily metrics |
-| `GET/POST /api/rag` | List, retrieve, create, update |
+| `GET/POST /api/rag` | List, retrieve; human write / propose_rag (AI blocked) |
 | `GET/POST /api/users` | Directory + create/disable |
 | `PATCH /api/settings` | Single key save |
 | Interventions | Server action `decideInterventionAction` (approve/reject) |
@@ -604,7 +610,7 @@ SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, 
 
 ### 16.5 Monitor 2.0 hub (unified indicator + detector registry)
 
-Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). APIs: `POST /api/monitor` (`sync_monitor2`, …) and `POST /api/detectors` `{ raiseAlarms: true }` or `{ action: 'toggle' }`. Table `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`.
+Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all indicators** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; threshold edit via `IndicatorThresholdEditor`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). Primary API: `POST /api/monitor` with `run_detectors` / `toggle_pause` / `update_thresholds` / `sync_monitor2`. Legacy `POST /api/detectors` still exists. Tables `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`. Mobile: `sm:hidden` card lists + `sm:block` tables.
 
 ### 16.6 Detectors URL (redirect)
 
@@ -690,6 +696,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
 | 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
+| 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

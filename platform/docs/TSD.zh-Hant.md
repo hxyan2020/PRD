@@ -1,7 +1,7 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.5  
+**版本：** 1.8  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -142,7 +142,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 
 | 系統 | 原型模式 | 說明 |
 |---|---|---|
-| Monitor 2.0 | 鏡像表 + 同步／模擬警報 | 指標／警報／工單 |
+| Monitor 2.0 | 鏡像表 + 同步／全部執行／模擬 | 指標＋偵測器登錄在 `/admin/monitor-2`；未結警報／工單在即時警報與追蹤 |
 | Demo Messenger | 站內執行緒 + `/api/messenger` | 證據、升級、控制 |
 | Lark | 頻道登錄 + 模擬 Webhook／情報 outbox | 依嚴重度路由 |
 | 市場情報來源 | 啟發式 5 分鐘掃描 | 卡片格式 i–vi |
@@ -178,7 +178,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
 | 監控 | `/admin/monitor-2` | 統一登錄＋`MonitorActions`、`/api/monitor`、`/api/detectors` | `monitor.read`／`monitor.operate` | §16.5 |
 | 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
-| 監控 | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
+| 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
@@ -215,7 +215,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 4. 排隊訓練／重新校正工作
 5. 標註 RCA 品質回饋（CORRECT／INCORRECT／PARTIAL）
 
-此頁是**治理**，不是即時 RCA 工作台（`/admin/ai-analyses`），也不是介入櫃檯（`/admin/interventions`）。
+此頁是**治理**，不是即時 RCA 工作台（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`），也不是介入櫃檯（`/admin/interventions`）。
 
 ### 8.2 路由與元件
 
@@ -549,10 +549,16 @@ GitHub Pages（靜態匯出）沒有這些 API。UI 必須降級：示範工作�
 | `GET/POST /api/messenger` | 執行緒＋內嵌動作 |
 | `GET/POST /api/lark` | 頻道登錄／模擬通知 |
 | `GET/POST /api/market-intel` | 掃描／發現／寄件匣 |
-| `GET/POST /api/detectors` | 全部執行、切換啟用 |
-| `GET/POST /api/monitor` | `sync_monitor2`、`ack_alert`、`update_ticket` |
+| `GET/POST /api/monitor` | Monitor 中心主 API：`run_detectors`、`toggle_pause`、`update_thresholds`、`sync_monitor2`、`ack_alert`、`update_ticket` |
+| `GET/POST /api/detectors` | 舊版偵測器 CRUD／執行（UI 在 Monitor 2.0） |
+| `GET/POST /api/escalation` | 路徑＋維度係數＋ESC-DEFAULT 探測 |
+| `GET/POST /api/roles` | 可編輯 RBAC（`update_role`；禁止 AI 寫入） |
+| `GET/POST /api/org` | 部門＋團隊；`update_team` 任務／值班 |
+| `POST /api/audit/rollback` | 依 `audit_id` 還原變更前快照 |
+| `GET/POST /api/ai-improve` | 如何改進審查聊天 |
+| `POST /api/ai-chat` | 劃選 AI 聊天 |
 | `POST /api/dashboard` | 重建每日指標 |
-| `GET/POST /api/rag` | 清單、檢索、新增、更新 |
+| `GET/POST /api/rag` | 清單、檢索；人類寫入／propose_rag（AI 封鎖） |
 | `GET/POST /api/users` | 目錄＋新增／停用 |
 | `PATCH /api/settings` | 單一鍵儲存 |
 | 干預 | 伺服器動作 `decideInterventionAction`（核准／駁回） |
@@ -600,7 +606,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.5 Monitor 2.0 中心（統一指標＋偵測器登錄）
 
-單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**全部執行**／**同步**／**暫停**；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。API：`POST /api/monitor`、`POST /api/detectors`。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。
+單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**執行全部指標**／**同步**／**暫停**；門檻編輯經 `IndicatorThresholdEditor`；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。主 API：`POST /api/monitor`（`run_detectors`／`toggle_pause`／`update_thresholds`／`sync_monitor2`）。舊 `POST /api/detectors` 仍在。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。手機：`sm:hidden` 卡片＋`sm:block` 表格。
 
 ### 16.6 偵測器網址（轉址）
 
@@ -684,9 +690,9 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.2 | 2026-10-01 | §9 挑戰者、§11 Messenger、§12 市場情報、文件／i18n／行動、重編號 |
 | 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、demo platform owner 負責人、Pages 登入 |
 | 1.5 | 2026-10-04 | TSD 流程圖與序列圖；mermaid 改 SVG 渲染 |
+| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
+| 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
-
-| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
-| 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
