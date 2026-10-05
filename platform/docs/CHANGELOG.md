@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-05T21:43:04.000Z | Finish stamp: docs parity pack complete — Ecosystem v1.8, Open Issues v1.3 (18 issues), Progress Tracker v1.4 (X=issues Y=timeline), mobile card twins across desk boards |
 | 2026-10-05T21:36:32.000Z | Mobile UI: Lark / Market Intel sources+scans / AI Admin / URL Catalog card twins; confirm-sheet primary full-width on phone |
 | 2026-10-05T21:32:31.000Z | Progress Tracker v1.4: X = open issues (columns), Y = timeline now→end-2027; BU on every column; status + BU filters; mobile cards |
 | 2026-10-05T21:28:17.000Z | Open Issues v1.3: detailed per-BU checklists (18 issues); OI-16 observability, OI-17 kill-switches, OI-18 tenancy; board renders checklist lines; Progress gantt updated |
