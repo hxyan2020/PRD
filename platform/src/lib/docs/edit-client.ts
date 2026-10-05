@@ -2,7 +2,16 @@ import { isPublicSnapshot } from "@/lib/static-export";
 
 export const DOC_EDIT_LS = "crmp_admin_doc_edits_v1";
 
-export type AdminDocKey = "TSD" | "PRD" | "USER_GUIDE" | "ECOSYSTEM" | "UAT" | "ROADMAP" | "URLS";
+export type AdminDocKey =
+  | "TSD"
+  | "PRD"
+  | "USER_GUIDE"
+  | "ECOSYSTEM"
+  | "UAT"
+  | "ROADMAP"
+  | "URLS"
+  | "OPEN_ISSUES"
+  | "PROGRESS";
 
 function slot(doc: string, locale: string) {
   return `${doc}::${locale}`;

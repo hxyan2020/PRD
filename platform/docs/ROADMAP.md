@@ -4,7 +4,7 @@
 **Audience:** Risk Owner, Platform Owner, engineering, GRC  
 **How to read:** the admin page `/admin/docs/roadmap` is the operator view (expandable cards). This file is the printable twin. Each `RM-xx` states **today’s prototype**, **what to build**, **done-when**, **where in the code**, and **skip risk**.
 
-This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit/spine**. Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, and logged-only “executions”.
+This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit + home spine**. Shipped desk polish (grouped AI pipeline, MonitorCode, RAG leaves, ESC-DEFAULT, BU and Teams, first/second-line AI Admin) is tracked as BAU docs; **programme open issues** with ETAs/BU live in [Open Issues](/admin/docs/open-issues) / [Progress Tracker](/admin/docs/progress). Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, and logged-only “executions”.
 
 **Effort key:** S = one vertical slice · M = multi-day module · L = cross-team module · XL = programme-sized
 
@@ -438,7 +438,7 @@ Without cost/latency, a bad prompt is an unbounded vendor bill and a frozen desk
 
 ### Today
 
-[Spine Log](/admin/spine) has timestamps. No token cost, no p95 RCA latency, no $ cap alarm.
+Admin Home spine (`/admin`, `/admin/spine` redirects) has stage ticket counts and timestamps. No token cost, no p95 RCA latency, no $ cap alarm.
 
 ### Build
 

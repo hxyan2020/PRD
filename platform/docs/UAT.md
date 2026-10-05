@@ -13,7 +13,7 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home, Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Detectors, Live Alerts, Risk Domains, AI Analyses, AI Admin, Skills, Knowledge Tree, RAG, Spine, Human Intervention, Lark, Escalation Routes, Departments / Teams / Roles / Users, Data Sources, AI Access, Audit, Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home, Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Detectors, Live Alerts, Risk Domains, AI Analyses, AI Admin, Skills, Knowledge Tree, RAG, Human Intervention, Lark, Escalation Routes, BU and Teams / Roles / Users, Data Sources, AI Access, Audit, Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -44,7 +44,7 @@ graph TD
 | 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — the person who proposes a change cannot approve it | AI Admin, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | Market Intelligence — Scan now must finish (including on GitHub Pages) | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI must not be allowed near human-only data | AI Access Security |
-| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and Spine tell the same story as messenger | Audit Log, Spine Log |
+| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and Spine tell the same story as messenger | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | English and Traditional Chinese documentation both render | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
 | 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, AI Analyses |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | Every serious analysis in this UAT window has a second AI | AI Analyses |
@@ -54,7 +54,7 @@ graph TD
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | Knowledge tree shows how domains, skills and documents connect | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | Traditional Chinese covers chrome, messenger, skills and docs | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
 | 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | URL catalog lists the public pages (including new ones) | URL Catalog, AI Skills, Knowledge Tree, Demo Messenger |
-| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | Tell the messenger loop out loud, in plain English | Demo Messenger, Spine Log, Audit Log, AI Analyses |
+| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | Tell the messenger loop out loud, in plain English | Demo Messenger, Admin Home spine, Audit Log, AI Analyses |
 | 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | Admin Home — cards, shortcuts and platform owner | Admin Home, Daily Performance, Users, URL Catalog |
 | 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | Daily Performance — CFD and Crypto desk numbers | Daily Performance |
 | 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | Risk Log Analytics — what actually moved P&L / clients | Risk Log Analytics |
@@ -66,7 +66,7 @@ graph TD
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | Human Intervention queue (the admin side of messenger controls) | Human Intervention |
 | 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark Integration — channels vs the in-app messenger demo | Lark Integration, Demo Messenger |
 | 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | Escalation routes registry | Escalation Routes |
-| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | Organisation — departments, teams, users and roles | Departments, Teams, Users, Roles & Permissions |
+| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | Organisation — departments, teams, users and roles | BU and Teams, Users, Roles & Permissions |
 | 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | Data sources registry (internal and external) | Data Sources |
 | 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | Platform settings are grouped (not a flat dump) | Platform Settings |
 | 41 | UAT-41 | 446m | 10m | Medium | AI + Risk | UAT-06; RAG seeded | RAG Knowledge Base — browse the corpus the AI cites | RAG Knowledge Base |
@@ -348,7 +348,7 @@ graph TD
 ### UAT-16 — Audit Log and Spine tell the same story as messenger
 
 - **Severity:** High · **BU:** System · **Depends:** UAT-07 through UAT-12 performed · **Window:** T+181m / 15m
-- **Covers:** Audit Log, Spine Log
+- **Covers:** Audit Log, Admin Home spine
 - **Why:** If chat actions vanish from the audit trail, we cannot reconstruct a decision after the fact.
 - **Goal:** Match at least one escalate and one control-confirm from messenger to Spine and/or Audit.
 
@@ -518,7 +518,7 @@ graph TD
 ### UAT-26 — Tell the messenger loop out loud, in plain English
 
 - **Severity:** Medium · **BU:** Risk + System · **Depends:** Messenger + alerts + spine · **Window:** T+289m / 12m
-- **Covers:** Demo Messenger, Spine Log, Audit Log, AI Analyses
+- **Covers:** Demo Messenger, Admin Home spine, Audit Log, AI Analyses
 - **Why:** If a Risk Owner cannot narrate alarm → inbox → AI pack → control → audit, the demo is only a screenshot.
 - **Goal:** Using only the seeded demo, point at each bubble and then find the same case on Spine and Audit.
 
@@ -732,7 +732,7 @@ graph TD
 ### UAT-38 — Organisation — departments, teams, users and roles
 
 - **Severity:** Medium · **BU:** System + Risk Owner · **Depends:** UAT-01 · **Window:** T+413m / 15m
-- **Covers:** Departments, Teams, Users, Roles & Permissions
+- **Covers:** BU and Teams, Users, Roles & Permissions
 - **Why:** RACI, on-call and RBAC all come from these four pages. Empty org data makes Home counts a lie.
 - **Goal:** Walk Departments → Teams → Users → Roles and confirm seeded people, including the Risk Owner and a Viewer.
 

@@ -5,7 +5,15 @@ const DOCS_DIR = path.join(process.cwd(), "docs");
 
 export type DocLocale = "en" | "zh-Hant";
 
-export type DocId = "TSD" | "PRD" | "USER_GUIDE" | "UAT" | "ECOSYSTEM" | "ROADMAP";
+export type DocId =
+  | "TSD"
+  | "PRD"
+  | "USER_GUIDE"
+  | "UAT"
+  | "ECOSYSTEM"
+  | "ROADMAP"
+  | "OPEN_ISSUES"
+  | "PROGRESS";
 
 export { markdownToHtml } from "./docs-markdown";
 
@@ -16,6 +24,8 @@ const DOC_FILES: Record<DocId, { en: string; "zh-Hant": string }> = {
   UAT: { en: "UAT.md", "zh-Hant": "UAT.zh-Hant.md" },
   ECOSYSTEM: { en: "ECOSYSTEM.md", "zh-Hant": "ECOSYSTEM.zh-Hant.md" },
   ROADMAP: { en: "ROADMAP.md", "zh-Hant": "ROADMAP.zh-Hant.md" },
+  OPEN_ISSUES: { en: "OPEN_ISSUES.md", "zh-Hant": "OPEN_ISSUES.zh-Hant.md" },
+  PROGRESS: { en: "PROGRESS.md", "zh-Hant": "PROGRESS.zh-Hant.md" },
 };
 
 export function resolveDocLocale(raw?: string | null): DocLocale {

@@ -27,6 +27,8 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/ecosystem": { en: "Ecosystem Eval", "zh-Hant": "生態導入評估" },
   "/admin/docs/roadmap": { en: "Improvement Roadmap", "zh-Hant": "改進路線圖" },
   "/admin/docs/urls": { en: "URL Catalog", "zh-Hant": "網址目錄" },
+  "/admin/docs/open-issues": { en: "Open Issues", "zh-Hant": "開放議題" },
+  "/admin/docs/progress": { en: "Progress Tracker", "zh-Hant": "進度追蹤" },
   "/admin/messenger": { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
   "/admin/security/ai-access": { en: "AI Access Security", "zh-Hant": "AI 存取安全" },
   "/admin/departments": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
@@ -105,29 +107,29 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "ai-admin": {
     title: { en: "AI Admin", "zh-Hant": "AI 管理" },
     subtitle: {
-      en: "Configure AI parameters, training, accuracy history, skills and RAG — with maker/checker dual control before changes apply.",
-      "zh-Hant": "設定 AI 參數、訓練、準確率、Skills 與 RAG — 變更前需 Maker／Checker 雙重控制。",
+      en: "First-line and second-line AI cards, parameters, training, accuracy, skills and RAG — maker/checker dual control; AI proposes RAG via propose_rag only.",
+      "zh-Hant": "一線／二線 AI 卡片、參數、訓練、準確率、Skills 與 RAG — Maker／Checker 雙重控制；AI 僅能經 propose_rag 提案 RAG。",
     },
   },
   interventions: {
     title: { en: "Human Intervention", "zh-Hant": "人工干預" },
     subtitle: {
-      en: "Approve or reject AI/skill actions awaiting human gates. Decisions are logged to the spine and audit trail.",
-      "zh-Hant": "核准或駁回待人工關卡之 AI／Skill 動作。決策寫入脊柱與稽核軌跡。",
+      en: "Approve or reject AI/skill actions awaiting human gates. Samples show actioner email. Decisions are logged to the spine and audit trail.",
+      "zh-Hant": "核准或駁回待人工關卡之 AI／Skill 動作。樣本顯示操作者信箱。決策寫入脊柱與稽核軌跡。",
     },
   },
   spine: {
-    title: { en: "Spine Log", "zh-Hant": "脊柱日誌" },
+    title: { en: "Spine (on Admin Home)", "zh-Hant": "脊柱（管理首頁）" },
     subtitle: {
-      en: "End-to-end pipeline trail: Detectors → Alarm → AI RCA → Skill execute → Human intervention → Resolved → Dashboard.",
-      "zh-Hant": "端到端管線軌跡：偵測 → 警報 → AI RCA → Skill 執行 → 人工干預 → 結案 → 儀表板。",
+      en: "Dedicated Spine Log tab removed — stage ticket counts live on Admin Home. Detect → Alarm → AI RCA → Skill → Human → Resolved → Dashboard.",
+      "zh-Hant": "專屬脊柱日誌分頁已移除 — 階段工單計數在管理首頁。偵測 → 警報 → AI RCA → Skill → 人工 → 結案 → 儀表板。",
     },
   },
   rag: {
     title: { en: "RAG Knowledge Base", "zh-Hant": "RAG 知識庫" },
     subtitle: {
-      en: "Internal static business corpus for Vantage Markets — policies, products, entities, platforms.",
-      "zh-Hant": "Vantage Markets 內部靜態業務語料 — 政策、產品、實體、平台。",
+      en: "Internal static business corpus — AI write blocked (human / propose_rag). Policies, products, entities, platforms.",
+      "zh-Hant": "內部靜態業務語料 — AI 寫入封鎖（人類／propose_rag）。政策、產品、實體、平台。",
     },
   },
   skills: {
@@ -175,8 +177,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   escalation: {
     title: { en: "Escalation Routes", "zh-Hant": "升級路徑" },
     subtitle: {
-      en: "Severity → team → SLA mapping used by Demo Messenger and Lark notify.",
-      "zh-Hant": "嚴重度 → 團隊 → SLA 對映，供示範 Messenger 與 Lark 通知使用。",
+      en: "Severity → team → SLA; catch-all ESC-DEFAULT; each skill binds one path. Used by Demo Messenger and Lark notify.",
+      "zh-Hant": "嚴重度 → 團隊 → SLA；兜底 ESC-DEFAULT；每個技能綁定一條路徑。供示範 Messenger 與 Lark 通知使用。",
     },
   },
   departments: {

@@ -1,5 +1,7 @@
 # Vantage 生態導入評估
 
+計畫缺口與暫定 ETA 見 [開放議題](/admin/docs/open-issues) 與 [進度追蹤](/admin/docs/progress)（Monitor 仍在加指標；CRMP 初始設計；技術／資源規劃仍開放）。
+
 **文件編號：** CRMP-ECO-001 · **狀態：** 高階規劃包 · **範圍：** CFD + Crypto CRMP 原型 → 正式環境
 
 ## 1. 總覽

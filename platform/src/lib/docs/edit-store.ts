@@ -1,8 +1,27 @@
 import type Database from "better-sqlite3";
 
-export type AdminDocKey = "TSD" | "PRD" | "USER_GUIDE" | "ECOSYSTEM" | "UAT" | "ROADMAP" | "URLS";
+export type AdminDocKey =
+  | "TSD"
+  | "PRD"
+  | "USER_GUIDE"
+  | "ECOSYSTEM"
+  | "UAT"
+  | "ROADMAP"
+  | "URLS"
+  | "OPEN_ISSUES"
+  | "PROGRESS";
 
-const KEYS = new Set<AdminDocKey>(["TSD", "PRD", "USER_GUIDE", "ECOSYSTEM", "UAT", "ROADMAP", "URLS"]);
+const KEYS = new Set<AdminDocKey>([
+  "TSD",
+  "PRD",
+  "USER_GUIDE",
+  "ECOSYSTEM",
+  "UAT",
+  "ROADMAP",
+  "URLS",
+  "OPEN_ISSUES",
+  "PROGRESS",
+]);
 
 export function isAdminDocKey(raw: string): raw is AdminDocKey {
   return KEYS.has(raw as AdminDocKey);

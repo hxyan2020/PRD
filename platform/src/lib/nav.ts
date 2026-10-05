@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Library,
   LineChart,
+  ListChecks,
   ListTree,
   Lock,
   MessageSquare,
@@ -87,4 +88,6 @@ export const NAV_ITEMS = [
   { href: "/admin/docs/tsd", label: "TSD", icon: FileText, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/roadmap", label: "Improvement Roadmap", icon: Compass, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/ecosystem", label: "Ecosystem Eval", icon: Globe2, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/open-issues", label: "Open Issues", icon: ListChecks, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/progress", label: "Progress Tracker", icon: LineChart, permission: "admin.access", group: "docs" },
 ] as const;

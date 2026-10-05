@@ -399,3 +399,6 @@ graph LR
 | 1.5 | 2026-10-04 | 各旅程與職能分離流程圖 |
 
 **負責人：** demo platform owner
+
+
+| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、AI 一線／二線、propose_rag、ESC-DEFAULT、開放議題／進度 |

@@ -64,6 +64,22 @@ const META: Record<
     zhSub: "每一項含現行原型、檔案／API、要做什麼、工期、人力、完成標準與不做的風險。",
     href: "/admin/docs/roadmap",
   },
+  OPEN_ISSUES: {
+    code: "CRMP-OI-001",
+    enTitle: "Open Issues",
+    zhTitle: "開放議題",
+    enSub: "Tentative checklist: ETA, responsible BU, dependencies — Monitor still adding indicators; CRMP in initial design.",
+    zhSub: "暫定清單：ETA、負責 BU、依賴 — Monitor 仍在加指標；CRMP 處初始設計。",
+    href: "/admin/docs/open-issues",
+  },
+  PROGRESS: {
+    code: "CRMP-PT-001",
+    enTitle: "Progress Tracker",
+    zhTitle: "進度追蹤",
+    enSub: "X = issues, Y = timeline now → end-2027; status and responsible BU on every bar.",
+    zhSub: "X＝議題、Y＝時間軸現在→2027 年底；每條標示狀態與負責 BU。",
+    href: "/admin/docs/progress",
+  },
 };
 
 export function DocArticleView({

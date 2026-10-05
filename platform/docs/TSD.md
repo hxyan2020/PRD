@@ -620,7 +620,7 @@ Join `monitor_alerts` × indicators. Sort CRITICAL/BREACH/WARN then time. `ack_a
 
 ### 16.9 AI Analyses list/detail
 
-List: `AiAnalysesBoard` simulate actions `simulate_copy_breach`, EQ drawdown, CRITICAL, `backfill_challenges`. Detail: `/admin/ai-analyses/[id]` evidence + `AiChallengePanel`. See §9.
+List merged into Realtime Alert (`AlertTrackerBoard`) with **grouped AI pipeline controls** + rank note. `MonitorCode` tooltips/links on M2-* codes. Detail: `/admin/ai-analyses/[id]` + `AiChallengePanel`. AI Admin Overview shows **first-line / second-line** cards (`ai.line1.*` / `ai.line2.*`).
 
 ### 16.10 Skills board + SKILL.md page
 
@@ -628,27 +628,27 @@ List: `AiAnalysesBoard` simulate actions `simulate_copy_breach`, EQ drawdown, CR
 
 ### 16.11 Knowledge Tree
 
-`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook (do not use invalid SVG `<Link>`). RAG docs scored from `tags_json` + title. Outline mode is the same graph as a nested list.
+`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook. **RAG documents render as leaves** with deep links to `/admin/rag?doc=…`. `MonitorCode` chips link to `/admin/monitor-2#M2-…`. Outline mode is the same graph as a nested list.
 
 ### 16.12 RAG corpus
 
-`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`, create/update/retire when `rag.manage`. FTS via `reindexRagFts`. Governed creates should prefer AI Admin CR path (§8.7).
+`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`. **AI write blocklist** — AI service actors cannot POST/PATCH; humans with `rag.manage` or AI Admin `propose_rag` maker-checker. FTS via `reindexRagFts`.
 
-### 16.13 Spine log
+### 16.13 Spine (on Admin Home)
 
-Stages: DETECT, ALARM, AI_RCA, SKILL_EXECUTE, HUMAN_INTERVENTION, RESOLVED, DASHBOARD. 24h `StatCard` counts + last 150 events.
+Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Home via `HomeSpineViz` with **stage ticket counts** (`spineStageCounts`). `/admin/spine` redirects to `/admin`.
 
 ### 16.14 Interventions
 
-`listInterventions()`. Pending: note + Approve/Reject via `decideInterventionAction`. Writes spine + audit. Distinct from AI Admin CRs.
+`listInterventions()`. Pending: note + Approve/Reject via `decideInterventionAction`. Samples show **actioner email**. Writes spine + audit. Distinct from AI Admin CRs.
 
 ### 16.15 Lark + escalation
 
-`lark_channels` + `lark.*` settings. `escalation_routes` join teams + channel. Messenger `escalate` walks primary → secondary → owner → exec using this map.
+`lark_channels` + `lark.*` settings. `escalation_routes` join teams + channel. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one path (`skill-escalation-map.ts`); unbound → ESC-DEFAULT. Coefficients / default SLA settings supported.
 
 ### 16.16 Organisation
 
-Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), roles (`permissions_json` chips), users (`UsersManager` create/toggle when `users.manage`). Seed includes `PLATFORM_OWNER`.
+**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). Roles (`permissions_json` chips), users (`UsersManager`). Seed includes `PLATFORM_OWNER`.
 
 ### 16.17 Data sources
 
@@ -668,7 +668,7 @@ Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), r
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–h4, tables, lists, mermaid `graph` / `flowchart` / `sequenceDiagram` → SVG (`.doc-diagram`, `lib/docs-mermaid.ts`). UAT: `UatChecklistBoard` + `UAT_CASES` (45). URL catalog: `lib/docs/urls.ts` `PLATFORM_URLS`, `PUBLIC_ADMIN_URL`, `PUBLIC_MESSENGER_URL`.
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts`.
 
 ---
 
@@ -681,6 +681,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–
 | 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
 | 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, demo platform owner, Pages login |
 | 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
+| 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 
 **Owner:** demo platform owner  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

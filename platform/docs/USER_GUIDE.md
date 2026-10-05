@@ -16,13 +16,14 @@ Vantage **CRMP Admin** is the control room for CFD and crypto risk. Monitor 2.0 
 2. On high severity (BREACH or CRITICAL), runs a **second, independent AI** that may agree, partly agree, or disagree.  
 3. Puts the pack into a **Lark-style messenger** so you can show evidence, chat, escalate, dismiss, close, or send a control.  
 4. Asks a human checker before irreversible controls go live.  
-5. Writes the whole story into the **Spine Log** and **Audit Log**.
+5. Writes the whole story into the **Audit Log** and the **home spine** (stage ticket counts — the dedicated Spine Log tab is gone).
 
 You do not need to be an engineer to use it. Click the left menu, read the cards, and follow the buttons on the page.
 
 **Permanent public demo:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **Messenger demo:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)  
-**Full URL list:** [URL Catalog](/admin/docs/urls)
+**Full URL list:** [URL Catalog](/admin/docs/urls)  
+**Open programme issues / progress:** [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress)
 
 On GitHub Pages there is **no live `/api`**. You can still walk every screen. Buttons that would save to the server keep a copy in this browser instead. Live writes (real scans, dual-control applies, user create) belong on `localhost:3000`.
 
@@ -32,7 +33,7 @@ graph TD
   Desk --> AI[AI RCA plus second AI]
   AI --> Msg[Demo Messenger]
   Msg --> Human[Human intervention]
-  Human --> Audit[Audit plus spine]
+  Human --> Audit[Audit plus home spine]
 ```
 
 ---
@@ -92,19 +93,19 @@ The left pane is grouped so you are not staring at one long list:
 
 | Group | What lives there |
 |---|---|
-| **Overview** | Admin Home |
-| **Monitor & risk** | Daily Performance → Monitor 2.0 → Detectors → Live Alerts → Market Intelligence → Risk Log → Risk Domains |
+| **Overview** | Admin Home (includes spine stage ticket counts) |
+| **Monitor & risk** | Daily Performance → Monitor 2.0 → Live Alerts → Market Intelligence → Risk Log → Risk Domains |
 | **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert) |
-| **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark → Spine Log |
-| **Organisation** | Departments → Teams → Users → Roles |
+| **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark |
+| **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
-| **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem |
+| **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem → Open Issues → Progress Tracker |
 
 The Vantage logo sits at the top. Your role badge (and **Public prototype** on GitHub Pages) sit under your name. Owner line: demo platform owner.
 
 ### Unread numbers
 
-Some rows show a **teal badge** (Live Alerts, AI Analyses, Demo Messenger, Market Intelligence, Human Intervention, Spine, Audit, Monitor 2.0, Risk Log, Detectors).
+Some rows show a **teal badge** (Live Alerts, Demo Messenger, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
 
 - The number is **new things since you last opened that tab** in this browser.  
 - Formula: `unread = max(0, (known total + extra bumps) − last seen)`.  
@@ -154,9 +155,9 @@ graph TD
 
 ### System Admin
 
-1. Users, roles, teams, departments, grouped settings.  
-2. Review [AI Access Security](/admin/security/ai-access) — pages, functions and fields AI must never touch.  
-3. Watch [Audit Log](/admin/audit) and [Spine Log](/admin/spine).
+1. Users, roles, **BU and Teams**, grouped settings.  
+2. Review [AI Access Security](/admin/security/ai-access) — pages, functions and fields AI must never touch (includes RAG write blocklist / `propose_rag`).  
+3. Watch [Audit Log](/admin/audit) and the **home spine** stage ticket counts on Admin Home (`/admin/spine` redirects here).
 
 ---
 
@@ -172,9 +173,9 @@ This is the path you will use most. Later sections explain every other page.
 6. **Show evidence** posts the vault into the thread. Chat if you challenge the story.  
 7. **Escalate**, **Dismiss** (false alarm), or **Close (accept AI)**.  
 8. For a control: pick a recommended action → double-confirm → checker if required.  
-9. Confirm the same events in Spine Log and Audit Log.
+9. Confirm the same events in **Audit Log** and on the **home spine** (stage ticket counts).
 
-**Demo shortcuts on Realtime Alert & Tracker** (localhost AI pipeline panel): Analyze all open alarms, Simulate COPY breach (skill path), Simulate EQ drawdown (RAG path), Simulate CRITICAL (2nd AI challenge), Backfill 2nd AI challenges.
+**Demo shortcuts on Realtime Alert & Tracker** (localhost **grouped AI pipeline** panel + rank note): Analyze all open alarms, Simulate COPY breach (skill path), Simulate EQ drawdown (RAG path), Simulate CRITICAL (2nd AI challenge), Backfill 2nd AI challenges. `M2-*` codes are clickable **MonitorCode** chips with tooltips → Monitor 2.0.
 
 **Decision rule:** `AGREE` may follow the playbook under policy. `PARTIAL` / `DISAGREE` means **needs human** — no irreversible control until a person has read both AIs.
 
@@ -207,11 +208,10 @@ graph TD
 
 - Owner card for **demo platform owner**. The whole card opens Sign in as platform owner.  
 - A Lark-style messenger promo. The whole card opens the messenger demo (permanent GitHub Pages URL is on the card).  
-- Clickable count cards: Users, Teams, Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  
-- **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Live Alerts, AI Analyses, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
-- Department division. Each department card opens that team’s working page (Risk Control → Live Alerts, Operations → Human Intervention, AI → AI Analyses, System → Settings). **View all** opens the Departments directory.  
+- Clickable count cards: Users, Teams (opens **BU and Teams**), Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  
+- **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Live Alerts, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
 - Recent alerts. Each row opens that alarm on Live Alerts. **View all** lists every alarm.  
-- Integration spine steps. Each step opens the matching page (Monitor 2.0, Live Alerts, Escalation, AI Analyses, Daily Performance). **Spine log** opens the tape.  
+- **Integration spine** with **stage ticket counts** (Detect → Alarm → AI RCA → Skill → Human → Resolved → Dashboard). Each step opens the matching page. There is **no separate Spine Log tab** — `/admin/spine` redirects here.  
 - Header shortcuts: Messenger, User Guide, Daily Performance.
 
 **What to click.** Use the cards as a map. If Open Alerts is not zero, go there first.
@@ -332,7 +332,7 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 **What it is.** The RCA workbench is merged into **Realtime Alert & Tracker**. `/admin/ai-analyses` redirects there. Per-analysis evidence packs stay at `/admin/ai-analyses/[id]`.
 
-**What you see on Realtime Alert.** An **AI pipeline controls** panel with five working buttons, then open tracker cards. Expand a card for mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, **2nd AI · verdict**, the **how to improve** panel (chatbot: Pull data / Add fact / Challenge / Regenerate / Mark satisfactory), and the action log.
+**What you see on Realtime Alert.** A **grouped AI pipeline controls** panel (with rank/ordering note) and five working buttons, then open tracker cards. `M2-*` monitor ids are **MonitorCode** chips — hover for tooltip, click to open Monitor 2.0 anchored on that indicator. Expand a card for mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, **2nd AI · verdict**, the **how to improve** panel (chatbot: Pull data / Add fact / Challenge / Regenerate / Mark satisfactory), and the action log.
 
 **What to click (demo, localhost).**
 
@@ -348,15 +348,15 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 **What it is.** Governance for AI, **not** the live RCA list. Maker proposes; a **different** person checks.
 
-**Tabs.**
+**Tabs / cards.**
 
 | Tab | What you do |
 |---|---|
-| Overview | KPIs: analyses, skill-match %, confidence, needs-human, pending interventions, human-agree %, feedback-correct %, pending change requests |
-| Parameters | Draft `ai.*` settings (RCA on/off, auto-on-alarm, min confidence, RAG top-K, second-opinion severity, maker/checker). **Propose** does not apply yet |
+| Overview | KPIs plus **first-line** and **second-line** AI Admin cards (models, confidence gate, RAG top-K, challenger) |
+| Parameters | Draft `ai.*` / `ai.line1.*` / `ai.line2.*` settings. **Propose** does not apply yet |
 | Maker / Checker | Pending change requests first. Approve or reject with a note. You cannot approve your own |
 | Skills | Propose create/update/disable of a playbook. Applied only after approve |
-| RAG | Propose create/update/retire of a corpus doc |
+| RAG | Propose create/update/retire via **`propose_rag`** (AI cannot write the corpus directly) |
 | Training | Queue a recalibration run (becomes a TRAINING change request) |
 | History | Accuracy snapshots (about 14 days) |
 
@@ -390,7 +390,7 @@ sequenceDiagram
 
 ### 8.4 Knowledge Tree — `/admin/knowledge-tree`
 
-**What it is.** A picture of how knowledge hangs together: CRMP → risk domains → skill playbooks, with linked timelines and RAG on the side trunks.
+**What it is.** A picture of how knowledge hangs together: CRMP → risk domains → skill playbooks, with linked timelines and **RAG document leaves** (deep links into `/admin/rag?doc=`).
 
 **What you see.**
 
@@ -399,7 +399,7 @@ sequenceDiagram
 - Trunk switch: Risk domains, Linked timelines, RAG corpus.  
 - Click a **domain** to fan out its skills. Click a **skill** to fill the inspector.  
 - **Enter** / **Enter full playbook** opens the SKILL.md page.  
-- RAG nodes open the RAG library. Docs are matched by tags and title.
+- **RAG document leaves** open the RAG library on that doc. Docs are matched by tags and title; `MonitorCode` chips link to Monitor 2.0.
 
 Domains wrap on two rows so labels stay readable. There is no sideways-only strip of ten tiny boxes.
 
@@ -408,31 +408,32 @@ graph TD
   Hub[CRMP knowledge tree] --> Dom[Risk domains]
   Dom --> Sk[Skill playbooks]
   Hub --> Ch[Linked timelines]
-  Hub --> Rag[RAG corpus]
+  Hub --> Rag[RAG document leaves]
   Sk --> Enter[Enter full SKILL.md]
+  Rag --> Doc[Deep link RAG doc]
 ```
 
-**Good looks like.** LP_HEDGE expands to hedge skills. RAG trunk groups documents by category. Enter navigates; it is not a dead SVG link.
+**Good looks like.** LP_HEDGE expands to hedge skills. RAG trunk groups documents by category and shows clickable leaves. Enter navigates; it is not a dead SVG link.
 
 ### 8.5 RAG Knowledge Base — `/admin/rag`
 
 **What it is.** The internal corpus used when a skill is not certain: policies, products, entities, platforms.
 
-**What you see.** Filter by category, search box, document cards (key, title, tags, status, excerpt). A **retrieve** box to try a query (top-K hits with scores). If you can manage: create a doc, edit content, retire.
+**What you see.** Filter by category, search box, document cards (key, title, tags, status, excerpt). A **retrieve** box to try a query (top-K hits with scores). An **AI write block** banner: AI service actors cannot mutate the corpus — humans with `rag.manage` write, or AI Admin **`propose_rag`** for maker-checker.
 
-**What to click.** Retrieve with a phrase like “copy trading concentration gold margin” and confirm hits look relevant. Governed production-like creates should go through AI Admin; this page is the corpus browser.
+**What to click.** Retrieve with a phrase like “copy trading concentration gold margin” and confirm hits look relevant. Production-like creates should go through AI Admin `propose_rag`; this page is the corpus browser (and human write when permitted).
 
-**Good looks like.** Retrieve returns ranked hits. Retired docs drop out of search.
+**Good looks like.** Retrieve returns ranked hits. Retired docs drop out of search. AI cannot POST/PATCH `/api/rag` as a service actor.
 
-### 8.6 Spine Log — `/admin/spine`
+### 8.6 Spine on Admin Home — `/admin` ( `/admin/spine` redirects )
 
-**What it is.** The end-to-end tape: DETECT → ALARM → AI_RCA → SKILL_EXECUTE → HUMAN_INTERVENTION → RESOLVED → DASHBOARD.
+**What it is.** The end-to-end tape lives on **Admin Home** as the integration spine with **stage ticket counts**: DETECT → ALARM → AI_RCA → SKILL_EXECUTE → HUMAN_INTERVENTION → RESOLVED → DASHBOARD. The dedicated **Spine Log** left-nav tab was removed.
 
-**What you see.** 24-hour counts per stage, then a timeline of events (id, stage, product, severity, title, actor, time, detail).
+**What you see.** Per-stage counts (open work + 24h activity) and latest event titles; each step links to the matching page.
 
-**What to click.** Read-only. After you run a detector or close a messenger thread, confirm matching stages appear within about a minute (localhost).
+**What to click.** Read-only orientation. After you run a detector or close a messenger thread, confirm matching stages move on localhost.
 
-**Good looks like.** A COPY breach demo produces DETECT, ALARM, AI_RCA (and SKILL_EXECUTE / HUMAN_INTERVENTION if those ran). No silent gaps on the happy path.
+**Good looks like.** A COPY breach demo moves Detect / Alarm / AI RCA counts. No silent gaps on the happy path.
 
 ```mermaid
 graph LR
@@ -453,11 +454,11 @@ graph LR
 
 **What it is.** The checker desk for runtime actions (not AI Admin config). Maker already asked for a control; you approve or reject.
 
-**What you see.** Cards: action code, status, analysis, indicator, alert title/severity, skill step, requested time. Pending items have a note box plus **Approve** and **Reject**.
+**What you see.** Cards: action code, status, analysis, indicator, alert title/severity, skill step, requested time, and **actioner email** on samples. Pending items have a note box plus **Approve** and **Reject**.
 
 **What to click.** Type a short reason. Approve to go live (prototype records the decision). Reject to stop. Both write spine + audit.
 
-**Good looks like.** Pending count matches the home / AI Admin KPI. Decided rows show who and when.
+**Good looks like.** Pending count matches the home / AI Admin KPI. Decided rows show who (email) and when.
 
 ```mermaid
 graph TD
@@ -524,13 +525,13 @@ graph TD
 
 ### 9.4 Escalation Routes — `/admin/escalation`
 
-**What it is.** The map: severity → primary team → secondary team → Lark channel → SLA minutes. Demo Messenger **Escalate** follows this map.
+**What it is.** The map: severity → primary team → secondary team → Lark channel → SLA minutes. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** path (coefficients / skill binds); unbound skills fall back to ESC-DEFAULT.
 
-**What you see.** Route name, severity, domain, teams, channel, SLA, enabled flag.
+**What you see.** Route name, route code (including `ESC-DEFAULT`), severity, domain, teams, channel, SLA, default flag, enabled.
 
-**What to click.** Create/edit/disable if you have manage rights (localhost). Read the SLA before you escalate a CRITICAL.
+**What to click.** Create/edit/disable if you have manage rights (localhost). Read the SLA before you escalate a CRITICAL. Confirm the catch-all default exists.
 
-**Good looks like.** CRITICAL has a tighter SLA than WARN. Every route has a primary team.
+**Good looks like.** CRITICAL has a tighter SLA than WARN. Every route has a primary team. Exotic / unmatched events still resolve via ESC-DEFAULT.
 
 ```mermaid
 graph LR
@@ -544,19 +545,15 @@ graph LR
 
 ## 10. Organisation
 
-### 10.1 Departments — `/admin/departments`
+### 10.1 BU and Teams — `/admin/departments` ( `/admin/teams` redirects here )
 
-Cards for Risk Control, Operations, AI, System: description, team count, user count, primary responsibilities (RACI). Read-only catalogue.
+**Combined hub.** Risk Control, Operations, AI, and System BUs with nested on-call teams. Expand a BU for mandate / Owns / Accountable / Collaborates / Out of scope / Escalates to, plus team mission and rotation (editable when authorised). There is no separate Teams left-nav tab.
 
-### 10.2 Teams — `/admin/teams`
-
-Table: team name, department, members, Lark chat id, on-call rotation, mission. This is who wakes up when a route fires.
-
-### 10.3 Roles & Permissions — `/admin/roles`
+### 10.2 Roles & Permissions — `/admin/roles`
 
 Each role (Risk Owner, Analyst, Ops, AI Engineer, System Admin, Super Admin, Viewer, …) with its permission chips (`monitor.read`, `ai.approve`, `settings.manage`, …). Super Admin has `*`. Use this page to see why a button is missing for a persona.
 
-### 10.4 Users — `/admin/users`
+### 10.3 Users — `/admin/users`
 
 Directory of operators and demo personas, including **demo platform owner**. Columns: name, email, role, department, team, status, last login.
 
@@ -613,6 +610,8 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | UAT Checklist | `/admin/docs/uat` | Interactive 45-case sign-off (UAT-01 … UAT-45): why, steps, pass, evidence, screen coverage |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
+| Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
+| Progress Tracker | `/admin/docs/progress` | Interactive board: X=issues, Y=timeline now→end-2027 |
 | URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs |
 
 On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail on the board; coverage chips show which screens each case hits.
@@ -625,7 +624,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 2. Never give a production AI service account those rights.  
 3. Treat messenger **Dismiss** and **Close** as real decisions — they are audited.  
 4. For BREACH/CRITICAL, keep primary + second AI on screen before any irreversible control.  
-5. After a control, check **Audit Log** and **Spine Log** for the same ids.  
+5. After a control, check **Audit Log** and the **home spine** for the same ids.  
 6. Maker and checker must be **two different people** on AI Admin and on designated controls.
 
 ---
@@ -634,33 +633,29 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 
 | Group | Page | You come here to… |
 |---|---|---|
-| Overview | Admin Home | See counts; click every card and alert row |
+| Overview | Admin Home | See counts; home spine stage ticket counts; click every card and alert row |
 | Monitor & risk | Daily Performance | Day-end CFD + crypto metrics |
-| Monitor & risk | Monitor 2.0 | Indicators, alerts, tickets; sync from upstream |
-| Monitor & risk | Detectors | Run or pause threshold monitors |
-| Monitor & risk | Live Alerts | Ack the open queue |
+| Monitor & risk | Monitor 2.0 | Indicators, alerts, tickets; sync from upstream; M2-* deep links |
+| Monitor & risk | Live Alerts | Ack the open queue; grouped AI pipeline; MonitorCode tooltips |
 | Monitor & risk | Market Intelligence | Scan news/social; read findings and outbox |
-| Monitor & risk | Risk Log Analytics | Timeline, handling time, loss vs prevented, loopholes |
-| Monitor & risk | Risk Domains | See who owns each risk area |
-| AI & knowledge | AI Analyses | Read RCA + second AI; run demo simulates |
-| AI & knowledge | AI Skills | Browse playbooks; Enter the full SKILL.md |
-| AI & knowledge | Knowledge Tree | Visual map of domains, skills, RAG |
-| AI & knowledge | RAG Knowledge Base | Search and retrieve evidence docs |
-| AI & knowledge | AI Admin | Propose/approve models, params, skills, RAG |
+| Monitor & risk | Risk Log Analytics | 90-day charts, closed packs, loss vs prevented, loopholes |
+| Monitor & risk | Risk Domains | P0–P3 scenarios hooked to Monitor 2.0 |
+| AI & knowledge | AI Skills | Browse playbooks; Enter the full SKILL.md; one escalation bind |
+| AI & knowledge | Knowledge Tree | Domains, skills, RAG document leaves + deep links |
+| AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
+| AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
-| Response | Human Intervention | Checker approve/reject runtime gates |
-| Response | Escalation Routes | Severity → team → SLA |
+| Response | Human Intervention | Checker approve/reject; actioner email on samples |
+| Response | Escalation Routes | Severity → team → SLA; ESC-DEFAULT catch-all |
 | Response | Lark Integration | Channel registry |
-| Response | Spine Log | Follow Detect → … → Dashboard |
-| Organisation | Departments | RACI ownership |
-| Organisation | Teams | On-call and Lark chat ids |
+| Organisation | BU and Teams | Combined BU RACI + nested on-call teams |
 | Organisation | Users | Directory, including demo platform owner |
 | Organisation | Roles & Permissions | RBAC chips |
 | Platform | Data Sources | Internal + external registry |
 | Platform | Platform Settings | Grouped flags |
 | Platform | Audit Log | Who changed what |
 | Platform | AI Access Security | Human-only pages/functions/fields |
-| Docs | User Guide / URL Catalog / UAT / PRD / TSD / Roadmap / Ecosystem | Product and operator documents |
+| Docs | User Guide / URLs / UAT / PRD / TSD / Roadmap / Ecosystem / Open Issues / Progress | Product and operator documents |
 
 ---
 
@@ -671,5 +666,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.0 | 2026-10-01 | Operator handbook |
 | 1.3 | 2026-10-04 | All admin screens, public Scan demo, demo platform owner, login on Pages |
 | 1.5 | 2026-10-04 | Flowcharts for login, unread, RCA path, messenger, maker/checker, intel scan, knowledge tree, spine |
+| 1.6 | 2026-10-05 | Spine on home; BU and Teams; AI line1/2; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 
 **Owner:** demo platform owner

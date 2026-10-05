@@ -20,37 +20,37 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },
 
   // Home
-  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, stats and expandable alert tracker", permission: "admin.access" },
+  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
-  { category: "Risk", title: "Risk Log Analytics", path: "/admin/risk-log", description: "Closed tracker packs (ticket closed, AI, BU/AI action logs, mandated solution) plus timeline of risk events", permission: "monitor.read" },
+  { category: "Risk", title: "Risk Log Analytics", path: "/admin/risk-log", description: "Closed tracker packs + 90-day historical charts (alerts/open book, loss vs prevented, latency) + timeline", permission: "monitor.read" },
   { category: "Risk", title: "Market Intelligence", path: "/admin/market-intel", description: "5-min news/social scan + messenger outbox", permission: "monitor.read" },
   { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Redirects to Monitor 2.0 — detectors merged into indicator registry", permission: "detectors.read" },
-  { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + AI RCA, gates, POC/RO; closed tickets move to Risk Log Analytics", permission: "monitor.read" },
-  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry, thresholds, sampling runs & sync", permission: "monitor.read" },
-  { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0", permission: "monitor.read" },
+  { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + grouped AI pipeline controls (rank note) + AI RCA; M2-* MonitorCode tooltips/links; closed tickets → Risk Log", permission: "monitor.read" },
+  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry, thresholds, sampling runs & sync — deep-link targets for M2-* codes", permission: "monitor.read" },
+  { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0 (M2-* chips)", permission: "monitor.read" },
 
   // AI
   { category: "AI", title: "AI Analyses (redirect)", path: "/admin/ai-analyses", description: "Redirects to Realtime Alert & Tracker", permission: "ai.read" },
   { category: "AI", title: "AI Analysis Detail", path: "/admin/ai-analyses/[id]", description: "Single analysis pack + AiChallengePanel", permission: "ai.read" },
-  { category: "AI", title: "AI Admin", path: "/admin/ai-admin", description: "Maker/checker config for AI settings & models", permission: "ai.admin" },
-  { category: "AI", title: "Human Intervention", path: "/admin/interventions", description: "Human gates from skill/RAG actions", permission: "intervene.operate" },
-  { category: "AI", title: "Spine (redirect → Home)", path: "/admin/spine", description: "Redirects to Admin Home — stage ticket counts live on the home spine viz", permission: "spine.read" },
-  { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus (AI write blocked — human / propose_rag)", permission: "rag.read" },
-  { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page", permission: "skills.read" },
+  { category: "AI", title: "AI Admin", path: "/admin/ai-admin", description: "First-line + second-line AI Admin cards, maker/checker, propose_rag, training & accuracy", permission: "ai.admin" },
+  { category: "AI", title: "Human Intervention", path: "/admin/interventions", description: "Human gates from skill/RAG actions — samples show actioner email", permission: "intervene.operate" },
+  { category: "AI", title: "Spine (redirect → Home)", path: "/admin/spine", description: "Redirects to Admin Home — stage ticket counts live on the home spine viz (dedicated Spine Log tab removed)", permission: "spine.read" },
+  { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus (AI write blocked — human / propose_rag maker-checker)", permission: "rag.read" },
+  { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page; each skill binds one escalation path (ESC-DEFAULT fallback)", permission: "skills.read" },
   { category: "AI", title: "Skill playbook detail", path: "/admin/skills/[code]", description: "Full when-to-use / prechecks / evidence / stop / success playbook for one skill", permission: "skills.read" },
-  { category: "AI", title: "Knowledge Tree", path: "/admin/knowledge-tree", description: "Visual map of domains, skills, linked timelines and RAG documents", permission: "rag.read" },
-  { category: "AI", title: "AI Access Security", path: "/admin/security/ai-access", description: "Human-only pages/functions/fields blocklist", permission: "audit.read" },
+  { category: "AI", title: "Knowledge Tree", path: "/admin/knowledge-tree", description: "Visual map of domains, skills, linked timelines and RAG document leaves with deep links", permission: "rag.read" },
+  { category: "AI", title: "AI Access Security", path: "/admin/security/ai-access", description: "Human-only pages/functions/fields blocklist (includes FN-RAG-WRITE / propose_rag only)", permission: "audit.read" },
 
   // Messenger
   { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox with inline actions", permission: "lark.read" },
   { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
-  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Severity → team → SLA paths", permission: "escalation.read" },
+  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Severity → team → SLA paths; catch-all ESC-DEFAULT + coefficients; skill binds one path", permission: "escalation.read" },
 
   // Org
-  { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation)", permission: "teams.read" },
-  { category: "Org", title: "Teams (redirect)", path: "/admin/teams", description: "Redirects to BU and Teams hub", permission: "teams.read" },
+  { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation)", permission: "teams.read" },
+  { category: "Org", title: "Teams (redirect)", path: "/admin/teams", description: "Redirects to combined BU and Teams hub", permission: "teams.read" },
   { category: "Org", title: "Roles & Permissions", path: "/admin/roles", description: "RBAC matrix plus owns / does / does-not / escalation charters", permission: "users.read" },
   { category: "Org", title: "Users", path: "/admin/users", description: "User directory", permission: "users.read" },
   { category: "API", title: "Org API", path: "/api/org", description: "Departments + teams read; update_team for mission / on-call", permission: "teams.read" },
@@ -65,8 +65,10 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "PRD", path: "/admin/docs/prd", description: "Product Requirements (EN/ZH)", permission: "admin.access" },
   { category: "Docs", title: "User Guide", path: "/admin/docs/user-guide", description: "Operator handbook (EN/ZH)", permission: "admin.access" },
   { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack", permission: "admin.access" },
-  { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
   { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
+  { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
+  { category: "Docs", title: "Open Issues", path: "/admin/docs/open-issues", description: "Checklist of open programme issues — ETA, responsible BU, dependencies (tentative through 2027)", permission: "admin.access" },
+  { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "Interactive board: X=issues, Y=timeline now→end-2027, status + BU labels", permission: "admin.access" },
   { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths", permission: "admin.access" },
 
   // APIs

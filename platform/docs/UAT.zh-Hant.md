@@ -13,7 +13,7 @@
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁、每日績效、風險日誌、Monitor 2.0、市場情報、偵測器、即時警報、風險領域、AI 分析、AI Admin、技能、知識樹、RAG、脊柱、人工介入、Lark、升級路徑、部門／團隊／角色／使用者、資料來源、AI 存取、稽核、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁、每日績效、風險日誌、Monitor 2.0、市場情報、偵測器、即時警報、風險領域、AI 分析、AI Admin、技能、知識樹、RAG、脊柱、人工介入、Lark、升級路徑、部門／團隊／角色／使用者、資料來源、AI 存取、稽核、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
@@ -44,7 +44,7 @@ graph TD
 | 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — 提出變更的人不能自己核准 | AI Admin, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | 市場情報 —「立即掃描」必須跑完（含 GitHub Pages） | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
-| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與脊柱說的故事要和 Messenger 同一件 | Audit Log, Spine Log |
+| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | 英文與繁中文件都能顯示 | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
 | 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, AI Analyses |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | 本輪 UAT 每個嚴重分析都有第二 AI | AI Analyses |
@@ -54,7 +54,7 @@ graph TD
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | 知識樹顯示領域、技能與文件如何串接 | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | 繁中覆蓋介面、Messenger、技能與文件 | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
 | 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | 網址目錄列出公開頁（含新頁） | URL Catalog, AI Skills, Knowledge Tree, Demo Messenger |
-| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | 用白話把 Messenger 迴路講一遍 | Demo Messenger, Spine Log, Audit Log, AI Analyses |
+| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | 用白話把 Messenger 迴路講一遍 | Demo Messenger, Admin Home spine, Audit Log, AI Analyses |
 | 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | 管理首頁 — 卡片、捷徑與平台負責人 | Admin Home, Daily Performance, Users, URL Catalog |
 | 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | 每日績效 — CFD 與 Crypto 桌數字 | Daily Performance |
 | 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | 風險日誌分析 — 實際動到損益／客戶的是什麼 | Risk Log Analytics |
@@ -66,7 +66,7 @@ graph TD
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | 人工介入佇列（Messenger 控制的管理端） | Human Intervention |
 | 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark 整合 — 頻道 vs 應用內 Messenger 示範 | Lark Integration, Demo Messenger |
 | 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | 升級路徑登錄 | Escalation Routes |
-| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | 組織 — 部門、團隊、使用者與角色 | Departments, Teams, Users, Roles & Permissions |
+| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | 組織 — BU 與團隊、使用者與角色 | BU and Teams, Users, Roles & Permissions |
 | 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | 資料來源登錄（內部與外部） | Data Sources |
 | 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | 平台設定已分組（不是扁平清單） | Platform Settings |
 | 41 | UAT-41 | 446m | 10m | Medium | AI + Risk | UAT-06; RAG seeded | RAG 知識庫 — 瀏覽 AI 引用的語料 | RAG Knowledge Base |
@@ -348,7 +348,7 @@ graph TD
 ### UAT-16 — 稽核與脊柱說的故事要和 Messenger 同一件
 
 - **嚴重度：** High · **負責：** System · **依賴：** UAT-07 through UAT-12 performed · **建議：** T+181m / 15m
-- **涵蓋：** Audit Log, Spine Log
+- **涵蓋：** Audit Log, Admin Home spine
 - **為何測：** 若聊天動作從稽核消失，事後無法還原決策。
 - **目的：** 把至少一次升級與一次控制確認對到脊柱與／或稽核。
 
@@ -518,7 +518,7 @@ graph TD
 ### UAT-26 — 用白話把 Messenger 迴路講一遍
 
 - **嚴重度：** Medium · **負責：** Risk + System · **依賴：** Messenger + alerts + spine · **建議：** T+289m / 12m
-- **涵蓋：** Demo Messenger, Spine Log, Audit Log, AI Analyses
+- **涵蓋：** Demo Messenger, Admin Home spine, Audit Log, AI Analyses
 - **為何測：** 若風險負責人不能口述警報→收件匣→AI 包→控制→稽核，示範就只是截圖。
 - **目的：** 只用種子示範，指著每個氣泡，再到脊柱與稽核找到同一案件。
 
@@ -729,10 +729,10 @@ graph TD
 **通過：** 至少一條已啟用、含 SLA 的多步路徑；與 Messenger 升級文字相符。
 **證據：** 路線截圖＋ Messenger ESCALATION 氣泡。
 
-### UAT-38 — 組織 — 部門、團隊、使用者與角色
+### UAT-38 — 組織 — BU 與團隊、使用者與角色
 
 - **嚴重度：** Medium · **負責：** System + Risk Owner · **依賴：** UAT-01 · **建議：** T+413m / 15m
-- **涵蓋：** Departments, Teams, Users, Roles & Permissions
+- **涵蓋：** BU and Teams, Users, Roles & Permissions
 - **為何測：** RACI、值班與 RBAC 都來自這四頁。組織資料是空的，首頁數字就是謊言。
 - **目的：** 走訪部門→團隊→使用者→角色，確認種子人員含風險負責人與 Viewer。
 

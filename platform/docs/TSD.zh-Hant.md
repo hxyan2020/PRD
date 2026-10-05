@@ -630,7 +630,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `RagManager`：分類篩選、搜尋、檢索 `GET /api/rag?mode=retrieve&q=&limit=6`，有 `rag.manage` 可新增／更新／退役。FTS 經 `reindexRagFts`。受治理新增應優先走 AI Admin 變更單路徑（§8.7）。
 
-### 16.13 脊柱日誌
+### 16.13 脊柱（管理首頁）
 
 階段：DETECT、ALARM、AI_RCA、SKILL_EXECUTE、HUMAN_INTERVENTION、RESOLVED、DASHBOARD。24 小時 `StatCard` 計數＋最近 150 事件。
 
@@ -680,3 +680,5 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 
 **負責人：** demo platform owner  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
+
+| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |

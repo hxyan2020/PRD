@@ -37,7 +37,7 @@ graph LR
 
 | # | Goal | Measurable outcome |
 |---|---|---|
-| G1 | One spine | Detect → Analyse → Challenge → Escalate → Intervene → Audit is visible in Spine Log |
+| G1 | One spine | Detect → Analyse → Challenge → Escalate → Intervene → Audit is visible on Admin Home spine (stage ticket counts; Spine Log tab removed) |
 | G2 | Certainty routing | Known skills auto-execute when certain; else RAG + human review |
 | G3 | Dual-AI on high severity | 100% of BREACH/CRITICAL analyses have second-AI challenge |
 | G4 | SoD on AI config | AI Admin changes require maker ≠ checker |
@@ -219,10 +219,10 @@ graph LR
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
 | FR-23 | Detectors run/toggle | Run all raises alarms + AI RCA; enable/disable persists on localhost |
 | FR-24 | Live Alerts ack queue | Open-only queue; Acknowledge mutates status; button to Risk Log for closed tickets |
-| FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG trunk |
+| FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG document leaves with deep links |
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
-| FR-27 | Org directory | Departments, Teams, Roles (permission chips), Users (incl. demo platform owner; add/disable on localhost) |
-| FR-28 | Escalation routes + Lark registry | Severity → team → SLA; channel enable; messenger Escalate follows route |
+| FR-27 | Org directory | Combined BU and Teams hub, Roles (permission chips), Users (incl. demo platform owner; add/disable on localhost) |
+| FR-28 | Escalation routes + Lark registry | Severity → team → SLA; ESC-DEFAULT catch-all; skill binds one path; channel enable |
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
@@ -246,26 +246,24 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 
 | Group | Feature | Path | Jobs to be done | Key acceptance |
 |---|---|---|---|---|
-| Overview | Admin Home | `/admin` | Orient; jump via cards | Every card/row is a link; owner visible; messenger CTA |
+| Overview | Admin Home | `/admin` | Orient; jump via cards; spine stage counts | Every card/row is a link; spine viz; messenger CTA |
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
 | Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Indicators / alerts / tickets | Three tabs; Sync now on localhost |
 | Monitor & risk | Detectors | `/admin/detectors` | Threshold first stage | Run all; toggle; runs list |
-| Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Open-only; ack; severity sort; button to Risk Log closed tickets |
+| Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Grouped AI pipeline; MonitorCode tooltips; open-only; ack |
 | Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership + P0–P3 scenarios linked to Monitor 2.0 | Expand scenario; click M2-* chip |
-| AI & knowledge | AI Analyses | `/admin/ai-analyses` | RCA + second AI | Simulate COPY/EQ/CRITICAL; detail pack |
-| AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control governance | Seven tabs; maker ≠ checker |
-| AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md page |
-| AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; trunks; Enter |
-| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Search, retrieve top-K, create/retire (manage) |
-| AI & knowledge | Spine Log | `/admin/spine` | End-to-end tape | Stage counts + event list |
-| Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note |
+| AI & knowledge | AI Analyses | `/admin/ai-analyses` → alerts | RCA + second AI on Realtime Alert | Grouped pipeline + rank note; MonitorCode; detail pack |
+| AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag; maker ≠ checker |
+| AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md; one escalation bind |
+| AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
+| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | AI write blocked; human / propose_rag |
+| Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
 | Response | Demo Messenger | `/admin/messenger` | Chat-native triage | Sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
 | Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
 | Response | Escalation Routes | `/admin/escalation` | Severity → team → SLA | CRUD localhost; used by Escalate |
-| Organisation | Departments | `/admin/departments` | RACI | Four BUs with responsibilities |
-| Organisation | Teams | `/admin/teams` | On-call | Members, Lark chat, rotation |
+| Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |
 | Organisation | Roles & Permissions | `/admin/roles` | RBAC | Permission chips per role |
 | Organisation | Users | `/admin/users` | Directory | demo platform owner present; add/disable manage |
 | Platform | Data Sources | `/admin/data-sources` | Feed registry | Category + status |
@@ -278,6 +276,8 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 45 cases, interactive |
 | Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
 | Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | RM-01…15: today / build / done-when |
+| Docs | Open Issues | `/admin/docs/open-issues` | Programme gaps | ETA, BU, dependencies → 2027 |
+| Docs | Progress Tracker | `/admin/docs/progress` | Timeline board | X=issues Y=now→2027 |
 | Docs | URL Catalog | `/admin/docs/urls` | Navigation | Pages + APIs + tables |
 | Shell | Login | `/login` | Named persona | Persist; Pages path; owner default |
 | Shell | Language | cookie `crmp_ui_lang` | EN / 繁中 | Nav + docs switch |
@@ -398,6 +398,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-01 | Goals G1–G7, FR-01…16 |
+| 1.6 | 2026-10-05 | Spine on home; BU and Teams; line1/2 AI Admin; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.5 | 2026-10-04 | Journey and SoD flowcharts for every P0 path |
 
 **Owner:** demo platform owner
