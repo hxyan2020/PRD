@@ -11,6 +11,18 @@
 export type BlockSeverity = "CRITICAL" | "HIGH" | "MEDIUM";
 export type BlockCategory = "PAGE" | "FUNCTION" | "FIELD" | "DATA";
 
+/**
+ * AI access modes:
+ * - NONE / FORBIDDEN: no AI action (read or write)
+ * - READ_ONLY_SUMMARY: may summarise; never mutate
+ * - PROPOSE_ONLY: may open a maker/checker CR; never direct write
+ *
+ * RAG write policy (PAGE-RAG / FN-RAG-WRITE):
+ * `/admin/rag` create/update/retire and `POST|PATCH /api/rag` must NEVER be done by AI.
+ * Escalate to a human with `rag.manage`, or propose via AI Admin maker-checker (`propose_rag`).
+ */
+export type AiMayMode = "NONE" | "FORBIDDEN" | "READ_ONLY_SUMMARY" | "PROPOSE_ONLY";
+
 export type AiBlockItem = {
   id: string;
   category: BlockCategory;
@@ -20,7 +32,7 @@ export type AiBlockItem = {
   reason: string;
   human_roles: string[];
   required_permissions: string[];
-  ai_may: "NONE" | "READ_ONLY_SUMMARY" | "PROPOSE_ONLY";
+  ai_may: AiMayMode;
   notes?: string;
 };
 
@@ -64,18 +76,19 @@ export const AI_BLOCKED_PAGES: AiBlockItem[] = [
   {
     id: "PAGE-TEAMS",
     category: "PAGE",
-    name: "Teams / on-call",
-    target: "/admin/teams",
+    name: "BU and Teams / on-call",
+    target: "/admin/departments",
     severity: "HIGH",
     reason: "On-call routing and Lark chat binding — AI rewriting teams can hijack escalations.",
     human_roles: ["SUPER_ADMIN", "SYSTEM_ADMIN", "RISK_OWNER"],
     required_permissions: ["teams.manage"],
     ai_may: "READ_ONLY_SUMMARY",
+    notes: "/admin/teams redirects here. Nested BU + teams hub.",
   },
   {
     id: "PAGE-DEPARTMENTS",
     category: "PAGE",
-    name: "Departments RACI",
+    name: "BU and Teams (RACI)",
     target: "/admin/departments",
     severity: "MEDIUM",
     reason: "Org ownership model; changes alter accountability for risk decisions.",
@@ -151,6 +164,20 @@ export const AI_BLOCKED_PAGES: AiBlockItem[] = [
     human_roles: ["SUPER_ADMIN", "RISK_OWNER", "SYSTEM_ADMIN"],
     required_permissions: ["audit.read", "settings.manage"],
     ai_may: "READ_ONLY_SUMMARY",
+  },
+  {
+    id: "PAGE-RAG",
+    category: "PAGE",
+    name: "RAG Knowledge Base (write)",
+    target: "/admin/rag",
+    severity: "HIGH",
+    reason:
+      "RAG corpus create / update / retire changes what AI retrieves in RCA. Direct write is human-only; AI must escalate to a human with rag.manage or open a maker-checker propose_rag CR.",
+    human_roles: ["SUPER_ADMIN", "RISK_OWNER", "AI_ENGINEER (human)"],
+    required_permissions: ["rag.manage", "rag.approve"],
+    ai_may: "PROPOSE_ONLY",
+    notes:
+      "AI may retrieve (rag.read) and propose via POST /api/ai-admin action=propose_rag. Never POST/PATCH /api/rag as an AI service actor.",
   },
 ];
 
@@ -310,6 +337,20 @@ export const AI_BLOCKED_FUNCTIONS: AiBlockItem[] = [
     human_roles: ["RISK_OWNER (different user)", "SUPER_ADMIN (different user)"],
     required_permissions: ["ai.approve"],
     ai_may: "NONE",
+  },
+  {
+    id: "FN-RAG-WRITE",
+    category: "FUNCTION",
+    name: "Create / update / retire RAG documents",
+    target: "POST /api/rag (create|reindex) · PATCH /api/rag (update|retire)",
+    severity: "HIGH",
+    reason:
+      "Direct RAG mutation by AI can poison retrieval used in RCA and skill matching. Forbidden for AI service actors — escalate to human rag.manage or propose_rag maker-checker.",
+    human_roles: ["SUPER_ADMIN", "RISK_OWNER", "AI_ENGINEER (human)"],
+    required_permissions: ["rag.manage"],
+    ai_may: "FORBIDDEN",
+    notes:
+      "Humans with rag.manage may write in the prototype. When dual-control is required, prefer AI Admin propose_rag → checker with rag.approve.",
   },
 ];
 
@@ -497,8 +538,8 @@ export const AI_ALLOWED_CAPABILITIES = [
   },
   {
     name: "Propose AI config / skills / RAG",
-    target: "POST /api/ai-admin propose_* (PENDING CR only)",
-    permission: "ai.propose / skills.manage / rag.manage",
+    target: "POST /api/ai-admin propose_* (PENDING CR only) — never direct POST /api/rag",
+    permission: "ai.propose / skills.manage / rag.manage (human apply)",
   },
   {
     name: "Recommend intervention steps",
@@ -525,6 +566,7 @@ export const AI_SERVICE_ROLE_FORBIDDEN_PERMISSIONS = [
   "ai.approve",
   "skills.approve",
   "rag.approve",
+  "rag.manage", // RAG write — human or propose_rag only (FN-RAG-WRITE)
   "lark.manage",
   "escalation.manage",
   "teams.manage",
@@ -533,11 +575,41 @@ export const AI_SERVICE_ROLE_FORBIDDEN_PERMISSIONS = [
   "risk.intervene", // final execute — human only (propose via intervene.operate path with human gate)
 ] as const;
 
+const AI_SERVICE_EMAIL_HINTS = ["ai.service@", "ai-service@", "ai.bot@", "ai-agent@", "crmp-ai@"];
+const AI_SERVICE_ROLES = new Set(["AI_SERVICE", "AI_AGENT", "AI_BOT"]);
+
+/**
+ * Detect automated AI / service actors that must not perform human-gated writes
+ * (e.g. RAG create/update/retire). Humans with rag.manage remain allowed.
+ */
+export function isAiServiceActor(
+  user: { email?: string | null; role_code?: string | null; name?: string | null } | null | undefined,
+  req?: Request | null
+): boolean {
+  if (req) {
+    const actor = (req.headers.get("x-crmp-actor") || req.headers.get("x-ai-actor") || "").toLowerCase();
+    if (actor === "ai" || actor === "ai-service" || actor === "agent" || actor === "bot") return true;
+  }
+  if (!user) return false;
+  const role = (user.role_code || "").toUpperCase();
+  if (AI_SERVICE_ROLES.has(role)) return true;
+  const email = (user.email || "").toLowerCase();
+  if (AI_SERVICE_EMAIL_HINTS.some((h) => email.includes(h))) return true;
+  const name = (user.name || "").toLowerCase();
+  if (name.includes("ai service") || name.includes("ai agent")) return true;
+  return false;
+}
+
 export function isAiBlockedTarget(target: string): AiBlockItem | undefined {
   const t = target.toLowerCase();
   return AI_ACCESS_BLOCKLIST.find(
     (b) => t === b.target.toLowerCase() || t.includes(b.target.toLowerCase()) || b.target.toLowerCase().includes(t)
   );
+}
+
+/** Highlight items for the RAG human-gate callout on the security page. */
+export function ragWriteBlockItems(): AiBlockItem[] {
+  return AI_ACCESS_BLOCKLIST.filter((b) => b.id === "PAGE-RAG" || b.id === "FN-RAG-WRITE");
 }
 
 export function blocklistStats() {

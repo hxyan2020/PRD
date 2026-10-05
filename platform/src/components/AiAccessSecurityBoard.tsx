@@ -31,6 +31,11 @@ export function AiAccessSecurityBoard({
   const [q, setQ] = useState("");
   const [sev, setSev] = useState<"ALL" | "CRITICAL" | "HIGH" | "MEDIUM">("ALL");
 
+  const ragItems = useMemo(
+    () => items.filter((i) => i.id === "PAGE-RAG" || i.id === "FN-RAG-WRITE"),
+    [items]
+  );
+
   const filtered = useMemo(() => {
     return items.filter((i) => {
       if (cat !== "ALL" && i.category !== cat) return false;
@@ -61,6 +66,33 @@ export function AiAccessSecurityBoard({
           </Link>
         </div>
       </div>
+
+      {ragItems.length > 0 && (
+        <div className="panel p-4 border-amber-200 bg-amber-50/40" data-testid="sec-rag-callout">
+          <div className="text-xs uppercase tracking-[0.12em] text-amber-950">{t("sec.ragCallout")}</div>
+          <p className="text-sm mt-1 text-amber-950">{t("sec.ragCalloutBody")}</p>
+          <div className="mt-3 space-y-2">
+            {ragItems.map((i) => (
+              <div key={i.id} className="rounded-lg border border-amber-200 bg-white/80 px-3 py-2 text-sm">
+                <div className="flex flex-wrap items-center gap-2">
+                  <code className="text-xs">{i.id}</code>
+                  <span className="font-semibold">{phrase(i.name)}</span>
+                  <Badge className="bg-rose-50 text-rose-900 border-rose-200">{t("sec.aiMay", { may: i.ai_may })}</Badge>
+                </div>
+                <p className="text-xs text-[var(--muted)] mt-1">{phrase(i.reason)}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2 flex flex-wrap gap-3 text-xs">
+            <Link className="underline" href="/admin/rag">
+              /admin/rag
+            </Link>
+            <Link className="underline" href="/admin/ai-admin">
+              propose_rag → AI Admin
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
         <StatCard label={t("sec.blockedItems")} value={stats.total} hint={`${stats.critical} CRITICAL`} />

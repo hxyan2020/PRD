@@ -122,6 +122,23 @@ export function RagManager({
 
   return (
     <div className="space-y-4">
+      <div className="panel p-4 border-amber-200 bg-amber-50/50">
+        <div className="text-xs uppercase tracking-[0.12em] text-amber-950">
+          {t("rag.aiBlockTitle")}
+        </div>
+        <p className="text-sm mt-1 text-amber-950">{t("rag.aiBlockBody")}</p>
+        <div className="mt-2 flex flex-wrap gap-2 text-xs">
+          <Badge className="bg-rose-50 text-rose-900 border-rose-200">PAGE-RAG · PROPOSE_ONLY</Badge>
+          <Badge className="bg-rose-50 text-rose-900 border-rose-200">FN-RAG-WRITE · FORBIDDEN</Badge>
+          <a className="underline text-amber-950" href="/admin/ai-admin">
+            {t("rag.aiAdminLink")}
+          </a>
+          <a className="underline text-amber-950" href="/admin/security/ai-access">
+            {t("rag.securityLink")}
+          </a>
+        </div>
+      </div>
+
       <div className="panel p-4">
         <h3 className="font-semibold">{t("rag.retrieve")}</h3>
         <p className="text-sm text-[var(--muted)] mt-1">{t("rag.intro")}</p>

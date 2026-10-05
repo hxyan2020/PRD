@@ -3,6 +3,27 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb, writeAudit } from "@/lib/db";
 import { listRagDocuments, retrieveRag, upsertRagDocument } from "@/lib/ai/rag";
 import { reindexRagFts } from "@/lib/ai/seed-rag";
+import { isAiServiceActor } from "@/lib/security/ai-access-blocklist";
+
+/**
+ * RAG write gate (FN-RAG-WRITE / PAGE-RAG):
+ * AI service actors cannot create / update / retire / reindex.
+ * Escalate to a human with rag.manage, or propose via AI Admin maker-checker (propose_rag).
+ * Human operators with rag.manage remain allowed in this prototype.
+ */
+function rejectAiRagWrite(user: Awaited<ReturnType<typeof getCurrentUser>>, req: Request) {
+  if (!isAiServiceActor(user, req)) return null;
+  return NextResponse.json(
+    {
+      error:
+        "AI cannot mutate RAG directly. Escalate to a human with rag.manage, or open a maker-checker propose_rag change request on /admin/ai-admin.",
+      blocklist: ["PAGE-RAG", "FN-RAG-WRITE"],
+      escalate_to: "/admin/ai-admin",
+      ai_may: "PROPOSE_ONLY",
+    },
+    { status: 403 }
+  );
+}
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
@@ -31,6 +52,9 @@ export async function POST(req: Request) {
   if (!user || !hasPermission(user.role_code, "rag.manage")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+  const blocked = rejectAiRagWrite(user, req);
+  if (blocked) return blocked;
+
   const body = await req.json();
 
   if (body.action === "reindex") {
@@ -62,6 +86,9 @@ export async function PATCH(req: Request) {
   if (!user || !hasPermission(user.role_code, "rag.manage")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+  const blocked = rejectAiRagWrite(user, req);
+  if (blocked) return blocked;
+
   const body = await req.json();
   if (!body.id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
