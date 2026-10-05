@@ -390,16 +390,22 @@ export function AiAdminConsole({
       {tab === "params" && (
         <div className="space-y-3">
           <div className="grid md:grid-cols-2 gap-3">
-            <div className="panel p-3 text-sm">
-              <div className="font-semibold">{t("adm.line1")}</div>
+            <div className="panel p-3 text-sm border-teal-200">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-teal-600 text-white border-teal-700">L1</Badge>
+                <div className="font-semibold">{t("adm.line1")}</div>
+              </div>
               <p className="text-[var(--muted)] mt-1">{t("adm.line1ParamsHint")}</p>
               <ul className="mt-2 space-y-1 text-xs font-mono">
                 <li>ai.line1.model</li>
                 <li>ai.min_confidence · ai.rag_top_k · ai.skill_certainty_only</li>
               </ul>
             </div>
-            <div className="panel p-3 text-sm">
-              <div className="font-semibold">{t("adm.line2")}</div>
+            <div className="panel p-3 text-sm border-amber-200">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-amber-600 text-white border-amber-700">L2</Badge>
+                <div className="font-semibold">{t("adm.line2")}</div>
+              </div>
               <p className="text-[var(--muted)] mt-1">{t("adm.line2ParamsHint")}</p>
               <ul className="mt-2 space-y-1 text-xs font-mono">
                 <li>ai.line2.model</li>
