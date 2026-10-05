@@ -72,7 +72,7 @@ graph LR
 | **Risk Owner** | Accept/reject AI packs; escalate; approve irreversible controls; run UAT exit |
 | **Risk Analyst** | Triage alerts; challenge AI in messenger; add context |
 | **Ops Lead / Analyst** | Propose halt/block/widen/pause-copy; maker-confirm into admin |
-| **AI Engineer** | Skills, RAG, detectors, second-opinion threshold, AI Admin proposals |
+| **AI Engineer** | Skills, RAG, Monitor 2.0 detector registry, second-opinion threshold, AI Admin proposals |
 | **System Admin** | Users/roles, grouped settings, AI access blocklist, audit hygiene |
 | **Viewer** | Read-only oversight (no AI Admin operate) |
 
@@ -165,8 +165,8 @@ graph TD
 
 
 ### 5.6 Unread badge
-1. A detector run / intel scan / AI simulate creates new work.  
-2. Left-nav badge increments.  
+1. A Monitor 2.0 **Run all indicators** / intel scan / AI simulate creates new work.  
+2. Left-nav badge increments (Realtime Alert & Tracker, Messenger, Intel, etc.).  
 3. Opening that tab stores “seen” and the badge drops to zero for this browser.
 
 ```mermaid
@@ -193,7 +193,7 @@ graph LR
 
 | ID | Requirement | Acceptance sketch |
 |---|---|---|
-| FR-01 | Sync/display Monitor 2.0 indicators & raise alarms | Indicators EQ/MRG/COPY visible; simulate alarm works |
+| FR-01 | Sync/display Monitor 2.0 indicators & raise alarms | Unified indicator + detector registry (EQ/MRG/COPY); Run all / Pause; simulate alarm works; no Alerts/Tickets tabs on Monitor |
 | FR-02 | Skill-match RCA with step execution log | COPY breach → `SKILL_MATCH` + skill run steps |
 | FR-03 | RAG RCA when skill uncertain | EQ path can yield `RAG_REASONING` + evidence |
 | FR-04 | Independent second-AI challenger ≥ threshold | BREACH/CRITICAL show panel + CHALLENGER evidence; WARN default skip |
@@ -210,9 +210,8 @@ graph LR
 |---|---|---|
 | FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
 | FR-12 | Risk Log analytics | Overview lists closed tracker cards (ticket closed, AI analysis, AI/BU action logs, mandated solution) plus 90-day historical charts (backfilled), timeline / loss vs prevented |
-| FR-24 | Realtime Alert & Tracker ack queue | Open-only queue; grouped AI pipeline; Acknowledge mutates status; closed tickets → Risk Log |
-| FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap toggle works |
-| FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |
+| FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap, Open Issues, Progress, URL Catalog toggle works |
+| FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; card lists where tables would overflow; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
 | FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs |
 | FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps) |
@@ -229,7 +228,7 @@ graph LR
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
 | FR-32 | UAT interactive pack | UAT-01…UAT-45 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
-| FR-34 | Risk domains catalogue | CFD + crypto domains with owner / supporting BUs |
+| FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 
 ### 6.3 P2 — later (ecosystem phases)
@@ -316,8 +315,9 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 8. **Mobile:** Messenger list→thread→back works at ~390px without document overflow.  
 9. **Pages:** Login, messenger Open-in-admin, and Market Intel Scan now succeed without 404/405.  
 10. **Knowledge tree:** Domain fan-out + Enter opens a playbook.  
-11. **Unread:** New simulate/scan bumps a badge; opening the tab clears it.  
-12. **Owner login:** demo platform owner persona persists after refresh on Pages.
+11. **Unread:** New simulate/scan / Monitor Run all bumps a badge; opening the tab clears it.  
+12. **Owner login:** demo platform owner persona persists after refresh on Pages.  
+13. **Nav truth:** Left nav has Realtime Alert & Tracker (not Live Alerts); no Detectors / AI Analyses list / Spine Log rows; `/admin/detectors` → Monitor 2.0; `/admin/ai-analyses` → alerts; `/admin/spine` → home.
 
 Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync).
 
@@ -399,8 +399,9 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-01 | Goals G1–G7, FR-01…16 |
+| 1.5 | 2026-10-04 | Journey and SoD flowcharts for every P0 path |
 | 1.6 | 2026-10-05 | Spine on home; BU and Teams; line1/2 AI Admin; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + rollback; editable Roles; escalation dimensions × coefficients |
-| 1.5 | 2026-10-04 | Journey and SoD flowcharts for every P0 path |
+| 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses list redirect; Monitor hub without Alerts/Tickets tabs; dedupe FR-24 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
