@@ -62,11 +62,13 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
 
   for (const a of openAlerts) {
     const t = timing[a.alert_id];
-    if (!t || a.acknowledged_at) continue;
+    if (!t) continue;
     const created = Date.parse(a.created_at.replace(" ", "T") + "Z");
     if (Number.isNaN(created)) continue;
-    const ackAt = new Date(created + t.ackMin * 60000).toISOString().slice(0, 19).replace("T", " ");
-    ack.run(ackAt, t.by, a.id);
+    if (!a.acknowledged_at) {
+      const ackAt = new Date(created + t.ackMin * 60000).toISOString().slice(0, 19).replace("T", " ");
+      ack.run(ackAt, t.by, a.id);
+    }
     if (t.resolveMin != null) {
       const resAt = new Date(created + t.resolveMin * 60000).toISOString().slice(0, 19).replace("T", " ");
       resolveTicket.run("RESOLVED", resAt, resAt, a.id);
