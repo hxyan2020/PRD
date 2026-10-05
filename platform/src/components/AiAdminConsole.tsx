@@ -363,7 +363,32 @@ export function AiAdminConsole({
           </div>
           <div className="panel p-4">
             <h3 className="font-semibold">{t("adm.accTrend")}</h3>
-            <div className="table-wrap mt-3">
+            <ul className="mt-3 space-y-2 sm:hidden" data-testid="ai-admin-acc-mobile">
+              {initial.overview.accuracy_history.map((h) => (
+                <li key={h.snapshot_date} className="rounded-lg border border-[var(--line)] p-3 space-y-1">
+                  <div className="font-semibold text-sm tabular-nums">{h.snapshot_date}</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.skillMatch")}</span>
+                      <div className="tabular-nums font-semibold">{pct(h.skill_match_rate)}</div>
+                    </div>
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.humanAgree")}</span>
+                      <div className="tabular-nums font-semibold">{pct(h.human_agree_rate)}</div>
+                    </div>
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.feedbackAcc")}</span>
+                      <div className="tabular-nums font-semibold">{pct(h.feedback_correct_rate)}</div>
+                    </div>
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.analyses")}</span>
+                      <div className="tabular-nums font-semibold">{h.analyses_total}</div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="table-wrap mt-3 hidden sm:block overflow-x-auto">
               <table className="data">
                 <thead>
                   <tr>
@@ -821,7 +846,44 @@ export function AiAdminConsole({
               </button>
             </div>
           )}
-          <div className="panel table-wrap">
+          <ul className="space-y-2 sm:hidden" data-testid="ai-admin-train-mobile">
+            {initial.training.map((tr) => (
+              <li key={tr.id} className="panel p-3 space-y-2">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="font-semibold break-words">{tr.name}</div>
+                    <div className="text-xs text-[var(--muted)] break-all">{tr.run_id}</div>
+                  </div>
+                  <StatusBadge value={tr.status} />
+                </div>
+                <div className="text-xs text-[var(--muted)]">
+                  {tr.model_name} · {tr.dataset_label}
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div>
+                    <span className="text-[var(--muted)]">{t("adm.accuracy")}</span>
+                    <div className="tabular-nums font-semibold">
+                      {tr.accuracy != null ? pct(tr.accuracy) : "—"}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)]">F1</span>
+                    <div className="tabular-nums font-semibold">
+                      {tr.f1_score != null ? pct(tr.f1_score) : "—"}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)]">{t("adm.samples")}</span>
+                    <div className="tabular-nums font-semibold">{tr.samples}</div>
+                  </div>
+                </div>
+                <div className="text-xs text-[var(--muted)]">
+                  {t("common.owner")}: {tr.created_by_name ?? "—"}
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="panel table-wrap hidden sm:block overflow-x-auto">
             <table className="data">
               <thead>
                 <tr>
@@ -836,21 +898,21 @@ export function AiAdminConsole({
                 </tr>
               </thead>
               <tbody>
-                {initial.training.map((t) => (
-                  <tr key={t.id}>
+                {initial.training.map((tr) => (
+                  <tr key={tr.id}>
                     <td>
-                      <div className="font-semibold">{t.name}</div>
-                      <div className="text-xs text-[var(--muted)]">{t.run_id}</div>
+                      <div className="font-semibold">{tr.name}</div>
+                      <div className="text-xs text-[var(--muted)]">{tr.run_id}</div>
                     </td>
-                    <td>{t.model_name}</td>
-                    <td className="text-sm">{t.dataset_label}</td>
+                    <td>{tr.model_name}</td>
+                    <td className="text-sm">{tr.dataset_label}</td>
                     <td>
-                      <StatusBadge value={t.status} />
+                      <StatusBadge value={tr.status} />
                     </td>
-                    <td className="tabular-nums">{t.accuracy != null ? pct(t.accuracy) : "—"}</td>
-                    <td className="tabular-nums">{t.f1_score != null ? pct(t.f1_score) : "—"}</td>
-                    <td className="tabular-nums">{t.samples}</td>
-                    <td className="text-sm">{t.created_by_name ?? "—"}</td>
+                    <td className="tabular-nums">{tr.accuracy != null ? pct(tr.accuracy) : "—"}</td>
+                    <td className="tabular-nums">{tr.f1_score != null ? pct(tr.f1_score) : "—"}</td>
+                    <td className="tabular-nums">{tr.samples}</td>
+                    <td className="text-sm">{tr.created_by_name ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>

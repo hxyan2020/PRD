@@ -413,21 +413,21 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Admin UX polish — mobile + docs parity",
       detail:
-        "Shipped: nav drawer, messenger list→thread, mobile cards (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues); Realtime Alert filters 2-col. Open: confirm-sheet 375px, Lark / Market Intel / AI Admin wide boards.",
+        "Shipped: nav drawer, messenger list→thread, mobile cards (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues / Progress / Lark / Market Intel sources+scans / AI Admin / URL Catalog); Realtime Alert filters 2-col; confirm-sheet primary full-width on phone. Open: remaining dense boards (e.g. RAG gate) as BAU.",
       dependencies: "Docs owners; FE capacity; i18n catalog",
       eta: "2026-Q4 BAU",
     },
     zh: {
       title: "管理後台 UX 打磨 — 行動＋文件對齊",
       detail:
-        "已交付：導覽抽屜、Messenger 列表→執行緒、多頁手機卡片；即時警報篩選手機兩欄。開放：確認表 375px、Lark／情報／AI 管理寬板。",
+        "已交付：導覽抽屜、Messenger 列表→執行緒、多頁手機卡片（含 Lark／情報／AI 管理／網址目錄）；即時警報篩選手機兩欄；確認表主按鈕全寬。開放：其餘密表（如 RAG 閘道）作日常。",
       dependencies: "文件負責人；前端產能；i18n 目錄",
       eta: "2026-Q4 日常",
     },
     checklist: [
       {
-        en: "Nav drawer + messenger list→thread + mobile cards (Monitor / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues)",
-        zh: "導覽抽屜＋Messenger 列表→執行緒＋手機卡片（Monitor／升級／資料來源／風險日誌／稽核／使用者／開放議題）",
+        en: "Nav drawer + messenger list→thread + mobile cards (Monitor / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues / Progress)",
+        zh: "導覽抽屜＋Messenger 列表→執行緒＋手機卡片（Monitor／升級／資料來源／風險日誌／稽核／使用者／開放議題／進度）",
         done: true,
       },
       {
@@ -435,8 +435,16 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "即時警報與追蹤篩選手機兩欄",
         done: true,
       },
-      { en: "Confirm-sheet 375px pass (messenger maker confirm)", zh: "確認表 375px 通過（Messenger Maker 確認）" },
-      { en: "Mobile cards for Lark / Market Intel / AI Admin boards", zh: "Lark／市場情報／AI 管理板手機卡片" },
+      {
+        en: "Mobile cards for Lark / Market Intel sources+scans / AI Admin / URL Catalog",
+        zh: "Lark／市場情報來源＋掃描／AI 管理／網址目錄手機卡片",
+        done: true,
+      },
+      {
+        en: "Confirm-sheet primary buttons full-width on phone (action-row)",
+        zh: "確認表主按鈕手機全寬（action-row）",
+        done: true,
+      },
       { en: "Docs parity BAU with each nav ship", zh: "每次選單交付後的文件對齊日常" },
     ],
   },

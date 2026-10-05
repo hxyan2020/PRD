@@ -570,7 +570,48 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       {tab === "sources" && (
         <div className="space-y-3" data-testid="mi-sources-table">
           <p className="text-sm text-[var(--muted)] px-1">{t("mi.sourceHealthHint", locale)}</p>
-          <div className="panel overflow-x-auto">
+          <ul className="space-y-2 sm:hidden" data-testid="mi-sources-mobile">
+            {sources.map((s) => {
+              const health = resolveSourceHealth({
+                enabled: s.enabled,
+                last_scraped_at: s.last_scraped_at,
+                health_status: s.health_status,
+                source_key: s.source_key,
+              });
+              const detail = s.health_detail || health.detail;
+              const assets = (JSON.parse(s.asset_classes_json || "[]") as string[]).join(", ");
+              return (
+                <li key={s.source_key} className="panel p-3 space-y-2" data-testid={`mi-source-${s.source_key}`}>
+                  <div className="flex items-start gap-3">
+                    <SourceBrandMark sourceKey={s.source_key} name={s.name} url={s.url} />
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium break-words">{s.name}</div>
+                      {s.url ? (
+                        <a
+                          className="text-xs underline text-[var(--muted)] break-all"
+                          href={s.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {s.url}
+                        </a>
+                      ) : null}
+                    </div>
+                    <StatusBadge value={health.status} />
+                  </div>
+                  {detail ? <p className="text-[11px] text-[var(--muted)] leading-snug">{detail}</p> : null}
+                  <div className="text-xs text-[var(--muted)]">
+                    {s.channel_type}
+                    {assets ? ` · ${assets}` : ""}
+                  </div>
+                  <div className="text-xs tabular-nums text-[var(--muted)]">
+                    {t("mi.lastScraped", locale)}: {s.last_scraped_at || "—"}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="panel overflow-x-auto hidden sm:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-xs uppercase text-[var(--muted)] border-b border-[var(--line)]">
@@ -591,7 +632,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
                   });
                   const detail = s.health_detail || health.detail;
                   return (
-                    <tr key={s.source_key} className="border-b border-[var(--line)]" data-testid={`mi-source-${s.source_key}`}>
+                    <tr key={s.source_key} className="border-b border-[var(--line)]" data-testid={`mi-source-row-${s.source_key}`}>
                       <td className="p-3">
                         <div className="flex items-start gap-3 min-w-[14rem]">
                           <SourceBrandMark sourceKey={s.source_key} name={s.name} url={s.url} />
@@ -635,39 +676,76 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       )}
 
       {tab === "scans" && (
-        <div className="panel overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs uppercase text-[var(--muted)] border-b border-[var(--line)]">
-                <th className="p-3">{t("mi.scan", locale)}</th>
-                <th className="p-3">{t("mi.trigger", locale)}</th>
-                <th className="p-3">{t("mi.sources", locale)}</th>
-                <th className="p-3">{t("mi.new", locale)}</th>
-                <th className="p-3">{t("mi.tabMessenger", locale)}</th>
-                <th className="p-3">{t("mi.highImpactCol", locale)}</th>
-                <th className="p-3">{t("common.status", locale)}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {scans.map((s) => (
-                <tr key={s.scan_id} className="border-b border-[var(--line)]">
-                  <td className="p-3">
-                    <div className="font-medium">{s.scan_id}</div>
+        <>
+          <ul className="space-y-2 sm:hidden" data-testid="mi-scans-mobile">
+            {scans.map((s) => (
+              <li key={s.scan_id} className="panel p-3 space-y-2">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="font-medium break-all">{s.scan_id}</div>
                     <div className="text-xs text-[var(--muted)]">{s.started_at}</div>
-                  </td>
-                  <td className="p-3">{s.trigger_mode}</td>
-                  <td className="p-3">{s.sources_checked}</td>
-                  <td className="p-3">{s.findings_new}</td>
-                  <td className="p-3">{s.findings_pushed}</td>
-                  <td className="p-3">{s.high_impact_count}</td>
-                  <td className="p-3">
-                    <StatusBadge value={s.status} />
-                  </td>
+                  </div>
+                  <StatusBadge value={s.status} />
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-[var(--muted)]">{t("mi.trigger", locale)}</span>
+                    <div className="font-semibold">{s.trigger_mode}</div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)]">{t("mi.sources", locale)}</span>
+                    <div className="font-semibold tabular-nums">{s.sources_checked}</div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)]">{t("mi.new", locale)}</span>
+                    <div className="font-semibold tabular-nums">{s.findings_new}</div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)]">{t("mi.tabMessenger", locale)}</span>
+                    <div className="font-semibold tabular-nums">{s.findings_pushed}</div>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-[var(--muted)]">{t("mi.highImpactCol", locale)}</span>
+                    <div className="font-semibold tabular-nums">{s.high_impact_count}</div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="panel overflow-x-auto hidden sm:block">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs uppercase text-[var(--muted)] border-b border-[var(--line)]">
+                  <th className="p-3">{t("mi.scan", locale)}</th>
+                  <th className="p-3">{t("mi.trigger", locale)}</th>
+                  <th className="p-3">{t("mi.sources", locale)}</th>
+                  <th className="p-3">{t("mi.new", locale)}</th>
+                  <th className="p-3">{t("mi.tabMessenger", locale)}</th>
+                  <th className="p-3">{t("mi.highImpactCol", locale)}</th>
+                  <th className="p-3">{t("common.status", locale)}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {scans.map((s) => (
+                  <tr key={s.scan_id} className="border-b border-[var(--line)]">
+                    <td className="p-3">
+                      <div className="font-medium">{s.scan_id}</div>
+                      <div className="text-xs text-[var(--muted)]">{s.started_at}</div>
+                    </td>
+                    <td className="p-3">{s.trigger_mode}</td>
+                    <td className="p-3">{s.sources_checked}</td>
+                    <td className="p-3">{s.findings_new}</td>
+                    <td className="p-3">{s.findings_pushed}</td>
+                    <td className="p-3">{s.high_impact_count}</td>
+                    <td className="p-3">
+                      <StatusBadge value={s.status} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </div>
   );

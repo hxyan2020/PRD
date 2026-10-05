@@ -134,7 +134,63 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
       {categories.map((cat) => (
         <section key={cat} className="panel p-4">
           <h2 className="font-[family-name:var(--font-display)] text-lg">{categoryLabel(cat)}</h2>
-          <div className="mt-3 table-wrap">
+          <ul className="mt-3 space-y-2 sm:hidden" data-testid={`url-cat-mobile-${cat}`}>
+            {rows
+              .filter((u) => u.category === cat)
+              .map((u) => (
+                <li key={`${u.category}-${u.path}-m`} className="rounded-lg border border-[var(--line)] p-3 space-y-2">
+                  <div className="font-semibold break-words">
+                    {editing ? (
+                      <input
+                        className="input w-full min-h-9"
+                        value={u.title}
+                        onChange={(e) => patch(u.path, "title", e.target.value)}
+                      />
+                    ) : (
+                      u.title
+                    )}
+                  </div>
+                  <div>
+                    {u.path.startsWith("/") ? (
+                      <Link
+                        className="text-teal-800 underline break-all text-sm"
+                        href={
+                          u.path.includes("[")
+                            ? u.path.replace("[id]", "1").replace("[code]", "SKILL-ABOOK-RATIO")
+                            : u.path
+                        }
+                      >
+                        {u.path}
+                      </Link>
+                    ) : (
+                      <code className="text-xs break-all">{u.path}</code>
+                    )}
+                  </div>
+                  <div className="text-sm text-[var(--muted)] break-words">
+                    {editing ? (
+                      <textarea
+                        className="input w-full min-h-16"
+                        value={u.description}
+                        onChange={(e) => patch(u.path, "description", e.target.value)}
+                      />
+                    ) : (
+                      u.description
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {u.path.startsWith("/") || u.category === "API" ? (
+                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                        <EnZh en="Public" zh="公開" />
+                      </Badge>
+                    ) : null}
+                    {u.permission ? (
+                      <Badge className="bg-slate-100 text-slate-700 border-slate-200">{u.permission}</Badge>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+          </ul>
+          <div className="mt-3 table-wrap hidden sm:block overflow-x-auto">
             <table className="data">
               <thead>
                 <tr>

@@ -265,7 +265,13 @@ body.nav-open {
   }
 
   .action-row .btn {
-    flex: 1 1 auto;
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: min(100%, 8.5rem);
+  }
+
+  /* Maker/checker confirm sheets: full-width stacked thumbs on narrow phones */
+  .action-row .btn.btn-primary {
+    flex: 1 1 100%;
   }
 
   /* Stack dense admin grids on phones */

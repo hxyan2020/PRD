@@ -134,10 +134,10 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 #### OI-11 — Admin UX polish
 **BU:** System · **Status:** WIP · **ETA:** 2026-Q4 BAU · **Depends:** Docs owner; FE; i18n
 
-- [x] Nav drawer + messenger list→thread + mobile cards (Monitor / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues)  
+- [x] Nav drawer + messenger list→thread + mobile cards (Monitor / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues / Progress)  
 - [x] Realtime Alert & Tracker filter toolbar 2-col on phone  
-- [ ] Confirm-sheet 375px pass (messenger maker confirm)  
-- [ ] Mobile cards for Lark / Market Intel / AI Admin boards  
+- [x] Mobile cards for Lark / Market Intel sources+scans / AI Admin / URL Catalog  
+- [x] Confirm-sheet primary buttons full-width on phone (`action-row`)  
 - [ ] Docs parity BAU with each nav ship  
 
 #### OI-16 — Observability

@@ -141,7 +141,42 @@ export function LarkManager({
         </div>
       )}
 
-      <div className="panel table-wrap">
+      <ul className="space-y-2 sm:hidden" data-testid="lark-mobile">
+        {channels.map((c) => (
+          <li key={c.id} className="panel p-3 space-y-2">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="font-semibold break-words">{phrase(c.name)}</div>
+                <div className="text-xs text-[var(--muted)] break-all">{c.chat_id}</div>
+              </div>
+              <StatusBadge value={c.enabled ? "ACTIVE" : "DISABLED"} />
+            </div>
+            <p className="text-sm text-[var(--muted)] break-words">{phrase(c.purpose)}</p>
+            <div className="flex flex-wrap gap-1.5">
+              <DeptBadge code={c.department_code} />
+              <SeverityBadge value={c.severity_min} />
+            </div>
+            <div className="text-xs break-all text-[var(--muted)]">{c.webhook_url ?? "—"}</div>
+            {canManage && (
+              <div className="action-row">
+                <button
+                  type="button"
+                  className="btn text-xs"
+                  data-testid={`lark-test-${c.id}`}
+                  onClick={() => testNotify(c.id, c.name)}
+                >
+                  {t("lark.test")}
+                </button>
+                <button type="button" className="btn text-xs" onClick={() => toggle(c)}>
+                  {c.enabled ? t("common.disable") : t("common.enable")}
+                </button>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <div className="panel table-wrap hidden sm:block overflow-x-auto">
         <table className="data">
           <thead>
             <tr>
