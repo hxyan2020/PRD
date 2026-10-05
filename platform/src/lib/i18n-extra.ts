@@ -203,6 +203,15 @@ export const EXTRA_UI: Record<string, Pair> = {
   "dash.cryptoEx": { en: "Crypto exchange", "zh-Hant": "加密交易所" },
   "dash.sphereCfd": { en: "Sphere 1 · CFD", "zh-Hant": "第一圈 · CFD" },
   "dash.sphereEx": { en: "Sphere 2 · Exchange", "zh-Hant": "第二圈 · 交易所" },
+  "dash.vs": { en: "VS", "zh-Hant": "對" },
+  "dash.cfdHint": {
+    en: "OTC book pressure — P&L, drawdown, hedge, margin and copy concentration.",
+    "zh-Hant": "OTC 帳簿壓力 — 損益、回撤、對沖、保證金與跟單集中度。",
+  },
+  "dash.exHint": {
+    en: "Exchange pressure — wallets, liquidations, spot flow and withdrawal queues.",
+    "zh-Hant": "交易所壓力 — 錢包、強平、現貨流量與出金佇列。",
+  },
   "dash.target": { en: "target {n}", "zh-Hant": "目標 {n}" },
 
   "ai.pipeline": { en: "AI pipeline controls", "zh-Hant": "AI 管線控制" },
