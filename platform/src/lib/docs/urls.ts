@@ -51,6 +51,8 @@ export const PLATFORM_URLS: UrlEntry[] = [
   // Org
   { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation)", permission: "teams.read" },
   { category: "Org", title: "Teams (redirect)", path: "/admin/teams", description: "Redirects to combined BU and Teams hub", permission: "teams.read" },
+  { category: "Org", title: "Roles & Permissions (editable)", path: "/admin/roles", description: "Editable RBAC matrix — name, description, BU, permission pills; users.manage; AI blocked", permission: "users.read" },
+  { category: "API", title: "Roles API", path: "/api/roles", description: "GET roles + catalog; POST update_role (users.manage; AI actors forbidden)", permission: "users.read" },
   { category: "Org", title: "Roles & Permissions", path: "/admin/roles", description: "RBAC matrix plus owns / does / does-not / escalation charters", permission: "users.read" },
   { category: "Org", title: "Users", path: "/admin/users", description: "User directory", permission: "users.read" },
   { category: "API", title: "Org API", path: "/api/org", description: "Departments + teams read; update_team for mission / on-call", permission: "teams.read" },
