@@ -279,7 +279,8 @@ function pushToLark(findingId: string, message: string) {
       mock: true,
       lark_message_id: msgId,
       message_preview: message.slice(0, 240),
-    }
+    },
+    { plane: "vantage" }
   );
 
   return msgId;

@@ -226,8 +226,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   audit: {
     title: { en: "Audit Log", "zh-Hant": "稽核日誌" },
     subtitle: {
-      en: "CRMP ops trail and Vantage Markets Admin trail, with rollback for reversible config changes.",
-      "zh-Hant": "CRMP 營運軌跡與 Vantage Markets 管理軌跡；可逆設定變更可回滾。",
+      en: "CRMP logs vs Vantage Markets Admin logs — Roll back restores before-state when captured.",
+      "zh-Hant": "CRMP 日誌與 Vantage Markets 管理日誌 — 有變更前快照時可回滾。",
     },
   },
   settings: {
