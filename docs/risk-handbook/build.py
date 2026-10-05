@@ -754,7 +754,7 @@ TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Crypto Exchange Risk Management Handbook / 加密货币交易所风险管理手册</title>
   <style>{css}</style>
 </head>

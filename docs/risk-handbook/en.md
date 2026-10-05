@@ -9,7 +9,7 @@
 > This handbook is the **operating playbook**: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does **not** replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.  
 > **Numbers in this handbook are teaching examples.** Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.  
 > **Edit both languages:** [Edit English / 简体中文](edit.html) — browser editor for `en.md` and `zh-CN.md` (drafts in this browser; download to commit).  
-> **Ask AI:** select any text — a sparkle icon appears; click it to explain that passage, then keep chatting. Floating button (bottom-right) also opens the bot.
+> **Ask AI:** select any text. On a phone a green **Ask AI** bar appears at the top (the system Copy menu covers a small icon). On desktop a sparkle appears next to the selection. Then keep chatting. Floating button (bottom-right) also opens the bot.
 
 ---
 
@@ -221,7 +221,7 @@ That is the whole job of a first night: **see, timestamp, outside world, contain
 | Listing / Delisting PIC | Listing BU chapter end-to-end |
 | Phase 1 PIC / launch crew | **Phase 1 operating scope** + [If you are new](#if-you-are-new-to-exchange-risk) + §3.3 Perps + §4.4 + ACC (broker / institution / MM) |
 | Handbook editor (EN / 简体中文) | [edit.html](edit.html) — edit `en.md` and `zh-CN.md`, save drafts, download both |
-| Ask AI about a term | Select the text → click the sparkle → chat. Or tap the bottom-right AI button. |
+| Ask AI about a term | Select the text → tap the top **Ask AI** bar (phone) or the sparkle (desktop) → chat. Or tap the bottom-right AI button. |
 
 If a section number looks like “§6.2”, it means “chapter 6, SOP G02 (trading halt)”. Codes like **PF-K01** are indicator IDs you can paste into a ticket. Codes like **SOP-G01** are procedures. You do not have to memorise them; on this page they are **clickable** and jump to that card.
 
