@@ -69,6 +69,10 @@ function parseFlowchart(src: string): { dir: "TD" | "LR"; nodes: FlowNode[]; edg
       ensure(id, label, shape);
     }
 
+    // IMPORTANT: source may carry a labelled shape before the arrow
+    // (`Scan[立即掃描] --> Q{GitHub Pages?}`). An older regex required bare
+    // ids (`Scan --> Q`) and dropped the first hop — leaving the first box
+    // visually orphaned beside the rest of the chart.
     const edgeRe =
       /([A-Za-z][A-Za-z0-9_]*)(?:\[[^\]]*\]|\(\[[^\]]*\]\)|\([^)]*\)|\{[^}]*\})?\s*(?:--+|==+)\s*>\s*(?:\|([^|]+)\|)?\s*([A-Za-z][A-Za-z0-9_]*)/g;
     // Walk the line so chained edges (`A --> B --> C`) and labelled shapes
