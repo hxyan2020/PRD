@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Badge, StatusBadge, StatCard } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
+import { cn } from "@/lib/utils";
 
 type Metric = {
   product: string;
@@ -47,16 +48,65 @@ export function DailyDashboardView({
     router.refresh();
   }
 
-  function MetricGrid({ title, rows, product }: { title: string; rows: Metric[]; product: string }) {
+  function Sphere({
+    tone,
+    title,
+    product,
+    rows,
+    warn,
+    breach,
+  }: {
+    tone: "cfd" | "ex";
+    title: string;
+    product: string;
+    rows: Metric[];
+    warn: number;
+    breach: number;
+  }) {
+    const cfdTone = tone === "cfd";
     return (
-      <section className="panel p-4">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="font-[family-name:var(--font-display)] text-xl">{title}</h2>
-          <Badge className="bg-orange-50 text-orange-900 border-orange-200">{product}</Badge>
+      <section
+        className={cn(
+          "relative overflow-hidden rounded-3xl border p-4 sm:p-5",
+          cfdTone
+            ? "border-teal-200 bg-gradient-to-br from-teal-50 via-white to-white"
+            : "border-violet-200 bg-gradient-to-br from-violet-50 via-white to-white"
+        )}
+      >
+        <div
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute -right-12 -top-16 h-52 w-52 rounded-full opacity-35 blur-2xl",
+            cfdTone ? "bg-teal-300" : "bg-violet-300"
+          )}
+        />
+        <div className="relative flex items-start justify-between gap-3">
+          <div>
+            <div
+              className={cn(
+                "text-xs font-semibold uppercase tracking-[0.14em]",
+                cfdTone ? "text-teal-800" : "text-violet-800"
+              )}
+            >
+              {cfdTone ? t("dash.sphereCfd") : t("dash.sphereEx")}
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-2xl mt-1">{title}</h2>
+          </div>
+          <Badge className={cfdTone ? "bg-teal-50 text-teal-900 border-teal-200" : "bg-violet-50 text-violet-900 border-violet-200"}>
+            {product}
+          </Badge>
         </div>
-        <div className="mt-4 grid sm:grid-cols-2 gap-3">
+        <div className="relative mt-4 grid grid-cols-2 gap-2">
+          <StatCard label={cfdTone ? t("dash.cfdWarn") : t("dash.cryptoWarn")} value={warn} />
+          <StatCard
+            label={cfdTone ? t("dash.cfdBreach") : t("dash.cryptoBreach")}
+            value={breach}
+            tone={breach > 0 ? "alert" : "default"}
+          />
+        </div>
+        <div className="relative mt-4 grid sm:grid-cols-2 gap-3">
           {rows.map((m) => (
-            <div key={m.metric_key} className="rounded-xl border border-[var(--line)] p-3">
+            <div key={m.metric_key} className="rounded-xl border border-[var(--line)] bg-white/80 p-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{m.metric_label}</div>
                 <StatusBadge value={m.status === "OK" ? "HEALTHY" : m.status} />
@@ -94,16 +144,16 @@ export function DailyDashboardView({
         </div>
       )}
 
-      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatCard label={t("dash.cfdWarn")} value={summary.cfd_warn} />
-        <StatCard label={t("dash.cfdBreach")} value={summary.cfd_breach} />
-        <StatCard label={t("dash.cryptoWarn")} value={summary.crypto_warn} />
-        <StatCard label={t("dash.cryptoBreach")} value={summary.crypto_breach} />
-      </div>
-
       <div className="grid xl:grid-cols-2 gap-4">
-        <MetricGrid title={t("dash.cfdBook")} rows={cfd} product="CFD" />
-        <MetricGrid title={t("dash.cryptoEx")} rows={crypto} product="CRYPTO" />
+        <Sphere tone="cfd" title={t("dash.cfdBook")} product="CFD" rows={cfd} warn={summary.cfd_warn} breach={summary.cfd_breach} />
+        <Sphere
+          tone="ex"
+          title={t("dash.cryptoEx")}
+          product="EXCHANGE"
+          rows={crypto}
+          warn={summary.crypto_warn}
+          breach={summary.crypto_breach}
+        />
       </div>
     </div>
   );
