@@ -16,6 +16,7 @@ import { findingMentionsSymbol } from "@/lib/market-intel/pulse";
 import { resolveFindingSources } from "@/lib/market-intel/article-links";
 import { EVENT_TEMPLATES } from "@/lib/market-intel/sources";
 import { IntelImpactBadge, RegionFlag } from "@/components/MarketIntelMeta";
+import { formatMarketIntelMessage } from "@/lib/market-intel/format";
 
 const MI_STORE = "crmp_mi_demo_v1";
 
@@ -95,6 +96,46 @@ function formatFindingStamp(raw: string) {
   const ts = Date.parse(raw.includes("T") ? raw : `${raw.replace(" ", "T")}Z`);
   if (!Number.isFinite(ts)) return raw;
   return `${new Date(ts).toISOString().slice(0, 19).replace("T", " ")} UTC`;
+}
+
+function displayOutboxMessage(
+  findingId: string,
+  stored: string,
+  findings: Array<{
+    finding_id: string;
+    event_title: string;
+    event_summary: string;
+    geography: string;
+    severity: string;
+    products_json: string;
+    sources_json: string;
+    scanned_at: string;
+  }>
+) {
+  const f = findings.find((x) => x.finding_id === findingId);
+  if (!f) return stored.replace(/^\([ivx]+\)\s*/gim, "");
+  let products: Array<{ product: string; asset_class: string; direction: "UP" | "DOWN" | "VOLATILE" }> = [];
+  let sources: Array<{ name: string; url: string }> = [];
+  try {
+    products = JSON.parse(f.products_json || "[]");
+  } catch {
+    products = [];
+  }
+  try {
+    sources = JSON.parse(f.sources_json || "[]");
+  } catch {
+    sources = [];
+  }
+  return formatMarketIntelMessage({
+    finding_id: f.finding_id,
+    event_title: f.event_title,
+    event_summary: f.event_summary,
+    geography: displayGeography(f.event_title, f.geography),
+    severity: f.severity,
+    products,
+    timestamp: f.scanned_at,
+    sources,
+  });
 }
 
 type MiTab = "findings" | "messenger" | "sources" | "scans";
@@ -517,7 +558,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
               </button>
               {openMsg === o.id && (
                 <pre className="mt-3 text-xs whitespace-pre-wrap rounded-lg bg-slate-50 border border-[var(--line)] p-3">
-                  {o.formatted_message}
+                  {displayOutboxMessage(o.finding_id, o.formatted_message, findings)}
                 </pre>
               )}
             </article>
