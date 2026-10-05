@@ -169,6 +169,21 @@ export function OpenIssuesBoard() {
                 <span className="font-semibold">{i.bu}</span>
                 <span className="text-[var(--muted)] tabular-nums">{copy.eta}</span>
               </div>
+              <ul className="space-y-1.5" data-testid={`oi-checklist-m-${i.id}`}>
+                {i.checklist.map((c, idx) => (
+                  <li key={idx} className="flex gap-2 text-xs items-start">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                      defaultChecked={!!c.done}
+                      aria-label={zh ? c.zh : c.en}
+                    />
+                    <span className={c.done ? "text-[var(--muted)] line-through" : ""}>
+                      {zh ? c.zh : c.en}
+                    </span>
+                  </li>
+                ))}
+              </ul>
               <p className="text-[11px] text-[var(--muted)] break-words">
                 <span className="font-semibold">{zh ? "依賴：" : "Depends: "}</span>
                 {copy.dependencies}
@@ -207,7 +222,22 @@ export function OpenIssuesBoard() {
                   <td className="min-w-[16rem] max-w-xl">
                     <div className="font-semibold text-sm">{copy.title}</div>
                     <p className="text-xs text-[var(--muted)] mt-1 break-word">{copy.detail}</p>
-                    <p className="text-[11px] text-[var(--muted)] mt-1">
+                    <ul className="mt-2 space-y-1" data-testid={`oi-checklist-${i.id}`}>
+                      {i.checklist.map((c, idx) => (
+                        <li key={idx} className="flex gap-2 text-xs items-start">
+                          <input
+                            type="checkbox"
+                            className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                            defaultChecked={!!c.done}
+                            aria-label={zh ? c.zh : c.en}
+                          />
+                          <span className={c.done ? "text-[var(--muted)] line-through" : ""}>
+                            {zh ? c.zh : c.en}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="text-[11px] text-[var(--muted)] mt-2">
                       <span className="font-semibold">{zh ? "依賴：" : "Depends: "}</span>
                       {copy.dependencies}
                     </p>

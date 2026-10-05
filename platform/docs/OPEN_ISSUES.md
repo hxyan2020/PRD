@@ -1,18 +1,36 @@
 # CRMP Open Issues
 
-**Document ID:** CRMP-OI-001 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
+**Document ID:** CRMP-OI-001 · **Version:** 1.3 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
 
 Tentative open-issue checklist for the CRMP admin / control-plane programme. Assumptions are explicit:
 
 1. **Monitor 2.0** is still adding indicators — CRMP syncs; it does not own the registry.  
 2. **CRMP** is in **initial design** for production scope (prototype desk already ships).  
-3. **Tech details** and **resource planning** remain open (see Ecosystem Eval bands).
+3. **Tech details** and **resource planning** remain open (see [Ecosystem Eval](/admin/docs/ecosystem) bands).
 
-Statuses: **Planned · Started · WIP · Delayed · UAT · Go live · BAU**. Responsible BU and dependencies are on every row. ETAs are tentative through **end-2027**.
+Statuses: **Planned · Started · WIP · Delayed · UAT · Go live · BAU**. Every issue carries **responsible BU**, **dependencies**, and a **tentative ETA** through **end-2027**.
+
+Source of truth for the interactive checklist: `platform/src/lib/docs/open-issues.ts` (18 issues).
 
 ---
 
-## Summary
+## Summary by BU
+
+| BU | IDs | Focus |
+|---|---|---|
+| **Monitor** | OI-01, OI-13 | Indicator expansion; bidirectional ticket write-back |
+| **Product** | OI-02, OI-15, OI-18 | Design freeze; docs BAU; multi-entity tenancy |
+| **System** | OI-03, OI-06, OI-11, OI-16 | Tech/resource plan; SSO; UX; observability |
+| **AI** | OI-04, OI-05, OI-14 | Production LLM; RAG governance; prototype UAT |
+| **Ops** | OI-07, OI-08, OI-17 | Control adapters; Lark cards; kill-switches |
+| **Risk Owner** | OI-09 | UAT exit + policy thresholds |
+| **Pricing** | OI-10 | LP / pricing feed contracts |
+| **GRC** | OI-12 | Evidence retention, redaction, audit export |
+| **All** | OI-15 | Docs / URL catalog keep pace |
+
+---
+
+## Summary table
 
 | ID | Pri | Area | BU | Status | Tentative ETA | Title |
 |---|---|---|---|---|---|---|
@@ -31,89 +49,206 @@ Statuses: **Planned · Started · WIP · Delayed · UAT · Go live · BAU**. Res
 | OI-13 | P1 | Monitor | Monitor | Delayed | 2027-Q3 | Bidirectional Monitor ticket write-back |
 | OI-14 | P2 | AI | AI | UAT | 2026-10 / 11 | Prototype AI desk features — UAT window |
 | OI-15 | P3 | Product | All | BAU | Ongoing → 2027-12 | Docs & URL catalog keep pace with admin |
-
-Source of truth for the interactive checklist: `platform/src/lib/docs/open-issues.ts`.
+| OI-16 | P1 | System | System | Planned | 2027-Q3 | Observability — spine SLOs / AI / false-alarm |
+| OI-17 | P1 | Ops | Ops | Planned | 2027-Q4 | Global kill-switches |
+| OI-18 | P2 | Product | Product | Planned | 2027-Q4 → 12 | Multi-entity / brand tenancy readiness |
 
 ---
 
-## Detail checklist
+## Detail checklist (by BU)
 
-### OI-01 — Monitor 2.0 indicator expansion
-- [ ] Keep `M2-*` tooltip / deep-link contract stable as new indicators arrive  
-- [ ] Sync API tolerates additive registry changes without CRMP fork  
-- **BU:** Monitor · **Depends:** Monitor roadmap; naming; sync contract · **ETA:** 2027-Q2 (ongoing)
+### Monitor
 
-### OI-02 — CRMP control-plane initial design freeze
-- [ ] Workshops: spine stages, BU RACI, dual-control write path, BAU vs pilot surfaces  
+#### OI-01 — Monitor 2.0 indicator expansion
+**BU:** Monitor · **Status:** WIP · **ETA:** 2027-Q2 (ongoing) · **Depends:** Monitor roadmap; naming; sync contract
+
+- [ ] Publish additive `M2-*` naming + category map as Monitor adds indicators  
+- [ ] Keep tooltip / deep-link contract stable for new codes on Monitor 2.0 + Realtime Alert & Tracker  
+- [ ] Sync / `run_detectors` tolerate unknown additive fields without CRMP schema fork  
+- [ ] Risk Domains P0–P3 scenarios map to new primary indicators  
+- [ ] UAT pack updated when each Monitor indicator wave lands  
+
+#### OI-13 — Bidirectional Monitor ticket write-back *(delayed)*
+**BU:** Monitor · **Status:** Delayed · **ETA:** 2027-Q3 (slipped) · **Depends:** Monitor write API; OI-01; OI-03
+
+- [ ] Inbound webhook: Monitor warn/breach → CRMP upsert + AI RCA  
+- [ ] Outbound PATCH: Ack / dismiss / close / assignee on Realtime Alert & Tracker → Monitor ticket  
+- [ ] Contract tests against Monitor sandbox  
+- [ ] Replace `sync_monitor2` fake `pulled_alerts: 5` with live pull/push  
+- [ ] No auto-close BREACH/CRITICAL from AI alone without RO policy  
+
+*Today:* Ack/dismiss/close update local SQLite only — no live Monitor HTTP.
+
+---
+
+### Product
+
+#### OI-02 — CRMP control-plane initial design freeze
+**BU:** Product · **Status:** Started · **ETA:** 2027-Q1 · **Depends:** RO + Platform Owner workshops; Ecosystem A–B
+
+- [ ] Workshop: spine stages vs home ticket counts vs audit planes  
+- [ ] Draft BU RACI (AI / System / RO / Pricing / Ops / Monitor / GRC)  
+- [ ] Define dual-control write path (maker → checker → control bus)  
+- [ ] Classify surfaces: BAU desk vs pilot-only vs human-only blocklist  
 - [ ] Design freeze signed by Risk Owner + Platform Owner  
-- **BU:** Product · **Depends:** Ecosystem phases A–B · **ETA:** 2027-Q1 (tentative)
 
-### OI-03 — Tech architecture & resource plan
-- [ ] Postgres/HA, IdP, secrets, APM target architecture  
-- [ ] FTE / budget re-estimate vs Ecosystem bands and SOWs  
-- **BU:** System · **Depends:** OI-02 · **ETA:** 2027-Q1 planning pack
+#### OI-15 — Docs & URL catalog BAU
+**BU:** All · **Status:** BAU · **ETA:** Ongoing → 2027-12 · **Depends:** Docs owner; each feature ship
 
-### OI-04 — Production LLM RCA + independent challenger
-- [ ] Vendor-separated primary LLM + challenger; eval harness; cost/latency SLOs  
-- [ ] Preserve RAG AI-write blocklist (`propose_rag` only)  
-- **BU:** AI · **Depends:** RM-03/04; prompt vault · **ETA:** 2027-Q3 UAT
+- [ ] Keep UG / PRD / TSD / UAT / Roadmap / Ecosystem aligned after each nav ship  
+- [ ] Refresh Open Issues + Progress when statuses/ETAs change  
+- [ ] URL catalog lists public + admin paths with correct permissions  
+- [ ] EN + zh-Hant parity for every docs page  
 
-### OI-05 — Knowledge tree + RAG corpus governance
-- [ ] Corpus ownership SLAs; retire cadence; skill↔doc binds at scale  
-- [ ] Maker-checker throughput for `propose_rag`  
-- **BU:** AI · **Depends:** rag.manage staffing · **ETA:** 2027-Q1 BAU hygiene
+#### OI-18 — Multi-entity / brand tenancy readiness
+**BU:** Product · **Status:** Planned · **ETA:** 2027-Q4 → 2027-12 · **Depends:** OI-02; OI-06; Legal entity list
 
-### OI-06 — SSO / IdP + SCIM
-- [ ] Corporate login; kill shared demo passwords  
-- [ ] Preserve maker ≠ checker for AI Admin and interventions (actioner email already on samples)  
-- **BU:** System · **Depends:** Okta/Entra; OI-03 · **ETA:** 2027-Q2 go live
+- [ ] Define tenant = legal entity (or brand) model  
+- [ ] Isolate alerts / RAG / skills / Lark routes / audit export  
+- [ ] Read-only cross-entity exec aggregation (if required)  
+- [ ] Two UAT seeds (e.g. VFSC vs FCA) when design allows  
 
-### OI-07 — Real control adapters
-- [ ] Dry-run then checker against trading/LP bus; global kill-switch  
-- [ ] Gate on shadow false-alarm acceptance; use ESC-DEFAULT + skill binds  
-- **BU:** Ops · **Depends:** control bus; OI-04 · **ETA:** 2027-Q4 (gated)
+---
 
-### OI-08 — Production Lark interactive cards
-- [ ] Ack / Escalate / Approve from Lark cards → CRMP APIs  
-- [ ] Keep Demo Messenger for UAT / fallback  
-- **BU:** Ops · **Depends:** Lark app approval · **ETA:** 2027-Q2 UAT
+### System
 
-### OI-09 — Risk Owner UAT exit + policy thresholds
-- [ ] Execute interactive UAT pack; formal sign-off cadence  
-- [ ] Accept second-AI severity policy + ESC-DEFAULT catch-all  
-- **BU:** Risk Owner · **Depends:** UAT-01…45; BU and Teams RACI · **ETA:** 2026-Q4 / 2027-Q1
+#### OI-03 — Tech architecture & resource plan
+**BU:** System · **Status:** Planned · **ETA:** 2027-Q1 · **Depends:** OI-02; infra; Finance SOW
 
-### OI-10 — LP / pricing feed contracts
-- [ ] Licensed news / LP pricing for Market Intel + margin scenarios  
-- **BU:** Pricing · **Depends:** vendor RFPs; Data Sources · **ETA:** 2027-Q3
+- [ ] Target architecture: Postgres + HA, secrets vault, env isolation  
+- [ ] IdP / SCIM integration sketch (feeds OI-06)  
+- [ ] APM + spine SLO sketch (latency, false-alarm, AI cost)  
+- [ ] FTE plan vs Ecosystem ~7–11 steady-state band  
+- [ ] Budget re-estimate vs A–C $730k–$1.3M and Phase D run-rate  
+- [ ] SOW package for Finance / vendor review  
 
-### OI-11 — Admin UX polish
-- [x] Nav drawer, messenger list→thread, mobile card lists (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues)  
+#### OI-06 — SSO / IdP + SCIM
+**BU:** System · **Status:** Planned · **ETA:** 2027-Q2 · **Depends:** Okta/Entra; OI-03
+
+- [ ] Choose IdP (Okta / Entra) and SCIM group → role map  
+- [ ] Remove shared demo passwords from staging/prod  
+- [ ] Enforce maker ≠ checker in IAM for AI Admin + interventions  
+- [ ] Map BU and Teams to directory groups  
+- [ ] UAT login personas against corporate IdP  
+
+#### OI-11 — Admin UX polish
+**BU:** System · **Status:** WIP · **ETA:** 2026-Q4 BAU · **Depends:** Docs owner; FE; i18n
+
+- [x] Nav drawer + messenger list→thread + mobile cards (Monitor / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues)  
 - [x] Realtime Alert & Tracker filter toolbar 2-col on phone  
-- [ ] Confirm-sheet 375px pass + remaining wide boards (Lark / Market Intel / AI Admin)  
+- [ ] Confirm-sheet 375px pass (messenger maker confirm)  
+- [ ] Mobile cards for Lark / Market Intel / AI Admin boards  
 - [ ] Docs parity BAU with each nav ship  
-- **BU:** System · **Depends:** docs owner; FE · **ETA:** 2026-Q4 BAU
 
-### OI-12 — Evidence retention & audit export
-- [ ] Retention jobs, redaction, auditor export beyond Audit Log (CRMP / Vantage Markets Admin plane split + Roll back) + home spine counts  
-- [x] Prototype audit plane split: CRMP logs vs Vantage Markets Admin logs; `POST /api/audit/rollback` when before-state snapshot exists  
-- **BU:** GRC · **Depends:** Legal; OI-06; Postgres · **ETA:** 2027-Q4
+#### OI-16 — Observability
+**BU:** System · **Status:** Planned · **ETA:** 2027-Q3 · **Depends:** OI-03; OI-04; SRE
 
-### OI-13 — Bidirectional Monitor ticket write-back *(delayed)*
-- [ ] Ack/dismiss/close on Realtime Alert & Tracker PATCHes upstream Monitor tickets (today: local SQLite only; `sync_monitor2` audits `pulled_alerts: 5` — no live HTTP)  
-- **BU:** Monitor · **Depends:** Monitor write API; OI-01 · **ETA:** 2027-Q3 (slipped)
+- [ ] Define spine stage latency SLOs  
+- [ ] Dashboards: AI RCA + challenger latency/cost  
+- [ ] False-alarm / dismiss rate tracking for shadow mode  
+- [ ] Adapter health checks for Monitor + Lark + control bus  
+- [ ] On-call runbook for CRMP control-plane pages  
 
-### OI-14 — Prototype AI desk features — UAT window
-- [x] Realtime Alert & Tracker (AI Analyses list → `/admin/alerts`) · Detectors merged into Monitor 2.0  
-- [x] First/second-line AI Admin · grouped pipeline + rank note · intervention actioner email  
-- [x] RAG `propose_rag` human-gate · ESC-DEFAULT + dimension coefficients + skill binds · knowledge-tree RAG leaves · MonitorCode tooltips  
-- [x] Editable Roles (`/admin/roles` · `/api/roles`) · audit plane split + Roll back  
+---
+
+### AI
+
+#### OI-04 — Production LLM RCA + independent challenger
+**BU:** AI · **Status:** WIP · **ETA:** 2027-Q3 UAT · **Depends:** Prompt vault; RM-03/04; RAG dual-control
+
+- [ ] Select primary LLM vendor + separate challenger vendor/prompt path  
+- [ ] Eval harness for BREACH/CRITICAL RCA quality gates  
+- [ ] Cost & latency SLOs with alerts (RM-14)  
+- [ ] Preserve `propose_rag` human-gate / AI write blocklist  
+- [ ] Wire first/second-line AI Admin cards to production models  
+- [ ] Shadow mode acceptance before any write-path coupling  
+
+#### OI-05 — Knowledge tree + RAG corpus governance
+**BU:** AI · **Status:** Started · **ETA:** 2027-Q1 · **Depends:** rag.manage staffing; skill catalog
+
+- [ ] Name corpus owners per domain (CFD / crypto / ops)  
+- [ ] Retire / refresh cadence for stale RAG leaves  
+- [ ] Skill↔doc bind coverage targets as catalog grows  
+- [ ] Maker-checker SLA for `propose_rag` queue depth  
+- [ ] Tag corpus rows to Monitor `M2-*` where applicable  
+
+#### OI-14 — Prototype AI desk features — UAT window
+**BU:** AI · **Status:** UAT · **ETA:** 2026-10 / 11 · **Depends:** UAT-01…45; RO calendar
+
+- [x] Realtime Alert & Tracker + Detectors merged into Monitor 2.0  
+- [x] First/second-line AI Admin · grouped pipeline · intervention actioner email  
+- [x] `propose_rag` · ESC-DEFAULT + coefficients · RAG leaves · MonitorCode  
+- [x] Editable Roles + audit plane split + Roll back  
 - [ ] Formal UAT sign-off (OI-09)  
-- **BU:** AI · **ETA:** 2026-10 / 11 UAT
 
-### OI-15 — Docs & URL catalog BAU
-- [ ] Keep User Guide / PRD / TSD / UAT / Roadmap / Ecosystem / Open Issues / Progress / URLs aligned with nav (Realtime Alert & Tracker naming; Detectors → Monitor 2.0; AI Analyses list redirect; no Spine Log tab; BU and Teams; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs + Roll back)  
-- **BU:** All · **ETA:** Ongoing → 2027-12
+---
+
+### Ops
+
+#### OI-07 — Real control adapters
+**BU:** Ops · **Status:** Planned · **ETA:** 2027-Q4 (gated) · **Depends:** Control bus; OI-04; ESC-DEFAULT
+
+- [ ] Inventory controls: halt, leverage cut, widen, pause-copy, block account  
+- [ ] Dry-run adapter against staging control bus  
+- [ ] Checker path for irreversible controls (SoD)  
+- [ ] Global + per-adapter kill-switches (ties OI-17)  
+- [ ] Runbooks for Ops liaison; shadow false-alarm gate from RO  
+
+#### OI-08 — Production Lark interactive cards
+**BU:** Ops · **Status:** Planned · **ETA:** 2027-Q2 UAT · **Depends:** Lark app approval; vault; escalation routes
+
+- [ ] Lark app / bot approved; secrets in vault  
+- [ ] Card actions: Ack / Escalate / Approve → CRMP APIs  
+- [ ] Route cards by ESC-DEFAULT + dimension coefficients  
+- [ ] Keep Demo Messenger for UAT / fallback  
+- [ ] Decide Lark vs Teams as corporate messenger (leadership)  
+
+#### OI-17 — Global kill-switches
+**BU:** Ops · **Status:** Planned · **ETA:** 2027-Q4 · **Depends:** OI-07; OI-08; Settings flags
+
+- [ ] Kill-switch matrix: auto-skills / intel push / each write adapter  
+- [ ] UI + API to flip switches with audit row (Vantage plane)  
+- [ ] UAT drill: disable and restore under RO observation  
+- [ ] Document who may flip switches (SoD)  
+
+---
+
+### Risk Owner
+
+#### OI-09 — Risk Owner UAT exit + policy thresholds
+**BU:** Risk Owner · **Status:** Started · **ETA:** 2026-Q4 / 2027-Q1 · **Depends:** UAT pack; BU and Teams RACI; AI Admin
+
+- [ ] Execute interactive UAT-01…45 with evidence notes  
+- [ ] Sign UAT exit criteria (pass thresholds)  
+- [ ] Set second-AI severity policy (default BREACH)  
+- [ ] Accept ESC-DEFAULT catch-all + dimension coefficients  
+- [ ] Rehearse escalation Primary → Secondary → RO → Exec  
+
+---
+
+### Pricing
+
+#### OI-10 — LP / pricing feed contracts
+**BU:** Pricing · **Status:** Planned · **ETA:** 2027-Q3 · **Depends:** Vendor RFPs; Monitor IDs; Data Sources
+
+- [ ] RFP licensed news / market-intel vendors  
+- [ ] LP pricing feed contract for margin / widen scenarios  
+- [ ] Register feeds in Data Sources with owner + cadence  
+- [ ] Bind feed health to Monitor `M2-*` where applicable  
+- [ ] Scoring / false-positive policy with RO + AI  
+
+---
+
+### GRC
+
+#### OI-12 — Evidence retention, redaction & audit export
+**BU:** GRC · **Status:** Planned · **ETA:** 2027-Q4 · **Depends:** Legal; OI-06; Postgres
+
+- [x] Prototype audit plane split (CRMP / Vantage Markets Admin) + Roll back  
+- [ ] Legal retention + redaction policy for evidence excerpts  
+- [ ] Scheduled retention / purge jobs  
+- [ ] Auditor-ready export pack (beyond UI tabs)  
+- [ ] Data residency statement for multi-entity  
 
 ---
 
@@ -123,6 +258,7 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 |---|---|---|
 | 1.0 | 2026-10-05 | Initial open-issues pack wired into admin docs |
 | 1.1 | 2026-10-05 | Audit plane split + rollback; editable Roles; escalation dimensions noted |
-| 1.2 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11 mobile cards; OI-13 local-only ack; Ecosystem v1.8 aligned |
+| 1.2 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11 mobile cards; OI-13 local-only ack |
+| 1.3 | 2026-10-05 | Detailed per-BU checklists; OI-16 observability, OI-17 kill-switches, OI-18 tenancy; board renders checklist lines |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)

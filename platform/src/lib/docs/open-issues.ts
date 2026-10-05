@@ -31,6 +31,12 @@ export type IssueArea =
   | "Platform"
   | "GRC";
 
+export type IssueChecklistItem = {
+  en: string;
+  zh: string;
+  done?: boolean;
+};
+
 export type IssueCopy = {
   title: string;
   detail: string;
@@ -50,6 +56,8 @@ export type OpenIssue = {
   priority: "P0" | "P1" | "P2" | "P3";
   en: IssueCopy;
   zh: IssueCopy;
+  /** Detailed checklist lines shown on the interactive board */
+  checklist: IssueChecklistItem[];
 };
 
 /** Timeline axis: Oct 2026 → Dec 2027 inclusive = 15 months (indices 0..14). */
@@ -103,17 +111,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Monitor 2.0 indicator expansion",
       detail:
-        "Upstream Monitor 2.0 continues to add CFD/crypto indicators. CRMP must stay sync-compatible (codes, thresholds, ticket write-back) without forking the registry. Tooltip/deep-link contract for M2-* codes is shipped in admin; new indicators still arrive from Monitor.",
+        "Upstream Monitor 2.0 continues to add CFD/crypto indicators. CRMP syncs; it does not own the registry. M2-* tooltip/deep-link contract is shipped; new indicators still arrive from Monitor.",
       dependencies: "Monitor 2.0 product roadmap; indicator naming convention; sync API contract",
       eta: "2027-Q2 (ongoing ingest)",
     },
     zh: {
       title: "Monitor 2.0 指標擴充",
       detail:
-        "上游 Monitor 2.0 仍持續新增 CFD／加密指標。CRMP 須保持同步相容（代碼、門檻、工單回寫），不可分叉登錄表。管理後台已交付 M2-* 提示／深連結契約；新指標仍由 Monitor 側進來。",
+        "上游 Monitor 2.0 仍持續新增 CFD／加密指標。CRMP 僅同步，不擁有登錄表。M2-* 提示／深連結已交付；新指標仍由 Monitor 側進來。",
       dependencies: "Monitor 2.0 產品路線；指標命名慣例；同步 API 契約",
       eta: "2027-Q2（持續接入）",
     },
+    checklist: [
+      { en: "Publish additive M2-* naming + category map as Monitor adds indicators", zh: "隨 Monitor 加指標發布可加性的 M2-* 命名與類別對照" },
+      { en: "Keep tooltip / deep-link contract stable for new codes on Monitor 2.0 + Realtime Alert", zh: "新代碼在 Monitor 2.0＋即時警報與追蹤的提示／深連結契約保持穩定" },
+      { en: "Sync / run_detectors tolerate unknown additive fields without CRMP schema fork", zh: "同步／run_detectors 容忍未知加性欄位，不造成 CRMP schema 分叉" },
+      { en: "Risk Domains P0–P3 scenarios map to new primary indicators", zh: "風險領域 P0–P3 情境對應新的主指標" },
+      { en: "UAT pack updated when each Monitor indicator wave lands", zh: "每波 Monitor 指標落地時更新 UAT 包" },
+    ],
   },
   {
     id: "OI-02",
@@ -126,17 +141,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "CRMP control-plane — initial design freeze",
       detail:
-        "CRMP is still in initial design for production scope: spine stages, BU RACI, dual-control write path, and which surfaces are BAU vs pilot. Prototype admin proves the desk; design freeze and RACI sign-off are open.",
+        "CRMP production scope is still in initial design: spine stages, BU RACI, dual-control write path, BAU vs pilot surfaces. Prototype admin proves the desk; design freeze and RACI sign-off remain open.",
       dependencies: "Risk Owner + Platform Owner workshops; Ecosystem Eval phases A–B",
       eta: "2027-Q1 design freeze (tentative)",
     },
     zh: {
       title: "CRMP 控制面 — 初始設計凍結",
       detail:
-        "CRMP 生產範圍仍處初始設計：脊柱階段、BU RACI、雙重控制寫路徑、哪些畫面屬日常／試點。原型後台已證明台面；設計凍結與 RACI 簽核仍開放。",
+        "CRMP 生產範圍仍處初始設計：脊柱階段、BU RACI、雙重控制寫路徑、日常／試點畫面。原型後台已證明台面；設計凍結與 RACI 簽核仍開放。",
       dependencies: "風險負責人＋平台負責人工作坊；生態評估 A–B 階段",
       eta: "2027-Q1 設計凍結（暫定）",
     },
+    checklist: [
+      { en: "Workshop: spine stages vs home ticket counts vs audit planes", zh: "工作坊：脊柱階段 vs 首頁計數 vs 稽核平面" },
+      { en: "Draft BU RACI (AI / System / RO / Pricing / Ops / Monitor / GRC)", zh: "起草 BU RACI（AI／System／RO／Pricing／Ops／Monitor／GRC）" },
+      { en: "Define dual-control write path (maker → checker → control bus)", zh: "定義雙重控制寫路徑（Maker→Checker→控制匯流排）" },
+      { en: "Classify surfaces: BAU desk vs pilot-only vs human-only blocklist", zh: "畫面分級：日常台面／僅試點／僅限人類黑名單" },
+      { en: "Design freeze signed by Risk Owner + Platform Owner", zh: "風險負責人＋平台負責人簽核設計凍結" },
+    ],
   },
   {
     id: "OI-03",
@@ -160,6 +182,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
       dependencies: "OI-02 設計凍結；基礎設施容量；財務 SOW",
       eta: "2027-Q1 規劃包",
     },
+    checklist: [
+      { en: "Target architecture: Postgres + HA, secrets vault, env isolation", zh: "目標架構：Postgres＋HA、密鑰庫、環境隔離" },
+      { en: "IdP / SCIM integration sketch (feeds OI-06)", zh: "IdP／SCIM 整合草圖（餵給 OI-06）" },
+      { en: "APM + spine SLO sketch (latency, false-alarm, AI cost)", zh: "APM＋脊柱 SLO 草圖（延遲、誤報、AI 成本）" },
+      { en: "FTE plan vs Ecosystem 7–11 steady-state band", zh: "FTE 計畫對照生態評估 7–11 穩態人力帶" },
+      { en: "Budget re-estimate vs A–C $730k–$1.3M and Phase D run-rate", zh: "預算重估對照 A–C $730k–$1.3M 與階段 D 年費" },
+      { en: "SOW package for Finance / vendor review", zh: "供財務／供應商審查的 SOW 包" },
+    ],
   },
   {
     id: "OI-04",
@@ -172,17 +202,25 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Production LLM RCA + independent challenger",
       detail:
-        "Prototype uses heuristic skill/RAG + second-line challenger models (first-line / second-line AI Admin cards). Need vendor-separated LLM primary RCA, eval harness, cost/latency SLOs, and keep RAG AI-write blocklist (propose_rag only).",
+        "Prototype uses heuristic skill/RAG + second-line challenger. Need vendor-separated LLM primary RCA, eval harness, cost/latency SLOs; keep RAG AI-write blocklist (propose_rag only).",
       dependencies: "Prompt vault; spend caps; RM-03/RM-04; RAG dual-control path",
       eta: "2027-Q3 UAT · go-live TBD",
     },
     zh: {
       title: "生產 LLM 根因＋獨立挑戰者",
       detail:
-        "原型使用啟發式技能／RAG＋二線挑戰模型（AI 管理一線／二線卡片）。需供應商分離的 LLM 主 RCA、評測架、成本／延遲 SLO，並維持 RAG AI 寫入封鎖（僅 propose_rag）。",
+        "原型使用啟發式技能／RAG＋二線挑戰。需供應商分離的 LLM 主 RCA、評測架、成本／延遲 SLO；維持 RAG AI 寫入封鎖（僅 propose_rag）。",
       dependencies: "提示詞金庫；支出上限；RM-03／RM-04；RAG 雙重控制路徑",
       eta: "2027-Q3 UAT · 上線待定",
     },
+    checklist: [
+      { en: "Select primary LLM vendor + separate challenger vendor/prompt path", zh: "選定主 LLM 供應商＋獨立挑戰供應商／提示路徑" },
+      { en: "Eval harness for BREACH/CRITICAL RCA quality gates", zh: "BREACH／CRITICAL RCA 品質閘道評測架" },
+      { en: "Cost & latency SLOs with alerts (RM-14)", zh: "成本與延遲 SLO＋告警（RM-14）" },
+      { en: "Preserve propose_rag human-gate / AI write blocklist", zh: "維持 propose_rag 人工閘道／AI 寫入黑名單" },
+      { en: "Wire first/second-line AI Admin cards to production models", zh: "將一線／二線 AI 管理卡片接到生產模型" },
+      { en: "Shadow mode acceptance before any write-path coupling", zh: "任何寫路徑耦合前完成影子模式接受" },
+    ],
   },
   {
     id: "OI-05",
@@ -195,17 +233,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Knowledge tree + RAG corpus governance",
       detail:
-        "Knowledge tree now maps RAG documents as leaves with deep links. Open: corpus ownership SLAs, retire cadence, skill↔doc binds at scale, and maker-checker throughput for propose_rag.",
+        "Knowledge tree maps RAG documents as leaves with deep links. Open: corpus ownership SLAs, retire cadence, skill↔doc binds at scale, maker-checker throughput for propose_rag.",
       dependencies: "rag.manage staffing; skill catalog growth; Monitor tags",
       eta: "2027-Q1 BAU hygiene",
     },
     zh: {
       title: "知識樹＋RAG 語料治理",
       detail:
-        "知識樹已將 RAG 文件對映為葉節點並可深連結。開放項：語料擁有 SLA、退役節奏、規模化技能↔文件綁定，以及 propose_rag 的 Maker-Checker 吞吐。",
+        "知識樹已將 RAG 文件對映為葉節點並可深連結。開放：語料擁有 SLA、退役節奏、規模化技能↔文件綁定、propose_rag Maker-Checker 吞吐。",
       dependencies: "rag.manage 人力；技能目錄成長；Monitor 標籤",
       eta: "2027-Q1 日常衛生",
     },
+    checklist: [
+      { en: "Name corpus owners per domain (CFD / crypto / ops)", zh: "按領域（CFD／加密／營運）指定語料負責人" },
+      { en: "Retire / refresh cadence for stale RAG leaves", zh: "過期 RAG 葉的退役／刷新節奏" },
+      { en: "Skill↔doc bind coverage targets as catalog grows", zh: "技能目錄成長時的技能↔文件綁定覆蓋目標" },
+      { en: "Maker-checker SLA for propose_rag queue depth", zh: "propose_rag 佇列深度的 Maker-Checker SLA" },
+      { en: "Tag corpus rows to Monitor M2-* where applicable", zh: "適用處將語料列標到 Monitor M2-*" },
+    ],
   },
   {
     id: "OI-06",
@@ -218,17 +263,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "SSO / IdP + SCIM (replace demo personas)",
       detail:
-        "Kill shared demo passwords (risk123 etc.). Corporate SSO + SCIM into users/roles; preserve maker≠checker SoD for AI Admin and interventions (actioner email already shown on samples).",
+        "Kill shared demo passwords. Corporate SSO + SCIM into users/roles; preserve maker≠checker SoD for AI Admin and interventions (actioner email already on samples).",
       dependencies: "Okta/Entra approval; OI-03 resource plan",
       eta: "2027-Q2 go live (tentative)",
     },
     zh: {
       title: "SSO／IdP＋SCIM（取代示範角色）",
       detail:
-        "淘汰共用示範密碼（risk123 等）。企業 SSO＋SCIM 進入使用者／角色；保留 AI 管理與干預的 Maker≠Checker 職責分離（樣本已顯示操作者信箱）。",
+        "淘汰共用示範密碼。企業 SSO＋SCIM 進入使用者／角色；保留 AI 管理與干預的 Maker≠Checker 職責分離（樣本已顯示操作者信箱）。",
       dependencies: "Okta／Entra 核准；OI-03 資源規劃",
       eta: "2027-Q2 上線（暫定）",
     },
+    checklist: [
+      { en: "Choose IdP (Okta / Entra) and SCIM group → role map", zh: "選定 IdP（Okta／Entra）與 SCIM 群組→角色對照" },
+      { en: "Remove shared demo passwords from staging/prod", zh: "從 staging／prod 移除共用示範密碼" },
+      { en: "Enforce maker ≠ checker in IAM for AI Admin + interventions", zh: "在 IAM 強制 AI 管理＋干預的 Maker≠Checker" },
+      { en: "Map BU and Teams to directory groups", zh: "將 BU 與團隊對映目錄群組" },
+      { en: "UAT login personas against corporate IdP", zh: "以企業 IdP 驗收登入角色" },
+    ],
   },
   {
     id: "OI-07",
@@ -241,17 +293,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Real control adapters (halt / leverage / pause-copy)",
       detail:
-        "Messenger recommended actions today create admin_ref + intervention samples. Production needs dry-run then checker against Vantage trading/LP bus, with global kill-switch. Do not enable before shadow false-alarm rates accepted.",
+        "Messenger recommended actions today create admin_ref + intervention samples. Production needs dry-run then checker against trading/LP bus, with global kill-switch. Gate on shadow false-alarm acceptance.",
       dependencies: "Trading control bus; OI-04 shadow quality; Escalation ESC-DEFAULT + skill binds",
       eta: "2027-Q4 go live (gated)",
     },
     zh: {
       title: "真實控制適配（停市／槓桿／暫停跟單）",
       detail:
-        "Messenger 建議動作目前產生 admin_ref＋干預樣本。生產需先 dry-run 再對 Vantage 交易／LP 匯流排做 Checker，並具全域緊急開關。影子誤報率未接受前不可啟用。",
+        "Messenger 建議動作目前產生 admin_ref＋干預樣本。生產需 dry-run 再對交易／LP 匯流排做 Checker，並具全域緊急開關。影子誤報率未接受前不可啟用。",
       dependencies: "交易控制匯流排；OI-04 影子品質；升級 ESC-DEFAULT＋技能綁定",
       eta: "2027-Q4 上線（閘控）",
     },
+    checklist: [
+      { en: "Inventory controls: halt, leverage cut, widen, pause-copy, block account", zh: "盤點控制：停市、槓桿、擴點、暫停跟單、封鎖帳戶" },
+      { en: "Dry-run adapter against staging control bus", zh: "對 staging 控制匯流排做 dry-run 適配" },
+      { en: "Checker path for irreversible controls (SoD)", zh: "不可逆控制的 Checker 路徑（職責分離）" },
+      { en: "Global + per-adapter kill-switches (ties OI-17)", zh: "全域＋逐適配緊急開關（銜接 OI-17）" },
+      { en: "Runbooks for Ops liaison; shadow false-alarm gate from RO", zh: "營運窗口操作手冊；風險負責人影子誤報閘門" },
+    ],
   },
   {
     id: "OI-08",
@@ -275,6 +334,13 @@ export const OPEN_ISSUES: OpenIssue[] = [
       dependencies: "Lark 應用核准；機器人密鑰庫；升級路徑",
       eta: "2027-Q2 UAT",
     },
+    checklist: [
+      { en: "Lark app / bot approved; secrets in vault", zh: "Lark 應用／機器人核准；密鑰入庫" },
+      { en: "Card actions: Ack / Escalate / Approve → CRMP APIs", zh: "卡片動作：確認／升級／核准 → CRMP API" },
+      { en: "Route cards by ESC-DEFAULT + dimension coefficients", zh: "依 ESC-DEFAULT＋維度係數路由卡片" },
+      { en: "Keep Demo Messenger for UAT / fallback", zh: "保留 Demo Messenger 供 UAT／備援" },
+      { en: "Decide Lark vs Teams as corporate messenger (leadership)", zh: "高階決策：企業即時通訊選 Lark 或 Teams" },
+    ],
   },
   {
     id: "OI-09",
@@ -287,17 +353,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Risk Owner UAT exit + policy thresholds",
       detail:
-        "Interactive UAT pack (45+ cases) exists. Open: formal Risk Owner sign-off cadence, policy thresholds for second-AI severity, and acceptance of ESC-DEFAULT catch-all + coefficient skill binds.",
+        "Interactive UAT pack (45+ cases) exists. Open: formal RO sign-off cadence, second-AI severity policy, acceptance of ESC-DEFAULT + coefficient skill binds.",
       dependencies: "UAT pack execution; BU and Teams RACI; AI Admin line1/line2 settings",
       eta: "2026-Q4 / 2027-Q1",
     },
     zh: {
       title: "風險負責人 UAT 出口＋政策門檻",
       detail:
-        "互動式 UAT 包（45+ 案例）已存在。開放項：正式風險負責人簽核節奏、第二 AI 嚴重度政策門檻，以及接受 ESC-DEFAULT 兜底＋係數技能綁定。",
+        "互動式 UAT 包（45+ 案例）已存在。開放：正式 RO 簽核節奏、第二 AI 嚴重度政策、接受 ESC-DEFAULT＋係數技能綁定。",
       dependencies: "執行 UAT 包；BU 與團隊 RACI；AI 管理一線／二線設定",
       eta: "2026-Q4／2027-Q1",
     },
+    checklist: [
+      { en: "Execute interactive UAT-01…45 with evidence notes", zh: "執行互動式 UAT-01…45 並留證據註記" },
+      { en: "Sign UAT exit criteria (pass thresholds)", zh: "簽核 UAT 退出標準（通過門檻）" },
+      { en: "Set second-AI severity policy (default BREACH)", zh: "設定第二 AI 嚴重度政策（預設 BREACH）" },
+      { en: "Accept ESC-DEFAULT catch-all + dimension coefficients", zh: "接受 ESC-DEFAULT 兜底＋維度係數" },
+      { en: "Rehearse escalation Primary → Secondary → RO → Exec", zh: "演練升級 Primary→Secondary→RO→Exec" },
+    ],
   },
   {
     id: "OI-10",
@@ -310,17 +383,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "LP / pricing feed contracts for market intel + margin",
       detail:
-        "Market Intelligence and margin scenarios need licensed/news and LP pricing contracts. Prototype uses heuristic scan templates and seeded M2-* indicators — not vendor SLA.",
+        "Market Intelligence and margin scenarios need licensed news and LP pricing contracts. Prototype uses heuristic scans and seeded M2-* — not vendor SLA.",
       dependencies: "Vendor RFPs; Monitor indicator IDs; Data Sources registry",
       eta: "2027-Q3 (tentative)",
     },
     zh: {
       title: "LP／定價饋送契約（市場情報＋保證金）",
       detail:
-        "市場情報與保證金情境需要授權新聞與 LP 定價契約。原型使用啟發式掃描模板與種子 M2-* 指標 — 非供應商 SLA。",
+        "市場情報與保證金情境需要授權新聞與 LP 定價契約。原型使用啟發式掃描與種子 M2-* — 非供應商 SLA。",
       dependencies: "供應商 RFP；Monitor 指標 ID；資料來源登錄",
       eta: "2027-Q3（暫定）",
     },
+    checklist: [
+      { en: "RFP licensed news / market-intel vendors", zh: "對授權新聞／市場情報供應商發 RFP" },
+      { en: "LP pricing feed contract for margin / widen scenarios", zh: "保證金／擴點情境的 LP 定價饋送契約" },
+      { en: "Register feeds in Data Sources with owner + cadence", zh: "在資料來源登錄饋送（負責人＋節奏）" },
+      { en: "Bind feed health to Monitor M2-* where applicable", zh: "適用處將饋送健康綁到 Monitor M2-*" },
+      { en: "Scoring / false-positive policy with RO + AI", zh: "與 RO＋AI 訂定評分／誤報政策" },
+    ],
   },
   {
     id: "OI-11",
@@ -333,17 +413,32 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Admin UX polish — mobile + docs parity",
       detail:
-        "Shipped: nav drawer, messenger list→thread, mobile card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues; Realtime Alert filters 2-col on phone. Open: confirm-sheet 375px pass, remaining wide boards (Lark / Market Intel / AI Admin), docs parity.",
+        "Shipped: nav drawer, messenger list→thread, mobile cards (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues); Realtime Alert filters 2-col. Open: confirm-sheet 375px, Lark / Market Intel / AI Admin wide boards.",
       dependencies: "Docs owners; FE capacity; i18n catalog",
       eta: "2026-Q4 BAU",
     },
     zh: {
       title: "管理後台 UX 打磨 — 行動＋文件對齊",
       detail:
-        "已交付：導覽抽屜、Messenger 列表→執行緒、Monitor 2.0／升級／資料來源／風險日誌／稽核／使用者／開放議題手機卡片；即時警報篩選手機兩欄。開放：確認表 375px、其餘寬板（Lark／情報／AI 管理）、文件對齊。",
+        "已交付：導覽抽屜、Messenger 列表→執行緒、多頁手機卡片；即時警報篩選手機兩欄。開放：確認表 375px、Lark／情報／AI 管理寬板。",
       dependencies: "文件負責人；前端產能；i18n 目錄",
       eta: "2026-Q4 日常",
     },
+    checklist: [
+      {
+        en: "Nav drawer + messenger list→thread + mobile cards (Monitor / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues)",
+        zh: "導覽抽屜＋Messenger 列表→執行緒＋手機卡片（Monitor／升級／資料來源／風險日誌／稽核／使用者／開放議題）",
+        done: true,
+      },
+      {
+        en: "Realtime Alert & Tracker filter toolbar 2-col on phone",
+        zh: "即時警報與追蹤篩選手機兩欄",
+        done: true,
+      },
+      { en: "Confirm-sheet 375px pass (messenger maker confirm)", zh: "確認表 375px 通過（Messenger Maker 確認）" },
+      { en: "Mobile cards for Lark / Market Intel / AI Admin boards", zh: "Lark／市場情報／AI 管理板手機卡片" },
+      { en: "Docs parity BAU with each nav ship", zh: "每次選單交付後的文件對齊日常" },
+    ],
   },
   {
     id: "OI-12",
@@ -356,17 +451,28 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Evidence retention, redaction & audit export",
       detail:
-        "Evidence vault and intervention samples may hold account identifiers. Need retention jobs, redaction policy, and auditor-ready export — beyond the current Audit Log (CRMP / Vantage Markets Admin plane split + Roll back) + home spine counts.",
+        "Evidence vault and intervention samples may hold account identifiers. Need retention jobs, redaction, auditor-ready export — beyond Audit Log plane split + Roll back + home spine counts.",
       dependencies: "Legal policy; OI-06 identity; Postgres migration",
       eta: "2027-Q4",
     },
     zh: {
       title: "證據保存、遮罩與稽核匯出",
       detail:
-        "證據庫與干預樣本可能含帳戶識別碼。需保存工作、遮罩政策與稽核就緒匯出 — 超越現行稽核日誌（CRMP／Vantage Markets 管理平面分流＋回滾）＋首頁脊柱計數。",
+        "證據庫與干預樣本可能含帳戶識別。需保存工作、遮罩、稽核就緒匯出 — 超越稽核平面分流＋回滾＋首頁脊柱計數。",
       dependencies: "法務政策；OI-06 身分；Postgres 遷移",
       eta: "2027-Q4",
     },
+    checklist: [
+      {
+        en: "Prototype audit plane split (CRMP / Vantage Markets Admin) + Roll back",
+        zh: "原型稽核平面分流（CRMP／Vantage Markets 管理）＋回滾",
+        done: true,
+      },
+      { en: "Legal retention + redaction policy for evidence excerpts", zh: "證據摘錄的法遵保存＋遮罩政策" },
+      { en: "Scheduled retention / purge jobs", zh: "排程保存／清除作業" },
+      { en: "Auditor-ready export pack (beyond UI tabs)", zh: "稽核就緒匯出包（超越 UI 分頁）" },
+      { en: "Data residency statement for multi-entity", zh: "多法人資料駐留聲明" },
+    ],
   },
   {
     id: "OI-13",
@@ -379,17 +485,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Bidirectional Monitor ticket write-back",
       detail:
-        "Ack/dismiss/close on Realtime Alert & Tracker must PATCH upstream Monitor tickets. Today those actions only update local SQLite (sync_monitor2 audits pulled_alerts: 5 — no live HTTP). Delayed pending Monitor API contract and resource plan (OI-01, OI-03).",
-      dependencies: "Monitor write API; OI-01 indicator stability",
+        "Ack/dismiss/close on Realtime Alert & Tracker must PATCH upstream Monitor tickets. Today: local SQLite only (sync_monitor2 audits pulled_alerts: 5 — no live HTTP). Delayed pending API contract + resource plan.",
+      dependencies: "Monitor write API; OI-01 indicator stability; OI-03",
       eta: "2027-Q3 (slipped from 2027-Q1)",
     },
     zh: {
       title: "Monitor 工單雙向回寫",
       detail:
-        "在即時警報與追蹤 Ack／排除／結案須 PATCH 上游 Monitor 工單。今日只改本機 SQLite（sync_monitor2 稽核 pulled_alerts: 5 — 無真實 HTTP）。因 Monitor API 契約與資源規劃（OI-01、OI-03）延期。",
-      dependencies: "Monitor 寫入 API；OI-01 指標穩定",
+        "在即時警報與追蹤 Ack／排除／結案須 PATCH 上游 Monitor 工單。今日只改本機 SQLite（sync_monitor2 稽核 pulled_alerts: 5 — 無真實 HTTP）。因 API 契約與資源規劃延期。",
+      dependencies: "Monitor 寫入 API；OI-01 指標穩定；OI-03",
       eta: "2027-Q3（自 2027-Q1 延後）",
     },
+    checklist: [
+      { en: "Inbound webhook: Monitor warn/breach → CRMP upsert + AI RCA", zh: "入站 webhook：Monitor 警告／違規 → CRMP upsert＋AI RCA" },
+      { en: "Outbound PATCH: Ack / dismiss / close / assignee → Monitor ticket", zh: "出站 PATCH：Ack／排除／結案／承辦人 → Monitor 工單" },
+      { en: "Contract tests against Monitor sandbox", zh: "對 Monitor 沙盒做契約測試" },
+      { en: "Replace sync_monitor2 fake pulled_alerts: 5 with live pull/push", zh: "以真實拉／推取代 sync_monitor2 假 pulled_alerts: 5" },
+      { en: "No auto-close BREACH/CRITICAL from AI alone without RO policy", zh: "無 RO 政策前禁止 AI 單獨自動關閉 BREACH／CRITICAL" },
+    ],
   },
   {
     id: "OI-14",
@@ -402,17 +515,40 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Prototype AI desk features — UAT window",
       detail:
-        "Shipped for UAT: Realtime Alert & Tracker (AI Analyses list redirect), Detectors merged into Monitor 2.0, first/second-line AI Admin, grouped pipeline + rank note, intervention actioner email, RAG propose_rag human-gate, ESC-DEFAULT + dimension coefficients + skill binds, knowledge-tree RAG leaves, MonitorCode tooltips, editable Roles (/api/roles), audit plane split (CRMP / Vantage Markets Admin) + Roll back. Formal UAT sign-off still open (OI-09).",
+        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back. Formal UAT sign-off still open (OI-09).",
       dependencies: "UAT-01…45; Risk Owner calendar",
       eta: "2026-10 / 2026-11 UAT",
     },
     zh: {
       title: "原型 AI 台面功能 — UAT 窗口",
       detail:
-        "已交付供 UAT：即時警報與追蹤（AI 分析列表轉址）、偵測器併入 Monitor 2.0、一線／二線 AI 管理、分組管線＋排序說明、干預操作者信箱、RAG propose_rag 人工閘道、ESC-DEFAULT＋維度係數＋技能綁定、知識樹 RAG 葉、MonitorCode 提示、可編輯角色（/api/roles）、稽核平面分流（CRMP／Vantage Markets 管理）＋回滾。正式 UAT 簽核仍開放（OI-09）。",
+        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾。正式 UAT 簽核仍開放（OI-09）。",
       dependencies: "UAT-01…45；風險負責人行程",
       eta: "2026-10／2026-11 UAT",
     },
+    checklist: [
+      {
+        en: "Realtime Alert & Tracker + Detectors merged into Monitor 2.0",
+        zh: "即時警報與追蹤＋偵測器併入 Monitor 2.0",
+        done: true,
+      },
+      {
+        en: "First/second-line AI Admin · grouped pipeline · intervention actioner email",
+        zh: "一線／二線 AI 管理·分組管線·干預操作者信箱",
+        done: true,
+      },
+      {
+        en: "propose_rag · ESC-DEFAULT + coefficients · RAG leaves · MonitorCode",
+        zh: "propose_rag·ESC-DEFAULT＋係數·RAG 葉·MonitorCode",
+        done: true,
+      },
+      {
+        en: "Editable Roles + audit plane split + Roll back",
+        zh: "可編輯角色＋稽核平面分流＋回滾",
+        done: true,
+      },
+      { en: "Formal UAT sign-off (OI-09)", zh: "正式 UAT 簽核（OI-09）" },
+    ],
   },
   {
     id: "OI-15",
@@ -425,17 +561,111 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress Tracker, and URL catalog must track nav reality (Realtime Alert & Tracker naming; Detectors merged into Monitor 2.0; AI Analyses list redirect; no Spine Log tab; BU and Teams combined; Risk Domains P0–P3; Risk Log 90d; audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles).",
+        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; audit tabs + Roll back).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度追蹤與網址目錄須追蹤導覽實況（即時警報與追蹤命名；偵測器併入 Monitor 2.0；AI 分析列表轉址；無脊柱日誌分頁；BU 與團隊合併；風險領域 P0–P3；風險日誌 90 天；稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色）。",
+        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；稽核分頁＋回滾）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },
+    checklist: [
+      { en: "Keep UG / PRD / TSD / UAT / Roadmap / Ecosystem aligned after each nav ship", zh: "每次選單交付後對齊 UG／PRD／TSD／UAT／路線圖／生態" },
+      { en: "Refresh Open Issues + Progress when statuses/ETAs change", zh: "狀態／ETA 變更時更新開放議題＋進度" },
+      { en: "URL catalog lists public + admin paths with correct permissions", zh: "網址目錄列出公開＋管理路徑與正確權限" },
+      { en: "EN + zh-Hant parity for every docs page", zh: "每份文件頁 EN＋繁中對齊" },
+    ],
+  },
+  {
+    id: "OI-16",
+    area: "System",
+    bu: "System",
+    status: "planned",
+    startMonth: 4,
+    endMonth: 10,
+    priority: "P1",
+    en: {
+      title: "Observability — spine SLOs, AI latency, false-alarm rate",
+      detail:
+        "Prototype has console + home spine counts. Production needs APM/metrics for spine SLOs, AI latency/cost, false-alarm rate, and adapter health. Tech details still open under initial design.",
+      dependencies: "OI-03 architecture; OI-04 model ops; SRE capacity",
+      eta: "2027-Q3 (tentative)",
+    },
+    zh: {
+      title: "可觀測性 — 脊柱 SLO、AI 延遲、誤報率",
+      detail:
+        "原型僅有 console＋首頁脊柱計數。生產需 APM／指標：脊柱 SLO、AI 延遲／成本、誤報率、適配健康。技術細節在初始設計下仍開放。",
+      dependencies: "OI-03 架構；OI-04 模型營運；SRE 產能",
+      eta: "2027-Q3（暫定）",
+    },
+    checklist: [
+      { en: "Define spine stage latency SLOs", zh: "定義脊柱階段延遲 SLO" },
+      { en: "Dashboards: AI RCA + challenger latency/cost", zh: "儀表板：AI RCA＋挑戰延遲／成本" },
+      { en: "False-alarm / dismiss rate tracking for shadow mode", zh: "影子模式誤報／排除率追蹤" },
+      { en: "Adapter health checks for Monitor + Lark + control bus", zh: "Monitor＋Lark＋控制匯流排適配健康檢查" },
+      { en: "On-call runbook for CRMP control-plane pages", zh: "CRMP 控制面頁面值班手冊" },
+    ],
+  },
+  {
+    id: "OI-17",
+    area: "Ops",
+    bu: "Ops",
+    status: "planned",
+    startMonth: 6,
+    endMonth: 12,
+    priority: "P1",
+    en: {
+      title: "Global kill-switches (skills, intel push, write adapters)",
+      detail:
+        "Settings flags are partial today. Production needs instant disable for auto-skills, market-intel push, and each write adapter — rehearsed in UAT before Phase C.",
+      dependencies: "OI-07 adapters; OI-08 Lark; Settings flags design",
+      eta: "2027-Q4 (with write path)",
+    },
+    zh: {
+      title: "全域緊急開關（技能、情報推送、寫入適配）",
+      detail:
+        "今日設定旗標僅部分。生產需可立即關閉自動技能、情報推送與各寫入適配 — 階段 C 前以 UAT 演練。",
+      dependencies: "OI-07 適配；OI-08 Lark；設定旗標設計",
+      eta: "2027-Q4（隨寫路徑）",
+    },
+    checklist: [
+      { en: "Kill-switch matrix: auto-skills / intel push / each write adapter", zh: "緊急開關矩陣：自動技能／情報推送／各寫入適配" },
+      { en: "UI + API to flip switches with audit row (Vantage plane)", zh: "UI＋API 切換開關並寫稽核列（Vantage 平面）" },
+      { en: "UAT drill: disable and restore under RO observation", zh: "UAT 演練：在 RO 觀察下關閉與恢復" },
+      { en: "Document who may flip switches (SoD)", zh: "文件化誰可切換開關（職責分離）" },
+    ],
+  },
+  {
+    id: "OI-18",
+    area: "Product",
+    bu: "Product",
+    status: "planned",
+    startMonth: 8,
+    endMonth: 14,
+    priority: "P2",
+    en: {
+      title: "Multi-entity / brand tenancy readiness",
+      detail:
+        "Prototype is single-tenant desk. Group rollout needs legal-entity isolation for alerts, RAG, skill packs, Lark routing, audit export — still open under initial design.",
+      dependencies: "OI-02 design freeze; OI-06 IdP; Legal entity list",
+      eta: "2027-Q4 → 2027-12 (tentative)",
+    },
+    zh: {
+      title: "多法人／品牌租戶就緒",
+      detail:
+        "原型為單租戶台面。集團推廣需法人隔離：警報、RAG、技能包、Lark 路由、稽核匯出 — 初始設計下仍開放。",
+      dependencies: "OI-02 設計凍結；OI-06 IdP；法人清單",
+      eta: "2027-Q4 → 2027-12（暫定）",
+    },
+    checklist: [
+      { en: "Define tenant = legal entity (or brand) model", zh: "定義租戶＝法人（或品牌）模型" },
+      { en: "Isolate alerts / RAG / skills / Lark routes / audit export", zh: "隔離警報／RAG／技能／Lark 路由／稽核匯出" },
+      { en: "Read-only cross-entity exec aggregation (if required)", zh: "只讀跨法人高階彙總（如需要）" },
+      { en: "Two UAT seeds (e.g. VFSC vs FCA) when design allows", zh: "設計允許時兩套 UAT 種子（如 VFSC vs FCA）" },
+    ],
   },
 ];
 
@@ -444,4 +674,14 @@ export function openIssuesSummary() {
   for (const s of Object.keys(ISSUE_STATUS_LABEL) as IssueStatus[]) byStatus[s] = 0;
   for (const i of OPEN_ISSUES) byStatus[i.status] += 1;
   return { total: OPEN_ISSUES.length, byStatus };
+}
+
+export function openIssuesByBu() {
+  const map = new Map<IssueBu, OpenIssue[]>();
+  for (const i of OPEN_ISSUES) {
+    const list = map.get(i.bu) ?? [];
+    list.push(i);
+    map.set(i.bu, list);
+  }
+  return map;
 }

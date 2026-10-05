@@ -19,10 +19,12 @@ gantt
   section Product
   OI-02 Design freeze                 :active, 2026-10, 2027-03
   OI-15 Docs BAU                      :2026-10, 2027-12
+  OI-18 Multi-entity tenancy          :2027-06, 2027-12
   section System
   OI-03 Tech + resource plan          :2026-11, 2027-04
   OI-06 SSO SCIM                      :2026-12, 2027-06
   OI-11 UX polish                     :active, 2026-10, 2026-12
+  OI-16 Observability                 :2027-02, 2027-08
   section AI
   OI-14 Prototype UAT                 :active, 2026-10, 2026-11
   OI-05 RAG governance                :active, 2026-10, 2027-02
@@ -30,18 +32,20 @@ gantt
   section Ops
   OI-08 Lark cards                    :2026-11, 2027-04
   OI-07 Control adapters              :2027-01, 2027-10
+  OI-17 Kill-switches                 :2027-04, 2027-10
   section RO Pricing GRC
   OI-09 UAT exit                      :active, 2026-10, 2027-01
   OI-10 LP pricing feeds              :2027-02, 2027-09
   OI-12 Evidence retention            :2027-03, 2027-12
 ```
 
-Interactive SVG/table: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts`).
+Interactive SVG/table: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 18 issues).
 
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-05 | Progress tracker wired into admin docs |
 | 1.1 | 2026-10-05 | Note audit plane split + Roles / escalation desk facts as BAU |
 | 1.2 | 2026-10-05 | BAU note: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11/13/14 detail sync with Ecosystem v1.8 |
+| 1.3 | 2026-10-05 | Bars for OI-16 observability, OI-17 kill-switches, OI-18 tenancy (Open Issues v1.3) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [PROGRESS.zh-Hant.md](./PROGRESS.zh-Hant.md)
