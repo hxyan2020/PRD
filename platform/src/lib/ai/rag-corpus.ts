@@ -134,7 +134,7 @@ export const SEED_RAG_DOCS: RagCorpusDoc[] = [
     product_scope: "CFD+CRYPTO",
     source_ref: "https://www.vantagemarkets.com/en/economic-calendar/",
     tags: ["macro", "nfp", "fomc", "cpi", "gap", "宏觀"],
-    content: `High-impact events (NFP, FOMC, CPI, central bank rates) cause spread blowouts, gaps, and margin spikes — especially on gold, USD pairs, US indices. Before attributing drawdown or margin breaches to toxic flow, check economic calendar within ±60 minutes. If event coincides, prefer monitoring + communication over punitive client actions. Market Intelligence scanner (5-min heuristic, M2-MKT-INTEL) pushes format (i)–(vi) to oc_market_intelligence. Licensed scored feeds are RM-15. Gap exposure USD is M2-GAP-012 (warn $1m / breach $2m).`,
+    content: `High-impact events (NFP, FOMC, CPI, central bank rates) cause spread blowouts, gaps, and margin spikes — especially on gold, USD pairs, US indices. Before attributing drawdown or margin breaches to toxic flow, check economic calendar within ±60 minutes. If event coincides, prefer monitoring + communication over punitive client actions. Market Intelligence scanner (5-min heuristic, M2-MKT-INTEL) pushes findings with region flags, impact labels, timestamps and article URLs to oc_market_intelligence. Licensed scored feeds are RM-15. Gap exposure USD is M2-GAP-012 (warn $1m / breach $2m).`,
   },
   {
     doc_key: "escalation-spine",

@@ -1,6 +1,7 @@
 "use client";
 
-import { Badge, SeverityBadge } from "@/components/ui";
+import { Badge } from "@/components/ui";
+import { IntelImpactBadge, RegionFlag } from "@/components/MarketIntelMeta";
 import { useT } from "@/hooks/useUiLocale";
 import { cn } from "@/lib/utils";
 import {
@@ -10,6 +11,7 @@ import {
   type PulseFinding,
   type SentimentTone,
 } from "@/lib/market-intel/pulse";
+import { EVENT_TEMPLATES } from "@/lib/market-intel/sources";
 import { useMemo } from "react";
 
 function toneBar(score: number) {
@@ -52,8 +54,14 @@ function EventCard({
       {event ? (
         <>
           <div className="mt-2 flex flex-wrap items-center gap-2">
-            <SeverityBadge value={event.severity} />
-            <span className="text-xs text-[var(--muted)]">{event.geography}</span>
+            <IntelImpactBadge severity={event.severity} />
+            <span className="text-xs text-[var(--muted)]">
+              <RegionFlag
+                geography={
+                  EVENT_TEMPLATES.find((t) => t.event_title === event.event_title)?.geography || event.geography
+                }
+              />
+            </span>
             <span className="text-xs tabular-nums text-[var(--muted)]">{event.scanned_at}</span>
           </div>
           <h3 className="mt-2 font-semibold leading-snug">{event.event_title}</h3>

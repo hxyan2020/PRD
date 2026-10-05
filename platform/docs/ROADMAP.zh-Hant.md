@@ -465,7 +465,7 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 
 ### 今日原型
 
-[市場情報](/admin/market-intel) 每五分鐘輪轉 `EVENT_TEMPLATES`（`lib/market-intel/scanner.ts`，Pages 用 `demo-scan.ts`）。種子 `MARKET_INTEL_SOURCES` — 發現可以是合成的。指標 `M2-MKT-INTEL` 計命中。推送格式（i）–（vi）進 `oc_market_intelligence`。
+[市場情報](/admin/market-intel) 每五分鐘輪轉 `EVENT_TEMPLATES`（`lib/market-intel/scanner.ts`，Pages 用 `demo-scan.ts`）。種子 `MARKET_INTEL_SOURCES` — 發現可以是合成的。指標 `M2-MKT-INTEL` 計命中。發現卡片帶文章網址進 `oc_market_intelligence`。
 
 ### 要做
 

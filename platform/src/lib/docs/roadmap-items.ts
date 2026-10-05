@@ -959,7 +959,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       "5-minute heuristic scanner · EVENT_TEMPLATES",
       "Seeded MARKET_INTEL_SOURCES — findings can be synthetic",
       "Indicator M2-MKT-INTEL counts hits",
-      "Push format (i)–(vi) into oc_market_intelligence",
+      "Push findings with article URLs into oc_market_intelligence",
     ],
     en: {
       title: "Scored market-intel sources (licensed feeds)",
@@ -969,7 +969,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       todayFacts: [
         "GitHub Pages uses the same client-side rotation (demo-scan.ts).",
         "Only WARN+ corroborated hits should increment M2-MKT-INTEL.",
-        "Keep push format (i)–(vi) into oc_market_intelligence.",
+        "Keep article URLs (not channel homepages) on each finding and messenger card.",
       ],
       build: [
         "Ingest contracted wires + official calendars + selected social.",
@@ -990,7 +990,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       todayFacts: [
         "GitHub Pages 用同一套前端輪轉（demo-scan.ts）。",
         "只有 WARN 以上經印證的命中才應累加 M2-MKT-INTEL。",
-        "推送格式維持（i）–（vi）進 oc_market_intelligence。",
+        "每筆發現與 Messenger 卡片維持文章網址（不是頻道首頁）。",
       ],
       build: [
         "接入合約電訊＋官方日曆＋選定社群。",

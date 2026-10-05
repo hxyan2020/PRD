@@ -465,7 +465,7 @@ Template headlines train the desk on fake catalysts. Indicator counts then lie.
 
 ### Today
 
-[Market Intelligence](/admin/market-intel) rotates `EVENT_TEMPLATES` every five minutes (`lib/market-intel/scanner.ts`, Pages uses `demo-scan.ts`). Seeded `MARKET_INTEL_SOURCES` — findings can be synthetic. Indicator `M2-MKT-INTEL` counts hits. Push format (i)–(vi) into `oc_market_intelligence`.
+[Market Intelligence](/admin/market-intel) rotates `EVENT_TEMPLATES` every five minutes (`lib/market-intel/scanner.ts`, Pages uses `demo-scan.ts`). Seeded `MARKET_INTEL_SOURCES` — findings can be synthetic. Indicator `M2-MKT-INTEL` counts hits. Findings carry article URLs into `oc_market_intelligence`.
 
 ### Build
 

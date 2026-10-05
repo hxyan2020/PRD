@@ -275,11 +275,11 @@ const KNOWLEDGE: Knowledge[] = [
     href: "/admin/market-intel",
     en: {
       title: "Market intelligence scanner",
-      body: "A 5-minute heuristic rotates EVENT_TEMPLATES. Findings can be synthetic. Indicator M2-MKT-INTEL counts hits. Licensed scored feeds are RM-15. Push format (i)–(vi) goes to oc_market_intelligence.",
+      body: "A 5-minute heuristic rotates EVENT_TEMPLATES. Findings can be synthetic. Indicator M2-MKT-INTEL counts hits. Licensed scored feeds are RM-15. Cards carry region flags, impact (not violation), timestamp, and the source article URL — not a channel homepage.",
     },
     zh: {
       title: "市場情報掃描",
-      body: "每五分鐘啟發式輪轉 EVENT_TEMPLATES。發現可以是合成的。指標 M2-MKT-INTEL 計命中。授權評分饋送是 RM-15。推送格式（i）–（vi）進 oc_market_intelligence。",
+      body: "每五分鐘啟發式輪轉 EVENT_TEMPLATES。發現可以是合成的。指標 M2-MKT-INTEL 計命中。授權評分饋送是 RM-15。卡片帶地區國旗、影響（不是違規）、時間戳與來源文章網址，不是頻道首頁。",
     },
   },
   {

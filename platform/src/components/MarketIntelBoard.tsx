@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
+import { Badge, StatCard, StatusBadge } from "@/components/ui";
 import { SourceBrandMark } from "@/components/SourceBrandMark";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { navLabel, t } from "@/lib/i18n";
@@ -13,6 +13,9 @@ import { resolveSourceHealth } from "@/lib/market-intel/source-brand";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { MarketIntelPulse } from "@/components/MarketIntelPulse";
 import { findingMentionsSymbol } from "@/lib/market-intel/pulse";
+import { resolveFindingSources } from "@/lib/market-intel/article-links";
+import { EVENT_TEMPLATES } from "@/lib/market-intel/sources";
+import { IntelImpactBadge, RegionFlag } from "@/components/MarketIntelMeta";
 
 const MI_STORE = "crmp_mi_demo_v1";
 
@@ -83,6 +86,16 @@ type BoardState = {
   indicator: Indicator;
   settings: Array<{ key: string; value: string }>;
 };
+
+function displayGeography(title: string, stored: string) {
+  return EVENT_TEMPLATES.find((t) => t.event_title === title)?.geography || stored;
+}
+
+function formatFindingStamp(raw: string) {
+  const ts = Date.parse(raw.includes("T") ? raw : `${raw.replace(" ", "T")}Z`);
+  if (!Number.isFinite(ts)) return raw;
+  return `${new Date(ts).toISOString().slice(0, 19).replace("T", " ")} UTC`;
+}
 
 type MiTab = "findings" | "messenger" | "sources" | "scans";
 
@@ -414,7 +427,8 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
               asset_class: string;
               direction: string;
             }>;
-            const findingSources = JSON.parse(f.sources_json || "[]") as Array<{ name: string; url: string }>;
+            const findingSources = resolveFindingSources(f.event_title, f.sources_json);
+            const geo = displayGeography(f.event_title, f.geography);
             return (
               <article
                 key={f.id}
@@ -430,9 +444,11 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
                     <h3 className="font-[family-name:var(--font-display)] text-lg">{f.event_title}</h3>
                     <p className="text-sm text-[var(--muted)] mt-1">{f.event_summary}</p>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <SeverityBadge value={f.severity} />
-                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">{f.geography}</Badge>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <IntelImpactBadge severity={f.severity} />
+                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                      <RegionFlag geography={geo} />
+                    </Badge>
                     {f.pushed_to_lark ? (
                       <Badge className="bg-teal-50 text-teal-900 border-teal-200">{t("mi.pushed", locale)}</Badge>
                     ) : null}
@@ -456,16 +472,23 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
                   </div>
                   <div>
                     <div className="text-xs uppercase text-[var(--muted)]">{t("mi.sourcesN", locale)}</div>
-                    <ul className="mt-1 space-y-1">
+                    <ul className="mt-1 space-y-2">
                       {findingSources.map((s, i) => (
-                        <li key={i}>
-                          <a className="underline" href={s.url} target="_blank" rel="noreferrer">
+                        <li key={i} className="min-w-0">
+                          <a className="underline font-medium break-words" href={s.url} target="_blank" rel="noreferrer">
                             {s.name}
                           </a>
+                          <div className="text-[11px] text-[var(--muted)] break-all">
+                            <a href={s.url} target="_blank" rel="noreferrer" className="hover:underline">
+                              {s.url}
+                            </a>
+                          </div>
                         </li>
                       ))}
                     </ul>
-                    <div className="text-xs text-[var(--muted)] mt-2">(v) {f.scanned_at}</div>
+                    <div className="text-xs text-[var(--muted)] mt-2 tabular-nums" data-testid="mi-finding-stamp">
+                      {t("mi.timestamp", locale)} · {formatFindingStamp(f.scanned_at)}
+                    </div>
                   </div>
                 </div>
               </article>
