@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     const bundle = analyzeAlert(Number(body.alert_id), { force: !!body.force });
     if (!bundle) {
       return NextResponse.json(
-        { error: "Indicator paused — resume it on Monitor 2.0 or force analysis" },
+        { error: "Indicator paused — resume it on Monitor 2.0 before AI analysis" },
         { status: 409 }
       );
     }
@@ -55,14 +55,20 @@ export async function POST(req: Request) {
   }
 
   if (body.action === "simulate_alarm") {
-    const bundle = createAlarmAndAnalyze({
-      monitor_id: body.monitor_id,
-      severity: body.severity || "BREACH",
-      title: body.title || `Simulated alarm on ${body.monitor_id}`,
-      message: body.message || "Simulated Monitor 2.0 alarm for AI pipeline demo",
-      observed_value: Number(body.observed_value ?? 0),
-    });
-    return NextResponse.json({ ok: true, ...bundle });
+    try {
+      const bundle = createAlarmAndAnalyze({
+        monitor_id: body.monitor_id,
+        severity: body.severity || "BREACH",
+        title: body.title || `Simulated alarm on ${body.monitor_id}`,
+        message: body.message || "Simulated Monitor 2.0 alarm for AI pipeline demo",
+        observed_value: Number(body.observed_value ?? 0),
+      });
+      return NextResponse.json({ ok: true, ...bundle });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "simulate_alarm failed";
+      const paused = /paused/i.test(msg);
+      return NextResponse.json({ error: msg }, { status: paused ? 409 : 400 });
+    }
   }
 
   if (body.action === "backfill_challenges") {

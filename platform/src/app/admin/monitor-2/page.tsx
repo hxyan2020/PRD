@@ -119,6 +119,9 @@ export default async function Monitor2Page({
               <T k="m2.mergedDetectors" />
             </p>
             <p className="text-sm text-[var(--muted)] mt-1">
+              <T k="m2.pauseHint" />
+            </p>
+            <p className="text-sm text-[var(--muted)] mt-1">
               <T k="m2.alertsTicketsMoved" />{" "}
               <Link href="/admin/alerts" className="font-semibold text-teal-800 underline">
                 <T k="m2.gotoRealtimeAlerts" />
@@ -179,7 +182,7 @@ export default async function Monitor2Page({
                       {paused ? (
                         <div className="mt-1">
                           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-                            <T k="common.paused" />
+                            <T k="m2.pausedNoAi" />
                           </Badge>
                         </div>
                       ) : null}

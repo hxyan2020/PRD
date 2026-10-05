@@ -121,8 +121,8 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
     .prepare(`SELECT * FROM monitor_indicators WHERE id = ?`)
     .get(alert.indicator_id) as IndicatorRow;
 
-  // Paused indicators are excluded from AI analysis unless explicitly forced.
-  if (indicator?.paused && !opts.force) {
+  // Paused indicators are never used in AI analysis (force cannot override).
+  if (indicator?.paused) {
     return null;
   }
 
@@ -373,8 +373,16 @@ export function getAnalysisBundle(id: number) {
 
 export function analyzeOpenAlerts(opts: { force?: boolean } = {}) {
   const db = getDb();
+  // Skip alerts whose indicator is paused — they must not enter AI analysis.
   const alerts = db
-    .prepare(`SELECT id FROM monitor_alerts WHERE status IN ('OPEN','ACKNOWLEDGED','ESCALATED') ORDER BY id`)
+    .prepare(
+      `SELECT a.id
+       FROM monitor_alerts a
+       JOIN monitor_indicators i ON i.id = a.indicator_id
+       WHERE a.status IN ('OPEN','ACKNOWLEDGED','ESCALATED')
+         AND COALESCE(i.paused, 0) = 0
+       ORDER BY a.id`
+    )
     .all() as Array<{ id: number }>;
   const results = [];
   for (const a of alerts) {

@@ -298,6 +298,14 @@ export const EXTRA_UI: Record<string, Pair> = {
   },
   "m2.recentRuns": { en: "Recent sampling runs", "zh-Hant": "最近採樣紀錄" },
   "m2.comparator": { en: "Comparator", "zh-Hant": "比較子" },
+  "m2.pauseHint": {
+    en: "Pause any indicator to stop sampling and exclude it from AI analysis until resumed.",
+    "zh-Hant": "暫停任一指標後停止採樣，並在恢復前排除於 AI 分析之外。",
+  },
+  "m2.pausedNoAi": {
+    en: "Paused — excluded from AI analysis",
+    "zh-Hant": "已暫停 — 不參與 AI 分析",
+  },
   "m2.warnBreach": { en: "Warn / Breach", "zh-Hant": "警告／違規" },
   "m2.description": { en: "Description", "zh-Hant": "說明" },
   "m2.frequency": { en: "Frequency", "zh-Hant": "檢查頻率" },

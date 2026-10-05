@@ -248,10 +248,18 @@ function updateIndicatorAndMaybeAlarm(highImpactCount: number, topFindingTitle: 
   const ind = db
     .prepare(`SELECT * FROM monitor_indicators WHERE monitor_id = ?`)
     .get(INDICATOR_ID) as
-    | { id: number; threshold_warn: number; threshold_breach: number; name: string }
+    | {
+        id: number;
+        threshold_warn: number;
+        threshold_breach: number;
+        name: string;
+        paused?: number;
+      }
     | undefined;
 
   if (!ind) return;
+  // Paused indicators must not raise alarms or enter AI analysis.
+  if (ind.paused) return;
 
   let status: "HEALTHY" | "WARN" | "BREACH" = "HEALTHY";
   if (highImpactCount >= ind.threshold_breach) status = "BREACH";
