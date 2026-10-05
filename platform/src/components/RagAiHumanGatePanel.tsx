@@ -107,11 +107,20 @@ function BlockTable({
                   className={
                     i.ai_may === "FORBIDDEN" || i.ai_may === "NONE"
                       ? "bg-rose-50 text-rose-900 border-rose-200"
-                      : "bg-amber-50 text-amber-950 border-amber-200"
+                      : i.ai_may === "READ_ONLY_SUMMARY"
+                        ? "bg-sky-50 text-sky-950 border-sky-200"
+                        : "bg-amber-50 text-amber-950 border-amber-200"
                   }
                 >
                   {i.ai_may}
                 </Badge>
+                <div className="text-[10px] text-[var(--muted)] mt-1 leading-snug">
+                  {i.ai_may === "READ_ONLY_SUMMARY"
+                    ? t("rag.modeReadOnly")
+                    : i.ai_may === "PROPOSE_ONLY"
+                      ? t("rag.modePropose")
+                      : t("rag.modeBlocked")}
+                </div>
               </td>
               <td className="align-top text-xs">
                 <ul className="space-y-0.5">

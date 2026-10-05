@@ -615,16 +615,45 @@ export function ragWriteBlockItems(): AiBlockItem[] {
 /**
  * Pages + functions AI must not edit directly — escalate to a human with the listed roles/permissions.
  * Shown under RAG Knowledge Base so the corpus policy is explicit next to retrieval.
+ *
+ * Includes READ_ONLY_SUMMARY: AI may summarise those surfaces but must escalate any edit
+ * to a human with the listed authorization.
  */
 export function humanEscalateAdminItems(): AiBlockItem[] {
   return AI_ACCESS_BLOCKLIST.filter(
     (b) =>
       (b.category === "PAGE" || b.category === "FUNCTION") &&
-      (b.ai_may === "NONE" || b.ai_may === "FORBIDDEN" || b.ai_may === "PROPOSE_ONLY")
+      (b.ai_may === "NONE" ||
+        b.ai_may === "FORBIDDEN" ||
+        b.ai_may === "PROPOSE_ONLY" ||
+        b.ai_may === "READ_ONLY_SUMMARY")
   ).sort((a, b) => {
     const rank = { CRITICAL: 0, HIGH: 1, MEDIUM: 2 } as const;
     return rank[a.severity] - rank[b.severity] || a.id.localeCompare(b.id);
   });
+}
+
+/** Plain-text catalogue for the RAG corpus doc `ai-human-escalate` (kept in sync with the blocklist). */
+export function formatAiHumanEscalateCatalogue(): string {
+  const items = humanEscalateAdminItems();
+  const pages = items.filter((i) => i.category === "PAGE");
+  const functions = items.filter((i) => i.category === "FUNCTION");
+  const line = (i: AiBlockItem) =>
+    `- ${i.id} | ${i.name} | ${i.target} | severity=${i.severity} | AI may=${i.ai_may} | escalate to=${i.human_roles.join(", ")} | needs=${i.required_permissions.join(", ")}`;
+  return [
+    "CRMP policy: AI service actors must NOT directly edit human-gated admin pages or functions.",
+    "Under RAG Knowledge Base this catalogue is the authoritative list. Any mutation must escalate to a human with the listed role and permission — never improvise a direct write.",
+    "Modes: NONE/FORBIDDEN = no AI read/write of the gated action; READ_ONLY_SUMMARY = summarise only, edits escalate; PROPOSE_ONLY = open a maker-checker CR only (no direct write).",
+    "RAG corpus specifically: PAGE-RAG (propose_rag only) and FN-RAG-WRITE (POST|PATCH /api/rag forbidden for AI).",
+    "",
+    `BLOCKED PAGES (${pages.length}) — AI cannot edit; escalate to authorised human:`,
+    ...pages.map(line),
+    "",
+    `BLOCKED FUNCTIONS / APIs (${functions.length}) — AI cannot execute; escalate to authorised human:`,
+    ...functions.map(line),
+    "",
+    "Full interactive catalogue: /admin/rag (Human-gate panel) and /admin/security/ai-access.",
+  ].join("\n");
 }
 
 export function blocklistStats() {
