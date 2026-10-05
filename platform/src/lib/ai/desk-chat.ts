@@ -72,11 +72,11 @@ const KNOWLEDGE: Knowledge[] = [
     boost: ["built"],
     en: {
       title: "What has been built",
-      body: "Shipped: Admin Home, Daily Performance, Monitor 2.0 + Alerts + Detectors, Market Intel, Risk Log, Risk Domains, AI Analyses + challenger, Skills / Knowledge Tree / RAG, AI Admin maker-checker, Human Intervention, Demo Messenger (thinking animation), Escalation + Lark registry, Spine + Audit, org + users, Data Sources, grouped Settings, AI access blocklist, EN/繁中 chrome, selection chatbot, docs (TSD/PRD/User Guide/UAT/Ecosystem/Roadmap/URLs), GitHub Pages snapshot. Not live: real Lark cards (RM-01), Monitor write-back (RM-02), billed LLM (RM-03), independent challenger vendor (RM-04), SSO (RM-05), Postgres (RM-06), real halt/leverage/LP/withdrawal adapters (RM-09).",
+      body: "Shipped: Admin Home, Daily Performance, Monitor 2.0 + Alerts + Detectors, Market Intel, Risk Log, Risk Domains, AI Analyses + challenger + how-to-improve chatbot, Skills / Knowledge Tree / RAG, AI Admin maker-checker, Human Intervention, Demo Messenger (thinking animation), Escalation + Lark registry, Spine + Audit, org + users, Data Sources, grouped Settings, AI access blocklist, EN/繁中 chrome, selection chatbot, docs (TSD/PRD/User Guide/UAT/Ecosystem/Roadmap/URLs), GitHub Pages snapshot. Not live: real Lark cards (RM-01), Monitor write-back (RM-02), billed LLM (RM-03), independent challenger vendor (RM-04), SSO (RM-05), Postgres (RM-06), real halt/leverage/LP/withdrawal adapters (RM-09).",
     },
     zh: {
       title: "目前已建置",
-      body: "已上線：管理首頁、每日績效、Monitor 2.0＋警報＋偵測器、市場情報、風險日誌、風險領域、AI 分析＋挑戰者、技能／知識樹／RAG、AI 管理雙人、人工干預、示範 Messenger（思考動畫）、升級＋Lark 登錄、脊柱＋稽核、組織與使用者、資料來源、分組設定、AI 存取禁區、EN／繁中、劃選聊天機器人、全套文件、GitHub Pages 快照。未上線：真實 Lark 卡片（RM-01）、Monitor 回寫（RM-02）、計費 LLM（RM-03）、獨立挑戰者供應商（RM-04）、SSO（RM-05）、Postgres（RM-06）、真實停商品／槓桿／LP／出金適配（RM-09）。",
+      body: "已上線：管理首頁、每日績效、Monitor 2.0＋警報＋偵測器、市場情報、風險日誌、風險領域、AI 分析＋挑戰者＋如何改進聊天、技能／知識樹／RAG、AI 管理雙人、人工干預、示範 Messenger（思考動畫）、升級＋Lark 登錄、脊柱＋稽核、組織與使用者、資料來源、分組設定、AI 存取禁區、EN／繁中、劃選聊天機器人、全套文件、GitHub Pages 快照。未上線：真實 Lark 卡片（RM-01）、Monitor 回寫（RM-02）、計費 LLM（RM-03）、獨立挑戰者供應商（RM-04）、SSO（RM-05）、Postgres（RM-06）、真實停商品／槓桿／LP／出金適配（RM-09）。",
     },
   },
   {

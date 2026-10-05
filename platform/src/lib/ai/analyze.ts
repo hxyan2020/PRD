@@ -9,6 +9,7 @@ import {
   ensureChallengerSchema,
   getChallengeForAnalysis,
 } from "@/lib/ai/challenger";
+import { ensureImprovementSchema, reviewAnalysisIfNeeded, getImprovementForAnalysis } from "@/lib/ai/improvement";
 
 type AlertRow = {
   id: number;
@@ -212,6 +213,7 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
     });
     syncInterventionsFromSkillRuns();
     challengeAnalysisIfNeeded(dbId);
+    reviewAnalysisIfNeeded(dbId);
 
     return getAnalysisBundle(dbId);
   }
@@ -351,6 +353,7 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
   });
   syncInterventionsFromSkillRuns();
   challengeAnalysisIfNeeded(dbId);
+  reviewAnalysisIfNeeded(dbId);
 
   return getAnalysisBundle(dbId);
 }
@@ -358,8 +361,11 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
 export function getAnalysisBundle(id: number) {
   const db = getDb();
   ensureChallengerSchema(db);
+  ensureImprovementSchema(db);
   // Lazy second-opinion for high-severity analyses created before challenger shipped
   challengeAnalysisIfNeeded(id);
+  // Always-on system-improvement review (all severities)
+  reviewAnalysisIfNeeded(id);
   const analysis = db.prepare(`SELECT * FROM ai_analyses WHERE id = ?`).get(id);
   const evidence = db
     .prepare(`SELECT * FROM ai_analysis_evidence WHERE analysis_id = ? ORDER BY score DESC, id`)
@@ -368,7 +374,8 @@ export function getAnalysisBundle(id: number) {
     .prepare(`SELECT * FROM ai_skill_runs WHERE analysis_id = ? ORDER BY step_index`)
     .all(id);
   const challenge = getChallengeForAnalysis(id) ?? null;
-  return { analysis, evidence, skillRuns, challenge };
+  const improvement = getImprovementForAnalysis(id) ?? null;
+  return { analysis, evidence, skillRuns, challenge, improvement };
 }
 
 export function analyzeOpenAlerts(opts: { force?: boolean } = {}) {

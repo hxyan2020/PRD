@@ -70,6 +70,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
 
   // APIs
   { category: "API", title: "AI API", path: "/api/ai", description: "GET analyses · POST analyze/simulate/backfill challenges" },
+  { category: "API", title: "AI improve chat", path: "/api/ai-improve", description: "GET/POST how-to-improve review · pull data / add fact / challenge / regenerate / accept" },
   { category: "API", title: "Desk selection chat", path: "/api/ai-chat", description: "POST selected text + follow-ups → grounded CRMP explanation" },
   { category: "API", title: "AI Admin API", path: "/api/ai-admin", description: "Propose/approve settings, training, feedback" },
   { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker" },
@@ -102,7 +103,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "DB Tables", title: "roles / departments / teams", path: "tables:roles,departments,teams", description: "RBAC + org structure" },
   { category: "DB Tables", title: "monitor_indicators / alerts / tickets", path: "tables:monitor_*", description: "Monitor 2.0 registry and open alerts" },
   { category: "DB Tables", title: "detectors / detector_runs", path: "tables:detectors,detector_runs", description: "Threshold sampling engine" },
-  { category: "DB Tables", title: "ai_analyses / evidence / challenges", path: "tables:ai_analyses,ai_analysis_evidence,ai_analysis_challenges", description: "Primary RCA + second-AI packs" },
+  { category: "DB Tables", title: "ai_analyses / evidence / challenges / improvements", path: "tables:ai_analyses,ai_analysis_evidence,ai_analysis_challenges,ai_improvement_reviews", description: "Primary RCA + second-AI packs + how-to-improve reviews" },
   { category: "DB Tables", title: "ai_skills / skill_runs / scenario_chains", path: "tables:ai_skills,ai_skill_runs,risk_scenario_chains", description: "Playbooks and multi-indicator chains" },
   { category: "DB Tables", title: "rag_documents / external_macro_events", path: "tables:rag_documents,external_macro_events", description: "Evidence corpus" },
   { category: "DB Tables", title: "messenger_*", path: "tables:messenger_threads,messenger_messages,messenger_pending_actions", description: "Demo Messenger inbox + pending controls" },

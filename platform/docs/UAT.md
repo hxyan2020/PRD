@@ -117,8 +117,8 @@ graph TD
 
 - **Severity:** Critical · **BU:** AI + Risk · **Depends:** UAT-02; AI skills seeded · **Window:** T+22m / 15m
 - **Covers:** AI Analyses, AI Skills
-- **Why:** When we already know the failure pattern, the first AI should follow the written skill — not invent a story.
-- **Goal:** Prove the COPY breach simulation uses the matching skill playbook and stores evidence you can show later in messenger.
+- **Why:** When we already know the failure pattern, the first AI should follow the written skill — not invent a story. Every new analysis also needs a how-to-improve review you can argue with.
+- **Goal:** Prove the COPY breach simulation uses the matching skill playbook, stores evidence, and opens an improvement chatbot.
 
 **Steps**
 
@@ -126,10 +126,12 @@ graph TD
 2. Click “Simulate COPY breach (skill path)”. Wait until a new analysis opens (or the list refreshes with a new row).
 3. On the detail page, the mode badge should say SKILL_MATCH (this means “we used a known playbook”, not free-form guessing). Confidence should look certain (around 100%).
 4. Scroll to Evidence vault. You must see at least a SKILL row (which playbook ran) and a MONITOR row (the alarm snapshot).
-5. Copy the analysis id from the title (looks like ANL-…). You will paste it into messenger and audit cases later.
+5. Find the panel **AI analysis — how to improve**. It must list items such as add a data source, check a dormant indicator, missing reasoning, a new skill pattern, tighten limit X→Y, and/or faster manual response. Evidence vault should also have an IMPROVEMENT row.
+6. In the chatbot: **Pull data**, then **Add fact** (e.g. feed was stale 9 minutes), **Challenge reasoning**, **Regenerate**, and confirm the plan updates. You may **Mark satisfactory** when done.
+7. Copy the analysis id from the title (looks like ANL-…). You will paste it into messenger and audit cases later.
 
-**Pass:** Mode is SKILL_MATCH; evidence includes SKILL and MONITOR; analysis id is written in your notes.
-**Evidence:** analysis id; screenshot of the mode badge and evidence types.
+**Pass:** Mode is SKILL_MATCH; evidence includes SKILL, MONITOR and IMPROVEMENT; how-to-improve chatbot can pull/add/challenge/regenerate; analysis id is written in your notes.
+**Evidence:** analysis id; screenshot of the mode badge, evidence types, and the how-to-improve chatbot.
 
 ### UAT-04 — Second AI challenges the first AI on serious alarms
 

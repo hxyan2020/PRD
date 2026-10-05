@@ -12,6 +12,7 @@ import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
 import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
+import { ensureImprovementSchema } from "@/lib/ai/improvement";
 import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
 import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
@@ -845,6 +846,7 @@ function ensureAiLayer(db: Database.Database) {
   seedRiskLogIfEmpty(db);
   ensureMarketIntelSchema(db);
   ensureChallengerSchema(db);
+  ensureImprovementSchema(db);
   seedAiAnalysesIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);

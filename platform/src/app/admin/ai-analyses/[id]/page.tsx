@@ -5,8 +5,10 @@ import { getAnalysisBundle } from "@/lib/ai/analyze";
 import { getDb } from "@/lib/db";
 import { isStaticExport } from "@/lib/static-export";
 import { AiChallengePanel } from "@/components/AiChallengePanel";
+import { AiImprovementPanel } from "@/components/AiImprovementPanel";
 import { PageHeader, Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { T } from "@/components/T";
+import type { ImprovementReview } from "@/lib/ai/improvement-model";
 
 export async function generateStaticParams() {
   try {
@@ -70,6 +72,7 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
     alert_severity: string | null;
     created_at: string;
   } | null;
+  const improvement = (bundle.improvement || null) as ImprovementReview | null;
 
   const explanations = JSON.parse(analysis.explanations_json) as Array<Record<string, unknown>>;
   const actions = JSON.parse(analysis.actions_taken_json) as Array<Record<string, unknown>>;
@@ -135,6 +138,10 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
 
       <div className="mb-4">
         <AiChallengePanel challenge={challenge} />
+      </div>
+
+      <div className="mb-4">
+        <AiImprovementPanel analysisId={analysis.id} initial={improvement} />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">

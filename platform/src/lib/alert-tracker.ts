@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { getImprovementForAnalysis, type ImprovementReview } from "@/lib/ai/improvement";
 
 export type TrackerPerson = { name: string; role: string; email?: string | null; team?: string | null };
 
@@ -70,6 +71,7 @@ export type AlertTrackerPack = {
   timeline: TrackerEvent[];
   outcome: string | null;
   final_solution: TrackerSolution | null;
+  improvement: ImprovementReview | null;
 };
 
 type AlertRow = {
@@ -258,6 +260,15 @@ export function listAlertTrackerPacks(
           challenge_verdict: analysisRow.challenge_verdict,
           href: `/admin/ai-analyses/${analysisRow.id}`,
         }
+      : null;
+    const improvement = analysisRow
+      ? (() => {
+          try {
+            return getImprovementForAnalysis(analysisRow.id);
+          } catch {
+            return null;
+          }
+        })()
       : null;
 
     const interventionRows = analysisRows.length
@@ -505,6 +516,7 @@ export function listAlertTrackerPacks(
       timeline,
       outcome: impact?.outcome || null,
       final_solution,
+      improvement,
     };
   });
 }

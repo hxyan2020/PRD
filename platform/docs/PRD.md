@@ -82,7 +82,7 @@ graph LR
 
 ### 5.1 High-severity alarm → dual-AI → messenger close
 1. Monitor indicator breaches (e.g. COPY concentration).  
-2. CRMP creates alert + AI analysis (`SKILL_MATCH` or `RAG_REASONING`).  
+2. CRMP creates alert + AI analysis (`SKILL_MATCH` or `RAG_REASONING`) **and** an always-on **how-to-improve** review (data source, dormant indicator health, missing reasoning, new skill pattern, tighten X→Y, response time) with a chatbot to pull data, add facts, challenge, and regenerate.  
 3. If severity ≥ `ai.second_opinion_severity` (default BREACH), run `crmp-challenger-v0`.  
 4. Risk Analyst opens Demo Messenger thread; **Show evidence**; optionally challenges via chatbot.  
 5. Risk Owner reviews primary + challenger; **Close (accept AI)** or escalates / requests control.
@@ -229,6 +229,7 @@ graph LR
 | FR-32 | UAT interactive pack | UAT-01…UAT-45 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with owner / supporting BUs |
+| FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -304,6 +305,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 ## 8. Detailed acceptance criteria (prototype gate)
 
 1. **Skill + challenger:** Simulate COPY BREACH → `SKILL_MATCH` + Second AI panel with ≥1 HIGH improvement when challenged.  
+1b. **How to improve:** The same analysis (any severity) opens a how-to-improve panel with data-source / health / reasoning / skill / X→Y / response-time items and a chatbot that can pull data, add a fact, challenge, regenerate, and mark SATISFIED. Evidence includes an IMPROVEMENT row.  
 2. **Threshold:** WARN-only EQ simulate does **not** create challenge under default BREACH threshold.  
 3. **Messenger path:** Show evidence posts vault; Escalate advances path; Dismiss/Close update statuses.  
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  

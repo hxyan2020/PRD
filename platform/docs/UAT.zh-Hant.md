@@ -117,8 +117,8 @@ graph TD
 
 - **嚴重度：** Critical · **負責：** AI + Risk · **依賴：** UAT-02; AI skills seeded · **建議：** T+22m / 15m
 - **涵蓋：** AI Analyses, AI Skills
-- **為何測：** 已知故障型態時，第一個 AI 應照書面技能走，而不是自行編故事。
-- **目的：** 證明 COPY breach 模擬會套用對應技能，並把證據存下來供 Messenger 使用。
+- **為何測：** 已知故障型態時，第一個 AI 應照書面技能走，而不是自行編故事。每次新分析也要有可對話的「如何改進」審查。
+- **目的：** 證明 COPY breach 模擬會套用對應技能、存證據，並打開改進聊天機器人。
 
 **步驟**
 
@@ -126,10 +126,12 @@ graph TD
 2. 點「Simulate COPY breach (skill path)」，等到新分析打開或列表出現新列。
 3. 詳情頁模式徽章應為 SKILL_MATCH（代表使用已知劇本，而非自由推理），信心接近確定。
 4. 證據庫至少要有 SKILL（跑了哪份劇本）與 MONITOR（警報快照）。
-5. 從標題抄下 analysis id（如 ANL-…），後續 Messenger／稽核會用到。
+5. 找到 **AI 分析 — 如何改進** 面板，應列出補資料源、休眠指標健康、推理缺口、新技能型態、門檻 X→Y、加快人工回應等項；證據庫也應有 IMPROVEMENT 列。
+6. 在聊天機器人：**拉資料**、**新增事實**（例如饋送過期 9 分鐘）、**挑戰推理**、**重產**，確認方案有更新。滿意後可 **標記滿意**。
+7. 從標題抄下 analysis id（如 ANL-…），後續 Messenger／稽核會用到。
 
-**通過：** 模式為 SKILL_MATCH；證據含 SKILL 與 MONITOR；已記錄 analysis id。
-**證據：** analysis id；模式徽章與證據類型截圖。
+**通過：** 模式為 SKILL_MATCH；證據含 SKILL、MONITOR 與 IMPROVEMENT；改進聊天可拉資料／補事實／挑戰／重產；已記錄 analysis id。
+**證據：** analysis id；模式徽章、證據類型與如何改進聊天截圖。
 
 ### UAT-04 — 嚴重警報由第二個 AI 挑戰第一個 AI
 

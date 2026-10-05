@@ -16,6 +16,7 @@ import {
   type AlertFilterState,
 } from "@/lib/alert-filters";
 import type { AlertTrackerPack, TrackerEvent, TrackerGate, TrackerPerson } from "@/lib/alert-tracker";
+import { AiImprovementPanel } from "@/components/AiImprovementPanel";
 
 function gateClass(code: TrackerGate["code"]) {
   switch (code) {
@@ -228,6 +229,12 @@ function AlertTrackerFacts({
           <p className="text-[var(--muted)]">{t("tracker.noAnalysis")}</p>
         )}
       </Fact>
+
+      {pack.analysis && pack.improvement ? (
+        <AiImprovementPanel analysisId={pack.analysis.id} initial={pack.improvement} compact />
+      ) : pack.analysis ? (
+        <p className="text-xs text-[var(--muted)] px-1">{t("imp.pending")}</p>
+      ) : null}
 
       <Fact label={t("tracker.finalSolution")}>
         {pack.final_solution ? (

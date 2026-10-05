@@ -166,7 +166,7 @@ This is the path you will use most. Later sections explain every other page.
 
 1. A detector or Monitor 2.0 indicator breaches.  
 2. An **OPEN** alert appears on Live Alerts (and a ticket on Monitor 2.0).  
-3. AI Analyses gets a pack: `SKILL_MATCH` if a playbook fits, otherwise `RAG_REASONING`.  
+3. AI Analyses gets a pack: `SKILL_MATCH` if a playbook fits, otherwise `RAG_REASONING`. Every analysis also opens a **How to improve** panel (data source, dormant indicator health, missing reasoning, new skill pattern, tighten limit X→Y, manual response time) with a chatbot to pull data, add facts, challenge, and regenerate until you mark it satisfactory.  
 4. If severity is BREACH or CRITICAL, a **Second AI** panel appears (`AGREE` / `PARTIAL` / `DISAGREE`).  
 5. Click **Sync alerts** on Demo Messenger so the pack is a chat thread.  
 6. **Show evidence** posts the vault into the thread. Chat if you challenge the story.  
@@ -331,7 +331,7 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 **What it is.** The RCA workbench. Auto-runs when an alarm fires.
 
-**What you see.** A list of analyses: mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, summary, status, needs-human flag, skill code, indicator, **2nd AI · verdict** badge. Open one id for the full pack: explanations, evidence vault, skill run steps, and the **Second AI challenger** panel (critiques, improvements, alternative hypotheses).
+**What you see.** A list of analyses: mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, summary, status, needs-human flag, skill code, indicator, **2nd AI · verdict** badge. Open one id for the full pack: explanations, evidence vault, skill run steps, the **Second AI challenger** panel (critiques, RCA improvements, alternative hypotheses), and the **AI analysis — how to improve** panel (always on, every severity). The improve panel lists 3–6 desk actions and a chatbot: **Pull data**, **Add fact**, **Challenge reasoning**, **Regenerate**, **Mark satisfactory**. The same panel sits on expanded Realtime Alert / Risk Log tracker cards.
 
 **What to click (demo, localhost).**
 
@@ -342,7 +342,7 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 Click through to the skill playbook or the messenger thread.
 
-**Good looks like.** Every BREACH/CRITICAL row has a second-AI badge. WARN under the default threshold does not. `PARTIAL` / `DISAGREE` sets needs-human.
+**Good looks like.** Every analysis (including WARN) has a how-to-improve review. Every BREACH/CRITICAL row has a second-AI badge. WARN under the default threshold does not run the challenger. `PARTIAL` / `DISAGREE` sets needs-human. Chat on the improve panel stores facts and can regenerate until status is SATISFIED.
 
 ### 8.2 AI Admin — `/admin/ai-admin`
 

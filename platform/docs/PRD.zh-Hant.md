@@ -82,7 +82,7 @@ graph LR
 
 ### 5.1 高嚴重度警報 → 雙 AI → messenger 結案
 1. Monitor 指標越線（例如 COPY 集中度）。  
-2. CRMP 建立警報＋AI 分析（`SKILL_MATCH` 或 `RAG_REASONING`）。  
+2. CRMP 建立警報＋AI 分析（`SKILL_MATCH` 或 `RAG_REASONING`），並一律產出 **如何改進** 審查（資料源、休眠指標健康、推理缺口、新技能型態、門檻 X→Y、回應時間），可用聊天拉資料、補事實、挑戰、重產。  
 3. 若嚴重度 ≥ `ai.second_opinion_severity`（預設 BREACH），跑 `crmp-challenger-v0`。  
 4. 風險分析師打開示範 Messenger 執行緒；**顯示證據**；可選以聊天挑戰。  
 5. 風險負責人審主 AI＋挑戰者；**結案（接受 AI）** 或升級／要求控制。
@@ -228,6 +228,7 @@ graph LR
 | FR-32 | UAT 互動包 | UAT-01…UAT-45 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
 | FR-34 | 風險領域目錄 | CFD＋加密領域含負責／支援 BU |
+| FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 
 ### 6.3 P2 — 之後（生態階段）
 

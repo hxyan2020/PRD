@@ -273,8 +273,8 @@ export const EXTRA_UI: Record<string, Pair> = {
 
   "ai.pipeline": { en: "AI pipeline controls", "zh-Hant": "AI 管線控制" },
   "ai.pipelineIntro": {
-    en: "Alarms auto-trigger analysis on Monitor sync. Use these controls to backfill or simulate a new Monitor 2.0 alarm.",
-    "zh-Hant": "Monitor 同步時警報會自動觸發分析。可用這些控制補跑或模擬新的 Monitor 2.0 警報。",
+    en: "Alarms auto-trigger RCA plus a how-to-improve review. Use these controls to backfill or simulate a new Monitor 2.0 alarm.",
+    "zh-Hant": "警報會自動觸發根因分析與「如何改進」審查。可用這些控制補跑或模擬新的 Monitor 2.0 警報。",
   },
   "ai.analyzeOpen": { en: "Analyze all open alarms", "zh-Hant": "分析全部未結警報" },
   "ai.simCopy": { en: "Simulate COPY breach (skill path)", "zh-Hant": "模擬跟單違規（技能路徑）" },
@@ -329,6 +329,51 @@ export const EXTRA_UI: Record<string, Pair> = {
     en: "Challenger confidence {pct}% · {at}",
     "zh-Hant": "挑戰者信心值 {pct}% · {at}",
   },
+
+  "imp.title": { en: "AI analysis — how to improve", "zh-Hant": "AI 分析 — 如何改進" },
+  "imp.kicker": { en: "Always-on desk coach", "zh-Hant": "每次分析都會跑" },
+  "imp.missing": {
+    en: "No improvement review on this pack yet — trigger AI analysis to generate one.",
+    "zh-Hant": "此包尚無改進審查 — 觸發 AI 分析即可產生。",
+  },
+  "imp.pending": {
+    en: "Improvement review will appear after AI analysis runs.",
+    "zh-Hant": "AI 分析跑完後會出現改進審查。",
+  },
+  "imp.itemCount": { en: "{n} items · {high} high", "zh-Hant": "{n} 項 · {high} 項高優先" },
+  "imp.facts": { en: "Facts you added", "zh-Hant": "你補充的事實" },
+  "imp.pull": { en: "Pull data", "zh-Hant": "拉資料" },
+  "imp.addFact": { en: "Add fact", "zh-Hant": "新增事實" },
+  "imp.challenge": { en: "Challenge reasoning", "zh-Hant": "挑戰推理" },
+  "imp.regenerate": { en: "Regenerate", "zh-Hant": "重產" },
+  "imp.satisfactory": { en: "Mark satisfactory", "zh-Hant": "標記滿意" },
+  "imp.send": { en: "Send", "zh-Hant": "送出" },
+  "imp.showChat": { en: "Open improvement chatbot", "zh-Hant": "開啟改進聊天" },
+  "imp.hideChat": { en: "Hide chatbot", "zh-Hant": "收合聊天" },
+  "imp.chatHint": {
+    en: "Pull live data, add a fact, challenge a line (I1–I6), regenerate, or mark the plan satisfactory.",
+    "zh-Hant": "可拉即時資料、新增事實、挑戰某一項（I1–I6）、重產，或標記方案滿意。",
+  },
+  "imp.chatPlaceholder": {
+    en: "Ask, add a fact, or challenge I1…",
+    "zh-Hant": "提問、新增事實，或挑戰 I1…",
+  },
+  "imp.factPlaceholder": {
+    en: "Type the fact to store (feed stale, extra source, …)",
+    "zh-Hant": "輸入要記下的事實（饋送過期、缺資料源…）",
+  },
+  "imp.thinking": { en: "Revising the plan…", "zh-Hant": "正在修正方案…" },
+  "imp.chip.pull": { en: "Pull live data", "zh-Hant": "拉即時資料" },
+  "imp.chip.challenge": { en: "Challenge your reasoning", "zh-Hant": "挑戰你的推理" },
+  "imp.chip.regenerate": { en: "Regenerate with the new facts", "zh-Hant": "用新事實重產改進方案" },
+  "imp.chip.accept": { en: "This solution is satisfactory", "zh-Hant": "方案已滿意，標記完成" },
+  "imp.chip.factPrefix": { en: "Add fact: ", "zh-Hant": "新增事實：" },
+  "imp.kind.DATA_SOURCE": { en: "Data source", "zh-Hant": "資料來源" },
+  "imp.kind.INDICATOR_HEALTH": { en: "Indicator health", "zh-Hant": "指標健康" },
+  "imp.kind.REASONING_GAP": { en: "Missing reasoning", "zh-Hant": "推理缺口" },
+  "imp.kind.SKILL_PATTERN": { en: "New skill pattern", "zh-Hant": "新技能型態" },
+  "imp.kind.THRESHOLD": { en: "Tighten limit", "zh-Hant": "收緊門檻" },
+  "imp.kind.RESPONSE_TIME": { en: "Response time", "zh-Hant": "人工回應時間" },
 
   "m2.upstream": { en: "Upstream platform", "zh-Hant": "上游平台" },
   "m2.hint": {
