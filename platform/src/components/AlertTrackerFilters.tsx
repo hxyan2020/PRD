@@ -36,7 +36,7 @@ export function AlertTrackerFilters({
     onChange({ ...filters, ...partial });
   }
 
-  const selectClass = "input h-9 text-sm min-w-[9rem]";
+  const selectClass = "input h-9 text-sm w-full min-w-0 sm:min-w-[9rem]";
 
   return (
     <div className="panel p-4 space-y-3" data-testid="alert-filters">
@@ -53,8 +53,8 @@ export function AlertTrackerFilters({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3 items-end">
-        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)]">
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-3 items-end">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)] min-w-0">
           {t("alerts.filterTime")}
           <select
             className={selectClass}
@@ -67,7 +67,7 @@ export function AlertTrackerFilters({
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)]">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)] min-w-0">
           {t("alerts.filterSeverity")}
           <select
             className={selectClass}
@@ -82,7 +82,7 @@ export function AlertTrackerFilters({
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)]">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)] min-w-0">
           {t("alerts.filterProduct")}
           <select
             className={selectClass}
@@ -96,7 +96,7 @@ export function AlertTrackerFilters({
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)]">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)] min-w-0">
           {t("alerts.filterCategory")}
           <select
             className={selectClass}
@@ -113,7 +113,7 @@ export function AlertTrackerFilters({
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)]">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-[var(--muted)] min-w-0 col-span-2 sm:col-span-1">
           {t("alerts.sortBy")}
           <select
             className={selectClass}
@@ -131,7 +131,7 @@ export function AlertTrackerFilters({
         </label>
 
         {showUnresolved ? (
-          <label className="flex items-center gap-2 h-9 px-1 text-sm font-medium cursor-pointer">
+          <label className="flex items-center gap-2 h-9 px-1 text-sm font-medium cursor-pointer col-span-2 sm:col-span-1">
             <input
               type="checkbox"
               className="h-4 w-4"
@@ -145,7 +145,7 @@ export function AlertTrackerFilters({
 
         {filters.monitorId ? (
           <div
-            className="flex items-center gap-2 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-2.5 py-1.5"
+            className="flex flex-wrap items-center gap-2 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-2.5 py-1.5 col-span-2"
             data-testid="alert-filter-monitor"
           >
             <span className="inline-flex flex-wrap items-center gap-1.5">
@@ -164,7 +164,7 @@ export function AlertTrackerFilters({
 
         <button
           type="button"
-          className="btn h-9"
+          className="btn h-9 col-span-2 sm:col-span-1 w-full sm:w-auto"
           data-testid="alert-filter-reset"
           onClick={() => onChange({ ...DEFAULT_ALERT_FILTERS })}
         >

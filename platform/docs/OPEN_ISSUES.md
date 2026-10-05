@@ -88,9 +88,10 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - **BU:** Pricing · **Depends:** vendor RFPs; Data Sources · **ETA:** 2027-Q3
 
 ### OI-11 — Admin UX polish
-- [x] Nav drawer, messenger list→thread, mobile card lists (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit)  
-- [ ] Confirm-sheet 375px pass + remaining wide-board overflow  
-- [ ] Docs parity with Realtime Alert & Tracker + Monitor registry nav  
+- [x] Nav drawer, messenger list→thread, mobile card lists (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues)  
+- [x] Realtime Alert & Tracker filter toolbar 2-col on phone  
+- [ ] Confirm-sheet 375px pass + remaining wide boards (Lark / Market Intel / AI Admin)  
+- [ ] Docs parity BAU with each nav ship  
 - **BU:** System · **Depends:** docs owner; FE · **ETA:** 2026-Q4 BAU
 
 ### OI-12 — Evidence retention & audit export

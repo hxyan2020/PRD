@@ -333,14 +333,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Admin UX polish — mobile + docs parity",
       detail:
-        "Shipped: nav drawer, messenger list→thread, mobile card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit. Open: confirm-sheet 375px pass, remaining wide-board overflow, docs parity with Realtime Alert & Tracker + Monitor registry nav.",
+        "Shipped: nav drawer, messenger list→thread, mobile card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues; Realtime Alert filters 2-col on phone. Open: confirm-sheet 375px pass, remaining wide boards (Lark / Market Intel / AI Admin), docs parity.",
       dependencies: "Docs owners; FE capacity; i18n catalog",
       eta: "2026-Q4 BAU",
     },
     zh: {
       title: "管理後台 UX 打磨 — 行動＋文件對齊",
       detail:
-        "已交付：導覽抽屜、Messenger 列表→執行緒、Monitor 2.0／升級／資料來源／風險日誌／稽核手機卡片。開放：確認表 375px、其餘寬板溢出、文件與即時警報與追蹤＋Monitor 登錄選單對齊。",
+        "已交付：導覽抽屜、Messenger 列表→執行緒、Monitor 2.0／升級／資料來源／風險日誌／稽核／使用者／開放議題手機卡片；即時警報篩選手機兩欄。開放：確認表 375px、其餘寬板（Lark／情報／AI 管理）、文件對齊。",
       dependencies: "文件負責人；前端產能；i18n 目錄",
       eta: "2026-Q4 日常",
     },

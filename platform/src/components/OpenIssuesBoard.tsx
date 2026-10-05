@@ -147,7 +147,38 @@ export function OpenIssuesBoard() {
         </div>
       </div>
 
-      <div className="table-wrap panel">
+      <ul className="space-y-2 sm:hidden" data-testid="open-issues-mobile">
+        {rows.map((i) => {
+          const copy = zh ? i.zh : i.en;
+          return (
+            <li key={i.id} id={`${i.id}-m`} className="panel p-3 space-y-2">
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <input type="checkbox" className="h-4 w-4 shrink-0" aria-label={i.id} />
+                  <span className="font-mono text-xs">{i.id}</span>
+                  <span className={`badge border ${priorityTone(i.priority)}`}>{i.priority}</span>
+                </div>
+                <span className={`badge border ${statusTone(i.status)}`}>
+                  {ISSUE_STATUS_LABEL[i.status][zh ? "zh-Hant" : "en"]}
+                </span>
+              </div>
+              <div className="font-semibold text-sm break-words">{copy.title}</div>
+              <p className="text-xs text-[var(--muted)] break-words">{copy.detail}</p>
+              <div className="flex flex-wrap gap-1.5 text-xs">
+                <span className="badge border bg-slate-100 text-slate-700 border-slate-200">{i.area}</span>
+                <span className="font-semibold">{i.bu}</span>
+                <span className="text-[var(--muted)] tabular-nums">{copy.eta}</span>
+              </div>
+              <p className="text-[11px] text-[var(--muted)] break-words">
+                <span className="font-semibold">{zh ? "依賴：" : "Depends: "}</span>
+                {copy.dependencies}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="table-wrap panel hidden sm:block overflow-x-auto">
         <table className="data">
           <thead>
             <tr>
