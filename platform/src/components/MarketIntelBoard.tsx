@@ -82,15 +82,33 @@ type BoardState = {
   settings: Array<{ key: string; value: string }>;
 };
 
+type MiTab = "findings" | "messenger" | "sources" | "scans";
+
+function isMiTab(v: string | null | undefined): v is MiTab {
+  return v === "findings" || v === "messenger" || v === "sources" || v === "scans";
+}
+
 export function MarketIntelBoard({ initial }: { initial: BoardState }) {
   const router = useRouter();
   const { locale } = useUiLocale();
   const [snapshot, setSnapshot] = useState(isStaticExport());
-  const [tab, setTab] = useState<"findings" | "messenger" | "sources" | "scans">("findings");
+  const [tab, setTab] = useState<MiTab>("findings");
+
+  function goTab(next: MiTab) {
+    setTab(next);
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", next);
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+  }
 
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search).get("tab");
-    if (q === "messenger" || q === "sources" || q === "scans" || q === "findings") setTab(q);
+    const apply = () => {
+      const q = new URLSearchParams(window.location.search).get("tab");
+      if (isMiTab(q)) setTab(q);
+    };
+    apply();
+    window.addEventListener("popstate", apply);
+    return () => window.removeEventListener("popstate", apply);
   }, []);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -278,18 +296,35 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
         )}
       </div>
 
-      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-        <StatCard label={t("mi.findings", locale)} value={findings.length} hint={`${highImpact} ${t("mi.highImpact", locale)}`} />
+      <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3" data-testid="mi-stat-cards">
         <StatCard
+          onClick={() => goTab("findings")}
+          label={t("mi.findings", locale)}
+          value={findings.length}
+          hint={`${highImpact} ${t("mi.highImpact", locale)}`}
+          cta={t("mi.openFindings", locale)}
+          tone={highImpact > 0 ? "alert" : "default"}
+        />
+        <StatCard
+          href="/admin/monitor-2#M2-MKT-INTEL"
           label={t("mi.indicator", locale)}
           value={indicator?.last_value ?? "—"}
           hint={t("mi.warnBreach", locale, { w: indicator?.threshold_warn ?? 1, b: indicator?.threshold_breach ?? 3 })}
+          cta={t("mi.openIndicator", locale)}
         />
-        <StatCard label={t("mi.sources", locale)} value={sources.length} hint={enabled ? t("mi.schedOn", locale) : t("mi.schedOff", locale)} />
         <StatCard
+          onClick={() => goTab("sources")}
+          label={t("mi.sources", locale)}
+          value={sources.length}
+          hint={enabled ? t("mi.schedOn", locale) : t("mi.schedOff", locale)}
+          cta={t("mi.openSources", locale)}
+        />
+        <StatCard
+          onClick={() => goTab("messenger")}
           label={t("mi.pushes", locale)}
           value={outbox.length}
           hint="oc_market_intelligence"
+          cta={t("mi.openMessenger", locale)}
         />
       </div>
 
@@ -299,7 +334,7 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
           <Badge className="bg-orange-50 text-orange-900 border-orange-200">{indicator.monitor_id}</Badge>
           <span>{indicator.name}</span>
           <StatusBadge value={indicator.status} />
-          <Link className="underline text-xs" href="/admin/monitor-2">
+          <Link className="underline text-xs" href="/admin/monitor-2#M2-MKT-INTEL">
             {navLabel("/admin/monitor-2", locale, "Monitor 2.0")}
           </Link>
           <Link className="underline text-xs" href="/admin/lark">
@@ -321,7 +356,8 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
             key={id}
             type="button"
             className={`btn ${tab === id ? "btn-primary" : ""}`}
-            onClick={() => setTab(id)}
+            data-testid={`mi-tab-${id}`}
+            onClick={() => goTab(id)}
           >
             {label}
           </button>

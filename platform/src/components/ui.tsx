@@ -38,6 +38,7 @@ export function StatCard({
   value,
   hint,
   href,
+  onClick,
   icon,
   tone = "default",
   cta,
@@ -46,11 +47,13 @@ export function StatCard({
   value: string | number;
   hint?: ReactNode;
   href?: string;
+  onClick?: () => void;
   icon?: ReactNode;
   tone?: "default" | "alert";
   cta?: ReactNode;
 }) {
   const alert = tone === "alert";
+  const interactive = Boolean(href || onClick);
   const inner = (
     <>
       <div className="flex items-start justify-between gap-2">
@@ -67,7 +70,7 @@ export function StatCard({
           ) : null}
           <div className="text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{label}</div>
         </div>
-        {href ? (
+        {interactive ? (
           <ChevronRight
             className="h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-teal-700"
             aria-hidden
@@ -75,30 +78,36 @@ export function StatCard({
         ) : null}
       </div>
       <div className="mt-2 text-2xl font-semibold tabular-nums">{value}</div>
-      {(hint || (href && cta)) && (
+      {(hint || (interactive && cta)) && (
         <div className="mt-1 flex items-end justify-between gap-2">
           {hint ? <div className="text-xs text-[var(--muted)]">{hint}</div> : <span />}
-          {href && cta ? (
+          {interactive && cta ? (
             <div className="text-xs font-semibold text-teal-800 whitespace-nowrap">{cta}</div>
           ) : null}
         </div>
       )}
     </>
   );
+  const className = cn(
+    "panel p-4",
+    interactive && "card-link group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/40 text-left w-full",
+    alert && "border-orange-200"
+  );
   if (href) {
     return (
-      <Link
-        href={href}
-        className={cn(
-          "panel card-link group p-4 block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-600/40",
-          alert && "border-orange-200"
-        )}
-      >
+      <Link href={href} className={className} onClick={onClick}>
         {inner}
       </Link>
     );
   }
-  return <div className="panel p-4">{inner}</div>;
+  if (onClick) {
+    return (
+      <button type="button" className={className} onClick={onClick}>
+        {inner}
+      </button>
+    );
+  }
+  return <div className={className}>{inner}</div>;
 }
 
 export function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
