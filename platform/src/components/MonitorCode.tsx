@@ -97,7 +97,12 @@ export function MonitorCode({
             {locale === "zh-Hant" ? "相關情境" : "Related"}: {meta.risk_scenarios[0]}
           </div>
         ) : null}
-        <div className="mt-2 text-[11px] font-semibold text-teal-800">{definedLabel}</div>
+        <AdminLink
+          href={href}
+          className="mt-2 inline-flex text-[11px] font-semibold text-teal-800 underline underline-offset-2 hover:text-teal-950"
+        >
+          {definedLabel}
+        </AdminLink>
       </span>
     </span>
   );
