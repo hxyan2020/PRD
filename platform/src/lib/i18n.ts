@@ -161,8 +161,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "monitor-2": {
     title: { en: "Monitor 2.0 Integration Hub", "zh-Hant": "Monitor 2.0 整合中心" },
     subtitle: {
-      en: "Existing indicator monitoring platform — warnings, alerts and ticket tracking. CRMP syncs and escalates from here.",
-      "zh-Hant": "既有指標監控平台 — 警告、警報與工單追蹤。CRMP 自此同步並升級。",
+      en: "Indicator registry — thresholds, risk scenarios and combinations. Alerts and tickets live under Realtime Alert & Tracker.",
+      "zh-Hant": "指標登錄 — 門檻、風險情境與組合。警報與工單請至「即時警報與追蹤」。",
     },
   },
   lark: {

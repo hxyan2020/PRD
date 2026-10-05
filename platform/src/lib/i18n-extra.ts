@@ -282,6 +282,11 @@ export const EXTRA_UI: Record<string, Pair> = {
   "m2.tabIndicators": { en: "Indicators", "zh-Hant": "指標" },
   "m2.tabAlerts": { en: "Alerts", "zh-Hant": "警報" },
   "m2.tabTickets": { en: "Tickets", "zh-Hant": "工單" },
+  "m2.alertsTicketsMoved": {
+    en: "Alerts and tickets are tracked under Realtime Alert & Tracker.",
+    "zh-Hant": "警報與工單已移至「即時警報與追蹤」。",
+  },
+  "m2.gotoRealtimeAlerts": { en: "Open Realtime Alert", "zh-Hant": "前往即時警報" },
   "m2.warnBreach": { en: "Warn / Breach", "zh-Hant": "警告／違規" },
   "m2.description": { en: "Description", "zh-Hant": "說明" },
   "m2.frequency": { en: "Frequency", "zh-Hant": "檢查頻率" },
