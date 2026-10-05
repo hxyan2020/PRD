@@ -168,10 +168,15 @@ export default async function AdminDashboardPage() {
       </div>
 
       <section className="panel p-3 sm:p-4 min-w-0 mt-6">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">
-            <T k="home.recentAlerts" />
-          </h2>
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <h2 className="font-[family-name:var(--font-display)] text-lg">
+              <T k="home.recentAlerts" />
+            </h2>
+            <p className="text-xs text-[var(--muted)] mt-0.5">
+              <T k="home.expandHint" />
+            </p>
+          </div>
           <Link
             href="/admin/alerts"
             className="text-sm text-teal-800 font-semibold shrink-0 inline-flex items-center gap-0.5"

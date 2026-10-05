@@ -287,6 +287,10 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "部門頁另有 {n} 項",
   },
   "home.recentAlerts": { en: "Recent Alerts", "zh-Hant": "最近警報" },
+  "home.expandHint": {
+    en: "Click a card to expand the full ticket — admin URL, AI RCA, POC, gates, escalation and timeline.",
+    "zh-Hant": "點卡片即可展開完整工單 — 管理網址、AI 根因、承辦、關卡、升級路徑與時間軸。",
+  },
   "home.viewAll": { en: "View all", "zh-Hant": "查看全部" },
   "home.open": { en: "Open", "zh-Hant": "開啟" },
   "home.openPage": { en: "Open page", "zh-Hant": "開啟頁面" },

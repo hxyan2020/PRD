@@ -70,8 +70,201 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
   return (
     <div className="rounded-xl border border-[var(--line)] bg-white px-3 py-2.5">
       <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--muted)]">{label}</div>
-      <div className="mt-1 text-sm break-word">{children}</div>
+      <div className="mt-1 text-sm break-words">{children}</div>
     </div>
+  );
+}
+
+function AlertTrackerFacts({
+  pack,
+  canOperate,
+  copied,
+  copyUrl,
+  ack,
+  displayUrl,
+  t,
+  phrase,
+  gateLabel,
+  openClose,
+  ticketStatus,
+}: {
+  pack: AlertTrackerPack;
+  canOperate: boolean;
+  copied: boolean;
+  copyUrl: (e: React.MouseEvent) => void;
+  ack: (e: React.MouseEvent) => void;
+  displayUrl: string;
+  t: (k: string, vars?: Record<string, string | number>) => string;
+  phrase: (text: string | null | undefined) => string;
+  gateLabel: string;
+  openClose: string;
+  ticketStatus: string;
+}) {
+  return (
+    <>
+      <div className="flex flex-wrap items-center gap-2">
+        <AdminLink className="btn btn-primary" href={pack.href}>
+          <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+          {t("tracker.openAdmin")}
+        </AdminLink>
+        <button type="button" className="btn" onClick={copyUrl}>
+          <Copy className="h-3.5 w-3.5" aria-hidden />
+          {copied ? t("tracker.copied") : t("tracker.copyUrl")}
+        </button>
+        {pack.analysis ? (
+          <AdminLink className="btn" href={pack.analysis.href}>
+            {t("ai.openEvidence")}
+          </AdminLink>
+        ) : null}
+        {canOperate && pack.alert_status === "OPEN" && (
+          <button type="button" className="btn sm:hidden" onClick={ack}>
+            {t("common.acknowledge")}
+          </button>
+        )}
+      </div>
+      <p className="text-xs text-[var(--muted)] break-all">
+        {t("tracker.adminUrl")}: {displayUrl}
+      </p>
+
+      <div className="grid sm:grid-cols-2 gap-2">
+        <Fact label={t("common.severity")}>
+          <SeverityBadge value={pack.severity} />
+          {pack.observed_value != null ? (
+            <span className="ml-2 text-[var(--muted)]">
+              {t("common.observed")} {pack.observed_value}
+            </span>
+          ) : null}
+        </Fact>
+        <Fact label={t("tracker.openClose")}>
+          <div className="flex flex-wrap gap-1.5 items-center">
+            <Badge className={gateClass(pack.gate.code === "CLOSED" ? "CLOSED" : "OPEN")}>{openClose}</Badge>
+            <StatusBadge value={pack.alert_status} />
+            {pack.ticket_status ? <StatusBadge value={pack.ticket_status} /> : null}
+          </div>
+          <div className="mt-1 text-xs text-[var(--muted)]">
+            {t("common.ticket")} {pack.ticket_id || "—"} · {ticketStatus}
+          </div>
+        </Fact>
+        <Fact label={t("tracker.raisedTo")}>
+          <PersonLine person={pack.poc} empty={t("tracker.noPoc")} phrase={phrase} />
+          {pack.ticket_department ? (
+            <div className="mt-1 text-xs text-[var(--muted)]">
+              {t("common.department")} · {phrase(pack.ticket_department)}
+            </div>
+          ) : null}
+        </Fact>
+        <Fact label={t("tracker.pending")}>
+          <Badge className={gateClass(pack.gate.code)}>{gateLabel}</Badge>
+          <p className="mt-1.5 text-xs text-[var(--muted)] leading-relaxed">
+            {pack.gate.code === "PENDING_RO"
+              ? t("tracker.gateDetail.PENDING_RO", { name: pack.ro?.name || t("tracker.roFallback") })
+              : t(`tracker.gateDetail.${pack.gate.code}`)}
+          </p>
+          {pack.ro ? (
+            <div className="mt-1.5 text-xs">
+              {t("tracker.ro")}: <PersonLine person={pack.ro} empty="" phrase={phrase} />
+            </div>
+          ) : null}
+        </Fact>
+      </div>
+
+      <Fact label={t("tracker.aiReport")}>
+        {pack.analysis ? (
+          <div className="space-y-2">
+            <div className="flex flex-wrap gap-2 items-center">
+              <Badge
+                className={
+                  pack.analysis.mode === "SKILL_MATCH"
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                    : "bg-amber-50 text-amber-900 border-amber-200"
+                }
+              >
+                {pack.analysis.mode}
+              </Badge>
+              <StatusBadge value={pack.analysis.status} />
+              <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                {t("common.confidence")} {(pack.analysis.confidence * 100).toFixed(0)}%
+              </Badge>
+              {pack.analysis.needs_human ? (
+                <Badge className="bg-rose-50 text-rose-800 border-rose-200">{t("common.needsHuman")}</Badge>
+              ) : null}
+              {pack.analysis.challenged ? (
+                <Badge
+                  className={
+                    pack.analysis.challenge_verdict === "AGREE"
+                      ? "bg-emerald-50 text-emerald-900 border-emerald-200"
+                      : pack.analysis.challenge_verdict === "DISAGREE"
+                        ? "bg-rose-50 text-rose-900 border-rose-200"
+                        : "bg-amber-50 text-amber-900 border-amber-200"
+                  }
+                >
+                  {t("ai.challenged", { verdict: pack.analysis.challenge_verdict || "challenged" })}
+                </Badge>
+              ) : pack.severity === "BREACH" || pack.severity === "CRITICAL" ? (
+                <Badge className="bg-slate-100 text-slate-600 border-slate-200">{t("ai.pending2nd")}</Badge>
+              ) : null}
+            </div>
+            <div className="text-xs text-[var(--muted)]">{pack.analysis.analysis_id}</div>
+            <p className="text-sm text-slate-700 leading-relaxed">{pack.analysis.summary}</p>
+            <AdminLink className="text-sm font-semibold text-teal-800 underline" href={pack.analysis.href}>
+              {t("tracker.openRca")}
+            </AdminLink>
+          </div>
+        ) : (
+          <p className="text-[var(--muted)]">{t("tracker.noAnalysis")}</p>
+        )}
+      </Fact>
+
+      <Fact label={t("tracker.escalation")}>
+        {pack.escalation ? (
+          <div className="space-y-1.5">
+            <div className="font-semibold">{phrase(pack.escalation.route_name)}</div>
+            <div className="text-xs text-[var(--muted)]">
+              {t("common.sla")} {pack.escalation.sla_minutes} {t("common.minutes")}
+              {pack.escalation.requires_human ? ` · ${t("common.needsHuman")}` : ""}
+            </div>
+            <div className="text-sm">
+              {t("tracker.primary")}: {phrase(pack.escalation.primary_team)}
+              {pack.escalation.secondary_team ? ` → ${phrase(pack.escalation.secondary_team)}` : ""}
+            </div>
+            {pack.escalation.lark_channel ? (
+              <div className="text-sm">
+                {t("common.lark")}: {phrase(pack.escalation.lark_channel)}
+              </div>
+            ) : null}
+            {pack.escalation.auto_actions.length ? (
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {pack.escalation.auto_actions.map((a) => (
+                  <Badge key={a} className="bg-slate-100 text-slate-700 border-slate-200">
+                    {phrase(a)}
+                  </Badge>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <p className="text-[var(--muted)]">{t("tracker.noEscalation")}</p>
+        )}
+      </Fact>
+
+      <div>
+        <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--muted)] mb-2">
+          {t("tracker.timeline")}
+        </div>
+        <ol className="space-y-0 border-l-2 border-teal-200 ml-2">
+          {pack.timeline.map((ev, i) => (
+            <li key={`${ev.at}-${ev.kind}-${i}`} className="relative pl-4 py-1.5">
+              <span className="absolute -left-[7px] top-2.5 h-3 w-3 rounded-full bg-teal-600 ring-4 ring-slate-50" />
+              <div className="text-sm">{eventTitle(ev, t)}</div>
+              <div className="text-xs text-[var(--muted)]">
+                {ev.at}
+                {ev.actor ? ` · ${phrase(ev.actor)}` : ""}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </>
   );
 }
 
@@ -131,6 +324,55 @@ export function AlertTrackerCard({
     pack.gate.code === "CLOSED" ? t("tracker.closed") : t("tracker.open");
   const ticketStatus = pack.ticket_status ? phrase(pack.ticket_status) : t("common.none");
 
+  const facts = (
+    <AlertTrackerFacts
+      pack={pack}
+      canOperate={canOperate}
+      copied={copied}
+      copyUrl={copyUrl}
+      ack={ack}
+      displayUrl={displayUrl}
+      t={t}
+      phrase={phrase}
+      gateLabel={gateLabel}
+      openClose={openClose}
+      ticketStatus={ticketStatus}
+    />
+  );
+
+  if (compact) {
+    return (
+      <details
+        id={`home-${pack.alert_id}`}
+        className="group bg-white"
+        data-testid={`home-alert-${pack.alert_id}`}
+      >
+        <summary className="flex cursor-pointer list-none items-start gap-3 px-3 py-3 hover:bg-slate-50 transition [&::-webkit-details-marker]:hidden">
+          <div className="min-w-0 flex-1">
+            <div className="font-medium">{phrase(pack.title)}</div>
+            <div className="text-xs text-[var(--muted)] mt-0.5">
+              {pack.alert_id} · <span>{phrase(pack.indicator_name)}</span>
+            </div>
+            <div className="mt-1.5 flex flex-wrap gap-1.5">
+              <SeverityBadge value={pack.severity} />
+              <StatusBadge value={pack.alert_status} />
+              <Badge className={gateClass(pack.gate.code)}>{gateLabel}</Badge>
+            </div>
+          </div>
+          <ChevronDown
+            className="h-4 w-4 mt-1 shrink-0 text-slate-400 transition group-open:rotate-180 group-open:text-teal-700"
+            aria-hidden
+          />
+          <span className="sr-only">{t("tracker.expand")}</span>
+        </summary>
+        <div className="border-t border-[var(--line)] bg-slate-50/70 px-3 py-3 space-y-3">
+          {pack.message ? <p className="text-sm text-slate-700 leading-relaxed">{phrase(pack.message)}</p> : null}
+          {facts}
+        </div>
+      </details>
+    );
+  }
+
   return (
     <details
       id={pack.alert_id}
@@ -148,7 +390,7 @@ export function AlertTrackerCard({
             <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(pack.product)}</Badge>
             <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(pack.domain_code)}</Badge>
           </div>
-          <h2 className={cn("mt-2 font-semibold", compact ? "text-base" : "text-lg")}>{phrase(pack.title)}</h2>
+          <h2 className="mt-2 font-semibold text-lg">{phrase(pack.title)}</h2>
           <p className="text-sm text-[var(--muted)] mt-1">{phrase(pack.message)}</p>
           <div className="text-xs text-[var(--muted)] mt-2">
             {pack.alert_id}
@@ -172,170 +414,7 @@ export function AlertTrackerCard({
         <span className="sr-only">{t("tracker.expand")}</span>
       </summary>
 
-      <div className="border-t border-[var(--line)] bg-slate-50/70 px-3 py-3 sm:px-4 sm:py-4 space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <AdminLink className="btn btn-primary" href={pack.href}>
-            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-            {t("tracker.openAdmin")}
-          </AdminLink>
-          <button type="button" className="btn" onClick={copyUrl}>
-            <Copy className="h-3.5 w-3.5" aria-hidden />
-            {copied ? t("tracker.copied") : t("tracker.copyUrl")}
-          </button>
-          {pack.analysis ? (
-            <AdminLink className="btn" href={pack.analysis.href}>
-              {t("ai.openEvidence")}
-            </AdminLink>
-          ) : null}
-          {canOperate && pack.alert_status === "OPEN" && (
-            <button type="button" className="btn sm:hidden" onClick={ack}>
-              {t("common.acknowledge")}
-            </button>
-          )}
-        </div>
-        <p className="text-xs text-[var(--muted)] break-all">
-          {t("tracker.adminUrl")}: {displayUrl}
-        </p>
-
-        <div className="grid sm:grid-cols-2 gap-2">
-          <Fact label={t("common.severity")}>
-            <SeverityBadge value={pack.severity} />
-            {pack.observed_value != null ? (
-              <span className="ml-2 text-[var(--muted)]">
-                {t("common.observed")} {pack.observed_value}
-              </span>
-            ) : null}
-          </Fact>
-          <Fact label={t("tracker.openClose")}>
-            <div className="flex flex-wrap gap-1.5 items-center">
-              <Badge className={gateClass(pack.gate.code === "CLOSED" ? "CLOSED" : "OPEN")}>{openClose}</Badge>
-              <StatusBadge value={pack.alert_status} />
-              {pack.ticket_status ? <StatusBadge value={pack.ticket_status} /> : null}
-            </div>
-            <div className="mt-1 text-xs text-[var(--muted)]">
-              {t("common.ticket")} {pack.ticket_id || "—"} · {ticketStatus}
-            </div>
-          </Fact>
-          <Fact label={t("tracker.raisedTo")}>
-            <PersonLine person={pack.poc} empty={t("tracker.noPoc")} phrase={phrase} />
-            {pack.ticket_department ? (
-              <div className="mt-1 text-xs text-[var(--muted)]">
-                {t("common.department")} · {phrase(pack.ticket_department)}
-              </div>
-            ) : null}
-          </Fact>
-          <Fact label={t("tracker.pending")}>
-            <Badge className={gateClass(pack.gate.code)}>{gateLabel}</Badge>
-            <p className="mt-1.5 text-xs text-[var(--muted)] leading-relaxed">
-              {pack.gate.code === "PENDING_RO"
-                ? t("tracker.gateDetail.PENDING_RO", { name: pack.ro?.name || t("tracker.roFallback") })
-                : t(`tracker.gateDetail.${pack.gate.code}`)}
-            </p>
-            {pack.ro ? (
-              <div className="mt-1.5 text-xs">
-                {t("tracker.ro")}: <PersonLine person={pack.ro} empty="" phrase={phrase} />
-              </div>
-            ) : null}
-          </Fact>
-        </div>
-
-        <Fact label={t("tracker.aiReport")}>
-          {pack.analysis ? (
-            <div className="space-y-2">
-              <div className="flex flex-wrap gap-2 items-center">
-                <Badge
-                  className={
-                    pack.analysis.mode === "SKILL_MATCH"
-                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                      : "bg-amber-50 text-amber-900 border-amber-200"
-                  }
-                >
-                  {pack.analysis.mode}
-                </Badge>
-                <StatusBadge value={pack.analysis.status} />
-                <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-                  {t("common.confidence")} {(pack.analysis.confidence * 100).toFixed(0)}%
-                </Badge>
-                {pack.analysis.needs_human ? (
-                  <Badge className="bg-rose-50 text-rose-800 border-rose-200">{t("common.needsHuman")}</Badge>
-                ) : null}
-                {pack.analysis.challenged ? (
-                  <Badge
-                    className={
-                      pack.analysis.challenge_verdict === "AGREE"
-                        ? "bg-emerald-50 text-emerald-900 border-emerald-200"
-                        : pack.analysis.challenge_verdict === "DISAGREE"
-                          ? "bg-rose-50 text-rose-900 border-rose-200"
-                          : "bg-amber-50 text-amber-900 border-amber-200"
-                    }
-                  >
-                    {t("ai.challenged", { verdict: pack.analysis.challenge_verdict || "challenged" })}
-                  </Badge>
-                ) : pack.severity === "BREACH" || pack.severity === "CRITICAL" ? (
-                  <Badge className="bg-slate-100 text-slate-600 border-slate-200">{t("ai.pending2nd")}</Badge>
-                ) : null}
-              </div>
-              <div className="text-xs text-[var(--muted)]">{pack.analysis.analysis_id}</div>
-              <p className="text-sm text-slate-700 leading-relaxed">{pack.analysis.summary}</p>
-              <AdminLink className="text-sm font-semibold text-teal-800 underline" href={pack.analysis.href}>
-                {t("tracker.openRca")}
-              </AdminLink>
-            </div>
-          ) : (
-            <p className="text-[var(--muted)]">{t("tracker.noAnalysis")}</p>
-          )}
-        </Fact>
-
-        <Fact label={t("tracker.escalation")}>
-          {pack.escalation ? (
-            <div className="space-y-1.5">
-              <div className="font-semibold">{phrase(pack.escalation.route_name)}</div>
-              <div className="text-xs text-[var(--muted)]">
-                {t("common.sla")} {pack.escalation.sla_minutes} {t("common.minutes")}
-                {pack.escalation.requires_human ? ` · ${t("common.needsHuman")}` : ""}
-              </div>
-              <div className="text-sm">
-                {t("tracker.primary")}: {phrase(pack.escalation.primary_team)}
-                {pack.escalation.secondary_team ? ` → ${phrase(pack.escalation.secondary_team)}` : ""}
-              </div>
-              {pack.escalation.lark_channel ? (
-                <div className="text-sm">
-                  {t("common.lark")}: {phrase(pack.escalation.lark_channel)}
-                </div>
-              ) : null}
-              {pack.escalation.auto_actions.length ? (
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {pack.escalation.auto_actions.map((a) => (
-                    <Badge key={a} className="bg-slate-100 text-slate-700 border-slate-200">
-                      {phrase(a)}
-                    </Badge>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          ) : (
-            <p className="text-[var(--muted)]">{t("tracker.noEscalation")}</p>
-          )}
-        </Fact>
-
-        <div>
-          <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--muted)] mb-2">
-            {t("tracker.timeline")}
-          </div>
-          <ol className="space-y-0 border-l-2 border-teal-200 ml-2">
-            {pack.timeline.map((ev, i) => (
-              <li key={`${ev.at}-${ev.kind}-${i}`} className="relative pl-4 py-1.5">
-                <span className="absolute -left-[7px] top-2.5 h-3 w-3 rounded-full bg-teal-600 ring-4 ring-slate-50" />
-                <div className="text-sm">{eventTitle(ev, t)}</div>
-                <div className="text-xs text-[var(--muted)]">
-                  {ev.at}
-                  {ev.actor ? ` · ${phrase(ev.actor)}` : ""}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
+      <div className="border-t border-[var(--line)] bg-slate-50/70 px-3 py-3 sm:px-4 sm:py-4 space-y-3">{facts}</div>
     </details>
   );
 }
@@ -356,7 +435,13 @@ export function AlertTrackerList({
     return <div className="panel p-6 text-sm text-[var(--muted)]">{t("tracker.empty")}</div>;
   }
   return (
-    <div className={cn("space-y-3", compact && "space-y-2")}>
+    <div
+      className={
+        compact
+          ? "overflow-hidden rounded-xl border border-[var(--line)] divide-y divide-[var(--line)] bg-white"
+          : "space-y-3"
+      }
+    >
       {packs.map((pack) => (
         <AlertTrackerCard
           key={pack.id}

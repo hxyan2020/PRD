@@ -1287,7 +1287,7 @@ export const UAT_CASES: UatCase[] = [
     ],
     en: {
       title: "Risk domains catalogue",
-      why: "Every alarm is tagged with a domain. If the catalogue is empty, RACI on Home is fiction.",
+      why: "Every alarm is tagged with a domain. If the catalogue is empty, RACI on Departments is fiction.",
       objective: "Open Risk Domains and confirm each domain has a code, name and a responsible team/department.",
       steps: [
         "Open Risk Domains.",
