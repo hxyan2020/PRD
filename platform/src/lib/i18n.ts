@@ -12,8 +12,8 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/risk-log": { en: "Risk Log Analytics", "zh-Hant": "風險日誌分析" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
-  "/admin/alerts": { en: "Live Alerts", "zh-Hant": "即時警報" },
-  "/admin/ai-analyses": { en: "AI Analyses", "zh-Hant": "AI 分析" },
+  "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
+  "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-admin": { en: "AI Admin", "zh-Hant": "AI 管理" },
   "/admin/interventions": { en: "Human Intervention", "zh-Hant": "人工干預" },
   "/admin/spine": { en: "Spine Log", "zh-Hant": "脊柱日誌" },
@@ -63,8 +63,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   dashboard: {
     title: { en: "Daily Performance Dashboard", "zh-Hant": "每日績效儀表板" },
     subtitle: {
-      en: "CFD + crypto exchange risk performance for the day — last stage of the semi-automated spine.",
-      "zh-Hant": "當日 CFD＋加密交易所風險績效 — 半自動化脊柱最後一環。",
+      en: "CFD sphere vs Exchange sphere — last stage of the semi-automated spine.",
+      "zh-Hant": "CFD 圈對交易所圈 — 半自動化脊柱最後一環。",
     },
   },
   "risk-log": {
@@ -89,10 +89,10 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   alerts: {
-    title: { en: "Live Alerts", "zh-Hant": "即時警報" },
+    title: { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
     subtitle: {
-      en: "Operational queue fed by Monitor 2.0. Ack here, escalate via routes, notify Lark.",
-      "zh-Hant": "由 Monitor 2.0 餵入之營運佇列。可在此確認、依路徑升級並通知 Lark。",
+      en: "Expand a ticket for facts, admin URL, AI RCA, severity, POC, open/close, pending admin or RO approval, escalation path and timeline. Pipeline controls sit at the top.",
+      "zh-Hant": "展開工單可看完整事實、管理後台網址、AI 根因、嚴重度、承辦 POC、開／關、待管理員變更或 RO 核准、升級路徑與時間軸。管線控制在頁首。",
     },
   },
   "ai-analyses": {
@@ -210,8 +210,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "risk-domains": {
     title: { en: "Risk Domains", "zh-Hant": "風險領域" },
     subtitle: {
-      en: "CFD and Crypto Exchange domain catalogue.",
-      "zh-Hant": "CFD 與加密交易所領域目錄。",
+      en: "Two visual spheres: CFD book vs crypto Exchange — owner, supporting BUs and coverage.",
+      "zh-Hant": "兩個視覺圈：CFD 帳簿對加密交易所 — 負責人、支援 BU 與覆蓋範圍。",
     },
   },
   "data-sources": {

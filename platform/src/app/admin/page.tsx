@@ -11,7 +11,7 @@ import {
   Waypoints,
 } from "lucide-react";
 import { getDb } from "@/lib/db";
-import { StatCard, SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { StatCard, DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
@@ -20,29 +20,24 @@ import { Phrase } from "@/components/Phrase";
 import { SignInOwnerCard } from "@/components/SignInOwnerCard";
 import { PUBLIC_MESSENGER_URL } from "@/lib/static-export";
 import { cn } from "@/lib/utils";
+import { listAlertTrackerPacks } from "@/lib/alert-tracker";
+import { AlertTrackerList } from "@/components/AlertTrackerBoard";
+import { HomeSpineViz } from "@/components/HomeSpineViz";
 
 const DEPT_DEST: Record<
   string,
   { href: string; en: string; zh: string; stripe: string }
 > = {
-  RISK_CONTROL: { href: "/admin/alerts", en: "Live Alerts", zh: "即時警報", stripe: "bg-teal-600" },
+  RISK_CONTROL: { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤", stripe: "bg-teal-600" },
   OPERATIONS: {
     href: "/admin/interventions",
     en: "Human Intervention",
     zh: "人工干預",
     stripe: "bg-orange-500",
   },
-  AI: { href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析", stripe: "bg-violet-600" },
+  AI: { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤", stripe: "bg-violet-600" },
   SYSTEM: { href: "/admin/settings", en: "Platform Settings", zh: "平台設定", stripe: "bg-slate-600" },
 };
-
-const SPINE: Array<{ href: string; en: string; zh: string }> = [
-  { href: "/admin/monitor-2", en: "Monitor 2.0 emits indicator warning / breach", zh: "Monitor 2.0 發出指標警告／違規" },
-  { href: "/admin/alerts", en: "CRMP creates / syncs ticket and attaches evidence", zh: "CRMP 建立／同步工單並附上證據" },
-  { href: "/admin/escalation", en: "Escalation route selects team + Lark channel + SLA", zh: "升級路徑選定團隊＋Lark 頻道＋SLA" },
-  { href: "/admin/ai-analyses", en: "AI drafts RCA; human approves intervention", zh: "AI 草擬根因；人工核准干預" },
-  { href: "/admin/dashboard", en: "Audit log + daily performance dashboard", zh: "稽核日誌＋每日績效儀表板" },
-];
 
 export default async function AdminDashboardPage() {
   const db = getDb();
@@ -72,21 +67,7 @@ export default async function AdminDashboardPage() {
     primary_responsibilities: string;
   }>;
 
-  const recentAlerts = db
-    .prepare(
-      `SELECT a.alert_id, a.severity, a.title, a.status, a.created_at, i.name AS indicator_name
-       FROM monitor_alerts a
-       JOIN monitor_indicators i ON i.id = a.indicator_id
-       ORDER BY a.created_at DESC LIMIT 5`
-    )
-    .all() as Array<{
-    alert_id: string;
-    severity: string;
-    title: string;
-    status: string;
-    created_at: string;
-    indicator_name: string;
-  }>;
+  const recentPacks = listAlertTrackerPacks({ limit: 5, order: "recent" });
 
   const openCta = <T k="home.open" />;
 
@@ -292,67 +273,11 @@ export default async function AdminDashboardPage() {
               <ChevronRight className="h-4 w-4" aria-hidden />
             </Link>
           </div>
-          <ul className="mt-3 divide-y divide-[var(--line)] rounded-xl border border-[var(--line)] overflow-hidden">
-            {recentAlerts.map((a) => (
-              <li key={a.alert_id}>
-                <Link
-                  href={`/admin/alerts#${a.alert_id}`}
-                  className="group flex items-start gap-3 px-3 py-3 hover:bg-slate-50 transition"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="font-medium"><Phrase>{a.title}</Phrase></div>
-                    <div className="text-xs text-[var(--muted)] mt-0.5">
-                      {a.alert_id} · <Phrase>{a.indicator_name}</Phrase>
-                    </div>
-                    <div className="mt-1.5 flex flex-wrap gap-1.5">
-                      <SeverityBadge value={a.severity} />
-                      <StatusBadge value={a.status} />
-                    </div>
-                  </div>
-                  <ChevronRight
-                    className="h-4 w-4 mt-1 shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-teal-700"
-                    aria-hidden
-                  />
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-4 rounded-xl bg-slate-50 border border-[var(--line)] p-3 text-sm">
-            <div className="flex items-center justify-between gap-2">
-              <div className="font-semibold">
-                <EnZh en="Integration spine" zh="整合脊柱" />
-              </div>
-              <Link
-                href="/admin/spine"
-                className="text-xs font-semibold text-teal-800 inline-flex items-center gap-0.5"
-              >
-                <EnZh en="Spine log" zh="脊柱日誌" />
-                <ChevronRight className="h-3.5 w-3.5" aria-hidden />
-              </Link>
-            </div>
-            <ol className="mt-2 space-y-1">
-              {SPINE.map((step, i) => (
-                <li key={step.href + i}>
-                  <Link
-                    href={step.href}
-                    className="group flex items-start gap-2 rounded-lg px-2 py-1.5 -mx-1 hover:bg-white hover:shadow-sm transition"
-                  >
-                    <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-600 text-[10px] font-bold text-white">
-                      {i + 1}
-                    </span>
-                    <span className="flex-1 text-[var(--muted)] group-hover:text-[var(--ink)]">
-                      <EnZh en={step.en} zh={step.zh} />
-                    </span>
-                    <ChevronRight
-                      className="h-4 w-4 mt-0.5 shrink-0 text-slate-300 group-hover:text-teal-700"
-                      aria-hidden
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ol>
+          <div className="mt-3">
+            <AlertTrackerList packs={recentPacks} canOperate={false} compact />
           </div>
+
+          <HomeSpineViz />
         </section>
       </div>
     </div>

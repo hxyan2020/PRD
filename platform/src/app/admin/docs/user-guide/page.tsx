@@ -17,7 +17,7 @@ export default async function UserGuidePage({ searchParams }: { searchParams: Pr
 
   const quick = [
     { href: "/admin/messenger", en: "Messenger", zh: "Messenger" },
-    { href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析" },
+    { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
     { href: "/admin/ai-admin", en: "AI Admin", zh: "AI 管理" },
     { href: "/admin/market-intel", en: "Market Intel", zh: "市場情報" },
     { href: "/admin/docs/uat", en: "UAT", zh: "UAT" },

@@ -404,5 +404,5 @@ export function createAlarmAndAnalyze(input: {
 
   const alertDbId = Number(info.lastInsertRowid);
   writeAudit({ name: "Monitor 2.0" }, "ALARM_RAISED", "monitor_alert", alertIdStr, input);
-  return analyzeAlert(alertDbId, { force: true });
+  return { ...analyzeAlert(alertDbId, { force: true }), monitor_alert_id: alertIdStr };
 }

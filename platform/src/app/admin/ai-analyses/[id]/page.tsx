@@ -31,15 +31,15 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
             title={<T k="ai.snapshot" />}
             subtitle={<T k="ai.snapshotSub" />}
             actions={
-              <Link className="btn" href="/admin/ai-analyses">
-                <T k="common.back" />
+              <Link className="btn" href="/admin/alerts">
+                <T k="tracker.back" />
               </Link>
             }
           />
         </div>
       );
     }
-    redirect("/admin/ai-analyses");
+    redirect("/admin/alerts");
   }
 
   const analysis = bundle.analysis as {
@@ -96,8 +96,8 @@ export default async function AiAnalysisDetailPage({ params }: { params: Promise
         title={analysis.analysis_id}
         subtitle={analysis.summary}
         actions={
-          <Link className="btn" href="/admin/ai-analyses">
-            <T k="common.back" />
+          <Link className="btn" href="/admin/alerts">
+            <T k="tracker.back" />
           </Link>
         }
       />

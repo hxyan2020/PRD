@@ -67,7 +67,6 @@ export function DetectorsBoard({
     if (alarms > 0) {
       bumpNavBadge("/admin/detectors", alarms);
       bumpNavBadge("/admin/alerts", alarms);
-      bumpNavBadge("/admin/ai-analyses", alarms);
     }
     router.refresh();
   }

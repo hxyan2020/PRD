@@ -7,7 +7,6 @@ export const NAV_EXTRA_KEY = "crmp_nav_extra_v1";
 /** Used when SQLite counts are missing (GitHub Pages export with an empty snapshot). */
 export const FALLBACK_NAV_TOTALS: Record<string, number> = {
   "/admin/alerts": 5,
-  "/admin/ai-analyses": 4,
   "/admin/messenger": 6,
   "/admin/market-intel": 3,
   "/admin/interventions": 3,

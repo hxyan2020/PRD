@@ -200,7 +200,7 @@ const KNOWLEDGE: Knowledge[] = [
   },
   {
     keys: ["challenger", "second-ai", "second ai", "second_opinion", "agree", "disagree", "partial", "挑戰"],
-    href: "/admin/ai-analyses",
+    href: "/admin/alerts",
     en: {
       title: "Second-AI challenger",
       body: "BREACH/CRITICAL analyses open a challenger panel (setting ai.second_opinion_severity, default BREACH). Today it is a second heuristic in lib/ai/challenger.ts — same repo, not a second vendor. Verdicts AGREE / PARTIAL / DISAGREE. Independent model is RM-04.",

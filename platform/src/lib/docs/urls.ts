@@ -27,12 +27,12 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Risk", title: "Risk Log Analytics", path: "/admin/risk-log", description: "Timeline of risk events & BU corrections", permission: "monitor.read" },
   { category: "Risk", title: "Market Intelligence", path: "/admin/market-intel", description: "5-min news/social scan + messenger outbox", permission: "monitor.read" },
   { category: "Risk", title: "Detectors", path: "/admin/detectors", description: "Threshold detectors that raise Monitor alarms", permission: "detectors.read" },
-  { category: "Risk", title: "Live Alerts", path: "/admin/alerts", description: "Open Monitor 2.0 alerts", permission: "monitor.read" },
+  { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Expandable Monitor 2.0 tickets + AI RCA, gates, POC/RO, escalation and timeline", permission: "monitor.read" },
   { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Indicator registry & sync", permission: "monitor.read" },
   { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domain catalogue", permission: "monitor.read" },
 
   // AI
-  { category: "AI", title: "AI Analyses", path: "/admin/ai-analyses", description: "Primary RCA + second-AI challenger", permission: "ai.read" },
+  { category: "AI", title: "AI Analyses (redirect)", path: "/admin/ai-analyses", description: "Redirects to Realtime Alert & Tracker", permission: "ai.read" },
   { category: "AI", title: "AI Analysis Detail", path: "/admin/ai-analyses/[id]", description: "Single analysis pack + AiChallengePanel", permission: "ai.read" },
   { category: "AI", title: "AI Admin", path: "/admin/ai-admin", description: "Maker/checker config for AI settings & models", permission: "ai.admin" },
   { category: "AI", title: "Human Intervention", path: "/admin/interventions", description: "Human gates from skill/RAG actions", permission: "intervene.operate" },

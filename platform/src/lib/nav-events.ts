@@ -28,7 +28,6 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     db,
     `SELECT COUNT(*) AS c, MAX(created_at) AS ts FROM monitor_alerts WHERE status IN ('OPEN','ACKNOWLEDGED','ESCALATED')`
   );
-  const analyses = scalar(db, `SELECT COUNT(*) AS c, MAX(created_at) AS ts FROM ai_analyses`);
   const messenger = scalar(
     db,
     `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM messenger_threads WHERE status IN ('OPEN','ESCALATED')`
@@ -55,7 +54,6 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
 
   return withFallback({
     "/admin/alerts": { count: alerts.c, latestAt: alerts.ts },
-    "/admin/ai-analyses": { count: analyses.c, latestAt: analyses.ts },
     "/admin/messenger": { count: messenger.c, latestAt: messenger.ts },
     "/admin/market-intel": { count: intel.c, latestAt: intel.ts },
     "/admin/interventions": { count: interventions.c, latestAt: interventions.ts },

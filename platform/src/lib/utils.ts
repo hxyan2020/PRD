@@ -36,6 +36,13 @@ export function statusClass(status: string) {
     case "DISABLED":
     case "INACTIVE":
       return "bg-slate-100 text-slate-600 border-slate-200";
+    case "PENDING_ADMIN":
+    case "AWAITING_CHECKER":
+    case "PENDING":
+      return "bg-amber-50 text-amber-900 border-amber-200";
+    case "PENDING_RO":
+    case "AWAITING_HUMAN":
+      return "bg-rose-50 text-rose-800 border-rose-200";
     default:
       return "bg-slate-100 text-slate-700 border-slate-200";
   }

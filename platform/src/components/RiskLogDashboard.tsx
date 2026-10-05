@@ -486,7 +486,7 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
           </div>
 
           <p className="text-sm text-[var(--muted)]">
-            {t("rl.related")} <Link className="underline" href="/admin/alerts">{navLabel("/admin/alerts", locale, "Live Alerts")}</Link> ·{" "}
+            {t("rl.related")} <Link className="underline" href="/admin/alerts">{navLabel("/admin/alerts", locale, "Realtime Alert & Tracker")}</Link> ·{" "}
             <Link className="underline" href="/admin/spine">{navLabel("/admin/spine", locale, "Spine Log")}</Link> ·{" "}
             <Link className="underline" href="/admin/audit">{navLabel("/admin/audit", locale, "Audit Log")}</Link>
           </p>

@@ -36,8 +36,8 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
             <Link className="btn" href="/admin/messenger">
               Messenger
             </Link>
-            <Link className="btn btn-primary" href="/admin/ai-analyses">
-              {zh ? "AI 分析" : "AI Analyses"}
+            <Link className="btn btn-primary" href="/admin/alerts">
+              {zh ? "即時警報與追蹤" : "Realtime Alert & Tracker"}
             </Link>
           </>
         }

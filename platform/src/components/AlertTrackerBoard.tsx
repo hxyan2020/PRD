@@ -1,0 +1,519 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ChevronDown, Copy, ExternalLink } from "lucide-react";
+import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { AdminLink } from "@/components/AdminLink";
+import { publicAdminHref } from "@/lib/static-export";
+import { bumpNavBadge } from "@/lib/nav-badges";
+import { useT } from "@/hooks/useUiLocale";
+import { cn } from "@/lib/utils";
+import type { AlertTrackerPack, TrackerEvent, TrackerGate, TrackerPerson } from "@/lib/alert-tracker";
+
+function gateClass(code: TrackerGate["code"]) {
+  switch (code) {
+    case "CLOSED":
+      return "bg-emerald-50 text-emerald-800 border-emerald-200";
+    case "PENDING_RO":
+      return "bg-rose-50 text-rose-800 border-rose-200";
+    case "PENDING_ADMIN":
+      return "bg-amber-50 text-amber-900 border-amber-200";
+    default:
+      return "bg-orange-50 text-orange-800 border-orange-200";
+  }
+}
+
+function eventTitle(ev: TrackerEvent, t: (k: string, vars?: Record<string, string | number>) => string) {
+  switch (ev.kind) {
+    case "raised":
+      return t("tracker.event.raised", { sev: ev.title });
+    case "ack":
+      return t("tracker.event.ack");
+    case "ticket":
+      return t("tracker.event.ticket", { title: ev.title });
+    case "rca":
+      return t("tracker.event.rca", { title: ev.title });
+    case "intervention":
+      return t("tracker.event.intervention", { title: ev.title });
+    case "decided":
+      return t("tracker.event.decided", { title: ev.title });
+    default:
+      return ev.title;
+  }
+}
+
+function PersonLine({
+  person,
+  empty,
+  phrase,
+}: {
+  person: TrackerPerson | null;
+  empty: string;
+  phrase: (text: string | null | undefined) => string;
+}) {
+  if (!person) return <span className="text-[var(--muted)]">{empty}</span>;
+  return (
+    <span>
+      <span className="font-semibold">{person.name}</span>
+      <span className="text-[var(--muted)]">
+        {" "}
+        · {phrase(person.role)}
+        {person.team ? ` · ${phrase(person.team)}` : ""}
+        {person.email ? ` · ${person.email}` : ""}
+      </span>
+    </span>
+  );
+}
+
+function Fact({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-xl border border-[var(--line)] bg-white px-3 py-2.5">
+      <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--muted)]">{label}</div>
+      <div className="mt-1 text-sm break-word">{children}</div>
+    </div>
+  );
+}
+
+export function AlertTrackerCard({
+  pack,
+  canOperate,
+  compact = false,
+  defaultOpen = false,
+}: {
+  pack: AlertTrackerPack;
+  canOperate: boolean;
+  compact?: boolean;
+  defaultOpen?: boolean;
+}) {
+  const router = useRouter();
+  const { t, phrase } = useT();
+  const [copied, setCopied] = useState(false);
+  const [displayUrl, setDisplayUrl] = useState(pack.href);
+
+  useEffect(() => {
+    setDisplayUrl(`${window.location.origin}${publicAdminHref(`/admin/alerts#${pack.alert_id}`)}`);
+  }, [pack.alert_id]);
+
+  function adminUrl() {
+    if (typeof window === "undefined") return pack.href;
+    return `${window.location.origin}${publicAdminHref(`/admin/alerts#${pack.alert_id}`)}`;
+  }
+
+  async function copyUrl(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(adminUrl());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  async function ack(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    await fetch("/api/monitor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "ack_alert", alert_id: pack.id }),
+    });
+    router.refresh();
+  }
+
+  const gateLabel =
+    pack.gate.code === "PENDING_RO"
+      ? t("tracker.gate.PENDING_RO", { name: pack.ro?.name || t("tracker.roFallback") })
+      : t(`tracker.gate.${pack.gate.code}`);
+  const openClose =
+    pack.gate.code === "CLOSED" ? t("tracker.closed") : t("tracker.open");
+  const ticketStatus = pack.ticket_status ? phrase(pack.ticket_status) : t("common.none");
+
+  return (
+    <details
+      id={pack.alert_id}
+      className={cn(
+        "group panel scroll-mt-24 overflow-hidden p-0",
+        defaultOpen && "ring-2 ring-teal-600/40 border-teal-300"
+      )}
+    >
+      <summary className="flex cursor-pointer list-none items-start gap-3 p-3 sm:p-4 [&::-webkit-details-marker]:hidden">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap gap-2 items-center">
+            <SeverityBadge value={pack.severity} />
+            <StatusBadge value={pack.alert_status} />
+            <Badge className={gateClass(pack.gate.code)}>{gateLabel}</Badge>
+            <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(pack.product)}</Badge>
+            <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(pack.domain_code)}</Badge>
+          </div>
+          <h2 className={cn("mt-2 font-semibold", compact ? "text-base" : "text-lg")}>{phrase(pack.title)}</h2>
+          <p className="text-sm text-[var(--muted)] mt-1">{phrase(pack.message)}</p>
+          <div className="text-xs text-[var(--muted)] mt-2">
+            {pack.alert_id}
+            {pack.ticket_id ? ` · ${pack.ticket_id}` : ""} · {pack.monitor_id} · {phrase(pack.indicator_name)}
+            {pack.poc ? ` · ${t("tracker.poc")}: ${pack.poc.name}` : ` · ${t("tracker.noPoc")}`}
+            {" · "}
+            {pack.created_at}
+          </div>
+        </div>
+        <div className="flex shrink-0 items-start gap-2">
+          {canOperate && pack.alert_status === "OPEN" && (
+            <button type="button" className="btn btn-primary hidden sm:inline-flex" onClick={ack}>
+              {t("common.acknowledge")}
+            </button>
+          )}
+          <ChevronDown
+            className="mt-1 h-5 w-5 shrink-0 text-slate-400 transition group-open:rotate-180 group-open:text-teal-700"
+            aria-hidden
+          />
+        </div>
+        <span className="sr-only">{t("tracker.expand")}</span>
+      </summary>
+
+      <div className="border-t border-[var(--line)] bg-slate-50/70 px-3 py-3 sm:px-4 sm:py-4 space-y-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <AdminLink className="btn btn-primary" href={pack.href}>
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+            {t("tracker.openAdmin")}
+          </AdminLink>
+          <button type="button" className="btn" onClick={copyUrl}>
+            <Copy className="h-3.5 w-3.5" aria-hidden />
+            {copied ? t("tracker.copied") : t("tracker.copyUrl")}
+          </button>
+          {pack.analysis ? (
+            <AdminLink className="btn" href={pack.analysis.href}>
+              {t("ai.openEvidence")}
+            </AdminLink>
+          ) : null}
+          {canOperate && pack.alert_status === "OPEN" && (
+            <button type="button" className="btn sm:hidden" onClick={ack}>
+              {t("common.acknowledge")}
+            </button>
+          )}
+        </div>
+        <p className="text-xs text-[var(--muted)] break-all">
+          {t("tracker.adminUrl")}: {displayUrl}
+        </p>
+
+        <div className="grid sm:grid-cols-2 gap-2">
+          <Fact label={t("common.severity")}>
+            <SeverityBadge value={pack.severity} />
+            {pack.observed_value != null ? (
+              <span className="ml-2 text-[var(--muted)]">
+                {t("common.observed")} {pack.observed_value}
+              </span>
+            ) : null}
+          </Fact>
+          <Fact label={t("tracker.openClose")}>
+            <div className="flex flex-wrap gap-1.5 items-center">
+              <Badge className={gateClass(pack.gate.code === "CLOSED" ? "CLOSED" : "OPEN")}>{openClose}</Badge>
+              <StatusBadge value={pack.alert_status} />
+              {pack.ticket_status ? <StatusBadge value={pack.ticket_status} /> : null}
+            </div>
+            <div className="mt-1 text-xs text-[var(--muted)]">
+              {t("common.ticket")} {pack.ticket_id || "—"} · {ticketStatus}
+            </div>
+          </Fact>
+          <Fact label={t("tracker.raisedTo")}>
+            <PersonLine person={pack.poc} empty={t("tracker.noPoc")} phrase={phrase} />
+            {pack.ticket_department ? (
+              <div className="mt-1 text-xs text-[var(--muted)]">
+                {t("common.department")} · {phrase(pack.ticket_department)}
+              </div>
+            ) : null}
+          </Fact>
+          <Fact label={t("tracker.pending")}>
+            <Badge className={gateClass(pack.gate.code)}>{gateLabel}</Badge>
+            <p className="mt-1.5 text-xs text-[var(--muted)] leading-relaxed">
+              {pack.gate.code === "PENDING_RO"
+                ? t("tracker.gateDetail.PENDING_RO", { name: pack.ro?.name || t("tracker.roFallback") })
+                : t(`tracker.gateDetail.${pack.gate.code}`)}
+            </p>
+            {pack.ro ? (
+              <div className="mt-1.5 text-xs">
+                {t("tracker.ro")}: <PersonLine person={pack.ro} empty="" phrase={phrase} />
+              </div>
+            ) : null}
+          </Fact>
+        </div>
+
+        <Fact label={t("tracker.aiReport")}>
+          {pack.analysis ? (
+            <div className="space-y-2">
+              <div className="flex flex-wrap gap-2 items-center">
+                <Badge
+                  className={
+                    pack.analysis.mode === "SKILL_MATCH"
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                      : "bg-amber-50 text-amber-900 border-amber-200"
+                  }
+                >
+                  {pack.analysis.mode}
+                </Badge>
+                <StatusBadge value={pack.analysis.status} />
+                <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                  {t("common.confidence")} {(pack.analysis.confidence * 100).toFixed(0)}%
+                </Badge>
+                {pack.analysis.needs_human ? (
+                  <Badge className="bg-rose-50 text-rose-800 border-rose-200">{t("common.needsHuman")}</Badge>
+                ) : null}
+                {pack.analysis.challenged ? (
+                  <Badge
+                    className={
+                      pack.analysis.challenge_verdict === "AGREE"
+                        ? "bg-emerald-50 text-emerald-900 border-emerald-200"
+                        : pack.analysis.challenge_verdict === "DISAGREE"
+                          ? "bg-rose-50 text-rose-900 border-rose-200"
+                          : "bg-amber-50 text-amber-900 border-amber-200"
+                    }
+                  >
+                    {t("ai.challenged", { verdict: pack.analysis.challenge_verdict || "challenged" })}
+                  </Badge>
+                ) : pack.severity === "BREACH" || pack.severity === "CRITICAL" ? (
+                  <Badge className="bg-slate-100 text-slate-600 border-slate-200">{t("ai.pending2nd")}</Badge>
+                ) : null}
+              </div>
+              <div className="text-xs text-[var(--muted)]">{pack.analysis.analysis_id}</div>
+              <p className="text-sm text-slate-700 leading-relaxed">{pack.analysis.summary}</p>
+              <AdminLink className="text-sm font-semibold text-teal-800 underline" href={pack.analysis.href}>
+                {t("tracker.openRca")}
+              </AdminLink>
+            </div>
+          ) : (
+            <p className="text-[var(--muted)]">{t("tracker.noAnalysis")}</p>
+          )}
+        </Fact>
+
+        <Fact label={t("tracker.escalation")}>
+          {pack.escalation ? (
+            <div className="space-y-1.5">
+              <div className="font-semibold">{phrase(pack.escalation.route_name)}</div>
+              <div className="text-xs text-[var(--muted)]">
+                {t("common.sla")} {pack.escalation.sla_minutes} {t("common.minutes")}
+                {pack.escalation.requires_human ? ` · ${t("common.needsHuman")}` : ""}
+              </div>
+              <div className="text-sm">
+                {t("tracker.primary")}: {phrase(pack.escalation.primary_team)}
+                {pack.escalation.secondary_team ? ` → ${phrase(pack.escalation.secondary_team)}` : ""}
+              </div>
+              {pack.escalation.lark_channel ? (
+                <div className="text-sm">
+                  {t("common.lark")}: {phrase(pack.escalation.lark_channel)}
+                </div>
+              ) : null}
+              {pack.escalation.auto_actions.length ? (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {pack.escalation.auto_actions.map((a) => (
+                    <Badge key={a} className="bg-slate-100 text-slate-700 border-slate-200">
+                      {phrase(a)}
+                    </Badge>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <p className="text-[var(--muted)]">{t("tracker.noEscalation")}</p>
+          )}
+        </Fact>
+
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--muted)] mb-2">
+            {t("tracker.timeline")}
+          </div>
+          <ol className="space-y-0 border-l-2 border-teal-200 ml-2">
+            {pack.timeline.map((ev, i) => (
+              <li key={`${ev.at}-${ev.kind}-${i}`} className="relative pl-4 py-1.5">
+                <span className="absolute -left-[7px] top-2.5 h-3 w-3 rounded-full bg-teal-600 ring-4 ring-slate-50" />
+                <div className="text-sm">{eventTitle(ev, t)}</div>
+                <div className="text-xs text-[var(--muted)]">
+                  {ev.at}
+                  {ev.actor ? ` · ${phrase(ev.actor)}` : ""}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </details>
+  );
+}
+
+export function AlertTrackerList({
+  packs,
+  canOperate,
+  compact = false,
+  openId,
+}: {
+  packs: AlertTrackerPack[];
+  canOperate: boolean;
+  compact?: boolean;
+  openId?: string;
+}) {
+  const { t } = useT();
+  if (!packs.length) {
+    return <div className="panel p-6 text-sm text-[var(--muted)]">{t("tracker.empty")}</div>;
+  }
+  return (
+    <div className={cn("space-y-3", compact && "space-y-2")}>
+      {packs.map((pack) => (
+        <AlertTrackerCard
+          key={pack.id}
+          pack={pack}
+          canOperate={canOperate}
+          compact={compact}
+          defaultOpen={openId === pack.alert_id}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function AlertTrackerBoard({
+  packs,
+  canOperate,
+  canOperateAi,
+}: {
+  packs: AlertTrackerPack[];
+  canOperate: boolean;
+  canOperateAi: boolean;
+}) {
+  const router = useRouter();
+  const { t } = useT();
+  const [msg, setMsg] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [hash, setHash] = useState("");
+
+  useEffect(() => {
+    const apply = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      setHash(id);
+      if (id) {
+        const el = document.getElementById(id);
+        if (el instanceof HTMLDetailsElement) el.open = true;
+        el?.scrollIntoView({ block: "start" });
+      }
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, []);
+
+  async function run(action: string, body: Record<string, unknown> = {}) {
+    setBusy(true);
+    setMsg(null);
+    const res = await fetch("/api/ai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action, ...body }),
+    });
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      setMsg(data.error || t("common.failed"));
+      return;
+    }
+    const pct = Math.round((data.analysis?.confidence || 0) * 100);
+    setMsg(
+      action === "analyze_open"
+        ? t("ai.ensured", { n: data.count })
+        : action === "simulate_alarm"
+          ? `${t("ai.alarmRaised", { id: data.analysis?.analysis_id, mode: data.analysis?.mode, pct })}${
+              data.challenge ? ` · ${t("ai.challenged", { verdict: data.challenge.verdict })}` : ""
+            }`
+          : action === "backfill_challenges"
+            ? t("ai.backfilled", { n: data.count })
+            : t("ai.done")
+    );
+    router.refresh();
+    if (action === "simulate_alarm") {
+      bumpNavBadge("/admin/alerts", 1);
+      bumpNavBadge("/admin/spine", 1);
+      const alertKey = data.monitor_alert_id as string | undefined;
+      if (alertKey) {
+        window.location.hash = alertKey;
+      }
+    } else if (action === "analyze_open" || action === "backfill_challenges") {
+      bumpNavBadge("/admin/alerts", Number(data.count) || 1);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      {canOperateAi && (
+        <div className="panel p-4">
+          <h3 className="font-semibold">{t("ai.pipeline")}</h3>
+          <p className="text-sm text-[var(--muted)] mt-1">{t("ai.pipelineIntro")}</p>
+          <div className="mt-3 action-row">
+            <button type="button" className="btn btn-primary" disabled={busy} onClick={() => run("analyze_open")}>
+              {t("ai.analyzeOpen")}
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() =>
+                run("simulate_alarm", {
+                  monitor_id: "M2-COPY-009",
+                  severity: "BREACH",
+                  observed_value: 33,
+                  title: "Simulated copy concentration breach",
+                  message: "Top signal provider now at 33% of copy equity after viral strategy share.",
+                })
+              }
+            >
+              {t("ai.simCopy")}
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() =>
+                run("simulate_alarm", {
+                  monitor_id: "M2-EQ-001",
+                  severity: "WARN",
+                  observed_value: 3.8,
+                  title: "Simulated equity drawdown warn",
+                  message: "Company CFD book drawdown rising through US session after CPI volatility.",
+                })
+              }
+            >
+              {t("ai.simEq")}
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() =>
+                run("simulate_alarm", {
+                  monitor_id: "M2-MRG-014",
+                  severity: "CRITICAL",
+                  observed_value: 220,
+                  title: "Simulated margin utilisation CRITICAL",
+                  message: "Book-wide margin utilisation spiked; LP rejects rising. Requires dual-AI RCA.",
+                })
+              }
+            >
+              {t("ai.simCrit")}
+            </button>
+            <button type="button" className="btn" disabled={busy} onClick={() => run("backfill_challenges")}>
+              {t("ai.backfill")}
+            </button>
+          </div>
+          {msg && (
+            <div
+              role="status"
+              data-testid="ai-action-status"
+              className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 sticky top-[72px] z-20"
+            >
+              {msg}
+            </div>
+          )}
+        </div>
+      )}
+
+      <AlertTrackerList packs={packs} canOperate={canOperate} openId={hash} />
+    </div>
+  );
+}

@@ -27,6 +27,12 @@ type NavEvents = Record<string, { count: number; latestAt: string | null }>;
 
 function navKey(href: string, pathname: string) {
   if (href === "/admin") return pathname === "/admin" || pathname === "/admin/";
+  if (href === "/admin/alerts") {
+    return (
+      pathname.startsWith("/admin/alerts") ||
+      pathname.startsWith("/admin/ai-analyses")
+    );
+  }
   return pathname === href || pathname.startsWith(`${href}/`) || pathname.startsWith(href);
 }
 
@@ -199,7 +205,10 @@ export function AdminShell({
                 {locale === "zh-Hant" ? group["zh-Hant"] : group.en}
               </div>
               {items.map((item) => {
-                const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+                const active =
+                  item.href === "/admin/alerts"
+                    ? pathname.startsWith("/admin/alerts") || pathname.startsWith("/admin/ai-analyses")
+                    : pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
                 const Icon = item.icon;
                 const effective = (totals[item.href] || 0) + (extra[item.href] || 0);
                 const viewed = seen[item.href] ?? 0;
