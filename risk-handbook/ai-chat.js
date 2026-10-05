@@ -94,7 +94,7 @@
           '<input id="rh-ai-ep" placeholder="' + DEFAULT_EP + '" />' +
           "<label>Optional API key (stored only in this browser)</label>" +
           '<input id="rh-ai-key" type="password" autocomplete="off" placeholder="leave blank for default AI" />' +
-          "<p>Selected text and questions are sent to the AI provider unless you choose handbook-only. Default provider is Pollinations (no key). The bot is grounded in this handbook and the Cursor design decisions for V-Exchange Phase 1.</p>" +
+          "<p>Selected text and questions are sent to the AI provider unless you choose handbook-only. If the online model does not answer within a few seconds, the bot uses this handbook and the Cursor Phase 1 decisions instead.</p>" +
         "</div>" +
       "</aside>";
     document.body.appendChild(root);
@@ -171,10 +171,12 @@
       document.getElementById("rh-ai-panel").classList.remove("open");
     });
     document.getElementById("rh-ai-clear").addEventListener("click", function () {
+      busy = false;
       messages = [];
       lastSelection = "";
       document.getElementById("rh-ai-quote").textContent = "";
       document.getElementById("rh-ai-msgs").innerHTML = "";
+      document.getElementById("rh-ai-send").disabled = false;
       greet();
     });
     document.getElementById("rh-ai-gear").addEventListener("click", function () {
@@ -434,6 +436,21 @@
     return bits.join("\n\n");
   }
 
+  function handbookFallback(query, chunks, lang, note) {
+    var text;
+    try {
+      text = localAnswer(query, chunks, lang);
+    } catch (e) {
+      text = lang === "zh"
+        ? "检索出错。请换一个术语再问，或点 Clear 后重试。"
+        : "Lookup failed. Try another term, or Clear and ask again.";
+    }
+    if (!note) return text;
+    return text + (lang === "zh"
+      ? "\n\n（在线 AI 暂不可用，以上为手册检索说明。）"
+      : "\n\n(Online AI was unavailable; this is the handbook retrieval explanation.)");
+  }
+
   function ask(query, isExplain, selected) {
     if (busy) return;
     if (!isExplain) addUser(query);
@@ -444,8 +461,14 @@
     var searchQ = isExplain
       ? (selected || lastSelection || query)
       : (query + " " + (lastSelection || "")).trim();
-    var chunks = retrieve(searchQ, lang, 8);
-    var mode = document.getElementById("rh-ai-mode").value;
+    var chunks = [];
+    try {
+      chunks = retrieve(searchQ, lang, 8);
+    } catch (e) {
+      chunks = [];
+    }
+    var modeEl = document.getElementById("rh-ai-mode");
+    var mode = modeEl ? modeEl.value : "local";
     var thinking = document.createElement("div");
     thinking.className = "rh-ai-msg bot";
     thinking.id = "rh-ai-thinking";
@@ -453,7 +476,12 @@
     document.getElementById("rh-ai-msgs").appendChild(thinking);
     scrollMsgs();
 
+    var settled = false;
+    var watchdog = null;
     var finish = function (text, err) {
+      if (settled) return;
+      settled = true;
+      if (watchdog) clearTimeout(watchdog);
       var node = document.getElementById("rh-ai-thinking");
       if (node) node.remove();
       addBot(text, !!err);
@@ -461,17 +489,19 @@
       document.getElementById("rh-ai-send").disabled = false;
     };
 
+    watchdog = setTimeout(function () {
+      finish(handbookFallback(query, chunks, lang, true), false);
+    }, 5000);
+
     if (mode === "local") {
-      finish(localAnswer(query, chunks, lang), false);
+      finish(handbookFallback(query, chunks, lang, false), false);
       return;
     }
 
     callModel(query, chunks, lang).then(function (text) {
-      finish(text || localAnswer(query, chunks, lang), false);
+      finish(text || handbookFallback(query, chunks, lang, false), false);
     }).catch(function () {
-      finish(localAnswer(query, chunks, lang) + (lang === "zh"
-        ? "\n\n（在线 AI 暂不可用，以上为手册检索说明。）"
-        : "\n\n(Online AI was unavailable; this is the handbook retrieval explanation.)"), false);
+      finish(handbookFallback(query, chunks, lang, true), false);
     });
   }
 
@@ -499,55 +529,61 @@
     throw new Error("empty");
   }
 
-  function fetchWithTimeout(url, opts, ms) {
-    var ctrl = new AbortController();
-    var t = setTimeout(function () { ctrl.abort(); }, ms || 12000);
-    opts = opts || {};
-    opts.signal = ctrl.signal;
-    return fetch(url, opts).finally(function () { clearTimeout(t); });
-  }
-
-  function callChromePrompt(packed) {
-    var LM = window.LanguageModel || (window.ai && window.ai.languageModel);
-    if (!LM) return Promise.reject(new Error("no chrome lm"));
-    var start = LM.create ? LM.create() : LM.createSession ? LM.createSession() : Promise.reject(new Error("no create"));
-    return Promise.resolve(start).then(function (session) {
-      if (session && session.prompt) return session.prompt(packed.slice(0, 6000));
-      throw new Error("no prompt");
+  function raceTimeout(promise, ms) {
+    return new Promise(function (resolve, reject) {
+      var done = false;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        reject(new Error("timeout"));
+      }, ms);
+      Promise.resolve(promise).then(function (value) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        resolve(value);
+      }, function (err) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        reject(err);
+      });
     });
   }
 
   function callModel(query, chunks, lang) {
-    var packed = packedPrompt(query, chunks, lang);
-    var payload = { model: "openai", messages: [{ role: "user", content: packed.slice(0, 8000) }] };
+    var packed;
+    try {
+      packed = packedPrompt(query, chunks, lang);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+    var payload = { model: "openai", messages: [{ role: "user", content: packed.slice(0, 6000) }] };
     var endpoint = (document.getElementById("rh-ai-ep").value || "").trim() || DEFAULT_EP;
     var key = (document.getElementById("rh-ai-key").value || "").trim();
     var headers = { "Content-Type": "application/json", Accept: "application/json, text/plain" };
     if (key) headers.Authorization = "Bearer " + key;
-    return callChromePrompt(packed).catch(function () {
-      return fetchWithTimeout(endpoint, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(payload)
-      }, 12000);
-    }).then(function (r) {
-      if (typeof r === "string") return r;
-      if (!r.ok) throw new Error("ai " + r.status);
-      var ct = r.headers.get("content-type") || "";
+    var ctrl = typeof AbortController === "function" ? new AbortController() : null;
+    var req = fetch(endpoint, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(payload),
+      signal: ctrl ? ctrl.signal : undefined
+    });
+    return raceTimeout(req, 4000).then(function (r) {
+      if (!r || !r.ok) throw new Error("ai " + (r && r.status));
+      var ct = (r.headers && r.headers.get("content-type")) || "";
       if (ct.indexOf("application/json") !== -1) return r.json().then(parseModelResponse);
       return r.text().then(parseModelResponse);
-    }).catch(function () {
-      var shortP = packed.slice(0, 1400);
-      return fetchWithTimeout("https://text.pollinations.ai/" + encodeURIComponent(shortP), {
-        headers: { Accept: "text/plain" }
-      }, 10000).then(function (r) {
-        if (!r.ok) throw new Error("get ai " + r.status);
-        return r.text();
-      });
     }).then(function (text) {
       var out = String(text || "").trim();
-      if (!out || /no space left|status":500|error"/i.test(out)) throw new Error("bad ai");
+      if (!out || /no space left|status":\s*500|"error"/i.test(out)) throw new Error("bad ai");
       return out;
+    }).then(function (text) {
+      return text;
+    }, function (err) {
+      try { if (ctrl) ctrl.abort(); } catch (e) {}
+      throw err;
     });
   }
 
@@ -580,7 +616,11 @@
 
   window.addEventListener("load", function () {
     var q = location.search || "";
-    if (q.indexOf("ai-demo") === -1 && q.indexOf("ai-spark") === -1) return;
+    if (q.indexOf("ai-demo") === -1 && q.indexOf("ai-spark") === -1 && q.indexOf("ai-online") === -1) return;
+    if (q.indexOf("ai-online") !== -1) {
+      setTimeout(function () { openExplain("Perp Account"); }, 500);
+      return;
+    }
     try { document.getElementById("rh-ai-mode").value = "local"; } catch (e) {}
     setTimeout(function () {
       demoSelectPhrase("Perp Account") || demoSelectPhrase("永续账户");
