@@ -26,9 +26,9 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
   { category: "Risk", title: "Risk Log Analytics", path: "/admin/risk-log", description: "Closed tracker packs + 90-day historical charts (alerts/open book, loss vs prevented, latency) + timeline", permission: "monitor.read" },
   { category: "Risk", title: "Market Intelligence", path: "/admin/market-intel", description: "5-min news/social scan + messenger outbox", permission: "monitor.read" },
-  { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Redirects to Monitor 2.0 — detectors merged into indicator registry", permission: "detectors.read" },
-  { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + grouped AI pipeline controls (rank note) + AI RCA; M2-* MonitorCode tooltips/links; closed tickets → Risk Log", permission: "monitor.read" },
-  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry, thresholds, sampling runs & sync — deep-link targets for M2-* codes", permission: "monitor.read" },
+  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry (Run all / Sync / Pause / recent runs); alerts & tickets live on Realtime Alert & Tracker; deep-link targets for M2-* codes", permission: "monitor.read" },
+  { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Not in left nav — redirects to Monitor 2.0 (detectors merged into indicator registry)", permission: "detectors.read" },
+  { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Open Monitor 2.0 tickets only + grouped AI pipeline controls (rank note) + AI RCA; M2-* MonitorCode tooltips/links; closed tickets → Risk Log; AI Analyses list redirects here", permission: "monitor.read" },
   { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0 (M2-* chips)", permission: "monitor.read" },
 
   // AI
@@ -81,8 +81,8 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker" },
   { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management & test notify" },
   { category: "API", title: "Market Intel API", path: "/api/market-intel", description: "Scan / findings / outbox" },
-  { category: "API", title: "Monitor API", path: "/api/monitor", description: "Indicators, alerts, sync" },
-  { category: "API", title: "Detectors API", path: "/api/detectors", description: "Detector CRUD / run" },
+  { category: "API", title: "Monitor API", path: "/api/monitor", description: "Indicators + detectors: run_detectors, toggle_pause, threshold edit, sync" },
+  { category: "API", title: "Detectors API", path: "/api/detectors", description: "Legacy detector CRUD / run (UI lives on Monitor 2.0)" },
   { category: "API", title: "Escalation API", path: "/api/escalation", description: "Escalation routes" },
   { category: "API", title: "Interventions API", path: "/api/interventions", description: "Human gates approve/reject" },
   { category: "API", title: "Spine API", path: "/api/spine", description: "Spine event feed" },
