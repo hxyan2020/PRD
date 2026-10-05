@@ -211,11 +211,7 @@ export function syncInterventionsFromSkillRuns() {
   return pending.length;
 }
 
-export function listInterventions(status?: string) {
-  const db = getDb();
-  seedInterventionsIfEmpty(db);
-  syncInterventionsFromSkillRuns();
-  let sql = `
+const INTERVENTION_SELECT = `
     SELECT i.*,
            a.analysis_id AS analysis_code,
            a.indicator_monitor_id,
@@ -238,21 +234,61 @@ export function listInterventions(status?: string) {
     LEFT JOIN monitor_tickets t ON t.alert_id = al.id
     LEFT JOIN monitor_indicators m ON m.id = al.indicator_id
     LEFT JOIN users u ON u.id = i.decided_by
-  `;
-  const params: string[] = [];
-  if (status) {
-    sql += ` WHERE i.status = ?`;
-    params.push(status);
-  }
-  sql += ` ORDER BY
-    CASE i.status WHEN 'PENDING' THEN 0 WHEN 'APPROVED' THEN 1 ELSE 2 END,
-    i.id DESC
-    LIMIT 80`;
-  const rows = db.prepare(sql).all(...params) as Array<Record<string, unknown>>;
-  if (rows.length > 0) return rows;
+`;
 
-  // Static export / empty DB fallback — curated samples with ticket + actioner email
-  if (status) return INTERVENTION_DEMO_SAMPLES.filter((s) => s.status === status);
+export function listInterventions(status?: string) {
+  const db = getDb();
+  seedInterventionsIfEmpty(db);
+  syncInterventionsFromSkillRuns();
+
+  if (status) {
+    const rows = db
+      .prepare(`${INTERVENTION_SELECT} WHERE i.status = ? ORDER BY i.id DESC LIMIT 40`)
+      .all(status) as Array<Record<string, unknown>>;
+    if (rows.length) return rows;
+    return INTERVENTION_DEMO_SAMPLES.filter((s) => s.status === status);
+  }
+
+  // Surface pending gates + decided samples with actioner email (not buried under backlog)
+  const pending = db
+    .prepare(`${INTERVENTION_SELECT} WHERE i.status = 'PENDING' ORDER BY i.id DESC LIMIT 12`)
+    .all() as Array<Record<string, unknown>>;
+  const decided = db
+    .prepare(
+      `${INTERVENTION_SELECT}
+       WHERE i.status IN ('APPROVED','REJECTED') AND u.email IS NOT NULL
+       ORDER BY i.id DESC LIMIT 8`
+    )
+    .all() as Array<Record<string, unknown>>;
+  const decidedNoEmail = db
+    .prepare(
+      `${INTERVENTION_SELECT}
+       WHERE i.status IN ('APPROVED','REJECTED') AND u.email IS NULL
+       ORDER BY i.id DESC LIMIT 4`
+    )
+    .all() as Array<Record<string, unknown>>;
+
+  const seen = new Set<number>();
+  const merged: Array<Record<string, unknown>> = [];
+  for (const row of [...pending, ...decided, ...decidedNoEmail]) {
+    const id = Number(row.id);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    merged.push(row);
+  }
+
+  if (merged.length > 0) {
+    // If DB has no decided+email samples yet, prepend curated decided demos so actioner email is visible
+    const hasEmail = merged.some((r) => r.decided_by_email);
+    if (!hasEmail) {
+      return [
+        ...INTERVENTION_DEMO_SAMPLES.filter((s) => s.status !== "PENDING"),
+        ...merged,
+      ];
+    }
+    return merged;
+  }
+
   return INTERVENTION_DEMO_SAMPLES;
 }
 
