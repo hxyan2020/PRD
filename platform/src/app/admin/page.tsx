@@ -22,6 +22,8 @@ import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
 import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
 import { spineStageCounts } from "@/lib/ai/spine";
+import { FINISHED_AT, finishedAtLabel } from "@/lib/build-stamp";
+import { getUiLocale } from "@/lib/i18n-server";
 
 function latestSpineEvent(db: ReturnType<typeof getDb>, stages: string[]) {
   const placeholders = stages.map(() => "?").join(",");
@@ -36,6 +38,7 @@ function latestSpineEvent(db: ReturnType<typeof getDb>, stages: string[]) {
 
 export default async function AdminDashboardPage() {
   const db = getDb();
+  const ui = await getUiLocale();
   const counts = {
     users: (db.prepare(`SELECT COUNT(*) AS c FROM users`).get() as { c: number }).c,
     teams: (db.prepare(`SELECT COUNT(*) AS c FROM teams`).get() as { c: number }).c,
@@ -368,6 +371,14 @@ export default async function AdminDashboardPage() {
       </section>
 
       <HomeSpineViz steps={spineSteps} />
+
+      <footer
+        className="mt-8 pt-4 border-t border-[var(--line)] text-[11px] text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
+        data-testid="admin-build-stamp"
+      >
+        <span>{finishedAtLabel(ui === "zh-Hant" ? "zh-Hant" : "en")}</span>
+        <span className="font-mono tabular-nums break-all">{FINISHED_AT}</span>
+      </footer>
     </div>
   );
 }

@@ -239,6 +239,11 @@ body.nav-open {
   .panel {
     border-radius: 12px;
   }
+
+  /* Nav drawer: keep focus inside; prevent background scroll already via body.nav-open */
+  body.nav-open main {
+    pointer-events: none;
+  }
 }
 
 @media (max-width: 640px) {
@@ -255,8 +260,31 @@ body.nav-open {
     flex: 1 1 calc(50% - 0.25rem);
   }
 
+  .action-row {
+    width: 100%;
+  }
+
   .action-row .btn {
     flex: 1 1 auto;
+  }
+
+  /* Stack dense admin grids on phones */
+  .admin-stack-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .table-wrap {
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    max-width: calc(100% + 0.5rem);
+  }
+
+  table.data {
+    min-width: 520px;
   }
 
   table.data th,
