@@ -49,8 +49,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "管理儀表板",
     },
     subtitle: {
-      en: "Click any card to open its page — counts, departments, alerts, the messenger demo, and the rest of the desk.",
-      "zh-Hant": "點任何卡片即可開啟對應頁面 — 計數、部門、警報、Messenger 示範與其他功能。",
+      en: "Click any card to open its page — counts, alerts, the messenger demo, and the rest of the desk.",
+      "zh-Hant": "點任何卡片即可開啟對應頁面 — 計數、警報、Messenger 示範與其他功能。",
     },
   },
   login: {

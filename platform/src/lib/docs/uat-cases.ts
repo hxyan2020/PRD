@@ -47,7 +47,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "Open the Sign in page from the left pane (or go to /login). On the public GitHub Pages snapshot the address is /PRD/crmp-admin/login/ — it must not be a 404.",
         "Sign in as risk.owner@vantagemarkets.com with password risk123. You should land on Admin Home, not an error page.",
-        "Look at the left pane: your name and role RISK_OWNER (or similar) should show. Department cards / RACI should be visible on Home.",
+        "Look at the left pane: your name and role RISK_OWNER (or similar) should show. Open Departments from the left nav for the RACI charters.",
         "Sign out. Sign in as viewer@vantagemarkets.com with password view123.",
         "Try to open AI Admin from the left pane or by typing /admin/ai-admin. You should be sent away or told you are not allowed — you must not see the maker/checker form.",
         "Sign back in as the Risk Owner (or Super Admin if your session was delegated) before the next cases.",
@@ -62,7 +62,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "由左側「登入」開啟登入頁（或 /login）。公開 GitHub Pages 網址為 /PRD/crmp-admin/login/，不可出現 404。",
         "以 risk.owner@vantagemarkets.com / risk123 登入，應進入管理首頁而非錯誤頁。",
-        "左側應顯示姓名與 RISK_OWNER 角色；首頁可見部門／RACI。",
+        "左側應顯示姓名與 RISK_OWNER 角色；RACI 章程在左側「部門」頁。",
         "登出後以 viewer@vantagemarkets.com / view123 登入。",
         "嘗試開啟 AI Admin（左側或直接輸入 /admin/ai-admin）。應被導離或拒絕，不可看到 Maker／Checker 表單。",
         "改回風險負責人（或授權之超級管理員）再繼續下一案。",
