@@ -20,7 +20,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },
 
   // Home
-  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview & department RACI", permission: "admin.access" },
+  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, stats and expandable alert tracker", permission: "admin.access" },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
