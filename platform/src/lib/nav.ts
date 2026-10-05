@@ -26,7 +26,6 @@ import {
   UserCheck,
   Users,
   Waypoints,
-  Workflow,
 } from "lucide-react";
 
 export type NavGroupId =
@@ -71,10 +70,8 @@ export const NAV_ITEMS = [
   { href: "/admin/interventions", label: "Human Intervention", icon: UserCheck, permission: "intervene.operate", group: "response" },
   { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read", group: "response" },
   { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read", group: "response" },
-  { href: "/admin/spine", label: "Spine Log", icon: Workflow, permission: "spine.read", group: "response" },
 
-  { href: "/admin/departments", label: "Departments", icon: Building2, permission: "teams.read", group: "org" },
-  { href: "/admin/teams", label: "Teams", icon: Users, permission: "teams.read", group: "org" },
+  { href: "/admin/departments", label: "BU and Teams", icon: Building2, permission: "teams.read", group: "org" },
   { href: "/admin/users", label: "Users", icon: Users, permission: "users.read", group: "org" },
   { href: "/admin/roles", label: "Roles & Permissions", icon: Shield, permission: "users.read", group: "org" },
 

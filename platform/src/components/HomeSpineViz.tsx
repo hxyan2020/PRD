@@ -4,13 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Activity,
+  Bell,
   BrainCircuit,
+  CheckCircle2,
   ChevronRight,
   GitBranch,
   LayoutDashboard,
   Pause,
   Play,
+  Sparkles,
   Ticket,
+  UserCheck,
 } from "lucide-react";
 import { EnZh } from "@/components/EnZh";
 import { cn } from "@/lib/utils";
@@ -22,30 +26,42 @@ export type SpineStepStat = {
   labelZh: string;
   detailEn: string;
   detailZh: string;
+  /** Primary count — prefer tickets / incidents over raw spine events */
   count: number;
   countLabelEn: string;
   countLabelZh: string;
+  /** Optional secondary (e.g. spine events) */
+  secondaryCount?: number;
+  secondaryLabelEn?: string;
+  secondaryLabelZh?: string;
   latestTitle?: string | null;
   latestAt?: string | null;
 };
 
 const ICONS = {
-  detect: Activity,
+  DETECT: Activity,
+  ALARM: Bell,
+  AI_RCA: BrainCircuit,
+  SKILL_EXECUTE: Sparkles,
+  HUMAN_INTERVENTION: UserCheck,
+  RESOLVED: CheckCircle2,
+  DASHBOARD: LayoutDashboard,
   ticket: Ticket,
   escalate: GitBranch,
-  rca: BrainCircuit,
-  dashboard: LayoutDashboard,
 } as const;
 
 type IconKey = keyof typeof ICONS;
 
-const ICON_KEYS: IconKey[] = ["detect", "ticket", "escalate", "rca", "dashboard"];
+function iconFor(id: string): IconKey {
+  if (id in ICONS) return id as IconKey;
+  return "DETECT";
+}
 
 export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(true);
   const step = steps[active] ?? steps[0];
-  const Icon = ICONS[ICON_KEYS[active] ?? "detect"];
+  const Icon = ICONS[iconFor(step?.id || "DETECT")];
 
   useEffect(() => {
     if (!playing || steps.length < 2) return;
@@ -56,6 +72,8 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
   }, [playing, steps.length]);
 
   if (!steps.length || !step) return null;
+
+  const cols = Math.min(steps.length, 7);
 
   return (
     <section
@@ -79,8 +97,8 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
           </div>
           <p className="mt-0.5 text-xs text-[var(--muted)]">
             <EnZh
-              en="Live path from detection → ticket → escalation → AI RCA → dashboard. Click a node or play the tour."
-              zh="從偵測 → 工單 → 升級 → AI 根因 → 儀表板的即時路徑。點節點或播放導覽。"
+              en="DETECT → ALARM → AI_RCA → SKILL → HUMAN → RESOLVED → DASHBOARD. Ticket / incident counts per stage."
+              zh="DETECT → ALARM → AI_RCA → SKILL → HUMAN → RESOLVED → DASHBOARD。各階段工單／事件數。"
             />
           </p>
         </div>
@@ -95,14 +113,9 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
             {playing ? <Pause className="h-3.5 w-3.5" aria-hidden /> : <Play className="h-3.5 w-3.5" aria-hidden />}
             <EnZh en={playing ? "Pause tour" : "Play tour"} zh={playing ? "暫停導覽" : "播放導覽"} />
           </button>
-          <Link href="/admin/spine" className="btn">
-            <EnZh en="Spine log" zh="脊柱日誌" />
-            <ChevronRight className="h-3.5 w-3.5" aria-hidden />
-          </Link>
         </div>
       </div>
 
-      {/* Desktop / tablet horizontal pipeline */}
       <div className="relative mt-5 hidden sm:block" data-testid="home-spine-desktop">
         <div className="absolute left-8 right-8 top-[22px] h-[3px] rounded-full bg-slate-200" aria-hidden>
           <div
@@ -110,9 +123,12 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
             style={{ width: `${(active / Math.max(steps.length - 1, 1)) * 100}%` }}
           />
         </div>
-        <ol className="relative grid grid-cols-5 gap-2">
+        <ol
+          className="relative grid gap-2"
+          style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+        >
           {steps.map((s, i) => {
-            const StepIcon = ICONS[ICON_KEYS[i] ?? "detect"];
+            const StepIcon = ICONS[iconFor(s.id)];
             const selected = active === i;
             const reached = i <= active;
             return (
@@ -160,7 +176,6 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
         </ol>
       </div>
 
-      {/* Mobile vertical stepper */}
       <ol className="relative mt-4 space-y-0 sm:hidden" data-testid="home-spine-mobile">
         <div className="absolute bottom-3 left-[15px] top-3 w-[2px] bg-slate-200" aria-hidden>
           <div
@@ -169,7 +184,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
           />
         </div>
         {steps.map((s, i) => {
-          const StepIcon = ICONS[ICON_KEYS[i] ?? "detect"];
+          const StepIcon = ICONS[iconFor(s.id)];
           const selected = active === i;
           return (
             <li key={s.id}>
@@ -209,7 +224,6 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
         })}
       </ol>
 
-      {/* Active stage detail */}
       <div
         key={step.id}
         className="relative mt-4 rounded-xl border border-teal-200/80 bg-white/90 p-3 sm:p-4 shadow-sm transition duration-300"
@@ -228,6 +242,12 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
               <span className="rounded-md bg-teal-50 px-2 py-0.5 text-xs font-semibold text-teal-900 tabular-nums">
                 {step.count} <EnZh en={step.countLabelEn} zh={step.countLabelZh} />
               </span>
+              {step.secondaryCount != null ? (
+                <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-700 tabular-nums">
+                  {step.secondaryCount}{" "}
+                  <EnZh en={step.secondaryLabelEn || "events"} zh={step.secondaryLabelZh || "事件"} />
+                </span>
+              ) : null}
             </div>
             <p className="mt-1 text-sm text-[var(--muted)] leading-relaxed">
               <EnZh en={step.detailEn} zh={step.detailZh} />

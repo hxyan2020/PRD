@@ -36,8 +36,8 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "AI Analysis Detail", path: "/admin/ai-analyses/[id]", description: "Single analysis pack + AiChallengePanel", permission: "ai.read" },
   { category: "AI", title: "AI Admin", path: "/admin/ai-admin", description: "Maker/checker config for AI settings & models", permission: "ai.admin" },
   { category: "AI", title: "Human Intervention", path: "/admin/interventions", description: "Human gates from skill/RAG actions", permission: "intervene.operate" },
-  { category: "AI", title: "Spine Log", path: "/admin/spine", description: "End-to-end event spine", permission: "spine.read" },
-  { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus", permission: "rag.read" },
+  { category: "AI", title: "Spine (redirect → Home)", path: "/admin/spine", description: "Redirects to Admin Home — stage ticket counts live on the home spine viz", permission: "spine.read" },
+  { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus (AI write blocked — human / propose_rag)", permission: "rag.read" },
   { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page", permission: "skills.read" },
   { category: "AI", title: "Skill playbook detail", path: "/admin/skills/[code]", description: "Full when-to-use / prechecks / evidence / stop / success playbook for one skill", permission: "skills.read" },
   { category: "AI", title: "Knowledge Tree", path: "/admin/knowledge-tree", description: "Visual map of domains, skills, linked timelines and RAG documents", permission: "rag.read" },
@@ -49,10 +49,11 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Severity → team → SLA paths", permission: "escalation.read" },
 
   // Org
-  { category: "Org", title: "Departments", path: "/admin/departments", description: "Risk / Ops / AI / System — mandate, owns, accountable, collaborates, out of scope, escalation", permission: "teams.read" },
-  { category: "Org", title: "Teams", path: "/admin/teams", description: "On-call teams", permission: "teams.read" },
+  { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation)", permission: "teams.read" },
+  { category: "Org", title: "Teams (redirect)", path: "/admin/teams", description: "Redirects to BU and Teams hub", permission: "teams.read" },
   { category: "Org", title: "Roles & Permissions", path: "/admin/roles", description: "RBAC matrix plus owns / does / does-not / escalation charters", permission: "users.read" },
   { category: "Org", title: "Users", path: "/admin/users", description: "User directory", permission: "users.read" },
+  { category: "API", title: "Org API", path: "/api/org", description: "Departments + teams read; update_team for mission / on-call", permission: "teams.read" },
 
   // System
   { category: "System", title: "Data Sources", path: "/admin/data-sources", description: "Internal/external source registry", permission: "sources.read" },

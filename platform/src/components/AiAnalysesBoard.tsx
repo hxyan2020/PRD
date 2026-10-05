@@ -69,7 +69,7 @@ export function AiAnalysesBoard({
     router.refresh();
     if (action === "simulate_alarm") {
       bumpNavBadge("/admin/alerts", 1);
-      bumpNavBadge("/admin/spine", 1);
+      bumpNavBadge("/admin/alerts", 1);
     } else if (action === "analyze_open") {
       bumpNavBadge("/admin/alerts", Number(data.count) || 1);
     } else if (action === "backfill_challenges") {
@@ -84,70 +84,86 @@ export function AiAnalysesBoard({
   return (
     <div className="space-y-4">
       {canOperate && (
-        <div className="panel p-4">
+        <div className="panel p-4" data-testid="ai-pipeline-controls">
           <h3 className="font-semibold">{t("ai.pipeline")}</h3>
           <p className="text-sm text-[var(--muted)] mt-1">{t("ai.pipelineIntro")}</p>
+          <p className="text-xs text-[var(--muted)] mt-1">{t("ai.pipelineRankNote")}</p>
           <div className="mt-3 action-row">
-            <button type="button" className="btn btn-primary" disabled={busy} onClick={() => run("analyze_open")}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              data-testid="ai-btn-analyze-open"
+              disabled={busy}
+              onClick={() => run("analyze_open")}
+            >
               {t("ai.analyzeOpen")}
             </button>
             <button
               type="button"
               className="btn"
-              disabled={busy}
-              onClick={() =>
-                run("simulate_alarm", {
-                  monitor_id: "M2-COPY-009",
-                  severity: "BREACH",
-                  observed_value: 33,
-                  title: "Simulated copy concentration breach",
-                  message: "Top signal provider now at 33% of copy equity after viral strategy share.",
-                })
-              }
-            >
-              {t("ai.simCopy")}
-            </button>
-            <button
-              type="button"
-              className="btn"
-              disabled={busy}
-              onClick={() =>
-                run("simulate_alarm", {
-                  monitor_id: "M2-EQ-001",
-                  severity: "WARN",
-                  observed_value: 3.8,
-                  title: "Simulated equity drawdown warn",
-                  message: "Company CFD book drawdown rising through US session after CPI volatility.",
-                })
-              }
-            >
-              {t("ai.simEq")}
-            </button>
-            <button
-              type="button"
-              className="btn"
-              disabled={busy}
-              onClick={() =>
-                run("simulate_alarm", {
-                  monitor_id: "M2-MRG-014",
-                  severity: "CRITICAL",
-                  observed_value: 220,
-                  title: "Simulated margin utilisation CRITICAL",
-                  message: "Book-wide margin utilisation spiked; LP rejects rising. Requires dual-AI RCA.",
-                })
-              }
-            >
-              {t("ai.simCrit")}
-            </button>
-            <button
-              type="button"
-              className="btn"
+              data-testid="ai-btn-backfill"
               disabled={busy}
               onClick={() => run("backfill_challenges")}
             >
               {t("ai.backfill")}
             </button>
           </div>
+          <details className="mt-3 rounded-lg border border-[var(--border)] bg-[var(--panel-2,#f8fafc)] px-3 py-2">
+            <summary className="cursor-pointer text-sm font-medium select-none">{t("ai.demoSims")}</summary>
+            <div className="mt-2 action-row">
+              <button
+                type="button"
+                className="btn"
+                data-testid="ai-btn-sim-copy"
+                disabled={busy}
+                onClick={() =>
+                  run("simulate_alarm", {
+                    monitor_id: "M2-COPY-009",
+                    severity: "BREACH",
+                    observed_value: 33,
+                    title: "Simulated copy concentration breach",
+                    message: "Top signal provider now at 33% of copy equity after viral strategy share.",
+                  })
+                }
+              >
+                {t("ai.simCopy")}
+              </button>
+              <button
+                type="button"
+                className="btn"
+                data-testid="ai-btn-sim-eq"
+                disabled={busy}
+                onClick={() =>
+                  run("simulate_alarm", {
+                    monitor_id: "M2-EQ-001",
+                    severity: "WARN",
+                    observed_value: 3.8,
+                    title: "Simulated equity drawdown warn",
+                    message: "Company CFD book drawdown rising through US session after CPI volatility.",
+                  })
+                }
+              >
+                {t("ai.simEq")}
+              </button>
+              <button
+                type="button"
+                className="btn"
+                data-testid="ai-btn-sim-crit"
+                disabled={busy}
+                onClick={() =>
+                  run("simulate_alarm", {
+                    monitor_id: "M2-MRG-014",
+                    severity: "CRITICAL",
+                    observed_value: 220,
+                    title: "Simulated margin utilisation CRITICAL",
+                    message: "Book-wide margin utilisation spiked; LP rejects rising. Requires dual-AI RCA.",
+                  })
+                }
+              >
+                {t("ai.simCrit")}
+              </button>
+            </div>
+          </details>
           {msg && (
             <div
               role="status"

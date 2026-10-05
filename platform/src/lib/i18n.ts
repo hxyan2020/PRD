@@ -16,7 +16,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-admin": { en: "AI Admin", "zh-Hant": "AI 管理" },
   "/admin/interventions": { en: "Human Intervention", "zh-Hant": "人工干預" },
-  "/admin/spine": { en: "Spine Log", "zh-Hant": "脊柱日誌" },
+  "/admin/spine": { en: "Spine (redirect)", "zh-Hant": "脊柱（轉址）" },
   "/admin/rag": { en: "RAG Knowledge Base", "zh-Hant": "RAG 知識庫" },
   "/admin/skills": { en: "AI Skills", "zh-Hant": "AI 技能" },
   "/admin/knowledge-tree": { en: "Knowledge Tree", "zh-Hant": "知識樹" },
@@ -29,8 +29,8 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/urls": { en: "URL Catalog", "zh-Hant": "網址目錄" },
   "/admin/messenger": { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
   "/admin/security/ai-access": { en: "AI Access Security", "zh-Hant": "AI 存取安全" },
-  "/admin/departments": { en: "Departments", "zh-Hant": "部門" },
-  "/admin/teams": { en: "Teams", "zh-Hant": "團隊" },
+  "/admin/departments": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
+  "/admin/teams": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
   "/admin/roles": { en: "Roles & Permissions", "zh-Hant": "角色與權限" },
   "/admin/users": { en: "Users", "zh-Hant": "使用者" },
   "/admin/risk-domains": { en: "Risk Domains", "zh-Hant": "風險領域" },
@@ -180,17 +180,17 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
     },
   },
   departments: {
-    title: { en: "Departments", "zh-Hant": "部門" },
+    title: { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
     subtitle: {
-      en: "Click any duty to unfold what that BU actually does; click again to fold it.",
-      "zh-Hant": "點任何職責展開該 BU 實際在做什麼；再點一次即可收合。",
+      en: "Business units with nested on-call teams — edit mission and rotation when authorised.",
+      "zh-Hant": "業務單位與其嵌套值班團隊 — 授權後可編輯任務與輪值。",
     },
   },
   teams: {
-    title: { en: "Teams", "zh-Hant": "團隊" },
+    title: { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
     subtitle: {
-      en: "On-call teams linked to Lark channels and escalation routes.",
-      "zh-Hant": "連結 Lark 頻道與升級路徑之值班團隊。",
+      en: "Redirects to the combined BU and Teams hub.",
+      "zh-Hant": "轉址至合併的 BU 與團隊中心。",
     },
   },
   roles: {
@@ -263,7 +263,7 @@ const UI: Record<string, Pair> = {
 
   "home.stat.users": { en: "Users", "zh-Hant": "使用者" },
   "home.stat.usersHint": { en: "Across 4 departments", "zh-Hant": "橫跨 4 個部門" },
-  "home.stat.teams": { en: "Teams", "zh-Hant": "團隊" },
+  "home.stat.teams": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
   "home.stat.teamsHint": { en: "On-call ready", "zh-Hant": "可值班" },
   "home.stat.sources": { en: "Data Sources", "zh-Hant": "資料來源" },
   "home.stat.sourcesHint": { en: "Internal + external registry", "zh-Hant": "內部＋外部登錄" },
@@ -466,6 +466,12 @@ const UI: Record<string, Pair> = {
   },
   "tree.skillsInDomain": { en: "skills in this domain", "zh-Hant": "此領域技能" },
   "tree.openRag": { en: "Open RAG library", "zh-Hant": "開啟 RAG 知識庫" },
+  "tree.openDoc": { en: "Open this document", "zh-Hant": "開啟此文件" },
+  "tree.linkedDocs": { en: "Linked RAG docs", "zh-Hant": "連結 RAG 文件" },
+  "tree.ragCatHint": {
+    en: "Category nodes expand into document leaves. Click a document for tags and a deep link into the library.",
+    "zh-Hant": "分類節點會展開為文件葉節點。點選文件可查看標籤並深連結至知識庫。",
+  },
   "tree.linkedSkills": { en: "Linked skills", "zh-Hant": "連結技能" },
   "tree.hubSub": { en: "knowledge tree", "zh-Hant": "知識樹" },
 

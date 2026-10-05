@@ -56,76 +56,165 @@ export default async function AdminDashboardPage() {
   };
 
   const stageMap = Object.fromEntries(spineStageCounts(db, 24).map((r) => [r.stage, r.c]));
-  const detectLatest = latestSpineEvent(db, ["DETECT", "ALARM"]);
-  const ticketLatest = latestSpineEvent(db, ["ALARM", "ESCALATION"]);
-  const escLatest = latestSpineEvent(db, ["ESCALATION"]);
-  const rcaLatest = latestSpineEvent(db, ["AI_RCA", "SKILL_EXECUTE", "HUMAN_INTERVENTION"]);
-  const dashLatest = latestSpineEvent(db, ["DASHBOARD", "RESOLVED"]);
-  const aiCount = (db.prepare(`SELECT COUNT(*) AS c FROM ai_analyses`).get() as { c: number }).c;
+  const detectLatest = latestSpineEvent(db, ["DETECT"]);
+  const alarmLatest = latestSpineEvent(db, ["ALARM", "ESCALATION"]);
+  const rcaLatest = latestSpineEvent(db, ["AI_RCA"]);
+  const skillLatest = latestSpineEvent(db, ["SKILL_EXECUTE"]);
+  const humanLatest = latestSpineEvent(db, ["HUMAN_INTERVENTION"]);
+  const resolvedLatest = latestSpineEvent(db, ["RESOLVED"]);
+  const dashLatest = latestSpineEvent(db, ["DASHBOARD"]);
+
+  const openAlerts = counts.openAlerts;
+  const pendingInterventions = (
+    db
+      .prepare(
+        `SELECT COUNT(*) AS c FROM interventions WHERE status IN ('PENDING','AWAITING_CHECKER','AWAITING_HUMAN')`
+      )
+      .get() as { c: number }
+  ).c;
+  const skillRunsOpen = (() => {
+    try {
+      return (
+        db
+          .prepare(
+            `SELECT COUNT(*) AS c FROM ai_skill_runs WHERE status IN ('PENDING','AWAITING_HUMAN','QUEUED','RUNNING')`
+          )
+          .get() as { c: number }
+      ).c;
+    } catch {
+      return stageMap.SKILL_EXECUTE ?? 0;
+    }
+  })();
+  const closedTickets24h = (
+    db
+      .prepare(
+        `SELECT COUNT(*) AS c FROM monitor_tickets
+         WHERE status IN ('RESOLVED','CLOSED') AND updated_at >= datetime('now','-1 day')`
+      )
+      .get() as { c: number }
+  ).c;
+  const aiAnalysesOpen = (() => {
+    try {
+      return (
+        db.prepare(`SELECT COUNT(*) AS c FROM ai_analyses WHERE status NOT IN ('CLOSED','DISMISSED','ARCHIVED')`).get() as {
+          c: number;
+        }
+      ).c;
+    } catch {
+      return stageMap.AI_RCA ?? 0;
+    }
+  })();
 
   const spineSteps: SpineStepStat[] = [
     {
-      id: "detect",
+      id: "DETECT",
       href: "/admin/monitor-2",
-      labelEn: "Detect",
+      labelEn: "DETECT",
       labelZh: "偵測",
-      detailEn: "Monitor 2.0 evaluates indicators and emits warning / breach alarms into the spine.",
-      detailZh: "Monitor 2.0 評估指標，並把警告／違規警報送入脊柱。",
-      count: (stageMap.DETECT ?? 0) + (stageMap.ALARM ?? 0),
-      countLabelEn: "events / 24h",
-      countLabelZh: "事件／24h",
+      detailEn: "Monitor 2.0 samples indicators and raises DETECT spine events for warn / breach candidates.",
+      detailZh: "Monitor 2.0 取樣指標，對警告／違規候選發出 DETECT 脊柱事件。",
+      count: openAlerts,
+      countLabelEn: "open alerts",
+      countLabelZh: "未結警報",
+      secondaryCount: stageMap.DETECT ?? 0,
+      secondaryLabelEn: "DETECT / 24h",
+      secondaryLabelZh: "DETECT／24h",
       latestTitle: detectLatest?.title ?? null,
       latestAt: detectLatest?.created_at ?? null,
     },
     {
-      id: "ticket",
+      id: "ALARM",
       href: "/admin/alerts",
-      labelEn: "Ticket",
-      labelZh: "工單",
-      detailEn: "CRMP creates / syncs the tracker ticket, attaches evidence, and keeps open alerts visible.",
-      detailZh: "CRMP 建立／同步追蹤工單、附上證據，並讓未結警報可展開查看。",
+      labelEn: "ALARM",
+      labelZh: "警報",
+      detailEn: "Tracker tickets and ALARM stage — open incidents awaiting desk action.",
+      detailZh: "追蹤工單與 ALARM 階段 — 待台面處理的未結事件。",
       count: counts.openTickets,
       countLabelEn: "open tickets",
       countLabelZh: "未結工單",
-      latestTitle: ticketLatest?.title ?? null,
-      latestAt: ticketLatest?.created_at ?? null,
+      secondaryCount: stageMap.ALARM ?? 0,
+      secondaryLabelEn: "ALARM / 24h",
+      secondaryLabelZh: "ALARM／24h",
+      latestTitle: alarmLatest?.title ?? null,
+      latestAt: alarmLatest?.created_at ?? null,
     },
     {
-      id: "escalate",
-      href: "/admin/escalation",
-      labelEn: "Escalate",
-      labelZh: "升級",
-      detailEn: "Escalation routes pick the on-call team, Lark channel, and SLA for domain + severity.",
-      detailZh: "升級路徑依領域與嚴重度選定值班團隊、Lark 頻道與 SLA。",
-      count: counts.routes,
-      countLabelEn: "live routes",
-      countLabelZh: "啟用路徑",
-      latestTitle: escLatest?.title ?? null,
-      latestAt: escLatest?.created_at ?? null,
-    },
-    {
-      id: "rca",
+      id: "AI_RCA",
       href: "/admin/alerts",
-      labelEn: "AI RCA",
+      labelEn: "AI_RCA",
       labelZh: "AI 根因",
-      detailEn: "AI drafts root-cause on the same tracker card; humans approve interventions when needed.",
-      detailZh: "AI 在同一張追蹤卡片草擬根因；必要時由人工核准干預。",
-      count: (stageMap.AI_RCA ?? 0) || aiCount,
-      countLabelEn: "RCA / 24h",
-      countLabelZh: "根因／24h",
+      detailEn: "AI root-cause packs on open tickets; humans review before control actions.",
+      detailZh: "未結工單上的 AI 根因包；控制動作前由人工審視。",
+      count: aiAnalysesOpen,
+      countLabelEn: "open RCA packs",
+      countLabelZh: "未結根因包",
+      secondaryCount: stageMap.AI_RCA ?? 0,
+      secondaryLabelEn: "AI_RCA / 24h",
+      secondaryLabelZh: "AI_RCA／24h",
       latestTitle: rcaLatest?.title ?? null,
       latestAt: rcaLatest?.created_at ?? null,
     },
     {
-      id: "dashboard",
+      id: "SKILL_EXECUTE",
+      href: "/admin/skills",
+      labelEn: "SKILL",
+      labelZh: "技能",
+      detailEn: "Matched skill playbooks executing or queued against open incidents.",
+      detailZh: "已匹配技能劇本對未結事件執行或排隊。",
+      count: skillRunsOpen,
+      countLabelEn: "skill runs",
+      countLabelZh: "技能執行",
+      secondaryCount: stageMap.SKILL_EXECUTE ?? 0,
+      secondaryLabelEn: "SKILL / 24h",
+      secondaryLabelZh: "SKILL／24h",
+      latestTitle: skillLatest?.title ?? null,
+      latestAt: skillLatest?.created_at ?? null,
+    },
+    {
+      id: "HUMAN_INTERVENTION",
+      href: "/admin/interventions",
+      labelEn: "HUMAN",
+      labelZh: "人工",
+      detailEn: "Human gates — approve / reject high-impact steps before execution.",
+      detailZh: "人工關卡 — 高影響步驟執行前核准／駁回。",
+      count: pendingInterventions,
+      countLabelEn: "pending gates",
+      countLabelZh: "待審關卡",
+      secondaryCount: stageMap.HUMAN_INTERVENTION ?? 0,
+      secondaryLabelEn: "HUMAN / 24h",
+      secondaryLabelZh: "HUMAN／24h",
+      latestTitle: humanLatest?.title ?? null,
+      latestAt: humanLatest?.created_at ?? null,
+    },
+    {
+      id: "RESOLVED",
+      href: "/admin/risk-log",
+      labelEn: "RESOLVED",
+      labelZh: "已解決",
+      detailEn: "Tickets closed in the last 24h — outcomes feed Risk Log Analytics.",
+      detailZh: "近 24 小時結案工單 — 結果進入風險日誌分析。",
+      count: closedTickets24h,
+      countLabelEn: "tickets / 24h",
+      countLabelZh: "工單／24h",
+      secondaryCount: stageMap.RESOLVED ?? 0,
+      secondaryLabelEn: "RESOLVED / 24h",
+      secondaryLabelZh: "RESOLVED／24h",
+      latestTitle: resolvedLatest?.title ?? null,
+      latestAt: resolvedLatest?.created_at ?? null,
+    },
+    {
+      id: "DASHBOARD",
       href: "/admin/dashboard",
-      labelEn: "Dashboard",
+      labelEn: "DASHBOARD",
       labelZh: "儀表板",
-      detailEn: "Closed outcomes land in the audit trail and the daily CFD / Exchange performance board.",
-      detailZh: "結案結果進入稽核軌跡與每日 CFD／交易所績效儀表板。",
-      count: (stageMap.DASHBOARD ?? 0) + (stageMap.RESOLVED ?? 0),
-      countLabelEn: "closes / 24h",
-      countLabelZh: "結案／24h",
+      detailEn: "Daily CFD / Exchange performance — closed outcomes roll into the desk board.",
+      detailZh: "每日 CFD／交易所績效 — 結案結果進入台面儀表板。",
+      count: (stageMap.DASHBOARD ?? 0) + closedTickets24h,
+      countLabelEn: "closes reflected",
+      countLabelZh: "已反映結案",
+      secondaryCount: stageMap.DASHBOARD ?? 0,
+      secondaryLabelEn: "DASHBOARD / 24h",
+      secondaryLabelZh: "DASHBOARD／24h",
       latestTitle: dashLatest?.title ?? null,
       latestAt: dashLatest?.created_at ?? null,
     },
@@ -197,7 +286,7 @@ export default async function AdminDashboardPage() {
           cta={openCta}
         />
         <StatCard
-          href="/admin/teams"
+          href="/admin/departments"
           icon={<Users aria-hidden />}
           label={<T k="home.stat.teams" />}
           value={counts.teams}
