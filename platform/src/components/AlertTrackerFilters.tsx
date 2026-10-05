@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import {
   DEFAULT_ALERT_FILTERS,
   type AlertFilterState,
@@ -17,11 +18,15 @@ export function AlertTrackerFilters({
   filters,
   onChange,
   resultCount,
+  showUnresolved = true,
+  extra,
 }: {
   packs: AlertTrackerPack[];
   filters: AlertFilterState;
   onChange: (next: AlertFilterState) => void;
   resultCount: number;
+  showUnresolved?: boolean;
+  extra?: ReactNode;
 }) {
   const { t, phrase } = useT();
   const domains = uniqueDomains(packs);
@@ -39,8 +44,11 @@ export function AlertTrackerFilters({
           <h3 className="font-semibold">{t("alerts.filtersTitle")}</h3>
           <p className="text-sm text-[var(--muted)] mt-0.5">{t("alerts.filtersHint")}</p>
         </div>
-        <div className="text-sm tabular-nums text-[var(--muted)]" data-testid="alert-filter-count">
-          {t("alerts.filterCount", { shown: resultCount, total: packs.length })}
+        <div className="flex flex-wrap items-center gap-2">
+          {extra}
+          <div className="text-sm tabular-nums text-[var(--muted)]" data-testid="alert-filter-count">
+            {t("alerts.filterCount", { shown: resultCount, total: packs.length })}
+          </div>
         </div>
       </div>
 
@@ -121,16 +129,18 @@ export function AlertTrackerFilters({
           </select>
         </label>
 
-        <label className="flex items-center gap-2 h-9 px-1 text-sm font-medium cursor-pointer">
-          <input
-            type="checkbox"
-            className="h-4 w-4"
-            checked={filters.unresolvedOnly}
-            data-testid="alert-filter-unresolved"
-            onChange={(e) => patch({ unresolvedOnly: e.target.checked })}
-          />
-          {t("alerts.unresolvedOnly")}
-        </label>
+        {showUnresolved ? (
+          <label className="flex items-center gap-2 h-9 px-1 text-sm font-medium cursor-pointer">
+            <input
+              type="checkbox"
+              className="h-4 w-4"
+              checked={filters.unresolvedOnly}
+              data-testid="alert-filter-unresolved"
+              onChange={(e) => patch({ unresolvedOnly: e.target.checked })}
+            />
+            {t("alerts.unresolvedOnly")}
+          </label>
+        ) : null}
 
         {filters.monitorId ? (
           <div

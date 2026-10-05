@@ -209,7 +209,8 @@ graph LR
 | ID | Requirement | Acceptance sketch |
 |---|---|---|
 | FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
-| FR-12 | Risk Log analytics | Page loads timeline / analytics for risk events |
+| FR-12 | Risk Log analytics | Overview lists closed tracker cards (ticket closed, AI analysis, AI/BU action logs, mandated solution) plus timeline / loss vs prevented |
+| FR-24 | Live Alerts ack queue | Open-only queue; Acknowledge mutates status; button to Risk Log for closed tickets |
 | FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap toggle works |
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
@@ -217,7 +218,7 @@ graph LR
 | FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps) |
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
 | FR-23 | Detectors run/toggle | Run all raises alarms + AI RCA; enable/disable persists on localhost |
-| FR-24 | Live Alerts ack queue | OPEN sorted by severity; Acknowledge mutates status |
+| FR-24 | Live Alerts ack queue | Open-only queue; Acknowledge mutates status; button to Risk Log for closed tickets |
 | FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG trunk |
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
 | FR-27 | Org directory | Departments, Teams, Roles (permission chips), Users (incl. demo platform owner; add/disable on localhost) |
@@ -246,11 +247,11 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 |---|---|---|---|---|
 | Overview | Admin Home | `/admin` | Orient; jump via cards | Every card/row is a link; owner visible; messenger CTA |
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
-| Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Handling time, loss vs prevented, loopholes | Summary + category + domain + records |
+| Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
 | Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Indicators / alerts / tickets | Three tabs; Sync now on localhost |
 | Monitor & risk | Detectors | `/admin/detectors` | Threshold first stage | Run all; toggle; runs list |
-| Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Ack; severity sort; unread clears |
+| Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Open-only; ack; severity sort; button to Risk Log closed tickets |
 | Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership catalogue | Owner + supporting BUs |
 | AI & knowledge | AI Analyses | `/admin/ai-analyses` | RCA + second AI | Simulate COPY/EQ/CRITICAL; detail pack |
 | AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control governance | Seven tabs; maker ≠ checker |

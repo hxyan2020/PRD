@@ -131,7 +131,7 @@ export default async function AdminDashboardPage() {
     },
   ];
 
-  const recentPacks = listAlertTrackerPacks({ limit: 5, order: "recent" });
+  const recentPacks = listAlertTrackerPacks({ limit: 8, order: "recent", status: "open" }).slice(0, 5);
 
   const openCta = <T k="home.open" />;
 

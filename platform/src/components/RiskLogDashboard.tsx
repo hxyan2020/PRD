@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
+import { AlertTrackerList } from "@/components/AlertTrackerBoard";
+import type { AlertTrackerPack } from "@/lib/alert-tracker";
 import { navLabel } from "@/lib/i18n";
 import { useT } from "@/hooks/useUiLocale";
 
@@ -122,11 +124,12 @@ function mins(n: number | null | undefined) {
   return `${h}h ${m}m`;
 }
 
-export function RiskLogDashboard({ data }: { data: Dashboard }) {
+export function RiskLogDashboard({ data, closedPacks = [] }: { data: Dashboard; closedPacks?: AlertTrackerPack[] }) {
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("overview");
   const { t, locale, phrase } = useT();
   const [filter, setFilter] = useState("ALL");
   const [q, setQ] = useState("");
+  const [openId, setOpenId] = useState("");
 
   const domains = useMemo(() => {
     const set = new Set(data.by_domain.map((d) => d.category));
@@ -143,6 +146,23 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
   }, [data.records, filter, q]);
 
   const maxDomainAlerts = Math.max(1, ...data.by_domain.map((d) => d.alert_count));
+
+  useEffect(() => {
+    const apply = () => {
+      const id = window.location.hash.replace(/^#/, "");
+      setOpenId(id);
+      if (!id) return;
+      setTab("overview");
+      window.requestAnimationFrame(() => {
+        const el = document.getElementById(id);
+        if (el instanceof HTMLDetailsElement) el.open = true;
+        el?.scrollIntoView({ block: "start" });
+      });
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, [closedPacks]);
 
   return (
     <div className="space-y-4">
@@ -208,6 +228,18 @@ export function RiskLogDashboard({ data }: { data: Dashboard }) {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="space-y-3" data-testid="risk-log-closed-cards">
+            <div>
+              <h3 className="font-semibold">{t("rl.closedTickets")}</h3>
+              <p className="text-sm text-[var(--muted)] mt-1">{t("rl.closedHint")}</p>
+            </div>
+            {closedPacks.length ? (
+              <AlertTrackerList packs={closedPacks} canOperate={false} openId={openId} />
+            ) : (
+              <div className="panel p-6 text-sm text-[var(--muted)]">{t("rl.closedEmpty")}</div>
+            )}
           </div>
         </div>
       )}

@@ -70,8 +70,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "risk-log": {
     title: { en: "Risk Log & Alerts Analytics", "zh-Hant": "風險日誌與警報分析" },
     subtitle: {
-      en: "Alerts by category, chronological records, human handling times, monetary loss vs prevented amounts, and loophole-prone areas across CFD + crypto.",
-      "zh-Hant": "依類別之警報、時序紀錄、人工處理時間、損失與防損金額，以及 CFD＋加密易漏洞領域。",
+      en: "Closed tickets land here with the same tracker pack as Realtime Alert — ticket-closed status, AI analysis, AI/BU action logs, mandated solution — plus category, handling time, loss vs prevented, and loophole areas.",
+      "zh-Hant": "已關閉工單以與即時警報相同的追蹤包落地於此 — 工單已關閉狀態、AI 分析、AI／各 BU 動作紀錄、核定方案 — 另含類別、處理時間、損失 vs 防損與漏洞領域。",
     },
   },
   "market-intel": {
@@ -91,8 +91,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   alerts: {
     title: { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
     subtitle: {
-      en: "Expand a ticket for facts, admin URL, AI RCA, severity, POC, open/close, pending admin or RO approval, escalation path and timeline. Pipeline controls sit at the top.",
-      "zh-Hant": "展開工單可看完整事實、管理後台網址、AI 根因、嚴重度、承辦 POC、開／關、待管理員變更或 RO 核准、升級路徑與時間軸。管線控制在頁首。",
+      en: "Open queue only. Expand a ticket for facts, admin URL, AI RCA, severity, POC, pending admin or RO approval, escalation and action log. Closed tickets live in Risk Log Analytics.",
+      "zh-Hant": "僅顯示未結佇列。展開工單可看事實、管理後台網址、AI 根因、嚴重度、承辦 POC、待管理員變更或 RO 核准、升級路徑與動作紀錄。已關閉工單在風險日誌分析。",
     },
   },
   "ai-analyses": {
@@ -288,8 +288,8 @@ const UI: Record<string, Pair> = {
   },
   "home.recentAlerts": { en: "Recent Alerts", "zh-Hant": "最近警報" },
   "home.expandHint": {
-    en: "Click a card to expand the full ticket — admin URL, AI RCA, POC, gates, escalation and timeline.",
-    "zh-Hant": "點卡片即可展開完整工單 — 管理網址、AI 根因、承辦、關卡、升級路徑與時間軸。",
+    en: "Click a card to expand the full open ticket — admin URL, AI RCA, POC, gates, escalation and action log. Closed tickets are in Risk Log Analytics.",
+    "zh-Hant": "點卡片即可展開完整未結工單 — 管理網址、AI 根因、承辦、關卡、升級路徑與動作紀錄。已關閉工單在風險日誌分析。",
   },
   "home.viewAll": { en: "View all", "zh-Hant": "查看全部" },
   "home.open": { en: "Open", "zh-Hant": "開啟" },

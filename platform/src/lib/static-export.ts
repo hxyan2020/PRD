@@ -38,8 +38,11 @@ export function publicBasePath() {
 export function publicAdminHref(path = "/admin/") {
   const base = publicBasePath();
   let suffix = path.startsWith("/") ? path : `/${path}`;
-  if (isStaticExport() && !suffix.endsWith("/")) suffix += "/";
-  return `${base}${suffix}`;
+  const hashIdx = suffix.indexOf("#");
+  const hash = hashIdx >= 0 ? suffix.slice(hashIdx) : "";
+  let pathname = hashIdx >= 0 ? suffix.slice(0, hashIdx) : suffix;
+  if (isStaticExport() && !pathname.endsWith("/")) pathname += "/";
+  return `${base}${pathname}${hash}`;
 }
 
 export async function readSearchParams<T extends Record<string, string | undefined>>(

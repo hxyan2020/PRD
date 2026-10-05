@@ -571,18 +571,19 @@ graph TD
 
 - **Severity:** Medium · **BU:** Risk · **Depends:** UAT-02 · **Window:** T+321m / 10m
 - **Covers:** Risk Log Analytics
-- **Why:** Alarms without impact are noise. This page is where we judge whether a breach hurt anyone.
-- **Goal:** Open Risk Log Analytics and confirm impact rows (or a clear empty state) with product/domain context.
+- **Why:** Alarms without impact are noise. This page is where we judge whether a breach hurt anyone — and read the closed tracker pack.
+- **Goal:** Open Risk Log Analytics Overview and confirm closed-ticket cards (status, AI analysis, BU/AI action log, mandated solution) plus impact rows with product/domain context.
 
 **Steps**
 
-1. Open Risk Log Analytics.
-2. You should see a dashboard: impact rows, totals, or charts — not a blank white page.
-3. Pick one row and write down: which alert or indicator, which product, and the impact description in plain English.
-4. If filters exist (product, domain, date), change one filter and confirm the list updates or shows a sensible empty state.
+1. Open Risk Log Analytics (Overview).
+2. You should see summary tiles, domain bars, and a Closed alerts & tickets list — not a blank white page.
+3. Expand one closed card. Write down: ticket-closed status, the AI analysis summary, at least one AI or BU action-log line, and the mandated final solution (who mandated it).
+4. Confirm the same alert id is not still sitting on Realtime Alert as an open card.
+5. If filters exist on other tabs (product, domain, date), change one filter and confirm the list updates or shows a sensible empty state.
 
-**Pass:** Page renders with impact data or an explicit empty state; at least one row can be explained in plain English.
-**Evidence:** Screenshot of Risk Log with one annotated row.
+**Pass:** Overview shows closed tracker cards with ticket-closed + AI + action log + mandated solution; at least one card can be explained in plain English.
+**Evidence:** Screenshot of Risk Log Overview with one closed card expanded.
 
 ### UAT-30 — Live Alerts — read the queue and acknowledge one
 
@@ -593,12 +594,13 @@ graph TD
 
 **Steps**
 
-1. Open Live Alerts. Confirm cards show severity, status, product, domain, Monitor id, ticket id and a short message.
+1. Open Live Alerts. Confirm only still-open cards show, with severity, status, product, domain, Monitor id, ticket id and a short message. Closed tickets must not appear here.
 2. Find an OPEN row. Read the message out loud: what broke, and which indicator.
-3. On localhost, click Acknowledge. After refresh the status should become ACKNOWLEDGED (or similar) and the button should disappear for that row.
-4. On the GitHub Pages snapshot, Acknowledge may not persist (no API). Pass if the button is present for operators and the list still shows seeded OPEN alarms; fail if the page is empty.
+3. Confirm a button/link “View closed alerts in Risk Log Analytics” is visible and opens `/admin/risk-log`.
+4. On localhost, click Acknowledge. After refresh the status should become ACKNOWLEDGED (or similar) and the button should disappear for that row.
+5. On the GitHub Pages snapshot, Acknowledge may not persist (no API). Pass if the button is present for operators and the list still shows seeded OPEN alarms; fail if the page is empty or mixes in closed tickets.
 
-**Pass:** Queue is readable. Localhost ack changes status. Pages still shows seeded alerts.
+**Pass:** Open-only queue is readable. Closed-log button reaches Risk Log. Localhost ack changes status. Pages still shows seeded open alerts.
 **Evidence:** Screenshot before/after ack (localhost) or the seeded queue (Pages).
 
 ### UAT-31 — Detectors — run the pack and see WARN/BREACH land

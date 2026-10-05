@@ -44,6 +44,10 @@ function eventTitle(ev: TrackerEvent, t: (k: string, vars?: Record<string, strin
       return t("tracker.event.intervention", { title: ev.title });
     case "decided":
       return t("tracker.event.decided", { title: ev.title });
+    case "ai_action":
+      return t("tracker.event.aiAction", { title: ev.title });
+    case "audit":
+      return t("tracker.event.audit", { title: ev.title });
     default:
       return ev.title;
   }
@@ -111,7 +115,7 @@ function AlertTrackerFacts({
       <div className="flex flex-wrap items-center gap-2">
         <AdminLink className="btn btn-primary" href={pack.href}>
           <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-          {t("tracker.openAdmin")}
+          {pack.gate.code === "CLOSED" ? t("tracker.openClosed") : t("tracker.openAdmin")}
         </AdminLink>
         <button type="button" className="btn" onClick={copyUrl}>
           <Copy className="h-3.5 w-3.5" aria-hidden />
@@ -144,8 +148,12 @@ function AlertTrackerFacts({
         <Fact label={t("tracker.openClose")}>
           <div className="flex flex-wrap gap-1.5 items-center">
             <Badge className={gateClass(pack.gate.code === "CLOSED" ? "CLOSED" : "OPEN")}>{openClose}</Badge>
+            {pack.gate.code === "CLOSED" ? (
+              <Badge className={gateClass("CLOSED")}>{t("tracker.ticketClosed")}</Badge>
+            ) : null}
             <StatusBadge value={pack.alert_status} />
             {pack.ticket_status ? <StatusBadge value={pack.ticket_status} /> : null}
+            {pack.outcome ? <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(pack.outcome)}</Badge> : null}
           </div>
           <div className="mt-1 text-xs text-[var(--muted)]">
             {t("common.ticket")} {pack.ticket_id || "—"} · {ticketStatus}
@@ -221,6 +229,19 @@ function AlertTrackerFacts({
         )}
       </Fact>
 
+      <Fact label={t("tracker.finalSolution")}>
+        {pack.final_solution ? (
+          <div className="space-y-1.5">
+            <p className="text-sm text-slate-800 leading-relaxed">{phrase(pack.final_solution.text)}</p>
+            <div className="text-xs text-[var(--muted)]">
+              {t("tracker.mandatedBy", { who: phrase(pack.final_solution.mandated_by) })}
+            </div>
+          </div>
+        ) : (
+          <p className="text-[var(--muted)]">{t("tracker.noSolution")}</p>
+        )}
+      </Fact>
+
       <Fact label={t("tracker.escalation")}>
         {pack.escalation ? (
           <div className="space-y-1.5">
@@ -255,7 +276,7 @@ function AlertTrackerFacts({
 
       <div>
         <div className="text-[11px] uppercase tracking-[0.08em] text-[var(--muted)] mb-2">
-          {t("tracker.timeline")}
+          {t("tracker.actionLog")}
         </div>
         <ol className="space-y-0 border-l-2 border-teal-200 ml-2">
           {pack.timeline.map((ev, i) => (
@@ -291,12 +312,12 @@ export function AlertTrackerCard({
   const [displayUrl, setDisplayUrl] = useState(pack.href);
 
   useEffect(() => {
-    setDisplayUrl(`${window.location.origin}${publicAdminHref(`/admin/alerts#${pack.alert_id}`)}`);
-  }, [pack.alert_id]);
+    setDisplayUrl(`${window.location.origin}${publicAdminHref(pack.href)}`);
+  }, [pack.href]);
 
   function adminUrl() {
     if (typeof window === "undefined") return pack.href;
-    return `${window.location.origin}${publicAdminHref(`/admin/alerts#${pack.alert_id}`)}`;
+    return `${window.location.origin}${publicAdminHref(pack.href)}`;
   }
 
   async function copyUrl(e: React.MouseEvent) {
@@ -621,11 +642,24 @@ export function AlertTrackerBoard({
         filters={filters}
         onChange={setFilters}
         resultCount={visiblePacks.length}
+        showUnresolved={false}
+        extra={
+          <span data-testid="view-closed-alerts">
+            <AdminLink className="btn btn-primary h-9" href="/admin/risk-log">
+              {t("alerts.viewClosed")}
+            </AdminLink>
+          </span>
+        }
       />
 
       {visiblePacks.length === 0 ? (
         <div className="panel p-6 text-sm text-[var(--muted)]" data-testid="alert-filters-empty">
-          {packs.length === 0 ? t("tracker.empty") : t("alerts.noneMatch")}
+          {packs.length === 0 ? t("tracker.emptyOpen") : t("alerts.noneMatch")}
+          <div className="mt-3">
+            <AdminLink className="btn btn-primary" href="/admin/risk-log">
+              {t("alerts.viewClosed")}
+            </AdminLink>
+          </div>
         </div>
       ) : (
         <AlertTrackerList packs={visiblePacks} canOperate={canOperate} openId={hash} />

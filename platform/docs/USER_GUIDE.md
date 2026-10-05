@@ -234,18 +234,19 @@ graph TD
 
 ### 7.2 Risk Log Analytics — `/admin/risk-log`
 
-**What it is.** The history book: what fired, how long humans took, money lost vs money prevented, and where loopholes cluster.
+**What it is.** The history book: closed tickets, what fired, how long humans took, money lost vs money prevented, and where loopholes cluster.
 
 **What you see.**
 
 - Summary tiles: open alerts, loss vs prevented vs exposure, average ack/resolve/handling minutes, SLA breaches, pending vs decided interventions.  
+- **Closed alerts & tickets** on Overview — the same tracker cards as Realtime Alert, but only after the ticket is closed: realtime status (ticket closed), AI analysis, AI/BU action logs, and the final solution mandated by AI or the business-unit POC.  
 - Tables by category and by domain.  
 - Loophole tags (repeat weak spots).  
 - Chronological records (alert, ticket, outcome, USD).
 
-**What to click.** Filter / scan the tables. Follow a row back to Live Alerts or AI Analyses when you need the pack.
+**What to click.** Expand a closed card for the full pack. Filter / scan the tables. Open work still lives on Realtime Alert.
 
-**Good looks like.** Totals add up. Handling times are filled for closed work. Loophole tags are not empty on the seeded demo.
+**Good looks like.** Closed cards show ticket-closed, an AI report, a BU/AI action log, and a mandated solution. Totals add up. Handling times are filled for closed work. Loophole tags are not empty on the seeded demo.
 
 ### 7.3 Market Intelligence — `/admin/market-intel`
 
@@ -304,13 +305,13 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 ### 7.6 Live Alerts — `/admin/alerts`
 
-**What it is.** The operational queue: what is on fire right now.
+**What it is.** The operational queue: what is still open right now. Closed tickets leave this page and land in Risk Log Analytics.
 
-**What you see.** Cards sorted CRITICAL → BREACH → WARN, newest first. Each card: severity, status, product, domain, title, message, alert id, monitor id, observed value, ticket id, time.
+**What you see.** Open cards only, sorted CRITICAL → BREACH → WARN, newest first. Each card: severity, status, product, domain, title, message, alert id, monitor id, observed value, ticket id, time. Expand for AI RCA, POC, gates, escalation and action log.
 
-**What to click.** **Acknowledge** on an OPEN alert if you have operate rights. Then open AI Analyses or Messenger for the pack. The unread badge clears when you visit this page.
+**What to click.** **Acknowledge** on an OPEN alert if you have operate rights. Then open AI Analyses or Messenger for the pack. Use **View closed alerts in Risk Log Analytics** to read tickets that already closed. The unread badge clears when you visit this page.
 
-**Good looks like.** OPEN items are at the top of your day. Ack moves status to ACKNOWLEDGED. Nothing here is a silent drop.
+**Good looks like.** Only still-open items. Ack moves status to ACKNOWLEDGED. Closed work is not mixed into this queue.
 
 ### 7.7 Risk Domains — `/admin/risk-domains`
 

@@ -132,8 +132,8 @@ export const EXTRA_UI: Record<string, Pair> = {
   },
   "alerts.filtersTitle": { en: "Filter & sort", "zh-Hant": "篩選與排序" },
   "alerts.filtersHint": {
-    en: "Narrow the operational queue by time, status, severity, product and issue category.",
-    "zh-Hant": "依時間、狀態、嚴重度、產品與議題類別縮小營運佇列。",
+    en: "Open queue only — closed tickets move to Risk Log Analytics. Narrow by time, severity, product and issue category.",
+    "zh-Hant": "僅顯示未結佇列 — 已關閉工單改在風險日誌分析。依時間、嚴重度、產品與議題類別縮小範圍。",
   },
   "alerts.filterCount": {
     en: "Showing {shown} of {total}",
@@ -163,6 +163,14 @@ export const EXTRA_UI: Record<string, Pair> = {
     en: "No alerts match these filters.",
     "zh-Hant": "沒有符合這些篩選條件的警報。",
   },
+  "alerts.viewClosed": {
+    en: "View closed alerts in Risk Log Analytics",
+    "zh-Hant": "至風險日誌分析查看已關閉警報",
+  },
+  "alerts.noneOpen": {
+    en: "No open alerts. Closed tickets live in Risk Log Analytics.",
+    "zh-Hant": "目前沒有未結警報。已關閉工單在風險日誌分析。",
+  },
 
   "tracker.expand": { en: "Expand ticket", "zh-Hant": "展開工單" },
   "tracker.openAdmin": { en: "Open admin page", "zh-Hant": "開啟管理頁" },
@@ -186,6 +194,16 @@ export const EXTRA_UI: Record<string, Pair> = {
   "tracker.noAnalysis": { en: "No AI RCA yet. Use “Analyze all open alarms” above.", "zh-Hant": "尚無 AI 根因。請用上方「分析全部未結警報」。" },
   "tracker.openRca": { en: "Open full AI evidence pack →", "zh-Hant": "開啟完整 AI 證據包 →" },
   "tracker.empty": { en: "No alert tickets yet. Sync Monitor 2.0 or simulate an alarm.", "zh-Hant": "尚無警報工單。請同步 Monitor 2.0 或模擬一則警報。" },
+  "tracker.emptyOpen": {
+    en: "No open alerts. Closed tickets are in Risk Log Analytics.",
+    "zh-Hant": "沒有未結警報。已關閉工單在風險日誌分析。",
+  },
+  "tracker.finalSolution": { en: "Final solution (mandated)", "zh-Hant": "最終方案（核定）" },
+  "tracker.mandatedBy": { en: "Mandated by {who}", "zh-Hant": "由 {who} 核定" },
+  "tracker.noSolution": { en: "No mandated solution recorded yet.", "zh-Hant": "尚未記錄核定方案。" },
+  "tracker.actionLog": { en: "Action log (AI & BUs)", "zh-Hant": "動作紀錄（AI 與各 BU）" },
+  "tracker.ticketClosed": { en: "Ticket closed", "zh-Hant": "工單已關閉" },
+  "tracker.openClosed": { en: "Open in Risk Log", "zh-Hant": "在風險日誌開啟" },
   "tracker.gate.OPEN": { en: "Open", "zh-Hant": "未結" },
   "tracker.gate.CLOSED": { en: "Closed", "zh-Hant": "已關閉" },
   "tracker.gate.PENDING_ADMIN": { en: "Pending admin change", "zh-Hant": "待管理員變更" },
@@ -209,6 +227,8 @@ export const EXTRA_UI: Record<string, Pair> = {
   "tracker.event.rca": { en: "AI RCA {title}", "zh-Hant": "AI 根因 {title}" },
   "tracker.event.intervention": { en: "Intervention {title}", "zh-Hant": "干預 {title}" },
   "tracker.event.decided": { en: "{title}", "zh-Hant": "{title}" },
+  "tracker.event.aiAction": { en: "AI action · {title}", "zh-Hant": "AI 動作 · {title}" },
+  "tracker.event.audit": { en: "{title}", "zh-Hant": "{title}" },
   "tracker.back": { en: "Back to tracker", "zh-Hant": "返回追蹤器" },
 
   "intv.stepRequested": { en: "step {step} · requested {at}", "zh-Hant": "步驟 {step} · 請求於 {at}" },
@@ -582,6 +602,15 @@ export const EXTRA_UI: Record<string, Pair> = {
   "rl.chrono": { en: "Unified chronological stream", "zh-Hant": "統一時序串流" },
   "rl.chronoHint": { en: "Alerts + interventions + spine events.", "zh-Hant": "警報＋干預＋脊柱事件。" },
   "rl.related": { en: "Related:", "zh-Hant": "相關：" },
+  "rl.closedTickets": { en: "Closed alerts & tickets", "zh-Hant": "已關閉警報與工單" },
+  "rl.closedHint": {
+    en: "Each closed event keeps the same tracker pack as Realtime Alert: ticket-closed status, AI analysis, AI/BU action logs, and the final solution mandated by AI or the business-unit POC.",
+    "zh-Hant": "每筆已結事件保留與即時警報相同的追蹤包：工單已關閉狀態、AI 分析、AI／各 BU 動作紀錄，以及 AI 或業務單位 POC 核定的最終方案。",
+  },
+  "rl.closedEmpty": {
+    en: "No closed tickets yet. Open work stays on Realtime Alert until the ticket is closed.",
+    "zh-Hant": "尚無已關閉工單。未結工作留在即時警報，直到工單關閉。",
+  },
 
   "org.teams": { en: "Teams", "zh-Hant": "團隊" },
   "org.users": { en: "Users", "zh-Hant": "使用者" },

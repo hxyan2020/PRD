@@ -33,9 +33,15 @@ export type TrackerEscalation = {
 
 export type TrackerEvent = {
   at: string;
-  kind: "raised" | "ack" | "ticket" | "rca" | "intervention" | "decided" | "spine";
+  kind: "raised" | "ack" | "ticket" | "rca" | "intervention" | "decided" | "spine" | "audit" | "ai_action";
   title: string;
   actor: string | null;
+};
+
+export type TrackerSolution = {
+  text: string;
+  mandated_by: string;
+  source: "intervention" | "impact" | "analysis";
 };
 
 export type AlertTrackerPack = {
@@ -62,6 +68,8 @@ export type AlertTrackerPack = {
   analysis: TrackerAnalysis | null;
   escalation: TrackerEscalation | null;
   timeline: TrackerEvent[];
+  outcome: string | null;
+  final_solution: TrackerSolution | null;
 };
 
 type AlertRow = {
@@ -136,12 +144,38 @@ function gateFor(input: {
   return { code: "OPEN", label: "Open", detail: "Raised and not yet closed." };
 }
 
+const CLOSED_TICKET_EXISTS = `EXISTS (
+  SELECT 1 FROM monitor_tickets t
+  WHERE (t.alert_id = a.id OR (a.monitor20_ticket_id IS NOT NULL AND t.ticket_id = a.monitor20_ticket_id))
+    AND t.status IN ('RESOLVED','CLOSED')
+)`;
+
+function statusWhereSql(status: "open" | "closed" | "all"): string {
+  if (status === "open") {
+    return `WHERE a.status NOT IN ('CLOSED','RESOLVED') AND NOT ${CLOSED_TICKET_EXISTS}`;
+  }
+  if (status === "closed") {
+    return `WHERE a.status IN ('CLOSED','RESOLVED') OR ${CLOSED_TICKET_EXISTS}`;
+  }
+  return "";
+}
+
+function parseJsonObject(raw: string | null | undefined): Record<string, unknown> {
+  try {
+    const v = JSON.parse(raw || "{}");
+    return v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
+  } catch {
+    return {};
+  }
+}
+
 export function listAlertTrackerPacks(
-  limitOrOpts: number | { limit?: number; order?: "severity" | "recent" } = 80
+  limitOrOpts: number | { limit?: number; order?: "severity" | "recent"; status?: "open" | "closed" | "all" } = 80
 ): AlertTrackerPack[] {
   const opts = typeof limitOrOpts === "number" ? { limit: limitOrOpts } : limitOrOpts;
   const limit = opts.limit ?? 80;
   const order = opts.order === "recent" ? "recent" : "severity";
+  const status = opts.status ?? "all";
   const db = getDb();
   const orderSql =
     order === "recent"
@@ -154,6 +188,7 @@ export function listAlertTrackerPacks(
               i.name AS indicator_name, i.monitor_id, i.domain_code, i.product
        FROM monitor_alerts a
        JOIN monitor_indicators i ON i.id = a.indicator_id
+       ${statusWhereSql(status)}
        ORDER BY ${orderSql}
        LIMIT ?`
     )
@@ -187,28 +222,28 @@ export function listAlertTrackerPacks(
         }
       | undefined;
 
-    const analysisRow = db
+    const analysisRows = db
       .prepare(
         `SELECT a.id, a.analysis_id, a.summary, a.mode, a.confidence, a.status, a.needs_human,
-                a.challenged, a.challenge_verdict, a.created_at
+                a.challenged, a.challenge_verdict, a.created_at, a.actions_taken_json
          FROM ai_analyses a
          WHERE a.alert_id = ?
-         ORDER BY a.id DESC LIMIT 1`
+         ORDER BY a.id ASC`
       )
-      .get(a.id) as
-      | {
-          id: number;
-          analysis_id: string;
-          summary: string;
-          mode: string;
-          confidence: number;
-          status: string;
-          needs_human: number;
-          challenged: number | null;
-          challenge_verdict: string | null;
-          created_at: string;
-        }
-      | undefined;
+      .all(a.id) as Array<{
+      id: number;
+      analysis_id: string;
+      summary: string;
+      mode: string;
+      confidence: number;
+      status: string;
+      needs_human: number;
+      challenged: number | null;
+      challenge_verdict: string | null;
+      created_at: string;
+      actions_taken_json: string | null;
+    }>;
+    const analysisRow = analysisRows.length ? analysisRows[analysisRows.length - 1] : undefined;
 
     const analysis: TrackerAnalysis | null = analysisRow
       ? {
@@ -225,14 +260,34 @@ export function listAlertTrackerPacks(
         }
       : null;
 
-    const intervention = analysis
+    const interventionRows = analysisRows.length
       ? (db
           .prepare(
-            `SELECT status, requested_at, decided_at, decision_note
-             FROM interventions WHERE analysis_id = ? ORDER BY id DESC LIMIT 1`
+            `SELECT i.status, i.action_code, i.requested_at, i.decided_at, i.decision_note, u.name AS decided_by_name
+             FROM interventions i
+             LEFT JOIN users u ON u.id = i.decided_by
+             WHERE i.analysis_id IN (${analysisRows.map(() => "?").join(",")})
+             ORDER BY i.id ASC`
           )
-          .get(analysis.id) as { status: string; requested_at: string; decided_at: string | null; decision_note: string | null } | undefined)
-      : undefined;
+          .all(...analysisRows.map((r) => r.id)) as Array<{
+          status: string;
+          action_code: string;
+          requested_at: string;
+          decided_at: string | null;
+          decision_note: string | null;
+          decided_by_name: string | null;
+        }>)
+      : [];
+    const intervention = interventionRows.length ? interventionRows[interventionRows.length - 1] : undefined;
+
+    let impact: { outcome: string | null; notes: string | null } | undefined;
+    try {
+      impact = db
+        .prepare(`SELECT outcome, notes FROM alert_impacts WHERE alert_id = ?`)
+        .get(a.id) as { outcome: string | null; notes: string | null } | undefined;
+    } catch {
+      impact = undefined;
+    }
 
     const esc = db
       .prepare(
@@ -291,6 +346,28 @@ export function listAlertTrackerPacks(
       ro,
     });
 
+    const decidedNote = [...interventionRows].reverse().find((row) => row.decision_note?.trim());
+    let final_solution: TrackerSolution | null = null;
+    if (decidedNote?.decision_note) {
+      final_solution = {
+        text: decidedNote.decision_note,
+        mandated_by: decidedNote.decided_by_name || ro?.name || "Risk Owner",
+        source: "intervention",
+      };
+    } else if (impact?.notes?.trim()) {
+      final_solution = {
+        text: impact.notes,
+        mandated_by: poc?.name || poc?.team || "Business unit POC",
+        source: "impact",
+      };
+    } else if (analysis?.summary) {
+      final_solution = {
+        text: analysis.summary,
+        mandated_by: "AI",
+        source: "analysis",
+      };
+    }
+
     const timeline: TrackerEvent[] = [];
     timeline.push({ at: a.created_at, kind: "raised", title: a.severity, actor: "Monitor 2.0" });
     if (a.acknowledged_at) timeline.push({ at: a.acknowledged_at, kind: "ack", title: "acknowledged", actor: poc?.name || null });
@@ -299,41 +376,56 @@ export function listAlertTrackerPacks(
         at: ticket.created_at,
         kind: "ticket",
         title: `${ticket.ticket_id} · ${ticket.status}`,
-        actor: poc?.name || null,
+        actor: poc?.name || ticket.department_code || null,
       });
     }
-    if (analysisRow) {
+    for (const row of analysisRows) {
       timeline.push({
-        at: analysisRow.created_at,
+        at: row.created_at,
         kind: "rca",
-        title: `${analysisRow.analysis_id} · ${analysisRow.mode}`,
+        title: `${row.analysis_id} · ${row.mode}`,
         actor: "AI",
       });
-    }
-    if (intervention) {
-      timeline.push({
-        at: intervention.requested_at,
-        kind: "intervention",
-        title: intervention.status,
-        actor: ro?.name || "Risk Owner",
-      });
-      if (intervention.decided_at) {
+      for (const action of parseJsonArrayObjects(row.actions_taken_json)) {
+        const code = String(action.action || action.code || "action");
+        const st = String(action.status || "");
+        const desc = String(action.description || "");
         timeline.push({
-          at: intervention.decided_at,
-          kind: "decided",
-          title: intervention.decision_note || "decided",
-          actor: ro?.name || null,
+          at: row.created_at,
+          kind: "ai_action",
+          title: desc ? `${code}${st ? ` · ${st}` : ""} — ${desc}` : `${code}${st ? ` · ${st}` : ""}`,
+          actor: "AI",
         });
       }
     }
+    for (const row of interventionRows) {
+      timeline.push({
+        at: row.requested_at,
+        kind: "intervention",
+        title: `${row.action_code} · ${row.status}`,
+        actor: ro?.name || "Risk Owner",
+      });
+      if (row.decided_at) {
+        timeline.push({
+          at: row.decided_at,
+          kind: "decided",
+          title: row.decision_note || `${row.action_code} decided`,
+          actor: row.decided_by_name || ro?.name || null,
+        });
+      }
+    }
+    const entityIds = [a.alert_id, String(a.id), ticket?.ticket_id || a.monitor20_ticket_id || "", ...analysisRows.map((r) => r.analysis_id)].filter(
+      Boolean
+    );
     try {
+      const spineIds = entityIds.length ? entityIds : [a.alert_id];
       const spine = db
         .prepare(
           `SELECT created_at, title, actor FROM spine_events
-           WHERE ref_id IN (?, ?, ?)
-           ORDER BY created_at ASC LIMIT 12`
+           WHERE ref_id IN (${spineIds.map(() => "?").join(",")})
+           ORDER BY created_at ASC LIMIT 24`
         )
-        .all(a.alert_id, String(a.id), analysisRow?.analysis_id || "") as Array<{
+        .all(...spineIds) as Array<{
         created_at: string;
         title: string;
         actor: string | null;
@@ -342,8 +434,41 @@ export function listAlertTrackerPacks(
     } catch {
       /* spine table may be empty */
     }
+    try {
+      const auditIds = entityIds.length ? entityIds : [a.alert_id];
+      const audits = db
+        .prepare(
+          `SELECT created_at, actor_name, action, entity_type, details_json
+           FROM audit_logs
+           WHERE entity_id IN (${auditIds.map(() => "?").join(",")})
+           ORDER BY created_at ASC LIMIT 40`
+        )
+        .all(...auditIds) as Array<{
+        created_at: string;
+        actor_name: string | null;
+        action: string;
+        entity_type: string;
+        details_json: string | null;
+      }>;
+      for (const log of audits) {
+        const details = parseJsonObject(log.details_json);
+        const note = String(details.note || details.notes || details.message || "").trim();
+        const dept = String(details.department || details.department_code || "").trim();
+        const title = note ? `${log.action} — ${note}` : log.action;
+        const actorBits = [log.actor_name, dept].filter(Boolean);
+        timeline.push({
+          at: log.created_at,
+          kind: "audit",
+          title,
+          actor: actorBits.length ? actorBits.join(" · ") : log.entity_type,
+        });
+      }
+    } catch {
+      /* audit table may be empty */
+    }
     timeline.sort((x, y) => String(x.at).localeCompare(String(y.at)));
 
+    const closed = gate.code === "CLOSED";
     return {
       id: a.id,
       alert_id: a.alert_id,
@@ -361,7 +486,7 @@ export function listAlertTrackerPacks(
       ticket_id: ticket?.ticket_id || a.monitor20_ticket_id,
       ticket_status: ticket?.status || null,
       ticket_department: ticket?.department_code || null,
-      href: `/admin/alerts#${a.alert_id}`,
+      href: closed ? `/admin/risk-log#${a.alert_id}` : `/admin/alerts#${a.alert_id}`,
       poc,
       ro,
       gate,
@@ -378,6 +503,17 @@ export function listAlertTrackerPacks(
           }
         : null,
       timeline,
+      outcome: impact?.outcome || null,
+      final_solution,
     };
   });
+}
+
+function parseJsonArrayObjects(raw: string | null | undefined): Array<Record<string, unknown>> {
+  try {
+    const v = JSON.parse(raw || "[]");
+    return Array.isArray(v) ? v.filter((x) => x && typeof x === "object" && !Array.isArray(x)) : [];
+  } catch {
+    return [];
+  }
 }
