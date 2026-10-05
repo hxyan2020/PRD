@@ -182,8 +182,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   departments: {
     title: { en: "Departments", "zh-Hant": "部門" },
     subtitle: {
-      en: "BU charters for Risk Control, Operations, AI and System — mandate, owns, accountable, collaborates, out of scope, and escalation.",
-      "zh-Hant": "風險控管、營運、AI 與系統之 BU 權責章程 — 使命、擁有、課責、協作、範圍外與升級。",
+      en: "Click any duty to unfold what that BU actually does; click again to fold it.",
+      "zh-Hant": "點任何職責展開該 BU 實際在做什麼；再點一次即可收合。",
     },
   },
   teams: {

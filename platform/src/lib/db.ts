@@ -447,7 +447,7 @@ function syncDepartments(db: Database.Database) {
        primary_responsibilities = excluded.primary_responsibilities`
   );
   for (const d of DEPARTMENT_LIST) {
-    upsert.run(d.code, d.name, d.mandate, JSON.stringify(d.owns));
+    upsert.run(d.code, d.name, d.mandate, JSON.stringify(d.owns.map((item) => item.title)));
   }
 }
 

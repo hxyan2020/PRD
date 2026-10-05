@@ -458,6 +458,11 @@ export const EXTRA_UI: Record<string, Pair> = {
   "org.doesNot": { en: "Does not", "zh-Hant": "不做" },
   "org.escalatesTo": { en: "Escalates to", "zh-Hant": "升級至" },
   "org.permissions": { en: "Permissions", "zh-Hant": "權限" },
+  "org.dutyHint": {
+    en: "Each duty is folded. Click a row for plain-English detail; click again to fold it.",
+    "zh-Hant": "每項職責預設收合。點列可看白話說明，再點一次即可收合。",
+  },
+  "org.dutyToggle": { en: "Show or hide duty detail", "zh-Hant": "展開或收合職責說明" },
   "org.onCall": { en: "On-call", "zh-Hant": "值班" },
   "org.larkChat": { en: "Lark Chat", "zh-Hant": "Lark 聊天室" },
   "org.stage24h": { en: "{stage} (24h)", "zh-Hant": "{stage}（24 小時）" },
