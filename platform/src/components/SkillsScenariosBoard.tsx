@@ -129,12 +129,12 @@ export function SkillsScenariosBoard({
 
   return (
     <div className="space-y-4">
-      <div className="panel p-4 flex flex-wrap items-end justify-between gap-3">
+      <div className="panel p-4 space-y-3">
         <div>
           <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("skill.eyebrow", locale)}</div>
           <p className="text-sm mt-1 max-w-3xl">{t("skill.boardIntro", locale)}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-start gap-2">
           <button type="button" className={`btn ${tab === "skills" ? "btn-primary" : ""}`} onClick={() => setTab("skills")}>
             {t("skill.tabSkills", locale)} ({skillViews.length})
           </button>
