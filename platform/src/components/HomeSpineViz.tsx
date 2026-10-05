@@ -103,7 +103,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
       </div>
 
       {/* Desktop / tablet horizontal pipeline */}
-      <div className="relative mt-5 hidden sm:block">
+      <div className="relative mt-5 hidden sm:block" data-testid="home-spine-desktop">
         <div className="absolute left-8 right-8 top-[22px] h-[3px] rounded-full bg-slate-200" aria-hidden>
           <div
             className="h-full rounded-full bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-500 transition-all duration-700 ease-out"
@@ -120,8 +120,8 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
                 <button
                   type="button"
                   onClick={() => {
-                    setActive(i);
                     setPlaying(false);
+                    setActive(i);
                   }}
                   className={cn(
                     "relative z-[1] flex h-11 w-11 items-center justify-center rounded-full border-2 transition duration-300",
@@ -161,7 +161,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
       </div>
 
       {/* Mobile vertical stepper */}
-      <ol className="relative mt-4 space-y-0 sm:hidden">
+      <ol className="relative mt-4 space-y-0 sm:hidden" data-testid="home-spine-mobile">
         <div className="absolute bottom-3 left-[15px] top-3 w-[2px] bg-slate-200" aria-hidden>
           <div
             className="w-full bg-teal-600 transition-all duration-700"
@@ -176,13 +176,14 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
               <button
                 type="button"
                 onClick={() => {
-                  setActive(i);
                   setPlaying(false);
+                  setActive(i);
                 }}
                 className={cn(
                   "relative flex w-full items-center gap-3 rounded-xl px-1 py-2.5 text-left transition",
                   selected ? "bg-white/80" : "hover:bg-white/50"
                 )}
+                data-testid={`home-spine-mnode-${s.id}`}
               >
                 <span
                   className={cn(
