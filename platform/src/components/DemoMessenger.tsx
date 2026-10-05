@@ -760,11 +760,11 @@ export function DemoMessenger({
                   <p className="text-[11px] text-[var(--muted)] mb-2 leading-snug">{t("msg.rankNote", locale)}</p>
                   {(
                     [
-                      ["critical", "msg.groupCritical", "btn btn-primary"],
-                      ["control", "msg.groupControl", "btn"],
-                      ["soft", "msg.groupSoft", "btn"],
+                      ["critical", "msg.groupCritical"],
+                      ["control", "msg.groupControl"],
+                      ["soft", "msg.groupSoft"],
                     ] as const
-                  ).map(([key, labelKey, btnClass]) => {
+                  ).map(([key, labelKey]) => {
                     const items = recommendedGroups[key];
                     if (!items.length) return null;
                     return (
@@ -775,12 +775,17 @@ export function DemoMessenger({
                         <div className="flex flex-wrap gap-2">
                           {items.map((a, idx) => {
                             const loc = localizeAction(a.code, a.label, a.description, locale);
-                            const primaryCritical = key === "critical" && idx === 0;
+                            const cls =
+                              key === "critical" && idx === 0
+                                ? "btn btn-primary"
+                                : key === "critical"
+                                  ? "btn border-rose-300 bg-rose-50 text-rose-950"
+                                  : "btn";
                             return (
                               <button
                                 key={a.code}
                                 type="button"
-                                className={`${primaryCritical ? "btn btn-primary" : btnClass} text-xs`}
+                                className={`${cls} text-xs`}
                                 disabled={busy}
                                 title={loc.description}
                                 onClick={() => void run("recommend", { action_code: a.code })}
