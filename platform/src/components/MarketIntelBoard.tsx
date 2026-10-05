@@ -145,11 +145,22 @@ function isMiTab(v: string | null | undefined): v is MiTab {
   return v === "findings" || v === "messenger" || v === "sources" || v === "scans";
 }
 
-export function MarketIntelBoard({ initial }: { initial: BoardState }) {
+export function MarketIntelBoard({
+  initial,
+  initialTab,
+}: {
+  initial: BoardState;
+  initialTab?: MiTab;
+}) {
   const router = useRouter();
   const { locale } = useUiLocale();
   const [snapshot, setSnapshot] = useState(isStaticExport());
-  const [tab, setTab] = useState<MiTab>("findings");
+  const [tab, setTab] = useState<MiTab>(() => {
+    if (initialTab && isMiTab(initialTab)) return initialTab;
+    if (typeof window === "undefined") return "findings";
+    const q = new URLSearchParams(window.location.search).get("tab");
+    return isMiTab(q) ? q : "findings";
+  });
 
   function goTab(next: MiTab) {
     setTab(next);
