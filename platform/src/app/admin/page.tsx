@@ -1,25 +1,14 @@
 import Link from "next/link";
 import {
   Bell,
-  BookOpen,
-  Brain,
   ChevronRight,
-  CircuitBoard,
   Database,
-  FileText,
   GitBranch,
-  LineChart,
   MessageSquare,
   MessagesSquare,
-  Network,
-  Radio,
-  Settings,
-  Sparkles,
   Ticket,
-  UserCheck,
   Users,
   Waypoints,
-  type LucideIcon,
 } from "lucide-react";
 import { getDb } from "@/lib/db";
 import { StatCard, SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
@@ -46,21 +35,6 @@ const DEPT_DEST: Record<
   AI: { href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析", stripe: "bg-violet-600" },
   SYSTEM: { href: "/admin/settings", en: "Platform Settings", zh: "平台設定", stripe: "bg-slate-600" },
 };
-
-const JUMPS: Array<{ href: string; en: string; zh: string; icon: LucideIcon }> = [
-  { href: "/admin/dashboard", en: "Daily Performance", zh: "每日績效", icon: LineChart },
-  { href: "/admin/market-intel", en: "Market Intelligence", zh: "市場情報", icon: Radio },
-  { href: "/admin/monitor-2", en: "Monitor 2.0", zh: "Monitor 2.0", icon: CircuitBoard },
-  { href: "/admin/alerts", en: "Live Alerts", zh: "即時警報", icon: Bell },
-  { href: "/admin/ai-analyses", en: "AI Analyses", zh: "AI 分析", icon: Brain },
-  { href: "/admin/skills", en: "AI Skills", zh: "AI 技能", icon: Sparkles },
-  { href: "/admin/knowledge-tree", en: "Knowledge Tree", zh: "知識樹", icon: Network },
-  { href: "/admin/interventions", en: "Human Intervention", zh: "人工干預", icon: UserCheck },
-  { href: "/admin/messenger", en: "Demo Messenger", zh: "示範 Messenger", icon: MessagesSquare },
-  { href: "/admin/settings", en: "Settings", zh: "平台設定", icon: Settings },
-  { href: "/admin/docs/user-guide", en: "User Guide", zh: "使用手冊", icon: BookOpen },
-  { href: "/admin/docs/prd", en: "PRD", zh: "PRD", icon: FileText },
-];
 
 const SPINE: Array<{ href: string; en: string; zh: string }> = [
   { href: "/admin/monitor-2", en: "Monitor 2.0 emits indicator warning / breach", zh: "Monitor 2.0 發出指標警告／違規" },
@@ -235,39 +209,6 @@ export default async function AdminDashboardPage() {
           cta={openCta}
         />
       </div>
-
-      <section className="mt-5">
-        <h2 className="font-[family-name:var(--font-display)] text-lg">
-          <T k="home.jumpTitle" />
-        </h2>
-        <p className="text-sm text-[var(--muted)] mt-1">
-          <T k="home.jumpSub" />
-        </p>
-        <div className="mt-3 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3">
-          {JUMPS.map((c) => {
-            const Icon = c.icon;
-            return (
-              <Link key={c.href} href={c.href} className="panel card-link group p-3 flex items-center gap-3">
-                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-800">
-                  <Icon className="h-4 w-4" aria-hidden />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm font-semibold truncate">
-                    <EnZh en={c.en} zh={c.zh} />
-                  </div>
-                  <div className="text-xs text-teal-800 mt-0.5">
-                    <T k="home.openPage" />
-                  </div>
-                </div>
-                <ChevronRight
-                  className="h-4 w-4 shrink-0 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-teal-700"
-                  aria-hidden
-                />
-              </Link>
-            );
-          })}
-        </div>
-      </section>
 
       <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
         <section className="panel p-3 sm:p-4 min-w-0">
