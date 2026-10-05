@@ -17,6 +17,21 @@ export default async function MessengerDemoPage() {
   const inbox = listMessengerInbox();
   const threads = inbox.threads as React.ComponentProps<typeof DemoMessenger>["initialThreads"];
 
+  const roleCode = user?.role_code || (staticMode ? "PUBLIC_GUEST" : "VIEWER");
+  const canIntervene = staticMode || (!!user && hasPermission(user.role_code, "intervene.operate"));
+  const canSoftControl =
+    staticMode ||
+    canIntervene ||
+    (!!user && (hasPermission(user.role_code, "monitor.operate") || hasPermission(user.role_code, "lark.manage")));
+  const canEscalate =
+    staticMode ||
+    canIntervene ||
+    (!!user &&
+      (hasPermission(user.role_code, "escalation.manage") ||
+        hasPermission(user.role_code, "risk.intervene") ||
+        ["RISK_OWNER", "RISK_ANALYST", "OPS_LEAD", "SUPER_ADMIN"].includes(user.role_code)));
+  const canTriage = staticMode || canIntervene || (!!user && hasPermission(user.role_code, "ai.operate"));
+
   return (
     <div className="messenger-page">
       <div className="shrink-0">
@@ -53,6 +68,14 @@ export default async function MessengerDemoPage() {
           initialThreads={threads}
           initialCatalog={inbox.catalog as React.ComponentProps<typeof DemoMessenger>["initialCatalog"]}
           staticMode={staticMode}
+          caps={{
+            roleCode,
+            canEvidence: true,
+            canEscalate,
+            canTriage,
+            canIntervene,
+            canSoftControl,
+          }}
         />
       </div>
     </div>

@@ -92,6 +92,25 @@ type Recommended = {
   description: string;
   admin_path: string;
   needs_checker: boolean;
+  priority?: "critical" | "control" | "soft";
+  permission?: string;
+};
+
+type MessengerCaps = {
+  roleCode: string;
+  canEvidence: boolean;
+  canEscalate: boolean;
+  canTriage: boolean;
+  canIntervene: boolean;
+  canSoftControl: boolean;
+};
+
+const ACTION_PRIORITY: Record<string, "critical" | "control" | "soft"> = {
+  BLOCK_ACCOUNT: "critical",
+  HALT_SYMBOL: "critical",
+  CUT_LEVERAGE: "control",
+  PAUSE_COPY: "control",
+  WIDEN_SPREAD: "soft",
 };
 
 type InboxPack = {
@@ -194,13 +213,23 @@ export function DemoMessenger({
   initialThreads,
   initialCatalog = {},
   staticMode = false,
+  caps,
 }: {
   initialThreads: Thread[];
   initialCatalog?: Record<number, InboxPack>;
   staticMode?: boolean;
+  caps?: MessengerCaps;
 }) {
   const router = useRouter();
   const { locale } = useUiLocale();
+  const capabilities: MessengerCaps = caps || {
+    roleCode: staticMode ? "PUBLIC_GUEST" : "VIEWER",
+    canEvidence: true,
+    canEscalate: staticMode,
+    canTriage: staticMode,
+    canIntervene: staticMode,
+    canSoftControl: staticMode,
+  };
   const [threads, setThreads] = useState(initialThreads);
   const [catalog, setCatalog] = useState<Record<number, InboxPack>>(initialCatalog);
   const [activeId, setActiveId] = useState<number | null>(initialThreads[0]?.id ?? null);
@@ -225,6 +254,28 @@ export function DemoMessenger({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const active = useMemo(() => threads.find((row) => row.id === activeId) || null, [threads, activeId]);
+
+  const visibleRecommended = useMemo(() => {
+    return recommended.filter((a) => {
+      const priority = a.priority || ACTION_PRIORITY[a.code] || "soft";
+      if (priority === "critical" || priority === "control") return capabilities.canIntervene;
+      if (priority === "soft") return capabilities.canSoftControl || capabilities.canIntervene;
+      return false;
+    });
+  }, [recommended, capabilities.canIntervene, capabilities.canSoftControl]);
+
+  const recommendedGroups = useMemo(() => {
+    const groups: Record<"critical" | "control" | "soft", Recommended[]> = {
+      critical: [],
+      control: [],
+      soft: [],
+    };
+    for (const a of visibleRecommended) {
+      const priority = a.priority || ACTION_PRIORITY[a.code] || "soft";
+      groups[priority].push(a);
+    }
+    return groups;
+  }, [visibleRecommended]);
 
   useEffect(() => {
     runGen.current += 1;
@@ -569,40 +620,68 @@ export function DemoMessenger({
               <h2 className="mt-2 font-[family-name:var(--font-display)] text-base sm:text-xl break-word line-clamp-2">
                 {active.title}
               </h2>
-              <div className="mt-2 chip-scroller">
-                <button
-                  type="button"
-                  className="btn"
-                  disabled={busy || active.status !== "OPEN"}
-                  onClick={() => void run("show_evidence")}
-                >
-                  {t("msg.showEvidence", locale)}
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  disabled={busy || active.status !== "OPEN"}
-                  onClick={() => void run("escalate")}
-                >
-                  {t("msg.escalate", locale)}
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  disabled={busy || active.status !== "OPEN"}
-                  onClick={() => void run("dismiss")}
-                >
-                  {t("msg.dismiss", locale)}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  disabled={busy || active.status !== "OPEN"}
-                  onClick={() => void run("close")}
-                >
-                  {t("msg.close", locale)}
-                </button>
-              </div>
+              {active.status === "OPEN" ? (
+                <div className="mt-3 space-y-2" data-testid="msg-triage-actions">
+                  <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">
+                    {t("msg.triagePrimary", locale)}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {capabilities.canTriage ? (
+                      <button
+                        type="button"
+                        className="btn btn-primary !min-h-11"
+                        disabled={busy}
+                        onClick={() => void run("close")}
+                        data-testid="msg-btn-close"
+                      >
+                        {t("msg.close", locale)}
+                      </button>
+                    ) : null}
+                    {capabilities.canEscalate ? (
+                      <button
+                        type="button"
+                        className="btn !min-h-11 border-rose-300 bg-rose-50 text-rose-950 hover:bg-rose-100"
+                        disabled={busy}
+                        onClick={() => void run("escalate")}
+                        title={t("msg.escalateHint", locale)}
+                        data-testid="msg-btn-escalate"
+                      >
+                        {t("msg.escalate", locale)}
+                      </button>
+                    ) : (
+                      <p className="text-xs text-rose-800 self-center">{t("msg.escalateHint", locale)}</p>
+                    )}
+                  </div>
+                  <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] pt-1">
+                    {t("msg.triageSecondary", locale)}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {capabilities.canEvidence ? (
+                      <button
+                        type="button"
+                        className="btn"
+                        disabled={busy}
+                        onClick={() => void run("show_evidence")}
+                        data-testid="msg-btn-evidence"
+                      >
+                        {t("msg.showEvidence", locale)}
+                      </button>
+                    ) : null}
+                    {capabilities.canTriage ? (
+                      <button
+                        type="button"
+                        className="btn text-[var(--muted)]"
+                        disabled={busy}
+                        onClick={() => void run("dismiss")}
+                        data-testid="msg-btn-dismiss"
+                      >
+                        {t("msg.dismiss", locale)}
+                      </button>
+                    ) : null}
+                  </div>
+                  <p className="text-[11px] text-[var(--muted)] leading-snug">{t("msg.rankNote", locale)}</p>
+                </div>
+              ) : null}
             </div>
 
             <div ref={listRef} className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain min-h-[12rem]">
@@ -671,27 +750,53 @@ export function DemoMessenger({
 
             {active.status === "OPEN" && (
               <div className="mt-2 border-t border-[var(--line)] pt-2 space-y-2 shrink-0 bg-[var(--panel)] pb-[max(0.35rem,var(--safe-bottom))]">
-                <div>
-                  <div className="hidden sm:block text-xs uppercase tracking-[0.1em] text-[var(--muted)] mb-2">
-                    {t("msg.recommended", locale)}
+                <div data-testid="msg-recommended-actions">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+                    <div className="text-xs uppercase tracking-[0.1em] text-[var(--muted)]">
+                      {t("msg.recommended", locale)}
+                    </div>
+                    <div className="text-[10px] text-[var(--muted)]">{capabilities.roleCode}</div>
                   </div>
-                  <div className="chip-scroller">
-                    {recommended.map((a) => {
-                      const loc = localizeAction(a.code, a.label, a.description, locale);
-                      return (
-                        <button
-                          key={a.code}
-                          type="button"
-                          className="btn text-xs max-sm:shrink-0"
-                          disabled={busy}
-                          title={loc.description}
-                          onClick={() => void run("recommend", { action_code: a.code })}
-                        >
-                          {loc.label}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  <p className="text-[11px] text-[var(--muted)] mb-2 leading-snug">{t("msg.rankNote", locale)}</p>
+                  {(
+                    [
+                      ["critical", "msg.groupCritical", "btn btn-primary"],
+                      ["control", "msg.groupControl", "btn"],
+                      ["soft", "msg.groupSoft", "btn"],
+                    ] as const
+                  ).map(([key, labelKey, btnClass]) => {
+                    const items = recommendedGroups[key];
+                    if (!items.length) return null;
+                    return (
+                      <div key={key} className="mb-2">
+                        <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1">
+                          {t(labelKey, locale)}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {items.map((a, idx) => {
+                            const loc = localizeAction(a.code, a.label, a.description, locale);
+                            const primaryCritical = key === "critical" && idx === 0;
+                            return (
+                              <button
+                                key={a.code}
+                                type="button"
+                                className={`${primaryCritical ? "btn btn-primary" : btnClass} text-xs`}
+                                disabled={busy}
+                                title={loc.description}
+                                onClick={() => void run("recommend", { action_code: a.code })}
+                                data-testid={`msg-rec-${a.code}`}
+                              >
+                                {loc.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {!visibleRecommended.length ? (
+                    <p className="text-xs text-rose-800">{t("msg.escalateHint", locale)}</p>
+                  ) : null}
                 </div>
 
                 {pending.map((p) => {

@@ -14,6 +14,8 @@ export type MessengerAction =
   | "cancel_action"
   | "checker_approve";
 
+export type ActionPriority = "critical" | "control" | "soft";
+
 export const RECOMMENDED_ACTIONS = [
   {
     code: "BLOCK_ACCOUNT",
@@ -21,6 +23,9 @@ export const RECOMMENDED_ACTIONS = [
     description: "Freeze login and new orders for flagged account(s).",
     admin_path: "/admin/interventions",
     needs_checker: true,
+    priority: "critical" as const,
+    /** Permission required to see/run this action in messenger. */
+    permission: "intervene.operate",
   },
   {
     code: "HALT_SYMBOL",
@@ -28,6 +33,8 @@ export const RECOMMENDED_ACTIONS = [
     description: "Temporarily disable new exposure on the stressed symbol.",
     admin_path: "/admin/monitor-2",
     needs_checker: true,
+    priority: "critical" as const,
+    permission: "intervene.operate",
   },
   {
     code: "CUT_LEVERAGE",
@@ -35,13 +42,8 @@ export const RECOMMENDED_ACTIONS = [
     description: "Reduce leverage for affected cohort / instrument.",
     admin_path: "/admin/interventions",
     needs_checker: true,
-  },
-  {
-    code: "WIDEN_SPREAD",
-    label: "Pre-widen spreads",
-    description: "Widen LP quotes ahead of expected volatility.",
-    admin_path: "/admin/market-intel",
-    needs_checker: false,
+    priority: "control" as const,
+    permission: "intervene.operate",
   },
   {
     code: "PAUSE_COPY",
@@ -49,6 +51,17 @@ export const RECOMMENDED_ACTIONS = [
     description: "Stop new copiers joining the concentrated provider.",
     admin_path: "/admin/skills",
     needs_checker: true,
+    priority: "control" as const,
+    permission: "intervene.operate",
+  },
+  {
+    code: "WIDEN_SPREAD",
+    label: "Pre-widen spreads",
+    description: "Widen LP quotes ahead of expected volatility.",
+    admin_path: "/admin/market-intel",
+    needs_checker: false,
+    priority: "soft" as const,
+    permission: "monitor.operate",
   },
 ] as const;
 
