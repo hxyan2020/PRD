@@ -254,10 +254,25 @@ export function AiAdminConsole({
 
       {tab === "overview" && (
         <div className="space-y-4">
+          <div
+            className="rounded-xl border border-teal-200 bg-gradient-to-r from-teal-50 to-amber-50 px-4 py-3"
+            data-testid="ai-dual-arch-banner"
+          >
+            <div className="text-xs font-semibold uppercase tracking-[0.12em] text-teal-900">
+              {t("adm.dualArchTitle")}
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-800">{t("adm.dualArchFlow")}</p>
+          </div>
           <div className="grid lg:grid-cols-2 gap-3">
-            <section className="panel p-4 space-y-3" data-testid="ai-line1-card">
+            <section
+              className="panel p-4 space-y-3 border-teal-200 ring-1 ring-teal-100"
+              data-testid="ai-line1-card"
+            >
               <div>
-                <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("adm.line1")}</div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className="bg-teal-600 text-white border-teal-700">L1</Badge>
+                  <div className="text-xs uppercase tracking-[0.12em] text-teal-800">{t("adm.line1")}</div>
+                </div>
                 <h3 className="font-semibold text-lg mt-1">{t("adm.line1Title")}</h3>
                 <p className="text-sm text-[var(--muted)] mt-1">{t("adm.line1Hint")}</p>
               </div>
@@ -287,9 +302,15 @@ export function AiAdminConsole({
                 />
               </div>
             </section>
-            <section className="panel p-4 space-y-3" data-testid="ai-line2-card">
+            <section
+              className="panel p-4 space-y-3 border-amber-200 ring-1 ring-amber-100"
+              data-testid="ai-line2-card"
+            >
               <div>
-                <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("adm.line2")}</div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className="bg-amber-600 text-white border-amber-700">L2</Badge>
+                  <div className="text-xs uppercase tracking-[0.12em] text-amber-900">{t("adm.line2")}</div>
+                </div>
                 <h3 className="font-semibold text-lg mt-1">{t("adm.line2Title")}</h3>
                 <p className="text-sm text-[var(--muted)] mt-1">{t("adm.line2Hint")}</p>
               </div>

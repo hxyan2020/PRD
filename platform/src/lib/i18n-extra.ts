@@ -582,8 +582,16 @@ export const EXTRA_UI: Record<string, Pair> = {
   "adm.history": { en: "History & accuracy", "zh-Hant": "歷史與準確率" },
   "adm.governance": { en: "Governance", "zh-Hant": "治理" },
   "adm.govHint": {
-    en: "Maker proposes AI config / skills / RAG / training. Checker (different user) approves before apply. Runtime interventions stay on Human Intervention.",
-    "zh-Hant": "Maker 提案 AI 設定／技能／RAG／訓練。Checker（不同使用者）核准後才套用。執行時干預仍在「人工干預」。",
+    en: "Runtime stack: First-line AI drafts RCA (skill match / RAG); Second-line AI challenges and corrects that output on BREACH/CRITICAL. Config changes still use Maker/Checker. Runtime halt/close-only gates stay on Human Intervention.",
+    "zh-Hant": "執行時架構：一線 AI 草擬根因（技能匹配／RAG）；二線 AI 在 BREACH／CRITICAL 時挑戰並校正一線輸出。設定變更仍走 Maker／Checker。執行時停牌／只平倉關卡仍在「人工干預」。",
+  },
+  "adm.dualArchTitle": {
+    en: "Two-line AI runtime",
+    "zh-Hant": "雙線 AI 執行架構",
+  },
+  "adm.dualArchFlow": {
+    en: "Alarm → First-line AI (RCA) → Second-line AI (challenge / correct) → Human gate when needed",
+    "zh-Hant": "警報 → 一線 AI（根因）→ 二線 AI（挑戰／校正）→ 必要時人工關卡",
   },
   "adm.maker": { en: "Maker", "zh-Hant": "Maker" },
   "adm.checker": { en: "Checker", "zh-Hant": "Checker" },
