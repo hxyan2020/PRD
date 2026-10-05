@@ -200,10 +200,11 @@
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.2 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.3 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/edit.html">edit EN / 简体中文</a></p>
       </div>
       <div class="md-links">
         <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
+        <a href="edit.html">Edit EN / 简体中文</a>
         <a href="en.md">en.md</a>
         <a href="zh-CN.md">zh-CN.md</a>
         <a href="urls.html">all URLs</a>
@@ -262,10 +263,11 @@
 <strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
 <strong>Scope:</strong> Full catalogue covers Spot · USD Margin · cross-ccy margin · portfolio margin · Options · Wealth · Perps; <strong>Phase 1 production (green) = Perpetual contracts + Perp Account (USD/USDT) + matching / risk &amp; liquidation / clearing</strong>. Access = 2B broker / institution / MM; 2C end users enter <strong>through a broker</strong> (no public self-serve).<br />
 <strong>Public site:</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/">https://hxyan2020.github.io/PRD/risk-handbook/</a> · <strong>All URLs:</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a> · <strong>Admin URLs:</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/</a><br />
-<strong>Version:</strong> 2.2 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
+<strong>Version:</strong> 2.3 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
 <blockquote>
 <p>This handbook is the <strong>operating playbook</strong>: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does <strong>not</strong> replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.<br />
-<strong>Numbers in this handbook are teaching examples.</strong> Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.</p>
+<strong>Numbers in this handbook are teaching examples.</strong> Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.<br />
+<strong>Edit both languages:</strong> <a href="edit.html">Edit English / 简体中文</a> — browser editor for <code>en.md</code> and <code>zh-CN.md</code> (drafts in this browser; download to commit).</p>
 </blockquote>
 <hr />
 <h2 id="en-table-of-contents">Table of contents</h2>
@@ -848,6 +850,10 @@ flowchart LR
 <tr>
 <td>Phase 1 PIC / launch crew</td>
 <td><strong>Phase 1 operating scope</strong> + <a href="#en-if-you-are-new-to-exchange-risk">If you are new</a> + <a class="xref" href="#en-sec-3-3">§3.3</a> Perps + <a class="xref" href="#en-sec-4-4">§4.4</a> + ACC (broker / institution / MM)</td>
+</tr>
+<tr>
+<td>Handbook editor (EN / 简体中文)</td>
+<td><a href="edit.html">edit.html</a> — edit <code>en.md</code> and <code>zh-CN.md</code>, save drafts, download both</td>
 </tr>
 </tbody>
 </table></div>
@@ -6387,7 +6393,7 @@ flowchart TB
 </tr>
 <tr>
 <td>Version</td>
-<td>2.2 — V-Exchange Phase 1 map: green = perps + Perp Account + matching/risk/clearing; 2B broker/institution/MM; 2C via broker</td>
+<td>2.3 — both English and Chinese sources editable in-browser (<code>edit.html</code>); V-Exchange Phase 1 map</td>
 </tr>
 </tbody>
 </table></div>
@@ -6401,10 +6407,11 @@ flowchart TB
 <strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
 <strong>范围：</strong> 全量目录含现货·USD Margin·跨币种保证金·组合保证金·期权·理财·永续；<strong>Phase 1 生产（绿色）= 永续合约 + 永续账户（USD/USDT）+ 撮合 / 风控与强平 / 清结算</strong>。准入 = 2B 经纪商 / 机构 / 做市商；2C 终端用户<strong>经经纪商进入</strong>（无公众自助注册）。<br />
 <strong>公开站点：</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/">https://hxyan2020.github.io/PRD/risk-handbook/</a> · <strong>全部 URL：</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a> · <strong>后台 URL：</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/</a><br />
-<strong>版本：</strong> 2.2 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
+<strong>版本：</strong> 2.3 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
 <blockquote>
 <p>本手册是<strong>操作说明书</strong>：谁负责什么、工作怎么分、每道手续怎么做、用哪块屏幕、看哪些数字、出问题时先做什么。它<strong>不能</strong>代替法律政策、《限额手册》（已签字的真实数字）或监管申报。<br />
-<strong>文中数字是教学示例。</strong> 投产前必须从《限额手册》抄录现行值，并经两名风险官批准。</p>
+<strong>文中数字是教学示例。</strong> 投产前必须从《限额手册》抄录现行值，并经两名风险官批准。<br />
+<strong>编辑中英两版：</strong> <a href="edit.html">编辑 English / 简体中文</a> — 浏览器内编辑 <code>en.md</code> 与 <code>zh-CN.md</code>（草稿保存在本机浏览器；下载后提交入库）。</p>
 </blockquote>
 <hr />
 <h2 id="zh-目录">目录</h2>
@@ -10594,7 +10601,7 @@ flowchart TB
 </tr>
 <tr>
 <td>版本</td>
-<td>2.2 — V-Exchange Phase 1 地图：绿色 = 永续 + 永续账户 + 撮合/风控/清结算；2B 经纪商/机构/做市；2C 经经纪商</td>
+<td>2.3 — 中英两版均可在浏览器编辑（<code>edit.html</code>）；V-Exchange Phase 1 地图</td>
 </tr>
 </tbody>
 </table></div>

@@ -761,10 +761,11 @@ TEMPLATE = """<!DOCTYPE html>
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.2 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.3 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/edit.html">edit EN / 简体中文</a></p>
       </div>
       <div class="md-links">
         <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
+        <a href="edit.html">Edit EN / 简体中文</a>
         <a href="en.md">en.md</a>
         <a href="zh-CN.md">zh-CN.md</a>
         <a href="urls.html">all URLs</a>
