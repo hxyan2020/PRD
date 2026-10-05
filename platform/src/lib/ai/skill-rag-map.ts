@@ -16,7 +16,7 @@ export const SKILL_RAG_DOCS: Record<string, string[]> = {
   "SKILL-NBP-SPIKE": ["cfd-nbp-gap", "margin-stopout", "macro-event-risk"],
   "SKILL-BONUS-ABUSE": ["promos-abuse", "accounts-pricing"],
   "SKILL-WD-SURGE": ["crypto-wallet", "crmp-org-raci", "escalation-spine"],
-  "SKILL-MODEL-DRIFT": ["crmp-admin-purpose", "crmp-built-surface", "ai-access"],
+  "SKILL-MODEL-DRIFT": ["crmp-admin-purpose", "crmp-built-surface", "ai-human-escalate"],
 };
 
 type DocLike = {

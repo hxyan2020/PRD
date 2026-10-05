@@ -612,6 +612,21 @@ export function ragWriteBlockItems(): AiBlockItem[] {
   return AI_ACCESS_BLOCKLIST.filter((b) => b.id === "PAGE-RAG" || b.id === "FN-RAG-WRITE");
 }
 
+/**
+ * Pages + functions AI must not edit directly — escalate to a human with the listed roles/permissions.
+ * Shown under RAG Knowledge Base so the corpus policy is explicit next to retrieval.
+ */
+export function humanEscalateAdminItems(): AiBlockItem[] {
+  return AI_ACCESS_BLOCKLIST.filter(
+    (b) =>
+      (b.category === "PAGE" || b.category === "FUNCTION") &&
+      (b.ai_may === "NONE" || b.ai_may === "FORBIDDEN" || b.ai_may === "PROPOSE_ONLY")
+  ).sort((a, b) => {
+    const rank = { CRITICAL: 0, HIGH: 1, MEDIUM: 2 } as const;
+    return rank[a.severity] - rank[b.severity] || a.id.localeCompare(b.id);
+  });
+}
+
 export function blocklistStats() {
   return {
     total: AI_ACCESS_BLOCKLIST.length,

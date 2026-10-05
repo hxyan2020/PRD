@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, StatusBadge } from "@/components/ui";
+import { RagAiHumanGatePanel } from "@/components/RagAiHumanGatePanel";
+import type { AiBlockItem } from "@/lib/security/ai-access-blocklist";
 import { useT } from "@/hooks/useUiLocale";
 
 type Doc = {
@@ -23,11 +25,14 @@ export function RagManager({
   categories,
   canManage,
   highlightDocKey,
+  escalateItems = [],
 }: {
   initialDocs: Doc[];
   categories: string[];
   canManage: boolean;
   highlightDocKey?: string | null;
+  /** Admin pages/functions AI cannot edit — must escalate to authorised humans. */
+  escalateItems?: AiBlockItem[];
 }) {
   const router = useRouter();
   const { t } = useT();
@@ -149,6 +154,8 @@ export function RagManager({
           </a>
         </div>
       </div>
+
+      {escalateItems.length > 0 ? <RagAiHumanGatePanel items={escalateItems} /> : null}
 
       <div className="panel p-4">
         <h3 className="font-semibold">{t("rag.retrieve")}</h3>

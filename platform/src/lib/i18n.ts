@@ -128,8 +128,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   rag: {
     title: { en: "RAG Knowledge Base", "zh-Hant": "RAG 知識庫" },
     subtitle: {
-      en: "Internal static business corpus — AI write blocked (human / propose_rag). Policies, products, entities, platforms.",
-      "zh-Hant": "內部靜態業務語料 — AI 寫入封鎖（人類／propose_rag）。政策、產品、實體、平台。",
+      en: "Business corpus + explicit AI human-gate: pages/functions AI cannot edit must escalate to authorised humans (rag.manage / maker-checker).",
+      "zh-Hant": "業務語料＋明確 AI 人工關卡：AI 不可編輯的頁面／功能必須升級給具授權人類（rag.manage／Maker-Checker）。",
     },
   },
   skills: {

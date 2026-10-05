@@ -101,6 +101,15 @@ export const SEED_RAG_DOCS: RagCorpusDoc[] = [
     content: `Hot wallet float ratio = hot balances / total custody. Warn ~15%, breach ~25% (M2-CRYPTO-WALLET). Elevated float increases theft/hack loss severity. Known remediation: initiate cold sweep to reduce hot float below warn, pause large withdrawals temporarily, notify Crypto Exchange Risk + System via Lark. Always require human confirmation before pausing withdrawals. Watch M2-CRYPTO-DEP (deposits 1h) and M2-WD-015 (withdrawals 1h) together — a deposit spike with rising hot float and a withdrawal queue is a classic run / exploit pattern. Never give the AI service role pause-withdrawal permission.`,
   },
   {
+    doc_key: "ai-human-escalate",
+    title: "AI Human-Gate — Pages & Functions AI Cannot Edit",
+    category: "OPS",
+    product_scope: "PLATFORM",
+    source_ref: "internal://crmp/ai-access-blocklist",
+    tags: ["ai", "blocklist", "escalate", "rag", "maker-checker", "人工關卡", "封鎖", "升級"],
+    content: `CRMP policy: AI service actors must NOT directly edit human-gated admin surfaces. Under RAG Knowledge Base the blocklist is published in full (pages + functions). Modes: NONE/FORBIDDEN = no AI write; PROPOSE_ONLY = open a maker-checker change request only. RAG corpus specifically: PAGE-RAG (propose_rag only) and FN-RAG-WRITE (POST/PATCH /api/rag forbidden for AI). Escalate to humans with the listed roles/permissions — e.g. rag.manage / rag.approve for corpus, users.manage for identity, intervene.operate for halt/leverage/LP, ai.approve for checker. Never improvise a direct write outside the path. Full catalogue: /admin/security/ai-access.`,
+  },
+  {
     doc_key: "entities-leverage",
     title: "Multi-Entity Regulation & Leverage Caps",
     category: "REGULATORY",

@@ -4,6 +4,7 @@ import { getDb } from "@/lib/db";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { RagManager } from "@/components/RagManager";
 import { listRagDocuments } from "@/lib/ai/rag";
+import { humanEscalateAdminItems } from "@/lib/security/ai-access-blocklist";
 import { readSearchParams } from "@/lib/static-export";
 
 export default async function RagPage({
@@ -32,6 +33,7 @@ export default async function RagPage({
         categories={categories}
         canManage={hasPermission(user.role_code, "rag.manage")}
         highlightDocKey={highlightDocKey}
+        escalateItems={humanEscalateAdminItems()}
       />
     </div>
   );

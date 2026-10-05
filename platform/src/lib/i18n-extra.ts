@@ -527,6 +527,29 @@ export const EXTRA_UI: Record<string, Pair> = {
     en: "AI service actors cannot create, update, or retire RAG documents via /admin/rag or POST/PATCH /api/rag. Escalate to a human with rag.manage, or propose via AI Admin (propose_rag) for dual-control approval.",
     "zh-Hant": "AI 服務角色不可透過 /admin/rag 或 POST/PATCH /api/rag 建立、更新或退役 RAG 文件。請升級給具 rag.manage 的人類，或經 AI 管理（propose_rag）走 Maker-Checker 雙重控管。",
   },
+  "rag.humanGateTitle": {
+    en: "Admin pages & functions AI cannot edit — escalate to human",
+    "zh-Hant": "AI 不可編輯的管理頁面與功能 — 必須升級給人類",
+  },
+  "rag.humanGateBody": {
+    en: "The following admin surfaces are blocked for AI mutation (NONE / FORBIDDEN / PROPOSE_ONLY). AI must escalate to a human with the listed role and permission — never improvise a direct write.",
+    "zh-Hant": "下列管理介面禁止 AI 直接變更（NONE／FORBIDDEN／PROPOSE_ONLY）。AI 必須升級給具備所列角色與權限的人類——禁止自行直接寫入。",
+  },
+  "rag.humanGateEscalate": {
+    en: "Escalate → authorised human",
+    "zh-Hant": "升級 → 授權人類",
+  },
+  "rag.humanGatePages": { en: "Blocked pages", "zh-Hant": "封鎖頁面" },
+  "rag.humanGateFunctions": { en: "Blocked functions / APIs", "zh-Hant": "封鎖功能／API" },
+  "rag.humanGateFooter": {
+    en: "Full policy: AI Access Security. RAG corpus writes specifically: PAGE-RAG (propose_rag only) and FN-RAG-WRITE (forbidden for AI service).",
+    "zh-Hant": "完整政策見「AI 存取安全」。RAG 語料寫入專項：PAGE-RAG（僅 propose_rag）與 FN-RAG-WRITE（禁止 AI 服務）。",
+  },
+  "rag.colId": { en: "Block id / name", "zh-Hant": "封鎖編號／名稱" },
+  "rag.colTarget": { en: "Target path / API", "zh-Hant": "目標路徑／API" },
+  "rag.colAiMay": { en: "AI may", "zh-Hant": "AI 可做" },
+  "rag.colEscalateTo": { en: "Escalate to (roles)", "zh-Hant": "升級對象（角色）" },
+  "rag.colPerms": { en: "Required permissions", "zh-Hant": "必要權限" },
   "rag.aiAdminLink": { en: "Open AI Admin proposals", "zh-Hant": "開啟 AI 管理提案" },
   "rag.securityLink": { en: "AI Access Security", "zh-Hant": "AI 存取安全" },
 
