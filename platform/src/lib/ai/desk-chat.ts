@@ -295,15 +295,15 @@ const KNOWLEDGE: Knowledge[] = [
     },
   },
   {
-    keys: ["spine", "audit", "脊柱", "稽核"],
-    href: "/admin/spine",
+    keys: ["spine", "audit", "脊柱", "稽核", "脊柱日誌"],
+    href: "/admin",
     en: {
-      title: "Spine and audit",
-      body: "The spine is the end-to-end event log: alarm → RCA → challenge → messenger → human gate → resolved. Audit Log is the immutable mutation trail. Timestamps exist; token cost / p95 RCA SLOs are RM-14.",
+      title: "Home spine & audit",
+      body: "Spine Log tab was removed. Stage ticket counts live on Admin Home (DETECT→…→DASHBOARD). Risk incidents are tracked under Realtime Alerts and Risk Log Analytics. Audit Log is the immutable mutation trail.",
     },
     zh: {
-      title: "脊柱與稽核",
-      body: "脊柱是端到端事件：警報 → RCA → 挑戰 → Messenger → 人工關卡 → 結案。稽核日誌是不可變變更軌跡。有時間戳；token／RCA p95 SLO 是 RM-14。",
+      title: "首頁脊柱與稽核",
+      body: "脊柱日誌分頁已移除。各階段工單數在管理首頁脊柱（DETECT→…→DASHBOARD）。風險事件請看即時警報與風險日誌分析。稽核日誌是不可變變更軌跡。",
     },
   },
   {

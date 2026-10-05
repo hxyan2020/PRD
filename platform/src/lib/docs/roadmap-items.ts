@@ -898,7 +898,7 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
     dependsEn: "Observability stack; pairs with RM-03",
     dependsZh: "可觀測性堆疊；搭配 RM-03",
     phase: "model-quality",
-    screens: [{ href: "/admin/spine", en: "Spine Log", zh: "脊柱日誌" }],
+    screens: [{ href: "/admin", en: "Admin Home spine", zh: "管理首頁脊柱" }],
     codebase: [
       "Spine timestamps exist",
       "No token cost, no p95 RCA latency, no $ cap alarm",

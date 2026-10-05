@@ -97,8 +97,8 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
           </div>
           <p className="mt-0.5 text-xs text-[var(--muted)]">
             <EnZh
-              en="DETECT → ALARM → AI_RCA → SKILL → HUMAN → RESOLVED → DASHBOARD. Ticket / incident counts per stage."
-              zh="DETECT → ALARM → AI_RCA → SKILL → HUMAN → RESOLVED → DASHBOARD。各階段工單／事件數。"
+              en="DETECT → ALARM → AI_RCA → SKILL → HUMAN → RESOLVED → DASHBOARD. Each stage badge shows live ticket / incident count. Spine Log tab removed — use Realtime Alerts & Risk Log."
+              zh="DETECT → ALARM → AI_RCA → SKILL → HUMAN → RESOLVED → DASHBOARD。各階段徽章顯示即時工單／事件數。脊柱日誌分頁已移除 — 請用即時警報與風險日誌。"
             />
           </p>
         </div>
@@ -148,12 +148,25 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
                         : "border-slate-200 bg-white text-slate-400 hover:border-teal-300 hover:text-teal-700"
                   )}
                   aria-current={selected ? "step" : undefined}
+                  aria-label={`${s.labelEn}: ${s.count} ${s.countLabelEn}`}
                   data-testid={`home-spine-node-${s.id}`}
+                  data-count={s.count}
                 >
                   <StepIcon className="h-5 w-5" aria-hidden />
                   {selected ? (
                     <span className="absolute inset-0 animate-ping rounded-full bg-teal-400/30" aria-hidden />
                   ) : null}
+                  <span
+                    className={cn(
+                      "absolute -right-1 -top-1 min-w-[1.35rem] rounded-full px-1 py-0.5 text-center text-[10px] font-bold tabular-nums leading-none shadow-sm",
+                      s.count > 0
+                        ? "bg-rose-600 text-white"
+                        : "bg-slate-200 text-slate-600"
+                    )}
+                    data-testid={`home-spine-count-${s.id}`}
+                  >
+                    {s.count}
+                  </span>
                 </button>
                 <div className="mt-2 text-xs font-semibold">
                   <span className="text-[10px] text-[var(--muted)]">{i + 1}. </span>
@@ -164,6 +177,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
                     "mt-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold tabular-nums",
                     selected ? "bg-teal-50 text-teal-900" : "text-[var(--muted)]"
                   )}
+                  data-testid={`home-spine-label-${s.id}`}
                 >
                   {s.count}
                   <span className="ml-1 font-normal">
@@ -211,8 +225,19 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
                   <StepIcon className="h-4 w-4" aria-hidden />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold">
-                    <EnZh en={s.labelEn} zh={s.labelZh} />
+                  <span className="flex items-center gap-2">
+                    <span className="block text-sm font-semibold">
+                      <EnZh en={s.labelEn} zh={s.labelZh} />
+                    </span>
+                    <span
+                      className={cn(
+                        "rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular-nums",
+                        s.count > 0 ? "bg-rose-600 text-white" : "bg-slate-200 text-slate-600"
+                      )}
+                      data-testid={`home-spine-mcount-${s.id}`}
+                    >
+                      {s.count}
+                    </span>
                   </span>
                   <span className="block text-xs text-[var(--muted)]">
                     {s.count} <EnZh en={s.countLabelEn} zh={s.countLabelZh} />
