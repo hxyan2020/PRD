@@ -68,15 +68,15 @@ export function BuTeamsBoard({
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="bu-teams-board">
       <div className="panel p-4 border-teal-200 bg-teal-50/30">
         <div className="text-xs uppercase tracking-[0.12em] text-teal-900">
           <EnZh en="BU and Teams" zh="BU 與團隊" />
         </div>
         <p className="text-sm mt-1 text-[var(--muted)]">
           <EnZh
-            en="Business units with nested on-call teams. Edit team mission and rotation when you have teams.manage."
-            zh="業務單位與其嵌套值班團隊。具 teams.manage 時可編輯團隊任務與輪值。"
+            en="Departments and Teams are one tab. Each business unit lists nested on-call teams — edit mission and rotation when you have teams.manage."
+            zh="部門與團隊已合併為同一個分頁。每個業務單位下列出嵌套值班團隊 — 具 teams.manage 時可編輯任務與輪值。"
           />
         </p>
       </div>

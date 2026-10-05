@@ -208,7 +208,9 @@ export function AdminShell({
                 const active =
                   item.href === "/admin/alerts"
                     ? pathname.startsWith("/admin/alerts") || pathname.startsWith("/admin/ai-analyses")
-                    : pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
+                    : item.href === "/admin/departments"
+                      ? pathname.startsWith("/admin/departments") || pathname.startsWith("/admin/teams")
+                      : pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));
                 const Icon = item.icon;
                 const effective = (totals[item.href] || 0) + (extra[item.href] || 0);
                 const viewed = seen[item.href] ?? 0;

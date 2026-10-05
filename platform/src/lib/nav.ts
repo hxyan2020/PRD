@@ -72,6 +72,7 @@ export const NAV_ITEMS = [
   { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read", group: "response" },
   { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read", group: "response" },
 
+  /** Combined former Departments + Teams pages. */
   { href: "/admin/departments", label: "BU and Teams", icon: Building2, permission: "teams.read", group: "org" },
   { href: "/admin/users", label: "Users", icon: Users, permission: "users.read", group: "org" },
   { href: "/admin/roles", label: "Roles & Permissions", icon: Shield, permission: "users.read", group: "org" },
