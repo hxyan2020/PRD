@@ -69,19 +69,29 @@ export function AuditBoard({ logs }: { logs: AuditLogRow[] }) {
     <div className="space-y-3">
       <div className="panel p-4 space-y-3">
         <p className="text-sm text-[var(--muted)] max-w-3xl">{t("audit.boardIntro", locale)}</p>
-        <div className="flex flex-wrap gap-2">
+        <div role="tablist" aria-label={t("audit.tabCrmp", locale)} className="flex flex-wrap gap-2">
           <button
             type="button"
+            role="tab"
+            aria-selected={tab === "crmp"}
             className={`btn ${tab === "crmp" ? "btn-primary" : ""}`}
-            onClick={() => setTab("crmp")}
+            onClick={() => {
+              setTab("crmp");
+              setMessage(null);
+            }}
             data-testid="audit-tab-crmp"
           >
             {t("audit.tabCrmp", locale)} ({partitioned.crmp.length})
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={tab === "vantage"}
             className={`btn ${tab === "vantage" ? "btn-primary" : ""}`}
-            onClick={() => setTab("vantage")}
+            onClick={() => {
+              setTab("vantage");
+              setMessage(null);
+            }}
             data-testid="audit-tab-vantage"
           >
             {t("audit.tabVantage", locale)} ({partitioned.vantage.length})

@@ -133,6 +133,68 @@ export async function POST(req: Request) {
         rollback_of: auditId,
         before: current ?? null,
         after: before,
+        plane: "vantage",
+      });
+      return NextResponse.json({ ok: true });
+    }
+
+    case "UPDATE_ROLE": {
+      if (!hasPermission(user.role_code, "users.manage")) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+      const id = Number(row.entity_id);
+      const code = row.entity_id;
+      const prev = Number.isFinite(id)
+        ? (db
+            .prepare(`SELECT id, code, name, description, department_code, permissions_json FROM roles WHERE id = ?`)
+            .get(id) as
+            | {
+                id: number;
+                code: string;
+                name: string;
+                description: string;
+                department_code: string | null;
+                permissions_json: string;
+              }
+            | undefined)
+        : (db
+            .prepare(`SELECT id, code, name, description, department_code, permissions_json FROM roles WHERE code = ?`)
+            .get(code) as
+            | {
+                id: number;
+                code: string;
+                name: string;
+                description: string;
+                department_code: string | null;
+                permissions_json: string;
+              }
+            | undefined);
+      if (!prev) return NextResponse.json({ error: "Role not found" }, { status: 404 });
+      db.prepare(
+        `UPDATE roles
+         SET name = COALESCE(?, name),
+             description = COALESCE(?, description),
+             department_code = ?,
+             permissions_json = COALESCE(?, permissions_json)
+         WHERE id = ?`
+      ).run(
+        (before.name as string) ?? null,
+        (before.description as string) ?? null,
+        (before.department_code as string | null) ?? null,
+        (before.permissions_json as string) ??
+          (Array.isArray(before.permissions) ? JSON.stringify(before.permissions) : null),
+        prev.id
+      );
+      writeAudit(user, "ROLLBACK_ROLE", "role", prev.code, {
+        rollback_of: auditId,
+        before: {
+          name: prev.name,
+          description: prev.description,
+          department_code: prev.department_code,
+          permissions_json: prev.permissions_json,
+        },
+        after: before,
+        plane: "vantage",
       });
       return NextResponse.json({ ok: true });
     }

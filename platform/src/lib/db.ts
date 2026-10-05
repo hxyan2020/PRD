@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import { classifyAuditPlane } from "@/lib/audit";
+import { classifyAuditPlane, ensureAuditDemoSamples } from "@/lib/audit";
 import fs from "fs";
 import path from "path";
 import { ensureAiSchema } from "@/lib/ai/schema";
@@ -1105,6 +1105,7 @@ function ensureAiLayer(db: Database.Database) {
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
   ensureDocEditsSchema(db);
+  ensureAuditDemoSamples(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`
