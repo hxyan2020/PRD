@@ -64,6 +64,38 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  if (action === "toggle_pause") {
+    const indicatorId = Number(body.indicator_id);
+    const paused = body.paused ? 1 : 0;
+    if (!Number.isFinite(indicatorId)) {
+      return NextResponse.json({ error: "Invalid indicator" }, { status: 400 });
+    }
+    const db = getDb();
+    const row = db
+      .prepare(`SELECT id, monitor_id FROM monitor_indicators WHERE id = ?`)
+      .get(indicatorId) as { id: number; monitor_id: string } | undefined;
+    if (!row) {
+      return NextResponse.json({ error: "Indicator not found" }, { status: 404 });
+    }
+    db.prepare(`UPDATE monitor_indicators SET paused = ? WHERE id = ?`).run(paused, indicatorId);
+    db.prepare(`UPDATE detectors SET enabled = ? WHERE monitor_id = ?`).run(paused ? 0 : 1, row.monitor_id);
+    writeAudit(user, paused ? "PAUSE_INDICATOR" : "RESUME_INDICATOR", "monitor_indicator", row.monitor_id, {
+      indicator_id: indicatorId,
+      paused: !!paused,
+    });
+    return NextResponse.json({ ok: true, paused: !!paused });
+  }
+
+  if (action === "run_detectors") {
+    const { runDetectors } = await import("@/lib/ai/run-detectors");
+    const results = runDetectors({
+      raiseAlarms: body.raiseAlarms !== false,
+      actor: user.name,
+    });
+    writeAudit(user, "RUN_DETECTORS", "monitor", "all", { count: results.length });
+    return NextResponse.json({ ok: true, results });
+  }
+
   if (action === "update_thresholds") {
     const indicatorId = Number(body.indicator_id);
     const warn = Number(body.threshold_warn);

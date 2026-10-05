@@ -246,6 +246,17 @@ const DETECTORS: DetectorDef[] = [
   },
 ];
 
+function detectorProduct(product: string): "CFD" | "CRYPTO" | "CFD+CRYPTO" {
+  const p = product.toUpperCase();
+  if (p.includes("CRYPTO") && p.includes("CFD")) return "CFD+CRYPTO";
+  if (p.includes("CRYPTO") || p === "加密") return "CRYPTO";
+  return "CFD";
+}
+
+function detectorCodeForMonitor(monitorId: string): string {
+  return `DET-${monitorId.replace(/^M2-/, "")}`;
+}
+
 export function seedDetectors(db: Database.Database) {
   // Preserve warn/breach on conflict — synced from Monitor 2.0 threshold edits.
   const upsert = db.prepare(
@@ -272,6 +283,52 @@ export function seedDetectors(db: Database.Database) {
       d.breach_threshold,
       d.comparator
     );
+  }
+
+  // Every Monitor 2.0 indicator is a detector — fill gaps so the pages are one registry.
+  const missing = db
+    .prepare(
+      `SELECT i.monitor_id, i.name, i.domain_code, i.product, i.threshold_warn, i.threshold_breach, i.unit
+       FROM monitor_indicators i
+       LEFT JOIN detectors d ON d.monitor_id = i.monitor_id
+       WHERE d.id IS NULL`
+    )
+    .all() as Array<{
+    monitor_id: string;
+    name: string;
+    domain_code: string;
+    product: string;
+    threshold_warn: number | null;
+    threshold_breach: number | null;
+    unit: string | null;
+  }>;
+  for (const i of missing) {
+    const code = detectorCodeForMonitor(i.monitor_id);
+    const unit = i.unit ? ` (${i.unit})` : "";
+    upsert.run(
+      code,
+      i.name,
+      `Auto-linked detector for ${i.monitor_id}${unit}.`,
+      detectorProduct(i.product),
+      i.domain_code,
+      i.monitor_id,
+      i.threshold_warn ?? 0,
+      i.threshold_breach ?? 0,
+      "gte"
+    );
+  }
+
+  // Keep detector enabled flag aligned with indicator pause state when present.
+  try {
+    db.exec(
+      `UPDATE detectors
+       SET enabled = CASE WHEN COALESCE((
+         SELECT paused FROM monitor_indicators mi WHERE mi.monitor_id = detectors.monitor_id
+       ), 0) = 0 THEN 1 ELSE 0 END
+       WHERE EXISTS (SELECT 1 FROM monitor_indicators mi WHERE mi.monitor_id = detectors.monitor_id)`
+    );
+  } catch {
+    // paused column may not exist yet on first boot ordering
   }
 }
 

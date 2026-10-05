@@ -26,9 +26,9 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
   { category: "Risk", title: "Risk Log Analytics", path: "/admin/risk-log", description: "Timeline of risk events & BU corrections", permission: "monitor.read" },
   { category: "Risk", title: "Market Intelligence", path: "/admin/market-intel", description: "5-min news/social scan + messenger outbox", permission: "monitor.read" },
-  { category: "Risk", title: "Detectors", path: "/admin/detectors", description: "Threshold detectors that raise Monitor alarms", permission: "detectors.read" },
+  { category: "Risk", title: "Detectors (redirect)", path: "/admin/detectors", description: "Redirects to Monitor 2.0 — detectors merged into indicator registry", permission: "detectors.read" },
   { category: "Risk", title: "Realtime Alert & Tracker", path: "/admin/alerts", description: "Expandable Monitor 2.0 tickets + AI RCA, gates, POC/RO, escalation and timeline", permission: "monitor.read" },
-  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Indicator registry, thresholds & sync (alerts/tickets → Realtime Alert)", permission: "monitor.read" },
+  { category: "Risk", title: "Monitor 2.0", path: "/admin/monitor-2", description: "Unified indicator + detector registry, thresholds, sampling runs & sync", permission: "monitor.read" },
   { category: "Risk", title: "Risk Domains", path: "/admin/risk-domains", description: "CFD + Crypto domain catalogue", permission: "monitor.read" },
 
   // AI

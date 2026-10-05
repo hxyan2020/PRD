@@ -7,7 +7,13 @@ export function runDetectors(opts: { raiseAlarms?: boolean; actor?: string } = {
   const db = getDb();
   const raise = opts.raiseAlarms !== false;
   const detectors = db
-    .prepare(`SELECT * FROM detectors WHERE enabled = 1 ORDER BY code`)
+    .prepare(
+      `SELECT d.*
+       FROM detectors d
+       JOIN monitor_indicators i ON i.monitor_id = d.monitor_id
+       WHERE d.enabled = 1 AND COALESCE(i.paused, 0) = 0
+       ORDER BY d.code`
+    )
     .all() as Array<{
     id: number;
     code: string;
@@ -24,8 +30,13 @@ export function runDetectors(opts: { raiseAlarms?: boolean; actor?: string } = {
   for (const det of detectors) {
     const ind = db
       .prepare(`SELECT * FROM monitor_indicators WHERE monitor_id = ?`)
-      .get(det.monitor_id) as { id: number; last_value: number | null; name: string } | undefined;
-    if (!ind) continue;
+      .get(det.monitor_id) as {
+      id: number;
+      last_value: number | null;
+      name: string;
+      paused?: number;
+    } | undefined;
+    if (!ind || ind.paused) continue;
 
     const observed = sampleDetectorValue(ind.last_value, det.monitor_id);
     const status = evaluateDetector(det.comparator, observed, det.warn_threshold, det.breach_threshold);

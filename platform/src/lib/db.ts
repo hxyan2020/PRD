@@ -119,7 +119,8 @@ function createSchema(db: Database.Database) {
       status TEXT NOT NULL DEFAULT 'HEALTHY',
       last_value REAL,
       last_checked_at TEXT,
-      ticket_open_count INTEGER NOT NULL DEFAULT 0
+      ticket_open_count INTEGER NOT NULL DEFAULT 0,
+      paused INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS monitor_alerts (
@@ -820,12 +821,20 @@ function ensurePlatformOwner(db: Database.Database) {
   put.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");
 }
 
+function ensureMonitorIndicatorColumns(db: Database.Database) {
+  const cols = db.prepare(`PRAGMA table_info(monitor_indicators)`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === "paused")) {
+    db.exec(`ALTER TABLE monitor_indicators ADD COLUMN paused INTEGER NOT NULL DEFAULT 0`);
+  }
+}
+
 function ensureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
   ensureSpineSchema(db);
   ensureAiAdminSchema(db);
   syncRoles(db);
   syncDepartments(db);
+  ensureMonitorIndicatorColumns(db);
   ensureExtraMonitors(db);
   seedRagIfEmpty(db);
   seedSkillsIfEmpty(db);

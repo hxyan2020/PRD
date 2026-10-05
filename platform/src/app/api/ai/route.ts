@@ -40,6 +40,12 @@ export async function POST(req: Request) {
 
   if (body.action === "analyze_alert") {
     const bundle = analyzeAlert(Number(body.alert_id), { force: !!body.force });
+    if (!bundle) {
+      return NextResponse.json(
+        { error: "Indicator paused — resume it on Monitor 2.0 or force analysis" },
+        { status: 409 }
+      );
+    }
     return NextResponse.json({ ok: true, ...bundle });
   }
 

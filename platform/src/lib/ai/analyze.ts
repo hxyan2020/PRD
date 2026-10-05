@@ -31,6 +31,7 @@ type IndicatorRow = {
   threshold_breach: number | null;
   unit: string | null;
   last_value: number | null;
+  paused?: number;
 };
 
 function newAnalysisId() {
@@ -119,6 +120,11 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
   const indicator = db
     .prepare(`SELECT * FROM monitor_indicators WHERE id = ?`)
     .get(alert.indicator_id) as IndicatorRow;
+
+  // Paused indicators are excluded from AI analysis unless explicitly forced.
+  if (indicator?.paused && !opts.force) {
+    return null;
+  }
 
   const skillMatch = matchSkill(db, indicator.monitor_id, alert.severity, alert.observed_value);
   const analysisId = newAnalysisId();
@@ -372,7 +378,8 @@ export function analyzeOpenAlerts(opts: { force?: boolean } = {}) {
     .all() as Array<{ id: number }>;
   const results = [];
   for (const a of alerts) {
-    results.push(analyzeAlert(a.id, opts));
+    const bundle = analyzeAlert(a.id, opts);
+    if (bundle) results.push(bundle);
   }
   return results;
 }
@@ -389,6 +396,7 @@ export function createAlarmAndAnalyze(input: {
     .prepare(`SELECT * FROM monitor_indicators WHERE monitor_id = ?`)
     .get(input.monitor_id) as IndicatorRow | undefined;
   if (!ind) throw new Error(`Unknown indicator ${input.monitor_id}`);
+  if (ind.paused) throw new Error(`Indicator ${input.monitor_id} is paused`);
 
   const alertIdStr = `ALT-${Date.now().toString().slice(-6)}`;
   const ticketId = `TKT-${Date.now().toString().slice(-5)}`;

@@ -3,7 +3,6 @@ import {
   Bell,
   BookOpen,
   Building2,
-  CircuitBoard,
   ClipboardCheck,
   Compass,
   Database,
@@ -58,7 +57,6 @@ export const NAV_ITEMS = [
 
   { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
   { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read", group: "monitor" },
-  { href: "/admin/detectors", label: "Detectors", icon: CircuitBoard, permission: "detectors.read", group: "monitor" },
   { href: "/admin/alerts", label: "Realtime Alert & Tracker", icon: Bell, permission: "monitor.read", group: "monitor" },
   { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
   { href: "/admin/risk-log", label: "Risk Log Analytics", icon: ScrollText, permission: "monitor.read", group: "monitor" },

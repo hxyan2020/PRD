@@ -84,8 +84,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   detectors: {
     title: { en: "Detectors", "zh-Hant": "偵測器" },
     subtitle: {
-      en: "First stage of the semi-automated spine — CFD and crypto exchange detectors feeding Monitor alarms and AI RCA.",
-      "zh-Hant": "半自動化脊柱第一階段 — CFD／加密偵測器餵給 Monitor 警報與 AI 根因分析。",
+      en: "Merged into Monitor 2.0 — redirecting.",
+      "zh-Hant": "已合併至 Monitor 2.0 — 重新導向中。",
     },
   },
   alerts: {
@@ -161,8 +161,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "monitor-2": {
     title: { en: "Monitor 2.0 Integration Hub", "zh-Hant": "Monitor 2.0 整合中心" },
     subtitle: {
-      en: "Indicator registry — thresholds, risk scenarios and combinations. Alerts and tickets live under Realtime Alert & Tracker.",
-      "zh-Hant": "指標登錄 — 門檻、風險情境與組合。警報與工單請至「即時警報與追蹤」。",
+      en: "Unified indicator + detector registry — thresholds, sampling runs, risk scenarios and combinations. Alerts live under Realtime Alert & Tracker.",
+      "zh-Hant": "統一指標與偵測器登錄 — 門檻、採樣執行、風險情境與組合。警報請至「即時警報與追蹤」。",
     },
   },
   lark: {

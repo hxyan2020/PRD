@@ -47,10 +47,18 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM monitor_tickets WHERE status NOT IN ('RESOLVED','CLOSED')`
   );
   const riskLog = scalar(db, `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM alert_impacts`);
-  const detectors = scalar(
+  const detectorAlarms = scalar(
     db,
     `SELECT COUNT(*) AS c, MAX(last_run_at) AS ts FROM detectors WHERE last_status IN ('WARN','BREACH')`
   );
+  const monitorBadge = {
+    count: Math.max(tickets.c, detectorAlarms.c),
+    latestAt: tickets.ts && detectorAlarms.ts
+      ? tickets.ts > detectorAlarms.ts
+        ? tickets.ts
+        : detectorAlarms.ts
+      : tickets.ts || detectorAlarms.ts,
+  };
 
   return withFallback({
     "/admin/alerts": { count: alerts.c, latestAt: alerts.ts },
@@ -59,8 +67,7 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     "/admin/interventions": { count: interventions.c, latestAt: interventions.ts },
     "/admin/spine": { count: spine.c, latestAt: spine.ts },
     "/admin/audit": { count: audit.c, latestAt: audit.ts },
-    "/admin/monitor-2": { count: tickets.c, latestAt: tickets.ts },
+    "/admin/monitor-2": monitorBadge,
     "/admin/risk-log": { count: riskLog.c, latestAt: riskLog.ts },
-    "/admin/detectors": { count: detectors.c, latestAt: detectors.ts },
   });
 }
