@@ -34,6 +34,16 @@ const FREQUENCY_BY_ID: Record<string, { en: string; zh: string }> = {
   "M2-CRYPTO-ORACLE": { en: "Every 10 sec", zh: "每 10 秒" },
   "M2-CRYPTO-LIQ": { en: "Every 30 sec", zh: "每 30 秒" },
   "M2-CRYPTO-WALLET": { en: "Every 1 min", zh: "每 1 分鐘" },
+  "M2-PERP-BASIS": { en: "Every 10 sec", zh: "每 10 秒" },
+  "M2-FUNDING-RATE": { en: "Every 1 min", zh: "每 1 分鐘" },
+  "M2-STABLE-EXP": { en: "Every 5 min", zh: "每 5 分鐘" },
+  "M2-MT-DISC": { en: "Every 30 sec", zh: "每 30 秒" },
+  "M2-RECON-BRK": { en: "Every 15 min", zh: "每 15 分鐘" },
+  "M2-KILL-COUNT": { en: "Every 30 sec", zh: "每 30 秒" },
+  "M2-NEWS-GROSS": { en: "Every 5 min pre-event", zh: "事件前每 5 分鐘" },
+  "M2-CHARGEBACK": { en: "Hourly (24h window)", zh: "每小時（24 小時窗）" },
+  "M2-IB-PAYOUT": { en: "Hourly", zh: "每小時" },
+  "M2-COPY-CHURN": { en: "Every 1 min", zh: "每 1 分鐘" },
 };
 
 const DEFAULT_FREQ = { en: "Every 1 min", zh: "每 1 分鐘" };
@@ -75,6 +85,16 @@ const FALLBACK_DESCRIPTION: Record<string, string> = {
   "M2-ARB-026": "Latency-arbitrage toxicity score on CFD flow.",
   "M2-SWAP-027": "Symbols whose swap diverges from the benchmark.",
   "M2-MKT-INTEL": "High-impact market-intelligence hits in the last 5 minutes.",
+  "M2-PERP-BASIS": "Absolute basis between perpetual mark price and the index, in basis points.",
+  "M2-FUNDING-RATE": "Absolute 8-hour perpetual funding rate on major contracts.",
+  "M2-STABLE-EXP": "Mark-to-market USD exposure if house stablecoin inventory depegs.",
+  "M2-MT-DISC": "Share of MT4/MT5/App sessions currently disconnected from trade gateways.",
+  "M2-RECON-BRK": "Open reconciliation breaks between internal ledger and bank/chain.",
+  "M2-KILL-COUNT": "Count of symbols currently halted by kill-switch.",
+  "M2-NEWS-GROSS": "Gross client and house notional sitting into the next Tier-1 macro print.",
+  "M2-CHARGEBACK": "Payment chargebacks and disputes in the last 24 hours.",
+  "M2-IB-PAYOUT": "Anomaly score on introducing-broker rebate payout patterns.",
+  "M2-COPY-CHURN": "Net percentage of copy followers exiting a top provider in one hour.",
 };
 
 function frequencyFor(monitorId: string, unit: string | null | undefined) {

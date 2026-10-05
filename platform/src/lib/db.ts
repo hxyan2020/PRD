@@ -715,6 +715,16 @@ const MONITOR_SEED_ROWS: Array<{
   { monitor_id: "M2-ARB-026", name: "Latency Arb Toxicity Score", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 0.5, breach: 0.7, unit: "score", status: "HEALTHY", last_value: 0.18, tickets: 0 },
   { monitor_id: "M2-SWAP-027", name: "Symbols with Swap vs Benchmark Δ", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 5, breach: 10, unit: "symbols", status: "HEALTHY", last_value: 1, tickets: 0 },
   { monitor_id: "M2-MKT-INTEL", name: "Market Intelligence High-Impact Hits (5m)", domain_code: "MARKET_PRICING", product: "CFD+Crypto", warn: 1, breach: 3, unit: "hits/5m", status: "HEALTHY", last_value: 0, tickets: 0 },
+  { monitor_id: "M2-PERP-BASIS", name: "Perp Mark–Index Basis", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 25, breach: 60, unit: "bps", status: "HEALTHY", last_value: 12, tickets: 0 },
+  { monitor_id: "M2-FUNDING-RATE", name: "Perp Funding Rate Abs (8h)", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 0.15, breach: 0.5, unit: "%", status: "HEALTHY", last_value: 0.04, tickets: 0 },
+  { monitor_id: "M2-STABLE-EXP", name: "Stablecoin Depeg Exposure (USD)", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 500000, breach: 2000000, unit: "USD", status: "HEALTHY", last_value: 120000, tickets: 0 },
+  { monitor_id: "M2-MT-DISC", name: "Trading Platform Disconnect Rate", domain_code: "TECH_INFRA", product: "CFD+Crypto", warn: 1, breach: 5, unit: "%", status: "HEALTHY", last_value: 0.2, tickets: 0 },
+  { monitor_id: "M2-RECON-BRK", name: "Reconciliation Breaks (open)", domain_code: "OPS_PROCESS", product: "CFD+Crypto", warn: 5, breach: 20, unit: "count", status: "HEALTHY", last_value: 2, tickets: 0 },
+  { monitor_id: "M2-KILL-COUNT", name: "Active Symbol Kill-Switches", domain_code: "TECH_INFRA", product: "CFD+Crypto", warn: 2, breach: 5, unit: "symbols", status: "HEALTHY", last_value: 0, tickets: 0 },
+  { monitor_id: "M2-NEWS-GROSS", name: "Gross Notional into Tier-1 News (USD)", domain_code: "MARKET_PRICING", product: "CFD", warn: 50000000, breach: 120000000, unit: "USD", status: "HEALTHY", last_value: 18000000, tickets: 0 },
+  { monitor_id: "M2-CHARGEBACK", name: "Payment Chargebacks (24h)", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 15, breach: 40, unit: "count/24h", status: "HEALTHY", last_value: 6, tickets: 0 },
+  { monitor_id: "M2-IB-PAYOUT", name: "IB Rebate Anomaly Score", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 0.6, breach: 0.8, unit: "score", status: "HEALTHY", last_value: 0.21, tickets: 0 },
+  { monitor_id: "M2-COPY-CHURN", name: "Copy Follower Net Exit (1h)", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 12, breach: 25, unit: "%", status: "HEALTHY", last_value: 3.2, tickets: 0 },
 ];
 
 function ensureExtraMonitors(db: Database.Database) {
