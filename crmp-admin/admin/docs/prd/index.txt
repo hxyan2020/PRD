@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/19e1908ddcfe0b61.css","style"]
-0:{"P":null,"b":"uRxUfk7ftYKYrSyUgtTgM","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/19e1908ddcfe0b61.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","cDHRIKlYMpI4dxKMhqdno",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[7604,["6874","static/chunks/6874-fb0d51e396347711.js","1881","static/chunks/1881-3106b82628f8e0d4.js","8465","static/chunks/8465-4d8c741809632d30.js","4415","static/chunks/4415-89072d76e52845ba.js","7581","static/chunks/app/admin/layout-8aee0c4371a0f422.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-05 16:45:02"},"/admin/messenger":{"count":5,"latestAt":"2026-10-05 16:45:02"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-05T16:45:02.682Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-05 16:45:05"},"/admin/audit":{"count":3,"latestAt":"2026-10-05 16:45:02"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-05 16:45:02"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-05 16:45:02"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-89072d76e52845ba.js","2839","static/chunks/2839-f98d468ef766f254.js","3353","static/chunks/3353-195ef69256abcd05.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-89072d76e52845ba.js","2839","static/chunks/2839-f98d468ef766f254.js","3353","static/chunks/3353-195ef69256abcd05.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],""]
-11:I[8905,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-89072d76e52845ba.js","2839","static/chunks/2839-f98d468ef766f254.js","3353","static/chunks/3353-195ef69256abcd05.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"DocArticleView"]
-12:T4de7,# CRMP Product Requirements Document (PRD)
+:HL["/PRD/crmp-admin/_next/static/css/c2f5108b742067a3.css","style"]
+0:{"P":null,"b":"2N-Xzgc-XDieKnovP5S4w","p":"/PRD/crmp-admin","c":["","admin","docs","prd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["prd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/c2f5108b742067a3.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["prd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","tpZmRLEGwZ9jH8OO34jJA",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","7581","static/chunks/app/admin/layout-70e65aa73614f957.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-05 20:55:22"},"/admin/messenger":{"count":5,"latestAt":"2026-10-05 20:55:22"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-05T20:55:22.290Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":31,"latestAt":"2026-10-06 00:25:22"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-05 20:55:22"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-05 20:55:22"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","9613","static/chunks/app/admin/docs/prd/page-9ddbf275eb051832.js"],"DocArticleView"]
+12:T5791,# CRMP Product Requirements Document (PRD)
 
 **Document ID:** CRMP-PRD-001  
 **Status:** Prototype / Demo-ready  
@@ -53,7 +53,7 @@ graph LR
 
 | # | Goal | Measurable outcome |
 |---|---|---|
-| G1 | One spine | Detect → Analyse → Challenge → Escalate → Intervene → Audit is visible in Spine Log |
+| G1 | One spine | Detect → Analyse → Challenge → Escalate → Intervene → Audit is visible on Admin Home spine (stage ticket counts; Spine Log tab removed) |
 | G2 | Certainty routing | Known skills auto-execute when certain; else RAG + human review |
 | G3 | Dual-AI on high severity | 100% of BREACH/CRITICAL analyses have second-AI challenge |
 | G4 | SoD on AI config | AI Admin changes require maker ≠ checker |
@@ -61,7 +61,7 @@ graph LR
 | G6 | Market awareness | 5-minute intel scan for LP-moving headlines (live on localhost; demo scan on Pages) |
 | G7 | Safe AI boundary | Human-only pages/functions/fields listed and denied to AI |
 | G8 | Complete admin map | Every left-nav group/page in §6.4 is shipped and documented |
-| G9 | Unread awareness | New work on Alerts / Analyses / Messenger / Intel / Interventions / Spine / Audit / Monitor / Risk Log / Detectors shows a badge that clears when viewed |
+| G9 | Unread awareness | New work on Realtime Alert & Tracker / Messenger / Intel / Interventions / home spine / Audit / Monitor 2.0 / Risk Log shows a badge that clears when viewed |
 | G10 | Public demo | GitHub Pages snapshot at `/PRD/crmp-admin/` walks the desk without 404/405 on login, messenger Open-in-admin, or Scan now |
 | G11 | Named owner | Platform owner demo platform owner is a first-class persona; session persists in-browser |
 
@@ -98,7 +98,7 @@ graph LR
 
 ### 5.1 High-severity alarm → dual-AI → messenger close
 1. Monitor indicator breaches (e.g. COPY concentration).  
-2. CRMP creates alert + AI analysis (`SKILL_MATCH` or `RAG_REASONING`).  
+2. CRMP creates alert + AI analysis (`SKILL_MATCH` or `RAG_REASONING`) **and** an always-on **how-to-improve** review (data source, dormant indicator health, missing reasoning, new skill pattern, tighten X→Y, response time) with a chatbot to pull data, add facts, challenge, and regenerate.  
 3. If severity ≥ `ai.second_opinion_severity` (default BREACH), run `crmp-challenger-v0`.  
 4. Risk Analyst opens Demo Messenger thread; **Show evidence**; optionally challenges via chatbot.  
 5. Risk Owner reviews primary + challenger; **Close (accept AI)** or escalates / requests control.
@@ -217,33 +217,36 @@ graph LR
 | FR-06 | Recommended controls + double-confirm → admin ref | Block/halt/etc. produce admin_ref; checker note when required |
 | FR-07 | AI Admin maker ≠ checker | Same user cannot approve own proposal |
 | FR-08 | AI access blocklist (pages/functions/fields) | UI lists human-only targets with reasons |
-| FR-09 | Spine + Audit for AI/messenger/intervention events | Events correlatable within ~1 minute |
-| FR-10 | RBAC for admin surfaces | Viewer blocked from AI Admin operate paths |
+| FR-09 | Home spine + Audit for AI/messenger/intervention events | Events correlatable within ~1 minute; Spine Log tab removed |
+| FR-10 | RBAC for admin surfaces | Viewer blocked from AI Admin operate paths; Roles page editable via `/api/roles` |
 
 ### 6.2 P1 — should ship in prototype
 
 | ID | Requirement | Acceptance sketch |
 |---|---|---|
 | FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
-| FR-12 | Risk Log analytics | Page loads timeline / analytics for risk events |
+| FR-12 | Risk Log analytics | Overview lists closed tracker cards (ticket closed, AI analysis, AI/BU action logs, mandated solution) plus 90-day historical charts (backfilled), timeline / loss vs prevented |
+| FR-24 | Realtime Alert & Tracker ack queue | Open-only queue; grouped AI pipeline; Acknowledge mutates status; closed tickets → Risk Log |
 | FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap toggle works |
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
 | FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs |
 | FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps) |
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
-| FR-23 | Detectors run/toggle | Run all raises alarms + AI RCA; enable/disable persists on localhost |
-| FR-24 | Live Alerts ack queue | OPEN sorted by severity; Acknowledge mutates status |
-| FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG trunk |
+| FR-23 | Monitor 2.0 registry (indicators + detectors) | Run all / Sync / Pause; recent runs; enable-disable persists on localhost (`/admin/detectors` redirects here) |
+| FR-24 | Realtime Alert & Tracker ack queue | Open-only queue; grouped AI pipeline; Acknowledge mutates status; closed tickets → Risk Log |
+| FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG document leaves with deep links |
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
-| FR-27 | Org directory | Departments, Teams, Roles (permission chips), Users (incl. demo platform owner; add/disable on localhost) |
-| FR-28 | Escalation routes + Lark registry | Severity → team → SLA; channel enable; messenger Escalate follows route |
+| FR-27 | Org directory | Combined BU and Teams hub (`/admin/departments`), editable Roles (`/admin/roles` · `/api/roles`), Users (incl. demo platform owner / haixiang.yan@hytechc.com) |
+| FR-28 | Escalation routes + Lark registry | Dimensions × coefficients; ESC-DEFAULT catch-all; skill binds one route code; no Path name column; channel enable |
+| FR-36 | Audit plane split + rollback | `/admin/audit` CRMP logs vs Vantage Markets Admin logs tabs; Roll back restores before-state via `POST /api/audit/rollback` |
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
 | FR-32 | UAT interactive pack | UAT-01…UAT-45 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with owner / supporting BUs |
+| FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -260,31 +263,29 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 
 | Group | Feature | Path | Jobs to be done | Key acceptance |
 |---|---|---|---|---|
-| Overview | Admin Home | `/admin` | Orient; jump via cards | Every card/row is a link; owner visible; messenger CTA |
+| Overview | Admin Home | `/admin` | Orient; jump via cards; spine stage counts | Every card/row is a link; spine viz; messenger CTA |
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
-| Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Handling time, loss vs prevented, loopholes | Summary + category + domain + records |
+| Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |
-| Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Indicators / alerts / tickets | Three tabs; Sync now on localhost |
-| Monitor & risk | Detectors | `/admin/detectors` | Threshold first stage | Run all; toggle; runs list |
-| Monitor & risk | Live Alerts | `/admin/alerts` | Open queue | Ack; severity sort; unread clears |
-| Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership catalogue | Owner + supporting BUs |
-| AI & knowledge | AI Analyses | `/admin/ai-analyses` | RCA + second AI | Simulate COPY/EQ/CRITICAL; detail pack |
-| AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control governance | Seven tabs; maker ≠ checker |
-| AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md page |
-| AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; trunks; Enter |
-| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Search, retrieve top-K, create/retire (manage) |
-| AI & knowledge | Spine Log | `/admin/spine` | End-to-end tape | Stage counts + event list |
-| Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note |
+| Monitor & risk | Monitor 2.0 | `/admin/monitor-2` | Unified indicator + detector registry | Run all / Sync / Pause; recent runs; open alerts link → Realtime Alert & Tracker (no Alerts/Tickets tabs) |
+| Monitor & risk | Detectors (redirect) | `/admin/detectors` | Bookmarks only | Not in left nav — redirects to Monitor 2.0 |
+| Monitor & risk | Realtime Alert & Tracker | `/admin/alerts` | Open queue + grouped AI pipeline | MonitorCode tooltips; open-only; ack; `/admin/ai-analyses` list redirects here |
+| Monitor & risk | Risk Domains | `/admin/risk-domains` | Ownership + P0–P3 scenarios linked to Monitor 2.0 | Expand scenario; click M2-* chip |
+| AI & knowledge | AI Analyses (redirect) | `/admin/ai-analyses` → `/admin/alerts` | List merged into Realtime Alert & Tracker | Grouped pipeline + rank note; detail pack at `/admin/ai-analyses/[id]` |
+| AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag human-gate; maker ≠ checker |
+| AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md; one escalation bind |
+| AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
+| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |
+| Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
 | Response | Demo Messenger | `/admin/messenger` | Chat-native triage | Sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
 | Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
-| Response | Escalation Routes | `/admin/escalation` | Severity → team → SLA | CRUD localhost; used by Escalate |
-| Organisation | Departments | `/admin/departments` | RACI | Four BUs with responsibilities |
-| Organisation | Teams | `/admin/teams` | On-call | Members, Lark chat, rotation |
-| Organisation | Roles & Permissions | `/admin/roles` | RBAC | Permission chips per role |
-| Organisation | Users | `/admin/users` | Directory | demo platform owner present; add/disable manage |
+| Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT; skill binds one path; no Path name column |
+| Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |
+| Organisation | Roles & Permissions | `/admin/roles` | Editable RBAC | `/api/roles`; permission chips + charters |
+| Organisation | Users | `/admin/users` | Directory | demo platform owner / haixiang.yan@hytechc.com; add/disable manage |
 | Platform | Data Sources | `/admin/data-sources` | Feed registry | Category + status |
 | Platform | AI Access Security | `/admin/security/ai-access` | Human-only inventory | Blocklist + allowed + forbidden perms |
-| Platform | Audit Log | `/admin/audit` | Who changed what | Latest mutations listed |
+| Platform | Audit Log | `/admin/audit` | CRMP vs Vantage Markets Admin planes | Two tabs; Roll back via before-state snapshot |
 | Platform | Platform Settings | `/admin/settings` | Flags | Grouped keys; save |
 | Docs | User Guide | `/admin/docs/user-guide` | How to operate | EN + zh-Hant; every screen |
 | Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document |
@@ -292,6 +293,8 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 45 cases, interactive |
 | Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
 | Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | RM-01…15: today / build / done-when |
+| Docs | Open Issues | `/admin/docs/open-issues` | Programme gaps | ETA, BU, dependencies → 2027 |
+| Docs | Progress Tracker | `/admin/docs/progress` | Timeline board | X=issues Y=now→2027 |
 | Docs | URL Catalog | `/admin/docs/urls` | Navigation | Pages + APIs + tables |
 | Shell | Login | `/login` | Named persona | Persist; Pages path; owner default |
 | Shell | Language | cookie `crmp_ui_lang` | EN / 繁中 | Nav + docs switch |
@@ -319,6 +322,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 ## 8. Detailed acceptance criteria (prototype gate)
 
 1. **Skill + challenger:** Simulate COPY BREACH → `SKILL_MATCH` + Second AI panel with ≥1 HIGH improvement when challenged.  
+1b. **How to improve:** The same analysis (any severity) opens a how-to-improve panel with data-source / health / reasoning / skill / X→Y / response-time items and a chatbot that can pull data, add a fact, challenge, regenerate, and mark SATISFIED. Evidence includes an IMPROVEMENT row.  
 2. **Threshold:** WARN-only EQ simulate does **not** create challenge under default BREACH threshold.  
 3. **Messenger path:** Show evidence posts vault; Escalate advances path; Dismiss/Close update statuses.  
 4. **Controls:** Block account → double confirm → admin_ref; checker follow-up when required.  
@@ -411,10 +415,12 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-45). The pack
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-01 | Goals G1–G7, FR-01…16 |
+| 1.6 | 2026-10-05 | Spine on home; BU and Teams; line1/2 AI Admin; propose_rag; ESC-DEFAULT; Open Issues / Progress |
+| 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + rollback; editable Roles; escalation dimensions × coefficients |
 | 1.5 | 2026-10-04 | Journey and SoD flowcharts for every P0 path |
 
-**Owner:** demo platform owner
-13:T4bcb,# CRMP 產品需求文件（PRD）
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
+13:T532e,# CRMP 產品需求文件（PRD）
 
 **文件編號：** CRMP-PRD-001  
 **狀態：** 原型／可示範  
@@ -453,7 +459,7 @@ graph LR
 
 | # | 目標 | 可衡量結果 |
 |---|---|---|
-| G1 | 單一脊柱 | 偵測→分析→挑戰→升級→干預→稽核可在脊柱日誌看見 |
+| G1 | 單一脊柱 | 偵測→分析→挑戰→升級→干預→稽核可在管理首頁脊柱（階段工單計數；脊柱日誌分頁已移除）看見 |
 | G2 | 確定性路由 | 已知技能確定時自動執行；否則 RAG＋人工覆核 |
 | G3 | 高嚴重度雙 AI | BREACH／CRITICAL 分析 100% 附第二 AI 挑戰 |
 | G4 | AI 設定職能分離 | AI Admin 變更必須 Maker ≠ Checker |
@@ -461,7 +467,7 @@ graph LR
 | G6 | 市場感知 | 每五分鐘情報掃描（localhost 即時；Pages 示範掃描） |
 | G7 | 安全 AI 邊界 | 僅限人類的頁／功能／欄位列出並對 AI 拒絕 |
 | G8 | 完整管理地圖 | §6.4 每個左側分組／頁都已交付並寫進文件 |
-| G9 | 未讀感知 | 警報／分析／Messenger／情報／干預／脊柱／稽核／Monitor／風險日誌／偵測器的新工作顯示徽章，打開後清除 |
+| G9 | 未讀感知 | 即時警報與追蹤／Messenger／情報／干預／首頁脊柱／稽核／Monitor 2.0／風險日誌的新工作顯示徽章，打開後清除 |
 | G10 | 公開示範 | GitHub Pages 快照 `/PRD/crmp-admin/` 可走完後台，登入、Messenger「在管理後台開啟」、立即掃描不出現 404／405 |
 | G11 | 具名負責人 | 平台負責人 demo platform owner 為一級角色；工作階段留在瀏覽器 |
 
@@ -498,7 +504,7 @@ graph LR
 
 ### 5.1 高嚴重度警報 → 雙 AI → messenger 結案
 1. Monitor 指標越線（例如 COPY 集中度）。  
-2. CRMP 建立警報＋AI 分析（`SKILL_MATCH` 或 `RAG_REASONING`）。  
+2. CRMP 建立警報＋AI 分析（`SKILL_MATCH` 或 `RAG_REASONING`），並一律產出 **如何改進** 審查（資料源、休眠指標健康、推理缺口、新技能型態、門檻 X→Y、回應時間），可用聊天拉資料、補事實、挑戰、重產。  
 3. 若嚴重度 ≥ `ai.second_opinion_severity`（預設 BREACH），跑 `crmp-challenger-v0`。  
 4. 風險分析師打開示範 Messenger 執行緒；**顯示證據**；可選以聊天挑戰。  
 5. 風險負責人審主 AI＋挑戰者；**結案（接受 AI）** 或升級／要求控制。
@@ -617,7 +623,7 @@ graph LR
 | FR-06 | 建議控制＋雙重確認 → 管理參照 | 封鎖／停交易等產出 admin_ref；必要時 Checker 註記 |
 | FR-07 | AI Admin Maker ≠ Checker | 同一使用者不能核准自己的提案 |
 | FR-08 | AI 存取黑名單（頁／功能／欄位） | UI 列出僅限人類目標與理由 |
-| FR-09 | AI／messenger／干預事件進脊柱＋稽核 | 約 1 分鐘內可對上 |
+| FR-09 | AI／messenger／干預事件進首頁脊柱＋稽核 | 約 1 分鐘內可對上；脊柱日誌分頁已移除 |
 | FR-10 | 管理介面 RBAC | 檢視者被擋在 AI Admin 操作路徑外 |
 
 ### 6.2 P1 — 原型應交付
@@ -625,25 +631,27 @@ graph LR
 | ID | 需求 | 驗收草圖 |
 |---|---|---|
 | FR-11 | 市場情報 5 分鐘掃描＋寄件匣卡片格式 | localhost 可掃；GitHub Pages 用用戶端示範掃描（無 405）。發現／寄件匣／掃描紀錄會更新。 |
-| FR-12 | 風險日誌分析 | 頁面載入風險事件時間軸／分析 |
+| FR-12 | 風險日誌分析 | 總覽含已關閉追蹤卡（工單已關閉、AI、BU／AI 動作、核定方案）＋90 天歷史圖表（已回填）＋時序／損失 vs 防損 |
 | FR-13 | 雙語產品文件（英／繁中） | PRD、TSD、使用手冊、UAT、生態、路線圖可切換 |
 | FR-14 | 響應式管理後台（網頁＋手機） | 390px：抽屜＋ messenger 主從；無整頁溢出 |
 | FR-15 | 豐富技能風險情境／鏈 | 技能看板顯示門檻與升級；**進入** 打開 `/admin/skills/{code}` |
 | FR-16 | 示範導覽網址目錄 | `/admin/docs/urls` 列出管理／API／資料路徑＋公開 Pages 網址 |
 | FR-21 | 管理首頁快照 | 每張卡／列皆為連結（數字、負責人、Messenger、跳轉、部門、最近警報、脊柱步驟） |
 | FR-22 | 每日績效儀表板 | CFD＋加密指標格；localhost 可重新整理 |
-| FR-23 | 偵測器執行／切換 | 全部執行會拉警報＋AI RCA；localhost 可啟用／停用 |
-| FR-24 | 即時警報確認佇列 | OPEN 依嚴重度排序；Acknowledge 變更狀態 |
+| FR-23 | Monitor 2.0 登錄（指標＋偵測器） | 全部執行／同步／暫停；近期執行；localhost 可啟用／停用（`/admin/detectors` 轉址至此） |
+| FR-24 | 即時警報與追蹤確認佇列 | 僅 OPEN；分組 AI 管線；Acknowledge 變更狀態；已關閉 → 風險日誌 |
 | FR-25 | 知識樹視覺化 | SVG 圖＋大綱；領域展開；進入劇本；RAG 幹 |
 | FR-26 | 分組平台設定 | 六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器 |
-| FR-27 | 組織目錄 | 部門、團隊、角色（權限晶片）、使用者（含 demo platform owner；localhost 可新增／停用） |
-| FR-28 | 升級路徑＋Lark 登錄 | 嚴重度 → 團隊 → SLA；頻道啟用；messenger 升級跟隨路徑 |
+| FR-27 | 組織目錄 | BU 與團隊合併中心（`/admin/departments`）、可編輯角色（`/admin/roles` · `/api/roles`）、使用者（含 demo platform owner／haixiang.yan@hytechc.com） |
+| FR-28 | 升級路徑＋Lark 登錄 | 維度 × 係數；ESC-DEFAULT 兜底；技能綁一條路徑代碼；無「路徑」名稱欄；頻道啟用 |
+| FR-36 | 稽核平面分流＋回滾 | `/admin/audit` CRMP 日誌 vs Vantage Markets 管理日誌分頁；回滾經 `POST /api/audit/rollback` 還原變更前快照 |
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
 | FR-32 | UAT 互動包 | UAT-01…UAT-45 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
-| FR-34 | 風險領域目錄 | CFD＋加密領域含負責／支援 BU |
+| FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
+| FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -660,31 +668,29 @@ graph LR
 
 | 分組 | 功能 | 路徑 | 待辦工作 | 關鍵驗收 |
 |---|---|---|---|---|
-| 總覽 | 管理首頁 | `/admin` | 定向；用卡片跳轉 | 每張卡／列皆為連結；看得到負責人；messenger CTA |
+| 總覽 | 管理首頁 | `/admin` | 定向；用卡片跳轉；脊柱階段計數 | 每張卡／列皆為連結；脊柱視覺；messenger CTA |
 | 監控與風險 | 每日績效 | `/admin/dashboard` | 當日 CFD＋加密畫面 | 兩產品格；WARN／BREACH 數 |
 | 監控與風險 | 風險日誌分析 | `/admin/risk-log` | 處理時間、損失 vs 防損、漏洞 | 摘要＋類別＋領域＋紀錄 |
 | 監控與風險 | 市場情報 | `/admin/market-intel` | 會移動 LP 的頭條 | 立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描 |
-| 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 指標／警報／工單 | 三分頁；localhost 立即同步 |
-| 監控與風險 | 偵測器 | `/admin/detectors` | 門檻第一階段 | 全部執行；切換；執行清單 |
-| 監控與風險 | 即時警報 | `/admin/alerts` | 未結佇列 | 確認；嚴重度排序；未讀清除 |
-| 監控與風險 | 風險領域 | `/admin/risk-domains` | 權責目錄 | 負責＋支援 BU |
-| AI 與知識 | AI 分析 | `/admin/ai-analyses` | RCA＋第二 AI | 模擬 COPY／EQ／CRITICAL；明細包 |
-| AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理 | 七個分頁；Maker ≠ Checker |
+| 監控與風險 | Monitor 2.0 | `/admin/monitor-2` | 統一指標＋偵測器登錄 | 全部執行／同步／暫停；近期執行；未結警報連至即時警報與追蹤（無警報／工單分頁） |
+| 監控與風險 | 偵測器（轉址） | `/admin/detectors` | 僅書籤 | 左側無此列 — 轉址 Monitor 2.0 |
+| 監控與風險 | 即時警報與追蹤 | `/admin/alerts` | 未結佇列＋分組 AI 管線 | MonitorCode 提示；僅 OPEN；確認；`/admin/ai-analyses` 列表轉址至此 |
+| 監控與風險 | 風險領域 | `/admin/risk-domains` | 權責＋P0–P3 情境對應 Monitor 2.0 | 展開情境；點 M2-* 晶片 |
+| AI 與知識 | AI 分析（轉址） | `/admin/ai-analyses` → `/admin/alerts` | 列表併入即時警報與追蹤 | 分組管線＋排序說明；明細包在 `/admin/ai-analyses/[id]` |
+| AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理＋第一／第二線卡片 | 七個分頁；propose_rag 人工閘道；Maker ≠ Checker |
 | AI 與知識 | AI 技能 | `/admin/skills` | 劇本＋鏈 | 進入 → SKILL.md 頁 |
 | AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；樹幹；進入 |
-| AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 搜尋、top-K 檢索、新增／退役（管理） |
-| AI 與知識 | 脊柱日誌 | `/admin/spine` | 端到端膠帶 | 階段計數＋事件清單 |
-| 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註 |
+| AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
+| 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註；樣本顯示操作者信箱 |
 | 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流 | 同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟 |
 | 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；localhost 模擬通知 |
-| 應變 | 升級路徑 | `/admin/escalation` | 嚴重度 → 團隊 → SLA | localhost CRUD；升級使用 |
-| 組織 | 部門 | `/admin/departments` | RACI | 四個 BU 含職責 |
-| 組織 | 團隊 | `/admin/teams` | 值班 | 成員、Lark chat、輪值 |
-| 組織 | 角色與權限 | `/admin/roles` | RBAC | 每角色權限晶片 |
-| 組織 | 使用者 | `/admin/users` | 目錄 | demo platform owner 在；管理可新增／停用 |
+| 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
+| 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
+| 組織 | 角色與權限 | `/admin/roles` | 可編輯 RBAC | `/api/roles`；權限晶片＋章程 |
+| 組織 | 使用者 | `/admin/users` | 目錄 | demo platform owner／haixiang.yan@hytechc.com；管理可新增／停用 |
 | 平台 | 資料來源 | `/admin/data-sources` | 來源登錄 | 分類＋狀態 |
 | 平台 | AI 存取安全 | `/admin/security/ai-access` | 僅限人類清單 | 黑名單＋允許＋禁止權限 |
-| 平台 | 稽核日誌 | `/admin/audit` | 誰改了什麼 | 列出最近變更 |
+| 平台 | 稽核日誌 | `/admin/audit` | CRMP／Vantage Markets 管理兩平面 | 兩個分頁；回滾還原變更前快照 |
 | 平台 | 平台設定 | `/admin/settings` | 旗標 | 分組鍵；儲存 |
 | 文件 | 使用手冊 | `/admin/docs/user-guide` | 如何操作 | 英＋繁中；每一畫面 |
 | 文件 | PRD | `/admin/docs/prd` | 為什麼／做什麼／怎麼過 | 本文件 |
@@ -692,6 +698,8 @@ graph LR
 | 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 45 案，可互動 |
 | 文件 | 生態導入評估 | `/admin/docs/ecosystem` | 導入 | 階段、預算、風險 |
 | 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | RM-01…15：今日／要做／完成標準 |
+| 文件 | 開放議題 | `/admin/docs/open-issues` | 計畫缺口 | ETA、BU、依賴 → 2027 |
+| 文件 | 進度追蹤 | `/admin/docs/progress` | 時間軸看板 | X＝議題 Y＝現在→2027 |
 | 文件 | 網址目錄 | `/admin/docs/urls` | 導覽 | 頁＋API＋表 |
 | 殼層 | 登入 | `/login` | 具名角色 | 保持；Pages 路徑；負責人預設 |
 | 殼層 | 語言 | cookie `crmp_ui_lang` | 英／繁中 | 導覽＋文件切換 |
@@ -813,7 +821,10 @@ graph LR
 | 1.0 | 2026-10-01 | 目標 G1–G7、FR-01…16 |
 | 1.5 | 2026-10-04 | 各旅程與職能分離流程圖 |
 
-**負責人：** demo platform owner
+| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、AI 一線／二線、propose_rag、ESC-DEFAULT、開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色；升級維度 × 係數 |
+
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","P0 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P0 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"10"}]]}],["$","div","P1 requirements",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"P1 requirements"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"20"}]]}],["$","div","Product scope",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Product scope"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"CFD + Crypto"}]]}],["$","div","Acceptance",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Acceptance"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"UAT-01…45"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-teal-50 text-teal-900 border-teal-200","children":"CRMP-PRD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / demo-ready"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/tsd","children":"TSD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"PRD","markdownEn":"$12","markdownZh":"$13"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null

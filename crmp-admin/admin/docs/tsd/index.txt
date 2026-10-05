@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/19e1908ddcfe0b61.css","style"]
-0:{"P":null,"b":"uRxUfk7ftYKYrSyUgtTgM","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/19e1908ddcfe0b61.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_e62506 __variable_27f23f antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","17i7Un9z0d2gOuE3GFY-I",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[7604,["6874","static/chunks/6874-fb0d51e396347711.js","1881","static/chunks/1881-3106b82628f8e0d4.js","8465","static/chunks/8465-4d8c741809632d30.js","4415","static/chunks/4415-89072d76e52845ba.js","7581","static/chunks/app/admin/layout-8aee0c4371a0f422.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-05 16:45:02"},"/admin/messenger":{"count":5,"latestAt":"2026-10-05 16:45:02"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-05T16:45:02.682Z"},"/admin/interventions":{"count":3,"latestAt":null},"/admin/spine":{"count":1,"latestAt":"2026-10-05 16:45:05"},"/admin/audit":{"count":3,"latestAt":"2026-10-05 16:45:02"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-05 16:45:02"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-05 16:45:02"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-89072d76e52845ba.js","2839","static/chunks/2839-f98d468ef766f254.js","3353","static/chunks/3353-195ef69256abcd05.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-89072d76e52845ba.js","2839","static/chunks/2839-f98d468ef766f254.js","3353","static/chunks/3353-195ef69256abcd05.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
-11:I[8905,["6874","static/chunks/6874-fb0d51e396347711.js","4415","static/chunks/4415-89072d76e52845ba.js","2839","static/chunks/2839-f98d468ef766f254.js","3353","static/chunks/3353-195ef69256abcd05.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
-12:T77c1,# Vantage CRMP — Technical Specification Design (TSD)
+:HL["/PRD/crmp-admin/_next/static/css/c2f5108b742067a3.css","style"]
+0:{"P":null,"b":"2N-Xzgc-XDieKnovP5S4w","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/c2f5108b742067a3.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","3GbTp0nqjZ6xZjIt-oKpc",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","7581","static/chunks/app/admin/layout-70e65aa73614f957.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-05 20:55:22"},"/admin/messenger":{"count":5,"latestAt":"2026-10-05 20:55:22"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-05T20:55:22.290Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":31,"latestAt":"2026-10-06 00:25:22"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-05 20:55:22"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-05 20:55:22"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
+12:T821a,# Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
 **Version:** 1.5  
@@ -38,11 +38,11 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
-- Review spine logs, risk analytics, market intel, and daily performance
+- Review home spine stage ticket counts, risk analytics, market intel, and daily performance
 
 ### 1.2 In scope (prototype)
 - Admin UI + SQLite persistence
-- Detectors → Alarm → AI RCA → Second opinion → Messenger / Intervention → Spine → Dashboard
+- Monitor 2.0 (indicator + detector registry) → Alarm → AI RCA → Second opinion → Messenger / Intervention → home spine → Dashboard
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
@@ -60,7 +60,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0 plus Detectors] --> Alarm[Alarms]
+  Mon[Monitor 2.0 unified registry] --> Alarm[Alarms]
   Alarm --> Rca[AI RCA Skills or RAG]
   Rca --> Ch[Second AI challenger]
   Ch --> Msg[Demo Messenger]
@@ -92,20 +92,20 @@ graph LR
 
 
 ### 3.1 Runtime spine stages
-1. **Detectors** sample indicators (`/admin/detectors`)
+1. **Monitor 2.0** runs detector sampling on the unified indicator + detector registry (`/admin/monitor-2`; `/admin/detectors` redirects)
 2. **Alarm** opens Monitor alert/ticket
-3. **AI RCA** matches skill or RAG-reasons (`/admin/ai-analyses`)
+3. **AI RCA** matches skill or RAG-reasons (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`)
 4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
 5. **Demo Messenger / Human intervention** triage and gated controls
-6. **Spine logging** records stage transitions (`/admin/spine`)
+6. **Home spine** records stage transitions with ticket counts on Admin Home (`/admin`; `/admin/spine` redirects — Spine Log tab removed)
 
 ```mermaid
 graph TD
-  Detectors[Detectors] --> Alarm[Monitor alarm]
+  M2[Monitor 2.0 registry] --> Alarm[Monitor alarm]
   Alarm --> RCA[AI RCA]
   RCA --> Challenger[Second AI]
   Challenger --> Messenger[Messenger / intervention]
-  Messenger --> Spine[Spine + audit]
+  Messenger --> Spine[Home spine + audit]
 ```
 7. **Daily performance / Risk Log / Market Intel** aggregate outcomes
 
@@ -169,7 +169,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 ## 7. Admin surface map
 
-Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide.
+Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§16) and has an operator how-to in the User Guide.
 
 ### 7.1 Shell (not a nav row)
 
@@ -188,33 +188,33 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 
 | Group | URL | UI / API | Permission | Spec |
 |---|---|---|---|---|
-| Overview | `/admin` | `app/admin/page.tsx` | `admin.access` | §17.1 |
-| Monitor | `/admin/dashboard` | `DailyDashboardView`, `GET/POST /api/dashboard` | `dashboard.read` | §17.2 |
-| Monitor | `/admin/risk-log` | `RiskLogDashboard`, `lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §17.3 |
+| Overview | `/admin` | `app/admin/page.tsx` | `admin.access` | §16.2 |
+| Monitor | `/admin/dashboard` | `DailyDashboardView`, `GET/POST /api/dashboard` | `dashboard.read` | §16.3 |
+| Monitor | `/admin/risk-log` | `RiskLogDashboard`, `lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §16.4 |
 | Monitor | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
-| Monitor | `/admin/monitor-2` | tabs + `MonitorActions`, `/api/monitor` | `monitor.read` / `monitor.operate` | §17.4 |
-| Monitor | `/admin/detectors` | `DetectorsBoard`, `/api/detectors` | `detectors.read` | §17.5 |
-| Monitor | `/admin/alerts` | `AlertsBoard` | `monitor.read` / `monitor.operate` | §17.6 |
-| Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §17.7 |
-| AI | `/admin/ai-analyses` | `AiAnalysesBoard`, `/api/ai` | `ai.read` / `ai.operate` | §9 + §17.8 |
+| Monitor | `/admin/monitor-2` | unified registry + `MonitorActions`, `/api/monitor`, `/api/detectors` | `monitor.read` / `monitor.operate` | §16.5 |
+| Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
+| Monitor | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
+| Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
+| AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
-| AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §17.9 |
-| AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §17.10 |
-| AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §17.11 |
+| AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §16.10 |
+| AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
+| AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §16.12 |
 | Response | `/admin/messenger` | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
-| Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §17.13 |
-| Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §17.15 |
-| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §17.14 |
-| Response | `/admin/spine` | `listSpineEvents` | `spine.read` | §17.12 |
-| Org | `/admin/departments` | department cards | `teams.read` | §17.16 |
-| Org | `/admin/teams` | teams table | `teams.read` | §17.16 |
-| Org | `/admin/roles` | permission chips | `users.read` | §17.16 |
-| Org | `/admin/users` | `UsersManager`, `/api/users` | `users.read` / `users.manage` | §17.16 |
-| Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §17.17 |
-| Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §17.18 |
-| Platform | `/admin/audit` | `audit_logs` last 200 | `audit.read` | §17.19 |
-| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §17.20 |
-| Docs | `/admin/docs/user-guide` · `/admin/docs/prd` · `/admin/docs/tsd` · `/admin/docs/uat` · `/admin/docs/ecosystem` · `/admin/docs/roadmap` · `/admin/docs/urls` | `lib/docs.ts`, `UatChecklistBoard` | `admin.access` | §13 + §16.21 |
+| Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
+| Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §16.15 |
+| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §16.15 |
+| Response | `/admin/spine` | redirects → Admin Home spine counts | `spine.read` | §16.13 |
+| Org | `/admin/departments` | **BU and Teams** combined hub | `teams.read` | §16.16 |
+| Org | `/admin/teams` | redirects → `/admin/departments` | `teams.read` | §16.16 |
+| Org | `/admin/roles` | editable RBAC · `/api/roles` | `users.read` / `users.manage` | §16.16 |
+| Org | `/admin/users` | `UsersManager`, `/api/users` | `users.read` / `users.manage` | §16.16 |
+| Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §16.17 |
+| Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §16.18 |
+| Platform | `/admin/audit` | `AuditBoard` — CRMP / Vantage Markets Admin tabs + Roll back | `audit.read` | §16.19 |
+| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §16.20 |
+| Docs | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`, boards | `admin.access` | §13 + §16.21 |
 | Shell | `SelectionChatbot` (select text → sparkle → chat) | `lib/ai/desk-chat.ts`, `POST /api/ai-chat` | public / `ai.read` | §12 |
 
 Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`.
@@ -604,11 +604,11 @@ Modules not fully specified in §8–§13. Behaviour must match the User Guide h
 - Localhost: `POST /api/auth/login` sets `crmp_session` **and** writes demo session.  
 - Pages / 404/405: skip API, `writeDemoSession` only.  
 - `AdminShell` prefers demo session when `isPublicSnapshot()`. Sign out clears both.  
-- Nav groups from `NAV_GROUPS`. Unread: `AdminShell` + `bumpNavBadge` from Market Intel, Detectors, AI Analyses, Messenger.
+- Nav groups from `NAV_GROUPS`. Unread: `AdminShell` + `bumpNavBadge` from Market Intel, Monitor 2.0, Realtime Alert & Tracker, Messenger.
 
 ### 16.2 Admin Home
 
-SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). Every tile is a `Link`: `StatCard` `href` (with icon + Open), owner → `/login`, messenger hero → `/admin/messenger`, jump grid, department cards to working pages (alerts / interventions / AI analyses / settings), recent alerts to `/admin/alerts#{alert_id}`, spine steps to monitor / alerts / escalation / AI / dashboard. `AlertsBoard` honours the hash.
+SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). Every tile is a `Link`: `StatCard` `href` (with icon + Open), owner → `/login`, messenger hero → `/admin/messenger`, jump grid, department cards to working pages (alerts / interventions / settings), recent alerts to `/admin/alerts#{alert_id}`, spine steps to monitor / alerts / escalation / AI / dashboard. `AlertTrackerBoard` honours the hash.
 
 ### 16.3 Daily performance
 
@@ -618,17 +618,17 @@ SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, 
 
 `getRiskLogDashboard()` aggregates: summary USD/times, `by_category`, `by_domain`, `loopholes`, chronological `records`. Read-only UI (`RiskLogDashboard`).
 
-### 16.5 Monitor 2.0 hub
+### 16.5 Monitor 2.0 hub (unified indicator + detector registry)
 
-Query `tab=indicators|alerts|tickets`. `MonitorActions` `sync_monitor2` / `ack_alert` / `update_ticket`. Setting `monitor2.base_url` displayed.
+Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). APIs: `POST /api/monitor` (`sync_monitor2`, …) and `POST /api/detectors` `{ raiseAlarms: true }` or `{ action: 'toggle' }`. Table `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`.
 
-### 16.6 Detectors
+### 16.6 Detectors URL (redirect)
 
-Table `detectors` + `detector_runs`. `POST /api/detectors` `{ raiseAlarms: true }` or `{ action: 'toggle' }`. Non-HEALTHY results bump nav badges for detectors/alerts/ai-analyses.
+Bookmarks only: `/admin/detectors` → `/admin/monitor-2`. See §16.5 for run/toggle/recent runs.
 
-### 16.7 Live alerts
+### 16.7 Realtime Alert & Tracker
 
-Join `monitor_alerts` × indicators. Sort CRITICAL/BREACH/WARN then time. `ack_alert` when `monitor.operate`.
+`AlertTrackerBoard`: join `monitor_alerts` × indicators. Open cards only; sort CRITICAL/BREACH/WARN then time. **Grouped AI pipeline** controls + rank note; `MonitorCode` tooltips on M2-* codes. `/admin/ai-analyses` list redirects here. `ack_alert` when `monitor.operate`. Closed tickets leave this queue for Risk Log.
 
 ### 16.8 Risk domains
 
@@ -636,7 +636,7 @@ Join `monitor_alerts` × indicators. Sort CRITICAL/BREACH/WARN then time. `ack_a
 
 ### 16.9 AI Analyses list/detail
 
-List: `AiAnalysesBoard` simulate actions `simulate_copy_breach`, EQ drawdown, CRITICAL, `backfill_challenges`. Detail: `/admin/ai-analyses/[id]` evidence + `AiChallengePanel`. See §9.
+List merged into Realtime Alert (`AlertTrackerBoard`) with **grouped AI pipeline controls** + rank note. `MonitorCode` tooltips/links on M2-* codes. Detail: `/admin/ai-analyses/[id]` + `AiChallengePanel`. AI Admin Overview shows **first-line / second-line** cards (`ai.line1.*` / `ai.line2.*`).
 
 ### 16.10 Skills board + SKILL.md page
 
@@ -644,27 +644,27 @@ List: `AiAnalysesBoard` simulate actions `simulate_copy_breach`, EQ drawdown, CR
 
 ### 16.11 Knowledge Tree
 
-`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook (do not use invalid SVG `<Link>`). RAG docs scored from `tags_json` + title. Outline mode is the same graph as a nested list.
+`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook. **RAG documents render as leaves** with deep links to `/admin/rag?doc=…`. `MonitorCode` chips link to `/admin/monitor-2#M2-…`. Outline mode is the same graph as a nested list.
 
 ### 16.12 RAG corpus
 
-`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`, create/update/retire when `rag.manage`. FTS via `reindexRagFts`. Governed creates should prefer AI Admin CR path (§8.7).
+`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`. **Human-gate:** pages/fields AI cannot edit escalate to human — AI service actors cannot POST/PATCH; humans with `rag.manage` or AI Admin `propose_rag` maker-checker. FTS via `reindexRagFts`.
 
-### 16.13 Spine log
+### 16.13 Spine (on Admin Home)
 
-Stages: DETECT, ALARM, AI_RCA, SKILL_EXECUTE, HUMAN_INTERVENTION, RESOLVED, DASHBOARD. 24h `StatCard` counts + last 150 events.
+Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Home via `HomeSpineViz` with **stage ticket counts** (`spineStageCounts`). `/admin/spine` redirects to `/admin`.
 
 ### 16.14 Interventions
 
-`listInterventions()`. Pending: note + Approve/Reject via `decideInterventionAction`. Writes spine + audit. Distinct from AI Admin CRs.
+`listInterventions()`. Pending: note + Approve/Reject via `decideInterventionAction`. Samples show **actioner email**. Writes spine + audit. Distinct from AI Admin CRs.
 
 ### 16.15 Lark + escalation
 
-`lark_channels` + `lark.*` settings. `escalation_routes` join teams + channel. Messenger `escalate` walks primary → secondary → owner → exec using this map.
+`lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
 
 ### 16.16 Organisation
 
-Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), roles (`permissions_json` chips), users (`UsersManager` create/toggle when `users.manage`). Seed includes `PLATFORM_OWNER`.
+**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`). Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
 
 ### 16.17 Data sources
 
@@ -676,7 +676,14 @@ Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), r
 
 ### 16.19 Audit log
 
-`audit_logs` ORDER BY id DESC LIMIT 200. Actor, action, entity, details_json.
+`AuditBoard` partitions `audit_logs` into two tabs via `classifyAuditPlane` (`lib/audit.ts`):
+
+| Tab | Contents |
+|---|---|
+| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
+| **Vantage Markets Admin logs** | Other admin pages — restrict user rights, pull transaction data, triggered Lark messages, BU POC risk-incident responses, settings / org / RAG |
+
+Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
 
 ### 16.20 Platform settings
 
@@ -684,7 +691,7 @@ Departments (responsibilities JSON), teams (Lark chat, on-call, member_count), r
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–h4, tables, lists, mermaid `graph` / `flowchart` / `sequenceDiagram` → SVG (`.doc-diagram`, `lib/docs-mermaid.ts`). UAT: `UatChecklistBoard` + `UAT_CASES` (45). URL catalog: `lib/docs/urls.ts` `PLATFORM_URLS`, `PUBLIC_ADMIN_URL`, `PUBLIC_MESSENGER_URL`.
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts`.
 
 ---
 
@@ -697,10 +704,12 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–
 | 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
 | 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, demo platform owner, Pages login |
 | 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
+| 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
+| 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
 
-**Owner:** demo platform owner  
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
-13:T7311,# Vantage CRMP — 技術規格設計（TSD）
+13:T7ca7,# Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
 **版本：** 1.5  
@@ -724,11 +733,11 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
 - 對高影響動作強制人工關卡
 - 以 Maker/Checker 治理 AI 設定
-- 檢視 Spine、風險分析、市場情報與每日績效
+- 檢視首頁脊柱階段工單計數、風險分析、市場情報與每日績效
 
 ### 1.2 原型範圍內
 - 管理 UI + SQLite 持久化
-- Detectors → Alarm → AI RCA → 第二意見 → Messenger／Intervention → Spine → Dashboard
+- Monitor 2.0（指標＋偵測器登錄）→ Alarm → AI RCA → 第二意見 → Messenger／Intervention → 首頁脊柱 → Dashboard
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
@@ -746,7 +755,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. `markdownToHtml`: headings h1–
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0 加偵測器] --> Alarm[警報]
+  Mon[Monitor 2.0 統一登錄] --> Alarm[警報]
   Alarm --> Rca[AI RCA Skills 或 RAG]
   Rca --> Ch[第二 AI 挑戰者]
   Ch --> Msg[示範 Messenger]
@@ -778,16 +787,16 @@ graph LR
 
 
 ### 3.1 執行期 Spine 階段
-1. **Detectors** 採樣指標（`/admin/detectors`）
+1. **Monitor 2.0** 在統一指標＋偵測器登錄上執行採樣（`/admin/monitor-2`；`/admin/detectors` 轉址）
 2. **Alarm** 建立 Monitor 警報／工單
-3. **AI RCA** 匹配 Skill 或 RAG 推論（`/admin/ai-analyses`）
+3. **AI RCA** 匹配 Skill 或 RAG 推論（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`）
 4. **第二 AI 挑戰者** 於嚴重度達門檻時執行（`crmp-challenger-v0`）
 5. **Demo Messenger／人工介入** 分流與關卡控制
-6. **Spine 日誌** 記錄階段轉換（`/admin/spine`）
+6. **首頁脊柱** 記錄階段轉換與工單計數（`/admin`；`/admin/spine` 轉址 — 脊柱日誌分頁已移除）
 
 ```mermaid
 graph TD
-  Detectors[偵測器] --> Alarm[Monitor 警報]
+  M2[Monitor 2.0 登錄] --> Alarm[Monitor 警報]
   Alarm --> RCA[AI RCA]
   RCA --> Challenger[第二 AI]
   Challenger --> Messenger[Messenger 加干預]
@@ -878,11 +887,11 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/dashboard` | `DailyDashboardView`、`GET/POST /api/dashboard` | `dashboard.read` | §16.3 |
 | 監控 | `/admin/risk-log` | `RiskLogDashboard`、`lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §16.4 |
 | 監控 | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
-| 監控 | `/admin/monitor-2` | 分頁＋`MonitorActions`、`/api/monitor` | `monitor.read`／`monitor.operate` | §16.5 |
-| 監控 | `/admin/detectors` | `DetectorsBoard`、`/api/detectors` | `detectors.read` | §16.6 |
-| 監控 | `/admin/alerts` | `AlertsBoard` | `monitor.read`／`monitor.operate` | §16.7 |
+| 監控 | `/admin/monitor-2` | 統一登錄＋`MonitorActions`、`/api/monitor`、`/api/detectors` | `monitor.read`／`monitor.operate` | §16.5 |
+| 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
+| 監控 | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
-| AI | `/admin/ai-analyses` | `AiAnalysesBoard`、`/api/ai` | `ai.read`／`ai.operate` | §9＋§16.9 |
+| AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
 | AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10＋§16.10 |
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
@@ -891,16 +900,16 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
 | 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
-| 應變 | `/admin/spine` | `listSpineEvents` | `spine.read` | §16.13 |
-| 組織 | `/admin/departments` | 部門卡 | `teams.read` | §16.16 |
-| 組織 | `/admin/teams` | 團隊表 | `teams.read` | §16.16 |
-| 組織 | `/admin/roles` | 權限晶片 | `users.read` | §16.16 |
+| 應變 | `/admin/spine` | 轉址 → 管理首頁脊柱計數 | `spine.read` | §16.13 |
+| 組織 | `/admin/departments` | **BU 與團隊**合併中心 | `teams.read` | §16.16 |
+| 組織 | `/admin/teams` | 轉址 → `/admin/departments` | `teams.read` | §16.16 |
+| 組織 | `/admin/roles` | 可編輯 RBAC · `/api/roles` | `users.read`／`users.manage` | §16.16 |
 | 組織 | `/admin/users` | `UsersManager`、`/api/users` | `users.read`／`users.manage` | §16.16 |
 | 平台 | `/admin/data-sources` | `DataSourcesManager` | `sources.read`／`.manage` | §16.17 |
 | 平台 | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5＋§16.18 |
-| 平台 | `/admin/audit` | `audit_logs` 最近 200 | `audit.read` | §16.19 |
+| 平台 | `/admin/audit` | `AuditBoard` — CRMP／Vantage Markets 管理分頁＋回滾 | `audit.read` | §16.19 |
 | 平台 | `/admin/settings` | `SettingsManager`、`PATCH /api/settings` | `settings.manage` | §16.20 |
-| 文件 | `/admin/docs/user-guide` · `/admin/docs/prd` · `/admin/docs/tsd` · `/admin/docs/uat` · `/admin/docs/ecosystem` · `/admin/docs/roadmap` · `/admin/docs/urls` | `lib/docs.ts`、`UatChecklistBoard` | `admin.access` | §13＋§16.21 |
+| 文件 | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
 | 殼層 | `SelectionChatbot`（劃選文字 → 火花 → 聊天） | `lib/ai/desk-chat.ts`、`POST /api/ai-chat` | 公開／`ai.read` | §12 |
 
 靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-admin'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。
@@ -1286,11 +1295,11 @@ SQLite：`platform/data/vantage_risk.db`。
 - localhost：`POST /api/auth/login` 設 `crmp_session` **並**寫入示範工作階段。  
 - Pages／404／405：略過 API，只 `writeDemoSession`。  
 - `AdminShell` 在 `isPublicSnapshot()` 時優先示範工作階段。登出兩者都清。  
-- 導覽分組來自 `NAV_GROUPS`。未讀：`AdminShell`＋市場情報、偵測器、AI 分析、Messenger 的 `bumpNavBadge`。
+- 導覽分組來自 `NAV_GROUPS`。未讀：`AdminShell`＋市場情報、Monitor 2.0、即時警報與追蹤、Messenger 的 `bumpNavBadge`。
 
 ### 16.2 管理首頁
 
-SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／AI 分析／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`AlertsBoard` 會對 hash 醒目顯示。
+SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`AlertTrackerBoard` 會對 hash 醒目顯示。
 
 ### 16.3 每日績效
 
@@ -1300,17 +1309,17 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 `getRiskLogDashboard()` 彙總：摘要美元／時間、`by_category`、`by_domain`、`loopholes`、時序 `records`。唯讀 UI（`RiskLogDashboard`）。
 
-### 16.5 Monitor 2.0 中心
+### 16.5 Monitor 2.0 中心（統一指標＋偵測器登錄）
 
-查詢 `tab=indicators|alerts|tickets`。`MonitorActions` 的 `sync_monitor2`／`ack_alert`／`update_ticket`。顯示設定 `monitor2.base_url`。
+單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**全部執行**／**同步**／**暫停**；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。API：`POST /api/monitor`、`POST /api/detectors`。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。
 
-### 16.6 偵測器
+### 16.6 偵測器網址（轉址）
 
-表 `detectors`＋`detector_runs`。`POST /api/detectors` `{ raiseAlarms: true }` 或 `{ action: 'toggle' }`。非 HEALTHY 結果會增加偵測器／警報／AI 分析的導覽徽章。
+僅書籤：`/admin/detectors` → `/admin/monitor-2`。執行／切換／近期執行見 §16.5。
 
-### 16.7 即時警報
+### 16.7 即時警報與追蹤
 
-`monitor_alerts` 聯結指標。排序 CRITICAL／BREACH／WARN 再依時間。有 `monitor.operate` 時可 `ack_alert`。
+`AlertTrackerBoard`：`monitor_alerts` 聯結指標。僅未結卡片；排序 CRITICAL／BREACH／WARN 再依時間。**分組 AI 管線**控制＋排序說明；M2-* 為 `MonitorCode` 提示。`/admin/ai-analyses` 列表轉址至此。有 `monitor.operate` 時可 `ack_alert`。已關閉工單離開此佇列進風險日誌。
 
 ### 16.8 風險領域
 
@@ -1318,7 +1327,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.9 AI 分析清單／明細
 
-清單：`AiAnalysesBoard` 模擬動作 `simulate_copy_breach`、EQ 回撤、CRITICAL、`backfill_challenges`。明細：`/admin/ai-analyses/[id]` 證據＋`AiChallengePanel`。見 §9。
+清單併入即時警報與追蹤（`AlertTrackerBoard`）：**分組 AI 管線**＋排序說明；localhost 五顆示範按鈕（分析未結／模擬技能／RAG／危急／補跑第二 AI）。M2-* 為 `MonitorCode` 提示／連結。明細：`/admin/ai-analyses/[id]`＋`AiChallengePanel`。AI 管理總覽有**第一／第二線**卡片（`ai.line1.*`／`ai.line2.*`）。見 §9。
 
 ### 16.10 技能看板＋SKILL.md 頁
 
@@ -1330,23 +1339,23 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.12 RAG 語料
 
-`RagManager`：分類篩選、搜尋、檢索 `GET /api/rag?mode=retrieve&q=&limit=6`，有 `rag.manage` 可新增／更新／退役。FTS 經 `reindexRagFts`。受治理新增應優先走 AI Admin 變更單路徑（§8.7）。
+`RagManager`：分類篩選、搜尋、檢索 `GET /api/rag?mode=retrieve&q=&limit=6`。**人工閘道：** AI 不能編輯的頁／欄位升級給人類 — AI 服務角色不可 POST／PATCH；具 `rag.manage` 的人類或 AI Admin `propose_rag` Maker-Checker。FTS 經 `reindexRagFts`。
 
-### 16.13 脊柱日誌
+### 16.13 脊柱（管理首頁）
 
-階段：DETECT、ALARM、AI_RCA、SKILL_EXECUTE、HUMAN_INTERVENTION、RESOLVED、DASHBOARD。24 小時 `StatCard` 計數＋最近 150 事件。
+專屬脊柱日誌左側分頁已移除。階段 DETECT…DASHBOARD 顯示於管理首頁 `HomeSpineViz`，含**階段工單計數**（`spineStageCounts`）。`/admin/spine` 轉址至 `/admin`。
 
 ### 16.14 干預
 
-`listInterventions()`。待決：備註＋核准／駁回經 `decideInterventionAction`。寫入脊柱＋稽核。與 AI Admin 變更單分開。
+`listInterventions()`。待決：備註＋核准／駁回經 `decideInterventionAction`。樣本顯示**操作者信箱**。寫入脊柱＋稽核。與 AI Admin 變更單分開。
 
 ### 16.15 Lark＋升級
 
-`lark_channels`＋`lark.*` 設定。`escalation_routes` 聯結團隊＋頻道。Messenger `escalate` 依此圖走主 → 次 → 負責人 → 高階。
+`lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
 
 ### 16.16 組織
 
-部門（職責 JSON）、團隊（Lark chat、值班、member_count）、角色（`permissions_json` 晶片）、使用者（有 `users.manage` 時 `UsersManager` 新增／切換）。種子含 `PLATFORM_OWNER`。
+**BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。部門（職責 JSON）嵌套團隊（Lark chat、值班、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
 
 ### 16.17 資料來源
 
@@ -1358,7 +1367,14 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.19 稽核日誌
 
-`audit_logs` ORDER BY id DESC LIMIT 200。執行者、動作、實體、details_json。
+`AuditBoard` 經 `classifyAuditPlane`（`lib/audit.ts`）將 `audit_logs` 分為兩個分頁：
+
+| 分頁 | 內容 |
+|---|---|
+| **CRMP 日誌** | 本 CRMP 管理介面內變更 — 警報、AI、技能、升級、干預、Messenger |
+| **Vantage Markets 管理日誌** | 其他管理頁 — 限制權限、拉取交易、觸發 Lark、BU POC 風險事件回應、設定／組織／RAG |
+
+兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
 
 ### 16.20 平台設定
 
@@ -1380,8 +1396,11 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、demo platform owner 負責人、Pages 登入 |
 | 1.5 | 2026-10-04 | TSD 流程圖與序列圖；mermaid 改 SVG 渲染 |
 
-**負責人：** demo platform owner  
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
+
+| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
 5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.5"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"17"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"TSD","markdownEn":"$12","markdownZh":"$13"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
