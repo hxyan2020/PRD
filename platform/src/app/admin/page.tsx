@@ -20,7 +20,19 @@ import { SignInOwnerCard } from "@/components/SignInOwnerCard";
 import { PUBLIC_MESSENGER_URL } from "@/lib/static-export";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
-import { HomeSpineViz } from "@/components/HomeSpineViz";
+import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
+import { spineStageCounts } from "@/lib/ai/spine";
+
+function latestSpineEvent(db: ReturnType<typeof getDb>, stages: string[]) {
+  const placeholders = stages.map(() => "?").join(",");
+  return db
+    .prepare(
+      `SELECT title, created_at FROM spine_events
+       WHERE stage IN (${placeholders})
+       ORDER BY id DESC LIMIT 1`
+    )
+    .get(...stages) as { title: string; created_at: string } | undefined;
+}
 
 export default async function AdminDashboardPage() {
   const db = getDb();
@@ -42,6 +54,82 @@ export default async function AdminDashboardPage() {
     larkChannels: (db.prepare(`SELECT COUNT(*) AS c FROM lark_channels WHERE enabled = 1`).get() as { c: number }).c,
     routes: (db.prepare(`SELECT COUNT(*) AS c FROM escalation_routes WHERE enabled = 1`).get() as { c: number }).c,
   };
+
+  const stageMap = Object.fromEntries(spineStageCounts(db, 24).map((r) => [r.stage, r.c]));
+  const detectLatest = latestSpineEvent(db, ["DETECT", "ALARM"]);
+  const ticketLatest = latestSpineEvent(db, ["ALARM", "ESCALATION"]);
+  const escLatest = latestSpineEvent(db, ["ESCALATION"]);
+  const rcaLatest = latestSpineEvent(db, ["AI_RCA", "SKILL_EXECUTE", "HUMAN_INTERVENTION"]);
+  const dashLatest = latestSpineEvent(db, ["DASHBOARD", "RESOLVED"]);
+  const aiCount = (db.prepare(`SELECT COUNT(*) AS c FROM ai_analyses`).get() as { c: number }).c;
+
+  const spineSteps: SpineStepStat[] = [
+    {
+      id: "detect",
+      href: "/admin/monitor-2",
+      labelEn: "Detect",
+      labelZh: "偵測",
+      detailEn: "Monitor 2.0 evaluates indicators and emits warning / breach alarms into the spine.",
+      detailZh: "Monitor 2.0 評估指標，並把警告／違規警報送入脊柱。",
+      count: (stageMap.DETECT ?? 0) + (stageMap.ALARM ?? 0),
+      countLabelEn: "events / 24h",
+      countLabelZh: "事件／24h",
+      latestTitle: detectLatest?.title ?? null,
+      latestAt: detectLatest?.created_at ?? null,
+    },
+    {
+      id: "ticket",
+      href: "/admin/alerts",
+      labelEn: "Ticket",
+      labelZh: "工單",
+      detailEn: "CRMP creates / syncs the tracker ticket, attaches evidence, and keeps open alerts visible.",
+      detailZh: "CRMP 建立／同步追蹤工單、附上證據，並讓未結警報可展開查看。",
+      count: counts.openTickets,
+      countLabelEn: "open tickets",
+      countLabelZh: "未結工單",
+      latestTitle: ticketLatest?.title ?? null,
+      latestAt: ticketLatest?.created_at ?? null,
+    },
+    {
+      id: "escalate",
+      href: "/admin/escalation",
+      labelEn: "Escalate",
+      labelZh: "升級",
+      detailEn: "Escalation routes pick the on-call team, Lark channel, and SLA for domain + severity.",
+      detailZh: "升級路徑依領域與嚴重度選定值班團隊、Lark 頻道與 SLA。",
+      count: counts.routes,
+      countLabelEn: "live routes",
+      countLabelZh: "啟用路徑",
+      latestTitle: escLatest?.title ?? null,
+      latestAt: escLatest?.created_at ?? null,
+    },
+    {
+      id: "rca",
+      href: "/admin/alerts",
+      labelEn: "AI RCA",
+      labelZh: "AI 根因",
+      detailEn: "AI drafts root-cause on the same tracker card; humans approve interventions when needed.",
+      detailZh: "AI 在同一張追蹤卡片草擬根因；必要時由人工核准干預。",
+      count: (stageMap.AI_RCA ?? 0) || aiCount,
+      countLabelEn: "RCA / 24h",
+      countLabelZh: "根因／24h",
+      latestTitle: rcaLatest?.title ?? null,
+      latestAt: rcaLatest?.created_at ?? null,
+    },
+    {
+      id: "dashboard",
+      href: "/admin/dashboard",
+      labelEn: "Dashboard",
+      labelZh: "儀表板",
+      detailEn: "Closed outcomes land in the audit trail and the daily CFD / Exchange performance board.",
+      detailZh: "結案結果進入稽核軌跡與每日 CFD／交易所績效儀表板。",
+      count: (stageMap.DASHBOARD ?? 0) + (stageMap.RESOLVED ?? 0),
+      countLabelEn: "closes / 24h",
+      countLabelZh: "結案／24h",
+      latestTitle: dashLatest?.title ?? null,
+      latestAt: dashLatest?.created_at ?? null,
+    },
+  ];
 
   const recentPacks = listAlertTrackerPacks({ limit: 5, order: "recent" });
 
@@ -188,8 +276,9 @@ export default async function AdminDashboardPage() {
         <div className="mt-3">
           <AlertTrackerList packs={recentPacks} canOperate={false} compact />
         </div>
-        <HomeSpineViz />
       </section>
+
+      <HomeSpineViz steps={spineSteps} />
     </div>
   );
 }
