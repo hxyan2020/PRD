@@ -82,25 +82,28 @@ export function ensureRagCorpus(db: Database.Database) {
 }
 
 function seedMacroEventsIfEmpty(db: Database.Database) {
-  const count = db.prepare(`SELECT COUNT(*) AS c FROM external_macro_events`).get() as { c: number };
-  if (count.c > 0) return;
   const insertEvent = db.prepare(
     `INSERT INTO external_macro_events
       (event_code, title, event_time, impact, currencies_json, instruments_json, description, source_url)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(event_code) DO NOTHING`
   );
-  for (const e of MACRO_EVENTS) {
-    insertEvent.run(
-      e.event_code,
-      e.title,
-      e.event_time,
-      e.impact,
-      JSON.stringify(e.currencies),
-      JSON.stringify(e.instruments),
-      e.description,
-      e.source_url
-    );
-  }
+  // Avoid count-then-insert races across Next static export workers.
+  const tx = db.transaction(() => {
+    for (const e of MACRO_EVENTS) {
+      insertEvent.run(
+        e.event_code,
+        e.title,
+        e.event_time,
+        e.impact,
+        JSON.stringify(e.currencies),
+        JSON.stringify(e.instruments),
+        e.description,
+        e.source_url
+      );
+    }
+  });
+  tx();
 }
 
 export function seedRagIfEmpty(db: Database.Database) {

@@ -14,6 +14,8 @@ const nextConfig: NextConfig = {
         assetPrefix: basePath,
         eslint: { ignoreDuringBuilds: true },
         typescript: { ignoreBuildErrors: true },
+        // One worker avoids SQLite seed races (UNIQUE) across prerender workers.
+        experimental: { cpus: 1 },
       }
     : {}),
 };

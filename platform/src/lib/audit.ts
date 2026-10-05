@@ -172,7 +172,10 @@ export function ensureAuditDemoSamples(db: {
     get: (...args: unknown[]) => unknown;
     run: (...args: unknown[]) => unknown;
   };
+  exec?: (sql: string) => unknown;
+  transaction?: (fn: () => void) => () => void;
 }) {
+  const runSeed = () => {
   const marker = db
     .prepare(`SELECT id FROM audit_logs WHERE action = ? AND entity_id = ? LIMIT 1`)
     .get("UPDATE_SETTING", "audit.demo.crmp_flag") as { id: number } | undefined;
@@ -319,4 +322,15 @@ export function ensureAuditDemoSamples(db: {
     }),
     "2026-10-05 12:22:00"
   );
+  };
+
+  try {
+    if (typeof db.transaction === "function") {
+      db.transaction(runSeed)();
+    } else {
+      runSeed();
+    }
+  } catch {
+    // Parallel static-export workers may race on first boot; safe to skip.
+  }
 }
