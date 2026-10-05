@@ -581,6 +581,7 @@
   window.addEventListener("load", function () {
     var q = location.search || "";
     if (q.indexOf("ai-demo") === -1 && q.indexOf("ai-spark") === -1) return;
+    try { document.getElementById("rh-ai-mode").value = "local"; } catch (e) {}
     setTimeout(function () {
       demoSelectPhrase("Perp Account") || demoSelectPhrase("永续账户");
       if (q.indexOf("ai-spark") !== -1) return;
@@ -588,7 +589,16 @@
         var spark = document.getElementById("rh-ai-spark");
         if (spark && spark.style.display !== "none") spark.click();
         else openExplain("Perp Account");
-      }, 500);
-    }, 700);
+        if (q.indexOf("ai-follow") === -1) return;
+        setTimeout(function () {
+          var box = document.getElementById("rh-ai-input");
+          if (!box) return;
+          box.value = currentLang() === "zh"
+            ? "这在 Phase 1 是不是已经上线？2C 用户怎么开永续账户？"
+            : "Is this live in Phase 1, and how do 2C users get a Perp Account?";
+          document.getElementById("rh-ai-form").dispatchEvent(new Event("submit", { cancelable: true }));
+        }, 900);
+      }, 400);
+    }, 500);
   });
 })();

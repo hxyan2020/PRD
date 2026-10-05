@@ -998,11 +998,18 @@ def write_ai_index() -> None:
             "text": "Perp Account: the Phase 1 trading account on V-Exchange. Only USD/USDT may be transferred in (from an MT account or X-fund). Matching, risk/liquidation, and clearing see this account. Product entitlement is perps only (including XAUUSD). Spot, USD margin, options, and wealth flags stay off.",
         },
         {
-            "id": "g-perp-zh",
+            "id": "g-access-en",
+            "lang": "en",
+            "kind": "glossary",
+            "title": "2C via broker",
+            "text": "2C end users cannot self-register on the public site. They enter through a broker (Vantage sub-brands or an external white-label/API broker) after KYC, then receive a Perp Account. SOP ACC-01. Institutional HF/HNW are API-only (ACC-02). MM is ACC-04. A working public Register button is an L3 incident.",
+        },
+        {
+            "id": "g-access-zh",
             "lang": "zh",
             "kind": "glossary",
-            "title": "永续账户",
-            "text": "永续账户（Perp Account）：V-Exchange Phase 1 交易账户。只允许从 MT 账户或 X-fund 转入 USD/USDT。撮合、风控/强平、清结算只看见这个账户。产品权益仅永续（含 XAUUSD）。现货、USD 杠杆、期权、理财开关保持关。",
+            "title": "2C 经经纪商",
+            "text": "2C 终端用户不能在官网自助注册。必须经经纪商（Vantage 子品牌或外部白标/API）KYC 后获得永续账户。SOP ACC-01。机构对冲基金/HNW 仅 API（ACC-02）。做市商 ACC-04。公众注册按钮开着 = L3 事件。",
         },
     ]
     chunks.extend(_section_chunks(en_md, "en"))
