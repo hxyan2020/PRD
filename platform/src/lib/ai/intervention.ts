@@ -173,6 +173,62 @@ export function seedInterventionsIfEmpty(db: Database.Database = getDb()) {
   });
 }
 
+/** Ensure at least two decided interventions exist with actioner emails for the samples UI. */
+export function ensureDecidedInterventionSamples(db: Database.Database = getDb()) {
+  const withEmail = db
+    .prepare(
+      `SELECT COUNT(*) AS c
+       FROM interventions i
+       JOIN users u ON u.id = i.decided_by
+       WHERE i.status IN ('APPROVED','REJECTED') AND u.email IS NOT NULL`
+    )
+    .get() as { c: number };
+  if (withEmail.c >= 2) return;
+
+  const owner = db.prepare(`SELECT id FROM users WHERE email=?`).get("risk.owner@vantagemarkets.com") as
+    | { id: number }
+    | undefined;
+  const analyst = db.prepare(`SELECT id FROM users WHERE email=?`).get("risk.analyst@vantagemarkets.com") as
+    | { id: number }
+    | undefined;
+  if (!owner) return;
+
+  const pending = db
+    .prepare(`SELECT id, skill_run_id FROM interventions WHERE status='PENDING' ORDER BY id DESC LIMIT 2`)
+    .all() as Array<{ id: number; skill_run_id: number }>;
+
+  if (pending[0]) {
+    db.prepare(
+      `UPDATE interventions
+       SET status='APPROVED', decided_by=?, decided_at=?, decision_note=?
+       WHERE id=?`
+    ).run(
+      owner.id,
+      "2026-10-04 14:48:00",
+      "Sample: Risk Owner approved after desk review.",
+      pending[0].id
+    );
+    db.prepare(
+      `UPDATE ai_skill_runs SET status='EXECUTED_AFTER_APPROVAL', decided_by=?, decided_at=?, decision_note=? WHERE id=?`
+    ).run(owner.id, "2026-10-04 14:48:00", "Sample: Risk Owner approved after desk review.", pending[0].skill_run_id);
+  }
+  if (pending[1] && analyst) {
+    db.prepare(
+      `UPDATE interventions
+       SET status='REJECTED', decided_by=?, decided_at=?, decision_note=?
+       WHERE id=?`
+    ).run(
+      analyst.id,
+      "2026-10-03 16:35:00",
+      "Sample: rejected — stale feed, not book risk.",
+      pending[1].id
+    );
+    db.prepare(
+      `UPDATE ai_skill_runs SET status='REJECTED_BY_HUMAN', decided_by=?, decided_at=?, decision_note=? WHERE id=?`
+    ).run(analyst.id, "2026-10-03 16:35:00", "Sample: rejected — stale feed, not book risk.", pending[1].skill_run_id);
+  }
+}
+
 export function syncInterventionsFromSkillRuns() {
   const db = getDb();
   const pending = db
@@ -240,6 +296,7 @@ export function listInterventions(status?: string) {
   const db = getDb();
   seedInterventionsIfEmpty(db);
   syncInterventionsFromSkillRuns();
+  ensureDecidedInterventionSamples(db);
 
   if (status) {
     const rows = db
