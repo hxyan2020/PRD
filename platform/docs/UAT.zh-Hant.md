@@ -13,11 +13,11 @@
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、偵測器、即時警報、風險領域、AI 分析、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
-  Login[UAT-01 登入] --> Mon[Monitor 加偵測器]
+  Login[UAT-01 登入] --> Mon[Monitor 2.0]
   Mon --> AI[技能再第二 AI]
   AI --> Msg[Messenger 迴路]
   Msg --> Gate[Checker 加稽核]
@@ -30,36 +30,36 @@ graph TD
 | 序 | ID | 起始 | 工期 | 嚴重度 | 負責 BU | 依賴 | 標題 | 涵蓋 |
 |---|---|---|---|---|---|---|---|---|
 | 01 | UAT-01 | 0m | 12m | Critical | System + Risk Owner | Seeded users; app running | 登入並確認誰可以做什麼 | Admin Home, Login, Roles |
-| 02 | UAT-02 | 12m | 10m | Critical | Risk | UAT-01; Monitor indicators seeded | Monitor 2.0 示範警報所用指標 | Monitor 2.0, Live Alerts |
-| 03 | UAT-03 | 22m | 15m | Critical | AI + Risk | UAT-02; AI skills seeded | 對跟單違規跑技能劇本 | AI Analyses, AI Skills |
-| 04 | UAT-04 | 37m | 15m | Critical | AI + Risk Owner | UAT-03 or any BREACH/CRITICAL analysis | 嚴重警報由第二個 AI 挑戰第一個 AI | AI Analyses |
-| 05 | UAT-05 | 52m | 10m | High | AI | UAT-02; default second-AI threshold = BREACH | 純 WARN 案例不可呼叫第二 AI | AI Analyses |
-| 06 | UAT-06 | 62m | 12m | High | AI + Risk | RAG corpus seeded | 沒有技能可套時，AI 從知識庫推理 | AI Analyses, RAG Knowledge Base |
-| 07 | UAT-07 | 74m | 12m | High | Risk | UAT-03/04; Demo Messenger | Messenger — 把證據包拉進程式對話 | Demo Messenger, AI Analyses |
-| 08 | UAT-08 | 86m | 10m | High | Risk Analyst + Risk Owner | UAT-07; open messenger thread | Messenger — 在同一則對話挑戰機器人 | Demo Messenger, AI Analyses |
+| 02 | UAT-02 | 12m | 10m | Critical | Risk | UAT-01; Monitor indicators seeded | Monitor 2.0 示範警報所用指標 | Monitor 2.0, Realtime Alert & Tracker |
+| 03 | UAT-03 | 22m | 15m | Critical | AI + Risk | UAT-02; AI skills seeded | 對跟單違規跑技能劇本 | Realtime Alert & Tracker, AI Skills |
+| 04 | UAT-04 | 37m | 15m | Critical | AI + Risk Owner | UAT-03 or any BREACH/CRITICAL analysis | 嚴重警報由第二個 AI 挑戰第一個 AI | Realtime Alert & Tracker |
+| 05 | UAT-05 | 52m | 10m | High | AI | UAT-02; default second-AI threshold = BREACH | 純 WARN 案例不可呼叫第二 AI | Realtime Alert & Tracker |
+| 06 | UAT-06 | 62m | 12m | High | AI + Risk | RAG corpus seeded | 沒有技能可套時，AI 從知識庫推理 | Realtime Alert & Tracker, RAG Knowledge Base |
+| 07 | UAT-07 | 74m | 12m | High | Risk | UAT-03/04; Demo Messenger | Messenger — 把證據包拉進程式對話 | Demo Messenger, Realtime Alert & Tracker |
+| 08 | UAT-08 | 86m | 10m | High | Risk Analyst + Risk Owner | UAT-07; open messenger thread | Messenger — 在同一則對話挑戰機器人 | Demo Messenger, Realtime Alert & Tracker |
 | 09 | UAT-09 | 96m | 10m | High | Risk | Escalation routes seeded; open thread | Messenger — 沿決策鏈升級 | Demo Messenger, Escalation Routes |
-| 10 | UAT-10 | 106m | 8m | Medium | Risk | Separate OPEN WARN thread (do not use the Critical sample) | Messenger — 排除誤報 | Demo Messenger, Live Alerts |
-| 11 | UAT-11 | 114m | 10m | Critical | Risk Owner | UAT-04 dual-AI pack reviewed on a BREACH thread | Messenger — 接受 AI 包後結案 | Demo Messenger, AI Analyses |
+| 10 | UAT-10 | 106m | 8m | Medium | Risk | Separate OPEN WARN thread (do not use the Critical sample) | Messenger — 排除誤報 | Demo Messenger, Realtime Alert & Tracker |
+| 11 | UAT-11 | 114m | 10m | Critical | Risk Owner | UAT-04 dual-AI pack reviewed on a BREACH thread | Messenger — 接受 AI 包後結案 | Demo Messenger, Realtime Alert & Tracker |
 | 12 | UAT-12 | 124m | 15m | Critical | Ops + Risk Owner | OPEN thread; Human Intervention page | Messenger — 提出控制、雙重確認、再送到管理端 | Demo Messenger, Human Intervention |
 | 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — 提出變更的人不能自己核准 | AI Admin, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | 市場情報 —「立即掃描」必須跑完（含 GitHub Pages） | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | 英文與繁中文件都能顯示 | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
-| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, AI Analyses |
-| 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | 本輪 UAT 每個嚴重分析都有第二 AI | AI Analyses |
+| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, Realtime Alert & Tracker |
+| 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | 本輪 UAT 每個嚴重分析都有第二 AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | 技能卡片保持精簡；「進入」打開完整劇本 | AI Skills |
-| 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger「在管理後台開啟」落到真實分析 | Demo Messenger, AI Analyses |
-| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | 左側未讀數字（Messenger 風格） | Admin Home, Live Alerts, Demo Messenger, Market Intelligence |
+| 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger「在管理後台開啟」落到真實分析 | Demo Messenger, AI analysis detail (/admin/ai-analyses/[id]) |
+| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | 左側未讀數字（Messenger 風格） | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence |
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | 知識樹顯示領域、技能與文件如何串接 | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | 繁中覆蓋介面、Messenger、技能與文件 | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
 | 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | 網址目錄列出公開頁（含新頁） | URL Catalog, AI Skills, Knowledge Tree, Demo Messenger |
-| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | 用白話把 Messenger 迴路講一遍 | Demo Messenger, Admin Home spine, Audit Log, AI Analyses |
+| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | 用白話把 Messenger 迴路講一遍 | Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker |
 | 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | 管理首頁 — 卡片、捷徑與平台負責人 | Admin Home, Daily Performance, Users, URL Catalog |
 | 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | 每日績效 — CFD 與 Crypto 桌數字 | Daily Performance |
 | 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | 風險日誌分析 — 實際動到損益／客戶的是什麼 | Risk Log Analytics |
-| 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Live Alerts list | 即時警報 — 讀佇列並確認一則 | Live Alerts |
-| 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | 偵測器 — 跑完整包並看到 WARN／BREACH 落地 | Detectors, Live Alerts, AI Analyses |
+| 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Realtime Alert & Tracker queue | 即時警報與追蹤 — 讀佇列並確認一則 | Realtime Alert & Tracker |
+| 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | Monitor 2.0 — 執行指標並看到 WARN／BREACH 落地 | Monitor 2.0, Realtime Alert & Tracker |
 | 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | 風險領域目錄（含 P0–P3 情境） | Risk Domains |
 | 33 | UAT-33 | 361m | 12m | High | Risk | UAT-07 | Messenger 收件匣 — 頻道、訊息種類與同步 | Demo Messenger |
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — 其他建議動作與取消 | Demo Messenger, Human Intervention |
@@ -99,30 +99,30 @@ graph TD
 ### UAT-02 — Monitor 2.0 示範警報所用指標
 
 - **嚴重度：** Critical · **負責：** Risk · **依賴：** UAT-01; Monitor indicators seeded · **建議：** T+12m / 10m
-- **涵蓋：** Monitor 2.0, Live Alerts
+- **涵蓋：** Monitor 2.0, Realtime Alert & Tracker
 - **為何測：** 若 CFD／Crypto 指標不存在，Messenger 與 AI 根因分析沒有來源。
-- **目的：** 確認股權、保證金、跟單集中度指標存在，且即時警報有資料。
+- **目的：** 確認股權、保證金、跟單集中度指標存在，且即時警報與追蹤有資料。
 
 **步驟**
 
 1. 由左側「監控與風險」開啟 Monitor 2.0。
 2. 找到 M2-EQ-001（股權／回撤）、M2-MRG-014（保證金）、M2-COPY-009（跟單集中度），記下產品與風險領域。
-3. 開啟即時警報。應看到嚴重度、狀態與 Monitor 工單編號的卡片列表。
+3. 開啟即時警報與追蹤。應看到嚴重度、狀態與 Monitor 工單編號的卡片列表。
 4. 記下目前 OPEN（或已確認）筆數，作為後續基線。
 
-**通過：** 股權／保證金／跟單各至少一項指標；即時警報有真實列。
+**通過：** 股權／保證金／跟單各至少一項指標；即時警報與追蹤有真實列。
 **證據：** 三個指標 ID；基線 OPEN 數量。
 
 ### UAT-03 — 對跟單違規跑技能劇本
 
 - **嚴重度：** Critical · **負責：** AI + Risk · **依賴：** UAT-02; AI skills seeded · **建議：** T+22m / 15m
-- **涵蓋：** AI Analyses, AI Skills
+- **涵蓋：** Realtime Alert & Tracker, AI Skills
 - **為何測：** 已知故障型態時，第一個 AI 應照書面技能走，而不是自行編故事。每次新分析也要有可對話的「如何改進」審查。
 - **目的：** 證明 COPY breach 模擬會套用對應技能、存證據，並打開改進聊天機器人。
 
 **步驟**
 
-1. 開啟 AI 分析。
+1. 開啟即時警報與追蹤。
 2. 點「Simulate COPY breach (skill path)」，等到新分析打開或列表出現新列。
 3. 詳情頁模式徽章應為 SKILL_MATCH（代表使用已知劇本，而非自由推理），信心接近確定。
 4. 證據庫至少要有 SKILL（跑了哪份劇本）與 MONITOR（警報快照）。
@@ -136,13 +136,13 @@ graph TD
 ### UAT-04 — 嚴重警報由第二個 AI 挑戰第一個 AI
 
 - **嚴重度：** Critical · **負責：** AI + Risk Owner · **依賴：** UAT-03 or any BREACH/CRITICAL analysis · **建議：** T+37m / 15m
-- **涵蓋：** AI Analyses
+- **涵蓋：** Realtime Alert & Tracker
 - **為何測：** 單一模型可能過度自信。BREACH／CRITICAL 需要獨立第二意見，人類才能接受敘事。
 - **目的：** 打開高嚴重度分析，確認挑戰面板、結論與至少一項高優先改進。
 
 **步驟**
 
-1. 在 AI 分析開啟 BREACH 或 CRITICAL（或點 Simulate CRITICAL）。
+1. 在即時警報與追蹤開啟 BREACH 或 CRITICAL（或點 Simulate CRITICAL）。
 2. 列表列上應有「2nd AI」徽章與 AGREE／PARTIAL／DISAGREE 等結論。
 3. 詳情頁找到「第二 AI 挑戰者」面板（crmp-challenger-v0）。
 4. 用白話讀完：同意什麼、懷疑什麼、改進建議。若為 PARTIAL／DISAGREE，應標示需要人工覆核。
@@ -154,13 +154,13 @@ graph TD
 ### UAT-05 — 純 WARN 案例不可呼叫第二 AI
 
 - **嚴重度：** High · **負責：** AI · **依賴：** UAT-02; default second-AI threshold = BREACH · **建議：** T+52m / 10m
-- **涵蓋：** AI Analyses
+- **涵蓋：** Realtime Alert & Tracker
 - **為何測：** 第二 AI 耗時。普通預警不應觸發，以免操作者被灌爆。
 - **目的：** 模擬 WARN 股權／回撤路徑，確認挑戰者沒有執行。
 
 **步驟**
 
-1. 於 AI 分析點「Simulate EQ drawdown (RAG path)」（WARN）。
+1. 於即時警報與追蹤點「Simulate EQ drawdown (RAG path)」（WARN）。
 2. 打開新分析。
 3. 第二 AI 面板應顯示未執行（或沒有 2nd AI 結論徽章）。
 4. 此 WARN 樣本證據庫不應有 CHALLENGER 列。
@@ -171,7 +171,7 @@ graph TD
 ### UAT-06 — 沒有技能可套時，AI 從知識庫推理
 
 - **嚴重度：** High · **負責：** AI + Risk · **依賴：** RAG corpus seeded · **建議：** T+62m / 12m
-- **涵蓋：** AI Analyses, RAG Knowledge Base
+- **涵蓋：** Realtime Alert & Tracker, RAG Knowledge Base
 - **為何測：** 不是每則警報都有現成劇本。仍需要可讀說明與來源。
 - **目的：** 跑 RAG 路徑，確認模式為 RAG_REASONING，且有說明與證據。
 
@@ -188,7 +188,7 @@ graph TD
 ### UAT-07 — Messenger — 把證據包拉進程式對話
 
 - **嚴重度：** High · **負責：** Risk · **依賴：** UAT-03/04; Demo Messenger · **建議：** T+74m / 12m
-- **涵蓋：** Demo Messenger, AI Analyses
+- **涵蓋：** Demo Messenger, Realtime Alert & Tracker
 - **為何測：** 風險人員不應離開對話才能看 AI 為何這樣說。
 - **目的：** 在示範 Messenger 把證據庫貼進同一則對話，並證明管理連結可用。
 
@@ -206,7 +206,7 @@ graph TD
 ### UAT-08 — Messenger — 在同一則對話挑戰機器人
 
 - **嚴重度：** High · **負責：** Risk Analyst + Risk Owner · **依賴：** UAT-07; open messenger thread · **建議：** T+86m / 10m
-- **涵蓋：** Demo Messenger, AI Analyses
+- **涵蓋：** Demo Messenger, Realtime Alert & Tracker
 - **為何測：** 操作者必須能說「我不同意」，而不另外開工單系統。
 - **目的：** 在輸入框提出挑戰，確認機器人回覆並標記人工覆核。
 
@@ -240,7 +240,7 @@ graph TD
 ### UAT-10 — Messenger — 排除誤報
 
 - **嚴重度：** Medium · **負責：** Risk · **依賴：** Separate OPEN WARN thread (do not use the Critical sample) · **建議：** T+106m / 8m
-- **涵蓋：** Demo Messenger, Live Alerts
+- **涵蓋：** Demo Messenger, Realtime Alert & Tracker
 - **為何測：** 雜訊必須一鍵關掉並留稽核，真正違規才不會被淹沒。
 - **目的：** 在可拋棄的 WARN 對話排除誤報，確認對話與關聯警報都關閉。
 
@@ -249,7 +249,7 @@ graph TD
 1. 選另一則 OPEN WARN（不要用稍後還要用的 BREACH）。
 2. 點「排除（誤報）」。
 3. 狀態變為 DISMISSED；顯示證據／升級／排除／結案按鈕應停用。
-4. 本機可到即時警報確認關聯警報已 CLOSED；公開快照則以 SYSTEM 氣泡寫明已關閉即可。
+4. 本機可到即時警報與追蹤確認關聯警報已 CLOSED；公開快照則以 SYSTEM 氣泡寫明已關閉即可。
 
 **通過：** 對話 DISMISSED；警報關閉或 SYSTEM 已說明；本機有稽核。
 **證據：** 前後 thread id；本機 Audit MESSENGER_DISMISS。
@@ -257,7 +257,7 @@ graph TD
 ### UAT-11 — Messenger — 接受 AI 包後結案
 
 - **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-04 dual-AI pack reviewed on a BREACH thread · **建議：** T+114m / 10m
-- **涵蓋：** Demo Messenger, AI Analyses
+- **涵蓋：** Demo Messenger, Realtime Alert & Tracker
 - **為何測：** 風險負責人需要乾淨的「我們接受此說明」按鈕，且不可刪掉證據。
 - **目的：** 對已覆核的 BREACH 結案，並確認 AI 分析仍保留挑戰包。
 
@@ -381,7 +381,7 @@ graph TD
 ### UAT-18 — 手機寬度煙測（約 390px）
 
 - **嚴重度：** Medium · **負責：** All · **依賴：** Responsive admin shell · **建議：** T+206m / 15m
-- **涵蓋：** Admin Home, Demo Messenger, AI Analyses
+- **涵蓋：** Admin Home, Demo Messenger, Realtime Alert & Tracker
 - **為何測：** 值班人員會用手機開 Messenger。溢出或抽屜壞掉會讓桌面不可用。
 - **目的：** 約 390px 寬時能開選單、走 Messenger 列表→對話→返回，並讀 AI 分析。
 
@@ -398,13 +398,13 @@ graph TD
 ### UAT-19 — 本輪 UAT 每個嚴重分析都有第二 AI
 
 - **嚴重度：** Medium · **負責：** Risk Owner · **依賴：** UAT-04 samples in window · **建議：** T+221m / 10m
-- **涵蓋：** AI Analyses
+- **涵蓋：** Realtime Alert & Tracker
 - **為何測：** 即使昨天的樣本沒問題，這一輪只要有一則未挑戰的 BREACH 就不算過關。
 - **目的：** 清點本輪 BREACH／CRITICAL，證明皆有挑戰結論（允許回補）。
 
 **步驟**
 
-1. 在 AI 分析列出本輪出現的 BREACH／CRITICAL。
+1. 在即時警報與追蹤列出本輪出現的 BREACH／CRITICAL。
 2. 每列須有非 pending 的 2nd AI 徽章。
 3. 若有 pending，點 Backfill 2nd AI challenges 後再查。
 
@@ -431,7 +431,7 @@ graph TD
 ### UAT-21 — Messenger「在管理後台開啟」落到真實分析
 
 - **嚴重度：** High · **負責：** Risk · **依賴：** UAT-07; public Pages URL · **建議：** T+243m / 8m
-- **涵蓋：** Demo Messenger, AI Analyses
+- **涵蓋：** Demo Messenger, AI analysis detail (/admin/ai-analyses/[id])
 - **為何測：** 上次公開快照就是這裡 404——操作者看不到 RCA 與第二 AI。
 - **目的：** 從 BREACH 對話跟著開啟，看到說明、證據與挑戰者。
 
@@ -448,15 +448,15 @@ graph TD
 ### UAT-22 — 左側未讀數字（Messenger 風格）
 
 - **嚴重度：** Medium · **負責：** All · **依賴：** Left nav shell · **建議：** T+251m / 8m
-- **涵蓋：** Admin Home, Live Alerts, Demo Messenger, Market Intelligence
+- **涵蓋：** Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence
 - **為何測：** 操作者不應每個分頁都打開才知道有新事件。
 - **目的：** 有新／未處理工作的分頁顯示玫瑰色數字；打開後只清該分頁。
 
 **步驟**
 
 1. 強制重新整理管理首頁，或用無痕視窗，清掉「已看過」標記。
-2. 即時警報、AI 分析、示範 Messenger、市場情報等有未處理工作的分頁應出現紅色數字。
-3. 開啟即時警報 — 該數字歸零，其他仍在。
+2. 即時警報與追蹤、示範 Messenger、市場情報等有未處理工作的分頁應出現紅色數字。
+3. 開啟即時警報與追蹤 — 該數字歸零，其他仍在。
 4. 開啟示範 Messenger — 該數字歸零。
 5. 離開再回來：已看過的維持零，除非掃描／分析／同步又產生新工作。
 
@@ -490,7 +490,7 @@ graph TD
 **步驟**
 
 1. 於左側點 繁中。
-2. 走訪首頁、即時警報、AI 技能、技能詳情、Messenger、市場情報、知識樹、本 UAT、PRD。
+2. 走訪首頁、即時警報與追蹤、AI 技能、技能詳情、Messenger、市場情報、知識樹、本 UAT、PRD。
 3. 標題／副標與主要按鈕應為繁中。
 4. 文件若有第二切換，點繁體中文後內文須切換。
 5. 改回 EN，英文須恢復且無重整迴圈。
@@ -518,7 +518,7 @@ graph TD
 ### UAT-26 — 用白話把 Messenger 迴路講一遍
 
 - **嚴重度：** Medium · **負責：** Risk + System · **依賴：** Messenger + alerts + spine · **建議：** T+289m / 12m
-- **涵蓋：** Demo Messenger, Admin Home spine, Audit Log, AI Analyses
+- **涵蓋：** Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker
 - **為何測：** 若風險負責人不能口述警報→收件匣→AI 包→控制→稽核，示範就只是截圖。
 - **目的：** 只用種子示範，指著每個氣泡，再到脊柱與稽核找到同一案件。
 
@@ -544,8 +544,8 @@ graph TD
 
 1. 開啟管理首頁。
 2. 首頁面板與左側頁尾可見平台負責人 demo platform owner／haixiang.yan@hytechc.com。
-3. 點這些數字卡並確認目的地：使用者、團隊、資料來源、風險領域、即時警報、Monitor 2.0、Lark 頻道、升級路徑。
-4. 點一張部門卡（應開該組工作頁）、一列最近警報（即時警報，該筆醒目）、一塊跳轉磁磚。頁首捷徑：示範 Messenger、使用手冊、每日績效。皆不可 404。
+3. 點這些數字卡並確認目的地：使用者、BU 與團隊、資料來源、風險領域、即時警報與追蹤、Monitor 2.0、Lark 頻道、升級路徑。
+4. 點一張部門卡（應開該組工作頁）、一列最近警報（即時警報與追蹤，該筆醒目）、一塊跳轉磁磚。頁首捷徑：示範 Messenger、使用手冊、每日績效。皆不可 404。
 5. 若仍是公開訪客，應看到訪客橫幅與登入；登入後應改變。
 
 **通過：** 宣稱有頁面的卡片／捷徑都能打開；負責人資訊可見。
@@ -582,21 +582,21 @@ graph TD
 2. 應看到摘要磚、**約 90 天的歷史圖表**（警報／未結帳本、損失 vs 防損、處理延遲 — 不是單日尖峰）、領域長條，以及「已關閉警報與工單」列表，不是空白頁。
 3. 可選開「歷史圖表」分頁確認同一序列。
 4. 展開一張已結卡片。記下：工單已關閉狀態、AI 分析摘要、至少一筆 AI 或 BU 動作紀錄，以及核定最終方案（誰核定）。
-5. 確認同一個警報編號不再出現在即時警報的未結佇列。
+5. 確認同一個警報編號不再出現在即時警報與追蹤的未結佇列。
 
 **通過：** 總覽有約 90 天圖表，以及已結追蹤卡片（工單已關閉、AI、動作紀錄與核定方案）；至少一張能用白話解釋。
 **證據：** 風險日誌總覽截圖（含歷史圖表），並展開一張已結卡片。
 
-### UAT-30 — 即時警報 — 讀佇列並確認一則
+### UAT-30 — 即時警報與追蹤 — 讀佇列並確認一則
 
-- **嚴重度：** High · **負責：** Risk · **依賴：** UAT-02; Live Alerts list · **建議：** T+331m / 10m
-- **涵蓋：** Live Alerts
+- **嚴重度：** High · **負責：** Risk · **依賴：** UAT-02; Realtime Alert & Tracker queue · **建議：** T+331m / 10m
+- **涵蓋：** Realtime Alert & Tracker
 - **為何測：** 營運佇列不是 Messenger。桌上必須有人能在後台確認警報。
 - **目的：** 找到 OPEN 警報，讀 Monitor 與工單編號；本機按確認，或說明 Pages 為何唯讀。
 
 **步驟**
 
-1. 開啟即時警報。應只看到仍未結的卡片，含嚴重度、狀態、產品、領域、Monitor id、工單編號與短訊。已關閉工單不可出現在此。
+1. 開啟即時警報與追蹤。應只看到仍未結的卡片，含嚴重度、狀態、產品、領域、Monitor id、工單編號與短訊。已關閉工單不可出現在此。
 2. 找一則 OPEN，大聲讀出：壞了什麼、哪個指標。
 3. 確認可見「至風險日誌分析查看已關閉警報」按鈕／連結，並會打開 `/admin/risk-log`。
 4. 本機點 Acknowledge，重新整理後狀態應變 ACKNOWLEDGED，該列按鈕消失。
@@ -605,23 +605,23 @@ graph TD
 **通過：** 未結佇列可讀。已結日誌按鈕可到風險日誌。本機確認會改狀態。Pages 仍顯示種子未結警報。
 **證據：** 本機確認前後截圖，或 Pages 種子佇列。
 
-### UAT-31 — 偵測器 — 跑完整包並看到 WARN／BREACH 落地
+### UAT-31 — Monitor 2.0 — 執行指標並看到 WARN／BREACH 落地
 
 - **嚴重度：** High · **負責：** Risk + AI · **依賴：** UAT-02; detectors seeded · **建議：** T+341m / 12m
-- **涵蓋：** Detectors, Live Alerts, AI Analyses
-- **為何測：** 偵測器是 Monitor 背後的排程規則。「全部執行」沒反應，示範就無法產生新工作。
-- **目的：** 開啟偵測器、全部執行，確認上次狀態；規則觸發時有新警報或分析。
+- **涵蓋：** Monitor 2.0, Realtime Alert & Tracker
+- **為何測：** 偵測器已合併至 Monitor 2.0。「執行全部指標」沒反應，示範就無法產生新工作。
+- **目的：** 開啟 Monitor 2.0、執行全部指標，確認上次狀態；規則觸發時有新警報或分析。
 
 **步驟**
 
-1. 開啟偵測器，應有規則表（代碼、產品、上次狀態、上次時間）。
-2. 本機點「全部執行偵測器」，等到重新整理或成功列。
-3. 列上應有 OK／WARN／BREACH，不可全空白。
-4. 若有 WARN／BREACH，到即時警報與／或 AI 分析找對應新列；左側未讀數字也可能增加。
+1. 開啟 Monitor 2.0（`/admin/detectors` 會導向此頁），應有統一指標表（偵測器代碼、門檻、暫停）。
+2. 本機點「執行全部指標」，等到重新整理或成功列。
+3. 列上應有 OK／WARN／BREACH，不可全空白；下方應有最近採樣紀錄。
+4. 若有 WARN／BREACH，到即時警報與追蹤找對應新列；左側未讀數字也可能增加。
 5. Pages 上可能唯讀。登錄有資料且控制項有說明即過；空白頁失敗。
 
-**通過：** 登錄有資料；本機執行完成；若有 WARN／BREACH 會出現在下游。
-**證據：** 偵測器表截圖；若觸發則附下游警報／分析。
+**通過：** 指標登錄有資料；本機執行完成；若有 WARN／BREACH 會出現在下游。
+**證據：** Monitor 2.0 表截圖；若觸發則附下游警報／分析。
 
 ### UAT-32 — 風險領域目錄（含 P0–P3 情境）
 
@@ -774,7 +774,7 @@ graph TD
 
 1. 開啟平台設定。
 2. 應看到分節標題，不是一張無差別表。預期分組含平台身分、Monitor 2.0、AI 分析、市場情報、Messenger／Lark、升級與 SLA。
-3. 在 AI 分析找到第二 AI 嚴重度門檻（ai.second_opinion_severity），預設 BREACH（UAT-05 的開關）；UAT-13 若改過則另計。
+3. 在即時警報與追蹤找到第二 AI 嚴重度門檻（ai.second_opinion_severity），預設 BREACH（UAT-05 的開關）；UAT-13 若改過則另計。
 4. 不要存不安全值。若有改，請還原。
 
 **通過：** 設定以具名分組呈現；找得到第二 AI 門檻鍵。

@@ -13,11 +13,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Detectors, Live Alerts, Risk Domains, AI Analyses, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
-  Login[UAT-01 login] --> Mon[Monitor plus detectors]
+  Login[UAT-01 login] --> Mon[Monitor 2.0]
   Mon --> AI[Skill then second AI]
   AI --> Msg[Messenger loop]
   Msg --> Gate[Checker plus audit]
@@ -30,36 +30,36 @@ graph TD
 | Seq | ID | T+ start | Dur | Severity | Responsible BU | Dependency | Title | Covers |
 |---|---|---|---|---|---|---|---|---|
 | 01 | UAT-01 | 0m | 12m | Critical | System + Risk Owner | Seeded users; app running | Sign in and check who is allowed to do what | Admin Home, Login, Roles |
-| 02 | UAT-02 | 12m | 10m | Critical | Risk | UAT-01; Monitor indicators seeded | Monitor 2.0 indicators that feed the demo alarms | Monitor 2.0, Live Alerts |
-| 03 | UAT-03 | 22m | 15m | Critical | AI + Risk | UAT-02; AI skills seeded | Run a skill playbook on a copy-trading breach | AI Analyses, AI Skills |
-| 04 | UAT-04 | 37m | 15m | Critical | AI + Risk Owner | UAT-03 or any BREACH/CRITICAL analysis | Second AI challenges the first AI on serious alarms | AI Analyses |
-| 05 | UAT-05 | 52m | 10m | High | AI | UAT-02; default second-AI threshold = BREACH | A WARN-only case must not call the second AI | AI Analyses |
-| 06 | UAT-06 | 62m | 12m | High | AI + Risk | RAG corpus seeded | When no skill fits, the AI reasons from the knowledge base | AI Analyses, RAG Knowledge Base |
-| 07 | UAT-07 | 74m | 12m | High | Risk | UAT-03/04; Demo Messenger | Messenger — pull the evidence pack into the chat | Demo Messenger, AI Analyses |
-| 08 | UAT-08 | 86m | 10m | High | Risk Analyst + Risk Owner | UAT-07; open messenger thread | Messenger — argue with the bot in the same thread | Demo Messenger, AI Analyses |
+| 02 | UAT-02 | 12m | 10m | Critical | Risk | UAT-01; Monitor indicators seeded | Monitor 2.0 indicators that feed the demo alarms | Monitor 2.0, Realtime Alert & Tracker |
+| 03 | UAT-03 | 22m | 15m | Critical | AI + Risk | UAT-02; AI skills seeded | Run a skill playbook on a copy-trading breach | Realtime Alert & Tracker, AI Skills |
+| 04 | UAT-04 | 37m | 15m | Critical | AI + Risk Owner | UAT-03 or any BREACH/CRITICAL analysis | Second AI challenges the first AI on serious alarms | Realtime Alert & Tracker |
+| 05 | UAT-05 | 52m | 10m | High | AI | UAT-02; default second-AI threshold = BREACH | A WARN-only case must not call the second AI | Realtime Alert & Tracker |
+| 06 | UAT-06 | 62m | 12m | High | AI + Risk | RAG corpus seeded | When no skill fits, the AI reasons from the knowledge base | Realtime Alert & Tracker, RAG Knowledge Base |
+| 07 | UAT-07 | 74m | 12m | High | Risk | UAT-03/04; Demo Messenger | Messenger — pull the evidence pack into the chat | Demo Messenger, Realtime Alert & Tracker |
+| 08 | UAT-08 | 86m | 10m | High | Risk Analyst + Risk Owner | UAT-07; open messenger thread | Messenger — argue with the bot in the same thread | Demo Messenger, Realtime Alert & Tracker |
 | 09 | UAT-09 | 96m | 10m | High | Risk | Escalation routes seeded; open thread | Messenger — escalate up the decision chain | Demo Messenger, Escalation Routes |
-| 10 | UAT-10 | 106m | 8m | Medium | Risk | Separate OPEN WARN thread (do not use the Critical sample) | Messenger — dismiss a false alarm | Demo Messenger, Live Alerts |
-| 11 | UAT-11 | 114m | 10m | Critical | Risk Owner | UAT-04 dual-AI pack reviewed on a BREACH thread | Messenger — close the case after accepting the AI pack | Demo Messenger, AI Analyses |
+| 10 | UAT-10 | 106m | 8m | Medium | Risk | Separate OPEN WARN thread (do not use the Critical sample) | Messenger — dismiss a false alarm | Demo Messenger, Realtime Alert & Tracker |
+| 11 | UAT-11 | 114m | 10m | Critical | Risk Owner | UAT-04 dual-AI pack reviewed on a BREACH thread | Messenger — close the case after accepting the AI pack | Demo Messenger, Realtime Alert & Tracker |
 | 12 | UAT-12 | 124m | 15m | Critical | Ops + Risk Owner | OPEN thread; Human Intervention page | Messenger — propose a control, double-check, then send to admin | Demo Messenger, Human Intervention |
 | 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — the person who proposes a change cannot approve it | AI Admin, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | Market Intelligence — Scan now must finish (including on GitHub Pages) | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI must not be allowed near human-only data | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and Spine tell the same story as messenger | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | English and Traditional Chinese documentation both render | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
-| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, AI Analyses |
-| 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | Every serious analysis in this UAT window has a second AI | AI Analyses |
+| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, Realtime Alert & Tracker |
+| 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | Every serious analysis in this UAT window has a second AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | Skill cards stay short; Enter opens the full playbook | AI Skills |
-| 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger “Open in admin” lands on a real analysis | Demo Messenger, AI Analyses |
-| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | Unread counts on the left pane (messenger-style) | Admin Home, Live Alerts, Demo Messenger, Market Intelligence |
+| 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger “Open in admin” lands on a real analysis | Demo Messenger, AI analysis detail (/admin/ai-analyses/[id]) |
+| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | Unread counts on the left pane (messenger-style) | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence |
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | Knowledge tree shows how domains, skills and documents connect | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | Traditional Chinese covers chrome, messenger, skills and docs | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
 | 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | URL catalog lists the public pages (including new ones) | URL Catalog, AI Skills, Knowledge Tree, Demo Messenger |
-| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | Tell the messenger loop out loud, in plain English | Demo Messenger, Admin Home spine, Audit Log, AI Analyses |
+| 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | Tell the messenger loop out loud, in plain English | Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker |
 | 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | Admin Home — cards, shortcuts and platform owner | Admin Home, Daily Performance, Users, URL Catalog |
 | 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | Daily Performance — CFD and Crypto desk numbers | Daily Performance |
 | 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | Risk Log Analytics — what actually moved P&L / clients | Risk Log Analytics |
-| 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Live Alerts list | Live Alerts — read the queue and acknowledge one | Live Alerts |
-| 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | Detectors — run the pack and see WARN/BREACH land | Detectors, Live Alerts, AI Analyses |
+| 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Realtime Alert & Tracker queue | Realtime Alert & Tracker — read the queue and acknowledge one | Realtime Alert & Tracker |
+| 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | Monitor 2.0 — run indicators and see WARN/BREACH land | Monitor 2.0, Realtime Alert & Tracker |
 | 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | Risk domains catalogue with P0–P3 scenarios | Risk Domains |
 | 33 | UAT-33 | 361m | 12m | High | Risk | UAT-07 | Messenger inbox — channels, kinds and Sync | Demo Messenger |
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — other recommended actions and cancel | Demo Messenger, Human Intervention |
@@ -99,31 +99,31 @@ graph TD
 ### UAT-02 — Monitor 2.0 indicators that feed the demo alarms
 
 - **Severity:** Critical · **BU:** Risk · **Depends:** UAT-01; Monitor indicators seeded · **Window:** T+12m / 10m
-- **Covers:** Monitor 2.0, Live Alerts
+- **Covers:** Monitor 2.0, Realtime Alert & Tracker
 - **Why:** Messenger and AI RCA are useless if the underlying CFD/Crypto indicators are missing.
-- **Goal:** Confirm the demo desk has the equity, margin and copy-trading indicators, and that Live Alerts actually lists alarms.
+- **Goal:** Confirm the demo desk has the equity, margin and copy-trading indicators, and that Realtime Alert & Tracker actually lists alarms.
 
 **Steps**
 
 1. Open Monitor 2.0 from the left pane (Monitor & risk group).
 2. Find these codes (search on the page or scroll): M2-EQ-001 (equity/drawdown), M2-MRG-014 (margin), M2-COPY-009 (copy concentration). Note the product (CFD or Crypto) and risk domain next to each.
-3. Open Live Alerts. You should see a list of cards with severity (CRITICAL / BREACH / WARN), status (OPEN and so on), and a Monitor ticket id.
+3. Open Realtime Alert & Tracker. You should see a list of cards with severity (CRITICAL / BREACH / WARN), status (OPEN and so on), and a Monitor ticket id.
 4. Write down how many OPEN (or ACKNOWLEDGED) alerts you see. That number is your baseline for later cases.
 
-**Pass:** At least one indicator each for equity, margin and copy concentration. Live Alerts page loads with real rows.
+**Pass:** At least one indicator each for equity, margin and copy concentration. Realtime Alert & Tracker page loads with real rows.
 **Evidence:** The three indicator IDs in your notes; baseline open-alert count.
 
 ### UAT-03 — Run a skill playbook on a copy-trading breach
 
 - **Severity:** Critical · **BU:** AI + Risk · **Depends:** UAT-02; AI skills seeded · **Window:** T+22m / 15m
-- **Covers:** AI Analyses, AI Skills
+- **Covers:** Realtime Alert & Tracker, AI Skills
 - **Why:** When we already know the failure pattern, the first AI should follow the written skill — not invent a story. Every new analysis also needs a how-to-improve review you can argue with.
 - **Goal:** Prove the COPY breach simulation uses the matching skill playbook, stores evidence, and opens an improvement chatbot.
 
 **Steps**
 
-1. Open AI Analyses.
-2. Click “Simulate COPY breach (skill path)”. Wait until a new analysis opens (or the list refreshes with a new row).
+1. Open Realtime Alert & Tracker.
+2. Use the AI pipeline controls to click “Simulate COPY breach (skill path)”. Wait until a new analysis opens (or the list refreshes with a new row).
 3. On the detail page, the mode badge should say SKILL_MATCH (this means “we used a known playbook”, not free-form guessing). Confidence should look certain (around 100%).
 4. Scroll to Evidence vault. You must see at least a SKILL row (which playbook ran) and a MONITOR row (the alarm snapshot).
 5. Find the panel **AI analysis — how to improve**. It must list items such as add a data source, check a dormant indicator, missing reasoning, a new skill pattern, tighten limit X→Y, and/or faster manual response. Evidence vault should also have an IMPROVEMENT row.
@@ -136,13 +136,13 @@ graph TD
 ### UAT-04 — Second AI challenges the first AI on serious alarms
 
 - **Severity:** Critical · **BU:** AI + Risk Owner · **Depends:** UAT-03 or any BREACH/CRITICAL analysis · **Window:** T+37m / 15m
-- **Covers:** AI Analyses
+- **Covers:** Realtime Alert & Tracker
 - **Why:** One model can be over-confident. On BREACH or CRITICAL we need an independent second opinion before a human accepts the story.
 - **Goal:** Open a high-severity analysis and confirm the challenger panel, verdict, and at least one high-priority improvement are present.
 
 **Steps**
 
-1. Stay on AI Analyses. Open a BREACH or CRITICAL row (or click Simulate CRITICAL if you need a fresh one).
+1. Stay on Realtime Alert & Tracker. Expand a card or open a BREACH or CRITICAL row (or click Simulate CRITICAL if you need a fresh one).
 2. In the list, the row should show a “2nd AI” badge with a verdict such as AGREE, PARTIAL or DISAGREE.
 3. On the detail page find the panel titled Second AI challenger (model name crmp-challenger-v0).
 4. Read it in plain language: what it likes, what it doubts, and the suggested improvements. If the verdict is PARTIAL or DISAGREE, it should say a human must review (needs_human).
@@ -154,13 +154,13 @@ graph TD
 ### UAT-05 — A WARN-only case must not call the second AI
 
 - **Severity:** High · **BU:** AI · **Depends:** UAT-02; default second-AI threshold = BREACH · **Window:** T+52m / 10m
-- **Covers:** AI Analyses
+- **Covers:** Realtime Alert & Tracker
 - **Why:** Second AI costs time. It should stay quiet on ordinary warnings so operators are not flooded.
 - **Goal:** Simulate a WARN equity/drawdown path and confirm the challenger did not run.
 
 **Steps**
 
-1. On AI Analyses click “Simulate EQ drawdown (RAG path)” (WARN).
+1. On Realtime Alert & Tracker, use the AI pipeline controls to click “Simulate EQ drawdown (RAG path)” (WARN).
 2. Open the new analysis.
 3. The Second AI panel should say it was not run (or there is no 2nd AI verdict badge).
 4. Evidence vault should not have a CHALLENGER row for this WARN-only sample.
@@ -171,7 +171,7 @@ graph TD
 ### UAT-06 — When no skill fits, the AI reasons from the knowledge base
 
 - **Severity:** High · **BU:** AI + Risk · **Depends:** RAG corpus seeded · **Window:** T+62m / 12m
-- **Covers:** AI Analyses, RAG Knowledge Base
+- **Covers:** Realtime Alert & Tracker, RAG Knowledge Base
 - **Why:** Not every alarm has a canned playbook. The desk still needs a readable explanation plus sources.
 - **Goal:** Run the RAG path and confirm the analysis is marked RAG_REASONING with at least one explanation and some evidence.
 
@@ -188,7 +188,7 @@ graph TD
 ### UAT-07 — Messenger — pull the evidence pack into the chat
 
 - **Severity:** High · **BU:** Risk · **Depends:** UAT-03/04; Demo Messenger · **Window:** T+74m / 12m
-- **Covers:** Demo Messenger, AI Analyses
+- **Covers:** Demo Messenger, Realtime Alert & Tracker
 - **Why:** Risk staff should not have to leave the conversation to see why the AI said what it said.
 - **Goal:** From Demo Messenger, put the evidence vault into the same thread and prove the admin link works.
 
@@ -206,7 +206,7 @@ graph TD
 ### UAT-08 — Messenger — argue with the bot in the same thread
 
 - **Severity:** High · **BU:** Risk Analyst + Risk Owner · **Depends:** UAT-07; open messenger thread · **Window:** T+86m / 10m
-- **Covers:** Demo Messenger, AI Analyses
+- **Covers:** Demo Messenger, Realtime Alert & Tracker
 - **Why:** Operators must be able to say “I disagree” without opening a separate ticket system.
 - **Goal:** Type a challenge in the composer and confirm the bot replies and flags the case for a human.
 
@@ -240,7 +240,7 @@ graph TD
 ### UAT-10 — Messenger — dismiss a false alarm
 
 - **Severity:** Medium · **BU:** Risk · **Depends:** Separate OPEN WARN thread (do not use the Critical sample) · **Window:** T+106m / 8m
-- **Covers:** Demo Messenger, Live Alerts
+- **Covers:** Demo Messenger, Realtime Alert & Tracker
 - **Why:** Noise must be closable in one click, with an audit trail, so real breaches are not buried.
 - **Goal:** On a disposable WARN thread, dismiss it as a false alarm and confirm the chat and the linked alert both close.
 
@@ -249,7 +249,7 @@ graph TD
 1. Pick a different OPEN WARN thread — not the BREACH you still need for later cases.
 2. Click Dismiss (false alarm).
 3. The thread status badge becomes DISMISSED. The action buttons (Show evidence, Escalate, Dismiss, Close) should disable.
-4. If you are on localhost, open Live Alerts and confirm the linked alarm is CLOSED (or equivalent). On the public snapshot, the SYSTEM bubble saying the alert closed is enough.
+4. If you are on localhost, open Realtime Alert & Tracker and confirm the linked alarm is CLOSED (or equivalent). On the public snapshot, the SYSTEM bubble saying the alert closed is enough.
 
 **Pass:** Thread DISMISSED; linked alert closed or SYSTEM message says so; action audited on localhost.
 **Evidence:** thread id before/after; Audit MESSENGER_DISMISS on localhost.
@@ -257,7 +257,7 @@ graph TD
 ### UAT-11 — Messenger — close the case after accepting the AI pack
 
 - **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-04 dual-AI pack reviewed on a BREACH thread · **Window:** T+114m / 10m
-- **Covers:** Demo Messenger, AI Analyses
+- **Covers:** Demo Messenger, Realtime Alert & Tracker
 - **Why:** The Risk Owner needs a clean “we accept this explanation” button that does not delete the evidence.
 - **Goal:** Close a reviewed BREACH thread and confirm the AI analysis still holds the challenger pack.
 
@@ -266,7 +266,7 @@ graph TD
 1. Open a BREACH thread whose dual-AI pack you already read (not the dismissed WARN).
 2. Click Close (accept AI).
 3. Status becomes CLOSED. Buttons for evidence/escalate/dismiss/close disable.
-4. Click Open in admin (or reopen the analysis from AI Analyses). Evidence vault and the second-AI panel must still be there — closing the chat must not wipe the science pack.
+4. Click Open in admin (or reopen the analysis from Realtime Alert & Tracker — expand the alert card). Evidence vault and the second-AI panel must still be there — closing the chat must not wipe the science pack.
 
 **Pass:** Thread CLOSED; analysis evidence retained; localhost Audit shows MESSENGER_CLOSE.
 **Evidence:** thread id; analysis detail still showing the challenger panel.
@@ -381,7 +381,7 @@ graph TD
 ### UAT-18 — Phone-width smoke test (~390px)
 
 - **Severity:** Medium · **BU:** All · **Depends:** Responsive admin shell · **Window:** T+206m / 15m
-- **Covers:** Admin Home, Demo Messenger, AI Analyses
+- **Covers:** Admin Home, Demo Messenger, Realtime Alert & Tracker
 - **Why:** On-call staff will open messenger from a phone. Overflow or a broken drawer makes the desk unusable.
 - **Goal:** At about 390px width, open the menu, use messenger list→thread→back, and read an AI analysis.
 
@@ -398,13 +398,13 @@ graph TD
 ### UAT-19 — Every serious analysis in this UAT window has a second AI
 
 - **Severity:** Medium · **BU:** Risk Owner · **Depends:** UAT-04 samples in window · **Window:** T+221m / 10m
-- **Covers:** AI Analyses
+- **Covers:** Realtime Alert & Tracker
 - **Why:** A single unchallenged BREACH is an exit-criteria miss, even if yesterday’s samples were fine.
 - **Goal:** Count BREACH/CRITICAL analyses created during UAT and prove each has a challenger verdict (backfill allowed).
 
 **Steps**
 
-1. On AI Analyses, list items with severity BREACH or CRITICAL that you created (or that appeared) during this sitting.
+1. On Realtime Alert & Tracker, list items with severity BREACH or CRITICAL that you created (or that appeared) during this sitting.
 2. Each row must show a 2nd AI badge that is not “pending”.
 3. If any are pending, click Backfill 2nd AI challenges, wait, and re-check.
 
@@ -431,7 +431,7 @@ graph TD
 ### UAT-21 — Messenger “Open in admin” lands on a real analysis
 
 - **Severity:** High · **BU:** Risk · **Depends:** UAT-07; public Pages URL · **Window:** T+243m / 8m
-- **Covers:** Demo Messenger, AI Analyses
+- **Covers:** Demo Messenger, AI analysis detail (/admin/ai-analyses/[id])
 - **Why:** A 404 here is how the public snapshot broke last time — the operator cannot see RCA or the second AI.
 - **Goal:** From a BREACH thread, follow Open in admin and see explanations, evidence and the challenger.
 
@@ -448,15 +448,15 @@ graph TD
 ### UAT-22 — Unread counts on the left pane (messenger-style)
 
 - **Severity:** Medium · **BU:** All · **Depends:** Left nav shell · **Window:** T+251m / 8m
-- **Covers:** Admin Home, Live Alerts, Demo Messenger, Market Intelligence
+- **Covers:** Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence
 - **Why:** Operators should see “something new happened” without opening every tab.
 - **Goal:** Show rose badges on tabs with new/open work; opening a tab clears only that tab’s number.
 
 **Steps**
 
 1. Hard-refresh Admin Home, or use a private window, so previous “I already saw this” marks are empty.
-2. Rose numbers should appear next to Live Alerts, AI Analyses, Demo Messenger, Market Intelligence and other tabs that have open work.
-3. Open Live Alerts — that badge drops to zero. Other badges stay.
+2. Rose numbers should appear next to Realtime Alert & Tracker, Demo Messenger, Market Intelligence and other tabs that have open work.
+3. Open Realtime Alert & Tracker — that badge drops to zero. Other badges stay.
 4. Open Demo Messenger — that badge drops to zero.
 5. Go away and come back: cleared badges stay at zero unless a new Scan / Analyse / Sync created more work.
 
@@ -490,7 +490,7 @@ graph TD
 **Steps**
 
 1. Click 繁中 in the left pane.
-2. Walk Admin Home, Live Alerts, AI Skills, a skill Enter page, Demo Messenger, Market Intelligence, Knowledge Tree, this UAT page and PRD.
+2. Walk Admin Home, Realtime Alert & Tracker, AI Skills, a skill Enter page, Demo Messenger, Market Intelligence, Knowledge Tree, this UAT page and PRD.
 3. Titles, subtitles and primary buttons should be Traditional Chinese.
 4. On docs, click 繁體中文 if a second toggle exists; the markdown body must switch.
 5. Switch back to EN. English returns without a refresh loop.
@@ -518,7 +518,7 @@ graph TD
 ### UAT-26 — Tell the messenger loop out loud, in plain English
 
 - **Severity:** Medium · **BU:** Risk + System · **Depends:** Messenger + alerts + spine · **Window:** T+289m / 12m
-- **Covers:** Demo Messenger, Admin Home spine, Audit Log, AI Analyses
+- **Covers:** Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker
 - **Why:** If a Risk Owner cannot narrate alarm → inbox → AI pack → control → audit, the demo is only a screenshot.
 - **Goal:** Using only the seeded demo, point at each bubble and then find the same case on Spine and Audit.
 
@@ -544,8 +544,8 @@ graph TD
 
 1. Open Admin Home.
 2. Read the platform owner line (demo platform owner / haixiang.yan@hytechc.com) on the home panel and in the left-pane footer.
-3. Click these stat cards and confirm the destination: Users, Teams, Data Sources, Risk Domains, Open Alerts (Live Alerts), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.
-4. Click a department card (should open that team’s working page), a recent-alert row (Live Alerts, that alarm highlighted), and a jump tile. Header shortcuts: Demo Messenger, User Guide, Daily Performance. None should 404.
+3. Click these stat cards and confirm the destination: Users, Teams, Data Sources, Risk Domains, Open Alerts (Realtime Alert & Tracker), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.
+4. Click a department card (should open that team’s working page), a recent-alert row (Realtime Alert & Tracker, that alarm highlighted), and a jump tile. Header shortcuts: Demo Messenger, User Guide, Daily Performance. None should 404.
 5. If you are still a public visitor, the guest banner and Sign in control should be visible; after login they should change.
 
 **Pass:** Every Home card/shortcut that claims a page actually opens it; owner attribution is visible.
@@ -582,21 +582,21 @@ graph TD
 2. You should see summary tiles, **historical charts spanning ~90 days** (alerts/open book, loss vs prevented, handling latency — not a flat single-day spike), domain bars, and a Closed alerts & tickets list — not a blank white page.
 3. Optionally open the Historical charts tab and confirm the same series.
 4. Expand one closed card. Write down: ticket-closed status, the AI analysis summary, at least one AI or BU action-log line, and the mandated final solution (who mandated it).
-5. Confirm the same alert id is not still sitting on Realtime Alert as an open card.
+5. Confirm the same alert id is not still sitting on Realtime Alert & Tracker as an open card.
 
 **Pass:** Overview shows ~90-day charts plus closed tracker cards with ticket-closed + AI + action log + mandated solution; at least one card can be explained in plain English.
 **Evidence:** Screenshot of Risk Log Overview showing historical charts and one closed card expanded.
 
-### UAT-30 — Live Alerts — read the queue and acknowledge one
+### UAT-30 — Realtime Alert & Tracker — read the queue and acknowledge one
 
-- **Severity:** High · **BU:** Risk · **Depends:** UAT-02; Live Alerts list · **Window:** T+331m / 10m
-- **Covers:** Live Alerts
+- **Severity:** High · **BU:** Risk · **Depends:** UAT-02; Realtime Alert & Tracker queue · **Window:** T+331m / 10m
+- **Covers:** Realtime Alert & Tracker
 - **Why:** The operational queue is not messenger. Someone on the desk must be able to ack an alarm in admin.
 - **Goal:** Find an OPEN alert, read its Monitor id and ticket, and acknowledge it (localhost) or explain why Pages is read-only.
 
 **Steps**
 
-1. Open Live Alerts. Confirm only still-open cards show, with severity, status, product, domain, Monitor id, ticket id and a short message. Closed tickets must not appear here.
+1. Open Realtime Alert & Tracker. Confirm only still-open cards show, with severity, status, product, domain, Monitor id, ticket id and a short message. Closed tickets must not appear here.
 2. Find an OPEN row. Read the message out loud: what broke, and which indicator.
 3. Confirm a button/link “View closed alerts in Risk Log Analytics” is visible and opens `/admin/risk-log`.
 4. On localhost, click Acknowledge. After refresh the status should become ACKNOWLEDGED (or similar) and the button should disappear for that row.
@@ -605,23 +605,23 @@ graph TD
 **Pass:** Open-only queue is readable. Closed-log button reaches Risk Log. Localhost ack changes status. Pages still shows seeded open alerts.
 **Evidence:** Screenshot before/after ack (localhost) or the seeded queue (Pages).
 
-### UAT-31 — Detectors — run the pack and see WARN/BREACH land
+### UAT-31 — Monitor 2.0 — run indicators and see WARN/BREACH land
 
 - **Severity:** High · **BU:** Risk + AI · **Depends:** UAT-02; detectors seeded · **Window:** T+341m / 12m
-- **Covers:** Detectors, Live Alerts, AI Analyses
-- **Why:** Detectors are the scheduled rules behind Monitor. If “Run all” does nothing, the demo cannot create fresh work.
-- **Goal:** Open Detectors, run all, and confirm last-run status plus a new alert and/or analysis when a rule fires.
+- **Covers:** Monitor 2.0, Realtime Alert & Tracker
+- **Why:** Detectors are merged into Monitor 2.0. If “Run all indicators” does nothing, the demo cannot create fresh work.
+- **Goal:** Open Monitor 2.0, run all indicators, and confirm last-run status plus a new alert and/or analysis when a rule fires.
 
 **Steps**
 
-1. Open Detectors. You should see a table of rules (code, product, last status, last run time).
-2. On localhost click Run all detectors. Wait until the page refreshes or a success line appears.
-3. At least some rows should show last status OK, WARN or BREACH — not all blank.
-4. If any WARN/BREACH fired, open Live Alerts and/or AI Analyses and look for a matching new row. The left-nav unread badge on those tabs may also tick up.
+1. Open Monitor 2.0 (/admin/detectors redirects here). You should see the unified indicator table with detector codes, thresholds, and Pause.
+2. On localhost click Run all indicators. Wait until the page refreshes or a success line appears.
+3. At least some rows should show last status OK, WARN or BREACH — not all blank. Recent sampling runs should list below.
+4. If any WARN/BREACH fired, open Realtime Alert & Tracker and look for a matching new row. The left-nav unread badge may also tick up.
 5. On Pages, Run all may be demo/read-only. Pass if the registry is populated and the control explains itself; fail if the page is empty.
 
-**Pass:** Detector registry populated; localhost run completes; WARN/BREACH (if any) show up downstream.
-**Evidence:** Screenshot of detector table plus a downstream alert/analysis if one fired.
+**Pass:** Indicator registry populated; localhost run completes; WARN/BREACH (if any) show up downstream.
+**Evidence:** Screenshot of Monitor 2.0 table plus a downstream alert/analysis if one fired.
 
 ### UAT-32 — Risk domains catalogue with P0–P3 scenarios
 

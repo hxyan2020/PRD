@@ -81,32 +81,32 @@ export const UAT_CASES: UatCase[] = [
     dependency: "UAT-01; Monitor indicators seeded",
     covers: [
       "Monitor 2.0",
-      "Live Alerts",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Monitor 2.0 indicators that feed the demo alarms",
       why: "Messenger and AI RCA are useless if the underlying CFD/Crypto indicators are missing.",
-      objective: "Confirm the demo desk has the equity, margin and copy-trading indicators, and that Live Alerts actually lists alarms.",
+      objective: "Confirm the demo desk has the equity, margin and copy-trading indicators, and that Realtime Alert & Tracker actually lists alarms.",
       steps: [
         "Open Monitor 2.0 from the left pane (Monitor & risk group).",
         "Find these codes (search on the page or scroll): M2-EQ-001 (equity/drawdown), M2-MRG-014 (margin), M2-COPY-009 (copy concentration). Note the product (CFD or Crypto) and risk domain next to each.",
-        "Open Live Alerts. You should see a list of cards with severity (CRITICAL / BREACH / WARN), status (OPEN and so on), and a Monitor ticket id.",
+        "Open Realtime Alert & Tracker. You should see a list of cards with severity (CRITICAL / BREACH / WARN), status (OPEN and so on), and a Monitor ticket id.",
         "Write down how many OPEN (or ACKNOWLEDGED) alerts you see. That number is your baseline for later cases.",
       ],
-      pass: "At least one indicator each for equity, margin and copy concentration. Live Alerts page loads with real rows.",
+      pass: "At least one indicator each for equity, margin and copy concentration. Realtime Alert & Tracker page loads with real rows.",
       evidence: "The three indicator IDs in your notes; baseline open-alert count.",
     },
     zh: {
       title: "Monitor 2.0 示範警報所用指標",
       why: "若 CFD／Crypto 指標不存在，Messenger 與 AI 根因分析沒有來源。",
-      objective: "確認股權、保證金、跟單集中度指標存在，且即時警報有資料。",
+      objective: "確認股權、保證金、跟單集中度指標存在，且即時警報與追蹤有資料。",
       steps: [
         "由左側「監控與風險」開啟 Monitor 2.0。",
         "找到 M2-EQ-001（股權／回撤）、M2-MRG-014（保證金）、M2-COPY-009（跟單集中度），記下產品與風險領域。",
-        "開啟即時警報。應看到嚴重度、狀態與 Monitor 工單編號的卡片列表。",
+        "開啟即時警報與追蹤。應看到嚴重度、狀態與 Monitor 工單編號的卡片列表。",
         "記下目前 OPEN（或已確認）筆數，作為後續基線。",
       ],
-      pass: "股權／保證金／跟單各至少一項指標；即時警報有真實列。",
+      pass: "股權／保證金／跟單各至少一項指標；即時警報與追蹤有真實列。",
       evidence: "三個指標 ID；基線 OPEN 數量。",
     },
   },
@@ -119,7 +119,7 @@ export const UAT_CASES: UatCase[] = [
     bu: "AI + Risk",
     dependency: "UAT-02; AI skills seeded",
     covers: [
-      "AI Analyses",
+      "Realtime Alert & Tracker",
       "AI Skills",
     ],
     en: {
@@ -127,7 +127,7 @@ export const UAT_CASES: UatCase[] = [
       why: "When we already know the failure pattern, the first AI should follow the written skill — not invent a story. Every new analysis also needs a how-to-improve review you can argue with.",
       objective: "Prove the COPY breach simulation uses the matching skill playbook, stores evidence, and opens an improvement chatbot.",
       steps: [
-        "Open AI Analyses.",
+        "Open Realtime Alert & Tracker.",
         "Click “Simulate COPY breach (skill path)”. Wait until a new analysis opens (or the list refreshes with a new row).",
         "On the detail page, the mode badge should say SKILL_MATCH (this means “we used a known playbook”, not free-form guessing). Confidence should look certain (around 100%).",
         "Scroll to Evidence vault. You must see at least a SKILL row (which playbook ran) and a MONITOR row (the alarm snapshot).",
@@ -143,7 +143,7 @@ export const UAT_CASES: UatCase[] = [
       why: "已知故障型態時，第一個 AI 應照書面技能走，而不是自行編故事。每次新分析也要有可對話的「如何改進」審查。",
       objective: "證明 COPY breach 模擬會套用對應技能、存證據，並打開改進聊天機器人。",
       steps: [
-        "開啟 AI 分析。",
+        "開啟即時警報與追蹤。",
         "點「Simulate COPY breach (skill path)」，等到新分析打開或列表出現新列。",
         "詳情頁模式徽章應為 SKILL_MATCH（代表使用已知劇本，而非自由推理），信心接近確定。",
         "證據庫至少要有 SKILL（跑了哪份劇本）與 MONITOR（警報快照）。",
@@ -164,14 +164,14 @@ export const UAT_CASES: UatCase[] = [
     bu: "AI + Risk Owner",
     dependency: "UAT-03 or any BREACH/CRITICAL analysis",
     covers: [
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Second AI challenges the first AI on serious alarms",
       why: "One model can be over-confident. On BREACH or CRITICAL we need an independent second opinion before a human accepts the story.",
       objective: "Open a high-severity analysis and confirm the challenger panel, verdict, and at least one high-priority improvement are present.",
       steps: [
-        "Stay on AI Analyses. Open a BREACH or CRITICAL row (or click Simulate CRITICAL if you need a fresh one).",
+        "Stay on Realtime Alert & Tracker. Open a BREACH or CRITICAL row (or click Simulate CRITICAL if you need a fresh one).",
         "In the list, the row should show a “2nd AI” badge with a verdict such as AGREE, PARTIAL or DISAGREE.",
         "On the detail page find the panel titled Second AI challenger (model name crmp-challenger-v0).",
         "Read it in plain language: what it likes, what it doubts, and the suggested improvements. If the verdict is PARTIAL or DISAGREE, it should say a human must review (needs_human).",
@@ -185,7 +185,7 @@ export const UAT_CASES: UatCase[] = [
       why: "單一模型可能過度自信。BREACH／CRITICAL 需要獨立第二意見，人類才能接受敘事。",
       objective: "打開高嚴重度分析，確認挑戰面板、結論與至少一項高優先改進。",
       steps: [
-        "在 AI 分析開啟 BREACH 或 CRITICAL（或點 Simulate CRITICAL）。",
+        "在即時警報與追蹤開啟 BREACH 或 CRITICAL（或點 Simulate CRITICAL）。",
         "列表列上應有「2nd AI」徽章與 AGREE／PARTIAL／DISAGREE 等結論。",
         "詳情頁找到「第二 AI 挑戰者」面板（crmp-challenger-v0）。",
         "用白話讀完：同意什麼、懷疑什麼、改進建議。若為 PARTIAL／DISAGREE，應標示需要人工覆核。",
@@ -204,14 +204,14 @@ export const UAT_CASES: UatCase[] = [
     bu: "AI",
     dependency: "UAT-02; default second-AI threshold = BREACH",
     covers: [
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "A WARN-only case must not call the second AI",
       why: "Second AI costs time. It should stay quiet on ordinary warnings so operators are not flooded.",
       objective: "Simulate a WARN equity/drawdown path and confirm the challenger did not run.",
       steps: [
-        "On AI Analyses click “Simulate EQ drawdown (RAG path)” (WARN).",
+        "On Realtime Alert & Tracker, use the AI pipeline controls to “Simulate EQ drawdown (RAG path)” (WARN).",
         "Open the new analysis.",
         "The Second AI panel should say it was not run (or there is no 2nd AI verdict badge).",
         "Evidence vault should not have a CHALLENGER row for this WARN-only sample.",
@@ -224,7 +224,7 @@ export const UAT_CASES: UatCase[] = [
       why: "第二 AI 耗時。普通預警不應觸發，以免操作者被灌爆。",
       objective: "模擬 WARN 股權／回撤路徑，確認挑戰者沒有執行。",
       steps: [
-        "於 AI 分析點「Simulate EQ drawdown (RAG path)」（WARN）。",
+        "於即時警報與追蹤使用 AI 管線控制，點「Simulate EQ drawdown (RAG path)」（WARN）。",
         "打開新分析。",
         "第二 AI 面板應顯示未執行（或沒有 2nd AI 結論徽章）。",
         "此 WARN 樣本證據庫不應有 CHALLENGER 列。",
@@ -242,7 +242,7 @@ export const UAT_CASES: UatCase[] = [
     bu: "AI + Risk",
     dependency: "RAG corpus seeded",
     covers: [
-      "AI Analyses",
+      "Realtime Alert & Tracker",
       "RAG Knowledge Base",
     ],
     en: {
@@ -282,7 +282,7 @@ export const UAT_CASES: UatCase[] = [
     dependency: "UAT-03/04; Demo Messenger",
     covers: [
       "Demo Messenger",
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Messenger — pull the evidence pack into the chat",
@@ -323,7 +323,7 @@ export const UAT_CASES: UatCase[] = [
     dependency: "UAT-07; open messenger thread",
     covers: [
       "Demo Messenger",
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Messenger — argue with the bot in the same thread",
@@ -401,7 +401,7 @@ export const UAT_CASES: UatCase[] = [
     dependency: "Separate OPEN WARN thread (do not use the Critical sample)",
     covers: [
       "Demo Messenger",
-      "Live Alerts",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Messenger — dismiss a false alarm",
@@ -411,7 +411,7 @@ export const UAT_CASES: UatCase[] = [
         "Pick a different OPEN WARN thread — not the BREACH you still need for later cases.",
         "Click Dismiss (false alarm).",
         "The thread status badge becomes DISMISSED. The action buttons (Show evidence, Escalate, Dismiss, Close) should disable.",
-        "If you are on localhost, open Live Alerts and confirm the linked alarm is CLOSED (or equivalent). On the public snapshot, the SYSTEM bubble saying the alert closed is enough.",
+        "If you are on localhost, open Realtime Alert & Tracker and confirm the linked alarm is CLOSED (or equivalent). On the public snapshot, the SYSTEM bubble saying the alert closed is enough.",
       ],
       pass: "Thread DISMISSED; linked alert closed or SYSTEM message says so; action audited on localhost.",
       evidence: "thread id before/after; Audit MESSENGER_DISMISS on localhost.",
@@ -424,7 +424,7 @@ export const UAT_CASES: UatCase[] = [
         "選另一則 OPEN WARN（不要用稍後還要用的 BREACH）。",
         "點「排除（誤報）」。",
         "狀態變為 DISMISSED；顯示證據／升級／排除／結案按鈕應停用。",
-        "本機可到即時警報確認關聯警報已 CLOSED；公開快照則以 SYSTEM 氣泡寫明已關閉即可。",
+        "本機可到即時警報與追蹤確認關聯警報已 CLOSED；公開快照則以 SYSTEM 氣泡寫明已關閉即可。",
       ],
       pass: "對話 DISMISSED；警報關閉或 SYSTEM 已說明；本機有稽核。",
       evidence: "前後 thread id；本機 Audit MESSENGER_DISMISS。",
@@ -440,7 +440,7 @@ export const UAT_CASES: UatCase[] = [
     dependency: "UAT-04 dual-AI pack reviewed on a BREACH thread",
     covers: [
       "Demo Messenger",
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Messenger — close the case after accepting the AI pack",
@@ -450,7 +450,7 @@ export const UAT_CASES: UatCase[] = [
         "Open a BREACH thread whose dual-AI pack you already read (not the dismissed WARN).",
         "Click Close (accept AI).",
         "Status becomes CLOSED. Buttons for evidence/escalate/dismiss/close disable.",
-        "Click Open in admin (or reopen the analysis from AI Analyses). Evidence vault and the second-AI panel must still be there — closing the chat must not wipe the science pack.",
+        "Click Open in admin (or reopen the analysis from Realtime Alert & Tracker — expand the alert card). Evidence vault and the second-AI panel must still be there — closing the chat must not wipe the science pack.",
       ],
       pass: "Thread CLOSED; analysis evidence retained; localhost Audit shows MESSENGER_CLOSE.",
       evidence: "thread id; analysis detail still showing the challenger panel.",
@@ -726,7 +726,7 @@ export const UAT_CASES: UatCase[] = [
     covers: [
       "Admin Home",
       "Demo Messenger",
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Phone-width smoke test (~390px)",
@@ -764,14 +764,14 @@ export const UAT_CASES: UatCase[] = [
     bu: "Risk Owner",
     dependency: "UAT-04 samples in window",
     covers: [
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Every serious analysis in this UAT window has a second AI",
       why: "A single unchallenged BREACH is an exit-criteria miss, even if yesterday’s samples were fine.",
       objective: "Count BREACH/CRITICAL analyses created during UAT and prove each has a challenger verdict (backfill allowed).",
       steps: [
-        "On AI Analyses, list items with severity BREACH or CRITICAL that you created (or that appeared) during this sitting.",
+        "On Realtime Alert & Tracker, find cards or list items with severity BREACH or CRITICAL that you created (or that appeared) during this sitting.",
         "Each row must show a 2nd AI badge that is not “pending”.",
         "If any are pending, click Backfill 2nd AI challenges, wait, and re-check.",
       ],
@@ -783,7 +783,7 @@ export const UAT_CASES: UatCase[] = [
       why: "即使昨天的樣本沒問題，這一輪只要有一則未挑戰的 BREACH 就不算過關。",
       objective: "清點本輪 BREACH／CRITICAL，證明皆有挑戰結論（允許回補）。",
       steps: [
-        "在 AI 分析列出本輪出現的 BREACH／CRITICAL。",
+        "在即時警報與追蹤列出本輪出現的 BREACH／CRITICAL。",
         "每列須有非 pending 的 2nd AI 徽章。",
         "若有 pending，點 Backfill 2nd AI challenges 後再查。",
       ],
@@ -839,7 +839,7 @@ export const UAT_CASES: UatCase[] = [
     dependency: "UAT-07; public Pages URL",
     covers: [
       "Demo Messenger",
-      "AI Analyses",
+      "AI analysis detail (/admin/ai-analyses/[id])",
     ],
     en: {
       title: "Messenger “Open in admin” lands on a real analysis",
@@ -878,7 +878,7 @@ export const UAT_CASES: UatCase[] = [
     dependency: "Left nav shell",
     covers: [
       "Admin Home",
-      "Live Alerts",
+      "Realtime Alert & Tracker",
       "Demo Messenger",
       "Market Intelligence",
     ],
@@ -888,8 +888,8 @@ export const UAT_CASES: UatCase[] = [
       objective: "Show rose badges on tabs with new/open work; opening a tab clears only that tab’s number.",
       steps: [
         "Hard-refresh Admin Home, or use a private window, so previous “I already saw this” marks are empty.",
-        "Rose numbers should appear next to Live Alerts, AI Analyses, Demo Messenger, Market Intelligence and other tabs that have open work.",
-        "Open Live Alerts — that badge drops to zero. Other badges stay.",
+        "Rose numbers should appear next to Realtime Alert & Tracker, Demo Messenger, Market Intelligence and other tabs that have open work.",
+        "Open Realtime Alert & Tracker — that badge drops to zero. Other badges stay.",
         "Open Demo Messenger — that badge drops to zero.",
         "Go away and come back: cleared badges stay at zero unless a new Scan / Analyse / Sync created more work.",
       ],
@@ -902,8 +902,8 @@ export const UAT_CASES: UatCase[] = [
       objective: "有新／未處理工作的分頁顯示玫瑰色數字；打開後只清該分頁。",
       steps: [
         "強制重新整理管理首頁，或用無痕視窗，清掉「已看過」標記。",
-        "即時警報、AI 分析、示範 Messenger、市場情報等有未處理工作的分頁應出現紅色數字。",
-        "開啟即時警報 — 該數字歸零，其他仍在。",
+        "即時警報與追蹤、示範 Messenger、市場情報等有未處理工作的分頁應出現紅色數字。",
+        "開啟即時警報與追蹤 — 該數字歸零，其他仍在。",
         "開啟示範 Messenger — 該數字歸零。",
         "離開再回來：已看過的維持零，除非掃描／分析／同步又產生新工作。",
       ],
@@ -971,7 +971,7 @@ export const UAT_CASES: UatCase[] = [
       objective: "Click 繁中 and walk Home, Alerts, Skills, Messenger, Market Intelligence, Knowledge Tree, UAT and PRD.",
       steps: [
         "Click 繁中 in the left pane.",
-        "Walk Admin Home, Live Alerts, AI Skills, a skill Enter page, Demo Messenger, Market Intelligence, Knowledge Tree, this UAT page and PRD.",
+        "Walk Admin Home, Realtime Alert & Tracker, AI Skills, a skill Enter page, Demo Messenger, Market Intelligence, Knowledge Tree, this UAT page and PRD.",
         "Titles, subtitles and primary buttons should be Traditional Chinese.",
         "On docs, click 繁體中文 if a second toggle exists; the markdown body must switch.",
         "Switch back to EN. English returns without a refresh loop.",
@@ -985,7 +985,7 @@ export const UAT_CASES: UatCase[] = [
       objective: "點繁中後走訪首頁、警報、技能、Messenger、市場情報、知識樹、UAT 與 PRD。",
       steps: [
         "於左側點 繁中。",
-        "走訪首頁、即時警報、AI 技能、技能詳情、Messenger、市場情報、知識樹、本 UAT、PRD。",
+        "走訪首頁、即時警報與追蹤、AI 技能、技能詳情、Messenger、市場情報、知識樹、本 UAT、PRD。",
         "標題／副標與主要按鈕應為繁中。",
         "文件若有第二切換，點繁體中文後內文須切換。",
         "改回 EN，英文須恢復且無重整迴圈。",
@@ -1047,7 +1047,7 @@ export const UAT_CASES: UatCase[] = [
       "Demo Messenger",
       "Admin Home spine",
       "Audit Log",
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Tell the messenger loop out loud, in plain English",
@@ -1099,7 +1099,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "Open Admin Home.",
         "Read the platform owner line (demo platform owner / haixiang.yan@hytechc.com) on the home panel and in the left-pane footer.",
-        "Click these stat cards and confirm the destination: Users, BU and Teams, Data Sources, Risk Domains, Open Alerts (Live Alerts), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.",
+        "Click these stat cards and confirm the destination: Users, BU and Teams, Data Sources, Risk Domains, Open Alerts (Realtime Alert & Tracker), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.",
         "Use the shortcut buttons (Demo Messenger, URL Catalog, PRD, User Guide, UAT, Daily Performance, AI Admin, AI Access Security). None should 404.",
         "If you are still a public visitor, the guest banner and Sign in control should be visible; after login they should change.",
       ],
@@ -1113,7 +1113,7 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "開啟管理首頁。",
         "首頁面板與左側頁尾可見平台負責人 demo platform owner／haixiang.yan@hytechc.com。",
-        "點這些數字卡並確認目的地：使用者、BU 與團隊、資料來源、風險領域、即時警報、Monitor 2.0、Lark 頻道、升級路徑。",
+        "點這些數字卡並確認目的地：使用者、BU 與團隊、資料來源、風險領域、即時警報與追蹤、Monitor 2.0、Lark 頻道、升級路徑。",
         "使用捷徑（示範 Messenger、網址目錄、PRD、使用手冊、UAT、每日績效、AI Admin、AI 存取安全），皆不可 404。",
         "若仍是公開訪客，應看到訪客橫幅與登入；登入後應改變。",
       ],
@@ -1181,7 +1181,7 @@ export const UAT_CASES: UatCase[] = [
         "You should see summary tiles, historical charts spanning ~90 days (alerts/open book, loss vs prevented, handling latency — not a flat single-day spike), domain bars, and a Closed alerts & tickets list — not a blank white page.",
         "Optionally open the Historical charts tab and confirm the same series.",
         "Expand one closed card. Write down: ticket-closed status, the AI analysis summary, at least one AI or BU action-log line, and the mandated final solution (who mandated it).",
-        "Confirm the same alert id is not still sitting on Realtime Alert as an open card.",
+        "Confirm the same alert id is not still sitting on Realtime Alert & Tracker as an open card.",
       ],
       pass: "Overview shows ~90-day charts plus closed tracker cards with ticket-closed + AI + action log + mandated solution; at least one card can be explained in plain English.",
       evidence: "Screenshot of Risk Log Overview showing historical charts and one closed card expanded.",
@@ -1195,7 +1195,7 @@ export const UAT_CASES: UatCase[] = [
         "應看到摘要磚、約 90 天的歷史圖表（警報／未結帳本、損失 vs 防損、處理延遲 — 不是單日尖峰）、領域長條，以及「已關閉警報與工單」列表，不是空白頁。",
         "可選開「歷史圖表」分頁確認同一序列。",
         "展開一張已結卡片。記下：工單已關閉狀態、AI 分析摘要、至少一筆 AI 或 BU 動作紀錄，以及核定最終方案（誰核定）。",
-        "確認同一個警報編號不再出現在即時警報的未結佇列。",
+        "確認同一個警報編號不再出現在即時警報與追蹤的未結佇列。",
       ],
       pass: "總覽有約 90 天圖表，以及已結追蹤卡片（工單已關閉、AI、動作紀錄與核定方案）；至少一張能用白話解釋。",
       evidence: "風險日誌總覽截圖（含歷史圖表），並展開一張已結卡片。",
@@ -1208,16 +1208,16 @@ export const UAT_CASES: UatCase[] = [
     duration_min: 10,
     severity: "High",
     bu: "Risk",
-    dependency: "UAT-02; Live Alerts list",
+    dependency: "UAT-02; Realtime Alert & Tracker queue",
     covers: [
-      "Live Alerts",
+      "Realtime Alert & Tracker",
     ],
     en: {
-      title: "Live Alerts — read the queue and acknowledge one",
+      title: "Realtime Alert & Tracker — read the queue and acknowledge one",
       why: "The operational queue is not messenger. Someone on the desk must be able to ack an alarm in admin.",
       objective: "Find an OPEN alert, read its Monitor id and ticket, and acknowledge it (localhost) or explain why Pages is read-only.",
       steps: [
-        "Open Live Alerts. Confirm only still-open cards show, with severity, status, product, domain, Monitor id, ticket id and a short message. Closed tickets must not appear here.",
+        "Open Realtime Alert & Tracker. Confirm only still-open cards show, with severity, status, product, domain, Monitor id, ticket id and a short message. Closed tickets must not appear here.",
         "Find an OPEN row. Read the message out loud: what broke, and which indicator.",
         "Confirm a button/link “View closed alerts in Risk Log Analytics” is visible and opens `/admin/risk-log`.",
         "On localhost, click Acknowledge. After refresh the status should become ACKNOWLEDGED (or similar) and the button should disappear for that row.",
@@ -1227,11 +1227,11 @@ export const UAT_CASES: UatCase[] = [
       evidence: "Screenshot before/after ack (localhost) or the seeded queue (Pages).",
     },
     zh: {
-      title: "即時警報 — 讀佇列並確認一則",
+      title: "即時警報與追蹤 — 讀佇列並確認一則",
       why: "營運佇列不是 Messenger。桌上必須有人能在後台確認警報。",
       objective: "找到 OPEN 警報，讀 Monitor 與工單編號；本機按確認，或說明 Pages 為何唯讀。",
       steps: [
-        "開啟即時警報。應只看到仍未結的卡片，含嚴重度、狀態、產品、領域、Monitor id、工單編號與短訊。已關閉工單不可出現在此。",
+        "開啟即時警報與追蹤。應只看到仍未結的卡片，含嚴重度、狀態、產品、領域、Monitor id、工單編號與短訊。已關閉工單不可出現在此。",
         "找一則 OPEN，大聲讀出：壞了什麼、哪個指標。",
         "確認可見「至風險日誌分析查看已關閉警報」按鈕／連結，並會打開 `/admin/risk-log`。",
         "本機點 Acknowledge，重新整理後狀態應變 ACKNOWLEDGED，該列按鈕消失。",
@@ -1251,8 +1251,7 @@ export const UAT_CASES: UatCase[] = [
     dependency: "UAT-02; detectors seeded",
     covers: [
       "Monitor 2.0",
-      "Live Alerts",
-      "AI Analyses",
+      "Realtime Alert & Tracker",
     ],
     en: {
       title: "Monitor 2.0 — run indicators and see WARN/BREACH land",
