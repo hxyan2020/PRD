@@ -7,17 +7,17 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/c2f5108b742067a3.css","style"]
-0:{"P":null,"b":"2N-Xzgc-XDieKnovP5S4w","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/c2f5108b742067a3.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","3GbTp0nqjZ6xZjIt-oKpc",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+:HL["/PRD/crmp-admin/_next/static/css/2c469f54fec9366e.css","style"]
+0:{"P":null,"b":"e7i88SIQMdiD-Clf0Ohq1","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/2c469f54fec9366e.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","i6Futz3csCnzfMvfmVhqa",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
 e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","7581","static/chunks/app/admin/layout-70e65aa73614f957.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-05 20:55:22"},"/admin/messenger":{"count":5,"latestAt":"2026-10-05 20:55:22"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-05T20:55:22.290Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":31,"latestAt":"2026-10-06 00:25:22"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-05 20:55:22"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-05 20:55:22"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-05 21:15:34"},"/admin/messenger":{"count":5,"latestAt":"2026-10-05 21:15:34"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-05T21:15:34.798Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":31,"latestAt":"2026-10-06 00:45:34"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-05 21:15:34"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-05 21:15:34"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
 f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
 10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
 11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-0636c68daa7ac0bb.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-6c20610f4dd82349.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
-12:T821a,# Vantage CRMP — Technical Specification Design (TSD)
+12:T863f,# Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.5  
+**Version:** 1.8  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -158,7 +158,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 | System | Mode in prototype | Notes |
 |---|---|---|
-| Monitor 2.0 | Mirrored tables + sync / simulate alarm | Indicators/alerts/tickets |
+| Monitor 2.0 | Mirrored tables + sync / Run all / simulate | Indicator + detector registry on `/admin/monitor-2`; open alerts/tickets on Realtime Alert & Tracker |
 | Demo Messenger | In-app threads + `/api/messenger` | Evidence, escalate, controls |
 | Lark | Channel registry + mock webhook / intel outbox | Severity routing |
 | Market intel feeds | Heuristic 5-min scanner | Card format i–vi |
@@ -194,7 +194,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Monitor | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
 | Monitor | `/admin/monitor-2` | unified registry + `MonitorActions`, `/api/monitor`, `/api/detectors` | `monitor.read` / `monitor.operate` | §16.5 |
 | Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
-| Monitor | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
+| Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
 | Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
@@ -231,7 +231,7 @@ Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, 
 4. Queue training / recalibration runs
 5. Label RCA quality feedback (CORRECT / INCORRECT / PARTIAL)
 
-It is **governance**, not the live RCA workbench (`/admin/ai-analyses`) and not the intervention desk (`/admin/interventions`).
+It is **governance**, not the live RCA workbench (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`) and not the intervention desk (`/admin/interventions`).
 
 ### 8.2 Route & components
 
@@ -569,10 +569,16 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/messenger` | Threads + inline actions |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
-| `GET/POST /api/detectors` | Run all, toggle enabled |
-| `GET/POST /api/monitor` | `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `GET/POST /api/detectors` | Legacy detector CRUD / run (UI on Monitor 2.0) |
+| `GET/POST /api/escalation` | Routes + dimension coefficients + ESC-DEFAULT probe |
+| `GET/POST /api/roles` | Editable RBAC (`update_role`; AI actors forbidden) |
+| `GET/POST /api/org` | Departments + teams; `update_team` mission / on-call |
+| `POST /api/audit/rollback` | Restore before-state snapshot by `audit_id` |
+| `GET/POST /api/ai-improve` | How-to-improve review chat |
+| `POST /api/ai-chat` | Desk selection chatbot |
 | `POST /api/dashboard` | Rebuild daily metrics |
-| `GET/POST /api/rag` | List, retrieve, create, update |
+| `GET/POST /api/rag` | List, retrieve; human write / propose_rag (AI blocked) |
 | `GET/POST /api/users` | Directory + create/disable |
 | `PATCH /api/settings` | Single key save |
 | Interventions | Server action `decideInterventionAction` (approve/reject) |
@@ -620,7 +626,7 @@ SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, 
 
 ### 16.5 Monitor 2.0 hub (unified indicator + detector registry)
 
-Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). APIs: `POST /api/monitor` (`sync_monitor2`, …) and `POST /api/detectors` `{ raiseAlarms: true }` or `{ action: 'toggle' }`. Table `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`.
+Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all indicators** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; threshold edit via `IndicatorThresholdEditor`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). Primary API: `POST /api/monitor` with `run_detectors` / `toggle_pause` / `update_thresholds` / `sync_monitor2`. Legacy `POST /api/detectors` still exists. Tables `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`. Mobile: `sm:hidden` card lists + `sm:block` tables.
 
 ### 16.6 Detectors URL (redirect)
 
@@ -706,13 +712,14 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
 | 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
+| 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
-13:T7ca7,# Vantage CRMP — 技術規格設計（TSD）
+13:T80ec,# Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.5  
+**版本：** 1.8  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -853,7 +860,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 
 | 系統 | 原型模式 | 說明 |
 |---|---|---|
-| Monitor 2.0 | 鏡像表 + 同步／模擬警報 | 指標／警報／工單 |
+| Monitor 2.0 | 鏡像表 + 同步／全部執行／模擬 | 指標＋偵測器登錄在 `/admin/monitor-2`；未結警報／工單在即時警報與追蹤 |
 | Demo Messenger | 站內執行緒 + `/api/messenger` | 證據、升級、控制 |
 | Lark | 頻道登錄 + 模擬 Webhook／情報 outbox | 依嚴重度路由 |
 | 市場情報來源 | 啟發式 5 分鐘掃描 | 卡片格式 i–vi |
@@ -889,7 +896,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 監控 | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
 | 監控 | `/admin/monitor-2` | 統一登錄＋`MonitorActions`、`/api/monitor`、`/api/detectors` | `monitor.read`／`monitor.operate` | §16.5 |
 | 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
-| 監控 | `/admin/alerts` | `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
+| 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
 | 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
 | AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
 | AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
@@ -926,7 +933,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 4. 排隊訓練／重新校正工作
 5. 標註 RCA 品質回饋（CORRECT／INCORRECT／PARTIAL）
 
-此頁是**治理**，不是即時 RCA 工作台（`/admin/ai-analyses`），也不是介入櫃檯（`/admin/interventions`）。
+此頁是**治理**，不是即時 RCA 工作台（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`），也不是介入櫃檯（`/admin/interventions`）。
 
 ### 8.2 路由與元件
 
@@ -1260,10 +1267,16 @@ GitHub Pages（靜態匯出）沒有這些 API。UI 必須降級：示範工作�
 | `GET/POST /api/messenger` | 執行緒＋內嵌動作 |
 | `GET/POST /api/lark` | 頻道登錄／模擬通知 |
 | `GET/POST /api/market-intel` | 掃描／發現／寄件匣 |
-| `GET/POST /api/detectors` | 全部執行、切換啟用 |
-| `GET/POST /api/monitor` | `sync_monitor2`、`ack_alert`、`update_ticket` |
+| `GET/POST /api/monitor` | Monitor 中心主 API：`run_detectors`、`toggle_pause`、`update_thresholds`、`sync_monitor2`、`ack_alert`、`update_ticket` |
+| `GET/POST /api/detectors` | 舊版偵測器 CRUD／執行（UI 在 Monitor 2.0） |
+| `GET/POST /api/escalation` | 路徑＋維度係數＋ESC-DEFAULT 探測 |
+| `GET/POST /api/roles` | 可編輯 RBAC（`update_role`；禁止 AI 寫入） |
+| `GET/POST /api/org` | 部門＋團隊；`update_team` 任務／值班 |
+| `POST /api/audit/rollback` | 依 `audit_id` 還原變更前快照 |
+| `GET/POST /api/ai-improve` | 如何改進審查聊天 |
+| `POST /api/ai-chat` | 劃選 AI 聊天 |
 | `POST /api/dashboard` | 重建每日指標 |
-| `GET/POST /api/rag` | 清單、檢索、新增、更新 |
+| `GET/POST /api/rag` | 清單、檢索；人類寫入／propose_rag（AI 封鎖） |
 | `GET/POST /api/users` | 目錄＋新增／停用 |
 | `PATCH /api/settings` | 單一鍵儲存 |
 | 干預 | 伺服器動作 `decideInterventionAction`（核准／駁回） |
@@ -1311,7 +1324,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.5 Monitor 2.0 中心（統一指標＋偵測器登錄）
 
-單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**全部執行**／**同步**／**暫停**；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。API：`POST /api/monitor`、`POST /api/detectors`。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。
+單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**執行全部指標**／**同步**／**暫停**；門檻編輯經 `IndicatorThresholdEditor`；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。主 API：`POST /api/monitor`（`run_detectors`／`toggle_pause`／`update_thresholds`／`sync_monitor2`）。舊 `POST /api/detectors` 仍在。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。手機：`sm:hidden` 卡片＋`sm:block` 表格。
 
 ### 16.6 偵測器網址（轉址）
 
@@ -1395,12 +1408,12 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.2 | 2026-10-01 | §9 挑戰者、§11 Messenger、§12 市場情報、文件／i18n／行動、重編號 |
 | 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、demo platform owner 負責人、Pages 登入 |
 | 1.5 | 2026-10-04 | TSD 流程圖與序列圖；mermaid 改 SVG 渲染 |
+| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
+| 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
-
-| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
-| 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
 5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.5"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"17"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"TSD","markdownEn":"$12","markdownZh":"$13"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
