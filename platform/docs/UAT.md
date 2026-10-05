@@ -44,7 +44,7 @@ graph TD
 | 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — the person who proposes a change cannot approve it | AI Admin, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | Market Intelligence — Scan now must finish (including on GitHub Pages) | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI must not be allowed near human-only data | AI Access Security |
-| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and Spine tell the same story as messenger | Audit Log, Admin Home spine |
+| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and home spine tell the same story as messenger | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | English and Traditional Chinese documentation both render | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
 | 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, Realtime Alert & Tracker |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | Every serious analysis in this UAT window has a second AI | Realtime Alert & Tracker |
@@ -66,7 +66,7 @@ graph TD
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | Human Intervention queue (the admin side of messenger controls) | Human Intervention |
 | 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark Integration — channels vs the in-app messenger demo | Lark Integration, Demo Messenger |
 | 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | Escalation routes registry | Escalation Routes |
-| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | Organisation — departments, teams, users and roles | BU and Teams, Users, Roles & Permissions |
+| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | Organisation — BU and Teams, users and roles | BU and Teams, Users, Roles & Permissions |
 | 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | Data sources registry (internal and external) | Data Sources |
 | 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | Platform settings are grouped (not a flat dump) | Platform Settings |
 | 41 | UAT-41 | 446m | 10m | Medium | AI + Risk | UAT-06; RAG seeded | RAG Knowledge Base — browse the corpus the AI cites | RAG Knowledge Base |
@@ -105,12 +105,12 @@ graph TD
 
 **Steps**
 
-1. Open Monitor 2.0 from the left pane (Monitor & risk group).
-2. Find these codes (search on the page or scroll): M2-EQ-001 (equity/drawdown), M2-MRG-014 (margin), M2-COPY-009 (copy concentration). Note the product (CFD or Crypto) and risk domain next to each.
-3. Open Realtime Alert & Tracker. You should see a list of cards with severity (CRITICAL / BREACH / WARN), status (OPEN and so on), and a Monitor ticket id.
+1. Open Monitor 2.0 from the left pane (Monitor & risk group). Confirm it is a single indicator + detector registry (Run all / Sync / Pause) — there are no Alerts/Tickets tabs here; open work lives on Realtime Alert & Tracker.
+2. Find these codes (search on the page or scroll): M2-EQ-001 (equity/drawdown), M2-MRG-014 (margin), M2-COPY-009 (copy concentration). Note the product (CFD or Crypto), risk domain, and detector code next to each.
+3. Open Realtime Alert & Tracker (left nav — not a Monitor 2.0 tab). You should see a list of cards with severity (CRITICAL / BREACH / WARN), status (OPEN and so on), and a Monitor ticket id.
 4. Write down how many OPEN (or ACKNOWLEDGED) alerts you see. That number is your baseline for later cases.
 
-**Pass:** At least one indicator each for equity, margin and copy concentration. Realtime Alert & Tracker page loads with real rows.
+**Pass:** At least one indicator each for equity, margin and copy concentration. Monitor has no Alerts/Tickets tabs. Realtime Alert & Tracker page loads with real rows.
 **Evidence:** The three indicator IDs in your notes; baseline open-alert count.
 
 ### UAT-03 — Run a skill playbook on a copy-trading breach
@@ -614,13 +614,13 @@ graph TD
 
 **Steps**
 
-1. Open Monitor 2.0 (/admin/detectors redirects here). You should see the unified indicator table with detector codes, thresholds, and Pause.
-2. On localhost click Run all indicators. Wait until the page refreshes or a success line appears.
+1. Open Monitor 2.0 (`/admin/detectors` redirects here — there is no Detectors left-nav row). You should see the unified indicator + detector table with detector codes, thresholds, Pause, and recent runs.
+2. On localhost click **Run all indicators**. Wait until the page refreshes or a success line appears.
 3. At least some rows should show last status OK, WARN or BREACH — not all blank. Recent sampling runs should list below.
-4. If any WARN/BREACH fired, open Realtime Alert & Tracker and look for a matching new row. The left-nav unread badge may also tick up.
+4. If any WARN/BREACH fired, open Realtime Alert & Tracker (not a Monitor tab) and look for a matching new row. The left-nav unread badge may also tick up.
 5. On Pages, Run all may be demo/read-only. Pass if the registry is populated and the control explains itself; fail if the page is empty.
 
-**Pass:** Indicator registry populated; localhost run completes; WARN/BREACH (if any) show up downstream.
+**Pass:** Indicator registry populated; no Detectors nav row; localhost run completes; WARN/BREACH (if any) show up on Realtime Alert & Tracker.
 **Evidence:** Screenshot of Monitor 2.0 table plus a downstream alert/analysis if one fired.
 
 ### UAT-32 — Risk domains catalogue with P0–P3 scenarios

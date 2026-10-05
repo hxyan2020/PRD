@@ -44,7 +44,7 @@ graph TD
 | 13 | UAT-13 | 139m | 20m | Critical | AI Engineer + Risk Owner | Two distinct users with ai.admin / checker capability | AI Admin — 提出變更的人不能自己核准 | AI Admin, Users, Audit Log |
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | 市場情報 —「立即掃描」必須跑完（含 GitHub Pages） | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
-| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
+| 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與首頁脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | 英文與繁中文件都能顯示 | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
 | 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, Realtime Alert & Tracker |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | 本輪 UAT 每個嚴重分析都有第二 AI | Realtime Alert & Tracker |
@@ -105,12 +105,12 @@ graph TD
 
 **步驟**
 
-1. 由左側「監控與風險」開啟 Monitor 2.0。
-2. 找到 M2-EQ-001（股權／回撤）、M2-MRG-014（保證金）、M2-COPY-009（跟單集中度），記下產品與風險領域。
-3. 開啟即時警報與追蹤。應看到嚴重度、狀態與 Monitor 工單編號的卡片列表。
+1. 由左側「監控與風險」開啟 Monitor 2.0。確認是單一指標＋偵測器登錄（全部執行／同步／暫停）— 這裡沒有警報／工單分頁；未結工作在「即時警報與追蹤」。
+2. 找到 M2-EQ-001（股權／回撤）、M2-MRG-014（保證金）、M2-COPY-009（跟單集中度），記下產品、風險領域與偵測器代碼。
+3. 開啟即時警報與追蹤（左側選單 — 不是 Monitor 2.0 分頁）。應看到嚴重度、狀態與 Monitor 工單編號的卡片列表。
 4. 記下目前 OPEN（或已確認）筆數，作為後續基線。
 
-**通過：** 股權／保證金／跟單各至少一項指標；即時警報與追蹤有真實列。
+**通過：** 股權／保證金／跟單各至少一項指標；Monitor 無警報／工單分頁；即時警報與追蹤有真實列。
 **證據：** 三個指標 ID；基線 OPEN 數量。
 
 ### UAT-03 — 對跟單違規跑技能劇本
@@ -614,13 +614,13 @@ graph TD
 
 **步驟**
 
-1. 開啟 Monitor 2.0（`/admin/detectors` 會導向此頁），應有統一指標表（偵測器代碼、門檻、暫停）。
-2. 本機點「執行全部指標」，等到重新整理或成功列。
+1. 開啟 Monitor 2.0（`/admin/detectors` 會導向此頁 — 左側無偵測器列），應有統一指標＋偵測器表（代碼、門檻、暫停、近期執行）。
+2. 本機點 **執行全部指標**，等到重新整理或成功列。
 3. 列上應有 OK／WARN／BREACH，不可全空白；下方應有最近採樣紀錄。
-4. 若有 WARN／BREACH，到即時警報與追蹤找對應新列；左側未讀數字也可能增加。
+4. 若有 WARN／BREACH，到即時警報與追蹤（不是 Monitor 分頁）找對應新列；左側未讀數字也可能增加。
 5. Pages 上可能唯讀。登錄有資料且控制項有說明即過；空白頁失敗。
 
-**通過：** 指標登錄有資料；本機執行完成；若有 WARN／BREACH 會出現在下游。
+**通過：** 指標登錄有資料；左側無偵測器列；本機執行完成；若有 WARN／BREACH 出現在即時警報與追蹤。
 **證據：** Monitor 2.0 表截圖；若觸發則附下游警報／分析。
 
 ### UAT-32 — 風險領域目錄（含 P0–P3 情境）
