@@ -28,13 +28,16 @@ export function statusClass(status: string) {
     case "WARN":
     case "ACKNOWLEDGED":
     case "IN_PROGRESS":
+    case "DEGRADED":
       return "bg-amber-50 text-amber-900 border-amber-200";
     case "BREACH":
     case "ESCALATED":
     case "OPEN":
+    case "DOWN":
       return "bg-orange-50 text-orange-800 border-orange-200";
     case "DISABLED":
     case "INACTIVE":
+    case "UNKNOWN":
       return "bg-slate-100 text-slate-600 border-slate-200";
     case "PENDING_ADMIN":
     case "AWAITING_CHECKER":

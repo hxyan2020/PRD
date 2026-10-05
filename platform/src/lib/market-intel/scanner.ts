@@ -7,6 +7,7 @@ import {
   MARKET_INTEL_SOURCES,
   type ScrapedCandidate,
 } from "@/lib/market-intel/sources";
+import { DEMO_SOURCE_HEALTH } from "@/lib/market-intel/source-brand";
 import { createAlarmAndAnalyze } from "@/lib/ai/analyze";
 import { logSpineEvent } from "@/lib/ai/spine";
 
@@ -36,8 +37,9 @@ export function seedMarketIntel(db = getDb()) {
   ensureMarketIntelSchema(db);
 
   const upsertSrc = db.prepare(
-    `INSERT INTO market_intel_sources (source_key, name, channel_type, asset_classes_json, url, enabled)
-     VALUES (?, ?, ?, ?, ?, 1)
+    `INSERT INTO market_intel_sources
+       (source_key, name, channel_type, asset_classes_json, url, enabled, health_status, health_detail)
+     VALUES (?, ?, ?, ?, ?, 1, ?, ?)
      ON CONFLICT(source_key) DO UPDATE SET
        name = excluded.name,
        channel_type = excluded.channel_type,
@@ -45,8 +47,33 @@ export function seedMarketIntel(db = getDb()) {
        url = excluded.url`
   );
   for (const s of MARKET_INTEL_SOURCES) {
-    upsertSrc.run(s.source_key, s.name, s.channel_type, JSON.stringify(s.asset_classes), s.url);
+    const demo = DEMO_SOURCE_HEALTH[s.source_key];
+    upsertSrc.run(
+      s.source_key,
+      s.name,
+      s.channel_type,
+      JSON.stringify(s.asset_classes),
+      s.url,
+      demo?.status ?? "HEALTHY",
+      demo?.detail ?? "Catalog seed — awaiting next scrape"
+    );
   }
+  // Apply demo health only when still UNKNOWN / catalog-seeded (never overwrite live scrape health).
+  for (const [key, demo] of Object.entries(DEMO_SOURCE_HEALTH)) {
+    db.prepare(
+      `UPDATE market_intel_sources
+       SET health_status = ?, health_detail = ?
+       WHERE source_key = ?
+         AND (health_status = 'UNKNOWN' OR health_detail LIKE 'Catalog seed%')`
+    ).run(demo.status, demo.detail, key);
+  }
+  // Existing rows with a recent scrape but no health yet → HEALTHY.
+  db.prepare(
+    `UPDATE market_intel_sources
+     SET health_status = 'HEALTHY',
+         health_detail = COALESCE(NULLIF(health_detail, ''), 'Last scrape OK')
+     WHERE health_status = 'UNKNOWN' AND last_scraped_at IS NOT NULL`
+  ).run();
 
   // Dedicated Lark / messenger group
   const existing = db
@@ -172,11 +199,33 @@ async function scrapeCandidates(): Promise<{ checked: number; candidates: Scrape
         if (res && (res.ok || res.status < 500)) {
           liveHints.push(src.source_key);
           getDb()
-            .prepare(`UPDATE market_intel_sources SET last_scraped_at = datetime('now') WHERE source_key = ?`)
-            .run(src.source_key);
+            .prepare(
+              `UPDATE market_intel_sources
+               SET last_scraped_at = datetime('now'),
+                   health_status = 'HEALTHY',
+                   health_detail = ?
+               WHERE source_key = ?`
+            )
+            .run(`HTTP ${res.status} OK`, src.source_key);
+        } else {
+          getDb()
+            .prepare(
+              `UPDATE market_intel_sources
+               SET health_status = 'DOWN',
+                   health_detail = ?
+               WHERE source_key = ?`
+            )
+            .run(res ? `HTTP ${res.status}` : "Network unreachable", src.source_key);
         }
       } catch {
-        /* prototype: ignore network failures */
+        getDb()
+          .prepare(
+            `UPDATE market_intel_sources
+             SET health_status = 'DOWN',
+                 health_detail = 'Fetch aborted / error'
+             WHERE source_key = ?`
+          )
+          .run(src.source_key);
       }
     })
   );

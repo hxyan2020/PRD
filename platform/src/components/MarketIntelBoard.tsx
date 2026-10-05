@@ -4,10 +4,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
+import { SourceBrandMark } from "@/components/SourceBrandMark";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { navLabel, t } from "@/lib/i18n";
 import { isPublicSnapshot, isStaticExport } from "@/lib/static-export";
 import { runClientMarketIntelScan } from "@/lib/market-intel/demo-scan";
+import { resolveSourceHealth } from "@/lib/market-intel/source-brand";
 import { bumpNavBadge } from "@/lib/nav-badges";
 
 const MI_STORE = "crmp_mi_demo_v1";
@@ -48,6 +50,8 @@ type Source = {
   url: string | null;
   enabled: number;
   last_scraped_at: string | null;
+  health_status?: string | null;
+  health_detail?: string | null;
 };
 
 type Outbox = {
@@ -83,6 +87,11 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
   const { locale } = useUiLocale();
   const [snapshot, setSnapshot] = useState(isStaticExport());
   const [tab, setTab] = useState<"findings" | "messenger" | "sources" | "scans">("findings");
+
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("tab");
+    if (q === "messenger" || q === "sources" || q === "scans" || q === "findings") setTab(q);
+  }, []);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -141,7 +150,12 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
     setScans((prev) => [...demo.scans, ...prev]);
     setOutbox((prev) => [...demo.outbox, ...prev]);
     setSources((prev) =>
-      prev.map((s) => ({ ...s, last_scraped_at: new Date().toISOString() }))
+      prev.map((s) => ({
+        ...s,
+        last_scraped_at: new Date().toISOString(),
+        health_status: s.enabled ? "HEALTHY" : "DISABLED",
+        health_detail: s.enabled ? "Demo scan touch" : s.health_detail,
+      }))
     );
     if (indicator) {
       const hits = demo.high_impact_count;
@@ -404,36 +418,69 @@ export function MarketIntelBoard({ initial }: { initial: BoardState }) {
       )}
 
       {tab === "sources" && (
-        <div className="panel overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-xs uppercase text-[var(--muted)] border-b border-[var(--line)]">
-                <th className="p-3">{t("common.source", locale)}</th>
-                <th className="p-3">{t("common.channel", locale)}</th>
-                <th className="p-3">{t("mi.assetClasses", locale)}</th>
-                <th className="p-3">{t("mi.lastScraped", locale)}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sources.map((s) => (
-                <tr key={s.source_key} className="border-b border-[var(--line)]">
-                  <td className="p-3">
-                    <div className="font-medium">{s.name}</div>
-                    {s.url && (
-                      <a className="text-xs underline text-[var(--muted)]" href={s.url} target="_blank" rel="noreferrer">
-                        {s.url}
-                      </a>
-                    )}
-                  </td>
-                  <td className="p-3">{s.channel_type}</td>
-                  <td className="p-3">
-                    {(JSON.parse(s.asset_classes_json || "[]") as string[]).join(", ")}
-                  </td>
-                  <td className="p-3 text-[var(--muted)]">{s.last_scraped_at || "—"}</td>
+        <div className="space-y-3" data-testid="mi-sources-table">
+          <p className="text-sm text-[var(--muted)] px-1">{t("mi.sourceHealthHint", locale)}</p>
+          <div className="panel overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-xs uppercase text-[var(--muted)] border-b border-[var(--line)]">
+                  <th className="p-3">{t("common.source", locale)}</th>
+                  <th className="p-3">{t("mi.sourceHealth", locale)}</th>
+                  <th className="p-3">{t("common.channel", locale)}</th>
+                  <th className="p-3">{t("mi.assetClasses", locale)}</th>
+                  <th className="p-3">{t("mi.lastScraped", locale)}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sources.map((s) => {
+                  const health = resolveSourceHealth({
+                    enabled: s.enabled,
+                    last_scraped_at: s.last_scraped_at,
+                    health_status: s.health_status,
+                    source_key: s.source_key,
+                  });
+                  const detail = s.health_detail || health.detail;
+                  return (
+                    <tr key={s.source_key} className="border-b border-[var(--line)]" data-testid={`mi-source-${s.source_key}`}>
+                      <td className="p-3">
+                        <div className="flex items-start gap-3 min-w-[14rem]">
+                          <SourceBrandMark sourceKey={s.source_key} name={s.name} url={s.url} />
+                          <div className="min-w-0">
+                            <div className="font-medium">{s.name}</div>
+                            {s.url && (
+                              <a
+                                className="text-xs underline text-[var(--muted)] break-all"
+                                href={s.url}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {s.url}
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <StatusBadge value={health.status} />
+                        {detail ? (
+                          <div className="text-[11px] text-[var(--muted)] mt-1 max-w-[14rem] leading-snug">
+                            {detail}
+                          </div>
+                        ) : null}
+                      </td>
+                      <td className="p-3 whitespace-nowrap">{s.channel_type}</td>
+                      <td className="p-3">
+                        {(JSON.parse(s.asset_classes_json || "[]") as string[]).join(", ")}
+                      </td>
+                      <td className="p-3 text-[var(--muted)] whitespace-nowrap tabular-nums">
+                        {s.last_scraped_at || "—"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
