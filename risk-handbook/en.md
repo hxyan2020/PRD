@@ -1,9 +1,10 @@
 # Crypto Exchange Risk Management — BU User Handbook
 
+**Venue:** Finprime **V-Exchange** (ADGM / Mauritius licensed entity; matching + clearing/settlement + risk)  
 **Audience:** Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody  
-**Scope:** Full catalogue covers Spot · Margin · Perps; **Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access**  
+**Scope:** Full catalogue covers Spot · USD Margin · cross-ccy margin · portfolio margin · Options · Wealth · Perps; **Phase 1 production (green) = Perpetual contracts + Perp Account (USD/USDT) + matching / risk & liquidation / clearing**. Access = 2B broker / institution / MM; 2C end users enter **through a broker** (no public self-serve).  
 **Public site:** [https://hxyan2020.github.io/PRD/risk-handbook/](https://hxyan2020.github.io/PRD/risk-handbook/) · **All URLs:** [https://hxyan2020.github.io/PRD/risk-handbook/urls.html](https://hxyan2020.github.io/PRD/risk-handbook/urls.html) · **Admin URLs:** [https://hxyan2020.github.io/PRD/risk-handbook/admin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/)  
-**Version:** 2.1 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
+**Version:** 2.2 · **Owner:** Chief Risk Officer (2nd line) · **Review cycle:** Quarterly or after material incident  
 
 > This handbook is the **operating playbook**: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does **not** replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.  
 > **Numbers in this handbook are teaching examples.** Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.
@@ -31,54 +32,84 @@
 
 ## Phase 1 operating scope (labels used throughout)
 
-> **Phase 1 is live / in-scope now.** Later-phase content stays in this handbook for readiness but is marked **`[Phase 2+]`** (or later). Do not enable Phase 2+ flows in production without a formal phase-gate sign-off (Risk **A** + CP + Product).
+> **Phase 1 is live / in-scope now** = the **green** boxes on the V-Exchange map. Later-phase content stays in this handbook for readiness but is marked **`[Phase 2+]`** (or later). Do not enable Phase 2+ flows in production without a formal phase-gate sign-off (Risk **A** + CP + Product).
 
-### Phase 1 — in scope
+### Phase 1 — in scope (green)
 
 | Area | Phase 1 rule |
 |------|----------------|
-| **Products / instruments** | **Perpetuals only.** Includes **XAUUSD perps** and **other approved perp contracts**. No Spot trading book and no Margin (cross/isolated) lending book in Phase 1. |
-| **Account opening** | **Invite-only** and/or **through brokers** (IB / introducing broker / white-label broker channel). No open public self-serve signup. |
-| **Trading access** | Users may trade only after invite acceptance **or** broker-introduced onboarding is complete and risk/compliance gates clear. |
-| **Primary BUs on critical path** | Futures/Perps Product & Liq Ops · Matching · Risk Engine · Risk Ops · Broker/Invite ops (CP+Product) · Wallet/Settlement as needed for collateral/PnL · Surveillance |
+| **Venue** | **Finprime V-Exchange.** Entity: ADGM and/or Mauritius licence. Infrastructure: matching + clearing/settlement + risk. |
+| **Product (green)** | **Perpetual contracts only** (永续合约), including **XAUUSD** and other approved perps. |
+| **Account (green)** | **Perp Account** (永续合约账户). Transfers **into** this account: **USD / USDT only**. |
+| **Trading stack (green)** | Matching (open / hold / close) · Risk & liquidation · Clearing & settlement. |
+| **2B access** | **Broker 接入** (Vantage and other sub-brands; external white-label / API) · **Institutional direct** (hedge funds / HNW; **offline open, API only**) · **MM 接入** (partner liquidity). All 2B opens are **offline**. |
+| **2C access** | Terminal users enter **through a broker**. No public self-serve signup. |
+| **Funding rails (needed for green)** | User **deposit** → **MT account** and/or **X-fund** → USD/USDT transfer into Perp Account. User **withdraw** after trading. MT ↔ X-fund may transfer. |
+| **Primary BUs** | Futures/Perps Product & Liq Ops · Matching · Risk Engine · Clearing · Risk Ops · Broker/Institution/MM ops (CP+Product) · Wallet/Treasury on MT–X-fund–cash rails · Surveillance |
 
 
-**Figure — Phase 1 production scope (what is on vs labelled later)**
+**Figure — V-Exchange Phase 1 (green) vs later products**
+
+```mermaid
+flowchart TB
+  subgraph products ["Exchange product map"]
+    Perps["Perps GREEN"]
+    Spot["Spot"]
+    M1["USD Margin iso+cross"]
+    M2["Cross-ccy margin"]
+    PM["Portfolio margin"]
+    Opt["Options"]
+    WM["Wealth"]
+  end
+  Perps --> VX["Finprime V-Exchange"]
+  Spot -.-> P2["Phase 2+"]
+  M1 -.-> P2
+  M2 -.-> P2
+  PM -.-> P2
+  Opt -.-> P2
+  WM -.-> P2
+```
 
 ```mermaid
 flowchart LR
-  subgraph access ["Account open"]
-    I["Invite code"] --> CP["KYC / CP clear"]
-    B["Broker / IB"] --> CP
+  subgraph b2c ["2C"]
+    U["Terminal user"] --> BR["Broker 接入"]
   end
-  CP --> E["Entitlement: perps only"]
-  E --> P["XAUUSD + other approved perps"]
-  P --> ME["Matching + risk engine"]
-  ME --> LIQ["Liq / insurance / ADL"]
-  Spot["Spot book"] -.-> P2["Phase 2+"]
-  Mar["Margin borrow"] -.-> P2
-  Pub["Public self-serve signup"] -.-> P2
+  subgraph b2b ["2B offline"]
+    BR
+    INST["Institution API-only"]
+    MM["MM 接入"]
+  end
+  BR --> KYC["KYC / Open Account"]
+  INST --> KYC
+  MM --> KYC
+  KYC --> PA["Perp Account GREEN"]
+  PA --> ME["Matching + Risk + Clearing GREEN"]
 ```
 
 ### Phase 1 — out of production (keep playbooks; label only)
 
 | Area | Label | Note |
 |------|-------|------|
-| Spot markets, spot listing/delist go-live | **`[Phase 2+]`** | Playbooks SP-*, LD-05, spot KRIs remain for future |
-| Margin borrow / LTV / interest | **`[Phase 2+]`** | MG-* remain for future |
-| Public retail self-serve onboarding | **`[Phase 2+]`** | Phase 1 = invite + broker only |
-| Non-perp products (options, earn, etc. if any) | **`[Phase 2+]`** | Unless separately gated |
+| Spot markets, spot listing/delist go-live | **`[Phase 2+]`** | Playbooks SP-*, LD-05, spot KRIs remain |
+| USD Margin isolated + cross; borrow / LTV / interest | **`[Phase 2+]`** | MG-* remain |
+| Cross-currency margin; portfolio margin / unified account | **`[Phase 2+]`** | Do not turn on netting across products |
+| Options; wealth / 理财; other products | **`[Phase 2+]`** | Unless separately gated |
+| Public 2C self-serve registration | **`[Phase 2+]`** | 2C = broker-introduced only |
 
 ### Phase 1 control implications (operators)
 
-1. **Listing / go-live:** only **perp** pipeline (incl. **XAUUSD**) and broker/invite entitlement configs are production-critical.  
-2. **Access control:** reject or hold any account that is neither **invite-redeemed** nor **broker-linked**.  
-3. **KRIs / SOPs:** Spot- and Margin-tagged items are still documented — treat as **dormant** unless a Phase 2+ waiver exists. Prefer Perps + access KRIs in daily MI.  
-4. **XAUUSD perps:** apply full Perps controls (mark/index, funding, leverage brackets, insurance/ADL) plus commodity/FX-hours awareness (session gaps, weekend/holiday liquidity).
+1. **Listing / go-live:** only the **perp** pipeline (incl. **XAUUSD**) is production-critical.  
+2. **Access control:** reject or hold any UID that is not tagged **broker**, **institution**, or **MM**. Public “register” live = **L3**.  
+3. **Funding:** only **USD/USDT** may be transferred into the Perp Account (from MT account or X-fund). Other assets stay off this rail.  
+4. **KRIs / SOPs:** Spot-, Margin-, options-, and wealth-tagged items are still documented — treat as **dormant** unless a Phase 2+ waiver exists. Prefer Perps + access + funding-rail KRIs in daily MI.  
+5. **XAUUSD perps:** full Perps controls (mark/index, funding, leverage brackets, insurance/ADL) plus commodity/FX-hours awareness (session gaps, weekend/holiday liquidity).
 
 **What that means in everyday language**
 
-Think of the exchange as a shop that, **today**, only sells one kind of product: **perpetual futures** (contracts that track a price and never expire). Gold versus US dollar (**XAUUSD**) is one of those products. A customer cannot walk in off the street. They need an **invite code** or a **broker** who already has a contract with us. After identity checks (KYC — “know your customer”), they may trade perps only. Buying coins on a spot market, or borrowing money to trade (margin), is written down here so teams can prepare — but those switches stay **off** until a later phase is formally approved.
+V-Exchange is a licensed shop (ADGM / Mauritius). **Today the green lights are only perpetual futures** — contracts that track a price and never expire. Gold versus US dollar (**XAUUSD**) is one of those. A retail customer does **not** walk in off the street. They come through a **broker** (for example a Vantage sub-brand, or an external white-label). Hedge funds and large clients open **offline** and trade **by API**. Market makers plug in on their own path.
+
+Money does not drop straight into a trading wallet. The customer **deposits** into an **MT account** or **X-fund**, then **transfers USD or USDT** into a **Perp Account**. That account is what matching, liquidation, and clearing see. Spot, USD margin (isolated and cross), cross-currency margin, portfolio margin, options, and wealth products are drawn on the map so teams can prepare — those switches stay **off**.
 
 If you see a ticket about Spot or Margin, treat it as **homework for later**, not a live control, unless Risk has signed a Phase 2+ waiver.
 
@@ -90,7 +121,7 @@ You do not need a trading background to use this book. You **do** need to know w
 
 ### What this company is doing
 
-Customers send us **collateral** (usually stablecoins or crypto). They open **positions** — they go **long** if they think the price will rise, or **short** if they think it will fall. Because they can use **leverage**, a small price move can wipe out their collateral. When that happens the system **liquidates** them: it forcibly closes the position so the loss does not spill onto other customers or the firm.
+This is **Finprime V-Exchange**. Customers who are allowed in open a **Perp Account**, send **USD/USDT** into it, and trade **perpetual futures**. They go **long** if they think the price will rise, or **short** if they think it will fall. Because they can use **leverage**, a small price move can wipe out their collateral. When that happens the system **liquidates** them: it forcibly closes the position so the loss does not spill onto other customers or the firm.
 
 Your job, in one sentence: **keep client money safe, keep the matching engine honest, and stop a bad price or a bad config from cascading.**
 
@@ -119,15 +150,15 @@ Your job, in one sentence: **keep client money safe, keep the matching engine ho
 
 ### How money actually moves (simple picture)
 
-1. **Invite or broker** lets a person open an account.  
-2. **KYC / Compliance** checks they are allowed to trade.  
-3. They deposit collateral into **wallet / custody**.  
-4. They send orders. The **matching engine** turns two orders into a trade.  
+1. A **2C** person arrives through a **broker** (Vantage sub-brand or external white-label). A **2B** hedge fund / HNW opens **offline** and gets **API only**. An **MM** joins on the liquidity path.  
+2. **KYC / Compliance** then **Open Account**.  
+3. They **deposit** into an **MT account** or **X-fund**, then **transfer USD or USDT only** into the **Perp Account**.  
+4. They send orders. The **matching engine** turns two orders into a trade (open / hold / close).  
 5. The **risk engine** constantly asks: “If price jumps against them, do they still have enough collateral?”  
-6. If the answer becomes no, **liquidation** starts. Insurance (then ADL) covers leftovers.  
-7. At end of day, **reconciliation** checks our books against wallets and banks so we do not pay out money we do not have.
+6. If the answer becomes no, **liquidation** starts. Insurance (then ADL) covers leftovers. **Clearing & settlement** books the result.  
+7. They **withdraw** from the funding rails. At end of day, **reconciliation** checks our books against wallets and banks so we do not pay out money we do not have.
 
-Phase 1 stops at perps. There is no “buy Bitcoin and withdraw it as a spot customer” in production yet.
+Phase 1 stops at perps. There is no “buy Bitcoin on spot and withdraw it as a spot customer” in production yet.
 
 ### How to read a procedure (SOP)
 
@@ -186,7 +217,7 @@ That is the whole job of a first night: **see, timestamp, outside world, contain
 | Eng / SRE (Matching, Risk Engine, Wallet) | Your tech BU chapter + failover SOPs |
 | Compliance / Surveillance | Compliance BU + market-abuse SOPs |
 | Listing / Delisting PIC | Listing BU chapter end-to-end |
-| Phase 1 PIC / launch crew | **Phase 1 operating scope** + [If you are new](#if-you-are-new-to-exchange-risk) + §3.3 Perps + §4.4 + invite/broker SOPs |
+| Phase 1 PIC / launch crew | **Phase 1 operating scope** + [If you are new](#if-you-are-new-to-exchange-risk) + §3.3 Perps + §4.4 + ACC (broker / institution / MM) |
 
 If a section number looks like “§6.2”, it means “chapter 6, SOP G02 (trading halt)”. Codes like **PF-K01** are indicator IDs you can paste into a ticket. Codes like **SOP-G01** are procedures. You do not have to memorise them; on this page they are **clickable** and jump to that card.
 
@@ -197,7 +228,7 @@ If a section number looks like “§6.2”, it means “chapter 6, SOP G02 (trad
 3. **Instrument-aware** — Spot, Margin, and Perps are different machines. Copying a Spot price-band onto a perp, or a perp liquidation onto margin, can liquidate the wrong people. Always tag **SPOT / MARGIN / PERP** on the ticket.  
 4. **Pre-trade / at-trade / post-trade** — *before* the order (limits, KYC), *while* it matches (bands, STP, rate limits), *after* (alerts, recon, surveillance). One layer failing should not be the only layer.  
 5. **Client assets first** — if you must choose between keeping withdrawals honest and keeping a revenue feature on, protect withdrawals and custody.  
-6. **Phase 1 product & access gates** — production trading = **perps only** (including **XAUUSD**); accounts = **invite-only or via brokers**. Spot, Margin, and public signup stay **`[Phase 2+]`** until a phase-gate sign-off.
+6. **Phase 1 product & access gates** — production trading = **perps only** (including **XAUUSD**) on a **Perp Account** funded in **USD/USDT**. Access = **broker / institution / MM** (2C via broker). Spot, USD margin, cross-ccy margin, portfolio margin, options, wealth, and public signup stay **`[Phase 2+]`** until a phase-gate sign-off.
 
 ---
 
@@ -350,15 +381,21 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-  subgraph p1 ["Phase 1 ON"]
+  subgraph p1 ["Phase 1 ON (green)"]
     Perps["Perps incl. XAUUSD"]
+    PA["Perp Account USD/USDT"]
   end
   subgraph p2 ["Phase 2+ documented / dormant"]
     Spot["Spot"]
-    Margin["Cross / Isolated margin"]
-    Public["Public signup"]
+    Margin["USD Margin iso+cross"]
+    XMgn["Cross-ccy / portfolio margin"]
+    Opt["Options / Wealth"]
+    Public["Public 2C signup"]
   end
-  User["User"] -->|invite or broker only| Perps
+  User["2C user"] --> BR["Broker"]
+  BR --> PA
+  Inst["Institution / MM"] --> PA
+  PA --> Perps
   User -.->|blocked| Spot
   User -.->|blocked| Margin
   User -.->|blocked| Public
@@ -383,8 +420,9 @@ Each chapter follows the same template so one team does not write a novel while 
 
 ```mermaid
 flowchart LR
-  ACC["Invite / Broker + CP"] --> UID["Trade-enabled UID"]
-  UID --> ME["Matching ME"]
+  ACC["Broker / Inst / MM + CP"] --> OA["Open Account"]
+  OA --> PA["Perp Account"]
+  PA --> ME["Matching ME"]
   ME --> RE["Risk engine RE"]
   RE --> FUT["Futures TO / PM"]
   FUT --> RO["RO / RO-OPS"]
@@ -573,7 +611,7 @@ flowchart LR
 
 ### 4.4 Futures / Perps Product & Liquidation Ops — PM-FUT / RO / TO-FUT `[Phase 1 — primary]`
 
-> Phase 1 critical path: **XAUUSD perps** + other approved perps; invite/broker traders only.
+> Phase 1 critical path: **XAUUSD perps** + other approved perps on the **Perp Account**; 2C via broker; 2B institution / MM.
 
 **In plain English:** this team owns the *product* you are actually running today. If mark price, leverage, funding, insurance, or ADL is wrong, it is this chapter plus Risk Engine (§4.6). Read it even if your day job is not “futures.”
 
@@ -847,7 +885,7 @@ flowchart LR
 
 #### In scope
 - KYC/AML, sanctions, travel rule
-- **Phase 1 access:** invite-code redemption controls; **broker / IB** introduced accounts; block public self-serve signup
+- **Phase 1 access:** broker / sub-brand 2C (ACC-01); institutional direct API (ACC-02); MM access (ACC-04); block public self-serve signup
 - Trade surveillance (spoofing, layering, wash, insider)
 - Market abuse investigations across Spot / Margin / Perps
 - Regulatory reporting liaison
@@ -900,10 +938,12 @@ flowchart LR
 
 ### 4.11 Liquidity / Market Making Ops — MM
 
+> Phase 1: MM **接入** is live as a 2B path onto **perps** (ACC-04). Spot MM SLAs stay `[Phase 2+]`.
+
 **In plain English:** a market maker is paid (or contracted) to keep a **buy price and a sell price** on the book so other people can trade. If the gap between those prices suddenly explodes, or the book is empty, first ask “is the maker still alive (heartbeat)?” before you decide the whole market crashed.
 
 #### In scope
-- MM agreement SLAs (depth, spread, uptime) for Spot & Perps
+- MM agreement SLAs (depth, spread, uptime) — **Phase 1: perps**; Spot `[Phase 2+]`
 - Inventory & adverse selection monitoring
 - Cross-venue arb inventory risk if MM is internal/affiliated (Chinese walls with Risk)
 
@@ -1182,7 +1222,7 @@ flowchart TB
 ### 6.6 SOP-G06 — New product / instrument approval
 
 
-**Figure — SOP-G06 new product gates (Phase 1 = perps + invite/broker)**
+**Figure — SOP-G06 new product gates (Phase 1 = perps + broker/institution/MM)**
 
 ```mermaid
 flowchart LR
@@ -1191,7 +1231,7 @@ flowchart LR
   LI --> Prod["Product checklist"]
   Prod --> Eng["RE / ME dry-run"]
   Eng --> WO["Wallet ready"]
-  WO --> Acc["ACC-01 / ACC-02"]
+  WO --> Acc["ACC-01 / 02 / 04"]
   Acc --> Live["Perps live"]
   Spot["Spot / Margin"] -.-> P2["Phase 2+ hold"]
 ```
@@ -1214,9 +1254,9 @@ flowchart LR
 5. **RE/ME** put configs in staging and **sign a dry-run** (especially liquidation and ADL for perps).  
 6. **WO** confirms deposit/withdraw on the right chains if collateral needs them.  
 7. Soft launch / whitelist if used → **72h hypercare roster** named.  
-8. Only then open traffic. **Phase 1:** invite/broker cohort only, **not** public signup; **perps only**.
+8. Only then open traffic. **Phase 1:** broker / institution / MM cohort only, **not** public 2C signup; **perps only** on the Perp Account.
 
-> **Phase 1 gate note:** production instruments = **perps (incl. XAUUSD)**; access = **ACC-01/ACC-02**. Spot/Margin = **`[Phase 2+]`**.
+> **Phase 1 gate note:** production instruments = **perps (incl. XAUUSD)**; access = **ACC-01/02/04** (broker / institution / MM). Spot/Margin/options/wealth = **`[Phase 2+]`**.
 
 **Done when:** Pipeline stage = Live; monitoring KRIs wired; hypercare named.  
 **Escalate if:** Traffic is detected before clear → PL-K12 BREACH, force disable, L3 audit.
@@ -1229,7 +1269,7 @@ This section is the **desk-level recipes**. Global G01–G06 above are the share
 
 **If you have never done this work**
 
-1. Find your team's prefix: **RM** = risk ops, **PF** = perps (today's live product), **ACC** = invite/broker access, **ME** = matching engine, **RE** = risk/liquidation engine, **WA** = wallet, **SP** = spot `[Phase 2+]`, **MG** = margin lending `[Phase 2+]`.
+1. Find your team's prefix: **RM** = risk ops, **PF** = perps (today's live product), **ACC** = V-Exchange access (broker / institution / MM), **ME** = matching engine, **RE** = risk/liquidation engine, **WA** = wallet, **SP** = spot `[Phase 2+]`, **MG** = margin lending `[Phase 2+]`.
 2. Read **What this is** first. If you cannot explain the job in one sentence to a new colleague, do not start clicking.
 3. Read **When**. If that event has not happened, this recipe is not yours yet — do not improvise a similar-looking action.
 4. Then **How**, in order. A sentence marked *Why* is the reason the previous step exists, not decoration.
@@ -1473,7 +1513,7 @@ Do not push a new rate curve while MG-K07 (accrual exceptions) is red — you wi
 
 ##### PF-01 New perp contract launch
 
-**What this is:** putting a new contract (for example another metal pair, or a new BTC perp) in front of invite/broker users. Skipping a checkbox here is how you launch with no insurance or a one-venue index.
+**What this is:** putting a new contract (for example another metal pair, or a new BTC perp) in front of broker / institution / MM users. Skipping a checkbox here is how you launch with no insurance or a one-venue index.
 
 | Field | Detail |
 |-------|--------|
@@ -1746,56 +1786,68 @@ Compromised key: **kill it ≤2 min**, rotate, notify, forensics, L3/L4 war room
 
 ---
 
-#### ACCESS — Phase 1 invite & broker onboarding `[Phase 1]`
+#### ACCESS — Phase 1 V-Exchange onboarding `[Phase 1]`
 
-**Plain English:** in Phase 1 a person **cannot** create an account from the public website. They need an **invite code** or a **broker** (a firm that already signed a contract with us). After identity checks (KYC = know your customer), they may trade **perps only**. Spot and margin flags stay off. If you find a public “register” button working, that is an **L3 incident**, not a growth win.
+**Plain English:** in Phase 1 a person **cannot** create an account from the public website. **2C** terminal users come through a **broker** (Vantage or another sub-brand, or an external white-label / API broker). **Hedge funds / HNW** open **offline** and trade **by API**. **Market makers** join on the liquidity path. After KYC they get a **Perp Account** funded in **USD/USDT** only. Spot, USD margin, cross-ccy margin, portfolio margin, options, and wealth flags stay off. If you find a public “register” button working, that is an **L3 incident**, not a growth win.
 
-##### ACC-01 Invite-only account open
+##### ACC-01 Broker / sub-brand 2C onboarding
 
 | Field | Detail |
 |-------|--------|
-| **When** | Someone redeems an invite / allowlist code, or ops issues one |
-| **Who** | **R:** Product/Growth ops · **A CP:** identity gates · **A risk entitlements:** RO · **R enable trade:** RE/ENG flags |
-| **SLA** | Invite validate ≤1 min automated · Manual CP review per policy · Entitlement push ≤15 min after clear |
-| **Preconditions** | Phase 1 mode on; invite unused/unexpired; sanctions screen clear |
-| **Systems** | Invite admin · KYC · `/admin/compliance/holds` · risk limits tier |
+| **When** | A contracted broker (Vantage sub-brand or external white-label / API) introduces a terminal user |
+| **Who** | **R:** Broker ops / Product · **A CP:** KYC/KYB gates · **A risk entitlements:** RO · **R enable trade:** RE/ENG flags |
+| **SLA** | Broker-tag bind ≤5 min automated after CP clear · Manual CP review per policy · Entitlement push ≤15 min after clear |
+| **Preconditions** | Phase 1 mode on; broker agreement live; sanctions screen clear |
+| **Systems** | Broker portal · KYC · `/admin/compliance/holds` · risk limits tier |
 
 **How (why each step exists)**
-1. **Validate the invite.** Unused, unexpired, not obviously shared. *Why:* a leaked code is a public signup in disguise.
-2. **Collect KYC/KYB** (who they are; if a company, who owns it).
+1. **Verify the broker agreement is live** (not expired, not suspended). *Why:* a lapsed broker is not a front door.
+2. **Collect KYC/KYB** on the end-client (who they are; if a company, who owns it).
 3. **CP clears.** Until this, the account is a folder, not a trader.
-4. **Bind metadata:** which invite, whom it came from, when. *Why:* later surveillance and broker revenue need this tag; you will not remember.
-5. **Set product entitlement = perps only.** Explicitly confirm spot and margin flags are **off**.
-6. Enable trading flags. Audit log.
-7. Spot-check: can they open an approved perp? Can they **not** open a spot order?
+4. **Bind metadata:** broker id, sub-brand vs external WL, who introduced, when. *Why:* surveillance and broker revenue need this tag.
+5. **Open Account, then Perp Account.** Product entitlement = **perps only**. Spot / margin / options / wealth flags **off**.
+6. **Funding rule:** only **USD/USDT** transfers from **MT account** or **X-fund** into the Perp Account.
+7. Enable trading flags. Audit log. Spot-check: can they open an approved perp? Can they **not** open a spot order?
 
-**Done when:** they can trade approved perps only. **Escalate if:** invite abuse → CP-02 hold; public signup path found open → **L3 disable the path first**, then hunt UIDs already created.
+**Done when:** they can trade approved perps only, tagged to that broker. **Escalate if:** public signup path found open → **L3 disable the path first**, then hunt UIDs already created.
 
-##### ACC-02 Broker-introduced account open
+##### ACC-02 Institutional direct (offline, API-only)
 
-**What this is:** a signed introducing broker brings an end-client. The client still needs KYC. Limits are the **tighter** of (broker book limit, client limit).
-
-**How**
-1. Verify the broker agreement is **live** (not expired, not suspended).
-2. Onboard the client under that broker tag.
-3. CP clears the client.
-4. Apply **both** limit stacks; the engine must use the stricter one. *Why:* a tiny client under a huge broker must not inherit the broker's cap.
-5. Entitlement = Phase 1 perps only. Dual-control any broker credit/VIP.
-6. If the agreement lapses: **stop new accounts**. Existing accounts follow the contract + a risk opinion — do not pretend you did not notice.
-
-**Done when:** client trades only on the approved path; surveillance can attribute them to the broker.
-
-##### ACC-03 Phase 1 entitlement guard (continuous)
-
-**What this is:** the daily “is the front door still locked?” check.
+**What this is:** a hedge fund or HNW opens **offline** on V-Exchange and receives **API access only** — no public UI signup. Limits are the **tighter** of (institution book limit, account limit).
 
 **How**
-1. Alert if any UID has spot or margin enabled.
-2. Alert if self-serve register is open.
-3. Alert if a UID can place an order with **no** invite and **no** broker tag.
-4. Daily report to RO-OPS + CP. Zero exceptions, or exceptions ticketed with a **phase-gate waiver** (not a Slack emoji).
+1. Offline KYC/KYB pack complete; Legal/CP classify the entity.
+2. Open Account **without** a retail UI path. Issue API credentials under dual control (G04).
+3. Apply **both** limit stacks; the engine must use the stricter one.
+4. Entitlement = Phase 1 **Perp Account** only (USD/USDT). Dual-control any VIP/credit.
+5. If the agreement lapses: **kill new API keys** first. Existing positions follow the contract + a risk opinion.
+
+**Done when:** the institution trades only on the approved API path; surveillance can attribute orders to that legal entity.
+
+##### ACC-03 Phase 1 entitlement & channel guard (daily)
+
+**What this is:** the daily “is the front door still locked, and is money still on the green rail?”
+
+**How**
+1. Alert if any UID has spot, USD margin, cross-ccy margin, portfolio margin, options, or wealth enabled.
+2. Alert if self-serve 2C register is open.
+3. Alert if a UID can place an order with **no** broker, institution, or MM tag.
+4. Alert if a Perp Account accepted a transfer that is **not** USD/USDT.
+5. Daily report to RO-OPS + CP. Zero exceptions, or exceptions ticketed with a **phase-gate waiver** (not a Slack emoji).
 
 **Done when:** daily zero exceptions or every exception has a waiver ticket.
+
+##### ACC-04 MM / liquidity-partner access
+
+**What this is:** a contracted market maker plugs into V-Exchange to quote Phase 1 perps. They are 2B, not a retail 2C user.
+
+**How**
+1. Agreement + MM SLA live (heartbeat, max spread/depth for the perp book).
+2. Offline open; tag **MM**. API keys dual-control.
+3. Entitlement = perps only. Separate information barriers if an affiliate desk exists (MM-03).
+4. If heartbeat dies → treat as family **S5** (single-name liquidity hole), not “they went quiet.”
+
+**Done when:** MM tag + SLA monitors are live on the symbols they cover.
 
 
 ## 7. Admin pages & tool catalogue
@@ -1818,12 +1870,12 @@ Compromised key: **kill it ≤2 min**, rotate, notify, forensics, L3/L4 war room
 | Access & audit | `/admin/iam/* , /admin/audit/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/](https://hxyan2020.github.io/PRD/risk-handbook/admin/iam/) · [https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/](https://hxyan2020.github.io/PRD/risk-handbook/admin/audit/) | Security / ENG |
 | Spot `[Phase 2+]` | `/admin/spot/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/](https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/) | Spot PM / TO |
 | Margin `[Phase 2+]` | `/admin/margin/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/) | Margin PM / RO-Credit |
-| Market making `[Phase 2+]` | `/admin/mm/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/) | MM |
+| Market making `[Phase 1 — perps]` | `/admin/mm/*` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/) | MM |
 
 > **Vercel:** this handbook is **not** on Vercel. `https://prd.vercel.app/` is a different product (LeadShark MVP PRD).  
 > These GitHub Pages URLs are **public documentation stubs** of the admin catalogue (not a live exchange). Map the same paths 1:1 onto the internal Admin Console when it exists.
 
-> **Phase 1 admin priority:** futures, risk, engine, wallet, invite/broker & compliance. Spot and margin URLs exist as stubs but stay **disabled** in production (`[Phase 2+]`).
+> **Phase 1 admin priority:** futures, risk, engine, wallet, broker/institution/MM & compliance. Spot and margin URLs exist as stubs but stay **disabled** in production (`[Phase 2+]`).
 
 #### 7.1.1 Every admin page (full URL)
 
@@ -1881,9 +1933,9 @@ Compromised key: **kill it ≤2 min**, rotate, notify, forensics, L3/L4 war room
 | Phase 2+ | `/admin/margin/interest` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/interest/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/interest/) |
 | Phase 2+ | `/admin/margin/liquidation` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/liquidation/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/liquidation/) |
 | Phase 2+ | `/admin/margin/bad-debt` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/bad-debt/](https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/bad-debt/) |
-| Phase 2+ | `/admin/mm/sla` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/) |
-| Phase 2+ | `/admin/mm/inventory` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/) |
-| Phase 2+ | `/admin/mm/agreements` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/) |
+| Phase 1 | `/admin/mm/sla` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/) |
+| Phase 1 | `/admin/mm/inventory` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/) |
+| Phase 1 | `/admin/mm/agreements` | [https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/](https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/) |
 
 ### 7.2 Tooling aligned to platform modules
 
@@ -2126,7 +2178,7 @@ Stand up these first — then expand to full catalogue:
 
 **Phase 1 prefer (perps + access + platform):**  
 1. **PF-K01** Mark−index · **PF-K07** Insurance · **PF-K06** Liq burst · **PF-K03** Funding (incl. **XAUUSD**)  
-2. **ACC / access:** invite/broker tag coverage; blocked public signup; entitlement = perps-only  
+2. **ACC / access:** broker / institution / MM tag coverage; blocked public signup; Perp Account = perps-only; USD/USDT funding rail  
 3. **PL-K01** Hot-wallet buffer · **PL-K06** Mark pipeline lag · **PL-K05** Recon · **SP-K09** Matching latency (shared engine)  
 
 **`[Phase 2+]` dormant until enabled:**  
@@ -2646,10 +2698,13 @@ If a word is not here, search this page; many terms are defined in [If you are n
 | Tier A+ | A change big enough that two people must approve (four-eyes). |
 | RAG | Red / Amber / Green status of an indicator (§9). |
 | Scenario family | A named pattern of several KRIs moving in a certain order, S1–S12 (§9.4). |
-| Phase 1 | What is live now: perps only (including XAUUSD); invite-only or broker onboarding. |
-| Phase 2+ | Written here but **not** switched on (Spot, Margin, public signup). |
-| Invite-only | You cannot open an account without a valid invite/allowlist. |
-| Broker channel | Accounts introduced by a contracted introducing broker (IB). |
+| Phase 1 | What is live now on V-Exchange: perpetual contracts (including XAUUSD); Perp Account (USD/USDT); matching / risk / clearing. Access = broker / institution / MM; 2C via broker. |
+| Phase 2+ | Written here but **not** switched on (Spot, USD Margin, cross-ccy margin, portfolio margin, options, wealth, public 2C signup). |
+| V-Exchange | Finprime venue (ADGM / Mauritius). Matching + clearing/settlement + risk. |
+| Perp Account | The Phase 1 trading account. Only USD/USDT may be transferred in. |
+| MT account / X-fund | Funding wallets. Users deposit here, then transfer USD/USDT into the Perp Account. |
+| 2B / 2C | Business vs consumer access. 2C enters through a broker. 2B = broker, institution (API-only), MM. |
+| Broker channel | Vantage sub-brands or external white-label / API brokers. Offline broker open. |
 | KYC | Know-your-customer identity check before trading. |
 | Collateral | Assets the customer posts so we can close them out if the bet goes wrong. |
 | Liquidation | Forced close of a position when collateral is no longer enough. |
@@ -2676,7 +2731,7 @@ If a word is not here, search this page; many terms are defined in [If you are n
 
 ### 11.3 Go-live checklist — Perps (summary) `[Phase 1]`
 
-> Includes **XAUUSD** and other Phase 1 perps. Confirm invite/broker access (ACC-01/02) before publicising any cohort.
+> Includes **XAUUSD** and other Phase 1 perps. Confirm ACC-01/02/04 (broker / institution / MM) and the USD/USDT Perp Account rail before publicising any cohort.
 
 - [ ] Contract specs signed (PM + Legal)  
 - [ ] Index constituents ≥ policy minimum; **PF-K01/PF-K02** alerts on  
@@ -2689,13 +2744,15 @@ If a word is not here, search this page; many terms are defined in [If you are n
 - [ ] Hypercare roster 72h  
 - [ ] RO-OPS briefed on S2 vs S1 discrimination for this contract  
 
-### 11.3a Go-live checklist — Phase 1 access (invite / broker)
+### 11.3a Go-live checklist — Phase 1 access (V-Exchange)
 
-- [ ] Public self-serve registration **disabled**
-- [ ] Invite service live; code expiry/reuse rules tested (ACC-01)
-- [ ] Broker allowlist + agreements executed; portal/tagging works (ACC-02)
-- [ ] Every trade-enabled UID has invite **or** broker attribution
-- [ ] Product entitlement = **perps only** (spot/margin flags off)
+- [ ] Public 2C self-serve registration **disabled**
+- [ ] Broker agreements (Vantage sub-brands + external WL/API) executed; tagging works (ACC-01)
+- [ ] Institutional direct: offline open, API-only, dual-control keys (ACC-02)
+- [ ] MM access tagged; SLA heartbeat live (ACC-04)
+- [ ] Every trade-enabled UID has broker **or** institution **or** MM attribution
+- [ ] Product entitlement = **Perp Account / perps only** (spot/margin/options/wealth flags off)
+- [ ] Perp Account inbound transfers = **USD/USDT only** (MT account / X-fund)
 - [ ] ACC-03 daily exception report subscribed by RO-OPS + CP
 
 ### 11.4 Go-live checklist — Margin asset `[Phase 2+]`
@@ -2724,7 +2781,7 @@ If a word is not here, search this page; many terms are defined in [If you are n
 | Change control | CRO approve; publish via Risk portal |
 | Related artefacts | Limit Book, Liquidation Policy, Insurance/ADL Policy, Listing Policy, BCP/DR, **§8 Indicator Catalogue**, **§9 Scenario Diagnostics**; Chinese edition via handbook tabs |
 | Training | Mandatory for all BU PICs within 30 days of role start |
-| Version | 2.1 — Clickable in-doc SOP / KRI / § / scenario links; admin and public URLs in both languages |
+| Version | 2.2 — V-Exchange Phase 1 map: green = perps + Perp Account + matching/risk/clearing; 2B broker/institution/MM; 2C via broker |
 
 ---
 

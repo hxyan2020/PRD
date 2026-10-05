@@ -200,7 +200,7 @@
     <header class="top">
       <div>
         <h1>Crypto Exchange Risk Management — BU User Handbook</h1>
-        <p>加密货币交易所风险管理 — 业务单元用户手册 · v2.1 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
+        <p>Finprime V-Exchange · 加密货币交易所风险管理 — 业务单元用户手册 · v2.2 · <a href="https://hxyan2020.github.io/PRD/risk-handbook/">public site</a> · <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">all URLs</a></p>
       </div>
       <div class="md-links">
         <a class="jump-viz" href="#hero-viz">Visual maps 示意图</a>
@@ -211,42 +211,46 @@
       </div>
     </header>
     <div class="legend">
-      <span class="chip p1">Phase 1 = perps + invite/broker</span>
+      <span class="chip p1">Phase 1 = V-Exchange perps (green)</span>
       <span class="chip p2">Phase 2+ = documented, not live</span>
       <span class="chip g">Green</span>
       <span class="chip a">Amber</span>
       <span class="chip r">Red</span>
     </div>
     <section class="hero-viz" id="hero-viz" aria-label="Phase 1 visual map">
-      <h2>Diagram / 示意图 — Phase 1 production</h2>
-      <p class="lead-viz">Always visible above the language tabs. Green = live now. Amber strikethrough = Phase 2+ only.</p>
+      <h2>Diagram / 示意图 — Finprime V-Exchange Phase 1</h2>
+      <p class="lead-viz">Always visible above the language tabs. Green = live now (永续合约 · 永续账户 · 撮合/风控/清结算). Amber strikethrough = Phase 2+ only.</p>
       <div class="lane">
-        <div class="lane-label">Live / 当前开通 — invite or broker · perps only（含 XAUUSD）</div>
+        <div class="lane-label">Live / 当前开通 — 2B broker · institution · MM · 2C via broker · perps only</div>
         <div class="flow-row">
-          <div class="node">Invite 邀请码</div>
+          <div class="node">2C user 终端用户</div>
           <span class="arrow">→</span>
-          <div class="node">Broker / IB 经纪商</div>
+          <div class="node">Broker 接入<small>Vantage / 白标</small></div>
           <span class="arrow">→</span>
-          <div class="node">KYC / CP</div>
+          <div class="node">KYC · Open Account</div>
           <span class="arrow">→</span>
-          <div class="node">Perps only 仅永续</div>
+          <div class="node green">Perp Account<small>USD/USDT</small></div>
           <span class="arrow">→</span>
-          <div class="node">XAUUSD + approved</div>
-          <span class="arrow">→</span>
-          <div class="node">Matching + RE</div>
-          <span class="arrow">→</span>
-          <div class="node">Liq / 保险 / ADL</div>
+          <div class="node green">Matching + Risk + Clearing</div>
+        </div>
+        <div class="flow-row">
+          <div class="node">Institution 机构直连<small>API only</small></div>
+          <div class="node">MM 做市商接入</div>
+          <span class="muted-note">2B offline open · same green perp stack</span>
         </div>
       </div>
       <div class="lane off">
         <div class="lane-label">Phase 2+ — not live / 未投产</div>
         <div class="flow-row">
           <div class="node off">Spot 现货</div>
-          <div class="node off">Margin 杠杆</div>
-          <div class="node off">Public signup 公众注册</div>
+          <div class="node off">USD Margin 逐仓+全仓</div>
+          <div class="node off">Cross-ccy / 组合保证金</div>
+          <div class="node off">Options 期权</div>
+          <div class="node off">Wealth 理财</div>
+          <div class="node off">Public 2C signup</div>
         </div>
       </div>
-      <p class="muted-note">More maps sit at the top of each language tab (English: Visual maps · 中文：示意图).</p>
+      <p class="muted-note">Funding rails: user deposit → MT account / X-fund → USD/USDT transfer into Perp Account. More maps sit at the top of each language tab.</p>
     </section>
     <div class="tabs" role="tablist" aria-label="Handbook language">
       <button type="button" role="tab" id="tab-en" aria-controls="panel-en" aria-selected="true" data-tab="en">English</button>
@@ -254,10 +258,11 @@
     </div>
     <article class="panel active" role="tabpanel" id="panel-en" aria-labelledby="tab-en" lang="en">
 <h1 id="en-crypto-exchange-risk-management--bu-user-handbook">Crypto Exchange Risk Management — BU User Handbook</h1>
-<p><strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
-<strong>Scope:</strong> Full catalogue covers Spot · Margin · Perps; <strong>Phase 1 production = Perps only (incl. XAUUSD) + invite/broker access</strong><br />
+<p><strong>Venue:</strong> Finprime <strong>V-Exchange</strong> (ADGM / Mauritius licensed entity; matching + clearing/settlement + risk)<br />
+<strong>Audience:</strong> Business Unit Persons-in-Charge (BU PICs), Risk Officers (RO), Product, Trading Ops, Engineering, Compliance, Treasury, Listing, Custody<br />
+<strong>Scope:</strong> Full catalogue covers Spot · USD Margin · cross-ccy margin · portfolio margin · Options · Wealth · Perps; <strong>Phase 1 production (green) = Perpetual contracts + Perp Account (USD/USDT) + matching / risk &amp; liquidation / clearing</strong>. Access = 2B broker / institution / MM; 2C end users enter <strong>through a broker</strong> (no public self-serve).<br />
 <strong>Public site:</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/">https://hxyan2020.github.io/PRD/risk-handbook/</a> · <strong>All URLs:</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a> · <strong>Admin URLs:</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/</a><br />
-<strong>Version:</strong> 2.1 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
+<strong>Version:</strong> 2.2 · <strong>Owner:</strong> Chief Risk Officer (2nd line) · <strong>Review cycle:</strong> Quarterly or after material incident  </p>
 <blockquote>
 <p>This handbook is the <strong>operating playbook</strong>: who owns what, how work is split, how to run each procedure, which screens to use, which numbers to watch, and what to do when something looks wrong. It does <strong>not</strong> replace legal policy, the Limit Book (the signed list of real numbers), or regulatory filings.<br />
 <strong>Numbers in this handbook are teaching examples.</strong> Before using any threshold in production, copy the live value from the Limit Book and get two Risk Officers to approve it.</p>
@@ -282,45 +287,101 @@
 </ol>
 <section class="visual-maps" id="en-visual-maps-2">
   <h2 id="en-visual-maps">Visual maps</h2>
-  <p class="lead-viz">These diagrams are drawn in the page itself (no extra click, no CDN). Green = Phase 1 live. Amber strikethrough = Phase 2+ documented only.</p>
+  <p class="lead-viz">Finprime <strong>V-Exchange</strong> (ADGM / Mauritius entity; matching + clearing + risk). Green = Phase 1 live. Amber strikethrough = Phase 2+ documented only.</p>
 
   <div class="board">
-    <div class="board-title">1 · Phase 1 production path</div>
+    <div class="board-title">1 · V-Exchange product map</div>
     <div class="lane">
-      <div class="lane-label">Live now — invite or broker only · perps only</div>
+      <div class="lane-label">Phase 1 live — green</div>
       <div class="flow-row">
-        <div class="node">Invite code</div>
+        <div class="node green">Perpetual contracts 永续合约<small>incl. XAUUSD + other approved perps</small></div>
         <span class="arrow">→</span>
-        <div class="node">KYC / CP clear</div>
+        <div class="node green">Perp Account<small>USD / USDT only</small></div>
         <span class="arrow">→</span>
-        <div class="node">Entitlement: perps only</div>
-        <span class="arrow">→</span>
-        <div class="node">XAUUSD + approved perps</div>
-        <span class="arrow">→</span>
-        <div class="node">Matching + risk engine</div>
-        <span class="arrow">→</span>
-        <div class="node">Liq / insurance / ADL</div>
-      </div>
-      <div class="flow-row">
-        <div class="node">Broker / IB</div>
-        <span class="arrow">→</span>
-        <div class="node">KYC / CP clear</div>
-        <span class="muted-note">joins the same path</span>
+        <div class="node green">Matching · Open/Hold/Close<small>Risk &amp; liquidation · Clearing</small></div>
       </div>
     </div>
     <div class="lane off">
-      <div class="lane-label">Phase 2+ — playbooks kept, not live</div>
+      <div class="lane-label">Phase 2+ — playbooks kept, switches off</div>
       <div class="flow-row">
-        <div class="node off">Spot book</div>
-        <div class="node off">Margin borrow</div>
-        <div class="node off">Public self-serve signup</div>
+        <div class="node off">Spot</div>
+        <div class="node off">USD Margin isolated + cross</div>
+        <div class="node off">Cross-ccy margin</div>
+        <div class="node off">Portfolio margin</div>
+        <div class="node off">Options</div>
+        <div class="node off">Wealth / 理财</div>
+        <div class="node off">Public 2C self-serve</div>
       </div>
     </div>
   </div>
 
+  <div class="board">
+    <div class="board-title">2 · Access layers (2B / 2C)</div>
+    <div class="lane">
+      <div class="lane-label">2B — offline account open onto V-Exchange</div>
+      <div class="flow-row">
+        <div class="node">Broker 接入<small>Vantage sub-brands · external WL / API</small></div>
+        <div class="node">Institutional direct<small>HF / HNW · API only</small></div>
+        <div class="node">MM 接入<small>partner liquidity</small></div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lane-label">2C — terminal users do not self-serve; they enter through a broker</div>
+      <div class="flow-row">
+        <div class="node navy">2C end user</div>
+        <span class="arrow">→</span>
+        <div class="node">Broker 接入</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / Open Account</div>
+        <span class="arrow">→</span>
+        <div class="node green">Perp Account</div>
+      </div>
+      <p class="muted-note">No public website registration. A UID with no broker, institution, or MM tag that can trade is an L3 incident.</p>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">3 · 2C trading lifecycle (Phase 1 rails)</div>
+    <div class="flow-row">
+      <div class="stack">
+        <div class="lane-label">Stage 1 Onboarding</div>
+        <div class="node">KYC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">Open Account 开户</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 2 Funding (USD/USDT only)</div>
+        <div class="node">User deposit 入金</div>
+        <span class="arrow down">↓</span>
+        <div class="flow-row">
+          <div class="node">MT account</div>
+          <div class="node">X-fund</div>
+        </div>
+        <span class="arrow down">↓ transfer USD/USDT</span>
+        <div class="node green">Perp Account 永续账户</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 3 Trade (green)</div>
+        <div class="node green">Matching engine<small>Open / Hold / Close</small></div>
+        <span class="arrow down">↓</span>
+        <div class="node green">Risk &amp; liquidation</div>
+        <span class="arrow down">↓</span>
+        <div class="node green">Clearing &amp; settlement</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 4 Withdrawal</div>
+        <div class="node">User withdraw 出金</div>
+      </div>
+    </div>
+    <p class="muted-note">MT ↔ X-fund can transfer. Only USD/USDT may move into the perp account. Spot/margin wallets stay off.</p>
+  </div>
+
   <div class="viz-grid">
     <div class="board">
-      <div class="board-title">2 · Three lines of defence</div>
+      <div class="board-title">4 · Three lines of defence</div>
       <div class="stack">
         <div class="node navy">1st line — Product / TO / ME / Wallet / Listing / MM<small>Own BAU risk, run controls</small></div>
         <span class="arrow down">↓ escalate breaches</span>
@@ -332,7 +393,7 @@
       </div>
     </div>
     <div class="board">
-      <div class="board-title">3 · Perps control chain (Phase 1 primary)</div>
+      <div class="board-title">5 · Perps control chain (Phase 1 primary)</div>
       <div class="stack">
         <div class="flow-row">
           <div class="node navy">Index (multi-venue)</div>
@@ -361,11 +422,13 @@
   </div>
 
   <div class="board">
-    <div class="board-title">4 · Phase 1 critical-path BUs</div>
+    <div class="board-title">6 · Phase 1 critical-path BUs</div>
     <div class="flow-row">
-      <div class="node">Invite / Broker + CP</div>
+      <div class="node">Broker / Inst / MM + CP</div>
       <span class="arrow">→</span>
-      <div class="node">Trade-enabled UID</div>
+      <div class="node">Open Account</div>
+      <span class="arrow">→</span>
+      <div class="node green">Perp Account</div>
       <span class="arrow">→</span>
       <div class="node">Matching (ME)</div>
       <span class="arrow">→</span>
@@ -377,12 +440,12 @@
       <span class="arrow">→</span>
       <div class="node amber">CRO</div>
     </div>
-    <p class="muted-note">Wallet (WO) sits on the risk-engine path for collateral / PnL settlement.</p>
+    <p class="muted-note">Wallet (WO) + Treasury (TS) sit on MT / X-fund / deposit-withdraw rails. Clearing is inside Stage 3 with RE.</p>
   </div>
 
   <div class="viz-grid">
     <div class="board">
-      <div class="board-title">5 · RAG triage</div>
+      <div class="board-title">7 · RAG triage</div>
       <div class="stack">
         <div class="flow-row">
           <div class="node green">Green → check timestamp</div>
@@ -397,7 +460,7 @@
       </div>
     </div>
     <div class="board">
-      <div class="board-title">6 · Escalation ladder</div>
+      <div class="board-title">8 · Escalation ladder</div>
       <div class="stack">
         <div class="node">L1 RO-OPS ticket</div>
         <span class="arrow down">↓</span>
@@ -411,7 +474,7 @@
   </div>
 
   <div class="board">
-    <div class="board-title">7 · <a class="xref" href="#en-sop-g02">SOP-G02</a> halt then resume</div>
+    <div class="board-title">9 · <a class="xref" href="#en-sop-g02">SOP-G02</a> halt then resume</div>
     <div class="flow-row">
       <div class="node">TO proposes</div>
       <span class="arrow">→</span>
@@ -430,7 +493,7 @@
   </div>
 
   <div class="board">
-    <div class="board-title">8 · Diagnostic order (clock first)</div>
+    <div class="board-title">10 · Diagnostic order (clock first)</div>
     <div class="flow-row">
       <div class="node navy">1 Clock</div>
       <span class="arrow">→</span>
@@ -454,9 +517,9 @@
 <hr />
 <h2 id="en-phase-1-operating-scope-labels-used-throughout">Phase 1 operating scope (labels used throughout)</h2>
 <blockquote>
-<p><strong>Phase 1 is live / in-scope now.</strong> Later-phase content stays in this handbook for readiness but is marked <strong><code>[Phase 2+]</code></strong> (or later). Do not enable Phase 2+ flows in production without a formal phase-gate sign-off (Risk <strong>A</strong> + CP + Product).</p>
+<p><strong>Phase 1 is live / in-scope now</strong> = the <strong>green</strong> boxes on the V-Exchange map. Later-phase content stays in this handbook for readiness but is marked <strong><code>[Phase 2+]</code></strong> (or later). Do not enable Phase 2+ flows in production without a formal phase-gate sign-off (Risk <strong>A</strong> + CP + Product).</p>
 </blockquote>
-<h3 id="en-phase-1--in-scope">Phase 1 — in scope</h3>
+<h3 id="en-phase-1--in-scope-green">Phase 1 — in scope (green)</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -466,38 +529,77 @@
 </thead>
 <tbody>
 <tr>
-<td><strong>Products / instruments</strong></td>
-<td><strong>Perpetuals only.</strong> Includes <strong>XAUUSD perps</strong> and <strong>other approved perp contracts</strong>. No Spot trading book and no Margin (cross/isolated) lending book in Phase 1.</td>
+<td><strong>Venue</strong></td>
+<td><strong>Finprime V-Exchange.</strong> Entity: ADGM and/or Mauritius licence. Infrastructure: matching + clearing/settlement + risk.</td>
 </tr>
 <tr>
-<td><strong>Account opening</strong></td>
-<td><strong>Invite-only</strong> and/or <strong>through brokers</strong> (IB / introducing broker / white-label broker channel). No open public self-serve signup.</td>
+<td><strong>Product (green)</strong></td>
+<td><strong>Perpetual contracts only</strong> (永续合约), including <strong>XAUUSD</strong> and other approved perps.</td>
 </tr>
 <tr>
-<td><strong>Trading access</strong></td>
-<td>Users may trade only after invite acceptance <strong>or</strong> broker-introduced onboarding is complete and risk/compliance gates clear.</td>
+<td><strong>Account (green)</strong></td>
+<td><strong>Perp Account</strong> (永续合约账户). Transfers <strong>into</strong> this account: <strong>USD / USDT only</strong>.</td>
 </tr>
 <tr>
-<td><strong>Primary BUs on critical path</strong></td>
-<td>Futures/Perps Product &amp; Liq Ops · Matching · Risk Engine · Risk Ops · Broker/Invite ops (CP+Product) · Wallet/Settlement as needed for collateral/PnL · Surveillance</td>
+<td><strong>Trading stack (green)</strong></td>
+<td>Matching (open / hold / close) · Risk &amp; liquidation · Clearing &amp; settlement.</td>
+</tr>
+<tr>
+<td><strong>2B access</strong></td>
+<td><strong>Broker 接入</strong> (Vantage and other sub-brands; external white-label / API) · <strong>Institutional direct</strong> (hedge funds / HNW; <strong>offline open, API only</strong>) · <strong>MM 接入</strong> (partner liquidity). All 2B opens are <strong>offline</strong>.</td>
+</tr>
+<tr>
+<td><strong>2C access</strong></td>
+<td>Terminal users enter <strong>through a broker</strong>. No public self-serve signup.</td>
+</tr>
+<tr>
+<td><strong>Funding rails (needed for green)</strong></td>
+<td>User <strong>deposit</strong> → <strong>MT account</strong> and/or <strong>X-fund</strong> → USD/USDT transfer into Perp Account. User <strong>withdraw</strong> after trading. MT ↔ X-fund may transfer.</td>
+</tr>
+<tr>
+<td><strong>Primary BUs</strong></td>
+<td>Futures/Perps Product &amp; Liq Ops · Matching · Risk Engine · Clearing · Risk Ops · Broker/Institution/MM ops (CP+Product) · Wallet/Treasury on MT–X-fund–cash rails · Surveillance</td>
 </tr>
 </tbody>
 </table></div>
-<p><strong>Figure — Phase 1 production scope (what is on vs labelled later)</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Invite code</div><span class="arrow">→</span><div class="node">KYC / CP clear</div><span class="arrow">→</span><div class="node">Broker / IB</div><span class="arrow">→</span><div class="node">Entitlement: perps only</div><span class="arrow">→</span><div class="node">XAUUSD + other approved perps</div><span class="arrow">→</span><div class="node">Matching + risk engine</div><span class="arrow">→</span><div class="node">Liq / insurance / ADL</div><span class="arrow">→</span><div class="node">Spot book</div><span class="arrow">→</span><div class="node off">Phase 2+</div><span class="arrow">→</span><div class="node">Margin borrow</div><span class="arrow">→</span><div class="node">Public self-serve signup</div></div></div>
+<p><strong>Figure — V-Exchange Phase 1 (green) vs later products</strong></p>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Perps GREEN</div><span class="arrow">→</span><div class="node">Spot</div><span class="arrow">→</span><div class="node">USD Margin iso+cross</div><span class="arrow">→</span><div class="node">Cross-ccy margin</div><span class="arrow">→</span><div class="node">Portfolio margin</div><span class="arrow">→</span><div class="node">Options</div><span class="arrow">→</span><div class="node">Wealth</div><span class="arrow">→</span><div class="node">Finprime V-Exchange</div><span class="arrow">→</span><div class="node off">Phase 2+</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  subgraph products ["Exchange product map"]
+    Perps["Perps GREEN"]
+    Spot["Spot"]
+    M1["USD Margin iso+cross"]
+    M2["Cross-ccy margin"]
+    PM["Portfolio margin"]
+    Opt["Options"]
+    WM["Wealth"]
+  end
+  Perps --> VX["Finprime V-Exchange"]
+  Spot -.-> P2["Phase 2+"]
+  M1 -.-> P2
+  M2 -.-> P2
+  PM -.-> P2
+  Opt -.-> P2
+  WM -.-> P2
+</div></div>
+
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Terminal user</div><span class="arrow">→</span><div class="node">Broker 接入</div><span class="arrow">→</span><div class="node">Institution API-only</div><span class="arrow">→</span><div class="node">MM 接入</div><span class="arrow">→</span><div class="node">KYC / Open Account</div><span class="arrow">→</span><div class="node">Perp Account GREEN</div><span class="arrow">→</span><div class="node">Matching + Risk + Clearing GREEN</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart LR
-  subgraph access ["Account open"]
-    I["Invite code"] --> CP["KYC / CP clear"]
-    B["Broker / IB"] --> CP
+  subgraph b2c ["2C"]
+    U["Terminal user"] --> BR["Broker 接入"]
   end
-  CP --> E["Entitlement: perps only"]
-  E --> P["XAUUSD + other approved perps"]
-  P --> ME["Matching + risk engine"]
-  ME --> LIQ["Liq / insurance / ADL"]
-  Spot["Spot book"] -.-> P2["Phase 2+"]
-  Mar["Margin borrow"] -.-> P2
-  Pub["Public self-serve signup"] -.-> P2
+  subgraph b2b ["2B offline"]
+    BR
+    INST["Institution API-only"]
+    MM["MM 接入"]
+  end
+  BR --> KYC["KYC / Open Account"]
+  INST --> KYC
+  MM --> KYC
+  KYC --> PA["Perp Account GREEN"]
+  PA --> ME["Matching + Risk + Clearing GREEN"]
 </div></div>
 
 <h3 id="en-phase-1--out-of-production-keep-playbooks-label-only">Phase 1 — out of production (keep playbooks; label only)</h3>
@@ -513,40 +615,47 @@ flowchart LR
 <tr>
 <td>Spot markets, spot listing/delist go-live</td>
 <td><strong><code>[Phase 2+]</code></strong></td>
-<td>Playbooks SP-*, <a class="xref" href="#en-ld-05">LD-05</a>, spot KRIs remain for future</td>
+<td>Playbooks SP-*, <a class="xref" href="#en-ld-05">LD-05</a>, spot KRIs remain</td>
 </tr>
 <tr>
-<td>Margin borrow / LTV / interest</td>
+<td>USD Margin isolated + cross; borrow / LTV / interest</td>
 <td><strong><code>[Phase 2+]</code></strong></td>
-<td>MG-* remain for future</td>
+<td>MG-* remain</td>
 </tr>
 <tr>
-<td>Public retail self-serve onboarding</td>
+<td>Cross-currency margin; portfolio margin / unified account</td>
 <td><strong><code>[Phase 2+]</code></strong></td>
-<td>Phase 1 = invite + broker only</td>
+<td>Do not turn on netting across products</td>
 </tr>
 <tr>
-<td>Non-perp products (options, earn, etc. if any)</td>
+<td>Options; wealth / 理财; other products</td>
 <td><strong><code>[Phase 2+]</code></strong></td>
 <td>Unless separately gated</td>
+</tr>
+<tr>
+<td>Public 2C self-serve registration</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>2C = broker-introduced only</td>
 </tr>
 </tbody>
 </table></div>
 <h3 id="en-phase-1-control-implications-operators">Phase 1 control implications (operators)</h3>
 <ol>
-<li><strong>Listing / go-live:</strong> only <strong>perp</strong> pipeline (incl. <strong>XAUUSD</strong>) and broker/invite entitlement configs are production-critical.  </li>
-<li><strong>Access control:</strong> reject or hold any account that is neither <strong>invite-redeemed</strong> nor <strong>broker-linked</strong>.  </li>
-<li><strong>KRIs / SOPs:</strong> Spot- and Margin-tagged items are still documented — treat as <strong>dormant</strong> unless a Phase 2+ waiver exists. Prefer Perps + access KRIs in daily MI.  </li>
-<li><strong>XAUUSD perps:</strong> apply full Perps controls (mark/index, funding, leverage brackets, insurance/ADL) plus commodity/FX-hours awareness (session gaps, weekend/holiday liquidity).</li>
+<li><strong>Listing / go-live:</strong> only the <strong>perp</strong> pipeline (incl. <strong>XAUUSD</strong>) is production-critical.  </li>
+<li><strong>Access control:</strong> reject or hold any UID that is not tagged <strong>broker</strong>, <strong>institution</strong>, or <strong>MM</strong>. Public “register” live = <strong>L3</strong>.  </li>
+<li><strong>Funding:</strong> only <strong>USD/USDT</strong> may be transferred into the Perp Account (from MT account or X-fund). Other assets stay off this rail.  </li>
+<li><strong>KRIs / SOPs:</strong> Spot-, Margin-, options-, and wealth-tagged items are still documented — treat as <strong>dormant</strong> unless a Phase 2+ waiver exists. Prefer Perps + access + funding-rail KRIs in daily MI.  </li>
+<li><strong>XAUUSD perps:</strong> full Perps controls (mark/index, funding, leverage brackets, insurance/ADL) plus commodity/FX-hours awareness (session gaps, weekend/holiday liquidity).</li>
 </ol>
 <p><strong>What that means in everyday language</strong></p>
-<p>Think of the exchange as a shop that, <strong>today</strong>, only sells one kind of product: <strong>perpetual futures</strong> (contracts that track a price and never expire). Gold versus US dollar (<strong>XAUUSD</strong>) is one of those products. A customer cannot walk in off the street. They need an <strong>invite code</strong> or a <strong>broker</strong> who already has a contract with us. After identity checks (KYC — “know your customer”), they may trade perps only. Buying coins on a spot market, or borrowing money to trade (margin), is written down here so teams can prepare — but those switches stay <strong>off</strong> until a later phase is formally approved.</p>
+<p>V-Exchange is a licensed shop (ADGM / Mauritius). <strong>Today the green lights are only perpetual futures</strong> — contracts that track a price and never expire. Gold versus US dollar (<strong>XAUUSD</strong>) is one of those. A retail customer does <strong>not</strong> walk in off the street. They come through a <strong>broker</strong> (for example a Vantage sub-brand, or an external white-label). Hedge funds and large clients open <strong>offline</strong> and trade <strong>by API</strong>. Market makers plug in on their own path.</p>
+<p>Money does not drop straight into a trading wallet. The customer <strong>deposits</strong> into an <strong>MT account</strong> or <strong>X-fund</strong>, then <strong>transfers USD or USDT</strong> into a <strong>Perp Account</strong>. That account is what matching, liquidation, and clearing see. Spot, USD margin (isolated and cross), cross-currency margin, portfolio margin, options, and wealth products are drawn on the map so teams can prepare — those switches stay <strong>off</strong>.</p>
 <p>If you see a ticket about Spot or Margin, treat it as <strong>homework for later</strong>, not a live control, unless Risk has signed a Phase 2+ waiver.</p>
 <hr />
 <h2 id="en-if-you-are-new-to-exchange-risk">If you are new to exchange risk</h2>
 <p>You do not need a trading background to use this book. You <strong>do</strong> need to know who to call and which switch is dangerous. This section translates the jargon.</p>
 <h3 id="en-what-this-company-is-doing">What this company is doing</h3>
-<p>Customers send us <strong>collateral</strong> (usually stablecoins or crypto). They open <strong>positions</strong> — they go <strong>long</strong> if they think the price will rise, or <strong>short</strong> if they think it will fall. Because they can use <strong>leverage</strong>, a small price move can wipe out their collateral. When that happens the system <strong>liquidates</strong> them: it forcibly closes the position so the loss does not spill onto other customers or the firm.</p>
+<p>This is <strong>Finprime V-Exchange</strong>. Customers who are allowed in open a <strong>Perp Account</strong>, send <strong>USD/USDT</strong> into it, and trade <strong>perpetual futures</strong>. They go <strong>long</strong> if they think the price will rise, or <strong>short</strong> if they think it will fall. Because they can use <strong>leverage</strong>, a small price move can wipe out their collateral. When that happens the system <strong>liquidates</strong> them: it forcibly closes the position so the loss does not spill onto other customers or the firm.</p>
 <p>Your job, in one sentence: <strong>keep client money safe, keep the matching engine honest, and stop a bad price or a bad config from cascading.</strong></p>
 <h3 id="en-words-you-will-see-on-every-page">Words you will see on every page</h3>
 <div class="table-wrap"><table>
@@ -652,15 +761,15 @@ flowchart LR
 </table></div>
 <h3 id="en-how-money-actually-moves-simple-picture">How money actually moves (simple picture)</h3>
 <ol>
-<li><strong>Invite or broker</strong> lets a person open an account.  </li>
-<li><strong>KYC / Compliance</strong> checks they are allowed to trade.  </li>
-<li>They deposit collateral into <strong>wallet / custody</strong>.  </li>
-<li>They send orders. The <strong>matching engine</strong> turns two orders into a trade.  </li>
+<li>A <strong>2C</strong> person arrives through a <strong>broker</strong> (Vantage sub-brand or external white-label). A <strong>2B</strong> hedge fund / HNW opens <strong>offline</strong> and gets <strong>API only</strong>. An <strong>MM</strong> joins on the liquidity path.  </li>
+<li><strong>KYC / Compliance</strong> then <strong>Open Account</strong>.  </li>
+<li>They <strong>deposit</strong> into an <strong>MT account</strong> or <strong>X-fund</strong>, then <strong>transfer USD or USDT only</strong> into the <strong>Perp Account</strong>.  </li>
+<li>They send orders. The <strong>matching engine</strong> turns two orders into a trade (open / hold / close).  </li>
 <li>The <strong>risk engine</strong> constantly asks: “If price jumps against them, do they still have enough collateral?”  </li>
-<li>If the answer becomes no, <strong>liquidation</strong> starts. Insurance (then ADL) covers leftovers.  </li>
-<li>At end of day, <strong>reconciliation</strong> checks our books against wallets and banks so we do not pay out money we do not have.</li>
+<li>If the answer becomes no, <strong>liquidation</strong> starts. Insurance (then ADL) covers leftovers. <strong>Clearing &amp; settlement</strong> books the result.  </li>
+<li>They <strong>withdraw</strong> from the funding rails. At end of day, <strong>reconciliation</strong> checks our books against wallets and banks so we do not pay out money we do not have.</li>
 </ol>
-<p>Phase 1 stops at perps. There is no “buy Bitcoin and withdraw it as a spot customer” in production yet.</p>
+<p>Phase 1 stops at perps. There is no “buy Bitcoin on spot and withdraw it as a spot customer” in production yet.</p>
 <h3 id="en-how-to-read-a-procedure-sop">How to read a procedure (SOP)</h3>
 <p>Every SOP answers eight questions. If a field is blank, <strong>stop</strong> and ask Risk Ops — do not invent a step.</p>
 <ol>
@@ -738,7 +847,7 @@ flowchart LR
 </tr>
 <tr>
 <td>Phase 1 PIC / launch crew</td>
-<td><strong>Phase 1 operating scope</strong> + <a href="#en-if-you-are-new-to-exchange-risk">If you are new</a> + <a class="xref" href="#en-sec-3-3">§3.3</a> Perps + <a class="xref" href="#en-sec-4-4">§4.4</a> + invite/broker SOPs</td>
+<td><strong>Phase 1 operating scope</strong> + <a href="#en-if-you-are-new-to-exchange-risk">If you are new</a> + <a class="xref" href="#en-sec-3-3">§3.3</a> Perps + <a class="xref" href="#en-sec-4-4">§4.4</a> + ACC (broker / institution / MM)</td>
 </tr>
 </tbody>
 </table></div>
@@ -750,7 +859,7 @@ flowchart LR
 <li><strong>Instrument-aware</strong> — Spot, Margin, and Perps are different machines. Copying a Spot price-band onto a perp, or a perp liquidation onto margin, can liquidate the wrong people. Always tag <strong>SPOT / MARGIN / PERP</strong> on the ticket.  </li>
 <li><strong>Pre-trade / at-trade / post-trade</strong> — <em>before</em> the order (limits, KYC), <em>while</em> it matches (bands, STP, rate limits), <em>after</em> (alerts, recon, surveillance). One layer failing should not be the only layer.  </li>
 <li><strong>Client assets first</strong> — if you must choose between keeping withdrawals honest and keeping a revenue feature on, protect withdrawals and custody.  </li>
-<li><strong>Phase 1 product &amp; access gates</strong> — production trading = <strong>perps only</strong> (including <strong>XAUUSD</strong>); accounts = <strong>invite-only or via brokers</strong>. Spot, Margin, and public signup stay <strong><code>[Phase 2+]</code></strong> until a phase-gate sign-off.</li>
+<li><strong>Phase 1 product &amp; access gates</strong> — production trading = <strong>perps only</strong> (including <strong>XAUUSD</strong>) on a <strong>Perp Account</strong> funded in <strong>USD/USDT</strong>. Access = <strong>broker / institution / MM</strong> (2C via broker). Spot, USD margin, cross-ccy margin, portfolio margin, options, wealth, and public signup stay <strong><code>[Phase 2+]</code></strong> until a phase-gate sign-off.</li>
 </ol>
 <hr />
 <h2 id="en-2-three-lines-of-defence--role-map"><span class="alias" id="en-sec-2"></span>2. Three lines of defence &amp; role map</h2>
@@ -1095,18 +1204,24 @@ flowchart TB
 </tbody>
 </table></div>
 <p><strong>Figure — Instruments vs Phase 1 gate</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Perps incl. XAUUSD</div><span class="arrow">→</span><div class="node">Spot</div><span class="arrow">→</span><div class="node">Cross / Isolated margin</div><span class="arrow">→</span><div class="node">Public signup</div><span class="arrow">→</span><div class="node">User</div></div></div>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Perps incl. XAUUSD</div><span class="arrow">→</span><div class="node">Perp Account USD/USDT</div><span class="arrow">→</span><div class="node">Spot</div><span class="arrow">→</span><div class="node">USD Margin iso+cross</div><span class="arrow">→</span><div class="node">Cross-ccy / portfolio margin</div><span class="arrow">→</span><div class="node">Options / Wealth</div><span class="arrow">→</span><div class="node">Public 2C signup</div><span class="arrow">→</span><div class="node">2C user</div><span class="arrow">→</span><div class="node">Broker</div><span class="arrow">→</span><div class="node">Institution / MM</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart TB
-  subgraph p1 ["Phase 1 ON"]
+  subgraph p1 ["Phase 1 ON (green)"]
     Perps["Perps incl. XAUUSD"]
+    PA["Perp Account USD/USDT"]
   end
   subgraph p2 ["Phase 2+ documented / dormant"]
     Spot["Spot"]
-    Margin["Cross / Isolated margin"]
-    Public["Public signup"]
+    Margin["USD Margin iso+cross"]
+    XMgn["Cross-ccy / portfolio margin"]
+    Opt["Options / Wealth"]
+    Public["Public 2C signup"]
   end
-  User["User"] -->|invite or broker only| Perps
+  User["2C user"] --> BR["Broker"]
+  BR --> PA
+  Inst["Institution / MM"] --> PA
+  PA --> Perps
   User -.->|blocked| Spot
   User -.->|blocked| Margin
   User -.->|blocked| Public
@@ -1124,11 +1239,12 @@ flowchart TB
 </ul>
 <p><strong>In plain English:</strong> a “BU” is one business unit (futures product, matching, wallet, …). A “PIC” is the named owner. Tickets and admin access hang off those names. You do not need to be a trader. You do need to know whether this chapter is yours, and the first SOP to open when something breaks.</p>
 <p><strong>Figure — Phase 1 critical-path BUs</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Invite / Broker + CP</div><span class="arrow">→</span><div class="node">Trade-enabled UID</div><span class="arrow">→</span><div class="node">Matching ME</div><span class="arrow">→</span><div class="node">Risk engine RE</div><span class="arrow">→</span><div class="node">Futures TO / PM</div><span class="arrow">→</span><div class="node">RO / RO-OPS</div><span class="arrow">→</span><div class="node">Wallet WO</div><span class="arrow">→</span><div class="node">CRO</div></div></div>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Broker / Inst / MM + CP</div><span class="arrow">→</span><div class="node">Open Account</div><span class="arrow">→</span><div class="node">Perp Account</div><span class="arrow">→</span><div class="node">Matching ME</div><span class="arrow">→</span><div class="node">Risk engine RE</div><span class="arrow">→</span><div class="node">Futures TO / PM</div><span class="arrow">→</span><div class="node">RO / RO-OPS</div><span class="arrow">→</span><div class="node">Wallet WO</div><span class="arrow">→</span><div class="node">CRO</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart LR
-  ACC["Invite / Broker + CP"] --> UID["Trade-enabled UID"]
-  UID --> ME["Matching ME"]
+  ACC["Broker / Inst / MM + CP"] --> OA["Open Account"]
+  OA --> PA["Perp Account"]
+  PA --> ME["Matching ME"]
   ME --> RE["Risk engine RE"]
   RE --> FUT["Futures TO / PM"]
   FUT --> RO["RO / RO-OPS"]
@@ -1528,7 +1644,7 @@ flowchart LR
 <hr />
 <h3 id="en-44-futures--perps-product--liquidation-ops--pm-fut--ro--to-fut-phase-1--primary"><span class="alias" id="en-sec-4-4"></span>4.4 Futures / Perps Product &amp; Liquidation Ops — PM-FUT / RO / TO-FUT <code>[Phase 1 — primary]</code></h3>
 <blockquote>
-<p>Phase 1 critical path: <strong>XAUUSD perps</strong> + other approved perps; invite/broker traders only.</p>
+<p>Phase 1 critical path: <strong>XAUUSD perps</strong> + other approved perps on the <strong>Perp Account</strong>; 2C via broker; 2B institution / MM.</p>
 </blockquote>
 <p><strong>In plain English:</strong> this team owns the <em>product</em> you are actually running today. If mark price, leverage, funding, insurance, or ADL is wrong, it is this chapter plus Risk Engine (<a class="xref" href="#en-sec-4-6">§4.6</a>). Read it even if your day job is not “futures.”</p>
 <h4 id="en-in-scope-4">In scope</h4>
@@ -2177,7 +2293,7 @@ flowchart LR
 <h4 id="en-in-scope-9">In scope</h4>
 <ul>
 <li>KYC/AML, sanctions, travel rule</li>
-<li><strong>Phase 1 access:</strong> invite-code redemption controls; <strong>broker / IB</strong> introduced accounts; block public self-serve signup</li>
+<li><strong>Phase 1 access:</strong> broker / sub-brand 2C (<a class="xref" href="#en-acc-01">ACC-01</a>); institutional direct API (<a class="xref" href="#en-acc-02">ACC-02</a>); MM access (<a class="xref" href="#en-acc-04">ACC-04</a>); block public self-serve signup</li>
 <li>Trade surveillance (spoofing, layering, wash, insider)</li>
 <li>Market abuse investigations across Spot / Margin / Perps</li>
 <li>Regulatory reporting liaison</li>
@@ -2293,10 +2409,13 @@ flowchart LR
 <p><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/balances/" target="_blank" rel="noopener">/admin/treasury/balances</a></code> · <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/settlement/" target="_blank" rel="noopener">/admin/treasury/settlement</a></code> · <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/stablecoins/" target="_blank" rel="noopener">/admin/treasury/stablecoins</a></code></p>
 <hr />
 <h3 id="en-411-liquidity--market-making-ops--mm"><span class="alias" id="en-sec-4-11"></span>4.11 Liquidity / Market Making Ops — MM</h3>
+<blockquote>
+<p>Phase 1: MM <strong>接入</strong> is live as a 2B path onto <strong>perps</strong> (<a class="xref" href="#en-acc-04">ACC-04</a>). Spot MM SLAs stay <code>[Phase 2+]</code>.</p>
+</blockquote>
 <p><strong>In plain English:</strong> a market maker is paid (or contracted) to keep a <strong>buy price and a sell price</strong> on the book so other people can trade. If the gap between those prices suddenly explodes, or the book is empty, first ask “is the maker still alive (heartbeat)?” before you decide the whole market crashed.</p>
 <h4 id="en-in-scope-11">In scope</h4>
 <ul>
-<li>MM agreement SLAs (depth, spread, uptime) for Spot &amp; Perps</li>
+<li>MM agreement SLAs (depth, spread, uptime) — <strong>Phase 1: perps</strong>; Spot <code>[Phase 2+]</code></li>
 <li>Inventory &amp; adverse selection monitoring</li>
 <li>Cross-venue arb inventory risk if MM is internal/affiliated (Chinese walls with Risk)</li>
 </ul>
@@ -2887,8 +3006,8 @@ flowchart TB
 <strong>Escalate if:</strong> Trades are missing with no explanation → L2/L3 and consider whether trading should pause.</p>
 <hr />
 <h3 id="en-66-sop-g06--new-product--instrument-approval"><span class="alias" id="en-sec-6-6"></span><span class="alias" id="en-sop-g06"></span>6.6 SOP-G06 — New product / instrument approval</h3>
-<p><strong>Figure — <a class="xref" href="#en-sop-g06">SOP-G06</a> new product gates (Phase 1 = perps + invite/broker)</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Legal</div><span class="arrow">→</span><div class="node">CP</div><span class="arrow">→</span><div class="node">Listing + RO opinion</div><span class="arrow">→</span><div class="node">Product checklist</div><span class="arrow">→</span><div class="node">RE / ME dry-run</div><span class="arrow">→</span><div class="node">Wallet ready</div><span class="arrow">→</span><div class="node"><a class="xref" href="#en-acc-01">ACC-01</a> / <a class="xref" href="#en-acc-02">ACC-02</a></div><span class="arrow">→</span><div class="node">Perps live</div><span class="arrow">→</span><div class="node">Spot / Margin</div><span class="arrow">→</span><div class="node off">Phase 2+ hold</div></div></div>
+<p><strong>Figure — <a class="xref" href="#en-sop-g06">SOP-G06</a> new product gates (Phase 1 = perps + broker/institution/MM)</strong></p>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">Legal</div><span class="arrow">→</span><div class="node">CP</div><span class="arrow">→</span><div class="node">Listing + RO opinion</div><span class="arrow">→</span><div class="node">Product checklist</div><span class="arrow">→</span><div class="node">RE / ME dry-run</div><span class="arrow">→</span><div class="node">Wallet ready</div><span class="arrow">→</span><div class="node"><a class="xref" href="#en-acc-01">ACC-01</a> / 02 / 04</div><span class="arrow">→</span><div class="node">Perps live</div><span class="arrow">→</span><div class="node">Spot / Margin</div><span class="arrow">→</span><div class="node off">Phase 2+ hold</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart LR
   Legal["Legal"] --> CP["CP"]
@@ -2896,7 +3015,7 @@ flowchart LR
   LI --> Prod["Product checklist"]
   Prod --> Eng["RE / ME dry-run"]
   Eng --> WO["Wallet ready"]
-  WO --> Acc["ACC-01 / ACC-02"]
+  WO --> Acc["ACC-01 / 02 / 04"]
   Acc --> Live["Perps live"]
   Spot["Spot / Margin"] -.-> P2["Phase 2+ hold"]
 </div></div>
@@ -2940,9 +3059,9 @@ flowchart LR
 5. <strong>RE/ME</strong> put configs in staging and <strong>sign a dry-run</strong> (especially liquidation and ADL for perps).<br />
 6. <strong>WO</strong> confirms deposit/withdraw on the right chains if collateral needs them.<br />
 7. Soft launch / whitelist if used → <strong>72h hypercare roster</strong> named.<br />
-8. Only then open traffic. <strong>Phase 1:</strong> invite/broker cohort only, <strong>not</strong> public signup; <strong>perps only</strong>.</p>
+8. Only then open traffic. <strong>Phase 1:</strong> broker / institution / MM cohort only, <strong>not</strong> public 2C signup; <strong>perps only</strong> on the Perp Account.</p>
 <blockquote>
-<p><strong>Phase 1 gate note:</strong> production instruments = <strong>perps (incl. XAUUSD)</strong>; access = <strong><a class="xref" href="#en-acc-01">ACC-01</a>/<a class="xref" href="#en-acc-02">ACC-02</a></strong>. Spot/Margin = <strong><code>[Phase 2+]</code></strong>.</p>
+<p><strong>Phase 1 gate note:</strong> production instruments = <strong>perps (incl. XAUUSD)</strong>; access = <strong><a class="xref" href="#en-acc-01">ACC-01</a>/02/04</strong> (broker / institution / MM). Spot/Margin/options/wealth = <strong><code>[Phase 2+]</code></strong>.</p>
 </blockquote>
 <p><strong>Done when:</strong> Pipeline stage = Live; monitoring KRIs wired; hypercare named.<br />
 <strong>Escalate if:</strong> Traffic is detected before clear → <a class="xref" href="#en-pl-k12">PL-K12</a> BREACH, force disable, L3 audit.</p>
@@ -2951,7 +3070,7 @@ flowchart LR
 <p>This section is the <strong>desk-level recipes</strong>. Global <a class="xref" href="#en-sop-g01">G01</a>–<a class="xref" href="#en-sop-g06">G06</a> above are the shared skeleton (change a limit, halt a market, ACK an alert, two-person control, end-of-day books, open a new product). Each card below is one job a named team actually runs.</p>
 <p><strong>If you have never done this work</strong></p>
 <ol>
-<li>Find your team's prefix: <strong>RM</strong> = risk ops, <strong>PF</strong> = perps (today's live product), <strong>ACC</strong> = invite/broker access, <strong>ME</strong> = matching engine, <strong>RE</strong> = risk/liquidation engine, <strong>WA</strong> = wallet, <strong>SP</strong> = spot <code>[Phase 2+]</code>, <strong>MG</strong> = margin lending <code>[Phase 2+]</code>.</li>
+<li>Find your team's prefix: <strong>RM</strong> = risk ops, <strong>PF</strong> = perps (today's live product), <strong>ACC</strong> = V-Exchange access (broker / institution / MM), <strong>ME</strong> = matching engine, <strong>RE</strong> = risk/liquidation engine, <strong>WA</strong> = wallet, <strong>SP</strong> = spot <code>[Phase 2+]</code>, <strong>MG</strong> = margin lending <code>[Phase 2+]</code>.</li>
 <li>Read <strong>What this is</strong> first. If you cannot explain the job in one sentence to a new colleague, do not start clicking.</li>
 <li>Read <strong>When</strong>. If that event has not happened, this recipe is not yours yet — do not improvise a similar-looking action.</li>
 <li>Then <strong>How</strong>, in order. A sentence marked <em>Why</em> is the reason the previous step exists, not decoration.</li>
@@ -3259,7 +3378,7 @@ flowchart LR
 <h4 id="en-pf--perps-phase-1">PF — Perps <code>[Phase 1]</code></h4>
 <p><strong>This is today's live path.</strong> Read every card. A perpetual (“perp”) is a contract that tracks a price (Bitcoin, gold vs US dollar, …) and <strong>never expires</strong>. Users post collateral, go long or short with leverage. We use a <strong>mark price</strong> (fair price from an index of other venues) to decide profit/loss and liquidation — <strong>not</strong> the last print on our book.</p>
 <h5 id="en-pf-01-new-perp-contract-launch"><span class="alias" id="en-pf-01"></span>PF-01 New perp contract launch</h5>
-<p><strong>What this is:</strong> putting a new contract (for example another metal pair, or a new BTC perp) in front of invite/broker users. Skipping a checkbox here is how you launch with no insurance or a one-venue index.</p>
+<p><strong>What this is:</strong> putting a new contract (for example another metal pair, or a new BTC perp) in front of broker / institution / MM users. Skipping a checkbox here is how you launch with no insurance or a one-venue index.</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3454,9 +3573,9 @@ flowchart LR
 <h5 id="en-eng-04-security-incident-keyapi"><span class="alias" id="en-eng-04"></span>ENG-04 Security incident (key/API)</h5>
 <p>Compromised key: <strong>kill it ≤2 min</strong>, rotate, notify, forensics, L3/L4 war room. CRO/CISO/CP informed. Speed beats a perfect write-up.</p>
 <hr />
-<h4 id="en-access--phase-1-invite--broker-onboarding-phase-1">ACCESS — Phase 1 invite &amp; broker onboarding <code>[Phase 1]</code></h4>
-<p><strong>Plain English:</strong> in Phase 1 a person <strong>cannot</strong> create an account from the public website. They need an <strong>invite code</strong> or a <strong>broker</strong> (a firm that already signed a contract with us). After identity checks (KYC = know your customer), they may trade <strong>perps only</strong>. Spot and margin flags stay off. If you find a public “register” button working, that is an <strong>L3 incident</strong>, not a growth win.</p>
-<h5 id="en-acc-01-invite-only-account-open"><span class="alias" id="en-acc-01"></span>ACC-01 Invite-only account open</h5>
+<h4 id="en-access--phase-1-v-exchange-onboarding-phase-1">ACCESS — Phase 1 V-Exchange onboarding <code>[Phase 1]</code></h4>
+<p><strong>Plain English:</strong> in Phase 1 a person <strong>cannot</strong> create an account from the public website. <strong>2C</strong> terminal users come through a <strong>broker</strong> (Vantage or another sub-brand, or an external white-label / API broker). <strong>Hedge funds / HNW</strong> open <strong>offline</strong> and trade <strong>by API</strong>. <strong>Market makers</strong> join on the liquidity path. After KYC they get a <strong>Perp Account</strong> funded in <strong>USD/USDT</strong> only. Spot, USD margin, cross-ccy margin, portfolio margin, options, and wealth flags stay off. If you find a public “register” button working, that is an <strong>L3 incident</strong>, not a growth win.</p>
+<h5 id="en-acc-01-broker--sub-brand-2c-onboarding"><span class="alias" id="en-acc-01"></span>ACC-01 Broker / sub-brand 2C onboarding</h5>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -3467,53 +3586,61 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>When</strong></td>
-<td>Someone redeems an invite / allowlist code, or ops issues one</td>
+<td>A contracted broker (Vantage sub-brand or external white-label / API) introduces a terminal user</td>
 </tr>
 <tr>
 <td><strong>Who</strong></td>
-<td><strong>R:</strong> Product/Growth ops · <strong>A CP:</strong> identity gates · <strong>A risk entitlements:</strong> RO · <strong>R enable trade:</strong> RE/ENG flags</td>
+<td><strong>R:</strong> Broker ops / Product · <strong>A CP:</strong> KYC/KYB gates · <strong>A risk entitlements:</strong> RO · <strong>R enable trade:</strong> RE/ENG flags</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>Invite validate ≤1 min automated · Manual CP review per policy · Entitlement push ≤15 min after clear</td>
+<td>Broker-tag bind ≤5 min automated after CP clear · Manual CP review per policy · Entitlement push ≤15 min after clear</td>
 </tr>
 <tr>
 <td><strong>Preconditions</strong></td>
-<td>Phase 1 mode on; invite unused/unexpired; sanctions screen clear</td>
+<td>Phase 1 mode on; broker agreement live; sanctions screen clear</td>
 </tr>
 <tr>
 <td><strong>Systems</strong></td>
-<td>Invite admin · KYC · <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/holds/" target="_blank" rel="noopener">/admin/compliance/holds</a></code> · risk limits tier</td>
+<td>Broker portal · KYC · <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/holds/" target="_blank" rel="noopener">/admin/compliance/holds</a></code> · risk limits tier</td>
 </tr>
 </tbody>
 </table></div>
 <p><strong>How (why each step exists)</strong><br />
-1. <strong>Validate the invite.</strong> Unused, unexpired, not obviously shared. <em>Why:</em> a leaked code is a public signup in disguise.<br />
-2. <strong>Collect KYC/KYB</strong> (who they are; if a company, who owns it).<br />
+1. <strong>Verify the broker agreement is live</strong> (not expired, not suspended). <em>Why:</em> a lapsed broker is not a front door.<br />
+2. <strong>Collect KYC/KYB</strong> on the end-client (who they are; if a company, who owns it).<br />
 3. <strong>CP clears.</strong> Until this, the account is a folder, not a trader.<br />
-4. <strong>Bind metadata:</strong> which invite, whom it came from, when. <em>Why:</em> later surveillance and broker revenue need this tag; you will not remember.<br />
-5. <strong>Set product entitlement = perps only.</strong> Explicitly confirm spot and margin flags are <strong>off</strong>.<br />
-6. Enable trading flags. Audit log.<br />
-7. Spot-check: can they open an approved perp? Can they <strong>not</strong> open a spot order?</p>
-<p><strong>Done when:</strong> they can trade approved perps only. <strong>Escalate if:</strong> invite abuse → <a class="xref" href="#en-cp-02">CP-02</a> hold; public signup path found open → <strong>L3 disable the path first</strong>, then hunt UIDs already created.</p>
-<h5 id="en-acc-02-broker-introduced-account-open"><span class="alias" id="en-acc-02"></span>ACC-02 Broker-introduced account open</h5>
-<p><strong>What this is:</strong> a signed introducing broker brings an end-client. The client still needs KYC. Limits are the <strong>tighter</strong> of (broker book limit, client limit).</p>
+4. <strong>Bind metadata:</strong> broker id, sub-brand vs external WL, who introduced, when. <em>Why:</em> surveillance and broker revenue need this tag.<br />
+5. <strong>Open Account, then Perp Account.</strong> Product entitlement = <strong>perps only</strong>. Spot / margin / options / wealth flags <strong>off</strong>.<br />
+6. <strong>Funding rule:</strong> only <strong>USD/USDT</strong> transfers from <strong>MT account</strong> or <strong>X-fund</strong> into the Perp Account.<br />
+7. Enable trading flags. Audit log. Spot-check: can they open an approved perp? Can they <strong>not</strong> open a spot order?</p>
+<p><strong>Done when:</strong> they can trade approved perps only, tagged to that broker. <strong>Escalate if:</strong> public signup path found open → <strong>L3 disable the path first</strong>, then hunt UIDs already created.</p>
+<h5 id="en-acc-02-institutional-direct-offline-api-only"><span class="alias" id="en-acc-02"></span>ACC-02 Institutional direct (offline, API-only)</h5>
+<p><strong>What this is:</strong> a hedge fund or HNW opens <strong>offline</strong> on V-Exchange and receives <strong>API access only</strong> — no public UI signup. Limits are the <strong>tighter</strong> of (institution book limit, account limit).</p>
 <p><strong>How</strong><br />
-1. Verify the broker agreement is <strong>live</strong> (not expired, not suspended).<br />
-2. Onboard the client under that broker tag.<br />
-3. CP clears the client.<br />
-4. Apply <strong>both</strong> limit stacks; the engine must use the stricter one. <em>Why:</em> a tiny client under a huge broker must not inherit the broker's cap.<br />
-5. Entitlement = Phase 1 perps only. Dual-control any broker credit/VIP.<br />
-6. If the agreement lapses: <strong>stop new accounts</strong>. Existing accounts follow the contract + a risk opinion — do not pretend you did not notice.</p>
-<p><strong>Done when:</strong> client trades only on the approved path; surveillance can attribute them to the broker.</p>
-<h5 id="en-acc-03-phase-1-entitlement-guard-continuous"><span class="alias" id="en-acc-03"></span>ACC-03 Phase 1 entitlement guard (continuous)</h5>
-<p><strong>What this is:</strong> the daily “is the front door still locked?” check.</p>
+1. Offline KYC/KYB pack complete; Legal/CP classify the entity.<br />
+2. Open Account <strong>without</strong> a retail UI path. Issue API credentials under dual control (<a class="xref" href="#en-sop-g04">G04</a>).<br />
+3. Apply <strong>both</strong> limit stacks; the engine must use the stricter one.<br />
+4. Entitlement = Phase 1 <strong>Perp Account</strong> only (USD/USDT). Dual-control any VIP/credit.<br />
+5. If the agreement lapses: <strong>kill new API keys</strong> first. Existing positions follow the contract + a risk opinion.</p>
+<p><strong>Done when:</strong> the institution trades only on the approved API path; surveillance can attribute orders to that legal entity.</p>
+<h5 id="en-acc-03-phase-1-entitlement--channel-guard-daily"><span class="alias" id="en-acc-03"></span>ACC-03 Phase 1 entitlement &amp; channel guard (daily)</h5>
+<p><strong>What this is:</strong> the daily “is the front door still locked, and is money still on the green rail?”</p>
 <p><strong>How</strong><br />
-1. Alert if any UID has spot or margin enabled.<br />
-2. Alert if self-serve register is open.<br />
-3. Alert if a UID can place an order with <strong>no</strong> invite and <strong>no</strong> broker tag.<br />
-4. Daily report to RO-OPS + CP. Zero exceptions, or exceptions ticketed with a <strong>phase-gate waiver</strong> (not a Slack emoji).</p>
+1. Alert if any UID has spot, USD margin, cross-ccy margin, portfolio margin, options, or wealth enabled.<br />
+2. Alert if self-serve 2C register is open.<br />
+3. Alert if a UID can place an order with <strong>no</strong> broker, institution, or MM tag.<br />
+4. Alert if a Perp Account accepted a transfer that is <strong>not</strong> USD/USDT.<br />
+5. Daily report to RO-OPS + CP. Zero exceptions, or exceptions ticketed with a <strong>phase-gate waiver</strong> (not a Slack emoji).</p>
 <p><strong>Done when:</strong> daily zero exceptions or every exception has a waiver ticket.</p>
+<h5 id="en-acc-04-mm--liquidity-partner-access"><span class="alias" id="en-acc-04"></span>ACC-04 MM / liquidity-partner access</h5>
+<p><strong>What this is:</strong> a contracted market maker plugs into V-Exchange to quote Phase 1 perps. They are 2B, not a retail 2C user.</p>
+<p><strong>How</strong><br />
+1. Agreement + MM SLA live (heartbeat, max spread/depth for the perp book).<br />
+2. Offline open; tag <strong>MM</strong>. API keys dual-control.<br />
+3. Entitlement = perps only. Separate information barriers if an affiliate desk exists (<a class="xref" href="#en-mm-03">MM-03</a>).<br />
+4. If heartbeat dies → treat as family <strong><a class="xref" href="#en-s5">S5</a></strong> (single-name liquidity hole), not “they went quiet.”</p>
+<p><strong>Done when:</strong> MM tag + SLA monitors are live on the symbols they cover.</p>
 <h2 id="en-7-admin-pages--tool-catalogue"><span class="alias" id="en-sec-7"></span>7. Admin pages &amp; tool catalogue</h2>
 <h3 id="en-71-canonical-admin-map-by-domain"><span class="alias" id="en-sec-7-1"></span>7.1 Canonical admin map (by domain)</h3>
 <p><strong>URL sheet (all full links):</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a><br />
@@ -3595,7 +3722,7 @@ flowchart LR
 <td>Margin PM / RO-Credit</td>
 </tr>
 <tr>
-<td>Market making <code>[Phase 2+]</code></td>
+<td>Market making <code>[Phase 1 — perps]</code></td>
 <td><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/" target="_blank" rel="noopener">/admin/mm/*</a></code></td>
 <td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/">https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/</a></td>
 <td>MM</td>
@@ -3605,7 +3732,7 @@ flowchart LR
 <blockquote>
 <p><strong>Vercel:</strong> this handbook is <strong>not</strong> on Vercel. <code><a class="ext" href="https://prd.vercel.app/" target="_blank" rel="noopener">https://prd.vercel.app/</a></code> is a different product (LeadShark MVP PRD).<br />
 These GitHub Pages URLs are <strong>public documentation stubs</strong> of the admin catalogue (not a live exchange). Map the same paths 1:1 onto the internal Admin Console when it exists.</p>
-<p><strong>Phase 1 admin priority:</strong> futures, risk, engine, wallet, invite/broker &amp; compliance. Spot and margin URLs exist as stubs but stay <strong>disabled</strong> in production (<code>[Phase 2+]</code>).</p>
+<p><strong>Phase 1 admin priority:</strong> futures, risk, engine, wallet, broker/institution/MM &amp; compliance. Spot and margin URLs exist as stubs but stay <strong>disabled</strong> in production (<code>[Phase 2+]</code>).</p>
 </blockquote>
 <h4 id="en-711-every-admin-page-full-url"><span class="alias" id="en-sec-7-1-1"></span>7.1.1 Every admin page (full URL)</h4>
 <div class="table-wrap"><table>
@@ -3878,17 +4005,17 @@ These GitHub Pages URLs are <strong>public documentation stubs</strong> of the a
 <td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/bad-debt/">https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/bad-debt/</a></td>
 </tr>
 <tr>
-<td>Phase 2+</td>
+<td>Phase 1</td>
 <td><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/" target="_blank" rel="noopener">/admin/mm/sla</a></code></td>
 <td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/">https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/sla/</a></td>
 </tr>
 <tr>
-<td>Phase 2+</td>
+<td>Phase 1</td>
 <td><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/" target="_blank" rel="noopener">/admin/mm/inventory</a></code></td>
 <td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/">https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/inventory/</a></td>
 </tr>
 <tr>
-<td>Phase 2+</td>
+<td>Phase 1</td>
 <td><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/" target="_blank" rel="noopener">/admin/mm/agreements</a></code></td>
 <td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/">https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/agreements/</a></td>
 </tr>
@@ -4907,7 +5034,7 @@ flowchart TB
 <p>Stand up these first — then expand to full catalogue:</p>
 <p><strong>Phase 1 prefer (perps + access + platform):</strong><br />
 1. <strong><a class="xref" href="#en-pf-k01">PF-K01</a></strong> Mark−index · <strong><a class="xref" href="#en-pf-k07">PF-K07</a></strong> Insurance · <strong><a class="xref" href="#en-pf-k06">PF-K06</a></strong> Liq burst · <strong><a class="xref" href="#en-pf-k03">PF-K03</a></strong> Funding (incl. <strong>XAUUSD</strong>)<br />
-2. <strong>ACC / access:</strong> invite/broker tag coverage; blocked public signup; entitlement = perps-only<br />
+2. <strong>ACC / access:</strong> broker / institution / MM tag coverage; blocked public signup; Perp Account = perps-only; USD/USDT funding rail<br />
 3. <strong><a class="xref" href="#en-pl-k01">PL-K01</a></strong> Hot-wallet buffer · <strong><a class="xref" href="#en-pl-k06">PL-K06</a></strong> Mark pipeline lag · <strong><a class="xref" href="#en-pl-k05">PL-K05</a></strong> Recon · <strong><a class="xref" href="#en-sp-k09">SP-K09</a></strong> Matching latency (shared engine)  </p>
 <p><strong><code>[Phase 2+]</code> dormant until enabled:</strong><br />
 4. <strong><a class="xref" href="#en-mg-k01">MG-K01</a> / K04 / K08</strong> · <strong><a class="xref" href="#en-sp-k03">SP-K03</a></strong> (spot book) and other Spot/Margin KRIs  </p>
@@ -6101,19 +6228,31 @@ flowchart TB
 </tr>
 <tr>
 <td>Phase 1</td>
-<td>What is live now: perps only (including XAUUSD); invite-only or broker onboarding.</td>
+<td>What is live now on V-Exchange: perpetual contracts (including XAUUSD); Perp Account (USD/USDT); matching / risk / clearing. Access = broker / institution / MM; 2C via broker.</td>
 </tr>
 <tr>
 <td>Phase 2+</td>
-<td>Written here but <strong>not</strong> switched on (Spot, Margin, public signup).</td>
+<td>Written here but <strong>not</strong> switched on (Spot, USD Margin, cross-ccy margin, portfolio margin, options, wealth, public 2C signup).</td>
 </tr>
 <tr>
-<td>Invite-only</td>
-<td>You cannot open an account without a valid invite/allowlist.</td>
+<td>V-Exchange</td>
+<td>Finprime venue (ADGM / Mauritius). Matching + clearing/settlement + risk.</td>
+</tr>
+<tr>
+<td>Perp Account</td>
+<td>The Phase 1 trading account. Only USD/USDT may be transferred in.</td>
+</tr>
+<tr>
+<td>MT account / X-fund</td>
+<td>Funding wallets. Users deposit here, then transfer USD/USDT into the Perp Account.</td>
+</tr>
+<tr>
+<td>2B / 2C</td>
+<td>Business vs consumer access. 2C enters through a broker. 2B = broker, institution (API-only), MM.</td>
 </tr>
 <tr>
 <td>Broker channel</td>
-<td>Accounts introduced by a contracted introducing broker (IB).</td>
+<td>Vantage sub-brands or external white-label / API brokers. Offline broker open.</td>
 </tr>
 <tr>
 <td>KYC</td>
@@ -6178,7 +6317,7 @@ flowchart TB
 </ul>
 <h3 id="en-113-go-live-checklist--perps-summary-phase-1"><span class="alias" id="en-sec-11-3"></span>11.3 Go-live checklist — Perps (summary) <code>[Phase 1]</code></h3>
 <blockquote>
-<p>Includes <strong>XAUUSD</strong> and other Phase 1 perps. Confirm invite/broker access (<a class="xref" href="#en-acc-01">ACC-01</a>/02) before publicising any cohort.</p>
+<p>Includes <strong>XAUUSD</strong> and other Phase 1 perps. Confirm <a class="xref" href="#en-acc-01">ACC-01</a>/02/04 (broker / institution / MM) and the USD/USDT Perp Account rail before publicising any cohort.</p>
 </blockquote>
 <ul>
 <li>[ ] Contract specs signed (PM + Legal)  </li>
@@ -6192,13 +6331,15 @@ flowchart TB
 <li>[ ] Hypercare roster 72h  </li>
 <li>[ ] RO-OPS briefed on <a class="xref" href="#en-s2">S2</a> vs <a class="xref" href="#en-s1">S1</a> discrimination for this contract  </li>
 </ul>
-<h3 id="en-113a-go-live-checklist--phase-1-access-invite--broker"><span class="alias" id="en-sec-11-3a"></span>11.3a Go-live checklist — Phase 1 access (invite / broker)</h3>
+<h3 id="en-113a-go-live-checklist--phase-1-access-v-exchange"><span class="alias" id="en-sec-11-3a"></span>11.3a Go-live checklist — Phase 1 access (V-Exchange)</h3>
 <ul>
-<li>[ ] Public self-serve registration <strong>disabled</strong></li>
-<li>[ ] Invite service live; code expiry/reuse rules tested (<a class="xref" href="#en-acc-01">ACC-01</a>)</li>
-<li>[ ] Broker allowlist + agreements executed; portal/tagging works (<a class="xref" href="#en-acc-02">ACC-02</a>)</li>
-<li>[ ] Every trade-enabled UID has invite <strong>or</strong> broker attribution</li>
-<li>[ ] Product entitlement = <strong>perps only</strong> (spot/margin flags off)</li>
+<li>[ ] Public 2C self-serve registration <strong>disabled</strong></li>
+<li>[ ] Broker agreements (Vantage sub-brands + external WL/API) executed; tagging works (<a class="xref" href="#en-acc-01">ACC-01</a>)</li>
+<li>[ ] Institutional direct: offline open, API-only, dual-control keys (<a class="xref" href="#en-acc-02">ACC-02</a>)</li>
+<li>[ ] MM access tagged; SLA heartbeat live (<a class="xref" href="#en-acc-04">ACC-04</a>)</li>
+<li>[ ] Every trade-enabled UID has broker <strong>or</strong> institution <strong>or</strong> MM attribution</li>
+<li>[ ] Product entitlement = <strong>Perp Account / perps only</strong> (spot/margin/options/wealth flags off)</li>
+<li>[ ] Perp Account inbound transfers = <strong>USD/USDT only</strong> (MT account / X-fund)</li>
 <li>[ ] <a class="xref" href="#en-acc-03">ACC-03</a> daily exception report subscribed by RO-OPS + CP</li>
 </ul>
 <h3 id="en-114-go-live-checklist--margin-asset-phase-2"><span class="alias" id="en-sec-11-4"></span>11.4 Go-live checklist — Margin asset <code>[Phase 2+]</code></h3>
@@ -6246,7 +6387,7 @@ flowchart TB
 </tr>
 <tr>
 <td>Version</td>
-<td>2.1 — Clickable in-doc SOP / KRI / § / scenario links; admin and public URLs in both languages</td>
+<td>2.2 — V-Exchange Phase 1 map: green = perps + Perp Account + matching/risk/clearing; 2B broker/institution/MM; 2C via broker</td>
 </tr>
 </tbody>
 </table></div>
@@ -6256,10 +6397,11 @@ flowchart TB
     </article>
     <article class="panel" role="tabpanel" id="panel-zh" aria-labelledby="tab-zh" lang="zh-CN" hidden>
 <h1 id="zh-加密货币交易所风险管理--业务单元bu用户手册">加密货币交易所风险管理 — 业务单元（BU）用户手册</h1>
-<p><strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
-<strong>范围：</strong> 全量目录含现货·杠杆·永续；<strong>Phase 1 生产 = 仅永续（含 XAUUSD）+ 邀请/经纪商准入</strong><br />
+<p><strong>场所：</strong> Finprime <strong>V-Exchange</strong>（ADGM / 毛里求斯持牌主体；撮合 + 清结算 + 风控）<br />
+<strong>读者：</strong> 业务单元负责人（BU PIC）、风险官（RO）、产品、交易运维、工程、合规、资金、上币、托管<br />
+<strong>范围：</strong> 全量目录含现货·USD Margin·跨币种保证金·组合保证金·期权·理财·永续；<strong>Phase 1 生产（绿色）= 永续合约 + 永续账户（USD/USDT）+ 撮合 / 风控与强平 / 清结算</strong>。准入 = 2B 经纪商 / 机构 / 做市商；2C 终端用户<strong>经经纪商进入</strong>（无公众自助注册）。<br />
 <strong>公开站点：</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/">https://hxyan2020.github.io/PRD/risk-handbook/</a> · <strong>全部 URL：</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a> · <strong>后台 URL：</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/</a><br />
-<strong>版本：</strong> 2.1 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
+<strong>版本：</strong> 2.2 · <strong>归属：</strong> 首席风险官（第二道防线）· <strong>审阅周期：</strong> 每季度或重大事件后  </p>
 <blockquote>
 <p>本手册是<strong>操作说明书</strong>：谁负责什么、工作怎么分、每道手续怎么做、用哪块屏幕、看哪些数字、出问题时先做什么。它<strong>不能</strong>代替法律政策、《限额手册》（已签字的真实数字）或监管申报。<br />
 <strong>文中数字是教学示例。</strong> 投产前必须从《限额手册》抄录现行值，并经两名风险官批准。</p>
@@ -6284,45 +6426,101 @@ flowchart TB
 </ol>
 <section class="visual-maps" id="zh-visual-maps-zh">
   <h2 id="zh-示意图">示意图</h2>
-  <p class="lead-viz">这些图直接画在页面上（无需点击、不依赖外链）。绿色 = Phase 1 已开通。琥珀色删除线 = Phase 2+ 仅文档、未投产。</p>
+  <p class="lead-viz">Finprime <strong>V-Exchange</strong>（ADGM / 毛里求斯主体；撮合 + 清结算 + 风控）。绿色 = Phase 1 已开通。琥珀色删除线 = Phase 2+ 仅文档、未投产。</p>
 
   <div class="board">
-    <div class="board-title">1 · Phase 1 生产路径</div>
+    <div class="board-title">1 · V-Exchange 业务版图</div>
     <div class="lane">
-      <div class="lane-label">当前开通 — 仅邀请或经纪商 · 仅永续</div>
+      <div class="lane-label">Phase 1 已开通 — 绿色</div>
       <div class="flow-row">
-        <div class="node">邀请码</div>
+        <div class="node green">永续合约<small>含 XAUUSD 及其他已批永续</small></div>
         <span class="arrow">→</span>
-        <div class="node">KYC / 合规放行</div>
+        <div class="node green">永续账户 Perp Account<small>仅 USD / USDT</small></div>
         <span class="arrow">→</span>
-        <div class="node">权益：仅永续</div>
-        <span class="arrow">→</span>
-        <div class="node">XAUUSD + 已批永续</div>
-        <span class="arrow">→</span>
-        <div class="node">撮合 + 风控引擎</div>
-        <span class="arrow">→</span>
-        <div class="node">强平 / 保险 / ADL</div>
-      </div>
-      <div class="flow-row">
-        <div class="node">经纪商 / IB</div>
-        <span class="arrow">→</span>
-        <div class="node">KYC / 合规放行</div>
-        <span class="muted-note">汇入同一路径</span>
+        <div class="node green">撮合 · 开/持/平<small>风控与强平 · 清结算</small></div>
       </div>
     </div>
     <div class="lane off">
-      <div class="lane-label">Phase 2+ — 手册保留，生产未开</div>
+      <div class="lane-label">Phase 2+ — 手册保留，开关关闭</div>
       <div class="flow-row">
-        <div class="node off">现货簿</div>
-        <div class="node off">杠杆借款</div>
-        <div class="node off">公众自助注册</div>
+        <div class="node off">Spot 现货</div>
+        <div class="node off">USD Margin 逐仓+全仓</div>
+        <div class="node off">跨币种 Margin 全仓</div>
+        <div class="node off">组合保证金</div>
+        <div class="node off">期权</div>
+        <div class="node off">理财</div>
+        <div class="node off">公众 2C 自助注册</div>
       </div>
     </div>
   </div>
 
+  <div class="board">
+    <div class="board-title">2 · 准入分层（2B / 2C）</div>
+    <div class="lane">
+      <div class="lane-label">2B — 线下开户接入 V-Exchange</div>
+      <div class="flow-row">
+        <div class="node">Broker 接入<small>Vantage 等子品牌 · 外部白标 / API</small></div>
+        <div class="node">机构直连<small>对冲基金 / HNW · 仅 API</small></div>
+        <div class="node">做市商接入<small>合作方流动性</small></div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lane-label">2C — 终端用户不能自助注册，必须经经纪商进入</div>
+      <div class="flow-row">
+        <div class="node navy">2C 终端用户</div>
+        <span class="arrow">→</span>
+        <div class="node">Broker 接入</div>
+        <span class="arrow">→</span>
+        <div class="node">KYC / 开户</div>
+        <span class="arrow">→</span>
+        <div class="node green">永续账户</div>
+      </div>
+      <p class="muted-note">无公众网站注册。无经纪商 / 机构 / 做市商标签却能交易的 UID，视为 L3 事件。</p>
+    </div>
+  </div>
+
+  <div class="board">
+    <div class="board-title">3 · 2C 用户交易生命周期（Phase 1 轨道）</div>
+    <div class="flow-row">
+      <div class="stack">
+        <div class="lane-label">Stage 1 开户</div>
+        <div class="node">KYC</div>
+        <span class="arrow down">↓</span>
+        <div class="node">Open Account 开户</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 2 入金与划转（仅 USD/USDT）</div>
+        <div class="node">用户入金</div>
+        <span class="arrow down">↓</span>
+        <div class="flow-row">
+          <div class="node">MT 账户</div>
+          <div class="node">X-fund</div>
+        </div>
+        <span class="arrow down">↓ 划转 USD/USDT</span>
+        <div class="node green">永续账户 Perp Account</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 3 交易（绿色）</div>
+        <div class="node green">撮合引擎<small>开 / 持 / 平</small></div>
+        <span class="arrow down">↓</span>
+        <div class="node green">风控与强平</div>
+        <span class="arrow down">↓</span>
+        <div class="node green">清结算</div>
+      </div>
+      <span class="arrow">→</span>
+      <div class="stack">
+        <div class="lane-label">Stage 4 出金</div>
+        <div class="node">用户出金</div>
+      </div>
+    </div>
+    <p class="muted-note">MT 与 X-fund 可互转。进入永续账户的划转仅限 USD/USDT。现货/杠杆钱包保持关闭。</p>
+  </div>
+
   <div class="viz-grid">
     <div class="board">
-      <div class="board-title">2 · 三道防线</div>
+      <div class="board-title">4 · 三道防线</div>
       <div class="stack">
         <div class="node navy">第一道 — 产品 / TO / 撮合 / 钱包 / 上币 / 做市<small>承担 BAU 风险并执行控制</small></div>
         <span class="arrow down">↓ 突破升级</span>
@@ -6334,7 +6532,7 @@ flowchart TB
       </div>
     </div>
     <div class="board">
-      <div class="board-title">3 · 永续控制链（Phase 1 主路径）</div>
+      <div class="board-title">5 · 永续控制链（Phase 1 主路径）</div>
       <div class="stack">
         <div class="flow-row">
           <div class="node navy">指数（多所合成）</div>
@@ -6363,11 +6561,13 @@ flowchart TB
   </div>
 
   <div class="board">
-    <div class="board-title">4 · Phase 1 关键路径 BU</div>
+    <div class="board-title">6 · Phase 1 关键路径 BU</div>
     <div class="flow-row">
-      <div class="node">邀请 / 经纪商 + 合规</div>
+      <div class="node">经纪商 / 机构 / 做市 + 合规</div>
       <span class="arrow">→</span>
-      <div class="node">可交易 UID</div>
+      <div class="node">开户</div>
+      <span class="arrow">→</span>
+      <div class="node green">永续账户</div>
       <span class="arrow">→</span>
       <div class="node">撮合（ME）</div>
       <span class="arrow">→</span>
@@ -6379,12 +6579,12 @@ flowchart TB
       <span class="arrow">→</span>
       <div class="node amber">CRO</div>
     </div>
-    <p class="muted-note">钱包（WO）挂在风控引擎路径上，负责抵押与盈亏结算。</p>
+    <p class="muted-note">钱包（WO）与资金（TS）挂在 MT / X-fund / 出入金轨道。清结算在 Stage 3 与风控引擎一起。</p>
   </div>
 
   <div class="viz-grid">
     <div class="board">
-      <div class="board-title">5 · 红黄绿分流</div>
+      <div class="board-title">7 · 红黄绿分流</div>
       <div class="stack">
         <div class="flow-row">
           <div class="node green">绿 → 先看时间戳</div>
@@ -6399,7 +6599,7 @@ flowchart TB
       </div>
     </div>
     <div class="board">
-      <div class="board-title">6 · 升级阶梯</div>
+      <div class="board-title">8 · 升级阶梯</div>
       <div class="stack">
         <div class="node">L1 RO-OPS 工单</div>
         <span class="arrow down">↓</span>
@@ -6413,7 +6613,7 @@ flowchart TB
   </div>
 
   <div class="board">
-    <div class="board-title">7 · <a class="xref" href="#zh-sop-g02">SOP-G02</a> 停牌后复牌</div>
+    <div class="board-title">9 · <a class="xref" href="#zh-sop-g02">SOP-G02</a> 停牌后复牌</div>
     <div class="flow-row">
       <div class="node">TO 提议</div>
       <span class="arrow">→</span>
@@ -6432,7 +6632,7 @@ flowchart TB
   </div>
 
   <div class="board">
-    <div class="board-title">8 · 诊断顺序（先时钟）</div>
+    <div class="board-title">10 · 诊断顺序（先时钟）</div>
     <div class="flow-row">
       <div class="node navy">1 时钟</div>
       <span class="arrow">→</span>
@@ -6456,9 +6656,9 @@ flowchart TB
 <hr />
 <h2 id="zh-phase-1-运营范围全文标签说明">Phase 1 运营范围（全文标签说明）</h2>
 <blockquote>
-<p><strong>Phase 1 为当前生产范围。</strong> 后续阶段内容保留备战，一律标注 <strong><code>[Phase 2+]</code></strong>（或更晚）。未经正式阶段门禁（风险 <strong>A</strong> + 合规 + 产品）不得在生产开通 Phase 2+ 流程。</p>
+<p><strong>Phase 1 为当前生产范围</strong> = V-Exchange 图上的<strong>绿色</strong>框。后续阶段内容保留备战，一律标注 <strong><code>[Phase 2+]</code></strong>（或更晚）。未经正式阶段门禁（风险 <strong>A</strong> + 合规 + 产品）不得在生产开通 Phase 2+ 流程。</p>
 </blockquote>
-<h3 id="zh-phase-1--范围内">Phase 1 — 范围内</h3>
+<h3 id="zh-phase-1--范围内绿色">Phase 1 — 范围内（绿色）</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -6468,38 +6668,77 @@ flowchart TB
 </thead>
 <tbody>
 <tr>
-<td><strong>产品 / 合约</strong></td>
-<td><strong>仅永续（Perps）。</strong> 含 <strong>XAUUSD 永续</strong> 及其他已批准永续合约。Phase 1 <strong>无现货交易簿、无杠杆借贷簿</strong>。</td>
+<td><strong>场所</strong></td>
+<td><strong>Finprime V-Exchange。</strong> 主体：ADGM 和/或毛里求斯牌照。基建：撮合 + 清结算 + 风控。</td>
 </tr>
 <tr>
-<td><strong>开户</strong></td>
-<td><strong>仅邀请制</strong> 和/或 <strong>经经纪商（Broker / IB）</strong> 引入。无面向公众的自助开放注册。</td>
+<td><strong>产品（绿）</strong></td>
+<td><strong>仅永续合约</strong>，含 <strong>XAUUSD</strong> 及其他已批准永续。</td>
 </tr>
 <tr>
-<td><strong>交易准入</strong></td>
-<td>须完成邀请兑换 <strong>或</strong> 经纪商引入入驻，并通过风险/合规门禁后方可交易。</td>
+<td><strong>账户（绿）</strong></td>
+<td><strong>永续账户 Perp Account。</strong> 转入该账户：<strong>仅 USD / USDT</strong>。</td>
+</tr>
+<tr>
+<td><strong>交易栈（绿）</strong></td>
+<td>撮合（开 / 持 / 平）· 风控与强平 · 清结算。</td>
+</tr>
+<tr>
+<td><strong>2B 准入</strong></td>
+<td><strong>Broker 接入</strong>（Vantage 等子品牌；外部白标 / API）· <strong>机构直连</strong>（对冲基金 / HNW；<strong>线下开户，仅 API</strong>）· <strong>做市商接入</strong>（合作方流动性）。2B 一律<strong>线下开户</strong>。</td>
+</tr>
+<tr>
+<td><strong>2C 准入</strong></td>
+<td>终端用户<strong>经经纪商进入</strong>。无公众自助注册。</td>
+</tr>
+<tr>
+<td><strong>资金轨道（绿灯所需）</strong></td>
+<td>用户<strong>入金</strong> → <strong>MT 账户</strong> 和/或 <strong>X-fund</strong> → 仅 USD/USDT 划入永续账户。交易后<strong>出金</strong>。MT ↔ X-fund 可互转。</td>
 </tr>
 <tr>
 <td><strong>关键路径 BU</strong></td>
-<td>合约/永续产品与强平 · 撮合 · 风控引擎 · 风险运维 · 邀请/经纪商运营（合规+产品）· 钱包/结算（按需）· 监察</td>
+<td>合约/永续产品与强平 · 撮合 · 风控引擎 · 清结算 · 风险运维 · 经纪商/机构/做市运营（合规+产品）· 钱包/资金（MT–X-fund–出入金）· 监察</td>
 </tr>
 </tbody>
 </table></div>
-<p><strong>图 — Phase 1 生产范围（开通 vs 仅标签）</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">邀请码</div><span class="arrow">→</span><div class="node">KYC / 合规放行</div><span class="arrow">→</span><div class="node">经纪商 / IB</div><span class="arrow">→</span><div class="node">权益: 仅永续</div><span class="arrow">→</span><div class="node">XAUUSD + 其他已批永续</div><span class="arrow">→</span><div class="node">撮合 + 风控引擎</div><span class="arrow">→</span><div class="node">强平 / 保险 / ADL</div><span class="arrow">→</span><div class="node">现货簿</div><span class="arrow">→</span><div class="node off">Phase 2+</div><span class="arrow">→</span><div class="node">杠杆借款</div><span class="arrow">→</span><div class="node">公众自助注册</div></div></div>
+<p><strong>图 — V-Exchange Phase 1（绿色）vs 后续产品</strong></p>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">永续 GREEN</div><span class="arrow">→</span><div class="node">Spot</div><span class="arrow">→</span><div class="node">USD Margin 逐仓+全仓</div><span class="arrow">→</span><div class="node">跨币种 Margin</div><span class="arrow">→</span><div class="node">组合保证金</div><span class="arrow">→</span><div class="node">期权</div><span class="arrow">→</span><div class="node">理财</div><span class="arrow">→</span><div class="node">Finprime V-Exchange</div><span class="arrow">→</span><div class="node off">Phase 2+</div></div></div>
+<div class="viz"><div class="mermaid">
+flowchart TB
+  subgraph products ["交易所业务版图"]
+    Perps["永续 GREEN"]
+    Spot["Spot"]
+    M1["USD Margin 逐仓+全仓"]
+    M2["跨币种 Margin"]
+    PM["组合保证金"]
+    Opt["期权"]
+    WM["理财"]
+  end
+  Perps --> VX["Finprime V-Exchange"]
+  Spot -.-> P2["Phase 2+"]
+  M1 -.-> P2
+  M2 -.-> P2
+  PM -.-> P2
+  Opt -.-> P2
+  WM -.-> P2
+</div></div>
+
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">终端用户</div><span class="arrow">→</span><div class="node">Broker 接入</div><span class="arrow">→</span><div class="node">机构 仅 API</div><span class="arrow">→</span><div class="node">做市商接入</div><span class="arrow">→</span><div class="node">KYC / 开户</div><span class="arrow">→</span><div class="node">永续账户 GREEN</div><span class="arrow">→</span><div class="node">撮合 + 风控 + 清结算 GREEN</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart LR
-  subgraph access ["开户"]
-    I["邀请码"] --> CP["KYC / 合规放行"]
-    B["经纪商 / IB"] --> CP
+  subgraph b2c ["2C"]
+    U["终端用户"] --> BR["Broker 接入"]
   end
-  CP --> E["权益: 仅永续"]
-  E --> P["XAUUSD + 其他已批永续"]
-  P --> ME["撮合 + 风控引擎"]
-  ME --> LIQ["强平 / 保险 / ADL"]
-  Spot["现货簿"] -.-> P2["Phase 2+"]
-  Mar["杠杆借款"] -.-> P2
-  Pub["公众自助注册"] -.-> P2
+  subgraph b2b ["2B 线下"]
+    BR
+    INST["机构 仅 API"]
+    MM["做市商接入"]
+  end
+  BR --> KYC["KYC / 开户"]
+  INST --> KYC
+  MM --> KYC
+  KYC --> PA["永续账户 GREEN"]
+  PA --> ME["撮合 + 风控 + 清结算 GREEN"]
 </div></div>
 
 <h3 id="zh-phase-1--生产未开保留手册仅贴标签">Phase 1 — 生产未开（保留手册，仅贴标签）</h3>
@@ -6518,37 +6757,44 @@ flowchart LR
 <td>保留 SP-*、<a class="xref" href="#zh-ld-05">LD-05</a>、现货 KRI</td>
 </tr>
 <tr>
-<td>杠杆借款 / LTV / 利息</td>
+<td>USD Margin 逐仓+全仓；借款 / LTV / 利息</td>
 <td><strong><code>[Phase 2+]</code></strong></td>
 <td>保留 MG-*</td>
 </tr>
 <tr>
-<td>公众自助开户</td>
+<td>跨币种保证金；组合保证金 / 统一账户</td>
 <td><strong><code>[Phase 2+]</code></strong></td>
-<td>Phase 1 = 邀请 + 经纪商</td>
+<td>不得跨产品轧差</td>
 </tr>
 <tr>
-<td>非永续产品（期权、理财等，如有）</td>
+<td>期权；理财；其他产品</td>
 <td><strong><code>[Phase 2+]</code></strong></td>
 <td>除非另行门禁</td>
+</tr>
+<tr>
+<td>公众 2C 自助注册</td>
+<td><strong><code>[Phase 2+]</code></strong></td>
+<td>2C = 仅经纪商引入</td>
 </tr>
 </tbody>
 </table></div>
 <h3 id="zh-phase-1-对操作的含义">Phase 1 对操作的含义</h3>
 <ol>
-<li><strong>上币/上线：</strong> 生产关键路径仅为 <strong>永续</strong>（含 <strong>XAUUSD</strong>）与邀请/经纪商权益配置。  </li>
-<li><strong>准入：</strong> 既非邀请兑换、亦非经纪商关联的账户不得开通交易。  </li>
-<li><strong>KRI/SOP：</strong> 现货/杠杆条目仍文档化 — 视为<strong>休眠</strong>，除非有 Phase 2+ 豁免；日报优先永续与准入类指标。  </li>
+<li><strong>上币/上线：</strong> 生产关键路径仅为 <strong>永续</strong>（含 <strong>XAUUSD</strong>）。  </li>
+<li><strong>准入：</strong> 未打上 <strong>经纪商 / 机构 / 做市商</strong> 标签的 UID 不得交易。公众“注册”开着 = <strong>L3</strong>。  </li>
+<li><strong>资金：</strong> 进入永续账户的划转 <strong>仅 USD/USDT</strong>（来自 MT 账户或 X-fund）。其他资产不得上这条轨。  </li>
+<li><strong>KRI/SOP：</strong> 现货、杠杆、期权、理财条目仍文档化 — 视为<strong>休眠</strong>，除非有 Phase 2+ 豁免；日报优先永续、准入与资金轨道。  </li>
 <li><strong>XAUUSD 永续：</strong> 适用完整永续控制（标记/指数、资金费、杠杆档、保险/ADL），并关注贵金属时段/节假日流动性与间隙风险。</li>
 </ol>
 <p><strong>用日常话说</strong></p>
-<p>把交易所想成一家店：<strong>今天只卖一种货</strong>——<strong>永续合约</strong>（跟踪某个价格、没有到期日的合同）。黄金对美元（<strong>XAUUSD</strong>）是其中之一。客人不能直接从大街走进来，必须有<strong>邀请码</strong>，或由已签约的<strong>经纪商</strong>带来。做完身份核验（KYC，即“了解你的客户”）之后，也<strong>只能交易永续</strong>。现货买币、借钱加杠杆，手册里写着是为了以后能开，但开关现在是<strong>关</strong>的，除非走完正式阶段门禁。</p>
+<p>V-Exchange 是持牌店（ADGM / 毛里求斯）。<strong>今天绿灯只亮永续合约</strong>——跟踪某个价格、没有到期日的合同。黄金对美元（<strong>XAUUSD</strong>）是其中之一。零售客人<strong>不能</strong>从大街走进来，必须经<strong>经纪商</strong>（例如 Vantage 子品牌，或外部白标）。对冲基金和大客<strong>线下开户、只走 API</strong>。做市商走自己的接入。</p>
+<p>钱不会直接掉进交易钱包。客户先<strong>入金</strong>到 <strong>MT 账户</strong> 或 <strong>X-fund</strong>，再把 <strong>USD 或 USDT</strong> <strong>划入永续账户</strong>。撮合、强平、清结算只看见这个账户。现货、USD 杠杆（逐仓和全仓）、跨币种保证金、组合保证金、期权、理财画在版图上是为了以后能开——开关现在是<strong>关</strong>的。</p>
 <p>如果工单在说现货或杠杆，先当成<strong>以后的作业</strong>，不是今天的生产控制——除非风险已经签了 Phase 2+ 豁免。</p>
 <hr />
 <h2 id="zh-零基础说明">零基础说明</h2>
 <p>不要求你以前做过交易。你需要知道的是：<strong>出了事该叫谁、哪一颗按钮会伤人</strong>。本节把行话翻成人话。</p>
 <h3 id="zh-这家公司在干什么">这家公司在干什么</h3>
-<p>客户把<strong>抵押品</strong>（多为稳定币或加密资产）交给我们，开立<strong>仓位</strong>：看涨叫<strong>做多</strong>，看跌叫<strong>做空</strong>。因为可以用<strong>杠杆</strong>，价格小动就可能把抵押品亏光。这时系统会<strong>强平</strong>：强制平掉仓位，避免亏损传染给其他客户或公司。</p>
+<p>这是 <strong>Finprime V-Exchange</strong>。获准进入的客户开立<strong>永续账户</strong>，把 <strong>USD/USDT</strong> 划进去，交易<strong>永续合约</strong>。看涨叫<strong>做多</strong>，看跌叫<strong>做空</strong>。因为可以用<strong>杠杆</strong>，价格小动就可能把抵押品亏光。这时系统会<strong>强平</strong>：强制平掉仓位，避免亏损传染给其他客户或公司。</p>
 <p>一句话职责：<strong>保住客户资产、让撮合诚实、别让错误价格或错误配置连环爆炸。</strong></p>
 <h3 id="zh-每一页都会出现的词">每一页都会出现的词</h3>
 <div class="table-wrap"><table>
@@ -6654,13 +6900,13 @@ flowchart LR
 </table></div>
 <h3 id="zh-钱怎么走简图">钱怎么走（简图）</h3>
 <ol>
-<li><strong>邀请或经纪商</strong>让人开得了户。  </li>
-<li><strong>KYC / 合规</strong>确认此人可以交易。  </li>
-<li>抵押品进入<strong>钱包 / 托管</strong>。  </li>
-<li>下单；<strong>撮合引擎</strong>把两笔订单变成成交。  </li>
+<li><strong>2C</strong> 经<strong>经纪商</strong>进来（Vantage 子品牌或外部白标）。<strong>2B</strong> 对冲基金 / HNW <strong>线下开户、只走 API</strong>。<strong>做市商</strong>走流动性接入。  </li>
+<li><strong>KYC / 合规</strong> 然后 <strong>开户</strong>。  </li>
+<li><strong>入金</strong>到 <strong>MT 账户</strong> 或 <strong>X-fund</strong>，再把 <strong>USD 或 USDT</strong> <strong>划入永续账户</strong>。  </li>
+<li>下单；<strong>撮合引擎</strong>把两笔订单变成成交（开 / 持 / 平）。  </li>
 <li><strong>风控引擎</strong>不停问：“价格若反向跳，抵押还够不够？”  </li>
-<li>不够就开始<strong>强平</strong>。窟窿先由保险、再由 ADL 补。  </li>
-<li>日终<strong>对账</strong>，核对账本、钱包、银行，避免把没有的钱打出去。</li>
+<li>不够就开始<strong>强平</strong>。窟窿先由保险、再由 ADL 补。<strong>清结算</strong>记账。  </li>
+<li>从资金轨道<strong>出金</strong>。日终<strong>对账</strong>，核对账本、钱包、银行，避免把没有的钱打出去。</li>
 </ol>
 <p>Phase 1 停在永续。生产上还没有“现货买完币再提出去”这条完整零售路径。</p>
 <h3 id="zh-怎么读一份-sop">怎么读一份 SOP</h3>
@@ -6740,7 +6986,7 @@ flowchart LR
 </tr>
 <tr>
 <td>Phase 1 负责人 / 上线组</td>
-<td><strong>Phase 1 运营范围</strong> + <a href="#zh-零基础说明">零基础说明</a> + <a class="xref" href="#zh-sec-3-3">§3.3</a> 永续 + <a class="xref" href="#zh-sec-4-4">§4.4</a> + 邀请/经纪商 SOP</td>
+<td><strong>Phase 1 运营范围</strong> + <a href="#zh-零基础说明">零基础说明</a> + <a class="xref" href="#zh-sec-3-3">§3.3</a> 永续 + <a class="xref" href="#zh-sec-4-4">§4.4</a> + ACC（经纪商 / 机构 / 做市）</td>
 </tr>
 </tbody>
 </table></div>
@@ -6752,7 +6998,7 @@ flowchart LR
 <li><strong>产品差异意识</strong> — 现货、杠杆、永续是三台不同的机器。把现货价格带抄到永续、把永续强平抄到杠杆，会杀错人。工单必须标注 <strong>SPOT / MARGIN / PERP</strong>。  </li>
 <li><strong>盘前 / 盘中 / 盘后</strong> — 下单前（限额、KYC）、撮合中（价格带、STP、限频）、盘后（告警、对账、监察）。不能只靠一层。  </li>
 <li><strong>客户资产优先</strong> — 提现和托管的完整性，高于营收功能。  </li>
-<li><strong>Phase 1 产品与准入门禁</strong> — 生产交易 = <strong>仅永续</strong>（含 <strong>XAUUSD</strong>）；开户 = <strong>邀请制或经纪商</strong>。现货、杠杆、公众注册保持 <strong><code>[Phase 2+]</code></strong>。</li>
+<li><strong>Phase 1 产品与准入门禁</strong> — 生产交易 = <strong>仅永续</strong>（含 <strong>XAUUSD</strong>），在 <strong>永续账户</strong> 上用 <strong>USD/USDT</strong> 入金。准入 = <strong>经纪商 / 机构 / 做市商</strong>（2C 经经纪商）。现货、USD 杠杆、跨币种保证金、组合保证金、期权、理财、公众注册保持 <strong><code>[Phase 2+]</code></strong>。</li>
 </ol>
 <hr />
 <h2 id="zh-2-三道防线与角色映射"><span class="alias" id="zh-sec-2"></span>2. 三道防线与角色映射</h2>
@@ -7097,18 +7343,24 @@ flowchart TB
 </tbody>
 </table></div>
 <p><strong>图 — 产品 vs Phase 1 门禁</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">永续含 XAUUSD</div><span class="arrow">→</span><div class="node">现货</div><span class="arrow">→</span><div class="node">全仓 / 逐仓杠杆</div><span class="arrow">→</span><div class="node">公众注册</div><span class="arrow">→</span><div class="node">用户</div></div></div>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">永续含 XAUUSD</div><span class="arrow">→</span><div class="node">永续账户 USD/USDT</div><span class="arrow">→</span><div class="node">现货</div><span class="arrow">→</span><div class="node">USD Margin 逐仓+全仓</div><span class="arrow">→</span><div class="node">跨币种 / 组合保证金</div><span class="arrow">→</span><div class="node">期权 / 理财</div><span class="arrow">→</span><div class="node">公众 2C 注册</div><span class="arrow">→</span><div class="node">2C 用户</div><span class="arrow">→</span><div class="node">经纪商</div><span class="arrow">→</span><div class="node">机构 / 做市</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart TB
-  subgraph p1 ["Phase 1 开通"]
+  subgraph p1 ["Phase 1 开通（绿）"]
     Perps["永续含 XAUUSD"]
+    PA["永续账户 USD/USDT"]
   end
   subgraph p2 ["Phase 2+ 文档保留 / 休眠"]
     Spot["现货"]
-    Margin["全仓 / 逐仓杠杆"]
-    Public["公众注册"]
+    Margin["USD Margin 逐仓+全仓"]
+    XMgn["跨币种 / 组合保证金"]
+    Opt["期权 / 理财"]
+    Public["公众 2C 注册"]
   end
-  User["用户"] -->|仅邀请或经纪商| Perps
+  User["2C 用户"] --> BR["经纪商"]
+  BR --> PA
+  Inst["机构 / 做市"] --> PA
+  PA --> Perps
   User -.->|阻断| Spot
   User -.->|阻断| Margin
   User -.->|阻断| Public
@@ -7117,11 +7369,12 @@ flowchart TB
 <hr />
 <h2 id="zh-4-分-bu-作战手册"><span class="alias" id="zh-sec-4"></span>4. 分 BU 作战手册</h2>
 <p><strong>图 — Phase 1 关键路径 BU</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">邀请 / 经纪商 + 合规</div><span class="arrow">→</span><div class="node">可交易 UID</div><span class="arrow">→</span><div class="node">撮合</div><span class="arrow">→</span><div class="node">风控引擎</div><span class="arrow">→</span><div class="node">合约 TO / PM</div><span class="arrow">→</span><div class="node">RO / RO-OPS</div><span class="arrow">→</span><div class="node">钱包</div><span class="arrow">→</span><div class="node">CRO</div></div></div>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">经纪商 / 机构 / 做市 + 合规</div><span class="arrow">→</span><div class="node">开户</div><span class="arrow">→</span><div class="node">永续账户</div><span class="arrow">→</span><div class="node">撮合</div><span class="arrow">→</span><div class="node">风控引擎</div><span class="arrow">→</span><div class="node">合约 TO / PM</div><span class="arrow">→</span><div class="node">RO / RO-OPS</div><span class="arrow">→</span><div class="node">钱包</div><span class="arrow">→</span><div class="node">CRO</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart LR
-  ACC["邀请 / 经纪商 + 合规"] --> UID["可交易 UID"]
-  UID --> ME["撮合"]
+  ACC["经纪商 / 机构 / 做市 + 合规"] --> OA["开户"]
+  OA --> PA["永续账户"]
+  PA --> ME["撮合"]
   ME --> RE["风控引擎"]
   RE --> FUT["合约 TO / PM"]
   FUT --> RO["RO / RO-OPS"]
@@ -7440,7 +7693,7 @@ flowchart LR
 <hr />
 <h3 id="zh-44-合约--永续产品与强平运维--pm-fut--ro--to-fut-phase-1--主路径"><span class="alias" id="zh-sec-4-4"></span>4.4 合约 / 永续产品与强平运维 — PM-FUT / RO / TO-FUT <code>[Phase 1 — 主路径]</code></h3>
 <blockquote>
-<p>Phase 1 关键路径：<strong>XAUUSD 永续</strong> + 其他已批永续；仅邀请/经纪商客户。</p>
+<p>Phase 1 关键路径：<strong>XAUUSD 永续</strong> + 其他已批永续，走<strong>永续账户</strong>；2C 经经纪商；2B 机构 / 做市。</p>
 </blockquote>
 <p><strong>人话：</strong> 这是你们<strong>今天真正在跑的产品</strong>。标记价、杠杆、资金费、保险、ADL 出问题，先看本章和风控引擎（<a class="xref" href="#zh-sec-4-6">§4.6</a>）。即使你不是“合约岗”也请读。</p>
 <p>永续 = 跟踪一个价格、没有到期日的合约。客户交抵押，可杠杆做多或做空。每隔几小时多空之间结一笔<strong>资金费</strong>，免得合约永远偏离真价。强平看的是<strong>标记价</strong>（公允价），不是最新成交。</p>
@@ -7738,11 +7991,11 @@ flowchart LR
 <p><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/listing/pipeline/" target="_blank" rel="noopener">/admin/listing/pipeline</a></code> · <code>tags</code> · <code>delist</code> · <code>migrations</code></p>
 <hr />
 <h3 id="zh-49-合规监察与市场滥用--cp"><span class="alias" id="zh-sec-4-9"></span>4.9 合规、监察与市场滥用 — CP</h3>
-<p><strong>人话：</strong> 合规决定谁可以交易、有没有人在滥用市场。风险决定能加多少杠杆。两份工作不要混。Phase 1 还管邀请码和经纪商通道——公众自助注册必须是关的。</p>
+<p><strong>人话：</strong> 合规决定谁可以交易、有没有人在滥用市场。风险决定能加多少杠杆。两份工作不要混。Phase 1 还管 <strong>2B 经纪商 / 机构 / 做市商</strong> 以及 <strong>2C 经经纪商进入</strong>——公众自助注册必须是关的。</p>
 <h4 id="zh-范围内-9">范围内</h4>
 <ul>
 <li>KYC/AML、制裁、旅行规则</li>
-<li><strong>Phase 1 准入：</strong> 邀请码兑换、经纪商/IB 引入账户、阻断公众自助注册</li>
+<li><strong>Phase 1 准入：</strong> 经纪商 / 子品牌 2C（<a class="xref" href="#zh-acc-01">ACC-01</a>）；机构直连 API（<a class="xref" href="#zh-acc-02">ACC-02</a>）；做市商接入（<a class="xref" href="#zh-acc-04">ACC-04</a>）；阻断公众自助注册</li>
 <li>监察（幌骗、分层、对倒、内幕）</li>
 <li>跨产品市场滥用调查</li>
 <li>监管报送</li>
@@ -7773,10 +8026,13 @@ flowchart LR
 <p><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/treasury/balances/" target="_blank" rel="noopener">/admin/treasury/balances</a></code> · <code>settlement</code> · <code>stablecoins</code></p>
 <hr />
 <h3 id="zh-411-流动性--做市运维--mm"><span class="alias" id="zh-sec-4-11"></span>4.11 流动性 / 做市运维 — MM</h3>
+<blockquote>
+<p>Phase 1：做市商 <strong>接入</strong> 作为 2B 路径已开通到 <strong>永续</strong>（<a class="xref" href="#zh-acc-04">ACC-04</a>）。现货做市 SLA 仍为 <code>[Phase 2+]</code>。</p>
+</blockquote>
 <p><strong>人话：</strong> 做市商按合同在买卖两边挂单，让别人能成交。价差突然拉宽、深度突然没了，先问他们是不是还活着（心跳），再问是不是市场真崩了。</p>
 <h4 id="zh-范围内-11">范围内</h4>
 <ul>
-<li>现货与永续的做市 SLA（深度、价差、在线）</li>
+<li>做市 SLA（深度、价差、在线）— <strong>Phase 1：永续</strong>；现货 <code>[Phase 2+]</code></li>
 <li>库存与逆向选择监控</li>
 <li>若做市是内部/关联：与风险的信息隔离</li>
 </ul>
@@ -8274,8 +8530,8 @@ flowchart TB
 6. 按合规政策留存。</p>
 <p><strong>升级：</strong> 缺账无法解释 → L2/L3，并评估是否该暂停交易。</p>
 <h3 id="zh-sop-g06--新产品--新合约准入"><span class="alias" id="zh-sop-g06"></span>SOP-G06 — 新产品 / 新合约准入</h3>
-<p><strong>图 — <a class="xref" href="#zh-sop-g06">SOP-G06</a> 新产品门禁（Phase 1 = 永续 + 邀请/经纪商）</strong></p>
-<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">法务</div><span class="arrow">→</span><div class="node">合规</div><span class="arrow">→</span><div class="node">上币 + 风险意见</div><span class="arrow">→</span><div class="node">产品清单</div><span class="arrow">→</span><div class="node">RE / ME 演练</div><span class="arrow">→</span><div class="node">钱包就绪</div><span class="arrow">→</span><div class="node"><a class="xref" href="#zh-acc-01">ACC-01</a> / <a class="xref" href="#zh-acc-02">ACC-02</a></div><span class="arrow">→</span><div class="node">永续上线</div><span class="arrow">→</span><div class="node">现货 / 杠杆</div><span class="arrow">→</span><div class="node off">Phase 2+ 冻结</div></div></div>
+<p><strong>图 — <a class="xref" href="#zh-sop-g06">SOP-G06</a> 新产品门禁（Phase 1 = 永续 + 经纪商/机构/做市）</strong></p>
+<div class="board mermaid-fallback" aria-hidden="false"><div class="board-title">Diagram (always on)</div><div class="flow-row"><div class="node">法务</div><span class="arrow">→</span><div class="node">合规</div><span class="arrow">→</span><div class="node">上币 + 风险意见</div><span class="arrow">→</span><div class="node">产品清单</div><span class="arrow">→</span><div class="node">RE / ME 演练</div><span class="arrow">→</span><div class="node">钱包就绪</div><span class="arrow">→</span><div class="node"><a class="xref" href="#zh-acc-01">ACC-01</a> / 02 / 04</div><span class="arrow">→</span><div class="node">永续上线</div><span class="arrow">→</span><div class="node">现货 / 杠杆</div><span class="arrow">→</span><div class="node off">Phase 2+ 冻结</div></div></div>
 <div class="viz"><div class="mermaid">
 flowchart LR
   Legal["法务"] --> CP["合规"]
@@ -8283,7 +8539,7 @@ flowchart LR
   LI --> Prod["产品清单"]
   Prod --> Eng["RE / ME 演练"]
   Eng --> WO["钱包就绪"]
-  WO --> Acc["ACC-01 / ACC-02"]
+  WO --> Acc["ACC-01 / 02 / 04"]
   Acc --> Live["永续上线"]
   Spot["现货 / 杠杆"] -.-> P2["Phase 2+ 冻结"]
 </div></div>
@@ -8319,9 +8575,9 @@ flowchart LR
 5. <strong>RE/ME</strong> 在预发放配置并<strong>签署演练</strong>（永续尤其要强平与 ADL）。<br />
 6. <strong>钱包</strong>确认抵押所需链的充提可用。<br />
 7. 若用白名单/软启 → <strong>点名 72h 超护值班</strong>。<br />
-8. 然后才放流量。<strong>Phase 1：</strong> 仅邀请/经纪商客群，<strong>不是</strong>公众注册；<strong>仅永续</strong>。</p>
+8. 然后才放流量。<strong>Phase 1：</strong> 仅经纪商 / 机构 / 做市客群，<strong>不是</strong>公众 2C 注册；<strong>仅永续账户上的永续</strong>。</p>
 <blockquote>
-<p><strong>Phase 1 门禁说明：</strong> 生产合约 = <strong>永续（含 XAUUSD）</strong>；准入 = <strong><a class="xref" href="#zh-acc-01">ACC-01</a>/02（邀请或经纪商）</strong>，非公众注册；现货/杠杆 = <strong><code>[Phase 2+]</code></strong>。<br />
+<p><strong>Phase 1 门禁说明：</strong> 生产合约 = <strong>永续（含 XAUUSD）</strong>；准入 = <strong><a class="xref" href="#zh-acc-01">ACC-01</a>/02/04</strong>（经纪商 / 机构 / 做市）。现货 / 杠杆 / 期权 / 理财 = <strong><code>[Phase 2+]</code></strong>。<br />
 <strong>升级：</strong> 未放行已有流量 → <a class="xref" href="#zh-pl-k12">PL-K12</a>，强制关闭，L3 审计。</p>
 </blockquote>
 <hr />
@@ -8329,7 +8585,7 @@ flowchart LR
 <p>上面 <a class="xref" href="#zh-sop-g01">G01</a>–<a class="xref" href="#zh-sop-g06">G06</a> 是<strong>全公司共用骨架</strong>（改限额、停牌、确认告警、双人控制、日终对账、新产品开门）。下面每一张卡片，是某个具名团队真正会跑的一份作业。</p>
 <p><strong>如果你从来没干过这类工作</strong></p>
 <ol>
-<li>先找自己的前缀：<strong>RM</strong> = 风险运维，<strong>PF</strong> = 永续（今天的生产），<strong>ACC</strong> = 邀请/经纪商准入，<strong>ME</strong> = 撮合引擎，<strong>RE</strong> = 风控/强平引擎，<strong>WA</strong> = 钱包，<strong>SP</strong> = 现货 <code>[Phase 2+]</code>，<strong>MG</strong> = 杠杆借贷 <code>[Phase 2+]</code>。</li>
+<li>先找自己的前缀：<strong>RM</strong> = 风险运维，<strong>PF</strong> = 永续（今天的生产），<strong>ACC</strong> = V-Exchange 准入（经纪商 / 机构 / 做市），<strong>ME</strong> = 撮合引擎，<strong>RE</strong> = 风控/强平引擎，<strong>WA</strong> = 钱包，<strong>SP</strong> = 现货 <code>[Phase 2+]</code>，<strong>MG</strong> = 杠杆借贷 <code>[Phase 2+]</code>。</li>
 <li>先读 <strong>这份 SOP 干什么</strong>。若不能用一句话讲给新同事听，不要开始点按钮。</li>
 <li>再读 <strong>何时</strong>。那件事没发生，这份食谱就还没轮到你——不要“看着像”就自己发明步骤。</li>
 <li>然后按 <strong>如何做</strong> 的编号走。标了 <em>为什么</em> 的句子不是装饰，是上一步存在的理由。</li>
@@ -8632,7 +8888,7 @@ flowchart LR
 <h4 id="zh-pf-永续-phase-1">PF 永续 <code>[Phase 1]</code></h4>
 <p><strong>这是今天真正在跑的路径。请读完每一张。</strong> 永续（perp）跟踪某个价格（比特币、黄金兑美元……）且<strong>永不到期</strong>。客户交抵押，杠杆做多或做空。盈亏和强平看的是<strong>标记价</strong>（多家外盘合成的公允价），<strong>不是</strong>我们簿上最新一笔成交。</p>
 <h5 id="zh-pf-01-新合约上线"><span class="alias" id="zh-pf-01"></span>PF-01 新合约上线</h5>
-<p><strong>这份 SOP 干什么：</strong> 把一份新合约（例如另一个金属对，或新的 BTC 永续）放到邀请/经纪商客户面前。漏勾一项，就是没保险或只有一家指数源就上线。</p>
+<p><strong>这份 SOP 干什么：</strong> 把一份新合约（例如另一个金属对，或新的 BTC 永续）放到经纪商 / 机构 / 做市客户面前。漏勾一项，就是没保险或只有一家指数源就上线。</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -8827,9 +9083,9 @@ flowchart LR
 <h5 id="zh-eng-04-安全事件密钥--api"><span class="alias" id="zh-eng-04"></span>ENG-04 安全事件（密钥 / API）</h5>
 <p>密钥失陷：<strong>≤2 分杀掉</strong>，轮换，通知，取证，L3/L4 战时。告知 CRO/CISO/合规。速度比完美报告重要。</p>
 <hr />
-<h4 id="zh-access--phase-1-邀请与经纪商开户-phase-1">ACCESS — Phase 1 邀请与经纪商开户 <code>[Phase 1]</code></h4>
-<p><strong>人话：</strong> Phase 1 不能从官网自己注册。必须有<strong>邀请码</strong>，或由已签约的<strong>经纪商</strong>带来。做完身份核验（KYC = 了解你的客户）之后，也<strong>只能交易永续</strong>。现货和杠杆开关保持关。若发现公众“注册”按钮是开的，那是 <strong>L3 事件</strong>，不是增长业绩。</p>
-<h5 id="zh-acc-01-邀请制开户"><span class="alias" id="zh-acc-01"></span>ACC-01 邀请制开户</h5>
+<h4 id="zh-access--phase-1-v-exchange-开户-phase-1">ACCESS — Phase 1 V-Exchange 开户 <code>[Phase 1]</code></h4>
+<p><strong>人话：</strong> Phase 1 不能从官网自己注册。<strong>2C</strong> 终端用户经<strong>经纪商</strong>进入（Vantage 或其他子品牌，或外部白标 / API 经纪商）。<strong>对冲基金 / 高净值</strong>走<strong>线下开户、仅 API</strong>。<strong>做市商</strong>走流动性接入。KYC 之后拿到 <strong>永续账户</strong>，入金只允许 <strong>USD/USDT</strong>。现货、USD 杠杆、跨币种保证金、组合保证金、期权、理财开关保持关。若发现公众“注册”按钮是开的，那是 <strong>L3 事件</strong>，不是增长业绩。</p>
+<h5 id="zh-acc-01-经纪商--子品牌-2c-开户"><span class="alias" id="zh-acc-01"></span>ACC-01 经纪商 / 子品牌 2C 开户</h5>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -8840,53 +9096,61 @@ flowchart LR
 <tbody>
 <tr>
 <td><strong>何时</strong></td>
-<td>有人兑换邀请/白名单码，或运营发出一张</td>
+<td>已签约经纪商（Vantage 子品牌或外部白标 / API）引入一名终端用户</td>
 </tr>
 <tr>
 <td><strong>谁</strong></td>
-<td><strong>R</strong> 产品/增长运营 · <strong>A 合规</strong> 身份门禁 · <strong>A 风险权益</strong> RO · <strong>R 打开交易</strong> RE/ENG 标志</td>
+<td><strong>R：</strong> 经纪商运营 / 产品 · <strong>A 合规：</strong> KYC/KYB 门禁 · <strong>A 风险权益：</strong> RO · <strong>R 打开交易：</strong> RE/ENG 标志</td>
 </tr>
 <tr>
 <td><strong>SLA</strong></td>
-<td>邀请校验自动 ≤1 分 · 人工合规按政策 · 放行后权益推送 ≤15 分</td>
+<td>经纪商标签绑定：合规放行后自动 ≤5 分 · 人工合规按政策 · 放行后权益推送 ≤15 分</td>
 </tr>
 <tr>
 <td><strong>前置</strong></td>
-<td>Phase 1 模式开；邀请未用未过期；制裁筛查通过</td>
+<td>Phase 1 模式开；经纪商协议有效；制裁筛查通过</td>
 </tr>
 <tr>
 <td><strong>系统</strong></td>
-<td>邀请后台 · KYC · <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/holds/" target="_blank" rel="noopener">/admin/compliance/holds</a></code> · 风险限额档</td>
+<td>经纪商门户 · KYC · <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/compliance/holds/" target="_blank" rel="noopener">/admin/compliance/holds</a></code> · 风险限额档</td>
 </tr>
 </tbody>
 </table></div>
 <p><strong>如何做（每步为什么）</strong><br />
-1. <strong>校验邀请。</strong> 未用、未过期、不像被转发滥用。<em>为什么：</em> 泄露的码等于伪装成邀请的公众注册。<br />
+1. <strong>确认经纪商协议仍有效</strong>（没过期、没被暂停）。<em>为什么：</em> 失效经纪商不是正门。<br />
 2. <strong>收集 KYC/KYB</strong>（他是谁；若是公司，谁拥有）。<br />
 3. <strong>合规放行。</strong> 在此之前账户只是一个文件夹，不是交易员。<br />
-4. <strong>绑定元数据：</strong> 哪张邀请、谁发的、何时。<em>为什么：</em> 以后监察和经纪商分润都靠这个标签，你不会记得。<br />
-5. <strong>产品权益 = 仅永续。</strong> 明确确认现货和杠杆标志是<strong>关</strong>的。<br />
-6. 打开交易开关。写审计日志。<br />
-7. 抽查：能开已批永续吗？<strong>不能</strong>开出现货单吗？</p>
-<p><strong>完成：</strong> 只能交易已批永续。<strong>升级：</strong> 邀请被滥用 → <a class="xref" href="#zh-cp-02">CP-02</a> 冻结；发现公众注册入口开着 → <strong>先 L3 关掉入口</strong>，再清已经放出的 UID。</p>
-<h5 id="zh-acc-02-经纪商引入开户"><span class="alias" id="zh-acc-02"></span>ACC-02 经纪商引入开户</h5>
-<p><strong>这份 SOP 干什么：</strong> 已签约的介绍经纪商带来终端客户。客户仍然要 KYC。限额取（经纪商簿限额，客户限额）里<strong>更严</strong>的那个。</p>
+4. <strong>绑定元数据：</strong> 经纪商 id、子品牌 vs 外部白标、谁引入、何时。<em>为什么：</em> 以后监察和经纪商分润都靠这个标签。<br />
+5. <strong>先开户，再开永续账户。</strong> 产品权益 = <strong>仅永续</strong>。现货 / 杠杆 / 期权 / 理财标志 <strong>关</strong>。<br />
+6. <strong>入金规则：</strong> 只允许从 <strong>MT 账户</strong> 或 <strong>X-fund</strong> 向永续账户划转 <strong>USD/USDT</strong>。<br />
+7. 打开交易开关。写审计日志。抽查：能开已批永续吗？<strong>不能</strong>开出现货单吗？</p>
+<p><strong>完成：</strong> 只能交易已批永续，并挂在该经纪商下。<strong>升级：</strong> 发现公众注册入口开着 → <strong>先 L3 关掉入口</strong>，再清已经放出的 UID。</p>
+<h5 id="zh-acc-02-机构直连线下仅-api"><span class="alias" id="zh-acc-02"></span>ACC-02 机构直连（线下，仅 API）</h5>
+<p><strong>这份 SOP 干什么：</strong> 对冲基金或高净值在 V-Exchange <strong>线下开户</strong>，只拿 <strong>API</strong>——没有公众界面注册。限额取（机构簿限额，账户限额）里<strong>更严</strong>的那个。</p>
 <p><strong>如何做</strong><br />
-1. 确认经纪商协议<strong>仍有效</strong>（没过期、没被暂停）。<br />
-2. 在该经纪商标签下开户。<br />
-3. 合规放行该客户。<br />
-4. 两套限额都套上；引擎必须用更严的。<em>为什么：</em> 挂在大经纪商下的小客户，不能继承经纪商的大帽子。<br />
-5. 权益 = Phase 1 仅永续。经纪商授信/VIP 走双控。<br />
-6. 协议失效：先停<strong>新开户</strong>。已开户按协议 + 风险意见处理——不要假装没看见。</p>
-<p><strong>完成：</strong> 客户只走批准路径交易；监察能把他归因到经纪商。</p>
-<h5 id="zh-acc-03-phase-1-权益护栏每天"><span class="alias" id="zh-acc-03"></span>ACC-03 Phase 1 权益护栏（每天）</h5>
-<p><strong>这份 SOP 干什么：</strong> 每天问一次“大门还锁着吗”。</p>
+1. 线下 KYC/KYB 包齐；法务/合规给实体定性。<br />
+2. <strong>不走零售 UI</strong> 开户。API 密钥走双控（<a class="xref" href="#zh-sop-g04">G04</a>）。<br />
+3. 两套限额都套上；引擎必须用更严的。<br />
+4. 权益 = Phase 1 <strong>永续账户</strong> only（USD/USDT）。VIP/授信走双控。<br />
+5. 协议失效：先<strong>杀掉新 API 密钥</strong>。已有仓位按协议 + 风险意见处理。</p>
+<p><strong>完成：</strong> 机构只走批准的 API 路径交易；监察能把订单归因到该法律实体。</p>
+<h5 id="zh-acc-03-phase-1-权益与通道护栏每天"><span class="alias" id="zh-acc-03"></span>ACC-03 Phase 1 权益与通道护栏（每天）</h5>
+<p><strong>这份 SOP 干什么：</strong> 每天问一次“大门还锁着吗，钱还在绿色通道上吗”。</p>
 <p><strong>如何做</strong><br />
-1. 任何 UID 被打开现货或杠杆 → 告警。<br />
-2. 自助注册若开着 → 告警。<br />
-3. 没有邀请也没有经纪商标签却能下单 → 告警。<br />
-4. 日报给 RO-OPS + 合规。零例外，或例外必须挂<strong>阶段门禁豁免</strong>工单（不是 Slack 一个表情）。</p>
+1. 任何 UID 被打开现货、USD 杠杆、跨币种保证金、组合保证金、期权或理财 → 告警。<br />
+2. 自助 2C 注册若开着 → 告警。<br />
+3. 没有经纪商、机构、做市商标签却能下单 → 告警。<br />
+4. 永续账户收下了<strong>不是</strong> USD/USDT 的划转 → 告警。<br />
+5. 日报给 RO-OPS + 合规。零例外，或例外必须挂<strong>阶段门禁豁免</strong>工单（不是 Slack 一个表情）。</p>
 <p><strong>完成：</strong> 每日零例外，或每条例外都有豁免工单。</p>
+<h5 id="zh-acc-04-做市商--流动性伙伴接入"><span class="alias" id="zh-acc-04"></span>ACC-04 做市商 / 流动性伙伴接入</h5>
+<p><strong>这份 SOP 干什么：</strong> 已签约做市商接入 V-Exchange，为 Phase 1 永续报价。他们是 2B，不是零售 2C。</p>
+<p><strong>如何做</strong><br />
+1. 协议 + 做市 SLA 有效（心跳、该永续簿的最大价差/深度）。<br />
+2. 线下开户；打 <strong>MM</strong> 标签。API 密钥双控。<br />
+3. 权益 = 仅永续。若有关联自营台，走信息隔离（<a class="xref" href="#zh-mm-03">MM-03</a>）。<br />
+4. 心跳死了 → 按情景族 <strong><a class="xref" href="#zh-s5">S5</a></strong>（单标的流动性空洞）处理，不要当成“他们安静了”。</p>
+<p><strong>完成：</strong> MM 标签 + SLA 监控已挂到他们覆盖的标的。</p>
 <h2 id="zh-7-管理后台与工具目录"><span class="alias" id="zh-sec-7"></span>7. 管理后台与工具目录</h2>
 <h3 id="zh-71-规范管理后台映射含完整-url"><span class="alias" id="zh-sec-7-1"></span>7.1 规范管理后台映射（含完整 URL）</h3>
 <p><strong>完整 URL 表：</strong> <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a><br />
@@ -8972,7 +9236,7 @@ flowchart LR
 <td>杠杆 PM / RO-Credit</td>
 </tr>
 <tr>
-<td>做市 <code>[Phase 2+]</code></td>
+<td>做市 <code>[Phase 1 — 永续]</code></td>
 <td><code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/" target="_blank" rel="noopener">/admin/mm/*</a></code></td>
 <td><a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/">https://hxyan2020.github.io/PRD/risk-handbook/admin/mm/</a></td>
 <td>MM</td>
@@ -8982,7 +9246,7 @@ flowchart LR
 <p>逐页完整 URL 见 <a href="https://hxyan2020.github.io/PRD/risk-handbook/urls.html">https://hxyan2020.github.io/PRD/risk-handbook/urls.html</a> 与 <a href="https://hxyan2020.github.io/PRD/risk-handbook/admin/">https://hxyan2020.github.io/PRD/risk-handbook/admin/</a>。</p>
 <p><strong>ACL 原则：</strong> 最小权限；Kill/密钥/制裁覆盖/保险注资/A 级限额双控；变更不可篡改审计；破窗账户限时+自动工单+通知 CRO/CISO；分析尽量用只读副本。</p>
 <blockquote>
-<p><strong>Phase 1 后台优先级：</strong> <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/" target="_blank" rel="noopener">/admin/futures/*</a></code>、风险与撮合、邀请/经纪商与合规冻结。<code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/" target="_blank" rel="noopener">/admin/spot/*</a></code>、<code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/" target="_blank" rel="noopener">/admin/margin/*</a></code> 文档桩仍在，生产须<strong>关闭</strong>（<code>[Phase 2+]</code>）。</p>
+<p><strong>Phase 1 后台优先级：</strong> <code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/futures/" target="_blank" rel="noopener">/admin/futures/*</a></code>、风险与撮合、经纪商/机构/做市与合规冻结。<code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/spot/" target="_blank" rel="noopener">/admin/spot/*</a></code>、<code><a class="ext" href="https://hxyan2020.github.io/PRD/risk-handbook/admin/margin/" target="_blank" rel="noopener">/admin/margin/*</a></code> 文档桩仍在，生产须<strong>关闭</strong>（<code>[Phase 2+]</code>）。</p>
 </blockquote>
 <hr />
 <h2 id="zh-8-限额kri阈值动作与升级"><span class="alias" id="zh-sec-8"></span>8. 限额、KRI、阈值、动作与升级</h2>
@@ -9744,7 +10008,7 @@ flowchart TB
 </tbody>
 </table></div>
 <h3 id="zh-812-最小必开集"><span class="alias" id="zh-sec-8-12"></span>8.12 最小必开集</h3>
-<p><strong>Phase 1 优先：</strong> <a class="xref" href="#zh-pf-k01">PF-K01</a><a class="xref" href="#zh-pf-k07">/K07</a><a class="xref" href="#zh-pf-k06">/K06</a><a class="xref" href="#zh-pf-k03">/K03</a>（含 XAUUSD）· 邀请/经纪商覆盖与仅永续权益 · <a class="xref" href="#zh-pl-k01">PL-K01</a><a class="xref" href="#zh-pl-k06">/K06</a><a class="xref" href="#zh-pl-k05">/K05</a> · <a class="xref" href="#zh-sp-k09">SP-K09</a>（共用撮合时延）。<br />
+<p><strong>Phase 1 优先：</strong> <a class="xref" href="#zh-pf-k01">PF-K01</a><a class="xref" href="#zh-pf-k07">/K07</a><a class="xref" href="#zh-pf-k06">/K06</a><a class="xref" href="#zh-pf-k03">/K03</a>（含 XAUUSD）· 经纪商/机构/做市覆盖、仅永续权益、USD/USDT 入金轨 · <a class="xref" href="#zh-pl-k01">PL-K01</a><a class="xref" href="#zh-pl-k06">/K06</a><a class="xref" href="#zh-pl-k05">/K05</a> · <a class="xref" href="#zh-sp-k09">SP-K09</a>（共用撮合时延）。<br />
 <strong><code>[Phase 2+]</code> 休眠：</strong> <a class="xref" href="#zh-mg-k01">MG-K01</a><a class="xref" href="#zh-mg-k04">/K04</a><a class="xref" href="#zh-mg-k08">/K08</a> · 现货簿 <a class="xref" href="#zh-sp-k03">SP-K03</a> 等。</p>
 <hr />
 <h2 id="zh-9-风险情景诊断红黄绿--时序"><span class="alias" id="zh-sec-9"></span>9. 风险情景诊断（红黄绿 + 时序）</h2>
@@ -10169,19 +10433,31 @@ flowchart TB
 </tr>
 <tr>
 <td>Phase 1</td>
-<td>现在生产：仅永续（含 XAUUSD）；邀请或经纪商开户</td>
+<td>现在生产：V-Exchange 永续（含 XAUUSD）；永续账户（USD/USDT）；撮合 / 风控 / 清结算。准入 = 经纪商 / 机构 / 做市；2C 经经纪商。</td>
 </tr>
 <tr>
 <td>Phase 2+</td>
-<td>写在手册里但开关是关的（现货、杠杆、公众注册）</td>
+<td>写在手册里但开关是关的（现货、USD 杠杆、跨币种保证金、组合保证金、期权、理财、公众 2C 注册）</td>
 </tr>
 <tr>
-<td>邀请制</td>
-<td>没有有效邀请/白名单就开不了户</td>
+<td>V-Exchange</td>
+<td>Finprime 场所（ADGM / 毛里求斯）。撮合 + 清结算 + 风控。</td>
+</tr>
+<tr>
+<td>永续账户 Perp Account</td>
+<td>Phase 1 交易账户。只允许划入 USD/USDT。</td>
+</tr>
+<tr>
+<td>MT 账户 / X-fund</td>
+<td>入金钱包。用户先入金到这里，再把 USD/USDT 划进永续账户。</td>
+</tr>
+<tr>
+<td>2B / 2C</td>
+<td>对公 vs 对客。2C 经经纪商进入。2B = 经纪商、机构（仅 API）、做市商。</td>
 </tr>
 <tr>
 <td>经纪商通道</td>
-<td>签约引入经纪商带来的客户</td>
+<td>Vantage 子品牌或外部白标 / API 经纪商。线下开经纪商。</td>
 </tr>
 <tr>
 <td>KYC</td>
@@ -10246,7 +10522,7 @@ flowchart TB
 </ul>
 <h3 id="zh-113-永续上线清单-phase-1"><span class="alias" id="zh-sec-11-3"></span>11.3 永续上线清单 <code>[Phase 1]</code></h3>
 <blockquote>
-<p>含 <strong>XAUUSD</strong> 及其他 Phase 1 永续。对外宣传任何客群前，先确认 <a class="xref" href="#zh-acc-01">ACC-01</a>/02（邀请或经纪商）已接通。</p>
+<p>含 <strong>XAUUSD</strong> 及其他 Phase 1 永续。对外宣传任何客群前，先确认 <a class="xref" href="#zh-acc-01">ACC-01</a>/02/04（经纪商 / 机构 / 做市）以及 USD/USDT 永续账户入金轨已接通。</p>
 </blockquote>
 <ul>
 <li>[ ] 合约规格由产品 + 法务签字  </li>
@@ -10260,13 +10536,15 @@ flowchart TB
 <li>[ ] 72 小时超护值班表已点名  </li>
 <li>[ ] RO-OPS 能口述本合约如何区分 <a class="xref" href="#zh-s2">S2</a>（错标记）与 <a class="xref" href="#zh-s1">S1</a>（真下跌）</li>
 </ul>
-<h3 id="zh-113a-phase-1-准入清单邀请--经纪商"><span class="alias" id="zh-sec-11-3a"></span>11.3a Phase 1 准入清单（邀请 / 经纪商）</h3>
+<h3 id="zh-113a-phase-1-准入清单v-exchange"><span class="alias" id="zh-sec-11-3a"></span>11.3a Phase 1 准入清单（V-Exchange）</h3>
 <ul>
-<li>[ ] 公众自助注册<strong>已关闭</strong></li>
-<li>[ ] 邀请服务上线；过期/复用规则已测（<a class="xref" href="#zh-acc-01">ACC-01</a>）</li>
-<li>[ ] 经纪商白名单+协议生效；标签/门户可用（<a class="xref" href="#zh-acc-02">ACC-02</a>）</li>
-<li>[ ] 每一可交易 UID 均有邀请 <strong>或</strong> 经纪商归属</li>
-<li>[ ] 产品权益 = <strong>仅永续</strong>（现货/杠杆关闭）</li>
+<li>[ ] 公众 2C 自助注册<strong>已关闭</strong></li>
+<li>[ ] 经纪商协议（Vantage 子品牌 + 外部白标/API）已生效；标签可用（<a class="xref" href="#zh-acc-01">ACC-01</a>）</li>
+<li>[ ] 机构直连：线下开户、仅 API、密钥双控（<a class="xref" href="#zh-acc-02">ACC-02</a>）</li>
+<li>[ ] 做市商接入已打标；SLA 心跳已开（<a class="xref" href="#zh-acc-04">ACC-04</a>）</li>
+<li>[ ] 每一可交易 UID 均有经纪商 <strong>或</strong> 机构 <strong>或</strong> 做市归属</li>
+<li>[ ] 产品权益 = <strong>永续账户 / 仅永续</strong>（现货/杠杆/期权/理财关闭）</li>
+<li>[ ] 永续账户入金划转 = <strong>仅 USD/USDT</strong>（MT 账户 / X-fund）</li>
 <li>[ ] <a class="xref" href="#zh-acc-03">ACC-03</a> 日例外报表已订阅（RO-OPS + 合规）</li>
 </ul>
 <h3 id="zh-114-杠杆资产上线清单-phase-2"><span class="alias" id="zh-sec-11-4"></span>11.4 杠杆资产上线清单 <code>[Phase 2+]</code></h3>
@@ -10316,7 +10594,7 @@ flowchart TB
 </tr>
 <tr>
 <td>版本</td>
-<td>2.1 — 文内 SOP / KRI / § / 情景编号可点击跳转；后台与公开 URL 中英均可点</td>
+<td>2.2 — V-Exchange Phase 1 地图：绿色 = 永续 + 永续账户 + 撮合/风控/清结算；2B 经纪商/机构/做市；2C 经经纪商</td>
 </tr>
 </tbody>
 </table></div>
