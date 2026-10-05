@@ -106,7 +106,7 @@ function relatedMacroEvents(domain: string, product: string, title: string, mess
     .slice(0, 3);
 }
 
-export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
+export function analyzeAlert(alertId: number, opts: { force?: boolean; prefer_rag?: boolean } = {}) {
   const db = getDb();
   const alert = db.prepare(`SELECT * FROM monitor_alerts WHERE id = ?`).get(alertId) as AlertRow | undefined;
   if (!alert) throw new Error(`Alert ${alertId} not found`);
@@ -127,7 +127,10 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
     return null;
   }
 
-  const skillMatch = matchSkill(db, indicator.monitor_id, alert.severity, alert.observed_value);
+  // Demo "RAG path" buttons can skip skill match so the RAG branch is always exercised.
+  const skillMatch = opts.prefer_rag
+    ? null
+    : matchSkill(db, indicator.monitor_id, alert.severity, alert.observed_value);
   const analysisId = newAnalysisId();
 
   if (skillMatch) {
@@ -378,7 +381,16 @@ export function getAnalysisBundle(id: number) {
   return { analysis, evidence, skillRuns, challenge, improvement };
 }
 
-export function analyzeOpenAlerts(opts: { force?: boolean } = {}) {
+export type AnalyzeOpenSummary = {
+  analysis_id: string;
+  analysis_db_id: number;
+  alert_id: number;
+  mode: string;
+  created: boolean;
+};
+
+/** Ensure every open alert has an AI pack. Returns slim summaries (not full evidence blobs). */
+export function analyzeOpenAlerts(opts: { force?: boolean } = {}): AnalyzeOpenSummary[] {
   const db = getDb();
   // Skip alerts whose indicator is paused — they must not enter AI analysis.
   const alerts = db
@@ -391,10 +403,31 @@ export function analyzeOpenAlerts(opts: { force?: boolean } = {}) {
        ORDER BY a.id`
     )
     .all() as Array<{ id: number }>;
-  const results = [];
+  const results: AnalyzeOpenSummary[] = [];
   for (const a of alerts) {
+    const existing = db
+      .prepare(`SELECT id, analysis_id, mode FROM ai_analyses WHERE alert_id = ? ORDER BY id DESC LIMIT 1`)
+      .get(a.id) as { id: number; analysis_id: string; mode: string } | undefined;
+    if (existing && !opts.force) {
+      results.push({
+        analysis_id: existing.analysis_id,
+        analysis_db_id: existing.id,
+        alert_id: a.id,
+        mode: existing.mode,
+        created: false,
+      });
+      continue;
+    }
     const bundle = analyzeAlert(a.id, opts);
-    if (bundle) results.push(bundle);
+    if (bundle?.analysis) {
+      results.push({
+        analysis_id: String(bundle.analysis.analysis_id),
+        analysis_db_id: Number(bundle.analysis.id),
+        alert_id: a.id,
+        mode: String(bundle.analysis.mode),
+        created: true,
+      });
+    }
   }
   return results;
 }
@@ -405,6 +438,7 @@ export function createAlarmAndAnalyze(input: {
   title: string;
   message: string;
   observed_value: number;
+  prefer_rag?: boolean;
 }) {
   const db = getDb();
   const ind = db
@@ -441,5 +475,8 @@ export function createAlarmAndAnalyze(input: {
   ).run(ticketId, alertDbId, input.title, input.severity, assignee?.id ?? null, assignee?.department_code ?? null);
 
   writeAudit({ name: "Monitor 2.0" }, "ALARM_RAISED", "monitor_alert", alertIdStr, input);
-  return { ...analyzeAlert(alertDbId, { force: true }), monitor_alert_id: alertIdStr };
+  return {
+    ...analyzeAlert(alertDbId, { force: true, prefer_rag: !!input.prefer_rag }),
+    monitor_alert_id: alertIdStr,
+  };
 }

@@ -21,7 +21,7 @@ const BASE_SKILL_SCENARIOS: SkillScenario[] = [
       why: "At ≥100 stressed accounts, liquidation clustering can move company equity and LP fills simultaneously; 50 is early warning for desk staffing.",
     },
     related_indicators: ["M2-COPY-009", "M2-EQ-001", "M2-HEDGE-007", "M2-FEED-003"],
-    conditions: { severity_in: ["BREACH"], min_observed: 100 },
+    conditions: { severity_in: ["BREACH", "CRITICAL"], min_observed: 100 },
     fault_areas: [
       "Copy-provider leverage contagion",
       "Stale quote → delayed stop-outs",

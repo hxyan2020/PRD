@@ -94,7 +94,7 @@ The left pane is grouped so you are not staring at one long list:
 |---|---|
 | **Overview** | Admin Home |
 | **Monitor & risk** | Daily Performance → Monitor 2.0 → Detectors → Live Alerts → Market Intelligence → Risk Log → Risk Domains |
-| **AI & knowledge** | AI Analyses → AI Skills → Knowledge Tree → RAG → AI Admin |
+| **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert) |
 | **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark → Spine Log |
 | **Organisation** | Departments → Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
@@ -174,7 +174,7 @@ This is the path you will use most. Later sections explain every other page.
 8. For a control: pick a recommended action → double-confirm → checker if required.  
 9. Confirm the same events in Spine Log and Audit Log.
 
-**Demo shortcuts on AI Analyses** (localhost): Simulate COPY breach (skill path), Simulate EQ drawdown (RAG, often WARN so second AI is skipped), Simulate CRITICAL (forces second AI), Backfill 2nd AI challenges.
+**Demo shortcuts on Realtime Alert & Tracker** (localhost AI pipeline panel): Analyze all open alarms, Simulate COPY breach (skill path), Simulate EQ drawdown (RAG path), Simulate CRITICAL (2nd AI challenge), Backfill 2nd AI challenges.
 
 **Decision rule:** `AGREE` may follow the playbook under policy. `PARTIAL` / `DISAGREE` means **needs human** — no irreversible control until a person has read both AIs.
 
@@ -328,22 +328,21 @@ A panel shows `monitor2.base_url` and **Sync now (prototype)**.
 
 ## 8. AI & knowledge
 
-### 8.1 AI Analyses — `/admin/ai-analyses`
+### 8.1 AI Analyses — merged into `/admin/alerts` (detail `/admin/ai-analyses/[id]`)
 
-**What it is.** The RCA workbench. Auto-runs when an alarm fires.
+**What it is.** The RCA workbench is merged into **Realtime Alert & Tracker**. `/admin/ai-analyses` redirects there. Per-analysis evidence packs stay at `/admin/ai-analyses/[id]`.
 
-**What you see.** A list of analyses: mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, summary, status, needs-human flag, skill code, indicator, **2nd AI · verdict** badge. Open one id for the full pack: explanations, evidence vault, skill run steps, the **Second AI challenger** panel (critiques, RCA improvements, alternative hypotheses), and the **AI analysis — how to improve** panel (always on, every severity). The improve panel lists 3–6 desk actions and a chatbot: **Pull data**, **Add fact**, **Challenge reasoning**, **Regenerate**, **Mark satisfactory**. The same panel sits on expanded Realtime Alert / Risk Log tracker cards.
+**What you see on Realtime Alert.** An **AI pipeline controls** panel with five working buttons, then open tracker cards. Expand a card for mode (`SKILL_MATCH` or `RAG_REASONING`), confidence, **2nd AI · verdict**, the **how to improve** panel (chatbot: Pull data / Add fact / Challenge / Regenerate / Mark satisfactory), and the action log.
 
 **What to click (demo, localhost).**
 
-- Simulate COPY breach — skill path.  
-- Simulate EQ drawdown — RAG; WARN usually skips second AI.  
-- Simulate CRITICAL — forces second AI.  
+- Analyze all open alarms — ensures every open alert has an AI pack (fast; reuses existing).  
+- Simulate COPY breach — skill path + second AI.  
+- Simulate EQ drawdown — forced RAG path; WARN usually skips second AI.  
+- Simulate CRITICAL — margin skill + second AI.  
 - Backfill 2nd AI challenges — attaches challenger rows to older high-severity packs.
 
-Click through to the skill playbook or the messenger thread.
-
-**Good looks like.** Every analysis (including WARN) has a how-to-improve review. Every BREACH/CRITICAL row has a second-AI badge. WARN under the default threshold does not run the challenger. `PARTIAL` / `DISAGREE` sets needs-human. Chat on the improve panel stores facts and can regenerate until status is SATISFIED.
+**Good looks like.** All five buttons respond with a status line (not stuck disabled). Every analysis has a how-to-improve review. BREACH/CRITICAL get a second-AI badge. `PARTIAL` / `DISAGREE` sets needs-human.
 
 ### 8.2 AI Admin — `/admin/ai-admin`
 

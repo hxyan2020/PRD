@@ -532,57 +532,84 @@ export function AlertTrackerBoard({
   const visiblePacks = useMemo(() => filterAndSortAlerts(packs, filters), [packs, filters]);
 
   async function run(action: string, body: Record<string, unknown> = {}) {
+    if (busy) return;
     setBusy(true);
-    setMsg(null);
-    const res = await fetch("/api/ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action, ...body }),
-    });
-    const data = await res.json();
-    setBusy(false);
-    if (!res.ok) {
-      setMsg(data.error || t("common.failed"));
-      return;
-    }
-    const pct = Math.round((data.analysis?.confidence || 0) * 100);
-    setMsg(
-      action === "analyze_open"
-        ? t("ai.ensured", { n: data.count })
-        : action === "simulate_alarm"
-          ? `${t("ai.alarmRaised", { id: data.analysis?.analysis_id, mode: data.analysis?.mode, pct })}${
-              data.challenge ? ` · ${t("ai.challenged", { verdict: data.challenge.verdict })}` : ""
-            }`
-          : action === "backfill_challenges"
-            ? t("ai.backfilled", { n: data.count })
-            : t("ai.done")
-    );
-    router.refresh();
-    if (action === "simulate_alarm") {
-      bumpNavBadge("/admin/alerts", 1);
-      bumpNavBadge("/admin/spine", 1);
-      const alertKey = data.monitor_alert_id as string | undefined;
-      if (alertKey) {
-        window.location.hash = alertKey;
+    setMsg(t("ai.working"));
+    try {
+      const res = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, ...body }),
+      });
+      let data: Record<string, unknown> = {};
+      try {
+        data = (await res.json()) as Record<string, unknown>;
+      } catch {
+        setMsg(t("ai.badResponse", { status: res.status }));
+        return;
       }
-    } else if (action === "analyze_open" || action === "backfill_challenges") {
-      bumpNavBadge("/admin/alerts", Number(data.count) || 1);
+      if (!res.ok) {
+        setMsg(String(data.error || t("common.failed")));
+        return;
+      }
+      const analysis = (data.analysis || {}) as {
+        analysis_id?: string;
+        mode?: string;
+        confidence?: number;
+      };
+      const challenge = (data.challenge || null) as { verdict?: string } | null;
+      const pct = Math.round((analysis.confidence || 0) * 100);
+      setMsg(
+        action === "analyze_open"
+          ? t("ai.ensured", { n: Number(data.count) || 0 })
+          : action === "simulate_alarm"
+            ? `${t("ai.alarmRaised", {
+                id: analysis.analysis_id || "—",
+                mode: analysis.mode || "—",
+                pct,
+              })}${challenge?.verdict ? ` · ${t("ai.challenged", { verdict: challenge.verdict })}` : ""}`
+            : action === "backfill_challenges"
+              ? t("ai.backfilled", { n: Number(data.count) || 0 })
+              : t("ai.done")
+      );
+      router.refresh();
+      if (action === "simulate_alarm") {
+        bumpNavBadge("/admin/alerts", 1);
+        bumpNavBadge("/admin/spine", 1);
+        const alertKey = data.monitor_alert_id as string | undefined;
+        if (alertKey) {
+          window.location.hash = alertKey;
+        }
+      } else if (action === "analyze_open" || action === "backfill_challenges") {
+        bumpNavBadge("/admin/alerts", Number(data.count) || 1);
+      }
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : t("common.failed"));
+    } finally {
+      setBusy(false);
     }
   }
 
   return (
     <div className="space-y-4">
-      {canOperateAi && (
-        <div className="panel p-4">
+      {canOperateAi ? (
+        <div className="panel p-4" data-testid="ai-pipeline-controls">
           <h3 className="font-semibold">{t("ai.pipeline")}</h3>
           <p className="text-sm text-[var(--muted)] mt-1">{t("ai.pipelineIntro")}</p>
           <div className="mt-3 action-row">
-            <button type="button" className="btn btn-primary" disabled={busy} onClick={() => run("analyze_open")}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              data-testid="ai-btn-analyze-open"
+              disabled={busy}
+              onClick={() => run("analyze_open")}
+            >
               {t("ai.analyzeOpen")}
             </button>
             <button
               type="button"
               className="btn"
+              data-testid="ai-btn-sim-copy"
               disabled={busy}
               onClick={() =>
                 run("simulate_alarm", {
@@ -599,12 +626,14 @@ export function AlertTrackerBoard({
             <button
               type="button"
               className="btn"
+              data-testid="ai-btn-sim-eq"
               disabled={busy}
               onClick={() =>
                 run("simulate_alarm", {
                   monitor_id: "M2-EQ-001",
                   severity: "WARN",
                   observed_value: 3.8,
+                  prefer_rag: true,
                   title: "Simulated equity drawdown warn",
                   message: "Company CFD book drawdown rising through US session after CPI volatility.",
                 })
@@ -615,6 +644,7 @@ export function AlertTrackerBoard({
             <button
               type="button"
               className="btn"
+              data-testid="ai-btn-sim-crit"
               disabled={busy}
               onClick={() =>
                 run("simulate_alarm", {
@@ -628,7 +658,13 @@ export function AlertTrackerBoard({
             >
               {t("ai.simCrit")}
             </button>
-            <button type="button" className="btn" disabled={busy} onClick={() => run("backfill_challenges")}>
+            <button
+              type="button"
+              className="btn"
+              data-testid="ai-btn-backfill"
+              disabled={busy}
+              onClick={() => run("backfill_challenges")}
+            >
               {t("ai.backfill")}
             </button>
           </div>
@@ -638,9 +674,13 @@ export function AlertTrackerBoard({
               data-testid="ai-action-status"
               className="mt-3 text-sm bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2 sticky top-[72px] z-20"
             >
-              {msg}
+              {busy ? `${msg}…` : msg}
             </div>
           )}
+        </div>
+      ) : (
+        <div className="panel p-4 text-sm text-[var(--muted)]" data-testid="ai-pipeline-locked">
+          {t("ai.pipelineLocked")}
         </div>
       )}
 

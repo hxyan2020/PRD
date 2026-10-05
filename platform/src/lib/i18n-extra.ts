@@ -273,8 +273,17 @@ export const EXTRA_UI: Record<string, Pair> = {
 
   "ai.pipeline": { en: "AI pipeline controls", "zh-Hant": "AI 管線控制" },
   "ai.pipelineIntro": {
-    en: "Alarms auto-trigger RCA plus a how-to-improve review. Use these controls to backfill or simulate a new Monitor 2.0 alarm.",
-    "zh-Hant": "警報會自動觸發根因分析與「如何改進」審查。可用這些控制補跑或模擬新的 Monitor 2.0 警報。",
+    en: "Merged from AI Analyses into Realtime Alert & Tracker. Alarms auto-trigger RCA plus a how-to-improve review. Use these controls to backfill or simulate a new Monitor 2.0 alarm.",
+    "zh-Hant": "已自 AI 分析合併到即時警報與追蹤。警報會自動觸發根因分析與「如何改進」審查。可用這些控制補跑或模擬新的 Monitor 2.0 警報。",
+  },
+  "ai.pipelineLocked": {
+    en: "AI pipeline controls need the ai.operate permission. Switch to Risk Owner, Risk Analyst, AI Engineer, or Super Admin to run simulates and backfills.",
+    "zh-Hant": "AI 管線控制需要 ai.operate 權限。請切換為風險負責人、風險分析師、AI 工程師或超級管理員以執行模擬與補跑。",
+  },
+  "ai.working": { en: "Working — calling AI pipeline", "zh-Hant": "處理中 — 正在呼叫 AI 管線" },
+  "ai.badResponse": {
+    en: "AI API returned a non-JSON response (HTTP {status}). On the public static site these buttons need the live localhost admin.",
+    "zh-Hant": "AI API 回傳非 JSON（HTTP {status}）。公開靜態站需改用本機 localhost 管理台才可按這些按鈕。",
   },
   "ai.analyzeOpen": { en: "Analyze all open alarms", "zh-Hant": "分析全部未結警報" },
   "ai.simCopy": { en: "Simulate COPY breach (skill path)", "zh-Hant": "模擬跟單違規（技能路徑）" },

@@ -91,15 +91,15 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   alerts: {
     title: { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
     subtitle: {
-      en: "Open queue only. Expand a ticket for facts, admin URL, AI RCA, severity, POC, pending admin or RO approval, escalation and action log. Closed tickets live in Risk Log Analytics.",
-      "zh-Hant": "僅顯示未結佇列。展開工單可看事實、管理後台網址、AI 根因、嚴重度、承辦 POC、待管理員變更或 RO 核准、升級路徑與動作紀錄。已關閉工單在風險日誌分析。",
+      en: "Open queue only — includes AI pipeline controls (analyze open, simulate skill/RAG/CRITICAL, backfill 2nd AI). Expand a ticket for facts, AI RCA, improve review, POC and action log. Closed tickets live in Risk Log Analytics.",
+      "zh-Hant": "僅顯示未結佇列 — 含 AI 管線控制（分析未結、模擬技能／RAG／危急、補跑第二 AI）。展開工單可看事實、AI 根因、改進審查、承辦與動作紀錄。已關閉工單在風險日誌分析。",
     },
   },
   "ai-analyses": {
     title: { en: "AI Analyses", "zh-Hant": "AI 分析" },
     subtitle: {
-      en: "Auto-triggered when Monitor 2.0 indicators alarm. Skill path when certain; otherwise RAG. BREACH/CRITICAL also receive an independent second-AI challenge.",
-      "zh-Hant": "Monitor 2.0 警報時自動觸發。確定時走 Skill，否則 RAG。BREACH／CRITICAL 另有獨立第二 AI 挑戰。",
+      en: "List merged into Realtime Alert & Tracker. This URL redirects. Detail packs remain at /admin/ai-analyses/[id].",
+      "zh-Hant": "列表已合併到即時警報與追蹤。此網址會轉址。詳細證據包仍在 /admin/ai-analyses/[id]。",
     },
   },
   "ai-admin": {
