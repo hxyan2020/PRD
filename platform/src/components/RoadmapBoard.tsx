@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui";
 import { useUiLocale } from "@/hooks/useUiLocale";
@@ -8,10 +8,14 @@ import {
   ROADMAP_ITEMS,
   ROADMAP_PHASES,
   roadmapSummary,
+  type RoadmapCopy,
   type RoadmapItem,
   type RoadmapPhase,
   type RoadmapSeverity,
 } from "@/lib/docs/roadmap-items";
+import { fetchDocOverlay, resetDocOverlay, saveDocOverlay } from "@/lib/docs/edit-client";
+import { isPublicSnapshot } from "@/lib/static-export";
+import { DocEditBar } from "@/components/DocEditBar";
 
 function sevClass(s: RoadmapSeverity) {
   if (s === "Critical") return "bg-rose-50 text-rose-900 border-rose-200";
@@ -25,6 +29,40 @@ function effortClass(e: RoadmapItem["effort"]) {
   return "bg-slate-100 text-slate-700 border-slate-200";
 }
 
+type RoadmapPatch = {
+  peopleEn?: string;
+  peopleZh?: string;
+  dependsEn?: string;
+  dependsZh?: string;
+  en?: Partial<RoadmapCopy>;
+  zh?: Partial<RoadmapCopy>;
+};
+type RoadmapOverlay = Record<string, RoadmapPatch>;
+
+function mergeCopy(base: RoadmapCopy, patch?: Partial<RoadmapCopy>): RoadmapCopy {
+  if (!patch) return base;
+  return {
+    title: patch.title ?? base.title,
+    operatorGets: patch.operatorGets ?? base.operatorGets,
+    why: patch.why ?? base.why,
+    today: patch.today ?? base.today,
+    todayFacts: patch.todayFacts ?? base.todayFacts,
+    build: patch.build ?? base.build,
+    doneWhen: patch.doneWhen ?? base.doneWhen,
+    skipRisk: patch.skipRisk ?? base.skipRisk,
+  };
+}
+
+function parseOverlay(raw: string | null): RoadmapOverlay {
+  if (!raw) return {};
+  try {
+    const v = JSON.parse(raw) as RoadmapOverlay;
+    return v && typeof v === "object" ? v : {};
+  } catch {
+    return {};
+  }
+}
+
 export function RoadmapBoard() {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
@@ -32,17 +70,114 @@ export function RoadmapBoard() {
   const [sevFilter, setSevFilter] = useState<"ALL" | RoadmapSeverity>("ALL");
   const [phaseFilter, setPhaseFilter] = useState<"ALL" | RoadmapPhase>("ALL");
   const [openId, setOpenId] = useState<string | null>(ROADMAP_ITEMS[0]?.id ?? null);
+  const [overlay, setOverlay] = useState<RoadmapOverlay>({});
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<RoadmapOverlay>({});
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const localOnly = isPublicSnapshot();
+
+  useEffect(() => {
+    let live = true;
+    fetchDocOverlay("ROADMAP", "overlay").then((raw) => {
+      if (!live) return;
+      const next = parseOverlay(raw);
+      setOverlay(next);
+      setDraft(next);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   const items = useMemo(() => {
-    return ROADMAP_ITEMS.filter((item) => {
+    const source = editing ? draft : overlay;
+    return ROADMAP_ITEMS.map((item) => {
+      const p = source[item.id];
+      if (!p) return item;
+      return {
+        ...item,
+        peopleEn: p.peopleEn ?? item.peopleEn,
+        peopleZh: p.peopleZh ?? item.peopleZh,
+        dependsEn: p.dependsEn ?? item.dependsEn,
+        dependsZh: p.dependsZh ?? item.dependsZh,
+        en: mergeCopy(item.en, p.en),
+        zh: mergeCopy(item.zh, p.zh),
+      };
+    }).filter((item) => {
       if (sevFilter !== "ALL" && item.severity !== sevFilter) return false;
       if (phaseFilter !== "ALL" && item.phase !== phaseFilter) return false;
       return true;
     });
-  }, [sevFilter, phaseFilter]);
+  }, [sevFilter, phaseFilter, overlay, draft, editing]);
+
+  function patchItem(id: string, field: keyof RoadmapCopy | "people" | "depends", value: string | string[]) {
+    setDraft((prev) => {
+      const cur = prev[id] ? { ...prev[id] } : {};
+      if (field === "people") {
+        if (zh) cur.peopleZh = String(value);
+        else cur.peopleEn = String(value);
+      } else if (field === "depends") {
+        if (zh) cur.dependsZh = String(value);
+        else cur.dependsEn = String(value);
+      } else {
+        const loc = zh ? { ...(cur.zh || {}) } : { ...(cur.en || {}) };
+        (loc as Record<string, unknown>)[field] = value;
+        if (zh) cur.zh = loc;
+        else cur.en = loc;
+      }
+      return { ...prev, [id]: cur };
+    });
+  }
+
+  async function save() {
+    setBusy(true);
+    const result = await saveDocOverlay("ROADMAP", "overlay", JSON.stringify(draft));
+    setBusy(false);
+    if (!result.ok) {
+      setMsg(result.error || (zh ? "儲存失敗" : "Save failed"));
+      return;
+    }
+    setOverlay(draft);
+    setEditing(false);
+    setMsg(result.localOnly ? (zh ? "已儲存在這個瀏覽器" : "Saved in this browser") : zh ? "已儲存" : "Saved");
+  }
+
+  async function reset() {
+    if (!window.confirm(zh ? "還原全部路線圖文案為種子稿？" : "Reset all roadmap copy to the seed draft?")) return;
+    setBusy(true);
+    await resetDocOverlay("ROADMAP", "overlay");
+    setBusy(false);
+    setOverlay({});
+    setDraft({});
+    setEditing(false);
+    setMsg(zh ? "已還原種子稿" : "Restored seed draft");
+  }
 
   return (
     <div className="space-y-4">
+      <div className="panel p-3 sm:p-4">
+        <DocEditBar
+          zh={zh}
+          editing={editing}
+          busy={busy}
+          dirty={editing && JSON.stringify(draft) !== JSON.stringify(overlay)}
+          localOnly={localOnly}
+          message={msg}
+          onEdit={() => {
+            setDraft(overlay);
+            setEditing(true);
+            setMsg(null);
+          }}
+          onCancel={() => {
+            setDraft(overlay);
+            setEditing(false);
+          }}
+          onSave={() => void save()}
+          onReset={() => void reset()}
+        />
+      </div>
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         <div className="panel p-3">
           <div className="text-[10px] uppercase text-[var(--muted)]">{zh ? "項目" : "Items"}</div>
@@ -169,51 +304,140 @@ export function RoadmapBoard() {
 
               {open && (
                 <div className="mt-4 border-t border-[var(--line)] pt-3 space-y-3">
-                  <div className="rounded-xl border border-teal-200 bg-teal-50/60 p-3 text-sm">
-                    <div className="text-xs uppercase text-teal-800">{zh ? "為何要做" : "Why this item"}</div>
-                    <p className="mt-1 break-word">{copy.why}</p>
-                  </div>
+                  {editing ? (
+                    <div className="space-y-3 text-sm">
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "標題" : "Title"}</span>
+                        <input
+                          className="input mt-1 w-full"
+                          value={copy.title}
+                          onChange={(e) => patchItem(item.id, "title", e.target.value)}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "值班得到什麼" : "Operator gets"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-20"
+                          value={copy.operatorGets}
+                          onChange={(e) => patchItem(item.id, "operatorGets", e.target.value)}
+                        />
+                      </label>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <label className="block">
+                          <span className="text-xs uppercase text-[var(--muted)]">{zh ? "人力" : "People"}</span>
+                          <input
+                            className="input mt-1 w-full"
+                            value={zh ? item.peopleZh : item.peopleEn}
+                            onChange={(e) => patchItem(item.id, "people", e.target.value)}
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs uppercase text-[var(--muted)]">{zh ? "依賴" : "Depends"}</span>
+                          <input
+                            className="input mt-1 w-full"
+                            value={zh ? item.dependsZh : item.dependsEn}
+                            onChange={(e) => patchItem(item.id, "depends", e.target.value)}
+                          />
+                        </label>
+                      </div>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "為何要做" : "Why"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-20"
+                          value={copy.why}
+                          onChange={(e) => patchItem(item.id, "why", e.target.value)}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "今日原型" : "Today"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-20"
+                          value={copy.today}
+                          onChange={(e) => patchItem(item.id, "today", e.target.value)}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "今日事實（一行一點）" : "Today facts (one per line)"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-24"
+                          value={copy.todayFacts.join("\n")}
+                          onChange={(e) => patchItem(item.id, "todayFacts", e.target.value.split("\n"))}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "要做什麼（一行一步）" : "What to build (one per line)"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-28"
+                          value={copy.build.join("\n")}
+                          onChange={(e) => patchItem(item.id, "build", e.target.value.split("\n"))}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "完成標準（一行一點）" : "Done when (one per line)"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-24"
+                          value={copy.doneWhen.join("\n")}
+                          onChange={(e) => patchItem(item.id, "doneWhen", e.target.value.split("\n"))}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "不做的風險" : "If we skip"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-20"
+                          value={copy.skipRisk}
+                          onChange={(e) => patchItem(item.id, "skipRisk", e.target.value)}
+                        />
+                      </label>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="rounded-xl border border-teal-200 bg-teal-50/60 p-3 text-sm">
+                        <div className="text-xs uppercase text-teal-800">{zh ? "為何要做" : "Why this item"}</div>
+                        <p className="mt-1 break-word">{copy.why}</p>
+                      </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-xl border border-[var(--line)] p-3">
-                      <div className="text-xs uppercase text-[var(--muted)]">{zh ? "今日原型" : "Today’s prototype"}</div>
-                      <p className="mt-1 break-word">{copy.today}</p>
-                      <ul className="mt-2 list-disc pl-5 space-y-1 text-[var(--muted)]">
-                        {copy.todayFacts.map((fact) => (
-                          <li key={fact} className="break-word">
-                            {fact}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="rounded-xl border border-[var(--line)] p-3">
-                      <div className="text-xs uppercase text-[var(--muted)]">{zh ? "要做什麼" : "What to build"}</div>
-                      <ol className="mt-2 list-decimal pl-5 space-y-1">
-                        {copy.build.map((step) => (
-                          <li key={step} className="break-word">
-                            {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <div className="rounded-xl border border-[var(--line)] p-3">
+                          <div className="text-xs uppercase text-[var(--muted)]">{zh ? "今日原型" : "Today’s prototype"}</div>
+                          <p className="mt-1 break-word">{copy.today}</p>
+                          <ul className="mt-2 list-disc pl-5 space-y-1 text-[var(--muted)]">
+                            {copy.todayFacts.map((fact) => (
+                              <li key={fact} className="break-word">
+                                {fact}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-xl border border-[var(--line)] p-3">
+                          <div className="text-xs uppercase text-[var(--muted)]">{zh ? "要做什麼" : "What to build"}</div>
+                          <ol className="mt-2 list-decimal pl-5 space-y-1">
+                            {copy.build.map((step) => (
+                              <li key={step} className="break-word">
+                                {step}
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                      </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3">
-                      <div className="text-xs uppercase text-emerald-900">{zh ? "完成標準" : "Done when"}</div>
-                      <ul className="mt-2 list-disc pl-5 space-y-1">
-                        {copy.doneWhen.map((d) => (
-                          <li key={d} className="break-word">
-                            {d}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-3">
-                      <div className="text-xs uppercase text-rose-900">{zh ? "不做的風險" : "If we skip"}</div>
-                      <p className="mt-1 break-word">{copy.skipRisk}</p>
-                    </div>
-                  </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3">
+                          <div className="text-xs uppercase text-emerald-900">{zh ? "完成標準" : "Done when"}</div>
+                          <ul className="mt-2 list-disc pl-5 space-y-1">
+                            {copy.doneWhen.map((d) => (
+                              <li key={d} className="break-word">
+                                {d}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-3">
+                          <div className="text-xs uppercase text-rose-900">{zh ? "不做的風險" : "If we skip"}</div>
+                          <p className="mt-1 break-word">{copy.skipRisk}</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   <div>
                     <div className="text-xs uppercase text-[var(--muted)]">{zh ? "相關畫面" : "Related screens"}</div>

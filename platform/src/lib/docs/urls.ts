@@ -85,6 +85,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Risk Log API", path: "/api/risk-log", description: "Risk analytics feed" },
   { category: "API", title: "Dashboard API", path: "/api/dashboard", description: "Daily performance metrics" },
   { category: "API", title: "Data Sources API", path: "/api/data-sources", description: "Source registry" },
+  { category: "API", title: "Docs API", path: "/api/docs", description: "GET/PUT/DELETE admin document overlays (markdown + structured UAT/roadmap/URLs)" },
   { category: "API", title: "Settings API", path: "/api/settings", description: "Platform settings" },
   { category: "API", title: "Users API", path: "/api/users", description: "User directory mutations" },
 
@@ -111,4 +112,5 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "DB Tables", title: "market_intel_*", path: "tables:market_intel_sources,findings,scans,lark_outbox", description: "Market intelligence scanner + outbox" },
   { category: "DB Tables", title: "daily_performance / alert_impacts", path: "tables:daily_performance,alert_impacts", description: "Dashboard + risk-log analytics" },
   { category: "DB Tables", title: "audit_logs / platform_settings / data_sources", path: "tables:audit_logs,platform_settings,data_sources", description: "Audit trail, flags, source registry" },
+  { category: "DB Tables", title: "admin_doc_edits", path: "tables:admin_doc_edits", description: "In-admin edits to TSD/PRD/UG/Ecosystem/UAT/Roadmap/URL catalog overlays" },
 ];

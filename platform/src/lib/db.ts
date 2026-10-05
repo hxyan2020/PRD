@@ -15,6 +15,7 @@ import { ensureChallengerSchema } from "@/lib/ai/challenger";
 import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
 import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
+import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -857,6 +858,7 @@ function ensureAiLayer(db: Database.Database) {
   seedAiAnalysesIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
+  ensureDocEditsSchema(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`
