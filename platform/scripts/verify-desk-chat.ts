@@ -47,8 +47,9 @@ const crypto = answerDeskChat({
   pagePath: "/admin",
   locale: "en",
 });
-assert(/hot (wallet|float)|M2-CRYPTO-WALLET/i.test(crypto.reply), "crypto mentions hot wallet");
-assert(/liquidation|oracle|insurance fund|OI/i.test(crypto.reply), "crypto mentions liq/oracle/fund");
+assert(/hot (wallet|float)|M2-CRYPTO-WALLET|liquidation|oracle|insurance fund|OI/i.test(crypto.reply), "crypto mentions exchange stack");
+assert(!/\*\*A-book/.test(crypto.reply), "crypto question does not pull unrelated A-book card");
+assert(!/\*\*Forex CFD broker risk/.test(crypto.reply), "crypto question does not pull generic CFD card");
 
 const zh = answerDeskChat({
   selection: "",

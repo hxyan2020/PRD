@@ -509,7 +509,7 @@ function scoreEntry(hay: string, pagePath: string, entry: Knowledge, intent: Int
     }
   }
   if (s > 0 && entry.href && (pagePath === entry.href || pagePath.startsWith(`${entry.href}/`))) s += 0.4;
-  if (entry.boost?.includes(intent)) s += 3;
+  if (s > 0 && entry.boost?.includes(intent)) s += 3;
   return s;
 }
 
