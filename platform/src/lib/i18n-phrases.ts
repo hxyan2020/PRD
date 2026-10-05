@@ -49,6 +49,163 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   CFD: "CFD",
 
   // Departments
+  "Book owner for Vantage forex CFD (MT4/MT5 via oneZero) and the crypto-exchange stack. Sets limit policy, chairs war-rooms, and is the human gate for halt, close-only, leverage cut, LP disable and withdrawal pause. AI may recommend; this BU decides.":
+    "Vantage 外匯 CFD（MT4／MT5，經 oneZero）與加密交易所棧之帳簿負責人。制定限額政策、主持戰情室，並為停商品／只平倉／收槓桿／停 LP／暫停出金之人工關卡。AI 可建議；此 BU 做決定。",
+  "Runs the client-money and case spine: funding exceptions, EOD reconciliation, ticket triage, promo/bonus execution and client contact. Executes risk decisions; does not set limit policy or arm halt/leverage controls.":
+    "負責客戶資金與案件脊柱：資金例外、日終對帳、工單分流、促銷／贈金執行與客戶聯繫。執行風險決策；不制定限額政策，也不啟動停商品／槓桿控制。",
+  "Builds and maintains the detection, RCA and evidence layer: detectors, skill playbooks, RAG, challenger packs and alert-quality monitoring. Recommends only — never executes halt, close-only, leverage cut, LP disable or withdrawal pause.":
+    "建立並維護偵測、根因與證據層：偵測器、技能劇本、RAG、挑戰包與警報品質監控。只建議 — 永不執行停商品、只平倉、收槓桿、停 LP 或暫停出金。",
+  "Owns control-plane plumbing: trading servers, oneZero bridges, LP endpoints, wallets, config change-control, kill-switches, data pipelines, evidence vault, admin privileges and the audit store. Executes switches Risk has armed; does not set book-risk policy.":
+    "負責控制面管線：交易伺服器、oneZero 橋接、LP 端點、錢包、設定變更控制、緊急開關、資料管線、證據庫、管理權限與稽核儲存。執行風控已啟動之開關；不制定帳簿風險政策。",
+
+  "Limit policy, entity-aware exposure caps, and the breach-authority matrix (CFD + crypto)":
+    "限額政策、依實體之曝險上限，以及違規授權矩陣（CFD＋加密）",
+  "Market, credit, liquidity and LP-hedge risk on the live CFD book (A-book / B-book)":
+    "即時 CFD 帳簿（A-book／B-book）之市場、信貸、流動性與 LP 對沖風險",
+  "Crypto exchange: wallet-float policy, liquidation backlog, oracle lag, insurance-fund drawdown, OI concentration":
+    "加密交易所：錢包浮額政策、強平積壓、預言機延遲、保險基金回撤、持倉集中度",
+  "Human approval of halt / close-only / group leverage cut / LP disable / large-withdrawal pause":
+    "停商品／只平倉／組別收槓桿／停 LP／大額出金暫停之人工核准",
+  "Daily risk dashboard, risk-domain RACI, and residual-risk sign-off after incidents":
+    "每日風險儀表板、風險領域 RACI，以及事故後剩餘風險簽核",
+  "Copy-trade cascade, toxic-flow, NBP and concentration interventions":
+    "跟單連鎖、有毒流量、負餘額與集中度干預",
+  "Escalation routes into Risk Control Desk and Crypto Exchange Risk":
+    "通往風險控管台與加密交易所風險之升級路徑",
+  "War-room decisions on BREACH/CRITICAL until residual risk is accepted in writing":
+    "BREACH／CRITICAL 戰情室決策，直至剩餘風險書面接受",
+  "Policy changes that alter client trading conditions (leverage, spreads, product groups, entity packs)":
+    "改變客戶交易條件之政策（槓桿、點差、商品組、實體包）",
+  "Named owner on every risk domain tagged RISK_CONTROL": "所有標記 RISK_CONTROL 之風險領域具名負責人",
+  "Post-incident risk memo and lessons fed into RAG": "事故後風險備忘與教訓寫入 RAG",
+  "Operations — funding exceptions and withdrawal pauses that have credit, AML or fraud impact":
+    "營運 — 具信貸、AML 或詐欺影響之資金例外與出金暫停",
+  "AI — detector promotion (Risk is checker), RCA challenge, skill-playbook certainty":
+    "AI — 偵測器晉升（風控為 Checker）、根因挑戰、技能劇本確定性",
+  "System — kill-switches, feed health, LP/bridge failover, wallet infrastructure":
+    "系統 — 緊急開關、饋送健康、LP／橋接備援、錢包基礎設施",
+  "Crypto Exchange Risk team — matching-engine, oracle and hot-wallet incidents":
+    "加密交易所風險團隊 — 撮合引擎、預言機與熱錢包事故",
+  "Day-to-day deposit/withdrawal case work and EOD recon (Operations)":
+    "日常入金／出金案件與日終對帳（營運）",
+  "Training detectors or promoting shadow → live as maker (AI Engineer; Risk is checker)":
+    "訓練偵測器或以 Maker 將影子晉升為正式（AI 工程師；風控為 Checker）",
+  "Patching trading servers, bridges or wallets (System)": "修補交易伺服器、橋接或錢包（系統）",
+  "Changing platform feature flags that are not risk thresholds this BU owns":
+    "變更非本 BU 擁有之風險門檻的平台功能旗標",
+  "SUPER_ADMIN / demo platform owner on multi-entity or capital-threshold events":
+    "跨實體或資本門檻事件升級至 SUPER_ADMIN／示範平台負責人",
+  "Legal/compliance (outside CRMP) when entity segregation or licence limits are at risk":
+    "實體隔離或牌照限額受威脅時升級至法遵（CRMP 外）",
+
+  "Deposit and withdrawal exception queues, including crypto on-chain rails":
+    "入金／出金例外佇列，含加密鏈上通道",
+  "EOD reconciliations, Nostro/Vostro breaks, and bonus-wallet mismatches":
+    "日終對帳、Nostro／Vostro 差異與贈金錢包不符",
+  "Ticket triage, client contact, and case notes that the spine can audit":
+    "工單分流、客戶聯繫，以及脊柱可稽核之案件紀錄",
+  "Promo / bonus ops execution and clawback after Risk or Fraud flags":
+    "促銷／贈金作業執行，以及風控或詐欺標記後之追回",
+  "Operational runbooks for funding freezes that Risk has already approved":
+    "風控已核准之資金凍結營運手冊",
+  "Client-facing status on halted symbols or paused withdrawals (after a Risk decision)":
+    "停商品或暫停出金之客戶狀態（風控決策之後）",
+  "Completeness of recon before the daily dashboard is published": "每日儀表板發布前對帳完整性",
+  "SLA on funding tickets that sit on escalation routes": "位於升級路徑之資金工單 SLA",
+  "Accurate client communication that does not pre-empt a Risk decision":
+    "準確客戶溝通，且不搶先風控決策",
+  "Risk Control — when a withdrawal pause or credit freeze is proposed":
+    "風險控管 — 提案暫停出金或信貸凍結時",
+  "System — payment-rail, wallet-ops and banking-file incidents":
+    "系統 — 支付通道、錢包作業與銀行檔案事故",
+  "AI — fraud/bonus detectors that need case evidence": "AI — 需要案件證據之詐欺／贈金偵測器",
+  "Credit & Client Risk team — NBP clusters tied to funding delays":
+    "信貸與客戶風險團隊 — 與資金延遲相關之負餘額叢集",
+  "Setting leverage, halt, LP or wallet-float policy (Risk Control)":
+    "制定槓桿、停商品、LP 或錢包浮額政策（風險控管）",
+  "Approving high-severity interventions (Risk Owner / dual control)":
+    "核准高嚴重度干預（風險負責人／雙重控制）",
+  "Changing detectors, skills or the RAG corpus (AI)": "變更偵測器、技能或 RAG 語料（AI）",
+  "Admin privilege and audit-store configuration (System)": "管理權限與稽核庫設定（系統）",
+  "OPS_LEAD → RISK_OWNER when a funding case becomes credit, fraud or market risk":
+    "資金案件變成信貸、詐欺或市場風險時：OPS_LEAD → RISK_OWNER",
+  "SYSTEM_ADMIN when payment rails or wallets are down": "支付通道或錢包故障時升級至 SYSTEM_ADMIN",
+
+  "Anomaly, toxic-flow, copy-cascade and crypto-liquidation detector catalogue":
+    "異常、有毒流量、跟單連鎖與加密強平偵測器目錄",
+  "AI RCA narratives with evidence links into RAG and the spine":
+    "附 RAG 與脊柱證據連結之 AI 根因敘事",
+  "Alert quality, false-positive rate, and model-drift monitoring":
+    "警報品質、誤報率與模型漂移監控",
+  "Shadow → live detector promotion as maker (Risk Owner is checker on live)":
+    "以 Maker 將影子偵測器晉升為正式（正式上線由風險負責人 Checker）",
+  "Skill playbooks (SKILL.md), Knowledge Tree mapping, and RAG document hygiene":
+    "技能劇本（SKILL.md）、知識樹對映與 RAG 文件整潔",
+  "Second-AI challenger configuration (in-repo heuristic today; independent vendor is RM-04)":
+    "第二 AI 挑戰者設定（今日為庫內啟發式；獨立供應商為 RM-04）",
+  "Human-only AI access blocklist recommendations (AI Access Security)":
+    "僅限人工之 AI 存取封鎖清單建議（AI 存取安全）",
+  "Explainability of every auto-triggered analysis on the spine": "脊柱上每筆自動分析之可解釋性",
+  "Maker/checker dual control on AI Admin settings, training runs and skill edits":
+    "AI 管理設定、訓練與技能編輯之 Maker／Checker 雙重控制",
+  "That the AI service role never receives halt / close-only / secret permissions":
+    "AI 服務角色永不可獲得停商品／只平倉／機密權限",
+  "Risk Control — checker on live detector promotion and intervention recommendations":
+    "風險控管 — 正式偵測器晉升與干預建議之 Checker",
+  "Operations — case evidence that trains fraud/bonus skills":
+    "營運 — 訓練詐欺／贈金技能之案件證據",
+  "System — data-source health that feeds detectors and RAG":
+    "系統 — 餵給偵測器與 RAG 之資料來源健康",
+  "All BUs — when a skill certainty gate fails and RCA falls back to RAG":
+    "全部 BU — 技能確定性關卡失敗而 RCA 回退 RAG 時",
+  "Final intervention authority (Risk / Ops / System per domain RACI)":
+    "最終干預權（依領域 RACI：風控／營運／系統）",
+  "Changing production Monitor 2.0 upstream thresholds (owner BU + System)":
+    "變更正式 Monitor 2.0 上游門檻（負責 BU＋系統）",
+  "User directory, SSO and break-glass admin (System / Super Admin)":
+    "使用者目錄、SSO 與緊急管理（系統／超級管理員）",
+  "Client contact or funding-ticket ownership (Operations)": "客戶聯繫或資金工單權責（營運）",
+  "RISK_OWNER when a detector should go live or a recommendation needs a human gate":
+    "偵測器應上線或建議需人工關卡時升級至 RISK_OWNER",
+  "AI Engineer on-call → SYSTEM_ADMIN on pipeline or source outages":
+    "管線或來源中斷時：AI 工程師值班 → SYSTEM_ADMIN",
+
+  "Trading server / oneZero bridge / LP endpoint health and failover":
+    "交易伺服器／oneZero 橋接／LP 端點健康與備援",
+  "Config change control, non-risk feature flags, and platform kill-switches":
+    "設定變更控制、非風險功能旗標與平台緊急開關",
+  "Data pipelines into Monitor, detectors, RAG and the evidence vault":
+    "通往 Monitor、偵測器、RAG 與證據庫之資料管線",
+  "Admin privileges, session store, and immutable audit logging":
+    "管理權限、工作階段儲存與不可變稽核紀錄",
+  "Data-source registry (internal + external) and connector credentials":
+    "資料來源登錄（內部＋外部）與連接憑證",
+  "Crypto wallet infrastructure (hot / warm / cold) — not float policy (Risk)":
+    "加密錢包基礎設施（熱／溫／冷）— 浮額政策屬風控",
+  "Availability of CRMP, Monitor sync, and messenger routes":
+    "CRMP、Monitor 同步與通訊路由之可用性",
+  "Segregation of duties between settings.manage and risk.intervene":
+    "settings.manage 與 risk.intervene 之職責分離",
+  "That every kill-switch execution is logged to spine + audit":
+    "每次緊急開關執行皆寫入脊柱＋稽核",
+  "Risk Control — which kill-switches exist and who may arm them":
+    "風險控管 — 有哪些緊急開關、誰可啟動",
+  "AI — source freshness and pipeline SLAs for detectors":
+    "AI — 偵測器之來源新鮮度與管線 SLA",
+  "Operations — payment-rail and banking-file incidents":
+    "營運 — 支付通道與銀行檔案事故",
+  "SUPER_ADMIN — break-glass access and privilege reviews":
+    "SUPER_ADMIN — 緊急存取與權限審閱",
+  "Limit policy and book-risk decisions (Risk Control)": "限額政策與帳簿風險決策（風險控管）",
+  "Client case handling and recon ownership (Operations)": "客戶案件處理與對帳權責（營運）",
+  "Model training and RCA narrative quality (AI)": "模型訓練與根因敘事品質（AI）",
+  "Accepting residual market or credit risk after an incident": "事故後接受剩餘市場或信貸風險",
+  "SUPER_ADMIN on privilege, data-loss or multi-system outage":
+    "權限、資料遺失或多系統中斷時升級至 SUPER_ADMIN",
+  "RISK_OWNER when infrastructure failure creates market or wallet risk":
+    "基礎設施故障造成市場或錢包風險時升級至 RISK_OWNER",
+
+  // Keep legacy short department copy so older snapshots still translate
   "Owns market, credit, liquidity and limit policy; decides escalations and interventions.":
     "負責市場、信貸、流動性與限額政策；決定升級與干預。",
   "Runs funding, reconciliation, client handling and case execution.":
@@ -105,25 +262,193 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   // Roles
   SUPER_ADMIN: "超級管理員",
   "Super Admin": "超級管理員",
+  "Cross-department platform administrator. Holds break-glass access to users, settings, detectors and AI Admin without a single-BU RACI constraint. Used for the demo platform owner and exceptional incidents — not for daily book risk.":
+    "跨部門平台管理員。對使用者、設定、偵測器與 AI 管理持有緊急存取，不受單一 BU 之 RACI 約束。供示範平台負責人與例外事故使用 — 不是每日帳簿風險。",
+  "User and role assignment, including emergency privilege": "使用者與角色指派，含緊急權限",
+  "Platform-wide settings, feature flags and kill-switch configuration":
+    "全平台設定、功能旗標與緊急開關配置",
+  "Break-glass override of maker/checker after an incident is declared":
+    "事故宣告後對 Maker／Checker 之緊急覆寫",
+  "Audit-log retention and the admin-access security blocklist":
+    "稽核日誌保留與管理存取安全封鎖清單",
+  "Create, disable and reassign users across departments": "跨部門建立、停用與改派使用者",
+  "Review any admin page; operate AI Admin when no departmental checker is available":
+    "檢視任何管理頁；部門 Checker 不可用時操作 AI 管理",
+  "Reset demo data and documentation overlays in this prototype":
+    "在此原型重設示範資料與文件覆蓋",
+  "Authorise System to execute a platform-wide kill-switch": "授權系統執行全平台緊急開關",
+  "Own the daily CFD or crypto risk book (that is the Risk Owner)":
+    "擁有每日 CFD 或加密風險帳簿（那是風險負責人）",
+  "Replace departmental decision rights on client-facing interventions unless escalated":
+    "在未升級前取代部門對客戶面干預之決策權",
+  "Act as the default maker on detector training or shadow runs (AI Engineer)":
+    "擔任偵測器訓練或影子執行之預設 Maker（AI 工程師）",
+  "Named demo platform owner (haixiang.yan@hytechc.com) / board for capital or licence events":
+    "資本或牌照事件升級至具名示範平台負責人（haixiang.yan@hytechc.com）／董事會",
   "Full platform administration across all departments.": "跨全部門的完整平台管理。",
   RISK_OWNER: "風險負責人",
+  "Department owner for Risk Control. Accountable for limit policy, escalations, war-room, and the human gate on high-severity interventions across forex CFD and the crypto exchange.":
+    "風險控管部門負責人。對外匯 CFD 與加密交易所之限額政策、升級、戰情室，以及高嚴重度干預之人工關卡課責。",
+  "Limit policy, breach authority, and residual-risk acceptance":
+    "限額政策、違規授權與剩餘風險接受",
+  "Checker role on live detector promotion and risk-facing AI Admin settings":
+    "正式偵測器晉升與風險向 AI 管理設定之 Checker",
+  "Approve / reject Human Intervention for halt, leverage, LP disable and wallet pause":
+    "核准／駁回停商品、槓桿、停 LP 與錢包暫停之人工干預",
+  "Chair BREACH/CRITICAL war-rooms until residual risk is signed":
+    "主持 BREACH／CRITICAL 戰情室直至剩餘風險簽核",
+  "Tune risk thresholds this BU owns (not System-only flags)":
+    "調整本 BU 擁有之風險門檻（非僅系統旗標）",
+  "Assign Risk Analysts on-call and review the daily risk dashboard":
+    "指派風險分析師值班並審閱每日風險儀表板",
+  "Challenge AI RCA when the second-AI verdict is DISAGREE or PARTIAL":
+    "第二 AI 裁決為 DISAGREE 或 PARTIAL 時挑戰 AI 根因",
+  "Sign entity-aware leverage or product-group changes before they go live":
+    "依實體之槓桿或商品組變更上線前簽核",
+  "Process funding tickets or speak to clients as case owner (Operations)":
+    "以案件負責人處理資金工單或對客（營運）",
+  "Patch bridges, LPs or wallets (System)": "修補橋接、LP 或錢包（系統）",
+  "Auto-execute halt / close-only — those stay human-gated, including for this role's own proposals when dual-control applies":
+    "自動執行停商品／只平倉 — 即使是本角色提案，雙重控制時仍須人工關卡",
+  "SUPER_ADMIN / demo platform owner on entity-capital, multi-entity or licence-limit events":
+    "實體資本、跨實體或牌照限額事件升級至 SUPER_ADMIN／示範平台負責人",
   "Risk department owner — policy, escalations, interventions.": "風險部門負責人 — 政策、升級、干預。",
   RISK_ANALYST: "風險分析師",
   "Risk Analyst": "風險分析師",
+  "First-line Risk Control operator. Monitors alerts, investigates with AI RCA and evidence, proposes actions, and pages the Risk Owner when a human gate is required.":
+    "風險控管一線操作員。監控警報、以 AI 根因與證據調查、提案動作，並在需要人工關卡時呼叫風險負責人。",
+  "Live alert queue for Risk Control domains during the shift":
+    "值班期間風險控管領域之即時警報佇列",
+  "Investigation packs: Monitor evidence, RAG, market intel, messenger thread":
+    "調查包：Monitor 證據、RAG、市場情報、Messenger 執行緒",
+  "Draft intervention recommendations (maker) for the Risk Owner to check":
+    "草擬干預建議（Maker）供風險負責人 Checker",
+  "Ack, annotate and escalate alerts on Demo Messenger":
+    "在示範 Messenger 確認、註記並升級警報",
+  "Run detectors in operate mode and attach evidence to the spine":
+    "以操作模式執行偵測器並把證據附到脊柱",
+  "Propose halt / leverage / LP / pause — never confirm high-severity actions alone":
+    "提案停商品／槓桿／LP／暫停 — 絕不單獨確認高嚴重度動作",
+  "Feed post-incident notes into the case thread for RAG later":
+    "把事故後筆記寫進案件執行緒，供之後 RAG 使用",
+  "Approve high-severity interventions or change limit policy": "核准高嚴重度干預或變更限額政策",
+  "Manage users, platform settings, or AI Admin checker steps":
+    "管理使用者、平台設定或 AI 管理 Checker 步驟",
+  "Close a CRITICAL without Risk Owner (or dual-control) sign-off":
+    "未經風險負責人（或雙重控制）簽核即關閉 CRITICAL",
+  "RISK_OWNER (primary) → SUPER_ADMIN if the owner is unreachable past SLA":
+    "RISK_OWNER（主責）→ 逾 SLA 無法聯繫時 SUPER_ADMIN",
   "Monitors alerts, investigates, proposes actions.": "監控警報、調查並提案動作。",
   OPS_LEAD: "營運主管",
   "Operations Lead": "營運主管",
+  "Owns Operations queues: funding exceptions, EOD recon, ticket SLA, and client-facing execution of risk decisions. Checker for ops-side interventions; maker for case assignment.":
+    "負責營運佇列：資金例外、日終對帳、工單 SLA，以及風險決策之對客執行。營運側干預之 Checker；案件指派之 Maker。",
+  "Ops Funding & Recon team SLA and on-call roster": "營運資金與對帳團隊 SLA 與值班表",
+  "Withdrawal / deposit exception policy inside rails Risk has not frozen":
+    "風控尚未凍結通道內之出金／入金例外政策",
+  "Client communication after a Risk decision (halted symbol, paused withdrawal)":
+    "風控決策後之客戶溝通（停商品、暫停出金）",
+  "Ops dashboard scope (dashboard.ops)": "營運儀表板範圍（dashboard.ops）",
+  "Prioritise recon breaks before the daily dashboard is published":
+    "每日儀表板發布前優先處理對帳差異",
+  "Approve ops-severity interventions; escalate credit or fraud to Risk":
+    "核准營運嚴重度干預；信貸或詐欺升級至風控",
+  "Manage Lark channels used by Ops Funding & Recon": "管理營運資金與對帳使用之 Lark 頻道",
+  "Dual-control with Risk when a funding freeze is credit-related":
+    "資金凍結與信貸相關時與風控雙重控制",
+  "Set leverage, halt, LP or wallet-float policy": "制定槓桿、停商品、LP 或錢包浮額政策",
+  "Promote detectors or edit RAG as owner": "以負責人晉升偵測器或編輯 RAG",
+  "Grant admin privileges or change platform kill-switches": "授予管理權限或變更平台緊急開關",
+  "RISK_OWNER when a case becomes credit, fraud or market risk":
+    "案件變成信貸、詐欺或市場風險時升級至 RISK_OWNER",
   "Owns ops queues, funding exceptions and reconciliations.": "負責營運佇列、資金例外與對帳。",
   OPS_ANALYST: "營運分析師",
   "Operations Analyst": "營運分析師",
+  "Handles operational tickets and case work: funding exceptions, recon items, client contact, and evidence capture for AI fraud/bonus skills.":
+    "處理營運工單與案件：資金例外、對帳項目、客戶聯繫，以及 AI 詐欺／贈金技能之證據擷取。",
+  "Assigned tickets in Ops Funding & Recon": "營運資金與對帳之指派工單",
+  "Case notes and client-contact logs that the spine can audit":
+    "脊柱可稽核之案件紀錄與客戶聯繫日誌",
+  "First-pass recon exception classification": "對帳例外之第一關分類",
+  "Work the ops queue, update ticket status, notify via messenger":
+    "處理營運佇列、更新工單狀態、經 Messenger 通知",
+  "Collect payment-rail / on-chain evidence for AI and Risk":
+    "為 AI 與風控蒐集支付通道／鏈上證據",
+  "Execute a freeze or release only after the documented approval":
+    "僅在有紀錄之核准後執行凍結或放行",
+  "Close credit-impacted withdrawals without the Operations Lead":
+    "未經營運主管即關閉有信貸影響之出金",
+  "Change Monitor thresholds, detectors or platform settings":
+    "變更 Monitor 門檻、偵測器或平台設定",
+  "Tell a client a risk decision that Risk has not signed":
+    "向客戶告知風控尚未簽核之風險決策",
+  "OPS_LEAD → RISK_OWNER if the case is credit or fraud":
+    "案件為信貸或詐欺時：OPS_LEAD → RISK_OWNER",
   "Handles tickets and operational case work.": "處理工單與營運案件。",
   AI_ENGINEER: "AI 工程師",
   "AI Engineer": "AI 工程師",
+  "Maintains detectors, RCA models, skill playbooks, RAG pipelines and the challenger. Maker on AI Admin; cannot be the sole checker on live promotion.":
+    "維護偵測器、根因模型、技能劇本、RAG 管線與挑戰者。AI 管理之 Maker；不可單獨擔任正式晉升之 Checker。",
+  "Detector catalogue health, shadow runs, and drift monitors":
+    "偵測器目錄健康、影子執行與漂移監控",
+  "Skill playbook accuracy and Knowledge Tree links": "技能劇本準確度與知識樹連結",
+  "RAG corpus freshness and source citations": "RAG 語料新鮮度與來源引用",
+  "AI analysis pipeline as maker (auto-on-alarm, certainty gate, challenger settings)":
+    "以 Maker 負責 AI 分析管線（警報自動觸發、確定性關卡、挑戰者設定）",
+  "Propose AI Admin changes, training runs and skill edits":
+    "提案 AI 管理變更、訓練執行與技能編輯",
+  "Investigate false positives with the Risk Analyst": "與風險分析師調查誤報",
+  "Keep human-only AI access blocklist recommendations current":
+    "維持僅限人工之 AI 存取封鎖清單建議為最新",
+  "Operate detectors and attach RCA evidence": "操作偵測器並附上根因證據",
+  "Approve their own live detector promotion (Risk Owner or a different checker)":
+    "核准自己的正式偵測器晉升（須風險負責人或另一位 Checker）",
+  "Execute halt / leverage / LP / withdrawal actions": "執行停商品／槓桿／LP／出金動作",
+  "Change platform-wide kill-switches (System)": "變更全平台緊急開關（系統）",
+  "RISK_OWNER for live promotion and intervention recommendations":
+    "正式晉升與干預建議升級至 RISK_OWNER",
+  "SYSTEM_ADMIN for source or pipeline outages": "來源或管線中斷升級至 SYSTEM_ADMIN",
   "Maintains detectors, RCA models and evidence pipelines.": "維護偵測器、根因模型與證據管線。",
   SYSTEM_ADMIN: "系統管理員",
+  "Infra, LP endpoints, bridges, servers, wallets, config change-control and platform configuration. Executes kill-switches that Risk has armed; does not set book-risk policy.":
+    "基礎設施、LP 端點、橋接、伺服器、錢包、設定變更控制與平台配置。執行風控已啟動之緊急開關；不制定帳簿風險政策。",
+  "Trading Infra & Bridges on-call": "交易基礎設施與橋接值班",
+  "Data-source connectors, credentials and refresh cadence":
+    "資料來源連接器、憑證與刷新節奏",
+  "settings.manage for non-risk flags, sessions and the audit store":
+    "非風險旗標、工作階段與稽核庫之 settings.manage",
+  "User / team management within System (and support for other BUs)":
+    "系統部門內使用者／團隊管理（並支援其他 BU）",
+  "Patch, failover and health-check LP / bridge / wallet / server":
+    "修補、備援與健康檢查 LP／橋接／錢包／伺服器",
+  "Arm or execute a kill-switch when Risk (or Super Admin) has authorised it":
+    "風控（或超級管理員）授權後啟動或執行緊急開關",
+  "Register new internal and external sources": "登錄新的內部與外部來源",
+  "Investigate tech-domain alerts (stale quotes from feed, API errors, wallet daemons)":
+    "調查技術領域警報（饋送過期報價、API 錯誤、錢包常駐程式）",
+  "Accept residual market or credit risk": "接受剩餘市場或信貸風險",
+  "Train models or write RCA as owner": "以負責人訓練模型或撰寫根因",
+  "Handle client funding cases": "處理客戶資金案件",
+  "RISK_OWNER when infra failure creates book or wallet risk":
+    "基礎設施故障造成帳簿或錢包風險時升級至 RISK_OWNER",
+  "SUPER_ADMIN on privilege, data-loss or multi-system outage":
+    "權限、資料遺失或多系統中斷時升級至 SUPER_ADMIN",
   "Infra, LP endpoints, bridges, servers and platform config.": "基礎設施、LP 端點、橋接、伺服器與平台設定。",
   VIEWER: "檢視者",
   Viewer: "檢視者",
+  "Read-only observer of dashboards, org chart, source registry, analyses and docs. Cannot operate alerts, interventions, AI Admin or settings. Typical board / auditor persona.":
+    "儀表板、組織圖、來源登錄、分析與文件之唯讀觀察者。不能操作警報、干預、AI 管理或設定。典型董事會／稽核角色。",
+  "No operational RACI — may raise questions in messenger threads they can read":
+    "無營運 RACI — 可在其能讀取之 Messenger 執行緒提問",
+  "Open dashboards, docs, RAG, skills (read), alerts (read) and org pages":
+    "開啟儀表板、文件、RAG、技能（讀）、警報（讀）與組織頁",
+  "Follow the spine log and the audit trail they are permitted to see":
+    "追蹤其獲准查看之脊柱日誌與稽核軌跡",
+  "Ack, escalate, intervene, edit users, change settings, or run AI Admin":
+    "確認、升級、干預、編輯使用者、變更設定或操作 AI 管理",
+  "Be assigned as on-call or as maker/checker": "被指派值班或擔任 Maker／Checker",
+  "Sponsoring BU owner (usually RISK_OWNER or SUPER_ADMIN) outside the product":
+    "產品外之贊助 BU 負責人（通常為 RISK_OWNER 或 SUPER_ADMIN）",
   "Read-only access to dashboards, org chart and source registry.": "儀表板、組織與來源登錄之唯讀權限。",
 
   // Settings descriptions
@@ -583,6 +908,10 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "高影響交易／託管動作之執行時核准 — 最終關卡僅限人類。",
   "API keys, app secrets, DB DSNs registered for connectors.": "連接器登錄之 API 金鑰、應用密鑰、資料庫 DSN。",
   "This policy page itself must not be editable by AI.": "本政策頁本身不得由 AI 編輯。",
+  "Risk / Ops / AI / System — mandate, owns, accountable, collaborates, out of scope, escalation":
+    "風險／營運／AI／系統 — 使命、擁有、課責、協作、範圍外與升級",
+  "RBAC matrix plus owns / does / does-not / escalation charters":
+    "RBAC 矩陣，並附擁有／日常／不做／升級章程",
   PROPOSE_ONLY: "僅可提案",
   BLOCKED: "已封鎖",
   READ: "可讀",

@@ -128,11 +128,38 @@ const KNOWLEDGE: Knowledge[] = [
     href: "/admin/risk-domains",
     en: {
       title: "Risk domains",
-      body: "Ten domains: Market & Pricing, Credit & Client, Liquidity & Hedge, Product & Trading Conditions, Operational & Process, Fraud/Abuse/Conduct, Platform & Technology, Regulatory/Entity/Capital, Model & AI, Crypto Exchange Stack. Owner BUs are Risk Control, Operations, AI or System. Open Risk Domains for the catalogue; Knowledge Tree maps domain → skill → RAG.",
+      body: "Ten domains: Market & Pricing, Credit & Client, Liquidity & Hedge, Product & Trading Conditions, Operational & Process, Fraud/Abuse/Conduct, Platform & Technology, Regulatory/Entity/Capital, Model & AI, Crypto Exchange Stack. Owner BUs are Risk Control, Operations, AI or System. Open Risk Domains for the catalogue; Knowledge Tree maps domain → skill → RAG. Open Departments / Roles for the full RACI charter (owns, accountable, does-not, escalation).",
     },
     zh: {
       title: "風險領域",
-      body: "十個領域：市場與定價、信用與客戶、流動性與對沖、商品與交易條件、營運流程、欺詐／濫用／行為、平台技術、監管／實體／資本、模型與 AI、加密交易所棧。負責 BU 為風控、營運、AI 或系統。目錄在「風險領域」；知識樹把領域 → 技能 → RAG 連起來。",
+      body: "十個領域：市場與定價、信用與客戶、流動性與對沖、商品與交易條件、營運流程、欺詐／濫用／行為、平台技術、監管／實體／資本、模型與 AI、加密交易所棧。負責 BU 為風控、營運、AI 或系統。目錄在「風險領域」；知識樹把領域 → 技能 → RAG 連起來。完整 RACI 章程（擁有、課責、不做、升級）在「部門」／「角色」。",
+    },
+  },
+  {
+    keys: [
+      "department",
+      "departments",
+      "bu charter",
+      "raci",
+      "who owns",
+      "risk owner",
+      "ops lead",
+      "role intro",
+      "responsibilit",
+      "部門",
+      "職責",
+      "誰負責",
+      "角色",
+    ],
+    href: "/admin/departments",
+    boost: ["who"],
+    en: {
+      title: "BU and role charters",
+      body: "Four BUs. Risk Control owns limit policy, CFD book risk, crypto wallet-float/liquidation policy, and the human gate for halt/leverage/LP/withdrawal pause. Operations owns funding exceptions, EOD recon, tickets and client contact — it executes Risk decisions. AI owns detectors, RCA, RAG, challenger; it never executes halt/close-only. System owns servers, oneZero bridges, LP endpoints, wallets infra, kill-switches and audit. Roles: RISK_OWNER is checker on live detectors and high-severity interventions; RISK_ANALYST investigates and proposes; OPS_LEAD owns ops SLA; AI_ENGINEER is maker not sole checker; SYSTEM_ADMIN executes switches Risk armed; VIEWER is read-only; SUPER_ADMIN is break-glass. Full owns / does / does-not / escalation lists are on Departments and Roles.",
+    },
+    zh: {
+      title: "BU 與角色章程",
+      body: "四個 BU。風險控管擁有限額政策、CFD 帳簿風險、加密錢包浮額／強平政策，以及停商品／槓桿／LP／暫停出金之人工關卡。營運擁有資金例外、日終對帳、工單與客戶聯繫 — 執行風控決策。AI 擁有偵測器、根因、RAG、挑戰者；永不執行停商品／只平倉。系統擁有伺服器、oneZero 橋接、LP 端點、錢包基礎設施、緊急開關與稽核。角色：RISK_OWNER 是正式偵測器與高嚴重度干預之 Checker；RISK_ANALYST 調查並提案；OPS_LEAD 負責營運 SLA；AI_ENGINEER 是 Maker 而非唯一 Checker；SYSTEM_ADMIN 執行風控已啟動之開關；VIEWER 唯讀；SUPER_ADMIN 為緊急權限。完整擁有／日常／不做／升級清單在「部門」與「角色」。",
     },
   },
   {
@@ -539,7 +566,7 @@ function detectIntent(q: string): Intent {
     return "domain";
   }
   if (/(how do i|how can i|how to|which button|click|step-by-step|步驟|怎麼點|如何操作)/i.test(x)) return "how";
-  if (/(who owns|who is the owner|which role|誰負責|哪個角色)/i.test(x)) return "who";
+  if (/(who owns|who is the owner|which role|raci|which bu|which department|誰負責|哪個角色|哪個部門)/i.test(x)) return "who";
   return "explain";
 }
 
@@ -548,6 +575,7 @@ function suggestionsFor(intent: Intent, zh: boolean): string[] {
     if (intent === "purpose") return ["目前後台建了什麼？", "外匯 CFD 風險怎麼管？", "加密交易所覆蓋哪些風險？"];
     if (intent === "built") return ["這是正式環境還是示範？", "警報到 Messenger 的脊柱怎麼走？", "RAG 知識庫在哪一頁？"];
     if (intent === "domain") return ["保證金／強平劇本是什麼？", "熱錢包浮額怎麼控？", "LP 拒單風暴怎麼處置？"];
+    if (intent === "who") return ["風險負責人擁有什麼？", "AI 能不能停商品？", "營運與風控怎麼分工？"];
     return ["這是正式環境還是示範？", "這個後台的用途是什麼？", "外匯 CFD 與加密風控差在哪？"];
   }
   if (intent === "purpose") {
@@ -558,6 +586,9 @@ function suggestionsFor(intent: Intent, zh: boolean): string[] {
   }
   if (intent === "domain") {
     return ["What is the margin / stop-out playbook?", "How is hot-wallet float controlled?", "What happens on an LP reject storm?"];
+  }
+  if (intent === "who") {
+    return ["What does the Risk Owner own?", "Can AI halt a symbol?", "How do Ops and Risk split work?"];
   }
   return ["What is the purpose of this admin?", "What has been built so far?", "How do CFD vs crypto-exchange risks differ?"];
 }

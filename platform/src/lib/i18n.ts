@@ -182,8 +182,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   departments: {
     title: { en: "Departments", "zh-Hant": "部門" },
     subtitle: {
-      en: "Risk Control, Operations, AI and System ownership model.",
-      "zh-Hant": "風險控管、營運、AI 與系統之權責模型。",
+      en: "BU charters for Risk Control, Operations, AI and System — mandate, owns, accountable, collaborates, out of scope, and escalation.",
+      "zh-Hant": "風險控管、營運、AI 與系統之 BU 權責章程 — 使命、擁有、課責、協作、範圍外與升級。",
     },
   },
   teams: {
@@ -196,8 +196,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   roles: {
     title: { en: "Roles & Permissions", "zh-Hant": "角色與權限" },
     subtitle: {
-      en: "RBAC matrix for CRMP admin surfaces.",
-      "zh-Hant": "CRMP 管理介面之 RBAC 矩陣。",
+      en: "RBAC matrix plus detailed owns / does / does-not / escalation for each CRMP role.",
+      "zh-Hant": "RBAC 矩陣，並附各 CRMP 角色之擁有／日常／不做／升級細節。",
     },
   },
   users: {
@@ -279,8 +279,12 @@ const UI: Record<string, Pair> = {
   "home.stat.routesHint": { en: "Severity → team → SLA", "zh-Hant": "嚴重度 → 團隊 → SLA" },
   "home.deptTitle": { en: "Department Division", "zh-Hant": "部門分工" },
   "home.deptSub": {
-    en: "RACI-aligned ownership for the CRMP spine.",
-    "zh-Hant": "對齊 RACI 之 CRMP 脊柱權責。",
+    en: "RACI charters for the CRMP spine — preview of what each BU owns; full detail on Departments.",
+    "zh-Hant": "CRMP 脊柱之 RACI 章程 — 此處預覽各 BU 擁有項；完整細節在「部門」。",
+  },
+  "home.deptMore": {
+    en: "+{n} more on Departments",
+    "zh-Hant": "部門頁另有 {n} 項",
   },
   "home.recentAlerts": { en: "Recent Alerts", "zh-Hant": "最近警報" },
   "home.viewAll": { en: "View all", "zh-Hant": "查看全部" },

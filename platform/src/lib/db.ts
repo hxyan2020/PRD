@@ -16,6 +16,7 @@ import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
 import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
 import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
+import { DEPARTMENT_LIST, ROLE_CHARTERS } from "@/lib/org-catalog";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -212,11 +213,17 @@ function createSchema(db: Database.Database) {
 }
 
 const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
-  ["SUPER_ADMIN", "Super Admin", "Full platform administration across all departments.", null, ["*"]],
+  [
+    "SUPER_ADMIN",
+    ROLE_CHARTERS.SUPER_ADMIN.name,
+    ROLE_CHARTERS.SUPER_ADMIN.intro,
+    ROLE_CHARTERS.SUPER_ADMIN.department,
+    ["*"],
+  ],
   [
     "RISK_OWNER",
-    "Risk Owner",
-    "Risk department owner — policy, escalations, interventions.",
+    ROLE_CHARTERS.RISK_OWNER.name,
+    ROLE_CHARTERS.RISK_OWNER.intro,
     "RISK_CONTROL",
     [
       "admin.access",
@@ -257,8 +264,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "RISK_ANALYST",
-    "Risk Analyst",
-    "Monitors alerts, investigates, proposes actions.",
+    ROLE_CHARTERS.RISK_ANALYST.name,
+    ROLE_CHARTERS.RISK_ANALYST.intro,
     "RISK_CONTROL",
     [
       "admin.access",
@@ -286,8 +293,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "OPS_LEAD",
-    "Operations Lead",
-    "Owns ops queues, funding exceptions and reconciliations.",
+    ROLE_CHARTERS.OPS_LEAD.name,
+    ROLE_CHARTERS.OPS_LEAD.intro,
     "OPERATIONS",
     [
       "admin.access",
@@ -312,8 +319,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "OPS_ANALYST",
-    "Operations Analyst",
-    "Handles tickets and operational case work.",
+    ROLE_CHARTERS.OPS_ANALYST.name,
+    ROLE_CHARTERS.OPS_ANALYST.intro,
     "OPERATIONS",
     [
       "admin.access",
@@ -332,8 +339,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "AI_ENGINEER",
-    "AI Engineer",
-    "Maintains detectors, RCA models and evidence pipelines.",
+    ROLE_CHARTERS.AI_ENGINEER.name,
+    ROLE_CHARTERS.AI_ENGINEER.intro,
     "AI",
     [
       "admin.access",
@@ -362,8 +369,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "SYSTEM_ADMIN",
-    "System Admin",
-    "Infra, LP endpoints, bridges, servers and platform config.",
+    ROLE_CHARTERS.SYSTEM_ADMIN.name,
+    ROLE_CHARTERS.SYSTEM_ADMIN.intro,
     "SYSTEM",
     [
       "admin.access",
@@ -393,9 +400,9 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "VIEWER",
-    "Viewer",
-    "Read-only access to dashboards, org chart and source registry.",
-    null,
+    ROLE_CHARTERS.VIEWER.name,
+    ROLE_CHARTERS.VIEWER.intro,
+    ROLE_CHARTERS.VIEWER.department,
     [
       "admin.access",
       "users.read",
@@ -430,61 +437,25 @@ function syncRoles(db: Database.Database) {
   }
 }
 
+function syncDepartments(db: Database.Database) {
+  const upsert = db.prepare(
+    `INSERT INTO departments (code, name, description, primary_responsibilities)
+     VALUES (?, ?, ?, ?)
+     ON CONFLICT(code) DO UPDATE SET
+       name = excluded.name,
+       description = excluded.description,
+       primary_responsibilities = excluded.primary_responsibilities`
+  );
+  for (const d of DEPARTMENT_LIST) {
+    upsert.run(d.code, d.name, d.mandate, JSON.stringify(d.owns));
+  }
+}
+
 function seedIfEmpty(db: Database.Database) {
   syncRoles(db);
+  syncDepartments(db);
   const userCount = db.prepare("SELECT COUNT(*) AS c FROM users").get() as { c: number };
   if (userCount.c > 0) return;
-
-  const insertDept = db.prepare(
-    `INSERT INTO departments (code, name, description, primary_responsibilities) VALUES (?, ?, ?, ?)`
-  );
-  const depts = [
-    [
-      "RISK_CONTROL",
-      "Risk Control",
-      "Owns market, credit, liquidity and limit policy; decides escalations and interventions.",
-      JSON.stringify([
-        "Limit policy & breach authority",
-        "Market / credit / LP hedge risk",
-        "Human approval of high-severity actions",
-        "Daily risk dashboard ownership",
-      ]),
-    ],
-    [
-      "OPERATIONS",
-      "Operations",
-      "Runs funding, reconciliation, client handling and case execution.",
-      JSON.stringify([
-        "Deposit / withdrawal exceptions",
-        "EOD reconciliations",
-        "Ticket triage & client contact",
-        "Promo / bonus ops execution",
-      ]),
-    ],
-    [
-      "AI",
-      "AI",
-      "Builds detectors, root-cause narratives and alert prioritisation models.",
-      JSON.stringify([
-        "Anomaly & toxic-flow models",
-        "AI RCA narratives with evidence links",
-        "Alert quality / model drift monitoring",
-        "Shadow → live detector promotion",
-      ]),
-    ],
-    [
-      "SYSTEM",
-      "System",
-      "Admin, infra, LP endpoints, bridges, trading servers and audit store.",
-      JSON.stringify([
-        "Trading server / bridge / LP health",
-        "Config change control & kill-switches",
-        "Data pipelines & evidence vault",
-        "Admin privileges & audit logging",
-      ]),
-    ],
-  ] as const;
-  for (const d of depts) insertDept.run(...d);
 
   const insertTeam = db.prepare(
     `INSERT INTO teams (name, department_code, mission, lark_chat_id, on_call_rotation) VALUES (?, ?, ?, ?, ?)`
@@ -845,6 +816,7 @@ function ensureAiLayer(db: Database.Database) {
   ensureSpineSchema(db);
   ensureAiAdminSchema(db);
   syncRoles(db);
+  syncDepartments(db);
   ensureExtraMonitors(db);
   seedRagIfEmpty(db);
   seedSkillsIfEmpty(db);

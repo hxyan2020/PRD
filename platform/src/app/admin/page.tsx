@@ -290,7 +290,15 @@ export default async function AdminDashboardPage() {
           </div>
           <div className="mt-4 space-y-3">
             {departments.map((d) => {
-              const responsibilities = JSON.parse(d.primary_responsibilities) as string[];
+              const responsibilities = (() => {
+                try {
+                  return JSON.parse(d.primary_responsibilities) as string[];
+                } catch {
+                  return [];
+                }
+              })();
+              const preview = responsibilities.slice(0, 4);
+              const rest = Math.max(0, responsibilities.length - preview.length);
               const dest = DEPT_DEST[d.code] ?? { href: "/admin/departments", en: "Departments", zh: "部門", stripe: "bg-teal-600" };
               return (
                 <Link
@@ -305,18 +313,22 @@ export default async function AdminDashboardPage() {
                       <DeptBadge code={d.code} />
                       <ChevronRight
                         className="h-4 w-4 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-teal-700"
-                        aria-hidden
-                      />
+                        aria-hidden />
                     </div>
                   </div>
                   <p className="text-sm text-[var(--muted)] mt-1 pl-2"><Phrase>{d.description}</Phrase></p>
                   <ul className="mt-2 grid sm:grid-cols-2 gap-1 text-xs text-slate-700 pl-2">
-                    {responsibilities.map((r) => (
+                    {preview.map((r) => (
                       <li key={r} className="before:content-['•'] before:mr-1.5 before:text-teal-700 break-word">
                         <Phrase>{r}</Phrase>
                       </li>
                     ))}
                   </ul>
+                  {rest > 0 ? (
+                    <div className="mt-1.5 pl-2 text-xs text-[var(--muted)]">
+                      <T k="home.deptMore" vars={{ n: rest }} />
+                    </div>
+                  ) : null}
                   <div className="mt-2 pl-2 text-xs font-semibold text-teal-800">
                     <EnZh en={`Open ${dest.en}`} zh={`開啟${dest.zh}`} />
                   </div>

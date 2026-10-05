@@ -49,9 +49,9 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Severity → team → SLA paths", permission: "escalation.read" },
 
   // Org
-  { category: "Org", title: "Departments", path: "/admin/departments", description: "Risk / Ops / AI / System", permission: "teams.read" },
+  { category: "Org", title: "Departments", path: "/admin/departments", description: "Risk / Ops / AI / System — mandate, owns, accountable, collaborates, out of scope, escalation", permission: "teams.read" },
   { category: "Org", title: "Teams", path: "/admin/teams", description: "On-call teams", permission: "teams.read" },
-  { category: "Org", title: "Roles & Permissions", path: "/admin/roles", description: "RBAC matrix", permission: "users.read" },
+  { category: "Org", title: "Roles & Permissions", path: "/admin/roles", description: "RBAC matrix plus owns / does / does-not / escalation charters", permission: "users.read" },
   { category: "Org", title: "Users", path: "/admin/users", description: "User directory", permission: "users.read" },
 
   // System
