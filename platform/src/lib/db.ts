@@ -21,6 +21,13 @@ import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
 import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
 import { DEPARTMENT_LIST, ROLE_CHARTERS } from "@/lib/org-catalog";
 import { ensureCsSchema, seedCsIfEmpty } from "@/lib/cs/desk";
+import {
+  CS_LARK_SPECS,
+  CS_POC_SPECS,
+  CS_SETTING_SEED,
+  CS_SOURCE_SPECS,
+  CS_TEAM_SPECS,
+} from "@/lib/cs/params";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -906,8 +913,8 @@ function ensureUser(
     ).run(email, name, password, role, department, teamId);
   } else {
     db.prepare(
-      `UPDATE users SET name = ?, password = ?, role_code = ?, department_code = ?, status = 'ACTIVE' WHERE id = ?`
-    ).run(name, password, role, department, existing.id);
+      `UPDATE users SET name = ?, password = ?, role_code = ?, department_code = ?, team_id = COALESCE(?, team_id), status = 'ACTIVE' WHERE id = ?`
+    ).run(name, password, role, department, teamId, existing.id);
   }
 }
 
@@ -1196,41 +1203,37 @@ function ensureCsOrg(db: Database.Database) {
   const insertTeam = db.prepare(
     `INSERT INTO teams (name, department_code, mission, lark_chat_id, on_call_rotation) VALUES (?, ?, ?, ?, ?)`
   );
-  if (!teamByName.get("CS 24/7 Desk")) {
-    insertTeam.run(
-      "CS 24/7 Desk",
-      "CUSTOMER_SERVICE",
-      "24/7 C1 live chat, web form and official mailbox intake; AI follow-up until the client replies.",
-      "oc_cs_c1",
-      "CS Agent → CS Lead"
-    );
+  const updateTeam = db.prepare(
+    `UPDATE teams SET department_code = ?, mission = ?, lark_chat_id = ?, on_call_rotation = ? WHERE id = ?`
+  );
+  for (const spec of CS_TEAM_SPECS) {
+    const existing = teamByName.get(spec.name) as { id: number } | undefined;
+    if (!existing) {
+      insertTeam.run(spec.name, spec.department_code, spec.mission, spec.lark_chat_id, spec.on_call_rotation);
+    } else {
+      updateTeam.run(spec.department_code, spec.mission, spec.lark_chat_id, spec.on_call_rotation, existing.id);
+    }
   }
-  if (!teamByName.get("TR Dealing Support")) {
-    insertTeam.run(
-      "TR Dealing Support",
-      "TRADING",
-      "Order, fill, slippage and MT4/MT5 execution complaints routed from CS.",
-      "oc_tr_dealing",
-      "TR Dealer → TR Lead"
-    );
+  for (const poc of CS_POC_SPECS) {
+    const team = teamByName.get(poc.team) as { id: number } | undefined;
+    ensureUser(db, poc.email, poc.name, poc.password, poc.role, poc.department, team?.id ?? null);
   }
-  const csTeam = teamByName.get("CS 24/7 Desk") as { id: number } | undefined;
-  const trTeam = teamByName.get("TR Dealing Support") as { id: number } | undefined;
-  ensureUser(db, "cs.lead@vantagemarkets.com", "Maya Santos", "cs123", "CS_LEAD", "CUSTOMER_SERVICE", csTeam?.id ?? null);
-  ensureUser(db, "cs.agent@vantagemarkets.com", "Elena Rossi", "cs123", "CS_AGENT", "CUSTOMER_SERVICE", csTeam?.id ?? null);
-  ensureUser(db, "tr.lead@vantagemarkets.com", "Kenji Watanabe", "tr123", "TR_LEAD", "TRADING", trTeam?.id ?? null);
-  ensureUser(db, "tr.dealer@vantagemarkets.com", "Omar Haddad", "tr123", "TR_DEALER", "TRADING", trTeam?.id ?? null);
 
   const lark = db.prepare(`SELECT id FROM lark_channels WHERE chat_id = ?`);
   const insertLark = db.prepare(
     `INSERT INTO lark_channels (name, chat_id, purpose, department_code, severity_min, webhook_url, enabled)
      VALUES (?, ?, ?, ?, 'INFO', ?, 1)`
   );
-  if (!lark.get("oc_cs_c1")) {
-    insertLark.run("CS C1 Live", "oc_cs_c1", "24/7 C1 live chat bridge into CRMP", "CUSTOMER_SERVICE", null);
-  }
-  if (!lark.get("oc_tr_dealing")) {
-    insertLark.run("TR Dealing Support", "oc_tr_dealing", "Trading execution complaints from CS", "TRADING", null);
+  const updateLark = db.prepare(
+    `UPDATE lark_channels SET name = ?, purpose = ?, department_code = ?, webhook_url = COALESCE(?, webhook_url), enabled = 1 WHERE id = ?`
+  );
+  for (const spec of CS_LARK_SPECS) {
+    const existing = lark.get(spec.chat_id) as { id: number } | undefined;
+    if (!existing) {
+      insertLark.run(spec.name, spec.chat_id, spec.purpose, spec.department_code, spec.webhook_url);
+    } else {
+      updateLark.run(spec.name, spec.purpose, spec.department_code, spec.webhook_url, existing.id);
+    }
   }
 
   const srcByName = db.prepare(`SELECT id FROM data_sources WHERE name = ?`);
@@ -1238,44 +1241,44 @@ function ensureCsOrg(db: Database.Database) {
     `INSERT INTO data_sources (name, category, url, description, owner_department, auth_type, refresh_cadence, status, tags_json, notes)
      VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?)`
   );
-  if (!srcByName.get("C1 Live Chat Gateway")) {
-    insertSrc.run(
-      "C1 Live Chat Gateway",
-      "MESSAGING",
-      "/api/cs/intake",
-      "Platform 24/7 live chat (C1) webhook into the CS/TR desk.",
-      "CUSTOMER_SERVICE",
-      "TOKEN",
-      "Real-time",
-      '["cs","c1","live-chat"]',
-      "Prototype token x-cs-intake-token: demo-c1"
-    );
+  const updateSrc = db.prepare(
+    `UPDATE data_sources SET category = ?, url = ?, description = ?, owner_department = ?, auth_type = ?, refresh_cadence = ?, tags_json = ?, notes = ?, status = 'ACTIVE' WHERE id = ?`
+  );
+  for (const spec of CS_SOURCE_SPECS) {
+    const existing = srcByName.get(spec.name) as { id: number } | undefined;
+    if (!existing) {
+      insertSrc.run(
+        spec.name,
+        spec.category,
+        spec.url,
+        spec.description,
+        spec.owner_department,
+        spec.auth_type,
+        spec.refresh_cadence,
+        spec.tags_json,
+        spec.notes
+      );
+    } else {
+      updateSrc.run(
+        spec.category,
+        spec.url,
+        spec.description,
+        spec.owner_department,
+        spec.auth_type,
+        spec.refresh_cadence,
+        spec.tags_json,
+        spec.notes,
+        existing.id
+      );
+    }
   }
-  if (!srcByName.get("Website CS submission form")) {
-    insertSrc.run(
-      "Website CS submission form",
-      "INTERNAL_PLATFORM",
-      "/api/cs/intake",
-      "Website / app contact form posts into the CS/TR desk.",
-      "CUSTOMER_SERVICE",
-      "TOKEN",
-      "Event-driven",
-      '["cs","form"]',
-      "Same intake API as C1; channel=WEB_FORM"
-    );
-  }
-  if (!srcByName.get("Official support mailbox")) {
-    insertSrc.run(
-      "Official support mailbox",
-      "MESSAGING",
-      "/api/cs/intake",
-      "Official support and complaints mailboxes ingested as CS requests.",
-      "CUSTOMER_SERVICE",
-      "APP_SECRET",
-      "Event-driven",
-      '["cs","email"]',
-      "AI follow-up mail is sent from this mailbox until the client replies."
-    );
+
+  const upsertSetting = db.prepare(
+    `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+     ON CONFLICT(key) DO UPDATE SET description = excluded.description`
+  );
+  for (const s of CS_SETTING_SEED) {
+    upsertSetting.run(s.key, s.value, s.description);
   }
   ensureCsEscalationRoutes(db);
 }
@@ -1284,11 +1287,13 @@ function ensureCsEscalationRoutes(db: Database.Database) {
   const teamByName = db.prepare(`SELECT id FROM teams WHERE name = ?`);
   const larkByChat = db.prepare(`SELECT id FROM lark_channels WHERE chat_id = ?`);
   const csTeam = teamByName.get("CS 24/7 Desk") as { id: number } | undefined;
+  const kycTeam = teamByName.get("CS KYC Vault") as { id: number } | undefined;
   const trTeam = teamByName.get("TR Dealing Support") as { id: number } | undefined;
   const riskTeam = db
     .prepare(`SELECT id FROM teams WHERE department_code = 'RISK_CONTROL' ORDER BY id LIMIT 1`)
     .get() as { id: number } | undefined;
   const csLark = larkByChat.get("oc_cs_c1") as { id: number } | undefined;
+  const kycLark = larkByChat.get("oc_cs_kyc") as { id: number } | undefined;
   const trLark = larkByChat.get("oc_tr_dealing") as { id: number } | undefined;
   const riskLark = larkByChat.get("oc_risk_control_desk") as { id: number } | undefined;
   const primaryFallback = riskTeam?.id ?? 1;
@@ -1307,7 +1312,7 @@ function ensureCsEscalationRoutes(db: Database.Database) {
     coeffs: Record<string, number>;
   }> = [
     {
-      name: "CS 24/7 → Risk Desk",
+      name: "CS 24/7 intake",
       code: "ESC-CS-24-7",
       domain: "CS_SERVICE",
       severity: "WARN",
@@ -1319,6 +1324,20 @@ function ensureCsEscalationRoutes(db: Database.Database) {
       pending: 30,
       teams: ["CS 24/7 Desk", "CS Lead"],
       coeffs: { severity: 1.1, involved_teams: 1.0, risk_scenario: 1.1, pending_time: 1.2, need_human_intervention: 1.2 },
+    },
+    {
+      name: "CS KYC vault",
+      code: "ESC-CS-KYC",
+      domain: "CS_SERVICE",
+      severity: "WARN",
+      primary: kycTeam?.id ?? csTeam?.id ?? primaryFallback,
+      secondary: csTeam?.id ?? null,
+      lark: kycLark?.id ?? csLark?.id ?? null,
+      sla: 60,
+      scenario: "cs_id_verify",
+      pending: 60,
+      teams: ["CS KYC Vault", "CS Lead"],
+      coeffs: { severity: 1.2, involved_teams: 1.1, risk_scenario: 1.3, pending_time: 1.1, need_human_intervention: 1.4 },
     },
     {
       name: "TR dealing tape",

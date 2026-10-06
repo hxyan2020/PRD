@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Headphones, LayoutDashboard } from "lucide-react";
+import { Headphones, LayoutDashboard, TableProperties } from "lucide-react";
 import { Badge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
 import { CS_AUDIT_ACTIONS, type CsLog } from "@/lib/cs/analytics";
@@ -33,6 +33,10 @@ export function CsLogView({ data }: { data: CsLog }) {
         <Link className="btn" href="/admin/cs-dashboard">
           <LayoutDashboard className="mr-1 h-4 w-4" aria-hidden />
           {t("cs.dash.open")}
+        </Link>
+        <Link className="btn" href="/admin/cs-data">
+          <TableProperties className="mr-1 h-4 w-4" aria-hidden />
+          {t("cs.data.open")}
         </Link>
       </div>
       <div className="panel mb-4 p-3 sm:p-4">

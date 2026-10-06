@@ -1,12 +1,12 @@
 # Vantage CRMP Plus — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 2.4  
+**版本：** 2.5  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
 **負責人：** demo platform owner  
-**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…44）· [使用手冊](/admin/docs/user-guide)（§9.3）· [UAT](/admin/docs/uat)（UAT-46…51）· [網址目錄](/admin/docs/urls)
+**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…45）· [使用手冊](/admin/docs/user-guide)（§9.3）· [UAT](/admin/docs/uat)（UAT-46…52）· [網址目錄](/admin/docs/urls)
 
 本 TSD 描述 **CRMP Plus**（原 CRMP 管理後台加上 24/7 客服與交易台）之技術設計。  
 **§8 AI Admin**、**§9 第二 AI 挑戰者**與 **§17 CS／TR 台**（公開 `/cs`、`POST /api/cs/intake`、等待迴圈、專用 SKILL.md、**儀表板＋日誌**）為一級模組規格。原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結，本程式庫不覆蓋它。
@@ -22,7 +22,7 @@
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
 - 值守 24/7 CS／TR 進件：C1 即時聊天、網站表單與官方信箱經公開 `/cs` 與 `POST /api/cs/intake`；AI 在不清楚或需核身時寄信並**等待客戶回覆**（上限 3、`CSR-XXXX`／`channel_ref` 對案）
 - 蓋專用 CS／TR SKILL.md 劇本，帳簿風險升級至示範 Messenger
-- 在**專用儀表板**看 CS／TR 量、在**專用日誌**看 CS_* 歷史（不是每日績效／風險日誌）
+- 在**專用儀表板**看 CS／TR 量、在**專用日誌**看 CS_* 歷史、在**專用資料頁**看 BU／團隊／升級／`cs.*` 紀錄（不是每日績效／風險日誌）
 - 對高影響動作強制人工關卡
 - 以 Maker/Checker 治理 AI 設定
 - 檢視首頁脊柱階段工單計數、風險分析、市場情報與每日績效
@@ -211,6 +211,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 應變 | `/admin/cs-desk` | `CsTrDesk`、`/api/cs`、`/api/cs/intake` | `cs.read`／`cs.operate` | **§17** |
 | 應變 | `/admin/cs-dashboard` | `CsDashboardView`、`lib/cs/analytics.ts`、`GET /api/cs?view=dashboard` | `cs.read`／`lark.read` | **§17.11** |
 | 應變 | `/admin/cs-log` | `CsLogView`、`lib/cs/analytics.ts`、`GET /api/cs?view=log` | `cs.read`／`lark.read` | **§17.11** |
+| 應變 | `/admin/cs-data` | `CsOpsDataView`、`lib/cs/ops-data.ts`、`GET /api/cs?view=data` | `cs.read`／`lark.read` | **§17.12** |
 | 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
 | 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
@@ -800,12 +801,15 @@ graph TD
 | `lib/cs/skills.ts` | 啟發式 → `SKILL-CS-*`／`SKILL-TR-*` |
 | `lib/ai/risk-scenarios-cs.ts` | 五本劇本＋`CHAIN-CS-TR-INTAKE` |
 | `lib/cs/analytics.ts` | `getCsDashboard`、`getCsLog` |
+| `lib/cs/ops-data.ts` | `getCsOpsContract`、`getCsFollowupCap`、`getCsIntakeToken` |
+| `lib/cs/params.ts` | 種子目錄：團隊、POC、Lark、來源、`cs.*` 鍵、關卡 |
 | `app/api/cs/intake/route.ts` | GET 目錄／狀態 · POST 進件 |
-| `app/api/cs/route.ts` | 台面操作動作＋`GET ?view=dashboard\|log` |
+| `app/api/cs/route.ts` | 台面操作動作＋`GET ?view=dashboard\|log\|data` |
 | `app/cs/page.tsx`＋`CsClientPortal` | 公開三分頁入口 |
 | `components/CsTrDesk.tsx` | 操作收件匣 |
 | `components/CsDashboardView.tsx` | CS／TR 指標 |
 | `components/CsLogView.tsx` | CS_* 時間軸＋已結包 |
+| `components/CsOpsDataView.tsx` | BU／團隊／關卡／參數契約 |
 | `lib/docs/urls.ts`＋`UrlCatalogBoard` | CS／TR 目錄區段 |
 
 POST 進件驗證：工作階段 `cs.operate`、`mock_webhook: true`、`portal: true`，或標頭 `x-cs-intake-token: demo-c1`。
@@ -836,15 +840,15 @@ graph TD
 
 ### 17.9 網址目錄（技術）
 
-`PLATFORM_URLS` 類別 **CS／TR** 列出 `/cs`、`/admin/cs-desk`、`/admin/cs-dashboard`、`/admin/cs-log`、五條 `/admin/skills/SKILL-CS-*`／`SKILL-TR-*`、六片 `/admin/rag?doc=cs-*` 葉、`/api/cs`、`/api/cs?view=dashboard`、`/api/cs?view=log`、`/api/cs/intake`、`/api/cs/intake?request_id=` 與 `tables:cs_*`。看板：篩選、`#url-cat-cs-tr` 跳轉、雙語 `phrase()` 標題。守門：`scripts/verify-url-catalog.ts`。
+`PLATFORM_URLS` 類別 **CS／TR** 列出 `/cs`、`/admin/cs-desk`、`/admin/cs-dashboard`、`/admin/cs-log`、`/admin/cs-data`、五條 `/admin/skills/SKILL-CS-*`／`SKILL-TR-*`、六片 `/admin/rag?doc=cs-*` 葉、`/api/cs`、`/api/cs?view=dashboard`、`/api/cs?view=log`、`/api/cs?view=data`、`/api/cs/intake`、`/api/cs/intake?request_id=` 與 `tables:cs_*`。看板：篩選、`#url-cat-cs-tr` 跳轉、雙語 `phrase()` 標題。守門：`scripts/verify-url-catalog.ts`。
 
 ### 17.10 可追溯性
 
 | 產品 | 規格 |
 |---|---|
-| PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、FR-44、旅程 5.7–5.9、§6.5 |
-| 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色／儀表板／日誌 |
-| UAT | UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-49 核身庫；UAT-50 技能＋樹；UAT-51 儀表板＋日誌 |
+| PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、FR-44、FR-45、旅程 5.7–5.9、§6.5 |
+| 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色／儀表板／日誌／資料 |
+| UAT | UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-49 核身庫；UAT-50 技能＋樹；UAT-51 儀表板＋日誌；UAT-52 配套資料 |
 
 ### 17.11 專用儀表板＋日誌
 
@@ -869,6 +873,33 @@ graph TD
   Log --> Desk
 ```
 
+### 17.12 配套資料（BU／團隊／關卡／參數）
+
+**頁面：** `/admin/cs-data`（`CsOpsDataView`）。**API：** `GET /api/cs?view=data`。來源：`lib/cs/ops-data.ts` 的 `getCsOpsContract()`，種子目錄 `lib/cs/params.ts`。
+
+`ensureCsOrg`（`db.ts`）會 upsert：
+
+| 種類 | 紀錄 |
+|---|---|
+| BU | `CUSTOMER_SERVICE`、`TRADING` |
+| 團隊 | CS 24/7 台（`oc_cs_c1`）、**CS 核身庫**（`oc_cs_kyc`）、TR 成交支援（`oc_tr_dealing`） |
+| POC | Maya Santos CS_LEAD、Elena Rossi CS_AGENT、Nadia Okonkwo CS_AGENT（核身）、Kenji Watanabe TR_LEAD、Omar Haddad TR_DEALER |
+| 路徑 | `ESC-CS-24-7`、**`ESC-CS-KYC`**、`ESC-TR-DEAL`、`ESC-CS-RISK` 含關卡＋SLA |
+| 設定 | `cs.followup_cap`、`cs.wait_sla_minutes`、`cs.id_verify_sla_minutes`、`cs.tr_sla_minutes`、`cs.risk_sla_minutes`、`cs.intake_token`、`cs.mailbox_support`、`cs.mailbox_complaints`、`cs.lark_cs`／`_kyc`／`_tr` |
+| 來源 | C1 閘道、網站表單、官方信箱、support@、complaints@、CS 核身庫（僅旗標）、MT4／MT5 成交帶 |
+
+台面 `sendFollowupEmail` 讀 `getCsFollowupCap()`。進件標頭比對 `getCsIntakeToken()`。`cs_requests.assigned_bu` 蓋 CUSTOMER_SERVICE／TRADING／RISK_CONTROL。平台設定分組 **CS／TR 營運**。守門：`scripts/verify-cs-data.ts`。
+
+```mermaid
+graph LR
+  Params[cs 設定] --> Desk[CS TR 台]
+  Teams[BU 與團隊] --> Data[CS TR 資料]
+  Routes[ESC 關卡] --> Data
+  Sources[資料來源] --> Data
+  Data --> Dash[儀表板]
+  Data --> Desk
+```
+
 ---
 
 ## 18. 文件控制
@@ -889,6 +920,7 @@ graph TD
 | 2.2 | 2026-10-06 | §17.2 公開 `/cs` 入口＋進件回覆對案（CSR-XXXX／channel_ref／In-Reply-To）；GET 進件目錄；FR-40 |
 | 2.3 | 2026-10-06 | §17.5–17.10 綱要、模組地圖、等待迴圈狀態、`/cs` 入口、網址目錄、PRD FR-37…43 追溯 |
 | 2.4 | 2026-10-06 | §17.11 專用 CS／TR 儀表板＋日誌；FR-44；UAT-51 |
+| 2.5 | 2026-10-06 | §17.12 CS／TR 配套資料（BU／核身庫／關卡／`cs.*`）；FR-45；UAT-52 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

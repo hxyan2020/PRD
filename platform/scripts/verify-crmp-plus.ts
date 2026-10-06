@@ -13,6 +13,7 @@ import {
   PUBLIC_CS_DESK_URL,
   PUBLIC_CS_DASHBOARD_URL,
   PUBLIC_CS_LOG_URL,
+  PUBLIC_CS_DATA_URL,
   PUBLIC_CS_PORTAL_URL,
   PUBLIC_MESSENGER_URL,
 } from "../src/lib/platform-site";
@@ -30,6 +31,7 @@ assert.equal(PUBLIC_MESSENGER_URL, "https://hxyan2020.github.io/PRD/crmp-plus/ad
 assert.equal(PUBLIC_CS_DESK_URL, "https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/");
 assert.equal(PUBLIC_CS_DASHBOARD_URL, "https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-dashboard/");
 assert.equal(PUBLIC_CS_LOG_URL, "https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-log/");
+assert.equal(PUBLIC_CS_DATA_URL, "https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-data/");
 assert.equal(PUBLIC_CS_PORTAL_URL, "https://hxyan2020.github.io/PRD/crmp-plus/cs/");
 assert.equal(ORIGINAL_CRMP_ADMIN_URL, "https://hxyan2020.github.io/PRD/crmp-admin/admin/");
 
@@ -66,6 +68,7 @@ assert.match(catalogPage, /ORIGINAL_CRMP_ADMIN_URL/);
 assert.match(catalogPage, /PUBLIC_CS_DESK_URL/);
 assert.match(catalogPage, /PUBLIC_CS_DASHBOARD_URL/);
 assert.match(catalogPage, /PUBLIC_CS_LOG_URL/);
+assert.match(catalogPage, /PUBLIC_CS_DATA_URL/);
 assert.match(catalogPage, /PUBLIC_CS_PORTAL_URL/);
 
 console.log("ok: CRMP Plus URL /PRD/crmp-plus; original CRMP Admin frozen at /PRD/crmp-admin");

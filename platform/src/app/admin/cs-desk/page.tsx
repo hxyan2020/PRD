@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import type { ComponentProps } from "react";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { listCsInbox } from "@/lib/cs/desk";
+import { getCsOpsContract } from "@/lib/cs/ops-data";
 import { CsTrDesk } from "@/components/CsTrDesk";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { isStaticExport } from "@/lib/static-export";
@@ -14,6 +15,7 @@ export default async function CsDeskPage() {
     redirect("/admin");
   }
   const inbox = listCsInbox();
+  const ops = getCsOpsContract();
   const canOperate =
     staticMode ||
     (!!user &&
@@ -31,6 +33,7 @@ export default async function CsDeskPage() {
         initialRequests={inbox.requests as ComponentProps<typeof CsTrDesk>["initialRequests"]}
         initialChannels={inbox.channels as ComponentProps<typeof CsTrDesk>["initialChannels"]}
         initialCatalog={inbox.catalog as ComponentProps<typeof CsTrDesk>["initialCatalog"]}
+        ops={ops}
         staticMode={staticMode}
         canOperate={canOperate}
       />

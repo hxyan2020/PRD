@@ -522,7 +522,12 @@ export const DEPARTMENT_CHARTERS: Record<DepartmentCode, DepartmentCharter> = {
       {
         title: "AI follow-up loop when the issue is unclear or identity must be verified",
         detail:
-          "If AI cannot tell what the client needs, or KYC/ID is required, CS lets AI send an automatic email asking for the missing info and keeps the case AWAITING_CLIENT until the client replies. The loop repeats until the request is clear or ID is on file.",
+          "If AI cannot tell what the client needs, or KYC/ID is required, CS lets AI send an automatic email asking for the missing info and keeps the case AWAITING_CLIENT until the client replies. The loop repeats until the request is clear or ID is on file. Cap is `cs.followup_cap` (default 3) then CS Lead.",
+      },
+      {
+        title: "CS KYC Vault — ID-verify status flags, never ID-image blobs",
+        detail:
+          "The CS KYC Vault team holds ID_VERIFY cases. It records UID last-four and KYC status only. Passport photos stay in the official mailbox thread; they are never stored on cs_requests. Route ESC-CS-KYC pages oc_cs_kyc.",
       },
     ],
     accountable: [
@@ -858,8 +863,9 @@ export const ROLE_CHARTERS: Record<RoleCode, RoleCharter> = {
       "Leads the 24/7 CS desk. Owns C1 / form / mailbox intake quality, the AI follow-up loop, and when a case leaves CS for TR or Risk.",
     owns: [
       "CS 24/7 Desk on-call rota",
-      "Follow-up email waivers when a client never replies",
+      "CS KYC Vault rota and follow-up email waivers when a client never replies",
       "C1 live-chat and official-mailbox channel health",
+      "cs.* platform parameters (follow-up cap, wait SLA, mailboxes)",
     ],
     does: [
       "Watch the CS/TR intake board, re-assign to TR, escalate to Risk",
@@ -895,7 +901,7 @@ export const ROLE_CHARTERS: Record<RoleCode, RoleCharter> = {
       "Change trading conditions",
     ],
     escalatesTo: [
-      "CS_LEAD when the client is abusive, VIP, or the loop exceeded three mails",
+      "CS_LEAD when the client is abusive, VIP, or the loop exceeded cs.followup_cap",
       "TR_DEALER when the case is fills / orders / slippage",
     ],
   },
@@ -906,7 +912,7 @@ export const ROLE_CHARTERS: Record<RoleCode, RoleCharter> = {
     intro:
       "Leads Trading Support. Owns execution-complaint quality and whether a dealing adjustment needs Risk.",
     owns: [
-      "TR Dealing Support rota",
+      "TR Dealing Support rota and MT4/MT5 dealing-tape reconstruct",
       "Sign-off that execution facts are complete before goodwill talk",
     ],
     does: [

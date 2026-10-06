@@ -1,12 +1,12 @@
 # Vantage CRMP Plus — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 2.4  
+**Version:** 2.5  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
 **Owner:** demo platform owner  
-**Companion:** [PRD](/admin/docs/prd) (G13, FR-37…44) · [User Guide](/admin/docs/user-guide) (§9.3) · [UAT](/admin/docs/uat) (UAT-46…51) · [URL Catalog](/admin/docs/urls)
+**Companion:** [PRD](/admin/docs/prd) (G13, FR-37…45) · [User Guide](/admin/docs/user-guide) (§9.3) · [UAT](/admin/docs/uat) (UAT-46…52) · [URL Catalog](/admin/docs/urls)
 
 This TSD describes the technical design of **CRMP Plus** — the upgraded Centralised Risk Management Platform (original CRMP Admin plus 24/7 CS/TR) on one control plane.  
 **§8 AI Admin**, **§9 Second-AI Challenger** and **§17 CS/TR Desk** (public `/cs`, `POST /api/cs/intake`, wait loop, dedicated SKILL.md, **dashboard + log**) are first-class module specifications. Original CRMP Admin at `/PRD/crmp-admin/` is frozen and is not overwritten by this codebase.
@@ -22,7 +22,7 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
 - Staff 24/7 CS/TR intake: C1 live chat, website form and official email via public `/cs` and `POST /api/cs/intake`; AI emails the client when unclear or ID is needed and **waits for a reply** (cap 3, `CSR-XXXX` / `channel_ref` match)
 - Stamp dedicated CS/TR SKILL.md playbooks and escalate book-risk onto Demo Messenger
-- Review CS/TR volume on a **dedicated dashboard** and CS_* history on a **dedicated log** (not Daily Performance / Risk Log)
+- Review CS/TR volume on a **dedicated dashboard**, CS_* history on a **dedicated log**, and BU/team/escalation/`cs.*` records on a **dedicated data page** (not Daily Performance / Risk Log)
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
 - Review home spine stage ticket counts, risk analytics, market intel, and daily performance
@@ -211,6 +211,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Response | `/admin/cs-desk` | `CsTrDesk`, `/api/cs`, `/api/cs/intake` | `cs.read` / `cs.operate` | **§17** |
 | Response | `/admin/cs-dashboard` | `CsDashboardView`, `lib/cs/analytics.ts`, `GET /api/cs?view=dashboard` | `cs.read` / `lark.read` | **§17.11** |
 | Response | `/admin/cs-log` | `CsLogView`, `lib/cs/analytics.ts`, `GET /api/cs?view=log` | `cs.read` / `lark.read` | **§17.11** |
+| Response | `/admin/cs-data` | `CsOpsDataView`, `lib/cs/ops-data.ts`, `GET /api/cs?view=data` | `cs.read` / `lark.read` | **§17.12** |
 | Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §16.15 |
 | Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §16.15 |
@@ -222,7 +223,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §16.17 |
 | Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §16.18 |
 | Platform | `/admin/audit` | `AuditBoard` — CRMP / Vantage Markets Admin tabs + Roll back | `audit.read` | §16.19 |
-| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §16.20 |
+| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §16.20 + **§17.12** `cs.*` |
 | Docs | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`, boards | `admin.access` | §13 + §16.21 |
 | Shell | `SelectionChatbot` (select text → sparkle → chat) | `lib/ai/desk-chat.ts`, `POST /api/ai-chat` | public / `ai.read` | §12 |
 
@@ -804,12 +805,15 @@ Public `GET /api/cs/intake?request_id=` returns `request_id`, `status`, `ai_clar
 | `lib/cs/skills.ts` | Heuristic → `SKILL-CS-*` / `SKILL-TR-*` |
 | `lib/ai/risk-scenarios-cs.ts` | Five playbooks + `CHAIN-CS-TR-INTAKE` |
 | `lib/cs/analytics.ts` | `getCsDashboard`, `getCsLog` |
+| `lib/cs/ops-data.ts` | `getCsOpsContract`, `getCsFollowupCap`, `getCsIntakeToken` |
+| `lib/cs/params.ts` | Seed catalog: teams, POCs, Lark, sources, `cs.*` keys, hops |
 | `app/api/cs/intake/route.ts` | GET catalog/status · POST ingest |
-| `app/api/cs/route.ts` | Desk operator actions + `GET ?view=dashboard\|log` |
+| `app/api/cs/route.ts` | Desk operator actions + `GET ?view=dashboard\|log\|data` |
 | `app/cs/page.tsx` + `CsClientPortal` | Public three-tab portal |
 | `components/CsTrDesk.tsx` | Operator inbox |
 | `components/CsDashboardView.tsx` | CS/TR KPIs |
 | `components/CsLogView.tsx` | CS_* timeline + resolved packs |
+| `components/CsOpsDataView.tsx` | BU / team / hop / parameter contract |
 | `lib/docs/urls.ts` + `UrlCatalogBoard` | CS / TR catalog section |
 
 Auth for POST intake: session `cs.operate`, `mock_webhook: true`, `portal: true`, or header `x-cs-intake-token: demo-c1`.
@@ -840,15 +844,15 @@ Match order for continuation: `request_id` → `in_reply_to` → live `channel_r
 
 ### 17.9 URL Catalog (technical)
 
-`PLATFORM_URLS` category **CS / TR** lists `/cs`, `/admin/cs-desk`, `/admin/cs-dashboard`, `/admin/cs-log`, five `/admin/skills/SKILL-CS-*` / `SKILL-TR-*` paths, six `/admin/rag?doc=cs-*` leaves, `/api/cs`, `/api/cs?view=dashboard`, `/api/cs?view=log`, `/api/cs/intake`, `/api/cs/intake?request_id=`, and `tables:cs_*`. Board: filter, `#url-cat-cs-tr` jump, bilingual `phrase()` titles. Guard: `scripts/verify-url-catalog.ts`.
+`PLATFORM_URLS` category **CS / TR** lists `/cs`, `/admin/cs-desk`, `/admin/cs-dashboard`, `/admin/cs-log`, `/admin/cs-data`, five `/admin/skills/SKILL-CS-*` / `SKILL-TR-*` paths, six `/admin/rag?doc=cs-*` leaves, `/api/cs`, `/api/cs?view=dashboard`, `/api/cs?view=log`, `/api/cs?view=data`, `/api/cs/intake`, `/api/cs/intake?request_id=`, and `tables:cs_*`. Board: filter, `#url-cat-cs-tr` jump, bilingual `phrase()` titles. Guard: `scripts/verify-url-catalog.ts`.
 
 ### 17.10 Traceability
 
 | Product | Spec |
 |---|---|
-| PRD | G13, FR-37, FR-40, FR-41, FR-42, FR-43, FR-44, journeys 5.7–5.9, §6.5 |
-| User Guide | §9.3 portal / connectors / wait loop / daily roles / dashboard / log |
-| UAT | UAT-25 catalog; UAT-46 connectors; UAT-47 wait loop; UAT-48 TR/Risk; UAT-49 ID vault; UAT-50 skills + tree; UAT-51 dashboard + log |
+| PRD | G13, FR-37, FR-40, FR-41, FR-42, FR-43, FR-44, FR-45, journeys 5.7–5.9, §6.5 |
+| User Guide | §9.3 portal / connectors / wait loop / daily roles / dashboard / log / data |
+| UAT | UAT-25 catalog; UAT-46 connectors; UAT-47 wait loop; UAT-48 TR/Risk; UAT-49 ID vault; UAT-50 skills + tree; UAT-51 dashboard + log; UAT-52 supporting data |
 
 ### 17.11 Dedicated dashboard + log
 
@@ -873,6 +877,33 @@ graph TD
   Log --> Desk
 ```
 
+### 17.12 Supporting data (BU / team / hops / parameters)
+
+**Page:** `/admin/cs-data` (`CsOpsDataView`). **API:** `GET /api/cs?view=data`. Source: `getCsOpsContract()` in `lib/cs/ops-data.ts` over seed catalog `lib/cs/params.ts`.
+
+`ensureCsOrg` (in `db.ts`) upserts:
+
+| Kind | Records |
+|---|---|
+| BUs | `CUSTOMER_SERVICE`, `TRADING` |
+| Teams | CS 24/7 Desk (`oc_cs_c1`), **CS KYC Vault** (`oc_cs_kyc`), TR Dealing Support (`oc_tr_dealing`) |
+| POCs | Maya Santos CS_LEAD, Elena Rossi CS_AGENT, Nadia Okonkwo CS_AGENT (KYC), Kenji Watanabe TR_LEAD, Omar Haddad TR_DEALER |
+| Routes | `ESC-CS-24-7`, **`ESC-CS-KYC`**, `ESC-TR-DEAL`, `ESC-CS-RISK` with hops + SLA |
+| Settings | `cs.followup_cap`, `cs.wait_sla_minutes`, `cs.id_verify_sla_minutes`, `cs.tr_sla_minutes`, `cs.risk_sla_minutes`, `cs.intake_token`, `cs.mailbox_support`, `cs.mailbox_complaints`, `cs.lark_cs` / `_kyc` / `_tr` |
+| Sources | C1 gateway, website form, official mailbox, support@, complaints@, CS KYC Vault (flags only), MT4/MT5 dealing tape |
+
+Desk `sendFollowupEmail` reads `getCsFollowupCap()`. Intake header matches `getCsIntakeToken()`. `cs_requests.assigned_bu` stamps CUSTOMER_SERVICE / TRADING / RISK_CONTROL. Platform Settings group **CS / TR operations**. Guard: `scripts/verify-cs-data.ts`.
+
+```mermaid
+graph LR
+  Params[cs star settings] --> Desk[CS TR desk]
+  Teams[BU and teams] --> Data[CS TR data]
+  Routes[ESC hops] --> Data
+  Sources[data sources] --> Data
+  Data --> Dash[dashboard]
+  Data --> Desk
+```
+
 ---
 
 ## 18. Document control
@@ -893,6 +924,7 @@ graph TD
 | 2.2 | 2026-10-06 | §17.2 public `/cs` portal + inbound reply matching (CSR-XXXX / channel_ref / In-Reply-To); GET intake catalog; FR-40 |
 | 2.3 | 2026-10-06 | §17.5–17.10 schema, module map, wait-loop state, `/cs` portal, URL catalog, PRD FR-37…43 traceability |
 | 2.4 | 2026-10-06 | §17.11 dedicated CS/TR dashboard + log; FR-44; UAT-51 |
+| 2.5 | 2026-10-06 | §17.12 CS/TR supporting data (BU/KYC vault/hops/`cs.*`); FR-45; UAT-52 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

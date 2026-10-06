@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_PORTAL_URL, ORIGINAL_CRMP_ADMIN_URL } from "@/lib/docs/urls";
+import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_DATA_URL, PUBLIC_CS_PORTAL_URL, ORIGINAL_CRMP_ADMIN_URL } from "@/lib/docs/urls";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { OwnerIdentityPanel } from "@/components/OwnerIdentityPanel";
@@ -36,6 +36,9 @@ export default async function UrlsCatalogPage() {
             <Link className="btn" href="/admin/cs-log">
               <T k="home.csLogCta" />
             </Link>
+            <Link className="btn" href="/admin/cs-data">
+              <T k="home.csDataCta" />
+            </Link>
             <Link className="btn btn-primary" href="/admin/messenger">
               <T k="common.openMessenger" />
             </Link>
@@ -54,6 +57,7 @@ export default async function UrlsCatalogPage() {
           { label: <T k="urls.deskLabel" />, value: "/admin/cs-desk", key: "desk" },
           { label: <T k="urls.dashLabel" />, value: "/admin/cs-dashboard", key: "dash" },
           { label: <T k="urls.logLabel" />, value: "/admin/cs-log", key: "log" },
+          { label: <T k="urls.dataLabel" />, value: "/admin/cs-data", key: "dataCs" },
         ].map((c) => (
           <div key={c.key} className="panel p-3 sm:p-4">
             <div className="text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{c.label}</div>
@@ -92,6 +96,12 @@ export default async function UrlsCatalogPage() {
           <span className="font-semibold"><T k="urls.logLabel" />: </span>
           <a className="text-teal-900 underline break-all" href={PUBLIC_CS_LOG_URL}>
             {PUBLIC_CS_LOG_URL}
+          </a>
+        </p>
+        <p className="mt-2">
+          <span className="font-semibold"><T k="urls.dataLabel" />: </span>
+          <a className="text-teal-900 underline break-all" href={PUBLIC_CS_DATA_URL}>
+            {PUBLIC_CS_DATA_URL}
           </a>
         </p>
         <p className="mt-2">

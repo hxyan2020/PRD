@@ -1230,8 +1230,12 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "客戶全天候第一個聽到的是 CS。他們回答產品、資金狀態與投訴。他們不制定交易政策、不停商品。",
   "AI follow-up loop when the issue is unclear or identity must be verified":
     "案情不清或需核身時的 AI 追問迴圈",
-  "If AI cannot tell what the client needs, or KYC/ID is required, CS lets AI send an automatic email asking for the missing info and keeps the case AWAITING_CLIENT until the client replies. The loop repeats until the request is clear or ID is on file.":
-    "若 AI 無法判斷客戶需求，或需要 KYC／身分，CS 讓 AI 自動寄信索取缺漏資料，案件維持待客戶直到回覆。迴圈重複至案情清楚或身分已建檔。",
+  "If AI cannot tell what the client needs, or KYC/ID is required, CS lets AI send an automatic email asking for the missing info and keeps the case AWAITING_CLIENT until the client replies. The loop repeats until the request is clear or ID is on file. Cap is `cs.followup_cap` (default 3) then CS Lead.":
+    "若 AI 無法判斷客戶需求，或需要 KYC／身分，CS 讓 AI 自動寄信索取缺漏資料，案件維持待客戶直到回覆。迴圈重複至案情清楚或身分已建檔。上限為 cs.followup_cap（預設 3）再交 CS Lead。",
+  "CS KYC Vault — ID-verify status flags, never ID-image blobs":
+    "CS 核身庫 — 核身狀態旗標，永不存證件圖",
+  "The CS KYC Vault team holds ID_VERIFY cases. It records UID last-four and KYC status only. Passport photos stay in the official mailbox thread; they are never stored on cs_requests. Route ESC-CS-KYC pages oc_cs_kyc.":
+    "CS 核身庫團隊承接 ID_VERIFY 案件。只記 UID 後四碼與 KYC 狀態。護照照片留在官方信箱執行緒，永不存進 cs_requests。路徑 ESC-CS-KYC 呼叫 oc_cs_kyc。",
   "No silent drop of C1, form or mailbox requests": "C1、表單或信箱請求不可靜默丟失",
   "If a live-chat, form or mailbox item never appears on the CS/TR desk, that miss belongs to CS intake, not to Risk.":
     "若即時聊天、表單或信箱從未出現在 CS／TR 台，責任在 CS 進件，不在風控。",
@@ -1495,6 +1499,54 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "CRMP Plus CS / TR Log": "CRMP Plus CS／TR 日誌",
   "CS / TR Dashboard API": "CS／TR 儀表板 API",
   "CS / TR Log API": "CS／TR 日誌 API",
+  "CS / TR Data": "CS／TR 資料",
+  "CS / TR Data API": "CS／TR 資料 API",
+  "CRMP Plus CS / TR Data": "CRMP Plus CS／TR 資料",
+  "Permanent CS/TR BU, team, escalation-hop and parameter contract on CRMP Plus":
+    "CRMP Plus 上永久 CS／TR BU、團隊、升級關卡與參數契約",
+  "Live BU/team/POC roster, ESC-CS-24-7 / ESC-CS-KYC / ESC-TR-DEAL / ESC-CS-RISK hops, cs.* parameters, KYC vault and dealing-tape sources":
+    "即時 BU／團隊／POC 名冊、ESC-CS-24-7／ESC-CS-KYC／ESC-TR-DEAL／ESC-CS-RISK 關卡、cs.* 參數、核身庫與成交帶來源",
+  "GET live CS/TR ops contract: BUs, teams, POCs, escalation hops, cs.* parameters, sources, Lark":
+    "GET 即時 CS／TR 營運契約：BU、團隊、POC、升級關卡、cs.* 參數、來源、Lark",
+  "GET inbox · GET ?view=dashboard|log|data · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake":
+    "GET 收件匣 · GET ?view=dashboard|log|data · POST 分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬 C1｜表單｜信件 — 操作動作；公開進件為 POST /api/cs/intake",
+  "Channel registry & mock notify — includes oc_cs_c1 (C1 live chat), oc_cs_kyc (KYC vault) and oc_tr_dealing (TR dealing)":
+    "頻道登錄與模擬通知 — 含 oc_cs_c1（C1 即時聊天）、oc_cs_kyc（核身庫）與 oc_tr_dealing（TR 成交）",
+  "Dimension-defined paths × coefficients; ESC-DEFAULT catch-all plus ESC-CS-24-7, ESC-CS-KYC, ESC-TR-DEAL, ESC-CS-RISK for CS/TR skills":
+    "維度定義路徑 × 係數；ESC-DEFAULT 兜底，加上 CS／TR 技能的 ESC-CS-24-7、ESC-CS-KYC、ESC-TR-DEAL、ESC-CS-RISK",
+  "Internal/external source registry — includes C1 live-chat gateway, website CS form, official support/complaints mailboxes, CS KYC Vault and MT4/MT5 dealing tape":
+    "內外部來源登錄 — 含 C1 即時聊天閘道、網站 CS 表單、官方客服／投訴信箱、CS 核身庫與 MT4／MT5 成交帶",
+  "Grouped flags including cs.* (follow-up cap, wait/TR/Risk SLA, intake token, named mailboxes)":
+    "分組旗標含 cs.*（追問上限、等待／TR／風控 SLA、進件 token、具名信箱）",
+  "Technical Specification Design (EN/ZH) — §17.5–17.12 schema, intake, wait loop, /cs portal, CS/TR dashboard + log + data contract, URL catalog, FR-37…45":
+    "技術規格設計（英／繁中）— §17.5–17.12 綱要、進件、等待迴圈、/cs 入口、CS／TR 儀表板＋日誌＋資料契約、網址目錄、FR-37…45",
+  "Product Requirements (EN/ZH) — G13 + FR-37…45: /cs portal, C1/form/mailbox, wait loop, dedicated skills, CS/TR dashboard + log + data, catalog":
+    "產品需求（英／繁中）— G13＋FR-37…45：/cs 入口、C1／表單／信箱、等待迴圈、專用技能、CS／TR 儀表板＋日誌＋資料、目錄",
+  "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, desk, dashboard, log, data contract, auto-email wait loop, dedicated skills":
+    "操作手冊（英／繁中）— 左側每一頁加上 24/7 CS／TR：/cs 入口、台面、儀表板、日誌、資料契約、自動信件等待迴圈、專用技能",
+  "Risk Owner UAT pack — UAT-46…52 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault, CS/TR dashboard + log + data":
+    "風險負責人 UAT 包 — UAT-46…52 涵蓋 C1／表單／信箱、等待迴圈、專用技能、知識樹、核身庫、CS／TR 儀表板＋日誌＋資料",
+  "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, dashboard, log, data, five skills, RAG leaves, intake API)":
+    "本頁 — 全部管理／API／資料表路徑，加上 CS／TR 區段（/cs、台面、儀表板、日誌、資料、五本技能、RAG 葉、進件 API）",
+  "Control-plane overview, dummy spine, stats, CS/TR desk + dashboard + log + data + client-portal shortcuts, expandable alert tracker, home spine with stage ticket counts (Spine Log tab removed)":
+    "控制面總覽、虛擬脊柱、統計、CS／TR 台＋儀表板＋日誌＋資料＋客戶入口捷徑、可展開警報追蹤、首頁脊柱階段工單計數（已移除脊柱日誌分頁）",
+  "CS KYC Vault": "CS 核身庫",
+  "Identity-verification cases only — UID / KYC status flags, never ID-image blobs on the ticket. Holds ID_VERIFY until the client replies or CS Lead waives.":
+    "僅核身案件 — UID／KYC 狀態旗標，工單永不存證件圖。ID_VERIFY 直到客戶回覆或 CS Lead 豁免。",
+  "ID-verify holds — status flags only, no ID images": "核身暫扣 — 僅狀態旗標，無證件圖",
+  "Official mailbox support@": "官方信箱 support@",
+  "Official mailbox complaints@": "官方信箱 complaints@",
+  "Named support@ gateway — same POST /api/cs/intake as Official support mailbox.":
+    "具名 support@ 閘道 — 與官方客服信箱同一 POST /api/cs/intake。",
+  "Named complaints@ gateway for complaint-grade mail.": "具名 complaints@ 閘道，承接投訴級信件。",
+  "KYC / ID-verify status flags for CS. Never stores ID-image blobs on cs_requests.":
+    "CS 的 KYC／核身狀態旗標。永不把證件圖存進 cs_requests。",
+  "MT4/MT5 dealing tape": "MT4／MT5 成交帶",
+  "Execution reconstruct for TR — fills, slippage, rejects vs LP. CS does not read this tape.":
+    "TR 成交還原 — 成交、滑點、拒單對 LP。CS 不讀此帶。",
+  "CS 24/7 intake": "CS 24/7 進件",
+  "CS KYC vault": "CS 核身庫路徑",
+  "Feature flags & thresholds": "功能旗標與門檻",
   "Permanent CS/TR KPI dashboard on CRMP Plus — not Daily Performance":
     "CRMP Plus 上永久 CS／TR 指標看板 — 不是每日績效",
   "Permanent CS_* timeline and resolved packs on CRMP Plus — not Risk Log":

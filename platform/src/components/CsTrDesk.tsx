@@ -6,7 +6,8 @@ import { Badge, StatusBadge } from "@/components/ui";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase, t, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
-import { Headphones, Send } from "lucide-react";
+import { Headphones, Send, TableProperties } from "lucide-react";
+import type { CsOpsContract } from "@/lib/cs/ops-data";
 
 type RequestRow = {
   id: number;
@@ -21,6 +22,8 @@ type RequestRow = {
   status: string;
   ai_clarity: string;
   followup_count: number;
+  assigned_to: string | null;
+  assigned_bu: string | null;
   skill_code: string | null;
   updated_at: string;
 };
@@ -70,12 +73,14 @@ export function CsTrDesk({
   initialRequests,
   initialChannels,
   initialCatalog,
+  ops,
   staticMode = false,
   canOperate = false,
 }: {
   initialRequests: RequestRow[];
   initialChannels: Channel[];
   initialCatalog: Record<number, Pack>;
+  ops?: CsOpsContract;
   staticMode?: boolean;
   canOperate?: boolean;
 }) {
@@ -137,6 +142,22 @@ export function CsTrDesk({
   }
 
   return (
+    <div>
+      {ops ? (
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs" data-testid="cs-desk-ops">
+          <AdminLink href="/admin/cs-data" className="btn !min-h-9 text-xs inline-flex items-center gap-1">
+            <TableProperties className="h-3.5 w-3.5" aria-hidden />
+            {t("cs.data.open", locale)}
+          </AdminLink>
+          <span className="rounded-full border border-[var(--line)] px-2 py-1">
+            {t("cs.data.cap", locale)} {ops.params.followup_cap}
+          </span>
+          <span className="rounded-full border border-[var(--line)] px-2 py-1 font-mono">
+            {ops.routes.map((r) => r.route_code).join(" · ")}
+          </span>
+          <span className="rounded-full border border-[var(--line)] px-2 py-1">{ops.teams.map((x) => x.name).join(" · ")}</span>
+        </div>
+      ) : null}
     <div className="grid lg:grid-cols-[minmax(240px,320px)_minmax(0,1fr)] gap-3 sm:gap-4">
       <section className="panel p-3 flex flex-col min-h-0">
         <div className="flex items-center gap-2 mb-2">
@@ -216,6 +237,8 @@ export function CsTrDesk({
               <p className="text-xs text-[var(--muted)] mt-1">
                 {active.client_name} · {active.client_email}
                 {active.client_uid ? ` · UID ${active.client_uid}` : ""}
+                {active.assigned_bu ? ` · ${t("cs.data.buChip", locale)} ${active.assigned_bu}` : ""}
+                {active.assigned_to ? ` · ${active.assigned_to}` : ""}
               </p>
               <div className="mt-3 flex flex-wrap gap-2" data-testid="cs-actions">
                 <button type="button" className="btn" disabled={busy} onClick={() => void run("triage")}>
@@ -369,6 +392,7 @@ export function CsTrDesk({
           <div className="mt-2 text-xs bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">{statusMsg}</div>
         ) : null}
       </section>
+    </div>
     </div>
   );
 }

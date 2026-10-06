@@ -7,6 +7,7 @@ import {
   PUBLIC_CS_DESK_URL,
   PUBLIC_CS_DASHBOARD_URL,
   PUBLIC_CS_LOG_URL,
+  PUBLIC_CS_DATA_URL,
   PUBLIC_CS_PORTAL_URL,
   PUBLIC_MESSENGER_URL,
 } from "@/lib/platform-site";
@@ -28,6 +29,7 @@ export {
   PUBLIC_CS_DESK_URL,
   PUBLIC_CS_DASHBOARD_URL,
   PUBLIC_CS_LOG_URL,
+  PUBLIC_CS_DATA_URL,
   PUBLIC_CS_PORTAL_URL,
   PUBLIC_MESSENGER_URL,
 };
@@ -65,6 +67,12 @@ export const PLATFORM_URLS: UrlEntry[] = [
   },
   {
     category: "Public",
+    title: "CRMP Plus CS / TR Data",
+    path: PUBLIC_CS_DATA_URL,
+    description: "Permanent CS/TR BU, team, escalation-hop and parameter contract on CRMP Plus",
+  },
+  {
+    category: "Public",
     title: "CRMP Plus CS client portal",
     path: PUBLIC_CS_PORTAL_URL,
     description: "Permanent client door: C1 live chat, website form and official mailbox — same POST /api/cs/intake as the desk",
@@ -81,6 +89,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "CS / TR", title: "CS / TR Desk", path: "/admin/cs-desk", description: "Operator inbox: triage, auto-email follow-up, client-reply wait loop, TR handoff, risk escalate; AI stamps SKILL-CS-* / SKILL-TR-* playbooks", permission: "cs.read" },
   { category: "CS / TR", title: "CS / TR Dashboard", path: "/admin/cs-dashboard", description: "Dedicated CS/TR KPIs — totals, open/resolved, WAITING cap-3, TR and Risk, by channel/status/skill/desk; not Daily Performance", permission: "cs.read" },
   { category: "CS / TR", title: "CS / TR Log", path: "/admin/cs-log", description: "Timeline of CS_* audit plus resolved request packs; not Risk Log Analytics", permission: "cs.read" },
+  { category: "CS / TR", title: "CS / TR Data", path: "/admin/cs-data", description: "Live BU/team/POC roster, ESC-CS-24-7 / ESC-CS-KYC / ESC-TR-DEAL / ESC-CS-RISK hops, cs.* parameters, KYC vault and dealing-tape sources", permission: "cs.read" },
   { category: "CS / TR", title: "Skill: CS clarify", path: "/admin/skills/SKILL-CS-CLARIFY", description: "Dedicated SKILL.md — AI emails one missing-info question and waits for the client reply", permission: "skills.read" },
   { category: "CS / TR", title: "Skill: CS ID verify", path: "/admin/skills/SKILL-CS-ID-VERIFY", description: "Dedicated SKILL.md — ID / KYC follow-up via official mailbox; never store ID images in the request", permission: "skills.read" },
   { category: "CS / TR", title: "Skill: CS account FAQ", path: "/admin/skills/SKILL-CS-ACCOUNT-FAQ", description: "Dedicated SKILL.md — swap, margin, deposits, login; CS can auto-reply from RAG", permission: "skills.read" },
@@ -101,7 +110,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },
 
   // Home
-  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine, stats, CS/TR desk + dashboard + log + client-portal shortcuts, expandable alert tracker, home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
+  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine, stats, CS/TR desk + dashboard + log + data + client-portal shortcuts, expandable alert tracker, home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
@@ -126,8 +135,8 @@ export const PLATFORM_URLS: UrlEntry[] = [
   // Response (messenger / intervention / escalation)
   { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls; CS risk cases land here via SKILL-CS-ESCALATE-RISK", permission: "lark.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
-  { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify — includes oc_cs_c1 (C1 live chat) and oc_tr_dealing (TR dealing)", permission: "lark.read" },
-  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths × coefficients; ESC-DEFAULT catch-all plus ESC-CS-24-7, ESC-TR-DEAL, ESC-CS-RISK for CS/TR skills", permission: "escalation.read" },
+  { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify — includes oc_cs_c1 (C1 live chat), oc_cs_kyc (KYC vault) and oc_tr_dealing (TR dealing)", permission: "lark.read" },
+  { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths × coefficients; ESC-DEFAULT catch-all plus ESC-CS-24-7, ESC-CS-KYC, ESC-TR-DEAL, ESC-CS-RISK for CS/TR skills", permission: "escalation.read" },
 
   // Org
   { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System / CS / TR BUs with nested on-call teams (CS L1, TR dealing, KYC vault); editable mission / rotation", permission: "teams.read" },
@@ -138,21 +147,21 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Org API", path: "/api/org", description: "Departments + teams read; update_team for mission / on-call", permission: "teams.read" },
 
   // System
-  { category: "System", title: "Data Sources", path: "/admin/data-sources", description: "Internal/external source registry — includes C1 live-chat gateway, website CS form and official support mailbox", permission: "sources.read" },
+  { category: "System", title: "Data Sources", path: "/admin/data-sources", description: "Internal/external source registry — includes C1 live-chat gateway, website CS form, official support/complaints mailboxes, CS KYC Vault and MT4/MT5 dealing tape", permission: "sources.read" },
   { category: "System", title: "Audit Log", path: "/admin/audit", description: "Two tabs — CRMP logs (alerts/AI/skills/escalation/interventions/messenger/CS_*) and Vantage Markets Admin logs; Roll back via before-state snapshot", permission: "audit.read" },
   { category: "API", title: "Audit Rollback API", path: "/api/audit/rollback", description: "POST { audit_id } restores before-state snapshot when available (audit.read + manage)", permission: "audit.read" },
-  { category: "System", title: "Platform Settings", path: "/admin/settings", description: "Feature flags & thresholds", permission: "settings.manage" },
+  { category: "System", title: "Platform Settings", path: "/admin/settings", description: "Grouped flags including cs.* (follow-up cap, wait/TR/Risk SLA, intake token, named mailboxes)", permission: "settings.manage" },
 
   // Docs
-  { category: "Docs", title: "TSD", path: "/admin/docs/tsd", description: "Technical Specification Design (EN/ZH) — §17.5–17.11 schema, intake, wait loop, /cs portal, CS/TR dashboard + log, URL catalog, FR-37…44", permission: "admin.access" },
-  { category: "Docs", title: "PRD", path: "/admin/docs/prd", description: "Product Requirements (EN/ZH) — G13 + FR-37…44: /cs portal, C1/form/mailbox, wait loop, dedicated skills, CS/TR dashboard + log, catalog", permission: "admin.access" },
-  { category: "Docs", title: "User Guide", path: "/admin/docs/user-guide", description: "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, desk, dashboard, log, auto-email wait loop, dedicated skills", permission: "admin.access" },
-  { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack — UAT-46…51 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault, CS/TR dashboard + log", permission: "admin.access" },
+  { category: "Docs", title: "TSD", path: "/admin/docs/tsd", description: "Technical Specification Design (EN/ZH) — §17.5–17.12 schema, intake, wait loop, /cs portal, CS/TR dashboard + log + data contract, URL catalog, FR-37…45", permission: "admin.access" },
+  { category: "Docs", title: "PRD", path: "/admin/docs/prd", description: "Product Requirements (EN/ZH) — G13 + FR-37…45: /cs portal, C1/form/mailbox, wait loop, dedicated skills, CS/TR dashboard + log + data, catalog", permission: "admin.access" },
+  { category: "Docs", title: "User Guide", path: "/admin/docs/user-guide", description: "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, desk, dashboard, log, data contract, auto-email wait loop, dedicated skills", permission: "admin.access" },
+  { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack — UAT-46…52 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault, CS/TR dashboard + log + data", permission: "admin.access" },
   { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
   { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
   { category: "Docs", title: "Open Issues", path: "/admin/docs/open-issues", description: "20-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product, CS, TR) — ETA, dependencies, detailed ticks; includes C1/form/mailbox connectors and CS/TR ID vault", permission: "admin.access" },
   { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "X = open issues (columns), Y = timeline now→end-2027 (rows); status colours; responsible BU on every column", permission: "admin.access" },
-  { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, dashboard, log, five skills, RAG leaves, intake API)", permission: "admin.access" },
+  { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, dashboard, log, data, five skills, RAG leaves, intake API)", permission: "admin.access" },
 
   // APIs
   { category: "API", title: "AI API", path: "/api/ai", description: "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges" },
@@ -160,9 +169,10 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Desk selection chat", path: "/api/ai-chat", description: "POST selected text + follow-ups → grounded CRMP explanation" },
   { category: "API", title: "AI Admin API", path: "/api/ai-admin", description: "Propose/approve settings, training, feedback" },
   { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker" },
-  { category: "API", title: "CS / TR Desk API", path: "/api/cs", description: "GET inbox · GET ?view=dashboard|log · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake" },
+  { category: "API", title: "CS / TR Desk API", path: "/api/cs", description: "GET inbox · GET ?view=dashboard|log|data · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake" },
   { category: "API", title: "CS / TR Dashboard API", path: "/api/cs?view=dashboard", description: "GET CS/TR KPI payload (totals, WAITING, channel/status/skill/desk) — same auth as desk; not Daily Performance" },
   { category: "API", title: "CS / TR Log API", path: "/api/cs?view=log", description: "GET CS_* audit timeline plus resolved request packs — same auth as desk; not Risk Log" },
+  { category: "API", title: "CS / TR Data API", path: "/api/cs?view=data", description: "GET live CS/TR ops contract: BUs, teams, POCs, escalation hops, cs.* parameters, sources, Lark" },
   { category: "API", title: "CS intake webhook", path: "/api/cs/intake", description: "GET connector catalog · POST C1 live chat, web form and official-email ingest or continue (request_id / in_reply_to / channel_ref / CSR-XXXX) — session, mock_webhook, portal, or header x-cs-intake-token: demo-c1" },
   { category: "API", title: "CS intake ticket status", path: "/api/cs/intake?request_id=", description: "GET public status for one CSR-XXXX (no PII) — /cs portal and mailbox gateway poll this while the wait loop is open" },
   { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management & test notify" },

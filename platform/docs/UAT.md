@@ -9,11 +9,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **9.7 hours** (50 cases).
+- Full pack suggested window ≈ **10.1 hours** (52 cases).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; dedicated SKILL.md playbooks; AI follow-up until the client replies; TR routing) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; dedicated SKILL.md playbooks; AI follow-up until the client replies; TR routing; **dashboard, log and supporting data**) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT · ESC-CS-KYC), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings (`cs.*`), User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -77,7 +77,9 @@ graph TD
 | 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS/TR — AI emails when unclear or ID is needed, then waits | CS / TR Desk, Audit Log |
 | 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS/TR — trading cases go to TR; book-risk escalates to Risk | CS / TR Desk, Demo Messenger |
 | 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS/TR — dedicated SKILL.md playbooks stamp the desk and enrich the tree | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
-| 49 | UAT-49 | 535m | 15m | Critical | Risk Owner | UAT-01–50 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
+| 51 | UAT-51 | 535m | 12m | High | CS | UAT-46; CS/TR dashboard + log seeded | CS/TR — dedicated dashboard and log, not Daily Performance or Risk Log | CS / TR Dashboard, CS / TR Log |
+| 52 | UAT-52 | 547m | 12m | High | CS + System | UAT-46; CS/TR org + settings seeded | CS/TR — supporting data: BUs, KYC vault, hops and cs.* parameters | CS / TR Data, Platform Settings, BU and Teams, Escalation Routes |
+| 49 | UAT-49 | 559m | 15m | Critical | Risk Owner | UAT-01–52 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
 
@@ -932,9 +934,47 @@ graph TD
 **Pass:** Four seeded skills match. Chip opens playbook. Tree has CS_SERVICE / TRADING_EXEC with RAG leaves. zh-Hant present.
 **Evidence:** CS desk skill chip + Knowledge Tree CS_SERVICE fan-out + one RAG leaf.
 
+### UAT-51 — CS/TR — dedicated dashboard and log, not Daily Performance or Risk Log
+
+- **Severity:** High · **BU:** CS · **Depends:** UAT-46; CS/TR dashboard + log seeded · **Window:** T+535m / 12m
+- **Covers:** CS / TR Dashboard, CS / TR Log, Daily Performance, Risk Log Analytics
+- **Why:** If CS volume hides inside Daily Performance or Risk Log, CS Lead cannot see WAITING mail or the follow-up cap, and Risk thinks client tickets are Monitor closures.
+- **Goal:** Prove `/admin/cs-dashboard` and `/admin/cs-log` exist, show CS/TR KPIs and CS_* events, and stay separate from Daily Performance and Risk Log Analytics.
+
+**Steps**
+
+1. Open CS / TR Dashboard (`/admin/cs-dashboard`). Confirm it is not Daily Performance (no CFD/crypto spheres). KPIs include total, open, WAITING mail, TR/assigned, Escalated Risk, follow-up cap.
+2. Seeded channels C1 / form / email appear in By channel. SKILL-CS-* / SKILL-TR-* appear in By skill.
+3. Open CS / TR Log (`/admin/cs-log`). Confirm it is not Risk Log Analytics. Timeline shows CS_INTAKE and CS_FOLLOWUP_EMAIL.
+4. GET `/api/cs?view=dashboard` and GET `/api/cs?view=log` on localhost return the same payloads.
+5. Daily Performance and Risk Log Analytics must not host CS WAITING counts or CS_* timelines.
+6. Toggle 繁中: dashboard and log titles are Traditional Chinese.
+
+**Pass:** Dashboard KPIs are CS/TR-only. Log shows CS_* events. Daily Performance and Risk Log stay separate. zh-Hant chrome present.
+**Evidence:** Screenshot of CS/TR dashboard KPIs + CS/TR log timeline.
+
+### UAT-52 — CS/TR — supporting data: BUs, KYC vault, hops and cs.* parameters
+
+- **Severity:** High · **BU:** CS + System · **Depends:** UAT-46; CS/TR org + settings seeded · **Window:** T+547m / 12m
+- **Covers:** CS / TR Data, Platform Settings, BU and Teams, Escalation Routes, Data Sources, Lark Integration
+- **Why:** If the desk claims a KYC vault and four hops but those records are missing, operators cannot staff ID-verify, and dashboard cap/SLA drift from Settings.
+- **Goal:** Prove `/admin/cs-data`, `GET /api/cs?view=data`, CS KYC Vault, `ESC-CS-KYC` and the `cs.*` settings group exist and match what the desk already reads.
+
+**Steps**
+
+1. Open CS / TR Data (`/admin/cs-data`). CUSTOMER_SERVICE and TRADING BUs appear. Teams include CS 24/7 Desk, CS KYC Vault and TR Dealing Support with named POCs.
+2. Escalation hops list `ESC-CS-24-7`, `ESC-CS-KYC`, `ESC-TR-DEAL` and `ESC-CS-RISK`. `SKILL-CS-ID-VERIFY` binds `ESC-CS-KYC`.
+3. KPIs show follow-up cap (default 3), wait / KYC / TR / Risk SLAs, intake token, support@ and complaints@. Sources include CS KYC Vault (flags only) and MT4/MT5 dealing tape.
+4. Jump to Platform Settings `#settings-cs` — group CS / TR operations lists `cs.followup_cap`. Jump to BU and Teams — CS KYC Vault is nested under Customer Service.
+5. GET `/api/cs?view=data` on localhost returns the same contract. URL Catalog lists `/admin/cs-data`.
+6. Toggle 繁中: page title CS／TR 資料; team CS 核身庫.
+
+**Pass:** cs-data shows both BUs, CS KYC Vault, four hops including ESC-CS-KYC, and cs.* values that match Settings. GET ?view=data agrees. zh-Hant chrome present.
+**Evidence:** Screenshot of `/admin/cs-data` BUs + hops + cs.* KPIs, plus Settings CS/TR group.
+
 ### UAT-49 — Risk Owner exit sign-off
 
-- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–50 results recorded · **Window:** T+535m / 15m
+- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–52 results recorded · **Window:** T+559m / 15m
 - **Covers:** UAT Checklist, Audit Log
 - **Why:** UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.
 - **Goal:** Tally Critical/High results against the exit rules and file a signed decision.
@@ -943,7 +983,7 @@ graph TD
 
 1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in, CS/TR follow-up loop). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
-3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), CS/TR intake + follow-up (UAT-46, UAT-47), and CS/TR dedicated skills + tree (UAT-50) passed.
+3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), CS/TR intake + follow-up (UAT-46, UAT-47), CS/TR dedicated skills + tree (UAT-50), CS/TR dashboard + log (UAT-51), and CS/TR supporting data (UAT-52) passed.
 4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 

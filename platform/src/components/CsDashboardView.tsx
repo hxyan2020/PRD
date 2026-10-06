@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Headphones, ScrollText } from "lucide-react";
+import { Headphones, ScrollText, TableProperties } from "lucide-react";
 import { Badge, StatCard, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
 import type { CsCountBucket, CsDashboard, CsDashRow } from "@/lib/cs/analytics";
+import type { CsOpsContract } from "@/lib/cs/ops-data";
 
 function BucketList({ rows, empty }: { rows: CsCountBucket[]; empty: string }) {
   if (!rows.length) return <p className="text-sm text-[var(--muted)]">{empty}</p>;
@@ -74,7 +75,7 @@ function RequestTable({ rows, empty }: { rows: CsDashRow[]; empty: string }) {
   );
 }
 
-export function CsDashboardView({ data }: { data: CsDashboard }) {
+export function CsDashboardView({ data, ops }: { data: CsDashboard; ops?: CsOpsContract }) {
   const { t } = useT();
   const s = data.summary;
   return (
@@ -91,7 +92,31 @@ export function CsDashboardView({ data }: { data: CsDashboard }) {
           <ScrollText className="mr-1 h-4 w-4" aria-hidden />
           {t("cs.log.open")}
         </Link>
+        <Link className="btn" href="/admin/cs-data">
+          <TableProperties className="mr-1 h-4 w-4" aria-hidden />
+          {t("cs.data.open")}
+        </Link>
       </div>
+      {ops ? (
+        <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4" data-testid="cs-dash-ops">
+          <div className="panel p-3 text-sm">
+            <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.cap")}</div>
+            <div className="font-semibold tabular-nums">{ops.params.followup_cap}</div>
+          </div>
+          <div className="panel p-3 text-sm">
+            <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.teams")}</div>
+            <div className="font-semibold">{ops.teams.map((x) => x.name).join(" · ")}</div>
+          </div>
+          <div className="panel p-3 text-sm">
+            <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.routes")}</div>
+            <div className="font-mono text-xs">{ops.routes.map((r) => r.route_code).join(" · ")}</div>
+          </div>
+          <div className="panel p-3 text-sm">
+            <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.mailboxes")}</div>
+            <div className="font-mono text-xs break-all">{ops.params.mailbox_support}</div>
+          </div>
+        </div>
+      ) : null}
       <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
         <StatCard label={t("cs.dash.total")} value={s.total} hint={t("cs.dash.totalHint")} />
         <StatCard label={t("cs.dash.openCount")} value={s.open} href="/admin/cs-desk" />
