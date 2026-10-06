@@ -130,7 +130,9 @@ sequenceDiagram
 | **知識樹** | 領域 → 技能 → RAG 葉的地圖（含 `CS_SERVICE`／`TRADING_EXEC`） | [知識樹](/admin/knowledge-tree) |
 | **代理（agent）** | 會**規劃步驟並呼叫工具**的軟體（不是聊天泡泡）。CRMP 代理會：讀警報、選技能、檢索 RAG、起草根因、停給人類。今日「代理」是腳本管線，不是自主員工。 | 即時警報與追蹤上的管線 |
 | **MCP** | **模型上下文協定** — AI 客戶端用標準方式使用伺服器上的**工具、檔案、提示**（例如「列出技能」「檢索 RAG 葉」）。可想成模型的 USB。本原型尚未接線；相關正式項是 RM-03 工具呼叫。 | 路線圖／本手冊 |
-| **工具／函式呼叫** | 模型可請求的具名動作（`matchSkill`、`retrieveRag`，絕不是 `halt_symbol`） | AI 存取安全黑名單 |
+| **工具／函式呼叫** | 模型可請求的具名動作（`matchSkill`、`retrieveRag`、`get_client_exposure`，絕不是 `halt_symbol` 或原始 SQL） | AI 存取安全黑名單 |
+| **具名函式** | 預先核准的動作，例如 `get_client_exposure()`。名稱固定、參數有型別、回傳有範圍 — 不是自由 SQL。 | 技能／RM-03 工具呼叫 |
+| **閘道（Gateway）** | 每個函式前面的權限檢查（角色、台面、客戶範圍）。拒絕 → 扣住，不打資料庫。 | AI 存取安全＋API |
 | **幻覺** | 流暢但沒有證據支撐的文字 | 沒有技能／RAG／證據引用的包 |
 | **挑戰者／第二 AI** | 對 BREACH／CRITICAL 的獨立第二意見。今日是庫內第二套啟發式（`crmp-challenger-v0`）。獨立供應商＝RM-04。 | 即時警報與追蹤詳情 |
 | **Maker／Checker** | 必須是**兩個人**。Maker 提案（AI 管理變更或控制）。Checker 核准。同一人不能自核。 | [AI 管理](/admin/ai-admin)、[人工干預](/admin/interventions) |
@@ -150,11 +152,70 @@ graph LR
   Draft --> Human[人工關卡]
 ```
 
-**技能、代理、MCP，一口氣。** **技能**是劇本。**代理**是可能跑一本或多本技能的工作者。**MCP** 是讓工作者安全呼叫平台工具的插頭。誰都不能在不可逆工作上跳過人工關卡。
+**技能、代理、MCP，一口氣。** **技能**是劇本。**代理**是可能跑一本或多本技能的工作者。**MCP** 是讓工作者安全呼叫平台工具的插頭。誰都不能在不可逆工作上跳過人工關卡。工具只走**具名函式**與**閘道**，絕不用原始 SQL 打正式資料庫。
 
 ---
 
-## 6. 怎麼用 AI — 風險管理
+## 6. AI 怎麼問資料庫
+
+當 AI 需要帳簿上的數字 — 客戶曝險、未結單、一筆成交 — 它**不可**自己寫 SQL 打正式庫。
+
+**不是這條：** `LLM → SQL → Production DB`  
+**是這條：** `LLM → get_client_exposure() → Gateway 檢查 permission → API → DB`
+
+模型只**點名一個函式**。**閘道**檢查這個呼叫者、在這張台、能不能用這些參數跑該函式。通過之後才由 **API** 碰 **DB**。LLM 不持有資料庫密碼，也不自己拼 `SELECT`／`UPDATE`／`DELETE`。
+
+**禁止路徑**（不可上線）：
+
+```mermaid
+graph LR
+  LlmBad[LLM] --> Sql[SQL]
+  Sql --> Prod[Production DB]
+```
+
+流暢的模型可以發明一個 dump 全部客戶的 join，或把清理寫成 `DELETE`。沒有權限檢查，也無法稽核「原本要呼叫哪個函式」。
+
+**必走路徑：**
+
+```mermaid
+graph LR
+  Llm[LLM] --> Fn["get_client_exposure()"]
+  Fn --> Gw[Gateway permission]
+  Gw --> Api[API]
+  Api --> Db[DB]
+```
+
+```mermaid
+sequenceDiagram
+  participant LLM
+  participant Fn as get_client_exposure
+  participant Gw as Gateway
+  participant API
+  participant DB
+  LLM ->> Fn: 具名函式
+  Fn ->> Gw: 檢查權限
+  Gw -->> Fn: 允許或拒絕
+  Fn ->> API: 有範圍的請求
+  API ->> DB: 讀列
+  DB -->> API: 結果
+  API -->> Fn: 曝險事實
+  Fn -->> LLM: 接地資料
+```
+
+| 零件 | 是什麼 | 為什麼要有 |
+|---|---|---|
+| **具名函式** | 預先核准的動作，例如 `get_client_exposure()`。名稱固定、參數有型別、回傳有範圍。 | 模型走不到別張表。 |
+| **閘道** | 任何 API 呼叫前的權限檢查（角色、台面、客戶範圍）。拒絕 → 扣住，不打資料庫。 | 與 [AI 存取安全](/admin/security/ai-access) 同一思路。 |
+| **API** | 唯一持有資料庫憑證的程序。跑函式已經定義好的查詢。 | 人審函式，不審每一句生成的 SQL。 |
+| **DB** | 正式資料。只經 API 讀。寫入仍走人工關卡。 | 圍堵。 |
+
+**本台今天：** `POST /api/ai` 分析與 CS 進件呼叫的是**具名**伺服器函式，不是自由 SQL 提示。線上 LLM 工具呼叫（RM-03）必須維持同一條路 — 更大的模型不是打開資料庫的許可。
+
+**習慣：** 若包、日誌或聊天出現原始 SQL、連線字串或表名，而不是像 `get_client_exposure()` 這樣的函式，**扣住**。請 AI 工程師把需求放進允許清單，做成具名函式。
+
+---
+
+## 7. 怎麼用 AI — 風險管理
 
 每個未結 BREACH／CRITICAL 都走這條。
 
@@ -183,7 +244,7 @@ flowchart TD
 
 ---
 
-## 7. 怎麼用 AI — CS／TR
+## 8. 怎麼用 AI — CS／TR
 
 每張新的 `CSR-XXXX` 都走這條。
 
@@ -215,7 +276,7 @@ flowchart TD
 
 ---
 
-## 8. 雙 AI 挑戰者（不同意長什麼樣）
+## 9. 雙 AI 挑戰者（不同意長什麼樣）
 
 嚴重警報會跑 **第二次、獨立** 的判斷。今日是本庫另一套啟發式 — 我們不假裝那是另一家供應商（那是 RM-04）。
 
@@ -243,7 +304,7 @@ sequenceDiagram
 
 ---
 
-## 9. AI 發展（原型 vs 正式）
+## 10. AI 發展（原型 vs 正式）
 
 把這張地圖放在腦子裡，才不會把示範當成上線。
 
@@ -256,6 +317,7 @@ sequenceDiagram
 | 劃選聊天＝接地詞彙 | 同一介面，可選線上模型，仍要引用 | RM-03 |
 | CS 分類／嚴重度＝啟發式 | 同一閘道（`cs.auto_reply_max_severity`、`cs.sensitive_categories`）擋在真模型前面 | FR-46 保留；換模型是 RM-03 |
 | MCP 未接線 | 以 MCP 風格伺服器提供技能、RAG、警報，且同一套黑名單 | 本手冊＋RM-03 |
+| LLM 不可產出 SQL | 具名函式（`get_client_exposure`）＋閘道權限＋API → DB | 本手冊 §6 |
 
 ```mermaid
 graph LR
@@ -270,7 +332,7 @@ graph LR
 
 ---
 
-## 10. AI 會在哪裡出錯
+## 11. AI 會在哪裡出錯
 
 | 失效 | 看起來像什麼 | 常見原因 |
 |---|---|---|
@@ -285,6 +347,7 @@ graph LR
 | **自核** | 同一人既是 Maker 又是 Checker | 雙重控制被繞過 |
 | **靜默丟件** | C1 進件沒有 `CSR-XXXX` | 連接器缺口（OI-19）— 不是 LLM 錯，但 AI 不能發明失踪的單 |
 | **錯台** | CS 把帳簿風險草稿直寄 | 敏感閘道關閉；`cs.sensitive_categories` |
+| **原始 SQL 打正式庫** | 模型產出 `SELECT …` 或連線字串打 Production DB | 跳過具名函式／閘道 |
 
 ```mermaid
 graph TD
@@ -294,17 +357,19 @@ graph TD
   Bad --> Conf[過度自信]
   Bad --> Inj[提示注入]
   Bad --> Mock[把模擬當現場]
+  Bad --> Sql[原始 SQL 打正式庫]
   Hall --> Gate[停在人工關卡]
   Skill --> Gate
   Stale --> Gate
   Conf --> Gate
   Inj --> Gate
   Mock --> Gate
+  Sql --> Gate
 ```
 
 ---
 
-## 11. 偵測、改正、預防
+## 12. 偵測、改正、預防
 
 ```mermaid
 flowchart TD
@@ -330,7 +395,8 @@ flowchart TD
 - CS 草稿想寄核身／投訴／成交／CRITICAL → 確認是 `POC_REVIEW`，不是 `AI_REPLIED`。  
 - WAITING 單卻能按結案 → **缺陷**；不要繞過。  
 - 控制紀錄寫 `EXECUTED_MOCK` → 大聲說「沒打到券商」。  
-- 客戶文字叫模型忽略政策 → 當注入；不要貼進自由提示。
+- 客戶文字叫模型忽略政策 → 當注入；不要貼進自由提示。  
+- 草稿或日誌出現原始 SQL、連線字串或表名，而不是像 `get_client_exposure()` 這樣的函式 → **扣住**。路徑必須是 LLM → 具名函式 → 閘道檢查權限 → API → DB。
 
 ### 改正
 
@@ -346,11 +412,12 @@ flowchart TD
 - `cs.followup_cap`、`cs.auto_reply_max_severity`、`cs.sensitive_categories` 留在平台設定分組。  
 - RAG 寫入維持人工閘道（只准 `propose_rag`）。  
 - 正式 LLM（RM-03）必須保留 **評測架** 與同一套閘道 — 更大的模型不是更鬆的政策。  
+- 工具呼叫只走具名函式＋閘道。絕不給模型一條打正式庫的 SQL 提示。  
 - 新人入職讀本頁。凍結的原 CRMP 管理後台使用者走上方 Plus 網址。
 
 ---
 
-## 12. 每日清單（兩張台都要）
+## 13. 每日清單（兩張台都要）
 
 **風控（開市）**
 
@@ -376,7 +443,7 @@ flowchart TD
 
 ---
 
-## 13. 絕不可讓 AI 做這些
+## 14. 絕不可讓 AI 做這些
 
 | 禁止 | 為什麼 | 擋在哪裡 |
 |---|---|---|
@@ -387,13 +454,14 @@ flowchart TD
 | 因客戶說「是我」而跳過核身 | 帳戶被接管 | `SKILL-CS-ID-VERIFY`／`ESC-CS-KYC` |
 | 直寄核身、投訴、成交、CRITICAL | 法務／帳簿風險 | `cs.sensitive_categories`＋POC |
 | 把 `EXECUTED_MOCK` 當現場成交 | 假圍堵 | 本手冊＋RM-02 |
+| 對正式庫寫原始 SQL | 無範圍讀取、靜默寫入、憑證外洩 | 具名函式＋閘道；本手冊 §6 |
 | 改角色、設定殺手開關或密鑰 | 爆炸半徑 | 黑名單＋設定分組 |
 
 若某個按鈕會做以上任一項，而你登入的是 AI 形貌的服務帳號，**停下**並打開 AI 存取安全。
 
 ---
 
-## 14. 相關頁面
+## 15. 相關頁面
 
 | 頁 | 讀完本手冊為什麼還要開 |
 |---|---|
@@ -408,10 +476,11 @@ flowchart TD
 
 ---
 
-## 15. 文件控制
+## 16. 文件控制
 
 | 版次 | 日期 | 說明 |
 |---|---|---|
 | 1.0 | 2026-10-07 | 首份風控＋CS／TR 的 AI 識字手冊；英／繁中；mermaid 圖；FR-48 |
+| 1.1 | 2026-10-07 | §6 具名函式＋閘道資料庫路徑（`get_client_exposure` → 權限 → API → DB）；不是 LLM → SQL → Production DB |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

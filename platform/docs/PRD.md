@@ -312,7 +312,7 @@ graph TD
 | FR-45 | CS/TR supporting data | Seeded and surfaced: CUSTOMER_SERVICE / TRADING BUs; teams CS 24/7 Desk, **CS KYC Vault**, TR Dealing Support; named POCs; hops `ESC-CS-24-7` / `ESC-CS-KYC` / `ESC-TR-DEAL` / `ESC-CS-RISK`; `cs.*` parameters (cap, SLA, intake token, mailboxes, Lark ids); C1/form/mailbox + KYC vault + dealing-tape sources. Page `/admin/cs-data`, `GET /api/cs?view=data`. UAT-52. |
 | FR-46 | Categorize, severity, AI solution, auto vs POC | After collected facts: category + LOW\|MEDIUM\|HIGH\|CRITICAL; heuristic solution + client draft; auto-reply when sensitivity `auto` (`AI_REPLIED`); otherwise named POC adds detail before send (`POC_REVIEW`). Gates: `cs.auto_reply_max_severity`, `cs.sensitive_categories`. CRITICAL / book-risk still escalate. Prototype — no live LLM. UAT-53. |
 | FR-47 | Lark messenger alert + escalation cards | Monitor alerts and CS/TR risk hops post mock interactive cards on `/admin/lark`. Ack / Escalate / Dismiss / Close call the same CRMP APIs as Demo Messenger. Cards route by matched `lark_chat_id` / ESC-DEFAULT. Production webhooks remain FR-17 / RM-01. UAT-36. |
-| FR-48 | AI Use Manual for Risk and CS/TR | Bilingual literacy handbook at `/admin/docs/ai-use` (CRMP-AIU-001): AI basics, how this desk uses AI, LLM explanation, terms (agent, skill, MCP, RAG, hallucination, challenger, maker/checker), failure modes, detect / correct / prevent, mermaid visuals. UAT-17. |
+| FR-48 | AI Use Manual for Risk and CS/TR | Bilingual literacy handbook at `/admin/docs/ai-use` (CRMP-AIU-001): AI basics, how this desk uses AI, LLM explanation, terms (agent, skill, MCP, RAG, hallucination, challenger, maker/checker, named function, gateway), named-function DB path (`get_client_exposure()` → Gateway permission → API → DB, not LLM → SQL → Production DB), failure modes, detect / correct / prevent, mermaid visuals. UAT-17. |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -358,7 +358,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Platform | Audit Log | `/admin/audit` | CRMP vs Vantage Markets Admin planes | Two tabs; Roll back via before-state snapshot |
 | Platform | Platform Settings | `/admin/settings` | Flags | Grouped keys including **cs.***; save |
 | Docs | User Guide | `/admin/docs/user-guide` | How to operate | EN + zh-Hant; every screen plus §9.3 CS/TR |
-| Docs | AI Use Manual | `/admin/docs/ai-use` | AI literacy for Risk + CS/TR | EN + zh-Hant; LLM / skill / agent / MCP; detect / correct / prevent; mermaid; FR-48 |
+| Docs | AI Use Manual | `/admin/docs/ai-use` | AI literacy for Risk + CS/TR | EN + zh-Hant; LLM / skill / agent / MCP; named function + gateway DB path; detect / correct / prevent; mermaid; FR-48 |
 | Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document (FR-37…46, G13, §5.7–5.10, §6.5) |
 | Docs | TSD | `/admin/docs/tsd` | How built | Surface map complete |
 | Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 52 cases, interactive (UAT-46…53 CS/TR; catalogue v2.7) |
@@ -573,6 +573,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-53). The pack
 | 2.6 | 2026-10-06 | FR-46 categorize / severity / AI solution; auto-reply vs named POC addendum; journey 5.10; UAT-53 |
 | 2.7 | 2026-10-07 | FR-47 Lark messenger alert + escalation cards; UAT-36 Ack/Escalate on `/admin/lark` |
 | 2.8 | 2026-10-07 | FR-48 AI Use Manual `/admin/docs/ai-use` (Risk + CS/TR literacy, mermaid, EN/zh-Hant); UAT-17 |
+| 2.9 | 2026-10-07 | FR-48: named-function + gateway DB path (`get_client_exposure` → Gateway permission → API → DB) |
 | 2.7 | 2026-10-07 | FR-14 CS/TR desk list→thread + dashboard/log/data cards at 390px; UAT-18 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

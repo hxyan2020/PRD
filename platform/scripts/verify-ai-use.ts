@@ -44,6 +44,9 @@ const both = [
   "/PRD/crmp-plus/",
   "/PRD/crmp-admin/",
   "```mermaid",
+  "get_client_exposure",
+  "Gateway",
+  "Production DB",
 ];
 for (const needle of both) {
   assert(en.includes(needle), `EN missing ${needle}`);
@@ -54,19 +57,27 @@ assert(zh.includes("挑戰者"), "zh challenger");
 assert(zh.includes("代理"), "zh agent");
 assert(zh.includes("技能"), "zh skill");
 assert(zh.includes("模型上下文協定") || zh.includes("MCP"), "zh MCP");
-assert(en.includes("## 6. How to use AI — Risk Management"), "EN risk how-to");
-assert(zh.includes("## 6. 怎麼用 AI — 風險管理"), "zh risk how-to");
-assert(en.includes("## 7. How to use AI — CS / TR"), "EN CS how-to");
-assert(zh.includes("## 7. 怎麼用 AI — CS／TR"), "zh CS how-to");
-assert(en.includes("## 10. Where AI goes wrong"), "EN failure modes");
-assert(zh.includes("## 10. AI 會在哪裡出錯"), "zh failure modes");
-assert(en.includes("## 11. Detect, correct, prevent"), "EN detect");
-assert(zh.includes("## 11. 偵測、改正、預防"), "zh detect");
-assert((en.match(/```mermaid/g) || []).length >= 8, "EN mermaid count");
-assert((zh.match(/```mermaid/g) || []).length >= 8, "zh mermaid count");
+assert(zh.includes("具名函式"), "zh named function");
+assert(zh.includes("閘道"), "zh gateway");
+assert(en.includes("LLM → SQL → Production DB"), "EN forbidden SQL path");
+assert(zh.includes("LLM → SQL → Production DB"), "zh forbidden SQL path");
+assert(en.includes("Gateway checks permission"), "EN gateway permission path");
+assert(zh.includes("Gateway 檢查 permission"), "zh gateway permission path");
+assert(en.includes("## 6. How AI talks to the database"), "EN DB gateway how-to");
+assert(zh.includes("## 6. AI 怎麼問資料庫"), "zh DB gateway how-to");
+assert(en.includes("## 7. How to use AI — Risk Management"), "EN risk how-to");
+assert(zh.includes("## 7. 怎麼用 AI — 風險管理"), "zh risk how-to");
+assert(en.includes("## 8. How to use AI — CS / TR"), "EN CS how-to");
+assert(zh.includes("## 8. 怎麼用 AI — CS／TR"), "zh CS how-to");
+assert(en.includes("## 11. Where AI goes wrong"), "EN failure modes");
+assert(zh.includes("## 11. AI 會在哪裡出錯"), "zh failure modes");
+assert(en.includes("## 12. Detect, correct, prevent"), "EN detect");
+assert(zh.includes("## 12. 偵測、改正、預防"), "zh detect");
+assert((en.match(/```mermaid/g) || []).length >= 11, "EN mermaid count");
+assert((zh.match(/```mermaid/g) || []).length >= 11, "zh mermaid count");
 
 const mermaidBlocks = [...en.matchAll(/```mermaid\n([\s\S]*?)```/g)].map((m) => m[1]);
-assert(mermaidBlocks.length >= 8, "parsed EN mermaid");
+assert(mermaidBlocks.length >= 11, "parsed EN mermaid");
 for (const [i, src] of mermaidBlocks.entries()) {
   const html = mermaidToHtml(src);
   assert(html.includes("<svg"), `EN mermaid ${i} renders svg`);
@@ -137,8 +148,8 @@ const docs: [string, string[]][] = [
   ["docs/OPEN_ISSUES.zh-Hant.md", ["CRMP-AIU-001", "AI 使用手冊"]],
   ["docs/PROGRESS.md", ["CRMP-AIU-001"]],
   ["docs/PROGRESS.zh-Hant.md", ["CRMP-AIU-001"]],
-  ["docs/CHANGELOG.md", ["2026-10-07T02:00:00.000Z"]],
-  ["docs/CHANGELOG.zh-Hant.md", ["2026-10-07T02:00:00.000Z"]],
+  ["docs/CHANGELOG.md", ["2026-10-07T03:00:00.000Z"]],
+  ["docs/CHANGELOG.zh-Hant.md", ["2026-10-07T03:00:00.000Z"]],
 ];
 for (const [file, needles] of docs) {
   const body = read(file);
@@ -148,7 +159,7 @@ for (const [file, needles] of docs) {
 }
 
 const stamp = read("src/lib/build-stamp.ts");
-assert(stamp.includes("2026-10-07T02:00:00.000Z"), "FINISHED_AT 02:00");
+assert(stamp.includes("2026-10-07T03:00:00.000Z"), "FINISHED_AT 03:00");
 
 const pkg = read("package.json");
 assert(pkg.includes("test:ai-use"), "package.json test:ai-use");

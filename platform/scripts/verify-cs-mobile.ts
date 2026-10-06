@@ -112,7 +112,7 @@ for (const [file, needles] of docs) {
 }
 
 const stamp = read("src/lib/build-stamp.ts");
-assert(stamp.includes("2026-10-07T02:00:00.000Z"), "FINISHED_AT 02:00");
+assert(stamp.includes("2026-10-07T03:00:00.000Z"), "FINISHED_AT 03:00");
 
 console.log("verify-cs-mobile: ok");
 console.log(

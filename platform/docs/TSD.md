@@ -859,7 +859,7 @@ Match order for continuation: `request_id` → `in_reply_to` → live `channel_r
 |---|---|
 | PRD | G13, FR-37, FR-40, FR-41, FR-42, FR-43, FR-44, FR-45, FR-46, journeys 5.7–5.10, §6.5 |
 | User Guide | §9.3 portal / connectors / wait loop / daily roles / dashboard / log / data / analyze |
-| AI Use Manual | CRMP-AIU-001 `/admin/docs/ai-use` literacy for Risk + CS/TR (LLM, skill, agent, MCP, detect/correct/prevent) |
+| AI Use Manual | CRMP-AIU-001 `/admin/docs/ai-use` literacy for Risk + CS/TR (LLM, skill, agent, MCP, named function + gateway DB path, detect/correct/prevent) |
 | UAT | UAT catalogue v2.7: UAT-25 catalog; UAT-46 connectors; UAT-47 wait loop; UAT-48 TR/Risk; UAT-50 skills + tree; UAT-51 dashboard + log; UAT-52 supporting data; UAT-53 analyze / POC; support UAT-17/22/27–29/36–40; sign-off UAT-49 |
 
 ### 17.11 Dedicated dashboard + log

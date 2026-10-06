@@ -849,7 +849,7 @@ graph LR
 | 頁 | 路徑 | 這是什麼 |
 |---|---|---|
 | 使用手冊 | `/admin/docs/user-guide` | 本手冊 |
-| AI 使用手冊 | `/admin/docs/ai-use` | 給**風險管理與 CS／TR** 的 AI 識字：基礎、本台怎麼用、LLM 說明、詞彙（代理、技能、MCP、RAG、幻覺、挑戰者、Maker／Checker）、哪裡會錯、偵測／改正／預防。含 mermaid 圖。英／繁中。凍結的原 CRMP 管理後台操作人員請用 Plus 網址。 |
+| AI 使用手冊 | `/admin/docs/ai-use` | 給**風險管理與 CS／TR** 的 AI 識字：基礎、本台怎麼用、LLM 說明、詞彙（代理、技能、MCP、RAG、幻覺、挑戰者、Maker／Checker、具名函式、閘道）、AI 怎麼問資料庫（`get_client_exposure()` → 閘道檢查權限 → API → DB，絕不是 LLM → SQL → Production DB）、哪裡會錯、偵測／改正／預防。含 mermaid 圖。英／繁中。凍結的原 CRMP 管理後台操作人員請用 Plus 網址。 |
 | PRD | `/admin/docs/prd` | 我們在做什麼、為什麼、怎麼算過關 |
 | TSD | `/admin/docs/tsd` | 怎麼做的（架構、API、資料模型） |
 | UAT 清單 | `/admin/docs/uat` | 互動式 52 案簽核（UAT-01 … UAT-53，跳過 UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋。**CS／TR 目錄 v2.7：** UAT-25 目錄、UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹、UAT-51 儀表板＋日誌、UAT-52 BU／關卡／`cs.*`、UAT-53 分類／嚴重度／直回 vs POC，另有支援案 UAT-17／22／27–29／36–40 |
@@ -933,5 +933,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 2.6 | 2026-10-07 | §2.4 手機：CS／TR 台列表→案件、儀表板／日誌／資料卡片、`／cs` 分頁直向；UAT-18 |
 | 2.7 | 2026-10-07 | §9.4 Lark 即時通訊卡片：警報＋升級的確認／升級／排除／結案（UAT-36、FR-47） |
 | 2.8 | 2026-10-07 | §12 AI 使用手冊（`/admin/docs/ai-use`，CRMP-AIU-001）給風控＋CS／TR；FR-48 |
+| 2.9 | 2026-10-07 | AI 使用手冊 §6 具名函式＋閘道資料庫路徑（`get_client_exposure`） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

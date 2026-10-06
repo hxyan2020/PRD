@@ -430,7 +430,7 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 
 1. Open User Guide. Use the English / 繁體中文 buttons on the article (and the left-pane EN / 繁中 if you want chrome translated too).
 2. In the User Guide, open §9.3 CS/TR door. Confirm desk, /cs portal, dashboard, log, data, wait loop and skills are described in both languages.
-3. Open AI Use Manual (`/admin/docs/ai-use`). Confirm Risk + CS/TR sections, glossary (agent, skill, MCP, hallucination) and mermaid diagrams switch language — not only the title.
+3. Open AI Use Manual (`/admin/docs/ai-use`). Confirm Risk + CS/TR sections, glossary (agent, skill, MCP, hallucination, named function, gateway), the get_client_exposure mermaid (not LLM → SQL → Production DB), and diagrams switch language — not only the title.
 4. Repeat for PRD (§6.5 / FR-37…48), TSD (§17), Ecosystem Eval, and this UAT page — including the CS/TR feature catalogue table above the case list.
 5. Body text must actually switch — not only the page title. A missing-file stub fails the case.
 

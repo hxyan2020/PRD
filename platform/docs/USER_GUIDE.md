@@ -850,7 +850,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | Page | Path | What it is |
 |---|---|---|
 | User Guide | `/admin/docs/user-guide` | This handbook |
-| AI Use Manual | `/admin/docs/ai-use` | AI literacy for **Risk Management and CS/TR**: basics, how to use AI on this desk, LLM explanation, terms (agent, skill, MCP, RAG, hallucination, challenger, maker/checker), where AI goes wrong, detect / correct / prevent. Mermaid diagrams. EN / 繁中. Frozen original CRMP Admin operators use the Plus URL. |
+| AI Use Manual | `/admin/docs/ai-use` | AI literacy for **Risk Management and CS/TR**: basics, how to use AI on this desk, LLM explanation, terms (agent, skill, MCP, RAG, hallucination, challenger, maker/checker, named function, gateway), how AI talks to the database (`get_client_exposure()` → Gateway permission → API → DB, never LLM → SQL → Production DB), where AI goes wrong, detect / correct / prevent. Mermaid diagrams. EN / 繁中. Frozen original CRMP Admin operators use the Plus URL. |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
 | UAT Checklist | `/admin/docs/uat` | Interactive 52-case sign-off (UAT-01 … UAT-53, skip UAT-45): why, steps, pass, evidence, screen coverage. **CS/TR catalogue v2.7:** UAT-25 catalog, UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log, UAT-52 BU / hops / `cs.*`, UAT-53 categorize / severity / auto vs POC, plus support UAT-17/22/27–29/36–40 |
@@ -934,5 +934,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 2.6 | 2026-10-07 | §2.4 phones: CS/TR desk list→thread, dashboard/log/data cards, `/cs` stacked tabs; UAT-18 |
 | 2.7 | 2026-10-07 | §9.4 Lark messenger cards: alert + escalate Ack/Escalate/Dismiss/Close (UAT-36, FR-47) |
 | 2.8 | 2026-10-07 | §12 AI Use Manual (`/admin/docs/ai-use`, CRMP-AIU-001) for Risk + CS/TR; FR-48 |
+| 2.9 | 2026-10-07 | AI Use Manual §6 named-function + gateway DB path (`get_client_exposure`) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

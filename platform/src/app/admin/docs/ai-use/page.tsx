@@ -37,8 +37,8 @@ export default async function AiUseManualPage({ searchParams }: { searchParams: 
         </div>
         <p className="text-sm text-[var(--muted)]">
           {zh
-            ? "給風險管理與 CS／TR 操作人員：AI 是什麼、本台怎麼用、LLM／技能／代理／MCP 等詞、哪裡會錯、怎麼偵測改正預防。圖解可切英／繁。"
-            : "For Risk Management and CS/TR operators: what AI is, how this desk uses it, LLM / skill / agent / MCP terms, where it goes wrong, and how to detect, correct and prevent. Diagrams switch with EN / 繁中."}
+            ? "給風險管理與 CS／TR 操作人員：AI 是什麼、本台怎麼用、LLM／技能／代理／MCP 等詞、具名函式加閘道問資料庫、哪裡會錯、怎麼偵測改正預防。圖解可切英／繁。"
+            : "For Risk Management and CS/TR operators: what AI is, how this desk uses it, LLM / skill / agent / MCP terms, named functions plus a permission gateway to the database, where it goes wrong, and how to detect, correct and prevent. Diagrams switch with EN / 繁中."}
         </p>
         <div className="action-row">
           {quick.map((q) => (

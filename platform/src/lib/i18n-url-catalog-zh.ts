@@ -130,8 +130,8 @@ export const URL_CATALOG_ZH: Record<string, string> = {
   "POST { audit_id } restores before-state snapshot when available (audit.read + manage)":
     "POST { audit_id } 在有快照時還原變更前狀態（audit.read＋manage）",
   "RM-01…15 cards: today / build / done-when / skip risk": "RM-01…15 卡片：今日／要做／完成標準／不做風險",
-  "AI literacy for Risk and CS/TR (EN/ZH) — LLM, skills, agents, MCP, where AI goes wrong, detect / correct / prevent, mermaid visuals":
-    "給風控與 CS／TR 的 AI 識字（英／繁）— LLM、技能、代理、MCP、AI 會錯的地方、偵測／改正／預防、mermaid 圖",
+  "AI literacy for Risk and CS/TR (EN/ZH) — LLM, skills, agents, MCP, named function get_client_exposure plus gateway permission then API then DB (not LLM to SQL to Production DB), where AI goes wrong, detect / correct / prevent, mermaid visuals":
+    "給風控與 CS／TR 的 AI 識字（英／繁）— LLM、技能、代理、MCP、具名函式 get_client_exposure 加閘道權限再 API 再 DB（不是 LLM 寫 SQL 打正式庫）、AI 會錯的地方、偵測／改正／預防、mermaid 圖",
   "Foundations, people, budget, risks": "基礎、人力、預算、風險",
   "GET/POST how-to-improve review · pull data / add fact / challenge / regenerate / accept":
     "GET／POST 如何改進審查 · 拉資料／加事實／挑戰／重產／接受",
