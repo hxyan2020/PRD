@@ -191,7 +191,7 @@ A[First] --> B[Second] --> C[Third]`,
   Prompt --> Model[LLM or heuristic]
   Model --> Out[Draft answer]
   Out --> Check{Safe to send?}
-  Check -->|No| Human
+  Check -->|No| Hold[Hold and retry]
   Check -->|Yes| Act[Show on desk]`,
     minEdges: 5,
     firstLabel: "Human decides",
@@ -203,7 +203,7 @@ A[First] --> B[Second] --> C[Third]`,
   Prompt --> Model[LLM 或啟發式]
   Model --> Out[草稿答案]
   Out --> Check{可安全送出?}
-  Check -->|否| Human
+  Check -->|否| Hold[扣住再試]
   Check -->|是| Act[顯示在台面]`,
     minEdges: 5,
     firstLabel: "人類做決定",

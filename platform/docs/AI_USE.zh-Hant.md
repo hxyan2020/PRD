@@ -42,7 +42,7 @@ graph TD
   Prompt --> Model[LLM 或啟發式]
   Model --> Out[草稿答案]
   Out --> Check{可安全送出?}
-  Check -->|否| Human
+  Check -->|否| Hold[扣住再試]
   Check -->|是| Act[顯示在台面]
 ```
 

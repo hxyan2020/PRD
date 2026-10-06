@@ -42,7 +42,7 @@ graph TD
   Prompt --> Model[LLM or heuristic]
   Model --> Out[Draft answer]
   Out --> Check{Safe to send?}
-  Check -->|No| Human
+  Check -->|No| Hold[Hold and retry]
   Check -->|Yes| Act[Show on desk]
 ```
 
