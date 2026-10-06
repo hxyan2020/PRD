@@ -216,7 +216,7 @@ graph LR
 | FR-13 | 雙語產品文件（英／繁中） | PRD、TSD、使用手冊、UAT、生態、路線圖、開放議題、進度、網址目錄可切換 |
 | FR-14 | 響應式管理後台（網頁＋手機） | 390px：抽屜＋ messenger 主從；寬表改卡片列表；無整頁溢出 |
 | FR-15 | 豐富技能風險情境／鏈 | 技能看板顯示門檻與升級；**進入** 打開 `/admin/skills/{code}` |
-| FR-16 | 示範導覽網址目錄 | `/admin/docs/urls` 列出管理／API／資料路徑＋公開 Pages 網址 |
+| FR-16 | 示範導覽網址目錄 | `/admin/docs/urls` 列出管理／API／資料路徑＋公開 Pages 網址，加上 CS／TR 區段（`/cs`、台面、五本 SKILL.md、RAG 葉、`/api/cs/intake`） |
 | FR-21 | 管理首頁快照 | 每張卡／列皆為連結（數字、負責人、Messenger、跳轉、部門、最近警報、脊柱步驟）。虛擬警報／虛擬警報組走完 DETECT→結案；介面與儲存文案為英／繁中。 |
 | FR-22 | 每日績效儀表板 | CFD＋加密指標格；localhost 可重新整理 |
 | FR-23 | Monitor 2.0 登錄（指標＋偵測器） | 全部執行／同步／暫停；近期執行；localhost 可啟用／停用（`/admin/detectors` 轉址至此） |

@@ -52,6 +52,10 @@ const urls = read("platform/src/lib/docs/urls.ts");
 assert.match(urls, /ORIGINAL_CRMP_ADMIN_URL/);
 assert.match(urls, /CRMP Plus \(this platform\)/);
 assert.match(urls, /Original CRMP Admin \(frozen\)/);
+assert.match(urls, /category: "CS \/ TR"/);
+assert.match(urls, /SKILL-CS-CLARIFY/);
+assert.match(urls, /\/api\/cs\/intake/);
+assert.match(urls, /PUBLIC_CS_PORTAL_URL/);
 
 const catalogPage = read("platform/src/app/admin/docs/urls/page.tsx");
 assert.match(catalogPage, /ORIGINAL_CRMP_ADMIN_URL/);

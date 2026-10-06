@@ -1397,6 +1397,98 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "CS client portal": "CS 客戶入口",
   "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, C1/form/mailbox, auto-email wait loop, dedicated skills":
     "操作手冊（英／繁中）— 左側每一頁加上 24/7 CS／TR：/cs 入口、C1／表單／信箱、自動信件等待迴圈、專用技能",
+  "Permanent client door: C1 live chat, website form and official mailbox — same POST /api/cs/intake as the desk":
+    "永久客戶大門：C1 即時聊天、網站表單與官方信箱 — 與台面同一 POST /api/cs/intake",
+  "Public C1 live chat, website submission form and official email into POST /api/cs/intake; CSR-XXXX / channel_ref replies close the auto-email wait loop (max 3)":
+    "公開 C1 即時聊天、網站提交表單與官方信箱進 POST /api/cs/intake；CSR-XXXX／channel_ref 回覆關閉自動信件等待迴圈（最多 3 封）",
+  "Operator inbox: triage, auto-email follow-up, client-reply wait loop, TR handoff, risk escalate; AI stamps SKILL-CS-* / SKILL-TR-* playbooks":
+    "操作收件匣：分流、自動追問信、客戶回覆等待迴圈、TR 交接、升級風控；AI 蓋 SKILL-CS-*／SKILL-TR-* 劇本",
+  "Skill: CS clarify": "技能：CS 釐清",
+  "Skill: CS ID verify": "技能：CS 核身",
+  "Skill: CS account FAQ": "技能：CS 帳戶 FAQ",
+  "Skill: TR execution": "技能：TR 成交",
+  "Skill: CS escalate risk": "技能：CS 升級風控",
+  "Dedicated SKILL.md — AI emails one missing-info question and waits for the client reply":
+    "專用 SKILL.md — AI 寄一封缺資料問題並等待客戶回覆",
+  "Dedicated SKILL.md — ID / KYC follow-up via official mailbox; never store ID images in the request":
+    "專用 SKILL.md — 經官方信箱核身／KYC；切勿把證件圖存進案件",
+  "Dedicated SKILL.md — swap, margin, deposits, login; CS can auto-reply from RAG":
+    "專用 SKILL.md — 隔夜利息、保證金、入金、登入；CS 可從 RAG 自動回",
+  "Dedicated SKILL.md — fills, slippage, rejects; CS hands to TR dealing, never reprices":
+    "專用 SKILL.md — 成交、滑點、拒單；CS 交 TR 成交台，絕不改價",
+  "Dedicated SKILL.md — suspected fraud / A-book / liquidity → Risk + Demo Messenger":
+    "專用 SKILL.md — 疑詐欺／A-book／流動性 → 風控＋示範 Messenger",
+  "RAG: 24/7 intake": "RAG：24/7 進件",
+  "RAG: ID verify policy": "RAG：核身政策",
+  "RAG: swap FAQ": "RAG：隔夜利息 FAQ",
+  "RAG: TR dealing handoff": "RAG：TR 成交交接",
+  "RAG: escalate to risk": "RAG：升級風控",
+  "RAG: CS skill playbooks": "RAG：CS 技能劇本",
+  "Policy leaf: C1 / form / mailbox door, CSR-XXXX matching, wait-loop cap":
+    "政策葉：C1／表單／信箱大門、CSR-XXXX 對案、等待迴圈上限",
+  "Policy leaf: identity follow-up, vault, never store ID images on the ticket":
+    "政策葉：身分追問、核身庫，切勿把證件圖存進工單",
+  "Policy leaf: overnight swap / financing answers CS may auto-send":
+    "政策葉：隔夜利息／融資答案，CS 可自動寄出",
+  "Policy leaf: when CS assigns TR; execution team owns fills":
+    "政策葉：CS 何時指派 TR；成交由成交台負責",
+  "Policy leaf: CS → Risk via ESC-CS-RISK and Demo Messenger":
+    "政策葉：CS 經 ESC-CS-RISK 與示範 Messenger 升級風控",
+  "Index leaf: the five dedicated CS/TR SKILL.md codes and routes":
+    "索引葉：五本專用 CS／TR SKILL.md 代碼與路徑",
+  "Control-plane overview, dummy spine, stats, CS/TR desk + client-portal shortcuts, expandable alert tracker, home spine with stage ticket counts (Spine Log tab removed)":
+    "控制面總覽、虛擬脊柱、統計、CS／TR 台＋客戶入口捷徑、可展開警報追蹤、首頁脊柱階段工單計數（已移除脊柱日誌分頁）",
+  "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0 (M2-* chips); knowledge tree also maps CS_SERVICE / TRADING_EXEC":
+    "CFD＋加密領域、P0–P3 情境掛 Monitor 2.0（M2-* 晶片）；知識樹亦對應 CS_SERVICE／TRADING_EXEC",
+  "Internal + external evidence corpus (incl. cs-* / tr-* CS/TR policy leaves) — AI write blocked (human-gate: pages AI cannot edit escalate to human / propose_rag maker-checker)":
+    "內外部證據語料（含 cs-*／tr-* CS／TR 政策葉）— 禁止 AI 寫入（人工閘道：AI 不能改的頁升級人工／propose_rag 雙人）",
+  "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page; includes SKILL-CS-CLARIFY / ID-VERIFY / ACCOUNT-FAQ, SKILL-TR-EXECUTION, SKILL-CS-ESCALATE-RISK; each skill binds one escalation path (ESC-DEFAULT fallback)":
+    "劇本與豐富風險情境 — 進入打開完整 SKILL.md；含 SKILL-CS-CLARIFY／ID-VERIFY／ACCOUNT-FAQ、SKILL-TR-EXECUTION、SKILL-CS-ESCALATE-RISK；每技能綁一條升級路徑（ESC-DEFAULT 後援）",
+  "Full when-to-use / prechecks / evidence / stop / success playbook for one skill — CS/TR codes listed under CS / TR":
+    "單一技能的何時用／預檢／證據／停止／成功劇本 — CS／TR 代碼列於 CS／TR 區",
+  "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls; CS risk cases land here via SKILL-CS-ESCALATE-RISK":
+    "警報＋AI 報告收件匣；聊天窗依升級路徑 POC 分窗（鳥瞰轉傳）；證據、聊天、升級、排除、結案、控制；CS 風控案經 SKILL-CS-ESCALATE-RISK 落入此處",
+  "Channel registry & mock notify — includes oc_cs_c1 (C1 live chat) and oc_tr_dealing (TR dealing)":
+    "頻道登錄與模擬通知 — 含 oc_cs_c1（C1 即時聊天）與 oc_tr_dealing（TR 成交）",
+  "Dimension-defined paths × coefficients; ESC-DEFAULT catch-all plus ESC-CS-24-7, ESC-TR-DEAL, ESC-CS-RISK for CS/TR skills":
+    "維度定義路徑 × 係數；ESC-DEFAULT 兜底，加上 CS／TR 技能的 ESC-CS-24-7、ESC-TR-DEAL、ESC-CS-RISK",
+  "Combined hub: Risk / Ops / AI / System / CS / TR BUs with nested on-call teams (CS L1, TR dealing, KYC vault); editable mission / rotation":
+    "合併中心：風險／營運／AI／系統／CS／TR BU 與嵌套值班團隊（CS L1、TR 成交、KYC 庫）；可編輯任務／輪值",
+  "Internal/external source registry — includes C1 live-chat gateway, website CS form and official support mailbox":
+    "內外部來源登錄 — 含 C1 即時聊天閘道、網站 CS 表單與官方客服信箱",
+  "Two tabs — CRMP logs (alerts/AI/skills/escalation/interventions/messenger/CS_*) and Vantage Markets Admin logs; Roll back via before-state snapshot":
+    "兩個分頁 — CRMP 日誌（警報／AI／技能／升級／介入／Messenger／CS_*）與 Vantage Markets 管理日誌；有變更前快照可回滾",
+  "Technical Specification Design (EN/ZH) — §17 CS/TR intake, connectors, wait loop, skill stamps":
+    "技術規格設計（英／繁中）— §17 CS／TR 進件、連接器、等待迴圈、技能蓋章",
+  "Product Requirements (EN/ZH) — FR-CS / FR-TR plus the public /cs door":
+    "產品需求（英／繁中）— FR-CS／FR-TR 加上公開 /cs 大門",
+  "Risk Owner UAT pack — UAT-46…50 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault":
+    "風險負責人 UAT 包 — UAT-46…50 涵蓋 C1／表單／信箱、等待迴圈、專用技能、知識樹、核身庫",
+  "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, five skills, RAG leaves, intake API)":
+    "本頁 — 全部管理／API／資料表路徑，加上 CS／TR 區段（/cs、台面、五本技能、RAG 葉、進件 API）",
+  "GET inbox · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake":
+    "GET 收件匣 · POST 分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬 C1｜表單｜信件 — 操作動作；公開進件為 POST /api/cs/intake",
+  "GET connector catalog · POST C1 live chat, web form and official-email ingest or continue (request_id / in_reply_to / channel_ref / CSR-XXXX) — session, mock_webhook, portal, or header x-cs-intake-token: demo-c1":
+    "GET 連接器目錄 · POST C1 即時聊天、網頁表單與官方信箱進件或續辦（request_id／in_reply_to／channel_ref／CSR-XXXX）— 工作階段、mock_webhook、portal 或標頭 x-cs-intake-token: demo-c1",
+  "CS intake ticket status": "CS 進件案件狀態",
+  "GET public status for one CSR-XXXX (no PII) — /cs portal and mailbox gateway poll this while the wait loop is open":
+    "GET 單一 CSR-XXXX 公開狀態（無個資）— /cs 入口與信箱閘道在等待迴圈開啟時輪詢",
+  "Seeded C1 live chat, website form and official mailbox connectors (channel_code, kind, address)":
+    "種子 C1 即時聊天、網站表單與官方信箱連接器（channel_code、kind、address）",
+  "Client tickets CSR-XXXX — channel_ref, skill_code, wait_loop_open, followup_count, assigned_bu, status":
+    "客戶工單 CSR-XXXX — channel_ref、skill_code、wait_loop_open、followup_count、assigned_bu、status",
+  "Transcript: client / AI / CS / TR / system lines on each request":
+    "逐字稿：每則請求的客戶／AI／CS／TR／系統列",
+  "Auto-email wait-loop rows — waiting_reply until In-Reply-To / CSR-XXXX / channel_ref closes them (max 3)":
+    "自動信件等待迴圈列 — waiting_reply 直到 In-Reply-To／CSR-XXXX／channel_ref 關閉（最多 3 封）",
+  "cs_channels": "cs_channels（C1／表單／信箱）",
+  "cs_requests": "cs_requests（CSR-XXXX 工單）",
+  "cs_messages": "cs_messages（逐字稿）",
+  "cs_followups": "cs_followups（自動追問信）",
+  "CRMP Plus CS / TR Desk": "CRMP Plus CS／TR 台",
+  "CS / TR Desk": "CS／TR 台",
+  "CS / TR Desk API": "CS／TR 台 API",
+  "CS intake webhook": "CS 進件 webhook",
 };
 
 /** Longest-first English fragments rewritten inside mixed dummy / log strings. */

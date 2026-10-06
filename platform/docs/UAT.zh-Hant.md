@@ -53,7 +53,7 @@ graph TD
 | 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | 左側未讀數字（Messenger 風格） | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence |
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | 知識樹顯示領域、技能與文件如何串接 | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | 繁中覆蓋介面、Messenger、技能與文件 | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
-| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | 網址目錄列出公開頁（含新頁） | URL Catalog, AI Skills, Knowledge Tree, Demo Messenger |
+| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | 網址目錄列出公開頁（含 CS／TR 大門與劇本） | URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger |
 | 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | 用白話把 Messenger 迴路講一遍 | Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker |
 | 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | 管理首頁 — 卡片、捷徑與平台負責人 | Admin Home, Daily Performance, Users, URL Catalog |
 | 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | 每日績效 — CFD 與 Crypto 桌數字 | Daily Performance |
@@ -502,22 +502,22 @@ graph TD
 **通過：** 繁中模式下沒有整頁停留英文（監控代碼與種子事件標題除外）。
 **證據：** 首頁／技能／Messenger／文件之 EN vs 繁中截圖。
 
-### UAT-25 — 網址目錄列出公開頁（含新頁）
+### UAT-25 — 網址目錄列出公開頁（含 CS／TR 大門與劇本）
 
 - **嚴重度：** Medium · **負責：** System · **依賴：** URL catalog · **建議：** T+281m / 8m
-- **涵蓋：** URL Catalog, AI Skills, Knowledge Tree, Demo Messenger
-- **為何測：** 操作者不應靠猜路徑才找得到技能詳情、知識樹或 Messenger。
-- **目的：** 從網址目錄找到技能、劇本詳情、知識樹、示範 Messenger 與市場情報。
+- **涵蓋：** URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger
+- **為何測：** 操作者不應靠猜路徑才找得到 /cs、台面、技能詳情、知識樹或 Messenger。
+- **目的：** 從網址目錄找到 CS／TR 區段、技能、知識樹、示範 Messenger 與市場情報。
 
 **步驟**
 
-1. 開啟網址目錄。
-2. 找到 AI 技能、技能劇本詳情、知識樹、示範 Messenger、市場情報。
-3. 用 SKILL-ABOOK-RATIO 打開詳情，或由列表點進入。
-4. 目錄標示本平台來源（hxyan2020.github.io/PRD/crmp-plus），並仍列出原 CRMP 管理後台為凍結（hxyan2020.github.io/PRD/crmp-admin）。
+1. 開啟網址目錄。閱讀 CS／TR 速記：/cs、POST /api/cs/intake、CSR-XXXX 等待迴圈。
+2. 找到 CS／TR 區段：/cs、/admin/cs-desk、SKILL-CS-CLARIFY（及四本姊妹劇本）、RAG 葉 cs-24-7-intake／cs-id-verify-policy、GET /api/cs/intake。
+3. 從 CS／TR 列打開技能詳情（SKILL-CS-CLARIFY），或在 AI 技能以代碼取代 [code]。
+4. 目錄標示本平台來源（hxyan2020.github.io/PRD/crmp-plus）、客戶入口（…/cs/），並仍列出原 CRMP 管理後台為凍結（hxyan2020.github.io/PRD/crmp-admin）。
 
-**通過：** 新路由已列出且可開；CRMP Plus 來源可見；原 CRMP 管理後台標為凍結。
-**證據：** 目錄列截圖。
+**通過：** CS／TR 路由、五本劇本與進件 API 已列出且可開；CRMP Plus 來源與 /cs 可見；原 CRMP 管理後台標為凍結。
+**證據：** 目錄列截圖（CS／TR 區段＋公開網址）。
 
 ### UAT-26 — 用白話把 Messenger 迴路講一遍
 

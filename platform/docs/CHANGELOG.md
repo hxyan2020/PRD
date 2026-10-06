@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T14:00:00.000Z | URL Catalog: CS/TR section (/cs, desk, five SKILL.md, RAG leaves, intake GET/POST, cs_* tables), filter, bilingual cheat + UAT-25; EN/zh-Hant |
 | 2026-10-06T13:00:00.000Z | User handbook v2.2: /cs portal, three connectors, CSR-XXXX wait loop, CS/TR daily roles, dedicated skills + routes; EN/zh-Hant |
 | 2026-10-06T12:00:00.000Z | Public /cs portal (C1/form/mailbox) + intake ingestOrContinue (CSR-XXXX / channel_ref / In-Reply-To); GET catalog; FR-40; UAT-46/47; EN/zh-Hant |
 | 2026-10-06T10:00:00.000Z | CS/TR dedicated SKILL.md playbooks stamp skill_code; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* corpus; ESC-CS-24-7 / ESC-TR-DEAL / ESC-CS-RISK; FR-39; UAT-50; EN/zh-Hant |
