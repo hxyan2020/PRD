@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Database,
   GitBranch,
+  Headphones,
   MessageSquare,
   MessagesSquare,
   Ticket,
@@ -259,7 +260,7 @@ export default async function AdminDashboardPage({
     <div>
       <AdminPageHeader pageKey="home" actions={actions} />
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 mb-4">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4 mb-4">
         <SignInOwnerCard />
 
         <Link
@@ -288,6 +289,35 @@ export default async function AdminDashboardPage({
             </div>
             <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-600 text-white">
               <MessagesSquare className="h-5 w-5" aria-hidden />
+            </span>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/cs-desk"
+          className="panel card-link group relative overflow-hidden p-4 bg-gradient-to-br from-amber-50 via-white to-white"
+          data-testid="home-cs-desk"
+        >
+          <div className="absolute left-0 top-0 h-full w-1 bg-amber-600" aria-hidden />
+          <div className="flex items-start justify-between gap-3 pl-2">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-amber-900">
+                <Headphones className="h-3.5 w-3.5" aria-hidden />
+                <EnZh en="CS / TR desk" zh="CS／TR 台" />
+              </div>
+              <div className="font-semibold mt-1">
+                <T k="home.csDesk" />
+              </div>
+              <p className="text-xs text-[var(--muted)] mt-2">
+                <EnZh en="C1 live chat · web form · official email. Auto-email until the client replies." zh="C1 即時聊天 · 網頁表單 · 官方信箱。自動寄信直到客戶回覆。" />
+              </p>
+              <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-900">
+                <T k="home.csDeskCta" />
+                <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden />
+              </div>
+            </div>
+            <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-600 text-white">
+              <Headphones className="h-5 w-5" aria-hidden />
             </span>
           </div>
         </Link>

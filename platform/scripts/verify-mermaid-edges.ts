@@ -62,6 +62,42 @@ A[First] --> B[Second] --> C[Third]`,
     minEdges: 3,
     firstLabel: "Event",
   },
+  {
+    name: "cs-intake-en (TSD §17)",
+    src: `graph TD
+  In[C1, form, email] --> API[POST /api/cs/intake]
+  API --> Triage[AI triage]
+  Triage -->|clear CS| Open[OPEN on CS]
+  Triage -->|trading| TR[ASSIGNED_TR]
+  Triage -->|unclear or need_id| Mail[Auto EMAIL_OUT]
+  Mail --> Wait[AWAITING_CLIENT or ID_VERIFY]
+  Wait -->|client reply| Triage
+  Wait -->|cap 3| Lead[CS Lead human]
+  Open --> Risk{Book risk?}
+  TR --> Risk
+  Risk -->|yes| Esc[ESCALATED_RISK to Messenger]
+  Risk -->|no| Done[RESOLVED]`,
+    minEdges: 8,
+    firstLabel: "C1, form, email",
+  },
+  {
+    name: "cs-intake-zh (TSD §17)",
+    src: `graph TD
+  In[C1／表單／官方信箱] --> API[POST /api/cs/intake]
+  API --> Triage[AI 分流]
+  Triage -->|清楚 CS| Open[CS 未結]
+  Triage -->|交易| TR[已派 TR]
+  Triage -->|不清楚或需核身| Mail[自動 EMAIL_OUT]
+  Mail --> Wait[待客戶／身分驗證]
+  Wait -->|客戶回覆| Triage
+  Wait -->|上限 3| Lead[CS Lead 人工]
+  Open --> Risk{帳簿風險?}
+  TR --> Risk
+  Risk -->|是| Esc[升級風控 → Messenger]
+  Risk -->|否| Done[已結案]`,
+    minEdges: 8,
+    firstLabel: "C1／表單／官方信箱",
+  },
 ];
 
 function edgeCount(html: string) {

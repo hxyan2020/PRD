@@ -1,12 +1,12 @@
 # 平台改進路線圖
 
-已交付台面打磨（即時警報與追蹤命名；偵測器合併至 Monitor 2.0；分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾、手機卡片列表）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
+已交付台面打磨（即時警報與追蹤命名；偵測器合併至 Monitor 2.0；分組 AI 管線、MonitorCode、RAG 葉、ESC-DEFAULT＋維度係數、BU 與團隊、一線／二線 AI 管理、可編輯角色、稽核 CRMP／Vantage Markets 管理分頁＋回滾、手機卡片列表、CS／TR 原型台）屬文件日常；**計畫開放議題**見 [開放議題](/admin/docs/open-issues)／[進度追蹤](/admin/docs/progress)。
 
 **文件編號：** CRMP-RM-001 · 現行 CRMP 原型之後的優先待辦  
 **讀者：** 風險負責人、平台負責人、工程、GRC  
 **讀法：** 管理頁 `/admin/docs/roadmap` 是操作員視圖（可展開卡片）。本檔是可列印對本。每個 `RM-xx` 寫明 **今日原型**、**要做什麼**、**完成標準**、**程式落點**、**不做的風險**。
 
-本原型已能走通脊柱：**Monitor 警報 → AI 根因（技能／RAG）→ 第二 AI 挑戰 → Messenger → Maker／Checker → 稽核／首頁脊柱**。本表要補上會讓正式台面失敗的缺口：模擬 Lark、種子 Monitor、啟發式 AI、SQLite、共用示範密碼、只記日誌的「執行」。
+本原型已能走通脊柱：**Monitor 警報 → AI 根因（技能／RAG）→ 第二 AI 挑戰 → Messenger → Maker／Checker → 稽核／首頁脊柱**，以及客戶入口 **C1／表單／信箱 → CS／TR 台 → AI 追問直到回覆 → TR 或風控**。本表要補上會讓正式台面失敗的缺口：模擬 Lark、種子 Monitor、啟發式 AI、SQLite、共用示範密碼、只記日誌的「執行」、以及未簽章的 C1／表單／信箱連接器。
 
 **工期鍵：** S 一個垂直切片 · M 多日模組 · L 跨團隊 · XL 計畫級
 
@@ -33,11 +33,12 @@
 | RM-13 | **多品牌／實體租戶**（VFSC vs FCA 包、資料隔離） | XL | 架構 + 2 BE | 組織模型 | Medium |
 | RM-14 | **AI 成本／延遲 SLO**：RCA 或挑戰者超預算就告警 | S | SRE | 可觀測性 | Medium |
 | RM-15 | **有評分的市場情報來源**（授權饋送，不是模板標題） | M | 1 DS + 1 BE | 供應合約 | Medium |
+| RM-16 | **簽章 C1／表單／信箱連接器**：24/7 CS 在 CS／TR 台看到即時聊天、網站表單與官方信件；AI 在不清楚或需核身時寄信並等待回覆 | L | 1 BE + CS 主管 | C1／表單 HMAC／信箱 | High |
 
 ## 建議順序
 
 1. **基礎：** RM-05、RM-06、RM-02 — 身分、耐久儲存、即時警報與追蹤串流。
-2. **操作體驗：** RM-01、RM-07、RM-11 — 人在 Lark 工作，並能跑影子模式。
+2. **操作體驗：** RM-01、RM-07、RM-11、RM-16 — 人在 Lark 工作、能跑影子模式，且 CS／TR 進件上線。
 3. **寫路徑（最後）：** RM-09＋全域緊急開關 — 等風險負責人接受影子誤報率。
 4. **模型品質：** RM-03＋RM-04＋RM-14。
 5. **強化與擴充：** RM-08、RM-10、RM-12、RM-15。RM-13 屬後期計畫。
@@ -486,6 +487,35 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 
 ---
 
+## RM-16 — 簽章 C1、表單與官方信箱連接器
+
+**嚴重度：** High · **工期：** L · **人力：** 1 後端 + 1 CS 主管 + 信箱供應商 · **依賴：** C1 webhook 契約、表單 HMAC、信箱閘道。
+
+### 為何要做
+
+CS 是 24/7 大門。若即時聊天、網站表單與官方信箱只留在個人收件匣，投訴永遠不會變成 CRMP 請求，帳簿風險也到不了風控。
+
+### 今日原型
+
+[CS／TR 台](/admin/cs-desk) 是原型收件匣。`POST /api/cs/intake` 接受工作階段 `cs.operate`、`mock_webhook: true`，或標頭 `x-cs-intake-token: demo-c1`。啟發式 AI 在不清楚或需核身時寄信並等待（上限 3）。成交用語分流至 TR。沒有正式簽章連接器；核身庫是 OI-20。
+
+### 要做
+
+1. 以簽章 C1 webhook、表單 HMAC 與真實信箱閘道取代 `demo-c1`。
+2. 維持等到回覆的迴圈；三封之後由 CS Lead 豁免。
+3. 核身文件進庫（OI-20），不要留在逐字稿上。
+
+### 完成標準
+
+- 測試環境的 C1、表單與信箱各自在 30 秒內建立帶正確渠道戳記的 `cs_request`。
+- 不清楚聊天維持 `AWAITING_CLIENT` 直到客戶回覆後再分流；滑點表單為 `ASSIGNED_TR`。
+
+### 不做的風險
+
+24/7 問題與投訴到不了 CRMP；AI 追問與 TR 分流只停留在示範。
+
+---
+
 ## 對照
 
 | 路線圖 | 相關管理頁／文件 |
@@ -498,6 +528,7 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 | RM-11 | [每日績效](/admin/dashboard) · [風險日誌](/admin/risk-log) |
 | RM-12 | [UAT 清單](/admin/docs/uat) |
 | RM-15 | [市場情報](/admin/market-intel) |
+| RM-16 | [CS／TR 台](/admin/cs-desk) · [開放議題](/admin/docs/open-issues) |
 | 預算／人力 | [生態導入評估](/admin/docs/ecosystem) |
 
 ---
@@ -508,5 +539,6 @@ Ack 錯實體；FCA 槓桿技能打到 VFSC 帳簿。
 |---|---|---|
 | 1.7 | 2026-10-05 | 日常打磨：稽核分頁＋回滾、ESC-DEFAULT、BU 與團隊、開放議題／進度 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；RM-02／RM-12 今日事實；手機卡片列表 |
+| 1.9 | 2026-10-06 | RM-16 簽章 C1／表單／信箱進 CS／TR 台；OI-19／OI-20 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

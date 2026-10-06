@@ -32,6 +32,8 @@ const BU_TONE: Record<IssueBu, string> = {
   Monitor: "bg-teal-50 text-teal-900 border-teal-200",
   Product: "bg-indigo-50 text-indigo-900 border-indigo-200",
   GRC: "bg-rose-50 text-rose-900 border-rose-200",
+  CS: "bg-amber-50 text-amber-950 border-amber-200",
+  TR: "bg-cyan-50 text-cyan-900 border-cyan-200",
   All: "bg-slate-100 text-slate-700 border-slate-200",
 };
 

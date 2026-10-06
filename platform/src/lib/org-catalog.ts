@@ -1,6 +1,6 @@
 /** Source of truth for BU (department) and role responsibility charters. */
 
-export type DepartmentCode = "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM";
+export type DepartmentCode = "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM" | "CUSTOMER_SERVICE" | "TRADING";
 
 export type RoleCode =
   | "SUPER_ADMIN"
@@ -10,7 +10,11 @@ export type RoleCode =
   | "OPS_ANALYST"
   | "AI_ENGINEER"
   | "SYSTEM_ADMIN"
-  | "VIEWER";
+  | "VIEWER"
+  | "CS_LEAD"
+  | "CS_AGENT"
+  | "TR_LEAD"
+  | "TR_DEALER";
 
 export type Duty = {
   title: string;
@@ -499,6 +503,139 @@ export const DEPARTMENT_CHARTERS: Record<DepartmentCode, DepartmentCharter> = {
       },
     ],
   },
+  CUSTOMER_SERVICE: {
+    code: "CUSTOMER_SERVICE",
+    name: "Customer Service (CS)",
+    mandate:
+      "24/7 frontline for live C1 chat, web submission forms and official mailboxes. Answers client questions and complaints, requests missing facts or ID by AI-drafted email until the client replies, and routes trading-execution cases to TR.",
+    owns: [
+      {
+        title: "C1 live chat, web form and official-email intake into CRMP",
+        detail:
+          "CS owns the three public doors: platform live chat C1, the website submission form, and the official support mailboxes. Every inbound item must become a CRMP request with a channel stamp so nothing lives only in a personal inbox.",
+      },
+      {
+        title: "24/7 first response on questions and complaints",
+        detail:
+          "CS is who the client hears from first, around the clock. They answer product, funding-status and complaint questions. They do not set trading policy or halt symbols.",
+      },
+      {
+        title: "AI follow-up loop when the issue is unclear or identity must be verified",
+        detail:
+          "If AI cannot tell what the client needs, or KYC/ID is required, CS lets AI send an automatic email asking for the missing info and keeps the case AWAITING_CLIENT until the client replies. The loop repeats until the request is clear or ID is on file.",
+      },
+    ],
+    accountable: [
+      {
+        title: "No silent drop of C1, form or mailbox requests",
+        detail:
+          "If a live-chat, form or mailbox item never appears on the CS/TR desk, that miss belongs to CS intake, not to Risk.",
+      },
+      {
+        title: "Identity-verification emails actually go out and are closed only after a reply",
+        detail:
+          "CS may not close an ID-verify case because the client went quiet for an hour. The follow-up stays open until a reply lands or a named lead writes a waiver.",
+      },
+    ],
+    collaborates: [
+      {
+        title: "Trading (TR) — order, fill, slippage and platform-trading complaints",
+        detail:
+          "CS takes the first message; TR owns execution facts. CS assigns to TR instead of guessing fills.",
+      },
+      {
+        title: "Operations — funding status after a Risk or Ops decision",
+        detail:
+          "CS tells the client the status; Ops and Risk still decide pauses and recon.",
+      },
+      {
+        title: "Risk Control — fraud, credit or book-risk complaints",
+        detail:
+          "CS escalates into the existing messenger/risk spine when a complaint is really a risk event.",
+      },
+    ],
+    outOfScope: [
+      {
+        title: "Changing leverage, halting symbols, or pausing withdrawals (Risk)",
+        detail:
+          "CS does not arm trading controls. They record the client ask and escalate.",
+      },
+      {
+        title: "Reconstructing LP fills or oneZero tickets (TR / System)",
+        detail:
+          "CS does not read the dealing tape. That is TR, with System on infra.",
+      },
+    ],
+    escalatesTo: [
+      {
+        title: "TR_LEAD on execution / order / slippage cases",
+        detail: "Anything about fills, MT4/MT5 orders or dealing goes to Trading Support, not a CS workaround.",
+      },
+      {
+        title: "RISK_OWNER when a complaint is credit, fraud or book risk",
+        detail: "CS does not freeze accounts. They escalate onto the CRMP risk spine.",
+      },
+    ],
+  },
+  TRADING: {
+    code: "TRADING",
+    name: "Trading (TR)",
+    mandate:
+      "Dealing and execution support. Takes CS-routed cases about orders, fills, slippage, stop-out and platform trading; confirms facts with the book; does not replace Risk on limit policy.",
+    owns: [
+      {
+        title: "Order, fill, slippage, stop-out and MT4/MT5 execution complaints",
+        detail:
+          "TR reconstructs what the client traded and what the book did. CS collected the story; TR owns the tape.",
+      },
+      {
+        title: "Trading-desk replies on C1 and email once CS has assigned the case",
+        detail:
+          "After CS (or AI routing) stamps a request as Trading, TR is the voice on that thread — including follow-up mail if more trade details are missing.",
+      },
+    ],
+    accountable: [
+      {
+        title: "Honest execution facts before any goodwill or adjustment",
+        detail:
+          "TR must write what filled, at what price, versus the LP — before CS promises a refund. Goodwill still needs Risk/Ops if it moves money.",
+      },
+    ],
+    collaborates: [
+      {
+        title: "CS — first intake and ID/unclear follow-up loop",
+        detail: "TR does not man C1 24/7. CS keeps the door; TR joins when the case is trading.",
+      },
+      {
+        title: "Risk Control — toxic flow, stop-out storms, dealing adjustments that change residual risk",
+        detail: "If the complaint is really a book-risk event, TR escalates to Risk; they do not quietly widen spreads as a favour.",
+      },
+      {
+        title: "System — platform, bridge and quote-feed incidents that look like bad fills",
+        detail: "Stale quotes and bridge rejects are System to diagnose; TR explains the client impact.",
+      },
+    ],
+    outOfScope: [
+      {
+        title: "24/7 C1 staffing and generic product FAQs (CS)",
+        detail: "TR is not the all-hours help desk.",
+      },
+      {
+        title: "Limit policy, halt, leverage cut (Risk Control)",
+        detail: "TR may recommend; Risk decides.",
+      },
+    ],
+    escalatesTo: [
+      {
+        title: "RISK_OWNER on dealing adjustments, toxic flow or stop-out storms",
+        detail: "Anything that changes residual book risk leaves TR.",
+      },
+      {
+        title: "SYSTEM_ADMIN when fills look like feed or bridge failure",
+        detail: "TR does not restart daemons.",
+      },
+    ],
+  },
 };
 
 export const ROLE_CHARTERS: Record<RoleCode, RoleCharter> = {
@@ -711,6 +848,101 @@ export const ROLE_CHARTERS: Record<RoleCode, RoleCharter> = {
     ],
     escalatesTo: [
       "Sponsoring BU owner (usually RISK_OWNER or SUPER_ADMIN) outside the product",
+    ],
+  },
+  CS_LEAD: {
+    code: "CS_LEAD",
+    name: "CS Lead",
+    department: "CUSTOMER_SERVICE",
+    intro:
+      "Leads the 24/7 CS desk. Owns C1 / form / mailbox intake quality, the AI follow-up loop, and when a case leaves CS for TR or Risk.",
+    owns: [
+      "CS 24/7 Desk on-call rota",
+      "Follow-up email waivers when a client never replies",
+      "C1 live-chat and official-mailbox channel health",
+    ],
+    does: [
+      "Watch the CS/TR intake board, re-assign to TR, escalate to Risk",
+      "Approve closing an ID-verify case only after a reply or a written waiver",
+      "Coach agents on not promising trading controls CS cannot arm",
+    ],
+    doesNot: [
+      "Set leverage, halt symbols, or pause withdrawals",
+      "Rewrite dealing tape as a goodwill fill without TR/Risk",
+    ],
+    escalatesTo: [
+      "TR_LEAD on execution cases",
+      "RISK_OWNER on fraud / credit / book-risk complaints",
+    ],
+  },
+  CS_AGENT: {
+    code: "CS_AGENT",
+    name: "CS Agent",
+    department: "CUSTOMER_SERVICE",
+    intro:
+      "24/7 agent on C1 live chat, forms and mail. Uses AI to request missing facts or ID until the client replies.",
+    owns: [
+      "First response on assigned CS requests",
+      "Triggering the AI follow-up email when the issue is unclear or ID is needed",
+    ],
+    does: [
+      "Answer product questions and complaints in CRMP",
+      "Send / resend AI follow-up mail and record client replies",
+      "Assign trading-execution cases to TR",
+    ],
+    doesNot: [
+      "Close ID-verify without a client reply (unless CS Lead waives)",
+      "Change trading conditions",
+    ],
+    escalatesTo: [
+      "CS_LEAD when the client is abusive, VIP, or the loop exceeded three mails",
+      "TR_DEALER when the case is fills / orders / slippage",
+    ],
+  },
+  TR_LEAD: {
+    code: "TR_LEAD",
+    name: "TR Lead",
+    department: "TRADING",
+    intro:
+      "Leads Trading Support. Owns execution-complaint quality and whether a dealing adjustment needs Risk.",
+    owns: [
+      "TR Dealing Support rota",
+      "Sign-off that execution facts are complete before goodwill talk",
+    ],
+    does: [
+      "Take CS-assigned trading cases",
+      "Ask AI for more trade details by email if the ticket is still unclear",
+      "Escalate toxic flow / stop-out storms to Risk",
+    ],
+    doesNot: [
+      "Staff C1 24/7",
+      "Arm halt or leverage controls",
+    ],
+    escalatesTo: [
+      "RISK_OWNER on book-risk dealing issues",
+      "SYSTEM_ADMIN on feed/bridge failures that look like bad fills",
+    ],
+  },
+  TR_DEALER: {
+    code: "TR_DEALER",
+    name: "TR Dealer",
+    department: "TRADING",
+    intro:
+      "Execution analyst. Reconstructs orders and fills for cases CS routed to Trading.",
+    owns: [
+      "Assigned TR request threads",
+    ],
+    does: [
+      "Write fill vs LP facts on the CS/TR desk",
+      "Request missing ticket numbers / screenshots via the AI email loop",
+    ],
+    doesNot: [
+      "Promise refunds",
+      "Restart trading servers",
+    ],
+    escalatesTo: [
+      "TR_LEAD before any dealing adjustment",
+      "CS_AGENT to hand back generic product FAQs",
     ],
   },
 };

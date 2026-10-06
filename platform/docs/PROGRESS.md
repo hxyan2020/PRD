@@ -1,17 +1,17 @@
 # CRMP Progress Tracker
 
-**Document ID:** CRMP-PT-001 · **Version:** 1.4 · **Interactive board:** [/admin/docs/progress](/admin/docs/progress) · **Open issues:** [/admin/docs/open-issues](/admin/docs/open-issues)
+**Document ID:** CRMP-PT-001 · **Version:** 1.5 · **Interactive board:** [/admin/docs/progress](/admin/docs/progress) · **Open issues:** [/admin/docs/open-issues](/admin/docs/open-issues)
 
 Maps **every open issue** onto a tracker:
 
 | Axis | Meaning |
 |---|---|
-| **X** | Open issues (one column each: OI-01 … OI-18) |
+| **X** | Open issues (one column each: OI-01 … OI-20) |
 | **Y** | Timeline **now (2026-10) → end of 2027 (2027-12)** |
 
 Each column header labels the **responsible BU**. Cell colour = status: **Planned · Started · WIP · Delayed · UAT · Go live · BAU**.
 
-Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 18 issues). Filter by status and BU on the board.
+Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 20 issues). Filter by status and BU on the board.
 
 Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back), editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
 
@@ -37,6 +37,8 @@ Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP
 | OI-16 | System | Planned | 2027-02 → 2027-08 |
 | OI-17 | Ops | Planned | 2027-04 → 2027-10 |
 | OI-18 | Product | Planned | 2027-06 → 2027-12 |
+| OI-19 | CS | Started | 2026-10 → 2027-06 |
+| OI-20 | TR | Planned | 2026-12 → 2027-08 |
 
 ```mermaid
 gantt
@@ -50,6 +52,9 @@ gantt
   OI-02 Design freeze                 :active, 2026-10, 2027-03
   OI-15 Docs BAU                      :2026-10, 2027-12
   OI-18 Multi-entity tenancy          :2027-06, 2027-12
+  section CS TR
+  OI-19 C1 form mailbox connectors    :active, 2026-10, 2027-06
+  OI-20 ID vault + dealing tape       :2026-12, 2027-08
   section System
   OI-03 Tech + resource plan          :2026-11, 2027-04
   OI-06 SSO SCIM                      :2026-12, 2027-06
@@ -80,5 +85,6 @@ gantt
 | 1.2 | 2026-10-05 | BAU note: Realtime Alert & Tracker; Detectors→Monitor 2.0 |
 | 1.3 | 2026-10-05 | Bars for OI-16 / OI-17 / OI-18 |
 | 1.4 | 2026-10-05 | Board axes: X = open issues, Y = timeline; BU on every column; BU filter; mobile cards |
+| 1.5 | 2026-10-06 | OI-19 / OI-20 CS+TR bars; 20 issue columns |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [PROGRESS.zh-Hant.md](./PROGRESS.zh-Hant.md)

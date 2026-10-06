@@ -9,11 +9,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **9 hours** (45 cases).
+- Full pack suggested window ≈ **9.5 hours** (49 cases).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; AI follow-up until the client replies; TR routing) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -73,7 +73,10 @@ graph TD
 | 42 | UAT-42 | 456m | 8m | Low | All | Docs published | Improvement roadmap is readable | Improvement Roadmap |
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | Public snapshot — Sign in works and stays on demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — closed threads stay closed after refresh | Demo Messenger |
-| 45 | UAT-45 | 484m | 15m | Critical | Risk Owner | UAT-01–44 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
+| 46 | UAT-46 | 484m | 12m | High | CS + System | UAT-01; CS/TR desk seeded | CS/TR — C1, form and official email land in realtime | CS / TR Desk, URL Catalog, BU and Teams |
+| 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS/TR — AI emails when unclear or ID is needed, then waits | CS / TR Desk, Audit Log |
+| 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS/TR — trading cases go to TR; book-risk escalates to Risk | CS / TR Desk, Demo Messenger |
+| 49 | UAT-49 | 523m | 15m | Critical | Risk Owner | UAT-01–48 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
 
@@ -807,10 +810,10 @@ graph TD
 
 **Steps**
 
-1. Open Improvement Roadmap (Docs group). Counts should show 15 items and Critical / High tallies.
-2. The scan list is expandable cards RM-01…RM-15 — each collapsed line says what operators get, plus effort and severity.
+1. Open Improvement Roadmap (Docs group). Counts should show 16 items and Critical / High tallies.
+2. The scan list is expandable cards RM-01…RM-16 — each collapsed line says what operators get, plus effort and severity.
 3. Expand RM-01 (Lark cards): Why, Today’s prototype (mock webhooks, POST /api/lark mock:true), What to build, Done when, If we skip, and links to Demo Messenger / Lark.
-4. Expand RM-09: it must be tagged UAT out of scope (EXECUTED_MOCK — no live trading-bus write). Same for RM-05 (SSO).
+4. Expand RM-16 (CS/TR connectors): Today’s prototype is mock demo-c1 intake; production needs signed C1 / form / mailbox. Expand RM-09: it must be tagged UAT out of scope (EXECUTED_MOCK — no live trading-bus write). Same for RM-05 (SSO).
 
 **Pass:** Roadmap page renders with at least one phase and one out-of-scope note.
 **Evidence:** Screenshot of the roadmap.
@@ -851,18 +854,75 @@ graph TD
 **Pass:** Closed/dismissed state survives thread switching; localhost survives reload; Sync does not clone a closed case.
 **Evidence:** Screenshot of the disabled toolbar on a CLOSED thread after switching away and back.
 
-### UAT-45 — Risk Owner exit sign-off
+### UAT-46 — CS/TR — C1, form and official email land in realtime
 
-- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–44 results recorded · **Window:** T+484m / 15m
+- **Severity:** High · **BU:** CS + System · **Depends:** UAT-01; CS/TR desk seeded · **Window:** T+484m / 12m
+- **Covers:** CS / TR Desk, URL Catalog, BU and Teams
+- **Why:** CS is the 24/7 door. If live chat, the website form or official mail never appear on the desk, clients wait in a personal inbox and Risk never sees the complaint.
+- **Goal:** Prove the three public channels create CRMP requests through the same intake API.
+
+**Steps**
+
+1. Open CS / TR Desk (/admin/cs-desk). You should see seeded cases from C1 live chat, a web form and official email (Swap / Something wrong / Slippage / Verify my account).
+2. Confirm BU and Teams lists Customer Service (CS) and Trading (TR) with CS 24/7 Desk and TR Dealing Support.
+3. On localhost, click Simulate C1 chat (optional body). A new OPEN row appears with channel C1 live chat.
+4. Simulate form and Simulate official email. Each uses POST /api/cs (same connector as POST /api/cs/intake with header x-cs-intake-token: demo-c1).
+5. On GitHub Pages the simulate buttons may stay static — still read the seeded three-channel inbox and the URL Catalog row for /admin/cs-desk and /api/cs/intake.
+6. Toggle 繁中: inbox, statuses and channel labels must be Traditional Chinese.
+
+**Pass:** Three channels visible. Localhost simulate creates new rows. zh-Hant chrome is present.
+**Evidence:** Screenshot of CS/TR inbox with C1 + form + email; optional intake JSON.
+
+### UAT-47 — CS/TR — AI emails when unclear or ID is needed, then waits
+
+- **Severity:** Critical · **BU:** CS · **Depends:** UAT-46; follow-up seed cases · **Window:** T+496m / 15m
+- **Covers:** CS / TR Desk, Audit Log
+- **Why:** If AI guesses a thin “help me ???” or closes an ID-verify because the client went quiet, CS invents facts and KYC is skipped.
+- **Goal:** Unclear and need-ID cases send an automatic email, stay AWAITING_CLIENT / ID_VERIFY until a reply, block resolve while WAITING, and cap at three mails.
+
+**Steps**
+
+1. Open the seeded C1 case “Something wrong with my account” (Sofia Mendes). Status should be AWAITING_CLIENT with an EMAIL_OUT follow-up waiting.
+2. Do not Resolve yet. If localhost allows, Resolve must fail while a follow-up is WAITING.
+3. Click Simulate client email reply. The WAITING follow-up becomes REPLIED, AI re-triages, and the case leaves AWAITING_CLIENT if the reply is clear enough.
+4. Open “Please verify my account — cannot withdraw” (Priya Shah). Status ID_VERIFY. Simulate the ID reply (passport + UID last four).
+5. On a still-unclear thread, click Email: need more detail twice more if needed — the third automatic mail is the cap; a SYSTEM note must say CS Lead follows up in person.
+6. Audit Log (CRMP tab) shows CS_FOLLOWUP_EMAIL and CS_CLIENT_REPLY.
+
+**Pass:** Unclear/ID cases wait for a reply; resolve blocked while WAITING; cap 3; audit rows exist on localhost.
+**Evidence:** Screenshot of waiting auto-email + after simulated reply; optional audit rows.
+
+### UAT-48 — CS/TR — trading cases go to TR; book-risk escalates to Risk
+
+- **Severity:** High · **BU:** CS + TR · **Depends:** UAT-46; trading seed case · **Window:** T+511m / 12m
+- **Covers:** CS / TR Desk, Demo Messenger
+- **Why:** CS must not guess fills. TR owns the tape. Complaints that are really credit/fraud/book risk must leave CS and enter the existing messenger/risk spine.
+- **Goal:** Slippage / MT5 cases stamp desk=TR (ASSIGNED_TR). Escalate to Risk marks ESCALATED_RISK.
+
+**Steps**
+
+1. Open the seeded form case “Slippage on EURUSD market order” (Chen Wei). Desk should already be TR and status ASSIGNED_TR.
+2. Filter the inbox to TR. Only trading-desk rows remain.
+3. On a CS question (the XAUUSD swap chat), click Assign to TR. Desk becomes TR.
+4. On a complaint-style row (or the same case), click Escalate to Risk. Status ESCALATED_RISK. The note says CS/TR no longer handles it alone — Risk uses Demo Messenger / Human Intervention.
+5. Simulate C1 with body mentioning MT5 fill/slippage; the new row should route to TR.
+6. Switch 繁中: Assign to TR / Escalate to Risk / Assigned TR labels are Traditional Chinese.
+
+**Pass:** Trading keywords → TR. Assign to TR works. Escalate to Risk leaves CS. zh-Hant action labels present.
+**Evidence:** Screenshot of TR-filtered inbox + ESCALATED_RISK note.
+
+### UAT-49 — Risk Owner exit sign-off
+
+- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–48 results recorded · **Window:** T+523m / 15m
 - **Covers:** UAT Checklist, Audit Log
 - **Why:** UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.
 - **Goal:** Tally Critical/High results against the exit rules and file a signed decision.
 
 **Steps**
 
-1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in). All must be Pass.
+1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in, CS/TR follow-up loop). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
-3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), and public Sign in (UAT-43) passed.
+3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), and CS/TR intake + follow-up (UAT-46, UAT-47) passed.
 4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 
@@ -874,4 +934,4 @@ graph TD
 1. All **Critical** cases Pass.
 2. At most **2 High** waived with written Risk Owner acceptance.
 3. **100%** BREACH/CRITICAL samples in the UAT window have second-AI challenge (UAT-19).
-4. **UAT-45** sign-off filed (ACCEPT / ACCEPT WITH WAIVERS / REJECT).
+4. **UAT-49** sign-off filed (ACCEPT / ACCEPT WITH WAIVERS / REJECT).

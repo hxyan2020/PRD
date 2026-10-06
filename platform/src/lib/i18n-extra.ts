@@ -943,6 +943,8 @@ export const EXTRA_UI: Record<string, Pair> = {
   "dept.OPERATIONS": { en: "Operations", "zh-Hant": "營運" },
   "dept.AI": { en: "AI", "zh-Hant": "AI" },
   "dept.SYSTEM": { en: "System", "zh-Hant": "系統" },
+  "dept.CUSTOMER_SERVICE": { en: "Customer Service (CS)", "zh-Hant": "客服（CS）" },
+  "dept.TRADING": { en: "Trading (TR)", "zh-Hant": "交易（TR）" },
   "dept.EXEC": { en: "Exec", "zh-Hant": "高管" },
 };
 
@@ -957,6 +959,12 @@ export const STATUS_LABELS: Record<string, Pair> = {
   BREACH: { en: "BREACH", "zh-Hant": "違規" },
   ESCALATED: { en: "ESCALATED", "zh-Hant": "已升級" },
   OPEN: { en: "OPEN", "zh-Hant": "未結" },
+  WAITING: { en: "WAITING", "zh-Hant": "等待中" },
+  REPLIED: { en: "REPLIED", "zh-Hant": "已回覆" },
+  AWAITING_CLIENT: { en: "AWAITING CLIENT", "zh-Hant": "待客戶" },
+  ID_VERIFY: { en: "ID VERIFY", "zh-Hant": "身分驗證" },
+  ASSIGNED_TR: { en: "ASSIGNED TR", "zh-Hant": "已派 TR" },
+  ESCALATED_RISK: { en: "ESCALATED RISK", "zh-Hant": "已升級風控" },
   DISABLED: { en: "DISABLED", "zh-Hant": "停用" },
   INACTIVE: { en: "INACTIVE", "zh-Hant": "未啟用" },
   CRITICAL: { en: "CRITICAL", "zh-Hant": "危急" },
@@ -988,6 +996,8 @@ export const STAGE_LABELS: Record<string, Pair> = {
 export const PHRASES_ZH: Record<string, string> = {
   "Credit Desk": "信貸台",
   "Risk Control Desk": "風險控管台",
+  "CS 24/7 Desk": "CS 24/7 台",
+  "TR Dealing Support": "TR 成交支援",
   "Exec Risk Bridge": "風險執行橋",
   "Risk Owner": "風險負責人",
   "Crypto Exchange Risk": "加密交易所風險",

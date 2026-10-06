@@ -1147,6 +1147,202 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   FUNCTION: "功能",
   FIELD: "欄位",
   DATA: "資料",
+
+  // CS / TR desk
+  CS_LEAD: "客服主管",
+  "CS Lead": "客服主管",
+  CS_AGENT: "客服專員",
+  "CS Agent": "客服專員",
+  TR_LEAD: "交易主管",
+  "TR Lead": "交易主管",
+  TR_DEALER: "交易員",
+  "TR Dealer": "交易員",
+  "Customer Service (CS)": "客服（CS）",
+  "Trading (TR)": "交易（TR）",
+  "CS 24/7 Desk": "CS 24/7 台",
+  "TR Dealing Support": "TR 成交支援",
+  "CS C1 Live": "CS C1 即時",
+  "C1 live chat": "C1 即時聊天",
+  "Submission form": "提交表單",
+  "Official email": "官方信箱",
+  "C1 Live Chat Gateway": "C1 即時聊天閘道",
+  "Website CS submission form": "網站客服提交表單",
+  "Official support mailbox": "官方客服信箱",
+  CS_INTAKE: "CS 進件",
+  CS_FOLLOWUP_EMAIL: "CS 追問信",
+  CS_CLIENT_REPLY: "CS 客戶回覆",
+  CS_AGENT_REPLY: "CS 專員回覆",
+  CS_ASSIGN_TR: "CS 指派 TR",
+  CS_ESCALATE_RISK: "CS 升級風控",
+  CS_RESOLVE: "CS 結案",
+  cs_request: "CS 請求",
+  "24/7 frontline for live C1 chat, web submission forms and official mailboxes. Answers client questions and complaints, requests missing facts or ID by AI-drafted email until the client replies, and routes trading-execution cases to TR.":
+    "C1 即時聊天、網頁提交表單與官方信箱的 24/7 第一線。回答客戶問題與投訴，以 AI 擬稿信件索取缺漏事實或身分直到客戶回覆，並把成交案件分流至 TR。",
+  "C1 live chat, web form and official-email intake into CRMP":
+    "C1 即時聊天、網頁表單與官方信箱進件至 CRMP",
+  "CS owns the three public doors: platform live chat C1, the website submission form, and the official support mailboxes. Every inbound item must become a CRMP request with a channel stamp so nothing lives only in a personal inbox.":
+    "CS 擁有三扇公開門：平台即時聊天 C1、網站提交表單、官方客服信箱。每筆進件都必須成為帶渠道戳記的 CRMP 請求，避免只留在個人收件匣。",
+  "24/7 first response on questions and complaints": "問題與投訴的 24/7 第一回應",
+  "CS is who the client hears from first, around the clock. They answer product, funding-status and complaint questions. They do not set trading policy or halt symbols.":
+    "客戶全天候第一個聽到的是 CS。他們回答產品、資金狀態與投訴。他們不制定交易政策、不停商品。",
+  "AI follow-up loop when the issue is unclear or identity must be verified":
+    "案情不清或需核身時的 AI 追問迴圈",
+  "If AI cannot tell what the client needs, or KYC/ID is required, CS lets AI send an automatic email asking for the missing info and keeps the case AWAITING_CLIENT until the client replies. The loop repeats until the request is clear or ID is on file.":
+    "若 AI 無法判斷客戶需求，或需要 KYC／身分，CS 讓 AI 自動寄信索取缺漏資料，案件維持待客戶直到回覆。迴圈重複至案情清楚或身分已建檔。",
+  "No silent drop of C1, form or mailbox requests": "C1、表單或信箱請求不可靜默丟失",
+  "If a live-chat, form or mailbox item never appears on the CS/TR desk, that miss belongs to CS intake, not to Risk.":
+    "若即時聊天、表單或信箱從未出現在 CS／TR 台，責任在 CS 進件，不在風控。",
+  "Identity-verification emails actually go out and are closed only after a reply":
+    "核身信件確實寄出，且僅在回覆後才可關案",
+  "CS may not close an ID-verify case because the client went quiet for an hour. The follow-up stays open until a reply lands or a named lead writes a waiver.":
+    "CS 不可因客戶一小時沒回就關掉核身案件。追問維持開啟直到回覆到達或具名主管寫豁免。",
+  "Trading (TR) — order, fill, slippage and platform-trading complaints":
+    "交易（TR）— 訂單、成交、滑點與平台交易投訴",
+  "CS takes the first message; TR owns execution facts. CS assigns to TR instead of guessing fills.":
+    "CS 接第一則訊息；TR 擁有成交事實。CS 指派給 TR，不臆測成交。",
+  "Operations — funding status after a Risk or Ops decision":
+    "營運 — 風控或營運決策後的資金狀態",
+  "CS tells the client the status; Ops and Risk still decide pauses and recon.":
+    "CS 告知客戶狀態；暫停與對帳仍由營運與風控決定。",
+  "Risk Control — fraud, credit or book-risk complaints":
+    "風險控管 — 詐欺、信貸或帳簿風險投訴",
+  "CS escalates into the existing messenger/risk spine when a complaint is really a risk event.":
+    "當投訴其實是風險事件時，CS 升級到既有 Messenger／風控脊柱。",
+  "Changing leverage, halting symbols, or pausing withdrawals (Risk)":
+    "變更槓桿、停商品或暫停出金（風控）",
+  "CS does not arm trading controls. They record the client ask and escalate.":
+    "CS 不啟動交易管制。他們記錄客戶要求並升級。",
+  "Reconstructing LP fills or oneZero tickets (TR / System)":
+    "還原 LP 成交或 oneZero 工單（TR／系統）",
+  "CS does not read the dealing tape. That is TR, with System on infra.":
+    "CS 不讀成交帶。那是 TR，基礎設施歸系統。",
+  "TR_LEAD on execution / order / slippage cases": "成交／訂單／滑點案件升級至 TR_LEAD",
+  "Anything about fills, MT4/MT5 orders or dealing goes to Trading Support, not a CS workaround.":
+    "凡成交、MT4／MT5 訂單或做市皆交交易支援，不是 CS 權充。",
+  "RISK_OWNER when a complaint is credit, fraud or book risk":
+    "投訴為信貸、詐欺或帳簿風險時升級至 RISK_OWNER",
+  "CS does not freeze accounts. They escalate onto the CRMP risk spine.":
+    "CS 不凍結帳戶。他們升級到 CRMP 風險脊柱。",
+  "Dealing and execution support. Takes CS-routed cases about orders, fills, slippage, stop-out and platform trading; confirms facts with the book; does not replace Risk on limit policy.":
+    "做市與成交支援。承接 CS 分流的訂單、成交、滑點、強平與平台交易案件；與帳簿核對事實；不取代風控的限額政策。",
+  "Order, fill, slippage, stop-out and MT4/MT5 execution complaints":
+    "訂單、成交、滑點、強平與 MT4／MT5 成交投訴",
+  "TR reconstructs what the client traded and what the book did. CS collected the story; TR owns the tape.":
+    "TR 還原客戶交易與帳簿作為。CS 收集故事；TR 擁有成交帶。",
+  "Trading-desk replies on C1 and email once CS has assigned the case":
+    "CS 指派後，交易台在 C1 與信件上回覆",
+  "After CS (or AI routing) stamps a request as Trading, TR is the voice on that thread — including follow-up mail if more trade details are missing.":
+    "CS（或 AI 分流）把請求標為交易後，該執行緒由 TR 發聲 — 若仍缺交易細節亦可追問信。",
+  "Honest execution facts before any goodwill or adjustment":
+    "任何善意或調整前須有誠實的成交事實",
+  "TR must write what filled, at what price, versus the LP — before CS promises a refund. Goodwill still needs Risk/Ops if it moves money.":
+    "TR 必須寫清成交什麼、什麼價格、對比 LP — 才可由 CS 承諾退款。動用資金的善意仍需風控／營運。",
+  "CS — first intake and ID/unclear follow-up loop": "CS — 第一進件與核身／不清楚追問迴圈",
+  "TR does not man C1 24/7. CS keeps the door; TR joins when the case is trading.":
+    "TR 不值班 C1 24/7。CS 守門；案件屬交易時 TR 加入。",
+  "Risk Control — toxic flow, stop-out storms, dealing adjustments that change residual risk":
+    "風險控管 — 有毒流量、強平風暴、改變剩餘風險的做市調整",
+  "If the complaint is really a book-risk event, TR escalates to Risk; they do not quietly widen spreads as a favour.":
+    "若投訴其實是帳簿風險，TR 升級風控；不可私下當人情加寬點差。",
+  "System — platform, bridge and quote-feed incidents that look like bad fills":
+    "系統 — 看起來像錯價成交的平台、橋接與報價饋送事件",
+  "Stale quotes and bridge rejects are System to diagnose; TR explains the client impact.":
+    "過期報價與橋接拒單由系統診斷；TR 說明客戶影響。",
+  "24/7 C1 staffing and generic product FAQs (CS)": "24/7 C1 人力與一般產品 FAQ（CS）",
+  "TR is not the all-hours help desk.": "TR 不是全天候客服台。",
+  "Limit policy, halt, leverage cut (Risk Control)": "限額政策、停商品、收槓桿（風險控管）",
+  "TR may recommend; Risk decides.": "TR 可建議；風控決定。",
+  "RISK_OWNER on dealing adjustments, toxic flow or stop-out storms":
+    "做市調整、有毒流量或強平風暴升級至 RISK_OWNER",
+  "Anything that changes residual book risk leaves TR.": "凡改變剩餘帳簿風險者離開 TR。",
+  "SYSTEM_ADMIN when fills look like feed or bridge failure":
+    "成交看似饋送或橋接故障時升級至 SYSTEM_ADMIN",
+  "TR does not restart daemons.": "TR 不重啟常駐程式。",
+  "Leads the 24/7 CS desk. Owns C1 / form / mailbox intake quality, the AI follow-up loop, and when a case leaves CS for TR or Risk.":
+    "領導 24/7 CS 台。擁有 C1／表單／信箱進件品質、AI 追問迴圈，以及案件何時離開 CS 給 TR 或風控。",
+  "CS 24/7 Desk on-call rota": "CS 24/7 台值班表",
+  "Follow-up email waivers when a client never replies": "客戶始終未回時的追問信豁免",
+  "C1 live-chat and official-mailbox channel health": "C1 即時聊天與官方信箱渠道健康",
+  "Watch the CS/TR intake board, re-assign to TR, escalate to Risk":
+    "監看 CS／TR 進件板、改派 TR、升級風控",
+  "Approve closing an ID-verify case only after a reply or a written waiver":
+    "僅在回覆或書面豁免後核准關閉核身案件",
+  "Coach agents on not promising trading controls CS cannot arm":
+    "教導專員不承諾 CS 無法啟動的交易管制",
+  "Set leverage, halt symbols, or pause withdrawals": "設定槓桿、停商品或暫停出金",
+  "Rewrite dealing tape as a goodwill fill without TR/Risk":
+    "未經 TR／風控把成交帶改寫成善意成交",
+  "TR_LEAD on execution cases": "成交案件升級至 TR_LEAD",
+  "RISK_OWNER on fraud / credit / book-risk complaints":
+    "詐欺／信貸／帳簿風險投訴升級至 RISK_OWNER",
+  "24/7 agent on C1 live chat, forms and mail. Uses AI to request missing facts or ID until the client replies.":
+    "C1 即時聊天、表單與信件的 24/7 專員。以 AI 索取缺漏事實或身分直到客戶回覆。",
+  "First response on assigned CS requests": "已指派 CS 請求的第一回應",
+  "Triggering the AI follow-up email when the issue is unclear or ID is needed":
+    "案情不清或需核身時觸發 AI 追問信",
+  "Answer product questions and complaints in CRMP": "在 CRMP 回答產品問題與投訴",
+  "Send / resend AI follow-up mail and record client replies":
+    "寄出／重寄 AI 追問信並記錄客戶回覆",
+  "Assign trading-execution cases to TR": "把成交案件指派給 TR",
+  "Close ID-verify without a client reply (unless CS Lead waives)":
+    "客戶未回就關閉核身（除非 CS Lead 豁免）",
+  "Change trading conditions": "變更交易條件",
+  "CS_LEAD when the client is abusive, VIP, or the loop exceeded three mails":
+    "客戶辱罵、VIP 或迴圈超過三封時升級至 CS_LEAD",
+  "TR_DEALER when the case is fills / orders / slippage":
+    "案件為成交／訂單／滑點時升級至 TR_DEALER",
+  "Leads Trading Support. Owns execution-complaint quality and whether a dealing adjustment needs Risk.":
+    "領導交易支援。擁有成交投訴品質，以及做市調整是否需風控。",
+  "TR Dealing Support rota": "TR 成交支援值班表",
+  "Sign-off that execution facts are complete before goodwill talk":
+    "善意討論前簽署成交事實已完整",
+  "Take CS-assigned trading cases": "承接 CS 指派的交易案件",
+  "Ask AI for more trade details by email if the ticket is still unclear":
+    "工單仍不清楚時請 AI 以信件索取更多交易細節",
+  "Escalate toxic flow / stop-out storms to Risk": "有毒流量／強平風暴升級風控",
+  "Staff C1 24/7": "值班 C1 24/7",
+  "Arm halt or leverage controls": "啟動停商品或槓桿管制",
+  "RISK_OWNER on book-risk dealing issues": "帳簿風險做市問題升級至 RISK_OWNER",
+  "SYSTEM_ADMIN on feed/bridge failures that look like bad fills":
+    "看似錯價成交的饋送／橋接故障升級至 SYSTEM_ADMIN",
+  "Execution analyst. Reconstructs orders and fills for cases CS routed to Trading.":
+    "成交分析師。還原 CS 分流至交易的訂單與成交。",
+  "Assigned TR request threads": "已指派 TR 請求執行緒",
+  "Write fill vs LP facts on the CS/TR desk": "在 CS／TR 台寫成交 vs LP 事實",
+  "Request missing ticket numbers / screenshots via the AI email loop":
+    "經 AI 信件迴圈索取缺漏工單號／截圖",
+  "Promise refunds": "承諾退款",
+  "Restart trading servers": "重啟交易伺服器",
+  "TR_LEAD before any dealing adjustment": "任何做市調整前升級至 TR_LEAD",
+  "CS_AGENT to hand back generic product FAQs": "一般產品 FAQ 交回 CS_AGENT",
+  "Swap on XAUUSD overnight": "XAUUSD 隔夜利息",
+  "Something wrong with my account": "我的帳戶有問題",
+  "Slippage on EURUSD market order": "EURUSD 市價單滑點",
+  "Please verify my account — cannot withdraw": "請核對我的帳戶 — 無法出金",
+  "24/7 C1 live chat, web form and official mailbox intake; AI follow-up until the client replies.":
+    "24/7 C1 即時聊天、網頁表單與官方信箱進件；AI 追問直到客戶回覆。",
+  "Order, fill, slippage and MT4/MT5 execution complaints routed from CS.":
+    "由 CS 分流的訂單、成交、滑點與 MT4／MT5 成交投訴。",
+  "24/7 C1 live chat bridge into CRMP": "24/7 C1 即時聊天橋接至 CRMP",
+  "Trading execution complaints from CS": "來自 CS 的成交投訴",
+  "Platform 24/7 live chat (C1) webhook into the CS/TR desk.":
+    "平台 24/7 即時聊天（C1）webhook 進入 CS／TR 台。",
+  "Website / app contact form posts into the CS/TR desk.":
+    "網站／App 聯絡表單進件至 CS／TR 台。",
+  "Official support and complaints mailboxes ingested as CS requests.":
+    "官方客服與投訴信箱匯入為 CS 請求。",
+  "24/7 CS + Trading intake: C1 live chat, web form and official email via POST /api/cs/intake; AI emails the client when unclear or ID is needed and waits for a reply (max 3)":
+    "24/7 CS＋交易進件：C1 即時聊天、網頁表單與官方信箱經 POST /api/cs/intake；AI 在不清楚或需核身時寄信並等待回覆（最多 3 封）",
+  "GET inbox · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email":
+    "GET 收件匣 · POST 分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬 C1｜表單｜信件",
+  "Realtime C1 live chat, web form and official-email ingest — session, mock_webhook, or header x-cs-intake-token: demo-c1":
+    "即時 C1 聊天、網頁表單與官方信箱進件 — 工作階段、mock_webhook 或標頭 x-cs-intake-token: demo-c1",
+  "CS/TR intake channels, requests, transcript, auto-email follow-ups waiting for client reply":
+    "CS／TR 進件渠道、請求、逐字稿、等待客戶回覆的自動追問信",
+  "20-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product, CS, TR) — ETA, dependencies, detailed ticks; includes C1/form/mailbox connectors and CS/TR ID vault":
+    "依 BU 的 20 項議題清單（AI、系統、RO、定價、營運、Monitor、GRC、產品、CS、TR）— ETA、依賴、細項勾選；含 C1／表單／信箱連接器與 CS／TR 核身庫",
+  "Combined hub: Risk / Ops / AI / System / CS / TR BUs with nested on-call teams (editable mission / rotation); former Departments + Teams":
+    "合併中心：風險／營運／AI／系統／CS／TR BU 與嵌套值班團隊（可編輯任務／輪值）；原部門＋團隊",
 };
 
 /** Longest-first English fragments rewritten inside mixed dummy / log strings. */

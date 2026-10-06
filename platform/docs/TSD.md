@@ -1,7 +1,7 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.8  
+**Version:** 1.9  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
@@ -16,10 +16,11 @@ This TSD describes the technical design of the Centralised Risk Management Platf
 ## 1. Purpose & scope
 
 ### 1.1 Purpose
-Provide a single admin control plane where Risk, Ops, AI, and System operators can:
+Provide a single admin control plane where Risk, Ops, AI, System, Customer Service (CS) and Trading (TR) operators can:
 - Observe Monitor 2.0 indicators / alerts
 - Run AI RCA (skills + RAG) with independent second-AI challenge on high severity
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
+- Staff 24/7 CS/TR intake: C1 live chat, web form and official email; AI emails the client when unclear or ID is needed and waits for a reply
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
 - Review home spine stage ticket counts, risk analytics, market intel, and daily performance
@@ -30,6 +31,7 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
+- CS / TR Desk: C1 live chat, submission form and official-email intake (`POST /api/cs/intake`); AI follow-up mail until the client replies (cap 3)
 - Market Intelligence 5-minute scanner + outbox
 - Bilingual docs (EN / zh-Hant) and responsive admin shell
 
@@ -153,7 +155,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 ## 7. Admin surface map
 
-Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§16) and has an operator how-to in the User Guide.
+Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide.
 
 ### 7.1 Shell (not a nav row)
 
@@ -186,6 +188,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §16.12 |
 | Response | `/admin/messenger` | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
+| Response | `/admin/cs-desk` | `CsTrDesk`, `/api/cs`, `/api/cs/intake` | `cs.read` / `cs.operate` | **§17** |
 | Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §16.15 |
 | Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §16.15 |
@@ -657,7 +660,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.16 Organisation
 
-**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`). Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
+**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Six BUs: Risk Control, Operations, AI, System, **Customer Service (CS)**, **Trading (TR)** — each with nested on-call teams (Lark chat, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`) include CS Lead / CS Agent / TR Lead / TR Dealer demo personas. Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
 
 ### 16.17 Data sources
 
@@ -688,7 +691,57 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 
 ---
 
-## 17. Document control
+## 17. CS / TR Desk
+
+**Page:** `/admin/cs-desk` · `CsTrDesk` · permissions `cs.read` (view) / `cs.operate` (act). Guest/static snapshot is readable via `lark.read`.
+
+### 17.1 Purpose
+Customer Service is the **24/7** frontline for live **C1** chat (platform live chat), the website **submission form**, and **official support mailboxes**. Trading (TR) takes CS-routed execution complaints (orders, fills, slippage, stop-out, MT4/MT5). CS does not arm trading controls; TR does not staff C1 around the clock.
+
+### 17.2 Intake API
+Realtime connectors share one webhook:
+
+| Channel | `channel` code | Typical actor |
+|---|---|---|
+| C1 live chat | `C1_LIVE_CHAT` | C1 webhook |
+| Website / app form | `WEB_FORM` | form post |
+| Official email | `OFFICIAL_EMAIL` | mailbox gateway |
+
+`POST /api/cs/intake` accepts session (`cs.operate`), `mock_webhook: true`, or header `x-cs-intake-token: demo-c1`. Body: `client_name`, `client_email`, `client_uid`, `subject`, `body` / `text` / `message`. Desk actions: `POST /api/cs` (`triage`, `followup`, `client_reply`, `reply`, `assign_tr`, `escalate_risk`, `resolve`, `simulate_c1|form|email`).
+
+Tables: `cs_channels`, `cs_requests`, `cs_messages`, `cs_followups`. Audit actions `CS_*` land on the **CRMP** plane (`entity_type=cs_request`).
+
+### 17.3 AI triage and follow-up loop
+`triageText` is heuristic (prototype — no live LLM on this path):
+
+- **need_id** — KYC / passport / verify-account / 核身 keywords, or cannot-login. Status `ID_VERIFY`.
+- **unclear** — blob shorter than 48 chars or “help me / ??? / 不清楚”. Status `AWAITING_CLIENT`.
+- **trading** — order / fill / slippage / MT4 / MT5 / 成交. Desk `TR`, status `ASSIGNED_TR`.
+- **complaint** vs **question** otherwise. Book-risk complaints can `escalate_risk` onto Demo Messenger / Human Intervention (`ESCALATED_RISK`).
+
+When clarity is `unclear` or `need_id`, AI **sends an automatic email** (`EMAIL_OUT` + `cs_followups.status=WAITING`) and **waits until the client replies** (`EMAIL_IN` → re-triage). Resolve is **blocked** while a follow-up is WAITING. Loop cap **3** mails, then CS Lead follows up in person.
+
+```mermaid
+graph TD
+  In[C1, form, email] --> API[POST /api/cs/intake]
+  API --> Triage[AI triage]
+  Triage -->|clear CS| Open[OPEN on CS]
+  Triage -->|trading| TR[ASSIGNED_TR]
+  Triage -->|unclear or need_id| Mail[Auto EMAIL_OUT]
+  Mail --> Wait[AWAITING_CLIENT or ID_VERIFY]
+  Wait -->|client reply| Triage
+  Wait -->|cap 3| Lead[CS Lead human]
+  Open --> Risk{Book risk?}
+  TR --> Risk
+  Risk -->|yes| Esc[ESCALATED_RISK to Messenger]
+  Risk -->|no| Done[RESOLVED]
+```
+
+Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slippage form, ID-verify official email.
+
+---
+
+## 18. Document control
 
 | Ver | Date | Notes |
 |---|---|---|
@@ -700,6 +753,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 | 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
+| 1.9 | 2026-10-06 | §17 CS/TR Desk: C1/form/email intake, AI follow-up until client reply (cap 3), TR routing, escalate to Risk |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

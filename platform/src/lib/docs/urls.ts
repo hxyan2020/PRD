@@ -10,6 +10,7 @@ export type UrlEntry = {
 export const PUBLIC_ADMIN_URL = "https://hxyan2020.github.io/PRD/crmp-admin/admin/";
 export const PUBLIC_ADMIN_ORIGIN = "https://hxyan2020.github.io/PRD/crmp-admin";
 export const PUBLIC_MESSENGER_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/messenger/`;
+export const PUBLIC_CS_DESK_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/cs-desk/`;
 
 export const PLATFORM_URLS: UrlEntry[] = [
   // Auth
@@ -44,12 +45,13 @@ export const PLATFORM_URLS: UrlEntry[] = [
 
   // Response (messenger / intervention / escalation)
   { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls", permission: "lark.read" },
+  { category: "Messenger", title: "CS / TR Desk", path: "/admin/cs-desk", description: "24/7 CS + Trading intake: C1 live chat, web form and official email via POST /api/cs/intake; AI emails the client when unclear or ID is needed and waits for a reply (max 3)", permission: "cs.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
   { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; skill binds one route code; no separate Path name column", permission: "escalation.read" },
 
   // Org
-  { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System BUs with nested on-call teams (editable mission / rotation); former Departments + Teams", permission: "teams.read" },
+  { category: "Org", title: "BU and Teams", path: "/admin/departments", description: "Combined hub: Risk / Ops / AI / System / CS / TR BUs with nested on-call teams (editable mission / rotation); former Departments + Teams", permission: "teams.read" },
   { category: "Org", title: "Teams (redirect)", path: "/admin/teams", description: "Redirects to combined BU and Teams hub", permission: "teams.read" },
   { category: "Org", title: "Roles & Permissions (editable)", path: "/admin/roles", description: "Editable RBAC matrix — name, description, BU, permission pills + owns/does/does-not/escalation charters; POST /api/roles; users.manage; AI blocked", permission: "users.read" },
   { category: "API", title: "Roles API", path: "/api/roles", description: "GET roles + catalog; POST update_role (users.manage; AI actors forbidden)", permission: "users.read" },
@@ -69,7 +71,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack", permission: "admin.access" },
   { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
   { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
-  { category: "Docs", title: "Open Issues", path: "/admin/docs/open-issues", description: "18-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product) — ETA, dependencies, detailed ticks; Monitor still adding indicators; CRMP initial design", permission: "admin.access" },
+  { category: "Docs", title: "Open Issues", path: "/admin/docs/open-issues", description: "20-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product, CS, TR) — ETA, dependencies, detailed ticks; includes C1/form/mailbox connectors and CS/TR ID vault", permission: "admin.access" },
   { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "X = open issues (columns), Y = timeline now→end-2027 (rows); status colours; responsible BU on every column", permission: "admin.access" },
   { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths", permission: "admin.access" },
 
@@ -79,6 +81,8 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Desk selection chat", path: "/api/ai-chat", description: "POST selected text + follow-ups → grounded CRMP explanation" },
   { category: "API", title: "AI Admin API", path: "/api/ai-admin", description: "Propose/approve settings, training, feedback" },
   { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker" },
+  { category: "API", title: "CS / TR Desk API", path: "/api/cs", description: "GET inbox · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email" },
+  { category: "API", title: "CS intake webhook", path: "/api/cs/intake", description: "Realtime C1 live chat, web form and official-email ingest — session, mock_webhook, or header x-cs-intake-token: demo-c1" },
   { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management & test notify" },
   { category: "API", title: "Market Intel API", path: "/api/market-intel", description: "Scan / findings / outbox" },
   { category: "API", title: "Monitor API", path: "/api/monitor", description: "Indicators + detectors: run_detectors, toggle_pause, threshold edit, sync" },
@@ -112,6 +116,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "DB Tables", title: "ai_skills / skill_runs / scenario_chains", path: "tables:ai_skills,ai_skill_runs,risk_scenario_chains", description: "Playbooks and multi-indicator chains" },
   { category: "DB Tables", title: "rag_documents / external_macro_events", path: "tables:rag_documents,external_macro_events", description: "Evidence corpus" },
   { category: "DB Tables", title: "messenger_*", path: "tables:messenger_threads,messenger_messages,messenger_pending_actions", description: "Demo Messenger inbox + pending controls" },
+  { category: "DB Tables", title: "cs_*", path: "tables:cs_channels,cs_requests,cs_messages,cs_followups", description: "CS/TR intake channels, requests, transcript, auto-email follow-ups waiting for client reply" },
   { category: "DB Tables", title: "lark_channels / escalation_routes", path: "tables:lark_channels,escalation_routes", description: "Channel registry; routes with route_code, is_default, coefficients_json, risk_scenario, involved_teams, pending threshold (ESC-DEFAULT)" },
   { category: "DB Tables", title: "interventions / spine_events", path: "tables:interventions,spine_events", description: "Human gates and end-to-end spine" },
   { category: "DB Tables", title: "ai_change_requests / training / feedback", path: "tables:ai_change_requests,ai_training_runs,ai_feedback,ai_accuracy_snapshots", description: "AI Admin maker/checker + quality" },

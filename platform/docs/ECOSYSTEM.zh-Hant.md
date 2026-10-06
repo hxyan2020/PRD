@@ -1,12 +1,12 @@
 # Vantage 生態導入評估
 
-**文件編號：** CRMP-ECO-001 · **版本：** 1.8 · **狀態：** 高階規劃包 · **範圍：** CFD + Crypto CRMP 原型 → 正式環境
+**文件編號：** CRMP-ECO-001 · **版本：** 1.9 · **狀態：** 高階規劃包 · **範圍：** CFD + Crypto CRMP 原型 → 正式環境
 
 ## 1. 總覽
 
 CRMP 示範已驗證端到端脊柱：
 
-**Monitor 2.0 警報 → 即時警報與追蹤 → AI RCA（Skill/RAG）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核（CRMP／Vantage Markets 管理平面分流＋回滾）／首頁脊柱階段計數。**
+**Monitor 2.0 警報 → 即時警報與追蹤 → AI RCA（Skill/RAG）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核（CRMP／Vantage Markets 管理平面分流＋回滾）／首頁脊柱階段計數。** 並行客戶入口：**C1 即時聊天／網頁表單／官方信箱 → CS／TR 台 → AI 追問直到回覆 → TR 成交或風控 Messenger。**
 
 計畫缺口與暫定 ETA 見 [開放議題](/admin/docs/open-issues) 與 [進度追蹤](/admin/docs/progress)（Monitor 仍在加指標；CRMP 初始設計；技術／資源規劃仍開放）。平台負責人：demo platform owner／`haixiang.yan@hytechc.com`。
 
@@ -39,6 +39,7 @@ CRMP 示範已驗證端到端脊柱：
 | F10 | **AI 存取黑名單強制執行** | 僅限人類頁面／功能／欄位 | 文件化黑名單 UI | AI 主體執行期強制 |
 | F11 | **市場情報資料契約** | 5 分鐘掃描需授權來源 | 啟發式掃描 | 供應源＋評分 |
 | F12 | **緊急開關** | 立即關閉自動技能、情報推送、寫入適配 | 部分設定旗標 | 全域＋逐適配 |
+| F13 | **簽章 C1／表單／信箱連接器** | 24/7 CS 必須在 CRMP 收到即時聊天、網站表單與官方信件，不能只留在個人收件匣 | 模擬 `POST /api/cs/intake`（`x-cs-intake-token: demo-c1`）＋種子台面 | 正式簽章 webhook＋信箱閘道 |
 
 ### 目標整合路徑
 
@@ -46,6 +47,7 @@ CRMP 示範已驗證端到端脊柱：
 2. CRMP → Lark 卡片（通知＋內嵌操作）  
 3. 人工確認 → Vantage 管理／控制匯流排（Maker）→ Checker 核准  
 4. 狀態回寫 → Monitor 工單＋稽核（CRMP／Vantage Markets 管理）＋首頁脊柱階段計數  
+5. C1／表單／官方信箱 → CS／TR 台（`/admin/cs-desk`）→ AI 自動寄信直到客戶回覆 → TR 成交或風控 Messenger  
 
 ---
 
@@ -130,6 +132,7 @@ CRMP 示範已驗證端到端脊柱：
 | 情報 | 啟發式掃描 | 需授權來源 |
 | 強制 | AI 黑名單偏文件化 | 須綁定 AI 服務主體 |
 | 行動 | Monitor 2.0／升級／資料來源／風險日誌／稽核已有響應式卡片；確認表仍偏桌面 | Web 響應式可接受，非原生 App 級 |
+| CS／TR | 啟發式分流＋模擬進件 token；無簽章 C1／表單／信箱；無核身庫 | 真實 24/7 請求可能只留在個人收件匣；核身／不清楚迴圈僅示範 |
 
 ---
 
@@ -157,8 +160,9 @@ CRMP 示範已驗證端到端脊柱：
 - [ ] 同意階段 C 前影子模式期間  
 - [ ] 資安簽核 AI 黑名單＋SoD 模型  
 - [ ] 法遵簽核證據保存政策  
+- [ ] 確認 CS 24/7 的 C1／表單／信箱負責人與 AI 追問 SLA（等到客戶回覆，上限 3 封）  
 
-**示範連結：** 本頁 · [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress) · [網址目錄](/admin/docs/urls) · [UAT 清單](/admin/docs/uat) · [改進路線圖](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
+**示範連結：** 本頁 · [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress) · [網址目錄](/admin/docs/urls) · [UAT 清單](/admin/docs/uat) · [改進路線圖](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger) · [CS／TR 台](/admin/cs-desk)
 
 ---
 
@@ -168,5 +172,6 @@ CRMP 示範已驗證端到端脊柱：
 |---|---|---|
 | 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理＋回滾；首頁脊柱；開放議題／進度連結 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；F2／階段 B／Monitor 不足；手機卡片；示範連結 |
+| 1.9 | 2026-10-06 | F13 簽章 C1／表單／信箱；脊柱加上 CS／TR 台；OI-19／OI-20 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

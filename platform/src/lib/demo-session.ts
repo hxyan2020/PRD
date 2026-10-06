@@ -89,6 +89,42 @@ export const DEMO_PERSONAS: DemoPersona[] = [
     labelEn: "Super Admin",
     labelZh: "超級管理員",
   },
+  {
+    email: "cs.lead@vantagemarkets.com",
+    password: "cs123",
+    name: "Maya Santos",
+    role_code: "CS_LEAD",
+    department_code: "CUSTOMER_SERVICE",
+    labelEn: "CS Lead",
+    labelZh: "客服主管",
+  },
+  {
+    email: "cs.agent@vantagemarkets.com",
+    password: "cs123",
+    name: "Elena Rossi",
+    role_code: "CS_AGENT",
+    department_code: "CUSTOMER_SERVICE",
+    labelEn: "CS Agent",
+    labelZh: "客服專員",
+  },
+  {
+    email: "tr.lead@vantagemarkets.com",
+    password: "tr123",
+    name: "Kenji Watanabe",
+    role_code: "TR_LEAD",
+    department_code: "TRADING",
+    labelEn: "TR Lead",
+    labelZh: "交易主管",
+  },
+  {
+    email: "tr.dealer@vantagemarkets.com",
+    password: "tr123",
+    name: "Omar Haddad",
+    role_code: "TR_DEALER",
+    department_code: "TRADING",
+    labelEn: "TR Dealer",
+    labelZh: "交易員",
+  },
 ];
 
 export function personaToUser(p: DemoPersona, id = 9001): SessionUser {

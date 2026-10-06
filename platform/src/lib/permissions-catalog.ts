@@ -16,6 +16,8 @@ export const ALL_PERMISSIONS: string[] = [
   "monitor.manage",
   "lark.read",
   "lark.manage",
+  "cs.read",
+  "cs.operate",
   "escalation.read",
   "escalation.manage",
   "audit.read",
@@ -66,7 +68,7 @@ export const PERMISSION_GROUPS: Array<{ en: string; zh: string; keys: string[] }
   {
     en: "Messenger & escalation",
     zh: "通訊與升級",
-    keys: ["lark.read", "lark.manage", "escalation.read", "escalation.manage", "spine.read"],
+    keys: ["lark.read", "lark.manage", "cs.read", "cs.operate", "escalation.read", "escalation.manage", "spine.read"],
   },
   {
     en: "AI & knowledge",

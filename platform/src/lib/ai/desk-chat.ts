@@ -187,6 +187,30 @@ const KNOWLEDGE: Knowledge[] = [
     },
   },
   {
+    keys: [
+      "cs desk",
+      "cs/tr",
+      "customer service",
+      "c1",
+      "live chat",
+      "follow-up email",
+      "id verification",
+      "trading support",
+      "客服",
+      "核身",
+      "成交",
+    ],
+    href: "/admin/cs-desk",
+    en: {
+      title: "CS / TR Desk",
+      body: "Customer Service is the 24/7 frontline for C1 live chat, the website form and official mailboxes. POST /api/cs/intake (header x-cs-intake-token: demo-c1) creates a request. If AI is unclear or needs ID, it emails the client and waits for a reply (max 3 loops). Trading-execution cases (fills, slippage, MT4/MT5) go to TR. Book-risk complaints escalate onto Demo Messenger / Human Intervention. Do not close ID-verify while a follow-up is WAITING.",
+    },
+    zh: {
+      title: "CS／TR 台",
+      body: "客服是 24/7 第一線：C1 即時聊天、網站表單與官方信箱。POST /api/cs/intake（標頭 x-cs-intake-token: demo-c1）會開案。AI 若不清楚或需核身，會自動寄信並等待客戶回覆（最多三輪）。成交／滑點／MT4／MT5 案件分流至 TR。帳簿風險投訴升級到示範 Messenger／人工干預。追問信仍為 WAITING 時不可結案。",
+    },
+  },
+  {
     keys: ["executed_mock", "executed_after_approval", "intervention", "halt", "dry-run", "干預", "停商品"],
     href: "/admin/interventions",
     en: {

@@ -123,6 +123,8 @@ export function UsersManager({
                 <option value="OPERATIONS">{deptLabelI18n("OPERATIONS", locale)}</option>
                 <option value="AI">{deptLabelI18n("AI", locale)}</option>
                 <option value="SYSTEM">{deptLabelI18n("SYSTEM", locale)}</option>
+                <option value="CUSTOMER_SERVICE">{deptLabelI18n("CUSTOMER_SERVICE", locale)}</option>
+                <option value="TRADING">{deptLabelI18n("TRADING", locale)}</option>
               </select>
             </div>
             <div>
