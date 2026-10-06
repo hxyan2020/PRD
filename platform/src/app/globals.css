@@ -480,15 +480,15 @@ body.nav-open {
 }
 
 .poc-window {
-  flex: 1 0 210px;
-  min-width: 200px;
+  flex: 1 0 240px;
+  min-width: 220px;
   max-width: 100%;
   display: flex;
   flex-direction: column;
   border: 1px solid var(--line);
   border-radius: 0.85rem;
   background: #fff;
-  min-height: 11rem;
+  min-height: 16rem;
   scroll-snap-align: start;
 }
 

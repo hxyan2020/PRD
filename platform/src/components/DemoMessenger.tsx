@@ -444,8 +444,39 @@ export function DemoMessenger({
         messages: nextMessages,
         pending: nextPending,
         recommended_actions: packRef.current.recommended,
+        poc_windows: pocWindows,
+        current_step: focusedHop,
       },
     }));
+  }
+
+  function relayLocalHop(actor: string, outBody: string, inBody: string) {
+    if (!pocWindows.length) return;
+    const fromStep = pocWindows.find((w) => w.status === "active")?.step ?? focusedHop;
+    const nextStep = Math.min(fromStep + 1, pocWindows.length - 1);
+    const outMsg = makeMessage("ESCALATION", actor, outBody, {
+      poc_step: fromStep,
+      step: nextStep,
+      handoff: "out",
+    });
+    const inMsg =
+      nextStep !== fromStep
+        ? makeMessage("ESCALATION", actor, inBody, {
+            poc_step: nextStep,
+            step: nextStep,
+            handoff: "in",
+          })
+        : null;
+    setPocWindows((prev) =>
+      prev.map((w) => {
+        const status = w.step < nextStep ? "relayed" : w.step === nextStep ? "active" : "waiting";
+        const extra: Message[] = [];
+        if (w.step === fromStep) extra.push(outMsg);
+        if (inMsg && w.step === nextStep) extra.push(inMsg);
+        return { ...w, status, messages: extra.length ? [...w.messages, ...extra] : w.messages };
+      })
+    );
+    setFocusedHop(nextStep);
   }
 
   function appendLocal(
@@ -565,12 +596,24 @@ export function DemoMessenger({
               : "📎 Evidence pack (demo)\n• [MONITOR] Margin utilisation >90% for 128 accounts\n• [BOOK] Copy-equity concentration 31%\n• [RAG] Prior US-open breach playbook"
           );
         } else if (action === "escalate") {
+          const from = pocWindows.find((w) => w.status === "active") || pocWindows[0];
+          const to =
+            pocWindows.find((w) => w.step === Math.min((from?.step ?? 0) + 1, pocWindows.length - 1)) || from;
+          relayLocalHop(
+            actorEscalation,
+            zh
+              ? `⬆️ 已從 ${from?.team || "一線"} 轉交至 ${to?.team || "下一承辦"}（步驟 ${(to?.step ?? 0) + 1}/${pocWindows.length || 4}）\n承辦：${from?.poc_name || from?.team} → ${to?.poc_name || to?.team}`
+              : `⬆️ Relayed from ${from?.team || "primary"} to ${to?.team || "next POC"} (step ${(to?.step ?? 0) + 1}/${pocWindows.length || 4})\nPOC: ${from?.poc_name || from?.team} → ${to?.poc_name || to?.team}`,
+            zh
+              ? `⬇️ ${to?.team || "下一承辦"} 已接收（承辦 ${to?.poc_name || to?.team || ""}）\n來自：${from?.team || "一線"}`
+              : `⬇️ ${to?.team || "next desk"} received (POC ${to?.poc_name || to?.team || ""})\nFrom: ${from?.team || "primary"}`
+          );
           appendLocal(
             "ESCALATION",
             actorEscalation,
             zh
-              ? "⬆️ 已升級至風險負責人（步驟 2/4）\n頻道：風險控管台 · SLA 15 分鐘\n路徑：風險控管台 → 信貸與客戶風險 → 風險負責人 → 高管風險橋"
-              : "⬆️ Escalated to Risk Owner (step 2/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge"
+              ? `⬆️ 已從 ${from?.team || "一線"} 轉交至 ${to?.team || "下一承辦"}（步驟 ${(to?.step ?? 0) + 1}/${pocWindows.length || 4}）`
+              : `⬆️ Relayed from ${from?.team || "primary"} to ${to?.team || "next POC"} (step ${(to?.step ?? 0) + 1}/${pocWindows.length || 4})`
           );
         } else if (action === "dismiss") {
           appendLocal(
@@ -630,6 +673,23 @@ export function DemoMessenger({
       const data = await res.json();
       if (gen !== runGen.current) return;
       if (!res.ok) {
+        if (action === "escalate" && pocWindows.length) {
+          const from = pocWindows.find((w) => w.status === "active") || pocWindows[0];
+          const to =
+            pocWindows.find((w) => w.step === Math.min((from?.step ?? 0) + 1, pocWindows.length - 1)) || from;
+          const zh = locale === "zh-Hant";
+          relayLocalHop(
+            zh ? "升級引擎" : "Escalation Engine",
+            zh
+              ? `⬆️ 已從 ${from?.team || "一線"} 轉交至 ${to?.team || "下一承辦"}`
+              : `⬆️ Relayed from ${from?.team || "primary"} to ${to?.team || "next POC"}`,
+            zh
+              ? `⬇️ ${to?.team || "下一承辦"} 已接收`
+              : `⬇️ ${to?.team || "next desk"} received`
+          );
+          setStatusMsg(t("msg.actionDone", locale, { action }));
+          return;
+        }
         setStatusMsg(data.error || t("msg.actionFailed", locale));
         return;
       }
@@ -824,7 +884,7 @@ export function DemoMessenger({
                             type="button"
                             data-testid={`msg-poc-chip-${w.step}`}
                             onClick={() => setFocusedHop(w.step)}
-                            className={`flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-left min-h-11 ${
+                            className={`flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-left min-h-11 shrink-0 max-w-[16rem] ${
                               focusedHop === w.step
                                 ? "border-teal-400 bg-teal-50"
                                 : live
@@ -844,13 +904,13 @@ export function DemoMessenger({
                               </span>
                             </span>
                             <Badge
-                              className={
+                              className={`whitespace-nowrap ${
                                 live
                                   ? "bg-rose-100 text-rose-900 border-rose-200"
                                   : done
                                     ? "bg-slate-100 text-slate-700 border-slate-200"
                                     : "bg-white text-slate-500 border-slate-200"
-                              }
+                              }`}
                             >
                               {live
                                 ? t("msg.pocActive", locale)
