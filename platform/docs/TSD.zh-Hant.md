@@ -467,7 +467,7 @@ graph TD
 ## 10. Skills 與風險情境（摘要）
 
 Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、升級路徑、BU 矯正、歷史案件。  
-`risk_scenario_chains` 連結多指標時間線。見 `/admin/skills`、`risk-scenarios-catalog.ts`、`risk-scenarios-extra.ts`。
+`risk_scenario_chains` 連結多指標時間線。見 `/admin/skills`、`risk-scenarios-catalog.ts`、`risk-scenarios-extra.ts`、`risk-scenarios-cs.ts`。
 
 ---
 
@@ -633,11 +633,11 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.10 技能看板＋SKILL.md 頁
 
-`SkillsScenariosBoard`：搜尋、技能 vs 鏈分頁、**進入** → `/admin/skills/[code]`（`finalizeSkill` 劇本：何時用／不用、前置、步驟、證據、停止、成功）。目錄：`risk-scenarios-catalog.ts`＋額外。
+`SkillsScenariosBoard`：搜尋、技能 vs 鏈分頁、**進入** → `/admin/skills/[code]`（`finalizeSkill` 劇本：何時用／不用、前置、步驟、證據、停止、成功）。目錄：`risk-scenarios-catalog.ts`＋額外＋**`risk-scenarios-cs.ts`**（CS／TR 24/7 劇本）。
 
 ### 16.11 Knowledge Tree（知識樹）
 
-`KnowledgeTreeBoard` 用戶端 SVG（`viewBox` 寬 1120）。樹幹：`domains`｜`chains`｜`rag`。產品篩選 ALL／CFD／Crypto。領域節點換行（5 欄 × 2）。點領域展開技能；點技能填檢視器；`router.push` 劇本（不要用無效的 SVG `<Link>`）。RAG 文件依 `tags_json`＋標題計分。大綱模式是同一張圖的巢狀清單。
+`KnowledgeTreeBoard` 用戶端 SVG（`viewBox` 寬 1120）。樹幹：`domains`｜`chains`｜`rag`。產品篩選 ALL／CFD／Crypto。領域節點換行（5 欄 × N）。點領域展開技能；點技能填檢視器；`router.push` 劇本（不要用無效的 SVG `<Link>`）。**RAG 文件葉**深連結 `/admin/rag?doc=…`。`MonitorCode` 連到 Monitor 2.0。大綱模式是同一張圖的巢狀清單。CS／TR 樹幹：**CS_SERVICE**、**TRADING_EXEC**；連結鏈 `CHAIN-CS-TR-INTAKE`；RAG 分類 `CS_POLICY`。
 
 ### 16.12 RAG 語料
 
@@ -718,6 +718,19 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 
 清晰度為 `unclear` 或 `need_id` 時，AI **自動寄信**（`EMAIL_OUT`＋`cs_followups.status=WAITING`）並**等待客戶回覆**（`EMAIL_IN` → 重新分流）。追問仍為 WAITING 時**禁止結案**。迴圈上限 **3** 封，其後由 CS Lead 人工跟進。
 
+### 17.4 專用 SKILL.md 劇本＋知識樹
+分流不只是啟發式。每則請求在 `cs_requests.skill_code` 蓋上專用劇本（`platform/src/lib/ai/risk-scenarios-cs.ts`）：
+
+| 技能 | 何時 | 台面／狀態 |
+|---|---|---|
+| `SKILL-CS-CLARIFY` | 過短／「help me ???」 | CS · `AWAITING_CLIENT` |
+| `SKILL-CS-ID-VERIFY` | KYC／護照／登不進去 | CS · `ID_VERIFY` |
+| `SKILL-CS-ACCOUNT-FAQ` | 清楚的隔夜利息／時段／UID | CS · `OPEN` |
+| `SKILL-TR-EXECUTION` | 成交／滑點／MT4／MT5 | TR · `ASSIGNED_TR` |
+| `SKILL-CS-ESCALATE-RISK` | 帳簿風險／詐欺／錢包 | `ESCALATED_RISK` |
+
+每個技能含何時使用／何時不用／預檢／證據／停止／成功條件、繁中覆寫（`skill-zh.ts`）、一條升級路徑（`ESC-CS-24-7`／`ESC-TR-DEAL`／`ESC-CS-RISK`），以及明確 RAG 葉（`SKILL_RAG_DOCS`）。知識樹領域 **CS_SERVICE** 與 **TRADING_EXEC** 展開這些技能；連結時間鏈 `CHAIN-CS-TR-INTAKE`。語料鍵：`cs-24-7-intake`、`cs-id-verify-policy`、`cs-swap-faq`、`tr-dealing-handoff`、`cs-escalate-to-risk`、`cs-skill-playbooks`。佇列監控 `M2-CS-UNCLEAR`、`M2-CS-ID`、`M2-CS-FAQ`、`M2-TR-EXEC`、`M2-CS-ESC`。CS 台晶片 **進入** `/admin/skills/{code}`。
+
 ```mermaid
 graph TD
   In[C1／表單／官方信箱] --> API[POST /api/cs/intake]
@@ -752,6 +765,7 @@ graph TD
 | 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
 | 1.9 | 2026-10-06 | §17 CS／TR 台：C1／表單／信箱進件、AI 追問直到客戶回覆（上限 3）、TR 分流、升級風控 |
 | 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開 `basePath` `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
+| 2.1 | 2026-10-06 | §17.4 CS／TR 專用 SKILL.md；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 葉；UAT-50 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

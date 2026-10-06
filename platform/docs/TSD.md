@@ -637,11 +637,11 @@ List merged into Realtime Alert (`AlertTrackerBoard`) with **grouped AI pipeline
 
 ### 16.10 Skills board + SKILL.md page
 
-`SkillsScenariosBoard`: search, skills vs chains tabs, **Enter** → `/admin/skills/[code]` (`finalizeSkill` playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: `risk-scenarios-catalog.ts` + extras.
+`SkillsScenariosBoard`: search, skills vs chains tabs, **Enter** → `/admin/skills/[code]` (`finalizeSkill` playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: `risk-scenarios-catalog.ts` + extras + **`risk-scenarios-cs.ts`** (CS/TR 24/7 playbooks).
 
 ### 16.11 Knowledge Tree
 
-`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook. **RAG documents render as leaves** with deep links to `/admin/rag?doc=…`. `MonitorCode` chips link to `/admin/monitor-2#M2-…`. Outline mode is the same graph as a nested list.
+`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × N). Click domain fans skills; click skill fills inspector; `router.push` playbook. **RAG documents render as leaves** with deep links to `/admin/rag?doc=…`. `MonitorCode` chips link to `/admin/monitor-2#M2-…`. Outline mode is the same graph as a nested list. CS/TR trunks: **CS_SERVICE**, **TRADING_EXEC**; linked chain `CHAIN-CS-TR-INTAKE`; RAG category `CS_POLICY`.
 
 ### 16.12 RAG corpus
 
@@ -722,6 +722,19 @@ Tables: `cs_channels`, `cs_requests`, `cs_messages`, `cs_followups`. Audit actio
 
 When clarity is `unclear` or `need_id`, AI **sends an automatic email** (`EMAIL_OUT` + `cs_followups.status=WAITING`) and **waits until the client replies** (`EMAIL_IN` → re-triage). Resolve is **blocked** while a follow-up is WAITING. Loop cap **3** mails, then CS Lead follows up in person.
 
+### 17.4 Dedicated SKILL.md playbooks + Knowledge Tree
+Triage is not only a heuristic. Each request stamps `cs_requests.skill_code` to a dedicated playbook (`platform/src/lib/ai/risk-scenarios-cs.ts`):
+
+| Skill | When | Desk / status |
+|---|---|---|
+| `SKILL-CS-CLARIFY` | Thin / “help me ???” | CS · `AWAITING_CLIENT` |
+| `SKILL-CS-ID-VERIFY` | KYC / passport / cannot-login | CS · `ID_VERIFY` |
+| `SKILL-CS-ACCOUNT-FAQ` | Clear swap / hours / UID | CS · `OPEN` |
+| `SKILL-TR-EXECUTION` | Fill / slippage / MT4/MT5 | TR · `ASSIGNED_TR` |
+| `SKILL-CS-ESCALATE-RISK` | Book-risk / fraud / wallet | `ESCALATED_RISK` |
+
+Each skill has when-to-use / when-not / prechecks / evidence / stop / success, Traditional Chinese overlays (`skill-zh.ts`), one escalation route (`ESC-CS-24-7` / `ESC-TR-DEAL` / `ESC-CS-RISK`), and explicit RAG leaves (`SKILL_RAG_DOCS`). Knowledge Tree domains **CS_SERVICE** and **TRADING_EXEC** fan out these skills; linked timeline `CHAIN-CS-TR-INTAKE`. Corpus keys: `cs-24-7-intake`, `cs-id-verify-policy`, `cs-swap-faq`, `tr-dealing-handoff`, `cs-escalate-to-risk`, `cs-skill-playbooks`. Queue monitors `M2-CS-UNCLEAR`, `M2-CS-ID`, `M2-CS-FAQ`, `M2-TR-EXEC`, `M2-CS-ESC`. The CS desk chip **Enter**s `/admin/skills/{code}`.
+
 ```mermaid
 graph TD
   In[C1, form, email] --> API[POST /api/cs/intake]
@@ -756,6 +769,7 @@ Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slip
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
 | 1.9 | 2026-10-06 | §17 CS/TR Desk: C1/form/email intake, AI follow-up until client reply (cap 3), TR routing, escalate to Risk |
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; public `basePath` `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
+| 2.1 | 2026-10-06 | §17.4 dedicated CS/TR SKILL.md playbooks; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves; UAT-50 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

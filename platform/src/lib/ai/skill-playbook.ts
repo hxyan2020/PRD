@@ -25,12 +25,16 @@ function ownerRole(dept: string, locale: UiLocale) {
     if (dept === "SYSTEM") return "系統管理員";
     if (dept === "AI") return "AI 工程師";
     if (dept === "EXEC") return "風險執行橋";
+    if (dept === "CUSTOMER_SERVICE") return "客服主管／24/7 專員";
+    if (dept === "TRADING") return "TR 成交主管／交易員";
     return "風險負責人／信貸台";
   }
   if (dept === "OPERATIONS") return "Ops Lead";
   if (dept === "SYSTEM") return "System Admin";
   if (dept === "AI") return "AI Engineer";
   if (dept === "EXEC") return "Exec Risk Bridge";
+  if (dept === "CUSTOMER_SERVICE") return "CS Lead / 24-7 Agent";
+  if (dept === "TRADING") return "TR Lead / Dealer";
   return "Risk Owner / Credit Desk";
 }
 

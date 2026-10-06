@@ -321,6 +321,60 @@ export const SKILL_ZH: Record<string, SkillZh> = {
     why: "1 小時淨流失 ≥25% 需分階段平倉與暫停新跟單。",
     indicator_name: "跟單淨流失（1 小時）",
   },
+  "SKILL-CS-CLARIFY": {
+    name: "CS 釐清過短或不清楚的客戶請求",
+    description: "C1／表單／信件過短無法辦理時的 24/7 劇本。先寄信、等待回覆，禁止臆測需求。",
+    why: "不清楚案件堆積代表 AI 在猜。自動信件上限 3 封，案件維持待客戶直到客戶回答。",
+    indicator_name: "待釐清 CS 請求（未結）",
+    fault_areas: ["一行 C1（help me ???）", "表單細節空白", "語言混雜／無 UID", "承諾截圖未附"],
+    when_to_use: [
+      "進件短於 48 字，或含 help me／???／不清楚／不知道時使用。",
+      "重新分流時若最新回覆仍無法判斷 FAQ／TR／核身，繼續用本技能。",
+    ],
+    when_not_to_use: [
+      "不要從一行字臆測隔夜利息、成交或 KYC 結果。",
+      "追問信仍為 WAITING 時不可結案。",
+      "若已提到護照／KYC／登不進去，改用 SKILL-CS-ID-VERIFY。",
+    ],
+    corrections: ["官方信箱詢問發生什麼／UID／截圖／期望結果", "維持待客戶；WAITING 時禁止結案", "第 3 封後由 CS Lead 人工跟進"],
+    steps: ["通知 CS 24/7 台已啟動釐清迴圈", "寄出官方 EMAIL_OUT", "等待 EMAIL_IN 後重新分流"],
+  },
+  "SKILL-CS-ID-VERIFY": {
+    name: "CS 帳戶操作前身分驗證",
+    description: "KYC／護照／登不進去／出金被擋。要求證件＋UID 後四碼＋自拍，維持身分驗證直到回覆。",
+    why: "未核身做出金、重設密碼或改 UID 是帳戶盜用路徑。佇列 ≥12 代表核身流程卡住。",
+    indicator_name: "CS 核身佇列（未結）",
+    fault_areas: ["客戶登不進去／出金需 KYC", "自拍與護照不符", "缺 UID 後四碼", "共用裝置多帳戶叢集"],
+    corrections: ["要求護照／證件、UID 後四碼、相符自拍", "狀態維持身分驗證直到 EMAIL_IN", "自拍／裝置不符則升級風控"],
+    steps: ["寄核身信件", "維持身分驗證；WAITING 時禁止結案", "CS Lead 確認核身包或升級詐欺"],
+  },
+  "SKILL-CS-ACCOUNT-FAQ": {
+    name: "CS 帳戶／產品 FAQ（隔夜利息、時段、UID）",
+    description: "CS 可從 RAG 回答的清楚問題（隔夜利息、週末三倍、帳戶類型、交易時段），不需 TR 成交帶或風控開關。",
+    why: "FAQ 量是人力而非帳簿風險。違規代表 RAG 答案過期或夜間 C1 人力不足。",
+    indicator_name: "未結 CS FAQ／產品詢問",
+    fault_areas: ["RAG 隔夜利息表過期", "未揭露實體時段", "客戶搞混 XAUUSD 與 XAUUSD247", "週末三倍未說明"],
+    corrections: ["引用 cs-swap-faq／accounts-pricing／xauusd247", "若答案缺失則 propose_rag（人工關卡）"],
+    steps: ["檢索 cs-swap-faq／accounts-pricing", "CS 專員引用產品規則回覆"],
+  },
+  "SKILL-TR-EXECUTION": {
+    name: "TR 成交 — 成交、滑點、強平、MT4／MT5",
+    description: "成交投訴離開 CS。TR 重建成交帶（票號、商品、時間、LP 成交對按鈕）。CS 不可臆測點數。",
+    why: "波動後 TR 佇列常與 M2-SLIP-021／M2-LP-022 同動。要台面人力加成交帶覆核，不是 CS 複製貼上。",
+    indicator_name: "TR 成交佇列（已派）",
+    fault_areas: ["LP 拒單／部分成交", "橋接延遲對按鈕價", "過期聚合器", "跳空標記上的強平"],
+    corrections: ["台面=TR、狀態已派 TR", "票號、商品、UTC 時間、按鈕對 LP 成交", "對照滑點／LP 監控 — 勿從 CS 調帳簿"],
+    steps: ["蓋 desk=TR 與已派 TR", "蒐集票號／商品／時間／聲稱點數", "若全市場滑點則升級風控"],
+  },
+  "SKILL-CS-ESCALATE-RISK": {
+    name: "CS／TR 將帳簿風險升級至風控脊柱",
+    description: "真正的信貸、詐欺、錢包或連鎖風險離開 CS／TR。Messenger＋人工干預擁有開關。CS／TR 不再單獨處理。",
+    why: "CS→風控交接暴衝是帳簿事故在客戶端的鏡像。未結 ≥8 代表脊柱沒有吸收投訴。",
+    indicator_name: "CS／TR 升級風控（未結）",
+    fault_areas: ["強平連鎖以 CS 聊天出現", "帳戶盜用／詐欺環", "熱錢包／出金凍結觀感", "LP 拒單風暴被當成滑點投訴"],
+    corrections: ["狀態已升級風控；CS／TR 停止單獨回覆", "示範 Messenger／人工干預 — 開關需 Maker／Checker"],
+    steps: ["蓋已升級風控並停止 CS 單獨處理", "風險負責人接手 Messenger／干預"],
+  },
 };
 
 export const CHAIN_ZH: Record<string, { name: string; description: string }> = {
@@ -479,5 +533,9 @@ export const CHAIN_ZH: Record<string, { name: string; description: string }> = {
   "CHAIN-CHARGEBACK-FUNDING": {
     name: "支付詐欺 → 退單 → 入金例外 → 出金",
     description: "入金濫用變成收單行退單與營運資金壓力。",
+  },
+  "CHAIN-CS-TR-INTAKE": {
+    name: "不清楚 C1 → 核身 → TR 成交帶 → 風控脊柱",
+    description: "客戶 24/7 大門：過短聊天先釐清；KYC 走核身；成交字詞給 TR；帳簿風險離開 CS／TR 進入 Messenger。",
   },
 };

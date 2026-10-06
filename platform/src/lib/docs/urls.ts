@@ -79,12 +79,12 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "AI", title: "RAG Knowledge Base", path: "/admin/rag", description: "Internal + external evidence corpus — AI write blocked (human-gate: pages AI cannot edit escalate to human / propose_rag maker-checker)", permission: "rag.read" },
   { category: "AI", title: "AI Skills", path: "/admin/skills", description: "Playbooks & enriched risk scenarios — Enter opens the full SKILL.md page; each skill binds one escalation path (ESC-DEFAULT fallback)", permission: "skills.read" },
   { category: "AI", title: "Skill playbook detail", path: "/admin/skills/[code]", description: "Full when-to-use / prechecks / evidence / stop / success playbook for one skill", permission: "skills.read" },
-  { category: "AI", title: "Knowledge Tree", path: "/admin/knowledge-tree", description: "Visual map of domains, skills, linked timelines and RAG document leaves with deep links", permission: "rag.read" },
+  { category: "AI", title: "Knowledge Tree", path: "/admin/knowledge-tree", description: "Visual map of domains (incl. CS_SERVICE / TRADING_EXEC), dedicated CS/TR skills, linked timelines and RAG document leaves with deep links", permission: "rag.read" },
   { category: "AI", title: "AI Access Security", path: "/admin/security/ai-access", description: "Human-only pages/functions/fields blocklist (includes FN-RAG-WRITE / propose_rag only)", permission: "audit.read" },
 
   // Response (messenger / intervention / escalation)
   { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls", permission: "lark.read" },
-  { category: "Messenger", title: "CS / TR Desk", path: "/admin/cs-desk", description: "24/7 CS + Trading intake: C1 live chat, web form and official email via POST /api/cs/intake; AI emails the client when unclear or ID is needed and waits for a reply (max 3)", permission: "cs.read" },
+  { category: "Messenger", title: "CS / TR Desk", path: "/admin/cs-desk", description: "24/7 CS + Trading intake: C1 live chat, web form and official email via POST /api/cs/intake; AI stamps dedicated SKILL.md playbooks, emails when unclear or ID is needed and waits for a reply (max 3)", permission: "cs.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
   { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; skill binds one route code; no separate Path name column", permission: "escalation.read" },
@@ -155,7 +155,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "DB Tables", title: "ai_skills / skill_runs / scenario_chains", path: "tables:ai_skills,ai_skill_runs,risk_scenario_chains", description: "Playbooks and multi-indicator chains" },
   { category: "DB Tables", title: "rag_documents / external_macro_events", path: "tables:rag_documents,external_macro_events", description: "Evidence corpus" },
   { category: "DB Tables", title: "messenger_*", path: "tables:messenger_threads,messenger_messages,messenger_pending_actions", description: "Demo Messenger inbox + pending controls" },
-  { category: "DB Tables", title: "cs_*", path: "tables:cs_channels,cs_requests,cs_messages,cs_followups", description: "CS/TR intake channels, requests, transcript, auto-email follow-ups waiting for client reply" },
+  { category: "DB Tables", title: "cs_*", path: "tables:cs_channels,cs_requests,cs_messages,cs_followups", description: "CS/TR intake channels, requests (incl. skill_code), transcript, auto-email follow-ups waiting for client reply" },
   { category: "DB Tables", title: "lark_channels / escalation_routes", path: "tables:lark_channels,escalation_routes", description: "Channel registry; routes with route_code, is_default, coefficients_json, risk_scenario, involved_teams, pending threshold (ESC-DEFAULT)" },
   { category: "DB Tables", title: "interventions / spine_events", path: "tables:interventions,spine_events", description: "Human gates and end-to-end spine" },
   { category: "DB Tables", title: "ai_change_requests / training / feedback", path: "tables:ai_change_requests,ai_training_runs,ai_feedback,ai_accuracy_snapshots", description: "AI Admin maker/checker + quality" },

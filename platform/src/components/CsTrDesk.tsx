@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { AdminLink } from "@/components/AdminLink";
 import { Badge, StatusBadge } from "@/components/ui";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase, t, type UiLocale } from "@/lib/i18n";
@@ -20,6 +21,7 @@ type RequestRow = {
   status: string;
   ai_clarity: string;
   followup_count: number;
+  skill_code: string | null;
   updated_at: string;
 };
 
@@ -51,6 +53,11 @@ function channelLabel(code: string, locale: UiLocale) {
   if (code === "WEB_FORM") return locale === "zh-Hant" ? "提交表單" : "Submission form";
   if (code === "OFFICIAL_EMAIL") return locale === "zh-Hant" ? "官方信箱" : "Official email";
   return code;
+}
+
+function skillShort(code: string | null | undefined) {
+  if (!code) return "";
+  return code.replace(/^SKILL-/, "");
 }
 
 function clarityLabel(v: string, locale: UiLocale) {
@@ -163,6 +170,11 @@ export function CsTrDesk({
                 <Badge className="bg-slate-100 text-slate-700 border-slate-200">{row.desk}</Badge>
                 <StatusBadge value={row.status} />
                 <Badge className="bg-orange-50 text-orange-900 border-orange-200">{channelLabel(row.channel, locale)}</Badge>
+                {row.skill_code ? (
+                  <Badge className="bg-teal-50 text-teal-900 border-teal-200 font-mono text-[10px]">
+                    {skillShort(row.skill_code)}
+                  </Badge>
+                ) : null}
               </div>
               <div className="mt-1 text-sm font-semibold line-clamp-2">{phrase(row.subject, locale)}</div>
               <div className="text-[11px] text-[var(--muted)] mt-0.5">
@@ -185,6 +197,19 @@ export function CsTrDesk({
                 <Badge className="bg-violet-50 text-violet-900 border-violet-200">
                   {clarityLabel(active.ai_clarity, locale)}
                 </Badge>
+                {active.skill_code ? (
+                  <AdminLink
+                    href={`/admin/skills/${encodeURIComponent(active.skill_code)}`}
+                    className="inline-flex"
+                  >
+                    <Badge
+                      data-testid="cs-skill-chip"
+                      className="bg-teal-50 text-teal-900 border-teal-300 font-mono text-[11px] hover:bg-teal-100"
+                    >
+                      {t("cs.skill", locale)} {skillShort(active.skill_code)}
+                    </Badge>
+                  </AdminLink>
+                ) : null}
                 <span className="text-xs text-[var(--muted)] font-mono">{active.request_id}</span>
               </div>
               <h2 className="mt-2 font-[family-name:var(--font-display)] text-lg">{phrase(active.subject, locale)}</h2>

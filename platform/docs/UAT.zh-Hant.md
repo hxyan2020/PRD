@@ -9,11 +9,11 @@
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- 全包建議時窗約 **9.5 小時**（49 案）。
+- Full pack suggested window ≈ **9.7 小時**（50 案）。
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及 **CS／TR 台**（C1 即時聊天、網頁表單、官方信箱進件；AI 追問直到客戶回覆；TR 分流）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及 **CS／TR 台**（C1 即時聊天、網頁表單、官方信箱進件；專用 SKILL.md 劇本；AI 追問直到客戶回覆；TR 分流）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
@@ -76,7 +76,8 @@ graph TD
 | 46 | UAT-46 | 484m | 12m | High | CS + System | UAT-01; CS/TR desk seeded | CS／TR — C1、表單與官方信箱即時進件 | CS / TR Desk, URL Catalog, BU and Teams |
 | 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS／TR — AI 在不清楚或需核身時寄信並等待 | CS / TR Desk, Audit Log |
 | 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS／TR — 交易案件給 TR；帳簿風險升級風控 | CS / TR Desk, Demo Messenger |
-| 49 | UAT-49 | 523m | 15m | Critical | Risk Owner | UAT-01–48 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
+| 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS／TR — 專用 SKILL.md 劇本蓋台面並豐富知識樹 | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
+| 49 | UAT-49 | 535m | 15m | Critical | Risk Owner | UAT-01–50 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
 
 ## 逐步案例
 
@@ -476,11 +477,11 @@ graph TD
 **步驟**
 
 1. 由左側開啟知識樹。
-2. 領域、技能、時間鏈、RAG 文件數量皆非零。
-3. 展開一領域（如 LP_HEDGE）並點技能代碼，應打開完整劇本。
-4. 點 RAG 文件連結，進入知識庫。
+2. 領域、技能、時間鏈、RAG 文件數量皆非零。必須看見 CS_SERVICE 與 TRADING_EXEC 樹幹。
+3. 展開 CS_SERVICE（或 LP_HEDGE）並點技能代碼，應打開完整劇本。
+4. 點 RAG 文件葉（cs-24-7-intake 或風險政策）進入知識庫。
 
-**通過：** 樹可渲染；技能連到劇本；RAG 連到知識庫。
+**通過：** 樹可渲染；CS_SERVICE／TRADING_EXEC 存在；技能連到劇本；RAG 連到知識庫。
 **證據：** 知識樹＋劇本截圖。
 
 ### UAT-24 — 繁中覆蓋介面、Messenger、技能與文件
@@ -911,9 +912,28 @@ graph TD
 **通過：** 交易關鍵字 → TR。指派至 TR 可用。升級風控離開 CS。繁中動作標籤齊全。
 **證據：** TR 篩選收件匣＋已升級風控註記截圖。
 
+### UAT-50 — CS／TR — 專用 SKILL.md 劇本蓋台面並豐富知識樹
+
+- **嚴重度：** High · **負責：** CS + AI · **依賴：** UAT-46; skills + RAG seeded · **建議：** T+523m / 12m
+- **涵蓋：** CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base
+- **為何測：** 只有啟發式分流沒有具名劇本，CS 仍在猜。知識樹必須出現 CS_SERVICE／TRADING_EXEC 與 RAG 葉。
+- **目的：** 種子請求顯示專用技能晶片並打開 SKILL.md。樹有 CS_SERVICE 與 TRADING_EXEC；RAG 含 cs-24-7-intake。
+
+**步驟**
+
+1. 開啟 CS／TR 台。隔夜利息 → SKILL-CS-ACCOUNT-FAQ；「help me ???」→ SKILL-CS-CLARIFY；滑點表單 → SKILL-TR-EXECUTION；核身信件 → SKILL-CS-ID-VERIFY。
+2. 點技能晶片，打開 `/admin/skills/{code}`，含何時使用／預檢／證據／停止／成功。
+3. 開啟知識樹。展開 CS_SERVICE — CS 技能出現。TRADING_EXEC 有 SKILL-TR-EXECUTION。RAG 葉含 cs-24-7-intake／cs-swap-faq。
+4. 開啟 RAG，搜尋「C1 進件」。cs-24-7-intake 與相關 CS_POLICY 文件都在。
+5. 升級至風控重蓋 SKILL-CS-ESCALATE-RISK。指派至 TR 重蓋 SKILL-TR-EXECUTION。
+6. 切換繁中：劇本名稱與樹上 CS_SERVICE 為繁體中文。
+
+**通過：** 四則種子技能相符。晶片打開劇本。樹有 CS_SERVICE／TRADING_EXEC 與 RAG 葉。繁中齊全。
+**證據：** CS 台技能晶片＋知識樹 CS_SERVICE 展開＋一則 RAG 葉。
+
 ### UAT-49 — 風險負責人退出簽核
 
-- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–48 results recorded · **建議：** T+523m / 15m
+- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–50 results recorded · **建議：** T+535m / 15m
 - **涵蓋：** UAT Checklist, Audit Log
 - **為何測：** 在有權的人寫下 ACCEPT／ACCEPT WITH WAIVERS／REJECT 之前，UAT 不算結束。
 - **目的：** 依退出規則統計 Critical／High，並存簽署決策。
@@ -922,7 +942,7 @@ graph TD
 
 1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入、CS／TR 追問迴圈）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
-3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）通過。
+3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）、CS／TR 專用技能與知識樹（UAT-50）通過。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交给 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 

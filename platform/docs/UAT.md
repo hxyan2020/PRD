@@ -9,11 +9,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **9.5 hours** (49 cases).
+- Full pack suggested window ≈ **9.7 hours** (50 cases).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; AI follow-up until the client replies; TR routing) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; dedicated SKILL.md playbooks; AI follow-up until the client replies; TR routing) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings, User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
 
 ```mermaid
 graph TD
@@ -76,7 +76,8 @@ graph TD
 | 46 | UAT-46 | 484m | 12m | High | CS + System | UAT-01; CS/TR desk seeded | CS/TR — C1, form and official email land in realtime | CS / TR Desk, URL Catalog, BU and Teams |
 | 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS/TR — AI emails when unclear or ID is needed, then waits | CS / TR Desk, Audit Log |
 | 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS/TR — trading cases go to TR; book-risk escalates to Risk | CS / TR Desk, Demo Messenger |
-| 49 | UAT-49 | 523m | 15m | Critical | Risk Owner | UAT-01–48 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
+| 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS/TR — dedicated SKILL.md playbooks stamp the desk and enrich the tree | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
+| 49 | UAT-49 | 535m | 15m | Critical | Risk Owner | UAT-01–50 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
 
@@ -476,11 +477,11 @@ graph TD
 **Steps**
 
 1. Open Knowledge Tree from the left pane (AI & knowledge).
-2. Confirm counts for domains, skills, linked timelines and RAG docs are non-zero.
-3. Expand a domain (for example LP_HEDGE) and click a skill code. It must open the full playbook (same as UAT-20).
-4. Click a RAG document link and land on RAG Knowledge Base (or a document in it).
+2. Confirm counts for domains, skills, linked timelines and RAG docs are non-zero. CS_SERVICE and TRADING_EXEC trunks must appear.
+3. Expand CS_SERVICE (or LP_HEDGE) and click a skill code. It must open the full playbook (same as UAT-20).
+4. Click a RAG document leaf (cs-24-7-intake or a risk policy) and land on RAG Knowledge Base.
 
-**Pass:** Tree renders; skill links open playbooks; RAG links open the library.
+**Pass:** Tree renders; CS_SERVICE / TRADING_EXEC present; skill links open playbooks; RAG links open the library.
 **Evidence:** Screenshot of the tree plus the destination playbook.
 
 ### UAT-24 — Traditional Chinese covers chrome, messenger, skills and docs
@@ -911,9 +912,28 @@ graph TD
 **Pass:** Trading keywords → TR. Assign to TR works. Escalate to Risk leaves CS. zh-Hant action labels present.
 **Evidence:** Screenshot of TR-filtered inbox + ESCALATED_RISK note.
 
+### UAT-50 — CS/TR — dedicated SKILL.md playbooks stamp the desk and enrich the tree
+
+- **Severity:** High · **BU:** CS + AI · **Depends:** UAT-46; skills + RAG seeded · **Window:** T+523m / 12m
+- **Covers:** CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base
+- **Why:** Heuristic routing without a named playbook leaves CS guessing. The knowledge tree must show CS_SERVICE / TRADING_EXEC with RAG leaves.
+- **Goal:** Seeded requests show dedicated skill chips that open SKILL.md. Tree has CS_SERVICE and TRADING_EXEC; RAG includes cs-24-7-intake.
+
+**Steps**
+
+1. Open CS / TR Desk. Seeded swap chat → SKILL-CS-ACCOUNT-FAQ; “help me ???” → SKILL-CS-CLARIFY; slippage form → SKILL-TR-EXECUTION; verify-account email → SKILL-CS-ID-VERIFY.
+2. Click the skill chip. It opens `/admin/skills/{code}` with when-to-use / prechecks / evidence / stop / success.
+3. Open Knowledge Tree. Expand CS_SERVICE — CS skills appear. TRADING_EXEC holds SKILL-TR-EXECUTION. RAG leaves include cs-24-7-intake / cs-swap-faq.
+4. Open RAG, search “C1 intake”. cs-24-7-intake and related CS_POLICY docs are present.
+5. Escalate to Risk restamps SKILL-CS-ESCALATE-RISK. Assign to TR restamps SKILL-TR-EXECUTION.
+6. Switch 繁中: playbook names and CS_SERVICE on the tree are Traditional Chinese.
+
+**Pass:** Four seeded skills match. Chip opens playbook. Tree has CS_SERVICE / TRADING_EXEC with RAG leaves. zh-Hant present.
+**Evidence:** CS desk skill chip + Knowledge Tree CS_SERVICE fan-out + one RAG leaf.
+
 ### UAT-49 — Risk Owner exit sign-off
 
-- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–48 results recorded · **Window:** T+523m / 15m
+- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–50 results recorded · **Window:** T+535m / 15m
 - **Covers:** UAT Checklist, Audit Log
 - **Why:** UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.
 - **Goal:** Tally Critical/High results against the exit rules and file a signed decision.
@@ -922,7 +942,7 @@ graph TD
 
 1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in, CS/TR follow-up loop). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
-3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), and CS/TR intake + follow-up (UAT-46, UAT-47) passed.
+3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), CS/TR intake + follow-up (UAT-46, UAT-47), and CS/TR dedicated skills + tree (UAT-50) passed.
 4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 

@@ -6,7 +6,7 @@
 **Owner:** demo platform owner · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
-This PRD is the product contract for **every screen and feature currently in CRMP Plus** (original CRMP Admin plus 24/7 CS/TR). Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-49](/admin/docs/uat).
+This PRD is the product contract for **every screen and feature currently in CRMP Plus** (original CRMP Admin plus 24/7 CS/TR). Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-50](/admin/docs/uat).
 
 ---
 
@@ -221,7 +221,7 @@ graph LR
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
 | FR-23 | Monitor 2.0 registry (indicators + detectors) | Run all / Sync / Pause; recent runs; enable-disable persists on localhost (`/admin/detectors` redirects here) |
 | FR-24 | Realtime Alert & Tracker ack queue | Open-only queue; grouped AI pipeline; Acknowledge mutates status; closed tickets → Risk Log |
-| FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out; Enter to playbook; RAG document leaves with deep links |
+| FR-25 | Knowledge Tree visualisation | SVG map + outline; domain fan-out including CS_SERVICE / TRADING_EXEC; Enter to playbook; RAG document leaves with deep links |
 | FR-26 | Grouped Platform Settings | Six groups (platform, monitor, AI, market intel, Lark, SLA); save on localhost / browser-only on Pages |
 | FR-27 | Org directory | Combined BU and Teams hub (`/admin/departments`), editable Roles (`/admin/roles` · `/api/roles`), Users (incl. demo platform owner / haixiang.yan@hytechc.com) |
 | FR-28 | Escalation routes + Lark registry | Dimensions × coefficients; ESC-DEFAULT catch-all; skill binds one route code; no Path name column; channel enable |
@@ -229,12 +229,13 @@ graph LR
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-plus/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
-| FR-32 | UAT interactive pack | UAT-01…UAT-49 with why/steps/pass/evidence and screen coverage |
+| FR-32 | UAT interactive pack | UAT-01…UAT-50 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 | FR-37 | CS / TR 24/7 desk | C1 live chat, web form and official email ingest via `/api/cs/intake`; AI auto-emails when unclear or ID is needed and waits for a reply (cap 3); trading cases → TR; book-risk → messenger spine |
 | FR-38 | CRMP Plus public URL | Permanent snapshot at `https://hxyan2020.github.io/PRD/crmp-plus/`; original CRMP Admin at `/PRD/crmp-admin/` is frozen and not overwritten |
+| FR-39 | CS/TR dedicated skills + RAG tree | Five SKILL.md playbooks (clarify / ID / FAQ / TR execution / escalate-risk) stamp `skill_code`; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* corpus; routes ESC-CS-24-7 / ESC-TR-DEAL / ESC-CS-RISK |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -262,11 +263,11 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | AI & knowledge | AI Analyses (redirect) | `/admin/ai-analyses` → `/admin/alerts` | List merged into Realtime Alert & Tracker | Grouped pipeline + rank note; detail pack at `/admin/ai-analyses/[id]` |
 | AI & knowledge | AI Admin | `/admin/ai-admin` | Dual-control + first/second-line cards | Seven tabs; propose_rag human-gate; maker ≠ checker |
 | AI & knowledge | AI Skills | `/admin/skills` | Playbooks + chains | Enter → SKILL.md; one escalation bind |
-| AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
-| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |
+| AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; CS_SERVICE / TRADING_EXEC; RAG leaves + deep links |
+| AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag; CS_POLICY docs |
 | Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
 | Response | Demo Messenger | `/admin/messenger` | Chat-native triage with bird-eye POC windows | Path chips, per-POC chats, sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
-| Response | CS / TR Desk | `/admin/cs-desk` | 24/7 C1, form and mailbox intake | Three channels; AI follow-up until reply; TR routing; escalate to Risk |
+| Response | CS / TR Desk | `/admin/cs-desk` | 24/7 C1, form and mailbox intake | Three channels; dedicated skill chip; AI follow-up until reply; TR routing; escalate to Risk |
 | Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
 | Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT; skill binds one path; no Path name column |
 | Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |
@@ -279,7 +280,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Docs | User Guide | `/admin/docs/user-guide` | How to operate | EN + zh-Hant; every screen |
 | Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document |
 | Docs | TSD | `/admin/docs/tsd` | How built | Surface map complete |
-| Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 49 cases, interactive |
+| Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 50 cases, interactive |
 | Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
 | Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | RM-01…15: today / build / done-when |
 | Docs | Open Issues | `/admin/docs/open-issues` | Programme gaps | ETA, BU, dependencies → 2027 |
@@ -325,7 +326,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 12. **Owner login:** demo platform owner persona persists after refresh on Pages.  
 13. **Nav truth:** Left nav has Realtime Alert & Tracker (not Live Alerts); no Detectors / AI Analyses list / Spine Log rows; `/admin/detectors` → Monitor 2.0; `/admin/ai-analyses` → alerts; `/admin/spine` → home.
 
-Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-49). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync) and the CS/TR desk (C1 / form / email intake, AI follow-up until reply, TR routing).
+Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-50). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync) and the CS/TR desk (C1 / form / email intake, dedicated SKILL.md, AI follow-up until reply, TR routing).
 
 ---
 
@@ -383,7 +384,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-49). The pack
 |---|---|
 | Operator how-to per page | User Guide §6–§12 |
 | Technical module per page | TSD §7 + §8–§18 |
-| Test case per surface | UAT-01…UAT-49 `covers` field |
+| Test case per surface | UAT-01…UAT-50 `covers` field |
 | Public and local URLs | URL Catalog |
 
 ---
@@ -411,5 +412,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-49). The pack
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses list redirect; Monitor hub without Alerts/Tickets tabs; dedupe FR-24 |
 | 1.9 | 2026-10-06 | FR-37 CS/TR 24/7 desk; UAT-46…49; TSD §17 |
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; G12/FR-38 dual URLs (`/PRD/crmp-plus/` vs frozen `/PRD/crmp-admin/`) |
+| 2.1 | 2026-10-06 | FR-39 dedicated CS/TR skills + Knowledge Tree CS_SERVICE / TRADING_EXEC; UAT-50 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

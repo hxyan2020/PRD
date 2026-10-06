@@ -98,6 +98,25 @@ const trCase = ingestCsRequest({
 });
 assert(trCase?.request.desk === "TR", `expected desk TR, got ${trCase?.request.desk}`);
 assert(trCase?.request.status === "ASSIGNED_TR", `expected ASSIGNED_TR, got ${trCase?.request.status}`);
+assert(trCase?.request.skill_code === "SKILL-TR-EXECUTION", `expected TR skill, got ${trCase?.request.skill_code}`);
+
+assert(packed?.request.skill_code === "SKILL-CS-CLARIFY", `expected clarify skill, got ${packed?.request.skill_code}`);
+assert(idCase?.request.skill_code === "SKILL-CS-ID-VERIFY", `expected id skill, got ${idCase?.request.skill_code}`);
+
+const faqCase = ingestCsRequest({
+  channel: "C1_LIVE_CHAT",
+  client_name: "Faq Client",
+  client_email: "faq@client.example",
+  subject: "Swap on XAUUSD overnight",
+  body: "Hi CS, I held XAUUSD overnight on UID 880214. Can you confirm the swap rate that was charged on 5 Oct and whether weekends are triple? Thanks.",
+  locale: "en",
+  actor: "verify-cs-desk",
+});
+assert(faqCase?.request.skill_code === "SKILL-CS-ACCOUNT-FAQ", `expected FAQ skill, got ${faqCase?.request.skill_code}`);
+assert(
+  (faqCase?.messages || []).some((m) => /SKILL-CS-ACCOUNT-FAQ/.test(m.body)),
+  "AI routing note should name the skill"
+);
 
 applyTriage(trCase!.request.id, "en");
 
@@ -115,6 +134,10 @@ console.log(
       idStatus: idCase?.request.status,
       followupCount: capped?.request.followup_count,
       trStatus: trCase?.request.status,
+      trSkill: trCase?.request.skill_code,
+      faqSkill: faqCase?.request.skill_code,
+      clarifySkill: packed?.request.skill_code,
+      idSkill: idCase?.request.skill_code,
     },
     null,
     2

@@ -17,6 +17,11 @@ export const SKILL_RAG_DOCS: Record<string, string[]> = {
   "SKILL-BONUS-ABUSE": ["promos-abuse", "accounts-pricing"],
   "SKILL-WD-SURGE": ["crypto-wallet", "crmp-org-raci", "escalation-spine"],
   "SKILL-MODEL-DRIFT": ["crmp-admin-purpose", "crmp-built-surface", "ai-human-escalate"],
+  "SKILL-CS-CLARIFY": ["cs-24-7-intake", "cs-skill-playbooks", "crmp-built-surface"],
+  "SKILL-CS-ID-VERIFY": ["cs-id-verify-policy", "cs-24-7-intake", "cs-skill-playbooks"],
+  "SKILL-CS-ACCOUNT-FAQ": ["cs-swap-faq", "accounts-pricing", "xauusd247", "cs-24-7-intake"],
+  "SKILL-TR-EXECUTION": ["tr-dealing-handoff", "lp-hedge", "cs-24-7-intake", "cs-skill-playbooks"],
+  "SKILL-CS-ESCALATE-RISK": ["cs-escalate-to-risk", "escalation-spine", "ai-human-escalate", "cs-24-7-intake"],
 };
 
 type DocLike = {
@@ -71,6 +76,14 @@ export function resolveDocsForSkill<T extends DocLike>(
   }
   if (/XAU|GOLD/.test(skill.code)) tokens.add("gold");
   if (/FRAUD|BONUS|WASH/.test(skill.code)) tokens.add("fraud");
+  if (/CS-|TR-EXEC/.test(skill.code) || /CS_SERVICE|TRADING_EXEC/.test(skill.indicator.domain)) {
+    tokens.add("customer");
+    tokens.add("intake");
+    tokens.add("kyc");
+    tokens.add("swap");
+    tokens.add("slippage");
+    tokens.add("dealing");
+  }
   for (const d of docs) {
     const hay = `${d.title} ${d.category} ${d.product_scope} ${d.tags.join(" ")}`.toLowerCase();
     let score = 0;

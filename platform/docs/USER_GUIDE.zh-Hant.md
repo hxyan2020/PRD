@@ -392,7 +392,7 @@ sequenceDiagram
 
 ### 8.4 知識樹 — `/admin/knowledge-tree`
 
-**這頁是什麼。** 知識怎麼掛在一起的圖：CRMP → 風險領域 → 技能劇本，側幹是連結時間鏈與 **RAG 文件葉**（深連結 `/admin/rag?doc=`）。
+**這頁是什麼。** 知識怎麼掛在一起的圖：CRMP → 風險領域（含 **CS_SERVICE** 與 **TRADING_EXEC**）→ 技能劇本，側幹是連結時間鏈與 **RAG 文件葉**（深連結 `/admin/rag?doc=`）。CS／TR 進件技能（`SKILL-CS-CLARIFY`、`SKILL-CS-ID-VERIFY`、`SKILL-CS-ACCOUNT-FAQ`、`SKILL-TR-EXECUTION`、`SKILL-CS-ESCALATE-RISK`）掛在這兩條樹幹，RAG 葉為 `cs-*`。
 
 **會看到什麼。**
 
@@ -414,7 +414,7 @@ graph TD
   Sk --> Enter[進入完整 SKILL.md]
 ```
 
-**怎樣算正常。** LP_HEDGE 會展開對沖技能。RAG 幹依分類群組文件。進入會導頁，不是失效的 SVG 連結。
+**怎樣算正常。** LP_HEDGE 會展開對沖技能。**CS_SERVICE** 展開 CS 24/7 劇本；**TRADING_EXEC** 展開 TR 成交。RAG 幹依分類群組文件（含 CS_POLICY）。進入會導頁，不是失效的 SVG 連結。
 
 ### 8.5 RAG 知識庫 — `/admin/rag`
 
@@ -518,13 +518,13 @@ graph TD
 
 **這頁是什麼。** 24/7 客服與交易支援。平台 **C1 即時聊天**、網站**提交表單**與**官方信箱**在此即時進件（`POST /api/cs/intake`，標頭 `x-cs-intake-token: demo-c1`）。
 
-**會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）與狀態（未結、待客戶、身分驗證、已派 TR、已升級風控、已結案）。對話混合客戶聊天、AI 分流註記與**自動追問信**。
+**會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）、**專用技能晶片**（SKILL-CS-CLARIFY／ID-VERIFY／ACCOUNT-FAQ／TR-EXECUTION／ESCALATE-RISK）與狀態（未結、待客戶、身分驗證、已派 TR、已升級風控、已結案）。晶片打開 SKILL.md 劇本。對話混合客戶聊天、AI 分流註記與**自動追問信**。
 
 **要點什麼。**
 
 | 按鈕 | 做什麼 |
 |---|---|
-| **AI 分流** | 重跑路由（CS vs TR、類別、清晰度） |
+| **AI 分流** | 重跑路由（CS vs TR、類別、清晰度）並蓋上專用 SKILL.md |
 | **寄信：請補充** | AI 寄官方信索取發生什麼／UID／截圖；狀態待客戶 |
 | **寄信：身分驗證** | AI 索取護照／證件＋UID 後四碼＋自拍；狀態身分驗證 |
 | **模擬客戶回信** | 客戶回覆等待中的信；AI 重新分流。回覆前案件保持開啟（上限 3 封） |
@@ -533,7 +533,7 @@ graph TD
 | **結案** | 關閉 — 追問仍為 WAITING 時會被擋 |
 | **模擬 C1／表單／信件** | 走同一進件 API |
 
-**怎樣算正常。** 種子案件涵蓋清楚的 C1 隔夜利息、不清楚的 C1「help me ???」、TR 滑點表單、核身信件。不清楚／核身會等待。交易關鍵字到 TR。繁中標籤齊全。
+**怎樣算正常。** 種子案件涵蓋清楚的 C1 隔夜利息（SKILL-CS-ACCOUNT-FAQ）、不清楚的 C1「help me ???」（SKILL-CS-CLARIFY）、TR 滑點表單（SKILL-TR-EXECUTION）、核身信件（SKILL-CS-ID-VERIFY）。不清楚／核身會等待。交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。
 
 ```mermaid
 graph TD
@@ -684,11 +684,11 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 監控與風險 | 風險日誌分析 | 90 天圖、已關閉包、損失 vs 防損 |
 | 監控與風險 | 風險領域 | P0–P3 情境掛 Monitor 2.0 |
 | AI 與知識 | AI 技能 | 瀏覽劇本；進入完整 SKILL.md；一條升級綁定 |
-| AI 與知識 | 知識樹 | 領域、技能、RAG 文件葉＋深連結 |
+| AI 與知識 | 知識樹 | 領域（含 CS_SERVICE／TRADING_EXEC）、技能、RAG 文件葉＋深連結 |
 | AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖／人工閘道 — `propose_rag` |
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
 | 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、控制 |
-| 應變 | CS／TR 台 | C1／表單／信箱進件；AI 追問直到回覆；TR 分流 |
+| 應變 | CS／TR 台 | C1／表單／信箱進件；專用 SKILL.md 晶片；AI 追問直到回覆；TR 分流 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
 | 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 應變 | Lark 整合 | 頻道登錄 |
@@ -717,5 +717,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 1.10 | 2026-10-06 | 示範 Messenger 鳥瞰：升級路徑承辦聊天窗 |
 | 1.11 | 2026-10-06 | CS／TR 台：C1、表單、官方信箱；AI 追問直到回覆；TR 分流 |
 | 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開網址 `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
+| 2.1 | 2026-10-06 | CS／TR 專用 SKILL.md 晶片；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 葉 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

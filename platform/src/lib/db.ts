@@ -883,6 +883,8 @@ function ensureExtraRiskDomains(db: Database.Database) {
   touch.run(2, "PRODUCT_CONFIG");
   touch.run(2, "OPS_PROCESS");
   touch.run(2, "MODEL_AI");
+  touch.run(2, "CS_SERVICE");
+  touch.run(1, "TRADING_EXEC");
 }
 
 function ensureUser(
@@ -1274,6 +1276,131 @@ function ensureCsOrg(db: Database.Database) {
       '["cs","email"]',
       "AI follow-up mail is sent from this mailbox until the client replies."
     );
+  }
+  ensureCsEscalationRoutes(db);
+}
+
+function ensureCsEscalationRoutes(db: Database.Database) {
+  const teamByName = db.prepare(`SELECT id FROM teams WHERE name = ?`);
+  const larkByChat = db.prepare(`SELECT id FROM lark_channels WHERE chat_id = ?`);
+  const csTeam = teamByName.get("CS 24/7 Desk") as { id: number } | undefined;
+  const trTeam = teamByName.get("TR Dealing Support") as { id: number } | undefined;
+  const riskTeam = db
+    .prepare(`SELECT id FROM teams WHERE department_code = 'RISK_CONTROL' ORDER BY id LIMIT 1`)
+    .get() as { id: number } | undefined;
+  const csLark = larkByChat.get("oc_cs_c1") as { id: number } | undefined;
+  const trLark = larkByChat.get("oc_tr_dealing") as { id: number } | undefined;
+  const riskLark = larkByChat.get("oc_risk_control_desk") as { id: number } | undefined;
+  const primaryFallback = riskTeam?.id ?? 1;
+  const rows: Array<{
+    name: string;
+    code: string;
+    domain: string;
+    severity: string;
+    primary: number;
+    secondary: number | null;
+    lark: number | null;
+    sla: number;
+    scenario: string;
+    pending: number;
+    teams: string[];
+    coeffs: Record<string, number>;
+  }> = [
+    {
+      name: "CS 24/7 → Risk Desk",
+      code: "ESC-CS-24-7",
+      domain: "CS_SERVICE",
+      severity: "WARN",
+      primary: csTeam?.id ?? primaryFallback,
+      secondary: riskTeam?.id ?? null,
+      lark: csLark?.id ?? null,
+      sla: 30,
+      scenario: "cs_24_7_intake",
+      pending: 30,
+      teams: ["CS 24/7 Desk", "CS Lead"],
+      coeffs: { severity: 1.1, involved_teams: 1.0, risk_scenario: 1.1, pending_time: 1.2, need_human_intervention: 1.2 },
+    },
+    {
+      name: "TR dealing tape",
+      code: "ESC-TR-DEAL",
+      domain: "TRADING_EXEC",
+      severity: "WARN",
+      primary: trTeam?.id ?? primaryFallback,
+      secondary: riskTeam?.id ?? null,
+      lark: trLark?.id ?? null,
+      sla: 15,
+      scenario: "tr_execution",
+      pending: 15,
+      teams: ["TR Dealing Support", "TR Lead"],
+      coeffs: { severity: 1.3, involved_teams: 1.1, risk_scenario: 1.2, pending_time: 1.3, need_human_intervention: 1.3 },
+    },
+    {
+      name: "CS/TR book-risk → Risk spine",
+      code: "ESC-CS-RISK",
+      domain: "CS_SERVICE",
+      severity: "BREACH",
+      primary: riskTeam?.id ?? primaryFallback,
+      secondary: csTeam?.id ?? null,
+      lark: riskLark?.id ?? csLark?.id ?? null,
+      sla: 10,
+      scenario: "cs_escalate_risk",
+      pending: 10,
+      teams: ["Risk Control Desk", "CS 24/7 Desk"],
+      coeffs: { severity: 1.5, involved_teams: 1.2, risk_scenario: 1.4, pending_time: 1.3, need_human_intervention: 1.5 },
+    },
+  ];
+  const select = db.prepare(`SELECT id FROM escalation_routes WHERE route_code = ?`);
+  const insert = db.prepare(
+    `INSERT INTO escalation_routes
+      (name, domain_code, severity, primary_team_id, secondary_team_id, lark_channel_id, sla_minutes,
+       auto_actions_json, requires_human, enabled, route_code, is_default, coefficients_json, risk_scenario, involved_teams_json, pending_minutes_threshold)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, 0, ?, ?, ?, ?)`
+  );
+  const update = db.prepare(
+    `UPDATE escalation_routes
+     SET name = ?, domain_code = ?, severity = ?, primary_team_id = ?, secondary_team_id = ?,
+         lark_channel_id = COALESCE(?, lark_channel_id), sla_minutes = ?, route_code = ?,
+         coefficients_json = ?, risk_scenario = ?, involved_teams_json = ?, pending_minutes_threshold = ?, enabled = 1
+     WHERE id = ?`
+  );
+  for (const row of rows) {
+    const existing = select.get(row.code) as { id: number } | undefined;
+    const coeffs = JSON.stringify(row.coeffs);
+    const teams = JSON.stringify(row.teams);
+    const actions = JSON.stringify(["create_ticket", "lark_notify"]);
+    if (existing) {
+      update.run(
+        row.name,
+        row.domain,
+        row.severity,
+        row.primary,
+        row.secondary,
+        row.lark,
+        row.sla,
+        row.code,
+        coeffs,
+        row.scenario,
+        teams,
+        row.pending,
+        existing.id
+      );
+    } else {
+      insert.run(
+        row.name,
+        row.domain,
+        row.severity,
+        row.primary,
+        row.secondary,
+        row.lark,
+        row.sla,
+        actions,
+        row.code,
+        coeffs,
+        row.scenario,
+        teams,
+        row.pending
+      );
+    }
   }
 }
 
