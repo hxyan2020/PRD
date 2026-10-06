@@ -68,8 +68,8 @@ const META: Record<
     code: "CRMP-OI-001",
     enTitle: "Open Issues",
     zhTitle: "開放議題",
-    enSub: "Tentative checklist: ETA, responsible BU, dependencies — Monitor still adding indicators; CRMP in initial design.",
-    zhSub: "暫定清單：ETA、負責 BU、依賴 — Monitor 仍在加指標；CRMP 處初始設計。",
+    enSub: "20 issues with CS/TR catalogue v1.5 on OI-19/20 — prototype ticks vs production remaining.",
+    zhSub: "20 項含 CS／TR 目錄 v1.5（OI-19／20）— 原型已勾 vs 正式仍開放。",
     href: "/admin/docs/open-issues",
   },
   PROGRESS: {

@@ -11,7 +11,7 @@ Maps **every open issue** onto a tracker:
 
 Each column header labels the **responsible BU**. Cell colour = status: **Planned · Started · WIP · Delayed · UAT · Go live · BAU**.
 
-Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 20 issues). Filter by status and BU on the board.
+Interactive SVG + mobile cards: `/admin/docs/progress` (data: `platform/src/lib/docs/open-issues.ts` — 20 issues). Filter by status and BU on the board. Open Issues v1.5 still has **20 columns** (CS/TR catalogue is an index on OI-19/OI-20 + support issues, not extra bars).
 
 Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP logs** / **Vantage Markets Admin logs** + Roll back), editable Roles, escalation dimensions × coefficients + ESC-DEFAULT, home spine stage ticket counts (Spine Log tab removed), BU and Teams combined, **Realtime Alert & Tracker**, Detectors→**Monitor 2.0**.
 
@@ -38,7 +38,7 @@ Shipped desk facts tracked as BAU (not separate bars): audit plane split (**CRMP
 | OI-17 | Ops | Planned | 2027-04 → 2027-10 |
 | OI-18 | Product | Planned | 2027-06 → 2027-12 |
 | OI-19 | CS | Started | 2026-10 → 2027-06 |
-| OI-20 | TR | Planned | 2026-12 → 2027-08 |
+| OI-20 | TR | Started | 2026-10 → 2027-08 |
 
 ```mermaid
 gantt
@@ -54,7 +54,7 @@ gantt
   OI-18 Multi-entity tenancy          :2027-06, 2027-12
   section CS TR
   OI-19 C1 form mailbox connectors    :active, 2026-10, 2027-06
-  OI-20 ID vault + dealing tape       :2026-12, 2027-08
+  OI-20 ID vault + dealing tape       :active, 2026-10, 2027-08
   section System
   OI-03 Tech + resource plan          :2026-11, 2027-04
   OI-06 SSO SCIM                      :2026-12, 2027-06

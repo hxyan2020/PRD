@@ -158,7 +158,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
     },
     checklist: [
       { en: "Workshop: spine stages vs home ticket counts vs audit planes", zh: "工作坊：脊柱階段 vs 首頁計數 vs 稽核平面" },
-      { en: "Draft BU RACI (AI / System / RO / Pricing / Ops / Monitor / GRC)", zh: "起草 BU RACI（AI／System／RO／Pricing／Ops／Monitor／GRC）" },
+      { en: "Draft BU RACI (AI / System / RO / Pricing / Ops / Monitor / GRC / CS / TR)", zh: "起草 BU RACI（AI／System／RO／Pricing／Ops／Monitor／GRC／CS／TR）" },
       { en: "Define dual-control write path (maker → checker → control bus)", zh: "定義雙重控制寫路徑（Maker→Checker→控制匯流排）" },
       { en: "Classify surfaces: BAU desk vs pilot-only vs human-only blocklist", zh: "畫面分級：日常台面／僅試點／僅限人類黑名單" },
       { en: "Design freeze signed by Risk Owner + Platform Owner", zh: "風險負責人＋平台負責人簽核設計凍結" },
@@ -237,19 +237,24 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Knowledge tree + RAG corpus governance",
       detail:
-        "Knowledge tree maps RAG documents as leaves with deep links. Open: corpus ownership SLAs, retire cadence, skill↔doc binds at scale, maker-checker throughput for propose_rag.",
+        "Knowledge tree maps RAG documents as leaves with deep links, including prototype CS_SERVICE / TRADING_EXEC trunks and cs-* RAG leaves for the 24/7 door. Open: corpus ownership SLAs, retire cadence, skill↔doc binds at scale, maker-checker throughput for propose_rag.",
       dependencies: "rag.manage staffing; skill catalog growth; Monitor tags",
       eta: "2027-Q1 BAU hygiene",
     },
     zh: {
       title: "知識樹＋RAG 語料治理",
       detail:
-        "知識樹已將 RAG 文件對映為葉節點並可深連結。開放：語料擁有 SLA、退役節奏、規模化技能↔文件綁定、propose_rag Maker-Checker 吞吐。",
+        "知識樹已將 RAG 文件對映為葉節點並可深連結，含原型 CS_SERVICE／TRADING_EXEC 樹幹與 24/7 大門的 cs-* RAG 葉。開放：語料擁有 SLA、退役節奏、規模化技能↔文件綁定、propose_rag Maker-Checker 吞吐。",
       dependencies: "rag.manage 人力；技能目錄成長；Monitor 標籤",
       eta: "2027-Q1 日常衛生",
     },
     checklist: [
-      { en: "Name corpus owners per domain (CFD / crypto / ops)", zh: "按領域（CFD／加密／營運）指定語料負責人" },
+      {
+        en: "Prototype CS_SERVICE / TRADING_EXEC trunks + cs-* RAG leaves (UAT-50)",
+        zh: "原型 CS_SERVICE／TRADING_EXEC 樹幹＋cs-* RAG 葉（UAT-50）",
+        done: true,
+      },
+      { en: "Name corpus owners per domain (CFD / crypto / ops / CS_SERVICE / TRADING_EXEC)", zh: "按領域（CFD／加密／營運／CS_SERVICE／TRADING_EXEC）指定語料負責人" },
       { en: "Retire / refresh cadence for stale RAG leaves", zh: "過期 RAG 葉的退役／刷新節奏" },
       { en: "Skill↔doc bind coverage targets as catalog grows", zh: "技能目錄成長時的技能↔文件綁定覆蓋目標" },
       { en: "Maker-checker SLA for propose_rag queue depth", zh: "propose_rag 佇列深度的 Maker-Checker SLA" },
@@ -327,21 +332,26 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Production Lark interactive cards",
       detail:
-        "Replace Demo Messenger as the primary on-call surface. Card actions (Ack / Escalate / Approve) must call CRMP APIs; keep in-app messenger for UAT and fallback.",
+        "Replace Demo Messenger as the primary on-call surface. Card actions (Ack / Escalate / Approve) must call CRMP APIs; keep in-app messenger for UAT and fallback. Prototype already seeds CS/TR Lark ids oc_cs_c1 / oc_cs_kyc / oc_tr_dealing on Lark Integration.",
       dependencies: "Lark app approval; bot vault credentials; escalation routes",
       eta: "2027-Q2 UAT",
     },
     zh: {
       title: "生產 Lark 互動卡片",
       detail:
-        "以生產 Lark 取代示範 Messenger 作為值班主介面。卡片動作（確認／升級／核准）須呼叫 CRMP API；保留應用內 Messenger 供 UAT 與備援。",
+        "以生產 Lark 取代示範 Messenger 作為值班主介面。卡片動作（確認／升級／核准）須呼叫 CRMP API；保留應用內 Messenger 供 UAT 與備援。原型已在 Lark 整合種子 CS／TR 頻道 id：oc_cs_c1／oc_cs_kyc／oc_tr_dealing。",
       dependencies: "Lark 應用核准；機器人密鑰庫；升級路徑",
       eta: "2027-Q2 UAT",
     },
     checklist: [
+      {
+        en: "Seed CS/TR Lark ids oc_cs_c1 / oc_cs_kyc / oc_tr_dealing on Lark Integration (UAT-36)",
+        zh: "Lark 整合種子 CS／TR 頻道 oc_cs_c1／oc_cs_kyc／oc_tr_dealing（UAT-36）",
+        done: true,
+      },
       { en: "Lark app / bot approved; secrets in vault", zh: "Lark 應用／機器人核准；密鑰入庫" },
-      { en: "Card actions: Ack / Escalate / Approve → CRMP APIs", zh: "卡片動作：確認／升級／核准 → CRMP API" },
-      { en: "Route cards by ESC-DEFAULT + dimension coefficients", zh: "依 ESC-DEFAULT＋維度係數路由卡片" },
+      { en: "Card actions: Ack / Escalate / Approve → CRMP APIs (including CS WAITING / cap)", zh: "卡片動作：確認／升級／核准 → CRMP API（含 CS WAITING／上限）" },
+      { en: "Route cards by ESC-DEFAULT + dimension coefficients + ESC-CS-* hops", zh: "依 ESC-DEFAULT＋維度係數＋ESC-CS-* 關卡路由卡片" },
       { en: "Keep Demo Messenger for UAT / fallback", zh: "保留 Demo Messenger 供 UAT／備援" },
       { en: "Decide Lark vs Teams as corporate messenger (leadership)", zh: "高階決策：企業即時通訊選 Lark 或 Teams" },
     ],
@@ -357,22 +367,22 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Risk Owner UAT exit + policy thresholds",
       detail:
-        "Interactive UAT pack (45+ cases) exists. Open: formal RO sign-off cadence, second-AI severity policy, acceptance of ESC-DEFAULT + coefficient skill binds.",
-      dependencies: "UAT pack execution; BU and Teams RACI; AI Admin line1/line2 settings",
+        "Interactive UAT pack v2.6 (51 sequenced cases, skip UAT-45) includes the CS/TR feature catalogue (UAT-25, 46, 47, 48, 50, 51, 52). Open: formal RO sign-off cadence, second-AI severity policy, acceptance of ESC-DEFAULT + CS hops + coefficient skill binds.",
+      dependencies: "UAT pack execution (UAT-01…52); BU and Teams RACI; AI Admin line1/line2 settings",
       eta: "2026-Q4 / 2027-Q1",
     },
     zh: {
       title: "風險負責人 UAT 出口＋政策門檻",
       detail:
-        "互動式 UAT 包（45+ 案例）已存在。開放：正式 RO 簽核節奏、第二 AI 嚴重度政策、接受 ESC-DEFAULT＋係數技能綁定。",
-      dependencies: "執行 UAT 包；BU 與團隊 RACI；AI 管理一線／二線設定",
+        "互動式 UAT 包 v2.6（51 案、跳過 UAT-45）含 CS／TR 功能目錄（UAT-25、46、47、48、50、51、52）。開放：正式 RO 簽核節奏、第二 AI 嚴重度政策、接受 ESC-DEFAULT＋CS 關卡＋係數技能綁定。",
+      dependencies: "執行 UAT 包（UAT-01…52）；BU 與團隊 RACI；AI 管理一線／二線設定",
       eta: "2026-Q4／2027-Q1",
     },
     checklist: [
-      { en: "Execute interactive UAT-01…45 with evidence notes", zh: "執行互動式 UAT-01…45 並留證據註記" },
-      { en: "Sign UAT exit criteria (pass thresholds)", zh: "簽核 UAT 退出標準（通過門檻）" },
+      { en: "Execute interactive UAT-01…52 (skip UAT-45) with evidence notes, including CS/TR catalogue v2.6", zh: "執行互動式 UAT-01…52（跳過 UAT-45）並留證據註記，含 CS／TR 目錄 v2.6" },
+      { en: "Sign UAT exit criteria including CS/TR primary cases (UAT-25, 46, 47, 48, 50, 51, 52)", zh: "簽核 UAT 退出標準，含 CS／TR 主案（UAT-25、46、47、48、50、51、52）" },
       { en: "Set second-AI severity policy (default BREACH)", zh: "設定第二 AI 嚴重度政策（預設 BREACH）" },
-      { en: "Accept ESC-DEFAULT catch-all + dimension coefficients", zh: "接受 ESC-DEFAULT 兜底＋維度係數" },
+      { en: "Accept ESC-DEFAULT catch-all + four CS/TR hops (ESC-CS-24-7 / ESC-CS-KYC / ESC-TR-DEAL / ESC-CS-RISK)", zh: "接受 ESC-DEFAULT 兜底＋四條 CS／TR 關卡（ESC-CS-24-7／ESC-CS-KYC／ESC-TR-DEAL／ESC-CS-RISK）" },
       { en: "Rehearse escalation Primary → Secondary → RO → Exec", zh: "演練升級 Primary→Secondary→RO→Exec" },
     ],
   },
@@ -449,6 +459,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "確認表主按鈕手機全寬（action-row）",
         done: true,
       },
+      { en: "CS/TR desk, dashboard, log and data usable at ~390px (UAT-18)", zh: "CS／TR 台、儀表板、日誌與資料在約 390px 可用（UAT-18）" },
       { en: "Docs parity BAU with each nav ship", zh: "每次選單交付後的文件對齊日常" },
     ],
   },
@@ -480,6 +491,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "原型稽核平面分流（CRMP／Vantage Markets 管理）＋回滾",
         done: true,
       },
+      { en: "Prototype: CS intake never stores ID images; public GET status has no PII (FR-42)", zh: "原型：CS 進件不存證件圖；公開 GET 狀態無個資（FR-42）", done: true },
       { en: "Legal retention + redaction policy for evidence excerpts", zh: "證據摘錄的法遵保存＋遮罩政策" },
       { en: "Scheduled retention / purge jobs", zh: "排程保存／清除作業" },
       { en: "Auditor-ready export pack (beyond UI tabs)", zh: "稽核就緒匯出包（超越 UI 分頁）" },
@@ -527,15 +539,15 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Prototype AI desk features — UAT window",
       detail:
-        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back. Formal UAT sign-off still open (OI-09).",
-      dependencies: "UAT-01…45; Risk Owner calendar",
+        "Shipped for UAT: Realtime Alert & Tracker, Detectors→Monitor 2.0, line1/2 AI Admin, grouped pipeline, propose_rag, ESC-DEFAULT, RAG leaves, MonitorCode, editable Roles, audit plane split + Roll back, and the CS/TR door (portal, desk, skills, wait loop, dashboard, log, data). Formal UAT sign-off still open (OI-09).",
+      dependencies: "UAT-01…52 (skip UAT-45); Risk Owner calendar",
       eta: "2026-10 / 2026-11 UAT",
     },
     zh: {
       title: "原型 AI 台面功能 — UAT 窗口",
       detail:
-        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾。正式 UAT 簽核仍開放（OI-09）。",
-      dependencies: "UAT-01…45；風險負責人行程",
+        "已交付供 UAT：即時警報與追蹤、偵測器→Monitor 2.0、一線／二線 AI 管理、分組管線、propose_rag、ESC-DEFAULT、RAG 葉、MonitorCode、可編輯角色、稽核平面分流＋回滾，以及 CS／TR 大門（入口、台面、技能、等待迴圈、儀表板、日誌、資料）。正式 UAT 簽核仍開放（OI-09）。",
+      dependencies: "UAT-01…52（跳過 UAT-45）；風險負責人行程",
       eta: "2026-10／2026-11 UAT",
     },
     checklist: [
@@ -559,6 +571,11 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "可編輯角色＋稽核平面分流＋回滾",
         done: true,
       },
+      {
+        en: "CS/TR door for UAT: /cs, desk, skills, wait loop, dashboard, log, data (UAT-46…52)",
+        zh: "CS／TR 大門供 UAT：/cs、台面、技能、等待迴圈、儀表板、日誌、資料（UAT-46…52）",
+        done: true,
+      },
       { en: "Formal UAT sign-off (OI-09)", zh: "正式 UAT 簽核（OI-09）" },
     ],
   },
@@ -573,18 +590,23 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; audit tabs + Roll back).",
+        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; audit tabs + Roll back; CS/TR §9.3 / catalogue v2.6 / URL Catalog CS/TR section).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；稽核分頁＋回滾）。",
+        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；稽核分頁＋回滾；CS／TR §9.3／目錄 v2.6／網址目錄 CS／TR 區段）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },
     checklist: [
+      {
+        en: "UG §9.3 + URL Catalog CS/TR + UAT catalogue v2.6 (desk, /cs, dashboard, log, data)",
+        zh: "使用手冊 §9.3＋網址目錄 CS／TR＋UAT 目錄 v2.6（台面、/cs、儀表板、日誌、資料）",
+        done: true,
+      },
       { en: "Keep UG / PRD / TSD / UAT / Roadmap / Ecosystem aligned after each nav ship", zh: "每次選單交付後對齊 UG／PRD／TSD／UAT／路線圖／生態" },
       { en: "Refresh Open Issues + Progress when statuses/ETAs change", zh: "狀態／ETA 變更時更新開放議題＋進度" },
       { en: "URL catalog lists public + admin paths with correct permissions", zh: "網址目錄列出公開＋管理路徑與正確權限" },
@@ -690,58 +712,194 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Production C1 / form / mailbox connectors",
       detail:
-        "Prototype CS/TR desk ingests C1 live chat, the website form and official mailboxes through POST /api/cs/intake with token demo-c1. The public /cs portal and inbound CSR-XXXX / channel_ref matching close the auto-email wait loop. Production still needs signed C1 webhooks, form HMAC and a real mailbox gateway so no request lives only in a personal inbox.",
-      dependencies: "C1 vendor contract; mailbox Graph/IMAP; OI-03 secrets vault",
+        "Prototype CS/TR door is live: public /cs posts C1, form and mailbox through POST /api/cs/intake (token demo-c1); CSR-XXXX / channel_ref / In-Reply-To close the WAITING auto-mail loop; seed dashboard, log and cs-data (UAT-46/51/52). Production still needs signed C1 webhooks, form HMAC, a real mailbox gateway, production SMTP, live volume — so no request lives only in a personal inbox.",
+      dependencies: "C1 vendor contract; mailbox Graph/IMAP; production SMTP; OI-03 secrets vault",
       eta: "2027-Q2 (connectors) / prototype UAT now",
     },
     zh: {
       title: "正式 C1／表單／信箱連接器",
       detail:
-        "原型 CS／TR 台以 POST /api/cs/intake（token demo-c1）接入 C1 即時聊天、網站表單與官方信箱。公開 /cs 入口與 CSR-XXXX／channel_ref 進件對案會關閉自動信件等待迴圈。正式環境仍需簽章 C1 webhook、表單 HMAC 與真實信箱閘道，避免請求只留在個人收件匣。",
-      dependencies: "C1 供應商契約；信箱 Graph／IMAP；OI-03 密鑰庫",
+        "原型 CS／TR 大門已上：公開 /cs 把 C1、表單與信箱打進 POST /api/cs/intake（token demo-c1）；CSR-XXXX／channel_ref／In-Reply-To 關閉 WAITING 自動信件；種子儀表板、日誌與 cs-data（UAT-46／51／52）。正式環境仍需簽章 C1 webhook、表單 HMAC、真實信箱閘道、正式 SMTP、即時量 — 避免請求只留在個人收件匣。",
+      dependencies: "C1 供應商契約；信箱 Graph／IMAP；正式 SMTP；OI-03 密鑰庫",
       eta: "2027-Q2（連接器）／原型 UAT 現可測",
     },
     checklist: [
       { en: "Public /cs portal posts C1, form and mailbox through the same intake API", zh: "公開 /cs 入口把 C1、表單與信箱打同一進件 API", done: true },
       { en: "Inbound replies match CSR-XXXX / channel_ref / In-Reply-To and close WAITING auto-mail", zh: "進件回覆以 CSR-XXXX／channel_ref／In-Reply-To 對案並關閉 WAITING 自動信件", done: true },
-      { en: "Replace demo-c1 token with signed C1 webhook + replay protection", zh: "以簽章 C1 webhook＋防重放取代 demo-c1 token", done: false },
+      { en: "Prototype CS/TR dashboard + log on seed cases (UAT-51)", zh: "原型 CS／TR 儀表板＋日誌（種子案，UAT-51）", done: true },
+      { en: "Prototype CS/TR data: hops, cs.*, KYC vault team (UAT-52)", zh: "原型 CS／TR 資料：關卡、cs.*、核身庫團隊（UAT-52）", done: true },
+      { en: "Sandbox UAT against C1 staging (UAT-46)", zh: "對 C1 測試環境做沙盒 UAT（UAT-46）", done: true },
+      { en: "Replace demo-c1 token with signed C1 webhook + replay protection", zh: "以簽章 C1 webhook＋防重放取代 demo-c1 token" },
       { en: "Website / app form HMAC into the same intake API", zh: "網站／App 表單 HMAC 接入同一進件 API" },
       { en: "Mailbox gateway for support@ and complaints@ (Graph or IMAP)", zh: "support@ 與 complaints@ 信箱閘道（Graph 或 IMAP）" },
+      { en: "Production SMTP for the auto-email wait loop (not console / demo)", zh: "正式 SMTP 跑自動信件等待迴圈（非 console／示範）" },
+      { en: "Live dashboard / log volume (not seed-only)", zh: "儀表板／日誌即時量（非僅種子）" },
       { en: "No-silent-drop SLA on the CS/TR desk (channel stamp on every inbound)", zh: "CS／TR 台無靜默丟失 SLA（每筆進件含渠道戳記）" },
-      { en: "Sandbox UAT against C1 staging (UAT-46)", zh: "對 C1 測試環境做沙盒 UAT（UAT-46）", done: true },
     ],
   },
   {
     id: "OI-20",
     area: "TR",
     bu: "TR",
-    status: "planned",
-    startMonth: 2,
+    status: "started",
+    startMonth: 0,
     endMonth: 10,
     priority: "P1",
     en: {
       title: "CS/TR ID vault and dealing-tape reconstruct",
       detail:
-        "AI already emails the client when the issue is unclear or ID is needed, waits for a reply (cap 3), routes fills/slippage to TR, and escalates book-risk to the messenger spine. Production still needs a KYC document vault (not mock selfie text) and oneZero/MT tape for TR — not a CS workaround.",
+        "Prototype: CS KYC Vault team, ESC-CS-KYC + SKILL-CS-ID-VERIFY (flags only, no ID images), TR routing + ESCALATED_RISK, and MT4/MT5 tape listed on Data Sources. Heuristic AI emails and waits (cap from cs.followup_cap). Production still needs a real KYC document vault, production mailer, live oneZero/MT tape reconstruct, live messenger escalate, and audited CS Lead waivers.",
       dependencies: "OI-19 connectors; Client CRM/KYC; oneZero MT bridge; OI-07 control adapters for risk escalate",
-      eta: "2027-Q3 (tentative)",
+      eta: "2027-Q3 (tentative) / prototype UAT now",
     },
     zh: {
       title: "CS／TR 核身庫與成交帶還原",
       detail:
-        "AI 已能在案情不清或需核身時自動寄信、等待回覆（上限 3 封）、把成交／滑點派給 TR，並把帳簿風險升級到 Messenger 脊柱。正式環境仍需 KYC 證件庫（非模擬自拍文字）與 oneZero／MT 成交帶供 TR 使用 — 不可由 CS 權充。",
+        "原型：CS 核身庫團隊、ESC-CS-KYC＋SKILL-CS-ID-VERIFY（僅旗標、無證件圖）、TR 分流＋ESCALATED_RISK，以及資料來源列出的 MT4／MT5 成交帶。啟發式 AI 寄信並等待（上限來自 cs.followup_cap）。正式環境仍需真實 KYC 證件庫、正式寄信、即時 oneZero／MT 成交帶還原、即時 Messenger 升級，以及已稽核的 CS Lead 豁免。",
       dependencies: "OI-19 連接器；客戶 CRM／KYC；oneZero MT 橋；OI-07 風險升級適配",
-      eta: "2027-Q3（暫定）",
+      eta: "2027-Q3（暫定）／原型 UAT 現可測",
     },
     checklist: [
-      { en: "KYC document vault + UID match; ID-verify stays open until reply or CS Lead waiver", zh: "KYC 證件庫＋UID 核對；身分驗證須待回覆或 CS Lead 豁免才可關" },
-      { en: "Auto follow-up mailer (unclear / need_id) with 3-mail cap in production", zh: "正式自動追問信（不清楚／需核身）含 3 封上限" },
-      { en: "TR reconstruct fill vs LP from oneZero / MT4 / MT5 tape", zh: "TR 自 oneZero／MT4／MT5 成交帶還原成交 vs LP" },
-      { en: "Escalate-to-risk writes a messenger thread + Human Intervention gate", zh: "升級風控寫入 Messenger 執行緒＋人工干預關卡" },
+      { en: "Prototype CS KYC Vault team nested under Customer Service (UAT-38)", zh: "原型 CS 核身庫團隊嵌在客服底下（UAT-38）", done: true },
+      { en: "Prototype ESC-CS-KYC hop + SKILL-CS-ID-VERIFY flags-only KYC (no ID images)", zh: "原型 ESC-CS-KYC 關卡＋SKILL-CS-ID-VERIFY 僅旗標核身（無證件圖）", done: true },
+      { en: "Prototype TR routing + ESCALATED_RISK on the desk (UAT-48)", zh: "原型台面 TR 分流＋ESCALATED_RISK（UAT-48）", done: true },
+      { en: "MT4/MT5 dealing tape listed on Data Sources / CS-TR Data (UAT-39)", zh: "資料來源／CS-TR 資料列出 MT4／MT5 成交帶（UAT-39）", done: true },
+      { en: "Production KYC document vault + UID match; ID-verify stays open until reply or CS Lead waiver", zh: "正式 KYC 證件庫＋UID 核對；身分驗證須待回覆或 CS Lead 豁免才可關" },
+      { en: "Production auto-follow-up mailer (unclear / need_id) with cs.followup_cap", zh: "正式自動追問信（不清楚／需核身）套用 cs.followup_cap" },
+      { en: "Live TR reconstruct fill vs LP from oneZero / MT4 / MT5 tape", zh: "即時 TR 自 oneZero／MT4／MT5 成交帶還原成交 vs LP" },
+      { en: "Live escalate-to-risk writes a messenger thread + Human Intervention gate", zh: "即時升級風控寫入 Messenger 執行緒＋人工干預關卡" },
       { en: "CS Lead waiver audited on Vantage + CRMP planes", zh: "CS Lead 豁免寫入 Vantage＋CRMP 稽核平面" },
     ],
   },
 ];
+
+/** CS/TR feature catalogue — index on existing issues, not extra OI numbers. */
+export type CsTrOpenIssueCatalogRow = {
+  id: string;
+  kind: "primary" | "support";
+  featureEn: string;
+  featureZh: string;
+  screensEn: string;
+  screensZh: string;
+  shippedEn: string;
+  shippedZh: string;
+  remainingEn: string;
+  remainingZh: string;
+};
+
+export const CS_TR_OPEN_ISSUE_CATALOGUE: CsTrOpenIssueCatalogRow[] = [
+  {
+    id: "OI-19",
+    kind: "primary",
+    featureEn: "Production C1 / form / mailbox connectors",
+    featureZh: "正式 C1／表單／信箱連接器",
+    screensEn: "/cs, desk, dashboard, log, data, POST /api/cs/intake",
+    screensZh: "/cs、台面、儀表板、日誌、資料、POST /api/cs/intake",
+    shippedEn: "Portal, wait loop, seed dashboard/log/data, UAT-46",
+    shippedZh: "入口、等待迴圈、種子儀表板／日誌／資料、UAT-46",
+    remainingEn: "Signed C1, form HMAC, mailbox gateway, production SMTP, live volume, no-silent-drop SLA",
+    remainingZh: "簽章 C1、表單 HMAC、信箱閘道、正式 SMTP、即時量、無靜默丟失 SLA",
+  },
+  {
+    id: "OI-20",
+    kind: "primary",
+    featureEn: "CS/TR ID vault and dealing-tape reconstruct",
+    featureZh: "CS／TR 核身庫與成交帶還原",
+    screensEn: "CS KYC Vault, desk, Data Sources, Demo Messenger",
+    screensZh: "CS 核身庫、台面、資料來源、示範 Messenger",
+    shippedEn: "Vault team, ESC-CS-KYC flags-only, TR routing, MT4/MT5 tape listed",
+    shippedZh: "核身庫團隊、ESC-CS-KYC 僅旗標、TR 分流、列出 MT4／MT5 成交帶",
+    remainingEn: "Production vault, mailer with cs.followup_cap, live tape, live messenger escalate, CS Lead waiver audit",
+    remainingZh: "正式核身庫、cs.followup_cap 寄信、即時成交帶、即時 Messenger 升級、CS Lead 豁免稽核",
+  },
+  {
+    id: "OI-05",
+    kind: "support",
+    featureEn: "Knowledge tree + RAG corpus (CS_SERVICE / TRADING_EXEC)",
+    featureZh: "知識樹＋RAG 語料（CS_SERVICE／TRADING_EXEC）",
+    screensEn: "Knowledge Tree, RAG Knowledge Base, AI Skills",
+    screensZh: "知識樹、RAG 知識庫、AI 技能",
+    shippedEn: "CS_SERVICE / TRADING_EXEC trunks + cs-* leaves (UAT-50)",
+    shippedZh: "CS_SERVICE／TRADING_EXEC 樹幹＋cs-* 葉（UAT-50）",
+    remainingEn: "Corpus owners, retire cadence, skill↔doc binds, propose_rag SLA",
+    remainingZh: "語料負責人、退役節奏、技能↔文件綁定、propose_rag SLA",
+  },
+  {
+    id: "OI-08",
+    kind: "support",
+    featureEn: "Production Lark interactive cards (CS/TR channels)",
+    featureZh: "生產 Lark 互動卡片（CS／TR 頻道）",
+    screensEn: "Lark Integration, Demo Messenger",
+    screensZh: "Lark 整合、示範 Messenger",
+    shippedEn: "Seed oc_cs_c1 / oc_cs_kyc / oc_tr_dealing (UAT-36)",
+    shippedZh: "種子 oc_cs_c1／oc_cs_kyc／oc_tr_dealing（UAT-36）",
+    remainingEn: "Live card Ack / Escalate / Approve including CS WAITING / cap",
+    remainingZh: "正式卡片確認／升級／核准（含 CS WAITING／上限）",
+  },
+  {
+    id: "OI-09",
+    kind: "support",
+    featureEn: "Risk Owner UAT exit including CS/TR catalogue",
+    featureZh: "風險負責人 UAT 出口含 CS／TR 目錄",
+    screensEn: "UAT Checklist v2.6",
+    screensZh: "UAT 清單 v2.6",
+    shippedEn: "Pack v2.6 (51 cases, skip UAT-45) indexes CS/TR",
+    shippedZh: "v2.6 包（51 案、跳過 UAT-45）已索引 CS／TR",
+    remainingEn: "Formal RO sign-off of UAT-25/46/47/48/50/51/52 + four CS hops",
+    remainingZh: "正式 RO 簽核 UAT-25／46／47／48／50／51／52＋四條 CS 關卡",
+  },
+  {
+    id: "OI-11",
+    kind: "support",
+    featureEn: "Admin UX polish — CS/TR phone-width",
+    featureZh: "管理後台 UX 打磨 — CS／TR 手機寬",
+    screensEn: "CS / TR Desk, Dashboard, Log, Data",
+    screensZh: "CS／TR 台、儀表板、日誌、資料",
+    shippedEn: "Surfaces listed for ~390px (UAT-18)",
+    shippedZh: "已列入約 390px 驗收（UAT-18）",
+    remainingEn: "Phone-width pass on desk, dashboard, log and data",
+    remainingZh: "台面、儀表板、日誌與資料通過手機寬",
+  },
+  {
+    id: "OI-14",
+    kind: "support",
+    featureEn: "Prototype AI desk UAT window includes CS/TR door",
+    featureZh: "原型 AI 台面 UAT 窗口含 CS／TR 大門",
+    screensEn: "/cs, desk, skills, wait loop, dashboard, log, data",
+    screensZh: "/cs、台面、技能、等待迴圈、儀表板、日誌、資料",
+    shippedEn: "CS/TR door shipped for UAT-46…52",
+    shippedZh: "CS／TR 大門已交付供 UAT-46…52",
+    remainingEn: "Formal UAT sign-off (OI-09)",
+    remainingZh: "正式 UAT 簽核（OI-09）",
+  },
+  {
+    id: "OI-15",
+    kind: "support",
+    featureEn: "Docs & URL catalog keep pace (UG §9.3 / UAT v2.6)",
+    featureZh: "文件與網址目錄跟上（使用手冊 §9.3／UAT v2.6）",
+    screensEn: "User Guide, URL Catalog, UAT, Open Issues, Progress",
+    screensZh: "使用手冊、網址目錄、UAT、開放議題、進度",
+    shippedEn: "UG §9.3 + URL Catalog CS/TR + UAT catalogue v2.6",
+    shippedZh: "使用手冊 §9.3＋網址目錄 CS／TR＋UAT 目錄 v2.6",
+    remainingEn: "Keep Open Issues + Progress in lockstep after each ship",
+    remainingZh: "每次交付後開放議題＋進度保持同步",
+  },
+];
+
+export const CS_TR_OPEN_ISSUE_IDS = new Set(CS_TR_OPEN_ISSUE_CATALOGUE.map((r) => r.id));
+
+export function isCsTrOpenIssue(i: Pick<OpenIssue, "id">) {
+  return CS_TR_OPEN_ISSUE_IDS.has(i.id);
+}
+
+export function openIssuesCsTrSummary() {
+  const rows = CS_TR_OPEN_ISSUE_CATALOGUE;
+  return {
+    total: rows.length,
+    primary: rows.filter((r) => r.kind === "primary").length,
+    support: rows.filter((r) => r.kind === "support").length,
+  };
+}
 
 export function openIssuesSummary() {
   const byStatus = {} as Record<IssueStatus, number>;

@@ -813,7 +813,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | UAT Checklist | `/admin/docs/uat` | Interactive 51-case sign-off (UAT-01 … UAT-52, skip UAT-45): why, steps, pass, evidence, screen coverage. **CS/TR catalogue v2.6:** UAT-25 catalog, UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log, UAT-52 BU / hops / `cs.*`, plus support UAT-17/22/27–29/36–40 |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
-| Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
+| Open Issues | `/admin/docs/open-issues` | Programme checklist: **20 issues** (OI-01…20). **CS/TR catalogue v1.5:** primary OI-19/OI-20 plus support OI-05/08/09/11/14/15 — prototype ticks vs production connectors/vault/tape |
 | Progress Tracker | `/admin/docs/progress` | Interactive board: X=issues, Y=timeline now→end-2027 |
 | URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs. **CS / TR** section: `/cs` portal, desk, dashboard, log, data, five SKILL.md playbooks, RAG leaves, POST `/api/cs/intake`, `GET /api/cs?view=data`, `cs_*` tables |
 
