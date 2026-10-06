@@ -18,6 +18,8 @@ export type IssueBu =
   | "Monitor"
   | "Product"
   | "GRC"
+  | "CS"
+  | "TR"
   | "All";
 
 export type IssueArea =
@@ -29,7 +31,9 @@ export type IssueArea =
   | "Monitor"
   | "Product"
   | "Platform"
-  | "GRC";
+  | "GRC"
+  | "CS"
+  | "TR";
 
 export type IssueChecklistItem = {
   en: string;
@@ -673,6 +677,66 @@ export const OPEN_ISSUES: OpenIssue[] = [
       { en: "Isolate alerts / RAG / skills / Lark routes / audit export", zh: "隔離警報／RAG／技能／Lark 路由／稽核匯出" },
       { en: "Read-only cross-entity exec aggregation (if required)", zh: "只讀跨法人高階彙總（如需要）" },
       { en: "Two UAT seeds (e.g. VFSC vs FCA) when design allows", zh: "設計允許時兩套 UAT 種子（如 VFSC vs FCA）" },
+    ],
+  },
+  {
+    id: "OI-19",
+    area: "CS",
+    bu: "CS",
+    status: "started",
+    startMonth: 0,
+    endMonth: 8,
+    priority: "P1",
+    en: {
+      title: "Production C1 / form / mailbox connectors",
+      detail:
+        "Prototype CS/TR desk ingests C1 live chat, the website form and official mailboxes through POST /api/cs/intake with token demo-c1. Production needs signed C1 webhooks, form HMAC and a real mailbox gateway so no request lives only in a personal inbox.",
+      dependencies: "C1 vendor contract; mailbox Graph/IMAP; OI-03 secrets vault",
+      eta: "2027-Q2 (connectors) / prototype UAT now",
+    },
+    zh: {
+      title: "正式 C1／表單／信箱連接器",
+      detail:
+        "原型 CS／TR 台以 POST /api/cs/intake（token demo-c1）接入 C1 即時聊天、網站表單與官方信箱。正式環境需要簽章 C1 webhook、表單 HMAC 與真實信箱閘道，避免請求只留在個人收件匣。",
+      dependencies: "C1 供應商契約；信箱 Graph／IMAP；OI-03 密鑰庫",
+      eta: "2027-Q2（連接器）／原型 UAT 現可測",
+    },
+    checklist: [
+      { en: "Replace demo-c1 token with signed C1 webhook + replay protection", zh: "以簽章 C1 webhook＋防重放取代 demo-c1 token", done: false },
+      { en: "Website / app form HMAC into the same intake API", zh: "網站／App 表單 HMAC 接入同一進件 API" },
+      { en: "Mailbox gateway for support@ and complaints@ (Graph or IMAP)", zh: "support@ 與 complaints@ 信箱閘道（Graph 或 IMAP）" },
+      { en: "No-silent-drop SLA on the CS/TR desk (channel stamp on every inbound)", zh: "CS／TR 台無靜默丟失 SLA（每筆進件含渠道戳記）" },
+      { en: "Sandbox UAT against C1 staging (UAT-46)", zh: "對 C1 測試環境做沙盒 UAT（UAT-46）", done: true },
+    ],
+  },
+  {
+    id: "OI-20",
+    area: "TR",
+    bu: "TR",
+    status: "planned",
+    startMonth: 2,
+    endMonth: 10,
+    priority: "P1",
+    en: {
+      title: "CS/TR ID vault and dealing-tape reconstruct",
+      detail:
+        "AI already emails the client when the issue is unclear or ID is needed, waits for a reply (cap 3), routes fills/slippage to TR, and escalates book-risk to the messenger spine. Production still needs a KYC document vault (not mock selfie text) and oneZero/MT tape for TR — not a CS workaround.",
+      dependencies: "OI-19 connectors; Client CRM/KYC; oneZero MT bridge; OI-07 control adapters for risk escalate",
+      eta: "2027-Q3 (tentative)",
+    },
+    zh: {
+      title: "CS／TR 核身庫與成交帶還原",
+      detail:
+        "AI 已能在案情不清或需核身時自動寄信、等待回覆（上限 3 封）、把成交／滑點派給 TR，並把帳簿風險升級到 Messenger 脊柱。正式環境仍需 KYC 證件庫（非模擬自拍文字）與 oneZero／MT 成交帶供 TR 使用 — 不可由 CS 權充。",
+      dependencies: "OI-19 連接器；客戶 CRM／KYC；oneZero MT 橋；OI-07 風險升級適配",
+      eta: "2027-Q3（暫定）",
+    },
+    checklist: [
+      { en: "KYC document vault + UID match; ID-verify stays open until reply or CS Lead waiver", zh: "KYC 證件庫＋UID 核對；身分驗證須待回覆或 CS Lead 豁免才可關" },
+      { en: "Auto follow-up mailer (unclear / need_id) with 3-mail cap in production", zh: "正式自動追問信（不清楚／需核身）含 3 封上限" },
+      { en: "TR reconstruct fill vs LP from oneZero / MT4 / MT5 tape", zh: "TR 自 oneZero／MT4／MT5 成交帶還原成交 vs LP" },
+      { en: "Escalate-to-risk writes a messenger thread + Human Intervention gate", zh: "升級風控寫入 Messenger 執行緒＋人工干預關卡" },
+      { en: "CS Lead waiver audited on Vantage + CRMP planes", zh: "CS Lead 豁免寫入 Vantage＋CRMP 稽核平面" },
     ],
   },
 ];

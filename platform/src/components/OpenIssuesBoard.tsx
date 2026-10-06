@@ -25,6 +25,8 @@ const AREAS: Array<IssueArea | "ALL"> = [
   "Product",
   "Platform",
   "GRC",
+  "CS",
+  "TR",
 ];
 
 function statusTone(s: IssueStatus) {

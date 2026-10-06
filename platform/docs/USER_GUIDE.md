@@ -16,12 +16,14 @@ Vantage **CRMP Admin** is the control room for CFD and crypto risk. Monitor 2.0 
 2. On high severity (BREACH or CRITICAL), runs a **second, independent AI** that may agree, partly agree, or disagree.  
 3. Puts the pack into a **Lark-style messenger** so you can show evidence, chat, escalate, dismiss, close, or send a control.  
 4. Asks a human checker before irreversible controls go live.  
-5. Writes the whole story into the **Audit Log** and the **home spine** (stage ticket counts — the dedicated Spine Log tab is gone).
+5. Staffs **CS / TR Desk** for 24/7 C1 live chat, web form and official email — AI emails the client when unclear or ID is needed and waits for a reply.  
+6. Writes the whole story into the **Audit Log** and the **home spine** (stage ticket counts — the dedicated Spine Log tab is gone).
 
 You do not need to be an engineer to use it. Click the left menu, read the cards, and follow the buttons on the page.
 
 **Permanent public demo:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **Messenger demo:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)  
+**CS / TR desk:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/)  
 **Full URL list:** [URL Catalog](/admin/docs/urls)  
 **Open programme issues / progress:** [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress)
 
@@ -60,6 +62,10 @@ Click a **Quick fill demo role** button, or type the email and password, then **
 | AI Engineer | `ai.engineer@vantagemarkets.com` | `ai123` | Skills, RAG, detectors, AI Admin proposals |
 | System Admin | `system.admin@vantagemarkets.com` | `sys123` | Users, settings, audit, AI access blocklist |
 | Super Admin | `admin@vantagemarkets.com` | `admin123` | Full demo rights (still cannot self-approve AI Admin when dual control is on) |
+| CS Lead | `cs.lead@vantagemarkets.com` | `cs123` | 24/7 CS desk, follow-up waivers, assign to TR |
+| CS Agent | `cs.agent@vantagemarkets.com` | `cs123` | C1 / form / mailbox first response |
+| TR Lead | `tr.lead@vantagemarkets.com` | `tr123` | Execution-complaint quality |
+| TR Dealer | `tr.dealer@vantagemarkets.com` | `tr123` | Reconstruct fills vs LP |
 
 After Sign in you land on **Admin Home**. The name stays in this browser (`crmp_demo_session_v1`). Refreshing the public Pages site does not drop you back to a blank guest. Click **Sign out** in the left pane to clear it.
 
@@ -96,7 +102,7 @@ The left pane is grouped so you are not staring at one long list:
 | **Overview** | Admin Home (includes spine stage ticket counts) |
 | **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Risk Log → Risk Domains |
 | **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
-| **Response** | Demo Messenger → Human Intervention → Escalation Routes → Lark |
+| **Response** | Demo Messenger → CS / TR Desk → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
 | **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem → Open Issues → Progress Tracker |
@@ -105,7 +111,7 @@ The Vantage logo sits at the top. Your role badge (and **Public prototype** on G
 
 ### Unread numbers
 
-Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
+Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, CS / TR Desk, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
 
 - The number is **new things since you last opened that tab** in this browser.  
 - Formula: `unread = max(0, (known total + extra bumps) − last seen)`.  
@@ -506,7 +512,42 @@ graph TD
 ```
 
 
-### 9.3 Lark Integration — `/admin/lark`
+### 9.3 CS / TR Desk — `/admin/cs-desk`
+
+**What it is.** 24/7 Customer Service and Trading Support. Platform **C1 live chat**, the website **submission form** and **official emails** land here in realtime (`POST /api/cs/intake`, header `x-cs-intake-token: demo-c1`).
+
+**What you see.** Inbox filter All / CS / TR. Each request shows channel, desk, AI clarity (clear / unclear / need ID) and status (OPEN, AWAITING CLIENT, ID VERIFY, ASSIGNED TR, ESCALATED RISK, RESOLVED). The thread mixes client chat, AI routing notes and **automatic follow-up emails**.
+
+**What to click.**
+
+| Button | What it does |
+|---|---|
+| **AI triage** | Re-run routing (CS vs TR, category, clarity) |
+| **Email: need more detail** | AI sends an official mail asking what happened / UID / screenshot; status AWAITING CLIENT |
+| **Email: ID verification** | AI asks for passport/ID + UID last four + selfie; status ID VERIFY |
+| **Simulate client email reply** | Client answers the waiting mail; AI re-triages. The case stays open until they reply (cap 3 mails) |
+| **Assign to TR** | Hands execution complaints to TR Dealing Support |
+| **Escalate to Risk** | Leaves CS/TR and enters the messenger / Human Intervention spine |
+| **Resolve** | Close — blocked while a follow-up is still WAITING |
+| **Simulate C1 / form / email** | Posts through the same intake API |
+
+**Good looks like.** Seeded cases cover a clear C1 swap question, an unclear C1 “help me ???”, a TR slippage form, and an ID-verify email. Unclear/ID cases wait. Trading keywords go to TR. 繁中 labels the chrome.
+
+```mermaid
+graph TD
+  C1[C1 live chat] --> Intake[POST /api/cs/intake]
+  Form[Web form] --> Intake
+  Mail[Official email] --> Intake
+  Intake --> AI[AI triage]
+  AI -->|unclear or need ID| Wait[Auto email and wait]
+  Wait -->|client replies| AI
+  AI -->|trading| TR[TR Dealing]
+  AI -->|book risk| Risk[Escalate to Risk]
+  AI -->|clear CS| Done[CS resolve]
+```
+
+
+### 9.4 Lark Integration — `/admin/lark`
 
 **What it is.** Channel registry for severity-routed notify, on-call pages, and dual-control pings. Webhooks are mocked in the prototype.
 
@@ -516,7 +557,7 @@ graph TD
 
 **Good looks like.** Market intel, risk, and AI lab channels exist. Disabled channels are not used by escalation routes.
 
-### 9.4 Escalation Routes — `/admin/escalation`
+### 9.5 Escalation Routes — `/admin/escalation`
 
 **What it is.** Paths are defined by **dimensions** (severity, involved teams, risk scenario, pending time, need human intervention) with editable **coefficients**. Demo Messenger **Escalate** follows this map. Every alert gets a path: exact domain+severity → domain wild → **ESC-DEFAULT**. Each skill binds **one** route code; unbound skills fall back to ESC-DEFAULT. There is **no separate Path name column** — the route code plus dimensions identify the path.
 
@@ -607,7 +648,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | User Guide | `/admin/docs/user-guide` | This handbook |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
-| UAT Checklist | `/admin/docs/uat` | Interactive 45-case sign-off (UAT-01 … UAT-45): why, steps, pass, evidence, screen coverage |
+| UAT Checklist | `/admin/docs/uat` | Interactive 49-case sign-off (UAT-01 … UAT-49): why, steps, pass, evidence, screen coverage |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
@@ -645,6 +686,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
+| Response | CS / TR Desk | C1 / form / email intake; AI follow-up until reply; TR routing |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
 | Response | Lark Integration | Channel registry |
@@ -671,5 +713,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors merged into Monitor 2.0 (redirect); AI Analyses list not left-nav; Monitor hub = indicator+detector table (no Alerts/Tickets tabs); mobile polish note |
 | 1.9 | 2026-10-06 | Home dummy spine: Dummy alert / Dummy alert group; bilingual EN / zh-Hant chrome and stored copy |
 | 1.10 | 2026-10-06 | Demo Messenger bird-eye POC windows along the escalation path |
+| 1.11 | 2026-10-06 | CS / TR Desk: C1, form, official email; AI follow-up until reply; TR routing |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

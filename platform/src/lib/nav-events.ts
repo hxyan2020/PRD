@@ -50,6 +50,10 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     db,
     `SELECT COUNT(*) AS c, MAX(last_run_at) AS ts FROM detectors WHERE last_status IN ('WARN','BREACH')`
   );
+  const csDesk = scalar(
+    db,
+    `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM cs_requests WHERE status NOT IN ('RESOLVED','CLOSED')`
+  );
   const monitorBadge = {
     count: Math.max(tickets.c, detectorAlarms.c),
     latestAt: tickets.ts && detectorAlarms.ts
@@ -67,5 +71,6 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     "/admin/audit": { count: audit.c, latestAt: audit.ts },
     "/admin/monitor-2": monitorBadge,
     "/admin/risk-log": { count: riskLog.c, latestAt: riskLog.ts },
+    "/admin/cs-desk": { count: csDesk.c, latestAt: csDesk.ts },
   });
 }

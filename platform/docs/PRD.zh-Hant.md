@@ -6,7 +6,7 @@
 **負責人：** demo platform owner · **核准人：** 風險負責人  
 **相關文件：** [TSD](/admin/docs/tsd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [生態導入評估](/admin/docs/ecosystem)
 
-本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-45](/admin/docs/uat)。
+本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-49](/admin/docs/uat)。
 
 ---
 
@@ -226,10 +226,11 @@ graph LR
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
-| FR-32 | UAT 互動包 | UAT-01…UAT-45 含為什麼／步驟／通過／證據與畫面覆蓋 |
+| FR-32 | UAT 互動包 | UAT-01…UAT-49 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
+| FR-37 | CS／TR 24/7 台 | C1 即時聊天、網頁表單與官方信箱經 `/api/cs/intake` 進件；AI 在不清楚或需核身時自動寄信並等待回覆（上限 3）；交易案件 → TR；帳簿風險 → Messenger 脊柱 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -246,7 +247,7 @@ graph LR
 
 | 分組 | 功能 | 路徑 | 待辦工作 | 關鍵驗收 |
 |---|---|---|---|---|
-| 總覽 | 管理首頁 | `/admin` | 定向；用卡片跳轉；虛擬脊柱演練；脊柱階段計數 | 每張卡／列皆為連結；虛擬按鈕；脊柱視覺；messenger CTA |
+| 總覽 | 管理首頁 | `/admin` | 定向；用卡片跳轉；虛擬脊柱演練；脊柱階段計數 | 每張卡／列皆為連結；虛擬按鈕；脊柱視覺；messenger＋CS／TR CTA |
 | 監控與風險 | 每日績效 | `/admin/dashboard` | 當日 CFD＋加密畫面 | 兩產品格；WARN／BREACH 數 |
 | 監控與風險 | 風險日誌分析 | `/admin/risk-log` | 處理時間、損失 vs 防損、漏洞 | 摘要＋類別＋領域＋紀錄 |
 | 監控與風險 | 市場情報 | `/admin/market-intel` | 會移動 LP 的頭條 | 立即掃描；發現；寄件匣；掃描紀錄；Pages 示範掃描 |
@@ -261,6 +262,7 @@ graph LR
 | AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
 | 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註；樣本顯示操作者信箱 |
 | 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流＋鳥瞰 POC 窗 | 路徑晶片、承辦窗、同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟 |
+| 應變 | CS／TR 台 | `/admin/cs-desk` | 24/7 C1、表單與信箱進件 | 三渠道；AI 追問直到回覆；TR 分流；升級風控 |
 | 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；localhost 模擬通知 |
 | 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
@@ -273,7 +275,7 @@ graph LR
 | 文件 | 使用手冊 | `/admin/docs/user-guide` | 如何操作 | 英＋繁中；每一畫面 |
 | 文件 | PRD | `/admin/docs/prd` | 為什麼／做什麼／怎麼過 | 本文件 |
 | 文件 | TSD | `/admin/docs/tsd` | 怎麼做的 | 完整介面地圖 |
-| 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 45 案，可互動 |
+| 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 49 案，可互動 |
 | 文件 | 生態導入評估 | `/admin/docs/ecosystem` | 導入 | 階段、預算、風險 |
 | 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | RM-01…15：今日／要做／完成標準 |
 | 文件 | 開放議題 | `/admin/docs/open-issues` | 計畫缺口 | ETA、BU、依賴 → 2027 |
@@ -319,7 +321,7 @@ graph LR
 12. **負責人登入：** demo platform owner 角色在 Pages 重新整理後仍在。  
 13. **選單真相：** 左側為即時警報與追蹤（非「即時警報」舊名）；無偵測器／AI 分析列表／脊柱日誌列；`/admin/detectors`→Monitor 2.0；`/admin/ai-analyses`→警報；`/admin/spine`→首頁。
 
-正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-45）。此包覆蓋每一個管理畫面以及完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步）。
+正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-49）。此包覆蓋每一個管理畫面、完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步），以及 CS／TR 台（C1／表單／信箱進件、AI 追問直到回覆、TR 分流）。
 
 ---
 
@@ -376,8 +378,8 @@ graph LR
 | 產品產物 | 在哪裡 |
 |---|---|
 | 每頁操作說明 | 使用手冊 §6–§12 |
-| 每頁技術模組 | TSD §7＋§8–§16 |
-| 每介面測試案例 | UAT-01…UAT-45 的 `covers` 欄 |
+| 每頁技術模組 | TSD §7＋§8–§18 |
+| 每介面測試案例 | UAT-01…UAT-49 的 `covers` 欄 |
 | 公開與本機網址 | 網址目錄 |
 
 ---
@@ -403,5 +405,6 @@ graph LR
 | 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、AI 一線／二線、propose_rag、ESC-DEFAULT、開放議題／進度 |
 | 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；AI 分析列表轉址；Monitor 中心無警報／工單分頁 |
+| 1.9 | 2026-10-06 | FR-37 CS／TR 24/7 台；UAT-46…49；TSD §17 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

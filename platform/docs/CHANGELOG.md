@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T06:30:00.000Z | CS/TR desk: C1 live chat, web form and official email intake; AI follow-up until client reply (cap 3); TR routing; TSD §17; UAT-46…49; OI-19/20; Progress 20 columns; EN/zh-Hant |
 | 2026-10-06T05:40:00.000Z | Lark demo: split chat windows per POC on the escalation path; bird-eye relay chips; dummy spine escalates two hops |
 | 2026-10-06T05:15:00.000Z | Dummy spine zh-Hant: phrase maps + fragment rewrite for titles/messages/actors/spine; API locale into messenger notes; UG/UAT/PRD/TSD bilingual |
 | 2026-10-06T04:20:00.000Z | Home dummy spine: Dummy alert / Dummy alert group buttons walk DETECT→AI (skill/RAG)→messenger maker-checker→escalate→close; highlight cards + spine; Audit DUMMY_SPINE_RUN + Risk Log |

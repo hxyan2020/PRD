@@ -1,6 +1,6 @@
 # CRMP Open Issues
 
-**Document ID:** CRMP-OI-001 · **Version:** 1.3 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
+**Document ID:** CRMP-OI-001 · **Version:** 1.4 · **Interactive board:** [/admin/docs/open-issues](/admin/docs/open-issues) · **Progress twin:** [/admin/docs/progress](/admin/docs/progress)
 
 Tentative open-issue checklist for the CRMP admin / control-plane programme. Assumptions are explicit:
 
@@ -10,7 +10,7 @@ Tentative open-issue checklist for the CRMP admin / control-plane programme. Ass
 
 Statuses: **Planned · Started · WIP · Delayed · UAT · Go live · BAU**. Every issue carries **responsible BU**, **dependencies**, and a **tentative ETA** through **end-2027**.
 
-Source of truth for the interactive checklist: `platform/src/lib/docs/open-issues.ts` (18 issues).
+Source of truth for the interactive checklist: `platform/src/lib/docs/open-issues.ts` (20 issues).
 
 ---
 
@@ -20,6 +20,8 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 |---|---|---|
 | **Monitor** | OI-01, OI-13 | Indicator expansion; bidirectional ticket write-back |
 | **Product** | OI-02, OI-15, OI-18 | Design freeze; docs BAU; multi-entity tenancy |
+| **CS** | OI-19 | Production C1 / form / mailbox connectors |
+| **TR** | OI-20 | CS/TR ID vault and dealing-tape reconstruct |
 | **System** | OI-03, OI-06, OI-11, OI-16 | Tech/resource plan; SSO; UX; observability |
 | **AI** | OI-04, OI-05, OI-14 | Production LLM; RAG governance; prototype UAT |
 | **Ops** | OI-07, OI-08, OI-17 | Control adapters; Lark cards; kill-switches |
@@ -52,6 +54,8 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 | OI-16 | P1 | System | System | Planned | 2027-Q3 | Observability — spine SLOs / AI / false-alarm |
 | OI-17 | P1 | Ops | Ops | Planned | 2027-Q4 | Global kill-switches |
 | OI-18 | P2 | Product | Product | Planned | 2027-Q4 → 12 | Multi-entity / brand tenancy readiness |
+| OI-19 | P1 | CS | CS | Started | 2027-Q2 | Production C1 / form / mailbox connectors |
+| OI-20 | P1 | TR | TR | Planned | 2027-Q3 | CS/TR ID vault and dealing-tape reconstruct |
 
 ---
 
@@ -107,6 +111,34 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 - [ ] Isolate alerts / RAG / skills / Lark routes / audit export  
 - [ ] Read-only cross-entity exec aggregation (if required)  
 - [ ] Two UAT seeds (e.g. VFSC vs FCA) when design allows  
+
+---
+
+### CS
+
+#### OI-19 — Production C1 / form / mailbox connectors
+**BU:** CS · **Status:** Started · **ETA:** 2027-Q2 (connectors) / prototype UAT now · **Depends:** C1 vendor; mailbox Graph/IMAP; OI-03
+
+- [ ] Replace demo-c1 token with signed C1 webhook + replay protection  
+- [ ] Website / app form HMAC into the same intake API  
+- [ ] Mailbox gateway for support@ and complaints@ (Graph or IMAP)  
+- [x] Sandbox UAT against C1 staging (UAT-46) — prototype desk  
+
+*Today:* `POST /api/cs/intake` with `x-cs-intake-token: demo-c1` plus simulate buttons on `/admin/cs-desk`.
+
+---
+
+### TR
+
+#### OI-20 — CS/TR ID vault and dealing-tape reconstruct
+**BU:** TR · **Status:** Planned · **ETA:** 2027-Q3 · **Depends:** OI-19; CRM/KYC; oneZero MT; OI-07
+
+- [ ] KYC document vault + UID match; ID-verify stays open until reply or CS Lead waiver  
+- [ ] Auto follow-up mailer (unclear / need_id) with 3-mail cap in production  
+- [ ] TR reconstruct fill vs LP from oneZero / MT4 / MT5 tape  
+- [ ] Escalate-to-risk writes a messenger thread + Human Intervention gate  
+
+*Today:* heuristic AI emails the client and waits (cap 3); TR routing and ESCALATED_RISK are desk-local.
 
 ---
 
@@ -260,5 +292,6 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 | 1.1 | 2026-10-05 | Audit plane split + rollback; editable Roles; escalation dimensions noted |
 | 1.2 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; OI-11 mobile cards; OI-13 local-only ack |
 | 1.3 | 2026-10-05 | Detailed per-BU checklists; OI-16 observability, OI-17 kill-switches, OI-18 tenancy; board renders checklist lines |
+| 1.4 | 2026-10-06 | OI-19 C1/form/mailbox connectors; OI-20 CS/TR ID vault + dealing tape; 20 issues |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`) · **中文:** [OPEN_ISSUES.zh-Hant.md](./OPEN_ISSUES.zh-Hant.md)

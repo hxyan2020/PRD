@@ -9,6 +9,7 @@ import {
   FileText,
   GitBranch,
   Globe2,
+  Headphones,
   LayoutDashboard,
   Library,
   LineChart,
@@ -68,6 +69,7 @@ export const NAV_ITEMS = [
   { href: "/admin/ai-admin", label: "AI Admin", icon: SlidersHorizontal, permission: "ai.admin", group: "ai" },
 
   { href: "/admin/messenger", label: "Demo Messenger", icon: MessagesSquare, permission: "lark.read", group: "response" },
+  { href: "/admin/cs-desk", label: "CS / TR Desk", icon: Headphones, permission: "lark.read", group: "response" },
   { href: "/admin/interventions", label: "Human Intervention", icon: UserCheck, permission: "intervene.operate", group: "response" },
   { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read", group: "response" },
   { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read", group: "response" },

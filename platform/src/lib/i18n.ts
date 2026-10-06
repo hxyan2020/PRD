@@ -30,7 +30,7 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/urls": { en: "URL Catalog", "zh-Hant": "網址目錄" },
   "/admin/docs/open-issues": { en: "Open Issues", "zh-Hant": "開放議題" },
   "/admin/docs/progress": { en: "Progress Tracker", "zh-Hant": "進度追蹤" },
-  "/admin/messenger": { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
+  "/admin/cs-desk": { en: "CS / TR Desk", "zh-Hant": "CS／TR 台" },
   "/admin/security/ai-access": { en: "AI Access Security", "zh-Hant": "AI 存取安全" },
   "/admin/departments": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
   "/admin/teams": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
@@ -154,6 +154,13 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "原型 Lark 風格收件匣：同一案件依升級路徑承辦拆成多個聊天窗 — 鳥瞰台面轉遞，並含證據、聊天機器人、升級、排除、結案與控制動作。",
     },
   },
+  "cs-desk": {
+    title: { en: "CS / TR Desk", "zh-Hant": "CS／TR 台" },
+    subtitle: {
+      en: "24/7 Customer Service and Trading Support. Live C1 chat, web form and official email land here. If AI is unclear or needs ID, it emails the client and waits for a reply.",
+      "zh-Hant": "24/7 客服與交易支援。C1 即時聊天、網頁表單與官方信箱在此匯入。AI 若不清楚或需核身，會自動寄信並等待客戶回覆。",
+    },
+  },
   "ai-access": {
     title: { en: "AI Access Blocklist", "zh-Hant": "AI 存取黑名單" },
     subtitle: {
@@ -241,8 +248,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   urls: {
     title: { en: "URL Catalog", "zh-Hant": "網址目錄" },
     subtitle: {
-      en: "Admin pages (incl. redirects: Detectors→Monitor 2.0, AI Analyses→Realtime Alert, Spine→Home, Teams→BU and Teams), APIs, SQLite path, and core DB tables.",
-      "zh-Hant": "管理頁（含轉址：偵測器→Monitor 2.0、AI 分析→即時警報與追蹤、脊柱→首頁、團隊→BU 與團隊）、API、SQLite 路徑與核心資料表。",
+      en: "Admin pages (incl. CS/TR Desk, redirects: Detectors→Monitor 2.0, AI Analyses→Realtime Alert, Spine→Home, Teams→BU and Teams), APIs, SQLite path, and core DB tables.",
+      "zh-Hant": "管理頁（含 CS／TR 台、轉址：偵測器→Monitor 2.0、AI 分析→即時警報與追蹤、脊柱→首頁、團隊→BU 與團隊）、API、SQLite 路徑與核心資料表。",
     },
   },
 };
@@ -255,7 +262,7 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "集中式風險管理平台",
   },
   "shell.headerEyebrow": { en: "Admin Control Plane", "zh-Hant": "管理控制平面" },
-  "shell.headerTitle": { en: "Risk · Ops · AI · System", "zh-Hant": "風險 · 營運 · AI · 系統" },
+  "shell.headerTitle": { en: "Risk · Ops · AI · System · CS · TR", "zh-Hant": "風險 · 營運 · AI · 系統 · 客服 · 交易" },
   "shell.messenger": { en: "Messenger", "zh-Hant": "即時通訊" },
   "shell.indicators": { en: "Indicators", "zh-Hant": "指標" },
   "shell.signOut": { en: "Sign out", "zh-Hant": "登出" },
@@ -265,7 +272,7 @@ const UI: Record<string, Pair> = {
   "shell.language": { en: "Language", "zh-Hant": "語言" },
 
   "home.stat.users": { en: "Users", "zh-Hant": "使用者" },
-  "home.stat.usersHint": { en: "Across 4 departments", "zh-Hant": "橫跨 4 個部門" },
+  "home.stat.usersHint": { en: "Across 6 departments", "zh-Hant": "橫跨 6 個部門" },
   "home.stat.teams": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
   "home.stat.teamsHint": { en: "On-call ready", "zh-Hant": "可值班" },
   "home.stat.sources": { en: "Data Sources", "zh-Hant": "資料來源" },
@@ -368,6 +375,44 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "在 Lark 風格 Messenger 示範中查看警報、AI 報告與升級訊息。",
   },
   "home.larkDemoCta": { en: "Open messenger demo", "zh-Hant": "開啟 Messenger 示範" },
+  "home.csDesk": {
+    en: "C1 live chat, web form and official email — CS 24/7 and TR dealing in one desk.",
+    "zh-Hant": "C1 即時聊天、網頁表單與官方信箱 — CS 24/7 與 TR 成交同一台面。",
+  },
+  "home.csDeskCta": { en: "Open CS / TR desk", "zh-Hant": "開啟 CS／TR 台" },
+  "cs.pageHint": {
+    en: "Connectors: POST /api/cs/intake (C1 live chat, submission form, official email). Header x-cs-intake-token: demo-c1. If AI is unclear or needs ID, it emails the client and waits for a reply — up to three loops.",
+    "zh-Hant": "連接器：POST /api/cs/intake（C1 即時聊天、提交表單、官方信箱）。標頭 x-cs-intake-token: demo-c1。AI 若不清楚或需核身，會自動寄信等待回覆 — 最多三輪。",
+  },
+  "cs.inbox": { en: "CS / TR inbox", "zh-Hant": "CS／TR 收件匣" },
+  "cs.empty": { en: "No requests yet. Simulate C1, a form, or an email.", "zh-Hant": "尚無請求。請模擬 C1、表單或信件。" },
+  "cs.triage": { en: "AI triage", "zh-Hant": "AI 分流" },
+  "cs.askMore": { en: "Email: need more detail", "zh-Hant": "寄信：請補充" },
+  "cs.askId": { en: "Email: ID verification", "zh-Hant": "寄信：身分驗證" },
+  "cs.assignTr": { en: "Assign to TR", "zh-Hant": "指派至 TR" },
+  "cs.escalateRisk": { en: "Escalate to Risk", "zh-Hant": "升級至風控" },
+  "cs.resolve": { en: "Resolve", "zh-Hant": "結案" },
+  "cs.waitingReply": { en: "Waiting for the client to reply to auto-email", "zh-Hant": "等待客戶回覆自動信件" },
+  "cs.simulateReply": { en: "Simulate client email reply", "zh-Hant": "模擬客戶回信" },
+  "cs.replyPh": { en: "Reply as CS / TR…", "zh-Hant": "以 CS／TR 回覆…" },
+  "cs.select": { en: "Select a request.", "zh-Hant": "請選擇一則請求。" },
+  "cs.simulate": { en: "Realtime intake (demo)", "zh-Hant": "即時進件（示範）" },
+  "cs.simulateHint": {
+    en: "Posts through the same API C1, the website form and the mailbox gateway use.",
+    "zh-Hant": "走與 C1、網站表單、信箱閘道相同的 API。",
+  },
+  "cs.simPh": {
+    en: "Optional body — try a short “help me ???” to trigger follow-up, or mention MT5 fill/slippage for TR.",
+    "zh-Hant": "可選內文 — 試短句「help me ???」觸發追問，或提到 MT5 成交／滑點以分流至 TR。",
+  },
+  "cs.simC1": { en: "Simulate C1 chat", "zh-Hant": "模擬 C1 聊天" },
+  "cs.simForm": { en: "Simulate form", "zh-Hant": "模擬表單" },
+  "cs.simEmail": { en: "Simulate official email", "zh-Hant": "模擬官方信件" },
+  "cs.needOperate": { en: "Your rank cannot operate the CS/TR desk.", "zh-Hant": "你的職級無法操作 CS／TR 台。" },
+  "cs.staticNote": {
+    en: "Static snapshot — intake API is live on localhost. Seeded requests still show the three channels and the follow-up loop.",
+    "zh-Hant": "靜態快照 — 進件 API 在本機即時。種子案件仍展示三個渠道與追問迴圈。",
+  },
   "home.dummyTitle": { en: "Dummy spine run", "zh-Hant": "虛擬脊柱演練" },
   "home.dummyHint": {
     en: "Raise a dummy Monitor 2.0 alert (or a linked group). CRMP walks DETECT → AI (skill or RAG) → messenger → maker/checker → escalate → close, then highlights the cards and spine on this page. Audit and Risk Log keep the trail.",

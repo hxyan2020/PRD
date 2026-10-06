@@ -87,6 +87,13 @@ const CRMP_ACTION_HINT = new Set([
   "UPDATE_THRESHOLDS",
   "PAUSE_INDICATOR",
   "RESUME_INDICATOR",
+  "CS_INTAKE",
+  "CS_FOLLOWUP_EMAIL",
+  "CS_CLIENT_REPLY",
+  "CS_AGENT_REPLY",
+  "CS_ASSIGN_TR",
+  "CS_ESCALATE_RISK",
+  "CS_RESOLVE",
 ]);
 
 const REVERSIBLE_ACTIONS = new Set([
@@ -109,9 +116,16 @@ export function classifyAuditPlane(action: string, entityType: string): AuditPla
   if (VANTAGE_ENTITY.has(entityType) || VANTAGE_ACTION.has(action)) return "vantage";
   // Entity hints for CRMP ops
   if (
-    ["monitor_alert", "alert", "ai_analysis", "intervention", "escalation_route", "skill", "messenger_thread"].includes(
-      entityType
-    )
+    [
+      "monitor_alert",
+      "alert",
+      "ai_analysis",
+      "intervention",
+      "escalation_route",
+      "skill",
+      "messenger_thread",
+      "cs_request",
+    ].includes(entityType)
   ) {
     return "crmp";
   }

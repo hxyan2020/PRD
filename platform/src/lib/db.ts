@@ -20,6 +20,7 @@ import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/dem
 import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
 import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
 import { DEPARTMENT_LIST, ROLE_CHARTERS } from "@/lib/org-catalog";
+import { ensureCsSchema, seedCsIfEmpty } from "@/lib/cs/desk";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -422,6 +423,77 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
       "ai.read",
       "detectors.read",
       "spine.read",
+      "dashboard.read",
+      "cs.read",
+    ],
+  ],
+  [
+    "CS_LEAD",
+    ROLE_CHARTERS.CS_LEAD.name,
+    ROLE_CHARTERS.CS_LEAD.intro,
+    "CUSTOMER_SERVICE",
+    [
+      "admin.access",
+      "users.read",
+      "teams.read",
+      "lark.read",
+      "lark.manage",
+      "cs.read",
+      "cs.operate",
+      "monitor.read",
+      "audit.read",
+      "dashboard.ops",
+      "rag.read",
+      "spine.read",
+    ],
+  ],
+  [
+    "CS_AGENT",
+    ROLE_CHARTERS.CS_AGENT.name,
+    ROLE_CHARTERS.CS_AGENT.intro,
+    "CUSTOMER_SERVICE",
+    [
+      "admin.access",
+      "lark.read",
+      "cs.read",
+      "cs.operate",
+      "monitor.read",
+      "rag.read",
+      "spine.read",
+      "dashboard.read",
+    ],
+  ],
+  [
+    "TR_LEAD",
+    ROLE_CHARTERS.TR_LEAD.name,
+    ROLE_CHARTERS.TR_LEAD.intro,
+    "TRADING",
+    [
+      "admin.access",
+      "users.read",
+      "teams.read",
+      "lark.read",
+      "cs.read",
+      "cs.operate",
+      "monitor.read",
+      "audit.read",
+      "dashboard.ops",
+      "rag.read",
+      "spine.read",
+    ],
+  ],
+  [
+    "TR_DEALER",
+    ROLE_CHARTERS.TR_DEALER.name,
+    ROLE_CHARTERS.TR_DEALER.intro,
+    "TRADING",
+    [
+      "admin.access",
+      "lark.read",
+      "cs.read",
+      "cs.operate",
+      "monitor.read",
+      "rag.read",
       "dashboard.read",
     ],
   ],
@@ -1081,6 +1153,130 @@ function ensureEscalationSchema(db: Database.Database) {
   upsert.run("escalation.default_route_code", "ESC-DEFAULT", "Catch-all escalation path for unmatched / exotic events");
 }
 
+function ensureCsPermissions(db: Database.Database) {
+  const extras: Record<string, string[]> = {
+    RISK_OWNER: ["cs.read", "cs.operate"],
+    RISK_ANALYST: ["cs.read"],
+    OPS_LEAD: ["cs.read", "cs.operate"],
+    OPS_ANALYST: ["cs.read"],
+    SUPER_ADMIN: ["cs.read", "cs.operate"],
+    VIEWER: ["cs.read"],
+  };
+  const rows = db.prepare(`SELECT code, permissions_json FROM roles`).all() as Array<{
+    code: string;
+    permissions_json: string;
+  }>;
+  const upd = db.prepare(`UPDATE roles SET permissions_json = ? WHERE code = ?`);
+  for (const row of rows) {
+    const add = extras[row.code];
+    if (!add) continue;
+    let perms: string[] = [];
+    try {
+      perms = JSON.parse(row.permissions_json) as string[];
+    } catch {
+      perms = [];
+    }
+    if (perms.includes("*")) continue;
+    let changed = false;
+    for (const p of add) {
+      if (!perms.includes(p)) {
+        perms.push(p);
+        changed = true;
+      }
+    }
+    if (changed) upd.run(JSON.stringify(perms), row.code);
+  }
+}
+
+function ensureCsOrg(db: Database.Database) {
+  ensureCsPermissions(db);
+  const teamByName = db.prepare(`SELECT id FROM teams WHERE name = ?`);
+  const insertTeam = db.prepare(
+    `INSERT INTO teams (name, department_code, mission, lark_chat_id, on_call_rotation) VALUES (?, ?, ?, ?, ?)`
+  );
+  if (!teamByName.get("CS 24/7 Desk")) {
+    insertTeam.run(
+      "CS 24/7 Desk",
+      "CUSTOMER_SERVICE",
+      "24/7 C1 live chat, web form and official mailbox intake; AI follow-up until the client replies.",
+      "oc_cs_c1",
+      "CS Agent → CS Lead"
+    );
+  }
+  if (!teamByName.get("TR Dealing Support")) {
+    insertTeam.run(
+      "TR Dealing Support",
+      "TRADING",
+      "Order, fill, slippage and MT4/MT5 execution complaints routed from CS.",
+      "oc_tr_dealing",
+      "TR Dealer → TR Lead"
+    );
+  }
+  const csTeam = teamByName.get("CS 24/7 Desk") as { id: number } | undefined;
+  const trTeam = teamByName.get("TR Dealing Support") as { id: number } | undefined;
+  ensureUser(db, "cs.lead@vantagemarkets.com", "Maya Santos", "cs123", "CS_LEAD", "CUSTOMER_SERVICE", csTeam?.id ?? null);
+  ensureUser(db, "cs.agent@vantagemarkets.com", "Elena Rossi", "cs123", "CS_AGENT", "CUSTOMER_SERVICE", csTeam?.id ?? null);
+  ensureUser(db, "tr.lead@vantagemarkets.com", "Kenji Watanabe", "tr123", "TR_LEAD", "TRADING", trTeam?.id ?? null);
+  ensureUser(db, "tr.dealer@vantagemarkets.com", "Omar Haddad", "tr123", "TR_DEALER", "TRADING", trTeam?.id ?? null);
+
+  const lark = db.prepare(`SELECT id FROM lark_channels WHERE chat_id = ?`);
+  const insertLark = db.prepare(
+    `INSERT INTO lark_channels (name, chat_id, purpose, department_code, severity_min, webhook_url, enabled)
+     VALUES (?, ?, ?, ?, 'INFO', ?, 1)`
+  );
+  if (!lark.get("oc_cs_c1")) {
+    insertLark.run("CS C1 Live", "oc_cs_c1", "24/7 C1 live chat bridge into CRMP", "CUSTOMER_SERVICE", null);
+  }
+  if (!lark.get("oc_tr_dealing")) {
+    insertLark.run("TR Dealing Support", "oc_tr_dealing", "Trading execution complaints from CS", "TRADING", null);
+  }
+
+  const srcByName = db.prepare(`SELECT id FROM data_sources WHERE name = ?`);
+  const insertSrc = db.prepare(
+    `INSERT INTO data_sources (name, category, url, description, owner_department, auth_type, refresh_cadence, status, tags_json, notes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?)`
+  );
+  if (!srcByName.get("C1 Live Chat Gateway")) {
+    insertSrc.run(
+      "C1 Live Chat Gateway",
+      "MESSAGING",
+      "/api/cs/intake",
+      "Platform 24/7 live chat (C1) webhook into the CS/TR desk.",
+      "CUSTOMER_SERVICE",
+      "TOKEN",
+      "Real-time",
+      '["cs","c1","live-chat"]',
+      "Prototype token x-cs-intake-token: demo-c1"
+    );
+  }
+  if (!srcByName.get("Website CS submission form")) {
+    insertSrc.run(
+      "Website CS submission form",
+      "INTERNAL_PLATFORM",
+      "/api/cs/intake",
+      "Website / app contact form posts into the CS/TR desk.",
+      "CUSTOMER_SERVICE",
+      "TOKEN",
+      "Event-driven",
+      '["cs","form"]',
+      "Same intake API as C1; channel=WEB_FORM"
+    );
+  }
+  if (!srcByName.get("Official support mailbox")) {
+    insertSrc.run(
+      "Official support mailbox",
+      "MESSAGING",
+      "/api/cs/intake",
+      "Official support and complaints mailboxes ingested as CS requests.",
+      "CUSTOMER_SERVICE",
+      "APP_SECRET",
+      "Event-driven",
+      '["cs","email"]',
+      "AI follow-up mail is sent from this mailbox until the client replies."
+    );
+  }
+}
+
 function ensureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
   ensureSpineSchema(db);
@@ -1105,6 +1301,9 @@ function ensureAiLayer(db: Database.Database) {
   seedInterventionsIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
+  ensureCsSchema(db);
+  ensureCsOrg(db);
+  seedCsIfEmpty(db);
   ensureDocEditsSchema(db);
   ensureAuditDemoSamples(db);
   const upsert = db.prepare(

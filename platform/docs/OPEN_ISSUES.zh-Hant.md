@@ -1,6 +1,6 @@
 # CRMP 開放議題
 
-**文件編號：** CRMP-OI-001 · **版本：** 1.3 · **互動看板：** [/admin/docs/open-issues](/admin/docs/open-issues) · **進度雙生：** [/admin/docs/progress](/admin/docs/progress)
+**文件編號：** CRMP-OI-001 · **版本：** 1.4 · **互動看板：** [/admin/docs/open-issues](/admin/docs/open-issues) · **進度雙生：** [/admin/docs/progress](/admin/docs/progress)
 
 CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明示：
 
@@ -10,7 +10,7 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 
 狀態：**已規劃 · 已啟動 · 進行中 · 延期 · UAT · 上線 · 日常**。每一項含**負責 BU**、**依賴**與暫定 **ETA**（至 **2027 年底**）。
 
-互動清單資料源：`platform/src/lib/docs/open-issues.ts`（18 項）。管理後台看板可依領域／BU／狀態篩選並勾選明細。
+互動清單資料源：`platform/src/lib/docs/open-issues.ts`（20 項）。管理後台看板可依領域／BU／狀態篩選並勾選明細。
 
 ---
 
@@ -20,6 +20,8 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 |---|---|---|
 | **Monitor** | OI-01、OI-13 | 指標擴充；工單雙向回寫 |
 | **Product** | OI-02、OI-15、OI-18 | 設計凍結；文件日常；多法人租戶 |
+| **CS** | OI-19 | 正式 C1／表單／信箱連接器 |
+| **TR** | OI-20 | CS／TR 核身庫與成交帶還原 |
 | **System** | OI-03、OI-06、OI-11、OI-16 | 技術／資源；SSO；UX；可觀測性 |
 | **AI** | OI-04、OI-05、OI-14 | 生產 LLM；RAG 治理；原型 UAT |
 | **Ops** | OI-07、OI-08、OI-17 | 控制適配；Lark 卡片；緊急開關 |
@@ -52,6 +54,8 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 | OI-16 | P1 | System | System | 已規劃 | 2027-Q3 | 可觀測性 — 脊柱 SLO／AI／誤報 |
 | OI-17 | P1 | Ops | Ops | 已規劃 | 2027-Q4 | 全域緊急開關 |
 | OI-18 | P2 | Product | Product | 已規劃 | 2027-Q4→12 | 多法人／品牌租戶就緒 |
+| OI-19 | P1 | CS | CS | 已啟動 | 2027-Q2 | 正式 C1／表單／信箱連接器 |
+| OI-20 | P1 | TR | TR | 已規劃 | 2027-Q3 | CS／TR 核身庫與成交帶還原 |
 
 ---
 
@@ -107,6 +111,34 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 - [ ] 隔離警報／RAG／技能／Lark 路由／稽核匯出  
 - [ ] 只讀跨法人高階彙總（如需要）  
 - [ ] 設計允許時兩套 UAT 種子（如 VFSC vs FCA）  
+
+---
+
+### CS
+
+#### OI-19 — 正式 C1／表單／信箱連接器
+**BU：** CS · **狀態：** 已啟動 · **ETA：** 2027-Q2（連接器）／原型 UAT 現可測 · **依賴：** C1 供應商；信箱 Graph／IMAP；OI-03
+
+- [ ] 以簽章 C1 webhook＋防重放取代 demo-c1 token  
+- [ ] 網站／App 表單 HMAC 接入同一進件 API  
+- [ ] support@ 與 complaints@ 信箱閘道（Graph 或 IMAP）  
+- [x] 對 C1 測試環境做沙盒 UAT（UAT-46）— 原型台面  
+
+*今日：* `POST /api/cs/intake` 搭配 `x-cs-intake-token: demo-c1`，以及 `/admin/cs-desk` 模擬按鈕。
+
+---
+
+### TR
+
+#### OI-20 — CS／TR 核身庫與成交帶還原
+**BU：** TR · **狀態：** 已規劃 · **ETA：** 2027-Q3 · **依賴：** OI-19；CRM／KYC；oneZero MT；OI-07
+
+- [ ] KYC 證件庫＋UID 核對；身分驗證須待回覆或 CS Lead 豁免才可關  
+- [ ] 正式自動追問信（不清楚／需核身）含 3 封上限  
+- [ ] TR 自 oneZero／MT4／MT5 成交帶還原成交 vs LP  
+- [ ] 升級風控寫入 Messenger 執行緒＋人工干預關卡  
+
+*今日：* 啟發式 AI 寄信並等待（上限 3）；TR 分流與 ESCALATED_RISK 為台面本地。
 
 ---
 
@@ -260,5 +292,6 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 | 1.1 | 2026-10-05 | 稽核平面分流＋回滾；可編輯角色；升級維度 |
 | 1.2 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0 |
 | 1.3 | 2026-10-05 | 依 BU 詳細勾選；OI-16／17／18；看板渲染勾選明細 |
+| 1.4 | 2026-10-06 | OI-19 C1／表單／信箱連接器；OI-20 CS／TR 核身庫＋成交帶；20 項 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

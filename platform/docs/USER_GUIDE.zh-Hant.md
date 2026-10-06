@@ -16,12 +16,14 @@ Vantage **CRMP 管理後台** 是 CFD 與加密風險的控制室。Monitor 2.0 
 2. 高嚴重度（BREACH 或 CRITICAL）時，再跑一輪**獨立的第二 AI**，可能同意、部分同意或不同意。  
 3. 把整包放進 **Lark 風格 Messenger**，讓你顯示證據、聊天、升級、排除、結案或送出控制。  
 4. 不可逆控制上線前，要有人類 Checker。  
-5. 整段故事寫進**稽核日誌**與**首頁脊柱**（各階段工單計數 — 專屬脊柱日誌分頁已移除）。
+5. **CS／TR 台**值守 24/7：C1 即時聊天、網頁表單與官方信箱 — AI 在不清楚或需核身時寄信並等待客戶回覆。  
+6. 整段故事寫進**稽核日誌**與**首頁脊柱**（各階段工單計數 — 專屬脊柱日誌分頁已移除）。
 
 不必是工程師。點左側選單、讀卡片、跟畫面上的按鈕走即可。
 
 **永久公開示範：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **Messenger 示範：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)  
+**CS／TR 台：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/)  
 **完整網址：** [網址目錄](/admin/docs/urls)  
 **開放議題／進度：** [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress)
 
@@ -60,6 +62,10 @@ graph TD
 | AI 工程師 | `ai.engineer@vantagemarkets.com` | `ai123` | 技能、RAG、偵測器、AI Admin 提案 |
 | 系統管理員 | `system.admin@vantagemarkets.com` | `sys123` | 使用者、設定、稽核、AI 存取黑名單 |
 | 超級管理員 | `admin@vantagemarkets.com` | `admin123` | 完整示範權限（雙人管控開啟時仍不能自己核准自己的 AI Admin 變更） |
+| 客服主管 | `cs.lead@vantagemarkets.com` | `cs123` | 24/7 CS 台、追問豁免、指派 TR |
+| 客服專員 | `cs.agent@vantagemarkets.com` | `cs123` | C1／表單／信箱第一回應 |
+| 交易主管 | `tr.lead@vantagemarkets.com` | `tr123` | 成交投訴品質 |
+| 交易員 | `tr.dealer@vantagemarkets.com` | `tr123` | 還原成交 vs LP |
 
 登入後進入 **管理首頁**。姓名會留在這個瀏覽器（`crmp_demo_session_v1`）。重新整理公開 Pages 不會變回空白訪客。點左側 **登出** 才會清除。
 
@@ -96,7 +102,7 @@ graph TD
 | **總覽** | 管理首頁（含脊柱階段工單計數） |
 | **監控與風險** | 每日績效 → Monitor 2.0 → 即時警報與追蹤 → 市場情報 → 風險日誌 → 風險領域 |
 | **AI 與知識** | AI 技能 → 知識樹 → RAG → AI 管理（AI 分析列表已併入即時警報與追蹤；偵測器左側分頁已移除 → Monitor 2.0） |
-| **應變** | 示範 Messenger → 人工干預 → 升級路徑 → Lark |
+| **應變** | 示範 Messenger → CS／TR 台 → 人工干預 → 升級路徑 → Lark |
 | **組織** | BU 與團隊 → 使用者 → 角色 |
 | **平台** | 資料來源 → 平台設定 → 稽核日誌 → AI 存取安全 |
 | **文件** | 使用手冊 → 網址目錄 → UAT → PRD → TSD → 路線圖 → 生態 → 開放議題 → 進度追蹤 |
@@ -105,7 +111,7 @@ graph TD
 
 ### 未讀數字
 
-部分列會出現 **青色徽章**（即時警報與追蹤、示範 Messenger、市場情報、人工干預、稽核、Monitor 2.0、風險日誌）。
+部分列會出現 **青色徽章**（即時警報與追蹤、示範 Messenger、CS／TR 台、市場情報、人工干預、稽核、Monitor 2.0、風險日誌）。
 
 - 數字是**你上次打開該分頁之後的新事項**（本瀏覽器）。  
 - 公式：`未讀 = max(0,（已知總數 + 額外增量）− 上次已看）`。  
@@ -505,7 +511,42 @@ graph TD
 ```
 
 
-### 9.3 Lark 整合 — `/admin/lark`
+### 9.3 CS／TR 台 — `/admin/cs-desk`
+
+**這頁是什麼。** 24/7 客服與交易支援。平台 **C1 即時聊天**、網站**提交表單**與**官方信箱**在此即時進件（`POST /api/cs/intake`，標頭 `x-cs-intake-token: demo-c1`）。
+
+**會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）與狀態（未結、待客戶、身分驗證、已派 TR、已升級風控、已結案）。對話混合客戶聊天、AI 分流註記與**自動追問信**。
+
+**要點什麼。**
+
+| 按鈕 | 做什麼 |
+|---|---|
+| **AI 分流** | 重跑路由（CS vs TR、類別、清晰度） |
+| **寄信：請補充** | AI 寄官方信索取發生什麼／UID／截圖；狀態待客戶 |
+| **寄信：身分驗證** | AI 索取護照／證件＋UID 後四碼＋自拍；狀態身分驗證 |
+| **模擬客戶回信** | 客戶回覆等待中的信；AI 重新分流。回覆前案件保持開啟（上限 3 封） |
+| **指派至 TR** | 把成交投訴交給 TR 成交支援 |
+| **升級至風控** | 離開 CS／TR，進入 Messenger／人工干預脊柱 |
+| **結案** | 關閉 — 追問仍為 WAITING 時會被擋 |
+| **模擬 C1／表單／信件** | 走同一進件 API |
+
+**怎樣算正常。** 種子案件涵蓋清楚的 C1 隔夜利息、不清楚的 C1「help me ???」、TR 滑點表單、核身信件。不清楚／核身會等待。交易關鍵字到 TR。繁中標籤齊全。
+
+```mermaid
+graph TD
+  C1[C1 即時聊天] --> Intake[POST /api/cs/intake]
+  Form[網頁表單] --> Intake
+  Mail[官方信箱] --> Intake
+  Intake --> AI[AI 分流]
+  AI -->|不清楚或需核身| Wait[自動寄信並等待]
+  Wait -->|客戶回覆| AI
+  AI -->|交易| TR[TR 成交]
+  AI -->|帳簿風險| Risk[升級風控]
+  AI -->|清楚 CS| Done[CS 結案]
+```
+
+
+### 9.4 Lark 整合 — `/admin/lark`
 
 **這頁是什麼。** 依嚴重度通知、值班叫應、雙人核准 ping 的頻道登錄。原型 Webhook 為模擬。
 
@@ -515,7 +556,7 @@ graph TD
 
 **怎樣算正常。** 市場情報、風險、AI 實驗室頻道存在。停用頻道不會被升級路徑使用。
 
-### 9.4 升級路徑 — `/admin/escalation`
+### 9.5 升級路徑 — `/admin/escalation`
 
 **這頁是什麼。** 路徑由**維度**定義（嚴重度、涉入團隊、風險情境、待處理時間、是否需人工干預），各因子有可編輯**係數**。示範 Messenger **升級** 跟這張地圖走。每個警報一定有路徑：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。每個技能綁定**一條**路徑代碼；未綁定者回落 ESC-DEFAULT。**已移除獨立「路徑」名稱欄** — 以路徑代碼＋維度識別。
 
@@ -606,7 +647,7 @@ graph LR
 | 使用手冊 | `/admin/docs/user-guide` | 本手冊 |
 | PRD | `/admin/docs/prd` | 我們在做什麼、為什麼、怎麼算過關 |
 | TSD | `/admin/docs/tsd` | 怎麼做的（架構、API、資料模型） |
-| UAT 清單 | `/admin/docs/uat` | 互動式 45 案簽核（UAT-01 … UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋 |
+| UAT 清單 | `/admin/docs/uat` | 互動式 49 案簽核（UAT-01 … UAT-49）：為什麼、步驟、通過、證據、畫面覆蓋 |
 | 生態導入評估 | `/admin/docs/ecosystem` | 真要導入的人力、預算帶、階段、風險 |
 | 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
 | 開放議題 | `/admin/docs/open-issues` | 計畫清單：ETA、負責 BU、依賴（暫定至 2027） |
@@ -644,6 +685,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖／人工閘道 — `propose_rag` |
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
 | 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、控制 |
+| 應變 | CS／TR 台 | C1／表單／信箱進件；AI 追問直到回覆；TR 分流 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
 | 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 應變 | Lark 整合 | 頻道登錄 |
@@ -670,5 +712,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器合併至 Monitor 2.0（轉址）；AI 分析列表非左側分頁；Monitor 中心＝指標＋偵測器表（無警報／工單分頁）；手機適配說明 |
 | 1.9 | 2026-10-06 | 首頁虛擬脊柱：虛擬警報／虛擬警報組；英／繁中介面與儲存文案 |
 | 1.10 | 2026-10-06 | 示範 Messenger 鳥瞰：升級路徑承辦聊天窗 |
+| 1.11 | 2026-10-06 | CS／TR 台：C1、表單、官方信箱；AI 追問直到回覆；TR 分流 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

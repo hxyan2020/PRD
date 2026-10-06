@@ -1,7 +1,7 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.8  
+**版本：** 1.9  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
@@ -16,10 +16,11 @@
 ## 1. 目的與範圍
 
 ### 1.1 目的
-提供單一管理控制平面，讓風險、營運、AI、系統人員可以：
+提供單一管理控制平面，讓風險、營運、AI、系統、客服（CS）與交易（TR）人員可以：
 - 監看 Monitor 2.0 指標／警報
 - 執行 AI 根因分析（Skills + RAG），並於高嚴重度執行獨立第二 AI 挑戰
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
+- 值守 24/7 CS／TR 進件：C1 即時聊天、網頁表單與官方信箱；AI 在不清楚或需核身時寄信並等待客戶回覆
 - 對高影響動作強制人工關卡
 - 以 Maker/Checker 治理 AI 設定
 - 檢視首頁脊柱階段工單計數、風險分析、市場情報與每日績效
@@ -30,6 +31,7 @@
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
+- CS／TR 台：C1 即時聊天、提交表單與官方信箱進件（`POST /api/cs/intake`）；AI 追問信直到客戶回覆（上限 3 封）
 - 市場情報 5 分鐘掃描與 outbox
 - 雙語文件（英／繁中）與響應式管理殼層
 
@@ -153,7 +155,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 
 ## 7. 管理介面地圖
 
-路由真實來源：`platform/src/lib/nav.ts` 的 `NAV_ITEMS`＋`NAV_GROUPS`。每一列都在本 TSD（本節＋§8–§16）有規格，使用手冊有操作說明。
+路由真實來源：`platform/src/lib/nav.ts` 的 `NAV_ITEMS`＋`NAV_GROUPS`。每一列都在本 TSD（本節＋§8–§17）有規格，使用手冊有操作說明。
 
 ### 7.1 殼層（不是導覽列）
 
@@ -186,6 +188,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`、`/api/rag` | `rag.read`／`rag.manage` | §16.12 |
 | 應變 | `/admin/messenger` | `DemoMessenger`、`/api/messenger` | `lark.read` | **§11** |
+| 應變 | `/admin/cs-desk` | `CsTrDesk`、`/api/cs`、`/api/cs/intake` | `cs.read`／`cs.operate` | **§17** |
 | 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
 | 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
@@ -653,7 +656,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.16 組織
 
-**BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。部門（職責 JSON）嵌套團隊（Lark chat、值班、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
+**BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。六個 BU：風險控管、營運、AI、系統、**客服（CS）**、**交易（TR）** — 各含嵌套值班團隊（Lark chat、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）含 CS Lead／CS Agent／TR Lead／TR Dealer 示範角色。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
 
 ### 16.17 資料來源
 
@@ -680,11 +683,61 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（45）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（49）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`、`PUBLIC_CS_DESK_URL`。
 
 ---
 
-## 17. 文件控制
+## 17. CS／TR 台
+
+**頁面：** `/admin/cs-desk` · `CsTrDesk` · 權限 `cs.read`（檢視）／`cs.operate`（操作）。訪客／靜態快照可經 `lark.read` 閱讀。
+
+### 17.1 目的
+客服是 **24/7** 第一線：平台 **C1** 即時聊天、網站**提交表單**與**官方客服信箱**。交易（TR）承接 CS 分流的成交投訴（訂單、成交、滑點、強平、MT4／MT5）。CS 不啟動交易管制；TR 不值班 C1。
+
+### 17.2 進件 API
+即時連接器共用一個 webhook：
+
+| 渠道 | `channel` 代碼 | 典型來源 |
+|---|---|---|
+| C1 即時聊天 | `C1_LIVE_CHAT` | C1 webhook |
+| 網站／App 表單 | `WEB_FORM` | 表單送出 |
+| 官方信箱 | `OFFICIAL_EMAIL` | 信箱閘道 |
+
+`POST /api/cs/intake` 接受工作階段（`cs.operate`）、`mock_webhook: true`，或標頭 `x-cs-intake-token: demo-c1`。內文：`client_name`、`client_email`、`client_uid`、`subject`、`body`／`text`／`message`。台面動作：`POST /api/cs`（`triage`、`followup`、`client_reply`、`reply`、`assign_tr`、`escalate_risk`、`resolve`、`simulate_c1|form|email`）。
+
+資料表：`cs_channels`、`cs_requests`、`cs_messages`、`cs_followups`。稽核動作 `CS_*` 落在 **CRMP** 平面（`entity_type=cs_request`）。
+
+### 17.3 AI 分流與追問迴圈
+`triageText` 為啟發式（原型 — 此路徑無正式 LLM）：
+
+- **need_id** — KYC／護照／核身／登不進去。狀態 `ID_VERIFY`。
+- **unclear** — 內文短於 48 字或「help me／???／不清楚」。狀態 `AWAITING_CLIENT`。
+- **trading** — 訂單／成交／滑點／MT4／MT5。台面 `TR`，狀態 `ASSIGNED_TR`。
+- 其餘為 **complaint** 或 **question**。帳簿風險投訴可 `escalate_risk` 進入示範 Messenger／人工干預（`ESCALATED_RISK`）。
+
+清晰度為 `unclear` 或 `need_id` 時，AI **自動寄信**（`EMAIL_OUT`＋`cs_followups.status=WAITING`）並**等待客戶回覆**（`EMAIL_IN` → 重新分流）。追問仍為 WAITING 時**禁止結案**。迴圈上限 **3** 封，其後由 CS Lead 人工跟進。
+
+```mermaid
+graph TD
+  In[C1／表單／官方信箱] --> API[POST /api/cs/intake]
+  API --> Triage[AI 分流]
+  Triage -->|清楚 CS| Open[CS 未結]
+  Triage -->|交易| TR[已派 TR]
+  Triage -->|不清楚或需核身| Mail[自動 EMAIL_OUT]
+  Mail --> Wait[待客戶／身分驗證]
+  Wait -->|客戶回覆| Triage
+  Wait -->|上限 3| Lead[CS Lead 人工]
+  Open --> Risk{帳簿風險?}
+  TR --> Risk
+  Risk -->|是| Esc[升級風控 → Messenger]
+  Risk -->|否| Done[已結案]
+```
+
+種子示範案件：清楚的 C1 隔夜利息詢問、不清楚的 C1「help me ???」、TR 滑點表單、官方信箱核身。
+
+---
+
+## 18. 文件控制
 
 | 版次 | 日期 | 說明 |
 |---|---|---|
@@ -696,6 +749,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
 | 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
+| 1.9 | 2026-10-06 | §17 CS／TR 台：C1／表單／信箱進件、AI 追問直到客戶回覆（上限 3）、TR 分流、升級風控 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

@@ -62,6 +62,24 @@ A[First] --> B[Second] --> C[Third]`,
     minEdges: 3,
     firstLabel: "Event",
   },
+  {
+    name: "cs-intake-en (TSD §17)",
+    src: `graph TD
+  In[C1 / form / official email] --> API[POST /api/cs/intake]
+  API --> Triage[AI triage]
+  Triage -->|clear CS| Open[OPEN on CS]
+  Triage -->|trading| TR[ASSIGNED_TR]
+  Triage -->|unclear or need_id| Mail[Auto EMAIL_OUT]
+  Mail --> Wait[AWAITING_CLIENT / ID_VERIFY]
+  Wait -->|client reply| Triage
+  Wait -->|cap 3| Lead[CS Lead human]
+  Open --> Risk{Book risk?}
+  TR --> Risk
+  Risk -->|yes| Esc[ESCALATED_RISK → Messenger]
+  Risk -->|no| Done[RESOLVED]`,
+    minEdges: 8,
+    firstLabel: "C1 / form / official email",
+  },
 ];
 
 function edgeCount(html: string) {

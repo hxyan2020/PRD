@@ -9,11 +9,11 @@
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- 全包建議時窗約 **9 小時**（45 案）。
+- 全包建議時窗約 **9.5 小時**（49 案）。
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及 **CS／TR 台**（C1 即時聊天、網頁表單、官方信箱進件；AI 追問直到客戶回覆；TR 分流）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
 
 ```mermaid
 graph TD
@@ -73,7 +73,10 @@ graph TD
 | 42 | UAT-42 | 456m | 8m | Low | All | Docs published | 改進路線圖可讀 | Improvement Roadmap |
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | 公開快照 — 登入可用並維持 demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — 結案後重新整理仍保持關閉 | Demo Messenger |
-| 45 | UAT-45 | 484m | 15m | Critical | Risk Owner | UAT-01–44 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
+| 46 | UAT-46 | 484m | 12m | High | CS + System | UAT-01; CS/TR desk seeded | CS／TR — C1、表單與官方信箱即時進件 | CS / TR Desk, URL Catalog, BU and Teams |
+| 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS／TR — AI 在不清楚或需核身時寄信並等待 | CS / TR Desk, Audit Log |
+| 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS／TR — 交易案件給 TR；帳簿風險升級風控 | CS / TR Desk, Demo Messenger |
+| 49 | UAT-49 | 523m | 15m | Critical | Risk Owner | UAT-01–48 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
 
 ## 逐步案例
 
@@ -851,18 +854,75 @@ graph TD
 **通過：** 關閉／排除狀態在切換後仍在；本機重整後仍在；同步不複製已結案。
 **證據：** CLOSED 對話停用工具列截圖（離開再回來後）。
 
-### UAT-45 — 風險負責人退出簽核
+### UAT-46 — CS／TR — C1、表單與官方信箱即時進件
 
-- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–44 results recorded · **建議：** T+484m / 15m
+- **嚴重度：** High · **負責：** CS + System · **依賴：** UAT-01; CS/TR desk seeded · **建議：** T+484m / 12m
+- **涵蓋：** CS / TR Desk, URL Catalog, BU and Teams
+- **為何測：** CS 是 24/7 大門。若即時聊天、網站表單或官方信箱從未出現在台面，客戶只會等在個人收件匣，風控也看不到投訴。
+- **目的：** 證明三個公開渠道都經同一進件 API 變成 CRMP 請求。
+
+**步驟**
+
+1. 開啟 CS／TR 台（/admin/cs-desk）。應看到種子案件來自 C1 即時聊天、網頁表單與官方信箱。
+2. 確認 BU 與團隊列出客服（CS）與交易（TR），含 CS 24/7 台與 TR 成交支援。
+3. 本機點「模擬 C1 聊天」（可選內文）。應出現新的 OPEN 列，渠道為 C1 即時聊天。
+4. 模擬表單與模擬官方信件。皆走 POST /api/cs（與 POST /api/cs/intake、標頭 x-cs-intake-token: demo-c1 同一連接器）。
+5. GitHub Pages 上模擬按鈕可能維持靜態 — 仍須讀種子三渠道收件匣，以及網址目錄中 /admin/cs-desk 與 /api/cs/intake。
+6. 切換繁中：收件匣、狀態與渠道標籤必須是繁體中文。
+
+**通過：** 三渠道可見。本機模擬會開新列。繁中介面齊全。
+**證據：** CS／TR 收件匣截圖（C1＋表單＋信箱）；可附進件 JSON。
+
+### UAT-47 — CS／TR — AI 在不清楚或需核身時寄信並等待
+
+- **嚴重度：** Critical · **負責：** CS · **依賴：** UAT-46; follow-up seed cases · **建議：** T+496m / 15m
+- **涵蓋：** CS / TR Desk, Audit Log
+- **為何測：** 若 AI 對短句「help me ???」臆測結案，或客戶沒回就把核身關掉，CS 會捏造事實、KYC 被跳過。
+- **目的：** 不清楚與需核身案件自動寄信，維持待客戶／身分驗證直到回覆；WAITING 時不可結案；最多三封。
+
+**步驟**
+
+1. 開啟種子 C1 案件「Something wrong with my account」（Sofia Mendes）。狀態應為待客戶，並有 EMAIL_OUT 追問等待中。
+2. 先不要結案。本機若允許操作，在追問仍為 WAITING 時結案必須失敗。
+3. 點「模擬客戶回信」。WAITING 變 REPLIED，AI 重新分流；回覆足夠清楚時離開待客戶。
+4. 開啟「Please verify my account — cannot withdraw」（Priya Shah）。狀態身分驗證。模擬核身回覆（護照＋UID 後四碼）。
+5. 仍不清楚的對話可再點「寄信：請補充」；第三封是上限，SYSTEM 註記須說明由 CS Lead 人工跟進。
+6. 稽核日誌（CRMP 分頁）出現 CS_FOLLOWUP_EMAIL 與 CS_CLIENT_REPLY。
+
+**通過：** 不清楚／核身案件等待回覆；WAITING 時不可結案；上限 3 封；本機有稽核列。
+**證據：** 等待自動信件與模擬回覆後截圖；可附稽核列。
+
+### UAT-48 — CS／TR — 交易案件給 TR；帳簿風險升級風控
+
+- **嚴重度：** High · **負責：** CS + TR · **依賴：** UAT-46; trading seed case · **建議：** T+511m / 12m
+- **涵蓋：** CS / TR Desk, Demo Messenger
+- **為何測：** CS 不可臆測成交。TR 擁有成交帶。真正的信貸／詐欺／帳簿風險必須離開 CS，進入既有 Messenger／風控脊柱。
+- **目的：** 滑點／MT5 案件蓋 desk=TR（已派 TR）。升級風控標 ESCALATED_RISK。
+
+**步驟**
+
+1. 開啟種子表單案件「Slippage on EURUSD market order」（Chen Wei）。台面應已是 TR，狀態已派 TR。
+2. 收件匣篩選 TR，只剩成交台列。
+3. 在 CS 詢問（XAUUSD 隔夜利息聊天）點「指派至 TR」。台面變 TR。
+4. 在投訴列（或同一案件）點「升級至風控」。狀態已升級風控。註記說明 CS／TR 不再單獨處理 — 風控走示範 Messenger／人工干預。
+5. 模擬 C1 內文提到 MT5 成交／滑點；新列應分流至 TR。
+6. 切換繁中：指派至 TR／升級至風控／已派 TR 標籤為繁體中文。
+
+**通過：** 交易關鍵字 → TR。指派至 TR 可用。升級風控離開 CS。繁中動作標籤齊全。
+**證據：** TR 篩選收件匣＋已升級風控註記截圖。
+
+### UAT-49 — 風險負責人退出簽核
+
+- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–48 results recorded · **建議：** T+523m / 15m
 - **涵蓋：** UAT Checklist, Audit Log
 - **為何測：** 在有權的人寫下 ACCEPT／ACCEPT WITH WAIVERS／REJECT 之前，UAT 不算結束。
 - **目的：** 依退出規則統計 Critical／High，並存簽署決策。
 
 **步驟**
 
-1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入）必須全過。
+1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入、CS／TR 追問迴圈）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
-3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）通過。
+3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）通過。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交给 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 
@@ -874,4 +934,4 @@ graph TD
 1. 所有 **Critical** 必須 Pass。
 2. **High** 豁免不超過 2 項，且須書面風險接受。
 3. UAT 視窗內 BREACH／CRITICAL **100%** 附第二 AI（UAT-19）。
-4. 完成 **UAT-45** 簽核（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。
+4. 完成 **UAT-49** 簽核（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。
