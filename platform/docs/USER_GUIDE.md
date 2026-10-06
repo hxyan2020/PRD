@@ -10,7 +10,7 @@ This handbook is written in everyday language. It covers **every page in the lef
 
 ## 1. What this desk is
 
-Vantage **CRMP Admin** is the control room for CFD and crypto risk. Monitor 2.0 raises an alarm. This desk then:
+Vantage **CRMP Plus** is the upgraded control room for CFD and crypto risk: the original CRMP spine plus 24/7 CS / TR. Monitor 2.0 raises an alarm. This desk then:
 
 1. Finds a matching skill playbook, or searches the RAG knowledge base if no skill is certain.  
 2. On high severity (BREACH or CRITICAL), runs a **second, independent AI** that may agree, partly agree, or disagree.  
@@ -21,9 +21,10 @@ Vantage **CRMP Admin** is the control room for CFD and crypto risk. Monitor 2.0 
 
 You do not need to be an engineer to use it. Click the left menu, read the cards, and follow the buttons on the page.
 
-**Permanent public demo:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
-**Messenger demo:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)  
-**CS / TR desk:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/)  
+**Permanent public demo (CRMP Plus):** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
+**Messenger demo:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
+**CS / TR desk:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)  
+**Original CRMP Admin (frozen):** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **Full URL list:** [URL Catalog](/admin/docs/urls)  
 **Open programme issues / progress:** [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress)
 
@@ -31,11 +32,13 @@ On GitHub Pages there is **no live `/api`**. You can still walk every screen. Bu
 
 ```mermaid
 graph TD
-  Monitor[Monitor 2.0 alarm] --> Desk[CRMP Admin]
-  Desk --> AI[AI RCA plus second AI]
+  Monitor[Monitor 2.0 alarm] --> Plus[CRMP Plus]
+  Client[C1 form email] --> Cs[CS TR desk]
+  Cs --> Plus
+  Plus --> AI[AI RCA]
   AI --> Msg[Demo Messenger]
-  Msg --> Human[Human intervention]
-  Human --> Audit[Audit plus home spine]
+  Msg --> Human[Human gate]
+  Human --> Audit[Audit plus spine]
 ```
 
 ---
@@ -45,7 +48,7 @@ graph TD
 ### 2.1 Open the login page
 
 1. Click **Sign in** in the left pane (safest on GitHub Pages).  
-2. Or open [`/admin/login`](/admin/login) (safest). The old [`/login`](/login) page still exists, but on GitHub Pages you must use `/PRD/crmp-admin/login/` or `/PRD/crmp-admin/admin/login/` — plain `github.io/login` is a 404.
+2. Or open [`/admin/login`](/admin/login) (safest). The old [`/login`](/login) page still exists, but on GitHub Pages you must use `/PRD/crmp-plus/login/` or `/PRD/crmp-plus/admin/login/` — plain `github.io/login` is a 404.
 
 The admin is public in this prototype. Sign in only when you want a **named role** (so maker/checker and permissions behave like production).
 
@@ -491,11 +494,11 @@ graph TD
 | **Recommended actions** | Block user, halt trading, cut max leverage, pre-widen spreads, pause copy joining |
 | **Double-confirm…** then **Yes, send to Vantage admin** | Creates an admin reference + link (often Interventions) |
 | **Checker approve (go live)** | When the system says a checker is required |
-| **Open in admin** | Jumps to the matching admin page (must stay under `/PRD/crmp-admin/` on Pages) |
+| **Open in admin** | Jumps to the matching admin page (must stay under `/PRD/crmp-plus/` on Pages) |
 
 **Good looks like.** Sync creates threads. Evidence posts a vault, not an empty bubble. Escalate advances the path. Dismiss/Close change statuses. Double-confirm yields an admin_ref. Open in admin does not 404 on GitHub Pages.
 
-Permanent URL: [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)
+Permanent URL: [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)
 
 ```mermaid
 graph TD
@@ -714,5 +717,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.9 | 2026-10-06 | Home dummy spine: Dummy alert / Dummy alert group; bilingual EN / zh-Hant chrome and stored copy |
 | 1.10 | 2026-10-06 | Demo Messenger bird-eye POC windows along the escalation path |
 | 1.11 | 2026-10-06 | CS / TR Desk: C1, form, official email; AI follow-up until reply; TR routing |
+| 2.0 | 2026-10-06 | CRMP Plus coherent platform; public URL `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

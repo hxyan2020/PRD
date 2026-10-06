@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Static-export CRMP Admin for GitHub Pages (no API routes in the snapshot).
+# Static-export CRMP Plus for GitHub Pages (no API routes in the snapshot).
+# Default basePath is /PRD/crmp-plus. Original CRMP Admin stays at /PRD/crmp-admin.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -36,6 +37,6 @@ trap cleanup EXIT
 
 export NEXT_PUBLIC_STATIC_EXPORT=1
 export STATIC_EXPORT=1
-export NEXT_PUBLIC_BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-/PRD/crmp-admin}"
+export NEXT_PUBLIC_BASE_PATH="${NEXT_PUBLIC_BASE_PATH:-/PRD/crmp-plus}"
 npx next build
 echo "Static snapshot written to out"

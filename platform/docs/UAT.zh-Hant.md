@@ -89,7 +89,7 @@ graph TD
 
 **步驟**
 
-1. 由左側「登入」開啟登入頁（或 /login）。公開 GitHub Pages 網址為 /PRD/crmp-admin/login/，不可出現 404。
+1. 由左側「登入」開啟登入頁（或 /login）。公開 GitHub Pages 網址為 /PRD/crmp-plus/login/，不可出現 404。
 2. 以 risk.owner@vantagemarkets.com / risk123 登入，應進入管理首頁而非錯誤頁。
 3. 左側應顯示姓名與 RISK_OWNER 角色；首頁可見部門／RACI。
 4. 登出後以 viewer@vantagemarkets.com / view123 登入。
@@ -197,11 +197,11 @@ graph TD
 
 **步驟**
 
-1. 開啟示範 Messenger。GitHub Pages 網址為 /PRD/crmp-admin/admin/messenger/。
+1. 開啟示範 Messenger。GitHub Pages 網址為 /PRD/crmp-plus/admin/messenger/。
 2. 左欄是收件匣。應已有種子對話；若空白，點「同步警報」，等到至少一則 OPEN。
 3. 點一則 BREACH／CRITICAL。對話中應有彩色氣泡：ALERT（警報）、常有 AI_REPORT（第一 AI 說明）、有時有 ESCALATION。
 4. 點「顯示證據」。約 10 秒內同一則對話須出現 EVIDENCE 氣泡。
-5. 閱讀內容（監控快照、RAG 或外部）。點「在管理後台開啟」須打開對應 AI 分析，不可 404，Pages 上不可丢掉 /PRD/crmp-admin 前綴。
+5. 閱讀內容（監控快照、RAG 或外部）。點「在管理後台開啟」須打開對應 AI 分析，不可 404，Pages 上不可丢掉 /PRD/crmp-plus 前綴。
 
 **通過：** 出現 EVIDENCE；「在管理後台開啟」顯示對應分析包。
 **證據：** thread id；EVIDENCE 氣泡與分析頁截圖。
@@ -442,7 +442,7 @@ graph TD
 
 1. 於示範 Messenger 開啟 BREACH 對話。
 2. 點「在管理後台開啟」（或 ALERT／AI_REPORT 裡的分析連結）。
-3. 網址須為 /admin/ai-analyses/{id}/（Pages 含 /PRD/crmp-admin）。
+3. 網址須為 /admin/ai-analyses/{id}/（Pages 含 /PRD/crmp-plus）。
 4. 說明、證據庫與第二 AI 面板須有內容。
 
 **通過：** 無 404；分析包可見；Pages 網址保留前綴。
@@ -513,9 +513,9 @@ graph TD
 1. 開啟網址目錄。
 2. 找到 AI 技能、技能劇本詳情、知識樹、示範 Messenger、市場情報。
 3. 用 SKILL-ABOOK-RATIO 打開詳情，或由列表點進入。
-4. 目錄仍標示 GitHub Pages 來源（hxyan2020.github.io/PRD/crmp-admin）。
+4. 目錄標示本平台來源（hxyan2020.github.io/PRD/crmp-plus），並仍列出原 CRMP 管理後台為凍結（hxyan2020.github.io/PRD/crmp-admin）。
 
-**通過：** 新路由已列出且可開；Pages 來源可見。
+**通過：** 新路由已列出且可開；CRMP Plus 來源可見；原 CRMP 管理後台標為凍結。
 **證據：** 目錄列截圖。
 
 ### UAT-26 — 用白話把 Messenger 迴路講一遍
@@ -827,8 +827,8 @@ graph TD
 
 **步驟**
 
-1. 若在 https://hxyan2020.github.io/PRD/crmp-admin/admin/，登入前左側應為 Public visitor／PUBLIC_GUEST。
-2. 點登入。必須落到 /PRD/crmp-admin/login/ 的表單，絕不是 github.io/login，也不可 404。
+1. 若在 https://hxyan2020.github.io/PRD/crmp-plus/admin/，登入前左側應為 Public visitor／PUBLIC_GUEST。
+2. 點登入。必須落到 /PRD/crmp-plus/login/ 的表單，絕不是 github.io/login，也不可 404。
 3. 以 haixiang.yan@hytechc.com / yan123 登入。首頁應顯示 demo platform owner，不是訪客。
 4. 重新整理後仍是 demo platform owner。再到示範 Messenger 再回來，名字不可變回訪客。
 5. 本機同一帳號應對著即時 API 可用；可讀的 401 仍算失敗。

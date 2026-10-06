@@ -1,3 +1,13 @@
+import {
+  ORIGINAL_CRMP_ADMIN_URL,
+  ORIGINAL_CRMP_MESSENGER_URL,
+  ORIGINAL_CRMP_ORIGIN,
+  PUBLIC_ADMIN_ORIGIN,
+  PUBLIC_ADMIN_URL,
+  PUBLIC_CS_DESK_URL,
+  PUBLIC_MESSENGER_URL,
+} from "@/lib/platform-site";
+
 export type UrlEntry = {
   category: string;
   title: string;
@@ -6,13 +16,42 @@ export type UrlEntry = {
   permission?: string;
 };
 
-/** Permanent GitHub Pages URL for CRMP Admin (`/admin`). */
-export const PUBLIC_ADMIN_URL = "https://hxyan2020.github.io/PRD/crmp-admin/admin/";
-export const PUBLIC_ADMIN_ORIGIN = "https://hxyan2020.github.io/PRD/crmp-admin";
-export const PUBLIC_MESSENGER_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/messenger/`;
-export const PUBLIC_CS_DESK_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/cs-desk/`;
+export {
+  ORIGINAL_CRMP_ADMIN_URL,
+  ORIGINAL_CRMP_MESSENGER_URL,
+  ORIGINAL_CRMP_ORIGIN,
+  PUBLIC_ADMIN_ORIGIN,
+  PUBLIC_ADMIN_URL,
+  PUBLIC_CS_DESK_URL,
+  PUBLIC_MESSENGER_URL,
+};
 
 export const PLATFORM_URLS: UrlEntry[] = [
+  {
+    category: "Public",
+    title: "CRMP Plus (this platform)",
+    path: PUBLIC_ADMIN_URL,
+    description: "Permanent GitHub Pages URL for the upgraded CRMP platform (original spine + 24/7 CS/TR). Future requirements land only here.",
+  },
+  {
+    category: "Public",
+    title: "CRMP Plus Messenger",
+    path: PUBLIC_MESSENGER_URL,
+    description: "Permanent Lark-style messenger demo on CRMP Plus",
+  },
+  {
+    category: "Public",
+    title: "CRMP Plus CS / TR Desk",
+    path: PUBLIC_CS_DESK_URL,
+    description: "Permanent 24/7 CS/TR intake desk on CRMP Plus",
+  },
+  {
+    category: "Public",
+    title: "Original CRMP Admin (frozen)",
+    path: ORIGINAL_CRMP_ADMIN_URL,
+    description: "Original CRMP Admin snapshot — left intact at /PRD/crmp-admin/. This codebase does not overwrite it.",
+  },
+
   // Auth
   { category: "Auth", title: "Login", path: "/login", description: "Full-page credential login (bookmark). Prefer /admin/login from the desk." },
   { category: "Auth", title: "Admin Login", path: "/admin/login", description: "Sign in inside the admin shell — never 404s on GitHub Pages" },

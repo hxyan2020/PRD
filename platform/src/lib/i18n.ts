@@ -52,8 +52,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "管理儀表板",
     },
     subtitle: {
-      en: "Click any card to open its page — dummy spine buttons, counts, alerts, the messenger demo, and the rest of the desk.",
-      "zh-Hant": "點任何卡片即可開啟對應頁面 — 虛擬脊柱按鈕、計數、警報、Messenger 示範與其他功能。",
+      en: "CRMP Plus — original risk spine plus 24/7 CS/TR. Click any card to open its page.",
+      "zh-Hant": "CRMP Plus — 原風險脊柱加上 24/7 客服與交易台。點任何卡片即可開啟對應頁面。",
     },
   },
   login: {
@@ -256,12 +256,12 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
 
 const UI: Record<string, Pair> = {
   "shell.brandEyebrow": { en: "Vantage Markets", "zh-Hant": "Vantage Markets" },
-  "shell.brandTitle": { en: "CRMP Admin", "zh-Hant": "CRMP 管理後台" },
+  "shell.brandTitle": { en: "CRMP Plus", "zh-Hant": "CRMP Plus" },
   "shell.brandSub": {
-    en: "Centralised Risk Management Platform",
-    "zh-Hant": "集中式風險管理平台",
+    en: "Original CRMP plus 24/7 CS and TR",
+    "zh-Hant": "原 CRMP 加上 24/7 客服與交易台",
   },
-  "shell.headerEyebrow": { en: "Admin Control Plane", "zh-Hant": "管理控制平面" },
+  "shell.headerEyebrow": { en: "Upgraded Control Plane", "zh-Hant": "升級控制平面" },
   "shell.headerTitle": { en: "Risk · Ops · AI · System · CS · TR", "zh-Hant": "風險 · 營運 · AI · 系統 · 客服 · 交易" },
   "shell.messenger": { en: "Messenger", "zh-Hant": "即時通訊" },
   "shell.indicators": { en: "Indicators", "zh-Hant": "指標" },
@@ -432,8 +432,8 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "集中式風險管理平台",
   },
   "login.blurb": {
-    en: "Admin control plane for Risk Control, Operations, AI and System — wired to Monitor 2.0 indicators and Lark escalations across CFD and crypto exchange products.",
-    "zh-Hant": "風險控管、營運、AI 與系統之管理控制平面 — 串接 Monitor 2.0 指標與 Lark 升級，涵蓋 CFD 與加密交易所。",
+    en: "Upgraded CRMP: Risk, Ops, AI, System, 24/7 CS and TR dealing — original risk spine plus C1/form/email intake, wired to Monitor 2.0 and Lark escalations across CFD and crypto.",
+    "zh-Hant": "升級版 CRMP：風險、營運、AI、系統、24/7 客服與交易台 — 原風險脊柱加上 C1／表單／信箱進件，串接 Monitor 2.0 與 Lark 升級，涵蓋 CFD 與加密交易所。",
   },
   "login.signIn": { en: "Sign in to Admin", "zh-Hant": "登入管理後台" },
   "login.hint": {
@@ -451,8 +451,14 @@ const UI: Record<string, Pair> = {
   "urls.data": { en: "Data / tables", "zh-Hant": "資料／資料表" },
   "urls.inbox": { en: "Demo inbox", "zh-Hant": "示範收件匣" },
   "urls.publicNote": {
-    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. Permanent GitHub Pages URL: https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark messenger demo: https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
-    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。永久 GitHub Pages 網址：https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark Messenger 示範：https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
+    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. This upgraded platform lives at https://hxyan2020.github.io/PRD/crmp-plus/admin/. Original CRMP Admin remains frozen at https://hxyan2020.github.io/PRD/crmp-admin/admin/.",
+    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。本升級平台網址：https://hxyan2020.github.io/PRD/crmp-plus/admin/。原 CRMP 管理後台仍凍結於 https://hxyan2020.github.io/PRD/crmp-admin/admin/。",
+  },
+  "urls.plusLabel": { en: "CRMP Plus (this platform)", "zh-Hant": "CRMP Plus（本平台）" },
+  "urls.frozenLabel": { en: "Original CRMP Admin (frozen)", "zh-Hant": "原 CRMP 管理後台（凍結）" },
+  "home.plusBanner": {
+    en: "CRMP Plus is the upgraded platform: original CRMP risk spine plus 24/7 CS/TR. Future requirements apply only here. Original CRMP Admin stays at its own URL.",
+    "zh-Hant": "CRMP Plus 是升級平台：原 CRMP 風險脊柱加上 24/7 客服與交易台。後續需求只加在這裡。原 CRMP 管理後台保留獨立網址。",
   },
   "urls.cheat": {
     en: "Demo Messenger actions: show_evidence · chat · escalate · dismiss · close · recommend → double-confirm → Vantage admin ref · checker_approve when required.",

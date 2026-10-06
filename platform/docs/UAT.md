@@ -89,7 +89,7 @@ graph TD
 
 **Steps**
 
-1. Open the Sign in page from the left pane (or go to /login). On the public GitHub Pages snapshot the address is /PRD/crmp-admin/login/ — it must not be a 404.
+1. Open the Sign in page from the left pane (or go to /login). On the public GitHub Pages snapshot the address is /PRD/crmp-plus/login/ — it must not be a 404.
 2. Sign in as risk.owner@vantagemarkets.com with password risk123. You should land on Admin Home, not an error page.
 3. Look at the left pane: your name and role RISK_OWNER (or similar) should show. Department cards / RACI should be visible on Home.
 4. Sign out. Sign in as viewer@vantagemarkets.com with password view123.
@@ -197,11 +197,11 @@ graph TD
 
 **Steps**
 
-1. Open Demo Messenger (left pane → Response). On GitHub Pages the URL is /PRD/crmp-admin/admin/messenger/.
+1. Open Demo Messenger (left pane → Response). On GitHub Pages the URL is /PRD/crmp-plus/admin/messenger/.
 2. The left column is the inbox. You should already see seeded chats. If it is empty, click Sync alerts and wait until at least one OPEN thread appears.
 3. Click a serious (BREACH/CRITICAL) thread. In the transcript you should see coloured bubbles: ALERT (the alarm), often AI_REPORT (the first AI write-up), sometimes ESCALATION.
 4. Click Show evidence. A new EVIDENCE bubble must appear in the same thread within about 10 seconds.
-5. Read that bubble: it should list vault lines (monitor snapshot, RAG, or external). Click Open in admin — it must open the matching AI analysis, not a 404, and not drop the /PRD/crmp-admin prefix on Pages.
+5. Read that bubble: it should list vault lines (monitor snapshot, RAG, or external). Click Open in admin — it must open the matching AI analysis, not a 404, and not drop the /PRD/crmp-plus prefix on Pages.
 
 **Pass:** EVIDENCE message appears; Open in admin shows the matching analysis pack.
 **Evidence:** thread id; screenshot of the EVIDENCE bubble and the analysis page it opened.
@@ -442,10 +442,10 @@ graph TD
 
 1. In Demo Messenger open a BREACH thread.
 2. Click Open in admin (or the analysis link inside the ALERT / AI_REPORT bubble).
-3. The address must be under /admin/ai-analyses/{id}/ (on Pages: /PRD/crmp-admin/admin/ai-analyses/{id}/).
+3. The address must be under /admin/ai-analyses/{id}/ (on Pages: /PRD/crmp-plus/admin/ai-analyses/{id}/).
 4. Explanations, Evidence vault and the 2nd AI panel must render. An empty “snapshot missing” page fails unless you used a fake id.
 
-**Pass:** No 404; analysis pack visible; Pages URL keeps the /PRD/crmp-admin prefix.
+**Pass:** No 404; analysis pack visible; Pages URL keeps the /PRD/crmp-plus prefix.
 **Evidence:** URL-bar screenshot plus analysis detail.
 
 ### UAT-22 — Unread counts on the left pane (messenger-style)
@@ -513,9 +513,9 @@ graph TD
 1. Open URL Catalog (Docs group).
 2. Find rows for AI Skills, Skill playbook detail (/admin/skills/[code]), Knowledge Tree, Demo Messenger, Market Intelligence.
 3. Open a skill detail by replacing [code] with SKILL-ABOOK-RATIO, or use AI Skills → Enter.
-4. Confirm the catalog still states the public GitHub Pages origin (hxyan2020.github.io/PRD/crmp-admin).
+4. Confirm the catalog states this platform’s origin (hxyan2020.github.io/PRD/crmp-plus) and still lists original CRMP Admin as frozen (hxyan2020.github.io/PRD/crmp-admin).
 
-**Pass:** New routes are listed and reachable; Pages origin is visible.
+**Pass:** New routes are listed and reachable; CRMP Plus origin is visible; original CRMP Admin is listed as frozen.
 **Evidence:** Catalog rows screenshot.
 
 ### UAT-26 — Tell the messenger loop out loud, in plain English
@@ -827,8 +827,8 @@ graph TD
 
 **Steps**
 
-1. If you are on https://hxyan2020.github.io/PRD/crmp-admin/admin/, confirm the left pane says Public visitor / PUBLIC_GUEST before login.
-2. Click Sign in. You must land on a Sign in form under /PRD/crmp-admin/login/ — never github.io/login and never 404.
+1. If you are on https://hxyan2020.github.io/PRD/crmp-plus/admin/, confirm the left pane says Public visitor / PUBLIC_GUEST before login.
+2. Click Sign in. You must land on a Sign in form under /PRD/crmp-plus/login/ — never github.io/login and never 404.
 3. Sign in as haixiang.yan@hytechc.com / yan123 (platform owner). Admin Home should show demo platform owner, not Public visitor.
 4. Refresh the page. You should still be demo platform owner (demo session persist). Navigate to Demo Messenger and back; the name must not reset to guest.
 5. On localhost the same accounts should work against the live API; a 401 with a readable error is a Fail.

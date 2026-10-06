@@ -1,14 +1,14 @@
-# Vantage CRMP — Technical Specification Design (TSD)
+# Vantage CRMP Plus — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.9  
+**Version:** 2.0  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
 **Owner:** demo platform owner  
 **Companion:** [PRD](/admin/docs/prd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
-This TSD describes the technical design of the Centralised Risk Management Platform (CRMP) Admin Control Plane.  
+This TSD describes the technical design of **CRMP Plus** — the upgraded Centralised Risk Management Platform (original CRMP Admin plus 24/7 CS/TR) on one control plane.  
 **§8 AI Admin** and **§9 Second-AI Challenger** are first-class module specifications.
 
 ---
@@ -46,13 +46,14 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0 unified registry] --> Alarm[Alarms]
-  Alarm --> Rca[AI RCA Skills or RAG]
-  Rca --> Ch[Second AI challenger]
+  Mon[Monitor 2.0] --> Alarm[Alarms]
+  Alarm --> Rca[AI RCA]
+  Rca --> Ch[Second AI]
   Ch --> Msg[Demo Messenger]
-  Msg --> Gate[Human intervention]
-  Gate --> Spine[Spine Risk Log Dashboard]
-  Spine --> Out[Lark plus intel outbox]
+  Client[C1 form email] --> Cs[CS TR desk]
+  Cs --> Msg
+  Msg --> Gate[Human gate]
+  Gate --> Spine[Spine Risk Log]
 ```
 
 **AI Admin** sits beside the runtime spine: it does **not** execute live trading actions; it governs models, playbooks, RAG corpus, and AI parameters under dual control.
@@ -204,7 +205,7 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Docs | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`, boards | `admin.access` | §13 + §16.21 |
 | Shell | `SelectionChatbot` (select text → sparkle → chat) | `lib/ai/desk-chat.ts`, `POST /api/ai-chat` | public / `ai.read` | §12 |
 
-Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`.
+Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-plus'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`. Original CRMP Admin remains at `/PRD/crmp-admin/` (frozen; this workflow does not publish there).
 
 ---
 
@@ -517,7 +518,7 @@ Five-minute scan of news/social/official signals that can move LP prices; push f
 
 ### 12.3 Public snapshot (GitHub Pages)
 Pages has no Next.js API routes. `POST /api/market-intel` would return **405**. The desk therefore:
-1. Detects `github.io` / `/PRD/crmp-admin` / `NEXT_PUBLIC_STATIC_EXPORT`.
+1. Detects `github.io` / `/PRD/crmp-plus` / `NEXT_PUBLIC_STATIC_EXPORT`.
 2. Runs `runClientMarketIntelScan()` from the same `EVENT_TEMPLATES` as the live scanner.
 3. Updates Findings, outbox, scan log and `M2-MKT-INTEL` in local state (persisted in `localStorage`).
 4. Seeds three findings at SSG time so the first paint is not empty.
@@ -687,7 +688,7 @@ Both tabs expose **Roll back** when `details_json` holds a before-state snapshot
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts`.
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts` (`PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`).
 
 ---
 
@@ -754,6 +755,7 @@ Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slip
 | 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
 | 1.9 | 2026-10-06 | §17 CS/TR Desk: C1/form/email intake, AI follow-up until client reply (cap 3), TR routing, escalate to Risk |
+| 2.0 | 2026-10-06 | CRMP Plus coherent platform; public `basePath` `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

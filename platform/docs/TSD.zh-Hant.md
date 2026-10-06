@@ -1,14 +1,14 @@
-# Vantage CRMP — 技術規格設計（TSD）
+# Vantage CRMP Plus — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.9  
+**版本：** 2.0  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
 **負責人：** demo platform owner  
 **相關文件：** [PRD](/admin/docs/prd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
-本 TSD 描述中央風險管理平台（CRMP）管理控制平面之技術設計。  
+本 TSD 描述 **CRMP Plus**（原 CRMP 管理後台加上 24/7 客服與交易台）之技術設計。  
 **§8 AI Admin** 與 **§9 第二 AI 挑戰者**為一級模組規格。
 
 ---
@@ -46,13 +46,14 @@
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0 統一登錄] --> Alarm[警報]
-  Alarm --> Rca[AI RCA Skills 或 RAG]
-  Rca --> Ch[第二 AI 挑戰者]
+  Mon[Monitor 2.0] --> Alarm[警報]
+  Alarm --> Rca[AI RCA]
+  Rca --> Ch[第二 AI]
   Ch --> Msg[示範 Messenger]
-  Msg --> Gate[人工干預]
-  Gate --> Spine[脊柱風險日誌儀表板]
-  Spine --> Out[Lark 加情報寄件匣]
+  Client[C1 表單 信箱] --> Cs[CS TR 台]
+  Cs --> Msg
+  Msg --> Gate[人工關卡]
+  Gate --> Spine[脊柱風險日誌]
 ```
 
 **AI Admin** 位於執行期 Spine 旁側：不直接執行交易動作；在雙人管控下治理模型、劇本、RAG 語料與 AI 參數。
@@ -204,7 +205,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 文件 | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
 | 殼層 | `SelectionChatbot`（劃選文字 → 火花 → 聊天） | `lib/ai/desk-chat.ts`、`POST /api/ai-chat` | 公開／`ai.read` | §12 |
 
-靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-admin'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。
+靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-plus'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。原 CRMP 管理後台仍在 `/PRD/crmp-admin/`（凍結；本工作流程不發佈到該路徑）。
 
 ---
 
@@ -513,7 +514,7 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 ### 12.3 公開快照（GitHub Pages）
 Pages 沒有 Next.js API。`POST /api/market-intel` 會回 **405**。工作台因此：
-1. 偵測 `github.io`／`/PRD/crmp-admin`／`NEXT_PUBLIC_STATIC_EXPORT`。
+1. 偵測 `github.io`／`/PRD/crmp-plus`／`NEXT_PUBLIC_STATIC_EXPORT`。
 2. 以與正式掃描相同的 `EVENT_TEMPLATES` 執行 `runClientMarketIntelScan()`。
 3. 在本機狀態更新發現、寄件匣、掃描紀錄與 `M2-MKT-INTEL`（存 `localStorage`）。
 4. SSG 時先種三筆發現，避免第一次畫面是 0。
@@ -683,7 +684,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（49）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`、`PUBLIC_CS_DESK_URL`。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（49）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`、`PUBLIC_CS_DESK_URL`（CRMP Plus `/PRD/crmp-plus/`）與 `ORIGINAL_CRMP_*`（凍結 `/PRD/crmp-admin/`）。
 
 ---
 
@@ -750,6 +751,7 @@ graph TD
 | 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
 | 1.9 | 2026-10-06 | §17 CS／TR 台：C1／表單／信箱進件、AI 追問直到客戶回覆（上限 3）、TR 分流、升級風控 |
+| 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開 `basePath` `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

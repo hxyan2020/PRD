@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T08:00:00.000Z | CRMP Plus coherent platform: public URL /PRD/crmp-plus/; original CRMP Admin frozen at /PRD/crmp-admin/; branding + URL catalog + docs EN/zh-Hant |
 | 2026-10-06T06:30:00.000Z | CS/TR desk: C1 live chat, web form and official email intake; AI follow-up until client reply (cap 3); TR routing; TSD §17; UAT-46…49; OI-19/20; Progress 20 columns; EN/zh-Hant |
 | 2026-10-06T07:10:00.000Z | Docs parity: ECOSYSTEM F13 + CS/TR spine; ROADMAP RM-16; Progress zh-Hant gantt; Traditional Chinese review of CS/TR pages and docs |
 | 2026-10-06T05:40:00.000Z | Lark demo: split chat windows per POC on the escalation path; bird-eye relay chips; dummy spine escalates two hops |

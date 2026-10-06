@@ -107,7 +107,7 @@ export const EXTRA_UI: Record<string, Pair> = {
   "common.minutes": { en: "minutes", "zh-Hant": "分鐘" },
   "common.docs": { en: "{n} docs", "zh-Hant": "{n} 份文件" },
   "common.sourcesCount": { en: "{n} sources", "zh-Hant": "{n} 筆來源" },
-  "common.openAdmin": { en: "Open CRMP Admin", "zh-Hant": "開啟 CRMP 管理後台" },
+  "common.openAdmin": { en: "Open CRMP Plus", "zh-Hant": "開啟 CRMP Plus" },
   "common.enterNoSignIn": { en: "Enter admin without signing in", "zh-Hant": "不登入直接進入後台" },
   "common.closeMenu": { en: "Close menu", "zh-Hant": "關閉選單" },
   "common.close": { en: "Close", "zh-Hant": "關閉" },

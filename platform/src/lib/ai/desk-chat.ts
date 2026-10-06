@@ -44,7 +44,7 @@ const KNOWLEDGE: Knowledge[] = [
     href: "/admin",
     boost: ["purpose"],
     en: {
-      title: "Purpose of CRMP Admin",
+      title: "Purpose of CRMP Plus",
       body: "CRMP (Centralised Risk Management Platform) is the control plane for a forex CFD broker and a crypto exchange risk desk. It turns Monitor 2.0 alarms into explainable RCA, challenges BREACH/CRITICAL packs with a second AI, lets operators act in messenger, enforces maker/checker, keeps AI off halt/close-only, and leaves one spine + audit trail. It consumes Monitor 2.0; it does not replace it. This build is a UAT prototype — Lark, LP/wallet writes and SSO are mocked.",
     },
     zh: {

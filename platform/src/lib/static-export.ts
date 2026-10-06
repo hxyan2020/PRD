@@ -1,3 +1,13 @@
+import {
+  DEFAULT_BASE_PATH,
+  isPlatformBasePath,
+  ORIGINAL_CRMP_BASE_PATH,
+  PUBLIC_ADMIN_ORIGIN as SITE_ORIGIN,
+  PUBLIC_ADMIN_URL as SITE_ADMIN_URL,
+  PUBLIC_MESSENGER_URL as SITE_MESSENGER_URL,
+  PUBLIC_CS_DESK_URL as SITE_CS_DESK_URL,
+} from "@/lib/platform-site";
+
 /** True when building the GitHub Pages static snapshot. */
 export function isStaticExport() {
   return process.env.NEXT_PUBLIC_STATIC_EXPORT === "1" || process.env.STATIC_EXPORT === "1";
@@ -14,7 +24,7 @@ export function isPublicSnapshot() {
   const host = window.location.hostname;
   const path = window.location.pathname;
   if (host.endsWith("github.io")) return true;
-  if (path.includes("/PRD/crmp-admin")) return true;
+  if (isPlatformBasePath(path)) return true;
   return false;
 }
 
@@ -26,13 +36,20 @@ export function publicApiPath(path: string) {
   return `${publicBasePath()}${suffix}`;
 }
 
-export const PUBLIC_ADMIN_ORIGIN = "https://hxyan2020.github.io/PRD/crmp-admin";
-export const PUBLIC_ADMIN_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/`;
-export const PUBLIC_MESSENGER_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/messenger/`;
+export const PUBLIC_ADMIN_ORIGIN = SITE_ORIGIN;
+export const PUBLIC_ADMIN_URL = SITE_ADMIN_URL;
+export const PUBLIC_MESSENGER_URL = SITE_MESSENGER_URL;
+export const PUBLIC_CS_DESK_URL = SITE_CS_DESK_URL;
 
 export function publicBasePath() {
   const raw = process.env.NEXT_PUBLIC_BASE_PATH?.trim() || "";
-  return raw.replace(/\/$/, "");
+  if (raw) return raw.replace(/\/$/, "");
+  if (typeof window !== "undefined") {
+    const path = window.location.pathname;
+    if (path.includes(DEFAULT_BASE_PATH)) return DEFAULT_BASE_PATH;
+    if (path.includes(ORIGINAL_CRMP_BASE_PATH)) return ORIGINAL_CRMP_BASE_PATH;
+  }
+  return DEFAULT_BASE_PATH;
 }
 
 export function publicAdminHref(path = "/admin/") {

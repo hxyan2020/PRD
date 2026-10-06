@@ -6,7 +6,7 @@
 **負責人：** demo platform owner · **核准人：** 風險負責人  
 **相關文件：** [TSD](/admin/docs/tsd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [生態導入評估](/admin/docs/ecosystem)
 
-本 PRD 是 **CRMP 管理後台目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-49](/admin/docs/uat)。
+本 PRD 是 **CRMP Plus（原 CRMP 管理後台加上 24/7 客服與交易台）目前每一個畫面與功能** 的產品契約。操作說明見 [使用手冊](/admin/docs/user-guide)。實作細節見 [TSD](/admin/docs/tsd)。簽核案例見 [UAT-01 … UAT-49](/admin/docs/uat)。
 
 ---
 
@@ -18,16 +18,18 @@ Vantage Markets 的 CFD 與加密風險橫跨 Monitor 2.0 指標、各桌與即�
 - 將 Monitor 警報轉為可解釋 AI RCA  
 - 以獨立第二 AI 挑戰高嚴重度 RCA  
 - 讓操作者在 messenger 完成證據／升級／排除／結案／控制  
+- 在同一台面值守 24/7 客服（C1／表單／信箱）與交易台  
 - 強制 Maker／Checker，並禁止 AI 觸及僅限人類介面  
 - 留下單一脊柱與稽核軌跡  
 - 讓每個桌面功能都有具名管理頁（首頁、績效、風險日誌、情報、組織、設定、文件）
 
 ```mermaid
 graph LR
-  Mon[Monitor 2.0] --> Crmp[CRMP 管理後台]
-  Crmp --> Lark[示範 Messenger]
-  Crmp --> Admin[Vantage 管理參照]
-  Crmp --> Audit[脊柱加稽核]
+  Mon[Monitor 2.0] --> Plus[CRMP Plus]
+  CsIn[C1 表單 信箱] --> Plus
+  Plus --> Lark[示範 Messenger]
+  Plus --> CsDesk[CS TR 台]
+  Plus --> Audit[脊柱加稽核]
 ```
 
 
@@ -46,8 +48,9 @@ graph LR
 | G7 | 安全 AI 邊界 | 僅限人類的頁／功能／欄位列出並對 AI 拒絕 |
 | G8 | 完整管理地圖 | §6.4 每個左側分組／頁都已交付並寫進文件 |
 | G9 | 未讀感知 | 即時警報與追蹤／Messenger／情報／干預／首頁脊柱／稽核／Monitor 2.0／風險日誌的新工作顯示徽章，打開後清除 |
-| G10 | 公開示範 | GitHub Pages 快照 `/PRD/crmp-admin/` 可走完後台，登入、Messenger「在管理後台開啟」、立即掃描不出現 404／405 |
+| G10 | 公開示範 | GitHub Pages 快照 `/PRD/crmp-plus/` 可走完後台，登入、Messenger「在管理後台開啟」、立即掃描不出現 404／405 |
 | G11 | 具名負責人 | 平台負責人 demo platform owner 為一級角色；工作階段留在瀏覽器 |
+| G12 | 雙公開網址 | 本升級平台為 `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
 
 ---
 
@@ -224,13 +227,14 @@ graph LR
 | FR-28 | 升級路徑＋Lark 登錄 | 維度 × 係數；ESC-DEFAULT 兜底；技能綁一條路徑代碼；無「路徑」名稱欄；頻道啟用 |
 | FR-36 | 稽核平面分流＋回滾 | `/admin/audit` CRMP 日誌 vs Vantage Markets 管理日誌分頁；回滾經 `POST /api/audit/rollback` 還原變更前快照 |
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
-| FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-admin/login/`（無 404） |
+| FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-plus/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
 | FR-32 | UAT 互動包 | UAT-01…UAT-49 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | CS／TR 24/7 台 | C1 即時聊天、網頁表單與官方信箱經 `/api/cs/intake` 進件；AI 在不清楚或需核身時自動寄信並等待回覆（上限 3）；交易案件 → TR；帳簿風險 → Messenger 脊柱 |
+| FR-38 | CRMP Plus 公開網址 | 永久快照 `https://hxyan2020.github.io/PRD/crmp-plus/`；原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結且不被覆蓋 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -299,7 +303,7 @@ graph LR
 | NFR-05 | 可用性 | 示範單節點 SQLite 可接受；正式需 HA（見生態） |
 | NFR-06 | 國際化 | 操作文件英＋繁中；UI 導覽語言切換 |
 | NFR-07 | 基本無障礙 | 手機可點；關鍵動作有標籤 |
-| NFR-08 | 公開快照 | 靜態匯出 `basePath` `/PRD/crmp-admin`；沒有死掉的 `/api` 點擊（示範後備） |
+| NFR-08 | 公開快照 | 靜態匯出 `basePath` `/PRD/crmp-plus`；原 CRMP 管理後台仍在 `/PRD/crmp-admin`；沒有死掉的 `/api` 點擊（示範後備） |
 | NFR-09 | 工作階段 | 示範角色在 Pages 以 `localStorage`＋cookie 保持 |
 
 ---
@@ -406,5 +410,6 @@ graph LR
 | 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理分頁＋回滾；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；AI 分析列表轉址；Monitor 中心無警報／工單分頁 |
 | 1.9 | 2026-10-06 | FR-37 CS／TR 24/7 台；UAT-46…49；TSD §17 |
+| 2.0 | 2026-10-06 | CRMP Plus 一體平台；G12／FR-38 雙網址（`/PRD/crmp-plus/` vs 凍結 `/PRD/crmp-admin/`） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

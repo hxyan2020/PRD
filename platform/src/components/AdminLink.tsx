@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-/** In-app admin path that keeps GitHub Pages `basePath` (`/PRD/crmp-admin`). */
+/** In-app admin path that keeps GitHub Pages `basePath` (`/PRD/crmp-plus`). */
 export function AdminLink({
   href,
   className,
