@@ -26,6 +26,7 @@ const both = [
   "FR-45",
   "FR-46",
   "FR-47",
+  "FR-48",
   "NFR-10",
   "NFR-11",
   "/cs",

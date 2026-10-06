@@ -27,7 +27,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/open-issues](/admin/docs/open
 | support | OI-09 | Risk Owner UAT exit including CS/TR catalogue | UAT Checklist v2.7 | Pack v2.7 (52 cases, skip UAT-45) indexes CS/TR including UAT-53 | Formal RO sign-off of UAT-25/46/47/48/50/51/52/53 + four CS hops |
 | support | OI-11 | Admin UX polish — CS/TR phone-width | Desk, dashboard, log, data | List→thread desk; card twins for dashboard, log, data, /cs tabs, RAG gate (UAT-18) | Native phone apps; leftover dense boards as BAU |
 | support | OI-14 | Prototype AI desk UAT window includes CS/TR door | `/cs`, desk, skills, wait loop, dashboard, log, data | CS/TR door shipped for UAT-46…53 | Formal UAT sign-off (OI-09) |
-| support | OI-15 | Docs & URL catalog keep pace (UG §9.3 / UAT v2.7) | User Guide, URL Catalog, UAT, Open Issues, Progress | UG §9.3.10 + URL Catalog CS/TR + UAT catalogue v2.7 + Open Issues v1.5 | Keep Progress in lockstep after each ship |
+| support | OI-15 | Docs & URL catalog keep pace (UG §9.3 / AI Use Manual / UAT v2.7) | User Guide, AI Use Manual, URL Catalog, UAT, Open Issues, Progress | UG §9.3.10 + AI Use Manual CRMP-AIU-001 + URL Catalog CS/TR + UAT catalogue v2.7 + Open Issues v1.5 | Keep Progress in lockstep after each ship |
 
 ### Public URLs (CS/TR)
 
@@ -144,6 +144,7 @@ flowchart LR
 **BU:** All · **Status:** BAU · **ETA:** Ongoing → 2027-12 · **Depends:** Docs owner; each feature ship
 
 - [x] UG §9.3 + URL Catalog CS/TR + UAT catalogue v2.6 (desk, `/cs`, dashboard, log, data)  
+- [x] AI Use Manual CRMP-AIU-001 EN + zh-Hant with mermaid (Risk + CS/TR)  
 - [ ] Keep UG / PRD / TSD / UAT / Roadmap / Ecosystem aligned after each nav ship  
 - [ ] Refresh Open Issues + Progress when statuses/ETAs change  
 - [ ] URL catalog lists public + admin paths with correct permissions  

@@ -254,6 +254,9 @@ export default async function AdminDashboardPage({
       <Link className="btn" href="/admin/docs/user-guide">
         <ActionLabel href="/admin/docs/user-guide" />
       </Link>
+      <Link className="btn" href="/admin/docs/ai-use">
+        <ActionLabel href="/admin/docs/ai-use" />
+      </Link>
       <Link className="btn btn-primary" href="/admin/dashboard">
         <ActionLabel href="/admin/dashboard" />
       </Link>

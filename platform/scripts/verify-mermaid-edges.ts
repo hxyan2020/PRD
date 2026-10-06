@@ -184,6 +184,44 @@ A[First] --> B[Second] --> C[Third]`,
     minEdges: 10,
     firstLabel: "新進件",
   },
+  {
+    name: "ai-use-loop-en",
+    src: `graph TD
+  Human[Human decides] --> Prompt[Prompt plus context]
+  Prompt --> Model[LLM or heuristic]
+  Model --> Out[Draft answer]
+  Out --> Check{Safe to send?}
+  Check -->|No| Hold[Hold and retry]
+  Check -->|Yes| Act[Show on desk]`,
+    minEdges: 5,
+    firstLabel: "Human decides",
+  },
+  {
+    name: "ai-use-loop-zh",
+    src: `graph TD
+  Human[人類做決定] --> Prompt[提示加脈絡]
+  Prompt --> Model[LLM 或啟發式]
+  Model --> Out[草稿答案]
+  Out --> Check{可安全送出?}
+  Check -->|否| Hold[扣住再試]
+  Check -->|是| Act[顯示在台面]`,
+    minEdges: 5,
+    firstLabel: "人類做決定",
+  },
+  {
+    name: "ai-use-glossary-en",
+    src: `graph LR
+  Prompt[Prompt] --> Agent[Agent]
+  Agent --> Skill[Skill playbook]
+  Agent --> Rag[RAG retrieve]
+  Agent --> Mcp[MCP tools]
+  Skill --> Draft[Draft pack]
+  Rag --> Draft
+  Mcp --> Draft
+  Draft --> Human[Human gate]`,
+    minEdges: 8,
+    firstLabel: "Prompt",
+  },
 ];
 
 function edgeCount(html: string) {

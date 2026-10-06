@@ -50,7 +50,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/uat](/admin/docs/uat) (`data-
 | primary | UAT-51 | Dedicated CS/TR dashboard and log (not Daily Performance / Risk Log) | `/admin/cs-dashboard`, `/admin/cs-log` | FR-44 |
 | primary | UAT-52 | Supporting data: BUs, CS KYC Vault, four hops, `cs.*` parameters | `/admin/cs-data`, Settings, BU and Teams, Escalation Routes | FR-45 |
 | primary | UAT-53 | Categorize, severity, AI solution, auto-reply vs named POC review | CS / TR Desk, CS / TR Dashboard, Platform Settings | FR-46 |
-| support | UAT-17 | EN / 繁中 docs including UG §9.3 and this catalogue | User Guide, PRD, TSD, UAT Checklist | FR-43 |
+| support | UAT-17 | EN / 繁中 docs including UG §9.3, AI Use Manual and this catalogue | User Guide, AI Use Manual, PRD, TSD, UAT Checklist | FR-43, FR-48 |
 | support | UAT-22 | Unread badges on CS/TR desk, dashboard, log and data | Admin Home, CS / TR surfaces | FR-37 |
 | support | UAT-27 | Home shortcuts to CS/TR desk, dashboard, log, data and `/cs` | Admin Home | FR-37 |
 | support | UAT-28 | Daily Performance stays CFD/crypto — not the CS/TR dashboard | Daily Performance vs `/admin/cs-dashboard` | FR-44 |
@@ -95,7 +95,7 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | Market Intelligence — Scan now must finish (including on GitHub Pages) | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI must not be allowed near human-only data | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and home spine tell the same story as messenger | Audit Log, Admin Home spine |
-| 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | English and Traditional Chinese documentation both render | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
+| 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | English and Traditional Chinese documentation both render | User Guide, AI Use Manual, PRD, TSD, UAT Checklist, Ecosystem Eval |
 | 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, CS client portal |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | Every serious analysis in this UAT window has a second AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | Skill cards stay short; Enter opens the full playbook | AI Skills |
@@ -422,19 +422,20 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 ### UAT-17 — English and Traditional Chinese documentation both render
 
 - **Severity:** Low · **BU:** All · **Depends:** Docs published under /admin/docs/* · **Window:** T+196m / 10m
-- **Covers:** User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval
+- **Covers:** User Guide, AI Use Manual, PRD, TSD, UAT Checklist, Ecosystem Eval
 - **Why:** The Hong Kong desk must be able to run UAT and read the handbook in 繁中.
-- **Goal:** Toggle EN / 繁體中文 on User Guide (including §9.3 CS/TR), PRD, TSD, Ecosystem Eval and this UAT catalogue without 404s.
+- **Goal:** Toggle EN / 繁體中文 on User Guide (including §9.3 CS/TR), AI Use Manual, PRD, TSD, Ecosystem Eval and this UAT catalogue without 404s.
 
 **Steps**
 
 1. Open User Guide. Use the English / 繁體中文 buttons on the article (and the left-pane EN / 繁中 if you want chrome translated too).
 2. In the User Guide, open §9.3 CS/TR door. Confirm desk, /cs portal, dashboard, log, data, wait loop and skills are described in both languages.
-3. Repeat for PRD (§6.5 / FR-37…45), TSD (§17), Ecosystem Eval, and this UAT page — including the CS/TR feature catalogue table above the case list.
-4. Body text must actually switch — not only the page title. A missing-file stub fails the case.
+3. Open AI Use Manual (`/admin/docs/ai-use`). Confirm Risk + CS/TR sections, glossary (agent, skill, MCP, hallucination) and mermaid diagrams switch language — not only the title.
+4. Repeat for PRD (§6.5 / FR-37…48), TSD (§17), Ecosystem Eval, and this UAT page — including the CS/TR feature catalogue table above the case list.
+5. Body text must actually switch — not only the page title. A missing-file stub fails the case.
 
-**Pass:** Both languages render for each listed doc; UG §9.3 and this UAT CS/TR catalogue switch for real; no missing-file stub.
-**Evidence:** Tick-list of URLs tested in EN and ZH, including UG §9.3 and the UAT CS/TR catalogue.
+**Pass:** Both languages render for each listed doc; UG §9.3, AI Use Manual diagrams, and this UAT CS/TR catalogue switch for real; no missing-file stub.
+**Evidence:** Tick-list of URLs tested in EN and ZH, including UG §9.3, `/admin/docs/ai-use`, and the UAT CS/TR catalogue.
 
 ### UAT-18 — Phone-width smoke test (~390px)
 

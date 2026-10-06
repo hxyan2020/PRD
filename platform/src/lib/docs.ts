@@ -9,6 +9,7 @@ export type DocId =
   | "TSD"
   | "PRD"
   | "USER_GUIDE"
+  | "AI_USE"
   | "UAT"
   | "ECOSYSTEM"
   | "ROADMAP"
@@ -21,6 +22,7 @@ const DOC_FILES: Record<DocId, { en: string; "zh-Hant": string }> = {
   TSD: { en: "TSD.md", "zh-Hant": "TSD.zh-Hant.md" },
   PRD: { en: "PRD.md", "zh-Hant": "PRD.zh-Hant.md" },
   USER_GUIDE: { en: "USER_GUIDE.md", "zh-Hant": "USER_GUIDE.zh-Hant.md" },
+  AI_USE: { en: "AI_USE.md", "zh-Hant": "AI_USE.zh-Hant.md" },
   UAT: { en: "UAT.md", "zh-Hant": "UAT.zh-Hant.md" },
   ECOSYSTEM: { en: "ECOSYSTEM.md", "zh-Hant": "ECOSYSTEM.zh-Hant.md" },
   ROADMAP: { en: "ROADMAP.md", "zh-Hant": "ROADMAP.zh-Hant.md" },

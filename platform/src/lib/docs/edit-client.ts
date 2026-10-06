@@ -6,6 +6,7 @@ export type AdminDocKey =
   | "TSD"
   | "PRD"
   | "USER_GUIDE"
+  | "AI_USE"
   | "ECOSYSTEM"
   | "UAT"
   | "ROADMAP"

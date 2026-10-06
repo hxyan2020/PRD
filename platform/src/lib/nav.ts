@@ -10,6 +10,7 @@ import {
   Database,
   FileText,
   GitBranch,
+  GraduationCap,
   Globe2,
   Headphones,
   LayoutDashboard,
@@ -91,6 +92,7 @@ export const NAV_ITEMS = [
   { href: "/admin/security/ai-access", label: "AI Access Security", icon: Lock, permission: "audit.read", group: "platform" },
 
   { href: "/admin/docs/user-guide", label: "User Guide", icon: BookOpen, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/ai-use", label: "AI Use Manual", icon: GraduationCap, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/urls", label: "URL Catalog", icon: ListTree, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/uat", label: "UAT Checklist", icon: ClipboardCheck, permission: "admin.access", group: "docs" },
   { href: "/admin/docs/prd", label: "PRD", icon: FileText, permission: "admin.access", group: "docs" },

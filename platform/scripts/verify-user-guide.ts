@@ -54,6 +54,8 @@ const both = [
   "AI_REPLIED",
   "CS_FOLLOWUP_EMAIL",
   "https://hxyan2020.github.io/PRD/crmp-plus/cs/",
+  "/admin/docs/ai-use",
+  "CRMP-AIU-001",
 ];
 
 for (const needle of both) {
@@ -80,6 +82,7 @@ assert(page.includes('href: "/admin/cs-desk"'), "user-guide page quick link to d
 assert(page.includes('href: "/admin/cs-dashboard"'), "user-guide page quick link to dashboard");
 assert(page.includes('href: "/admin/cs-log"'), "user-guide page quick link to log");
 assert(page.includes('href: "/admin/cs-data"'), "user-guide page quick link to data");
+assert(page.includes('href: "/admin/docs/ai-use"'), "user-guide page quick link to AI Use Manual");
 
 console.log("verify-user-guide: ok");
 console.log(JSON.stringify({ enChars: en.length, zhChars: zh.length, needles: both.length }, null, 2));

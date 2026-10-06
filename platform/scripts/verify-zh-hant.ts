@@ -22,7 +22,7 @@ function assert(cond: unknown, msg: string) {
 
 const root = path.resolve(__dirname, "..");
 
-const DOC_IDS = ["TSD", "PRD", "USER_GUIDE", "UAT", "ECOSYSTEM", "ROADMAP", "OPEN_ISSUES", "PROGRESS"];
+const DOC_IDS = ["TSD", "PRD", "USER_GUIDE", "AI_USE", "UAT", "ECOSYSTEM", "ROADMAP", "OPEN_ISSUES", "PROGRESS"];
 for (const id of DOC_IDS) {
   const en = path.join(root, "docs", `${id}.md`);
   const zh = path.join(root, "docs", `${id}.zh-Hant.md`);
@@ -118,7 +118,7 @@ const oi15 = OPEN_ISSUES.find((i) => i.id === "OI-15");
 assert(oi15?.checklist.some((c) => c.done && c.en.includes("EN + zh-Hant parity")), "OI-15 docs parity ticked");
 
 const stamp = fs.readFileSync(path.join(root, "src/lib/build-stamp.ts"), "utf8");
-assert(stamp.includes("2026-10-07T01:00:00.000Z"), "FINISHED_AT 01:00");
+assert(stamp.includes("2026-10-07T02:00:00.000Z"), "FINISHED_AT 02:00");
 
 console.log("verify-zh-hant: ok");
 console.log(

@@ -90,7 +90,7 @@ graph TD
 
 ### 2.3 Language
 
-Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is stored in the `crmp_ui_lang` cookie. Every left-nav label (including Demo Messenger), page title, URL Catalog row, Settings `cs.*` descriptions, CS/TR Data seed copy (teams, rotations, sources), and product doc (User Guide, PRD, TSD, UAT, Ecosystem, Roadmap, Open Issues, Progress, changelog) can switch. Open a doc with `?lang=zh-Hant` if you want to share a Chinese link. Public `/cs` chrome is Traditional Chinese too.
+Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is stored in the `crmp_ui_lang` cookie. Every left-nav label (including Demo Messenger), page title, URL Catalog row, Settings `cs.*` descriptions, CS/TR Data seed copy (teams, rotations, sources), and product doc (User Guide, AI Use Manual, PRD, TSD, UAT, Ecosystem, Roadmap, Open Issues, Progress, changelog) can switch. Open a doc with `?lang=zh-Hant` if you want to share a Chinese link. Public `/cs` chrome is Traditional Chinese too.
 
 ### 2.4 Phones
 
@@ -114,7 +114,7 @@ The left pane is grouped so you are not staring at one long list:
 | **Response** | Demo Messenger → CS / TR Desk → CS / TR Dashboard → CS / TR Log → CS / TR Data → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
-| **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem → Open Issues → Progress Tracker |
+| **Docs** | User Guide → **AI Use Manual** → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem → Open Issues → Progress Tracker |
 
 The Vantage logo sits at the top. Your role badge (and **Public prototype** on GitHub Pages) sit under your name. Owner line: demo platform owner.
 
@@ -850,6 +850,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | Page | Path | What it is |
 |---|---|---|
 | User Guide | `/admin/docs/user-guide` | This handbook |
+| AI Use Manual | `/admin/docs/ai-use` | AI literacy for **Risk Management and CS/TR**: basics, how to use AI on this desk, LLM explanation, terms (agent, skill, MCP, RAG, hallucination, challenger, maker/checker), where AI goes wrong, detect / correct / prevent. Mermaid diagrams. EN / 繁中. Frozen original CRMP Admin operators use the Plus URL. |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
 | UAT Checklist | `/admin/docs/uat` | Interactive 52-case sign-off (UAT-01 … UAT-53, skip UAT-45): why, steps, pass, evidence, screen coverage. **CS/TR catalogue v2.7:** UAT-25 catalog, UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log, UAT-52 BU / hops / `cs.*`, UAT-53 categorize / severity / auto vs POC, plus support UAT-17/22/27–29/36–40 |
@@ -872,7 +873,8 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 5. After a control, check **Audit Log** and the **home spine** for the same ids.  
 6. Maker and checker must be **two different people** on AI Admin and on designated controls.  
 7. On CS/TR: never Resolve while a follow-up is WAITING; never skip ID-verify on a verbal “it’s me”; cap auto-mail at `cs.followup_cap` (default 3) then CS Lead in person. After facts are collected, never auto-send KYC / complaint / trading / CRITICAL — hold for the named POC who **adds detail before reply**.  
-8. CS does not arm trading controls. TR does not staff C1. Book-risk leaves this desk via **Escalate to Risk**.
+8. CS does not arm trading controls. TR does not staff C1. Book-risk leaves this desk via **Escalate to Risk**.  
+9. Read the [AI Use Manual](/admin/docs/ai-use) once: AI proposes, humans dispose; never treat `EXECUTED_MOCK` as a live control.
 
 ---
 
@@ -906,7 +908,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Platform | Platform Settings | Grouped flags |
 | Platform | Audit Log | CRMP vs Vantage Markets Admin tabs + Roll back |
 | Platform | AI Access Security | Human-only pages/functions/fields |
-| Docs | User Guide / URLs / UAT / PRD / TSD / Roadmap / Ecosystem / Open Issues / Progress | Product and operator documents |
+| Docs | User Guide / **AI Use Manual** / URLs / UAT / PRD / TSD / Roadmap / Ecosystem / Open Issues / Progress | Product and operator documents; AI literacy for Risk + CS/TR |
 
 ---
 
@@ -931,5 +933,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 2.5 | 2026-10-06 | §9.3.10 after collected facts: categorize, severity, AI solution, auto-reply vs named POC addendum; UAT-53 |
 | 2.6 | 2026-10-07 | §2.4 phones: CS/TR desk list→thread, dashboard/log/data cards, `/cs` stacked tabs; UAT-18 |
 | 2.7 | 2026-10-07 | §9.4 Lark messenger cards: alert + escalate Ack/Escalate/Dismiss/Close (UAT-36, FR-47) |
+| 2.8 | 2026-10-07 | §12 AI Use Manual (`/admin/docs/ai-use`, CRMP-AIU-001) for Risk + CS/TR; FR-48 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

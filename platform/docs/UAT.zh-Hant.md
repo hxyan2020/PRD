@@ -50,7 +50,7 @@ graph TD
 | 主案 | UAT-51 | 專用 CS／TR 儀表板與日誌（不是每日績效／風險日誌） | `/admin/cs-dashboard`、`/admin/cs-log` | FR-44 |
 | 主案 | UAT-52 | 配套資料：BU、CS 核身庫、四條關卡、`cs.*` 參數 | `/admin/cs-data`、設定、BU 與團隊、升級路徑 | FR-45 |
 | 主案 | UAT-53 | 分類、嚴重度、AI 方案，直回 vs 具名 POC 審閱 | CS／TR 台、CS／TR 儀表板、平台設定 | FR-46 |
-| 支援 | UAT-17 | 英／繁文件含使用手冊 §9.3 與本目錄 | 使用手冊、PRD、TSD、UAT 清單 | FR-43 |
+| 支援 | UAT-17 | 英／繁文件含使用手冊 §9.3、AI 使用手冊與本目錄 | 使用手冊、AI 使用手冊、PRD、TSD、UAT 清單 | FR-43、FR-48 |
 | 支援 | UAT-22 | CS／TR 台、儀表板、日誌、資料的未讀徽章 | 管理首頁、CS／TR 畫面 | FR-37 |
 | 支援 | UAT-27 | 首頁捷徑到 CS／TR 台、儀表板、日誌、資料與 `/cs` | 管理首頁 | FR-37 |
 | 支援 | UAT-28 | 每日績效仍是 CFD／加密 — 不是 CS／TR 儀表板 | 每日績效 vs `/admin/cs-dashboard` | FR-44 |
@@ -95,7 +95,7 @@ graph TD
 | 14 | UAT-14 | 159m | 12m | Medium | Risk + AI | market_intel.enabled=true | 市場情報 —「立即掃描」必須跑完（含 GitHub Pages） | Market Intelligence, Demo Messenger |
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與首頁脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
-| 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | 英文與繁中文件都能顯示 | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
+| 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | 英文與繁中文件都能顯示 | User Guide, AI Use Manual, PRD, TSD, UAT Checklist, Ecosystem Eval |
 | 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, CS client portal |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | 本輪 UAT 每個嚴重分析都有第二 AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | 技能卡片保持精簡；「進入」打開完整劇本 | AI Skills |
@@ -422,19 +422,20 @@ graph TD
 ### UAT-17 — 英文與繁中文件都能顯示
 
 - **嚴重度：** Low · **負責：** All · **依賴：** Docs published under /admin/docs/* · **建議：** T+196m / 10m
-- **涵蓋：** User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval
+- **涵蓋：** User Guide, AI Use Manual, PRD, TSD, UAT Checklist, Ecosystem Eval
 - **為何測：** 香港桌必須能用繁中跑 UAT 與讀手冊。
-- **目的：** 在使用手冊（含 §9.3 CS／TR）、PRD、TSD、生態評估與本 UAT 目錄切換英／繁，不可 404。
+- **目的：** 在使用手冊（含 §9.3 CS／TR）、AI 使用手冊、PRD、TSD、生態評估與本 UAT 目錄切換英／繁，不可 404。
 
 **步驟**
 
 1. 開啟使用手冊，點文章上的 English／繁體中文（左側 EN／繁中可一併翻譯介面）。
 2. 在使用手冊打開 §9.3 CS／TR 大門。確認台面、/cs 入口、儀表板、日誌、資料、等待迴圈與技能兩語都有。
-3. 對 PRD（§6.5／FR-37…45）、TSD（§17）、生態評估、本 UAT 頁重複 — 含案例列表上方的 CS／TR 功能目錄表。
-4. 內文必須真的切換，不能只有標題變。缺檔 stub 算失敗。
+3. 開啟 AI 使用手冊（`/admin/docs/ai-use`）。確認風控＋CS／TR 章節、詞彙（代理、技能、MCP、幻覺）與 mermaid 圖會切語言 — 不能只有標題變。
+4. 對 PRD（§6.5／FR-37…48）、TSD（§17）、生態評估、本 UAT 頁重複 — 含案例列表上方的 CS／TR 功能目錄表。
+5. 內文必須真的切換，不能只有標題變。缺檔 stub 算失敗。
 
-**通過：** 所列文件兩語皆可渲染；使用手冊 §9.3 與本 UAT 的 CS／TR 目錄真的切換；非缺檔 stub。
-**證據：** 已測 URL 清單（含使用手冊 §9.3 與 UAT CS／TR 目錄）。
+**通過：** 所列文件兩語皆可渲染；使用手冊 §9.3、AI 使用手冊圖解與本 UAT 的 CS／TR 目錄真的切換；非缺檔 stub。
+**證據：** 已測 URL 清單（含使用手冊 §9.3、`/admin/docs/ai-use` 與 UAT CS／TR 目錄）。
 
 ### UAT-18 — 手機寬度煙測（約 390px）
 
