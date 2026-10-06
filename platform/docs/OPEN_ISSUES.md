@@ -20,14 +20,14 @@ Interactive twin: filter **CS/TR** on [/admin/docs/open-issues](/admin/docs/open
 
 | Kind | ID | Feature | Screens / URLs | Prototype shipped | Still open (production) |
 |---|---|---|---|---|---|
-| primary | OI-19 | Production C1 / form / mailbox connectors | `/cs`, desk, dashboard, log, data, `POST /api/cs/intake` | Portal, wait loop, seed dashboard/log/data, UAT-46 | Signed C1, form HMAC, mailbox gateway, production SMTP, live volume, no-silent-drop SLA |
-| primary | OI-20 | CS/TR ID vault and dealing-tape reconstruct | CS KYC Vault, desk, Data Sources, Demo Messenger | Vault team, ESC-CS-KYC flags-only, TR routing, MT4/MT5 tape listed | Production vault, mailer with `cs.followup_cap`, live tape, live messenger escalate, CS Lead waiver audit |
+| primary | OI-19 | Production C1 / form / mailbox connectors | `/cs`, desk, dashboard, log, data, `POST /api/cs/intake` | Portal, wait loop, dashboard/log/data, categorize+severity auto vs POC (UAT-46, UAT-51, UAT-52, UAT-53) | Signed C1, form HMAC, mailbox gateway, production SMTP, live volume, no-silent-drop SLA |
+| primary | OI-20 | CS/TR ID vault and dealing-tape reconstruct | CS KYC Vault, desk, Data Sources, Demo Messenger | Vault team, ESC-CS-KYC flags-only, TR routing, named POC hold, MT4/MT5 tape listed (UAT-53) | Production vault, mailer with `cs.followup_cap`, live tape, live messenger escalate, CS Lead waiver audit |
 | support | OI-05 | Knowledge tree + RAG corpus (`CS_SERVICE` / `TRADING_EXEC`) | Knowledge Tree, RAG, AI Skills | Trunks + `cs-*` leaves (UAT-50) | Corpus owners, retire cadence, skill↔doc binds, `propose_rag` SLA |
 | support | OI-08 | Production Lark interactive cards (CS/TR channels) | Lark Integration | Seed `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing` (UAT-36) | Live card Ack / Escalate / Approve including CS WAITING / cap |
-| support | OI-09 | Risk Owner UAT exit including CS/TR catalogue | UAT Checklist v2.6 | Pack v2.6 (51 cases, skip UAT-45) indexes CS/TR | Formal RO sign-off of UAT-25/46/47/48/50/51/52 + four CS hops |
+| support | OI-09 | Risk Owner UAT exit including CS/TR catalogue | UAT Checklist v2.7 | Pack v2.7 (52 cases, skip UAT-45) indexes CS/TR including UAT-53 | Formal RO sign-off of UAT-25/46/47/48/50/51/52/53 + four CS hops |
 | support | OI-11 | Admin UX polish — CS/TR phone-width | Desk, dashboard, log, data | Surfaces listed for ~390px (UAT-18) | Phone-width pass on those surfaces |
-| support | OI-14 | Prototype AI desk UAT window includes CS/TR door | `/cs`, desk, skills, wait loop, dashboard, log, data | CS/TR door shipped for UAT-46…52 | Formal UAT sign-off (OI-09) |
-| support | OI-15 | Docs & URL catalog keep pace (UG §9.3 / UAT v2.6) | User Guide, URL Catalog, UAT, Open Issues, Progress | UG §9.3 + URL Catalog CS/TR + UAT catalogue v2.6 | Keep Open Issues + Progress in lockstep |
+| support | OI-14 | Prototype AI desk UAT window includes CS/TR door | `/cs`, desk, skills, wait loop, dashboard, log, data | CS/TR door shipped for UAT-46…53 | Formal UAT sign-off (OI-09) |
+| support | OI-15 | Docs & URL catalog keep pace (UG §9.3 / UAT v2.7) | User Guide, URL Catalog, UAT, Open Issues, Progress | UG §9.3.10 + URL Catalog CS/TR + UAT catalogue v2.7 + Open Issues v1.5 | Keep Progress in lockstep after each ship |
 
 ### Public URLs (CS/TR)
 

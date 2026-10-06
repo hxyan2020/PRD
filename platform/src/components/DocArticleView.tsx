@@ -76,8 +76,8 @@ const META: Record<
     code: "CRMP-PT-001",
     enTitle: "Progress Tracker",
     zhTitle: "進度追蹤",
-    enSub: "X = open issues (columns), Y = timeline now → end-2027; status colours; responsible BU on every column.",
-    zhSub: "X＝開放議題（欄）、Y＝時間軸現在→2027 年底；狀態色塊；每欄標示負責 BU。",
+    enSub: "v1.6 — 20 columns; CS/TR catalogue indexes desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.* and categorize/severity/POC on OI-19/20 — not extra bars.",
+    zhSub: "v1.6 — 20 欄；CS／TR 目錄把台面、／cs、等待迴圈、技能、儀表板、日誌、資料、關卡、cs.* 與分類／嚴重度／POC 對到 OI-19／20 — 不是額外長條。",
     href: "/admin/docs/progress",
   },
 };

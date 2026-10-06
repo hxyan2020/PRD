@@ -856,7 +856,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: **20 issues** (OI-01…20). **CS/TR catalogue v1.5:** primary OI-19/OI-20 plus support OI-05/08/09/11/14/15 — prototype ticks vs production connectors/vault/tape |
-| Progress Tracker | `/admin/docs/progress` | Interactive board: X=issues, Y=timeline now→end-2027 |
+| Progress Tracker | `/admin/docs/progress` | Interactive board: X=issues, Y=timeline now→end-2027. **CS/TR catalogue v1.6** on the same **20 columns** (desk, `/cs`, wait loop, skills, dashboard, log, data, hops, `cs.*`, categorize / severity / POC on OI-19/20 — not extra bars) |
 | URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs. **CS / TR** section: `/cs` portal, desk, dashboard, log, data, five SKILL.md playbooks, RAG leaves, POST `/api/cs/intake`, `GET /api/cs?view=data`, `cs_*` tables |
 
 On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail on the board; coverage chips show which screens each case hits.
