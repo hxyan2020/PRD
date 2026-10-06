@@ -17,9 +17,9 @@ export default async function PrdPage({ searchParams }: { searchParams: Promise<
 
   const cards = [
     { label: zh ? "P0 需求" : "P0 requirements", value: "10" },
-    { label: zh ? "P1 需求" : "P1 requirements", value: "29" },
-    { label: zh ? "CS／TR" : "CS / TR", value: "FR-37…43" },
-    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…50" },
+    { label: zh ? "P1 需求" : "P1 requirements", value: "30" },
+    { label: zh ? "CS／TR" : "CS / TR", value: "FR-37…44" },
+    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…51" },
   ];
 
   return (
@@ -37,7 +37,7 @@ export default async function PrdPage({ searchParams }: { searchParams: Promise<
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-PRD-001</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-            {zh ? "原型／可示範 · v2.3" : "Prototype / demo-ready · v2.3"}
+            {zh ? "原型／可示範 · v2.4" : "Prototype / demo-ready · v2.4"}
           </Badge>
         </div>
         <div className="action-row">
@@ -46,6 +46,12 @@ export default async function PrdPage({ searchParams }: { searchParams: Promise<
           </Link>
           <Link className="btn" href="/admin/cs-desk">
             {zh ? "CS／TR 台" : "CS / TR Desk"}
+          </Link>
+          <Link className="btn" href="/admin/cs-dashboard">
+            {zh ? "CS／TR 儀表板" : "CS / TR Dashboard"}
+          </Link>
+          <Link className="btn" href="/admin/cs-log">
+            {zh ? "CS／TR 日誌" : "CS / TR Log"}
           </Link>
           <Link className="btn" href="/admin/docs/urls">
             {zh ? "網址目錄" : "URL Catalog"}

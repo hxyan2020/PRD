@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getUiLocale } from "@/lib/i18n-server";
+import { getCsDashboard, getCsLog } from "@/lib/cs/analytics";
 import {
   agentReply,
   applyTriage,
@@ -35,11 +36,14 @@ export async function GET(req: Request) {
   }
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
+  const view = url.searchParams.get("view");
   if (id) {
     const detail = getCsRequest(Number(id));
     if (!detail) return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(detail);
   }
+  if (view === "dashboard") return NextResponse.json(getCsDashboard());
+  if (view === "log") return NextResponse.json(getCsLog());
   return NextResponse.json(listCsInbox());
 }
 

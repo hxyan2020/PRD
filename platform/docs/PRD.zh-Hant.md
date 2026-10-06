@@ -6,7 +6,7 @@
 **負責人：** demo platform owner · **核准人：** 風險負責人  
 **相關文件：** [TSD](/admin/docs/tsd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [生態導入評估](/admin/docs/ecosystem)
 
-本 PRD 是 **CRMP Plus（原 CRMP 管理後台加上 24/7 客服與交易台）目前每一個畫面與功能** 的產品契約。範圍含公開客戶大門 [`/cs`](/cs)、三條即時連接器（C1 即時聊天、網站表單、官方信箱）、自動信件等待迴圈、專用 CS／TR SKILL.md，以及 [網址目錄](/admin/docs/urls) 的 CS／TR 區段。操作說明見 [使用手冊](/admin/docs/user-guide)（§9.3）。實作細節見 [TSD](/admin/docs/tsd)（§17）。簽核案例見 [UAT-01 … UAT-50](/admin/docs/uat)（CS／TR：UAT-46…50）。
+本 PRD 是 **CRMP Plus（原 CRMP 管理後台加上 24/7 客服與交易台）目前每一個畫面與功能** 的產品契約。範圍含公開客戶大門 [`/cs`](/cs)、三條即時連接器（C1 即時聊天、網站表單、官方信箱）、自動信件等待迴圈、專用 CS／TR SKILL.md、**獨立的 CS／TR 儀表板與日誌**（不是每日績效／風險日誌），以及 [網址目錄](/admin/docs/urls) 的 CS／TR 區段。操作說明見 [使用手冊](/admin/docs/user-guide)（§9.3）。實作細節見 [TSD](/admin/docs/tsd)（§17）。簽核案例見 [UAT-01 … UAT-51](/admin/docs/uat)（CS／TR：UAT-46…51）。
 
 ---
 
@@ -33,6 +33,8 @@ graph LR
   Mail[官方信箱] --> Plus
   Plus --> Lark[示範 Messenger]
   Plus --> CsDesk[CS TR 台]
+  Plus --> CsDash[CS TR 儀表板]
+  Plus --> CsLog[CS TR 日誌]
   Plus --> Audit[脊柱加稽核]
 ```
 
@@ -55,7 +57,7 @@ graph LR
 | G10 | 公開示範 | GitHub Pages 快照 `/PRD/crmp-plus/` 可走完後台，登入、Messenger「在管理後台開啟」、立即掃描不出現 404／405 |
 | G11 | 具名負責人 | 平台負責人 demo platform owner 為一級角色；工作階段留在瀏覽器 |
 | G12 | 雙公開網址 | 本升級平台為 `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
-| G13 | 24/7 CS／TR 大門 | 三連接器＋`/cs` 共用 `POST /api/cs/intake`；不清楚／核身案件寄信並等待（上限 3、CSR-XXXX 對案）；五本 SKILL.md 蓋章；目錄列出此門 |
+| G13 | 24/7 CS／TR 大門 | 三連接器＋`/cs` 共用 `POST /api/cs/intake`；不清楚／核身案件寄信並等待（上限 3、CSR-XXXX 對案）；五本 SKILL.md 蓋章；**專用儀表板＋日誌**；目錄列出此門 |
 
 ---
 
@@ -278,7 +280,7 @@ graph TD
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-plus/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
-| FR-32 | UAT 互動包 | UAT-01…UAT-50 含為什麼／步驟／通過／證據與畫面覆蓋 |
+| FR-32 | UAT 互動包 | UAT-01…UAT-51 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
@@ -288,7 +290,8 @@ graph TD
 | FR-40 | 公開 CS 進件入口＋進件回覆 | 客戶 `/cs` 分頁（C1、表單、官方信箱）打 `/api/cs/intake`；GET 連接器目錄；回覆以 `request_id`／`in_reply_to`／`channel_ref`／`CSR-XXXX` 續辦原案。永久網址 `https://hxyan2020.github.io/PRD/crmp-plus/cs/`。 |
 | FR-41 | 自動信件等待迴圈 | 不清楚或需核身 → 一封 `EMAIL_OUT`，狀態 `AWAITING_CLIENT` 或 `ID_VERIFY`，追問 `WAITING`；上限 3 後客服主管；**WAITING 時禁止結案**。UAT-47。 |
 | FR-42 | CS／TR 隱私＋公開狀態 | `GET /api/cs/intake?request_id=` 回傳無個資狀態；切勿把證件圖存進案件；核身庫是流程不是 blob。UAT-49。 |
-| FR-43 | CS／TR 操作文件 | 使用手冊 §9.3；網址目錄 **CS／TR** 區段（`/cs`、台面、五本技能、RAG 葉、進件 API、`cs_*` 表）；UAT-25＋UAT-46…50 |
+| FR-43 | CS／TR 操作文件 | 使用手冊 §9.3；網址目錄 **CS／TR** 區段（`/cs`、台面、儀表板、日誌、五本技能、RAG 葉、進件 API、`cs_*` 表）；UAT-25＋UAT-46…51 |
+| FR-44 | CS／TR 儀表板＋日誌 | 專用 `/admin/cs-dashboard`（指標：總數、未結／已結、WAITING、上限 3、TR、風控，依渠道／狀態／技能／台面）與 `/admin/cs-log`（CS_* 時間軸＋已結包）。**不是**每日績效（`/admin/dashboard`），**不是**風險日誌分析（`/admin/risk-log`）。`GET /api/cs?view=dashboard\|log`。UAT-51。 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -321,6 +324,8 @@ graph TD
 | 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註；樣本顯示操作者信箱 |
 | 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流＋鳥瞰 POC 窗 | 路徑晶片、承辦窗、同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟 |
 | 應變 | CS／TR 台 | `/admin/cs-desk` | 24/7 C1、表單與信箱進件 | 三渠道；公開 `/cs` 入口；CSR-XXXX 進件回覆；專用技能晶片；等待迴圈上限 3；TR 分流；升級風控 |
+| 應變 | CS／TR 儀表板 | `/admin/cs-dashboard` | CS／TR 量與等待迴圈健康 | 獨立於每日績效；WAITING／上限 3／TR／風控指標；依渠道、狀態、技能、台面 |
+| 應變 | CS／TR 日誌 | `/admin/cs-log` | CS_* 時間軸與已結包 | 獨立於風險日誌；篩選 CS_INTAKE … CS_RESOLVE；已結案件包 |
 | 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；`oc_cs_c1`／`oc_tr_dealing`；localhost 模擬通知 |
 | 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT 加上 ESC-CS-24-7／ESC-TR-DEAL／ESC-CS-RISK；技能綁一條 |
 | 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
@@ -331,9 +336,9 @@ graph TD
 | 平台 | 稽核日誌 | `/admin/audit` | CRMP／Vantage Markets 管理兩平面 | 兩個分頁；回滾還原變更前快照 |
 | 平台 | 平台設定 | `/admin/settings` | 旗標 | 分組鍵；儲存 |
 | 文件 | 使用手冊 | `/admin/docs/user-guide` | 如何操作 | 英＋繁中；每一畫面加上 §9.3 CS／TR |
-| 文件 | PRD | `/admin/docs/prd` | 為什麼／做什麼／怎麼過 | 本文件（FR-37…43、G13、§5.7–5.9、§6.5） |
+| 文件 | PRD | `/admin/docs/prd` | 為什麼／做什麼／怎麼過 | 本文件（FR-37…44、G13、§5.7–5.9、§6.5） |
 | 文件 | TSD | `/admin/docs/tsd` | 怎麼做的 | 完整介面地圖 |
-| 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 50 案，可互動（UAT-46…50 CS／TR） |
+| 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 51 案，可互動（UAT-46…51 CS／TR） |
 | 文件 | 生態導入評估 | `/admin/docs/ecosystem` | 導入 | 階段、預算、風險 |
 | 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | RM-01…15：今日／要做／完成標準 |
 | 文件 | 開放議題 | `/admin/docs/open-issues` | 計畫缺口 | ETA、BU、依賴 → 2027 |
@@ -357,7 +362,7 @@ graph TD
 | `WEB_FORM` | 網站／App 聯絡表單＋`/cs` 提交分頁 | 同一 webhook。`channel_ref`＝表單提交 id。 |
 | `OFFICIAL_EMAIL` | 官方客服／投訴信箱＋`/cs` 官方信箱分頁 | 同一 webhook。主旨可帶 `CSR-XXXX`。 |
 
-`GET /api/cs/intake` 回傳此目錄。操作者 `/api/cs` **不是**公開進件 — 那是台面動作（分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬_*）。
+`GET /api/cs/intake` 回傳此目錄。操作者 `/api/cs` **不是**公開進件 — 那是台面動作（分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬_*）加上 `GET ?view=dashboard|log`。
 
 #### 續辦 — 不得開第二張工單
 
@@ -385,7 +390,11 @@ AI 不清楚或需核身：寄**一封**自動信、卡住工單、等客戶。�
 
 #### 文件（FR-43）
 
-操作者不必猜路徑：網址目錄 CS／TR 區段、使用手冊 §9.3、UAT-25／UAT-46…50。
+操作者不必猜路徑：網址目錄 CS／TR 區段、使用手冊 §9.3、UAT-25／UAT-46…51。
+
+#### 專用儀表板＋日誌（FR-44）
+
+CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已結包在 `/admin/cs-log`。每日績效仍是 CFD／加密日終指標。風險日誌分析仍是已關閉 Monitor 追蹤包。混在同一畫面是產品缺陷。
 
 ---
 
@@ -426,10 +435,11 @@ AI 不清楚或需核身：寄**一封**自動信、卡住工單、等客戶。�
 14. **CS 連接器：** C1、網站表單與官方信箱各經 `POST /api/cs/intake` 在台面開列（UAT-46），含 `/cs`。  
 15. **等待迴圈：** 不清楚或需核身寄自動信並 WAITING；CSR-XXXX／`channel_ref` 回覆續辦同一工單；關閉前禁止結案（UAT-47）。上限 3 後客服主管。  
 16. **技能＋樹：** 種子請求顯示 SKILL-CS-*／SKILL-TR-* 晶片並打開 SKILL.md；知識樹有 CS_SERVICE／TRADING_EXEC；RAG 有 `cs-24-7-intake`（UAT-50）。  
-17. **目錄：** 網址目錄 CS／TR 區段列出 `/cs`、台面、五本劇本、RAG 葉與 `/api/cs/intake`（UAT-25）。  
-18. **隱私：** 公開狀態 GET 無個資；證件圖不在工單上（UAT-49）。
+17. **目錄：** 網址目錄 CS／TR 區段列出 `/cs`、台面、儀表板、日誌、五本劇本、RAG 葉與 `/api/cs/intake`（UAT-25）。  
+18. **CS 儀表板＋日誌：** `/admin/cs-dashboard` 顯示 CS／TR 指標（不是每日績效）。`/admin/cs-log` 顯示 CS_* 事件與已結包（不是風險日誌）。UAT-51。  
+19. **隱私：** 公開狀態 GET 無個資；證件圖不在工單上（UAT-49）。
 
-正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-50）。此包覆蓋每一個管理畫面、完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步），以及 CS／TR 大門（C1／表單／信箱、`/cs`、等待迴圈、專用 SKILL.md、TR 分流、核身庫、目錄）。
+正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-51）。此包覆蓋每一個管理畫面、完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步），以及 CS／TR 大門（C1／表單／信箱、`/cs`、等待迴圈、專用 SKILL.md、TR 分流、核身庫、目錄、儀表板、日誌）。
 
 ---
 
@@ -524,5 +534,6 @@ AI 不清楚或需核身：寄**一封**自動信、卡住工單、等客戶。�
 | 2.1 | 2026-10-06 | FR-39 CS／TR 專用技能＋知識樹 CS_SERVICE／TRADING_EXEC；UAT-50 |
 | 2.2 | 2026-10-06 | FR-40 公開 `/cs` 入口＋`/api/cs/intake` 進件回覆對案 |
 | 2.3 | 2026-10-06 | G13＋FR-41…43；旅程 5.7–5.9；§6.5 CS／TR 產品契約；等待迴圈／隱私／目錄驗收 |
+| 2.4 | 2026-10-06 | FR-44 專用 CS／TR 儀表板＋日誌（不是每日績效／風險日誌）；UAT-51 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

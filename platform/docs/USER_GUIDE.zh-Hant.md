@@ -4,7 +4,7 @@
 **語言：** 繁體中文（本頁）· [English](/admin/docs/user-guide?lang=en)  
 **文件與平台負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 
-這本手冊用白話寫。涵蓋左側選單**每一頁**，以及登入、語言、未讀數字、公開 GitHub Pages 快照，還有 **24/7 CS／TR 客戶大門**（C1 即時聊天、網站表單、官方信箱、自動信件等待迴圈、專用技能）。
+這本手冊用白話寫。涵蓋左側選單**每一頁**，以及登入、語言、未讀數字、公開 GitHub Pages 快照，還有 **24/7 CS／TR 客戶大門**（C1 即時聊天、網站表單、官方信箱、自動信件等待迴圈、專用技能、**專用儀表板與日誌**）。
 
 ---
 
@@ -16,7 +16,7 @@ Vantage **CRMP Plus** 是升級控制室：原 CRMP 風險脊柱加上 24/7 客�
 2. 高嚴重度（BREACH 或 CRITICAL）時，再跑一輪**獨立的第二 AI**，可能同意、部分同意或不同意。  
 3. 把整包放進 **Lark 風格 Messenger**，讓你顯示證據、聊天、升級、排除、結案或送出控制。  
 4. 不可逆控制上線前，要有人類 Checker。  
-5. **CS／TR 台**值守 24/7：C1 即時聊天、網頁表單與官方信箱 — 客戶走公開 **`/cs`**；AI 在不清楚或需核身時寄信並**等到客戶回覆**（上限 3 封）。  
+5. **CS／TR 台**值守 24/7：C1 即時聊天、網頁表單與官方信箱 — 客戶走公開 **`/cs`**；AI 在不清楚或需核身時寄信並**等到客戶回覆**（上限 3 封）。CS／TR 量在**獨立儀表板**；CS_* 歷史在**獨立日誌**。  
 6. 整段故事寫進**稽核日誌**與**首頁脊柱**（各階段工單計數 — 專屬脊柱日誌分頁已移除）。
 
 不必是工程師。點左側選單、讀卡片、跟畫面上的按鈕走即可。
@@ -26,6 +26,8 @@ Vantage **CRMP Plus** 是升級控制室：原 CRMP 風險脊柱加上 24/7 客�
 **永久公開示範（CRMP Plus）：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
 **Messenger 示範：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
 **CS／TR 台：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)  
+**CS／TR 儀表板：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-dashboard/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-dashboard/)  
+**CS／TR 日誌：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-log/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-log/)  
 **CS 客戶入口：** [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)  
 **原 CRMP 管理後台（凍結）：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **完整網址：** [網址目錄](/admin/docs/urls)  
@@ -108,7 +110,7 @@ graph TD
 | **總覽** | 管理首頁（含脊柱階段工單計數） |
 | **監控與風險** | 每日績效 → Monitor 2.0 → 即時警報與追蹤 → 市場情報 → 風險日誌 → 風險領域 |
 | **AI 與知識** | AI 技能 → 知識樹 → RAG → AI 管理（AI 分析列表已併入即時警報與追蹤；偵測器左側分頁已移除 → Monitor 2.0） |
-| **應變** | 示範 Messenger → CS／TR 台 → 人工干預 → 升級路徑 → Lark |
+| **應變** | 示範 Messenger → CS／TR 台 → CS／TR 儀表板 → CS／TR 日誌 → 人工干預 → 升級路徑 → Lark |
 | **組織** | BU 與團隊 → 使用者 → 角色 |
 | **平台** | 資料來源 → 平台設定 → 稽核日誌 → AI 存取安全 |
 | **文件** | 使用手冊 → 網址目錄 → UAT → PRD → TSD → 路線圖 → 生態 → 開放議題 → 進度追蹤 |
@@ -117,7 +119,7 @@ graph TD
 
 ### 未讀數字
 
-部分列會出現 **青色徽章**（即時警報與追蹤、示範 Messenger、CS／TR 台、市場情報、人工干預、稽核、Monitor 2.0、風險日誌）。
+部分列會出現 **青色徽章**（即時警報與追蹤、示範 Messenger、CS／TR 台、CS／TR 儀表板、CS／TR 日誌、市場情報、人工干預、稽核、Monitor 2.0、風險日誌）。
 
 - 數字是**你上次打開該分頁之後的新事項**（本瀏覽器）。  
 - 公式：`未讀 = max(0,（已知總數 + 額外增量）− 上次已看）`。  
@@ -177,7 +179,8 @@ graph TD
 2. 追問仍為 WAITING 時**不要結案**。第三封自動信件之後改由你本人跟進（對話會出現 SYSTEM 上限註記）。  
 3. 確認公開入口 [`/cs`](/cs) 仍會進到這個收件匣。  
 4. 成交投訴交給 TR。帳簿風險／詐欺升級風控（Messenger 脊柱）。  
-5. 簽核版本時過 [UAT-46](/admin/docs/uat)（三渠道）與 [UAT-47](/admin/docs/uat)（等待迴圈）。
+5. 到 [CS／TR 儀表板](/admin/cs-dashboard) 看 WAITING／上限 3／TR／風控計數。到 [CS／TR 日誌](/admin/cs-log) 看 CS_* 事件。這**不是**每日績效或風險日誌。  
+6. 簽核版本時過 [UAT-46](/admin/docs/uat)（三渠道）、[UAT-47](/admin/docs/uat)（等待迴圈）與 [UAT-51](/admin/docs/uat)（儀表板＋日誌）。
 
 ### 客服專員（`cs.agent@vantagemarkets.com`／`cs123`）
 
@@ -647,7 +650,7 @@ CS **不**啟動交易管制。TR **不**值班 C1。帳簿風險離開此台，
 | Chen Wei — MT5 EURUSD 滑點 | 表單 | `SKILL-TR-EXECUTION` | 已派 TR |
 | Priya Shah — 核對帳戶、無法出金 | 官方信箱 | `SKILL-CS-ID-VERIFY` | 身分驗證＋WAITING 核身包 |
 
-交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。UAT-46（三渠道＋`/cs`）、UAT-47（等待迴圈）、UAT-48（TR／風控）、UAT-50（技能＋樹）。
+交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。UAT-46（三渠道＋`/cs`）、UAT-47（等待迴圈）、UAT-48（TR／風控）、UAT-50（技能＋樹）、UAT-51（儀表板＋日誌）。
 
 ```mermaid
 graph TD
@@ -657,10 +660,38 @@ graph TD
   Portal[客戶入口 /cs] --> Intake
   Intake --> AI[AI 分流]
   AI -->|不清楚或需核身| Wait[自動寄信並等待]
-  Wait -->|客戶回覆 CSR 或 C1| AI
+  Wait -->|客戶以 CSR 或 C1 回覆| AI
   AI -->|交易| TR[TR 成交]
   AI -->|帳簿風險| Risk[升級風控]
   AI -->|清楚 CS| Done[CS 結案]
+```
+
+#### 9.3.7 CS／TR 儀表板 — `/admin/cs-dashboard`
+
+**這頁是什麼。** CS／TR 量看板。**不是**[每日績效](/admin/dashboard)（CFD／加密日終），也**不是**[風險日誌分析](/admin/risk-log)（已關閉 Monitor 工單）。
+
+**會看到什麼。** 總數、未結 vs 已結、WAITING 自動信、上限 3、TR／已派、已升級風控、身分驗證、待客戶、CS vs TR 台。依渠道、狀態、技能、台面、AI 清晰度長條。等待清單與最近更新請求。
+
+**要點什麼。** 點 `CSR-XXXX` 跳到台面。開 CS／TR 日誌看 CS_* 時間軸。本機 `GET /api/cs?view=dashboard` 回同一包。
+
+**怎樣算正常。** 種子收件匣：至少一列 WAITING（Sofia／Priya）、TR 桶（Chen Wei 滑點）、C1＋表單＋信箱渠道、SKILL-CS-*／SKILL-TR-* 長條。繁中標籤齊全。
+
+#### 9.3.8 CS／TR 日誌 — `/admin/cs-log`
+
+**這頁是什麼。** 這扇門的 CS_* 故事：進件、續辦、追問信、客戶回覆、專員回覆、指派 TR、升級風控、結案 — 加上已結案件包。通用[稽核日誌](/admin/audit)仍有 CRMP／Vantage 分頁；風險日誌仍放 Monitor 結案。
+
+**會看到什麼。** 每個 `CS_*` 動作篩選晶片、搜尋框（操作者／CSR-XXXX）、時間軸、已結包表。
+
+**要點什麼。** 篩 `CS_FOLLOWUP_EMAIL` 看等待迴圈。清楚 FAQ 結案後篩 `CS_RESOLVE`。從案件號開台面。
+
+**怎樣算正常。** 種子進件寫 `CS_INTAKE`（常伴隨 `CS_FOLLOWUP_EMAIL`）。結清一則 FAQ 會在**本頁**加 `CS_RESOLVE` 與一包，**不會**進風險日誌。
+
+```mermaid
+graph TD
+  Desk[CS TR 台] --> Dash[CS TR 儀表板]
+  Desk --> Log[CS TR 日誌]
+  Audit[CS 稽核] --> Log
+  Tickets[cs 請求] --> Dash
 ```
 
 
@@ -765,7 +796,7 @@ graph LR
 | 使用手冊 | `/admin/docs/user-guide` | 本手冊 |
 | PRD | `/admin/docs/prd` | 我們在做什麼、為什麼、怎麼算過關 |
 | TSD | `/admin/docs/tsd` | 怎麼做的（架構、API、資料模型） |
-| UAT 清單 | `/admin/docs/uat` | 互動式 50 案簽核（UAT-01 … UAT-50）：為什麼、步驟、通過、證據、畫面覆蓋。CS／TR：UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹 |
+| UAT 清單 | `/admin/docs/uat` | 互動式 51 案簽核（UAT-01 … UAT-51）：為什麼、步驟、通過、證據、畫面覆蓋。CS／TR：UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹、UAT-51 儀表板＋日誌 |
 | 生態導入評估 | `/admin/docs/ecosystem` | 真要導入的人力、預算帶、階段、風險 |
 | 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
 | 開放議題 | `/admin/docs/open-issues` | 計畫清單：ETA、負責 BU、依賴（暫定至 2027） |
@@ -806,6 +837,8 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
 | 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、控制 |
 | 應變 | CS／TR 台 | C1／表單／信箱經 `/cs`＋`/api/cs/intake`；CSR-XXXX 回覆關閉 WAITING；專用 SKILL.md 晶片；AI 追問直到回覆；TR／風控 |
+| 應變 | CS／TR 儀表板 | CS／TR 指標 — 不是每日績效 |
+| 應變 | CS／TR 日誌 | CS_* 時間軸＋已結包 — 不是風險日誌 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
 | 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 應變 | Lark 整合 | 頻道登錄 |
@@ -836,5 +869,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開網址 `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
 | 2.1 | 2026-10-06 | CS／TR 專用 SKILL.md 晶片；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 葉 |
 | 2.2 | 2026-10-06 | 手冊：公開 `/cs` 入口、三連接器、CSR-XXXX 進件對案、自動信件等待迴圈、CS／TR 日常角色、技能＋路徑 |
+| 2.3 | 2026-10-06 | §9.3.7 儀表板＋§9.3.8 日誌（不是每日績效／風險日誌） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

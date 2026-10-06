@@ -1211,6 +1211,7 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Website CS submission form": "網站客服提交表單",
   "Official support mailbox": "官方客服信箱",
   CS_INTAKE: "CS 進件",
+  CS_INTAKE_CONTINUE: "CS 進件續辦",
   CS_FOLLOWUP_EMAIL: "CS 追問信",
   CS_CLIENT_REPLY: "CS 客戶回覆",
   CS_AGENT_REPLY: "CS 專員回覆",
@@ -1395,8 +1396,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "GET 連接器目錄／案件狀態 · POST C1 即時聊天、網頁表單與官方信箱進件或續辦（request_id／in_reply_to／channel_ref／CSR-XXXX）— 工作階段、mock_webhook、portal 或標頭 x-cs-intake-token: demo-c1",
   "CRMP Plus CS client portal": "CRMP Plus CS 客戶入口",
   "CS client portal": "CS 客戶入口",
-  "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, C1/form/mailbox, auto-email wait loop, dedicated skills":
-    "操作手冊（英／繁中）— 左側每一頁加上 24/7 CS／TR：/cs 入口、C1／表單／信箱、自動信件等待迴圈、專用技能",
+  "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, desk, dashboard, log, auto-email wait loop, dedicated skills":
+    "操作手冊（英／繁中）— 左側每一頁加上 24/7 CS／TR：/cs 入口、台面、儀表板、日誌、自動信件等待迴圈、專用技能",
   "Permanent client door: C1 live chat, website form and official mailbox — same POST /api/cs/intake as the desk":
     "永久客戶大門：C1 即時聊天、網站表單與官方信箱 — 與台面同一 POST /api/cs/intake",
   "Public C1 live chat, website submission form and official email into POST /api/cs/intake; CSR-XXXX / channel_ref replies close the auto-email wait loop (max 3)":
@@ -1436,8 +1437,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "政策葉：CS 經 ESC-CS-RISK 與示範 Messenger 升級風控",
   "Index leaf: the five dedicated CS/TR SKILL.md codes and routes":
     "索引葉：五本專用 CS／TR SKILL.md 代碼與路徑",
-  "Control-plane overview, dummy spine, stats, CS/TR desk + client-portal shortcuts, expandable alert tracker, home spine with stage ticket counts (Spine Log tab removed)":
-    "控制面總覽、虛擬脊柱、統計、CS／TR 台＋客戶入口捷徑、可展開警報追蹤、首頁脊柱階段工單計數（已移除脊柱日誌分頁）",
+  "Control-plane overview, dummy spine, stats, CS/TR desk + dashboard + log + client-portal shortcuts, expandable alert tracker, home spine with stage ticket counts (Spine Log tab removed)":
+    "控制面總覽、虛擬脊柱、統計、CS／TR 台＋儀表板＋日誌＋客戶入口捷徑、可展開警報追蹤、首頁脊柱階段工單計數（已移除脊柱日誌分頁）",
   "CFD + Crypto domains with P0–P3 scenarios linked to Monitor 2.0 (M2-* chips); knowledge tree also maps CS_SERVICE / TRADING_EXEC":
     "CFD＋加密領域、P0–P3 情境掛 Monitor 2.0（M2-* 晶片）；知識樹亦對應 CS_SERVICE／TRADING_EXEC",
   "Internal + external evidence corpus (incl. cs-* / tr-* CS/TR policy leaves) — AI write blocked (human-gate: pages AI cannot edit escalate to human / propose_rag maker-checker)":
@@ -1458,16 +1459,16 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "內外部來源登錄 — 含 C1 即時聊天閘道、網站 CS 表單與官方客服信箱",
   "Two tabs — CRMP logs (alerts/AI/skills/escalation/interventions/messenger/CS_*) and Vantage Markets Admin logs; Roll back via before-state snapshot":
     "兩個分頁 — CRMP 日誌（警報／AI／技能／升級／介入／Messenger／CS_*）與 Vantage Markets 管理日誌；有變更前快照可回滾",
-  "Technical Specification Design (EN/ZH) — §17.5–17.10 schema, intake, wait loop, /cs portal, URL catalog, FR-37…43":
-    "技術規格設計（英／繁中）— §17.5–17.10 綱要、進件、等待迴圈、/cs 入口、網址目錄、FR-37…43",
-  "Product Requirements (EN/ZH) — G13 + FR-37…43: /cs portal, C1/form/mailbox, wait loop, dedicated skills, catalog":
-    "產品需求（英／繁中）— G13＋FR-37…43：/cs 入口、C1／表單／信箱、等待迴圈、專用技能、目錄",
-  "Risk Owner UAT pack — UAT-46…50 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault":
-    "風險負責人 UAT 包 — UAT-46…50 涵蓋 C1／表單／信箱、等待迴圈、專用技能、知識樹、核身庫",
-  "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, five skills, RAG leaves, intake API)":
-    "本頁 — 全部管理／API／資料表路徑，加上 CS／TR 區段（/cs、台面、五本技能、RAG 葉、進件 API）",
-  "GET inbox · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake":
-    "GET 收件匣 · POST 分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬 C1｜表單｜信件 — 操作動作；公開進件為 POST /api/cs/intake",
+  "Technical Specification Design (EN/ZH) — §17.5–17.11 schema, intake, wait loop, /cs portal, CS/TR dashboard + log, URL catalog, FR-37…44":
+    "技術規格設計（英／繁中）— §17.5–17.11 綱要、進件、等待迴圈、/cs 入口、CS／TR 儀表板＋日誌、網址目錄、FR-37…44",
+  "Product Requirements (EN/ZH) — G13 + FR-37…44: /cs portal, C1/form/mailbox, wait loop, dedicated skills, CS/TR dashboard + log, catalog":
+    "產品需求（英／繁中）— G13＋FR-37…44：/cs 入口、C1／表單／信箱、等待迴圈、專用技能、CS／TR 儀表板＋日誌、目錄",
+  "Risk Owner UAT pack — UAT-46…51 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault, CS/TR dashboard + log":
+    "風險負責人 UAT 包 — UAT-46…51 涵蓋 C1／表單／信箱、等待迴圈、專用技能、知識樹、核身庫、CS／TR 儀表板＋日誌",
+  "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, dashboard, log, five skills, RAG leaves, intake API)":
+    "本頁 — 全部管理／API／資料表路徑，加上 CS／TR 區段（/cs、台面、儀表板、日誌、五本技能、RAG 葉、進件 API）",
+  "GET inbox · GET ?view=dashboard|log · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake":
+    "GET 收件匣 · GET ?view=dashboard|log · POST 分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬 C1｜表單｜信件 — 操作動作；公開進件為 POST /api/cs/intake",
   "GET connector catalog · POST C1 live chat, web form and official-email ingest or continue (request_id / in_reply_to / channel_ref / CSR-XXXX) — session, mock_webhook, portal, or header x-cs-intake-token: demo-c1":
     "GET 連接器目錄 · POST C1 即時聊天、網頁表單與官方信箱進件或續辦（request_id／in_reply_to／channel_ref／CSR-XXXX）— 工作階段、mock_webhook、portal 或標頭 x-cs-intake-token: demo-c1",
   "CS intake ticket status": "CS 進件案件狀態",
@@ -1488,6 +1489,24 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "CRMP Plus CS / TR Desk": "CRMP Plus CS／TR 台",
   "CS / TR Desk": "CS／TR 台",
   "CS / TR Desk API": "CS／TR 台 API",
+  "CS / TR Dashboard": "CS／TR 儀表板",
+  "CS / TR Log": "CS／TR 日誌",
+  "CRMP Plus CS / TR Dashboard": "CRMP Plus CS／TR 儀表板",
+  "CRMP Plus CS / TR Log": "CRMP Plus CS／TR 日誌",
+  "CS / TR Dashboard API": "CS／TR 儀表板 API",
+  "CS / TR Log API": "CS／TR 日誌 API",
+  "Permanent CS/TR KPI dashboard on CRMP Plus — not Daily Performance":
+    "CRMP Plus 上永久 CS／TR 指標看板 — 不是每日績效",
+  "Permanent CS_* timeline and resolved packs on CRMP Plus — not Risk Log":
+    "CRMP Plus 上永久 CS_* 時間軸與已結包 — 不是風險日誌",
+  "Dedicated CS/TR KPIs — totals, open/resolved, WAITING cap-3, TR and Risk, by channel/status/skill/desk; not Daily Performance":
+    "專用 CS／TR 指標 — 總數、未結／已結、WAITING 上限 3、TR 與風控，依渠道／狀態／技能／台面；不是每日績效",
+  "Timeline of CS_* audit plus resolved request packs; not Risk Log Analytics":
+    "CS_* 稽核時間軸加上已結案件包；不是風險日誌分析",
+  "GET CS/TR KPI payload (totals, WAITING, channel/status/skill/desk) — same auth as desk; not Daily Performance":
+    "GET CS／TR 指標內容（總數、WAITING、渠道／狀態／技能／台面）— 與台面同一授權；不是每日績效",
+  "GET CS_* audit timeline plus resolved request packs — same auth as desk; not Risk Log":
+    "GET CS_* 稽核時間軸加上已結案件包 — 與台面同一授權；不是風險日誌",
   "CS intake webhook": "CS 進件 webhook",
 };
 
