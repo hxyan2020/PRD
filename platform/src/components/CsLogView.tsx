@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Headphones, LayoutDashboard, TableProperties } from "lucide-react";
 import { Badge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
-import { CS_AUDIT_ACTIONS, type CsLog } from "@/lib/cs/analytics";
+import { CS_AUDIT_ACTIONS, type CsLog } from "@/lib/cs/analytics-shared";
 import { phrase } from "@/lib/i18n";
 
 export function CsLogView({ data }: { data: CsLog }) {

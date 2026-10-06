@@ -6,10 +6,11 @@
   --ink: #0f1b2d;
   --muted: #5b6b7c;
   --line: #d7dee7;
-  --brand: #0b6e6a;
-  --brand-ink: #084f4c;
+  /* Vantage Markets logo orange (triangle in the official mark). */
+  --brand: #e45729;
+  --brand-ink: #a6381b;
   --vantage: #044855;
-  --accent: #c45c26;
+  --accent: #e45729;
   --sidebar: #10233a;
   --sidebar-ink: #d7e2ef;
   --safe-top: env(safe-area-inset-top, 0px);
@@ -24,6 +25,18 @@
   --color-foreground: var(--ink);
   --font-sans: var(--font-source);
   --font-display: var(--font-display);
+  /* Remap Tailwind teal utilities to the logo orange so existing teal-* brand classes follow the theme. */
+  --color-teal-50: #fef6f3;
+  --color-teal-100: #fde8e0;
+  --color-teal-200: #f9cbbd;
+  --color-teal-300: #f4a48d;
+  --color-teal-400: #ec7856;
+  --color-teal-500: #e45729;
+  --color-teal-600: #c9461f;
+  --color-teal-700: #a6381b;
+  --color-teal-800: #88301c;
+  --color-teal-900: #6f2a1c;
+  --color-teal-950: #3c140c;
 }
 
 * {
@@ -86,9 +99,9 @@ canvas {
 }
 .card-link:hover,
 .card-link:focus-visible {
-  border-color: #5eead4;
-  box-shadow: 0 10px 28px rgba(8, 79, 76, 0.08);
-  background: #f8fffe;
+  border-color: #f4a48d;
+  box-shadow: 0 10px 28px rgba(166, 56, 27, 0.08);
+  background: #fef6f3;
 }
 
 .badge {
@@ -142,7 +155,7 @@ table.data td {
 }
 
 table.data tr:hover td {
-  background: #f8fbfb;
+  background: #fef8f5;
 }
 
 .btn {
@@ -163,7 +176,7 @@ table.data tr:hover td {
 }
 
 .btn:hover {
-  background: #f3f7f7;
+  background: #fef6f3;
 }
 
 .btn:disabled {
@@ -332,9 +345,9 @@ body.nav-open {
   flex-direction: column;
 }
 .doc-flow-node {
-  background: #f0fdfa;
-  border: 1px solid #99f6e4;
-  color: #134e4a;
+  background: #fef6f3;
+  border: 1px solid #f4a48d;
+  color: #6f2a1c;
   border-radius: 12px;
   padding: 0.55rem 0.85rem;
   font-size: 0.85rem;
@@ -343,7 +356,7 @@ body.nav-open {
   text-align: center;
 }
 .doc-flow-arrow {
-  color: #0b6e6a;
+  color: #e45729;
   font-size: 1.1rem;
   font-weight: 700;
   padding: 0.2rem;
@@ -384,7 +397,7 @@ body.nav-open {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #0b6e6a;
+  background: #e45729;
   animation: think-pulse 1s ease-in-out infinite;
 }
 
@@ -406,7 +419,7 @@ body.nav-open {
   height: 0.9em;
   margin-left: 3px;
   vertical-align: text-bottom;
-  background: #0b6e6a;
+  background: #e45729;
   animation: think-pulse 0.7s step-end infinite;
 }
 
@@ -493,7 +506,7 @@ body.nav-open {
 }
 
 .poc-window-focus {
-  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.28);
+  box-shadow: 0 0 0 2px rgba(228, 87, 41, 0.28);
 }
 
 .poc-window-live {

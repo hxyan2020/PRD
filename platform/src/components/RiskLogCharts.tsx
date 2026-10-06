@@ -242,7 +242,7 @@ export function RiskLogCharts({ history }: { history: HistoryDay[] }) {
           history={history}
           formatY={(n) => String(Math.round(n))}
           series={[
-            { key: "alerts_raised", label: t("rl.alertsRaised"), color: "#0f766e", fill: "1" },
+            { key: "alerts_raised", label: t("rl.alertsRaised"), color: "#e45729", fill: "1" },
             { key: "breaches", label: t("rl.breaches"), color: "#c2410c" },
             { key: "open_eod", label: t("rl.openEod"), color: "#475569" },
           ]}
@@ -253,7 +253,7 @@ export function RiskLogCharts({ history }: { history: HistoryDay[] }) {
           history={history}
           formatY={usdCompact}
           series={[
-            { key: "prevented_usd", label: t("rl.prevented"), color: "#0f766e", fill: "1" },
+            { key: "prevented_usd", label: t("rl.prevented"), color: "#e45729", fill: "1" },
             { key: "loss_usd", label: t("rl.loss"), color: "#b91c1c" },
           ]}
         />
@@ -266,7 +266,7 @@ export function RiskLogCharts({ history }: { history: HistoryDay[] }) {
         formatY={(n) => `${Math.round(n)}m`}
         height={180}
         series={[
-          { key: "avg_ack_minutes", label: t("rl.avgAckTitle"), color: "#0f766e", fill: "1" },
+          { key: "avg_ack_minutes", label: t("rl.avgAckTitle"), color: "#e45729", fill: "1" },
           { key: "avg_resolve_minutes", label: t("rl.avgResTitle"), color: "#b45309" },
         ]}
       />

@@ -29,13 +29,13 @@ export function VantageLogo({
   inverted?: boolean;
 }) {
   const ink = inverted ? "#f4f7fb" : "#10233a";
-  const teal = inverted ? "#99f6e4" : "#0b6e6a";
+  const accent = inverted ? "#f4a48d" : "#e45729";
   return (
     <div className={`inline-flex items-center gap-2.5 min-w-0 ${className}`}>
       <VantageMark className={markClassName} />
       {showWordmark ? (
         <span className="leading-tight min-w-0">
-          <span className="block text-[10px] uppercase tracking-[0.14em]" style={{ color: teal }}>
+          <span className="block text-[10px] uppercase tracking-[0.14em]" style={{ color: accent }}>
             Vantage Markets
           </span>
           <span

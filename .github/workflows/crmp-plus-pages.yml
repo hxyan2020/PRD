@@ -2,7 +2,7 @@ name: Publish CRMP Plus to GitHub Pages
 
 on:
   push:
-    branches: [cursor/crmp-plus-a935, cursor/ai-use-manual-a935]
+    branches: [cursor/crmp-plus-a935, cursor/ai-use-manual-a935, cursor/vantage-orange-theme-a935]
     paths:
       - "platform/**"
       - ".github/workflows/crmp-plus-pages.yml"
@@ -39,7 +39,6 @@ jobs:
           cp -a platform/out/. publish/crmp-plus/
           touch publish/crmp-plus/.nojekyll
       - name: Build original CRMP Admin snapshot (Docs includes AI Use Manual)
-        if: github.ref == 'refs/heads/cursor/ai-use-manual-a935'
         working-directory: platform
         env:
           NEXT_PUBLIC_STATIC_EXPORT: "1"
@@ -48,7 +47,6 @@ jobs:
           rm -rf out
           npm run build:pages
       - name: Stage original CRMP Admin folder
-        if: github.ref == 'refs/heads/cursor/ai-use-manual-a935'
         run: |
           mkdir -p publish/crmp-admin
           cp -a platform/out/. publish/crmp-admin/

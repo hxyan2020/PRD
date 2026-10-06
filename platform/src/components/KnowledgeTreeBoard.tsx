@@ -25,7 +25,7 @@ type ViewMode = "map" | "outline";
 type Trunk = "domains" | "chains" | "rag";
 
 const DOMAIN_COLOR: Record<string, string> = {
-  CREDIT_CLIENT: "#0b6e6a",
+  CREDIT_CLIENT: "#e45729",
   LP_HEDGE: "#c45c26",
   MARKET_PRICING: "#1d4ed8",
   CRYPTO_EXCHANGE: "#6d28d9",
@@ -257,7 +257,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
             >
               <defs>
                 <linearGradient id="crmpHub" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stopColor="#0b6e6a" />
+                  <stop offset="0%" stopColor="#e45729" />
                   <stop offset="100%" stopColor="#10233a" />
                 </linearGradient>
                 <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -270,7 +270,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                   key={`r-${tr.id}`}
                   d={linkPath(root.x, root.y + 22, tr.x, tr.y - 22)}
                   fill="none"
-                  stroke={trunk === tr.id ? "#0b6e6a" : "#c5d0db"}
+                  stroke={trunk === tr.id ? "#e45729" : "#c5d0db"}
                   strokeWidth={trunk === tr.id ? 2.4 : 1.4}
                 />
               ))}
@@ -320,7 +320,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     key={`tr-${n.cat}`}
                     d={linkPath(900, 150, n.x, n.y - 18)}
                     fill="none"
-                    stroke={activeRagCat === n.cat ? "#0f766e" : "#d7dee7"}
+                    stroke={activeRagCat === n.cat ? "#c9461f" : "#d7dee7"}
                     strokeWidth={activeRagCat === n.cat ? 2 : 1.1}
                   />
                 ))}
@@ -337,7 +337,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                       n.y - 16
                     )}
                     fill="none"
-                    stroke={ragDocKey === n.doc.doc_key ? "#0f766e" : "#d7dee7"}
+                    stroke={ragDocKey === n.doc.doc_key ? "#c9461f" : "#d7dee7"}
                     strokeWidth={ragDocKey === n.doc.doc_key ? 2 : 1}
                   />
                 ))}
@@ -358,7 +358,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                   y={tr.y}
                   label={tr.label}
                   sub={`${tr.count}`}
-                  fill={trunk === tr.id ? "#0b6e6a" : "#10233a"}
+                  fill={trunk === tr.id ? "#e45729" : "#10233a"}
                   active={trunk === tr.id}
                   onClick={() => {
                     setTrunk(tr.id);
@@ -431,7 +431,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     y={n.y}
                     label={n.cat.replace(/_/g, " ")}
                     sub={`${n.count}`}
-                    fill={activeRagCat === n.cat ? "#0f766e" : "#0b6e6a"}
+                    fill={activeRagCat === n.cat ? "#c9461f" : "#e45729"}
                     compact
                     wide
                     active={activeRagCat === n.cat}
@@ -450,7 +450,7 @@ export function KnowledgeTreeBoard({ docs }: { docs: RagDoc[] }) {
                     y={n.y}
                     label={n.doc.title.length > 28 ? `${n.doc.title.slice(0, 27)}…` : n.doc.title}
                     sub={n.doc.doc_key}
-                    fill={ragDocKey === n.doc.doc_key ? "#047857" : "#115e59"}
+                    fill={ragDocKey === n.doc.doc_key ? "#a6381b" : "#88301c"}
                     compact
                     wide
                     active={ragDocKey === n.doc.doc_key}
@@ -581,7 +581,7 @@ function SkillNode({
       <text
         x={-w / 2 + 18}
         y={-6}
-        fill="#0b6e6a"
+        fill={accent}
         fontSize={11}
         fontWeight={700}
         onClick={(e) => {

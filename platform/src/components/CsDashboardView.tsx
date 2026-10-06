@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Headphones, ScrollText, TableProperties } from "lucide-react";
 import { Badge, StatCard, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
-import type { CsCountBucket, CsDashboard, CsDashRow } from "@/lib/cs/analytics";
+import type { CsCountBucket, CsDashboard, CsDashRow } from "@/lib/cs/analytics-shared";
 import type { CsOpsContract } from "@/lib/cs/ops-data";
 
 function BucketList({ rows, empty }: { rows: CsCountBucket[]; empty: string }) {

@@ -223,9 +223,9 @@ function flowchartToSvg(src: string): string {
   const nodeSvg = sized
     .map((n) => {
       const b = boxes.get(n.id)!;
-      const fill = n.shape === "diamond" ? "#fff7ed" : "#f0fdfa";
-      const stroke = n.shape === "diamond" ? "#fdba74" : "#5eead4";
-      const textFill = n.shape === "diamond" ? "#9a3412" : "#134e4a";
+      const fill = n.shape === "diamond" ? "#f8fafc" : "#fef6f3";
+      const stroke = n.shape === "diamond" ? "#94a3b8" : "#f4a48d";
+      const textFill = n.shape === "diamond" ? "#334155" : "#6f2a1c";
       let shapeEl: string;
       if (n.shape === "diamond") {
         const pts = `${b.cx},${b.y} ${b.x + b.w},${b.cy} ${b.cx},${b.y + b.h} ${b.x},${b.cy}`;
@@ -269,13 +269,13 @@ function flowchartToSvg(src: string): string {
         ? `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`
         : `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`;
       const label = e.label
-        ? `<text x="${mx}" y="${my - 4}" text-anchor="middle" font-size="10" fill="#0f766e">${xml(e.label)}</text>`
+        ? `<text x="${mx}" y="${my - 4}" text-anchor="middle" font-size="10" fill="#a6381b">${xml(e.label)}</text>`
         : "";
-      return `<path d="${d}" fill="none" stroke="#0b6e6a" stroke-width="1.4" marker-end="url(#${mid})"/>${label}`;
+      return `<path d="${d}" fill="none" stroke="#e45729" stroke-width="1.4" marker-end="url(#${mid})"/>${label}`;
     })
     .join("");
 
-  return `<div class="doc-diagram"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Flowchart"><defs><marker id="${mid}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0b6e6a"/></marker></defs>${edgeSvg}${nodeSvg}</svg></div>`;
+  return `<div class="doc-diagram"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Flowchart"><defs><marker id="${mid}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e45729"/></marker></defs>${edgeSvg}${nodeSvg}</svg></div>`;
 }
 
 type SeqMsg = { from: string; to: string; text: string; dashed: boolean };
@@ -333,10 +333,10 @@ function sequenceToSvg(src: string): string {
       const text = lines
         .map(
           (ln, i) =>
-            `<text x="${x}" y="${22 + i * 13}" text-anchor="middle" font-size="12" font-weight="700" fill="#134e4a">${xml(ln)}</text>`
+            `<text x="${x}" y="${22 + i * 13}" text-anchor="middle" font-size="12" font-weight="700" fill="#6f2a1c">${xml(ln)}</text>`
         )
         .join("");
-      return `<rect x="${x - 62}" y="6" width="124" height="${headH - 8}" rx="10" fill="#f0fdfa" stroke="#5eead4" stroke-width="1.5"/>${text}<line x1="${x}" y1="${headH}" x2="${x}" y2="${H - 12}" stroke="#99f6e4" stroke-width="1.5"/>`;
+      return `<rect x="${x - 62}" y="6" width="124" height="${headH - 8}" rx="10" fill="#fef6f3" stroke="#f4a48d" stroke-width="1.5"/>${text}<line x1="${x}" y1="${headH}" x2="${x}" y2="${H - 12}" stroke="#f9cbbd" stroke-width="1.5"/>`;
     })
     .join("");
   const body = messages
@@ -348,11 +348,11 @@ function sequenceToSvg(src: string): string {
       const right = Math.max(x1, x2);
       const dash = m.dashed ? ` stroke-dasharray="5 4"` : "";
       const dir = x2 >= x1 ? 1 : -1;
-      return `<line x1="${x1}" y1="${y}" x2="${x2 - 10 * dir}" y2="${y}" stroke="#0b6e6a" stroke-width="1.4"${dash} marker-end="url(#${mid})"/>
-        <text x="${(left + right) / 2}" y="${y - 8}" text-anchor="middle" font-size="11" fill="#134e4a">${xml(m.text)}</text>`;
+      return `<line x1="${x1}" y1="${y}" x2="${x2 - 10 * dir}" y2="${y}" stroke="#e45729" stroke-width="1.4"${dash} marker-end="url(#${mid})"/>
+        <text x="${(left + right) / 2}" y="${y - 8}" text-anchor="middle" font-size="11" fill="#6f2a1c">${xml(m.text)}</text>`;
     })
     .join("");
-  return `<div class="doc-diagram"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Sequence diagram"><defs><marker id="${mid}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#0b6e6a"/></marker></defs>${heads}${body}</svg></div>`;
+  return `<div class="doc-diagram"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Sequence diagram"><defs><marker id="${mid}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#e45729"/></marker></defs>${heads}${body}</svg></div>`;
 }
 
 export function mermaidToHtml(src: string): string {
