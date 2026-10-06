@@ -102,6 +102,30 @@ A[First] --> B[Second] --> C[Third]`,
     minEdges: 10,
     firstLabel: "C1／表單／官方信箱",
   },
+  {
+    name: "ug-wait-loop-en",
+    src: `graph TD
+  Thin[Unclear or need ID] --> Mail[Auto EMAIL_OUT]
+  Mail --> Wait[WAITING follow-up]
+  Wait -->|CSR or C1 reply| Again[AI re-triage]
+  Wait -->|cap 3| Lead[CS Lead human]
+  Again -->|still thin| Mail
+  Again -->|clear enough| Open[OPEN or ASSIGNED_TR]`,
+    minEdges: 5,
+    firstLabel: "Unclear or need ID",
+  },
+  {
+    name: "ug-wait-loop-zh",
+    src: `graph TD
+  Thin[不清楚或需核身] --> Mail[自動 EMAIL_OUT]
+  Mail --> Wait[WAITING 追問]
+  Wait -->|CSR 或 C1 回覆| Again[AI 重新分流]
+  Wait -->|上限 3| Lead[CS Lead 人工]
+  Again -->|仍過短| Mail
+  Again -->|夠清楚| Open[未結或已派 TR]`,
+    minEdges: 5,
+    firstLabel: "不清楚或需核身",
+  },
 ];
 
 function edgeCount(html: string) {
