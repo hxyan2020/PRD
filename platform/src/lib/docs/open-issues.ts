@@ -610,7 +610,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
       { en: "Keep UG / PRD / TSD / UAT / Roadmap / Ecosystem aligned after each nav ship", zh: "每次選單交付後對齊 UG／PRD／TSD／UAT／路線圖／生態" },
       { en: "Refresh Open Issues + Progress when statuses/ETAs change", zh: "狀態／ETA 變更時更新開放議題＋進度" },
       { en: "URL catalog lists public + admin paths with correct permissions", zh: "網址目錄列出公開＋管理路徑與正確權限" },
-      { en: "EN + zh-Hant parity for every docs page", zh: "每份文件頁 EN＋繁中對齊" },
+      { en: "EN + zh-Hant parity for every docs page", zh: "每份文件頁 EN＋繁中對齊", done: true },
     ],
   },
   {

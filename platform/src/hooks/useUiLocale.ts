@@ -16,6 +16,10 @@ export function useUiLocale() {
     setLocaleState(readLocaleCookie());
   }, []);
 
+  useEffect(() => {
+    document.documentElement.lang = locale === "zh-Hant" ? "zh-Hant" : "en";
+  }, [locale]);
+
   function setLocale(next: UiLocale) {
     document.cookie = `${UI_LOCALE_COOKIE}=${encodeURIComponent(next)}; path=/; max-age=31536000; samesite=lax`;
     setLocaleState(next);

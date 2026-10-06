@@ -2167,7 +2167,7 @@ export const UAT_CASES: UatCase[] = [
         "統計 High：最多兩項 WAIVE，每項附一句書面風險接受。",
         "確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）、CS／TR 專用技能與知識樹（UAT-50）、CS／TR 儀表板與日誌（UAT-51）、CS／TR 配套資料（UAT-52）、CS／TR 分析＋POC 閘道（UAT-53）通過。",
         "記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。",
-        "將證據包連結記入稽核備註／交给 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。",
+        "將證據包連結記入稽核備註／交給 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。",
       ],
       pass: "已簽署決策；Critical 100% Pass；High 豁免≤2。",
       evidence: "簽核註記（日期、風險負責人、豁免清單）。",

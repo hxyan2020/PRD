@@ -1568,6 +1568,36 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "GET CS_* audit timeline plus resolved request packs — same auth as desk; not Risk Log":
     "GET CS_* 稽核時間軸加上已結案件包 — 與台面同一授權；不是風險日誌",
   "CS intake webhook": "CS 進件 webhook",
+
+  "AI may email the client directly at or below this severity (LOW|MEDIUM|HIGH|CRITICAL)":
+    "AI 可於此嚴重度（含）以下直接寄信給客戶（LOW|MEDIUM|HIGH|CRITICAL）",
+  "Categories that always hold the AI draft for a named POC before send":
+    "寄出前一律把 AI 草稿交給具名 POC 的類別",
+  "Auto-email wait-loop cap; CS Lead human after this many mails":
+    "自動信件等待迴圈上限；達此封數後交 CS Lead 人工",
+  "SLA minutes while AWAITING_CLIENT on ESC-CS-24-7": "ESC-CS-24-7 上 AWAITING_CLIENT 的 SLA 分鐘",
+  "SLA minutes while ID_VERIFY on ESC-CS-KYC": "ESC-CS-KYC 上 ID_VERIFY 的 SLA 分鐘",
+  "SLA minutes for TR dealing on ESC-TR-DEAL": "ESC-TR-DEAL 上 TR 成交的 SLA 分鐘",
+  "SLA minutes after CS/TR book-risk escalate on ESC-CS-RISK":
+    "CS／TR 帳簿風險升級至 ESC-CS-RISK 後的 SLA 分鐘",
+  "Prototype webhook token for header x-cs-intake-token": "原型 webhook 權杖，用於標頭 x-cs-intake-token",
+  "From-address for official support auto-mail": "官方客服自動信的寄件地址",
+  "From-address for complaint-grade auto-mail": "投訴級自動信的寄件地址",
+  "Lark chat id for CS 24/7 Desk": "CS 24/7 台的 Lark 聊天 id",
+  "Lark chat id for CS KYC Vault": "CS 核身庫的 Lark 聊天 id",
+  "Lark chat id for TR Dealing Support": "TR 成交支援的 Lark 聊天 id",
+  "CS Agent → CS Lead": "客服專員 → 客服主管",
+  "CS Agent (KYC) → CS Lead": "客服專員（核身）→ 客服主管",
+  "TR Dealer → TR Lead": "交易員 → 交易主管",
+  "Prototype token x-cs-intake-token: demo-c1": "原型權杖 x-cs-intake-token: demo-c1",
+  "Same intake API as C1; channel=WEB_FORM": "與 C1 同一進件 API；channel=WEB_FORM",
+  "AI follow-up mail is sent from this mailbox until the client replies.":
+    "AI 追問信由此信箱寄出直到客戶回覆。",
+  "cs.mailbox_support parameter": "cs.mailbox_support 參數",
+  "cs.mailbox_complaints parameter": "cs.mailbox_complaints 參數",
+  "Process vault — UID last-four and status only.": "流程庫 — 僅 UID 後四碼與狀態。",
+  "TR Dealing Support owns reconstruct; Risk owns residual book risk.":
+    "TR 成交支援負責還原；風控負責剩餘帳簿風險。",
 };
 
 /** Longest-first English fragments rewritten inside mixed dummy / log strings. */

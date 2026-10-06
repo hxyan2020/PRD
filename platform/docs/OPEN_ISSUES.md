@@ -147,7 +147,7 @@ flowchart LR
 - [ ] Keep UG / PRD / TSD / UAT / Roadmap / Ecosystem aligned after each nav ship  
 - [ ] Refresh Open Issues + Progress when statuses/ETAs change  
 - [ ] URL catalog lists public + admin paths with correct permissions  
-- [ ] EN + zh-Hant parity for every docs page  
+- [x] EN + zh-Hant parity for every docs page  
 
 #### OI-18 — Multi-entity / brand tenancy readiness
 **BU:** Product · **Status:** Planned · **ETA:** 2027-Q4 → 2027-12 · **Depends:** OI-02; OI-06; Legal entity list

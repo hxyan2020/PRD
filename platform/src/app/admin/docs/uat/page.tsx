@@ -53,7 +53,7 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
               {zh ? "資料" : "Data"}
             </Link>
             <Link className="btn" href="/admin/messenger">
-              Messenger
+              {zh ? "示範 Messenger" : "Messenger"}
             </Link>
             <Link className="btn btn-primary" href="/admin/alerts">
               {zh ? "即時警報與追蹤" : "Realtime Alert & Tracker"}
@@ -69,10 +69,10 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
           <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v2.7</Badge>
           <OwnerBadge />
           <Badge className="bg-rose-50 text-rose-900 border-rose-200">
-            Critical × {summary.bySev.Critical}
+            {zh ? `危急 × ${summary.bySev.Critical}` : `Critical × ${summary.bySev.Critical}`}
           </Badge>
           <Badge className="bg-orange-50 text-orange-900 border-orange-200">
-            High × {summary.bySev.High}
+            {zh ? `高 × ${summary.bySev.High}` : `High × ${summary.bySev.High}`}
           </Badge>
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">
             {zh ? `CS／TR × ${csTr.total}` : `CS/TR × ${csTr.total}`}
