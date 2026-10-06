@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T15:00:00.000Z | PRD v2.3: G13 + FR-41…43; journeys 5.7–5.9; §6.5 CS/TR product contract (connectors, wait loop, skills, privacy, catalog); EN/zh-Hant |
 | 2026-10-06T14:00:00.000Z | URL Catalog: CS/TR section (/cs, desk, five SKILL.md, RAG leaves, intake GET/POST, cs_* tables), filter, bilingual cheat + UAT-25; EN/zh-Hant |
 | 2026-10-06T13:00:00.000Z | User handbook v2.2: /cs portal, three connectors, CSR-XXXX wait loop, CS/TR daily roles, dedicated skills + routes; EN/zh-Hant |
 | 2026-10-06T12:00:00.000Z | Public /cs portal (C1/form/mailbox) + intake ingestOrContinue (CSR-XXXX / channel_ref / In-Reply-To); GET catalog; FR-40; UAT-46/47; EN/zh-Hant |
