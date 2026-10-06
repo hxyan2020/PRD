@@ -1,4 +1,10 @@
 import type Database from "better-sqlite3";
+import {
+  ensureRiskLogHistory,
+  ensureRiskLogHistorySchema,
+  listRiskLogHistory,
+  riskLogHistoryTotals,
+} from "@/lib/ai/risk-log-history";
 
 // Avoid circular import with db.ts (which calls ensure/seed from this module).
 function db() {
@@ -22,6 +28,7 @@ export function ensureRiskLogSchema(db: Database.Database) {
       FOREIGN KEY (alert_id) REFERENCES monitor_alerts(id)
     );
   `);
+  ensureRiskLogHistorySchema(db);
 }
 
 function minutesBetween(start: string | null, end: string | null): number | null {
@@ -62,11 +69,13 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
 
   for (const a of openAlerts) {
     const t = timing[a.alert_id];
-    if (!t || a.acknowledged_at) continue;
+    if (!t) continue;
     const created = Date.parse(a.created_at.replace(" ", "T") + "Z");
     if (Number.isNaN(created)) continue;
-    const ackAt = new Date(created + t.ackMin * 60000).toISOString().slice(0, 19).replace("T", " ");
-    ack.run(ackAt, t.by, a.id);
+    if (!a.acknowledged_at) {
+      const ackAt = new Date(created + t.ackMin * 60000).toISOString().slice(0, 19).replace("T", " ");
+      ack.run(ackAt, t.by, a.id);
+    }
     if (t.resolveMin != null) {
       const resAt = new Date(created + t.resolveMin * 60000).toISOString().slice(0, 19).replace("T", " ");
       resolveTicket.run("RESOLVED", resAt, resAt, a.id);
@@ -77,6 +86,7 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
   if (impactCount > 0) {
     // Still attach impacts for any new alerts missing them
     backfillImpactsForMissing(db);
+    seedClosedActionLogs(db);
     return;
   }
 
@@ -146,6 +156,124 @@ export function seedRiskLogIfEmpty(db: Database.Database) {
   }
 
   backfillImpactsForMissing(db);
+  seedClosedActionLogs(db);
+}
+
+function offsetFrom(base: string, minutes: number) {
+  const t = Date.parse(base.replace(" ", "T") + "Z");
+  if (!Number.isFinite(t)) return base;
+  return new Date(t + minutes * 60000).toISOString().slice(0, 19).replace("T", " ");
+}
+
+/** Idempotent AI + BU action trail so closed risk-log cards have the same depth as realtime tracker packs. */
+function seedClosedActionLogs(db: Database.Database) {
+  const resolved = db
+    .prepare(
+      `SELECT a.id, a.alert_id, a.created_at, a.acknowledged_at, t.ticket_id, t.resolved_at,
+              t.department_code, t.assignee_user_id, u.name AS assignee_name, u.role_code AS assignee_role,
+              tm.name AS team_name, imp.notes AS impact_notes
+       FROM monitor_tickets t
+       JOIN monitor_alerts a ON a.id = t.alert_id
+       LEFT JOIN users u ON u.id = t.assignee_user_id
+       LEFT JOIN teams tm ON tm.id = u.team_id
+       LEFT JOIN alert_impacts imp ON imp.alert_id = a.id
+       WHERE t.status IN ('RESOLVED','CLOSED')`
+    )
+    .all() as Array<{
+    id: number;
+    alert_id: string;
+    created_at: string;
+    acknowledged_at: string | null;
+    ticket_id: string;
+    resolved_at: string | null;
+    department_code: string | null;
+    assignee_user_id: number | null;
+    assignee_name: string | null;
+    assignee_role: string | null;
+    team_name: string | null;
+    impact_notes: string | null;
+  }>;
+
+  const exists = db.prepare(`SELECT 1 AS ok FROM audit_logs WHERE action = 'CLOSE_TICKET' AND entity_id = ? LIMIT 1`);
+  const ins = db.prepare(
+    `INSERT INTO audit_logs (actor_user_id, actor_name, action, entity_type, entity_id, details_json, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`
+  );
+  const ro = db
+    .prepare(`SELECT id, name FROM users WHERE role_code = 'RISK_OWNER' AND status = 'ACTIVE' ORDER BY id LIMIT 1`)
+    .get() as { id: number; name: string } | undefined;
+
+  for (const row of resolved) {
+    if (exists.get(row.alert_id)) continue;
+    const ackAt = row.acknowledged_at || offsetFrom(row.created_at, 12);
+    const closeAt = row.resolved_at || offsetFrom(row.created_at, 90);
+    const rcaAt = offsetFrom(row.created_at, 20);
+    const buAt = offsetFrom(row.created_at, 45);
+    const poc = row.assignee_name || "Business unit POC";
+    const dept = row.department_code || row.team_name || "RISK_CONTROL";
+    const solution =
+      row.impact_notes ||
+      `${poc} mandated the desk control for ${row.alert_id} and closed ${row.ticket_id}.`;
+
+    ins.run(
+      5,
+      "AI RCA",
+      "AI_RCA_PUBLISHED",
+      "ai_analysis",
+      row.alert_id,
+      JSON.stringify({
+        note: `Root-cause pack published for ${row.ticket_id}. Recommended control sent to ${dept}.`,
+        department: "AI",
+      }),
+      rcaAt
+    );
+    ins.run(
+      row.assignee_user_id,
+      poc,
+      "BU_ACTION",
+      "monitor_ticket",
+      row.ticket_id,
+      JSON.stringify({
+        note: `${dept} executed the recommended control and logged the handling trail.`,
+        department: dept,
+      }),
+      buAt
+    );
+    if (row.acknowledged_at) {
+      ins.run(
+        row.assignee_user_id,
+        poc,
+        "ACK_ALERT",
+        "monitor_alert",
+        row.alert_id,
+        JSON.stringify({ note: `${poc} acknowledged the alarm on the desk.`, department: dept }),
+        ackAt
+      );
+    }
+    ins.run(
+      row.assignee_user_id,
+      poc,
+      "CLOSE_TICKET",
+      "monitor_alert",
+      row.alert_id,
+      JSON.stringify({ note: `Ticket ${row.ticket_id} closed.`, ticket: row.ticket_id, department: dept }),
+      closeAt
+    );
+    ins.run(
+      ro?.id ?? row.assignee_user_id,
+      ro?.name || poc,
+      "MANDATE_SOLUTION",
+      "monitor_alert",
+      row.alert_id,
+      JSON.stringify({
+        notes: solution,
+        mandated_by: `${ro?.name || poc} / ${poc}`,
+        department: dept,
+        note: solution,
+      }),
+      closeAt
+    );
+  }
 }
 
 function backfillImpactsForMissing(db: Database.Database) {
@@ -206,6 +334,7 @@ export function getRiskLogDashboard() {
   const database = db();
   ensureRiskLogSchema(database);
   seedRiskLogIfEmpty(database);
+  ensureRiskLogHistory(database);
 
   const byCategory = database
     .prepare(
@@ -385,6 +514,9 @@ export function getRiskLogDashboard() {
     )
     .all();
 
+  const history = listRiskLogHistory(database);
+  const history_totals = riskLogHistoryTotals(history);
+
   return {
     summary: {
       alerts_total: (
@@ -404,6 +536,8 @@ export function getRiskLogDashboard() {
     loopholes,
     records,
     timeline,
+    history,
+    history_totals,
   };
 }
 

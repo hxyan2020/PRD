@@ -10,8 +10,20 @@ import {
   seedMarketIntel,
 } from "@/lib/market-intel/scanner";
 import { getDb } from "@/lib/db";
+import { readSearchParams } from "@/lib/static-export";
 
-export default async function MarketIntelPage() {
+type MiTab = "findings" | "messenger" | "sources" | "scans";
+
+function asMiTab(v: string | undefined): MiTab | undefined {
+  if (v === "findings" || v === "messenger" || v === "sources" || v === "scans") return v;
+  return undefined;
+}
+
+export default async function MarketIntelPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ lang?: string; tab?: string }>;
+}) {
   const user = await getCurrentUser();
   if (
     !user ||
@@ -23,6 +35,9 @@ export default async function MarketIntelPage() {
   ) {
     redirect("/admin");
   }
+
+  const sp = await readSearchParams(searchParams);
+  const initialTab = asMiTab(sp.tab);
 
   seedMarketIntel();
   const settings = getDb()
@@ -36,6 +51,7 @@ export default async function MarketIntelPage() {
     <div>
       <AdminPageHeader pageKey="market-intel" />
       <MarketIntelBoard
+        initialTab={initialTab}
         initial={{
           findings: listMarketIntelFindings(80) as React.ComponentProps<typeof MarketIntelBoard>["initial"]["findings"],
           scans: listMarketIntelScans(40) as React.ComponentProps<typeof MarketIntelBoard>["initial"]["scans"],

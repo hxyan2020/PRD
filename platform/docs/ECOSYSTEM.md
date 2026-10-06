@@ -1,12 +1,14 @@
 # Vantage Ecosystem Adoption Evaluation
 
-**Document ID:** CRMP-ECO-001 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
+**Document ID:** CRMP-ECO-001 · **Version:** 1.8 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
 
 ## 1. Executive view
 
 The CRMP demo already proves an end-to-end spine:
 
-**Monitor 2.0 alarm → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit/spine.**
+**Monitor 2.0 alarm → Realtime Alert & Tracker → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit (CRMP / Vantage Markets Admin plane split + Roll back) + home spine stage counts.**
+
+Programme gaps and tentative ETAs live in [Open Issues](/admin/docs/open-issues) and [Progress Tracker](/admin/docs/progress) (Monitor still adding indicators; CRMP initial design; tech/resource plan open). Platform owner: demo platform owner / `haixiang.yan@hytechc.com`.
 
 Fully implementing this into the **existing Vantage Markets ecosystem** is not a rewrite of trading platforms. It is a **control-plane product** that must plug into identity, Monitor 2.0, Lark, LP/bridge controls, and admin dual-control — with shadow mode first and write paths last.
 
@@ -26,12 +28,12 @@ Fully implementing this into the **existing Vantage Markets ecosystem** is not a
 | # | Foundation | Why it is required | Current prototype | Target maturity |
 |---|---|---|---|---|
 | F1 | **SSO / IdP + SCIM** (Okta / Azure AD) | Join corporate directories; kill shared demo passwords; enable SoD | Local email/password users | Production |
-| F2 | **Monitor 2.0 bidirectional API** | Live alarm ingest + ticket ack/close write-back | Seeded SQLite + simulate alarms | Production |
+| F2 | **Monitor 2.0 bidirectional API** | Live alarm ingest into Realtime Alert & Tracker + ticket ack/close write-back | Seeded SQLite Monitor registry + open queue on `/admin/alerts`; local simulate/sync only (no live Monitor HTTP) | Production |
 | F3 | **LP / bridge / trading control bus** | Real halt, leverage cut, widen, pause-copy, block account | Deep-links + mock admin refs | Production + dual-control |
 | F4 | **Lark (or Teams) interactive app** | Replace demo messenger; card actions → CRMP APIs | In-app Demo Messenger + outbox mock | Production |
 | F5 | **Secrets vault + env isolation** | Webhooks, model keys, DB, LP credentials | Env/local files | Production |
 | F6 | **Managed DB + HA deploy** | Multi-instance, backups, DR | SQLite single file | Postgres + HA |
-| F7 | **Observability** (metrics/traces/logs) | Spine SLOs, AI latency, false-alarm rate, cost | Console + spine table | Production APM |
+| F7 | **Observability** (metrics/traces/logs) | Spine SLOs, AI latency, false-alarm rate, cost | Console + home spine stage counts | Production APM |
 | F8 | **Data residency & retention** | Evidence vault may hold client identifiers | No formal retention | Legal policy + jobs |
 | F9 | **IAM maker ≠ checker** | AI Admin + irreversible interventions | App-level maker/checker | IAM + app |
 | F10 | **AI access blocklist enforcement** | Human-only pages/functions/fields stay human-only | Documented blocklist UI | Runtime enforcement on AI principals |
@@ -40,10 +42,10 @@ Fully implementing this into the **existing Vantage Markets ecosystem** is not a
 
 ### Integration map (target)
 
-1. Monitor 2.0 → CRMP (alarms) → dual-AI pack  
+1. Monitor 2.0 → CRMP Realtime Alert & Tracker (`/admin/alerts`) → dual-AI pack  
 2. CRMP → Lark cards (notify + inline actions)  
 3. Human confirm → Vantage admin / control bus (maker) → Checker approve  
-4. Status write-back → Monitor ticket + Audit + Spine  
+4. Status write-back → Monitor ticket + Audit (CRMP / Vantage Markets Admin) + home spine stage counts  
 
 ---
 
@@ -72,7 +74,7 @@ Fully implementing this into the **existing Vantage Markets ecosystem** is not a
 | Phase | Scope | Band | Notes |
 |---|---|---|---|
 | **A — Harden prototype** | SSO spike or staging auth, hosting, audit export, UAT facilitation, basic observability | **$80k – $150k** | Make demo deployable & reviewable |
-| **B — Ecosystem connect (read path)** | Monitor API, Lark interactive cards, read-only LP/inventory feeds, Postgres migration | **$250k – $450k** | Notify-only; no auto-trade |
+| **B — Ecosystem connect (read path)** | Monitor API → Realtime Alert stream, Lark interactive cards, read-only LP/inventory feeds, Postgres migration | **$250k – $450k** | Notify-only; no auto-trade |
 | **C — Supervised write path** | Dual-control adapters (block/halt/leverage/widen/pause-copy), DR, kill-switches | **$400k – $700k** | Highest risk; gated go-live |
 | **D — Model ops (annual)** | Eval harness, challenger diversity, drift/cost monitors, feed licences | **$150k – $300k / yr** | Run-rate after B/C |
 
@@ -96,7 +98,7 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 - UAT pack baseline with Risk Owner  
 
 ### Phase B — Read-path production
-- Live Monitor alarms into CRMP  
+- Live Monitor alarms into **Realtime Alert & Tracker**  
 - Dual-AI RCA (primary + **independent challenger**) on BREACH/CRITICAL  
 - Lark notify + “open in admin” (actions may still deep-link)  
 - Shadow dashboard: AI suggests, humans act outside write bus  
@@ -104,7 +106,7 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 ### Phase C — Supervised write path
 - Maker confirm in messenger/admin → control bus  
 - Checker approval for irreversible controls  
-- Ticket write-back + full audit/spine  
+- Ticket write-back + full audit (CRMP / Vantage Markets Admin planes) / home spine  
 - Kill-switch drills  
 
 ### Phase D — Optimisation
@@ -124,11 +126,12 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 | Data | SQLite single-node file | No HA / weak concurrent write |
 | Messenger | In-app demo; Lark delivery mocked | Operators won’t live in CRMP-only chat long-term |
 | Controls | Admin refs / deep-links, not real trading bus | Cannot rely on for true risk containment |
+| Monitor | Seeded registry + local sync; Detectors merged into Monitor 2.0 UI; open queue is Realtime Alert & Tracker | Live desk would diverge without bidirectional API |
 | Identity | Demo passwords | Failed SoD / audit |
 | Tenancy | Limited multi-brand / entity isolation | Blocks group-wide rollout |
 | Intel | Synthetic/heuristic market scan | Needs licensed sources + scoring |
 | Enforcement | AI blocklist is largely documentary in UI | Must bind to AI service principals |
-| Mobile | Improved, still not native-app grade | OK for web responsive ops |
+| Mobile | Responsive card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit; confirm sheets still desktop-first | OK for web responsive ops, not native-app grade |
 
 ---
 
@@ -157,4 +160,15 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 - [ ] Security sign-off on AI blocklist + SoD model  
 - [ ] Legal sign-off on evidence retention  
 
-**Demo links:** this page · [URL Catalog](/admin/docs/urls) · [UAT Checklist](/admin/docs/uat) · [Improvement Roadmap](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
+**Demo links:** this page · [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress) · [URL Catalog](/admin/docs/urls) · [UAT Checklist](/admin/docs/uat) · [Improvement Roadmap](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
+
+---
+
+## 9. Document control
+
+| Ver | Date | Notes |
+|---|---|---|
+| 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin + Roll back; home spine; Open Issues / Progress links |
+| 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; F2/Phase B/Monitor shortcoming; mobile card lists; demo links |
+
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -7,6 +7,7 @@ import {
   MARKET_INTEL_SOURCES,
   type ScrapedCandidate,
 } from "@/lib/market-intel/sources";
+import { DEMO_SOURCE_HEALTH } from "@/lib/market-intel/source-brand";
 import { createAlarmAndAnalyze } from "@/lib/ai/analyze";
 import { logSpineEvent } from "@/lib/ai/spine";
 
@@ -36,8 +37,9 @@ export function seedMarketIntel(db = getDb()) {
   ensureMarketIntelSchema(db);
 
   const upsertSrc = db.prepare(
-    `INSERT INTO market_intel_sources (source_key, name, channel_type, asset_classes_json, url, enabled)
-     VALUES (?, ?, ?, ?, ?, 1)
+    `INSERT INTO market_intel_sources
+       (source_key, name, channel_type, asset_classes_json, url, enabled, health_status, health_detail)
+     VALUES (?, ?, ?, ?, ?, 1, ?, ?)
      ON CONFLICT(source_key) DO UPDATE SET
        name = excluded.name,
        channel_type = excluded.channel_type,
@@ -45,8 +47,33 @@ export function seedMarketIntel(db = getDb()) {
        url = excluded.url`
   );
   for (const s of MARKET_INTEL_SOURCES) {
-    upsertSrc.run(s.source_key, s.name, s.channel_type, JSON.stringify(s.asset_classes), s.url);
+    const demo = DEMO_SOURCE_HEALTH[s.source_key];
+    upsertSrc.run(
+      s.source_key,
+      s.name,
+      s.channel_type,
+      JSON.stringify(s.asset_classes),
+      s.url,
+      demo?.status ?? "HEALTHY",
+      demo?.detail ?? "Catalog seed — awaiting next scrape"
+    );
   }
+  // Apply demo health only when still UNKNOWN / catalog-seeded (never overwrite live scrape health).
+  for (const [key, demo] of Object.entries(DEMO_SOURCE_HEALTH)) {
+    db.prepare(
+      `UPDATE market_intel_sources
+       SET health_status = ?, health_detail = ?
+       WHERE source_key = ?
+         AND (health_status = 'UNKNOWN' OR health_detail LIKE 'Catalog seed%')`
+    ).run(demo.status, demo.detail, key);
+  }
+  // Existing rows with a recent scrape but no health yet → HEALTHY.
+  db.prepare(
+    `UPDATE market_intel_sources
+     SET health_status = 'HEALTHY',
+         health_detail = COALESCE(NULLIF(health_detail, ''), 'Last scrape OK')
+     WHERE health_status = 'UNKNOWN' AND last_scraped_at IS NOT NULL`
+  ).run();
 
   // Dedicated Lark / messenger group
   const existing = db
@@ -78,6 +105,76 @@ export function seedMarketIntel(db = getDb()) {
     "true",
     "When high-impact findings arrive, update M2-MKT-INTEL and raise alarm"
   );
+
+  seedDemoFindingsIfEmpty(db);
+}
+
+/** Bake a few findings into SSG / first load so Scan is not an empty 0-count desk. */
+export function seedDemoFindingsIfEmpty(db = getDb()) {
+  const count = db.prepare(`SELECT COUNT(*) AS c FROM market_intel_findings`).get() as { c: number };
+  if (count.c > 0) return;
+
+  const ts = new Date().toISOString();
+  const insertFinding = db.prepare(
+    `INSERT INTO market_intel_findings
+     (finding_id, event_title, event_summary, geography, severity, products_json, directions_json,
+      sources_json, asset_classes_json, fingerprint, scanned_at, pushed_to_lark, lark_message_id, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 'PUSHED')`
+  );
+  const insertOutbox = db.prepare(
+    `INSERT INTO market_intel_lark_outbox (finding_id, channel_chat_id, formatted_message, delivered, mock, delivered_at)
+     VALUES (?, ?, ?, 1, 1, datetime('now'))`
+  );
+  const insertScan = db.prepare(
+    `INSERT INTO market_intel_scans
+     (scan_id, started_at, finished_at, sources_checked, findings_new, findings_pushed, high_impact_count, status, trigger_mode, detail_json)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 'COMPLETED', 'SEED', ?)`
+  );
+
+  const picked = EVENT_TEMPLATES.slice(0, 3);
+  let high = 0;
+  for (const c of picked) {
+    const findingId = newId("MIF");
+    const fp = fingerprint(c.fingerprint_seed, `seed|${c.event_title}`);
+    if (c.severity === "WARN" || c.severity === "BREACH" || c.severity === "CRITICAL") high += 1;
+    const message = formatMarketIntelMessage({
+      finding_id: findingId,
+      event_title: c.event_title,
+      event_summary: c.event_summary,
+      geography: c.geography,
+      severity: c.severity,
+      products: c.products,
+      timestamp: ts,
+      sources: c.source_urls,
+    });
+    insertFinding.run(
+      findingId,
+      c.event_title,
+      c.event_summary,
+      c.geography,
+      c.severity,
+      JSON.stringify(c.products),
+      JSON.stringify(c.products.map((p) => ({ product: p.product, direction: p.direction }))),
+      JSON.stringify(c.source_urls),
+      JSON.stringify(c.asset_classes),
+      fp,
+      ts,
+      `om_mi_${findingId.toLowerCase()}`
+    );
+    insertOutbox.run(findingId, LARK_CHAT_ID, message);
+  }
+  insertScan.run(
+    newId("MIS"),
+    ts,
+    ts,
+    MARKET_INTEL_SOURCES.length,
+    picked.length,
+    picked.length,
+    high,
+    JSON.stringify({ seed: true })
+  );
+
+  db.prepare(`UPDATE market_intel_sources SET last_scraped_at = datetime('now')`).run();
 }
 
 /** Prototype scrape: try lightweight HTTP HEAD/GET on a few sources; always enrich with templates. */
@@ -102,11 +199,33 @@ async function scrapeCandidates(): Promise<{ checked: number; candidates: Scrape
         if (res && (res.ok || res.status < 500)) {
           liveHints.push(src.source_key);
           getDb()
-            .prepare(`UPDATE market_intel_sources SET last_scraped_at = datetime('now') WHERE source_key = ?`)
-            .run(src.source_key);
+            .prepare(
+              `UPDATE market_intel_sources
+               SET last_scraped_at = datetime('now'),
+                   health_status = 'HEALTHY',
+                   health_detail = ?
+               WHERE source_key = ?`
+            )
+            .run(`HTTP ${res.status} OK`, src.source_key);
+        } else {
+          getDb()
+            .prepare(
+              `UPDATE market_intel_sources
+               SET health_status = 'DOWN',
+                   health_detail = ?
+               WHERE source_key = ?`
+            )
+            .run(res ? `HTTP ${res.status}` : "Network unreachable", src.source_key);
         }
       } catch {
-        /* prototype: ignore network failures */
+        getDb()
+          .prepare(
+            `UPDATE market_intel_sources
+             SET health_status = 'DOWN',
+                 health_detail = 'Fetch aborted / error'
+             WHERE source_key = ?`
+          )
+          .run(src.source_key);
       }
     })
   );
@@ -160,7 +279,8 @@ function pushToLark(findingId: string, message: string) {
       mock: true,
       lark_message_id: msgId,
       message_preview: message.slice(0, 240),
-    }
+    },
+    { plane: "vantage" }
   );
 
   return msgId;
@@ -178,10 +298,18 @@ function updateIndicatorAndMaybeAlarm(highImpactCount: number, topFindingTitle: 
   const ind = db
     .prepare(`SELECT * FROM monitor_indicators WHERE monitor_id = ?`)
     .get(INDICATOR_ID) as
-    | { id: number; threshold_warn: number; threshold_breach: number; name: string }
+    | {
+        id: number;
+        threshold_warn: number;
+        threshold_breach: number;
+        name: string;
+        paused?: number;
+      }
     | undefined;
 
   if (!ind) return;
+  // Paused indicators must not raise alarms or enter AI analysis.
+  if (ind.paused) return;
 
   let status: "HEALTHY" | "WARN" | "BREACH" = "HEALTHY";
   if (highImpactCount >= ind.threshold_breach) status = "BREACH";
@@ -238,7 +366,8 @@ export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"
      VALUES (?, ?, 'RUNNING', ?)`
   ).run(scanId, started, opts.trigger || "SCHEDULE");
 
-  const { checked, candidates } = await scrapeCandidates();
+  try {
+    const { checked, candidates } = await scrapeCandidates();
   let findingsNew = 0;
   let findingsPushed = 0;
   let highImpact = 0;
@@ -308,7 +437,11 @@ export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"
     .get() as { c: number; top_title: string | null };
   const indicatorHits = windowHit.c || highImpact;
   const indicatorTitle = windowHit.top_title || topTitle || "n/a";
-  updateIndicatorAndMaybeAlarm(indicatorHits, indicatorTitle);
+  try {
+    updateIndicatorAndMaybeAlarm(indicatorHits, indicatorTitle);
+  } catch (alarmErr) {
+    console.error("[market-intel] indicator/alarm update failed", alarmErr);
+  }
 
   logSpineEvent({
     stage: "DETECT",
@@ -343,14 +476,28 @@ export async function runMarketIntelScan(opts: { trigger?: "SCHEDULE" | "MANUAL"
     { checked, findingsNew, findingsPushed, highImpact, trigger: opts.trigger || "SCHEDULE" }
   );
 
-  return {
-    ok: true,
-    scan_id: scanId,
-    sources_checked: checked,
-    findings_new: findingsNew,
-    findings_pushed: findingsPushed,
-    high_impact_count: indicatorHits,
-  };
+    return {
+      ok: true,
+      scan_id: scanId,
+      sources_checked: checked,
+      findings_new: findingsNew,
+      findings_pushed: findingsPushed,
+      high_impact_count: indicatorHits,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[market-intel] scan failed", error);
+    try {
+      db.prepare(
+        `UPDATE market_intel_scans
+         SET finished_at = datetime('now'), status = 'FAILED', detail_json = ?
+         WHERE scan_id = ?`
+      ).run(JSON.stringify({ error: message }), scanId);
+    } catch {
+      /* ignore */
+    }
+    return { ok: false, scan_id: scanId, error: message };
+  }
 }
 
 export function startMarketIntelScheduler() {

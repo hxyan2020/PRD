@@ -26,7 +26,7 @@ export async function decideInterventionAction(formData: FormData) {
       actor: { id: user.id, name: user.name },
     });
     revalidatePath("/admin/interventions");
-    return { ok: true as const, ...result };
+    return { ...result, ok: true as const };
   } catch (e) {
     return { ok: false as const, error: (e as Error).message };
   }

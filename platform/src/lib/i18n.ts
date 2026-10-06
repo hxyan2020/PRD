@@ -1,3 +1,6 @@
+import { EXTRA_UI, PHRASES_ZH, STAGE_LABELS, STATUS_LABELS } from "@/lib/i18n-extra";
+import { DUMMY_PHRASE_FRAGMENTS } from "@/lib/i18n-phrases";
+
 export type UiLocale = "en" | "zh-Hant";
 
 export const UI_LOCALE_COOKIE = "crmp_ui_lang";
@@ -10,13 +13,14 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/risk-log": { en: "Risk Log Analytics", "zh-Hant": "風險日誌分析" },
   "/admin/market-intel": { en: "Market Intelligence", "zh-Hant": "市場情報" },
   "/admin/detectors": { en: "Detectors", "zh-Hant": "偵測器" },
-  "/admin/alerts": { en: "Live Alerts", "zh-Hant": "即時警報" },
-  "/admin/ai-analyses": { en: "AI Analyses", "zh-Hant": "AI 分析" },
+  "/admin/alerts": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
+  "/admin/ai-analyses": { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
   "/admin/ai-admin": { en: "AI Admin", "zh-Hant": "AI 管理" },
   "/admin/interventions": { en: "Human Intervention", "zh-Hant": "人工干預" },
-  "/admin/spine": { en: "Spine Log", "zh-Hant": "脊柱日誌" },
+  "/admin/spine": { en: "Spine (redirect)", "zh-Hant": "脊柱（轉址）" },
   "/admin/rag": { en: "RAG Knowledge Base", "zh-Hant": "RAG 知識庫" },
   "/admin/skills": { en: "AI Skills", "zh-Hant": "AI 技能" },
+  "/admin/knowledge-tree": { en: "Knowledge Tree", "zh-Hant": "知識樹" },
   "/admin/docs/tsd": { en: "TSD", "zh-Hant": "技術規格 TSD" },
   "/admin/docs/prd": { en: "PRD", "zh-Hant": "產品需求 PRD" },
   "/admin/docs/user-guide": { en: "User Guide", "zh-Hant": "使用手冊" },
@@ -24,10 +28,12 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/ecosystem": { en: "Ecosystem Eval", "zh-Hant": "生態導入評估" },
   "/admin/docs/roadmap": { en: "Improvement Roadmap", "zh-Hant": "改進路線圖" },
   "/admin/docs/urls": { en: "URL Catalog", "zh-Hant": "網址目錄" },
+  "/admin/docs/open-issues": { en: "Open Issues", "zh-Hant": "開放議題" },
+  "/admin/docs/progress": { en: "Progress Tracker", "zh-Hant": "進度追蹤" },
   "/admin/messenger": { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
   "/admin/security/ai-access": { en: "AI Access Security", "zh-Hant": "AI 存取安全" },
-  "/admin/departments": { en: "Departments", "zh-Hant": "部門" },
-  "/admin/teams": { en: "Teams", "zh-Hant": "團隊" },
+  "/admin/departments": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
+  "/admin/teams": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
   "/admin/roles": { en: "Roles & Permissions", "zh-Hant": "角色與權限" },
   "/admin/users": { en: "Users", "zh-Hant": "使用者" },
   "/admin/risk-domains": { en: "Risk Domains", "zh-Hant": "風險領域" },
@@ -46,92 +52,106 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "管理儀表板",
     },
     subtitle: {
-      en: "Control plane for roles, teams, data sources, Monitor 2.0 linkage and Lark escalation — foundation for the semi-automated CRMP.",
-      "zh-Hant": "角色、團隊、資料來源、Monitor 2.0 與 Lark 升級之控制平面 — 半自動化 CRMP 基礎。",
+      en: "Click any card to open its page — dummy spine buttons, counts, alerts, the messenger demo, and the rest of the desk.",
+      "zh-Hant": "點任何卡片即可開啟對應頁面 — 虛擬脊柱按鈕、計數、警報、Messenger 示範與其他功能。",
+    },
+  },
+  login: {
+    title: { en: "Sign in", "zh-Hant": "登入" },
+    subtitle: {
+      en: "Use demo platform owner or another demo role. The session stays in this browser after refresh.",
+      "zh-Hant": "使用示範平台負責人或其他示範角色。重新整理後工作階段仍會保留。",
     },
   },
   dashboard: {
     title: { en: "Daily Performance Dashboard", "zh-Hant": "每日績效儀表板" },
     subtitle: {
-      en: "CFD + crypto exchange risk performance for the day — last stage of the semi-automated spine.",
-      "zh-Hant": "當日 CFD＋加密交易所風險績效 — 半自動化脊柱最後一環。",
+      en: "CFD sphere vs Exchange sphere — last stage of the semi-automated spine.",
+      "zh-Hant": "CFD 圈對交易所圈 — 半自動化脊柱最後一環。",
     },
   },
   "risk-log": {
     title: { en: "Risk Log & Alerts Analytics", "zh-Hant": "風險日誌與警報分析" },
     subtitle: {
-      en: "Alerts by category, chronological records, human handling times, monetary loss vs prevented amounts, and loophole-prone areas across CFD + crypto.",
-      "zh-Hant": "依類別之警報、時序紀錄、人工處理時間、損失與防損金額，以及 CFD＋加密易漏洞領域。",
+      en: "Closed tickets land here with the same tracker pack as Realtime Alert — ticket-closed status, AI analysis, AI/BU action logs, mandated solution — plus 90-day historical charts (backfilled), category, handling time, loss vs prevented, and loophole areas.",
+      "zh-Hant": "已關閉工單以與即時警報相同的追蹤包落地於此 — 工單已關閉狀態、AI 分析、AI／各 BU 動作紀錄、核定方案 — 另含 90 天歷史圖表（已回填）、類別、處理時間、損失 vs 防損與漏洞領域。",
     },
   },
   "market-intel": {
     title: { en: "Market Intelligence", "zh-Hant": "市場情報" },
     subtitle: {
-      en: "5-minute scan of news, social and official channels that can move LP prices — pushed to messenger and wired as indicator M2-MKT-INTEL.",
-      "zh-Hant": "每五分鐘掃描可能影響 LP 報價之新聞／社群／官方頻道 — 推送至 Messenger，指標為 M2-MKT-INTEL。",
+      en: "Hour / 24h headlines plus a sentiment barometer for core Vantage instruments — then news, social and official channels that can move LP prices (M2-MKT-INTEL).",
+      "zh-Hant": "一小時／24 小時頭條，加上 Vantage 主要商品情緒氣壓計 — 再掃描可能影響 LP 報價的新聞／社群／官方頻道（M2-MKT-INTEL）。",
     },
   },
   detectors: {
     title: { en: "Detectors", "zh-Hant": "偵測器" },
     subtitle: {
-      en: "First stage of the semi-automated spine — CFD and crypto exchange detectors feeding Monitor alarms and AI RCA.",
-      "zh-Hant": "半自動化脊柱第一階段 — CFD／加密偵測器餵給 Monitor 警報與 AI 根因分析。",
+      en: "Merged into Monitor 2.0 — redirecting.",
+      "zh-Hant": "已合併至 Monitor 2.0 — 重新導向中。",
     },
   },
   alerts: {
-    title: { en: "Live Alerts", "zh-Hant": "即時警報" },
+    title: { en: "Realtime Alert & Tracker", "zh-Hant": "即時警報與追蹤" },
     subtitle: {
-      en: "Operational queue fed by Monitor 2.0. Ack here, escalate via routes, notify Lark.",
-      "zh-Hant": "由 Monitor 2.0 餵入之營運佇列。可在此確認、依路徑升級並通知 Lark。",
+      en: "Open queue only — includes AI pipeline controls (analyze open, simulate skill/RAG/CRITICAL, backfill 2nd AI). Expand a ticket for facts, AI RCA, improve review, POC and action log. Closed tickets live in Risk Log Analytics.",
+      "zh-Hant": "僅顯示未結佇列 — 含 AI 管線控制（分析未結、模擬技能／RAG／危急、補跑第二 AI）。展開工單可看事實、AI 根因、改進審查、承辦與動作紀錄。已關閉工單在風險日誌分析。",
     },
   },
   "ai-analyses": {
     title: { en: "AI Analyses", "zh-Hant": "AI 分析" },
     subtitle: {
-      en: "Auto-triggered when Monitor 2.0 indicators alarm. Skill path when certain; otherwise RAG. BREACH/CRITICAL also receive an independent second-AI challenge.",
-      "zh-Hant": "Monitor 2.0 警報時自動觸發。確定時走 Skill，否則 RAG。BREACH／CRITICAL 另有獨立第二 AI 挑戰。",
+      en: "List merged into Realtime Alert & Tracker. This URL redirects. Detail packs remain at /admin/ai-analyses/[id].",
+      "zh-Hant": "列表已合併到即時警報與追蹤。此網址會轉址。詳細證據包仍在 /admin/ai-analyses/[id]。",
     },
   },
   "ai-admin": {
     title: { en: "AI Admin", "zh-Hant": "AI 管理" },
     subtitle: {
-      en: "Configure AI parameters, training, accuracy history, skills and RAG — with maker/checker dual control before changes apply.",
-      "zh-Hant": "設定 AI 參數、訓練、準確率、Skills 與 RAG — 變更前需 Maker／Checker 雙重控制。",
+      en: "First-line and second-line AI cards, parameters, training, accuracy, skills and RAG — maker/checker dual control; AI proposes RAG via propose_rag only.",
+      "zh-Hant": "一線／二線 AI 卡片、參數、訓練、準確率、Skills 與 RAG — Maker／Checker 雙重控制；AI 僅能經 propose_rag 提案 RAG。",
     },
   },
   interventions: {
     title: { en: "Human Intervention", "zh-Hant": "人工干預" },
     subtitle: {
-      en: "Approve or reject AI/skill actions awaiting human gates. Decisions are logged to the spine and audit trail.",
-      "zh-Hant": "核准或駁回待人工關卡之 AI／Skill 動作。決策寫入脊柱與稽核軌跡。",
+      en: "Approve or reject AI/skill human gates. Cards show ticket, timestamp, severity, action, and actioner email. Decisions go to spine + audit.",
+      "zh-Hant": "核准或駁回 AI／Skill 人工關卡。卡片顯示工單、時間戳、嚴重度、動作與執行者信箱。決策寫入脊柱與稽核。",
     },
   },
   spine: {
-    title: { en: "Spine Log", "zh-Hant": "脊柱日誌" },
+    title: { en: "Spine (on Admin Home)", "zh-Hant": "脊柱（管理首頁）" },
     subtitle: {
-      en: "End-to-end pipeline trail: Detectors → Alarm → AI RCA → Skill execute → Human intervention → Resolved → Dashboard.",
-      "zh-Hant": "端到端管線軌跡：偵測 → 警報 → AI RCA → Skill 執行 → 人工干預 → 結案 → 儀表板。",
+      en: "Dedicated Spine Log tab removed — stage ticket counts live on Admin Home. Detect → Alarm → AI RCA → Skill → Human → Resolved → Dashboard.",
+      "zh-Hant": "專屬脊柱日誌分頁已移除 — 階段工單計數在管理首頁。偵測 → 警報 → AI RCA → Skill → 人工 → 結案 → 儀表板。",
     },
   },
   rag: {
     title: { en: "RAG Knowledge Base", "zh-Hant": "RAG 知識庫" },
     subtitle: {
-      en: "Internal static business corpus for Vantage Markets — policies, products, entities, platforms.",
-      "zh-Hant": "Vantage Markets 內部靜態業務語料 — 政策、產品、實體、平台。",
+      en: "Business corpus + explicit AI human-gate: pages/functions AI cannot edit must escalate to authorised humans (rag.manage / maker-checker).",
+      "zh-Hant": "業務語料＋明確 AI 人工關卡：AI 不可編輯的頁面／功能必須升級給具授權人類（rag.manage／Maker-Checker）。",
     },
   },
   skills: {
     title: { en: "AI Skills & Risk Scenarios", "zh-Hant": "AI 技能與風險情境" },
     subtitle: {
-      en: "Indicator thresholds (and why), fault areas, escalation paths, BU correction actions, past detections — plus multi-indicator timeline chains.",
-      "zh-Hant": "指標門檻與理由、故障區域、升級路徑、BU 矯正、歷史偵測，以及多指標時間鏈。",
+      en: "Indicator thresholds (and why), fault areas, escalation paths, BU correction actions, past detections — plus multi-indicator timeline chains. Click Enter on a card for the full SKILL.md playbook.",
+      "zh-Hant": "指標門檻與理由、故障區域、升級路徑、BU 矯正、歷史偵測，以及多指標時間鏈。在卡片點「進入」可看完整 SKILL.md 劇本。",
+    },
+  },
+  "knowledge-tree": {
+    title: { en: "Knowledge Tree", "zh-Hant": "知識樹" },
+    subtitle: {
+      en: "How domains, skill playbooks, linked timelines and RAG documents connect — click a node to open the source.",
+      "zh-Hant": "領域、技能劇本、連結時間鏈與 RAG 文件如何串接 — 點節點即可打開來源。",
     },
   },
   messenger: {
     title: { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
     subtitle: {
-      en: "Prototype Lark-style inbox: alerts + AI reports with inline evidence, chatbot challenge, escalate, dismiss, close, and confirmed control actions into Vantage admin.",
-      "zh-Hant": "原型 Lark 風格收件匣：警報＋AI 報告，內嵌證據、聊天挑戰、升級、排除、結案，以及確認後送至 Vantage 管理後台之控制動作。",
+      en: "Prototype Lark-style inbox: one case, split chat windows per POC on the escalation path — bird-eye relay from desk to desk, plus evidence, chatbot, escalate, dismiss, close, and controls.",
+      "zh-Hant": "原型 Lark 風格收件匣：同一案件依升級路徑承辦拆成多個聊天窗 — 鳥瞰台面轉遞，並含證據、聊天機器人、升級、排除、結案與控制動作。",
     },
   },
   "ai-access": {
@@ -144,8 +164,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   "monitor-2": {
     title: { en: "Monitor 2.0 Integration Hub", "zh-Hant": "Monitor 2.0 整合中心" },
     subtitle: {
-      en: "Existing indicator monitoring platform — warnings, alerts and ticket tracking. CRMP syncs and escalates from here.",
-      "zh-Hant": "既有指標監控平台 — 警告、警報與工單追蹤。CRMP 自此同步並升級。",
+      en: "Unified indicator + detector registry — thresholds, sampling runs, risk scenarios and combinations. Alerts live under Realtime Alert & Tracker.",
+      "zh-Hant": "統一指標與偵測器登錄 — 門檻、採樣執行、風險情境與組合。警報請至「即時警報與追蹤」。",
     },
   },
   lark: {
@@ -158,43 +178,43 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   escalation: {
     title: { en: "Escalation Routes", "zh-Hant": "升級路徑" },
     subtitle: {
-      en: "Severity → team → SLA mapping used by Demo Messenger and Lark notify.",
-      "zh-Hant": "嚴重度 → 團隊 → SLA 對映，供示範 Messenger 與 Lark 通知使用。",
+      en: "Severity → team → SLA; catch-all ESC-DEFAULT; each skill binds one path. Used by Demo Messenger and Lark notify.",
+      "zh-Hant": "嚴重度 → 團隊 → SLA；兜底 ESC-DEFAULT；每個技能綁定一條路徑。供示範 Messenger 與 Lark 通知使用。",
     },
   },
   departments: {
-    title: { en: "Departments", "zh-Hant": "部門" },
+    title: { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
     subtitle: {
-      en: "Risk Control, Operations, AI and System ownership model.",
-      "zh-Hant": "風險控管、營運、AI 與系統之權責模型。",
+      en: "Business units with nested on-call teams — edit mission and rotation when authorised.",
+      "zh-Hant": "業務單位與其嵌套值班團隊 — 授權後可編輯任務與輪值。",
     },
   },
   teams: {
-    title: { en: "Teams", "zh-Hant": "團隊" },
+    title: { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
     subtitle: {
-      en: "On-call teams linked to Lark channels and escalation routes.",
-      "zh-Hant": "連結 Lark 頻道與升級路徑之值班團隊。",
+      en: "Redirects to the combined BU and Teams hub.",
+      "zh-Hant": "轉址至合併的 BU 與團隊中心。",
     },
   },
   roles: {
     title: { en: "Roles & Permissions", "zh-Hant": "角色與權限" },
     subtitle: {
-      en: "RBAC matrix for CRMP admin surfaces.",
-      "zh-Hant": "CRMP 管理介面之 RBAC 矩陣。",
+      en: "Editable RBAC matrix — name, description, BU, and permission pills (users.manage). AI cannot edit roles.",
+      "zh-Hant": "可編輯 RBAC 矩陣 — 名稱、說明、BU 與權限標籤（需 users.manage）。AI 不可編輯角色。",
     },
   },
   users: {
     title: { en: "Users", "zh-Hant": "使用者" },
     subtitle: {
-      en: "Directory of operators and demo personas.",
-      "zh-Hant": "操作員與示範角色目錄。",
+      en: "Directory of operators and demo personas, including demo platform owner.",
+      "zh-Hant": "操作員與示範角色目錄，含示範平台負責人。",
     },
   },
   "risk-domains": {
     title: { en: "Risk Domains", "zh-Hant": "風險領域" },
     subtitle: {
-      en: "CFD and Crypto Exchange domain catalogue.",
-      "zh-Hant": "CFD 與加密交易所領域目錄。",
+      en: "CFD vs Exchange spheres with P0–P3 coloured scenarios, plain-English detail, and every scenario hooked to Monitor 2.0 indicators.",
+      "zh-Hant": "CFD 對交易所兩圈：P0–P3 色標情境、白話說明，且每則情境皆掛上 Monitor 2.0 指標。",
     },
   },
   "data-sources": {
@@ -207,22 +227,22 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   audit: {
     title: { en: "Audit Log", "zh-Hant": "稽核日誌" },
     subtitle: {
-      en: "Immutable trail of admin and messenger mutations.",
-      "zh-Hant": "管理與 Messenger 變更之不可變軌跡。",
+      en: "CRMP logs vs Vantage Markets Admin logs — Roll back restores before-state when captured.",
+      "zh-Hant": "CRMP 日誌與 Vantage Markets 管理日誌 — 有變更前快照時可回滾。",
     },
   },
   settings: {
     title: { en: "Platform Settings", "zh-Hant": "平台設定" },
     subtitle: {
-      en: "Feature flags, AI thresholds and integration toggles.",
-      "zh-Hant": "功能旗標、AI 門檻與整合開關。",
+      en: "Parameters grouped by identity, monitoring, AI, messenger and escalation.",
+      "zh-Hant": "參數依身分、監控、AI、Messenger 與升級分組。",
     },
   },
   urls: {
     title: { en: "URL Catalog", "zh-Hant": "網址目錄" },
     subtitle: {
-      en: "Admin pages, APIs, local SQLite path, and core DB tables for the CRMP prototype.",
-      "zh-Hant": "CRMP 原型之管理頁、API、本機 SQLite 路徑與核心資料表。",
+      en: "Admin pages (incl. redirects: Detectors→Monitor 2.0, AI Analyses→Realtime Alert, Spine→Home, Teams→BU and Teams), APIs, SQLite path, and core DB tables.",
+      "zh-Hant": "管理頁（含轉址：偵測器→Monitor 2.0、AI 分析→即時警報與追蹤、脊柱→首頁、團隊→BU 與團隊）、API、SQLite 路徑與核心資料表。",
     },
   },
 };
@@ -246,7 +266,7 @@ const UI: Record<string, Pair> = {
 
   "home.stat.users": { en: "Users", "zh-Hant": "使用者" },
   "home.stat.usersHint": { en: "Across 4 departments", "zh-Hant": "橫跨 4 個部門" },
-  "home.stat.teams": { en: "Teams", "zh-Hant": "團隊" },
+  "home.stat.teams": { en: "BU and Teams", "zh-Hant": "BU 與團隊" },
   "home.stat.teamsHint": { en: "On-call ready", "zh-Hant": "可值班" },
   "home.stat.sources": { en: "Data Sources", "zh-Hant": "資料來源" },
   "home.stat.sourcesHint": { en: "Internal + external registry", "zh-Hant": "內部＋外部登錄" },
@@ -262,11 +282,26 @@ const UI: Record<string, Pair> = {
   "home.stat.routesHint": { en: "Severity → team → SLA", "zh-Hant": "嚴重度 → 團隊 → SLA" },
   "home.deptTitle": { en: "Department Division", "zh-Hant": "部門分工" },
   "home.deptSub": {
-    en: "RACI-aligned ownership for the CRMP spine.",
-    "zh-Hant": "對齊 RACI 之 CRMP 脊柱權責。",
+    en: "RACI charters for the CRMP spine — preview of what each BU owns; full detail on Departments.",
+    "zh-Hant": "CRMP 脊柱之 RACI 章程 — 此處預覽各 BU 擁有項；完整細節在「部門」。",
+  },
+  "home.deptMore": {
+    en: "+{n} more on Departments",
+    "zh-Hant": "部門頁另有 {n} 項",
   },
   "home.recentAlerts": { en: "Recent Alerts", "zh-Hant": "最近警報" },
+  "home.expandHint": {
+    en: "Click a card to expand the full open ticket — admin URL, AI RCA, POC, gates, escalation and action log. Closed tickets are in Risk Log Analytics.",
+    "zh-Hant": "點卡片即可展開完整未結工單 — 管理網址、AI 根因、承辦、關卡、升級路徑與動作紀錄。已關閉工單在風險日誌分析。",
+  },
   "home.viewAll": { en: "View all", "zh-Hant": "查看全部" },
+  "home.open": { en: "Open", "zh-Hant": "開啟" },
+  "home.openPage": { en: "Open page", "zh-Hant": "開啟頁面" },
+  "home.jumpTitle": { en: "Jump to a page", "zh-Hant": "跳至頁面" },
+  "home.jumpSub": {
+    en: "Shortcuts into the rest of the desk. Every tile is a link.",
+    "zh-Hant": "通往其餘功能的捷徑。每塊磁磚都是連結。",
+  },
 
   "msg.channels": { en: "Channels / threads", "zh-Hant": "頻道／執行緒" },
   "msg.sync": { en: "Sync alerts", "zh-Hant": "同步警報" },
@@ -277,6 +312,28 @@ const UI: Record<string, Pair> = {
   "msg.dismiss": { en: "Dismiss", "zh-Hant": "排除（誤報）" },
   "msg.close": { en: "Close (accept AI)", "zh-Hant": "結案（接受 AI）" },
   "msg.recommended": { en: "Recommended actions", "zh-Hant": "建議動作" },
+  "msg.triagePrimary": { en: "Primary decision", "zh-Hant": "主要決策" },
+  "msg.triageSecondary": { en: "Other triage", "zh-Hant": "其他分流" },
+  "msg.groupCritical": { en: "Critical controls", "zh-Hant": "關鍵管制" },
+  "msg.groupControl": { en: "Risk controls", "zh-Hant": "風險控制" },
+  "msg.groupSoft": { en: "Market softeners", "zh-Hant": "市場緩和" },
+  "msg.rankNote": {
+    en: "Actions not available to your rank are hidden. When you need a hidden control, escalate — do not improvise outside the path.",
+    "zh-Hant": "你職級無法使用的動作不會顯示。若需要被隱藏的管制，請升級——勿在路徑外自行操作。",
+  },
+  "msg.escalateHint": {
+    en: "Use Escalate when the decision or control exceeds your rank.",
+    "zh-Hant": "當決策或管制超出你的職級時，請使用「升級」。",
+  },
+  "msg.birdeye": { en: "Bird-eye · POC relay", "zh-Hant": "鳥瞰 · POC 轉遞" },
+  "msg.pocActive": { en: "Live", "zh-Hant": "進行中" },
+  "msg.pocRelayed": { en: "Relayed", "zh-Hant": "已轉交" },
+  "msg.pocWaiting": { en: "Waiting", "zh-Hant": "等待中" },
+  "msg.pocEmpty": {
+    en: "No messages yet — waiting for the previous POC to escalate.",
+    "zh-Hant": "尚無訊息 — 等待上一承辦升級轉入。",
+  },
+  "msg.noPocYet": { en: "On-call desk", "zh-Hant": "值班台" },
   "msg.confirm": { en: "Confirm:", "zh-Hant": "確認：" },
   "msg.checkerNeeded": { en: "Checker approval needed:", "zh-Hant": "需要 Checker 核准：" },
   "msg.doubleConfirm": { en: "Double-confirm…", "zh-Hant": "雙重確認…" },
@@ -290,10 +347,40 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "挑戰 AI 報告或補充資訊…",
   },
   "msg.send": { en: "Send", "zh-Hant": "傳送" },
+  "msg.thinking": { en: "CRMP is thinking", "zh-Hant": "CRMP 思考中" },
+  "msg.thoughtFor": { en: "Thought for {s}s", "zh-Hant": "思考了 {s} 秒" },
+  "msg.showThoughts": { en: "Show reasoning", "zh-Hant": "顯示推理過程" },
+  "msg.hideThoughts": { en: "Hide reasoning", "zh-Hant": "隱藏推理過程" },
   "msg.select": { en: "Select a thread to open the demo messenger.", "zh-Hant": "選擇執行緒以開啟示範 Messenger。" },
   "msg.openInAdmin": { en: "Open in admin →", "zh-Hant": "在管理後台開啟 →" },
   "msg.actionDone": { en: "Action {action} completed", "zh-Hant": "動作 {action} 已完成" },
   "msg.synced": { en: "Synced {n} new alert(s) into messenger", "zh-Hant": "已同步 {n} 則新警報至 Messenger" },
+  "msg.larkDemoHint": {
+    en: "Lark-style demo inbox (no live Lark API). Open a thread to see the case split into POC chat windows along the escalation path — bird-eye relay from desk to desk. Permanent URL:",
+    "zh-Hant": "Lark 風格示範收件匣（無需正式 Lark API）。開啟執行緒即可依升級路徑承辦拆窗，鳥瞰案件如何轉遞。永久網址：",
+  },
+  "msg.larkDemoHintShort": {
+    en: "Lark-style demo inbox — POC chat windows along the escalation path.",
+    "zh-Hant": "Lark 風格示範收件匣 — 升級路徑承辦聊天窗。",
+  },
+  "home.larkDemo": {
+    en: "See alerts, AI reports and escalations in the Lark-style messenger demo.",
+    "zh-Hant": "在 Lark 風格 Messenger 示範中查看警報、AI 報告與升級訊息。",
+  },
+  "home.larkDemoCta": { en: "Open messenger demo", "zh-Hant": "開啟 Messenger 示範" },
+  "home.dummyTitle": { en: "Dummy spine run", "zh-Hant": "虛擬脊柱演練" },
+  "home.dummyHint": {
+    en: "Raise a dummy Monitor 2.0 alert (or a linked group). CRMP walks DETECT → AI (skill or RAG) → messenger → maker/checker → escalate → close, then highlights the cards and spine on this page. Audit and Risk Log keep the trail.",
+    "zh-Hant": "發出一則虛擬 Monitor 2.0 警報（或一組連動警報）。CRMP 會走完 DETECT → AI（技能或 RAG）→ Messenger → Maker／Checker → 升級 → 結案，並在本頁標出卡片與脊柱。稽核與風險日誌會留下紀錄。",
+  },
+  "home.dummyOne": { en: "Dummy alert", "zh-Hant": "虛擬警報" },
+  "home.dummyGroup": { en: "Dummy alert group", "zh-Hant": "虛擬警報組" },
+  "home.dummyWorking": { en: "Walking the spine", "zh-Hant": "正在走脊柱" },
+  "home.dummyDone": {
+    en: "Dummy run closed {n} alert(s). Highlighted below and on the spine; check Messenger, Audit and Risk Log.",
+    "zh-Hant": "虛擬演練已結案 {n} 則警報。已在下方與脊柱標出；請查看 Messenger、稽核與風險日誌。",
+  },
+  "home.dummyFailed": { en: "Dummy spine run failed", "zh-Hant": "虛擬脊柱演練失敗" },
 
   "login.title": {
     en: "Centralised Risk Management Platform",
@@ -305,8 +392,8 @@ const UI: Record<string, Pair> = {
   },
   "login.signIn": { en: "Sign in to Admin", "zh-Hant": "登入管理後台" },
   "login.hint": {
-    en: "Optional — the admin is public. Sign in only to use a named role persona.",
-    "zh-Hant": "可選 — 管理後台已公開。僅在要以具名角色操作時登入。",
+    en: "Optional — the admin is public. Sign in as demo platform owner or another named role.",
+    "zh-Hant": "可選 — 管理後台已公開。可以示範平台負責人或其他具名角色登入。",
   },
   "login.email": { en: "Email", "zh-Hant": "電子郵件" },
   "login.password": { en: "Password", "zh-Hant": "密碼" },
@@ -319,14 +406,115 @@ const UI: Record<string, Pair> = {
   "urls.data": { en: "Data / tables", "zh-Hant": "資料／資料表" },
   "urls.inbox": { en: "Demo inbox", "zh-Hant": "示範收件匣" },
   "urls.publicNote": {
-    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona.",
-    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。",
+    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. Permanent GitHub Pages URL: https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark messenger demo: https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
+    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。永久 GitHub Pages 網址：https://hxyan2020.github.io/PRD/crmp-admin/admin/ — Lark Messenger 示範：https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/",
   },
   "urls.cheat": {
     en: "Demo Messenger actions: show_evidence · chat · escalate · dismiss · close · recommend → double-confirm → Vantage admin ref · checker_approve when required.",
     "zh-Hant": "示範 Messenger 動作：顯示證據 · 聊天 · 升級 · 排除 · 結案 · 建議 → 雙重確認 → Vantage 管理參照 · 必要時 Checker 核准。",
   },
   "common.openMessenger": { en: "Open Demo Messenger", "zh-Hant": "開啟示範 Messenger" },
+
+  "skill.eyebrow": { en: "Risk scenarios", "zh-Hant": "風險情境" },
+  "skill.boardIntro": {
+    en: "Each skill is a SKILL.md-style playbook: when to use, when not to, prechecks, steps, evidence, stop conditions and success criteria. Cards stay compact — click Enter for the full page.",
+    "zh-Hant": "每項技能皆為 SKILL.md 風格劇本：何時用、何時不用、前置檢查、步驟、證據、停止條件與成功標準。卡片保持精簡 — 點「進入」看完整頁。",
+  },
+  "skill.tabSkills": { en: "Single-indicator skills", "zh-Hant": "單指標技能" },
+  "skill.tabChains": { en: "Linked timelines", "zh-Hant": "連結時間鏈" },
+  "skill.search": { en: "Search indicator, fault area, scenario code…", "zh-Hant": "搜尋指標、故障區域、情境代碼…" },
+  "skill.enter": { en: "Enter", "zh-Hant": "進入" },
+  "skill.back": { en: "Back to skills", "zh-Hant": "返回技能列表" },
+  "skill.tree": { en: "Knowledge tree", "zh-Hant": "知識樹" },
+  "skill.manual": { en: "manual", "zh-Hant": "人工" },
+  "skill.auto": { en: "auto-execute", "zh-Hant": "自動執行" },
+  "skill.whenToUse": { en: "When to use", "zh-Hant": "何時使用" },
+  "skill.whenNot": { en: "When not to use", "zh-Hant": "何時不要用" },
+  "skill.inputs": { en: "Inputs", "zh-Hant": "輸入" },
+  "skill.outputs": { en: "Outputs", "zh-Hant": "輸出" },
+  "skill.prechecks": { en: "Prechecks", "zh-Hant": "前置檢查" },
+  "skill.indicator": { en: "Indicator & thresholds", "zh-Hant": "指標與門檻" },
+  "skill.faults": { en: "Fault areas", "zh-Hant": "故障區域" },
+  "skill.escalation": { en: "Escalation", "zh-Hant": "升級" },
+  "skill.steps": { en: "Playbook steps", "zh-Hant": "劇本步驟" },
+  "skill.corrections": { en: "Correction actions by BU", "zh-Hant": "各 BU 矯正動作" },
+  "skill.evidence": { en: "Evidence to collect", "zh-Hant": "應蒐集證據" },
+  "skill.stop": { en: "Stop conditions", "zh-Hant": "停止條件" },
+  "skill.success": { en: "Success criteria", "zh-Hant": "成功標準" },
+  "skill.related": { en: "Related indicators", "zh-Hant": "相關指標" },
+  "skill.examples": { en: "Worked examples", "zh-Hant": "已驗證案例" },
+  "skill.humanGate": { en: "human gate", "zh-Hant": "人工關卡" },
+  "skill.aiAnalyses": { en: "AI analyses", "zh-Hant": "AI 分析" },
+  "skill.riskLog": { en: "Risk log", "zh-Hant": "風險日誌" },
+  "skill.timeline": { en: "Indicator timeline", "zh-Hant": "指標時間軸" },
+  "skill.causes": { en: "Likely causes", "zh-Hant": "可能原因" },
+  "skill.linked": { en: "Linked skills", "zh-Hant": "連結技能" },
+
+  "mi.eyebrow": { en: "LP price-moving intelligence", "zh-Hant": "會移動 LP 報價的情報" },
+  "mi.intro": {
+    en: "Scrapes news, social, official and exchange publications every 5 minutes for forex, index, commodity, futures and crypto. Findings push to Lark group oc_market_intelligence and feed indicator M2-MKT-INTEL.",
+    "zh-Hant": "每五分鐘掃描新聞、社群、官方與交易所公告（外匯、指數、商品、期貨、加密）。發現推送至 Lark 群 oc_market_intelligence，並餵給指標 M2-MKT-INTEL。",
+  },
+  "mi.scan": { en: "Scan now", "zh-Hant": "立即掃描" },
+  "mi.scanning": { en: "Scanning…", "zh-Hant": "掃描中…" },
+  "mi.disable": { en: "Disable scheduler", "zh-Hant": "停用排程" },
+  "mi.enable": { en: "Enable scheduler", "zh-Hant": "啟用排程" },
+  "mi.playbook": { en: "Skill playbook", "zh-Hant": "技能劇本" },
+  "mi.staticScan": {
+    en: "GitHub Pages is a read-only snapshot, so live Scan cannot call /api. Demo scan recorded from seeded findings — run Scan on localhost:3000/admin/market-intel for a live pass.",
+    "zh-Hant": "GitHub Pages 為唯讀快照，無法呼叫 /api 做即時掃描。已用種子發現記錄示範掃描 — 請在 localhost:3000/admin/market-intel 執行即時掃描。",
+  },
+  "mi.demoScan": {
+    en: "Scan {scan_id}: {n} new finding(s) → {pushed} pushed to messenger. Public snapshot uses a local demo scan (GitHub Pages has no /api).",
+    "zh-Hant": "掃描 {scan_id}：{n} 筆新發現 → {pushed} 筆已推送至 Messenger。公開快照使用本機示範掃描（GitHub Pages 沒有 /api）。",
+  },
+  "mi.findings": { en: "Findings (loaded)", "zh-Hant": "已載入發現" },
+  "mi.highImpact": { en: "high-impact", "zh-Hant": "高影響" },
+  "mi.sources": { en: "Sources", "zh-Hant": "來源" },
+  "mi.schedOn": { en: "Scheduler ON", "zh-Hant": "排程開啟" },
+  "mi.schedOff": { en: "Scheduler OFF", "zh-Hant": "排程關閉" },
+  "mi.pushes": { en: "Messenger pushes", "zh-Hant": "Messenger 推送" },
+  "mi.live": { en: "Live indicator", "zh-Hant": "即時指標" },
+  "mi.tabFindings": { en: "Findings", "zh-Hant": "發現" },
+  "mi.tabMessenger": { en: "Messenger outbox", "zh-Hant": "Messenger 寄件匣" },
+  "mi.tabSources": { en: "Sources", "zh-Hant": "來源" },
+  "mi.tabScans": { en: "Scan log", "zh-Hant": "掃描紀錄" },
+
+  "tree.domains": { en: "Risk domains", "zh-Hant": "風險領域" },
+  "tree.skills": { en: "Skill playbooks", "zh-Hant": "技能劇本" },
+  "tree.chains": { en: "Linked timelines", "zh-Hant": "連結時間鏈" },
+  "tree.rag": { en: "RAG corpus", "zh-Hant": "RAG 語料" },
+  "tree.hint": {
+    en: "This map is the knowledge tree: CRMP → risk domains → skill playbooks, with linked timelines and RAG documents on the side branches. Click a node to inspect it; Enter opens the source page.",
+    "zh-Hant": "這張圖就是知識樹：CRMP → 風險領域 → 技能劇本，側枝為連結時間鏈與 RAG 文件。點節點可檢視；「進入」打開來源頁。",
+  },
+  "tree.map": { en: "Tree map", "zh-Hant": "樹狀圖" },
+  "tree.outline": { en: "Outline", "zh-Hant": "大綱" },
+  "tree.allProducts": { en: "All products", "zh-Hant": "全部產品" },
+  "tree.clickNode": {
+    en: "Click a domain to fan out its skills. Click a skill to inspect; Enter opens the SKILL.md playbook. Switch to Linked timelines or RAG corpus for the other trunks.",
+    "zh-Hant": "點領域展開技能。點技能可檢視；「進入」打開 SKILL.md 劇本。切換「連結時間鏈」或「RAG 語料」看另外兩幹。",
+  },
+  "tree.enter": { en: "Enter", "zh-Hant": "進入" },
+  "tree.enterPlaybook": { en: "Enter full playbook", "zh-Hant": "進入完整劇本" },
+  "tree.inspector": { en: "Selected node", "zh-Hant": "選中節點" },
+  "tree.inspectorEmpty": {
+    en: "Click a skill, timeline or RAG category on the tree. The node details and links land here.",
+    "zh-Hant": "在樹上點技能、時間鏈或 RAG 分類，詳情與連結會顯示於此。",
+  },
+  "tree.skillsInDomain": { en: "skills in this domain", "zh-Hant": "此領域技能" },
+  "tree.openRag": { en: "Open RAG library", "zh-Hant": "開啟 RAG 知識庫" },
+  "tree.openDoc": { en: "Open this document", "zh-Hant": "開啟此文件" },
+  "tree.linkedDocs": { en: "Linked RAG docs", "zh-Hant": "連結 RAG 文件" },
+  "tree.ragCatHint": {
+    en: "Category nodes expand into document leaves. Click a document for tags and a deep link into the library.",
+    "zh-Hant": "分類節點會展開為文件葉節點。點選文件可查看標籤並深連結至知識庫。",
+  },
+  "tree.linkedSkills": { en: "Linked skills", "zh-Hant": "連結技能" },
+  "tree.hubSub": { en: "knowledge tree", "zh-Hant": "知識樹" },
+
+  "nav.unread": { en: "unread", "zh-Hant": "未讀" },
+  ...EXTRA_UI,
 };
 
 export function parseUiLocale(raw?: string | null): UiLocale {
@@ -353,6 +541,7 @@ export function shellCopy(locale: UiLocale) {
     publicMode: t("shell.publicMode", locale),
     menu: t("shell.menu", locale),
     language: t("shell.language", locale),
+    unread: t("nav.unread", locale),
   };
 }
 
@@ -374,4 +563,46 @@ export function t(key: string, locale: UiLocale, vars?: Record<string, string | 
 
 export function actionLabel(href: string, locale: UiLocale) {
   return navLabel(href, locale, href);
+}
+
+export function deptLabelI18n(code: string | null | undefined, locale: UiLocale = "en") {
+  if (!code) return "—";
+  const key = `dept.${code}`;
+  if (UI[key]) return t(key, locale);
+  return code;
+}
+
+export function statusLabel(value: string, locale: UiLocale = "en") {
+  const pair = STATUS_LABELS[value];
+  if (!pair) return value;
+  return pair[locale] || pair.en;
+}
+
+export function stageLabel(stage: string, locale: UiLocale = "en") {
+  const pair = STAGE_LABELS[stage];
+  if (!pair) return stage;
+  return pair[locale] || pair.en;
+}
+
+/** Translate a known English operational phrase; unknown text is left as-is. */
+export function phrase(text: string | null | undefined, locale: UiLocale = "en") {
+  if (!text) return "";
+  if (locale !== "zh-Hant") return text;
+  if (PHRASES_ZH[text]) return PHRASES_ZH[text];
+  let out = text;
+  for (const en of DUMMY_PHRASE_FRAGMENTS) {
+    const zh = PHRASES_ZH[en];
+    if (zh && out.includes(en)) out = out.split(en).join(zh);
+  }
+  if (out !== text) return out;
+  const detect = text.match(/^DUMMY detect (.+) → (.+)$/);
+  if (detect) return `虛擬偵測 ${detect[1]} → ${detect[2]}`;
+  const alarm = text.match(/^DUMMY alarm (.+) \((.+)\)$/);
+  if (alarm) return `虛擬警報 ${alarm[1]}（${alarm[2]}）`;
+  const closed = text.match(/^DUMMY closed (.+)$/);
+  if (closed) return `虛擬結案 ${closed[1]}`;
+  const board = text.match(/^DUMMY outcome rolled to desk board \((.+)\)$/);
+  if (board) return `虛擬結果已入台面儀表板（${board[1]}）`;
+  const pretty = text.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return PHRASES_ZH[pretty] || text;
 }

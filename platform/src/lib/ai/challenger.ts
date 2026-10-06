@@ -248,16 +248,21 @@ export function runChallengerReview(input: {
   const confidence =
     verdict === "AGREE" ? 0.78 : verdict === "PARTIAL" ? 0.66 : 0.58;
 
+  const modelRow = getDb()
+    .prepare(`SELECT value FROM platform_settings WHERE key = 'ai.line2.model'`)
+    .get() as { value: string } | undefined;
+  const modelName = modelRow?.value || "crmp-challenger-v0";
+
   const summary =
     verdict === "AGREE"
-      ? `Challenger (${"crmp-challenger-v0"}) broadly agrees with primary ${input.primaryMode} RCA; minor hardening suggested.`
+      ? `Challenger (${modelName}) broadly agrees with primary ${input.primaryMode} RCA; minor hardening suggested.`
       : verdict === "PARTIAL"
         ? `Challenger partially challenges primary RCA — ${improvements.filter((i) => i.priority === "HIGH").length} high-priority improvement(s) recommended before acting.`
         : `Challenger disagrees with treating primary RCA as sufficient for ${input.alertSeverity}; alternative hypotheses and gates required.`;
 
   return {
     challenge_id: `CHL-${randomBytes(3).toString("hex").toUpperCase()}`,
-    model_name: "crmp-challenger-v0",
+    model_name: modelName,
     verdict,
     confidence,
     summary,

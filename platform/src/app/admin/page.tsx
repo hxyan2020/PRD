@@ -1,13 +1,55 @@
 import Link from "next/link";
+import {
+  Bell,
+  ChevronRight,
+  Database,
+  GitBranch,
+  MessageSquare,
+  MessagesSquare,
+  Ticket,
+  Users,
+  Waypoints,
+} from "lucide-react";
 import { getDb } from "@/lib/db";
-import { StatCard, SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { StatCard } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
-import { actionLabel, t } from "@/lib/i18n";
+import { T } from "@/components/T";
+import { ActionLabel } from "@/components/ActionLabel";
+import { EnZh } from "@/components/EnZh";
+import { SignInOwnerCard } from "@/components/SignInOwnerCard";
+import { PUBLIC_MESSENGER_URL, readSearchParams } from "@/lib/static-export";
+import { listAlertTrackerPacks } from "@/lib/alert-tracker";
+import { AlertTrackerList } from "@/components/AlertTrackerBoard";
+import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
+import { HomeDummyAlertButtons } from "@/components/HomeDummyAlertButtons";
+import { spineStageCounts } from "@/lib/ai/spine";
+import { FINISHED_AT, finishedAtLabel } from "@/lib/build-stamp";
 import { getUiLocale } from "@/lib/i18n-server";
+import { DUMMY_HOME_STAGES } from "@/lib/ai/dummy-spine";
 
-export default async function AdminDashboardPage() {
-  const locale = await getUiLocale();
+function latestSpineEvent(db: ReturnType<typeof getDb>, stages: string[]) {
+  const placeholders = stages.map(() => "?").join(",");
+  return db
+    .prepare(
+      `SELECT title, created_at FROM spine_events
+       WHERE stage IN (${placeholders})
+       ORDER BY id DESC LIMIT 1`
+    )
+    .get(...stages) as { title: string; created_at: string } | undefined;
+}
+
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ dummy?: string }>;
+}) {
   const db = getDb();
+  const ui = await getUiLocale();
+  const sp = await readSearchParams(searchParams);
+  const dummyIds = String(sp.dummy || "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
   const counts = {
     users: (db.prepare(`SELECT COUNT(*) AS c FROM users`).get() as { c: number }).c,
     teams: (db.prepare(`SELECT COUNT(*) AS c FROM teams`).get() as { c: number }).c,
@@ -27,54 +69,188 @@ export default async function AdminDashboardPage() {
     routes: (db.prepare(`SELECT COUNT(*) AS c FROM escalation_routes WHERE enabled = 1`).get() as { c: number }).c,
   };
 
-  const departments = db.prepare(`SELECT * FROM departments ORDER BY id`).all() as Array<{
-    code: string;
-    name: string;
-    description: string;
-    primary_responsibilities: string;
-  }>;
+  const stageMap = Object.fromEntries(spineStageCounts(db, 24).map((r) => [r.stage, r.c]));
+  const detectLatest = latestSpineEvent(db, ["DETECT"]);
+  const alarmLatest = latestSpineEvent(db, ["ALARM", "ESCALATION"]);
+  const rcaLatest = latestSpineEvent(db, ["AI_RCA"]);
+  const skillLatest = latestSpineEvent(db, ["SKILL_EXECUTE"]);
+  const humanLatest = latestSpineEvent(db, ["HUMAN_INTERVENTION"]);
+  const resolvedLatest = latestSpineEvent(db, ["RESOLVED"]);
+  const dashLatest = latestSpineEvent(db, ["DASHBOARD"]);
 
-  const recentAlerts = db
-    .prepare(
-      `SELECT a.alert_id, a.severity, a.title, a.status, a.created_at, i.name AS indicator_name
-       FROM monitor_alerts a
-       JOIN monitor_indicators i ON i.id = a.indicator_id
-       ORDER BY a.created_at DESC LIMIT 5`
-    )
-    .all() as Array<{
-    alert_id: string;
-    severity: string;
-    title: string;
-    status: string;
-    created_at: string;
-    indicator_name: string;
-  }>;
+  const openAlerts = counts.openAlerts;
+  const pendingInterventions = (
+    db
+      .prepare(
+        `SELECT COUNT(*) AS c FROM interventions WHERE status IN ('PENDING','AWAITING_CHECKER','AWAITING_HUMAN')`
+      )
+      .get() as { c: number }
+  ).c;
+  const skillRunsOpen = (() => {
+    try {
+      return (
+        db
+          .prepare(
+            `SELECT COUNT(*) AS c FROM ai_skill_runs WHERE status IN ('PENDING','AWAITING_HUMAN','QUEUED','RUNNING')`
+          )
+          .get() as { c: number }
+      ).c;
+    } catch {
+      return stageMap.SKILL_EXECUTE ?? 0;
+    }
+  })();
+  const closedTickets24h = (
+    db
+      .prepare(
+        `SELECT COUNT(*) AS c FROM monitor_tickets
+         WHERE status IN ('RESOLVED','CLOSED') AND updated_at >= datetime('now','-1 day')`
+      )
+      .get() as { c: number }
+  ).c;
+  const aiAnalysesOpen = (() => {
+    try {
+      return (
+        db.prepare(`SELECT COUNT(*) AS c FROM ai_analyses WHERE status NOT IN ('CLOSED','DISMISSED','ARCHIVED')`).get() as {
+          c: number;
+        }
+      ).c;
+    } catch {
+      return stageMap.AI_RCA ?? 0;
+    }
+  })();
+
+  const spineSteps: SpineStepStat[] = [
+    {
+      id: "DETECT",
+      href: "/admin/monitor-2",
+      labelEn: "DETECT",
+      labelZh: "偵測",
+      detailEn: "Monitor 2.0 samples indicators and raises DETECT spine events for warn / breach candidates.",
+      detailZh: "Monitor 2.0 取樣指標，對警告／違規候選發出 DETECT 脊柱事件。",
+      count: openAlerts,
+      countLabelEn: "tickets (alerts)",
+      countLabelZh: "工單（警報）",
+      secondaryCount: stageMap.DETECT ?? 0,
+      secondaryLabelEn: "DETECT / 24h",
+      secondaryLabelZh: "DETECT／24h",
+      latestTitle: detectLatest?.title ?? null,
+      latestAt: detectLatest?.created_at ?? null,
+    },
+    {
+      id: "ALARM",
+      href: "/admin/alerts",
+      labelEn: "ALARM",
+      labelZh: "警報",
+      detailEn: "Tracker tickets and ALARM stage — open incidents awaiting desk action.",
+      detailZh: "追蹤工單與 ALARM 階段 — 待台面處理的未結事件。",
+      count: counts.openTickets,
+      countLabelEn: "open tickets",
+      countLabelZh: "未結工單數",
+      secondaryCount: stageMap.ALARM ?? 0,
+      secondaryLabelEn: "ALARM / 24h",
+      secondaryLabelZh: "ALARM／24h",
+      latestTitle: alarmLatest?.title ?? null,
+      latestAt: alarmLatest?.created_at ?? null,
+    },
+    {
+      id: "AI_RCA",
+      href: "/admin/alerts",
+      labelEn: "AI_RCA",
+      labelZh: "AI 根因",
+      detailEn: "AI root-cause packs on open tickets; humans review before control actions.",
+      detailZh: "未結工單上的 AI 根因包；控制動作前由人工審視。",
+      count: aiAnalysesOpen,
+      countLabelEn: "tickets w/ RCA",
+      countLabelZh: "有根因工單",
+      secondaryCount: stageMap.AI_RCA ?? 0,
+      secondaryLabelEn: "AI_RCA / 24h",
+      secondaryLabelZh: "AI_RCA／24h",
+      latestTitle: rcaLatest?.title ?? null,
+      latestAt: rcaLatest?.created_at ?? null,
+    },
+    {
+      id: "SKILL_EXECUTE",
+      href: "/admin/skills",
+      labelEn: "SKILL",
+      labelZh: "技能",
+      detailEn: "Matched skill playbooks executing or queued against open incidents.",
+      detailZh: "已匹配技能劇本對未結事件執行或排隊。",
+      count: skillRunsOpen,
+      countLabelEn: "tickets in skill",
+      countLabelZh: "技能中工單",
+      secondaryCount: stageMap.SKILL_EXECUTE ?? 0,
+      secondaryLabelEn: "SKILL / 24h",
+      secondaryLabelZh: "SKILL／24h",
+      latestTitle: skillLatest?.title ?? null,
+      latestAt: skillLatest?.created_at ?? null,
+    },
+    {
+      id: "HUMAN_INTERVENTION",
+      href: "/admin/interventions",
+      labelEn: "HUMAN",
+      labelZh: "人工",
+      detailEn: "Human gates — approve / reject high-impact steps before execution.",
+      detailZh: "人工關卡 — 高影響步驟執行前核准／駁回。",
+      count: pendingInterventions,
+      countLabelEn: "tickets at gate",
+      countLabelZh: "關卡工單",
+      secondaryCount: stageMap.HUMAN_INTERVENTION ?? 0,
+      secondaryLabelEn: "HUMAN / 24h",
+      secondaryLabelZh: "HUMAN／24h",
+      latestTitle: humanLatest?.title ?? null,
+      latestAt: humanLatest?.created_at ?? null,
+    },
+    {
+      id: "RESOLVED",
+      href: "/admin/risk-log",
+      labelEn: "RESOLVED",
+      labelZh: "已解決",
+      detailEn: "Tickets closed in the last 24h — outcomes feed Risk Log Analytics.",
+      detailZh: "近 24 小時結案工單 — 結果進入風險日誌分析。",
+      count: closedTickets24h,
+      countLabelEn: "tickets closed / 24h",
+      countLabelZh: "24h 結案工單",
+      secondaryCount: stageMap.RESOLVED ?? 0,
+      secondaryLabelEn: "RESOLVED / 24h",
+      secondaryLabelZh: "RESOLVED／24h",
+      latestTitle: resolvedLatest?.title ?? null,
+      latestAt: resolvedLatest?.created_at ?? null,
+    },
+    {
+      id: "DASHBOARD",
+      href: "/admin/dashboard",
+      labelEn: "DASHBOARD",
+      labelZh: "儀表板",
+      detailEn: "Daily CFD / Exchange performance — closed outcomes roll into the desk board.",
+      detailZh: "每日 CFD／交易所績效 — 結案結果進入台面儀表板。",
+      count: (stageMap.DASHBOARD ?? 0) + closedTickets24h,
+      countLabelEn: "closes reflected",
+      countLabelZh: "已反映結案",
+      secondaryCount: stageMap.DASHBOARD ?? 0,
+      secondaryLabelEn: "DASHBOARD / 24h",
+      secondaryLabelZh: "DASHBOARD／24h",
+      latestTitle: dashLatest?.title ?? null,
+      latestAt: dashLatest?.created_at ?? null,
+    },
+  ];
+
+  const dummyPacks = dummyIds.length ? listAlertTrackerPacks({ alertIds: dummyIds }) : [];
+  const recentOpen = listAlertTrackerPacks({ limit: 8, order: "recent", status: "open" }).slice(0, 5);
+  const dummySet = new Set(dummyPacks.map((p) => p.alert_id));
+  const recentPacks = [...dummyPacks, ...recentOpen.filter((p) => !dummySet.has(p.alert_id))].slice(0, 8);
+
+  const openCta = <T k="home.open" />;
 
   const actions = (
     <>
       <Link className="btn" href="/admin/messenger">
-        {actionLabel("/admin/messenger", locale)}
-      </Link>
-      <Link className="btn" href="/admin/docs/urls">
-        {actionLabel("/admin/docs/urls", locale)}
-      </Link>
-      <Link className="btn" href="/admin/docs/prd">
-        {actionLabel("/admin/docs/prd", locale)}
+        <ActionLabel href="/admin/messenger" />
       </Link>
       <Link className="btn" href="/admin/docs/user-guide">
-        {actionLabel("/admin/docs/user-guide", locale)}
-      </Link>
-      <Link className="btn" href="/admin/docs/uat">
-        {actionLabel("/admin/docs/uat", locale)}
-      </Link>
-      <Link className="btn" href="/admin/ai-admin">
-        {actionLabel("/admin/ai-admin", locale)}
-      </Link>
-      <Link className="btn" href="/admin/security/ai-access">
-        {actionLabel("/admin/security/ai-access", locale)}
+        <ActionLabel href="/admin/docs/user-guide" />
       </Link>
       <Link className="btn btn-primary" href="/admin/dashboard">
-        {actionLabel("/admin/dashboard", locale)}
+        <ActionLabel href="/admin/dashboard" />
       </Link>
     </>
   );
@@ -83,125 +259,152 @@ export default async function AdminDashboardPage() {
     <div>
       <AdminPageHeader pageKey="home" actions={actions} />
 
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4 mb-4">
+        <SignInOwnerCard />
+
+        <Link
+          href="/admin/messenger"
+          className="panel card-link group relative overflow-hidden p-4 bg-gradient-to-br from-teal-50 via-white to-white"
+        >
+          <div className="absolute left-0 top-0 h-full w-1 bg-teal-600" aria-hidden />
+          <div className="flex items-start justify-between gap-3 pl-2">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-teal-800">
+                <MessagesSquare className="h-3.5 w-3.5" aria-hidden />
+                <EnZh en="Messenger demo" zh="Messenger 示範" />
+              </div>
+              <div className="font-semibold mt-1">
+                <T k="home.larkDemo" />
+              </div>
+              <p className="text-xs text-[var(--muted)] mt-2 break-all">
+                <EnZh en="Permanent URL" zh="永久網址" />
+                {": "}
+                {PUBLIC_MESSENGER_URL}
+              </p>
+              <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-teal-800">
+                <T k="home.larkDemoCta" />
+                <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden />
+              </div>
+            </div>
+            <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-600 text-white">
+              <MessagesSquare className="h-5 w-5" aria-hidden />
+            </span>
+          </div>
+        </Link>
+      </div>
+
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3">
-        <StatCard label={t("home.stat.users", locale)} value={counts.users} hint={t("home.stat.usersHint", locale)} />
-        <StatCard label={t("home.stat.teams", locale)} value={counts.teams} hint={t("home.stat.teamsHint", locale)} />
         <StatCard
-          label={t("home.stat.sources", locale)}
+          href="/admin/users"
+          icon={<Users aria-hidden />}
+          label={<T k="home.stat.users" />}
+          value={counts.users}
+          hint={<T k="home.stat.usersHint" />}
+          cta={openCta}
+        />
+        <StatCard
+          href="/admin/departments"
+          icon={<Users aria-hidden />}
+          label={<T k="home.stat.teams" />}
+          value={counts.teams}
+          hint={<T k="home.stat.teamsHint" />}
+          cta={openCta}
+        />
+        <StatCard
+          href="/admin/data-sources"
+          icon={<Database aria-hidden />}
+          label={<T k="home.stat.sources" />}
           value={counts.sources}
-          hint={t("home.stat.sourcesHint", locale)}
+          hint={<T k="home.stat.sourcesHint" />}
+          cta={openCta}
         />
         <StatCard
-          label={t("home.stat.domains", locale)}
+          href="/admin/risk-domains"
+          icon={<Waypoints aria-hidden />}
+          label={<T k="home.stat.domains" />}
           value={counts.domains}
-          hint={t("home.stat.domainsHint", locale)}
+          hint={<T k="home.stat.domainsHint" />}
+          cta={openCta}
         />
         <StatCard
-          label={t("home.stat.openAlerts", locale)}
+          href="/admin/alerts"
+          icon={<Bell aria-hidden />}
+          tone={counts.openAlerts > 0 ? "alert" : "default"}
+          label={<T k="home.stat.openAlerts" />}
           value={counts.openAlerts}
-          hint={t("home.stat.openAlertsHint", locale)}
+          hint={<T k="home.stat.openAlertsHint" />}
+          cta={openCta}
         />
         <StatCard
-          label={t("home.stat.openTickets", locale)}
+          href="/admin/monitor-2"
+          icon={<Ticket aria-hidden />}
+          label={<T k="home.stat.openTickets" />}
           value={counts.openTickets}
-          hint={t("home.stat.openTicketsHint", locale)}
+          hint={<T k="home.stat.openTicketsHint" />}
+          cta={openCta}
         />
-        <StatCard label={t("home.stat.lark", locale)} value={counts.larkChannels} hint={t("home.stat.larkHint", locale)} />
         <StatCard
-          label={t("home.stat.routes", locale)}
+          href="/admin/lark"
+          icon={<MessageSquare aria-hidden />}
+          label={<T k="home.stat.lark" />}
+          value={counts.larkChannels}
+          hint={<T k="home.stat.larkHint" />}
+          cta={openCta}
+        />
+        <StatCard
+          href="/admin/escalation"
+          icon={<GitBranch aria-hidden />}
+          label={<T k="home.stat.routes" />}
           value={counts.routes}
-          hint={t("home.stat.routesHint", locale)}
+          hint={<T k="home.stat.routesHint" />}
+          cta={openCta}
         />
       </div>
 
-      <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-3 sm:gap-4">
-        <section className="panel p-3 sm:p-4 min-w-0">
-          <h2 className="font-[family-name:var(--font-display)] text-lg">{t("home.deptTitle", locale)}</h2>
-          <p className="text-sm text-[var(--muted)] mt-1">{t("home.deptSub", locale)}</p>
-          <div className="mt-4 space-y-3">
-            {departments.map((d) => {
-              const responsibilities = JSON.parse(d.primary_responsibilities) as string[];
-              return (
-                <div key={d.code} className="rounded-xl border border-[var(--line)] p-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="font-semibold">{d.name}</div>
-                    <DeptBadge code={d.code} />
-                  </div>
-                  <p className="text-sm text-[var(--muted)] mt-1">{d.description}</p>
-                  <ul className="mt-2 grid sm:grid-cols-2 gap-1 text-xs text-slate-700">
-                    {responsibilities.map((r) => (
-                      <li key={r} className="before:content-['•'] before:mr-1.5 before:text-teal-700 break-word">
-                        {r}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
-          </div>
-        </section>
+      <HomeDummyAlertButtons />
 
-        <section className="panel p-3 sm:p-4 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="font-[family-name:var(--font-display)] text-lg">{t("home.recentAlerts", locale)}</h2>
-            <Link href="/admin/alerts" className="text-sm text-teal-800 font-semibold shrink-0">
-              {t("home.viewAll", locale)}
-            </Link>
+      <section className="panel p-3 sm:p-4 min-w-0 mt-6">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <h2 className="font-[family-name:var(--font-display)] text-lg">
+              <T k="home.recentAlerts" />
+            </h2>
+            <p className="text-xs text-[var(--muted)] mt-0.5">
+              <T k="home.expandHint" />
+            </p>
           </div>
-          <div className="table-wrap mt-3 max-w-full">
-            <table className="data">
-              <thead>
-                <tr>
-                  <th>{locale === "zh-Hant" ? "警報" : "Alert"}</th>
-                  <th>{locale === "zh-Hant" ? "嚴重度" : "Severity"}</th>
-                  <th>{locale === "zh-Hant" ? "狀態" : "Status"}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentAlerts.map((a) => (
-                  <tr key={a.alert_id}>
-                    <td>
-                      <div className="font-medium">{a.title}</div>
-                      <div className="text-xs text-[var(--muted)]">
-                        {a.alert_id} · {a.indicator_name}
-                      </div>
-                    </td>
-                    <td>
-                      <SeverityBadge value={a.severity} />
-                    </td>
-                    <td>
-                      <StatusBadge value={a.status} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Link
+            href="/admin/alerts"
+            className="text-sm text-teal-800 font-semibold shrink-0 inline-flex items-center gap-0.5"
+          >
+            <T k="home.viewAll" />
+            <ChevronRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </div>
+        <div className="mt-3">
+          <AlertTrackerList
+            packs={recentPacks}
+            canOperate={false}
+            compact
+            highlightIds={dummyIds}
+            openId={dummyIds[0]}
+          />
+        </div>
+      </section>
 
-          <div className="mt-4 rounded-xl bg-slate-50 border border-[var(--line)] p-3 text-sm">
-            <div className="font-semibold">{locale === "zh-Hant" ? "整合脊柱" : "Integration spine"}</div>
-            <ol className="mt-2 space-y-1 text-[var(--muted)] list-decimal list-inside">
-              {locale === "zh-Hant" ? (
-                <>
-                  <li>Monitor 2.0 發出指標警告／違規</li>
-                  <li>CRMP 建立／同步工單並附上證據</li>
-                  <li>升級路徑選定團隊＋Lark 頻道＋SLA</li>
-                  <li>AI 草擬根因；人工核准干預</li>
-                  <li>稽核日誌＋每日績效儀表板</li>
-                </>
-              ) : (
-                <>
-                  <li>Monitor 2.0 emits indicator warning / breach</li>
-                  <li>CRMP creates / syncs ticket and attaches evidence</li>
-                  <li>Escalation route selects team + Lark channel + SLA</li>
-                  <li>AI drafts RCA; human approves intervention</li>
-                  <li>Audit log + daily performance dashboard</li>
-                </>
-              )}
-            </ol>
-          </div>
-        </section>
-      </div>
+      <HomeSpineViz
+        steps={spineSteps}
+        highlightStages={dummyIds.length ? [...DUMMY_HOME_STAGES] : []}
+        demoPulse={dummyIds.length > 0}
+      />
+
+      <footer
+        className="mt-8 pt-4 border-t border-[var(--line)] text-[11px] text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
+        data-testid="admin-build-stamp"
+      >
+        <span>{finishedAtLabel(ui === "zh-Hant" ? "zh-Hant" : "en")}</span>
+        <span className="font-mono tabular-nums break-all">{FINISHED_AT}</span>
+      </footer>
     </div>
   );
 }

@@ -11,6 +11,8 @@ export function ensureMarketIntelSchema(db: Database.Database) {
       url TEXT,
       enabled INTEGER NOT NULL DEFAULT 1,
       last_scraped_at TEXT,
+      health_status TEXT NOT NULL DEFAULT 'UNKNOWN',
+      health_detail TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
@@ -62,4 +64,13 @@ export function ensureMarketIntelSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_mi_findings_scanned ON market_intel_findings(scanned_at DESC);
     CREATE INDEX IF NOT EXISTS idx_mi_findings_fingerprint ON market_intel_findings(fingerprint);
   `);
+
+  // Migrate older DBs that predate health columns.
+  const cols = db.prepare(`PRAGMA table_info(market_intel_sources)`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === "health_status")) {
+    db.exec(`ALTER TABLE market_intel_sources ADD COLUMN health_status TEXT NOT NULL DEFAULT 'UNKNOWN'`);
+  }
+  if (!cols.some((c) => c.name === "health_detail")) {
+    db.exec(`ALTER TABLE market_intel_sources ADD COLUMN health_detail TEXT`);
+  }
 }

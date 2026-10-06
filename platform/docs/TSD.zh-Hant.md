@@ -1,10 +1,11 @@
 # Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 1.2  
+**版本：** 1.8  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
+**負責人：** demo platform owner  
 **相關文件：** [PRD](/admin/docs/prd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
 本 TSD 描述中央風險管理平台（CRMP）管理控制平面之技術設計。  
@@ -21,11 +22,11 @@
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
 - 對高影響動作強制人工關卡
 - 以 Maker/Checker 治理 AI 設定
-- 檢視 Spine、風險分析、市場情報與每日績效
+- 檢視首頁脊柱階段工單計數、風險分析、市場情報與每日績效
 
 ### 1.2 原型範圍內
 - 管理 UI + SQLite 持久化
-- Detectors → Alarm → AI RCA → 第二意見 → Messenger／Intervention → Spine → Dashboard
+- Monitor 2.0（指標＋偵測器登錄）→ Alarm → AI RCA → 第二意見 → Messenger／Intervention → 首頁脊柱 → Dashboard
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
@@ -41,20 +42,15 @@
 
 ## 2. 系統脈絡
 
-```
-Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
-                                      │
-                                      ▼
-                           第二 AI 挑戰者（≥ BREACH）
-                                      │
-                                      ▼
-                 Demo Messenger ◄──► 人工介入（Human Intervention）
-                                      │
-                                      ▼
-                           Spine 日誌 + Risk Log + 每日儀表板
-                                      │
-                                      ▼
-                      Lark 頻道／市場情報 outbox（模擬）
+```mermaid
+graph TD
+  Mon[Monitor 2.0 統一登錄] --> Alarm[警報]
+  Alarm --> Rca[AI RCA Skills 或 RAG]
+  Rca --> Ch[第二 AI 挑戰者]
+  Ch --> Msg[示範 Messenger]
+  Msg --> Gate[人工干預]
+  Gate --> Spine[脊柱風險日誌儀表板]
+  Spine --> Out[Lark 加情報寄件匣]
 ```
 
 **AI Admin** 位於執行期 Spine 旁側：不直接執行交易動作；在雙人管控下治理模型、劇本、RAG 語料與 AI 參數。
@@ -71,13 +67,30 @@ Monitor 2.0 / Detectors ──► 警報 ──► AI RCA（Skills | RAG）
 | 領域邏輯 | 業務規則 | `platform/src/lib/ai/*`、`lib/db.ts`、`lib/auth.ts` |
 | 持久化 | SQLite 檔 | `platform/data/vantage_risk.db` |
 
+```mermaid
+graph LR
+  UI[管理 UI] --> API[API 路由]
+  API --> Domain[領域邏輯]
+  Domain --> DB[SQLite]
+```
+
+
 ### 3.1 執行期 Spine 階段
-1. **Detectors** 採樣指標（`/admin/detectors`）
+1. **Monitor 2.0** 在統一指標＋偵測器登錄上執行採樣（`/admin/monitor-2`；`/admin/detectors` 轉址）
 2. **Alarm** 建立 Monitor 警報／工單
-3. **AI RCA** 匹配 Skill 或 RAG 推論（`/admin/ai-analyses`）
+3. **AI RCA** 匹配 Skill 或 RAG 推論（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`）
 4. **第二 AI 挑戰者** 於嚴重度達門檻時執行（`crmp-challenger-v0`）
 5. **Demo Messenger／人工介入** 分流與關卡控制
-6. **Spine 日誌** 記錄階段轉換（`/admin/spine`）
+6. **首頁脊柱** 記錄階段轉換與工單計數（`/admin`；`/admin/spine` 轉址 — 脊柱日誌分頁已移除）
+
+```mermaid
+graph TD
+  M2[Monitor 2.0 登錄] --> Alarm[Monitor 警報]
+  Alarm --> RCA[AI RCA]
+  RCA --> Challenger[第二 AI]
+  Challenger --> Messenger[Messenger 加干預]
+  Messenger --> Spine[脊柱加稽核]
+```
 7. **每日績效／Risk Log／市場情報** 彙總結果
 
 ---
@@ -129,7 +142,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 
 | 系統 | 原型模式 | 說明 |
 |---|---|---|
-| Monitor 2.0 | 鏡像表 + 同步／模擬警報 | 指標／警報／工單 |
+| Monitor 2.0 | 鏡像表 + 同步／全部執行／模擬 | 指標＋偵測器登錄在 `/admin/monitor-2`；未結警報／工單在即時警報與追蹤 |
 | Demo Messenger | 站內執行緒 + `/api/messenger` | 證據、升級、控制 |
 | Lark | 頻道登錄 + 模擬 Webhook／情報 outbox | 依嚴重度路由 |
 | 市場情報來源 | 啟發式 5 分鐘掃描 | 卡片格式 i–vi |
@@ -140,24 +153,55 @@ AI Admin 權限矩陣詳見 **§8.3**。
 
 ## 7. 管理介面地圖
 
-| URL | 模組 |
-|---|---|
-| `/admin` | 首頁 |
-| `/admin/dashboard` | 每日績效 |
-| `/admin/risk-log` | 風險日誌分析 |
-| `/admin/market-intel` | 市場情報掃描 |
-| `/admin/detectors` | 偵測器 |
-| `/admin/alerts` | 即時警報 |
-| `/admin/ai-analyses` | AI RCA 執行期＋第二 AI UI |
-| **`/admin/ai-admin`** | **AI Admin 管理（§8）** |
-| `/admin/interventions` | 人工關卡 |
-| `/admin/spine` | Spine 日誌 |
-| `/admin/rag` | RAG 語料 |
-| `/admin/skills` | Skill／風險情境劇本 |
-| **`/admin/messenger`** | **Demo Messenger（§11）** |
-| `/admin/security/ai-access` | AI 存取黑名單 |
-| `/admin/docs/prd` · `/user-guide` · `/uat` · `/ecosystem` · `/roadmap` · `/urls` · **`/tsd`** | 產品文件（英／繁中） |
-| `/admin/monitor-2`、`/admin/lark`、`/admin/escalation`… | 平台營運 |
+路由真實來源：`platform/src/lib/nav.ts` 的 `NAV_ITEMS`＋`NAV_GROUPS`。每一列都在本 TSD（本節＋§8–§16）有規格，使用手冊有操作說明。
+
+### 7.1 殼層（不是導覽列）
+
+| 介面 | 路由／儲存 | 模組 | 權限 |
+|---|---|---|---|
+| 登入 | `/login` | `app/login/page.tsx`、`lib/demo-session.ts` | 公開 |
+| 語言 | cookie `crmp_ui_lang` | `hooks/useUiLocale`、`lib/i18n.ts` | — |
+| 未讀徽章 | `crmp_nav_seen_v1`／`crmp_nav_extra_v1` | `AdminShell`、`lib/nav-badges.ts` | — |
+| 示範工作階段 | `crmp_demo_session_v1` | Pages 上保持具名角色 | — |
+| 手機抽屜 | `< lg` | `AdminShell` 漢堡 | — |
+| 品牌 | Vantage 標誌＋負責人列 | `VantageLogo`、`lib/platform-owner.ts` | — |
+
+未讀公式：`max(0, mergeNavTotals(server) + extra − seen)`。打開 href 寫入 seen。`bumpNavBadge(href)` 增加 extra。Pages 在 SQLite 計數為空時用 `FALLBACK_NAV_TOTALS`。
+
+### 7.2 頁面
+
+| 分組 | URL | UI／API | 權限 | 規格 |
+|---|---|---|---|---|
+| 總覽 | `/admin` | `app/admin/page.tsx` | `admin.access` | §16.2 |
+| 監控 | `/admin/dashboard` | `DailyDashboardView`、`GET/POST /api/dashboard` | `dashboard.read` | §16.3 |
+| 監控 | `/admin/risk-log` | `RiskLogDashboard`、`lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §16.4 |
+| 監控 | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
+| 監控 | `/admin/monitor-2` | 統一登錄＋`MonitorActions`、`/api/monitor`、`/api/detectors` | `monitor.read`／`monitor.operate` | §16.5 |
+| 監控 | `/admin/detectors` | 轉址 → Monitor 2.0（書籤） | `detectors.read` | §16.5 |
+| 監控 | `/admin/alerts` | **即時警報與追蹤** · `AlertTrackerBoard` | `monitor.read`／`monitor.operate` | §16.7 |
+| 監控 | `/admin/risk-domains` | 領域卡 | `monitor.read` | §16.8 |
+| AI | `/admin/ai-analyses` | 列表轉址 → 即時警報與追蹤；明細 `[id]` | `ai.read`／`ai.operate` | §9＋§16.9 |
+| AI | **`/admin/ai-admin`** | `AiAdminConsole`、`/api/ai-admin` | `ai.admin` | **§8** |
+| AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10＋§16.10 |
+| AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
+| AI | `/admin/rag` | `RagManager`、`/api/rag` | `rag.read`／`rag.manage` | §16.12 |
+| 應變 | `/admin/messenger` | `DemoMessenger`、`/api/messenger` | `lark.read` | **§11** |
+| 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
+| 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
+| 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
+| 應變 | `/admin/spine` | 轉址 → 管理首頁脊柱計數 | `spine.read` | §16.13 |
+| 組織 | `/admin/departments` | **BU 與團隊**合併中心 | `teams.read` | §16.16 |
+| 組織 | `/admin/teams` | 轉址 → `/admin/departments` | `teams.read` | §16.16 |
+| 組織 | `/admin/roles` | 可編輯 RBAC · `/api/roles` | `users.read`／`users.manage` | §16.16 |
+| 組織 | `/admin/users` | `UsersManager`、`/api/users` | `users.read`／`users.manage` | §16.16 |
+| 平台 | `/admin/data-sources` | `DataSourcesManager` | `sources.read`／`.manage` | §16.17 |
+| 平台 | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5＋§16.18 |
+| 平台 | `/admin/audit` | `AuditBoard` — CRMP／Vantage Markets 管理分頁＋回滾 | `audit.read` | §16.19 |
+| 平台 | `/admin/settings` | `SettingsManager`、`PATCH /api/settings` | `settings.manage` | §16.20 |
+| 文件 | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
+| 殼層 | `SelectionChatbot`（劃選文字 → 火花 → 聊天） | `lib/ai/desk-chat.ts`、`POST /api/ai-chat` | 公開／`ai.read` | §12 |
+
+靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-admin'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。
 
 ---
 
@@ -171,7 +215,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 4. 排隊訓練／重新校正工作
 5. 標註 RCA 品質回饋（CORRECT／INCORRECT／PARTIAL）
 
-此頁是**治理**，不是即時 RCA 工作台（`/admin/ai-analyses`），也不是介入櫃檯（`/admin/interventions`）。
+此頁是**治理**，不是即時 RCA 工作台（列表在**即時警報與追蹤** `/admin/alerts`；明細 `/admin/ai-analyses/[id]`），也不是介入櫃檯（`/admin/interventions`）。
 
 ### 8.2 路由與元件
 
@@ -341,15 +385,15 @@ JSON `action`：
 
 ### 8.11 序列 — 提案 Skill（成功路徑）
 
-```
-AI Engineer（Maker）              API / admin.ts                 Risk Owner（Checker）
-       │ propose_skill                  │                                │
-       ├───────────────────────────────►│ 插入 PENDING CR                │
-       │◄──────── request_id ───────────┤                                │
-       │                                │◄──── decide APPROVED ──────────┤
-       │                                │ applyChange SKILL/CREATE       │
-       │                                │ 稽核 AI_CHANGE_APPROVED        │
-       │                                ├──────── ok + applied ─────────►│
+```mermaid
+sequenceDiagram
+  participant Maker as AI 工程師
+  participant API as admin.ts
+  participant Checker as 風險負責人
+  Maker->>API: 提案技能
+  API-->>Maker: PENDING 單號
+  Checker->>API: 核准 APPROVED
+  API-->>Checker: 技能 CREATE 已套用
 ```
 
 ### 8.12 相關頁面
@@ -380,6 +424,18 @@ AI Engineer（Maker）              API / admin.ts                 Risk Owner（
 | 設定 | 預設 | 行為 |
 |---|---|---|
 | `ai.second_opinion_severity` | `BREACH` | 警報嚴重度等級 ≥ 設定時執行（`WARN` &lt; `BREACH` &lt; `CRITICAL`） |
+
+```mermaid
+graph TD
+  Rca[主 RCA 已寫入] --> Cmp{嚴重度達門檻?}
+  Cmp -->|否| Skip[略過挑戰者]
+  Cmp -->|是| Run[crmp-challenger-v0]
+  Run --> V{結論}
+  V -->|AGREE| Pack[附上挑戰包]
+  V -->|PARTIAL 或 DISAGREE| Human[needs human 等於 1]
+  Human --> Pack
+```
+
 
 ### 9.3 輸出
 | 欄位 | 說明 |
@@ -429,13 +485,16 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 |---|---|
 | `show_evidence` | 貼上證據庫＋挑戰摘要 |
 | `chat` | 使用者備註／挑戰；不同意標記 `needs_human` |
-| `escalate` | 升級路徑前進一步 |
+| `escalate` | 升級路徑前進一步；目前承辦窗貼轉交、下一窗貼接收 |
 | `dismiss` | 誤報 → DISMISSED／警報關閉 |
 | `close` | 接受 AI → CLOSED |
 | `recommend` → `confirm_action` | 雙重確認控制 → admin_ref（必要時 Checker） |
 
 ### 11.4 資料
 見 §4.4。
+
+### 11.5 POC 窗
+`getMessengerThread` 回傳 `poc_windows` — 匹配路徑每一跳一個 Lark 聊天（一線團隊 → 二線 → 風險負責人 → 高階），承辦來自 `users`／`teams`。UI：鳥瞰路徑晶片＋分欄（`data-testid=msg-poc-windows`）。
 
 ---
 
@@ -445,9 +504,25 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 每五分鐘掃描可能影響 LP 報價之新聞／社群／官方訊號；推送格式化卡片至專用 outbox；暴露指標 `M2-MKT-INTEL`。
 
 ### 12.2 主要模組
-- `lib/market-intel/scanner.ts`、`format.ts`、`schema.ts`
+- `lib/market-intel/scanner.ts`、`format.ts`、`schema.ts`、`demo-scan.ts`
 - UI `/admin/market-intel`
 - 設定：`market_intel.enabled`、`interval_minutes`、`lark_chat_id`
+
+### 12.3 公開快照（GitHub Pages）
+Pages 沒有 Next.js API。`POST /api/market-intel` 會回 **405**。工作台因此：
+1. 偵測 `github.io`／`/PRD/crmp-admin`／`NEXT_PUBLIC_STATIC_EXPORT`。
+2. 以與正式掃描相同的 `EVENT_TEMPLATES` 執行 `runClientMarketIntelScan()`。
+3. 在本機狀態更新發現、寄件匣、掃描紀錄與 `M2-MKT-INTEL`（存 `localStorage`）。
+4. SSG 時先種三筆發現，避免第一次畫面是 0。
+
+```mermaid
+graph TD
+  Click[立即掃描] --> Detect{公開快照?}
+  Detect -->|是| Demo[用戶端示範掃描]
+  Detect -->|否| Api[POST market-intel]
+  Demo --> Desk[發現加寄件匣]
+  Api --> Desk
+```
 
 ---
 
@@ -466,14 +541,30 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 ## 14. 主要 API 地圖（原型）
 
+GitHub Pages（靜態匯出）沒有這些 API。UI 必須降級：示範工作階段、用戶端情報掃描、本機設定訊息。
+
 | API | 角色 |
 |---|---|
-| `POST /api/auth/login` | Session cookie `crmp_session` |
+| `POST /api/auth/login` | Session cookie `crmp_session`；Pages 改走 `writeDemoSession` |
+| `POST /api/auth/logout` | 清除 cookie |
 | `GET/POST /api/ai` | 分析、模擬警報、`backfill_challenges` |
-| `GET/POST /api/ai-admin` | AI Admin 提案／核准／訓練／回饋 |
+| `GET/POST /api/ai-admin` | 提案／核准／訓練／回饋 |
 | `GET/POST /api/messenger` | 執行緒＋內嵌動作 |
 | `GET/POST /api/lark` | 頻道登錄／模擬通知 |
-| `GET/POST /api/market-intel` | 掃描／發現／outbox |
+| `GET/POST /api/market-intel` | 掃描／發現／寄件匣 |
+| `GET/POST /api/monitor` | Monitor 中心主 API：`run_detectors`、`toggle_pause`、`update_thresholds`、`sync_monitor2`、`ack_alert`、`update_ticket` |
+| `GET/POST /api/detectors` | 舊版偵測器 CRUD／執行（UI 在 Monitor 2.0） |
+| `GET/POST /api/escalation` | 路徑＋維度係數＋ESC-DEFAULT 探測 |
+| `GET/POST /api/roles` | 可編輯 RBAC（`update_role`；禁止 AI 寫入） |
+| `GET/POST /api/org` | 部門＋團隊；`update_team` 任務／值班 |
+| `POST /api/audit/rollback` | 依 `audit_id` 還原變更前快照 |
+| `GET/POST /api/ai-improve` | 如何改進審查聊天 |
+| `POST /api/ai-chat` | 劃選 AI 聊天 |
+| `POST /api/dashboard` | 重建每日指標 |
+| `GET/POST /api/rag` | 清單、檢索；人類寫入／propose_rag（AI 封鎖） |
+| `GET/POST /api/users` | 目錄＋新增／停用 |
+| `PATCH /api/settings` | 單一鍵儲存 |
+| 干預 | 伺服器動作 `decideInterventionAction`（核准／駁回） |
 
 ---
 
@@ -492,12 +583,119 @@ SQLite：`platform/data/vantage_risk.db`。
 
 ---
 
-## 16. 文件控制
+## 16. 其餘管理模組
+
+§8–§13 未完整寫出的模組。行為必須對齊使用手冊操作說明與 PRD §6.4。
+
+### 16.1 登入、工作階段、殼層、未讀 — §7.1
+
+- 角色：`lib/demo-session.ts` 的 `DEMO_PERSONAS`（demo platform owner 第一）。  
+- localhost：`POST /api/auth/login` 設 `crmp_session` **並**寫入示範工作階段。  
+- Pages／404／405：略過 API，只 `writeDemoSession`。  
+- `AdminShell` 在 `isPublicSnapshot()` 時優先示範工作階段。登出兩者都清。  
+- 導覽分組來自 `NAV_GROUPS`。未讀：`AdminShell`＋市場情報、Monitor 2.0、即時警報與追蹤、Messenger 的 `bumpNavBadge`。
+
+### 16.2 管理首頁
+
+SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`HomeDummyAlertButtons` POST `/api/ai` `dummy_spine`（單則或組）走完 DETECT→結案；語系來自 `getUiLocale()`，介面為繁中時 Messenger 備註存中文；儲存的英文標題／訊息顯示時仍經 `phrase()` 翻譯。`AlertTrackerBoard` 會對 hash 與 `?dummy=` 醒目顯示。
+
+### 16.3 每日績效
+
+`getDailyDashboard()` → CFD／加密指標陣列＋WARN／BREACH 摘要。`POST /api/dashboard` 重新整理。
+
+### 16.4 風險日誌
+
+`getRiskLogDashboard()` 彙總：摘要美元／時間、`by_category`、`by_domain`、`loopholes`、時序 `records`。唯讀 UI（`RiskLogDashboard`）。
+
+### 16.5 Monitor 2.0 中心（統一指標＋偵測器登錄）
+
+單一登錄表：`monitor_indicators` LEFT JOIN `detectors`（每指標偵測器代碼、暫停、上次執行）。**執行全部指標**／**同步**／**暫停**；門檻編輯經 `IndicatorThresholdEditor`；**近期執行**來自 `detector_runs`。舊 `tab=alerts|tickets` 深連結轉至即時警報與追蹤。`/admin/detectors` 轉址至此（左側無偵測器列）。主 API：`POST /api/monitor`（`run_detectors`／`toggle_pause`／`update_thresholds`／`sync_monitor2`）。舊 `POST /api/detectors` 仍在。表 `detectors`／`detector_runs` 仍在 SQLite — UI 在本頁。顯示 `monitor2.base_url`。未結工單數連至 `/admin/alerts`。手機：`sm:hidden` 卡片＋`sm:block` 表格。
+
+### 16.6 偵測器網址（轉址）
+
+僅書籤：`/admin/detectors` → `/admin/monitor-2`。執行／切換／近期執行見 §16.5。
+
+### 16.7 即時警報與追蹤
+
+`AlertTrackerBoard`：`monitor_alerts` 聯結指標。僅未結卡片；排序 CRITICAL／BREACH／WARN 再依時間。**分組 AI 管線**控制＋排序說明；M2-* 為 `MonitorCode` 提示。`/admin/ai-analyses` 列表轉址至此。有 `monitor.operate` 時可 `ack_alert`。已關閉工單離開此佇列進風險日誌。
+
+### 16.8 風險領域
+
+`risk_domains` 卡片：priority、product_coverage、owner_department、supporting_departments_json。唯讀。
+
+### 16.9 AI 分析清單／明細
+
+清單併入即時警報與追蹤（`AlertTrackerBoard`）：**分組 AI 管線**＋排序說明；localhost 五顆示範按鈕（分析未結／模擬技能／RAG／危急／補跑第二 AI）。M2-* 為 `MonitorCode` 提示／連結。明細：`/admin/ai-analyses/[id]`＋`AiChallengePanel`。AI 管理總覽有**第一／第二線**卡片（`ai.line1.*`／`ai.line2.*`）。見 §9。
+
+### 16.10 技能看板＋SKILL.md 頁
+
+`SkillsScenariosBoard`：搜尋、技能 vs 鏈分頁、**進入** → `/admin/skills/[code]`（`finalizeSkill` 劇本：何時用／不用、前置、步驟、證據、停止、成功）。目錄：`risk-scenarios-catalog.ts`＋額外。
+
+### 16.11 Knowledge Tree（知識樹）
+
+`KnowledgeTreeBoard` 用戶端 SVG（`viewBox` 寬 1120）。樹幹：`domains`｜`chains`｜`rag`。產品篩選 ALL／CFD／Crypto。領域節點換行（5 欄 × 2）。點領域展開技能；點技能填檢視器；`router.push` 劇本（不要用無效的 SVG `<Link>`）。RAG 文件依 `tags_json`＋標題計分。大綱模式是同一張圖的巢狀清單。
+
+### 16.12 RAG 語料
+
+`RagManager`：分類篩選、搜尋、檢索 `GET /api/rag?mode=retrieve&q=&limit=6`。**人工閘道：** AI 不能編輯的頁／欄位升級給人類 — AI 服務角色不可 POST／PATCH；具 `rag.manage` 的人類或 AI Admin `propose_rag` Maker-Checker。FTS 經 `reindexRagFts`。
+
+### 16.13 脊柱（管理首頁）
+
+專屬脊柱日誌左側分頁已移除。階段 DETECT…DASHBOARD 顯示於管理首頁 `HomeSpineViz`，含**階段工單計數**（`spineStageCounts`）。`/admin/spine` 轉址至 `/admin`。
+
+### 16.14 干預
+
+`listInterventions()`。待決：備註＋核准／駁回經 `decideInterventionAction`。樣本顯示**操作者信箱**。寫入脊柱＋稽核。與 AI Admin 變更單分開。
+
+### 16.15 Lark＋升級
+
+`lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
+
+### 16.16 組織
+
+**BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。部門（職責 JSON）嵌套團隊（Lark chat、值班、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
+
+### 16.17 資料來源
+
+`data_sources` 登錄。有 `sources.manage` 時 `DataSourcesManager` CRUD。
+
+### 16.18 AI 存取黑名單
+
+`lib/security/ai-access-blocklist.ts` → `AI_ACCESS_BLOCKLIST`、`AI_ALLOWED_CAPABILITIES`、`AI_SERVICE_ROLE_FORBIDDEN_PERMISSIONS`。唯讀看板＋統計。
+
+### 16.19 稽核日誌
+
+`AuditBoard` 經 `classifyAuditPlane`（`lib/audit.ts`）將 `audit_logs` 分為兩個分頁：
+
+| 分頁 | 內容 |
+|---|---|
+| **CRMP 日誌** | 本 CRMP 管理介面內變更 — 警報、AI、技能、升級、干預、Messenger |
+| **Vantage Markets 管理日誌** | 其他管理頁 — 限制權限、拉取交易、觸發 Lark、BU POC 風險事件回應、設定／組織／RAG |
+
+兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
+
+### 16.20 平台設定
+
+`SettingsManager` 依鍵前綴分組：`platform.|products.`、`monitor2.`、`ai.`、`market_intel.`、`lark.`、`escalation.|detectors.`。`PATCH /api/settings`。Pages：訊息「僅存在此瀏覽器」。
+
+### 16.21 文件渲染
+
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（45）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`。
+
+---
+
+## 17. 文件控制
 
 | 版次 | 日期 | 說明 |
 |---|---|---|
 | 1.0 | 2026-10-01 | 初版骨架 |
 | 1.1 | 2026-10-01 | 完整 §8 AI Admin 管理頁規格 |
 | 1.2 | 2026-10-01 | §9 挑戰者、§11 Messenger、§12 市場情報、文件／i18n／行動、重編號 |
+| 1.3 | 2026-10-04 | 公開快照示範掃描、導覽分組、demo platform owner 負責人、Pages 登入 |
+| 1.5 | 2026-10-04 | TSD 流程圖與序列圖；mermaid 改 SVG 渲染 |
+| 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
+| 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
+| 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
 
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

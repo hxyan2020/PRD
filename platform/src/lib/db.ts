@@ -1,4 +1,5 @@
 import Database from "better-sqlite3";
+import { classifyAuditPlane, ensureAuditDemoSamples } from "@/lib/audit";
 import fs from "fs";
 import path from "path";
 import { ensureAiSchema } from "@/lib/ai/schema";
@@ -12,7 +13,13 @@ import { seedAiAdminIfEmpty } from "@/lib/ai/admin";
 import { ensureRiskLogSchema, seedRiskLogIfEmpty } from "@/lib/ai/risk-log";
 import { ensureMarketIntelSchema } from "@/lib/market-intel/schema";
 import { ensureChallengerSchema } from "@/lib/ai/challenger";
+import { ensureImprovementSchema } from "@/lib/ai/improvement";
+import { seedAiAnalysesIfEmpty } from "@/lib/ai/seed-analyses";
+import { seedInterventionsIfEmpty } from "@/lib/ai/intervention";
 import { ensureMessengerSchema, seedMessengerIfEmpty } from "@/lib/messenger/demo";
+import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
+import { ensureDocEditsSchema } from "@/lib/docs/edit-store";
+import { DEPARTMENT_LIST, ROLE_CHARTERS } from "@/lib/org-catalog";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "vantage_risk.db");
@@ -30,6 +37,7 @@ function ensureDataDir() {
 function createSchema(db: Database.Database) {
   db.exec(`
     PRAGMA journal_mode = WAL;
+    PRAGMA busy_timeout = 5000;
     PRAGMA foreign_keys = ON;
 
     CREATE TABLE IF NOT EXISTS departments (
@@ -115,7 +123,8 @@ function createSchema(db: Database.Database) {
       status TEXT NOT NULL DEFAULT 'HEALTHY',
       last_value REAL,
       last_checked_at TEXT,
-      ticket_open_count INTEGER NOT NULL DEFAULT 0
+      ticket_open_count INTEGER NOT NULL DEFAULT 0,
+      paused INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS monitor_alerts (
@@ -209,11 +218,17 @@ function createSchema(db: Database.Database) {
 }
 
 const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
-  ["SUPER_ADMIN", "Super Admin", "Full platform administration across all departments.", null, ["*"]],
+  [
+    "SUPER_ADMIN",
+    ROLE_CHARTERS.SUPER_ADMIN.name,
+    ROLE_CHARTERS.SUPER_ADMIN.intro,
+    ROLE_CHARTERS.SUPER_ADMIN.department,
+    ["*"],
+  ],
   [
     "RISK_OWNER",
-    "Risk Owner",
-    "Risk department owner — policy, escalations, interventions.",
+    ROLE_CHARTERS.RISK_OWNER.name,
+    ROLE_CHARTERS.RISK_OWNER.intro,
     "RISK_CONTROL",
     [
       "admin.access",
@@ -254,8 +269,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "RISK_ANALYST",
-    "Risk Analyst",
-    "Monitors alerts, investigates, proposes actions.",
+    ROLE_CHARTERS.RISK_ANALYST.name,
+    ROLE_CHARTERS.RISK_ANALYST.intro,
     "RISK_CONTROL",
     [
       "admin.access",
@@ -283,8 +298,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "OPS_LEAD",
-    "Operations Lead",
-    "Owns ops queues, funding exceptions and reconciliations.",
+    ROLE_CHARTERS.OPS_LEAD.name,
+    ROLE_CHARTERS.OPS_LEAD.intro,
     "OPERATIONS",
     [
       "admin.access",
@@ -309,8 +324,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "OPS_ANALYST",
-    "Operations Analyst",
-    "Handles tickets and operational case work.",
+    ROLE_CHARTERS.OPS_ANALYST.name,
+    ROLE_CHARTERS.OPS_ANALYST.intro,
     "OPERATIONS",
     [
       "admin.access",
@@ -329,8 +344,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "AI_ENGINEER",
-    "AI Engineer",
-    "Maintains detectors, RCA models and evidence pipelines.",
+    ROLE_CHARTERS.AI_ENGINEER.name,
+    ROLE_CHARTERS.AI_ENGINEER.intro,
     "AI",
     [
       "admin.access",
@@ -359,8 +374,8 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "SYSTEM_ADMIN",
-    "System Admin",
-    "Infra, LP endpoints, bridges, servers and platform config.",
+    ROLE_CHARTERS.SYSTEM_ADMIN.name,
+    ROLE_CHARTERS.SYSTEM_ADMIN.intro,
     "SYSTEM",
     [
       "admin.access",
@@ -390,9 +405,9 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
   ],
   [
     "VIEWER",
-    "Viewer",
-    "Read-only access to dashboards, org chart and source registry.",
-    null,
+    ROLE_CHARTERS.VIEWER.name,
+    ROLE_CHARTERS.VIEWER.intro,
+    ROLE_CHARTERS.VIEWER.department,
     [
       "admin.access",
       "users.read",
@@ -413,75 +428,39 @@ const ROLE_DEFS: Array<[string, string, string, string | null, string[]]> = [
 ];
 
 function syncRoles(db: Database.Database) {
+  // Seed new roles; do NOT overwrite permissions_json on conflict so human edits persist.
   const upsert = db.prepare(
     `INSERT INTO roles (code, name, description, department_code, permissions_json)
      VALUES (?, ?, ?, ?, ?)
      ON CONFLICT(code) DO UPDATE SET
        name = excluded.name,
        description = excluded.description,
-       department_code = excluded.department_code,
-       permissions_json = excluded.permissions_json`
+       department_code = excluded.department_code`
   );
   for (const [code, name, description, department, perms] of ROLE_DEFS) {
     upsert.run(code, name, description, department, JSON.stringify(perms));
   }
 }
 
+function syncDepartments(db: Database.Database) {
+  const upsert = db.prepare(
+    `INSERT INTO departments (code, name, description, primary_responsibilities)
+     VALUES (?, ?, ?, ?)
+     ON CONFLICT(code) DO UPDATE SET
+       name = excluded.name,
+       description = excluded.description,
+       primary_responsibilities = excluded.primary_responsibilities`
+  );
+  for (const d of DEPARTMENT_LIST) {
+    upsert.run(d.code, d.name, d.mandate, JSON.stringify(d.owns.map((item) => item.title)));
+  }
+}
+
 function seedIfEmpty(db: Database.Database) {
   syncRoles(db);
+  syncDepartments(db);
   const userCount = db.prepare("SELECT COUNT(*) AS c FROM users").get() as { c: number };
   if (userCount.c > 0) return;
-
-  const insertDept = db.prepare(
-    `INSERT INTO departments (code, name, description, primary_responsibilities) VALUES (?, ?, ?, ?)`
-  );
-  const depts = [
-    [
-      "RISK_CONTROL",
-      "Risk Control",
-      "Owns market, credit, liquidity and limit policy; decides escalations and interventions.",
-      JSON.stringify([
-        "Limit policy & breach authority",
-        "Market / credit / LP hedge risk",
-        "Human approval of high-severity actions",
-        "Daily risk dashboard ownership",
-      ]),
-    ],
-    [
-      "OPERATIONS",
-      "Operations",
-      "Runs funding, reconciliation, client handling and case execution.",
-      JSON.stringify([
-        "Deposit / withdrawal exceptions",
-        "EOD reconciliations",
-        "Ticket triage & client contact",
-        "Promo / bonus ops execution",
-      ]),
-    ],
-    [
-      "AI",
-      "AI",
-      "Builds detectors, root-cause narratives and alert prioritisation models.",
-      JSON.stringify([
-        "Anomaly & toxic-flow models",
-        "AI RCA narratives with evidence links",
-        "Alert quality / model drift monitoring",
-        "Shadow → live detector promotion",
-      ]),
-    ],
-    [
-      "SYSTEM",
-      "System",
-      "Admin, infra, LP endpoints, bridges, trading servers and audit store.",
-      JSON.stringify([
-        "Trading server / bridge / LP health",
-        "Config change control & kill-switches",
-        "Data pipelines & evidence vault",
-        "Admin privileges & audit logging",
-      ]),
-    ],
-  ] as const;
-  for (const d of depts) insertDept.run(...d);
 
   const insertTeam = db.prepare(
     `INSERT INTO teams (name, department_code, mission, lark_chat_id, on_call_rotation) VALUES (?, ?, ?, ?, ?)`
@@ -540,6 +519,10 @@ function seedIfEmpty(db: Database.Database) {
   insertUser.run("system.admin@vantagemarkets.com", "Noah Wright", "sys123", "SYSTEM_ADMIN", "SYSTEM", 5);
   insertUser.run("admin@vantagemarkets.com", "Platform Admin", "admin123", "SUPER_ADMIN", null, null);
   insertUser.run("viewer@vantagemarkets.com", "Board Viewer", "view123", "VIEWER", null, null);
+  insertUser.run(PLATFORM_OWNER.email, PLATFORM_OWNER.name, PLATFORM_OWNER.password, PLATFORM_OWNER.role_code, PLATFORM_OWNER.department_code, 1);
+  if (PLATFORM_OWNER.githubEmail.toLowerCase() !== PLATFORM_OWNER.email.toLowerCase()) {
+    insertUser.run(PLATFORM_OWNER.githubEmail, PLATFORM_OWNER.name, PLATFORM_OWNER.password, PLATFORM_OWNER.role_code, PLATFORM_OWNER.department_code, 1);
+  }
 
   const insertSource = db.prepare(
     `INSERT INTO data_sources (name, category, url, description, owner_department, auth_type, refresh_cadence, status, tags_json, notes)
@@ -667,6 +650,9 @@ function seedIfEmpty(db: Database.Database) {
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)`
   );
   insertSetting.run("platform.name", "Vantage CRMP", "Centralised Risk Management Platform");
+  insertSetting.run("platform.owner_name", PLATFORM_OWNER.name, "Named platform and documentation owner");
+  insertSetting.run("platform.owner_email", PLATFORM_OWNER.email, "Platform owner contact");
+  insertSetting.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");
   insertSetting.run("monitor2.base_url", "https://monitor.vantagemarkets.internal/2.0", "Monitor 2.0 base URL");
   insertSetting.run("monitor2.sync_enabled", "true", "Bi-directional alert/ticket sync");
   insertSetting.run("lark.app_id", "cli_mock_vantage_crmp", "Lark app id (prototype)");
@@ -734,9 +720,20 @@ const MONITOR_SEED_ROWS: Array<{
   { monitor_id: "M2-ARB-026", name: "Latency Arb Toxicity Score", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 0.5, breach: 0.7, unit: "score", status: "HEALTHY", last_value: 0.18, tickets: 0 },
   { monitor_id: "M2-SWAP-027", name: "Symbols with Swap vs Benchmark Δ", domain_code: "PRODUCT_CONFIG", product: "CFD", warn: 5, breach: 10, unit: "symbols", status: "HEALTHY", last_value: 1, tickets: 0 },
   { monitor_id: "M2-MKT-INTEL", name: "Market Intelligence High-Impact Hits (5m)", domain_code: "MARKET_PRICING", product: "CFD+Crypto", warn: 1, breach: 3, unit: "hits/5m", status: "HEALTHY", last_value: 0, tickets: 0 },
+  { monitor_id: "M2-PERP-BASIS", name: "Perp Mark–Index Basis", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 25, breach: 60, unit: "bps", status: "HEALTHY", last_value: 12, tickets: 0 },
+  { monitor_id: "M2-FUNDING-RATE", name: "Perp Funding Rate Abs (8h)", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 0.15, breach: 0.5, unit: "%", status: "HEALTHY", last_value: 0.04, tickets: 0 },
+  { monitor_id: "M2-STABLE-EXP", name: "Stablecoin Depeg Exposure (USD)", domain_code: "CRYPTO_EXCHANGE", product: "Crypto", warn: 500000, breach: 2000000, unit: "USD", status: "HEALTHY", last_value: 120000, tickets: 0 },
+  { monitor_id: "M2-MT-DISC", name: "Trading Platform Disconnect Rate", domain_code: "TECH_INFRA", product: "CFD+Crypto", warn: 1, breach: 5, unit: "%", status: "HEALTHY", last_value: 0.2, tickets: 0 },
+  { monitor_id: "M2-RECON-BRK", name: "Reconciliation Breaks (open)", domain_code: "OPS_PROCESS", product: "CFD+Crypto", warn: 5, breach: 20, unit: "count", status: "HEALTHY", last_value: 2, tickets: 0 },
+  { monitor_id: "M2-KILL-COUNT", name: "Active Symbol Kill-Switches", domain_code: "TECH_INFRA", product: "CFD+Crypto", warn: 2, breach: 5, unit: "symbols", status: "HEALTHY", last_value: 0, tickets: 0 },
+  { monitor_id: "M2-NEWS-GROSS", name: "Gross Notional into Tier-1 News (USD)", domain_code: "MARKET_PRICING", product: "CFD", warn: 50000000, breach: 120000000, unit: "USD", status: "HEALTHY", last_value: 18000000, tickets: 0 },
+  { monitor_id: "M2-CHARGEBACK", name: "Payment Chargebacks (24h)", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 15, breach: 40, unit: "count/24h", status: "HEALTHY", last_value: 6, tickets: 0 },
+  { monitor_id: "M2-IB-PAYOUT", name: "IB Rebate Anomaly Score", domain_code: "FRAUD_CONDUCT", product: "CFD", warn: 0.6, breach: 0.8, unit: "score", status: "HEALTHY", last_value: 0.21, tickets: 0 },
+  { monitor_id: "M2-COPY-CHURN", name: "Copy Follower Net Exit (1h)", domain_code: "CREDIT_CLIENT", product: "CFD", warn: 12, breach: 25, unit: "%", status: "HEALTHY", last_value: 3.2, tickets: 0 },
 ];
 
 function ensureExtraMonitors(db: Database.Database) {
+  // Do not overwrite warn/breach on conflict — operators edit those live in Monitor 2.0.
   const upsert = db.prepare(
     `INSERT INTO monitor_indicators (monitor_id, name, domain_code, product, threshold_warn, threshold_breach, unit, status, last_value, last_checked_at, ticket_open_count)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)
@@ -744,8 +741,6 @@ function ensureExtraMonitors(db: Database.Database) {
        name = excluded.name,
        domain_code = excluded.domain_code,
        product = excluded.product,
-       threshold_warn = excluded.threshold_warn,
-       threshold_breach = excluded.threshold_breach,
        unit = excluded.unit`
   );
   for (const row of MONITOR_SEED_ROWS) {
@@ -762,6 +757,328 @@ function ensureExtraMonitors(db: Database.Database) {
       row.tickets
     );
   }
+  // Lazy import avoids circular init with scenario modules that only need getDb later.
+  const { EXTRA_MONITOR_SEED_ROWS } = require("@/lib/ai/risk-domain-scenarios") as typeof import("@/lib/ai/risk-domain-scenarios");
+  for (const row of EXTRA_MONITOR_SEED_ROWS) {
+    upsert.run(
+      row.monitor_id,
+      row.name,
+      row.domain_code,
+      row.product,
+      row.warn,
+      row.breach,
+      row.unit,
+      row.status,
+      row.last_value,
+      row.tickets
+    );
+  }
+}
+
+function ensureExtraRiskDomains(db: Database.Database) {
+  const { EXTRA_RISK_DOMAINS } = require("@/lib/ai/risk-domain-scenarios") as typeof import("@/lib/ai/risk-domain-scenarios");
+  const upsert = db.prepare(
+    `INSERT INTO risk_domains (code, name, description, owner_department, supporting_departments_json, product_coverage, priority)
+     VALUES (?, ?, ?, ?, ?, ?, ?)
+     ON CONFLICT(code) DO UPDATE SET
+       name = excluded.name,
+       description = excluded.description,
+       owner_department = excluded.owner_department,
+       supporting_departments_json = excluded.supporting_departments_json,
+       product_coverage = excluded.product_coverage,
+       priority = excluded.priority`
+  );
+  for (const d of EXTRA_RISK_DOMAINS) {
+    upsert.run(
+      d.code,
+      d.name,
+      d.description,
+      d.owner_department,
+      d.supporting_departments_json,
+      d.product_coverage,
+      d.priority
+    );
+  }
+  // Keep original domains active; gently rebalance a few priorities for P0–P3 colouring.
+  const touch = db.prepare(`UPDATE risk_domains SET priority = ? WHERE code = ?`);
+  touch.run(1, "MARKET_PRICING");
+  touch.run(1, "CREDIT_CLIENT");
+  touch.run(1, "LP_HEDGE");
+  touch.run(1, "CRYPTO_EXCHANGE");
+  touch.run(1, "FRAUD_CONDUCT");
+  touch.run(1, "TECH_INFRA");
+  touch.run(1, "REG_CAPITAL");
+  touch.run(2, "PRODUCT_CONFIG");
+  touch.run(2, "OPS_PROCESS");
+  touch.run(2, "MODEL_AI");
+}
+
+function ensureUser(
+  db: Database.Database,
+  email: string,
+  name: string,
+  password: string,
+  role: string,
+  department: string | null,
+  teamId: number | null
+) {
+  const existing = db
+    .prepare(`SELECT id FROM users WHERE lower(email) = lower(?)`)
+    .get(email) as { id: number } | undefined;
+  if (!existing) {
+    db.prepare(
+      `INSERT INTO users (email, name, password, role_code, department_code, team_id, status)
+       VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE')`
+    ).run(email, name, password, role, department, teamId);
+  } else {
+    db.prepare(
+      `UPDATE users SET name = ?, password = ?, role_code = ?, department_code = ?, status = 'ACTIVE' WHERE id = ?`
+    ).run(name, password, role, department, existing.id);
+  }
+}
+
+function ensurePlatformOwner(db: Database.Database) {
+  for (const former of FORMER_OWNER_EMAILS) {
+    if (former.toLowerCase() === PLATFORM_OWNER.email.toLowerCase()) continue;
+    const dest = db
+      .prepare(`SELECT id FROM users WHERE lower(email) = lower(?)`)
+      .get(PLATFORM_OWNER.email) as { id: number } | undefined;
+    const src = db
+      .prepare(`SELECT id FROM users WHERE lower(email) = lower(?)`)
+      .get(former) as { id: number } | undefined;
+    if (src && !dest) {
+      db.prepare(`UPDATE users SET email = ? WHERE id = ?`).run(PLATFORM_OWNER.email, src.id);
+    }
+  }
+  ensureUser(
+    db,
+    PLATFORM_OWNER.email,
+    PLATFORM_OWNER.name,
+    PLATFORM_OWNER.password,
+    PLATFORM_OWNER.role_code,
+    PLATFORM_OWNER.department_code,
+    1
+  );
+  if (PLATFORM_OWNER.githubEmail.toLowerCase() !== PLATFORM_OWNER.email.toLowerCase()) {
+    ensureUser(
+      db,
+      PLATFORM_OWNER.githubEmail,
+      PLATFORM_OWNER.name,
+      PLATFORM_OWNER.password,
+      PLATFORM_OWNER.role_code,
+      PLATFORM_OWNER.department_code,
+      1
+    );
+  }
+  const put = db.prepare(
+    `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value, description = excluded.description, updated_at = datetime('now')`
+  );
+  put.run("platform.owner_name", PLATFORM_OWNER.name, "Named platform and documentation owner");
+  put.run("platform.owner_email", PLATFORM_OWNER.email, "Platform owner contact");
+  put.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");
+}
+
+function ensureMonitorIndicatorColumns(db: Database.Database) {
+  const cols = db.prepare(`PRAGMA table_info(monitor_indicators)`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === "paused")) {
+    db.exec(`ALTER TABLE monitor_indicators ADD COLUMN paused INTEGER NOT NULL DEFAULT 0`);
+  }
+}
+
+/** Escalation route codes, default catch-all, and dimension coefficients. */
+function ensureEscalationSchema(db: Database.Database) {
+  const cols = db.prepare(`PRAGMA table_info(escalation_routes)`).all() as Array<{ name: string }>;
+  const names = new Set(cols.map((c) => c.name));
+  if (!names.has("route_code")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN route_code TEXT`);
+  }
+  if (!names.has("is_default")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN is_default INTEGER NOT NULL DEFAULT 0`);
+  }
+  if (!names.has("coefficients_json")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN coefficients_json TEXT NOT NULL DEFAULT '{}'`);
+  }
+  if (!names.has("risk_scenario")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN risk_scenario TEXT`);
+  }
+  if (!names.has("involved_teams_json")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN involved_teams_json TEXT NOT NULL DEFAULT '[]'`);
+  }
+  if (!names.has("pending_minutes_threshold")) {
+    db.exec(`ALTER TABLE escalation_routes ADD COLUMN pending_minutes_threshold INTEGER`);
+  }
+
+  const defaultCoeffs = JSON.stringify({
+    severity: 1.0,
+    involved_teams: 1.0,
+    risk_scenario: 1.0,
+    pending_time: 1.0,
+    need_human_intervention: 1.0,
+  });
+
+  const codeMap: Array<{
+    name: string;
+    code: string;
+    scenario: string;
+    pending: number;
+    teams: string[];
+    coeffs: Record<string, number>;
+  }> = [
+    {
+      name: "Margin breach → Risk Desk",
+      code: "ESC-MARGIN-BREACH",
+      scenario: "margin_cascade",
+      pending: 15,
+      teams: ["Risk Control Desk", "Credit Desk"],
+      coeffs: { severity: 1.4, involved_teams: 1.1, risk_scenario: 1.3, pending_time: 1.2, need_human_intervention: 1.5 },
+    },
+    {
+      name: "LP reject storm",
+      code: "ESC-LP-REJECT",
+      scenario: "lp_reject_storm",
+      pending: 10,
+      teams: ["Trading Infra", "Risk Control Desk"],
+      coeffs: { severity: 1.5, involved_teams: 1.2, risk_scenario: 1.4, pending_time: 1.3, need_human_intervention: 1.4 },
+    },
+    {
+      name: "Hot wallet float",
+      code: "ESC-WALLET-FLOAT",
+      scenario: "wallet_float",
+      pending: 20,
+      teams: ["Crypto Exchange Risk", "System"],
+      coeffs: { severity: 1.3, involved_teams: 1.2, risk_scenario: 1.5, pending_time: 1.1, need_human_intervention: 1.5 },
+    },
+    {
+      name: "Copy concentration",
+      code: "ESC-COPY-CONC",
+      scenario: "copy_concentration",
+      pending: 30,
+      teams: ["Credit Desk", "Risk Control Desk"],
+      coeffs: { severity: 1.2, involved_teams: 1.0, risk_scenario: 1.3, pending_time: 1.0, need_human_intervention: 1.2 },
+    },
+    {
+      name: "Feed stale quotes",
+      code: "ESC-FEED-STALE",
+      scenario: "stale_feed",
+      pending: 10,
+      teams: ["Trading Infra", "Pricing"],
+      coeffs: { severity: 1.4, involved_teams: 1.1, risk_scenario: 1.2, pending_time: 1.4, need_human_intervention: 1.3 },
+    },
+    {
+      name: "Funding exception surge",
+      code: "ESC-FUNDING",
+      scenario: "funding_exception",
+      pending: 45,
+      teams: ["Operations", "Risk Control Desk"],
+      coeffs: { severity: 1.1, involved_teams: 1.0, risk_scenario: 1.1, pending_time: 1.2, need_human_intervention: 1.1 },
+    },
+    {
+      name: "Model drift CRITICAL",
+      code: "ESC-MODEL-DRIFT",
+      scenario: "model_drift",
+      pending: 20,
+      teams: ["AI Detection Lab", "Risk Control Desk"],
+      coeffs: { severity: 1.5, involved_teams: 1.1, risk_scenario: 1.4, pending_time: 1.2, need_human_intervention: 1.5 },
+    },
+  ];
+  const setCode = db.prepare(
+    `UPDATE escalation_routes
+     SET route_code = COALESCE(NULLIF(route_code, ''), ?),
+         coefficients_json = ?,
+         risk_scenario = COALESCE(NULLIF(risk_scenario, ''), ?),
+         pending_minutes_threshold = COALESCE(pending_minutes_threshold, ?),
+         involved_teams_json = CASE WHEN involved_teams_json IS NULL OR involved_teams_json = '' OR involved_teams_json = '[]' THEN ? ELSE involved_teams_json END
+     WHERE name = ? OR route_code = ?`
+  );
+  for (const row of codeMap) {
+    // Curated dimension coefficients — human may edit later via Escalation UI.
+    setCode.run(
+      row.code,
+      JSON.stringify(row.coeffs),
+      row.scenario,
+      row.pending,
+      JSON.stringify(row.teams),
+      row.name,
+      row.code
+    );
+  }
+  // Default catch-all coefficients (balanced).
+  db.prepare(
+    `UPDATE escalation_routes
+     SET coefficients_json = ?,
+         pending_minutes_threshold = COALESCE(pending_minutes_threshold, 30),
+         involved_teams_json = CASE WHEN involved_teams_json IS NULL OR involved_teams_json = '' OR involved_teams_json = '[]'
+           THEN ? ELSE involved_teams_json END
+     WHERE is_default = 1 OR route_code = 'ESC-DEFAULT'`
+  ).run(
+    JSON.stringify({
+      severity: 1.0,
+      involved_teams: 1.0,
+      risk_scenario: 1.0,
+      pending_time: 1.2,
+      need_human_intervention: 1.3,
+    }),
+    JSON.stringify(["Risk Control Desk", "Ops Lead"])
+  );
+
+  const existingDefault = db
+    .prepare(
+      `SELECT id FROM escalation_routes WHERE is_default = 1 OR route_code = 'ESC-DEFAULT' OR domain_code = '*' LIMIT 1`
+    )
+    .get() as { id: number } | undefined;
+  if (!existingDefault) {
+    const riskTeam = db
+      .prepare(`SELECT id FROM teams WHERE department_code = 'RISK_CONTROL' ORDER BY id LIMIT 1`)
+      .get() as { id: number } | undefined;
+    const lark = db
+      .prepare(`SELECT id FROM lark_channels WHERE enabled = 1 ORDER BY id LIMIT 1`)
+      .get() as { id: number } | undefined;
+    const primaryId = riskTeam?.id ?? 1;
+    const defaultSlaRow = db
+      .prepare(`SELECT value FROM platform_settings WHERE key = 'escalation.default_sla_minutes'`)
+      .get() as { value: string } | undefined;
+    const sla = Number(defaultSlaRow?.value) || 30;
+    db.prepare(
+      `INSERT INTO escalation_routes
+        (name, domain_code, severity, primary_team_id, secondary_team_id, lark_channel_id, sla_minutes,
+         auto_actions_json, requires_human, enabled, route_code, is_default, coefficients_json, risk_scenario, involved_teams_json, pending_minutes_threshold)
+       VALUES (?, '*', 'ANY', ?, NULL, ?, ?, ?, 1, 1, 'ESC-DEFAULT', 1, ?, 'exotic_or_unmatched', '[]', ?)`
+    ).run(
+      "Default catch-all (exotic / unmatched)",
+      primaryId,
+      lark?.id ?? null,
+      sla,
+      JSON.stringify(["create_ticket", "lark_notify", "ai_rca"]),
+      defaultCoeffs,
+      sla
+    );
+  } else {
+    // Keep exactly one catch-all: force-enable, pin route_code/name/domain, clear other defaults.
+    db.prepare(`UPDATE escalation_routes SET is_default = 0 WHERE id != ?`).run(existingDefault.id);
+    db.prepare(
+      `UPDATE escalation_routes
+       SET is_default = 1,
+           enabled = 1,
+           route_code = 'ESC-DEFAULT',
+           domain_code = '*',
+           severity = CASE WHEN severity IS NULL OR severity = '' THEN 'ANY' ELSE severity END,
+           name = CASE
+             WHEN name IS NULL OR name = '' OR name LIKE 'Default%' THEN 'Default catch-all (exotic / unmatched)'
+             ELSE name
+           END,
+           risk_scenario = COALESCE(NULLIF(risk_scenario, ''), 'exotic_or_unmatched'),
+           coefficients_json = CASE WHEN coefficients_json IS NULL OR coefficients_json = '' OR coefficients_json = '{}' THEN ? ELSE coefficients_json END
+       WHERE id = ?`
+    ).run(defaultCoeffs, existingDefault.id);
+  }
+
+  const upsert = db.prepare(
+    `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
+     ON CONFLICT(key) DO NOTHING`
+  );
+  upsert.run("escalation.default_sla_minutes", "30", "Default SLA when route missing");
+  upsert.run("escalation.default_route_code", "ESC-DEFAULT", "Catch-all escalation path for unmatched / exotic events");
 }
 
 function ensureAiLayer(db: Database.Database) {
@@ -769,6 +1086,10 @@ function ensureAiLayer(db: Database.Database) {
   ensureSpineSchema(db);
   ensureAiAdminSchema(db);
   syncRoles(db);
+  syncDepartments(db);
+  ensureMonitorIndicatorColumns(db);
+  ensureEscalationSchema(db);
+  ensureExtraRiskDomains(db);
   ensureExtraMonitors(db);
   seedRagIfEmpty(db);
   seedSkillsIfEmpty(db);
@@ -779,8 +1100,13 @@ function ensureAiLayer(db: Database.Database) {
   seedRiskLogIfEmpty(db);
   ensureMarketIntelSchema(db);
   ensureChallengerSchema(db);
+  ensureImprovementSchema(db);
+  seedAiAnalysesIfEmpty(db);
+  seedInterventionsIfEmpty(db);
   ensureMessengerSchema(db);
   seedMessengerIfEmpty(db);
+  ensureDocEditsSchema(db);
+  ensureAuditDemoSamples(db);
   const upsert = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)
      ON CONFLICT(key) DO NOTHING`
@@ -792,15 +1118,23 @@ function ensureAiLayer(db: Database.Database) {
     "BREACH",
     "Minimum alert severity that triggers independent second AI challenger (WARN|BREACH|CRITICAL)"
   );
+  upsert.run("ai.line1.model", "crmp-rca-v0", "First-line AI model for RCA / skill match / RAG reasoning");
+  upsert.run("ai.line2.model", "crmp-challenger-v0", "Second-line AI challenger model that challenges first-line output");
   upsert.run("detectors.auto_raise_alarms", "true", "Detectors raise Monitor alarms when warn/breach");
   upsert.run("market_intel.enabled", "true", "Enable 5-minute market intelligence scanner");
   upsert.run("market_intel.interval_minutes", "5", "Scan cadence in minutes");
   upsert.run("market_intel.lark_chat_id", "oc_market_intelligence", "Dedicated messenger group for intel pushes");
+  upsert.run("platform.owner_name", PLATFORM_OWNER.name, "Named platform and documentation owner");
+  upsert.run("platform.owner_email", PLATFORM_OWNER.email, "Platform owner contact");
+  upsert.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");
+  ensurePlatformOwner(db);
   // Avoid static import cycle (scanner → getDb). Seed + scheduler via dynamic import.
+  const skipScheduler =
+    process.env.NEXT_PUBLIC_STATIC_EXPORT === "1" || process.env.STATIC_EXPORT === "1";
   void import("@/lib/market-intel/scanner")
     .then(({ seedMarketIntel, startMarketIntelScheduler }) => {
       seedMarketIntel(db);
-      startMarketIntelScheduler();
+      if (!skipScheduler) startMarketIntelScheduler();
     })
     .catch((e) => console.error("[market-intel] boot seed failed", e));
 }
@@ -824,11 +1158,14 @@ export function writeAudit(
   action: string,
   entityType: string,
   entityId: string | null,
-  details: Record<string, unknown> = {}
+  details: Record<string, unknown> = {},
+  opts?: { plane?: "crmp" | "vantage" }
 ) {
   const db = getDb();
+  const plane = opts?.plane ?? classifyAuditPlane(action, entityType);
+  const payload = { ...details, plane };
   db.prepare(
     `INSERT INTO audit_logs (actor_user_id, actor_name, action, entity_type, entity_id, details_json)
      VALUES (?, ?, ?, ?, ?, ?)`
-  ).run(actor?.id ?? null, actor?.name ?? "system", action, entityType, entityId, JSON.stringify(details));
+  ).run(actor?.id ?? null, actor?.name ?? "system", action, entityType, entityId, JSON.stringify(payload));
 }

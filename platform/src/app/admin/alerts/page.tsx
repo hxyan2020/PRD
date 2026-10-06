@@ -1,30 +1,47 @@
-import { AlertsBoard } from "@/components/AlertsBoard";
+import { AlertTrackerBoard } from "@/components/AlertTrackerBoard";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { getDb } from "@/lib/db";
+import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { AdminLink } from "@/components/AdminLink";
+import { T } from "@/components/T";
 import { redirect } from "next/navigation";
+import { readSearchParams } from "@/lib/static-export";
 
-export default async function AlertsPage() {
+export default async function AlertsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ monitor_id?: string }>;
+}) {
   const user = await getCurrentUser();
-  if (!user || !(hasPermission(user.role_code, "monitor.operate") || hasPermission(user.role_code, "monitor.read"))) {
-    redirect("/admin");
-  }
+  const canRead =
+    !!user &&
+    (hasPermission(user.role_code, "monitor.operate") ||
+      hasPermission(user.role_code, "monitor.read") ||
+      hasPermission(user.role_code, "ai.read"));
+  if (!canRead) redirect("/admin");
 
-  const alerts = getDb()
-    .prepare(
-      `SELECT a.*, i.name AS indicator_name, i.monitor_id, i.domain_code, i.product
-       FROM monitor_alerts a
-       JOIN monitor_indicators i ON i.id = a.indicator_id
-       ORDER BY
-         CASE a.severity WHEN 'CRITICAL' THEN 1 WHEN 'BREACH' THEN 2 WHEN 'WARN' THEN 3 ELSE 4 END,
-         a.created_at DESC`
-    )
-    .all() as React.ComponentProps<typeof AlertsBoard>["alerts"];
+  const sp = await readSearchParams(searchParams);
+  const monitorId = (sp.monitor_id || "").trim();
+  const packs = listAlertTrackerPacks({ limit: 200, order: "severity", status: "open" });
 
   return (
     <div>
-      <AdminPageHeader pageKey="alerts" />
-      <AlertsBoard alerts={alerts} canOperate={hasPermission(user.role_code, "monitor.operate")} />
+      <AdminPageHeader
+        pageKey="alerts"
+        actions={
+          <span data-testid="alerts-header-closed">
+            <AdminLink className="btn btn-primary" href="/admin/risk-log">
+              <T k="alerts.viewClosed" />
+            </AdminLink>
+          </span>
+        }
+      />
+      <AlertTrackerBoard
+        packs={packs}
+        canOperate={hasPermission(user.role_code, "monitor.operate")}
+        canOperateAi={hasPermission(user.role_code, "ai.operate")}
+        initialMonitorId={monitorId}
+      />
     </div>
   );
 }

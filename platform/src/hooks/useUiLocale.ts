@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { parseUiLocale, UI_LOCALE_COOKIE, type UiLocale } from "@/lib/i18n";
+import { useCallback, useEffect, useState } from "react";
+import { parseUiLocale, phrase, t, UI_LOCALE_COOKIE, type UiLocale } from "@/lib/i18n";
 
 function readLocaleCookie(): UiLocale {
   if (typeof document === "undefined") return "en";
@@ -32,4 +32,14 @@ export function useUiLocale() {
   }, []);
 
   return { locale, setLocale };
+}
+
+export function useT() {
+  const { locale, setLocale } = useUiLocale();
+  const tr = useCallback(
+    (key: string, vars?: Record<string, string | number>) => t(key, locale, vars),
+    [locale]
+  );
+  const ph = useCallback((text: string | null | undefined) => phrase(text, locale), [locale]);
+  return { locale, setLocale, t: tr, phrase: ph };
 }

@@ -2,6 +2,7 @@ import { SettingsManager } from "@/components/SettingsManager";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { OwnerIdentityPanel } from "@/components/OwnerIdentityPanel";
 import { redirect } from "next/navigation";
 
 export default async function SettingsPage() {
@@ -15,6 +16,7 @@ export default async function SettingsPage() {
   return (
     <div>
       <AdminPageHeader pageKey="settings" />
+      <OwnerIdentityPanel />
       <SettingsManager settings={settings} />
     </div>
   );

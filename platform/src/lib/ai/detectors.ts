@@ -134,9 +134,131 @@ const DETECTORS: DetectorDef[] = [
     breach_threshold: 3,
     comparator: "gte",
   },
+  {
+    code: "DET-PERP-BASIS",
+    name: "Perp mark–index basis",
+    description: "Absolute basis between perp mark and index in basis points.",
+    product: "CRYPTO",
+    domain_code: "CRYPTO_EXCHANGE",
+    monitor_id: "M2-PERP-BASIS",
+    warn_threshold: 25,
+    breach_threshold: 60,
+    comparator: "gte",
+  },
+  {
+    code: "DET-FUNDING-RATE",
+    name: "Perp funding rate absolute",
+    description: "Absolute 8h funding rate on major perpetual contracts.",
+    product: "CRYPTO",
+    domain_code: "CRYPTO_EXCHANGE",
+    monitor_id: "M2-FUNDING-RATE",
+    warn_threshold: 0.15,
+    breach_threshold: 0.5,
+    comparator: "gte",
+  },
+  {
+    code: "DET-STABLE-EXP",
+    name: "Stablecoin depeg exposure",
+    description: "Mark-to-market USD gap on house stablecoin inventory.",
+    product: "CRYPTO",
+    domain_code: "CRYPTO_EXCHANGE",
+    monitor_id: "M2-STABLE-EXP",
+    warn_threshold: 500000,
+    breach_threshold: 2000000,
+    comparator: "gte",
+  },
+  {
+    code: "DET-MT-DISC",
+    name: "Trading platform disconnect rate",
+    description: "Share of sessions disconnected on MT4/MT5/App gateways.",
+    product: "CFD+CRYPTO",
+    domain_code: "TECH_INFRA",
+    monitor_id: "M2-MT-DISC",
+    warn_threshold: 1,
+    breach_threshold: 5,
+    comparator: "gte",
+  },
+  {
+    code: "DET-RECON-BRK",
+    name: "Reconciliation breaks open",
+    description: "Open ledger vs bank/chain recon exceptions.",
+    product: "CFD+CRYPTO",
+    domain_code: "OPS_PROCESS",
+    monitor_id: "M2-RECON-BRK",
+    warn_threshold: 5,
+    breach_threshold: 20,
+    comparator: "gte",
+  },
+  {
+    code: "DET-KILL-COUNT",
+    name: "Active symbol kill-switches",
+    description: "Count of symbols currently halted by kill-switch.",
+    product: "CFD+CRYPTO",
+    domain_code: "TECH_INFRA",
+    monitor_id: "M2-KILL-COUNT",
+    warn_threshold: 2,
+    breach_threshold: 5,
+    comparator: "gte",
+  },
+  {
+    code: "DET-NEWS-GROSS",
+    name: "Gross notional into Tier-1 news",
+    description: "Client+house gross USD notional into the next Tier-1 macro window.",
+    product: "CFD",
+    domain_code: "MARKET_PRICING",
+    monitor_id: "M2-NEWS-GROSS",
+    warn_threshold: 50000000,
+    breach_threshold: 120000000,
+    comparator: "gte",
+  },
+  {
+    code: "DET-CHARGEBACK",
+    name: "Payment chargebacks 24h",
+    description: "Card/APM chargeback count in rolling 24 hours.",
+    product: "CFD",
+    domain_code: "FRAUD_CONDUCT",
+    monitor_id: "M2-CHARGEBACK",
+    warn_threshold: 15,
+    breach_threshold: 40,
+    comparator: "gte",
+  },
+  {
+    code: "DET-IB-PAYOUT",
+    name: "IB rebate anomaly score",
+    description: "Anomaly score on introducing-broker rebate patterns.",
+    product: "CFD",
+    domain_code: "FRAUD_CONDUCT",
+    monitor_id: "M2-IB-PAYOUT",
+    warn_threshold: 0.6,
+    breach_threshold: 0.8,
+    comparator: "gte",
+  },
+  {
+    code: "DET-COPY-CHURN",
+    name: "Copy follower net exit 1h",
+    description: "Net percentage of copy followers exiting a top provider in 1 hour.",
+    product: "CFD",
+    domain_code: "CREDIT_CLIENT",
+    monitor_id: "M2-COPY-CHURN",
+    warn_threshold: 12,
+    breach_threshold: 25,
+    comparator: "gte",
+  },
 ];
 
+function detectorProduct(product: string): "CFD" | "CRYPTO" | "CFD+CRYPTO" {
+  const p = product.toUpperCase();
+  if (p.includes("CRYPTO") && p.includes("CFD")) return "CFD+CRYPTO";
+  if (p.includes("CRYPTO") || p === "加密") return "CRYPTO";
+  return "CFD";
+}
+
+function detectorCodeForMonitor(monitorId: string): string {
+  return `DET-${monitorId.replace(/^M2-/, "")}`;
+}
+
 export function seedDetectors(db: Database.Database) {
+  // Preserve warn/breach on conflict — synced from Monitor 2.0 threshold edits.
   const upsert = db.prepare(
     `INSERT INTO detectors
       (code, name, description, product, domain_code, monitor_id, warn_threshold, breach_threshold, comparator, enabled)
@@ -147,8 +269,6 @@ export function seedDetectors(db: Database.Database) {
        product = excluded.product,
        domain_code = excluded.domain_code,
        monitor_id = excluded.monitor_id,
-       warn_threshold = excluded.warn_threshold,
-       breach_threshold = excluded.breach_threshold,
        comparator = excluded.comparator`
   );
   for (const d of DETECTORS) {
@@ -163,6 +283,52 @@ export function seedDetectors(db: Database.Database) {
       d.breach_threshold,
       d.comparator
     );
+  }
+
+  // Every Monitor 2.0 indicator is a detector — fill gaps so the pages are one registry.
+  const missing = db
+    .prepare(
+      `SELECT i.monitor_id, i.name, i.domain_code, i.product, i.threshold_warn, i.threshold_breach, i.unit
+       FROM monitor_indicators i
+       LEFT JOIN detectors d ON d.monitor_id = i.monitor_id
+       WHERE d.id IS NULL`
+    )
+    .all() as Array<{
+    monitor_id: string;
+    name: string;
+    domain_code: string;
+    product: string;
+    threshold_warn: number | null;
+    threshold_breach: number | null;
+    unit: string | null;
+  }>;
+  for (const i of missing) {
+    const code = detectorCodeForMonitor(i.monitor_id);
+    const unit = i.unit ? ` (${i.unit})` : "";
+    upsert.run(
+      code,
+      i.name,
+      `Auto-linked detector for ${i.monitor_id}${unit}.`,
+      detectorProduct(i.product),
+      i.domain_code,
+      i.monitor_id,
+      i.threshold_warn ?? 0,
+      i.threshold_breach ?? 0,
+      "gte"
+    );
+  }
+
+  // Keep detector enabled flag aligned with indicator pause state when present.
+  try {
+    db.exec(
+      `UPDATE detectors
+       SET enabled = CASE WHEN COALESCE((
+         SELECT paused FROM monitor_indicators mi WHERE mi.monitor_id = detectors.monitor_id
+       ), 0) = 0 THEN 1 ELSE 0 END
+       WHERE EXISTS (SELECT 1 FROM monitor_indicators mi WHERE mi.monitor_id = detectors.monitor_id)`
+    );
+  } catch {
+    // paused column may not exist yet on first boot ordering
   }
 }
 

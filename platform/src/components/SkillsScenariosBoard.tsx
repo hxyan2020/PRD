@@ -1,9 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Badge, DeptBadge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { AdminLink } from "@/components/AdminLink";
+import { MonitorCode } from "@/components/MonitorCode";
 import type { LinkedScenario, SkillScenario } from "@/lib/ai/scenario-types";
+import { finalizeSkill } from "@/lib/ai/skill-playbook";
+import { CHAIN_ZH } from "@/lib/ai/skill-zh";
+import { useUiLocale } from "@/hooks/useUiLocale";
+import { phrase, t } from "@/lib/i18n";
+import { escalationRouteForSkill } from "@/lib/ai/skill-escalation-map";
 
 type SkillRow = {
   id: number;
@@ -35,7 +41,7 @@ type ChainRow = {
   past_cases_json: string;
 };
 
-function parseScenario(raw: string, fallback: SkillRow): SkillScenario | null {
+function parseScenario(raw: string, fallback: SkillRow, locale: "en" | "zh-Hant" = "en"): SkillScenario | null {
   try {
     const s = JSON.parse(raw || "{}") as SkillScenario;
     if (s?.indicator?.monitor_id) return s;
@@ -57,7 +63,7 @@ function parseScenario(raw: string, fallback: SkillRow): SkillScenario | null {
       breach: 0,
       unit: "",
       comparator: "gte",
-      why: "See conditions JSON",
+      why: locale === "zh-Hant" ? "見條件 JSON" : "See conditions JSON",
     },
     related_indicators: [],
     conditions: JSON.parse(fallback.conditions_json || "{}"),
@@ -78,6 +84,7 @@ export function SkillsScenariosBoard({
   skills: SkillRow[];
   chains: ChainRow[];
 }) {
+  const { locale } = useUiLocale();
   const [tab, setTab] = useState<"skills" | "chains">("skills");
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<string | null>(skills[0]?.code ?? null);
@@ -85,9 +92,12 @@ export function SkillsScenariosBoard({
   const skillViews = useMemo(
     () =>
       skills
-        .map((s) => ({ row: s, scenario: parseScenario(s.scenario_json, s) }))
-        .filter((x) => x.scenario) as Array<{ row: SkillRow; scenario: SkillScenario }>,
-    [skills]
+        .map((s) => {
+          const parsed = parseScenario(s.scenario_json, s, locale);
+          return parsed ? { row: s, scenario: finalizeSkill(parsed, locale) } : null;
+        })
+        .filter((x): x is { row: SkillRow; scenario: ReturnType<typeof finalizeSkill> } => !!x),
+    [skills, locale]
   );
 
   const filteredSkills = skillViews.filter(({ scenario: s }) => {
@@ -121,20 +131,17 @@ export function SkillsScenariosBoard({
 
   return (
     <div className="space-y-4">
-      <div className="panel p-4 flex flex-wrap items-end justify-between gap-3">
+      <div className="panel p-4 space-y-3">
         <div>
-          <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">Risk scenarios</div>
-          <p className="text-sm mt-1 max-w-3xl">
-            Each skill states indicator + thresholds (and why), fault areas, escalation path, BU correction actions,
-            and links to past successful detections. Linked chains show multi-indicator timelines.
-          </p>
+          <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("skill.eyebrow", locale)}</div>
+          <p className="text-sm mt-1 max-w-3xl">{t("skill.boardIntro", locale)}</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap justify-start gap-2">
           <button type="button" className={`btn ${tab === "skills" ? "btn-primary" : ""}`} onClick={() => setTab("skills")}>
-            Single-indicator skills ({skillViews.length})
+            {t("skill.tabSkills", locale)} ({skillViews.length})
           </button>
           <button type="button" className={`btn ${tab === "chains" ? "btn-primary" : ""}`} onClick={() => setTab("chains")}>
-            Linked timelines ({chainViews.length})
+            {t("skill.tabChains", locale)} ({chainViews.length})
           </button>
         </div>
       </div>
@@ -144,7 +151,7 @@ export function SkillsScenariosBoard({
           className="input"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search indicator, fault area, scenario code…"
+          placeholder={t("skill.search", locale)}
         />
       </div>
 
@@ -154,46 +161,47 @@ export function SkillsScenariosBoard({
             const expanded = open === s.code;
             return (
               <article key={row.id} className="panel p-4">
-                <button
-                  type="button"
-                  className="w-full text-left"
-                  onClick={() => setOpen(expanded ? null : s.code)}
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <div className="text-xs text-[var(--muted)]">{s.code}</div>
-                      <h2 className="font-[family-name:var(--font-display)] text-xl">{s.name}</h2>
-                      <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{s.description}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <DeptBadge code={s.owner_department} />
-                      <StatusBadge value={row.status} />
-                      <Badge className="bg-orange-50 text-orange-900 border-orange-200">
-                        {s.indicator.monitor_id}
-                      </Badge>
-                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">
-                        {s.auto_execute === false ? "manual" : "auto-execute"}
-                      </Badge>
-                    </div>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <button type="button" className="text-left min-w-0 flex-1" onClick={() => setOpen(expanded ? null : s.code)}>
+                    <div className="text-xs text-[var(--muted)]">{s.code}</div>
+                    <h2 className="font-[family-name:var(--font-display)] text-xl">{s.name}</h2>
+                    <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{s.description}</p>
+                    {s.when_to_use[0] && (
+                      <p className="text-sm mt-2 max-w-3xl">
+                        <span className="text-xs uppercase tracking-wide text-teal-800 mr-2">{t("skill.whenToUse", locale)}</span>
+                        {s.when_to_use[0]}
+                      </p>
+                    )}
+                  </button>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <DeptBadge code={s.owner_department} />
+                    <StatusBadge value={row.status} />
+                    <MonitorCode id={s.indicator.monitor_id} name={s.indicator.name} unit={s.indicator.unit} />
+                    <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                      {s.auto_execute === false ? t("skill.manual", locale) : t("skill.auto", locale)}
+                    </Badge>
+                    <AdminLink href={`/admin/skills/${encodeURIComponent(s.code)}`} className="btn btn-primary">
+                      {t("skill.enter", locale)}
+                    </AdminLink>
                   </div>
-                </button>
+                </div>
 
                 <div className="mt-3 grid md:grid-cols-3 gap-3 text-sm">
                   <div className="rounded-xl border border-[var(--line)] p-3">
-                    <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Indicator & thresholds</div>
+                    <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.indicator", locale)}</div>
                     <div className="mt-1 font-semibold">{s.indicator.name}</div>
                     <div className="text-xs text-[var(--muted)]">
                       {s.indicator.product} · {s.indicator.domain}
                     </div>
                     <div className="mt-2 tabular-nums">
-                      warn {s.indicator.warn}
-                      {s.indicator.unit} / breach {s.indicator.breach}
+                      {t("common.warn", locale)} {s.indicator.warn}
+                      {s.indicator.unit} / {t("common.breach", locale)} {s.indicator.breach}
                       {s.indicator.unit} ({s.indicator.comparator})
                     </div>
                     <p className="mt-2 text-[var(--muted)]">{s.indicator.why}</p>
                   </div>
                   <div className="rounded-xl border border-[var(--line)] p-3">
-                    <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Fault areas</div>
+                    <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.faults", locale)}</div>
                     <ul className="mt-2 space-y-1">
                       {s.fault_areas.map((f) => (
                         <li key={f} className="before:content-['•'] before:mr-1.5 before:text-teal-700">
@@ -202,9 +210,24 @@ export function SkillsScenariosBoard({
                       ))}
                     </ul>
                   </div>
-                  <div className="rounded-xl border border-[var(--line)] p-3">
-                    <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
-                      Escalation (SLA {s.escalation.sla_minutes}m)
+                  <div
+                    className="rounded-xl border border-teal-200 bg-teal-50/40 p-3"
+                    data-testid={`skill-esc-bind-${s.code}`}
+                  >
+                    <div className="text-xs uppercase tracking-wide text-teal-900">
+                      {t("esc.skillBindTitle", locale)}
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                      <span className="text-xs text-[var(--muted)]">{t("esc.skillBind", locale)}</span>
+                      <code className="font-semibold px-1.5 py-0.5 rounded bg-white border border-teal-200">
+                        {escalationRouteForSkill(s.code, { domain: s.indicator.domain })}
+                      </code>
+                      <Badge className="bg-teal-100 text-teal-950 border-teal-300 text-[10px]">
+                        {locale === "zh-Hant" ? "唯一" : "1 only"}
+                      </Badge>
+                    </div>
+                    <div className="mt-2 text-xs text-[var(--muted)]">
+                      {t("skill.escalationSla", locale, { n: s.escalation.sla_minutes })}
                     </div>
                     <ol className="mt-2 space-y-1">
                       {s.escalation.path.map((h, i) => (
@@ -221,7 +244,7 @@ export function SkillsScenariosBoard({
                   <div className="mt-3 space-y-3">
                     <div className="rounded-xl border border-[var(--line)] p-3">
                       <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
-                        Correction actions by BU
+                        {t("skill.corrections", locale)}
                       </div>
                       <div className="mt-2 space-y-2">
                         {s.corrections.map((c, i) => (
@@ -230,7 +253,7 @@ export function SkillsScenariosBoard({
                             <div>
                               <div className="font-semibold">
                                 {c.action}
-                                {c.requires_human ? " · human gate" : ""}
+                                {c.requires_human ? ` · ${t("skill.humanGate", locale)}` : ""}
                               </div>
                               <div className="text-[var(--muted)]">{c.description}</div>
                             </div>
@@ -240,13 +263,13 @@ export function SkillsScenariosBoard({
                     </div>
 
                     <div className="rounded-xl border border-[var(--line)] p-3">
-                      <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Playbook steps</div>
+                      <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.steps", locale)}</div>
                       <ol className="mt-2 space-y-2">
                         {s.steps.map((st, i) => (
                           <li key={i} className="text-sm rounded-lg bg-slate-50 border border-[var(--line)] px-3 py-2">
                             <div className="font-semibold">
                               {i + 1}. {st.action}
-                              {st.requires_human ? " · human gate" : ""}
+                              {st.requires_human ? ` · ${t("skill.humanGate", locale)}` : ""}
                               {st.bu ? ` · ${st.bu}` : ""}
                             </div>
                             <div className="text-[var(--muted)]">{st.description}</div>
@@ -257,24 +280,20 @@ export function SkillsScenariosBoard({
 
                     <div className="rounded-xl border border-[var(--line)] p-3">
                       <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
-                        Related indicators
+                        {t("skill.related", locale)}
                       </div>
                       <div className="mt-2 flex flex-wrap gap-1">
                         {s.related_indicators.length ? (
-                          s.related_indicators.map((id) => (
-                            <Badge key={id} className="bg-orange-50 text-orange-900 border-orange-200">
-                              {id}
-                            </Badge>
-                          ))
+                          s.related_indicators.map((id) => <MonitorCode key={id} id={id} />)
                         ) : (
-                          <span className="text-sm text-[var(--muted)]">None</span>
+                          <span className="text-sm text-[var(--muted)]">{t("common.none", locale)}</span>
                         )}
                       </div>
                     </div>
 
                     <div className="rounded-xl border border-[var(--line)] p-3">
                       <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
-                        Past successfully detected cases
+                        {t("skill.examples", locale)}
                       </div>
                       <div className="mt-2 space-y-2">
                         {s.past_cases.map((pc) => (
@@ -284,18 +303,18 @@ export function SkillsScenariosBoard({
                               <Badge className="bg-teal-50 text-teal-900 border-teal-200">{pc.outcome}</Badge>
                               <span className="text-xs text-[var(--muted)]">{pc.date}</span>
                               {pc.alert_id && (
-                                <Link className="text-xs underline" href="/admin/alerts">
+                                <AdminLink className="text-xs underline" href="/admin/alerts">
                                   {pc.alert_id}
-                                </Link>
+                                </AdminLink>
                               )}
                               {pc.analysis_href && (
-                                <Link className="text-xs underline" href={pc.analysis_href}>
-                                  AI analyses
-                                </Link>
+                                <AdminLink className="text-xs underline" href={pc.analysis_href}>
+                                  {t("skill.aiAnalyses", locale)}
+                                </AdminLink>
                               )}
-                              <Link className="text-xs underline" href="/admin/risk-log">
-                                Risk log
-                              </Link>
+                              <AdminLink className="text-xs underline" href="/admin/risk-log">
+                                {t("skill.riskLog", locale)}
+                              </AdminLink>
                             </div>
                             <p className="text-[var(--muted)] mt-1">{pc.summary}</p>
                           </div>
@@ -312,13 +331,15 @@ export function SkillsScenariosBoard({
 
       {tab === "chains" && (
         <div className="space-y-3">
-          {filteredChains.map(({ data }) => (
+          {filteredChains.map(({ data }) => {
+            const zhChain = locale === "zh-Hant" ? CHAIN_ZH[data.code] : undefined;
+            return (
             <article key={data.code} className="panel p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="text-xs text-[var(--muted)]">{data.code}</div>
-                  <h2 className="font-[family-name:var(--font-display)] text-xl">{data.name}</h2>
-                  <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{data.description}</p>
+                  <h2 className="font-[family-name:var(--font-display)] text-xl">{zhChain?.name || data.name}</h2>
+                  <p className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{zhChain?.description || data.description}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <SeverityBadge value={data.severity} />
@@ -328,16 +349,16 @@ export function SkillsScenariosBoard({
               </div>
 
               <div className="mt-4">
-                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Indicator timeline</div>
+                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.timeline", locale)}</div>
                 <div className="mt-2 relative pl-4 border-l-2 border-teal-200 space-y-3">
                   {data.sequence.map((ev, i) => (
                     <div key={i} className="relative">
                       <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-teal-600" />
                       <div className="text-sm">
                         <span className="font-semibold tabular-nums">T+{ev.t_minutes}m</span>{" "}
-                        <Badge className="bg-orange-50 text-orange-900 border-orange-200">{ev.monitor_id}</Badge>{" "}
+                        <MonitorCode id={ev.monitor_id} />{" "}
                         <SeverityBadge value={ev.severity} />
-                        <div className="text-[var(--muted)] mt-0.5">{ev.signal}</div>
+                        <div className="text-[var(--muted)] mt-0.5">{phrase(ev.signal, locale)}</div>
                       </div>
                     </div>
                   ))}
@@ -346,34 +367,34 @@ export function SkillsScenariosBoard({
 
               <div className="mt-4 grid md:grid-cols-3 gap-3 text-sm">
                 <div className="rounded-xl border border-[var(--line)] p-3">
-                  <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Likely causes</div>
+                  <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.causes", locale)}</div>
                   <ul className="mt-2 space-y-1">
                     {data.causes.map((c) => (
                       <li key={c} className="before:content-['•'] before:mr-1.5 before:text-teal-700">
-                        {c}
+                        {phrase(c, locale)}
                       </li>
                     ))}
                   </ul>
                 </div>
                 <div className="rounded-xl border border-[var(--line)] p-3">
-                  <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Escalation plan</div>
+                  <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.escalation", locale)}</div>
                   <ol className="mt-2 space-y-1">
                     {data.escalation_plan.map((h, i) => (
                       <li key={i}>
-                        <span className="font-medium">T+{h.after_minutes}m</span> · {h.team}
-                        <div className="text-xs text-[var(--muted)]">{h.action}</div>
+                        <span className="font-medium">T+{h.after_minutes}m</span> · {phrase(h.team, locale)}
+                        <div className="text-xs text-[var(--muted)]">{phrase(h.action, locale)}</div>
                       </li>
                     ))}
                   </ol>
                 </div>
                 <div className="rounded-xl border border-[var(--line)] p-3">
-                  <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Corrections by BU</div>
+                  <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.corrections", locale)}</div>
                   <div className="mt-2 space-y-2">
                     {data.corrections.map((c, i) => (
                       <div key={i}>
                         <DeptBadge code={c.bu} />{" "}
-                        <span className="font-semibold">{c.action}</span>
-                        <div className="text-[var(--muted)]">{c.description}</div>
+                        <span className="font-semibold">{phrase(c.action, locale)}</span>
+                        <div className="text-[var(--muted)]">{phrase(c.description, locale)}</div>
                       </div>
                     ))}
                   </div>
@@ -381,43 +402,35 @@ export function SkillsScenariosBoard({
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2 items-center">
-                <span className="text-xs uppercase tracking-wide text-[var(--muted)]">Linked skills</span>
+                <span className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.linked", locale)}</span>
                 {data.linked_skills.map((code) => (
-                  <button
-                    key={code}
-                    type="button"
-                    className="btn"
-                    onClick={() => {
-                      setTab("skills");
-                      setOpen(code);
-                      setQ(code);
-                    }}
-                  >
-                    {code}
-                  </button>
+                  <AdminLink key={code} className="btn" href={`/admin/skills/${encodeURIComponent(code)}`}>
+                    {code} · {t("skill.enter", locale)}
+                  </AdminLink>
                 ))}
               </div>
 
               <div className="mt-3 rounded-xl border border-[var(--line)] p-3">
-                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Past cases</div>
+                <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{t("skill.examples", locale)}</div>
                 <div className="mt-2 space-y-2">
                   {data.past_cases.map((pc) => (
                     <div key={pc.case_id} className="text-sm">
                       <span className="font-semibold">{pc.case_id}</span> · {pc.date} ·{" "}
-                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">{pc.outcome}</Badge>
+                      <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(pc.outcome, locale)}</Badge>
                       {pc.alert_id && (
                         <>
                           {" "}
-                          · <Link className="underline" href="/admin/alerts">{pc.alert_id}</Link>
+                          · <AdminLink className="underline" href="/admin/alerts">{pc.alert_id}</AdminLink>
                         </>
                       )}
-                      <div className="text-[var(--muted)]">{pc.summary}</div>
+                      <div className="text-[var(--muted)]">{phrase(pc.summary, locale)}</div>
                     </div>
                   ))}
                 </div>
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

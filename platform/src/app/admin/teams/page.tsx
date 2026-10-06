@@ -1,9 +1,33 @@
+import { redirect } from "next/navigation";
+import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { DeptBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { BuTeamsBoard } from "@/components/BuTeamsBoard";
+import { isStaticExport } from "@/lib/static-export";
 
-export default function TeamsPage() {
-  const teams = getDb()
+/**
+ * Legacy /admin/teams URL — combined into BU and Teams hub.
+ * On the live app, redirect. On GitHub Pages static export, render the same hub
+ * so bookmarks to /admin/teams/ still show the merged page.
+ */
+export default async function TeamsPage() {
+  if (!isStaticExport()) {
+    redirect("/admin/departments");
+  }
+
+  const user = await getCurrentUser();
+  if (user && !hasPermission(user.role_code, "teams.read")) redirect("/admin");
+
+  const db = getDb();
+  const departments = db.prepare(`SELECT * FROM departments ORDER BY id`).all() as Array<{
+    id: number;
+    code: string;
+    name: string;
+    description: string;
+    primary_responsibilities: string;
+  }>;
+
+  const teams = db
     .prepare(
       `SELECT t.*,
               (SELECT COUNT(*) FROM users u WHERE u.team_id = t.id) AS member_count
@@ -20,39 +44,19 @@ export default function TeamsPage() {
     member_count: number;
   }>;
 
+  const userCounts = db
+    .prepare(`SELECT department_code, COUNT(*) AS c FROM users WHERE department_code IS NOT NULL GROUP BY department_code`)
+    .all() as Array<{ department_code: string; c: number }>;
+
   return (
     <div>
-      <AdminPageHeader pageKey="teams" />
-      <div className="panel table-wrap">
-        <table className="data">
-          <thead>
-            <tr>
-              <th>Team</th>
-              <th>Department</th>
-              <th>Members</th>
-              <th>Lark Chat</th>
-              <th>On-call</th>
-              <th>Mission</th>
-            </tr>
-          </thead>
-          <tbody>
-            {teams.map((t) => (
-              <tr key={t.id}>
-                <td className="font-semibold">{t.name}</td>
-                <td>
-                  <DeptBadge code={t.department_code} />
-                </td>
-                <td>{t.member_count}</td>
-                <td>
-                  <code className="text-xs bg-slate-100 px-1.5 py-0.5 rounded">{t.lark_chat_id}</code>
-                </td>
-                <td className="text-sm">{t.on_call_rotation}</td>
-                <td className="text-sm text-[var(--muted)] max-w-md">{t.mission}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <AdminPageHeader pageKey="departments" />
+      <BuTeamsBoard
+        departments={departments}
+        teams={teams}
+        userCounts={Object.fromEntries(userCounts.map((u) => [u.department_code, u.c]))}
+        canManage={Boolean(user && hasPermission(user.role_code, "teams.manage"))}
+      />
     </div>
   );
 }

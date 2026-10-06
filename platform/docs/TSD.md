@@ -1,10 +1,11 @@
 # Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 1.2  
+**Version:** 1.8  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
+**Owner:** demo platform owner  
 **Companion:** [PRD](/admin/docs/prd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
 This TSD describes the technical design of the Centralised Risk Management Platform (CRMP) Admin Control Plane.  
@@ -21,11 +22,11 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
-- Review spine logs, risk analytics, market intel, and daily performance
+- Review home spine stage ticket counts, risk analytics, market intel, and daily performance
 
 ### 1.2 In scope (prototype)
 - Admin UI + SQLite persistence
-- Detectors → Alarm → AI RCA → Second opinion → Messenger / Intervention → Spine → Dashboard
+- Monitor 2.0 (indicator + detector registry) → Alarm → AI RCA → Second opinion → Messenger / Intervention → home spine → Dashboard
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
@@ -41,20 +42,15 @@ Provide a single admin control plane where Risk, Ops, AI, and System operators c
 
 ## 2. System context
 
-```
-Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
-                                         │
-                                         ▼
-                              Second-AI Challenger (≥ BREACH)
-                                         │
-                                         ▼
-                    Demo Messenger ◄──► Human Intervention (gates)
-                                         │
-                                         ▼
-                              Spine Log + Risk Log + Daily Dashboard
-                                         │
-                                         ▼
-                         Lark channels / Market Intel outbox (mock)
+```mermaid
+graph TD
+  Mon[Monitor 2.0 unified registry] --> Alarm[Alarms]
+  Alarm --> Rca[AI RCA Skills or RAG]
+  Rca --> Ch[Second AI challenger]
+  Ch --> Msg[Demo Messenger]
+  Msg --> Gate[Human intervention]
+  Gate --> Spine[Spine Risk Log Dashboard]
+  Spine --> Out[Lark plus intel outbox]
 ```
 
 **AI Admin** sits beside the runtime spine: it does **not** execute live trading actions; it governs models, playbooks, RAG corpus, and AI parameters under dual control.
@@ -71,13 +67,30 @@ Monitor 2.0 / Detectors ──► Alarms ──► AI RCA (Skills | RAG)
 | Domain libs | Business logic | `platform/src/lib/ai/*`, `lib/db.ts`, `lib/auth.ts` |
 | Persistence | SQLite file | `platform/data/vantage_risk.db` |
 
+```mermaid
+graph LR
+  UI[Admin UI] --> API[API routes]
+  API --> Domain[Domain libs]
+  Domain --> DB[SQLite]
+```
+
+
 ### 3.1 Runtime spine stages
-1. **Detectors** sample indicators (`/admin/detectors`)
+1. **Monitor 2.0** runs detector sampling on the unified indicator + detector registry (`/admin/monitor-2`; `/admin/detectors` redirects)
 2. **Alarm** opens Monitor alert/ticket
-3. **AI RCA** matches skill or RAG-reasons (`/admin/ai-analyses`)
+3. **AI RCA** matches skill or RAG-reasons (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`)
 4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
 5. **Demo Messenger / Human intervention** triage and gated controls
-6. **Spine logging** records stage transitions (`/admin/spine`)
+6. **Home spine** records stage transitions with ticket counts on Admin Home (`/admin`; `/admin/spine` redirects — Spine Log tab removed)
+
+```mermaid
+graph TD
+  M2[Monitor 2.0 registry] --> Alarm[Monitor alarm]
+  Alarm --> RCA[AI RCA]
+  RCA --> Challenger[Second AI]
+  Challenger --> Messenger[Messenger / intervention]
+  Messenger --> Spine[Home spine + audit]
+```
 7. **Daily performance / Risk Log / Market Intel** aggregate outcomes
 
 ---
@@ -129,7 +142,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 | System | Mode in prototype | Notes |
 |---|---|---|
-| Monitor 2.0 | Mirrored tables + sync / simulate alarm | Indicators/alerts/tickets |
+| Monitor 2.0 | Mirrored tables + sync / Run all / simulate | Indicator + detector registry on `/admin/monitor-2`; open alerts/tickets on Realtime Alert & Tracker |
 | Demo Messenger | In-app threads + `/api/messenger` | Evidence, escalate, controls |
 | Lark | Channel registry + mock webhook / intel outbox | Severity routing |
 | Market intel feeds | Heuristic 5-min scanner | Card format i–vi |
@@ -140,24 +153,55 @@ Detailed AI Admin permission matrix: **§8.3**.
 
 ## 7. Admin surface map
 
-| URL | Module |
-|---|---|
-| `/admin` | Home |
-| `/admin/dashboard` | Daily performance |
-| `/admin/risk-log` | Risk log analytics |
-| `/admin/market-intel` | Market intelligence scanner |
-| `/admin/detectors` | Detectors |
-| `/admin/alerts` | Live alerts |
-| `/admin/ai-analyses` | AI RCA runtime + second-AI UI |
-| **`/admin/ai-admin`** | **AI Admin management (§8)** |
-| `/admin/interventions` | Human gates |
-| `/admin/spine` | Spine log |
-| `/admin/rag` | RAG corpus |
-| `/admin/skills` | Skill / scenario playbooks |
-| **`/admin/messenger`** | **Demo Messenger (§11)** |
-| `/admin/security/ai-access` | AI access blocklist |
-| `/admin/docs/prd` · `/user-guide` · `/uat` · `/ecosystem` · `/roadmap` · `/urls` · **`/tsd`** | Product docs (EN / 繁中) |
-| `/admin/monitor-2`, `/admin/lark`, `/admin/escalation`, … | Platform ops |
+Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§16) and has an operator how-to in the User Guide.
+
+### 7.1 Shell (not a nav row)
+
+| Surface | Route / store | Module | Permission |
+|---|---|---|---|
+| Login | `/login` | `app/login/page.tsx`, `lib/demo-session.ts` | public |
+| Language | cookie `crmp_ui_lang` | `hooks/useUiLocale`, `lib/i18n.ts` | — |
+| Unread badges | `crmp_nav_seen_v1` / `crmp_nav_extra_v1` | `AdminShell`, `lib/nav-badges.ts` | — |
+| Demo session | `crmp_demo_session_v1` | persist named persona on Pages | — |
+| Mobile drawer | `< lg` | `AdminShell` hamburger | — |
+| Brand | Vantage logo + owner line | `VantageLogo`, `lib/platform-owner.ts` | — |
+
+Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a href writes seen. `bumpNavBadge(href)` increments extra. Pages uses `FALLBACK_NAV_TOTALS` when SQLite counts are empty.
+
+### 7.2 Pages
+
+| Group | URL | UI / API | Permission | Spec |
+|---|---|---|---|---|
+| Overview | `/admin` | `app/admin/page.tsx` | `admin.access` | §16.2 |
+| Monitor | `/admin/dashboard` | `DailyDashboardView`, `GET/POST /api/dashboard` | `dashboard.read` | §16.3 |
+| Monitor | `/admin/risk-log` | `RiskLogDashboard`, `lib/ai/risk-log.ts` | `monitor.read` \| `audit.read` \| `dashboard.read` | §16.4 |
+| Monitor | `/admin/market-intel` | `MarketIntelBoard` | `monitor.read` | **§12** |
+| Monitor | `/admin/monitor-2` | unified registry + `MonitorActions`, `/api/monitor`, `/api/detectors` | `monitor.read` / `monitor.operate` | §16.5 |
+| Monitor | `/admin/detectors` | redirects → Monitor 2.0 (bookmarks) | `detectors.read` | §16.5 |
+| Monitor | `/admin/alerts` | **Realtime Alert & Tracker** · `AlertTrackerBoard` | `monitor.read` / `monitor.operate` | §16.7 |
+| Monitor | `/admin/risk-domains` | domain cards | `monitor.read` | §16.8 |
+| AI | `/admin/ai-analyses` | redirects → Realtime Alert & Tracker (list); detail `[id]` | `ai.read` / `ai.operate` | §9 + §16.9 |
+| AI | **`/admin/ai-admin`** | `AiAdminConsole`, `/api/ai-admin` | `ai.admin` | **§8** |
+| AI | `/admin/skills` · `/admin/skills/[code]` | `SkillsScenariosBoard` | `skills.read` | §10 + §16.10 |
+| AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
+| AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §16.12 |
+| Response | `/admin/messenger` | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
+| Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
+| Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §16.15 |
+| Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §16.15 |
+| Response | `/admin/spine` | redirects → Admin Home spine counts | `spine.read` | §16.13 |
+| Org | `/admin/departments` | **BU and Teams** combined hub | `teams.read` | §16.16 |
+| Org | `/admin/teams` | redirects → `/admin/departments` | `teams.read` | §16.16 |
+| Org | `/admin/roles` | editable RBAC · `/api/roles` | `users.read` / `users.manage` | §16.16 |
+| Org | `/admin/users` | `UsersManager`, `/api/users` | `users.read` / `users.manage` | §16.16 |
+| Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §16.17 |
+| Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §16.18 |
+| Platform | `/admin/audit` | `AuditBoard` — CRMP / Vantage Markets Admin tabs + Roll back | `audit.read` | §16.19 |
+| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §16.20 |
+| Docs | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`, boards | `admin.access` | §13 + §16.21 |
+| Shell | `SelectionChatbot` (select text → sparkle → chat) | `lib/ai/desk-chat.ts`, `POST /api/ai-chat` | public / `ai.read` | §12 |
+
+Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`.
 
 ---
 
@@ -171,7 +215,7 @@ Detailed AI Admin permission matrix: **§8.3**.
 4. Queue training / recalibration runs
 5. Label RCA quality feedback (CORRECT / INCORRECT / PARTIAL)
 
-It is **governance**, not the live RCA workbench (`/admin/ai-analyses`) and not the intervention desk (`/admin/interventions`).
+It is **governance**, not the live RCA workbench (list on **Realtime Alert & Tracker** `/admin/alerts`; detail `/admin/ai-analyses/[id]`) and not the intervention desk (`/admin/interventions`).
 
 ### 8.2 Route & components
 
@@ -345,16 +389,15 @@ Unsupported pairs throw and leave CR undecided (transactional expectation for pr
 
 ### 8.11 Sequence — propose skill (happy path)
 
-```
-AI Engineer (Maker)                API / admin.ts                 Risk Owner (Checker)
-       │ propose_skill                  │                                │
-       ├───────────────────────────────►│ insert PENDING CR              │
-       │◄──────── request_id ───────────┤                                │
-       │                                │                                │
-       │                                │◄──── decide APPROVED ──────────┤
-       │                                │ applyChange SKILL/CREATE       │
-       │                                │ audit AI_CHANGE_APPROVED       │
-       │                                ├──────── ok + applied ─────────►│
+```mermaid
+sequenceDiagram
+  participant Maker as AI Engineer
+  participant API as admin.ts
+  participant Checker as Risk Owner
+  Maker->>API: propose skill
+  API-->>Maker: PENDING request id
+  Checker->>API: decide APPROVED
+  API-->>Checker: skill CREATE applied
 ```
 
 ### 8.12 Related pages
@@ -385,6 +428,18 @@ For alert severities at or above `ai.second_opinion_severity` (default **BREACH*
 | Setting | Default | Behaviour |
 |---|---|---|
 | `ai.second_opinion_severity` | `BREACH` | Run when alert severity rank ≥ setting (`WARN` &lt; `BREACH` &lt; `CRITICAL`) |
+
+```mermaid
+graph TD
+  Rca[Primary RCA persisted] --> Cmp{Severity at threshold?}
+  Cmp -->|No| Skip[Skip challenger]
+  Cmp -->|Yes| Run[crmp-challenger-v0]
+  Run --> V{Verdict}
+  V -->|AGREE| Pack[Attach challenge pack]
+  V -->|PARTIAL or DISAGREE| Human[needs human equals 1]
+  Human --> Pack
+```
+
 
 ### 9.3 Outputs
 | Field | Description |
@@ -434,13 +489,16 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 |---|---|
 | `show_evidence` | Post vault + challenger summary into thread |
 | `chat` | User note / challenge; disagreement flags `needs_human` |
-| `escalate` | Advance escalation path step |
+| `escalate` | Advance escalation path step; post hand-off in the current POC window and intake in the next |
 | `dismiss` | False alarm → thread DISMISSED, alert CLOSED |
 | `close` | Accept AI → thread CLOSED |
 | `recommend` → `confirm_action` | Double-confirm control → admin_ref (+ checker if required) |
 
 ### 11.4 Data
 `messenger_threads`, `messenger_messages`, `messenger_pending_actions` (see §4.4).
+
+### 11.5 POC windows
+`getMessengerThread` returns `poc_windows` — one Lark chat per hop on the matched route (primary team → secondary → Risk Owner → Exec) with named POC from `users`/`teams`. UI: bird-eye path chips + split columns (`data-testid=msg-poc-windows`).
 
 ---
 
@@ -450,9 +508,25 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 Five-minute scan of news/social/official signals that can move LP prices; push formatted cards to a dedicated messenger/outbox channel; expose indicator `M2-MKT-INTEL`.
 
 ### 12.2 Key modules
-- `lib/market-intel/scanner.ts`, `format.ts`, `schema.ts`
+- `lib/market-intel/scanner.ts`, `format.ts`, `schema.ts`, `demo-scan.ts`
 - UI `/admin/market-intel`
 - Settings: `market_intel.enabled`, `interval_minutes`, `lark_chat_id`
+
+### 12.3 Public snapshot (GitHub Pages)
+Pages has no Next.js API routes. `POST /api/market-intel` would return **405**. The desk therefore:
+1. Detects `github.io` / `/PRD/crmp-admin` / `NEXT_PUBLIC_STATIC_EXPORT`.
+2. Runs `runClientMarketIntelScan()` from the same `EVENT_TEMPLATES` as the live scanner.
+3. Updates Findings, outbox, scan log and `M2-MKT-INTEL` in local state (persisted in `localStorage`).
+4. Seeds three findings at SSG time so the first paint is not empty.
+
+```mermaid
+graph TD
+  Click[Scan now] --> Detect{Public snapshot?}
+  Detect -->|Yes| Demo[Client demo scan]
+  Detect -->|No| Api[POST market-intel]
+  Demo --> Desk[Findings plus outbox]
+  Api --> Desk
+```
 
 ---
 
@@ -471,15 +545,30 @@ Interactive UAT board: `/admin/docs/uat` (`UatChecklistBoard` + `lib/docs/uat-ca
 
 ## 14. Key API map (prototype)
 
+Absent on GitHub Pages (static export). UI must degrade: demo session, client intel scan, local settings message.
+
 | API | Role |
 |---|---|
-| `POST /api/auth/login` | Session cookie `crmp_session` |
+| `POST /api/auth/login` | Session cookie `crmp_session`; Pages falls back to `writeDemoSession` |
+| `POST /api/auth/logout` | Clear cookie |
 | `GET/POST /api/ai` | Analyses, simulate alarm, `backfill_challenges` |
-| `GET/POST /api/ai-admin` | AI Admin propose/approve/training/feedback |
+| `GET/POST /api/ai-admin` | Propose/approve/training/feedback |
 | `GET/POST /api/messenger` | Threads + inline actions |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
-| Other | detectors, escalation, interventions, rag, skills, … |
+| `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
+| `GET/POST /api/detectors` | Legacy detector CRUD / run (UI on Monitor 2.0) |
+| `GET/POST /api/escalation` | Routes + dimension coefficients + ESC-DEFAULT probe |
+| `GET/POST /api/roles` | Editable RBAC (`update_role`; AI actors forbidden) |
+| `GET/POST /api/org` | Departments + teams; `update_team` mission / on-call |
+| `POST /api/audit/rollback` | Restore before-state snapshot by `audit_id` |
+| `GET/POST /api/ai-improve` | How-to-improve review chat |
+| `POST /api/ai-chat` | Desk selection chatbot |
+| `POST /api/dashboard` | Rebuild daily metrics |
+| `GET/POST /api/rag` | List, retrieve; human write / propose_rag (AI blocked) |
+| `GET/POST /api/users` | Directory + create/disable |
+| `PATCH /api/settings` | Single key save |
+| Interventions | Server action `decideInterventionAction` (approve/reject) |
 
 ---
 
@@ -498,12 +587,119 @@ Demo logins: see User Guide §1 (e.g. `admin@vantagemarkets.com` / `admin123`).
 
 ---
 
-## 16. Document control
+## 16. Remaining admin modules
+
+Modules not fully specified in §8–§13. Behaviour must match the User Guide how-to and PRD §6.4.
+
+### 16.1 Login, session, shell, unread — §7.1
+
+- Personas: `DEMO_PERSONAS` in `lib/demo-session.ts` (demo platform owner first).  
+- Localhost: `POST /api/auth/login` sets `crmp_session` **and** writes demo session.  
+- Pages / 404/405: skip API, `writeDemoSession` only.  
+- `AdminShell` prefers demo session when `isPublicSnapshot()`. Sign out clears both.  
+- Nav groups from `NAV_GROUPS`. Unread: `AdminShell` + `bumpNavBadge` from Market Intel, Monitor 2.0, Realtime Alert & Tracker, Messenger.
+
+### 16.2 Admin Home
+
+SSR counts (users, teams, sources, domains, open alerts/tickets, Lark channels, routes). Every tile is a `Link`: `StatCard` `href` (with icon + Open), owner → `/login`, messenger hero → `/admin/messenger`, jump grid, department cards to working pages (alerts / interventions / settings), recent alerts to `/admin/alerts#{alert_id}`, spine steps to monitor / alerts / escalation / AI / dashboard. `HomeDummyAlertButtons` POST `/api/ai` `dummy_spine` (single or group) walks DETECT→close; locale from `getUiLocale()` so messenger notes store zh-Hant when the UI is 繁中; stored English titles/messages still display via `phrase()`. `AlertTrackerBoard` honours the hash and `?dummy=` highlight.
+
+### 16.3 Daily performance
+
+`getDailyDashboard()` → CFD/crypto metric arrays + WARN/BREACH summary. `POST /api/dashboard` refresh.
+
+### 16.4 Risk log
+
+`getRiskLogDashboard()` aggregates: summary USD/times, `by_category`, `by_domain`, `loopholes`, chronological `records`. Read-only UI (`RiskLogDashboard`).
+
+### 16.5 Monitor 2.0 hub (unified indicator + detector registry)
+
+Single registry table: `monitor_indicators` LEFT JOIN `detectors` (per-indicator detector code, pause, last run). **Run all indicators** / **Sync** / **Pause** via `MonitorEngineActions` + `MonitorActions`; threshold edit via `IndicatorThresholdEditor`; **recent runs** from `detector_runs`. Legacy `tab=alerts|tickets` deep-links redirect to Realtime Alert & Tracker. `/admin/detectors` redirects here (not in left nav). Primary API: `POST /api/monitor` with `run_detectors` / `toggle_pause` / `update_thresholds` / `sync_monitor2`. Legacy `POST /api/detectors` still exists. Tables `detectors` + `detector_runs` remain in SQLite — UI lives on this page. Setting `monitor2.base_url` displayed. Open-ticket counts link to `/admin/alerts`. Mobile: `sm:hidden` card lists + `sm:block` tables.
+
+### 16.6 Detectors URL (redirect)
+
+Bookmarks only: `/admin/detectors` → `/admin/monitor-2`. See §16.5 for run/toggle/recent runs.
+
+### 16.7 Realtime Alert & Tracker
+
+`AlertTrackerBoard`: join `monitor_alerts` × indicators. Open cards only; sort CRITICAL/BREACH/WARN then time. **Grouped AI pipeline** controls + rank note; `MonitorCode` tooltips on M2-* codes. `/admin/ai-analyses` list redirects here. `ack_alert` when `monitor.operate`. Closed tickets leave this queue for Risk Log.
+
+### 16.8 Risk domains
+
+`risk_domains` cards: priority, product_coverage, owner_department, supporting_departments_json. Read-only.
+
+### 16.9 AI Analyses list/detail
+
+List merged into Realtime Alert (`AlertTrackerBoard`) with **grouped AI pipeline controls** + rank note. `MonitorCode` tooltips/links on M2-* codes. Detail: `/admin/ai-analyses/[id]` + `AiChallengePanel`. AI Admin Overview shows **first-line / second-line** cards (`ai.line1.*` / `ai.line2.*`).
+
+### 16.10 Skills board + SKILL.md page
+
+`SkillsScenariosBoard`: search, skills vs chains tabs, **Enter** → `/admin/skills/[code]` (`finalizeSkill` playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: `risk-scenarios-catalog.ts` + extras.
+
+### 16.11 Knowledge Tree
+
+`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook. **RAG documents render as leaves** with deep links to `/admin/rag?doc=…`. `MonitorCode` chips link to `/admin/monitor-2#M2-…`. Outline mode is the same graph as a nested list.
+
+### 16.12 RAG corpus
+
+`RagManager`: category filter, search, retrieve `GET /api/rag?mode=retrieve&q=&limit=6`. **Human-gate:** pages/fields AI cannot edit escalate to human — AI service actors cannot POST/PATCH; humans with `rag.manage` or AI Admin `propose_rag` maker-checker. FTS via `reindexRagFts`.
+
+### 16.13 Spine (on Admin Home)
+
+Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Home via `HomeSpineViz` with **stage ticket counts** (`spineStageCounts`). `/admin/spine` redirects to `/admin`.
+
+### 16.14 Interventions
+
+`listInterventions()`. Pending: note + Approve/Reject via `decideInterventionAction`. Samples show **actioner email**. Writes spine + audit. Distinct from AI Admin CRs.
+
+### 16.15 Lark + escalation
+
+`lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
+
+### 16.16 Organisation
+
+**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`). Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
+
+### 16.17 Data sources
+
+`data_sources` registry. `DataSourcesManager` CRUD when `sources.manage`.
+
+### 16.18 AI access blocklist
+
+`lib/security/ai-access-blocklist.ts` → `AI_ACCESS_BLOCKLIST`, `AI_ALLOWED_CAPABILITIES`, `AI_SERVICE_ROLE_FORBIDDEN_PERMISSIONS`. Read-only board + stats.
+
+### 16.19 Audit log
+
+`AuditBoard` partitions `audit_logs` into two tabs via `classifyAuditPlane` (`lib/audit.ts`):
+
+| Tab | Contents |
+|---|---|
+| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
+| **Vantage Markets Admin logs** | Other admin pages — restrict user rights, pull transaction data, triggered Lark messages, BU POC risk-incident responses, settings / org / RAG |
+
+Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
+
+### 16.20 Platform settings
+
+`SettingsManager` groups by key prefix: `platform.|products.`, `monitor2.`, `ai.`, `market_intel.`, `lark.`, `escalation.|detectors.`. `PATCH /api/settings`. Pages: message “stored in this browser only”.
+
+### 16.21 Docs renderer
+
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts`.
+
+---
+
+## 17. Document control
 
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-01 | Initial TSD skeleton |
 | 1.1 | 2026-10-01 | Full §8 AI Admin Management Page specification |
 | 1.2 | 2026-10-01 | §9 Challenger, §11 Messenger, §12 Market Intel, docs/i18n/mobile, renumber |
+| 1.3 | 2026-10-04 | Public snapshot demo scan, grouped nav, demo platform owner, Pages login |
+| 1.5 | 2026-10-04 | SVG flowcharts and sequence diagrams in TSD + mermaid renderer |
+| 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
+| 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
+| 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
 
+**Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

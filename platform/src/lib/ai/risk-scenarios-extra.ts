@@ -197,6 +197,41 @@ export const EXTRA_SKILL_SCENARIOS: SkillScenario[] = [
       { case_id: "CASE-ABOOK-0612", date: "2026-06-12", outcome: "PREVENTED ~$150k", summary: "Override left on overnight; forced A-book restored ratio to 55%." },
     ],
     owner_department: "RISK_CONTROL",
+    owner_role: "Risk Owner / Credit Desk",
+    when_to_use: [
+      "Use when M2-ABOOK-008 session A-book ratio is at or below 40% (WARN) or 30% (BREACH).",
+      "Also use when A-book is >90% and LP credit is simultaneously stressing — too much A-book can exhaust LP limits.",
+      "Prefer this skill when hedge coverage or LP reject rate is co-moving; that is book-construction risk, not a single-symbol blip.",
+    ],
+    when_not_to_use: [
+      "Do not force A-book on the whole book because one symbol flipped B-book for a few minutes.",
+      "Do not add A-book flow when LP credit is already full — fix credit first.",
+      "Do not treat a known UAT / desk test print as production drift.",
+      "Do not skip the human gate on routing changes that cannot be cheaply reversed.",
+    ],
+    prechecks: [
+      "Confirm M2-ABOOK-008 is a live session snapshot, not yesterday's close.",
+      "List active manual B-book overrides before changing routing.",
+      "Check M2-HEDGE-007 and M2-LP-022 — LP full is a different playbook.",
+      "Confirm there is a matching OPEN alert / messenger thread.",
+    ],
+    evidence_to_collect: [
+      "Session A-book ratio vs warn 40% / breach 30%.",
+      "Override audit: who left B-book on, since when, on which symbols.",
+      "LP credit utilisation and reject rate.",
+      "Messenger ALERT + AI_REPORT pack.",
+    ],
+    stop_conditions: [
+      "Stop if ratio has recovered above 40% for 15 minutes and overrides are explained.",
+      "Do not force A-book if LP credit is exhausted.",
+      "Abort auto-execute — this skill always needs a human gate for routing force.",
+    ],
+    success_criteria: [
+      "Named Risk Control owner within 20 minutes SLA.",
+      "Override list attached to the case even if empty.",
+      "Any A-book force has Risk Owner approval in audit.",
+      "Looks like CASE-ABOOK-0612: ratio restored toward 55% without leftover silent B-book.",
+    ],
     steps: [
       { action: "lark_notify", description: "Notify Risk Control Desk", params: { channel: "oc_risk_control_desk" }, bu: "RISK_CONTROL" },
       { action: "review_bbook_overrides", description: "List active B-book overrides", bu: "RISK_CONTROL" },

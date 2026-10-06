@@ -36,7 +36,11 @@ export async function POST(req: Request) {
          VALUES (?, ?, ?, ?, ?, ?)`
       )
       .run(email, name, password, role_code, department_code || null, team_id || null);
-    writeAudit(user, "CREATE_USER", "user", String(info.lastInsertRowid), { email, role_code });
+    writeAudit(user, "CREATE_USER", "user", String(info.lastInsertRowid), {
+      after: { email, role_code, department_code: department_code || null, team_id: team_id || null },
+      email,
+      role_code,
+    });
     return NextResponse.json({ ok: true, id: info.lastInsertRowid });
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 400 });
@@ -51,16 +55,46 @@ export async function PATCH(req: Request) {
   const body = await req.json();
   const { id, status, role_code, team_id, department_code } = body;
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
-  getDb()
+  const db = getDb();
+  const prev = db
     .prepare(
-      `UPDATE users SET
-         status = COALESCE(?, status),
-         role_code = COALESCE(?, role_code),
-         team_id = COALESCE(?, team_id),
-         department_code = COALESCE(?, department_code)
-       WHERE id = ?`
+      `SELECT id, email, name, role_code, department_code, team_id, status FROM users WHERE id = ?`
     )
-    .run(status ?? null, role_code ?? null, team_id ?? null, department_code ?? null, id);
-  writeAudit(user, "UPDATE_USER", "user", String(id), body);
+    .get(id) as
+    | {
+        id: number;
+        email: string;
+        name: string;
+        role_code: string;
+        department_code: string | null;
+        team_id: number | null;
+        status: string;
+      }
+    | undefined;
+  if (!prev) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  db.prepare(
+    `UPDATE users SET
+       status = COALESCE(?, status),
+       role_code = COALESCE(?, role_code),
+       team_id = COALESCE(?, team_id),
+       department_code = COALESCE(?, department_code)
+     WHERE id = ?`
+  ).run(status ?? null, role_code ?? null, team_id ?? null, department_code ?? null, id);
+  const after = {
+    status: status ?? prev.status,
+    role_code: role_code ?? prev.role_code,
+    team_id: team_id ?? prev.team_id,
+    department_code: department_code ?? prev.department_code,
+  };
+  writeAudit(user, "UPDATE_USER", "user", String(id), {
+    before: {
+      status: prev.status,
+      role_code: prev.role_code,
+      team_id: prev.team_id,
+      department_code: prev.department_code,
+    },
+    after,
+    ...body,
+  });
   return NextResponse.json({ ok: true });
 }

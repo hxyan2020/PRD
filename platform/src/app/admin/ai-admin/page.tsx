@@ -45,13 +45,13 @@ export default async function AiAdminPage() {
         </Link>
         {" · "}
         <Link className="underline" href="/admin/docs/tsd?lang=zh-Hant">
-          繁中規格
+          TSD §8 — AI 管理頁規格
         </Link>
       </div>
       <AiAdminConsole
         initial={{
-          overview: getAiAdminOverview(),
-          params: listAiParams(),
+          overview: getAiAdminOverview() as React.ComponentProps<typeof AiAdminConsole>["initial"]["overview"],
+          params: listAiParams() as React.ComponentProps<typeof AiAdminConsole>["initial"]["params"],
           changes: listChangeRequests() as React.ComponentProps<typeof AiAdminConsole>["initial"]["changes"],
           training: listTrainingRuns() as React.ComponentProps<typeof AiAdminConsole>["initial"]["training"],
           skills: listSkillsForAdmin() as React.ComponentProps<typeof AiAdminConsole>["initial"]["skills"],

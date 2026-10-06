@@ -8,6 +8,8 @@ export type SpineStage =
   | "AI_RCA"
   | "SKILL_EXECUTE"
   | "HUMAN_INTERVENTION"
+  | "INTERVENTION"
+  | "ESCALATION"
   | "RESOLVED"
   | "DASHBOARD";
 

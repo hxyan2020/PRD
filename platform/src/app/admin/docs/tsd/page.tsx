@@ -5,18 +5,19 @@ import { DocArticlePage } from "@/components/DocArticlePage";
 import { Badge } from "@/components/ui";
 import { resolveDocLocale } from "@/lib/docs";
 import { getUiLocale } from "@/lib/i18n-server";
+import { readSearchParams } from "@/lib/static-export";
 
 export default async function TsdPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
-  const sp = await searchParams;
+  const sp = await readSearchParams(searchParams);
   const ui = await getUiLocale();
   const lang = sp.lang ? resolveDocLocale(sp.lang) : ui;
   const zh = lang === "zh-Hant";
 
   const cards = [
-    { label: zh ? "文件版次" : "Document version", value: "v1.2" },
-    { label: zh ? "章節" : "Sections", value: "16" },
+    { label: zh ? "文件版次" : "Document version", value: "v1.5" },
+    { label: zh ? "章節" : "Sections", value: "17" },
     { label: zh ? "核心模組" : "Core modules", value: zh ? "挑戰者 · Messenger · 市場情報" : "Challenger · Messenger · Market Intel" },
     { label: zh ? "技術棧" : "Stack", value: "Next.js 15 + SQLite" },
   ];

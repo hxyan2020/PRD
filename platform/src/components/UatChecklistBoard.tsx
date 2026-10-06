@@ -1,8 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Badge, SeverityBadge } from "@/components/ui";
-import { UAT_CASES, uatSummary, type UatSeverity } from "@/lib/docs/uat-cases";
+import { UAT_CASES, uatCoverage, uatSummary, type UatCopy, type UatSeverity } from "@/lib/docs/uat-cases";
+import { fetchDocOverlay, resetDocOverlay, saveDocOverlay } from "@/lib/docs/edit-client";
+import { isPublicSnapshot } from "@/lib/static-export";
+import { DocEditBar } from "@/components/DocEditBar";
+
+type UatPatch = {
+  bu?: string;
+  dependency?: string;
+  en?: Partial<UatCopy>;
+  zh?: Partial<UatCopy>;
+};
+type UatOverlay = Record<string, UatPatch>;
 
 function sevClass(s: UatSeverity) {
   if (s === "Critical") return "bg-rose-50 text-rose-900 border-rose-200";
@@ -17,17 +28,69 @@ function formatClock(min: number) {
   return `T+${h}:${String(m).padStart(2, "0")}`;
 }
 
+function mergeCopy(base: UatCopy, patch?: Partial<UatCopy>): UatCopy {
+  if (!patch) return base;
+  return {
+    title: patch.title ?? base.title,
+    why: patch.why ?? base.why,
+    objective: patch.objective ?? base.objective,
+    steps: patch.steps ?? base.steps,
+    pass: patch.pass ?? base.pass,
+    evidence: patch.evidence ?? base.evidence,
+  };
+}
+
+function parseOverlay(raw: string | null): UatOverlay {
+  if (!raw) return {};
+  try {
+    const v = JSON.parse(raw) as UatOverlay;
+    return v && typeof v === "object" ? v : {};
+  } catch {
+    return {};
+  }
+}
+
 export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
   const zh = lang === "zh-Hant";
   const summary = uatSummary();
   const [filter, setFilter] = useState<"ALL" | UatSeverity>("ALL");
   const [openId, setOpenId] = useState<string | null>(UAT_CASES[0]?.id ?? null);
   const [results, setResults] = useState<Record<string, "PASS" | "FAIL" | "WAIVE" | "">>({});
+  const [overlay, setOverlay] = useState<UatOverlay>({});
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState<UatOverlay>({});
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const localOnly = isPublicSnapshot();
 
-  const cases = useMemo(
-    () => (filter === "ALL" ? UAT_CASES : UAT_CASES.filter((c) => c.severity === filter)),
-    [filter]
-  );
+  useEffect(() => {
+    let live = true;
+    fetchDocOverlay("UAT", "overlay").then((raw) => {
+      if (!live) return;
+      const next = parseOverlay(raw);
+      setOverlay(next);
+      setDraft(next);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  const cases = useMemo(() => {
+    const source = editing ? draft : overlay;
+    const merged = UAT_CASES.map((c) => {
+      const p = source[c.id];
+      if (!p) return c;
+      return {
+        ...c,
+        bu: p.bu ?? c.bu,
+        dependency: p.dependency ?? c.dependency,
+        en: mergeCopy(c.en, p.en),
+        zh: mergeCopy(c.zh, p.zh),
+      };
+    });
+    return filter === "ALL" ? merged : merged.filter((c) => c.severity === filter);
+  }, [filter, overlay, draft, editing]);
 
   const tallies = useMemo(() => {
     let pass = 0;
@@ -42,8 +105,70 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
     return { pass, fail, waive, unset: UAT_CASES.length - pass - fail - waive };
   }, [results]);
 
+  function patchCase(id: string, field: keyof UatCopy | "bu" | "dependency", value: string | string[]) {
+    setDraft((prev) => {
+      const cur = prev[id] ? { ...prev[id] } : {};
+      if (field === "bu" || field === "dependency") {
+        cur[field] = String(value);
+      } else {
+        const loc = zh ? { ...(cur.zh || {}) } : { ...(cur.en || {}) };
+        (loc as Record<string, unknown>)[field] = value;
+        if (zh) cur.zh = loc;
+        else cur.en = loc;
+      }
+      return { ...prev, [id]: cur };
+    });
+  }
+
+  async function save() {
+    setBusy(true);
+    const body = JSON.stringify(draft);
+    const result = await saveDocOverlay("UAT", "overlay", body);
+    setBusy(false);
+    if (!result.ok) {
+      setMsg(result.error || (zh ? "儲存失敗" : "Save failed"));
+      return;
+    }
+    setOverlay(draft);
+    setEditing(false);
+    setMsg(result.localOnly ? (zh ? "已儲存在這個瀏覽器" : "Saved in this browser") : zh ? "已儲存" : "Saved");
+  }
+
+  async function reset() {
+    if (!window.confirm(zh ? "還原全部 UAT 文案為種子稿？" : "Reset all UAT copy to the seed draft?")) return;
+    setBusy(true);
+    await resetDocOverlay("UAT", "overlay");
+    setBusy(false);
+    setOverlay({});
+    setDraft({});
+    setEditing(false);
+    setMsg(zh ? "已還原種子稿" : "Restored seed draft");
+  }
+
   return (
     <div className="space-y-4">
+      <div className="panel p-3 sm:p-4">
+        <DocEditBar
+          zh={zh}
+          editing={editing}
+          busy={busy}
+          dirty={editing && JSON.stringify(draft) !== JSON.stringify(overlay)}
+          localOnly={localOnly}
+          message={msg}
+          onEdit={() => {
+            setDraft(overlay);
+            setEditing(true);
+            setMsg(null);
+          }}
+          onCancel={() => {
+            setDraft(overlay);
+            setEditing(false);
+          }}
+          onSave={() => void save()}
+          onReset={() => void reset()}
+        />
+      </div>
+
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         <div className="panel p-3">
           <div className="text-[10px] uppercase text-[var(--muted)]">{zh ? "案例數" : "Cases"}</div>
@@ -51,12 +176,10 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
         </div>
         <div className="panel p-3">
           <div className="text-[10px] uppercase text-[var(--muted)]">{zh ? "建議時窗" : "Suggested window"}</div>
-          <div className="font-semibold text-lg tabular-nums">
-            ~{Math.ceil(summary.windowEndMin / 60)}h
-          </div>
+          <div className="font-semibold text-lg tabular-nums">~{Math.ceil(summary.windowEndMin / 60)}h</div>
         </div>
         <div className="panel p-3">
-          <div className="text-[10px] uppercase text-[var(--muted)]">Critical / High</div>
+          <div className="text-[10px] uppercase text-[var(--muted)]">{zh ? "危急／高" : "Critical / High"}</div>
           <div className="font-semibold text-lg tabular-nums">
             {summary.bySev.Critical} / {summary.bySev.High}
           </div>
@@ -72,8 +195,8 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
       <div className="panel p-3 sm:p-4">
         <p className="text-sm text-[var(--muted)]">
           {zh
-            ? "請依序執行。Critical 前置未通過前勿跳號。通過門檻見各案「通過標準」。退出：Critical 全過；High 豁免≤2 且需書面接受。"
-            : "Execute in sequence. Do not skip ahead of failed Critical predecessors. Exit: all Critical Pass; ≤2 High waivers with written acceptance."}
+            ? "請依序執行。這是風險負責人帶著證據走完整張管理桌與 Lark 風格 Messenger 的白話劇本，不是開發自測。Critical 前置未通過前勿跳號。退出：Critical 全過；High 豁免≤2 且需書面接受。"
+            : "Execute in sequence. This is the Risk Owner script for the whole admin desk and the Lark-style messenger — written in plain English, not a developer smoke test. Do not skip ahead of failed Critical predecessors. Exit: all Critical Pass; ≤2 High waivers with written acceptance."}
         </p>
         <div className="mt-3 action-row">
           {(["ALL", "Critical", "High", "Medium", "Low"] as const).map((f) => (
@@ -133,34 +256,119 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
                       <strong>{zh ? "負責 BU" : "BU"}:</strong> {c.bu}
                       {" · "}
                       <strong>{zh ? "依賴" : "Depends"}:</strong> {c.dependency}
+                      {" · "}
+                      <strong>{zh ? "涵蓋" : "Covers"}:</strong> {c.covers.join(" · ")}
                     </div>
                   </div>
-                  <span className="text-xs text-[var(--muted)] shrink-0">{open ? (zh ? "收合" : "Collapse") : zh ? "展開步驟" : "Expand steps"}</span>
+                  <span className="text-xs text-[var(--muted)] shrink-0">
+                    {open ? (zh ? "收合" : "Collapse") : zh ? "展開步驟" : "Expand steps"}
+                  </span>
                 </div>
               </button>
 
               {open && (
                 <div className="mt-4 border-t border-[var(--line)] pt-3 space-y-3">
-                  <div>
-                    <div className="text-xs uppercase text-[var(--muted)]">{zh ? "逐步步驟" : "Step by step"}</div>
-                    <ol className="mt-2 list-decimal pl-5 space-y-1.5 text-sm">
-                      {copy.steps.map((s, i) => (
-                        <li key={i} className="break-word">
-                          {s}
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                    <div className="rounded-xl border border-[var(--line)] p-3">
-                      <div className="text-xs uppercase text-[var(--muted)]">{zh ? "通過標準" : "Pass threshold"}</div>
-                      <p className="mt-1 break-word">{copy.pass}</p>
+                  {editing ? (
+                    <div className="space-y-3 text-sm">
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "標題" : "Title"}</span>
+                        <input
+                          className="input mt-1 w-full"
+                          value={copy.title}
+                          onChange={(e) => patchCase(c.id, "title", e.target.value)}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "目標" : "Objective"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-20"
+                          value={copy.objective}
+                          onChange={(e) => patchCase(c.id, "objective", e.target.value)}
+                        />
+                      </label>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <label className="block">
+                          <span className="text-xs uppercase text-[var(--muted)]">BU</span>
+                          <input
+                            className="input mt-1 w-full"
+                            value={c.bu}
+                            onChange={(e) => patchCase(c.id, "bu", e.target.value)}
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs uppercase text-[var(--muted)]">{zh ? "依賴" : "Depends"}</span>
+                          <input
+                            className="input mt-1 w-full"
+                            value={c.dependency}
+                            onChange={(e) => patchCase(c.id, "dependency", e.target.value)}
+                          />
+                        </label>
+                      </div>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">{zh ? "為何要測" : "Why this test"}</span>
+                        <textarea
+                          className="input mt-1 w-full min-h-20"
+                          value={copy.why}
+                          onChange={(e) => patchCase(c.id, "why", e.target.value)}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="text-xs uppercase text-[var(--muted)]">
+                          {zh ? "步驟（一行一步）" : "Steps (one per line)"}
+                        </span>
+                        <textarea
+                          className="input mt-1 w-full min-h-36"
+                          value={copy.steps.join("\n")}
+                          onChange={(e) => patchCase(c.id, "steps", e.target.value.split("\n"))}
+                        />
+                      </label>
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <label className="block">
+                          <span className="text-xs uppercase text-[var(--muted)]">{zh ? "通過標準" : "Pass threshold"}</span>
+                          <textarea
+                            className="input mt-1 w-full min-h-20"
+                            value={copy.pass}
+                            onChange={(e) => patchCase(c.id, "pass", e.target.value)}
+                          />
+                        </label>
+                        <label className="block">
+                          <span className="text-xs uppercase text-[var(--muted)]">{zh ? "應留證據" : "Evidence"}</span>
+                          <textarea
+                            className="input mt-1 w-full min-h-20"
+                            value={copy.evidence}
+                            onChange={(e) => patchCase(c.id, "evidence", e.target.value)}
+                          />
+                        </label>
+                      </div>
                     </div>
-                    <div className="rounded-xl border border-[var(--line)] p-3">
-                      <div className="text-xs uppercase text-[var(--muted)]">{zh ? "應留證據" : "Evidence to keep"}</div>
-                      <p className="mt-1 break-word">{copy.evidence}</p>
-                    </div>
-                  </div>
+                  ) : (
+                    <>
+                      <div className="rounded-xl border border-teal-200 bg-teal-50/60 p-3 text-sm">
+                        <div className="text-xs uppercase text-teal-800">{zh ? "為何要測" : "Why this test"}</div>
+                        <p className="mt-1 break-word">{copy.why}</p>
+                      </div>
+                      <div>
+                        <div className="text-xs uppercase text-[var(--muted)]">{zh ? "逐步步驟" : "Step by step"}</div>
+                        <ol className="mt-2 list-decimal pl-5 space-y-1.5 text-sm">
+                          {copy.steps.map((s, i) => (
+                            <li key={i} className="break-word">
+                              {s}
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <div className="rounded-xl border border-[var(--line)] p-3">
+                          <div className="text-xs uppercase text-[var(--muted)]">{zh ? "通過標準" : "Pass threshold"}</div>
+                          <p className="mt-1 break-word">{copy.pass}</p>
+                        </div>
+                        <div className="rounded-xl border border-[var(--line)] p-3">
+                          <div className="text-xs uppercase text-[var(--muted)]">{zh ? "應留證據" : "Evidence to keep"}</div>
+                          <p className="mt-1 break-word">{copy.evidence}</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
                   <div className="action-row">
                     {(["PASS", "FAIL", "WAIVE", ""] as const).map((r) => (
                       <button
@@ -186,6 +394,23 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
       </div>
 
       <section className="panel p-3 sm:p-4 text-sm">
+        <h3 className="font-semibold">{zh ? "畫面涵蓋" : "Screen coverage"}</h3>
+        <p className="mt-1 text-xs text-[var(--muted)]">
+          {zh
+            ? "每個管理頁與 Messenger 主要動作都應對得到至少一案。若你新加了功能，請補案。"
+            : "Every admin page and the main messenger actions map to at least one case. If you add a feature, add a case."}
+        </p>
+        <div className="mt-3 grid sm:grid-cols-2 gap-2">
+          {uatCoverage().map((row) => (
+            <div key={row.screen} className="rounded-lg border border-[var(--line)] px-3 py-2 text-xs">
+              <div className="font-semibold text-[var(--ink)]">{row.screen}</div>
+              <div className="text-[var(--muted)] mt-0.5 break-word">{row.ids.join(", ")}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="panel p-3 sm:p-4 text-sm">
         <h3 className="font-semibold">{zh ? "退出標準" : "Exit criteria"}</h3>
         <ul className="mt-2 list-disc pl-5 space-y-1 text-[var(--muted)]">
           <li>{zh ? "所有 Critical 必須 Pass。" : "All Critical cases must Pass."}</li>
@@ -199,7 +424,11 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
               ? "UAT 視窗內 BREACH／CRITICAL 樣本 100% 附第二 AI（UAT-19）。"
               : "100% of BREACH/CRITICAL samples in the window have second AI (UAT-19)."}
           </li>
-          <li>{zh ? "UAT-20 簽核完成。" : "UAT-20 sign-off completed."}</li>
+          <li>
+            {zh
+              ? `${summary.lastId} 簽核完成（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。`
+              : `${summary.lastId} sign-off completed (ACCEPT / ACCEPT WITH WAIVERS / REJECT).`}
+          </li>
         </ul>
         <div className="mt-3 flex flex-wrap gap-2">
           <SeverityBadge value="CRITICAL" />

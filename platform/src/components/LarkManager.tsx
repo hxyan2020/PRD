@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DeptBadge, SeverityBadge, StatusBadge } from "@/components/ui";
+import { useT } from "@/hooks/useUiLocale";
 
 type Channel = {
   id: number;
@@ -25,6 +26,7 @@ export function LarkManager({
   canManage: boolean;
 }) {
   const router = useRouter();
+  const { t, phrase } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
@@ -43,15 +45,15 @@ export function LarkManager({
       body: JSON.stringify({
         action: "test_notify",
         channel_id: channelId,
-        message: "CRMP prototype test notification",
+        message: t("lark.testMsg"),
       }),
     });
     const data = await res.json();
     if (!res.ok) {
-      setMsg(data.error || "Notify failed");
+      setMsg(data.error || t("lark.notifyFailed"));
       return;
     }
-    setMsg(`Test notify logged for “${channelName}” — ${data.note || "delivered (mock)"}`);
+    setMsg(t("lark.logged", { name: channelName, note: data.note || t("lark.delivered") }));
   }
 
   async function toggle(channel: Channel) {
@@ -71,10 +73,10 @@ export function LarkManager({
     });
     const data = await res.json();
     if (!res.ok) {
-      setMsg(data.error || "Failed");
+      setMsg(data.error || t("common.failed"));
       return;
     }
-    setMsg(`Channel #${data.id} created`);
+    setMsg(t("lark.created", { id: data.id }));
     router.refresh();
   }
 
@@ -85,7 +87,7 @@ export function LarkManager({
           <div key={s.key} className="rounded-xl border border-[var(--line)] p-3">
             <div className="text-xs uppercase tracking-wide text-[var(--muted)]">{s.key}</div>
             <div className="font-semibold mt-1 break-all">{s.value}</div>
-            <div className="text-xs text-[var(--muted)] mt-1">{s.description}</div>
+            <div className="text-xs text-[var(--muted)] mt-1">{phrase(s.description)}</div>
           </div>
         ))}
       </div>
@@ -102,14 +104,14 @@ export function LarkManager({
 
       {canManage && (
         <div className="panel p-4">
-          <h3 className="font-semibold">Add Lark channel</h3>
+          <h3 className="font-semibold">{t("lark.add")}</h3>
           <div className="mt-3 grid md:grid-cols-3 gap-3">
             <div>
-              <label className="label">Name</label>
+              <label className="label">{t("common.name")}</label>
               <input className="input" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div>
-              <label className="label">Chat ID</label>
+              <label className="label">{t("lark.chatId")}</label>
               <input
                 className="input"
                 value={form.chat_id}
@@ -117,7 +119,7 @@ export function LarkManager({
               />
             </div>
             <div>
-              <label className="label">Webhook URL</label>
+              <label className="label">{t("lark.webhookUrl")}</label>
               <input
                 className="input"
                 value={form.webhook_url}
@@ -125,7 +127,7 @@ export function LarkManager({
               />
             </div>
             <div className="md:col-span-3">
-              <label className="label">Purpose</label>
+              <label className="label">{t("common.purpose")}</label>
               <input
                 className="input"
                 value={form.purpose}
@@ -134,30 +136,65 @@ export function LarkManager({
             </div>
           </div>
           <button className="btn btn-primary mt-3" onClick={create}>
-            Create channel
+            {t("lark.create")}
           </button>
         </div>
       )}
 
-      <div className="panel table-wrap">
+      <ul className="space-y-2 sm:hidden" data-testid="lark-mobile">
+        {channels.map((c) => (
+          <li key={c.id} className="panel p-3 space-y-2">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <div className="font-semibold break-words">{phrase(c.name)}</div>
+                <div className="text-xs text-[var(--muted)] break-all">{c.chat_id}</div>
+              </div>
+              <StatusBadge value={c.enabled ? "ACTIVE" : "DISABLED"} />
+            </div>
+            <p className="text-sm text-[var(--muted)] break-words">{phrase(c.purpose)}</p>
+            <div className="flex flex-wrap gap-1.5">
+              <DeptBadge code={c.department_code} />
+              <SeverityBadge value={c.severity_min} />
+            </div>
+            <div className="text-xs break-all text-[var(--muted)]">{c.webhook_url ?? "—"}</div>
+            {canManage && (
+              <div className="action-row">
+                <button
+                  type="button"
+                  className="btn text-xs"
+                  data-testid={`lark-test-${c.id}`}
+                  onClick={() => testNotify(c.id, c.name)}
+                >
+                  {t("lark.test")}
+                </button>
+                <button type="button" className="btn text-xs" onClick={() => toggle(c)}>
+                  {c.enabled ? t("common.disable") : t("common.enable")}
+                </button>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <div className="panel table-wrap hidden sm:block overflow-x-auto">
         <table className="data">
           <thead>
             <tr>
-              <th>Channel</th>
-              <th>Department</th>
-              <th>Min severity</th>
-              <th>Status</th>
-              <th>Webhook</th>
-              {canManage && <th>Actions</th>}
+              <th>{t("common.channel")}</th>
+              <th>{t("common.department")}</th>
+              <th>{t("lark.minSev")}</th>
+              <th>{t("common.status")}</th>
+              <th>{t("common.webhook")}</th>
+              {canManage && <th>{t("common.actions")}</th>}
             </tr>
           </thead>
           <tbody>
             {channels.map((c) => (
               <tr key={c.id}>
                 <td>
-                  <div className="font-semibold">{c.name}</div>
+                  <div className="font-semibold">{phrase(c.name)}</div>
                   <div className="text-xs text-[var(--muted)]">{c.chat_id}</div>
-                  <div className="text-sm mt-1">{c.purpose}</div>
+                  <div className="text-sm mt-1">{phrase(c.purpose)}</div>
                 </td>
                 <td>
                   <DeptBadge code={c.department_code} />
@@ -172,10 +209,10 @@ export function LarkManager({
                 {canManage && (
                   <td className="space-x-1 whitespace-nowrap">
                     <button type="button" className="btn" data-testid={`lark-test-${c.id}`} onClick={() => testNotify(c.id, c.name)}>
-                      Test notify
+                      {t("lark.test")}
                     </button>
                     <button type="button" className="btn" onClick={() => toggle(c)}>
-                      {c.enabled ? "Disable" : "Enable"}
+                      {c.enabled ? t("common.disable") : t("common.enable")}
                     </button>
                   </td>
                 )}

@@ -3,14 +3,17 @@ import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { UatChecklistBoard } from "@/components/UatChecklistBoard";
 import { PageHeader, Badge } from "@/components/ui";
+import { VantageMark } from "@/components/VantageLogo";
+import { OwnerBadge } from "@/components/OwnerBadge";
 import { resolveDocLocale } from "@/lib/docs";
 import { getUiLocale } from "@/lib/i18n-server";
 import { uatSummary } from "@/lib/docs/uat-cases";
+import { readSearchParams } from "@/lib/static-export";
 
 export default async function UatPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
-  const sp = await searchParams;
+  const sp = await readSearchParams(searchParams);
   const ui = await getUiLocale();
   const lang = sp.lang ? resolveDocLocale(sp.lang) : ui;
   const zh = lang === "zh-Hant";
@@ -22,8 +25,8 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
         title={zh ? "UAT 驗收清單（風險負責人）" : "UAT Checklist (Risk Owner)"}
         subtitle={
           zh
-            ? `共 ${summary.count} 案 · 建議時窗約 ${Math.ceil(summary.windowEndMin / 60)} 小時 · 依序執行並記錄通過標準與證據。`
-            : `${summary.count} sequenced cases · ~${Math.ceil(summary.windowEndMin / 60)}h suggested window · step-by-step with BU, dependency, severity, pass thresholds.`
+            ? `共 ${summary.count} 案 · 建議時窗約 ${Math.ceil(summary.windowEndMin / 60)} 小時 · 白話步驟涵蓋每個管理頁與 Messenger 迴路。`
+            : `${summary.count} sequenced cases · ~${Math.ceil(summary.windowEndMin / 60)}h suggested window · plain-English steps covering every admin screen and the messenger loop.`
         }
         actions={
           <>
@@ -33,8 +36,8 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
             <Link className="btn" href="/admin/messenger">
               Messenger
             </Link>
-            <Link className="btn btn-primary" href="/admin/ai-analyses">
-              {zh ? "AI 分析" : "AI Analyses"}
+            <Link className="btn btn-primary" href="/admin/alerts">
+              {zh ? "即時警報與追蹤" : "Realtime Alert & Tracker"}
             </Link>
           </>
         }
@@ -42,7 +45,9 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
 
       <div className="panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex flex-wrap gap-2 items-center">
+          <VantageMark className="h-8 w-8" />
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-UAT-001</Badge>
+          <OwnerBadge />
           <Badge className="bg-rose-50 text-rose-900 border-rose-200">
             Critical × {summary.bySev.Critical}
           </Badge>
