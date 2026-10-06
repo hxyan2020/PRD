@@ -771,7 +771,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
 | Progress Tracker | `/admin/docs/progress` | Interactive board: X=issues, Y=timeline now→end-2027 |
-| URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs (`/cs` portal, CS/TR desk, messenger) |
+| URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs. **CS / TR** section: `/cs` portal, desk, five SKILL.md playbooks, RAG leaves, POST `/api/cs/intake`, `cs_*` tables |
 
 On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail on the board; coverage chips show which screens each case hits.
 

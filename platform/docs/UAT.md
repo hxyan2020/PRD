@@ -53,7 +53,7 @@ graph TD
 | 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | Unread counts on the left pane (messenger-style) | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence |
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | Knowledge tree shows how domains, skills and documents connect | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | Traditional Chinese covers chrome, messenger, skills and docs | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
-| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | URL catalog lists the public pages (including new ones) | URL Catalog, AI Skills, Knowledge Tree, Demo Messenger |
+| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | URL catalog lists the public pages (including CS/TR door and playbooks) | URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger |
 | 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | Tell the messenger loop out loud, in plain English | Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker |
 | 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | Admin Home — cards, shortcuts and platform owner | Admin Home, Daily Performance, Users, URL Catalog |
 | 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | Daily Performance — CFD and Crypto desk numbers | Daily Performance |
@@ -502,22 +502,22 @@ graph TD
 **Pass:** No page stays fully English while 繁中 is selected, except raw monitor IDs, codes and seeded event titles.
 **Evidence:** Screenshot pair EN vs 繁中 on Home, Skills, Messenger, a doc.
 
-### UAT-25 — URL catalog lists the public pages (including new ones)
+### UAT-25 — URL catalog lists the public pages (including CS/TR door and playbooks)
 
 - **Severity:** Medium · **BU:** System · **Depends:** URL catalog · **Window:** T+281m / 8m
-- **Covers:** URL Catalog, AI Skills, Knowledge Tree, Demo Messenger
-- **Why:** Operators should not have to guess paths for skill detail, knowledge tree or messenger.
-- **Goal:** From the URL catalog, find Skills, skill playbook detail, Knowledge Tree, Demo Messenger and Market Intel.
+- **Covers:** URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger
+- **Why:** Operators should not have to guess paths for /cs, the desk, skill detail, knowledge tree or messenger.
+- **Goal:** From the URL catalog, find the CS/TR section, Skills, Knowledge Tree, Demo Messenger and Market Intel.
 
 **Steps**
 
-1. Open URL Catalog (Docs group).
-2. Find rows for AI Skills, Skill playbook detail (/admin/skills/[code]), Knowledge Tree, Demo Messenger, Market Intelligence.
-3. Open a skill detail by replacing [code] with SKILL-ABOOK-RATIO, or use AI Skills → Enter.
-4. Confirm the catalog states this platform’s origin (hxyan2020.github.io/PRD/crmp-plus) and still lists original CRMP Admin as frozen (hxyan2020.github.io/PRD/crmp-admin).
+1. Open URL Catalog (Docs group). Read the CS/TR cheat: /cs, POST /api/cs/intake, CSR-XXXX wait loop.
+2. Find the CS / TR section: /cs, /admin/cs-desk, SKILL-CS-CLARIFY (and four sibling playbooks), RAG leaves cs-24-7-intake / cs-id-verify-policy, GET /api/cs/intake.
+3. Open a skill detail from the CS/TR row (SKILL-CS-CLARIFY) or replace [code] under AI Skills.
+4. Confirm the catalog states this platform’s origin (hxyan2020.github.io/PRD/crmp-plus), the client portal (…/cs/), and still lists original CRMP Admin as frozen (hxyan2020.github.io/PRD/crmp-admin).
 
-**Pass:** New routes are listed and reachable; CRMP Plus origin is visible; original CRMP Admin is listed as frozen.
-**Evidence:** Catalog rows screenshot.
+**Pass:** CS/TR routes, five playbooks and intake API are listed and reachable; CRMP Plus origin and /cs are visible; original CRMP Admin is listed as frozen.
+**Evidence:** Catalog rows screenshot (CS / TR section + public URLs).
 
 ### UAT-26 — Tell the messenger loop out loud, in plain English
 

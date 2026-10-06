@@ -248,8 +248,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   urls: {
     title: { en: "URL Catalog", "zh-Hant": "網址目錄" },
     subtitle: {
-      en: "Admin pages (incl. CS/TR Desk, redirects: Detectors→Monitor 2.0, AI Analyses→Realtime Alert, Spine→Home, Teams→BU and Teams), APIs, SQLite path, and core DB tables.",
-      "zh-Hant": "管理頁（含 CS／TR 台、轉址：偵測器→Monitor 2.0、AI 分析→即時警報與追蹤、脊柱→首頁、團隊→BU 與團隊）、API、SQLite 路徑與核心資料表。",
+      en: "Admin pages, public /cs portal, CS/TR desk, five SKILL.md playbooks, RAG leaves, APIs (incl. POST /api/cs/intake), SQLite path and core DB tables — plus frozen original CRMP Admin.",
+      "zh-Hant": "管理頁、公開 /cs 入口、CS／TR 台、五本 SKILL.md、RAG 葉、API（含 POST /api/cs/intake）、SQLite 路徑與核心資料表 — 以及凍結的原 CRMP 管理後台。",
     },
   },
 };
@@ -513,16 +513,25 @@ const UI: Record<string, Pair> = {
   "login.demoRoles": { en: "Quick fill demo role", "zh-Hant": "快速填入示範角色" },
   "login.failed": { en: "Login failed", "zh-Hant": "登入失敗" },
 
-  "urls.pages": { en: "Admin / auth pages", "zh-Hant": "管理／登入頁" },
+  "urls.pages": { en: "Admin / auth / CS pages", "zh-Hant": "管理／登入／CS 頁" },
   "urls.apis": { en: "API routes", "zh-Hant": "API 路由" },
   "urls.data": { en: "Data / tables", "zh-Hant": "資料／資料表" },
   "urls.inbox": { en: "Demo inbox", "zh-Hant": "示範收件匣" },
+  "urls.csCount": { en: "CS / TR rows", "zh-Hant": "CS／TR 列" },
+  "urls.messengerLabel": { en: "CRMP Plus Messenger", "zh-Hant": "CRMP Plus Messenger" },
+  "urls.deskLabel": { en: "CS / TR Desk", "zh-Hant": "CS／TR 台" },
+  "urls.portalLabel": { en: "CS client portal", "zh-Hant": "CS 客戶入口" },
+  "urls.jumpCs": { en: "Jump to CS / TR section", "zh-Hant": "跳至 CS／TR 區段" },
   "urls.publicNote": {
-    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. This upgraded platform lives at https://hxyan2020.github.io/PRD/crmp-plus/admin/. Original CRMP Admin remains frozen at https://hxyan2020.github.io/PRD/crmp-admin/admin/.",
-    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。本升級平台網址：https://hxyan2020.github.io/PRD/crmp-plus/admin/。原 CRMP 管理後台仍凍結於 https://hxyan2020.github.io/PRD/crmp-admin/admin/。",
+    en: "All catalogued URLs are public in this prototype — no login required. Sign in only to act as a named persona. This upgraded platform lives at https://hxyan2020.github.io/PRD/crmp-plus/admin/. Original CRMP Admin remains frozen at https://hxyan2020.github.io/PRD/crmp-admin/admin/. Client intake is https://hxyan2020.github.io/PRD/crmp-plus/cs/.",
+    "zh-Hant": "本原型目錄中的所有網址皆公開，無需登入。僅在要以具名角色操作時才需登入。本升級平台網址：https://hxyan2020.github.io/PRD/crmp-plus/admin/。原 CRMP 管理後台仍凍結於 https://hxyan2020.github.io/PRD/crmp-admin/admin/。客戶進件：https://hxyan2020.github.io/PRD/crmp-plus/cs/。",
   },
   "urls.plusLabel": { en: "CRMP Plus (this platform)", "zh-Hant": "CRMP Plus（本平台）" },
   "urls.frozenLabel": { en: "Original CRMP Admin (frozen)", "zh-Hant": "原 CRMP 管理後台（凍結）" },
+  "urls.csCheat": {
+    en: "CS/TR door: public /cs (C1 live chat, website form, official mailbox) posts POST /api/cs/intake. Replies with CSR-XXXX or channel_ref close WAITING auto-mail (max 3). Operators work /admin/cs-desk. GET /api/cs/intake lists connectors; GET /api/cs/intake?request_id= is public ticket status. Five SKILL.md playbooks and cs-* RAG leaves sit in the CS / TR section.",
+    "zh-Hant": "CS／TR 大門：公開 /cs（C1 即時聊天、網站表單、官方信箱）走 POST /api/cs/intake。回覆帶 CSR-XXXX 或 channel_ref 會關閉 WAITING 自動信（最多 3 封）。操作者在 /admin/cs-desk。GET /api/cs/intake 列連接器；GET /api/cs/intake?request_id= 為公開案件狀態。五本 SKILL.md 與 cs-* RAG 葉在 CS／TR 區段。",
+  },
   "home.plusBanner": {
     en: "CRMP Plus is the upgraded platform: original CRMP risk spine plus 24/7 CS/TR. Future requirements apply only here. Original CRMP Admin stays at its own URL.",
     "zh-Hant": "CRMP Plus 是升級平台：原 CRMP 風險脊柱加上 24/7 客服與交易台。後續需求只加在這裡。原 CRMP 管理後台保留獨立網址。",

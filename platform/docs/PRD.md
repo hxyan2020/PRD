@@ -216,7 +216,7 @@ graph LR
 | FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap, Open Issues, Progress, URL Catalog toggle works |
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; card lists where tables would overflow; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
-| FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs |
+| FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs plus CS/TR section (`/cs`, desk, five SKILL.md, RAG leaves, `/api/cs/intake`) |
 | FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps). Dummy alert / Dummy alert group walk DETECT→close; chrome and stored copy are EN / zh-Hant. |
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
 | FR-23 | Monitor 2.0 registry (indicators + detectors) | Run all / Sync / Pause; recent runs; enable-disable persists on localhost (`/admin/detectors` redirects here) |

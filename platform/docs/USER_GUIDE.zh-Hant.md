@@ -770,7 +770,7 @@ graph LR
 | 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
 | 開放議題 | `/admin/docs/open-issues` | 計畫清單：ETA、負責 BU、依賴（暫定至 2027） |
 | 進度追蹤 | `/admin/docs/progress` | 互動看板：X＝議題、Y＝時間軸現在→2027 年底 |
-| 網址目錄 | `/admin/docs/urls` | 每個管理頁、API、資料表，加上公開 Pages 網址（`/cs` 入口、CS／TR 台、Messenger） |
+| 網址目錄 | `/admin/docs/urls` | 每個管理頁、API、資料表，加上公開 Pages 網址。**CS／TR** 區段：`/cs` 入口、台面、五本 SKILL.md、RAG 葉、POST `/api/cs/intake`、`cs_*` 表 |
 
 UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fail；覆蓋晶片顯示每案打到哪些畫面。
 

@@ -688,7 +688,7 @@ Both tabs expose **Roll back** when `details_json` holds a before-state snapshot
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts` (`PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/` including `PUBLIC_CS_PORTAL_URL` `/cs/`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`).
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts` (`PLATFORM_URLS` category **CS / TR** = `/cs`, desk, five SKILL.md, RAG leaves, GET/POST `/api/cs/intake`, `cs_*` tables; `PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/` including `PUBLIC_CS_PORTAL_URL` `/cs/`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`).
 
 ---
 

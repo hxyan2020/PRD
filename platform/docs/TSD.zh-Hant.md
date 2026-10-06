@@ -684,7 +684,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（49）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`、`PUBLIC_CS_DESK_URL`（CRMP Plus `/PRD/crmp-plus/`）與 `ORIGINAL_CRMP_*`（凍結 `/PRD/crmp-admin/`）。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（49）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、五本 SKILL.md、RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表）、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`、`PUBLIC_CS_DESK_URL`、`PUBLIC_CS_PORTAL_URL`（CRMP Plus `/PRD/crmp-plus/`）與 `ORIGINAL_CRMP_*`（凍結 `/PRD/crmp-admin/`）。
 
 ---
 

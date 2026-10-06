@@ -13,6 +13,27 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 
 type UrlOverlay = Record<string, { title?: string; description?: string }>;
 
+function catalogHref(path: string) {
+  if (!path.startsWith("/")) return path;
+  return path.replace("[id]", "1").replace("[code]", "SKILL-CS-CLARIFY");
+}
+
+const CATEGORY_ZH: Record<string, string> = {
+  Public: "公開",
+  "CS / TR": "CS／TR",
+  Auth: "驗證",
+  Home: "首頁",
+  Risk: "風險",
+  AI: "AI",
+  Messenger: "Messenger",
+  Org: "組織",
+  System: "系統",
+  Docs: "文件",
+  API: "API",
+  Data: "資料",
+  "DB Tables": "資料表",
+};
+
 function parseOverlay(raw: string | null): UrlOverlay {
   if (!raw) return {};
   try {
@@ -31,6 +52,7 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const localOnly = isPublicSnapshot();
 
   useEffect(() => {
@@ -55,7 +77,20 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
     });
   }, [seed, overlay, draft, editing]);
 
-  const categories = useMemo(() => Array.from(new Set(rows.map((u) => u.category))), [rows]);
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return rows;
+    return rows.filter(
+      (u) =>
+        u.title.toLowerCase().includes(q) ||
+        u.path.toLowerCase().includes(q) ||
+        u.description.toLowerCase().includes(q) ||
+        u.category.toLowerCase().includes(q) ||
+        (u.permission || "").toLowerCase().includes(q)
+    );
+  }, [rows, query]);
+
+  const categories = useMemo(() => Array.from(new Set(filtered.map((u) => u.category))), [filtered]);
 
   async function save() {
     setBusy(true);
@@ -85,32 +120,23 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
     setDraft((prev) => ({ ...prev, [path]: { ...prev[path], [field]: value } }));
   }
 
-  const categoryLabel = (cat: string) => (
-    <EnZh
-      en={cat}
-      zh={
-        (
-          {
-            Auth: "驗證",
-            Home: "首頁",
-            Risk: "風險",
-            AI: "AI",
-            Messenger: "Messenger",
-            Org: "組織",
-            System: "系統",
-            Docs: "文件",
-            API: "API",
-            Data: "資料",
-            "DB Tables": "資料表",
-          } as Record<string, string>
-        )[cat] || cat
-      }
-    />
-  );
+  const categoryLabel = (cat: string) => <EnZh en={cat} zh={CATEGORY_ZH[cat] || cat} />;
 
   return (
     <div className="space-y-6">
-      <div className="panel p-3 sm:p-4">
+      <div className="panel p-3 sm:p-4 space-y-3">
+        <label className="block">
+          <span className="text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]">
+            <EnZh en="Filter titles, paths, CS/TR, APIs…" zh="篩選名稱、路徑、CS／TR、API…" />
+          </span>
+          <input
+            className="input w-full mt-1 min-h-9"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={zh ? "例如 /cs、CSR-XXXX、intake、SKILL-CS" : "e.g. /cs, CSR-XXXX, intake, SKILL-CS"}
+            data-testid="url-catalog-filter"
+          />
+        </label>
         <DocEditBar
           zh={zh}
           editing={editing}
@@ -132,11 +158,21 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
         />
       </div>
 
+      {categories.length === 0 ? (
+        <p className="panel p-4 text-sm text-[var(--muted)]">
+          <EnZh en="No catalog rows match that filter." zh="沒有符合此篩選的目錄列。" />
+        </p>
+      ) : null}
+
       {categories.map((cat) => (
-        <section key={cat} className="panel p-4">
+        <section
+          key={cat}
+          id={cat === "CS / TR" ? "url-cat-cs-tr" : undefined}
+          className="panel p-4"
+        >
           <h2 className="font-[family-name:var(--font-display)] text-lg">{categoryLabel(cat)}</h2>
           <ul className="mt-3 space-y-2 sm:hidden" data-testid={`url-cat-mobile-${cat}`}>
-            {rows
+            {filtered
               .filter((u) => u.category === cat)
               .map((u) => (
                 <li key={`${u.category}-${u.path}-m`} className="rounded-lg border border-[var(--line)] p-3 space-y-2">
@@ -148,19 +184,12 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
                         onChange={(e) => patch(u.path, "title", e.target.value)}
                       />
                     ) : (
-                      u.title
+                      <Phrase>{u.title}</Phrase>
                     )}
                   </div>
                   <div>
                     {u.path.startsWith("/") ? (
-                      <Link
-                        className="text-teal-800 underline break-all text-sm"
-                        href={
-                          u.path.includes("[")
-                            ? u.path.replace("[id]", "1").replace("[code]", "SKILL-ABOOK-RATIO")
-                            : u.path
-                        }
-                      >
+                      <Link className="text-teal-800 underline break-all text-sm" href={catalogHref(u.path)}>
                         {u.path}
                       </Link>
                     ) : (
@@ -210,7 +239,7 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
                 </tr>
               </thead>
               <tbody>
-                {rows
+                {filtered
                   .filter((u) => u.category === cat)
                   .map((u) => (
                     <tr key={`${u.category}-${u.path}`}>
@@ -222,15 +251,12 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
                             onChange={(e) => patch(u.path, "title", e.target.value)}
                           />
                         ) : (
-                          u.title
+                          <Phrase>{u.title}</Phrase>
                         )}
                       </td>
                       <td>
                         {u.path.startsWith("/") ? (
-                          <Link
-                            className="text-teal-800 underline break-all"
-                            href={u.path.includes("[") ? u.path.replace("[id]", "1").replace("[code]", "SKILL-ABOOK-RATIO") : u.path}
-                          >
+                          <Link className="text-teal-800 underline break-all" href={catalogHref(u.path)}>
                             {u.path}
                           </Link>
                         ) : (

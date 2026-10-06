@@ -15,6 +15,7 @@ export default async function UrlsCatalogPage() {
     pages: PLATFORM_URLS.filter((u) => u.path.startsWith("/admin") || u.path === "/login" || u.path === "/cs").length,
     apis: PLATFORM_URLS.filter((u) => u.category === "API").length,
     tables: PLATFORM_URLS.filter((u) => u.category === "DB Tables" || u.category === "Data").length,
+    cs: PLATFORM_URLS.filter((u) => u.category === "CS / TR").length,
   };
 
   return (
@@ -22,19 +23,29 @@ export default async function UrlsCatalogPage() {
       <AdminPageHeader
         pageKey="urls"
         actions={
+          <div className="action-row">
+            <Link className="btn" href="/cs">
+              <T k="cs.portalLink" />
+            </Link>
+            <Link className="btn" href="/admin/cs-desk">
+              <T k="home.csDeskCta" />
+            </Link>
             <Link className="btn btn-primary" href="/admin/messenger">
               <T k="common.openMessenger" />
             </Link>
+          </div>
         }
       />
       <OwnerIdentityPanel />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 mb-4">
         {[
           { label: <T k="urls.pages" />, value: String(counts.pages), key: "pages" },
           { label: <T k="urls.apis" />, value: String(counts.apis), key: "apis" },
           { label: <T k="urls.data" />, value: String(counts.tables), key: "data" },
-          { label: <T k="urls.inbox" />, value: "/admin/messenger", key: "inbox" },
+          { label: <T k="urls.csCount" />, value: String(counts.cs), key: "cs" },
+          { label: <T k="urls.portalLabel" />, value: "/cs", key: "portal" },
+          { label: <T k="urls.deskLabel" />, value: "/admin/cs-desk", key: "desk" },
         ].map((c) => (
           <div key={c.key} className="panel p-3 sm:p-4">
             <div className="text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]">{c.label}</div>
@@ -52,16 +63,19 @@ export default async function UrlsCatalogPage() {
           </a>
         </p>
         <p className="mt-2">
+          <span className="font-semibold"><T k="urls.messengerLabel" />: </span>
           <a className="text-teal-900 underline break-all" href={PUBLIC_MESSENGER_URL}>
             {PUBLIC_MESSENGER_URL}
           </a>
         </p>
         <p className="mt-2">
+          <span className="font-semibold"><T k="urls.deskLabel" />: </span>
           <a className="text-teal-900 underline break-all" href={PUBLIC_CS_DESK_URL}>
             {PUBLIC_CS_DESK_URL}
           </a>
         </p>
         <p className="mt-2">
+          <span className="font-semibold"><T k="urls.portalLabel" />: </span>
           <a className="text-teal-900 underline break-all" href={PUBLIC_CS_PORTAL_URL}>
             {PUBLIC_CS_PORTAL_URL}
           </a>
@@ -70,6 +84,15 @@ export default async function UrlsCatalogPage() {
           <span className="font-semibold"><T k="urls.frozenLabel" />: </span>
           <a className="text-teal-900 underline break-all" href={ORIGINAL_CRMP_ADMIN_URL}>
             {ORIGINAL_CRMP_ADMIN_URL}
+          </a>
+        </p>
+      </div>
+
+      <div className="panel p-3 sm:p-4 mb-4 text-sm border-cyan-200 bg-cyan-50 text-cyan-950" data-testid="url-cs-cheat">
+        <p><T k="urls.csCheat" /></p>
+        <p className="mt-2">
+          <a className="text-cyan-900 underline" href="#url-cat-cs-tr">
+            <T k="urls.jumpCs" />
           </a>
         </p>
       </div>
