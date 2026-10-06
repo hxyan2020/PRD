@@ -268,7 +268,7 @@ graph TD
 | FR-02 | 技能匹配 RCA 含步驟執行紀錄 | COPY 越線 → `SKILL_MATCH`＋技能執行步驟 |
 | FR-03 | 技能不確定時 RAG RCA | EQ 路徑可產出 `RAG_REASONING`＋證據 |
 | FR-04 | 達門檻之獨立第二 AI 挑戰者 | BREACH／CRITICAL 顯示面板＋CHALLENGER 證據；WARN 預設略過 |
-| FR-05 | 示範 Messenger：證據／聊天／升級／排除／結案 | 每個動作變更執行緒＋稽核 |
+| FR-05 | 示範 Messenger：證據／聊天／升級／排除／結案 | 每個動作變更執行緒＋稽核。仍作 UAT／備援；Lark 整合卡片共用同一套 CRMP 動作（FR-47）。 |
 | FR-06 | 建議控制＋雙重確認 → 管理參照 | 封鎖／停交易等產出 admin_ref；必要時 Checker 註記 |
 | FR-07 | AI Admin Maker ≠ Checker | 同一使用者不能核准自己的提案 |
 | FR-08 | AI 存取黑名單（頁／功能／欄位） | UI 列出僅限人類目標與理由 |
@@ -311,6 +311,7 @@ graph TD
 | FR-44 | CS／TR 儀表板＋日誌 | 專用 `/admin/cs-dashboard`（指標：總數、未結／已結、WAITING、追問上限、TR、風控，依渠道／狀態／技能／台面）與 `/admin/cs-log`（CS_* 時間軸＋已結包）。**不是**每日績效（`/admin/dashboard`），**不是**風險日誌分析（`/admin/risk-log`）。`GET /api/cs?view=dashboard\|log`。UAT-51。 |
 | FR-45 | CS／TR 配套資料 | 種子並呈現：CUSTOMER_SERVICE／TRADING BU；團隊 CS 24/7 台、**CS 核身庫**、TR 成交支援；具名 POC；路徑 `ESC-CS-24-7`／`ESC-CS-KYC`／`ESC-TR-DEAL`／`ESC-CS-RISK`；`cs.*` 參數（上限、SLA、進件 token、信箱、Lark）；C1／表單／信箱＋核身庫＋成交帶來源。頁面 `/admin/cs-data`，`GET /api/cs?view=data`。UAT-52。 |
 | FR-46 | 分類、嚴重度、AI 方案，直回 vs POC | 資料齊全後：類別＋LOW\|MEDIUM\|HIGH\|CRITICAL；啟發式方案＋客戶草稿；敏感度 `auto` 時直回（`AI_REPLIED`）；否則具名 POC 補細節後寄出（`POC_REVIEW`）。閘道：`cs.auto_reply_max_severity`、`cs.sensitive_categories`。CRITICAL／帳簿風險仍升級。原型 — 此路徑無正式 LLM。UAT-53。 |
+| FR-47 | Lark 即時通訊警報＋升級卡片 | Monitor 警報與 CS／TR 風控關卡會把模擬互動卡片送到 `/admin/lark`。確認／升級／排除／結案呼叫與示範 Messenger 同一套 CRMP API。卡片依匹配 `lark_chat_id`／ESC-DEFAULT 路由。正式 webhook 仍屬 FR-17／RM-01。UAT-36。 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -346,7 +347,7 @@ graph TD
 | 應變 | CS／TR 儀表板 | `/admin/cs-dashboard` | CS／TR 量與等待迴圈健康 | 獨立於每日績效；WAITING／上限 3／TR／風控指標；依渠道、狀態、技能、台面 |
 | 應變 | CS／TR 日誌 | `/admin/cs-log` | CS_* 時間軸與已結包 | 獨立於風險日誌；篩選 CS_INTAKE … CS_RESOLVE；已結案件包 |
 | 應變 | CS／TR 資料 | `/admin/cs-data` | BU、團隊、關卡、參數 | 即時契約；連到組織／升級／設定／來源／Lark |
-| 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；`oc_cs_c1`／`oc_tr_dealing`；localhost 模擬通知 |
+| 應變 | Lark 整合 | `/admin/lark` | 頻道登錄＋模擬互動卡片 | 進行中卡片確認／升級／排除／結案；`oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`；localhost 模擬通知 |
 | 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT 加上 ESC-CS-24-7／ESC-CS-KYC／ESC-TR-DEAL／ESC-CS-RISK；技能綁一條 |
 | 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
 | 組織 | 角色與權限 | `/admin/roles` | 可編輯 RBAC | `/api/roles`；權限晶片＋章程 |
@@ -568,6 +569,7 @@ CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已
 | 2.4 | 2026-10-06 | FR-44 專用 CS／TR 儀表板＋日誌（不是每日績效／風險日誌）；UAT-51 |
 | 2.5 | 2026-10-06 | FR-45 CS／TR 配套資料（BU／團隊／核身庫、ESC-CS-KYC、cs.* 參數）；UAT-52 |
 | 2.6 | 2026-10-06 | FR-46 分類／嚴重度／AI 方案；直回 vs 具名 POC 補註；旅程 5.10；UAT-53 |
+| 2.7 | 2026-10-07 | FR-47 Lark 即時通訊警報＋升級卡片；UAT-36 在 `/admin/lark` 確認／升級 |
 | 2.7 | 2026-10-07 | FR-14 CS／TR 台列表→案件＋儀表板／日誌／資料卡片（390px）；UAT-18 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

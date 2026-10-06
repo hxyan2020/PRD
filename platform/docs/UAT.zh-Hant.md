@@ -55,7 +55,7 @@ graph TD
 | 支援 | UAT-27 | 首頁捷徑到 CS／TR 台、儀表板、日誌、資料與 `/cs` | 管理首頁 | FR-37 |
 | 支援 | UAT-28 | 每日績效仍是 CFD／加密 — 不是 CS／TR 儀表板 | 每日績效 vs `/admin/cs-dashboard` | FR-44 |
 | 支援 | UAT-29 | 風險日誌仍是 Monitor 結案 — 不是 CS_* 日誌 | 風險日誌 vs `/admin/cs-log` | FR-44 |
-| 支援 | UAT-36 | Lark 頻道 `oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing` | Lark 整合 | FR-45 |
+| 支援 | UAT-36 | Lark 即時通訊卡片＋頻道 `oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing` | Lark 整合 | FR-47 |
 | 支援 | UAT-37 | 關卡 `ESC-CS-24-7`／`ESC-CS-KYC`／`ESC-TR-DEAL`／`ESC-CS-RISK` | 升級路徑、CS／TR 資料 | FR-39、FR-45 |
 | 支援 | UAT-38 | BU 與團隊 — CS 核身庫嵌在客服底下 | BU 與團隊、CS／TR 資料 | FR-45 |
 | 支援 | UAT-39 | 資料來源 — 核身庫旗標＋MT4／MT5 成交帶 | 資料來源、CS／TR 資料 | FR-45 |
@@ -114,7 +114,7 @@ graph TD
 | 33 | UAT-33 | 361m | 12m | High | Risk | UAT-07 | Messenger 收件匣 — 頻道、訊息種類與同步 | Demo Messenger |
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — 其他建議動作與取消 | Demo Messenger, Human Intervention |
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | 人工介入佇列（Messenger 控制的管理端） | Human Intervention |
-| 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark 整合 — 頻道 vs 應用內 Messenger 示範 | Lark Integration, Demo Messenger |
+| 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark 整合 — 即時通訊卡片＋頻道 vs 示範 Messenger | Lark Integration, Demo Messenger |
 | 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | 升級路徑登錄 | Escalation Routes, CS / TR Data |
 | 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | 組織 — BU 與團隊、使用者與角色 | BU and Teams, Users, Roles & Permissions, CS / TR Data |
 | 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | 資料來源登錄（內部與外部） | Data Sources, CS / TR Data |
@@ -758,24 +758,24 @@ graph TD
 **通過：** 佇列顯示來自 Messenger 的控制；至少一列對得上聊天 admin_ref。
 **證據：** 人工介入截圖並標出對應參考號。
 
-### UAT-36 — Lark 整合 — 頻道 vs 應用內 Messenger 示範
+### UAT-36 — Lark 整合 — 即時通訊卡片＋頻道 vs 示範 Messenger
 
 - **嚴重度：** Medium · **負責：** System + Risk · **依賴：** UAT-01; lark channels seeded · **建議：** T+395m / 10m
-- **涵蓋：** Lark Integration, Demo Messenger
-- **為何測：** 示範 Messenger 是瀏覽器裡的 Lark。Lark 整合頁才是真實頻道名、webhook 與開關。
-- **目的：** 開啟 Lark 整合、列出已啟用頻道，並說明與 Messenger 收件匣頻道名的關係。
+- **涵蓋：** Lark Integration, Demo Messenger, Lark messenger cards
+- **為何測：** 警報與升級也要在 Lark 即時通訊發生，不能只在示範 Messenger。本頁既是進行中卡片收件匣（模擬），也是接上真實 Lark 時的頻道目錄。
+- **目的：** 開啟 Lark 整合，對一張進行中卡片按確認或升級，列出含 CS／TR id 的頻道，並對上示範 Messenger。
 
 **步驟**
 
-1. 開啟 Lark 整合。
-2. 應看到具名頻道（如 Risk Control Desk、oc_market_intelligence），含用途、部門、最低嚴重度與啟用。
-3. 找到 CS／TR 頻道：oc_cs_c1（C1 即時聊天）、oc_cs_kyc（CS 核身庫）與 oc_tr_dealing（TR 成交）。種子必須列出且啟用。
-4. 至少一個頻道名對得上示範 Messenger 對話的頻道徽章。
-5. 閱讀 Lark 設定（webhook／app id 佔位）。本機測試通知可模擬；Pages 應溫和失敗，不可整頁 404。
-6. 寫一句：「示範 Messenger 是介面；本頁是接上真實 Lark 時的頻道目錄。」
+1. 開啟 Lark 整合。上方是 Lark 即時通訊 — 警報與升級（`data-testid=lark-messenger`）。
+2. 應看到進行中卡片（ALERT／ESCALATION／CS_ESCALATION）與確認／升級／排除／結案。localhost 按鈕寫入 CRMP；Pages 本機模擬。
+3. 對一張 OPEN 卡片按確認，狀態變 ACKED。再升級一張 — 匹配聊天室（常為 `oc_risk_control_desk`／ESC-DEFAULT）應出現新的 ESCALATION 卡片。
+4. 找到具名頻道（Risk Control Desk、`oc_market_intelligence`）以及 CS／TR id：`oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`，須列出且啟用。
+5. 至少一個頻道／chat_id 對得上示範 Messenger 徽章。「在示範 Messenger 開啟」連回應用內收件匣（UAT／備援）。
+6. 閱讀 Lark 設定。測試通知可模擬；Pages 上頁面不可 404。
 
-**通過：** 至少三個頻道，含 oc_cs_c1／oc_cs_kyc／oc_tr_dealing；一個名稱對得上 Messenger；Pages 上頁面不崩。
-**證據：** 頻道表截圖（含 CS／TR id）＋對應的 Messenger 徽章。
+**通過：** 至少一張進行中卡片確認或升級成功（或 Pages 模擬）；三個 CS／TR 頻道在列；一個名稱對得上 Messenger；頁面不崩。
+**證據：** Lark 即時通訊卡片（確認／升級）截圖＋含 CS／TR id 的頻道表。
 
 ### UAT-37 — 升級路徑登錄
 
@@ -877,7 +877,7 @@ graph TD
 
 1. 開啟改進路線圖。計數應顯示 16 項與 Critical／High 彙總。
 2. 清單是可展開卡片 RM-01…RM-16 — 收合列寫操作員拿到什麼，加上工期與嚴重度。
-3. 展開 RM-01（Lark 卡片）：為何要做、今日原型（模擬 webhook、POST /api/lark mock:true）、要做什麼、完成標準、不做的風險，以及示範 Messenger／Lark 連結。
+3. 展開 RM-01（Lark 卡片）：為何要做、今日原型（Lark 整合上的模擬互動卡片、POST /api/lark card_*＋test_notify mock:true）、要做什麼、完成標準、不做的風險，以及示範 Messenger／Lark 連結。
 4. 展開 RM-16（CS／TR 連接器）：今日原型是模擬 demo-c1 進件；正式環境需要簽章 C1／表單／信箱。展開 RM-09：必須標「UAT 範圍外」（EXECUTED_MOCK — 沒有真實交易匯流排寫入）。RM-05（SSO）同理。
 
 **通過：** 路線圖有至少一個階段與一項範圍外說明。

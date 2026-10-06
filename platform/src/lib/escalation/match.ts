@@ -30,6 +30,7 @@ export type MatchedEscalationRoute = {
   primary_team: string;
   secondary_team: string | null;
   lark_channel: string | null;
+  lark_chat_id: string | null;
   is_default: number;
   coefficients_json: string;
   match_kind: "exact" | "domain_wild" | "default";
@@ -52,7 +53,7 @@ function rowSelect() {
             r.name, r.domain_code, r.severity, r.sla_minutes, r.auto_actions_json, r.requires_human,
             COALESCE(r.is_default, 0) AS is_default,
             COALESCE(r.coefficients_json, '{}') AS coefficients_json,
-            t1.name AS primary_team, t2.name AS secondary_team, c.name AS lark_channel
+            t1.name AS primary_team, t2.name AS secondary_team, c.name AS lark_channel, c.chat_id AS lark_chat_id
      FROM escalation_routes r
      JOIN teams t1 ON t1.id = r.primary_team_id
      LEFT JOIN teams t2 ON t2.id = r.secondary_team_id
@@ -107,7 +108,7 @@ export function matchEscalationRoute(
               r.name, r.domain_code, r.severity, r.sla_minutes, r.auto_actions_json, r.requires_human,
               COALESCE(r.is_default, 0) AS is_default,
               COALESCE(r.coefficients_json, '{}') AS coefficients_json,
-              t1.name AS primary_team, t2.name AS secondary_team, c.name AS lark_channel
+              t1.name AS primary_team, t2.name AS secondary_team, c.name AS lark_channel, c.chat_id AS lark_chat_id
        FROM escalation_routes r
        JOIN teams t1 ON t1.id = r.primary_team_id
        LEFT JOIN teams t2 ON t2.id = r.secondary_team_id
@@ -138,6 +139,7 @@ export function matchEscalationRoute(
     primary_team: anyTeam?.name || "Risk Control Desk",
     secondary_team: null,
     lark_channel: "Risk Desk",
+    lark_chat_id: "oc_risk_control_desk",
     is_default: 1,
     coefficients_json: JSON.stringify(DEFAULT_ESCALATION_COEFFICIENTS),
     match_kind: "default",

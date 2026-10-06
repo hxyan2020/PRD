@@ -268,7 +268,7 @@ graph TD
 | FR-02 | Skill-match RCA with step execution log | COPY breach → `SKILL_MATCH` + skill run steps |
 | FR-03 | RAG RCA when skill uncertain | EQ path can yield `RAG_REASONING` + evidence |
 | FR-04 | Independent second-AI challenger ≥ threshold | BREACH/CRITICAL show panel + CHALLENGER evidence; WARN default skip |
-| FR-05 | Demo Messenger: evidence / chat / escalate / dismiss / close | Each action mutates thread + audit |
+| FR-05 | Demo Messenger: evidence / chat / escalate / dismiss / close | Each action mutates thread + audit. Remains UAT / fallback; Lark Integration cards share the same CRMP actions (FR-47). |
 | FR-06 | Recommended controls + double-confirm → admin ref | Block/halt/etc. produce admin_ref; checker note when required |
 | FR-07 | AI Admin maker ≠ checker | Same user cannot approve own proposal |
 | FR-08 | AI access blocklist (pages/functions/fields) | UI lists human-only targets with reasons |
@@ -311,6 +311,7 @@ graph TD
 | FR-44 | CS/TR dashboard + log | Dedicated `/admin/cs-dashboard` (KPIs: totals, open/resolved, WAITING, follow-up cap, TR, Risk, by channel/status/skill/desk) and `/admin/cs-log` (CS_* timeline + resolved packs). **Not** Daily Performance (`/admin/dashboard`) and **not** Risk Log Analytics (`/admin/risk-log`). `GET /api/cs?view=dashboard\|log`. UAT-51. |
 | FR-45 | CS/TR supporting data | Seeded and surfaced: CUSTOMER_SERVICE / TRADING BUs; teams CS 24/7 Desk, **CS KYC Vault**, TR Dealing Support; named POCs; hops `ESC-CS-24-7` / `ESC-CS-KYC` / `ESC-TR-DEAL` / `ESC-CS-RISK`; `cs.*` parameters (cap, SLA, intake token, mailboxes, Lark ids); C1/form/mailbox + KYC vault + dealing-tape sources. Page `/admin/cs-data`, `GET /api/cs?view=data`. UAT-52. |
 | FR-46 | Categorize, severity, AI solution, auto vs POC | After collected facts: category + LOW\|MEDIUM\|HIGH\|CRITICAL; heuristic solution + client draft; auto-reply when sensitivity `auto` (`AI_REPLIED`); otherwise named POC adds detail before send (`POC_REVIEW`). Gates: `cs.auto_reply_max_severity`, `cs.sensitive_categories`. CRITICAL / book-risk still escalate. Prototype — no live LLM. UAT-53. |
+| FR-47 | Lark messenger alert + escalation cards | Monitor alerts and CS/TR risk hops post mock interactive cards on `/admin/lark`. Ack / Escalate / Dismiss / Close call the same CRMP APIs as Demo Messenger. Cards route by matched `lark_chat_id` / ESC-DEFAULT. Production webhooks remain FR-17 / RM-01. UAT-36. |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -346,7 +347,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Response | CS / TR Dashboard | `/admin/cs-dashboard` | CS/TR volume and wait-loop health | Separate from Daily Performance; WAITING / cap-3 / TR / Risk KPIs; by channel, status, skill, desk |
 | Response | CS / TR Log | `/admin/cs-log` | CS_* timeline and resolved packs | Separate from Risk Log; filter CS_INTAKE … CS_RESOLVE; resolved request packs |
 | Response | CS / TR Data | `/admin/cs-data` | BU, team, hops, parameters | Live contract; links to org / escalation / settings / sources / Lark |
-| Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; `oc_cs_c1` / `oc_tr_dealing`; mock notify localhost |
+| Response | Lark Integration | `/admin/lark` | Channel registry + mock interactive cards | Live cards Ack/Escalate/Dismiss/Close; `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing`; mock notify localhost |
 | Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT plus ESC-CS-24-7 / ESC-CS-KYC / ESC-TR-DEAL / ESC-CS-RISK; skill binds one path |
 | Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |
 | Organisation | Roles & Permissions | `/admin/roles` | Editable RBAC | `/api/roles`; permission chips + charters |
@@ -568,6 +569,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-53). The pack
 | 2.4 | 2026-10-06 | FR-44 dedicated CS/TR dashboard + log (not Daily Performance / Risk Log); UAT-51 |
 | 2.5 | 2026-10-06 | FR-45 CS/TR supporting data (BU/teams/KYC vault, ESC-CS-KYC, cs.* parameters); UAT-52 |
 | 2.6 | 2026-10-06 | FR-46 categorize / severity / AI solution; auto-reply vs named POC addendum; journey 5.10; UAT-53 |
+| 2.7 | 2026-10-07 | FR-47 Lark messenger alert + escalation cards; UAT-36 Ack/Escalate on `/admin/lark` |
 | 2.7 | 2026-10-07 | FR-14 CS/TR desk list→thread + dashboard/log/data cards at 390px; UAT-18 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

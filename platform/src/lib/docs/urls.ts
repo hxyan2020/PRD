@@ -135,7 +135,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   // Response (messenger / intervention / escalation)
   { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls; CS risk cases land here via SKILL-CS-ESCALATE-RISK", permission: "lark.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
-  { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify — includes oc_cs_c1 (C1 live chat), oc_cs_kyc (KYC vault) and oc_tr_dealing (TR dealing)", permission: "lark.read" },
+  { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Lark messenger cards (Ack/Escalate/Dismiss/Close) plus channel registry — oc_cs_c1 / oc_cs_kyc / oc_tr_dealing", permission: "lark.read" },
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths × coefficients; ESC-DEFAULT catch-all plus ESC-CS-24-7, ESC-CS-KYC, ESC-TR-DEAL, ESC-CS-RISK for CS/TR skills", permission: "escalation.read" },
 
   // Org
@@ -175,7 +175,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "CS / TR Data API", path: "/api/cs?view=data", description: "GET live CS/TR ops contract: BUs, teams, POCs, escalation hops, cs.* parameters, sources, Lark" },
   { category: "API", title: "CS intake webhook", path: "/api/cs/intake", description: "GET connector catalog · POST C1 live chat, web form and official-email ingest or continue (request_id / in_reply_to / channel_ref / CSR-XXXX) — session, mock_webhook, portal, or header x-cs-intake-token: demo-c1" },
   { category: "API", title: "CS intake ticket status", path: "/api/cs/intake?request_id=", description: "GET public status for one CSR-XXXX (no PII) — /cs portal and mailbox gateway poll this while the wait loop is open" },
-  { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management & test notify" },
+  { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management, test notify, and card Ack/Escalate/Dismiss/Close (mock)" },
   { category: "API", title: "Market Intel API", path: "/api/market-intel", description: "Scan / findings / outbox" },
   { category: "API", title: "Monitor API", path: "/api/monitor", description: "Indicators + detectors: run_detectors, toggle_pause, threshold edit, sync" },
   { category: "API", title: "Detectors API", path: "/api/detectors", description: "Legacy detector CRUD / run (UI lives on Monitor 2.0)" },
@@ -213,6 +213,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "DB Tables", title: "cs_messages", path: "tables:cs_messages", description: "Transcript: client / AI / CS / TR / system lines on each request" },
   { category: "DB Tables", title: "cs_followups", path: "tables:cs_followups", description: "Auto-email wait-loop rows — waiting_reply until In-Reply-To / CSR-XXXX / channel_ref closes them (max 3)" },
   { category: "DB Tables", title: "lark_channels / escalation_routes", path: "tables:lark_channels,escalation_routes", description: "Channel registry; routes with route_code, is_default, coefficients_json, risk_scenario, involved_teams, pending threshold (ESC-DEFAULT)" },
+  { category: "DB Tables", title: "lark_cards", path: "tables:lark_cards", description: "Prototype interactive Lark cards (ALERT / ESCALATION / CS_ESCALATION) posted onto /admin/lark" },
   { category: "DB Tables", title: "interventions / spine_events", path: "tables:interventions,spine_events", description: "Human gates and end-to-end spine" },
   { category: "DB Tables", title: "ai_change_requests / training / feedback", path: "tables:ai_change_requests,ai_training_runs,ai_feedback,ai_accuracy_snapshots", description: "AI Admin maker/checker + quality" },
   { category: "DB Tables", title: "market_intel_*", path: "tables:market_intel_sources,findings,scans,lark_outbox", description: "Market intelligence scanner + outbox" },

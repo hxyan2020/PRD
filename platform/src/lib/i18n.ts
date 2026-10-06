@@ -206,15 +206,15 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   lark: {
     title: { en: "Lark Integration", "zh-Hant": "Lark 整合" },
     subtitle: {
-      en: "Company messenger for severity-routed escalations, on-call pages and dual-control approvals.",
-      "zh-Hant": "依嚴重度路由升級、值班叫應與雙重控制核准之企業即時通訊。",
+      en: "Company messenger: alert and escalation cards (Ack / Escalate / Dismiss / Close) plus the channel registry for when live Lark is wired.",
+      "zh-Hant": "企業即時通訊：警報與升級卡片（確認／升級／排除／結案），以及接上真實 Lark 時的頻道目錄。",
     },
   },
   escalation: {
     title: { en: "Escalation Routes", "zh-Hant": "升級路徑" },
     subtitle: {
-      en: "Severity → team → SLA; catch-all ESC-DEFAULT; each skill binds one path. Used by Demo Messenger and Lark notify.",
-      "zh-Hant": "嚴重度 → 團隊 → SLA；兜底 ESC-DEFAULT；每個技能綁定一條路徑。供示範 Messenger 與 Lark 通知使用。",
+      en: "Severity → team → SLA; catch-all ESC-DEFAULT; each skill binds one path. Used by Demo Messenger and Lark messenger cards.",
+      "zh-Hant": "嚴重度 → 團隊 → SLA；兜底 ESC-DEFAULT；每個技能綁定一條路徑。供示範 Messenger 與 Lark 即時通訊卡片使用。",
     },
   },
   departments: {
@@ -391,8 +391,8 @@ const UI: Record<string, Pair> = {
   "msg.actionDone": { en: "Action {action} completed", "zh-Hant": "動作 {action} 已完成" },
   "msg.synced": { en: "Synced {n} new alert(s) into messenger", "zh-Hant": "已同步 {n} 則新警報至 Messenger" },
   "msg.larkDemoHint": {
-    en: "Lark-style demo inbox (no live Lark API). Open a thread to see the case split into POC chat windows along the escalation path — bird-eye relay from desk to desk. Permanent URL:",
-    "zh-Hant": "Lark 風格示範收件匣（無需正式 Lark API）。開啟執行緒即可依升級路徑承辦拆窗，鳥瞰案件如何轉遞。永久網址：",
+    en: "Lark-style demo inbox. Alerts and escalations also post interactive cards on Lark Integration. Open a thread to see POC chat windows along the path. Permanent URL:",
+    "zh-Hant": "Lark 風格示範收件匣。警報與升級也會在 Lark 整合送出互動卡片。開啟執行緒即可依路徑承辦拆窗。永久網址：",
   },
   "msg.larkDemoHintShort": {
     en: "Lark-style demo inbox — POC chat windows along the escalation path.",

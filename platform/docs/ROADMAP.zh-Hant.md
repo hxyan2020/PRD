@@ -57,11 +57,13 @@
 
 ### 今日原型
 
-[示範 Messenger](/admin/messenger) 是 CRMP 內的 Lark 風格收件匣。[Lark 整合](/admin/lark) 存模擬 Webhook。沒有任何訊息發到真實 Lark。
+[示範 Messenger](/admin/messenger) 是 CRMP 內的 Lark 風格收件匣（UAT／備援）。[Lark 整合](/admin/lark) 現在也列出**模擬互動卡片**，確認／升級／排除／結案也在 Lark 即時通訊完成。尚未發到真實 Lark。
 
-- 種子頻道：`oc_risk_control_desk`、`oc_ops_funding_recon`、`oc_ai_detection_lab`、`oc_trading_infra`、`oc_crypto_exchange_risk`、`oc_exec_risk_bridge`。
+- Lark 即時通訊窗：來自 Monitor 同步與 CS／TR 風控關卡的 `ALERT`／`ESCALATION`／`CS_ESCALATION` 卡片。`POST /api/lark` 的 `card_ack|card_escalate|card_dismiss|card_close` 寫入 CRMP（`LARK_CARD_*`，CRMP 平面）。Pages 本機模擬。
+- 卡片依匹配 `lark_chat_id`／ESC-DEFAULT 路由。CS 升級風控也會送到 `oc_cs_c1`。
+- 種子頻道：`oc_risk_control_desk`、`oc_ops_funding_recon`、`oc_ai_detection_lab`、`oc_trading_infra`、`oc_crypto_exchange_risk`、`oc_exec_risk_bridge`，加上 CS／TR `oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`。
 - Webhook 為模擬網址（`https://open.larksuite.com/hook/mock-risk-desk` 等）。`POST /api/lark` 的 `test_notify` 寫稽核 `LARK_TEST_NOTIFY` 並回 `{ mock: true }`。
-- 設定 `lark.app_id` = `cli_mock_vantage_crmp`。示範 Messenger 已有確認／升級／排除／結案／Maker／Checker — 全部只寫本機 SQLite（`lib/messenger/demo.ts`、`LarkManager.tsx`）。
+- 設定 `lark.app_id` = `cli_mock_vantage_crmp`。示範 Messenger 仍有確認／升級／排除／結案／Maker／Checker — 全部只寫本機 SQLite（`lib/messenger/demo.ts`、`lib/lark/cards.ts`、`LarkManager.tsx`）。
 
 ### 要做
 

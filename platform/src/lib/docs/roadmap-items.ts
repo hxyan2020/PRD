@@ -91,7 +91,9 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       { href: "/admin/lark", en: "Lark Integration", zh: "Lark 整合" },
     ],
     codebase: [
+      "POST /api/lark card_ack|card_escalate|card_dismiss|card_close → LARK_CARD_* (CRMP plane, mock)",
       "POST /api/lark action=test_notify → { mock: true }",
+      "lark_cards table · lib/lark/cards.ts · lib/lark/actions.ts",
       "lark_channels.webhook_url = https://open.larksuite.com/hook/mock-*",
       "lark.app_id = cli_mock_vantage_crmp",
       "lib/messenger/demo.ts · LarkManager.tsx",
@@ -101,11 +103,12 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       operatorGets:
         "Ack / Escalate / Approve happen in the company Lark chat, not only inside Demo Messenger.",
       why: "On-call will not keep the CRMP tab open. If the only working inbox is the in-app demo, BREACH cards never reach the desk that actually pages.",
-      today: "Messenger is a CRMP-hosted Lark lookalike. Nothing is posted to a real Lark chat.",
+      today: "Prototype posts mock interactive cards on Lark Integration so Ack / Escalate / Dismiss / Close happen in Lark messenger too. Nothing is posted to a real Lark chat yet.",
       todayFacts: [
-        "Seeded chats: oc_risk_control_desk, oc_ops_funding_recon, oc_ai_detection_lab, oc_trading_infra, oc_crypto_exchange_risk, oc_exec_risk_bridge.",
-        "Webhooks are mock URLs (e.g. hook/mock-risk-desk). Test notify writes audit LARK_TEST_NOTIFY and returns mock: true.",
-        "Demo Messenger already has Ack / Escalate / Dismiss / Close / maker-confirm / checker — all local to SQLite.",
+        "Lark Integration messenger pane lists ALERT / ESCALATION / CS_ESCALATION cards from Monitor sync and CS/TR risk hops. Buttons call the same CRMP APIs as Demo Messenger (UAT-36, FR-47).",
+        "Cards route by matched lark_chat_id / ESC-DEFAULT. CS escalate-to-risk also posts oc_cs_c1 CS_ESCALATION.",
+        "Seeded chats include oc_risk_control_desk plus CS/TR oc_cs_c1 / oc_cs_kyc / oc_tr_dealing. Webhooks stay mock URLs. Production app / SSO / live webhook remain this item.",
+        "Demo Messenger stays the UAT / fallback inbox (Ack / Escalate / Dismiss / Close / maker-confirm / checker in SQLite).",
       ],
       build: [
         "Register a real Lark app; store app id / secret / encrypt key in a vault (retire cli_mock_vantage_crmp).",
@@ -124,11 +127,12 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
       title: "正式 Lark 互動卡片",
       operatorGets: "Ack／升級／核准在公司 Lark 聊天室完成，不必只待在示範 Messenger。",
       why: "值班不會一直開著 CRMP 分頁。若唯一可用收件匣是站內示範，違規卡片到不了真正被呼叫的台面。",
-      today: "Messenger 是 CRMP 內的 Lark 風格收件匣，沒有任何訊息發到真實 Lark。",
+      today: "原型已在 Lark 整合送出模擬互動卡片，確認／升級／排除／結案也在 Lark 即時通訊完成。尚未發到真實 Lark 聊天室。",
       todayFacts: [
-        "種子頻道：oc_risk_control_desk、oc_ops_funding_recon、oc_ai_detection_lab、oc_trading_infra、oc_crypto_exchange_risk、oc_exec_risk_bridge。",
-        "Webhook 為模擬網址（如 hook/mock-risk-desk）。測試通知只寫稽核 LARK_TEST_NOTIFY 並回 mock: true。",
-        "示範 Messenger 已有確認／升級／排除／結案／Maker 確認／Checker — 全部只寫本機 SQLite。",
+        "Lark 整合即時通訊窗列出 Monitor 同步與 CS／TR 風控關卡的 ALERT／ESCALATION／CS_ESCALATION 卡片。按鈕呼叫與示範 Messenger 同一套 CRMP API（UAT-36、FR-47）。",
+        "卡片依匹配 lark_chat_id／ESC-DEFAULT 路由。CS 升級風控也會在 oc_cs_c1 送 CS_ESCALATION。",
+        "種子頻道含 oc_risk_control_desk 以及 CS／TR 的 oc_cs_c1／oc_cs_kyc／oc_tr_dealing。Webhook 仍是模擬網址。正式應用／SSO／真實 webhook 仍屬本項。",
+        "示範 Messenger 仍是 UAT／備援收件匣（確認／升級／排除／結案／Maker／Checker 寫 SQLite）。",
       ],
       build: [
         "註冊正式 Lark 應用；app id／密鑰／加密金鑰進密鑰庫（廢除 cli_mock_vantage_crmp）。",

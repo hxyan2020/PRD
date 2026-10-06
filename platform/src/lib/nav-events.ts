@@ -62,6 +62,10 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     db,
     `SELECT COUNT(*) AS c, MAX(id) AS ts FROM teams WHERE department_code IN ('CUSTOMER_SERVICE','TRADING')`
   );
+  const larkCards = scalar(
+    db,
+    `SELECT COUNT(*) AS c, MAX(updated_at) AS ts FROM lark_cards WHERE status IN ('OPEN','ACKED','ESCALATED')`
+  );
   const monitorBadge = {
     count: Math.max(tickets.c, detectorAlarms.c),
     latestAt: tickets.ts && detectorAlarms.ts
@@ -83,5 +87,6 @@ export function collectNavEvents(db: Database.Database): NavEventSnapshot {
     "/admin/cs-dashboard": { count: csDesk.c, latestAt: csDesk.ts },
     "/admin/cs-log": { count: csLog.c, latestAt: csLog.ts },
     "/admin/cs-data": { count: csData.c, latestAt: csData.ts },
+    "/admin/lark": { count: larkCards.c, latestAt: larkCards.ts },
   });
 }

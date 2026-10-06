@@ -4,6 +4,7 @@ import { getDb, writeAudit } from "@/lib/db";
 import { logSpineEvent } from "@/lib/ai/spine";
 import { matchEscalationRoute } from "@/lib/escalation/match";
 import type { UiLocale } from "@/lib/i18n";
+import { markLarkCardsForThread, postLarkCard } from "@/lib/lark/cards";
 
 export type MessengerAction =
   | "show_evidence"
@@ -132,6 +133,7 @@ export function getEscalationPocs(
   steps: MessengerPoc[];
   sla_minutes: number;
   channel: string;
+  chat_id: string;
   route_code: string;
   match_kind: string;
   route_name: string;
@@ -153,6 +155,7 @@ export function getEscalationPocs(
     steps,
     sla_minutes: route.sla_minutes,
     channel: route.lark_channel || "Risk Desk",
+    chat_id: route.lark_chat_id || "oc_risk_control_desk",
     route_code: route.route_code,
     match_kind: route.match_kind,
     route_name: route.name,
@@ -250,6 +253,10 @@ export function ensureMessengerSchema(db: Database.Database = getDb()) {
       FOREIGN KEY (thread_id) REFERENCES messenger_threads(id)
     );
   `);
+  const cols = db.prepare(`PRAGMA table_info(messenger_threads)`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === "cs_request_id")) {
+    db.exec(`ALTER TABLE messenger_threads ADD COLUMN cs_request_id TEXT`);
+  }
 }
 
 function newId(prefix: string) {
@@ -672,10 +679,70 @@ function getEscalationPath(severity: string, domainCode?: string | null) {
     pocs: path.steps,
     sla_minutes: path.sla_minutes,
     channel: path.channel,
+    chat_id: path.chat_id,
     route_code: path.route_code,
     match_kind: path.match_kind,
     route_name: path.route_name,
   };
+}
+
+function postThreadAlertCard(input: {
+  threadDbId: number;
+  title: string;
+  severity: string;
+  body: string;
+  chatId: string;
+  alertDbId?: number | null;
+  csRequestId?: string | null;
+  routeCode?: string | null;
+}) {
+  try {
+    postLarkCard({
+      chat_id: input.chatId,
+      kind: "ALERT",
+      title: input.title,
+      body: input.body,
+      severity: input.severity,
+      thread_db_id: input.threadDbId,
+      alert_db_id: input.alertDbId ?? null,
+      cs_request_id: input.csRequestId ?? null,
+      route_code: input.routeCode ?? null,
+      actor: "Monitor 2.0",
+    });
+  } catch {
+    /* Lark cards optional in unit tests without schema */
+  }
+}
+
+function postThreadEscalationCard(input: {
+  threadDbId: number;
+  title: string;
+  severity: string;
+  body: string;
+  chatId: string;
+  alertDbId?: number | null;
+  csRequestId?: string | null;
+  routeCode?: string | null;
+  actor?: string;
+}) {
+  try {
+    postLarkCard({
+      chat_id: input.chatId,
+      kind: "ESCALATION",
+      title: `Escalate · ${input.title}`,
+      body: input.body,
+      severity: input.severity,
+      thread_db_id: input.threadDbId,
+      alert_db_id: input.alertDbId ?? null,
+      cs_request_id: input.csRequestId ?? null,
+      route_code: input.routeCode ?? null,
+      actor: input.actor || "Escalation Engine",
+      dedupe: false,
+    });
+    markLarkCardsForThread(input.threadDbId, "ESCALATED");
+  } catch {
+    /* optional */
+  }
 }
 
 export function messengerAction(input: {
@@ -861,6 +928,18 @@ export function messengerAction(input: {
       match_kind: path.match_kind,
       from: fromTeam,
     });
+    postThreadEscalationCard({
+      threadDbId: thread.id,
+      title: thread.title,
+      severity: thread.severity,
+      body: zh
+        ? `⬆️ 已從 ${fromTeam} 轉交至 ${target}（步驟 ${nextStep + 1}/${path.steps.length}）\n頻道：${path.channel}`
+        : `⬆️ Relayed from ${fromTeam} to ${target} (step ${nextStep + 1}/${path.steps.length})\nChannel: ${path.channel}`,
+      chatId: path.chat_id || path.channel,
+      alertDbId: thread.alert_id,
+      routeCode: path.route_code,
+      actor: input.user_name,
+    });
     return getMessengerThread(thread.id);
   }
 
@@ -882,6 +961,11 @@ export function messengerAction(input: {
         { poc_step: hop }
     );
     writeAudit({ name: input.user_name }, "MESSENGER_DISMISS", "messenger_thread", thread.thread_id, {});
+    try {
+      markLarkCardsForThread(thread.id, "DISMISSED");
+    } catch {
+      /* optional */
+    }
     return getMessengerThread(thread.id);
   }
 
@@ -903,6 +987,11 @@ export function messengerAction(input: {
         { poc_step: hop }
     );
     writeAudit({ name: input.user_name }, "MESSENGER_CLOSE", "messenger_thread", thread.thread_id, {});
+    try {
+      markLarkCardsForThread(thread.id, "CLOSED");
+    } catch {
+      /* optional */
+    }
     return getMessengerThread(thread.id);
   }
 
@@ -1111,6 +1200,7 @@ export function syncNewAlertsToMessenger(limit = 5) {
   }>;
 
   for (const a of rows) {
+    const path = getEscalationPocs(a.severity, null);
     const threadId = newId("THR");
     const info = db
       .prepare(
@@ -1118,23 +1208,10 @@ export function syncNewAlertsToMessenger(limit = 5) {
           (thread_id, channel_name, title, severity, status, alert_id, analysis_id, escalation_step)
          VALUES (?, ?, ?, ?, 'OPEN', ?, ?, 0)`
       )
-      .run(
-        threadId,
-        a.severity === "CRITICAL" ? "Risk Critical Bridge" : a.severity === "BREACH" ? "Risk Desk" : "Ops Watch",
-        a.title,
-        a.severity,
-        a.id,
-        a.analysis_db_id
-      );
+      .run(threadId, path.channel, a.title, a.severity, a.id, a.analysis_db_id);
     const tid = Number(info.lastInsertRowid);
-    addMessage(
-      db,
-      tid,
-      "ALERT",
-      "Monitor 2.0",
-      `🚨 ${a.severity} · ${a.indicator_name} (${a.monitor_id})\n${a.message}\nAlert: ${a.alert_id}`,
-      { alert_id: a.alert_id, monitor_id: a.monitor_id }
-    );
+    const alertBody = `🚨 ${a.severity} · ${a.indicator_name} (${a.monitor_id})\n${a.message}\nAlert: ${a.alert_id}`;
+    addMessage(db, tid, "ALERT", "Monitor 2.0", alertBody, { alert_id: a.alert_id, monitor_id: a.monitor_id });
     if (a.analysis_db_id && a.summary) {
       addMessage(
         db,
@@ -1151,6 +1228,64 @@ export function syncNewAlertsToMessenger(limit = 5) {
         }
       );
     }
+    postThreadAlertCard({
+      threadDbId: tid,
+      title: a.title,
+      severity: a.severity,
+      body: a.summary ? `${alertBody}\n\n${a.summary}` : alertBody,
+      chatId: path.chat_id,
+      alertDbId: a.id,
+      routeCode: path.route_code,
+    });
   }
   return rows.length;
+}
+
+export function openCsRiskOnMessenger(input: {
+  request_id: string;
+  subject: string;
+  body: string;
+  client_name: string;
+  user_name: string;
+  locale?: UiLocale;
+}): { thread_db_id: number; thread_id: string } {
+  ensureMessengerSchema();
+  const db = getDb();
+  const existing = db
+    .prepare(`SELECT id, thread_id FROM messenger_threads WHERE cs_request_id = ? ORDER BY id DESC LIMIT 1`)
+    .get(input.request_id) as { id: number; thread_id: string } | undefined;
+  if (existing) return { thread_db_id: existing.id, thread_id: existing.thread_id };
+
+  const zh = input.locale === "zh-Hant";
+  const path = getEscalationPocs("CRITICAL", "CREDIT_CLIENT");
+  const threadId = newId("THR");
+  const title = `CS ${input.request_id}: ${input.subject}`;
+  const info = db
+    .prepare(
+      `INSERT INTO messenger_threads
+        (thread_id, channel_name, title, severity, status, alert_id, analysis_id, escalation_step, cs_request_id)
+       VALUES (?, ?, ?, 'CRITICAL', 'OPEN', NULL, NULL, 0, ?)`
+    )
+    .run(threadId, path.channel, title, input.request_id);
+  const tid = Number(info.lastInsertRowid);
+  const alertBody = zh
+    ? `🚨 CS／TR 已升級風控\n案件 ${input.request_id} · ${input.client_name}\n${input.subject}\n${input.body.slice(0, 400)}`
+    : `🚨 CS/TR escalated to Risk\nTicket ${input.request_id} · ${input.client_name}\n${input.subject}\n${input.body.slice(0, 400)}`;
+  addMessage(db, tid, "ALERT", "CS / TR Desk", alertBody, { cs_request_id: input.request_id });
+  postThreadAlertCard({
+    threadDbId: tid,
+    title,
+    severity: "CRITICAL",
+    body: alertBody,
+    chatId: path.chat_id,
+    csRequestId: input.request_id,
+    routeCode: path.route_code,
+  });
+  messengerAction({
+    thread_id: tid,
+    action: "escalate",
+    user_name: input.user_name,
+    locale: input.locale,
+  });
+  return { thread_db_id: tid, thread_id: threadId };
 }

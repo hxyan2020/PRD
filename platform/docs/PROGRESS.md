@@ -33,7 +33,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/progress](/admin/docs/progres
 | Supporting data: hops, `cs.*`, KYC vault team | OI-19 + OI-20 | Started | UAT-52 · `/admin/cs-data` · `ESC-CS-KYC` |
 | Categorize / severity / AI solution / auto-reply vs named POC | OI-19 | Started | UAT-53 · FR-46 · `cs.auto_reply_max_severity` |
 | KYC / trading named POC hold (not auto-reply) | OI-20 | Started | UAT-53 · `POC_REVIEW` |
-| Lark CS/TR channel seeds | OI-08 | Planned | UAT-36 · `oc_cs_c1` |
+| Lark messenger cards + CS/TR seeds | OI-08 | Started | UAT-36 · Ack/Escalate · `oc_cs_c1` |
 | Risk Owner UAT pack including UAT-53 | OI-09 | Started | UAT Checklist v2.7 (52 cases) |
 | Prototype UAT window includes CS/TR door | OI-14 | UAT | UAT-46…53 |
 | Phone-width CS/TR | OI-11 | UAT | UAT-18 |
@@ -46,7 +46,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/progress](/admin/docs/progres
 | primary | OI-19 | Production C1 / form / mailbox connectors | `/cs`, desk, dashboard, log, data, `POST /api/cs/intake` | Portal, wait loop, dashboard/log/data, categorize+severity auto vs POC (UAT-46, UAT-51, UAT-52, UAT-53) | Signed C1, form HMAC, mailbox gateway, production SMTP, live volume, no-silent-drop SLA |
 | primary | OI-20 | CS/TR ID vault and dealing-tape reconstruct | CS KYC Vault, desk, Data Sources, Demo Messenger | Vault team, ESC-CS-KYC flags-only, TR routing, named POC hold, MT4/MT5 tape listed (UAT-53) | Production vault, mailer with `cs.followup_cap`, live tape, live messenger escalate, CS Lead waiver audit |
 | support | OI-05 | Knowledge tree + RAG corpus (`CS_SERVICE` / `TRADING_EXEC`) | Knowledge Tree, RAG, AI Skills | Trunks + `cs-*` leaves (UAT-50) | Corpus owners, retire cadence, skill↔doc binds, `propose_rag` SLA |
-| support | OI-08 | Production Lark interactive cards (CS/TR channels) | Lark Integration | Seed `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing` (UAT-36) | Live card Ack / Escalate / Approve including CS WAITING / cap |
+| support | OI-08 | Production Lark interactive cards (CS/TR channels) | Lark Integration | Mock Lark messenger cards for alert + escalate; Ack/Escalate/Dismiss/Close call CRMP (UAT-36) | Live Lark app / webhooks / SSO; production CS WAITING / cap cards |
 | support | OI-09 | Risk Owner UAT exit including CS/TR catalogue | UAT Checklist v2.7 | Pack v2.7 (52 cases, skip UAT-45) indexes CS/TR including UAT-53 | Formal RO sign-off of UAT-25/46/47/48/50/51/52/53 + four CS hops |
 | support | OI-11 | Admin UX polish — CS/TR phone-width | Desk, dashboard, log, data | List→thread desk; card twins for dashboard, log, data, /cs tabs, RAG gate (UAT-18) | Native phone apps; leftover dense boards as BAU |
 | support | OI-14 | Prototype AI desk UAT window includes CS/TR door | `/cs`, desk, skills, wait loop, dashboard, log, data | CS/TR door shipped for UAT-46…53 | Formal UAT sign-off (OI-09) |

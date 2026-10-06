@@ -33,7 +33,7 @@
 | 配套資料：關卡、`cs.*`、核身庫團隊 | OI-19＋OI-20 | 已啟動 | UAT-52 · `/admin/cs-data` · `ESC-CS-KYC` |
 | 分類／嚴重度／AI 方案／直回 vs 具名 POC | OI-19 | 已啟動 | UAT-53 · FR-46 · `cs.auto_reply_max_severity` |
 | 核身／成交交具名 POC（不直回） | OI-20 | 已啟動 | UAT-53 · `POC_REVIEW` |
-| Lark CS／TR 頻道種子 | OI-08 | 已規劃 | UAT-36 · `oc_cs_c1` |
+| Lark 即時通訊卡片＋CS／TR 種子 | OI-08 | 已啟動 | UAT-36 · 確認／升級 · `oc_cs_c1` |
 | 風險負責人 UAT 包含 UAT-53 | OI-09 | 已啟動 | UAT 清單 v2.7（52 案） |
 | 原型 UAT 窗口含 CS／TR 大門 | OI-14 | UAT | UAT-46…53 |
 | CS／TR 手機寬 | OI-11 | UAT | UAT-18 |
@@ -46,7 +46,7 @@
 | 主案 | OI-19 | 正式 C1／表單／信箱連接器 | `/cs`、台面、儀表板、日誌、資料、`POST /api/cs/intake` | 入口、等待迴圈、儀表板／日誌／資料、分類＋嚴重度直回 vs POC（UAT-46、UAT-51、UAT-52、UAT-53） | 簽章 C1、表單 HMAC、信箱閘道、正式 SMTP、即時量、無靜默丟失 SLA |
 | 主案 | OI-20 | CS／TR 核身庫與成交帶還原 | CS 核身庫、台面、資料來源、示範 Messenger | 核身庫團隊、ESC-CS-KYC 僅旗標、TR 分流、具名 POC 暫扣、列出 MT4／MT5 成交帶（UAT-53） | 正式核身庫、`cs.followup_cap` 寄信、即時成交帶、即時 Messenger 升級、CS Lead 豁免稽核 |
 | 支援 | OI-05 | 知識樹＋RAG 語料（`CS_SERVICE`／`TRADING_EXEC`） | 知識樹、RAG、AI 技能 | 樹幹＋`cs-*` 葉（UAT-50） | 語料負責人、退役節奏、技能↔文件綁定、`propose_rag` SLA |
-| 支援 | OI-08 | 生產 Lark 互動卡片（CS／TR 頻道） | Lark 整合 | 種子 `oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`（UAT-36） | 正式卡片確認／升級／核准（含 CS WAITING／上限） |
+| 支援 | OI-08 | 生產 Lark 互動卡片（CS／TR 頻道） | Lark 整合 | 模擬 Lark 即時通訊卡片（警報＋升級）；確認／升級／排除／結案呼叫 CRMP（UAT-36） | 正式 Lark 應用／webhook／SSO；正式 CS WAITING／上限卡片 |
 | 支援 | OI-09 | 風險負責人 UAT 出口含 CS／TR 目錄 | UAT 清單 v2.7 | v2.7 包（52 案、跳過 UAT-45）已索引 CS／TR 含 UAT-53 | 正式 RO 簽核 UAT-25／46／47／48／50／51／52／53＋四條 CS 關卡 |
 | 支援 | OI-11 | 管理後台 UX 打磨 — CS／TR 手機寬 | 台面、儀表板、日誌、資料 | 台面列表→案件；儀表板／日誌／資料／／cs 分頁／RAG 閘道卡片雙檔（UAT-18） | 原生手機 App；其餘密表作日常 |
 | 支援 | OI-14 | 原型 AI 台面 UAT 窗口含 CS／TR 大門 | `/cs`、台面、技能、等待迴圈、儀表板、日誌、資料 | CS／TR 大門已交付供 UAT-46…53 | 正式 UAT 簽核（OI-09） |

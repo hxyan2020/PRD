@@ -179,6 +179,26 @@ function createSchema(db: Database.Database) {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    CREATE TABLE IF NOT EXISTS lark_cards (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      card_id TEXT NOT NULL UNIQUE,
+      chat_id TEXT NOT NULL,
+      kind TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'OPEN',
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      severity TEXT NOT NULL DEFAULT 'WARN',
+      thread_db_id INTEGER,
+      alert_db_id INTEGER,
+      cs_request_id TEXT,
+      route_code TEXT,
+      mock INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE INDEX IF NOT EXISTS idx_lark_cards_chat ON lark_cards(chat_id, id DESC);
+    CREATE INDEX IF NOT EXISTS idx_lark_cards_thread ON lark_cards(thread_db_id);
+
     CREATE TABLE IF NOT EXISTS escalation_routes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
