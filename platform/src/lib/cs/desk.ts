@@ -314,19 +314,21 @@ export function applyTriage(
   return getCsRequest(row.id);
 }
 
-export function ingestCsRequest(input: {
-  channel: CsChannelCode | string;
-  client_name: string;
-  client_email: string;
-  client_uid?: string | null;
-  subject: string;
-  body: string;
-  channel_ref?: string | null;
-  locale?: UiLocale;
-  actor?: string;
-}) {
-  ensureCsSchema();
-  const db = getDb();
+export function ingestCsRequest(
+  input: {
+    channel: CsChannelCode | string;
+    client_name: string;
+    client_email: string;
+    client_uid?: string | null;
+    subject: string;
+    body: string;
+    channel_ref?: string | null;
+    locale?: UiLocale;
+    actor?: string;
+  },
+  db: Database.Database = getDb()
+) {
+  ensureCsSchema(db);
   const channel = CS_CHANNELS.some((c) => c.code === input.channel) ? input.channel : "C1_LIVE_CHAT";
   const t = triageText(input.subject, input.body);
   const requestId = newId("CSR");
@@ -458,9 +460,9 @@ export function resolveRequest(requestDbId: number, userName: string, locale: Ui
 }
 
 export function listCsInbox() {
-  ensureCsSchema();
-  seedCsIfEmpty();
   const db = getDb();
+  ensureCsSchema(db);
+  seedCsIfEmpty(db);
   const requests = db
     .prepare(`SELECT * FROM cs_requests ORDER BY updated_at DESC, id DESC`)
     .all() as CsRequest[];
@@ -484,44 +486,56 @@ export function seedCsIfEmpty(db: Database.Database = getDb()) {
   ensureCsSchema(db);
   const n = (db.prepare(`SELECT COUNT(*) AS c FROM cs_requests`).get() as { c: number }).c;
   if (n > 0) return;
-  ingestCsRequest({
-    channel: "C1_LIVE_CHAT",
-    client_name: "Liam Okafor",
-    client_email: "liam.okafor@client.example",
-    client_uid: "880214",
-    subject: "Swap on XAUUSD overnight",
-    body: "Hi CS, I held XAUUSD overnight on UID 880214. Can you confirm the swap rate that was charged on 5 Oct and whether weekends are triple? Thanks.",
-    locale: "en",
-    actor: "C1 webhook",
-  });
-  ingestCsRequest({
-    channel: "C1_LIVE_CHAT",
-    client_name: "Sofia Mendes",
-    client_email: "sofia.mendes@client.example",
-    client_uid: "771902",
-    subject: "Something wrong with my account",
-    body: "help me something wrong ???",
-    locale: "en",
-    actor: "C1 webhook",
-  });
-  ingestCsRequest({
-    channel: "WEB_FORM",
-    client_name: "Chen Wei",
-    client_email: "chen.wei@client.example",
-    client_uid: "665441",
-    subject: "Slippage on EURUSD market order",
-    body: "EURUSD market order on MT5 ticket 849201 filled 2.1 pips worse than the button. Please check LP fill vs our execution. Time 14:03 UTC 6 Oct.",
-    locale: "en",
-    actor: "Web form",
-  });
-  ingestCsRequest({
-    channel: "OFFICIAL_EMAIL",
-    client_name: "Priya Shah",
-    client_email: "priya.shah@client.example",
-    client_uid: "120088",
-    subject: "Please verify my account — cannot withdraw",
-    body: "I need you to verify my identity so I can withdraw. Passport scan to follow if you tell me where.",
-    locale: "en",
-    actor: "Mailbox gateway",
-  });
+  ingestCsRequest(
+    {
+      channel: "C1_LIVE_CHAT",
+      client_name: "Liam Okafor",
+      client_email: "liam.okafor@client.example",
+      client_uid: "880214",
+      subject: "Swap on XAUUSD overnight",
+      body: "Hi CS, I held XAUUSD overnight on UID 880214. Can you confirm the swap rate that was charged on 5 Oct and whether weekends are triple? Thanks.",
+      locale: "en",
+      actor: "C1 webhook",
+    },
+    db
+  );
+  ingestCsRequest(
+    {
+      channel: "C1_LIVE_CHAT",
+      client_name: "Sofia Mendes",
+      client_email: "sofia.mendes@client.example",
+      client_uid: "771902",
+      subject: "Something wrong with my account",
+      body: "help me something wrong ???",
+      locale: "en",
+      actor: "C1 webhook",
+    },
+    db
+  );
+  ingestCsRequest(
+    {
+      channel: "WEB_FORM",
+      client_name: "Chen Wei",
+      client_email: "chen.wei@client.example",
+      client_uid: "665441",
+      subject: "Slippage on EURUSD market order",
+      body: "EURUSD market order on MT5 ticket 849201 filled 2.1 pips worse than the button. Please check LP fill vs our execution. Time 14:03 UTC 6 Oct.",
+      locale: "en",
+      actor: "Web form",
+    },
+    db
+  );
+  ingestCsRequest(
+    {
+      channel: "OFFICIAL_EMAIL",
+      client_name: "Priya Shah",
+      client_email: "priya.shah@client.example",
+      client_uid: "120088",
+      subject: "Please verify my account — cannot withdraw",
+      body: "I need you to verify my identity so I can withdraw. Passport scan to follow if you tell me where.",
+      locale: "en",
+      actor: "Mailbox gateway",
+    },
+    db
+  );
 }

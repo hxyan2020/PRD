@@ -1277,7 +1277,19 @@ function ensureCsOrg(db: Database.Database) {
   }
 }
 
+let aiLayerBusy = false;
+
 function ensureAiLayer(db: Database.Database) {
+  if (aiLayerBusy) return;
+  aiLayerBusy = true;
+  try {
+    runEnsureAiLayer(db);
+  } finally {
+    aiLayerBusy = false;
+  }
+}
+
+function runEnsureAiLayer(db: Database.Database) {
   ensureAiSchema(db);
   ensureSpineSchema(db);
   ensureAiAdminSchema(db);
@@ -1347,8 +1359,8 @@ export function getDb() {
   const db = new Database(DB_PATH);
   createSchema(db);
   seedIfEmpty(db);
-  ensureAiLayer(db);
   global.__vantageRiskDb = db;
+  ensureAiLayer(db);
   return db;
 }
 
