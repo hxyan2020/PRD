@@ -16,9 +16,9 @@ export default async function TsdPage({ searchParams }: { searchParams: Promise<
   const zh = lang === "zh-Hant";
 
   const cards = [
-    { label: zh ? "文件版次" : "Document version", value: "v1.5" },
-    { label: zh ? "章節" : "Sections", value: "17" },
-    { label: zh ? "核心模組" : "Core modules", value: zh ? "挑戰者 · Messenger · 市場情報" : "Challenger · Messenger · Market Intel" },
+    { label: zh ? "文件版次" : "Document version", value: "v2.3" },
+    { label: zh ? "章節" : "Sections", value: "18" },
+    { label: zh ? "CS／TR" : "CS / TR", value: "§17.5–17.10" },
     { label: zh ? "技術棧" : "Stack", value: "Next.js 15 + SQLite" },
   ];
 
@@ -37,10 +37,19 @@ export default async function TsdPage({ searchParams }: { searchParams: Promise<
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-indigo-50 text-indigo-900 border-indigo-200">CRMP-TSD-001</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-            {zh ? "原型／活規格" : "Prototype / living spec"}
+            {zh ? "原型／活規格 · v2.3" : "Prototype / living spec · v2.3"}
           </Badge>
         </div>
         <div className="action-row">
+          <Link className="btn" href="/cs">
+            {zh ? "客戶入口" : "Client portal"}
+          </Link>
+          <Link className="btn" href="/admin/cs-desk">
+            {zh ? "CS／TR 台" : "CS / TR Desk"}
+          </Link>
+          <Link className="btn" href="/admin/docs/urls">
+            {zh ? "網址目錄" : "URL Catalog"}
+          </Link>
           <Link className="btn" href="/admin/docs/prd">
             PRD
           </Link>

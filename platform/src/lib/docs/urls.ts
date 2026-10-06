@@ -126,7 +126,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "System", title: "Platform Settings", path: "/admin/settings", description: "Feature flags & thresholds", permission: "settings.manage" },
 
   // Docs
-  { category: "Docs", title: "TSD", path: "/admin/docs/tsd", description: "Technical Specification Design (EN/ZH) — §17 CS/TR intake, connectors, wait loop, skill stamps", permission: "admin.access" },
+  { category: "Docs", title: "TSD", path: "/admin/docs/tsd", description: "Technical Specification Design (EN/ZH) — §17.5–17.10 schema, intake, wait loop, /cs portal, URL catalog, FR-37…43", permission: "admin.access" },
   { category: "Docs", title: "PRD", path: "/admin/docs/prd", description: "Product Requirements (EN/ZH) — G13 + FR-37…43: /cs portal, C1/form/mailbox, wait loop, dedicated skills, catalog", permission: "admin.access" },
   { category: "Docs", title: "User Guide", path: "/admin/docs/user-guide", description: "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, C1/form/mailbox, auto-email wait loop, dedicated skills", permission: "admin.access" },
   { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack — UAT-46…50 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault", permission: "admin.access" },

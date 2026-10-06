@@ -1,15 +1,15 @@
 # Vantage CRMP Plus — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 2.0  
+**Version:** 2.3  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
 **Owner:** demo platform owner  
-**Companion:** [PRD](/admin/docs/prd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
+**Companion:** [PRD](/admin/docs/prd) (G13, FR-37…43) · [User Guide](/admin/docs/user-guide) (§9.3) · [UAT](/admin/docs/uat) (UAT-46…50) · [URL Catalog](/admin/docs/urls)
 
 This TSD describes the technical design of **CRMP Plus** — the upgraded Centralised Risk Management Platform (original CRMP Admin plus 24/7 CS/TR) on one control plane.  
-**§8 AI Admin** and **§9 Second-AI Challenger** are first-class module specifications.
+**§8 AI Admin**, **§9 Second-AI Challenger** and **§17 CS/TR Desk** (public `/cs`, `POST /api/cs/intake`, wait loop, dedicated SKILL.md) are first-class module specifications. Original CRMP Admin at `/PRD/crmp-admin/` is frozen and is not overwritten by this codebase.
 
 ---
 
@@ -20,7 +20,8 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - Observe Monitor 2.0 indicators / alerts
 - Run AI RCA (skills + RAG) with independent second-AI challenge on high severity
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
-- Staff 24/7 CS/TR intake: C1 live chat, web form and official email; AI emails the client when unclear or ID is needed and waits for a reply
+- Staff 24/7 CS/TR intake: C1 live chat, website form and official email via public `/cs` and `POST /api/cs/intake`; AI emails the client when unclear or ID is needed and **waits for a reply** (cap 3, `CSR-XXXX` / `channel_ref` match)
+- Stamp dedicated CS/TR SKILL.md playbooks and escalate book-risk onto Demo Messenger
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
 - Review home spine stage ticket counts, risk analytics, market intel, and daily performance
@@ -31,7 +32,7 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
-- CS / TR Desk: C1 live chat, submission form and official-email intake (`POST /api/cs/intake` + public `/cs`); AI follow-up mail until the client replies (cap 3)
+- CS / TR Desk: C1 live chat, submission form and official-email intake (`POST /api/cs/intake` + public `/cs`); inbound reply matching; auto-email wait loop (cap 3); five dedicated SKILL.md; URL Catalog **CS / TR** section
 - Market Intelligence 5-minute scanner + outbox
 - Bilingual docs (EN / zh-Hant) and responsive admin shell
 
@@ -39,6 +40,8 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - Live SSO / IdP
 - Real Lark interactive cards / oneZero / wallet write adapters
 - Production LLM billing + training cluster
+- Production IMAP / SMTP mailbox (official-email connector posts the same intake webhook)
+- Storing ID document images on `cs_requests`
 
 ---
 
@@ -50,7 +53,10 @@ graph TD
   Alarm --> Rca[AI RCA]
   Rca --> Ch[Second AI]
   Ch --> Msg[Demo Messenger]
-  Client[C1 form email] --> Cs[CS TR desk]
+  Portal["/cs portal"] --> Cs[CS TR desk]
+  C1[C1 live chat] --> Cs
+  Form[Website form] --> Cs
+  Mail[Official mailbox] --> Cs
   Cs --> Msg
   Msg --> Gate[Human gate]
   Gate --> Spine[Spine Risk Log]
@@ -64,10 +70,10 @@ graph TD
 
 | Layer | Responsibility | Key paths |
 |---|---|---|
-| UI (App Router) | RBAC-gated admin pages | `platform/src/app/admin/**` |
-| Client consoles | Interactive tabs / forms | `platform/src/components/*` |
-| API routes | JSON mutations + reads | `platform/src/app/api/**` |
-| Domain libs | Business logic | `platform/src/lib/ai/*`, `lib/db.ts`, `lib/auth.ts` |
+| UI (App Router) | RBAC-gated admin pages + public `/cs` | `platform/src/app/admin/**`, `app/cs/**` |
+| Client consoles | Interactive tabs / forms | `platform/src/components/*` (`CsClientPortal`, `CsTrDesk`, `UrlCatalogBoard`) |
+| API routes | JSON mutations + reads | `platform/src/app/api/**` (incl. `/api/cs`, `/api/cs/intake`) |
+| Domain libs | Business logic | `platform/src/lib/ai/*`, `lib/cs/*`, `lib/db.ts`, `lib/auth.ts` |
 | Persistence | SQLite file | `platform/data/vantage_risk.db` |
 
 ```mermaid
@@ -85,6 +91,7 @@ graph LR
 4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
 5. **Demo Messenger / Human intervention** triage and gated controls
 6. **Home spine** records stage transitions with ticket counts on Admin Home (`/admin`; `/admin/spine` redirects — Spine Log tab removed)
+7. **CS / TR door** (parallel to Monitor): `/cs` + C1/form/mailbox → `POST /api/cs/intake` → skill stamp → wait loop or TR / Risk → `CS_*` audit on the CRMP plane
 
 ```mermaid
 graph TD
@@ -93,8 +100,11 @@ graph TD
   RCA --> Challenger[Second AI]
   Challenger --> Messenger[Messenger / intervention]
   Messenger --> Spine[Home spine + audit]
+  Portal["/cs plus connectors"] --> Intake[POST /api/cs/intake]
+  Intake --> Desk[CS TR desk]
+  Desk --> Messenger
 ```
-7. **Daily performance / Risk Log / Market Intel** aggregate outcomes
+8. **Daily performance / Risk Log / Market Intel** aggregate outcomes
 
 ---
 
@@ -124,6 +134,9 @@ graph TD
 ### 4.6 AI Admin governance
 See **§8.4** — `ai_change_requests`, `ai_training_runs`, `ai_feedback`, `ai_accuracy_snapshots`, AI keys in `platform_settings`.
 
+### 4.7 CS / TR intake
+See **§17.5**. Tables: `cs_channels`, `cs_requests` (`request_id` CSR-XXXX, `channel_ref`, `skill_code`, `ai_clarity`, `followup_count`), `cs_messages`, `cs_followups` (`status=WAITING|CLOSED`). No ID-image blob column — identity stays off the ticket.
+
 ---
 
 ## 5. Security & RBAC (summary)
@@ -150,13 +163,15 @@ Detailed AI Admin permission matrix: **§8.3**.
 | Lark | Channel registry + mock webhook / intel outbox | Severity routing |
 | Market intel feeds | Heuristic 5-min scanner | Card format i–vi |
 | LP / Bridge / Wallets | Suggested actions + admin deep-links | Human gate before real adapters |
-| Model training | Queued runs + seeded metrics | No GPU cluster in prototype |
+| C1 live chat | Webhook + `/cs` Live chat tab | `POST /api/cs/intake` (`x-cs-intake-token: demo-c1` or `portal: true`); `channel_ref` = session |
+| Website / app form | Form post + `/cs` Submission tab | Same webhook; `channel_ref` = form id |
+| Official mailbox | Gateway + `/cs` Official email tab | Same webhook; subject may carry `CSR-XXXX`; `In-Reply-To` continues |
 
 ---
 
 ## 7. Admin surface map
 
-Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide.
+Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide. Public `/cs` is **not** a left-nav row — it is the client door specified in **§17.8**.
 
 ### 7.1 Shell (not a nav row)
 
@@ -166,6 +181,7 @@ Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.
 | Language | cookie `crmp_ui_lang` | `hooks/useUiLocale`, `lib/i18n.ts` | — |
 | Unread badges | `crmp_nav_seen_v1` / `crmp_nav_extra_v1` | `AdminShell`, `lib/nav-badges.ts` | — |
 | Demo session | `crmp_demo_session_v1` | persist named persona on Pages | — |
+| CS client portal | `/cs` | `CsClientPortal`, `POST /api/cs/intake` | public |
 | Mobile drawer | `< lg` | `AdminShell` hamburger | — |
 | Brand | Vantage logo + owner line | `VantageLogo`, `lib/platform-owner.ts` | — |
 
@@ -558,6 +574,8 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/ai` | Analyses, simulate alarm, `backfill_challenges` |
 | `GET/POST /api/ai-admin` | Propose/approve/training/feedback |
 | `GET/POST /api/messenger` | Threads + inline actions |
+| `GET/POST /api/cs` | CS/TR desk inbox + operator actions (`triage` / `followup` / `client_reply` / `reply` / `assign_tr` / `escalate_risk` / `resolve` / `simulate_*`) |
+| `GET/POST /api/cs/intake` | Public connector catalog + ticket status; C1/form/mailbox ingest or continue (`request_id` / `in_reply_to` / `channel_ref` / `CSR-XXXX`) |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
 | `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
@@ -657,7 +675,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.15 Lark + escalation
 
-`lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
+`lark_channels` + `lark.*` settings (includes `oc_cs_c1`, `oc_tr_dealing`). `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT. CS/TR skills bind `ESC-CS-24-7` / `ESC-TR-DEAL` / `ESC-CS-RISK`.
 
 ### 16.16 Organisation
 
@@ -665,7 +683,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.17 Data sources
 
-`data_sources` registry. `DataSourcesManager` CRUD when `sources.manage`.
+`data_sources` registry. `DataSourcesManager` CRUD when `sources.manage`. Seed includes C1 live-chat gateway, website CS form and official support mailbox.
 
 ### 16.18 AI access blocklist
 
@@ -677,7 +695,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 | Tab | Contents |
 |---|---|
-| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
+| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger, **CS_*** |
 | **Vantage Markets Admin logs** | Other admin pages — restrict user rights, pull transaction data, triggered Lark messages, BU POC risk-incident responses, settings / org / RAG |
 
 Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
@@ -688,7 +706,7 @@ Both tabs expose **Roll back** when `details_json` holds a before-state snapshot
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts` (`PLATFORM_URLS` category **CS / TR** = `/cs`, desk, five SKILL.md, RAG leaves, GET/POST `/api/cs/intake`, `cs_*` tables; `PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/` including `PUBLIC_CS_PORTAL_URL` `/cs/`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`).
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `UrlCatalogBoard` + `lib/docs/urls.ts` (`PLATFORM_URLS` category **CS / TR** = `/cs`, desk, five SKILL.md, six RAG leaves, GET/POST `/api/cs/intake`, `cs_*` tables; filter; `PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/` including `PUBLIC_CS_PORTAL_URL` `/cs/`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`). See **§17.9**.
 
 ---
 
@@ -759,6 +777,71 @@ graph TD
 
 Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slippage form, ID-verify official email.
 
+### 17.5 Schema
+
+`ensureCsSchema` (`lib/cs/desk.ts`) creates:
+
+| Table | Key columns | Role |
+|---|---|---|
+| `cs_channels` | `code` unique, `kind`, `endpoint`, `enabled` | Seeded C1 / form / mailbox connectors |
+| `cs_requests` | `request_id` CSR-XXXX unique, `channel`, `channel_ref`, `desk`, `status`, `ai_clarity`, `followup_count`, `skill_code` | Client tickets |
+| `cs_messages` | `msg_id`, `kind` (CLIENT / FORM / EMAIL_IN / EMAIL_OUT / AI / CS / TR / SYSTEM), `sender`, `body` | Transcript |
+| `cs_followups` | `email_to`, `subject`, `reason`, `status` WAITING\|CLOSED, `sent_at`, `replied_at` | Auto-email wait loop |
+
+Public `GET /api/cs/intake?request_id=` returns `request_id`, `status`, `ai_clarity`, `skill_code`, `channel`, `channel_ref` — **no** client name/email/body. There is **no** ID-image column.
+
+### 17.6 Module map
+
+| Path | Responsibility |
+|---|---|
+| `lib/cs/intake.ts` | `parseIntakePayload`, `inferIntakeChannel`, `ingestOrContinue`, `intakeConnectorCatalog`, `lookupPublicCsStatus` |
+| `lib/cs/desk.ts` | Schema, `findCsRequestMatch`, `ingestCsRequest`, `continueCsRequest`, `recordClientReply`, `applyTriage`, `sendFollowupEmail` |
+| `lib/cs/skills.ts` | Heuristic → `SKILL-CS-*` / `SKILL-TR-*` |
+| `lib/ai/risk-scenarios-cs.ts` | Five playbooks + `CHAIN-CS-TR-INTAKE` |
+| `app/api/cs/intake/route.ts` | GET catalog/status · POST ingest |
+| `app/api/cs/route.ts` | Desk operator actions |
+| `app/cs/page.tsx` + `CsClientPortal` | Public three-tab portal |
+| `components/CsTrDesk.tsx` | Operator inbox |
+| `lib/docs/urls.ts` + `UrlCatalogBoard` | CS / TR catalog section |
+
+Auth for POST intake: session `cs.operate`, `mock_webhook: true`, `portal: true`, or header `x-cs-intake-token: demo-c1`.
+
+### 17.7 Wait-loop state
+
+```mermaid
+graph TD
+  New[New ingest] --> Triage[triageText plus skill stamp]
+  Triage -->|clear FAQ| Open[OPEN]
+  Triage -->|trading| TR[ASSIGNED_TR]
+  Triage -->|unclear| Wait[AWAITING_CLIENT WAITING]
+  Triage -->|need_id| Id[ID_VERIFY WAITING]
+  Wait -->|CSR or channel_ref reply| Triage
+  Id -->|CSR or channel_ref reply| Triage
+  Wait -->|cap 3| Lead[CS Lead]
+  Id -->|cap 3| Lead
+  Open --> Hold{WAITING followup?}
+  Hold -->|yes| Block[Resolve blocked]
+  Hold -->|no| Done[RESOLVED]
+```
+
+Match order for continuation: `request_id` → `in_reply_to` → live `channel_ref` → `CSR-[0-9A-F]{6}` in subject.
+
+### 17.8 Public `/cs` portal
+
+`CsClientPortal` tabs: Live chat (`C1_LIVE_CHAT`), Submission form (`WEB_FORM`), Official email (`OFFICIAL_EMAIL`). Each POST sets `portal: true` and persists `channel_ref` in the browser so the next message continues the same `CSR-XXXX`. Status badges poll `GET /api/cs/intake?request_id=`. Permanent Pages URL: `https://hxyan2020.github.io/PRD/crmp-plus/cs/`.
+
+### 17.9 URL Catalog (technical)
+
+`PLATFORM_URLS` category **CS / TR** lists `/cs`, `/admin/cs-desk`, five `/admin/skills/SKILL-CS-*` / `SKILL-TR-*` paths, six `/admin/rag?doc=cs-*` leaves, `/api/cs`, `/api/cs/intake`, `/api/cs/intake?request_id=`, and `tables:cs_*`. Board: filter, `#url-cat-cs-tr` jump, bilingual `phrase()` titles. Guard: `scripts/verify-url-catalog.ts`.
+
+### 17.10 Traceability
+
+| Product | Spec |
+|---|---|
+| PRD | G13, FR-37, FR-40, FR-41, FR-42, FR-43, journeys 5.7–5.9, §6.5 |
+| User Guide | §9.3 portal / connectors / wait loop / daily roles |
+| UAT | UAT-25 catalog; UAT-46 connectors; UAT-47 wait loop; UAT-48 TR/Risk; UAT-49 ID vault; UAT-50 skills + tree |
+
 ---
 
 ## 18. Document control
@@ -777,6 +860,7 @@ Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slip
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; public `basePath` `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
 | 2.1 | 2026-10-06 | §17.4 dedicated CS/TR SKILL.md playbooks; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves; UAT-50 |
 | 2.2 | 2026-10-06 | §17.2 public `/cs` portal + inbound reply matching (CSR-XXXX / channel_ref / In-Reply-To); GET intake catalog; FR-40 |
+| 2.3 | 2026-10-06 | §17.5–17.10 schema, module map, wait-loop state, `/cs` portal, URL catalog, PRD FR-37…43 traceability |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

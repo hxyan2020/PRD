@@ -148,6 +148,42 @@ A[First] --> B[Second] --> C[Third]`,
     minEdges: 5,
     firstLabel: "POST 進件",
   },
+  {
+    name: "tsd-wait-en",
+    src: `graph TD
+  New[New ingest] --> Triage[triageText plus skill stamp]
+  Triage -->|clear FAQ| Open[OPEN]
+  Triage -->|trading| TR[ASSIGNED_TR]
+  Triage -->|unclear| Wait[AWAITING_CLIENT WAITING]
+  Triage -->|need_id| Id[ID_VERIFY WAITING]
+  Wait -->|CSR or channel_ref reply| Triage
+  Id -->|CSR or channel_ref reply| Triage
+  Wait -->|cap 3| Lead[CS Lead]
+  Id -->|cap 3| Lead
+  Open --> Hold{WAITING followup?}
+  Hold -->|yes| Block[Resolve blocked]
+  Hold -->|no| Done[RESOLVED]`,
+    minEdges: 10,
+    firstLabel: "New ingest",
+  },
+  {
+    name: "tsd-wait-zh",
+    src: `graph TD
+  New[新進件] --> Triage[triageText 加技能蓋章]
+  Triage -->|清楚 FAQ| Open[未結]
+  Triage -->|交易| TR[已派 TR]
+  Triage -->|不清楚| Wait[待客戶 WAITING]
+  Triage -->|需核身| Id[身分驗證 WAITING]
+  Wait -->|CSR 或 channel_ref 回覆| Triage
+  Id -->|CSR 或 channel_ref 回覆| Triage
+  Wait -->|上限 3| Lead[客服主管]
+  Id -->|上限 3| Lead
+  Open --> Hold{WAITING 追問?}
+  Hold -->|是| Block[禁止結案]
+  Hold -->|否| Done[已結案]`,
+    minEdges: 10,
+    firstLabel: "新進件",
+  },
 ];
 
 function edgeCount(html: string) {
