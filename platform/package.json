@@ -13,6 +13,7 @@
     "test:cs-intake": "npx tsx scripts/verify-cs-intake.ts",
     "test:user-guide": "npx tsx scripts/verify-user-guide.ts",
     "test:url-catalog": "npx tsx scripts/verify-url-catalog.ts",
+    "test:prd": "npx tsx scripts/verify-prd.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {

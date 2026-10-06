@@ -126,6 +126,28 @@ A[First] --> B[Second] --> C[Third]`,
     minEdges: 5,
     firstLabel: "不清楚或需核身",
   },
+  {
+    name: "prd-skill-stamp-en",
+    src: `graph TD
+  In[POST intake] --> Stamp[Stamp skill_code]
+  Stamp -->|CLARIFY or ID| Mail[Auto email wait]
+  Stamp -->|FAQ| Cs[CS auto-reply RAG]
+  Stamp -->|TR-EXEC| Tr[Assign TR]
+  Stamp -->|ESC-RISK| Msg[Messenger spine]`,
+    minEdges: 5,
+    firstLabel: "POST intake",
+  },
+  {
+    name: "prd-skill-stamp-zh",
+    src: `graph TD
+  In[POST 進件] --> Stamp[蓋 skill_code]
+  Stamp -->|釐清或核身| Mail[自動信件等待]
+  Stamp -->|FAQ| Cs[CS 從 RAG 自動回]
+  Stamp -->|TR 成交| Tr[指派 TR]
+  Stamp -->|升級風控| Msg[Messenger 脊柱]`,
+    minEdges: 5,
+    firstLabel: "POST 進件",
+  },
 ];
 
 function edgeCount(html: string) {
