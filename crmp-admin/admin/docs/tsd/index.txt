@@ -7,14 +7,14 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/05f4a35c75e80841.css","style"]
-0:{"P":null,"b":"vlSWkwjsBkCuHZ3Y2v3GD","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/05f4a35c75e80841.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","n9Z4QNtLZf30ZMn6xkdlT",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-3b078fe4302cc0cc.js","7581","static/chunks/app/admin/layout-eae9bb1d4f29cf68.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-06 04:17:34"},"/admin/messenger":{"count":5,"latestAt":"2026-10-06 04:17:34"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-06T04:17:34.396Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":31,"latestAt":"2026-10-06 07:47:34"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-06 04:17:34"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-06 04:17:34"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3b078fe4302cc0cc.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3b078fe4302cc0cc.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-3b078fe4302cc0cc.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
-12:T8745,# Vantage CRMP — Technical Specification Design (TSD)
+:HL["/PRD/crmp-admin/_next/static/css/77a3ddac64dce675.css","style"]
+0:{"P":null,"b":"WoMBkOLJP04oIbMXfetFd","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/77a3ddac64dce675.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","rvxpmF_kRdG0HwqYI4KTw",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-490b8cabf5024b34.js","7581","static/chunks/app/admin/layout-56ca0e502b05799c.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-06 04:34:04"},"/admin/messenger":{"count":5,"latestAt":"2026-10-06 04:34:04"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-06T04:34:04.807Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":31,"latestAt":"2026-10-06 08:04:04"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-06 04:34:04"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-06 04:34:04"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-490b8cabf5024b34.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-490b8cabf5024b34.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-490b8cabf5024b34.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
+12:T8898,# Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
 **Version:** 1.8  
@@ -505,13 +505,16 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 |---|---|
 | `show_evidence` | Post vault + challenger summary into thread |
 | `chat` | User note / challenge; disagreement flags `needs_human` |
-| `escalate` | Advance escalation path step |
+| `escalate` | Advance escalation path step; post hand-off in the current POC window and intake in the next |
 | `dismiss` | False alarm → thread DISMISSED, alert CLOSED |
 | `close` | Accept AI → thread CLOSED |
 | `recommend` → `confirm_action` | Double-confirm control → admin_ref (+ checker if required) |
 
 ### 11.4 Data
 `messenger_threads`, `messenger_messages`, `messenger_pending_actions` (see §4.4).
+
+### 11.5 POC windows
+`getMessengerThread` returns `poc_windows` — one Lark chat per hop on the matched route (primary team → secondary → Risk Owner → Exec) with named POC from `users`/`teams`. UI: bird-eye path chips + split columns (`data-testid=msg-poc-windows`).
 
 ---
 
@@ -716,7 +719,7 @@ Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChe
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
-13:T81e9,# Vantage CRMP — 技術規格設計（TSD）
+13:T8327,# Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
 **版本：** 1.8  
@@ -1203,13 +1206,16 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 |---|---|
 | `show_evidence` | 貼上證據庫＋挑戰摘要 |
 | `chat` | 使用者備註／挑戰；不同意標記 `needs_human` |
-| `escalate` | 升級路徑前進一步 |
+| `escalate` | 升級路徑前進一步；目前承辦窗貼轉交、下一窗貼接收 |
 | `dismiss` | 誤報 → DISMISSED／警報關閉 |
 | `close` | 接受 AI → CLOSED |
 | `recommend` → `confirm_action` | 雙重確認控制 → admin_ref（必要時 Checker） |
 
 ### 11.4 資料
 見 §4.4。
+
+### 11.5 POC 窗
+`getMessengerThread` 回傳 `poc_windows` — 匹配路徑每一跳一個 Lark 聊天（一線團隊 → 二線 → 風險負責人 → 高階），承辦來自 `users`／`teams`。UI：鳥瞰路徑晶片＋分欄（`data-testid=msg-poc-windows`）。
 
 ---
 
