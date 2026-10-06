@@ -236,7 +236,37 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
           </div>
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">v2.7</Badge>
         </div>
-        <div className="mt-3 overflow-x-auto">
+        <ul className="mt-3 space-y-2 sm:hidden" data-testid="uat-cs-catalogue-mobile">
+          {CS_TR_UAT_CATALOGUE.map((row) => (
+            <li key={row.id} className="rounded-xl border border-[var(--line)] p-3 space-y-1">
+              <button
+                type="button"
+                className="font-mono text-teal-800 underline-offset-2 hover:underline"
+                onClick={() => {
+                  setFilter("CS_TR");
+                  setOpenId(row.id);
+                  requestAnimationFrame(() =>
+                    document.getElementById(row.id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+                  );
+                }}
+              >
+                {row.id}
+              </button>
+              <Badge
+                className={
+                  row.kind === "primary"
+                    ? "bg-teal-50 text-teal-900 border-teal-200"
+                    : "bg-slate-100 text-slate-700 border-slate-200"
+                }
+              >
+                {row.kind === "primary" ? (zh ? "主案" : "primary") : zh ? "支援" : "support"}
+              </Badge>
+              <div className="text-sm break-word">{zh ? row.featureZh : row.featureEn}</div>
+              <div className="text-xs text-[var(--muted)] break-word">{zh ? row.screensZh : row.screensEn}</div>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-3 overflow-x-auto hidden sm:block">
           <table className="w-full text-xs min-w-[36rem]">
             <thead>
               <tr className="text-left text-[var(--muted)] border-b border-[var(--line)]">

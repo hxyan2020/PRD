@@ -427,14 +427,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Admin UX polish — mobile + docs parity",
       detail:
-        "Shipped: nav drawer, messenger list→thread, mobile cards (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues / Progress / Lark / Market Intel sources+scans / AI Admin / URL Catalog); Realtime Alert filters 2-col; confirm-sheet primary full-width on phone. Open: remaining dense boards (e.g. RAG gate) as BAU.",
+        "Shipped: nav drawer, messenger list→thread, mobile cards (Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit / Users / Open Issues / Progress / Lark / Market Intel sources+scans / AI Admin / URL Catalog / CS/TR desk list→thread / dashboard / log / data / /cs / RAG gate); Realtime Alert filters 2-col; confirm-sheet primary full-width on phone. Open: leftover dense boards as BAU.",
       dependencies: "Docs owners; FE capacity; i18n catalog",
       eta: "2026-Q4 BAU",
     },
     zh: {
       title: "管理後台 UX 打磨 — 行動＋文件對齊",
       detail:
-        "已交付：導覽抽屜、Messenger 列表→執行緒、多頁手機卡片（含 Lark／情報／AI 管理／網址目錄）；即時警報篩選手機兩欄；確認表主按鈕全寬。開放：其餘密表（如 RAG 閘道）作日常。",
+        "已交付：導覽抽屜、Messenger 列表→執行緒、多頁手機卡片（含 Lark／情報／AI 管理／網址目錄／CS／TR 台列表→案件／儀表板／日誌／資料／／cs／RAG 閘道）；即時警報篩選手機兩欄；確認表主按鈕全寬。開放：其餘密表作日常。",
       dependencies: "文件負責人；前端產能；i18n 目錄",
       eta: "2026-Q4 日常",
     },
@@ -459,7 +459,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "確認表主按鈕手機全寬（action-row）",
         done: true,
       },
-      { en: "CS/TR desk, dashboard, log and data usable at ~390px (UAT-18)", zh: "CS／TR 台、儀表板、日誌與資料在約 390px 可用（UAT-18）" },
+      { en: "CS/TR desk, dashboard, log and data usable at ~390px (UAT-18)", zh: "CS／TR 台、儀表板、日誌與資料在約 390px 可用（UAT-18）", done: true },
       { en: "Docs parity BAU with each nav ship", zh: "每次選單交付後的文件對齊日常" },
     ],
   },
@@ -857,10 +857,10 @@ export const CS_TR_OPEN_ISSUE_CATALOGUE: CsTrOpenIssueCatalogRow[] = [
     featureZh: "管理後台 UX 打磨 — CS／TR 手機寬",
     screensEn: "CS / TR Desk, Dashboard, Log, Data",
     screensZh: "CS／TR 台、儀表板、日誌、資料",
-    shippedEn: "Surfaces listed for ~390px (UAT-18)",
-    shippedZh: "已列入約 390px 驗收（UAT-18）",
-    remainingEn: "Phone-width pass on desk, dashboard, log and data",
-    remainingZh: "台面、儀表板、日誌與資料通過手機寬",
+    shippedEn: "List→thread desk; card twins for dashboard, log, data, /cs tabs, RAG gate (UAT-18)",
+    shippedZh: "台面列表→案件；儀表板／日誌／資料／／cs 分頁／RAG 閘道卡片雙檔（UAT-18）",
+    remainingEn: "Native phone apps; leftover dense boards as BAU",
+    remainingZh: "原生手機 App；其餘密表作日常",
   },
   {
     id: "OI-14",

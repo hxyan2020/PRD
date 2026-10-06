@@ -96,7 +96,7 @@ graph TD
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與首頁脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | 英文與繁中文件都能顯示 | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
-| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk |
+| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, CS client portal |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | 本輪 UAT 每個嚴重分析都有第二 AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | 技能卡片保持精簡；「進入」打開完整劇本 | AI Skills |
 | 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger「在管理後台開啟」落到真實分析 | Demo Messenger, AI analysis detail (/admin/ai-analyses/[id]) |
@@ -439,9 +439,9 @@ graph TD
 ### UAT-18 — 手機寬度煙測（約 390px）
 
 - **嚴重度：** Medium · **負責：** All · **依賴：** Responsive admin shell · **建議：** T+206m / 15m
-- **涵蓋：** Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk
-- **為何測：** 值班人員會用手機開 Messenger。溢出或抽屜壞掉會讓桌面不可用。
-- **目的：** 約 390px 寬時能開選單、走 Messenger 列表→對話→返回、讀 AI 分析，並開啟 CS／TR 台。
+- **涵蓋：** Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, CS client portal
+- **為何測：** 值班人員會用手機開 Messenger 與 CS／TR。溢出或抽屜壞掉會讓桌面不可用。
+- **目的：** 約 390px 寬時能開選單、走 Messenger 列表→對話→返回、讀 AI 分析，並使用 CS／TR 台、儀表板、日誌、資料與 /cs。
 
 **步驟**
 
@@ -449,10 +449,11 @@ graph TD
 2. 首頁點漢堡，左側抽屜打開，整頁不可左右滑。
 3. 開啟示範 Messenger，先看到列表；進對話後點「對話」返回。
 4. 開啟 AI 分析詳情，第二 AI 區塊直向堆疊，主要按鈕仍可點。
-5. 開啟 CS／TR 台。收件匣卡片直向堆疊；模擬／指派至 TR／升級仍可點；無文件級橫向溢出。
+5. 開啟 CS／TR 台。先收件匣列表；點卡片；收件匣返回。模擬／指派至 TR／升級仍可點；無文件級橫向溢出。
+6. 開啟 CS／TR 儀表板與日誌：等待／最近／已結以卡片顯示，不是橫滑表。CS／TR 資料團隊為卡片。／cs 渠道分頁直向堆疊。
 
-**通過：** 抽屜可用；messenger 主從可用；CS／TR 台在 390px 可用；無文件級橫向溢出。
-**證據：** 抽屜／列表／對話／AI 詳情／CS／TR 台手機截圖。
+**通過：** 抽屜可用；messenger 與 CS／TR 台主從可用；儀表板、日誌、資料與 /cs 在 390px 可用；無文件級橫向溢出。
+**證據：** 抽屜／列表／對話／AI 詳情／CS／TR 台列表＋案件／儀表板卡片／日誌／資料／／cs 手機截圖。
 
 ### UAT-19 — 本輪 UAT 每個嚴重分析都有第二 AI
 

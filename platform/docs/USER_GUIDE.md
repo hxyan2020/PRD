@@ -94,7 +94,7 @@ Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is store
 
 ### 2.4 Phones
 
-Tap the **hamburger** (Menu) to open the left nav. Messenger is list-first: tap a thread, then **Threads** to go back. Language sits in the header. Tables on Monitor 2.0, Realtime Alert & Tracker, and Audit scroll sideways when needed; the selection AI chatbot (below) also works with a long-press highlight.
+Tap the **hamburger** (Menu) to open the left nav. Messenger is list-first: tap a thread, then **Threads** to go back. CS / TR Desk works the same: inbox cards first, then **Inbox** back. CS / TR Dashboard, Log and Data show cards instead of sideways tables; `/cs` channel tabs stack. Language sits in the header. Tables on Monitor 2.0, Realtime Alert & Tracker, and Audit scroll sideways when needed; the selection AI chatbot (below) also works with a long-press highlight.
 
 ### 2.5 Selection AI chatbot
 
@@ -929,5 +929,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 2.3 | 2026-10-06 | §9.3.7 dashboard + §9.3.8 log (not Daily Performance / Risk Log) |
 | 2.4 | 2026-10-06 | §9.3.9 CS/TR Data: BU / CS KYC Vault / four hops / `cs.*`; UAT-52 |
 | 2.5 | 2026-10-06 | §9.3.10 after collected facts: categorize, severity, AI solution, auto-reply vs named POC addendum; UAT-53 |
+| 2.6 | 2026-10-07 | §2.4 phones: CS/TR desk list→thread, dashboard/log/data cards, `/cs` stacked tabs; UAT-18 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

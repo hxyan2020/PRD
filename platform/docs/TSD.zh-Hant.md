@@ -559,7 +559,7 @@ graph TD
 | 文件 | `platform/docs/*` Markdown，經 `lib/docs.ts`＋`DocArticlePage` 渲染 |
 | 語系 | `en`／`zh-Hant` 查詢參數 `?lang=` |
 | UI 語系 | Cookie `crmp_ui_lang`；導覽字串於 `lib/i18n.ts` |
-| 行動裝置 | `AdminShell` 抽屜 &lt; `lg`；messenger 主從；safe-area CSS |
+| 行動裝置 | `AdminShell` 抽屜 &lt; `lg`；messenger 與 CS／TR 台列表→案件；儀表板／日誌／資料卡片雙檔；`／cs` 分頁直向；safe-area CSS |
 
 互動 UAT 看板：`/admin/docs/uat`。
 
@@ -962,6 +962,7 @@ graph TD
 | 2.4 | 2026-10-06 | §17.11 專用 CS／TR 儀表板＋日誌；FR-44；UAT-51 |
 | 2.5 | 2026-10-06 | §17.12 CS／TR 配套資料（BU／核身庫／關卡／`cs.*`）；FR-45；UAT-52 |
 | 2.6 | 2026-10-06 | §17.13 資料齊全後分析（分類／嚴重度／直回 vs POC）；FR-46；UAT-53 |
+| 2.7 | 2026-10-07 | §13 行動：CS／TR 台列表→案件＋儀表板／日誌／資料卡片雙檔；FR-14；UAT-18 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

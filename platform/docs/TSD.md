@@ -563,7 +563,7 @@ graph TD
 | Docs | Markdown under `platform/docs/*` rendered via `lib/docs.ts` + `DocArticlePage` |
 | Locales | `en` / `zh-Hant` query `?lang=` |
 | UI chrome i18n | Cookie `crmp_ui_lang`; nav labels in `lib/i18n.ts` |
-| Mobile | `AdminShell` drawer &lt; `lg`; messenger list/thread panes; safe-area CSS |
+| Mobile | `AdminShell` drawer &lt; `lg`; messenger and CS/TR desk list→thread; dashboard/log/data card twins; `/cs` stacked tabs; safe-area CSS |
 
 Interactive UAT board: `/admin/docs/uat` (`UatChecklistBoard` + `lib/docs/uat-cases.ts`).
 
@@ -966,6 +966,7 @@ graph TD
 | 2.4 | 2026-10-06 | §17.11 dedicated CS/TR dashboard + log; FR-44; UAT-51 |
 | 2.5 | 2026-10-06 | §17.12 CS/TR supporting data (BU/KYC vault/hops/`cs.*`); FR-45; UAT-52 |
 | 2.6 | 2026-10-06 | §17.13 analyze after collected (categorize / severity / auto vs POC); FR-46; UAT-53 |
+| 2.7 | 2026-10-07 | §13 mobile: CS/TR desk list→thread + dashboard/log/data card twins; FR-14; UAT-18 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
