@@ -1385,6 +1385,16 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "依 BU 的 20 項議題清單（AI、系統、RO、定價、營運、Monitor、GRC、產品、CS、TR）— ETA、依賴、細項勾選；含 C1／表單／信箱連接器與 CS／TR 核身庫",
   "Combined hub: Risk / Ops / AI / System / CS / TR BUs with nested on-call teams (editable mission / rotation); former Departments + Teams":
     "合併中心：風險／營運／AI／系統／CS／TR BU 與嵌套值班團隊（可編輯任務／輪值）；原部門＋團隊",
+  "Client-facing C1 live chat, website form and official email into POST /api/cs/intake; replies with CSR-XXXX close the auto-email wait loop":
+    "客戶端 C1 即時聊天、網站表單與官方信箱進 POST /api/cs/intake；回覆帶 CSR-XXXX 會關閉自動信件等待迴圈",
+  "Client-facing C1 live chat, submission form and official mailbox — same POST /api/cs/intake as the desk":
+    "客戶端 C1 即時聊天、提交表單與官方信箱 — 與台面同一 POST /api/cs/intake",
+  "24/7 CS + Trading intake: public /cs portal plus C1 live chat, web form and official email via POST /api/cs/intake; replies match CSR-XXXX / channel_ref; AI stamps dedicated SKILL.md playbooks, emails when unclear or ID is needed and waits for a reply (max 3)":
+    "24/7 CS＋交易進件：公開 /cs 入口加上 C1 即時聊天、網頁表單與官方信箱經 POST /api/cs/intake；回覆以 CSR-XXXX／channel_ref 對案；AI 蓋專用 SKILL.md，不清楚或需核身時寄信並等待回覆（最多 3 封）",
+  "GET connector catalog / ticket status · POST C1 live chat, web form and official-email ingest or continue (request_id / in_reply_to / channel_ref / CSR-XXXX) — session, mock_webhook, portal, or header x-cs-intake-token: demo-c1":
+    "GET 連接器目錄／案件狀態 · POST C1 即時聊天、網頁表單與官方信箱進件或續辦（request_id／in_reply_to／channel_ref／CSR-XXXX）— 工作階段、mock_webhook、portal 或標頭 x-cs-intake-token: demo-c1",
+  "CRMP Plus CS client portal": "CRMP Plus CS 客戶入口",
+  "CS client portal": "CS 客戶入口",
 };
 
 /** Longest-first English fragments rewritten inside mixed dummy / log strings. */

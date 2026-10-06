@@ -10,6 +10,7 @@
     "lint": "next lint",
     "test:mermaid": "npx tsx scripts/verify-mermaid-edges.ts",
     "test:crmp-plus": "npx tsx scripts/verify-crmp-plus.ts",
+    "test:cs-intake": "npx tsx scripts/verify-cs-intake.ts",
     "db:reset": "rm -f data/vantage_risk.db data/vantage_risk.db-wal data/vantage_risk.db-shm"
   },
   "dependencies": {

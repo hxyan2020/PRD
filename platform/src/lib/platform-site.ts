@@ -25,6 +25,7 @@ export const PUBLIC_ADMIN_ORIGIN = `${PAGES_HOST}${DEFAULT_BASE_PATH}`;
 export const PUBLIC_ADMIN_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/`;
 export const PUBLIC_MESSENGER_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/messenger/`;
 export const PUBLIC_CS_DESK_URL = `${PUBLIC_ADMIN_ORIGIN}/admin/cs-desk/`;
+export const PUBLIC_CS_PORTAL_URL = `${PUBLIC_ADMIN_ORIGIN}/cs/`;
 
 export const ORIGINAL_CRMP_ORIGIN = `${PAGES_HOST}${ORIGINAL_CRMP_BASE_PATH}`;
 export const ORIGINAL_CRMP_ADMIN_URL = `${ORIGINAL_CRMP_ORIGIN}/admin/`;

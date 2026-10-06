@@ -10,7 +10,7 @@ This phase delivers:
 - Monitor 2.0 integration hub (indicators, alerts, tickets)
 - Lark messenger integration (channels, test notify, severity routing)
 - Escalation routes with SLA + auto-actions + human gate
-- CS / TR Desk: C1 live chat, web form, official email; AI follow-up until the client replies
+- CS / TR Desk: C1 live chat, web form, official email via public `/cs` and `POST /api/cs/intake`; AI follow-up until the client replies
 
 ## Quick start
 
@@ -27,6 +27,8 @@ Permanent public URL for **this upgraded platform** (GitHub Pages): [https://hxy
 Lark-style messenger demo: [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)
 
 CS / TR desk: [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)
+
+CS client portal: [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)
 
 **Original CRMP Admin (frozen, left intact):** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)
 

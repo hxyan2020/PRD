@@ -31,7 +31,7 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
-- CS / TR Desk: C1 live chat, submission form and official-email intake (`POST /api/cs/intake`); AI follow-up mail until the client replies (cap 3)
+- CS / TR Desk: C1 live chat, submission form and official-email intake (`POST /api/cs/intake` + public `/cs`); AI follow-up mail until the client replies (cap 3)
 - Market Intelligence 5-minute scanner + outbox
 - Bilingual docs (EN / zh-Hant) and responsive admin shell
 
@@ -688,7 +688,7 @@ Both tabs expose **Roll back** when `details_json` holds a before-state snapshot
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts` (`PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`).
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts` (`PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/` including `PUBLIC_CS_PORTAL_URL` `/cs/`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`).
 
 ---
 
@@ -708,7 +708,11 @@ Realtime connectors share one webhook:
 | Website / app form | `WEB_FORM` | form post |
 | Official email | `OFFICIAL_EMAIL` | mailbox gateway |
 
-`POST /api/cs/intake` accepts session (`cs.operate`), `mock_webhook: true`, or header `x-cs-intake-token: demo-c1`. Body: `client_name`, `client_email`, `client_uid`, `subject`, `body` / `text` / `message`. Desk actions: `POST /api/cs` (`triage`, `followup`, `client_reply`, `reply`, `assign_tr`, `escalate_risk`, `resolve`, `simulate_c1|form|email`).
+`POST /api/cs/intake` accepts session (`cs.operate`), `mock_webhook: true`, `portal: true`, or header `x-cs-intake-token: demo-c1`. Body: `client_name` / `from_name`, `client_email` / `from_email`, `client_uid`, `subject`, `body` / `text` / `message`. C1 may send `c1_id` / `channel_ref`; the mailbox gateway may send `in_reply_to` or `CSR-XXXX` in the subject. **GET** `/api/cs/intake` returns the connector catalog; `?request_id=CSR-XXXX` returns public status (no PII). Desk actions: `POST /api/cs` (`triage`, `followup`, `client_reply`, `reply`, `assign_tr`, `escalate_risk`, `resolve`, `simulate_c1|form|email`).
+
+Inbound payloads **continue** an open ticket when they match, in order: `request_id`, `in_reply_to` (message id / channel_ref / CSR-XXXX), the same `channel_ref` on a live C1/form/mailbox thread, or `CSR-[0-9A-F]{6}` in the subject. A match that still has a WAITING follow-up is treated as the client reply — it closes the wait loop and re-triages instead of opening a duplicate.
+
+Public client UI: `/cs` (`CsClientPortal`) — tabs for C1 live chat, submission form and official email, all posting to the same webhook. Permanent URL `PUBLIC_CS_PORTAL_URL`.
 
 Tables: `cs_channels`, `cs_requests`, `cs_messages`, `cs_followups`. Audit actions `CS_*` land on the **CRMP** plane (`entity_type=cs_request`).
 
@@ -720,7 +724,7 @@ Tables: `cs_channels`, `cs_requests`, `cs_messages`, `cs_followups`. Audit actio
 - **trading** — order / fill / slippage / MT4 / MT5 / 成交. Desk `TR`, status `ASSIGNED_TR`.
 - **complaint** vs **question** otherwise. Book-risk complaints can `escalate_risk` onto Demo Messenger / Human Intervention (`ESCALATED_RISK`).
 
-When clarity is `unclear` or `need_id`, AI **sends an automatic email** (`EMAIL_OUT` + `cs_followups.status=WAITING`) and **waits until the client replies** (`EMAIL_IN` → re-triage). Resolve is **blocked** while a follow-up is WAITING. Loop cap **3** mails, then CS Lead follows up in person.
+When clarity is `unclear` or `need_id`, AI **sends an automatic email** (`EMAIL_OUT` + `cs_followups.status=WAITING`) and **waits until the client replies** (`EMAIL_IN` / C1 `CLIENT` / form `FORM` via the same intake API → re-triage). Resolve is **blocked** while a follow-up is WAITING. Loop cap **3** mails, then CS Lead follows up in person.
 
 ### 17.4 Dedicated SKILL.md playbooks + Knowledge Tree
 Triage is not only a heuristic. Each request stamps `cs_requests.skill_code` to a dedicated playbook (`platform/src/lib/ai/risk-scenarios-cs.ts`):
@@ -738,6 +742,8 @@ Each skill has when-to-use / when-not / prechecks / evidence / stop / success, T
 ```mermaid
 graph TD
   In[C1, form, email] --> API[POST /api/cs/intake]
+  Portal[Client portal /cs] --> In
+  Reply[Inbound reply CSR or channel_ref] --> API
   API --> Triage[AI triage]
   Triage -->|clear CS| Open[OPEN on CS]
   Triage -->|trading| TR[ASSIGNED_TR]
@@ -770,6 +776,7 @@ Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slip
 | 1.9 | 2026-10-06 | §17 CS/TR Desk: C1/form/email intake, AI follow-up until client reply (cap 3), TR routing, escalate to Risk |
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; public `basePath` `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
 | 2.1 | 2026-10-06 | §17.4 dedicated CS/TR SKILL.md playbooks; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves; UAT-50 |
+| 2.2 | 2026-10-06 | §17.2 public `/cs` portal + inbound reply matching (CSR-XXXX / channel_ref / In-Reply-To); GET intake catalog; FR-40 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

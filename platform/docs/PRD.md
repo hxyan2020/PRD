@@ -236,6 +236,7 @@ graph LR
 | FR-37 | CS / TR 24/7 desk | C1 live chat, web form and official email ingest via `/api/cs/intake`; AI auto-emails when unclear or ID is needed and waits for a reply (cap 3); trading cases → TR; book-risk → messenger spine |
 | FR-38 | CRMP Plus public URL | Permanent snapshot at `https://hxyan2020.github.io/PRD/crmp-plus/`; original CRMP Admin at `/PRD/crmp-admin/` is frozen and not overwritten |
 | FR-39 | CS/TR dedicated skills + RAG tree | Five SKILL.md playbooks (clarify / ID / FAQ / TR execution / escalate-risk) stamp `skill_code`; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* corpus; routes ESC-CS-24-7 / ESC-TR-DEAL / ESC-CS-RISK |
+| FR-40 | Public CS intake portal + inbound replies | Client `/cs` (C1 chat, form, official email) posts to `/api/cs/intake`; GET catalog; replies match `request_id` / `in_reply_to` / `channel_ref` / `CSR-XXXX` and close WAITING auto-mail until the user replies |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -267,7 +268,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag; CS_POLICY docs |
 | Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
 | Response | Demo Messenger | `/admin/messenger` | Chat-native triage with bird-eye POC windows | Path chips, per-POC chats, sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
-| Response | CS / TR Desk | `/admin/cs-desk` | 24/7 C1, form and mailbox intake | Three channels; dedicated skill chip; AI follow-up until reply; TR routing; escalate to Risk |
+| Response | CS / TR Desk | `/admin/cs-desk` | 24/7 C1, form and mailbox intake | Three channels; public `/cs` portal; inbound CSR-XXXX replies; dedicated skill chip; AI follow-up until reply; TR routing; escalate to Risk |
 | Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
 | Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT; skill binds one path; no Path name column |
 | Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |
@@ -413,5 +414,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-50). The pack
 | 1.9 | 2026-10-06 | FR-37 CS/TR 24/7 desk; UAT-46…49; TSD §17 |
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; G12/FR-38 dual URLs (`/PRD/crmp-plus/` vs frozen `/PRD/crmp-admin/`) |
 | 2.1 | 2026-10-06 | FR-39 dedicated CS/TR skills + Knowledge Tree CS_SERVICE / TRADING_EXEC; UAT-50 |
+| 2.2 | 2026-10-06 | FR-40 public `/cs` portal + inbound reply matching on `/api/cs/intake` |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

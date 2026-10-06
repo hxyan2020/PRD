@@ -31,7 +31,7 @@
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
-- CS／TR 台：C1 即時聊天、提交表單與官方信箱進件（`POST /api/cs/intake`）；AI 追問信直到客戶回覆（上限 3 封）
+- CS／TR 台：C1 即時聊天、提交表單與官方信箱進件（`POST /api/cs/intake`＋公開 `/cs`）；AI 追問信直到客戶回覆（上限 3 封）
 - 市場情報 5 分鐘掃描與 outbox
 - 雙語文件（英／繁中）與響應式管理殼層
 
@@ -704,7 +704,11 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 網站／App 表單 | `WEB_FORM` | 表單送出 |
 | 官方信箱 | `OFFICIAL_EMAIL` | 信箱閘道 |
 
-`POST /api/cs/intake` 接受工作階段（`cs.operate`）、`mock_webhook: true`，或標頭 `x-cs-intake-token: demo-c1`。內文：`client_name`、`client_email`、`client_uid`、`subject`、`body`／`text`／`message`。台面動作：`POST /api/cs`（`triage`、`followup`、`client_reply`、`reply`、`assign_tr`、`escalate_risk`、`resolve`、`simulate_c1|form|email`）。
+`POST /api/cs/intake` 接受工作階段（`cs.operate`）、`mock_webhook: true`、`portal: true`，或標頭 `x-cs-intake-token: demo-c1`。內文：`client_name`／`from_name`、`client_email`／`from_email`、`client_uid`、`subject`、`body`／`text`／`message`。C1 可帶 `c1_id`／`channel_ref`；信箱閘道可帶 `in_reply_to` 或主旨中的 `CSR-XXXX`。**GET** `/api/cs/intake` 回傳連接器目錄；`?request_id=CSR-XXXX` 回傳公開狀態（不含個資）。台面動作：`POST /api/cs`（`triage`、`followup`、`client_reply`、`reply`、`assign_tr`、`escalate_risk`、`resolve`、`simulate_c1|form|email`）。
+
+進件若對得上既有未結案件則**續辦**，順序：`request_id`、`in_reply_to`（訊息 id／channel_ref／CSR-XXXX）、同一個 C1／表單／信箱 `channel_ref`，或主旨中的 `CSR-[0-9A-F]{6}`。若該案仍有 WAITING 追問，視為客戶回覆 — 關閉等待迴圈並重新分流，不另開重複案件。
+
+公開客戶畫面：`/cs`（`CsClientPortal`）— C1 即時聊天、提交表單、官方信箱分頁，皆打同一 webhook。永久網址 `PUBLIC_CS_PORTAL_URL`。
 
 資料表：`cs_channels`、`cs_requests`、`cs_messages`、`cs_followups`。稽核動作 `CS_*` 落在 **CRMP** 平面（`entity_type=cs_request`）。
 
@@ -716,7 +720,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 - **trading** — 訂單／成交／滑點／MT4／MT5。台面 `TR`，狀態 `ASSIGNED_TR`。
 - 其餘為 **complaint** 或 **question**。帳簿風險投訴可 `escalate_risk` 進入示範 Messenger／人工干預（`ESCALATED_RISK`）。
 
-清晰度為 `unclear` 或 `need_id` 時，AI **自動寄信**（`EMAIL_OUT`＋`cs_followups.status=WAITING`）並**等待客戶回覆**（`EMAIL_IN` → 重新分流）。追問仍為 WAITING 時**禁止結案**。迴圈上限 **3** 封，其後由 CS Lead 人工跟進。
+清晰度為 `unclear` 或 `need_id` 時，AI **自動寄信**（`EMAIL_OUT`＋`cs_followups.status=WAITING`）並**等待客戶回覆**（同一進件 API 的 `EMAIL_IN`／C1 `CLIENT`／表單 `FORM` → 重新分流）。追問仍為 WAITING 時**禁止結案**。迴圈上限 **3** 封，其後由 CS Lead 人工跟進。
 
 ### 17.4 專用 SKILL.md 劇本＋知識樹
 分流不只是啟發式。每則請求在 `cs_requests.skill_code` 蓋上專用劇本（`platform/src/lib/ai/risk-scenarios-cs.ts`）：
@@ -734,6 +738,8 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 ```mermaid
 graph TD
   In[C1／表單／官方信箱] --> API[POST /api/cs/intake]
+  Portal[客戶入口 /cs] --> In
+  Reply[進件回覆 CSR 或 channel_ref] --> API
   API --> Triage[AI 分流]
   Triage -->|清楚 CS| Open[CS 未結]
   Triage -->|交易| TR[已派 TR]
@@ -766,6 +772,7 @@ graph TD
 | 1.9 | 2026-10-06 | §17 CS／TR 台：C1／表單／信箱進件、AI 追問直到客戶回覆（上限 3）、TR 分流、升級風控 |
 | 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開 `basePath` `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
 | 2.1 | 2026-10-06 | §17.4 CS／TR 專用 SKILL.md；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 葉；UAT-50 |
+| 2.2 | 2026-10-06 | §17.2 公開 `/cs` 入口＋進件回覆對案（CSR-XXXX／channel_ref／In-Reply-To）；GET 進件目錄；FR-40 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

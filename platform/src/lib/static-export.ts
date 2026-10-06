@@ -6,6 +6,7 @@ import {
   PUBLIC_ADMIN_URL as SITE_ADMIN_URL,
   PUBLIC_MESSENGER_URL as SITE_MESSENGER_URL,
   PUBLIC_CS_DESK_URL as SITE_CS_DESK_URL,
+  PUBLIC_CS_PORTAL_URL as SITE_CS_PORTAL_URL,
 } from "@/lib/platform-site";
 
 /** True when building the GitHub Pages static snapshot. */
@@ -40,6 +41,7 @@ export const PUBLIC_ADMIN_ORIGIN = SITE_ORIGIN;
 export const PUBLIC_ADMIN_URL = SITE_ADMIN_URL;
 export const PUBLIC_MESSENGER_URL = SITE_MESSENGER_URL;
 export const PUBLIC_CS_DESK_URL = SITE_CS_DESK_URL;
+export const PUBLIC_CS_PORTAL_URL = SITE_CS_PORTAL_URL;
 
 export function publicBasePath() {
   const raw = process.env.NEXT_PUBLIC_BASE_PATH?.trim() || "";

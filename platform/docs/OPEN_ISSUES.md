@@ -119,12 +119,14 @@ Source of truth for the interactive checklist: `platform/src/lib/docs/open-issue
 #### OI-19 — Production C1 / form / mailbox connectors
 **BU:** CS · **Status:** Started · **ETA:** 2027-Q2 (connectors) / prototype UAT now · **Depends:** C1 vendor; mailbox Graph/IMAP; OI-03
 
+- [x] Public /cs portal posts C1, form and mailbox through the same intake API  
+- [x] Inbound replies match CSR-XXXX / channel_ref / In-Reply-To and close WAITING auto-mail  
 - [ ] Replace demo-c1 token with signed C1 webhook + replay protection  
 - [ ] Website / app form HMAC into the same intake API  
 - [ ] Mailbox gateway for support@ and complaints@ (Graph or IMAP)  
 - [x] Sandbox UAT against C1 staging (UAT-46) — prototype desk  
 
-*Today:* `POST /api/cs/intake` with `x-cs-intake-token: demo-c1` plus simulate buttons on `/admin/cs-desk`.
+*Today:* `POST /api/cs/intake` with `x-cs-intake-token: demo-c1`, public `/cs` portal, inbound CSR-XXXX matching, plus simulate buttons on `/admin/cs-desk`.
 
 ---
 

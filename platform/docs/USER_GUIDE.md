@@ -24,6 +24,7 @@ You do not need to be an engineer to use it. Click the left menu, read the cards
 **Permanent public demo (CRMP Plus):** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
 **Messenger demo:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
 **CS / TR desk:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)  
+**CS client portal:** [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)  
 **Original CRMP Admin (frozen):** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **Full URL list:** [URL Catalog](/admin/docs/urls)  
 **Open programme issues / progress:** [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress)
@@ -517,7 +518,7 @@ graph TD
 
 ### 9.3 CS / TR Desk — `/admin/cs-desk`
 
-**What it is.** 24/7 Customer Service and Trading Support. Platform **C1 live chat**, the website **submission form** and **official emails** land here in realtime (`POST /api/cs/intake`, header `x-cs-intake-token: demo-c1`).
+**What it is.** 24/7 Customer Service and Trading Support. Platform **C1 live chat**, the website **submission form** and **official emails** land here in realtime (`POST /api/cs/intake`, header `x-cs-intake-token: demo-c1`). Clients use the public portal **`/cs`**. A reply that carries `CSR-XXXX`, the same C1 `channel_ref`, or `In-Reply-To` continues the ticket and **closes the waiting auto-email**.
 
 **What you see.** Inbox filter All / CS / TR. Each request shows channel, desk, AI clarity (clear / unclear / need ID), a **dedicated skill chip** (SKILL-CS-CLARIFY / ID-VERIFY / ACCOUNT-FAQ / TR-EXECUTION / ESCALATE-RISK) and status (OPEN, AWAITING CLIENT, ID VERIFY, ASSIGNED TR, ESCALATED RISK, RESOLVED). The chip opens the SKILL.md playbook. The thread mixes client chat, AI routing notes and **automatic follow-up emails**.
 
@@ -533,17 +534,19 @@ graph TD
 | **Escalate to Risk** | Leaves CS/TR and enters the messenger / Human Intervention spine |
 | **Resolve** | Close — blocked while a follow-up is still WAITING |
 | **Simulate C1 / form / email** | Posts through the same intake API |
+| **Open client intake portal** | `/cs` — the three public connectors a real user would see |
 
-**Good looks like.** Seeded cases cover a clear C1 swap question (SKILL-CS-ACCOUNT-FAQ), an unclear C1 “help me ???” (SKILL-CS-CLARIFY), a TR slippage form (SKILL-TR-EXECUTION), and an ID-verify email (SKILL-CS-ID-VERIFY). Unclear/ID cases wait. Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome.
+**Good looks like.** Seeded cases cover a clear C1 swap question (SKILL-CS-ACCOUNT-FAQ), an unclear C1 “help me ???” (SKILL-CS-CLARIFY), a TR slippage form (SKILL-TR-EXECUTION), and an ID-verify email (SKILL-CS-ID-VERIFY). Unclear/ID cases wait. Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome. The `/cs` portal posts live chat / form / mailbox through the same webhook; a mailbox reply with `CSR-XXXX` in the subject closes WAITING.
 
 ```mermaid
 graph TD
   C1[C1 live chat] --> Intake[POST /api/cs/intake]
   Form[Web form] --> Intake
   Mail[Official email] --> Intake
+  Portal[Client portal /cs] --> Intake
   Intake --> AI[AI triage]
   AI -->|unclear or need ID| Wait[Auto email and wait]
-  Wait -->|client replies| AI
+  Wait -->|client replies CSR or C1| AI
   AI -->|trading| TR[TR Dealing]
   AI -->|book risk| Risk[Escalate to Risk]
   AI -->|clear CS| Done[CS resolve]

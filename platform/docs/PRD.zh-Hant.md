@@ -236,6 +236,7 @@ graph LR
 | FR-37 | CS／TR 24/7 台 | C1 即時聊天、網頁表單與官方信箱經 `/api/cs/intake` 進件；AI 在不清楚或需核身時自動寄信並等待回覆（上限 3）；交易案件 → TR；帳簿風險 → Messenger 脊柱 |
 | FR-38 | CRMP Plus 公開網址 | 永久快照 `https://hxyan2020.github.io/PRD/crmp-plus/`；原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結且不被覆蓋 |
 | FR-39 | CS／TR 專用技能＋RAG 樹 | 五份 SKILL.md（釐清／核身／FAQ／TR 成交／升級風控）蓋 `skill_code`；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 語料；路徑 ESC-CS-24-7／ESC-TR-DEAL／ESC-CS-RISK |
+| FR-40 | 公開 CS 進件入口＋進件回覆 | 客戶 `/cs`（C1 聊天、表單、官方信箱）打 `/api/cs/intake`；GET 目錄；回覆以 `request_id`／`in_reply_to`／`channel_ref`／`CSR-XXXX` 對上原案並關閉 WAITING 自動信件直到客戶回覆 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -267,7 +268,7 @@ graph LR
 | AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
 | 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註；樣本顯示操作者信箱 |
 | 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流＋鳥瞰 POC 窗 | 路徑晶片、承辦窗、同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟 |
-| 應變 | CS／TR 台 | `/admin/cs-desk` | 24/7 C1、表單與信箱進件 | 三渠道；專用技能晶片；AI 追問直到回覆；TR 分流；升級風控 |
+| 應變 | CS／TR 台 | `/admin/cs-desk` | 24/7 C1、表單與信箱進件 | 三渠道；公開 `/cs` 入口；CSR-XXXX 進件回覆；專用技能晶片；AI 追問直到回覆；TR 分流；升級風控 |
 | 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；localhost 模擬通知 |
 | 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
@@ -413,5 +414,6 @@ graph LR
 | 1.9 | 2026-10-06 | FR-37 CS／TR 24/7 台；UAT-46…49；TSD §17 |
 | 2.0 | 2026-10-06 | CRMP Plus 一體平台；G12／FR-38 雙網址（`/PRD/crmp-plus/` vs 凍結 `/PRD/crmp-admin/`） |
 | 2.1 | 2026-10-06 | FR-39 CS／TR 專用技能＋知識樹 CS_SERVICE／TRADING_EXEC；UAT-50 |
+| 2.2 | 2026-10-06 | FR-40 公開 `/cs` 入口＋`/api/cs/intake` 進件回覆對案 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
