@@ -18,7 +18,8 @@ import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
 import { EnZh } from "@/components/EnZh";
 import { SignInOwnerCard } from "@/components/SignInOwnerCard";
-import { PUBLIC_MESSENGER_URL, readSearchParams } from "@/lib/static-export";
+import { PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_ADMIN_URL, readSearchParams } from "@/lib/static-export";
+import { ORIGINAL_CRMP_ADMIN_URL } from "@/lib/platform-site";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
 import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
@@ -260,6 +261,26 @@ export default async function AdminDashboardPage({
     <div>
       <AdminPageHeader pageKey="home" actions={actions} />
 
+      <div className="panel p-3 sm:p-4 mb-4 text-sm border-teal-200 bg-teal-50 text-teal-950" data-testid="crmp-plus-banner">
+        <p className="font-semibold">
+          <T k="home.plusBanner" />
+        </p>
+        <p className="mt-2 break-all">
+          <EnZh en="This platform" zh="本平台" />
+          {": "}
+          <a className="underline text-teal-900" href={PUBLIC_ADMIN_URL}>
+            {PUBLIC_ADMIN_URL}
+          </a>
+        </p>
+        <p className="mt-1 break-all">
+          <EnZh en="Original CRMP Admin (frozen)" zh="原 CRMP 管理後台（凍結）" />
+          {": "}
+          <a className="underline text-teal-900" href={ORIGINAL_CRMP_ADMIN_URL}>
+            {ORIGINAL_CRMP_ADMIN_URL}
+          </a>
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-3 sm:gap-4 mb-4">
         <SignInOwnerCard />
 
@@ -308,8 +329,10 @@ export default async function AdminDashboardPage({
               <div className="font-semibold mt-1">
                 <T k="home.csDesk" />
               </div>
-              <p className="text-xs text-[var(--muted)] mt-2">
-                <EnZh en="C1 live chat · web form · official email. Auto-email until the client replies." zh="C1 即時聊天 · 網頁表單 · 官方信箱。自動寄信直到客戶回覆。" />
+              <p className="text-xs text-[var(--muted)] mt-2 break-all">
+                <EnZh en="Permanent URL" zh="永久網址" />
+                {": "}
+                {PUBLIC_CS_DESK_URL}
               </p>
               <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-900">
                 <T k="home.csDeskCta" />

@@ -6,7 +6,7 @@
 **Owner:** demo platform owner · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
-This PRD is the product contract for **every screen and feature currently in CRMP Admin**. Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-49](/admin/docs/uat).
+This PRD is the product contract for **every screen and feature currently in CRMP Plus** (original CRMP Admin plus 24/7 CS/TR). Operator how-tos live in the [User Guide](/admin/docs/user-guide). Build detail lives in the [TSD](/admin/docs/tsd). Sign-off cases are [UAT-01 … UAT-49](/admin/docs/uat).
 
 ---
 
@@ -18,16 +18,18 @@ Vantage Markets operates CFD and crypto risk across Monitor 2.0 indicators, desk
 - Turns Monitor alarms into explainable AI RCA  
 - Challenges high-severity RCA with a second independent AI  
 - Lets operators act in messenger (evidence, escalate, dismiss, close, controls)  
+- Staffs 24/7 CS (C1 / form / email) and TR dealing on the same desk  
 - Enforces maker/checker and keeps AI off human-only surfaces  
 - Leaves a single spine + audit trail  
 - Gives every desk function a named admin page (home, performance, risk log, intel, org, settings, docs)
 
 ```mermaid
 graph LR
-  Mon[Monitor 2.0] --> Crmp[CRMP Admin]
-  Crmp --> Lark[Demo Messenger]
-  Crmp --> Admin[Vantage admin refs]
-  Crmp --> Audit[Spine plus audit]
+  Mon[Monitor 2.0] --> Plus[CRMP Plus]
+  CsIn[C1 form email] --> Plus
+  Plus --> Lark[Demo Messenger]
+  Plus --> CsDesk[CS TR desk]
+  Plus --> Audit[Spine plus audit]
 ```
 
 
@@ -46,8 +48,9 @@ graph LR
 | G7 | Safe AI boundary | Human-only pages/functions/fields listed and denied to AI |
 | G8 | Complete admin map | Every left-nav group/page in §6.4 is shipped and documented |
 | G9 | Unread awareness | New work on Realtime Alert & Tracker / Messenger / Intel / Interventions / home spine / Audit / Monitor 2.0 / Risk Log shows a badge that clears when viewed |
-| G10 | Public demo | GitHub Pages snapshot at `/PRD/crmp-admin/` walks the desk without 404/405 on login, messenger Open-in-admin, or Scan now |
+| G10 | Public demo | GitHub Pages snapshot at `/PRD/crmp-plus/` walks the desk without 404/405 on login, messenger Open-in-admin, or Scan now |
 | G11 | Named owner | Platform owner demo platform owner is a first-class persona; session persists in-browser |
+| G12 | Dual public URLs | This upgraded platform is `/PRD/crmp-plus/`; original CRMP Admin stays frozen at `/PRD/crmp-admin/` |
 
 ---
 
@@ -224,13 +227,14 @@ graph LR
 | FR-28 | Escalation routes + Lark registry | Dimensions × coefficients; ESC-DEFAULT catch-all; skill binds one route code; no Path name column; channel enable |
 | FR-36 | Audit plane split + rollback | `/admin/audit` CRMP logs vs Vantage Markets Admin logs tabs; Roll back restores before-state via `POST /api/audit/rollback` |
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
-| FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-admin/login/` (no 404) |
+| FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-plus/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
 | FR-32 | UAT interactive pack | UAT-01…UAT-49 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
 | FR-37 | CS / TR 24/7 desk | C1 live chat, web form and official email ingest via `/api/cs/intake`; AI auto-emails when unclear or ID is needed and waits for a reply (cap 3); trading cases → TR; book-risk → messenger spine |
+| FR-38 | CRMP Plus public URL | Permanent snapshot at `https://hxyan2020.github.io/PRD/crmp-plus/`; original CRMP Admin at `/PRD/crmp-admin/` is frozen and not overwritten |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -299,7 +303,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | NFR-05 | Availability | Demo single-node SQLite acceptable; production needs HA (see Ecosystem) |
 | NFR-06 | i18n | Operator docs EN + zh-Hant; UI nav language toggle |
 | NFR-07 | Accessibility (basic) | Touch targets usable on mobile; critical actions labeled |
-| NFR-08 | Public snapshot | Static export under `basePath` `/PRD/crmp-admin`; no dead `/api` clicks (demo fallbacks) |
+| NFR-08 | Public snapshot | Static export under `basePath` `/PRD/crmp-plus`; original CRMP Admin remains at `/PRD/crmp-admin`; no dead `/api` clicks (demo fallbacks) |
 | NFR-09 | Session | Demo persona persists in `localStorage` + cookie on Pages |
 
 ---
@@ -406,5 +410,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-49). The pack
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + rollback; editable Roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses list redirect; Monitor hub without Alerts/Tickets tabs; dedupe FR-24 |
 | 1.9 | 2026-10-06 | FR-37 CS/TR 24/7 desk; UAT-46…49; TSD §17 |
+| 2.0 | 2026-10-06 | CRMP Plus coherent platform; G12/FR-38 dual URLs (`/PRD/crmp-plus/` vs frozen `/PRD/crmp-admin/`) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

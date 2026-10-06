@@ -1,4 +1,4 @@
-/** Named platform / documentation owner shown across CRMP Admin. */
+/** Named platform / documentation owner shown across CRMP Plus. */
 export const PLATFORM_OWNER = {
   name: "demo platform owner",
   email: "haixiang.yan@hytechc.com",

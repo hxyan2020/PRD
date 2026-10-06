@@ -721,7 +721,7 @@ function seedIfEmpty(db: Database.Database) {
   const insertSetting = db.prepare(
     `INSERT INTO platform_settings (key, value, description) VALUES (?, ?, ?)`
   );
-  insertSetting.run("platform.name", "Vantage CRMP", "Centralised Risk Management Platform");
+  insertSetting.run("platform.name", "Vantage CRMP Plus", "Original CRMP plus 24/7 CS and TR");
   insertSetting.run("platform.owner_name", PLATFORM_OWNER.name, "Named platform and documentation owner");
   insertSetting.run("platform.owner_email", PLATFORM_OWNER.email, "Platform owner contact");
   insertSetting.run("platform.docs_owner", PLATFORM_OWNER.name, "Owner of PRD, TSD, User Guide and UAT packs");

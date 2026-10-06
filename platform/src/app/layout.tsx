@@ -13,8 +13,8 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Vantage CRMP Admin",
-  description: "Centralised Risk Management Platform — Admin Control Plane",
+  title: "Vantage CRMP Plus",
+  description: "Upgraded Centralised Risk Management Platform — original CRMP plus 24/7 CS/TR",
   icons: {
     icon: "/vantage-markets-logo.png",
     apple: "/vantage-markets-logo.png",

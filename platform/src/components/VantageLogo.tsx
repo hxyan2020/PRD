@@ -42,7 +42,7 @@ export function VantageLogo({
             className="block font-[family-name:var(--font-display)] text-sm"
             style={{ color: ink }}
           >
-            CRMP Admin
+            CRMP Plus
           </span>
         </span>
       ) : null}

@@ -1,5 +1,6 @@
 import { FORMER_OWNER_EMAILS, PLATFORM_OWNER } from "@/lib/platform-owner";
 import type { RoleCode, DepartmentCode, SessionUser } from "@/lib/types";
+import { DEFAULT_BASE_PATH, ORIGINAL_CRMP_BASE_PATH } from "@/lib/platform-site";
 import { isPublicSnapshot, publicBasePath } from "@/lib/static-export";
 
 export const DEMO_SESSION_KEY = "crmp_demo_session_v1";
@@ -158,8 +159,10 @@ export function defaultPersona() {
 
 function cookiePath() {
   if (typeof window === "undefined") return "/";
-  if (window.location.pathname.includes("/PRD/crmp-admin")) return "/PRD/crmp-admin";
-  return "/";
+  const path = window.location.pathname;
+  if (path.includes(DEFAULT_BASE_PATH)) return DEFAULT_BASE_PATH;
+  if (path.includes(ORIGINAL_CRMP_BASE_PATH)) return ORIGINAL_CRMP_BASE_PATH;
+  return publicBasePath() || "/";
 }
 
 export function readDemoSession(): SessionUser | null {
@@ -194,13 +197,13 @@ export function loginHref() {
   const suffix = "/admin/login";
   if (typeof window !== "undefined") {
     if (isPublicSnapshot()) {
-      const base = publicBasePath() || "/PRD/crmp-admin";
+      const base = publicBasePath() || DEFAULT_BASE_PATH;
       return `${base}${suffix}/`;
     }
     return suffix;
   }
   if (isPublicSnapshot() || process.env.NEXT_PUBLIC_STATIC_EXPORT === "1") {
-    const base = publicBasePath() || "/PRD/crmp-admin";
+    const base = publicBasePath() || DEFAULT_BASE_PATH;
     return `${base}${suffix}/`;
   }
   return suffix;

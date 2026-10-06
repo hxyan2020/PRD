@@ -1,21 +1,18 @@
-name: Publish CRMP Admin to GitHub Pages
-
-# Frozen original CRMP Admin at /PRD/crmp-admin/. Do not add CRMP Plus
-# branches here — the upgraded platform publishes via crmp-plus-pages.yml.
+name: Publish CRMP Plus to GitHub Pages
 
 on:
   push:
-    branches: [cursor/crmp-admin-pages-a935, cursor/public-urls-a935, main]
+    branches: [cursor/crmp-plus-a935]
     paths:
       - "platform/**"
-      - ".github/workflows/crmp-pages.yml"
+      - ".github/workflows/crmp-plus-pages.yml"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: crmp-static
+  group: crmp-plus-static
   cancel-in-progress: true
 
 jobs:
@@ -28,20 +25,20 @@ jobs:
           node-version: "22"
           cache: npm
           cache-dependency-path: platform/package-lock.json
-      - name: Build static admin snapshot
+      - name: Build static CRMP Plus snapshot
         working-directory: platform
         env:
           NEXT_PUBLIC_STATIC_EXPORT: "1"
-          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-admin
+          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-plus
         run: |
           npm ci
           npm run build:pages
       - name: Stage nested Pages folder
         run: |
-          mkdir -p publish/crmp-admin
-          cp -a platform/out/. publish/crmp-admin/
-          touch publish/crmp-admin/.nojekyll
-      - name: Publish gh-pages (keep sibling sites)
+          mkdir -p publish/crmp-plus
+          cp -a platform/out/. publish/crmp-plus/
+          touch publish/crmp-plus/.nojekyll
+      - name: Publish gh-pages (keep sibling sites including crmp-admin)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -51,7 +48,8 @@ jobs:
       - name: Public URL
         run: |
           {
-            echo "Permanent CRMP Admin URL"
-            echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
-            echo "- https://hxyan2020.github.io/PRD/crmp-admin/"
+            echo "Permanent CRMP Plus URL (original CRMP Admin left intact)"
+            echo "- https://hxyan2020.github.io/PRD/crmp-plus/admin/"
+            echo "- https://hxyan2020.github.io/PRD/crmp-plus/"
+            echo "- Frozen original: https://hxyan2020.github.io/PRD/crmp-admin/admin/"
           } >> "$GITHUB_STEP_SUMMARY"

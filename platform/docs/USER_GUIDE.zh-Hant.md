@@ -10,7 +10,7 @@
 
 ## 1. 這個後台是做什麼的
 
-Vantage **CRMP 管理後台** 是 CFD 與加密風險的控制室。Monitor 2.0 發出警報後，這裡會：
+Vantage **CRMP Plus** 是升級控制室：原 CRMP 風險脊柱加上 24/7 客服與交易台。Monitor 2.0 發出警報後，這裡會：
 
 1. 找到對應的技能劇本；若不確定，就搜尋 RAG 知識庫。  
 2. 高嚴重度（BREACH 或 CRITICAL）時，再跑一輪**獨立的第二 AI**，可能同意、部分同意或不同意。  
@@ -21,9 +21,10 @@ Vantage **CRMP 管理後台** 是 CFD 與加密風險的控制室。Monitor 2.0 
 
 不必是工程師。點左側選單、讀卡片、跟畫面上的按鈕走即可。
 
-**永久公開示範：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
-**Messenger 示範：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)  
-**CS／TR 台：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-admin/admin/cs-desk/)  
+**永久公開示範（CRMP Plus）：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
+**Messenger 示範：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
+**CS／TR 台：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)  
+**原 CRMP 管理後台（凍結）：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **完整網址：** [網址目錄](/admin/docs/urls)  
 **開放議題／進度：** [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress)
 
@@ -31,11 +32,13 @@ GitHub Pages **沒有即時 `/api`**。每一頁仍可走完。本來要寫進�
 
 ```mermaid
 graph TD
-  Monitor[Monitor 2.0 警報] --> Desk[CRMP 管理後台]
-  Desk --> AI[AI 根因加第二 AI]
+  Monitor[Monitor 2.0 警報] --> Plus[CRMP Plus]
+  Client[C1 表單 信箱] --> Cs[CS TR 台]
+  Cs --> Plus
+  Plus --> AI[AI 根因]
   AI --> Msg[示範 Messenger]
-  Msg --> Human[人工干預]
-  Human --> Audit[稽核加首頁脊柱]
+  Msg --> Human[人工關卡]
+  Human --> Audit[稽核加脊柱]
 ```
 
 ---
@@ -45,7 +48,7 @@ graph TD
 ### 2.1 打開登入頁
 
 1. 點左側 **登入**（在 GitHub Pages 最穩妥）。  
-2. 或開啟 [`/admin/login`](/admin/login)（最穩）。舊的 [`/login`](/login) 仍在，但 GitHub Pages 要用 `/PRD/crmp-admin/login/` 或 `/PRD/crmp-admin/admin/login/` — 只打 `github.io/login` 會 404。
+2. 或開啟 [`/admin/login`](/admin/login)（最穩）。舊的 [`/login`](/login) 仍在，但 GitHub Pages 要用 `/PRD/crmp-plus/login/` 或 `/PRD/crmp-plus/admin/login/` — 只打 `github.io/login` 會 404。
 
 本原型管理後台是公開的。只有要用**具名角色**（讓 Maker／Checker 與權限像正式環境）時才需登入。
 
@@ -490,11 +493,11 @@ graph TD
 | **建議動作** | 封鎖使用者、停交易、降最高槓桿、預先加寬點差、暫停跟單加入 |
 | **雙重確認…** 再 **是，送至 Vantage 管理後台** | 產生管理參照 + 連結（常是人工干預） |
 | **Checker 核准（上線）** | 系統說需要 Checker 時 |
-| **在管理後台開啟** | 跳到對應管理頁（Pages 上必須留在 `/PRD/crmp-admin/` 底下） |
+| **在管理後台開啟** | 跳到對應管理頁（Pages 上必須留在 `/PRD/crmp-plus/` 底下） |
 
 **怎樣算正常。** 同步會產生執行緒。證據貼的是保險庫，不是空白泡泡。升級會前進路徑。排除／結案會改狀態。雙重確認產出 admin_ref。在 GitHub Pages「開啟管理後台」不會 404。
 
-永久網址：[https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-admin/admin/messenger/)
+永久網址：[https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)
 
 ```mermaid
 graph TD
@@ -713,5 +716,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 1.9 | 2026-10-06 | 首頁虛擬脊柱：虛擬警報／虛擬警報組；英／繁中介面與儲存文案 |
 | 1.10 | 2026-10-06 | 示範 Messenger 鳥瞰：升級路徑承辦聊天窗 |
 | 1.11 | 2026-10-06 | CS／TR 台：C1、表單、官方信箱；AI 追問直到回覆；TR 分流 |
+| 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開網址 `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

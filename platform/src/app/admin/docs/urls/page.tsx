@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL } from "@/lib/docs/urls";
+import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, ORIGINAL_CRMP_ADMIN_URL } from "@/lib/docs/urls";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { OwnerIdentityPanel } from "@/components/OwnerIdentityPanel";
@@ -46,6 +46,7 @@ export default async function UrlsCatalogPage() {
       <div className="panel p-3 sm:p-4 mb-4 text-sm border-teal-200 bg-teal-50 text-teal-950">
         <p><T k="urls.publicNote" /></p>
         <p className="mt-2">
+          <span className="font-semibold"><T k="urls.plusLabel" />: </span>
           <a className="text-teal-900 underline break-all" href={PUBLIC_ADMIN_URL}>
             {PUBLIC_ADMIN_URL}
           </a>
@@ -53,6 +54,17 @@ export default async function UrlsCatalogPage() {
         <p className="mt-2">
           <a className="text-teal-900 underline break-all" href={PUBLIC_MESSENGER_URL}>
             {PUBLIC_MESSENGER_URL}
+          </a>
+        </p>
+        <p className="mt-2">
+          <a className="text-teal-900 underline break-all" href={PUBLIC_CS_DESK_URL}>
+            {PUBLIC_CS_DESK_URL}
+          </a>
+        </p>
+        <p className="mt-3">
+          <span className="font-semibold"><T k="urls.frozenLabel" />: </span>
+          <a className="text-teal-900 underline break-all" href={ORIGINAL_CRMP_ADMIN_URL}>
+            {ORIGINAL_CRMP_ADMIN_URL}
           </a>
         </p>
       </div>
