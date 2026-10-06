@@ -290,7 +290,7 @@ graph TD
 | FR-40 | Public CS intake portal + inbound replies | Client `/cs` tabs (C1, form, official email) post to `/api/cs/intake`; GET connector catalog; replies match `request_id` / `in_reply_to` / `channel_ref` / `CSR-XXXX` and continue the ticket. Permanent URL `https://hxyan2020.github.io/PRD/crmp-plus/cs/`. |
 | FR-41 | Auto-email wait loop | Unclear or need-ID → one `EMAIL_OUT`, status `AWAITING_CLIENT` or `ID_VERIFY`, follow-up `WAITING`; cap from `cs.followup_cap` (default 3) then CS Lead; **Resolve blocked** while WAITING. UAT-47. |
 | FR-42 | CS/TR privacy + public status | `GET /api/cs/intake?request_id=` returns status without PII; never store ID images on the request; ID vault is process, not a blob. UAT-49. |
-| FR-43 | CS/TR operator docs | User Guide §9.3; URL Catalog **CS / TR** section (`/cs`, desk, dashboard, log, data, five skills, RAG leaves, intake API, `cs_*` tables); UAT-25 + UAT-46…52 |
+| FR-43 | CS/TR operator docs | User Guide §9.3; URL Catalog **CS / TR** section (`/cs`, desk, dashboard, log, data, five skills, RAG leaves, intake API, `cs_*` tables); UAT catalogue v2.6 (UAT-25 + UAT-46…52 + support 17/22/27–29/36–40) |
 | FR-44 | CS/TR dashboard + log | Dedicated `/admin/cs-dashboard` (KPIs: totals, open/resolved, WAITING, follow-up cap, TR, Risk, by channel/status/skill/desk) and `/admin/cs-log` (CS_* timeline + resolved packs). **Not** Daily Performance (`/admin/dashboard`) and **not** Risk Log Analytics (`/admin/risk-log`). `GET /api/cs?view=dashboard\|log`. UAT-51. |
 | FR-45 | CS/TR supporting data | Seeded and surfaced: CUSTOMER_SERVICE / TRADING BUs; teams CS 24/7 Desk, **CS KYC Vault**, TR Dealing Support; named POCs; hops `ESC-CS-24-7` / `ESC-CS-KYC` / `ESC-TR-DEAL` / `ESC-CS-RISK`; `cs.*` parameters (cap, SLA, intake token, mailboxes, Lark ids); C1/form/mailbox + KYC vault + dealing-tape sources. Page `/admin/cs-data`, `GET /api/cs?view=data`. UAT-52. |
 
@@ -340,7 +340,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Docs | User Guide | `/admin/docs/user-guide` | How to operate | EN + zh-Hant; every screen plus §9.3 CS/TR |
 | Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document (FR-37…45, G13, §5.7–5.9, §6.5) |
 | Docs | TSD | `/admin/docs/tsd` | How built | Surface map complete |
-| Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 52 cases, interactive (UAT-46…52 CS/TR) |
+| Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 51 cases, interactive (UAT-46…52 CS/TR; catalogue v2.6) |
 | Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
 | Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | RM-01…15: today / build / done-when |
 | Docs | Open Issues | `/admin/docs/open-issues` | Programme gaps | ETA, BU, dependencies → 2027 |
@@ -510,7 +510,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-52). The pack
 |---|---|
 | Operator how-to per page | User Guide §6–§12 (CS/TR: §9.3) |
 | Technical module per page | TSD §7 + §8–§18 (CS/TR: §17) |
-| Test case per surface | UAT-01…UAT-52 `covers` field (CS/TR: UAT-25, UAT-46…52) |
+| Test case per surface | UAT catalogue v2.6 — UAT-01…UAT-52 `covers` field (CS/TR primary: UAT-25, UAT-46…52; support: 17/22/27–29/36–40) |
 | Public and local URLs | URL Catalog (CS / TR section) |
 
 ---

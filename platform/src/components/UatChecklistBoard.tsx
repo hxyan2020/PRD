@@ -2,7 +2,16 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Badge, SeverityBadge } from "@/components/ui";
-import { UAT_CASES, uatCoverage, uatSummary, type UatCopy, type UatSeverity } from "@/lib/docs/uat-cases";
+import {
+  CS_TR_UAT_CATALOGUE,
+  UAT_CASES,
+  isCsTrUatCase,
+  uatCoverage,
+  uatCsTrSummary,
+  uatSummary,
+  type UatCopy,
+  type UatSeverity,
+} from "@/lib/docs/uat-cases";
 import { fetchDocOverlay, resetDocOverlay, saveDocOverlay } from "@/lib/docs/edit-client";
 import { isPublicSnapshot } from "@/lib/static-export";
 import { DocEditBar } from "@/components/DocEditBar";
@@ -13,7 +22,7 @@ type UatPatch = {
   en?: Partial<UatCopy>;
   zh?: Partial<UatCopy>;
 };
-type UatOverlay = Record<string, UatPatch>;
+  type UatFilter = "ALL" | "CS_TR" | UatSeverity;
 
 function sevClass(s: UatSeverity) {
   if (s === "Critical") return "bg-rose-50 text-rose-900 border-rose-200";
@@ -53,7 +62,8 @@ function parseOverlay(raw: string | null): UatOverlay {
 export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
   const zh = lang === "zh-Hant";
   const summary = uatSummary();
-  const [filter, setFilter] = useState<"ALL" | UatSeverity>("ALL");
+  const [filter, setFilter] = useState<UatFilter>("ALL");
+  const csTr = uatCsTrSummary();
   const [openId, setOpenId] = useState<string | null>(UAT_CASES[0]?.id ?? null);
   const [results, setResults] = useState<Record<string, "PASS" | "FAIL" | "WAIVE" | "">>({});
   const [overlay, setOverlay] = useState<UatOverlay>({});
@@ -89,7 +99,9 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
         zh: mergeCopy(c.zh, p.zh),
       };
     });
-    return filter === "ALL" ? merged : merged.filter((c) => c.severity === filter);
+    if (filter === "ALL") return merged;
+    if (filter === "CS_TR") return merged.filter((c) => isCsTrUatCase(c));
+    return merged.filter((c) => c.severity === filter);
   }, [filter, overlay, draft, editing]);
 
   const tallies = useMemo(() => {
@@ -195,22 +207,86 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
       <div className="panel p-3 sm:p-4">
         <p className="text-sm text-[var(--muted)]">
           {zh
-            ? "請依序執行。這是風險負責人帶著證據走完整張管理桌與 Lark 風格 Messenger 的白話劇本，不是開發自測。Critical 前置未通過前勿跳號。退出：Critical 全過；High 豁免≤2 且需書面接受。"
-            : "Execute in sequence. This is the Risk Owner script for the whole admin desk and the Lark-style messenger — written in plain English, not a developer smoke test. Do not skip ahead of failed Critical predecessors. Exit: all Critical Pass; ≤2 High waivers with written acceptance."}
+            ? "請依序執行。這是風險負責人帶著證據走完整張管理桌與 Lark 風格 Messenger 的白話劇本，不是開發自測。Critical 前置未通過前勿跳號。退出：Critical 全過；High 豁免≤2 且需書面接受。CS／TR 目錄篩出大門、等待迴圈、儀表板、日誌與配套資料。"
+            : "Execute in sequence. This is the Risk Owner script for the whole admin desk and the Lark-style messenger — written in plain English, not a developer smoke test. Do not skip ahead of failed Critical predecessors. Exit: all Critical Pass; ≤2 High waivers with written acceptance. The CS/TR filter isolates the door, wait loop, dashboard, log and supporting data."}
         </p>
         <div className="mt-3 action-row">
-          {(["ALL", "Critical", "High", "Medium", "Low"] as const).map((f) => (
+          {(["ALL", "CS_TR", "Critical", "High", "Medium", "Low"] as const).map((f) => (
             <button
               key={f}
               type="button"
               className={`btn text-xs ${filter === f ? "btn-primary" : ""}`}
               onClick={() => setFilter(f)}
             >
-              {f === "ALL" ? (zh ? "全部" : "All") : f}
+              {f === "ALL" ? (zh ? "全部" : "All") : f === "CS_TR" ? (zh ? "CS／TR" : "CS/TR") : f}
             </button>
           ))}
         </div>
       </div>
+
+      <section className="panel p-3 sm:p-4" data-testid="uat-cs-catalogue">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+          <div>
+            <h3 className="font-semibold">{zh ? "CS／TR 功能目錄" : "CS/TR feature catalogue"}</h3>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              {zh
+                ? `主案 ${csTr.primary} · 支援 ${csTr.support} · 共 ${csTr.total}。點列跳到該案。這份目錄對應大門、劇本、儀表板、日誌與配套資料，不是再加一堆編號。`
+                : `Primary ${csTr.primary} · support ${csTr.support} · ${csTr.total} total. Click a row to jump to that case. This is the feature catalogue for the door, playbooks, dashboard, log and supporting data — not extra numbered cases.`}
+            </p>
+          </div>
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200">v2.6</Badge>
+        </div>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-xs min-w-[36rem]">
+            <thead>
+              <tr className="text-left text-[var(--muted)] border-b border-[var(--line)]">
+                <th className="py-1.5 pr-2 font-medium">{zh ? "案號" : "Case"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "種類" : "Kind"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "功能" : "Feature"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "畫面" : "Screens"}</th>
+                <th className="py-1.5 font-medium">FR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {CS_TR_UAT_CATALOGUE.map((row) => (
+                <tr key={row.id} className="border-b border-[var(--line)] last:border-0">
+                  <td className="py-1.5 pr-2 align-top">
+                    <button
+                      type="button"
+                      className="font-mono text-teal-800 underline-offset-2 hover:underline"
+                      onClick={() => {
+                        setFilter("CS_TR");
+                        setOpenId(row.id);
+                        requestAnimationFrame(() =>
+                          document.getElementById(row.id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+                        );
+                      }}
+                    >
+                      {row.id}
+                    </button>
+                  </td>
+                  <td className="py-1.5 pr-2 align-top">
+                    <Badge
+                      className={
+                        row.kind === "primary"
+                          ? "bg-teal-50 text-teal-900 border-teal-200"
+                          : "bg-slate-100 text-slate-700 border-slate-200"
+                      }
+                    >
+                      {row.kind === "primary" ? (zh ? "主案" : "primary") : zh ? "支援" : "support"}
+                    </Badge>
+                  </td>
+                  <td className="py-1.5 pr-2 align-top break-word">{zh ? row.featureZh : row.featureEn}</td>
+                  <td className="py-1.5 pr-2 align-top text-[var(--muted)] break-word">
+                    {zh ? row.screensZh : row.screensEn}
+                  </td>
+                  <td className="py-1.5 align-top font-mono">{row.fr}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <div className="space-y-3">
         {cases.map((c) => {
@@ -218,7 +294,7 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
           const open = openId === c.id;
           const result = results[c.id] || "";
           return (
-            <article key={c.id} className="panel p-3 sm:p-4 min-w-0">
+            <article key={c.id} id={c.id} className="panel p-3 sm:p-4 min-w-0 scroll-mt-20">
               <button
                 type="button"
                 className="w-full text-left"
@@ -236,6 +312,9 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
                       <Badge className="bg-teal-50 text-teal-900 border-teal-200">
                         {formatClock(c.t_start_min)} · {c.duration_min}m
                       </Badge>
+                      {isCsTrUatCase(c) ? (
+                        <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">CS/TR</Badge>
+                      ) : null}
                       {result ? (
                         <Badge
                           className={
@@ -423,6 +502,11 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
             {zh
               ? "UAT 視窗內 BREACH／CRITICAL 樣本 100% 附第二 AI（UAT-19）。"
               : "100% of BREACH/CRITICAL samples in the window have second AI (UAT-19)."}
+          </li>
+          <li>
+            {zh
+              ? "CS／TR 主案（UAT-25、46、47、48、50、51、52）必須 Pass；支援案（17／22／27–29／36–40）須證明新畫面仍被點到。"
+              : "CS/TR primary cases (UAT-25, 46, 47, 48, 50, 51, 52) must Pass; support cases (17 / 22 / 27–29 / 36–40) must still hit the new surfaces."}
           </li>
           <li>
             {zh

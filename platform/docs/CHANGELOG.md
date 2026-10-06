@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T19:00:00.000Z | UAT catalogue v2.6: CS/TR feature index (desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*) + interactive CS/TR filter; EN/zh-Hant |
 | 2026-10-06T18:00:00.000Z | CS/TR supporting data: BU/teams/KYC vault, ESC-CS-KYC hops, cs.* parameters, /admin/cs-data; FR-45; TSD §17.12; UG §9.3.9; UAT-52; EN/zh-Hant |
 | 2026-10-06T17:00:00.000Z | CS/TR dedicated dashboard + log (/admin/cs-dashboard, /admin/cs-log); FR-44; TSD §17.11; UG §9.3.7–9.3.8; UAT-51; EN/zh-Hant |
 | 2026-10-06T16:00:00.000Z | TSD v2.3: §17.5–17.10 schema, module map, wait-loop state, /cs portal, URL catalog, FR-37…43; EN/zh-Hant |
