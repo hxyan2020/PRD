@@ -362,7 +362,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
 | Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | RM-01…15: today / build / done-when |
 | Docs | Open Issues | `/admin/docs/open-issues` | Programme gaps | 20 issues; CS/TR catalogue v1.5 on OI-19/20 |
-| Docs | Progress Tracker | `/admin/docs/progress` | Timeline board | X=issues Y=now→2027 |
+| Docs | Progress Tracker | `/admin/docs/progress` | Timeline board | X=issues Y=now→2027; CS/TR catalogue v1.6 on 20 columns |
 | Docs | URL Catalog | `/admin/docs/urls` | Navigation | Pages + APIs + tables + **CS / TR** section |
 | Shell | Login | `/login` | Named persona | Persist; Pages path; owner default |
 | Shell | Language | cookie `crmp_ui_lang` | EN / 繁中 | Nav + docs switch |

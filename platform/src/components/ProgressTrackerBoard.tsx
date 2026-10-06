@@ -4,12 +4,15 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui";
 import {
+  CS_TR_OPEN_ISSUE_CATALOGUE,
+  CS_TR_PROGRESS_FUNCTIONS,
   ISSUE_STATUS_LABEL,
   OPEN_ISSUES,
   PROGRESS_TIMELINE,
+  isCsTrOpenIssue,
+  openIssuesCsTrSummary,
   type IssueBu,
   type IssueStatus,
-  type OpenIssue,
 } from "@/lib/docs/open-issues";
 import { useUiLocale } from "@/hooks/useUiLocale";
 
@@ -61,6 +64,8 @@ export function ProgressTrackerBoard() {
   const [focus, setFocus] = useState<string | null>(OPEN_ISSUES[0]?.id ?? null);
   const [statusFilter, setStatusFilter] = useState<IssueStatus | "ALL">("ALL");
   const [buFilter, setBuFilter] = useState<IssueBu | "ALL">("ALL");
+  const [csTrOnly, setCsTrOnly] = useState(false);
+  const csTr = openIssuesCsTrSummary();
 
   const bus = useMemo(
     () => Array.from(new Set(OPEN_ISSUES.map((i) => i.bu))).sort() as IssueBu[],
@@ -69,11 +74,12 @@ export function ProgressTrackerBoard() {
 
   const cols = useMemo(() => {
     return OPEN_ISSUES.filter((i) => {
+      if (csTrOnly && !isCsTrOpenIssue(i)) return false;
       if (statusFilter !== "ALL" && i.status !== statusFilter) return false;
       if (buFilter !== "ALL" && i.bu !== buFilter) return false;
       return true;
     });
-  }, [statusFilter, buFilter]);
+  }, [statusFilter, buFilter, csTrOnly]);
 
   /** X = open issues (columns), Y = timeline months (rows) — now → end-2027 */
   const labelW = 72;
@@ -88,11 +94,19 @@ export function ProgressTrackerBoard() {
   const focused = OPEN_ISSUES.find((i) => i.id === focus) ?? null;
   const focusedCopy = focused ? (zh ? focused.zh : focused.en) : null;
 
+  function focusColumn(id: string) {
+    setCsTrOnly(true);
+    setStatusFilter("ALL");
+    setBuFilter("ALL");
+    setFocus(id);
+  }
+
   return (
     <div className="space-y-4">
       <div className="panel p-3 sm:p-4">
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-PT-001</Badge>
+          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.6</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
             {zh
               ? `X＝開放議題 · Y＝${PROGRESS_TIMELINE.startLabel}→${PROGRESS_TIMELINE.endLabel}`
@@ -101,14 +115,35 @@ export function ProgressTrackerBoard() {
           <Badge className="bg-white text-slate-700 border-slate-200">
             {zh ? `${cols.length} / ${OPEN_ISSUES.length} 議題` : `${cols.length} / ${OPEN_ISSUES.length} issues`}
           </Badge>
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+            {zh ? `CS／TR × ${csTr.total}` : `CS/TR × ${csTr.total}`}
+          </Badge>
           <Link className="btn text-sm" href="/admin/docs/open-issues">
             {zh ? "開放議題清單 →" : "Open issues list →"}
+          </Link>
+          <Link className="btn text-sm" href="/admin/docs/uat">
+            UAT
+          </Link>
+          <Link className="btn text-sm" href="/cs">
+            /cs
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-desk">
+            {zh ? "CS／TR 台" : "CS / TR Desk"}
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-dashboard">
+            {zh ? "儀表板" : "Dashboard"}
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-log">
+            {zh ? "日誌" : "Log"}
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-data">
+            {zh ? "資料" : "Data"}
           </Link>
         </div>
         <p className="text-sm text-[var(--muted)] mt-2">
           {zh
-            ? "每個開放議題一欄（X），時間軸由上而下（Y：現在→2027 年底）。色塊＝狀態；欄頂清楚標示負責 BU。點欄檢視詳情。"
-            : "One column per open issue (X); timeline top→bottom (Y: now → end-2027). Cell colour = status; column header labels responsible BU. Click a column for detail."}
+            ? "每個開放議題一欄（X），時間軸由上而下（Y：現在→2027 年底）。色塊＝狀態；欄頂清楚標示負責 BU。CS／TR 目錄索引大門、等待迴圈、技能、儀表板、日誌、資料、關卡、cs.* 與分類／嚴重度／POC — 不是額外長條。仍為 20 欄。點欄檢視詳情。"
+            : "One column per open issue (X); timeline top→bottom (Y: now → end-2027). Cell colour = status; column header labels responsible BU. The CS/TR catalogue indexes the door, wait loop, skills, dashboard, log, data, hops, cs.* and categorize/severity/POC — not extra bars. Still 20 columns. Click a column for detail."}
         </p>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
@@ -127,8 +162,11 @@ export function ProgressTrackerBoard() {
         <div className="chip-scroller mt-3">
           <button
             type="button"
-            className={`btn text-xs ${statusFilter === "ALL" ? "btn-primary" : ""}`}
-            onClick={() => setStatusFilter("ALL")}
+            className={`btn text-xs ${statusFilter === "ALL" && !csTrOnly ? "btn-primary" : ""}`}
+            onClick={() => {
+              setCsTrOnly(false);
+              setStatusFilter("ALL");
+            }}
           >
             {zh ? "全部狀態" : "All statuses"}
           </button>
@@ -136,12 +174,26 @@ export function ProgressTrackerBoard() {
             <button
               key={s}
               type="button"
-              className={`btn text-xs ${statusFilter === s ? "btn-primary" : ""}`}
-              onClick={() => setStatusFilter(s)}
+              className={`btn text-xs ${!csTrOnly && statusFilter === s ? "btn-primary" : ""}`}
+              onClick={() => {
+                setCsTrOnly(false);
+                setStatusFilter(s);
+              }}
             >
               {ISSUE_STATUS_LABEL[s][zh ? "zh-Hant" : "en"]}
             </button>
           ))}
+          <button
+            type="button"
+            className={`btn text-xs ${csTrOnly ? "btn-primary" : ""}`}
+            onClick={() => {
+              setCsTrOnly(true);
+              setStatusFilter("ALL");
+              setBuFilter("ALL");
+            }}
+          >
+            {zh ? "CS／TR" : "CS/TR"}
+          </button>
         </div>
 
         <div className="chip-scroller mt-2">
@@ -164,6 +216,107 @@ export function ProgressTrackerBoard() {
           ))}
         </div>
       </div>
+
+      <section className="panel p-3 sm:p-4" data-testid="pt-cs-catalogue">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+          <div>
+            <h3 className="font-semibold">{zh ? "CS／TR 功能目錄" : "CS/TR feature catalogue"}</h3>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              {zh
+                ? `主案 ${csTr.primary} · 支援 ${csTr.support} · 共 ${csTr.total}。點列聚焦該欄。這份目錄把大門、等待迴圈、技能、儀表板、日誌、資料、關卡、cs.* 與分類／嚴重度／POC 對到既有長條，不是額外欄。仍為 20 欄。`
+                : `Primary ${csTr.primary} · support ${csTr.support} · ${csTr.total} total. Click a row to focus that column. This maps the door, wait loop, skills, dashboard, log, data, hops, cs.* and categorize/severity/POC onto existing bars — not extra columns. Still 20 columns.`}
+            </p>
+          </div>
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200">v1.6</Badge>
+        </div>
+
+        <h4 className="mt-3 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
+          {zh ? "功能對應既有長條" : "Functions on existing bars"}
+        </h4>
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full text-xs min-w-[36rem]">
+            <thead>
+              <tr className="text-left text-[var(--muted)] border-b border-[var(--line)]">
+                <th className="py-1.5 pr-2 font-medium">{zh ? "功能" : "Function"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "欄（X）" : "Column (X)"}</th>
+                <th className="py-1.5 font-medium">{zh ? "原型證明" : "Prototype proof"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {CS_TR_PROGRESS_FUNCTIONS.map((row) => (
+                <tr key={row.id} className="border-b border-[var(--line)] last:border-0">
+                  <td className="py-1.5 pr-2 align-top break-word">{zh ? row.functionZh : row.functionEn}</td>
+                  <td className="py-1.5 pr-2 align-top">
+                    {row.columns.map((id) => (
+                      <button
+                        key={id}
+                        type="button"
+                        className="mr-1 font-mono text-teal-800 underline-offset-2 hover:underline"
+                        onClick={() => focusColumn(id)}
+                      >
+                        {id}
+                      </button>
+                    ))}
+                  </td>
+                  <td className="py-1.5 align-top text-[var(--muted)] break-word">
+                    {zh ? row.proofZh : row.proofEn}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h4 className="mt-4 text-xs font-semibold uppercase tracking-wide text-[var(--muted)]">
+          {zh ? "與開放議題同一八項" : "Same eight issues as Open Issues"}
+        </h4>
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full text-xs min-w-[40rem]">
+            <thead>
+              <tr className="text-left text-[var(--muted)] border-b border-[var(--line)]">
+                <th className="py-1.5 pr-2 font-medium">{zh ? "議題" : "Issue"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "種類" : "Kind"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "功能" : "Feature"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "原型已交付" : "Prototype shipped"}</th>
+                <th className="py-1.5 font-medium">{zh ? "正式仍開放" : "Still open"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {CS_TR_OPEN_ISSUE_CATALOGUE.map((row) => (
+                <tr key={row.id} className="border-b border-[var(--line)] last:border-0">
+                  <td className="py-1.5 pr-2 align-top">
+                    <button
+                      type="button"
+                      className="font-mono text-teal-800 underline-offset-2 hover:underline"
+                      onClick={() => focusColumn(row.id)}
+                    >
+                      {row.id}
+                    </button>
+                  </td>
+                  <td className="py-1.5 pr-2 align-top">
+                    <Badge
+                      className={
+                        row.kind === "primary"
+                          ? "bg-teal-50 text-teal-900 border-teal-200"
+                          : "bg-slate-100 text-slate-700 border-slate-200"
+                      }
+                    >
+                      {row.kind === "primary" ? (zh ? "主案" : "primary") : zh ? "支援" : "support"}
+                    </Badge>
+                  </td>
+                  <td className="py-1.5 pr-2 align-top break-word">{zh ? row.featureZh : row.featureEn}</td>
+                  <td className="py-1.5 pr-2 align-top text-[var(--muted)] break-word">
+                    {zh ? row.shippedZh : row.shippedEn}
+                  </td>
+                  <td className="py-1.5 align-top text-[var(--muted)] break-word">
+                    {zh ? row.remainingZh : row.remainingEn}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <div className="panel p-2 sm:p-4 overflow-x-auto" data-testid="progress-chart">
         <div className="flex items-center justify-between gap-2 mb-2 px-1">
@@ -324,6 +477,9 @@ export function ProgressTrackerBoard() {
         <div className="panel p-3 sm:p-4" data-testid="progress-detail">
           <div className="flex flex-wrap gap-2 items-center">
             <span className="font-mono text-sm font-semibold">{focused.id}</span>
+            {isCsTrOpenIssue(focused) ? (
+              <span className="badge border bg-teal-50 text-teal-900 border-teal-200">CS/TR</span>
+            ) : null}
             <span className={`badge border ${statusTone(focused.status)}`}>
               {ISSUE_STATUS_LABEL[focused.status][zh ? "zh-Hant" : "en"]}
             </span>
@@ -378,6 +534,9 @@ export function ProgressTrackerBoard() {
             >
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-mono text-xs font-semibold">{i.id}</span>
+                {isCsTrOpenIssue(i) ? (
+                  <span className="badge border bg-teal-50 text-teal-900 border-teal-200">CS/TR</span>
+                ) : null}
                 <span className={`badge border ${BU_TONE[i.bu]}`}>{i.bu}</span>
                 <span className={`badge border ${statusTone(i.status)}`}>
                   {ISSUE_STATUS_LABEL[i.status][zh ? "zh-Hant" : "en"]}

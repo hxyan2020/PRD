@@ -708,7 +708,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（52）。網址目錄：`UrlCatalogBoard`＋`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、儀表板、日誌、五本 SKILL.md、六片 RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表；篩選；`PUBLIC_*`＝CRMP Plus `/PRD/crmp-plus/` 含 `PUBLIC_CS_PORTAL_URL` `/cs/`、`PUBLIC_CS_DASHBOARD_URL`、`PUBLIC_CS_LOG_URL`；`ORIGINAL_CRMP_*`＝凍結 `/PRD/crmp-admin/`）。見 **§17.9**。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。互動看板：UAT（`UatChecklistBoard`）、路線圖、開放議題、進度（`ProgressTrackerBoard` — X＝議題、Y＝2026-10→2027-12；CS／TR 目錄 v1.6 在同一 20 欄，不是額外長條）。網址目錄：`UrlCatalogBoard`＋`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、儀表板、日誌、五本 SKILL.md、六片 RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表；篩選；`PUBLIC_*`＝CRMP Plus `/PRD/crmp-plus/` 含 `PUBLIC_CS_PORTAL_URL` `/cs/`、`PUBLIC_CS_DASHBOARD_URL`、`PUBLIC_CS_LOG_URL`；`ORIGINAL_CRMP_*`＝凍結 `/PRD/crmp-admin/`）。見 **§17.9**。
 
 ---
 

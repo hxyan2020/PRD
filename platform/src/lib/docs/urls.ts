@@ -160,7 +160,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
   { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
   { category: "Docs", title: "Open Issues", path: "/admin/docs/open-issues", description: "20-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product, CS, TR) — CS/TR feature catalogue v1.5 on OI-19/OI-20 plus support OI-05/08/09/11/14/15; prototype ticks vs production connectors/vault/tape", permission: "admin.access" },
-  { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "X = open issues (columns), Y = timeline now→end-2027 (rows); status colours; responsible BU on every column", permission: "admin.access" },
+  { category: "Docs", title: "Progress Tracker", path: "/admin/docs/progress", description: "X = open issues (20 columns OI-01…20), Y = timeline now→end-2027; CS/TR catalogue v1.6 indexes desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*, categorize/severity/POC on OI-19/20 — not extra bars", permission: "admin.access" },
   { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, dashboard, log, data, five skills, RAG leaves, intake API)", permission: "admin.access" },
 
   // APIs

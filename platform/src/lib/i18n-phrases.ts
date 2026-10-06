@@ -1388,6 +1388,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "CS／TR 進件渠道、請求、逐字稿、等待客戶回覆的自動追問信",
   "20-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product, CS, TR) — CS/TR feature catalogue v1.5 on OI-19/OI-20 plus support OI-05/08/09/11/14/15; prototype ticks vs production connectors/vault/tape":
     "依 BU 的 20 項議題清單（AI、系統、RO、定價、營運、Monitor、GRC、產品、CS、TR）— CS／TR 功能目錄 v1.5 主案 OI-19／OI-20 加上支援 OI-05／08／09／11／14／15；原型已勾 vs 正式連接器／核身庫／成交帶",
+  "X = open issues (20 columns OI-01…20), Y = timeline now→end-2027; CS/TR catalogue v1.6 indexes desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*, categorize/severity/POC on OI-19/20 — not extra bars":
+    "X＝開放議題（20 欄 OI-01…20）、Y＝時間軸現在→2027 年底；CS／TR 目錄 v1.6 把台面、／cs、等待迴圈、技能、儀表板、日誌、資料、關卡、cs.*、分類／嚴重度／POC 對到 OI-19／20 — 不是額外長條",
   "20-issue checklist by BU (AI, System, RO, Pricing, Ops, Monitor, GRC, Product, CS, TR) — ETA, dependencies, detailed ticks; includes C1/form/mailbox connectors and CS/TR ID vault":
     "依 BU 的 20 項議題清單（AI、系統、RO、定價、營運、Monitor、GRC、產品、CS、TR）— ETA、依賴、細項勾選；含 C1／表單／信箱連接器與 CS／TR 核身庫",
   "Combined hub: Risk / Ops / AI / System / CS / TR BUs with nested on-call teams (editable mission / rotation); former Departments + Teams":
