@@ -130,7 +130,9 @@ Read this table once. The pictures under it show how the words connect.
 | **Knowledge tree** | Map of domains → skills → RAG leaves (incl. `CS_SERVICE` / `TRADING_EXEC`) | [Knowledge Tree](/admin/knowledge-tree) |
 | **Agent** | Software that **plans steps and calls tools** (not a chat bubble). A CRMP agent would: read the alert, pick a skill, retrieve RAG, draft RCA, stop for a human. Today the “agent” is a scripted pipeline, not an autonomous worker. | Pipeline on Realtime Alert & Tracker |
 | **MCP** | **Model Context Protocol** — a standard way for an AI client to use **tools, files, and prompts** from a server (for example “list skills”, “retrieve RAG leaf”). Think USB for models. Not wired in this prototype; RM-03 tool-calling is the related production item. | Roadmap / this handbook |
-| **Tool / function call** | A named action the model may request (`matchSkill`, `retrieveRag`, never `halt_symbol`) | AI Access Security blocklist |
+| **Tool / function call** | A named action the model may request (`matchSkill`, `retrieveRag`, `get_client_exposure`, never `halt_symbol` or raw SQL) | AI Access Security blocklist |
+| **Named function** | A pre-approved action such as `get_client_exposure()`. Fixed name, typed args, scoped return — not free-form SQL. | Skills / RM-03 tool-calling |
+| **Gateway** | Permission check in front of every function (role, desk, client scope). Deny → hold, no DB hit. | AI Access Security + APIs |
 | **Hallucination** | Fluent text that is not supported by evidence | Pack with no skill/RAG/evidence cite |
 | **Challenger / second AI** | Independent second opinion on BREACH/CRITICAL. Today a second in-repo heuristic (`crmp-challenger-v0`). Separate vendor = RM-04. | Realtime Alert & Tracker detail |
 | **Maker / checker** | Two **different people**. Maker proposes (AI Admin change, or control). Checker approves. Same user cannot self-approve. | [AI Admin](/admin/ai-admin), [Human Intervention](/admin/interventions) |
@@ -150,11 +152,70 @@ graph LR
   Draft --> Human[Human gate]
 ```
 
-**Skill vs agent vs MCP, in one breath.** A **skill** is the playbook. An **agent** is the worker that may run one or more skills. **MCP** is the plug that lets that worker call platform tools safely. None of them is allowed to skip the human gate on irreversible work.
+**Skill vs agent vs MCP, in one breath.** A **skill** is the playbook. An **agent** is the worker that may run one or more skills. **MCP** is the plug that lets that worker call platform tools safely. None of them is allowed to skip the human gate on irreversible work. Tools go through **named functions** and a **gateway**, never raw SQL against production.
 
 ---
 
-## 6. How to use AI — Risk Management
+## 6. How AI talks to the database
+
+When AI needs a number from the book — client exposure, an open ticket, a fill — it must **not** write SQL and run it on production.
+
+**Not this:** `LLM → SQL → Production DB`  
+**This:** `LLM → get_client_exposure() → Gateway checks permission → API → DB`
+
+The model only **names a function**. A **gateway** checks whether this caller, on this desk, may run that function with these arguments. Only then does an **API** talk to the **DB**. The LLM never holds a database password and never composes `SELECT` / `UPDATE` / `DELETE`.
+
+**Forbidden path** (do not ship this):
+
+```mermaid
+graph LR
+  LlmBad[LLM] --> Sql[SQL]
+  Sql --> Prod[Production DB]
+```
+
+A fluent model can invent a join that dumps every client, or a cleanup that is really a `DELETE`. There is no permission check and no audit of *which* function was intended.
+
+**Required path:**
+
+```mermaid
+graph LR
+  Llm[LLM] --> Fn["get_client_exposure()"]
+  Fn --> Gw[Gateway permission]
+  Gw --> Api[API]
+  Api --> Db[DB]
+```
+
+```mermaid
+sequenceDiagram
+  participant LLM
+  participant Fn as get_client_exposure
+  participant Gw as Gateway
+  participant API
+  participant DB
+  LLM ->> Fn: named function
+  Fn ->> Gw: check permission
+  Gw -->> Fn: allow or deny
+  Fn ->> API: scoped request
+  API ->> DB: read rows
+  DB -->> API: result
+  API -->> Fn: exposure facts
+  Fn -->> LLM: grounded data
+```
+
+| Piece | What it is | Why it is there |
+|---|---|---|
+| **Named function** | A pre-approved action such as `get_client_exposure()`. Fixed name, typed arguments, scoped return. | The model cannot wander into other tables. |
+| **Gateway** | Permission check (role, desk, client scope) before any API call. Deny → hold, no DB hit. | Same idea as [AI Access Security](/admin/security/ai-access). |
+| **API** | The only process that holds DB credentials. Runs the query the function already defined. | Humans review the function; they do not review every generated SQL string. |
+| **DB** | Production data. Read through the API only. Writes stay on the human gate. | Containment. |
+
+**On this desk today:** `POST /api/ai` analyze and CS intake call **named** server functions, not a free SQL prompt. Live LLM tool-calling (RM-03) must keep this same path — adding a bigger model is not a licence to open the database.
+
+**Habits:** if a pack, log, or chatbot shows raw SQL, a connection string, or a table name instead of a function like `get_client_exposure()`, **hold**. Ask the AI Engineer to put the need on the allow-list as a named function.
+
+---
+
+## 7. How to use AI — Risk Management
 
 Walk this every OPEN BREACH / CRITICAL.
 
@@ -183,7 +244,7 @@ flowchart TD
 
 ---
 
-## 7. How to use AI — CS / TR
+## 8. How to use AI — CS / TR
 
 Walk this on every new `CSR-XXXX`.
 
@@ -215,7 +276,7 @@ flowchart TD
 
 ---
 
-## 8. Dual-AI challenger (how disagreement looks)
+## 9. Dual-AI challenger (how disagreement looks)
 
 On serious alarms a **second, independent** pass runs. Today it is another heuristic in this repo — we do not pretend it is a separate vendor (that is RM-04).
 
@@ -243,7 +304,7 @@ sequenceDiagram
 
 ---
 
-## 9. AI developments (prototype vs production)
+## 10. AI developments (prototype vs production)
 
 Keep this map in your head so a demo never gets mistaken for go-live.
 
@@ -256,6 +317,7 @@ Keep this map in your head so a demo never gets mistaken for go-live.
 | Selection chatbot = grounded glossary | Same UX, optional live model behind the same citations | RM-03 |
 | CS categorize / severity = heuristic | Same gates (`cs.auto_reply_max_severity`, `cs.sensitive_categories`) in front of a real model | FR-46 stays; model swap is RM-03 |
 | MCP not wired | Tool access via MCP-style servers (skills, RAG, alerts) with the same blocklist | This handbook + RM-03 |
+| LLM must not emit SQL | Named functions (`get_client_exposure`) + gateway permission + API → DB | This handbook §6 |
 
 ```mermaid
 graph LR
@@ -270,7 +332,7 @@ graph LR
 
 ---
 
-## 10. Where AI goes wrong
+## 11. Where AI goes wrong
 
 | Failure | What it looks like | Typical cause |
 |---|---|---|
@@ -285,6 +347,7 @@ graph LR
 | **Self-approve** | Same user maker and checker | Dual-control bypass |
 | **Silent drop** | Inbound C1 with no `CSR-XXXX` | Connector gap (OI-19) — not an LLM bug, but AI cannot invent the missing ticket |
 | **Wrong desk** | CS auto-sends a book-risk draft | Sensitivity gate off; `cs.sensitive_categories` |
+| **Raw SQL to prod** | Model emits `SELECT …` or a connection string against Production DB | Skipping named functions / gateway |
 
 ```mermaid
 graph TD
@@ -294,17 +357,19 @@ graph TD
   Bad --> Conf[Overconfidence]
   Bad --> Inj[Prompt injection]
   Bad --> Mock[Mock treated as live]
+  Bad --> Sql[Raw SQL to prod]
   Hall --> Gate[Stop at human gate]
   Skill --> Gate
   Stale --> Gate
   Conf --> Gate
   Inj --> Gate
   Mock --> Gate
+  Sql --> Gate
 ```
 
 ---
 
-## 11. Detect, correct, prevent
+## 12. Detect, correct, prevent
 
 ```mermaid
 flowchart TD
@@ -330,7 +395,8 @@ flowchart TD
 - CS draft wants to send KYC / complaint / trading / CRITICAL → confirm `POC_REVIEW`, not `AI_REPLIED`.  
 - WAITING ticket with a Resolve button enabled → **bug**; do not click around it.  
 - Control log says `EXECUTED_MOCK` → say out loud “not on the broker”.  
-- Client text that asks the model to ignore policy → treat as injection; do not paste it into a free-form prompt.
+- Client text that asks the model to ignore policy → treat as injection; do not paste it into a free-form prompt.  
+- Draft or log shows raw SQL, a connection string, or a table name instead of a function like `get_client_exposure()` → **hold**. The path must be LLM → named function → Gateway permission → API → DB.
 
 ### Correct
 
@@ -346,11 +412,12 @@ flowchart TD
 - `cs.followup_cap`, `cs.auto_reply_max_severity`, `cs.sensitive_categories` stay grouped under Platform Settings.  
 - RAG write stays human-gated (`propose_rag` only).  
 - Production LLM (RM-03) must keep an **eval harness** and the same gates — a bigger model is not a looser policy.  
+- Tool-calling stays on named functions + gateway. Never give the model a SQL prompt against Production DB.  
 - Teach this page in onboarding. Frozen original CRMP Admin users get the Plus URL above.
 
 ---
 
-## 12. Daily checklist (both desks)
+## 13. Daily checklist (both desks)
 
 **Risk (open of day)**
 
@@ -376,7 +443,7 @@ flowchart TD
 
 ---
 
-## 13. Never let AI do this
+## 14. Never let AI do this
 
 | Forbidden | Why | Where it is blocked |
 |---|---|---|
@@ -387,13 +454,14 @@ flowchart TD
 | Skip ID-verify because the client said “it’s me” | Account takeover | `SKILL-CS-ID-VERIFY` / `ESC-CS-KYC` |
 | Auto-send KYC, complaint, trading, CRITICAL | Legal / book risk | `cs.sensitive_categories` + POC |
 | Treat `EXECUTED_MOCK` as a live fill | False containment | This manual + RM-02 |
+| Write raw SQL against Production DB | Unscoped reads, silent writes, credential leak | Named functions + gateway; this handbook §6 |
 | Write roles, settings kill-switches, or secrets | Blast radius | Blocklist + settings groups |
 
 If a button would do one of these and you are signed in as an AI-shaped service account, **stop** and open AI Access Security.
 
 ---
 
-## 14. Related pages
+## 15. Related pages
 
 | Page | Why you open it after this manual |
 |---|---|
@@ -408,10 +476,11 @@ If a button would do one of these and you are signed in as an AI-shaped service 
 
 ---
 
-## 15. Document control
+## 16. Document control
 
 | Ver | Date | Notes |
 |---|---|---|
 | 1.0 | 2026-10-07 | First AI literacy handbook for Risk + CS/TR; EN / zh-Hant; mermaid visuals; FR-48 |
+| 1.1 | 2026-10-07 | §6 named-function + gateway DB path (`get_client_exposure` → permission → API → DB); not LLM → SQL → Production DB |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

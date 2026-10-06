@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-07T03:00:00.000Z | AI Use Manual §6: LLM talks to DB via named function `get_client_exposure()` → Gateway permission → API → DB (not LLM → SQL → Production DB); mermaid EN/zh-Hant; FR-48 |
 | 2026-10-07T02:00:00.000Z | AI Use Manual CRMP-AIU-001 at /admin/docs/ai-use for Risk + CS/TR (LLM, skills, agents, MCP, failure modes, detect/correct/prevent, mermaid); FR-48; UAT-17; OI-15; EN/zh-Hant |
 | 2026-10-07T01:00:00.000Z | Lark messenger cards: Monitor alerts + CS/TR risk hops post Ack/Escalate/Dismiss/Close on /admin/lark (same CRMP APIs as Demo Messenger); OI-08 Started; UAT-36; FR-47; EN/zh-Hant || 2026-10-07T00:00:00.000Z | Mobile UI: CS/TR desk list→thread; dashboard/log/data card twins; /cs stacked tabs; RAG gate + catalogue cards; OI-11 phone-width ticked; UAT-18; FR-14; EN/zh-Hant |
 | 2026-10-06T23:30:00.000Z | zh-Hant gap-fill: Settings cs.* descriptions, CS/TR Data rotations/source notes, html lang, CHANGELOG.zh-Hant.md |

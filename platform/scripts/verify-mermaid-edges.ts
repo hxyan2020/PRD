@@ -222,6 +222,24 @@ A[First] --> B[Second] --> C[Third]`,
     minEdges: 8,
     firstLabel: "Prompt",
   },
+  {
+    name: "ai-use-db-forbidden-en",
+    src: `graph LR
+  LlmBad[LLM] --> Sql[SQL]
+  Sql --> Prod[Production DB]`,
+    minEdges: 2,
+    firstLabel: "LLM",
+  },
+  {
+    name: "ai-use-db-allowed-en",
+    src: `graph LR
+  Llm[LLM] --> Fn["get_client_exposure()"]
+  Fn --> Gw[Gateway permission]
+  Gw --> Api[API]
+  Api --> Db[DB]`,
+    minEdges: 4,
+    firstLabel: "LLM",
+  },
 ];
 
 function edgeCount(html: string) {

@@ -47,6 +47,7 @@ assert.match(plusWf, /publish\/crmp-plus/);
 assert.match(plusWf, /keep_files: true/);
 assert.match(plusWf, /cursor\/crmp-plus-a935/);
 assert.match(plusWf, /cursor\/vantage-orange-theme-a935/);
+assert.match(plusWf, /cursor\/ai-db-gateway-a935/);
 assert.match(plusWf, /publish\/crmp-admin/);
 assert.match(plusWf, /NEXT_PUBLIC_BASE_PATH: \/PRD\/crmp-admin/);
 assert.doesNotMatch(plusWf, /if: github.ref/);

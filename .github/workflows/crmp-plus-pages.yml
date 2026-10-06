@@ -2,7 +2,7 @@ name: Publish CRMP Plus to GitHub Pages
 
 on:
   push:
-    branches: [cursor/crmp-plus-a935, cursor/ai-use-manual-a935, cursor/vantage-orange-theme-a935]
+    branches: [cursor/crmp-plus-a935, cursor/ai-use-manual-a935, cursor/vantage-orange-theme-a935, cursor/ai-db-gateway-a935]
     paths:
       - "platform/**"
       - ".github/workflows/crmp-plus-pages.yml"

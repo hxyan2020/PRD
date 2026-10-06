@@ -312,7 +312,7 @@ graph TD
 | FR-45 | CS／TR 配套資料 | 種子並呈現：CUSTOMER_SERVICE／TRADING BU；團隊 CS 24/7 台、**CS 核身庫**、TR 成交支援；具名 POC；路徑 `ESC-CS-24-7`／`ESC-CS-KYC`／`ESC-TR-DEAL`／`ESC-CS-RISK`；`cs.*` 參數（上限、SLA、進件 token、信箱、Lark）；C1／表單／信箱＋核身庫＋成交帶來源。頁面 `/admin/cs-data`，`GET /api/cs?view=data`。UAT-52。 |
 | FR-46 | 分類、嚴重度、AI 方案，直回 vs POC | 資料齊全後：類別＋LOW\|MEDIUM\|HIGH\|CRITICAL；啟發式方案＋客戶草稿；敏感度 `auto` 時直回（`AI_REPLIED`）；否則具名 POC 補細節後寄出（`POC_REVIEW`）。閘道：`cs.auto_reply_max_severity`、`cs.sensitive_categories`。CRITICAL／帳簿風險仍升級。原型 — 此路徑無正式 LLM。UAT-53。 |
 | FR-47 | Lark 即時通訊警報＋升級卡片 | Monitor 警報與 CS／TR 風控關卡會把模擬互動卡片送到 `/admin/lark`。確認／升級／排除／結案呼叫與示範 Messenger 同一套 CRMP API。卡片依匹配 `lark_chat_id`／ESC-DEFAULT 路由。正式 webhook 仍屬 FR-17／RM-01。UAT-36。 |
-| FR-48 | 風控與 CS／TR 的 AI 使用手冊 | 雙語識字手冊 `/admin/docs/ai-use`（CRMP-AIU-001）：AI 基礎、本台怎麼用、LLM 說明、詞彙（代理、技能、MCP、RAG、幻覺、挑戰者、Maker／Checker）、失效、偵測／改正／預防、mermaid 圖。UAT-17。 |
+| FR-48 | 風控與 CS／TR 的 AI 使用手冊 | 雙語識字手冊 `/admin/docs/ai-use`（CRMP-AIU-001）：AI 基礎、本台怎麼用、LLM 說明、詞彙（代理、技能、MCP、RAG、幻覺、挑戰者、Maker／Checker、具名函式、閘道）、具名函式資料庫路徑（`get_client_exposure()` → 閘道檢查權限 → API → DB，不是 LLM → SQL → Production DB）、失效、偵測／改正／預防、mermaid 圖。UAT-17。 |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -358,7 +358,7 @@ graph TD
 | 平台 | 稽核日誌 | `/admin/audit` | CRMP／Vantage Markets 管理兩平面 | 兩個分頁；回滾還原變更前快照 |
 | 平台 | 平台設定 | `/admin/settings` | 旗標 | 分組鍵含 **cs.***；儲存 |
 | 文件 | 使用手冊 | `/admin/docs/user-guide` | 如何操作 | 英＋繁中；每一畫面加上 §9.3 CS／TR |
-| 文件 | AI 使用手冊 | `/admin/docs/ai-use` | 風控＋CS／TR 的 AI 識字 | 英＋繁中；LLM／技能／代理／MCP；偵測／改正／預防；mermaid；FR-48 |
+| 文件 | AI 使用手冊 | `/admin/docs/ai-use` | 風控＋CS／TR 的 AI 識字 | 英＋繁中；LLM／技能／代理／MCP；具名函式＋閘道資料庫路徑；偵測／改正／預防；mermaid；FR-48 |
 | 文件 | PRD | `/admin/docs/prd` | 為什麼／做什麼／怎麼過 | 本文件（FR-37…46、G13、§5.7–5.10、§6.5） |
 | 文件 | TSD | `/admin/docs/tsd` | 怎麼做的 | 完整介面地圖 |
 | 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 52 案，可互動（UAT-46…53 CS／TR；目錄 v2.7） |
@@ -573,6 +573,7 @@ CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已
 | 2.6 | 2026-10-06 | FR-46 分類／嚴重度／AI 方案；直回 vs 具名 POC 補註；旅程 5.10；UAT-53 |
 | 2.7 | 2026-10-07 | FR-47 Lark 即時通訊警報＋升級卡片；UAT-36 在 `/admin/lark` 確認／升級 |
 | 2.8 | 2026-10-07 | FR-48 AI 使用手冊 `/admin/docs/ai-use`（風控＋CS／TR 識字、mermaid、英／繁中）；UAT-17 |
+| 2.9 | 2026-10-07 | FR-48：具名函式＋閘道資料庫路徑（`get_client_exposure` → 閘道檢查權限 → API → DB） |
 | 2.7 | 2026-10-07 | FR-14 CS／TR 台列表→案件＋儀表板／日誌／資料卡片（390px）；UAT-18 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
