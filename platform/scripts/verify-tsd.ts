@@ -14,13 +14,14 @@ const en = fs.readFileSync(path.join(root, "docs/TSD.md"), "utf8");
 const zh = fs.readFileSync(path.join(root, "docs/TSD.zh-Hant.md"), "utf8");
 
 const both = [
-  "**Version:** 2.3",
+  "**Version:** 2.4",
   "### 17.5",
   "### 17.6",
   "### 17.7",
   "### 17.8",
   "### 17.9",
   "### 17.10",
+  "### 17.11",
   "### 4.7",
   "/cs",
   "POST /api/cs/intake",
@@ -40,17 +41,23 @@ const both = [
   "FR-37",
   "FR-41",
   "FR-43",
+  "FR-44",
   "UAT-46",
   "UAT-47",
+  "UAT-51",
   "UrlCatalogBoard",
   "lib/cs/intake.ts",
+  "lib/cs/analytics.ts",
+  "getCsDashboard",
+  "CsDashboardView",
+  "CsLogView",
   "x-cs-intake-token",
   "/PRD/crmp-plus/cs/",
   "/PRD/crmp-admin/",
 ];
 
-assert(en.includes("**Version:** 2.3"), "EN version 2.3 header");
-assert(zh.includes("**版本：** 2.3"), "zh version 2.3 header");
+assert(en.includes("**Version:** 2.4"), "EN version 2.4 header");
+assert(zh.includes("**版本：** 2.4"), "zh version 2.4 header");
 
 for (const needle of both.slice(1)) {
   assert(en.includes(needle), `EN TSD missing ${needle}`);
@@ -59,8 +66,8 @@ for (const needle of both.slice(1)) {
 
 assert(en.includes("### 17.5 Schema"), "EN schema heading");
 assert(zh.includes("### 17.5 資料綱要"), "zh schema heading");
-assert(en.includes("### 17.8 Public `/cs` portal"), "EN portal heading");
-assert(zh.includes("### 17.8 公開 `/cs` 入口"), "zh portal heading");
+assert(en.includes("### 17.11 Dedicated dashboard + log"), "EN dashboard heading");
+assert(zh.includes("### 17.11 專用儀表板＋日誌"), "zh dashboard heading");
 assert(en.includes("New ingest"), "EN wait-loop mermaid");
 assert(zh.includes("新進件"), "zh wait-loop mermaid");
 assert(en.includes("frozen") || en.includes("not overwritten"), "EN frozen original");
@@ -69,10 +76,12 @@ assert(en.includes("ID-image") || en.includes("ID image"), "EN no ID images");
 assert(zh.includes("證件圖"), "zh no ID images");
 
 const page = fs.readFileSync(path.join(root, "src/app/admin/docs/tsd/page.tsx"), "utf8");
-assert(page.includes("v2.3"), "tsd page version");
-assert(page.includes("§17.5–17.10"), "tsd page CS/TR card");
+assert(page.includes("v2.4"), "tsd page version");
+assert(page.includes("§17.5–17.11"), "tsd page CS/TR card");
 assert(page.includes('href="/cs"'), "tsd page /cs link");
 assert(page.includes('href="/admin/cs-desk"'), "tsd page desk link");
+assert(page.includes('href="/admin/cs-dashboard"'), "tsd page dashboard link");
+assert(page.includes('href="/admin/cs-log"'), "tsd page log link");
 
 console.log("verify-tsd: ok");
 console.log(JSON.stringify({ enChars: en.length, zhChars: zh.length, needles: both.length }, null, 2));

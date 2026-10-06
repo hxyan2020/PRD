@@ -1,9 +1,11 @@
 import {
   Activity,
+  BarChart3,
   Bell,
   BookOpen,
   Building2,
   ClipboardCheck,
+  ClipboardList,
   Compass,
   Database,
   FileText,
@@ -70,6 +72,8 @@ export const NAV_ITEMS = [
 
   { href: "/admin/messenger", label: "Demo Messenger", icon: MessagesSquare, permission: "lark.read", group: "response" },
   { href: "/admin/cs-desk", label: "CS / TR Desk", icon: Headphones, permission: "lark.read", group: "response" },
+  { href: "/admin/cs-dashboard", label: "CS / TR Dashboard", icon: BarChart3, permission: "lark.read", group: "response" },
+  { href: "/admin/cs-log", label: "CS / TR Log", icon: ClipboardList, permission: "lark.read", group: "response" },
   { href: "/admin/interventions", label: "Human Intervention", icon: UserCheck, permission: "intervene.operate", group: "response" },
   { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read", group: "response" },
   { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read", group: "response" },

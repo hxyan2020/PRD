@@ -1,7 +1,9 @@
 import Link from "next/link";
 import {
+  BarChart3,
   Bell,
   ChevronRight,
+  ClipboardList,
   Database,
   GitBranch,
   Headphones,
@@ -18,7 +20,7 @@ import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
 import { EnZh } from "@/components/EnZh";
 import { SignInOwnerCard } from "@/components/SignInOwnerCard";
-import { PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_PORTAL_URL, PUBLIC_ADMIN_URL, readSearchParams } from "@/lib/static-export";
+import { PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_PORTAL_URL, PUBLIC_ADMIN_URL, readSearchParams } from "@/lib/static-export";
 import { ORIGINAL_CRMP_ADMIN_URL } from "@/lib/platform-site";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
@@ -346,6 +348,67 @@ export default async function AdminDashboardPage({
             </div>
             <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-600 text-white">
               <Headphones className="h-5 w-5" aria-hidden />
+            </span>
+          </div>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+        <Link
+          href="/admin/cs-dashboard"
+          className="panel card-link group relative overflow-hidden p-4"
+          data-testid="home-cs-dashboard"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-cyan-900">
+                <BarChart3 className="h-3.5 w-3.5" aria-hidden />
+                <EnZh en="CS / TR dashboard" zh="CS／TR 儀表板" />
+              </div>
+              <div className="font-semibold mt-1">
+                <T k="home.csDash" />
+              </div>
+              <p className="text-xs text-[var(--muted)] mt-2 break-all">
+                <EnZh en="Permanent URL" zh="永久網址" />
+                {": "}
+                {PUBLIC_CS_DASHBOARD_URL}
+              </p>
+              <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-cyan-900">
+                <T k="home.csDashCta" />
+                <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden />
+              </div>
+            </div>
+            <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-700 text-white">
+              <BarChart3 className="h-5 w-5" aria-hidden />
+            </span>
+          </div>
+        </Link>
+        <Link
+          href="/admin/cs-log"
+          className="panel card-link group relative overflow-hidden p-4"
+          data-testid="home-cs-log"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-800">
+                <ClipboardList className="h-3.5 w-3.5" aria-hidden />
+                <EnZh en="CS / TR log" zh="CS／TR 日誌" />
+              </div>
+              <div className="font-semibold mt-1">
+                <T k="home.csLog" />
+              </div>
+              <p className="text-xs text-[var(--muted)] mt-2 break-all">
+                <EnZh en="Permanent URL" zh="永久網址" />
+                {": "}
+                {PUBLIC_CS_LOG_URL}
+              </p>
+              <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-slate-800">
+                <T k="home.csLogCta" />
+                <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden />
+              </div>
+            </div>
+            <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-white">
+              <ClipboardList className="h-5 w-5" aria-hidden />
             </span>
           </div>
         </Link>

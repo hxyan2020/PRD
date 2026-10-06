@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T17:00:00.000Z | CS/TR dedicated dashboard + log (/admin/cs-dashboard, /admin/cs-log); FR-44; TSD §17.11; UG §9.3.7–9.3.8; UAT-51; EN/zh-Hant |
 | 2026-10-06T16:00:00.000Z | TSD v2.3: §17.5–17.10 schema, module map, wait-loop state, /cs portal, URL catalog, FR-37…43; EN/zh-Hant |
 | 2026-10-06T15:00:00.000Z | PRD v2.3: G13 + FR-41…43; journeys 5.7–5.9; §6.5 CS/TR product contract (connectors, wait loop, skills, privacy, catalog); EN/zh-Hant |
 | 2026-10-06T14:00:00.000Z | URL Catalog: CS/TR section (/cs, desk, five SKILL.md, RAG leaves, intake GET/POST, cs_* tables), filter, bilingual cheat + UAT-25; EN/zh-Hant |

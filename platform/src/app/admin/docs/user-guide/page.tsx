@@ -17,6 +17,8 @@ export default async function UserGuidePage({ searchParams }: { searchParams: Pr
 
   const quick = [
     { href: "/admin/cs-desk", en: "CS / TR Desk", zh: "CS／TR 台" },
+    { href: "/admin/cs-dashboard", en: "CS / TR Dashboard", zh: "CS／TR 儀表板" },
+    { href: "/admin/cs-log", en: "CS / TR Log", zh: "CS／TR 日誌" },
     { href: "/cs", en: "Client portal", zh: "客戶入口" },
     { href: "/admin/messenger", en: "Messenger", zh: "Messenger" },
     { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
@@ -35,8 +37,8 @@ export default async function UserGuidePage({ searchParams }: { searchParams: Pr
         </div>
         <p className="text-sm text-[var(--muted)]">
           {zh
-            ? "白話說明左側每一頁，以及 24/7 CS／TR：公開 /cs 入口、C1／表單／信箱、自動信件直到客戶回覆、專用技能。"
-            : "Plain-English how-to for every left-nav page, plus 24/7 CS/TR: public /cs portal, C1/form/mailbox, auto-email until the client replies, dedicated skills."}
+            ? "白話說明左側每一頁，以及 24/7 CS／TR：公開 /cs 入口、台面、儀表板、日誌、自動信件直到客戶回覆、專用技能。"
+            : "Plain-English how-to for every left-nav page, plus 24/7 CS/TR: public /cs portal, desk, dashboard, log, auto-email until the client replies, dedicated skills."}
         </p>
         <div className="action-row">
           {quick.map((q) => (

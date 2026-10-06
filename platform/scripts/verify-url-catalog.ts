@@ -4,7 +4,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { PLATFORM_URLS, PUBLIC_CS_DESK_URL, PUBLIC_CS_PORTAL_URL } from "../src/lib/docs/urls";
+import { PLATFORM_URLS, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_PORTAL_URL } from "../src/lib/docs/urls";
 import { PHRASES_ZH } from "../src/lib/i18n-extra";
 
 function assert(cond: unknown, msg: string) {
@@ -14,6 +14,8 @@ function assert(cond: unknown, msg: string) {
 const requiredPaths = [
   "/cs",
   "/admin/cs-desk",
+  "/admin/cs-dashboard",
+  "/admin/cs-log",
   "/admin/skills/SKILL-CS-CLARIFY",
   "/admin/skills/SKILL-CS-ID-VERIFY",
   "/admin/skills/SKILL-CS-ACCOUNT-FAQ",
@@ -34,6 +36,8 @@ const requiredPaths = [
   "tables:cs_followups",
   PUBLIC_CS_PORTAL_URL,
   PUBLIC_CS_DESK_URL,
+  PUBLIC_CS_DASHBOARD_URL,
+  PUBLIC_CS_LOG_URL,
 ];
 
 const byPath = new Map(PLATFORM_URLS.map((u) => [u.path, u]));
@@ -44,7 +48,6 @@ for (const p of requiredPaths) {
 }
 
 const csRows = PLATFORM_URLS.filter((u) => u.category === "CS / TR");
-assert(csRows.length >= 13, `CS / TR section too small: ${csRows.length}`);
 assert(
   csRows.some((u) => u.path === "/cs"),
   "/cs must live in CS / TR"
@@ -53,6 +56,15 @@ assert(
   csRows.some((u) => u.path === "/admin/cs-desk"),
   "/admin/cs-desk must live in CS / TR"
 );
+assert(
+  csRows.some((u) => u.path === "/admin/cs-dashboard"),
+  "/admin/cs-dashboard must live in CS / TR"
+);
+assert(
+  csRows.some((u) => u.path === "/admin/cs-log"),
+  "/admin/cs-log must live in CS / TR"
+);
+assert(csRows.length >= 15, `CS / TR section too small: ${csRows.length}`);
 
 const phraseTargets = PLATFORM_URLS.filter(
   (u) =>
@@ -71,6 +83,8 @@ assert(page.includes("urls.csCheat"), "catalog page CS/TR cheat");
 assert(page.includes("PUBLIC_CS_PORTAL_URL"), "catalog page portal URL");
 assert(page.includes('href="/cs"'), "catalog page /cs action");
 assert(page.includes('href="/admin/cs-desk"'), "catalog page desk action");
+assert(page.includes('href="/admin/cs-dashboard"'), "catalog page dashboard action");
+assert(page.includes('href="/admin/cs-log"'), "catalog page log action");
 assert(page.includes("url-cs-cheat"), "catalog page cheat testid");
 
 const board = fs.readFileSync(path.join(root, "src/components/UrlCatalogBoard.tsx"), "utf8");

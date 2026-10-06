@@ -4,7 +4,7 @@
 **Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
 **Docs & platform owner:** demo platform owner (`haixiang.yan@hytechc.com`)
 
-This handbook is written in everyday language. It covers **every page in the left menu**, plus login, language, unread numbers, the public GitHub Pages snapshot, and the **24/7 CS / TR client door** (live C1 chat, website form, official email, auto-email wait loop, dedicated skills).
+This handbook is written in everyday language. It covers **every page in the left menu**, plus login, language, unread numbers, the public GitHub Pages snapshot, and the **24/7 CS / TR client door** (live C1 chat, website form, official email, auto-email wait loop, dedicated skills, **dedicated dashboard and log**).
 
 ---
 
@@ -16,7 +16,7 @@ Vantage **CRMP Plus** is the upgraded control room for CFD and crypto risk: the 
 2. On high severity (BREACH or CRITICAL), runs a **second, independent AI** that may agree, partly agree, or disagree.  
 3. Puts the pack into a **Lark-style messenger** so you can show evidence, chat, escalate, dismiss, close, or send a control.  
 4. Asks a human checker before irreversible controls go live.  
-5. Staffs **CS / TR Desk** for 24/7 C1 live chat, web form and official email — clients use public **`/cs`**; AI emails when unclear or ID is needed and **waits until they reply** (cap 3).  
+5. Staffs **CS / TR Desk** for 24/7 C1 live chat, web form and official email — clients use public **`/cs`**; AI emails when unclear or ID is needed and **waits until they reply** (cap 3). CS/TR volume lives on a **separate dashboard**; CS_* history lives on a **separate log**.  
 6. Writes the whole story into the **Audit Log** and the **home spine** (stage ticket counts — the dedicated Spine Log tab is gone).
 
 You do not need to be an engineer to use it. Click the left menu, read the cards, and follow the buttons on the page.
@@ -26,6 +26,8 @@ You do not need to be an engineer to use it. Click the left menu, read the cards
 **Permanent public demo (CRMP Plus):** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
 **Messenger demo:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
 **CS / TR desk:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)  
+**CS / TR dashboard:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-dashboard/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-dashboard/)  
+**CS / TR log:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-log/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-log/)  
 **CS client portal:** [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)  
 **Original CRMP Admin (frozen):** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **Full URL list:** [URL Catalog](/admin/docs/urls)  
@@ -108,7 +110,7 @@ The left pane is grouped so you are not staring at one long list:
 | **Overview** | Admin Home (includes spine stage ticket counts) |
 | **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Risk Log → Risk Domains |
 | **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
-| **Response** | Demo Messenger → CS / TR Desk → Human Intervention → Escalation Routes → Lark |
+| **Response** | Demo Messenger → CS / TR Desk → CS / TR Dashboard → CS / TR Log → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
 | **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem → Open Issues → Progress Tracker |
@@ -117,7 +119,7 @@ The Vantage logo sits at the top. Your role badge (and **Public prototype** on G
 
 ### Unread numbers
 
-Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, CS / TR Desk, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
+Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, CS / TR Desk, CS / TR Dashboard, CS / TR Log, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
 
 - The number is **new things since you last opened that tab** in this browser.  
 - Formula: `unread = max(0, (known total + extra bumps) − last seen)`.  
@@ -177,7 +179,8 @@ graph TD
 2. Do **not** Resolve while a follow-up is WAITING. After the third auto-mail, follow up in person (the thread shows a SYSTEM cap note).  
 3. Confirm the public portal [`/cs`](/cs) still posts into this inbox.  
 4. Hand execution complaints to TR. Escalate book-risk / fraud to Risk (messenger spine).  
-5. Sign [UAT-46](/admin/docs/uat) (three channels) and [UAT-47](/admin/docs/uat) (wait loop) when you accept a release.
+5. Check [CS / TR Dashboard](/admin/cs-dashboard) for WAITING / cap-3 / TR / Risk counts. Check [CS / TR Log](/admin/cs-log) for CS_* events. These are **not** Daily Performance or Risk Log.  
+6. Sign [UAT-46](/admin/docs/uat) (three channels), [UAT-47](/admin/docs/uat) (wait loop) and [UAT-51](/admin/docs/uat) (dashboard + log) when you accept a release.
 
 ### CS Agent (`cs.agent@vantagemarkets.com` / `cs123`)
 
@@ -648,7 +651,7 @@ Need `cs.operate` (CS Lead, CS Agent, Super Admin, …) to act. `cs.read` / `lar
 | Chen Wei — EURUSD slippage on MT5 | Form | `SKILL-TR-EXECUTION` | ASSIGNED TR |
 | Priya Shah — verify my account, cannot withdraw | Official email | `SKILL-CS-ID-VERIFY` | ID VERIFY + WAITING ID pack |
 
-Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome. UAT-46 (three channels + `/cs`), UAT-47 (wait loop), UAT-48 (TR / Risk), UAT-50 (skills + tree).
+Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome. UAT-46 (three channels + `/cs`), UAT-47 (wait loop), UAT-48 (TR / Risk), UAT-50 (skills + tree), UAT-51 (dashboard + log).
 
 ```mermaid
 graph TD
@@ -662,6 +665,34 @@ graph TD
   AI -->|trading| TR[TR Dealing]
   AI -->|book risk| Risk[Escalate to Risk]
   AI -->|clear CS| Done[CS resolve]
+```
+
+#### 9.3.7 CS / TR Dashboard — `/admin/cs-dashboard`
+
+**What it is.** The CS/TR volume board. It is **not** [Daily Performance](/admin/dashboard) (CFD / crypto day-end) and **not** [Risk Log Analytics](/admin/risk-log) (closed Monitor tickets).
+
+**What you see.** Totals, open vs resolved, WAITING auto-mail, cap-3, TR / assigned, Escalated Risk, ID verify, awaiting client, CS vs TR desk. Bars by channel, status, skill, desk, AI clarity. A waiting list and recently updated requests.
+
+**What to click.** Open a `CSR-XXXX` to jump to the desk. Open CS / TR log for the CS_* timeline. `GET /api/cs?view=dashboard` returns the same payload on localhost.
+
+**Good looks like.** Seeded inbox: at least one WAITING row (Sofia / Priya), a TR bucket (Chen Wei slippage), C1 + form + email channels, SKILL-CS-* / SKILL-TR-* bars. 繁中 labels the chrome.
+
+#### 9.3.8 CS / TR Log — `/admin/cs-log`
+
+**What it is.** The CS_* story for this door: intake, continue, follow-up email, client reply, agent reply, assign TR, escalate risk, resolve — plus resolved request packs. The generic [Audit Log](/admin/audit) still has CRMP / Vantage tabs; Risk Log still holds Monitor closures.
+
+**What you see.** Filter chips per `CS_*` action, a search box (actor / CSR-XXXX), a timeline, and a resolved-packs table.
+
+**What to click.** Filter `CS_FOLLOWUP_EMAIL` to see the wait loop. Filter `CS_RESOLVE` after you close a clear FAQ. Open the desk from a request id.
+
+**Good looks like.** Seeded intake writes `CS_INTAKE` (and often `CS_FOLLOWUP_EMAIL`). Resolving a clear case adds `CS_RESOLVE` and a pack on this page, **not** on Risk Log.
+
+```mermaid
+graph TD
+  Desk[CS TR desk] --> Dash[CS TR dashboard]
+  Desk --> Log[CS TR log]
+  Audit[CS audit] --> Log
+  Tickets[cs requests] --> Dash
 ```
 
 
@@ -766,7 +797,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | User Guide | `/admin/docs/user-guide` | This handbook |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
-| UAT Checklist | `/admin/docs/uat` | Interactive 50-case sign-off (UAT-01 … UAT-50): why, steps, pass, evidence, screen coverage. CS/TR: UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree |
+| UAT Checklist | `/admin/docs/uat` | Interactive 51-case sign-off (UAT-01 … UAT-51): why, steps, pass, evidence, screen coverage. CS/TR: UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
@@ -807,6 +838,8 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
 | Response | CS / TR Desk | C1 / form / mailbox via `/cs` + `/api/cs/intake`; CSR-XXXX replies close WAITING; dedicated SKILL.md chip; AI follow-up until reply; TR / Risk |
+| Response | CS / TR Dashboard | CS/TR KPIs — not Daily Performance |
+| Response | CS / TR Log | CS_* timeline + resolved packs — not Risk Log |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
 | Response | Lark Integration | Channel registry |
@@ -837,5 +870,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; public URL `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
 | 2.1 | 2026-10-06 | CS/TR dedicated SKILL.md chips; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves |
 | 2.2 | 2026-10-06 | Handbook: public `/cs` portal, three connectors, inbound CSR-XXXX matching, auto-email wait loop, CS/TR daily roles, skills + routes |
+| 2.3 | 2026-10-06 | §9.3.7 dashboard + §9.3.8 log (not Daily Performance / Risk Log) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

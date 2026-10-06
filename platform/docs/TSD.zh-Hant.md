@@ -1,15 +1,15 @@
 # Vantage CRMP Plus — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 2.3  
+**版本：** 2.4  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
 **負責人：** demo platform owner  
-**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…43）· [使用手冊](/admin/docs/user-guide)（§9.3）· [UAT](/admin/docs/uat)（UAT-46…50）· [網址目錄](/admin/docs/urls)
+**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…44）· [使用手冊](/admin/docs/user-guide)（§9.3）· [UAT](/admin/docs/uat)（UAT-46…51）· [網址目錄](/admin/docs/urls)
 
 本 TSD 描述 **CRMP Plus**（原 CRMP 管理後台加上 24/7 客服與交易台）之技術設計。  
-**§8 AI Admin**、**§9 第二 AI 挑戰者**與 **§17 CS／TR 台**（公開 `/cs`、`POST /api/cs/intake`、等待迴圈、專用 SKILL.md）為一級模組規格。原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結，本程式庫不覆蓋它。
+**§8 AI Admin**、**§9 第二 AI 挑戰者**與 **§17 CS／TR 台**（公開 `/cs`、`POST /api/cs/intake`、等待迴圈、專用 SKILL.md、**儀表板＋日誌**）為一級模組規格。原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結，本程式庫不覆蓋它。
 
 ---
 
@@ -22,6 +22,7 @@
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
 - 值守 24/7 CS／TR 進件：C1 即時聊天、網站表單與官方信箱經公開 `/cs` 與 `POST /api/cs/intake`；AI 在不清楚或需核身時寄信並**等待客戶回覆**（上限 3、`CSR-XXXX`／`channel_ref` 對案）
 - 蓋專用 CS／TR SKILL.md 劇本，帳簿風險升級至示範 Messenger
+- 在**專用儀表板**看 CS／TR 量、在**專用日誌**看 CS_* 歷史（不是每日績效／風險日誌）
 - 對高影響動作強制人工關卡
 - 以 Maker/Checker 治理 AI 設定
 - 檢視首頁脊柱階段工單計數、風險分析、市場情報與每日績效
@@ -32,7 +33,7 @@
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
-- CS／TR 台：C1 即時聊天、提交表單與官方信箱進件（`POST /api/cs/intake`＋公開 `/cs`）；進件回覆對案；自動信件等待迴圈（上限 3）；五本專用 SKILL.md；網址目錄 **CS／TR** 區段
+- CS／TR 台：C1 即時聊天、提交表單與官方信箱進件（`POST /api/cs/intake`＋公開 `/cs`）；進件回覆對案；自動信件等待迴圈（上限 3）；五本專用 SKILL.md；專用儀表板＋日誌；網址目錄 **CS／TR** 區段
 - 市場情報 5 分鐘掃描與 outbox
 - 雙語文件（英／繁中）與響應式管理殼層
 
@@ -58,6 +59,8 @@ graph TD
   Form[網站表單] --> Cs
   Mail[官方信箱] --> Cs
   Cs --> Msg
+  Cs --> Dash[CS TR 儀表板]
+  Cs --> Log[CS TR 日誌]
   Msg --> Gate[人工關卡]
   Gate --> Spine[脊柱風險日誌]
 ```
@@ -71,7 +74,7 @@ graph TD
 | 層級 | 職責 | 主要路徑 |
 |---|---|---|
 | UI（App Router） | RBAC 控管管理頁＋公開 `/cs` | `platform/src/app/admin/**`、`app/cs/**` |
-| 前端主控台 | 互動分頁／表單 | `platform/src/components/*`（`CsClientPortal`、`CsTrDesk`、`UrlCatalogBoard`） |
+| 前端主控台 | 互動分頁／表單 | `platform/src/components/*`（`CsClientPortal`、`CsTrDesk`、`CsDashboardView`、`CsLogView`、`UrlCatalogBoard`） |
 | API | JSON 讀寫 | `platform/src/app/api/**`（含 `/api/cs`、`/api/cs/intake`） |
 | 領域邏輯 | 業務規則 | `platform/src/lib/ai/*`、`lib/cs/*`、`lib/db.ts`、`lib/auth.ts` |
 | 持久化 | SQLite 檔 | `platform/data/vantage_risk.db` |
@@ -206,6 +209,8 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | AI | `/admin/rag` | `RagManager`、`/api/rag` | `rag.read`／`rag.manage` | §16.12 |
 | 應變 | `/admin/messenger` | `DemoMessenger`、`/api/messenger` | `lark.read` | **§11** |
 | 應變 | `/admin/cs-desk` | `CsTrDesk`、`/api/cs`、`/api/cs/intake` | `cs.read`／`cs.operate` | **§17** |
+| 應變 | `/admin/cs-dashboard` | `CsDashboardView`、`lib/cs/analytics.ts`、`GET /api/cs?view=dashboard` | `cs.read`／`lark.read` | **§17.11** |
+| 應變 | `/admin/cs-log` | `CsLogView`、`lib/cs/analytics.ts`、`GET /api/cs?view=log` | `cs.read`／`lark.read` | **§17.11** |
 | 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
 | 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
@@ -702,7 +707,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（50）。網址目錄：`UrlCatalogBoard`＋`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、五本 SKILL.md、六片 RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表；篩選；`PUBLIC_*`＝CRMP Plus `/PRD/crmp-plus/` 含 `PUBLIC_CS_PORTAL_URL` `/cs/`；`ORIGINAL_CRMP_*`＝凍結 `/PRD/crmp-admin/`）。見 **§17.9**。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（51）。網址目錄：`UrlCatalogBoard`＋`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、儀表板、日誌、五本 SKILL.md、六片 RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表；篩選；`PUBLIC_*`＝CRMP Plus `/PRD/crmp-plus/` 含 `PUBLIC_CS_PORTAL_URL` `/cs/`、`PUBLIC_CS_DASHBOARD_URL`、`PUBLIC_CS_LOG_URL`；`ORIGINAL_CRMP_*`＝凍結 `/PRD/crmp-admin/`）。見 **§17.9**。
 
 ---
 
@@ -794,10 +799,13 @@ graph TD
 | `lib/cs/desk.ts` | 綱要、`findCsRequestMatch`、`ingestCsRequest`、`continueCsRequest`、`recordClientReply`、`applyTriage`、`sendFollowupEmail` |
 | `lib/cs/skills.ts` | 啟發式 → `SKILL-CS-*`／`SKILL-TR-*` |
 | `lib/ai/risk-scenarios-cs.ts` | 五本劇本＋`CHAIN-CS-TR-INTAKE` |
+| `lib/cs/analytics.ts` | `getCsDashboard`、`getCsLog` |
 | `app/api/cs/intake/route.ts` | GET 目錄／狀態 · POST 進件 |
-| `app/api/cs/route.ts` | 台面操作動作 |
+| `app/api/cs/route.ts` | 台面操作動作＋`GET ?view=dashboard\|log` |
 | `app/cs/page.tsx`＋`CsClientPortal` | 公開三分頁入口 |
 | `components/CsTrDesk.tsx` | 操作收件匣 |
+| `components/CsDashboardView.tsx` | CS／TR 指標 |
+| `components/CsLogView.tsx` | CS_* 時間軸＋已結包 |
 | `lib/docs/urls.ts`＋`UrlCatalogBoard` | CS／TR 目錄區段 |
 
 POST 進件驗證：工作階段 `cs.operate`、`mock_webhook: true`、`portal: true`，或標頭 `x-cs-intake-token: demo-c1`。
@@ -828,15 +836,38 @@ graph TD
 
 ### 17.9 網址目錄（技術）
 
-`PLATFORM_URLS` 類別 **CS／TR** 列出 `/cs`、`/admin/cs-desk`、五條 `/admin/skills/SKILL-CS-*`／`SKILL-TR-*`、六片 `/admin/rag?doc=cs-*` 葉、`/api/cs`、`/api/cs/intake`、`/api/cs/intake?request_id=` 與 `tables:cs_*`。看板：篩選、`#url-cat-cs-tr` 跳轉、雙語 `phrase()` 標題。守門：`scripts/verify-url-catalog.ts`。
+`PLATFORM_URLS` 類別 **CS／TR** 列出 `/cs`、`/admin/cs-desk`、`/admin/cs-dashboard`、`/admin/cs-log`、五條 `/admin/skills/SKILL-CS-*`／`SKILL-TR-*`、六片 `/admin/rag?doc=cs-*` 葉、`/api/cs`、`/api/cs?view=dashboard`、`/api/cs?view=log`、`/api/cs/intake`、`/api/cs/intake?request_id=` 與 `tables:cs_*`。看板：篩選、`#url-cat-cs-tr` 跳轉、雙語 `phrase()` 標題。守門：`scripts/verify-url-catalog.ts`。
 
 ### 17.10 可追溯性
 
 | 產品 | 規格 |
 |---|---|
-| PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、旅程 5.7–5.9、§6.5 |
-| 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色 |
-| UAT | UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-49 核身庫；UAT-50 技能＋樹 |
+| PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、FR-44、旅程 5.7–5.9、§6.5 |
+| 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色／儀表板／日誌 |
+| UAT | UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-49 核身庫；UAT-50 技能＋樹；UAT-51 儀表板＋日誌 |
+
+### 17.11 專用儀表板＋日誌
+
+**頁面：** `/admin/cs-dashboard`（`CsDashboardView`）與 `/admin/cs-log`（`CsLogView`）。權限 `cs.read`／`lark.read`（與台面檢視相同）。訪客／靜態快照可讀。
+
+這些畫面**不是**每日績效（`/admin/dashboard`，CFD／加密日終）也**不是**風險日誌分析（`/admin/risk-log`，已關閉 Monitor 追蹤包）。混在一起是產品缺陷。
+
+| 畫面 | 來源 | 功能 |
+|---|---|---|
+| 儀表板 | `lib/cs/analytics.ts` 的 `getCsDashboard()`，來自 `cs_requests`＋WAITING `cs_followups` | 總數、未結／已結、WAITING、上限 3（`followup_count ≥ 3`）、TR／風控、依渠道／狀態／技能／台面／清晰度分桶、等待清單、最近列 |
+| 日誌 | `getCsLog()` 來自 `audit_logs`（`entity_type=cs_request` 或 `CS_*`）加上已結案件包 | `CS_INTAKE`、`CS_INTAKE_CONTINUE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_AGENT_REPLY`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE` 時間軸；篩選；已結包 |
+
+`GET /api/cs?view=dashboard` 與 `GET /api/cs?view=log` 回傳相同內容。導覽徽章：儀表板用未結 CS 工單；日誌用 CS_* 稽核數。守門：`scripts/verify-cs-analytics.ts`。
+
+```mermaid
+graph TD
+  Tickets[cs_requests] --> Dash[CS TR 儀表板]
+  Wait[WAITING 追問] --> Dash
+  Audit[CS 稽核] --> Log[CS TR 日誌]
+  Done[已結包] --> Log
+  Dash --> Desk[CS TR 台]
+  Log --> Desk
+```
 
 ---
 
@@ -857,6 +888,7 @@ graph TD
 | 2.1 | 2026-10-06 | §17.4 CS／TR 專用 SKILL.md；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 葉；UAT-50 |
 | 2.2 | 2026-10-06 | §17.2 公開 `/cs` 入口＋進件回覆對案（CSR-XXXX／channel_ref／In-Reply-To）；GET 進件目錄；FR-40 |
 | 2.3 | 2026-10-06 | §17.5–17.10 綱要、模組地圖、等待迴圈狀態、`/cs` 入口、網址目錄、PRD FR-37…43 追溯 |
+| 2.4 | 2026-10-06 | §17.11 專用 CS／TR 儀表板＋日誌；FR-44；UAT-51 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
