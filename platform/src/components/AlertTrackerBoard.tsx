@@ -298,7 +298,7 @@ function AlertTrackerFacts({
           {pack.timeline.map((ev, i) => (
             <li key={`${ev.at}-${ev.kind}-${i}`} className="relative pl-4 py-1.5">
               <span className="absolute -left-[7px] top-2.5 h-3 w-3 rounded-full bg-teal-600 ring-4 ring-slate-50" />
-              <div className="text-sm">{eventTitle(ev, t)}</div>
+              <div className="text-sm">{phrase(eventTitle(ev, t))}</div>
               <div className="text-xs text-[var(--muted)]">
                 {ev.at}
                 {ev.actor ? ` · ${phrase(ev.actor)}` : ""}

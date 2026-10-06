@@ -1,4 +1,5 @@
 import { EXTRA_UI, PHRASES_ZH, STAGE_LABELS, STATUS_LABELS } from "@/lib/i18n-extra";
+import { DUMMY_PHRASE_FRAGMENTS } from "@/lib/i18n-phrases";
 
 export type UiLocale = "en" | "zh-Hant";
 
@@ -51,8 +52,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
       "zh-Hant": "管理儀表板",
     },
     subtitle: {
-      en: "Click any card to open its page — counts, alerts, the messenger demo, and the rest of the desk.",
-      "zh-Hant": "點任何卡片即可開啟對應頁面 — 計數、警報、Messenger 示範與其他功能。",
+      en: "Click any card to open its page — dummy spine buttons, counts, alerts, the messenger demo, and the rest of the desk.",
+      "zh-Hant": "點任何卡片即可開啟對應頁面 — 虛擬脊柱按鈕、計數、警報、Messenger 示範與其他功能。",
     },
   },
   login: {
@@ -579,6 +580,20 @@ export function phrase(text: string | null | undefined, locale: UiLocale = "en")
   if (!text) return "";
   if (locale !== "zh-Hant") return text;
   if (PHRASES_ZH[text]) return PHRASES_ZH[text];
+  let out = text;
+  for (const en of DUMMY_PHRASE_FRAGMENTS) {
+    const zh = PHRASES_ZH[en];
+    if (zh && out.includes(en)) out = out.split(en).join(zh);
+  }
+  if (out !== text) return out;
+  const detect = text.match(/^DUMMY detect (.+) → (.+)$/);
+  if (detect) return `虛擬偵測 ${detect[1]} → ${detect[2]}`;
+  const alarm = text.match(/^DUMMY alarm (.+) \((.+)\)$/);
+  if (alarm) return `虛擬警報 ${alarm[1]}（${alarm[2]}）`;
+  const closed = text.match(/^DUMMY closed (.+)$/);
+  if (closed) return `虛擬結案 ${closed[1]}`;
+  const board = text.match(/^DUMMY outcome rolled to desk board \((.+)\)$/);
+  if (board) return `虛擬結果已入台面儀表板（${board[1]}）`;
   const pretty = text.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   return PHRASES_ZH[pretty] || text;
 }

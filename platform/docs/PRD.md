@@ -214,7 +214,7 @@ graph LR
 | FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; card lists where tables would overflow; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
 | FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs |
-| FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps) |
+| FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps). Dummy alert / Dummy alert group walk DETECT→close; chrome and stored copy are EN / zh-Hant. |
 | FR-22 | Daily Performance dashboard | CFD + crypto metric grids; refresh on localhost |
 | FR-23 | Monitor 2.0 registry (indicators + detectors) | Run all / Sync / Pause; recent runs; enable-disable persists on localhost (`/admin/detectors` redirects here) |
 | FR-24 | Realtime Alert & Tracker ack queue | Open-only queue; grouped AI pipeline; Acknowledge mutates status; closed tickets → Risk Log |
@@ -246,7 +246,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 
 | Group | Feature | Path | Jobs to be done | Key acceptance |
 |---|---|---|---|---|
-| Overview | Admin Home | `/admin` | Orient; jump via cards; spine stage counts | Every card/row is a link; spine viz; messenger CTA |
+| Overview | Admin Home | `/admin` | Orient; jump via cards; dummy spine walk; spine stage counts | Every card/row is a link; dummy buttons; spine viz; messenger CTA |
 | Monitor & risk | Daily Performance | `/admin/dashboard` | Day-end CFD + crypto picture | Both product grids; WARN/BREACH counts |
 | Monitor & risk | Risk Log Analytics | `/admin/risk-log` | Closed tracker packs, handling time, loss vs prevented, loopholes | Overview closed cards + category + domain + records |
 | Monitor & risk | Market Intelligence | `/admin/market-intel` | LP-moving headlines | Scan now; Findings; outbox; scan log; Pages demo scan |

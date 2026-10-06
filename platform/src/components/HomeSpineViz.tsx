@@ -19,6 +19,7 @@ import {
 import { EnZh } from "@/components/EnZh";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { cn } from "@/lib/utils";
+import { phrase } from "@/lib/i18n";
 
 export type SpineStepStat = {
   id: string;
@@ -311,7 +312,7 @@ export function HomeSpineViz({
                   <EnZh en="Latest" zh="最新" />
                 </span>
                 {": "}
-                {step.latestTitle}
+                {phrase(step.latestTitle, locale)}
                 {step.latestAt ? <span className="text-[var(--muted)]"> · {step.latestAt}</span> : null}
               </p>
             ) : null}

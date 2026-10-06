@@ -8,7 +8,7 @@ import { bumpNavBadge } from "@/lib/nav-badges";
 type DummyRun = { alert_id?: string; analysis_mode?: string | null; ticket_id?: string };
 
 export function HomeDummyAlertButtons() {
-  const { t } = useT();
+  const { t, phrase } = useT();
   const [busy, setBusy] = useState<"single" | "group" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -30,7 +30,8 @@ export function HomeDummyAlertButtons() {
         return;
       }
       if (!res.ok) {
-        setMsg(String(data.error || t("home.dummyFailed")));
+        const err = String(data.error || "");
+        setMsg(err ? phrase(err) : t("home.dummyFailed"));
         return;
       }
       const runs = (Array.isArray(data.runs) ? data.runs : []) as DummyRun[];
@@ -45,7 +46,7 @@ export function HomeDummyAlertButtons() {
       const hash = ids[0] ? `#home-${ids[0]}` : "";
       window.location.assign(qs.toString() ? `/admin?${qs.toString()}${hash}` : `/admin${hash}`);
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : t("home.dummyFailed"));
+      setMsg(e instanceof Error && e.message ? phrase(e.message) : t("home.dummyFailed"));
     } finally {
       setBusy(null);
     }

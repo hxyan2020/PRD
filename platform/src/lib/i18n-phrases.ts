@@ -701,6 +701,29 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   monitor_indicator: "監控指標",
   market_intel_finding: "市場情報發現",
   market_intel_scan: "市場情報掃描",
+  dummy_spine: "虛擬脊柱",
+  "dummy_spine failed": "虛擬脊柱演練失敗",
+  "Home dummy": "首頁虛擬演練",
+  "home-dummy": "首頁虛擬演練",
+  "DUMMY · Copy concentration breach": "虛擬 · 跟單集中度違規",
+  "DUMMY · Equity drawdown warn": "虛擬 · 權益回撤警告",
+  "DUMMY · Margin utilisation CRITICAL": "虛擬 · 保證金使用率危急",
+  "Home dummy: top signal provider now at 33% of copy equity after a viral strategy share. Walk the full spine to closure.":
+    "首頁虛擬演練：龍頭信號提供者跟單權益佔比因策略爆紅升至 33%。走完整條脊柱至結案。",
+  "Home dummy: company CFD book drawdown rising through the US session after CPI volatility. RAG path + human review.":
+    "首頁虛擬演練：CPI 波動後，公司 CFD 帳簿回撤在美盤上升。RAG 路徑＋人工覆核。",
+  "Home dummy: book-wide margin utilisation spiked and LP rejects are rising. Dual-AI RCA and maker/checker required.":
+    "首頁虛擬演練：全帳簿保證金使用率驟升，LP 拒單增加。需雙 AI 根因與 Maker／Checker。",
+  "Dummy home run: accepting the AI pack and walking maker/checker through to closure.":
+    "虛擬首頁演練：接受 AI 包，並以 Maker／Checker 走完至結案。",
+  "Dummy home run — Risk Owner auto-approved after messenger maker/checker.":
+    "虛擬首頁演練 — 風險負責人已在 Messenger Maker／Checker 後自動核准。",
+  "Dummy spine produced no alerts": "虛擬脊柱演練未產生警報",
+  "Dummy run": "虛擬演練",
+  "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)":
+    "控制平面總覽、虛擬脊柱按鈕（單則或連動組走完 DETECT→結案）、統計、可展開警報追蹤，以及首頁脊柱階段工單數（脊柱日誌分頁已移除）",
+  "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges":
+    "GET 分析 · POST 分析／模擬／dummy_spine（首頁虛擬警報或組、自動走至結案）／補跑挑戰",
 
   // Source categories
   INTERNAL_PLATFORM: "內部平台",
@@ -1119,3 +1142,21 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   FIELD: "欄位",
   DATA: "資料",
 };
+
+/** Longest-first English fragments rewritten inside mixed dummy / log strings. */
+export const DUMMY_PHRASE_FRAGMENTS = [
+  "Home dummy: top signal provider now at 33% of copy equity after a viral strategy share. Walk the full spine to closure.",
+  "Home dummy: company CFD book drawdown rising through the US session after CPI volatility. RAG path + human review.",
+  "Home dummy: book-wide margin utilisation spiked and LP rejects are rising. Dual-AI RCA and maker/checker required.",
+  "Dummy home run — Risk Owner auto-approved after messenger maker/checker.",
+  "Dummy home run: accepting the AI pack and walking maker/checker through to closure.",
+  "DUMMY · Copy concentration breach",
+  "DUMMY · Equity drawdown warn",
+  "DUMMY · Margin utilisation CRITICAL",
+  "Dummy spine produced no alerts",
+  "dummy_spine failed",
+  "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)",
+  "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges",
+  "Home dummy",
+  "home-dummy",
+] as const;

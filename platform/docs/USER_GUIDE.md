@@ -211,6 +211,7 @@ graph TD
 - Clickable count cards: Users, Teams (opens **BU and Teams**), Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  
 - **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Realtime Alert & Tracker, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
 - Recent alerts. Each row opens that alarm on Realtime Alert & Tracker. **View all** lists every alarm.  
+- **Dummy spine run** buttons: **Dummy alert** (one) and **Dummy alert group** (three linked). On localhost they walk DETECT → AI (skill or RAG) → messenger maker/checker → escalate → close, then highlight the new cards and spine. Audit `DUMMY_SPINE_RUN` and Risk Log keep the trail. Chrome and stored English copy display in 繁中 when the UI language is zh-Hant.  
 - **Integration spine** with **stage ticket counts** (Detect → Alarm → AI RCA → Skill → Human → Resolved → Dashboard). Each step opens the matching page. There is **no separate Spine Log tab** — `/admin/spine` redirects here.  
 - Header shortcuts: Messenger, User Guide, Daily Performance.
 
@@ -632,7 +633,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 
 | Group | Page | You come here to… |
 |---|---|---|
-| Overview | Admin Home | See counts; home spine stage ticket counts; click every card and alert row |
+| Overview | Admin Home | See counts; dummy spine buttons; home spine stage ticket counts; click every card and alert row |
 | Monitor & risk | Daily Performance | Day-end CFD + crypto metrics |
 | Monitor & risk | Monitor 2.0 | Unified indicator + detector registry; Run all / Sync / Pause; recent runs; M2-* deep links (alerts → Realtime Alert) |
 | Monitor & risk | Realtime Alert & Tracker | Ack the open queue; grouped AI pipeline; MonitorCode tooltips; AI Analyses list redirects here |
@@ -668,5 +669,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.6 | 2026-10-05 | Spine on home; BU and Teams; AI line1/2; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors merged into Monitor 2.0 (redirect); AI Analyses list not left-nav; Monitor hub = indicator+detector table (no Alerts/Tickets tabs); mobile polish note |
+| 1.9 | 2026-10-06 | Home dummy spine: Dummy alert / Dummy alert group; bilingual EN / zh-Hant chrome and stored copy |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

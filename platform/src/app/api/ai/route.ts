@@ -4,6 +4,7 @@ import { getDb } from "@/lib/db";
 import { analyzeAlert, analyzeOpenAlerts, createAlarmAndAnalyze, getAnalysisBundle } from "@/lib/ai/analyze";
 import { backfillChallenges } from "@/lib/ai/challenger";
 import { runDummyAlertDemo } from "@/lib/ai/dummy-spine";
+import { getUiLocale } from "@/lib/i18n-server";
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
@@ -111,8 +112,10 @@ export async function POST(req: Request) {
 
   if (body.action === "dummy_spine") {
     try {
+      const locale = await getUiLocale();
       const result = runDummyAlertDemo({
         mode: body.mode === "group" ? "group" : "single",
+        locale,
       });
       return NextResponse.json({
         ok: true,

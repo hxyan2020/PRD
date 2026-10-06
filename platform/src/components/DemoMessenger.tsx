@@ -7,7 +7,7 @@ import { Badge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { VantageMark } from "@/components/VantageLogo";
 import { AdminLink } from "@/components/AdminLink";
 import { useUiLocale } from "@/hooks/useUiLocale";
-import { t, type UiLocale } from "@/lib/i18n";
+import { t, phrase, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
 import { THINKING_ACTIONS, thinkingSteps } from "@/lib/messenger/thinking";
 
@@ -618,7 +618,7 @@ export function DemoMessenger({
                 <SeverityBadge value={row.severity} />
                 <StatusBadge value={row.status} />
               </div>
-              <div className="mt-1 text-sm font-semibold line-clamp-2 break-word">{row.title}</div>
+              <div className="mt-1 text-sm font-semibold line-clamp-2 break-word">{phrase(row.title, locale)}</div>
               <div className="text-[11px] text-[var(--muted)] mt-0.5">
                 {row.channel_name} · {row.message_count} msgs
               </div>
@@ -657,7 +657,7 @@ export function DemoMessenger({
                 </div>
               </div>
               <h2 className="mt-2 font-[family-name:var(--font-display)] text-base sm:text-xl break-word line-clamp-2">
-                {active.title}
+                {phrase(active.title, locale)}
               </h2>
               {active.status === "OPEN" ? (
                 <div className="mt-3 space-y-2" data-testid="msg-triage-actions">
@@ -766,7 +766,7 @@ export function DemoMessenger({
                       <span className="break-word">{m.created_at}</span>
                     </div>
                     <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800 break-word">
-                      {m.body}
+                      {phrase(m.body, locale)}
                     </pre>
                     {typeof meta.admin_url === "string" ? (
                       <AdminLink className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>

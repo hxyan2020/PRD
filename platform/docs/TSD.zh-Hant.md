@@ -594,7 +594,7 @@ SQLite：`platform/data/vantage_risk.db`。
 
 ### 16.2 管理首頁
 
-SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`AlertTrackerBoard` 會對 hash 醒目顯示。
+SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark 頻道、路徑）。每塊磁磚都是 `Link`：`StatCard` 的 `href`（含圖示＋開啟）、負責人 → `/login`、Messenger 主卡 → `/admin/messenger`、跳轉格、部門卡到工作頁（警報／干預／設定）、最近警報到 `/admin/alerts#{alert_id}`、脊柱步驟到 monitor／alerts／escalation／AI／dashboard。`HomeDummyAlertButtons` POST `/api/ai` `dummy_spine`（單則或組）走完 DETECT→結案；語系來自 `getUiLocale()`，介面為繁中時 Messenger 備註存中文；儲存的英文標題／訊息顯示時仍經 `phrase()` 翻譯。`AlertTrackerBoard` 會對 hash 與 `?dummy=` 醒目顯示。
 
 ### 16.3 每日績效
 

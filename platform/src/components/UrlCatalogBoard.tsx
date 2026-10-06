@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui";
 import { EnZh } from "@/components/EnZh";
+import { Phrase } from "@/components/Phrase";
 import type { UrlEntry } from "@/lib/docs/urls";
 import { fetchDocOverlay, resetDocOverlay, saveDocOverlay } from "@/lib/docs/edit-client";
 import { isPublicSnapshot } from "@/lib/static-export";
@@ -174,7 +175,7 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
                         onChange={(e) => patch(u.path, "description", e.target.value)}
                       />
                     ) : (
-                      u.description
+                      <Phrase>{u.description}</Phrase>
                     )}
                   </div>
                   <div className="flex flex-wrap gap-1">
@@ -244,7 +245,7 @@ export function UrlCatalogBoard({ seed }: { seed: UrlEntry[] }) {
                             onChange={(e) => patch(u.path, "description", e.target.value)}
                           />
                         ) : (
-                          u.description
+                          <Phrase>{u.description}</Phrase>
                         )}
                       </td>
                       <td>

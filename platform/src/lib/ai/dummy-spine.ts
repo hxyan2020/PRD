@@ -3,6 +3,7 @@ import { analyzeAlert, raiseMonitorAlarm } from "@/lib/ai/analyze";
 import { logSpineEvent, type SpineStage } from "@/lib/ai/spine";
 import { decideIntervention } from "@/lib/ai/intervention";
 import { messengerAction, syncNewAlertsToMessenger } from "@/lib/messenger/demo";
+import type { UiLocale } from "@/lib/i18n";
 
 export type DummySpineMode = "single" | "group";
 
@@ -91,11 +92,21 @@ function userByEmail(email: string, fallbackName: string) {
   return { id: row?.id ?? 1, name: row?.name || fallbackName };
 }
 
+const CHAT_NOTE: Record<UiLocale, string> = {
+  en: "Dummy home run: accepting the AI pack and walking maker/checker through to closure.",
+  "zh-Hant": "虛擬首頁演練：接受 AI 包，並以 Maker／Checker 走完至結案。",
+};
+
+const INTERVENTION_NOTE: Record<UiLocale, string> = {
+  en: "Dummy home run — Risk Owner auto-approved after messenger maker/checker.",
+  "zh-Hant": "虛擬首頁演練 — 風險負責人已在 Messenger Maker／Checker 後自動核准。",
+};
+
 function markStage(stages: SpineStage[], stage: SpineStage) {
   if (!stages.includes(stage)) stages.push(stage);
 }
 
-function walkOne(tpl: DummyTemplate): DummySpineRun {
+function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
   const db = getDb();
   const stages: SpineStage[] = [];
   const maker = userByEmail(MAKER_EMAIL, MAKER_FALLBACK);
@@ -159,17 +170,20 @@ function walkOne(tpl: DummyTemplate): DummySpineRun {
       thread_id: thread.id,
       action: "show_evidence",
       user_name: maker.name,
+      locale,
     });
     messengerAction({
       thread_id: thread.id,
       action: "chat",
       user_name: maker.name,
-      text: "Dummy home run: accepting the AI pack and walking maker/checker through to closure.",
+      text: CHAT_NOTE[locale] || CHAT_NOTE.en,
+      locale,
     });
     messengerAction({
       thread_id: thread.id,
       action: "escalate",
       user_name: maker.name,
+      locale,
     });
     markStage(stages, "HUMAN_INTERVENTION");
 
@@ -178,6 +192,7 @@ function walkOne(tpl: DummyTemplate): DummySpineRun {
       action: "recommend",
       user_name: maker.name,
       action_code: tpl.action_code,
+      locale,
     });
     const pending = (recommended?.pending || []) as Array<{ id: number; status: string }>;
     const awaiting = pending.find((p) => p.status === "AWAITING_CONFIRM") ?? pending[0];
@@ -187,6 +202,7 @@ function walkOne(tpl: DummyTemplate): DummySpineRun {
         action: "confirm_action",
         user_name: maker.name,
         pending_id: awaiting.id,
+        locale,
       });
       const afterConfirm = db
         .prepare(`SELECT status FROM messenger_pending_actions WHERE id = ?`)
@@ -197,6 +213,7 @@ function walkOne(tpl: DummyTemplate): DummySpineRun {
           action: "checker_approve",
           user_name: checker.name,
           pending_id: awaiting.id,
+          locale,
         });
       }
     }
@@ -213,7 +230,7 @@ function walkOne(tpl: DummyTemplate): DummySpineRun {
         decideIntervention({
           interventionId: row.id,
           decision: "APPROVED",
-          note: "Dummy home run — Risk Owner auto-approved after messenger maker/checker.",
+          note: INTERVENTION_NOTE[locale] || INTERVENTION_NOTE.en,
           actor: checker,
         });
         markStage(stages, "HUMAN_INTERVENTION");
@@ -229,6 +246,7 @@ function walkOne(tpl: DummyTemplate): DummySpineRun {
       thread_id: thread.id,
       action: "close",
       user_name: checker.name,
+      locale,
     });
   } else {
     db.prepare(`UPDATE monitor_alerts SET status = 'CLOSED' WHERE id = ?`).run(raised.alert_db_id);
@@ -289,15 +307,16 @@ function walkOne(tpl: DummyTemplate): DummySpineRun {
   };
 }
 
-export function runDummyAlertDemo(input: { mode?: DummySpineMode } = {}) {
+export function runDummyAlertDemo(input: { mode?: DummySpineMode; locale?: UiLocale } = {}) {
   const mode: DummySpineMode = input.mode === "group" ? "group" : "single";
+  const locale: UiLocale = input.locale === "zh-Hant" ? "zh-Hant" : "en";
   const templates = mode === "group" ? DUMMY_SPINE_TEMPLATES : [DUMMY_SPINE_TEMPLATES[0]];
   const runs: DummySpineRun[] = [];
   const errors: string[] = [];
 
   for (const tpl of templates) {
     try {
-      runs.push(walkOne(tpl));
+      runs.push(walkOne(tpl, locale));
     } catch (e) {
       errors.push(`${tpl.key}: ${e instanceof Error ? e.message : String(e)}`);
     }

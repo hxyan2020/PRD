@@ -121,7 +121,7 @@ export function AuditBoard({ logs }: { logs: AuditLogRow[] }) {
                     <div className="min-w-0">
                       <div className="text-xs text-[var(--muted)]">{l.created_at}</div>
                       <div className="text-sm font-medium truncate">
-                        {l.actor_name ?? t("common.system", locale)}
+                        <Phrase>{l.actor_name ?? t("common.system", locale)}</Phrase>
                       </div>
                     </div>
                     <Badge className="bg-teal-50 text-teal-900 border-teal-200 shrink-0">
@@ -172,7 +172,7 @@ export function AuditBoard({ logs }: { logs: AuditLogRow[] }) {
                   return (
                     <tr key={l.id} data-testid={`audit-row-${l.id}`}>
                       <td className="text-sm whitespace-nowrap">{l.created_at}</td>
-                      <td>{l.actor_name ?? t("common.system", locale)}</td>
+                      <td><Phrase>{l.actor_name ?? t("common.system", locale)}</Phrase></td>
                       <td>
                         <Badge className="bg-teal-50 text-teal-900 border-teal-200">
                           <Phrase>{l.action}</Phrase>

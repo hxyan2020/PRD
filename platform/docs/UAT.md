@@ -547,6 +547,7 @@ graph TD
 3. Click these stat cards and confirm the destination: Users, Teams, Data Sources, Risk Domains, Open Alerts (Realtime Alert & Tracker), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.
 4. Click a department card (should open that team’s working page), a recent-alert row (Realtime Alert & Tracker, that alarm highlighted), and a jump tile. Header shortcuts: Demo Messenger, User Guide, Daily Performance. None should 404.
 5. If you are still a public visitor, the guest banner and Sign in control should be visible; after login they should change.
+6. On localhost, click Dummy alert (and once Dummy alert group). The new card(s) highlight on Recent Alerts with a Dummy run badge, spine nodes mark DETECT→DASHBOARD, and Audit / Risk Log / Messenger show the closed walk.
 
 **Pass:** Every Home card/shortcut that claims a page actually opens it; owner attribution is visible.
 **Evidence:** Screenshot of Home plus one card destination; owner line visible.
