@@ -47,7 +47,9 @@ assert.match(plusWf, /publish\/crmp-plus/);
 assert.match(plusWf, /keep_files: true/);
 assert.match(plusWf, /cursor\/crmp-plus-a935/);
 assert.match(plusWf, /cursor\/vantage-orange-theme-a935/);
-assert.match(plusWf, /if: github.ref == 'refs\/heads\/cursor\/ai-use-manual-a935'/);
+assert.match(plusWf, /publish\/crmp-admin/);
+assert.match(plusWf, /NEXT_PUBLIC_BASE_PATH: \/PRD\/crmp-admin/);
+assert.doesNotMatch(plusWf, /if: github.ref/);
 
 const nextCfg = read("platform/next.config.ts");
 assert.match(nextCfg, /\/PRD\/crmp-plus/);

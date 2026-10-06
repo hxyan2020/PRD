@@ -68,6 +68,9 @@ assert(dashPage.includes("cs.read"), "dashboard auth");
 
 const logPage = fs.readFileSync(path.join(root, "src/app/admin/cs-log/page.tsx"), "utf8");
 assert(logPage.includes("getCsLog"), "log page uses analytics");
+const logView = fs.readFileSync(path.join(root, "src/components/CsLogView.tsx"), "utf8");
+assert(logView.includes("@/lib/cs/analytics-shared"), "log view uses client-safe analytics types");
+assert(!logView.includes('@/lib/cs/analytics"'), "log view must not import sqlite analytics");
 
 const api = fs.readFileSync(path.join(root, "src/app/api/cs/route.ts"), "utf8");
 assert(api.includes('view === "dashboard"') || api.includes('view=dashboard') || api.includes('"dashboard"'), "API dashboard view");

@@ -84,6 +84,7 @@ assert(docsTs.includes("AI_USE.md"), "DOC_FILES AI_USE");
 
 const nav = NAV_ITEMS.find((i) => i.href === "/admin/docs/ai-use");
 assert(nav, "NAV_ITEMS ai-use");
+assert(nav.group === "docs", "AI Use Manual sits in the Docs left-nav group");
 assert(NAV_I18N["/admin/docs/ai-use"]?.["zh-Hant"] === "AI 使用手冊", "NAV_I18N zh");
 
 assert(PLATFORM_URLS.some((u) => u.path === "/admin/docs/ai-use"), "URL catalog row");
