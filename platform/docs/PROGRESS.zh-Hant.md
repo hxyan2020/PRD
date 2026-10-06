@@ -13,7 +13,7 @@
 
 互動 SVG＋手機卡片：`/admin/docs/progress`（資料：`platform/src/lib/docs/open-issues.ts` — 20 項）。可依狀態與 BU 篩選。
 
-已交付台面事實（日常，不另開長條）：稽核平面分流、可編輯角色、ESC-DEFAULT、首頁脊柱、BU 與團隊、**即時警報與追蹤**、偵測器→**Monitor 2.0**。
+已交付台面事實（日常，不另開長條）：稽核平面分流、可編輯角色、ESC-DEFAULT、首頁脊柱、BU 與團隊、**即時警報與追蹤**、偵測器→**Monitor 2.0**、**CS／TR 原型台**。
 
 ### 議題 → BU → 狀態 → 時間窗
 
@@ -40,7 +40,39 @@
 | OI-19 | CS | 已啟動 | 2026-10 → 2027-06 |
 | OI-20 | TR | 已規劃 | 2026-12 → 2027-08 |
 
-互動板與甘特明細見英文版 [PROGRESS.md](./PROGRESS.md) 與管理後台 `/admin/docs/progress`。
+```mermaid
+gantt
+  title CRMP 開放議題（暫定）— 依 BU／狀態長條
+  dateFormat YYYY-MM
+  axisFormat %y-%m
+  section Monitor
+  OI-01 指標擴充           :active, 2026-10, 2027-06
+  OI-13 工單回寫（延期）   :crit, 2027-01, 2027-09
+  section 產品
+  OI-02 設計凍結           :active, 2026-10, 2027-03
+  OI-15 文件日常           :2026-10, 2027-12
+  OI-18 多法人租戶         :2027-06, 2027-12
+  section CS TR
+  OI-19 C1 表單信箱連接器  :active, 2026-10, 2027-06
+  OI-20 核身庫與成交帶     :2026-12, 2027-08
+  section 系統
+  OI-03 技術與資源規劃     :2026-11, 2027-04
+  OI-06 SSO SCIM           :2026-12, 2027-06
+  OI-11 UX 打磨            :active, 2026-10, 2026-12
+  OI-16 可觀測性           :2027-02, 2027-08
+  section AI
+  OI-14 原型 UAT           :active, 2026-10, 2026-11
+  OI-05 RAG 治理           :active, 2026-10, 2027-02
+  OI-04 LLM 與挑戰者       :active, 2026-10, 2027-07
+  section 營運
+  OI-08 Lark 卡片          :2026-11, 2027-04
+  OI-07 控制適配           :2027-01, 2027-10
+  OI-17 緊急開關           :2027-04, 2027-10
+  section RO 定價 GRC
+  OI-09 UAT 退出           :active, 2026-10, 2027-01
+  OI-10 LP 定價饋送        :2027-02, 2027-09
+  OI-12 證據保存           :2027-03, 2027-12
+```
 
 ---
 

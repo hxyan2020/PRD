@@ -1,12 +1,12 @@
 # Vantage Ecosystem Adoption Evaluation
 
-**Document ID:** CRMP-ECO-001 · **Version:** 1.8 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
+**Document ID:** CRMP-ECO-001 · **Version:** 1.9 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
 
 ## 1. Executive view
 
 The CRMP demo already proves an end-to-end spine:
 
-**Monitor 2.0 alarm → Realtime Alert & Tracker → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit (CRMP / Vantage Markets Admin plane split + Roll back) + home spine stage counts.**
+**Monitor 2.0 alarm → Realtime Alert & Tracker → AI RCA (skill/RAG) → independent second-AI challenge → messenger actions → maker/checker intervention → audit (CRMP / Vantage Markets Admin plane split + Roll back) + home spine stage counts.** Parallel client door: **C1 live chat / web form / official email → CS/TR desk → AI follow-up until reply → TR dealing or Risk messenger.**
 
 Programme gaps and tentative ETAs live in [Open Issues](/admin/docs/open-issues) and [Progress Tracker](/admin/docs/progress) (Monitor still adding indicators; CRMP initial design; tech/resource plan open). Platform owner: demo platform owner / `haixiang.yan@hytechc.com`.
 
@@ -39,6 +39,7 @@ Fully implementing this into the **existing Vantage Markets ecosystem** is not a
 | F10 | **AI access blocklist enforcement** | Human-only pages/functions/fields stay human-only | Documented blocklist UI | Runtime enforcement on AI principals |
 | F11 | **Market-intel feed contracts** | 5-min scan needs licensed/news APIs | Heuristic scanner | Vendor feeds + scoring |
 | F12 | **Kill-switches** | Disable auto-skills, intel push, write adapters instantly | Settings flags (partial) | Global + per-adapter |
+| F13 | **Signed C1 / form / mailbox connectors** | 24/7 CS must receive live chat, website forms and official mail in CRMP, not only in personal inboxes | Mock `POST /api/cs/intake` (`x-cs-intake-token: demo-c1`) + seeded desk | Production signed webhooks + mailbox gateway |
 
 ### Integration map (target)
 
@@ -46,6 +47,7 @@ Fully implementing this into the **existing Vantage Markets ecosystem** is not a
 2. CRMP → Lark cards (notify + inline actions)  
 3. Human confirm → Vantage admin / control bus (maker) → Checker approve  
 4. Status write-back → Monitor ticket + Audit (CRMP / Vantage Markets Admin) + home spine stage counts  
+5. C1 / form / official email → CS/TR desk (`/admin/cs-desk`) → AI auto-email until client reply → TR dealing or Risk messenger  
 
 ---
 
@@ -132,6 +134,7 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 | Intel | Synthetic/heuristic market scan | Needs licensed sources + scoring |
 | Enforcement | AI blocklist is largely documentary in UI | Must bind to AI service principals |
 | Mobile | Responsive card lists on Monitor 2.0 / Escalation / Data Sources / Risk Log / Audit; confirm sheets still desktop-first | OK for web responsive ops, not native-app grade |
+| CS / TR | Heuristic triage + mock intake token; no signed C1/form/mailbox; no ID vault | Live 24/7 requests can stay in personal inboxes; ID/unclear loop is demo-only |
 
 ---
 
@@ -159,8 +162,9 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 - [ ] Agree shadow-mode duration before Phase C  
 - [ ] Security sign-off on AI blocklist + SoD model  
 - [ ] Legal sign-off on evidence retention  
+- [ ] Confirm CS 24/7 C1 / form / mailbox owners and the AI follow-up SLA (wait until client reply, cap 3)  
 
-**Demo links:** this page · [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress) · [URL Catalog](/admin/docs/urls) · [UAT Checklist](/admin/docs/uat) · [Improvement Roadmap](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
+**Demo links:** this page · [Open Issues](/admin/docs/open-issues) · [Progress Tracker](/admin/docs/progress) · [URL Catalog](/admin/docs/urls) · [UAT Checklist](/admin/docs/uat) · [Improvement Roadmap](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger) · [CS / TR Desk](/admin/cs-desk)
 
 ---
 
@@ -170,5 +174,6 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 |---|---|---|
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin + Roll back; home spine; Open Issues / Progress links |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; F2/Phase B/Monitor shortcoming; mobile card lists; demo links |
+| 1.9 | 2026-10-06 | F13 signed C1/form/mailbox; CS/TR desk on the spine; OI-19/OI-20 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

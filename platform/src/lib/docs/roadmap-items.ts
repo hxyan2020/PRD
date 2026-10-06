@@ -49,9 +49,9 @@ export const ROADMAP_PHASES: Array<{
   {
     id: "operator-ux",
     order: 2,
-    ids: ["RM-01", "RM-07", "RM-11"],
-    en: "Operator UX — work in Lark, phone, and shadow mode",
-    zh: "操作體驗 — 在 Lark／手機工作，並能跑影子模式",
+    ids: ["RM-01", "RM-07", "RM-11", "RM-16"],
+    en: "Operator UX — work in Lark, phone, shadow mode, and CS/TR intake",
+    zh: "操作體驗 — 在 Lark／手機工作、影子模式，以及 CS／TR 進件",
   },
   {
     id: "write-path",
@@ -1003,6 +1003,71 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
         "單則未印證社群貼文不會違規。",
       ],
       skipRisk: "合成「非農意外」呼叫台面；真實公布被漏掉或被雙計。",
+    },
+  },
+  {
+    id: "RM-16",
+    severity: "High",
+    effort: "L",
+    peopleEn: "1 backend + 1 CS lead + mailbox vendor",
+    peopleZh: "1 後端 + 1 CS 主管 + 信箱供應商",
+    dependsEn: "C1 webhook contract, form HMAC, mailbox gateway",
+    dependsZh: "C1 webhook 契約、表單 HMAC、信箱閘道",
+    phase: "operator-ux",
+    screens: [
+      { href: "/admin/cs-desk", en: "CS / TR Desk", zh: "CS／TR 台" },
+      { href: "/admin/docs/open-issues", en: "Open Issues (OI-19 / OI-20)", zh: "開放議題（OI-19／OI-20）" },
+    ],
+    codebase: [
+      "POST /api/cs/intake — mock token demo-c1",
+      "CsTrDesk + lib/cs/desk.ts heuristic triage",
+      "Auto EMAIL_OUT until EMAIL_IN; cap 3; TR routing",
+    ],
+    en: {
+      title: "Signed C1, form and official-email connectors into the CS/TR desk",
+      operatorGets:
+        "A live C1 chat, a website form and an official mailbox item land on /admin/cs-desk in realtime. If AI is unclear or needs ID, CRMP emails the client and waits until they reply (max 3).",
+      why: "CS is the 24/7 door. If those three channels stay in personal inboxes, complaints never become CRMP requests and Risk never sees book-risk ones.",
+      today:
+        "Prototype desk with mock webhook token demo-c1, seeded C1/form/email cases, heuristic triage, auto-email wait loop and TR routing. No signed production connectors, no ID vault (OI-20).",
+      todayFacts: [
+        "Header x-cs-intake-token: demo-c1 or session cs.operate.",
+        "Unclear / need_id → EMAIL_OUT WAITING; resolve is blocked until EMAIL_IN.",
+        "Trading language (fill / slippage / MT4/MT5) stamps desk TR.",
+      ],
+      build: [
+        "Replace demo-c1 with signed C1 webhook, form HMAC and a real mailbox gateway.",
+        "Keep the wait-until-reply loop; CS Lead waiver after three mails.",
+        "Hand ID artefacts to a vault (OI-20) instead of leaving them on the transcript.",
+      ],
+      doneWhen: [
+        "Staging C1, form and mailbox each create a cs_request with the right channel stamp inside 30 seconds.",
+        "An unclear chat stays AWAITING_CLIENT until a client reply, then re-triages; a slippage form is ASSIGNED_TR.",
+      ],
+      skipRisk: "24/7 questions and complaints never reach CRMP; AI follow-up and TR routing stay a demo.",
+    },
+    zh: {
+      title: "簽章 C1、表單與官方信箱連接器進入 CS／TR 台",
+      operatorGets:
+        "真實 C1 聊天、網站表單與官方信箱會即時出現在 /admin/cs-desk。AI 若不清楚或需核身，CRMP 會寄信並等到客戶回覆（最多 3 封）。",
+      why: "CS 是 24/7 大門。若三渠道只留在個人收件匣，投訴永遠不會變成 CRMP 請求，帳簿風險也到不了風控。",
+      today:
+        "原型台面使用模擬 webhook token demo-c1、種子 C1／表單／信件、啟發式分流、自動寄信等待迴圈與 TR 分流。沒有正式簽章連接器，也沒有核身庫（OI-20）。",
+      todayFacts: [
+        "標頭 x-cs-intake-token: demo-c1 或工作階段 cs.operate。",
+        "不清楚／需核身 → EMAIL_OUT 等待中；結案在 EMAIL_IN 前被擋住。",
+        "成交用語（成交／滑點／MT4／MT5）會把台面標成 TR。",
+      ],
+      build: [
+        "以簽章 C1 webhook、表單 HMAC 與真實信箱閘道取代 demo-c1。",
+        "維持等到回覆的迴圈；三封之後由 CS Lead 豁免。",
+        "核身文件進庫（OI-20），不要留在逐字稿上。",
+      ],
+      doneWhen: [
+        "測試環境的 C1、表單與信箱各自在 30 秒內建立帶正確渠道戳記的 cs_request。",
+        "不清楚聊天維持待客戶直到回覆後再分流；滑點表單為已派 TR。",
+      ],
+      skipRisk: "24/7 問題與投訴到不了 CRMP；AI 追問與 TR 分流只停留在示範。",
     },
   },
 ];

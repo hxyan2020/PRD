@@ -810,10 +810,10 @@ graph TD
 
 **Steps**
 
-1. Open Improvement Roadmap (Docs group). Counts should show 15 items and Critical / High tallies.
-2. The scan list is expandable cards RM-01…RM-15 — each collapsed line says what operators get, plus effort and severity.
+1. Open Improvement Roadmap (Docs group). Counts should show 16 items and Critical / High tallies.
+2. The scan list is expandable cards RM-01…RM-16 — each collapsed line says what operators get, plus effort and severity.
 3. Expand RM-01 (Lark cards): Why, Today’s prototype (mock webhooks, POST /api/lark mock:true), What to build, Done when, If we skip, and links to Demo Messenger / Lark.
-4. Expand RM-09: it must be tagged UAT out of scope (EXECUTED_MOCK — no live trading-bus write). Same for RM-05 (SSO).
+4. Expand RM-16 (CS/TR connectors): Today’s prototype is mock demo-c1 intake; production needs signed C1 / form / mailbox. Expand RM-09: it must be tagged UAT out of scope (EXECUTED_MOCK — no live trading-bus write). Same for RM-05 (SSO).
 
 **Pass:** Roadmap page renders with at least one phase and one out-of-scope note.
 **Evidence:** Screenshot of the roadmap.

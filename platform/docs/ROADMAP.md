@@ -4,7 +4,7 @@
 **Audience:** Risk Owner, Platform Owner, engineering, GRC  
 **How to read:** the admin page `/admin/docs/roadmap` is the operator view (expandable cards). This file is the printable twin. Each `RM-xx` states **today’s prototype**, **what to build**, **done-when**, **where in the code**, and **skip risk**.
 
-This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit + home spine**. Shipped desk polish (Realtime Alert & Tracker naming; Detectors merged into Monitor 2.0; grouped AI pipeline; MonitorCode; RAG leaves; ESC-DEFAULT + dimension coefficients; BU and Teams; first/second-line AI Admin; editable Roles; audit CRMP / Vantage Markets Admin tabs + Roll back; mobile card lists) is tracked as BAU docs; **programme open issues** with ETAs/BU live in [Open Issues](/admin/docs/open-issues) / [Progress Tracker](/admin/docs/progress). Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, and logged-only “executions”.
+This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) → second-AI challenge → messenger → maker/checker → audit + home spine**, plus the client door **C1 / form / email → CS/TR desk → AI follow-up until reply → TR or Risk**. Shipped desk polish (Realtime Alert & Tracker naming; Detectors merged into Monitor 2.0; grouped AI pipeline; MonitorCode; RAG leaves; ESC-DEFAULT + dimension coefficients; BU and Teams; first/second-line AI Admin; editable Roles; audit CRMP / Vantage Markets Admin tabs + Roll back; mobile card lists; CS/TR prototype desk) is tracked as BAU docs; **programme open issues** with ETAs/BU live in [Open Issues](/admin/docs/open-issues) / [Progress Tracker](/admin/docs/progress). Items here close the gaps that would fail a live desk: mocked Lark, seeded Monitor, heuristic AI, SQLite, shared demo passwords, logged-only “executions”, and unsigned C1/form/mailbox connectors.
 
 **Effort key:** S = one vertical slice · M = multi-day module · L = cross-team module · XL = programme-sized
 
@@ -31,11 +31,12 @@ This prototype already walks the spine **Monitor alarm → AI RCA (skill / RAG) 
 | RM-13 | **Multi-brand / entity tenancy** (VFSC vs FCA packs, data isolation) | XL | Arch + 2 BE | Org model | Medium |
 | RM-14 | **AI cost & latency SLOs** with alerts when RCA or challenger blows budget | S | SRE | Observability | Medium |
 | RM-15 | **Scored market-intel sources** (licensed feeds, not template headlines) | M | 1 DS + 1 BE | Vendor contracts | Medium |
+| RM-16 | **Signed C1 / form / mailbox connectors** so 24/7 CS sees live chat, website forms and official email on the CS/TR desk; AI emails when unclear or ID is needed and waits for a reply | L | 1 BE + CS lead | C1 / form HMAC / mailbox | High |
 
 ## Suggested sequencing
 
 1. **Foundations:** RM-05, RM-06, RM-02 — identity, durable store, live Realtime Alert stream.
-2. **Operator UX:** RM-01, RM-07, RM-11 — people work in Lark and can run shadow.
+2. **Operator UX:** RM-01, RM-07, RM-11, RM-16 — people work in Lark, can run shadow, and CS/TR intake is live.
 3. **Write path (last):** RM-09 with a global kill-switch — only after Risk Owner accepts shadow false-alarm rates.
 4. **Model quality:** RM-03 + RM-04 + RM-14.
 5. **Harden & scale:** RM-08, RM-10, RM-12, RM-15. RM-13 stays a later programme.
@@ -484,6 +485,35 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 
 ---
 
+## RM-16 — Signed C1, form and official-email connectors
+
+**Severity:** High · **Effort:** L · **People:** 1 backend + 1 CS lead + mailbox vendor · **Depends:** C1 webhook contract, form HMAC, mailbox gateway.
+
+### Why
+
+CS is the 24/7 door. If live chat, the website form and official mailboxes stay in personal inboxes, complaints never become CRMP requests and book-risk ones never reach Risk.
+
+### Today
+
+[CS / TR Desk](/admin/cs-desk) is a prototype inbox. `POST /api/cs/intake` accepts session `cs.operate`, `mock_webhook: true`, or header `x-cs-intake-token: demo-c1`. Heuristic AI emails the client when unclear or ID is needed and waits (cap 3). Trading language routes to TR. No signed production connectors; ID vault is OI-20.
+
+### Build
+
+1. Replace `demo-c1` with a signed C1 webhook, form HMAC and a real mailbox gateway.
+2. Keep the wait-until-reply loop; CS Lead waiver after three mails.
+3. Hand ID artefacts to a vault (OI-20) instead of leaving them on the transcript.
+
+### Done when
+
+- Staging C1, form and mailbox each create a `cs_request` with the right channel stamp inside 30 seconds.
+- An unclear chat stays `AWAITING_CLIENT` until a client reply, then re-triages; a slippage form is `ASSIGNED_TR`.
+
+### If we skip
+
+24/7 questions and complaints never reach CRMP; AI follow-up and TR routing stay a demo.
+
+---
+
 ## Traceability
 
 | Roadmap | Related admin / docs |
@@ -496,6 +526,7 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 | RM-11 | [Daily Performance](/admin/dashboard) · [Risk Log](/admin/risk-log) |
 | RM-12 | [UAT Checklist](/admin/docs/uat) |
 | RM-15 | [Market Intelligence](/admin/market-intel) |
+| RM-16 | [CS / TR Desk](/admin/cs-desk) · [Open Issues](/admin/docs/open-issues) |
 | Budget / FTE | [Ecosystem Eval](/admin/docs/ecosystem) |
 
 ---
@@ -506,5 +537,6 @@ Synthetic “NFP surprise” pages the desk; real prints are missed or double-co
 |---|---|---|
 | 1.7 | 2026-10-05 | BAU polish: audit tabs + rollback, ESC-DEFAULT, BU and Teams, Open Issues / Progress |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; RM-02/RM-12 today facts; mobile card lists noted |
+| 1.9 | 2026-10-06 | RM-16 signed C1/form/mailbox into CS/TR desk; OI-19/OI-20 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
