@@ -1,19 +1,21 @@
 # CRMP UAT Pack — Risk Owner
 
-**Document ID:** CRMP-UAT-001 · **Interactive demo:** [/admin/docs/uat](/admin/docs/uat)
+**Document ID:** CRMP-UAT-001 · **Version:** 2.6 · **Date:** 2026-10-06 · **Interactive demo:** [/admin/docs/uat](/admin/docs/uat)
 
-In plain English: this is not a developer smoke test. It is the Risk Owner script for walking the whole admin desk and the Lark-style messenger, with evidence.
+**Scope:** CRMP Plus at `/PRD/crmp-plus/` only. Original CRMP Admin at `/PRD/crmp-admin/` stays frozen.
 
-Execute **in sequence**. Critical predecessors must Pass before later Critical cases. Record PASS / FAIL / WAIVE plus evidence in Audit notes. The on-page tally lives only in this browser session; formal sign-off is the last case.
+In plain English: this is not a developer smoke test. It is the Risk Owner script for walking the whole admin desk and the Lark-style messenger, with evidence. The **CS/TR feature catalogue** below is the index of the new 24/7 door — not extra numbered cases.
+
+Execute **in sequence**. Critical predecessors must Pass before later Critical cases. Record PASS / FAIL / WAIVE plus evidence in Audit notes. The on-page tally lives only in this browser session; formal sign-off is the last case (UAT-49). There is **no UAT-45**.
 
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **10.1 hours** (52 cases).
+- Full pack suggested window ≈ **10.1 hours** (51 cases; UAT-45 is unused).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; dedicated SKILL.md playbooks; AI follow-up until the client replies; TR routing; **dashboard, log and supporting data**) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance, Risk Log, Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark, Escalation Routes (dimensions × coefficients · ESC-DEFAULT · ESC-CS-KYC), BU and Teams / editable Roles / Users, Data Sources, AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings (`cs.*`), User Guide / PRD / TSD / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; dedicated SKILL.md playbooks; AI follow-up until the client replies, cap from `cs.followup_cap`; TR routing; **dashboard, log and supporting data**) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance (**not** CS/TR dashboard), Risk Log (**not** CS_* log), Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark (`oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing`), Escalation Routes (dimensions × coefficients · ESC-DEFAULT · ESC-CS-24-7 · ESC-CS-KYC · ESC-TR-DEAL · ESC-CS-RISK), BU and Teams (CS KYC Vault nested under Customer Service) / editable Roles / Users, Data Sources (KYC vault flags + MT4/MT5 tape), AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings (`cs.*` group), User Guide §9.3 / PRD §6.5 / TSD §17 / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges including CS/TR surfaces.
 
 ```mermaid
 graph TD
@@ -22,8 +24,54 @@ graph TD
   AI --> Msg[Messenger loop]
   Msg --> Gate[Checker plus audit]
   Gate --> Docs[Docs and remaining screens]
+  Login --> CsDoor[UAT-25 URL catalog CS/TR]
+  CsDoor --> Intake[UAT-46 C1 form mailbox]
+  Intake --> Wait[UAT-47 wait loop]
+  Wait --> Tr[UAT-48 TR and Risk]
+  Tr --> Skills[UAT-50 skills and tree]
+  Skills --> Dash[UAT-51 dashboard and log]
+  Dash --> Data[UAT-52 supporting data]
+  Data --> Sign[UAT-49 sign-off]
+  Docs --> Sign
 ```
 
+## CS/TR feature catalogue
+
+Interactive twin: filter **CS/TR** on [/admin/docs/uat](/admin/docs/uat) (`data-testid="uat-cs-catalogue"`). Seven **primary** cases prove the new functions. Ten **support** cases prove the rest of the desk still names those surfaces.
+
+| Kind | ID | Feature | Screens / URLs | FR |
+|---|---|---|---|---|
+| primary | UAT-25 | URL Catalog CS/TR section + public Pages URLs | `/cs`, desk, dashboard, log, data, five SKILL.md, RAG leaves, intake API | FR-43 |
+| primary | UAT-46 | C1 live chat, website form, official mailbox, `/cs` portal | CS / TR Desk, CS client portal, URL Catalog, BU and Teams | FR-37, FR-40 |
+| primary | UAT-47 | Auto-email wait loop and ID verify (cap from `cs.followup_cap`) | CS / TR Desk, Audit Log, CS KYC Vault | FR-41 |
+| primary | UAT-48 | TR dealing handoff and book-risk escalate | CS / TR Desk, Demo Messenger | FR-38 |
+| primary | UAT-50 | Dedicated SKILL.md playbooks, `CS_SERVICE` / `TRADING_EXEC` tree | CS / TR Desk, AI Skills, Knowledge Tree, RAG | FR-39 |
+| primary | UAT-51 | Dedicated CS/TR dashboard and log (not Daily Performance / Risk Log) | `/admin/cs-dashboard`, `/admin/cs-log` | FR-44 |
+| primary | UAT-52 | Supporting data: BUs, CS KYC Vault, four hops, `cs.*` parameters | `/admin/cs-data`, Settings, BU and Teams, Escalation Routes | FR-45 |
+| support | UAT-17 | EN / 繁中 docs including UG §9.3 and this catalogue | User Guide, PRD, TSD, UAT Checklist | FR-43 |
+| support | UAT-22 | Unread badges on CS/TR desk, dashboard, log and data | Admin Home, CS / TR surfaces | FR-37 |
+| support | UAT-27 | Home shortcuts to CS/TR desk, dashboard, log, data and `/cs` | Admin Home | FR-37 |
+| support | UAT-28 | Daily Performance stays CFD/crypto — not the CS/TR dashboard | Daily Performance vs `/admin/cs-dashboard` | FR-44 |
+| support | UAT-29 | Risk Log stays Monitor closures — not the CS_* log | Risk Log vs `/admin/cs-log` | FR-44 |
+| support | UAT-36 | Lark channels `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing` | Lark Integration | FR-45 |
+| support | UAT-37 | Hops `ESC-CS-24-7` / `ESC-CS-KYC` / `ESC-TR-DEAL` / `ESC-CS-RISK` | Escalation Routes, CS / TR Data | FR-39, FR-45 |
+| support | UAT-38 | BU and Teams — CS KYC Vault nested under Customer Service | BU and Teams, CS / TR Data | FR-45 |
+| support | UAT-39 | Data sources — KYC vault flags + MT4/MT5 dealing tape | Data Sources, CS / TR Data | FR-45 |
+| support | UAT-40 | Platform Settings CS / TR operations group (`cs.*`) | Platform Settings `#settings-cs`, CS / TR Data | FR-45 |
+
+### Public URLs (CS/TR)
+
+Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
+
+| Surface | Path |
+|---|---|
+| Client portal | `/cs` |
+| CS / TR Desk | `/admin/cs-desk` |
+| CS / TR Dashboard | `/admin/cs-dashboard` |
+| CS / TR Log | `/admin/cs-log` |
+| CS / TR Data | `/admin/cs-data` |
+| Intake API | `POST /api/cs/intake` · `GET /api/cs/intake` |
+| Payloads | `GET /api/cs?view=dashboard` · `log` · `data` |
 
 ## Summary matrix
 
@@ -46,18 +94,18 @@ graph TD
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI must not be allowed near human-only data | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and home spine tell the same story as messenger | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | English and Traditional Chinese documentation both render | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
-| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, Realtime Alert & Tracker |
+| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | Every serious analysis in this UAT window has a second AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | Skill cards stay short; Enter opens the full playbook | AI Skills |
 | 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger “Open in admin” lands on a real analysis | Demo Messenger, AI analysis detail (/admin/ai-analyses/[id]) |
-| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | Unread counts on the left pane (messenger-style) | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence |
+| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | Unread counts on the left pane (messenger-style) | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data |
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | Knowledge tree shows how domains, skills and documents connect | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | Traditional Chinese covers chrome, messenger, skills and docs | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
-| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | URL catalog lists the public pages (including CS/TR door and playbooks) | URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger |
+| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | URL catalog lists the public pages (including CS/TR door and playbooks) | URL Catalog, CS / TR Desk, CS client portal, CS / TR Dashboard, CS / TR Log, CS / TR Data, AI Skills, Knowledge Tree, Demo Messenger |
 | 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | Tell the messenger loop out loud, in plain English | Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker |
-| 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | Admin Home — cards, shortcuts and platform owner | Admin Home, Daily Performance, Users, URL Catalog |
-| 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | Daily Performance — CFD and Crypto desk numbers | Daily Performance |
-| 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | Risk Log Analytics — what actually moved P&L / clients | Risk Log Analytics |
+| 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | Admin Home — cards, shortcuts and platform owner | Admin Home, Daily Performance, Users, URL Catalog, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data |
+| 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | Daily Performance — CFD and Crypto desk numbers | Daily Performance, CS / TR Dashboard |
+| 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | Risk Log Analytics — what actually moved P&L / clients | Risk Log Analytics, CS / TR Log |
 | 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Realtime Alert & Tracker queue | Realtime Alert & Tracker — read the queue and acknowledge one | Realtime Alert & Tracker |
 | 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | Monitor 2.0 — run indicators and see WARN/BREACH land | Monitor 2.0, Realtime Alert & Tracker |
 | 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | Risk domains catalogue with P0–P3 scenarios | Risk Domains |
@@ -65,16 +113,16 @@ graph TD
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — other recommended actions and cancel | Demo Messenger, Human Intervention |
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | Human Intervention queue (the admin side of messenger controls) | Human Intervention |
 | 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark Integration — channels vs the in-app messenger demo | Lark Integration, Demo Messenger |
-| 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | Escalation routes registry | Escalation Routes |
-| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | Organisation — BU and Teams, users and roles | BU and Teams, Users, Roles & Permissions |
-| 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | Data sources registry (internal and external) | Data Sources |
-| 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | Platform settings are grouped (not a flat dump) | Platform Settings |
+| 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | Escalation routes registry | Escalation Routes, CS / TR Data |
+| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | Organisation — BU and Teams, users and roles | BU and Teams, Users, Roles & Permissions, CS / TR Data |
+| 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | Data sources registry (internal and external) | Data Sources, CS / TR Data |
+| 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | Platform settings are grouped (not a flat dump) | Platform Settings, CS / TR Data |
 | 41 | UAT-41 | 446m | 10m | Medium | AI + Risk | UAT-06; RAG seeded | RAG Knowledge Base — browse the corpus the AI cites | RAG Knowledge Base |
 | 42 | UAT-42 | 456m | 8m | Low | All | Docs published | Improvement roadmap is readable | Improvement Roadmap |
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | Public snapshot — Sign in works and stays on demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — closed threads stay closed after refresh | Demo Messenger |
 | 46 | UAT-46 | 484m | 12m | High | CS + System | UAT-01; CS/TR desk seeded | CS/TR — C1, form and official email land in realtime | CS / TR Desk, URL Catalog, BU and Teams |
-| 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS/TR — AI emails when unclear or ID is needed, then waits | CS / TR Desk, Audit Log |
+| 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS/TR — AI emails when unclear or ID is needed, then waits | CS / TR Desk, Audit Log, CS KYC Vault |
 | 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS/TR — trading cases go to TR; book-risk escalates to Risk | CS / TR Desk, Demo Messenger |
 | 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS/TR — dedicated SKILL.md playbooks stamp the desk and enrich the tree | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
 | 51 | UAT-51 | 535m | 12m | High | CS | UAT-46; CS/TR dashboard + log seeded | CS/TR — dedicated dashboard and log, not Daily Performance or Risk Log | CS / TR Dashboard, CS / TR Log |
@@ -373,23 +421,24 @@ graph TD
 - **Severity:** Low · **BU:** All · **Depends:** Docs published under /admin/docs/* · **Window:** T+196m / 10m
 - **Covers:** User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval
 - **Why:** The Hong Kong desk must be able to run UAT and read the handbook in 繁中.
-- **Goal:** Toggle EN / 繁體中文 on User Guide, PRD, TSD, Ecosystem Eval and this UAT page without 404s.
+- **Goal:** Toggle EN / 繁體中文 on User Guide (including §9.3 CS/TR), PRD, TSD, Ecosystem Eval and this UAT catalogue without 404s.
 
 **Steps**
 
 1. Open User Guide. Use the English / 繁體中文 buttons on the article (and the left-pane EN / 繁中 if you want chrome translated too).
-2. Repeat for PRD, TSD, Ecosystem Eval, and this UAT page.
-3. Body text must actually switch — not only the page title. A missing-file stub fails the case.
+2. In the User Guide, open §9.3 CS/TR door. Confirm desk, /cs portal, dashboard, log, data, wait loop and skills are described in both languages.
+3. Repeat for PRD (§6.5 / FR-37…45), TSD (§17), Ecosystem Eval, and this UAT page — including the CS/TR feature catalogue table above the case list.
+4. Body text must actually switch — not only the page title. A missing-file stub fails the case.
 
-**Pass:** Both languages render for each listed doc; no missing-file stub.
-**Evidence:** Tick-list of URLs tested in EN and ZH.
+**Pass:** Both languages render for each listed doc; UG §9.3 and this UAT CS/TR catalogue switch for real; no missing-file stub.
+**Evidence:** Tick-list of URLs tested in EN and ZH, including UG §9.3 and the UAT CS/TR catalogue.
 
 ### UAT-18 — Phone-width smoke test (~390px)
 
 - **Severity:** Medium · **BU:** All · **Depends:** Responsive admin shell · **Window:** T+206m / 15m
-- **Covers:** Admin Home, Demo Messenger, Realtime Alert & Tracker
+- **Covers:** Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk
 - **Why:** On-call staff will open messenger from a phone. Overflow or a broken drawer makes the desk unusable.
-- **Goal:** At about 390px width, open the menu, use messenger list→thread→back, and read an AI analysis.
+- **Goal:** At about 390px width, open the menu, use messenger list→thread→back, read an AI analysis, and open CS / TR Desk.
 
 **Steps**
 
@@ -397,9 +446,10 @@ graph TD
 2. On Admin Home, tap the hamburger. The left drawer opens. The page itself must not scroll sideways.
 3. Open Demo Messenger. You should see the thread list first. Open a thread, then tap Threads (back) to return to the list.
 4. Open an AI analysis detail. The second-AI sections should stack vertically. Primary buttons must still be tappable.
+5. Open CS / TR Desk. Inbox cards stack; Simulate / Assign to TR / Escalate stay tappable; no document-level horizontal overflow.
 
-**Pass:** Drawer works; messenger master-detail works; no document-level horizontal overflow.
-**Evidence:** Mobile screenshots of drawer, messenger list, messenger thread, AI detail.
+**Pass:** Drawer works; messenger master-detail works; CS / TR Desk is usable at 390px; no document-level horizontal overflow.
+**Evidence:** Mobile screenshots of drawer, messenger list, messenger thread, AI detail, CS / TR Desk.
 
 ### UAT-19 — Every serious analysis in this UAT window has a second AI
 
@@ -454,7 +504,7 @@ graph TD
 ### UAT-22 — Unread counts on the left pane (messenger-style)
 
 - **Severity:** Medium · **BU:** All · **Depends:** Left nav shell · **Window:** T+251m / 8m
-- **Covers:** Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence
+- **Covers:** Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data
 - **Why:** Operators should see “something new happened” without opening every tab.
 - **Goal:** Show rose badges on tabs with new/open work; opening a tab clears only that tab’s number.
 
@@ -462,12 +512,13 @@ graph TD
 
 1. Hard-refresh Admin Home, or use a private window, so previous “I already saw this” marks are empty.
 2. Rose numbers should appear next to Realtime Alert & Tracker, Demo Messenger, Market Intelligence and other tabs that have open work.
-3. Open Realtime Alert & Tracker — that badge drops to zero. Other badges stay.
-4. Open Demo Messenger — that badge drops to zero.
-5. Go away and come back: cleared badges stay at zero unless a new Scan / Analyse / Sync created more work.
+3. CS / TR Desk, CS / TR Dashboard, CS / TR Log and CS / TR Data should also show rose badges when seeded CS tickets / CS_* events exist (desk = open tickets, dashboard = open, log = CS_* count).
+4. Open Realtime Alert & Tracker — that badge drops to zero. Other badges stay.
+5. Open Demo Messenger — that badge drops to zero. Open CS / TR Desk — that CS badge drops; dashboard / log / data stay until opened.
+6. Go away and come back: cleared badges stay at zero unless a new Scan / Analyse / Sync / CS intake created more work.
 
-**Pass:** Badges match open/new work; viewing a tab clears that tab only.
-**Evidence:** Before/after screenshots of the left pane.
+**Pass:** Badges match open/new work including CS/TR surfaces; viewing a tab clears that tab only.
+**Evidence:** Before/after screenshots of the left pane including CS/TR badges.
 
 ### UAT-23 — Knowledge tree shows how domains, skills and documents connect
 
@@ -507,19 +558,19 @@ graph TD
 ### UAT-25 — URL catalog lists the public pages (including CS/TR door and playbooks)
 
 - **Severity:** Medium · **BU:** System · **Depends:** URL catalog · **Window:** T+281m / 8m
-- **Covers:** URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger
-- **Why:** Operators should not have to guess paths for /cs, the desk, skill detail, knowledge tree or messenger.
+- **Covers:** URL Catalog, CS / TR Desk, CS client portal, CS / TR Dashboard, CS / TR Log, CS / TR Data, AI Skills, Knowledge Tree, Demo Messenger
+- **Why:** Operators should not have to guess paths for /cs, the desk, dashboard, log, data, skill detail, knowledge tree or messenger.
 - **Goal:** From the URL catalog, find the CS/TR section, Skills, Knowledge Tree, Demo Messenger and Market Intel.
 
 **Steps**
 
 1. Open URL Catalog (Docs group). Read the CS/TR cheat: /cs, POST /api/cs/intake, CSR-XXXX wait loop.
-2. Find the CS / TR section: /cs, /admin/cs-desk, SKILL-CS-CLARIFY (and four sibling playbooks), RAG leaves cs-24-7-intake / cs-id-verify-policy, GET /api/cs/intake.
-3. Open a skill detail from the CS/TR row (SKILL-CS-CLARIFY) or replace [code] under AI Skills.
+2. Find the CS / TR section: /cs, /admin/cs-desk, /admin/cs-dashboard, /admin/cs-log, /admin/cs-data, SKILL-CS-CLARIFY (and four sibling playbooks), RAG leaves cs-24-7-intake / cs-id-verify-policy, GET /api/cs/intake and GET /api/cs?view=dashboard|log|data.
+3. Open a skill detail from the CS/TR row (SKILL-CS-CLARIFY) or replace [code] under AI Skills. Open dashboard / log / data from the same section.
 4. Confirm the catalog states this platform’s origin (hxyan2020.github.io/PRD/crmp-plus), the client portal (…/cs/), and still lists original CRMP Admin as frozen (hxyan2020.github.io/PRD/crmp-admin).
 
-**Pass:** CS/TR routes, five playbooks and intake API are listed and reachable; CRMP Plus origin and /cs are visible; original CRMP Admin is listed as frozen.
-**Evidence:** Catalog rows screenshot (CS / TR section + public URLs).
+**Pass:** CS/TR routes (desk, dashboard, log, data), five playbooks and intake API are listed and reachable; CRMP Plus origin and /cs are visible; original CRMP Admin is listed as frozen.
+**Evidence:** Catalog rows screenshot (CS / TR section + public URLs including dashboard, log, data).
 
 ### UAT-26 — Tell the messenger loop out loud, in plain English
 
@@ -542,7 +593,7 @@ graph TD
 ### UAT-27 — Admin Home — cards, shortcuts and platform owner
 
 - **Severity:** Medium · **BU:** System + Risk Owner · **Depends:** UAT-01 · **Window:** T+301m / 10m
-- **Covers:** Admin Home, Daily Performance, Users, URL Catalog
+- **Covers:** Admin Home, Daily Performance, Users, URL Catalog, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data
 - **Why:** Home is the map of the desk. Dead cards and a missing owner make the prototype look unowned.
 - **Goal:** Click through Home stats and confirm they open the right pages; owner line names demo platform owner.
 
@@ -551,48 +602,50 @@ graph TD
 1. Open Admin Home.
 2. Read the platform owner line (demo platform owner / haixiang.yan@hytechc.com) on the home panel and in the left-pane footer.
 3. Click these stat cards and confirm the destination: Users, Teams, Data Sources, Risk Domains, Open Alerts (Realtime Alert & Tracker), Open Tickets (Monitor 2.0), Lark channels, Escalation routes.
-4. Click a department card (should open that team’s working page), a recent-alert row (Realtime Alert & Tracker, that alarm highlighted), and a jump tile. Header shortcuts: Demo Messenger, User Guide, Daily Performance. None should 404.
+4. Click a department card (should open that team’s working page), a recent-alert row (Realtime Alert & Tracker, that alarm highlighted), and a jump tile. Header shortcuts: Demo Messenger, User Guide, Daily Performance, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, /cs. None should 404.
 5. If you are still a public visitor, the guest banner and Sign in control should be visible; after login they should change.
 6. On localhost, click Dummy alert (and once Dummy alert group). The new card(s) highlight on Recent Alerts with a Dummy run badge, spine nodes mark DETECT→DASHBOARD, and Audit / Risk Log / Messenger show the closed walk.
 
-**Pass:** Every Home card/shortcut that claims a page actually opens it; owner attribution is visible.
-**Evidence:** Screenshot of Home plus one card destination; owner line visible.
+**Pass:** Every Home card/shortcut that claims a page actually opens it, including CS/TR desk / dashboard / log / data and /cs; owner attribution is visible.
+**Evidence:** Screenshot of Home plus one CS/TR card destination; owner line visible.
 
 ### UAT-28 — Daily Performance — CFD and Crypto desk numbers
 
 - **Severity:** Medium · **BU:** Risk · **Depends:** UAT-01; daily dashboard seeded · **Window:** T+311m / 10m
-- **Covers:** Daily Performance
+- **Covers:** Daily Performance, CS / TR Dashboard
 - **Why:** The morning meeting needs yesterday’s CFD vs Crypto health in one place, not a spreadsheet.
-- **Goal:** Open Daily Performance and confirm a report date, CFD block, Crypto block and a short summary exist.
+- **Goal:** Open Daily Performance and confirm a report date, CFD block, Crypto block and a short summary exist — and that this is not the CS/TR dashboard.
 
 **Steps**
 
-1. Open Daily Performance from the left pane (or the Home shortcut).
+1. Open Daily Performance from the left pane (or the Home shortcut). The path is /admin/dashboard — not /admin/cs-dashboard.
 2. Note the report date at the top. It must be a real date, not blank.
 3. Confirm two product blocks: CFD and Crypto. Each should list metrics (value, target or status such as OK/WARN/BREACH).
-4. Read the summary counts of WARN/BREACH per product. They should match the colour of the metric rows at a glance.
-5. On localhost, if a Refresh control exists, click it once and confirm the page still renders (Pages may explain read-only).
+4. Read the summary counts of WARN/BREACH per product. They should match the colour of the metric rows at a glance. There must be no CS WAITING mail, follow-up cap or SKILL-CS-* tiles here.
+5. Open CS / TR Dashboard once to prove the two pages are different (UAT-51). Come back: Daily Performance still shows CFD/crypto only.
+6. On localhost, if a Refresh control exists, click it once and confirm the page still renders (Pages may explain read-only).
 
-**Pass:** Report date present; CFD and Crypto sections populated; summary counts visible.
-**Evidence:** Screenshot of Daily Performance with both product blocks.
+**Pass:** Report date present; CFD and Crypto sections populated; summary counts visible; page is not /admin/cs-dashboard.
+**Evidence:** Screenshot of Daily Performance with both product blocks (not CS/TR dashboard).
 
 ### UAT-29 — Risk Log Analytics — what actually moved P&L / clients
 
 - **Severity:** Medium · **BU:** Risk · **Depends:** UAT-02 · **Window:** T+321m / 10m
-- **Covers:** Risk Log Analytics
+- **Covers:** Risk Log Analytics, CS / TR Log
 - **Why:** Alarms without impact are noise. This page is where we judge whether a breach hurt anyone — and read the closed tracker pack, with a full-quarter historical view.
-- **Goal:** Open Risk Log Analytics Overview and confirm 90-day historical charts (backfilled), closed-ticket cards (status, AI analysis, BU/AI action log, mandated solution), plus impact rows with product/domain context.
+- **Goal:** Open Risk Log Analytics Overview and confirm 90-day historical charts (backfilled), closed-ticket cards (status, AI analysis, BU/AI action log, mandated solution), plus impact rows with product/domain context — and that this is not the CS_* log.
 
 **Steps**
 
-1. Open Risk Log Analytics (Overview).
+1. Open Risk Log Analytics (Overview). The path is /admin/risk-log — not /admin/cs-log.
 2. You should see summary tiles, **historical charts spanning ~90 days** (alerts/open book, loss vs prevented, handling latency — not a flat single-day spike), domain bars, and a Closed alerts & tickets list — not a blank white page.
 3. Optionally open the Historical charts tab and confirm the same series.
 4. Expand one closed card. Write down: ticket-closed status, the AI analysis summary, at least one AI or BU action-log line, and the mandated final solution (who mandated it).
-5. Confirm the same alert id is not still sitting on Realtime Alert & Tracker as an open card.
+5. Confirm the same alert id is not still sitting on Realtime Alert & Tracker as an open card. There must be no CS_INTAKE / CS_FOLLOWUP_EMAIL timeline here.
+6. Open CS / TR Log once to prove the two pages are different (UAT-51). Come back: Risk Log still shows Monitor closures only.
 
-**Pass:** Overview shows ~90-day charts plus closed tracker cards with ticket-closed + AI + action log + mandated solution; at least one card can be explained in plain English.
-**Evidence:** Screenshot of Risk Log Overview showing historical charts and one closed card expanded.
+**Pass:** Overview shows ~90-day charts plus closed tracker cards with ticket-closed + AI + action log + mandated solution; at least one card can be explained in plain English; page is not /admin/cs-log.
+**Evidence:** Screenshot of Risk Log Overview showing historical charts and one closed card expanded (not CS/TR log).
 
 ### UAT-30 — Realtime Alert & Tracker — read the queue and acknowledge one
 
@@ -712,80 +765,85 @@ graph TD
 
 1. Open Lark Integration (Response group).
 2. You should see named channels (for example Risk Control Desk, oc_market_intelligence) with purpose, department, minimum severity and enabled flag.
-3. Match at least one channel name to a thread’s channel badge in Demo Messenger.
-4. Read the Lark settings block (webhook / app id placeholders). On localhost, Test notify may send a simulated ping; on Pages it should fail gracefully, not 404 the whole page.
-5. Write one sentence: “Demo Messenger is the UI; this page is the channel directory for when real Lark is wired.”
+3. Find the CS/TR channels: oc_cs_c1 (C1 live chat), oc_cs_kyc (CS KYC Vault) and oc_tr_dealing (TR dealing). They must be listed and enabled in the seed.
+4. Match at least one channel name to a thread’s channel badge in Demo Messenger.
+5. Read the Lark settings block (webhook / app id placeholders). On localhost, Test notify may send a simulated ping; on Pages it should fail gracefully, not 404 the whole page.
+6. Write one sentence: “Demo Messenger is the UI; this page is the channel directory for when real Lark is wired.”
 
-**Pass:** At least three channels listed; one name matches messenger; the page does not crash on Pages.
-**Evidence:** Screenshot of channel table plus a matching messenger badge.
+**Pass:** At least three channels listed including oc_cs_c1 / oc_cs_kyc / oc_tr_dealing; one name matches messenger; the page does not crash on Pages.
+**Evidence:** Screenshot of channel table (including CS/TR ids) plus a matching messenger badge.
 
 ### UAT-37 — Escalation routes registry
 
 - **Severity:** Medium · **BU:** Risk · **Depends:** UAT-09 · **Window:** T+405m / 8m
-- **Covers:** Escalation Routes
+- **Covers:** Escalation Routes, CS / TR Data
 - **Why:** Messenger Escalate is only trustworthy if the path is a configured object with SLA, not free text.
-- **Goal:** Open Escalation Routes and confirm dimension-defined paths (ESC-DEFAULT catch-all), coefficients, and that skills bind one route code — no separate Path name column.
+- **Goal:** Open Escalation Routes and confirm dimension-defined paths (ESC-DEFAULT catch-all plus the four CS/TR hops), coefficients, and that skills bind one route code — no separate Path name column.
 
 **Steps**
 
 1. Open Escalation Routes.
 2. Confirm rows are defined by dimensions (severity, involved teams, risk scenario, pending threshold, need-human) with editable coefficients — not a free-text Path name column.
 3. Find `ESC-DEFAULT` (catch-all for unmatched / exotic events) and at least one enabled non-default route with SLA.
-4. Compare with the ESCALATION bubble from UAT-09. Route codes / teams should match in spirit (desk → credit → owner → exec).
+4. Find the four CS/TR hops: `ESC-CS-24-7`, `ESC-CS-KYC`, `ESC-TR-DEAL` and `ESC-CS-RISK`. `SKILL-CS-ID-VERIFY` binds `ESC-CS-KYC` (not `ESC-CS-24-7`). CS / TR Data lists the same four hops.
+5. Compare with the ESCALATION bubble from UAT-09. Route codes / teams should match in spirit (desk → credit → owner → exec).
 
-**Pass:** ESC-DEFAULT present; at least one enabled dimension-based route with coefficients + SLA; no Path name column; matches messenger escalate text.
-**Evidence:** Screenshot of the dimensions table plus the messenger ESCALATION bubble.
+**Pass:** ESC-DEFAULT present; four CS/TR hops including ESC-CS-KYC; at least one enabled dimension-based route with coefficients + SLA; no Path name column; matches messenger escalate text.
+**Evidence:** Screenshot of the dimensions table (four CS/TR hops) plus the messenger ESCALATION bubble.
 
 ### UAT-38 — Organisation — BU and Teams, users and roles
 
 - **Severity:** Medium · **BU:** System + Risk Owner · **Depends:** UAT-01 · **Window:** T+413m / 15m
-- **Covers:** BU and Teams, Users, Roles & Permissions
+- **Covers:** BU and Teams, Users, Roles & Permissions, CS / TR Data
 - **Why:** RACI, on-call and RBAC all come from these org pages. Empty org data makes Home counts a lie.
-- **Goal:** Walk BU and Teams → Users → editable Roles and confirm seeded people, including the Risk Owner, Viewer, and platform owner.
+- **Goal:** Walk BU and Teams → Users → editable Roles and confirm seeded people, including the Risk Owner, Viewer, platform owner, and the CS KYC Vault team.
 
 **Steps**
 
 1. Open BU and Teams (`/admin/departments`). Each BU should show mandate plus Owns / Accountable / Collaborates / Out of scope / Escalates to, with nested on-call teams (no separate Teams nav tab).
-2. Open Users. Find risk.owner@vantagemarkets.com and viewer@vantagemarkets.com (and haixiang.yan@hytechc.com as demo platform owner). Roles must differ.
-3. Open Roles & Permissions. Confirm the matrix is **editable** (name / description / BU / permission pills via `/api/roles`), RISK_OWNER can enter admin, and VIEWER cannot operate AI Admin — this is the policy behind UAT-01.
-4. Home Users/Teams counts should match what you just counted (allowing for seed size).
+2. Under Customer Service, find CS 24/7 Desk and CS KYC Vault (nested). Under Trading, find TR Dealing Support. CS / TR Data (`/admin/cs-data`) must list the same teams.
+3. Open Users. Find risk.owner@vantagemarkets.com and viewer@vantagemarkets.com (and haixiang.yan@hytechc.com as demo platform owner). Roles must differ.
+4. Open Roles & Permissions. Confirm the matrix is **editable** (name / description / BU / permission pills via `/api/roles`), RISK_OWNER can enter admin, and VIEWER cannot operate AI Admin — this is the policy behind UAT-01.
+5. Home Users/Teams counts should match what you just counted (allowing for seed size).
 
-**Pass:** BU and Teams + Users + editable Roles populated; Risk Owner, Viewer, and platform owner exist with different roles; Home counts are in the same ballpark.
-**Evidence:** Screenshots of Users and Roles highlighting the test accounts.
+**Pass:** BU and Teams + Users + editable Roles populated; CS KYC Vault nested under Customer Service; Risk Owner, Viewer, and platform owner exist with different roles; Home counts are in the same ballpark.
+**Evidence:** Screenshots of Users, Roles, and CS KYC Vault on BU and Teams.
 
 ### UAT-39 — Data sources registry (internal and external)
 
 - **Severity:** Low · **BU:** System · **Depends:** UAT-01 · **Window:** T+428m / 8m
-- **Covers:** Data Sources
+- **Covers:** Data Sources, CS / TR Data
 - **Why:** Market intel, Monitor and RAG all claim sources. This page is the inventory.
-- **Goal:** Open Data Sources and confirm named feeds with type (internal/external) and a status.
+- **Goal:** Open Data Sources and confirm named feeds with type (internal/external) and a status, including CS KYC Vault flags and the MT4/MT5 dealing tape.
 
 **Steps**
 
 1. Open Data Sources (or click the Home card).
 2. The list should include both internal systems (Monitor 2.0, trading DB) and external/public sources used by Market Intelligence.
-3. Pick one internal and one external row. Write name, type and whether it is enabled.
-4. A totally empty registry fails — Home advertised a non-zero count.
+3. Find CS KYC Vault (flags only — no ID images) and the MT4/MT5 dealing tape. CS / TR Data lists the same two CS/TR sources.
+4. Pick one internal and one external row. Write name, type and whether it is enabled.
+5. A totally empty registry fails — Home advertised a non-zero count.
 
-**Pass:** Non-empty registry with at least one internal and one external source.
-**Evidence:** Screenshot of the source list with two rows marked.
+**Pass:** Non-empty registry with at least one internal and one external source, plus CS KYC Vault flags and MT4/MT5 dealing tape.
+**Evidence:** Screenshot of the source list with CS KYC Vault and dealing tape marked.
 
 ### UAT-40 — Platform settings are grouped (not a flat dump)
 
 - **Severity:** Medium · **BU:** System · **Depends:** UAT-01; settings.manage or read · **Window:** T+436m / 10m
-- **Covers:** Platform Settings
-- **Why:** A single alphabetical list of keys is how operators miss lark.* vs ai.* vs monitor2.*.
-- **Goal:** Open Platform Settings and confirm logical groups such as Platform identity, Monitor 2.0, AI analysis, Market intelligence, Messenger/Lark, Escalation & SLA.
+- **Covers:** Platform Settings, CS / TR Data
+- **Why:** A single alphabetical list of keys is how operators miss lark.* vs ai.* vs monitor2.* vs cs.*.
+- **Goal:** Open Platform Settings and confirm logical groups such as Platform identity, Monitor 2.0, AI analysis, Market intelligence, Messenger/Lark, Escalation & SLA, and CS / TR operations (cs.*).
 
 **Steps**
 
 1. Open Platform Settings.
-2. You should see section headings, not one undifferentiated table. Expected groups include Platform identity, Monitor 2.0, AI analysis, Market intelligence, Messenger / Lark, Escalation & SLA.
+2. You should see section headings, not one undifferentiated table. Expected groups include Platform identity, Monitor 2.0, AI analysis, Market intelligence, Messenger / Lark, Escalation & SLA, and CS / TR operations (`#settings-cs`).
 3. Inside AI analysis, find the second-AI severity threshold (ai.second_opinion_severity). It should be BREACH unless someone changed it in UAT-13 — that is the switch behind UAT-05.
-4. Do not save a production-unsafe value. If you change anything, revert it.
+4. Inside CS / TR operations, find `cs.followup_cap` (default 3) plus wait / KYC / TR / Risk SLA keys. CS / TR Data KPIs must show the same cap.
+5. Do not save a production-unsafe value. If you change anything, revert it.
 
-**Pass:** Settings render in named groups; second-AI threshold key is findable.
-**Evidence:** Screenshot of the grouped settings page with the AI section visible.
+**Pass:** Settings render in named groups; second-AI threshold and cs.followup_cap are findable; cs.* matches CS / TR Data.
+**Evidence:** Screenshot of the grouped settings page with the AI section and CS / TR operations visible.
 
 ### UAT-41 — RAG Knowledge Base — browse the corpus the AI cites
 
@@ -867,7 +925,7 @@ graph TD
 **Steps**
 
 1. Open CS / TR Desk (/admin/cs-desk). You should see seeded cases from C1 live chat, a web form and official email (Swap / Something wrong / Slippage / Verify my account).
-2. Confirm BU and Teams lists Customer Service (CS) and Trading (TR) with CS 24/7 Desk and TR Dealing Support.
+2. Confirm BU and Teams lists Customer Service (CS) and Trading (TR) with CS 24/7 Desk, CS KYC Vault and TR Dealing Support.
 3. Open the client portal /cs. Tabs: C1 live chat, Submission form, Official email. On localhost send a short C1 chat — a new desk row appears with channel C1 live chat.
 4. Submit the form and an official email (optional CSR-XXXX in subject to continue). Each uses POST /api/cs/intake with header x-cs-intake-token: demo-c1 (same connector as desk Simulate C1/form/email).
 5. GET /api/cs/intake returns the three-connector catalog. URL Catalog lists /cs, PUBLIC_CS_PORTAL_URL and /api/cs/intake.
@@ -880,21 +938,21 @@ graph TD
 ### UAT-47 — CS/TR — AI emails when unclear or ID is needed, then waits
 
 - **Severity:** Critical · **BU:** CS · **Depends:** UAT-46; follow-up seed cases · **Window:** T+496m / 15m
-- **Covers:** CS / TR Desk, Audit Log
+- **Covers:** CS / TR Desk, Audit Log, CS KYC Vault
 - **Why:** If AI guesses a thin “help me ???” or closes an ID-verify because the client went quiet, CS invents facts and KYC is skipped.
-- **Goal:** Unclear and need-ID cases send an automatic email, stay AWAITING_CLIENT / ID_VERIFY until a reply, block resolve while WAITING, and cap at three mails.
+- **Goal:** Unclear and need-ID cases send an automatic email, stay AWAITING_CLIENT / ID_VERIFY until a reply, block resolve while WAITING, and cap from `cs.followup_cap` (default 3).
 
 **Steps**
 
 1. Open the seeded C1 case “Something wrong with my account” (Sofia Mendes). Status should be AWAITING_CLIENT with an EMAIL_OUT follow-up waiting.
 2. Do not Resolve yet. If localhost allows, Resolve must fail while a follow-up is WAITING.
 3. Click Simulate client email reply, or POST /api/cs/intake with the CSR-XXXX in the subject / In-Reply-To (same as a real mailbox reply). The WAITING follow-up becomes REPLIED, AI re-triages, and the case leaves AWAITING_CLIENT if the reply is clear enough.
-4. Open “Please verify my account — cannot withdraw” (Priya Shah). Status ID_VERIFY. Simulate the ID reply (passport + UID last four).
-5. On a still-unclear thread, click Email: need more detail twice more if needed — the third automatic mail is the cap; a SYSTEM note must say CS Lead follows up in person.
+4. Open “Please verify my account — cannot withdraw” (Priya Shah). Status ID_VERIFY. The hop is `ESC-CS-KYC` (CS KYC Vault), not `ESC-CS-24-7`. Simulate the ID reply (passport + UID last four).
+5. On a still-unclear thread, click Email: need more detail until you hit the cap. The cap is `cs.followup_cap` (default 3, visible on Platform Settings `#settings-cs` and CS / TR Data); a SYSTEM note must say CS Lead follows up in person.
 6. Audit Log (CRMP tab) shows CS_FOLLOWUP_EMAIL and CS_CLIENT_REPLY.
 
-**Pass:** Unclear/ID cases wait for a reply; resolve blocked while WAITING; cap 3; audit rows exist on localhost.
-**Evidence:** Screenshot of waiting auto-email + after simulated reply; optional audit rows.
+**Pass:** Unclear/ID cases wait for a reply; resolve blocked while WAITING; cap from cs.followup_cap (default 3); ID-verify uses CS KYC Vault; audit rows exist on localhost.
+**Evidence:** Screenshot of waiting auto-email + after simulated reply; optional audit rows; cap matches Settings.
 
 ### UAT-48 — CS/TR — trading cases go to TR; book-risk escalates to Risk
 
@@ -996,3 +1054,10 @@ graph TD
 2. At most **2 High** waived with written Risk Owner acceptance.
 3. **100%** BREACH/CRITICAL samples in the UAT window have second-AI challenge (UAT-19).
 4. **UAT-49** sign-off filed (ACCEPT / ACCEPT WITH WAIVERS / REJECT).
+5. CS/TR primary cases (UAT-25, 46, 47, 48, 50, 51, 52) Pass; support cases (17 / 22 / 27–29 / 36–40) still hit the new surfaces.
+
+## Document control
+
+| Ver | Date | Notes |
+|---|---|---|
+| 2.6 | 2026-10-06 | CS/TR feature catalogue: desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*; interactive CS/TR filter; EN/zh-Hant |

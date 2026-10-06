@@ -809,7 +809,7 @@ graph LR
 | 使用手冊 | `/admin/docs/user-guide` | 本手冊 |
 | PRD | `/admin/docs/prd` | 我們在做什麼、為什麼、怎麼算過關 |
 | TSD | `/admin/docs/tsd` | 怎麼做的（架構、API、資料模型） |
-| UAT 清單 | `/admin/docs/uat` | 互動式 52 案簽核（UAT-01 … UAT-52）：為什麼、步驟、通過、證據、畫面覆蓋。CS／TR：UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹、UAT-51 儀表板＋日誌、UAT-52 BU／關卡／`cs.*` |
+| UAT 清單 | `/admin/docs/uat` | 互動式 51 案簽核（UAT-01 … UAT-52，跳過 UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋。**CS／TR 目錄 v2.6：** UAT-25 目錄、UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹、UAT-51 儀表板＋日誌、UAT-52 BU／關卡／`cs.*`，另有支援案 UAT-17／22／27–29／36–40 |
 | 生態導入評估 | `/admin/docs/ecosystem` | 真要導入的人力、預算帶、階段、風險 |
 | 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
 | 開放議題 | `/admin/docs/open-issues` | 計畫清單：ETA、負責 BU、依賴（暫定至 2027） |

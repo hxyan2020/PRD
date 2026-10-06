@@ -1,19 +1,21 @@
 # CRMP UAT 驗收包 — 風險負責人
 
-**文件編號：** CRMP-UAT-001 · **互動示範頁：** [/admin/docs/uat](/admin/docs/uat)
+**文件編號：** CRMP-UAT-001 · **版次：** 2.6 · **日期：** 2026-10-06 · **互動示範頁：** [/admin/docs/uat](/admin/docs/uat)
 
-用白話說：這不是開發自測清單，而是風險負責人帶著證據走完整張管理桌與 Lark 風格 Messenger 的驗收劇本。
+**範圍：** 只升級 CRMP Plus（`/PRD/crmp-plus/`）。原 CRMP 管理後台（`/PRD/crmp-admin/`）維持凍結。
 
-請**依序**執行。Critical 前置未通過前勿跳號。於稽核備註記錄 PASS／FAIL／WAIVE 與證據。本頁互動勾選只存在瀏覽器工作階段，正式簽核是最後一案。
+用白話說：這不是開發自測清單，而是風險負責人帶著證據走完整張管理桌與 Lark 風格 Messenger 的驗收劇本。下方 **CS／TR 功能目錄** 是 24/7 大門的索引，不是再加一堆編號案例。
+
+請**依序**執行。Critical 前置未通過前勿跳號。於稽核備註記錄 PASS／FAIL／WAIVE 與證據。本頁互動勾選只存在瀏覽器工作階段，正式簽核是最後一案（UAT-49）。**沒有 UAT-45**。
 
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- Full pack suggested window ≈ **10.1 小時**（52 案）。
+- Full pack suggested window ≈ **10.1 小時**（51 案；不使用 UAT-45）。
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及 **CS／TR 台**（C1 即時聊天、網頁表單、官方信箱進件；專用 SKILL.md 劇本；AI 追問直到客戶回覆；TR 分流）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效、風險日誌、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark、升級路徑（維度 × 係數 · ESC-DEFAULT）、BU 與團隊／可編輯角色／使用者、資料來源、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定、使用手冊／PRD／TSD／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及 **CS／TR 台**（C1 即時聊天、網頁表單、官方信箱進件；專用 SKILL.md 劇本；AI 追問直到客戶回覆，上限來自 `cs.followup_cap`；TR 分流；**儀表板、日誌與配套資料**）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效（**不是** CS／TR 儀表板）、風險日誌（**不是** CS_* 日誌）、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark（`oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`）、升級路徑（維度 × 係數 · ESC-DEFAULT · ESC-CS-24-7 · ESC-CS-KYC · ESC-TR-DEAL · ESC-CS-RISK）、BU 與團隊（CS 核身庫嵌在客服底下）／可編輯角色／使用者、資料來源（核身庫旗標＋MT4／MT5 成交帶）、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定（`cs.*` 分組）、使用手冊 §9.3／PRD §6.5／TSD §17／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字（含 CS／TR 畫面）。
 
 ```mermaid
 graph TD
@@ -22,8 +24,54 @@ graph TD
   AI --> Msg[Messenger 迴路]
   Msg --> Gate[Checker 加稽核]
   Gate --> Docs[文件與其餘畫面]
+  Login --> CsDoor[UAT-25 網址目錄 CS/TR]
+  CsDoor --> Intake[UAT-46 C1 表單信箱]
+  Intake --> Wait[UAT-47 等待迴圈]
+  Wait --> Tr[UAT-48 TR 與風控]
+  Tr --> Skills[UAT-50 技能與樹]
+  Skills --> Dash[UAT-51 儀表板與日誌]
+  Dash --> Data[UAT-52 配套資料]
+  Data --> Sign[UAT-49 簽核]
+  Docs --> Sign
 ```
 
+## CS／TR 功能目錄
+
+互動雙生：在 [/admin/docs/uat](/admin/docs/uat) 篩選 **CS／TR**（`data-testid="uat-cs-catalogue"`）。七則**主案**證明新功能。十則**支援案**證明其餘桌面仍點到這些畫面。
+
+| 種類 | ID | 功能 | 畫面／網址 | FR |
+|---|---|---|---|---|
+| 主案 | UAT-25 | 網址目錄 CS／TR 區段＋公開 Pages 網址 | `/cs`、台面、儀表板、日誌、資料、五本 SKILL.md、RAG 葉、進件 API | FR-43 |
+| 主案 | UAT-46 | C1 即時聊天、網站表單、官方信箱、`/cs` 入口 | CS／TR 台、客戶入口、網址目錄、BU 與團隊 | FR-37、FR-40 |
+| 主案 | UAT-47 | 自動信件等待迴圈與核身（上限來自 `cs.followup_cap`） | CS／TR 台、稽核日誌、CS 核身庫 | FR-41 |
+| 主案 | UAT-48 | TR 成交交接與帳簿風險升級 | CS／TR 台、示範 Messenger | FR-38 |
+| 主案 | UAT-50 | 專用 SKILL.md 劇本、`CS_SERVICE`／`TRADING_EXEC` 知識樹 | CS／TR 台、AI 技能、知識樹、RAG | FR-39 |
+| 主案 | UAT-51 | 專用 CS／TR 儀表板與日誌（不是每日績效／風險日誌） | `/admin/cs-dashboard`、`/admin/cs-log` | FR-44 |
+| 主案 | UAT-52 | 配套資料：BU、CS 核身庫、四條關卡、`cs.*` 參數 | `/admin/cs-data`、設定、BU 與團隊、升級路徑 | FR-45 |
+| 支援 | UAT-17 | 英／繁文件含使用手冊 §9.3 與本目錄 | 使用手冊、PRD、TSD、UAT 清單 | FR-43 |
+| 支援 | UAT-22 | CS／TR 台、儀表板、日誌、資料的未讀徽章 | 管理首頁、CS／TR 畫面 | FR-37 |
+| 支援 | UAT-27 | 首頁捷徑到 CS／TR 台、儀表板、日誌、資料與 `/cs` | 管理首頁 | FR-37 |
+| 支援 | UAT-28 | 每日績效仍是 CFD／加密 — 不是 CS／TR 儀表板 | 每日績效 vs `/admin/cs-dashboard` | FR-44 |
+| 支援 | UAT-29 | 風險日誌仍是 Monitor 結案 — 不是 CS_* 日誌 | 風險日誌 vs `/admin/cs-log` | FR-44 |
+| 支援 | UAT-36 | Lark 頻道 `oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing` | Lark 整合 | FR-45 |
+| 支援 | UAT-37 | 關卡 `ESC-CS-24-7`／`ESC-CS-KYC`／`ESC-TR-DEAL`／`ESC-CS-RISK` | 升級路徑、CS／TR 資料 | FR-39、FR-45 |
+| 支援 | UAT-38 | BU 與團隊 — CS 核身庫嵌在客服底下 | BU 與團隊、CS／TR 資料 | FR-45 |
+| 支援 | UAT-39 | 資料來源 — 核身庫旗標＋MT4／MT5 成交帶 | 資料來源、CS／TR 資料 | FR-45 |
+| 支援 | UAT-40 | 平台設定 CS／TR 營運分組（`cs.*`） | 平台設定 `#settings-cs`、CS／TR 資料 | FR-45 |
+
+### 公開網址（CS／TR）
+
+永久 Pages 來源：`https://hxyan2020.github.io/PRD/crmp-plus/`。
+
+| 畫面 | 路徑 |
+|---|---|
+| 客戶入口 | `/cs` |
+| CS／TR 台 | `/admin/cs-desk` |
+| CS／TR 儀表板 | `/admin/cs-dashboard` |
+| CS／TR 日誌 | `/admin/cs-log` |
+| CS／TR 資料 | `/admin/cs-data` |
+| 進件 API | `POST /api/cs/intake` · `GET /api/cs/intake` |
+| 資料包 | `GET /api/cs?view=dashboard` · `log` · `data` |
 
 ## 摘要矩陣
 
@@ -46,18 +94,18 @@ graph TD
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI 不可靠近僅限人類的資料 | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | 稽核與首頁脊柱說的故事要和 Messenger 同一件 | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | 英文與繁中文件都能顯示 | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
-| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, Realtime Alert & Tracker |
+| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | 手機寬度煙測（約 390px） | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | 本輪 UAT 每個嚴重分析都有第二 AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | 技能卡片保持精簡；「進入」打開完整劇本 | AI Skills |
 | 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger「在管理後台開啟」落到真實分析 | Demo Messenger, AI analysis detail (/admin/ai-analyses/[id]) |
-| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | 左側未讀數字（Messenger 風格） | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence |
+| 22 | UAT-22 | 251m | 8m | Medium | All | Left nav shell | 左側未讀數字（Messenger 風格） | Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data |
 | 23 | UAT-23 | 259m | 10m | Medium | AI + Risk | RAG + skills seeded | 知識樹顯示領域、技能與文件如何串接 | Knowledge Tree, AI Skills, RAG Knowledge Base |
 | 24 | UAT-24 | 269m | 12m | High | All | EN / 繁中 toggle in shell | 繁中覆蓋介面、Messenger、技能與文件 | Admin Home, Demo Messenger, AI Skills, UAT Checklist |
-| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | 網址目錄列出公開頁（含 CS／TR 大門與劇本） | URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger |
+| 25 | UAT-25 | 281m | 8m | Medium | System | URL catalog | 網址目錄列出公開頁（含 CS／TR 大門與劇本） | URL Catalog, CS / TR Desk, CS client portal, CS / TR Dashboard, CS / TR Log, CS / TR Data, AI Skills, Knowledge Tree, Demo Messenger |
 | 26 | UAT-26 | 289m | 12m | Medium | Risk + System | Messenger + alerts + spine | 用白話把 Messenger 迴路講一遍 | Demo Messenger, Admin Home spine, Audit Log, Realtime Alert & Tracker |
-| 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | 管理首頁 — 卡片、捷徑與平台負責人 | Admin Home, Daily Performance, Users, URL Catalog |
-| 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | 每日績效 — CFD 與 Crypto 桌數字 | Daily Performance |
-| 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | 風險日誌分析 — 實際動到損益／客戶的是什麼 | Risk Log Analytics |
+| 27 | UAT-27 | 301m | 10m | Medium | System + Risk Owner | UAT-01 | 管理首頁 — 卡片、捷徑與平台負責人 | Admin Home, Daily Performance, Users, URL Catalog, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data |
+| 28 | UAT-28 | 311m | 10m | Medium | Risk | UAT-01; daily dashboard seeded | 每日績效 — CFD 與 Crypto 桌數字 | Daily Performance, CS / TR Dashboard |
+| 29 | UAT-29 | 321m | 10m | Medium | Risk | UAT-02 | 風險日誌分析 — 實際動到損益／客戶的是什麼 | Risk Log Analytics, CS / TR Log |
 | 30 | UAT-30 | 331m | 10m | High | Risk | UAT-02; Realtime Alert & Tracker queue | 即時警報與追蹤 — 讀佇列並確認一則 | Realtime Alert & Tracker |
 | 31 | UAT-31 | 341m | 12m | High | Risk + AI | UAT-02; detectors seeded | Monitor 2.0 — 執行指標並看到 WARN／BREACH 落地 | Monitor 2.0, Realtime Alert & Tracker |
 | 32 | UAT-32 | 353m | 8m | Low | Risk | UAT-01 | 風險領域目錄（含 P0–P3 情境） | Risk Domains |
@@ -65,16 +113,16 @@ graph TD
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — 其他建議動作與取消 | Demo Messenger, Human Intervention |
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | 人工介入佇列（Messenger 控制的管理端） | Human Intervention |
 | 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark 整合 — 頻道 vs 應用內 Messenger 示範 | Lark Integration, Demo Messenger |
-| 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | 升級路徑登錄 | Escalation Routes |
-| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | 組織 — BU 與團隊、使用者與角色 | BU and Teams, Users, Roles & Permissions |
-| 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | 資料來源登錄（內部與外部） | Data Sources |
-| 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | 平台設定已分組（不是扁平清單） | Platform Settings |
+| 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | 升級路徑登錄 | Escalation Routes, CS / TR Data |
+| 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | 組織 — BU 與團隊、使用者與角色 | BU and Teams, Users, Roles & Permissions, CS / TR Data |
+| 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | 資料來源登錄（內部與外部） | Data Sources, CS / TR Data |
+| 40 | UAT-40 | 436m | 10m | Medium | System | UAT-01; settings.manage or read | 平台設定已分組（不是扁平清單） | Platform Settings, CS / TR Data |
 | 41 | UAT-41 | 446m | 10m | Medium | AI + Risk | UAT-06; RAG seeded | RAG 知識庫 — 瀏覽 AI 引用的語料 | RAG Knowledge Base |
 | 42 | UAT-42 | 456m | 8m | Low | All | Docs published | 改進路線圖可讀 | Improvement Roadmap |
 | 43 | UAT-43 | 464m | 10m | Critical | System + Platform owner | Public snapshot or local login | 公開快照 — 登入可用並維持 demo platform owner | Login, Admin Home |
 | 44 | UAT-44 | 474m | 10m | High | Risk + System | UAT-11 or UAT-10 | Messenger — 結案後重新整理仍保持關閉 | Demo Messenger |
 | 46 | UAT-46 | 484m | 12m | High | CS + System | UAT-01; CS/TR desk seeded | CS／TR — C1、表單與官方信箱即時進件 | CS / TR Desk, URL Catalog, BU and Teams |
-| 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS／TR — AI 在不清楚或需核身時寄信並等待 | CS / TR Desk, Audit Log |
+| 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS／TR — AI 在不清楚或需核身時寄信並等待 | CS / TR Desk, Audit Log, CS KYC Vault |
 | 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS／TR — 交易案件給 TR；帳簿風險升級風控 | CS / TR Desk, Demo Messenger |
 | 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS／TR — 專用 SKILL.md 劇本蓋台面並豐富知識樹 | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
 | 51 | UAT-51 | 535m | 12m | High | CS | UAT-46; CS/TR dashboard + log seeded | CS／TR — 專用儀表板與日誌，不是每日績效或風險日誌 | CS / TR Dashboard, CS / TR Log |
@@ -373,23 +421,24 @@ graph TD
 - **嚴重度：** Low · **負責：** All · **依賴：** Docs published under /admin/docs/* · **建議：** T+196m / 10m
 - **涵蓋：** User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval
 - **為何測：** 香港桌必須能用繁中跑 UAT 與讀手冊。
-- **目的：** 在使用手冊、PRD、TSD、生態評估與本 UAT 頁切換英／繁，不可 404。
+- **目的：** 在使用手冊（含 §9.3 CS／TR）、PRD、TSD、生態評估與本 UAT 目錄切換英／繁，不可 404。
 
 **步驟**
 
 1. 開啟使用手冊，點文章上的 English／繁體中文（左側 EN／繁中可一併翻譯介面）。
-2. 對 PRD、TSD、生態評估、本 UAT 頁重複。
-3. 內文必須真的切換，不能只有標題變。缺檔 stub 算失敗。
+2. 在使用手冊打開 §9.3 CS／TR 大門。確認台面、/cs 入口、儀表板、日誌、資料、等待迴圈與技能兩語都有。
+3. 對 PRD（§6.5／FR-37…45）、TSD（§17）、生態評估、本 UAT 頁重複 — 含案例列表上方的 CS／TR 功能目錄表。
+4. 內文必須真的切換，不能只有標題變。缺檔 stub 算失敗。
 
-**通過：** 所列文件兩語皆可渲染；非缺檔 stub。
-**證據：** 已測 URL 清單。
+**通過：** 所列文件兩語皆可渲染；使用手冊 §9.3 與本 UAT 的 CS／TR 目錄真的切換；非缺檔 stub。
+**證據：** 已測 URL 清單（含使用手冊 §9.3 與 UAT CS／TR 目錄）。
 
 ### UAT-18 — 手機寬度煙測（約 390px）
 
 - **嚴重度：** Medium · **負責：** All · **依賴：** Responsive admin shell · **建議：** T+206m / 15m
-- **涵蓋：** Admin Home, Demo Messenger, Realtime Alert & Tracker
+- **涵蓋：** Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk
 - **為何測：** 值班人員會用手機開 Messenger。溢出或抽屜壞掉會讓桌面不可用。
-- **目的：** 約 390px 寬時能開選單、走 Messenger 列表→對話→返回，並讀 AI 分析。
+- **目的：** 約 390px 寬時能開選單、走 Messenger 列表→對話→返回、讀 AI 分析，並開啟 CS／TR 台。
 
 **步驟**
 
@@ -397,9 +446,10 @@ graph TD
 2. 首頁點漢堡，左側抽屜打開，整頁不可左右滑。
 3. 開啟示範 Messenger，先看到列表；進對話後點「對話」返回。
 4. 開啟 AI 分析詳情，第二 AI 區塊直向堆疊，主要按鈕仍可點。
+5. 開啟 CS／TR 台。收件匣卡片直向堆疊；模擬／指派至 TR／升級仍可點；無文件級橫向溢出。
 
-**通過：** 抽屜可用；messenger 主從可用；無文件級橫向溢出。
-**證據：** 抽屜／列表／對話／AI 詳情手機截圖。
+**通過：** 抽屜可用；messenger 主從可用；CS／TR 台在 390px 可用；無文件級橫向溢出。
+**證據：** 抽屜／列表／對話／AI 詳情／CS／TR 台手機截圖。
 
 ### UAT-19 — 本輪 UAT 每個嚴重分析都有第二 AI
 
@@ -454,7 +504,7 @@ graph TD
 ### UAT-22 — 左側未讀數字（Messenger 風格）
 
 - **嚴重度：** Medium · **負責：** All · **依賴：** Left nav shell · **建議：** T+251m / 8m
-- **涵蓋：** Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence
+- **涵蓋：** Admin Home, Realtime Alert & Tracker, Demo Messenger, Market Intelligence, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data
 - **為何測：** 操作者不應每個分頁都打開才知道有新事件。
 - **目的：** 有新／未處理工作的分頁顯示玫瑰色數字；打開後只清該分頁。
 
@@ -462,12 +512,13 @@ graph TD
 
 1. 強制重新整理管理首頁，或用無痕視窗，清掉「已看過」標記。
 2. 即時警報與追蹤、示範 Messenger、市場情報等有未處理工作的分頁應出現紅色數字。
-3. 開啟即時警報與追蹤 — 該數字歸零，其他仍在。
-4. 開啟示範 Messenger — 該數字歸零。
-5. 離開再回來：已看過的維持零，除非掃描／分析／同步又產生新工作。
+3. CS／TR 台、CS／TR 儀表板、CS／TR 日誌與 CS／TR 資料在有種子 CS 工單／CS_* 事件時也應有玫瑰色數字（台面＝未結工單、儀表板＝未結、日誌＝CS_* 計數）。
+4. 開啟即時警報與追蹤 — 該數字歸零，其他仍在。
+5. 開啟示範 Messenger — 該數字歸零。開啟 CS／TR 台 — 該 CS 數字歸零；儀表板／日誌／資料在打開前仍在。
+6. 離開再回來：已看過的維持零，除非掃描／分析／同步／CS 進件又產生新工作。
 
-**通過：** 數字對應未處理工作；僅所看分頁歸零。
-**證據：** 左側欄前後截圖。
+**通過：** 數字對應未處理工作（含 CS／TR 畫面）；僅所看分頁歸零。
+**證據：** 左側欄前後截圖（含 CS／TR 徽章）。
 
 ### UAT-23 — 知識樹顯示領域、技能與文件如何串接
 
@@ -507,19 +558,19 @@ graph TD
 ### UAT-25 — 網址目錄列出公開頁（含 CS／TR 大門與劇本）
 
 - **嚴重度：** Medium · **負責：** System · **依賴：** URL catalog · **建議：** T+281m / 8m
-- **涵蓋：** URL Catalog, CS / TR Desk, CS client portal, AI Skills, Knowledge Tree, Demo Messenger
-- **為何測：** 操作者不應靠猜路徑才找得到 /cs、台面、技能詳情、知識樹或 Messenger。
+- **涵蓋：** URL Catalog, CS / TR Desk, CS client portal, CS / TR Dashboard, CS / TR Log, CS / TR Data, AI Skills, Knowledge Tree, Demo Messenger
+- **為何測：** 操作者不應靠猜路徑才找得到 /cs、台面、儀表板、日誌、資料、技能詳情、知識樹或 Messenger。
 - **目的：** 從網址目錄找到 CS／TR 區段、技能、知識樹、示範 Messenger 與市場情報。
 
 **步驟**
 
 1. 開啟網址目錄。閱讀 CS／TR 速記：/cs、POST /api/cs/intake、CSR-XXXX 等待迴圈。
-2. 找到 CS／TR 區段：/cs、/admin/cs-desk、SKILL-CS-CLARIFY（及四本姊妹劇本）、RAG 葉 cs-24-7-intake／cs-id-verify-policy、GET /api/cs/intake。
-3. 從 CS／TR 列打開技能詳情（SKILL-CS-CLARIFY），或在 AI 技能以代碼取代 [code]。
+2. 找到 CS／TR 區段：/cs、/admin/cs-desk、/admin/cs-dashboard、/admin/cs-log、/admin/cs-data、SKILL-CS-CLARIFY（及四本姊妹劇本）、RAG 葉 cs-24-7-intake／cs-id-verify-policy、GET /api/cs/intake 與 GET /api/cs?view=dashboard|log|data。
+3. 從 CS／TR 列打開技能詳情（SKILL-CS-CLARIFY），或在 AI 技能以代碼取代 [code]。同一區段打開儀表板／日誌／資料。
 4. 目錄標示本平台來源（hxyan2020.github.io/PRD/crmp-plus）、客戶入口（…/cs/），並仍列出原 CRMP 管理後台為凍結（hxyan2020.github.io/PRD/crmp-admin）。
 
-**通過：** CS／TR 路由、五本劇本與進件 API 已列出且可開；CRMP Plus 來源與 /cs 可見；原 CRMP 管理後台標為凍結。
-**證據：** 目錄列截圖（CS／TR 區段＋公開網址）。
+**通過：** CS／TR 路由（台面、儀表板、日誌、資料）、五本劇本與進件 API 已列出且可開；CRMP Plus 來源與 /cs 可見；原 CRMP 管理後台標為凍結。
+**證據：** 目錄列截圖（CS／TR 區段＋公開網址，含儀表板、日誌、資料）。
 
 ### UAT-26 — 用白話把 Messenger 迴路講一遍
 
@@ -542,7 +593,7 @@ graph TD
 ### UAT-27 — 管理首頁 — 卡片、捷徑與平台負責人
 
 - **嚴重度：** Medium · **負責：** System + Risk Owner · **依賴：** UAT-01 · **建議：** T+301m / 10m
-- **涵蓋：** Admin Home, Daily Performance, Users, URL Catalog
+- **涵蓋：** Admin Home, Daily Performance, Users, URL Catalog, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data
 - **為何測：** 首頁是整張桌的地圖。卡片失效或沒有負責人會讓原型看起來沒人管。
 - **目的：** 點進首頁數字卡確認開到正確頁；負責人列為 demo platform owner。
 
@@ -551,48 +602,50 @@ graph TD
 1. 開啟管理首頁。
 2. 首頁面板與左側頁尾可見平台負責人 demo platform owner／haixiang.yan@hytechc.com。
 3. 點這些數字卡並確認目的地：使用者、BU 與團隊、資料來源、風險領域、即時警報與追蹤、Monitor 2.0、Lark 頻道、升級路徑。
-4. 點一張部門卡（應開該組工作頁）、一列最近警報（即時警報與追蹤，該筆醒目）、一塊跳轉磁磚。頁首捷徑：示範 Messenger、使用手冊、每日績效。皆不可 404。
+4. 點一張部門卡（應開該組工作頁）、一列最近警報（即時警報與追蹤，該筆醒目）、一塊跳轉磁磚。頁首捷徑：示範 Messenger、使用手冊、每日績效、CS／TR 台、儀表板、日誌、資料、/cs。皆不可 404。
 5. 若仍是公開訪客，應看到訪客橫幅與登入；登入後應改變。
 6. 本機點「虛擬警報」（以及一次「虛擬警報組」）。最近警報卡片應標「虛擬演練」、脊柱標出 DETECT→DASHBOARD，稽核／風險日誌／Messenger 可見已結案走線。
 
-**通過：** 宣稱有頁面的卡片／捷徑都能打開；負責人資訊可見。
-**證據：** 首頁截圖＋一張卡片目的地；負責人列可見。
+**通過：** 宣稱有頁面的卡片／捷徑都能打開，含 CS／TR 台／儀表板／日誌／資料與 /cs；負責人資訊可見。
+**證據：** 首頁截圖＋一張 CS／TR 卡片目的地；負責人列可見。
 
 ### UAT-28 — 每日績效 — CFD 與 Crypto 桌數字
 
 - **嚴重度：** Medium · **負責：** Risk · **依賴：** UAT-01; daily dashboard seeded · **建議：** T+311m / 10m
-- **涵蓋：** Daily Performance
+- **涵蓋：** Daily Performance, CS / TR Dashboard
 - **為何測：** 早會需要在同一頁看到昨天 CFD 與 Crypto 健康，而不是試算表。
-- **目的：** 開啟每日績效，確認報告日、CFD 區、Crypto 區與摘要都在。
+- **目的：** 開啟每日績效，確認報告日、CFD 區、Crypto 區與摘要都在 — 且這不是 CS／TR 儀表板。
 
 **步驟**
 
-1. 由左側或首頁捷徑開啟每日績效。
+1. 由左側或首頁捷徑開啟每日績效。路徑是 /admin/dashboard — 不是 /admin/cs-dashboard。
 2. 頂部報告日期須為真實日期，不可空白。
 3. 確認 CFD 與 Crypto 兩塊，各有指標（數值、目標或 OK／WARN／BREACH）。
-4. 閱讀各產品 WARN／BREACH 摘要，應與列的顏色大致相符。
-5. 本機若有重新整理，點一次後頁面仍能顯示（Pages 可說明唯讀）。
+4. 閱讀各產品 WARN／BREACH 摘要，應與列的顏色大致相符。這裡不可有 CS WAITING 信件、追問上限或 SKILL-CS-* 磚。
+5. 打開 CS／TR 儀表板一次以證明兩頁不同（UAT-51）。回來：每日績效仍只有 CFD／加密。
+6. 本機若有重新整理，點一次後頁面仍能顯示（Pages 可說明唯讀）。
 
-**通過：** 有報告日；CFD 與 Crypto 有資料；摘要可見。
-**證據：** 每日績效兩產品區塊截圖。
+**通過：** 有報告日；CFD 與 Crypto 有資料；摘要可見；頁面不是 /admin/cs-dashboard。
+**證據：** 每日績效兩產品區塊截圖（不是 CS／TR 儀表板）。
 
 ### UAT-29 — 風險日誌分析 — 實際動到損益／客戶的是什麼
 
 - **嚴重度：** Medium · **負責：** Risk · **依賴：** UAT-02 · **建議：** T+321m / 10m
-- **涵蓋：** Risk Log Analytics
+- **涵蓋：** Risk Log Analytics, CS / TR Log
 - **為何測：** 沒有影響的警報是雜訊。這頁用來判斷違規有沒有傷到人，並讀已結追蹤包，同時看完整一季歷史。
-- **目的：** 開啟風險日誌分析總覽，確認 90 天歷史圖表（已回填）、已結工單卡片（狀態、AI 分析、BU／AI 動作紀錄、核定方案）以及含產品／領域的影響列。
+- **目的：** 開啟風險日誌分析總覽，確認 90 天歷史圖表（已回填）、已結工單卡片（狀態、AI 分析、BU／AI 動作紀錄、核定方案）以及含產品／領域的影響列 — 且這不是 CS_* 日誌。
 
 **步驟**
 
-1. 開啟風險日誌分析（總覽）。
+1. 開啟風險日誌分析（總覽）。路徑是 /admin/risk-log — 不是 /admin/cs-log。
 2. 應看到摘要磚、**約 90 天的歷史圖表**（警報／未結帳本、損失 vs 防損、處理延遲 — 不是單日尖峰）、領域長條，以及「已關閉警報與工單」列表，不是空白頁。
 3. 可選開「歷史圖表」分頁確認同一序列。
 4. 展開一張已結卡片。記下：工單已關閉狀態、AI 分析摘要、至少一筆 AI 或 BU 動作紀錄，以及核定最終方案（誰核定）。
-5. 確認同一個警報編號不再出現在即時警報與追蹤的未結佇列。
+5. 確認同一個警報編號不再出現在即時警報與追蹤的未結佇列。這裡不可有 CS_INTAKE／CS_FOLLOWUP_EMAIL 時間軸。
+6. 打開 CS／TR 日誌一次以證明兩頁不同（UAT-51）。回來：風險日誌仍只有 Monitor 結案。
 
-**通過：** 總覽有約 90 天圖表，以及已結追蹤卡片（工單已關閉、AI、動作紀錄與核定方案）；至少一張能用白話解釋。
-**證據：** 風險日誌總覽截圖（含歷史圖表），並展開一張已結卡片。
+**通過：** 總覽有約 90 天圖表，以及已結追蹤卡片（工單已關閉、AI、動作紀錄與核定方案）；至少一張能用白話解釋；頁面不是 /admin/cs-log。
+**證據：** 風險日誌總覽截圖（含歷史圖表），並展開一張已結卡片（不是 CS／TR 日誌）。
 
 ### UAT-30 — 即時警報與追蹤 — 讀佇列並確認一則
 
@@ -712,80 +765,85 @@ graph TD
 
 1. 開啟 Lark 整合。
 2. 應看到具名頻道（如 Risk Control Desk、oc_market_intelligence），含用途、部門、最低嚴重度與啟用。
-3. 至少一個頻道名對得上示範 Messenger 對話的頻道徽章。
-4. 閱讀 Lark 設定（webhook／app id 佔位）。本機測試通知可模擬；Pages 應溫和失敗，不可整頁 404。
-5. 寫一句：「示範 Messenger 是介面；本頁是接上真實 Lark 時的頻道目錄。」
+3. 找到 CS／TR 頻道：oc_cs_c1（C1 即時聊天）、oc_cs_kyc（CS 核身庫）與 oc_tr_dealing（TR 成交）。種子必須列出且啟用。
+4. 至少一個頻道名對得上示範 Messenger 對話的頻道徽章。
+5. 閱讀 Lark 設定（webhook／app id 佔位）。本機測試通知可模擬；Pages 應溫和失敗，不可整頁 404。
+6. 寫一句：「示範 Messenger 是介面；本頁是接上真實 Lark 時的頻道目錄。」
 
-**通過：** 至少三個頻道；一個名稱對得上 Messenger；Pages 上頁面不崩。
-**證據：** 頻道表截圖＋對應的 Messenger 徽章。
+**通過：** 至少三個頻道，含 oc_cs_c1／oc_cs_kyc／oc_tr_dealing；一個名稱對得上 Messenger；Pages 上頁面不崩。
+**證據：** 頻道表截圖（含 CS／TR id）＋對應的 Messenger 徽章。
 
 ### UAT-37 — 升級路徑登錄
 
 - **嚴重度：** Medium · **負責：** Risk · **依賴：** UAT-09 · **建議：** T+405m / 8m
-- **涵蓋：** Escalation Routes
+- **涵蓋：** Escalation Routes, CS / TR Data
 - **為何測：** Messenger 的升級只有在路徑是有 SLA 的設定物件時才可信，而不是自由文字。
-- **目的：** 開啟升級路徑，確認維度定義路徑（ESC-DEFAULT 兜底）、係數，以及技能只綁一條路徑代碼 — 無獨立「路徑」名稱欄。
+- **目的：** 開啟升級路徑，確認維度定義路徑（ESC-DEFAULT 兜底加上四條 CS／TR 關卡）、係數，以及技能只綁一條路徑代碼 — 無獨立「路徑」名稱欄。
 
 **步驟**
 
 1. 開啟升級路徑。
 2. 確認列以維度定義（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）並可編輯係數 — 不是自由文字「路徑」名稱欄。
 3. 找到 `ESC-DEFAULT`（未匹配／特殊事件兜底）與至少一條已啟用、含 SLA 的非預設路徑。
-4. 與 UAT-09 的 ESCALATION 氣泡比對，路徑代碼／團隊精神應相符。
+4. 找到四條 CS／TR 關卡：`ESC-CS-24-7`、`ESC-CS-KYC`、`ESC-TR-DEAL`、`ESC-CS-RISK`。`SKILL-CS-ID-VERIFY` 綁 `ESC-CS-KYC`（不是 `ESC-CS-24-7`）。CS／TR 資料列出同一四條。
+5. 與 UAT-09 的 ESCALATION 氣泡比對，路徑代碼／團隊精神應相符。
 
-**通過：** ESC-DEFAULT 存在；至少一條維度路徑含係數＋SLA；無「路徑」名稱欄；與 Messenger 升級文字相符。
-**證據：** 維度表截圖＋ Messenger ESCALATION 氣泡。
+**通過：** ESC-DEFAULT 存在；四條 CS／TR 關卡含 ESC-CS-KYC；至少一條維度路徑含係數＋SLA；無「路徑」名稱欄；與 Messenger 升級文字相符。
+**證據：** 維度表截圖（四條 CS／TR 關卡）＋ Messenger ESCALATION 氣泡。
 
 ### UAT-38 — 組織 — BU 與團隊、使用者與角色
 
 - **嚴重度：** Medium · **負責：** System + Risk Owner · **依賴：** UAT-01 · **建議：** T+413m / 15m
-- **涵蓋：** BU and Teams, Users, Roles & Permissions
+- **涵蓋：** BU and Teams, Users, Roles & Permissions, CS / TR Data
 - **為何測：** RACI、值班與 RBAC 都來自這些組織頁。組織資料是空的，首頁數字就是謊言。
-- **目的：** 走訪 BU 與團隊→使用者→可編輯角色，確認種子人員含風險負責人、Viewer 與平台負責人。
+- **目的：** 走訪 BU 與團隊→使用者→可編輯角色，確認種子人員含風險負責人、Viewer、平台負責人，以及 CS 核身庫團隊。
 
 **步驟**
 
 1. 開啟 BU 與團隊（`/admin/departments`）。每個 BU 應有使命與擁有／課責／協作／範圍外／升級至，並含嵌套值班團隊（左側無獨立團隊分頁）。
-2. 開啟使用者。找到 risk.owner@…、viewer@…，以及 haixiang.yan@hytechc.com（demo platform owner）。角色必須不同。
-3. 開啟角色與權限。確認矩陣**可編輯**（名稱／說明／BU／權限晶片經 `/api/roles`）、RISK_OWNER 可進後台、VIEWER 不能操作 AI Admin——這是 UAT-01 背後的政策。
-4. 首頁使用者／團隊數字應與剛數的大致相符。
+2. 在客服底下找到 CS 24/7 台與 CS 核身庫（嵌套）。在交易底下找到 TR 成交支援。CS／TR 資料（`/admin/cs-data`）必須列出同一批團隊。
+3. 開啟使用者。找到 risk.owner@…、viewer@…，以及 haixiang.yan@hytechc.com（demo platform owner）。角色必須不同。
+4. 開啟角色與權限。確認矩陣**可編輯**（名稱／說明／BU／權限晶片經 `/api/roles`）、RISK_OWNER 可進後台、VIEWER 不能操作 AI Admin——這是 UAT-01 背後的政策。
+5. 首頁使用者／團隊數字應與剛數的大致相符。
 
-**通過：** BU 與團隊＋使用者＋可編輯角色有資料；風險負責人、Viewer 與平台負責人存在且角色不同；首頁數字同一量級。
-**證據：** 使用者與角色截圖，標出測試帳號。
+**通過：** BU 與團隊＋使用者＋可編輯角色有資料；CS 核身庫嵌在客服底下；風險負責人、Viewer 與平台負責人存在且角色不同；首頁數字同一量級。
+**證據：** 使用者、角色與 BU 與團隊上的 CS 核身庫截圖。
 
 ### UAT-39 — 資料來源登錄（內部與外部）
 
 - **嚴重度：** Low · **負責：** System · **依賴：** UAT-01 · **建議：** T+428m / 8m
-- **涵蓋：** Data Sources
+- **涵蓋：** Data Sources, CS / TR Data
 - **為何測：** 市場情報、Monitor 與 RAG 都宣稱有來源。本頁是清單。
-- **目的：** 開啟資料來源，確認具名來源、類型（內部／外部）與狀態。
+- **目的：** 開啟資料來源，確認具名來源、類型（內部／外部）與狀態，含 CS 核身庫旗標與 MT4／MT5 成交帶。
 
 **步驟**
 
 1. 開啟資料來源（或點首頁卡片）。
 2. 列表應含內部系統（Monitor 2.0、交易庫）與市場情報用的外部／公開來源。
-3. 各挑一列內部與外部，記下名稱、類型、是否啟用。
-4. 完全空白算失敗——首頁已顯示非零。
+3. 找到 CS 核身庫（僅旗標 — 無證件圖）與 MT4／MT5 成交帶。CS／TR 資料列出同一兩項 CS／TR 來源。
+4. 各挑一列內部與外部，記下名稱、類型、是否啟用。
+5. 完全空白算失敗——首頁已顯示非零。
 
-**通過：** 登錄非空；至少一內一外。
-**證據：** 來源列表截圖並標兩列。
+**通過：** 登錄非空；至少一內一外；另有 CS 核身庫旗標與 MT4／MT5 成交帶。
+**證據：** 來源列表截圖並標出 CS 核身庫與成交帶。
 
 ### UAT-40 — 平台設定已分組（不是扁平清單）
 
 - **嚴重度：** Medium · **負責：** System · **依賴：** UAT-01; settings.manage or read · **建議：** T+436m / 10m
-- **涵蓋：** Platform Settings
-- **為何測：** 單一字母排序很容易讓人漏掉 lark.*、ai.*、monitor2.*。
-- **目的：** 開啟平台設定，確認有平台身分、Monitor 2.0、AI 分析、市場情報、Messenger／Lark、升級與 SLA 等分組。
+- **涵蓋：** Platform Settings, CS / TR Data
+- **為何測：** 單一字母排序很容易讓人漏掉 lark.*、ai.*、monitor2.*、cs.*。
+- **目的：** 開啟平台設定，確認有平台身分、Monitor 2.0、AI 分析、市場情報、Messenger／Lark、升級與 SLA，以及 CS／TR 營運（cs.*）等分組。
 
 **步驟**
 
 1. 開啟平台設定。
-2. 應看到分節標題，不是一張無差別表。預期分組含平台身分、Monitor 2.0、AI 分析、市場情報、Messenger／Lark、升級與 SLA。
+2. 應看到分節標題，不是一張無差別表。預期分組含平台身分、Monitor 2.0、AI 分析、市場情報、Messenger／Lark、升級與 SLA，以及 CS／TR 營運（`#settings-cs`）。
 3. 在即時警報與追蹤找到第二 AI 嚴重度門檻（ai.second_opinion_severity），預設 BREACH（UAT-05 的開關）；UAT-13 若改過則另計。
-4. 不要存不安全值。若有改，請還原。
+4. 在 CS／TR 營運找到 `cs.followup_cap`（預設 3）以及等待／核身／TR／風控 SLA 鍵。CS／TR 資料指標必須顯示同一上限。
+5. 不要存不安全值。若有改，請還原。
 
-**通過：** 設定以具名分組呈現；找得到第二 AI 門檻鍵。
-**證據：** 分組設定頁截圖，AI 區可見。
+**通過：** 設定以具名分組呈現；找得到第二 AI 門檻與 cs.followup_cap；cs.* 與 CS／TR 資料相符。
+**證據：** 分組設定頁截圖，AI 區與 CS／TR 營運可見。
 
 ### UAT-41 — RAG 知識庫 — 瀏覽 AI 引用的語料
 
@@ -867,7 +925,7 @@ graph TD
 **步驟**
 
 1. 開啟 CS／TR 台（/admin/cs-desk）。應看到種子案件來自 C1 即時聊天、網頁表單與官方信箱。
-2. 確認 BU 與團隊列出客服（CS）與交易（TR），含 CS 24/7 台與 TR 成交支援。
+2. 確認 BU 與團隊列出客服（CS）與交易（TR），含 CS 24/7 台、CS 核身庫與 TR 成交支援。
 3. 開啟客戶入口 /cs。分頁：C1 即時聊天、提交表單、官方信箱。本機送出短句 C1 聊天 — 台面應出現新列，渠道為 C1 即時聊天。
 4. 送出表單與官方信件（主旨可含 CSR-XXXX 以續辦）。皆走 POST /api/cs/intake、標頭 x-cs-intake-token: demo-c1（與台面模擬 C1／表單／信件同一連接器）。
 5. GET /api/cs/intake 回傳三連接器目錄。網址目錄列出 /cs、PUBLIC_CS_PORTAL_URL 與 /api/cs/intake。
@@ -880,21 +938,21 @@ graph TD
 ### UAT-47 — CS／TR — AI 在不清楚或需核身時寄信並等待
 
 - **嚴重度：** Critical · **負責：** CS · **依賴：** UAT-46; follow-up seed cases · **建議：** T+496m / 15m
-- **涵蓋：** CS / TR Desk, Audit Log
+- **涵蓋：** CS / TR Desk, Audit Log, CS KYC Vault
 - **為何測：** 若 AI 對短句「help me ???」臆測結案，或客戶沒回就把核身關掉，CS 會捏造事實、KYC 被跳過。
-- **目的：** 不清楚與需核身案件自動寄信，維持待客戶／身分驗證直到回覆；WAITING 時不可結案；最多三封。
+- **目的：** 不清楚與需核身案件自動寄信，維持待客戶／身分驗證直到回覆；WAITING 時不可結案；上限來自 `cs.followup_cap`（預設 3）。
 
 **步驟**
 
 1. 開啟種子 C1 案件「Something wrong with my account」（Sofia Mendes）。狀態應為待客戶，並有 EMAIL_OUT 追問等待中。
 2. 先不要結案。本機若允許操作，在追問仍為 WAITING 時結案必須失敗。
 3. 點「模擬客戶回信」，或對 POST /api/cs/intake 主旨／In-Reply-To 帶 CSR-XXXX（與真實信箱回信相同）。WAITING 變 REPLIED，AI 重新分流；回覆足夠清楚時離開待客戶。
-4. 開啟「Please verify my account — cannot withdraw」（Priya Shah）。狀態身分驗證。模擬核身回覆（護照＋UID 後四碼）。
-5. 仍不清楚的對話可再點「寄信：請補充」；第三封是上限，SYSTEM 註記須說明由 CS Lead 人工跟進。
+4. 開啟「Please verify my account — cannot withdraw」（Priya Shah）。狀態身分驗證。關卡是 `ESC-CS-KYC`（CS 核身庫），不是 `ESC-CS-24-7`。模擬核身回覆（護照＋UID 後四碼）。
+5. 仍不清楚的對話可再點「寄信：請補充」直到碰到上限。上限是 `cs.followup_cap`（預設 3，平台設定 `#settings-cs` 與 CS／TR 資料可見）；SYSTEM 註記須說明由 CS Lead 人工跟進。
 6. 稽核日誌（CRMP 分頁）出現 CS_FOLLOWUP_EMAIL 與 CS_CLIENT_REPLY。
 
-**通過：** 不清楚／核身案件等待回覆；WAITING 時不可結案；上限 3 封；本機有稽核列。
-**證據：** 等待自動信件與模擬回覆後截圖；可附稽核列。
+**通過：** 不清楚／核身案件等待回覆；WAITING 時不可結案；上限來自 cs.followup_cap（預設 3）；核身走 CS 核身庫；本機有稽核列。
+**證據：** 等待自動信件與模擬回覆後截圖；可附稽核列；上限與設定相符。
 
 ### UAT-48 — CS／TR — 交易案件給 TR；帳簿風險升級風控
 
@@ -996,3 +1054,10 @@ graph TD
 2. **High** 豁免不超過 2 項，且須書面風險接受。
 3. UAT 視窗內 BREACH／CRITICAL **100%** 附第二 AI（UAT-19）。
 4. 完成 **UAT-49** 簽核（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。
+5. CS／TR 主案（UAT-25、46、47、48、50、51、52）必須 Pass；支援案（17／22／27–29／36–40）須證明新畫面仍被點到。
+
+## 文件控制
+
+| 版次 | 日期 | 說明 |
+|---|---|---|
+| 2.6 | 2026-10-06 | CS／TR 功能目錄：台面、/cs、等待迴圈、技能、儀表板、日誌、資料、關卡、cs.*；互動 CS／TR 篩選；英／繁 |

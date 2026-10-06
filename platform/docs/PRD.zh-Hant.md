@@ -290,7 +290,7 @@ graph TD
 | FR-40 | 公開 CS 進件入口＋進件回覆 | 客戶 `/cs` 分頁（C1、表單、官方信箱）打 `/api/cs/intake`；GET 連接器目錄；回覆以 `request_id`／`in_reply_to`／`channel_ref`／`CSR-XXXX` 續辦原案。永久網址 `https://hxyan2020.github.io/PRD/crmp-plus/cs/`。 |
 | FR-41 | 自動信件等待迴圈 | 不清楚或需核身 → 一封 `EMAIL_OUT`，狀態 `AWAITING_CLIENT` 或 `ID_VERIFY`，追問 `WAITING`；上限來自 `cs.followup_cap`（預設 3）後客服主管；**WAITING 時禁止結案**。UAT-47。 |
 | FR-42 | CS／TR 隱私＋公開狀態 | `GET /api/cs/intake?request_id=` 回傳無個資狀態；切勿把證件圖存進案件；核身庫是流程不是 blob。UAT-49。 |
-| FR-43 | CS／TR 操作文件 | 使用手冊 §9.3；網址目錄 **CS／TR** 區段（`/cs`、台面、儀表板、日誌、資料、五本技能、RAG 葉、進件 API、`cs_*` 表）；UAT-25＋UAT-46…52 |
+| FR-43 | CS／TR 操作文件 | 使用手冊 §9.3；網址目錄 **CS／TR** 區段（`/cs`、台面、儀表板、日誌、資料、五本技能、RAG 葉、進件 API、`cs_*` 表）；UAT 目錄 v2.6（UAT-25＋UAT-46…52＋支援 17／22／27–29／36–40） |
 | FR-44 | CS／TR 儀表板＋日誌 | 專用 `/admin/cs-dashboard`（指標：總數、未結／已結、WAITING、追問上限、TR、風控，依渠道／狀態／技能／台面）與 `/admin/cs-log`（CS_* 時間軸＋已結包）。**不是**每日績效（`/admin/dashboard`），**不是**風險日誌分析（`/admin/risk-log`）。`GET /api/cs?view=dashboard\|log`。UAT-51。 |
 | FR-45 | CS／TR 配套資料 | 種子並呈現：CUSTOMER_SERVICE／TRADING BU；團隊 CS 24/7 台、**CS 核身庫**、TR 成交支援；具名 POC；路徑 `ESC-CS-24-7`／`ESC-CS-KYC`／`ESC-TR-DEAL`／`ESC-CS-RISK`；`cs.*` 參數（上限、SLA、進件 token、信箱、Lark）；C1／表單／信箱＋核身庫＋成交帶來源。頁面 `/admin/cs-data`，`GET /api/cs?view=data`。UAT-52。 |
 
@@ -340,7 +340,7 @@ graph TD
 | 文件 | 使用手冊 | `/admin/docs/user-guide` | 如何操作 | 英＋繁中；每一畫面加上 §9.3 CS／TR |
 | 文件 | PRD | `/admin/docs/prd` | 為什麼／做什麼／怎麼過 | 本文件（FR-37…45、G13、§5.7–5.9、§6.5） |
 | 文件 | TSD | `/admin/docs/tsd` | 怎麼做的 | 完整介面地圖 |
-| 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 52 案，可互動（UAT-46…52 CS／TR） |
+| 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 51 案，可互動（UAT-46…52 CS／TR；目錄 v2.6） |
 | 文件 | 生態導入評估 | `/admin/docs/ecosystem` | 導入 | 階段、預算、風險 |
 | 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | RM-01…15：今日／要做／完成標準 |
 | 文件 | 開放議題 | `/admin/docs/open-issues` | 計畫缺口 | ETA、BU、依賴 → 2027 |
@@ -510,7 +510,7 @@ CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已
 |---|---|
 | 每頁操作說明 | 使用手冊 §6–§12（CS／TR：§9.3） |
 | 每頁技術模組 | TSD §7＋§8–§18（CS／TR：§17） |
-| 每介面測試案例 | UAT-01…UAT-52 的 `covers` 欄（CS／TR：UAT-25、UAT-46…52） |
+| 每介面測試案例 | UAT 目錄 v2.6 — UAT-01…UAT-52 的 `covers` 欄（CS／TR 主案：UAT-25、UAT-46…52；支援：17／22／27–29／36–40） |
 | 公開與本機網址 | 網址目錄（CS／TR 區段） |
 
 ---

@@ -810,7 +810,7 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | User Guide | `/admin/docs/user-guide` | This handbook |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
-| UAT Checklist | `/admin/docs/uat` | Interactive 52-case sign-off (UAT-01 … UAT-52): why, steps, pass, evidence, screen coverage. CS/TR: UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log, UAT-52 BU / hops / `cs.*` |
+| UAT Checklist | `/admin/docs/uat` | Interactive 51-case sign-off (UAT-01 … UAT-52, skip UAT-45): why, steps, pass, evidence, screen coverage. **CS/TR catalogue v2.6:** UAT-25 catalog, UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log, UAT-52 BU / hops / `cs.*`, plus support UAT-17/22/27–29/36–40 |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
