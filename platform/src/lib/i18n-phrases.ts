@@ -1458,8 +1458,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "內外部來源登錄 — 含 C1 即時聊天閘道、網站 CS 表單與官方客服信箱",
   "Two tabs — CRMP logs (alerts/AI/skills/escalation/interventions/messenger/CS_*) and Vantage Markets Admin logs; Roll back via before-state snapshot":
     "兩個分頁 — CRMP 日誌（警報／AI／技能／升級／介入／Messenger／CS_*）與 Vantage Markets 管理日誌；有變更前快照可回滾",
-  "Technical Specification Design (EN/ZH) — §17 CS/TR intake, connectors, wait loop, skill stamps":
-    "技術規格設計（英／繁中）— §17 CS／TR 進件、連接器、等待迴圈、技能蓋章",
+  "Technical Specification Design (EN/ZH) — §17.5–17.10 schema, intake, wait loop, /cs portal, URL catalog, FR-37…43":
+    "技術規格設計（英／繁中）— §17.5–17.10 綱要、進件、等待迴圈、/cs 入口、網址目錄、FR-37…43",
   "Product Requirements (EN/ZH) — G13 + FR-37…43: /cs portal, C1/form/mailbox, wait loop, dedicated skills, catalog":
     "產品需求（英／繁中）— G13＋FR-37…43：/cs 入口、C1／表單／信箱、等待迴圈、專用技能、目錄",
   "Risk Owner UAT pack — UAT-46…50 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault":
