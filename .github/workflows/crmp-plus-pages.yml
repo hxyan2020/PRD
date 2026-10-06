@@ -2,7 +2,7 @@ name: Publish CRMP Plus to GitHub Pages
 
 on:
   push:
-    branches: [cursor/crmp-plus-a935]
+    branches: [cursor/crmp-plus-a935, cursor/ai-use-manual-a935]
     paths:
       - "platform/**"
       - ".github/workflows/crmp-plus-pages.yml"
@@ -38,7 +38,22 @@ jobs:
           mkdir -p publish/crmp-plus
           cp -a platform/out/. publish/crmp-plus/
           touch publish/crmp-plus/.nojekyll
-      - name: Publish gh-pages (keep sibling sites including crmp-admin)
+      - name: Build original CRMP Admin snapshot (Docs includes AI Use Manual)
+        if: github.ref == 'refs/heads/cursor/ai-use-manual-a935'
+        working-directory: platform
+        env:
+          NEXT_PUBLIC_STATIC_EXPORT: "1"
+          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-admin
+        run: |
+          rm -rf out
+          npm run build:pages
+      - name: Stage original CRMP Admin folder
+        if: github.ref == 'refs/heads/cursor/ai-use-manual-a935'
+        run: |
+          mkdir -p publish/crmp-admin
+          cp -a platform/out/. publish/crmp-admin/
+          touch publish/crmp-admin/.nojekyll
+      - name: Publish gh-pages (keep sibling sites)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -48,8 +63,10 @@ jobs:
       - name: Public URL
         run: |
           {
-            echo "Permanent CRMP Plus URL (original CRMP Admin left intact)"
+            echo "CRMP Plus (upgraded admin)"
             echo "- https://hxyan2020.github.io/PRD/crmp-plus/admin/"
-            echo "- https://hxyan2020.github.io/PRD/crmp-plus/"
-            echo "- Frozen original: https://hxyan2020.github.io/PRD/crmp-admin/admin/"
+            echo "- Docs → AI Use Manual: https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/"
+            echo "Original CRMP Admin"
+            echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
+            echo "- Docs → AI Use Manual: https://hxyan2020.github.io/PRD/crmp-admin/admin/docs/ai-use/"
           } >> "$GITHUB_STEP_SUMMARY"
