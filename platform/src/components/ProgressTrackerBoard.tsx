@@ -18,8 +18,8 @@ import { useUiLocale } from "@/hooks/useUiLocale";
 
 const STATUS_COLOR: Record<IssueStatus, string> = {
   planned: "#94a3b8",
-  started: "#0d9488",
-  wip: "#0b6e6a",
+  started: "#ec7856",
+  wip: "#e45729",
   delayed: "#e11d48",
   uat: "#d97706",
   go_live: "#059669",
@@ -410,8 +410,8 @@ export function ProgressTrackerBoard() {
                   width={colW - 2}
                   height={headH - 8}
                   rx={4}
-                  fill={active ? "#f0fdfa" : "#f8fafc"}
-                  stroke={active ? "#0b6e6a" : "#e2e8f0"}
+                  fill={active ? "#fef6f3" : "#f8fafc"}
+                  stroke={active ? "#e45729" : "#e2e8f0"}
                 />
                 <text
                   x={x + (colW - 2) / 2}
@@ -430,7 +430,7 @@ export function ProgressTrackerBoard() {
                   textAnchor="middle"
                   fontSize={8}
                   fontWeight={700}
-                  fill="#0b6e6a"
+                  fill="#e45729"
                 >
                   {i.bu.length > 8 ? `${i.bu.slice(0, 7)}…` : i.bu}
                 </text>
@@ -458,14 +458,14 @@ export function ProgressTrackerBoard() {
                   y={y}
                   width={Math.max(chartW, labelW + 120)}
                   height={rowH}
-                  fill={isNow ? "#f0fdfa" : row % 2 ? "#fafafa" : "#fff"}
+                  fill={isNow ? "#fef6f3" : row % 2 ? "#fafafa" : "#fff"}
                 />
                 <text
                   x={8}
                   y={y + 15}
                   fontSize={10}
                   fontWeight={isNow ? 700 : 500}
-                  fill={isNow ? "#0b6e6a" : "#64748b"}
+                  fill={isNow ? "#e45729" : "#64748b"}
                   fontFamily="ui-monospace, monospace"
                 >
                   {m}

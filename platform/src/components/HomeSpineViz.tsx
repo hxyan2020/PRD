@@ -103,7 +103,7 @@ export function HomeSpineViz({
       aria-label={locale === "zh-Hant" ? "整合脊柱" : "Integration spine"}
     >
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(13,148,136,0.12),transparent_55%),linear-gradient(135deg,#f8fafc_0%,#ffffff_45%,#f0fdfa_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(228,87,41,0.12),transparent_55%),linear-gradient(135deg,#f8fafc_0%,#ffffff_45%,#fef6f3_100%)]"
         aria-hidden
       />
       <div
@@ -140,7 +140,7 @@ export function HomeSpineViz({
       <div className="relative mt-5 hidden sm:block" data-testid="home-spine-desktop">
         <div className="absolute left-8 right-8 top-[22px] h-[3px] rounded-full bg-slate-200" aria-hidden>
           <div
-            className="h-full rounded-full bg-gradient-to-r from-teal-500 via-teal-600 to-cyan-500 transition-all duration-700 ease-out"
+            className="h-full rounded-full bg-gradient-to-r from-teal-500 via-teal-600 to-teal-400 transition-all duration-700 ease-out"
             style={{ width: `${(active / Math.max(steps.length - 1, 1)) * 100}%` }}
           />
         </div>
@@ -164,7 +164,7 @@ export function HomeSpineViz({
                   className={cn(
                     "relative z-[1] flex h-11 w-11 items-center justify-center rounded-full border-2 transition duration-300",
                     selected
-                      ? "scale-110 border-teal-600 bg-teal-600 text-white shadow-[0_0_0_6px_rgba(13,148,136,0.18)]"
+                      ? "scale-110 border-teal-600 bg-teal-600 text-white shadow-[0_0_0_6px_rgba(228,87,41,0.18)]"
                       : dummyHit
                         ? "border-amber-500 bg-amber-50 text-amber-800 shadow-[0_0_0_4px_rgba(245,158,11,0.25)]"
                       : reached

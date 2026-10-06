@@ -46,10 +46,18 @@ assert.match(plusWf, /NEXT_PUBLIC_BASE_PATH: \/PRD\/crmp-plus/);
 assert.match(plusWf, /publish\/crmp-plus/);
 assert.match(plusWf, /keep_files: true/);
 assert.match(plusWf, /cursor\/crmp-plus-a935/);
+assert.match(plusWf, /cursor\/vantage-orange-theme-a935/);
 assert.doesNotMatch(plusWf, /publish\/crmp-admin/);
 
 const nextCfg = read("platform/next.config.ts");
 assert.match(nextCfg, /\/PRD\/crmp-plus/);
+
+const css = read("platform/src/app/globals.css");
+assert.match(css, /--brand:\s*#e45729/);
+assert.match(css, /--color-teal-500:\s*#e45729/);
+
+const mark = read("platform/src/components/VantageLogo.tsx");
+assert.match(mark, /fill="#e45729"/);
 
 const buildSh = read("platform/scripts/build-github-pages.sh");
 assert.match(buildSh, /\/PRD\/crmp-plus/);

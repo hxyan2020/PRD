@@ -32,7 +32,7 @@ function MetricTile({
       className={cn(
         "rounded-2xl border p-3 backdrop-blur-sm transition hover:-translate-y-0.5",
         cfd
-          ? "border-teal-200/80 bg-white/85 shadow-[inset_0_1px_0_rgba(13,148,136,0.08)]"
+          ? "border-teal-200/80 bg-white/85 shadow-[inset_0_1px_0_rgba(228,87,41,0.08)]"
           : "border-amber-200/80 bg-white/85 shadow-[inset_0_1px_0_rgba(217,119,6,0.08)]"
       )}
     >
@@ -112,7 +112,7 @@ function Sphere({
       className={cn(
         "relative overflow-hidden rounded-[1.75rem] border p-4 sm:p-5",
         cfd
-          ? "border-teal-300/80 bg-[radial-gradient(circle_at_20%_0%,rgba(45,212,191,0.22),transparent_42%),linear-gradient(160deg,#f0fdfa_0%,#ffffff_48%,#ecfeff_100%)]"
+          ? "border-teal-300/80 bg-[radial-gradient(circle_at_20%_0%,rgba(228,87,41,0.22),transparent_42%),linear-gradient(160deg,#fef6f3_0%,#ffffff_48%,#fff7ed_100%)]"
           : "border-amber-300/80 bg-[radial-gradient(circle_at_80%_0%,rgba(251,191,36,0.28),transparent_42%),linear-gradient(200deg,#fffbeb_0%,#ffffff_48%,#fff7ed_100%)]"
       )}
     >
@@ -245,7 +245,7 @@ export function DailyDashboardView({
       <div className="panel relative overflow-hidden p-4">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(13,148,136,0.08),transparent_40%,transparent_60%,rgba(217,119,6,0.10))]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(228,87,41,0.08),transparent_40%,transparent_60%,rgba(217,119,6,0.10))]"
         />
         <div className="relative flex flex-wrap items-center justify-between gap-3">
           <div>
