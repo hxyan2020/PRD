@@ -4,7 +4,7 @@
 **語言：** 繁體中文（本頁）· [English](/admin/docs/user-guide?lang=en)  
 **文件與平台負責人：** demo platform owner（`haixiang.yan@hytechc.com`）
 
-這本手冊用白話寫。涵蓋左側選單**每一頁**，以及登入、語言、未讀數字、公開 GitHub Pages 快照。
+這本手冊用白話寫。涵蓋左側選單**每一頁**，以及登入、語言、未讀數字、公開 GitHub Pages 快照，還有 **24/7 CS／TR 客戶大門**（C1 即時聊天、網站表單、官方信箱、自動信件等待迴圈、專用技能）。
 
 ---
 
@@ -16,10 +16,12 @@ Vantage **CRMP Plus** 是升級控制室：原 CRMP 風險脊柱加上 24/7 客�
 2. 高嚴重度（BREACH 或 CRITICAL）時，再跑一輪**獨立的第二 AI**，可能同意、部分同意或不同意。  
 3. 把整包放進 **Lark 風格 Messenger**，讓你顯示證據、聊天、升級、排除、結案或送出控制。  
 4. 不可逆控制上線前，要有人類 Checker。  
-5. **CS／TR 台**值守 24/7：C1 即時聊天、網頁表單與官方信箱 — AI 在不清楚或需核身時寄信並等待客戶回覆。  
+5. **CS／TR 台**值守 24/7：C1 即時聊天、網頁表單與官方信箱 — 客戶走公開 **`/cs`**；AI 在不清楚或需核身時寄信並**等到客戶回覆**（上限 3 封）。  
 6. 整段故事寫進**稽核日誌**與**首頁脊柱**（各階段工單計數 — 專屬脊柱日誌分頁已移除）。
 
 不必是工程師。點左側選單、讀卡片、跟畫面上的按鈕走即可。
+
+**兩個故事、同一後台。** 風險警報仍走 Monitor → AI → Messenger → 人工關卡（第 5 節）。客戶問題與投訴走 **C1／表單／信箱 → `/cs` 或 webhook → CS／TR 台 → 技能＋自動信件 → TR 或風控**（第 9.3 節）。CS 不啟動交易管制；TR 不值班 C1。
 
 **永久公開示範（CRMP Plus）：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
 **Messenger 示範：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
@@ -169,6 +171,27 @@ graph TD
 2. 檢視 [AI 存取安全](/admin/security/ai-access) — AI 絕不可碰的頁／功能／欄位（含 RAG 寫入封鎖／`propose_rag`）。  
 3. 監看 [稽核日誌](/admin/audit)（CRMP／Vantage Markets 管理分頁＋回滾）與管理首頁的 **首頁脊柱** 階段工單計數（`/admin/spine` 會轉址至此）。
 
+### 客服主管（`cs.lead@vantagemarkets.com`／`cs123`）
+
+1. 打開 [CS／TR 台](/admin/cs-desk)。篩選 **CS**。盯待客戶與身分驗證。  
+2. 追問仍為 WAITING 時**不要結案**。第三封自動信件之後改由你本人跟進（對話會出現 SYSTEM 上限註記）。  
+3. 確認公開入口 [`/cs`](/cs) 仍會進到這個收件匣。  
+4. 成交投訴交給 TR。帳簿風險／詐欺升級風控（Messenger 脊柱）。  
+5. 簽核版本時過 [UAT-46](/admin/docs/uat)（三渠道）與 [UAT-47](/admin/docs/uat)（等待迴圈）。
+
+### 客服專員（`cs.agent@vantagemarkets.com`／`cs123`）
+
+1. C1、表單、官方信箱的第一回應。在台面輸入框以 CS 回覆。  
+2. 案件過短（「help me ???」）時讓 AI 寄 **寄信：請補充** 並等待。  
+3. 客戶登不進去或要求核身時讓 AI 寄 **寄信：身分驗證**（護照＋UID 後四碼＋自拍）。不要只憑口頭「是我」做出金。  
+4. 客戶回覆後（入口、同一個 C1 對話、或主旨含 `CSR-XXXX` 的信），AI 重新分流。已清楚的 FAQ 依技能／RAG 晶片作答。
+
+### 交易主管／交易員（`tr.lead@…`／`tr.dealer@…`／`tr123`）
+
+1. 把 CS／TR 收件匣篩成 **TR**。種子滑點／成交／MT4／MT5 案件會以已派 TR、技能 `SKILL-TR-EXECUTION` 進來。  
+2. 依逐字稿還原成交 vs LP。CS 已收集 UID／票號／時間。  
+3. 不要去值班 C1。若其實是 CS FAQ，退回。若是帳簿風險，**升級至風控**。
+
 ---
 
 ## 5. 主流程：警報 → AI → 聊天 → 結案
@@ -218,6 +241,7 @@ graph TD
 
 - **demo platform owner** 負責人卡。整張卡開啟「以平台負責人登入」。  
 - Lark 風格 Messenger 宣傳。整張卡開啟 Messenger 示範（卡上有永久 GitHub Pages 網址）。  
+- **CS／TR 台**宣傳。整張卡開啟 `/admin/cs-desk`；卡上印客戶入口網址（`/cs`）。  
 - 可點擊的數字卡：使用者、團隊（開 **BU 與團隊**）、資料來源、風險領域、未結警報、未結工單、Lark 頻道、升級路徑。每張卡跳到對應頁。  
 - **跳至頁面** 磁磚：每日績效、市場情報、Monitor 2.0、即時警報與追蹤、AI 技能、知識樹、人工干預、Messenger、設定、使用手冊、PRD。  
 - 最近警報。每一列開啟即時警報與追蹤中該筆警報。**查看全部** 列出全部。  
@@ -387,9 +411,9 @@ sequenceDiagram
 
 **會看到什麼。** 搜尋框。兩個分頁：**單指標技能** 與 **連結時間鏈**（多指標鏈）。卡片保持精簡（代碼、名稱、產品、領域、自動 vs 人工）。
 
-**要點什麼。** **進入** 打開 `/admin/skills/{code}` — 完整劇本頁（不是小卡片）。從那裡可回技能、知識樹、AI 分析、風險日誌。
+**要點什麼。** **進入** 打開 `/admin/skills/{code}` — 完整劇本頁（不是小卡片）。從那裡可回技能、知識樹、AI 分析、風險日誌。CS／TR 台晶片會跳到 `SKILL-CS-CLARIFY`、`SKILL-CS-ID-VERIFY`、`SKILL-CS-ACCOUNT-FAQ`、`SKILL-TR-EXECUTION`、`SKILL-CS-ESCALATE-RISK`。連結時間鏈 **CHAIN-CS-TR-INTAKE** 就是進件路徑。
 
-**怎樣算正常。** 種子技能的進入不會 404。連結時間鏈看得到順序、原因、連結技能。
+**怎樣算正常。** 種子技能的進入不會 404（含五份 CS／TR 劇本）。連結時間鏈看得到順序、原因、連結技能。每個 CS／TR 技能綁一條路徑：`ESC-CS-24-7`、`ESC-TR-DEAL` 或 `ESC-CS-RISK`。
 
 ### 8.4 知識樹 — `/admin/knowledge-tree`
 
@@ -517,25 +541,113 @@ graph TD
 
 ### 9.3 CS／TR 台 — `/admin/cs-desk`
 
-**這頁是什麼。** 24/7 客服與交易支援。平台 **C1 即時聊天**、網站**提交表單**與**官方信箱**在此即時進件（`POST /api/cs/intake`，標頭 `x-cs-intake-token: demo-c1`）。客戶走公開入口 **`/cs`**。回覆帶 `CSR-XXXX`、同一個 C1 `channel_ref` 或 `In-Reply-To` 會續辦並**關閉等待中的自動信件**。
+**這頁是什麼。** 24/7 客服與交易支援 — CRMP Plus 的客戶大門。三個公開渠道經同一個 webhook（`POST /api/cs/intake`，標頭 `x-cs-intake-token: demo-c1`）即時進件：
 
-**會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）、**專用技能晶片**（SKILL-CS-CLARIFY／ID-VERIFY／ACCOUNT-FAQ／TR-EXECUTION／ESCALATE-RISK）與狀態（未結、待客戶、身分驗證、已派 TR、已升級風控、已結案）。晶片打開 SKILL.md 劇本。對話混合客戶聊天、AI 分流註記與**自動追問信**。
+| 渠道 | 代碼 | 誰送來 |
+|---|---|---|
+| 平台 **C1 即時聊天** | `C1_LIVE_CHAT` | C1 視窗／`/cs` 聊天分頁／C1 webhook |
+| 網站／App **提交表單** | `WEB_FORM` | `/cs` 表單分頁／網站聯絡表單 |
+| **官方信箱**（support@、complaints@） | `OFFICIAL_EMAIL` | `/cs` 信箱分頁／信箱閘道 |
 
-**要點什麼。**
+客戶走公開入口 **[`/cs`](/cs)**（永久網址：[https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)）。值班在這一頁看收件匣。原 CRMP 管理後台**沒有** CS／TR 台 — 那個快照保持凍結。
+
+**會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）、**專用技能晶片**與狀態（未結、待客戶、身分驗證、已派 TR、已升級風控、已結案）。晶片 **進入** `/admin/skills/{code}`。對話混合客戶聊天、AI 分流註記與**自動追問信**。左側此列未讀徽章會在新進件時跳動。
+
+#### 9.3.1 客戶入口 — `/cs`
+
+**誰用。** 客戶，不是值班。不必登入。語言切換 EN／繁中（同一個 `crmp_ui_lang` cookie）。
+
+**三個分頁**
+
+1. **C1 即時聊天** — 輸入訊息。同一個瀏覽器後續訊息留在同一個 C1 `channel_ref`（送出鈕下方會顯示）。  
+2. **提交表單** — 姓名、email、選填 UID、主旨、內文。送出 `channel=WEB_FORM`。  
+3. **官方信箱** — 同樣欄位，加上選填 **回覆對象／案件號**。主旨或該欄填 `CSR-XXXX` 即可續辦等待中的自動信件。
+
+**送出之後。** 結果卡顯示公開案件號（`CSR-XXXX`）、狀態、技能；若 AI 不清楚或需核身，會標出正在 WAITING 的自動官方信件。GitHub Pages 沒有即時 `/api`；分頁仍會顯示，並說明即時 POST 請用 `localhost:3000`。
+
+**怎樣算正常。** 聊天分頁打短句「help me ???」會得到待客戶，以及黃色「自動官方信件正在等你回覆」。同一個分頁再聊、或信箱分頁主旨帶該 `CSR-XXXX`，會續辦而不是另開一案。
+
+#### 9.3.2 回覆怎麼對上同一案件
+
+C1／表單／信箱進件若對得上未結案件就**續辦**，順序：
+
+1. `request_id`（`CSR-XXXX`）  
+2. `In-Reply-To`（訊息 id、channel_ref 或 CSR-XXXX）  
+3. 同一個尚未結案的 C1／表單／信箱 `channel_ref`  
+4. 主旨中的 `CSR-[0-9A-F]{6}`（自動信件本來就會印「案件 CSR-A1B2C3」）
+
+若該案仍有 WAITING 追問，視為**客戶回覆**：WAITING 變 REPLIED，AI 重新分流。已結案的同一 C1 工作階段會**另開**新案。
+
+`GET /api/cs/intake` 回傳連接器目錄。`GET /api/cs/intake?request_id=CSR-XXXX` 只回公開狀態（不含 email 或姓名）。
+
+#### 9.3.3 AI 何時寄信並等待
+
+AI 若無法判斷客戶要什麼、或需要 KYC／核身，**不可以臆測**。它會寄官方 `EMAIL_OUT`、維持案件開啟、並等待。
+
+| 清晰度 | 狀態 | 自動信件要什麼 | 技能 |
+|---|---|---|---|
+| **不清楚** — 短於約 48 字，或「help me／???／不清楚」 | 待客戶 | 發生什麼、何時（時區）、UID、商品／訂單／截圖、希望我們做什麼 | `SKILL-CS-CLARIFY` |
+| **需核身** — KYC／護照／核對帳戶／登不進去／核身 | 身分驗證 | 護照或證件照片、UID 後四碼、與持有人一致的自拍 | `SKILL-CS-ID-VERIFY` |
+
+**直到客戶回覆。** 任何追問仍為 WAITING 時**禁止結案**。每次過短回覆都會再問。上限 **3** 封自動信件，之後 SYSTEM 註記請 CS Lead 人工跟進 — 不再自動寄。
+
+**客戶怎麼回（任一方式都會關閉 WAITING）：**
+
+- 同一個 C1 聊天分頁（`channel_ref`）  
+- 官方信箱分頁或真實信箱，主旨／In-Reply-To 帶 `CSR-XXXX`  
+- 台面按鈕 **模擬客戶回信**（僅示範）
+
+```mermaid
+graph TD
+  Thin[不清楚或需核身] --> Mail[自動 EMAIL_OUT]
+  Mail --> Wait[WAITING 追問]
+  Wait -->|CSR 或 C1 回覆| Again[AI 重新分流]
+  Wait -->|上限 3| Lead[CS Lead 人工]
+  Again -->|仍過短| Mail
+  Again -->|夠清楚| Open[未結或已派 TR]
+```
+
+#### 9.3.4 專用 SKILL.md 劇本
+
+分流會蓋上 `skill_code`。點晶片看何時使用／停止／成功。知識樹樹幹 **CS_SERVICE** 與 **TRADING_EXEC**；連結時間鏈 `CHAIN-CS-TR-INTAKE`；RAG 葉 `cs-24-7-intake`、`cs-id-verify-policy`、`cs-swap-faq`、`tr-dealing-handoff`、`cs-escalate-to-risk`、`cs-skill-playbooks`。
+
+| 技能 | 何時出現 | 台面／狀態 | 升級路徑 |
+|---|---|---|---|
+| `SKILL-CS-CLARIFY` | 過短「help me ???」 | CS · 待客戶 | `ESC-CS-24-7` |
+| `SKILL-CS-ID-VERIFY` | KYC／登不進去 | CS · 身分驗證 | `ESC-CS-24-7` |
+| `SKILL-CS-ACCOUNT-FAQ` | 清楚的隔夜利息／時段／UID | CS · 未結 | `ESC-CS-24-7` |
+| `SKILL-TR-EXECUTION` | 成交／滑點／MT4／MT5 | TR · 已派 TR | `ESC-TR-DEAL` |
+| `SKILL-CS-ESCALATE-RISK` | 帳簿風險／詐欺／錢包 | 已升級風控 → Messenger | `ESC-CS-RISK` |
+
+CS **不**啟動交易管制。TR **不**值班 C1。帳簿風險離開此台，進入示範 Messenger／人工干預。
+
+#### 9.3.5 要點什麼（值班）
 
 | 按鈕 | 做什麼 |
 |---|---|
 | **AI 分流** | 重跑路由（CS vs TR、類別、清晰度）並蓋上專用 SKILL.md |
 | **寄信：請補充** | AI 寄官方信索取發生什麼／UID／截圖；狀態待客戶 |
 | **寄信：身分驗證** | AI 索取護照／證件＋UID 後四碼＋自拍；狀態身分驗證 |
-| **模擬客戶回信** | 客戶回覆等待中的信；AI 重新分流。回覆前案件保持開啟（上限 3 封） |
-| **指派至 TR** | 把成交投訴交給 TR 成交支援 |
-| **升級至風控** | 離開 CS／TR，進入 Messenger／人工干預脊柱 |
+| **模擬客戶回信** | 示範用，等同真實信箱／入口回覆；AI 重新分流 |
+| **指派至 TR** | 把成交投訴交給 TR 成交支援（`SKILL-TR-EXECUTION`） |
+| **升級至風控** | 離開 CS／TR；技能 `SKILL-CS-ESCALATE-RISK`；Messenger 脊柱 |
 | **結案** | 關閉 — 追問仍為 WAITING 時會被擋 |
-| **模擬 C1／表單／信件** | 走同一進件 API |
+| **模擬 C1／表單／信件** | 走與入口相同的進件 API |
 | **開啟客戶進件入口** | `/cs` — 真實使用者會看到的三個公開連接器 |
+| 台面輸入框＋送出 | 以 CS／TR 寫入逐字稿 |
 
-**怎樣算正常。** 種子案件涵蓋清楚的 C1 隔夜利息（SKILL-CS-ACCOUNT-FAQ）、不清楚的 C1「help me ???」（SKILL-CS-CLARIFY）、TR 滑點表單（SKILL-TR-EXECUTION）、核身信件（SKILL-CS-ID-VERIFY）。不清楚／核身會等待。交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。`/cs` 入口把即時聊天／表單／信箱打同一 webhook；信箱回覆主旨含 `CSR-XXXX` 會關閉 WAITING。
+操作需要 `cs.operate`（客服主管、客服專員、超級管理員…）。`cs.read`／`lark.read` 可觀看。稽核（CRMP 分頁）寫入 `CS_INTAKE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_INTAKE_CONTINUE`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE`。
+
+#### 9.3.6 種子案件 — 怎樣算正常
+
+| 種子 | 渠道 | 技能 | 應看到 |
+|---|---|---|---|
+| Liam Okafor — XAUUSD 隔夜利息 | C1 | `SKILL-CS-ACCOUNT-FAQ` | 未結、清楚 |
+| Sofia Mendes — 「help me something wrong ???」 | C1 | `SKILL-CS-CLARIFY` | 待客戶＋WAITING 自動信件 |
+| Chen Wei — MT5 EURUSD 滑點 | 表單 | `SKILL-TR-EXECUTION` | 已派 TR |
+| Priya Shah — 核對帳戶、無法出金 | 官方信箱 | `SKILL-CS-ID-VERIFY` | 身分驗證＋WAITING 核身包 |
+
+交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。UAT-46（三渠道＋`/cs`）、UAT-47（等待迴圈）、UAT-48（TR／風控）、UAT-50（技能＋樹）。
 
 ```mermaid
 graph TD
@@ -570,7 +682,7 @@ graph TD
 
 **要點什麼。** 有管理權可在 localhost 新增／編輯／停用。編輯維度係數。確認兜底預設存在。在技能頁確認每個劇本只綁一條路徑。
 
-**怎樣算正常。** CRITICAL 的 SLA 比 WARN 緊。未匹配事件仍經 ESC-DEFAULT 落地。技能頁沒有自由文字「路徑」欄 — 只有綁定的路徑代碼。
+**怎樣算正常。** CRITICAL 的 SLA 比 WARN 緊。未匹配事件仍經 ESC-DEFAULT 落地。技能頁沒有自由文字「路徑」欄 — 只有綁定的路徑代碼。CS／TR 劇本綁 `ESC-CS-24-7`（釐清／核身／FAQ）、`ESC-TR-DEAL`（成交）、`ESC-CS-RISK`（帳簿風險升級）。在此頁與技能晶片確認這三條存在。
 
 ```mermaid
 graph LR
@@ -586,7 +698,7 @@ graph LR
 
 ### 10.1 BU 與團隊 — `/admin/departments`（`/admin/teams` 轉址至此）
 
-**合併中心。** Risk／Ops／AI／System BU 與嵌套值班團隊。展開可看任務／擁有／負責／協作／範圍外／升級至，以及團隊任務與輪值（授權後可編輯）。左側不再有獨立「團隊」分頁。
+**合併中心。** Risk／Ops／AI／System、**客服（CS）** 與 **交易（TR）** BU 與嵌套值班團隊。展開 CS 看 **CS 24/7 台**；展開 TR 看 **TR 成交支援**。每個 BU 顯示任務／擁有／負責／協作／範圍外／升級至，以及團隊任務與輪值（授權後可編輯）。左側不再有獨立「團隊」分頁。
 
 ### 10.2 角色與權限 — `/admin/roles`（可編輯）
 
@@ -606,7 +718,7 @@ graph LR
 
 ### 11.1 資料來源 — `/admin/data-sources`
 
-內部平台與外部驗證來源登錄（分類、名稱、類型、狀態）。localhost 有 `sources.manage` 可管理。這是 AI 與 Monitor 2.0 偵測器在證據裡可以點名的目錄。
+內部平台與外部驗證來源登錄（分類、名稱、類型、狀態）。localhost 有 `sources.manage` 可管理。這是 AI 與 Monitor 2.0 偵測器在證據裡可以點名的目錄。CS 連接器列在這裡：**C1 Live Chat Gateway**、**Website CS submission form**、**Official support mailbox** — 都指向 `/api/cs/intake`。
 
 ### 11.2 AI 存取安全 — `/admin/security/ai-access`
 
@@ -622,7 +734,7 @@ graph LR
 
 | 分頁 | 記錄內容 |
 |---|---|
-| **CRMP 日誌** | 本 CRMP 管理介面內的所有變更 — 警報、AI、技能、升級、干預、Messenger |
+| **CRMP 日誌** | 本 CRMP 管理介面內的所有變更 — 警報、AI、技能、升級、干預、Messenger、**CS／TR 進件**（`CS_INTAKE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_INTAKE_CONTINUE`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE`） |
 | **Vantage Markets 管理日誌** | 其他管理頁面的變更 — 限制使用者權限、拉取交易資料、觸發 Lark 訊息、接收 BU POC 風險事件回應、設定／組織／RAG |
 
 每列：時間、執行者、動作、實體、明細。兩個分頁皆有**回滾**按鈕 — 有變更前快照時可還原（`POST /api/audit/rollback`）。
@@ -653,12 +765,12 @@ graph LR
 | 使用手冊 | `/admin/docs/user-guide` | 本手冊 |
 | PRD | `/admin/docs/prd` | 我們在做什麼、為什麼、怎麼算過關 |
 | TSD | `/admin/docs/tsd` | 怎麼做的（架構、API、資料模型） |
-| UAT 清單 | `/admin/docs/uat` | 互動式 49 案簽核（UAT-01 … UAT-49）：為什麼、步驟、通過、證據、畫面覆蓋 |
+| UAT 清單 | `/admin/docs/uat` | 互動式 50 案簽核（UAT-01 … UAT-50）：為什麼、步驟、通過、證據、畫面覆蓋。CS／TR：UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹 |
 | 生態導入評估 | `/admin/docs/ecosystem` | 真要導入的人力、預算帶、階段、風險 |
 | 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
 | 開放議題 | `/admin/docs/open-issues` | 計畫清單：ETA、負責 BU、依賴（暫定至 2027） |
 | 進度追蹤 | `/admin/docs/progress` | 互動看板：X＝議題、Y＝時間軸現在→2027 年底 |
-| 網址目錄 | `/admin/docs/urls` | 每個管理頁、API、資料表，加上公開 Pages 網址 |
+| 網址目錄 | `/admin/docs/urls` | 每個管理頁、API、資料表，加上公開 Pages 網址（`/cs` 入口、CS／TR 台、Messenger） |
 
 UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fail；覆蓋晶片顯示每案打到哪些畫面。
 
@@ -671,7 +783,9 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 3. 把 Messenger **排除** 與 **結案** 當真正決策 — 會被稽核。  
 4. BREACH／CRITICAL 時，不可逆控制前主 AI 與第二 AI 都要留在畫面上。  
 5. 控制之後，用同一組 id 核對 **稽核日誌** 與 **首頁脊柱**。  
-6. AI 管理與指定控制的 Maker 與 Checker 必須是**兩個人**。
+6. AI 管理與指定控制的 Maker 與 Checker 必須是**兩個人**。  
+7. CS／TR：追問仍為 WAITING 時不可結案；不可只憑口頭「是我」跳過核身；自動信件上限 3 封，其後由 CS Lead 人工。  
+8. CS 不啟動交易管制。TR 不值班 C1。帳簿風險經 **升級至風控** 離開此台。
 
 ---
 
@@ -691,7 +805,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖／人工閘道 — `propose_rag` |
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
 | 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、控制 |
-| 應變 | CS／TR 台 | C1／表單／信箱進件；專用 SKILL.md 晶片；AI 追問直到回覆；TR 分流 |
+| 應變 | CS／TR 台 | C1／表單／信箱經 `/cs`＋`/api/cs/intake`；CSR-XXXX 回覆關閉 WAITING；專用 SKILL.md 晶片；AI 追問直到回覆；TR／風控 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
 | 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 應變 | Lark 整合 | 頻道登錄 |
@@ -721,5 +835,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 1.11 | 2026-10-06 | CS／TR 台：C1、表單、官方信箱；AI 追問直到回覆；TR 分流 |
 | 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開網址 `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
 | 2.1 | 2026-10-06 | CS／TR 專用 SKILL.md 晶片；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 葉 |
+| 2.2 | 2026-10-06 | 手冊：公開 `/cs` 入口、三連接器、CSR-XXXX 進件對案、自動信件等待迴圈、CS／TR 日常角色、技能＋路徑 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

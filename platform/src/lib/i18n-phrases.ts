@@ -1395,6 +1395,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "GET 連接器目錄／案件狀態 · POST C1 即時聊天、網頁表單與官方信箱進件或續辦（request_id／in_reply_to／channel_ref／CSR-XXXX）— 工作階段、mock_webhook、portal 或標頭 x-cs-intake-token: demo-c1",
   "CRMP Plus CS client portal": "CRMP Plus CS 客戶入口",
   "CS client portal": "CS 客戶入口",
+  "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, C1/form/mailbox, auto-email wait loop, dedicated skills":
+    "操作手冊（英／繁中）— 左側每一頁加上 24/7 CS／TR：/cs 入口、C1／表單／信箱、自動信件等待迴圈、專用技能",
 };
 
 /** Longest-first English fragments rewritten inside mixed dummy / log strings. */

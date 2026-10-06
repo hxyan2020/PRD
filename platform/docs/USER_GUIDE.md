@@ -4,7 +4,7 @@
 **Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
 **Docs & platform owner:** demo platform owner (`haixiang.yan@hytechc.com`)
 
-This handbook is written in everyday language. It covers **every page in the left menu**, plus login, language, unread numbers, and the public GitHub Pages snapshot.
+This handbook is written in everyday language. It covers **every page in the left menu**, plus login, language, unread numbers, the public GitHub Pages snapshot, and the **24/7 CS / TR client door** (live C1 chat, website form, official email, auto-email wait loop, dedicated skills).
 
 ---
 
@@ -16,10 +16,12 @@ Vantage **CRMP Plus** is the upgraded control room for CFD and crypto risk: the 
 2. On high severity (BREACH or CRITICAL), runs a **second, independent AI** that may agree, partly agree, or disagree.  
 3. Puts the pack into a **Lark-style messenger** so you can show evidence, chat, escalate, dismiss, close, or send a control.  
 4. Asks a human checker before irreversible controls go live.  
-5. Staffs **CS / TR Desk** for 24/7 C1 live chat, web form and official email — AI emails the client when unclear or ID is needed and waits for a reply.  
+5. Staffs **CS / TR Desk** for 24/7 C1 live chat, web form and official email — clients use public **`/cs`**; AI emails when unclear or ID is needed and **waits until they reply** (cap 3).  
 6. Writes the whole story into the **Audit Log** and the **home spine** (stage ticket counts — the dedicated Spine Log tab is gone).
 
 You do not need to be an engineer to use it. Click the left menu, read the cards, and follow the buttons on the page.
+
+**Two stories, one desk.** Risk alarms still walk Monitor → AI → messenger → human gate (section 5). Client questions and complaints walk **C1 / form / mailbox → `/cs` or webhook → CS/TR desk → skill + auto-email → TR or Risk** (section 9.3). CS does not arm trading controls. TR does not staff C1 around the clock.
 
 **Permanent public demo (CRMP Plus):** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
 **Messenger demo:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
@@ -169,6 +171,27 @@ graph TD
 2. Review [AI Access Security](/admin/security/ai-access) — pages, functions and fields AI must never touch (includes RAG write blocklist / `propose_rag`).  
 3. Watch [Audit Log](/admin/audit) (CRMP / Vantage Markets Admin tabs + Roll back) and the **home spine** stage ticket counts on Admin Home (`/admin/spine` redirects here).
 
+### CS Lead (`cs.lead@vantagemarkets.com` / `cs123`)
+
+1. Open [CS / TR Desk](/admin/cs-desk). Filter **CS**. Watch AWAITING CLIENT and ID VERIFY.  
+2. Do **not** Resolve while a follow-up is WAITING. After the third auto-mail, follow up in person (the thread shows a SYSTEM cap note).  
+3. Confirm the public portal [`/cs`](/cs) still posts into this inbox.  
+4. Hand execution complaints to TR. Escalate book-risk / fraud to Risk (messenger spine).  
+5. Sign [UAT-46](/admin/docs/uat) (three channels) and [UAT-47](/admin/docs/uat) (wait loop) when you accept a release.
+
+### CS Agent (`cs.agent@vantagemarkets.com` / `cs123`)
+
+1. First response on C1, the form and official email. Type in the desk composer as CS.  
+2. If the case is thin (“help me ???”), let AI send **Email: need more detail** and wait.  
+3. If the client cannot log in or asks to verify identity, let AI send **Email: ID verification** (passport + UID last four + selfie). Do not process a withdrawal on a verbal “it’s me”.  
+4. When the client replies (portal, same C1 thread, or mail with `CSR-XXXX` in the subject), AI re-triages. Answer the now-clear FAQ from the skill / RAG chip.
+
+### TR Lead / Dealer (`tr.lead@…` / `tr.dealer@…` / `tr123`)
+
+1. Filter the CS/TR inbox to **TR**. Seeded slippage / fill / MT4 / MT5 cases land as ASSIGNED TR with skill `SKILL-TR-EXECUTION`.  
+2. Reconstruct the fill vs LP on the transcript. CS has already collected UID / ticket / time.  
+3. Do not staff C1. If the case is really a CS FAQ, send it back. If it is book-risk, **Escalate to Risk**.
+
 ---
 
 ## 5. The main story: alarm → AI → chat → close
@@ -218,6 +241,7 @@ graph TD
 
 - Owner card for **demo platform owner**. The whole card opens Sign in as platform owner.  
 - A Lark-style messenger promo. The whole card opens the messenger demo (permanent GitHub Pages URL is on the card).  
+- A **CS / TR desk** promo. The whole card opens `/admin/cs-desk`; the client portal URL (`/cs`) is printed on the card.  
 - Clickable count cards: Users, Teams (opens **BU and Teams**), Data Sources, Risk Domains, Open Alerts, Open Tickets, Lark Channels, Escalation Routes. Each card jumps to that page.  
 - **Jump to a page** tiles for Daily Performance, Market Intelligence, Monitor 2.0, Realtime Alert & Tracker, AI Skills, Knowledge Tree, Human Intervention, Messenger, Settings, User Guide, PRD.  
 - Recent alerts. Each row opens that alarm on Realtime Alert & Tracker. **View all** lists every alarm.  
@@ -387,9 +411,9 @@ sequenceDiagram
 
 **What you see.** Search box. Two tabs: **Single-indicator skills** and **Linked timelines** (multi-indicator chains). Cards stay compact (code, name, product, domain, auto vs manual).
 
-**What to click.** **Enter** opens `/admin/skills/{code}` — the full playbook page (not a tiny card). From there: back to skills, knowledge tree, AI analyses, risk log.
+**What to click.** **Enter** opens `/admin/skills/{code}` — the full playbook page (not a tiny card). From there: back to skills, knowledge tree, AI analyses, risk log. CS/TR desk chips jump here for `SKILL-CS-CLARIFY`, `SKILL-CS-ID-VERIFY`, `SKILL-CS-ACCOUNT-FAQ`, `SKILL-TR-EXECUTION`, `SKILL-CS-ESCALATE-RISK`. Linked timeline **CHAIN-CS-TR-INTAKE** is the intake path.
 
-**Good looks like.** Enter never 404s for a seeded skill. Linked timelines show sequence, causes, linked skills.
+**Good looks like.** Enter never 404s for a seeded skill (including the five CS/TR playbooks). Linked timelines show sequence, causes, linked skills. Each CS/TR skill binds one route: `ESC-CS-24-7`, `ESC-TR-DEAL` or `ESC-CS-RISK`.
 
 ### 8.4 Knowledge Tree — `/admin/knowledge-tree`
 
@@ -518,25 +542,113 @@ graph TD
 
 ### 9.3 CS / TR Desk — `/admin/cs-desk`
 
-**What it is.** 24/7 Customer Service and Trading Support. Platform **C1 live chat**, the website **submission form** and **official emails** land here in realtime (`POST /api/cs/intake`, header `x-cs-intake-token: demo-c1`). Clients use the public portal **`/cs`**. A reply that carries `CSR-XXXX`, the same C1 `channel_ref`, or `In-Reply-To` continues the ticket and **closes the waiting auto-email**.
+**What it is.** 24/7 Customer Service and Trading Support — the client door on CRMP Plus. Three public channels land here in realtime through one webhook (`POST /api/cs/intake`, header `x-cs-intake-token: demo-c1`):
 
-**What you see.** Inbox filter All / CS / TR. Each request shows channel, desk, AI clarity (clear / unclear / need ID), a **dedicated skill chip** (SKILL-CS-CLARIFY / ID-VERIFY / ACCOUNT-FAQ / TR-EXECUTION / ESCALATE-RISK) and status (OPEN, AWAITING CLIENT, ID VERIFY, ASSIGNED TR, ESCALATED RISK, RESOLVED). The chip opens the SKILL.md playbook. The thread mixes client chat, AI routing notes and **automatic follow-up emails**.
+| Channel | Code | Who sends it |
+|---|---|---|
+| Platform **C1 live chat** | `C1_LIVE_CHAT` | C1 widget / `/cs` chat tab / C1 webhook |
+| Website / app **submission form** | `WEB_FORM` | `/cs` form tab / website contact form |
+| **Official email** (support@, complaints@) | `OFFICIAL_EMAIL` | `/cs` mailbox tab / mailbox gateway |
 
-**What to click.**
+Clients use the public portal **[`/cs`](/cs)** (permanent: [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)). Staff work the inbox on this page. Original CRMP Admin has **no** CS/TR desk — that snapshot stays frozen.
+
+**What you see.** Inbox filter All / CS / TR. Each request shows channel, desk, AI clarity (clear / unclear / need ID), a **dedicated skill chip** and status (OPEN, AWAITING CLIENT, ID VERIFY, ASSIGNED TR, ESCALATED RISK, RESOLVED). The chip **Enter**s `/admin/skills/{code}`. The thread mixes client chat, AI routing notes and **automatic follow-up emails**. Unread badge on this left-nav row ticks when new intake lands.
+
+#### 9.3.1 Client portal — `/cs`
+
+**Who uses it.** The client, not the operator. No login. Language toggle EN / 繁中 (same `crmp_ui_lang` cookie).
+
+**Three tabs**
+
+1. **C1 live chat** — type a message. Follow-ups in the same browser stay on one C1 `channel_ref` (shown under the send button).  
+2. **Submission form** — name, email, optional UID, subject, message. Posts `channel=WEB_FORM`.  
+3. **Official email** — same fields plus optional **In-Reply-To / ticket**. Put `CSR-XXXX` in the subject or that box to continue a waiting auto-email.
+
+**What happens after Send.** A result card shows the public ticket id (`CSR-XXXX`), status, skill, and — if AI is unclear or needs ID — the automatic official email that is now WAITING. GitHub Pages has no live `/api`; the tabs still render and explain that live POST belongs on `localhost:3000`.
+
+**Good looks like.** A short “help me ???” on the chat tab produces AWAITING CLIENT plus a yellow “automatic official email is waiting”. A later chat in the same tab, or a mailbox tab with that `CSR-XXXX` in the subject, continues the ticket instead of opening a duplicate.
+
+#### 9.3.2 How replies find the same ticket
+
+Inbound C1 / form / mailbox payloads **continue** an open request when they match, in this order:
+
+1. `request_id` (`CSR-XXXX`)  
+2. `In-Reply-To` (message id, channel_ref, or CSR-XXXX)  
+3. The same C1 / form / mailbox `channel_ref` on a live thread  
+4. `CSR-[0-9A-F]{6}` in the email subject (what the auto-mail already prints: “request CSR-A1B2C3”)
+
+A match that still has a WAITING follow-up is treated as the **client reply**: WAITING becomes REPLIED, AI re-triages. A resolved thread with the same C1 session starts a **new** ticket.
+
+`GET /api/cs/intake` returns the connector catalog. `GET /api/cs/intake?request_id=CSR-XXXX` returns public status only (no email or name).
+
+#### 9.3.3 When AI emails and waits
+
+If AI cannot tell what the client needs, or KYC/ID is required, it **must not guess**. It sends an official `EMAIL_OUT`, keeps the case open, and waits.
+
+| Clarity | Status | What the auto-mail asks | Skill |
+|---|---|---|---|
+| **Unclear** — shorter than ~48 characters, or “help me / ??? / 不清楚” | AWAITING CLIENT | What happened, when (timezone), UID, symbol / order / screenshot, what they want | `SKILL-CS-CLARIFY` |
+| **Need ID** — KYC / passport / verify account / cannot login / 核身 | ID VERIFY | Passport or ID photo, UID last four, selfie that matches the holder | `SKILL-CS-ID-VERIFY` |
+
+**Until the client replies.** Resolve is **blocked** while any follow-up is WAITING. The loop repeats on each thin reply. Cap **3** automatic mails, then a SYSTEM note tells CS Lead to follow up in person — no more auto-mail.
+
+**How the client replies (any of these close WAITING):**
+
+- Same C1 chat tab (`channel_ref`)  
+- Official-email tab or real mailbox with `CSR-XXXX` in the subject / In-Reply-To  
+- Desk button **Simulate client email reply** (demo only)
+
+```mermaid
+graph TD
+  Thin[Unclear or need ID] --> Mail[Auto EMAIL_OUT]
+  Mail --> Wait[WAITING follow-up]
+  Wait -->|CSR or C1 reply| Again[AI re-triage]
+  Wait -->|cap 3| Lead[CS Lead human]
+  Again -->|still thin| Mail
+  Again -->|clear enough| Open[OPEN or ASSIGNED_TR]
+```
+
+#### 9.3.4 Dedicated SKILL.md playbooks
+
+Triage stamps `skill_code`. Click the chip to read when-to-use / stop / success. Knowledge Tree trunks **CS_SERVICE** and **TRADING_EXEC**; linked timeline `CHAIN-CS-TR-INTAKE`; RAG leaves `cs-24-7-intake`, `cs-id-verify-policy`, `cs-swap-faq`, `tr-dealing-handoff`, `cs-escalate-to-risk`, `cs-skill-playbooks`.
+
+| Skill | When you see it | Desk / status | Escalation route |
+|---|---|---|---|
+| `SKILL-CS-CLARIFY` | Thin “help me ???” | CS · AWAITING CLIENT | `ESC-CS-24-7` |
+| `SKILL-CS-ID-VERIFY` | KYC / cannot login | CS · ID VERIFY | `ESC-CS-24-7` |
+| `SKILL-CS-ACCOUNT-FAQ` | Clear swap / hours / UID question | CS · OPEN | `ESC-CS-24-7` |
+| `SKILL-TR-EXECUTION` | Fill / slippage / MT4 / MT5 | TR · ASSIGNED TR | `ESC-TR-DEAL` |
+| `SKILL-CS-ESCALATE-RISK` | Book-risk / fraud / wallet | ESCALATED RISK → messenger | `ESC-CS-RISK` |
+
+CS does **not** arm trading controls. TR does **not** staff C1. Book-risk leaves this desk and joins Demo Messenger / Human Intervention.
+
+#### 9.3.5 What to click (operators)
 
 | Button | What it does |
 |---|---|
 | **AI triage** | Re-run routing (CS vs TR, category, clarity) and stamp the dedicated SKILL.md |
 | **Email: need more detail** | AI sends an official mail asking what happened / UID / screenshot; status AWAITING CLIENT |
 | **Email: ID verification** | AI asks for passport/ID + UID last four + selfie; status ID VERIFY |
-| **Simulate client email reply** | Client answers the waiting mail; AI re-triages. The case stays open until they reply (cap 3 mails) |
-| **Assign to TR** | Hands execution complaints to TR Dealing Support |
-| **Escalate to Risk** | Leaves CS/TR and enters the messenger / Human Intervention spine |
+| **Simulate client email reply** | Demo stand-in for a real mailbox / portal reply; AI re-triages |
+| **Assign to TR** | Hands execution complaints to TR Dealing Support (`SKILL-TR-EXECUTION`) |
+| **Escalate to Risk** | Leaves CS/TR; skill `SKILL-CS-ESCALATE-RISK`; messenger spine |
 | **Resolve** | Close — blocked while a follow-up is still WAITING |
-| **Simulate C1 / form / email** | Posts through the same intake API |
+| **Simulate C1 / form / email** | Posts through the same intake API the portal uses |
 | **Open client intake portal** | `/cs` — the three public connectors a real user would see |
+| Desk composer + Send | Reply as CS / TR on the transcript |
 
-**Good looks like.** Seeded cases cover a clear C1 swap question (SKILL-CS-ACCOUNT-FAQ), an unclear C1 “help me ???” (SKILL-CS-CLARIFY), a TR slippage form (SKILL-TR-EXECUTION), and an ID-verify email (SKILL-CS-ID-VERIFY). Unclear/ID cases wait. Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome. The `/cs` portal posts live chat / form / mailbox through the same webhook; a mailbox reply with `CSR-XXXX` in the subject closes WAITING.
+Need `cs.operate` (CS Lead, CS Agent, Super Admin, …) to act. `cs.read` / `lark.read` can watch. Audit (CRMP tab) writes `CS_INTAKE`, `CS_FOLLOWUP_EMAIL`, `CS_CLIENT_REPLY`, `CS_INTAKE_CONTINUE`, `CS_ASSIGN_TR`, `CS_ESCALATE_RISK`, `CS_RESOLVE`.
+
+#### 9.3.6 Seeded cases — good looks like
+
+| Seed | Channel | Skill | What you should see |
+|---|---|---|---|
+| Liam Okafor — swap on XAUUSD overnight | C1 | `SKILL-CS-ACCOUNT-FAQ` | OPEN, clear |
+| Sofia Mendes — “help me something wrong ???” | C1 | `SKILL-CS-CLARIFY` | AWAITING CLIENT + WAITING auto-mail |
+| Chen Wei — EURUSD slippage on MT5 | Form | `SKILL-TR-EXECUTION` | ASSIGNED TR |
+| Priya Shah — verify my account, cannot withdraw | Official email | `SKILL-CS-ID-VERIFY` | ID VERIFY + WAITING ID pack |
+
+Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome. UAT-46 (three channels + `/cs`), UAT-47 (wait loop), UAT-48 (TR / Risk), UAT-50 (skills + tree).
 
 ```mermaid
 graph TD
@@ -571,7 +683,7 @@ graph TD
 
 **What to click.** Create/edit/disable if you have manage rights (localhost). Edit dimension coefficients. Confirm the catch-all default exists. On Skills, confirm each playbook binds exactly one path.
 
-**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code.
+**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code. CS/TR playbooks bind `ESC-CS-24-7` (clarify / ID / FAQ), `ESC-TR-DEAL` (execution), `ESC-CS-RISK` (book-risk escalate). Confirm those three exist on this page and on the skill chip.
 
 ```mermaid
 graph LR
@@ -587,7 +699,7 @@ graph LR
 
 ### 10.1 BU and Teams — `/admin/departments` ( `/admin/teams` redirects here )
 
-**Combined hub.** Risk Control, Operations, AI, and System BUs with nested on-call teams. Expand a BU for mandate / Owns / Accountable / Collaborates / Out of scope / Escalates to, plus team mission and rotation (editable when authorised). There is no separate Teams left-nav tab.
+**Combined hub.** Risk Control, Operations, AI, System, **Customer Service (CS)** and **Trading (TR)** BUs with nested on-call teams. Expand CS for **CS 24/7 Desk**; expand TR for **TR Dealing Support**. Each BU shows mandate / Owns / Accountable / Collaborates / Out of scope / Escalates to, plus team mission and rotation (editable when authorised). There is no separate Teams left-nav tab.
 
 ### 10.2 Roles & Permissions — `/admin/roles` (editable)
 
@@ -607,7 +719,7 @@ If you have `users.manage` (localhost): **Add user** (name, email, password, rol
 
 ### 11.1 Data Sources — `/admin/data-sources`
 
-Registry of internal platforms and external verification feeds (category, name, type, status). Manage on localhost if you have `sources.manage`. This is the catalogue AI and Monitor 2.0 detectors are allowed to name in evidence.
+Registry of internal platforms and external verification feeds (category, name, type, status). Manage on localhost if you have `sources.manage`. This is the catalogue AI and Monitor 2.0 detectors are allowed to name in evidence. CS connectors are listed here as **C1 Live Chat Gateway**, **Website CS submission form** and **Official support mailbox** — all pointing at `/api/cs/intake`.
 
 ### 11.2 AI Access Security — `/admin/security/ai-access`
 
@@ -623,7 +735,7 @@ Two tabs:
 
 | Tab | What it records |
 |---|---|
-| **CRMP logs** | All changes done inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
+| **CRMP logs** | All changes done inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger, **CS/TR intake** (`CS_INTAKE`, `CS_FOLLOWUP_EMAIL`, `CS_CLIENT_REPLY`, `CS_INTAKE_CONTINUE`, `CS_ASSIGN_TR`, `CS_ESCALATE_RISK`, `CS_RESOLVE`) |
 | **Vantage Markets Admin logs** | Changes on other admin pages — restrict user rights, pull transaction data, triggered Lark messages, received risk incident response by BU POC, settings / org / RAG |
 
 Each row: time, actor, action, entity, details. Both tabs have a **Roll back** button — restores the before-state snapshot when available (`POST /api/audit/rollback`). Newest rows per plane.
@@ -654,12 +766,12 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | User Guide | `/admin/docs/user-guide` | This handbook |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
-| UAT Checklist | `/admin/docs/uat` | Interactive 49-case sign-off (UAT-01 … UAT-49): why, steps, pass, evidence, screen coverage |
+| UAT Checklist | `/admin/docs/uat` | Interactive 50-case sign-off (UAT-01 … UAT-50): why, steps, pass, evidence, screen coverage. CS/TR: UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
 | Progress Tracker | `/admin/docs/progress` | Interactive board: X=issues, Y=timeline now→end-2027 |
-| URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs |
+| URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs (`/cs` portal, CS/TR desk, messenger) |
 
 On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail on the board; coverage chips show which screens each case hits.
 
@@ -672,7 +784,9 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 3. Treat messenger **Dismiss** and **Close** as real decisions — they are audited.  
 4. For BREACH/CRITICAL, keep primary + second AI on screen before any irreversible control.  
 5. After a control, check **Audit Log** and the **home spine** for the same ids.  
-6. Maker and checker must be **two different people** on AI Admin and on designated controls.
+6. Maker and checker must be **two different people** on AI Admin and on designated controls.  
+7. On CS/TR: never Resolve while a follow-up is WAITING; never skip ID-verify on a verbal “it’s me”; cap auto-mail at 3 then CS Lead in person.  
+8. CS does not arm trading controls. TR does not staff C1. Book-risk leaves this desk via **Escalate to Risk**.
 
 ---
 
@@ -692,7 +806,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
-| Response | CS / TR Desk | C1 / form / email intake; dedicated SKILL.md chip; AI follow-up until reply; TR routing |
+| Response | CS / TR Desk | C1 / form / mailbox via `/cs` + `/api/cs/intake`; CSR-XXXX replies close WAITING; dedicated SKILL.md chip; AI follow-up until reply; TR / Risk |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
 | Response | Lark Integration | Channel registry |
@@ -722,5 +836,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.11 | 2026-10-06 | CS / TR Desk: C1, form, official email; AI follow-up until reply; TR routing |
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; public URL `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
 | 2.1 | 2026-10-06 | CS/TR dedicated SKILL.md chips; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves |
+| 2.2 | 2026-10-06 | Handbook: public `/cs` portal, three connectors, inbound CSR-XXXX matching, auto-email wait loop, CS/TR daily roles, skills + routes |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)
