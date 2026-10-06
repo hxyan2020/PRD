@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getUiLocale } from "@/lib/i18n-server";
 import { getCsDashboard, getCsLog } from "@/lib/cs/analytics";
+import { getCsOpsContract } from "@/lib/cs/ops-data";
 import {
   agentReply,
   applyTriage,
@@ -44,6 +45,7 @@ export async function GET(req: Request) {
   }
   if (view === "dashboard") return NextResponse.json(getCsDashboard());
   if (view === "log") return NextResponse.json(getCsLog());
+  if (view === "data") return NextResponse.json(getCsOpsContract());
   return NextResponse.json(listCsInbox());
 }
 

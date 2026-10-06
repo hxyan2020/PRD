@@ -9,11 +9,12 @@ import {
   lookupPublicCsStatus,
   parseIntakePayload,
 } from "@/lib/cs/intake";
+import { getCsIntakeToken } from "@/lib/cs/ops-data";
 
 function intakeAllowed(req: Request, body: Record<string, unknown>, user: Awaited<ReturnType<typeof getCurrentUser>>) {
   if (user && (hasPermission(user.role_code, "cs.operate") || hasPermission(user.role_code, "*"))) return true;
   if (body.mock_webhook === true || body.portal === true) return true;
-  if (req.headers.get(CS_INTAKE_TOKEN_HEADER) === CS_INTAKE_DEMO_TOKEN) return true;
+  if (req.headers.get(CS_INTAKE_TOKEN_HEADER) === getCsIntakeToken()) return true;
   return false;
 }
 

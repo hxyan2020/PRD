@@ -9,6 +9,7 @@ import {
   Headphones,
   MessageSquare,
   MessagesSquare,
+  TableProperties,
   Ticket,
   Users,
   Waypoints,
@@ -20,7 +21,7 @@ import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
 import { EnZh } from "@/components/EnZh";
 import { SignInOwnerCard } from "@/components/SignInOwnerCard";
-import { PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_PORTAL_URL, PUBLIC_ADMIN_URL, readSearchParams } from "@/lib/static-export";
+import { PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_DATA_URL, PUBLIC_CS_PORTAL_URL, PUBLIC_ADMIN_URL, readSearchParams } from "@/lib/static-export";
 import { ORIGINAL_CRMP_ADMIN_URL } from "@/lib/platform-site";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
@@ -353,7 +354,7 @@ export default async function AdminDashboardPage({
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
         <Link
           href="/admin/cs-dashboard"
           className="panel card-link group relative overflow-hidden p-4"
@@ -409,6 +410,35 @@ export default async function AdminDashboardPage({
             </div>
             <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-800 text-white">
               <ClipboardList className="h-5 w-5" aria-hidden />
+            </span>
+          </div>
+        </Link>
+        <Link
+          href="/admin/cs-data"
+          className="panel card-link group relative overflow-hidden p-4"
+          data-testid="home-cs-data"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-teal-900">
+                <TableProperties className="h-3.5 w-3.5" aria-hidden />
+                <EnZh en="CS / TR data" zh="CS／TR 資料" />
+              </div>
+              <div className="font-semibold mt-1">
+                <T k="home.csData" />
+              </div>
+              <p className="text-xs text-[var(--muted)] mt-2 break-all">
+                <EnZh en="Permanent URL" zh="永久網址" />
+                {": "}
+                {PUBLIC_CS_DATA_URL}
+              </p>
+              <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-teal-900">
+                <T k="home.csDataCta" />
+                <ChevronRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden />
+              </div>
+            </div>
+            <span className="hidden sm:inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-800 text-white">
+              <TableProperties className="h-5 w-5" aria-hidden />
             </span>
           </div>
         </Link>

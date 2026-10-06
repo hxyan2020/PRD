@@ -16,6 +16,7 @@ export const FALLBACK_NAV_TOTALS: Record<string, number> = {
   "/admin/cs-desk": 4,
   "/admin/cs-dashboard": 4,
   "/admin/cs-log": 8,
+  "/admin/cs-data": 3,
 };
 
 export type NavBadgeBump = { href: string; delta?: number };

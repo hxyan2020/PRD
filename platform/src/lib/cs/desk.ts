@@ -3,6 +3,8 @@ import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
 import type { UiLocale } from "@/lib/i18n";
 import { CS_SKILL_CODES, csSkillName, skillCodeForTriage } from "@/lib/cs/skills";
+import { assignedBuFor } from "@/lib/cs/params";
+import { getCsFollowupCap } from "@/lib/cs/ops-data";
 
 export const CS_CHANNELS = [
   {
@@ -48,6 +50,7 @@ export type CsRequest = {
   ai_clarity: string;
   followup_count: number;
   assigned_to: string | null;
+  assigned_bu: string | null;
   skill_code: string | null;
   created_at: string;
   updated_at: string;
@@ -107,6 +110,7 @@ export function ensureCsSchema(db: Database.Database = getDb()) {
       ai_clarity TEXT NOT NULL DEFAULT 'clear',
       followup_count INTEGER NOT NULL DEFAULT 0,
       assigned_to TEXT,
+      assigned_bu TEXT,
       skill_code TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
@@ -146,6 +150,9 @@ export function ensureCsSchema(db: Database.Database = getDb()) {
   const cols = db.prepare(`PRAGMA table_info(cs_requests)`).all() as Array<{ name: string }>;
   if (!cols.some((c) => c.name === "skill_code")) {
     db.exec(`ALTER TABLE cs_requests ADD COLUMN skill_code TEXT`);
+  }
+  if (!cols.some((c) => c.name === "assigned_bu")) {
+    db.exec(`ALTER TABLE cs_requests ADD COLUMN assigned_bu TEXT`);
   }
   db.prepare(
     `UPDATE cs_requests SET skill_code = CASE
@@ -384,15 +391,16 @@ export function sendFollowupEmail(
   const zh = locale === "zh-Hant";
   const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(requestDbId) as CsRequest | undefined;
   if (!row) throw new Error("Request not found");
-  if (row.followup_count >= 3) {
+  const cap = getCsFollowupCap(db);
+  if (row.followup_count >= cap) {
     addMessage(
       db,
       row.id,
       "SYSTEM",
       "CS AI",
       zh
-        ? "已達 3 封自動追問信上限。請 CS Lead 人工跟進，勿再自動寄信。"
-        : "Reached the 3-mail automatic follow-up cap. CS Lead must follow up in person — no more auto-mail."
+        ? `已達 ${cap} 封自動追問信上限。請 CS Lead 人工跟進，勿再自動寄信。`
+        : `Reached the ${cap}-mail automatic follow-up cap. CS Lead must follow up in person — no more auto-mail.`
     );
     return getCsRequest(row.id);
   }
@@ -406,9 +414,11 @@ export function sendFollowupEmail(
      SET followup_count = followup_count + 1,
          status = ?,
          ai_clarity = ?,
+         assigned_to = CASE WHEN ? = 'need_id' THEN 'CS KYC Vault' ELSE assigned_to END,
+         assigned_bu = 'CUSTOMER_SERVICE',
          updated_at = datetime('now')
      WHERE id = ?`
-  ).run(reason === "need_id" ? "ID_VERIFY" : "AWAITING_CLIENT", reason, row.id);
+  ).run(reason === "need_id" ? "ID_VERIFY" : "AWAITING_CLIENT", reason, reason, row.id);
   addMessage(db, row.id, "EMAIL_OUT", zh ? "官方信箱（自動）" : "Official mailbox (auto)", copy.body, {
     to: row.client_email,
     subject: copy.subject,
@@ -448,8 +458,8 @@ export function applyTriage(
   });
   const skillTitle = csSkillName(skillCode, locale);
   db.prepare(
-    `UPDATE cs_requests SET desk = ?, category = ?, ai_clarity = ?, skill_code = ?, updated_at = datetime('now') WHERE id = ?`
-  ).run(desk, category, clarity, skillCode, row.id);
+    `UPDATE cs_requests SET desk = ?, category = ?, ai_clarity = ?, skill_code = ?, assigned_bu = ?, updated_at = datetime('now') WHERE id = ?`
+  ).run(desk, category, clarity, skillCode, assignedBuFor({ desk, status: row.status, category }), row.id);
   addMessage(
     db,
     row.id,
@@ -462,7 +472,7 @@ export function applyTriage(
   );
   if (desk === "TR") {
     db.prepare(
-      `UPDATE cs_requests SET status = CASE WHEN status IN ('AWAITING_CLIENT','ID_VERIFY') THEN status ELSE 'ASSIGNED_TR' END, assigned_to = 'TR Dealing Support', updated_at = datetime('now') WHERE id = ?`
+      `UPDATE cs_requests SET status = CASE WHEN status IN ('AWAITING_CLIENT','ID_VERIFY') THEN status ELSE 'ASSIGNED_TR' END, assigned_to = 'TR Dealing Support', assigned_bu = 'TRADING', updated_at = datetime('now') WHERE id = ?`
     ).run(row.id);
   }
   if (clarity === "unclear" || clarity === "need_id") {
@@ -500,8 +510,8 @@ export function ingestCsRequest(
   const info = db
     .prepare(
       `INSERT INTO cs_requests
-        (request_id, channel, channel_ref, desk, category, client_name, client_email, client_uid, subject, body, status, ai_clarity)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN', ?)`
+        (request_id, channel, channel_ref, desk, category, client_name, client_email, client_uid, subject, body, status, ai_clarity, assigned_bu)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN', ?, ?)`
     )
     .run(
       requestId,
@@ -514,7 +524,8 @@ export function ingestCsRequest(
       input.client_uid || null,
       input.subject,
       input.body,
-      t.clarity
+      t.clarity,
+      assignedBuFor({ desk: t.desk, category: t.category })
     );
   const id = Number(info.lastInsertRowid);
   const senderKind = channel === "OFFICIAL_EMAIL" ? "EMAIL_IN" : channel === "WEB_FORM" ? "FORM" : "CLIENT";
@@ -578,7 +589,7 @@ export function assignToTr(requestDbId: number, userName: string, locale: UiLoca
   const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(requestDbId) as CsRequest | undefined;
   if (!row) throw new Error("Request not found");
   db.prepare(
-    `UPDATE cs_requests SET desk = 'TR', status = 'ASSIGNED_TR', assigned_to = 'TR Dealing Support', category = 'trading', skill_code = ?, updated_at = datetime('now') WHERE id = ?`
+    `UPDATE cs_requests SET desk = 'TR', status = 'ASSIGNED_TR', assigned_to = 'TR Dealing Support', assigned_bu = 'TRADING', category = 'trading', skill_code = ?, updated_at = datetime('now') WHERE id = ?`
   ).run(CS_SKILL_CODES.execution, row.id);
   addMessage(
     db,
@@ -599,7 +610,7 @@ export function escalateToRisk(requestDbId: number, userName: string, locale: Ui
   const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(requestDbId) as CsRequest | undefined;
   if (!row) throw new Error("Request not found");
   db.prepare(
-    `UPDATE cs_requests SET status = 'ESCALATED_RISK', skill_code = ?, updated_at = datetime('now') WHERE id = ?`
+    `UPDATE cs_requests SET status = 'ESCALATED_RISK', skill_code = ?, assigned_bu = 'RISK_CONTROL', updated_at = datetime('now') WHERE id = ?`
   ).run(CS_SKILL_CODES.escalateRisk, row.id);
   addMessage(
     db,

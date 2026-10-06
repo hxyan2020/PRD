@@ -4,7 +4,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { PLATFORM_URLS, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_PORTAL_URL } from "../src/lib/docs/urls";
+import { PLATFORM_URLS, PUBLIC_CS_DESK_URL, PUBLIC_CS_DASHBOARD_URL, PUBLIC_CS_LOG_URL, PUBLIC_CS_DATA_URL, PUBLIC_CS_PORTAL_URL } from "../src/lib/docs/urls";
 import { PHRASES_ZH } from "../src/lib/i18n-extra";
 
 function assert(cond: unknown, msg: string) {
@@ -16,6 +16,7 @@ const requiredPaths = [
   "/admin/cs-desk",
   "/admin/cs-dashboard",
   "/admin/cs-log",
+  "/admin/cs-data",
   "/admin/skills/SKILL-CS-CLARIFY",
   "/admin/skills/SKILL-CS-ID-VERIFY",
   "/admin/skills/SKILL-CS-ACCOUNT-FAQ",
@@ -28,6 +29,7 @@ const requiredPaths = [
   "/admin/rag?doc=cs-escalate-to-risk",
   "/admin/rag?doc=cs-skill-playbooks",
   "/api/cs",
+  "/api/cs?view=data",
   "/api/cs/intake",
   "/api/cs/intake?request_id=",
   "tables:cs_channels",
@@ -38,6 +40,7 @@ const requiredPaths = [
   PUBLIC_CS_DESK_URL,
   PUBLIC_CS_DASHBOARD_URL,
   PUBLIC_CS_LOG_URL,
+  PUBLIC_CS_DATA_URL,
 ];
 
 const byPath = new Map(PLATFORM_URLS.map((u) => [u.path, u]));
@@ -64,6 +67,10 @@ assert(
   csRows.some((u) => u.path === "/admin/cs-log"),
   "/admin/cs-log must live in CS / TR"
 );
+assert(
+  csRows.some((u) => u.path === "/admin/cs-data"),
+  "/admin/cs-data must live in CS / TR"
+);
 assert(csRows.length >= 15, `CS / TR section too small: ${csRows.length}`);
 
 const phraseTargets = PLATFORM_URLS.filter(
@@ -85,6 +92,7 @@ assert(page.includes('href="/cs"'), "catalog page /cs action");
 assert(page.includes('href="/admin/cs-desk"'), "catalog page desk action");
 assert(page.includes('href="/admin/cs-dashboard"'), "catalog page dashboard action");
 assert(page.includes('href="/admin/cs-log"'), "catalog page log action");
+assert(page.includes('href="/admin/cs-data"'), "catalog page data action");
 assert(page.includes("url-cs-cheat"), "catalog page cheat testid");
 
 const board = fs.readFileSync(path.join(root, "src/components/UrlCatalogBoard.tsx"), "utf8");

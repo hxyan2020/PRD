@@ -11,6 +11,7 @@ import {
   Settings,
   Shield,
   Sparkles,
+  Headphones,
   type LucideIcon,
 } from "lucide-react";
 import { isPublicSnapshot } from "@/lib/static-export";
@@ -117,6 +118,27 @@ const GROUPS: GroupDef[] = [
     icon: GitBranch,
     keys: ["escalation.default_sla_minutes"],
   },
+  {
+    id: "cs",
+    titleEn: "CS / TR operations",
+    titleZh: "CS／TR 營運",
+    blurbEn: "Follow-up cap, wait / TR / Risk SLAs, intake token, named mailboxes and Lark chats.",
+    blurbZh: "追問上限、等待／TR／風控 SLA、進件 token、具名信箱與 Lark 頻道。",
+    icon: Headphones,
+    keys: [
+      "cs.followup_cap",
+      "cs.wait_sla_minutes",
+      "cs.id_verify_sla_minutes",
+      "cs.tr_sla_minutes",
+      "cs.risk_sla_minutes",
+      "cs.intake_token",
+      "cs.mailbox_support",
+      "cs.mailbox_complaints",
+      "cs.lark_cs",
+      "cs.lark_kyc",
+      "cs.lark_tr",
+    ],
+  },
 ];
 
 const KEY_LABEL: Record<string, { en: string; zh: string }> = {
@@ -142,6 +164,17 @@ const KEY_LABEL: Record<string, { en: string; zh: string }> = {
   "lark.enabled": { en: "Lark notifications", zh: "Lark 通知" },
   "lark.app_id": { en: "Lark app id", zh: "Lark 應用 ID" },
   "escalation.default_sla_minutes": { en: "Default SLA (minutes)", zh: "預設 SLA（分鐘）" },
+  "cs.followup_cap": { en: "Auto-email follow-up cap", zh: "自動追問信上限" },
+  "cs.wait_sla_minutes": { en: "CS wait SLA (minutes)", zh: "CS 等待 SLA（分鐘）" },
+  "cs.id_verify_sla_minutes": { en: "ID-verify SLA (minutes)", zh: "核身 SLA（分鐘）" },
+  "cs.tr_sla_minutes": { en: "TR dealing SLA (minutes)", zh: "TR 成交 SLA（分鐘）" },
+  "cs.risk_sla_minutes": { en: "CS→Risk SLA (minutes)", zh: "CS→風控 SLA（分鐘）" },
+  "cs.intake_token": { en: "Intake webhook token", zh: "進件 webhook token" },
+  "cs.mailbox_support": { en: "Support mailbox", zh: "客服信箱" },
+  "cs.mailbox_complaints": { en: "Complaints mailbox", zh: "投訴信箱" },
+  "cs.lark_cs": { en: "CS 24/7 Lark chat id", zh: "CS 24/7 Lark 頻道" },
+  "cs.lark_kyc": { en: "CS KYC Lark chat id", zh: "CS 核身 Lark 頻道" },
+  "cs.lark_tr": { en: "TR dealing Lark chat id", zh: "TR 成交 Lark 頻道" },
 };
 
 const OTHER: GroupDef = {

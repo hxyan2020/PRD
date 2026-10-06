@@ -9,7 +9,7 @@
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- Full pack suggested window ≈ **9.7 小時**（50 案）。
+- Full pack suggested window ≈ **10.1 小時**（52 案）。
 
 ## 涵蓋範圍
 
@@ -77,7 +77,9 @@ graph TD
 | 47 | UAT-47 | 496m | 15m | Critical | CS | UAT-46; follow-up seed cases | CS／TR — AI 在不清楚或需核身時寄信並等待 | CS / TR Desk, Audit Log |
 | 48 | UAT-48 | 511m | 12m | High | CS + TR | UAT-46; trading seed case | CS／TR — 交易案件給 TR；帳簿風險升級風控 | CS / TR Desk, Demo Messenger |
 | 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS／TR — 專用 SKILL.md 劇本蓋台面並豐富知識樹 | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
-| 49 | UAT-49 | 535m | 15m | Critical | Risk Owner | UAT-01–50 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
+| 51 | UAT-51 | 535m | 12m | High | CS | UAT-46; CS/TR dashboard + log seeded | CS／TR — 專用儀表板與日誌，不是每日績效或風險日誌 | CS / TR Dashboard, CS / TR Log |
+| 52 | UAT-52 | 547m | 12m | High | CS + System | UAT-46; CS/TR org + settings seeded | CS／TR — 配套資料：BU、核身庫、關卡與 cs.* 參數 | CS / TR Data, Platform Settings, BU and Teams, Escalation Routes |
+| 49 | UAT-49 | 559m | 15m | Critical | Risk Owner | UAT-01–52 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
 
 ## 逐步案例
 
@@ -932,9 +934,47 @@ graph TD
 **通過：** 四則種子技能相符。晶片打開劇本。樹有 CS_SERVICE／TRADING_EXEC 與 RAG 葉。繁中齊全。
 **證據：** CS 台技能晶片＋知識樹 CS_SERVICE 展開＋一則 RAG 葉。
 
+### UAT-51 — CS／TR — 專用儀表板與日誌，不是每日績效或風險日誌
+
+- **嚴重度：** High · **負責：** CS · **依賴：** UAT-46; CS/TR dashboard + log seeded · **建議：** T+535m / 12m
+- **涵蓋：** CS / TR Dashboard, CS / TR Log, Daily Performance, Risk Log Analytics
+- **為何測：** 若 CS 量藏在每日績效或風險日誌裡，客服主管看不到 WAITING 信件或追問上限，風控也會把客戶工單當成 Monitor 結案。
+- **目的：** 證明 `/admin/cs-dashboard` 與 `/admin/cs-log` 存在、顯示 CS／TR 指標與 CS_* 事件，且與每日績效、風險日誌分析分開。
+
+**步驟**
+
+1. 開啟 CS／TR 儀表板（`/admin/cs-dashboard`）。確認不是每日績效。指標含總數、未結、WAITING 信件、TR／已派、已升級風控、追問上限。
+2. 種子渠道 C1／表單／信箱出現在依渠道。SKILL-CS-*／SKILL-TR-* 出現在依技能。
+3. 開啟 CS／TR 日誌（`/admin/cs-log`）。確認不是風險日誌分析。時間軸有 CS_INTAKE 與 CS_FOLLOWUP_EMAIL。
+4. 本機 GET `/api/cs?view=dashboard` 與 GET `/api/cs?view=log` 回同一包。
+5. 每日績效與風險日誌分析不可承載 CS WAITING 計數或 CS_* 時間軸。
+6. 切換繁中：儀表板與日誌標題為繁體中文。
+
+**通過：** 儀表板指標只屬 CS／TR。日誌顯示 CS_* 事件。每日績效與風險日誌保持分開。繁中介面齊全。
+**證據：** CS／TR 儀表板指標＋CS／TR 日誌時間軸截圖。
+
+### UAT-52 — CS／TR — 配套資料：BU、核身庫、關卡與 cs.* 參數
+
+- **嚴重度：** High · **負責：** CS + System · **依賴：** UAT-46; CS/TR org + settings seeded · **建議：** T+547m / 12m
+- **涵蓋：** CS / TR Data, Platform Settings, BU and Teams, Escalation Routes, Data Sources, Lark Integration
+- **為何測：** 若台面宣稱有核身庫與四條關卡但紀錄不存在，操作者無法值守核身，儀表板上限／SLA 也會與設定漂移。
+- **目的：** 證明 `/admin/cs-data`、`GET /api/cs?view=data`、CS 核身庫、`ESC-CS-KYC` 與 `cs.*` 設定分組存在，且與台面已讀內容相符。
+
+**步驟**
+
+1. 開啟 CS／TR 資料（`/admin/cs-data`）。出現 CUSTOMER_SERVICE 與 TRADING BU。團隊含 CS 24/7 台、CS 核身庫與 TR 成交支援，並有具名 POC。
+2. 升級關卡列出 `ESC-CS-24-7`、`ESC-CS-KYC`、`ESC-TR-DEAL`、`ESC-CS-RISK`。`SKILL-CS-ID-VERIFY` 綁 `ESC-CS-KYC`。
+3. 指標顯示追問上限（預設 3）、等待／核身／TR／風控 SLA、進件 token、support@ 與 complaints@。來源含 CS 核身庫（僅旗標）與 MT4／MT5 成交帶。
+4. 跳到平台設定 `#settings-cs` — CS／TR 營運分組列出 `cs.followup_cap`。跳到 BU 與團隊 — CS 核身庫嵌在客服底下。
+5. 本機 GET `/api/cs?view=data` 回同一契約。網址目錄列出 `/admin/cs-data`。
+6. 切換繁中：頁名 CS／TR 資料；團隊 CS 核身庫。
+
+**通過：** cs-data 顯示兩個 BU、CS 核身庫、四條關卡（含 ESC-CS-KYC），cs.* 與設定相符。GET ?view=data 一致。繁中介面齊全。
+**證據：** `/admin/cs-data` 的 BU＋關卡＋cs.* 指標截圖，加上設定的 CS／TR 分組。
+
 ### UAT-49 — 風險負責人退出簽核
 
-- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–50 results recorded · **建議：** T+535m / 15m
+- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–52 results recorded · **建議：** T+559m / 15m
 - **涵蓋：** UAT Checklist, Audit Log
 - **為何測：** 在有權的人寫下 ACCEPT／ACCEPT WITH WAIVERS／REJECT 之前，UAT 不算結束。
 - **目的：** 依退出規則統計 Critical／High，並存簽署決策。
@@ -943,7 +983,7 @@ graph TD
 
 1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入、CS／TR 追問迴圈）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
-3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）、CS／TR 專用技能與知識樹（UAT-50）通過。
+3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）、CS／TR 專用技能與知識樹（UAT-50）、CS／TR 儀表板與日誌（UAT-51）、CS／TR 配套資料（UAT-52）通過。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交给 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 

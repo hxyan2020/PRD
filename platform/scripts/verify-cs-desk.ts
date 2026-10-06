@@ -113,6 +113,9 @@ const faqCase = ingestCsRequest({
   actor: "verify-cs-desk",
 });
 assert(faqCase?.request.skill_code === "SKILL-CS-ACCOUNT-FAQ", `expected FAQ skill, got ${faqCase?.request.skill_code}`);
+assert(faqCase?.request.assigned_bu === "CUSTOMER_SERVICE", `FAQ assigned_bu ${faqCase?.request.assigned_bu}`);
+assert(trCase?.request.assigned_bu === "TRADING", `TR assigned_bu ${trCase?.request.assigned_bu}`);
+assert(idCase?.request.assigned_bu === "CUSTOMER_SERVICE", `ID assigned_bu ${idCase?.request.assigned_bu}`);
 assert(
   (faqCase?.messages || []).some((m) => /SKILL-CS-ACCOUNT-FAQ/.test(m.body)),
   "AI routing note should name the skill"

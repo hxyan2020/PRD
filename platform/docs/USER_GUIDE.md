@@ -4,7 +4,7 @@
 **Languages:** English (this page) · [繁體中文](/admin/docs/user-guide?lang=zh-Hant)  
 **Docs & platform owner:** demo platform owner (`haixiang.yan@hytechc.com`)
 
-This handbook is written in everyday language. It covers **every page in the left menu**, plus login, language, unread numbers, the public GitHub Pages snapshot, and the **24/7 CS / TR client door** (live C1 chat, website form, official email, auto-email wait loop, dedicated skills, **dedicated dashboard and log**).
+This handbook is written in everyday language. It covers **every page in the left menu**, plus login, language, unread numbers, the public GitHub Pages snapshot, and the **24/7 CS / TR client door** (live C1 chat, website form, official email, auto-email wait loop, dedicated skills, **dedicated dashboard, log and data**).
 
 ---
 
@@ -16,7 +16,7 @@ Vantage **CRMP Plus** is the upgraded control room for CFD and crypto risk: the 
 2. On high severity (BREACH or CRITICAL), runs a **second, independent AI** that may agree, partly agree, or disagree.  
 3. Puts the pack into a **Lark-style messenger** so you can show evidence, chat, escalate, dismiss, close, or send a control.  
 4. Asks a human checker before irreversible controls go live.  
-5. Staffs **CS / TR Desk** for 24/7 C1 live chat, web form and official email — clients use public **`/cs`**; AI emails when unclear or ID is needed and **waits until they reply** (cap 3). CS/TR volume lives on a **separate dashboard**; CS_* history lives on a **separate log**.  
+5. Staffs **CS / TR Desk** for 24/7 C1 live chat, web form and official email — clients use public **`/cs`**; AI emails when unclear or ID is needed and **waits until they reply** (cap from `cs.followup_cap`, default 3). CS/TR volume lives on a **separate dashboard**; CS_* history lives on a **separate log**; BU / team / hops / `cs.*` live on a **separate data page**.  
 6. Writes the whole story into the **Audit Log** and the **home spine** (stage ticket counts — the dedicated Spine Log tab is gone).
 
 You do not need to be an engineer to use it. Click the left menu, read the cards, and follow the buttons on the page.
@@ -28,6 +28,7 @@ You do not need to be an engineer to use it. Click the left menu, read the cards
 **CS / TR desk:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)  
 **CS / TR dashboard:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-dashboard/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-dashboard/)  
 **CS / TR log:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-log/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-log/)  
+**CS / TR data:** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-data/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-data/)  
 **CS client portal:** [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)  
 **Original CRMP Admin (frozen):** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **Full URL list:** [URL Catalog](/admin/docs/urls)  
@@ -110,7 +111,7 @@ The left pane is grouped so you are not staring at one long list:
 | **Overview** | Admin Home (includes spine stage ticket counts) |
 | **Monitor & risk** | Daily Performance → Monitor 2.0 → Realtime Alert & Tracker → Market Intelligence → Risk Log → Risk Domains |
 | **AI & knowledge** | AI Skills → Knowledge Tree → RAG → AI Admin (AI Analyses list lives on Realtime Alert & Tracker; Detectors left-nav removed → Monitor 2.0) |
-| **Response** | Demo Messenger → CS / TR Desk → CS / TR Dashboard → CS / TR Log → Human Intervention → Escalation Routes → Lark |
+| **Response** | Demo Messenger → CS / TR Desk → CS / TR Dashboard → CS / TR Log → CS / TR Data → Human Intervention → Escalation Routes → Lark |
 | **Organisation** | BU and Teams → Users → Roles |
 | **Platform** | Data Sources → Platform Settings → Audit Log → AI Access Security |
 | **Docs** | User Guide → URL Catalog → UAT → PRD → TSD → Roadmap → Ecosystem → Open Issues → Progress Tracker |
@@ -119,7 +120,7 @@ The Vantage logo sits at the top. Your role badge (and **Public prototype** on G
 
 ### Unread numbers
 
-Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, CS / TR Desk, CS / TR Dashboard, CS / TR Log, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
+Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
 
 - The number is **new things since you last opened that tab** in this browser.  
 - Formula: `unread = max(0, (known total + extra bumps) − last seen)`.  
@@ -176,11 +177,11 @@ graph TD
 ### CS Lead (`cs.lead@vantagemarkets.com` / `cs123`)
 
 1. Open [CS / TR Desk](/admin/cs-desk). Filter **CS**. Watch AWAITING CLIENT and ID VERIFY.  
-2. Do **not** Resolve while a follow-up is WAITING. After the third auto-mail, follow up in person (the thread shows a SYSTEM cap note).  
+2. Do **not** Resolve while a follow-up is WAITING. After `cs.followup_cap` auto-mails (default 3), follow up in person (the thread shows a SYSTEM cap note).  
 3. Confirm the public portal [`/cs`](/cs) still posts into this inbox.  
-4. Hand execution complaints to TR. Escalate book-risk / fraud to Risk (messenger spine).  
-5. Check [CS / TR Dashboard](/admin/cs-dashboard) for WAITING / cap-3 / TR / Risk counts. Check [CS / TR Log](/admin/cs-log) for CS_* events. These are **not** Daily Performance or Risk Log.  
-6. Sign [UAT-46](/admin/docs/uat) (three channels), [UAT-47](/admin/docs/uat) (wait loop) and [UAT-51](/admin/docs/uat) (dashboard + log) when you accept a release.
+4. Hand execution complaints to TR. Escalate book-risk / fraud to Risk (messenger spine). ID-verify stays on **CS KYC Vault** (`ESC-CS-KYC`).  
+5. Check [CS / TR Dashboard](/admin/cs-dashboard) for WAITING / cap / TR / Risk counts. Check [CS / TR Log](/admin/cs-log) for CS_* events. Check [CS / TR Data](/admin/cs-data) for BUs, hops and `cs.*`. These are **not** Daily Performance or Risk Log.  
+6. Sign [UAT-46](/admin/docs/uat) (three channels), [UAT-47](/admin/docs/uat) (wait loop), [UAT-51](/admin/docs/uat) (dashboard + log) and [UAT-52](/admin/docs/uat) (supporting data) when you accept a release.
 
 ### CS Agent (`cs.agent@vantagemarkets.com` / `cs123`)
 
@@ -651,7 +652,7 @@ Need `cs.operate` (CS Lead, CS Agent, Super Admin, …) to act. `cs.read` / `lar
 | Chen Wei — EURUSD slippage on MT5 | Form | `SKILL-TR-EXECUTION` | ASSIGNED TR |
 | Priya Shah — verify my account, cannot withdraw | Official email | `SKILL-CS-ID-VERIFY` | ID VERIFY + WAITING ID pack |
 
-Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome. UAT-46 (three channels + `/cs`), UAT-47 (wait loop), UAT-48 (TR / Risk), UAT-50 (skills + tree), UAT-51 (dashboard + log).
+Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome. UAT-46 (three channels + `/cs`), UAT-47 (wait loop), UAT-48 (TR / Risk), UAT-50 (skills + tree), UAT-51 (dashboard + log), UAT-52 (BU / hops / `cs.*`).
 
 ```mermaid
 graph TD
@@ -693,8 +694,19 @@ graph TD
   Desk --> Log[CS TR log]
   Audit[CS audit] --> Log
   Tickets[cs requests] --> Dash
+  Data[CS TR data] --> Desk
+  Data --> Dash
 ```
 
+#### 9.3.9 CS / TR Data — `/admin/cs-data`
+
+**What it is.** The live operational contract the desk, dashboard and log already consume: Customer Service and Trading BUs, nested teams, named POCs, four escalation hops, `cs.*` parameters, KYC vault and dealing-tape sources. Permanent URL: [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-data/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-data/). Edit the records on [BU and Teams](/admin/departments), [Escalation Routes](/admin/escalation), [Platform Settings](/admin/settings#settings-cs), [Data Sources](/admin/data-sources) and [Lark](/admin/lark) — this page is the read-out.
+
+**What you see.** Follow-up cap, wait / KYC / TR / Risk SLAs, intake token, support@ and complaints@. Two BUs. Teams **CS 24/7 Desk**, **CS KYC Vault**, **TR Dealing Support** with on-call and POC names. Hops `ESC-CS-24-7` (clarify / FAQ), `ESC-CS-KYC` (ID verify), `ESC-TR-DEAL` (execution), `ESC-CS-RISK` (book-risk). Seeded C1 / form / mailbox plus KYC vault and MT4/MT5 tape. Lark chats `oc_cs_c1`, `oc_cs_kyc`, `oc_tr_dealing`.
+
+**What to click.** Jump to org / hops / `cs.*` / sources / Lark / desk. `GET /api/cs?view=data` on localhost returns the same payload.
+
+**Good looks like.** CS KYC Vault exists (not only claimed on the BU card). `SKILL-CS-ID-VERIFY` binds `ESC-CS-KYC`. Cap on this page matches Platform Settings `cs.followup_cap` and the dashboard. ID images are not a data source — the vault is status flags only. 繁中 labels the chrome.
 
 ### 9.4 Lark Integration — `/admin/lark`
 
@@ -714,7 +726,7 @@ graph TD
 
 **What to click.** Create/edit/disable if you have manage rights (localhost). Edit dimension coefficients. Confirm the catch-all default exists. On Skills, confirm each playbook binds exactly one path.
 
-**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code. CS/TR playbooks bind `ESC-CS-24-7` (clarify / ID / FAQ), `ESC-TR-DEAL` (execution), `ESC-CS-RISK` (book-risk escalate). Confirm those three exist on this page and on the skill chip.
+**Good looks like.** CRITICAL has a tighter SLA than WARN. Exotic / unmatched events still resolve via ESC-DEFAULT. Skills never show a free-text “路徑” column — only the bound route code. CS/TR playbooks bind `ESC-CS-24-7` (clarify / FAQ), `ESC-CS-KYC` (ID verify), `ESC-TR-DEAL` (execution), `ESC-CS-RISK` (book-risk escalate). Confirm those four exist on this page, on [CS / TR Data](/admin/cs-data), and on the skill chip.
 
 ```mermaid
 graph LR
@@ -730,7 +742,7 @@ graph LR
 
 ### 10.1 BU and Teams — `/admin/departments` ( `/admin/teams` redirects here )
 
-**Combined hub.** Risk Control, Operations, AI, System, **Customer Service (CS)** and **Trading (TR)** BUs with nested on-call teams. Expand CS for **CS 24/7 Desk**; expand TR for **TR Dealing Support**. Each BU shows mandate / Owns / Accountable / Collaborates / Out of scope / Escalates to, plus team mission and rotation (editable when authorised). There is no separate Teams left-nav tab.
+**Combined hub.** Risk Control, Operations, AI, System, **Customer Service (CS)** and **Trading (TR)** BUs with nested on-call teams. Expand CS for **CS 24/7 Desk** and **CS KYC Vault**; expand TR for **TR Dealing Support**. Each BU shows mandate / Owns / Accountable / Collaborates / Out of scope / Escalates to, plus team mission and rotation (editable when authorised). There is no separate Teams left-nav tab. The same roster is summarised on [CS / TR Data](/admin/cs-data).
 
 ### 10.2 Roles & Permissions — `/admin/roles` (editable)
 
@@ -750,7 +762,7 @@ If you have `users.manage` (localhost): **Add user** (name, email, password, rol
 
 ### 11.1 Data Sources — `/admin/data-sources`
 
-Registry of internal platforms and external verification feeds (category, name, type, status). Manage on localhost if you have `sources.manage`. This is the catalogue AI and Monitor 2.0 detectors are allowed to name in evidence. CS connectors are listed here as **C1 Live Chat Gateway**, **Website CS submission form** and **Official support mailbox** — all pointing at `/api/cs/intake`.
+Registry of internal platforms and external verification feeds (category, name, type, status). Manage on localhost if you have `sources.manage`. This is the catalogue AI and Monitor 2.0 detectors are allowed to name in evidence. CS connectors are listed here as **C1 Live Chat Gateway**, **Website CS submission form**, **Official support mailbox**, named **support@** / **complaints@**, **CS KYC Vault** (status flags only) and **MT4/MT5 dealing tape** (TR-owned).
 
 ### 11.2 AI Access Security — `/admin/security/ai-access`
 
@@ -783,6 +795,7 @@ Grouped flags (not one giant alphabetical dump):
 | Market intelligence | `market_intel.*` (enabled, interval, Lark chat) |
 | Messenger / Lark | `lark.*` |
 | Escalation & SLA | `escalation.*`, `detectors.*` |
+| CS / TR operations | `cs.*` (follow-up cap, wait / KYC / TR / Risk SLA, intake token, mailboxes, Lark chat ids) |
 
 Edit a value and **Save**. Localhost writes SQLite. GitHub Pages stores the change in this browser only and says so.
 
@@ -797,12 +810,12 @@ All of these toggle **EN / 繁中** like the rest of the desk.
 | User Guide | `/admin/docs/user-guide` | This handbook |
 | PRD | `/admin/docs/prd` | What we are building and why, with acceptance tests |
 | TSD | `/admin/docs/tsd` | How it is built (architecture, APIs, data model) |
-| UAT Checklist | `/admin/docs/uat` | Interactive 51-case sign-off (UAT-01 … UAT-51): why, steps, pass, evidence, screen coverage. CS/TR: UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log |
+| UAT Checklist | `/admin/docs/uat` | Interactive 52-case sign-off (UAT-01 … UAT-52): why, steps, pass, evidence, screen coverage. CS/TR: UAT-46 channels + `/cs`, UAT-47 wait loop, UAT-48 TR/Risk, UAT-50 skills + tree, UAT-51 dashboard + log, UAT-52 BU / hops / `cs.*` |
 | Ecosystem Eval | `/admin/docs/ecosystem` | People, budget bands, phases, risks to adopt CRMP for real |
 | Improvement Roadmap | `/admin/docs/roadmap` | RM-01…15 cards: today / build / done-when / skip risk |
 | Open Issues | `/admin/docs/open-issues` | Programme checklist: ETA, responsible BU, dependencies (tentative → 2027) |
 | Progress Tracker | `/admin/docs/progress` | Interactive board: X=issues, Y=timeline now→end-2027 |
-| URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs. **CS / TR** section: `/cs` portal, desk, five SKILL.md playbooks, RAG leaves, POST `/api/cs/intake`, `cs_*` tables |
+| URL Catalog | `/admin/docs/urls` | Every admin page, API, and table, plus the public Pages URLs. **CS / TR** section: `/cs` portal, desk, dashboard, log, data, five SKILL.md playbooks, RAG leaves, POST `/api/cs/intake`, `GET /api/cs?view=data`, `cs_*` tables |
 
 On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail on the board; coverage chips show which screens each case hits.
 
@@ -816,7 +829,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 4. For BREACH/CRITICAL, keep primary + second AI on screen before any irreversible control.  
 5. After a control, check **Audit Log** and the **home spine** for the same ids.  
 6. Maker and checker must be **two different people** on AI Admin and on designated controls.  
-7. On CS/TR: never Resolve while a follow-up is WAITING; never skip ID-verify on a verbal “it’s me”; cap auto-mail at 3 then CS Lead in person.  
+7. On CS/TR: never Resolve while a follow-up is WAITING; never skip ID-verify on a verbal “it’s me”; cap auto-mail at `cs.followup_cap` (default 3) then CS Lead in person.  
 8. CS does not arm trading controls. TR does not staff C1. Book-risk leaves this desk via **Escalate to Risk**.
 
 ---
@@ -840,6 +853,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Response | CS / TR Desk | C1 / form / mailbox via `/cs` + `/api/cs/intake`; CSR-XXXX replies close WAITING; dedicated SKILL.md chip; AI follow-up until reply; TR / Risk |
 | Response | CS / TR Dashboard | CS/TR KPIs — not Daily Performance |
 | Response | CS / TR Log | CS_* timeline + resolved packs — not Risk Log |
+| Response | CS / TR Data | BU / team / hops / `cs.*` contract the desk already reads |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
 | Response | Lark Integration | Channel registry |
@@ -871,5 +885,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 2.1 | 2026-10-06 | CS/TR dedicated SKILL.md chips; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves |
 | 2.2 | 2026-10-06 | Handbook: public `/cs` portal, three connectors, inbound CSR-XXXX matching, auto-email wait loop, CS/TR daily roles, skills + routes |
 | 2.3 | 2026-10-06 | §9.3.7 dashboard + §9.3.8 log (not Daily Performance / Risk Log) |
+| 2.4 | 2026-10-06 | §9.3.9 CS/TR Data: BU / CS KYC Vault / four hops / `cs.*`; UAT-52 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import { listCsInbox, type CsRequest } from "@/lib/cs/desk";
+import { getCsFollowupCap } from "@/lib/cs/ops-data";
 
 export const CS_AUDIT_ACTIONS = [
   "CS_INTAKE",
@@ -135,7 +136,7 @@ export function getCsDashboard(): CsDashboard {
     id_verify: requests.filter((r) => r.status === "ID_VERIFY").length,
     assigned_tr: requests.filter((r) => r.status === "ASSIGNED_TR" || r.desk === "TR").length,
     escalated_risk: requests.filter((r) => r.status === "ESCALATED_RISK").length,
-    cap3: requests.filter((r) => r.followup_count >= 3).length,
+    cap3: requests.filter((r) => r.followup_count >= getCsFollowupCap()).length,
     cs_desk: requests.filter((r) => r.desk === "CS").length,
     tr_desk: requests.filter((r) => r.desk === "TR").length,
   };

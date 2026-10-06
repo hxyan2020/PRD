@@ -12,9 +12,10 @@ import {
   type CsRequest,
 } from "@/lib/cs/desk";
 import { getDb } from "@/lib/db";
+import { CS_INTAKE_DEMO_TOKEN, CS_INTAKE_TOKEN_HEADER } from "@/lib/cs/params";
+import { getCsIntakeToken } from "@/lib/cs/ops-data";
 
-export const CS_INTAKE_TOKEN_HEADER = "x-cs-intake-token";
-export const CS_INTAKE_DEMO_TOKEN = "demo-c1";
+export { CS_INTAKE_TOKEN_HEADER, CS_INTAKE_DEMO_TOKEN };
 
 export type ParsedIntake = {
   channel: CsChannelCode;
