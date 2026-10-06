@@ -30,48 +30,68 @@ function BucketList({ rows, empty }: { rows: CsCountBucket[]; empty: string }) {
   );
 }
 
-function RequestTable({ rows, empty }: { rows: CsDashRow[]; empty: string }) {
+function RequestTable({ rows, empty, testId }: { rows: CsDashRow[]; empty: string; testId: string }) {
   const { t } = useT();
   if (!rows.length) return <p className="text-sm text-[var(--muted)]">{empty}</p>;
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-left text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">
-            <th className="py-2 pr-3">{t("cs.dash.colId")}</th>
-            <th className="py-2 pr-3">{t("cs.dash.colSubject")}</th>
-            <th className="py-2 pr-3">{t("common.channel")}</th>
-            <th className="py-2 pr-3">{t("cs.dash.colDesk")}</th>
-            <th className="py-2 pr-3">{t("common.status")}</th>
-            <th className="py-2">{t("cs.skill")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.id} className="border-t border-slate-100">
-              <td className="py-2 pr-3 font-mono text-xs">
-                <Link className="text-teal-800 underline" href="/admin/cs-desk">
-                  {row.request_id}
-                </Link>
-              </td>
-              <td className="py-2 pr-3">
-                <div className="font-medium">{row.subject}</div>
-                <div className="text-xs text-[var(--muted)]">{row.client_name}</div>
-              </td>
-              <td className="py-2 pr-3">{row.channel}</td>
-              <td className="py-2 pr-3">{row.desk}</td>
-              <td className="py-2 pr-3">
-                <div className="flex flex-wrap items-center gap-1">
-                  <StatusBadge value={row.status} />
-                  {row.waiting ? <Badge className="bg-amber-50 text-amber-900 border-amber-200">WAITING</Badge> : null}
-                </div>
-              </td>
-              <td className="py-2 font-mono text-xs">{row.skill_code || "—"}</td>
+    <>
+      <ul className="space-y-2 sm:hidden" data-testid={testId}>
+        {rows.map((row) => (
+          <li key={row.id} className="rounded-xl border border-[var(--line)] p-3 space-y-1.5">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Link className="font-mono text-xs text-teal-800 underline" href="/admin/cs-desk">
+                {row.request_id}
+              </Link>
+              <StatusBadge value={row.status} />
+              {row.waiting ? <Badge className="bg-amber-50 text-amber-900 border-amber-200">WAITING</Badge> : null}
+            </div>
+            <div className="font-medium break-word">{row.subject}</div>
+            <div className="text-xs text-[var(--muted)] break-word">
+              {row.client_name} · {row.channel} · {row.desk}
+              {row.skill_code ? ` · ${row.skill_code}` : ""}
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div className="hidden sm:block overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">
+              <th className="py-2 pr-3">{t("cs.dash.colId")}</th>
+              <th className="py-2 pr-3">{t("cs.dash.colSubject")}</th>
+              <th className="py-2 pr-3">{t("common.channel")}</th>
+              <th className="py-2 pr-3">{t("cs.dash.colDesk")}</th>
+              <th className="py-2 pr-3">{t("common.status")}</th>
+              <th className="py-2">{t("cs.skill")}</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.id} className="border-t border-slate-100">
+                <td className="py-2 pr-3 font-mono text-xs">
+                  <Link className="text-teal-800 underline" href="/admin/cs-desk">
+                    {row.request_id}
+                  </Link>
+                </td>
+                <td className="py-2 pr-3">
+                  <div className="font-medium">{row.subject}</div>
+                  <div className="text-xs text-[var(--muted)]">{row.client_name}</div>
+                </td>
+                <td className="py-2 pr-3">{row.channel}</td>
+                <td className="py-2 pr-3">{row.desk}</td>
+                <td className="py-2 pr-3">
+                  <div className="flex flex-wrap items-center gap-1">
+                    <StatusBadge value={row.status} />
+                    {row.waiting ? <Badge className="bg-amber-50 text-amber-900 border-amber-200">WAITING</Badge> : null}
+                  </div>
+                </td>
+                <td className="py-2 font-mono text-xs">{row.skill_code || "—"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 
@@ -83,7 +103,7 @@ export function CsDashboardView({ data, ops }: { data: CsDashboard; ops?: CsOpsC
       <p className="mb-3 text-sm text-[var(--muted)]">
         <THint />
       </p>
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-4 action-row">
         <Link className="btn" href="/admin/cs-desk">
           <Headphones className="mr-1 h-4 w-4" aria-hidden />
           {t("home.csDeskCta")}
@@ -105,11 +125,11 @@ export function CsDashboardView({ data, ops }: { data: CsDashboard; ops?: CsOpsC
           </div>
           <div className="panel p-3 text-sm">
             <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.teams")}</div>
-            <div className="font-semibold">{ops.teams.map((x) => x.name).join(" · ")}</div>
+            <div className="font-semibold break-word">{ops.teams.map((x) => x.name).join(" · ")}</div>
           </div>
           <div className="panel p-3 text-sm">
             <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.routes")}</div>
-            <div className="font-mono text-xs">{ops.routes.map((r) => r.route_code).join(" · ")}</div>
+            <div className="font-mono text-xs break-all">{ops.routes.map((r) => r.route_code).join(" · ")}</div>
           </div>
           <div className="panel p-3 text-sm">
             <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.mailboxes")}</div>
@@ -160,11 +180,11 @@ export function CsDashboardView({ data, ops }: { data: CsDashboard; ops?: CsOpsC
       </div>
       <section className="panel mb-4 p-4">
         <h2 className="mb-3 text-sm font-semibold">{t("cs.dash.waitingList")}</h2>
-        <RequestTable rows={data.waiting} empty={t("cs.dash.waitingEmpty")} />
+        <RequestTable rows={data.waiting} empty={t("cs.dash.waitingEmpty")} testId="cs-dash-waiting-mobile" />
       </section>
       <section className="panel p-4">
         <h2 className="mb-3 text-sm font-semibold">{t("cs.dash.recent")}</h2>
-        <RequestTable rows={data.recent} empty={t("cs.dash.empty")} />
+        <RequestTable rows={data.recent} empty={t("cs.dash.empty")} testId="cs-dash-recent-mobile" />
       </section>
     </div>
   );

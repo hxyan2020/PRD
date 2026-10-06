@@ -76,7 +76,24 @@ function BlockTable({
 }) {
   if (!items.length) return null;
   return (
-    <div className="table-wrap rounded-xl border border-rose-200 bg-white/90">
+    <>
+      <ul className="space-y-2 sm:hidden" data-testid="rag-gate-mobile">
+        {items.map((i) => (
+          <li key={i.id} className="rounded-xl border border-rose-200 bg-white/90 p-3 space-y-1.5">
+            <div className="font-mono text-[11px] break-all">{i.id}</div>
+            <div className="font-semibold break-word">{phrase(i.name)}</div>
+            <p className="text-[11px] text-[var(--muted)] break-word">{phrase(i.reason)}</p>
+            <div className="font-mono text-[11px] break-all">{i.target}</div>
+            <div className="flex flex-wrap gap-1.5">
+              <SeverityBadge value={i.severity} />
+              <Badge className="bg-slate-100 text-slate-700 border-slate-200">{i.ai_may}</Badge>
+            </div>
+            <div className="text-xs break-word">{i.human_roles.join(" · ")}</div>
+            <div className="font-mono text-[11px] break-all">{i.required_permissions.join(" · ")}</div>
+          </li>
+        ))}
+      </ul>
+      <div className="table-wrap rounded-xl border border-rose-200 bg-white/90 hidden sm:block">
       <table className="data text-sm">
         <thead>
           <tr>
@@ -140,6 +157,7 @@ function BlockTable({
           ))}
         </tbody>
       </table>
-    </div>
+      </div>
+    </>
   );
 }

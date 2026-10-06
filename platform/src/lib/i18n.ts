@@ -428,6 +428,7 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "連接器：公開 /cs 入口與 POST /api/cs/intake（C1 即時聊天、提交表單、官方信箱）。標頭 x-cs-intake-token: demo-c1。回覆以 CSR-XXXX／channel_ref／In-Reply-To 對上原案。AI 蓋上專用 SKILL.md；不清楚或需核身會自動寄信等待 — 最多三輪。資料齊全後分類、給嚴重度、起草方案，並依敏感度直回或交 POC 審閱後寄出。",
   },
   "cs.inbox": { en: "CS / TR inbox", "zh-Hant": "CS／TR 收件匣" },
+  "cs.inboxBack": { en: "Inbox", "zh-Hant": "收件匣" },
   "cs.empty": { en: "No requests yet. Simulate C1, a form, or an email.", "zh-Hant": "尚無請求。請模擬 C1、表單或信件。" },
   "cs.triage": { en: "AI triage", "zh-Hant": "AI 分流" },
   "cs.analyze": { en: "AI analyse + draft", "zh-Hant": "AI 分析＋草稿" },

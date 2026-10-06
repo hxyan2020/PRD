@@ -282,7 +282,7 @@ graph TD
 | FR-11 | Market intel 5-min scan + outbox card format | Scan runs on localhost; GitHub Pages uses a client demo scan (no 405). Findings/outbox/scan log update in the desk. |
 | FR-12 | Risk Log analytics | Overview lists closed tracker cards (ticket closed, AI analysis, AI/BU action logs, mandated solution) plus 90-day historical charts (backfilled), timeline / loss vs prevented |
 | FR-13 | Bilingual product docs (EN / zh-Hant) | PRD, TSD, User Guide, UAT, Ecosystem, Roadmap, Open Issues, Progress, URL Catalog toggle works |
-| FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger master-detail; card lists where tables would overflow; no page overflow |
+| FR-14 | Responsive admin (web + mobile) | 390px: drawer + messenger and CS/TR desk list→thread; card lists for dashboard/log/data and leftover dense boards; no page overflow |
 | FR-15 | Enriched skill risk scenarios / chains | Skills board shows scenarios with thresholds & escalation; **Enter** opens `/admin/skills/{code}` |
 | FR-16 | URL catalog for demo navigation | `/admin/docs/urls` lists admin/API/data paths + public Pages URLs plus CS/TR section (`/cs`, desk, five SKILL.md, RAG leaves, `/api/cs/intake`) |
 | FR-21 | Admin Home snapshot | Every card/row is a link (stats, owner, messenger, jumps, departments, recent alerts, spine steps). Dummy alert / Dummy alert group walk DETECT→close; chrome and stored copy are EN / zh-Hant. |
@@ -568,5 +568,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-53). The pack
 | 2.4 | 2026-10-06 | FR-44 dedicated CS/TR dashboard + log (not Daily Performance / Risk Log); UAT-51 |
 | 2.5 | 2026-10-06 | FR-45 CS/TR supporting data (BU/teams/KYC vault, ESC-CS-KYC, cs.* parameters); UAT-52 |
 | 2.6 | 2026-10-06 | FR-46 categorize / severity / AI solution; auto-reply vs named POC addendum; journey 5.10; UAT-53 |
+| 2.7 | 2026-10-07 | FR-14 CS/TR desk list→thread + dashboard/log/data cards at 390px; UAT-18 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

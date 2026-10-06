@@ -205,7 +205,7 @@ export function CsClientPortal({ staticMode = false }: { staticMode?: boolean })
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-8 py-6 pb-[max(2rem,var(--safe-bottom))]">
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="grid grid-cols-1 sm:flex sm:flex-wrap gap-2 mb-4">
           {tabs.map((item) => {
             const Icon = item.icon;
             return (

@@ -96,7 +96,7 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 | 15 | UAT-15 | 171m | 10m | High | System + Security | AI access blocklist seeded | AI must not be allowed near human-only data | AI Access Security |
 | 16 | UAT-16 | 181m | 15m | High | System | UAT-07 through UAT-12 performed | Audit Log and home spine tell the same story as messenger | Audit Log, Admin Home spine |
 | 17 | UAT-17 | 196m | 10m | Low | All | Docs published under /admin/docs/* | English and Traditional Chinese documentation both render | User Guide, PRD, TSD, UAT Checklist, Ecosystem Eval |
-| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk |
+| 18 | UAT-18 | 206m | 15m | Medium | All | Responsive admin shell | Phone-width smoke test (~390px) | Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, CS client portal |
 | 19 | UAT-19 | 221m | 10m | Medium | Risk Owner | UAT-04 samples in window | Every serious analysis in this UAT window has a second AI | Realtime Alert & Tracker |
 | 20 | UAT-20 | 231m | 12m | High | Risk + AI | Skills catalog seeded | Skill cards stay short; Enter opens the full playbook | AI Skills |
 | 21 | UAT-21 | 243m | 8m | High | Risk | UAT-07; public Pages URL | Messenger “Open in admin” lands on a real analysis | Demo Messenger, AI analysis detail (/admin/ai-analyses/[id]) |
@@ -439,9 +439,9 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 ### UAT-18 — Phone-width smoke test (~390px)
 
 - **Severity:** Medium · **BU:** All · **Depends:** Responsive admin shell · **Window:** T+206m / 15m
-- **Covers:** Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk
-- **Why:** On-call staff will open messenger from a phone. Overflow or a broken drawer makes the desk unusable.
-- **Goal:** At about 390px width, open the menu, use messenger list→thread→back, read an AI analysis, and open CS / TR Desk.
+- **Covers:** Admin Home, Demo Messenger, Realtime Alert & Tracker, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, CS client portal
+- **Why:** On-call staff will open messenger and CS/TR from a phone. Overflow or a broken drawer makes the desk unusable.
+- **Goal:** At about 390px width, open the menu, use messenger list→thread→back, read an AI analysis, and use CS / TR Desk, Dashboard, Log, Data and /cs.
 
 **Steps**
 
@@ -449,10 +449,11 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 2. On Admin Home, tap the hamburger. The left drawer opens. The page itself must not scroll sideways.
 3. Open Demo Messenger. You should see the thread list first. Open a thread, then tap Threads (back) to return to the list.
 4. Open an AI analysis detail. The second-AI sections should stack vertically. Primary buttons must still be tappable.
-5. Open CS / TR Desk. Inbox cards stack; Simulate / Assign to TR / Escalate stay tappable; no document-level horizontal overflow.
+5. Open CS / TR Desk. Inbox list first; tap a card; Inbox back returns. Simulate / Assign to TR / Escalate stay tappable; no document-level horizontal overflow.
+6. Open CS / TR Dashboard and Log: waiting/recent/resolved show as cards, not a sideways table. CS / TR Data teams are cards. /cs channel tabs stack.
 
-**Pass:** Drawer works; messenger master-detail works; CS / TR Desk is usable at 390px; no document-level horizontal overflow.
-**Evidence:** Mobile screenshots of drawer, messenger list, messenger thread, AI detail, CS / TR Desk.
+**Pass:** Drawer works; messenger and CS/TR desk master-detail work; dashboard, log, data and /cs are usable at 390px; no document-level horizontal overflow.
+**Evidence:** Mobile screenshots of drawer, messenger list/thread, AI detail, CS / TR Desk list+thread, dashboard cards, log, data, /cs.
 
 ### UAT-19 — Every serious analysis in this UAT window has a second AI
 

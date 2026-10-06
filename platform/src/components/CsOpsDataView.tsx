@@ -13,7 +13,7 @@ export function CsOpsDataView({ data }: { data: CsOpsContract }) {
   return (
     <div className="space-y-4" data-testid="cs-ops-data">
       <p className="text-sm text-[var(--muted)]">{t("cs.data.hint")}</p>
-      <div className="flex flex-wrap gap-2">
+      <div className="action-row">
         <Link className="btn" href="/admin/departments">
           <Building2 className="mr-1 h-4 w-4" aria-hidden />
           {t("cs.data.linkOrg")}
@@ -98,7 +98,23 @@ export function CsOpsDataView({ data }: { data: CsOpsContract }) {
           <Users className="h-4 w-4" aria-hidden />
           {t("cs.data.teams")}
         </h2>
-        <div className="overflow-x-auto">
+        <ul className="space-y-2 sm:hidden" data-testid="cs-data-teams-mobile">
+          {data.teams.map((team) => (
+            <li key={team.name} className="rounded-xl border border-[var(--line)] p-3 space-y-1.5">
+              <div className="font-medium break-word">{phrase(team.name, locale)}</div>
+              {team.mission ? <div className="text-xs text-[var(--muted)] break-word">{phrase(team.mission, locale)}</div> : null}
+              <div className="text-xs text-[var(--muted)] break-all">
+                {team.department_code} · {team.lark_chat_id || "—"}
+              </div>
+              <div className="text-xs">{t("cs.data.rota")}: {team.on_call_rotation ? phrase(team.on_call_rotation, locale) : "—"}</div>
+              <div className="text-xs">
+                {t("cs.data.pocs")}:{" "}
+                {team.members.length ? team.members.map((m) => `${m.name} · ${m.role_code}`).join(" · ") : "—"}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="hidden sm:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">
@@ -176,11 +192,11 @@ export function CsOpsDataView({ data }: { data: CsOpsContract }) {
           <ul className="space-y-1 text-sm">
             <li>
               <span className="text-[var(--muted)]">{t("cs.data.support")}: </span>
-              <span className="font-mono">{p.mailbox_support}</span>
+              <span className="font-mono break-all">{p.mailbox_support}</span>
             </li>
             <li>
               <span className="text-[var(--muted)]">{t("cs.data.complaints")}: </span>
-              <span className="font-mono">{p.mailbox_complaints}</span>
+              <span className="font-mono break-all">{p.mailbox_complaints}</span>
             </li>
           </ul>
           <h3 className="mt-4 mb-2 text-sm font-semibold">{t("cs.data.lark")}</h3>
@@ -199,7 +215,7 @@ export function CsOpsDataView({ data }: { data: CsOpsContract }) {
             {data.sources.map((src) => (
               <li key={src.name}>
                 <div className="font-medium">{phrase(src.name, locale)}</div>
-                <div className="text-xs text-[var(--muted)]">
+                <div className="text-xs text-[var(--muted)] break-all">
                   {src.owner_department} · {src.category}
                   {src.url ? ` · ${src.url}` : ""}
                 </div>

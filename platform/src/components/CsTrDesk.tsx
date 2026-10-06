@@ -6,7 +6,7 @@ import { Badge, StatusBadge } from "@/components/ui";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase, t, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
-import { Headphones, Send, TableProperties } from "lucide-react";
+import { ArrowLeft, Headphones, Send, TableProperties } from "lucide-react";
 import type { CsOpsContract } from "@/lib/cs/ops-data";
 
 type RequestRow = {
@@ -101,6 +101,7 @@ export function CsTrDesk({
   const [pocExtra, setPocExtra] = useState("");
   const [simBody, setSimBody] = useState("");
   const [deskFilter, setDeskFilter] = useState<"ALL" | "CS" | "TR">("ALL");
+  const [mobilePane, setMobilePane] = useState<"list" | "thread">("list");
 
   const active = useMemo(() => requests.find((r) => r.id === activeId) || null, [requests, activeId]);
   const pack = activeId ? catalog[activeId] : undefined;
@@ -152,7 +153,7 @@ export function CsTrDesk({
   return (
     <div>
       {ops ? (
-        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs" data-testid="cs-desk-ops">
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs max-w-full" data-testid="cs-desk-ops">
           <AdminLink href="/admin/cs-data" className="btn !min-h-9 text-xs inline-flex items-center gap-1">
             <TableProperties className="h-3.5 w-3.5" aria-hidden />
             {t("cs.data.open", locale)}
@@ -160,14 +161,24 @@ export function CsTrDesk({
           <span className="rounded-full border border-[var(--line)] px-2 py-1">
             {t("cs.data.cap", locale)} {ops.params.followup_cap}
           </span>
-          <span className="rounded-full border border-[var(--line)] px-2 py-1 font-mono">
+          <span className="rounded-full border border-[var(--line)] px-2 py-1 font-mono break-all">
             {ops.routes.map((r) => r.route_code).join(" · ")}
           </span>
-          <span className="rounded-full border border-[var(--line)] px-2 py-1">{ops.teams.map((x) => x.name).join(" · ")}</span>
+          <span className="rounded-full border border-[var(--line)] px-2 py-1 break-word">
+            {ops.teams.map((x) => phrase(x.name, locale)).join(" · ")}
+          </span>
         </div>
       ) : null}
-    <div className="grid lg:grid-cols-[minmax(240px,320px)_minmax(0,1fr)] gap-3 sm:gap-4">
-      <section className="panel p-3 flex flex-col min-h-0">
+    <div
+      className="messenger-shell grid lg:grid-cols-[minmax(240px,320px)_minmax(0,1fr)] gap-3 sm:gap-4"
+      data-testid="cs-desk-mobile"
+    >
+      <section
+        className={`panel p-3 flex flex-col min-h-0 min-w-0 ${
+          mobilePane === "thread" ? "hidden lg:flex" : "flex"
+        }`}
+        data-testid="cs-desk-inbox"
+      >
         <div className="flex items-center gap-2 mb-2">
           <Headphones size={16} className="text-teal-800" />
           <h2 className="font-semibold text-sm">{t("cs.inbox", locale)}</h2>
@@ -189,7 +200,10 @@ export function CsTrDesk({
             <button
               key={row.id}
               type="button"
-              onClick={() => setActiveId(row.id)}
+              onClick={() => {
+                setActiveId(row.id);
+                setMobilePane("thread");
+              }}
               data-testid={`cs-req-${row.id}`}
               className={`w-full text-left rounded-xl border px-3 py-2.5 min-h-16 ${
                 activeId === row.id ? "border-teal-400 bg-teal-50" : "border-[var(--line)] hover:bg-slate-50"
@@ -213,12 +227,76 @@ export function CsTrDesk({
           ))}
           {!shown.length ? <p className="text-sm text-[var(--muted)] p-2">{t("cs.empty", locale)}</p> : null}
         </div>
+        <div className="mt-3 border-t border-[var(--line)] pt-3 space-y-2">
+          <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">{t("cs.simulate", locale)}</div>
+          <p className="text-[11px] text-[var(--muted)]">{t("cs.simulateHint", locale)}</p>
+          <textarea
+            className="textarea text-sm"
+            rows={2}
+            value={simBody}
+            onChange={(e) => setSimBody(e.target.value)}
+            placeholder={t("cs.simPh", locale)}
+          />
+          <div className="action-row">
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              data-testid="cs-sim-c1"
+              onClick={() => void run("simulate_c1", { body: simBody || undefined, subject: "C1 live chat" })}
+            >
+              {t("cs.simC1", locale)}
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() => void run("simulate_form", { body: simBody || undefined, subject: "Web form" })}
+            >
+              {t("cs.simForm", locale)}
+            </button>
+            <button
+              type="button"
+              className="btn"
+              disabled={busy}
+              onClick={() => void run("simulate_email", { body: simBody || undefined, subject: "Official email" })}
+            >
+              {t("cs.simEmail", locale)}
+            </button>
+          </div>
+          <div className="text-[11px] text-[var(--muted)] flex flex-wrap gap-3 items-center break-all">
+            POST /api/cs/intake · header x-cs-intake-token: demo-c1
+            <a className="underline text-teal-800 break-all" href="/cs">
+              {t("cs.portalLink", locale)}
+            </a>
+          </div>
+        </div>
+        {statusMsg && mobilePane === "list" ? (
+          <div className="mt-2 text-xs bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">{statusMsg}</div>
+        ) : null}
       </section>
 
-      <section className="panel p-3 sm:p-4 flex flex-col min-h-0">
+      <section
+        className={`panel p-3 sm:p-4 flex flex-col min-h-0 min-w-0 ${
+          mobilePane === "list" ? "hidden lg:flex" : "flex"
+        }`}
+        data-testid="cs-desk-thread"
+      >
         {active ? (
           <>
             <div className="border-b border-[var(--line)] pb-2 mb-2">
+              <div className="flex items-center gap-2 min-w-0 mb-2 lg:hidden">
+                <button
+                  type="button"
+                  className="btn !min-h-11 !px-2.5 shrink-0"
+                  data-testid="cs-inbox-back"
+                  onClick={() => setMobilePane("list")}
+                >
+                  <ArrowLeft size={16} />
+                  <span className="sr-only">{t("cs.inboxBack", locale)}</span>
+                </button>
+                <span className="text-sm font-semibold truncate">{t("cs.inboxBack", locale)}</span>
+              </div>
               <div className="flex flex-wrap gap-1.5 items-center">
                 <Badge className="bg-teal-50 text-teal-900 border-teal-200">{active.desk}</Badge>
                 <StatusBadge value={active.status} />
@@ -268,7 +346,7 @@ export function CsTrDesk({
                 {active.assigned_bu ? ` · ${t("cs.data.buChip", locale)} ${active.assigned_bu}` : ""}
                 {active.assigned_to ? ` · ${active.assigned_to}` : ""}
               </p>
-              <div className="mt-3 flex flex-wrap gap-2" data-testid="cs-actions">
+              <div className="mt-3 action-row" data-testid="cs-actions">
                 <button type="button" className="btn" disabled={busy} onClick={() => void run("triage")}>
                   {t("cs.triage", locale)}
                 </button>
@@ -334,14 +412,16 @@ export function CsTrDesk({
                       onChange={(e) => setPocExtra(e.target.value)}
                       placeholder={t("cs.pocExtraPh", locale)}
                     />
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      disabled={busy}
-                      onClick={() => void run("poc_release", { extra: pocExtra })}
-                    >
-                      {t("cs.pocRelease", locale)}
-                    </button>
+                    <div className="action-row">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={busy}
+                        onClick={() => void run("poc_release", { extra: pocExtra })}
+                      >
+                        {t("cs.pocRelease", locale)}
+                      </button>
+                    </div>
                   </div>
                 ) : null}
               </div>
@@ -376,21 +456,23 @@ export function CsTrDesk({
                   <p className="text-xs mt-1">
                     {zh ? "寄至" : "To"} {f.email_to} · {f.reason}
                   </p>
-                  <button
-                    type="button"
-                    className="btn btn-primary mt-2"
-                    disabled={busy}
-                    onClick={() =>
-                      void run("client_reply", {
-                        text:
-                          f.reason === "need_id"
-                            ? "Here is my passport photo and UID last four 0088. Selfie attached."
-                            : "Account UID 771902. I cannot log in since yesterday 22:00 UTC. Screenshot of the error is attached. Please reset KYC.",
-                      })
-                    }
-                  >
-                    {t("cs.simulateReply", locale)}
-                  </button>
+                  <div className="action-row mt-2">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={busy}
+                      onClick={() =>
+                        void run("client_reply", {
+                          text:
+                            f.reason === "need_id"
+                              ? "Here is my passport photo and UID last four 0088. Selfie attached."
+                              : "Account UID 771902. I cannot log in since yesterday 22:00 UTC. Screenshot of the error is attached. Please reset KYC.",
+                        })
+                      }
+                    >
+                      {t("cs.simulateReply", locale)}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -418,52 +500,7 @@ export function CsTrDesk({
         ) : (
           <p className="text-sm text-[var(--muted)] p-2">{t("cs.select", locale)}</p>
         )}
-
-        <div className="mt-3 border-t border-[var(--line)] pt-3 space-y-2">
-          <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)]">{t("cs.simulate", locale)}</div>
-          <p className="text-[11px] text-[var(--muted)]">{t("cs.simulateHint", locale)}</p>
-          <textarea
-            className="textarea text-sm"
-            rows={2}
-            value={simBody}
-            onChange={(e) => setSimBody(e.target.value)}
-            placeholder={t("cs.simPh", locale)}
-          />
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="btn"
-              disabled={busy}
-              data-testid="cs-sim-c1"
-              onClick={() => void run("simulate_c1", { body: simBody || undefined, subject: "C1 live chat" })}
-            >
-              {t("cs.simC1", locale)}
-            </button>
-            <button
-              type="button"
-              className="btn"
-              disabled={busy}
-              onClick={() => void run("simulate_form", { body: simBody || undefined, subject: "Web form" })}
-            >
-              {t("cs.simForm", locale)}
-            </button>
-            <button
-              type="button"
-              className="btn"
-              disabled={busy}
-              onClick={() => void run("simulate_email", { body: simBody || undefined, subject: "Official email" })}
-            >
-              {t("cs.simEmail", locale)}
-            </button>
-          </div>
-          <div className="text-[11px] text-[var(--muted)] flex flex-wrap gap-3 items-center">
-            POST /api/cs/intake · header x-cs-intake-token: demo-c1
-            <a className="underline text-teal-800" href="/cs">
-              {t("cs.portalLink", locale)}
-            </a>
-          </div>
-        </div>
-        {statusMsg ? (
+        {statusMsg && mobilePane === "thread" ? (
           <div className="mt-2 text-xs bg-teal-50 border border-teal-200 text-teal-900 rounded-lg px-3 py-2">{statusMsg}</div>
         ) : null}
       </section>
