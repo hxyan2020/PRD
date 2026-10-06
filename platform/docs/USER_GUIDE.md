@@ -120,7 +120,7 @@ The Vantage logo sits at the top. Your role badge (and **Public prototype** on G
 
 ### Unread numbers
 
-Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log).
+Some rows show a **teal badge** (Realtime Alert & Tracker, Demo Messenger, CS / TR Desk, CS / TR Dashboard, CS / TR Log, CS / TR Data, Market Intelligence, Human Intervention, Audit, Monitor 2.0, Risk Log, Lark Integration).
 
 - The number is **new things since you last opened that tab** in this browser.  
 - Formula: `unread = max(0, (known total + extra bumps) − last seen)`.  
@@ -145,7 +145,7 @@ graph TD
 
 1. Open [Realtime Alert & Tracker](/admin/alerts). Look for BREACH / CRITICAL (expand the card for the AI pack; detail packs stay at `/admin/ai-analyses/[id]` — the list URL redirects here).  
 2. Open the dual-AI pack. If the second AI is `PARTIAL` or `DISAGREE`, do **not** approve an irreversible control yet.  
-3. In [Demo Messenger](/admin/messenger): escalate, **Close (accept AI)**, or **Dismiss** a false alarm.  
+3. In [Demo Messenger](/admin/messenger) **or** [Lark Integration](/admin/lark) messenger cards: escalate, **Close (accept AI)**, or **Dismiss** a false alarm. Lark cards call the same CRMP APIs.  
 4. On [Human Intervention](/admin/interventions), approve checker steps after Ops has maker-confirmed a control.  
 5. Run the [UAT Checklist](/admin/docs/uat) when you sign off a release.
 
@@ -752,13 +752,13 @@ graph TD
 
 ### 9.4 Lark Integration — `/admin/lark`
 
-**What it is.** Channel registry for severity-routed notify, on-call pages, and dual-control pings. Webhooks are mocked in the prototype.
+**What it is.** Company messenger for this prototype: Monitor alerts and CS/TR risk hops post **interactive cards** here so Ack / Escalate / Dismiss / Close happen in Lark too, not only Demo Messenger. The same page is the channel registry for when live Lark is wired. Webhooks stay mocked.
 
-**What you see.** Channel list (name, chat id, purpose, enabled). Lark-related settings (`lark.*`).
+**What you see.** Lark messenger pane (`lark-messenger`) with live ALERT / ESCALATION / CS_ESCALATION cards, chat filter, and Ack / Escalate / Dismiss / Close. Channel list (name, chat id, purpose, enabled) including `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing`. Lark-related settings (`lark.*`). Unread badge on this nav row counts open cards.
 
-**What to click.** Enable/disable a channel if you have manage rights. Send a mock notify on localhost. On Pages, treat as a directory.
+**What to click.** On a live card: Acknowledge (marks the Monitor alert), Escalate (posts an ESCALATION card on the matched `chat_id` / ESC-DEFAULT), Dismiss, or Close. **Open in Demo Messenger** jumps to the UAT/fallback inbox. Enable/disable a channel if you have manage rights. Send a mock notify on localhost. On Pages, card buttons mock locally.
 
-**Good looks like.** Market intel, risk, and AI lab channels exist. Disabled channels are not used by escalation routes.
+**Good looks like.** Open alerts from Monitor 2.0 appear as cards. Escalating a card updates CRMP the same way Demo Messenger does. CS escalate-to-risk also lands a `CS_ESCALATION` on `oc_cs_c1`. Disabled channels are not used by escalation routes. Production live Lark app remains FR-17 / RM-01.
 
 ### 9.5 Escalation Routes — `/admin/escalation`
 
@@ -898,7 +898,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | Response | CS / TR Data | BU / team / hops / `cs.*` contract the desk already reads |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
-| Response | Lark Integration | Channel registry |
+| Response | Lark Integration | Messenger cards (Ack/Escalate/Dismiss/Close) + channel registry |
 | Organisation | BU and Teams | Combined BU RACI + nested on-call teams (`/admin/departments`) |
 | Organisation | Users | Directory, including demo platform owner / haixiang.yan@hytechc.com |
 | Organisation | Roles & Permissions | Editable RBAC (`/api/roles`) |
@@ -930,5 +930,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 2.4 | 2026-10-06 | §9.3.9 CS/TR Data: BU / CS KYC Vault / four hops / `cs.*`; UAT-52 |
 | 2.5 | 2026-10-06 | §9.3.10 after collected facts: categorize, severity, AI solution, auto-reply vs named POC addendum; UAT-53 |
 | 2.6 | 2026-10-07 | §2.4 phones: CS/TR desk list→thread, dashboard/log/data cards, `/cs` stacked tabs; UAT-18 |
+| 2.7 | 2026-10-07 | §9.4 Lark messenger cards: alert + escalate Ack/Escalate/Dismiss/Close (UAT-36, FR-47) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

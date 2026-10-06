@@ -120,7 +120,7 @@ graph TD
 
 ### 未讀數字
 
-部分列會出現 **青色徽章**（即時警報與追蹤、示範 Messenger、CS／TR 台、CS／TR 儀表板、CS／TR 日誌、CS／TR 資料、市場情報、人工干預、稽核、Monitor 2.0、風險日誌）。
+部分列會出現 **青色徽章**（即時警報與追蹤、示範 Messenger、CS／TR 台、CS／TR 儀表板、CS／TR 日誌、CS／TR 資料、市場情報、人工干預、稽核、Monitor 2.0、風險日誌、Lark 整合）。
 
 - 數字是**你上次打開該分頁之後的新事項**（本瀏覽器）。  
 - 公式：`未讀 = max(0,（已知總數 + 額外增量）− 上次已看）`。  
@@ -145,7 +145,7 @@ graph TD
 
 1. 打開 [即時警報與追蹤](/admin/alerts)，找 BREACH／CRITICAL（展開卡片看 AI 包；詳情仍在 `/admin/ai-analyses/[id]` — 列表網址會轉址至此）。  
 2. 打開雙 AI 包。若第二 AI 是 `PARTIAL` 或 `DISAGREE`，**先不要**核准不可逆控制。  
-3. 在 [示範 Messenger](/admin/messenger) 升級、**結案（接受 AI）**，或 **排除** 誤報。  
+3. 在 [示範 Messenger](/admin/messenger) **或** [Lark 整合](/admin/lark) 即時通訊卡片：升級、**結案（接受 AI）**，或 **排除** 誤報。Lark 卡片呼叫同一套 CRMP API。  
 4. Ops 已 Maker 確認控制後，到 [人工干預](/admin/interventions) 做 Checker。  
 5. 版本驗收時跑 [UAT 清單](/admin/docs/uat)。
 
@@ -751,13 +751,13 @@ graph TD
 
 ### 9.4 Lark 整合 — `/admin/lark`
 
-**這頁是什麼。** 依嚴重度通知、值班叫應、雙人核准 ping 的頻道登錄。原型 Webhook 為模擬。
+**這頁是什麼。** 本原型的企業即時通訊：Monitor 警報與 CS／TR 風控關卡會把**互動卡片**送到這裡，確認／升級／排除／結案也在 Lark 完成，不只示範 Messenger。同一頁也是接上真實 Lark 時的頻道登錄。Webhook 仍為模擬。
 
-**會看到什麼。** 頻道清單（名稱、chat id、用途、啟用）。Lark 相關設定（`lark.*`）。
+**會看到什麼。** Lark 即時通訊窗（`lark-messenger`）列出進行中 ALERT／ESCALATION／CS_ESCALATION 卡片、聊天室篩選，以及確認／升級／排除／結案。頻道清單（名稱、chat id、用途、啟用），含 `oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`。Lark 相關設定（`lark.*`）。此導行列未讀徽章計算進行中卡片。
 
-**要點什麼。** 有管理權可啟用／停用頻道。localhost 可送模擬通知。Pages 上當目錄。
+**要點什麼。** 對進行中卡片：確認（標 Monitor 警報）、升級（在匹配 `chat_id`／ESC-DEFAULT 送 ESCALATION 卡片）、排除或結案。**在示範 Messenger 開啟** 跳到 UAT／備援收件匣。有管理權可啟用／停用頻道。localhost 可送模擬通知。Pages 上卡片按鈕本機模擬。
 
-**怎樣算正常。** 市場情報、風險、AI 實驗室頻道存在。停用頻道不會被升級路徑使用。
+**怎樣算正常。** Monitor 2.0 未結警報會出卡。升級卡片更新 CRMP 的方式與示範 Messenger 相同。CS 升級風控也會在 `oc_cs_c1` 落下 `CS_ESCALATION`。停用頻道不會被升級路徑使用。正式 Lark 應用仍屬 FR-17／RM-01。
 
 ### 9.5 升級路徑 — `/admin/escalation`
 
@@ -897,7 +897,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 應變 | CS／TR 資料 | 台面已讀的 BU／團隊／關卡／`cs.*` 契約 |
 | 應變 | 人工干預 | Checker；樣本顯示操作者信箱 |
 | 應變 | 升級路徑 | 維度 × 係數；ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
-| 應變 | Lark 整合 | 頻道登錄 |
+| 應變 | Lark 整合 | 即時通訊卡片（確認／升級／排除／結案）＋頻道登錄 |
 | 組織 | BU 與團隊 | 合併 BU RACI＋嵌套值班團隊（`/admin/departments`） |
 | 組織 | 使用者 | 目錄，含 demo platform owner／haixiang.yan@hytechc.com |
 | 組織 | 角色與權限 | 可編輯 RBAC（`/api/roles`） |
@@ -929,5 +929,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 2.4 | 2026-10-06 | §9.3.9 CS／TR 資料：BU／CS 核身庫／四條關卡／`cs.*`；UAT-52 |
 | 2.5 | 2026-10-06 | §9.3.10 資料齊全後：分類、嚴重度、AI 方案，直回 vs 具名 POC 補註；UAT-53 |
 | 2.6 | 2026-10-07 | §2.4 手機：CS／TR 台列表→案件、儀表板／日誌／資料卡片、`／cs` 分頁直向；UAT-18 |
+| 2.7 | 2026-10-07 | §9.4 Lark 即時通訊卡片：警報＋升級的確認／升級／排除／結案（UAT-36、FR-47） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

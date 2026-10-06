@@ -2,7 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
-| 2026-10-07T00:00:00.000Z | Mobile UI: CS/TR desk list→thread; dashboard/log/data card twins; /cs stacked tabs; RAG gate + catalogue cards; OI-11 phone-width ticked; UAT-18; FR-14; EN/zh-Hant |
+| 2026-10-07T01:00:00.000Z | Lark messenger cards: Monitor alerts + CS/TR risk hops post Ack/Escalate/Dismiss/Close on /admin/lark (same CRMP APIs as Demo Messenger); OI-08 Started; UAT-36; FR-47; EN/zh-Hant || 2026-10-07T00:00:00.000Z | Mobile UI: CS/TR desk list→thread; dashboard/log/data card twins; /cs stacked tabs; RAG gate + catalogue cards; OI-11 phone-width ticked; UAT-18; FR-14; EN/zh-Hant |
 | 2026-10-06T23:30:00.000Z | zh-Hant gap-fill: Settings cs.* descriptions, CS/TR Data rotations/source notes, html lang, CHANGELOG.zh-Hant.md |
 | 2026-10-06T23:00:00.000Z | Traditional Chinese review of every admin page + product doc: nav (incl. Demo Messenger), URL Catalog titles/descriptions, CS/TR chrome, docs twins; simplified 给→給; EN/zh-Hant |
 | 2026-10-06T22:00:00.000Z | Progress Tracker v1.6: CS/TR feature catalogue on the same 20 columns (desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*, categorize/severity/POC); interactive CS/TR filter; FR-46 / UAT-53; EN/zh-Hant |

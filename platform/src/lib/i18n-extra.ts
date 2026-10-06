@@ -505,6 +505,28 @@ export const EXTRA_UI: Record<string, Pair> = {
   },
   "lark.delivered": { en: "delivered (mock)", "zh-Hant": "已送達（模擬）" },
   "lark.created": { en: "Channel #{id} created", "zh-Hant": "已建立頻道 #{id}" },
+  "lark.messengerTitle": { en: "Lark messenger — alerts & escalations", "zh-Hant": "Lark 即時通訊 — 警報與升級" },
+  "lark.messengerHint": {
+    en: "Monitor alerts and CS/TR risk hops post interactive cards here (mock webhook). Ack / Escalate / Dismiss / Close call the same CRMP APIs as Demo Messenger.",
+    "zh-Hant": "Monitor 警報與 CS／TR 風控關卡會把互動卡片送到這裡（模擬 webhook）。確認／升級／排除／結案呼叫與示範 Messenger 同一套 CRMP API。",
+  },
+  "lark.openCards": { en: "{n} live cards", "zh-Hant": "{n} 張進行中卡片" },
+  "lark.noCards": {
+    en: "No cards yet. Open Demo Messenger or fire a dummy alert, then return — alerts and escalations land here too.",
+    "zh-Hant": "尚無卡片。開啟示範 Messenger 或觸發虛擬警報再回來 — 警報與升級也會落到這裡。",
+  },
+  "lark.openMessenger": { en: "Open in Demo Messenger", "zh-Hant": "在示範 Messenger 開啟" },
+  "lark.escalate": { en: "Escalate", "zh-Hant": "升級" },
+  "lark.dismiss": { en: "Dismiss", "zh-Hant": "排除" },
+  "lark.close": { en: "Close (accept AI)", "zh-Hant": "結案（接受 AI）" },
+  "lark.cardMock": {
+    en: "Pages demo: {action} on “{title}” (mock — localhost writes CRMP).",
+    "zh-Hant": "Pages 示範：已對「{title}」執行 {action}（模擬 — localhost 才寫入 CRMP）。",
+  },
+  "lark.cardDone": {
+    en: "{action} posted for “{title}” (mock Lark card; CRMP updated).",
+    "zh-Hant": "已為「{title}」送出 {action}（模擬 Lark 卡片；CRMP 已更新）。",
+  },
 
   "rag.retrieve": { en: "Retrieve (RAG query)", "zh-Hant": "檢索（RAG 查詢）" },
   "rag.intro": {

@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { DeptBadge, SeverityBadge, StatusBadge } from "@/components/ui";
 import { useT } from "@/hooks/useUiLocale";
+import { isPublicSnapshot } from "@/lib/static-export";
+import type { LarkCard } from "@/lib/lark/cards";
 
 type Channel = {
   id: number;
@@ -19,15 +22,24 @@ type Channel = {
 export function LarkManager({
   channels,
   settings,
+  cards: initialCards = [],
   canManage,
+  canAct = false,
+  staticMode = false,
 }: {
   channels: Channel[];
   settings: Array<{ key: string; value: string; description: string | null }>;
+  cards?: LarkCard[];
   canManage: boolean;
+  canAct?: boolean;
+  staticMode?: boolean;
 }) {
   const router = useRouter();
-  const { t, phrase } = useT();
+  const { t, phrase, locale } = useT();
   const [msg, setMsg] = useState<string | null>(null);
+  const [cards, setCards] = useState(initialCards);
+  const [chatFilter, setChatFilter] = useState("ALL");
+  const [busy, setBusy] = useState(false);
   const [form, setForm] = useState({
     name: "",
     chat_id: "",
@@ -80,6 +92,45 @@ export function LarkManager({
     router.refresh();
   }
 
+  async function cardAction(card: LarkCard, action: "ack" | "escalate" | "dismiss" | "close") {
+    setMsg(null);
+    if (staticMode || isPublicSnapshot()) {
+      const nextStatus =
+        action === "ack" ? "ACKED" : action === "escalate" ? "ESCALATED" : action === "dismiss" ? "DISMISSED" : "CLOSED";
+      setCards((prev) =>
+        prev.map((c) =>
+          c.id === card.id || (card.thread_db_id && c.thread_db_id === card.thread_db_id)
+            ? { ...c, status: nextStatus }
+            : c
+        )
+      );
+      setMsg(t("lark.cardMock", { action, title: card.title }));
+      return;
+    }
+    setBusy(true);
+    const res = await fetch("/api/lark", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: `card_${action}`, card_id: card.id }),
+    });
+    const data = await res.json();
+    setBusy(false);
+    if (!res.ok) {
+      setMsg(data.error || t("common.failed"));
+      return;
+    }
+    if (Array.isArray(data.cards)) setCards(data.cards);
+    setMsg(t("lark.cardDone", { action, title: card.title }));
+    router.refresh();
+  }
+
+  const chats = useMemo(() => {
+    const ids = Array.from(new Set(cards.map((c) => c.chat_id)));
+    return ids;
+  }, [cards]);
+  const shown = cards.filter((c) => chatFilter === "ALL" || c.chat_id === chatFilter);
+  const openN = cards.filter((c) => c.status === "OPEN" || c.status === "ACKED" || c.status === "ESCALATED").length;
+
   return (
     <div className="space-y-4">
       <div className="panel p-4 grid md:grid-cols-3 gap-3">
@@ -101,6 +152,107 @@ export function LarkManager({
           {msg}
         </div>
       )}
+
+      <section className="panel p-4" data-testid="lark-messenger">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+          <div>
+            <h3 className="font-semibold">{t("lark.messengerTitle")}</h3>
+            <p className="mt-1 text-sm text-[var(--muted)]">{t("lark.messengerHint")}</p>
+          </div>
+          <span className="text-xs text-[var(--muted)]">
+            {t("lark.openCards", { n: openN })} · mock
+          </span>
+        </div>
+        <div className="mt-3 chip-scroller">
+          <button
+            type="button"
+            className={`btn text-xs ${chatFilter === "ALL" ? "btn-primary" : ""}`}
+            onClick={() => setChatFilter("ALL")}
+          >
+            {locale === "zh-Hant" ? "全部" : "All"}
+          </button>
+          {chats.map((id) => (
+            <button
+              key={id}
+              type="button"
+              className={`btn text-xs ${chatFilter === id ? "btn-primary" : ""}`}
+              onClick={() => setChatFilter(id)}
+            >
+              {id}
+            </button>
+          ))}
+        </div>
+        {!shown.length ? (
+          <p className="mt-3 text-sm text-[var(--muted)]">{t("lark.noCards")}</p>
+        ) : (
+          <ul className="mt-3 space-y-2">
+            {shown.map((card) => {
+              const live = card.status === "OPEN" || card.status === "ACKED" || card.status === "ESCALATED";
+              return (
+                <li
+                  key={card.id}
+                  data-testid={`lark-card-${card.id}`}
+                  className="rounded-xl border border-[var(--line)] p-3 space-y-2"
+                >
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <StatusBadge value={card.kind} />
+                    <SeverityBadge value={card.severity} />
+                    <StatusBadge value={card.status} />
+                    <span className="text-[11px] font-mono text-[var(--muted)] break-all">{card.chat_id}</span>
+                  </div>
+                  <div className="font-semibold break-word">{card.title}</div>
+                  <pre className="text-xs text-[var(--muted)] whitespace-pre-wrap break-word font-sans">{card.body}</pre>
+                  {card.thread_db_id ? (
+                    <Link className="text-xs text-teal-800 underline" href="/admin/messenger">
+                      {t("lark.openMessenger")}
+                    </Link>
+                  ) : null}
+                  {canAct && live ? (
+                    <div className="action-row">
+                      <button
+                        type="button"
+                        className="btn text-xs"
+                        data-testid={`lark-ack-${card.id}`}
+                        disabled={busy || card.status === "ACKED"}
+                        onClick={() => void cardAction(card, "ack")}
+                      >
+                        {t("common.acknowledge")}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn text-xs"
+                        data-testid={`lark-escalate-${card.id}`}
+                        disabled={busy}
+                        onClick={() => void cardAction(card, "escalate")}
+                      >
+                        {t("lark.escalate")}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn text-xs"
+                        data-testid={`lark-dismiss-${card.id}`}
+                        disabled={busy}
+                        onClick={() => void cardAction(card, "dismiss")}
+                      >
+                        {t("lark.dismiss")}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary text-xs"
+                        data-testid={`lark-close-${card.id}`}
+                        disabled={busy}
+                        onClick={() => void cardAction(card, "close")}
+                      >
+                        {t("lark.close")}
+                      </button>
+                    </div>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
 
       {canManage && (
         <div className="panel p-4">

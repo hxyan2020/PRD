@@ -676,6 +676,11 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   UPDATE_USER: "更新使用者",
   UPDATE_ROLE: "更新角色",
   LARK_TEST_NOTIFY: "Lark 測試通知",
+  LARK_CARD_POST: "Lark 卡片送出",
+  LARK_CARD_ACK: "Lark 卡片確認",
+  LARK_CARD_ESCALATE: "Lark 卡片升級",
+  LARK_CARD_DISMISS: "Lark 卡片排除",
+  LARK_CARD_CLOSE: "Lark 卡片結案",
   MARKET_INTEL_LARK_PUSH: "市場情報 Lark 推送",
   MARKET_INTEL_SCAN: "市場情報掃描",
   BU_POC_INCIDENT_RESPONSE: "BU POC 事故回應",
@@ -1491,6 +1496,7 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   "Auto-email wait-loop rows — waiting_reply until In-Reply-To / CSR-XXXX / channel_ref closes them (max 3)":
     "自動信件等待迴圈列 — waiting_reply 直到 In-Reply-To／CSR-XXXX／channel_ref 關閉（最多 3 封）",
   "cs_channels": "cs_channels（C1／表單／信箱）",
+  "lark_cards": "lark_cards（互動卡片）",
   "cs_requests": "cs_requests（CSR-XXXX 工單）",
   "cs_messages": "cs_messages（逐字稿）",
   "cs_followups": "cs_followups（自動追問信）",
@@ -1516,6 +1522,12 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "GET 收件匣 · GET ?view=dashboard|log|data · POST 分流／分析／追問／客戶回覆／回覆／指派 TR／升級風控／結案／POC 放行／模擬 C1｜表單｜信件 — 操作動作；公開進件為 POST /api/cs/intake",
   "Channel registry & mock notify — includes oc_cs_c1 (C1 live chat), oc_cs_kyc (KYC vault) and oc_tr_dealing (TR dealing)":
     "頻道登錄與模擬通知 — 含 oc_cs_c1（C1 即時聊天）、oc_cs_kyc（核身庫）與 oc_tr_dealing（TR 成交）",
+  "Lark messenger cards (Ack/Escalate/Dismiss/Close) plus channel registry — oc_cs_c1 / oc_cs_kyc / oc_tr_dealing":
+    "Lark 即時通訊卡片（確認／升級／排除／結案）加上頻道登錄 — oc_cs_c1／oc_cs_kyc／oc_tr_dealing",
+  "Channel management, test notify, and card Ack/Escalate/Dismiss/Close (mock)":
+    "頻道管理、測試通知，以及卡片確認／升級／排除／結案（模擬）",
+  "Prototype interactive Lark cards (ALERT / ESCALATION / CS_ESCALATION) posted onto /admin/lark":
+    "原型 Lark 互動卡片（ALERT／ESCALATION／CS_ESCALATION）送到 /admin/lark",
   "Dimension-defined paths × coefficients; ESC-DEFAULT catch-all plus ESC-CS-24-7, ESC-CS-KYC, ESC-TR-DEAL, ESC-CS-RISK for CS/TR skills":
     "維度定義路徑 × 係數；ESC-DEFAULT 兜底，加上 CS／TR 技能的 ESC-CS-24-7、ESC-CS-KYC、ESC-TR-DEAL、ESC-CS-RISK",
   "Internal/external source registry — includes C1 live-chat gateway, website CS form, official support/complaints mailboxes, CS KYC Vault and MT4/MT5 dealing tape":

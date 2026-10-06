@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb, writeAudit } from "@/lib/db";
 import { analyzeOpenAlerts } from "@/lib/ai/analyze";
+import { markLarkCardsForAlert } from "@/lib/lark/cards";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
       )
       .run(user.id, body.alert_id);
     writeAudit(user, "ACK_ALERT", "monitor_alert", String(body.alert_id));
+    markLarkCardsForAlert(Number(body.alert_id), "ACKED");
     return NextResponse.json({ ok: true });
   }
 

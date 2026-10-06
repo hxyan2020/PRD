@@ -179,11 +179,11 @@ const KNOWLEDGE: Knowledge[] = [
     href: "/admin/messenger",
     en: {
       title: "Demo Messenger / Lark",
-      body: "Demo Messenger is an in-app Lark lookalike. Channel webhooks are mock URLs; POST /api/lark test_notify returns mock: true and writes audit only. Production interactive cards are RM-01. Ack / Escalate / maker-confirm already work locally. AI-style buttons play a thinking process then a Thought card.",
+      body: "Demo Messenger is an in-app Lark lookalike and the UAT/fallback inbox. Lark Integration now also shows mock interactive cards for alerts and escalations — Ack / Escalate / Dismiss / Close call the same CRMP APIs. Channel webhooks stay mock URLs; POST /api/lark test_notify returns mock: true. Production live Lark app / SSO / webhooks remain RM-01.",
     },
     zh: {
       title: "示範 Messenger／Lark",
-      body: "示範 Messenger 是站內 Lark 風格收件匣。頻道 Webhook 是模擬網址；POST /api/lark test_notify 回 mock: true 只寫稽核。正式互動卡片是 RM-01。Ack／升級／Maker 確認已可在本機走通。AI 風格按鈕會先播思考過程再收成 Thought 卡。",
+      body: "示範 Messenger 是站內 Lark 風格收件匣，也是 UAT／備援。Lark 整合現在也會顯示警報與升級的模擬互動卡片 — 確認／升級／排除／結案呼叫同一套 CRMP API。頻道 Webhook 仍是模擬網址；POST /api/lark test_notify 回 mock: true。正式 Lark 應用／SSO／webhook 仍是 RM-01。",
     },
   },
   {

@@ -677,7 +677,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.15 Lark＋升級
 
-`lark_channels`＋`lark.*` 設定（含 `oc_cs_c1`、`oc_tr_dealing`）。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。CS／TR 技能綁 `ESC-CS-24-7`／`ESC-TR-DEAL`／`ESC-CS-RISK`。
+`lark_channels`＋`lark_cards`＋`lark.*` 設定（含 `oc_cs_c1`、`oc_cs_kyc`、`oc_tr_dealing`）。原型互動卡片（`ALERT`／`ESCALATION`／`CS_ESCALATION`）送到 `/admin/lark`；確認／升級／排除／結案經 `POST /api/lark` `card_*` 呼叫與 Messenger／CS 同一套 CRMP API（`lib/lark/cards.ts`、`lib/lark/actions.ts`）。稽核 `LARK_CARD_*` 屬 CRMP 平面；`LARK_TEST_NOTIFY` 仍屬 Vantage。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。CS／TR 技能綁 `ESC-CS-24-7`／`ESC-TR-DEAL`／`ESC-CS-RISK`。卡片依匹配 `lark_chat_id` 路由。
 
 ### 16.16 組織
 

@@ -55,7 +55,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/uat](/admin/docs/uat) (`data-
 | support | UAT-27 | Home shortcuts to CS/TR desk, dashboard, log, data and `/cs` | Admin Home | FR-37 |
 | support | UAT-28 | Daily Performance stays CFD/crypto — not the CS/TR dashboard | Daily Performance vs `/admin/cs-dashboard` | FR-44 |
 | support | UAT-29 | Risk Log stays Monitor closures — not the CS_* log | Risk Log vs `/admin/cs-log` | FR-44 |
-| support | UAT-36 | Lark channels `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing` | Lark Integration | FR-45 |
+| support | UAT-36 | Lark messenger cards + channels `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing` | Lark Integration | FR-47 |
 | support | UAT-37 | Hops `ESC-CS-24-7` / `ESC-CS-KYC` / `ESC-TR-DEAL` / `ESC-CS-RISK` | Escalation Routes, CS / TR Data | FR-39, FR-45 |
 | support | UAT-38 | BU and Teams — CS KYC Vault nested under Customer Service | BU and Teams, CS / TR Data | FR-45 |
 | support | UAT-39 | Data sources — KYC vault flags + MT4/MT5 dealing tape | Data Sources, CS / TR Data | FR-45 |
@@ -114,7 +114,7 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 | 33 | UAT-33 | 361m | 12m | High | Risk | UAT-07 | Messenger inbox — channels, kinds and Sync | Demo Messenger |
 | 34 | UAT-34 | 373m | 12m | High | Ops + Risk | UAT-12; OPEN thread with recommended actions | Messenger — other recommended actions and cancel | Demo Messenger, Human Intervention |
 | 35 | UAT-35 | 385m | 10m | High | Ops + Risk Owner | UAT-12 or UAT-34 | Human Intervention queue (the admin side of messenger controls) | Human Intervention |
-| 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark Integration — channels vs the in-app messenger demo | Lark Integration, Demo Messenger |
+| 36 | UAT-36 | 395m | 10m | Medium | System + Risk | UAT-01; lark channels seeded | Lark Integration — messenger cards plus channels vs Demo Messenger | Lark Integration, Demo Messenger |
 | 37 | UAT-37 | 405m | 8m | Medium | Risk | UAT-09 | Escalation routes registry | Escalation Routes, CS / TR Data |
 | 38 | UAT-38 | 413m | 15m | Medium | System + Risk Owner | UAT-01 | Organisation — BU and Teams, users and roles | BU and Teams, Users, Roles & Permissions, CS / TR Data |
 | 39 | UAT-39 | 428m | 8m | Low | System | UAT-01 | Data sources registry (internal and external) | Data Sources, CS / TR Data |
@@ -758,24 +758,24 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 **Pass:** Queue shows messenger-originated controls; at least one row matches a chat admin_ref.
 **Evidence:** Screenshot of Human Intervention with the matching reference highlighted.
 
-### UAT-36 — Lark Integration — channels vs the in-app messenger demo
+### UAT-36 — Lark Integration — messenger cards plus channels vs Demo Messenger
 
 - **Severity:** Medium · **BU:** System + Risk · **Depends:** UAT-01; lark channels seeded · **Window:** T+395m / 10m
-- **Covers:** Lark Integration, Demo Messenger
-- **Why:** Demo Messenger is the in-browser Lark. The Lark Integration page is where real channel names, webhooks and on/off live.
-- **Goal:** Open Lark Integration, list enabled channels, and explain how they relate to the messenger inbox channel names.
+- **Covers:** Lark Integration, Demo Messenger, Lark messenger cards
+- **Why:** Alerts and escalations must happen in Lark messenger too, not only Demo Messenger. This page is both the live-card inbox (mock) and the channel directory for when real Lark is wired.
+- **Goal:** Open Lark Integration, Ack or Escalate a live card, list enabled channels including CS/TR ids, and relate them to Demo Messenger.
 
 **Steps**
 
-1. Open Lark Integration (Response group).
-2. You should see named channels (for example Risk Control Desk, oc_market_intelligence) with purpose, department, minimum severity and enabled flag.
-3. Find the CS/TR channels: oc_cs_c1 (C1 live chat), oc_cs_kyc (CS KYC Vault) and oc_tr_dealing (TR dealing). They must be listed and enabled in the seed.
-4. Match at least one channel name to a thread’s channel badge in Demo Messenger.
-5. Read the Lark settings block (webhook / app id placeholders). On localhost, Test notify may send a simulated ping; on Pages it should fail gracefully, not 404 the whole page.
-6. Write one sentence: “Demo Messenger is the UI; this page is the channel directory for when real Lark is wired.”
+1. Open Lark Integration (Response group). The top pane is Lark messenger — alerts & escalations (`data-testid=lark-messenger`).
+2. You should see live cards (ALERT / ESCALATION / CS_ESCALATION) with Ack / Escalate / Dismiss / Close. On localhost the buttons write CRMP; on Pages they mock locally.
+3. Ack one OPEN card. Status becomes ACKED. Escalate one card — a new ESCALATION card should appear on the matched chat (often `oc_risk_control_desk` / ESC-DEFAULT).
+4. Find named channels (Risk Control Desk, `oc_market_intelligence`) plus CS/TR ids `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing` — listed and enabled.
+5. Match at least one channel / chat_id to a Demo Messenger thread badge. Open-in-Messenger links the card to the in-app inbox (UAT/fallback).
+6. Read the Lark settings block. Test notify may simulate a ping; the page must not 404 on Pages.
 
-**Pass:** At least three channels listed including oc_cs_c1 / oc_cs_kyc / oc_tr_dealing; one name matches messenger; the page does not crash on Pages.
-**Evidence:** Screenshot of channel table (including CS/TR ids) plus a matching messenger badge.
+**Pass:** At least one live card Ack or Escalate works (or Pages mock); three CS/TR channels present; one name matches messenger; page does not crash.
+**Evidence:** Screenshot of Lark messenger cards (Ack/Escalate) plus the channel table including CS/TR ids.
 
 ### UAT-37 — Escalation routes registry
 
@@ -877,7 +877,7 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 
 1. Open Improvement Roadmap (Docs group). Counts should show 16 items and Critical / High tallies.
 2. The scan list is expandable cards RM-01…RM-16 — each collapsed line says what operators get, plus effort and severity.
-3. Expand RM-01 (Lark cards): Why, Today’s prototype (mock webhooks, POST /api/lark mock:true), What to build, Done when, If we skip, and links to Demo Messenger / Lark.
+3. Expand RM-01 (Lark cards): Why, Today’s prototype (mock interactive cards on Lark Integration, POST /api/lark card_* + test_notify mock:true), What to build, Done when, If we skip, and links to Demo Messenger / Lark.
 4. Expand RM-16 (CS/TR connectors): Today’s prototype is mock demo-c1 intake; production needs signed C1 / form / mailbox. Expand RM-09: it must be tagged UAT out of scope (EXECUTED_MOCK — no live trading-bus write). Same for RM-05 (SSO).
 
 **Pass:** Roadmap page renders with at least one phase and one out-of-scope note.

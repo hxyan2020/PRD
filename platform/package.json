@@ -20,6 +20,7 @@
     "test:progress": "npx tsx scripts/verify-progress.ts",
     "test:zh-hant": "npx tsx scripts/verify-zh-hant.ts",
     "test:cs-mobile": "npx tsx scripts/verify-cs-mobile.ts",
+    "test:lark-cards": "npx tsx scripts/verify-lark-cards.ts",
     "test:url-catalog": "npx tsx scripts/verify-url-catalog.ts",
     "test:prd": "npx tsx scripts/verify-prd.ts",
     "test:tsd": "npx tsx scripts/verify-tsd.ts",

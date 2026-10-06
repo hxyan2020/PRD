@@ -55,11 +55,13 @@ On-call will not keep the CRMP tab open. If the only working inbox is the in-app
 
 ### Today
 
-[Demo Messenger](/admin/messenger) is a CRMP-hosted Lark lookalike. [Lark Integration](/admin/lark) stores mock webhooks. Nothing is posted to a real Lark chat.
+[Demo Messenger](/admin/messenger) is a CRMP-hosted Lark lookalike (UAT / fallback). [Lark Integration](/admin/lark) now also lists **mock interactive cards** so Ack / Escalate / Dismiss / Close happen in Lark messenger too. Nothing is posted to a real Lark chat.
 
-- Seeded chats: `oc_risk_control_desk`, `oc_ops_funding_recon`, `oc_ai_detection_lab`, `oc_trading_infra`, `oc_crypto_exchange_risk`, `oc_exec_risk_bridge`.
+- Lark messenger pane: `ALERT` / `ESCALATION` / `CS_ESCALATION` cards from Monitor sync and CS/TR risk hops. `POST /api/lark` `card_ack|card_escalate|card_dismiss|card_close` writes CRMP (`LARK_CARD_*`, CRMP plane). Pages mocks locally.
+- Cards route by matched `lark_chat_id` / ESC-DEFAULT. CS escalate-to-risk also posts `oc_cs_c1`.
+- Seeded chats: `oc_risk_control_desk`, `oc_ops_funding_recon`, `oc_ai_detection_lab`, `oc_trading_infra`, `oc_crypto_exchange_risk`, `oc_exec_risk_bridge`, plus CS/TR `oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing`.
 - Webhooks are mock URLs (`https://open.larksuite.com/hook/mock-risk-desk`, …). `POST /api/lark` `test_notify` writes audit `LARK_TEST_NOTIFY` and returns `{ mock: true }`.
-- Setting `lark.app_id` = `cli_mock_vantage_crmp`. Demo Messenger already has Ack / Escalate / Dismiss / Close / maker-confirm / checker — all local to SQLite (`lib/messenger/demo.ts`, `LarkManager.tsx`).
+- Setting `lark.app_id` = `cli_mock_vantage_crmp`. Demo Messenger still has Ack / Escalate / Dismiss / Close / maker-confirm / checker — all local to SQLite (`lib/messenger/demo.ts`, `lib/lark/cards.ts`, `LarkManager.tsx`).
 
 ### Build
 

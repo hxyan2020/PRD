@@ -118,7 +118,7 @@ const oi15 = OPEN_ISSUES.find((i) => i.id === "OI-15");
 assert(oi15?.checklist.some((c) => c.done && c.en.includes("EN + zh-Hant parity")), "OI-15 docs parity ticked");
 
 const stamp = fs.readFileSync(path.join(root, "src/lib/build-stamp.ts"), "utf8");
-assert(stamp.includes("2026-10-07T00:00:00.000Z"), "FINISHED_AT 00:00");
+assert(stamp.includes("2026-10-07T01:00:00.000Z"), "FINISHED_AT 01:00");
 
 console.log("verify-zh-hant: ok");
 console.log(

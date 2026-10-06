@@ -681,7 +681,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.15 Lark + escalation
 
-`lark_channels` + `lark.*` settings (includes `oc_cs_c1`, `oc_tr_dealing`). `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT. CS/TR skills bind `ESC-CS-24-7` / `ESC-TR-DEAL` / `ESC-CS-RISK`.
+`lark_channels` + `lark_cards` + `lark.*` settings (includes `oc_cs_c1`, `oc_cs_kyc`, `oc_tr_dealing`). Prototype interactive cards (`ALERT` / `ESCALATION` / `CS_ESCALATION`) post onto `/admin/lark`; Ack / Escalate / Dismiss / Close via `POST /api/lark` `card_*` call the same CRMP messenger / CS APIs (`lib/lark/cards.ts`, `lib/lark/actions.ts`). Audit `LARK_CARD_*` is the CRMP plane; `LARK_TEST_NOTIFY` stays Vantage. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT. CS/TR skills bind `ESC-CS-24-7` / `ESC-TR-DEAL` / `ESC-CS-RISK`. Cards route by matched `lark_chat_id`.
 
 ### 16.16 Organisation
 

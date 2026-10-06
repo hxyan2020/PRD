@@ -11,6 +11,8 @@ import {
   parseSensitiveCategories,
   parseSeverity,
 } from "@/lib/cs/analyze";
+import { openCsRiskOnMessenger } from "@/lib/messenger/demo";
+import { postLarkCard } from "@/lib/lark/cards";
 
 export const CS_CHANNELS = [
   {
@@ -855,9 +857,34 @@ export function escalateToRisk(requestDbId: number, userName: string, locale: Ui
     "SYSTEM",
     userName,
     zh
-      ? `已升級至風險控管脊柱（示範 Messenger／人工干預）。技能 ${CS_SKILL_CODES.escalateRisk}。CS／TR 不再單獨處理。`
-      : `Escalated onto the Risk Control spine (Demo Messenger / Human Intervention). Skill ${CS_SKILL_CODES.escalateRisk}. CS/TR no longer handles this alone.`
+      ? `已升級至風險控管脊柱（示範 Messenger＋Lark 卡片／人工干預）。技能 ${CS_SKILL_CODES.escalateRisk}。CS／TR 不再單獨處理。`
+      : `Escalated onto the Risk Control spine (Demo Messenger + Lark cards / Human Intervention). Skill ${CS_SKILL_CODES.escalateRisk}. CS/TR no longer handles this alone.`
   );
+  try {
+    openCsRiskOnMessenger({
+      request_id: row.request_id,
+      subject: row.subject,
+      body: row.body || row.subject,
+      client_name: row.client_name,
+      user_name: userName,
+      locale,
+    });
+    postLarkCard({
+      chat_id: "oc_cs_c1",
+      kind: "CS_ESCALATION",
+      title: `CS ${row.request_id} → Risk`,
+      body: zh
+        ? `⬆️ ${row.request_id} 已從 CS／TR 台升級風控。Lark 風險台與示範 Messenger 同步有卡片。`
+        : `⬆️ ${row.request_id} escalated from CS/TR desk to Risk. Lark Risk Desk and Demo Messenger both have the card.`,
+      severity: row.severity || "HIGH",
+      cs_request_id: row.request_id,
+      route_code: "ESC-CS-RISK",
+      actor: userName,
+      dedupe: false,
+    });
+  } catch {
+    /* messenger / lark optional in isolated tests */
+  }
   writeAudit({ name: userName }, "CS_ESCALATE_RISK", "cs_request", row.request_id, {});
   return getCsRequest(row.id);
 }
