@@ -280,8 +280,10 @@ export function applyTriage(
   const messages = db
     .prepare(`SELECT body FROM cs_messages WHERE request_db_id = ? AND kind IN ('CLIENT','EMAIL_IN','FORM') ORDER BY id`)
     .all(requestDbId) as Array<{ body: string }>;
+  const latest = messages[messages.length - 1]?.body || row.body;
   const joined = [row.body, ...messages.map((m) => m.body)].join("\n");
-  const again = triageText(row.subject, joined);
+  // After a client reply, score the latest inbound — do not keep the original “help me ???” forever.
+  const again = messages.length > 1 ? triageText("client follow-up", latest) : triageText(row.subject, joined);
   const { clarity, desk, category } = again;
   db.prepare(
     `UPDATE cs_requests SET desk = ?, category = ?, ai_clarity = ?, updated_at = datetime('now') WHERE id = ?`
