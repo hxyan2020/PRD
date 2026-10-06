@@ -343,7 +343,7 @@ graph TD
 | 文件 | UAT 清單 | `/admin/docs/uat` | 簽核 | 51 案，可互動（UAT-46…52 CS／TR；目錄 v2.6） |
 | 文件 | 生態導入評估 | `/admin/docs/ecosystem` | 導入 | 階段、預算、風險 |
 | 文件 | 改進路線圖 | `/admin/docs/roadmap` | 下一步 | RM-01…15：今日／要做／完成標準 |
-| 文件 | 開放議題 | `/admin/docs/open-issues` | 計畫缺口 | ETA、BU、依賴 → 2027 |
+| 文件 | 開放議題 | `/admin/docs/open-issues` | 計畫缺口 | 20 項；CS／TR 目錄 v1.5 在 OI-19／20 |
 | 文件 | 進度追蹤 | `/admin/docs/progress` | 時間軸看板 | X＝議題 Y＝現在→2027 |
 | 文件 | 網址目錄 | `/admin/docs/urls` | 導覽 | 頁＋API＋表＋**CS／TR** 區段 |
 | 殼層 | 登入 | `/login` | 具名角色 | 保持；Pages 路徑；負責人預設 |

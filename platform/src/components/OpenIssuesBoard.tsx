@@ -4,8 +4,11 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui";
 import {
+  CS_TR_OPEN_ISSUE_CATALOGUE,
   ISSUE_STATUS_LABEL,
   OPEN_ISSUES,
+  isCsTrOpenIssue,
+  openIssuesCsTrSummary,
   openIssuesSummary,
   type IssueArea,
   type IssueBu,
@@ -54,13 +57,22 @@ function priorityTone(p: OpenIssue["priority"]) {
   return "bg-slate-100 text-slate-700 border-slate-200";
 }
 
+function jumpToIssue(id: string) {
+  requestAnimationFrame(() => {
+    const el = document.getElementById(id) || document.getElementById(`${id}-m`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+}
+
 export function OpenIssuesBoard() {
   const { locale } = useUiLocale();
   const zh = locale === "zh-Hant";
   const [area, setArea] = useState<IssueArea | "ALL">("ALL");
   const [bu, setBu] = useState<IssueBu | "ALL">("ALL");
   const [status, setStatus] = useState<IssueStatus | "ALL">("ALL");
+  const [csTrOnly, setCsTrOnly] = useState(false);
   const summary = openIssuesSummary();
+  const csTr = openIssuesCsTrSummary();
 
   const bus = useMemo(
     () => Array.from(new Set(OPEN_ISSUES.map((i) => i.bu))).sort() as IssueBu[],
@@ -69,29 +81,52 @@ export function OpenIssuesBoard() {
 
   const rows = useMemo(() => {
     return OPEN_ISSUES.filter((i) => {
+      if (csTrOnly && !isCsTrOpenIssue(i)) return false;
       if (area !== "ALL" && i.area !== area) return false;
       if (bu !== "ALL" && i.bu !== bu) return false;
       if (status !== "ALL" && i.status !== status) return false;
       return true;
     });
-  }, [area, bu, status]);
+  }, [area, bu, status, csTrOnly]);
 
   return (
     <div className="space-y-4">
       <div className="panel p-3 sm:p-4">
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-OI-001</Badge>
+          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.5</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
             {zh ? `${summary.total} 項開放議題` : `${summary.total} open issues`}
+          </Badge>
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+            {zh ? `CS／TR × ${csTr.total}` : `CS/TR × ${csTr.total}`}
           </Badge>
           <Link className="btn text-sm" href="/admin/docs/progress">
             {zh ? "進度追蹤板 →" : "Progress tracker →"}
           </Link>
+          <Link className="btn text-sm" href="/admin/docs/uat">
+            UAT
+          </Link>
+          <Link className="btn text-sm" href="/cs">
+            /cs
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-desk">
+            {zh ? "CS／TR 台" : "CS / TR Desk"}
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-dashboard">
+            {zh ? "儀表板" : "Dashboard"}
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-log">
+            {zh ? "日誌" : "Log"}
+          </Link>
+          <Link className="btn text-sm" href="/admin/cs-data">
+            {zh ? "資料" : "Data"}
+          </Link>
         </div>
         <p className="text-sm text-[var(--muted)] mt-2">
           {zh
-            ? "暫定清單：Monitor 2.0 仍在加指標；CRMP 處初始設計；技術細節與資源規劃仍開放。勾選式詳情、暫定 ETA、負責 BU 與依賴。"
-            : "Tentative checklist: Monitor 2.0 still adding indicators; CRMP in initial design; tech details and resource planning open. Detailed rows with ETA, responsible BU, and dependencies."}
+            ? "暫定清單：Monitor 2.0 仍在加指標；CRMP 處初始設計；技術細節與資源規劃仍開放。20 項不變。CS／TR 目錄索引大門、等待迴圈、儀表板、日誌與配套資料 — 不是再加編號。"
+            : "Tentative checklist: Monitor 2.0 still adding indicators; CRMP in initial design; tech details and resource planning open. Still 20 issues. The CS/TR catalogue indexes the door, wait loop, dashboard, log and supporting data — not extra numbered issues."}
         </p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {(Object.keys(ISSUE_STATUS_LABEL) as IssueStatus[]).map((s) => (
@@ -108,12 +143,27 @@ export function OpenIssuesBoard() {
             <button
               key={a}
               type="button"
-              className={`btn text-xs ${area === a ? "btn-primary" : ""}`}
-              onClick={() => setArea(a)}
+              className={`btn text-xs ${!csTrOnly && area === a ? "btn-primary" : ""}`}
+              onClick={() => {
+                setCsTrOnly(false);
+                setArea(a);
+              }}
             >
               {a === "ALL" ? (zh ? "全部領域" : "All areas") : a}
             </button>
           ))}
+          <button
+            type="button"
+            className={`btn text-xs ${csTrOnly ? "btn-primary" : ""}`}
+            onClick={() => {
+              setCsTrOnly(true);
+              setArea("ALL");
+              setBu("ALL");
+              setStatus("ALL");
+            }}
+          >
+            {zh ? "CS／TR" : "CS/TR"}
+          </button>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <label className="flex-1 min-w-0">
@@ -149,6 +199,72 @@ export function OpenIssuesBoard() {
         </div>
       </div>
 
+      <section className="panel p-3 sm:p-4" data-testid="oi-cs-catalogue">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+          <div>
+            <h3 className="font-semibold">{zh ? "CS／TR 功能目錄" : "CS/TR feature catalogue"}</h3>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              {zh
+                ? `主案 ${csTr.primary} · 支援 ${csTr.support} · 共 ${csTr.total}。點列跳到該議題。這份目錄對應大門、等待迴圈、儀表板、日誌與配套資料，不是再加編號。仍為 20 項。`
+                : `Primary ${csTr.primary} · support ${csTr.support} · ${csTr.total} total. Click a row to jump to that issue. This is the feature catalogue for the door, wait loop, dashboard, log and supporting data — not extra numbered issues. Still 20 issues.`}
+            </p>
+          </div>
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200">v1.5</Badge>
+        </div>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-xs min-w-[40rem]">
+            <thead>
+              <tr className="text-left text-[var(--muted)] border-b border-[var(--line)]">
+                <th className="py-1.5 pr-2 font-medium">{zh ? "議題" : "Issue"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "種類" : "Kind"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "功能" : "Feature"}</th>
+                <th className="py-1.5 pr-2 font-medium">{zh ? "原型已交付" : "Prototype shipped"}</th>
+                <th className="py-1.5 font-medium">{zh ? "正式仍開放" : "Still open"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {CS_TR_OPEN_ISSUE_CATALOGUE.map((row) => (
+                <tr key={row.id} className="border-b border-[var(--line)] last:border-0">
+                  <td className="py-1.5 pr-2 align-top">
+                    <button
+                      type="button"
+                      className="font-mono text-teal-800 underline-offset-2 hover:underline"
+                      onClick={() => {
+                        setCsTrOnly(true);
+                        setArea("ALL");
+                        setBu("ALL");
+                        setStatus("ALL");
+                        jumpToIssue(row.id);
+                      }}
+                    >
+                      {row.id}
+                    </button>
+                  </td>
+                  <td className="py-1.5 pr-2 align-top">
+                    <Badge
+                      className={
+                        row.kind === "primary"
+                          ? "bg-teal-50 text-teal-900 border-teal-200"
+                          : "bg-slate-100 text-slate-700 border-slate-200"
+                      }
+                    >
+                      {row.kind === "primary" ? (zh ? "主案" : "primary") : zh ? "支援" : "support"}
+                    </Badge>
+                  </td>
+                  <td className="py-1.5 pr-2 align-top break-word">{zh ? row.featureZh : row.featureEn}</td>
+                  <td className="py-1.5 pr-2 align-top text-[var(--muted)] break-word">
+                    {zh ? row.shippedZh : row.shippedEn}
+                  </td>
+                  <td className="py-1.5 align-top text-[var(--muted)] break-word">
+                    {zh ? row.remainingZh : row.remainingEn}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <ul className="space-y-2 sm:hidden" data-testid="open-issues-mobile">
         {rows.map((i) => {
           const copy = zh ? i.zh : i.en;
@@ -158,6 +274,9 @@ export function OpenIssuesBoard() {
                 <div className="flex items-center gap-2 min-w-0">
                   <input type="checkbox" className="h-4 w-4 shrink-0" aria-label={i.id} />
                   <span className="font-mono text-xs">{i.id}</span>
+                  {isCsTrOpenIssue(i) ? (
+                    <span className="badge border bg-teal-50 text-teal-900 border-teal-200">CS/TR</span>
+                  ) : null}
                   <span className={`badge border ${priorityTone(i.priority)}`}>{i.priority}</span>
                 </div>
                 <span className={`badge border ${statusTone(i.status)}`}>
@@ -217,7 +336,12 @@ export function OpenIssuesBoard() {
                   <td>
                     <input type="checkbox" className="h-4 w-4" aria-label={i.id} />
                   </td>
-                  <td className="font-mono text-xs whitespace-nowrap">{i.id}</td>
+                  <td className="font-mono text-xs whitespace-nowrap">
+                    {i.id}
+                    {isCsTrOpenIssue(i) ? (
+                      <span className="ml-1 badge border bg-teal-50 text-teal-900 border-teal-200">CS/TR</span>
+                    ) : null}
+                  </td>
                   <td>
                     <span className={`badge border ${priorityTone(i.priority)}`}>{i.priority}</span>
                   </td>

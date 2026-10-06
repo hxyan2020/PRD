@@ -812,7 +812,7 @@ graph LR
 | UAT 清單 | `/admin/docs/uat` | 互動式 51 案簽核（UAT-01 … UAT-52，跳過 UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋。**CS／TR 目錄 v2.6：** UAT-25 目錄、UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹、UAT-51 儀表板＋日誌、UAT-52 BU／關卡／`cs.*`，另有支援案 UAT-17／22／27–29／36–40 |
 | 生態導入評估 | `/admin/docs/ecosystem` | 真要導入的人力、預算帶、階段、風險 |
 | 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
-| 開放議題 | `/admin/docs/open-issues` | 計畫清單：ETA、負責 BU、依賴（暫定至 2027） |
+| 開放議題 | `/admin/docs/open-issues` | 計畫清單：**20 項**（OI-01…20）。**CS／TR 目錄 v1.5：** 主案 OI-19／OI-20 加上支援 OI-05／08／09／11／14／15 — 原型已勾 vs 正式連接器／核身庫／成交帶 |
 | 進度追蹤 | `/admin/docs/progress` | 互動看板：X＝議題、Y＝時間軸現在→2027 年底 |
 | 網址目錄 | `/admin/docs/urls` | 每個管理頁、API、資料表，加上公開 Pages 網址。**CS／TR** 區段：`/cs` 入口、台面、儀表板、日誌、資料、五本 SKILL.md、RAG 葉、POST `/api/cs/intake`、`GET /api/cs?view=data`、`cs_*` 表 |
 
