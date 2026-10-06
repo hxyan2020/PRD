@@ -188,6 +188,7 @@ export const EXTRA_UI: Record<string, Pair> = {
   },
 
   "tracker.dummyRun": { en: "Dummy run", "zh-Hant": "虛擬演練" },
+  "tracker.expand": { en: "Expand ticket", "zh-Hant": "展開工單" },
   "tracker.openAdmin": { en: "Open admin page", "zh-Hant": "開啟管理頁" },
   "tracker.copyUrl": { en: "Copy admin URL", "zh-Hant": "複製管理網址" },
   "tracker.copied": { en: "Copied", "zh-Hant": "已複製" },

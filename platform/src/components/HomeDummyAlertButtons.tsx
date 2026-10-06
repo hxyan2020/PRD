@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { FlaskConical, Layers } from "lucide-react";
 import { useT } from "@/hooks/useUiLocale";
 import { bumpNavBadge } from "@/lib/nav-badges";
@@ -9,7 +8,6 @@ import { bumpNavBadge } from "@/lib/nav-badges";
 type DummyRun = { alert_id?: string; analysis_mode?: string | null; ticket_id?: string };
 
 export function HomeDummyAlertButtons() {
-  const router = useRouter();
   const { t } = useT();
   const [busy, setBusy] = useState<"single" | "group" | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -44,15 +42,8 @@ export function HomeDummyAlertButtons() {
       bumpNavBadge("/admin/audit", ids.length || 1);
       const qs = new URLSearchParams();
       if (ids.length) qs.set("dummy", ids.join(","));
-      router.replace(qs.toString() ? `/admin?${qs.toString()}` : "/admin");
-      router.refresh();
-      window.setTimeout(() => {
-        const first = ids[0];
-        if (!first) return;
-        const el = document.getElementById(`home-${first}`);
-        if (el instanceof HTMLDetailsElement) el.open = true;
-        el?.scrollIntoView({ block: "center", behavior: "smooth" });
-      }, 350);
+      const hash = ids[0] ? `#home-${ids[0]}` : "";
+      window.location.assign(qs.toString() ? `/admin?${qs.toString()}${hash}` : `/admin${hash}`);
     } catch (e) {
       setMsg(e instanceof Error ? e.message : t("home.dummyFailed"));
     } finally {
