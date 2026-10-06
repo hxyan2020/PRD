@@ -68,6 +68,13 @@ export const SKILL_ESCALATION_ROUTE: Record<string, string> = {
   "SKILL-GENERIC-HUMAN-REVIEW": "ESC-DEFAULT",
   "SKILL-MARKET-INTEL": "ESC-DEFAULT",
   "SKILL-DEMO-LIQ": "ESC-DEFAULT",
+
+  // CS / TR 24/7 intake
+  "SKILL-CS-CLARIFY": "ESC-CS-24-7",
+  "SKILL-CS-ID-VERIFY": "ESC-CS-24-7",
+  "SKILL-CS-ACCOUNT-FAQ": "ESC-CS-24-7",
+  "SKILL-TR-EXECUTION": "ESC-TR-DEAL",
+  "SKILL-CS-ESCALATE-RISK": "ESC-CS-RISK",
 };
 
 /** Domain → route when a skill has no explicit bind. */
@@ -82,6 +89,8 @@ const DOMAIN_ROUTE_FALLBACK: Record<string, string> = {
   FRAUD_CONDUCT: "ESC-MARGIN-BREACH",
   REG_CAPITAL: "ESC-MARGIN-BREACH",
   PRODUCT_CONFIG: "ESC-FEED-STALE",
+  CS_SERVICE: "ESC-CS-24-7",
+  TRADING_EXEC: "ESC-TR-DEAL",
 };
 
 export function escalationRouteForSkill(

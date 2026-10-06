@@ -221,7 +221,7 @@ graph LR
 | FR-22 | 每日績效儀表板 | CFD＋加密指標格；localhost 可重新整理 |
 | FR-23 | Monitor 2.0 登錄（指標＋偵測器） | 全部執行／同步／暫停；近期執行；localhost 可啟用／停用（`/admin/detectors` 轉址至此） |
 | FR-24 | 即時警報與追蹤確認佇列 | 僅 OPEN；分組 AI 管線；Acknowledge 變更狀態；已關閉 → 風險日誌 |
-| FR-25 | 知識樹視覺化 | SVG 圖＋大綱；領域展開；進入劇本；RAG 幹 |
+| FR-25 | 知識樹視覺化 | SVG 圖＋大綱；領域展開（含 CS_SERVICE／TRADING_EXEC）；進入劇本；RAG 文件葉深連結 |
 | FR-26 | 分組平台設定 | 六組（平台、monitor、AI、市場情報、Lark、SLA）；localhost 儲存／Pages 僅本機瀏覽器 |
 | FR-27 | 組織目錄 | BU 與團隊合併中心（`/admin/departments`）、可編輯角色（`/admin/roles` · `/api/roles`）、使用者（含 demo platform owner／haixiang.yan@hytechc.com） |
 | FR-28 | 升級路徑＋Lark 登錄 | 維度 × 係數；ESC-DEFAULT 兜底；技能綁一條路徑代碼；無「路徑」名稱欄；頻道啟用 |
@@ -229,12 +229,13 @@ graph LR
 | FR-29 | 未讀導覽徽章 | 徽章 = max(0, 總數+增量−已看)；打開清除；新工作增加 |
 | FR-30 | Pages 登入保持 | 以具名角色登入；重新整理仍在；登入連結在 `/PRD/crmp-plus/login/`（無 404） |
 | FR-31 | 分組左側導覽＋Vantage 標誌 | 七組；英／繁中標籤；負責人列 |
-| FR-32 | UAT 互動包 | UAT-01…UAT-49 含為什麼／步驟／通過／證據與畫面覆蓋 |
+| FR-32 | UAT 互動包 | UAT-01…UAT-50 含為什麼／步驟／通過／證據與畫面覆蓋 |
 | FR-33 | 資料來源登錄 | 內部＋外部目錄；localhost 可管理 |
 | FR-34 | 風險領域目錄 | CFD＋加密領域含 P0–P3 情境，並掛上 Monitor 2.0 指標 |
 | FR-35 | 如何改進審查＋聊天 | 每次 AI 分析（各嚴重度）產 DATA_SOURCE／INDICATOR_HEALTH／REASONING_GAP／SKILL_PATTERN／THRESHOLD／RESPONSE_TIME；聊天可拉資料／補事實／挑戰／重產直到 SATISFIED |
 | FR-37 | CS／TR 24/7 台 | C1 即時聊天、網頁表單與官方信箱經 `/api/cs/intake` 進件；AI 在不清楚或需核身時自動寄信並等待回覆（上限 3）；交易案件 → TR；帳簿風險 → Messenger 脊柱 |
 | FR-38 | CRMP Plus 公開網址 | 永久快照 `https://hxyan2020.github.io/PRD/crmp-plus/`；原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結且不被覆蓋 |
+| FR-39 | CS／TR 專用技能＋RAG 樹 | 五份 SKILL.md（釐清／核身／FAQ／TR 成交／升級風控）蓋 `skill_code`；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 語料；路徑 ESC-CS-24-7／ESC-TR-DEAL／ESC-CS-RISK |
 
 ### 6.3 P2 — 之後（生態階段）
 
@@ -262,11 +263,11 @@ graph LR
 | AI 與知識 | AI 分析（轉址） | `/admin/ai-analyses` → `/admin/alerts` | 列表併入即時警報與追蹤 | 分組管線＋排序說明；明細包在 `/admin/ai-analyses/[id]` |
 | AI 與知識 | AI 管理 | `/admin/ai-admin` | 雙人治理＋第一／第二線卡片 | 七個分頁；propose_rag 人工閘道；Maker ≠ Checker |
 | AI 與知識 | AI 技能 | `/admin/skills` | 劇本＋鏈 | 進入 → SKILL.md 頁 |
-| AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；樹幹；進入 |
+| AI 與知識 | 知識樹 | `/admin/knowledge-tree` | 視覺地圖 | 圖／大綱；CS_SERVICE／TRADING_EXEC；RAG 葉＋深連結 |
 | AI 與知識 | RAG 知識庫 | `/admin/rag` | 語料檢索 | 人工閘道：AI 不能編輯 → 升級人類／propose_rag |
 | 應變 | 人工干預 | `/admin/interventions` | 執行期 Checker | 核准／駁回＋備註；樣本顯示操作者信箱 |
 | 應變 | 示範 Messenger | `/admin/messenger` | 聊天原生分流＋鳥瞰 POC 窗 | 路徑晶片、承辦窗、同步、證據、聊天、升級、排除、結案、控制、在管理後台開啟 |
-| 應變 | CS／TR 台 | `/admin/cs-desk` | 24/7 C1、表單與信箱進件 | 三渠道；AI 追問直到回覆；TR 分流；升級風控 |
+| 應變 | CS／TR 台 | `/admin/cs-desk` | 24/7 C1、表單與信箱進件 | 三渠道；專用技能晶片；AI 追問直到回覆；TR 分流；升級風控 |
 | 應變 | Lark 整合 | `/admin/lark` | 頻道登錄 | 清單＋啟用；localhost 模擬通知 |
 | 應變 | 升級路徑 | `/admin/escalation` | 維度 × 係數 → 團隊 → SLA | ESC-DEFAULT；技能綁一條；無「路徑」名稱欄 |
 | 組織 | BU 與團隊 | `/admin/departments` | RACI＋值班 | 合併中心；`/admin/teams` 轉址 |
@@ -325,7 +326,7 @@ graph LR
 12. **負責人登入：** demo platform owner 角色在 Pages 重新整理後仍在。  
 13. **選單真相：** 左側為即時警報與追蹤（非「即時警報」舊名）；無偵測器／AI 分析列表／脊柱日誌列；`/admin/detectors`→Monitor 2.0；`/admin/ai-analyses`→警報；`/admin/spine`→首頁。
 
-正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-49）。此包覆蓋每一個管理畫面、完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步），以及 CS／TR 台（C1／表單／信箱進件、AI 追問直到回覆、TR 分流）。
+正式執行：[UAT 清單](/admin/docs/uat)（UAT-01 … UAT-50）。此包覆蓋每一個管理畫面、完整 messenger 迴路（收件匣、證據、挑戰、升級、排除、結案、建議控制、同步），以及 CS／TR 台（C1／表單／信箱進件、專用 SKILL.md、AI 追問直到回覆、TR 分流）。
 
 ---
 
@@ -383,7 +384,7 @@ graph LR
 |---|---|
 | 每頁操作說明 | 使用手冊 §6–§12 |
 | 每頁技術模組 | TSD §7＋§8–§18 |
-| 每介面測試案例 | UAT-01…UAT-49 的 `covers` 欄 |
+| 每介面測試案例 | UAT-01…UAT-50 的 `covers` 欄 |
 | 公開與本機網址 | 網址目錄 |
 
 ---
@@ -411,5 +412,6 @@ graph LR
 | 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；AI 分析列表轉址；Monitor 中心無警報／工單分頁 |
 | 1.9 | 2026-10-06 | FR-37 CS／TR 24/7 台；UAT-46…49；TSD §17 |
 | 2.0 | 2026-10-06 | CRMP Plus 一體平台；G12／FR-38 雙網址（`/PRD/crmp-plus/` vs 凍結 `/PRD/crmp-admin/`） |
+| 2.1 | 2026-10-06 | FR-39 CS／TR 專用技能＋知識樹 CS_SERVICE／TRADING_EXEC；UAT-50 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

@@ -1,6 +1,6 @@
 export type CorrectionAction = {
   action: string;
-  bu: "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM" | "EXEC";
+  bu: "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM" | "EXEC" | "CUSTOMER_SERVICE" | "TRADING";
   description: string;
   requires_human?: boolean;
 };

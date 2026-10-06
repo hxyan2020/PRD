@@ -35,6 +35,8 @@ const DOMAIN_COLOR: Record<string, string> = {
   OPS_PROCESS: "#0369a1",
   REG_CAPITAL: "#a16207",
   TECH_INFRA: "#334155",
+  CS_SERVICE: "#0f766e",
+  TRADING_EXEC: "#b45309",
 };
 
 const W = 1120;

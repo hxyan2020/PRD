@@ -392,7 +392,7 @@ sequenceDiagram
 
 ### 8.4 Knowledge Tree — `/admin/knowledge-tree`
 
-**What it is.** A picture of how knowledge hangs together: CRMP → risk domains → skill playbooks, with linked timelines and **RAG document leaves** (deep links into `/admin/rag?doc=`).
+**What it is.** A picture of how knowledge hangs together: CRMP → risk domains (including **CS_SERVICE** and **TRADING_EXEC**) → skill playbooks, with linked timelines and **RAG document leaves** (deep links into `/admin/rag?doc=`). CS/TR intake skills (`SKILL-CS-CLARIFY`, `SKILL-CS-ID-VERIFY`, `SKILL-CS-ACCOUNT-FAQ`, `SKILL-TR-EXECUTION`, `SKILL-CS-ESCALATE-RISK`) hang off those two trunks with `cs-*` RAG leaves.
 
 **What you see.**
 
@@ -415,7 +415,7 @@ graph TD
   Rag --> Doc[Deep link RAG doc]
 ```
 
-**Good looks like.** LP_HEDGE expands to hedge skills. RAG trunk groups documents by category and shows clickable leaves. Enter navigates; it is not a dead SVG link.
+**Good looks like.** LP_HEDGE expands to hedge skills. **CS_SERVICE** expands to CS 24/7 playbooks; **TRADING_EXEC** to TR dealing. RAG trunk groups documents by category (including CS_POLICY) and shows clickable leaves. Enter navigates; it is not a dead SVG link.
 
 ### 8.5 RAG Knowledge Base — `/admin/rag`
 
@@ -519,13 +519,13 @@ graph TD
 
 **What it is.** 24/7 Customer Service and Trading Support. Platform **C1 live chat**, the website **submission form** and **official emails** land here in realtime (`POST /api/cs/intake`, header `x-cs-intake-token: demo-c1`).
 
-**What you see.** Inbox filter All / CS / TR. Each request shows channel, desk, AI clarity (clear / unclear / need ID) and status (OPEN, AWAITING CLIENT, ID VERIFY, ASSIGNED TR, ESCALATED RISK, RESOLVED). The thread mixes client chat, AI routing notes and **automatic follow-up emails**.
+**What you see.** Inbox filter All / CS / TR. Each request shows channel, desk, AI clarity (clear / unclear / need ID), a **dedicated skill chip** (SKILL-CS-CLARIFY / ID-VERIFY / ACCOUNT-FAQ / TR-EXECUTION / ESCALATE-RISK) and status (OPEN, AWAITING CLIENT, ID VERIFY, ASSIGNED TR, ESCALATED RISK, RESOLVED). The chip opens the SKILL.md playbook. The thread mixes client chat, AI routing notes and **automatic follow-up emails**.
 
 **What to click.**
 
 | Button | What it does |
 |---|---|
-| **AI triage** | Re-run routing (CS vs TR, category, clarity) |
+| **AI triage** | Re-run routing (CS vs TR, category, clarity) and stamp the dedicated SKILL.md |
 | **Email: need more detail** | AI sends an official mail asking what happened / UID / screenshot; status AWAITING CLIENT |
 | **Email: ID verification** | AI asks for passport/ID + UID last four + selfie; status ID VERIFY |
 | **Simulate client email reply** | Client answers the waiting mail; AI re-triages. The case stays open until they reply (cap 3 mails) |
@@ -534,7 +534,7 @@ graph TD
 | **Resolve** | Close — blocked while a follow-up is still WAITING |
 | **Simulate C1 / form / email** | Posts through the same intake API |
 
-**Good looks like.** Seeded cases cover a clear C1 swap question, an unclear C1 “help me ???”, a TR slippage form, and an ID-verify email. Unclear/ID cases wait. Trading keywords go to TR. 繁中 labels the chrome.
+**Good looks like.** Seeded cases cover a clear C1 swap question (SKILL-CS-ACCOUNT-FAQ), an unclear C1 “help me ???” (SKILL-CS-CLARIFY), a TR slippage form (SKILL-TR-EXECUTION), and an ID-verify email (SKILL-CS-ID-VERIFY). Unclear/ID cases wait. Trading keywords go to TR. Skill chips open playbooks. 繁中 labels the chrome.
 
 ```mermaid
 graph TD
@@ -689,7 +689,7 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | AI & knowledge | RAG Knowledge Base | Search / retrieve; AI write blocked — `propose_rag` |
 | AI & knowledge | AI Admin | First/second-line cards; propose/approve models, params, skills, RAG |
 | Response | Demo Messenger | Evidence, chat, escalate, dismiss, close, controls |
-| Response | CS / TR Desk | C1 / form / email intake; AI follow-up until reply; TR routing |
+| Response | CS / TR Desk | C1 / form / email intake; dedicated SKILL.md chip; AI follow-up until reply; TR routing |
 | Response | Human Intervention | Checker approve/reject; actioner email on samples |
 | Response | Escalation Routes | Dimensions × coefficients; ESC-DEFAULT; skill binds one path; no Path name column |
 | Response | Lark Integration | Channel registry |
@@ -718,5 +718,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.10 | 2026-10-06 | Demo Messenger bird-eye POC windows along the escalation path |
 | 1.11 | 2026-10-06 | CS / TR Desk: C1, form, official email; AI follow-up until reply; TR routing |
 | 2.0 | 2026-10-06 | CRMP Plus coherent platform; public URL `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
+| 2.1 | 2026-10-06 | CS/TR dedicated SKILL.md chips; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -2,6 +2,7 @@ import { randomBytes } from "crypto";
 import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
 import type { UiLocale } from "@/lib/i18n";
+import { CS_SKILL_CODES, csSkillName, skillCodeForTriage } from "@/lib/cs/skills";
 
 export const CS_CHANNELS = [
   {
@@ -47,6 +48,7 @@ export type CsRequest = {
   ai_clarity: string;
   followup_count: number;
   assigned_to: string | null;
+  skill_code: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -105,6 +107,7 @@ export function ensureCsSchema(db: Database.Database = getDb()) {
       ai_clarity TEXT NOT NULL DEFAULT 'clear',
       followup_count INTEGER NOT NULL DEFAULT 0,
       assigned_to TEXT,
+      skill_code TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
@@ -140,6 +143,21 @@ export function ensureCsSchema(db: Database.Database = getDb()) {
   for (const ch of CS_CHANNELS) {
     insert.run(ch.code, ch.name, ch.kind, ch.description, ch.endpoint);
   }
+  const cols = db.prepare(`PRAGMA table_info(cs_requests)`).all() as Array<{ name: string }>;
+  if (!cols.some((c) => c.name === "skill_code")) {
+    db.exec(`ALTER TABLE cs_requests ADD COLUMN skill_code TEXT`);
+  }
+  db.prepare(
+    `UPDATE cs_requests SET skill_code = CASE
+       WHEN skill_code IS NOT NULL AND skill_code != '' THEN skill_code
+       WHEN status = 'ESCALATED_RISK' THEN 'SKILL-CS-ESCALATE-RISK'
+       WHEN ai_clarity = 'need_id' THEN 'SKILL-CS-ID-VERIFY'
+       WHEN ai_clarity = 'unclear' THEN 'SKILL-CS-CLARIFY'
+       WHEN desk = 'TR' OR category = 'trading' THEN 'SKILL-TR-EXECUTION'
+       ELSE 'SKILL-CS-ACCOUNT-FAQ'
+     END
+     WHERE skill_code IS NULL OR skill_code = ''`
+  ).run();
 }
 
 function addMessage(
@@ -285,18 +303,26 @@ export function applyTriage(
   // After a client reply, score the latest inbound — do not keep the original “help me ???” forever.
   const again = messages.length > 1 ? triageText("client follow-up", latest) : triageText(row.subject, joined);
   const { clarity, desk, category } = again;
+  const skillCode = skillCodeForTriage({
+    clarity,
+    desk,
+    category,
+    subject: row.subject,
+    body: latest,
+  });
+  const skillTitle = csSkillName(skillCode, locale);
   db.prepare(
-    `UPDATE cs_requests SET desk = ?, category = ?, ai_clarity = ?, updated_at = datetime('now') WHERE id = ?`
-  ).run(desk, category, clarity, row.id);
+    `UPDATE cs_requests SET desk = ?, category = ?, ai_clarity = ?, skill_code = ?, updated_at = datetime('now') WHERE id = ?`
+  ).run(desk, category, clarity, skillCode, row.id);
   addMessage(
     db,
     row.id,
     "AI",
     zh ? "CS／TR AI" : "CS/TR AI",
     zh
-      ? `分流：${desk} · 類別 ${category} · 清晰度 ${clarity === "clear" ? "清楚" : clarity === "need_id" ? "需身分驗證" : "不清楚"}`
-      : `Routed to ${desk} · category ${category} · clarity ${clarity}`,
-    { desk, category, clarity }
+      ? `分流：${desk} · 類別 ${category} · 清晰度 ${clarity === "clear" ? "清楚" : clarity === "need_id" ? "需身分驗證" : "不清楚"} · 技能 ${skillCode}（${skillTitle}）`
+      : `Routed to ${desk} · category ${category} · clarity ${clarity} · skill ${skillCode} (${skillTitle})`,
+    { desk, category, clarity, skill_code: skillCode }
   );
   if (desk === "TR") {
     db.prepare(
@@ -412,9 +438,17 @@ export function assignToTr(requestDbId: number, userName: string, locale: UiLoca
   const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(requestDbId) as CsRequest | undefined;
   if (!row) throw new Error("Request not found");
   db.prepare(
-    `UPDATE cs_requests SET desk = 'TR', status = 'ASSIGNED_TR', assigned_to = 'TR Dealing Support', category = 'trading', updated_at = datetime('now') WHERE id = ?`
-  ).run(row.id);
-  addMessage(db, row.id, "SYSTEM", userName, zh ? "已指派至 TR 成交支援。" : "Handed to TR Dealing Support.");
+    `UPDATE cs_requests SET desk = 'TR', status = 'ASSIGNED_TR', assigned_to = 'TR Dealing Support', category = 'trading', skill_code = ?, updated_at = datetime('now') WHERE id = ?`
+  ).run(CS_SKILL_CODES.execution, row.id);
+  addMessage(
+    db,
+    row.id,
+    "SYSTEM",
+    userName,
+    zh
+      ? `已指派至 TR 成交支援。技能 ${CS_SKILL_CODES.execution}。`
+      : `Handed to TR Dealing Support. Skill ${CS_SKILL_CODES.execution}.`
+  );
   writeAudit({ name: userName }, "CS_ASSIGN_TR", "cs_request", row.request_id, {});
   return getCsRequest(row.id);
 }
@@ -424,15 +458,17 @@ export function escalateToRisk(requestDbId: number, userName: string, locale: Ui
   const zh = locale === "zh-Hant";
   const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(requestDbId) as CsRequest | undefined;
   if (!row) throw new Error("Request not found");
-  db.prepare(`UPDATE cs_requests SET status = 'ESCALATED_RISK', updated_at = datetime('now') WHERE id = ?`).run(row.id);
+  db.prepare(
+    `UPDATE cs_requests SET status = 'ESCALATED_RISK', skill_code = ?, updated_at = datetime('now') WHERE id = ?`
+  ).run(CS_SKILL_CODES.escalateRisk, row.id);
   addMessage(
     db,
     row.id,
     "SYSTEM",
     userName,
     zh
-      ? "已升級至風險控管脊柱（示範 Messenger／人工干預）。CS／TR 不再單獨處理。"
-      : "Escalated onto the Risk Control spine (Demo Messenger / Human Intervention). CS/TR no longer handles this alone."
+      ? `已升級至風險控管脊柱（示範 Messenger／人工干預）。技能 ${CS_SKILL_CODES.escalateRisk}。CS／TR 不再單獨處理。`
+      : `Escalated onto the Risk Control spine (Demo Messenger / Human Intervention). Skill ${CS_SKILL_CODES.escalateRisk}. CS/TR no longer handles this alone.`
   );
   writeAudit({ name: userName }, "CS_ESCALATE_RISK", "cs_request", row.request_id, {});
   return getCsRequest(row.id);
