@@ -125,7 +125,7 @@ assert(board.includes('data-testid="progress-detail"'), "board detail");
 assert(board.includes('data-testid="progress-mobile"'), "board mobile cards");
 
 const stamp = fs.readFileSync(path.join(root, "src/lib/build-stamp.ts"), "utf8");
-assert(stamp.includes("2026-10-06T23:00:00.000Z"), "FINISHED_AT 23:00");
+assert(stamp.includes("2026-10-06T23:30:00.000Z"), "FINISHED_AT 23:30");
 
 const urls = fs.readFileSync(path.join(root, "src/lib/docs/urls.ts"), "utf8");
 assert(urls.includes("CS/TR catalogue v1.6"), "url catalog Progress description");

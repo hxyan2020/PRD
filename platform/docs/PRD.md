@@ -435,7 +435,7 @@ After the wait loop has enough facts, AI **must** categorise, assign severity, a
 | NFR-03 | Security | AI principals must not receive blocklisted rights; public CS status has no PII |
 | NFR-04 | SoD | Maker/checker enforced for AI Admin; checker for designated controls |
 | NFR-05 | Availability | Demo single-node SQLite acceptable; production needs HA (see Ecosystem) |
-| NFR-06 | i18n | Operator docs EN + zh-Hant; UI nav language toggle; URL Catalog titles/descriptions 繁中 |
+| NFR-06 | i18n | Operator docs EN + zh-Hant; UI nav language toggle; URL Catalog titles/descriptions, Settings `cs.*` copy and CS/TR Data seed strings 繁中 |
 | NFR-07 | Accessibility (basic) | Touch targets usable on mobile; critical actions labeled |
 | NFR-08 | Public snapshot | Static export under `basePath` `/PRD/crmp-plus`; original CRMP Admin remains at `/PRD/crmp-admin`; no dead `/api` clicks (demo fallbacks) |
 | NFR-09 | Session | Demo persona persists in `localStorage` + cookie on Pages |

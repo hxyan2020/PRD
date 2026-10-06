@@ -137,6 +137,10 @@ export function AdminShell({
     return () => document.body.classList.remove("nav-open");
   }, [open]);
 
+  useEffect(() => {
+    document.documentElement.lang = locale === "zh-Hant" ? "zh-Hant" : "en";
+  }, [locale]);
+
   function setLang(next: UiLocale) {
     document.cookie = `${UI_LOCALE_COOKIE}=${encodeURIComponent(next)}; path=/; max-age=31536000; samesite=lax`;
     setLocale(next);

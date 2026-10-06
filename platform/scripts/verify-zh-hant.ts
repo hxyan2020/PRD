@@ -9,6 +9,12 @@ import { NAV_ITEMS } from "../src/lib/nav";
 import { PLATFORM_URLS } from "../src/lib/docs/urls";
 import { PHRASES_ZH } from "../src/lib/i18n-extra";
 import { OPEN_ISSUES } from "../src/lib/docs/open-issues";
+import {
+  CS_LARK_SPECS,
+  CS_SETTING_SEED,
+  CS_SOURCE_SPECS,
+  CS_TEAM_SPECS,
+} from "../src/lib/cs/params";
 
 function assert(cond: unknown, msg: string) {
   if (!cond) throw new Error(msg);
@@ -25,6 +31,7 @@ for (const id of DOC_IDS) {
   const zhBody = fs.readFileSync(zh, "utf8");
   assert(zhBody.length > 500, `${id}.zh-Hant.md too short`);
 }
+assert(fs.existsSync(path.join(root, "docs", "CHANGELOG.zh-Hant.md")), "CHANGELOG.zh-Hant.md twin");
 
 const simpRe = /[们这过发对还时国开关门东车来头经会说为现从与无后边让种进给吗条样点将应该当么]/;
 for (const file of fs.readdirSync(path.join(root, "docs")).filter((f) => f.endsWith(".zh-Hant.md"))) {
@@ -77,13 +84,41 @@ const ugEn = fs.readFileSync(path.join(root, "docs/USER_GUIDE.md"), "utf8");
 const ugZh = fs.readFileSync(path.join(root, "docs/USER_GUIDE.zh-Hant.md"), "utf8");
 assert(ugEn.includes("URL Catalog row"), "UG EN mentions catalog bilingual");
 assert(ugZh.includes("網址目錄列"), "UG zh mentions catalog bilingual");
+assert(ugZh.includes("設定 `cs.*` 說明"), "UG zh mentions settings cs.* copy");
 assert(ugZh.includes("公開 `/cs` 介面同樣是繁體中文"), "UG zh mentions /cs chrome");
+
+const prdZh = fs.readFileSync(path.join(root, "docs/PRD.zh-Hant.md"), "utf8");
+assert(prdZh.includes("設定 cs.* 文案"), "PRD NFR-06 mentions settings copy");
+
+function needPhrase(label: string, text: string) {
+  assert(PHRASES_ZH[text], `phrase missing zh: ${label} | ${text.slice(0, 80)}`);
+}
+for (const s of CS_SETTING_SEED) needPhrase(s.key, s.description);
+for (const t of CS_TEAM_SPECS) {
+  needPhrase(`team ${t.name}`, t.name);
+  needPhrase(`mission ${t.name}`, t.mission);
+  needPhrase(`rota ${t.name}`, t.on_call_rotation);
+}
+for (const l of CS_LARK_SPECS) {
+  needPhrase(`lark ${l.name}`, l.name);
+  needPhrase(`purpose ${l.name}`, l.purpose);
+}
+for (const s of CS_SOURCE_SPECS) {
+  needPhrase(`src ${s.name}`, s.name);
+  needPhrase(`src desc ${s.name}`, s.description);
+  needPhrase(`src notes ${s.name}`, s.notes);
+}
+
+const dataView = fs.readFileSync(path.join(root, "src/components/CsOpsDataView.tsx"), "utf8");
+assert(dataView.includes("phrase(team.on_call_rotation"), "CS data rotations go through phrase()");
+const localeHook = fs.readFileSync(path.join(root, "src/hooks/useUiLocale.ts"), "utf8");
+assert(localeHook.includes("document.documentElement.lang"), "html lang follows UI locale");
 
 const oi15 = OPEN_ISSUES.find((i) => i.id === "OI-15");
 assert(oi15?.checklist.some((c) => c.done && c.en.includes("EN + zh-Hant parity")), "OI-15 docs parity ticked");
 
 const stamp = fs.readFileSync(path.join(root, "src/lib/build-stamp.ts"), "utf8");
-assert(stamp.includes("2026-10-06T23:00:00.000Z"), "FINISHED_AT 23:00");
+assert(stamp.includes("2026-10-06T23:30:00.000Z"), "FINISHED_AT 23:30");
 
 console.log("verify-zh-hant: ok");
 console.log(

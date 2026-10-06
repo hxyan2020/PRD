@@ -90,7 +90,7 @@ graph TD
 
 ### 2.3 Language
 
-Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is stored in the `crmp_ui_lang` cookie. Every left-nav label (including Demo Messenger), page title, URL Catalog row, and product doc (User Guide, PRD, TSD, UAT, Ecosystem, Roadmap, Open Issues, Progress) can switch. Open a doc with `?lang=zh-Hant` if you want to share a Chinese link. Public `/cs` chrome is Traditional Chinese too.
+Use **EN / 繁中** (sidebar on desktop; header on a phone). The choice is stored in the `crmp_ui_lang` cookie. Every left-nav label (including Demo Messenger), page title, URL Catalog row, Settings `cs.*` descriptions, CS/TR Data seed copy (teams, rotations, sources), and product doc (User Guide, PRD, TSD, UAT, Ecosystem, Roadmap, Open Issues, Progress, changelog) can switch. Open a doc with `?lang=zh-Hant` if you want to share a Chinese link. Public `/cs` chrome is Traditional Chinese too.
 
 ### 2.4 Phones
 

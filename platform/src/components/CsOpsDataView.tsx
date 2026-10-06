@@ -118,7 +118,9 @@ export function CsOpsDataView({ data }: { data: CsOpsContract }) {
                   </td>
                   <td className="py-2 pr-3 font-mono text-xs">{team.department_code}</td>
                   <td className="py-2 pr-3 font-mono text-xs">{team.lark_chat_id || "—"}</td>
-                  <td className="py-2 pr-3 text-xs">{team.on_call_rotation || "—"}</td>
+                  <td className="py-2 pr-3 text-xs">
+                    {team.on_call_rotation ? phrase(team.on_call_rotation, locale) : "—"}
+                  </td>
                   <td className="py-2 text-xs">
                     {team.members.length
                       ? team.members.map((m) => (
