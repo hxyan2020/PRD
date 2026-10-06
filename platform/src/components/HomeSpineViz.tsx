@@ -58,12 +58,29 @@ function iconFor(id: string): IconKey {
   return "DETECT";
 }
 
-export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
+export function HomeSpineViz({
+  steps,
+  highlightStages = [],
+  demoPulse = false,
+}: {
+  steps: SpineStepStat[];
+  highlightStages?: string[];
+  demoPulse?: boolean;
+}) {
   const { locale } = useUiLocale();
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(true);
   const step = steps[active] ?? steps[0];
   const Icon = ICONS[iconFor(step?.id || "DETECT")];
+  const highlight = new Set(highlightStages);
+  const pulseKey = demoPulse ? highlightStages.join("|") : "";
+
+  useEffect(() => {
+    if (demoPulse) {
+      setActive(0);
+      setPlaying(true);
+    }
+  }, [demoPulse, pulseKey]);
 
   useEffect(() => {
     if (!playing || steps.length < 2) return;
@@ -81,6 +98,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
     <section
       className="panel relative mt-4 overflow-hidden p-3 sm:p-4"
       data-testid="home-spine-viz"
+      data-dummy-run={demoPulse ? "1" : undefined}
       aria-label={locale === "zh-Hant" ? "整合脊柱" : "Integration spine"}
     >
       <div
@@ -133,6 +151,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
             const StepIcon = ICONS[iconFor(s.id)];
             const selected = active === i;
             const reached = i <= active;
+            const dummyHit = highlight.has(s.id);
             return (
               <li key={s.id} className="flex flex-col items-center text-center">
                 <button
@@ -145,6 +164,8 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
                     "relative z-[1] flex h-11 w-11 items-center justify-center rounded-full border-2 transition duration-300",
                     selected
                       ? "scale-110 border-teal-600 bg-teal-600 text-white shadow-[0_0_0_6px_rgba(13,148,136,0.18)]"
+                      : dummyHit
+                        ? "border-amber-500 bg-amber-50 text-amber-800 shadow-[0_0_0_4px_rgba(245,158,11,0.25)]"
                       : reached
                         ? "border-teal-500 bg-white text-teal-700 hover:border-teal-600"
                         : "border-slate-200 bg-white text-slate-400 hover:border-teal-300 hover:text-teal-700"
@@ -153,6 +174,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
                   aria-label={`${s.labelEn}: ${s.count} ${s.countLabelEn}`}
                   data-testid={`home-spine-node-${s.id}`}
                   data-count={s.count}
+                  data-dummy-stage={dummyHit ? "1" : undefined}
                 >
                   <StepIcon className="h-5 w-5" aria-hidden />
                   {selected ? (
@@ -202,6 +224,7 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
         {steps.map((s, i) => {
           const StepIcon = ICONS[iconFor(s.id)];
           const selected = active === i;
+          const dummyHit = highlight.has(s.id);
           return (
             <li key={s.id}>
               <button
@@ -212,15 +235,18 @@ export function HomeSpineViz({ steps }: { steps: SpineStepStat[] }) {
                 }}
                 className={cn(
                   "relative flex w-full items-center gap-3 rounded-xl px-1 py-2.5 text-left transition",
-                  selected ? "bg-white/80" : "hover:bg-white/50"
+                  selected ? "bg-white/80" : dummyHit ? "bg-amber-50/80" : "hover:bg-white/50"
                 )}
                 data-testid={`home-spine-mnode-${s.id}`}
+                data-dummy-stage={dummyHit ? "1" : undefined}
               >
                 <span
                   className={cn(
                     "relative z-[1] inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2",
                     selected
                       ? "border-teal-600 bg-teal-600 text-white"
+                      : dummyHit
+                        ? "border-amber-500 bg-amber-100 text-amber-800"
                       : "border-slate-200 bg-white text-teal-700"
                   )}
                 >

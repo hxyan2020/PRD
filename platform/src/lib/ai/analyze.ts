@@ -432,14 +432,22 @@ export function analyzeOpenAlerts(opts: { force?: boolean } = {}): AnalyzeOpenSu
   return results;
 }
 
-export function createAlarmAndAnalyze(input: {
+export type RaisedAlarm = {
+  alert_db_id: number;
+  alert_id: string;
+  ticket_id: string;
+  monitor_id: string;
+  product: string;
+  severity: string;
+};
+
+export function raiseMonitorAlarm(input: {
   monitor_id: string;
   severity: string;
   title: string;
   message: string;
   observed_value: number;
-  prefer_rag?: boolean;
-}) {
+}): RaisedAlarm {
   const db = getDb();
   const ind = db
     .prepare(`SELECT * FROM monitor_indicators WHERE monitor_id = ?`)
@@ -447,8 +455,8 @@ export function createAlarmAndAnalyze(input: {
   if (!ind) throw new Error(`Unknown indicator ${input.monitor_id}`);
   if (ind.paused) throw new Error(`Indicator ${input.monitor_id} is paused`);
 
-  const alertIdStr = `ALT-${Date.now().toString().slice(-6)}`;
-  const ticketId = `TKT-${Date.now().toString().slice(-5)}`;
+  const alertIdStr = `ALT-${randomBytes(3).toString("hex").toUpperCase()}`;
+  const ticketId = `TKT-${randomBytes(3).toString("hex").toUpperCase()}`;
   const info = db
     .prepare(
       `INSERT INTO monitor_alerts (alert_id, indicator_id, severity, title, message, observed_value, status, monitor20_ticket_id)
@@ -476,7 +484,28 @@ export function createAlarmAndAnalyze(input: {
 
   writeAudit({ name: "Monitor 2.0" }, "ALARM_RAISED", "monitor_alert", alertIdStr, input);
   return {
-    ...analyzeAlert(alertDbId, { force: true, prefer_rag: !!input.prefer_rag }),
-    monitor_alert_id: alertIdStr,
+    alert_db_id: alertDbId,
+    alert_id: alertIdStr,
+    ticket_id: ticketId,
+    monitor_id: ind.monitor_id,
+    product: ind.product,
+    severity: input.severity,
+  };
+}
+
+export function createAlarmAndAnalyze(input: {
+  monitor_id: string;
+  severity: string;
+  title: string;
+  message: string;
+  observed_value: number;
+  prefer_rag?: boolean;
+}) {
+  const raised = raiseMonitorAlarm(input);
+  return {
+    ...analyzeAlert(raised.alert_db_id, { force: true, prefer_rag: !!input.prefer_rag }),
+    monitor_alert_id: raised.alert_id,
+    alert_db_id: raised.alert_db_id,
+    ticket_id: raised.ticket_id,
   };
 }

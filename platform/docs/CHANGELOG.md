@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T04:20:00.000Z | Home dummy spine: Dummy alert / Dummy alert group buttons walk DETECT→AI (skill/RAG)→messenger maker-checker→escalate→close; highlight cards + spine; Audit DUMMY_SPINE_RUN + Risk Log |
 | 2026-10-05T21:43:04.000Z | Finish stamp: docs parity pack complete — Ecosystem v1.8, Open Issues v1.3 (18 issues), Progress Tracker v1.4 (X=issues Y=timeline), mobile card twins across desk boards |
 | 2026-10-05T21:36:32.000Z | Mobile UI: Lark / Market Intel sources+scans / AI Admin / URL Catalog card twins; confirm-sheet primary full-width on phone |
 | 2026-10-05T21:32:31.000Z | Progress Tracker v1.4: X = open issues (columns), Y = timeline now→end-2027; BU on every column; status + BU filters; mobile cards |

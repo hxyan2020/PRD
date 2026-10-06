@@ -70,6 +70,7 @@ const VANTAGE_ACTION = new Set([
 /** CRMP plane — ops inside this CRMP admin (alerts, AI, skills, escalation, interventions, messenger triage). */
 const CRMP_ACTION_HINT = new Set([
   "ALARM_RAISED",
+  "DUMMY_SPINE_RUN",
   "ACK_ALERT",
   "AI_ANALYSIS_SKILL",
   "AI_SECOND_OPINION",

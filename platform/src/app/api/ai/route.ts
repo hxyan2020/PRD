@@ -3,6 +3,7 @@ import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
 import { analyzeAlert, analyzeOpenAlerts, createAlarmAndAnalyze, getAnalysisBundle } from "@/lib/ai/analyze";
 import { backfillChallenges } from "@/lib/ai/challenger";
+import { runDummyAlertDemo } from "@/lib/ai/dummy-spine";
 
 export async function GET(req: Request) {
   const user = await getCurrentUser();
@@ -103,6 +104,35 @@ export async function POST(req: Request) {
       });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "simulate_alarm failed";
+      const paused = /paused/i.test(msg);
+      return NextResponse.json({ error: msg }, { status: paused ? 409 : 400 });
+    }
+  }
+
+  if (body.action === "dummy_spine") {
+    try {
+      const result = runDummyAlertDemo({
+        mode: body.mode === "group" ? "group" : "single",
+      });
+      return NextResponse.json({
+        ok: true,
+        mode: result.mode,
+        highlight_stages: result.highlight_stages,
+        errors: result.errors,
+        runs: result.runs.map((r) => ({
+          key: r.key,
+          alert_id: r.alert_id,
+          ticket_id: r.ticket_id,
+          analysis_id: r.analysis_id,
+          analysis_mode: r.analysis_mode,
+          thread_id: r.thread_id,
+          action_code: r.action_code,
+          stages: r.stages,
+          closed: r.closed,
+        })),
+      });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "dummy_spine failed";
       const paused = /paused/i.test(msg);
       return NextResponse.json({ error: msg }, { status: paused ? 409 : 400 });
     }

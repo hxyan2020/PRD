@@ -316,20 +316,27 @@ export function AlertTrackerCard({
   canOperate,
   compact = false,
   defaultOpen = false,
+  highlighted = false,
 }: {
   pack: AlertTrackerPack;
   canOperate: boolean;
   compact?: boolean;
   defaultOpen?: boolean;
+  highlighted?: boolean;
 }) {
   const router = useRouter();
   const { t, phrase } = useT();
   const [copied, setCopied] = useState(false);
   const [displayUrl, setDisplayUrl] = useState(pack.href);
+  const [open, setOpen] = useState(defaultOpen);
 
   useEffect(() => {
     setDisplayUrl(`${window.location.origin}${publicAdminHref(pack.href)}`);
   }, [pack.href]);
+
+  useEffect(() => {
+    if (defaultOpen) setOpen(true);
+  }, [defaultOpen]);
 
   function adminUrl() {
     if (typeof window === "undefined") return pack.href;
@@ -387,8 +394,14 @@ export function AlertTrackerCard({
     return (
       <details
         id={`home-${pack.alert_id}`}
-        className="group bg-white"
+        className={cn(
+          "group bg-white",
+          highlighted && "ring-2 ring-inset ring-teal-600 bg-teal-50/50"
+        )}
+        open={open}
+        onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
         data-testid={`home-alert-${pack.alert_id}`}
+        data-dummy={highlighted ? "1" : undefined}
       >
         <summary className="flex cursor-pointer list-none items-start gap-3 px-3 py-3 hover:bg-slate-50 transition [&::-webkit-details-marker]:hidden">
           <div className="min-w-0 flex-1">
@@ -397,6 +410,7 @@ export function AlertTrackerCard({
               {pack.alert_id} · <span>{phrase(pack.indicator_name)}</span>
             </div>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
+              {highlighted ? <Badge className="bg-teal-600 text-white border-teal-700">{t("tracker.dummyRun")}</Badge> : null}
               <SeverityBadge value={pack.severity} />
               <StatusBadge value={pack.alert_status} />
               <Badge className={gateClass(pack.gate.code)}>{gateLabel}</Badge>
@@ -421,8 +435,11 @@ export function AlertTrackerCard({
       id={pack.alert_id}
       className={cn(
         "group panel scroll-mt-24 overflow-hidden p-0",
-        defaultOpen && "ring-2 ring-teal-600/40 border-teal-300"
+        (defaultOpen || highlighted) && "ring-2 ring-teal-600/40 border-teal-300"
       )}
+      open={open}
+      onToggle={(e) => setOpen((e.currentTarget as HTMLDetailsElement).open)}
+      data-dummy={highlighted ? "1" : undefined}
     >
       <summary className="flex cursor-pointer list-none items-start gap-3 p-3 sm:p-4 [&::-webkit-details-marker]:hidden">
         <div className="min-w-0 flex-1">
@@ -430,6 +447,7 @@ export function AlertTrackerCard({
             <SeverityBadge value={pack.severity} />
             <StatusBadge value={pack.alert_status} />
             <Badge className={gateClass(pack.gate.code)}>{gateLabel}</Badge>
+            {highlighted ? <Badge className="bg-teal-600 text-white border-teal-700">{t("tracker.dummyRun")}</Badge> : null}
             <Badge className="bg-slate-100 text-slate-700 border-slate-200">{phrase(pack.product)}</Badge>
             <Badge className="bg-teal-50 text-teal-900 border-teal-200">{phrase(pack.domain_code)}</Badge>
           </div>
@@ -469,16 +487,19 @@ export function AlertTrackerList({
   canOperate,
   compact = false,
   openId,
+  highlightIds,
 }: {
   packs: AlertTrackerPack[];
   canOperate: boolean;
   compact?: boolean;
   openId?: string;
+  highlightIds?: string[];
 }) {
   const { t } = useT();
   if (!packs.length) {
     return <div className="panel p-6 text-sm text-[var(--muted)]">{t("tracker.empty")}</div>;
   }
+  const highlighted = new Set(highlightIds || []);
   return (
     <div
       className={
@@ -493,7 +514,8 @@ export function AlertTrackerList({
           pack={pack}
           canOperate={canOperate}
           compact={compact}
-          defaultOpen={openId === pack.alert_id}
+          defaultOpen={openId === pack.alert_id || highlighted.has(pack.alert_id)}
+          highlighted={highlighted.has(pack.alert_id)}
         />
       ))}
     </div>

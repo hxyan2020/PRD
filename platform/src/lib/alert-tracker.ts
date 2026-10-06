@@ -176,29 +176,55 @@ function parseJsonObject(raw: string | null | undefined): Record<string, unknown
 }
 
 export function listAlertTrackerPacks(
-  limitOrOpts: number | { limit?: number; order?: "severity" | "recent"; status?: "open" | "closed" | "all" } = 80
+  limitOrOpts:
+    | number
+    | {
+        limit?: number;
+        order?: "severity" | "recent";
+        status?: "open" | "closed" | "all";
+        alertIds?: string[];
+      } = 80
 ): AlertTrackerPack[] {
   const opts = typeof limitOrOpts === "number" ? { limit: limitOrOpts } : limitOrOpts;
   const limit = opts.limit ?? 80;
   const order = opts.order === "recent" ? "recent" : "severity";
   const status = opts.status ?? "all";
+  const alertIds = (opts.alertIds || []).map((id) => String(id).trim()).filter(Boolean);
   const db = getDb();
   const orderSql =
     order === "recent"
       ? `a.created_at DESC`
       : `CASE a.severity WHEN 'CRITICAL' THEN 1 WHEN 'BREACH' THEN 2 WHEN 'WARN' THEN 3 ELSE 4 END, a.created_at DESC`;
-  const alerts = db
-    .prepare(
-      `SELECT a.id, a.alert_id, a.severity, a.title, a.message, a.observed_value, a.status,
-              a.monitor20_ticket_id, a.created_at, a.acknowledged_at,
-              i.name AS indicator_name, i.monitor_id, i.domain_code, i.product
-       FROM monitor_alerts a
-       JOIN monitor_indicators i ON i.id = a.indicator_id
-       ${statusWhereSql(status)}
-       ORDER BY ${orderSql}
-       LIMIT ?`
-    )
-    .all(limit) as AlertRow[];
+  const alerts = (
+    alertIds.length
+      ? (db
+          .prepare(
+            `SELECT a.id, a.alert_id, a.severity, a.title, a.message, a.observed_value, a.status,
+                    a.monitor20_ticket_id, a.created_at, a.acknowledged_at,
+                    i.name AS indicator_name, i.monitor_id, i.domain_code, i.product
+             FROM monitor_alerts a
+             JOIN monitor_indicators i ON i.id = a.indicator_id
+             WHERE a.alert_id IN (${alertIds.map(() => "?").join(",")})
+             ORDER BY ${orderSql}`
+          )
+          .all(...alertIds) as AlertRow[])
+      : (db
+          .prepare(
+            `SELECT a.id, a.alert_id, a.severity, a.title, a.message, a.observed_value, a.status,
+                    a.monitor20_ticket_id, a.created_at, a.acknowledged_at,
+                    i.name AS indicator_name, i.monitor_id, i.domain_code, i.product
+             FROM monitor_alerts a
+             JOIN monitor_indicators i ON i.id = a.indicator_id
+             ${statusWhereSql(status)}
+             ORDER BY ${orderSql}
+             LIMIT ?`
+          )
+          .all(limit) as AlertRow[])
+  );
+  if (alertIds.length) {
+    const idx = new Map(alertIds.map((id, i) => [id, i]));
+    alerts.sort((a, b) => (idx.get(a.alert_id) ?? 99) - (idx.get(b.alert_id) ?? 99));
+  }
 
   const ro = riskOwner(db);
 

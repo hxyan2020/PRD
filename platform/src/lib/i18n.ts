@@ -358,6 +358,19 @@ const UI: Record<string, Pair> = {
     "zh-Hant": "在 Lark 風格 Messenger 示範中查看警報、AI 報告與升級訊息。",
   },
   "home.larkDemoCta": { en: "Open messenger demo", "zh-Hant": "開啟 Messenger 示範" },
+  "home.dummyTitle": { en: "Dummy spine run", "zh-Hant": "虛擬脊柱演練" },
+  "home.dummyHint": {
+    en: "Raise a dummy Monitor 2.0 alert (or a linked group). CRMP walks DETECT → AI (skill or RAG) → messenger → maker/checker → escalate → close, then highlights the cards and spine on this page. Audit and Risk Log keep the trail.",
+    "zh-Hant": "發出一則虛擬 Monitor 2.0 警報（或一組連動警報）。CRMP 會走完 DETECT → AI（技能或 RAG）→ Messenger → Maker／Checker → 升級 → 結案，並在本頁標出卡片與脊柱。稽核與風險日誌會留下紀錄。",
+  },
+  "home.dummyOne": { en: "Dummy alert", "zh-Hant": "虛擬警報" },
+  "home.dummyGroup": { en: "Dummy alert group", "zh-Hant": "虛擬警報組" },
+  "home.dummyWorking": { en: "Walking the spine", "zh-Hant": "正在走脊柱" },
+  "home.dummyDone": {
+    en: "Dummy run closed {n} alert(s). Highlighted below and on the spine; check Messenger, Audit and Risk Log.",
+    "zh-Hant": "虛擬演練已結案 {n} 則警報。已在下方與脊柱標出；請查看 Messenger、稽核與風險日誌。",
+  },
+  "home.dummyFailed": { en: "Dummy spine run failed", "zh-Hant": "虛擬脊柱演練失敗" },
 
   "login.title": {
     en: "Centralised Risk Management Platform",

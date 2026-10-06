@@ -17,13 +17,15 @@ import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
 import { EnZh } from "@/components/EnZh";
 import { SignInOwnerCard } from "@/components/SignInOwnerCard";
-import { PUBLIC_MESSENGER_URL } from "@/lib/static-export";
+import { PUBLIC_MESSENGER_URL, readSearchParams } from "@/lib/static-export";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
 import { HomeSpineViz, type SpineStepStat } from "@/components/HomeSpineViz";
+import { HomeDummyAlertButtons } from "@/components/HomeDummyAlertButtons";
 import { spineStageCounts } from "@/lib/ai/spine";
 import { FINISHED_AT, finishedAtLabel } from "@/lib/build-stamp";
 import { getUiLocale } from "@/lib/i18n-server";
+import { DUMMY_HOME_STAGES } from "@/lib/ai/dummy-spine";
 
 function latestSpineEvent(db: ReturnType<typeof getDb>, stages: string[]) {
   const placeholders = stages.map(() => "?").join(",");
@@ -36,9 +38,18 @@ function latestSpineEvent(db: ReturnType<typeof getDb>, stages: string[]) {
     .get(...stages) as { title: string; created_at: string } | undefined;
 }
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ dummy?: string }>;
+}) {
   const db = getDb();
   const ui = await getUiLocale();
+  const sp = await readSearchParams(searchParams);
+  const dummyIds = String(sp.dummy || "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
   const counts = {
     users: (db.prepare(`SELECT COUNT(*) AS c FROM users`).get() as { c: number }).c,
     teams: (db.prepare(`SELECT COUNT(*) AS c FROM teams`).get() as { c: number }).c,
@@ -223,7 +234,10 @@ export default async function AdminDashboardPage() {
     },
   ];
 
-  const recentPacks = listAlertTrackerPacks({ limit: 8, order: "recent", status: "open" }).slice(0, 5);
+  const dummyPacks = dummyIds.length ? listAlertTrackerPacks({ alertIds: dummyIds }) : [];
+  const recentOpen = listAlertTrackerPacks({ limit: 8, order: "recent", status: "open" }).slice(0, 5);
+  const dummySet = new Set(dummyPacks.map((p) => p.alert_id));
+  const recentPacks = [...dummyPacks, ...recentOpen.filter((p) => !dummySet.has(p.alert_id))].slice(0, 8);
 
   const openCta = <T k="home.open" />;
 
@@ -347,6 +361,8 @@ export default async function AdminDashboardPage() {
         />
       </div>
 
+      <HomeDummyAlertButtons />
+
       <section className="panel p-3 sm:p-4 min-w-0 mt-6">
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -366,11 +382,21 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
         <div className="mt-3">
-          <AlertTrackerList packs={recentPacks} canOperate={false} compact />
+          <AlertTrackerList
+            packs={recentPacks}
+            canOperate={false}
+            compact
+            highlightIds={dummyIds}
+            openId={dummyIds[0]}
+          />
         </div>
       </section>
 
-      <HomeSpineViz steps={spineSteps} />
+      <HomeSpineViz
+        steps={spineSteps}
+        highlightStages={dummyIds.length ? [...DUMMY_HOME_STAGES] : []}
+        demoPulse={dummyIds.length > 0}
+      />
 
       <footer
         className="mt-8 pt-4 border-t border-[var(--line)] text-[11px] text-[var(--muted)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"

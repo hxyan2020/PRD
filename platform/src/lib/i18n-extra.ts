@@ -187,7 +187,7 @@ export const EXTRA_UI: Record<string, Pair> = {
     "zh-Hant": "目前沒有未結警報。已關閉工單在風險日誌分析。",
   },
 
-  "tracker.expand": { en: "Expand ticket", "zh-Hant": "展開工單" },
+  "tracker.dummyRun": { en: "Dummy run", "zh-Hant": "虛擬演練" },
   "tracker.openAdmin": { en: "Open admin page", "zh-Hant": "開啟管理頁" },
   "tracker.copyUrl": { en: "Copy admin URL", "zh-Hant": "複製管理網址" },
   "tracker.copied": { en: "Copied", "zh-Hant": "已複製" },

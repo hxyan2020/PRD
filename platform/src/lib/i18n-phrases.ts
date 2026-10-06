@@ -653,6 +653,7 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
   DOC_UPDATE: "更新文件",
   DOC_RESET: "重設文件",
   ALARM_RAISED: "觸發警報",
+  DUMMY_SPINE_RUN: "虛擬脊柱演練",
   AI_ANALYSIS_SKILL: "AI 分析技能",
   AI_SECOND_OPINION: "AI 第二意見",
   MESSENGER_ESCALATE: "Messenger 升級",

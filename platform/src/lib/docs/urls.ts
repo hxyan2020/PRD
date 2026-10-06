@@ -20,7 +20,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "Auth Logout", path: "/api/auth/logout", description: "POST clear session cookie" },
 
   // Home
-  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
+  { category: "Home", title: "Admin Home", path: "/admin", description: "Control-plane overview, dummy spine buttons (single alert or linked group walk DETECT→close), stats, expandable alert tracker, and home spine with stage ticket counts (Spine Log tab removed)", permission: "admin.access" },
 
   // Risk
   { category: "Risk", title: "Daily Performance", path: "/admin/dashboard", description: "PnL / exposure performance board", permission: "dashboard.read" },
@@ -74,7 +74,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "URL Catalog", path: "/admin/docs/urls", description: "This page — all admin/API/DB paths", permission: "admin.access" },
 
   // APIs
-  { category: "API", title: "AI API", path: "/api/ai", description: "GET analyses · POST analyze/simulate/backfill challenges" },
+  { category: "API", title: "AI API", path: "/api/ai", description: "GET analyses · POST analyze/simulate/dummy_spine (home dummy alert or group, auto-walk to closure)/backfill challenges" },
   { category: "API", title: "AI improve chat", path: "/api/ai-improve", description: "GET/POST how-to-improve review · pull data / add fact / challenge / regenerate / accept" },
   { category: "API", title: "Desk selection chat", path: "/api/ai-chat", description: "POST selected text + follow-ups → grounded CRMP explanation" },
   { category: "API", title: "AI Admin API", path: "/api/ai-admin", description: "Propose/approve settings, training, feedback" },
