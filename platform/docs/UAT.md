@@ -1,6 +1,6 @@
 # CRMP UAT Pack — Risk Owner
 
-**Document ID:** CRMP-UAT-001 · **Version:** 2.6 · **Date:** 2026-10-06 · **Interactive demo:** [/admin/docs/uat](/admin/docs/uat)
+**Document ID:** CRMP-UAT-001 · **Version:** 2.7 · **Date:** 2026-10-06 · **Interactive demo:** [/admin/docs/uat](/admin/docs/uat)
 
 **Scope:** CRMP Plus at `/PRD/crmp-plus/` only. Original CRMP Admin at `/PRD/crmp-admin/` stays frozen.
 
@@ -11,11 +11,11 @@ Execute **in sequence**. Critical predecessors must Pass before later Critical c
 ## Timing model
 - `T+0` = Risk Owner starts UAT session.
 - Each case has a suggested start offset and duration.
-- Full pack suggested window ≈ **10.1 hours** (51 cases; UAT-45 is unused).
+- Full pack suggested window ≈ **10.3 hours** (52 cases; UAT-45 is unused).
 
 ## Coverage
 
-Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; dedicated SKILL.md playbooks; AI follow-up until the client replies, cap from `cs.followup_cap`; TR routing; **dashboard, log and supporting data**) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance (**not** CS/TR dashboard), Risk Log (**not** CS_* log), Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark (`oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing`), Escalation Routes (dimensions × coefficients · ESC-DEFAULT · ESC-CS-24-7 · ESC-CS-KYC · ESC-TR-DEAL · ESC-CS-RISK), BU and Teams (CS KYC Vault nested under Customer Service) / editable Roles / Users, Data Sources (KYC vault flags + MT4/MT5 tape), AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings (`cs.*` group), User Guide §9.3 / PRD §6.5 / TSD §17 / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges including CS/TR surfaces.
+Messenger (inbox, evidence, chatbot challenge, escalate, false alarm, close, recommended controls, sync, closed-thread persistence) plus **CS / TR Desk** (C1 live chat, web form, official email intake; dedicated SKILL.md playbooks; AI follow-up until the client replies, cap from `cs.followup_cap`; **categorize / severity / auto-reply vs named POC**; TR routing; **dashboard, log and supporting data**) plus every left-nav admin screen: Home (spine stage ticket counts — no Spine Log tab), Daily Performance (**not** CS/TR dashboard), Risk Log (**not** CS_* log), Monitor 2.0, Market Intelligence, Realtime Alert & Tracker, Risk Domains, AI Admin, Skills, Knowledge Tree, RAG (human-gate), Human Intervention, Lark (`oc_cs_c1` / `oc_cs_kyc` / `oc_tr_dealing`), Escalation Routes (dimensions × coefficients · ESC-DEFAULT · ESC-CS-24-7 · ESC-CS-KYC · ESC-TR-DEAL · ESC-CS-RISK), BU and Teams (CS KYC Vault nested under Customer Service) / editable Roles / Users, Data Sources (KYC vault flags + MT4/MT5 tape), AI Access, Audit (CRMP / Vantage Markets Admin tabs + Roll back), Platform Settings (`cs.*` group including `cs.auto_reply_max_severity`), User Guide §9.3 / PRD §6.5 / TSD §17 / UAT / Ecosystem / Roadmap / Open Issues / Progress / URL Catalog, login, and unread badges including CS/TR surfaces.
 
 ```mermaid
 graph TD
@@ -31,13 +31,14 @@ graph TD
   Tr --> Skills[UAT-50 skills and tree]
   Skills --> Dash[UAT-51 dashboard and log]
   Dash --> Data[UAT-52 supporting data]
-  Data --> Sign[UAT-49 sign-off]
+  Data --> Analyze[UAT-53 categorize POC]
+  Analyze --> Sign[UAT-49 sign-off]
   Docs --> Sign
 ```
 
 ## CS/TR feature catalogue
 
-Interactive twin: filter **CS/TR** on [/admin/docs/uat](/admin/docs/uat) (`data-testid="uat-cs-catalogue"`). Seven **primary** cases prove the new functions. Ten **support** cases prove the rest of the desk still names those surfaces.
+Interactive twin: filter **CS/TR** on [/admin/docs/uat](/admin/docs/uat) (`data-testid="uat-cs-catalogue"`). Eight **primary** cases prove the new functions. Ten **support** cases prove the rest of the desk still names those surfaces.
 
 | Kind | ID | Feature | Screens / URLs | FR |
 |---|---|---|---|---|
@@ -48,6 +49,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/uat](/admin/docs/uat) (`data-
 | primary | UAT-50 | Dedicated SKILL.md playbooks, `CS_SERVICE` / `TRADING_EXEC` tree | CS / TR Desk, AI Skills, Knowledge Tree, RAG | FR-39 |
 | primary | UAT-51 | Dedicated CS/TR dashboard and log (not Daily Performance / Risk Log) | `/admin/cs-dashboard`, `/admin/cs-log` | FR-44 |
 | primary | UAT-52 | Supporting data: BUs, CS KYC Vault, four hops, `cs.*` parameters | `/admin/cs-data`, Settings, BU and Teams, Escalation Routes | FR-45 |
+| primary | UAT-53 | Categorize, severity, AI solution, auto-reply vs named POC review | CS / TR Desk, CS / TR Dashboard, Platform Settings | FR-46 |
 | support | UAT-17 | EN / 繁中 docs including UG §9.3 and this catalogue | User Guide, PRD, TSD, UAT Checklist | FR-43 |
 | support | UAT-22 | Unread badges on CS/TR desk, dashboard, log and data | Admin Home, CS / TR surfaces | FR-37 |
 | support | UAT-27 | Home shortcuts to CS/TR desk, dashboard, log, data and `/cs` | Admin Home | FR-37 |
@@ -127,7 +129,8 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 | 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS/TR — dedicated SKILL.md playbooks stamp the desk and enrich the tree | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
 | 51 | UAT-51 | 535m | 12m | High | CS | UAT-46; CS/TR dashboard + log seeded | CS/TR — dedicated dashboard and log, not Daily Performance or Risk Log | CS / TR Dashboard, CS / TR Log |
 | 52 | UAT-52 | 547m | 12m | High | CS + System | UAT-46; CS/TR org + settings seeded | CS/TR — supporting data: BUs, KYC vault, hops and cs.* parameters | CS / TR Data, Platform Settings, BU and Teams, Escalation Routes |
-| 49 | UAT-49 | 559m | 15m | Critical | Risk Owner | UAT-01–52 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
+| 53 | UAT-53 | 559m | 12m | High | CS + TR | UAT-47; facts collected after wait loop | CS/TR — categorize, severity, AI solution, auto-reply vs POC review | CS / TR Desk, CS / TR Dashboard, Platform Settings |
+| 49 | UAT-49 | 571m | 15m | Critical | Risk Owner | UAT-01–53 results recorded | Risk Owner exit sign-off | UAT Checklist, Audit Log |
 
 ## Cases (step by step)
 
@@ -1030,9 +1033,28 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 **Pass:** cs-data shows both BUs, CS KYC Vault, four hops including ESC-CS-KYC, and cs.* values that match Settings. GET ?view=data agrees. zh-Hant chrome present.
 **Evidence:** Screenshot of `/admin/cs-data` BUs + hops + cs.* KPIs, plus Settings CS/TR group.
 
+### UAT-53 — CS/TR — categorize, severity, AI solution, auto-reply vs POC review
+
+- **Severity:** High · **BU:** CS + TR · **Depends:** UAT-47; facts collected after wait loop · **Window:** T+559m / 12m
+- **Covers:** CS / TR Desk, CS / TR Dashboard, Platform Settings, CS / TR Data, CS / TR Log
+- **Why:** Once facts are collected the desk must not guess. It must classify the issue, assign severity, draft a solution and a client reply, then either send (low-sensitivity FAQ) or hold for a named POC who adds detail before send.
+- **Goal:** Prove collected facts trigger heuristic AI analysis: category + LOW|MEDIUM|HIGH|CRITICAL, a solution and draft, then auto-reply or POC_REVIEW from `cs.auto_reply_max_severity` and `cs.sensitive_categories`.
+
+**Steps**
+
+1. Open a clear FAQ (seeded Liam swap, or ingest a collected swap/hours question). Desk shows category, severity LOW, sensitivity auto, status `AI_REPLIED`, and an official EMAIL_OUT with the FAQ draft. Dashboard counts AI replied and a LOW severity bucket.
+2. A thin “help me ???” stays AWAITING CLIENT with WAITING mail. Analyze / re-triage must not auto-send a solution until facts are collected.
+3. On an ID-verify ticket, simulate a client reply ≥48 characters that names a UID. Status becomes `POC_REVIEW` with a named CS Agent POC. The draft must not echo ID-image contents. KYC stays flags-only.
+4. On that ticket, type a POC addendum and send (`poc_release`). EMAIL_OUT includes “POC addendum”, status `AI_REPLIED`, audit `CS_POC_RELEASE`.
+5. Trading seed (Chen Wei slippage) stays `ASSIGNED_TR` with poc sensitivity — TR Dealer named; CS does not reprice. Book-risk / CRITICAL still Escalate to Risk (no client auto-mail).
+6. Platform Settings `#settings-cs` lists `cs.auto_reply_max_severity` (MEDIUM) and `cs.sensitive_categories` (complaint,kyc,trading). CS / TR Data tiles match. Toggle 繁中: 嚴重度 / POC 審閱 labels.
+
+**Pass:** FAQ auto-replies at LOW. Thin still waits. Collected KYC holds for a named POC who can add detail then send. TR stays assigned. CRITICAL/book-risk escalates. zh-Hant chrome present.
+**Evidence:** Screenshot of AI_REPLIED FAQ, POC_REVIEW KYC with addendum, Settings `cs.auto_reply_max_severity` + `cs.sensitive_categories`.
+
 ### UAT-49 — Risk Owner exit sign-off
 
-- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–52 results recorded · **Window:** T+559m / 15m
+- **Severity:** Critical · **BU:** Risk Owner · **Depends:** UAT-01–53 results recorded · **Window:** T+571m / 15m
 - **Covers:** UAT Checklist, Audit Log
 - **Why:** UAT is not finished until someone accountable writes ACCEPT, ACCEPT WITH WAIVERS, or REJECT.
 - **Goal:** Tally Critical/High results against the exit rules and file a signed decision.
@@ -1041,7 +1063,7 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 
 1. Count Critical cases (including login, dual-AI, messenger close, maker≠checker, public Sign in, CS/TR follow-up loop). All must be Pass.
 2. Count High cases. At most two may be WAIVE, each with a written sentence of risk acceptance.
-3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), CS/TR intake + follow-up (UAT-46, UAT-47), CS/TR dedicated skills + tree (UAT-50), CS/TR dashboard + log (UAT-51), and CS/TR supporting data (UAT-52) passed.
+3. Confirm dual-AI coverage (UAT-19), skill Enter (UAT-20), messenger evidence (UAT-07), public Sign in (UAT-43), CS/TR intake + follow-up (UAT-46, UAT-47), CS/TR dedicated skills + tree (UAT-50), CS/TR dashboard + log (UAT-51), CS/TR supporting data (UAT-52), and CS/TR analyze + POC gate (UAT-53) passed.
 4. Record the overall decision: ACCEPT / ACCEPT WITH WAIVERS / REJECT, with today’s date and the name demo platform owner (or the delegated Risk Owner).
 5. File the evidence pack link in Audit notes / share with PM. Session PASS/FAIL buttons on this page are only a live tally — they are not the sign-off.
 
@@ -1054,10 +1076,11 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 2. At most **2 High** waived with written Risk Owner acceptance.
 3. **100%** BREACH/CRITICAL samples in the UAT window have second-AI challenge (UAT-19).
 4. **UAT-49** sign-off filed (ACCEPT / ACCEPT WITH WAIVERS / REJECT).
-5. CS/TR primary cases (UAT-25, 46, 47, 48, 50, 51, 52) Pass; support cases (17 / 22 / 27–29 / 36–40) still hit the new surfaces.
+5. CS/TR primary cases (UAT-25, 46, 47, 48, 50, 51, 52, 53) Pass; support cases (17 / 22 / 27–29 / 36–40) still hit the new surfaces.
 
 ## Document control
 
 | Ver | Date | Notes |
 |---|---|---|
 | 2.6 | 2026-10-06 | CS/TR feature catalogue: desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*; interactive CS/TR filter; EN/zh-Hant |
+| 2.7 | 2026-10-06 | UAT-53 categorize / severity / AI solution / auto vs named POC; pack 52 cases; catalogue primary 8; FR-46 |

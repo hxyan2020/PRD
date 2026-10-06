@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T21:00:00.000Z | CS/TR after collected facts: categorize + severity, heuristic AI solution and client draft, auto-reply or named POC addendum (FR-46; UG §9.3.10; TSD §17.13; UAT-53); EN/zh-Hant |
 | 2026-10-06T20:00:00.000Z | Open Issues catalogue v1.5: CS/TR feature index on the same 20 issues (OI-19/20 primary + 05/08/09/11/14/15 support); prototype ticks vs production remaining; interactive CS/TR filter; EN/zh-Hant |
 | 2026-10-06T19:00:00.000Z | UAT catalogue v2.6: CS/TR feature index (desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*) + interactive CS/TR filter; EN/zh-Hant |
 | 2026-10-06T18:00:00.000Z | CS/TR supporting data: BU/teams/KYC vault, ESC-CS-KYC hops, cs.* parameters, /admin/cs-data; FR-45; TSD §17.12; UG §9.3.9; UAT-52; EN/zh-Hant |

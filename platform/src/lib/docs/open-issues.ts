@@ -712,14 +712,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Production C1 / form / mailbox connectors",
       detail:
-        "Prototype CS/TR door is live: public /cs posts C1, form and mailbox through POST /api/cs/intake (token demo-c1); CSR-XXXX / channel_ref / In-Reply-To close the WAITING auto-mail loop; seed dashboard, log and cs-data (UAT-46/51/52). Production still needs signed C1 webhooks, form HMAC, a real mailbox gateway, production SMTP, live volume — so no request lives only in a personal inbox.",
+        "Prototype CS/TR door is live: public /cs posts C1, form and mailbox through POST /api/cs/intake (token demo-c1); CSR-XXXX / channel_ref / In-Reply-To close the WAITING auto-mail loop; after collected facts AI categorises, assigns severity and either auto-replies or holds for a named POC (UAT-46/51/52/53). Production still needs signed C1 webhooks, form HMAC, a real mailbox gateway, production SMTP, live volume — so no request lives only in a personal inbox.",
       dependencies: "C1 vendor contract; mailbox Graph/IMAP; production SMTP; OI-03 secrets vault",
       eta: "2027-Q2 (connectors) / prototype UAT now",
     },
     zh: {
       title: "正式 C1／表單／信箱連接器",
       detail:
-        "原型 CS／TR 大門已上：公開 /cs 把 C1、表單與信箱打進 POST /api/cs/intake（token demo-c1）；CSR-XXXX／channel_ref／In-Reply-To 關閉 WAITING 自動信件；種子儀表板、日誌與 cs-data（UAT-46／51／52）。正式環境仍需簽章 C1 webhook、表單 HMAC、真實信箱閘道、正式 SMTP、即時量 — 避免請求只留在個人收件匣。",
+        "原型 CS／TR 大門已上：公開 /cs 把 C1、表單與信箱打進 POST /api/cs/intake（token demo-c1）；CSR-XXXX／channel_ref／In-Reply-To 關閉 WAITING 自動信件；資料齊全後 AI 分類、給嚴重度，並直回或交具名 POC（UAT-46／51／52／53）。正式環境仍需簽章 C1 webhook、表單 HMAC、真實信箱閘道、正式 SMTP、即時量 — 避免請求只留在個人收件匣。",
       dependencies: "C1 供應商契約；信箱 Graph／IMAP；正式 SMTP；OI-03 密鑰庫",
       eta: "2027-Q2（連接器）／原型 UAT 現可測",
     },
@@ -728,6 +728,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
       { en: "Inbound replies match CSR-XXXX / channel_ref / In-Reply-To and close WAITING auto-mail", zh: "進件回覆以 CSR-XXXX／channel_ref／In-Reply-To 對案並關閉 WAITING 自動信件", done: true },
       { en: "Prototype CS/TR dashboard + log on seed cases (UAT-51)", zh: "原型 CS／TR 儀表板＋日誌（種子案，UAT-51）", done: true },
       { en: "Prototype CS/TR data: hops, cs.*, KYC vault team (UAT-52)", zh: "原型 CS／TR 資料：關卡、cs.*、核身庫團隊（UAT-52）", done: true },
+      { en: "Prototype AI categorize + severity + auto vs POC after collected facts (UAT-53)", zh: "原型資料齊全後 AI 分類＋嚴重度＋直回 vs POC（UAT-53）", done: true },
       { en: "Sandbox UAT against C1 staging (UAT-46)", zh: "對 C1 測試環境做沙盒 UAT（UAT-46）", done: true },
       { en: "Replace demo-c1 token with signed C1 webhook + replay protection", zh: "以簽章 C1 webhook＋防重放取代 demo-c1 token" },
       { en: "Website / app form HMAC into the same intake API", zh: "網站／App 表單 HMAC 接入同一進件 API" },
@@ -748,14 +749,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "CS/TR ID vault and dealing-tape reconstruct",
       detail:
-        "Prototype: CS KYC Vault team, ESC-CS-KYC + SKILL-CS-ID-VERIFY (flags only, no ID images), TR routing + ESCALATED_RISK, and MT4/MT5 tape listed on Data Sources. Heuristic AI emails and waits (cap from cs.followup_cap). Production still needs a real KYC document vault, production mailer, live oneZero/MT tape reconstruct, live messenger escalate, and audited CS Lead waivers.",
+        "Prototype: CS KYC Vault team, ESC-CS-KYC + SKILL-CS-ID-VERIFY (flags only, no ID images), TR routing + ESCALATED_RISK, and MT4/MT5 tape listed on Data Sources. Heuristic AI emails and waits (cap from cs.followup_cap); collected KYC/trading hold for a named POC. Production still needs a real KYC document vault, production mailer, live oneZero/MT tape reconstruct, live messenger escalate, and audited CS Lead waivers.",
       dependencies: "OI-19 connectors; Client CRM/KYC; oneZero MT bridge; OI-07 control adapters for risk escalate",
       eta: "2027-Q3 (tentative) / prototype UAT now",
     },
     zh: {
       title: "CS／TR 核身庫與成交帶還原",
       detail:
-        "原型：CS 核身庫團隊、ESC-CS-KYC＋SKILL-CS-ID-VERIFY（僅旗標、無證件圖）、TR 分流＋ESCALATED_RISK，以及資料來源列出的 MT4／MT5 成交帶。啟發式 AI 寄信並等待（上限來自 cs.followup_cap）。正式環境仍需真實 KYC 證件庫、正式寄信、即時 oneZero／MT 成交帶還原、即時 Messenger 升級，以及已稽核的 CS Lead 豁免。",
+        "原型：CS 核身庫團隊、ESC-CS-KYC＋SKILL-CS-ID-VERIFY（僅旗標、無證件圖）、TR 分流＋ESCALATED_RISK，以及資料來源列出的 MT4／MT5 成交帶。啟發式 AI 寄信並等待（上限來自 cs.followup_cap）；齊全核身／成交交具名 POC。正式環境仍需真實 KYC 證件庫、正式寄信、即時 oneZero／MT 成交帶還原、即時 Messenger 升級，以及已稽核的 CS Lead 豁免。",
       dependencies: "OI-19 連接器；客戶 CRM／KYC；oneZero MT 橋；OI-07 風險升級適配",
       eta: "2027-Q3（暫定）／原型 UAT 現可測",
     },
@@ -763,6 +764,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
       { en: "Prototype CS KYC Vault team nested under Customer Service (UAT-38)", zh: "原型 CS 核身庫團隊嵌在客服底下（UAT-38）", done: true },
       { en: "Prototype ESC-CS-KYC hop + SKILL-CS-ID-VERIFY flags-only KYC (no ID images)", zh: "原型 ESC-CS-KYC 關卡＋SKILL-CS-ID-VERIFY 僅旗標核身（無證件圖）", done: true },
       { en: "Prototype TR routing + ESCALATED_RISK on the desk (UAT-48)", zh: "原型台面 TR 分流＋ESCALATED_RISK（UAT-48）", done: true },
+      { en: "Prototype collected KYC holds for a named POC (not auto-reply) (UAT-53)", zh: "原型齊全核身交具名 POC、不直回（UAT-53）", done: true },
       { en: "MT4/MT5 dealing tape listed on Data Sources / CS-TR Data (UAT-39)", zh: "資料來源／CS-TR 資料列出 MT4／MT5 成交帶（UAT-39）", done: true },
       { en: "Production KYC document vault + UID match; ID-verify stays open until reply or CS Lead waiver", zh: "正式 KYC 證件庫＋UID 核對；身分驗證須待回覆或 CS Lead 豁免才可關" },
       { en: "Production auto-follow-up mailer (unclear / need_id) with cs.followup_cap", zh: "正式自動追問信（不清楚／需核身）套用 cs.followup_cap" },

@@ -25,6 +25,12 @@ type RequestRow = {
   assigned_to: string | null;
   assigned_bu: string | null;
   skill_code: string | null;
+  severity: string | null;
+  sensitivity: string | null;
+  ai_solution: string | null;
+  ai_draft: string | null;
+  poc_role: string | null;
+  poc_name: string | null;
   updated_at: string;
 };
 
@@ -92,6 +98,7 @@ export function CsTrDesk({
   const [busy, setBusy] = useState(false);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const [reply, setReply] = useState("");
+  const [pocExtra, setPocExtra] = useState("");
   const [simBody, setSimBody] = useState("");
   const [deskFilter, setDeskFilter] = useState<"ALL" | "CS" | "TR">("ALL");
 
@@ -133,6 +140,7 @@ export function CsTrDesk({
         }));
       }
       setReply("");
+      setPocExtra("");
       setSimBody("");
       setStatusMsg(t("msg.actionDone", locale, { action }));
       bumpNavBadge("/admin/cs-desk", 1);
@@ -218,6 +226,26 @@ export function CsTrDesk({
                 <Badge className="bg-violet-50 text-violet-900 border-violet-200">
                   {clarityLabel(active.ai_clarity, locale)}
                 </Badge>
+                {active.severity ? (
+                  <Badge
+                    data-testid="cs-severity"
+                    className="bg-orange-50 text-orange-950 border-orange-200"
+                  >
+                    {t("cs.severity", locale)} {active.severity}
+                  </Badge>
+                ) : null}
+                {active.sensitivity ? (
+                  <Badge
+                    data-testid="cs-sensitivity"
+                    className={
+                      active.sensitivity === "poc"
+                        ? "bg-rose-50 text-rose-900 border-rose-200"
+                        : "bg-emerald-50 text-emerald-900 border-emerald-200"
+                    }
+                  >
+                    {active.sensitivity === "poc" ? t("cs.sensPoc", locale) : t("cs.sensAuto", locale)}
+                  </Badge>
+                ) : null}
                 {active.skill_code ? (
                   <AdminLink
                     href={`/admin/skills/${encodeURIComponent(active.skill_code)}`}
@@ -243,6 +271,9 @@ export function CsTrDesk({
               <div className="mt-3 flex flex-wrap gap-2" data-testid="cs-actions">
                 <button type="button" className="btn" disabled={busy} onClick={() => void run("triage")}>
                   {t("cs.triage", locale)}
+                </button>
+                <button type="button" className="btn" disabled={busy} onClick={() => void run("analyze")}>
+                  {t("cs.analyze", locale)}
                 </button>
                 <button type="button" className="btn" disabled={busy} onClick={() => void run("followup", { reason: "unclear" })}>
                   {t("cs.askMore", locale)}
@@ -271,6 +302,50 @@ export function CsTrDesk({
                 </button>
               </div>
             </div>
+
+            {active.ai_solution || active.ai_draft ? (
+              <div className="mb-3 rounded-xl border border-teal-200 bg-teal-50/50 p-3 space-y-2" data-testid="cs-analysis">
+                <div className="text-xs font-semibold uppercase tracking-[0.08em] text-teal-900">
+                  {t("cs.analysis", locale)}
+                </div>
+                {active.poc_name ? (
+                  <p className="text-xs text-[var(--muted)]">
+                    {t("cs.poc", locale)} {active.poc_role} · {active.poc_name}
+                  </p>
+                ) : null}
+                {active.ai_solution ? (
+                  <div>
+                    <div className="text-[11px] font-semibold">{t("cs.solution", locale)}</div>
+                    <pre className="mt-1 whitespace-pre-wrap font-sans text-sm">{phrase(active.ai_solution, locale)}</pre>
+                  </div>
+                ) : null}
+                {active.ai_draft ? (
+                  <div>
+                    <div className="text-[11px] font-semibold">{t("cs.draft", locale)}</div>
+                    <pre className="mt-1 whitespace-pre-wrap font-sans text-sm">{phrase(active.ai_draft, locale)}</pre>
+                  </div>
+                ) : null}
+                {active.sensitivity === "poc" && active.status !== "ESCALATED_RISK" ? (
+                  <div className="space-y-2" data-testid="cs-poc-release">
+                    <textarea
+                      className="textarea text-sm"
+                      rows={2}
+                      value={pocExtra}
+                      onChange={(e) => setPocExtra(e.target.value)}
+                      placeholder={t("cs.pocExtraPh", locale)}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={busy}
+                      onClick={() => void run("poc_release", { extra: pocExtra })}
+                    >
+                      {t("cs.pocRelease", locale)}
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
 
             <div className="flex-1 overflow-auto space-y-2 min-h-[12rem]">
               {(pack?.messages || []).map((m) => (

@@ -13,6 +13,7 @@
     "test:cs-intake": "npx tsx scripts/verify-cs-intake.ts",
     "test:cs-analytics": "npx tsx scripts/verify-cs-analytics.ts",
     "test:cs-data": "npx tsx scripts/verify-cs-data.ts",
+    "test:cs-analyze": "npx tsx scripts/verify-cs-analyze.ts",
     "test:user-guide": "npx tsx scripts/verify-user-guide.ts",
     "test:uat": "npx tsx scripts/verify-uat.ts",
     "test:open-issues": "npx tsx scripts/verify-open-issues.ts",

@@ -64,6 +64,14 @@ export function CsOpsDataView({ data }: { data: CsOpsContract }) {
           <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.token")}</div>
           <div className="mt-1 font-mono text-xs break-all">{p.intake_token}</div>
         </div>
+        <div className="panel p-3">
+          <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.autoMax")}</div>
+          <div className="mt-1 font-semibold">{p.auto_reply_max_severity}</div>
+        </div>
+        <div className="panel p-3">
+          <div className="text-[10px] uppercase tracking-[0.08em] text-[var(--muted)]">{t("cs.data.sensitive")}</div>
+          <div className="mt-1 font-mono text-xs break-all">{p.sensitive_categories}</div>
+        </div>
       </div>
 
       <section className="panel p-4">

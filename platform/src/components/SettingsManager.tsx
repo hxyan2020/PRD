@@ -122,8 +122,8 @@ const GROUPS: GroupDef[] = [
     id: "cs",
     titleEn: "CS / TR operations",
     titleZh: "CS／TR 營運",
-    blurbEn: "Follow-up cap, wait / TR / Risk SLAs, intake token, named mailboxes and Lark chats.",
-    blurbZh: "追問上限、等待／TR／風控 SLA、進件 token、具名信箱與 Lark 頻道。",
+    blurbEn: "Follow-up cap, wait / TR / Risk SLAs, intake token, named mailboxes, Lark chats, AI auto-reply max severity.",
+    blurbZh: "追問上限、等待／TR／風控 SLA、進件 token、具名信箱、Lark 頻道、AI 直回最高嚴重度。",
     icon: Headphones,
     keys: [
       "cs.followup_cap",
@@ -137,6 +137,8 @@ const GROUPS: GroupDef[] = [
       "cs.lark_cs",
       "cs.lark_kyc",
       "cs.lark_tr",
+      "cs.auto_reply_max_severity",
+      "cs.sensitive_categories",
     ],
   },
 ];
@@ -175,6 +177,8 @@ const KEY_LABEL: Record<string, { en: string; zh: string }> = {
   "cs.lark_cs": { en: "CS 24/7 Lark chat id", zh: "CS 24/7 Lark 頻道" },
   "cs.lark_kyc": { en: "CS KYC Lark chat id", zh: "CS 核身 Lark 頻道" },
   "cs.lark_tr": { en: "TR dealing Lark chat id", zh: "TR 成交 Lark 頻道" },
+  "cs.auto_reply_max_severity": { en: "AI auto-reply max severity", zh: "AI 直回最高嚴重度" },
+  "cs.sensitive_categories": { en: "Categories that need POC review", zh: "需 POC 審閱的類別" },
 };
 
 const OTHER: GroupDef = {

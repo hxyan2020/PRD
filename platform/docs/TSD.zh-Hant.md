@@ -1,12 +1,12 @@
 # Vantage CRMP Plus — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 2.5  
+**版本：** 2.6  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
 **負責人：** demo platform owner  
-**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…45）· [使用手冊](/admin/docs/user-guide)（§9.3）· [UAT](/admin/docs/uat)（UAT-46…52）· [網址目錄](/admin/docs/urls)
+**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…46）· [使用手冊](/admin/docs/user-guide)（§9.3）· [UAT](/admin/docs/uat)（UAT-46…53）· [網址目錄](/admin/docs/urls)
 
 本 TSD 描述 **CRMP Plus**（原 CRMP 管理後台加上 24/7 客服與交易台）之技術設計。  
 **§8 AI Admin**、**§9 第二 AI 挑戰者**與 **§17 CS／TR 台**（公開 `/cs`、`POST /api/cs/intake`、等待迴圈、專用 SKILL.md、**儀表板＋日誌**）為一級模組規格。原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結，本程式庫不覆蓋它。
@@ -20,7 +20,7 @@
 - 監看 Monitor 2.0 指標／警報
 - 執行 AI 根因分析（Skills + RAG），並於高嚴重度執行獨立第二 AI 挑戰
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
-- 值守 24/7 CS／TR 進件：C1 即時聊天、網站表單與官方信箱經公開 `/cs` 與 `POST /api/cs/intake`；AI 在不清楚或需核身時寄信並**等待客戶回覆**（上限 3、`CSR-XXXX`／`channel_ref` 對案）
+- 值守 24/7 CS／TR 進件：C1 即時聊天、網站表單與官方信箱經公開 `/cs` 與 `POST /api/cs/intake`；AI 在不清楚或需核身時寄信並**等待客戶回覆**（上限 3、`CSR-XXXX`／`channel_ref` 對案）；資料齊全後**分類、給嚴重度、起草方案**，並直回或交具名 POC
 - 蓋專用 CS／TR SKILL.md 劇本，帳簿風險升級至示範 Messenger
 - 在**專用儀表板**看 CS／TR 量、在**專用日誌**看 CS_* 歷史、在**專用資料頁**看 BU／團隊／升級／`cs.*` 紀錄（不是每日績效／風險日誌）
 - 對高影響動作強制人工關卡
@@ -576,7 +576,7 @@ GitHub Pages（靜態匯出）沒有這些 API。UI 必須降級：示範工作�
 | `GET/POST /api/ai` | 分析、模擬警報、`backfill_challenges` |
 | `GET/POST /api/ai-admin` | 提案／核准／訓練／回饋 |
 | `GET/POST /api/messenger` | 執行緒＋內嵌動作 |
-| `GET/POST /api/cs` | CS／TR 台收件匣＋操作動作（`triage`／`followup`／`client_reply`／`reply`／`assign_tr`／`escalate_risk`／`resolve`／`simulate_*`） |
+| `GET/POST /api/cs` | CS／TR 台收件匣＋操作動作（`triage`／`analyze`／`followup`／`client_reply`／`reply`／`assign_tr`／`escalate_risk`／`resolve`／`poc_release`／`simulate_*`） |
 | `GET/POST /api/cs/intake` | 公開連接器目錄＋案件狀態；C1／表單／信箱進件或續辦（`request_id`／`in_reply_to`／`channel_ref`／`CSR-XXXX`） |
 | `GET/POST /api/lark` | 頻道登錄／模擬通知 |
 | `GET/POST /api/market-intel` | 掃描／發現／寄件匣 |
@@ -708,7 +708,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（51）。網址目錄：`UrlCatalogBoard`＋`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、儀表板、日誌、五本 SKILL.md、六片 RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表；篩選；`PUBLIC_*`＝CRMP Plus `/PRD/crmp-plus/` 含 `PUBLIC_CS_PORTAL_URL` `/cs/`、`PUBLIC_CS_DASHBOARD_URL`、`PUBLIC_CS_LOG_URL`；`ORIGINAL_CRMP_*`＝凍結 `/PRD/crmp-admin/`）。見 **§17.9**。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（52）。網址目錄：`UrlCatalogBoard`＋`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、儀表板、日誌、五本 SKILL.md、六片 RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表；篩選；`PUBLIC_*`＝CRMP Plus `/PRD/crmp-plus/` 含 `PUBLIC_CS_PORTAL_URL` `/cs/`、`PUBLIC_CS_DASHBOARD_URL`、`PUBLIC_CS_LOG_URL`；`ORIGINAL_CRMP_*`＝凍結 `/PRD/crmp-admin/`）。見 **§17.9**。
 
 ---
 
@@ -728,7 +728,7 @@ Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–
 | 網站／App 表單 | `WEB_FORM` | 表單送出 |
 | 官方信箱 | `OFFICIAL_EMAIL` | 信箱閘道 |
 
-`POST /api/cs/intake` 接受工作階段（`cs.operate`）、`mock_webhook: true`、`portal: true`，或標頭 `x-cs-intake-token: demo-c1`。內文：`client_name`／`from_name`、`client_email`／`from_email`、`client_uid`、`subject`、`body`／`text`／`message`。C1 可帶 `c1_id`／`channel_ref`；信箱閘道可帶 `in_reply_to` 或主旨中的 `CSR-XXXX`。**GET** `/api/cs/intake` 回傳連接器目錄；`?request_id=CSR-XXXX` 回傳公開狀態（不含個資）。台面動作：`POST /api/cs`（`triage`、`followup`、`client_reply`、`reply`、`assign_tr`、`escalate_risk`、`resolve`、`simulate_c1|form|email`）。
+`POST /api/cs/intake` 接受工作階段（`cs.operate`）、`mock_webhook: true`、`portal: true`，或標頭 `x-cs-intake-token: demo-c1`。內文：`client_name`／`from_name`、`client_email`／`from_email`、`client_uid`、`subject`、`body`／`text`／`message`。C1 可帶 `c1_id`／`channel_ref`；信箱閘道可帶 `in_reply_to` 或主旨中的 `CSR-XXXX`。**GET** `/api/cs/intake` 回傳連接器目錄；`?request_id=CSR-XXXX` 回傳公開狀態（不含個資）。台面動作：`POST /api/cs`（`triage`、`analyze`、`followup`、`client_reply`、`reply`、`assign_tr`、`escalate_risk`、`resolve`、`poc_release`、`simulate_c1|form|email`）。
 
 進件若對得上既有未結案件則**續辦**，順序：`request_id`、`in_reply_to`（訊息 id／channel_ref／CSR-XXXX）、同一個 C1／表單／信箱 `channel_ref`，或主旨中的 `CSR-[0-9A-F]{6}`。若該案仍有 WAITING 追問，視為客戶回覆 — 關閉等待迴圈並重新分流，不另開重複案件。
 
@@ -775,6 +775,9 @@ graph TD
   TR --> Risk
   Risk -->|是| Esc[升級風控 → Messenger]
   Risk -->|否| Done[已結案]
+  Open --> Analyze[analyzeCsRequest]
+  Analyze -->|FAQ 直回| Replied[AI_REPLIED]
+  Analyze -->|敏感| Poc[POC_REVIEW]
 ```
 
 種子示範案件：清楚的 C1 隔夜利息詢問、不清楚的 C1「help me ???」、TR 滑點表單、官方信箱核身。
@@ -786,7 +789,7 @@ graph TD
 | 資料表 | 關鍵欄 | 角色 |
 |---|---|---|
 | `cs_channels` | `code` 唯一、`kind`、`endpoint`、`enabled` | 種子 C1／表單／信箱連接器 |
-| `cs_requests` | `request_id` CSR-XXXX 唯一、`channel`、`channel_ref`、`desk`、`status`、`ai_clarity`、`followup_count`、`skill_code` | 客戶工單 |
+| `cs_requests` | `request_id` CSR-XXXX 唯一、`channel`、`channel_ref`、`desk`、`status`、`ai_clarity`、`followup_count`、`skill_code`、`severity`、`sensitivity`、`ai_solution`、`ai_draft`、`poc_role`、`poc_name` | 客戶工單 |
 | `cs_messages` | `msg_id`、`kind`（CLIENT／FORM／EMAIL_IN／EMAIL_OUT／AI／CS／TR／SYSTEM）、`sender`、`body` | 逐字稿 |
 | `cs_followups` | `email_to`、`subject`、`reason`、`status` WAITING\|CLOSED、`sent_at`、`replied_at` | 自動信件等待迴圈 |
 
@@ -797,7 +800,8 @@ graph TD
 | 路徑 | 職責 |
 |---|---|
 | `lib/cs/intake.ts` | `parseIntakePayload`、`inferIntakeChannel`、`ingestOrContinue`、`intakeConnectorCatalog`、`lookupPublicCsStatus` |
-| `lib/cs/desk.ts` | 綱要、`findCsRequestMatch`、`ingestCsRequest`、`continueCsRequest`、`recordClientReply`、`applyTriage`、`sendFollowupEmail` |
+| `lib/cs/desk.ts` | 綱要、`findCsRequestMatch`、`ingestCsRequest`、`continueCsRequest`、`recordClientReply`、`applyTriage`、`applyCsAnalysis`、`releasePocDraft`、`sendFollowupEmail` |
+| `lib/cs/analyze.ts` | `analyzeCsRequest`、`scoreSeverity`、`scoreSensitivity`、`isCollectedReply` — 啟發式，無正式 LLM |
 | `lib/cs/skills.ts` | 啟發式 → `SKILL-CS-*`／`SKILL-TR-*` |
 | `lib/ai/risk-scenarios-cs.ts` | 五本劇本＋`CHAIN-CS-TR-INTAKE` |
 | `lib/cs/analytics.ts` | `getCsDashboard`、`getCsLog` |
@@ -827,6 +831,9 @@ graph TD
   Id -->|CSR 或 channel_ref 回覆| Triage
   Wait -->|上限 3| Lead[客服主管]
   Id -->|上限 3| Lead
+  Open --> Analyze[analyzeCsRequest]
+  Analyze -->|直回| Replied[AI_REPLIED]
+  Analyze -->|poc| Poc[POC_REVIEW]
   Open --> Hold{WAITING 追問?}
   Hold -->|是| Block[禁止結案]
   Hold -->|否| Done[已結案]
@@ -846,9 +853,9 @@ graph TD
 
 | 產品 | 規格 |
 |---|---|
-| PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、FR-44、FR-45、旅程 5.7–5.9、§6.5 |
-| 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色／儀表板／日誌／資料 |
-| UAT | UAT 目錄 v2.6：UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-50 技能＋樹；UAT-51 儀表板＋日誌；UAT-52 配套資料；支援 UAT-17／22／27–29／36–40；簽核 UAT-49 |
+| PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、FR-44、FR-45、FR-46、旅程 5.7–5.10、§6.5 |
+| 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色／儀表板／日誌／資料／分析 |
+| UAT | UAT 目錄 v2.7：UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-50 技能＋樹；UAT-51 儀表板＋日誌；UAT-52 配套資料；UAT-53 分析／POC；支援 UAT-17／22／27–29／36–40；簽核 UAT-49 |
 
 ### 17.11 專用儀表板＋日誌
 
@@ -858,8 +865,8 @@ graph TD
 
 | 畫面 | 來源 | 功能 |
 |---|---|---|
-| 儀表板 | `lib/cs/analytics.ts` 的 `getCsDashboard()`，來自 `cs_requests`＋WAITING `cs_followups` | 總數、未結／已結、WAITING、上限 3（`followup_count ≥ 3`）、TR／風控、依渠道／狀態／技能／台面／清晰度分桶、等待清單、最近列 |
-| 日誌 | `getCsLog()` 來自 `audit_logs`（`entity_type=cs_request` 或 `CS_*`）加上已結案件包 | `CS_INTAKE`、`CS_INTAKE_CONTINUE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_AGENT_REPLY`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE` 時間軸；篩選；已結包 |
+| 儀表板 | `lib/cs/analytics.ts` 的 `getCsDashboard()`，來自 `cs_requests`＋WAITING `cs_followups` | 總數、未結／已結、WAITING、上限 3（`followup_count ≥ 3`）、TR／風控、POC 審閱、AI 已回、依渠道／狀態／技能／台面／清晰度／**嚴重度**分桶、等待清單、最近列 |
+| 日誌 | `getCsLog()` 來自 `audit_logs`（`entity_type=cs_request` 或 `CS_*`）加上已結案件包 | `CS_INTAKE`、`CS_INTAKE_CONTINUE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_AGENT_REPLY`、`CS_AI_ANALYZE`、`CS_AI_REPLY`、`CS_POC_REVIEW`、`CS_POC_RELEASE`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE` 時間軸；篩選；已結包 |
 
 `GET /api/cs?view=dashboard` 與 `GET /api/cs?view=log` 回傳相同內容。導覽徽章：儀表板用未結 CS 工單；日誌用 CS_* 稽核數。守門：`scripts/verify-cs-analytics.ts`。
 
@@ -885,7 +892,7 @@ graph TD
 | 團隊 | CS 24/7 台（`oc_cs_c1`）、**CS 核身庫**（`oc_cs_kyc`）、TR 成交支援（`oc_tr_dealing`） |
 | POC | Maya Santos CS_LEAD、Elena Rossi CS_AGENT、Nadia Okonkwo CS_AGENT（核身）、Kenji Watanabe TR_LEAD、Omar Haddad TR_DEALER |
 | 路徑 | `ESC-CS-24-7`、**`ESC-CS-KYC`**、`ESC-TR-DEAL`、`ESC-CS-RISK` 含關卡＋SLA |
-| 設定 | `cs.followup_cap`、`cs.wait_sla_minutes`、`cs.id_verify_sla_minutes`、`cs.tr_sla_minutes`、`cs.risk_sla_minutes`、`cs.intake_token`、`cs.mailbox_support`、`cs.mailbox_complaints`、`cs.lark_cs`／`_kyc`／`_tr` |
+| 設定 | `cs.followup_cap`、`cs.auto_reply_max_severity`、`cs.sensitive_categories`、`cs.wait_sla_minutes`、`cs.id_verify_sla_minutes`、`cs.tr_sla_minutes`、`cs.risk_sla_minutes`、`cs.intake_token`、`cs.mailbox_support`、`cs.mailbox_complaints`、`cs.lark_cs`／`_kyc`／`_tr` |
 | 來源 | C1 閘道、網站表單、官方信箱、support@、complaints@、CS 核身庫（僅旗標）、MT4／MT5 成交帶 |
 
 台面 `sendFollowupEmail` 讀 `getCsFollowupCap()`。進件標頭比對 `getCsIntakeToken()`。`cs_requests.assigned_bu` 蓋 CUSTOMER_SERVICE／TRADING／RISK_CONTROL。平台設定分組 **CS／TR 營運**。守門：`scripts/verify-cs-data.ts`。
@@ -898,6 +905,39 @@ graph LR
   Sources[資料來源] --> Data
   Data --> Dash[儀表板]
   Data --> Desk
+```
+
+### 17.13 資料齊全後分析（分類／嚴重度／直回 vs POC）
+
+**程式：** `lib/cs/analyze.ts`（`analyzeCsRequest`、`scoreSeverity`、`scoreSensitivity`、`isCollectedReply`）加上 `lib/cs/desk.ts` 的 `applyCsAnalysis`／`releasePocDraft`。**API：** `POST /api/cs` 動作 `analyze` 與 `poc_release`。原型啟發式 — **此路徑無正式 LLM**（與 `triageText` 相同）。守門：`scripts/verify-cs-analyze.ts`。
+
+`applyTriage` 只在事實**齊全**時才分析：清晰度 `clear`，或等待迴圈回覆 ≥48 字且含 UID（`isCollectedReply`）。過短維持 `AWAITING_CLIENT`／`ID_VERIFY`。長 UID 回覆即使仍有核身關鍵字，也不再永遠重開 need-ID。
+
+| 輸出 | 值 |
+|---|---|
+| `severity` | `LOW`／`MEDIUM`／`HIGH`／`CRITICAL` |
+| `sensitivity` | `auto` 或 `poc` |
+| `ai_solution`／`ai_draft` | 依類別＋技能的啟發式文案（FAQ／核身／投訴／成交／CRITICAL） |
+| `poc_role`／`poc_name` | 敏感度為 `poc` 時來自 `CS_POC_SPECS` |
+
+閘道：`cs.auto_reply_max_severity`（預設 `MEDIUM`）與 `cs.sensitive_categories`（預設 `complaint,kyc,trading`）。技能 `SKILL-CS-ID-VERIFY`、`SKILL-TR-EXECUTION`、`SKILL-CS-ESCALATE-RISK` 一律 `poc`（或升級）。
+
+| 路徑 | CS 狀態 | 客戶信 |
+|---|---|---|
+| FAQ，嚴重度 ≤ 直回上限 | `AI_REPLIED` | 立刻 `EMAIL_OUT`（`CS_AI_REPLY`） |
+| 核身／投訴 | `POC_REVIEW` | 暫扣；POC 補註後 `poc_release`（`CS_POC_RELEASE`） |
+| 成交 | 維持 `ASSIGNED_TR` | 交 TR Dealer 補註 |
+| CRITICAL／帳簿風險 | `ESCALATED_RISK` | 不直寄客戶 |
+
+稽核：`CS_AI_ANALYZE`、`CS_AI_REPLY`、`CS_POC_REVIEW`、`CS_POC_RELEASE`。儀表板桶 `poc_review`、`ai_replied`、`by_severity`。
+
+```mermaid
+graph TD
+  Collected[isCollectedReply] --> Analyze[analyzeCsRequest]
+  Analyze -->|FAQ 直回| Send[EMAIL_OUT AI_REPLIED]
+  Analyze -->|poc| Hold[POC_REVIEW]
+  Hold -->|poc_release extra| Send
+  Analyze -->|CRITICAL| Esc[escalateToRisk]
 ```
 
 ---
@@ -921,6 +961,7 @@ graph LR
 | 2.3 | 2026-10-06 | §17.5–17.10 綱要、模組地圖、等待迴圈狀態、`/cs` 入口、網址目錄、PRD FR-37…43 追溯 |
 | 2.4 | 2026-10-06 | §17.11 專用 CS／TR 儀表板＋日誌；FR-44；UAT-51 |
 | 2.5 | 2026-10-06 | §17.12 CS／TR 配套資料（BU／核身庫／關卡／`cs.*`）；FR-45；UAT-52 |
+| 2.6 | 2026-10-06 | §17.13 資料齊全後分析（分類／嚴重度／直回 vs POC）；FR-46；UAT-53 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

@@ -1,12 +1,12 @@
 # Vantage CRMP Plus — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 2.5  
+**Version:** 2.6  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
 **Owner:** demo platform owner  
-**Companion:** [PRD](/admin/docs/prd) (G13, FR-37…45) · [User Guide](/admin/docs/user-guide) (§9.3) · [UAT](/admin/docs/uat) (UAT-46…52) · [URL Catalog](/admin/docs/urls)
+**Companion:** [PRD](/admin/docs/prd) (G13, FR-37…46) · [User Guide](/admin/docs/user-guide) (§9.3) · [UAT](/admin/docs/uat) (UAT-46…53) · [URL Catalog](/admin/docs/urls)
 
 This TSD describes the technical design of **CRMP Plus** — the upgraded Centralised Risk Management Platform (original CRMP Admin plus 24/7 CS/TR) on one control plane.  
 **§8 AI Admin**, **§9 Second-AI Challenger** and **§17 CS/TR Desk** (public `/cs`, `POST /api/cs/intake`, wait loop, dedicated SKILL.md, **dashboard + log**) are first-class module specifications. Original CRMP Admin at `/PRD/crmp-admin/` is frozen and is not overwritten by this codebase.
@@ -20,7 +20,7 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - Observe Monitor 2.0 indicators / alerts
 - Run AI RCA (skills + RAG) with independent second-AI challenge on high severity
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
-- Staff 24/7 CS/TR intake: C1 live chat, website form and official email via public `/cs` and `POST /api/cs/intake`; AI emails the client when unclear or ID is needed and **waits for a reply** (cap 3, `CSR-XXXX` / `channel_ref` match)
+- Staff 24/7 CS/TR intake: C1 live chat, website form and official email via public `/cs` and `POST /api/cs/intake`; AI emails the client when unclear or ID is needed and **waits for a reply** (cap 3, `CSR-XXXX` / `channel_ref` match); once facts are collected it **categorises, assigns severity, drafts a solution**, and either auto-replies or holds for a named POC
 - Stamp dedicated CS/TR SKILL.md playbooks and escalate book-risk onto Demo Messenger
 - Review CS/TR volume on a **dedicated dashboard**, CS_* history on a **dedicated log**, and BU/team/escalation/`cs.*` records on a **dedicated data page** (not Daily Performance / Risk Log)
 - Enforce human gates on high-impact actions
@@ -580,7 +580,7 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/ai` | Analyses, simulate alarm, `backfill_challenges` |
 | `GET/POST /api/ai-admin` | Propose/approve/training/feedback |
 | `GET/POST /api/messenger` | Threads + inline actions |
-| `GET/POST /api/cs` | CS/TR desk inbox + operator actions (`triage` / `followup` / `client_reply` / `reply` / `assign_tr` / `escalate_risk` / `resolve` / `simulate_*`) |
+| `GET/POST /api/cs` | CS/TR desk inbox + operator actions (`triage` / `analyze` / `followup` / `client_reply` / `reply` / `assign_tr` / `escalate_risk` / `resolve` / `poc_release` / `simulate_*`) |
 | `GET/POST /api/cs/intake` | Public connector catalog + ticket status; C1/form/mailbox ingest or continue (`request_id` / `in_reply_to` / `channel_ref` / `CSR-XXXX`) |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
@@ -732,7 +732,7 @@ Realtime connectors share one webhook:
 | Website / app form | `WEB_FORM` | form post |
 | Official email | `OFFICIAL_EMAIL` | mailbox gateway |
 
-`POST /api/cs/intake` accepts session (`cs.operate`), `mock_webhook: true`, `portal: true`, or header `x-cs-intake-token: demo-c1`. Body: `client_name` / `from_name`, `client_email` / `from_email`, `client_uid`, `subject`, `body` / `text` / `message`. C1 may send `c1_id` / `channel_ref`; the mailbox gateway may send `in_reply_to` or `CSR-XXXX` in the subject. **GET** `/api/cs/intake` returns the connector catalog; `?request_id=CSR-XXXX` returns public status (no PII). Desk actions: `POST /api/cs` (`triage`, `followup`, `client_reply`, `reply`, `assign_tr`, `escalate_risk`, `resolve`, `simulate_c1|form|email`).
+`POST /api/cs/intake` accepts session (`cs.operate`), `mock_webhook: true`, `portal: true`, or header `x-cs-intake-token: demo-c1`. Body: `client_name` / `from_name`, `client_email` / `from_email`, `client_uid`, `subject`, `body` / `text` / `message`. C1 may send `c1_id` / `channel_ref`; the mailbox gateway may send `in_reply_to` or `CSR-XXXX` in the subject. **GET** `/api/cs/intake` returns the connector catalog; `?request_id=CSR-XXXX` returns public status (no PII). Desk actions: `POST /api/cs` (`triage`, `analyze`, `followup`, `client_reply`, `reply`, `assign_tr`, `escalate_risk`, `resolve`, `poc_release`, `simulate_c1|form|email`).
 
 Inbound payloads **continue** an open ticket when they match, in order: `request_id`, `in_reply_to` (message id / channel_ref / CSR-XXXX), the same `channel_ref` on a live C1/form/mailbox thread, or `CSR-[0-9A-F]{6}` in the subject. A match that still has a WAITING follow-up is treated as the client reply — it closes the wait loop and re-triages instead of opening a duplicate.
 
@@ -779,6 +779,9 @@ graph TD
   TR --> Risk
   Risk -->|yes| Esc[ESCALATED_RISK to Messenger]
   Risk -->|no| Done[RESOLVED]
+  Open --> Analyze[analyzeCsRequest]
+  Analyze -->|auto FAQ| Replied[AI_REPLIED]
+  Analyze -->|sensitive| Poc[POC_REVIEW]
 ```
 
 Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slippage form, ID-verify official email.
@@ -790,7 +793,7 @@ Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slip
 | Table | Key columns | Role |
 |---|---|---|
 | `cs_channels` | `code` unique, `kind`, `endpoint`, `enabled` | Seeded C1 / form / mailbox connectors |
-| `cs_requests` | `request_id` CSR-XXXX unique, `channel`, `channel_ref`, `desk`, `status`, `ai_clarity`, `followup_count`, `skill_code` | Client tickets |
+| `cs_requests` | `request_id` CSR-XXXX unique, `channel`, `channel_ref`, `desk`, `status`, `ai_clarity`, `followup_count`, `skill_code`, `severity`, `sensitivity`, `ai_solution`, `ai_draft`, `poc_role`, `poc_name` | Client tickets |
 | `cs_messages` | `msg_id`, `kind` (CLIENT / FORM / EMAIL_IN / EMAIL_OUT / AI / CS / TR / SYSTEM), `sender`, `body` | Transcript |
 | `cs_followups` | `email_to`, `subject`, `reason`, `status` WAITING\|CLOSED, `sent_at`, `replied_at` | Auto-email wait loop |
 
@@ -801,7 +804,8 @@ Public `GET /api/cs/intake?request_id=` returns `request_id`, `status`, `ai_clar
 | Path | Responsibility |
 |---|---|
 | `lib/cs/intake.ts` | `parseIntakePayload`, `inferIntakeChannel`, `ingestOrContinue`, `intakeConnectorCatalog`, `lookupPublicCsStatus` |
-| `lib/cs/desk.ts` | Schema, `findCsRequestMatch`, `ingestCsRequest`, `continueCsRequest`, `recordClientReply`, `applyTriage`, `sendFollowupEmail` |
+| `lib/cs/desk.ts` | Schema, `findCsRequestMatch`, `ingestCsRequest`, `continueCsRequest`, `recordClientReply`, `applyTriage`, `applyCsAnalysis`, `releasePocDraft`, `sendFollowupEmail` |
+| `lib/cs/analyze.ts` | `analyzeCsRequest`, `scoreSeverity`, `scoreSensitivity`, `isCollectedReply` — heuristic, no live LLM |
 | `lib/cs/skills.ts` | Heuristic → `SKILL-CS-*` / `SKILL-TR-*` |
 | `lib/ai/risk-scenarios-cs.ts` | Five playbooks + `CHAIN-CS-TR-INTAKE` |
 | `lib/cs/analytics.ts` | `getCsDashboard`, `getCsLog` |
@@ -831,6 +835,9 @@ graph TD
   Id -->|CSR or channel_ref reply| Triage
   Wait -->|cap 3| Lead[CS Lead]
   Id -->|cap 3| Lead
+  Open --> Analyze[analyzeCsRequest]
+  Analyze -->|auto| Replied[AI_REPLIED]
+  Analyze -->|poc| Poc[POC_REVIEW]
   Open --> Hold{WAITING followup?}
   Hold -->|yes| Block[Resolve blocked]
   Hold -->|no| Done[RESOLVED]
@@ -850,9 +857,9 @@ Match order for continuation: `request_id` → `in_reply_to` → live `channel_r
 
 | Product | Spec |
 |---|---|
-| PRD | G13, FR-37, FR-40, FR-41, FR-42, FR-43, FR-44, FR-45, journeys 5.7–5.9, §6.5 |
-| User Guide | §9.3 portal / connectors / wait loop / daily roles / dashboard / log / data |
-| UAT | UAT catalogue v2.6: UAT-25 catalog; UAT-46 connectors; UAT-47 wait loop; UAT-48 TR/Risk; UAT-50 skills + tree; UAT-51 dashboard + log; UAT-52 supporting data; support UAT-17/22/27–29/36–40; sign-off UAT-49 |
+| PRD | G13, FR-37, FR-40, FR-41, FR-42, FR-43, FR-44, FR-45, FR-46, journeys 5.7–5.10, §6.5 |
+| User Guide | §9.3 portal / connectors / wait loop / daily roles / dashboard / log / data / analyze |
+| UAT | UAT catalogue v2.7: UAT-25 catalog; UAT-46 connectors; UAT-47 wait loop; UAT-48 TR/Risk; UAT-50 skills + tree; UAT-51 dashboard + log; UAT-52 supporting data; UAT-53 analyze / POC; support UAT-17/22/27–29/36–40; sign-off UAT-49 |
 
 ### 17.11 Dedicated dashboard + log
 
@@ -862,8 +869,8 @@ These surfaces are **not** Daily Performance (`/admin/dashboard`, CFD/crypto day
 
 | Surface | Source | Functions |
 |---|---|---|
-| Dashboard | `getCsDashboard()` in `lib/cs/analytics.ts` from `cs_requests` + WAITING `cs_followups` | Totals, open/resolved, WAITING, cap-3 (`followup_count ≥ 3`), TR / Risk, buckets by channel / status / skill / desk / clarity, waiting list, recent rows |
-| Log | `getCsLog()` from `audit_logs` (`entity_type=cs_request` or `CS_*`) plus resolved request packs | Timeline of `CS_INTAKE`, `CS_INTAKE_CONTINUE`, `CS_FOLLOWUP_EMAIL`, `CS_CLIENT_REPLY`, `CS_AGENT_REPLY`, `CS_ASSIGN_TR`, `CS_ESCALATE_RISK`, `CS_RESOLVE`; filter; resolved packs |
+| Dashboard | `getCsDashboard()` in `lib/cs/analytics.ts` from `cs_requests` + WAITING `cs_followups` | Totals, open/resolved, WAITING, cap-3 (`followup_count ≥ 3`), TR / Risk, POC review, AI replied, buckets by channel / status / skill / desk / clarity / **severity**, waiting list, recent rows |
+| Log | `getCsLog()` from `audit_logs` (`entity_type=cs_request` or `CS_*`) plus resolved request packs | Timeline of `CS_INTAKE`, `CS_INTAKE_CONTINUE`, `CS_FOLLOWUP_EMAIL`, `CS_CLIENT_REPLY`, `CS_AGENT_REPLY`, `CS_AI_ANALYZE`, `CS_AI_REPLY`, `CS_POC_REVIEW`, `CS_POC_RELEASE`, `CS_ASSIGN_TR`, `CS_ESCALATE_RISK`, `CS_RESOLVE`; filter; resolved packs |
 
 `GET /api/cs?view=dashboard` and `GET /api/cs?view=log` return the same payloads. Nav badges: dashboard uses open CS tickets; log uses CS_* audit count. Guard: `scripts/verify-cs-analytics.ts`.
 
@@ -889,7 +896,7 @@ graph TD
 | Teams | CS 24/7 Desk (`oc_cs_c1`), **CS KYC Vault** (`oc_cs_kyc`), TR Dealing Support (`oc_tr_dealing`) |
 | POCs | Maya Santos CS_LEAD, Elena Rossi CS_AGENT, Nadia Okonkwo CS_AGENT (KYC), Kenji Watanabe TR_LEAD, Omar Haddad TR_DEALER |
 | Routes | `ESC-CS-24-7`, **`ESC-CS-KYC`**, `ESC-TR-DEAL`, `ESC-CS-RISK` with hops + SLA |
-| Settings | `cs.followup_cap`, `cs.wait_sla_minutes`, `cs.id_verify_sla_minutes`, `cs.tr_sla_minutes`, `cs.risk_sla_minutes`, `cs.intake_token`, `cs.mailbox_support`, `cs.mailbox_complaints`, `cs.lark_cs` / `_kyc` / `_tr` |
+| Settings | `cs.followup_cap`, `cs.auto_reply_max_severity`, `cs.sensitive_categories`, `cs.wait_sla_minutes`, `cs.id_verify_sla_minutes`, `cs.tr_sla_minutes`, `cs.risk_sla_minutes`, `cs.intake_token`, `cs.mailbox_support`, `cs.mailbox_complaints`, `cs.lark_cs` / `_kyc` / `_tr` |
 | Sources | C1 gateway, website form, official mailbox, support@, complaints@, CS KYC Vault (flags only), MT4/MT5 dealing tape |
 
 Desk `sendFollowupEmail` reads `getCsFollowupCap()`. Intake header matches `getCsIntakeToken()`. `cs_requests.assigned_bu` stamps CUSTOMER_SERVICE / TRADING / RISK_CONTROL. Platform Settings group **CS / TR operations**. Guard: `scripts/verify-cs-data.ts`.
@@ -902,6 +909,39 @@ graph LR
   Sources[data sources] --> Data
   Data --> Dash[dashboard]
   Data --> Desk
+```
+
+### 17.13 Analyze after collected (categorize / severity / auto vs POC)
+
+**Code:** `lib/cs/analyze.ts` (`analyzeCsRequest`, `scoreSeverity`, `scoreSensitivity`, `isCollectedReply`) plus `applyCsAnalysis` / `releasePocDraft` in `lib/cs/desk.ts`. **API:** `POST /api/cs` actions `analyze` and `poc_release`. Prototype heuristic — **no live LLM** on this path (same as `triageText`). Guard: `scripts/verify-cs-analyze.ts`.
+
+`applyTriage` only calls analysis when facts are **collected**: clarity `clear`, or a wait-loop reply ≥48 characters that names a UID (`isCollectedReply`). Thin tickets stay `AWAITING_CLIENT` / `ID_VERIFY`. KYC keywords on a long UID reply no longer re-open need-ID forever.
+
+| Output | Values |
+|---|---|
+| `severity` | `LOW` / `MEDIUM` / `HIGH` / `CRITICAL` |
+| `sensitivity` | `auto` or `poc` |
+| `ai_solution` / `ai_draft` | Heuristic copy from category + skill (FAQ / KYC / complaint / trading / critical) |
+| `poc_role` / `poc_name` | From `CS_POC_SPECS` when sensitivity is `poc` |
+
+Gates: `cs.auto_reply_max_severity` (default `MEDIUM`) and `cs.sensitive_categories` (default `complaint,kyc,trading`). Skills `SKILL-CS-ID-VERIFY`, `SKILL-TR-EXECUTION`, `SKILL-CS-ESCALATE-RISK` always `poc` (or escalate).
+
+| Path | CS status | Client mail |
+|---|---|---|
+| FAQ, severity ≤ auto-max | `AI_REPLIED` | `EMAIL_OUT` immediately (`CS_AI_REPLY`) |
+| KYC / complaint | `POC_REVIEW` | Hold; POC addendum then `poc_release` (`CS_POC_RELEASE`) |
+| Trading | stays `ASSIGNED_TR` | Hold for TR Dealer addendum |
+| CRITICAL / book-risk | `ESCALATED_RISK` | No client auto-mail |
+
+Audit: `CS_AI_ANALYZE`, `CS_AI_REPLY`, `CS_POC_REVIEW`, `CS_POC_RELEASE`. Dashboard buckets `poc_review`, `ai_replied`, `by_severity`.
+
+```mermaid
+graph TD
+  Collected[isCollectedReply] --> Analyze[analyzeCsRequest]
+  Analyze -->|auto FAQ| Send[EMAIL_OUT AI_REPLIED]
+  Analyze -->|poc| Hold[POC_REVIEW]
+  Hold -->|poc_release extra| Send
+  Analyze -->|CRITICAL| Esc[escalateToRisk]
 ```
 
 ---
@@ -925,6 +965,7 @@ graph LR
 | 2.3 | 2026-10-06 | §17.5–17.10 schema, module map, wait-loop state, `/cs` portal, URL catalog, PRD FR-37…43 traceability |
 | 2.4 | 2026-10-06 | §17.11 dedicated CS/TR dashboard + log; FR-44; UAT-51 |
 | 2.5 | 2026-10-06 | §17.12 CS/TR supporting data (BU/KYC vault/hops/`cs.*`); FR-45; UAT-52 |
+| 2.6 | 2026-10-06 | §17.13 analyze after collected (categorize / severity / auto vs POC); FR-46; UAT-53 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

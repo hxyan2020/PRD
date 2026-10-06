@@ -38,8 +38,8 @@ export default async function UserGuidePage({ searchParams }: { searchParams: Pr
         </div>
         <p className="text-sm text-[var(--muted)]">
           {zh
-            ? "白話說明左側每一頁，以及 24/7 CS／TR：公開 /cs 入口、台面、儀表板、日誌、資料契約、自動信件直到客戶回覆、專用技能。"
-            : "Plain-English how-to for every left-nav page, plus 24/7 CS/TR: public /cs portal, desk, dashboard, log, data contract, auto-email until the client replies, dedicated skills."}
+            ? "白話說明左側每一頁，以及 24/7 CS／TR：公開 /cs 入口、台面、儀表板、日誌、資料契約、自動信件直到客戶回覆、資料齊全後分類／嚴重度／AI 草稿（直回或 POC 審閱）。"
+            : "Plain-English how-to for every left-nav page, plus 24/7 CS/TR: public /cs portal, desk, dashboard, log, data contract, auto-email until the client replies, then categorize / severity / AI draft with auto-reply or POC review."}
         </p>
         <div className="action-row">
           {quick.map((q) => (

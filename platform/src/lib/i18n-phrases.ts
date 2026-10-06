@@ -1408,8 +1408,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "永久客戶大門：C1 即時聊天、網站表單與官方信箱 — 與台面同一 POST /api/cs/intake",
   "Public C1 live chat, website submission form and official email into POST /api/cs/intake; CSR-XXXX / channel_ref replies close the auto-email wait loop (max 3)":
     "公開 C1 即時聊天、網站提交表單與官方信箱進 POST /api/cs/intake；CSR-XXXX／channel_ref 回覆關閉自動信件等待迴圈（最多 3 封）",
-  "Operator inbox: triage, auto-email follow-up, client-reply wait loop, TR handoff, risk escalate; AI stamps SKILL-CS-* / SKILL-TR-* playbooks":
-    "操作收件匣：分流、自動追問信、客戶回覆等待迴圈、TR 交接、升級風控；AI 蓋 SKILL-CS-*／SKILL-TR-* 劇本",
+  "Operator inbox: triage, auto-email follow-up, client-reply wait loop, then categorize/severity/AI draft — auto-reply or named POC addendum; TR handoff, risk escalate; AI stamps SKILL-CS-* / SKILL-TR-* playbooks":
+    "操作收件匣：分流、自動追問信、客戶回覆等待迴圈，資料齊全後分類／嚴重度／AI 草稿 — 直回或具名 POC 補註；TR 交接、升級風控；AI 蓋 SKILL-CS-*／SKILL-TR-* 劇本",
   "Skill: CS clarify": "技能：CS 釐清",
   "Skill: CS ID verify": "技能：CS 核身",
   "Skill: CS account FAQ": "技能：CS 帳戶 FAQ",
@@ -1510,8 +1510,8 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "即時 BU／團隊／POC 名冊、ESC-CS-24-7／ESC-CS-KYC／ESC-TR-DEAL／ESC-CS-RISK 關卡、cs.* 參數、核身庫與成交帶來源",
   "GET live CS/TR ops contract: BUs, teams, POCs, escalation hops, cs.* parameters, sources, Lark":
     "GET 即時 CS／TR 營運契約：BU、團隊、POC、升級關卡、cs.* 參數、來源、Lark",
-  "GET inbox · GET ?view=dashboard|log|data · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake":
-    "GET 收件匣 · GET ?view=dashboard|log|data · POST 分流／追問／客戶回覆／回覆／指派 TR／升級風控／結案／模擬 C1｜表單｜信件 — 操作動作；公開進件為 POST /api/cs/intake",
+  "GET inbox · GET ?view=dashboard|log|data · POST triage / analyze / followup / client_reply / reply / assign_tr / escalate_risk / resolve / poc_release / simulate_c1|form|email — operator actions; public ingest is POST /api/cs/intake":
+    "GET 收件匣 · GET ?view=dashboard|log|data · POST 分流／分析／追問／客戶回覆／回覆／指派 TR／升級風控／結案／POC 放行／模擬 C1｜表單｜信件 — 操作動作；公開進件為 POST /api/cs/intake",
   "Channel registry & mock notify — includes oc_cs_c1 (C1 live chat), oc_cs_kyc (KYC vault) and oc_tr_dealing (TR dealing)":
     "頻道登錄與模擬通知 — 含 oc_cs_c1（C1 即時聊天）、oc_cs_kyc（核身庫）與 oc_tr_dealing（TR 成交）",
   "Dimension-defined paths × coefficients; ESC-DEFAULT catch-all plus ESC-CS-24-7, ESC-CS-KYC, ESC-TR-DEAL, ESC-CS-RISK for CS/TR skills":
@@ -1520,12 +1520,16 @@ export const PHRASES_ZH_MORE: Record<string, string> = {
     "內外部來源登錄 — 含 C1 即時聊天閘道、網站 CS 表單、官方客服／投訴信箱、CS 核身庫與 MT4／MT5 成交帶",
   "Grouped flags including cs.* (follow-up cap, wait/TR/Risk SLA, intake token, named mailboxes)":
     "分組旗標含 cs.*（追問上限、等待／TR／風控 SLA、進件 token、具名信箱）",
-  "Technical Specification Design (EN/ZH) — §17.5–17.12 schema, intake, wait loop, /cs portal, CS/TR dashboard + log + data contract, URL catalog, FR-37…45":
-    "技術規格設計（英／繁中）— §17.5–17.12 綱要、進件、等待迴圈、/cs 入口、CS／TR 儀表板＋日誌＋資料契約、網址目錄、FR-37…45",
-  "Product Requirements (EN/ZH) — G13 + FR-37…45: /cs portal, C1/form/mailbox, wait loop, dedicated skills, CS/TR dashboard + log + data, catalog":
-    "產品需求（英／繁中）— G13＋FR-37…45：/cs 入口、C1／表單／信箱、等待迴圈、專用技能、CS／TR 儀表板＋日誌＋資料、目錄",
-  "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, desk, dashboard, log, data contract, auto-email wait loop, dedicated skills":
-    "操作手冊（英／繁中）— 左側每一頁加上 24/7 CS／TR：/cs 入口、台面、儀表板、日誌、資料契約、自動信件等待迴圈、專用技能",
+  "Technical Specification Design (EN/ZH) — §17.5–17.13 schema, intake, wait loop, analyze after collected, /cs portal, CS/TR dashboard + log + data contract, URL catalog, FR-37…46":
+    "技術規格設計（英／繁中）— §17.5–17.13 綱要、進件、等待迴圈、資料齊全後分析、/cs 入口、CS／TR 儀表板＋日誌＋資料契約、網址目錄、FR-37…46",
+  "Product Requirements (EN/ZH) — G13 + FR-37…46: /cs portal, C1/form/mailbox, wait loop, categorize/severity/AI draft, auto vs POC, dedicated skills, CS/TR dashboard + log + data, catalog":
+    "產品需求（英／繁中）— G13＋FR-37…46：/cs 入口、C1／表單／信箱、等待迴圈、分類／嚴重度／AI 草稿、直回 vs POC、專用技能、CS／TR 儀表板＋日誌＋資料、目錄",
+  "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, desk, dashboard, log, data contract, auto-email wait loop, categorize/severity, auto-reply or POC review, dedicated skills":
+    "操作手冊（英／繁中）— 左側每一頁加上 24/7 CS／TR：/cs 入口、台面、儀表板、日誌、資料契約、自動信件等待迴圈、分類／嚴重度、直回或 POC 審閱、專用技能",
+  "Risk Owner UAT pack v2.7 — CS/TR feature catalogue: UAT-25 + UAT-46…53 (desk, /cs, wait loop, skills, dashboard, log, data, analyze/POC) plus support UAT-17/22/27–29/36–40":
+    "風險負責人 UAT 包 v2.7 — CS／TR 功能目錄：UAT-25＋UAT-46…53（台面、/cs、等待迴圈、技能、儀表板、日誌、資料、分析／POC）加上支援 UAT-17／22／27–29／36–40",
+  "Grouped flags including cs.* (follow-up cap, auto-reply max severity, sensitive categories, wait/TR/Risk SLA, intake token, named mailboxes)":
+    "分組旗標含 cs.*（追問上限、AI 直回最高嚴重度、需 POC 類別、等待／TR／風控 SLA、進件 token、具名信箱）",
   "Risk Owner UAT pack — UAT-46…52 cover C1/form/mailbox, wait loop, dedicated skills, knowledge tree, ID vault, CS/TR dashboard + log + data":
     "風險負責人 UAT 包 — UAT-46…52 涵蓋 C1／表單／信箱、等待迴圈、專用技能、知識樹、核身庫、CS／TR 儀表板＋日誌＋資料",
   "This page — all admin/API/DB paths plus the CS/TR section (/cs, desk, dashboard, log, data, five skills, RAG leaves, intake API)":

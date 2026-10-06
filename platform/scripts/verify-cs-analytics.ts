@@ -33,7 +33,7 @@ const packed = ingestCsRequest({
   locale: "en",
   actor: "verify-cs-analytics",
 });
-assert(packed?.request.status === "OPEN" || packed?.request.status === "ASSIGNED_TR", `clear ingest status ${packed?.request.status}`);
+assert(packed?.request.status === "OPEN" || packed?.request.status === "ASSIGNED_TR" || packed?.request.status === "AI_REPLIED", `clear ingest status ${packed?.request.status}`);
 resolveRequest(packed!.request.id, "verify-cs-analytics", "en");
 
 const after = getCsDashboard();

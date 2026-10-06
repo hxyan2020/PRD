@@ -36,6 +36,7 @@ const bothNeedles = [
   "UAT-46",
   "UAT-51",
   "UAT-52",
+  "UAT-53",
   "oc_cs_c1",
 ];
 
@@ -101,7 +102,7 @@ assert(board.includes('href="/admin/cs-data"'), "board data link");
 assert(board.includes('href="/admin/docs/uat"'), "board UAT link");
 
 const stamp = fs.readFileSync(path.join(root, "src/lib/build-stamp.ts"), "utf8");
-assert(stamp.includes("2026-10-06T20:00:00.000Z"), "FINISHED_AT 20:00");
+assert(stamp.includes("2026-10-06T21:00:00.000Z"), "FINISHED_AT 21:00");
 
 console.log("verify-open-issues: ok");
 console.log(

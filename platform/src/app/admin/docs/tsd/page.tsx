@@ -16,9 +16,9 @@ export default async function TsdPage({ searchParams }: { searchParams: Promise<
   const zh = lang === "zh-Hant";
 
   const cards = [
-    { label: zh ? "文件版次" : "Document version", value: "v2.5" },
+    { label: zh ? "文件版次" : "Document version", value: "v2.6" },
     { label: zh ? "章節" : "Sections", value: "18" },
-    { label: zh ? "CS／TR" : "CS / TR", value: "§17.5–17.12" },
+    { label: zh ? "CS／TR" : "CS / TR", value: "§17.5–17.13" },
     { label: zh ? "技術棧" : "Stack", value: "Next.js 15 + SQLite" },
   ];
 
@@ -37,7 +37,7 @@ export default async function TsdPage({ searchParams }: { searchParams: Promise<
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-indigo-50 text-indigo-900 border-indigo-200">CRMP-TSD-001</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-            {zh ? "原型／活規格 · v2.5" : "Prototype / living spec · v2.5"}
+            {zh ? "原型／活規格 · v2.6" : "Prototype / living spec · v2.6"}
           </Badge>
         </div>
         <div className="action-row">

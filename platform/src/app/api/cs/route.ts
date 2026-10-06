@@ -12,6 +12,7 @@ import {
   ingestCsRequest,
   listCsInbox,
   recordClientReply,
+  releasePocDraft,
   resolveRequest,
   sendFollowupEmail,
   type CsClarity,
@@ -87,6 +88,20 @@ export async function POST(req: Request) {
 
     if (action === "triage") {
       return NextResponse.json({ ok: true, ...applyTriage(requestId, locale) });
+    }
+    if (action === "analyze") {
+      return NextResponse.json({ ok: true, ...applyTriage(requestId, locale) });
+    }
+    if (action === "poc_release") {
+      return NextResponse.json({
+        ok: true,
+        ...releasePocDraft({
+          request_id: requestId,
+          extra: String(body.extra || body.text || ""),
+          user_name: actor,
+          locale,
+        }),
+      });
     }
     if (action === "followup") {
       const reason = (body.reason === "need_id" ? "need_id" : "unclear") as CsClarity;

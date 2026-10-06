@@ -66,7 +66,7 @@ export default async function UatPage({ searchParams }: { searchParams: Promise<
         <div className="flex flex-wrap gap-2 items-center">
           <VantageMark className="h-8 w-8" />
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-UAT-001</Badge>
-          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v2.6</Badge>
+          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v2.7</Badge>
           <OwnerBadge />
           <Badge className="bg-rose-50 text-rose-900 border-rose-200">
             Critical × {summary.bySev.Critical}

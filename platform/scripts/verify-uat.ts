@@ -22,6 +22,7 @@ const bothNeedles = [
   "UAT-50",
   "UAT-51",
   "UAT-52",
+  "UAT-53",
   "/admin/cs-dashboard",
   "/admin/cs-log",
   "/admin/cs-data",
@@ -29,12 +30,12 @@ const bothNeedles = [
   "cs.followup_cap",
 ];
 
-assert(en.includes("**Version:** 2.6"), "EN version 2.6 header");
-assert(zh.includes("**版次：** 2.6"), "zh version 2.6 header");
+assert(en.includes("**Version:** 2.7"), "EN version 2.7 header");
+assert(zh.includes("**版次：** 2.7"), "zh version 2.7 header");
 assert(en.includes("## CS/TR feature catalogue"), "EN CS/TR catalogue heading");
 assert(zh.includes("## CS／TR 功能目錄"), "zh CS/TR catalogue heading");
-assert(en.includes("51 cases"), "EN pack size 51");
-assert(zh.includes("51 案"), "zh pack size 51");
+assert(en.includes("52 cases"), "EN pack size 52");
+assert(zh.includes("52 案"), "zh pack size 52");
 assert(en.includes("CS/TR door and playbooks"), "UAT-25 title substring (url-catalog)");
 assert(en.includes("not /admin/cs-dashboard"), "UAT-28 is not CS dashboard");
 assert(en.includes("not /admin/cs-log"), "UAT-29 is not CS log");
@@ -49,10 +50,10 @@ for (const needle of bothNeedles) {
 }
 
 const summary = uatCsTrSummary();
-assert(summary.primary === 7, `primary count ${summary.primary}`);
+assert(summary.primary === 8, `primary count ${summary.primary}`);
 assert(summary.support === 10, `support count ${summary.support}`);
-assert(summary.total === 17, `catalogue total ${summary.total}`);
-assert(UAT_CASES.length === 51, `51 cases (skip UAT-45), got ${UAT_CASES.length}`);
+assert(summary.total === 18, `catalogue total ${summary.total}`);
+assert(UAT_CASES.length === 52, `52 cases (skip UAT-45), got ${UAT_CASES.length}`);
 assert(!UAT_CASES.some((c) => c.id === "UAT-45"), "array must skip UAT-45");
 assert(UAT_CASES[UAT_CASES.length - 1]?.id === "UAT-49", "sign-off last");
 
@@ -63,7 +64,7 @@ assert(uat25?.covers.includes("CS / TR Log"), "UAT-25 covers log");
 assert(uat25?.covers.includes("CS / TR Data"), "UAT-25 covers data");
 
 const ids = CS_TR_UAT_CATALOGUE.map((r) => r.id);
-for (const id of ["UAT-25", "UAT-46", "UAT-47", "UAT-48", "UAT-50", "UAT-51", "UAT-52"]) {
+for (const id of ["UAT-25", "UAT-46", "UAT-47", "UAT-48", "UAT-50", "UAT-51", "UAT-52", "UAT-53"]) {
   assert(ids.includes(id), `catalogue missing primary ${id}`);
   assert(isCsTrUatCase({ id }), `${id} is CS/TR`);
 }
@@ -77,7 +78,7 @@ assert(board.includes('"CS_TR"'), "board CS/TR filter");
 assert(board.includes("isCsTrUatCase"), "board uses isCsTrUatCase");
 
 const page = fs.readFileSync(path.join(root, "src/app/admin/docs/uat/page.tsx"), "utf8");
-assert(page.includes("v2.6"), "uat page version badge");
+assert(page.includes("v2.7"), "uat page version badge");
 assert(page.includes('href="/cs"'), "uat page /cs link");
 assert(page.includes('href="/admin/cs-desk"'), "uat page desk link");
 assert(page.includes('href="/admin/cs-dashboard"'), "uat page dashboard link");

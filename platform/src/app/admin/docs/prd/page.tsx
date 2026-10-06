@@ -17,9 +17,9 @@ export default async function PrdPage({ searchParams }: { searchParams: Promise<
 
   const cards = [
     { label: zh ? "P0 需求" : "P0 requirements", value: "10" },
-    { label: zh ? "P1 需求" : "P1 requirements", value: "30" },
-    { label: zh ? "CS／TR" : "CS / TR", value: "FR-37…45" },
-    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…52" },
+    { label: zh ? "P1 需求" : "P1 requirements", value: "31" },
+    { label: zh ? "CS／TR" : "CS / TR", value: "FR-37…46" },
+    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…53" },
   ];
 
   return (
@@ -37,7 +37,7 @@ export default async function PrdPage({ searchParams }: { searchParams: Promise<
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-PRD-001</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-            {zh ? "原型／可示範 · v2.5" : "Prototype / demo-ready · v2.5"}
+            {zh ? "原型／可示範 · v2.6" : "Prototype / demo-ready · v2.6"}
           </Badge>
         </div>
         <div className="action-row">
