@@ -1,7 +1,7 @@
 /** Build / docs finish stamp — shown on admin home footer. */
 
 /** ISO-8601 timestamp when the docs/admin parity pack was last finished. */
-export const FINISHED_AT = "2026-10-07T01:00:00.000Z";
+export const FINISHED_AT = "2026-10-07T02:00:00.000Z";
 
 export function finishedAtLabel(locale: "en" | "zh-Hant" = "en") {
   const d = new Date(FINISHED_AT);

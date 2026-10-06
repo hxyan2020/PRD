@@ -17,6 +17,7 @@ const requiredPaths = [
   "/admin/cs-dashboard",
   "/admin/cs-log",
   "/admin/cs-data",
+  "/admin/docs/ai-use",
   "/admin/skills/SKILL-CS-CLARIFY",
   "/admin/skills/SKILL-CS-ID-VERIFY",
   "/admin/skills/SKILL-CS-ACCOUNT-FAQ",

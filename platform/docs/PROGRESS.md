@@ -37,7 +37,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/progress](/admin/docs/progres
 | Risk Owner UAT pack including UAT-53 | OI-09 | Started | UAT Checklist v2.7 (52 cases) |
 | Prototype UAT window includes CS/TR door | OI-14 | UAT | UAT-46…53 |
 | Phone-width CS/TR | OI-11 | UAT | UAT-18 |
-| Docs lockstep (UG / UAT / Open Issues / Progress) | OI-15 | BAU | UG §9.3.10 · UAT catalogue v2.7 |
+| Docs lockstep (UG / AI Use Manual / UAT / Open Issues / Progress) | OI-15 | BAU | UG §9.3.10 · CRMP-AIU-001 · UAT catalogue v2.7 |
 
 ### Catalogue (same eight issues as Open Issues)
 
@@ -50,7 +50,7 @@ Interactive twin: filter **CS/TR** on [/admin/docs/progress](/admin/docs/progres
 | support | OI-09 | Risk Owner UAT exit including CS/TR catalogue | UAT Checklist v2.7 | Pack v2.7 (52 cases, skip UAT-45) indexes CS/TR including UAT-53 | Formal RO sign-off of UAT-25/46/47/48/50/51/52/53 + four CS hops |
 | support | OI-11 | Admin UX polish — CS/TR phone-width | Desk, dashboard, log, data | List→thread desk; card twins for dashboard, log, data, /cs tabs, RAG gate (UAT-18) | Native phone apps; leftover dense boards as BAU |
 | support | OI-14 | Prototype AI desk UAT window includes CS/TR door | `/cs`, desk, skills, wait loop, dashboard, log, data | CS/TR door shipped for UAT-46…53 | Formal UAT sign-off (OI-09) |
-| support | OI-15 | Docs & URL catalog keep pace (UG §9.3 / UAT v2.7) | User Guide, URL Catalog, UAT, Open Issues, Progress | UG §9.3.10 + URL Catalog CS/TR + UAT catalogue v2.7 + Open Issues v1.5 | Keep Progress in lockstep after each ship |
+| support | OI-15 | Docs & URL catalog keep pace (UG §9.3 / AI Use Manual / UAT v2.7) | User Guide, AI Use Manual, URL Catalog, UAT, Open Issues, Progress | UG §9.3.10 + AI Use Manual CRMP-AIU-001 + URL Catalog CS/TR + UAT catalogue v2.7 + Open Issues v1.5 | Keep Progress in lockstep after each ship |
 
 ### Public URLs (CS/TR)
 

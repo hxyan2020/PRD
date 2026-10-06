@@ -6,7 +6,7 @@ import { Badge, StatusBadge } from "@/components/ui";
 import { useUiLocale } from "@/hooks/useUiLocale";
 import { phrase, t, type UiLocale } from "@/lib/i18n";
 import { bumpNavBadge } from "@/lib/nav-badges";
-import { ArrowLeft, Headphones, Send, TableProperties } from "lucide-react";
+import { ArrowLeft, GraduationCap, Headphones, Send, TableProperties } from "lucide-react";
 import type { CsOpsContract } from "@/lib/cs/ops-data";
 
 type RequestRow = {
@@ -157,6 +157,10 @@ export function CsTrDesk({
           <AdminLink href="/admin/cs-data" className="btn !min-h-9 text-xs inline-flex items-center gap-1">
             <TableProperties className="h-3.5 w-3.5" aria-hidden />
             {t("cs.data.open", locale)}
+          </AdminLink>
+          <AdminLink href="/admin/docs/ai-use" className="btn !min-h-9 text-xs inline-flex items-center gap-1">
+            <GraduationCap className="h-3.5 w-3.5" aria-hidden />
+            {locale === "zh-Hant" ? "AI 使用手冊" : "AI Use Manual"}
           </AdminLink>
           <span className="rounded-full border border-[var(--line)] px-2 py-1">
             {t("cs.data.cap", locale)} {ops.params.followup_cap}

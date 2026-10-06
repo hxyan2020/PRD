@@ -40,6 +40,14 @@ const META: Record<
     zhSub: "左側每一頁、登入、未讀徽章與 Messenger 的白話操作說明。",
     href: "/admin/docs/user-guide",
   },
+  AI_USE: {
+    code: "CRMP-AIU-001",
+    enTitle: "AI Use Manual",
+    zhTitle: "AI 使用手冊",
+    enSub: "AI literacy for Risk and CS/TR: basics, LLM, skills, agents, MCP, failure modes, detect / correct / prevent.",
+    zhSub: "給風控與 CS／TR 的 AI 識字：基礎、LLM、技能、代理、MCP、失效、偵測／改正／預防。",
+    href: "/admin/docs/ai-use",
+  },
   UAT: {
     code: "CRMP-UAT-001",
     enTitle: "UAT Checklist (Risk Owner)",

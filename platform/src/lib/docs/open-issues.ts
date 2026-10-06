@@ -599,14 +599,14 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Docs & URL catalog keep pace with admin",
       detail:
-        "BAU: User Guide, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; audit tabs + Roll back; CS/TR §9.3 / catalogue v2.6 / URL Catalog CS/TR section).",
+        "BAU: User Guide, AI Use Manual, PRD, TSD, UAT, Roadmap, Ecosystem, Open Issues, Progress, URLs track nav reality (Realtime Alert & Tracker; Detectors→Monitor 2.0; AI Analyses redirect; no Spine Log; BU and Teams; audit tabs + Roll back; CS/TR §9.3 / catalogue v2.6 / URL Catalog CS/TR section; AI literacy CRMP-AIU-001).",
       dependencies: "Docs owner; each feature ship",
       eta: "Ongoing → 2027-12",
     },
     zh: {
       title: "文件與網址目錄跟上管理後台",
       detail:
-        "日常：使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；稽核分頁＋回滾；CS／TR §9.3／目錄 v2.6／網址目錄 CS／TR 區段）。",
+        "日常：使用手冊、AI 使用手冊、PRD、TSD、UAT、路線圖、生態、開放議題、進度、網址目錄追蹤導覽實況（即時警報與追蹤；偵測器→Monitor 2.0；AI 分析轉址；無脊柱日誌；BU 與團隊；稽核分頁＋回滾；CS／TR §9.3／目錄 v2.6／網址目錄 CS／TR 區段；AI 識字 CRMP-AIU-001）。",
       dependencies: "文件負責人；各功能交付",
       eta: "持續 → 2027-12",
     },
@@ -616,6 +616,7 @@ export const OPEN_ISSUES: OpenIssue[] = [
         zh: "使用手冊 §9.3＋網址目錄 CS／TR＋UAT 目錄 v2.6（台面、/cs、儀表板、日誌、資料）",
         done: true,
       },
+      { en: "AI Use Manual CRMP-AIU-001 EN + zh-Hant with mermaid (Risk + CS/TR)", zh: "AI 使用手冊 CRMP-AIU-001 英＋繁中含 mermaid（風控＋CS／TR）", done: true },
       { en: "Keep UG / PRD / TSD / UAT / Roadmap / Ecosystem aligned after each nav ship", zh: "每次選單交付後對齊 UG／PRD／TSD／UAT／路線圖／生態" },
       { en: "Refresh Open Issues + Progress when statuses/ETAs change", zh: "狀態／ETA 變更時更新開放議題＋進度" },
       { en: "URL catalog lists public + admin paths with correct permissions", zh: "網址目錄列出公開＋管理路徑與正確權限" },
@@ -886,12 +887,12 @@ export const CS_TR_OPEN_ISSUE_CATALOGUE: CsTrOpenIssueCatalogRow[] = [
   {
     id: "OI-15",
     kind: "support",
-    featureEn: "Docs & URL catalog keep pace (UG §9.3 / UAT v2.7)",
-    featureZh: "文件與網址目錄跟上（使用手冊 §9.3／UAT v2.7）",
-    screensEn: "User Guide, URL Catalog, UAT, Open Issues, Progress",
-    screensZh: "使用手冊、網址目錄、UAT、開放議題、進度",
-    shippedEn: "UG §9.3.10 + URL Catalog CS/TR + UAT catalogue v2.7 + Open Issues v1.5",
-    shippedZh: "使用手冊 §9.3.10＋網址目錄 CS／TR＋UAT 目錄 v2.7＋開放議題 v1.5",
+    featureEn: "Docs & URL catalog keep pace (UG §9.3 / AI Use Manual / UAT v2.7)",
+    featureZh: "文件與網址目錄跟上（使用手冊 §9.3／AI 使用手冊／UAT v2.7）",
+    screensEn: "User Guide, AI Use Manual, URL Catalog, UAT, Open Issues, Progress",
+    screensZh: "使用手冊、AI 使用手冊、網址目錄、UAT、開放議題、進度",
+    shippedEn: "UG §9.3.10 + AI Use Manual CRMP-AIU-001 + URL Catalog CS/TR + UAT catalogue v2.7 + Open Issues v1.5",
+    shippedZh: "使用手冊 §9.3.10＋AI 使用手冊 CRMP-AIU-001＋網址目錄 CS／TR＋UAT 目錄 v2.7＋開放議題 v1.5",
     remainingEn: "Keep Progress in lockstep after each ship",
     remainingZh: "每次交付後進度保持同步",
   },
@@ -1007,10 +1008,10 @@ export const CS_TR_PROGRESS_FUNCTIONS: CsTrProgressFunctionRow[] = [
   {
     id: "fn-docs",
     columns: ["OI-15"],
-    functionEn: "Docs lockstep (UG / UAT / Open Issues / Progress)",
-    functionZh: "文件同步（使用手冊／UAT／開放議題／進度）",
-    proofEn: "UG §9.3.10 · UAT catalogue v2.7",
-    proofZh: "使用手冊 §9.3.10 · UAT 目錄 v2.7",
+    functionEn: "Docs lockstep (UG / AI Use Manual / UAT / Open Issues / Progress)",
+    functionZh: "文件同步（使用手冊／AI 使用手冊／UAT／開放議題／進度）",
+    proofEn: "UG §9.3.10 · CRMP-AIU-001 · UAT catalogue v2.7",
+    proofZh: "使用手冊 §9.3.10 · CRMP-AIU-001 · UAT 目錄 v2.7",
   },
 ];
 

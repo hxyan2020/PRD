@@ -4,6 +4,7 @@ export type AdminDocKey =
   | "TSD"
   | "PRD"
   | "USER_GUIDE"
+  | "AI_USE"
   | "ECOSYSTEM"
   | "UAT"
   | "ROADMAP"
@@ -15,6 +16,7 @@ const KEYS = new Set<AdminDocKey>([
   "TSD",
   "PRD",
   "USER_GUIDE",
+  "AI_USE",
   "ECOSYSTEM",
   "UAT",
   "ROADMAP",

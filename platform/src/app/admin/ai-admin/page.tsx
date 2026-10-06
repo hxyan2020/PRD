@@ -40,6 +40,10 @@ export default async function AiAdminPage() {
     <div>
       <AdminPageHeader pageKey="ai-admin" />
       <div className="mb-4 text-sm">
+        <Link className="underline" href="/admin/docs/ai-use">
+          AI Use Manual / AI 使用手冊
+        </Link>
+        {" · "}
         <Link className="underline" href="/admin/docs/tsd?lang=en">
           TSD §8 — AI Admin management page specification
         </Link>

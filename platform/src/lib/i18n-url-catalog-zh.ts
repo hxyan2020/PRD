@@ -42,6 +42,7 @@ export const URL_CATALOG_ZH: Record<string, string> = {
   TSD: "技術規格 TSD",
   PRD: "產品需求 PRD",
   "User Guide": "使用手冊",
+  "AI Use Manual": "AI 使用手冊",
   "UAT Checklist": "UAT 清單",
   "Improvement Roadmap": "改進路線圖",
   "Ecosystem Adoption": "生態導入評估",
@@ -129,6 +130,8 @@ export const URL_CATALOG_ZH: Record<string, string> = {
   "POST { audit_id } restores before-state snapshot when available (audit.read + manage)":
     "POST { audit_id } 在有快照時還原變更前狀態（audit.read＋manage）",
   "RM-01…15 cards: today / build / done-when / skip risk": "RM-01…15 卡片：今日／要做／完成標準／不做風險",
+  "AI literacy for Risk and CS/TR (EN/ZH) — LLM, skills, agents, MCP, where AI goes wrong, detect / correct / prevent, mermaid visuals":
+    "給風控與 CS／TR 的 AI 識字（英／繁）— LLM、技能、代理、MCP、AI 會錯的地方、偵測／改正／預防、mermaid 圖",
   "Foundations, people, budget, risks": "基礎、人力、預算、風險",
   "GET/POST how-to-improve review · pull data / add fact / challenge / regenerate / accept":
     "GET／POST 如何改進審查 · 拉資料／加事實／挑戰／重產／接受",

@@ -6,7 +6,7 @@
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
 **負責人：** demo platform owner  
-**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…46）· [使用手冊](/admin/docs/user-guide)（§9.3）· [UAT](/admin/docs/uat)（UAT-46…53）· [網址目錄](/admin/docs/urls)
+**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…48）· [使用手冊](/admin/docs/user-guide)（§9.3）· [AI 使用手冊](/admin/docs/ai-use)（CRMP-AIU-001）· [UAT](/admin/docs/uat)（UAT-46…53）· [網址目錄](/admin/docs/urls)
 
 本 TSD 描述 **CRMP Plus**（原 CRMP 管理後台加上 24/7 客服與交易台）之技術設計。  
 **§8 AI Admin**、**§9 第二 AI 挑戰者**與 **§17 CS／TR 台**（公開 `/cs`、`POST /api/cs/intake`、等待迴圈、專用 SKILL.md、**儀表板＋日誌**）為一級模組規格。原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結，本程式庫不覆蓋它。
@@ -224,7 +224,7 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 平台 | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5＋§16.18 |
 | 平台 | `/admin/audit` | `AuditBoard` — CRMP／Vantage Markets 管理分頁＋回滾 | `audit.read` | §16.19 |
 | 平台 | `/admin/settings` | `SettingsManager`、`PATCH /api/settings` | `settings.manage` | §16.20 |
-| 文件 | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
+| 文件 | `/admin/docs/user-guide` · `ai-use` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
 | 殼層 | `SelectionChatbot`（劃選文字 → 火花 → 聊天） | `lib/ai/desk-chat.ts`、`POST /api/ai-chat` | 公開／`ai.read` | §12 |
 
 靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-plus'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。原 CRMP 管理後台仍在 `/PRD/crmp-admin/`（凍結；本工作流程不發佈到該路徑）。
@@ -855,6 +855,7 @@ graph TD
 |---|---|
 | PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、FR-44、FR-45、FR-46、旅程 5.7–5.10、§6.5 |
 | 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色／儀表板／日誌／資料／分析 |
+| AI 使用手冊 | CRMP-AIU-001 `/admin/docs/ai-use` 風控＋CS／TR 識字（LLM、技能、代理、MCP、偵測／改正／預防） |
 | UAT | UAT 目錄 v2.7：UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-50 技能＋樹；UAT-51 儀表板＋日誌；UAT-52 配套資料；UAT-53 分析／POC；支援 UAT-17／22／27–29／36–40；簽核 UAT-49 |
 
 ### 17.11 專用儀表板＋日誌
