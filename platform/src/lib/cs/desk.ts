@@ -239,6 +239,142 @@ export function getCsRequest(id: number) {
   return { request, messages, followups };
 }
 
+/** Public ticket token used in auto-email subjects, e.g. CSR-A1B2C3. */
+export const CS_PUBLIC_ID_RE = /\bCSR-[0-9A-F]{6}\b/i;
+
+export function extractCsPublicId(text: string | null | undefined): string | null {
+  const m = String(text || "")
+    .toUpperCase()
+    .match(/\bCSR-[0-9A-F]{6}\b/);
+  return m ? m[0] : null;
+}
+
+/**
+ * Match an inbound C1/form/mailbox payload onto an open request so replies
+ * close the auto-email wait loop instead of opening a duplicate ticket.
+ */
+export function findCsRequestMatch(
+  input: {
+    request_id?: string | null;
+    channel?: string | null;
+    channel_ref?: string | null;
+    in_reply_to?: string | null;
+    subject?: string | null;
+  },
+  db: Database.Database = getDb()
+): CsRequest | undefined {
+  ensureCsSchema(db);
+  const publicId =
+    extractCsPublicId(input.request_id) ||
+    extractCsPublicId(input.in_reply_to) ||
+    extractCsPublicId(input.subject);
+  if (publicId) {
+    const row = db
+      .prepare(`SELECT * FROM cs_requests WHERE upper(request_id) = ?`)
+      .get(publicId) as CsRequest | undefined;
+    if (row) return row;
+  }
+  const reply = String(input.in_reply_to || "").trim();
+  if (reply) {
+    const byMsg = db
+      .prepare(
+        `SELECT r.* FROM cs_requests r
+         JOIN cs_messages m ON m.request_db_id = r.id
+         WHERE m.msg_id = ? OR r.channel_ref = ?
+         ORDER BY r.id DESC LIMIT 1`
+      )
+      .get(reply, reply) as CsRequest | undefined;
+    if (byMsg) return byMsg;
+  }
+  const ref = String(input.channel_ref || "").trim();
+  if (ref) {
+    const row = (
+      input.channel
+        ? db
+            .prepare(
+              `SELECT * FROM cs_requests WHERE channel_ref = ? AND channel = ? AND status != 'RESOLVED' ORDER BY id DESC LIMIT 1`
+            )
+            .get(ref, input.channel)
+        : db
+            .prepare(
+              `SELECT * FROM cs_requests WHERE channel_ref = ? AND status != 'RESOLVED' ORDER BY id DESC LIMIT 1`
+            )
+            .get(ref)
+    ) as CsRequest | undefined;
+    if (row) return row;
+  }
+  return undefined;
+}
+
+export function publicCsStatus(row: CsRequest, db: Database.Database = getDb()) {
+  const waiting = (
+    db
+      .prepare(`SELECT COUNT(*) AS c FROM cs_followups WHERE request_db_id = ? AND status = 'WAITING'`)
+      .get(row.id) as { c: number }
+  ).c;
+  return {
+    request_id: row.request_id,
+    status: row.status,
+    ai_clarity: row.ai_clarity,
+    skill_code: row.skill_code,
+    channel: row.channel,
+    desk: row.desk,
+    waiting: waiting > 0,
+    followup_count: row.followup_count,
+  };
+}
+
+/** Append an inbound client message; close WAITING follow-ups when present. */
+export function continueCsRequest(
+  input: {
+    request_id: number;
+    text: string;
+    locale?: UiLocale;
+    actor?: string;
+    kind?: string;
+    client_uid?: string | null;
+  },
+  db: Database.Database = getDb()
+) {
+  const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(input.request_id) as CsRequest | undefined;
+  if (!row) throw new Error("Request not found");
+  if (input.client_uid && !row.client_uid) {
+    db.prepare(`UPDATE cs_requests SET client_uid = ?, updated_at = datetime('now') WHERE id = ?`).run(
+      input.client_uid,
+      row.id
+    );
+  }
+  const waiting = (
+    db
+      .prepare(`SELECT COUNT(*) AS c FROM cs_followups WHERE request_db_id = ? AND status = 'WAITING'`)
+      .get(row.id) as { c: number }
+  ).c;
+  if (waiting > 0) {
+    const packed = recordClientReply(
+      {
+        request_id: row.id,
+        text: input.text,
+        locale: input.locale,
+        actor: input.actor,
+        kind: input.kind,
+      },
+      db
+    );
+    return { ...packed, continued: true as const, closed_wait: true as const };
+  }
+  const kind = input.kind || (row.channel === "OFFICIAL_EMAIL" ? "EMAIL_IN" : row.channel === "WEB_FORM" ? "FORM" : "CLIENT");
+  addMessage(db, row.id, kind, row.client_name, input.text, { continued: true });
+  db.prepare(`UPDATE cs_requests SET body = body || char(10) || ?, updated_at = datetime('now') WHERE id = ?`).run(
+    input.text,
+    row.id
+  );
+  writeAudit({ name: input.actor || row.client_name }, "CS_INTAKE_CONTINUE", "cs_request", row.request_id, {
+    channel: row.channel,
+  });
+  const packed = applyTriage(row.id, input.locale || "en", db);
+  return { ...packed, continued: true as const, closed_wait: false as const };
+}
+
 export function sendFollowupEmail(
   requestDbId: number,
   reason: CsClarity,
@@ -391,18 +527,22 @@ export function ingestCsRequest(
   return applyTriage(id, input.locale || "en", db);
 }
 
-export function recordClientReply(input: {
-  request_id: number;
-  text: string;
-  locale?: UiLocale;
-  actor?: string;
-}) {
-  ensureCsSchema();
-  const db = getDb();
+export function recordClientReply(
+  input: {
+    request_id: number;
+    text: string;
+    locale?: UiLocale;
+    actor?: string;
+    kind?: string;
+  },
+  db: Database.Database = getDb()
+) {
+  ensureCsSchema(db);
   const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(input.request_id) as CsRequest | undefined;
   if (!row) throw new Error("Request not found");
   const zh = input.locale === "zh-Hant";
-  addMessage(db, row.id, "EMAIL_IN", row.client_name, input.text, { in_reply_to: "followup" });
+  const kind = input.kind || "EMAIL_IN";
+  addMessage(db, row.id, kind, row.client_name, input.text, { in_reply_to: "followup" });
   db.prepare(
     `UPDATE cs_followups SET status = 'REPLIED', replied_at = datetime('now')
      WHERE request_db_id = ? AND status = 'WAITING'`
@@ -416,7 +556,7 @@ export function recordClientReply(input: {
     db,
     row.id,
     "SYSTEM",
-    zh ? "信箱閘道" : "Mailbox gateway",
+    zh ? "進件閘道" : "Intake gateway",
     zh ? "已收到客戶回覆。AI 將重新分流。" : "Client reply received. AI will re-triage."
   );
   return applyTriage(row.id, input.locale || "en", db);

@@ -5,6 +5,7 @@ import {
   PUBLIC_ADMIN_ORIGIN,
   PUBLIC_ADMIN_URL,
   PUBLIC_CS_DESK_URL,
+  PUBLIC_CS_PORTAL_URL,
   PUBLIC_MESSENGER_URL,
 } from "@/lib/platform-site";
 
@@ -23,6 +24,7 @@ export {
   PUBLIC_ADMIN_ORIGIN,
   PUBLIC_ADMIN_URL,
   PUBLIC_CS_DESK_URL,
+  PUBLIC_CS_PORTAL_URL,
   PUBLIC_MESSENGER_URL,
 };
 
@@ -47,12 +49,19 @@ export const PLATFORM_URLS: UrlEntry[] = [
   },
   {
     category: "Public",
+    title: "CRMP Plus CS client portal",
+    path: PUBLIC_CS_PORTAL_URL,
+    description: "Client-facing C1 live chat, submission form and official mailbox — same POST /api/cs/intake as the desk",
+  },
+  {
+    category: "Public",
     title: "Original CRMP Admin (frozen)",
     path: ORIGINAL_CRMP_ADMIN_URL,
     description: "Original CRMP Admin snapshot — left intact at /PRD/crmp-admin/. This codebase does not overwrite it.",
   },
 
   // Auth
+  { category: "Public", title: "CS client portal", path: "/cs", description: "Client-facing C1 live chat, website form and official email into POST /api/cs/intake; replies with CSR-XXXX close the auto-email wait loop" },
   { category: "Auth", title: "Login", path: "/login", description: "Full-page credential login (bookmark). Prefer /admin/login from the desk." },
   { category: "Auth", title: "Admin Login", path: "/admin/login", description: "Sign in inside the admin shell — never 404s on GitHub Pages" },
   { category: "API", title: "Auth Login", path: "/api/auth/login", description: "POST email/password → session cookie" },
@@ -84,7 +93,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
 
   // Response (messenger / intervention / escalation)
   { category: "Messenger", title: "Demo Messenger", path: "/admin/messenger", description: "Alert + AI report inbox; chat windows split by POC on the escalation path (bird-eye relay); evidence, chat, escalate, dismiss, close, controls", permission: "lark.read" },
-  { category: "Messenger", title: "CS / TR Desk", path: "/admin/cs-desk", description: "24/7 CS + Trading intake: C1 live chat, web form and official email via POST /api/cs/intake; AI stamps dedicated SKILL.md playbooks, emails when unclear or ID is needed and waits for a reply (max 3)", permission: "cs.read" },
+  { category: "Messenger", title: "CS / TR Desk", path: "/admin/cs-desk", description: "24/7 CS + Trading intake: public /cs portal plus C1 live chat, web form and official email via POST /api/cs/intake; replies match CSR-XXXX / channel_ref; AI stamps dedicated SKILL.md playbooks, emails when unclear or ID is needed and waits for a reply (max 3)", permission: "cs.read" },
   { category: "Messenger", title: "Human Intervention", path: "/admin/interventions", description: "Checker desk for runtime controls — samples show actioner email; decisions write spine + audit (CRMP plane)", permission: "intervene.operate" },
   { category: "Messenger", title: "Lark Integration", path: "/admin/lark", description: "Channel registry & mock notify", permission: "lark.read" },
   { category: "Messenger", title: "Escalation Routes", path: "/admin/escalation", description: "Dimension-defined paths (severity, teams, scenario, pending time, need-human) × editable coefficients; ESC-DEFAULT catch-all; skill binds one route code; no separate Path name column", permission: "escalation.read" },
@@ -121,7 +130,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "API", title: "AI Admin API", path: "/api/ai-admin", description: "Propose/approve settings, training, feedback" },
   { category: "API", title: "Messenger API", path: "/api/messenger", description: "GET threads · POST evidence/chat/escalate/dismiss/close/recommend/confirm/checker" },
   { category: "API", title: "CS / TR Desk API", path: "/api/cs", description: "GET inbox · POST triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_c1|form|email" },
-  { category: "API", title: "CS intake webhook", path: "/api/cs/intake", description: "Realtime C1 live chat, web form and official-email ingest — session, mock_webhook, or header x-cs-intake-token: demo-c1" },
+  { category: "API", title: "CS intake webhook", path: "/api/cs/intake", description: "GET connector catalog / ticket status · POST C1 live chat, web form and official-email ingest or continue (request_id / in_reply_to / channel_ref / CSR-XXXX) — session, mock_webhook, portal, or header x-cs-intake-token: demo-c1" },
   { category: "API", title: "Lark API", path: "/api/lark", description: "Channel management & test notify" },
   { category: "API", title: "Market Intel API", path: "/api/market-intel", description: "Scan / findings / outbox" },
   { category: "API", title: "Monitor API", path: "/api/monitor", description: "Indicators + detectors: run_detectors, toggle_pause, threshold edit, sync" },

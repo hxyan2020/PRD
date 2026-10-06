@@ -381,8 +381,8 @@ const UI: Record<string, Pair> = {
   },
   "home.csDeskCta": { en: "Open CS / TR desk", "zh-Hant": "開啟 CS／TR 台" },
   "cs.pageHint": {
-    en: "Connectors: POST /api/cs/intake (C1 live chat, submission form, official email). Header x-cs-intake-token: demo-c1. AI stamps a dedicated SKILL.md (clarify / ID / FAQ / TR execution / escalate-risk), emails when unclear or ID is needed, and waits — up to three loops.",
-    "zh-Hant": "連接器：POST /api/cs/intake（C1 即時聊天、提交表單、官方信箱）。標頭 x-cs-intake-token: demo-c1。AI 蓋上專用 SKILL.md（釐清／核身／FAQ／TR 成交／升級風控）；不清楚或需核身會自動寄信等待 — 最多三輪。",
+    en: "Connectors: public /cs portal and POST /api/cs/intake (C1 live chat, submission form, official email). Header x-cs-intake-token: demo-c1. Replies match CSR-XXXX / channel_ref / In-Reply-To. AI stamps a dedicated SKILL.md, emails when unclear or ID is needed, and waits — up to three loops.",
+    "zh-Hant": "連接器：公開 /cs 入口與 POST /api/cs/intake（C1 即時聊天、提交表單、官方信箱）。標頭 x-cs-intake-token: demo-c1。回覆以 CSR-XXXX／channel_ref／In-Reply-To 對上原案。AI 蓋上專用 SKILL.md；不清楚或需核身會自動寄信等待 — 最多三輪。",
   },
   "cs.inbox": { en: "CS / TR inbox", "zh-Hant": "CS／TR 收件匣" },
   "cs.empty": { en: "No requests yet. Simulate C1, a form, or an email.", "zh-Hant": "尚無請求。請模擬 C1、表單或信件。" },
@@ -414,6 +414,72 @@ const UI: Record<string, Pair> = {
     en: "Static snapshot — intake API is live on localhost. Seeded requests still show the three channels and the follow-up loop.",
     "zh-Hant": "靜態快照 — 進件 API 在本機即時。種子案件仍展示三個渠道與追問迴圈。",
   },
+  "cs.portalLink": { en: "Open client intake portal", "zh-Hant": "開啟客戶進件入口" },
+  "cs.portal.title": { en: "Talk to CS / TR", "zh-Hant": "聯絡客服／交易台" },
+  "cs.portal.blurb": {
+    en: "Live C1 chat, the website form and official email all land on the same CRMP desk in realtime. If AI is unclear or needs ID, it emails you and waits until you reply.",
+    "zh-Hant": "C1 即時聊天、網站表單與官方信箱都會即時進到同一 CRMP 台面。AI 若不清楚或需核身，會寄信給你並等到你回覆。",
+  },
+  "cs.portal.hint.C1_LIVE_CHAT": {
+    en: "This is the platform live-chat widget. Follow-up messages in this tab stay on the same C1 thread.",
+    "zh-Hant": "這是平台即時聊天視窗。此分頁後續訊息會留在同一個 C1 對話。",
+  },
+  "cs.portal.hint.WEB_FORM": {
+    en: "Website / app submission form. Posts to POST /api/cs/intake with channel WEB_FORM.",
+    "zh-Hant": "網站／App 提交表單。送到 POST /api/cs/intake，渠道 WEB_FORM。",
+  },
+  "cs.portal.hint.OFFICIAL_EMAIL": {
+    en: "Official support mailbox. Put CSR-XXXX in the subject or In-Reply-To to continue a waiting auto-email.",
+    "zh-Hant": "官方客服信箱。主旨或 In-Reply-To 填 CSR-XXXX 即可續辦等待中的自動信件。",
+  },
+  "cs.portal.name": { en: "Your name", "zh-Hant": "姓名" },
+  "cs.portal.email": { en: "Email", "zh-Hant": "電子郵件" },
+  "cs.portal.uid": { en: "Account UID (optional)", "zh-Hant": "帳戶 UID（選填）" },
+  "cs.portal.subject": { en: "Subject", "zh-Hant": "主旨" },
+  "cs.portal.subjectPh": {
+    en: "Include request CSR-XXXX to reply to an auto-email",
+    "zh-Hant": "回覆自動信件請在主旨加上案件 CSR-XXXX",
+  },
+  "cs.portal.inReply": { en: "In-Reply-To / ticket (optional)", "zh-Hant": "回覆對象／案件號（選填）" },
+  "cs.portal.messagePh": {
+    en: "What happened? Try a short “help me ???” to see the auto-email, or mention passport / cannot login for ID verify.",
+    "zh-Hant": "發生什麼事？可試短句「help me ???」觸發自動信件，或提到護照／登不進去以核身。",
+  },
+  "cs.portal.chatEmpty": {
+    en: "No messages yet. Type below — this is the live C1 channel.",
+    "zh-Hant": "尚無訊息。在下方輸入 — 這就是 C1 即時渠道。",
+  },
+  "cs.portal.sendChat": { en: "Send chat", "zh-Hant": "送出聊天" },
+  "cs.portal.submit": { en: "Submit request", "zh-Hant": "送出請求" },
+  "cs.portal.received": { en: "Request {id} received on the CS/TR desk.", "zh-Hant": "案件 {id} 已進到 CS／TR 台。" },
+  "cs.portal.mailed": {
+    en: "Request {id} is waiting on you — AI sent an official email asking for more detail or ID.",
+    "zh-Hant": "案件 {id} 正在等你 — AI 已寄出官方信件，請補充說明或核身資料。",
+  },
+  "cs.portal.replied": {
+    en: "Reply on {id} received. The waiting auto-email is closed and AI will re-triage.",
+    "zh-Hant": "案件 {id} 的回覆已收到。等待中的自動信件已關閉，AI 將重新分流。",
+  },
+  "cs.portal.failed": { en: "Could not reach the intake API. Use localhost:3000 for live posts.", "zh-Hant": "無法連到進件 API。即時送出請用 localhost:3000。" },
+  "cs.portal.staticNote": {
+    en: "Static snapshot — the three connectors still render here. Live POST /api/cs/intake runs on localhost.",
+    "zh-Hant": "靜態快照 — 三個連接器仍會顯示。即時 POST /api/cs/intake 請在本機執行。",
+  },
+  "cs.portal.continued": { en: "Continued existing ticket", "zh-Hant": "續辦既有案件" },
+  "cs.portal.resultHint": {
+    en: "The CS/TR desk sees this in realtime. If status is AWAITING CLIENT or ID VERIFY, reply here or to the official email until AI has enough.",
+    "zh-Hant": "CS／TR 台會即時看到此案件。若狀態為待客戶或身分驗證，請在此或回官方信件，直到 AI 資料齊全。",
+  },
+  "cs.portal.waitingMail": { en: "Automatic official email is waiting for your reply", "zh-Hant": "自動官方信件正在等你回覆" },
+  "cs.portal.apiHint": {
+    en: "C1, the form and the mailbox share this webhook (header x-cs-intake-token: demo-c1).",
+    "zh-Hant": "C1、表單與信箱共用此 webhook（標頭 x-cs-intake-token: demo-c1）。",
+  },
+  "home.csPortal": {
+    en: "Client-facing C1 chat, submission form and official mailbox — same intake API as the desk.",
+    "zh-Hant": "客戶端 C1 聊天、提交表單與官方信箱 — 與台面同一進件 API。",
+  },
+  "home.csPortalCta": { en: "Open client portal", "zh-Hant": "開啟客戶入口" },
   "home.dummyTitle": { en: "Dummy spine run", "zh-Hant": "虛擬脊柱演練" },
   "home.dummyHint": {
     en: "Raise a dummy Monitor 2.0 alert (or a linked group). CRMP walks DETECT → AI (skill or RAG) → messenger → maker/checker → escalate → close, then highlights the cards and spine on this page. Audit and Risk Log keep the trail.",

@@ -860,19 +860,20 @@ graph TD
 - **Severity:** High · **BU:** CS + System · **Depends:** UAT-01; CS/TR desk seeded · **Window:** T+484m / 12m
 - **Covers:** CS / TR Desk, URL Catalog, BU and Teams
 - **Why:** CS is the 24/7 door. If live chat, the website form or official mail never appear on the desk, clients wait in a personal inbox and Risk never sees the complaint.
-- **Goal:** Prove the three public channels create CRMP requests through the same intake API.
+- **Goal:** Prove the three public channels create CRMP requests through the same intake API, including the /cs client portal.
 
 **Steps**
 
 1. Open CS / TR Desk (/admin/cs-desk). You should see seeded cases from C1 live chat, a web form and official email (Swap / Something wrong / Slippage / Verify my account).
 2. Confirm BU and Teams lists Customer Service (CS) and Trading (TR) with CS 24/7 Desk and TR Dealing Support.
-3. On localhost, click Simulate C1 chat (optional body). A new OPEN row appears with channel C1 live chat.
-4. Simulate form and Simulate official email. Each uses POST /api/cs (same connector as POST /api/cs/intake with header x-cs-intake-token: demo-c1).
-5. On GitHub Pages the simulate buttons may stay static — still read the seeded three-channel inbox and the URL Catalog row for /admin/cs-desk and /api/cs/intake.
-6. Toggle 繁中: inbox, statuses and channel labels must be Traditional Chinese.
+3. Open the client portal /cs. Tabs: C1 live chat, Submission form, Official email. On localhost send a short C1 chat — a new desk row appears with channel C1 live chat.
+4. Submit the form and an official email (optional CSR-XXXX in subject to continue). Each uses POST /api/cs/intake with header x-cs-intake-token: demo-c1 (same connector as desk Simulate C1/form/email).
+5. GET /api/cs/intake returns the three-connector catalog. URL Catalog lists /cs, PUBLIC_CS_PORTAL_URL and /api/cs/intake.
+6. On GitHub Pages the live POST may stay static — still read the seeded three-channel inbox and the portal chrome.
+7. Toggle 繁中: inbox, portal tabs and channel labels must be Traditional Chinese.
 
-**Pass:** Three channels visible. Localhost simulate creates new rows. zh-Hant chrome is present.
-**Evidence:** Screenshot of CS/TR inbox with C1 + form + email; optional intake JSON.
+**Pass:** Three channels visible on desk and portal. Localhost /cs and simulate create new rows. zh-Hant chrome is present.
+**Evidence:** Screenshot of CS/TR inbox with C1 + form + email and of /cs portal; optional intake JSON.
 
 ### UAT-47 — CS/TR — AI emails when unclear or ID is needed, then waits
 
@@ -885,7 +886,7 @@ graph TD
 
 1. Open the seeded C1 case “Something wrong with my account” (Sofia Mendes). Status should be AWAITING_CLIENT with an EMAIL_OUT follow-up waiting.
 2. Do not Resolve yet. If localhost allows, Resolve must fail while a follow-up is WAITING.
-3. Click Simulate client email reply. The WAITING follow-up becomes REPLIED, AI re-triages, and the case leaves AWAITING_CLIENT if the reply is clear enough.
+3. Click Simulate client email reply, or POST /api/cs/intake with the CSR-XXXX in the subject / In-Reply-To (same as a real mailbox reply). The WAITING follow-up becomes REPLIED, AI re-triages, and the case leaves AWAITING_CLIENT if the reply is clear enough.
 4. Open “Please verify my account — cannot withdraw” (Priya Shah). Status ID_VERIFY. Simulate the ID reply (passport + UID last four).
 5. On a still-unclear thread, click Email: need more detail twice more if needed — the third automatic mail is the cap; a SYSTEM note must say CS Lead follows up in person.
 6. Audit Log (CRMP tab) shows CS_FOLLOWUP_EMAIL and CS_CLIENT_REPLY.

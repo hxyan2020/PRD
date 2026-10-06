@@ -1029,10 +1029,10 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
         "A live C1 chat, a website form and an official mailbox item land on /admin/cs-desk in realtime. If AI is unclear or needs ID, CRMP emails the client and waits until they reply (max 3).",
       why: "CS is the 24/7 door. If those three channels stay in personal inboxes, complaints never become CRMP requests and Risk never sees book-risk ones.",
       today:
-        "Prototype desk with mock webhook token demo-c1, seeded C1/form/email cases, heuristic triage, auto-email wait loop and TR routing. No signed production connectors, no ID vault (OI-20).",
+        "Prototype desk with mock webhook token demo-c1, public /cs portal, inbound CSR-XXXX matching, seeded C1/form/email cases, heuristic triage, auto-email wait loop and TR routing. No signed production connectors, no ID vault (OI-20).",
       todayFacts: [
-        "Header x-cs-intake-token: demo-c1 or session cs.operate.",
-        "Unclear / need_id → EMAIL_OUT WAITING; resolve is blocked until EMAIL_IN.",
+        "Header x-cs-intake-token: demo-c1, portal: true, or session cs.operate. Public /cs.",
+        "Unclear / need_id → EMAIL_OUT WAITING; inbound CSR-XXXX / channel_ref / In-Reply-To closes the wait.",
         "Trading language (fill / slippage / MT4/MT5) stamps desk TR.",
       ],
       build: [
@@ -1052,10 +1052,10 @@ export const ROADMAP_ITEMS: RoadmapItem[] = [
         "真實 C1 聊天、網站表單與官方信箱會即時出現在 /admin/cs-desk。AI 若不清楚或需核身，CRMP 會寄信並等到客戶回覆（最多 3 封）。",
       why: "CS 是 24/7 大門。若三渠道只留在個人收件匣，投訴永遠不會變成 CRMP 請求，帳簿風險也到不了風控。",
       today:
-        "原型台面使用模擬 webhook token demo-c1、種子 C1／表單／信件、啟發式分流、自動寄信等待迴圈與 TR 分流。沒有正式簽章連接器，也沒有核身庫（OI-20）。",
+        "原型台面使用模擬 webhook token demo-c1、公開 /cs 入口、CSR-XXXX 進件對案、種子 C1／表單／信件、啟發式分流、自動寄信等待迴圈與 TR 分流。沒有正式簽章連接器，也沒有核身庫（OI-20）。",
       todayFacts: [
-        "標頭 x-cs-intake-token: demo-c1 或工作階段 cs.operate。",
-        "不清楚／需核身 → EMAIL_OUT 等待中；結案在 EMAIL_IN 前被擋住。",
+        "標頭 x-cs-intake-token: demo-c1、portal: true 或工作階段 cs.operate。公開 /cs。",
+        "不清楚／需核身 → EMAIL_OUT 等待中；進件 CSR-XXXX／channel_ref／In-Reply-To 關閉等待。",
         "成交用語（成交／滑點／MT4／MT5）會把台面標成 TR。",
       ],
       build: [

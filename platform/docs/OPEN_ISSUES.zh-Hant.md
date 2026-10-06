@@ -119,12 +119,14 @@ CRMP 管理後台／控制面計畫的**暫定**開放議題清單。前提明�
 #### OI-19 — 正式 C1／表單／信箱連接器
 **BU：** CS · **狀態：** 已啟動 · **ETA：** 2027-Q2（連接器）／原型 UAT 現可測 · **依賴：** C1 供應商；信箱 Graph／IMAP；OI-03
 
+- [x] 公開 /cs 入口把 C1、表單與信箱打同一進件 API  
+- [x] 進件回覆以 CSR-XXXX／channel_ref／In-Reply-To 對案並關閉 WAITING 自動信件  
 - [ ] 以簽章 C1 webhook＋防重放取代 demo-c1 token  
 - [ ] 網站／App 表單 HMAC 接入同一進件 API  
 - [ ] support@ 與 complaints@ 信箱閘道（Graph 或 IMAP）  
 - [x] 對 C1 測試環境做沙盒 UAT（UAT-46）— 原型台面  
 
-*今日：* `POST /api/cs/intake` 搭配 `x-cs-intake-token: demo-c1`，以及 `/admin/cs-desk` 模擬按鈕。
+*今日：* `POST /api/cs/intake` 搭配 `x-cs-intake-token: demo-c1`、公開 `/cs` 入口、CSR-XXXX 進件對案，以及 `/admin/cs-desk` 模擬按鈕。
 
 ---
 

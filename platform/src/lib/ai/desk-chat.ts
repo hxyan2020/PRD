@@ -203,11 +203,11 @@ const KNOWLEDGE: Knowledge[] = [
     href: "/admin/cs-desk",
     en: {
       title: "CS / TR Desk",
-      body: "Customer Service is the 24/7 frontline for C1 live chat, the website form and official mailboxes. POST /api/cs/intake (header x-cs-intake-token: demo-c1) creates a request. If AI is unclear or needs ID, it emails the client and waits for a reply (max 3 loops). Trading-execution cases (fills, slippage, MT4/MT5) go to TR. Book-risk complaints escalate onto Demo Messenger / Human Intervention. Do not close ID-verify while a follow-up is WAITING.",
+      body: "Customer Service is the 24/7 frontline for C1 live chat, the website form and official mailboxes. Clients use /cs; connectors POST /api/cs/intake (header x-cs-intake-token: demo-c1). Replies match CSR-XXXX / channel_ref / In-Reply-To and close WAITING auto-mail. If AI is unclear or needs ID, it emails the client and waits (max 3 loops). Trading-execution cases (fills, slippage, MT4/MT5) go to TR. Book-risk complaints escalate onto Demo Messenger / Human Intervention. Do not close ID-verify while a follow-up is WAITING.",
     },
     zh: {
       title: "CS／TR 台",
-      body: "客服是 24/7 第一線：C1 即時聊天、網站表單與官方信箱。POST /api/cs/intake（標頭 x-cs-intake-token: demo-c1）會開案。AI 若不清楚或需核身，會自動寄信並等待客戶回覆（最多三輪）。成交／滑點／MT4／MT5 案件分流至 TR。帳簿風險投訴升級到示範 Messenger／人工干預。追問信仍為 WAITING 時不可結案。",
+      body: "客服是 24/7 第一線：C1 即時聊天、網站表單與官方信箱。客戶走 /cs；連接器 POST /api/cs/intake（標頭 x-cs-intake-token: demo-c1）。回覆以 CSR-XXXX／channel_ref／In-Reply-To 對上原案並關閉 WAITING 自動信件。AI 若不清楚或需核身，會自動寄信並等待（最多三輪）。成交／滑點／MT4／MT5 案件分流至 TR。帳簿風險投訴升級到示範 Messenger／人工干預。追問信仍為 WAITING 時不可結案。",
     },
   },
   {

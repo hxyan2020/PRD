@@ -858,21 +858,22 @@ graph TD
 ### UAT-46 — CS／TR — C1、表單與官方信箱即時進件
 
 - **嚴重度：** High · **負責：** CS + System · **依賴：** UAT-01; CS/TR desk seeded · **建議：** T+484m / 12m
-- **涵蓋：** CS / TR Desk, URL Catalog, BU and Teams
+- **涵蓋：** CS / TR Desk, CS client portal, URL Catalog, BU and Teams
 - **為何測：** CS 是 24/7 大門。若即時聊天、網站表單或官方信箱從未出現在台面，客戶只會等在個人收件匣，風控也看不到投訴。
-- **目的：** 證明三個公開渠道都經同一進件 API 變成 CRMP 請求。
+- **目的：** 證明三個公開渠道（含 /cs 客戶入口）都經同一進件 API 變成 CRMP 請求。
 
 **步驟**
 
 1. 開啟 CS／TR 台（/admin/cs-desk）。應看到種子案件來自 C1 即時聊天、網頁表單與官方信箱。
 2. 確認 BU 與團隊列出客服（CS）與交易（TR），含 CS 24/7 台與 TR 成交支援。
-3. 本機點「模擬 C1 聊天」（可選內文）。應出現新的 OPEN 列，渠道為 C1 即時聊天。
-4. 模擬表單與模擬官方信件。皆走 POST /api/cs（與 POST /api/cs/intake、標頭 x-cs-intake-token: demo-c1 同一連接器）。
-5. GitHub Pages 上模擬按鈕可能維持靜態 — 仍須讀種子三渠道收件匣，以及網址目錄中 /admin/cs-desk 與 /api/cs/intake。
-6. 切換繁中：收件匣、狀態與渠道標籤必須是繁體中文。
+3. 開啟客戶入口 /cs。分頁：C1 即時聊天、提交表單、官方信箱。本機送出短句 C1 聊天 — 台面應出現新列，渠道為 C1 即時聊天。
+4. 送出表單與官方信件（主旨可含 CSR-XXXX 以續辦）。皆走 POST /api/cs/intake、標頭 x-cs-intake-token: demo-c1（與台面模擬 C1／表單／信件同一連接器）。
+5. GET /api/cs/intake 回傳三連接器目錄。網址目錄列出 /cs、PUBLIC_CS_PORTAL_URL 與 /api/cs/intake。
+6. GitHub Pages 上即時 POST 可能維持靜態 — 仍須讀種子三渠道收件匣與入口介面。
+7. 切換繁中：收件匣、入口分頁與渠道標籤必須是繁體中文。
 
-**通過：** 三渠道可見。本機模擬會開新列。繁中介面齊全。
-**證據：** CS／TR 收件匣截圖（C1＋表單＋信箱）；可附進件 JSON。
+**通過：** 台面與入口可見三渠道。本機 /cs 與模擬會開新列。繁中介面齊全。
+**證據：** CS／TR 收件匣截圖（C1＋表單＋信箱）與 /cs 入口；可附進件 JSON。
 
 ### UAT-47 — CS／TR — AI 在不清楚或需核身時寄信並等待
 
@@ -885,7 +886,7 @@ graph TD
 
 1. 開啟種子 C1 案件「Something wrong with my account」（Sofia Mendes）。狀態應為待客戶，並有 EMAIL_OUT 追問等待中。
 2. 先不要結案。本機若允許操作，在追問仍為 WAITING 時結案必須失敗。
-3. 點「模擬客戶回信」。WAITING 變 REPLIED，AI 重新分流；回覆足夠清楚時離開待客戶。
+3. 點「模擬客戶回信」，或對 POST /api/cs/intake 主旨／In-Reply-To 帶 CSR-XXXX（與真實信箱回信相同）。WAITING 變 REPLIED，AI 重新分流；回覆足夠清楚時離開待客戶。
 4. 開啟「Please verify my account — cannot withdraw」（Priya Shah）。狀態身分驗證。模擬核身回覆（護照＋UID 後四碼）。
 5. 仍不清楚的對話可再點「寄信：請補充」；第三封是上限，SYSTEM 註記須說明由 CS Lead 人工跟進。
 6. 稽核日誌（CRMP 分頁）出現 CS_FOLLOWUP_EMAIL 與 CS_CLIENT_REPLY。

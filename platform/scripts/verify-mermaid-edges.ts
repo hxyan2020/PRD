@@ -66,6 +66,8 @@ A[First] --> B[Second] --> C[Third]`,
     name: "cs-intake-en (TSD §17)",
     src: `graph TD
   In[C1, form, email] --> API[POST /api/cs/intake]
+  Portal[Client portal /cs] --> In
+  Reply[Inbound reply CSR or channel_ref] --> API
   API --> Triage[AI triage]
   Triage -->|clear CS| Open[OPEN on CS]
   Triage -->|trading| TR[ASSIGNED_TR]
@@ -77,13 +79,15 @@ A[First] --> B[Second] --> C[Third]`,
   TR --> Risk
   Risk -->|yes| Esc[ESCALATED_RISK to Messenger]
   Risk -->|no| Done[RESOLVED]`,
-    minEdges: 8,
+    minEdges: 10,
     firstLabel: "C1, form, email",
   },
   {
     name: "cs-intake-zh (TSD §17)",
     src: `graph TD
   In[C1／表單／官方信箱] --> API[POST /api/cs/intake]
+  Portal[客戶入口 /cs] --> In
+  Reply[進件回覆 CSR 或 channel_ref] --> API
   API --> Triage[AI 分流]
   Triage -->|清楚 CS| Open[CS 未結]
   Triage -->|交易| TR[已派 TR]
@@ -95,7 +99,7 @@ A[First] --> B[Second] --> C[Third]`,
   TR --> Risk
   Risk -->|是| Esc[升級風控 → Messenger]
   Risk -->|否| Done[已結案]`,
-    minEdges: 8,
+    minEdges: 10,
     firstLabel: "C1／表單／官方信箱",
   },
 ];

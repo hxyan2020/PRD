@@ -358,8 +358,11 @@ export function CsTrDesk({
               {t("cs.simEmail", locale)}
             </button>
           </div>
-          <div className="text-[11px] text-[var(--muted)]">
+          <div className="text-[11px] text-[var(--muted)] flex flex-wrap gap-3 items-center">
             POST /api/cs/intake · header x-cs-intake-token: demo-c1
+            <a className="underline text-teal-800" href="/cs">
+              {t("cs.portalLink", locale)}
+            </a>
           </div>
         </div>
         {statusMsg ? (

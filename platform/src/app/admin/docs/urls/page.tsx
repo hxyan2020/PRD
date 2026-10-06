@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, ORIGINAL_CRMP_ADMIN_URL } from "@/lib/docs/urls";
+import { PLATFORM_URLS, PUBLIC_ADMIN_URL, PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_PORTAL_URL, ORIGINAL_CRMP_ADMIN_URL } from "@/lib/docs/urls";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
 import { T } from "@/components/T";
 import { OwnerIdentityPanel } from "@/components/OwnerIdentityPanel";
@@ -12,7 +12,7 @@ export default async function UrlsCatalogPage() {
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
 
   const counts = {
-    pages: PLATFORM_URLS.filter((u) => u.path.startsWith("/admin") || u.path === "/login").length,
+    pages: PLATFORM_URLS.filter((u) => u.path.startsWith("/admin") || u.path === "/login" || u.path === "/cs").length,
     apis: PLATFORM_URLS.filter((u) => u.category === "API").length,
     tables: PLATFORM_URLS.filter((u) => u.category === "DB Tables" || u.category === "Data").length,
   };
@@ -59,6 +59,11 @@ export default async function UrlsCatalogPage() {
         <p className="mt-2">
           <a className="text-teal-900 underline break-all" href={PUBLIC_CS_DESK_URL}>
             {PUBLIC_CS_DESK_URL}
+          </a>
+        </p>
+        <p className="mt-2">
+          <a className="text-teal-900 underline break-all" href={PUBLIC_CS_PORTAL_URL}>
+            {PUBLIC_CS_PORTAL_URL}
           </a>
         </p>
         <p className="mt-3">

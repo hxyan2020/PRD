@@ -690,18 +690,20 @@ export const OPEN_ISSUES: OpenIssue[] = [
     en: {
       title: "Production C1 / form / mailbox connectors",
       detail:
-        "Prototype CS/TR desk ingests C1 live chat, the website form and official mailboxes through POST /api/cs/intake with token demo-c1. Production needs signed C1 webhooks, form HMAC and a real mailbox gateway so no request lives only in a personal inbox.",
+        "Prototype CS/TR desk ingests C1 live chat, the website form and official mailboxes through POST /api/cs/intake with token demo-c1. The public /cs portal and inbound CSR-XXXX / channel_ref matching close the auto-email wait loop. Production still needs signed C1 webhooks, form HMAC and a real mailbox gateway so no request lives only in a personal inbox.",
       dependencies: "C1 vendor contract; mailbox Graph/IMAP; OI-03 secrets vault",
       eta: "2027-Q2 (connectors) / prototype UAT now",
     },
     zh: {
       title: "正式 C1／表單／信箱連接器",
       detail:
-        "原型 CS／TR 台以 POST /api/cs/intake（token demo-c1）接入 C1 即時聊天、網站表單與官方信箱。正式環境需要簽章 C1 webhook、表單 HMAC 與真實信箱閘道，避免請求只留在個人收件匣。",
+        "原型 CS／TR 台以 POST /api/cs/intake（token demo-c1）接入 C1 即時聊天、網站表單與官方信箱。公開 /cs 入口與 CSR-XXXX／channel_ref 進件對案會關閉自動信件等待迴圈。正式環境仍需簽章 C1 webhook、表單 HMAC 與真實信箱閘道，避免請求只留在個人收件匣。",
       dependencies: "C1 供應商契約；信箱 Graph／IMAP；OI-03 密鑰庫",
       eta: "2027-Q2（連接器）／原型 UAT 現可測",
     },
     checklist: [
+      { en: "Public /cs portal posts C1, form and mailbox through the same intake API", zh: "公開 /cs 入口把 C1、表單與信箱打同一進件 API", done: true },
+      { en: "Inbound replies match CSR-XXXX / channel_ref / In-Reply-To and close WAITING auto-mail", zh: "進件回覆以 CSR-XXXX／channel_ref／In-Reply-To 對案並關閉 WAITING 自動信件", done: true },
       { en: "Replace demo-c1 token with signed C1 webhook + replay protection", zh: "以簽章 C1 webhook＋防重放取代 demo-c1 token", done: false },
       { en: "Website / app form HMAC into the same intake API", zh: "網站／App 表單 HMAC 接入同一進件 API" },
       { en: "Mailbox gateway for support@ and complaints@ (Graph or IMAP)", zh: "support@ 與 complaints@ 信箱閘道（Graph 或 IMAP）" },

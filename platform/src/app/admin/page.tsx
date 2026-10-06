@@ -18,7 +18,7 @@ import { T } from "@/components/T";
 import { ActionLabel } from "@/components/ActionLabel";
 import { EnZh } from "@/components/EnZh";
 import { SignInOwnerCard } from "@/components/SignInOwnerCard";
-import { PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_ADMIN_URL, readSearchParams } from "@/lib/static-export";
+import { PUBLIC_MESSENGER_URL, PUBLIC_CS_DESK_URL, PUBLIC_CS_PORTAL_URL, PUBLIC_ADMIN_URL, readSearchParams } from "@/lib/static-export";
 import { ORIGINAL_CRMP_ADMIN_URL } from "@/lib/platform-site";
 import { listAlertTrackerPacks } from "@/lib/alert-tracker";
 import { AlertTrackerList } from "@/components/AlertTrackerBoard";
@@ -333,6 +333,11 @@ export default async function AdminDashboardPage({
                 <EnZh en="Permanent URL" zh="永久網址" />
                 {": "}
                 {PUBLIC_CS_DESK_URL}
+              </p>
+              <p className="text-xs text-[var(--muted)] mt-1 break-all">
+                <EnZh en="Client portal" zh="客戶入口" />
+                {": "}
+                {PUBLIC_CS_PORTAL_URL}
               </p>
               <div className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-900">
                 <T k="home.csDeskCta" />

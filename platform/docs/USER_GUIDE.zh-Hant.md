@@ -24,6 +24,7 @@ Vantage **CRMP Plus** 是升級控制室：原 CRMP 風險脊柱加上 24/7 客�
 **永久公開示範（CRMP Plus）：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)  
 **Messenger 示範：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)  
 **CS／TR 台：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)  
+**CS 客戶入口：** [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)  
 **原 CRMP 管理後台（凍結）：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)  
 **完整網址：** [網址目錄](/admin/docs/urls)  
 **開放議題／進度：** [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress)
@@ -516,7 +517,7 @@ graph TD
 
 ### 9.3 CS／TR 台 — `/admin/cs-desk`
 
-**這頁是什麼。** 24/7 客服與交易支援。平台 **C1 即時聊天**、網站**提交表單**與**官方信箱**在此即時進件（`POST /api/cs/intake`，標頭 `x-cs-intake-token: demo-c1`）。
+**這頁是什麼。** 24/7 客服與交易支援。平台 **C1 即時聊天**、網站**提交表單**與**官方信箱**在此即時進件（`POST /api/cs/intake`，標頭 `x-cs-intake-token: demo-c1`）。客戶走公開入口 **`/cs`**。回覆帶 `CSR-XXXX`、同一個 C1 `channel_ref` 或 `In-Reply-To` 會續辦並**關閉等待中的自動信件**。
 
 **會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）、**專用技能晶片**（SKILL-CS-CLARIFY／ID-VERIFY／ACCOUNT-FAQ／TR-EXECUTION／ESCALATE-RISK）與狀態（未結、待客戶、身分驗證、已派 TR、已升級風控、已結案）。晶片打開 SKILL.md 劇本。對話混合客戶聊天、AI 分流註記與**自動追問信**。
 
@@ -532,17 +533,19 @@ graph TD
 | **升級至風控** | 離開 CS／TR，進入 Messenger／人工干預脊柱 |
 | **結案** | 關閉 — 追問仍為 WAITING 時會被擋 |
 | **模擬 C1／表單／信件** | 走同一進件 API |
+| **開啟客戶進件入口** | `/cs` — 真實使用者會看到的三個公開連接器 |
 
-**怎樣算正常。** 種子案件涵蓋清楚的 C1 隔夜利息（SKILL-CS-ACCOUNT-FAQ）、不清楚的 C1「help me ???」（SKILL-CS-CLARIFY）、TR 滑點表單（SKILL-TR-EXECUTION）、核身信件（SKILL-CS-ID-VERIFY）。不清楚／核身會等待。交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。
+**怎樣算正常。** 種子案件涵蓋清楚的 C1 隔夜利息（SKILL-CS-ACCOUNT-FAQ）、不清楚的 C1「help me ???」（SKILL-CS-CLARIFY）、TR 滑點表單（SKILL-TR-EXECUTION）、核身信件（SKILL-CS-ID-VERIFY）。不清楚／核身會等待。交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。`/cs` 入口把即時聊天／表單／信箱打同一 webhook；信箱回覆主旨含 `CSR-XXXX` 會關閉 WAITING。
 
 ```mermaid
 graph TD
   C1[C1 即時聊天] --> Intake[POST /api/cs/intake]
   Form[網頁表單] --> Intake
   Mail[官方信箱] --> Intake
+  Portal[客戶入口 /cs] --> Intake
   Intake --> AI[AI 分流]
   AI -->|不清楚或需核身| Wait[自動寄信並等待]
-  Wait -->|客戶回覆| AI
+  Wait -->|客戶回覆 CSR 或 C1| AI
   AI -->|交易| TR[TR 成交]
   AI -->|帳簿風險| Risk[升級風控]
   AI -->|清楚 CS| Done[CS 結案]
