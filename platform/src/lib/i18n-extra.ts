@@ -1,6 +1,7 @@
 /** Extra UI chrome + operational phrase maps for 繁中. Merged by i18n.ts. */
 
 import { PHRASES_ZH_MORE } from "@/lib/i18n-phrases";
+import { URL_CATALOG_ZH } from "@/lib/i18n-url-catalog-zh";
 
 type Pair = { en: string; "zh-Hant": string };
 
@@ -1090,4 +1091,5 @@ export const PHRASES_ZH: Record<string, string> = {
   LOSS: "損失",
   FALSE_POSITIVE: "誤報",
   ...PHRASES_ZH_MORE,
+  ...URL_CATALOG_ZH,
 };

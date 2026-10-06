@@ -7,7 +7,7 @@ export const UI_LOCALE_COOKIE = "crmp_ui_lang";
 
 type Pair = { en: string; "zh-Hant": string };
 
-const NAV_I18N: Record<string, Pair> = {
+export const NAV_I18N: Record<string, Pair> = {
   "/admin": { en: "Admin Home", "zh-Hant": "管理首頁" },
   "/admin/dashboard": { en: "Daily Performance", "zh-Hant": "每日績效" },
   "/admin/risk-log": { en: "Risk Log Analytics", "zh-Hant": "風險日誌分析" },
@@ -30,6 +30,10 @@ const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/urls": { en: "URL Catalog", "zh-Hant": "網址目錄" },
   "/admin/docs/open-issues": { en: "Open Issues", "zh-Hant": "開放議題" },
   "/admin/docs/progress": { en: "Progress Tracker", "zh-Hant": "進度追蹤" },
+  "/admin/messenger": { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
+  "/cs": { en: "CS client portal", "zh-Hant": "CS 客戶入口" },
+  "/login": { en: "Sign in", "zh-Hant": "登入" },
+  "/admin/login": { en: "Sign in", "zh-Hant": "登入" },
   "/admin/cs-desk": { en: "CS / TR Desk", "zh-Hant": "CS／TR 台" },
   "/admin/cs-dashboard": { en: "CS / TR Dashboard", "zh-Hant": "CS／TR 儀表板" },
   "/admin/cs-log": { en: "CS / TR Log", "zh-Hant": "CS／TR 日誌" },

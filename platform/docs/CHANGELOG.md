@@ -2,6 +2,7 @@
 
 | When (ISO) | Note |
 |---|---|
+| 2026-10-06T23:00:00.000Z | Traditional Chinese review of every admin page + product doc: nav (incl. Demo Messenger), URL Catalog titles/descriptions, CS/TR chrome, docs twins; simplified 给→給; EN/zh-Hant |
 | 2026-10-06T22:00:00.000Z | Progress Tracker v1.6: CS/TR feature catalogue on the same 20 columns (desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*, categorize/severity/POC); interactive CS/TR filter; FR-46 / UAT-53; EN/zh-Hant |
 | 2026-10-06T21:00:00.000Z | CS/TR after collected facts: categorize + severity, heuristic AI solution and client draft, auto-reply or named POC addendum (FR-46; UG §9.3.10; TSD §17.13; UAT-53); EN/zh-Hant |
 | 2026-10-06T20:00:00.000Z | Open Issues catalogue v1.5: CS/TR feature index on the same 20 issues (OI-19/20 primary + 05/08/09/11/14/15 support); prototype ticks vs production remaining; interactive CS/TR filter; EN/zh-Hant |

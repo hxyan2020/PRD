@@ -21,7 +21,7 @@ export default async function UserGuidePage({ searchParams }: { searchParams: Pr
     { href: "/admin/cs-log", en: "CS / TR Log", zh: "CS／TR 日誌" },
     { href: "/admin/cs-data", en: "CS / TR Data", zh: "CS／TR 資料" },
     { href: "/cs", en: "Client portal", zh: "客戶入口" },
-    { href: "/admin/messenger", en: "Messenger", zh: "Messenger" },
+    { href: "/admin/messenger", en: "Messenger", zh: "示範 Messenger" },
     { href: "/admin/alerts", en: "Realtime Alert & Tracker", zh: "即時警報與追蹤" },
     { href: "/admin/docs/uat", en: "UAT", zh: "UAT" },
     { href: "/admin/docs/urls", en: "All URLs", zh: "全部網址" },

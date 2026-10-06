@@ -25,7 +25,7 @@ const CATEGORY_ZH: Record<string, string> = {
   Home: "首頁",
   Risk: "風險",
   AI: "AI",
-  Messenger: "Messenger",
+  Messenger: "即時通訊",
   Org: "組織",
   System: "系統",
   Docs: "文件",

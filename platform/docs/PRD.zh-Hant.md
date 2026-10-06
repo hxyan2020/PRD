@@ -435,7 +435,7 @@ CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已
 | NFR-03 | 安全 | AI 主體不得取得黑名單權限；公開 CS 狀態無個資 |
 | NFR-04 | 職能分離 | AI Admin 強制 Maker／Checker；指定控制要 Checker |
 | NFR-05 | 可用性 | 示範單節點 SQLite 可接受；正式需 HA（見生態） |
-| NFR-06 | 國際化 | 操作文件英＋繁中；UI 導覽語言切換 |
+| NFR-06 | 國際化 | 操作文件英＋繁中；UI 導覽語言切換；網址目錄標題／說明為繁中 |
 | NFR-07 | 基本無障礙 | 手機可點；關鍵動作有標籤 |
 | NFR-08 | 公開快照 | 靜態匯出 `basePath` `/PRD/crmp-plus`；原 CRMP 管理後台仍在 `/PRD/crmp-admin`；沒有死掉的 `/api` 點擊（示範後備） |
 | NFR-09 | 工作階段 | 示範角色在 Pages 以 `localStorage`＋cookie 保持 |
