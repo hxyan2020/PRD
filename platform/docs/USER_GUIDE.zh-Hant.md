@@ -16,7 +16,7 @@ Vantage **CRMP Plus** 是升級控制室：原 CRMP 風險脊柱加上 24/7 客�
 2. 高嚴重度（BREACH 或 CRITICAL）時，再跑一輪**獨立的第二 AI**，可能同意、部分同意或不同意。  
 3. 把整包放進 **Lark 風格 Messenger**，讓你顯示證據、聊天、升級、排除、結案或送出控制。  
 4. 不可逆控制上線前，要有人類 Checker。  
-5. **CS／TR 台**值守 24/7：C1 即時聊天、網頁表單與官方信箱 — 客戶走公開 **`/cs`**；AI 在不清楚或需核身時寄信並**等到客戶回覆**（上限來自 `cs.followup_cap`，預設 3 封）。CS／TR 量在**獨立儀表板**；CS_* 歷史在**獨立日誌**；BU／團隊／關卡／`cs.*` 在**獨立資料頁**。  
+5. **CS／TR 台**值守 24/7：C1 即時聊天、網頁表單與官方信箱 — 客戶走公開 **`/cs`**；AI 在不清楚或需核身時寄信並**等到客戶回覆**（上限來自 `cs.followup_cap`，預設 3 封）。資料齊全後**分類、給嚴重度、起草方案**，並依敏感度直回或交具名 POC。CS／TR 量在**獨立儀表板**；CS_* 歷史在**獨立日誌**；BU／團隊／關卡／`cs.*` 在**獨立資料頁**。  
 6. 整段故事寫進**稽核日誌**與**首頁脊柱**（各階段工單計數 — 專屬脊柱日誌分頁已移除）。
 
 不必是工程師。點左側選單、讀卡片、跟畫面上的按鈕走即可。
@@ -181,14 +181,14 @@ graph TD
 3. 確認公開入口 [`/cs`](/cs) 仍會進到這個收件匣。  
 4. 成交投訴交給 TR。帳簿風險／詐欺升級風控（Messenger 脊柱）。核身留在 **CS 核身庫**（`ESC-CS-KYC`）。  
 5. 到 [CS／TR 儀表板](/admin/cs-dashboard) 看 WAITING／上限／TR／風控計數。到 [CS／TR 日誌](/admin/cs-log) 看 CS_* 事件。到 [CS／TR 資料](/admin/cs-data) 看 BU、關卡與 `cs.*`。這**不是**每日績效或風險日誌。  
-6. 簽核版本時過 [UAT-46](/admin/docs/uat)（三渠道）、[UAT-47](/admin/docs/uat)（等待迴圈）、[UAT-51](/admin/docs/uat)（儀表板＋日誌）與 [UAT-52](/admin/docs/uat)（配套資料）。
+6. 簽核版本時過 [UAT-46](/admin/docs/uat)（三渠道）、[UAT-47](/admin/docs/uat)（等待迴圈）、[UAT-51](/admin/docs/uat)（儀表板＋日誌）、[UAT-52](/admin/docs/uat)（配套資料）與 [UAT-53](/admin/docs/uat)（分類／嚴重度／直回 vs POC）。
 
 ### 客服專員（`cs.agent@vantagemarkets.com`／`cs123`）
 
 1. C1、表單、官方信箱的第一回應。在台面輸入框以 CS 回覆。  
 2. 案件過短（「help me ???」）時讓 AI 寄 **寄信：請補充** 並等待。  
 3. 客戶登不進去或要求核身時讓 AI 寄 **寄信：身分驗證**（護照＋UID 後四碼＋自拍）。不要只憑口頭「是我」做出金。  
-4. 客戶回覆後（入口、同一個 C1 對話、或主旨含 `CSR-XXXX` 的信），AI 重新分流。已清楚的 FAQ 依技能／RAG 晶片作答。
+4. 客戶回覆後（入口、同一個 C1 對話、或主旨含 `CSR-XXXX` 的信），AI 重新分流。仍過短就再等。資料齊全後 AI 分類、給嚴重度並起草回覆 — FAQ 可直寄；核身／投訴／成交交你或具名 POC **補細節後才寄**。
 
 ### 交易主管／交易員（`tr.lead@…`／`tr.dealer@…`／`tr123`）
 
@@ -555,7 +555,7 @@ graph TD
 
 客戶走公開入口 **[`/cs`](/cs)**（永久網址：[https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)）。值班在這一頁看收件匣。原 CRMP 管理後台**沒有** CS／TR 台 — 那個快照保持凍結。
 
-**會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）、**專用技能晶片**與狀態（未結、待客戶、身分驗證、已派 TR、已升級風控、已結案）。晶片 **進入** `/admin/skills/{code}`。對話混合客戶聊天、AI 分流註記與**自動追問信**。左側此列未讀徽章會在新進件時跳動。
+**會看到什麼。** 收件匣篩選全部／CS／TR。每則請求顯示渠道、台面、AI 清晰度（清楚／不清楚／需核身）、**嚴重度**（LOW／MEDIUM／HIGH／CRITICAL）、**敏感度**（AI 可直回／POC 審閱）、**專用技能晶片**與狀態（未結、待客戶、身分驗證、已派 TR、POC 審閱、AI 已回、已升級風控、已結案）。晶片 **進入** `/admin/skills/{code}`。對話混合客戶聊天、AI 分流註記、**自動追問信**、AI 方案＋草稿與 POC 補註。左側此列未讀徽章會在新進件時跳動。
 
 #### 9.3.1 客戶入口 — `/cs`
 
@@ -608,7 +608,10 @@ graph TD
   Wait -->|CSR 或 C1 回覆| Again[AI 重新分流]
   Wait -->|上限 3| Lead[CS Lead 人工]
   Again -->|仍過短| Mail
-  Again -->|夠清楚| Open[未結或已派 TR]
+  Again -->|資料齊全| Analyze[分類加嚴重度]
+  Analyze -->|FAQ 直回| Replied[AI_REPLIED]
+  Analyze -->|敏感| Poc[POC_REVIEW]
+  Analyze -->|CRITICAL| Risk[升級風控]
 ```
 
 #### 9.3.4 專用 SKILL.md 劇本
@@ -630,17 +633,19 @@ CS **不**啟動交易管制。TR **不**值班 C1。帳簿風險離開此台，
 | 按鈕 | 做什麼 |
 |---|---|
 | **AI 分流** | 重跑路由（CS vs TR、類別、清晰度）並蓋上專用 SKILL.md |
+| **AI 分析＋草稿** | 資料齊全後：分類、給嚴重度、起草方案與客戶回覆，再直寄或交具名 POC |
 | **寄信：請補充** | AI 寄官方信索取發生什麼／UID／截圖；狀態待客戶 |
 | **寄信：身分驗證** | AI 索取護照／證件＋UID 後四碼＋自拍；狀態身分驗證 |
-| **模擬客戶回信** | 示範用，等同真實信箱／入口回覆；AI 重新分流 |
+| **模擬客戶回信** | 示範用，等同真實信箱／入口回覆；AI 重新分流；資料齊全會觸發分析 |
 | **指派至 TR** | 把成交投訴交給 TR 成交支援（`SKILL-TR-EXECUTION`） |
 | **升級至風控** | 離開 CS／TR；技能 `SKILL-CS-ESCALATE-RISK`；Messenger 脊柱 |
+| **POC 補註＋寄出** | 具名 POC 在 AI 草稿上補細節，再寄官方信；狀態 AI 已回 |
 | **結案** | 關閉 — 追問仍為 WAITING 時會被擋 |
 | **模擬 C1／表單／信件** | 走與入口相同的進件 API |
 | **開啟客戶進件入口** | `/cs` — 真實使用者會看到的三個公開連接器 |
 | 台面輸入框＋送出 | 以 CS／TR 寫入逐字稿 |
 
-操作需要 `cs.operate`（客服主管、客服專員、超級管理員…）。`cs.read`／`lark.read` 可觀看。稽核（CRMP 分頁）寫入 `CS_INTAKE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_INTAKE_CONTINUE`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE`。
+操作需要 `cs.operate`（客服主管、客服專員、超級管理員…）。`cs.read`／`lark.read` 可觀看。稽核（CRMP 分頁）寫入 `CS_INTAKE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_INTAKE_CONTINUE`、`CS_AI_ANALYZE`、`CS_AI_REPLY`、`CS_POC_REVIEW`、`CS_POC_RELEASE`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE`。
 
 #### 9.3.6 種子案件 — 怎樣算正常
 
@@ -651,7 +656,7 @@ CS **不**啟動交易管制。TR **不**值班 C1。帳簿風險離開此台，
 | Chen Wei — MT5 EURUSD 滑點 | 表單 | `SKILL-TR-EXECUTION` | 已派 TR |
 | Priya Shah — 核對帳戶、無法出金 | 官方信箱 | `SKILL-CS-ID-VERIFY` | 身分驗證＋WAITING 核身包 |
 
-交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。UAT-46（三渠道＋`/cs`）、UAT-47（等待迴圈）、UAT-48（TR／風控）、UAT-50（技能＋樹）、UAT-51（儀表板＋日誌）、UAT-52（BU／關卡／`cs.*`）。
+交易關鍵字到 TR。技能晶片打開劇本。繁中標籤齊全。UAT-46（三渠道＋`/cs`）、UAT-47（等待迴圈）、UAT-48（TR／風控）、UAT-50（技能＋樹）、UAT-51（儀表板＋日誌）、UAT-52（BU／關卡／`cs.*`）、UAT-53（分類／嚴重度／直回 vs POC）。
 
 ```mermaid
 graph TD
@@ -664,14 +669,16 @@ graph TD
   Wait -->|客戶以 CSR 或 C1 回覆| AI
   AI -->|交易| TR[TR 成交]
   AI -->|帳簿風險| Risk[升級風控]
-  AI -->|清楚 CS| Done[CS 結案]
+  AI -->|資料齊全| Analyze[分類加嚴重度]
+  Analyze -->|FAQ 直回| Replied[AI_REPLIED]
+  Analyze -->|敏感| Poc[POC_REVIEW]
 ```
 
 #### 9.3.7 CS／TR 儀表板 — `/admin/cs-dashboard`
 
 **這頁是什麼。** CS／TR 量看板。**不是**[每日績效](/admin/dashboard)（CFD／加密日終），也**不是**[風險日誌分析](/admin/risk-log)（已關閉 Monitor 工單）。
 
-**會看到什麼。** 總數、未結 vs 已結、WAITING 自動信、上限 3、TR／已派、已升級風控、身分驗證、待客戶、CS vs TR 台。依渠道、狀態、技能、台面、AI 清晰度長條。等待清單與最近更新請求。
+**會看到什麼。** 總數、未結 vs 已結、WAITING 自動信、上限 3、TR／已派、已升級風控、身分驗證、待客戶、**POC 審閱**、**AI 已回**、CS vs TR 台、**依嚴重度**。依渠道、狀態、技能、台面、AI 清晰度長條。等待清單與最近更新請求。
 
 **要點什麼。** 點 `CSR-XXXX` 跳到台面。開 CS／TR 日誌看 CS_* 時間軸。本機 `GET /api/cs?view=dashboard` 回同一包。
 
@@ -701,11 +708,46 @@ graph TD
 
 **這頁是什麼。** 台面、儀表板與日誌已在讀的即時營運契約：客服與交易 BU、嵌套團隊、具名 POC、四條升級關卡、`cs.*` 參數、核身庫與成交帶來源。永久網址：[https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-data/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-data/)。請在 [BU 與團隊](/admin/departments)、[升級路徑](/admin/escalation)、[平台設定](/admin/settings#settings-cs)、[資料來源](/admin/data-sources) 與 [Lark](/admin/lark) 編輯紀錄 — 本頁是讀出。
 
-**會看到什麼。** 追問上限、等待／核身／TR／風控 SLA、進件 token、support@ 與 complaints@。兩個 BU。團隊 **CS 24/7 台**、**CS 核身庫**、**TR 成交支援**，含值班與 POC。關卡 `ESC-CS-24-7`（釐清／FAQ）、`ESC-CS-KYC`（核身）、`ESC-TR-DEAL`（成交）、`ESC-CS-RISK`（帳簿風險）。種子 C1／表單／信箱，加上核身庫與 MT4／MT5 成交帶。Lark 頻道 `oc_cs_c1`、`oc_cs_kyc`、`oc_tr_dealing`。
+**會看到什麼。** 追問上限、**AI 直回最高嚴重度**、**需 POC 類別**、等待／核身／TR／風控 SLA、進件 token、support@ 與 complaints@。兩個 BU。團隊 **CS 24/7 台**、**CS 核身庫**、**TR 成交支援**，含值班與 POC。關卡 `ESC-CS-24-7`（釐清／FAQ）、`ESC-CS-KYC`（核身）、`ESC-TR-DEAL`（成交）、`ESC-CS-RISK`（帳簿風險）。種子 C1／表單／信箱，加上核身庫與 MT4／MT5 成交帶。Lark 頻道 `oc_cs_c1`、`oc_cs_kyc`、`oc_tr_dealing`。
 
 **要點什麼。** 跳到組織／關卡／`cs.*`／來源／Lark／台面。本機 `GET /api/cs?view=data` 回同一包。
 
-**怎樣算正常。** CS 核身庫真的存在（不是只寫在 BU 卡片上）。`SKILL-CS-ID-VERIFY` 綁 `ESC-CS-KYC`。本頁上限與平台設定 `cs.followup_cap`、儀表板一致。證件圖不是資料來源 — 核身庫只有狀態旗標。繁中標籤齊全。
+**怎樣算正常。** CS 核身庫真的存在（不是只寫在 BU 卡片上）。`SKILL-CS-ID-VERIFY` 綁 `ESC-CS-KYC`。本頁上限與平台設定 `cs.followup_cap`、儀表板一致。直回上限與敏感類別磁磚對得上 `cs.auto_reply_max_severity`／`cs.sensitive_categories`。證件圖不是資料來源 — 核身庫只有狀態旗標。繁中標籤齊全。
+
+#### 9.3.10 資料齊全之後 — 分類、嚴重度、AI 草稿
+
+**這頁是什麼。** 等待迴圈一旦拿到足夠事實就**停止猜測**。AI 接著分類、給 **LOW／MEDIUM／HIGH／CRITICAL**、寫詳細方案與客戶草稿，並依敏感度決定**直回**或**具名 POC 審閱**。
+
+**何時跑。** 收集到足夠回覆之後（等待迴圈案件 ≥48 字且含 UID，或清晰度已是 `clear`）。過短「help me ???」維持待客戶。長 UID 回覆即使仍有核身關鍵字，也不再永遠重開 need-ID。
+
+**敏感度閘道**（平台設定 `#settings-cs`）：
+
+| 閘道 | 預設 | 效果 |
+|---|---|---|
+| `cs.auto_reply_max_severity` | `MEDIUM` | 嚴重度超過此值一律交 POC |
+| `cs.sensitive_categories` | `complaint,kyc,trading` | 這些類別一律交 POC |
+| 技能 `SKILL-CS-ID-VERIFY`／`SKILL-TR-EXECUTION`／`SKILL-CS-ESCALATE-RISK` | — | 一律 POC（或升級風控） |
+
+**會發生什麼**
+
+| 路徑 | 狀態 | 誰寄客戶信 |
+|---|---|---|
+| 清楚 FAQ，嚴重度 ≤ 直回上限 | `AI_REPLIED` | AI 立刻寄出草稿 |
+| 核身／投訴／成交 | `POC_REVIEW`（TR 維持 `ASSIGNED_TR`） | 具名 POC（客服專員／客服主管／TR 交易員）**補細節**後寄出 |
+| CRITICAL／帳簿風險 | `ESCALATED_RISK` | 不直寄客戶 — 示範 Messenger／人工干預 |
+
+POC 姓名來自 CS／TR 名冊（Maya Santos 客服主管、Elena Rossi 客服專員、Omar Haddad TR 交易員）。補註在官方信標為 **POC 補註**。原型路徑為啟發式（`analyzeCsRequest`）— 此路徑無正式 LLM，與 `triageText` 相同。
+
+**怎樣算正常。** Liam 隔夜利息 FAQ → `AI_REPLIED`／LOW／直回。Sofia 過短仍等待。Priya 核身回覆 → `POC_REVIEW`；補註後 → `AI_REPLIED`。Chen Wei 滑點維持 `ASSIGNED_TR`／poc。UAT-53。
+
+```mermaid
+graph TD
+  Collected[資料齊全] --> Cat[分類加嚴重度]
+  Cat -->|FAQ 直回| Mail[EMAIL_OUT AI_REPLIED]
+  Cat -->|敏感| Hold[POC_REVIEW]
+  Hold -->|POC 補註| Mail
+  Cat -->|CRITICAL| Esc[升級風控]
+```
 
 ### 9.4 Lark 整合 — `/admin/lark`
 
@@ -794,7 +836,7 @@ graph LR
 | 市場情報 | `market_intel.*`（啟用、間隔、Lark chat） |
 | Messenger／Lark | `lark.*` |
 | 升級與 SLA | `escalation.*`、`detectors.*` |
-| CS／TR 營運 | `cs.*`（追問上限、等待／核身／TR／風控 SLA、進件 token、信箱、Lark 頻道） |
+| CS／TR 營運 | `cs.*`（追問上限、AI 直回最高嚴重度、需 POC 類別、等待／核身／TR／風控 SLA、進件 token、信箱、Lark 頻道） |
 
 改一個值再 **儲存**。localhost 寫入 SQLite。GitHub Pages 只存在這個瀏覽器，並會這樣說明。
 
@@ -809,7 +851,7 @@ graph LR
 | 使用手冊 | `/admin/docs/user-guide` | 本手冊 |
 | PRD | `/admin/docs/prd` | 我們在做什麼、為什麼、怎麼算過關 |
 | TSD | `/admin/docs/tsd` | 怎麼做的（架構、API、資料模型） |
-| UAT 清單 | `/admin/docs/uat` | 互動式 51 案簽核（UAT-01 … UAT-52，跳過 UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋。**CS／TR 目錄 v2.6：** UAT-25 目錄、UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹、UAT-51 儀表板＋日誌、UAT-52 BU／關卡／`cs.*`，另有支援案 UAT-17／22／27–29／36–40 |
+| UAT 清單 | `/admin/docs/uat` | 互動式 52 案簽核（UAT-01 … UAT-53，跳過 UAT-45）：為什麼、步驟、通過、證據、畫面覆蓋。**CS／TR 目錄 v2.7：** UAT-25 目錄、UAT-46 渠道＋`/cs`、UAT-47 等待迴圈、UAT-48 TR／風控、UAT-50 技能＋樹、UAT-51 儀表板＋日誌、UAT-52 BU／關卡／`cs.*`、UAT-53 分類／嚴重度／直回 vs POC，另有支援案 UAT-17／22／27–29／36–40 |
 | 生態導入評估 | `/admin/docs/ecosystem` | 真要導入的人力、預算帶、階段、風險 |
 | 改進路線圖 | `/admin/docs/roadmap` | RM-01…15 卡片：今日／要做／完成標準／不做風險 |
 | 開放議題 | `/admin/docs/open-issues` | 計畫清單：**20 項**（OI-01…20）。**CS／TR 目錄 v1.5：** 主案 OI-19／OI-20 加上支援 OI-05／08／09／11／14／15 — 原型已勾 vs 正式連接器／核身庫／成交帶 |
@@ -828,7 +870,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 4. BREACH／CRITICAL 時，不可逆控制前主 AI 與第二 AI 都要留在畫面上。  
 5. 控制之後，用同一組 id 核對 **稽核日誌** 與 **首頁脊柱**。  
 6. AI 管理與指定控制的 Maker 與 Checker 必須是**兩個人**。  
-7. CS／TR：追問仍為 WAITING 時不可結案；不可只憑口頭「是我」跳過核身；自動信件上限為 `cs.followup_cap`（預設 3 封），其後由 CS Lead 人工。  
+7. CS／TR：追問仍為 WAITING 時不可結案；不可只憑口頭「是我」跳過核身；自動信件上限為 `cs.followup_cap`（預設 3 封），其後由 CS Lead 人工。資料齊全後不可直寄核身／投訴／成交／CRITICAL — 交具名 POC **補細節後才回**。  
 8. CS 不啟動交易管制。TR 不值班 C1。帳簿風險經 **升級至風控** 離開此台。
 
 ---
@@ -849,7 +891,7 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | AI 與知識 | RAG 知識庫 | 搜尋／檢索；AI 寫入封鎖／人工閘道 — `propose_rag` |
 | AI 與知識 | AI 管理 | 一線／二線卡片；提案／核准 |
 | 應變 | 示範 Messenger | 證據、聊天、升級、排除、結案、控制 |
-| 應變 | CS／TR 台 | C1／表單／信箱經 `/cs`＋`/api/cs/intake`；CSR-XXXX 回覆關閉 WAITING；專用 SKILL.md 晶片；AI 追問直到回覆；TR／風控 |
+| 應變 | CS／TR 台 | C1／表單／信箱經 `/cs`＋`/api/cs/intake`；CSR-XXXX 回覆關閉 WAITING；專用 SKILL.md 晶片；AI 追問直到回覆；再分類／嚴重度／直回 vs POC |
 | 應變 | CS／TR 儀表板 | CS／TR 指標 — 不是每日績效 |
 | 應變 | CS／TR 日誌 | CS_* 時間軸＋已結包 — 不是風險日誌 |
 | 應變 | CS／TR 資料 | 台面已讀的 BU／團隊／關卡／`cs.*` 契約 |
@@ -885,5 +927,6 @@ UAT：依序走案例。不要跳過 Critical 前置。在看板上勾 Pass／Fa
 | 2.2 | 2026-10-06 | 手冊：公開 `/cs` 入口、三連接器、CSR-XXXX 進件對案、自動信件等待迴圈、CS／TR 日常角色、技能＋路徑 |
 | 2.3 | 2026-10-06 | §9.3.7 儀表板＋§9.3.8 日誌（不是每日績效／風險日誌） |
 | 2.4 | 2026-10-06 | §9.3.9 CS／TR 資料：BU／CS 核身庫／四條關卡／`cs.*`；UAT-52 |
+| 2.5 | 2026-10-06 | §9.3.10 資料齊全後：分類、嚴重度、AI 方案，直回 vs 具名 POC 補註；UAT-53 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

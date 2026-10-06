@@ -4,7 +4,13 @@ import { getDb, writeAudit } from "@/lib/db";
 import type { UiLocale } from "@/lib/i18n";
 import { CS_SKILL_CODES, csSkillName, skillCodeForTriage } from "@/lib/cs/skills";
 import { assignedBuFor } from "@/lib/cs/params";
-import { getCsFollowupCap } from "@/lib/cs/ops-data";
+import { getCsFollowupCap, getCsSetting } from "@/lib/cs/ops-data";
+import {
+  analyzeCsRequest,
+  isCollectedReply,
+  parseSensitiveCategories,
+  parseSeverity,
+} from "@/lib/cs/analyze";
 
 export const CS_CHANNELS = [
   {
@@ -52,6 +58,12 @@ export type CsRequest = {
   assigned_to: string | null;
   assigned_bu: string | null;
   skill_code: string | null;
+  severity: string | null;
+  sensitivity: string | null;
+  ai_solution: string | null;
+  ai_draft: string | null;
+  poc_role: string | null;
+  poc_name: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -112,6 +124,12 @@ export function ensureCsSchema(db: Database.Database = getDb()) {
       assigned_to TEXT,
       assigned_bu TEXT,
       skill_code TEXT,
+      severity TEXT,
+      sensitivity TEXT,
+      ai_solution TEXT,
+      ai_draft TEXT,
+      poc_role TEXT,
+      poc_name TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
@@ -153,6 +171,20 @@ export function ensureCsSchema(db: Database.Database = getDb()) {
   }
   if (!cols.some((c) => c.name === "assigned_bu")) {
     db.exec(`ALTER TABLE cs_requests ADD COLUMN assigned_bu TEXT`);
+  }
+  const extra: Array<[string, string]> = [
+    ["severity", "TEXT"],
+    ["sensitivity", "TEXT"],
+    ["ai_solution", "TEXT"],
+    ["ai_draft", "TEXT"],
+    ["poc_role", "TEXT"],
+    ["poc_name", "TEXT"],
+  ];
+  const fresh = db.prepare(`PRAGMA table_info(cs_requests)`).all() as Array<{ name: string }>;
+  for (const [name, typ] of extra) {
+    if (!fresh.some((c) => c.name === name)) {
+      db.exec(`ALTER TABLE cs_requests ADD COLUMN ${name} ${typ}`);
+    }
   }
   db.prepare(
     `UPDATE cs_requests SET skill_code = CASE
@@ -324,6 +356,8 @@ export function publicCsStatus(row: CsRequest, db: Database.Database = getDb()) 
     status: row.status,
     ai_clarity: row.ai_clarity,
     skill_code: row.skill_code,
+    severity: row.severity,
+    sensitivity: row.sensitivity,
     channel: row.channel,
     desk: row.desk,
     waiting: waiting > 0,
@@ -448,9 +482,22 @@ export function applyTriage(
   const joined = [row.body, ...messages.map((m) => m.body)].join("\n");
   // After a client reply, score the latest inbound — do not keep the original “help me ???” forever.
   const again = messages.length > 1 ? triageText("client follow-up", latest) : triageText(row.subject, joined);
-  const { clarity, desk, category } = again;
-  const skillCode = skillCodeForTriage({
+  let { clarity, desk, category } = again;
+  const collected = isCollectedReply({
+    previousStatus: row.status,
+    inboundCount: messages.length,
+    latest,
     clarity,
+  });
+  if (collected && (row.ai_clarity === "need_id" || row.status === "ID_VERIFY" || category === "kyc")) {
+    category = "kyc";
+    clarity = "clear";
+  }
+  if (collected && category !== "kyc" && category !== "trading" && desk !== "TR") {
+    clarity = "clear";
+  }
+  const skillCode = skillCodeForTriage({
+    clarity: collected && category === "kyc" ? "need_id" : clarity,
     desk,
     category,
     subject: row.subject,
@@ -459,23 +506,23 @@ export function applyTriage(
   const skillTitle = csSkillName(skillCode, locale);
   db.prepare(
     `UPDATE cs_requests SET desk = ?, category = ?, ai_clarity = ?, skill_code = ?, assigned_bu = ?, updated_at = datetime('now') WHERE id = ?`
-  ).run(desk, category, clarity, skillCode, assignedBuFor({ desk, status: row.status, category }), row.id);
+  ).run(desk, category, collected ? "clear" : clarity, skillCode, assignedBuFor({ desk, status: row.status, category }), row.id);
   addMessage(
     db,
     row.id,
     "AI",
     zh ? "CS／TR AI" : "CS/TR AI",
     zh
-      ? `分流：${desk} · 類別 ${category} · 清晰度 ${clarity === "clear" ? "清楚" : clarity === "need_id" ? "需身分驗證" : "不清楚"} · 技能 ${skillCode}（${skillTitle}）`
-      : `Routed to ${desk} · category ${category} · clarity ${clarity} · skill ${skillCode} (${skillTitle})`,
-    { desk, category, clarity, skill_code: skillCode }
+      ? `分流：${desk} · 類別 ${category} · 清晰度 ${collected || clarity === "clear" ? "清楚" : clarity === "need_id" ? "需身分驗證" : "不清楚"} · 技能 ${skillCode}（${skillTitle}）`
+      : `Routed to ${desk} · category ${category} · clarity ${collected || clarity === "clear" ? "clear" : clarity} · skill ${skillCode} (${skillTitle})`,
+    { desk, category, clarity: collected ? "clear" : clarity, skill_code: skillCode }
   );
   if (desk === "TR") {
     db.prepare(
       `UPDATE cs_requests SET status = CASE WHEN status IN ('AWAITING_CLIENT','ID_VERIFY') THEN status ELSE 'ASSIGNED_TR' END, assigned_to = 'TR Dealing Support', assigned_bu = 'TRADING', updated_at = datetime('now') WHERE id = ?`
     ).run(row.id);
   }
-  if (clarity === "unclear" || clarity === "need_id") {
+  if (!collected && (clarity === "unclear" || clarity === "need_id")) {
     return sendFollowupEmail(row.id, clarity, locale, db);
   }
   const fresh = db.prepare(`SELECT status FROM cs_requests WHERE id = ?`).get(row.id) as { status: string };
@@ -485,6 +532,196 @@ export function applyTriage(
       row.id
     );
   }
+  return applyCsAnalysis(row.id, locale, db);
+}
+
+function analysisSettings(db: Database.Database) {
+  return {
+    autoMax: parseSeverity(getCsSetting("cs.auto_reply_max_severity", "MEDIUM", db), "MEDIUM"),
+    sensitiveCategories: parseSensitiveCategories(getCsSetting("cs.sensitive_categories", "complaint,kyc,trading", db)),
+  };
+}
+
+function lastInboundId(db: Database.Database, requestDbId: number): number {
+  const row = db
+    .prepare(
+      `SELECT id FROM cs_messages WHERE request_db_id = ? AND kind IN ('CLIENT','EMAIL_IN','FORM') ORDER BY id DESC LIMIT 1`
+    )
+    .get(requestDbId) as { id: number } | undefined;
+  return row?.id || 0;
+}
+
+function alreadySentAutoAnalysis(db: Database.Database, requestDbId: number): boolean {
+  const after = lastInboundId(db, requestDbId);
+  const sent = db
+    .prepare(
+      `SELECT meta_json FROM cs_messages WHERE request_db_id = ? AND kind = 'EMAIL_OUT' AND id > ? ORDER BY id DESC`
+    )
+    .all(requestDbId, after) as Array<{ meta_json: string }>;
+  return sent.some((m) => {
+    try {
+      const meta = JSON.parse(m.meta_json || "{}") as { auto_analysis?: boolean };
+      return !!meta.auto_analysis;
+    } catch {
+      return false;
+    }
+  });
+}
+
+export function applyCsAnalysis(
+  requestDbId: number,
+  locale: UiLocale = "en",
+  db: Database.Database = getDb()
+) {
+  const zh = locale === "zh-Hant";
+  const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(requestDbId) as CsRequest | undefined;
+  if (!row) throw new Error("Request not found");
+  if (row.status === "AWAITING_CLIENT" || row.status === "ID_VERIFY") return getCsRequest(row.id);
+  const messages = db
+    .prepare(`SELECT body FROM cs_messages WHERE request_db_id = ? AND kind IN ('CLIENT','EMAIL_IN','FORM') ORDER BY id`)
+    .all(requestDbId) as Array<{ body: string }>;
+  const latest = messages[messages.length - 1]?.body || row.body;
+  const settings = analysisSettings(db);
+  const analysis = analyzeCsRequest({
+    requestId: row.request_id,
+    clientName: row.client_name,
+    subject: row.subject,
+    body: row.body,
+    latest,
+    category: row.category,
+    desk: row.desk,
+    skillCode: row.skill_code,
+    autoMax: settings.autoMax,
+    sensitiveCategories: settings.sensitiveCategories,
+    locale,
+  });
+  db.prepare(
+    `UPDATE cs_requests
+     SET category = ?,
+         severity = ?,
+         sensitivity = ?,
+         ai_solution = ?,
+         ai_draft = ?,
+         poc_role = ?,
+         poc_name = ?,
+         assigned_to = COALESCE(?, assigned_to),
+         updated_at = datetime('now')
+     WHERE id = ?`
+  ).run(
+    analysis.category,
+    analysis.severity,
+    analysis.sensitivity,
+    analysis.solution,
+    analysis.draft,
+    analysis.poc_role,
+    analysis.poc_name,
+    analysis.poc_name,
+    row.id
+  );
+  addMessage(
+    db,
+    row.id,
+    "AI",
+    zh ? "CS／TR AI 分析" : "CS/TR AI analysis",
+    zh
+      ? `類別 ${analysis.category} · 嚴重度 ${analysis.severity} · 敏感度 ${analysis.sensitivity === "auto" ? "可直回" : "需 POC 審閱"}${analysis.poc_name ? `（${analysis.poc_role} ${analysis.poc_name}）` : ""}\n\n方案：\n${analysis.solution}\n\n擬回覆：\n${analysis.draft}`
+      : `Category ${analysis.category} · severity ${analysis.severity} · sensitivity ${analysis.sensitivity === "auto" ? "auto-reply" : "POC review"}${analysis.poc_name ? ` (${analysis.poc_role} ${analysis.poc_name})` : ""}\n\nSolution:\n${analysis.solution}\n\nDraft reply:\n${analysis.draft}`,
+    {
+      analysis: true,
+      category: analysis.category,
+      severity: analysis.severity,
+      sensitivity: analysis.sensitivity,
+      poc_role: analysis.poc_role,
+    }
+  );
+  writeAudit({ name: "CS AI" }, "CS_AI_ANALYZE", "cs_request", row.request_id, {
+    category: analysis.category,
+    severity: analysis.severity,
+    sensitivity: analysis.sensitivity,
+    poc_role: analysis.poc_role,
+  });
+  if (row.skill_code === CS_SKILL_CODES.escalateRisk || analysis.severity === "CRITICAL") {
+    return escalateToRisk(row.id, zh ? "CS／TR AI" : "CS/TR AI", locale);
+  }
+  if (analysis.sensitivity === "auto") {
+    if (!alreadySentAutoAnalysis(db, row.id)) {
+      sendAnalysisReply(row.id, analysis.draft, locale, db, { auto: true });
+    }
+    const deskNow = db.prepare(`SELECT desk FROM cs_requests WHERE id = ?`).get(row.id) as { desk: string };
+    if (deskNow.desk !== "TR") {
+      db.prepare(`UPDATE cs_requests SET status = 'AI_REPLIED', updated_at = datetime('now') WHERE id = ?`).run(row.id);
+    }
+    return getCsRequest(row.id);
+  }
+  const cur = db.prepare(`SELECT desk, status FROM cs_requests WHERE id = ?`).get(row.id) as {
+    desk: string;
+    status: string;
+  };
+  if (cur.desk !== "TR" && cur.status !== "ESCALATED_RISK") {
+    db.prepare(`UPDATE cs_requests SET status = 'POC_REVIEW', updated_at = datetime('now') WHERE id = ?`).run(row.id);
+  }
+  writeAudit({ name: analysis.poc_name || "CS AI" }, "CS_POC_REVIEW", "cs_request", row.request_id, {
+    poc_role: analysis.poc_role,
+    poc_name: analysis.poc_name,
+  });
+  return getCsRequest(row.id);
+}
+
+function sendAnalysisReply(
+  requestDbId: number,
+  body: string,
+  locale: UiLocale,
+  db: Database.Database,
+  opts: { auto: boolean; extra?: string }
+) {
+  const zh = locale === "zh-Hant";
+  const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(requestDbId) as CsRequest | undefined;
+  if (!row) throw new Error("Request not found");
+  const extra = String(opts.extra || "").trim();
+  const full = extra
+    ? zh
+      ? `${body}\n\n—— 值班補註 ——\n${extra}`
+      : `${body}\n\n—— POC addendum ——\n${extra}`
+    : body;
+  const subject = zh ? `關於案件 ${row.request_id}` : `Regarding request ${row.request_id}`;
+  addMessage(db, row.id, "EMAIL_OUT", zh ? "官方信箱（AI）" : "Official mailbox (AI)", full, {
+    to: row.client_email,
+    subject,
+    auto_analysis: opts.auto,
+    poc_addendum: extra || undefined,
+    mock: true,
+  });
+  writeAudit({ name: opts.auto ? "CS AI" : row.poc_name || "CS POC" }, opts.auto ? "CS_AI_REPLY" : "CS_POC_RELEASE", "cs_request", row.request_id, {
+    auto: opts.auto,
+  });
+}
+
+export function releasePocDraft(
+  input: { request_id: number; extra?: string; user_name: string; locale?: UiLocale },
+  db: Database.Database = getDb()
+) {
+  ensureCsSchema(db);
+  const locale = input.locale || "en";
+  const zh = locale === "zh-Hant";
+  const row = db.prepare(`SELECT * FROM cs_requests WHERE id = ?`).get(input.request_id) as CsRequest | undefined;
+  if (!row) throw new Error("Request not found");
+  if (row.sensitivity !== "poc" && row.status !== "POC_REVIEW") {
+    throw new Error(zh ? "此案件不是 POC 審閱件，無需放行草稿。" : "This request is not in POC review.");
+  }
+  if (!row.ai_draft) throw new Error(zh ? "尚無 AI 草稿可放行。" : "No AI draft to release.");
+  sendAnalysisReply(row.id, row.ai_draft, locale, db, { auto: false, extra: input.extra });
+  if (row.desk !== "TR" && row.status !== "ESCALATED_RISK") {
+    db.prepare(`UPDATE cs_requests SET status = 'AI_REPLIED', updated_at = datetime('now') WHERE id = ?`).run(row.id);
+  }
+  addMessage(
+    db,
+    row.id,
+    "SYSTEM",
+    input.user_name,
+    zh
+      ? `POC ${input.user_name} 已審閱並補註後寄出 AI 草稿。`
+      : `POC ${input.user_name} reviewed the AI draft, added detail, and sent it.`
+  );
   return getCsRequest(row.id);
 }
 

@@ -10,6 +10,10 @@ export const CS_AUDIT_ACTIONS = [
   "CS_AGENT_REPLY",
   "CS_ASSIGN_TR",
   "CS_ESCALATE_RISK",
+  "CS_AI_ANALYZE",
+  "CS_AI_REPLY",
+  "CS_POC_REVIEW",
+  "CS_POC_RELEASE",
   "CS_RESOLVE",
 ] as const;
 
@@ -43,6 +47,8 @@ export type CsDashboard = {
     id_verify: number;
     assigned_tr: number;
     escalated_risk: number;
+    poc_review: number;
+    ai_replied: number;
     cap3: number;
     cs_desk: number;
     tr_desk: number;
@@ -52,6 +58,7 @@ export type CsDashboard = {
   by_skill: CsCountBucket[];
   by_desk: CsCountBucket[];
   by_clarity: CsCountBucket[];
+  by_severity: CsCountBucket[];
   waiting: CsDashRow[];
   recent: CsDashRow[];
 };
@@ -136,6 +143,8 @@ export function getCsDashboard(): CsDashboard {
     id_verify: requests.filter((r) => r.status === "ID_VERIFY").length,
     assigned_tr: requests.filter((r) => r.status === "ASSIGNED_TR" || r.desk === "TR").length,
     escalated_risk: requests.filter((r) => r.status === "ESCALATED_RISK").length,
+    poc_review: requests.filter((r) => r.status === "POC_REVIEW" || r.sensitivity === "poc").length,
+    ai_replied: requests.filter((r) => r.status === "AI_REPLIED").length,
     cap3: requests.filter((r) => r.followup_count >= getCsFollowupCap()).length,
     cs_desk: requests.filter((r) => r.desk === "CS").length,
     tr_desk: requests.filter((r) => r.desk === "TR").length,
@@ -153,6 +162,7 @@ export function getCsDashboard(): CsDashboard {
     by_skill: buckets(requests, (r) => r.skill_code || "—"),
     by_desk: buckets(requests, (r) => r.desk),
     by_clarity: buckets(requests, (r) => r.ai_clarity),
+    by_severity: buckets(requests, (r) => r.severity || "—"),
     waiting,
     recent,
   };

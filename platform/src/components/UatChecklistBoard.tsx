@@ -234,7 +234,7 @@ export function UatChecklistBoard({ lang }: { lang: "en" | "zh-Hant" }) {
                 : `Primary ${csTr.primary} · support ${csTr.support} · ${csTr.total} total. Click a row to jump to that case. This is the feature catalogue for the door, playbooks, dashboard, log and supporting data — not extra numbered cases.`}
             </p>
           </div>
-          <Badge className="bg-teal-50 text-teal-900 border-teal-200">v2.6</Badge>
+          <Badge className="bg-teal-50 text-teal-900 border-teal-200">v2.7</Badge>
         </div>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-xs min-w-[36rem]">

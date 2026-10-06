@@ -1,6 +1,6 @@
 # CRMP UAT 驗收包 — 風險負責人
 
-**文件編號：** CRMP-UAT-001 · **版次：** 2.6 · **日期：** 2026-10-06 · **互動示範頁：** [/admin/docs/uat](/admin/docs/uat)
+**文件編號：** CRMP-UAT-001 · **版次：** 2.7 · **日期：** 2026-10-06 · **互動示範頁：** [/admin/docs/uat](/admin/docs/uat)
 
 **範圍：** 只升級 CRMP Plus（`/PRD/crmp-plus/`）。原 CRMP 管理後台（`/PRD/crmp-admin/`）維持凍結。
 
@@ -11,11 +11,11 @@
 ## 時間模型
 - `T+0` = 風險負責人開始 UAT。
 - 各案有建議起始偏移與工期。
-- Full pack suggested window ≈ **10.1 小時**（51 案；不使用 UAT-45）。
+- Full pack suggested window ≈ **10.3 小時**（52 案；不使用 UAT-45）。
 
 ## 涵蓋範圍
 
-Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及 **CS／TR 台**（C1 即時聊天、網頁表單、官方信箱進件；專用 SKILL.md 劇本；AI 追問直到客戶回覆，上限來自 `cs.followup_cap`；TR 分流；**儀表板、日誌與配套資料**）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效（**不是** CS／TR 儀表板）、風險日誌（**不是** CS_* 日誌）、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark（`oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`）、升級路徑（維度 × 係數 · ESC-DEFAULT · ESC-CS-24-7 · ESC-CS-KYC · ESC-TR-DEAL · ESC-CS-RISK）、BU 與團隊（CS 核身庫嵌在客服底下）／可編輯角色／使用者、資料來源（核身庫旗標＋MT4／MT5 成交帶）、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定（`cs.*` 分組）、使用手冊 §9.3／PRD §6.5／TSD §17／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字（含 CS／TR 畫面）。
+Messenger（收件匣、證據、聊天挑戰、升級、誤報、結案、建議控制、同步、結案後狀態）以及 **CS／TR 台**（C1 即時聊天、網頁表單、官方信箱進件；專用 SKILL.md 劇本；AI 追問直到客戶回覆，上限來自 `cs.followup_cap`；**分類／嚴重度／直回 vs 具名 POC**；TR 分流；**儀表板、日誌與配套資料**）以及管理後台每一個左側頁：首頁（脊柱階段工單計數 — 無脊柱日誌分頁）、每日績效（**不是** CS／TR 儀表板）、風險日誌（**不是** CS_* 日誌）、Monitor 2.0、市場情報、即時警報與追蹤、風險領域、AI Admin、技能、知識樹、RAG（人工閘道）、人工介入、Lark（`oc_cs_c1`／`oc_cs_kyc`／`oc_tr_dealing`）、升級路徑（維度 × 係數 · ESC-DEFAULT · ESC-CS-24-7 · ESC-CS-KYC · ESC-TR-DEAL · ESC-CS-RISK）、BU 與團隊（CS 核身庫嵌在客服底下）／可編輯角色／使用者、資料來源（核身庫旗標＋MT4／MT5 成交帶）、AI 存取、稽核（CRMP／Vantage Markets 管理分頁＋回滾）、平台設定（`cs.*` 分組含 `cs.auto_reply_max_severity`）、使用手冊 §9.3／PRD §6.5／TSD §17／UAT／生態／路線圖／開放議題／進度／網址目錄、登入與未讀數字（含 CS／TR 畫面）。
 
 ```mermaid
 graph TD
@@ -31,13 +31,14 @@ graph TD
   Tr --> Skills[UAT-50 技能與樹]
   Skills --> Dash[UAT-51 儀表板與日誌]
   Dash --> Data[UAT-52 配套資料]
-  Data --> Sign[UAT-49 簽核]
+  Data --> Analyze[UAT-53 分類 POC]
+  Analyze --> Sign[UAT-49 簽核]
   Docs --> Sign
 ```
 
 ## CS／TR 功能目錄
 
-互動雙生：在 [/admin/docs/uat](/admin/docs/uat) 篩選 **CS／TR**（`data-testid="uat-cs-catalogue"`）。七則**主案**證明新功能。十則**支援案**證明其餘桌面仍點到這些畫面。
+互動雙生：在 [/admin/docs/uat](/admin/docs/uat) 篩選 **CS／TR**（`data-testid="uat-cs-catalogue"`）。八則**主案**證明新功能。十則**支援案**證明其餘桌面仍點到這些畫面。
 
 | 種類 | ID | 功能 | 畫面／網址 | FR |
 |---|---|---|---|---|
@@ -48,6 +49,7 @@ graph TD
 | 主案 | UAT-50 | 專用 SKILL.md 劇本、`CS_SERVICE`／`TRADING_EXEC` 知識樹 | CS／TR 台、AI 技能、知識樹、RAG | FR-39 |
 | 主案 | UAT-51 | 專用 CS／TR 儀表板與日誌（不是每日績效／風險日誌） | `/admin/cs-dashboard`、`/admin/cs-log` | FR-44 |
 | 主案 | UAT-52 | 配套資料：BU、CS 核身庫、四條關卡、`cs.*` 參數 | `/admin/cs-data`、設定、BU 與團隊、升級路徑 | FR-45 |
+| 主案 | UAT-53 | 分類、嚴重度、AI 方案，直回 vs 具名 POC 審閱 | CS／TR 台、CS／TR 儀表板、平台設定 | FR-46 |
 | 支援 | UAT-17 | 英／繁文件含使用手冊 §9.3 與本目錄 | 使用手冊、PRD、TSD、UAT 清單 | FR-43 |
 | 支援 | UAT-22 | CS／TR 台、儀表板、日誌、資料的未讀徽章 | 管理首頁、CS／TR 畫面 | FR-37 |
 | 支援 | UAT-27 | 首頁捷徑到 CS／TR 台、儀表板、日誌、資料與 `/cs` | 管理首頁 | FR-37 |
@@ -127,7 +129,8 @@ graph TD
 | 50 | UAT-50 | 523m | 12m | High | CS + AI | UAT-46; skills + RAG seeded | CS／TR — 專用 SKILL.md 劇本蓋台面並豐富知識樹 | CS / TR Desk, AI Skills, Knowledge Tree, RAG Knowledge Base |
 | 51 | UAT-51 | 535m | 12m | High | CS | UAT-46; CS/TR dashboard + log seeded | CS／TR — 專用儀表板與日誌，不是每日績效或風險日誌 | CS / TR Dashboard, CS / TR Log |
 | 52 | UAT-52 | 547m | 12m | High | CS + System | UAT-46; CS/TR org + settings seeded | CS／TR — 配套資料：BU、核身庫、關卡與 cs.* 參數 | CS / TR Data, Platform Settings, BU and Teams, Escalation Routes |
-| 49 | UAT-49 | 559m | 15m | Critical | Risk Owner | UAT-01–52 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
+| 53 | UAT-53 | 559m | 12m | High | CS + TR | UAT-47; facts collected after wait loop | CS／TR — 分類、嚴重度、AI 方案，直回 vs POC 審閱 | CS / TR Desk, CS / TR Dashboard, Platform Settings |
+| 49 | UAT-49 | 571m | 15m | Critical | Risk Owner | UAT-01–53 results recorded | 風險負責人退出簽核 | UAT Checklist, Audit Log |
 
 ## 逐步案例
 
@@ -1030,9 +1033,28 @@ graph TD
 **通過：** cs-data 顯示兩個 BU、CS 核身庫、四條關卡（含 ESC-CS-KYC），cs.* 與設定相符。GET ?view=data 一致。繁中介面齊全。
 **證據：** `/admin/cs-data` 的 BU＋關卡＋cs.* 指標截圖，加上設定的 CS／TR 分組。
 
+### UAT-53 — CS／TR — 分類、嚴重度、AI 方案，直回 vs POC 審閱
+
+- **嚴重度：** High · **負責：** CS + TR · **依賴：** UAT-47; facts collected after wait loop · **建議：** T+559m / 12m
+- **涵蓋：** CS / TR Desk, CS / TR Dashboard, Platform Settings, CS / TR Data, CS / TR Log
+- **為何測：** 資料齊全後台面不可猜。必須分類、給嚴重度、起草方案與客戶回覆，再依敏感度直寄（低敏感 FAQ）或交給具名 POC 補細節後才寄。
+- **目的：** 證明資料齊全會觸發啟發式 AI 分析：類別＋LOW|MEDIUM|HIGH|CRITICAL、方案與草稿，再依 `cs.auto_reply_max_severity` 與 `cs.sensitive_categories` 直回或 POC_REVIEW。
+
+**步驟**
+
+1. 開啟清楚 FAQ（種子 Liam 隔夜利息，或進一件已齊的利息／時段問題）。台面顯示類別、嚴重度 LOW、敏感度可直回、狀態 `AI_REPLIED`，以及官方 EMAIL_OUT FAQ 草稿。儀表板有 AI 已回與 LOW 嚴重度桶。
+2. 過短「help me ???」維持待客戶＋WAITING 信件。Analyze／再分流在資料未齊前不得直寄方案。
+3. 在核身案模擬客戶回覆（≥48 字且含 UID）。狀態變 `POC_REVIEW`，具名 CS Agent POC。草稿不得複述證件圖。核身仍僅旗標。
+4. 在該案輸入 POC 補註並寄出（`poc_release`）。EMAIL_OUT 含「POC 補註」、狀態 `AI_REPLIED`、稽核 `CS_POC_RELEASE`。
+5. 交易種子（Chen Wei 滑點）維持 `ASSIGNED_TR`、敏感度 poc — 具名 TR Dealer；CS 不改價。帳簿風險／CRITICAL 仍升級風控（不直寄客戶）。
+6. 平台設定 `#settings-cs` 列出 `cs.auto_reply_max_severity`（MEDIUM）與 `cs.sensitive_categories`（complaint,kyc,trading）。CS／TR 資料磁磚相符。切換繁中：嚴重度／POC 審閱標籤。
+
+**通過：** FAQ 以 LOW 直回。過短仍等待。齊全核身交具名 POC 補細節後寄出。TR 維持已派。CRITICAL／帳簿風險升級。繁中介面齊全。
+**證據：** AI_REPLIED FAQ、POC_REVIEW 核身含補註、設定 `cs.auto_reply_max_severity`＋`cs.sensitive_categories` 截圖。
+
 ### UAT-49 — 風險負責人退出簽核
 
-- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–52 results recorded · **建議：** T+559m / 15m
+- **嚴重度：** Critical · **負責：** Risk Owner · **依賴：** UAT-01–53 results recorded · **建議：** T+571m / 15m
 - **涵蓋：** UAT Checklist, Audit Log
 - **為何測：** 在有權的人寫下 ACCEPT／ACCEPT WITH WAIVERS／REJECT 之前，UAT 不算結束。
 - **目的：** 依退出規則統計 Critical／High，並存簽署決策。
@@ -1041,7 +1063,7 @@ graph TD
 
 1. 統計 Critical（含登入、雙 AI、Messenger 結案、Maker≠Checker、公開登入、CS／TR 追問迴圈）必須全過。
 2. 統計 High：最多兩項 WAIVE，每項附一句書面風險接受。
-3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）、CS／TR 專用技能與知識樹（UAT-50）、CS／TR 儀表板與日誌（UAT-51）、CS／TR 配套資料（UAT-52）通過。
+3. 確認雙 AI 覆蓋（UAT-19）、技能進入（UAT-20）、Messenger 證據（UAT-07）、公開登入（UAT-43）、CS／TR 進件與追問（UAT-46、UAT-47）、CS／TR 專用技能與知識樹（UAT-50）、CS／TR 儀表板與日誌（UAT-51）、CS／TR 配套資料（UAT-52）、CS／TR 分析＋POC 閘道（UAT-53）通過。
 4. 記錄總決：ACCEPT／ACCEPT WITH WAIVERS／REJECT，日期與 demo platform owner（或授權風險負責人）。
 5. 將證據包連結記入稽核備註／交给 PM。本頁 PASS／FAIL 只是現場勾選，不是簽核。
 
@@ -1054,10 +1076,11 @@ graph TD
 2. **High** 豁免不超過 2 項，且須書面風險接受。
 3. UAT 視窗內 BREACH／CRITICAL **100%** 附第二 AI（UAT-19）。
 4. 完成 **UAT-49** 簽核（ACCEPT／ACCEPT WITH WAIVERS／REJECT）。
-5. CS／TR 主案（UAT-25、46、47、48、50、51、52）必須 Pass；支援案（17／22／27–29／36–40）須證明新畫面仍被點到。
+5. CS／TR 主案（UAT-25、46、47、48、50、51、52、53）必須 Pass；支援案（17／22／27–29／36–40）須證明新畫面仍被點到。
 
 ## 文件控制
 
 | 版次 | 日期 | 說明 |
 |---|---|---|
 | 2.6 | 2026-10-06 | CS／TR 功能目錄：台面、/cs、等待迴圈、技能、儀表板、日誌、資料、關卡、cs.*；互動 CS／TR 篩選；英／繁 |
+| 2.7 | 2026-10-06 | UAT-53 分類／嚴重度／AI 方案／直回 vs 具名 POC；52 案；目錄主案 8；FR-46 |

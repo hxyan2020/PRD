@@ -168,6 +168,7 @@ flowchart LR
 - [x] Inbound replies match CSR-XXXX / channel_ref / In-Reply-To and close WAITING auto-mail  
 - [x] Prototype CS/TR dashboard + log on seed cases (UAT-51)  
 - [x] Prototype CS/TR data: hops, `cs.*`, KYC vault team (UAT-52)  
+- [x] Prototype AI categorize + severity + auto vs POC after collected facts (UAT-53)  
 - [x] Sandbox UAT against C1 staging (UAT-46) — prototype desk  
 - [ ] Replace demo-c1 token with signed C1 webhook + replay protection  
 - [ ] Website / app form HMAC into the same intake API  
@@ -188,6 +189,7 @@ flowchart LR
 - [x] Prototype CS KYC Vault team nested under Customer Service (UAT-38)  
 - [x] Prototype ESC-CS-KYC hop + SKILL-CS-ID-VERIFY flags-only KYC (no ID images)  
 - [x] Prototype TR routing + ESCALATED_RISK on the desk (UAT-48)  
+- [x] Prototype collected KYC holds for a named POC (not auto-reply) (UAT-53)  
 - [x] MT4/MT5 dealing tape listed on Data Sources / CS-TR Data (UAT-39)  
 - [ ] Production KYC document vault + UID match; ID-verify stays open until reply or CS Lead waiver  
 - [ ] Production auto-follow-up mailer (unclear / need_id) with `cs.followup_cap`  

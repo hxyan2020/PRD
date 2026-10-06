@@ -83,6 +83,8 @@ export type CsOpsParams = {
   lark_cs: string;
   lark_kyc: string;
   lark_tr: string;
+  auto_reply_max_severity: string;
+  sensitive_categories: string;
 };
 export type CsOpsContract = {
   generated_at: string;
@@ -283,6 +285,8 @@ export function getCsOpsContract(db: Database.Database = getDb()): CsOpsContract
     lark_cs: map.get("cs.lark_cs") || "oc_cs_c1",
     lark_kyc: map.get("cs.lark_kyc") || "oc_cs_kyc",
     lark_tr: map.get("cs.lark_tr") || "oc_tr_dealing",
+    auto_reply_max_severity: map.get("cs.auto_reply_max_severity") || "MEDIUM",
+    sensitive_categories: map.get("cs.sensitive_categories") || "complaint,kyc,trading",
   };
 
   return {

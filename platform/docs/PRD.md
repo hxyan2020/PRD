@@ -6,7 +6,7 @@
 **Owner:** demo platform owner · **Approver:** Risk Owner  
 **Related:** [TSD](/admin/docs/tsd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat) · [Ecosystem Eval](/admin/docs/ecosystem)
 
-This PRD is the product contract for **every screen and feature currently in CRMP Plus** (original CRMP Admin plus 24/7 CS/TR). That includes the public client door at [`/cs`](/cs), the three realtime connectors (C1 live chat, website form, official mailbox), the auto-email wait loop, dedicated CS/TR SKILL.md playbooks, a **separate CS/TR dashboard and log** (not Daily Performance / Risk Log), the **CS/TR data contract** (BU / team / escalation hops / `cs.*` parameters), and the [URL Catalog](/admin/docs/urls) CS/TR section. Operator how-tos live in the [User Guide](/admin/docs/user-guide) (§9.3). Build detail lives in the [TSD](/admin/docs/tsd) (§17). Sign-off cases are [UAT-01 … UAT-52](/admin/docs/uat) (CS/TR: UAT-46…52).
+This PRD is the product contract for **every screen and feature currently in CRMP Plus** (original CRMP Admin plus 24/7 CS/TR). That includes the public client door at [`/cs`](/cs), the three realtime connectors (C1 live chat, website form, official mailbox), the auto-email wait loop, **categorize / severity / AI solution with auto-reply or named POC review**, dedicated CS/TR SKILL.md playbooks, a **separate CS/TR dashboard and log** (not Daily Performance / Risk Log), the **CS/TR data contract** (BU / team / escalation hops / `cs.*` parameters), and the [URL Catalog](/admin/docs/urls) CS/TR section. Operator how-tos live in the [User Guide](/admin/docs/user-guide) (§9.3). Build detail lives in the [TSD](/admin/docs/tsd) (§17). Sign-off cases are [UAT-01 … UAT-53](/admin/docs/uat) (CS/TR: UAT-46…53).
 
 ---
 
@@ -208,7 +208,7 @@ graph LR
 2. AI stamps a dedicated skill (`SKILL-CS-CLARIFY` or `SKILL-CS-ID-VERIFY` when thin or ID is the ask).  
 3. Desk sends **one** auto-email (`EMAIL_OUT`) and holds `AWAITING_CLIENT` / `ID_VERIFY` with follow-up **WAITING** (cap 3). Resolve is blocked.  
 4. Client replies with `CSR-XXXX` in the subject, the same `channel_ref`, `in_reply_to`, or `request_id`. Intake **continues** the ticket — it does not open a duplicate.  
-5. AI re-triages. If still thin, another mail (until cap); if clear, OPEN / FAQ / TR / Risk.
+5. AI re-triages. If still thin, another mail (until cap); if facts are collected, categorize + severity + AI draft (auto-reply or POC review).
 
 ```mermaid
 graph TD
@@ -217,7 +217,9 @@ graph TD
   Wait -->|CSR or C1 reply| Again[AI re-triage]
   Wait -->|cap 3| Lead[CS Lead human]
   Again -->|still thin| Mail
-  Again -->|clear enough| Open[OPEN or ASSIGNED_TR]
+  Again -->|facts collected| Analyze[Categorize plus severity]
+  Analyze -->|auto FAQ| Replied[AI_REPLIED]
+  Analyze -->|sensitive| Poc[POC_REVIEW]
 ```
 
 ### 5.8 Skill stamp → CS auto-reply, TR, or Risk
@@ -238,6 +240,21 @@ graph TD
 1. Operator opens [URL Catalog](/admin/docs/urls).  
 2. Reads the CS/TR cheat (`/cs`, intake API, CSR-XXXX).  
 3. Opens `/cs`, `/admin/cs-desk`, a SKILL-CS-* playbook, or `GET /api/cs/intake` from the **CS / TR** section (UAT-25).
+
+### 5.10 Collected facts → categorize, severity, auto-reply or POC
+1. Wait-loop facts are complete (clarity `clear`, or a collected reply ≥48 characters with a UID).  
+2. Heuristic AI (`analyzeCsRequest`) categorises the issue and assigns **LOW / MEDIUM / HIGH / CRITICAL**.  
+3. It drafts a detailed solution and a client reply.  
+4. Sensitivity from `cs.auto_reply_max_severity` (default MEDIUM) and `cs.sensitive_categories` (complaint, kyc, trading): FAQ at or below the cap **auto-replies** (`AI_REPLIED`); KYC / complaint / trading **hold for a named POC** who adds detail then sends (`POC_REVIEW` → `AI_REPLIED`); CRITICAL / book-risk still **Escalate to Risk** (no client auto-mail). Trading stays `ASSIGNED_TR`.
+
+```mermaid
+graph TD
+  Facts[Facts collected] --> Score[Category plus severity]
+  Score -->|FAQ auto| Send[AI_REPLIED EMAIL_OUT]
+  Score -->|sensitive| Poc[POC_REVIEW]
+  Poc -->|addendum| Send
+  Score -->|CRITICAL| Esc[ESCALATED_RISK]
+```
 
 ---
 
@@ -280,7 +297,7 @@ graph TD
 | FR-29 | Unread nav badges | Badge = max(0, total+extra−seen); clears on view; bumps on new work |
 | FR-30 | Login persist on Pages | Sign in as named persona; session survives refresh; Sign in link under `/PRD/crmp-plus/login/` (no 404) |
 | FR-31 | Grouped left nav + Vantage logo | Seven groups; EN/繁中 labels; owner line |
-| FR-32 | UAT interactive pack | UAT-01…UAT-52 with why/steps/pass/evidence and screen coverage |
+| FR-32 | UAT interactive pack | UAT-01…UAT-53 with why/steps/pass/evidence and screen coverage |
 | FR-33 | Data sources registry | Internal + external catalogue; manage on localhost |
 | FR-34 | Risk domains catalogue | CFD + crypto domains with P0–P3 scenarios, owner / supporting BUs, M2-* chips |
 | FR-35 | How-to-improve review + chatbot | Every AI analysis (all severities) produces DATA_SOURCE / INDICATOR_HEALTH / REASONING_GAP / SKILL_PATTERN / THRESHOLD / RESPONSE_TIME items; chatbot pull/add-fact/challenge/regenerate until SATISFIED |
@@ -290,9 +307,10 @@ graph TD
 | FR-40 | Public CS intake portal + inbound replies | Client `/cs` tabs (C1, form, official email) post to `/api/cs/intake`; GET connector catalog; replies match `request_id` / `in_reply_to` / `channel_ref` / `CSR-XXXX` and continue the ticket. Permanent URL `https://hxyan2020.github.io/PRD/crmp-plus/cs/`. |
 | FR-41 | Auto-email wait loop | Unclear or need-ID → one `EMAIL_OUT`, status `AWAITING_CLIENT` or `ID_VERIFY`, follow-up `WAITING`; cap from `cs.followup_cap` (default 3) then CS Lead; **Resolve blocked** while WAITING. UAT-47. |
 | FR-42 | CS/TR privacy + public status | `GET /api/cs/intake?request_id=` returns status without PII; never store ID images on the request; ID vault is process, not a blob. UAT-49. |
-| FR-43 | CS/TR operator docs | User Guide §9.3; URL Catalog **CS / TR** section (`/cs`, desk, dashboard, log, data, five skills, RAG leaves, intake API, `cs_*` tables); UAT catalogue v2.6 (UAT-25 + UAT-46…52 + support 17/22/27–29/36–40) |
+| FR-43 | CS/TR operator docs | User Guide §9.3; URL Catalog **CS / TR** section (`/cs`, desk, dashboard, log, data, five skills, RAG leaves, intake API, `cs_*` tables); UAT catalogue v2.7 (UAT-25 + UAT-46…53 + support 17/22/27–29/36–40) |
 | FR-44 | CS/TR dashboard + log | Dedicated `/admin/cs-dashboard` (KPIs: totals, open/resolved, WAITING, follow-up cap, TR, Risk, by channel/status/skill/desk) and `/admin/cs-log` (CS_* timeline + resolved packs). **Not** Daily Performance (`/admin/dashboard`) and **not** Risk Log Analytics (`/admin/risk-log`). `GET /api/cs?view=dashboard\|log`. UAT-51. |
 | FR-45 | CS/TR supporting data | Seeded and surfaced: CUSTOMER_SERVICE / TRADING BUs; teams CS 24/7 Desk, **CS KYC Vault**, TR Dealing Support; named POCs; hops `ESC-CS-24-7` / `ESC-CS-KYC` / `ESC-TR-DEAL` / `ESC-CS-RISK`; `cs.*` parameters (cap, SLA, intake token, mailboxes, Lark ids); C1/form/mailbox + KYC vault + dealing-tape sources. Page `/admin/cs-data`, `GET /api/cs?view=data`. UAT-52. |
+| FR-46 | Categorize, severity, AI solution, auto vs POC | After collected facts: category + LOW\|MEDIUM\|HIGH\|CRITICAL; heuristic solution + client draft; auto-reply when sensitivity `auto` (`AI_REPLIED`); otherwise named POC adds detail before send (`POC_REVIEW`). Gates: `cs.auto_reply_max_severity`, `cs.sensitive_categories`. CRITICAL / book-risk still escalate. Prototype — no live LLM. UAT-53. |
 
 ### 6.3 P2 — later (ecosystem phases)
 
@@ -324,7 +342,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag; CS_POLICY docs |
 | Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
 | Response | Demo Messenger | `/admin/messenger` | Chat-native triage with bird-eye POC windows | Path chips, per-POC chats, sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
-| Response | CS / TR Desk | `/admin/cs-desk` | 24/7 C1, form and mailbox intake | Three channels; public `/cs` portal; inbound CSR-XXXX replies; dedicated skill chip; wait loop cap 3; TR routing; escalate to Risk |
+| Response | CS / TR Desk | `/admin/cs-desk` | 24/7 C1, form and mailbox intake | Three channels; public `/cs` portal; inbound CSR-XXXX replies; dedicated skill chip; wait loop cap 3; categorize / severity / auto vs POC; TR routing; escalate to Risk |
 | Response | CS / TR Dashboard | `/admin/cs-dashboard` | CS/TR volume and wait-loop health | Separate from Daily Performance; WAITING / cap-3 / TR / Risk KPIs; by channel, status, skill, desk |
 | Response | CS / TR Log | `/admin/cs-log` | CS_* timeline and resolved packs | Separate from Risk Log; filter CS_INTAKE … CS_RESOLVE; resolved request packs |
 | Response | CS / TR Data | `/admin/cs-data` | BU, team, hops, parameters | Live contract; links to org / escalation / settings / sources / Lark |
@@ -338,9 +356,9 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | Platform | Audit Log | `/admin/audit` | CRMP vs Vantage Markets Admin planes | Two tabs; Roll back via before-state snapshot |
 | Platform | Platform Settings | `/admin/settings` | Flags | Grouped keys including **cs.***; save |
 | Docs | User Guide | `/admin/docs/user-guide` | How to operate | EN + zh-Hant; every screen plus §9.3 CS/TR |
-| Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document (FR-37…45, G13, §5.7–5.9, §6.5) |
+| Docs | PRD | `/admin/docs/prd` | Why / what / accept | This document (FR-37…46, G13, §5.7–5.10, §6.5) |
 | Docs | TSD | `/admin/docs/tsd` | How built | Surface map complete |
-| Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 51 cases, interactive (UAT-46…52 CS/TR; catalogue v2.6) |
+| Docs | UAT Checklist | `/admin/docs/uat` | Sign-off | 52 cases, interactive (UAT-46…53 CS/TR; catalogue v2.7) |
 | Docs | Ecosystem Eval | `/admin/docs/ecosystem` | Adoption | Phases, budget, risks |
 | Docs | Improvement Roadmap | `/admin/docs/roadmap` | Next | RM-01…15: today / build / done-when |
 | Docs | Open Issues | `/admin/docs/open-issues` | Programme gaps | 20 issues; CS/TR catalogue v1.5 on OI-19/20 |
@@ -364,7 +382,7 @@ This door ships **only** on CRMP Plus (`/PRD/crmp-plus/`). Original CRMP Admin a
 | `WEB_FORM` | Website / app contact form + `/cs` Submission tab | Same webhook. `channel_ref` = form submission id. |
 | `OFFICIAL_EMAIL` | Official support / complaints mailbox + `/cs` Official email tab | Same webhook. Subject may carry `CSR-XXXX`. |
 
-`GET /api/cs/intake` returns this catalog. Operator `/api/cs` is **not** the public ingest — it is desk actions (triage / followup / client_reply / reply / assign_tr / escalate_risk / resolve / simulate_*) plus `GET ?view=dashboard|log|data`.
+`GET /api/cs/intake` returns this catalog. Operator `/api/cs` is **not** the public ingest — it is desk actions (triage / analyze / followup / client_reply / reply / assign_tr / escalate_risk / resolve / poc_release / simulate_*) plus `GET ?view=dashboard|log|data`.
 
 #### Continuation — must not open a duplicate
 
@@ -392,7 +410,7 @@ Public ticket status has **no PII**. ID images are not stored on `cs_requests`. 
 
 #### Docs (FR-43)
 
-Operators must find the door without guessing: URL Catalog CS/TR section, User Guide §9.3, UAT-25 / UAT-46…52.
+Operators must find the door without guessing: URL Catalog CS/TR section, User Guide §9.3, UAT-25 / UAT-46…53.
 
 #### Dedicated dashboard + log (FR-44)
 
@@ -400,7 +418,11 @@ CS/TR volume and wait-loop health live on `/admin/cs-dashboard`. CS_* audit plus
 
 #### Supporting data (FR-45)
 
-The desk, dashboard and log must read the same operational records: CUSTOMER_SERVICE and TRADING BUs; teams **CS 24/7 Desk**, **CS KYC Vault**, **TR Dealing Support**; named POCs; hops `ESC-CS-24-7` (clarify/FAQ), `ESC-CS-KYC` (ID verify), `ESC-TR-DEAL` (execution), `ESC-CS-RISK` (book-risk); `cs.*` parameters (`followup_cap`, wait/TR/Risk SLA, intake token, support@ / complaints@, Lark chat ids). `/admin/cs-data` is the contract page. `GET /api/cs?view=data` returns the live payload. ID images stay off `cs_requests` — the KYC vault is status flags only.
+The desk, dashboard and log must read the same operational records: CUSTOMER_SERVICE and TRADING BUs; teams **CS 24/7 Desk**, **CS KYC Vault**, **TR Dealing Support**; named POCs; hops `ESC-CS-24-7` (clarify/FAQ), `ESC-CS-KYC` (ID verify), `ESC-TR-DEAL` (execution), `ESC-CS-RISK` (book-risk); `cs.*` parameters (`followup_cap`, `auto_reply_max_severity`, `sensitive_categories`, wait/TR/Risk SLA, intake token, support@ / complaints@, Lark chat ids). `/admin/cs-data` is the contract page. `GET /api/cs?view=data` returns the live payload. ID images stay off `cs_requests` — the KYC vault is status flags only.
+
+#### Categorize / severity / auto vs POC (FR-46)
+
+After the wait loop has enough facts, AI **must** categorise, assign severity, and draft a solution plus a client reply. Low-sensitivity FAQ may send immediately (`AI_REPLIED`). Sensitive categories and severity above `cs.auto_reply_max_severity` hold for a **named POC** who adds detail before send (`POC_REVIEW`). CRITICAL / book-risk never auto-mail the client. Prototype heuristic — no live LLM on this path.
 
 ---
 
@@ -419,6 +441,7 @@ The desk, dashboard and log must read the same operational records: CUSTOMER_SER
 | NFR-09 | Session | Demo persona persists in `localStorage` + cookie on Pages |
 | NFR-10 | CS wait loop | Auto-mail cap from `cs.followup_cap` (default 3); Resolve blocked while WAITING; inbound match must continue, not duplicate |
 | NFR-11 | CS privacy | No ID images on `cs_requests`; `/cs` and public GET status stay PII-light |
+| NFR-12 | CS sensitivity gate | Auto-reply only when severity ≤ `cs.auto_reply_max_severity` and category is not in `cs.sensitive_categories`; POC addendum required otherwise |
 
 ---
 
@@ -444,9 +467,10 @@ The desk, dashboard and log must read the same operational records: CUSTOMER_SER
 17. **Catalog:** URL Catalog CS/TR section lists `/cs`, desk, dashboard, log, data, five playbooks, RAG leaves and `/api/cs/intake` (UAT-25).  
 18. **CS dashboard + log:** `/admin/cs-dashboard` shows CS/TR KPIs (not Daily Performance). `/admin/cs-log` shows CS_* events and resolved packs (not Risk Log). UAT-51.  
 19. **Privacy:** Public status GET has no PII; ID images are not on the ticket (UAT-49).  
-20. **Supporting data:** `/admin/cs-data` shows CS/TR BUs, CS KYC Vault, four escalation hops including `ESC-CS-KYC`, and `cs.*` parameters; Platform Settings has a CS/TR group; desk/dashboard consume the live cap. UAT-52.
+20. **Supporting data:** `/admin/cs-data` shows CS/TR BUs, CS KYC Vault, four escalation hops including `ESC-CS-KYC`, and `cs.*` parameters; Platform Settings has a CS/TR group; desk/dashboard consume the live cap. UAT-52.  
+21. **Analyze after collected:** Clear FAQ auto-replies (`AI_REPLIED`). Collected KYC holds for a named POC who can addendum then send. TR stays `ASSIGNED_TR`. CRITICAL/book-risk still escalate. UAT-53.
 
-Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-52). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync) and the CS/TR door (C1 / form / email, `/cs`, wait loop, dedicated SKILL.md, TR routing, ID vault, catalog, dashboard, log, data contract).
+Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-53). The pack covers every admin screen plus the full messenger loop (inbox, evidence, challenge, escalate, dismiss, close, recommended controls, sync) and the CS/TR door (C1 / form / email, `/cs`, wait loop, categorize / severity / auto vs POC, dedicated SKILL.md, TR routing, ID vault, catalog, dashboard, log, data contract).
 
 ---
 
@@ -496,7 +520,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-52). The pack
 
 | Stage | Outcome |
 |---|---|
-| Prototype (now) | Full admin map, dual-AI, messenger, **CS/TR door** (`/cs`, intake, wait loop, skills, data contract), docs, UAT-01…52, public Pages snapshot |
+| Prototype (now) | Full admin map, dual-AI, messenger, **CS/TR door** (`/cs`, intake, wait loop, analyze/POC, skills, data contract), docs, UAT-01…53, public Pages snapshot |
 | Phase A | Harden auth/hosting/observability |
 | Phase B | Live Monitor + Lark notify (read path) |
 | Phase C | Supervised write path + kill-switches |
@@ -510,7 +534,7 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-52). The pack
 |---|---|
 | Operator how-to per page | User Guide §6–§12 (CS/TR: §9.3) |
 | Technical module per page | TSD §7 + §8–§18 (CS/TR: §17) |
-| Test case per surface | UAT catalogue v2.6 — UAT-01…UAT-52 `covers` field (CS/TR primary: UAT-25, UAT-46…52; support: 17/22/27–29/36–40) |
+| Test case per surface | UAT catalogue v2.7 — UAT-01…UAT-53 `covers` field (CS/TR primary: UAT-25, UAT-46…53; support: 17/22/27–29/36–40) |
 | Public and local URLs | URL Catalog (CS / TR section) |
 
 ---
@@ -543,5 +567,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-52). The pack
 | 2.3 | 2026-10-06 | G13 + FR-41…43; journeys 5.7–5.9; §6.5 CS/TR product contract; wait loop / privacy / catalog AC |
 | 2.4 | 2026-10-06 | FR-44 dedicated CS/TR dashboard + log (not Daily Performance / Risk Log); UAT-51 |
 | 2.5 | 2026-10-06 | FR-45 CS/TR supporting data (BU/teams/KYC vault, ESC-CS-KYC, cs.* parameters); UAT-52 |
+| 2.6 | 2026-10-06 | FR-46 categorize / severity / AI solution; auto-reply vs named POC addendum; journey 5.10; UAT-53 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

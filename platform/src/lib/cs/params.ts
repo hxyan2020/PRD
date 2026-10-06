@@ -184,6 +184,16 @@ export const CS_SOURCE_SPECS = [
 
 export const CS_SETTING_SEED: Array<{ key: string; value: string; description: string }> = [
   {
+    key: "cs.auto_reply_max_severity",
+    value: "MEDIUM",
+    description: "AI may email the client directly at or below this severity (LOW|MEDIUM|HIGH|CRITICAL)",
+  },
+  {
+    key: "cs.sensitive_categories",
+    value: "complaint,kyc,trading",
+    description: "Categories that always hold the AI draft for a named POC before send",
+  },
+  {
     key: "cs.followup_cap",
     value: String(CS_FOLLOWUP_CAP_DEFAULT),
     description: "Auto-email wait-loop cap; CS Lead human after this many mails",

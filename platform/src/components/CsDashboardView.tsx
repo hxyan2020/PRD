@@ -127,6 +127,8 @@ export function CsDashboardView({ data, ops }: { data: CsDashboard; ops?: CsOpsC
         <StatCard label={t("cs.dash.cap3")} value={s.cap3} tone={s.cap3 ? "alert" : "default"} hint={t("cs.dash.cap3Hint")} />
         <StatCard label={t("cs.dash.idVerify")} value={s.id_verify} />
         <StatCard label={t("cs.dash.awaiting")} value={s.awaiting_client} />
+        <StatCard label={t("cs.dash.pocReview")} value={s.poc_review} hint={t("cs.dash.pocHint")} />
+        <StatCard label={t("cs.dash.aiReplied")} value={s.ai_replied} hint={t("cs.dash.aiHint")} />
         <StatCard label={t("cs.dash.csDesk")} value={s.cs_desk} />
         <StatCard label={t("cs.dash.trDesk")} value={s.tr_desk} />
       </div>
@@ -150,6 +152,10 @@ export function CsDashboardView({ data, ops }: { data: CsDashboard; ops?: CsOpsC
         <section className="panel p-4">
           <h2 className="mb-3 text-sm font-semibold">{t("cs.dash.byClarity")}</h2>
           <BucketList rows={data.by_clarity} empty={t("cs.dash.empty")} />
+        </section>
+        <section className="panel p-4">
+          <h2 className="mb-3 text-sm font-semibold">{t("cs.dash.bySeverity")}</h2>
+          <BucketList rows={data.by_severity} empty={t("cs.dash.empty")} />
         </section>
       </div>
       <section className="panel mb-4 p-4">

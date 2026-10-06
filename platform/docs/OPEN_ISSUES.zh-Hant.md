@@ -168,6 +168,7 @@ flowchart LR
 - [x] 進件回覆以 CSR-XXXX／channel_ref／In-Reply-To 對案並關閉 WAITING 自動信件  
 - [x] 原型 CS／TR 儀表板＋日誌（種子案，UAT-51）  
 - [x] 原型 CS／TR 資料：關卡、`cs.*`、核身庫團隊（UAT-52）  
+- [x] 原型資料齊全後 AI 分類＋嚴重度＋直回 vs POC（UAT-53）  
 - [x] 對 C1 測試環境做沙盒 UAT（UAT-46）— 原型台面  
 - [ ] 以簽章 C1 webhook＋防重放取代 demo-c1 token  
 - [ ] 網站／App 表單 HMAC 接入同一進件 API  
@@ -188,6 +189,7 @@ flowchart LR
 - [x] 原型 CS 核身庫團隊嵌在客服底下（UAT-38）  
 - [x] 原型 ESC-CS-KYC 關卡＋SKILL-CS-ID-VERIFY 僅旗標核身（無證件圖）  
 - [x] 原型台面 TR 分流＋ESCALATED_RISK（UAT-48）  
+- [x] 原型齊全核身交具名 POC、不直回（UAT-53）  
 - [x] 資料來源／CS-TR 資料列出 MT4／MT5 成交帶（UAT-39）  
 - [ ] 正式 KYC 證件庫＋UID 核對；身分驗證須待回覆或 CS Lead 豁免才可關  
 - [ ] 正式自動追問信（不清楚／需核身）套用 `cs.followup_cap`  

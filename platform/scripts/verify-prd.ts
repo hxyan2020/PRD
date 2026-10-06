@@ -24,6 +24,7 @@ const both = [
   "FR-43",
   "FR-44",
   "FR-45",
+  "FR-46",
   "NFR-10",
   "NFR-11",
   "/cs",
@@ -51,11 +52,13 @@ const both = [
   "UAT-47",
   "UAT-51",
   "UAT-52",
+  "UAT-53",
   "UAT-25",
   "6.5",
   "5.7",
   "5.8",
   "5.9",
+  "5.10",
   "/PRD/crmp-plus/",
   "/PRD/crmp-admin/",
 ];
@@ -67,28 +70,30 @@ for (const needle of both) {
 
 assert(en.includes("### 5.7 Client intake"), "EN journey 5.7");
 assert(zh.includes("### 5.7 客戶進件"), "zh journey 5.7");
+assert(en.includes("### 5.10"), "EN journey 5.10");
+assert(zh.includes("### 5.10"), "zh journey 5.10");
 assert(en.includes("### 6.5 CS / TR product contract"), "EN §6.5");
 assert(zh.includes("### 6.5 CS／TR 產品契約"), "zh §6.5");
 assert(en.includes("C1_LIVE_CHAT"), "EN connector C1");
 assert(zh.includes("C1_LIVE_CHAT"), "zh connector C1");
 assert(en.includes("WEB_FORM"), "EN connector form");
 assert(zh.includes("OFFICIAL_EMAIL"), "zh connector mailbox");
-assert(/\| 2\.5 \| 2026-10-06 \|/.test(en), "EN version 2.5");
-assert(/\| 2\.5 \| 2026-10-06 \|/.test(zh), "zh version 2.5");
+assert(/\| 2\.6 \| 2026-10-06 \|/.test(en), "EN version 2.6");
+assert(/\| 2\.6 \| 2026-10-06 \|/.test(zh), "zh version 2.6");
 assert(en.includes("frozen") || en.includes("not overwritten"), "EN frozen original");
 assert(zh.includes("凍結"), "zh frozen original");
 assert(en.includes("never store") || en.includes("No ID images"), "EN no ID images");
 assert(zh.includes("證件圖") || zh.includes("不存"), "zh no ID images");
 
 const page = fs.readFileSync(path.join(root, "src/app/admin/docs/prd/page.tsx"), "utf8");
-assert(page.includes("FR-37…45") || page.includes("FR-45"), "prd page CS/TR card");
-assert(page.includes("UAT-01…52"), "prd page UAT-52");
+assert(page.includes("FR-37…46") || page.includes("FR-46"), "prd page CS/TR card");
+assert(page.includes("UAT-01…53"), "prd page UAT-53");
 assert(page.includes('href="/cs"'), "prd page /cs link");
 assert(page.includes('href="/admin/cs-desk"'), "prd page desk link");
 assert(page.includes('href="/admin/cs-dashboard"'), "prd page dashboard link");
 assert(page.includes('href="/admin/cs-log"'), "prd page log link");
 assert(page.includes('href="/admin/cs-data"'), "prd page data link");
-assert(page.includes("v2.5"), "prd page version badge");
+assert(page.includes("v2.6"), "prd page version badge");
 
 console.log("verify-prd: ok");
 console.log(JSON.stringify({ enChars: en.length, zhChars: zh.length, needles: both.length }, null, 2));
