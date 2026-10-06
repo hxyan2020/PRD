@@ -469,7 +469,7 @@ graph TD
 
 **What it is.** In-app Lark-style inbox. Production will use real Lark; this page proves the buttons and the audit trail.
 
-**Layout.** Desktop: thread list + chat side by side. Phone: list → tap thread → **Threads** to go back.
+**Layout.** Desktop: thread list + **bird-eye POC windows** side by side. Phone: list → tap thread → path chips → one POC chat at a time. Each hop on the escalation path (primary desk → secondary → Risk Owner → Exec) is its own Lark window with the named POC. Escalate **hands the case to the next window** so you can see the relay.
 
 **Toolbar.** **Sync alerts** pulls new Monitor alarms into threads.
 
@@ -670,5 +670,6 @@ On UAT: walk cases in order. Do not skip Critical predecessors. Tick Pass/Fail o
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin tabs + Roll back; editable Roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors merged into Monitor 2.0 (redirect); AI Analyses list not left-nav; Monitor hub = indicator+detector table (no Alerts/Tickets tabs); mobile polish note |
 | 1.9 | 2026-10-06 | Home dummy spine: Dummy alert / Dummy alert group; bilingual EN / zh-Hant chrome and stored copy |
+| 1.10 | 2026-10-06 | Demo Messenger bird-eye POC windows along the escalation path |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

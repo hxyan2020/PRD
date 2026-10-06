@@ -489,13 +489,16 @@ In-app Lark-style inbox for alert + AI report threads with inline operator actio
 |---|---|
 | `show_evidence` | Post vault + challenger summary into thread |
 | `chat` | User note / challenge; disagreement flags `needs_human` |
-| `escalate` | Advance escalation path step |
+| `escalate` | Advance escalation path step; post hand-off in the current POC window and intake in the next |
 | `dismiss` | False alarm → thread DISMISSED, alert CLOSED |
 | `close` | Accept AI → thread CLOSED |
 | `recommend` → `confirm_action` | Double-confirm control → admin_ref (+ checker if required) |
 
 ### 11.4 Data
 `messenger_threads`, `messenger_messages`, `messenger_pending_actions` (see §4.4).
+
+### 11.5 POC windows
+`getMessengerThread` returns `poc_windows` — one Lark chat per hop on the matched route (primary team → secondary → Risk Owner → Exec) with named POC from `users`/`teams`. UI: bird-eye path chips + split columns (`data-testid=msg-poc-windows`).
 
 ---
 

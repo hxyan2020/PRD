@@ -225,16 +225,16 @@ graph TD
 - **Severity:** High · **BU:** Risk · **Depends:** Escalation routes seeded; open thread · **Window:** T+96m / 10m
 - **Covers:** Demo Messenger, Escalation Routes
 - **Why:** Serious cases must move to the next accountable team with a visible SLA, not a private phone call.
-- **Goal:** Click Escalate twice and show that the step number, team and path text all move forward.
+- **Goal:** Click Escalate twice and show that the bird-eye POC windows relay the case to the next named owner.
 
 **Steps**
 
-1. On an OPEN thread click Escalate.
-2. A new ESCALATION bubble should name: which step you are on (for example 1 of 4), which team owns it now, the SLA (minutes), and the full path (desk → credit → Risk Owner → exec).
-3. Click Escalate again. The step index must increase and the target team must change toward Risk Owner / Exec.
+1. On an OPEN thread, read the bird-eye path chips (POC 1 → 2 → 3 → 4). The first hop chat should hold the alert + AI report.
+2. Click Escalate. The live window moves to the next POC. The previous hop shows a hand-off bubble; the next hop shows a received bubble.
+3. Click Escalate again. The step index must increase and a third POC window becomes Live.
 4. Optional: open Escalation Routes in the left pane and confirm the same path name exists as a configured route.
 
-**Pass:** Two escalations produce increasing step numbers; path text names the next owners.
+**Pass:** Two escalations move Live from hop to hop; each window keeps its own chat; path chips name the POCs.
 **Evidence:** Screenshots after step 1 and step 2; route name in notes.
 
 ### UAT-10 — Messenger — dismiss a false alarm

@@ -185,6 +185,12 @@ function walkOne(tpl: DummyTemplate, locale: UiLocale): DummySpineRun {
       user_name: maker.name,
       locale,
     });
+    messengerAction({
+      thread_id: thread.id,
+      action: "escalate",
+      user_name: maker.name,
+      locale,
+    });
     markStage(stages, "HUMAN_INTERVENTION");
 
     const recommended = messengerAction({

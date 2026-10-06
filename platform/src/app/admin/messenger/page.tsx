@@ -66,7 +66,7 @@ export default async function MessengerDemoPage() {
       <div className="flex-1 min-h-0">
         <DemoMessenger
           initialThreads={threads}
-          initialCatalog={inbox.catalog as React.ComponentProps<typeof DemoMessenger>["initialCatalog"]}
+          initialCatalog={inbox.catalog as unknown as React.ComponentProps<typeof DemoMessenger>["initialCatalog"]}
           staticMode={staticMode}
           caps={{
             roleCode,

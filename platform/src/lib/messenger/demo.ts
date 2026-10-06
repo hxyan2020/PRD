@@ -67,6 +67,149 @@ export const RECOMMENDED_ACTIONS = [
   },
 ] as const;
 
+export type MessengerPoc = {
+  step: number;
+  team: string;
+  poc_name: string | null;
+  poc_email: string | null;
+  poc_role: string | null;
+};
+
+export type MessengerPocWindow = MessengerPoc & {
+  status: "relayed" | "active" | "waiting";
+  messages: unknown[];
+};
+
+function parseMsgMeta(raw: string | null | undefined): Record<string, unknown> {
+  try {
+    return JSON.parse(raw || "{}") as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+}
+
+function lookupPocPerson(db: Database.Database, teamName: string) {
+  const name = (teamName || "").trim();
+  if (!name) return null;
+  const special =
+    /exec/i.test(name) ? "SUPER_ADMIN" : /risk owner/i.test(name) ? "RISK_OWNER" : null;
+  if (special) {
+    const row = db
+      .prepare(
+        `SELECT name, email, role_code FROM users WHERE role_code = ? AND status = 'ACTIVE' ORDER BY id LIMIT 1`
+      )
+      .get(special) as { name: string; email: string; role_code: string } | undefined;
+    return row || null;
+  }
+  const row = db
+    .prepare(
+      `SELECT u.name, u.email, u.role_code
+       FROM users u JOIN teams t ON t.id = u.team_id
+       WHERE t.name = ? AND u.status = 'ACTIVE'
+       ORDER BY CASE u.role_code
+         WHEN 'RISK_OWNER' THEN 0 WHEN 'RISK_ANALYST' THEN 1 WHEN 'OPS_LEAD' THEN 2
+         ELSE 3 END, u.id
+       LIMIT 1`
+    )
+    .get(name) as { name: string; email: string; role_code: string } | undefined;
+  return row || null;
+}
+
+function uniquePathTeams(primary: string | null | undefined, secondary: string | null | undefined) {
+  const raw = [primary || "Primary on-call", secondary || "Secondary / Risk Desk", "Risk Owner", "Exec Risk Bridge"];
+  const out: string[] = [];
+  for (const team of raw) {
+    if (team && !out.includes(team)) out.push(team);
+  }
+  if (out.length < 2) out.push("Risk Owner");
+  return out;
+}
+
+export function getEscalationPocs(
+  severity: string,
+  domainCode?: string | null
+): {
+  steps: MessengerPoc[];
+  sla_minutes: number;
+  channel: string;
+  route_code: string;
+  match_kind: string;
+  route_name: string;
+} {
+  const db = getDb();
+  const route = matchEscalationRoute(db, domainCode || "UNKNOWN", severity);
+  const teams = uniquePathTeams(route.primary_team, route.secondary_team);
+  const steps: MessengerPoc[] = teams.map((team, step) => {
+    const person = lookupPocPerson(db, team);
+    return {
+      step,
+      team,
+      poc_name: person?.name || null,
+      poc_email: person?.email || null,
+      poc_role: person?.role_code || null,
+    };
+  });
+  return {
+    steps,
+    sla_minutes: route.sla_minutes,
+    channel: route.lark_channel || "Risk Desk",
+    route_code: route.route_code,
+    match_kind: route.match_kind,
+    route_name: route.name,
+  };
+}
+
+export function buildPocWindows(
+  messages: Array<{ kind: string; meta_json?: string | null }>,
+  pocs: MessengerPoc[],
+  currentStep: number
+): MessengerPocWindow[] {
+  const windows: MessengerPocWindow[] = pocs.map((p, i) => ({
+    ...p,
+    status: i < currentStep ? "relayed" : i === currentStep ? "active" : "waiting",
+    messages: [],
+  }));
+  if (!windows.length) return windows;
+
+  let hop = 0;
+  for (const m of messages) {
+    const meta = parseMsgMeta(m.meta_json);
+    const tagged = typeof meta.poc_step === "number" ? Number(meta.poc_step) : null;
+    const dest = typeof meta.step === "number" ? Number(meta.step) : null;
+
+    if (tagged != null && windows[tagged]) {
+      hop = tagged;
+      windows[tagged].messages.push(m);
+      continue;
+    }
+
+    if (m.kind === "ESCALATION" && dest != null) {
+      const src = Math.max(0, dest > 0 ? dest - 1 : 0);
+      if (windows[src]) windows[src].messages.push(m);
+      if (dest !== src && windows[dest]) windows[dest].messages.push(m);
+      hop = Math.min(Math.max(dest, 0), windows.length - 1);
+      continue;
+    }
+
+    if (!windows[hop]) hop = 0;
+    windows[hop].messages.push(m);
+  }
+  return windows;
+}
+
+function alertDomainForThread(db: Database.Database, alertId: number | null | undefined): string | null {
+  if (!alertId) return null;
+  const alert = db
+    .prepare(
+      `SELECT mi.domain_code AS domain_code
+       FROM monitor_alerts a
+       LEFT JOIN monitor_indicators mi ON mi.id = a.indicator_id
+       WHERE a.id = ?`
+    )
+    .get(alertId) as { domain_code: string | null } | undefined;
+  return alert?.domain_code || null;
+}
+
 export function ensureMessengerSchema(db: Database.Database = getDb()) {
   db.exec(`
     CREATE TABLE IF NOT EXISTS messenger_threads (
@@ -122,10 +265,12 @@ function addMessage(
   meta: Record<string, unknown> = {}
 ) {
   const msgId = newId("MSG");
+  const merged = { poc_step: 0, ...meta };
+  if (typeof merged.poc_step !== "number" || Number.isNaN(merged.poc_step)) merged.poc_step = 0;
   db.prepare(
     `INSERT INTO messenger_messages (thread_id, msg_id, kind, sender, body, meta_json)
      VALUES (?, ?, ?, ?, ?, ?)`
-  ).run(threadDbId, msgId, kind, sender, body, JSON.stringify(meta));
+  ).run(threadDbId, msgId, kind, sender, body, JSON.stringify(merged));
   db.prepare(`UPDATE messenger_threads SET updated_at = datetime('now') WHERE id = ?`).run(threadDbId);
   return msgId;
 }
@@ -298,14 +443,22 @@ function addDemoAiReport(
 }
 
 function addDemoEscalation(db: Database.Database, tid: number, severity: string) {
-  const target = severity === "CRITICAL" ? "Exec Risk Bridge" : "Risk Control Desk";
+  const path = getEscalationPocs(severity, null);
+  const from = path.steps[0];
   addMessage(
     db,
     tid,
     "ESCALATION",
     "Escalation Engine",
-    `⬆️ Escalated to ${target} (step 1/4)\nChannel: Risk Control Desk · SLA 15m\nPath: Risk Control Desk → Credit & Client Risk → Risk Owner → Exec Risk Bridge\nLark: posted to oc_risk_control_desk (demo — no live webhook)`,
-    { target, step: 0, mock: true }
+    `⬆️ Path posted to ${from?.team || "primary desk"} Lark (step 1/${path.steps.length})\nChannel: ${path.channel} · SLA ${path.sla_minutes}m\nPath: ${path.steps.map((s) => s.team).join(" → ")}\nPOC: ${from?.poc_name || from?.team || "on-call"}`,
+    {
+      target: from?.team,
+      step: 0,
+      poc_step: 0,
+      path: path.steps.map((s) => s.team),
+      route_code: path.route_code,
+      mock: true,
+    }
   );
 }
 
@@ -427,6 +580,9 @@ export type MessengerInboxPack = {
   messages: unknown[];
   pending: unknown[];
   recommended_actions: typeof RECOMMENDED_ACTIONS;
+  poc_windows?: MessengerPocWindow[];
+  escalation_path?: ReturnType<typeof getEscalationPocs>;
+  current_step?: number;
 };
 
 export function listMessengerInbox() {
@@ -442,6 +598,9 @@ export function listMessengerInbox() {
       messages: full.messages,
       pending: full.pending,
       recommended_actions: full.recommended_actions,
+      poc_windows: full.poc_windows,
+      escalation_path: full.escalation_path,
+      current_step: full.current_step,
     };
   }
   return { threads, catalog };
@@ -465,7 +624,19 @@ export function listMessengerThreads() {
 export function getMessengerThread(threadDbId: number) {
   ensureMessengerSchema();
   const db = getDb();
-  const thread = db.prepare(`SELECT * FROM messenger_threads WHERE id = ?`).get(threadDbId);
+  const thread = db.prepare(`SELECT * FROM messenger_threads WHERE id = ?`).get(threadDbId) as
+    | {
+        id: number;
+        thread_id: string;
+        title: string;
+        severity: string;
+        status: string;
+        analysis_id: number | null;
+        alert_id: number | null;
+        escalation_step: number;
+        channel_name: string;
+      }
+    | undefined;
   if (!thread) return null;
   const messages = db
     .prepare(`SELECT * FROM messenger_messages WHERE thread_id = ? ORDER BY id`)
@@ -475,26 +646,35 @@ export function getMessengerThread(threadDbId: number) {
       `SELECT * FROM messenger_pending_actions WHERE thread_id = ? AND status IN ('AWAITING_CONFIRM','AWAITING_CHECKER') ORDER BY id DESC`
     )
     .all(threadDbId);
-  return { thread, messages, pending, recommended_actions: RECOMMENDED_ACTIONS };
+  const domainCode = alertDomainForThread(db, thread.alert_id);
+  const path = getEscalationPocs(thread.severity, domainCode);
+  const current_step = Math.min(Math.max(Number(thread.escalation_step) || 0, 0), Math.max(path.steps.length - 1, 0));
+  const poc_windows = buildPocWindows(
+    messages as Array<{ kind: string; meta_json?: string | null }>,
+    path.steps,
+    current_step
+  );
+  return {
+    thread,
+    messages,
+    pending,
+    recommended_actions: RECOMMENDED_ACTIONS,
+    escalation_path: path,
+    current_step,
+    poc_windows,
+  };
 }
 
 function getEscalationPath(severity: string, domainCode?: string | null) {
-  const db = getDb();
-  // Always resolve via match order (exact → domain wild → ESC-DEFAULT). No event is pathless.
-  const route = matchEscalationRoute(db, domainCode || "UNKNOWN", severity);
-  const steps = [
-    route.primary_team || "Primary on-call",
-    route.secondary_team || "Secondary / Risk Desk",
-    "Risk Owner",
-    "Exec Risk Bridge",
-  ];
+  const path = getEscalationPocs(severity, domainCode);
   return {
-    steps,
-    sla_minutes: route.sla_minutes,
-    channel: route.lark_channel || "Risk Desk",
-    route_code: route.route_code,
-    match_kind: route.match_kind,
-    route_name: route.name,
+    steps: path.steps.map((s) => s.team),
+    pocs: path.steps,
+    sla_minutes: path.sla_minutes,
+    channel: path.channel,
+    route_code: path.route_code,
+    match_kind: path.match_kind,
+    route_name: path.route_name,
   };
 }
 
@@ -527,6 +707,7 @@ export function messengerAction(input: {
       }
     | undefined;
   if (!thread) throw new Error("Thread not found");
+  const hop = Number(thread.escalation_step) || 0;
 
   if (input.action === "show_evidence") {
     if (!thread.analysis_id) {
@@ -535,7 +716,8 @@ export function messengerAction(input: {
         thread.id,
         "SYSTEM",
         "Messenger",
-        zh ? "尚未連結 AI 分析 — 請開啟 Realtime Alert & Tracker 調查。" : "No AI analysis linked — open Realtime Alert & Tracker to investigate."
+        zh ? "尚未連結 AI 分析 — 請開啟 Realtime Alert & Tracker 調查。" : "No AI analysis linked — open Realtime Alert & Tracker to investigate.",
+        { poc_step: hop }
       );
       return getMessengerThread(thread.id);
     }
@@ -568,7 +750,7 @@ export function messengerAction(input: {
         : `📎 Evidence pack for analysis #${thread.analysis_id}\n${lines.join("\n")}${
             challenge?.verdict ? `\n\nSecond AI (${challenge.verdict}): ${challenge.summary}` : ""
           }`,
-      { analysis_id: thread.analysis_id, admin_url: `/admin/ai-analyses/${thread.analysis_id}` }
+      { analysis_id: thread.analysis_id, admin_url: `/admin/ai-analyses/${thread.analysis_id}`, poc_step: hop }
     );
     writeAudit({ name: input.user_name }, "MESSENGER_SHOW_EVIDENCE", "messenger_thread", thread.thread_id, {});
     return getMessengerThread(thread.id);
@@ -577,7 +759,7 @@ export function messengerAction(input: {
   if (input.action === "chat") {
     const text = (input.text || "").trim();
     if (!text) throw new Error("Message required");
-    addMessage(db, thread.id, "USER", input.user_name, text);
+    addMessage(db, thread.id, "USER", input.user_name, text, { poc_step: hop });
     const lower = text.toLowerCase();
     let reply = zh
       ? "已記錄。已將您的備註附加至案件，風險台覆核 AI 報告時可使用。"
@@ -594,27 +776,20 @@ export function messengerAction(input: {
         ? "已將額外脈絡存入執行緒。下次風險負責人覆核包會連同主 RCA 與挑戰者一併呈現。"
         : "Additional context saved on the thread. It will appear in the next Risk Owner review pack alongside primary + challenger RCA.";
     }
-    addMessage(db, thread.id, "CHATBOT", actorBot, `💬 ${reply}`, { in_reply_to: text });
+    addMessage(db, thread.id, "CHATBOT", actorBot, `💬 ${reply}`, { in_reply_to: text, poc_step: hop });
     writeAudit({ name: input.user_name }, "MESSENGER_CHAT", "messenger_thread", thread.thread_id, { text });
     return getMessengerThread(thread.id);
   }
 
   if (input.action === "escalate") {
-    let domainCode: string | null = null;
-    if (thread.alert_id) {
-      const alert = db
-        .prepare(
-          `SELECT mi.domain_code AS domain_code
-           FROM monitor_alerts a
-           LEFT JOIN monitor_indicators mi ON mi.id = a.indicator_id
-           WHERE a.id = ?`
-        )
-        .get(thread.alert_id) as { domain_code: string | null } | undefined;
-      domainCode = alert?.domain_code || null;
-    }
+    const domainCode = alertDomainForThread(db, thread.alert_id);
     const path = getEscalationPath(thread.severity, domainCode);
-    const nextStep = Math.min(thread.escalation_step + 1, path.steps.length - 1);
+    const fromStep = Math.min(Math.max(thread.escalation_step || 0, 0), Math.max(path.steps.length - 1, 0));
+    const nextStep = Math.min(fromStep + 1, path.steps.length - 1);
+    const fromTeam = path.steps[fromStep];
     const target = path.steps[nextStep];
+    const fromPoc = path.pocs[fromStep];
+    const toPoc = path.pocs[nextStep];
     db.prepare(`UPDATE messenger_threads SET escalation_step = ?, updated_at = datetime('now') WHERE id = ?`).run(
       nextStep,
       thread.id
@@ -626,23 +801,49 @@ export function messengerAction(input: {
       : path.match_kind === "default"
         ? `\nRoute: ${path.route_code} (DEFAULT catch-all — exotic / unmatched)`
         : `\nRoute: ${path.route_code} (${path.match_kind})`;
+    const chain = path.steps.join(" → ");
     addMessage(
       db,
       thread.id,
       "ESCALATION",
       actorEscalation,
       zh
-        ? `⬆️ 已升級至 ${target}（步驟 ${nextStep + 1}/${path.steps.length}）\n頻道：${path.channel} · SLA ${path.sla_minutes} 分鐘${defaultNote}\n升級鏈：${path.steps.join(" → ")}`
-        : `⬆️ Escalated to ${target} (step ${nextStep + 1}/${path.steps.length})\nChannel: ${path.channel} · SLA ${path.sla_minutes}m${defaultNote}\nPath: ${path.steps.join(" → ")}`,
+        ? `⬆️ 已從 ${fromTeam} 轉交至 ${target}（步驟 ${nextStep + 1}/${path.steps.length}）\n承辦：${fromPoc?.poc_name || fromTeam} → ${toPoc?.poc_name || target}\n頻道：${path.channel} · SLA ${path.sla_minutes} 分鐘${defaultNote}\n升級鏈：${chain}`
+        : `⬆️ Relayed from ${fromTeam} to ${target} (step ${nextStep + 1}/${path.steps.length})\nPOC: ${fromPoc?.poc_name || fromTeam} → ${toPoc?.poc_name || target}\nChannel: ${path.channel} · SLA ${path.sla_minutes}m${defaultNote}\nPath: ${chain}`,
       {
         target,
         step: nextStep,
+        poc_step: fromStep,
+        handoff: "out",
         path: path.steps,
         route_code: path.route_code,
         match_kind: path.match_kind,
         route_name: path.route_name,
+        from_poc: fromPoc?.poc_name,
+        to_poc: toPoc?.poc_name,
       }
     );
+    if (nextStep !== fromStep) {
+      addMessage(
+        db,
+        thread.id,
+        "ESCALATION",
+        actorEscalation,
+        zh
+          ? `⬇️ ${target} 已接收（承辦 ${toPoc?.poc_name || target}）\n來自：${fromTeam}${fromPoc?.poc_name ? `（${fromPoc.poc_name}）` : ""}\n請在此窗繼續覆核；升級鏈：${chain}`
+          : `⬇️ ${target} received (POC ${toPoc?.poc_name || target})\nFrom: ${fromTeam}${fromPoc?.poc_name ? ` (${fromPoc.poc_name})` : ""}\nContinue the case in this window. Path: ${chain}`,
+        {
+          target,
+          step: nextStep,
+          poc_step: nextStep,
+          handoff: "in",
+          path: path.steps,
+          route_code: path.route_code,
+          from_poc: fromPoc?.poc_name,
+          to_poc: toPoc?.poc_name,
+        }
+      );
+    }
     logSpineEvent({
       stage: "ESCALATION",
       title: `Messenger escalate → ${target}`,
@@ -650,7 +851,7 @@ export function messengerAction(input: {
       ref_type: "messenger_thread",
       ref_id: thread.thread_id,
       severity: thread.severity,
-      detail: { step: nextStep, target, route_code: path.route_code, match_kind: path.match_kind },
+      detail: { step: nextStep, target, route_code: path.route_code, match_kind: path.match_kind, from: fromTeam },
       actor: input.user_name,
     });
     writeAudit({ name: input.user_name }, "MESSENGER_ESCALATE", "messenger_thread", thread.thread_id, {
@@ -658,6 +859,7 @@ export function messengerAction(input: {
       step: nextStep,
       route_code: path.route_code,
       match_kind: path.match_kind,
+      from: fromTeam,
     });
     return getMessengerThread(thread.id);
   }
@@ -676,7 +878,8 @@ export function messengerAction(input: {
       input.user_name,
       zh
         ? "❎ 已排除為誤報。警報已關閉。未再套用控制。"
-        : "❎ Dismissed as false alarm. Alert closed. No further controls applied."
+        : "❎ Dismissed as false alarm. Alert closed. No further controls applied.",
+        { poc_step: hop }
     );
     writeAudit({ name: input.user_name }, "MESSENGER_DISMISS", "messenger_thread", thread.thread_id, {});
     return getMessengerThread(thread.id);
@@ -696,7 +899,8 @@ export function messengerAction(input: {
       input.user_name,
       zh
         ? "✅ 已結案 — 接受 AI 分析。工單已關閉；雙 AI 包保留於證據庫。"
-        : "✅ Closed — AI analysis accepted. Ticket closed; dual-AI pack retained in evidence vault."
+        : "✅ Closed — AI analysis accepted. Ticket closed; dual-AI pack retained in evidence vault.",
+        { poc_step: hop }
     );
     writeAudit({ name: input.user_name }, "MESSENGER_CLOSE", "messenger_thread", thread.thread_id, {});
     return getMessengerThread(thread.id);
@@ -720,7 +924,7 @@ export function messengerAction(input: {
       zh
         ? `⚙️ 建議：${action.label}\n${action.description}\n送至 Vantage Markets 管理後台前請雙重確認。`
         : `⚙️ Proposed: ${action.label}\n${action.description}\nPlease double-confirm before sending to Vantage Markets admin.`,
-      { pending_id: Number(info.lastInsertRowid), action }
+      { pending_id: Number(info.lastInsertRowid), action, poc_step: hop }
     );
     return getMessengerThread(thread.id);
   }
@@ -735,7 +939,8 @@ export function messengerAction(input: {
       thread.id,
       "SYSTEM",
       input.user_name,
-      zh ? "已取消待確認控制動作。" : "Cancelled pending control action."
+      zh ? "已取消待確認控制動作。" : "Cancelled pending control action.",
+      { poc_step: hop }
     );
     return getMessengerThread(thread.id);
   }
@@ -776,6 +981,7 @@ export function messengerAction(input: {
         admin_url: action.admin_path,
         needs_checker: action.needs_checker,
         status: nextStatus,
+        poc_step: hop,
       }
     );
 
@@ -785,7 +991,8 @@ export function messengerAction(input: {
         thread.id,
         "SYSTEM",
         "Maker-Checker",
-        `Next step: Checker must approve ${adminRef} in this chat (or open ${action.admin_path}). Control is not live until Checker signs off.`
+        `Next step: Checker must approve ${adminRef} in this chat (or open ${action.admin_path}). Control is not live until Checker signs off.`,
+        { poc_step: hop }
       );
     }
 
@@ -849,6 +1056,7 @@ export function messengerAction(input: {
         needs_checker: false,
         status: "DONE",
         checker: input.user_name,
+        poc_step: hop,
       }
     );
     logSpineEvent({

@@ -113,10 +113,25 @@ const ACTION_PRIORITY: Record<string, "critical" | "control" | "soft"> = {
   WIDEN_SPREAD: "soft",
 };
 
+type PocHop = {
+  step: number;
+  team: string;
+  poc_name: string | null;
+  poc_email: string | null;
+  poc_role: string | null;
+};
+
+type PocWindow = PocHop & {
+  status: "relayed" | "active" | "waiting";
+  messages: Message[];
+};
+
 type InboxPack = {
   messages: Message[];
   pending: Pending[];
   recommended_actions: Recommended[];
+  poc_windows?: PocWindow[];
+  current_step?: number;
 };
 
 type LiveThink = {
@@ -209,6 +224,65 @@ function ThinkingCard({
   );
 }
 
+function MessageBubble({
+  m,
+  locale,
+  openThoughts,
+  onToggleThoughts,
+}: {
+  m: Message;
+  locale: UiLocale;
+  openThoughts: Record<string, boolean>;
+  onToggleThoughts: (id: string) => void;
+}) {
+  if (m.kind === "THINKING") {
+    const meta = JSON.parse(m.meta_json || "{}") as { elapsed_ms?: number; steps?: string[] };
+    const steps = Array.isArray(meta.steps) && meta.steps.length ? meta.steps : m.body.split("\n").filter(Boolean);
+    const expanded = Boolean(openThoughts[m.msg_id]);
+    return (
+      <ThinkingCard
+        steps={steps}
+        visible={steps.length}
+        running={false}
+        elapsedMs={meta.elapsed_ms}
+        expanded={expanded}
+        onToggle={() => onToggleThoughts(m.msg_id)}
+        locale={locale}
+      />
+    );
+  }
+  const meta = JSON.parse(m.meta_json || "{}") as Record<string, unknown>;
+  const isUser = m.kind === "USER";
+  const handoff = meta.handoff === "in" || meta.handoff === "out" ? String(meta.handoff) : null;
+  return (
+    <div
+      className={`rounded-xl border px-3 py-2 text-sm max-w-full ${
+        isUser
+          ? "ml-auto border-teal-200 bg-teal-50"
+          : m.kind === "AI_REPORT"
+            ? "border-amber-200 bg-amber-50/60"
+            : m.kind === "ESCALATION" || handoff
+              ? "border-rose-200 bg-rose-50/50"
+              : "border-[var(--line)] bg-white"
+      }`}
+    >
+      <div className="flex flex-wrap gap-2 items-center text-xs text-[var(--muted)]">
+        <Badge className="bg-slate-100 text-slate-700 border-slate-200">{m.kind}</Badge>
+        <span className="font-semibold text-[var(--ink)]">{m.sender}</span>
+        <span className="break-word">{m.created_at}</span>
+      </div>
+      <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800 break-word">
+        {phrase(m.body, locale)}
+      </pre>
+      {typeof meta.admin_url === "string" ? (
+        <AdminLink className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
+          {t("msg.openInAdmin", locale)}
+        </AdminLink>
+      ) : null}
+    </div>
+  );
+}
+
 export function DemoMessenger({
   initialThreads,
   initialCatalog = {},
@@ -237,6 +311,8 @@ export function DemoMessenger({
   const [messages, setMessages] = useState<Message[]>(firstPack?.messages || []);
   const [pending, setPending] = useState<Pending[]>(firstPack?.pending || []);
   const [recommended, setRecommended] = useState<Recommended[]>(firstPack?.recommended_actions || []);
+  const [pocWindows, setPocWindows] = useState<PocWindow[]>(firstPack?.poc_windows || []);
+  const [focusedHop, setFocusedHop] = useState<number>(firstPack?.current_step ?? 0);
   const [chat, setChat] = useState("");
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(Boolean(firstPack?.messages?.length));
@@ -302,6 +378,8 @@ export function DemoMessenger({
     setMessages(pack.messages || []);
     setPending(pack.pending || []);
     setRecommended(pack.recommended_actions || []);
+    setPocWindows(pack.poc_windows || []);
+    setFocusedHop(pack.current_step ?? pack.poc_windows?.find((w) => w.status === "active")?.step ?? 0);
     setLoaded(true);
     setConfirmId(null);
     if (opts.openPane !== false) setMobilePane("thread");
@@ -331,6 +409,8 @@ export function DemoMessenger({
         messages: data.messages || [],
         pending: data.pending || [],
         recommended_actions: data.recommended_actions || [],
+        poc_windows: data.poc_windows || [],
+        current_step: data.current_step,
       },
       opts
     );
@@ -566,6 +646,10 @@ export function DemoMessenger({
       setMessages(nextMessages);
       setPending(data.pending || []);
       setRecommended(data.recommended_actions || []);
+      if (Array.isArray(data.poc_windows)) {
+        setPocWindows(data.poc_windows as PocWindow[]);
+        if (typeof data.current_step === "number") setFocusedHop(data.current_step);
+      }
       setConfirmId(null);
       setChat("");
       const listRes = await fetch("/api/messenger");
@@ -723,68 +807,135 @@ export function DemoMessenger({
               ) : null}
             </div>
 
-            <div ref={listRef} className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain min-h-[12rem]">
-              {messages.map((m) => {
-                if (m.kind === "THINKING") {
-                  const meta = JSON.parse(m.meta_json || "{}") as {
-                    elapsed_ms?: number;
-                    steps?: string[];
-                  };
-                  const steps = Array.isArray(meta.steps) && meta.steps.length ? meta.steps : m.body.split("\n").filter(Boolean);
-                  const expanded = Boolean(openThoughts[m.msg_id]);
-                  return (
-                    <ThinkingCard
-                      key={m.msg_id}
-                      steps={steps}
-                      visible={steps.length}
-                      running={false}
-                      elapsedMs={meta.elapsed_ms}
-                      expanded={expanded}
-                      onToggle={() => setOpenThoughts((prev) => ({ ...prev, [m.msg_id]: !prev[m.msg_id] }))}
-                      locale={locale}
-                    />
-                  );
-                }
-                const meta = JSON.parse(m.meta_json || "{}") as Record<string, unknown>;
-                const isUser = m.kind === "USER";
-                return (
-                  <div
-                    key={m.msg_id}
-                    className={`rounded-xl border px-3 py-2 text-sm max-w-full sm:max-w-[95%] ${
-                      isUser
-                        ? "ml-auto border-teal-200 bg-teal-50"
-                        : m.kind === "AI_REPORT"
-                          ? "border-amber-200 bg-amber-50/60"
-                          : m.kind === "ESCALATION"
-                            ? "border-rose-200 bg-rose-50/50"
-                            : "border-[var(--line)] bg-white"
-                    }`}
-                  >
-                    <div className="flex flex-wrap gap-2 items-center text-xs text-[var(--muted)]">
-                      <Badge className="bg-slate-100 text-slate-700 border-slate-200">{m.kind}</Badge>
-                      <span className="font-semibold text-[var(--ink)]">{m.sender}</span>
-                      <span className="break-word">{m.created_at}</span>
+            <div ref={listRef} className="flex-1 min-h-[12rem] min-w-0 flex flex-col">
+              {pocWindows.length ? (
+                <>
+                  <div className="shrink-0 mb-2" data-testid="msg-poc-path">
+                    <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--muted)] mb-1.5">
+                      {t("msg.birdeye", locale)}
                     </div>
-                    <pre className="mt-2 whitespace-pre-wrap font-sans text-sm text-slate-800 break-word">
-                      {phrase(m.body, locale)}
-                    </pre>
-                    {typeof meta.admin_url === "string" ? (
-                      <AdminLink className="inline-block mt-2 text-teal-800 text-xs underline" href={String(meta.admin_url)}>
-                        {t("msg.openInAdmin", locale)}
-                      </AdminLink>
-                    ) : null}
+                    <div className="chip-scroller items-stretch">
+                      {pocWindows.map((w, i) => {
+                        const live = w.status === "active";
+                        const done = w.status === "relayed";
+                        return (
+                          <button
+                            key={w.step}
+                            type="button"
+                            data-testid={`msg-poc-chip-${w.step}`}
+                            onClick={() => setFocusedHop(w.step)}
+                            className={`flex items-center gap-2 rounded-xl border px-2.5 py-1.5 text-left min-h-11 ${
+                              focusedHop === w.step
+                                ? "border-teal-400 bg-teal-50"
+                                : live
+                                  ? "border-rose-300 bg-rose-50"
+                                  : done
+                                    ? "border-slate-200 bg-slate-50"
+                                    : "border-dashed border-[var(--line)] bg-white"
+                            }`}
+                          >
+                            <span className="text-[10px] tabular-nums text-[var(--muted)]">{w.step + 1}</span>
+                            <span className="min-w-0">
+                              <span className="block text-xs font-semibold truncate">{phrase(w.team, locale)}</span>
+                              <span className="block text-[10px] text-[var(--muted)] truncate">
+                                {w.poc_name
+                                  ? `${w.poc_name}${w.poc_role ? ` · ${w.poc_role}` : ""}`
+                                  : t("msg.noPocYet", locale)}
+                              </span>
+                            </span>
+                            <Badge
+                              className={
+                                live
+                                  ? "bg-rose-100 text-rose-900 border-rose-200"
+                                  : done
+                                    ? "bg-slate-100 text-slate-700 border-slate-200"
+                                    : "bg-white text-slate-500 border-slate-200"
+                              }
+                            >
+                              {live
+                                ? t("msg.pocActive", locale)
+                                : done
+                                  ? t("msg.pocRelayed", locale)
+                                  : t("msg.pocWaiting", locale)}
+                            </Badge>
+                            {i < pocWindows.length - 1 ? (
+                              <span className="text-[var(--muted)] text-xs" aria-hidden>
+                                →
+                              </span>
+                            ) : null}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                );
-              })}
-              {liveThink ? (
-                <ThinkingCard
-                  steps={liveThink.steps}
-                  visible={liveThink.visible}
-                  running
-                  locale={locale}
-                />
-              ) : null}
-              <div ref={bottomRef} className="h-px w-full shrink-0" />
+                  <div className="poc-windows flex-1 min-h-0" data-testid="msg-poc-windows">
+                    {pocWindows.map((w) => {
+                      const live = w.status === "active";
+                      const focused = focusedHop === w.step;
+                      return (
+                        <div
+                          key={w.step}
+                          data-testid={`msg-poc-window-${w.step}`}
+                          data-poc-status={w.status}
+                          onClick={() => setFocusedHop(w.step)}
+                          className={`poc-window ${focused ? "poc-window-focus" : ""} ${
+                            live ? "poc-window-live" : w.status === "waiting" ? "poc-window-wait" : ""
+                          } ${focused || pocWindows.length <= 2 ? "" : "hidden md:flex"}`}
+                        >
+                          <div className="shrink-0 border-b border-[var(--line)] px-2.5 py-1.5">
+                            <div className="text-xs font-semibold truncate">{phrase(w.team, locale)}</div>
+                            <div className="text-[10px] text-[var(--muted)] truncate">
+                              {w.poc_name ? `${w.poc_name}${w.poc_email ? ` · ${w.poc_email}` : ""}` : t("tracker.noPoc", locale)}
+                            </div>
+                          </div>
+                          <div className="flex-1 overflow-auto space-y-2 p-2 min-h-0 overscroll-contain">
+                            {w.messages.map((m) => (
+                              <MessageBubble
+                                key={`${m.msg_id}-${w.step}`}
+                                m={m}
+                                locale={locale}
+                                openThoughts={openThoughts}
+                                onToggleThoughts={(id) =>
+                                  setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))
+                                }
+                              />
+                            ))}
+                            {!w.messages.length ? (
+                              <p className="text-[11px] text-[var(--muted)] leading-snug p-1">
+                                {t("msg.pocEmpty", locale)}
+                              </p>
+                            ) : null}
+                            {live && liveThink ? (
+                              <ThinkingCard
+                                steps={liveThink.steps}
+                                visible={liveThink.visible}
+                                running
+                                locale={locale}
+                              />
+                            ) : null}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : (
+                <div className="flex-1 overflow-auto space-y-3 pr-0.5 overscroll-contain">
+                  {messages.map((m) => (
+                    <MessageBubble
+                      key={m.msg_id}
+                      m={m}
+                      locale={locale}
+                      openThoughts={openThoughts}
+                      onToggleThoughts={(id) => setOpenThoughts((prev) => ({ ...prev, [id]: !prev[id] }))}
+                    />
+                  ))}
+                  {liveThink ? (
+                    <ThinkingCard steps={liveThink.steps} visible={liveThink.visible} running locale={locale} />
+                  ) : null}
+                  <div ref={bottomRef} className="h-px w-full shrink-0" />
+                </div>
+              )}
             </div>
 
             {active.status === "OPEN" && (

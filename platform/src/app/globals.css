@@ -468,3 +468,45 @@ body.nav-open {
   height: 100%;
   min-height: 0;
 }
+
+.poc-windows {
+  display: flex;
+  gap: 0.65rem;
+  overflow-x: auto;
+  min-height: 0;
+  padding-bottom: 0.15rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.poc-window {
+  flex: 1 0 210px;
+  min-width: 200px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  background: #fff;
+  min-height: 11rem;
+  scroll-snap-align: start;
+}
+
+.poc-window-focus {
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.28);
+}
+
+.poc-window-live {
+  border-color: #fda4af;
+}
+
+.poc-window-wait {
+  opacity: 0.78;
+}
+
+@media (max-width: 767px) {
+  .poc-window {
+    flex-basis: 100%;
+    min-width: 100%;
+  }
+}

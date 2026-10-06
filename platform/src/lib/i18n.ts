@@ -150,8 +150,8 @@ const PAGE_META: Record<string, { title: Pair; subtitle: Pair }> = {
   messenger: {
     title: { en: "Demo Messenger", "zh-Hant": "示範 Messenger" },
     subtitle: {
-      en: "Prototype Lark-style inbox: alerts + AI reports with inline evidence, chatbot challenge, escalate, dismiss, close, and confirmed control actions into Vantage admin.",
-      "zh-Hant": "原型 Lark 風格收件匣：警報＋AI 報告，內嵌證據、聊天挑戰、升級、排除、結案，以及確認後送至 Vantage 管理後台之控制動作。",
+      en: "Prototype Lark-style inbox: one case, split chat windows per POC on the escalation path — bird-eye relay from desk to desk, plus evidence, chatbot, escalate, dismiss, close, and controls.",
+      "zh-Hant": "原型 Lark 風格收件匣：同一案件依升級路徑承辦拆成多個聊天窗 — 鳥瞰台面轉遞，並含證據、聊天機器人、升級、排除、結案與控制動作。",
     },
   },
   "ai-access": {
@@ -325,6 +325,15 @@ const UI: Record<string, Pair> = {
     en: "Use Escalate when the decision or control exceeds your rank.",
     "zh-Hant": "當決策或管制超出你的職級時，請使用「升級」。",
   },
+  "msg.birdeye": { en: "Bird-eye · POC relay", "zh-Hant": "鳥瞰 · POC 轉遞" },
+  "msg.pocActive": { en: "Live", "zh-Hant": "進行中" },
+  "msg.pocRelayed": { en: "Relayed", "zh-Hant": "已轉交" },
+  "msg.pocWaiting": { en: "Waiting", "zh-Hant": "等待中" },
+  "msg.pocEmpty": {
+    en: "No messages yet — waiting for the previous POC to escalate.",
+    "zh-Hant": "尚無訊息 — 等待上一承辦升級轉入。",
+  },
+  "msg.noPocYet": { en: "On-call desk", "zh-Hant": "值班台" },
   "msg.confirm": { en: "Confirm:", "zh-Hant": "確認：" },
   "msg.checkerNeeded": { en: "Checker approval needed:", "zh-Hant": "需要 Checker 核准：" },
   "msg.doubleConfirm": { en: "Double-confirm…", "zh-Hant": "雙重確認…" },
@@ -347,12 +356,12 @@ const UI: Record<string, Pair> = {
   "msg.actionDone": { en: "Action {action} completed", "zh-Hant": "動作 {action} 已完成" },
   "msg.synced": { en: "Synced {n} new alert(s) into messenger", "zh-Hant": "已同步 {n} 則新警報至 Messenger" },
   "msg.larkDemoHint": {
-    en: "Lark-style demo inbox (no live Lark API). Open a thread to see the Monitor alert, AI report, and escalation message. Permanent URL:",
-    "zh-Hant": "Lark 風格示範收件匣（無需正式 Lark API）。開啟執行緒即可看到 Monitor 警報、AI 報告與升級訊息。永久網址：",
+    en: "Lark-style demo inbox (no live Lark API). Open a thread to see the case split into POC chat windows along the escalation path — bird-eye relay from desk to desk. Permanent URL:",
+    "zh-Hant": "Lark 風格示範收件匣（無需正式 Lark API）。開啟執行緒即可依升級路徑承辦拆窗，鳥瞰案件如何轉遞。永久網址：",
   },
   "msg.larkDemoHintShort": {
-    en: "Lark-style demo inbox — open a thread for alerts, AI reports and escalations.",
-    "zh-Hant": "Lark 風格示範收件匣 — 開啟執行緒查看警報、AI 報告與升級。",
+    en: "Lark-style demo inbox — POC chat windows along the escalation path.",
+    "zh-Hant": "Lark 風格示範收件匣 — 升級路徑承辦聊天窗。",
   },
   "home.larkDemo": {
     en: "See alerts, AI reports and escalations in the Lark-style messenger demo.",

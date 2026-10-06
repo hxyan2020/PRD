@@ -260,7 +260,7 @@ This table **is** the product scope of the admin. If a row is in the left nav, i
 | AI & knowledge | Knowledge Tree | `/admin/knowledge-tree` | Visual map | Map/outline; RAG leaves + deep links |
 | AI & knowledge | RAG Knowledge Base | `/admin/rag` | Corpus retrieve | Human-gate: AI cannot edit → escalate to human / propose_rag |
 | Response | Human Intervention | `/admin/interventions` | Runtime checker | Approve/Reject + note; actioner email on samples |
-| Response | Demo Messenger | `/admin/messenger` | Chat-native triage | Sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
+| Response | Demo Messenger | `/admin/messenger` | Chat-native triage with bird-eye POC windows | Path chips, per-POC chats, sync, evidence, chat, escalate, dismiss, close, controls, Open in admin |
 | Response | Lark Integration | `/admin/lark` | Channel registry | List + enable; mock notify localhost |
 | Response | Escalation Routes | `/admin/escalation` | Dimensions × coefficients → team → SLA | ESC-DEFAULT; skill binds one path; no Path name column |
 | Organisation | BU and Teams | `/admin/departments` | RACI + on-call | Combined hub; `/admin/teams` redirects |

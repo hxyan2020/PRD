@@ -485,13 +485,16 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 |---|---|
 | `show_evidence` | 貼上證據庫＋挑戰摘要 |
 | `chat` | 使用者備註／挑戰；不同意標記 `needs_human` |
-| `escalate` | 升級路徑前進一步 |
+| `escalate` | 升級路徑前進一步；目前承辦窗貼轉交、下一窗貼接收 |
 | `dismiss` | 誤報 → DISMISSED／警報關閉 |
 | `close` | 接受 AI → CLOSED |
 | `recommend` → `confirm_action` | 雙重確認控制 → admin_ref（必要時 Checker） |
 
 ### 11.4 資料
 見 §4.4。
+
+### 11.5 POC 窗
+`getMessengerThread` 回傳 `poc_windows` — 匹配路徑每一跳一個 Lark 聊天（一線團隊 → 二線 → 風險負責人 → 高階），承辦來自 `users`／`teams`。UI：鳥瞰路徑晶片＋分欄（`data-testid=msg-poc-windows`）。
 
 ---
 
