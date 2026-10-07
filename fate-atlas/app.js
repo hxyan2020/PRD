@@ -90,6 +90,8 @@
     if (m.guided === "tarot" || m.id === "tarot") return "Guided · 塔罗牌";
     if (m.guided === "mbti" || m.id === "mbti") return "Guided · MBTI";
     try {
+      const photo = window.fatePhotoSubjectFor ? window.fatePhotoSubjectFor(m) : null;
+      if (photo) return photo.required ? "Photo · form reading" : "Form (+ optional photo)";
       return window.fateProcessForMethod ? window.fateProcessForMethod(m).label : m.type;
     } catch (_) {
       return m.type;

@@ -160,7 +160,7 @@
     form: {
       id: "form",
       label: "Form reading",
-      blurb: "Answer a few traits of body, place, or name. Form becomes fortune.",
+      blurb: "Upload a photo when asked (palm, face, place, etc.), note a trait, and form becomes fortune.",
       steps: ["intent", "form", "ritual", "result"],
       ritualLabel: "Reading the form…",
       cta: "Read the form",
@@ -214,6 +214,105 @@
     if (method.type === "Fate") return PROCESSES.birth;
     if (method.type === "Form") return PROCESSES.form;
     return PROCESSES.omen;
+  }
+
+  /**
+   * Photo upload guidance for methods that read from imageable subjects.
+   * Returns null when upload is not relevant.
+   */
+  function photoSubjectFor(method) {
+    const hay = `${method.name} ${method.summary} ${method.region || ""}`;
+    if (/palm|chiromanc|shou xiang|shouxiang|mogu|bone palm|hand line/i.test(hay)) {
+      return {
+        id: "palm",
+        label: "Upload a photo of your palm",
+        accept: "image/*",
+        hint: "Use the hand you want read. Good light, palm open, fingers slightly apart. Avoid heavy filters.",
+        placeholderTrait: "e.g. deep life line, clear heart line, prominent Venus mount…",
+        required: true,
+      };
+    }
+    if (/face|mian xiang|mianxiang|physiognom|metoposcop/i.test(hay)) {
+      return {
+        id: "face",
+        label: "Upload a photo of your face",
+        accept: "image/*",
+        hint: "Front-facing portrait, even lighting, neutral expression. Hair not covering key features.",
+        placeholderTrait: "e.g. broad forehead, high cheekbones, deep-set eyes…",
+        required: true,
+      };
+    }
+    if (/mole|moleosoph/i.test(hay)) {
+      return {
+        id: "mole",
+        label: "Upload a photo showing the mole(s)",
+        accept: "image/*",
+        hint: "Frame the area clearly (face, neck, hand, etc.).",
+        placeholderTrait: "e.g. mole on left cheek, raised dark mole near brow…",
+        required: true,
+      };
+    }
+    if (/nail|onychomanc/i.test(hay)) {
+      return {
+        id: "nails",
+        label: "Upload a photo of your nails / hands",
+        accept: "image/*",
+        hint: "Natural nails in clear light work best.",
+        placeholderTrait: "e.g. almond shape, pale lunulae, vertical ridges…",
+        required: true,
+      };
+    }
+    if (/samudrika/i.test(hay)) {
+      return {
+        id: "body",
+        label: "Upload a photo for body-mark reading",
+        accept: "image/*",
+        hint: "Hands, face, or the feature you want considered. Keep it respectful and clear.",
+        placeholderTrait: "e.g. long fingers, marked brow, distinctive gait note…",
+        required: true,
+      };
+    }
+    if (/feng shui|vastu|kasō|kaso|house|grave|boso/i.test(hay)) {
+      return {
+        id: "place",
+        label: "Upload a photo of the place / plan",
+        accept: "image/*",
+        hint: "Floor plan sketch, entrance, or room photo. North orientation helps if you know it.",
+        placeholderTrait: "e.g. south-facing door, cluttered SE corner, L-shaped lot…",
+        required: false,
+      };
+    }
+    if (/grapholog|handwriting|seal|insō/i.test(hay)) {
+      return {
+        id: "writing",
+        label: "Upload a photo of the writing / seal",
+        accept: "image/*",
+        hint: "Clear scan or photo of a handwriting sample or seal impression.",
+        placeholderTrait: "e.g. right-slanted script, heavy pressure, open loops…",
+        required: true,
+      };
+    }
+    if (/aura/i.test(hay)) {
+      return {
+        id: "aura",
+        label: "Optional: upload a portrait for aura focus",
+        accept: "image/*",
+        hint: "A calm portrait helps you hold the subject in mind (symbolic reading only).",
+        placeholderTrait: "e.g. sensed gold rim, heavy grey near shoulders…",
+        required: false,
+      };
+    }
+    if (method.type === "Form") {
+      return {
+        id: "form",
+        label: "Optional: upload a reference photo",
+        accept: "image/*",
+        hint: "Any clear image of the form you want read.",
+        placeholderTrait: "Describe the main trait…",
+        required: false,
+      };
+    }
+    return null;
   }
 
   function hashSeed(str) {
@@ -371,13 +470,19 @@
       reading.omen = v;
       reading.details = [`Interpreted through ${method.name}.`, "Let the line sit beside your question without forcing fit."];
     } else if (process.id === "form") {
+      const photo = input.photoMeta;
       reading.title = `Form of ${input.formTrait || "the seeker"}`;
       reading.omen = input.formFocus || "General fortune";
       reading.details = [
         `Trait noted: ${input.formTrait || "unspecified"}.`,
         `Focus: ${input.formFocus || "overall path"}.`,
+        photo
+          ? `Photo received (${photo.subjectLabel}): image held as the form under study.`
+          : "No photo uploaded — reading from your written notes alone.",
         `Read in the observational style of ${method.name}.`,
       ];
+      reading.photoDataUrl = input.photoDataUrl || null;
+      reading.photoSubject = photo?.subjectId || null;
     } else if (process.id === "pendulum") {
       const ans = rng() < 0.5 ? "Yes" : "No";
       const lean = rng() < 0.35 ? "strongly" : rng() < 0.7 ? "clearly" : "softly";
@@ -424,5 +529,6 @@
 
   window.FATE_PROCESSES = PROCESSES;
   window.fateProcessForMethod = processForMethod;
+  window.fatePhotoSubjectFor = photoSubjectFor;
   window.fateGenerateReading = generateReading;
 })();

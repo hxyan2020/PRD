@@ -73,11 +73,15 @@
           dayPurpose: "",
           formTrait: "",
           formFocus: "",
+          photoDataUrl: "",
+          photoName: "",
+          photoMeta: null,
           nonce: Date.now() % 100000,
         },
         reading: null,
         journalSaved: false,
         journalTitle: "",
+        photoConfig: window.fatePhotoSubjectFor ? window.fatePhotoSubjectFor(method) : null,
       };
     }
 
@@ -526,11 +530,18 @@
     const step = currentGenericStep();
 
     if (step === "intent") {
+      const photo = state.photoConfig || window.fatePhotoSubjectFor?.(method);
+      state.photoConfig = photo;
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(method.continent)} · ${escapeHTML(method.type)}</p>
         <h3 class="studio__heading">Begin with ${escapeHTML(method.name)}</h3>
         <p class="studio__copy">${escapeHTML(method.summary)}</p>
         <p class="studio__copy studio__copy--soft">${escapeHTML(process.blurb)}</p>
+        ${
+          photo
+            ? `<p class="studio__copy"><strong>Photo step:</strong> ${escapeHTML(photo.label)}. ${photo.required ? "A clear image is required." : "A photo is optional but helpful."}</p>`
+            : ""
+        }
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
           <button type="button" class="btn btn--primary" data-action="next">Start process</button>
@@ -567,16 +578,35 @@
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
         </div>`;
     } else if (step === "form") {
+      const photo = state.photoConfig || window.fatePhotoSubjectFor?.(method);
+      state.photoConfig = photo;
+      const preview = state.input.photoDataUrl
+        ? `<div class="photo-preview"><img src="${state.input.photoDataUrl}" alt="Upload preview" /><button type="button" class="photo-preview__clear" data-action="clear-photo" aria-label="Remove photo">×</button></div>`
+        : `<div class="photo-drop" id="photo-drop">
+            <p class="photo-drop__label">${escapeHTML(photo ? photo.label : "Upload a photo")}</p>
+            <p class="photo-drop__hint">${escapeHTML(photo ? photo.hint : "Optional reference image")}</p>
+            <label class="btn btn--ghost studio__btn-muted photo-drop__btn">
+              Choose image
+              <input type="file" id="r-photo" accept="${escapeHTML(photo?.accept || "image/*")}" hidden />
+            </label>
+          </div>`;
       body.innerHTML = `
-        <h3 class="studio__heading">Describe the form</h3>
-        <div class="field"><label for="r-trait">Trait</label>
-        <input type="text" id="r-trait" value="${escapeHTML(state.input.formTrait)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-focus">Focus</label>
-        <input type="text" id="r-focus" value="${escapeHTML(state.input.formFocus)}" /></div>
+        <h3 class="studio__heading">${escapeHTML(photo ? photo.label.replace(/^Upload a photo of your /i, "Your ").replace(/^Upload /i, "") : "Describe the form")}</h3>
+        <p class="studio__copy">${escapeHTML(photo ? photo.hint : "Note the trait you want read.")}</p>
+        <div class="photo-field" data-required="${photo && photo.required ? "true" : "false"}">
+          ${preview}
+          ${state.input.photoDataUrl ? `<p class="photo-filename">${escapeHTML(state.input.photoName || "Photo attached")}</p><label class="btn btn--ghost btn--small studio__btn-muted">Replace<input type="file" id="r-photo" accept="image/*" hidden /></label>` : ""}
+        </div>
+        <div class="field" style="margin-top:1rem"><label for="r-trait">Trait / observation ${photo?.required ? "" : "(required)"}</label>
+        <input type="text" id="r-trait" maxlength="120" placeholder="${escapeHTML(photo?.placeholderTrait || "Describe the main trait…")}" value="${escapeHTML(state.input.formTrait)}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-focus">Reading focus</label>
+        <input type="text" id="r-focus" maxlength="80" placeholder="Character, career, love, health…" value="${escapeHTML(state.input.formFocus)}" /></div>
+        <p class="photo-privacy">Photos stay in this browser only (compressed for the reading &amp; journal). Nothing is uploaded to a server.</p>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
         </div>`;
+      bindPhotoInput();
     } else if (step === "ritual") {
       body.innerHTML = `<div class="ritual"><div class="ritual__orb" data-process="${escapeHTML(process.id)}"></div><p class="ritual__label">${escapeHTML(process.ritualLabel)}</p></div>`;
       setTimeout(() => {
@@ -587,9 +617,13 @@
       }, 1800);
     } else if (step === "result" && state.reading) {
       const r = state.reading;
+      const photoHtml = r.photoDataUrl
+        ? `<div class="reading-photo"><img src="${r.photoDataUrl}" alt="Submitted photo for this reading" /></div>`
+        : "";
       body.innerHTML = `
         <div class="reading tone-${escapeHTML(r.tone)}">
           <p class="studio__eyebrow">Your reading</p>
+          ${photoHtml}
           <div class="reading__symbol">${escapeHTML(r.symbol)}</div>
           <h3 class="studio__heading">${escapeHTML(r.title)}</h3>
           <p class="reading__omen">${escapeHTML(r.omen)}</p>
@@ -603,9 +637,64 @@
     }
   }
 
+  function bindPhotoInput() {
+    const input = body.querySelector("#r-photo");
+    if (!input) return;
+    input.addEventListener("change", async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        alert("Please choose an image file (JPG, PNG, WEBP, etc.).");
+        return;
+      }
+      try {
+        const dataUrl = await compressImageFile(file, 900, 0.72);
+        state.input.photoDataUrl = dataUrl;
+        state.input.photoName = file.name;
+        const cfg = state.photoConfig;
+        state.input.photoMeta = cfg
+          ? { subjectId: cfg.id, subjectLabel: cfg.label }
+          : { subjectId: "form", subjectLabel: "Reference photo" };
+        render();
+      } catch (err) {
+        console.error(err);
+        alert("Could not read that image. Try another photo.");
+      }
+    });
+  }
+
+  function compressImageFile(file, maxEdge, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("read failed"));
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          const scale = Math.min(1, maxEdge / Math.max(width, height));
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = () => reject(new Error("image decode failed"));
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function saveCurrentToJournal() {
     if (!state?.reading || state.journalSaved) return null;
     if (!window.FatumJournal) return null;
+    // Keep photo on reading object for journal snapshot
+    if (state.input?.photoDataUrl && state.reading && !state.reading.photoDataUrl) {
+      state.reading.photoDataUrl = state.input.photoDataUrl;
+    }
     const entry = window.FatumJournal.collect({
       methodId: state.method.id,
       methodName: state.method.name,
@@ -613,6 +702,7 @@
       question: state.question || state.input?.question || "",
       focus: state.focus || state.input?.formFocus || state.input?.dayPurpose || "",
       reading: state.reading,
+      photoDataUrl: state.reading.photoDataUrl || state.input?.photoDataUrl || "",
     });
     state.journalSaved = true;
     state.journalEntryId = entry.id;
@@ -638,7 +728,18 @@
     if (step === "question" && !state.input.question) return fail(q);
     if (step === "birth" && !state.input.birthDate) return fail(b);
     if (step === "day" && !state.input.dayDate) return fail(d);
-    if (step === "form" && !state.input.formTrait) return fail(ft);
+    if (step === "form") {
+      if (!state.input.formTrait) return fail(ft);
+      const needsPhoto = state.photoConfig?.required;
+      if (needsPhoto && !state.input.photoDataUrl) {
+        const drop = body.querySelector(".photo-drop, .photo-field");
+        if (drop) {
+          drop.classList.add("field-error");
+          setTimeout(() => drop.classList.remove("field-error"), 700);
+        }
+        return false;
+      }
+    }
     return true;
   }
 
@@ -722,6 +823,14 @@
     if (action === "next") return goNext();
     if (action === "back") return goBack();
     if (action === "save-journal") return saveCurrentToJournal();
+    if (action === "clear-photo") {
+      if (state?.input) {
+        state.input.photoDataUrl = "";
+        state.input.photoName = "";
+        state.input.photoMeta = null;
+      }
+      return render();
+    }
     if (action === "goto-journal") {
       closeStudio();
       document.getElementById("journal")?.scrollIntoView({ behavior: "smooth" });

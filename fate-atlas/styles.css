@@ -988,6 +988,115 @@ body.studio-open {
   animation: rise-in 0.4s var(--ease);
 }
 
+.journal-entry__row {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+}
+
+.journal-entry__thumb {
+  flex: 0 0 4.5rem;
+  width: 4.5rem;
+  height: 4.5rem;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: #dfe8ef;
+}
+
+.journal-entry__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journal-entry__main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Photo upload */
+.photo-field {
+  margin: 0.75rem 0 0;
+}
+
+.photo-drop {
+  border: 1px dashed rgba(15, 92, 86, 0.35);
+  background: rgba(15, 92, 86, 0.04);
+  padding: 1.25rem 1rem;
+  text-align: center;
+}
+
+.photo-drop__label {
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+}
+
+.photo-drop__hint {
+  margin: 0 0 0.9rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.photo-drop__btn {
+  cursor: pointer;
+}
+
+.photo-preview {
+  position: relative;
+  border: 1px solid var(--line);
+  background: #0b1c22;
+  overflow: hidden;
+  max-height: 220px;
+}
+
+.photo-preview img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  background: #0b1c22;
+}
+
+.photo-preview__clear {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 0;
+  background: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.photo-filename {
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.photo-privacy {
+  margin: 0.85rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.reading-photo {
+  margin: 0 0 1rem;
+  border: 1px solid var(--line);
+  background: #0b1c22;
+  overflow: hidden;
+  max-height: 200px;
+}
+
+.reading-photo img {
+  display: block;
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+}
+
 .hero__scroll {
   position: absolute;
   left: 50%;

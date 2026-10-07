@@ -102,6 +102,7 @@
       question: payload.question || "",
       focus: payload.focus || "",
       reading: payload.reading || {},
+      photoDataUrl: payload.photoDataUrl || payload.reading?.photoDataUrl || "",
     };
     base.title = autoTitle(base);
 
@@ -125,7 +126,16 @@
           }))
         : undefined,
       type: base.reading.type,
+      photoSubject: base.reading.photoSubject || null,
     };
+    // Keep compressed photo on the entry (not duplicated inside reading to save space)
+    if (base.photoDataUrl && base.photoDataUrl.length > 900000) {
+      // Too large for comfortable localStorage — drop image, keep text
+      base.photoDataUrl = "";
+      leanReading.details = (leanReading.details || []).concat([
+        "Photo was too large to store in the journal; text of the reading was kept.",
+      ]);
+    }
     base.reading = leanReading;
 
     const list = loadAll();
@@ -165,17 +175,25 @@
     container.innerHTML = list
       .map((e) => {
         const verdict = clip(e.reading?.verdict || e.reading?.omen || "", 140);
+        const thumb = e.photoDataUrl
+          ? `<div class="journal-entry__thumb"><img src="${e.photoDataUrl}" alt="" /></div>`
+          : "";
         return `<article class="journal-entry" data-id="${escapeHTML(e.id)}">
-          <header class="journal-entry__head">
-            <h3 class="journal-entry__title">${escapeHTML(e.title)}</h3>
-            <time class="journal-entry__time" datetime="${escapeHTML(e.createdAt)}">${escapeHTML(formatStamp(e.createdAt))}</time>
-          </header>
-          <p class="journal-entry__method">${escapeHTML(e.methodName)}</p>
-          ${e.question ? `<p class="journal-entry__q">Q: ${escapeHTML(e.question)}</p>` : ""}
-          <p class="journal-entry__verdict">${escapeHTML(verdict)}</p>
-          <div class="journal-entry__actions">
-            <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-view="${escapeHTML(e.id)}">Open</button>
-            <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-delete="${escapeHTML(e.id)}">Remove</button>
+          <div class="journal-entry__row">
+            ${thumb}
+            <div class="journal-entry__main">
+              <header class="journal-entry__head">
+                <h3 class="journal-entry__title">${escapeHTML(e.title)}</h3>
+                <time class="journal-entry__time" datetime="${escapeHTML(e.createdAt)}">${escapeHTML(formatStamp(e.createdAt))}</time>
+              </header>
+              <p class="journal-entry__method">${escapeHTML(e.methodName)}</p>
+              ${e.question ? `<p class="journal-entry__q">Q: ${escapeHTML(e.question)}</p>` : ""}
+              <p class="journal-entry__verdict">${escapeHTML(verdict)}</p>
+              <div class="journal-entry__actions">
+                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-view="${escapeHTML(e.id)}">Open</button>
+                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-delete="${escapeHTML(e.id)}">Remove</button>
+              </div>
+            </div>
           </div>
         </article>`;
       })
@@ -189,6 +207,7 @@
       <p class="studio__eyebrow">Journal entry</p>
       <h3 class="studio__heading">${escapeHTML(entry.title)}</h3>
       <p class="reading__omen"><time datetime="${escapeHTML(entry.createdAt)}">${escapeHTML(formatStamp(entry.createdAt))}</time> · ${escapeHTML(entry.methodName)}</p>
+      ${entry.photoDataUrl ? `<div class="reading-photo"><img src="${entry.photoDataUrl}" alt="Saved photo for this reading" /></div>` : ""}
       ${entry.question ? `<p class="studio__copy"><strong>Question:</strong> ${escapeHTML(entry.question)}</p>` : ""}
       ${entry.focus ? `<p class="studio__copy"><strong>Focus:</strong> ${escapeHTML(entry.focus)}</p>` : ""}
       <p class="reading__verdict">${escapeHTML(r.verdict || "")}</p>
