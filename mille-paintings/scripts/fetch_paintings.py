@@ -208,9 +208,8 @@ def fetch_wikipedia_extracts(titles: list[str]) -> dict[str, str]:
             title = page.get("title")
             extract = (page.get("extract") or "").strip()
             if title and extract:
-                if len(extract) > 900:
-                    extract = extract[:897].rsplit(" ", 1)[0] + "…"
-                out[title] = extract
+                # Keep the full Wikipedia lead; never mid-sentence ellipsis.
+                out[title] = re.sub(r"\s+", " ", extract).strip()
         time.sleep(0.3)
     return out
 
@@ -221,11 +220,8 @@ def build_anecdote(painter: str, extract: str) -> str:
             f"Little is recorded in popular anecdote about {painter}, yet their work continues "
             "to shape how we see color, form, and narrative."
         )
-    parts = re.split(r"(?<=[.!?])\s+", extract)
-    text = " ".join(parts[:2]).strip()
-    if len(text) > 420:
-        text = text[:417].rsplit(" ", 1)[0] + "…"
-    return text
+    # Store the full painter lead section as the life note.
+    return re.sub(r"\s+", " ", extract).strip()
 
 
 DESTROYED_IDS = {"Q56556915", "Q56644435", "Q208887", "Q106574501", "Q24354019"}

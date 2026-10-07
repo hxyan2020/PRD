@@ -146,9 +146,7 @@ def wiki_extract(title: str) -> str:
     for page in data.get("query", {}).get("pages", {}).values():
         extract = (page.get("extract") or "").strip()
         if extract and "may refer to:" not in extract.lower():
-            if len(extract) > 900:
-                extract = extract[:897].rsplit(" ", 1)[0] + "…"
-            return extract
+            return re.sub(r"\s+", " ", extract).strip()
     return ""
 
 
@@ -158,9 +156,7 @@ def anecdote(painter: str, extract: str) -> str:
             f"Little is recorded in popular anecdote about {painter}, yet their work continues "
             "to shape how we see color, form, and narrative."
         )
-    parts = re.split(r"(?<=[.!?])\s+", extract)
-    text = " ".join(parts[:2]).strip()
-    return text[:417] + "…" if len(text) > 420 else text
+    return re.sub(r"\s+", " ", extract).strip()
 
 
 DESTROYED = {"Q56556915", "Q56644435", "Q208887", "Q106574501", "Q24354019"}
