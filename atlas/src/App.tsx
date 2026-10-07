@@ -6,6 +6,7 @@ import { GameDetailPage } from "./pages/GameDetailPage";
 import { JournalPage } from "./pages/JournalPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { GuidePage } from "./pages/GuidePage";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/collection" element={<CollectionPage />} />
+        <Route path="/guide" element={<GuidePage />} />
         <Route path="/journal" element={<JournalPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />

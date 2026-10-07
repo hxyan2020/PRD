@@ -31,9 +31,9 @@ export function HomePage() {
             <Link className="btn btn-primary" to="/collection">
               Browse the full collection
             </Link>
-            <a className="btn btn-ghost" href="#featured">
-              See featured lineages
-            </a>
+            <Link className="btn btn-ghost" to="/guide">
+              Ask Atlas Guide
+            </Link>
           </div>
         </div>
       </section>

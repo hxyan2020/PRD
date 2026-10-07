@@ -19,6 +19,7 @@ export function Header() {
             Home
           </NavLink>
           <NavLink to="/collection">Collection</NavLink>
+          <NavLink to="/guide">Guide</NavLink>
           <NavLink to="/journal">
             Journal
             {isLoggedIn && counts.total > 0 ? (
