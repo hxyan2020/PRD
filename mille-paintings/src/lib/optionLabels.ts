@@ -102,6 +102,18 @@ const zh: Record<string, string> = {
   'Andean art': '安第斯艺术',
   'Brazilian painting': '巴西绘画',
   'American painting': '美国绘画',
+  'monochrome painting': '单色画',
+  nocturne: '夜景画',
+  idyll: '田园画',
+  'atelier scene': '画室场景',
+  'heroic nudity': '英雄裸体',
+  bodegón: '博德贡静物',
+  'inverted still-life': '倒置静物',
+  'merry company': '欢乐聚会',
+  garden: '花园',
+  Veduta: '城市景观画',
+  'art gallery painting': '画廊场景',
+  'topographic landscape': '地形风景',
 
   // Eras
   ancient: '古代',
