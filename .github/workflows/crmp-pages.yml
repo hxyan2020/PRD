@@ -1,8 +1,8 @@
 name: Publish CRMP Admin to GitHub Pages
 
 # Frozen original CRMP Admin at /PRD/crmp-admin/ — no CS/TR.
-# Do not build this codebase into crmp-admin (that overwrote Plus onto it).
-# Republish the pinned snapshot from .github/frozen-crmp-admin.sha.
+# Fully replaces the crmp-admin folder from .github/frozen-crmp-admin.sha
+# so leftover CS/TR files from a bad overwrite are removed.
 
 on:
   push:
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Restore frozen original CRMP Admin (no CS/TR)
+      - name: Stage frozen original CRMP Admin (no CS/TR)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -46,13 +46,28 @@ jobs:
           test -f publish/crmp-admin/admin/index.html
           test -f publish/crmp-admin/admin/messenger/index.html
           rm -rf .frozen-gh-pages
-      - name: Publish gh-pages (keep sibling sites)
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: publish
-          publish_branch: gh-pages
-          keep_files: true
+      - name: Replace crmp-admin on gh-pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          rm -rf .gh-pages-work
+          git clone --depth=1 --branch gh-pages \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .gh-pages-work
+          rm -rf .gh-pages-work/crmp-admin
+          cp -a publish/crmp-admin .gh-pages-work/crmp-admin
+          cd .gh-pages-work
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No gh-pages changes"
+          else
+            git commit -m "deploy: restore frozen crmp-admin ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages
+          fi
+          test ! -e crmp-admin/admin/cs-desk
+          test ! -e crmp-admin/cs
       - name: Public URL
         run: |
           {

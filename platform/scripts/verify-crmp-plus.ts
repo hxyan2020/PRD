@@ -38,25 +38,30 @@ assert.equal(ORIGINAL_CRMP_ADMIN_URL, "https://hxyan2020.github.io/PRD/crmp-admi
 const origWf = read(".github/workflows/crmp-pages.yml");
 assert.match(origWf, /publish\/crmp-admin/);
 assert.match(origWf, /frozen-crmp-admin\.sha/);
-assert.match(origWf, /Restore frozen original CRMP Admin/);
+assert.match(origWf, /Stage frozen original CRMP Admin/);
+assert.match(origWf, /Replace crmp-admin on gh-pages/);
+assert.match(origWf, /rm -rf \.gh-pages-work\/crmp-admin/);
 assert.match(origWf, /Refusing to publish CS\/TR onto original CRMP Admin/);
 assert.doesNotMatch(origWf, /crmp-plus-a935/);
 assert.doesNotMatch(origWf, /publish\/crmp-plus/);
 assert.doesNotMatch(origWf, /npm run build:pages/);
 assert.doesNotMatch(origWf, /NEXT_PUBLIC_BASE_PATH: \/PRD\/crmp-admin/);
+assert.doesNotMatch(origWf, /peaceiris\/actions-gh-pages/);
 
 const plusWf = read(".github/workflows/crmp-plus-pages.yml");
 assert.match(plusWf, /NEXT_PUBLIC_BASE_PATH: \/PRD\/crmp-plus/);
 assert.match(plusWf, /publish\/crmp-plus/);
-assert.match(plusWf, /keep_files: true/);
 assert.match(plusWf, /cursor\/crmp-plus-a935/);
 assert.match(plusWf, /cursor\/restore-crmp-admin-a935/);
 assert.match(plusWf, /frozen-crmp-admin\.sha/);
-assert.match(plusWf, /Restore frozen original CRMP Admin/);
+assert.match(plusWf, /Stage frozen original CRMP Admin/);
+assert.match(plusWf, /replace crmp-plus and crmp-admin folders/);
+assert.match(plusWf, /rm -rf \.gh-pages-work\/crmp-plus \.gh-pages-work\/crmp-admin/);
 assert.match(plusWf, /Refusing to publish CS\/TR onto original CRMP Admin/);
 // Plus must not rebuild the original admin from this codebase (that overwrote CS/TR onto it).
 assert.doesNotMatch(plusWf, /Build original CRMP Admin snapshot/);
 assert.doesNotMatch(plusWf, /NEXT_PUBLIC_BASE_PATH: \/PRD\/crmp-admin/);
+assert.doesNotMatch(plusWf, /peaceiris\/actions-gh-pages/);
 
 const frozenSha = read(".github/frozen-crmp-admin.sha").trim();
 assert.match(frozenSha, /^[0-9a-f]{40}$/);
