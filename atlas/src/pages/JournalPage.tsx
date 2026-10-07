@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
+import { OriginCountry } from "../components/OriginCountry";
 import { useJournal } from "../hooks/useJournal";
 import { useAuth } from "../hooks/useAuth";
 import { loadCollection } from "../lib/collection";
@@ -78,12 +79,13 @@ export function JournalPage() {
     () =>
       display.map((entry) => {
         const game = gamesById.get(entry.gameId);
-        if (!game) return entry;
+        if (!game) return { ...entry, originCountryKey: entry.originCountry };
         const localized = localizeGame(game, locale, contentI18n);
         return {
           ...entry,
           name: localized.name,
           originCountry: localized.originCountry,
+          originCountryKey: localized.originCountryKey ?? game.originCountry,
           category: localized.category,
           image: localized.images[0] ?? entry.image,
         };
@@ -191,7 +193,12 @@ export function JournalPage() {
                     <div>
                       <div className="pill">{entry.category}</div>
                       <h3>{entry.name}</h3>
-                      <div className="meta">{entry.originCountry}</div>
+                      <div className="meta">
+                        <OriginCountry
+                          country={entry.originCountry}
+                          countryKey={entry.originCountryKey}
+                        />
+                      </div>
                       <div className="journal-badges">
                         {entry.collectedAt ? (
                           <span className="badge collect">

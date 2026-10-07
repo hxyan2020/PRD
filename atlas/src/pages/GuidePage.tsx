@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
+import { OriginCountry } from "../components/OriginCountry";
 import { loadCollection } from "../lib/collection";
 import type { Game } from "../types/game";
 import type { ChatMessage, ChatState } from "../types/chat";
@@ -52,7 +53,11 @@ function RecCards({ games }: { games: Game[] }) {
             <div className="pill">{g.category}</div>
             <h4>{g.name}</h4>
             <p>
-              {g.originCountry} · {g.creationYear}
+              <OriginCountry
+                country={g.originCountry}
+                countryKey={g.originCountryKey}
+              />{" "}
+              · {g.creationYear}
             </p>
           </div>
         </Link>

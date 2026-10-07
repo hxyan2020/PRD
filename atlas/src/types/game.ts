@@ -9,6 +9,8 @@ export type GameVariation = {
   originCountry: string;
   creationYear: string;
   notes: string;
+  /** English catalog key for flag lookup when `originCountry` is localized. */
+  originCountryKey?: string;
 };
 
 export type Game = {
@@ -29,6 +31,8 @@ export type Game = {
   tags: string[];
   /** Present on matrix-expanded regional craft/play entries; omitted for curated seeds. */
   archetypeKey?: string;
+  /** English catalog key for flag lookup when `originCountry` is localized. */
+  originCountryKey?: string;
 };
 
 export type CollectionMeta = {

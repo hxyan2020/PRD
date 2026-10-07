@@ -10,6 +10,7 @@ import type {
 } from "../types/chat";
 import type { MessageKey } from "../i18n/messages/en";
 import { charExcerpt } from "./textPreview";
+import { countryWithFlag } from "./countryFlags";
 
 export type ChatTranslate = (
   key: MessageKey,
@@ -505,7 +506,7 @@ function answerPurchase(game: Game, t: ChatTranslate): string {
 function answerAbout(game: Game, t: ChatTranslate): string {
   return t("chat.answer.about", {
     name: game.name,
-    origin: game.originCountry,
+    origin: countryWithFlag(game.originCountryKey ?? game.originCountry),
     civilization: game.civilization,
     year: game.creationYear,
     category: game.category,
@@ -521,7 +522,7 @@ function answerVariations(game: Game, t: ChatTranslate): string {
     .map((v) =>
       t("chat.answer.variationLine", {
         name: v.name,
-        origin: v.originCountry,
+        origin: countryWithFlag(v.originCountryKey ?? v.originCountry),
         year: v.creationYear,
         notes: v.notes,
       }),
@@ -918,9 +919,9 @@ export function handleUserMessage(
     const body = t("chat.answer.compare", {
       a: a.name,
       b: b.name,
-      aOrigin: a.originCountry,
+      aOrigin: countryWithFlag(a.originCountryKey ?? a.originCountry),
       aYear: a.creationYear,
-      bOrigin: b.originCountry,
+      bOrigin: countryWithFlag(b.originCountryKey ?? b.originCountry),
       bYear: b.creationYear,
       aPlayers: a.idealParticipants,
       bPlayers: b.idealParticipants,

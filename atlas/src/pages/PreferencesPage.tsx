@@ -18,6 +18,7 @@ import {
   localizeGame,
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
+import { OriginCountry } from "../components/OriginCountry";
 
 export function PreferencesPage() {
   const { isLoggedIn, user } = useAuth();
@@ -402,8 +403,11 @@ export function PreferencesPage() {
                           </div>
                           <h4>{display.name}</h4>
                           <p className="meta">
-                            {display.originCountry} · {display.creationYear} ·{" "}
-                            {display.idealParticipants}
+                            <OriginCountry
+                              country={display.originCountry}
+                              countryKey={display.originCountryKey}
+                            />{" "}
+                            · {display.creationYear} · {display.idealParticipants}
                           </p>
                           <p className="prefs-reason">{hit.reason}</p>
                           <p className="prefs-excerpt">

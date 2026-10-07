@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { Game } from "../types/game";
 import { excerpt } from "../lib/collection";
 import { JournalActions } from "./JournalActions";
+import { OriginCountry } from "./OriginCountry";
 import { useI18n } from "../i18n";
 
 export function GameCard({ game, index }: { game: Game; index: number }) {
@@ -19,7 +20,11 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
         <div className="pill">{game.category}</div>
         <h3>{game.name}</h3>
         <div className="meta">
-          {game.originCountry} · {game.creationYear}
+          <OriginCountry
+            country={game.originCountry}
+            countryKey={game.originCountryKey}
+          />{" "}
+          · {game.creationYear}
           {game.variations.length > 0 ? (
             <>
               {" "}

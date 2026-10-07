@@ -5,6 +5,7 @@ import type { Game } from "../types/game";
 import { Footer } from "../components/Footer";
 import { JournalActions } from "../components/JournalActions";
 import { PlatformLogo } from "../components/PlatformLogo";
+import { OriginCountry } from "../components/OriginCountry";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
 
@@ -64,7 +65,10 @@ export function GameDetailPage() {
           <div className="detail-facts">
             <span>
               <strong style={{ color: "var(--mist)" }}>{t("detail.origin")}</strong>{" "}
-              {game.originCountry}
+              <OriginCountry
+                country={game.originCountry}
+                countryKey={game.originCountryKey}
+              />
             </span>
             <span>
               <strong style={{ color: "var(--mist)" }}>
@@ -115,7 +119,11 @@ export function GameDetailPage() {
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
                     <h3>{v.name}</h3>
                     <div className="meta">
-                      {v.originCountry} · {v.creationYear}
+                      <OriginCountry
+                        country={v.originCountry}
+                        countryKey={v.originCountryKey}
+                      />{" "}
+                      · {v.creationYear}
                     </div>
                     <p>{v.notes}</p>
                   </article>

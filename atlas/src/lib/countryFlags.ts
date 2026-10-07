@@ -1,0 +1,179 @@
+/**
+ * Flag / emblem for catalog origin-country strings (modern flags + a few
+ * civilizational stand-ins for historical / multi-region labels).
+ */
+
+const COUNTRY_FLAGS: Record<string, string> = {
+  Afghanistan: "🇦🇫",
+  Algeria: "🇩🇿",
+  Argentina: "🇦🇷",
+  Armenia: "🇦🇲",
+  Australia: "🇦🇺",
+  Bangladesh: "🇧🇩",
+  Belgium: "🇧🇪",
+  Belize: "🇧🇿",
+  Bolivia: "🇧🇴",
+  Brazil: "🇧🇷",
+  Bulgaria: "🇧🇬",
+  Cambodia: "🇰🇭",
+  Canada: "🇨🇦",
+  Chile: "🇨🇱",
+  China: "🇨🇳",
+  Colombia: "🇨🇴",
+  Croatia: "🇭🇷",
+  Cuba: "🇨🇺",
+  Czechia: "🇨🇿",
+  Denmark: "🇩🇰",
+  Ecuador: "🇪🇨",
+  Egypt: "🇪🇬",
+  Ethiopia: "🇪🇹",
+  Fiji: "🇫🇯",
+  Finland: "🇫🇮",
+  France: "🇫🇷",
+  Georgia: "🇬🇪",
+  Germany: "🇩🇪",
+  Ghana: "🇬🇭",
+  Greece: "🇬🇷",
+  Greenland: "🇬🇱",
+  Guatemala: "🇬🇹",
+  "Hawaiʻi": "ハワイ",
+  Hungary: "🇭🇺",
+  India: "🇮🇳",
+  Indonesia: "🇮🇩",
+  Iran: "🇮🇷",
+  Iraq: "🇮🇶",
+  "Iraq (Sumer)": "🇮🇶",
+  Ireland: "🇮🇪",
+  Israel: "🇮🇱",
+  Italy: "🇮🇹",
+  Japan: "🇯🇵",
+  Kazakhstan: "🇰🇿",
+  Kenya: "🇰🇪",
+  Korea: "🇰🇷",
+  Laos: "🇱🇦",
+  Lebanon: "🇱🇧",
+  Madagascar: "🇲🇬",
+  Malaysia: "🇲🇾",
+  Mali: "🇲🇱",
+  Mauritania: "🇲🇷",
+  Mexico: "🇲🇽",
+  "Mexico (Maya region)": "🇲🇽",
+  Mongolia: "🇲🇳",
+  Morocco: "🇲🇦",
+  Myanmar: "🇲🇲",
+  Nepal: "🇳🇵",
+  Netherlands: "🇳🇱",
+  "New Zealand": "🇳🇿",
+  Nigeria: "🇳🇬",
+  Norway: "🇳🇴",
+  Pakistan: "🇵🇰",
+  "Papua New Guinea": "🇵🇬",
+  "Persia / Iran": "🇮🇷",
+  Peru: "🇵🇪",
+  Philippines: "🇵🇭",
+  Poland: "🇵🇱",
+  Portugal: "🇵🇹",
+  Romania: "🇷🇴",
+  Russia: "🇷🇺",
+  Samoa: "🇼🇸",
+  "Saudi Arabia": "🇸🇦",
+  Senegal: "🇸🇳",
+  Serbia: "🇷🇸",
+  "Solomon Islands": "🇸🇧",
+  "South Africa": "🇿🇦",
+  Spain: "🇪🇸",
+  "Sri Lanka": "🇱🇰",
+  Sudan: "🇸🇩",
+  Sweden: "🇸🇪",
+  Tanzania: "🇹🇿",
+  Thailand: "🇹🇭",
+  Tibet: "🏔️",
+  Tonga: "🇹🇴",
+  Turkey: "🇹🇷",
+  Ukraine: "🇺🇦",
+  "United Kingdom": "🇬🇧",
+  "United States": "🇺🇸",
+  Uzbekistan: "🇺🇿",
+  Venezuela: "🇻🇪",
+  Vietnam: "🇻🇳",
+  Yemen: "🇾🇪",
+  // Multi-region / historical labels — primary emblem
+  "Africa / Middle East": "🌍",
+  "Canada / United States": "🇨🇦",
+  "China / Greece (disputed antiquity); Philippines popularization": "🇨🇳",
+  "China / Hong Kong": "🇭🇰",
+  "Egypt / China origins; Europe standardized": "🇪🇬",
+  "Ethiopia / Eritrea": "🇪🇹",
+  Europe: "🇪🇺",
+  "Europe / Americas": "🌍",
+  "France / Mexico / Japan": "🇫🇷",
+  "France / Netherlands": "🇫🇷",
+  "Germany / United Kingdom": "🇩🇪",
+  "India / Pakistan": "🇮🇳",
+  "Japan / China": "🇯🇵",
+  "Malaysia / Indonesia": "🇲🇾",
+  "Malaysia / Sri Lanka": "🇲🇾",
+  "Mauritania / Morocco": "🇲🇷",
+  "Multiple (global)": "🌍",
+  "Multiple (global; Roman roots often cited)": "🌍",
+  "Multiple Asia": "🌏",
+  "Multiple Europe / China roots debated": "🌍",
+  "Persia / Mesopotamia region": "🇮🇷",
+  "Roman Empire / Europe": "🦅",
+  "Spain / Islamic Spain": "🇪🇸",
+  "Spain / Latin America": "🇪🇸",
+  "Sweden / Sápmi": "🇸🇪",
+  "Thailand / Malaysia": "🇹🇭",
+  "Turkey / Levant": "🇹🇷",
+  "United Kingdom / Europe / East Asia porcelain play": "🇬🇧",
+  "United Kingdom / Japan": "🇬🇧",
+  "United Kingdom / United States": "🇬🇧",
+  "United Kingdom / global": "🇬🇧",
+  "United States / Canada": "🇺🇸",
+  "United States / Mexico": "🇺🇸",
+  "United States / global": "🇺🇸",
+  "United States / global; older Asian footbags": "🇺🇸",
+  global: "🌍",
+};
+
+/** Fix Hawaiʻi — use US flag (Unicode regional). */
+COUNTRY_FLAGS["Hawaiʻi"] = "🇺🇸";
+
+const TOKEN_FLAGS: [RegExp, string][] = [
+  [/\bUnited States\b/i, "🇺🇸"],
+  [/\bUnited Kingdom\b/i, "🇬🇧"],
+  [/\bChina\b/i, "🇨🇳"],
+  [/\bJapan\b/i, "🇯🇵"],
+  [/\bIndia\b/i, "🇮🇳"],
+  [/\bEgypt\b/i, "🇪🇬"],
+  [/\bIran\b|\bPersia\b/i, "🇮🇷"],
+  [/\bIraq\b|\bSumer\b|\bMesopotamia\b/i, "🇮🇶"],
+  [/\bMexico\b|\bMaya\b/i, "🇲🇽"],
+  [/\bKorea\b/i, "🇰🇷"],
+  [/\bGreece\b/i, "🇬🇷"],
+  [/\bRoman\b/i, "🦅"],
+  [/\bEurope\b/i, "🇪🇺"],
+  [/\bglobal\b|\bMultiple\b|\bAfrica\b/i, "🌍"],
+];
+
+/** Resolve a flag emoji for an English (or compound) origin-country label. */
+export function flagForCountry(country: string | undefined | null): string {
+  if (!country) return "🌍";
+  const trimmed = country.trim();
+  if (COUNTRY_FLAGS[trimmed]) return COUNTRY_FLAGS[trimmed];
+
+  // Exact segment before " / " often is the primary origin
+  const primary = trimmed.split(/\s*\/\s*/)[0]?.trim();
+  if (primary && COUNTRY_FLAGS[primary]) return COUNTRY_FLAGS[primary];
+
+  for (const [re, flag] of TOKEN_FLAGS) {
+    if (re.test(trimmed)) return flag;
+  }
+  return "🌍";
+}
+
+/** `"🇪🇬 Egypt"` style label for selects and plain text. */
+export function countryWithFlag(country: string): string {
+  const flag = flagForCountry(country);
+  return flag ? `${flag} ${country}` : country;
+}

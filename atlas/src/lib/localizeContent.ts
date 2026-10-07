@@ -113,18 +113,29 @@ export function localizeGame(
   locale: LocaleCode,
   catalog?: ContentI18nCatalog | null,
 ): Game {
-  if (locale === "en") return game;
+  const originKey = game.originCountryKey ?? game.originCountry;
+  if (locale === "en") {
+    return game.originCountryKey
+      ? game
+      : {
+          ...game,
+          originCountryKey: originKey,
+          variations: game.variations.map((v) => ({
+            ...v,
+            originCountryKey: v.originCountryKey ?? v.originCountry,
+          })),
+        };
+  }
   const pack = packFor(catalog ?? catalogCache, locale);
   if (!pack) return game;
 
   const category = localizeCategory(game.category, locale, catalog ?? catalogCache);
-  const originCountry = localizeCountry(game.originCountry, locale, pack);
+  const originCountry = localizeCountry(originKey, locale, pack);
   const civilization = localizeCivilization(game.civilization, locale, pack);
 
   if (game.archetypeKey && pack.archetypes[game.archetypeKey]) {
     const arch = pack.archetypes[game.archetypeKey];
-    const countryForTemplate =
-      pack.countries[game.originCountry] ?? game.originCountry;
+    const countryForTemplate = pack.countries[originKey] ?? originKey;
     const description = preferCompleteText(
       fillTemplate(arch.descTemplate, {
         country: countryForTemplate,
@@ -149,6 +160,7 @@ export function localizeGame(
       ...game,
       name,
       originCountry,
+      originCountryKey: originKey,
       civilization,
       category,
       description,
@@ -163,32 +175,37 @@ export function localizeGame(
     return {
       ...game,
       originCountry,
+      originCountryKey: originKey,
       civilization,
       category,
+      variations: game.variations.map((v) => {
+        const key = v.originCountryKey ?? v.originCountry;
+        return {
+          ...v,
+          originCountryKey: key,
+          originCountry: localizeCountry(key, locale, pack),
+        };
+      }),
     };
   }
 
-  let variations: GameVariation[] = game.variations;
-  if (curated.variationNotes && curated.variationNotes.length > 0) {
-    variations = game.variations.map((v, i) => ({
+  let variations: GameVariation[] = game.variations.map((v, i) => {
+    const key = v.originCountryKey ?? v.originCountry;
+    return {
       ...v,
-      notes: preferCompleteText(
-        curated.variationNotes![i] ?? v.notes,
-        v.notes,
-      ),
-      originCountry: localizeCountry(v.originCountry, locale, pack),
-    }));
-  } else {
-    variations = game.variations.map((v) => ({
-      ...v,
-      originCountry: localizeCountry(v.originCountry, locale, pack),
-    }));
-  }
+      originCountryKey: key,
+      originCountry: localizeCountry(key, locale, pack),
+      notes: curated.variationNotes?.[i]
+        ? preferCompleteText(curated.variationNotes[i]!, v.notes)
+        : v.notes,
+    };
+  });
 
   return {
     ...game,
     name: curated.name ?? game.name,
     originCountry,
+    originCountryKey: originKey,
     civilization,
     category,
     description: preferCompleteText(curated.description, game.description),

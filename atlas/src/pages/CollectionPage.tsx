@@ -13,6 +13,7 @@ import {
   localizeCategory,
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
+import { flagForCountry } from "../lib/countryFlags";
 
 const PAGE_SIZE = 30;
 
@@ -145,11 +146,15 @@ export function CollectionPage() {
                 onChange={(e) => setRegion(e.target.value)}
               >
                 <option value="all">{t("collection.allOrigins")}</option>
-                {countries.map((c) => (
-                  <option key={c} value={c}>
-                    {catalog?.locales[locale]?.countries[c] ?? c}
-                  </option>
-                ))}
+                {countries.map((c) => {
+                  const label =
+                    catalog?.locales[locale]?.countries[c] ?? c;
+                  return (
+                    <option key={c} value={c}>
+                      {`${flagForCountry(c)} ${label}`}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <button
