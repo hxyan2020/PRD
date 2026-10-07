@@ -23,6 +23,7 @@ export type LocaleContentPack = {
   curated: Record<string, CuratedI18n>;
   categories: Record<string, string>;
   countries: Record<string, string>;
+  civilizations: Record<string, string>;
 };
 
 export type ContentI18nCatalog = {
@@ -92,6 +93,15 @@ function localizeCountry(
   return pack.countries[country] ?? country;
 }
 
+function localizeCivilization(
+  civilization: string,
+  locale: LocaleCode,
+  pack: LocaleContentPack | null,
+): string {
+  if (!pack || locale === "en") return civilization;
+  return pack.civilizations[civilization] ?? civilization;
+}
+
 /**
  * Overlay localized catalog fields onto a game.
  * English returns the game unchanged. Matrix games use archetype templates;
@@ -108,7 +118,7 @@ export function localizeGame(
 
   const category = localizeCategory(game.category, locale, catalog ?? catalogCache);
   const originCountry = localizeCountry(game.originCountry, locale, pack);
-  const civLocalized = game.civilization; // civilizations stay as catalog English unless extended later
+  const civilization = localizeCivilization(game.civilization, locale, pack);
 
   if (game.archetypeKey && pack.archetypes[game.archetypeKey]) {
     const arch = pack.archetypes[game.archetypeKey];
@@ -116,13 +126,14 @@ export function localizeGame(
       pack.countries[game.originCountry] ?? game.originCountry;
     const description = fillTemplate(arch.descTemplate, {
       country: countryForTemplate,
-      civ: civLocalized,
+      civ: civilization,
     });
     const name = `${arch.title} — ${countryForTemplate}`;
     return {
       ...game,
       name,
       originCountry,
+      civilization,
       category,
       description,
       howToPlay: arch.steps,
@@ -136,6 +147,7 @@ export function localizeGame(
     return {
       ...game,
       originCountry,
+      civilization,
       category,
     };
   }
@@ -158,6 +170,7 @@ export function localizeGame(
     ...game,
     name: curated.name ?? game.name,
     originCountry,
+    civilization,
     category,
     description: curated.description,
     howToPlay: curated.howToPlay,

@@ -2,8 +2,8 @@
  * Assembles public/data/content-i18n.json from scripts/content-i18n-data/.
  *
  * English collection.json remains the source of truth; this overlay supplies
- * translated archetypes, curated seed text, categories, and countries for every
- * non-en locale in src/i18n/languages.ts.
+ * translated archetypes, curated seed text, categories, countries, and
+ * civilizations for every non-en locale in src/i18n/languages.ts.
  *
  * Run: node scripts/generate-content-i18n.mjs
  */
@@ -61,6 +61,7 @@ const archI18n = loadJson("archetypes-i18n.json");
 const curI18n = loadJson("curated-i18n.json");
 const categories = loadJson("categories.json");
 const countries = loadJson("countries.json");
+const civilizations = loadJson("civilizations.json");
 
 const archKeys = Object.keys(enArch);
 const curIds = Object.keys(enCur);
@@ -73,6 +74,7 @@ for (const loc of LOCALES) {
   if (!curI18n[loc]) throw new Error(`Missing curated for ${loc}`);
   if (!categories[loc]) throw new Error(`Missing categories for ${loc}`);
   if (!countries[loc]) throw new Error(`Missing countries for ${loc}`);
+  if (!civilizations[loc]) throw new Error(`Missing civilizations for ${loc}`);
 
   for (const key of archKeys) {
     const a = archI18n[loc][key];
@@ -119,6 +121,7 @@ for (const loc of LOCALES) {
     curated,
     categories: categories[loc],
     countries: countries[loc],
+    civilizations: civilizations[loc],
   };
 }
 
@@ -130,6 +133,7 @@ const payload = {
     curatedIds: curIds,
     categoryCount: Object.keys(categories[LOCALES[0]]).length,
     countryCount: Object.keys(countries[LOCALES[0]]).length,
+    civilizationCount: Object.keys(civilizations[LOCALES[0]]).length,
   },
   locales,
 };
