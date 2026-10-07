@@ -16,7 +16,7 @@ export function StatsCounter({ compact = false }: { compact?: boolean }) {
       <span className="stat-sep" aria-hidden="true">
         ·
       </span>
-      <Link to="/collection" className="stat" title={t('collectedCount')}>
+      <Link to="/collection" className="stat" title={t('collectedCount')} onClick={(e) => e.stopPropagation()}>
         <span className="stat-label">{t('collectedCount')}</span>
         <strong className="stat-value">{stats.collected}</strong>
       </Link>

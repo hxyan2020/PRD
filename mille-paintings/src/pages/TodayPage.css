@@ -87,7 +87,27 @@
 }
 
 @media (max-width: 860px) {
+  .today-page {
+    width: min(var(--max), calc(100% - 1.5rem));
+    padding-top: 1.35rem;
+  }
+
   .today-stage {
     grid-template-columns: 1fr;
+  }
+
+  .today-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .today-actions .btn {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+
+  .today-image img {
+    max-height: 55vh;
   }
 }

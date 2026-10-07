@@ -37,10 +37,17 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  min-height: 100svh;
+  overflow-x: hidden;
   background:
     radial-gradient(1200px 600px at 80% -10%, rgba(214, 167, 86, 0.12), transparent 55%),
     radial-gradient(900px 500px at -10% 30%, rgba(127, 163, 138, 0.1), transparent 50%),
     linear-gradient(180deg, #0d110f 0%, #121816 40%, #0f1411 100%);
+}
+
+.btn {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 body::before {
@@ -64,8 +71,10 @@ a {
   text-decoration: none;
 }
 
-img {
+img,
+video {
   max-width: 100%;
+  height: auto;
   display: block;
 }
 

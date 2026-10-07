@@ -9,6 +9,7 @@
   font-size: 0.82rem;
   letter-spacing: 0.02em;
   white-space: nowrap;
+  max-width: 100%;
 }
 
 .stats-counter .stat {
@@ -42,11 +43,26 @@
   color: var(--brass-soft);
 }
 
+.stats-counter.compact {
+  padding: 0.3rem 0.5rem;
+  gap: 0.3rem;
+}
+
 .stats-counter.compact .stat-label {
   display: none;
 }
 
-.stats-counter.compact .stat-value::after {
-  content: none;
+.stats-counter.compact .stat-value {
+  font-size: 1.05rem;
+}
+
+@media (max-width: 860px) {
+  .header-stats-slot .stats-counter .stat-label {
+    display: none;
+  }
+
+  .header-stats-slot .stats-counter {
+    padding: 0.28rem 0.45rem;
+  }
 }
 

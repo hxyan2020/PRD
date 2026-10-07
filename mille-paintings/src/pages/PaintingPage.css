@@ -211,6 +211,11 @@
 }
 
 @media (max-width: 960px) {
+  .painting-page {
+    width: min(var(--max), calc(100% - 1.5rem));
+    padding-top: 1.35rem;
+  }
+
   .painting-hero,
   .painter-block,
   .related-grid {
@@ -218,6 +223,34 @@
   }
 
   .facts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .summary-actions .btn {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .back-row .btn {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .related-grid {
     grid-template-columns: 1fr;
   }
 }

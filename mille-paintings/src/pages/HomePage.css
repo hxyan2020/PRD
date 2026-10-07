@@ -261,11 +261,35 @@
 
   .hero-copy {
     margin-bottom: 8vh;
+    width: min(var(--max), calc(100% - 1.5rem));
   }
 }
 
 @media (max-width: 640px) {
   .featured-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .facts {
+    gap: 0.5rem;
+  }
+
+  .facts strong {
+    font-size: 1.55rem;
+  }
+
+  .home-strip-inner,
+  .featured {
+    width: min(var(--max), calc(100% - 1.5rem));
   }
 }

@@ -112,11 +112,32 @@
 }
 
 @media (max-width: 640px) {
+  .gallery-page {
+    width: min(var(--max), calc(100% - 1.5rem));
+    padding-top: 1.35rem;
+  }
+
   .filters {
     grid-template-columns: 1fr;
   }
 
+  .filters input,
+  .filters select {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .filters .check {
+    padding-bottom: 0.2rem;
+    min-height: 44px;
+  }
+
   .gallery-masonry {
     columns: 1;
+  }
+
+  .load-more .btn {
+    width: 100%;
+    min-height: 48px;
   }
 }
