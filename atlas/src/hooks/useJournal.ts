@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import type { Game } from "../types/game";
 import type { JournalKind, JournalState } from "../types/journal";
+import { AUTH_EVENT, SESSION_KEY } from "../lib/auth";
 import {
   JOURNAL_EVENT,
   journalCounts,
+  journalStorageSnapshot,
   listJournal,
   readJournal,
   removeFromJournal,
@@ -13,15 +15,17 @@ import {
 function subscribe(onStoreChange: () => void) {
   const handler = () => onStoreChange();
   window.addEventListener(JOURNAL_EVENT, handler);
+  window.addEventListener(AUTH_EVENT, handler);
   window.addEventListener("storage", handler);
   return () => {
     window.removeEventListener(JOURNAL_EVENT, handler);
+    window.removeEventListener(AUTH_EVENT, handler);
     window.removeEventListener("storage", handler);
   };
 }
 
 function getSnapshot(): string {
-  return localStorage.getItem("ludus-atlas-journal-v1") ?? "";
+  return `${localStorage.getItem(SESSION_KEY) ?? ""}|${journalStorageSnapshot()}`;
 }
 
 function getServerSnapshot(): string {

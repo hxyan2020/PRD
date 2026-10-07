@@ -1,14 +1,26 @@
 import type { Game } from "../types/game";
 import type { JournalEntry, JournalKind, JournalState } from "../types/journal";
+import { getSession } from "./auth";
 
-export const JOURNAL_STORAGE_KEY = "ludus-atlas-journal-v1";
 export const JOURNAL_EVENT = "ludus-atlas-journal-change";
+const LEGACY_JOURNAL_KEY = "ludus-atlas-journal-v1";
 
 const empty: JournalState = { entries: {} };
 
-export function readJournal(): JournalState {
+function journalKeyForUser(userId: string) {
+  return `ludus-atlas-journal-v1:${userId}`;
+}
+
+function activeJournalKey(): string | null {
+  const session = getSession();
+  return session ? journalKeyForUser(session.userId) : null;
+}
+
+export function readJournal(userId?: string): JournalState {
+  const key = userId ? journalKeyForUser(userId) : activeJournalKey();
+  if (!key) return empty;
   try {
-    const raw = localStorage.getItem(JOURNAL_STORAGE_KEY);
+    const raw = localStorage.getItem(key);
     if (!raw) return empty;
     const parsed = JSON.parse(raw) as JournalState;
     if (!parsed || typeof parsed !== "object" || !parsed.entries) return empty;
@@ -18,8 +30,10 @@ export function readJournal(): JournalState {
   }
 }
 
-function writeJournal(state: JournalState) {
-  localStorage.setItem(JOURNAL_STORAGE_KEY, JSON.stringify(state));
+function writeJournal(state: JournalState, userId?: string) {
+  const key = userId ? journalKeyForUser(userId) : activeJournalKey();
+  if (!key) return;
+  localStorage.setItem(key, JSON.stringify(state));
   window.dispatchEvent(new CustomEvent(JOURNAL_EVENT));
 }
 
@@ -34,6 +48,38 @@ function stubFromGame(game: Game): JournalEntry {
   };
 }
 
+/** Merge any pre-auth guest journal into the signed-in user's journal once. */
+export function migrateGuestJournalIfNeeded(userId: string) {
+  try {
+    const legacy = localStorage.getItem(LEGACY_JOURNAL_KEY);
+    if (!legacy) return;
+    const guest = JSON.parse(legacy) as JournalState;
+    if (!guest?.entries || !Object.keys(guest.entries).length) {
+      localStorage.removeItem(LEGACY_JOURNAL_KEY);
+      return;
+    }
+    const current = readJournal(userId);
+    const merged: JournalState = { entries: { ...current.entries } };
+    for (const [id, entry] of Object.entries(guest.entries)) {
+      const existing = merged.entries[id];
+      if (!existing) {
+        merged.entries[id] = entry;
+        continue;
+      }
+      merged.entries[id] = {
+        ...existing,
+        ...entry,
+        collectedAt: existing.collectedAt || entry.collectedAt,
+        playedAt: existing.playedAt || entry.playedAt,
+      };
+    }
+    writeJournal(merged, userId);
+    localStorage.removeItem(LEGACY_JOURNAL_KEY);
+  } catch {
+    // ignore corrupt legacy data
+  }
+}
+
 export function isInJournal(gameId: string, kind: JournalKind): boolean {
   const entry = readJournal().entries[gameId];
   if (!entry) return false;
@@ -41,16 +87,14 @@ export function isInJournal(gameId: string, kind: JournalKind): boolean {
 }
 
 export function toggleJournal(game: Game, kind: JournalKind): JournalState {
+  if (!getSession()) return empty;
   const state = readJournal();
   const existing = state.entries[game.id] ?? stubFromGame(game);
   const now = new Date().toISOString();
 
   if (kind === "collected") {
-    if (existing.collectedAt) {
-      delete existing.collectedAt;
-    } else {
-      existing.collectedAt = now;
-    }
+    if (existing.collectedAt) delete existing.collectedAt;
+    else existing.collectedAt = now;
   } else if (existing.playedAt) {
     delete existing.playedAt;
   } else {
@@ -100,6 +144,7 @@ export function journalCounts() {
 }
 
 export function removeFromJournal(gameId: string, kind: JournalKind): JournalState {
+  if (!getSession()) return empty;
   const state = readJournal();
   const entry = state.entries[gameId];
   if (!entry) return state;
@@ -111,7 +156,8 @@ export function removeFromJournal(gameId: string, kind: JournalKind): JournalSta
   return state;
 }
 
-export function clearJournal(): JournalState {
-  writeJournal(empty);
-  return empty;
+export function journalStorageSnapshot(): string {
+  const key = activeJournalKey();
+  if (!key) return "";
+  return `${key}:${localStorage.getItem(key) ?? ""}`;
 }

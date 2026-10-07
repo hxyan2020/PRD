@@ -707,6 +707,80 @@ select {
   vertical-align: middle;
 }
 
+.nav-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-left: 0.25rem;
+}
+
+.nav-email {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--mist-dim);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+}
+
+.nav-logout {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--mist);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.nav-logout:hover {
+  border-color: var(--brass);
+  color: var(--brass);
+}
+
+.auth-section {
+  padding-top: 2.5rem;
+}
+
+.auth-shell {
+  max-width: 28rem;
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.5rem;
+}
+
+.auth-form .btn {
+  justify-self: start;
+  margin-top: 0.35rem;
+}
+
+.auth-error {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid rgba(212, 120, 74, 0.55);
+  background: rgba(212, 120, 74, 0.12);
+  color: #f0c3a8;
+  font-size: 0.92rem;
+}
+
+.auth-switch {
+  margin-top: 1.5rem;
+  color: var(--mist-dim);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 720px) {
+  .nav-email {
+    display: none;
+  }
+}
+
 .detail-journal {
   display: flex;
   flex-wrap: wrap;

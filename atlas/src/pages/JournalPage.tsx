@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { useJournal } from "../hooks/useJournal";
+import { useAuth } from "../hooks/useAuth";
 import { loadCollection } from "../lib/collection";
 import type { JournalEntry, JournalKind } from "../types/journal";
 
@@ -36,6 +37,7 @@ function sortByRecent(entries: JournalEntry[]) {
 
 export function JournalPage() {
   const { collected, played, counts, remove } = useJournal();
+  const { isLoggedIn, user } = useAuth();
   const [tab, setTab] = useState<"all" | JournalKind>("all");
   const [catalogTotal, setCatalogTotal] = useState<number>();
 
@@ -58,6 +60,35 @@ export function JournalPage() {
             ),
           );
 
+  if (!isLoggedIn) {
+    return (
+      <>
+        <section className="section" style={{ paddingTop: "2.5rem" }}>
+          <div className="container">
+            <div className="section-head">
+              <h2>Your journal</h2>
+              <p>
+                Log in to save collected and played games. Your session stays
+                active on this device until you log out.
+              </p>
+            </div>
+            <div className="journal-empty">
+              <div className="cta-row">
+                <Link className="btn btn-primary" to="/login?next=%2Fjournal">
+                  Log in
+                </Link>
+                <Link className="btn btn-ghost" to="/register?next=%2Fjournal">
+                  Create account
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+        <Footer total={catalogTotal} />
+      </>
+    );
+  }
+
   return (
     <>
       <section className="section" style={{ paddingTop: "2.5rem" }}>
@@ -65,8 +96,8 @@ export function JournalPage() {
           <div className="section-head">
             <h2>Your journal</h2>
             <p>
-              Games you mark as collected or played are saved here on this
-              device—your personal atlas of play.
+              Signed in as <strong style={{ color: "var(--mist)" }}>{user?.email}</strong>.
+              Collected and played games are saved to your account on this device.
             </p>
           </div>
 
