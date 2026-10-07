@@ -1,17 +1,21 @@
 .fs-viewer {
   position: fixed;
   inset: 0;
-  z-index: 100;
-  background: rgba(4, 6, 5, 0.96);
+  z-index: 10000;
+  background: #040605;
   display: grid;
   place-items: center;
   padding: 1rem 1rem 5.5rem;
   animation: fadeIn 200ms ease;
+  isolation: isolate;
 }
 
 .fs-viewer img {
+  width: auto;
+  height: auto;
   max-width: min(96vw, 1600px);
   max-height: calc(100vh - 7rem);
+  max-height: calc(100svh - 7rem);
   object-fit: contain;
   box-shadow: 0 20px 80px rgba(0, 0, 0, 0.55);
 }
@@ -22,7 +26,7 @@
   right: 1rem;
   z-index: 2;
   border: 1px solid rgba(243, 239, 228, 0.35);
-  background: rgba(16, 20, 18, 0.7);
+  background: rgba(16, 20, 18, 0.85);
   color: var(--paper);
   padding: 0.65rem 0.9rem;
   cursor: pointer;
@@ -33,13 +37,14 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.8rem;
   padding: 1rem clamp(1rem, 4vw, 2rem);
-  background: linear-gradient(180deg, transparent, rgba(4, 6, 5, 0.92) 35%);
+  background: linear-gradient(180deg, transparent, rgba(4, 6, 5, 0.96) 35%);
 }
 
 .fs-caption {
