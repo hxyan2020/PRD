@@ -913,13 +913,13 @@ async function searchCommons(
 type MetSearch = { objectIDs?: number[] | null }
 
 async function searchMet(query: string, existing: Set<string>): Promise<Painting[]> {
+  // Met retired /v1/search on 2026-10-01 — use Elastic-backed v1.1.
   const params = new URLSearchParams({
     q: query,
     hasImages: 'true',
-    medium: 'Paintings',
   })
   const res = await fetchWithTimeout(
-    `https://collectionapi.metmuseum.org/public/collection/v1/search?${params}`,
+    `https://collectionapi.metmuseum.org/public/collection/v1.1/search?${params}`,
     { headers: { 'User-Agent': UA } },
     12000,
   )
