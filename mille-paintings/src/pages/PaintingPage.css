@@ -57,6 +57,13 @@
   line-height: 1.1;
 }
 
+.localize-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--sage);
+  letter-spacing: 0.02em;
+}
+
 .painter-line {
   margin: 0.7rem 0 0;
   color: var(--paper-dim);

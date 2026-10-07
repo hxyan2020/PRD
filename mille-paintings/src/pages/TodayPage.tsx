@@ -5,6 +5,7 @@ import { LoadingState } from '../components/LoadingState'
 import { SafeImage } from '../components/SafeImage'
 import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
+import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
 import { useI18n } from '../i18n/I18nContext'
 import { displayImageUrl } from '../lib/images'
 import { pickDailyPainting, pickSurprise } from '../lib/recommend'
@@ -17,6 +18,8 @@ export function TodayPage() {
   const [current, setCurrent] = useState<Painting | null>(null)
   const [fullscreen, setFullscreen] = useState(false)
   const [saved, setSaved] = useState(false)
+  const { painting: localized, loading: localizing } = useLocalizedPainting(current)
+  const display = localized || current
 
   const daily = useMemo(() => {
     if (store.status !== 'ready' || !store.paintings.length) return null
@@ -34,7 +37,10 @@ export function TodayPage() {
 
   if (store.status === 'loading') return <LoadingState label={t('opening')} />
   if (store.status === 'error') return <main className="today-page"><p className="error">{store.message}</p></main>
-  if (!current) return null
+  if (!current || !display) return null
+
+  const blurb = display.intro.slice(0, 280)
+  const blurbEllipsis = display.intro.length > 280 ? '…' : ''
 
   return (
     <main className="today-page">
@@ -49,15 +55,16 @@ export function TodayPage() {
 
       <section className="today-stage">
         <button type="button" className="today-image" onClick={() => setFullscreen(true)}>
-          <SafeImage src={displayImageUrl(current)} fallbackSrc={current.image} alt={current.name} />
+          <SafeImage src={displayImageUrl(display)} fallbackSrc={display.image} alt={display.name} />
         </button>
         <div className="today-meta">
-          <p className="rank">{t('rank', { n: current.rank || '—' })}</p>
-          <h2>{current.name}</h2>
+          <p className="rank">{t('rank', { n: display.rank || '—' })}</p>
+          <h2>{display.name}</h2>
+          {localizing ? <p className="localize-hint">{t('loadingTranslation')}</p> : null}
           <p className="painter">
-            {current.painter} ({current.painterBirthYear}–{current.painterDeathYear})
+            {display.painter} ({display.painterBirthYear}–{display.painterDeathYear})
           </p>
-          <p className="blurb">{current.intro.slice(0, 280)}{current.intro.length > 280 ? '…' : ''}</p>
+          <p className="blurb">{blurb}{blurbEllipsis}</p>
           <div className="today-actions">
             <button type="button" className="btn primary" onClick={() => setFullscreen(true)}>
               {t('fullscreen')}
@@ -89,7 +96,7 @@ export function TodayPage() {
       </section>
 
       <FullscreenViewer
-        painting={current}
+        painting={display}
         open={fullscreen}
         onClose={() => setFullscreen(false)}
         collected={saved}

@@ -5,14 +5,18 @@ import './CountryFlags.css'
 export function CountryFlags({
   country,
   label,
+  displayName,
   size = 'md',
 }: {
   country: string
   /** When true, show country text beside the flags. */
   label?: boolean
+  /** Optional localized label; flags still resolve from `country`. */
+  displayName?: string
   size?: 'sm' | 'md'
 }) {
   const flags = flagsForCountry(country)
+  const text = displayName || country
   if (!flags.length && !label) return null
 
   return (
@@ -31,7 +35,7 @@ export function CountryFlags({
           }}
         />
       ))}
-      {label ? <span className="country-flags-text">{country}</span> : null}
+      {label ? <span className="country-flags-text">{text}</span> : null}
     </span>
   )
 }

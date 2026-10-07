@@ -63,6 +63,12 @@
   font-weight: 400;
 }
 
+.today-meta .localize-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--sage);
+}
+
 .today-meta .painter {
   margin: 0.5rem 0 0;
   color: var(--paper-dim);

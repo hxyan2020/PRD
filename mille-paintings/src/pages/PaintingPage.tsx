@@ -5,6 +5,7 @@ import { FullscreenViewer } from '../components/FullscreenViewer'
 import { LoadingState } from '../components/LoadingState'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
+import { useLocalizedPainting } from '../hooks/useLocalizedPainting'
 import { useI18n } from '../i18n/I18nContext'
 import { displayImageUrl, hiResImageUrl, withCommonsWidth } from '../lib/images'
 import './PaintingPage.css'
@@ -16,15 +17,16 @@ export function PaintingPage() {
   const [fullscreen, setFullscreen] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  const painting = store.paintings.find((p) => p.id === id)
+  const base = store.paintings.find((p) => p.id === id)
+  const { painting, loading: localizing } = useLocalizedPainting(base)
 
   useEffect(() => {
-    if (painting) {
-      store.trackView(painting.id)
-      setSaved(store.collected(painting.id))
+    if (base) {
+      store.trackView(base.id)
+      setSaved(store.collected(base.id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [painting?.id])
+  }, [base?.id])
 
   if (store.status === 'loading') return <LoadingState label={t('opening')} />
   if (store.status === 'error') {
@@ -35,7 +37,7 @@ export function PaintingPage() {
     )
   }
 
-  if (!painting) {
+  if (!base || !painting) {
     return (
       <main className="painting-page">
         <p className="empty">{t('notFound')}</p>
@@ -47,11 +49,11 @@ export function PaintingPage() {
   }
 
   const nearby = store.paintings
-    .filter((p) => p.id !== painting.id)
+    .filter((p) => p.id !== base.id)
     .filter(
       (p) =>
-        p.painter === painting.painter ||
-        p.genre.split(',')[0] === painting.genre.split(',')[0],
+        p.painter === base.painter ||
+        p.genre.split(',')[0] === base.genre.split(',')[0],
     )
     .slice(0, 4)
 
@@ -69,6 +71,7 @@ export function PaintingPage() {
         <div className="painting-summary">
           <p className="rank">{t('rank', { n: painting.rank || '—' })}</p>
           <h1>{painting.name}</h1>
+          {localizing ? <p className="localize-hint">{t('loadingTranslation')}</p> : null}
           <p className="painter-line">
             {painting.painter}{' '}
             <span>
@@ -83,7 +86,11 @@ export function PaintingPage() {
             <div>
               <dt>{t('painterCountry')}</dt>
               <dd>
-                <CountryFlags country={painting.painterCountry} label />
+                <CountryFlags
+                  country={base.painterCountry}
+                  displayName={painting.painterCountry}
+                  label
+                />
               </dd>
             </div>
             <div>
@@ -102,7 +109,7 @@ export function PaintingPage() {
             <button
               type="button"
               className={`btn ghost ${saved ? 'active' : ''}`}
-              onClick={() => setSaved(store.toggleCollect(painting.id))}
+              onClick={() => setSaved(store.toggleCollect(base.id))}
             >
               {saved ? t('collected') : t('collect')}
             </button>
@@ -113,7 +120,6 @@ export function PaintingPage() {
               rel="noopener noreferrer"
               referrerPolicy="no-referrer"
               onClick={(e) => {
-                // Never navigate to uncapped Commons originals (can be 100MB+ and fail to render).
                 const href = hiResImageUrl(painting)
                 if (!href) {
                   e.preventDefault()
@@ -140,7 +146,12 @@ export function PaintingPage() {
           <p className="painter-name">{painting.painter}</p>
           <p className="years">
             {painting.painterBirthYear} – {painting.painterDeathYear} ·{' '}
-            <CountryFlags country={painting.painterCountry} label size="sm" />
+            <CountryFlags
+              country={base.painterCountry}
+              displayName={painting.painterCountry}
+              label
+              size="sm"
+            />
           </p>
           <h3>{t('anecdote')}</h3>
           <p>{painting.anecdote}</p>
@@ -167,13 +178,7 @@ export function PaintingPage() {
           <h2>{t('related')}</h2>
           <div className="related-grid">
             {nearby.map((p) => (
-              <Link key={p.id} to={`/painting/${p.id}`} className="related-card">
-                <SafeImage src={displayImageUrl(p)} alt={p.name} loading="lazy" />
-                <div>
-                  <h3>{p.name}</h3>
-                  <p>{p.painter}</p>
-                </div>
-              </Link>
+              <LocalizedRelatedCard key={p.id} id={p.id} fallbackName={p.name} fallbackPainter={p.painter} image={p} />
             ))}
           </div>
         </section>
@@ -190,8 +195,33 @@ export function PaintingPage() {
         open={fullscreen}
         onClose={() => setFullscreen(false)}
         collected={saved}
-        onCollect={() => setSaved(store.toggleCollect(painting.id))}
+        onCollect={() => setSaved(store.toggleCollect(base.id))}
       />
     </main>
+  )
+}
+
+function LocalizedRelatedCard({
+  id,
+  fallbackName,
+  fallbackPainter,
+  image,
+}: {
+  id: string
+  fallbackName: string
+  fallbackPainter: string
+  image: { image: string; imageFull: string; name: string }
+}) {
+  const store = usePaintingsStore()
+  const base = store.paintings.find((p) => p.id === id)
+  const { painting } = useLocalizedPainting(base)
+  return (
+    <Link to={`/painting/${id}`} className="related-card">
+      <SafeImage src={displayImageUrl(image)} alt={painting?.name || fallbackName} loading="lazy" />
+      <div>
+        <h3>{painting?.name || fallbackName}</h3>
+        <p>{painting?.painter || fallbackPainter}</p>
+      </div>
+    </Link>
   )
 }

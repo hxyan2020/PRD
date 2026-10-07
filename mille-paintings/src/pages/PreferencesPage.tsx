@@ -7,6 +7,7 @@ import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import { discoverPaintings } from '../lib/discover'
 import { displayImageUrl } from '../lib/images'
+import { optionLabel } from '../lib/optionLabels'
 import {
   COUNTRY_GROUPS,
   ERA_OPTIONS,
@@ -22,7 +23,7 @@ function toggleIn(list: string[], value: string) {
 }
 
 export function PreferencesPage() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const store = usePaintingsStore()
   const [prefs, setPrefs] = useState<Preferences>(() => getPreferences())
   const [savedMsg, setSavedMsg] = useState('')
@@ -77,7 +78,7 @@ export function PreferencesPage() {
                   onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
                 >
                   <GenreIcon genre={g} />
-                  <span>{g}</span>
+                  <span>{optionLabel(lang, g)}</span>
                 </button>
               ))}
             </div>
@@ -95,7 +96,7 @@ export function PreferencesPage() {
                   onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
                 >
                   <GenreIcon genre={g} />
-                  <span>{g}</span>
+                  <span>{optionLabel(lang, g)}</span>
                 </button>
               ))}
             </div>
@@ -118,7 +119,7 @@ export function PreferencesPage() {
                   onClick={() => setPrefs((p) => ({ ...p, countries: toggleIn(p.countries, c) }))}
                 >
                   <CountryFlags country={c} size="sm" />
-                  <span>{c}</span>
+                  <span>{optionLabel(lang, c)}</span>
                 </button>
               ))}
             </div>
@@ -137,7 +138,7 @@ export function PreferencesPage() {
               className={`chip ${prefs.eras.includes(e) ? 'on' : ''}`}
               onClick={() => setPrefs((p) => ({ ...p, eras: toggleIn(p.eras, e) }))}
             >
-              {e}
+              {optionLabel(lang, e)}
             </button>
           ))}
         </div>
@@ -153,7 +154,7 @@ export function PreferencesPage() {
               className={`chip ${prefs.moods.includes(m) ? 'on' : ''}`}
               onClick={() => setPrefs((p) => ({ ...p, moods: toggleIn(p.moods, m) }))}
             >
-              {m}
+              {optionLabel(lang, m)}
             </button>
           ))}
         </div>

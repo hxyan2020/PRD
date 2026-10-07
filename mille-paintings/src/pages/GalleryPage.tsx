@@ -5,12 +5,13 @@ import { PaintingCard } from '../components/PaintingCard'
 import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
+import { optionLabel } from '../lib/optionLabels'
 import './GalleryPage.css'
 
 const PAGE_SIZE = 48
 
 export function GalleryPage() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const store = usePaintingsStore()
   const [query, setQuery] = useState('')
   const [genre, setGenre] = useState('all')
@@ -74,7 +75,7 @@ export function GalleryPage() {
                 setVisible(PAGE_SIZE)
               })
             }}
-            placeholder="Mona Lisa, Vermeer, Louvre…"
+            placeholder={t('searchPlaceholder')}
           />
         </label>
         <label>
@@ -89,7 +90,7 @@ export function GalleryPage() {
             <option value="all">{t('allGenres')}</option>
             {genres.map((g) => (
               <option key={g} value={g}>
-                {g}
+                {optionLabel(lang, g)}
               </option>
             ))}
           </select>
@@ -114,7 +115,7 @@ export function GalleryPage() {
             <option value="all">{t('allCountries')}</option>
             {countries.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {optionLabel(lang, c)}
               </option>
             ))}
           </select>
