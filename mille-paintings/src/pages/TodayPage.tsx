@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FullscreenViewer } from '../components/FullscreenViewer'
 import { LoadingState } from '../components/LoadingState'
+import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import { pickDailyPainting, pickSurprise } from '../lib/recommend'
@@ -39,7 +40,9 @@ export function TodayPage() {
         <p className="eyebrow">{t('navToday')}</p>
         <h1>{t('todayTitle')}</h1>
         <p>{t('todayLede')}</p>
-        <p className="stats">{t('statsLine', { viewed: store.stats.viewed, collected: store.stats.collected })}</p>
+        <div className="stats">
+          <StatsCounter />
+        </div>
       </header>
 
       <section className="today-stage">

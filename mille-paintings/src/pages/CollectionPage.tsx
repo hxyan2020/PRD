@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { LoadingState } from '../components/LoadingState'
 import { PaintingCard } from '../components/PaintingCard'
+import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import { getCollectedIds } from '../lib/storage'
@@ -23,7 +24,9 @@ export function CollectionPage() {
       <header>
         <p className="eyebrow">{t('navCollection')}</p>
         <h1>{t('collectionTitle')}</h1>
-        <p>{t('statsLine', { viewed: store.stats.viewed, collected: store.stats.collected })}</p>
+        <div className="collection-stats">
+          <StatsCounter />
+        </div>
       </header>
       {items.length === 0 ? (
         <p className="empty">

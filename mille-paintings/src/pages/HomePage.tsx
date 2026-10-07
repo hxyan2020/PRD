@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { LoadingState } from '../components/LoadingState'
+import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import './HomePage.css'
@@ -38,9 +39,9 @@ export function HomePage() {
               </Link>
             ) : null}
           </div>
-          <p className="hero-stats">
-            {t('statsLine', { viewed: store.stats.viewed, collected: store.stats.collected })}
-          </p>
+          <div className="hero-stats">
+            <StatsCounter />
+          </div>
         </div>
       </section>
 

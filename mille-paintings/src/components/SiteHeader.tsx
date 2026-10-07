@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { LANGUAGES } from '../i18n/translations'
 import { useI18n } from '../i18n/I18nContext'
-import { usePaintingsStore } from '../data/PaintingsProvider'
+import { StatsCounter } from './StatsCounter'
 import './SiteHeader.css'
 
 export function SiteHeader() {
   const { t, lang, setLang } = useI18n()
-  const { stats } = usePaintingsStore()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -27,8 +26,8 @@ export function SiteHeader() {
         <span className="brand-sub">{t('brandSub')}</span>
       </Link>
 
-      <div className="header-stats" aria-label="activity">
-        {t('statsLine', { viewed: stats.viewed, collected: stats.collected })}
+      <div className="header-stats-slot">
+        <StatsCounter />
       </div>
 
       <button

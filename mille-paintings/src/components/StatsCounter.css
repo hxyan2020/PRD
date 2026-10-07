@@ -1,0 +1,52 @@
+.stats-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(214, 167, 86, 0.28);
+  background: rgba(23, 32, 27, 0.75);
+  color: var(--paper-dim);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.stats-counter .stat {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  color: inherit;
+}
+
+.stats-counter .stat-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  opacity: 0.85;
+}
+
+.stats-counter .stat-value {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--brass);
+  line-height: 1;
+}
+
+.stats-counter .stat-sep {
+  opacity: 0.45;
+  color: var(--brass);
+}
+
+.stats-counter a.stat:hover .stat-value {
+  color: var(--brass-soft);
+}
+
+.stats-counter.compact .stat-label {
+  display: none;
+}
+
+.stats-counter.compact .stat-value::after {
+  content: none;
+}
+

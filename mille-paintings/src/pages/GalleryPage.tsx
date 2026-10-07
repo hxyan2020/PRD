@@ -1,6 +1,7 @@
 import { startTransition, useDeferredValue, useMemo, useState } from 'react'
 import { LoadingState } from '../components/LoadingState'
 import { PaintingCard } from '../components/PaintingCard'
+import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import './GalleryPage.css'
@@ -55,7 +56,9 @@ export function GalleryPage() {
         <p className="eyebrow">{t('theCollection')}</p>
         <h1>{t('browseThousand')}</h1>
         <p>{t('galleryIntro')}</p>
-        <p className="stats">{t('statsLine', { viewed: store.stats.viewed, collected: store.stats.collected })}</p>
+        <div className="stats">
+          <StatsCounter />
+        </div>
       </header>
 
       <div className="filters">

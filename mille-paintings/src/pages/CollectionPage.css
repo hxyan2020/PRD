@@ -21,6 +21,10 @@
   color: var(--paper-dim);
 }
 
+.collection-stats {
+  margin-top: 0.85rem;
+}
+
 .collection-page .empty a {
   color: var(--brass);
   text-decoration: underline;

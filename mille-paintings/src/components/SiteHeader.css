@@ -38,11 +38,9 @@
   max-width: 42vw;
 }
 
-.header-stats {
-  display: none;
-  color: var(--paper-dim);
-  font-size: 0.85rem;
-  white-space: nowrap;
+.header-stats-slot {
+  margin-inline-start: auto;
+  margin-inline-end: 0.75rem;
 }
 
 .menu-toggle {
@@ -135,17 +133,13 @@
   border: 0;
 }
 
-@media (min-width: 1100px) {
-  .header-stats {
-    display: block;
-    margin-inline-start: auto;
-    margin-inline-end: 1rem;
-  }
-}
-
 @media (max-width: 860px) {
   .menu-toggle {
     display: inline-block;
+  }
+
+  .header-stats-slot {
+    margin-inline-end: 0.4rem;
   }
 
   .header-panel {
@@ -175,9 +169,5 @@
   .lang-picker select {
     width: 100%;
     max-width: none;
-  }
-
-  .header-stats {
-    display: none;
   }
 }
