@@ -117,6 +117,18 @@ export function GameDetailPage() {
               <div className="variations">
                 {game.variations.map((v) => (
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
+                    {v.images?.[0] ? (
+                      <div className="variation-media">
+                        <img src={v.images[0]} alt="" loading="lazy" />
+                        {v.images.length > 1 ? (
+                          <div className="variation-thumbs">
+                            {v.images.slice(1, 4).map((src) => (
+                              <img key={src} src={src} alt="" loading="lazy" />
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
                     <h3>{v.name}</h3>
                     <div className="meta">
                       <OriginCountry

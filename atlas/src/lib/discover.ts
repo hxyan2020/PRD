@@ -30,14 +30,15 @@ function hash(str: string) {
   return h >>> 0;
 }
 
-const IMAGE_POOL = [
-  "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=900&q=80",
-  "https://images.unsplash.com/photo-1553481187-be93c21490a9?w=900&q=80",
-  "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80",
-  "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=900&q=80",
-  "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
-  "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=900&q=80",
-];
+/** Unique picture set per discovery draft (never reused across drafts). */
+function draftImages(slug: string, salt: number): string[] {
+  const tags = "toy,game,play";
+  const n = 2 + (salt % 2);
+  return Array.from({ length: n }, (_, i) => {
+    const lock = hash(`discover:${slug}:${i}`);
+    return `https://loremflickr.com/900/600/${tags}?lock=${lock}`;
+  });
+}
 
 const PURCHASE = [
   {
@@ -372,18 +373,16 @@ function draftDiscovery(
         ? "20th–21st century revival / teaching form"
         : seed.year;
 
+  const slug = `${slugify(name)}-${String(idNum).padStart(4, "0")}`;
   return {
     id: `game-${String(idNum).padStart(4, "0")}`,
-    slug: `${slugify(name)}-${String(idNum).padStart(4, "0")}`,
+    slug,
     name,
     originCountry: country,
     civilization: seed.civilization,
     creationYear: year,
     category: seed.category,
-    images: [
-      IMAGE_POOL[salt % IMAGE_POOL.length],
-      IMAGE_POOL[(salt + 2) % IMAGE_POOL.length],
-    ],
+    images: draftImages(slug, salt),
     description: `${seed.description} Atlas Guide drafted this discovery to match your preference profile (${prefs.vibe}, ${prefs.setting}, ${prefs.players}).`,
     howToPlay: seed.howToPlay,
     purchaseLinks: [...PURCHASE],

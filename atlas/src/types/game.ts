@@ -9,6 +9,8 @@ export type GameVariation = {
   originCountry: string;
   creationYear: string;
   notes: string;
+  /** Distinct picture set for this cultural variation (never shared with parent/siblings). */
+  images?: string[];
   /** English catalog key for flag lookup when `originCountry` is localized. */
   originCountryKey?: string;
 };

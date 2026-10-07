@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, "../public/data/collection.json");
 
+/** Thematic Unsplash stills — each URL is used at most once across the catalog. */
 const IMAGE_POOLS = {
   board: [
     "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=900&q=80",
@@ -16,46 +17,83 @@ const IMAGE_POOLS = {
     "https://images.unsplash.com/photo-1611371805429-8b5c1b2c34ba?w=900&q=80",
     "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80",
     "https://images.unsplash.com/photo-1632501641765-e568d28b0015?w=900&q=80",
+    "https://images.unsplash.com/photo-1611195974226-a6a9be93d23b?w=900&q=80",
+    "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=900&q=80",
+    "https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=900&q=80",
+    "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=900&q=80",
+    "https://images.unsplash.com/photo-1606503153255-59d8b8b82176?w=900&q=80",
   ],
   cards: [
     "https://images.unsplash.com/photo-1541278107931-e006523892df?w=900&q=80",
     "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=900&q=80",
     "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=900&q=80",
+    "https://images.unsplash.com/photo-1511192336575-5a79af67a729?w=900&q=80",
+    "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=900&q=80",
+    "https://images.unsplash.com/photo-1591034986967-5e3f0f9b5b5b?w=900&q=80",
   ],
   dolls: [
     "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=900&q=80",
     "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=900&q=80",
     "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=900&q=80",
+    "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=900&q=80",
+    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=900&q=80",
+    "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=80",
   ],
   outdoor: [
     "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=900&q=80",
     "https://images.unsplash.com/photo-1472162072942-cd5147eb3902?w=900&q=80",
     "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80",
+    "https://images.unsplash.com/photo-1502086227841-98595262e576?w=900&q=80",
+    "https://images.unsplash.com/photo-1472745942893-4b9f730c2148?w=900&q=80",
+    "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=900&q=80",
   ],
   spinning: [
     "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80",
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=900&q=80",
+    "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=900&q=80",
+    "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=900&q=80",
   ],
   puzzle: [
     "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
     "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=900&q=80",
+    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=900&q=80",
+    "https://images.unsplash.com/photo-1606503153255-59d8b8b82176?w=900&q=80",
   ],
   music: [
     "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=900&q=80",
     "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&q=80",
+    "https://images.unsplash.com/photo-1514320291840-092e2f6a6f64?w=900&q=80",
+    "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=900&q=80",
   ],
   ball: [
     "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=900&q=80",
     "https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=80",
+    "https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=900&q=80",
+    "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=80",
   ],
   ritual: [
     "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=900&q=80",
     "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=900&q=80",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=80",
   ],
   default: [
     "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80",
     "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=900&q=80",
+    "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=900&q=80",
   ],
+};
+
+/** Category keyword tags for unique seeded stock photos (never reused). */
+const THEME_TAGS = {
+  board: "boardgame,chess,tabletop",
+  cards: "playing-cards,cards,poker",
+  dolls: "doll,toy,figurine",
+  outdoor: "children-playing,playground,outdoors",
+  spinning: "spinning-top,toy,wood",
+  puzzle: "puzzle,blocks,wood-toy",
+  music: "music,instrument,percussion",
+  ball: "ball,sport,play",
+  ritual: "festival,ceremony,lantern",
+  default: "toy,game,play",
 };
 
 const CAT_IMG = {
@@ -219,14 +257,101 @@ function hash(str) {
   return h >>> 0;
 }
 
-function pickImages(category, salt) {
-  const key = CAT_IMG[category] || "default";
-  const pool = IMAGE_POOLS[key] || IMAGE_POOLS.default;
-  const n = 1 + (salt % 5); // 1–5 images typically; occasionally more
-  const count = salt % 17 === 0 ? Math.min(9, pool.length + 2) : Math.min(n + 1, 9);
-  const imgs = [];
-  for (let i = 0; i < count; i++) imgs.push(pool[(salt + i * 2) % pool.length]);
-  return [...new Set(imgs)].slice(0, Math.min(9, Math.max(1, count)));
+/**
+ * Global image bank: every URL is handed out at most once so no two catalog
+ * entries (including cultural variations) share the same picture set — or even
+ * the same individual picture.
+ */
+const imageBank = {
+  /** @type {Set<string>} */
+  usedUrls: new Set(),
+  /** @type {Set<string>} */
+  usedSets: new Set(),
+  /** @type {Map<string, string[]>} */
+  poolQueues: new Map(),
+  serial: 0,
+
+  themeKey(category) {
+    return CAT_IMG[category] || "default";
+  },
+
+  queueFor(theme) {
+    if (!this.poolQueues.has(theme)) {
+      const base = IMAGE_POOLS[theme] || IMAGE_POOLS.default;
+      // Shuffle copy so adjacent games in a category do not get near-identical order
+      const copy = [...base];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = (hash(`${theme}:${i}`) + i * 17) % (i + 1);
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      this.poolQueues.set(theme, copy);
+    }
+    return this.poolQueues.get(theme);
+  },
+
+  /** Deterministic unique stock URL when thematic Unsplash URLs are exhausted. */
+  seededUrl(theme, token) {
+    const tags = THEME_TAGS[theme] || THEME_TAGS.default;
+    this.serial += 1;
+    // lock= guarantees a stable, unique photo per token across the catalog
+    return `https://loremflickr.com/900/600/${tags}?lock=${hash(`${token}:${this.serial}`)}`;
+  },
+
+  takeOne(theme, token) {
+    const queue = this.queueFor(theme);
+    while (queue.length) {
+      const url = queue.shift();
+      if (!this.usedUrls.has(url)) {
+        this.usedUrls.add(url);
+        return url;
+      }
+    }
+    // Exhausted thematic Unsplash — mint a unique seeded URL
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const url = this.seededUrl(theme, `${token}:a${attempt}`);
+      if (!this.usedUrls.has(url)) {
+        this.usedUrls.add(url);
+        return url;
+      }
+    }
+    // Absolute fallback (should be unreachable)
+    const url = `https://picsum.photos/seed/${slugify(token)}-${this.serial}/900/600`;
+    this.usedUrls.add(url);
+    return url;
+  },
+
+  /**
+   * @param {string} category
+   * @param {string} uniqueKey  stable id (slug / variation key)
+   * @param {number} [minCount]
+   */
+  allocate(category, uniqueKey, minCount = 2) {
+    const theme = this.themeKey(category);
+    const salt = hash(uniqueKey);
+    const count = Math.min(5, Math.max(minCount, 2 + (salt % 3))); // 2–4
+    /** @type {string[]} */
+    let imgs = [];
+    for (let i = 0; i < count; i++) {
+      imgs.push(this.takeOne(theme, `${uniqueKey}#${i}`));
+    }
+    // Guarantee set-level uniqueness even if something reused a URL
+    let guard = 0;
+    let sig = JSON.stringify(imgs);
+    while (this.usedSets.has(sig) && guard < 10) {
+      imgs = imgs.map((u, i) => {
+        this.usedUrls.delete(u);
+        return this.takeOne(theme, `${uniqueKey}#retry${guard}:${i}`);
+      });
+      sig = JSON.stringify(imgs);
+      guard += 1;
+    }
+    this.usedSets.add(sig);
+    return imgs;
+  },
+};
+
+function pickImages(category, uniqueKey) {
+  return imageBank.allocate(category, uniqueKey, 2);
 }
 
 function pickPurchase(key, salt) {
@@ -1794,6 +1919,14 @@ function toGame(seed, index) {
   const salt = hash(seed.name + seed.originCountry + String(index));
   const slugBase = slugify(seed.name);
   const slug = `${slugBase}-${String(index).padStart(4, "0")}`;
+  const imageKey = `game:${slug}`;
+  const variations = (seed.variations || []).map((v, vi) => {
+    const varKey = `var:${slug}:${slugify(v.name)}:${slugify(v.originCountry)}:${vi}`;
+    return {
+      ...v,
+      images: pickImages(seed.category, varKey),
+    };
+  });
   /** @type {Record<string, unknown>} */
   const game = {
     id: `game-${String(index).padStart(4, "0")}`,
@@ -1803,13 +1936,13 @@ function toGame(seed, index) {
     civilization: seed.civilization,
     creationYear: seed.creationYear,
     category: seed.category,
-    images: pickImages(seed.category, salt),
+    images: pickImages(seed.category, imageKey),
     description: seed.description,
     howToPlay: seed.howToPlay,
     purchaseLinks: pickPurchase(seed.purchase, salt),
     requirements: seed.requirements,
     idealParticipants: seed.idealParticipants,
-    variations: seed.variations || [],
+    variations,
     tags: [seed.category, seed.originCountry, seed.civilization].map((t) => t.toLowerCase()),
   };
   if (seed.archetypeKey) {
