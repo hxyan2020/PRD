@@ -91,7 +91,7 @@
     window.FatumPlay?.setQuestProgress?.(0);
     window.FatumPlay?.showToast?.(
       (window.FatumI18n ? window.FatumI18n.t("toast.questStarted", { name: method.name }) : `Quest started · ${method.name}`),
-      { ms: 1800 }
+      { ms: window.matchMedia("(max-width: 720px)").matches ? 1200 : 1800 }
     );
     render();
     studio.querySelector(".studio__close")?.focus();
