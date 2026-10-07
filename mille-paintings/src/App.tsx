@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { SiteHeader } from './components/SiteHeader'
 import { PaintingsProvider } from './data/PaintingsProvider'
 import { I18nProvider, useI18n } from './i18n/I18nContext'
@@ -23,7 +23,7 @@ export default function App() {
   return (
     <I18nProvider>
       <PaintingsProvider>
-        <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}>
+        <HashRouter>
           <div className="app-shell">
             <SiteHeader />
             <Routes>
@@ -37,7 +37,7 @@ export default function App() {
             </Routes>
             <Footer />
           </div>
-        </BrowserRouter>
+        </HashRouter>
       </PaintingsProvider>
     </I18nProvider>
   )
