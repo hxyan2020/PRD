@@ -235,10 +235,15 @@ export function PreferencesPage() {
             try {
               savePreferences(prefs)
               const existing = new Set(store.paintings.map((p) => p.id))
-              const found = await discoverPaintings(prefs, existing, (p) => {
-                setProgress(p)
-                setGenMsg(p.message)
-              })
+              const found = await discoverPaintings(
+                prefs,
+                existing,
+                (p) => {
+                  setProgress(p)
+                  setGenMsg(p.message)
+                },
+                t,
+              )
               store.mergeExtras(found)
               setLastBatch(found)
               setGenMsg(t('generated', { n: found.length }))

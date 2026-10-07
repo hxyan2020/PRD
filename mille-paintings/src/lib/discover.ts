@@ -27,6 +27,18 @@ export type DiscoverProgress = {
 
 type ProgressFn = (p: DiscoverProgress) => void
 
+/** Optional UI translator so progress strings follow the active language. */
+export type DiscoverI18n = (key: string, vars?: Record<string, string | number>) => string
+
+function errDetail(err: unknown): string {
+  if (err instanceof DOMException && err.name === 'AbortError') return 'Timed out'
+  if (err instanceof Error) {
+    if (err.name === 'AbortError' || /aborted/i.test(err.message)) return 'Timed out'
+    return err.message
+  }
+  return 'Failed'
+}
+
 function commons(filename: string, width = 2400) {
   const base = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`
   return `${base}?width=${width}`
@@ -177,36 +189,190 @@ function rowToPainting(row: Binding, genreFallback?: string): Painting | null {
   }
 }
 
+async function fetchWithTimeout(
+  url: string,
+  init: RequestInit = {},
+  ms = 18000,
+): Promise<Response> {
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), ms)
+  try {
+    return await fetch(url, { ...init, signal: ctrl.signal })
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 async function runSparql(query: string): Promise<Binding[]> {
   const url =
     'https://query.wikidata.org/sparql?' + new URLSearchParams({ format: 'json', query })
-  const res = await fetch(url, {
-    headers: { Accept: 'application/sparql-results+json', 'User-Agent': UA },
-  })
+  const res = await fetchWithTimeout(
+    url,
+    {
+      headers: { Accept: 'application/sparql-results+json', 'User-Agent': UA },
+    },
+    20000,
+  )
   if (!res.ok) throw new Error(`Wikidata SPARQL ${res.status}`)
   const data = (await res.json()) as { results: { bindings: Binding[] } }
   return data.results.bindings
 }
 
+/** Faster SPARQL: direct painting instance, no subclass walk. */
+function buildSparqlFast(prefs: Preferences): string {
+  const genreTerms = expandGenreTerms(prefs.genres).slice(0, 8)
+  const genreClause = genreTerms.length
+    ? `
+      ?painting wdt:P136 ?genre .
+      ?genre rdfs:label ?gLabel .
+      FILTER(LANG(?gLabel) = "en")
+      FILTER(${genreTerms.map((g) => `CONTAINS(LCASE(?gLabel), "${g}")`).join(' || ')})
+    `
+    : 'OPTIONAL { ?painting wdt:P136 ?genre. }'
+  return `
+    SELECT DISTINCT ?painting ?paintingLabel ?paintingDescription ?image ?creator ?creatorLabel
+           ?birth ?death ?countryLabel ?genreLabel ?collectionLabel ?creationPlaceLabel ?sitelinks
+    WHERE {
+      ?painting wdt:P31 wd:Q3305213;
+                wikibase:sitelinks ?sitelinks;
+                wdt:P18 ?image;
+                wdt:P170 ?creator.
+      FILTER(?sitelinks >= 3)
+      ${genreClause}
+      OPTIONAL { ?creator wdt:P27 ?country. }
+      OPTIONAL { ?creator wdt:P569 ?birth. }
+      OPTIONAL { ?creator wdt:P570 ?death. }
+      OPTIONAL { ?painting wdt:P195 ?collection. }
+      OPTIONAL { ?painting wdt:P1071 ?creationPlace. }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+    }
+    ORDER BY DESC(?sitelinks)
+    LIMIT 40
+  `
+}
+
+async function searchWikidataText(query: string, existing: Set<string>): Promise<Painting[]> {
+  const params = new URLSearchParams({
+    action: 'wbsearchentities',
+    format: 'json',
+    origin: '*',
+    language: 'en',
+    uselang: 'en',
+    type: 'item',
+    limit: '12',
+    search: query.slice(0, 80),
+  })
+  const res = await fetchWithTimeout(
+    `https://www.wikidata.org/w/api.php?${params}`,
+    { headers: { 'User-Agent': UA } },
+    12000,
+  )
+  if (!res.ok) throw new Error(`Wikidata search ${res.status}`)
+  const data = (await res.json()) as {
+    search?: Array<{ id: string; label?: string; description?: string }>
+  }
+  const ids = (data.search || []).map((s) => s.id).filter(Boolean).slice(0, 10)
+  if (!ids.length) return []
+
+  const entParams = new URLSearchParams({
+    action: 'wbgetentities',
+    format: 'json',
+    origin: '*',
+    ids: ids.join('|'),
+    props: 'labels|descriptions|claims',
+    languages: 'en',
+  })
+  const entRes = await fetchWithTimeout(
+    `https://www.wikidata.org/w/api.php?${entParams}`,
+    { headers: { 'User-Agent': UA } },
+    12000,
+  )
+  if (!entRes.ok) throw new Error(`Wikidata entities ${entRes.status}`)
+  const entData = (await entRes.json()) as {
+    entities?: Record<
+      string,
+      {
+        labels?: Record<string, { value: string }>
+        descriptions?: Record<string, { value: string }>
+        claims?: Record<string, Array<{ mainsnak?: { datavalue?: { value?: string | { id?: string } } } }>>
+      }
+    >
+  }
+
+  const out: Painting[] = []
+  for (const [id, ent] of Object.entries(entData.entities || {})) {
+    if (existing.has(id) || id.startsWith('-')) continue
+    const name = ent.labels?.en?.value
+    if (!name) continue
+    const imageClaim = ent.claims?.P18?.[0]?.mainsnak?.datavalue?.value
+    if (typeof imageClaim !== 'string' || !imageClaim) continue
+    const creatorId =
+      typeof ent.claims?.P170?.[0]?.mainsnak?.datavalue?.value === 'object'
+        ? ent.claims?.P170?.[0]?.mainsnak?.datavalue?.value?.id
+        : undefined
+    out.push({
+      id,
+      rank: 0,
+      sitelinks: 5,
+      name,
+      image: commons(imageClaim, 1600),
+      imageFull: commons(imageClaim),
+      painter: creatorId || 'Unknown',
+      painterId: creatorId || '',
+      painterBirthYear: 'Unknown',
+      painterDeathYear: 'Unknown',
+      painterCountry: 'Unknown',
+      placeOfCreation: 'Unknown',
+      collection: 'Wikidata',
+      lostOrDestroyed: false,
+      intro:
+        ent.descriptions?.en?.value ||
+        `${name} — found via Wikidata entity search for your preferences.`,
+      genre: 'Painting',
+      anecdote: 'Discovered through the Wikidata search API.',
+      painterPhotos: [],
+      discovered: true,
+    })
+  }
+  return out
+}
+
 async function searchWikidata(
   prefs: Preferences,
   existing: Set<string>,
+  query: string,
 ): Promise<Painting[]> {
-  let bindings = await runSparql(buildSparql(prefs))
-  if (bindings.length < 8 && (prefs.countries.length || prefs.eras.length)) {
-    bindings = await runSparql(buildSparql({ ...prefs, countries: [], eras: prefs.eras }))
-  }
-  if (bindings.length < 5) {
-    bindings = await runSparql(
-      buildSparql({ genres: prefs.genres.slice(0, 2), countries: [], eras: [], moods: [] }),
-    )
-  }
   const out: Painting[] = []
-  for (const row of bindings) {
-    const p = rowToPainting(row, prefs.genres[0])
-    if (!p || existing.has(p.id)) continue
-    out.push(p)
+  const pushRows = (bindings: Binding[]) => {
+    for (const row of bindings) {
+      const p = rowToPainting(row, prefs.genres[0])
+      if (!p || existing.has(p.id) || out.some((x) => x.id === p.id)) continue
+      out.push(p)
+    }
   }
+
+  try {
+    pushRows(await runSparql(buildSparqlFast(prefs)))
+  } catch {
+    // fall through to full / text search
+  }
+
+  if (out.length < 6) {
+    try {
+      pushRows(await runSparql(buildSparql({ ...prefs, countries: [], eras: [] })))
+    } catch {
+      // ignore — text search next
+    }
+  }
+
+  if (out.length < 4) {
+    const textHits = await searchWikidataText(query, existing)
+    for (const p of textHits) {
+      if (existing.has(p.id) || out.some((x) => x.id === p.id)) continue
+      out.push(p)
+    }
+  }
+
   return out
 }
 
@@ -231,11 +397,13 @@ async function searchArtInstitute(query: string, existing: Set<string>): Promise
   })
   // Prefer paintings when the API understands the filter.
   const url = `https://api.artic.edu/api/v1/artworks/search?${params}&query[term][artwork_type_id]=1`
-  let res = await fetch(url, { headers: { 'User-Agent': UA } })
+  let res = await fetchWithTimeout(url, { headers: { 'User-Agent': UA } }, 15000)
   if (!res.ok) {
-    res = await fetch(`https://api.artic.edu/api/v1/artworks/search?${params}`, {
-      headers: { 'User-Agent': UA },
-    })
+    res = await fetchWithTimeout(
+      `https://api.artic.edu/api/v1/artworks/search?${params}`,
+      { headers: { 'User-Agent': UA } },
+      15000,
+    )
   }
   if (!res.ok) throw new Error(`Art Institute ${res.status}`)
   const data = (await res.json()) as { data?: AicHit[] }
@@ -296,9 +464,11 @@ async function searchVA(query: string, existing: Set<string>): Promise<Painting[
     images_exist: 'true',
     page_size: '24',
   })
-  const res = await fetch(`https://api.vam.ac.uk/v2/objects/search?${params}`, {
-    headers: { Accept: 'application/json', 'User-Agent': UA },
-  })
+  const res = await fetchWithTimeout(
+    `https://api.vam.ac.uk/v2/objects/search?${params}`,
+    { headers: { Accept: 'application/json', 'User-Agent': UA } },
+    15000,
+  )
   if (!res.ok) throw new Error(`V&A ${res.status}`)
   const data = (await res.json()) as { records?: VaRecord[] }
   const out: Painting[] = []
@@ -359,9 +529,11 @@ async function searchOpenverse(query: string, existing: Set<string>): Promise<Pa
     category: 'digitized_artwork',
     license_type: 'commercial,modification',
   })
-  const res = await fetch(`https://api.openverse.org/v1/images/?${params}`, {
-    headers: { Accept: 'application/json', 'User-Agent': UA },
-  })
+  const res = await fetchWithTimeout(
+    `https://api.openverse.org/v1/images/?${params}`,
+    { headers: { Accept: 'application/json', 'User-Agent': UA } },
+    15000,
+  )
   if (!res.ok) throw new Error(`Openverse ${res.status}`)
   const data = (await res.json()) as { results?: OpenverseHit[] }
   const out: Painting[] = []
@@ -411,9 +583,11 @@ async function searchCommons(query: string, existing: Set<string>): Promise<Pain
     iiprop: 'url|extmetadata|size',
     iiurlwidth: '1200',
   })
-  const res = await fetch(`https://commons.wikimedia.org/w/api.php?${params}`, {
-    headers: { 'User-Agent': UA },
-  })
+  const res = await fetchWithTimeout(
+    `https://commons.wikimedia.org/w/api.php?${params}`,
+    { headers: { 'User-Agent': UA } },
+    15000,
+  )
   if (!res.ok) throw new Error(`Commons ${res.status}`)
   const data = (await res.json()) as {
     query?: {
@@ -497,13 +671,6 @@ function makeSteps(): DiscoverStep[] {
       found: 0,
     },
     {
-      id: 'wikidata',
-      source: 'Wikidata',
-      status: 'pending',
-      detail: 'Structured painting graph (SPARQL)',
-      found: 0,
-    },
-    {
       id: 'aic',
       source: 'Art Institute of Chicago',
       status: 'pending',
@@ -532,6 +699,13 @@ function makeSteps(): DiscoverStep[] {
       found: 0,
     },
     {
+      id: 'wikidata',
+      source: 'Wikidata',
+      status: 'pending',
+      detail: 'Structured painting graph + entity search',
+      found: 0,
+    },
+    {
       id: 'merge',
       source: 'Merge',
       status: 'pending',
@@ -549,6 +723,11 @@ export async function discoverPaintings(
   prefs: Preferences,
   existingIds: Set<string>,
   onProgress?: ProgressFn,
+  t: DiscoverI18n = (_key, vars) => {
+    if (vars && 'source' in vars) return `Searching ${vars.source}…`
+    if (vars && 'n' in vars) return `Found ${vars.n}`
+    return ''
+  },
 ): Promise<Painting[]> {
   const steps = makeSteps()
   const emit = (phase: DiscoverProgress['phase'], message: string, totalFound: number) => {
@@ -583,166 +762,91 @@ export async function discoverPaintings(
   const query = preferenceSearchQuery(prefs)
   setStep(
     'prepare',
-    { status: 'running', detail: `Query: “${query.slice(0, 120)}”` },
+    { status: 'running', detail: t('discoverStepQuery', { q: query.slice(0, 120) }) },
     'preparing',
-    `Preparing search: ${query}`,
+    t('discoverPreparing', { q: query.slice(0, 80) }),
     0,
   )
   await new Promise((r) => setTimeout(r, 120))
   setStep(
     'prepare',
-    { status: 'ok', detail: `Ready · ${prefs.genres.length} genres · ${prefs.countries.length} regions · ${prefs.eras.length} eras` },
+    {
+      status: 'ok',
+      detail: t('discoverStepReady', {
+        genres: prefs.genres.length,
+        countries: prefs.countries.length,
+        eras: prefs.eras.length,
+      }),
+    },
     'searching',
-    'Searching museum and archive APIs…',
+    t('discoverSearchingApis'),
     0,
   )
 
-  // --- Wikidata ---
-  setStep('wikidata', { status: 'running', detail: 'Querying Wikidata SPARQL…' }, 'searching', 'Searching Wikidata…', pool.length)
-  try {
-    const found = await searchWikidata(prefs, seen)
-    const n = addAll(found)
+  const runSource = async (
+    id: string,
+    sourceLabel: string,
+    search: () => Promise<Painting[]>,
+  ) => {
     setStep(
-      'wikidata',
-      {
-        status: n ? 'ok' : 'empty',
-        found: n,
-        detail: n ? `Added ${n} new work${n === 1 ? '' : 's'}` : 'No new matches',
-      },
+      id,
+      { status: 'running', detail: t('discoverStepRunning', { source: sourceLabel }) },
       'searching',
-      `Wikidata: ${n} new`,
+      t('discoverSearchingSource', { source: sourceLabel }),
       pool.length,
     )
-  } catch (err) {
-    setStep(
-      'wikidata',
-      {
-        status: 'error',
-        detail: err instanceof Error ? err.message : 'Failed',
-      },
-      'searching',
-      'Wikidata unavailable — continuing with other sources…',
-      pool.length,
-    )
+    try {
+      const found = await search()
+      const n = addAll(found)
+      setStep(
+        id,
+        {
+          status: n ? 'ok' : 'empty',
+          found: n,
+          detail: n ? t('discoverStepAdded', { n, source: sourceLabel }) : t('discoverStepEmpty', { source: sourceLabel }),
+        },
+        'searching',
+        t('discoverSourceCount', { source: sourceLabel, n }),
+        pool.length,
+      )
+    } catch (err) {
+      setStep(
+        id,
+        { status: 'error', detail: errDetail(err) },
+        'searching',
+        t('discoverSourceSkipped', { source: sourceLabel }),
+        pool.length,
+      )
+    }
   }
 
-  // --- Art Institute of Chicago ---
-  setStep('aic', { status: 'running', detail: `Searching for “${query.slice(0, 80)}”…` }, 'searching', 'Searching Art Institute of Chicago…', pool.length)
-  try {
-    const found = await searchArtInstitute(query, seen)
-    const n = addAll(found)
-    setStep(
-      'aic',
-      {
-        status: n ? 'ok' : 'empty',
-        found: n,
-        detail: n ? `Added ${n} from AIC` : 'No new AIC matches',
-      },
-      'searching',
-      `Art Institute of Chicago: ${n} new`,
-      pool.length,
-    )
-  } catch (err) {
-    setStep(
-      'aic',
-      { status: 'error', detail: err instanceof Error ? err.message : 'Failed' },
-      'searching',
-      'AIC unavailable — continuing…',
-      pool.length,
-    )
-  }
+  // Hit fast museum APIs first so the status UI moves quickly; Wikidata SPARQL can be slower.
+  await runSource('aic', 'Art Institute of Chicago', () => searchArtInstitute(query, seen))
+  await runSource('va', 'V&A Museum', () => searchVA(query, seen))
+  await runSource('openverse', 'Openverse', () => searchOpenverse(query, seen))
+  await runSource('commons', 'Wikimedia Commons', () => searchCommons(query, seen))
+  await runSource('wikidata', 'Wikidata', () => searchWikidata(prefs, seen, query))
 
-  // --- V&A ---
-  setStep('va', { status: 'running', detail: `Searching V&A collections…` }, 'searching', 'Searching V&A Museum…', pool.length)
-  try {
-    const found = await searchVA(query, seen)
-    const n = addAll(found)
-    setStep(
-      'va',
-      {
-        status: n ? 'ok' : 'empty',
-        found: n,
-        detail: n ? `Added ${n} from V&A` : 'No new V&A matches',
-      },
-      'searching',
-      `V&A: ${n} new`,
-      pool.length,
-    )
-  } catch (err) {
-    setStep(
-      'va',
-      { status: 'error', detail: err instanceof Error ? err.message : 'Failed' },
-      'searching',
-      'V&A unavailable — continuing…',
-      pool.length,
-    )
-  }
-
-  // --- Openverse ---
-  setStep('openverse', { status: 'running', detail: 'Searching open-licensed artworks…' }, 'searching', 'Searching Openverse…', pool.length)
-  try {
-    const found = await searchOpenverse(query, seen)
-    const n = addAll(found)
-    setStep(
-      'openverse',
-      {
-        status: n ? 'ok' : 'empty',
-        found: n,
-        detail: n ? `Added ${n} open works` : 'No new Openverse matches',
-      },
-      'searching',
-      `Openverse: ${n} new`,
-      pool.length,
-    )
-  } catch (err) {
-    setStep(
-      'openverse',
-      { status: 'error', detail: err instanceof Error ? err.message : 'Failed' },
-      'searching',
-      'Openverse unavailable — continuing…',
-      pool.length,
-    )
-  }
-
-  // --- Commons ---
-  setStep('commons', { status: 'running', detail: 'Searching Wikimedia Commons media…' }, 'searching', 'Searching Wikimedia Commons…', pool.length)
-  try {
-    const found = await searchCommons(query, seen)
-    const n = addAll(found)
-    setStep(
-      'commons',
-      {
-        status: n ? 'ok' : 'empty',
-        found: n,
-        detail: n ? `Added ${n} media works` : 'No new Commons matches',
-      },
-      'searching',
-      `Commons: ${n} new`,
-      pool.length,
-    )
-  } catch (err) {
-    setStep(
-      'commons',
-      { status: 'error', detail: err instanceof Error ? err.message : 'Failed' },
-      'searching',
-      'Commons unavailable — finishing…',
-      pool.length,
-    )
-  }
-
-  setStep('merge', { status: 'running', detail: 'Ranking by preference fit…' }, 'merging', 'Merging results…', pool.length)
+  setStep(
+    'merge',
+    { status: 'running', detail: t('discoverStepMerging') },
+    'merging',
+    t('discoverMerging'),
+    pool.length,
+  )
   const ranked = rankByMood(pool, prefs.moods).slice(0, 40)
+  const sourcesHit = steps.filter((s) => s.found > 0 && s.id !== 'merge').length
   setStep(
     'merge',
     {
       status: ranked.length ? 'ok' : 'empty',
       found: ranked.length,
-      detail: `Kept top ${ranked.length} across ${steps.filter((s) => s.found > 0).length} sources`,
+      detail: t('discoverStepMerged', { n: ranked.length, sources: sourcesHit }),
     },
     'done',
     ranked.length
-      ? `Found ${ranked.length} new works across museum and archive sources`
-      : 'No new works matched these preferences — try broader genres or regions',
+      ? t('discoverDone', { n: ranked.length })
+      : t('discoverNone'),
     ranked.length,
   )
 
