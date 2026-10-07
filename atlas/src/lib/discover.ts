@@ -30,14 +30,22 @@ function hash(str: string) {
   return h >>> 0;
 }
 
-/** Unique picture set per discovery draft (never reused across drafts). */
-function draftImages(slug: string, salt: number): string[] {
-  const tags = "toy,game,play";
-  const n = 2 + (salt % 2);
-  return Array.from({ length: n }, (_, i) => {
+/** Unique picture set per discovery draft: named title card + toy-specific photos. */
+function draftImages(
+  name: string,
+  category: string,
+  country: string,
+  slug: string,
+  salt: number,
+): string[] {
+  const tags = `${slugify(name).replace(/-/g, ",")},traditional-toy`;
+  const card = `ludus-card:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(country)}`;
+  const n = 1 + (salt % 2);
+  const extras = Array.from({ length: n }, (_, i) => {
     const lock = hash(`discover:${slug}:${i}`);
     return `https://loremflickr.com/900/600/${tags}?lock=${lock}`;
   });
+  return [card, ...extras];
 }
 
 const PURCHASE = [
@@ -382,7 +390,7 @@ function draftDiscovery(
     civilization: seed.civilization,
     creationYear: year,
     category: seed.category,
-    images: draftImages(slug, salt),
+    images: draftImages(name, seed.category, country, slug, salt),
     description: `${seed.description} Atlas Guide drafted this discovery to match your preference profile (${prefs.vibe}, ${prefs.setting}, ${prefs.players}).`,
     howToPlay: seed.howToPlay,
     purchaseLinks: [...PURCHASE],

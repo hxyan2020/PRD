@@ -9,110 +9,149 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, "../public/data/collection.json");
 
-/** Thematic Unsplash stills — each URL is used at most once across the catalog. */
-const IMAGE_POOLS = {
-  board: [
+/**
+ * Per-toy search tags — never use a sibling game’s name (e.g. Go must not
+ * search “chess”; Mahjong must not search “poker”).
+ */
+const ARCHETYPE_TAGS = {
+  rattle: "baby-rattle,infant-rattle,wooden-rattle",
+  whistle_toy: "toy-whistle,clay-whistle,bird-whistle",
+  pull_toy: "pull-toy,wooden-horse-toy,animal-pull-toy",
+  mini_weapons_toy: "toy-bow,toy-archery,foam-arrow",
+  jacks_local: "jacks-game,knucklebones,five-stones",
+  story_dice_oral: "story-dice,game-dice,wooden-lots",
+  shadow_play: "shadow-puppet,hand-shadow,shadow-theater",
+  kite_local: "kite,kite-flying,paper-kite",
+  cloth_doll_local: "cloth-doll,rag-doll,handmade-doll",
+  ball_sewn: "cloth-ball,soft-ball,handmade-ball",
+  top_local: "spinning-top,wooden-top,beyblade",
+  string_local: "cats-cradle,string-figure,finger-string",
+  board_race_folk: "race-board-game,pachisi,ludo-board",
+  sowing_local: "mancala,owari,sowing-game",
+  jump_rope: "jump-rope,skipping-rope,jump-rope-kids",
+  blindfold_tag: "blindfold-game,kids-playing-tag,party-blindfold",
+  wrestling_play: "youth-wrestling,folk-wrestling,sand-wrestling",
+  memory_song: "children-singing-circle,clapping-game,campfire-song",
+  balance_stilts: "stilts,walking-stilts,stilt-walker",
+  leaf_boat: "leaf-boat,toy-boat,cork-boat",
+  snow_or_sand: "sandcastle,snowman,sand-sculpture",
+  knuckle_football: "table-football,finger-football,paper-soccer",
+  riddle_local: "riddle-book,question-mark-vintage,oral-storytelling",
+  ceremonial_toy: "festival-noisemaker,ratchet-toy,carnival-clapper",
+  puzzle_knot: "rope-puzzle,disentanglement-puzzle,metal-puzzle",
+  mini_house: "dollhouse,miniature-kitchen,toy-tea-set",
+};
+
+const CURATED_TAGS = {
+  Chess: "chess,chessboard,chess-pieces",
+  "Go (Weiqi)": "go-board,weiqi,baduk",
+  Xiangqi: "xiangqi,chinese-chess",
+  Shogi: "shogi,japanese-chess",
+  "Mancala sowing games": "mancala,kalah,owari",
+  Backgammon: "backgammon,backgammon-board",
+  Senet: "senet,egyptian-game",
+  Patolli: "patolli,aztec-game",
+  Pachisi: "pachisi,chaupar",
+  Mahjong: "mahjong,mahjong-tiles",
+  Dominoes: "dominoes,domino-tiles",
+  "Nine Men's Morris": "nine-mens-morris,mills-game",
+  "Alquerque / Draughts family": "draughts,checkers-board",
+  Fanorona: "fanorona,madagascar-board-game",
+  Carrom: "carrom,carrom-board",
+  "Playing cards (French-suited deck)": "playing-cards,bicycle-cards",
+  "Hanafuda / Karuta": "hanafuda,karuta,japanese-cards",
+  Ganjifa: "ganjifa,circular-playing-cards",
+  Knucklebones: "knucklebones,astragali,jacks-game",
+  "Yo-yo": "yo-yo,yoyo,duncan-yoyo",
+  "Kite flying": "kite,kite-flying",
+  "Cat's cradle": "cats-cradle,string-figure",
+  "Jianzi (shuttlecock kicking)": "jianzi,shuttlecock,featherball",
+  "Sepak takraw": "sepak-takraw,takraw-ball",
+  Lacrosse: "lacrosse,lacrosse-stick",
+  "Mesoamerican ballgame / Ulama": "ulama,mesoamerican-ballgame",
+  Kokeshi: "kokeshi,japanese-doll",
+  Matryoshka: "matryoshka,russian-nesting-dolls",
+  "Worry dolls": "worry-dolls,guatemalan-dolls",
+  "Corn husk doll": "corn-husk-doll,cornhusk-doll",
+  "Bilboquet / Balero / Kendama family": "kendama,bilboquet,cup-and-ball",
+  Tangram: "tangram,tangram-puzzle",
+  "Rubik's Cube": "rubiks-cube,rubik-cube",
+  "Building blocks": "wooden-blocks,building-blocks",
+  Chunkey: "chunkey,native-american-game",
+  Palín: "palin,mapuche-hockey",
+  "Tug of war": "tug-of-war,rope-pulling",
+  "Hide-and-seek": "hide-and-seek,kids-hiding",
+  Hopscotch: "hopscotch,hopscotch-grid",
+  Marbles: "marbles,glass-marbles",
+  "Spinning top": "spinning-top,wooden-top",
+  Hnefatafl: "hnefatafl,tafl-game",
+  "Fox and Geese": "fox-and-geese,board-game",
+  "Go Bang / Gomoku": "gomoku,five-in-a-row",
+  "Reversi / Othello": "othello,reversi",
+  Scrabble: "scrabble,scrabble-tiles",
+  "Snakes and Ladders": "snakes-and-ladders,chutes-and-ladders",
+  Monopoly: "monopoly,monopoly-board",
+  Jenga: "jenga,jenga-tower",
+  Diabolo: "diabolo,chinese-yo-yo",
+  "Kapu kuapu / Jackstraws / Spillikins": "pick-up-sticks,mikado,spillikins",
+  Mehen: "mehen,egyptian-serpent-game",
+  "Buckingham Palace toy soldiers aside: Toy soldiers": "toy-soldiers,tin-soldiers",
+  "Tea set toy": "toy-tea-set,children-tea-party",
+  Slinky: "slinky-toy,metal-spring-toy",
+  "Frisbee / flying disc": "frisbee,flying-disc",
+  "Hacky sack / footbag": "hacky-sack,footbag",
+  Boomerang: "boomerang,returning-boomerang",
+  Poi: "poi-balls,maori-poi",
+  Surakarta: "surakarta,javanese-board-game",
+  Dakon: "dakon,congkak",
+  Sungka: "sungka,filipino-mancala",
+};
+
+/** Hand-picked Unsplash photos that depict the named game (used once each). */
+const CURATED_PHOTOS = {
+  Chess: [
     "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=900&q=80",
-    "https://images.unsplash.com/photo-1553481187-be93c21490a9?w=900&q=80",
-    "https://images.unsplash.com/photo-1611371805429-8b5c1b2c34ba?w=900&q=80",
-    "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80",
-    "https://images.unsplash.com/photo-1632501641765-e568d28b0015?w=900&q=80",
-    "https://images.unsplash.com/photo-1611195974226-a6a9be93d23b?w=900&q=80",
     "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=900&q=80",
-    "https://images.unsplash.com/photo-1560174038-da43ac74f01b?w=900&q=80",
-    "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=900&q=80",
-    "https://images.unsplash.com/photo-1606503153255-59d8b8b82176?w=900&q=80",
   ],
-  cards: [
-    "https://images.unsplash.com/photo-1541278107931-e006523892df?w=900&q=80",
-    "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=900&q=80",
-    "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=900&q=80",
-    "https://images.unsplash.com/photo-1511192336575-5a79af67a729?w=900&q=80",
+  "Go (Weiqi)": [
+    "https://images.unsplash.com/photo-1611195974226-a6a9be93d23b?w=900&q=80",
+  ],
+  Mahjong: [
     "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=900&q=80",
-    "https://images.unsplash.com/photo-1591034986967-5e3f0f9b5b5b?w=900&q=80",
   ],
-  dolls: [
-    "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=900&q=80",
-    "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=900&q=80",
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=900&q=80",
-    "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=900&q=80",
-    "https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?w=900&q=80",
-    "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=900&q=80",
-  ],
-  outdoor: [
-    "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=900&q=80",
-    "https://images.unsplash.com/photo-1472162072942-cd5147eb3902?w=900&q=80",
-    "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=80",
-    "https://images.unsplash.com/photo-1502086227841-98595262e576?w=900&q=80",
-    "https://images.unsplash.com/photo-1472745942893-4b9f730c2148?w=900&q=80",
-    "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=900&q=80",
-  ],
-  spinning: [
-    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80",
+  "Yo-yo": [
     "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=900&q=80",
+  ],
+  "Rubik's Cube": [
+    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=900&q=80",
+  ],
+  Dominoes: [
+    "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=900&q=80",
+  ],
+  "Playing cards (French-suited deck)": [
+    "https://images.unsplash.com/photo-1541278107931-e006523892df?w=900&q=80",
+  ],
+  Marbles: [
     "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=900&q=80",
   ],
-  puzzle: [
-    "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
-    "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=900&q=80",
-    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=900&q=80",
+  "Kite flying": [
+    "https://images.unsplash.com/photo-1502086227841-98595262e576?w=900&q=80",
+  ],
+  Matryoshka: [
+    "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=900&q=80",
+  ],
+  Jenga: [
     "https://images.unsplash.com/photo-1606503153255-59d8b8b82176?w=900&q=80",
   ],
-  music: [
-    "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=900&q=80",
-    "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&q=80",
-    "https://images.unsplash.com/photo-1514320291840-092e2f6a6f64?w=900&q=80",
-    "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=900&q=80",
+  Scrabble: [
+    "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=900&q=80",
   ],
-  ball: [
-    "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=900&q=80",
-    "https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=80",
-    "https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=900&q=80",
-    "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=900&q=80",
+  Backgammon: [
+    "https://images.unsplash.com/photo-1632501641765-e568d28b0015?w=900&q=80",
   ],
-  ritual: [
-    "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=900&q=80",
-    "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=900&q=80",
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&q=80",
+  "Building blocks": [
+    "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
   ],
-  default: [
-    "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80",
-    "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=900&q=80",
-    "https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=900&q=80",
-  ],
-};
-
-/** Category keyword tags for unique seeded stock photos (never reused). */
-const THEME_TAGS = {
-  board: "boardgame,chess,tabletop",
-  cards: "playing-cards,cards,poker",
-  dolls: "doll,toy,figurine",
-  outdoor: "children-playing,playground,outdoors",
-  spinning: "spinning-top,toy,wood",
-  puzzle: "puzzle,blocks,wood-toy",
-  music: "music,instrument,percussion",
-  ball: "ball,sport,play",
-  ritual: "festival,ceremony,lantern",
-  default: "toy,game,play",
-};
-
-const CAT_IMG = {
-  "Board & Race": "board",
-  "Strategy & War": "board",
-  "Mancala & Sowing": "board",
-  "Cards & Tiles": "cards",
-  "Dice & Chance": "board",
-  "String & Finger": "outdoor",
-  "Dolls & Figures": "dolls",
-  "Ball & Sport": "ball",
-  "Spinning & Tops": "spinning",
-  "Puzzles & Skill": "puzzle",
-  "Outdoor Folk": "outdoor",
-  "Musical Play": "music",
-  Construction: "puzzle",
-  "Ritual & Ceremony": "ritual",
-  "Memory & Word": "cards",
-  "Hand & Gesture": "outdoor",
 };
 
 const PURCHASE = {
@@ -257,101 +296,96 @@ function hash(str) {
   return h >>> 0;
 }
 
+/** Title-card ref consumed by the UI (`resolveImageSrc`) so the pictured name always matches. */
+function encodeLudusCard(name, category, originCountry) {
+  return `ludus-card:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}`;
+}
+
+function tagsForEntry(name, archetypeKey) {
+  if (archetypeKey && ARCHETYPE_TAGS[archetypeKey]) return ARCHETYPE_TAGS[archetypeKey];
+  // Strip regional suffix from matrix-style titles
+  const base = name.replace(/\s+[—–-]\s+.*$/, "").trim();
+  if (CURATED_TAGS[name]) return CURATED_TAGS[name];
+  if (CURATED_TAGS[base]) return CURATED_TAGS[base];
+  // Derive from distinctive words in the name (avoid generic “game/toy” alone)
+  const slug = slugify(base).replace(/-/g, ",");
+  return `${slug},traditional-toy`;
+}
+
 /**
- * Global image bank: every URL is handed out at most once so no two catalog
- * entries (including cultural variations) share the same picture set — or even
- * the same individual picture.
+ * Global image bank: unique sets per entry; primary image is a named title card;
+ * follow-on photos use toy-specific tags (never a wrong sibling game’s keywords).
  */
 const imageBank = {
   /** @type {Set<string>} */
   usedUrls: new Set(),
   /** @type {Set<string>} */
   usedSets: new Set(),
-  /** @type {Map<string, string[]>} */
-  poolQueues: new Map(),
   serial: 0,
 
-  themeKey(category) {
-    return CAT_IMG[category] || "default";
-  },
-
-  queueFor(theme) {
-    if (!this.poolQueues.has(theme)) {
-      const base = IMAGE_POOLS[theme] || IMAGE_POOLS.default;
-      // Shuffle copy so adjacent games in a category do not get near-identical order
-      const copy = [...base];
-      for (let i = copy.length - 1; i > 0; i--) {
-        const j = (hash(`${theme}:${i}`) + i * 17) % (i + 1);
-        [copy[i], copy[j]] = [copy[j], copy[i]];
+  takeCuratedPhoto(gameName) {
+    const pool = CURATED_PHOTOS[gameName];
+    if (!pool?.length) return null;
+    while (pool.length) {
+      const url = pool.shift();
+      if (!this.usedUrls.has(url)) {
+        this.usedUrls.add(url);
+        return url;
       }
-      this.poolQueues.set(theme, copy);
     }
-    return this.poolQueues.get(theme);
+    return null;
   },
 
-  /** Deterministic unique stock URL when thematic Unsplash URLs are exhausted. */
-  seededUrl(theme, token) {
-    const tags = THEME_TAGS[theme] || THEME_TAGS.default;
+  thematicUrl(tags, token) {
     this.serial += 1;
-    // lock= guarantees a stable, unique photo per token across the catalog
     return `https://loremflickr.com/900/600/${tags}?lock=${hash(`${token}:${this.serial}`)}`;
   },
 
-  takeOne(theme, token) {
-    const queue = this.queueFor(theme);
-    while (queue.length) {
-      const url = queue.shift();
+  takeThematic(tags, token) {
+    for (let attempt = 0; attempt < 12; attempt++) {
+      const url = this.thematicUrl(tags, `${token}:t${attempt}`);
       if (!this.usedUrls.has(url)) {
         this.usedUrls.add(url);
         return url;
       }
     }
-    // Exhausted thematic Unsplash — mint a unique seeded URL
-    for (let attempt = 0; attempt < 8; attempt++) {
-      const url = this.seededUrl(theme, `${token}:a${attempt}`);
-      if (!this.usedUrls.has(url)) {
-        this.usedUrls.add(url);
-        return url;
-      }
-    }
-    // Absolute fallback (should be unreachable)
     const url = `https://picsum.photos/seed/${slugify(token)}-${this.serial}/900/600`;
     this.usedUrls.add(url);
     return url;
   },
 
   /**
-   * @param {string} category
-   * @param {string} uniqueKey  stable id (slug / variation key)
-   * @param {number} [minCount]
+   * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string }} opts
    */
-  allocate(category, uniqueKey, minCount = 2) {
-    const theme = this.themeKey(category);
+  allocate(opts) {
+    const { name, category, originCountry, uniqueKey, archetypeKey } = opts;
+    const tags = tagsForEntry(name, archetypeKey);
     const salt = hash(uniqueKey);
-    const count = Math.min(5, Math.max(minCount, 2 + (salt % 3))); // 2–4
+    const extraCount = 1 + (salt % 3); // 1–3 thematic photos after the title card
     /** @type {string[]} */
-    let imgs = [];
-    for (let i = 0; i < count; i++) {
-      imgs.push(this.takeOne(theme, `${uniqueKey}#${i}`));
+    const imgs = [encodeLudusCard(name, category, originCountry)];
+
+    // Prefer a verified photo of this exact game when available
+    const curated = this.takeCuratedPhoto(name);
+    if (curated) imgs.push(curated);
+
+    while (imgs.length < extraCount + 1) {
+      imgs.push(this.takeThematic(tags, `${uniqueKey}#${imgs.length}`));
     }
-    // Guarantee set-level uniqueness even if something reused a URL
-    let guard = 0;
-    let sig = JSON.stringify(imgs);
-    while (this.usedSets.has(sig) && guard < 10) {
-      imgs = imgs.map((u, i) => {
-        this.usedUrls.delete(u);
-        return this.takeOne(theme, `${uniqueKey}#retry${guard}:${i}`);
-      });
-      sig = JSON.stringify(imgs);
-      guard += 1;
+
+    const sig = JSON.stringify(imgs);
+    if (this.usedSets.has(sig)) {
+      imgs.push(this.takeThematic(tags, `${uniqueKey}#uniq`));
     }
-    this.usedSets.add(sig);
+    this.usedSets.add(JSON.stringify(imgs));
+    // Title cards are unique per name/country but still mark them used
+    this.usedUrls.add(imgs[0]);
     return imgs;
   },
 };
 
-function pickImages(category, uniqueKey) {
-  return imageBank.allocate(category, uniqueKey, 2);
+function pickImages(opts) {
+  return imageBank.allocate(opts);
 }
 
 function pickPurchase(key, salt) {
@@ -1924,7 +1958,13 @@ function toGame(seed, index) {
     const varKey = `var:${slug}:${slugify(v.name)}:${slugify(v.originCountry)}:${vi}`;
     return {
       ...v,
-      images: pickImages(seed.category, varKey),
+      images: pickImages({
+        name: v.name,
+        category: seed.category,
+        originCountry: v.originCountry,
+        uniqueKey: varKey,
+        archetypeKey: seed.archetypeKey,
+      }),
     };
   });
   /** @type {Record<string, unknown>} */
@@ -1936,7 +1976,13 @@ function toGame(seed, index) {
     civilization: seed.civilization,
     creationYear: seed.creationYear,
     category: seed.category,
-    images: pickImages(seed.category, imageKey),
+    images: pickImages({
+      name: seed.name,
+      category: seed.category,
+      originCountry: seed.originCountry,
+      uniqueKey: imageKey,
+      archetypeKey: seed.archetypeKey,
+    }),
     description: seed.description,
     howToPlay: seed.howToPlay,
     purchaseLinks: pickPurchase(seed.purchase, salt),

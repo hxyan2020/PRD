@@ -19,6 +19,7 @@ import {
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
 import { OriginCountry } from "../components/OriginCountry";
+import { GameImage } from "../components/GameImage";
 
 export function PreferencesPage() {
   const { isLoggedIn, user } = useAuth();
@@ -390,7 +391,16 @@ export function PreferencesPage() {
                     <li key={hit.game.id} className="prefs-hit">
                       <div className="prefs-hit-main">
                         <div className="prefs-hit-img">
-                          <img src={display.images[0]} alt="" loading="lazy" />
+                          <GameImage
+                            src={display.images[0]}
+                            alt={display.name}
+                            loading="lazy"
+                            label={{
+                              name: display.name,
+                              category: display.category,
+                              originCountry: display.originCountry,
+                            }}
+                          />
                         </div>
                         <div>
                           <div className="prefs-hit-tags">

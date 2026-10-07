@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { OriginCountry } from "../components/OriginCountry";
+import { GameImage } from "../components/GameImage";
 import { useJournal } from "../hooks/useJournal";
 import { useAuth } from "../hooks/useAuth";
 import { loadCollection } from "../lib/collection";
@@ -187,7 +188,16 @@ export function JournalPage() {
                   <Link to={`/game/${entry.slug}`} className="journal-item-main">
                     <div className="journal-thumb">
                       {entry.image ? (
-                        <img src={entry.image} alt="" loading="lazy" />
+                        <GameImage
+                          src={entry.image}
+                          alt={entry.name}
+                          loading="lazy"
+                          label={{
+                            name: entry.name,
+                            category: entry.category,
+                            originCountry: entry.originCountry,
+                          }}
+                        />
                       ) : null}
                     </div>
                     <div>

@@ -3,6 +3,7 @@ import type { Game } from "../types/game";
 import { excerpt } from "../lib/collection";
 import { JournalActions } from "./JournalActions";
 import { OriginCountry } from "./OriginCountry";
+import { GameImage } from "./GameImage";
 import { useI18n } from "../i18n";
 
 export function GameCard({ game, index }: { game: Game; index: number }) {
@@ -15,7 +16,16 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
     >
       <Link to={`/game/${game.slug}`} className="game-card-link">
         <div className="game-card-img">
-          <img src={game.images[0]} alt="" loading="lazy" />
+          <GameImage
+            src={game.images[0]}
+            alt={game.name}
+            loading="lazy"
+            label={{
+              name: game.name,
+              category: game.category,
+              originCountry: game.originCountry,
+            }}
+          />
         </div>
         <div className="pill">{game.category}</div>
         <h3>{game.name}</h3>

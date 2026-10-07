@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEven
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { OriginCountry } from "../components/OriginCountry";
+import { GameImage } from "../components/GameImage";
 import { loadCollection } from "../lib/collection";
 import type { Game } from "../types/game";
 import type { ChatMessage, ChatState } from "../types/chat";
@@ -47,7 +48,16 @@ function RecCards({ games }: { games: Game[] }) {
       {games.map((g) => (
         <Link key={g.id} to={`/game/${g.slug}`} className="chat-rec-card">
           <div className="chat-rec-img">
-            <img src={g.images[0]} alt="" loading="lazy" />
+            <GameImage
+              src={g.images[0]}
+              alt={g.name}
+              loading="lazy"
+              label={{
+                name: g.name,
+                category: g.category,
+                originCountry: g.originCountry,
+              }}
+            />
           </div>
           <div>
             <div className="pill">{g.category}</div>

@@ -6,8 +6,14 @@ import { Footer } from "../components/Footer";
 import { JournalActions } from "../components/JournalActions";
 import { PlatformLogo } from "../components/PlatformLogo";
 import { OriginCountry } from "../components/OriginCountry";
+import { GameImage } from "../components/GameImage";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
+import {
+  isLudusCardSrc,
+  ludusCardDataUri,
+  resolveImageSrc,
+} from "../lib/gameCardImage";
 
 export function GameDetailPage() {
   const { slug } = useParams();
@@ -49,7 +55,10 @@ export function GameDetailPage() {
     );
   }
 
-  const shot = game.images[activeImg] ?? game.images[0];
+  const activeSrc = game.images[activeImg] ?? game.images[0];
+  const shot = isLudusCardSrc(activeSrc)
+    ? ludusCardDataUri(game.name, game.category, game.originCountry)
+    : resolveImageSrc(activeSrc);
 
   return (
     <>
@@ -119,11 +128,30 @@ export function GameDetailPage() {
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
                     {v.images?.[0] ? (
                       <div className="variation-media">
-                        <img src={v.images[0]} alt="" loading="lazy" />
+                        <GameImage
+                          src={v.images[0]}
+                          alt={v.name}
+                          loading="lazy"
+                          label={{
+                            name: v.name,
+                            category: game.category,
+                            originCountry: v.originCountry,
+                          }}
+                        />
                         {v.images.length > 1 ? (
                           <div className="variation-thumbs">
                             {v.images.slice(1, 4).map((src) => (
-                              <img key={src} src={src} alt="" loading="lazy" />
+                              <GameImage
+                                key={src}
+                                src={src}
+                                alt=""
+                                loading="lazy"
+                                label={{
+                                  name: v.name,
+                                  category: game.category,
+                                  originCountry: v.originCountry,
+                                }}
+                              />
                             ))}
                           </div>
                         ) : null}
@@ -148,13 +176,14 @@ export function GameDetailPage() {
         <aside>
           <div className="panel">
             <h2>{t("detail.images")}</h2>
-            <img
+            <GameImage
               className="main-shot"
-              src={shot}
+              src={activeSrc}
               alt={`${game.name} reference`}
-              onError={(e) => {
-                e.currentTarget.src =
-                  "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80";
+              label={{
+                name: game.name,
+                category: game.category,
+                originCountry: game.originCountry,
               }}
             />
             <div className="gallery">
@@ -166,13 +195,14 @@ export function GameDetailPage() {
                   onClick={() => setActiveImg(i)}
                   aria-label={t("detail.showImage", { n: i + 1 })}
                 >
-                  <img
+                  <GameImage
                     src={src}
                     alt=""
                     loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.src =
-                        "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80";
+                    label={{
+                      name: game.name,
+                      category: game.category,
+                      originCountry: game.originCountry,
                     }}
                   />
                 </button>
