@@ -18,6 +18,16 @@ npm run dev
 
 Open the printed local URL (default `http://localhost:5173`).
 
+## Permanent public link
+
+**https://hxyan2020.github.io/PRD/ludus-atlas/**
+
+Publish an update to GitHub Pages:
+
+```bash
+npm run deploy:pages
+```
+
 ## Build
 
 ```bash

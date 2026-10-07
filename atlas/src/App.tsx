@@ -1,4 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  HashRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
 import { Header } from "./components/Header";
 import { HomePage } from "./pages/HomePage";
 import { CollectionPage } from "./pages/CollectionPage";
@@ -9,9 +14,13 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { GuidePage } from "./pages/GuidePage";
 import { PreferencesPage } from "./pages/PreferencesPage";
 
+/** GitHub Pages serves the app under /PRD/ludus-atlas/; hash routes keep deep links working. */
+const useHashRouter = import.meta.env.BASE_URL !== "/";
+const Router = useHashRouter ? HashRouter : BrowserRouter;
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -23,6 +32,6 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/game/:slug" element={<GameDetailPage />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
