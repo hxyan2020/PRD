@@ -1146,6 +1146,128 @@ body.studio-open {
   border-top: 1px solid var(--line);
 }
 
+.advisory {
+  margin-top: 1.75rem;
+  padding: 1.25rem 1.3rem;
+  border: 1px solid rgba(107, 58, 58, 0.25);
+  background: rgba(107, 58, 58, 0.06);
+  max-width: 42rem;
+}
+
+.advisory--compact {
+  margin: 1rem 0 0;
+  max-width: none;
+}
+
+.advisory__eyebrow {
+  margin: 0 0 0.45rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #6b3a3a;
+  font-weight: 700;
+}
+
+.advisory__body {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.advisory__list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.15rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.advisory__list li + li {
+  margin-top: 0.3rem;
+}
+
+.science-box {
+  margin: 0.75rem 0 1rem;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--line);
+  background: white;
+}
+
+.science-box__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--teal-deep);
+}
+
+.science-box__text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.science-box--none,
+.science-box--falsified {
+  border-color: rgba(107, 58, 58, 0.28);
+  background: rgba(107, 58, 58, 0.04);
+}
+
+.science-box--none .science-box__label,
+.science-box--falsified .science-box__label {
+  color: #6b3a3a;
+}
+
+.science-box--reflective,
+.science-box--cultural {
+  border-color: rgba(15, 92, 86, 0.28);
+  background: rgba(15, 92, 86, 0.05);
+}
+
+.science-box--contested {
+  border-color: rgba(138, 85, 32, 0.35);
+  background: rgba(193, 122, 47, 0.08);
+}
+
+.science-box--contested .science-box__label {
+  color: #8a5520;
+}
+
+.science-box--env {
+  border-color: rgba(26, 58, 92, 0.3);
+  background: rgba(26, 58, 92, 0.05);
+}
+
+.science-box--env .science-box__label {
+  color: #1a3a5c;
+}
+
+.tag--science {
+  border-color: rgba(107, 58, 58, 0.35);
+  color: #6b3a3a;
+  background: rgba(107, 58, 58, 0.06);
+}
+
+.tag--science-reflective,
+.tag--science-cultural {
+  border-color: rgba(15, 92, 86, 0.35);
+  color: var(--teal-deep);
+  background: rgba(15, 92, 86, 0.06);
+}
+
+.tag--science-contested {
+  border-color: rgba(138, 85, 32, 0.4);
+  color: #8a5520;
+  background: rgba(193, 122, 47, 0.08);
+}
+
+.tag--science-env {
+  border-color: rgba(26, 58, 92, 0.35);
+  color: #1a3a5c;
+  background: rgba(26, 58, 92, 0.06);
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

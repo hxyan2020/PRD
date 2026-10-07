@@ -398,7 +398,7 @@
       timing,
       details: [],
       disclaimer:
-        "Simulated reading in the style of this tradition—for reflection and learning, not authentic initiatory practice or medical/legal advice.",
+        "Simulated reading in the style of this tradition—for reflection and learning, not authentic initiatory practice or medical/legal/financial advice. May be inaccurate; cannot predict black swan events.",
     };
 
     if (process.id === "birth") {

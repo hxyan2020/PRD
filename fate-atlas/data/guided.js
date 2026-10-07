@@ -240,7 +240,8 @@
       ],
       hex,
       lines,
-      disclaimer: "Educational simulation of the three-coin Yì method (铜钱起卦). Not a substitute for classical study with a teacher.",
+      disclaimer:
+        "Educational simulation of the three-coin Yì method (铜钱起卦). Reflective only—not a validated forecast. May be inaccurate; cannot predict black swan events.",
     };
   }
 
@@ -268,7 +269,8 @@
       }),
       drawn,
       positions,
-      disclaimer: "Major Arcana three-card spread for reflection. Simulated shuffle; not a professional reading.",
+      disclaimer:
+        "Major Arcana three-card spread for reflection. Simulated shuffle—not a validated forecast. May be inaccurate; cannot predict black swan events.",
     };
   }
 
@@ -292,7 +294,8 @@
       type,
       score,
       meta,
-      disclaimer: "Simplified MBTI-style preference quiz for entertainment and self-reflection—not a clinical assessment.",
+      disclaimer:
+        "Simplified MBTI-style preference quiz for self-reflection—not a clinical assessment or fate forecast. Preferences ≠ destiny; cannot predict black swan events.",
     };
   }
 

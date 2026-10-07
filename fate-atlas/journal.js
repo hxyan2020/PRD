@@ -215,6 +215,10 @@
       <ul class="reading__details">${(r.details || []).map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
       ${r.counsel ? `<div class="reading__block"><h4>Counsel</h4><p>${escapeHTML(r.counsel)}</p></div>` : ""}
       ${r.timing ? `<div class="reading__block"><h4>Timing</h4><p>${escapeHTML(r.timing)}</p></div>` : ""}
+      <div class="advisory advisory--compact">
+        <p class="advisory__eyebrow">Accuracy advisory</p>
+        <p class="advisory__body">Saved for reflection. Readings may be inaccurate. No method predicts black swan events that can change everything at once.</p>
+      </div>
     `;
   }
 

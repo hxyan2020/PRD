@@ -229,6 +229,7 @@
         <div class="bagua-strip" aria-hidden="true">
           ${Object.values(G().TRIGRAMS).map((t) => `<span title="${escapeHTML(t.name)}">${t.symbol}<small>${escapeHTML(t.name.split(" ")[0])}</small></span>`).join("")}
         </div>
+        ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
           <button type="button" class="btn btn--primary" data-action="next">I understand — continue</button>
@@ -317,6 +318,7 @@
           <li>Reveal <strong>Past · Present · Path</strong> one card at a time</li>
           <li>Read upright or reversed meanings together</li>
         </ol>
+        ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
           <button type="button" class="btn btn--primary" data-action="next">Continue</button>
@@ -430,7 +432,8 @@
           <li><strong>T / F</strong> — Thinking · Feeling (decisions)</li>
           <li><strong>J / P</strong> — Judging · Perceiving (lifestyle)</li>
         </ul>
-        <p class="studio__copy studio__copy--soft">Then we map your type to a reflective “path” reading.</p>
+        <p class="studio__copy studio__copy--soft">Then we map your type to a reflective “path” reading—not a forecast of events.</p>
+        ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
           <button type="button" class="btn btn--primary" data-action="next">Continue</button>
@@ -477,6 +480,31 @@
     render();
   }
 
+  function sciencePanelHTML(method) {
+    const sci = window.fateScienceStatusFor?.(method);
+    const adv = window.FATE_GLOBAL_ADVISORY;
+    if (!sci) return "";
+    return `<div class="science-box science-box--${escapeHTML(sci.levelId)}">
+        <p class="science-box__label">Scientific reasoning · ${escapeHTML(sci.label)}</p>
+        <p class="science-box__text">${escapeHTML(sci.reasoning)}</p>
+      </div>
+      <div class="advisory advisory--compact">
+        <p class="advisory__eyebrow">${escapeHTML(adv?.title || "Accuracy advisory")}</p>
+        <p class="advisory__body">${escapeHTML(adv?.body || "")}</p>
+      </div>`;
+  }
+
+  function resultDisclaimerHTML(method, custom) {
+    const sci = window.fateScienceStatusFor?.(method);
+    const adv = window.FATE_GLOBAL_ADVISORY?.body || "";
+    const parts = [
+      custom || "",
+      sci ? `Scientific status: ${sci.label}. ${sci.reasoning}` : "",
+      adv,
+    ].filter(Boolean);
+    return `<p class="reading__disclaimer">${escapeHTML(parts.join(" "))}</p>`;
+  }
+
   function journalActionsHTML(saved, againLabel) {
     const again = againLabel || "Start over";
     if (saved) {
@@ -514,7 +542,8 @@
         <ul class="reading__details">${r.details.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
         <div class="reading__block"><h4>Counsel</h4><p>${escapeHTML(r.counsel)}</p></div>
         <div class="reading__block"><h4>Timing / Next</h4><p>${escapeHTML(r.timing)}</p></div>
-        <p class="reading__disclaimer">${escapeHTML(r.disclaimer)}</p>
+        ${sciencePanelHTML(state.method)}
+        ${resultDisclaimerHTML(state.method, r.disclaimer)}
       </div>
       ${journalActionsHTML(!!state.journalSaved, allowAgain ? "Start over" : "Done")}`;
   }
@@ -537,6 +566,7 @@
         <h3 class="studio__heading">Begin with ${escapeHTML(method.name)}</h3>
         <p class="studio__copy">${escapeHTML(method.summary)}</p>
         <p class="studio__copy studio__copy--soft">${escapeHTML(process.blurb)}</p>
+        ${sciencePanelHTML(method)}
         ${
           photo
             ? `<p class="studio__copy"><strong>Photo step:</strong> ${escapeHTML(photo.label)}. ${photo.required ? "A clear image is required." : "A photo is optional but helpful."}</p>`
@@ -631,7 +661,8 @@
           <ul class="reading__details">${r.details.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
           <div class="reading__block"><h4>Counsel</h4><p>${escapeHTML(r.counsel)}</p></div>
           <div class="reading__block"><h4>Timing</h4><p>${escapeHTML(r.timing)}</p></div>
-          <p class="reading__disclaimer">${escapeHTML(r.disclaimer)}</p>
+          ${sciencePanelHTML(method)}
+          ${resultDisclaimerHTML(method, r.disclaimer)}
         </div>
         ${journalActionsHTML(!!state.journalSaved, "Read again")}`;
     }
@@ -920,14 +951,20 @@
     const featuredEl = document.getElementById("featured-guides");
     if (featuredEl) {
       featuredEl.innerHTML = (window.FATE_FEATURED_METHODS || [])
-        .map(
-          (m) => `<article class="feature-card">
+        .map((m) => {
+          const sci = window.fateScienceStatusFor?.(m);
+          return `<article class="feature-card">
           <p class="feature-card__eyebrow">${escapeHTML(m.guided === "bagua" ? "八卦" : m.guided === "tarot" ? "塔罗" : "MBTI")}</p>
           <h3 class="feature-card__title">${escapeHTML(m.name)}</h3>
           <p class="feature-card__copy">${escapeHTML(m.summary)}</p>
+          ${
+            sci
+              ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">${escapeHTML(sci.tag)}</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>`
+              : ""
+          }
           <button type="button" class="btn btn--primary btn--small" data-read="${escapeHTML(m.id)}">Start guided rite</button>
-        </article>`
-        )
+        </article>`;
+        })
         .join("");
     }
   }
