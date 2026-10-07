@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { CountryFlags } from '../components/CountryFlags'
 import { FullscreenViewer } from '../components/FullscreenViewer'
 import { LoadingState } from '../components/LoadingState'
 import { SafeImage } from '../components/SafeImage'
@@ -81,7 +82,9 @@ export function PaintingPage() {
             </div>
             <div>
               <dt>{t('painterCountry')}</dt>
-              <dd>{painting.painterCountry}</dd>
+              <dd>
+                <CountryFlags country={painting.painterCountry} label />
+              </dd>
             </div>
             <div>
               <dt>{t('placeOfCreation')}</dt>
@@ -125,7 +128,8 @@ export function PaintingPage() {
           <h2>{t('thePainter')}</h2>
           <p className="painter-name">{painting.painter}</p>
           <p className="years">
-            {painting.painterBirthYear} – {painting.painterDeathYear} · {painting.painterCountry}
+            {painting.painterBirthYear} – {painting.painterDeathYear} ·{' '}
+            <CountryFlags country={painting.painterCountry} label size="sm" />
           </p>
           <h3>{t('anecdote')}</h3>
           <p>{painting.anecdote}</p>

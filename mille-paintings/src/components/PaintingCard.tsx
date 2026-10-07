@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { Painting } from '../types'
 import { displayImageUrl } from '../lib/images'
+import { CountryFlags } from './CountryFlags'
 import { SafeImage } from './SafeImage'
 import './PaintingCard.css'
 
@@ -25,6 +26,9 @@ export function PaintingCard({ painting }: { painting: Painting }) {
           <span>
             {painting.painterBirthYear}–{painting.painterDeathYear}
           </span>
+        </p>
+        <p className="country-line">
+          <CountryFlags country={painting.painterCountry} label size="sm" />
         </p>
         <p className="genre">{painting.genre}</p>
       </div>

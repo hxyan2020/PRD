@@ -66,10 +66,17 @@
   font-size: 0.92rem;
 }
 
-.painting-card-meta span {
+.painting-card-meta > p > span {
   display: inline-block;
   margin-left: 0.45rem;
   opacity: 0.8;
+}
+
+.painting-card-meta .country-line {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.84rem;
 }
 
 .painting-card-meta .genre {

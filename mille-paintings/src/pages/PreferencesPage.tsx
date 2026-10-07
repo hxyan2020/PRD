@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { CountryFlags } from '../components/CountryFlags'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
@@ -90,10 +91,11 @@ export function PreferencesPage() {
             <button
               key={c}
               type="button"
-              className={`chip ${prefs.countries.includes(c) ? 'on' : ''}`}
+              className={`chip chip-country ${prefs.countries.includes(c) ? 'on' : ''}`}
               onClick={() => setPrefs((p) => ({ ...p, countries: toggleIn(p.countries, c) }))}
             >
-              {c}
+              <CountryFlags country={c} size="sm" />
+              <span>{c}</span>
             </button>
           ))}
         </div>

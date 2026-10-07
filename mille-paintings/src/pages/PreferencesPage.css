@@ -50,6 +50,19 @@
   cursor: pointer;
 }
 
+.chip-country {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+}
+
+.chip-country > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .chip.on {
   background: rgba(214, 167, 86, 0.18);
   border-color: var(--brass);

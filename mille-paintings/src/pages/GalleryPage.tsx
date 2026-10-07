@@ -1,4 +1,5 @@
 import { startTransition, useDeferredValue, useMemo, useState } from 'react'
+import { CountryFlags } from '../components/CountryFlags'
 import { LoadingState } from '../components/LoadingState'
 import { PaintingCard } from '../components/PaintingCard'
 import { StatsCounter } from '../components/StatsCounter'
@@ -93,8 +94,16 @@ export function GalleryPage() {
             ))}
           </select>
         </label>
-        <label>
-          <span>{t('painterCountry')}</span>
+        <label className="country-filter">
+          <span>
+            {t('painterCountry')}
+            {country !== 'all' ? (
+              <>
+                {' '}
+                <CountryFlags country={country} size="sm" />
+              </>
+            ) : null}
+          </span>
           <select
             value={country}
             onChange={(e) => {
