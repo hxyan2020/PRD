@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fatum Atlas — World Fate-Telling Methods</title>
-  <meta name="description" content="An atlas of fate-telling and divination methods from Africa, Asia, Europe, the Americas, and Oceania." />
+  <title>Fatum Atlas — Choose a method &amp; read your fate</title>
+  <meta name="description" content="Choose any fate-telling method and follow its pre-defined ritual process to generate a reading." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -19,10 +19,10 @@
     <div class="hero__content">
       <h1 class="brand">Fatum <span>Atlas</span></h1>
       <p class="hero__lead">A world map of fate-telling.</p>
-      <p class="hero__sub">Browse divinatory traditions sourced across continents—from Ifá and Bazi to maramataka moon nights and Andean leaf casting.</p>
+      <p class="hero__sub">Choose any tradition, follow its ritual process, and receive a generated reading.</p>
       <div class="hero__cta">
-        <a class="btn btn--primary" href="#catalog">Browse methods</a>
-        <a class="btn btn--ghost" href="#oracle">Draw one at random</a>
+        <a class="btn btn--primary" href="#begin">Begin a reading</a>
+        <a class="btn btn--ghost" href="#catalog">Browse all methods</a>
       </div>
     </div>
     <div class="hero__scroll" aria-hidden="true">Scroll</div>
@@ -35,8 +35,8 @@
         <h2 class="section__title">Fate read in every latitude</h2>
         <p class="section__copy">
           People everywhere have asked what comes next—by casting lots, reading stars, opening poems,
-          watching crabs, burning bones, and tracing the lines of a hand. This atlas gathers named
-          methods with their regions and countries, organized for browsing rather than belief.
+          watching crabs, burning bones, and tracing the lines of a hand. Pick any method in this atlas
+          and walk a short, pre-defined process to generate a stylized reading.
         </p>
         <div class="stats" aria-label="Collection statistics">
           <div>
@@ -55,30 +55,53 @@
       </div>
     </section>
 
+    <section class="begin" id="begin" aria-labelledby="begin-title">
+      <div class="section">
+        <p class="section__eyebrow">Reading studio</p>
+        <h2 class="section__title" id="begin-title">Choose a method &amp; begin</h2>
+        <p class="section__copy">
+          Every tradition has a guided process—birth chart, lot casting, cards, dice, book opening,
+          form reading, day selection, pendulum, or omen watching. Select one to start.
+        </p>
+        <div class="begin__row">
+          <div class="field begin__picker">
+            <label for="method-picker">Fate-telling method</label>
+            <select id="method-picker"></select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn--primary" id="start-reading-btn">Start the process</button>
+          </div>
+        </div>
+        <div class="process-legend" aria-label="Process types">
+          <span class="legend-chip">Birth chart</span>
+          <span class="legend-chip">Lot casting</span>
+          <span class="legend-chip">Cards</span>
+          <span class="legend-chip">Dice</span>
+          <span class="legend-chip">Book / verse</span>
+          <span class="legend-chip">Form</span>
+          <span class="legend-chip">Pendulum</span>
+          <span class="legend-chip">Day almanac</span>
+          <span class="legend-chip">Omen watch</span>
+        </div>
+        <p class="begin__or">or cast a random method</p>
+        <button type="button" class="btn btn--ghost begin__random" id="draw-btn" style="border-color:var(--line);color:var(--ink);">Surprise me</button>
+        <div class="oracle__result" id="oracle-result" hidden style="margin-top:1.5rem"></div>
+      </div>
+    </section>
+
     <section class="section" id="regions" aria-labelledby="regions-title">
       <p class="section__eyebrow">Navigate</p>
       <h2 class="section__title" id="regions-title">By continent</h2>
-      <p class="section__copy">Jump into a region. Counts update from the live catalog.</p>
+      <p class="section__copy">Jump into a region, then start a reading from any method card.</p>
       <div class="continents" id="continent-nav" role="group" aria-label="Filter by continent"></div>
-    </section>
-
-    <section class="oracle" id="oracle" aria-labelledby="oracle-title">
-      <div class="section">
-        <p class="section__eyebrow">Lot casting</p>
-        <h2 class="section__title" id="oracle-title">Draw a method</h2>
-        <p class="section__copy">Cast a random tradition from the atlas—an invitation to explore, not a prediction.</p>
-        <div class="oracle__panel">
-          <button type="button" class="btn btn--primary" id="draw-btn">Cast the lot</button>
-          <div class="oracle__result" id="oracle-result" hidden></div>
-        </div>
-      </div>
     </section>
 
     <section class="catalog" id="catalog" aria-labelledby="catalog-title">
       <div class="section">
         <p class="section__eyebrow">Catalog</p>
         <h2 class="section__title" id="catalog-title">All fate-telling methods</h2>
-        <p class="section__copy">Search by name, country, or region. Filter by continent and reading type.</p>
+        <p class="section__copy">Search, filter, then press <strong>Begin reading</strong> on any method to run its process.</p>
 
         <div class="controls">
           <div class="field">
@@ -135,10 +158,26 @@
 
   <footer class="footer">
     <div class="brand-mini">Fatum Atlas</div>
-    <p>A curated index of human fortune-seeking — for learning and wonder.</p>
+    <p>Choose a tradition, follow the rite, read the sign — for learning and wonder.</p>
   </footer>
 
+  <div class="studio" id="reading-studio" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reading-title">
+    <div class="studio__panel">
+      <header class="studio__header">
+        <div>
+          <p class="studio__kicker" id="reading-step">Reading</p>
+          <h2 class="studio__method" id="reading-title">Method</h2>
+        </div>
+        <button type="button" class="studio__close" id="reading-close" aria-label="Close reading">×</button>
+      </header>
+      <div class="studio__progress" id="reading-progress" aria-hidden="true"></div>
+      <div class="studio__body" id="reading-body"></div>
+    </div>
+  </div>
+
   <script src="data/methods.js"></script>
+  <script src="data/processes.js"></script>
   <script src="app.js"></script>
+  <script src="reading.js"></script>
 </body>
 </html>

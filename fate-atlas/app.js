@@ -85,14 +85,24 @@
     return hay.includes(q);
   }
 
+  function processLabelFor(m) {
+    try {
+      return window.fateProcessForMethod ? window.fateProcessForMethod(m).label : m.type;
+    } catch (_) {
+      return m.type;
+    }
+  }
+
   function methodHTML(m) {
     const countries = (m.countries || []).join(", ");
+    const processLabel = processLabelFor(m);
     return `<li class="method" id="method-${m.id}">
       <div>
         <h3 class="method__name">${escapeHTML(m.name)}</h3>
         <div class="method__meta">
           <span class="tag tag--type">${escapeHTML(m.type)}</span>
           <span class="tag">${escapeHTML(m.continent)}</span>
+          <span class="tag tag--process">${escapeHTML(processLabel)}</span>
         </div>
         <p class="method__region">${escapeHTML(m.region || "")}</p>
       </div>
@@ -100,6 +110,9 @@
         <p class="method__summary">${escapeHTML(m.summary)}</p>
         <p class="method__countries"><strong>Countries:</strong> ${escapeHTML(countries)}</p>
         <p class="method__source"><strong>Source:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
+        <p class="method__actions">
+          <button type="button" class="btn btn--primary btn--small" data-read="${escapeHTML(m.id)}">Begin reading</button>
+        </p>
       </div>
     </li>`;
   }
@@ -130,6 +143,7 @@
 
   function drawLot() {
     const pick = methods[Math.floor(Math.random() * methods.length)];
+    const processLabel = processLabelFor(pick);
     els.oracleResult.hidden = false;
     els.oracleResult.innerHTML = `
       <p class="section__eyebrow" style="margin-bottom:0.5rem">Your lot</p>
@@ -137,16 +151,14 @@
       <div class="method__meta" style="margin:0.5rem 0 1rem">
         <span class="tag tag--type">${escapeHTML(pick.type)}</span>
         <span class="tag">${escapeHTML(pick.continent)}</span>
-        <span class="tag">${escapeHTML((pick.countries || []).slice(0, 3).join(", "))}</span>
+        <span class="tag tag--process">${escapeHTML(processLabel)}</span>
       </div>
       <p class="method__summary">${escapeHTML(pick.summary)}</p>
-      <p style="margin-top:1rem"><a href="#method-${pick.id}">View in catalog →</a></p>
+      <p class="method__actions" style="margin-top:1rem">
+        <button type="button" class="btn btn--primary btn--small" data-read="${escapeHTML(pick.id)}">Begin reading</button>
+        <a class="btn btn--ghost btn--small" href="#method-${pick.id}" style="border-color:var(--line);color:var(--ink);">View in catalog</a>
+      </p>
     `;
-    // Ensure the catalog item exists even if filtered out
-    els.search.value = "";
-    els.continent.value = "all";
-    els.type.value = "all";
-    renderList();
   }
 
   function initStats() {
