@@ -8,9 +8,49 @@ import type {
   UserPrefs,
   VibePref,
 } from "../types/chat";
+import type { MessageKey } from "../i18n/messages/en";
 
-const OUT_OF_SCOPE =
-  "I stay focused on Ludus Atlas—finding toys and games, how they work, cultural background, how to play, and where to buy them. Ask me anything in that lane, or say “start over” to redo preferences.";
+export type ChatTranslate = (
+  key: MessageKey,
+  vars?: Record<string, string | number>,
+) => string;
+
+function playerQuickReplies(t: ChatTranslate) {
+  return [
+    t("chat.qr.alone"),
+    t("chat.qr.two"),
+    t("chat.qr.small"),
+    t("chat.qr.group"),
+    t("chat.qr.anySize"),
+  ];
+}
+
+function settingQuickReplies(t: ChatTranslate) {
+  return [t("chat.qr.indoor"), t("chat.qr.outdoor"), t("chat.qr.either")];
+}
+
+function vibeQuickReplies(t: ChatTranslate, full = true) {
+  if (full) {
+    return [
+      t("chat.qr.strategy"),
+      t("chat.qr.casual"),
+      t("chat.qr.craft"),
+      t("chat.qr.sport"),
+      t("chat.qr.puzzle"),
+      t("chat.qr.kids"),
+      t("chat.qr.ritual"),
+      t("chat.qr.surprise"),
+    ];
+  }
+  return [
+    t("chat.qr.strategy"),
+    t("chat.qr.casual"),
+    t("chat.qr.craft"),
+    t("chat.qr.sport"),
+    t("chat.qr.puzzle"),
+    t("chat.qr.surprise"),
+  ];
+}
 
 function uid() {
   return `m_${Math.random().toString(36).slice(2, 10)}`;
@@ -67,17 +107,21 @@ export function initialChatState(): ChatState {
   };
 }
 
-export function welcomeMessage(): ChatMessage {
-  return assistant(
-    "I’m Atlas Guide—your helper for this catalog of historical toys and games. I’ll ask a few preference questions, then recommend matches. You can also ask how to play, where a game comes from, cultural variations, or purchase options.\n\nHow many people will usually play?",
-    {
-      quickReplies: ["Alone", "2 people", "3–4 people", "A larger group", "Any size"],
-    },
-  );
+export function welcomeMessage(t: ChatTranslate): ChatMessage {
+  return assistant(t("chat.welcome"), {
+    quickReplies: playerQuickReplies(t),
+  });
 }
 
-function parsePlayers(text: string): PlayerPref | null {
+function parsePlayers(text: string, tr?: ChatTranslate): PlayerPref | null {
   const t = normalize(text);
+  if (tr) {
+    if (t === normalize(tr("chat.qr.alone"))) return "alone";
+    if (t === normalize(tr("chat.qr.two"))) return "two";
+    if (t === normalize(tr("chat.qr.small"))) return "small";
+    if (t === normalize(tr("chat.qr.group"))) return "group";
+    if (t === normalize(tr("chat.qr.anySize"))) return "any";
+  }
   if (/\b(alone|solo|by myself|1 person|one person|just me)\b/.test(t)) return "alone";
   if (/\b(2|two|pair|duo)\b/.test(t) && !/\b(3|4|three|four|group)\b/.test(t)) return "two";
   if (/\b(3|4|three|four|small group|few friends)\b/.test(t)) return "small";
@@ -90,16 +134,31 @@ function parsePlayers(text: string): PlayerPref | null {
   return null;
 }
 
-function parseSetting(text: string): SettingPref | null {
+function parseSetting(text: string, tr?: ChatTranslate): SettingPref | null {
   const t = normalize(text);
+  if (tr) {
+    if (t === normalize(tr("chat.qr.outdoor"))) return "outdoor";
+    if (t === normalize(tr("chat.qr.indoor"))) return "indoor";
+    if (t === normalize(tr("chat.qr.either"))) return "either";
+  }
   if (/\b(outdoor|outside|yard|park|field|street)\b/.test(t)) return "outdoor";
   if (/\b(indoor|inside|table|tabletop|home|parlor|room)\b/.test(t)) return "indoor";
   if (/\b(either|both|any|no preference|doesn't matter)\b/.test(t)) return "either";
   return null;
 }
 
-function parseVibe(text: string): VibePref | null {
+function parseVibe(text: string, tr?: ChatTranslate): VibePref | null {
   const t = normalize(text);
+  if (tr) {
+    if (t === normalize(tr("chat.qr.strategy"))) return "strategy";
+    if (t === normalize(tr("chat.qr.casual"))) return "casual";
+    if (t === normalize(tr("chat.qr.craft"))) return "craft";
+    if (t === normalize(tr("chat.qr.sport"))) return "sport";
+    if (t === normalize(tr("chat.qr.ritual"))) return "ritual";
+    if (t === normalize(tr("chat.qr.kids"))) return "kids";
+    if (t === normalize(tr("chat.qr.puzzle"))) return "puzzle";
+    if (t === normalize(tr("chat.qr.surprise"))) return "any";
+  }
   if (/\b(strateg|chess|think|tactical|mind)\b/.test(t)) return "strategy";
   if (/\b(casual|light|easy|party|social|fun)\b/.test(t)) return "casual";
   if (/\b(craft|doll|make|build|construction|toy figure)\b/.test(t)) return "craft";
@@ -119,8 +178,9 @@ function parseVibe(text: string): VibePref | null {
   return null;
 }
 
-function parseRegion(text: string): string | null {
+function parseRegion(text: string, tr?: ChatTranslate): string | null {
   const t = normalize(text);
+  if (tr && t === normalize(tr("chat.qr.worldwide"))) return "any";
   if (/\b(any|worldwide|no preference|everywhere|global)\b/.test(t)) return "any";
   if (!t) return null;
   return t.replace(/^(from|in|around|near)\s+/, "");
@@ -477,11 +537,11 @@ function resolveFocusGame(
   return null;
 }
 
-function applyFreeformPrefs(text: string, prefs: UserPrefs): UserPrefs {
+function applyFreeformPrefs(text: string, prefs: UserPrefs, tr?: ChatTranslate): UserPrefs {
   const next = { ...prefs };
-  const players = parsePlayers(text);
-  const setting = parseSetting(text);
-  const vibe = parseVibe(text);
+  const players = parsePlayers(text, tr);
+  const setting = parseSetting(text, tr);
+  const vibe = parseVibe(text, tr);
   if (players) next.players = players;
   if (setting) next.setting = setting;
   if (vibe) next.vibe = vibe;
@@ -508,12 +568,13 @@ export function handleUserMessage(
   games: Game[],
   state: ChatState,
   rawText: string,
+  t: ChatTranslate,
 ): ChatTurnResult {
   const text = rawText.trim();
   if (!text) {
     return {
       state,
-      replies: [assistant("Say a preference, ask about a game, or tap a quick reply.")],
+      replies: [assistant(t("chat.hint.preference"))],
     };
   }
 
@@ -523,27 +584,24 @@ export function handleUserMessage(
     return {
       state: fresh,
       replies: [
-        assistant(
-          "Starting fresh. How many people will usually play?",
-          {
-            quickReplies: ["Alone", "2 people", "3–4 people", "A larger group", "Any size"],
-          },
-        ),
+        assistant(t("chat.welcome"), {
+          quickReplies: playerQuickReplies(t),
+        }),
       ],
     };
   }
 
   if (isOffTopic(text)) {
-    return { state, replies: [assistant(OUT_OF_SCOPE)] };
+    return { state, replies: [assistant(t("chat.outOfScope"))] };
   }
 
   // Preference interview flow
   if (state.phase === "welcome" || state.phase === "ask_players") {
-    const players = parsePlayers(text);
+    const players = parsePlayers(text, t);
     if (!players) {
       // maybe they jumped ahead with a full ask
-      if (intent(text) === "recommend" || parseVibe(text) || parseSetting(text)) {
-        const prefs = applyFreeformPrefs(text, state.prefs);
+      if (intent(text) === "recommend" || parseVibe(text, t) || parseSetting(text, t)) {
+        const prefs = applyFreeformPrefs(text, state.prefs, t);
         const recs = recommendGames(games, prefs);
         return {
           state: {
@@ -570,8 +628,8 @@ export function handleUserMessage(
       return {
         state: { ...state, phase: "ask_players" },
         replies: [
-          assistant("I didn’t catch the group size. Alone, 2, 3–4, a larger group, or any?", {
-            quickReplies: ["Alone", "2 people", "3–4 people", "A larger group", "Any size"],
+          assistant(t("chat.hint.players"), {
+            quickReplies: playerQuickReplies(t),
           }),
         ],
       };
@@ -583,21 +641,21 @@ export function handleUserMessage(
         prefs: { ...state.prefs, players },
       },
       replies: [
-        assistant("Got it. Indoor table play, outdoor/active play, or either?", {
-          quickReplies: ["Indoor", "Outdoor", "Either"],
+        assistant(t("chat.askSetting"), {
+          quickReplies: settingQuickReplies(t),
         }),
       ],
     };
   }
 
   if (state.phase === "ask_setting") {
-    const setting = parseSetting(text);
+    const setting = parseSetting(text, t);
     if (!setting) {
       return {
         state,
         replies: [
-          assistant("Choose indoor, outdoor, or either—and we’ll keep going.", {
-            quickReplies: ["Indoor", "Outdoor", "Either"],
+          assistant(t("chat.hint.setting"), {
+            quickReplies: settingQuickReplies(t),
           }),
         ],
       };
@@ -609,37 +667,21 @@ export function handleUserMessage(
         prefs: { ...state.prefs, setting },
       },
       replies: [
-        assistant("What kind of experience are you after?", {
-          quickReplies: [
-            "Deep strategy",
-            "Light & social",
-            "Craft & dolls",
-            "Sport & active",
-            "Puzzles & skill",
-            "Kids & family",
-            "Ritual & festival",
-            "Surprise me",
-          ],
+        assistant(t("chat.askVibe"), {
+          quickReplies: vibeQuickReplies(t, true),
         }),
       ],
     };
   }
 
   if (state.phase === "ask_vibe") {
-    const vibe = parseVibe(text) || (normalize(text).includes("surprise") ? "any" : null);
+    const vibe = parseVibe(text, t) || (normalize(text).includes("surprise") ? "any" : null);
     if (!vibe) {
       return {
         state,
         replies: [
-          assistant("Pick a vibe—or say “surprise me.”", {
-            quickReplies: [
-              "Deep strategy",
-              "Light & social",
-              "Craft & dolls",
-              "Sport & active",
-              "Puzzles & skill",
-              "Surprise me",
-            ],
+          assistant(t("chat.hint.vibe"), {
+            quickReplies: vibeQuickReplies(t, false),
           }),
         ],
       };
@@ -651,25 +693,22 @@ export function handleUserMessage(
         prefs: { ...state.prefs, vibe },
       },
       replies: [
-        assistant(
-          "Any region or civilization to lean toward? (e.g. Japan, West Africa, Mesoamerica) Or say “worldwide.”",
-          {
-            quickReplies: [
-              "Worldwide",
-              "East Asia",
-              "Africa",
-              "India",
-              "Europe",
-              "Mesoamerica",
-            ],
-          },
-        ),
+        assistant(t("chat.askRegion"), {
+          quickReplies: [
+            t("chat.qr.worldwide"),
+            "East Asia",
+            "Africa",
+            "India",
+            "Europe",
+            "Mesoamerica",
+          ],
+        }),
       ],
     };
   }
 
   if (state.phase === "ask_region") {
-    const region = parseRegion(text) || normalize(text) || "any";
+    const region = parseRegion(text, t) || normalize(text) || "any";
     const prefs = { ...state.prefs, region };
     const recs = recommendGames(games, prefs);
     return {
@@ -697,7 +736,7 @@ export function handleUserMessage(
   }
 
   // Follow-up / freeform mode
-  const prefs = applyFreeformPrefs(text, state.prefs);
+  const prefs = applyFreeformPrefs(text, state.prefs, t);
   const i = intent(text);
   let focus = resolveFocusGame(games, text, state);
 
@@ -726,7 +765,12 @@ export function handleUserMessage(
       replies: [
         assistant(answerHowToPlay(focus), {
           recommendations: [focus],
-          quickReplies: ["Requirements?", "Where to buy?", "Variations?", "Recommend something else"],
+          quickReplies: [
+            t("chat.qr.requirements"),
+            t("chat.qr.whereBuy"),
+            t("chat.qr.variations"),
+            t("chat.qr.recommendElse"),
+          ],
         }),
       ],
     };
@@ -737,7 +781,7 @@ export function handleUserMessage(
       return {
         state: { ...state, prefs },
         replies: [
-          assistant("Which game do you want purchase links for?", {
+          assistant(t("chat.askPurchaseWhich"), {
             quickReplies: state.lastRecommendations.slice(0, 3).map((g) => `Buy ${g.name}`),
           }),
         ],
@@ -748,7 +792,11 @@ export function handleUserMessage(
       replies: [
         assistant(answerPurchase(focus), {
           recommendations: [focus],
-          quickReplies: ["How to play?", "Requirements?", "More recommendations"],
+          quickReplies: [
+            t("chat.qr.howToPlay"),
+            t("chat.qr.requirements"),
+            t("chat.qr.moreRecs"),
+          ],
         }),
       ],
     };
@@ -758,7 +806,7 @@ export function handleUserMessage(
     if (!focus) {
       return {
         state: { ...state, prefs },
-        replies: [assistant("Name a game from the catalog and I’ll share its origin and story.")],
+        replies: [assistant(t("chat.askAbout"))],
       };
     }
     return {
@@ -766,7 +814,11 @@ export function handleUserMessage(
       replies: [
         assistant(answerAbout(focus), {
           recommendations: [focus],
-          quickReplies: ["How to play?", "Variations?", "Where to buy?"],
+          quickReplies: [
+            t("chat.qr.howToPlay"),
+            t("chat.qr.variations"),
+            t("chat.qr.whereBuy"),
+          ],
         }),
       ],
     };
@@ -776,7 +828,7 @@ export function handleUserMessage(
     if (!focus) {
       return {
         state: { ...state, prefs },
-        replies: [assistant("Name a game and I’ll list its cultural variations.")],
+        replies: [assistant(t("chat.askVariations"))],
       };
     }
     return {
@@ -784,7 +836,7 @@ export function handleUserMessage(
       replies: [
         assistant(answerVariations(focus), {
           recommendations: [focus],
-          quickReplies: ["How to play?", "Where to buy?"],
+          quickReplies: [t("chat.qr.howToPlay"), t("chat.qr.whereBuy")],
         }),
       ],
     };
@@ -806,7 +858,7 @@ export function handleUserMessage(
       replies: [
         assistant(extra, {
           recommendations: [focus],
-          quickReplies: ["How to play?", "Where to buy?"],
+          quickReplies: [t("chat.qr.howToPlay"), t("chat.qr.whereBuy")],
         }),
       ],
     };
@@ -889,7 +941,12 @@ export function handleUserMessage(
           `${answerAbout(focus)}\n\nI can walk you through how to play, list requirements, show variations, or share purchase links.`,
           {
             recommendations: [focus],
-            quickReplies: ["How to play?", "Where to buy?", "Variations?", "Recommend similar"],
+            quickReplies: [
+            t("chat.qr.howToPlay"),
+            t("chat.qr.whereBuy"),
+            t("chat.qr.variations"),
+            t("chat.qr.recommendElse"),
+          ],
           },
         ),
       ],

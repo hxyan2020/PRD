@@ -404,13 +404,17 @@ export async function runDiscoverySearch(
     if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
   };
 
-  onProgress({ percent: 4, status: "Reading your preferences…", detail: summarizePrefs(prefs) });
+  onProgress({
+    percent: 4,
+    status: "discover.status.readingPrefs",
+    detail: summarizePrefs(prefs),
+  });
   await sleep(280);
   throwIfAborted();
 
   onProgress({
     percent: 14,
-    status: "Scanning the Ludus Atlas catalog…",
+    status: "discover.status.scanning",
     detail: `${catalog.length.toLocaleString()} entries`,
   });
   await sleep(320);
@@ -441,7 +445,7 @@ export async function runDiscoverySearch(
     const pct = 14 + Math.round(((i + chunk) / catalog.length) * 40);
     onProgress({
       percent: Math.min(54, pct),
-      status: "Ranking catalog matches…",
+      status: "discover.status.ranking",
       detail: `Reviewed ${Math.min(catalog.length, i + chunk).toLocaleString()} / ${catalog.length.toLocaleString()}`,
     });
     await sleep(90);
@@ -449,7 +453,7 @@ export async function runDiscoverySearch(
 
   onProgress({
     percent: 60,
-    status: "Querying historical play patterns…",
+    status: "discover.status.querying",
     detail: "Folk archives, board lineages, outdoor & craft corpora",
   });
   await sleep(450);
@@ -459,7 +463,7 @@ export async function runDiscoverySearch(
   if (prefs.includeNewDiscoveries) {
     onProgress({
       percent: 72,
-      status: "Drafting new discoveries in your preference nature…",
+      status: "discover.status.drafting",
       detail: "Generating candidate toys/games not yet in the pool",
     });
     await sleep(380);
@@ -492,7 +496,7 @@ export async function runDiscoverySearch(
       drafted += 1;
       onProgress({
         percent: 72 + Math.min(18, drafted * 3),
-        status: "Drafting new discoveries…",
+        status: "discover.status.draftingMore",
         detail: `Drafted ${drafted}: ${game.name}`,
       });
       await sleep(120);
@@ -500,12 +504,12 @@ export async function runDiscoverySearch(
   } else {
     onProgress({
       percent: 78,
-      status: "Skipping new drafts (catalog-only mode)…",
+      status: "discover.status.catalogOnly",
     });
     await sleep(200);
   }
 
-  onProgress({ percent: 94, status: "Finalizing shortlist…" });
+  onProgress({ percent: 94, status: "discover.status.finalizing" });
   await sleep(220);
   throwIfAborted();
 
@@ -515,7 +519,7 @@ export async function runDiscoverySearch(
 
   onProgress({
     percent: 100,
-    status: "Search complete",
+    status: "discover.status.complete",
     detail: `${hits.length} candidates ready to add to the collection pool`,
   });
 

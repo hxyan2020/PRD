@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { useJournal } from "../hooks/useJournal";
 import { useAuth } from "../hooks/useAuth";
 import { loadCollection } from "../lib/collection";
 import type { JournalEntry, JournalKind } from "../types/journal";
+import type { Game } from "../types/game";
 import { useI18n } from "../i18n";
+import {
+  loadContentI18n,
+  localizeGame,
+  type ContentI18nCatalog,
+} from "../lib/localizeContent";
 
 function formatWhen(iso?: string) {
   if (!iso) return "";
@@ -41,11 +47,17 @@ export function JournalPage() {
   const { isLoggedIn, user } = useAuth();
   const [tab, setTab] = useState<"all" | JournalKind>("all");
   const [catalogTotal, setCatalogTotal] = useState<number>();
-  const { t } = useI18n();
+  const [gamesById, setGamesById] = useState<Map<string, Game>>(() => new Map());
+  const [contentI18n, setContentI18n] = useState<ContentI18nCatalog | null>(null);
+  const { t, locale } = useI18n();
 
   useEffect(() => {
-    loadCollection()
-      .then((d) => setCatalogTotal(d.meta.totalGames))
+    Promise.all([loadCollection(), loadContentI18n().catch(() => null)])
+      .then(([d, i18n]) => {
+        setCatalogTotal(d.meta.totalGames);
+        setGamesById(new Map(d.games.map((g) => [g.id, g])));
+        setContentI18n(i18n);
+      })
       .catch(() => undefined);
   }, []);
 
@@ -61,6 +73,23 @@ export function JournalPage() {
               ),
             ),
           );
+
+  const localizedDisplay = useMemo(
+    () =>
+      display.map((entry) => {
+        const game = gamesById.get(entry.gameId);
+        if (!game) return entry;
+        const localized = localizeGame(game, locale, contentI18n);
+        return {
+          ...entry,
+          name: localized.name,
+          originCountry: localized.originCountry,
+          category: localized.category,
+          image: localized.images[0] ?? entry.image,
+        };
+      }),
+    [display, gamesById, locale, contentI18n],
+  );
 
   if (!isLoggedIn) {
     return (
@@ -141,7 +170,7 @@ export function JournalPage() {
             </button>
           </div>
 
-          {display.length === 0 ? (
+          {localizedDisplay.length === 0 ? (
             <div className="journal-empty">
               <p>{t("journal.empty")}</p>
               <p style={{ color: "var(--mist-dim)" }}>{t("journal.emptyHint")}</p>
@@ -151,7 +180,7 @@ export function JournalPage() {
             </div>
           ) : (
             <ul className="journal-list">
-              {display.map((entry) => (
+              {localizedDisplay.map((entry) => (
                 <li key={entry.gameId} className="journal-item">
                   <Link to={`/game/${entry.slug}`} className="journal-item-main">
                     <div className="journal-thumb">

@@ -1,19 +1,40 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { loadCollection, type CollectionData } from "../lib/collection";
 import { GameCard } from "../components/GameCard";
 import { Footer } from "../components/Footer";
 import { useI18n } from "../i18n";
+import {
+  loadContentI18n,
+  localizeGame,
+  type ContentI18nCatalog,
+} from "../lib/localizeContent";
 
 export function HomePage() {
   const [data, setData] = useState<CollectionData | null>(null);
-  const { t } = useI18n();
+  const [contentI18n, setContentI18n] = useState<ContentI18nCatalog | null>(null);
+  const { t, locale } = useI18n();
 
   useEffect(() => {
-    loadCollection().then(setData).catch(console.error);
+    Promise.all([loadCollection(), loadContentI18n().catch(() => null)])
+      .then(([d, i18n]) => {
+        setData(d);
+        setContentI18n(i18n);
+      })
+      .catch(console.error);
   }, []);
 
-  const featured = data?.games.filter((g) => g.variations.length > 0).slice(0, 6) ?? [];
+  useEffect(() => {
+    document.title = t("home.docTitle");
+  }, [t, locale]);
+
+  const featured = useMemo(() => {
+    if (!data) return [];
+    return data.games
+      .filter((g) => g.variations.length > 0)
+      .slice(0, 6)
+      .map((g) => localizeGame(g, locale, contentI18n));
+  }, [data, locale, contentI18n]);
 
   return (
     <>

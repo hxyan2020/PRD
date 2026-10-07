@@ -74,14 +74,14 @@ function randomHex(bytes = 16) {
 
 export function validateEmail(email: string): string | null {
   const e = normalizeEmail(email);
-  if (!e) return "Email is required.";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return "Enter a valid email address.";
+  if (!e) return "auth.err.emailRequired";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return "auth.err.emailInvalid";
   return null;
 }
 
 export function validatePassword(password: string): string | null {
-  if (!password) return "Password is required.";
-  if (password.length < 8) return "Password must be at least 8 characters.";
+  if (!password) return "auth.err.passwordRequired";
+  if (password.length < 8) return "auth.err.passwordShort";
   return null;
 }
 
@@ -97,7 +97,7 @@ export async function register(
   const users = readUsers();
   const normalized = normalizeEmail(email);
   if (users.some((u) => u.email === normalized)) {
-    return { error: "An account with this email already exists." };
+    return { error: "auth.err.emailExists" };
   }
 
   const salt = randomHex(16);
@@ -123,16 +123,16 @@ export async function login(
 ): Promise<{ user: AuthUser } | { error: string }> {
   const emailError = validateEmail(email);
   if (emailError) return { error: emailError };
-  if (!password) return { error: "Password is required." };
+  if (!password) return { error: "auth.err.passwordRequired" };
 
   const users = readUsers();
   const normalized = normalizeEmail(email);
   const user = users.find((u) => u.email === normalized);
-  if (!user) return { error: "Incorrect email or password." };
+  if (!user) return { error: "auth.err.badCredentials" };
 
   const hash = await hashPassword(password, user.salt);
   if (hash !== user.passwordHash) {
-    return { error: "Incorrect email or password." };
+    return { error: "auth.err.badCredentials" };
   }
 
   persistSession(createSession(user));

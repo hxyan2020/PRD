@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { loadCollection } from "../lib/collection";
@@ -11,6 +11,11 @@ import {
   welcomeMessage,
 } from "../lib/chatEngine";
 import { useI18n } from "../i18n";
+import {
+  loadContentI18n,
+  localizeGame,
+  type ContentI18nCatalog,
+} from "../lib/localizeContent";
 
 function RichText({ text }: { text: string }) {
   return (
@@ -57,22 +62,37 @@ function RecCards({ games }: { games: Game[] }) {
 }
 
 export function GuidePage() {
-  const [games, setGames] = useState<Game[]>([]);
+  const [rawGames, setRawGames] = useState<Game[]>([]);
+  const [contentI18n, setContentI18n] = useState<ContentI18nCatalog | null>(null);
   const [state, setState] = useState<ChatState>(() => initialChatState());
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [ready, setReady] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+
+  const games = useMemo(
+    () => rawGames.map((g) => localizeGame(g, locale, contentI18n)),
+    [rawGames, locale, contentI18n],
+  );
 
   useEffect(() => {
-    loadCollection().then((data) => {
-      setGames(data.games);
-      setMessages([welcomeMessage()]);
-      setState((s) => ({ ...s, phase: phaseAfterWelcome() }));
-      setReady(true);
-    });
+    Promise.all([loadCollection(), loadContentI18n().catch(() => null)]).then(
+      ([data, i18n]) => {
+        setRawGames(data.games);
+        setContentI18n(i18n);
+        setReady(true);
+      },
+    );
   }, []);
+
+  // Re-init welcome when locale changes (or after catalog first loads).
+  useEffect(() => {
+    if (!ready) return;
+    setMessages([welcomeMessage(t)]);
+    setState({ ...initialChatState(), phase: phaseAfterWelcome() });
+    setInput("");
+  }, [locale, ready, t]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -86,7 +106,7 @@ export function GuidePage() {
       role: "user",
       content: trimmed,
     };
-    const result = handleUserMessage(games, state, trimmed);
+    const result = handleUserMessage(games, state, trimmed, t);
     setMessages((prev) => [...prev, userMsg, ...result.replies]);
     setState(result.state);
     setInput("");

@@ -3,7 +3,11 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { migrateGuestJournalIfNeeded } from "../lib/journal";
 import { Footer } from "../components/Footer";
-import { useI18n } from "../i18n";
+import { useI18n, type MessageKey } from "../i18n";
+
+function formatAuthError(error: string, t: (key: MessageKey) => string) {
+  return error.startsWith("auth.") ? t(error as MessageKey) : error;
+}
 
 export function RegisterPage() {
   const { register, isLoggedIn } = useAuth();
@@ -26,7 +30,7 @@ export function RegisterPage() {
     e.preventDefault();
     setError(null);
     if (password !== confirm) {
-      setError("Passwords do not match.");
+      setError("auth.err.passwordMismatch");
       return;
     }
     setBusy(true);
@@ -52,7 +56,7 @@ export function RegisterPage() {
           <form className="auth-form" onSubmit={onSubmit} noValidate>
             {error ? (
               <div className="auth-error" role="alert">
-                {error}
+                {formatAuthError(error, t)}
               </div>
             ) : null}
 

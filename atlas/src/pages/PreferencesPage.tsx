@@ -12,13 +12,19 @@ import { addGamesToPool, isInPool, poolCount, readPool } from "../lib/pool";
 import { setStagingGames } from "../lib/staging";
 import type { DiscoverHit, DiscoverPreferences, DiscoverProgress } from "../types/discover";
 import type { Game } from "../types/game";
-import { useI18n } from "../i18n";
+import { useI18n, type MessageKey } from "../i18n";
+import {
+  loadContentI18n,
+  localizeGame,
+  type ContentI18nCatalog,
+} from "../lib/localizeContent";
 
 export function PreferencesPage() {
   const { isLoggedIn, user } = useAuth();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [prefs, setPrefs] = useState<DiscoverPreferences>(() => loadSavedDiscoverPrefs());
   const [catalog, setCatalog] = useState<Game[]>([]);
+  const [contentI18n, setContentI18n] = useState<ContentI18nCatalog | null>(null);
   const [baseIds, setBaseIds] = useState<Set<string>>(() => new Set());
   const [baseSlugs, setBaseSlugs] = useState<Set<string>>(() => new Set());
   const [baseCount, setBaseCount] = useState(0);
@@ -27,13 +33,19 @@ export function PreferencesPage() {
   const [hits, setHits] = useState<DiscoverHit[]>([]);
   const [stats, setStats] = useState<{ scanned: number; drafted: number } | null>(null);
   const [flash, setFlash] = useState<string | null>(null);
+  const [flashShowCollection, setFlashShowCollection] = useState(false);
   const [poolSize, setPoolSize] = useState(0);
   const [addedIds, setAddedIds] = useState<Set<string>>(() => new Set());
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    Promise.all([ensureBaseLoaded(), loadCollection()]).then(([base, data]) => {
+    Promise.all([
+      ensureBaseLoaded(),
+      loadCollection(),
+      loadContentI18n().catch(() => null),
+    ]).then(([base, data, i18n]) => {
       setCatalog(data.games);
+      setContentI18n(i18n);
       setBaseCount(base.games.length);
       setBaseIds(new Set(base.games.map((g) => g.id)));
       setBaseSlugs(new Set(base.games.map((g) => g.slug)));
@@ -64,6 +76,11 @@ export function PreferencesPage() {
     });
   }
 
+  function showFlash(message: string, showCollection = false) {
+    setFlash(message);
+    setFlashShowCollection(showCollection);
+  }
+
   async function onSearch() {
     if (!catalog.length || searching) return;
     abortRef.current?.abort();
@@ -71,9 +88,10 @@ export function PreferencesPage() {
     abortRef.current = ac;
     setSearching(true);
     setFlash(null);
+    setFlashShowCollection(false);
     setHits([]);
     setStats(null);
-    setProgress({ percent: 0, status: "Starting AI search…" });
+    setProgress({ percent: 0, status: "discover.status.starting" });
     try {
       const result = await runDiscoverySearch(catalog, prefs, setProgress, ac.signal);
       setHits(result.hits);
@@ -84,7 +102,7 @@ export function PreferencesPage() {
       });
     } catch (e) {
       if ((e as Error).name !== "AbortError") {
-        setFlash("Search failed. Try again.");
+        showFlash(t("prefs.flash.searchFailed"));
       }
     } finally {
       setSearching(false);
@@ -94,19 +112,22 @@ export function PreferencesPage() {
   function stopSearch() {
     abortRef.current?.abort();
     setSearching(false);
-    setProgress((p) => (p ? { ...p, status: "Search cancelled", percent: p.percent } : p));
+    setProgress((p) =>
+      p ? { ...p, status: "discover.status.cancelled", percent: p.percent } : p,
+    );
   }
 
   function requireLogin(): boolean {
     if (isLoggedIn) return true;
-    setFlash("Log in to add games to your collection pool.");
+    showFlash(t("prefs.flash.loginToAdd"));
     return false;
   }
 
   function addOne(game: Game, source: DiscoverHit["source"]) {
     if (!requireLogin()) return;
+    const display = localizeGame(game, locale, contentI18n);
     if (source === "catalog" || baseIds.has(game.id) || baseSlugs.has(game.slug)) {
-      setFlash(`“${game.name}” is already in the base catalog.`);
+      showFlash(t("prefs.flash.alreadyCatalog", { name: display.name }));
       return;
     }
     const { added } = addGamesToPool([game], undefined, {
@@ -114,18 +135,18 @@ export function PreferencesPage() {
       existingSlugs: baseSlugs,
     });
     if (!added.length) {
-      setFlash(`“${game.name}” is already in the pool.`);
+      showFlash(t("prefs.flash.alreadyPool", { name: display.name }));
       return;
     }
     setAddedIds((prev) => new Set([...prev, game.id]));
     setPoolSize(poolCount());
-    setFlash(`Added “${game.name}” to the collection pool.`);
+    showFlash(t("prefs.flash.addedOne", { name: display.name }), true);
   }
 
   function addAll() {
     if (!requireLogin()) return;
     if (!pendingHits.length) {
-      setFlash("Nothing new to add—new discoveries are already in the pool.");
+      showFlash(t("prefs.flash.nothingNew"));
       return;
     }
     const { added } = addGamesToPool(
@@ -135,8 +156,13 @@ export function PreferencesPage() {
     );
     setAddedIds((prev) => new Set([...prev, ...added.map((g) => g.id)]));
     setPoolSize(poolCount());
-    setFlash(`Added ${added.length} discoveries to the collection pool.`);
+    showFlash(t("prefs.flash.addedMany", { n: added.length }), true);
   }
+
+  const statusText =
+    progress?.status?.startsWith("discover.")
+      ? t(progress.status as MessageKey)
+      : progress?.status;
 
   return (
     <>
@@ -301,7 +327,7 @@ export function PreferencesPage() {
                   </div>
                   <div className="progress-meta">
                     <strong>{progress.percent}%</strong>
-                    <span>{progress.status}</span>
+                    <span>{statusText}</span>
                   </div>
                   {progress.detail ? (
                     <p className="prefs-muted">{progress.detail}</p>
@@ -330,7 +356,7 @@ export function PreferencesPage() {
           {flash ? (
             <div className="prefs-flash" role="status">
               {flash}{" "}
-              {flash.includes("Added") ? (
+              {flashShowCollection ? (
                 <Link to="/collection">{t("prefs.openCollection")}</Link>
               ) : null}
             </div>
@@ -352,6 +378,7 @@ export function PreferencesPage() {
 
               <ul className="prefs-hit-list">
                 {hits.map((hit) => {
+                  const display = localizeGame(hit.game, locale, contentI18n);
                   const inBase =
                     hit.source === "catalog" ||
                     baseIds.has(hit.game.id) ||
@@ -362,26 +389,26 @@ export function PreferencesPage() {
                     <li key={hit.game.id} className="prefs-hit">
                       <div className="prefs-hit-main">
                         <div className="prefs-hit-img">
-                          <img src={hit.game.images[0]} alt="" loading="lazy" />
+                          <img src={display.images[0]} alt="" loading="lazy" />
                         </div>
                         <div>
                           <div className="prefs-hit-tags">
-                            <span className="pill">{hit.game.category}</span>
+                            <span className="pill">{display.category}</span>
                             <span className={`badge ${hit.source === "discovery" ? "played" : "collect"}`}>
                               {hit.source === "discovery"
                                 ? t("prefs.badgeDiscovery")
                                 : t("prefs.badgeCatalog")}
                             </span>
                           </div>
-                          <h4>{hit.game.name}</h4>
+                          <h4>{display.name}</h4>
                           <p className="meta">
-                            {hit.game.originCountry} · {hit.game.creationYear} ·{" "}
-                            {hit.game.idealParticipants}
+                            {display.originCountry} · {display.creationYear} ·{" "}
+                            {display.idealParticipants}
                           </p>
                           <p className="prefs-reason">{hit.reason}</p>
                           <p className="prefs-excerpt">
-                            {hit.game.description.slice(0, 160)}
-                            {hit.game.description.length > 160 ? "…" : ""}
+                            {display.description.slice(0, 160)}
+                            {display.description.length > 160 ? "…" : ""}
                           </p>
                         </div>
                       </div>
