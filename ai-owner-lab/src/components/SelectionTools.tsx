@@ -10,6 +10,10 @@ interface ToolbarState {
   y: number
 }
 
+function isMobileViewport() {
+  return typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches
+}
+
 export function SelectionTools() {
   const location = useLocation()
   const notebook = useNotebook()
@@ -18,9 +22,18 @@ export function SelectionTools() {
   const [flash, setFlash] = useState('')
   const [explainOpen, setExplainOpen] = useState(false)
   const [explainText, setExplainText] = useState('')
+  const [mobile, setMobile] = useState(isMobileViewport)
 
   useEffect(() => {
-    const onMouseUp = () => {
+    const mq = window.matchMedia('(max-width: 760px)')
+    const onChange = () => setMobile(mq.matches)
+    onChange()
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  useEffect(() => {
+    const showFromSelection = () => {
       window.setTimeout(() => {
         const selection = window.getSelection()
         if (!selection || selection.isCollapsed || !selection.rangeCount) {
@@ -44,19 +57,24 @@ export function SelectionTools() {
         }
         setToolbar({
           text,
-          x: Math.min(window.innerWidth - 180, Math.max(12, rect.left + rect.width / 2 - 90)),
+          x: Math.min(window.innerWidth - 200, Math.max(12, rect.left + rect.width / 2 - 100)),
           y: Math.max(12, rect.top + window.scrollY - 52),
         })
       }, 10)
     }
 
-    const onScroll = () => setToolbar(null)
-    document.addEventListener('mouseup', onMouseUp)
-    document.addEventListener('keyup', onMouseUp)
+    const onScroll = () => {
+      if (!isMobileViewport()) setToolbar(null)
+    }
+
+    document.addEventListener('mouseup', showFromSelection)
+    document.addEventListener('touchend', showFromSelection, { passive: true })
+    document.addEventListener('keyup', showFromSelection)
     window.addEventListener('scroll', onScroll, true)
     return () => {
-      document.removeEventListener('mouseup', onMouseUp)
-      document.removeEventListener('keyup', onMouseUp)
+      document.removeEventListener('mouseup', showFromSelection)
+      document.removeEventListener('touchend', showFromSelection)
+      document.removeEventListener('keyup', showFromSelection)
       window.removeEventListener('scroll', onScroll, true)
     }
   }, [])
@@ -72,6 +90,7 @@ export function SelectionTools() {
     })
     setFlash(t('savedToNotebook'))
     setToolbar(null)
+    window.getSelection()?.removeAllRanges()
     window.setTimeout(() => setFlash(''), 1800)
   }
 
@@ -80,18 +99,25 @@ export function SelectionTools() {
     setExplainText(toolbar.text)
     setExplainOpen(true)
     setToolbar(null)
+    window.getSelection()?.removeAllRanges()
   }
 
   return (
     <>
       {toolbar ? (
-        <div className="selection-toolbar" style={{ left: toolbar.x, top: toolbar.y }}>
-          <button type="button" onClick={saveClip}>
-            {t('addToNotebook')}
-          </button>
-          <button type="button" onClick={openExplain}>
-            {t('explainWithAI')}
-          </button>
+        <div
+          className={`selection-toolbar ${mobile ? 'mobile' : ''}`}
+          style={mobile ? undefined : { left: toolbar.x, top: toolbar.y }}
+        >
+          <p className="selection-preview">{toolbar.text.slice(0, 80)}{toolbar.text.length > 80 ? '…' : ''}</p>
+          <div className="selection-actions">
+            <button type="button" onClick={saveClip}>
+              {t('addToNotebook')}
+            </button>
+            <button type="button" onClick={openExplain}>
+              {t('explainWithAI')}
+            </button>
+          </div>
         </div>
       ) : null}
       {flash ? <div className="notebook-toast">{flash}</div> : null}
@@ -109,7 +135,16 @@ export function SelectionTools() {
 function sourceFromPath(
   pathname: string,
   lang: 'en' | 'zh',
-  t: (key: 'day' | 'navGlossary' | 'navUseCases' | 'navOps' | 'navCareer' | 'navCurriculum' | 'navTracker') => string,
+  t: (
+    key:
+      | 'day'
+      | 'navGlossary'
+      | 'navUseCases'
+      | 'navOps'
+      | 'navCareer'
+      | 'navCurriculum'
+      | 'navTracker',
+  ) => string,
 ) {
   const day = pathname.match(/\/day\/(\d+)/)
   if (day) {
@@ -132,7 +167,7 @@ function isInsideUiChrome(node: Node): boolean {
   if (!el) return false
   return Boolean(
     el.closest(
-      'input, textarea, button, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch',
+      'input, textarea, button, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch, .menu-toggle',
     ),
   )
 }

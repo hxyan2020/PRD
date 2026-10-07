@@ -149,6 +149,8 @@ const en = {
   skillsDay: 'Skills portfolio day',
   min: 'm',
   day: 'Day',
+  menu: 'Menu',
+  closeMenu: 'Close menu',
 } as const
 
 type UiKey = keyof typeof en
@@ -293,6 +295,8 @@ const zh: Record<UiKey, string> = {
   skillsDay: '技能组合日',
   min: '分钟',
   day: '第',
+  menu: '菜单',
+  closeMenu: '关闭菜单',
 }
 
 const catalogs: Record<Lang, Record<UiKey, string>> = { en: en as Record<UiKey, string>, zh }

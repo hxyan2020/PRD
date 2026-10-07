@@ -40,4 +40,6 @@ Each day lesson includes a **From production** case (real products/incidents/pat
 
 **Languages:** switch **EN / 中文** in the top bar. UI, curriculum, glossary, visuals, production cases, and the local tutor follow the selected language (saved in `localStorage`).
 
+**Mobile:** sticky header with hamburger nav drawer, larger touch targets, stacked CTAs, bottom selection action bar, and safe-area padding for notched phones.
+
 Progress and notebook data are stored in `localStorage` in your browser.

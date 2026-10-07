@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useProgress } from '../hooks/useProgress'
 import { useNotebook } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -8,6 +9,17 @@ export function Layout() {
   const { percent, completedCount } = useProgress()
   const { count: notebookCount } = useNotebook()
   const { lang, setLang, t } = useLanguage()
+  const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname, lang])
+
+  useEffect(() => {
+    document.body.classList.toggle('menu-open', menuOpen)
+    return () => document.body.classList.remove('menu-open')
+  }, [menuOpen])
 
   const links = [
     { to: '/', label: t('navHome'), end: true },
@@ -31,7 +43,8 @@ export function Layout() {
             <small>{t('brandSub')}</small>
           </span>
         </NavLink>
-        <div className="topbar-right">
+
+        <div className="topbar-actions">
           <div className="lang-switch" role="group" aria-label="Language">
             <button
               type="button"
@@ -48,29 +61,57 @@ export function Layout() {
               {t('langZh')}
             </button>
           </div>
-          <nav className="nav" aria-label="Primary">
-            {links.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                end={link.end}
-                className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-              >
-                {link.label}
-                {link.to === '/tracker' ? (
-                  <span className="nav-progress" aria-label={`${percent} percent complete`}>
-                    {completedCount}/30
-                  </span>
-                ) : null}
-                {link.to === '/notebook' && notebookCount > 0 ? (
-                  <span className="nav-progress" aria-label={`${notebookCount} notebook entries`}>
-                    {notebookCount}
-                  </span>
-                ) : null}
-              </NavLink>
-            ))}
-          </nav>
+
+          <button
+            type="button"
+            className={`menu-toggle ${menuOpen ? 'open' : ''}`}
+            aria-expanded={menuOpen}
+            aria-controls="primary-nav"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <span className="sr-only">{menuOpen ? t('closeMenu') : t('menu')}</span>
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+          </button>
         </div>
+
+        {menuOpen ? (
+          <button
+            type="button"
+            className="nav-scrim"
+            aria-label={t('closeMenu')}
+            onClick={() => setMenuOpen(false)}
+          />
+        ) : null}
+
+        <nav
+          id="primary-nav"
+          className={`nav ${menuOpen ? 'open' : ''}`}
+          aria-label="Primary"
+        >
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.end}
+              className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+              {link.to === '/tracker' ? (
+                <span className="nav-progress" aria-label={`${percent} percent complete`}>
+                  {completedCount}/30
+                </span>
+              ) : null}
+              {link.to === '/notebook' && notebookCount > 0 ? (
+                <span className="nav-progress" aria-label={`${notebookCount} notebook entries`}>
+                  {notebookCount}
+                </span>
+              ) : null}
+            </NavLink>
+          ))}
+        </nav>
       </header>
       <main className="main">
         <Outlet />
