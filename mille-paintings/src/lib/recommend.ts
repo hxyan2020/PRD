@@ -24,6 +24,10 @@ function eraFor(painting: Painting): string {
 
 function scorePainting(p: Painting, prefs: Preferences, viewed: Set<string>, collected: Set<string>): number {
   let score = Math.log10(2 + p.sitelinks) * 10
+
+  // Discovered works enter the daily rotation with a deliberate boost.
+  if (p.discovered) score += 28
+
   if (prefs.genres.length) {
     const g = p.genre.toLowerCase()
     if (prefs.genres.some((x) => g.includes(x.toLowerCase()))) score += 35
@@ -39,7 +43,7 @@ function scorePainting(p: Painting, prefs: Preferences, viewed: Set<string>, col
   if (prefs.moods.length) {
     const blob = `${p.intro} ${p.genre}`.toLowerCase()
     const moodMap: Record<string, string[]> = {
-      contemplative: ['landscape', 'still', 'quiet', 'meditation', 'haze'],
+      contemplative: ['landscape', 'still', 'quiet', 'meditation', 'haze', 'seascape'],
       dramatic: ['history', 'battle', 'myth', 'storm', 'crucifix'],
       intimate: ['portrait', 'genre', 'domestic', 'interior'],
       epic: ['history', 'allegory', 'religious', 'monument'],
@@ -64,9 +68,12 @@ export function pickDailyPainting(paintings: Painting[], date = new Date()): Pai
     .map((p) => ({ p, s: scorePainting(p, prefs, viewed, collected) }))
     .sort((a, b) => b.s - a.s)
 
-  // Rotate through top candidates using day hash so the pick is stable per day.
-  const pool = ranked.slice(0, Math.min(80, ranked.length))
-  const idx = hashString(day + JSON.stringify(prefs)) % pool.length
+  // Prefer a healthy mix: ensure discovered matches can appear in the daily pool.
+  const discoveredTop = ranked.filter((x) => x.p.discovered).slice(0, 20)
+  const coreTop = ranked.filter((x) => !x.p.discovered).slice(0, 60)
+  const mixed = [...discoveredTop, ...coreTop]
+  const pool = (mixed.length ? mixed : ranked).slice(0, Math.min(80, ranked.length))
+  const idx = hashString(day + JSON.stringify(prefs) + String(discoveredTop.length)) % pool.length
   return pool[idx].p
 }
 
@@ -76,9 +83,12 @@ export function pickSurprise(paintings: Painting[], excludeId?: string): Paintin
   const collected = new Set(getCollectedIds())
   const ranked = paintings
     .filter((p) => p.id !== excludeId)
-    .map((p) => ({ p, s: scorePainting(p, prefs, viewed, collected) + (hashString(p.id + String(Date.now())) % 40) }))
+    .map((p) => ({
+      p,
+      s: scorePainting(p, prefs, viewed, collected) + (hashString(p.id + String(Date.now())) % 40),
+    }))
     .sort((a, b) => b.s - a.s)
   return ranked[0]?.p ?? paintings[0]
 }
 
-export { eraFor }
+export { eraFor, scorePainting }

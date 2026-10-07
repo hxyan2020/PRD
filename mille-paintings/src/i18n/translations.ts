@@ -91,7 +91,8 @@ const en: Dict = {
   savePrefs: 'Save preferences',
   generateMore: 'Discover more paintings',
   generating: 'Searching Wikidata…',
-  generateHint: 'Pull additional works matching your taste and add them to your personal pool (beyond the core 1000).',
+  generateHint:
+    'Pull additional works matching your taste and add them to your personal pool (beyond the core 1000). They join daily recommendations immediately.',
   generated: 'Added {n} new works to your pool.',
   eras: 'Eras',
   moods: 'Moods',
@@ -104,6 +105,15 @@ const en: Dict = {
   collectionEmpty: 'You have not collected any paintings yet.',
   opening: 'Opening the collection…',
   notFound: 'Painting not found.',
+  poolSummary: 'Pool: {core} core + {extras} discovered = {total} total',
+  prefsSaved: 'Preferences saved — Today will use them.',
+  prefsReset: 'Preferences cleared.',
+  reset: 'Reset',
+  seeTodayPick: 'See today’s pick',
+  discoverFeedsDaily: 'Discovered works are mixed into your daily recommendation and Surprise Me.',
+  justAdded: 'Just added to your pool',
+  yourDiscoveries: 'Your discoveries',
+  discoveredBadge: 'Discovered',
 }
 
 const zh: Dict = {
@@ -164,7 +174,7 @@ const zh: Dict = {
   savePrefs: '保存偏好',
   generateMore: '发现更多画作',
   generating: '正在检索维基数据…',
-  generateHint: '按偏好拉取更多作品，加入你的个人扩充池（在核心 1000 之外）。',
+  generateHint: '按偏好拉取更多作品，加入你的个人扩充池（在核心 1000 之外），并立刻进入每日推荐。',
   generated: '已向你的收藏池加入 {n} 幅新作。',
   eras: '时代',
   moods: '气质',
@@ -176,6 +186,15 @@ const zh: Dict = {
   collectionEmpty: '你还没有收藏任何画作。',
   opening: '正在打开收藏…',
   notFound: '未找到该画作。',
+  poolSummary: '画池：核心 {core} + 发现 {extras} = 共 {total}',
+  prefsSaved: '偏好已保存——今日推荐会使用它们。',
+  prefsReset: '偏好已清空。',
+  reset: '重置',
+  seeTodayPick: '查看今日一画',
+  discoverFeedsDaily: '新发现的作品会进入每日推荐与“再来一幅”。',
+  justAdded: '刚加入你的画池',
+  yourDiscoveries: '你的发现',
+  discoveredBadge: '发现',
 }
 
 const es: Dict = {

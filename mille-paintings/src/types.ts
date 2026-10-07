@@ -17,6 +17,8 @@ export type Painting = {
   genre: string
   anecdote: string
   painterPhotos: string[]
+  /** Present when the work was added via Preferences → Discover */
+  discovered?: boolean
 }
 
 export type PaintingsPayload = {

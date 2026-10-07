@@ -37,7 +37,7 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         setCore(data.paintings)
         setSource(data.source)
-        setExtras(getExtraPaintings())
+        setExtras(getExtraPaintings().map((p) => ({ ...p, discovered: true })))
         setStatus('ready')
         setStats(getStats())
       })
@@ -54,8 +54,10 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
 
   const paintings = useMemo(() => {
     const byId = new Map<string, Painting>()
-    for (const p of core) byId.set(p.id, p)
-    for (const p of extras) if (!byId.has(p.id)) byId.set(p.id, p)
+    for (const p of core) byId.set(p.id, { ...p, discovered: false })
+    for (const p of extras) {
+      if (!byId.has(p.id)) byId.set(p.id, { ...p, discovered: true })
+    }
     return [...byId.values()].sort((a, b) => b.sitelinks - a.sitelinks)
   }, [core, extras])
 
@@ -78,7 +80,8 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
     },
     collected: (id) => isCollected(id),
     mergeExtras: (items) => {
-      const next = addExtraPaintings(items)
+      const tagged = items.map((p) => ({ ...p, discovered: true }))
+      const next = addExtraPaintings(tagged).map((p) => ({ ...p, discovered: true }))
       setExtras(next)
       setStats(getStats())
     },

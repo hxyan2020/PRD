@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import { discoverPaintings } from '../lib/discover'
 import { DEFAULT_PREFS, getPreferences, savePreferences, type Preferences } from '../lib/storage'
+import type { Painting } from '../types'
 import './PreferencesPage.css'
 
 const ERA_OPTIONS = [
@@ -28,6 +30,7 @@ export function PreferencesPage() {
   const [savedMsg, setSavedMsg] = useState('')
   const [busy, setBusy] = useState(false)
   const [genMsg, setGenMsg] = useState('')
+  const [lastBatch, setLastBatch] = useState<Painting[]>([])
 
   const genres = useMemo(() => {
     const set = new Set<string>()
@@ -42,12 +45,24 @@ export function PreferencesPage() {
     return [...set].sort((a, b) => a.localeCompare(b)).slice(0, 50)
   }, [store.paintings])
 
+  const discovered = useMemo(
+    () => store.paintings.filter((p) => p.discovered).slice(0, 12),
+    [store.paintings],
+  )
+
   return (
     <main className="prefs-page">
       <header>
         <p className="eyebrow">{t('navPrefs')}</p>
         <h1>{t('prefsTitle')}</h1>
         <p>{t('prefsLede')}</p>
+        <p className="pool-line">
+          {t('poolSummary', {
+            core: store.coreCount,
+            extras: store.stats.extras,
+            total: store.paintings.length,
+          })}
+        </p>
       </header>
 
       <section className="prefs-block">
@@ -120,8 +135,8 @@ export function PreferencesPage() {
           className="btn primary"
           onClick={() => {
             savePreferences(prefs)
-            setSavedMsg(t('savePrefs') + ' ✓')
-            setTimeout(() => setSavedMsg(''), 2000)
+            setSavedMsg(t('prefsSaved'))
+            setTimeout(() => setSavedMsg(''), 2500)
           }}
         >
           {t('savePrefs')}
@@ -132,10 +147,14 @@ export function PreferencesPage() {
           onClick={() => {
             setPrefs(DEFAULT_PREFS)
             savePreferences(DEFAULT_PREFS)
+            setSavedMsg(t('prefsReset'))
           }}
         >
-          Reset
+          {t('reset')}
         </button>
+        <Link to="/today" className="btn ghost">
+          {t('seeTodayPick')}
+        </Link>
         {savedMsg ? <span className="msg">{savedMsg}</span> : null}
       </div>
 
@@ -149,11 +168,13 @@ export function PreferencesPage() {
           onClick={async () => {
             setBusy(true)
             setGenMsg(t('generating'))
+            setLastBatch([])
             try {
               savePreferences(prefs)
               const existing = new Set(store.paintings.map((p) => p.id))
               const found = await discoverPaintings(prefs, existing)
               store.mergeExtras(found)
+              setLastBatch(found)
               setGenMsg(t('generated', { n: found.length }))
             } catch (err) {
               setGenMsg(err instanceof Error ? err.message : 'Failed')
@@ -165,10 +186,34 @@ export function PreferencesPage() {
           {busy ? t('generating') : t('generateMore')}
         </button>
         {genMsg ? <p className="msg">{genMsg}</p> : null}
-        <p className="pool">
-          Core {store.coreCount} + extras {store.stats.extras} = {store.paintings.length}
-        </p>
+        <p className="hint-daily">{t('discoverFeedsDaily')}</p>
       </section>
+
+      {(lastBatch.length > 0 || discovered.length > 0) && (
+        <section className="prefs-block results">
+          <h2>{lastBatch.length ? t('justAdded') : t('yourDiscoveries')}</h2>
+          <div className="discover-grid">
+            {(lastBatch.length ? lastBatch : discovered).slice(0, 8).map((p) => (
+              <Link key={p.id} to={`/painting/${p.id}`} className="discover-card">
+                <img src={p.image} alt={p.name} loading="lazy" />
+                <div>
+                  <h3>{p.name}</h3>
+                  <p>{p.painter}</p>
+                  <span>{t('discoveredBadge')}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="prefs-actions">
+            <Link to="/today" className="btn primary">
+              {t('seeTodayPick')}
+            </Link>
+            <Link to="/gallery" className="btn ghost">
+              {t('enterGallery')}
+            </Link>
+          </div>
+        </section>
+      )}
     </main>
   )
 }
