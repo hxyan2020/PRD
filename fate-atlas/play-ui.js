@@ -64,7 +64,7 @@
       <div class="celebrate__burst" aria-hidden="true"></div>
       <div class="celebrate__card">
         <p class="celebrate__eyebrow">${escapeHTML(t("celebrate.eyebrow"))}</p>
-        <p class="celebrate__title">${escapeHTML(title || "Reading saved")}</p>
+        <p class="celebrate__title">${escapeHTML(title || t("celebrate.fallback"))}</p>
         <p class="celebrate__hint">${escapeHTML(t("celebrate.hint"))}</p>
       </div>`;
     el.classList.add("is-on");

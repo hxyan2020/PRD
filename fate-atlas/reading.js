@@ -146,23 +146,38 @@
     window.FatumPlay?.setQuestProgress?.(0);
   }
 
+  function ti(key, vars) {
+    return window.FatumI18n ? window.FatumI18n.t(key, vars) : key;
+  }
+
   function stepMeta() {
     if (!state) return { label: "", total: 0, idx: 0 };
     if (state.mode === "guided") {
       if (state.kind === "bagua") {
         const total = 4;
         let idx = state.stepIndex + 1;
-        let label = ["Learn", "Question", "Cast coins", "Reading"][state.stepIndex] || "Reading";
+        let label = [
+          ti("studio.step.learn"),
+          ti("studio.step.question"),
+          ti("studio.step.cast"),
+          ti("studio.step.reading"),
+        ][state.stepIndex] || ti("studio.step.reading");
         if (state.steps[state.stepIndex] === "cast") {
-          label = `Cast line ${Math.min(state.castingIndex + 1, 6)} of 6`;
+          label = ti("studio.step.castLine", { n: Math.min(state.castingIndex + 1, 6) });
         }
         return { label, total, idx };
       }
       if (state.kind === "tarot") {
-        const labels = ["Learn", "Question", "Shuffle", "Reveal", "Reading"];
-        let label = labels[state.stepIndex] || "Reading";
+        const labels = [
+          ti("studio.step.learn"),
+          ti("studio.step.question"),
+          ti("studio.step.shuffle"),
+          ti("studio.step.reveal"),
+          ti("studio.step.reading"),
+        ];
+        let label = labels[state.stepIndex] || ti("studio.step.reading");
         if (state.steps[state.stepIndex] === "reveal") {
-          label = `Reveal card ${Math.min(state.revealIndex + 1, 3)} of 3`;
+          label = ti("studio.step.revealCard", { n: Math.min(state.revealIndex + 1, 3) });
         }
         return { label, total: 5, idx: state.stepIndex + 1 };
       }
@@ -170,12 +185,17 @@
         const qTotal = G().MBTI_QUESTIONS.length;
         if (state.steps[state.stepIndex] === "quiz") {
           return {
-            label: `Question ${state.quizIndex + 1} of ${qTotal}`,
+            label: ti("studio.step.questionOf", { n: state.quizIndex + 1, total: qTotal }),
             total: qTotal + 3,
             idx: state.quizIndex + 3,
           };
         }
-        const labels = ["Learn", "Focus", "Quiz", "Type reading"];
+        const labels = [
+          ti("studio.step.learn"),
+          ti("studio.step.focus"),
+          ti("studio.step.quiz"),
+          ti("studio.step.typeReading"),
+        ];
         return { label: labels[state.stepIndex], total: 4, idx: state.stepIndex + 1 };
       }
     }
@@ -218,7 +238,11 @@
     if (!state) return;
     const meta = stepMeta();
     titleEl.textContent = state.method.name;
-    stepEl.textContent = `Quest · ${meta.label} · ${meta.idx}/${meta.total}`;
+    stepEl.textContent = ti("studio.questStep", {
+      label: meta.label,
+      idx: meta.idx,
+      total: meta.total,
+    });
 
     window.FatumPlay?.setQuestProgress?.(questRatio());
 
@@ -266,8 +290,8 @@
         </div>
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
-          <button type="button" class="btn btn--primary" data-action="next">I understand — continue</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.understand"))}</button>
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
@@ -278,8 +302,8 @@
           <textarea id="r-question" rows="3" maxlength="280" placeholder="e.g. Is this the right time to change roles?">${escapeHTML(state.question)}</textarea>
         </div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
-          <button type="button" class="btn btn--primary" data-action="next">Begin casting</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.beginCast"))}</button>
         </div>`;
     } else if (step === "cast") {
       const i = state.castingIndex;
@@ -298,8 +322,8 @@
         <p class="coin-sum" id="coin-sum">Ready when you are.</p>
         <ol class="yao-stack">${built || "<li class='yao yao--empty'>No lines yet</li>"}</ol>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back" ${i > 0 ? "" : ""}>Back</button>
-          <button type="button" class="btn btn--primary" data-action="toss-coins">Toss three coins</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back" ${i > 0 ? "" : ""}>${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="toss-coins">${escapeHTML(ti("studio.tossCoins"))}</button>
         </div>`;
     } else if (step === "result" && state.reading) {
       renderGuidedResult(state.reading, true);
@@ -355,8 +379,8 @@
         </ol>
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
-          <button type="button" class="btn btn--primary" data-action="next">Continue</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
@@ -367,8 +391,8 @@
           <textarea id="r-question" rows="3" maxlength="280" placeholder="What energy surrounds my next decision?">${escapeHTML(state.question)}</textarea>
         </div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
-          <button type="button" class="btn btn--primary" data-action="next">Shuffle the deck</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.shuffleDeck"))}</button>
         </div>`;
     } else if (step === "shuffle") {
       body.innerHTML = `
@@ -379,11 +403,11 @@
           <p class="coin-sum">${state.deck ? "Deck ready. Cut to draw." : "Shuffling Major Arcana…"}</p>
         </div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
           ${
             state.deck
-              ? `<button type="button" class="btn btn--primary" data-action="cut-deck">Cut &amp; draw three</button>`
-              : `<button type="button" class="btn btn--primary" data-action="do-shuffle">Shuffle</button>`
+              ? `<button type="button" class="btn btn--primary" data-action="cut-deck">${escapeHTML(ti("studio.cutDraw"))}</button>`
+              : `<button type="button" class="btn btn--primary" data-action="do-shuffle">${escapeHTML(ti("studio.shuffle"))}</button>`
           }
         </div>`;
       if (!state._shuffleStarted) {
@@ -404,7 +428,7 @@
         <p class="studio__copy">${escapeHTML(pos.hint)}</p>
         <div class="tarot-row">${cardsHtml}<div class="tarot-card is-back" aria-hidden="true"></div></div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--primary" data-action="reveal-one">Flip card ${state.revealIndex + 1}</button>
+          <button type="button" class="btn btn--primary" data-action="reveal-one">${escapeHTML(ti("studio.flipCard", { n: state.revealIndex + 1 }))}</button>
         </div>`;
     } else if (step === "result" && state.reading) {
       renderGuidedResult(state.reading, true);
@@ -481,8 +505,8 @@
         <p class="studio__copy studio__copy--soft">Then we map your type to a reflective “path” reading—not a forecast of events.</p>
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
-          <button type="button" class="btn btn--primary" data-action="next">Continue</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
         </div>`;
     } else if (step === "focus") {
       body.innerHTML = `
@@ -493,8 +517,8 @@
           <input type="text" id="r-focus" maxlength="120" placeholder="Career, love, creative work, leadership…" value="${escapeHTML(state.focus)}" />
         </div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
-          <button type="button" class="btn btn--primary" data-action="next">Start questions</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.startQuestions"))}</button>
         </div>`;
     } else if (step === "quiz") {
       const q = G().MBTI_QUESTIONS[state.quizIndex];
@@ -508,7 +532,7 @@
           <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.b.side}">${escapeHTML(q.b.label)}</button>
         </div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
         </div>`;
     } else if (step === "result" && state.reading) {
       renderGuidedResult(state.reading, true);
@@ -551,10 +575,6 @@
     return `<p class="reading__disclaimer">${escapeHTML(parts.join(" "))}</p>`;
   }
 
-  function ti(key, vars) {
-    return window.FatumI18n ? window.FatumI18n.t(key, vars) : key;
-  }
-
   function journalActionsHTML(saved, againLabel) {
     const again = againLabel || ti("action.playAgain");
     if (saved) {
@@ -583,7 +603,7 @@
 
     body.innerHTML = `
       <div class="reading">
-        <p class="studio__eyebrow">Your reading</p>
+        <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
         <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(r.title)}</h3>
@@ -595,7 +615,7 @@
         ${sciencePanelHTML(state.method)}
         ${resultDisclaimerHTML(state.method, r.disclaimer)}
       </div>
-      ${journalActionsHTML(!!state.journalSaved, allowAgain ? "Start over" : "Done")}`;
+      ${journalActionsHTML(!!state.journalSaved, allowAgain ? ti("action.startOver") : ti("action.done"))}`;
   }
 
   // ——— Generic (existing) ———
@@ -623,8 +643,8 @@
             : ""
         }
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Cancel</button>
-          <button type="button" class="btn btn--primary" data-action="next">Start process</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.startProcess"))}</button>
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
@@ -632,7 +652,7 @@
         <div class="field"><label for="r-question">Your question</label>
         <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.input.question)}</textarea></div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
         </div>`;
     } else if (step === "birth") {
@@ -643,7 +663,7 @@
         <div class="field" style="margin-top:1rem"><label for="r-question">Optional focus</label>
         <input type="text" id="r-question" value="${escapeHTML(state.input.question)}" /></div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
         </div>`;
     } else if (step === "day") {
@@ -654,7 +674,7 @@
         <div class="field" style="margin-top:1rem"><label for="r-purpose">Purpose</label>
         <input type="text" id="r-purpose" value="${escapeHTML(state.input.dayPurpose)}" /></div>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
         </div>`;
     } else if (step === "form") {
@@ -683,7 +703,7 @@
         <input type="text" id="r-focus" maxlength="80" placeholder="Character, career, love, health…" value="${escapeHTML(state.input.formFocus)}" /></div>
         <p class="photo-privacy">Photos stay in this browser only (compressed for the reading &amp; journal). Nothing is uploaded to a server.</p>
         <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">Back</button>
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
         </div>`;
       bindPhotoInput();
@@ -702,7 +722,7 @@
         : "";
       body.innerHTML = `
         <div class="reading tone-${escapeHTML(r.tone)}">
-          <p class="studio__eyebrow">Your reading</p>
+          <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
           ${photoHtml}
           <div class="reading__symbol">${escapeHTML(r.symbol)}</div>
           <h3 class="studio__heading">${escapeHTML(r.title)}</h3>
@@ -714,7 +734,7 @@
           ${sciencePanelHTML(method)}
           ${resultDisclaimerHTML(method, r.disclaimer)}
         </div>
-        ${journalActionsHTML(!!state.journalSaved, "Read again")}`;
+        ${journalActionsHTML(!!state.journalSaved, ti("studio.readAgain"))}`;
     }
   }
 
