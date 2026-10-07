@@ -160,7 +160,13 @@ export function PaintingPage() {
         </Link>
       </div>
 
-      <FullscreenViewer painting={painting} open={fullscreen} onClose={() => setFullscreen(false)} />
+      <FullscreenViewer
+        painting={painting}
+        open={fullscreen}
+        onClose={() => setFullscreen(false)}
+        collected={saved}
+        onCollect={() => setSaved(store.toggleCollect(painting.id))}
+      />
     </main>
   )
 }

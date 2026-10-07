@@ -7,10 +7,16 @@ export function FullscreenViewer({
   painting,
   open,
   onClose,
+  collected = false,
+  onCollect,
+  onSurprise,
 }: {
   painting: Painting
   open: boolean
   onClose: () => void
+  collected?: boolean
+  onCollect?: () => void
+  onSurprise?: () => void
 }) {
   const { t } = useI18n()
 
@@ -18,6 +24,8 @@ export function FullscreenViewer({
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
+      if (e.key === 'c' || e.key === 'C') onCollect?.()
+      if (e.key === 's' || e.key === 'S') onSurprise?.()
     }
     document.body.style.overflow = 'hidden'
     window.addEventListener('keydown', onKey)
@@ -25,7 +33,7 @@ export function FullscreenViewer({
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKey)
     }
-  }, [open, onClose])
+  }, [open, onClose, onCollect, onSurprise])
 
   if (!open) return null
 
@@ -35,9 +43,27 @@ export function FullscreenViewer({
         {t('exitFullscreen')}
       </button>
       <img src={painting.imageFull || painting.image} alt={painting.name} />
-      <div className="fs-caption">
-        <strong>{painting.name}</strong>
-        <span>{painting.painter}</span>
+      <div className="fs-bar">
+        <div className="fs-caption">
+          <strong>{painting.name}</strong>
+          <span>
+            {painting.painter} ({painting.painterBirthYear}–{painting.painterDeathYear})
+          </span>
+        </div>
+        {(onCollect || onSurprise) && (
+          <div className="fs-actions">
+            {onCollect ? (
+              <button type="button" className={`btn ghost ${collected ? 'active' : ''}`} onClick={onCollect}>
+                {collected ? t('collected') : t('collect')}
+              </button>
+            ) : null}
+            {onSurprise ? (
+              <button type="button" className="btn primary" onClick={onSurprise}>
+                {t('surpriseMe')}
+              </button>
+            ) : null}
+          </div>
+        )}
       </div>
     </div>
   )

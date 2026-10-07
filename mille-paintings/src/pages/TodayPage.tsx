@@ -83,7 +83,19 @@ export function TodayPage() {
         </div>
       </section>
 
-      <FullscreenViewer painting={current} open={fullscreen} onClose={() => setFullscreen(false)} />
+      <FullscreenViewer
+        painting={current}
+        open={fullscreen}
+        onClose={() => setFullscreen(false)}
+        collected={saved}
+        onCollect={() => setSaved(store.toggleCollect(current.id))}
+        onSurprise={() => {
+          const next = pickSurprise(store.paintings, current.id)
+          setCurrent(next)
+          store.trackView(next.id)
+          setSaved(store.collected(next.id))
+        }}
+      />
     </main>
   )
 }
