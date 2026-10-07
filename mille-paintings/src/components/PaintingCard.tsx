@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { Painting } from '../types'
 import { useI18n } from '../i18n/I18nContext'
+import { optionLabel, optionLabels } from '../lib/optionLabels'
 import { displayImageUrl } from '../lib/images'
 import { CountryFlags } from './CountryFlags'
 import { SafeImage } from './SafeImage'
@@ -13,7 +14,10 @@ export function PaintingCard({
   painting: Painting
   collected?: boolean
 }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
+  const genre = optionLabels(lang, painting.genre)
+  const country = optionLabel(lang, painting.painterCountry)
+
   return (
     <Link to={`/painting/${painting.id}`} className="painting-card">
       <div className="painting-card-media">
@@ -37,9 +41,14 @@ export function PaintingCard({
           </span>
         </p>
         <p className="country-line">
-          <CountryFlags country={painting.painterCountry} label size="sm" />
+          <CountryFlags
+            country={painting.painterCountry}
+            displayName={country}
+            label
+            size="sm"
+          />
         </p>
-        <p className="genre">{painting.genre}</p>
+        <p className="genre">{genre}</p>
       </div>
     </Link>
   )

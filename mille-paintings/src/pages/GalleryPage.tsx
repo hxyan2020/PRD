@@ -4,6 +4,7 @@ import { LoadingState } from '../components/LoadingState'
 import { PaintingCard } from '../components/PaintingCard'
 import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
+import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
 import { optionLabel } from '../lib/optionLabels'
 import { getCollectedIds, getViewedIds } from '../lib/storage'
@@ -130,6 +131,7 @@ export function GalleryPage() {
   ])
 
   const shown = filtered.slice(0, visible)
+  const { paintings: localizedShown, loading: localizing } = useLocalizedPaintings(shown)
 
   const resetVisible = () => setVisible(PAGE_SIZE)
 
@@ -278,9 +280,12 @@ export function GalleryPage() {
 
       {store.status === 'ready' ? (
         <>
-          <p className="result-count">{t('showing', { shown: shown.length, total: filtered.length })}</p>
+          <p className="result-count">
+            {t('showing', { shown: shown.length, total: filtered.length })}
+            {localizing ? ` · ${t('loadingTranslation')}` : ''}
+          </p>
           <div className="gallery-masonry">
-            {shown.map((painting) => (
+            {localizedShown.map((painting) => (
               <PaintingCard
                 key={painting.id}
                 painting={painting}

@@ -30,6 +30,9 @@ const zh: Record<string, string> = {
   'double portrait': '双人肖像',
   'interior view': '室内景',
   tronie: '特罗尼头像',
+  Tronie: '特罗尼头像',
+  'landscape art': '风景艺术',
+  '风景艺术': '风景艺术',
   'equestrian portrait': '骑马肖像',
   'Arthurian painting': '亚瑟王题材',
   'French Realism': '法国现实主义',
@@ -328,4 +331,16 @@ export function optionLabel(lang: string, value: string): string {
       .join(' / ')
   }
   return value
+}
+
+/** Translate comma-separated genre lists for card display. */
+export function optionLabels(lang: string, value: string): string {
+  if (!value) return value
+  if (!value.includes(',')) return optionLabel(lang, value)
+  const joiner = lang === 'zh' || lang === 'zh-TW' || lang.startsWith('zh') ? '、' : ', '
+  return value
+    .split(',')
+    .map((part) => optionLabel(lang, part.trim()))
+    .filter(Boolean)
+    .join(joiner)
 }

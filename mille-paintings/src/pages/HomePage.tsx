@@ -3,6 +3,7 @@ import { LoadingState } from '../components/LoadingState'
 import { SafeImage } from '../components/SafeImage'
 import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
+import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
 import { displayImageUrl } from '../lib/images'
 import './HomePage.css'
@@ -12,6 +13,9 @@ export function HomePage() {
   const store = usePaintingsStore()
   const hero = store.status === 'ready' ? store.paintings[0] : null
   const featured = store.status === 'ready' ? store.paintings.slice(1, 7) : []
+  const { paintings: localizedFeatured } = useLocalizedPaintings(featured)
+  const { paintings: localizedHero } = useLocalizedPaintings(hero ? [hero] : [])
+  const heroLocalized = localizedHero[0] || hero
 
   return (
     <main className="home">
@@ -40,9 +44,9 @@ export function HomePage() {
             <Link to="/gallery" className="btn ghost">
               {t('enterGallery')}
             </Link>
-            {hero ? (
-              <Link to={`/painting/${hero.id}`} className="btn ghost">
-                {t('beginWith', { name: hero.name })}
+            {heroLocalized ? (
+              <Link to={`/painting/${heroLocalized.id}`} className="btn ghost">
+                {t('beginWith', { name: heroLocalized.name })}
               </Link>
             ) : null}
           </div>
@@ -84,7 +88,7 @@ export function HomePage() {
         {store.status === 'error' ? <p className="error">{store.message}</p> : null}
         {store.status === 'ready' ? (
           <div className="featured-grid">
-            {featured.map((painting, index) => (
+            {localizedFeatured.map((painting, index) => (
               <Link
                 key={painting.id}
                 to={`/painting/${painting.id}`}

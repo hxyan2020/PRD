@@ -4,6 +4,7 @@ import { CountryFlags } from '../components/CountryFlags'
 import { GenreIcon } from '../components/GenreIcon'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
+import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
 import {
   discoverPaintings,
@@ -69,6 +70,8 @@ export function PreferencesPage() {
     () => store.paintings.filter((p) => p.discovered).slice(0, 12),
     [store.paintings],
   )
+  const discoverCards = (lastBatch.length ? lastBatch : discovered).slice(0, 8)
+  const { paintings: localizedDiscover } = useLocalizedPaintings(discoverCards)
 
   return (
     <main className="prefs-page">
@@ -335,7 +338,7 @@ export function PreferencesPage() {
         <section className="prefs-block results">
           <h2>{lastBatch.length ? t('justAdded') : t('yourDiscoveries')}</h2>
           <div className="discover-grid">
-            {(lastBatch.length ? lastBatch : discovered).slice(0, 8).map((p) => (
+            {localizedDiscover.map((p) => (
               <Link key={p.id} to={`/painting/${p.id}`} className="discover-card">
                 <SafeImage src={displayImageUrl(p)} alt={p.name} loading="lazy" />
                 <div>
