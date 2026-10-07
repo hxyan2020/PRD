@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom'
-import { curriculum } from '../data/curriculum'
-import { phases } from '../data/phases'
+import { getCurriculum, getPhases } from '../data/content'
 import { useProgress } from '../hooks/useProgress'
 import { ProgressBar } from '../components/ProgressBar'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function Curriculum() {
   const progress = useProgress()
+  const { lang, t } = useLanguage()
+  const phases = getPhases(lang)
+  const curriculum = getCurriculum(lang)
 
   return (
     <div className="page">
       <header className="page-header">
-        <p className="eyebrow">30-day path</p>
-        <h1>Full curriculum</h1>
+        <p className="eyebrow">{t('curriculumEyebrow')}</p>
+        <h1>{t('curriculumTitle')}</h1>
         <p className="section-lede">
-          Foundations → architecture → AI DevOps → future & capstone. Toggle the checkbox to mark a
-          day complete, or open the{' '}
+          {t('curriculumLedePrefix')}{' '}
           <Link to="/tracker" className="inline-link">
-            progress tracker
+            {t('progressTracker')}
           </Link>
           .
         </p>
@@ -33,10 +35,13 @@ export function Curriculum() {
         return (
           <section key={phase.id} className="week-block">
             <div className="week-head">
-              <span className="phase-week">Week {phase.week}</span>
+              <span className="phase-week">
+                {t('week')}
+                {phase.week}
+              </span>
               <h2>{phase.title}</h2>
               <p>
-                {phase.subtitle} · {doneCount}/{days.length} done
+                {phase.subtitle} · {doneCount}/{days.length} {t('done')}
               </p>
             </div>
             <div className="day-list">
@@ -48,20 +53,29 @@ export function Curriculum() {
                       type="button"
                       className={`day-check ${done ? 'checked' : ''}`}
                       aria-pressed={done}
-                      aria-label={`Mark day ${day.day} ${done ? 'incomplete' : 'complete'}`}
+                      aria-label={
+                        done
+                          ? t('markDayIncomplete', { n: day.day })
+                          : t('markDayComplete', { n: day.day })
+                      }
                       onClick={() => progress.toggleComplete(day.day)}
                     >
                       {done ? '✓' : ''}
                     </button>
                     <Link to={`/day/${day.day}`} className="day-row-link">
-                      <span className="day-num">Day {day.day}</span>
+                      <span className="day-num">
+                        {t('day')}
+                        {day.day}
+                        {lang === 'zh' ? ' 天' : ''}
+                      </span>
                       <span className="day-body">
                         <strong>{day.title}</strong>
                         <small>{day.subtitle}</small>
                       </span>
                       <span className="day-meta">
-                        {day.minutes}m
-                        {done ? <em>Done</em> : null}
+                        {day.minutes}
+                        {t('min')}
+                        {done ? <em>{t('done')}</em> : null}
                       </span>
                     </Link>
                   </div>
@@ -74,16 +88,16 @@ export function Curriculum() {
 
       <div className="danger-zone">
         <Link className="btn primary" to="/tracker">
-          Open tracker
+          {t('openTrackerBtn')}
         </Link>
         <button
           type="button"
           className="btn ghost"
           onClick={() => {
-            if (window.confirm('Reset all progress and notes?')) progress.reset()
+            if (window.confirm(t('resetConfirm'))) progress.reset()
           }}
         >
-          Reset progress
+          {t('resetProgress')}
         </button>
       </div>
     </div>

@@ -1,28 +1,30 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { phases } from '../data/phases'
+import { getPhases } from '../data/content'
 import { useProgress } from '../hooks/useProgress'
 import { ProgressBar } from '../components/ProgressBar'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function Home() {
   const progress = useProgress()
+  const { lang, t } = useLanguage()
+  const phases = getPhases(lang)
 
   return (
     <div className="home">
       <section className="hero">
         <div className="hero-copy">
           <p className="brand-hero">OWNLAB</p>
-          <h1>Become a true AI product owner in 30 days.</h1>
-          <p className="lede">
-            Not an engineer track — a fluency track. Learn the terms, modules, infra, debugging,
-            AI DevOps, and the career skills that keep you in command.
-          </p>
+          <h1>{t('heroTitle')}</h1>
+          <p className="lede">{t('heroLede')}</p>
           <div className="cta-row">
             <Link className="btn primary" to={`/day/${progress.nextDay}`}>
-              {progress.completedCount === 0 ? 'Start Day 1' : `Continue Day ${progress.nextDay}`}
+              {progress.completedCount === 0
+                ? t('startDay1')
+                : `${t('continueDay')} ${progress.nextDay}`}
             </Link>
             <Link className="btn ghost" to="/tracker">
-              Open progress tracker
+              {t('openTracker')}
             </Link>
           </div>
           <ProgressBar
@@ -38,11 +40,15 @@ export function Home() {
             ))}
           </div>
           <div className="hero-panel">
-            <p>Week map</p>
+            <p>{t('weekMap')}</p>
             <ol>
               {phases.map((p) => (
                 <li key={p.id}>
-                  <em>W{p.week}</em> {p.title}
+                  <em>
+                    {t('week')}
+                    {p.week}
+                  </em>{' '}
+                  {p.title}
                 </li>
               ))}
             </ol>
@@ -51,17 +57,25 @@ export function Home() {
       </section>
 
       <section className="section">
-        <h2>Four weeks. One composition of ownership.</h2>
-        <p className="section-lede">
-          Each week has one job — so you finish with judgment, not a pile of jargon.
-        </p>
+        <h2>{t('fourWeeks')}</h2>
+        <p className="section-lede">{t('fourWeeksLede')}</p>
         <div className="phase-grid">
           {phases.map((phase) => (
-            <Link key={phase.id} to="/curriculum" className="phase-link" style={{ '--phase': phase.color } as CSSProperties}>
-              <span className="phase-week">Week {phase.week}</span>
+            <Link
+              key={phase.id}
+              to="/curriculum"
+              className="phase-link"
+              style={{ '--phase': phase.color } as CSSProperties}
+            >
+              <span className="phase-week">
+                {t('week')}
+                {phase.week}
+              </span>
               <h3>{phase.title}</h3>
               <p>{phase.subtitle}</p>
-              <span className="phase-days">Days {phase.days[0]}–{phase.days[phase.days.length - 1]}</span>
+              <span className="phase-days">
+                {t('days')} {phase.days[0]}–{phase.days[phase.days.length - 1]}
+              </span>
             </Link>
           ))}
         </div>
@@ -69,17 +83,14 @@ export function Home() {
 
       <section className="section split">
         <div>
-          <h2>Built for product owners</h2>
-          <p className="section-lede">
-            Debug with traces. Prevent hallucinations. Maintain skills and RAG. Speak infra without
-            writing production code.
-          </p>
+          <h2>{t('builtFor')}</h2>
+          <p className="section-lede">{t('builtForLede')}</p>
         </div>
         <ul className="promise-list">
-          <li>Technical vocabulary that survives design reviews</li>
-          <li>Module maps for RAG, agents, tools, and gateways</li>
-          <li>Production playbooks for real failure modes</li>
-          <li>Career radar for the next wave of AI work</li>
+          <li>{t('promise1')}</li>
+          <li>{t('promise2')}</li>
+          <li>{t('promise3')}</li>
+          <li>{t('promise4')}</li>
         </ul>
       </section>
     </div>

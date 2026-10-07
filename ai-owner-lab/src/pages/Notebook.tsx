@@ -1,28 +1,30 @@
 import { Link } from 'react-router-dom'
 import { formatTimestamp, useNotebook } from '../hooks/useNotebook'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function Notebook() {
   const { entries, count, removeEntry, clearAll } = useNotebook()
+  const { lang, t } = useLanguage()
 
   return (
     <div className="page">
       <header className="page-header">
-        <p className="eyebrow">Your capture stream</p>
-        <h1>Notebook</h1>
-        <p className="section-lede">
-          Select text anywhere in OWNLAB → <strong>Add to notebook</strong> or{' '}
-          <strong>Explain with AI</strong>, then save the reply here. Newest notes first, each with
-          a timestamp.
+        <p className="eyebrow">{t('notebookEyebrow')}</p>
+        <h1>{t('notebookTitle')}</h1>
+        <p className="section-lede">{t('notebookLede')}</p>
+        <p className="notebook-count">
+          {count} {count === 1 ? t('note') : t('notes')}
         </p>
-        <p className="notebook-count">{count} note{count === 1 ? '' : 's'}</p>
       </header>
 
       {entries.length === 0 ? (
         <div className="callout">
-          <h2>Empty for now</h2>
+          <h2>{t('emptyNotebook')}</h2>
           <p>
-            Open a <Link to="/day/1">day lesson</Link>, highlight a sentence, and use the floating
-            toolbar.
+            {t('emptyNotebookBody')}{' '}
+            <Link to="/day/1">
+              {t('day')}1
+            </Link>
           </p>
         </div>
       ) : (
@@ -30,9 +32,9 @@ export function Notebook() {
           {entries.map((entry) => (
             <li key={entry.id} className={`notebook-entry ${entry.type}`}>
               <div className="notebook-meta">
-                <time dateTime={entry.createdAt}>{formatTimestamp(entry.createdAt)}</time>
+                <time dateTime={entry.createdAt}>{formatTimestamp(entry.createdAt, lang)}</time>
                 <span className="notebook-type">
-                  {entry.type === 'explanation' ? 'AI explanation' : 'Clip'}
+                  {entry.type === 'explanation' ? t('aiExplanation') : t('clip')}
                 </span>
                 {entry.sourceLabel ? (
                   entry.sourcePath ? (
@@ -52,7 +54,7 @@ export function Notebook() {
                 </div>
               ) : null}
               <button type="button" className="btn ghost" onClick={() => removeEntry(entry.id)}>
-                Delete
+                {t('delete')}
               </button>
             </li>
           ))}
@@ -65,10 +67,10 @@ export function Notebook() {
             type="button"
             className="btn ghost"
             onClick={() => {
-              if (window.confirm('Clear the entire notebook?')) clearAll()
+              if (window.confirm(t('clearNotebookConfirm'))) clearAll()
             }}
           >
-            Clear notebook
+            {t('clearNotebook')}
           </button>
         </div>
       ) : null}

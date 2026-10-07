@@ -1,25 +1,23 @@
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { searchGlossary } from '../data/glossary'
+import { searchGlossaryLang } from '../data/content'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function Glossary() {
   const [params, setParams] = useSearchParams()
   const initial = params.get('q') ?? ''
   const [query, setQuery] = useState(initial)
-
-  const results = useMemo(() => searchGlossary(query), [query])
+  const { lang, t } = useLanguage()
+  const results = useMemo(() => searchGlossaryLang(lang, query), [lang, query])
 
   return (
     <div className="page">
       <header className="page-header">
-        <p className="eyebrow">Reference</p>
-        <h1>Glossary</h1>
-        <p className="section-lede">
-          The vocabulary you need in design reviews, incidents, and vendor calls — without needing to
-          implement the systems yourself.
-        </p>
+        <p className="eyebrow">{t('glossaryEyebrow')}</p>
+        <h1>{t('glossaryTitle')}</h1>
+        <p className="section-lede">{t('glossaryLede')}</p>
         <label className="search">
-          <span className="sr-only">Search glossary</span>
+          <span className="sr-only">{t('glossaryTitle')}</span>
           <input
             value={query}
             onChange={(e) => {
@@ -28,7 +26,7 @@ export function Glossary() {
               if (value) setParams({ q: value })
               else setParams({})
             }}
-            placeholder="Search terms — RAG, hallucination, MCP…"
+            placeholder={t('searchGlossary')}
           />
         </label>
       </header>
@@ -40,11 +38,11 @@ export function Glossary() {
             <p className="glossary-short">{term.short}</p>
             <p>{term.detail}</p>
             <p className="related">
-              Related: {term.related.join(' · ')} · <em>{term.phase}</em>
+              {t('related')}: {term.related.join(' · ')} · <em>{term.phase}</em>
             </p>
           </article>
         ))}
-        {results.length === 0 ? <p>No terms match.</p> : null}
+        {results.length === 0 ? <p>{t('noTerms')}</p> : null}
       </div>
     </div>
   )

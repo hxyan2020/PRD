@@ -6,6 +6,7 @@ import {
   type ChatMessage,
 } from '../lib/explain'
 import { useNotebook } from '../hooks/useNotebook'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface Props {
   open: boolean
@@ -23,6 +24,7 @@ export function ExplainDrawer({
   onClose,
 }: Props) {
   const notebook = useNotebook()
+  const { lang, t } = useLanguage()
   const [messages, setMessages] = useState<{ role: 'assistant' | 'user'; content: string }[]>([])
   const [model, setModel] = useState('local-tutor')
   const [busy, setBusy] = useState(false)
@@ -45,7 +47,7 @@ export function ExplainDrawer({
     setDraft('')
     setSavedFlash(false)
     setBusy(true)
-    void explainSelection({ selectedText, sourceLabel, sourcePath })
+    void explainSelection({ selectedText, sourceLabel, sourcePath, lang })
       .then((result) => {
         setModel(result.model)
         setMessages([{ role: 'assistant', content: result.content }])
@@ -54,7 +56,7 @@ export function ExplainDrawer({
         setError(err instanceof Error ? err.message : 'Explain failed')
       })
       .finally(() => setBusy(false))
-  }, [open, selectedText, sourceLabel, sourcePath])
+  }, [open, selectedText, sourceLabel, sourcePath, lang])
 
   if (!open) return null
 
@@ -80,6 +82,7 @@ export function ExplainDrawer({
         sourcePath,
         history: history.slice(0, -1),
         userMessage: text,
+        lang,
       })
       setModel(result.model)
       setMessages([...nextMessages, { role: 'assistant', content: result.content }])
@@ -114,27 +117,24 @@ export function ExplainDrawer({
       <aside className="drawer-panel">
         <header className="drawer-head">
           <div>
-            <p className="eyebrow">AI tutor</p>
-            <h2>Explain selection</h2>
+            <p className="eyebrow">{t('aiTutor')}</p>
+            <h2>{t('explainSelection')}</h2>
           </div>
           <div className="drawer-head-actions">
             <button type="button" className="btn ghost" onClick={() => setShowSettings((v) => !v)}>
-              API
+              {t('api')}
             </button>
             <button type="button" className="btn ghost" onClick={onClose}>
-              Close
+              {t('close')}
             </button>
           </div>
         </header>
 
         {showSettings ? (
           <div className="api-settings">
-            <p>
-              Optional OpenAI-compatible key (stored only in this browser). Leave empty to use the
-              built-in OWNLAB local tutor.
-            </p>
+            <p>{t('apiHelp')}</p>
             <label>
-              API key
+              {t('apiKey')}
               <input
                 type="password"
                 value={apiKey}
@@ -143,30 +143,36 @@ export function ExplainDrawer({
               />
             </label>
             <label>
-              Endpoint
+              {t('endpoint')}
               <input value={endpoint} onChange={(e) => setEndpoint(e.target.value)} />
             </label>
             <label>
-              Model
+              {t('model')}
               <input value={modelName} onChange={(e) => setModelName(e.target.value)} />
             </label>
             <button type="button" className="btn primary" onClick={persistSettings}>
-              Save API settings
+              {t('saveApi')}
             </button>
           </div>
         ) : null}
 
         <div className="drawer-selection">
-          <strong>Selected text</strong>
+          <strong>{t('selectedText')}</strong>
           <blockquote>{selectedText}</blockquote>
-          {sourceLabel ? <small>Source: {sourceLabel}</small> : null}
+          {sourceLabel ? (
+            <small>
+              {t('source')}: {sourceLabel}
+            </small>
+          ) : null}
         </div>
 
         <div className="drawer-chat">
-          {busy && messages.length === 0 ? <p className="chat-status">Thinking…</p> : null}
+          {busy && messages.length === 0 ? <p className="chat-status">{t('thinking')}</p> : null}
           {messages.map((m, index) => (
             <div key={`${m.role}-${index}`} className={`chat-bubble ${m.role}`}>
-              <span className="chat-role">{m.role === 'assistant' ? `AI · ${model}` : 'You'}</span>
+              <span className="chat-role">
+                {m.role === 'assistant' ? `AI · ${model}` : t('you')}
+              </span>
               <div className="chat-content">{renderLightMarkdown(m.content)}</div>
             </div>
           ))}
@@ -181,7 +187,7 @@ export function ExplainDrawer({
               disabled={!latestAssistant || busy}
               onClick={saveToNotebook}
             >
-              {savedFlash ? 'Saved to notebook' : 'Save AI reply to notebook'}
+              {savedFlash ? t('savedToNotebook') : t('saveAiReply')}
             </button>
           </div>
           <form
@@ -194,11 +200,11 @@ export function ExplainDrawer({
             <input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Ask a follow-up…"
+              placeholder={t('askFollowUp')}
               disabled={busy}
             />
             <button type="submit" className="btn ghost" disabled={busy || !draft.trim()}>
-              Send
+              {t('send')}
             </button>
           </form>
         </footer>

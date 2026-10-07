@@ -38,4 +38,6 @@ Each day lesson includes a **From production** case (real products/incidents/pat
 
 **Notebook / AI tutor:** highlight text → floating toolbar → **Add to notebook** or **Explain with AI**. The drawer can use the built-in local tutor, or an OpenAI-compatible API key (browser-only). Saved replies appear on **Notebook**, newest first with timestamps.
 
+**Languages:** switch **EN / 中文** in the top bar. UI, curriculum, glossary, visuals, production cases, and the local tutor follow the selected language (saved in `localStorage`).
+
 Progress and notebook data are stored in `localStorage` in your browser.

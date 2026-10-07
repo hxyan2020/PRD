@@ -1,15 +1,16 @@
-import { useCases } from '../data/useCases'
+import { getUseCases } from '../data/content'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function UseCases() {
+  const { lang, t } = useLanguage()
+  const useCases = getUseCases(lang)
+
   return (
     <div className="page">
       <header className="page-header">
-        <p className="eyebrow">Field examples</p>
-        <h1>Interesting AI use cases</h1>
-        <p className="section-lede">
-          Study how modules, risks, and metrics fit together — then steal the patterns for your own
-          PRD.
-        </p>
+        <p className="eyebrow">{t('useCasesEyebrow')}</p>
+        <h1>{t('useCasesTitle')}</h1>
+        <p className="section-lede">{t('useCasesLede')}</p>
       </header>
 
       <div className="usecase-list">
@@ -20,7 +21,7 @@ export function UseCases() {
             <p>{uc.summary}</p>
             <div className="usecase-cols">
               <div>
-                <h3>Modules</h3>
+                <h3>{t('modules')}</h3>
                 <ul>
                   {uc.modules.map((m) => (
                     <li key={m}>{m}</li>
@@ -28,7 +29,7 @@ export function UseCases() {
                 </ul>
               </div>
               <div>
-                <h3>PO risks</h3>
+                <h3>{t('poRisks')}</h3>
                 <ul>
                   {uc.poRisks.map((m) => (
                     <li key={m}>{m}</li>
@@ -36,7 +37,7 @@ export function UseCases() {
                 </ul>
               </div>
               <div>
-                <h3>Success metrics</h3>
+                <h3>{t('successMetrics')}</h3>
                 <ul>
                   {uc.successMetrics.map((m) => (
                     <li key={m}>{m}</li>
@@ -45,7 +46,7 @@ export function UseCases() {
               </div>
             </div>
             <p className="why">
-              <strong>Why it matters:</strong> {uc.whyInteresting}
+              <strong>{t('whyMatters')}</strong> {uc.whyInteresting}
             </p>
           </article>
         ))}

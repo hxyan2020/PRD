@@ -39,3 +39,10 @@ assertThirty('Visuals', collectDays('src/data/visuals.ts'))
 const prodText = readFileSync(join(root, 'src/data/productionExamples.ts'), 'utf8')
 const prodDays = [...prodText.matchAll(/^\s*(\d+)\s*:\s*\{/gm)].map((m) => Number(m[1]))
 assertThirty('Production examples', prodDays)
+
+assertThirty('Curriculum ZH', collectDays('src/data/zh/curriculum.ts'))
+const prodZh = readFileSync(join(root, 'src/data/zh/productionExamples.ts'), 'utf8')
+assertThirty(
+  'Production examples ZH',
+  [...prodZh.matchAll(/^\s*(\d+)\s*:\s*\{/gm)].map((m) => Number(m[1])),
+)

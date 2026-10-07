@@ -101,6 +101,37 @@ textarea {
   animation: fade-down 0.7s ease both;
 }
 
+.topbar-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+}
+
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.lang-switch button {
+  border: none;
+  background: transparent;
+  padding: 0.3rem 0.65rem;
+  font-weight: 800;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.lang-switch button.active {
+  background: var(--ink);
+  color: #f5f8fa;
+}
+
 .brand {
   display: flex;
   align-items: center;

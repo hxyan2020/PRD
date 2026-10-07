@@ -1,21 +1,23 @@
 import { Link, useParams } from 'react-router-dom'
-import { getDay, getPhaseForDay, TOTAL_DAYS } from '../data/curriculum'
-import { getVisual } from '../data/visuals'
+import { getDayLesson, getPhaseForDayLang, getVisualLang, TOTAL_DAYS } from '../data/content'
 import { LessonVisual } from '../components/LessonVisual'
 import { useProgress } from '../hooks/useProgress'
+import { useLanguage } from '../i18n/LanguageContext'
 
 export function DayLessonPage() {
   const { day: dayParam } = useParams()
   const dayNum = Number(dayParam)
-  const lesson = getDay(dayNum)
-  const phase = getPhaseForDay(dayNum)
+  const { lang, t } = useLanguage()
+  const lesson = getDayLesson(lang, dayNum)
+  const phase = getPhaseForDayLang(lang, dayNum)
   const progress = useProgress()
+  const visual = getVisualLang(lang, dayNum)
 
   if (!lesson || Number.isNaN(dayNum)) {
     return (
       <div className="page">
-        <h1>Day not found</h1>
-        <Link to="/curriculum">Back to curriculum</Link>
+        <h1>{t('dayNotFound')}</h1>
+        <Link to="/curriculum">{t('backCurriculum')}</Link>
       </div>
     )
   }
@@ -24,13 +26,15 @@ export function DayLessonPage() {
   const note = progress.notes[lesson.day] ?? ''
   const prev = lesson.day > 1 ? lesson.day - 1 : null
   const next = lesson.day < TOTAL_DAYS ? lesson.day + 1 : null
-  const visual = getVisual(lesson.day)
 
   return (
     <article className="page lesson">
       <header className="lesson-header">
         <p className="eyebrow">
-          Day {lesson.day} · Week {phase?.week} · {phase?.title} · {lesson.minutes} min
+          {t('day')}
+          {lesson.day}
+          {lang === 'zh' ? ' 天' : ''} · {t('week')}
+          {phase?.week} · {phase?.title} · {lesson.minutes} {t('min')}
         </p>
         <h1>{lesson.title}</h1>
         <p className="section-lede">{lesson.subtitle}</p>
@@ -40,15 +44,15 @@ export function DayLessonPage() {
             className={`btn ${done ? 'ghost' : 'primary'}`}
             onClick={() => progress.toggleComplete(lesson.day)}
           >
-            {done ? 'Mark incomplete' : 'Mark day complete'}
+            {done ? t('markIncomplete') : t('markComplete')}
           </button>
           {next ? (
             <Link className="btn ghost" to={`/day/${next}`}>
-              Next day
+              {t('nextDay')}
             </Link>
           ) : null}
           <Link className="btn ghost" to="/tracker">
-            Tracker ({progress.completedCount}/30)
+            {t('tracker')} ({progress.completedCount}/30)
           </Link>
         </div>
       </header>
@@ -56,7 +60,7 @@ export function DayLessonPage() {
       <section className="lesson-grid">
         <div className="lesson-main">
           <div className="callout">
-            <h2>Today you will</h2>
+            <h2>{t('todayYouWill')}</h2>
             <ul>
               {lesson.outcomes.map((o) => (
                 <li key={o}>{o}</li>
@@ -66,14 +70,14 @@ export function DayLessonPage() {
 
           {lesson.production ? (
             <aside className="production-example">
-              <p className="eyebrow">From production</p>
+              <p className="eyebrow">{t('fromProduction')}</p>
               <h2>{lesson.production.source}</h2>
               <p className="production-setting">{lesson.production.setting}</p>
               <p>
-                <strong>What happened.</strong> {lesson.production.whatHappened}
+                <strong>{t('whatHappened')}</strong> {lesson.production.whatHappened}
               </p>
               <p>
-                <strong>PO lesson.</strong> {lesson.production.poLesson}
+                <strong>{t('poLesson')}</strong> {lesson.production.poLesson}
               </p>
               <ul>
                 {lesson.production.watchFor.map((item) => (
@@ -101,7 +105,7 @@ export function DayLessonPage() {
 
           {lesson.debugTip ? (
             <aside className="debug-tip">
-              <strong>Debug tip</strong>
+              <strong>{t('debugTip')}</strong>
               <p>{lesson.debugTip}</p>
             </aside>
           ) : null}
@@ -109,17 +113,17 @@ export function DayLessonPage() {
 
         <aside className="lesson-side">
           <div className="side-card">
-            <h3>Terms</h3>
+            <h3>{t('terms')}</h3>
             <ul className="term-chips">
-              {lesson.terms.map((t) => (
-                <li key={t}>
-                  <Link to={`/glossary?q=${encodeURIComponent(t)}`}>{t}</Link>
+              {lesson.terms.map((term) => (
+                <li key={term}>
+                  <Link to={`/glossary?q=${encodeURIComponent(term)}`}>{term}</Link>
                 </li>
               ))}
             </ul>
           </div>
           <div className="side-card">
-            <h3>PO moves</h3>
+            <h3>{t('poMoves')}</h3>
             <ol>
               {lesson.poMoves.map((m) => (
                 <li key={m}>{m}</li>
@@ -127,7 +131,7 @@ export function DayLessonPage() {
             </ol>
           </div>
           <div className="side-card">
-            <h3>Self-check</h3>
+            <h3>{t('selfCheck')}</h3>
             <ul>
               {lesson.check.map((c) => (
                 <li key={c}>{c}</li>
@@ -135,11 +139,11 @@ export function DayLessonPage() {
             </ul>
           </div>
           <div className="side-card">
-            <h3>Your notes</h3>
+            <h3>{t('yourNotes')}</h3>
             <textarea
               value={note}
               onChange={(e) => progress.setNote(lesson.day, e.target.value)}
-              placeholder="Capture decisions, questions, tickets…"
+              placeholder={t('notesPlaceholder')}
               rows={5}
             />
           </div>
@@ -147,9 +151,25 @@ export function DayLessonPage() {
       </section>
 
       <nav className="lesson-nav">
-        {prev ? <Link to={`/day/${prev}`}>← Day {prev}</Link> : <span />}
-        <Link to="/curriculum">All days</Link>
-        {next ? <Link to={`/day/${next}`}>Day {next} →</Link> : <span>Capstone complete</span>}
+        {prev ? (
+          <Link to={`/day/${prev}`}>
+            ← {t('day')}
+            {prev}
+            {lang === 'zh' ? ' 天' : ''}
+          </Link>
+        ) : (
+          <span />
+        )}
+        <Link to="/curriculum">{t('allDays')}</Link>
+        {next ? (
+          <Link to={`/day/${next}`}>
+            {t('day')}
+            {next}
+            {lang === 'zh' ? ' 天' : ''} →
+          </Link>
+        ) : (
+          <span>{t('capstoneComplete')}</span>
+        )}
       </nav>
     </article>
   )

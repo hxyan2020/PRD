@@ -1,14 +1,15 @@
 import { useMemo, useState } from 'react'
-import { getProductionExample } from '../data/productionExamples'
+import { getProductionLang } from '../data/content'
 import type { LessonVisual as VisualSpec, VisualNode } from '../data/visualTypes'
+import { useLanguage } from '../i18n/LanguageContext'
 
 interface Props {
   visual: VisualSpec
 }
 
-function NodeDetail({ node }: { node: VisualNode | null }) {
+function NodeDetail({ node, hint }: { node: VisualNode | null; hint: string }) {
   if (!node) {
-    return <p className="visual-hint">Click a node to inspect it.</p>
+    return <p className="visual-hint">{hint}</p>
   }
   return (
     <div className="visual-detail">
@@ -20,9 +21,10 @@ function NodeDetail({ node }: { node: VisualNode | null }) {
 }
 
 export function LessonVisual({ visual }: Props) {
+  const { lang, t } = useLanguage()
   const [activeId, setActiveId] = useState<string | null>(null)
   const [sliderValue, setSliderValue] = useState(visual.slider?.initial ?? 0)
-  const production = getProductionExample(visual.day)
+  const production = getProductionLang(lang, visual.day)
 
   const allNodes = useMemo(() => {
     const list: VisualNode[] = []
@@ -44,12 +46,12 @@ export function LessonVisual({ visual }: Props) {
   return (
     <section className="lesson-visual" aria-label={visual.title}>
       <div className="visual-head">
-        <p className="eyebrow">Interactive diagram</p>
+        <p className="eyebrow">{t('interactiveDiagram')}</p>
         <h2>{visual.title}</h2>
         <p>{visual.caption}</p>
         {production ? (
           <p className="visual-prod-hook">
-            Production lens: <strong>{production.source}</strong> — {production.setting}
+            {t('productionLens')} <strong>{production.source}</strong> — {production.setting}
           </p>
         ) : null}
       </div>
@@ -243,10 +245,10 @@ export function LessonVisual({ visual }: Props) {
       ) : null}
 
       {visual.kind !== 'slider' && visual.kind !== 'cards' && visual.kind !== 'balance' ? (
-        <NodeDetail node={active} />
+        <NodeDetail node={active} hint={t('clickNode')} />
       ) : null}
       {(visual.kind === 'cards' || visual.kind === 'balance') && visual.nodes?.length ? (
-        <NodeDetail node={active} />
+        <NodeDetail node={active} hint={t('clickNode')} />
       ) : null}
     </section>
   )

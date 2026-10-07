@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNotebook } from '../hooks/useNotebook'
+import { useLanguage } from '../i18n/LanguageContext'
 import { ExplainDrawer } from './ExplainDrawer'
 
 interface ToolbarState {
@@ -9,21 +10,10 @@ interface ToolbarState {
   y: number
 }
 
-function sourceFromPath(pathname: string): { label?: string; path: string } {
-  const day = pathname.match(/\/day\/(\d+)/)
-  if (day) return { label: `Day ${day[1]}`, path: pathname }
-  if (pathname.startsWith('/glossary')) return { label: 'Glossary', path: pathname }
-  if (pathname.startsWith('/use-cases')) return { label: 'Use cases', path: pathname }
-  if (pathname.startsWith('/ops')) return { label: 'Ops playbook', path: pathname }
-  if (pathname.startsWith('/career')) return { label: 'Career', path: pathname }
-  if (pathname.startsWith('/curriculum')) return { label: 'Curriculum', path: pathname }
-  if (pathname.startsWith('/tracker')) return { label: 'Tracker', path: pathname }
-  return { label: 'OWNLAB', path: pathname }
-}
-
 export function SelectionTools() {
   const location = useLocation()
   const notebook = useNotebook()
+  const { lang, t } = useLanguage()
   const [toolbar, setToolbar] = useState<ToolbarState | null>(null)
   const [flash, setFlash] = useState('')
   const [explainOpen, setExplainOpen] = useState(false)
@@ -71,7 +61,7 @@ export function SelectionTools() {
     }
   }, [])
 
-  const source = sourceFromPath(location.pathname)
+  const source = sourceFromPath(location.pathname, lang, t)
 
   function saveClip() {
     if (!toolbar) return
@@ -80,7 +70,7 @@ export function SelectionTools() {
       sourceLabel: source.label,
       sourcePath: source.path,
     })
-    setFlash('Saved to notebook')
+    setFlash(t('savedToNotebook'))
     setToolbar(null)
     window.setTimeout(() => setFlash(''), 1800)
   }
@@ -97,10 +87,10 @@ export function SelectionTools() {
       {toolbar ? (
         <div className="selection-toolbar" style={{ left: toolbar.x, top: toolbar.y }}>
           <button type="button" onClick={saveClip}>
-            Add to notebook
+            {t('addToNotebook')}
           </button>
           <button type="button" onClick={openExplain}>
-            Explain with AI
+            {t('explainWithAI')}
           </button>
         </div>
       ) : null}
@@ -116,12 +106,33 @@ export function SelectionTools() {
   )
 }
 
+function sourceFromPath(
+  pathname: string,
+  lang: 'en' | 'zh',
+  t: (key: 'day' | 'navGlossary' | 'navUseCases' | 'navOps' | 'navCareer' | 'navCurriculum' | 'navTracker') => string,
+) {
+  const day = pathname.match(/\/day\/(\d+)/)
+  if (day) {
+    return {
+      label: lang === 'zh' ? `第 ${day[1]} 天` : `Day ${day[1]}`,
+      path: pathname,
+    }
+  }
+  if (pathname.startsWith('/glossary')) return { label: t('navGlossary'), path: pathname }
+  if (pathname.startsWith('/use-cases')) return { label: t('navUseCases'), path: pathname }
+  if (pathname.startsWith('/ops')) return { label: t('navOps'), path: pathname }
+  if (pathname.startsWith('/career')) return { label: t('navCareer'), path: pathname }
+  if (pathname.startsWith('/curriculum')) return { label: t('navCurriculum'), path: pathname }
+  if (pathname.startsWith('/tracker')) return { label: t('navTracker'), path: pathname }
+  return { label: 'OWNLAB', path: pathname }
+}
+
 function isInsideUiChrome(node: Node): boolean {
   const el = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement
   if (!el) return false
   return Boolean(
     el.closest(
-      'input, textarea, button, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check',
+      'input, textarea, button, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch',
     ),
   )
 }

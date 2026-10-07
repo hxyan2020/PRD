@@ -31,9 +31,10 @@ export function useNotebook() {
   }
 }
 
-export function formatTimestamp(iso: string): string {
+export function formatTimestamp(iso: string, lang?: 'en' | 'zh'): string {
   try {
-    return new Intl.DateTimeFormat(undefined, {
+    const locale = lang === 'zh' ? 'zh-CN' : undefined
+    return new Intl.DateTimeFormat(locale, {
       dateStyle: 'medium',
       timeStyle: 'short',
     }).format(new Date(iso))
