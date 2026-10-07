@@ -1,5 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { getDay, getPhaseForDay, TOTAL_DAYS } from '../data/curriculum'
+import { getVisual } from '../data/visuals'
+import { LessonVisual } from '../components/LessonVisual'
 import { useProgress } from '../hooks/useProgress'
 
 export function DayLessonPage() {
@@ -22,6 +24,7 @@ export function DayLessonPage() {
   const note = progress.notes[lesson.day] ?? ''
   const prev = lesson.day > 1 ? lesson.day - 1 : null
   const next = lesson.day < TOTAL_DAYS ? lesson.day + 1 : null
+  const visual = getVisual(lesson.day)
 
   return (
     <article className="page lesson">
@@ -60,6 +63,8 @@ export function DayLessonPage() {
               ))}
             </ul>
           </div>
+
+          {visual ? <LessonVisual visual={visual} /> : null}
 
           {lesson.sections.map((section) => (
             <section key={section.heading} className="content-block">
