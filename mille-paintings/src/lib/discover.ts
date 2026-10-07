@@ -1,4 +1,9 @@
 import type { Painting } from '../types'
+import {
+  countrySearchTerms,
+  eraYearRanges,
+  genreSearchTerms,
+} from './preferenceOptions'
 import type { Preferences } from './storage'
 
 const UA_NOTE = 'MillePaintings/1.0 (educational gallery discover)'
@@ -21,26 +26,33 @@ function esc(s: string): string {
 /** Map preference eras to birth-year ranges for SPARQL. */
 function eraBirthFilter(eras: string[]): string {
   if (!eras.length) return ''
-  const ranges: Record<string, [number, number]> = {
-    medieval: [-2000, 1399],
-    renaissance: [1400, 1599],
-    baroque: [1550, 1749],
-    'neoclassical-romantic': [1700, 1849],
-    'impressionist-era': [1800, 1899],
-    modern: [1850, 1949],
-    contemporary: [1900, 2100],
-  }
   const clauses = eras
-    .map((e) => ranges[e])
-    .filter(Boolean)
+    .map((e) => eraYearRanges(e))
+    .filter((x): x is [number, number] => Boolean(x))
     .map(([a, b]) => `(YEAR(?birth) >= ${a} && YEAR(?birth) <= ${b})`)
   if (!clauses.length) return ''
   return `OPTIONAL { ?creator wdt:P569 ?birth. } FILTER(${clauses.join(' || ')})`
 }
 
+function expandGenreTerms(genres: string[]): string[] {
+  const out = new Set<string>()
+  for (const g of genres.slice(0, 8)) {
+    for (const t of genreSearchTerms(g)) out.add(esc(t.toLowerCase()))
+  }
+  return [...out].slice(0, 14)
+}
+
+function expandCountryTerms(countries: string[]): string[] {
+  const out = new Set<string>()
+  for (const c of countries.slice(0, 8)) {
+    for (const t of countrySearchTerms(c)) out.add(esc(t.toLowerCase()))
+  }
+  return [...out].slice(0, 16)
+}
+
 function buildQuery(prefs: Preferences): string {
-  const genreTerms = prefs.genres.slice(0, 6).map((g) => esc(g.toLowerCase()))
-  const countryTerms = prefs.countries.slice(0, 6).map((c) => esc(c.toLowerCase()))
+  const genreTerms = expandGenreTerms(prefs.genres)
+  const countryTerms = expandCountryTerms(prefs.countries)
 
   const genreClause = genreTerms.length
     ? `
@@ -64,14 +76,14 @@ function buildQuery(prefs: Preferences): string {
   const birthOptional = eraClause.includes('P569') ? '' : 'OPTIONAL { ?creator wdt:P569 ?birth. }'
 
   // Slightly looser when many filters are set so we still find candidates.
-  const minLinks = genreTerms.length || countryTerms.length || prefs.eras.length ? 3 : 6
+  const minLinks = genreTerms.length || countryTerms.length || prefs.eras.length ? 2 : 6
 
   return `
     SELECT DISTINCT ?painting ?paintingLabel ?paintingDescription ?image ?creator ?creatorLabel
            ?birth ?death ?countryLabel ?genreLabel ?collectionLabel ?creationPlaceLabel ?sitelinks
     WHERE {
-      VALUES ?type { wd:Q3305213 wd:Q134307 wd:Q18573970 wd:Q860861 }
-      ?painting wdt:P31 ?type;
+      VALUES ?type { wd:Q3305213 wd:Q134307 wd:Q18573970 wd:Q860861 wd:Q4502142 }
+      ?painting wdt:P31/wdt:P279* ?type;
                 wikibase:sitelinks ?sitelinks;
                 wdt:P18 ?image;
                 wdt:P170 ?creator.
@@ -86,7 +98,7 @@ function buildQuery(prefs: Preferences): string {
       SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
     }
     ORDER BY DESC(?sitelinks)
-    LIMIT 120
+    LIMIT 140
   `
 }
 
@@ -165,10 +177,10 @@ export async function discoverPaintings(
   let list = [...byId.values()]
   if (prefs.moods.length) {
     const moodMap: Record<string, string[]> = {
-      contemplative: ['landscape', 'still', 'quiet', 'seascape'],
-      dramatic: ['history', 'battle', 'myth', 'religious'],
-      intimate: ['portrait', 'genre', 'domestic', 'interior'],
-      epic: ['history', 'allegory', 'religious', 'monument'],
+      contemplative: ['landscape', 'still', 'quiet', 'seascape', 'shan shui', 'ink'],
+      dramatic: ['history', 'battle', 'myth', 'religious', 'mural'],
+      intimate: ['portrait', 'genre', 'domestic', 'interior', 'miniature'],
+      epic: ['history', 'allegory', 'religious', 'monument', 'mural'],
     }
     list = list
       .map((p) => {
@@ -178,8 +190,6 @@ export async function discoverPaintings(
       })
       .sort((a, b) => Number(b.hit) - Number(a.hit) || b.p.sitelinks - a.p.sitelinks)
       .map((x) => x.p)
-  } else {
-    list.sort((a, b) => b.sitelinks - a.sitelinks)
   }
 
   return list.slice(0, 40)

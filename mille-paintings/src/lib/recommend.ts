@@ -1,4 +1,5 @@
 import type { Painting } from '../types'
+import { countrySearchTerms, eraYearRanges, genreSearchTerms } from './preferenceOptions'
 import { getCollectedIds, getPreferences, getViewedIds, todayKey, type Preferences } from './storage'
 
 function hashString(input: string): number {
@@ -10,16 +11,44 @@ function hashString(input: string): number {
   return h >>> 0
 }
 
-function eraFor(painting: Painting): string {
-  const year = Number(painting.painterBirthYear)
-  if (!Number.isFinite(year)) return 'unknown'
-  if (year < 1400) return 'medieval'
-  if (year < 1600) return 'renaissance'
-  if (year < 1750) return 'baroque'
-  if (year < 1850) return 'neoclassical-romantic'
-  if (year < 1900) return 'impressionist-era'
-  if (year < 1950) return 'modern'
-  return 'contemporary'
+function erasForYear(year: number): string[] {
+  const hits: string[] = []
+  for (const era of [
+    'ancient',
+    'classical-antiquity',
+    'medieval',
+    'islamic-golden-age',
+    'song-yuan',
+    'ming-qing',
+    'edo-period',
+    'mughal-era',
+    'renaissance',
+    'baroque',
+    'neoclassical-romantic',
+    'impressionist-era',
+    'modern',
+    'contemporary',
+  ]) {
+    const range = eraYearRanges(era)
+    if (range && year >= range[0] && year <= range[1]) hits.push(era)
+  }
+  return hits
+}
+
+function matchesGenre(paintingGenre: string, selected: string[]): boolean {
+  const g = paintingGenre.toLowerCase()
+  return selected.some((x) => {
+    const terms = genreSearchTerms(x)
+    return terms.some((t) => g.includes(t.toLowerCase()) || t.toLowerCase().includes(g))
+  })
+}
+
+function matchesCountry(painterCountry: string, selected: string[]): boolean {
+  const c = painterCountry.toLowerCase()
+  return selected.some((label) => {
+    const terms = countrySearchTerms(label)
+    return terms.some((t) => c.includes(t.toLowerCase()))
+  })
 }
 
 function scorePainting(p: Painting, prefs: Preferences, viewed: Set<string>, collected: Set<string>): number {
@@ -29,16 +58,16 @@ function scorePainting(p: Painting, prefs: Preferences, viewed: Set<string>, col
   if (p.discovered) score += 28
 
   if (prefs.genres.length) {
-    const g = p.genre.toLowerCase()
-    if (prefs.genres.some((x) => g.includes(x.toLowerCase()))) score += 35
+    if (matchesGenre(p.genre, prefs.genres)) score += 35
     else score -= 8
   }
   if (prefs.countries.length) {
-    if (prefs.countries.some((c) => p.painterCountry.toLowerCase().includes(c.toLowerCase()))) score += 25
+    if (matchesCountry(p.painterCountry, prefs.countries)) score += 25
     else score -= 5
   }
   if (prefs.eras.length) {
-    if (prefs.eras.includes(eraFor(p))) score += 20
+    const year = Number(p.painterBirthYear)
+    if (Number.isFinite(year) && prefs.eras.some((e) => erasForYear(year).includes(e))) score += 20
   }
   if (prefs.moods.length) {
     const blob = `${p.intro} ${p.genre}`.toLowerCase()
@@ -91,4 +120,4 @@ export function pickSurprise(paintings: Painting[], excludeId?: string): Paintin
   return ranked[0]?.p ?? paintings[0]
 }
 
-export { eraFor, scorePainting }
+export { erasForYear, scorePainting }

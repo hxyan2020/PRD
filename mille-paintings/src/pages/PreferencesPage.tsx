@@ -7,21 +7,15 @@ import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import { discoverPaintings } from '../lib/discover'
 import { displayImageUrl } from '../lib/images'
+import {
+  COUNTRY_GROUPS,
+  ERA_OPTIONS,
+  GENRE_GROUPS,
+  MOOD_OPTIONS,
+} from '../lib/preferenceOptions'
 import { DEFAULT_PREFS, getPreferences, savePreferences, type Preferences } from '../lib/storage'
 import type { Painting } from '../types'
 import './PreferencesPage.css'
-
-const ERA_OPTIONS = [
-  'medieval',
-  'renaissance',
-  'baroque',
-  'neoclassical-romantic',
-  'impressionist-era',
-  'modern',
-  'contemporary',
-]
-
-const MOOD_OPTIONS = ['contemplative', 'dramatic', 'intimate', 'epic']
 
 function toggleIn(list: string[], value: string) {
   return list.includes(value) ? list.filter((x) => x !== value) : [...list, value]
@@ -36,17 +30,15 @@ export function PreferencesPage() {
   const [genMsg, setGenMsg] = useState('')
   const [lastBatch, setLastBatch] = useState<Painting[]>([])
 
-  const genres = useMemo(() => {
+  const collectionGenres = useMemo(() => {
+    const curated = new Set(GENRE_GROUPS.flatMap((g) => g.options.map((x) => x.toLowerCase())))
     const set = new Set<string>()
     for (const p of store.paintings) {
-      for (const g of p.genre.split(',').map((x) => x.trim())) if (g) set.add(g)
+      for (const g of p.genre.split(',').map((x) => x.trim())) {
+        if (g && !curated.has(g.toLowerCase())) set.add(g)
+      }
     }
-    return [...set].sort((a, b) => a.localeCompare(b)).slice(0, 40)
-  }, [store.paintings])
-
-  const countries = useMemo(() => {
-    const set = new Set(store.paintings.map((p) => p.painterCountry).filter((c) => c && c !== 'Unknown'))
-    return [...set].sort((a, b) => a.localeCompare(b)).slice(0, 50)
+    return [...set].sort((a, b) => a.localeCompare(b)).slice(0, 24)
   }, [store.paintings])
 
   const discovered = useMemo(
@@ -60,6 +52,7 @@ export function PreferencesPage() {
         <p className="eyebrow">{t('navPrefs')}</p>
         <h1>{t('prefsTitle')}</h1>
         <p>{t('prefsLede')}</p>
+        <p className="prefs-world-note">{t('prefsWorldNote')}</p>
         <p className="pool-line">
           {t('poolSummary', {
             core: store.coreCount,
@@ -71,40 +64,71 @@ export function PreferencesPage() {
 
       <section className="prefs-block">
         <h2>{t('genre')}</h2>
-        <div className="chip-grid">
-          {genres.map((g) => (
-            <button
-              key={g}
-              type="button"
-              className={`chip chip-genre ${prefs.genres.includes(g) ? 'on' : ''}`}
-              onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
-            >
-              <GenreIcon genre={g} />
-              <span>{g}</span>
-            </button>
-          ))}
-        </div>
+        <p className="prefs-section-lede">{t('prefsGenreLede')}</p>
+        {GENRE_GROUPS.map((group) => (
+          <div key={group.id} className="prefs-subgroup">
+            <h3>{t(group.labelKey)}</h3>
+            <div className="chip-grid">
+              {group.options.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  className={`chip chip-genre ${prefs.genres.includes(g) ? 'on' : ''}`}
+                  onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
+                >
+                  <GenreIcon genre={g} />
+                  <span>{g}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+        {collectionGenres.length ? (
+          <div className="prefs-subgroup">
+            <h3>{t('prefsGroupFromCollection')}</h3>
+            <div className="chip-grid">
+              {collectionGenres.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  className={`chip chip-genre ${prefs.genres.includes(g) ? 'on' : ''}`}
+                  onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
+                >
+                  <GenreIcon genre={g} />
+                  <span>{g}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </section>
 
       <section className="prefs-block">
         <h2>{t('painterCountry')}</h2>
-        <div className="chip-grid">
-          {countries.map((c) => (
-            <button
-              key={c}
-              type="button"
-              className={`chip chip-country ${prefs.countries.includes(c) ? 'on' : ''}`}
-              onClick={() => setPrefs((p) => ({ ...p, countries: toggleIn(p.countries, c) }))}
-            >
-              <CountryFlags country={c} size="sm" />
-              <span>{c}</span>
-            </button>
-          ))}
-        </div>
+        <p className="prefs-section-lede">{t('prefsCountryLede')}</p>
+        {COUNTRY_GROUPS.map((group) => (
+          <div key={group.id} className="prefs-subgroup">
+            <h3>{t(group.labelKey)}</h3>
+            <div className="chip-grid">
+              {group.options.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`chip chip-country ${prefs.countries.includes(c) ? 'on' : ''}`}
+                  onClick={() => setPrefs((p) => ({ ...p, countries: toggleIn(p.countries, c) }))}
+                >
+                  <CountryFlags country={c} size="sm" />
+                  <span>{c}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       <section className="prefs-block">
         <h2>{t('eras')}</h2>
+        <p className="prefs-section-lede">{t('prefsEraLede')}</p>
         <div className="chip-grid">
           {ERA_OPTIONS.map((e) => (
             <button

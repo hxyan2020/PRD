@@ -36,6 +36,28 @@
   color: var(--brass);
 }
 
+.prefs-world-note,
+.prefs-section-lede {
+  margin: 0.35rem 0 0.9rem;
+  color: var(--paper-dim);
+  line-height: 1.5;
+  max-width: 62ch;
+  font-size: 0.95rem;
+}
+
+.prefs-subgroup {
+  margin-top: 1rem;
+}
+
+.prefs-subgroup h3 {
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sage);
+  font-weight: 600;
+}
+
 .chip-grid {
   display: flex;
   flex-wrap: wrap;

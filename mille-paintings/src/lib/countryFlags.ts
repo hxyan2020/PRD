@@ -28,6 +28,104 @@ const SEGMENT_FLAGS: Array<{ match: RegExp | string; code: string; title: string
   { match: /^russia$/i, code: 'ru', title: 'Russia' },
   { match: /^poland$/i, code: 'pl', title: 'Poland' },
   { match: /^netherlands$/i, code: 'nl', title: 'Netherlands' },
+  { match: /^portugal$/i, code: 'pt', title: 'Portugal' },
+  { match: /^ireland$/i, code: 'ie', title: 'Ireland' },
+  { match: /^greece$/i, code: 'gr', title: 'Greece' },
+  { match: /^czech republic$/i, code: 'cz', title: 'Czech Republic' },
+  { match: /^hungary$/i, code: 'hu', title: 'Hungary' },
+  { match: /^ukraine$/i, code: 'ua', title: 'Ukraine' },
+  { match: /^austria$/i, code: 'at', title: 'Austria' },
+  { match: /^denmark$/i, code: 'dk', title: 'Denmark' },
+
+  // Asia
+  { match: /^china$/i, code: 'cn', title: 'China' },
+  { match: /^japan$/i, code: 'jp', title: 'Japan' },
+  { match: /^korea$/i, code: 'kr', title: 'Korea' },
+  { match: /^mongolia$/i, code: 'mn', title: 'Mongolia' },
+  { match: /^taiwan$/i, code: 'tw', title: 'Taiwan' },
+  { match: /^india$/i, code: 'in', title: 'India' },
+  { match: /^pakistan$/i, code: 'pk', title: 'Pakistan' },
+  { match: /^bangladesh$/i, code: 'bd', title: 'Bangladesh' },
+  { match: /^sri lanka$/i, code: 'lk', title: 'Sri Lanka' },
+  { match: /^nepal$/i, code: 'np', title: 'Nepal' },
+  { match: /^tibet$/i, code: 'tibet', title: 'Tibet' },
+  { match: /^indonesia$/i, code: 'id', title: 'Indonesia' },
+  { match: /^malaysia$/i, code: 'my', title: 'Malaysia' },
+  { match: /^thailand$/i, code: 'th', title: 'Thailand' },
+  { match: /^vietnam$/i, code: 'vn', title: 'Vietnam' },
+  { match: /^philippines$/i, code: 'ph', title: 'Philippines' },
+  { match: /^cambodia$/i, code: 'kh', title: 'Cambodia' },
+  { match: /^myanmar$/i, code: 'mm', title: 'Myanmar' },
+  { match: /^joseon$/i, code: 'kr', title: 'Joseon' },
+  { match: /^ming dynasty$/i, code: 'ming', title: 'Ming dynasty' },
+  { match: /^song dynasty$/i, code: 'cn', title: 'Song dynasty' },
+  { match: /^edo period$/i, code: 'jp', title: 'Edo period' },
+  { match: /^mughal empire$/i, code: 'mughal', title: 'Mughal Empire' },
+
+  // Middle East & Central Asia
+  { match: /^iran$/i, code: 'ir', title: 'Iran' },
+  { match: /^persia$/i, code: 'persia', title: 'Persia' },
+  { match: /^turkey$/i, code: 'tr', title: 'Turkey' },
+  { match: /^iraq$/i, code: 'iq', title: 'Iraq' },
+  { match: /^syria$/i, code: 'sy', title: 'Syria' },
+  { match: /^lebanon$/i, code: 'lb', title: 'Lebanon' },
+  { match: /^israel$/i, code: 'il', title: 'Israel' },
+  { match: /^palestine$/i, code: 'ps', title: 'Palestine' },
+  { match: /^saudi arabia$/i, code: 'sa', title: 'Saudi Arabia' },
+  { match: /^yemen$/i, code: 'ye', title: 'Yemen' },
+  { match: /^afghanistan$/i, code: 'af', title: 'Afghanistan' },
+  { match: /^uzbekistan$/i, code: 'uz', title: 'Uzbekistan' },
+  { match: /^kazakhstan$/i, code: 'kz', title: 'Kazakhstan' },
+  { match: /^azerbaijan$/i, code: 'az', title: 'Azerbaijan' },
+  { match: /^armenia$/i, code: 'am', title: 'Armenia' },
+  { match: /^georgia$/i, code: 'ge', title: 'Georgia' },
+  { match: /^safavid empire$/i, code: 'persia', title: 'Safavid Empire' },
+
+  // Africa
+  { match: /^egypt$/i, code: 'eg', title: 'Egypt' },
+  { match: /^ethiopia$/i, code: 'et', title: 'Ethiopia' },
+  { match: /^nigeria$/i, code: 'ng', title: 'Nigeria' },
+  { match: /^ghana$/i, code: 'gh', title: 'Ghana' },
+  { match: /^senegal$/i, code: 'sn', title: 'Senegal' },
+  { match: /^mali$/i, code: 'ml', title: 'Mali' },
+  { match: /^morocco$/i, code: 'ma', title: 'Morocco' },
+  { match: /^algeria$/i, code: 'dz', title: 'Algeria' },
+  { match: /^tunisia$/i, code: 'tn', title: 'Tunisia' },
+  { match: /^south africa$/i, code: 'za', title: 'South Africa' },
+  { match: /^kenya$/i, code: 'ke', title: 'Kenya' },
+  { match: /^congo$/i, code: 'cd', title: 'Congo' },
+  { match: /^sudan$/i, code: 'sd', title: 'Sudan' },
+  { match: /^kingdom of benin$/i, code: 'benin-kingdom', title: 'Kingdom of Benin' },
+  { match: /^mali empire$/i, code: 'ml', title: 'Mali Empire' },
+
+  // Americas & Caribbean
+  { match: /^mexico$/i, code: 'mx', title: 'Mexico' },
+  { match: /^canada$/i, code: 'ca', title: 'Canada' },
+  { match: /^brazil$/i, code: 'br', title: 'Brazil' },
+  { match: /^argentina$/i, code: 'ar', title: 'Argentina' },
+  { match: /^peru$/i, code: 'pe', title: 'Peru' },
+  { match: /^chile$/i, code: 'cl', title: 'Chile' },
+  { match: /^colombia$/i, code: 'co', title: 'Colombia' },
+  { match: /^cuba$/i, code: 'cu', title: 'Cuba' },
+  { match: /^haiti$/i, code: 'ht', title: 'Haiti' },
+  { match: /^jamaica$/i, code: 'jm', title: 'Jamaica' },
+  { match: /^trinidad and tobago$/i, code: 'tt', title: 'Trinidad and Tobago' },
+  { match: /^caribbean$/i, code: 'caribbean', title: 'Caribbean' },
+  { match: /^aztec empire$/i, code: 'mx', title: 'Aztec Empire' },
+  { match: /^maya civilization$/i, code: 'maya', title: 'Maya civilization' },
+  { match: /^inca empire$/i, code: 'pe', title: 'Inca Empire' },
+
+  // Oceania
+  { match: /^australia$/i, code: 'au', title: 'Australia' },
+  { match: /^new zealand$/i, code: 'nz', title: 'New Zealand' },
+  { match: /^papua new guinea$/i, code: 'pg', title: 'Papua New Guinea' },
+  { match: /^fiji$/i, code: 'fj', title: 'Fiji' },
+  { match: /^samoa$/i, code: 'ws', title: 'Samoa' },
+  { match: /^tonga$/i, code: 'to', title: 'Tonga' },
+  { match: /^hawaii$/i, code: 'us', title: 'Hawaii' },
+  { match: /^polynesia$/i, code: 'polynesia', title: 'Polynesia' },
+  { match: /^melanesia$/i, code: 'pg', title: 'Melanesia' },
+  { match: /^micronesia$/i, code: 'fm', title: 'Micronesia' },
 
   // British / Irish
   { match: /united kingdom of great britain and ireland/i, code: 'gb', title: 'United Kingdom of Great Britain and Ireland' },
@@ -117,7 +215,18 @@ function resolveSegment(segment: string): CountryFlagRef | null {
   if (lower.includes('italy') || lower.includes('italian')) return { code: 'it', title: s }
   if (lower.includes('german')) return { code: 'de', title: s }
   if (lower.includes('russia')) return { code: 'ru', title: s }
-  if (lower.includes('china') || lower.includes('dynasty')) return { code: 'cn', title: s }
+  if (lower.includes('china') || lower.includes('dynasty') || lower.includes('ming') || lower.includes('qing') || lower.includes('tang') || lower.includes('song') || lower.includes('yuan'))
+    return { code: 'cn', title: s }
+  if (lower.includes('japan') || lower.includes('edo')) return { code: 'jp', title: s }
+  if (lower.includes('korea') || lower.includes('joseon')) return { code: 'kr', title: s }
+  if (lower.includes('india') || lower.includes('mughal')) return { code: 'in', title: s }
+  if (lower.includes('persia') || lower.includes('iran') || lower.includes('safavid')) return { code: 'ir', title: s }
+  if (lower.includes('ottoman') || lower.includes('turkey')) return { code: 'tr', title: s }
+  if (lower.includes('egypt')) return { code: 'eg', title: s }
+  if (lower.includes('mexico') || lower.includes('aztec')) return { code: 'mx', title: s }
+  if (lower.includes('peru') || lower.includes('inca')) return { code: 'pe', title: s }
+  if (lower.includes('australia')) return { code: 'au', title: s }
+  if (lower.includes('caribbean')) return { code: 'caribbean', title: s }
   return null
 }
 
