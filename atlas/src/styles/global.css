@@ -542,11 +542,8 @@ select {
 .game-card .excerpt {
   color: var(--mist-dim);
   font-size: 0.92rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
   margin: 0;
+  /* Full sentences from excerpt(); do not CSS-clamp mid-word */
 }
 
 .pill {

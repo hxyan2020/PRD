@@ -27,7 +27,7 @@
     "game-0002": {
       "description": "Go是一个包围领地的游戏. 石头一放置就永远不动;被俘团体被清除. 中国学者四艺之一,传播到韩国(巴都克)和日本(igo). 游戏编码平衡,影响,和活体形状,而不是直接捕获一个国王.",
       "howToPlay": [
-        "(                                                                                                                                        (",
+        "Black places the first stone on a grid intersection.",
         "玩家轮流放置一块石块;石块放置后不移动.",
         "一个没有自由的团体(空近的十字路口)被俘虏和清除.",
         "不重现之前的全板位置( k) 或玩自杀动作, 除非它们抓住 。",
@@ -43,7 +43,8 @@
         "韩国传统具有相同的核心规则和独特的教学文化.",
         "日本职业排名和地区评分大会."
       ],
-      "name": "围棋"
+      "name": "围棋",
+      "fallbackEn": true
     },
     "game-0003": {
       "description": "X奇 (中国围棋) 阵列将领,顾问,大象,马匹,战车,大炮,以及排队的棋盘上的士兵被一条河渡过. 炮台的跳跃捕捉和宫殿禁闭使其具有不同于国际象棋的战术风味. 它仍然是中国各地喜爱的公园和街头游戏.",
@@ -140,7 +141,7 @@
         "扔棍子或关节 移动长度。",
         "沿着蛇道前进,当心特殊广场(安全、水、复活)。",
         "在你们之后的重建中 解决降落对手的问题",
-        "(                                                                                                                                                      你知道吗"
+        "First to bear all pawns off the final squares wins."
       ],
       "requirements": [
         "30平方块的塞网板",
@@ -148,7 +149,8 @@
         "扔棍子或关节骨"
       ],
       "idealParticipants": "2个人",
-      "name": "塞尼特"
+      "name": "塞尼特",
+      "fallbackEn": true
     },
     "game-0008": {
       "description": "Patolli是一款使用豆子作为骰子的X形赛道上的神圣的阿兹特克赛车游戏. 赌博和仪式祭品相互交织;游戏在codices和西班牙的账户中出现,因为宇宙风险变得可以玩耍.",
@@ -194,7 +196,7 @@
       "name": "帕奇西"
     },
     "game-0010": {
-      "description": "麻将借鉴了早期的中 1 牌和赌牌传统. 4名玩家在读取 1 个弃物时, 向着一个完整的手建立连接 。 地区风格在评分上有所不同,",
+      "description": "麻将借鉴了早期的中 1 牌和赌牌传统. 4名玩家在读取 1 个弃物时, 向着一个完整的手建立连接 。",
       "howToPlay": [
         "建造并加入四块瓦墙;用骰子打破.",
         "交易手(通常是13块瓷砖;14块). 东方弃先.",
@@ -205,7 +207,7 @@
       "requirements": [
         "144个瓦",
         "四面墙的桌子",
-        "(                                                          特别是那些                                                                                                               (                  临时议程项目"
+        "Dice for wall break"
       ],
       "idealParticipants": "4个人u",
       "variationNotes": [
@@ -213,7 +215,8 @@
         "快速,面向乒乓球的流行风格.",
         "NMJL牌手和小丑."
       ],
-      "name": "麻将"
+      "name": "麻将",
+      "fallbackEn": true
     },
     "game-0011": {
       "description": "中国多米诺斯与骰子面对有关;欧洲双六套通过意大利和法国传播. 封锁、打分和训练游戏都共享匹配的 pip 端点——一个工具,许多表格文化。",
@@ -236,7 +239,7 @@
       "name": "多米诺"
     },
     "game-0012": {
-      "description": "米尔斯游戏形成三连拍以捕捉. 中世纪欧洲的板块被切成板凳。 南部非洲的摩拉巴拉巴与牧业的`牛 ' 隐喻是相同的基本磨坊竞争,",
+      "description": "米尔斯游戏形成三连拍以捕捉. 中世纪欧洲的板块被切成板凳。",
       "howToPlay": [
         "在空点上交替放置棋子, 直到全部9个都下线 。",
         "沿线移动到相邻点。",
@@ -511,9 +514,10 @@
       ],
       "idealParticipants": "2个小组",
       "variationNotes": [
-        "从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从 1999从"
+        "Double-stick ball games with distinct ritual contexts."
       ],
-      "name": "长曲棍球"
+      "name": "长曲棍球",
+      "fallbackEn": true
     },
     "game-0026": {
       "description": "中美球会使用重橡胶球,主要是在正规球场上用臀部击球. 礼仪、政治和体育相互交织。 现代乌拉玛在锡那罗亚作为活生生的后代继续嘻哈球演奏.",
@@ -546,13 +550,14 @@
       ],
       "requirements": [
         "变身木偶",
-        "该该该的该该的\"\"的\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\" 新\"\"的\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\""
+        "Painted finish"
       ],
       "idealParticipants": "单独 / N/ A( 播放和温柔播放)",
       "variationNotes": [
         "点击头部联合学校风格 。"
       ],
-      "name": "小芥子"
+      "name": "小芥子",
+      "fallbackEn": true
     },
     "game-0028": {
       "description": "马特廖什卡筑巢娃娃创作于1890年代的阿布拉姆策沃工场,受到筑巢形式和农民服饰摩蒂夫的影响. 每一次开场都揭示出一个较小的姊妹——象征着家庭的连续性和生育力——并成为全球的手工艺偶像。",
@@ -570,7 +575,7 @@
       "name": "俄罗斯套娃"
     },
     "game-0029": {
-      "description": "危地马拉担心娃娃是小人物, 民俗说玩偶协助会员国,",
+      "description": "Guatemalan worry dolls are tiny figures to whom children tell troubles before placing them under a pillow. Folklore says the dolls carry the worries overnight—a ritual of voice and comfort more than competitive play.",
       "howToPlay": [
         "给每个娃娃一个小声点",
         "把它们放在枕头下或盒子里",
@@ -583,7 +588,8 @@
         "盒子或枕头"
       ],
       "idealParticipants": "一个人",
-      "name": "忧虑娃娃"
+      "name": "忧虑娃娃",
+      "fallbackEn": true
     },
     "game-0030": {
       "description": "玉米壳娃娃是几个土著民族和后来的农村定居者的传统。 脸部常是空白的,带有社区特有的关于原因的教义. 做娃娃是一半的戏。",
@@ -639,7 +645,7 @@
       "name": "七巧板"
     },
     "game-0033": {
-      "description": "Ernő Rubik的立方体普及三维组合谜题, 层-转力学将群脾气理论隐藏在多彩的玩具中. 快速孵化文化增加了算法、硬件和运动时间,",
+      "description": "Ernő Rubik的立方体普及三维组合谜题, 层-转力学将群脾气理论隐藏在多彩的玩具中.",
       "howToPlay": [
         "以随机翻面而为ble.",
         "利用图层方法或直觉将每个面部还原为坚实的颜色.",
@@ -735,7 +741,7 @@
     "game-0038": {
       "description": "捉迷藏是一款近乎普遍的儿童游戏, 它排练了隐形的,空间的记忆, 和被找到的社会刺激。 建筑——从Kasbah巷道到公寓楼梯间——重新塑造战略。",
       "howToPlay": [
-        "3 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 力争 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 家 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 家 人 人 人 人 人 人 人 人 家 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人 人",
+        "Choose a seeker; others hide while the seeker counts.",
         "寻找者也对范围进行搜索",
         "拖拖拉拉可能会监禁玩家,或者根据房屋规则招募猿人.",
         "跑到基地或免费呼叫可能会在一些地方营救玩家.",
@@ -749,7 +755,8 @@
       "variationNotes": [
         "反向隐藏:一个隐藏,另一个加入隐藏点."
       ],
-      "name": "捉迷藏"
+      "name": "捉迷藏",
+      "fallbackEn": true
     },
     "game-0039": {
       "description": "丢弃标记的跳动网格出现于各大洲,带有局部形状和韵律. 平衡 旋转 和人行道 粉笔艺术在一个简单的种族中通过编号的细胞相遇。",
@@ -817,9 +824,9 @@
       "description": "Hnefatafl是诺斯不对称狩猎:国王和维权者试图在网格上躲避攻击者. 变体遍布维京世界. 力量平衡和王位方块定义了紧张的终局.",
       "howToPlay": [
         "将国王置于中心,有捍卫者;攻击者处于边缘。",
-        "攻击者在进行许多次的训练,",
+        "Attackers move first in many reconstructions.",
         "所有棋子都像 Rooks (任何距离) 一样移动,但不能跳动 。",
-        "造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造区造",
+        "Attackers win by capturing the king (two or four sides depending on rules); defenders win if the king reaches a corner or edge sanctuary.",
         "在竞争之前就公布的重建达成协议。"
       ],
       "requirements": [
@@ -831,7 +838,8 @@
         "Linnaeus记录了萨米塔弗尔家族。",
         "我应该在更小的板子上看到爱尔兰塔夫尔的亲戚"
       ],
-      "name": "王桌棋"
+      "name": "王桌棋",
+      "fallbackEn": true
     },
     "game-0043": {
       "description": "十字架上的不对称猎杀:鹅试图拐弯一只跳跃捕捉的狐狸. 与世界各地许多食肉动物捕食板有关——这里的欧洲食堂形式以表亲为单位编目为变体.",
@@ -912,7 +920,7 @@
     "game-0047": {
       "description": "Paramapada sopanam / gyan chaupar)以功德教因果报应如梯子,恶习如蛇. 英国的蛇队和梯队将儿童竞赛世俗化——同样是基本的上下道德轨道。",
       "howToPlay": [
-        "从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从协助发展中国家从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从从",
+        "Place tokens off the board; roll to enter.",
         "由死神前进.",
         "降落在爬梯基地;降落在蛇头上滑下.",
         "可能需要精确的卷子才能完成。",
@@ -928,13 +936,14 @@
         "具有美德和恶习的教父",
         "美国密尔顿 布拉德利的品牌 相同的种族。"
       ],
-      "name": "蛇梯棋"
+      "name": "蛇梯棋",
+      "fallbackEn": true
     },
     "game-0048": {
       "description": "地产交易种族游戏批评或庆祝地产资本主义. Magie's Landlord's Game 之前的帕克兄弟独占游戏. 本地版将世界城市映射到相同的购房-租房-银行破产环路.",
       "howToPlay": [
         "每个玩家从分配的现金开始,在Go处有一个符号.",
-        "掷骰子、搬家、买地产,",
+        "Roll dice, move, and buy unowned properties you land on—or pay rent.",
         "在完整的彩色套装上建造房屋/酒店",
         "管理抵押贷款和交易。",
         "最后一个没有破产的玩家获胜 。"
@@ -948,7 +957,8 @@
       "variationNotes": [
         "伊丽莎白·马吉执教祖先."
       ],
-      "name": "大富翁"
+      "name": "大富翁",
+      "fallbackEn": true
     },
     "game-0049": {
       "description": "Jenga 将古老的兴奋 清除碎块 从堆堆而不塌。 Leslie Scott在全球营销了塔游戏;物理谜题是所有玩家共享的堆栈.",
@@ -963,8 +973,9 @@
         "54精觅区块",
         "稳定表"
       ],
-      "idealParticipants": "1至8人;",
-      "name": "叠叠乐"
+      "idealParticipants": "1–8 people",
+      "name": "叠叠乐",
+      "fallbackEn": true
     },
     "game-0050": {
       "description": "汉语Kongzhu / diabolo在棍子之间旋转, 欧洲的马戏团鸠养并更名为diabolo.",
@@ -1041,7 +1052,7 @@
       "name": "玩具士兵"
     },
     "game-0054": {
-      "description": "小型茶具让孩子们排练招待仪式. 瓷器和锡的版本追踪了从英国到日本的成人茶文化. 社会剧本是真正的规则,",
+      "description": "小型茶具让孩子们排练招待仪式. 瓷器和锡的版本追踪了从英国到日本的成人茶文化.",
       "howToPlay": [
         "为娃娃曙光或朋友设定位置.",
         "倒(真或假想的)茶不尖杯.",
@@ -1141,7 +1152,7 @@
       "name": "火舞球"
     },
     "game-0060": {
-      "description": "苏拉卡塔(Surakarta)是一款爪哇语捕捉游戏,其中片段绕着彩色环路行走. 捕捉跟随循环,",
+      "description": "苏拉卡塔(Surakarta)是一款爪哇语捕捉游戏,其中片段绕着彩色环路行走.",
       "howToPlay": [
         "板子的侧面有阵列",
         "转到相邻的空位。",
@@ -1159,7 +1170,7 @@
     "game-0061": {
       "description": "D 我以为 我请她去参加婚礼 它作为曼卡拉的一个区域标准提出,同时仍是一个播种家庭。",
       "howToPlay": [
-        "2. 获得、、和、、、和和, 和, 和, , 和和,, 和, 和和 ,和和,和,和和,,和,和和,,和,和和,和和, ,和和,,和和和,,和和,和和和,,和和和,和和,,和和和,,和和和,和,,和和和,,和和,和和和,和和和,和和和,和和和和和和和,,和和和,,,,和和和和,,和,,和和和,和和和,,和和和和和和,,,和和,,和,,和和和和,,和和和,,,和,和,,,,,和和和和和和和和和,,,,,,,,,,和和和和,,,,,, 和和,,,,,,,,和和和和和和和和,,,,,和,,,,,和和和,,,,,,,,,",
+        "Fill cups with traditional seed counts.",
         "顺时针或按当地规则,将杯子和商店吸食。",
         "如果规则允许, 在您的商店结束时进行中继 。",
         "抓取每个 dakon 模式 。",
@@ -1173,7 +1184,8 @@
       "variationNotes": [
         "密切相关的马来船板播种游戏——同一家人."
       ],
-      "name": "达孔"
+      "name": "达孔",
+      "fallbackEn": true
     },
     "game-0062": {
       "description": "成卡(英語:Sungka)是菲律宾船形的播种游戏,表妹为康格卡克. 棋盘是传家宝;游戏混合播音速度和捕获时间。",
@@ -1181,7 +1193,7 @@
         "在每个小杯中放置平等的种子.",
         "向传统方向扫荡和播种.",
         "如果规则允许,在你的头部(商店)进行额外的转弯。",
-        "(                                           各派              e                                                                                             (                                                                                                  不错",
+        "Capture opposite seeds in stated patterns.",
         "最重新审查的商店数胜出"
       ],
       "requirements": [
@@ -1192,15 +1204,16 @@
       "variationNotes": [
         "播种船板内的马来语相对变化."
       ],
-      "name": "松卡"
+      "name": "松卡",
+      "fallbackEn": true
     }
   },
   "zh-Hant": {
     "game-0001": {
-      "description": "象棋是由戰時模仿步兵、騎兵、大象和戰車而成的 經過波斯(shatranj), 現代女王和主教的權力 在中世紀晚期的歐洲結晶 在文化中,",
+      "description": "Chess evolved from chaturanga, a war-simulation of infantry, cavalry, elephants, and chariots. As it traveled through Persia (shatranj) into the Islamic world and medieval Europe, pieces became court ranks. The modern queen and bishop powers crystallized in late medieval Europe. Across cultures it has stood for intellect, foresight, and educated leisure.",
       "howToPlay": [
         "指向棋盤,所以每個玩家在右邊的角落有個光亮的方形.",
-        "將棋子放在後排(魯克、騎士、主教、皇后、國王、主教、騎士),",
+        "Place pieces on the back rank (rook, knight, bishop, queen on her color, king, bishop, knight, rook) with pawns on the second rank.",
         "白牌先移; 玩家交替移動一塊( 阉割時除外) 。",
         "降落在對手的碎片上 以辨王而胜.",
         "合法時使用特殊技術:阉割、過世和卒子升職。"
@@ -1214,20 +1227,21 @@
       "idealParticipants": "2人",
       "variationNotes": [
         "古代的形式; 大象而不是主教; 一些早期的說法提到骰子.",
-        "波斯-阿拉伯形式,",
-        "泰國棋手表弟,",
-        "緬甸國際象棋,"
+        "Persian-Arabic form with firzan (weak queen) and alfil (leaping bishop).",
+        "Thai chess cousin with different piece powers and promotion rules.",
+        "Burmese chess with free setup behind the pawns."
       ],
-      "name": "國際象棋"
+      "name": "國際象棋",
+      "fallbackEn": true
     },
     "game-0002": {
-      "description": "Go是一個圍繞地盤的遊戲。 石頭從不移動, 中國學者四大藝術之一,昙花一现,",
+      "description": "Go is an encirclement game of territory. Stones never move once placed; captured groups are removed. One of the Four Arts of the Chinese scholar, it spread to Korea (baduk) and Japan (igo). Play encodes balance, influence, and living shape rather than direct capture of a king.",
       "howToPlay": [
         "黑色把第一块石頭放在格子路口上",
         "玩家可交換曝出一塊石頭; 石頭放置後不動 。",
         "一個沒有自由的團體(空的相邻路口)被俘获並移除.",
         "除非他們抓住, 不要重製先前的全板位置( k) 或玩自殺動作 。",
-        "當兩者通過,"
+        "When both pass, score territory plus captives (rules vary by country); higher score wins."
       ],
       "requirements": [
         "19×19板(或13×被指定为13/9×9).",
@@ -1236,10 +1250,11 @@
       ],
       "idealParticipants": "2人",
       "variationNotes": [
-        "韓國傳統,",
+        "Korean tradition with the same core rules and distinct teaching culture.",
         "日本專業名單和地區得分會議"
       ],
-      "name": "圍棋"
+      "name": "圍棋",
+      "fallbackEn": true
     },
     "game-0003": {
       "description": "包括將軍、顧問、大象、馬匹、戰車、大炮、軍人, 火炮的跳樓捕捉與宮殿禁閉, 這仍是中國各地最受歡迎的公園街游戲。",
@@ -1256,16 +1271,17 @@
       ],
       "idealParticipants": "2人",
       "variationNotes": [
-        "韓國的表妹沒有河流,"
+        "Korean cousin without a river and with different elephant/horse moves."
       ],
-      "name": "中國象棋"
+      "name": "中國象棋",
+      "fallbackEn": true
     },
     "game-0004": {
       "description": "Shogi是日本的棋子, 楔形碎片指向對手 專業的Shogi仍然是日本主要的智障運動。",
       "howToPlay": [
         "以尖端對付對手",
         "傳送先移動 – 移動或每轉移一塊 。",
-        "捕捉到的碎片會送到你的立場,",
+        "Captured pieces go to your stand and may be dropped later on empty squares (with pawn/check restrictions).",
         "在最后3名中提升合格棋子。",
         "贏定在此方面的對手"
       ],
@@ -1278,15 +1294,16 @@
       "variationNotes": [
         "更大的歷史變體 有很多獨特的作品類型"
       ],
-      "name": "將棋"
+      "name": "將棋",
+      "fallbackEn": true
     },
     "game-0005": {
-      "description": "玩家在木頭、石頭或土上雕刻的坑裡放種。 包括非洲、中東和南亞。 區域名和坑名不一樣,",
+      "description": "玩家在木頭、石頭或土上雕刻的坑裡放種。 包括非洲、中東和南亞。",
       "howToPlay": [
         "為您所選的變體在每個坑中放置相等的种子起始數 。",
         "輪到你 挖一個坑 逐個播種到之後的坑裡",
         "捕捉會在變體定義的設定中播種結束 。",
-        "繼續到一邊不能移動,",
+        "Continue until a side cannot move or seeds are exhausted per local rules.",
         "數種子在商店或剩餘的坑中切实可行;總勝率越高。"
       ],
       "requirements": [
@@ -1297,13 +1314,14 @@
       "variationNotes": [
         "Akan 2x6 經典;以 2 或 3 結束時抓取對方种子 。",
         "斯瓦希里在国家和国际一级的游戲",
-        "给我看,",
+        "Boat-shaped Southeast Asian board with large stores.",
         "非洲之角播种板。",
         "泰米爾/南印度杯盤播種遊戲.",
         "Yoruba播送有節奏的曲子。",
         "曼卡拉的現代商業教學形式"
       ],
-      "name": "曼卡拉播種類遊戲"
+      "name": "曼卡拉播種類遊戲",
+      "fallbackEn": true
     },
     "game-0006": {
       "description": "從厄爾的皇家遊戲到波斯納德和歐洲的桌子, 雙陸棋混合了運氣和技術, 雙倍立方體是現代戰略層",
@@ -1324,18 +1342,19 @@
       "variationNotes": [
         "波斯桌球遊戲與雙陆棋密切相关.",
         "希臘語族套房:Portes, Plakoto, Fevga.",
-        "區域咖啡館文化名,",
+        "Regional café culture name for backgammon-like play.",
         "古老的種族祖先 和獨特的賽道"
       ],
-      "name": "雙陸棋"
+      "name": "雙陸棋",
+      "fallbackEn": true
     },
     "game-0007": {
       "description": "塞內特出現在古埃及的墓志和葬品中。 它具有宗教意義 作為穿越來世的通道 埃及學者從後世的文字和棋盤几何學中 没问题",
       "howToPlay": [
         "在30平方碼的開放方位上安置棋子",
         "扔棍子或指骨做移動 快去",
-        "沿著蛇路而行,你應當謹慎地、",
-        "在你所遵循的重建中,",
+        "Advance along the serpentine path; heed special squares (safe, water, rebirth).",
+        "Resolve landings on opponents per the reconstruction you follow.",
         "首先讓所有棋子從最後的方塊上贏"
       ],
       "requirements": [
@@ -1344,10 +1363,11 @@
         "扔棍在现有资源范围内"
       ],
       "idealParticipants": "2人",
-      "name": "塞尼特"
+      "name": "塞尼特",
+      "fallbackEn": true
     },
     "game-0008": {
-      "description": "Patolli在X形賽道上用豆子當骰子, 賭博和儀式供奉相互交织;",
+      "description": "Patolli was a sacred Aztec race game on an X-shaped track using beans as dice. Gambling and ritual offerings intertwined; the game appears in codices and Spanish accounts as cosmic risk made playable.",
       "howToPlay": [
         "把X形的板子放好,在開始時加注",
         "扔一個有標記的豆子來做移動值 。",
@@ -1364,7 +1384,8 @@
       "variationNotes": [
         "相關的中美洲人種/水稻傳統。"
       ],
-      "name": "帕托利"
+      "name": "帕托利",
+      "fallbackEn": true
     },
     "game-0009": {
       "description": "Pachisi – 「印度的國家遊戲」, 喬帕是親戚 英國的盧多和美國的帕切西 是同一個根本种族的商業后代",
@@ -1390,13 +1411,13 @@
       "name": "帕奇西"
     },
     "game-0010": {
-      "description": "麻將借鉴了早期的中式牌和賭牌傳統. 四個玩家在讀取丟棄物時, 向著完整的手建立焊接。 區域風格各有不同,",
+      "description": "麻將借鉴了早期的中式牌和賭牌傳統. 四個玩家在讀取丟棄物時, 向著完整的手建立焊接。",
       "howToPlay": [
         "建築並加入四乍牆; 用骰子打破 。",
         "交易手(通常是13塊瓦;14塊) 東方先丟棄物",
         "畫或要求丟棄 。",
         "形 c,委员会将s, k,并一对.",
-        "完全宣布麻將;"
+        "Declare mahjong on a complete hand; score by regional rules."
       ],
       "requirements": [
         "144瓦",
@@ -1409,10 +1430,11 @@
         "快速的,面向流行的风格。",
         "NMJL牌手和小丑。"
       ],
-      "name": "麻將"
+      "name": "麻將",
+      "fallbackEn": true
     },
     "game-0011": {
-      "description": "中國多米諾斯與骰子面對有關; 封鎖、打分、訓練遊戲都分享符合 pip 的結局,",
+      "description": "Chinese dominoes relate to dice face pairs; European double-six sets spread via Italy and France. Blocking, scoring, and train games all share matching pip ends—one tool, many table cultures.",
       "howToPlay": [
         "向下拉手",
         "每變種有雙重或最高的瓦片",
@@ -1429,10 +1451,11 @@
         "雙进行必要的派對",
         "普通的客廳封鎖/拖動規則。"
       ],
-      "name": "多米諾"
+      "name": "多米諾",
+      "fallbackEn": true
     },
     "game-0012": {
-      "description": "Mills遊戲形成三進制以捕捉 在中世紀歐洲, 南部的摩拉巴拉巴(Southern African moraba)與牧師「牛」比喻是一樣根本的爭議,",
+      "description": "Mills games form three-in-a-row to capture. Boards are cut into cloister benches across medieval Europe. Southern African morabaraba is the same fundamental mills contest with pastoral ‘cow’ metaphors—catalogued here as variations, not separate inventions.",
       "howToPlay": [
         "將棋子交替放在空點上, 直到全部九點都落下 。",
         "沿線移到相邻點 。",
@@ -1446,14 +1469,15 @@
       ],
       "idealParticipants": "2人",
       "variationNotes": [
-        "南部非洲磨坊每邊有12頭牛;",
+        "Southern African mills with 12 cows per side; school sport form.",
         "同樣的磨坊遊戲的祖魯名字.",
         "大片數磨坊的變型."
       ],
-      "name": "九子棋"
+      "name": "九子棋",
+      "fallbackEn": true
     },
     "game-0013": {
-      "description": "Alquerque在排行板上的跳跃捕捉, 歐洲翻譯者/檢查者將此 不用了, 撒哈拉的哈爾巴加遊戲和相关的马格里布遊戲,",
+      "description": "Alquerque’s leaping captures on a lined board are documented in Alfonso X’s Book of Games. European draughts/checkers moved the idea onto a checkered board. Saharan kharbaga and related Maghreb games belong to the same leap-capture family—variations of one hunting geometry.",
       "howToPlay": [
         "相對方有陣列",
         "移到一線的相邻空點( 或檢查符中的暗方形) 。",
@@ -1471,7 +1495,8 @@
         "10×10 与飛王板.",
         "撒哈拉人跳樓的親戚"
       ],
-      "name": "阿爾克爾克 / 跳棋族"
+      "name": "阿爾克爾克 / 跳棋族",
+      "fallbackEn": true
     },
     "game-0014": {
       "description": "Fanorona是馬達加斯加國際棋盤遊戲, 混亂的線索捕捉會 產生尖锐的策略。 口述歷史與王室政治與",
@@ -1511,7 +1536,7 @@
       "name": "卡羅姆"
     },
     "game-0016": {
-      "description": "玩牌可能來自中國的錢卡想法, 法國服裝成為全球數以千計的遊戲標準工具。 區域甲板是同樣的便携式遊戲平台的變化,",
+      "description": "玩牌可能來自中國的錢卡想法, 法國服裝成為全球數以千計的遊戲標準工具。",
       "howToPlay": [
         "按所選的牌局打牌",
         "跟隨那場比賽的規矩",
@@ -1537,7 +1562,7 @@
         "讀者呼喊詩歌的前半部分。",
         "玩家竞相打出相對的結局牌 。",
         "拿好牌,繼續拍攝",
-        "對於Hanafuda/koi-koi:交易,",
+        "For hanafuda/koi-koi: deal, capture by matching months, and declare yaku.",
         "同意你交易前扮演的 卡洛塔家族"
       ],
       "requirements": [
@@ -1549,10 +1574,11 @@
         "12個月的花卡",
         "一百个诗歌卡比比赛"
       ],
-      "name": "花札 / 歌留多"
+      "name": "花札 / 歌留多",
+      "fallbackEn": true
     },
     "game-0018": {
-      "description": "甘吉法(Ganjifa)是莫卧儿和印度大區法院的圓形彩色卡片, 服裝系統(Mughal, Dashavatara)不同,",
+      "description": "Ganjifa are circular painted cards of Mughal and regional Indian courts, later folk-crafted in places such as Odisha. Suit systems (Mughal, Dashavatara) differ, but trick-taking court hierarchies unite them as one painted-card tradition.",
       "howToPlay": [
         "洗牌要小心",
         "處理區域的手勢 。",
@@ -1568,14 +1594,15 @@
       "variationNotes": [
         "10瓦塔服裝系統"
       ],
-      "name": "甘吉法"
+      "name": "甘吉法",
+      "fallbackEn": true
     },
     "game-0019": {
       "description": "羊或山羊的骨頭是無處不在的古老骰子 用于玩耍和占卜 孩童拋棄並抓获, 現代JJ是同樣傳統的技術後裔",
       "howToPlay": [
         "手背上抓著",
-        "找回錯失的碎片,",
-        "賭博時,",
+        "Recover missed pieces without disturbing caught ones (local rules vary).",
+        "For gambling forms, compare which faces land up.",
         "玩到商定的分數",
         "在沒有真骨時使用复制品 。"
       ],
@@ -1589,7 +1616,8 @@
         "韓國五石皮卡技術賽",
         "斯通托斯接力賽"
       ],
-      "name": "羊拐骨"
+      "name": "羊拐骨",
+      "fallbackEn": true
     },
     "game-0020": {
       "description": "現代的yo-yo興起穿梭在菲律賓製造商和美國品牌。 睡眠、旋轉和弦樂把一個簡單的旋轉器變成一個技術語言 比賽判斷难度和風格",
@@ -1616,7 +1644,7 @@
         "集合風筝,檢查溫泉和平衡",
         "回到風中,有幫助者 握住或發射當你拉鏈緊張。",
         "以直線角度向上; 在穩定的風中爬升。",
-        "在戰鬥變體中,",
+        "In fighter variants, maneuver to cut an opponent’s line.",
         "在暴風雨前降落,從不靠近電源線"
       ],
       "requirements": [
@@ -1630,7 +1658,8 @@
         "巨大的公園風筝和戰事.",
         "巴西拳擊街文化."
       ],
-      "name": "放風箏"
+      "name": "放風箏",
+      "fallbackEn": true
     },
     "game-0022": {
       "description": "3 人 近 近 近 人 近 近 人 近  不行 3 人 近 近 人 近 人 近 近 人 近 人 近 人 近 人 近 近 人 近 人 近 近 人 近 人 近 近 人 近 人 近 近 人 近 近 人 近 近 人 人 近 人 近 人 近 人 近 人 近 人 、 、 、 、 、 ( 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、体现了 、 、 、 、 、 、 、 、 、 、 、 程序 、 、 、 、 、 、 、 程序 、 、 程序 程序 、 程序 、的了解 、 程序 程序 程序 程序 程序 程序 程序 程序  數目依次交換, 人類學家記錄了數百種與故事相關的命名模式。",
@@ -1653,7 +1682,7 @@
       "name": "翻花繩"
     },
     "game-0023": {
-      "description": "Jianzi 保留了羽毛穿梭雀高空, Circle play 建立節奏; 獨奏 play 建立十分重视的數目記錄 。 韓國的Jegichagi與越南的QQ cầu是同樣的基礎腳步賽,",
+      "description": "Jianzi 保留了羽毛穿梭雀高空, Circle play 建立節奏; 獨奏 play 建立十分重视的數目記錄 。",
       "howToPlay": [
         "把穿梭雀扔到你的腳上",
         "用內足踢,外足踢,或膝蓋 保持它空中。",
@@ -1692,11 +1721,11 @@
       "name": "藤球"
     },
     "game-0025": {
-      "description": "在東北原住民國家中, 法國觀察者稱它為曲棍球 現代規定體育規則,",
+      "description": "Stickball among northeastern Indigenous nations held spiritual and diplomatic weight—the Creator’s game. French observers named it lacrosse. Modern codes formalized sport rules, but cradling and scoring with a netted stick continue a deep tradition.",
       "howToPlay": [
         "組成兩支球隊并設下目標",
         "面朝中間",
-        "帶上、傳球、用棍子口袋射擊,",
+        "Carry, pass, and shoot using the stick pocket (no hand on ball in field rules).",
         "把球打進球門",
         "最終得分最高"
       ],
@@ -1709,7 +1738,8 @@
       "variationNotes": [
         "雙棒球比賽 不同儀式背景"
       ],
-      "name": "長曲棍球"
+      "name": "長曲棍球",
+      "fallbackEn": true
     },
     "game-0026": {
       "description": "中美球會使用重橡皮球, 宗教、政治、體育相互交织 現代烏拉瑪在西納羅亞以活生生的後裔身份繼續嘻哈球演奏.",
@@ -1732,7 +1762,7 @@
       "name": "中美洲球戲 / 烏拉馬"
     },
     "game-0027": {
-      "description": "Kokeshi是北韓的木偶, 區域學校(Naruko, Tsuchiyu等)頭部關節和花渊畫不同,",
+      "description": "Kokeshi are limbless lathe-turned wooden dolls from northern Honshu onsen towns—first souvenirs and children’s toys, now collected art. Regional schools (Naruko, Tsuchiyu, and others) differ in head joints and floral painting.",
       "howToPlay": [
         "顯示或持有此玩偶; 沒有競爭的分數 。",
         "孩童可能會在Kokeshi周圍發明培育故事。",
@@ -1748,7 +1778,8 @@
       "variationNotes": [
         "點擊主校園風格 。"
       ],
-      "name": "小芥子"
+      "name": "小芥子",
+      "fallbackEn": true
     },
     "game-0028": {
       "description": "馬特羅什卡筑巢娃娃下列各项, 並成為全球藝術偶像。",
@@ -1766,7 +1797,7 @@
       "name": "俄羅斯套娃"
     },
     "game-0029": {
-      "description": "孩童會在枕頭下撒尿, 我们还是會說: 人們說,",
+      "description": "Guatemalan worry dolls are tiny figures to whom children tell troubles before placing them under a pillow. Folklore says the dolls carry the worries overnight—a ritual of voice and comfort more than competitive play.",
       "howToPlay": [
         "每個娃娃都擔心",
         "把它們放在枕頭下 或放在盒子里",
@@ -1779,7 +1810,8 @@
         "盒子或枕頭"
       ],
       "idealParticipants": "獨自一人",
-      "name": "憂慮娃娃"
+      "name": "憂慮娃娃",
+      "fallbackEn": true
     },
     "game-0030": {
       "description": "玉米壳娃娃在多個原住民國家及後來鄉村定居者中傳統存在。 臉部常空白, 做娃娃是一半的玩法。",
@@ -1787,7 +1819,7 @@
         "浸泡壳; 折叠和綁住頭依然是手臂, 身體或裙子。",
         "空气干完的娃娃。",
         "創作照顧遊戲或展示圖片。",
-        "在傳統中學習時,",
+        "Follow community protocols when learning inside a living tradition.",
         "保持娃娃干燥以防止模毗."
       ],
       "requirements": [
@@ -1796,10 +1828,11 @@
         "可選擇的玉米卷毛"
       ],
       "idealParticipants": "獨自一人",
-      "name": "玉米殼娃娃"
+      "name": "玉米殼娃娃",
+      "fallbackEn": true
     },
     "game-0031": {
-      "description": "杯球玩具挑戰手眼的時間:把捆綁的球打成杯子或打成尖 法國的Bilboquet、墨西哥的balero以及日本的kendama,",
+      "description": "Cup-and-ball toys challenge hand-eye timing: swing a tethered ball into a cup or onto a spike. French bilboquet, Mexican balero, and Japanese kendama are variations of one skill family with different vocabularies of tricks.",
       "howToPlay": [
         "握住手柄,把球掛在繩子上",
         "向上轉,在杯子或尖刺上接球",
@@ -1816,7 +1849,8 @@
         "多杯尖端玩具 和大把的字典。",
         "歐洲客廳依旧是杯球"
       ],
-      "name": "杯與球 / 劍玉族"
+      "name": "杯與球 / 劍玉族",
+      "fallbackEn": true
     },
     "game-0032": {
       "description": "棕色把一個方形分解成七個棕色 用来形成 s 在19世紀, 幾何變化與負面 但这正是玩具的安靜課程。",
@@ -1835,7 +1869,7 @@
       "name": "七巧板"
     },
     "game-0033": {
-      "description": "Erná Rubik的立方體廣泛化三維拼圖, 層问题的讨论力學把團體理論藏在多彩的玩具裡 快速孵 Pearling文化增加了算法、硬件和運動時間,",
+      "description": "Ernő Rubik’s cube popularized three-dimensional combination puzzles worldwide. Layer-turn mechanics hide group theory inside a colorful toy. Speedcubing culture added algorithms, hardware, and sport timing—still one puzzle at heart.",
       "howToPlay": [
         "隨意轉動臉",
         "用層面方法或直覺把每張面孔恢復到坚实的顏色 。",
@@ -1851,7 +1885,8 @@
         "相同的機制的更小的排序.",
         "具有还原方法的高序立方体。"
       ],
-      "name": "魔術方塊"
+      "name": "魔術方塊",
+      "fallbackEn": true
     },
     "game-0034": {
       "description": "堆積物是最古老的建築玩具之一, 弗羅貝爾的禮物在19世紀正式化的 教育街區演出 其根本作用是從模組固件組合成形",
@@ -1923,13 +1958,14 @@
       ],
       "idealParticipants": "2支工作队",
       "variationNotes": [
-        "在儀式曆事項目中,",
+        "Communal ropes in ritual calendar events.",
         "節日的村莊拖拉儀式"
       ],
-      "name": "拔河"
+      "name": "拔河",
+      "fallbackEn": true
     },
     "game-0038": {
-      "description": "也 它排練了隱形的 空間的記憶 以及被發現的社會刺激 從Kasbah小巷到公寓樓梯,",
+      "description": "Hide-and-seek is a near-universal children’s game with countless local names and counting rhymes. It rehearses stealth, spatial memory, and the social thrill of being found. Architecture—from kasbah alleys to apartment stairwells—reshapes strategy.",
       "howToPlay": [
         "選擇尋求者; 其他人在尋求者數目時隱藏 。",
         "搜捕者呼叫和搜索",
@@ -1945,7 +1981,8 @@
       "variationNotes": [
         "反向躲藏:一藏,二藏加入藏地."
       ],
-      "name": "捉迷藏"
+      "name": "捉迷藏",
+      "fallbackEn": true
     },
     "game-0039": {
       "description": "隨著地區的形狀與韵律, 平衡 轉身 和人行道 粉筆藝術在一個簡單的比賽中 穿過數字的細胞",
@@ -2015,7 +2052,7 @@
         "把 王 和 守 衛 的 人 放在 中央 、 攻 擊 的 人 在 邊緣",
         "攻擊者在很多重建中居第一",
         "所有棋子都像蟑螂一樣移動,但無法跳動。",
-        "攻擊者以捕捉國王(兩、四方依規矩而定)而贏;",
+        "Attackers win by capturing the king (two or four sides depending on rules); defenders win if the king reaches a corner or edge sanctuary.",
         "同意在競爭前進行公開重建"
       ],
       "requirements": [
@@ -2024,16 +2061,17 @@
       ],
       "idealParticipants": "2人",
       "variationNotes": [
-        "Linnaeus記錄了Sámi Tablut,",
+        "Linnaeus recorded Sámi tablut—same tafl family.",
         "愛爾蘭的塔弗爾親戚在小板上"
       ],
-      "name": "王桌棋"
+      "name": "王桌棋",
+      "fallbackEn": true
     },
     "game-0043": {
       "description": "十字架上的非對稱獵: 雁要抓住一只跳跃的狐狸。 歐洲的客廳表單以表兄弟為單位。",
       "howToPlay": [
         "把大雁放在一端 和狐狸集中或相反的規矩。",
-        "雁先走或次走,",
+        "Geese move first or second by agreement; they walk without jumping.",
         "狐狸可能會跳過邻近的雁來抓捕.",
         "雁取胜于令狐;狐取胜于擒足.",
         "如果沒有歷史紀錄板, 請使用現代印刷的狐狸與地盤 。"
@@ -2047,10 +2085,11 @@
         "獵兔的對比",
         "螺旋掠食者-掠食者族表弟."
       ],
-      "name": "狐狸與鵝"
+      "name": "狐狸與鵝",
+      "fallbackEn": true
     },
     "game-0044": {
-      "description": "在Go類型的網格上, 和戈的地盤有區別,",
+      "description": "Five-in-a-row on a Go-like grid is an ancient East Asian pastime formalized as gomoku and renju. Distinct from Go's territory scoring—the goal is a straight five.",
       "howToPlay": [
         "黑色的位置先在十字路口",
         "玩家另置一塊石頭",
@@ -2066,7 +2105,8 @@
       "variationNotes": [
         "平衡的競爭規矩"
       ],
-      "name": "五子棋"
+      "name": "五子棋",
+      "fallbackEn": true
     },
     "game-0045": {
       "description": "Reversi翻過三明治碟片, 奧塞羅將現代品牌和開發标准化 一個純粹的布置和飛行比賽 和爆炸性的比賽",
@@ -2088,13 +2128,13 @@
       "name": "黑白棋 / 奧賽羅"
     },
     "game-0046": {
-      "description": "拼字遊戲為字面字樣格上的字母分配點數值, 上面有溢价方塊 。 由於美國的填字文化,",
+      "description": "拼字遊戲為字面字樣格上的字母分配點數值, 上面有溢价方塊 。",
       "howToPlay": [
         "畫出 7 塊; 在中星中排第一個字 。",
         "建立連接现有字母填字型的新單字 。",
         "分數字母值乘以溢价; 每轉 怎么了 ?",
         "每次玩完就抽回七塊牌子",
-        "瓦片耗盡時得分最高,"
+        "Highest score when tiles run out and one player empties their rack wins."
       ],
       "requirements": [
         "拼字板",
@@ -2103,16 +2143,17 @@
         "挑戰字典"
       ],
       "idealParticipants": "2-4人",
-      "name": "拼字遊戲"
+      "name": "拼字遊戲",
+      "fallbackEn": true
     },
     "game-0047": {
-      "description": "Paramapada sopanam / Gyan chaupar 教因果, 英國的蛇和梯子將孩子的競爭世俗化,",
+      "description": "Paramapada sopanam / gyan chaupar taught karma with virtues as ladders and vices as snakes. British Snakes and Ladders secularized the race for children—same fundamental up-and-down morality track.",
       "howToPlay": [
         "將符號從棋盤上移出; 滾入 。",
         "向死神前進",
         "降落在爬梯基地上;降落在蛇頭上滑下.",
         "可能需要精确的卷子完成 。",
-        "以以以以以以以以以以以以以以以以以以或以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以公民资格以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以以"
+        "First to the final square wins."
       ],
       "requirements": [
         "有蛇和梯子的网格板",
@@ -2124,12 +2165,13 @@
         "教父有美德和惡習",
         "美國密爾頓 布拉德利的品牌 同一種种族。"
       ],
-      "name": "蛇梯棋"
+      "name": "蛇梯棋",
+      "fallbackEn": true
     },
     "game-0048": {
       "description": "地產交易種族遊戲批評或慶祝地產資本主義。 Magie's Landlord's Game 之前帕克兄弟的垄断。 本地版將世界城市映射到同一套買租銀行環路上。",
       "howToPlay": [
-        "每個玩家從分配的現金開始,",
+        "Each player starts with allotted cash and a token at Go.",
         "或付房租。",
         "在完整的彩色套裝上建造房屋/酒店。",
         "管理抵押和交易。",
@@ -2144,10 +2186,11 @@
       "variationNotes": [
         "伊麗莎白·瑪吉教祖師"
       ],
-      "name": "大富翁"
+      "name": "大富翁",
+      "fallbackEn": true
     },
     "game-0049": {
-      "description": "Jenga將古老的興奮正式化, Leslie Scott在全球銷售了塔牌遊戲;",
+      "description": "Jenga formalizes the ancient thrill of removing pieces from a stack without collapse. Leslie Scott marketed the tower game globally; the physical puzzle is one shared stack for all players.",
       "howToPlay": [
         "依三層交替建塔。",
         "轉過身來,用一隻手去掉不完全的頂層下面的一個區塊",
@@ -2160,7 +2203,8 @@
         "俨然表"
       ],
       "idealParticipants": "1-8人",
-      "name": "疊疊樂"
+      "name": "疊疊樂",
+      "fallbackEn": true
     },
     "game-0050": {
       "description": "中國的Kongzhu / diabolo在棍棒、加速與自殺之間旋轉, 歐洲馬戲團收養并更名為迪亞博洛",
@@ -2177,9 +2221,10 @@
       ],
       "idealParticipants": "一個人",
       "variationNotes": [
-        "中國人名與民俗/圈士傳統,"
+        "Chinese name and folk/circus tradition for the same spool toy."
       ],
-      "name": "扯鈴"
+      "name": "扯鈴",
+      "fallbackEn": true
     },
     "game-0051": {
       "description": "拾取棒( spillikins, justraws) 掉入t中; 玩家不移動他人就提取棒 。 顏色值得分 。 一個安靜的客廳測試 精被用作引擎控制。",
@@ -2237,11 +2282,11 @@
       "name": "玩具士兵"
     },
     "game-0054": {
-      "description": "迷你茶具讓孩子排練招待儀式 從英國到日本, 社會劇本,",
+      "description": "Miniature tea sets let children rehearse hospitality rituals. Porcelain and tin versions tracked adult tea cultures from Britain to Japan. Social scripts—pouring, offering, thanking—are the real ruleset.",
       "howToPlay": [
         "為玩偶或朋友設定位置。",
         "倒杯茶(真杯或假杯)",
-        "的问题是,",
+        "Practice serving order and polite phrases.",
         "清洗和收放 玩的一部分。",
         "沒有得分 – 角色扮演遊戲 。"
       ],
@@ -2250,7 +2295,8 @@
         "可選擇的水/沙子"
       ],
       "idealParticipants": "1-4人",
-      "name": "玩具茶具"
+      "name": "玩具茶具",
+      "fallbackEn": true
     },
     "game-0055": {
       "description": "斯林基人會把潜在的能量轉換成末端的樓梯步行 海軍春天工程的意外 成為了全球的桌子和樓梯玩具",
@@ -2285,7 +2331,7 @@
       "name": "飛盤"
     },
     "game-0057": {
-      "description": "保持一個小充分享有, 圓圈的「 Sunny 」 會議强调風格與分享,",
+      "description": "Keeping a small bag aloft with feet echoes older Eurasian kickbag play. Circle 'sunny' sessions emphasize style and sharing over scoring.",
       "howToPlay": [
         "把袋子扔到腳上 輕輕地往上踢",
         "用腳 膝蓋 和大腿 不要手",
@@ -2301,10 +2347,11 @@
       "variationNotes": [
         "古老的踢球傳統與精神相關"
       ],
-      "name": "踢沙包"
+      "name": "踢沙包",
+      "fallbackEn": true
     },
     "game-0058": {
-      "description": "也用於不回來的捕獵方式。 觀光運動的潮流简化了回歸的玩具;",
+      "description": "Returning boomerangs are precision-carved throwing sticks from Aboriginal Australian traditions, also used in hunting forms that do not return. Tourist sport boomerangs simplify the returning toy; cultural knowledge of designs remains with communities.",
       "howToPlay": [
         "只能用在大清澈的田地上 沒有人能下游",
         "扔到那個形狀所學到的角度",
@@ -2318,7 +2365,8 @@
         "建议监测器"
       ],
       "idealParticipants": "獨自一人",
-      "name": "回力鏢"
+      "name": "回力鏢",
+      "fallbackEn": true
     },
     "game-0059": {
       "description": "毛利波依在舞蹈鐵車手腕節奏和故事說法裡 傳統背景仍是文化習慣。",
@@ -2326,7 +2374,7 @@
         "持戒有重者免人.",
         "旋轉在簡單的邊圈 跳到一拍",
         "隨技能增長而加入模式 。",
-        "在文化表演中,",
+        "In cultural performance, follow song and choreography.",
         "只有專業安全專業才能使用火藥"
       ],
       "requirements": [
@@ -2334,10 +2382,11 @@
         "清除旋轉半徑"
       ],
       "idealParticipants": "單獨或群組",
-      "name": "火舞球"
+      "name": "火舞球",
+      "fallbackEn": true
     },
     "game-0060": {
-      "description": "Surakarta是一款爪哇內斯捕捉遊戲, 捕捉是循環而來,",
+      "description": "Surakarta is a Javanese capture game where pieces travel circuits around colored loops. Captures follow the loops rather than simple jumps—an elegant regional strategy toy.",
       "howToPlay": [
         "板子上有數據",
         "移至相邻的空點 。",
@@ -2350,13 +2399,14 @@
         "每邊12件"
       ],
       "idealParticipants": "2人",
-      "name": "蘇拉卡爾塔"
+      "name": "蘇拉卡爾塔",
+      "fallbackEn": true
     },
     "game-0061": {
-      "description": "Dakon 是 Javanese congkak 家族播種板, 在曼卡拉,",
+      "description": "Dakon is a Javanese congkak-family sowing board, often elaborately carved. It is presented as a named regional standard within mancala while remaining one sowing family.",
       "howToPlay": [
         "用傳統的种子數填滿杯子 。",
-        "依時機或當地規則,",
+        "Sow clockwise or per local rule into cups and stores.",
         "如果規定允許, 在你的店里結束時會中继 。",
         "每個 dakon 模式 。",
         "大部分的种子都贏了"
@@ -2367,12 +2417,13 @@
       ],
       "idealParticipants": "2人",
       "variationNotes": [
-        "相當相關的馬來船板播種遊戲,"
+        "Closely related Malay boat-board sowing game—same family."
       ],
-      "name": "達孔"
+      "name": "達孔",
+      "fallbackEn": true
     },
     "game-0062": {
-      "description": "Sungka是菲律賓船形的播種遊戲, 板子是家傳寶物;",
+      "description": "Sungka is the Filipino boat-shaped sowing game, cousin to congkak. Boards are household heirlooms; play mixes speed sowing with capture timing.",
       "howToPlay": [
         "每個小杯子裡都有相同的種子",
         "向傳統方向吸食和播種",
@@ -2386,9 +2437,10 @@
       ],
       "idealParticipants": "2人",
       "variationNotes": [
-        "馬來人相对而言,"
+        "Malay relative—variation within sowing boat boards."
       ],
-      "name": "松卡"
+      "name": "松卡",
+      "fallbackEn": true
     }
   },
   "es": {
@@ -2818,7 +2870,7 @@
       "requirements": [
         "[es] Kite",
         "Línea de vuelo",
-        "Abrir espacio de viento lejos de las líneas de energía"
+        "Open windy space away from power lines"
       ],
       "idealParticipants": "Solos o 2 personas",
       "variationNotes": [
@@ -2826,7 +2878,8 @@
         "Gatos gigantes y eventos de combate.",
         "Cultura callejera de caza brasileño."
       ],
-      "name": "Cometas"
+      "name": "Cometas",
+      "fallbackEn": true
     },
     "game-0022": {
       "description": "Las figuras de cuna y cadena relacionadas de gato aparecen del Ártico a Oceanía con una similitud sorprendente. Las figuras pasan entre manos en secuencia, capacitando la memoria espacial y la cooperación. Los antropólogos registraron cientos de patrones de nombre ligados a historias.",
@@ -4785,10 +4838,10 @@
   },
   "ar": {
     "game-0001": {
-      "description": "الشطرنج تطورت من الدردشة، محاكاة حربية للمشاة، الفرسان، الفيلة، العربات. عندما سافرت عبر بيرسيا (شترانج) إلى العالم الإسلامي والعصور الوسطى في أوروبا، أصبحت القطع في مرتبة المحكمة. الملكة الحديثة وقوى الأسقف تبلورت في أواخر العصور الوسطى في أوروبا عبر الثقافات وقفت للتعلم والبصر والراحة المتعلمة",
+      "description": "الشطرنج تطورت من الدردشة، محاكاة حربية للمشاة، الفرسان، الفيلة، العربات. عندما سافرت عبر بيرسيا (شترانج) إلى العالم الإسلامي والعصور الوسطى في أوروبا، أصبحت القطع في مرتبة المحكمة.",
       "howToPlay": [
         "توجه اللوحة حتى يكون لكل لاعب مربع ضوء على الزاوية اليمنى",
-        "ضع قطعاً في المرتبة الخلفية (الفارس، الأسقف، الملكة على لونها، الملك، الأسقف، الفرسان، الروك)",
+        "Place pieces on the back rank (rook, knight, bishop, queen on her color, king, bishop, knight, rook) with pawns on the second rank.",
         "الحركات البيضاء أولاً؛ اللاعبون المناوبون يحركون قطعة واحدة (إلا عند القذف).",
         "نلتقطها بالهبوط على قطعة خصم يفوز بالتحقق من الملك",
         "استخدام حركات خاصة عندما تكون قانونية: القذف، والمرور، وترقية الرهن."
@@ -4806,10 +4859,11 @@
         "ابن عم الشطرنج التايلندي مع قوى مختلفة وقواعد ترقية.",
         "الشطرنج البورمية مع تجهيزات مجانية خلف الرهانات"
       ],
-      "name": "الشطرنج"
+      "name": "الشطرنج",
+      "fallbackEn": true
     },
     "game-0002": {
-      "description": "الذهاب هو لعبة السخرية من الإقليم. الحجارة لا تتحرك أبداً مرة واحدة.. One of the Four Arts of the Chinese scholar, it spread to Korea (baduk) and Japan (igo). ألعب التوازن والتأثير وشكل المعيشة بدلاً من القبض مباشرة على ملك",
+      "description": "الذهاب هو لعبة السخرية من الإقليم. الحجارة لا تتحرك أبداً مرة واحدة.. One of the Four Arts of the Chinese scholar, it spread to Korea (baduk) and Japan (igo).",
       "howToPlay": [
         "السود يضعون أول حجر على تقاطع الشبكة",
         "اللاعبون يتناوبون على وضع حجر واحد، والحجارة لا تتحرك بعد التنسيب.",
@@ -4830,7 +4884,7 @@
       "name": "الغو (ويتشي)"
     },
     "game-0003": {
-      "description": "Xiangqi (Chinese chess) ranges generals, advisors, elephants, horses, chariots, cannons, and soldiers on a lined board crossed by a river. إن قفزة المدفع إلى الحجز والقصر تعطيه نكهة تكتيكية متميزة عن الشطرنج الدولية. لا تزال حديقة محبوبة ولعبة شارع عبر الصين",
+      "description": "Xiangqi (Chinese chess) ranges generals, advisors, elephants, horses, chariots, cannons, and soldiers on a lined board crossed by a river. إن قفزة المدفع إلى الحجز والقصر تعطيه نكهة تكتيكية متميزة عن الشطرنج الدولية.",
       "howToPlay": [
         "قطع غريبة على نقاط البداية على الجانب الآخر من النهر",
         "تحركات حمراء أولاً، وتتحرك القطع على النقاط حسب نوعها.",
@@ -4894,7 +4948,7 @@
       "name": "ألعاب المنقلة / البذر"
     },
     "game-0006": {
-      "description": "وتمتد ألعاب النرد الراقص من لعبة أور الملكية إلى طاولات فارسية وأوروبية. (باكجامون) يمزّق الحظ والمهارة كلاعبين يتحملون خمسة عشر راكباً بينما يضربون الرجال المكعب المزدوج هو طبقة استراتيجية حديثة",
+      "description": "وتمتد ألعاب النرد الراقص من لعبة أور الملكية إلى طاولات فارسية وأوروبية.",
       "howToPlay": [
         "جهزوا الشيكات في تشكيلة الافتتاح القياسية على الـ 24 نقطة",
         "ادفعي نردين وحركي راكبي الشيكات إلى الأمام باستخدام كلا الرقمين",
@@ -4955,7 +5009,7 @@
       "name": "باتولي"
     },
     "game-0009": {
-      "description": "أما الباتشيسي - وهو &quot; لعبة وطنية في الهند &quot; - فهو سباق متقاطع ومعقد يلعب تقليديا مع الأبقار. الشابار قريب من المحكمة بريطانيا (لودو) و (بارشيزي) أمريكيان هما خزائن تجاريين من نفس العرق الأساسي",
+      "description": "أما الباتشيسي - وهو &quot; لعبة وطنية في الهند &quot; - فهو سباق متقاطع ومعقد يلعب تقليديا مع الأبقار.",
       "howToPlay": [
         "كل لاعب يجلس على ذراع الصليب بأربع قطع في العش",
         "رمي الأبقار أو النرد؛ دخول القطع عندما يسمح الرمية.",
@@ -5062,7 +5116,7 @@
       "name": "عائلة القرق / الضامة"
     },
     "game-0014": {
-      "description": "فونوراونا هي لعبة المجلس الوطني لمدغشقر المتمثلة في النهج والاستيلاء على الانسحاب. التقاط خط المطاردة يخلق أساليب حادة. التاريخ الشفهي يربط الألواح بالسياسة الملكية والتنافس المجتمعي",
+      "description": "فونوراونا هي لعبة المجلس الوطني لمدغشقر المتمثلة في النهج والاستيلاء على الانسحاب. التقاط خط المطاردة يخلق أساليب حادة.",
       "howToPlay": [
         "املأ اللوحة باستثناء المركز والحركات البيضاء أولاً",
         "نقل قطعة واحدة إلى نقطة فارغة مجاورة على طول خط.",
@@ -5078,7 +5132,7 @@
       "name": "فانورونا"
     },
     "game-0015": {
-      "description": "(كاروم) هي لعبة مضرب محبوبة عبر جنوب آسيا و المغتربين اللاعبون يضربون مضرباً لرجال الجزر، مع الملكة التي تحتاج إلى غطاء. إنه يمزّق (بيلياردز) مع القدرة على الاجتماع",
+      "description": "(كاروم) هي لعبة مضرب محبوبة عبر جنوب آسيا و المغتربين اللاعبون يضربون مضرباً لرجال الجزر، مع الملكة التي تحتاج إلى غطاء.",
       "howToPlay": [
         "ضعوا اللوحة بشكل خفيف و ضعوا أجزاء في المركز مع الملكة في المنتصف",
         "اضغط على المضرب من خط قاعدتك لضرب لونك في الجيوب",
@@ -5159,7 +5213,7 @@
       "name": "غنجيفة"
     },
     "game-0019": {
-      "description": "عظام الخراف أو الماعز كانت نرد قديماً من أجل اللعب و الإنقراض Children tosed and caught them; adults wagered on faces. الرافعات الحديثة هي مهارة تنحدر من نفس التقاليد",
+      "description": "عظام الخراف أو الماعز كانت نرد قديماً من أجل اللعب و الإنقراض Children tosed and caught them; adults wagered on faces.",
       "howToPlay": [
         "ارمي الكنز و امسكهم على ظهر اليد",
         "[ar] Recover missed pieces without disturbing caught ones (local rules vary).",
@@ -5180,7 +5234,7 @@
       "name": "الكعب"
     },
     "game-0020": {
-      "description": "ألعاب الأقراص تظهر في الفن القديم.. النوم، والثغرة، وخدع الخيوط تحول دوار بسيط إلى محرك مهارة. المنافسات تحكم على الصعوبة والأسلوب",
+      "description": "ألعاب الأقراص تظهر في الفن القديم.. النوم، والثغرة، وخدع الخيوط تحول دوار بسيط إلى محرك مهارة.",
       "howToPlay": [
         "اربطي الخيط على اصبعك واريحي اليويو",
         "ارمى بقوة حتى تنام فى القاع",
@@ -5221,7 +5275,7 @@
       "name": "الطائرات الورقية"
     },
     "game-0022": {
-      "description": "وتظهر أرقام المهد والسلاسل ذات الصلة في قطة من القطب الشمالي إلى أوقيانوسيا مع التشابه الحاد. وتمر الأرقام بين اليدين بالتسلسل، وتدريب الذاكرة المكانية والتعاون. علماء الأنثروبولوجيا سجلوا مئات من الأنماط المسماة مرتبطة بالقصص",
+      "description": "وتظهر أرقام المهد والسلاسل ذات الصلة في قطة من القطب الشمالي إلى أوقيانوسيا مع التشابه الحاد. وتمر الأرقام بين اليدين بالتسلسل، وتدريب الذاكرة المكانية والتعاون.",
       "howToPlay": [
         "وشكل المهد الافتتاحي على يد أحد اللاعبين.",
         "الشريك يعبر ويرفع الرقم على أيديهم",
@@ -5241,7 +5295,7 @@
       "name": "خيط القطة"
     },
     "game-0023": {
-      "description": "Jianzi keep a feathered shuttlecock aloft with the feet-an accessible park sport across China and diaspora communities. مسرحية الدائرة تُبني الإيقاع، واللعب المنفرد يبني سجلات العد. (جيجيشاغي) الكوري و(فيتنامي دوا كو) هما نفس اللعبة الأساسية",
+      "description": "Jianzi keep a feathered shuttlecock aloft with the feet-an accessible park sport across China and diaspora communities. مسرحية الدائرة تُبني الإيقاع، واللعب المنفرد يبني سجلات العد.",
       "howToPlay": [
         "ارمي المكوك على قدمك",
         "ركلة مع القدم الداخلية، القدم الخارجية، أو الركبة لإبقائه المحمولة جوا.",
@@ -5261,7 +5315,7 @@
       "name": "الجيانزي (الريشة)"
     },
     "game-0024": {
-      "description": "(سيباك تاكراو) يزج بلعبة صافية تشبه الكرة الطائرة بالقدم والركبة والصدر والاتصالات الرأسية فقط وتقع روتس في دائرة مالاي - العالم الركل (سيباك راغا). ركلات الدراجات العلوية تحدد المشهد الحديث",
+      "description": "(سيباك تاكراو) يزج بلعبة صافية تشبه الكرة الطائرة بالقدم والركبة والصدر والاتصالات الرأسية فقط وتقع روتس في دائرة مالاي - العالم الركل (سيباك راغا).",
       "howToPlay": [
         "خدم على الشبكة بقدم",
         "ويمكن أن تستخدم الأفرقة ما يصل إلى ثلاثة لمسات قبل العودة (قواعد الإبلاغ).",
@@ -5300,7 +5354,7 @@
       "name": "لا كروس"
     },
     "game-0026": {
-      "description": "واستخدمت كرة المطاط في أمريكا الوسطى الكرات المطاطية الثقيلة التي تضرب أساساً بالورق على المحاكم الرسمية. متقلبة، سياسة، رياضة متداخلة لا يزال (الولاما) الحديث في (سينالوا) يلعب كرة القدم كسلة حيّة",
+      "description": "واستخدمت كرة المطاط في أمريكا الوسطى الكرات المطاطية الثقيلة التي تضرب أساساً بالورق على المحاكم الرسمية.",
       "howToPlay": [
         "الفرق تواجه محكمة طويلة",
         "اضرب الكرة مع الورك (تختلف القواعد البديلة).",
@@ -5354,7 +5408,7 @@
       "name": "ماتريوشكا"
     },
     "game-0029": {
-      "description": "الدمى الغواتيمالية المقلقة هي أرقام صغيرة يُخبر بها الأطفال مشاكل قبل وضعهم تحت الوسادة يقول الناس أن الدمى تحمل القلق بين عشية وضحاها طقوس الصوت والراحة أكثر من اللعب التنافسي",
+      "description": "Guatemalan worry dolls are tiny figures to whom children tell troubles before placing them under a pillow. Folklore says the dolls carry the worries overnight—a ritual of voice and comfort more than competitive play.",
       "howToPlay": [
         "يقلق على كل دمية",
         "ضعهم تحت وسادة أو في صندوقهم ليلاً",
@@ -5367,10 +5421,11 @@
         "الصندوق أو الوسادة"
       ],
       "idealParticipants": "وحيدة",
-      "name": "دمى القلق"
+      "name": "دمى القلق",
+      "fallbackEn": true
     },
     "game-0030": {
-      "description": "ودُمى كورن هوسك تقليدية بين عدة دول من الشعوب الأصلية ومستوطنين ريفيين في وقت لاحق. وكثيراً ما تُترك الواجهات فارغة، مع تدريسات خاصة بالمجتمع المحلي عن السبب. جعل الدمية نصف المسرحية",
+      "description": "ودُمى كورن هوسك تقليدية بين عدة دول من الشعوب الأصلية ومستوطنين ريفيين في وقت لاحق. وكثيراً ما تُترك الواجهات فارغة، مع تدريسات خاصة بالمجتمع المحلي عن السبب.",
       "howToPlay": [
         "أكواخ سوك؛ طوي وربط رأساً وأذرعاً وجسداً أو تنورة",
         "جرف الهواء الدمية المنتهية.",
@@ -5387,7 +5442,7 @@
       "name": "دمية قشر الذرة"
     },
     "game-0031": {
-      "description": "لعبة الكأس والكرة تحدّي توقيت العين اليدويّة: تأرجح كرة ملتوية إلى كوب أو إلى سقف. الـ (بليبوكيت) الفرنسيّ، (باليرو) المكسيكيّ، و(كينداما) اليابانيّة هي إختلافات لعائلة مهارة واحدة",
+      "description": "لعبة الكأس والكرة تحدّي توقيت العين اليدويّة: تأرجح كرة ملتوية إلى كوب أو إلى سقف.",
       "howToPlay": [
         "احمل المقبض مع الكرة معلقة على حبلها",
         "تسبحين للأعلى و تمسكي بالكرة في كوب أو على السجق",
@@ -5462,7 +5517,7 @@
       "name": "مكعبات البناء"
     },
     "game-0035": {
-      "description": "كان (تشونكي) رياضة (ميسيسيبيان بلازا) قرص حجاري ملتوي ورمح يُلقي للتنبؤ بسقوطه الوضع والقمار والألعاب الرياضية التقت بالقرب من الجنيه علم الآثار يتعافى بشكل جيد من الأحجار الكريمة عبر الغرب الأوسط والجنوب",
+      "description": "Chunkey was a Mississippian plaza sport: a rolled stone disk and spears cast to predict its fall. Status, gambling, and athleticism met near mounds. Archaeology recovers finely made chunkey stones across the Midwest and South.",
       "howToPlay": [
         "لاعب واحد يلف حجر الشونكي عبر الأرض",
         "هناك اعمدة اخرى ستتوقف",
@@ -5476,7 +5531,8 @@
         "أرض مكتظة من المستوى"
       ],
       "idealParticipants": "2+ أشخاص",
-      "name": "تشانكي"
+      "name": "تشانكي",
+      "fallbackEn": true
     },
     "game-0036": {
       "description": "Palín (chueca) is a Mapuche stick-and-ball game with communal and ro importance. الفرق تقود الكرة نحو الأهداف على ملعب طويل ولا تزال علامة على جمع هوية مابوتشي.",
@@ -5496,7 +5552,7 @@
       "name": "بالين"
     },
     "game-0037": {
-      "description": "وتظهر حشرة الحرب في طقوس الحصاد والرياضات المدرسية ومهرجانات القرى في جميع أنحاء العالم. وتحتوي بعض أشكال شرق آسيا والمحيط الهادئ على معاني تجميلية للتوازن الموسمي. فريقان، مسابقة تنسيق عنصرية واحدة",
+      "description": "وتظهر حشرة الحرب في طقوس الحصاد والرياضات المدرسية ومهرجانات القرى في جميع أنحاء العالم. وتحتوي بعض أشكال شرق آسيا والمحيط الهادئ على معاني تجميلية للتوازن الموسمي.",
       "howToPlay": [
         "ضعوا خطاً مركزياً وخطاً للفرق",
         "يقبض على الفرق بالتساوي، ويتفادى لف الحبل حول الأطراف في القواعد الرياضية.",
@@ -5638,7 +5694,7 @@
       "name": "الثعلب والإوز"
     },
     "game-0044": {
-      "description": "خمسة في العجلات على شبكة متشابهة هو ماضي قديم في شرق آسيا تم إضفاء طابع رسمي عليه كغوموكو ورينجو. من إقليم (جو) يتجمع الهدف هو خمسة مستقيمين",
+      "description": "خمسة في العجلات على شبكة متشابهة هو ماضي قديم في شرق آسيا تم إضفاء طابع رسمي عليه كغوموكو ورينجو.",
       "howToPlay": [
         "الأماكن السوداء أولاً على تقاطع",
         "اللاعبون يتناوبون وضع حجر واحد.",
@@ -5657,7 +5713,7 @@
       "name": "غوموكو"
     },
     "game-0045": {
-      "description": "العكس على الأقراص الشطيرة للمطالبة بلون الأغلبية (أوثيلو) مُوحّدٌ بعلامة تجارية وفتح. مسابقه نقيه للتنسيب و الشفاه مع حركات متفجرة",
+      "description": "العكس على الأقراص الشطيرة للمطالبة بلون الأغلبية (أوثيلو) مُوحّدٌ بعلامة تجارية وفتح.",
       "howToPlay": [
         "ضع أربعة أقراص في المركز في فتحة أوثيلو",
         "الأماكن السوداء أولا على مربع التي تقلب على الأقل قرص أبيض واحد.",
@@ -5715,7 +5771,7 @@
       "name": "ثعابين وسلالم"
     },
     "game-0048": {
-      "description": "ألعاب سباق تجار الممتلكات أو تحتفل برأسمالية حقيقية (لعبة مالكة (ماغي سبقت حفل (باركر براذرز الطبعات المحلية ترسم خرائط المدن العالمية على نفس الحلقة المفاجئة",
+      "description": "Property-trading race games critique or celebrate real-estate capitalism. Magie's Landlord's Game preceded Parker Brothers' Monopoly. Local editions map world cities onto the same buy-rent-bankrupt loop.",
       "howToPlay": [
         "كل لاعب يبدأ بالنقود المخصصة وتذكرة في جو",
         "النرد، والتحرّك، وشراء العقارات غير المُملوكة التي تهبط فيها أو تُدفع الإيجار.",
@@ -5732,7 +5788,8 @@
       "variationNotes": [
         "(إليزابيث ماجي) تعلم أجدادها"
       ],
-      "name": "مونوبولي"
+      "name": "مونوبولي",
+      "fallbackEn": true
     },
     "game-0049": {
       "description": "(جينجا) تضفي طابعاً رسمياً على الإثارة القديمة بإزالة القطع من كومة دون أن تنهار قام (ليزلي سكوت) بتسويق لعبة البرج على الصعيد العالمي، واللغز المادي هو كومة مشتركة لجميع اللاعبين.",
@@ -5751,7 +5808,7 @@
       "name": "جينغا"
     },
     "game-0050": {
-      "description": "ويدور الكونغزو الصيني/الديابولو على سلسلة بين العصي والعصي، والتسريع، والانتحارات تشكل مفاصل السيرك. السيرك الأوروبيون اعتمدوا عليه وأعادوا تسميته ديابولو",
+      "description": "ويدور الكونغزو الصيني/الديابولو على سلسلة بين العصي والعصي، والتسريع، والانتحارات تشكل مفاصل السيرك.",
       "howToPlay": [
         "ابدأي بالصراخ على الخيط",
         "تسارع مع حركة العصي المتناوبة",
@@ -5770,7 +5827,7 @@
       "name": "ديابولو"
     },
     "game-0051": {
-      "description": "وتسقط عصا التقاط (الزجاجات، والأعشاب) في خندق؛ ويستخرج اللاعبون عصا دون تحريك الآخرين. قيم الألوان اختبار صالون هادئ للتحكم في السيارات",
+      "description": "وتسقط عصا التقاط (الزجاجات، والأعشاب) في خندق؛ ويستخرج اللاعبون عصا دون تحريك الآخرين.",
       "howToPlay": [
         "اثبتوا جيداً في حزمة واطلقوا سراحكم",
         "اللاعبون يسحبون عصا واحدة بدون أن يضربوا الآخرين",
@@ -5806,7 +5863,7 @@
       "name": "مهن"
     },
     "game-0053": {
-      "description": "وقام الجنود المصبوبون أو المطبوعون بمساندة مسرحية الحرب، ثم المغازلة. صانعي القصدير الألمان و بريطانيون ينشرون مجموعات في جميع أنحاء العالم اللعب يمتد من المعارك البسيطة إلى محاكاة القواعد الثقيلة",
+      "description": "وقام الجنود المصبوبون أو المطبوعون بمساندة مسرحية الحرب، ثم المغازلة.",
       "howToPlay": [
         "اري قوتان على طاولة",
         "وحدات متحركة بديلة بخطى بسيطة أو قواعد مقاسة",
@@ -5825,7 +5882,7 @@
       "name": "جنود اللعب"
     },
     "game-0054": {
-      "description": "مجموعات شاي صغيرة تجعل الأطفال يتدربون على طقوس الضيافة (بورسلين) و (القصدير) تتبعوا ثقافات شاي الكبار من (بريطانيا) إلى (اليابان) النصوص الاجتماعية - العرض والشكر هي القواعد الحقيقية",
+      "description": "Miniature tea sets let children rehearse hospitality rituals. Porcelain and tin versions tracked adult tea cultures from Britain to Japan. Social scripts—pouring, offering, thanking—are the real ruleset.",
       "howToPlay": [
         "ضعوا أماكن للدمى أو الأصدقاء",
         "شاي (حقيقي أو خيالي) بدون أكواب",
@@ -5838,10 +5895,11 @@
         "المياه/المياه الاختيارية"
       ],
       "idealParticipants": "١-٤ أشخاص",
-      "name": "طقم شاي لعبة"
+      "name": "طقم شاي لعبة",
+      "fallbackEn": true
     },
     "game-0055": {
-      "description": "(سلينكي) يحوّل الطاقة المُحتملة إلى مُشية في نهاية المطاف. حادث سعيد لهندسة الربيع البحرية أصبح مكتباً عالمياً ولعبة سلحفاة",
+      "description": "(سلينكي) يحوّل الطاقة المُحتملة إلى مُشية في نهاية المطاف.",
       "howToPlay": [
         "ضع السلينكي على خيط الدرج",
         "اربطي العجلة العلوية إلى الخطوة السفلى التالية",
@@ -5857,7 +5915,7 @@
       "name": "سلينكي"
     },
     "game-0056": {
-      "description": "Flying discs formalizedshore and park tosing; ultimate and disc added sport frames. اللعبه الأساسيه هي صفيحة غطس يدوية",
+      "description": "Flying discs formalizedshore and park tosing; ultimate and disc added sport frames.",
       "howToPlay": [
         "امسح القرص بأصابع تحت الضلع",
         "ارمي الشقة مع العمود الفقري واجه الهدف",
@@ -5873,7 +5931,7 @@
       "name": "الفريسبي / القرص الطائر"
     },
     "game-0057": {
-      "description": "الاحتفاظ بحقيبة صغيرة مع الأقدام صدى لمسرحية (أوراسيان) القديمة دورات (سوني) تُشدّد على النمط والتشارك في التمارين",
+      "description": "Keeping a small bag aloft with feet echoes older Eurasian kickbag play. Circle 'sunny' sessions emphasize style and sharing over scoring.",
       "howToPlay": [
         "ألقِ الحقيبة إلى قدم و ركّزي بهدوء",
         "استعملي الأقدام والركبتين و الفخذين لا أيدي",
@@ -5889,7 +5947,8 @@
       "variationNotes": [
         "تقاليد كبار السن ذات علاقة بالروح"
       ],
-      "name": "هاكي ساك"
+      "name": "هاكي ساك",
+      "fallbackEn": true
     },
     "game-0058": {
       "description": "Reing boomerangs are precision-carved throw sticks from Aboriginal Australian traditions, also used in hunting forms that do not return. وتبسط ازدهار الرياضة السياحية لعبة العودة؛ وتظل المعرفة الثقافية بالتصميمات مع المجتمعات المحلية.",
@@ -6703,14 +6762,15 @@
       ],
       "requirements": [
         "Corde forte",
-        "Marqueur au centre, marqueur au centre,",
-        ", , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,  , , , , , , , , , ,  , ,   ,   , ,     ,   ,  , ,   ,  ,"
+        "Center ground marker",
+        "Clear pull zone"
       ],
       "idealParticipants": "2 équipes",
       "variationNotes": [
         "Cordes communes dans les événements rituels du calendrier.",
         "Village remorqueur rites autour des festivals."
-      ]
+      ],
+      "fallbackEn": true
     },
     "game-0038": {
       "name": "Cache-cache",
@@ -6739,7 +6799,7 @@
         "Jeter un marqueur dans la place suivante; il doit atterrir proprement à l'intérieur.",
         "Montez sur un pied et sautez la place occupée.",
         "Récupérer le marqueur sur le retour sans défaut.",
-        "Il s'agit d'une qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qu'il s'agit d'un qucing qu'il s'agit d'un qu'un qu'il s'agit d'un qu'il s'agit d'un qu'un qu'il s'agit d'un qu'un qu'il s'agit d'un qu'un qu'un qu'un qu'un qu'un qu'un qu'un qu'un qu' qu' qu'un qu' qu' qu' qu' qu'un qu' qu' qu' qu' qu'un qu' qu' qu' un qu' qu' qu' qu' qu' un qu' qu' qu' qu' qu' qu' qu'"
+        "First to complete all numbers wins."
       ],
       "requirements": [
         "Grille en craie ou éraflée",
@@ -6749,7 +6809,8 @@
       "variationNotes": [
         "Nom et variantes de grille en langue espagnole.",
         "Les grille download."
-      ]
+      ],
+      "fallbackEn": true
     },
     "game-0040": {
       "name": "Billes",
@@ -7189,7 +7250,7 @@
         "Tabuleiro de xadrez (8×8)",
         "16 peças por lado",
         "Mesa silenciosa",
-        "Conhecimento de movimentos de peças"
+        "Knowledge of piece moves"
       ],
       "idealParticipants": "2 pessoas",
       "variationNotes": [
@@ -7198,7 +7259,8 @@
         "Prima de xadrez tailandesa com diferentes poderes de peça e regras de promoção.",
         "Xadrez birmanês com configuração livre atrás dos peões."
       ],
-      "name": "Xadrez"
+      "name": "Xadrez",
+      "fallbackEn": true
     },
     "game-0002": {
       "description": "fundar é um jogo de território.fundamentos nunca se movem uma vez colocados; grupos capturados são removidos. Uma das quatro artes do estudioso chinês, espalhou-se para a Coréia (baduk) e Japão (igo). Jogar codifica equilíbrio, influência, e forma viva em vez de captura direta de um rei.",
@@ -7251,14 +7313,15 @@
       ],
       "requirements": [
         "[pt] 9×9 shogi board",
-        "40 peças",
+        "40 pieces",
         "Suportes de peças opcionais"
       ],
       "idealParticipants": "2 pessoas",
       "variationNotes": [
         "Maior variante históricaEU com muitos tipos de peças únicas."
       ],
-      "name": "Shogi"
+      "name": "Shogi",
+      "fallbackEn": true
     },
     "game-0005": {
       "description": "Mancala é uma família de jogos de semeadura: os jogadores distribuem sementes em torno de poços esculpidos em madeira, pedra ou terra. Quadros aparecem em toda a África, Oriente Médio e Ásia do Sul. Nomes regionais e contagem de poços diferem, mas o gesto colher-e-sow une-los como um jogo fundamental com muitas faces culturais.",
@@ -7406,10 +7469,11 @@
       ],
       "idealParticipants": "2–4 pessoas",
       "variationNotes": [
-        "- Sim, é..........",
+        "Double-twelve party game with personal trains.",
         "Regras comuns de bloqueio/desenho."
       ],
-      "name": "Dominó"
+      "name": "Dominó",
+      "fallbackEn": true
     },
     "game-0012": {
       "description": "Mills jogos formam três em uma linha para capturar. As tábuas são cortadas em bancos de claustro em toda a Europa medieval. Morabaraba sul-africano é a mesma competição fundamental de moinhos com metáforas pastorais de “vaca” – aqui catalogadas como variações, não invenções separadas.",
@@ -7779,7 +7843,7 @@
       "name": "Boneca de folha de milho"
     },
     "game-0031": {
-      "description": "Cup-and-Bill brinquedos desafie hand-yeye timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp ti TACT tamp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp timp tip tip timp timp timp timp timp timp timp timp timp tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip tip ti Bilboquet francês, balero mexicano e kendama japonês são variações de uma família de habilidades com diferentes vocabulários de truques.",
+      "description": "Cup-and-ball toys challenge hand-eye timing: swing a tethered ball into a cup or onto a spike. French bilboquet, Mexican balero, and Japanese kendama are variations of one skill family with different vocabularies of tricks.",
       "howToPlay": [
         "Segure o cabo com a bola pendurada na corda.",
         "Balançar para cima e pegar a bola em um copo ou no ponto.",
@@ -7796,7 +7860,8 @@
         "Brinquedo de ponta multi-copo com extenso léxico truque.",
         "Copo de salão europeu e bola."
       ],
-      "name": "Família bilboquê / balero / kendama"
+      "name": "Família bilboquê / balero / kendama",
+      "fallbackEn": true
     },
     "game-0032": {
       "description": "O tangrama disseca um quadrado em sete tans usados para formar silhuetas. Se espalhou da China como uma mania de salão no século 19. Transformação geométrica e espaço negativo são as aulas tranquilas do brinquedo.",
@@ -7996,7 +8061,7 @@
         "Os atacantes avançam primeiro em muitas reconstruções.",
         "Todas as peças se movem como torres (qualquer distância), mas não podem saltar.",
         "Os atacantes ganham capturando o rei (dois ou quatro lados, dependendo das regras); os defensores vencem se o rei alcançar um canto ou um santuário de borda.",
-        "- e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e e"
+        "Agree on a published reconstruction before competing."
       ],
       "requirements": [
         "Tabuleiro Tafl",
@@ -8007,7 +8072,8 @@
         "Linnaeus gravou o tablut de Sámi — a mesma família tafl.",
         "Um familiar irlandês num tabuleiro mais pequeno."
       ],
-      "name": "Hnefatafl"
+      "name": "Hnefatafl",
+      "fallbackEn": true
     },
     "game-0043": {
       "description": "Caça assimétrica em uma cruz: gansos tentam encurralar uma raposa que salta para capturar. Relacionado com muitas placas de predator-prey em todo o mundo – a forma de salão europeu está catalogada aqui com primos como variaçõesdouros.",
@@ -11692,7 +11758,8 @@
       "variationNotes": [
         "Didaktische Vorfahren mit Tugenden und Laster beschriftet.",
         "Amerikanischer Milton Bradley Branding des gleichen Rennens."
-      ]
+      ],
+      "fallbackEn": true
     },
     "game-0048": {
       "name": "Monopoly",
@@ -14388,14 +14455,15 @@
       "requirements": [
         "19×19 kurulu (veya 13 ×13 / 9×9)",
         "Siyah ve beyaz taşlar",
-        "taşlar için"
+        "Bowls for stones"
       ],
       "idealParticipants": "2 kişi",
       "variationNotes": [
         "Kore geleneği aynı temel kurallar ve farklı öğretim kültürü ile.",
         "Japon profesyonel rütbe ve bölge puanlama kongreleri."
       ],
-      "name": "Go (Weiqi)"
+      "name": "Go (Weiqi)",
+      "fallbackEn": true
     },
     "game-0003": {
       "description": "Xiangqi (Çin satranç) diziler generaller, danışmanlar, filler, atlar, arabalar, kansızlar ve bir nehir tarafından geçti. Cannon'un atlayışı ve saray sınırlılığı uluslararası satrançtan ayrı bir taktik lezzet veriyor. Çin genelinde sevgili bir park ve sokak oyunu olmaya devam ediyor.",
@@ -14427,14 +14495,15 @@
       ],
       "requirements": [
         "9×9 shogi tahta",
-        "40 parça",
+        "40 pieces",
         "Seçmeli parça duruyor"
       ],
       "idealParticipants": "2 kişi",
       "variationNotes": [
         "Birçok eşsiz parça türü olan büyük tarihsel değişken."
       ],
-      "name": "Shogi"
+      "name": "Shogi",
+      "fallbackEn": true
     },
     "game-0005": {
       "description": "Mancala sowing oyunların bir ailesidir: oyuncular ormanda, taş veya yerde çukurların etrafında tohum dağıtır. Kurullar Afrika, Orta Doğu ve Güney Asya'da görünüyor. Bölgesel isimler ve pit farklıdır, ancak scoop-and-sow buzz onları birçok kültürel yüzle temel bir oyun olarak birleştirir.",
@@ -14533,7 +14602,7 @@
       ],
       "requirements": [
         "Cross- şekilli tahta veya bez",
-        "Oyuncu başına 4 parça",
+        "4 pieces per player",
         "İnekrie kabuklar veya indeksler"
       ],
       "idealParticipants": "2-4 kişi",
@@ -14543,7 +14612,8 @@
         "Amerikan ticari adaptasyonu.",
         "Alman aile yarış oyunu aynı çizgide."
       ],
-      "name": "Pachisi"
+      "name": "Pachisi",
+      "fallbackEn": true
     },
     "game-0010": {
       "description": "Mahjong daha önce Çin kartı ve kumar-tile geleneklerini çekiyor. Dört oyuncu, kartları okurken tam bir el üzerine melds inşa ediyor. Bölgesel stilleri puanlamada farklılık gösterir, ancak \" Duvar\" nın popüler kültürel tiyatrodur.",
@@ -14598,7 +14668,7 @@
       ],
       "requirements": [
         "Mills Board ile 24 puan",
-        "Oyuncu başına 9 parça"
+        "9 pieces per player"
       ],
       "idealParticipants": "2 kişi",
       "variationNotes": [
@@ -14606,7 +14676,8 @@
         "Zulu aynı değirmen oyununun adı.",
         "Büyük parça-say değirmenleri değişkeni."
       ],
-      "name": "Değirmen oyunu"
+      "name": "Değirmen oyunu",
+      "fallbackEn": true
     },
     "game-0013": {
       "description": "Alquerque'nin bir çizgide yakalama yakalama yakalaması Alfonso X'in Oyunları Kitabında belgelenmiştir. Avrupalı draughts/checkers fikri bir kontrol kuruluna taşıdı. Sahrak kharbaga ve ilgili Maghreb oyunları aynı sıçrama-kapı aileye ait - bir av geometrisinin değişmezleri.",
@@ -14640,10 +14711,11 @@
       ],
       "requirements": [
         "9×5-point fanorona tahta",
-        "Renk başına 22 parça"
+        "22 pieces per color"
       ],
       "idealParticipants": "2 kişi",
-      "name": "Fanorona"
+      "name": "Fanorona",
+      "fallbackEn": true
     },
     "game-0015": {
       "description": "Carrom, Güney Asya ve diyaspor'da sevilen bir masa tenisi oyundur. Oyuncular, bir kapak gerektiren kraliçe ile cep carrom erkeklere bir grev yapar. billiards geometrisini oturma odası bu kadarciability ile birleştirir.",
@@ -14786,7 +14858,8 @@
         "Dev toplumsal öpücükler ve olaylarla savaşmak.",
         "Brezilyalı dövüşçü sokak kültürü."
       ],
-      "name": "Kite uçan"
+      "name": "Kite flying",
+      "fallbackEn": true
     },
     "game-0022": {
       "description": "Cat's cradle ve ilgili dize rakamları benzerliği başlatmakla Arctic'den Asya'ya görünür. Şekiller sıralamada eller arasında geçer, uzaysal hafıza ve işbirliğini eğitir. Anthropologlar hikayelere bağlı yüzlerce isim desen kaydetti.",
@@ -14984,11 +15057,12 @@
         "Zaman denemeleri rekabetçi oyun için tercih edilir."
       ],
       "requirements": [
-        "Yedi Tan parça",
+        "Seven tan pieces",
         "Silhouette meydan okumaları"
       ],
       "idealParticipants": "Yalnız Yalnız Yalnız Yalnız Yalnız Yalnız",
-      "name": "Tangram"
+      "name": "Tangram",
+      "fallbackEn": true
     },
     "game-0033": {
       "description": "Ernő Rubik'in küpü dünya çapında üç boyutlu kombinasyon bulmacalarını popülerleştirdi. Katman dönüş mekaniği, renkli bir oyuncak içinde grup teorisini gizler. Hızlama kültürü algoritmaları, donanım ve spor zamanlama ekledi – kalpte bir bulmacaya son verecek.",
@@ -15272,7 +15346,7 @@
       ],
       "requirements": [
         "Izgara tahta yılanlar ve merdivenlerle",
-        "Die Die",
+        "Die",
         "[tr] One token per player"
       ],
       "idealParticipants": "2-4 kişi",
@@ -15280,7 +15354,8 @@
         "Bağımlı ata erdemlerle ve etiketli yardımcılarla.",
         "Amerikan Milton Bradley aynı ırkın markalaşması."
       ],
-      "name": "Yılanlar ve merdivenler"
+      "name": "Yılanlar ve merdivenler",
+      "fallbackEn": true
     },
     "game-0048": {
       "description": "Emlak yarış oyunları eleştirisi veya gerçek devlet kapitalizmini kutlamak. Magie'nin Landlord'ın Oyunu Parker Brothers'ın Monopoli'den önce çıktı. Yerel baskılar harita dünya şehirleri aynı satın almak-bankrupt döngüsüne.",
@@ -16160,7 +16235,7 @@
         "Tập luyện trên một khu vực mềm mại trong khi học tập."
       ],
       "requirements": [
-        "Cốc và bóng hay đồ chơi lấp lánh trên dây"
+        "Cup-and-ball or spike-and-ball toy on a cord"
       ],
       "idealParticipants": "Một mình",
       "variationNotes": [
@@ -16168,7 +16243,8 @@
         "Một món đồ chơi với nhiều từ vựng.",
         "Châu Âu."
       ],
-      "name": "Bilboquet / Balero / Kendama"
+      "name": "Bilboquet / Balero / Kendama",
+      "fallbackEn": true
     },
     "game-0032": {
       "description": "Hai chiều phân tích hình vuông thành bảy lớp rám nắng được dùng để tạo thành hình bóng. Nó lan truyền từ Trung Quốc như một nhà máy điên cuồng vào thế kỷ 19. Biến đổi hình học và không gian tiêu cực là những bài học thầm lặng của đồ chơi.",
@@ -16564,10 +16640,11 @@
       "requirements": [
         "Hội đồng quản trị",
         "Name",
-        "Ném gậy"
+        "Throwing sticks"
       ],
       "idealParticipants": "2+người",
-      "name": "Mehen"
+      "name": "Mehen",
+      "fallbackEn": true
     },
     "game-0053": {
       "description": "Những người lính nhỏ hoặc được in ra ủng hộ việc chiến đấu và sau đó là đánh nhau. Các nhà chế tạo thiếc Đức và các bộ phát tán rỗng ở Anh trên toàn thế giới. Chơi những trò chơi từ những trận chiến đơn giản đến những trò chơi mô phỏng nghiêm trọng.",
@@ -16748,7 +16825,7 @@
       "description": "หมากรุกพัฒนาจาก Tuturanga, การจําลองสงครามของทหารราบ, ทหารม้า, ช้าง, และรถรบ ขณะ ที่ หนังสือ นี้ เดิน ทาง ผ่าน เปอร์เซีย (ชา ตรัน จ) เข้า สู่ โลก อิสลาม และ ยุโรป ยุค กลาง ชิ้น ส่วน ต่าง ๆ ก็ กลาย เป็น ตําแหน่ง ศาล. ราชินี และ บิชอป สมัย ใหม่ ได้ รับ อํานาจ เป็น ผลึก ใน ยุโรป ยุค ปลาย. ใน วัฒนธรรม ต่าง ๆ การ ทํา เช่น นั้น หมาย ถึง การ มี สติ ปัญญา, การ มอง การณ์ ไกล, และ การ พัก ผ่อน หย่อน ใจ.",
       "howToPlay": [
         "ออกทะเลบอร์ดเพื่อให้ผู้เล่นแต่ละคนมีตารางแสงที่มุมขวามือ",
-        "วางชิ้นส่วนไว้ที่ตําแหน่งหลัง (รูค อัศวิน บิชอพ ราชินีสีเธอ คิง บิชอพ อัศวิน รูค) กับเบี้ยในตําแหน่งที่สอง",
+        "Place pieces on the back rank (rook, knight, bishop, queen on her color, king, bishop, knight, rook) with pawns on the second rank.",
         "การเคลื่อนไหวสีขาวก่อน; ผู้เล่นสลับการย้ายหนึ่งชิ้น (ยกเว้นเมื่อโยน)",
         "จับโดยการลงจอดบนชิ้นส่วนของฝ่ายตรงข้าม ชนะโดยการตรวจสอบกษัตริย์",
         "ใช้ ท่า ทาง พิเศษ เมื่อ มี กฎหมาย: การ โยน, การ ส่ง ผ่าน, และ การ เลื่อน ตําแหน่ง เบี้ย."
@@ -16766,7 +16843,8 @@
         "ลูกพี่ลูกน้องหมากรุกไทย มีกฏข้อแตกต่าง และกฏโปรโมชั่น",
         "หมากรุกแบบบุนเม่ มีชุดฟรีอยู่หลังเบี้ย"
       ],
-      "name": "หมากรุกสากล"
+      "name": "หมากรุกสากล",
+      "fallbackEn": true
     },
     "game-0002": {
       "description": "ไปเป็นเกมรวมของอาณาเขต หินไม่เคยย้ายเมื่อวาง; กลุ่มจับจะถูกลบ หนึ่ง ใน สี่ ศิลปะ ของ ผู้ คง แก่ เรียน ชาว จีน ได้ แพร่ กระจาย ไป ยัง เกาหลี (บา ดุก) และ ญี่ปุ่น. การ เล่น เกม ที่ ควบคุม ความ คิด จิตใจ, อิทธิพล, และ รูป ร่าง แทน ที่ จะ เป็น การ จับ กุม กษัตริย์ โดย ตรง.",
@@ -16854,7 +16932,7 @@
       "name": "เกม หว่าน มัง คา ลา"
     },
     "game-0006": {
-      "description": "การแข่งขันและติดเกมส์ยืดเยื้อ จากการแข่งขันของราชวงศ์อูร์ ไปสู่โต๊ะเปอร์เซียและยุโรป แบ็คแกมมอนผสมโชคและทักษะ เป็นผู้เล่นที่หมีออก teckers สิบห้าในขณะที่ตีตรา ลูกบาศก์คู่เป็นชั้นยุทธศาสตร์สมัยใหม่",
+      "description": "Race-and-hit dice games stretch from the Royal Game of Ur to Persian nard and European tables. Backgammon blends luck and skill as players bear off fifteen checkers while hitting blots. The doubling cube is a modern strategic layer.",
       "howToPlay": [
         "ตั้งค่าหมากฮอสในรูปแบบเปิดมาตรฐานบน 24 จุด",
         "ม้วนลูกเต๋าสองลูกและเลื่อนหมากฮอสไปข้างหน้า โดยใช้เลขทั้งสองตัว",
@@ -16875,7 +16953,8 @@
         "วัฒนธรรมท้องถิ่นของร้านกาแฟ สําหรับการเล่นแบ็คแกมมอน",
         "บรรพบุรุษเผ่าพันธ์โบราณ กับลู่วิ่งที่พิเศษ"
       ],
-      "name": "แบ็คแกมมอน"
+      "name": "แบ็คแกมมอน",
+      "fallbackEn": true
     },
     "game-0007": {
       "description": "เซเน็ตปรากฏในภาพวาดของสุสาน และฝังสินค้าทั่วอียิปต์พรานิก หนังสือ เล่ม นี้ มี ความ หมาย ทาง ศาสนา ว่า เป็น ทาง ผ่าน ชีวิต หลัง จาก ตาย. กฎ ข้อ บังคับ ถูก สร้าง ขึ้น ใหม่ โดย นัก วิทยา ชาว อียิปต์ จาก ข้อ ความ ต่อ ไป และ เรขาคณิต บน กระดาน.",
@@ -16960,7 +17039,7 @@
       "name": "มา ฮ็อง"
     },
     "game-0011": {
-      "description": "โดมิโนของจีนเกี่ยวข้องกับคู่หน้าลูกเต๋า; ชุดคู่ที่ 6 ของยุโรป แพร่กระจายผ่านอิตาลีและฝรั่งเศส บล็อก, scorling, และรถไฟเกมทั้งหมดร่วมกันที่ตรงกับปลาย PIP -- หนึ่งเครื่องมือ วัฒนธรรมตารางหลาย",
+      "description": "Chinese dominoes relate to dice face pairs; European double-six sets spread via Italy and France. Blocking, scoring, and train games all share matching pip ends—one tool, many table cultures.",
       "howToPlay": [
         "ดึงหน้าและดึงมือ",
         "ตะกั่วด้วยแผ่นบัฟเฟอร์คู่หรือที่สูงที่สุดต่อเส้นเอ็น",
@@ -16977,10 +17056,11 @@
         "2553 เกมปาร์ตี้ 2 ครั้งกับรถไฟส่วนตัว",
         "กฎการปิดกั้น/การดึง"
       ],
-      "name": "โดมิโน"
+      "name": "โดมิโน",
+      "fallbackEn": true
     },
     "game-0012": {
-      "description": "มิลส์เกมส์ประกอบเป็น 3 ใน 5 เพื่อจับ คณะกรรมการถูกตัดเป็น ม้าลายข้ามยุโรปยุคกลาง โมราบาบาในแอฟริกาใต้ เป็นการแข่งขันโรงสีพื้นฐานเดียวกัน กับอุปไมย ‘โคว' -- คาตาโลบา เป็นรูปแบบ ไม่ใช่แยกสิ่งประดิษฐ์",
+      "description": "Mills games form three-in-a-row to capture. Boards are cut into cloister benches across medieval Europe. Southern African morabaraba is the same fundamental mills contest with pastoral ‘cow’ metaphors—catalogued here as variations, not separate inventions.",
       "howToPlay": [
         "วางชิ้นส่วนสลับบนจุดว่างจนกว่าทั้งเก้าจะลง",
         "ย้ายไปตามเส้นไปยังจุดชิด",
@@ -16998,10 +17078,11 @@
         "ชื่อซูลูเกมเดียวกัน",
         "มีโรงสีขนาดใหญ่"
       ],
-      "name": "เก้านายมอร์ริส"
+      "name": "เก้านายมอร์ริส",
+      "fallbackEn": true
     },
     "game-0013": {
-      "description": "การ กระโดด ของ อัล เก อร์ก บน กระดาน เรียง มี บันทึก ไว้ ใน หนังสือ ของ อัล ฟอง โซ X แห่ง เกม. รายการโทรทัศน์/ Checkers ของยุโรปได้ย้ายความคิดไปยังกระดานตรวจสอบ Sarazan Kharbacka และ Maghreb Games ที่เกี่ยวข้องกับเกมนี้ เป็นส่วนหนึ่งของตระกูลที่กระโดดข้ามโลกเดียวกัน --",
+      "description": "การ กระโดด ของ อัล เก อร์ก บน กระดาน เรียง มี บันทึก ไว้ ใน หนังสือ ของ อัล ฟอง โซ X แห่ง เกม.",
       "howToPlay": [
         "ชิ้นส่วนอาร์เรย์ในด้านฝ่ายตรงข้าม",
         "ย้ายไปยังจุดที่ว่างชิดไปตามบรรทัด (หรือสี่เหลี่ยมมืดงั๊นในหมากฮอส)",
@@ -17038,7 +17119,7 @@
       "name": "Fanorona"
     },
     "game-0015": {
-      "description": "แคร์มเป็นเกมที่โดดเด่นบนโต๊ะ ที่รักทั่วเอเชียใต้และไดอาสปอร์ ผู้เล่นจะดีดตัวคนใส่คาร์รอม โดยมีพระราชินีต้องการคุ้มกัน มันผสมเรขาคณิตของบิลเลียด กับทํางานที่นี่",
+      "description": "Carrom is a tabletop striking game beloved across South Asia and the diaspora. Players flick a striker to pocket carrom men, with the queen requiring a cover. It blends billiards geometry with sitting-room sociability.",
       "howToPlay": [
         "จง บด แผ่น กระดาน เบา ๆ; วาง ชิ้น ส่วน ต่าง ๆ ไว้ ตรง กลาง กับ ราชินี อยู่ ตรง กลาง.",
         "หยิบเครื่องตีจากฐานของคุณ เพื่อตีสีของคุณเป็นกระเป๋า",
@@ -17056,10 +17137,11 @@
       "variationNotes": [
         "กฎบ้านสกปรกและสกปรกในกระดานเดียวกัน"
       ],
-      "name": "แครอท"
+      "name": "แครอท",
+      "fallbackEn": true
     },
     "game-0016": {
-      "description": "การเล่นไพ่น่าจะสืบเชื้อสายมาจากไอเดียเรื่องบัตรเงินของจีน และเข้ายุโรปผ่านทางไพ่มัมลัก สูทฝรั่งเศสกลายเป็นเครื่องมือมาตรฐานระดับโลก สําหรับเกมนับพัน ดาดฟ้าภูมิภาคมีความแตกต่างของแพลตฟอร์มเกมพกพาเดียวกัน -- ไม่ได้แยกของเล่นทั้งหมด",
+      "description": "Playing cards likely descended from Chinese money-card ideas and entered Europe via Mamluk decks. French suits became a global standard tool for thousands of games. Regional decks are variations of the same portable gaming platform—not wholly separate toys.",
       "howToPlay": [
         "สับปะรดและจัดการตามเกมไพ่ที่เลือก",
         "ทําตามชุดและหลอกหรือทําตามกฏเกม",
@@ -17077,7 +17159,8 @@
         "หัวใจ ระฆัง ลูกโอ๊ก ใบไม้",
         "40 หรือ 48 การ์ด ระเบียงสําหรับ มิวส์ Tuts ฯลฯ"
       ],
-      "name": "ไพ่เล่น (ไพ่ฝรั่งเศส)"
+      "name": "ไพ่เล่น (ไพ่ฝรั่งเศส)",
+      "fallbackEn": true
     },
     "game-0017": {
       "description": "ประเพณีของญี่ปุ่น คารุตะ รวมถึง ฤดูกาล ฮานาฟาดา และ วรรณกรรม อุตะ การูตา บทกวีประกอบ การ์ด คารุตะ ต้องการการจดจําสายฟ้าแลบ ฮานาเฟด้า ตีนกระต่าย การ์ด ประกอบ ฤดู กาล, บท กวี, และ ความ เร็ว เข้า สู่ ครอบครัว หนึ่ง ของ วัตถุ ที่ เล่น อยู่.",
@@ -17100,7 +17183,7 @@
       "name": "ฮา นา เฟ ดา / คา รู ตา"
     },
     "game-0018": {
-      "description": "Ganjifa เป็นการ์ดสีแบบวงกลมของ Mughal และภาคภูมิภาคอินเดีย ซึ่งต่อมาถูกออกแบบโดยประชาชนในพื้นที่อย่างโอดีชา ระบบสูท (Mughal, Dashavatara) แตกต่างกันไป แต่กลอุบายการเข้ารับราชการศาล ทําให้พวกเขารวมกันเป็นประเพณีการทาสี",
+      "description": "Ganjifa are circular painted cards of Mughal and regional Indian courts, later folk-crafted in places such as Odisha. Suit systems (Mughal, Dashavatara) differ, but trick-taking court hierarchies unite them as one painted-card tradition.",
       "howToPlay": [
         "สับไพ่วงกลมอย่างระมัดระวัง",
         "ซื้อขายขนาดมือภูมิภาค",
@@ -17116,7 +17199,8 @@
       "variationNotes": [
         "สูทสิบดอก"
       ],
-      "name": "Ganjifa"
+      "name": "Ganjifa",
+      "fallbackEn": true
     },
     "game-0019": {
       "description": "กระดูก ของ แกะ หรือ ของ แพะ เป็น ลูกเต๋า ใน สมัย โบราณ ที่ ใช้ ใน การ เล่น และ การ ทํานาย. เด็ก ๆ ถูก โยน และ จับ ได้ ผู้ ใหญ่ พนัน หน้า กัน. รถ แจ็ก สมัย ใหม่ เป็น ลูก หลาน ที่ ชํานาญ ของ ธรรมเนียม การ จับ ปลา แบบ เดียว กัน.",
@@ -17201,7 +17285,7 @@
       "name": "เปลแมว"
     },
     "game-0023": {
-      "description": "เจียงซีเก็บ กระสวยอวกาศขนนกไว้ พร้อมเท้า -- กีฬาสวนที่เข้าถึงได้ทั่วประเทศจีน และชุมชนดีอัสโพ การเล่นวงกลมสร้างจังหวะ การเล่นเดี่ยวสร้างสถิตินับ Jegichaki และ เวียดนาม vera cu เป็นเกมพื้นฐานเดียวกัน",
+      "description": "Jianzi keeps a feathered shuttlecock aloft with the feet—an accessible park sport across China and diaspora communities. Circle play builds rhythm; solo play builds count records. Korean jegichagi and Vietnamese đá cầu are the same fundamental foot-shuttlecock game.",
       "howToPlay": [
         "โยนกระสวยอวกาศลงบนเท้าคุณ",
         "การ เตะ ด้วย เท้า ชั้น ใน, เท้า ชั้น นอก, หรือ เข่า เพื่อ ให้ มัน บิน อยู่ ได้.",
@@ -17218,7 +17302,8 @@
         "การห่อกระดาษของเกาหลี",
         "กีฬา Terbock ของเวียดนาม"
       ],
-      "name": "Jianzi (เตะหวอ)"
+      "name": "Jianzi (เตะหวอ)",
+      "fallbackEn": true
     },
     "game-0024": {
       "description": "Sepak takraraf dits ตาข่ายคล้ายวอลเลย์บอล เล่นด้วยเท้า เข่า หน้าอก และส่วนหัวเท่านั้น รากปักอยู่ที่วงมาเลย์-เวิลด์ เตะ (Sepak Rega) การ เตะ จักรยาน แบบ หัว โต เป็น การ กําหนด ภาพ ที่ ทัน สมัย.",
@@ -17383,7 +17468,7 @@
       "name": "แทนแกรม"
     },
     "game-0033": {
-      "description": "เอิร์น ลูกบาศก์ของรูบิก ได้รับความนิยมจากปริศนาสามมิติทั่วโลก ช่างกลชั้นหนึ่ง ซ่อนทฤษฎีกลุ่มไว้ในของเล่นสีสัน วัฒนธรรมที่ลดความเร็วเร็วจัง เพิ่มอัลกอริทึม ฮาร์ดแวร์ และเวลากีฬา",
+      "description": "Ernő Rubik’s cube popularized three-dimensional combination puzzles worldwide. Layer-turn mechanics hide group theory inside a colorful toy. Speedcubing culture added algorithms, hardware, and sport timing—still one puzzle at heart.",
       "howToPlay": [
         "บิดเบี้ยวโดยการเปลี่ยนใบหน้าอย่างสุ่ม",
         "เรียกคืนหน้าแต่ละหน้าเป็นสีทึบ โดยใช้วิธีการชั้นหรือสัญชาตญาณ",
@@ -17399,7 +17484,8 @@
         "ลําดับที่เล็กกว่าของกลไกเดียวกัน",
         "คิวบาสั่งเพิ่มด้วยวิธีการลดขนาด"
       ],
-      "name": "รูบิค"
+      "name": "รูบิค",
+      "fallbackEn": true
     },
     "game-0034": {
       "description": "หิน, ดิน เหนียว, และ กอง ไม้ ปรากฏ อยู่ ทั่ว อารยธรรม. Froebel นําเสนอการเล่นบล็อกการศึกษาอย่างเป็นทางการใน ค.ศ. การกระทําพื้นฐานคือ การประกอบรูปแบบ จากของแข็ง",
@@ -17439,7 +17525,7 @@
       "name": "ชุนคีย์"
     },
     "game-0036": {
-      "description": "พาลิน (จีน) เป็นเกมไม้กับลูกบอล ที่มีความสําคัญต่อสังคมและพิธีกรรม ทีมขับบอลไปสู่เป้าหมายในระยะยาว มันยังคงเป็นสัญลักษณ์ของการชุมนุมและระบุตัวตน",
+      "description": "Palín (chueca) is a Mapuche stick-and-ball game with communal and ritual importance. Teams drive a ball toward goals on a long pitch. It remains a marker of Mapuche gathering and identity.",
       "howToPlay": [
         "จง กําหนด ขอบ เขต ที่ ยาว ซึ่ง มี เป้า หมาย แต่ ละ อย่าง.",
         "เริ่มการแข่งขันที่ศูนย์ระหว่างทีม",
@@ -17453,7 +17539,8 @@
         "ช่องข้อมูลยาว"
       ],
       "idealParticipants": "2 ทีม",
-      "name": "พาลิน"
+      "name": "พาลิน",
+      "fallbackEn": true
     },
     "game-0037": {
       "description": "การ สู้ รบ ปรากฏ ใน พิธี เกี่ยว, กีฬา ที่ โรง เรียน, และ เทศกาล ประจํา หมู่ บ้าน ทั่ว โลก. บาง รูป แบบ ของ เอเชีย ตะวัน ออก และ แปซิฟิก มี ความ หมาย ของ ความ สมดุล ตาม ฤดู กาล. 2 ทีม เชือก 1 เชือก -- การแข่งขันความร่วมมือของธาตุ",
@@ -17496,7 +17583,7 @@
       "name": "ซ่อนและค้นหา"
     },
     "game-0039": {
-      "description": "การ หวัง ให้ มี เส้น ทาง สําหรับ การ ทิ้ง สมดุล, หมุน, และภาพเขียนพื้นถนน พบกันในการแข่งขันที่เรียบง่าย",
+      "description": "Hopping grids for tossed markers appear across continents with local shapes and rhymes. Balance, turn-taking, and pavement chalk art meet in one simple race through numbered cells.",
       "howToPlay": [
         "วาดตาราง Hopscotch",
         "โยนเครื่องหมายลงในสี่เหลี่ยมถัดไป จะต้องที่ดินสะอาดภายใน",
@@ -17513,7 +17600,8 @@
         "เครื่องราชอิสริยาภรณ์ของสเปน",
         "ไลน์และกฏโรงเรียนของฝรั่งเศส"
       ],
-      "name": "โฮปสค็อท"
+      "name": "โฮปสค็อท",
+      "fallbackEn": true
     },
     "game-0040": {
       "description": "วง แหวน วง แหวน เกือบ จะ เป็น เกม ของ เด็ก ทั่ว โลก. เคลย์, หิน, และทรงกลมแก้วในภายหลัง จะจับเป้าหมายจากวงกลม ‘ จง เก็บ ลูก หิน ของ คุณ ไว้ กับ เพื่อน ๆ และ ตัดสิน ใจ ว่า ผู้ ชนะ จะ เก็บ ลูก หิน ไว้ หรือ ไม่.",
@@ -17558,7 +17646,7 @@
       "name": "หมุน & 90"
     },
     "game-0042": {
-      "description": "Henfatafl เป็นการตามล่าของชาวนอร์ส แบบไม่สมมาตร : กษัตริย์และผู้พิทักษ์พยายามหลบหนี พวกวาเรียนแผ่ขยายไปทั่วโลกของไวกิ้ง ความสมดุลของกองกําลังและบัลลังก์สี่เหลี่ยม นิยามเกมสิ้นสุดความเครียด",
+      "description": "Hnefatafl is a Norse asymmetric hunt: a king and defenders try to escape attackers on a grid. Variants spread across Viking worlds. Balance of forces and throne squares define tense endgames.",
       "howToPlay": [
         "วางกษัตริย์ไว้ตรงกลางพร้อมกับคนคุ้มกัน การโจมตีอยู่ที่ขอบ",
         "การโจมตีเคลื่อนไหวครั้งแรก ในหลายการสร้างขึ้นใหม่",
@@ -17575,7 +17663,8 @@
         "ลินเนอัสบันทึก ซามี แท็บลูท -- ครอบครัวที่เหมือนกัน",
         "ไอริชเทไฟสัมพันธ์บนกระดานขนาดเล็ก"
       ],
-      "name": "Henfatafl"
+      "name": "Henfatafl",
+      "fallbackEn": true
     },
     "game-0043": {
       "description": "การ ล่า โดย ไม่ มี ความ สมดุล บน ไม้ กางเขน: ห่าน พยายาม จะ ทํา ให้ สุนัข จิ้งจอก ที่ กระโดด มา จับ มัน. เกี่ยวข้องกับบอร์ดนักล่าหลายแผ่นทั่วโลก แบบฟอร์มรับเชิญของยุโรป ถูกจัดหมวดหมู่ที่นี่กับลูกพี่ลูกน้องเป็นความหลากหลาย",
@@ -17617,12 +17706,12 @@
       "name": "ปัง / โกโมกู"
     },
     "game-0045": {
-      "description": "รีเวอรีพลิกแผ่นมาอ้างสีส่วนใหญ่ โอเทลโล่มาตรฐาน แบรนด์และเปิดแบบสมัยใหม่ การประกวดการวางตําแหน่งและฟลิป โดยมีแรงเหวี่ยงระเบิด",
+      "description": "Reversi flips sandwiched discs to claim majority color. Othello standardized modern branding and opening. A pure placement-and-flip contest with explosive endgame swings.",
       "howToPlay": [
         "วางแผ่น 4 แผ่นไว้ตรงกลาง ตรงที่เปิดโอเทลโล่มาตรฐาน",
         "สีดํา safety บนสี่เหลี่ยมที่พลิกอย่างน้อยหนึ่งแผ่นสีขาว.",
         "พลิกแผ่นฝ่ายตรงข้ามทุกทิศทาง",
-        "ผู้ตั้งแต่เมื่อไรที่ไม่สามารถกลับค่าได้ ซึ่งถ้าทั้งสองรายการไม่สามารถเลื่อนได้ ทั้งจํานวนแผ่น",
+        "A player unable to flip passes; when both cannot move, count discs.",
         "สีหลักชนะ"
       ],
       "requirements": [
@@ -17633,10 +17722,11 @@
       "variationNotes": [
         "การเทรดกําหนดมาตรฐาน ของการเล่นย้อนยุค"
       ],
-      "name": "รีเวอรี / โอเทลโล"
+      "name": "รีเวอรี / โอเทลโล",
+      "fallbackEn": true
     },
     "game-0046": {
-      "description": "สแครบเบิลกําหนดค่าชี้ไปยังตัวอักษรบนตารางรูปแบบอักษรไขว้ที่มีสี่เหลี่ยมพรีเมี่ยม เกิดจากวัฒนธรรมอักษรไขว้แบบอเมริกัน มันกลายเป็นกีฬาคําทั่วโลกที่มีชุดภาษาเฉพาะ",
+      "description": "Scrabble assigns point values to letters on a crossword-style grid with premium squares. Born from American crossword culture, it became a global word sport with language-specific sets.",
       "howToPlay": [
         "วาดแผ่นกระเบื้องเจ็ดอัน วางคําแรกผ่านดาวกลาง",
         "สร้างคําใหม่ที่เชื่อมต่อกับรูปแบบตัวอักษรที่ใช้อยู่",
@@ -17651,10 +17741,11 @@
         "พจนานุกรมสําหรับความท้าทาย"
       ],
       "idealParticipants": "21-24 คน",
-      "name": "สแครบเบิล"
+      "name": "สแครบเบิล",
+      "fallbackEn": true
     },
     "game-0047": {
-      "description": "ปา รา มา ดา โซ ปา นาม / กยุก ซาร์ สอน กรรม กรรม ด้วย คุณ ความ ดี เสมือน บันได และ ความ ชั่ว ร้าย เป็น งู. งูและเสืออังกฤษทําให้การแข่งขัน สําหรับเด็กเป็นระบบนิยม --",
+      "description": "ปา รา มา ดา โซ ปา นาม / กยุก ซาร์ สอน กรรม กรรม ด้วย คุณ ความ ดี เสมือน บันได และ ความ ชั่ว ร้าย เป็น งู.",
       "howToPlay": [
         "วางป้ายออกจากกระดานม้วนที่จะป้อน",
         "เดินหน้าก่อนตาย",
@@ -17675,7 +17766,7 @@
       "name": "งูและบันได"
     },
     "game-0048": {
-      "description": "เกมชิงแชมป์โลก หรือเฉลิมฉลองทุนนิยมที่แท้จริง เกมของแมกกี้ ผู้ปกครองแผ่นดิน ก่อนปาเกอร์บราเธอร์ส พิมพ์ตามท้องที่ แผนที่เมืองโลก เข้าสู่วงจรการซื้อธนาคารเดียวกัน",
+      "description": "Property-trading race games critique or celebrate real-estate capitalism. Magie's Landlord's Game preceded Parker Brothers' Monopoly. Local editions map world cities onto the same buy-rent-bankrupt loop.",
       "howToPlay": [
         "ผู้เล่นแต่ละคนเริ่มต้นด้วยเงินสดที่ปันส่วน และเหรียญที่โก",
         "กลิ้งลูกเต๋า ย้าย และซื้อที่ดินที่ไม่ต้องเป็นเจ้าของ",
@@ -17692,7 +17783,8 @@
       "variationNotes": [
         "บรรพบุรุษของเราสอนอลิซาเบท แม็กกี้"
       ],
-      "name": "โมโนโพลี"
+      "name": "โมโนโพลี",
+      "fallbackEn": true
     },
     "game-0049": {
       "description": "เจน กา ทํา ให้ ความ ตื่น เต้น ของ การ ถอด ชิ้น ส่วน ต่าง ๆ ออก จาก กอง โดย ไม่ พัง ทลาย. เลสลี่สกอตต์จัดวางตลาดเกมทาวเวอร์ทั่วโลก ปัญหาทางกายภาพเป็นหนึ่งกองร่วมกันสําหรับผู้เล่นทุกคน",
@@ -17711,7 +17803,7 @@
       "name": "เจนกา"
     },
     "game-0050": {
-      "description": "Kongzhu/diabolo ของจีน จะหมุนสายระหว่างแท่ง -- toses, ความเร่ง และการฆ่าตัวตายเป็นคําศัพท์ละครสัตว์ ละครสัตว์ยุโรปรับและเปลี่ยนชื่อเป็น Diabolo",
+      "description": "The Chinese kongzhu / diabolo spins on a string between sticks—tosses, accelerations, and suicides form a circus vocabulary. European circuses adopted and renamed it diabolo.",
       "howToPlay": [
         "เริ่มโยนเชือก",
         "เร่งด้วยการเคลื่อนไหวที่ต่อเนื่อง",
@@ -17727,10 +17819,11 @@
       "variationNotes": [
         "ชื่อจีนและประเพณีพื้นบ้าน/ซิคัส สําหรับของเล่นเหมือนกัน"
       ],
-      "name": "ไดโบโล"
+      "name": "ไดโบโล",
+      "fallbackEn": true
     },
     "game-0051": {
-      "description": "ไม้จิ้มฟัน (Spillikins, jackstraws) ลดลงใน tang; ผู้เล่นดึงไม้โดยไม่ต้องย้ายคนอื่น ๆ คะแนนสี ทดสอบความเงียบสงบของการควบคุมมอเตอร์",
+      "description": "Pick-up sticks (spillikins, jackstraws) drop in a tangle; players extract sticks without moving others. Color values score. A quiet parlor test of fine motor control.",
       "howToPlay": [
         "ถือไม้ตรงในห่อและปล่อยเพื่อการกวน",
         "ผู้เล่นจะสลับที่กันดึงแท่งหนึ่งออก โดยไม่ชักใยคนอื่น",
@@ -17746,7 +17839,8 @@
       "variationNotes": [
         "ชื่อชุดไม้เก็บสินค้า"
       ],
-      "name": "คาปู คู ปู / แจ็กสตรอว์ / สปิริคินส์"
+      "name": "คาปู คู ปู / แจ็กสตรอว์ / สปิริคินส์",
+      "fallbackEn": true
     },
     "game-0052": {
       "description": "เม เฮ น เกม งู ขด ลวด ปรากฏ ใน อียิปต์ ยุค แรก ๆ. เกมย้ายตามงูเกลียวไปยังศูนย์; กฎที่แน่นอนเป็นเศษ แต่รูปแบบสัตว์ศักดิ์สิทธิ์ของคณะกรรมการเป็นที่ชัดเจน",
@@ -17833,7 +17927,7 @@
       "name": "ฟริสบี / แผ่นลอย"
     },
     "game-0057": {
-      "description": "เก็บถุงเล็ก ๆ ที่มีเท้า grunting เก่า Eurasian เตะเล่น Circle 'Sunny' เซสชั่นเน้นสไตล์และการแบ่งปันมากกว่าสกอร์",
+      "description": "Keeping a small bag aloft with feet echoes older Eurasian kickbag play. Circle 'sunny' sessions emphasize style and sharing over scoring.",
       "howToPlay": [
         "วางกระเป๋าลงที่เท้าและเตะเบา ๆ ขึ้น",
         "ใช้เท้า เข่า และต้นขา -- ไม่ใช้มือ",
@@ -17849,7 +17943,8 @@
       "variationNotes": [
         "ประเพณีเก่าอันเป็นที่นับถือของวิญญาณ"
       ],
-      "name": "ถุง แฮ กกี / ถุง เท้า"
+      "name": "ถุง แฮ กกี / ถุง เท้า",
+      "fallbackEn": true
     },
     "game-0058": {
       "description": "การกลับมาของบูเมอแรง คือ การขว้างไม้อย่างแม่นยํา จากประเพณีของชาวแอน promisinganian นอกจากนี้ยังใช้ในรูปแบบการล่าที่ไม่กลับมา นัก กีฬา นัก ท่อง เที่ยว มัก จะ ทํา ให้ ของ เล่น ที่ นํา กลับ มา ง่าย ขึ้น ความ รู้ ด้าน การ ออก แบบ ทาง วัฒนธรรม ยัง คง อยู่ กับ ชุมชน.",
@@ -17885,7 +17980,7 @@
       "name": "โปอิ"
     },
     "game-0060": {
-      "description": "เซอราการ์ตาเป็นเกมจับสวาเกีย ที่ๆชิ้นส่วนต่างๆเดินทางรอบวงสี จับภาพตามลูป แทนที่จะกระโดดง่ายๆ -- กลยุทธ์ระดับภูมิภาคที่งดงาม",
+      "description": "Surakarta is a Javanese capture game where pieces travel circuits around colored loops. Captures follow the loops rather than simple jumps—an elegant regional strategy toy.",
       "howToPlay": [
         "ชิ้นส่วนอาร์เรย์บนกระดานของคุณ",
         "อยู่เหนือเส้นรุ้ง",
@@ -17898,7 +17993,8 @@
         "12 ชิ้นต่อด้าน"
       ],
       "idealParticipants": "2 คน",
-      "name": "ซูราการะ"
+      "name": "ซูราการะ",
+      "fallbackEn": true
     },
     "game-0061": {
       "description": "ดากอนเป็นกระดานหว่านพืชของครอบครัวชาวจาวา มักจะแกะสลักอย่างประณีต มี การ นํา มา แสดง ใน ฐานะ มาตรฐาน ระดับ ภูมิภาค ภาย ใน แมงกะลา ขณะ ที่ ยัง คง เป็น ครอบครัว หว่าน.",
@@ -19203,7 +19299,7 @@
     "game-0004": {
       "description": "Shogi is Japans schaak onderscheiden door druppels: gevangen stukken terugkeren als je eigen. Wedgevormige stukken wijzen naar de tegenstander. Materiaal schommels en dichte midgames definiëren zijn drama; professionele shogi blijft een belangrijke Japanse mindsport.",
       "howToPlay": [
-        "Ik heb er niet voor dat ik er niet voor dat dat niet doen dat je dat niet doen? ervoor dat dat hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe hoe ervoor te ervoor ervoor ervoor te ervoor ervoor te ervoor dat dat dat te ervoor ervoor ervoor te dat dat dat te ervoor ervoor ervoor te dat dat dat dat te ervoor ervoor ervoor te dat dat dat te ervoor te ervoor ervoor ervoor ervoor te ervoor ervoor ervoor te ervoor ervoor ervoor ervoor ervoor ervoor te ervoor ervoor dat dat ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor dat dat dat dat dat dat dat dat dat dat dat dat ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor te ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor ervoor dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat dat",
+        "Ik heb er niet voor dat ik er niet voor dat dat niet doen dat je dat niet doen?",
         "Sente beweegt eerst verplaats of laat één stuk per keer vallen.",
         "Gevangen stukken gaan naar uw stand en kunnen later worden gedropt op lege vierkantjes (met pionsproeier / controle beperkingen).",
         "Bevordering van in aanmerking komende stukken in de laatste drie rangen.",
@@ -19387,10 +19483,11 @@
       "idealParticipants": "2 personen",
       "variationNotes": [
         "Zuid-Afrikaanse molens met 12 koeien per kant; schoolsportvorm.",
-        "Zulu's naam voor een pop voor een pop voor een pop voor de pop en een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een pop voor een spelletje aan de pop een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een voor een een voor een voor een een voor een voor een een een voor een een een een een een voor een een een een een een voor een een een een een een een voor een een een voor een een een een een voor een een een voor een een voor een een een voor een een een voor een een voor een een een een voor een een een voor een een een voor een een een een een een voor een een een een eensdocumenten om een voor een een een een een een een voor een een een voor een een een een voor een een een voor een een een een een een een",
+        "Zulu name for the same mills game.",
         "Grotere stuk-telling molens variant."
       ],
-      "name": "Molen"
+      "name": "Molen",
+      "fallbackEn": true
     },
     "game-0013": {
       "description": "Alquerque springt vangt op een bekleed bord zijn gedocumenteerd in Alfonso X De Europese tekenaars verplaatsten het idee naar een geruit bord. Saharaanse kharbaga en aanverwante Maghreb games behoren tot dezelfde schrikkel-vangst familie... variaties van één jacht geometrie.",
@@ -19436,7 +19533,7 @@
         "Klik op de staker van uw basislijn om uw kleur te raken in zakken.",
         "Pocket de koningin, dan bedek het door een van uw stukken onmiddellijk na.",
         "Fouten retourneren stukken of kosten draaien per set regel.",
-        "Verzet de ver de de de de de de de de de de de en de de de de de de de de de de de de de de en de de de de de en de de de de de en de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de deijver de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de verordeningen de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de de"
+        "Clear your pieces (with queen covered) to win."
       ],
       "requirements": [
         "Carrom board met zakken",
@@ -19448,7 +19545,8 @@
       "variationNotes": [
         "Lokale fout en scores huisregels op hetzelfde bord."
       ],
-      "name": "Carrom"
+      "name": "Carrom",
+      "fallbackEn": true
     },
     "game-0016": {
       "description": "Speelkaarten zijn waarschijnlijk afkomstig van Chinese geldkaartideeën en zijn via mamluk decks in Europa binnengekomen. Franse pakken werden een wereldwijde standaard tool voor duizenden games. Regionale decks zijn variaties van hetzelfde draagbare gaming platform.",
@@ -20512,7 +20610,7 @@
         "Pierwsze, aby wnieść wszystkie cztery kawałki do centrum wygrywa."
       ],
       "requirements": [
-        "Płyta lub tkanina w kształcie krzyża",
+        "Cross-shaped board or cloth",
         "4 sztuki na gracza",
         "Skorupiaki lub kostki"
       ],
@@ -20523,7 +20621,8 @@
         "Amerykańska komercyjna adaptacja.",
         "Niemiecki wyścig rodzinny gra w tym samym rodowodzie."
       ],
-      "name": "Pachisi"
+      "name": "Pachisi",
+      "fallbackEn": true
     },
     "game-0010": {
       "description": "Mahjong czerpie z wcześniejszych chińskich kart i hazardzistów tradycji. Czterech graczy buduje miednice w kierunku pełnej ręki podczas czytania odrzutów. Style regionalne różnią się w zdobywaniu punktów, ale \"ściana\" jest wspólnym teatrem kulturalnym.",
@@ -20582,11 +20681,12 @@
       ],
       "idealParticipants": "2 osoby",
       "variationNotes": [
-        "Nie na nie nie na nienienienienieniena nienieniena nienienienienienieniena nienienienienienienienienieniena na nienienienienienienieniena na nienienienienienieniena na nienienienienienieniena na nienienienienieniena na na nienieniena na na nienienieniena na na nieniena na na nieniena na na na niena na na nieniena na na niena na na na na na niena na na na na niena na na na na na na na niena na na na na na na na niena na na na na na na niena na na na na na na na na na na na na na na na na na na na na na na na na na niena na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na na",
+        "Southern African mills with 12 cows per side; school sport form.",
         "Nazwa Zulu dla tej samej gry młynów.",
         "Większy wariant młynów do liczenia części."
       ],
-      "name": "Młynek"
+      "name": "Młynek",
+      "fallbackEn": true
     },
     "game-0013": {
       "description": "Nagrania Alquerque na płycie są udokumentowane w książce gier Alfonso X. Europejskie tarcze / warcaby przesunęły pomysł na kratkę. Saharan kharPatrzcie i powiązane gry Maghreb należą do tej samej rodziny skoków - odmiany jednej geometrii łowieckiej.",
@@ -20738,13 +20838,14 @@
       ],
       "requirements": [
         "Yo- yo on a string",
-        "Czysta przestrzeń wokół ciała"
+        "Clear space around body"
       ],
       "idealParticipants": "Sam",
       "variationNotes": [
         "Europejska modna zabawka dyskietkowa."
       ],
-      "name": "Yo- yo"
+      "name": "Yo- yo",
+      "fallbackEn": true
     },
     "game-0021": {
       "description": "Laty prawdopodobnie zaczęły się w Chinach do sygnalizacji i ceremonii przed staniem się sportu dla dzieci na całym świecie. Kultury myśliwskie w Afganistanie, Indiach, Brazylii i Japonii dodają linie cięcia i walki powietrznej. Zabawka dołącza do rzemiosła, odczytu pogody i publicznego spektaklu.",
@@ -20779,14 +20880,15 @@
       ],
       "requirements": [
         "Pętla strun o 1-2 metrach",
-        ".:"
+        "Two players"
       ],
       "idealParticipants": "2 osoby",
       "variationNotes": [
         "Japońska tradycja.",
         "String historie z lokalnych nazw i narracji. Zamieniają się w opowiadanie."
       ],
-      "name": "Kot"
+      "name": "Kot",
+      "fallbackEn": true
     },
     "game-0023": {
       "description": "Jianzi trzyma pierzasty wahadłowiec z nogami - dostępny sport park w Chinach i społeczności diaspory. Gra Circle buduje rytm; gra solo buduje rekordy liczenia. Koreański jegichagi i wietnamski đá ceptu są takie same podstawowe foot- shuttlecock gry.",
@@ -20841,11 +20943,12 @@
         "Piłka",
         "Pole z celami"
       ],
-      "idealParticipants": "2 zespoły",
+      "idealParticipants": "2 teams",
       "variationNotes": [
         "Gry w piłkę Doublestick z odrębnymi kontekstami rytualnymi."
       ],
-      "name": "Lacrosse"
+      "name": "Lacrosse",
+      "fallbackEn": true
     },
     "game-0026": {
       "description": "Mezoamerykańska gra w piłkę używała ciężkich gumowych kulek uderzonych głównie biodrami na formalnych sądach. Rytuał, polityka i sport splecione. Nowoczesna ulama w Sinaloa nadal hip-ball grać jako żywy potomek.",
@@ -20861,11 +20964,12 @@
         "Sąd lub aleja",
         "Ochrona biodra"
       ],
-      "idealParticipants": "2 zespoły",
+      "idealParticipants": "2 teams",
       "variationNotes": [
         "Sinaloa Hip- Ulama kontynuacja."
       ],
-      "name": "Mezoamerykańska gra w piłkę / Ulama"
+      "name": "Mezoamerykańska gra w piłkę / Ulama",
+      "fallbackEn": true
     },
     "game-0027": {
       "description": "Kokeshi są limbless lalki z północnego Honshu onsen miast - pierwsze pamiątki i zabawki dla dzieci, teraz zebrane sztuki. Szkoły regionalne (Naruko, Tsuchiyu i inne) różnią się od siebie stawami głowy i malarstwem kwiatowym.",
@@ -21040,8 +21144,9 @@
         "Kula ukryta lub drewniana",
         "Pole długie"
       ],
-      "idealParticipants": "2 zespoły",
-      "name": "Palín Przewodniczący"
+      "idealParticipants": "2 teams",
+      "name": "Palín Przewodniczący",
+      "fallbackEn": true
     },
     "game-0037": {
       "description": "Holownik wojna pojawiam się w żniwa obrządek, szkolny sport, i wieś festiwal światowy. Niektóre formy wschodnioazjatyckie i pacyficzne posiadają kosmologiczne znaczenie równowagi sezonowej. Dwie drużyny, jedna lina - konkurs koordynacji elementarnej.",
@@ -21054,15 +21159,16 @@
       ],
       "requirements": [
         "Mocna lina",
-        "Wskaźnik środkowego podłoża",
+        "Center ground marker",
         "Czysta strefa ciągnięcia"
       ],
-      "idealParticipants": "2 zespoły",
+      "idealParticipants": "2 teams",
       "variationNotes": [
         "Łączne liny w rytualnych wydarzeniach kalendarzowych.",
         "Wioskowe rytuały holownicze wokół festiwali."
       ],
-      "name": "Holownik wojenny"
+      "name": "Holownik wojenny",
+      "fallbackEn": true
     },
     "game-0038": {
       "description": "Hide- and- seek jest prawie uniwersalna gra dla dzieci z niezliczoną ilością lokalnych nazw i liczenie rymów. Przeprowadza próby ukrycia, pamięci przestrzennej i społecznego dreszczyku bycia odnalezionym. Architektura - od alei kasbah do schodów mieszkalnych - strategia resocjalizacji.",
@@ -21411,14 +21517,15 @@
         "Rzucić płasko z zakręceniem; twarzą do celu.",
         "Łapać dwoma rękami podczas nauki far.",
         "Graj złapać, ostateczne wyniki, lub disc- golf otwory.",
-        "Umysłowy wiatr i przechodPowiedzmy Jesli to jest to"
+        "Mind wind and bystanders."
       ],
       "requirements": [
         "Płyta latająca",
         "Pole otwarte"
       ],
       "idealParticipants": "2 + ludzie",
-      "name": "Frisbee / pływający dysk"
+      "name": "Frisbee / pływający dysk",
+      "fallbackEn": true
     },
     "game-0057": {
       "description": "Trzymanie małej torby z nogami echa starszej Eurazji kickbag play. Okrąg \"słoneczny\" sesje podkreślają styl i dzielenie się nad punktacji.",
@@ -22448,7 +22555,7 @@
       ],
       "requirements": [
         "Gridboard med ormar och stegar",
-        "[sv] Die",
+        "Die",
         "Ett token per spelare"
       ],
       "idealParticipants": "2–4 personer",
@@ -22456,7 +22563,8 @@
         "Didaktisk förfader med dygder och laster märkta.",
         "Amerikanska Milton Bradley branding av samma ras."
       ],
-      "name": "Ormar och stegar"
+      "name": "Ormar och stegar",
+      "fallbackEn": true
     },
     "game-0048": {
       "description": "Fastighetshandel tävlingsspel kritik eller fira real-estate kapitalism. Magies hyresvärdsspel föregick Parker Brothers Monopol. Lokala utgåvor kartlägger världsstäder på samma köp-rent-bankrupt loop.",
@@ -22868,11 +22976,12 @@
       ],
       "requirements": [
         "Πίνακας 30 τετραγωνικών σεναρίων",
-        "57 πι πι shaped 5 577 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι 5 πι πι 5 πι πι 5 πι πι 5 πι 5 πι 5 πι 5 πι πι 5 πι πι 5 πιόνια πιόνια πιόνια πιόνια για για για για για με με με με με με με με με με με με με με με ένα ένα ένα ένα ένα ένα ένα ένα μαζί με με με με ένα 5 με με με ένα 5 με με με με με ένα ένα ένα ένα ένα μαζί μαζί μαζί μαζί μαζί με με με ένα ένα ένα ένα ένα ένα μαζί μαζί μαζί μαζί με με με με με με με με με με με ένα ένα ένα ένα ένα ένα μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί με με με με θα θα μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί θα μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί μαζί",
+        "5–7 pawns per player",
         "Ράβδοι ή κόκκαλα"
       ],
       "idealParticipants": "2 άτομα",
-      "name": "Σενέτ"
+      "name": "Σενέτ",
+      "fallbackEn": true
     },
     "game-0008": {
       "description": "Patolli ήταν ένα ιερό παιχνίδι φυλής Αζτέκων σε ένα κομμάτι σε σχήμα Χ χρησιμοποιώντας φασόλια ως ζάρια. Τυχερά παιχνίδια και τελετουργικές προσφορές συνυφασμένες; το παιχνίδι εμφανίζεται σε κώδικες και ισπανικούς λογαριασμούς ως κοσμικός κίνδυνος που γίνεται playable.",
@@ -22906,16 +23015,17 @@
       "requirements": [
         "Σταυροειδής σανίδα ή ύφασμα",
         "4 κομμάτια ανά παίκτη",
-        "Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κε Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κε Κο Κο Κο Κο Κο Κο Κε Κε Κο Κο Κο Κο Κε Κε Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κε Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κε Κο Κε Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο για Κά για Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κε Κο Κο Κε Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Κο Π Π Π Π Π Π Π ο για Κο της Κο της της της Κο της Κο της της της της της Κο της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της της"
+        "Cowrie shells or dice"
       ],
       "idealParticipants": "2,4 άτομα",
       "variationNotes": [
         "Είναι συγγενής με μακρύτερα χέρια και ζάρια.",
         "Βρετανική πατενταρισμένη απλοποίηση με κυβικά ζάρια.",
         "Αμερικανική εμπορική προσαρμογή.",
-        "Α, , , , , , , , , , , , , , , , , , , , , , , , , ,            ,"
+        "German family race game in the same lineage."
       ],
-      "name": "Πατσίσι"
+      "name": "Πατσίσι",
+      "fallbackEn": true
     },
     "game-0010": {
       "description": "Ο Mahjong αντλεί από προηγούμενες κινέζικες κάρτες και παραδόσεις τυχερών παιχνιδιών. Τέσσερις παίκτες χτίζουν συγκολλήσεις προς ένα πλήρες χέρι κατά την ανάγνωση απορρίψεων. Τα περιφερειακά στυλ διαφέρουν στη βαθμολόγηση, αλλά το ανακάτεμα «wall» είναι κοινό πολιτιστικό θέατρο.",
@@ -23044,7 +23154,7 @@
         "Ανακάτεψε και μοίρασε σύμφωνα με το παιχνίδι φύλλων που επιλέχθηκε.",
         "Ακολούθα τους κανόνες του παιχνιδιού.",
         "Παίξτε μέχρι να εκπληρωθεί μια σύμβαση, στόχος σκορ, ή προϋπόθεση εξάλειψης.",
-        "Τι ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο, ωραίο... πολύ ωραίο, ωραίο, ωραίο, ωραίο... ωραίο, ωραίο, ωραίο, ωραίο... ωραίο... ωραίο, ωραίο... ωραίο... ωραίο... ωραίο... ωραίο, ωραίο, ωραίο, ωραίο... ωραίο, ωραίο, ωραίο... ωραίο, ωραίο... ωραίο, ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο... ωραίο...........................χαρ...............χαρ.........χαρ............χαρχαρ.....................χαρ..........................................................................................................................................................................................................................................",
+        "Rotate the dealer each hand.",
         "Μάθετε ένα κλασικό (whist/hearts family) πριν από σύνθετες παραλλαγές."
       ],
       "requirements": [
@@ -23057,7 +23167,8 @@
         "Καρδιές, καμπάνες, βελανίδια, φύλλα.",
         "40 ή 48 τράπουλες για mus, tute κ.λπ."
       ],
-      "name": "Παιγνιόχαρτα (γαλλικής στολής τράπουλα)"
+      "name": "Παιγνιόχαρτα (γαλλικής στολής τράπουλα)",
+      "fallbackEn": true
     },
     "game-0017": {
       "description": "Οι ιαπωνικές παραδόσεις καρούτα περιλαμβάνουν εποχιακές χαναφούντα και λογοτεχνικές uta-garuta. Ανταγωνιστικό ποίημα-κάρτα karuta απαιτεί την αναγνώριση αστραπή? hanafuda υποστηρίζει koi-koi. Τα χαρτιά δένουν εποχές, ποίηση και ταχύτητα σε μια οικογένεια αντικειμένων παιχνιδιού.",
@@ -23152,13 +23263,14 @@
         "Ιπτάμενη γραμμή",
         "Ανοίξτε ανεμοδαρμένο χώρο μακριά apostles"
       ],
-      "idealParticipants": "Α, , , , , , , , , , , , , , , , , , , ,  , , ,                                                                         Tony",
+      "idealParticipants": "Alone or 2 people",
       "variationNotes": [
         "Μάτζα λειαντική γραμμή για μάχες χαρταετών.",
         "Γιγαντιαίοι κοινοί χαρταετοί και μάχες.",
         "Βραζιλιάνικος πολιτισμός δρόμου-μαχητών."
       ],
-      "name": "Πτήση Kite"
+      "name": "Πτήση Kite",
+      "fallbackEn": true
     },
     "game-0022": {
       "description": "Το λίκνο της γάτας και οι σχετικές μορφές χορδών εμφανίζονται από την Αρκτική μέχρι την Ωκεανία με εκπληκτική ομοιότητα. Τα σχήματα περνούν ανάμεσα στα χέρια σε ακολουθία, εκπαίδευση χωρικής μνήμης και συνεργασίας. Οι ανθρωπολόγοι κατέγραψαν εκατοντάδες ονομαστικά μοτίβα που συνδέονται με ιστορίες.",
@@ -23205,7 +23317,7 @@
       "howToPlay": [
         "Σερβίρετε πάνω από το δίχτυ με ένα πόδι.",
         "Οι ομάδες μπορούν να χρησιμοποιήσουν μέχρι τρεις πινελιές πριν επιστρέψουν (αθλητικοί κανόνες).",
-        "Χωρίς χέρια ή χέρια. χωρίς χέρια. χωρίς χέρια. χωρίς χέρια. χωρίς χέρια χωρίς χέρια. χωρίς χέρια. χωρίς χέρια. σας χωρίς χέρια χωρίς χέρια. χέρια. χωρίς χέρια. χωρίς χέρια. χωρίς χέρια.. χωρίς χέρια χωρίς χέρια από χέρια...... απ απ απ κα κακακακακακακακακακακακακακακακακακα κακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακα κακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακακαSvenskaκακακακακακακακακακακακακακακακακακα",
+        "No hands or arms.",
         "Σκοράρει όταν η μπάλα γήπεδο νόμιμα στο γήπεδο του αντιπάλου.",
         "Παίξτε σύνολα σε ένα συμφωνημένο σημείο σύνολο."
       ],
@@ -23217,7 +23329,8 @@
       "variationNotes": [
         "Συνεργατικός κύκλος διατήρησης χωρίς δίχτυ."
       ],
-      "name": "Τακρόου Sepak"
+      "name": "Τακρόου Sepak",
+      "fallbackEn": true
     },
     "game-0025": {
       "description": "Το stickball μεταξύ των βορειοανατολικών αυτοχθόνων εθνών είχε πνευματικό και διπλωματικό βάρος— το παιχνίδι του Δημιουργού. Γάλλοι παρατηρητές το ονόμασαν λακρός. Οι σύγχρονοι κώδικες επισημοποίησαν τους κανόνες του αθλητισμού, αλλά το δέσιμο και το σκοράρισμα με ένα δίχτυ συνεχίζουν μια βαθιά παράδοση.",
@@ -23272,11 +23385,12 @@
         "Γυρισμένη ξύλινη κούκλα",
         "Βαμμένο φινίρισμα"
       ],
-      "idealParticipants": "- Μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα, μα μα, μα μα, μα μα μα μα, μα μα μα, μα μα μα μα μα , μα μα , μα μα μα μα μα μα μα μα μα , μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα     μα μα μα  μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα  μα μα μα μα μα μα μα μα μα μα μα μα    μα μα μα μα μα μα μα μα μα μα  μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα  μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα μα",
+      "idealParticipants": "Alone / N/A (display & gentle play)",
       "variationNotes": [
         "Κάνοντας κλικ στο στυλ του σχολείου."
       ],
-      "name": "Κοκέσι"
+      "name": "Κοκέσι",
+      "fallbackEn": true
     },
     "game-0028": {
       "description": "Matryoshka φωλιές κούκλες δημιουργήθηκε στα 1890s στο Abramtsevo εργαστήρια, επηρεασμένοι από μορφές φωλιάς και χωριάτικο φόρεμα μοτίβα. Κάθε άνοιγμα αποκαλύπτει μια μικρότερη αδελφή—συμβολίζοντας την οικογενειακή συνέχεια και τη γονιμότητα— και έγινε μια παγκόσμια εικόνα της βιοτεχνίας.",
@@ -23384,7 +23498,7 @@
     "game-0034": {
       "description": "Οι στοιβάδες είναι από τα παλαιότερα κατασκευαστικά παιχνίδια—πέτρα, πηλός και ξύλινες στοίβες εμφανίζονται σε πολιτισμούς. Η Φρόεμπελ χαρίζει επίσημο εκπαιδευτικό παιχνίδι μπλοκ τον 19ο αιώνα. Η θεμελιώδης πράξη συγκεντρώνει μορφή από αρθρωτά στερεά.",
       "howToPlay": [
-        "Να καθαρίσ, καθαρίσ, καθαρ, καθαρ, καθαρ, καθαρ, καθαρ, καθαρ, καθαρ, καθαρ, καθαρ, καθαρ,, καθαρ,ςς, καθαρόςςς, καθαρόςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςς whichςςςςςςςςςςςςςςςςςςςςςςςςςςςςνειςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςςς",
+        "Clear a stable building surface.",
         "Στοίβα, γέφυρα, και cantilever μπλοκ σε πύργους ή σπίτια.",
         "Συμφωνήστε προαιρετικές προκλήσεις (tallest πύργος, εύρος γέφυρας, αντίγραφο ενός μοντέλου).",
         "Χτυπήστε σκόπιμα ως μέρος του παιχνιδιού, αν επιθυμείτε.",
@@ -23399,7 +23513,8 @@
         "Εκπαιδευτική ακολουθία μπλοκ για νηπιαγωγεία.",
         "Τα αρθρωτά τμήματα της τάξης της Caroline Pratt."
       ],
-      "name": "Δομικά τεμάχια"
+      "name": "Δομικά τεμάχια",
+      "fallbackEn": true
     },
     "game-0035": {
       "description": "Το Chunkey ήταν ένα άθλημα της πλατείας του Μισισιπή: ένας έλασης πέτρινος δίσκος και δόρατα που έριχναν για να προβλέψουν την πτώση του. Η κατάσταση, ο τζόγος και ο αθλητισμός συναντήθηκαν κοντά σε αναχώματα. Η αρχαιολογία ανακάμπτει με λεπτότητα κατασκευασμένες χοντρές πέτρες στα μεσοδυτικά και νότια.",
@@ -23411,12 +23526,13 @@
         "Κρατήστε τους θεατές μακριά από το μονοπάτι throwψης."
       ],
       "requirements": [
-        "-",
+        "Stone discoidal",
         "Πέταξε στύλους",
         "Επίπεδο συσκευασμένο έδαφος"
       ],
       "idealParticipants": "2+ άτομα",
-      "name": "Τσάνκεϊ"
+      "name": "Τσάνκεϊ",
+      "fallbackEn": true
     },
     "game-0036": {
       "description": "Palín (chueca Enter) είναι ένα παιχνίδι Mapuche stick-and-ball με κοινοτική και τελετουργική σημασία. Οι ομάδες οδηγούν μια μπάλα προς τα γκολ σε ένα μακρύ γήπεδο. Παραμένει δείκτης συγκέντρωσης και ταυτότητας Μαπούτσε.",
@@ -23481,7 +23597,7 @@
         "Σχεδιάστε ένα αριθμημένο πλέγμα λυκίσκου.",
         "Πέτα έναν δείκτη στο επόμενο τετράγωνο, πρέπει να προσγειωθεί καθαρά μέσα.",
         "Πήδα με το ένα πόδι, παρακάμπτοντας την κατεχόμενη πλατεία.",
-        "Αν είναι να:",
+        "Retrieve the marker on the return without faults.",
         "Πρώτα να ολοκληρώσει όλους τους αριθμούς κερδίζει."
       ],
       "requirements": [
@@ -23493,7 +23609,8 @@
         "Ισπανική γλώσσα hopscotch όνομα και παραλλαγές πλέγμα.",
         "Γαλλικά πλέγματα και σχολικοί κανόνες."
       ],
-      "name": "Κουτσό"
+      "name": "Κουτσό",
+      "fallbackEn": true
     },
     "game-0040": {
       "description": "Τα μαρμάρινα δαχτυλίδια είναι σχεδόν παγκόσμια παιδικά παιχνίδια. Πήλινα, πέτρα, και αργότερα γυάλινες σφαίρες είναι αρθρώσεις-πυροβολισμού για να χτυπήσει στόχους από έναν κύκλο. Οι «Keepsies» έναντι των φίλων αποφασίζουν αν οι νικητές κρατούν αιχμαλωτισμένα μάρμαρα.",
@@ -23578,7 +23695,7 @@
       "name": "Αλεπού και Γκιζ"
     },
     "game-0044": {
-      "description": "Πέντε-σε-σειρά σε ένα Go-like πλέγμα είναι μια αρχαία ανατολική ασιατική χόμπι επισημοποιήθηκε ως gomoku και renju. Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go2 Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go2 Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go Go",
+      "description": "Πέντε-σε-σειρά σε ένα Go-like πλέγμα είναι μια αρχαία ανατολική ασιατική χόμπι επισημοποιήθηκε ως gomoku και renju.",
       "howToPlay": [
         "Οι μαύρες θέσεις πρώτα σε μια διασταύρωση.",
         "Οι παίκτες εναλλάσσονται τοποθετώντας μία πέτρα.",
@@ -23749,7 +23866,7 @@
       "description": "Οι χυτοί ή τυπωμένοι μινιατούρες στρατιώτες υποστήριζαν το πολεμικό Price και αργότερα το warming. Οι Γερμανοί κατασκευαστές κασσίτερου και οι Βρετανοί κούφιοι casts διέδωσαν σετ παγκοσμίως. Το παιχνίδι κυμαίνεται από απλές μάχες γραμμής μέχρι και βαριές προσομοιώσεις.",
       "howToPlay": [
         "Κανόνισε δύο δυνάμεις σε ένα τραπέζι.",
-        "ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑΜα ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ sizes ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ ΜΑ",
+        "Alternate moving units by simple paces or measured rules.",
         "Επίλυση επιθέσεων με ζάρια ή \\\"μπαμ είσαι έξω\\\" κανόνες σπίτι.",
         "Στόχος: συλλαμβάνει μια σημαία ή να εξαλείψει τον εχθρό.",
         "Αποθήκευση φιγούρες έτσι χρώμα και ξιφολόγχες επιβιώνουν."
@@ -23762,7 +23879,8 @@
       "variationNotes": [
         "Πρώιμοι μαζικόχρωμοι στρατιώτες επίπεδης κονσέρβας."
       ],
-      "name": "Πέρα από τους στρατιώτες του παλατιού του Μπάκιγχαμ:"
+      "name": "Buckingham Palace toy soldiers aside: Toy soldiers",
+      "fallbackEn": true
     },
     "game-0054": {
       "description": "Μινιατούρα σετ τσαγιού αφήνουν τα παιδιά να κάνουν πρόβες σε τελετές φιλοξενίας. Οι εκδόσεις πορσελάνη και κασσίτερος εντόπισαν καλλιέργειες τσαγιού ενηλίκων από τη Βρετανία μέχρι την Ιαπωνία. Κοινωνικά σενάρια—χύνοντας, προσφέροντας, ευχαριστώ— είναι οι mythologyset.",
@@ -23791,10 +23909,11 @@
       ],
       "requirements": [
         "Μεταλλικό ή πλαστικό παιχνίδι ελατηρίου",
-        "- Είναι πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ ordinary πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ από πολύ πολύ πολύ πολύ frame πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ πολύ"
+        "Stairs optional"
       ],
       "idealParticipants": "Μόνος μου.",
-      "name": "Σλίνκι."
+      "name": "Σλίνκι.",
+      "fallbackEn": true
     },
     "game-0056": {
       "description": "Ιπτάμενοι δίσκοι επισημοποίησαν την παραλία και το πάρκο πετώντας? απόλυτη γκολφ και δίσκο πρόσθετα αθλητικά πλαίσια. Το βασικό παιχνίδι είναι μια πλάκα που αιωρείται με το χέρι.",
@@ -23996,13 +24115,14 @@
       "requirements": [
         "9 ×9 לוחצים",
         "40 חתיכות",
-        "המונחים:"
+        "Optional piece stands"
       ],
       "idealParticipants": "2 אנשים",
       "variationNotes": [
         "גרסה היסטורית גדולה יותר עם סוגים ייחודיים רבים."
       ],
-      "name": "Shogi"
+      "name": "Shogi",
+      "fallbackEn": true
     },
     "game-0005": {
       "description": "Mancala היא משפחה של משחקי סויה: שחקנים מחלקים זרעים סביב בורות שנחצבו בעץ, אבן או אדמה. הדירקטוריון מופיע ברחבי אפריקה, המזרח התיכון ודרום אסיה. השמות האזוריים וספירת הבור נבדלים, אך מחות ה-Scoop-and-sow מאחדת אותם כמשחק יסודי אחד עם פרצופים תרבותיים רבים.",
@@ -25087,13 +25207,14 @@
       ],
       "requirements": [
         "לוח הסירה Dakon",
-        "תגית:"
+        "Seeds"
       ],
       "idealParticipants": "2 אנשים",
       "variationNotes": [
         "משחק ה-Samsame Boat-board - משפחה."
       ],
-      "name": "דקונון"
+      "name": "דקונון",
+      "fallbackEn": true
     },
     "game-0062": {
       "description": "Sungka הוא משחק סווינג בצורת הסירה הפיליפינית, בן דוד לקונאק. הדירקטוריון הם יורשים ביתיים; משחק מערבב מהירות סוחף עם תזמון לכידת.",
@@ -26209,7 +26330,7 @@
       "howToPlay": [
         "Поверніть мішок на ногу і акуратно підшийте вгору.",
         "Використовуйте ноги, коліна, стегна — руки.",
-        "У колі, переходять на сусіди,",
+        "In a circle, pass to neighbors.",
         "Кількість послідовних ударів.",
         "Перезапустіть разом після падіння."
       ],
@@ -26221,7 +26342,8 @@
       "variationNotes": [
         "Старші курчатські традиції, пов'язані з духом."
       ],
-      "name": "Хакі sack / мішок ноги"
+      "name": "Хакі sack / мішок ноги",
+      "fallbackEn": true
     },
     "game-0058": {
       "description": "Повернути бомеранги є прецизійними кишенями з Австралійці, також використовуються в мисливських формах, які не повертаються. Туристичні спортивні бумеранги спрощують повернення іграшок; культурні знання дизайну залишаються з громадами.",
@@ -27024,7 +27146,7 @@
       "name": "پالانی"
     },
     "game-0037": {
-      "description": "توگ جنگ در مراسم برداشت، ورزش مدرسه و جشنواره های روستایی در سراسر جهان به نظر می رسد. برخی از فرم های شرق آسیا و اقیانوس آرام دارای معانی کیهان شناختی از تعادل فصلی هستند. دو تیم، یک طناب – مسابقه هماهنگی عنصری",
+      "description": "توگ جنگ در مراسم برداشت، ورزش مدرسه و جشنواره های روستایی در سراسر جهان به نظر می رسد. برخی از فرم های شرق آسیا و اقیانوس آرام دارای معانی کیهان شناختی از تعادل فصلی هستند.",
       "howToPlay": [
         "مارک یک خط مرکزی و خطوط خطا تیمی",
         "تیم ها به طور مساوی کنترل می شوند؛ از بستن طناب اطراف اندام در قوانین ورزشی خودداری کنید.",
@@ -27298,7 +27420,7 @@
       "name": "Diabolo"
     },
     "game-0051": {
-      "description": "نخ های پیک (اسپکین ها، جکسترها) در یک انقباض قرار می گیرند؛ بازیکنان بدون حرکت دیگران، چوب را استخراج می کنند. ارزش های رنگی امتیاز یک تست آرام برای کنترل موتور خوب",
+      "description": "نخ های پیک (اسپکین ها، جکسترها) در یک انقباض قرار می گیرند؛ بازیکنان بدون حرکت دیگران، چوب را استخراج می کنند.",
       "howToPlay": [
         "نگه داشتن چوب راست در یک بسته و آزاد برای قمار.",
         "بازیکنان به طور متناوب یک چوب را بدون تکان دادن دیگران بکشید.",
@@ -27618,7 +27740,7 @@
       "name": "Macalaa বীজ বপন করার খেলা"
     },
     "game-0006": {
-      "description": "রেস-আর-হই-বল-চরম পাশা খেলা, উরনের রাজকীয় খেলা থেকে শুরু করে ফার্সি নার্ড আর ইউরোপিয়ান টেবিলে। টেশেন ভাগ্য ও দক্ষতাকে সমন্বয় করে... ...১৫ টা চেকারদের আঘাত করার সময়। কিউব একটি আধুনিক কৌশলগত স্তর।",
+      "description": "Race-and-hit dice games stretch from the Royal Game of Ur to Persian nard and European tables. Backgammon blends luck and skill as players bear off fifteen checkers while hitting blots. The doubling cube is a modern strategic layer.",
       "howToPlay": [
         "২৪ পয়েন্ট অনুযায়ী ইঞ্জিনের মানের মধ্যে সাধারণ রেখা নির্ধারণ করে ।",
         "দুই অর্থনীতিবিদের সারি বেছে নিন এবং দু'টি টিক দিয়ে দু'টি গড়িয়ে দিন।",
@@ -27639,7 +27761,8 @@
         "ব্যাকগ্যামন-এর মত খেলার জন্য আঞ্চলিক ক্যাফে সংস্কৃতির নাম।",
         "প্রাচীন পূর্বপুরুষদের একটা একক ট্র্যাক আছে."
       ],
-      "name": "ব্যাকগ্যামন"
+      "name": "ব্যাকগ্যামন",
+      "fallbackEn": true
     },
     "game-0007": {
       "description": "সিনেট মিশরের সব জায়গায় সমাধি চিত্র এবং সমাধিস্থানের দৃশ্য ধারণ করেছে। এটা ধর্মীয় অর্থকে পুনর্জীবনের পর লিখিত হিসেবে গণ্য করত । পরবর্তী টেক্সট এবং বোর্ড জ্যামিতির মাধ্যমে মিশরীয় বিজ্ঞানীদের দ্বারা প্রবর্তিত নিয়ম।",
@@ -27926,7 +28049,7 @@
       "description": "সম্ভবত কা. পূ. আফগানিস্তান, ভারত, ব্রাজিল, এবং জাপান-এর যুদ্ধ-বিগ্রহী সংস্কৃতির সাথে যুক্ত হয়েছে। খেলনার সাথে যোগ দেওয়া, আবহাওয়া পড়া, এবং জনসাধারণের সামনে।",
       "howToPlay": [
         "হাত উপরে তোলো, স্পেয়ারস আর অতিরিক্ত ভারসাম্য পরীক্ষা করো।",
-        "বাতাসে ফিরে যাওয়ার সাথে সাথে, তোমাকে সাহায্য করতে হবে... ...যখন তুমি উত্তেজনা সৃষ্টি করবে.",
+        "With back to the wind, have a helper hold or launch as you reel tension.",
         "লাইন কোণ দিয়ে স্ট্রেচার; স্থির বায়ুতে উঠে ।",
         "ফাইটেডের মাধ্যমে প্রতিপক্ষের সীমা কেটে ফেলার চেষ্টা করা হয়।",
         "ঝড়ের আগে রিলে; কখনো বিদ্যুত লাইনের কাছাকাছি উড়ে যায় না।"
@@ -27942,7 +28065,8 @@
         "দৈত্য সম্প্রদায়গত কিট এবং লড়াই করছে।",
         "ব্রাজিলিয়ান ফাইটার-কিট স্ট্রিট সংস্কৃতি।"
       ],
-      "name": "কিট উড়ন্ত"
+      "name": "কিট উড়ন্ত",
+      "fallbackEn": true
     },
     "game-0022": {
       "description": "( যিশাইয় ৫৫: ১০, ১১) এর সঙ্গে মিল রেখে speedরের অধঃস্থিত সাদৃশ্যও রয়েছে । হাতের মাঝের আকৃতি, অনুশীলন করা স্মৃতি আর সহযোগিতার মধ্যে দিয়ে। নৃতত্ত্ববিদরা গল্পের সাথে সংযুক্ত শত শত নাম ধারণ করেছে।",
@@ -27955,14 +28079,15 @@
       ],
       "requirements": [
         "১-২ মিটার পর্যন্ত লুপ",
-        "খেলোয়াড়ের সংখ্যা ( N):"
+        "Two players"
       ],
       "idealParticipants": "২ জন লোক",
       "variationNotes": [
         "জাপানি স্ট্রিং-ম্লম ঐতিহ্য।",
         "স্থানীয় নাম এবং বর্ণনার মাধ্যমে স্ট্রিং গল্প।"
       ],
-      "name": "বিড়ালের ঝলক"
+      "name": "বিড়ালের ঝলক",
+      "fallbackEn": true
     },
     "game-0023": {
       "description": "ঝিয়ানজি চীন ও প্রবাসী সম্প্রদায়ের মাঝে একটি বিশেষ উদ্যানের খেলা। বৃত্তের তাল নির্মাণ; সলো খেলা গণনা গণনা রেকর্ড। কোরিয়ান জেগিগি Testingগি এবং ভিয়েতনামের নাগরিক সাইকু একই ধরনের মৌলিক পা-চুম্বক খেলা।",
@@ -28115,7 +28240,7 @@
       "howToPlay": [
         "বল ঝুলে থাকা হ্যান্ডেল ধরে রাখো.",
         "উপরে উঠে গিয়ে বল ধরে কাপে বা চকে।",
-        "হুট করে সাজানো শুরু করা হচ্ছে... ...একটা কৌশলের ক্রম.",
+        "Progress to flips and named trick sequences.",
         "বার বার ধরা পর.",
         "শেখার সময় নরম এলাকায় অনুশীলন করুন ।"
       ],
@@ -28128,7 +28253,8 @@
         "প্রচুর কৌশল সহ মাল্টি-ফাইড।",
         "ইউরোপিয়ান কাপ-বল।"
       ],
-      "name": "বিলবোক্‌ত / বালোরো / কেডামা পরিবার"
+      "name": "বিলবোক্‌ত / বালোরো / কেডামা পরিবার",
+      "fallbackEn": true
     },
     "game-0032": {
       "description": "টরেন্টালগুলো সাত টনে থাকে । এটা ১৯ শতকের একটি উন্মাদনা হিসেবে চীন থেকে ছড়িয়ে পড়ে। জ্যামিতিক রূপান্তর এবং নেতিবাচক স্থান হচ্ছে খেলনার শান্ত শিক্ষা।",
@@ -28186,7 +28312,7 @@
       "name": "অবরুদ্ধ ব্লক"
     },
     "game-0035": {
-      "description": "চুনকি একজন মিসিসিপিনপ্লাজা খেলা: একটি পাথরের ডিস্ক আর বর্শা এর পতন সম্পর্কে ভবিষ্যদ্বাণী করা হয়েছে। কা. পূ. আর্কিটেক্টরা একেবারে সুস্থ হয়ে যায়... ...ডিওয়েস্ট আর দক্ষিণের মাঝে.",
+      "description": "Chunkey was a Mississippian plaza sport: a rolled stone disk and spears cast to predict its fall. Status, gambling, and athleticism met near mounds. Archaeology recovers finely made chunkey stones across the Midwest and South.",
       "howToPlay": [
         "একজন খেলোয়াড় মাটির নিচ দিয়েini পাথর রোল করে.",
         "কা. পূ.",
@@ -28200,7 +28326,8 @@
         "স্তর মুছে ফেলো"
       ],
       "idealParticipants": "২+ মানুষ",
-      "name": "চোকি"
+      "name": "চোকি",
+      "fallbackEn": true
     },
     "game-0036": {
       "description": "পালালিন (চুকা)人 ও ধর্মীয় গুরুত্বের সাথে একটি ম্যাপুচি-বল খেলা। টিমরা লম্বা পিচে গোলের দিকে এগিয়ে যাচ্ছে. এটা ম্যাপুচে সমাবেশ এবং পরিচয়ের একটি মার্কার।",
@@ -28260,7 +28387,7 @@
       "name": "ছোট/বড়াকার"
     },
     "game-0039": {
-      "description": "বিভিন্ন স্থান থেকে আসা মার্কারের জন্য বিভিন্ন পথ বেছে নেওয়া হচ্ছে। ভারসাম্য বজায় রাখা, চাষ করা, আর ফুটপাথ আর্ট... ...বিড়াল সেলের মাধ্যমে... ...একটা সাধারণ জাতিতে মিলিত হয়.",
+      "description": "Hopping grids for tossed markers appear across continents with local shapes and rhymes. Balance, turn-taking, and pavement chalk art meet in one simple race through numbered cells.",
       "howToPlay": [
         "ক্রস ক্ষেত্র আঁকুন",
         "পরবর্তী স্কোয়ারে মার্কার দিতে হলে এটিকে ভিতরে পরিষ্কার করতে হবে।",
@@ -28277,7 +28404,8 @@
         "স্প্যানিশ ভাষার  যেয়োনা প্রোফাইল এবং গ্রীড তালিকা।",
         "ফ্রেঞ্চ ক্রস গ্রিড আর স্কুলের নিয়ম."
       ],
-      "name": "হোস্ট"
+      "name": "হোস্ট",
+      "fallbackEn": true
     },
     "game-0040": {
       "description": "মার্বেল আংটিগুলো প্রায় বৈশ্বিক শিশুদের গেইম। Kel, পাথর এবং পরে কাঁচের বলগুলো একটি বৃত্ত থেকে টার্গেট করা হয়. বিজয়ীরা মার্বেল ধরে রেখেছে কিনা সে সিদ্ধান্ত নিয়েছে।",
@@ -28366,7 +28494,7 @@
       "howToPlay": [
         "কালো জায়গা প্রথমে মোড়ে.",
         "খেলোয়াড়রা একটি পাথর স্থাপন করছে.",
-        "প্রথমে ৫টা পাথর তৈরি করবে... ...একটা লাইন জয়ে.",
+        "First to form five consecutive stones in a line wins.",
         "সেভপোর্ট রিনজু ভারসাম্যের উপর নিষেধাজ্ঞা জারি করেছে।",
         "একটি নিবেদিত গমকু বোর্ড বা একটি গো বোর্ডে খেলুন।"
       ],
@@ -28378,10 +28506,11 @@
       "variationNotes": [
         "পাঁচ বছরের জন্য প্রতিযোগিতামূলক শাসন।"
       ],
-      "name": "ব্যাং / গোমোকা"
+      "name": "ব্যাং / গোমোকা",
+      "fallbackEn": true
     },
     "game-0045": {
-      "description": "অগোছালো স্যান্ডউইচ ডিস্ককে সংখ্যাগরিষ্ঠ রঙ দাবি করতে বলা হচ্ছে। নতুন ব্র্যান্ডিং এবং উদ্বোধন। একটি খাঁটি ক-চূড়া-এবং প্রতিদ্বন্দ্বিতা... ... বিস্ফোরকের গোলক দিয়ে.",
+      "description": "Reversi flips sandwiched discs to claim majority color. Othello standardized modern branding and opening. A pure placement-and-flip contest with explosive endgame swings.",
       "howToPlay": [
         "স্ট্যান্ডার্ড ওথলো খোলার মধ্যে চারটি ডিস্ক স্থাপন করুন।",
         "কমপক্ষে একটি সাদা ডিস্ক।",
@@ -28397,7 +28526,8 @@
       "variationNotes": [
         "এটা আধুনিক দিনের খেলা।"
       ],
-      "name": "Reversi / ও পথেলো"
+      "name": "Reversi / ও পথেলো",
+      "fallbackEn": true
     },
     "game-0046": {
       "description": "প্রিমিয়াম বর্গ দ্বারা ক্রস-প্ল্যাটিক গ্রিডের মধ্যে অক্ষরবিশিষ্ট বিন্দুকে নির্দেশ করে । আমেরিকার ক্রসওয়ার্ড সংস্কৃতি থেকে শুরু করে এটা ভাষা নির্ধারণের ক্ষেত্রে বিশ্বব্যাপী একটি খেলা হয়ে দাঁড়ায়।",
@@ -28625,12 +28755,13 @@
         "জ্ঞানীদের কাছ থেকে শিখুন; নকশা মালিকানার প্রতি সম্মান দেখান ।"
       ],
       "requirements": [
-        "বঙ্গানুবাদে :",
+        "Returning boomerang",
         "বড় আকারে প্রদর্শন ক্ষেত্র",
         "কেন্দ্রবিন্দু বিশিষ্ট"
       ],
       "idealParticipants": "একা",
-      "name": "বুমেরাং"
+      "name": "বুমেরাং",
+      "fallbackEn": true
     },
     "game-0059": {
       "description": "নাচের ট্রেন কব্জি আর গল্প বলা। আধুনিক আগুন এবং কর্মক্ষমতা বিশ্বব্যাপী ছড়িয়ে পড়েছে; ঐতিহ্যবাহী প্রেক্ষাপটগুলো সাংস্কৃতিক অনুশীলনের মধ্যে রয়েছে।",
@@ -28975,27 +29106,29 @@
       ],
       "idealParticipants": "Watu wawili",
       "variationNotes": [
-        "8 × 8 × 8 × 8 × 8 × 8 × × × × × × × × × × . . . . . . . . . . . . . . . .; . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
-        "10 × 10 × 10 × 10 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
+        "8×8 checkered form; men move diagonally.",
+        "10×10 board with flying kings.",
         "Mkoa wa Kusini mwa Jangwa la Sahara."
       ],
-      "name": "Familia ya Alquerque / binti"
+      "name": "Familia ya Alquerque / binti",
+      "fallbackEn": true
     },
     "game-0014": {
       "description": "Fanorona ni mchezo wa bodi ya taifa ya Madagascar wa mbinu na uondoaji. Cascading line kukamata kujenga mbinu kali. Historia ya Oral inaunganisha bodi za siasa za kifalme na ushindani wa jamii.",
       "howToPlay": [
-        ". . . . . . . .; . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
+        "Fill the board except the center; white moves first.",
         "Weka kipande kimoja kwenye sehemu ya karibu tupu kwenye mstari.",
         "Kukamatwa kwa njia au uondoaji kuhusiana na kundi la adui.",
         "Endelea kukamata na kipande hicho hicho wakati kuna kukamata zaidi.",
         "Kukamata vipande vyote vya kupinga ili kushinda."
       ],
       "requirements": [
-        "9 ×5 ×5 ×5 - - - - -",
+        "9×5-point fanorona board",
         "22 kwa kila rangi"
       ],
       "idealParticipants": "Watu wawili",
-      "name": "Fantasia ya"
+      "name": "Fantasia ya",
+      "fallbackEn": true
     },
     "game-0015": {
       "description": "Carrom ni mchezo tabletop kuvutia mpenzi katika Asia ya Kusini na diaspora. Wachezaji flick mshambuliaji mfukoni carrom wanaume, na malkia wanaohitaji cover. Inaunganisha geometry ya billiards na sociability ya chumba cha kukaa.",
@@ -29008,7 +29141,7 @@
       ],
       "requirements": [
         "Carrom bodi na mifuko",
-        "Picha zote na Wizara ya Mambo ya Ndani ya Nchi. ....................................................................",
+        "9 white, 9 black, 1 red queen",
         "Mgomo wa",
         "Poda kwa ajili ya uso"
       ],
@@ -29016,7 +29149,8 @@
       "variationNotes": [
         "Home » Unlabelled » Sheria za Nyumba za Mitaa na Sheria za Nyumba kwenye Bodi hiyo."
       ],
-      "name": "Carrom"
+      "name": "Carrom",
+      "fallbackEn": true
     },
     "game-0016": {
       "description": "Kucheza kadi inawezekana alishuka kutoka mawazo ya kadi ya fedha ya Kichina na kuingia Ulaya kupitia staha Mamluk. Kifaransa suti akawa chombo kimataifa standard kwa maelfu ya michezo. Kanda decks ni tofauti ya jukwaa moja portable michezo ya kubahatisha - si kabisa tofauti toys.",
@@ -29123,7 +29257,7 @@
       "howToPlay": [
         "Funga mlango na uacha ladha.",
         "Na nyuma ya upepo, kuwa na msaada kushikilia au uzinduzi kama wewe reel mvutano.",
-        ". . . .; . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
+        "Steer with line angle; climb in steady wind.",
         "Katika tofauti za mpiganaji, jaribu kupunguza mstari wa mpinzani.",
         "Kupumua kabla ya dhoruba; kamwe kuruka karibu na mistari ya nguvu."
       ],
@@ -29138,7 +29272,8 @@
         "kubwa ya kijamii na kupambana na matukio.",
         "Utamaduni wa mitaani wa Brazil."
       ],
-      "name": "Ndege ya kuruka"
+      "name": "Ndege ya kuruka",
+      "fallbackEn": true
     },
     "game-0022": {
       "description": "Utoto wa Cat na takwimu zinazohusiana na kamba zinaonekana kutoka Arctic hadi Oceania na kufanana kwa kuanza. Takwimu hupita kati ya mikono katika mlolongo, mafunzo ya kumbukumbu ya anga na ushirikiano. Wanaanthropolojia walirekodi mamia ya mifumo inayoitwa imefungwa na hadithi.",
@@ -29292,7 +29427,7 @@
     "game-0030": {
       "description": "Vipodozi vya nguruwe ni jadi kati ya mataifa kadhaa ya asili na baadaye wakazi wa vijijini. Uso mara nyingi huachwa tupu, na mafundisho maalum ya jamii kuhusu kwa nini. Kufanya mazoezi ni nusu ya mchezo.",
       "howToPlay": [
-        ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .; . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .",
+        "Soak husks; fold and tie a head, arms, and body or skirt.",
         "Air-Dry kumaliza doll.",
         "Kucheza michezo ya kubahatisha au kuonyesha takwimu.",
         "Fuata itifaki za jamii wakati wa kujifunza ndani ya utamaduni wa kuishi.",
@@ -29304,12 +29439,13 @@
         "Aina ya nywele za corn-silk"
       ],
       "idealParticipants": "pekee peke yake",
-      "name": "Kikoa cha kiwango cha juu"
+      "name": "Kikoa cha kiwango cha juu",
+      "fallbackEn": true
     },
     "game-0031": {
       "description": "toys kombe-na-balaji changamoto mkono-macho wakati: swing mpira tethered katika kikombe au kwenye spike. Kifaransa bilboquet, Mexican balero, na Kijapani kendama ni tofauti ya familia moja ujuzi na vocabularies tofauti ya tricks.",
       "howToPlay": [
-        "nena kwa sauti ya juu, na kwa sauti ya juu,",
+        "Hold the handle with the ball hanging on its cord.",
         "Swing juu na kukamata mpira katika kikombe au juu ya spike.",
         "Kuendeleza flips na majina ya hila.",
         "Ufuatiliaji wa upatikanaji wa samaki.",
@@ -29324,7 +29460,8 @@
         "Multi-cup spike toy na hila kubwa ya lexicon.",
         "Kombe la Ulaya na mpira wa miguu."
       ],
-      "name": "Bilboquet / Balero / familia ya Kendama"
+      "name": "Bilboquet / Balero / familia ya Kendama",
+      "fallbackEn": true
     },
     "game-0032": {
       "description": "Tangram hugawanya mraba katika tans saba zinazotumiwa kuunda silhouettes. Ilienea kutoka China kama craze ya parlor katika karne ya 19. Mabadiliko ya Geometric na nafasi mbaya ni masomo ya utulivu ya toy.",
@@ -29453,7 +29590,8 @@
       "variationNotes": [
         "Kwa upande mwingine, kwa upande mwingine, kuna njia nyingine, kwa upande mwingine, kwa upande mwingine."
       ],
-      "name": "wa wa wa wa wa wa wa"
+      "name": "Hide-and-seek",
+      "fallbackEn": true
     },
     "game-0039": {
       "description": "grids Hopping kwa alama kurushwa kuonekana katika mabara na maumbo ya ndani na rhymes. Mizani, kugeuka-kuchukua, na pavement chalk sanaa kukutana katika mbio moja rahisi kupitia seli kuhesabiwa.",
@@ -29535,7 +29673,8 @@
         "Linnaeus alirekodi jina la Sámi tablut – familia moja ya tafl.",
         "Kwa upande wake Balozi wa Ireland katika Baraza la Mawaziri Mhe."
       ],
-      "name": "wa wa wa wa wa"
+      "name": "Hnefatafl",
+      "fallbackEn": true
     },
     "game-0043": {
       "description": "kuwinda asymmetric juu ya msalaba: geese kujaribu kona mbweha kwamba leaps kukamata. Kuhusiana na bodi nyingi za prey duniani kote - fomu ya parlor ya Ulaya imeorodheshwa hapa na binamu kama tofauti.",
@@ -29668,7 +29807,8 @@
         "Ukumbi wa Tablet"
       ],
       "idealParticipants": "Watu wa 1-8",
-      "name": "ya ya ya ya"
+      "name": "Jenga",
+      "fallbackEn": true
     },
     "game-0050": {
       "description": "Kichina kongzhu / diabolo huzunguka kamba kati ya fimbo-mali, kuongeza kasi, na kujiua hufanya msamiati wa sarakasi. Vyama vya Ulaya vilikubali na kubadili jina la diabolo.",
@@ -29748,7 +29888,7 @@
       "description": "Chai ndogo huruhusu watoto kusoma ibada za ukarimu. Matoleo ya Porcelain na bati yalifuatilia tamaduni za chai za watu wazima kutoka Uingereza hadi Japan. Maandishi ya kijamii—wakati, kutoa, kushukuru—ni kanuni halisi.",
       "howToPlay": [
         "Kuweka nafasi kwa dolls au marafiki.",
-        "Kunywa chai au kahawa bila maziwa;",
+        "Pour (real or imaginary) tea without tipping cups.",
         "Mazoezi ya kutumikia amri na maneno ya heshima.",
         "Ondoa na kuweka kama sehemu ya kucheza.",
         "Hakuna alama - mchezo wa kucheza."
@@ -29758,7 +29898,8 @@
         "Upatikanaji wa maji/Sand"
       ],
       "idealParticipants": "Watu wa 1-4",
-      "name": "Vinywaji kwa wakubwa"
+      "name": "Vinywaji kwa wakubwa",
+      "fallbackEn": true
     },
     "game-0055": {
       "description": "Slinky hubadilisha nishati ya uwezo katika ngazi ya mwisho ya kutembea. Ajali ya furaha ya uhandisi wa spring ya majini ilikuwa dawati la kimataifa na stair toy.",
@@ -29894,9 +30035,10 @@
       ],
       "idealParticipants": "Watu wawili",
       "variationNotes": [
-        "Malay  Malay  Malay  Malay . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
+        "Malay relative—variation within sowing boat boards."
       ],
-      "name": "Sungka"
+      "name": "Sungka",
+      "fallbackEn": true
     }
   },
   "la": {

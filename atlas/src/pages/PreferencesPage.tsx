@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import { useAuth } from "../hooks/useAuth";
-import { ensureBaseLoaded, loadCollection } from "../lib/collection";
+import { charExcerpt, ensureBaseLoaded, loadCollection } from "../lib/collection";
 import {
   loadSavedDiscoverPrefs,
   runDiscoverySearch,
@@ -407,8 +407,7 @@ export function PreferencesPage() {
                           </p>
                           <p className="prefs-reason">{hit.reason}</p>
                           <p className="prefs-excerpt">
-                            {display.description.slice(0, 160)}
-                            {display.description.length > 160 ? "…" : ""}
+                            {charExcerpt(display.description, 180)}
                           </p>
                         </div>
                       </div>

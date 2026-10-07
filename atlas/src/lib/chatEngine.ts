@@ -9,6 +9,7 @@ import type {
   VibePref,
 } from "../types/chat";
 import type { MessageKey } from "../i18n/messages/en";
+import { charExcerpt } from "./textPreview";
 
 export type ChatTranslate = (
   key: MessageKey,
@@ -925,8 +926,8 @@ export function handleUserMessage(
       bPlayers: b.idealParticipants,
       aCategory: a.category,
       bCategory: b.category,
-      aDesc: a.description.slice(0, 180),
-      bDesc: b.description.slice(0, 180),
+      aDesc: charExcerpt(a.description, 200),
+      bDesc: charExcerpt(b.description, 200),
     });
     return {
       state: { ...state, prefs, phase: "followup", lastRecommendations: unique },

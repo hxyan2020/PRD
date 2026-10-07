@@ -64,11 +64,7 @@ export async function ensureBaseLoaded(): Promise<CollectionData> {
   return loadBase();
 }
 
-export function excerpt(text: string, words = 28): string {
-  const parts = text.split(/\s+/);
-  if (parts.length <= words) return text;
-  return `${parts.slice(0, words).join(" ")}…`;
-}
+export { excerpt, charExcerpt, preferCompleteText } from "./textPreview";
 
 /** Subscribe to pool/auth changes that affect the merged catalog. */
 export function subscribeCollection(onChange: () => void) {

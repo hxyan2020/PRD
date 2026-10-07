@@ -1,5 +1,6 @@
 import type { LocaleCode } from "../i18n/languages";
 import type { Game, GameVariation } from "../types/game";
+import { preferCompleteText } from "./textPreview";
 
 export type ArchetypeI18n = {
   title: string;
@@ -124,11 +125,20 @@ export function localizeGame(
     const arch = pack.archetypes[game.archetypeKey];
     const countryForTemplate =
       pack.countries[game.originCountry] ?? game.originCountry;
-    const description = fillTemplate(arch.descTemplate, {
-      country: countryForTemplate,
-      civ: civilization,
-    });
+    const description = preferCompleteText(
+      fillTemplate(arch.descTemplate, {
+        country: countryForTemplate,
+        civ: civilization,
+      }),
+      game.description,
+    );
     const name = `${arch.title} — ${countryForTemplate}`;
+    const howToPlay = arch.steps.map((step, i) =>
+      preferCompleteText(step, game.howToPlay[i] ?? step),
+    );
+    const requirements = arch.req.map((r, i) =>
+      preferCompleteText(r, game.requirements[i] ?? r),
+    );
     return {
       ...game,
       name,
@@ -136,9 +146,9 @@ export function localizeGame(
       civilization,
       category,
       description,
-      howToPlay: arch.steps,
-      requirements: arch.req,
-      idealParticipants: arch.participants,
+      howToPlay,
+      requirements,
+      idealParticipants: arch.participants || game.idealParticipants,
     };
   }
 
@@ -156,7 +166,10 @@ export function localizeGame(
   if (curated.variationNotes && curated.variationNotes.length > 0) {
     variations = game.variations.map((v, i) => ({
       ...v,
-      notes: curated.variationNotes![i] ?? v.notes,
+      notes: preferCompleteText(
+        curated.variationNotes![i] ?? v.notes,
+        v.notes,
+      ),
       originCountry: localizeCountry(v.originCountry, locale, pack),
     }));
   } else {
@@ -172,10 +185,14 @@ export function localizeGame(
     originCountry,
     civilization,
     category,
-    description: curated.description,
-    howToPlay: curated.howToPlay,
-    requirements: curated.requirements,
-    idealParticipants: curated.idealParticipants,
+    description: preferCompleteText(curated.description, game.description),
+    howToPlay: curated.howToPlay.map((step, i) =>
+      preferCompleteText(step, game.howToPlay[i] ?? step),
+    ),
+    requirements: curated.requirements.map((r, i) =>
+      preferCompleteText(r, game.requirements[i] ?? r),
+    ),
+    idealParticipants: curated.idealParticipants || game.idealParticipants,
     variations,
   };
 }

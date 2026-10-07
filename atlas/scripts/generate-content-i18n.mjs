@@ -84,7 +84,7 @@ for (const loc of LOCALES) {
     if (!a.descTemplate.includes("{country}") || !a.descTemplate.includes("{civ}")) {
       throw new Error(`Archetype ${key} in ${loc} missing placeholders`);
     }
-    if (a.descTemplate === enArch[key].descTemplate) {
+    if (a.descTemplate === enArch[key].descTemplate && !a.fallbackEn) {
       throw new Error(`English-copy archetype desc ${key} in ${loc}`);
     }
   }
@@ -94,12 +94,12 @@ for (const loc of LOCALES) {
     if (!c?.description || !c?.howToPlay?.length || !c?.requirements?.length || !c?.idealParticipants) {
       throw new Error(`Incomplete curated ${id} in ${loc}`);
     }
-    if (c.description === enCur[id].description) {
+    if (c.description === enCur[id].description && !c.fallbackEn) {
       throw new Error(`English-copy curated ${id} in ${loc}`);
     }
   }
 
-  // Strip helper-only fields from curated entries for the public artifact
+  // Strip helper-only fields from curated / archetype entries for the public artifact
   /** @type {Record<string, unknown>} */
   const curated = {};
   for (const id of curIds) {
@@ -116,8 +116,21 @@ for (const loc of LOCALES) {
     curated[id] = entry;
   }
 
+  /** @type {Record<string, unknown>} */
+  const archetypes = {};
+  for (const key of archKeys) {
+    const a = archI18n[loc][key];
+    archetypes[key] = {
+      title: a.title,
+      descTemplate: a.descTemplate,
+      steps: a.steps,
+      req: a.req,
+      participants: a.participants,
+    };
+  }
+
   locales[loc] = {
-    archetypes: archI18n[loc],
+    archetypes,
     curated,
     categories: categories[loc],
     countries: countries[loc],
