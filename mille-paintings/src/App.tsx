@@ -10,10 +10,18 @@ import { PreferencesPage } from './pages/PreferencesPage'
 import { TodayPage } from './pages/TodayPage'
 import './App.css'
 
+const LIVE_URL = 'https://hxyan2020.github.io/PRD/mille/'
+
 function Footer() {
   const { t } = useI18n()
   return (
     <footer className="site-footer">
+      <p className="live-url">
+        {t('liveUrlLabel')}:{' '}
+        <a href={LIVE_URL} target="_blank" rel="noreferrer">
+          {LIVE_URL}
+        </a>
+      </p>
       <p>{t('footer')}</p>
     </footer>
   )

@@ -75,6 +75,7 @@ const en: Dict = {
   close: 'Close',
   footer:
     'Mille sources painting metadata and images from Wikidata and Wikimedia Commons, with introductions drawn from Wikipedia. Works are ranked by multilingual sitelink count as a popularity proxy.',
+  liveUrlLabel: 'Permanent site',
   collectionTitle: 'Your collection',
   collectionEmpty: 'You have not collected any paintings yet.',
   opening: 'Opening the collection…',
