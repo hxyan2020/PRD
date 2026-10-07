@@ -1,5 +1,7 @@
 # Fatum Atlas
 
+**Live site:** https://hxyan2020.github.io/PRD/fate-atlas/
+
 A browsable website cataloguing fate-telling and divination methods from around the world.
 
 ## Run locally
