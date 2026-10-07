@@ -4,6 +4,7 @@ import { loadCollection } from "../lib/collection";
 import type { Game } from "../types/game";
 import { Footer } from "../components/Footer";
 import { JournalActions } from "../components/JournalActions";
+import { PlatformLogo } from "../components/PlatformLogo";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
 
@@ -184,8 +185,13 @@ export function GameDetailPage() {
               {game.purchaseLinks.map((link) => (
                 <li key={link.url}>
                   <a href={link.url} target="_blank" rel="noreferrer noopener">
-                    <span className="platform">{link.platform}</span>
-                    {link.label}
+                    <span className="buy-link-main">
+                      <PlatformLogo platform={link.platform} />
+                      <span className="buy-link-text">
+                        <span className="platform">{link.platform}</span>
+                        <span className="buy-label">{link.label}</span>
+                      </span>
+                    </span>
                   </a>
                 </li>
               ))}
