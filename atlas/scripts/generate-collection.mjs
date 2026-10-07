@@ -13,7 +13,7 @@ const IMAGE_POOLS = {
   board: [
     "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=900&q=80",
     "https://images.unsplash.com/photo-1553481187-be93c21490a9?w=900&q=80",
-    "https://images.unsplash.com/photo-1611195974226-ef0e5b0f5f0d?w=900&q=80",
+    "https://images.unsplash.com/photo-1611371805429-8b5c1b2c34ba?w=900&q=80",
     "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80",
     "https://images.unsplash.com/photo-1632501641765-e568d28b0015?w=900&q=80",
   ],
@@ -38,15 +38,15 @@ const IMAGE_POOLS = {
   ],
   puzzle: [
     "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
-    "https://images.unsplash.com/photo-1611996575749-79a3a250f79e?w=900&q=80",
+    "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=900&q=80",
   ],
   music: [
     "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=900&q=80",
-    "https://images.unsplash.com/photo-1519892300165-cb5542fb48e6?w=900&q=80",
+    "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=900&q=80",
   ],
   ball: [
     "https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=900&q=80",
-    "https://images.unsplash.com/photo-1461896836934-ffe607ba6851?w=900&q=80",
+    "https://images.unsplash.com/photo-1551958219-acbc608c6377?w=900&q=80",
   ],
   ritual: [
     "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=900&q=80",
@@ -226,11 +226,7 @@ function pickImages(category, salt) {
   const count = salt % 17 === 0 ? Math.min(9, pool.length + 2) : Math.min(n + 1, 9);
   const imgs = [];
   for (let i = 0; i < count; i++) imgs.push(pool[(salt + i * 2) % pool.length]);
-  // pad with default if need more unique slots visually (allow repeats with cache-bust)
-  while (imgs.length < Math.min(count, 9)) {
-    imgs.push(`${pool[imgs.length % pool.length]}&sig=${salt + imgs.length}`);
-  }
-  return imgs.slice(0, Math.min(9, Math.max(1, count)));
+  return [...new Set(imgs)].slice(0, Math.min(9, Math.max(1, count)));
 }
 
 function pickPurchase(key, salt) {

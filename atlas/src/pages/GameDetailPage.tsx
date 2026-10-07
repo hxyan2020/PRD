@@ -116,7 +116,15 @@ export function GameDetailPage() {
         <aside>
           <div className="panel">
             <h2>Images</h2>
-            <img className="main-shot" src={shot} alt={`${game.name} reference`} />
+            <img
+              className="main-shot"
+              src={shot}
+              alt={`${game.name} reference`}
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80";
+              }}
+            />
             <div className="gallery">
               {game.images.map((src, i) => (
                 <button
@@ -126,7 +134,15 @@ export function GameDetailPage() {
                   onClick={() => setActiveImg(i)}
                   aria-label={`Show image ${i + 1}`}
                 >
-                  <img src={src} alt="" loading="lazy" />
+                  <img
+                    src={src}
+                    alt=""
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=900&q=80";
+                    }}
+                  />
                 </button>
               ))}
             </div>
