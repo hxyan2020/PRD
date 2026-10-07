@@ -199,8 +199,7 @@
       return (state.stepIndex + state.castingIndex / 6) / n;
     }
     if (state.mode === "guided" && state.kind === "tarot" && state.steps[state.stepIndex] === "reveal") {
-      const need = state.positions?.length || 3;
-      return (state.stepIndex + (state.drawn?.length || 0) / need) / n;
+      return (state.stepIndex + (state.revealIndex || 0) / 3) / n;
     }
     // Complete on result
     if (
@@ -427,7 +426,18 @@
     const deck = state.deck.slice(cutAt).concat(state.deck.slice(0, cutAt));
     state.drawn = [0, 1, 2].map((i) => {
       const card = deck[i];
-      return { ...card, reversed: rng() < 0.28 };
+      const isReversed = rng() < 0.28;
+      return G().drawTarotCard
+        ? G().drawTarotCard(card, isReversed)
+        : {
+            id: card.id,
+            name: card.name,
+            nameZh: card.nameZh,
+            upright: card.upright,
+            revMeaning: card.reversed,
+            isReversed,
+            reversed: isReversed,
+          };
     });
     state.revealIndex = 0;
     state.stepIndex = state.steps.indexOf("reveal");

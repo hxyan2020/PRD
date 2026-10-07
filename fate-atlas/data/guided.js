@@ -245,27 +245,65 @@
     };
   }
 
+  function tarotCardMeaning(c) {
+    const base = MAJOR.find((m) => m.id === c.id) || c;
+    const isRx = !!(c.isReversed ?? (typeof c.reversed === "boolean" ? c.reversed : false));
+    if (!isRx) return base.upright || c.upright || "";
+    // Prefer explicit rev text; never treat boolean `reversed` as the meaning string
+    if (typeof c.revMeaning === "string") return c.revMeaning;
+    if (typeof base.reversed === "string") return base.reversed;
+    if (typeof c.reversed === "string") return c.reversed;
+    return base.upright || "";
+  }
+
+  function tarotIsReversed(c) {
+    if (typeof c.isReversed === "boolean") return c.isReversed;
+    if (typeof c.reversed === "boolean") return c.reversed;
+    return false;
+  }
+
+  function drawTarotCard(card, isReversed) {
+    return {
+      id: card.id,
+      name: card.name,
+      nameZh: card.nameZh,
+      upright: card.upright,
+      revMeaning: card.reversed,
+      isReversed: !!isReversed,
+      reversed: !!isReversed,
+    };
+  }
+
   function generateTarotReading(input) {
     const rng = mulberry32(hashSeed(`tarot|${input.question}|${input.nonce}`));
     const deck = shuffle(MAJOR, rng);
     const drawn = (input.drawn && input.drawn.length === 3)
-      ? input.drawn
-      : [0, 1, 2].map((i) => {
-          const card = deck[i];
-          const reversed = rng() < 0.3;
-          return { ...card, reversed };
-        });
+      ? input.drawn.map((c) =>
+          c.revMeaning != null || typeof c.reversed === "boolean" || typeof c.isReversed === "boolean"
+            ? {
+                id: c.id,
+                name: c.name,
+                nameZh: c.nameZh,
+                upright: c.upright,
+                revMeaning: c.revMeaning || (MAJOR.find((m) => m.id === c.id) || {}).reversed,
+                isReversed: tarotIsReversed(c),
+                reversed: tarotIsReversed(c),
+              }
+            : drawTarotCard(c, false)
+        )
+      : [0, 1, 2].map((i) => drawTarotCard(deck[i], rng() < 0.3));
     const positions = TAROT_POSITIONS;
     return {
       kind: "tarot",
-      title: drawn.map((c) => `${c.nameZh} ${c.name}${c.reversed ? " (Rx)" : ""}`).join(" · "),
+      title: drawn.map((c) => `${c.nameZh} ${c.name}${tarotIsReversed(c) ? " (Rx)" : ""}`).join(" · "),
       omen: "Past · Present · Path / 过去 · 现在 · 指引",
-      verdict: drawn[1].reversed ? drawn[1].reversed : drawn[1].upright,
-      counsel: drawn[2].reversed ? drawn[2].reversed : drawn[2].upright,
+      verdict: tarotCardMeaning(drawn[1]),
+      counsel: tarotCardMeaning(drawn[2]),
       timing: "Let the Path card set the next seven days’ tone.",
       details: drawn.map((c, i) => {
-        const mean = c.reversed ? c.reversed : c.upright;
-        return `${positions[i].label} — ${c.name} / ${c.nameZh}${c.reversed ? " (reversed)" : ""}: ${mean}`;
+        const mean = tarotCardMeaning(c);
+        const rx = tarotIsReversed(c);
+        return `${positions[i].label} — ${c.name} / ${c.nameZh}${rx ? " (reversed)" : ""}: ${mean}`;
       }),
       drawn,
       positions,
@@ -315,6 +353,9 @@
     generateBaguaReading,
     generateTarotReading,
     generateMbtiReading,
+    drawTarotCard,
+    tarotCardMeaning,
+    tarotIsReversed,
   };
 
   // Featured method definitions merged at runtime if missing
