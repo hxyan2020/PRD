@@ -2,6 +2,8 @@
 
 A web gallery of the ~1000 most popular paintings in human history, ranked by Wikipedia/Wikidata sitelinks.
 
+**Live URL:** https://hxyan2020.github.io/PRD/mille/
+
 Each painting page includes:
 
 1. High-resolution digital image (Wikimedia Commons)
@@ -16,6 +18,14 @@ Each painting page includes:
 10. Painter anecdote / life note
 11. 1–9 painter portraits when available
 
+Also included:
+
+- Daily recommendation (`/today`) with fullscreen view, collect, and surprise-me
+- Viewed / collected counters (localStorage)
+- Preferences + Wikidata discovery to expand beyond the core 1000
+- UI translations for major languages with flag language picker
+- Mobile hamburger navigation
+
 ## Develop
 
 ```bash
@@ -27,13 +37,17 @@ npm run dev
 
 ```bash
 python3 scripts/fetch_paintings.py
+python3 scripts/enrich_extracts.py
+python3 scripts/supplement_must_include.py
 ```
 
 Writes `public/data/paintings.json` from Wikidata + Wikipedia.
 
-## Build
+## Build & deploy
 
 ```bash
 npm run build
-npm run preview
+npm run deploy:pages
 ```
+
+Deploys to GitHub Pages at `/PRD/mille/`.
