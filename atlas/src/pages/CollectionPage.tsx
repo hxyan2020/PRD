@@ -1,5 +1,9 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
-import { loadCollection, type CollectionData } from "../lib/collection";
+import {
+  loadCollection,
+  subscribeCollection,
+  type CollectionData,
+} from "../lib/collection";
 import { GameCard } from "../components/GameCard";
 import { Footer } from "../components/Footer";
 
@@ -15,9 +19,22 @@ export function CollectionPage() {
   const deferredQuery = useDeferredValue(query);
 
   useEffect(() => {
-    loadCollection()
-      .then(setData)
-      .catch((e: Error) => setError(e.message));
+    let alive = true;
+    const refresh = () => {
+      loadCollection()
+        .then((d) => {
+          if (alive) setData(d);
+        })
+        .catch((e: Error) => {
+          if (alive) setError(e.message);
+        });
+    };
+    refresh();
+    const unsub = subscribeCollection(refresh);
+    return () => {
+      alive = false;
+      unsub();
+    };
   }, []);
 
   const countries = useMemo(() => {

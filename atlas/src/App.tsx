@@ -7,6 +7,7 @@ import { JournalPage } from "./pages/JournalPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { GuidePage } from "./pages/GuidePage";
+import { PreferencesPage } from "./pages/PreferencesPage";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/collection" element={<CollectionPage />} />
         <Route path="/guide" element={<GuidePage />} />
+        <Route path="/preferences" element={<PreferencesPage />} />
         <Route path="/journal" element={<JournalPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
