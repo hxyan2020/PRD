@@ -134,7 +134,13 @@ export function localizeGame(
     );
     const name = `${arch.title} — ${countryForTemplate}`;
     const howToPlay = arch.steps.map((step, i) =>
-      preferCompleteText(step, game.howToPlay[i] ?? step),
+      preferCompleteText(
+        fillTemplate(step, {
+          country: countryForTemplate,
+          civ: civilization,
+        }),
+        game.howToPlay[i] ?? step,
+      ),
     );
     const requirements = arch.req.map((r, i) =>
       preferCompleteText(r, game.requirements[i] ?? r),

@@ -3,11 +3,11 @@
     "title": "Infant rattle",
     "descTemplate": "Rattles are among the oldest sound toys. In {country}, {civ} caregivers have long sealed seeds or pebbles in gourd, clay, basketry, or wood to reward infant grasping and rhythm. The rattle is both sensory toy and, in some places, a protective charm sound.",
     "steps": [
-      "Offer the rattle within the infant’s reach during supervised play.",
-      "Shake gently to demonstrate cause and effect.",
-      "Allow grasping, mouthing (if material-safe), and dropping.",
-      "Sing or speak in rhythm with the sound.",
-      "Inspect often for cracks or loose parts."
+      "In {country}, offer a sealed {civ} rattle (gourd, clay, wood, or basketry with seeds or pebbles) within the infant’s supervised reach.",
+      "Shake once slowly so the child hears a clear cause-and-effect sound, then pause for them to grasp.",
+      "Allow grasping, gentle shaking, and dropping onto a soft mat; block mouthing if the shell cracks or finishes flake.",
+      "Sing or speak a short {civ} lullaby or counting rhyme from {country} in time with three to five shakes.",
+      "After each session, check seams, plugs, and loose bits; retire the toy if seeds can spill."
     ],
     "req": [
       "Hollow rattle with seeds, pebbles, or bells",
@@ -20,11 +20,11 @@
     "title": "Clay or wood whistle toy",
     "descTemplate": "Small whistles—bird-shaped clay, carved wood, reed—appear in markets and archaeological layers tied to {civ} life in {country}. Children use them as voice-amplifying toys; some double as festival noisemakers. Sound play teaches breath and pitch playfully.",
     "steps": [
-      "Hold the whistle with air holes unobstructed.",
-      "Blow steadily to find a clear tone.",
-      "Try short calls and longer notes.",
-      "Invent call-and-response with a friend.",
-      "Do not share mouthpieces without cleaning."
+      "Hold a clay, wood, or reed whistle made in the {civ} craft style of {country}; keep finger holes and the windway clear.",
+      "Blow a steady stream for two seconds to find one clear tone before trying short chirps.",
+      "Alternate three short calls and one long note; count successful clear tones aloud.",
+      "Play call-and-response with a partner: one player blows a rhythm from {country} street or festival play, the other copies it.",
+      "Wash or wipe the mouthpiece between players; do not share if anyone is ill."
     ],
     "req": [
       "Whistle toy",
@@ -38,11 +38,11 @@
     "title": "Animal pull toy",
     "descTemplate": "Wheeled animals and pull-along figures are documented from classical antiquity through village woodcrafts in {country}. {civ} artisans shape horses, birds, or oxen that teach walking toddlers about traction and companionship in motion.",
     "steps": [
-      "Attach or hold the pull cord.",
-      "Walk forward so the toy follows on wheels or runners.",
-      "Navigate gentle turns without yanking.",
-      "Invent delivery or parade stories.",
-      "Store cord neatly to avoid tangles."
+      "Tie a short cord to the nose or yoke of a wheeled {civ} animal figure from {country}; leave enough slack for a toddler’s stride.",
+      "Walk five to ten steps on a clear floor so wheels or runners follow without tipping.",
+      "Make one gentle left turn and one right turn; stop if the axle binds or the cord jerks the toy airborne.",
+      "Narrate a short parade or market delivery story using animals familiar in {country} (horse, ox, bird, or camel as fits the figure).",
+      "Coil the cord after play and store the toy upright so wheels stay round."
     ],
     "req": [
       "Wheeled or sliding animal figure",
@@ -56,11 +56,11 @@
     "title": "Toy bow or dart play set",
     "descTemplate": "Scaled hunting toys let children in {country} rehearse skills celebrated by {civ} adults—archery, spear-thorn darts, or blowpipe aim—using safer materials. Targets on straw, wood, or drawn circles turn martial technique into scored play.",
     "steps": [
-      "Set a clear target with a safe backstop.",
-      "Nock or load the soft projectile.",
-      "Aim and release with controlled form.",
-      "Score hits by rings or knock-down blocks.",
-      "Never aim at people or animals."
+      "Outdoors in {country}, set a straw, wood, or chalk target with a backstop; clear people and animals for at least five paces downrange.",
+      "Nock a soft arrow or load a foam/cork dart; keep the tip pointed at the ground until ready.",
+      "Use a calm {civ} stance—feet apart, eyes on the center ring—and release one shot at a time.",
+      "Score 3 points for the center, 2 for the middle ring, 1 for the outer; first to 15 points wins a round.",
+      "Never aim at people or animals; collect every projectile before the next turn."
     ],
     "req": [
       "Soft or low-power toy bow/darts",
@@ -74,11 +74,11 @@
     "title": "Pocket skill stones",
     "descTemplate": "Beyond the shared knucklebones family, {country} has local stone-and-seed skill sequences shaped by {civ} childhood—different throws, chants, and difficulty ladders on the same pickup principle, recorded here as a regional practice entry when chants and sequences are locally distinct.",
     "steps": [
-      "Scatter five stones lightly.",
-      "Toss one skyward and sweep others in the local pattern.",
-      "Catch the tossed stone to complete each step.",
-      "Pass the turn on a drop.",
-      "First to finish the local sequence wins."
+      "Sit on flat ground in {country} with five small stones or seeds used in {civ} children’s pickup play.",
+      "Scatter all five lightly, then toss one skyward and pick up exactly one stone before catching the tossed stone.",
+      "On the next turns, pick up two, then three, then the last group of remaining stones in one sweep while the toss is aloft.",
+      "Drop or fail to catch ends your turn; the next player restarts at ones.",
+      "First player to finish the ones–twos–threes–fours ladder while saying a short {civ} count or chant from {country} wins."
     ],
     "req": [
       "Five small stones or seeds",
@@ -91,11 +91,11 @@
     "title": "Story lots / drawing lots game",
     "descTemplate": "Casting lots for turns, forfeits, or story prompts appears in {civ} gatherings in {country}. Whether bamboo sticks, knucklebones, or painted dice, chance chooses who speaks, dances, or answers—a social toy at the edge of divination and party game.",
     "steps": [
-      "Place lots in a cup or hand.",
-      "Cast and read the marked result.",
-      "The indicated player performs the prompt (story, song, forfeit).",
-      "Return lots and continue around the group.",
-      "Agree beforehand which outcomes are playful versus serious."
+      "Put three to six marked sticks, shells, or dice in a cup—marks can be colors or short {civ} prompt words used in {country}.",
+      "Shake once and cast onto a cloth; read the uppermost mark as this turn’s prompt.",
+      "The indicated player has thirty seconds to tell a short story, sing one verse, or perform a playful forfeit named by the mark.",
+      "Return all lots to the cup and pass clockwise until each player has had at least two turns.",
+      "Before starting, list which marks are playful only—never use sacred {civ} divination lots from {country} as party toys."
     ],
     "req": [
       "Marked sticks, lots, or dice",
@@ -108,11 +108,11 @@
     "title": "Shadow figures play",
     "descTemplate": "Shadow play—hand animals or leather puppets—has entertained nights in {country} within {civ} storytelling. Light and silhouette turn gesture into theater. Some regions elevated this into formal puppet arts; children's hand shadows remain the toy form.",
     "steps": [
-      "Place a lamp so hands cast clear shadows on a wall.",
-      "Form animals or people with fingers; move slowly for clarity.",
-      "Narrate a short scene while shapes move.",
-      "Optional: use cut-out rod puppets for crisper figures.",
-      "End by letting children invent their own creatures."
+      "In a dim room in {country}, place a lamp or candle so hands cast sharp shadows on a blank wall about one arm’s length away.",
+      "Form one animal or person with fingers; move slowly for three seconds so the outline stays readable.",
+      "Narrate a one-minute {civ} folk scene (market, animal chase, or hero greeting) while the shadow acts.",
+      "Optional: cut a cardboard figure, tape it to a stick, and replay the same scene with crisper edges.",
+      "End by letting each child invent one new creature and name it before the lamp is put out."
     ],
     "req": [
       "Lamp or firelight",
@@ -126,11 +126,11 @@
     "title": "Local kite craft",
     "descTemplate": "While kite flying is one global family, {country}'s {civ} makers developed distinctive shapes, papers, bridles, and festival uses. This entry highlights that local craft tradition as a regional kite practice under the wider kite sky.",
     "steps": [
-      "Build or buy a kite in the local style.",
-      "Check bridle balance before launch.",
-      "Launch with wind at your back in open space.",
-      "Steer via line tension; land gently.",
-      "Never fly near power lines or storms."
+      "Build or buy a paper or cloth kite in a shape used by {civ} makers in {country} (diamond, box, bird, or fighter flat).",
+      "Check that both bridle legs are equal and the spar joints are tight before you walk to the field.",
+      "Stand with the wind at your back in open ground; have a helper release the kite as you take three steps and feed five to ten meters of line.",
+      "Steer by tension: pull to climb, ease to dive; land by walking toward the kite while reeling.",
+      "Never fly near power lines, airports, or storms—common safety rules for festival kite days in {country}."
     ],
     "req": [
       "Paper or cloth kite",
@@ -145,11 +145,11 @@
     "title": "Local cloth doll",
     "descTemplate": "Soft dolls dressed in local textile patterns appear across {civ} households in {country}. Embroidery, wrap clothing, and hairstyles miniaturize adult dress. Caregiving play teaches social roles; craft techniques pass between generations.",
     "steps": [
-      "Sew or tie a simple body; stuff firmly but softly.",
-      "Dress the doll in local-style miniature clothes.",
-      "Invent daily-care and family stories.",
-      "Repair tears as ongoing play.",
-      "No competitive score—open-ended nurturing."
+      "Sew or tie a simple cloth body and stuff it firmly with fiber so the head and torso hold shape.",
+      "Dress the doll in miniature wraps, sash, or embroidered scraps that echo everyday {civ} clothing in {country}.",
+      "Act out at least three caregiving scenes: wake, feed, and put to sleep.",
+      "Repair tears with needle and thread as part of play rather than discarding the doll.",
+      "No points are scored—nurture play ends when the child packs the doll into a small basket or box used in {country} households."
     ],
     "req": [
       "Cloth scraps",
@@ -163,11 +163,11 @@
     "title": "Sewn cloth or hide ball",
     "descTemplate": "Before industrial rubber, {civ} communities in {country} stuffed and sewed balls from hide, cloth, or plant fiber. Catch, kick, and circle games grew around these objects. The ball's make is as cultural as the rules.",
     "steps": [
-      "Form a circle or pairs in a clear area.",
-      "Toss or kick according to local house rules.",
-      "A drop may eliminate a player or score for the thrower.",
-      "Increase speed as skill rises.",
-      "Last player or highest score wins."
+      "Form a circle of four or more players in a clear yard in {country}; use one sewn cloth, palm-fiber, or hide ball.",
+      "Toss underhand to the neighbor on your right; {civ} circle play scores one point for each clean catch.",
+      "A drop removes that player from the circle (or gives the thrower one point if you play pairs).",
+      "When three players remain, speed up to a one-second hold before passing.",
+      "Last player in the circle wins; restart with everyone after one champion round."
     ],
     "req": [
       "Sewn cloth, palm, or hide ball",
@@ -180,11 +180,11 @@
     "title": "Local spinning top craft",
     "descTemplate": "Top play is ancient and global; this entry records {country}'s {civ} carving styles, tip materials, and contest etiquette as a distinct craft-and-play practice within that shared physics toy.",
     "steps": [
-      "Wind string or ready a whip in the local manner.",
-      "Launch onto hard ground with a smooth pull.",
-      "Sustain with whipping if that is the local style.",
-      "Contest for endurance or combat knockouts.",
-      "Sand and re-tip worn points."
+      "Wind a cord clockwise around a carved {civ} top from {country}, or ready a short whip cord if the tip is meant for whipping.",
+      "Plant your feet on hard earth or stone; pull the cord smooth and level so the tip bites and spins.",
+      "For whip tops, tap the shoulder of the top lightly to keep it upright for a timed spin.",
+      "In a contest, longest continuous spin wins; or play combat where the first top knocked flat loses.",
+      "Sand a dull tip and re-point it before the next match so launches stay true."
     ],
     "req": [
       "Locally carved top",
@@ -198,11 +198,11 @@
     "title": "Local string figures",
     "descTemplate": "{civ} string figures linked to {country} carry local names, animals, and myths even when openings resemble cat's cradle elsewhere. The figures are portable diagrams of story and hand memory.",
     "steps": [
-      "Make a loop sized for your hands.",
-      "Open with the locally taught starting position.",
-      "Form a named figure through picks and drops.",
-      "Tell the associated story if one exists.",
-      "Teach one figure at a time to a partner."
+      "Make a loop of cord about the span of your outstretched arms so it fits both hands with slight slack.",
+      "Open on both thumbs and little fingers in the starting position taught for {civ} figures in {country}.",
+      "Pick, drop, and transfer strings until you hold one named figure (animal, tool, or star) for three seconds.",
+      "Say the figure’s {civ} name or a one-sentence story tied to {country} while holding the shape.",
+      "Teach that single figure to a partner before starting a second pattern."
     ],
     "req": [
       "Cord or sinew loop",
@@ -215,11 +215,11 @@
     "title": "Folk race board (local)",
     "descTemplate": "Cross-and-circle and path race boards appear in many lands. In {country}, {civ} players used shells, sticks, or knucklebones to race markers home—cousins to pachisi-like structures but with local track shapes and safe-space customs recorded as a regional folk race board.",
     "steps": [
-      "Place markers in starting nests.",
-      "Throw the local lot generator (dice, sticks, shells).",
-      "Enter and advance pieces when throws allow.",
-      "Send opponents home if your rules include hits.",
-      "First to bear all markers home wins."
+      "Seat 2–4 players at a path or cross-and-circle board used in {country}; each gets four markers in a starting nest.",
+      "Throw two casting sticks, four cowrie shells, or one die—whatever {civ} sets use—and total the pips or “mouth-up” shells.",
+      "Enter a marker only on a throw of the highest single result (for example 4 sticks or a 6); then advance that many spaces.",
+      "Landing on an opponent’s single marker sends it back to its nest; stacked markers are safe.",
+      "First player to move all four markers around the track and into the home column wins."
     ],
     "req": [
       "Track board or cloth",
@@ -233,11 +233,11 @@
     "title": "Local pit-and-seed sowing",
     "descTemplate": "Where sowing games took root in {country}, {civ} boards show distinctive cup counts, relay rules, and wood shapes. They belong to the mancala family yet deserve regional entries when board geometry and capture customs are locally standardized.",
     "steps": [
-      "Fill pits with the traditional starting seed count.",
-      "Scoop and sow in the locally prescribed direction.",
-      "Resolve captures by local patterns.",
-      "Play until the ending condition of that board.",
-      "Count stores or remaining seeds to decide the winner."
+      "Use a 2×6 board (twelve small pits plus one store per side) common in {civ} sowing play in {country}; place four seeds in each small pit.",
+      "On your turn, scoop every seed from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
+      "If the last seed lands in your empty pit and the opposite pit holds seeds, capture those opposite seeds into your store.",
+      "If the last seed lands in your store, take another turn; otherwise play passes.",
+      "When one side’s pits are empty, the opponent puts remaining seeds in their store; most seeds in store wins."
     ],
     "req": [
       "Cup board or pits in earth",
@@ -250,11 +250,11 @@
     "title": "Skipping rope games",
     "descTemplate": "Skipping and jump-rope rhymes thrive in {country}'s schoolyards and streets within {civ} childhood culture. Solo speed steps and group long-rope games share the bouncing rhythm; chants localize the toy.",
     "steps": [
-      "For solo: swing the rope over your head and jump each pass.",
-      "For group: two turners swing a long rope while jumpers enter.",
-      "Add local chants; miss a jump and rotate roles.",
-      "Try double-unders or pepper speeds as skill rises.",
-      "Keep the rope clear of traffic and hazards."
+      "For solo play: hold both ends, swing the rope over your head, and jump once per pass; count consecutive jumps.",
+      "For group play: two turners swing a long rope; a jumper runs in, jumps five times, and runs out.",
+      "Add a short {civ} schoolyard chant from {country}; a missed jump or broken rhythm rotates the jumper to turner.",
+      "Try pepper (fast turns) or one double-under after you can clear twenty steady jumps.",
+      "Keep the rope away from roads, wet floors, and low branches."
     ],
     "req": [
       "Rope of hemp, plastic, or vine",
@@ -268,11 +268,11 @@
     "title": "Blind man's tag / call games",
     "descTemplate": "Blindfolded seeking games—call-and-dodge variants—appear across {civ} parties and children's gatherings in {country}. Sound, stillness, and empathy for the blinded player structure the fun.",
     "steps": [
-      "Blindfold one player and spin them gently to disorient.",
-      "Others stay inside bounds and may call per local rules.",
-      "The blindfolded player tags someone by hearing and touch.",
-      "The tagged player becomes the next blind seeker.",
-      "Remove obstacles before play."
+      "Clear toys and furniture from a bounded room or yard in {country}; mark walls or chalk lines as out-of-bounds.",
+      "Blindfold one seeker and spin them twice; sighted players must stay inside the bounds.",
+      "Sighted players may call a short {civ} nickname or clap once every five seconds so the seeker has sound cues.",
+      "The seeker tags by touch; the tagged player becomes the next seeker.",
+      "Stop the round immediately if anyone near stairs or hard edges; remove the blindfold before leaving the space."
     ],
     "req": [
       "Soft blindfold",
@@ -286,11 +286,11 @@
     "title": "Folk wrestling play for youth",
     "descTemplate": "Youth wrestling games prepare for adult folk styles celebrated by {civ} communities in {country}. Play versions emphasize safe throws, circle boundaries, and laughter over injury—sport as social toy.",
     "steps": [
-      "Mark a circle; agree forbidden holds.",
-      "Wrestlers grip and try to throw or pin per local play rules.",
-      "Referee stops unsafe moves immediately.",
-      "Best of three exchanges often decides a bout.",
-      "Salute or handshake afterward."
+      "Mark a circle about three paces across on sand or soft ground used for youth bouts in {country}.",
+      "Forbid headlocks, joint twists, and strikes; wrestlers may grip belts, sashes, or shoulders as in {civ} play wrestling.",
+      "A referee starts each exchange; first to make the opponent’s knee or back touch outside or flat wins that exchange.",
+      "Best of three exchanges decides the bout; rest thirty seconds between exchanges.",
+      "Handshake or salute after the bout; the referee ends play at the first sign of pain."
     ],
     "req": [
       "Soft ground or sand",
@@ -304,11 +304,11 @@
     "title": "Memory song / elimination chant",
     "descTemplate": "Elimination chants and memory songs—akin to 'who remains' circle games—are toys of rhythm and attention in {civ} oral culture in {country}. Wrong words or missed beats eliminate players until one remains.",
     "steps": [
-      "Players sit or stand in a circle.",
-      "Start the traditional chant with gestures if any.",
-      "Each player must continue the next word, beat, or motion.",
-      "Mistakes eliminate a player.",
-      "Last remaining player wins and may lead the next round."
+      "Stand or sit in a circle so every player can see the leader’s hands.",
+      "The leader starts a {civ} elimination chant or clapping song known in {country}, with one word or beat per player.",
+      "Each player must say the next word or clap on the next beat without pausing more than one second.",
+      "A wrong word, late beat, or broken gesture eliminates that player, who steps back one pace.",
+      "Last remaining player wins and leads the next round’s chant."
     ],
     "req": [
       "Shared song or chant",
@@ -321,11 +321,11 @@
     "title": "Stilts or balance poles",
     "descTemplate": "Stilts appear as festival tools and children's balance toys in {country}. {civ} makers raise walkers on bamboo, wood, or recycled cans. Racing and trick-stepping turn elevation into play.",
     "steps": [
-      "Mount stilts with a spotter if you are new.",
-      "Take small steps; look forward, not down.",
-      "Race a set distance or complete a trick course.",
-      "Dismount carefully onto clear ground.",
-      "Check bindings before each session."
+      "Mount bamboo, wood, or tin-can stilts built in the {civ} style of {country} with a spotter holding your elbow.",
+      "Take ten small steps on level ground while looking forward, not down at the footrests.",
+      "Race a marked ten-meter line, or walk a chalk zigzag without a footrest touching the ground.",
+      "Dismount by stepping backward onto clear ground with the spotter ready.",
+      "Check cords, cans, and footrest bindings before every session; replace frayed ties."
     ],
     "req": [
       "Pair of stilts or tin-can stilts",
@@ -339,11 +339,11 @@
     "title": "Leaf or bark boat racing",
     "descTemplate": "Miniature boat races using leaves, bark, or corncobs delight children near water in {country}. {civ} play turns currents into tracks and craft into engineering experiments.",
     "steps": [
-      "Fold or carve a small hull that floats.",
-      "Mark start and finish on a gentle current or basin.",
-      "Release together on a signal.",
-      "First boat to the finish wins; no touching after release.",
-      "Retrieve materials; leave no trash in water."
+      "Fold a broad leaf or carve a bark/cork hull that floats—materials children gather near water in {country}.",
+      "Mark a start and finish about two meters apart in a basin or gentle gutter current.",
+      "On a shared count of three in any {civ} counting words, release all boats together; no pushing after release.",
+      "First boat to touch the finish line wins the heat; run best of three heats.",
+      "Retrieve every leaf, twig, and cork; leave the water clear of trash."
     ],
     "req": [
       "Leaves, bark, or cork for hulls",
@@ -357,11 +357,11 @@
     "title": "Sand / snow figure play",
     "descTemplate": "Sculpting temporary figures in sand or snow is elemental construction play wherever {civ} landscapes in {country} provide the medium. Castles, animals, and ancestral forms appear and erode—architecture as ephemeral toy.",
     "steps": [
-      "Gather moist sand or packable snow.",
-      "Pile, carve, and mold figures or forts.",
-      "Optional contests: tallest tower or best likeness.",
-      "Photograph if you wish; enjoy the collapse too.",
-      "Respect sacred or protected dunes and sites."
+      "Gather moist sand or packable snow from a safe open patch in {country}—never dig undercut cliffs.",
+      "Pile a base, then carve one figure or fort wall with hands or a simple mold.",
+      "Optional contest: tallest free-standing tower in five minutes, or best likeness of an animal known in {civ} stories.",
+      "Photograph if you wish, then watch or gently collapse the build as part of play.",
+      "Stay off sacred dunes, marked ruins, and protected sites; fill holes you dig on public beaches."
     ],
     "req": [
       "Sand or snow",
@@ -375,11 +375,11 @@
     "title": "Table flick football / paper soccer",
     "descTemplate": "Flick games that simulate football/soccer on a tabletop spread through schools in {country}, layered onto older finger-flicking toy habits in {civ} childhood. Goals are books or drawn posts; tournaments can be fierce.",
     "steps": [
-      "Mark goals at each end of a table.",
-      "Place the ball (coin/paper) at center.",
-      "Alternate flicks; no covering the ball with a palm.",
-      "Score by sending the ball between goal markers.",
-      "Play to an agreed number of goals."
+      "On a clear table in {country}, mark each goal with two small gaps about three finger-widths wide (books or tape posts).",
+      "Place a coin, button, or crumpled paper ball on the center line.",
+      "Players alternate one finger-flick; no covering the ball with a palm—common {civ} school-desk rule.",
+      "A goal scores when the ball fully crosses between the posts; play to five goals.",
+      "If the ball leaves the table, the opponent places it back one hand-span from the edge and flicks next."
     ],
     "req": [
       "Coin, button, or paper ball",
@@ -392,11 +392,11 @@
     "title": "Local riddle exchange",
     "descTemplate": "Riddle exchanges in {country} preserve {civ} metaphor, ecology, and humor. Posing and solving under time pressure is a mind toy requiring no manufactured equipment.",
     "steps": [
-      "One player poses a riddle.",
-      "Others guess within a turn limit.",
-      "Solver scores a point or becomes the next poser.",
-      "Optional playful forfeits for wrong guesses.",
-      "Play to an agreed score."
+      "One player poses a riddle drawn from {civ} oral tradition in {country} (animals, tools, weather, or food metaphors).",
+      "Others have one minute and up to three guesses.",
+      "A correct solver scores one point and poses the next riddle; if no one solves, the poser scores one point and chooses the next poser.",
+      "Optional playful forfeit for three wrong guesses: clap a rhythm or name five animals from ${c}.",
+      "First to five points wins the exchange."
     ],
     "req": [
       "Shared language",
@@ -409,11 +409,11 @@
     "title": "Festival noisemaker toy",
     "descTemplate": "Festival noisemakers—ratchets, clappers, bell-sticks—let children join {civ} public rites in {country}. Volume and rhythm mark calendar time; some toys are seasonal and stored afterward like ritual gear.",
     "steps": [
-      "Learn when and where the noisemaker is appropriate.",
-      "Play pulses that match the procession or song.",
-      "Stop when ceremony leaders signal silence.",
-      "Do not mock restricted sacred forms.",
-      "Store the toy clean until the next festival."
+      "Ask an adult when ratchets, clappers, or bell-sticks are welcome in the {civ} festival calendar of {country}.",
+      "Play short pulses that match the procession drum or sung phrase—typically two or four beats per measure.",
+      "Stop instantly when ceremony leaders raise a hand or the song falls silent.",
+      "Do not imitate restricted sacred instruments or mock prayer gestures with the toy.",
+      "Wipe the handle clean and store the noisemaker until the next public festival day."
     ],
     "req": [
       "Ratchet, bell stick, clapper, or drum toy",
@@ -426,11 +426,11 @@
     "title": "Cord & knot puzzle toy",
     "descTemplate": "Disentanglement puzzles of cord, rings, and wood appear as market toys and blacksmith curiosities around {country}. {civ} players learn topology by touch—release a ring without forcing, then reassemble.",
     "steps": [
-      "Study how loops pass through openings.",
-      "Manipulate without bending rigid parts.",
-      "Free the target piece by a legal path.",
-      "Reassemble to the starting state.",
-      "Time yourself or challenge a friend to match your method."
+      "Study a cord-and-ring or wire puzzle sold or forged around {country}; note which loop is the piece you must free.",
+      "Move loops only through openings that already exist—do not bend metal or force wood.",
+      "Free the target ring or block by a legal path; {civ} market puzzles are solved when that piece separates cleanly.",
+      "Reassemble every loop to the exact starting state before claiming the solve.",
+      "Time your solve, then challenge a friend to beat that time with the same path."
     ],
     "req": [
       "Cord, rings, or wire puzzle",
@@ -443,11 +443,11 @@
     "title": "Miniature household play set",
     "descTemplate": "Tiny household tools—clay pans, woven mats, doll furniture—support role-play of adult domestic life in {civ} childhoods in {country}. Archaeology and ethnography both find these teaching toys.",
     "steps": [
-      "Arrange a miniature hearth or room.",
-      "Assign roles to dolls or players.",
-      "Act out cooking, market, or visiting scenes.",
-      "Swap stories and add new props over time.",
-      "Pack pieces together so sets stay complete."
+      "Arrange miniature pots, mats, and dolls into a small hearth or room layout familiar in {country}.",
+      "Assign roles (cook, guest, child) to dolls or players before the scene starts.",
+      "Act out one cooking scene, one market or visiting scene, and one bedtime scene drawn from {civ} daily life.",
+      "Add one new prop each week (ladle, basket, or stool) and reuse it in the next story.",
+      "Pack all pieces into one box after play so the set stays complete."
     ],
     "req": [
       "Miniature pots, mats, or dolls",

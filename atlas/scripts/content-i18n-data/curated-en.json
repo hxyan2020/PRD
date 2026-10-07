@@ -95,11 +95,11 @@
     "name": "Mancala sowing games",
     "description": "Mancala is a family of sowing games: players distribute seeds around pits carved in wood, stone, or earth. Boards appear across Africa, the Middle East, and South Asia. Regional names and pit counts differ, but the scoop-and-sow gesture unites them as one fundamental game with many cultural faces.",
     "howToPlay": [
-      "Place an equal starting number of seeds in each pit for your chosen variant.",
-      "On your turn, scoop one of your pits and sow seeds one-by-one into subsequent pits.",
-      "Captures occur when sowing ends in configurations defined by the variant.",
-      "Continue until a side cannot move or seeds are exhausted per local rules.",
-      "Count seeds in stores or remaining pits; the higher total wins."
+      "Default to a Kalah-style 2×6 board: place four seeds in each of the twelve small pits; leave both end stores empty.",
+      "On your turn, scoop all seeds from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
+      "If the last seed lands in your store, take another turn; if it lands in an empty pit on your side, capture that seed plus any seeds in the opposite pit into your store.",
+      "When one player’s six pits are empty, the opponent moves all remaining seeds into their store and the game ends.",
+      "Count seeds in each store; the higher total wins (ties are draws)."
     ],
     "requirements": [
       "Board with two or more rows of pits",
@@ -349,11 +349,11 @@
     "name": "Playing cards (French-suited deck)",
     "description": "Playing cards likely descended from Chinese money-card ideas and entered Europe via Mamluk decks. French suits became a global standard tool for thousands of games. Regional decks are variations of the same portable gaming platform—not wholly separate toys.",
     "howToPlay": [
-      "Shuffle and deal according to the chosen card game.",
-      "Follow suit and trick-taking or shedding rules of that game.",
-      "Play until a contract, score target, or elimination condition is met.",
-      "Rotate the dealer each hand.",
-      "Learn one classic (whist/hearts family) before complex variants."
+      "Use a 52-card French-suited deck; shuffle, then deal thirteen cards to each of four players for a Hearts-style starter game.",
+      "Play proceeds clockwise; lead any suit except hearts until hearts are broken; players must follow suit if able.",
+      "Highest card of the led suit wins the trick; hearts score 1 penalty point each and the queen of spades scores 13.",
+      "After all thirteen tricks, tally penalty points; rotate the dealer clockwise for the next hand.",
+      "Play hands until one player reaches 100 penalty points; the lowest score wins (or switch later to whist, rummy, or another named game)."
     ],
     "requirements": [
       "52-card French deck (or regional deck)",
@@ -394,11 +394,11 @@
     "name": "Ganjifa",
     "description": "Ganjifa are circular painted cards of Mughal and regional Indian courts, later folk-crafted in places such as Odisha. Suit systems (Mughal, Dashavatara) differ, but trick-taking court hierarchies unite them as one painted-card tradition.",
     "howToPlay": [
-      "Shuffle circular cards carefully.",
-      "Deal the regional hand size.",
-      "Follow suit when able; highest card of led suit or trump wins the trick.",
-      "Score per local ganjifa rules.",
-      "Store flat to protect paint layers."
+      "Use an 8-suit Mughal ganjifa set (96 circular cards) or a 10-suit Dashavatara set; shuffle gently without bending paint layers.",
+      "For a four-player Mughal session, deal twelve cards each; decide trump by the first suit led or a declared trump suit before play.",
+      "Players must follow the led suit if able; otherwise they may play trump or discard.",
+      "Highest trump wins the trick if any trump is played; otherwise the highest card of the led suit wins.",
+      "Each won trick scores one point (or count face cards if using a court-heavy house tally); highest trick total after all cards are played wins. Store cards flat."
     ],
     "requirements": [
       "Circular ganjifa set",
@@ -415,11 +415,11 @@
     "name": "Knucklebones",
     "description": "Sheep or goat astragalus bones were ubiquitous ancient dice for play and divination. Children tossed and caught them; adults wagered on faces. Modern jacks are a skill descendant of the same pickup tradition.",
     "howToPlay": [
-      "Toss knucklebones and catch them on the back of the hand.",
-      "Recover missed pieces without disturbing caught ones (local rules vary).",
-      "For gambling forms, compare which faces land up.",
-      "Play to an agreed point score.",
-      "Use replicas when real bones are unavailable."
+      "Start with five astragali (or five jacks plus a small bounce ball if using modern replicas).",
+      "Scatter the pieces, toss one aloft (or bounce the ball once), and pick up one piece before catching the tossed piece or ball.",
+      "On later turns in the same round, pick up two, then three, then four pieces in one sweep while the toss or bounce is airborne.",
+      "Failing to catch or disturbing the remaining pile ends your turn; the next player restarts at picking up ones.",
+      "First player to complete the ones–twos–threes–fours sequence scores one point; play to five points. Use plastic or wooden replicas when real bones are unavailable."
     ],
     "requirements": [
       "Four astragali or replicas",
@@ -483,11 +483,11 @@
     "name": "Cat's cradle",
     "description": "Cat’s cradle and related string figures appear from the Arctic to Oceania with startling similarity. Figures pass between hands in sequence, training spatial memory and cooperation. Anthropologists recorded hundreds of named patterns tied to stories.",
     "howToPlay": [
-      "Form the opening cradle on one player’s hands.",
-      "Partner pinches crossings and lifts the figure onto their own hands.",
-      "Continue the traditional sequence (soldier’s bed, candles, and so on).",
-      "If the figure collapses, restart from the opening.",
-      "Learn solo figures after mastering partner passes."
+      "Loop a 1–2 meter cord; Player A opens Cat’s Cradle: palms facing, strings across both hands with the palmar string crossed once.",
+      "Player B pinches the two crossed X’s, pulls them out and down, then up through the center, taking the figure onto their own hands as Soldier’s Bed (or Mattress).",
+      "Player A next takes the side strings to form Candles, then Player B takes again to form the Manger (or Cradle reverse).",
+      "If any loop slips off a finger and the figure collapses, both players restart from Player A’s opening cradle.",
+      "After one clean four-step pass (Cradle → Bed → Candles → Manger), try the sequence again or learn a solo figure such as Cup and Saucer."
     ],
     "requirements": [
       "Loop of string about 1–2 meters",
@@ -527,11 +527,11 @@
     "name": "Sepak takraw",
     "description": "Sepak takraw blends volleyball-like net play with foot, knee, chest, and head contacts only. Roots lie in Malay-world circle kicking (sepak raga). Overhead bicycle kicks define the modern spectacle.",
     "howToPlay": [
-      "Serve over the net with a foot.",
-      "Teams may use up to three touches before returning (sport rules).",
-      "No hands or arms.",
-      "Score when the ball grounds legally in the opponent’s court.",
-      "Play sets to an agreed point total."
+      "Mark a court about 13.4 × 6.1 m with a net 1.52 m high (men’s sport height) and use a rattan or synthetic takraw ball.",
+      "Each team of three stands on its side; the server’s teammate tosses the ball for a foot serve over the net into the opponent’s court.",
+      "A side may use at most three touches with foot, knee, chest, or head before sending the ball back; hands and arms are faults.",
+      "Score one point when the ball grounds in the opponent’s court or the opponent faults (net touch with hand, four touches, out of bounds).",
+      "Play to 21 points per set (must win by 2); best of three sets decides the match."
     ],
     "requirements": [
       "Rattan or synthetic ball",
@@ -570,11 +570,11 @@
     "name": "Mesoamerican ballgame / Ulama",
     "description": "The Mesoamerican ballgame used heavy rubber balls struck mainly with hips on formal courts. Ritual, politics, and sport intertwined. Modern ulama in Sinaloa continues hip-ball play as a living descendant.",
     "howToPlay": [
-      "Teams face on a long court.",
-      "Strike the ball with the hip (variant rules differ).",
-      "Keep the ball in play across markers.",
-      "Score by driving past opponents or through rings in some ancient forms.",
-      "Modern ulama uses safer agreed scoring."
+      "Play ulama de cadera on a long packed-earth alley about 65 m; two teams of three to five wear hip pads and use a solid rubber ball.",
+      "Serve by bouncing the ball to a teammate who strikes it forward with the hip only—no hands, feet, or heads.",
+      "Teams volley the ball back and forth across the midline; a bounce must stay within the alley sidelines.",
+      "Score one point when the opposing team fails to return, lets the ball stop, or sends it out of the alley.",
+      "First team to 8 points wins the game (common Sinaloa street tally); rest and switch ends after each game."
     ],
     "requirements": [
       "Solid rubber ball",
@@ -817,11 +817,11 @@
     "name": "Hide-and-seek",
     "description": "Hide-and-seek is a near-universal children’s game with countless local names and counting rhymes. It rehearses stealth, spatial memory, and the social thrill of being found. Architecture—from kasbah alleys to apartment stairwells—reshapes strategy.",
     "howToPlay": [
-      "Choose a seeker; others hide while the seeker counts.",
-      "Seeker calls and searches within bounds.",
-      "Tagging may jail a player or recruit a helper per house rules.",
-      "Racing to base or a free-call may rescue players in some locales.",
-      "Rotate seekers each round."
+      "Pick one seeker and a home base (tree, wall, or stoop); set hard bounds—no street, no locked rooms.",
+      "The seeker faces the base and counts aloud to 50 while others hide inside the bounds.",
+      "The seeker shouts “Ready or not, here I come,” then tags hiders by touch; tagged players walk to a jail spot beside home base.",
+      "A free hider may dash to base, touch it, and call “Free [name]!” to release one jailed player; if the seeker tags them on the way, they go to jail.",
+      "When all hiders are jailed, or after five minutes, the first player tagged becomes the next seeker."
     ],
     "requirements": [
       "Safe bounded hiding area",
@@ -906,11 +906,11 @@
     "name": "Hnefatafl",
     "description": "Hnefatafl is a Norse asymmetric hunt: a king and defenders try to escape attackers on a grid. Variants spread across Viking worlds. Balance of forces and throne squares define tense endgames.",
     "howToPlay": [
-      "Place the king in the center with defenders; attackers on edges.",
-      "Attackers move first in many reconstructions.",
-      "All pieces move like rooks (any distance) but cannot jump.",
-      "Attackers win by capturing the king (two or four sides depending on rules); defenders win if the king reaches a corner or edge sanctuary.",
-      "Agree on a published reconstruction before competing."
+      "Play Copenhagen Hnefatafl on an 11×11 board: place the king on the center throne with 12 defenders in a cross; place 24 attackers in the four edge camps.",
+      "Attackers move first. Every piece slides any number of empty squares like a rook; none may jump.",
+      "Capture an enemy by sandwiching it between two of your pieces on a rank or file (custodial capture); the throne and corner squares can help bracket.",
+      "Attackers win by capturing the king on two opposite sides (or against the throne/edge as a second side). Defenders win if the king reaches any of the four corner sanctuary squares.",
+      "Pieces may not stop on the throne except the king; attackers may not occupy the corners."
     ],
     "requirements": [
       "Tafl board",
@@ -1139,11 +1139,11 @@
     "name": "Buckingham Palace toy soldiers aside: Toy soldiers",
     "description": "Cast or printed miniature soldiers supported war play and later wargaming. German tin makers and British hollow-casts spread sets worldwide. Play ranges from simple line battles to rule-heavy simulations.",
     "howToPlay": [
-      "Array two forces on a table.",
-      "Alternate moving units by simple paces or measured rules.",
-      "Resolve attacks with dice or 'bang you're out' house rules.",
-      "Objective: capture a flag or eliminate the foe.",
-      "Store figures so paint and bayonets survive."
+      "Array two equal forces of at least ten figures each on opposite ends of a table or sand tray; place one flag token behind each line.",
+      "On a turn, move up to three of your figures up to one hand-span forward, sideways, or diagonally.",
+      "If a figure ends within one finger-width of an enemy, roll one six-sided die: 4–6 removes the enemy; 1–3 misses. Remove casualties to a dead pile.",
+      "Capture the opponent’s flag by ending a move on its square, or eliminate every enemy figure, to win.",
+      "Store figures upright in a box with tissue so paint and bayonets do not chip."
     ],
     "requirements": [
       "Miniature soldiers",
@@ -1296,11 +1296,11 @@
     "name": "Dakon",
     "description": "Dakon is a Javanese congkak-family sowing board, often elaborately carved. It is presented as a named regional standard within mancala while remaining one sowing family.",
     "howToPlay": [
-      "Fill cups with traditional seed counts.",
-      "Sow clockwise or per local rule into cups and stores.",
-      "Relay when ending in your store if rules allow.",
-      "Capture per dakon patterns.",
-      "Most seeds in store wins."
+      "Use a boat board with seven small cups per side plus one large store (lumbung) at each end; place seven seeds in every small cup.",
+      "On your turn, scoop one of your cups and sow one seed clockwise into each following cup, including your store but skipping the opponent’s store.",
+      "If the last seed lands in your store, sow again immediately from any of your cups that still hold seeds (relay turn).",
+      "If the last seed lands in an empty cup on your side, capture that seed and all seeds in the opposite cup into your store.",
+      "When one player cannot move, remaining seeds go to the owner of those cups; most seeds in store wins."
     ],
     "requirements": [
       "Dakon boat board",
@@ -1317,11 +1317,11 @@
     "name": "Sungka",
     "description": "Sungka is the Filipino boat-shaped sowing game, cousin to congkak. Boards are household heirlooms; play mixes speed sowing with capture timing.",
     "howToPlay": [
-      "Place equal seeds in each small cup.",
-      "Scoop and sow in the traditional direction.",
-      "Land in your head (store) for an extra turn if rules allow.",
-      "Capture opposite seeds in stated patterns.",
-      "Highest store count wins."
+      "Seat two players at a sungka board with seven small cups (bahay) per side and one head store (ulo) each; place seven cowries or seeds in every bahay.",
+      "Scoop all seeds from one of your bahay and sow counterclockwise one-by-one into each following cup, including your ulo but skipping the opponent’s ulo.",
+      "If the last seed lands in your ulo, take another turn; if it lands in an empty bahay on your side, capture the opposite bahay’s seeds into your ulo.",
+      "A player who empties their side early waits while the opponent may still sow; continue until neither side has seeds left in bahay.",
+      "Count cowries in each ulo; the higher store wins."
     ],
     "requirements": [
       "Sungka board",
