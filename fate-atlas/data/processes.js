@@ -319,7 +319,12 @@
         `Core number current: ${path}.`,
       ];
     } else if (process.id === "cards") {
-      const cards = [pick(rng, TAROT_LIKE), pick(rng, TAROT_LIKE), pick(rng, TAROT_LIKE)];
+      const deck = TAROT_LIKE.slice();
+      const cards = [];
+      for (let i = 0; i < 3 && deck.length; i++) {
+        const idx = Math.floor(rng() * deck.length);
+        cards.push(deck.splice(idx, 1)[0]);
+      }
       reading.title = cards.map((c) => c.name).join(" · ");
       reading.omen = "Past · Present · Path";
       reading.details = cards.map((c, i) => `${["Past", "Present", "Path"][i]} — ${c.name}: ${c.upright}`);
