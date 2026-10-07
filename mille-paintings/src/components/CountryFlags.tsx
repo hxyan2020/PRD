@@ -26,6 +26,9 @@ export function CountryFlags({
           title={f.title}
           loading="lazy"
           decoding="async"
+          onError={(e) => {
+            ;(e.currentTarget as HTMLImageElement).style.display = 'none'
+          }}
         />
       ))}
       {label ? <span className="country-flags-text">{country}</span> : null}
