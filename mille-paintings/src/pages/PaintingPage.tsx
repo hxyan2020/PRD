@@ -110,7 +110,18 @@ export function PaintingPage() {
               className="btn ghost"
               href={hiResImageUrl(painting)}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
+              referrerPolicy="no-referrer"
+              onClick={(e) => {
+                // Never navigate to uncapped Commons originals (can be 100MB+ and fail to render).
+                const href = hiResImageUrl(painting)
+                if (!href) {
+                  e.preventDefault()
+                  setFullscreen(true)
+                  return
+                }
+                e.currentTarget.href = href
+              }}
             >
               {t('openHiRes')}
             </a>
