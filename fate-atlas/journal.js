@@ -167,7 +167,7 @@
     if (!list.length) {
       container.innerHTML = `
         <p class="journal-empty">
-          No entries yet. Finish a reading and press <strong>Save to journal</strong> to collect it here.
+          No seals yet. Finish a quest and press <strong>Collect seal</strong> to lock it here.
         </p>`;
       return;
     }
@@ -190,8 +190,8 @@
               ${e.question ? `<p class="journal-entry__q">Q: ${escapeHTML(e.question)}</p>` : ""}
               <p class="journal-entry__verdict">${escapeHTML(verdict)}</p>
               <div class="journal-entry__actions">
-                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-view="${escapeHTML(e.id)}">Open</button>
-                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-delete="${escapeHTML(e.id)}">Remove</button>
+                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-view="${escapeHTML(e.id)}">Open seal</button>
+                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-delete="${escapeHTML(e.id)}">Discard</button>
               </div>
             </div>
           </div>
@@ -204,7 +204,7 @@
     if (!entry) return "";
     const r = entry.reading || {};
     return `
-      <p class="studio__eyebrow">Journal entry</p>
+      <p class="studio__eyebrow">Seal</p>
       <h3 class="studio__heading">${escapeHTML(entry.title)}</h3>
       <p class="reading__omen"><time datetime="${escapeHTML(entry.createdAt)}">${escapeHTML(formatStamp(entry.createdAt))}</time> · ${escapeHTML(entry.methodName)}</p>
       ${entry.photoDataUrl ? `<div class="reading-photo"><img src="${entry.photoDataUrl}" alt="Saved photo for this reading" /></div>` : ""}

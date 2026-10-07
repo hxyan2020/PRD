@@ -44,7 +44,7 @@
 
     document.getElementById("journal-clear")?.addEventListener("click", () => {
       if (!J().loadAll().length) return;
-      if (confirm("Clear all journal entries from this browser?")) {
+      if (confirm("Clear all seals from this browser?")) {
         J().clearAll();
         refresh();
       }
@@ -58,7 +58,7 @@
       }
       if (del) {
         const id = del.getAttribute("data-journal-delete");
-        if (confirm("Remove this journal entry?")) {
+        if (confirm("Remove this seal?")) {
           J().remove(id);
           refresh();
         }

@@ -50,7 +50,7 @@
         const n = counts[c.id] || 0;
         return `<button type="button" class="continent-btn" data-continent="${c.id}">
           <span class="continent-btn__name">${c.label}</span>
-          <span class="continent-btn__count">${n} methods</span>
+          <span class="continent-btn__count">${n} rites</span>
         </button>`;
       })
       .join("");
@@ -134,7 +134,7 @@
         <p class="method__countries"><strong>Countries:</strong> ${escapeHTML(countries)}</p>
         <p class="method__source"><strong>Source:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
         <p class="method__actions">
-          <button type="button" class="btn btn--primary btn--small" data-read="${escapeHTML(m.id)}">Begin reading</button>
+          <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ Play</button>
         </p>
       </div>
     </li>`;
@@ -154,7 +154,7 @@
     const type = els.type.value;
     const filtered = methods.filter((m) => methodMatches(m, q, continent, type));
 
-    els.count.textContent = `Showing ${filtered.length} method${filtered.length === 1 ? "" : "s"}`;
+    els.count.textContent = `Showing ${filtered.length} rite${filtered.length === 1 ? "" : "s"}`;
     els.list.innerHTML = filtered.map(methodHTML).join("");
     els.empty.hidden = filtered.length > 0;
     els.list.hidden = filtered.length === 0;
@@ -181,8 +181,8 @@
       <p class="method__summary">${escapeHTML(pick.summary)}</p>
       ${sci ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">Scientific reasoning</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>` : ""}
       <p class="method__actions" style="margin-top:1rem">
-        <button type="button" class="btn btn--primary btn--small" data-read="${escapeHTML(pick.id)}">Begin reading</button>
-        <a class="btn btn--ghost btn--small" href="#method-${pick.id}" style="border-color:var(--line);color:var(--ink);">View in catalog</a>
+        <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(pick.id)}">▶ Play</button>
+        <a class="btn btn--ghost btn--small studio__btn-muted" href="#method-${pick.id}">View in atlas</a>
       </p>
     `;
   }
@@ -190,6 +190,8 @@
   function initStats() {
     els.statMethods.textContent = String(methods.length);
     els.statCountries.textContent = String(uniqueCountries(methods).size);
+    const hudMethods = document.getElementById("hud-methods");
+    if (hudMethods) hudMethods.textContent = String(methods.length);
   }
 
   function init() {

@@ -3,133 +3,125 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fatum Atlas — Choose a method &amp; read your fate</title>
-  <meta name="description" content="Choose any fate-telling method and follow its pre-defined ritual process to generate a reading." />
+  <title>Fatum Atlas — Play a fate rite</title>
+  <meta name="description" content="Pick a fate-telling method, play its ritual step by step, collect the reading in your journal." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <a class="skip-link" href="#catalog">Skip to catalog</a>
+  <a class="skip-link" href="#play">Skip to play</a>
+
+  <div class="hud" id="player-hud" aria-label="Player progress">
+    <a class="hud__brand" href="#top">Fatum</a>
+    <div class="hud__stats">
+      <span class="hud__pill" title="Methods in the atlas"><em id="hud-methods">0</em> rites</span>
+      <span class="hud__pill hud__pill--seal" title="Saved readings"><em id="hud-seals">0</em> seals</span>
+    </div>
+    <a class="hud__link" href="#journal">Journal</a>
+  </div>
 
   <header class="hero" id="top">
     <div class="hero__sky" aria-hidden="true"></div>
     <div class="hero__map" aria-hidden="true"></div>
     <div class="hero__content">
       <h1 class="brand">Fatum <span>Atlas</span></h1>
-      <p class="hero__lead">A world map of fate-telling.</p>
-      <p class="hero__sub">Choose any tradition, follow its ritual process, and receive a generated reading.</p>
+      <p class="hero__lead">Play the world’s fate rites.</p>
+      <p class="hero__sub">Pick a method → follow the steps → reveal your reading. Optional: collect it as a seal in your journal.</p>
       <div class="hero__cta">
-        <a class="btn btn--primary" href="#featured">Try 八卦 / MBTI / 塔罗</a>
-        <a class="btn btn--ghost" href="#journal">Open journal</a>
+        <a class="btn btn--primary" href="#play">Start playing</a>
+        <button type="button" class="btn btn--ghost" id="hero-surprise">Random rite</button>
       </div>
     </div>
-    <div class="hero__scroll" aria-hidden="true">Scroll</div>
+    <div class="hero__scroll" aria-hidden="true">How to play ↓</div>
   </header>
 
   <main>
-    <section class="atlas-intro">
+    <section class="howto" id="howto" aria-labelledby="howto-title">
       <div class="section">
-        <p class="section__eyebrow">The atlas</p>
-        <h2 class="section__title">Fate read in every latitude</h2>
-        <p class="section__copy">
-          People everywhere have asked what comes next—by casting lots, reading stars, opening poems,
-          watching crabs, burning bones, and tracing the lines of a hand. Pick any method in this atlas
-          and walk a short, pre-defined process to generate a stylized reading.
-        </p>
-        <aside class="advisory" id="accuracy-advisory" aria-label="Accuracy advisory">
-          <p class="advisory__eyebrow">Accuracy advisory</p>
+        <p class="section__eyebrow">How to play</p>
+        <h2 class="section__title" id="howto-title">Three moves</h2>
+        <ol class="howto__steps">
+          <li class="howto__step">
+            <span class="howto__num" aria-hidden="true">1</span>
+            <h3>Pick a rite</h3>
+            <p>Choose a featured quest or any method from the atlas.</p>
+          </li>
+          <li class="howto__step">
+            <span class="howto__num" aria-hidden="true">2</span>
+            <h3>Play the steps</h3>
+            <p>Answer prompts, cast lots, flip cards, or upload a photo when asked.</p>
+          </li>
+          <li class="howto__step">
+            <span class="howto__num" aria-hidden="true">3</span>
+            <h3>Collect a seal</h3>
+            <p>Save the reading to your journal with an auto title and time stamp.</p>
+          </li>
+        </ol>
+        <aside class="advisory advisory--inline" id="accuracy-advisory" aria-label="Accuracy advisory">
+          <p class="advisory__eyebrow">Fair play notice</p>
           <p class="advisory__body">
-            These readings <strong>may not be accurate</strong>. We live in a <strong>stochastic</strong> world—chance and hidden variables shape outcomes.
-            Some traditions feel precise as mirrors or in hindsight, but <strong>none can reliably forecast the future</strong>, and
-            <strong>none can predict black swan events</strong> that can change everything at once.
+            Readings <strong>may not be accurate</strong>. Reality is <strong>stochastic</strong>.
+            Fun and reflection only — <strong>no rite predicts black swan events</strong> that can change everything at once.
           </p>
-          <ul class="advisory__list">
-            <li>Each method is labeled with any scientific reasoning—or the lack of it.</li>
-            <li>Use results for reflection only—not medical, legal, financial, or safety decisions.</li>
-            <li>Rare shocks (crashes, disasters, sudden ruptures) sit outside every divinatory model.</li>
-          </ul>
         </aside>
-        <div class="stats" aria-label="Collection statistics">
-          <div>
-            <div class="stat__value" id="stat-methods">0</div>
-            <div class="stat__label">Methods catalogued</div>
-          </div>
-          <div>
-            <div class="stat__value" id="stat-countries">0</div>
-            <div class="stat__label">Countries &amp; territories named</div>
-          </div>
-          <div>
-            <div class="stat__value" id="stat-continents">6</div>
-            <div class="stat__label">Continents covered</div>
-          </div>
-        </div>
       </div>
     </section>
 
-    <section class="featured" id="featured" aria-labelledby="featured-title">
+    <section class="featured" id="play" aria-labelledby="featured-title">
       <div class="section">
-        <p class="section__eyebrow">Deep guides</p>
-        <h2 class="section__title" id="featured-title">八卦 · MBTI · 塔罗牌</h2>
-        <p class="section__copy">
-          Full step-by-step rites that teach the method as you go—coin-cast hexagrams, preference typing, and Major Arcana spreads.
-        </p>
+        <p class="section__eyebrow">Starter quests</p>
+        <h2 class="section__title" id="featured-title">Play these first</h2>
+        <p class="section__copy">Three guided games with clear rules. Tap a card to begin.</p>
         <div class="feature-grid" id="featured-guides"></div>
       </div>
     </section>
 
     <section class="begin" id="begin" aria-labelledby="begin-title">
       <div class="section">
-        <p class="section__eyebrow">Reading studio</p>
-        <h2 class="section__title" id="begin-title">Choose a method &amp; begin</h2>
-        <p class="section__copy">
-          Every tradition has a guided process—or pick a deep guide above. Birth chart, lot casting, cards, dice, book, form, day, pendulum, omen.
-        </p>
+        <p class="section__eyebrow">Quick match</p>
+        <h2 class="section__title" id="begin-title">Or jump straight in</h2>
+        <p class="section__copy">Pick any rite from the list, or roll a surprise.</p>
         <div class="begin__row">
           <div class="field begin__picker">
-            <label for="method-picker">Fate-telling method</label>
+            <label for="method-picker">Choose a rite</label>
             <select id="method-picker"></select>
           </div>
           <div class="field">
             <label>&nbsp;</label>
-            <button type="button" class="btn btn--primary" id="start-reading-btn">Start the process</button>
+            <button type="button" class="btn btn--primary" id="start-reading-btn">Play</button>
           </div>
         </div>
-        <div class="process-legend" aria-label="Process types">
-          <span class="legend-chip">Birth chart</span>
-          <span class="legend-chip">Lot casting</span>
-          <span class="legend-chip">Cards</span>
-          <span class="legend-chip">Dice</span>
-          <span class="legend-chip">Book / verse</span>
-          <span class="legend-chip">Form</span>
-          <span class="legend-chip">Pendulum</span>
-          <span class="legend-chip">Day almanac</span>
-          <span class="legend-chip">Omen watch</span>
+        <div class="quick-actions">
+          <button type="button" class="btn btn--play-secondary" id="draw-btn">🎲 Surprise me</button>
         </div>
-        <p class="begin__or">or cast a random method</p>
-        <button type="button" class="btn btn--ghost begin__random" id="draw-btn" style="border-color:var(--line);color:var(--ink);">Surprise me</button>
-        <div class="oracle__result" id="oracle-result" hidden style="margin-top:1.5rem"></div>
+        <div class="oracle__result" id="oracle-result" hidden></div>
       </div>
     </section>
 
-    <section class="section" id="regions" aria-labelledby="regions-title">
-      <p class="section__eyebrow">Navigate</p>
-      <h2 class="section__title" id="regions-title">By continent</h2>
-      <p class="section__copy">Jump into a region, then start a reading from any method card.</p>
+    <section class="section regions-wrap" id="regions" aria-labelledby="regions-title">
+      <p class="section__eyebrow">World map</p>
+      <h2 class="section__title" id="regions-title">Browse by continent</h2>
+      <p class="section__copy">Filter the atlas, then hit <strong>Play</strong> on any card.</p>
       <div class="continents" id="continent-nav" role="group" aria-label="Filter by continent"></div>
+      <div class="stats stats--inline" aria-label="Collection statistics">
+        <div><div class="stat__value" id="stat-methods">0</div><div class="stat__label">rites</div></div>
+        <div><div class="stat__value" id="stat-countries">0</div><div class="stat__label">places named</div></div>
+        <div><div class="stat__value" id="stat-continents">6</div><div class="stat__label">continents</div></div>
+      </div>
     </section>
 
     <section class="catalog" id="catalog" aria-labelledby="catalog-title">
       <div class="section">
-        <p class="section__eyebrow">Catalog</p>
-        <h2 class="section__title" id="catalog-title">All fate-telling methods</h2>
-        <p class="section__copy">Search, filter, then press <strong>Begin reading</strong> on any method to run its process.</p>
+        <p class="section__eyebrow">Atlas</p>
+        <h2 class="section__title" id="catalog-title">All rites</h2>
+        <p class="section__copy">Search or filter, then press Play.</p>
 
         <div class="controls">
           <div class="field">
             <label for="search">Search</label>
-            <input type="search" id="search" placeholder="e.g. Ifá, Korea, cowrie, moon…" autocomplete="off" />
+            <input type="search" id="search" placeholder="Try Ifá, palm, Korea, tarot…" autocomplete="off" />
           </div>
           <div class="field">
             <label for="continent-filter">Continent</label>
@@ -140,32 +132,31 @@
             <select id="type-filter"></select>
           </div>
           <div class="field">
-            <label for="sort">&nbsp;</label>
-            <button type="button" class="btn btn--ghost" id="reset-filters" style="width:100%;border-color:var(--line);color:var(--ink);">Reset</button>
+            <label>&nbsp;</label>
+            <button type="button" class="btn btn--play-secondary" id="reset-filters" style="width:100%">Reset filters</button>
           </div>
         </div>
 
         <div class="results-meta">
-          <span id="results-count">Showing 0 methods</span>
-          <span>Sorted A–Z</span>
+          <span id="results-count">Showing 0 rites</span>
+          <span class="results-meta__hint">Each card shows science status</span>
         </div>
 
         <ul class="method-list" id="method-list"></ul>
-        <p class="empty" id="empty-state" hidden>No methods match those filters. Try another search.</p>
+        <p class="empty" id="empty-state" hidden>No rites match. Try another search.</p>
       </div>
     </section>
 
     <section class="journal" id="journal" aria-labelledby="journal-title">
       <div class="section">
-        <p class="section__eyebrow">Personal record</p>
-        <h2 class="section__title" id="journal-title">Fate journal</h2>
+        <p class="section__eyebrow">Collection</p>
+        <h2 class="section__title" id="journal-title">Your seals</h2>
         <p class="section__copy">
-          Save any reading into your journal. Each entry gets a timestamp and an auto-generated title.
-          Entries stay in this browser (local storage).
+          Saved readings live here as seals — auto title + timestamp. Kept only in this browser.
         </p>
         <div class="journal-toolbar">
-          <p class="journal-toolbar__count"><span id="journal-count">0</span> saved</p>
-          <button type="button" class="btn btn--ghost begin__random" id="journal-clear" style="border-color:var(--line);color:var(--ink);">Clear journal</button>
+          <p class="journal-toolbar__count"><span id="journal-count">0</span> seals collected</p>
+          <button type="button" class="btn btn--play-secondary" id="journal-clear">Clear all</button>
         </div>
         <div id="journal-list" class="journal-list"></div>
       </div>
@@ -175,7 +166,7 @@
       <div class="studio__panel">
         <header class="studio__header">
           <div>
-            <p class="studio__kicker">Journal</p>
+            <p class="studio__kicker">Seal</p>
             <h2 class="studio__method" id="journal-detail-title">Entry</h2>
           </div>
           <button type="button" class="studio__close" id="journal-detail-close" aria-label="Close">×</button>
@@ -186,23 +177,14 @@
 
     <section class="sources" id="sources" aria-labelledby="sources-title">
       <div class="section">
-        <p class="section__eyebrow">Provenance</p>
-        <h2 class="section__title" id="sources-title">Where these were sourced</h2>
-        <p class="section__copy">
-          Compiled from publicly available ethnographic and historical references. Entries are
-          descriptive summaries, not instructional manuals for sacred or initiatory systems.
-        </p>
+        <p class="section__eyebrow">Credits</p>
+        <h2 class="section__title" id="sources-title">Where rites were sourced</h2>
+        <p class="section__copy">Cultural references for learning — not manuals for sacred initiation.</p>
         <ul>
           <li><a href="https://en.wikipedia.org/wiki/Methods_of_divination" target="_blank" rel="noopener">Wikipedia — Methods of divination</a></li>
-          <li><a href="https://en.wikipedia.org/wiki/African_divination" target="_blank" rel="noopener">Wikipedia — African divination</a></li>
-          <li><a href="https://en.wikipedia.org/wiki/Chinese_fortune_telling" target="_blank" rel="noopener">Wikipedia — Chinese fortune telling</a></li>
-          <li><a href="https://en.wikipedia.org/wiki/Cowrie-shell_divination" target="_blank" rel="noopener">Wikipedia — Cowrie-shell divination</a></li>
-          <li><a href="https://sekaifortune.com/en" target="_blank" rel="noopener">Sekai Fortune — World Divination (105 methods)</a></li>
-          <li><a href="https://plutto.space/traditions" target="_blank" rel="noopener">Plutto — 102 Astrology &amp; Divination Traditions</a></li>
-          <li><a href="https://www.anthroencyclopedia.com/entry/divination" target="_blank" rel="noopener">Open Encyclopedia of Anthropology — Divination</a></li>
-          <li><a href="https://theoriesofanything.com/research/oracle-traditions-cross-cultural-divination-systems" target="_blank" rel="noopener">Oracle Traditions — Cross-Cultural Divination Systems</a></li>
-          <li><a href="https://www.thecanadianencyclopedia.ca/en/article/shaman/" target="_blank" rel="noopener">Canadian Encyclopedia — Shaman (Innu scapulimancy, Shaking Tent)</a></li>
-          <li>Additional regional folk studies (Slavic svyatki, Mesoamerican maize casting, Torres Strait stellar scintillation, Andean and Amazonian ethnography)</li>
+          <li><a href="https://sekaifortune.com/en" target="_blank" rel="noopener">Sekai Fortune</a></li>
+          <li><a href="https://plutto.space/traditions" target="_blank" rel="noopener">Plutto Traditions</a></li>
+          <li><a href="https://www.anthroencyclopedia.com/entry/divination" target="_blank" rel="noopener">Open Encyclopedia of Anthropology</a></li>
         </ul>
       </div>
     </section>
@@ -210,22 +192,28 @@
 
   <footer class="footer">
     <div class="brand-mini">Fatum Atlas</div>
-    <p>For learning and wonder — not prediction. Stochastic world; no method sees black swans.</p>
+    <p>Play · reflect · collect — not predict. No black swans in the deck.</p>
   </footer>
 
   <div class="studio" id="reading-studio" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reading-title">
     <div class="studio__panel">
       <header class="studio__header">
         <div>
-          <p class="studio__kicker" id="reading-step">Reading</p>
+          <p class="studio__kicker" id="reading-step">Quest</p>
           <h2 class="studio__method" id="reading-title">Method</h2>
         </div>
-        <button type="button" class="studio__close" id="reading-close" aria-label="Close reading">×</button>
+        <button type="button" class="studio__close" id="reading-close" aria-label="Close">×</button>
       </header>
-      <div class="studio__progress" id="reading-progress" aria-hidden="true"></div>
+      <div class="quest-bar" aria-hidden="true">
+        <div class="quest-bar__fill" id="quest-bar-fill"></div>
+      </div>
+      <div class="studio__progress" id="reading-progress"></div>
       <div class="studio__body" id="reading-body"></div>
     </div>
   </div>
+
+  <div class="toast" id="toast" hidden role="status"></div>
+  <div class="celebrate" id="celebrate" hidden aria-hidden="true"></div>
 
   <script src="data/methods.js"></script>
   <script src="data/processes.js"></script>
@@ -235,5 +223,6 @@
   <script src="app.js"></script>
   <script src="reading.js"></script>
   <script src="journal-ui.js"></script>
+  <script src="play-ui.js"></script>
 </body>
 </html>

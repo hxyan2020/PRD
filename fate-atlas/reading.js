@@ -88,6 +88,8 @@
     studio.hidden = false;
     document.body.classList.add("studio-open");
     studio.setAttribute("aria-hidden", "false");
+    window.FatumPlay?.setQuestProgress?.(0);
+    window.FatumPlay?.showToast?.(`Quest started · ${method.name}`, { ms: 1800 });
     render();
     studio.querySelector(".studio__close")?.focus();
   }
@@ -138,6 +140,7 @@
     studio.hidden = true;
     document.body.classList.remove("studio-open");
     studio.setAttribute("aria-hidden", "true");
+    window.FatumPlay?.setQuestProgress?.(0);
   }
 
   function stepMeta() {
@@ -181,11 +184,41 @@
     };
   }
 
+  function questRatio() {
+    if (!state) return 0;
+    if (state.mode === "guided" && state.kind === "mbti" && state.steps[state.stepIndex] === "quiz") {
+      const total = G().MBTI_QUESTIONS.length;
+      return total ? (state.quizIndex + 0.15) / (total + 1) : 0;
+    }
+    const n =
+      state.mode === "guided"
+        ? state.steps.length
+        : state.process?.steps?.length || 1;
+    const on = state.stepIndex;
+    if (state.mode === "guided" && state.kind === "bagua" && state.steps[state.stepIndex] === "cast") {
+      return (state.stepIndex + state.castingIndex / 6) / n;
+    }
+    if (state.mode === "guided" && state.kind === "tarot" && state.steps[state.stepIndex] === "reveal") {
+      const need = state.positions?.length || 3;
+      return (state.stepIndex + (state.drawn?.length || 0) / need) / n;
+    }
+    // Complete on result
+    if (
+      (state.mode === "guided" && state.steps[state.stepIndex] === "result") ||
+      (state.mode !== "guided" && state.process?.steps?.[state.stepIndex] === "result")
+    ) {
+      return 1;
+    }
+    return n > 1 ? on / (n - 1) : 0;
+  }
+
   function render() {
     if (!state) return;
     const meta = stepMeta();
     titleEl.textContent = state.method.name;
-    stepEl.textContent = `${meta.label} · Step ${meta.idx}`;
+    stepEl.textContent = `Quest · ${meta.label} · ${meta.idx}/${meta.total}`;
+
+    window.FatumPlay?.setQuestProgress?.(questRatio());
 
     const prog = document.getElementById("reading-progress");
     if (prog) {
@@ -506,18 +539,18 @@
   }
 
   function journalActionsHTML(saved, againLabel) {
-    const again = againLabel || "Start over";
+    const again = againLabel || "Play again";
     if (saved) {
-      return `<p class="journal-saved-note" role="status">Saved as “${escapeHTML(state.journalTitle || "entry")}” · <a href="#journal" data-action="goto-journal">View journal</a></p>
+      return `<p class="journal-saved-note" role="status">Seal locked · “${escapeHTML(state.journalTitle || "entry")}” · <a href="#journal" data-action="goto-journal">Open collection</a></p>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">${escapeHTML(again)}</button>
           <button type="button" class="btn btn--primary" data-action="close">Done</button>
         </div>`;
     }
-    return `<div class="studio__actions">
+    return `<div class="studio__actions studio__actions--reward">
         <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">${escapeHTML(again)}</button>
-        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="save-journal">Save to journal</button>
-        <button type="button" class="btn btn--primary" data-action="close">Done</button>
+        <button type="button" class="btn btn--primary btn--seal" data-action="save-journal">◎ Collect seal</button>
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Skip</button>
       </div>`;
   }
 
@@ -738,6 +771,9 @@
     state.journalSaved = true;
     state.journalEntryId = entry.id;
     state.journalTitle = entry.title;
+    document.dispatchEvent(
+      new CustomEvent("fatum:seal-collected", { detail: { title: entry.title, id: entry.id } })
+    );
     render();
     return entry;
   }
@@ -923,14 +959,14 @@
         return a.name.localeCompare(b.name);
       });
       picker.innerHTML =
-        `<option value="">Choose a method…</option>` +
-        `<optgroup label="Featured guides">` +
+        `<option value="">Choose a rite…</option>` +
+        `<optgroup label="Starter quests">` +
         sorted
           .filter((m) => m.featured)
           .map((m) => `<option value="${m.id}">${escapeHTML(m.name)}</option>`)
           .join("") +
         `</optgroup>` +
-        `<optgroup label="All methods">` +
+        `<optgroup label="All rites">` +
         sorted
           .filter((m) => !m.featured)
           .map((m) => `<option value="${m.id}">${escapeHTML(m.name)} (${escapeHTML(m.continent)})</option>`)
@@ -947,25 +983,37 @@
       });
     }
 
-    // Featured cards
+    // Featured quest cards
     const featuredEl = document.getElementById("featured-guides");
     if (featuredEl) {
+      const questMeta = {
+        bagua: { badge: "Quest · 八卦", moves: "4 moves · coins", icon: "☰" },
+        tarot: { badge: "Quest · 塔罗", moves: "5 moves · cards", icon: "✦" },
+        mbti: { badge: "Quest · MBTI", moves: "Quiz · type", icon: "◎" },
+      };
       featuredEl.innerHTML = (window.FATE_FEATURED_METHODS || [])
         .map((m) => {
+          const meta = questMeta[m.guided] || { badge: "Quest", moves: "Guided", icon: "◇" };
           const sci = window.fateScienceStatusFor?.(m);
-          return `<article class="feature-card">
-          <p class="feature-card__eyebrow">${escapeHTML(m.guided === "bagua" ? "八卦" : m.guided === "tarot" ? "塔罗" : "MBTI")}</p>
+          return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="Play ${escapeHTML(m.name)}">
+          <div class="feature-card__top">
+            <span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>
+            <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
+          </div>
           <h3 class="feature-card__title">${escapeHTML(m.name)}</h3>
           <p class="feature-card__copy">${escapeHTML(m.summary)}</p>
-          ${
-            sci
-              ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">${escapeHTML(sci.tag)}</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>`
-              : ""
-          }
-          <button type="button" class="btn btn--primary btn--small" data-read="${escapeHTML(m.id)}">Start guided rite</button>
+          <p class="feature-card__moves">${escapeHTML(meta.moves)}${sci ? ` · ${escapeHTML(sci.tag)}` : ""}</p>
+          <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ Play quest</button>
         </article>`;
         })
         .join("");
+
+      featuredEl.addEventListener("keydown", (e) => {
+        const card = e.target.closest(".feature-card--quest");
+        if (!card || (e.key !== "Enter" && e.key !== " ")) return;
+        e.preventDefault();
+        openStudio(card.dataset.read);
+      });
     }
   }
 
