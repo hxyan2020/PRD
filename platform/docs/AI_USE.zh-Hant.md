@@ -6,9 +6,8 @@
 
 這是本台的 AI 識字手冊。它不取代[使用手冊](/admin/docs/user-guide)（每一頁怎麼用）或 [PRD](/admin/docs/prd)（我們在做什麼）。當你需要知道 **AI 是什麼、在這裡怎麼用、哪裡會錯、怎麼抓出來** 時讀本頁。
 
-**CRMP Plus（升級管理後台）：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/](https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/)  
-**原 CRMP 管理後台：** [https://hxyan2020.github.io/PRD/crmp-admin/admin/docs/ai-use/](https://hxyan2020.github.io/PRD/crmp-admin/admin/docs/ai-use/)  
-兩個後台左側 **文件 → AI 使用手冊** 都有這一頁。
+**CRMP Plus（升級管理後台）：** [https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/](https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/) — 左側 **文件 → AI 使用手冊**。  
+**原 CRMP 管理後台**凍結於 [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)，**沒有 CS／TR**；請在 CRMP Plus 打開本手冊。
 
 ---
 

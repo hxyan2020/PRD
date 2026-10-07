@@ -1,11 +1,17 @@
 name: Publish CRMP Plus to GitHub Pages
 
+# Publishes upgraded CRMP Plus to /PRD/crmp-plus/ only.
+# Original CRMP Admin at /PRD/crmp-admin/ is frozen (no CS/TR) and is restored
+# from .github/frozen-crmp-admin.sha by fully replacing that folder (so leftover
+# CS/TR files from a bad overwrite are removed).
+
 on:
   push:
-    branches: [cursor/crmp-plus-a935, cursor/ai-use-manual-a935, cursor/vantage-orange-theme-a935, cursor/ai-db-gateway-a935]
+    branches: [cursor/crmp-plus-a935, cursor/ai-use-manual-a935, cursor/vantage-orange-theme-a935, cursor/ai-db-gateway-a935, cursor/restore-crmp-admin-a935]
     paths:
       - "platform/**"
       - ".github/workflows/crmp-plus-pages.yml"
+      - ".github/frozen-crmp-admin.sha"
   workflow_dispatch:
 
 permissions:
@@ -33,38 +39,64 @@ jobs:
         run: |
           npm ci
           npm run build:pages
-      - name: Stage nested Pages folder
+      - name: Stage CRMP Plus
         run: |
           mkdir -p publish/crmp-plus
           cp -a platform/out/. publish/crmp-plus/
           touch publish/crmp-plus/.nojekyll
-      - name: Build original CRMP Admin snapshot (Docs includes AI Use Manual)
-        working-directory: platform
+      - name: Stage frozen original CRMP Admin (no CS/TR)
         env:
-          NEXT_PUBLIC_STATIC_EXPORT: "1"
-          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-admin
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          rm -rf out
-          npm run build:pages
-      - name: Stage original CRMP Admin folder
-        run: |
+          set -euo pipefail
+          FROZEN_SHA="$(tr -d '[:space:]' < .github/frozen-crmp-admin.sha)"
+          test -n "$FROZEN_SHA"
+          rm -rf .frozen-gh-pages publish/crmp-admin
+          git clone --filter=blob:none --no-checkout \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .frozen-gh-pages
+          git -C .frozen-gh-pages fetch --depth=1 origin "$FROZEN_SHA"
+          git -C .frozen-gh-pages checkout "$FROZEN_SHA" -- crmp-admin
           mkdir -p publish/crmp-admin
-          cp -a platform/out/. publish/crmp-admin/
+          cp -a .frozen-gh-pages/crmp-admin/. publish/crmp-admin/
           touch publish/crmp-admin/.nojekyll
-      - name: Publish gh-pages (keep sibling sites)
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: publish
-          publish_branch: gh-pages
-          keep_files: true
+          if [ -e publish/crmp-admin/admin/cs-desk ] || [ -e publish/crmp-admin/admin/cs-dashboard ] || [ -e publish/crmp-admin/admin/cs-log ] || [ -e publish/crmp-admin/cs ]; then
+            echo "Refusing to publish CS/TR onto original CRMP Admin" >&2
+            exit 1
+          fi
+          test -f publish/crmp-admin/admin/index.html
+          test -f publish/crmp-admin/admin/messenger/index.html
+          rm -rf .frozen-gh-pages
+      - name: Publish gh-pages (replace crmp-plus and crmp-admin folders)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          rm -rf .gh-pages-work
+          git clone --depth=1 --branch gh-pages \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .gh-pages-work
+          rm -rf .gh-pages-work/crmp-plus .gh-pages-work/crmp-admin
+          cp -a publish/crmp-plus .gh-pages-work/crmp-plus
+          cp -a publish/crmp-admin .gh-pages-work/crmp-admin
+          cd .gh-pages-work
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No gh-pages changes"
+          else
+            git commit -m "deploy: ${GITHUB_SHA} (plus + frozen admin)"
+            git push origin HEAD:gh-pages
+          fi
+          # Post-publish guard on the staged trees
+          test ! -e crmp-admin/admin/cs-desk
+          test ! -e crmp-admin/cs
+          test -e crmp-plus/admin/cs-desk/index.html
       - name: Public URL
         run: |
           {
-            echo "CRMP Plus (upgraded admin)"
+            echo "CRMP Plus (upgraded admin — includes CS/TR)"
             echo "- https://hxyan2020.github.io/PRD/crmp-plus/admin/"
             echo "- Docs → AI Use Manual: https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/"
-            echo "Original CRMP Admin"
+            echo "Original CRMP Admin (frozen — no CS/TR)"
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
-            echo "- Docs → AI Use Manual: https://hxyan2020.github.io/PRD/crmp-admin/admin/docs/ai-use/"
           } >> "$GITHUB_STEP_SUMMARY"
