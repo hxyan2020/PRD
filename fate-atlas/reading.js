@@ -76,6 +76,8 @@
           nonce: Date.now() % 100000,
         },
         reading: null,
+        journalSaved: false,
+        journalTitle: "",
       };
     }
 
@@ -93,6 +95,8 @@
       method,
       stepIndex: 0,
       reading: null,
+      journalSaved: false,
+      journalTitle: "",
       nonce: Date.now() % 100000,
     };
     if (kind === "bagua") {

@@ -28,6 +28,7 @@ Then visit http://localhost:8080
 1. Choose a method (hero picker, catalog **Begin reading**, or Surprise me).
 2. Follow that method’s pre-defined process (birth chart, lot casting, cards, dice, book, form, pendulum, day almanac, or omen watch).
 3. Receive a generated reading styled after the tradition.
+4. Optionally **Save to journal** — auto title + timestamp, stored in browser localStorage.
 
 Readings are educational simulations, not authentic initiatory practice.
 
