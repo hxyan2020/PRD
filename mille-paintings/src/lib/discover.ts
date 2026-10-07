@@ -841,14 +841,33 @@ async function searchCommonsOnce(
     const categories = (meta.Categories?.value || '').replace(/<[^>]+>/g, ' ')
     const file = page.title.replace(/^File:/, '')
     const name = file.replace(/\.[^.]+$/, '')
-    // FilePath + width works under referrerPolicy=no-referrer on GitHub Pages.
+    const blob = `${name} ${desc} ${categories} ${artist}`.toLowerCase()
+    // Drop tourist photos / hotels that match “shan shui” as a place name.
+    if (
+      /panoramio|resort|hotel|spa|restaurant|selfie|wedding|logo|map of|street view|flickr/.test(
+        blob,
+      )
+    ) {
+      continue
+    }
+    // Prefer painting-like media when the filename/description gives a signal.
+    const looksPainted =
+      /paint|painting|scroll|ink|watercolor|watercolour|oil on|canvas|album leaf|hanging|handscroll|山水|水墨|国画|画|畫|painter|artist/.test(
+        blob,
+      )
+    if (!looksPainted && !/shan\s*shui|shanshui|chinese landscape/.test(blob)) {
+      continue
+    }
+    // Prefer direct upload.wikimedia.org URLs (less redirect/rate-limit than FilePath).
+    // Keep FilePath as imageFull alternate for SafeImage fallback.
+    const direct = info.thumburl || info.url
     out.push({
       id,
       rank: 0,
-      sitelinks: 2,
+      sitelinks: looksPainted ? 3 : 2,
       name,
-      image: commons(file, 1600),
-      imageFull: commons(file, 2400),
+      image: direct || commons(file, 1600),
+      imageFull: info.url || commons(file, 2400),
       painter: artist.slice(0, 120),
       painterId: '',
       painterBirthYear: 'Unknown',

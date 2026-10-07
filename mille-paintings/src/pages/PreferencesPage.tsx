@@ -340,7 +340,12 @@ export function PreferencesPage() {
           <div className="discover-grid">
             {localizedDiscover.map((p) => (
               <Link key={p.id} to={`/painting/${p.id}`} className="discover-card">
-                <SafeImage src={displayImageUrl(p)} alt={p.name} loading="lazy" />
+                <SafeImage
+                  src={displayImageUrl(p)}
+                  fallbackSrc={p.imageFull && p.imageFull !== displayImageUrl(p) ? p.imageFull : p.image}
+                  alt={p.name}
+                  loading="lazy"
+                />
                 <div>
                   <h3>{p.name}</h3>
                   <p>{p.painter}</p>

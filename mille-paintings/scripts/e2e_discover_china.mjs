@@ -77,36 +77,60 @@ async function main() {
 
   let imagesOk = 0
   let imagesFail = 0
+  let imagesRateLimited = 0
   for (const r of results.slice(0, 12)) {
-    const url = r.image
-    try {
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: { 'User-Agent': 'MillePaintings-e2e/1.0', Referer: '' },
-        redirect: 'follow',
-        signal: AbortSignal.timeout(12000),
-      })
-      const ct = res.headers.get('content-type') || ''
-      const ok = res.ok && /image|octet-stream/i.test(ct)
-      if (ok) imagesOk++
-      else {
-        imagesFail++
+    const urls = [...new Set([r.image, r.imageFull].filter(Boolean))]
+    let ok = false
+    let rateLimited = false
+    for (const url of urls) {
+      try {
+        await new Promise((r) => setTimeout(r, 350))
+        const res = await fetch(url, {
+          method: 'GET',
+          headers: { 'User-Agent': 'MillePaintings-e2e/1.0' },
+          redirect: 'follow',
+          signal: AbortSignal.timeout(12000),
+        })
+        const ct = res.headers.get('content-type') || ''
+        if (res.status === 429) {
+          rateLimited = true
+          continue
+        }
+        if (res.ok && /image|octet-stream/i.test(ct)) {
+          ok = true
+          break
+        }
         console.log('IMG_FAIL', r.name, res.status, ct, url.slice(0, 100))
+      } catch (e) {
+        console.log('IMG_ERR', r.name, String(e).slice(0, 120))
       }
-    } catch (e) {
-      imagesFail++
-      console.log('IMG_ERR', r.name, String(e).slice(0, 120))
     }
+    if (ok) imagesOk++
+    else if (rateLimited) imagesRateLimited++
+    else imagesFail++
     console.log('-', r.name, '|', r.painter, '|', r.painterCountry, '|', r.genre)
   }
 
+  const hotelNoise = results.filter((r) =>
+    /panoramio|resort|hotel|spa/i.test(`${r.name} ${r.intro}`),
+  )
+  console.log('HOTEL_NOISE:', hotelNoise.length)
+
   const allMatch = results.every((r) => matchesPreferences(r, prefs))
   console.log('ALL_MATCH_PREFS:', allMatch)
-  console.log('IMAGES_OK:', imagesOk, 'IMAGES_FAIL:', imagesFail)
+  console.log(
+    'IMAGES_OK:',
+    imagesOk,
+    'IMAGES_FAIL:',
+    imagesFail,
+    'IMAGES_429:',
+    imagesRateLimited,
+  )
 
   const pass =
     results.length >= 3 &&
     westernLeak.length === 0 &&
+    hotelNoise.length === 0 &&
     allMatch &&
     imagesOk >= Math.min(3, results.length) &&
     imagesFail === 0

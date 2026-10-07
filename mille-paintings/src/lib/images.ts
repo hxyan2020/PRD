@@ -35,6 +35,16 @@ export function withCommonsWidth(url: string, width: number): string {
   const trimmed = url.trim()
   if (!trimmed) return trimmed
 
+  // Already a sized Commons thumb on upload.wikimedia.org — keep it (avoids FilePath redirects/429s).
+  if (/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\//i.test(trimmed)) {
+    return trimmed
+  }
+
+  // FilePath already width-capped.
+  if (/Special:FilePath\//i.test(trimmed) && /[?&]width=\d+/i.test(trimmed)) {
+    return trimmed.replace(/([?&]width=)\d+/i, `$1${width}`)
+  }
+
   const name = commonsFileName(trimmed)
   if (name) {
     return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(name)}?width=${width}`
@@ -50,7 +60,16 @@ export function withCommonsWidth(url: string, width: number): string {
 /** Inline page / card display — sharp enough, safe to decode. */
 export function displayImageUrl(painting: Pick<Painting, 'image' | 'imageFull'>): string {
   const primary = painting.image?.trim()
-  if (primary) return withCommonsWidth(primary, 1600)
+  // Prefer already-sized upload thumbs / non-Commons museum URLs as-is.
+  if (primary) {
+    if (
+      /upload\.wikimedia\.org\/wikipedia\/commons\/thumb\//i.test(primary) ||
+      (!/wikimedia\.org|wikidata\.org/i.test(primary) && !/Special:FilePath/i.test(primary))
+    ) {
+      return primary
+    }
+    return withCommonsWidth(primary, 1600)
+  }
   const full = painting.imageFull?.trim()
   return full ? withCommonsWidth(full, 1600) : ''
 }
