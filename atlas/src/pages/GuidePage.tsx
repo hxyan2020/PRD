@@ -10,6 +10,7 @@ import {
   phaseAfterWelcome,
   welcomeMessage,
 } from "../lib/chatEngine";
+import { useI18n } from "../i18n";
 
 function RichText({ text }: { text: string }) {
   return (
@@ -62,6 +63,7 @@ export function GuidePage() {
   const [input, setInput] = useState("");
   const [ready, setReady] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     loadCollection().then((data) => {
@@ -113,11 +115,8 @@ export function GuidePage() {
       <section className="section chat-page">
         <div className="container chat-layout">
           <div className="section-head chat-head">
-            <h2>Atlas Guide</h2>
-            <p>
-              Tell me what you like to play—I’ll recommend from this catalog and
-              answer follow-ups about rules, origins, variations, and buying.
-            </p>
+            <h2>{t("guide.title")}</h2>
+            <p>{t("guide.sub")}</p>
           </div>
 
           <div className="chat-shell">
@@ -145,7 +144,7 @@ export function GuidePage() {
 
             <form className="chat-composer" onSubmit={onSubmit}>
               <label className="sr-only" htmlFor="chat-input">
-                Message Atlas Guide
+                {t("guide.inputLabel")}
               </label>
               <textarea
                 id="chat-input"
@@ -153,7 +152,7 @@ export function GuidePage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
-                placeholder="Ask for recommendations, how to play, origins, or where to buy…"
+                placeholder={t("guide.placeholder")}
                 disabled={!ready}
               />
               <button
@@ -161,13 +160,10 @@ export function GuidePage() {
                 type="submit"
                 disabled={!ready || !input.trim()}
               >
-                Send
+                {t("guide.send")}
               </button>
             </form>
-            <p className="chat-scope-note">
-              Scoped to Ludus Atlas: browse games & toys, understand them, learn
-              how to play, and find purchase options.
-            </p>
+            <p className="chat-scope-note">{t("guide.scope")}</p>
           </div>
         </div>
       </section>

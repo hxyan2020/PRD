@@ -5,6 +5,7 @@ import { useJournal } from "../hooks/useJournal";
 import { useAuth } from "../hooks/useAuth";
 import { loadCollection } from "../lib/collection";
 import type { JournalEntry, JournalKind } from "../types/journal";
+import { useI18n } from "../i18n";
 
 function formatWhen(iso?: string) {
   if (!iso) return "";
@@ -40,6 +41,7 @@ export function JournalPage() {
   const { isLoggedIn, user } = useAuth();
   const [tab, setTab] = useState<"all" | JournalKind>("all");
   const [catalogTotal, setCatalogTotal] = useState<number>();
+  const { t } = useI18n();
 
   useEffect(() => {
     loadCollection()
@@ -66,19 +68,16 @@ export function JournalPage() {
         <section className="section" style={{ paddingTop: "2.5rem" }}>
           <div className="container">
             <div className="section-head">
-              <h2>Your journal</h2>
-              <p>
-                Log in to save collected and played games. Your session stays
-                active on this device until you log out.
-              </p>
+              <h2>{t("journal.title")}</h2>
+              <p>{t("journal.subLoggedOut")}</p>
             </div>
             <div className="journal-empty">
               <div className="cta-row">
                 <Link className="btn btn-primary" to="/login?next=%2Fjournal">
-                  Log in
+                  {t("nav.login")}
                 </Link>
                 <Link className="btn btn-ghost" to="/register?next=%2Fjournal">
-                  Create account
+                  {t("journal.createAccount")}
                 </Link>
               </div>
             </div>
@@ -94,22 +93,21 @@ export function JournalPage() {
       <section className="section" style={{ paddingTop: "2.5rem" }}>
         <div className="container">
           <div className="section-head">
-            <h2>Your journal</h2>
+            <h2>{t("journal.title")}</h2>
             <p>
-              Signed in as <strong style={{ color: "var(--mist)" }}>{user?.email}</strong>.
-              Collected and played games are saved to your account on this device.
+              {t("journal.subLoggedIn", { email: user?.email ?? "" })}
             </p>
           </div>
 
           <div className="meta-bar">
             <span>
-              Collected: <strong>{counts.collected}</strong>
+              {t("journal.collected")} <strong>{counts.collected}</strong>
             </span>
             <span>
-              Played: <strong>{counts.played}</strong>
+              {t("journal.played")} <strong>{counts.played}</strong>
             </span>
             <span>
-              In journal: <strong>{counts.total}</strong>
+              {t("journal.inJournal")} <strong>{counts.total}</strong>
             </span>
           </div>
 
@@ -121,7 +119,7 @@ export function JournalPage() {
               className={tab === "all" ? "active" : undefined}
               onClick={() => setTab("all")}
             >
-              All
+              {t("journal.all")}
             </button>
             <button
               type="button"
@@ -130,7 +128,7 @@ export function JournalPage() {
               className={tab === "collected" ? "active" : undefined}
               onClick={() => setTab("collected")}
             >
-              Collected
+              {t("journal.tabCollected")}
             </button>
             <button
               type="button"
@@ -139,19 +137,16 @@ export function JournalPage() {
               className={tab === "played" ? "active" : undefined}
               onClick={() => setTab("played")}
             >
-              Played
+              {t("journal.tabPlayed")}
             </button>
           </div>
 
           {display.length === 0 ? (
             <div className="journal-empty">
-              <p>Nothing here yet.</p>
-              <p style={{ color: "var(--mist-dim)" }}>
-                Open any game and tap Collect or Mark played to add it to your
-                journal.
-              </p>
+              <p>{t("journal.empty")}</p>
+              <p style={{ color: "var(--mist-dim)" }}>{t("journal.emptyHint")}</p>
               <Link className="btn btn-primary" to="/collection">
-                Browse the collection
+                {t("journal.browse")}
               </Link>
             </div>
           ) : (
@@ -171,12 +166,16 @@ export function JournalPage() {
                       <div className="journal-badges">
                         {entry.collectedAt ? (
                           <span className="badge collect">
-                            Collected · {formatWhen(entry.collectedAt)}
+                            {t("journal.badgeCollected", {
+                              when: formatWhen(entry.collectedAt),
+                            })}
                           </span>
                         ) : null}
                         {entry.playedAt ? (
                           <span className="badge played">
-                            Played · {formatWhen(entry.playedAt)}
+                            {t("journal.badgePlayed", {
+                              when: formatWhen(entry.playedAt),
+                            })}
                           </span>
                         ) : null}
                       </div>
@@ -189,7 +188,7 @@ export function JournalPage() {
                         className="btn btn-ghost"
                         onClick={() => remove(entry.gameId, "collected")}
                       >
-                        Remove collect
+                        {t("journal.removeCollect")}
                       </button>
                     ) : null}
                     {entry.playedAt ? (
@@ -198,7 +197,7 @@ export function JournalPage() {
                         className="btn btn-ghost"
                         onClick={() => remove(entry.gameId, "played")}
                       >
-                        Remove played
+                        {t("journal.removePlayed")}
                       </button>
                     ) : null}
                   </div>

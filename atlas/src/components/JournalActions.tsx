@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import type { Game } from "../types/game";
 import { useJournal } from "../hooks/useJournal";
 import { useAuth } from "../hooks/useAuth";
+import { useI18n } from "../i18n";
 
 type Props = {
   game: Game;
@@ -14,6 +15,7 @@ export function JournalActions({ game, compact = false }: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const status = statusFor(game.id);
+  const { t } = useI18n();
 
   function requireAuth(action: () => void) {
     if (!isLoggedIn) {
@@ -32,7 +34,7 @@ export function JournalActions({ game, compact = false }: Props) {
         type="button"
         className={`journal-btn${status.collected ? " is-active collect" : ""}`}
         aria-pressed={status.collected}
-        title={isLoggedIn ? undefined : "Log in to collect"}
+        title={isLoggedIn ? undefined : t("nav.login")}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -40,13 +42,13 @@ export function JournalActions({ game, compact = false }: Props) {
         }}
       >
         <span aria-hidden="true">{status.collected ? "★" : "☆"}</span>
-        {status.collected ? "Collected" : "Collect"}
+        {status.collected ? t("actions.collected") : t("actions.collect")}
       </button>
       <button
         type="button"
         className={`journal-btn${status.played ? " is-active played" : ""}`}
         aria-pressed={status.played}
-        title={isLoggedIn ? undefined : "Log in to mark played"}
+        title={isLoggedIn ? undefined : t("nav.login")}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -54,7 +56,7 @@ export function JournalActions({ game, compact = false }: Props) {
         }}
       >
         <span aria-hidden="true">{status.played ? "●" : "○"}</span>
-        {status.played ? "Played" : "Mark played"}
+        {status.played ? t("actions.played") : t("actions.markPlayed")}
       </button>
     </div>
   );

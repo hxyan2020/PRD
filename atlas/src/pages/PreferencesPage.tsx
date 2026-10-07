@@ -12,9 +12,11 @@ import { addGamesToPool, isInPool, poolCount, readPool } from "../lib/pool";
 import { setStagingGames } from "../lib/staging";
 import type { DiscoverHit, DiscoverPreferences, DiscoverProgress } from "../types/discover";
 import type { Game } from "../types/game";
+import { useI18n } from "../i18n";
 
 export function PreferencesPage() {
   const { isLoggedIn, user } = useAuth();
+  const { t } = useI18n();
   const [prefs, setPrefs] = useState<DiscoverPreferences>(() => loadSavedDiscoverPrefs());
   const [catalog, setCatalog] = useState<Game[]>([]);
   const [baseIds, setBaseIds] = useState<Set<string>>(() => new Set());
@@ -141,32 +143,28 @@ export function PreferencesPage() {
       <section className="section prefs-page">
         <div className="container">
           <div className="section-head">
-            <h2>Preferences & AI search</h2>
-            <p>
-              Set what you like. Atlas searches the catalog and can draft new
-              discoveries in that nature—then you add them one-by-one or all at
-              once into the collection pool.
-            </p>
+            <h2>{t("prefs.title")}</h2>
+            <p>{t("prefs.sub")}</p>
           </div>
 
-              <div className="meta-bar">
+          <div className="meta-bar">
             <span>
-              Base catalog: <strong>{baseCount.toLocaleString()}</strong>
+              {t("prefs.baseCatalog")} <strong>{baseCount.toLocaleString()}</strong>
             </span>
             <span>
-              Pool additions: <strong>{poolSize}</strong>
+              {t("prefs.poolAdditions")} <strong>{poolSize}</strong>
             </span>
             <span>
-              Collection total: <strong>{(baseCount + poolSize).toLocaleString()}</strong>
+              {t("prefs.collectionTotal")}{" "}
+              <strong>{(baseCount + poolSize).toLocaleString()}</strong>
             </span>
           </div>
 
           {!isLoggedIn ? (
             <div className="prefs-login-hint">
               <p>
-                You can run searches anytime.{" "}
-                <Link to="/login?next=%2Fpreferences">Log in</Link> to save finds
-                into the collection pool.
+                {t("prefs.loginHint")}{" "}
+                <Link to="/login?next=%2Fpreferences">{t("prefs.loginLink")}</Link>
               </p>
             </div>
           ) : null}
@@ -179,85 +177,85 @@ export function PreferencesPage() {
                 void onSearch();
               }}
             >
-              <h3>Your preferences</h3>
+              <h3>{t("prefs.yourPrefs")}</h3>
 
               <div className="field">
-                <label htmlFor="players">Players</label>
+                <label htmlFor="players">{t("prefs.players")}</label>
                 <select
                   id="players"
                   value={prefs.players}
                   onChange={(e) => update("players", e.target.value as DiscoverPreferences["players"])}
                 >
-                  <option value="any">Any</option>
-                  <option value="alone">Alone</option>
-                  <option value="two">2 people</option>
-                  <option value="small">3–4 people</option>
-                  <option value="group">Larger group / teams</option>
+                  <option value="any">{t("prefs.any")}</option>
+                  <option value="alone">{t("prefs.alone")}</option>
+                  <option value="two">{t("prefs.two")}</option>
+                  <option value="small">{t("prefs.small")}</option>
+                  <option value="group">{t("prefs.group")}</option>
                 </select>
               </div>
 
               <div className="field">
-                <label htmlFor="setting">Setting</label>
+                <label htmlFor="setting">{t("prefs.setting")}</label>
                 <select
                   id="setting"
                   value={prefs.setting}
                   onChange={(e) => update("setting", e.target.value as DiscoverPreferences["setting"])}
                 >
-                  <option value="either">Either</option>
-                  <option value="indoor">Indoor</option>
-                  <option value="outdoor">Outdoor</option>
+                  <option value="either">{t("prefs.either")}</option>
+                  <option value="indoor">{t("prefs.indoor")}</option>
+                  <option value="outdoor">{t("prefs.outdoor")}</option>
                 </select>
               </div>
 
               <div className="field">
-                <label htmlFor="vibe">Nature / vibe</label>
+                <label htmlFor="vibe">{t("prefs.vibe")}</label>
                 <select
                   id="vibe"
                   value={prefs.vibe}
                   onChange={(e) => update("vibe", e.target.value as DiscoverPreferences["vibe"])}
                 >
-                  <option value="any">Any</option>
-                  <option value="strategy">Strategy</option>
-                  <option value="casual">Casual / social</option>
-                  <option value="craft">Craft & dolls</option>
-                  <option value="sport">Sport & active</option>
-                  <option value="puzzle">Puzzles & skill</option>
-                  <option value="kids">Kids & family</option>
-                  <option value="ritual">Ritual & festival</option>
+                  <option value="any">{t("prefs.any")}</option>
+                  <option value="strategy">{t("prefs.strategy")}</option>
+                  <option value="casual">{t("prefs.casual")}</option>
+                  <option value="craft">{t("prefs.craft")}</option>
+                  <option value="sport">{t("prefs.sport")}</option>
+                  <option value="puzzle">{t("prefs.puzzle")}</option>
+                  <option value="kids">{t("prefs.kids")}</option>
+                  <option value="ritual">{t("prefs.ritual")}</option>
                 </select>
               </div>
 
               <div className="field">
-                <label htmlFor="era">Era lean</label>
+                <label htmlFor="era">{t("prefs.era")}</label>
                 <select
                   id="era"
                   value={prefs.era}
                   onChange={(e) => update("era", e.target.value as DiscoverPreferences["era"])}
                 >
-                  <option value="any">Any era</option>
-                  <option value="ancient">Ancient</option>
-                  <option value="traditional">Traditional / folk</option>
-                  <option value="modern">Modern</option>
+                  <option value="any">{t("prefs.eraAny")}</option>
+                  <option value="ancient">{t("prefs.eraAncient")}</option>
+                  <option value="traditional">{t("prefs.eraTraditional")}</option>
+                  <option value="modern">{t("prefs.eraModern")}</option>
                 </select>
               </div>
 
               <div className="field">
-                <label htmlFor="region">Region / civilization</label>
+                <label htmlFor="region">{t("prefs.region")}</label>
                 <input
                   id="region"
                   value={prefs.region}
                   onChange={(e) => update("region", e.target.value)}
-                  placeholder="e.g. East Asia, West Africa, Japan…"
+                  placeholder={t("prefs.regionPlaceholder")}
                 />
               </div>
 
               <div className="field">
-                <label htmlFor="keywords">Keywords</label>
+                <label htmlFor="keywords">{t("prefs.keywords")}</label>
                 <input
                   id="keywords"
                   value={prefs.keywords}
                   onChange={(e) => update("keywords", e.target.value)}
-                  placeholder="e.g. stones, harvest, shadow, knots…"
+                  placeholder={t("prefs.keywordsPlaceholder")}
                 />
               </div>
 
@@ -267,27 +265,25 @@ export function PreferencesPage() {
                   checked={prefs.includeNewDiscoveries}
                   onChange={(e) => update("includeNewDiscoveries", e.target.checked)}
                 />
-                Also draft new AI discoveries (not yet in the catalog)
+                {t("prefs.includeDiscoveries")}
               </label>
 
               <div className="cta-row">
                 <button className="btn btn-primary" type="submit" disabled={searching || !catalog.length}>
-                  {searching ? "Searching…" : "AI search toys / games"}
+                  {searching ? t("prefs.searching") : t("prefs.search")}
                 </button>
                 {searching ? (
                   <button className="btn btn-ghost" type="button" onClick={stopSearch}>
-                    Cancel
+                    {t("prefs.cancel")}
                   </button>
                 ) : null}
               </div>
             </form>
 
             <aside className="prefs-progress-panel">
-              <h3>Realtime search status</h3>
+              <h3>{t("prefs.statusTitle")}</h3>
               {!progress ? (
-                <p className="prefs-muted">
-                  Set preferences and start a search. Progress appears here live.
-                </p>
+                <p className="prefs-muted">{t("prefs.statusIdle")}</p>
               ) : (
                 <>
                   <div
@@ -317,13 +313,14 @@ export function PreferencesPage() {
               {stats ? (
                 <div className="meta-bar" style={{ marginTop: "1rem" }}>
                   <span>
-                    Scanned: <strong>{stats.scanned.toLocaleString()}</strong>
+                    {t("prefs.scanned")}{" "}
+                    <strong>{stats.scanned.toLocaleString()}</strong>
                   </span>
                   <span>
-                    New drafts: <strong>{stats.drafted}</strong>
+                    {t("prefs.newDrafts")} <strong>{stats.drafted}</strong>
                   </span>
                   <span>
-                    Results: <strong>{hits.length}</strong>
+                    {t("prefs.results")} <strong>{hits.length}</strong>
                   </span>
                 </div>
               ) : null}
@@ -334,7 +331,7 @@ export function PreferencesPage() {
             <div className="prefs-flash" role="status">
               {flash}{" "}
               {flash.includes("Added") ? (
-                <Link to="/collection">Open collection</Link>
+                <Link to="/collection">{t("prefs.openCollection")}</Link>
               ) : null}
             </div>
           ) : null}
@@ -342,14 +339,14 @@ export function PreferencesPage() {
           {hits.length > 0 ? (
             <div className="prefs-results">
               <div className="prefs-results-head">
-                <h3>Search results</h3>
+                <h3>{t("prefs.resultsTitle")}</h3>
                 <button
                   type="button"
                   className="btn btn-primary"
                   onClick={addAll}
                   disabled={!pendingHits.length}
                 >
-                  Add all new discoveries ({pendingHits.length})
+                  {t("prefs.addAll", { n: pendingHits.length })}
                 </button>
               </div>
 
@@ -371,7 +368,9 @@ export function PreferencesPage() {
                           <div className="prefs-hit-tags">
                             <span className="pill">{hit.game.category}</span>
                             <span className={`badge ${hit.source === "discovery" ? "played" : "collect"}`}>
-                              {hit.source === "discovery" ? "New discovery" : "From catalog"}
+                              {hit.source === "discovery"
+                                ? t("prefs.badgeDiscovery")
+                                : t("prefs.badgeCatalog")}
                             </span>
                           </div>
                           <h4>{hit.game.name}</h4>
@@ -388,7 +387,7 @@ export function PreferencesPage() {
                       </div>
                       <div className="prefs-hit-actions">
                         <Link className="btn btn-ghost" to={`/game/${hit.game.slug}`}>
-                          Preview
+                          {t("prefs.preview")}
                         </Link>
                         <button
                           type="button"
@@ -397,10 +396,10 @@ export function PreferencesPage() {
                           onClick={() => addOne(hit.game, hit.source)}
                         >
                           {inBase
-                            ? "In catalog"
+                            ? t("prefs.inCatalog")
                             : inPool
-                              ? "In pool"
-                              : "Add to collection"}
+                              ? t("prefs.inPool")
+                              : t("prefs.add")}
                         </button>
                       </div>
                     </li>

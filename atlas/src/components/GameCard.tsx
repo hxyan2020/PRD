@@ -2,8 +2,11 @@ import { Link } from "react-router-dom";
 import type { Game } from "../types/game";
 import { excerpt } from "../lib/collection";
 import { JournalActions } from "./JournalActions";
+import { useI18n } from "../i18n";
 
 export function GameCard({ game, index }: { game: Game; index: number }) {
+  const { t } = useI18n();
+
   return (
     <article
       className="game-card"
@@ -22,7 +25,7 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
               {" "}
               ·{" "}
               <span className="var-count">
-                {game.variations.length} variations
+                {t("collection.variations", { n: game.variations.length })}
               </span>
             </>
           ) : null}

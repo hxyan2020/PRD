@@ -4,12 +4,14 @@ import { loadCollection } from "../lib/collection";
 import type { Game } from "../types/game";
 import { Footer } from "../components/Footer";
 import { JournalActions } from "../components/JournalActions";
+import { useI18n } from "../i18n";
 
 export function GameDetailPage() {
   const { slug } = useParams();
   const [game, setGame] = useState<Game | null | undefined>(undefined);
   const [activeImg, setActiveImg] = useState(0);
   const [total, setTotal] = useState<number>();
+  const { t } = useI18n();
 
   useEffect(() => {
     let alive = true;
@@ -26,16 +28,16 @@ export function GameDetailPage() {
   }, [slug]);
 
   if (game === undefined) {
-    return <div className="loading">Loading entry…</div>;
+    return <div className="loading">{t("detail.loading")}</div>;
   }
 
   if (!game) {
     return (
       <div className="error">
         <div>
-          <p>Game not found.</p>
+          <p>{t("detail.notFound")}</p>
           <Link className="btn btn-primary" to="/collection">
-            Back to collection
+            {t("detail.back")}
           </Link>
         </div>
       </div>
@@ -57,26 +59,28 @@ export function GameDetailPage() {
           <h1>{game.name}</h1>
           <div className="detail-facts">
             <span>
-              <strong style={{ color: "var(--mist)" }}>Origin:</strong>{" "}
+              <strong style={{ color: "var(--mist)" }}>{t("detail.origin")}</strong>{" "}
               {game.originCountry}
             </span>
             <span>
-              <strong style={{ color: "var(--mist)" }}>Civilization:</strong>{" "}
+              <strong style={{ color: "var(--mist)" }}>
+                {t("detail.civilization")}
+              </strong>{" "}
               {game.civilization}
             </span>
             <span>
-              <strong style={{ color: "var(--mist)" }}>Created:</strong>{" "}
+              <strong style={{ color: "var(--mist)" }}>{t("detail.created")}</strong>{" "}
               {game.creationYear}
             </span>
             <span>
-              <strong style={{ color: "var(--mist)" }}>Players:</strong>{" "}
+              <strong style={{ color: "var(--mist)" }}>{t("detail.players")}</strong>{" "}
               {game.idealParticipants}
             </span>
           </div>
           <div className="detail-journal">
             <JournalActions game={game} />
             <Link className="journal-link" to="/journal">
-              Open your journal →
+              {t("detail.openJournal")}
             </Link>
           </div>
         </div>
@@ -85,12 +89,12 @@ export function GameDetailPage() {
       <div className="container detail-layout">
         <div>
           <div className="panel">
-            <h2>About this game / toy</h2>
+            <h2>{t("detail.about")}</h2>
             <p style={{ color: "var(--mist-dim)" }}>{game.description}</p>
           </div>
 
           <div className="panel">
-            <h2>How to play</h2>
+            <h2>{t("detail.howToPlay")}</h2>
             <ol>
               {game.howToPlay.map((step) => (
                 <li key={step}>{step}</li>
@@ -100,11 +104,8 @@ export function GameDetailPage() {
 
           {game.variations.length > 0 ? (
             <div className="panel">
-              <h2>Cultural variations</h2>
-              <p style={{ color: "var(--mist-dim)" }}>
-                These are fundamentally the same game or toy, expressed in
-                different places and eras—not separate catalog inventions.
-              </p>
+              <h2>{t("detail.variations")}</h2>
+              <p style={{ color: "var(--mist-dim)" }}>{t("detail.variationsIntro")}</p>
               <div className="variations">
                 {game.variations.map((v) => (
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
@@ -122,7 +123,7 @@ export function GameDetailPage() {
 
         <aside>
           <div className="panel">
-            <h2>Images</h2>
+            <h2>{t("detail.images")}</h2>
             <img
               className="main-shot"
               src={shot}
@@ -139,7 +140,7 @@ export function GameDetailPage() {
                   key={`${src}-${i}`}
                   className={i === activeImg ? "active" : undefined}
                   onClick={() => setActiveImg(i)}
-                  aria-label={`Show image ${i + 1}`}
+                  aria-label={t("detail.showImage", { n: i + 1 })}
                 >
                   <img
                     src={src}
@@ -156,7 +157,7 @@ export function GameDetailPage() {
           </div>
 
           <div className="panel">
-            <h2>Requirements</h2>
+            <h2>{t("detail.requirements")}</h2>
             <ul>
               {game.requirements.map((r) => (
                 <li key={r}>{r}</li>
@@ -165,17 +166,16 @@ export function GameDetailPage() {
           </div>
 
           <div className="panel">
-            <h2>Ideal participants</h2>
+            <h2>{t("detail.idealParticipants")}</h2>
             <p style={{ color: "var(--mist-dim)", margin: 0 }}>
               {game.idealParticipants}
             </p>
           </div>
 
           <div className="panel">
-            <h2>Where to buy</h2>
+            <h2>{t("detail.whereToBuy")}</h2>
             <p style={{ color: "var(--mist-dim)", fontSize: "0.92rem" }}>
-              Product pages from different platforms so you can compare by
-              region and shipping.
+              {t("detail.buyIntro")}
             </p>
             <ul className="buy-list">
               {game.purchaseLinks.map((link) => (
@@ -190,7 +190,7 @@ export function GameDetailPage() {
           </div>
 
           <Link className="btn btn-ghost" to="/collection">
-            ← Back to collection
+            {t("detail.back")}
           </Link>
         </aside>
       </div>

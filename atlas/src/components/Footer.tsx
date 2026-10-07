@@ -1,4 +1,8 @@
+import { useI18n } from "../i18n";
+
 export function Footer({ total }: { total?: number }) {
+  const { t } = useI18n();
+
   return (
     <footer className="site-footer">
       <div className="container">
@@ -6,9 +10,10 @@ export function Footer({ total }: { total?: number }) {
           <strong style={{ color: "var(--mist)", fontFamily: "var(--font-display)" }}>
             Ludus Atlas
           </strong>{" "}
-          catalogs toys and games across civilizations. Fundamentally identical
-          forms appear as variations under one entry.
-          {typeof total === "number" ? ` ${total.toLocaleString()} entries in this edition.` : null}
+          {t("footer.blurb")}
+          {typeof total === "number"
+            ? ` ${t("footer.entries", { n: total.toLocaleString() })}`
+            : null}
         </p>
       </div>
     </footer>

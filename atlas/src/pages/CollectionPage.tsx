@@ -6,6 +6,7 @@ import {
 } from "../lib/collection";
 import { GameCard } from "../components/GameCard";
 import { Footer } from "../components/Footer";
+import { useI18n } from "../i18n";
 
 const PAGE_SIZE = 30;
 
@@ -17,6 +18,7 @@ export function CollectionPage() {
   const [region, setRegion] = useState("all");
   const [page, setPage] = useState(1);
   const deferredQuery = useDeferredValue(query);
+  const { t } = useI18n();
 
   useEffect(() => {
     let alive = true;
@@ -72,11 +74,13 @@ export function CollectionPage() {
   }, [deferredQuery, category, region]);
 
   if (error) {
-    return <div className="error">Could not load collection: {error}</div>;
+    return (
+      <div className="error">{t("collection.error", { error })}</div>
+    );
   }
 
   if (!data) {
-    return <div className="loading">Loading {`1000+`} toys & games…</div>;
+    return <div className="loading">{t("collection.loading")}</div>;
   }
 
   return (
@@ -84,32 +88,32 @@ export function CollectionPage() {
       <section className="section" style={{ paddingTop: "2.5rem" }}>
         <div className="container">
           <div className="section-head">
-            <h2>Full collection</h2>
+            <h2>{t("collection.title")}</h2>
             <p>
-              {data.meta.totalGames.toLocaleString()} toys and games. Same
-              fundamental games are grouped with cultural variations—not split
-              into duplicate entries.
+              {t("collection.sub", {
+                n: data.meta.totalGames.toLocaleString(),
+              })}
             </p>
           </div>
 
           <div className="filters">
             <div className="field">
-              <label htmlFor="q">Search</label>
+              <label htmlFor="q">{t("collection.search")}</label>
               <input
                 id="q"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Name, country, civilization, variation…"
+                placeholder={t("collection.searchPlaceholder")}
               />
             </div>
             <div className="field">
-              <label htmlFor="cat">Category</label>
+              <label htmlFor="cat">{t("collection.category")}</label>
               <select
                 id="cat"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                <option value="all">All categories</option>
+                <option value="all">{t("collection.allCategories")}</option>
                 {data.meta.categories.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -118,13 +122,13 @@ export function CollectionPage() {
               </select>
             </div>
             <div className="field">
-              <label htmlFor="region">Origin</label>
+              <label htmlFor="region">{t("collection.origin")}</label>
               <select
                 id="region"
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
               >
-                <option value="all">All origins</option>
+                <option value="all">{t("collection.allOrigins")}</option>
                 {countries.map((c) => (
                   <option key={c} value={c}>
                     {c}
@@ -141,16 +145,18 @@ export function CollectionPage() {
                 setRegion("all");
               }}
             >
-              Reset
+              {t("collection.reset")}
             </button>
           </div>
 
           <div className="meta-bar">
             <span>
-              Showing <strong>{filtered.length.toLocaleString()}</strong> matches
+              {t("collection.showing")}{" "}
+              <strong>{filtered.length.toLocaleString()}</strong>{" "}
+              {t("collection.matches")}
             </span>
             <span>
-              Page <strong>{safePage}</strong> / {pageCount}
+              {t("collection.page")} <strong>{safePage}</strong> / {pageCount}
             </span>
           </div>
 
@@ -167,7 +173,7 @@ export function CollectionPage() {
                 disabled={safePage <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
-                Prev
+                {t("collection.prev")}
               </button>
               {Array.from({ length: Math.min(pageCount, 7) }, (_, i) => {
                 let n = i + 1;
@@ -191,7 +197,7 @@ export function CollectionPage() {
                 disabled={safePage >= pageCount}
                 onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
               >
-                Next
+                {t("collection.next")}
               </button>
             </div>
           ) : null}

@@ -3,12 +3,14 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { migrateGuestJournalIfNeeded } from "../lib/journal";
 import { Footer } from "../components/Footer";
+import { useI18n } from "../i18n";
 
 export function LoginPage() {
   const { login, isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const next = params.get("next") || "/journal";
+  const { t } = useI18n();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,11 +40,8 @@ export function LoginPage() {
       <section className="section auth-section">
         <div className="container auth-shell">
           <div className="section-head">
-            <h2>Log in</h2>
-            <p>
-              Sign in with your email and password. You stay logged in on this
-              device until you log out.
-            </p>
+            <h2>{t("auth.loginTitle")}</h2>
+            <p>{t("auth.loginSub")}</p>
           </div>
 
           <form className="auth-form" onSubmit={onSubmit} noValidate>
@@ -53,7 +52,7 @@ export function LoginPage() {
             ) : null}
 
             <div className="field">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">{t("auth.email")}</label>
               <input
                 id="email"
                 type="email"
@@ -65,7 +64,7 @@ export function LoginPage() {
             </div>
 
             <div className="field">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t("auth.password")}</label>
               <input
                 id="password"
                 type="password"
@@ -77,14 +76,14 @@ export function LoginPage() {
             </div>
 
             <button className="btn btn-primary" type="submit" disabled={busy}>
-              {busy ? "Signing in…" : "Log in"}
+              {busy ? t("auth.signingIn") : t("auth.loginBtn")}
             </button>
           </form>
 
           <p className="auth-switch">
-            New here?{" "}
+            {t("auth.newHere")}{" "}
             <Link to={`/register?next=${encodeURIComponent(next)}`}>
-              Create an account
+              {t("auth.createLink")}
             </Link>
           </p>
         </div>

@@ -1,11 +1,13 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useJournal } from "../hooks/useJournal";
 import { useAuth } from "../hooks/useAuth";
+import { LanguageSwitcher, useI18n } from "../i18n";
 
 export function Header() {
   const { counts } = useJournal();
   const { user, isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <header className="site-header">
@@ -14,17 +16,20 @@ export function Header() {
           <span className="brand-mark" aria-hidden="true" />
           Ludus Atlas
         </NavLink>
-        <nav className="nav" aria-label="Primary">
+        <nav className="nav" aria-label={t("nav.primary")}>
           <NavLink to="/" end>
-            Home
+            {t("nav.home")}
           </NavLink>
-          <NavLink to="/collection">Collection</NavLink>
-          <NavLink to="/guide">Guide</NavLink>
-          <NavLink to="/preferences">Preferences</NavLink>
+          <NavLink to="/collection">{t("nav.collection")}</NavLink>
+          <NavLink to="/guide">{t("nav.guide")}</NavLink>
+          <NavLink to="/preferences">{t("nav.preferences")}</NavLink>
           <NavLink to="/journal">
-            Journal
+            {t("nav.journal")}
             {isLoggedIn && counts.total > 0 ? (
-              <span className="nav-count" aria-label={`${counts.total} in journal`}>
+              <span
+                className="nav-count"
+                aria-label={t("nav.journalCount", { n: counts.total })}
+              >
                 {counts.total}
               </span>
             ) : null}
@@ -42,12 +47,13 @@ export function Header() {
                   navigate("/");
                 }}
               >
-                Log out
+                {t("nav.logout")}
               </button>
             </div>
           ) : (
-            <NavLink to="/login">Log in</NavLink>
+            <NavLink to="/login">{t("nav.login")}</NavLink>
           )}
+          <LanguageSwitcher />
         </nav>
       </div>
     </header>
