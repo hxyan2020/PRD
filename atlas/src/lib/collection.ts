@@ -14,7 +14,7 @@ let baseCache: CollectionData | null = null;
 
 async function loadBase(): Promise<CollectionData> {
   if (baseCache) return baseCache;
-  const res = await fetch("/data/collection.json");
+  const res = await fetch(`${import.meta.env.BASE_URL}data/collection.json`);
   if (!res.ok) throw new Error(`Failed to load collection (${res.status})`);
   baseCache = (await res.json()) as CollectionData;
   return baseCache;

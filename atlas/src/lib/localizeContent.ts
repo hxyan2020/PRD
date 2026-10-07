@@ -51,7 +51,7 @@ export async function loadContentI18n(): Promise<ContentI18nCatalog> {
   if (catalogCache) return catalogCache;
   if (loadPromise) return loadPromise;
   loadPromise = (async () => {
-    const res = await fetch("/data/content-i18n.json");
+    const res = await fetch(`${import.meta.env.BASE_URL}data/content-i18n.json`);
     if (!res.ok) {
       throw new Error(`Failed to load content-i18n (${res.status})`);
     }
