@@ -266,5 +266,7 @@
   "footer.entries": "{n} færslur í þessari útgáfu.",
   "lang.modern": "Nútímamál",
   "lang.ancient": "Fornmál ok klassísk",
-  "lang.choose": "Veldu tungu"
+  "lang.choose": "Veldu tungu",
+  "nav.openMenu": "Opna valmynd",
+  "nav.closeMenu": "Loka valmynd"
 }

@@ -266,5 +266,7 @@
   "footer.entries": "{n} items in deze editie.",
   "lang.modern": "Moderne talen",
   "lang.ancient": "Oud & klassiek",
-  "lang.choose": "Kies taal"
+  "lang.choose": "Kies taal",
+  "nav.openMenu": "Menu openen",
+  "nav.closeMenu": "Menu sluiten"
 }

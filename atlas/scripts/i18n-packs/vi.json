@@ -266,5 +266,7 @@
   "footer.entries": "{n} mục trong ấn bản này.",
   "lang.modern": "Ngôn ngữ hiện đại",
   "lang.ancient": "Cổ đại & cổ điển",
-  "lang.choose": "Chọn ngôn ngữ"
+  "lang.choose": "Chọn ngôn ngữ",
+  "nav.openMenu": "Mở menu",
+  "nav.closeMenu": "Đóng menu"
 }

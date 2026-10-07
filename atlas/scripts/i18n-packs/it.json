@@ -266,5 +266,7 @@
   "footer.entries": "{n} voci in questa edizione.",
   "lang.modern": "Lingue moderne",
   "lang.ancient": "Antiche e classiche",
-  "lang.choose": "Scegli la lingua"
+  "lang.choose": "Scegli la lingua",
+  "nav.openMenu": "Apri menu",
+  "nav.closeMenu": "Chiudi menu"
 }

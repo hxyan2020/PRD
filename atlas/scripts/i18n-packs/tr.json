@@ -266,5 +266,7 @@
   "footer.entries": "Bu baskıda {n} kayıt.",
   "lang.modern": "Modern diller",
   "lang.ancient": "Antik ve klasik",
-  "lang.choose": "Dil seçin"
+  "lang.choose": "Dil seçin",
+  "nav.openMenu": "Menüyü aç",
+  "nav.closeMenu": "Menüyü kapat"
 }

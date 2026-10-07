@@ -266,5 +266,7 @@
   "footer.entries": "इस संस्करण में {n} प्रविष्टियाँ।",
   "lang.modern": "आधुनिक भाषाएँ",
   "lang.ancient": "प्राचीन और शास्त्रीय",
-  "lang.choose": "भाषा चुनें"
+  "lang.choose": "भाषा चुनें",
+  "nav.openMenu": "मेनू खोलें",
+  "nav.closeMenu": "मेनू बंद करें"
 }

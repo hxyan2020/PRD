@@ -266,5 +266,7 @@
   "footer.entries": "{n} εγγραφές σε αυτή την έκδοση.",
   "lang.modern": "Νεότερες γλώσσες",
   "lang.ancient": "Αρχαίες & κλασικές",
-  "lang.choose": "Επιλογή γλώσσας"
+  "lang.choose": "Επιλογή γλώσσας",
+  "nav.openMenu": "Άνοιγμα μενού",
+  "nav.closeMenu": "Κλείσιμο μενού"
 }

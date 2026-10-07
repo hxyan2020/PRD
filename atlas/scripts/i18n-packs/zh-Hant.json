@@ -266,5 +266,7 @@
   "footer.entries": "本版共 {n} 條。",
   "lang.modern": "現代語言",
   "lang.ancient": "古代與古典語言",
-  "lang.choose": "選擇語言"
+  "lang.choose": "選擇語言",
+  "nav.openMenu": "開啟選單",
+  "nav.closeMenu": "關閉選單"
 }

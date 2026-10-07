@@ -266,5 +266,7 @@
   "footer.entries": "{n} รายการในฉบับนี้",
   "lang.modern": "ภาษาสมัยใหม่",
   "lang.ancient": "โบราณและคลาสสิก",
-  "lang.choose": "เลือกภาษา"
+  "lang.choose": "เลือกภาษา",
+  "nav.openMenu": "เปิดเมนู",
+  "nav.closeMenu": "ปิดเมนู"
 }

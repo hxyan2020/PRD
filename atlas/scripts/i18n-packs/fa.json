@@ -266,5 +266,7 @@
   "footer.entries": "{n} مدخل در این ویرایش.",
   "lang.modern": "زبان‌های مدرن",
   "lang.ancient": "باستان و کلاسیک",
-  "lang.choose": "انتخاب زبان"
+  "lang.choose": "انتخاب زبان",
+  "nav.openMenu": "باز کردن منو",
+  "nav.closeMenu": "بستن منو"
 }

@@ -271,7 +271,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} entries in this edition.",
     "lang.modern": "Modern languages",
     "lang.ancient": "Ancient & classical",
-    "lang.choose": "Choose language (lišānu)"
+    "lang.choose": "Choose language (lišānu)",
+    "nav.openMenu": "Open menu (petû)",
+    "nav.closeMenu": "Close menu (edēlu)"
   },
   "ar": {
     "nav.home": "الرئيسية",
@@ -541,7 +543,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} مدخلات في هذه الطبعة.",
     "lang.modern": "لغات حديثة",
     "lang.ancient": "قديمة وكلاسيكية",
-    "lang.choose": "اختر اللغة"
+    "lang.choose": "اختر اللغة",
+    "nav.openMenu": "فتح القائمة",
+    "nav.closeMenu": "إغلاق القائمة"
   },
   "bn": {
     "nav.home": "হোম",
@@ -811,7 +815,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "এই সংস্করণে {n}টি এন্ট্রি।",
     "lang.modern": "আধুনিক ভাষা",
     "lang.ancient": "প্রাচীন ও ধ্রুপদী",
-    "lang.choose": "ভাষা বেছে নিন"
+    "lang.choose": "ভাষা বেছে নিন",
+    "nav.openMenu": "মেনু খুলুন",
+    "nav.closeMenu": "মেনু বন্ধ করুন"
   },
   "de": {
     "nav.home": "Start",
@@ -1081,7 +1087,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} Einträge in dieser Ausgabe.",
     "lang.modern": "Moderne Sprachen",
     "lang.ancient": "Antike & klassische",
-    "lang.choose": "Sprache wählen"
+    "lang.choose": "Sprache wählen",
+    "nav.openMenu": "Menü öffnen",
+    "nav.closeMenu": "Menü schließen"
   },
   "egy": {
     "nav.home": "pr",
@@ -1351,7 +1359,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} entries in this edition.",
     "lang.modern": "Modern languages",
     "lang.ancient": "Ancient & classical",
-    "lang.choose": "Choose language (stp mdw)"
+    "lang.choose": "Choose language (stp mdw)",
+    "nav.openMenu": "Open menu (wn)",
+    "nav.closeMenu": "Close menu (ḫtm)"
   },
   "el": {
     "nav.home": "Αρχική",
@@ -1621,7 +1631,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} εγγραφές σε αυτή την έκδοση.",
     "lang.modern": "Νεότερες γλώσσες",
     "lang.ancient": "Αρχαίες & κλασικές",
-    "lang.choose": "Επιλογή γλώσσας"
+    "lang.choose": "Επιλογή γλώσσας",
+    "nav.openMenu": "Άνοιγμα μενού",
+    "nav.closeMenu": "Κλείσιμο μενού"
   },
   "es": {
     "nav.home": "Inicio",
@@ -1891,7 +1903,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} entradas en esta edición.",
     "lang.modern": "Idiomas modernos",
     "lang.ancient": "Antiguos y clásicos",
-    "lang.choose": "Elegir idioma"
+    "lang.choose": "Elegir idioma",
+    "nav.openMenu": "Abrir menú",
+    "nav.closeMenu": "Cerrar menú"
   },
   "fa": {
     "nav.home": "خانه",
@@ -2161,7 +2175,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} مدخل در این ویرایش.",
     "lang.modern": "زبان‌های مدرن",
     "lang.ancient": "باستان و کلاسیک",
-    "lang.choose": "انتخاب زبان"
+    "lang.choose": "انتخاب زبان",
+    "nav.openMenu": "باز کردن منو",
+    "nav.closeMenu": "بستن منو"
   },
   "fr": {
     "nav.home": "Accueil",
@@ -2431,7 +2447,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} entrées dans cette édition.",
     "lang.modern": "Langues modernes",
     "lang.ancient": "Anciennes et classiques",
-    "lang.choose": "Choisir la langue"
+    "lang.choose": "Choisir la langue",
+    "nav.openMenu": "Ouvrir le menu",
+    "nav.closeMenu": "Fermer le menu"
   },
   "grc": {
     "nav.home": "Οἶκος",
@@ -2701,7 +2719,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} ἐγγραφαὶ ἐν τῇδε τῇ ἐκδόσει.",
     "lang.modern": "Νεώτεραι γλῶτται",
     "lang.ancient": "Ἀρχαῖαι καὶ κλασικαί",
-    "lang.choose": "Γλῶτταν αἱροῦ"
+    "lang.choose": "Γλῶτταν αἱροῦ",
+    "nav.openMenu": "Ἄνοιξον τὸ μενοῦ",
+    "nav.closeMenu": "Κλεῖσον τὸ μενοῦ"
   },
   "he": {
     "nav.home": "בית",
@@ -2971,7 +2991,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} רשומות במהדורה זו.",
     "lang.modern": "שפות מודרניות",
     "lang.ancient": "עתיקות וקלאסיות",
-    "lang.choose": "בחירת שפה"
+    "lang.choose": "בחירת שפה",
+    "nav.openMenu": "פתח תפריט",
+    "nav.closeMenu": "סגור תפריט"
   },
   "hi": {
     "nav.home": "होम",
@@ -3241,7 +3263,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "इस संस्करण में {n} प्रविष्टियाँ।",
     "lang.modern": "आधुनिक भाषाएँ",
     "lang.ancient": "प्राचीन और शास्त्रीय",
-    "lang.choose": "भाषा चुनें"
+    "lang.choose": "भाषा चुनें",
+    "nav.openMenu": "मेनू खोलें",
+    "nav.closeMenu": "मेनू बंद करें"
   },
   "id": {
     "nav.home": "Beranda",
@@ -3511,7 +3535,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} entri dalam edisi ini.",
     "lang.modern": "Bahasa modern",
     "lang.ancient": "Kuno & klasik",
-    "lang.choose": "Pilih bahasa"
+    "lang.choose": "Pilih bahasa",
+    "nav.openMenu": "Buka menu",
+    "nav.closeMenu": "Tutup menu"
   },
   "it": {
     "nav.home": "Home",
@@ -3781,7 +3807,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} voci in questa edizione.",
     "lang.modern": "Lingue moderne",
     "lang.ancient": "Antiche e classiche",
-    "lang.choose": "Scegli la lingua"
+    "lang.choose": "Scegli la lingua",
+    "nav.openMenu": "Apri menu",
+    "nav.closeMenu": "Chiudi menu"
   },
   "ja": {
     "nav.home": "ホーム",
@@ -4051,7 +4079,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "本版に {n} 件。",
     "lang.modern": "現代語",
     "lang.ancient": "古代・古典語",
-    "lang.choose": "言語を選択"
+    "lang.choose": "言語を選択",
+    "nav.openMenu": "メニューを開く",
+    "nav.closeMenu": "メニューを閉じる"
   },
   "ko": {
     "nav.home": "홈",
@@ -4321,7 +4351,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "이 판에 {n}개 항목.",
     "lang.modern": "현대 언어",
     "lang.ancient": "고대·고전 언어",
-    "lang.choose": "언어 선택"
+    "lang.choose": "언어 선택",
+    "nav.openMenu": "메뉴 열기",
+    "nav.closeMenu": "메뉴 닫기"
   },
   "la": {
     "nav.home": "Domus",
@@ -4591,7 +4623,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} inscriptiones in hac editione.",
     "lang.modern": "Linguae recentiores",
     "lang.ancient": "Antiquae et classicae",
-    "lang.choose": "Linguam elige"
+    "lang.choose": "Linguam elige",
+    "nav.openMenu": "Aperi menu",
+    "nav.closeMenu": "Claude menu"
   },
   "nl": {
     "nav.home": "Home",
@@ -4861,7 +4895,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} items in deze editie.",
     "lang.modern": "Moderne talen",
     "lang.ancient": "Oud & klassiek",
-    "lang.choose": "Kies taal"
+    "lang.choose": "Kies taal",
+    "nav.openMenu": "Menu openen",
+    "nav.closeMenu": "Menu sluiten"
   },
   "non": {
     "nav.home": "Heim",
@@ -5131,7 +5167,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} færslur í þessari útgáfu.",
     "lang.modern": "Nútímamál",
     "lang.ancient": "Fornmál ok klassísk",
-    "lang.choose": "Veldu tungu"
+    "lang.choose": "Veldu tungu",
+    "nav.openMenu": "Opna valmynd",
+    "nav.closeMenu": "Loka valmynd"
   },
   "pl": {
     "nav.home": "Start",
@@ -5401,7 +5439,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} pozycji w tym wydaniu.",
     "lang.modern": "Języki nowożytne",
     "lang.ancient": "Starożytne i klasyczne",
-    "lang.choose": "Wybierz język"
+    "lang.choose": "Wybierz język",
+    "nav.openMenu": "Otwórz menu",
+    "nav.closeMenu": "Zamknij menu"
   },
   "pt": {
     "nav.home": "Início",
@@ -5671,7 +5711,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} entradas nesta edição.",
     "lang.modern": "Idiomas modernos",
     "lang.ancient": "Antigos e clássicos",
-    "lang.choose": "Escolher idioma"
+    "lang.choose": "Escolher idioma",
+    "nav.openMenu": "Abrir menu",
+    "nav.closeMenu": "Fechar menu"
   },
   "ru": {
     "nav.home": "Главная",
@@ -5941,7 +5983,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} записей в этом издании.",
     "lang.modern": "Современные языки",
     "lang.ancient": "Древние и классические",
-    "lang.choose": "Выберите язык"
+    "lang.choose": "Выберите язык",
+    "nav.openMenu": "Открыть меню",
+    "nav.closeMenu": "Закрыть меню"
   },
   "sa": {
     "nav.home": "गृहम्",
@@ -6211,7 +6255,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "अस्मिन् संस्करणे {n} प्रविष्टयः।",
     "lang.modern": "आधुनिकाः भाषाः",
     "lang.ancient": "प्राचीनाः शास्त्रीयाः च",
-    "lang.choose": "भाषां वृणोतु"
+    "lang.choose": "भाषां वृणोतु",
+    "nav.openMenu": "मेनू उद्घाटयतु",
+    "nav.closeMenu": "मेनू पिदधातु"
   },
   "sv": {
     "nav.home": "Hem",
@@ -6481,7 +6527,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} poster i denna upplaga.",
     "lang.modern": "Moderna språk",
     "lang.ancient": "Antika & klassiska",
-    "lang.choose": "Välj språk"
+    "lang.choose": "Välj språk",
+    "nav.openMenu": "Öppna meny",
+    "nav.closeMenu": "Stäng meny"
   },
   "sw": {
     "nav.home": "Nyumbani",
@@ -6751,7 +6799,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "Maingizo {n} katika toleo hili.",
     "lang.modern": "Lugha za kisasa",
     "lang.ancient": "Za kale na klasiki",
-    "lang.choose": "Chagua lugha"
+    "lang.choose": "Chagua lugha",
+    "nav.openMenu": "Fungua menyu",
+    "nav.closeMenu": "Funga menyu"
   },
   "th": {
     "nav.home": "หน้าแรก",
@@ -7021,7 +7071,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} รายการในฉบับนี้",
     "lang.modern": "ภาษาสมัยใหม่",
     "lang.ancient": "โบราณและคลาสสิก",
-    "lang.choose": "เลือกภาษา"
+    "lang.choose": "เลือกภาษา",
+    "nav.openMenu": "เปิดเมนู",
+    "nav.closeMenu": "ปิดเมนู"
   },
   "tr": {
     "nav.home": "Ana sayfa",
@@ -7291,7 +7343,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "Bu baskıda {n} kayıt.",
     "lang.modern": "Modern diller",
     "lang.ancient": "Antik ve klasik",
-    "lang.choose": "Dil seçin"
+    "lang.choose": "Dil seçin",
+    "nav.openMenu": "Menüyü aç",
+    "nav.closeMenu": "Menüyü kapat"
   },
   "uk": {
     "nav.home": "Головна",
@@ -7561,7 +7615,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} записів у цьому виданні.",
     "lang.modern": "Сучасні мови",
     "lang.ancient": "Давні й класичні",
-    "lang.choose": "Оберіть мову"
+    "lang.choose": "Оберіть мову",
+    "nav.openMenu": "Відкрити меню",
+    "nav.closeMenu": "Закрити меню"
   },
   "vi": {
     "nav.home": "Trang chủ",
@@ -7831,7 +7887,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "{n} mục trong ấn bản này.",
     "lang.modern": "Ngôn ngữ hiện đại",
     "lang.ancient": "Cổ đại & cổ điển",
-    "lang.choose": "Chọn ngôn ngữ"
+    "lang.choose": "Chọn ngôn ngữ",
+    "nav.openMenu": "Mở menu",
+    "nav.closeMenu": "Đóng menu"
   },
   "zh-Hans": {
     "nav.home": "首页",
@@ -8101,7 +8159,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "本版共 {n} 条。",
     "lang.modern": "现代语言",
     "lang.ancient": "古代与古典语言",
-    "lang.choose": "选择语言"
+    "lang.choose": "选择语言",
+    "nav.openMenu": "打开菜单",
+    "nav.closeMenu": "关闭菜单"
   },
   "zh-Hant": {
     "nav.home": "首頁",
@@ -8371,7 +8431,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "footer.entries": "本版共 {n} 條。",
     "lang.modern": "現代語言",
     "lang.ancient": "古代與古典語言",
-    "lang.choose": "選擇語言"
+    "lang.choose": "選擇語言",
+    "nav.openMenu": "開啟選單",
+    "nav.closeMenu": "關閉選單"
   }
 };
 

@@ -266,5 +266,7 @@
   "footer.entries": "{n} poster i denna upplaga.",
   "lang.modern": "Moderna språk",
   "lang.ancient": "Antika & klassiska",
-  "lang.choose": "Välj språk"
+  "lang.choose": "Välj språk",
+  "nav.openMenu": "Öppna meny",
+  "nav.closeMenu": "Stäng meny"
 }

@@ -266,5 +266,7 @@
   "footer.entries": "अस्मिन् संस्करणे {n} प्रविष्टयः।",
   "lang.modern": "आधुनिकाः भाषाः",
   "lang.ancient": "प्राचीनाः शास्त्रीयाः च",
-  "lang.choose": "भाषां वृणोतु"
+  "lang.choose": "भाषां वृणोतु",
+  "nav.openMenu": "मेनू उद्घाटयतु",
+  "nav.closeMenu": "मेनू पिदधातु"
 }

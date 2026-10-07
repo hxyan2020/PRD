@@ -266,5 +266,7 @@
   "footer.entries": "{n} Einträge in dieser Ausgabe.",
   "lang.modern": "Moderne Sprachen",
   "lang.ancient": "Antike & klassische",
-  "lang.choose": "Sprache wählen"
+  "lang.choose": "Sprache wählen",
+  "nav.openMenu": "Menü öffnen",
+  "nav.closeMenu": "Menü schließen"
 }

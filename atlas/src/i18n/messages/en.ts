@@ -9,6 +9,8 @@ export const en = {
   "nav.primary": "Primary",
   "nav.language": "Language",
   "nav.journalCount": "{n} in journal",
+  "nav.openMenu": "Open menu",
+  "nav.closeMenu": "Close menu",
 
   "home.docTitle": "Ludus Atlas — Historical toys & games",
   "home.headline": "Toys and games from every civilization.",

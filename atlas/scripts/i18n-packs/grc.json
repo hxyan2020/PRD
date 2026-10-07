@@ -266,5 +266,7 @@
   "footer.entries": "{n} ἐγγραφαὶ ἐν τῇδε τῇ ἐκδόσει.",
   "lang.modern": "Νεώτεραι γλῶτται",
   "lang.ancient": "Ἀρχαῖαι καὶ κλασικαί",
-  "lang.choose": "Γλῶτταν αἱροῦ"
+  "lang.choose": "Γλῶτταν αἱροῦ",
+  "nav.openMenu": "Ἄνοιξον τὸ μενοῦ",
+  "nav.closeMenu": "Κλεῖσον τὸ μενοῦ"
 }

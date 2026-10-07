@@ -266,5 +266,7 @@
   "footer.entries": "이 판에 {n}개 항목.",
   "lang.modern": "현대 언어",
   "lang.ancient": "고대·고전 언어",
-  "lang.choose": "언어 선택"
+  "lang.choose": "언어 선택",
+  "nav.openMenu": "메뉴 열기",
+  "nav.closeMenu": "메뉴 닫기"
 }

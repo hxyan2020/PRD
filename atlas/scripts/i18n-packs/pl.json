@@ -266,5 +266,7 @@
   "footer.entries": "{n} pozycji w tym wydaniu.",
   "lang.modern": "Języki nowożytne",
   "lang.ancient": "Starożytne i klasyczne",
-  "lang.choose": "Wybierz język"
+  "lang.choose": "Wybierz język",
+  "nav.openMenu": "Otwórz menu",
+  "nav.closeMenu": "Zamknij menu"
 }

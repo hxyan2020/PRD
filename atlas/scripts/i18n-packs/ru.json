@@ -266,5 +266,7 @@
   "footer.entries": "{n} записей в этом издании.",
   "lang.modern": "Современные языки",
   "lang.ancient": "Древние и классические",
-  "lang.choose": "Выберите язык"
+  "lang.choose": "Выберите язык",
+  "nav.openMenu": "Открыть меню",
+  "nav.closeMenu": "Закрыть меню"
 }

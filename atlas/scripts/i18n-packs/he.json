@@ -266,5 +266,7 @@
   "footer.entries": "{n} רשומות במהדורה זו.",
   "lang.modern": "שפות מודרניות",
   "lang.ancient": "עתיקות וקלאסיות",
-  "lang.choose": "בחירת שפה"
+  "lang.choose": "בחירת שפה",
+  "nav.openMenu": "פתח תפריט",
+  "nav.closeMenu": "סגור תפריט"
 }

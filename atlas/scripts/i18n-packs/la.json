@@ -266,5 +266,7 @@
   "footer.entries": "{n} inscriptiones in hac editione.",
   "lang.modern": "Linguae recentiores",
   "lang.ancient": "Antiquae et classicae",
-  "lang.choose": "Linguam elige"
+  "lang.choose": "Linguam elige",
+  "nav.openMenu": "Aperi menu",
+  "nav.closeMenu": "Claude menu"
 }

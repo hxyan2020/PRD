@@ -266,5 +266,7 @@
   "footer.entries": "{n} مدخلات في هذه الطبعة.",
   "lang.modern": "لغات حديثة",
   "lang.ancient": "قديمة وكلاسيكية",
-  "lang.choose": "اختر اللغة"
+  "lang.choose": "اختر اللغة",
+  "nav.openMenu": "فتح القائمة",
+  "nav.closeMenu": "إغلاق القائمة"
 }

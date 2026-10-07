@@ -266,5 +266,7 @@
   "footer.entries": "{n} entries in this edition.",
   "lang.modern": "Modern languages",
   "lang.ancient": "Ancient & classical",
-  "lang.choose": "Choose language (stp mdw)"
+  "lang.choose": "Choose language (stp mdw)",
+  "nav.openMenu": "Open menu (wn)",
+  "nav.closeMenu": "Close menu (ḫtm)"
 }

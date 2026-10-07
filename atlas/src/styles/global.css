@@ -116,6 +116,75 @@ select {
   gap: 1rem;
   width: min(100% - 2rem, var(--max));
   margin-inline: auto;
+  position: relative;
+}
+
+.nav-toggle {
+  display: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--mist);
+  cursor: pointer;
+  place-items: center;
+  padding: 0;
+  margin-inline-start: auto;
+  z-index: 60;
+}
+
+.nav-lang {
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-toggle-bars,
+.nav-toggle-bars::before,
+.nav-toggle-bars::after {
+  display: block;
+  width: 1.15rem;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle-bars {
+  position: relative;
+}
+
+.nav-toggle-bars::before,
+.nav-toggle-bars::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+}
+
+.nav-toggle-bars::before {
+  top: -6px;
+}
+
+.nav-toggle-bars::after {
+  top: 6px;
+}
+
+.site-header.is-open .nav-toggle-bars {
+  background: transparent;
+}
+
+.site-header.is-open .nav-toggle-bars::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.site-header.is-open .nav-toggle-bars::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+.nav-backdrop {
+  display: none;
 }
 
 .brand {
@@ -859,28 +928,305 @@ select {
 }
 
 @media (max-width: 960px) {
+  :root {
+    --header-h: 64px;
+  }
+
+  body.nav-open {
+    overflow: hidden;
+  }
+
   .site-header {
-    height: auto;
-    min-height: var(--header-h);
+    height: var(--header-h);
   }
 
   .site-header .inner {
-    flex-wrap: wrap;
-    padding-block: 0.65rem;
+    flex-wrap: nowrap;
+    min-height: var(--header-h);
+  }
+
+  .brand {
+    font-size: 1.15rem;
+    z-index: 60;
+  }
+
+  .brand-mark {
+    width: 24px;
+    height: 24px;
+  }
+
+  .nav-toggle {
+    display: inline-grid;
   }
 
   .nav {
-    flex-wrap: wrap;
-    gap: 0.75rem 1rem;
-    justify-content: flex-end;
+    position: fixed;
+    inset: var(--header-h) 0 auto 0;
+    z-index: 55;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.1rem;
+    padding: 0.85rem 1rem 1.25rem;
+    background: rgba(8, 24, 27, 0.97);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    max-height: calc(100dvh - var(--header-h));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav.is-open {
+    display: flex;
+  }
+
+  .nav a,
+  .nav-logout {
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 0.35rem;
+    font-size: 1.05rem;
+  }
+
+  .nav a.active {
+    box-shadow: none;
+    color: var(--brass);
+  }
+
+  .nav-account {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
+    margin: 0.35rem 0 0;
   }
 
   .nav-email {
-    display: none;
+    display: block;
+    max-width: none;
+    padding: 0.35rem 0.15rem;
+  }
+
+  .nav-logout {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .nav-lang {
+    display: block;
+    width: 100%;
+    margin-top: 0.55rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .nav-lang .lang-switcher {
+    width: 100%;
+    margin: 0;
+  }
+
+  .nav-lang .lang-select {
+    flex: 1;
+    max-width: none;
+    width: 100%;
+    min-height: 2.75rem;
+    font-size: 0.95rem;
+  }
+
+  .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    z-index: 40;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.45);
+    cursor: pointer;
   }
 
   .lang-select {
     max-width: 9.5rem;
+  }
+
+  .container {
+    width: min(100% - 1.25rem, var(--max));
+  }
+
+  .hero {
+    min-height: calc(100dvh - var(--header-h));
+  }
+
+  .hero-content {
+    padding: 2.25rem 0 2.75rem;
+    max-width: none;
+  }
+
+  .hero-brand {
+    font-size: clamp(2.4rem, 14vw, 3.6rem);
+  }
+
+  .hero h1 {
+    font-size: clamp(1.2rem, 5.5vw, 1.55rem);
+    max-width: none;
+  }
+
+  .hero p {
+    font-size: 0.98rem;
+    max-width: none;
+  }
+
+  .cta-row {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 1.35rem;
+  }
+
+  .cta-row .btn {
+    width: 100%;
+    min-height: 2.9rem;
+  }
+
+  .section {
+    padding: 2.75rem 0;
+  }
+
+  .section-head {
+    margin-bottom: 1.35rem;
+  }
+
+  .filters .btn {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    min-height: 2.75rem;
+    font-size: 1rem;
+  }
+
+  .meta-bar {
+    gap: 0.45rem 1rem;
+    font-size: 0.88rem;
+  }
+
+  .pagination {
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pagination button {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+  }
+
+  .detail-hero .container {
+    padding: 2rem 0 1.75rem;
+  }
+
+  .detail-facts {
+    gap: 0.45rem 1rem;
+    font-size: 0.92rem;
+  }
+
+  .detail-layout {
+    gap: 1.5rem;
+    padding: 1.75rem 0 3rem;
+  }
+
+  .detail-journal {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .journal-actions {
+    width: 100%;
+  }
+
+  .journal-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    min-height: 2.75rem;
+  }
+
+  .journal-link {
+    text-align: center;
+  }
+
+  .buy-list a {
+    padding: 0.85rem;
+  }
+
+  .platform-logo {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .chat-page,
+  .prefs-page,
+  .auth-section {
+    padding-top: 1.5rem;
+  }
+
+  .chat-messages {
+    min-height: 42vh;
+    max-height: min(58dvh, 520px);
+  }
+
+  .chat-quick {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 0.2rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-composer .btn {
+    min-height: 2.9rem;
+  }
+
+  .prefs-results-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .prefs-results-head .btn,
+  .prefs-hit-actions .btn {
+    width: 100%;
+    min-height: 2.75rem;
+  }
+
+  .prefs-hit {
+    grid-template-columns: 1fr;
+  }
+
+  .journal-item-main {
+    grid-template-columns: 72px 1fr;
+    gap: 0.75rem;
+  }
+
+  .journal-item-actions {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .journal-item-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand {
+    letter-spacing: 0;
+  }
+
+  .lang-flag {
+    display: none;
   }
 }
 

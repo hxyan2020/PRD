@@ -266,5 +266,7 @@
   "footer.entries": "{n} entries in this edition.",
   "lang.modern": "Modern languages",
   "lang.ancient": "Ancient & classical",
-  "lang.choose": "Choose language (lišānu)"
+  "lang.choose": "Choose language (lišānu)",
+  "nav.openMenu": "Open menu (petû)",
+  "nav.closeMenu": "Close menu (edēlu)"
 }

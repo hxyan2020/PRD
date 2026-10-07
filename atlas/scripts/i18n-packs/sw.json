@@ -266,5 +266,7 @@
   "footer.entries": "Maingizo {n} katika toleo hili.",
   "lang.modern": "Lugha za kisasa",
   "lang.ancient": "Za kale na klasiki",
-  "lang.choose": "Chagua lugha"
+  "lang.choose": "Chagua lugha",
+  "nav.openMenu": "Fungua menyu",
+  "nav.closeMenu": "Funga menyu"
 }

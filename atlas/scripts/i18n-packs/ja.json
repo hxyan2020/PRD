@@ -266,5 +266,7 @@
   "footer.entries": "本版に {n} 件。",
   "lang.modern": "現代語",
   "lang.ancient": "古代・古典語",
-  "lang.choose": "言語を選択"
+  "lang.choose": "言語を選択",
+  "nav.openMenu": "メニューを開く",
+  "nav.closeMenu": "メニューを閉じる"
 }
