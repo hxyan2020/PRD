@@ -44,6 +44,9 @@ export function DayLessonPage() {
               Next day
             </Link>
           ) : null}
+          <Link className="btn ghost" to="/tracker">
+            Tracker ({progress.completedCount}/30)
+          </Link>
         </div>
       </header>
 

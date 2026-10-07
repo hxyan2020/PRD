@@ -21,8 +21,8 @@ export function Home() {
             <Link className="btn primary" to={`/day/${progress.nextDay}`}>
               {progress.completedCount === 0 ? 'Start Day 1' : `Continue Day ${progress.nextDay}`}
             </Link>
-            <Link className="btn ghost" to="/curriculum">
-              View full curriculum
+            <Link className="btn ghost" to="/tracker">
+              Open progress tracker
             </Link>
           </div>
           <ProgressBar

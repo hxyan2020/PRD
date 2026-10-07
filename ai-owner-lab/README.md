@@ -31,5 +31,6 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | Use cases | Support, internal RAG, claims, on-call agent, sales research, learning coach |
 | Ops playbook | Incident patterns + maintenance calendar |
 | Career | Skills portfolio + personal tech radar |
+| Tracker | Mark days complete, ring + week progress, 30-day board |
 
-Progress and notes are stored in `localStorage` in your browser.
+Progress and notes are stored in `localStorage` in your browser. Open **Tracker** in the nav (shows `n/30`) to toggle any day and see overall progress.

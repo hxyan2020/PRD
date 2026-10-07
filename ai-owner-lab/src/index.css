@@ -155,6 +155,9 @@ textarea {
 }
 
 .nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--ink-soft);
@@ -167,6 +170,15 @@ textarea {
 .nav-link.active {
   color: var(--ink);
   border-color: var(--teal);
+}
+
+.nav-progress {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.35rem;
+  background: rgba(13, 148, 136, 0.14);
+  color: var(--teal-deep);
 }
 
 .main {
@@ -502,10 +514,10 @@ textarea {
 
 .day-row {
   display: grid;
-  grid-template-columns: 5.5rem 1fr auto;
-  gap: 1rem;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
   align-items: center;
-  padding: 0.95rem 1rem;
+  padding: 0.75rem 0.85rem;
   background: rgba(245, 248, 250, 0.7);
   border: 1px solid transparent;
   transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
@@ -519,6 +531,42 @@ textarea {
 
 .day-row.done {
   border-color: rgba(13, 148, 136, 0.45);
+}
+
+.day-check {
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 2px solid rgba(13, 148, 136, 0.45);
+  border-radius: 0.4rem;
+  background: #fff;
+  color: var(--teal-deep);
+  font-weight: 800;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+  padding: 0;
+}
+
+.day-check.checked {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #f5f8fa;
+}
+
+.day-row-link {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.inline-link {
+  color: var(--teal-deep);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .day-num {
@@ -554,6 +602,199 @@ textarea {
 
 .danger-zone {
   margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tracker-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+}
+
+.progress-ring {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.progress-ring-track {
+  stroke: rgba(11, 31, 42, 0.1);
+}
+
+.progress-ring-value {
+  stroke: url(#none);
+  stroke: var(--teal);
+  transition: stroke-dashoffset 0.45s ease;
+}
+
+.progress-ring-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 0.1rem;
+}
+
+.progress-ring-label strong {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.progress-ring-label span {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.tracker-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat {
+  padding: 1rem 1.1rem;
+  background: rgba(245, 248, 250, 0.75);
+  border: 1px solid var(--line);
+}
+
+.stat strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  margin-bottom: 0.2rem;
+}
+
+.stat span {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.next-stat strong {
+  color: var(--teal-deep);
+}
+
+.day-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.board-cell {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.7rem 0.75rem;
+  background: rgba(245, 248, 250, 0.75);
+  border: 1px solid var(--line);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.board-cell.done {
+  border-color: rgba(13, 148, 136, 0.5);
+  background: rgba(13, 148, 136, 0.08);
+}
+
+.board-check {
+  width: 2.2rem;
+  height: 2.2rem;
+  border: none;
+  border-radius: 0.45rem;
+  background: var(--ink);
+  color: #f5f8fa;
+  font-weight: 800;
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.board-cell.done .board-check {
+  background: var(--teal);
+}
+
+.board-check:hover {
+  transform: scale(1.05);
+}
+
+.board-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.board-link strong {
+  font-size: 0.92rem;
+}
+
+.board-link small {
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.week-progress-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.week-progress {
+  padding: 1.1rem 1.15rem;
+  background: rgba(245, 248, 250, 0.75);
+  border: 1px solid var(--line);
+}
+
+.week-progress-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.week-progress h3 {
+  font-family: var(--font-display);
+  margin: 0.15rem 0 0;
+}
+
+.week-count {
+  font-weight: 800;
+  color: var(--teal-deep);
+}
+
+.week-progress .progress-block {
+  max-width: none;
+  margin: 0 0 0.85rem;
+}
+
+.week-toggle-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.week-day-toggle {
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+
+.week-day-toggle.done {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #f5f8fa;
 }
 
 .lesson-header {
@@ -796,6 +1037,10 @@ textarea {
   }
 
   .day-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .day-row-link {
     grid-template-columns: 1fr;
     gap: 0.35rem;
   }
@@ -812,5 +1057,22 @@ textarea {
 
   .hero {
     min-height: auto;
+  }
+
+  .tracker-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tracker-stats,
+  .day-board {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .tracker-stats,
+  .day-board {
+    grid-template-columns: 1fr;
   }
 }

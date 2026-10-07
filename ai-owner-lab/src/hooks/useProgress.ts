@@ -27,6 +27,11 @@ export function useProgress() {
 
   useEffect(() => {
     setState(load())
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === STORAGE_KEY) setState(load())
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
   }, [])
 
   const persist = useCallback((next: ProgressState) => {

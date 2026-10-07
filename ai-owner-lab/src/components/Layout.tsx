@@ -1,8 +1,10 @@
 import { NavLink, Outlet } from 'react-router-dom'
+import { useProgress } from '../hooks/useProgress'
 
 const links = [
   { to: '/', label: 'Home', end: true },
   { to: '/curriculum', label: 'Curriculum' },
+  { to: '/tracker', label: 'Tracker' },
   { to: '/glossary', label: 'Glossary' },
   { to: '/use-cases', label: 'Use cases' },
   { to: '/ops', label: 'Ops playbook' },
@@ -10,6 +12,8 @@ const links = [
 ]
 
 export function Layout() {
+  const { percent, completedCount } = useProgress()
+
   return (
     <div className="shell">
       <div className="atmosphere" aria-hidden="true" />
@@ -30,6 +34,11 @@ export function Layout() {
               className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
             >
               {link.label}
+              {link.to === '/tracker' ? (
+                <span className="nav-progress" aria-label={`${percent} percent complete`}>
+                  {completedCount}/30
+                </span>
+              ) : null}
             </NavLink>
           ))}
         </nav>
