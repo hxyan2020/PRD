@@ -5,27 +5,30 @@ import type { Game } from "../types/game";
 import { Footer } from "../components/Footer";
 import { JournalActions } from "../components/JournalActions";
 import { useI18n } from "../i18n";
+import { loadContentI18n, localizeGame } from "../lib/localizeContent";
 
 export function GameDetailPage() {
   const { slug } = useParams();
   const [game, setGame] = useState<Game | null | undefined>(undefined);
   const [activeImg, setActiveImg] = useState(0);
   const [total, setTotal] = useState<number>();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   useEffect(() => {
     let alive = true;
-    loadCollection().then((data) => {
-      if (!alive) return;
-      setTotal(data.meta.totalGames);
-      const found = data.games.find((g) => g.slug === slug) ?? null;
-      setGame(found);
-      setActiveImg(0);
-    });
+    Promise.all([loadCollection(), loadContentI18n().catch(() => null)]).then(
+      ([data, catalog]) => {
+        if (!alive) return;
+        setTotal(data.meta.totalGames);
+        const found = data.games.find((g) => g.slug === slug) ?? null;
+        setGame(found ? localizeGame(found, locale, catalog) : null);
+        setActiveImg(0);
+      },
+    );
     return () => {
       alive = false;
     };
-  }, [slug]);
+  }, [slug, locale]);
 
   if (game === undefined) {
     return <div className="loading">{t("detail.loading")}</div>;

@@ -1794,7 +1794,8 @@ function toGame(seed, index) {
   const salt = hash(seed.name + seed.originCountry + String(index));
   const slugBase = slugify(seed.name);
   const slug = `${slugBase}-${String(index).padStart(4, "0")}`;
-  return {
+  /** @type {Record<string, unknown>} */
+  const game = {
     id: `game-${String(index).padStart(4, "0")}`,
     slug,
     name: seed.name,
@@ -1811,6 +1812,10 @@ function toGame(seed, index) {
     variations: seed.variations || [],
     tags: [seed.category, seed.originCountry, seed.civilization].map((t) => t.toLowerCase()),
   };
+  if (seed.archetypeKey) {
+    game.archetypeKey = seed.archetypeKey;
+  }
+  return game;
 }
 
 function main() {
@@ -1849,6 +1854,7 @@ function main() {
         description: arch.desc(country, civ),
         howToPlay: arch.steps,
         variations: [],
+        archetypeKey: arch.key,
       });
     }
   }

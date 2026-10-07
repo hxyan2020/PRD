@@ -1,0 +1,459 @@
+{
+  "rattle": {
+    "title": "Infant rattle",
+    "descTemplate": "Rattles are among the oldest sound toys. In {country}, {civ} caregivers have long sealed seeds or pebbles in gourd, clay, basketry, or wood to reward infant grasping and rhythm. The rattle is both sensory toy and, in some places, a protective charm sound.",
+    "steps": [
+      "Offer the rattle within the infant’s reach during supervised play.",
+      "Shake gently to demonstrate cause and effect.",
+      "Allow grasping, mouthing (if material-safe), and dropping.",
+      "Sing or speak in rhythm with the sound.",
+      "Inspect often for cracks or loose parts."
+    ],
+    "req": [
+      "Hollow rattle with seeds, pebbles, or bells",
+      "Safe non-toxic materials"
+    ],
+    "participants": "Alone (infant with caregiver)",
+    "category": "Musical Play"
+  },
+  "whistle_toy": {
+    "title": "Clay or wood whistle toy",
+    "descTemplate": "Small whistles—bird-shaped clay, carved wood, reed—appear in markets and archaeological layers tied to {civ} life in {country}. Children use them as voice-amplifying toys; some double as festival noisemakers. Sound play teaches breath and pitch playfully.",
+    "steps": [
+      "Hold the whistle with air holes unobstructed.",
+      "Blow steadily to find a clear tone.",
+      "Try short calls and longer notes.",
+      "Invent call-and-response with a friend.",
+      "Do not share mouthpieces without cleaning."
+    ],
+    "req": [
+      "Whistle toy",
+      "Breath control",
+      "Open air if loud"
+    ],
+    "participants": "Alone",
+    "category": "Musical Play"
+  },
+  "pull_toy": {
+    "title": "Animal pull toy",
+    "descTemplate": "Wheeled animals and pull-along figures are documented from classical antiquity through village woodcrafts in {country}. {civ} artisans shape horses, birds, or oxen that teach walking toddlers about traction and companionship in motion.",
+    "steps": [
+      "Attach or hold the pull cord.",
+      "Walk forward so the toy follows on wheels or runners.",
+      "Navigate gentle turns without yanking.",
+      "Invent delivery or parade stories.",
+      "Store cord neatly to avoid tangles."
+    ],
+    "req": [
+      "Wheeled or sliding animal figure",
+      "Pull cord",
+      "Floor space"
+    ],
+    "participants": "Alone",
+    "category": "Construction"
+  },
+  "mini_weapons_toy": {
+    "title": "Toy bow or dart play set",
+    "descTemplate": "Scaled hunting toys let children in {country} rehearse skills celebrated by {civ} adults—archery, spear-thorn darts, or blowpipe aim—using safer materials. Targets on straw, wood, or drawn circles turn martial technique into scored play.",
+    "steps": [
+      "Set a clear target with a safe backstop.",
+      "Nock or load the soft projectile.",
+      "Aim and release with controlled form.",
+      "Score hits by rings or knock-down blocks.",
+      "Never aim at people or animals."
+    ],
+    "req": [
+      "Soft or low-power toy bow/darts",
+      "Target",
+      "Clear downrange area"
+    ],
+    "participants": "1–2 people",
+    "category": "Outdoor Folk"
+  },
+  "jacks_local": {
+    "title": "Pocket skill stones",
+    "descTemplate": "Beyond the shared knucklebones family, {country} has local stone-and-seed skill sequences shaped by {civ} childhood—different throws, chants, and difficulty ladders on the same pickup principle, recorded here as a regional practice entry when chants and sequences are locally distinct.",
+    "steps": [
+      "Scatter five stones lightly.",
+      "Toss one skyward and sweep others in the local pattern.",
+      "Catch the tossed stone to complete each step.",
+      "Pass the turn on a drop.",
+      "First to finish the local sequence wins."
+    ],
+    "req": [
+      "Five small stones or seeds",
+      "Flat ground"
+    ],
+    "participants": "1–4 people",
+    "category": "Puzzles & Skill"
+  },
+  "story_dice_oral": {
+    "title": "Story lots / drawing lots game",
+    "descTemplate": "Casting lots for turns, forfeits, or story prompts appears in {civ} gatherings in {country}. Whether bamboo sticks, knucklebones, or painted dice, chance chooses who speaks, dances, or answers—a social toy at the edge of divination and party game.",
+    "steps": [
+      "Place lots in a cup or hand.",
+      "Cast and read the marked result.",
+      "The indicated player performs the prompt (story, song, forfeit).",
+      "Return lots and continue around the group.",
+      "Agree beforehand which outcomes are playful versus serious."
+    ],
+    "req": [
+      "Marked sticks, lots, or dice",
+      "Shared language"
+    ],
+    "participants": "2+ people",
+    "category": "Memory & Word"
+  },
+  "shadow_play": {
+    "title": "Shadow figures play",
+    "descTemplate": "Shadow play—hand animals or leather puppets—has entertained nights in {country} within {civ} storytelling. Light and silhouette turn gesture into theater. Some regions elevated this into formal puppet arts; children's hand shadows remain the toy form.",
+    "steps": [
+      "Place a lamp so hands cast clear shadows on a wall.",
+      "Form animals or people with fingers; move slowly for clarity.",
+      "Narrate a short scene while shapes move.",
+      "Optional: use cut-out rod puppets for crisper figures.",
+      "End by letting children invent their own creatures."
+    ],
+    "req": [
+      "Lamp or firelight",
+      "Blank wall",
+      "Hands or cut-out puppets"
+    ],
+    "participants": "1–many people",
+    "category": "Hand & Gesture"
+  },
+  "kite_local": {
+    "title": "Local kite craft",
+    "descTemplate": "While kite flying is one global family, {country}'s {civ} makers developed distinctive shapes, papers, bridles, and festival uses. This entry highlights that local craft tradition as a regional kite practice under the wider kite sky.",
+    "steps": [
+      "Build or buy a kite in the local style.",
+      "Check bridle balance before launch.",
+      "Launch with wind at your back in open space.",
+      "Steer via line tension; land gently.",
+      "Never fly near power lines or storms."
+    ],
+    "req": [
+      "Paper or cloth kite",
+      "Spar materials",
+      "Flying line",
+      "Open wind"
+    ],
+    "participants": "Alone or 2 people",
+    "category": "Outdoor Folk"
+  },
+  "cloth_doll_local": {
+    "title": "Local cloth doll",
+    "descTemplate": "Soft dolls dressed in local textile patterns appear across {civ} households in {country}. Embroidery, wrap clothing, and hairstyles miniaturize adult dress. Caregiving play teaches social roles; craft techniques pass between generations.",
+    "steps": [
+      "Sew or tie a simple body; stuff firmly but softly.",
+      "Dress the doll in local-style miniature clothes.",
+      "Invent daily-care and family stories.",
+      "Repair tears as ongoing play.",
+      "No competitive score—open-ended nurturing."
+    ],
+    "req": [
+      "Cloth scraps",
+      "Fiber stuffing",
+      "Thread or ties"
+    ],
+    "participants": "Alone",
+    "category": "Dolls & Figures"
+  },
+  "ball_sewn": {
+    "title": "Sewn cloth or hide ball",
+    "descTemplate": "Before industrial rubber, {civ} communities in {country} stuffed and sewed balls from hide, cloth, or plant fiber. Catch, kick, and circle games grew around these objects. The ball's make is as cultural as the rules.",
+    "steps": [
+      "Form a circle or pairs in a clear area.",
+      "Toss or kick according to local house rules.",
+      "A drop may eliminate a player or score for the thrower.",
+      "Increase speed as skill rises.",
+      "Last player or highest score wins."
+    ],
+    "req": [
+      "Sewn cloth, palm, or hide ball",
+      "Open play space"
+    ],
+    "participants": "2–10+ people",
+    "category": "Ball & Sport"
+  },
+  "top_local": {
+    "title": "Local spinning top craft",
+    "descTemplate": "Top play is ancient and global; this entry records {country}'s {civ} carving styles, tip materials, and contest etiquette as a distinct craft-and-play practice within that shared physics toy.",
+    "steps": [
+      "Wind string or ready a whip in the local manner.",
+      "Launch onto hard ground with a smooth pull.",
+      "Sustain with whipping if that is the local style.",
+      "Contest for endurance or combat knockouts.",
+      "Sand and re-tip worn points."
+    ],
+    "req": [
+      "Locally carved top",
+      "String or whip",
+      "Hard ground"
+    ],
+    "participants": "1–many people",
+    "category": "Spinning & Tops"
+  },
+  "string_local": {
+    "title": "Local string figures",
+    "descTemplate": "{civ} string figures linked to {country} carry local names, animals, and myths even when openings resemble cat's cradle elsewhere. The figures are portable diagrams of story and hand memory.",
+    "steps": [
+      "Make a loop sized for your hands.",
+      "Open with the locally taught starting position.",
+      "Form a named figure through picks and drops.",
+      "Tell the associated story if one exists.",
+      "Teach one figure at a time to a partner."
+    ],
+    "req": [
+      "Cord or sinew loop",
+      "Story knowledge optional"
+    ],
+    "participants": "Alone or 2 people",
+    "category": "String & Finger"
+  },
+  "board_race_folk": {
+    "title": "Folk race board (local)",
+    "descTemplate": "Cross-and-circle and path race boards appear in many lands. In {country}, {civ} players used shells, sticks, or knucklebones to race markers home—cousins to pachisi-like structures but with local track shapes and safe-space customs recorded as a regional folk race board.",
+    "steps": [
+      "Place markers in starting nests.",
+      "Throw the local lot generator (dice, sticks, shells).",
+      "Enter and advance pieces when throws allow.",
+      "Send opponents home if your rules include hits.",
+      "First to bear all markers home wins."
+    ],
+    "req": [
+      "Track board or cloth",
+      "Markers",
+      "Dice, sticks, or shells"
+    ],
+    "participants": "2–4 people",
+    "category": "Board & Race"
+  },
+  "sowing_local": {
+    "title": "Local pit-and-seed sowing",
+    "descTemplate": "Where sowing games took root in {country}, {civ} boards show distinctive cup counts, relay rules, and wood shapes. They belong to the mancala family yet deserve regional entries when board geometry and capture customs are locally standardized.",
+    "steps": [
+      "Fill pits with the traditional starting seed count.",
+      "Scoop and sow in the locally prescribed direction.",
+      "Resolve captures by local patterns.",
+      "Play until the ending condition of that board.",
+      "Count stores or remaining seeds to decide the winner."
+    ],
+    "req": [
+      "Cup board or pits in earth",
+      "Seeds or pebbles"
+    ],
+    "participants": "2 people",
+    "category": "Mancala & Sowing"
+  },
+  "jump_rope": {
+    "title": "Skipping rope games",
+    "descTemplate": "Skipping and jump-rope rhymes thrive in {country}'s schoolyards and streets within {civ} childhood culture. Solo speed steps and group long-rope games share the bouncing rhythm; chants localize the toy.",
+    "steps": [
+      "For solo: swing the rope over your head and jump each pass.",
+      "For group: two turners swing a long rope while jumpers enter.",
+      "Add local chants; miss a jump and rotate roles.",
+      "Try double-unders or pepper speeds as skill rises.",
+      "Keep the rope clear of traffic and hazards."
+    ],
+    "req": [
+      "Rope of hemp, plastic, or vine",
+      "Flat ground",
+      "Optional turners"
+    ],
+    "participants": "1–many people",
+    "category": "Outdoor Folk"
+  },
+  "blindfold_tag": {
+    "title": "Blind man's tag / call games",
+    "descTemplate": "Blindfolded seeking games—call-and-dodge variants—appear across {civ} parties and children's gatherings in {country}. Sound, stillness, and empathy for the blinded player structure the fun.",
+    "steps": [
+      "Blindfold one player and spin them gently to disorient.",
+      "Others stay inside bounds and may call per local rules.",
+      "The blindfolded player tags someone by hearing and touch.",
+      "The tagged player becomes the next blind seeker.",
+      "Remove obstacles before play."
+    ],
+    "req": [
+      "Soft blindfold",
+      "Safe clear space",
+      "Agreed boundaries"
+    ],
+    "participants": "4+ people",
+    "category": "Outdoor Folk"
+  },
+  "wrestling_play": {
+    "title": "Folk wrestling play for youth",
+    "descTemplate": "Youth wrestling games prepare for adult folk styles celebrated by {civ} communities in {country}. Play versions emphasize safe throws, circle boundaries, and laughter over injury—sport as social toy.",
+    "steps": [
+      "Mark a circle; agree forbidden holds.",
+      "Wrestlers grip and try to throw or pin per local play rules.",
+      "Referee stops unsafe moves immediately.",
+      "Best of three exchanges often decides a bout.",
+      "Salute or handshake afterward."
+    ],
+    "req": [
+      "Soft ground or sand",
+      "Agreed hold rules",
+      "Referee"
+    ],
+    "participants": "2 people (plus referee)",
+    "category": "Outdoor Folk"
+  },
+  "memory_song": {
+    "title": "Memory song / elimination chant",
+    "descTemplate": "Elimination chants and memory songs—akin to 'who remains' circle games—are toys of rhythm and attention in {civ} oral culture in {country}. Wrong words or missed beats eliminate players until one remains.",
+    "steps": [
+      "Players sit or stand in a circle.",
+      "Start the traditional chant with gestures if any.",
+      "Each player must continue the next word, beat, or motion.",
+      "Mistakes eliminate a player.",
+      "Last remaining player wins and may lead the next round."
+    ],
+    "req": [
+      "Shared song or chant",
+      "Circle of players"
+    ],
+    "participants": "3+ people",
+    "category": "Memory & Word"
+  },
+  "balance_stilts": {
+    "title": "Stilts or balance poles",
+    "descTemplate": "Stilts appear as festival tools and children's balance toys in {country}. {civ} makers raise walkers on bamboo, wood, or recycled cans. Racing and trick-stepping turn elevation into play.",
+    "steps": [
+      "Mount stilts with a spotter if you are new.",
+      "Take small steps; look forward, not down.",
+      "Race a set distance or complete a trick course.",
+      "Dismount carefully onto clear ground.",
+      "Check bindings before each session."
+    ],
+    "req": [
+      "Pair of stilts or tin-can stilts",
+      "Level ground",
+      "Spotter for beginners"
+    ],
+    "participants": "Alone or racing pairs",
+    "category": "Outdoor Folk"
+  },
+  "leaf_boat": {
+    "title": "Leaf or bark boat racing",
+    "descTemplate": "Miniature boat races using leaves, bark, or corncobs delight children near water in {country}. {civ} play turns currents into tracks and craft into engineering experiments.",
+    "steps": [
+      "Fold or carve a small hull that floats.",
+      "Mark start and finish on a gentle current or basin.",
+      "Release together on a signal.",
+      "First boat to the finish wins; no touching after release.",
+      "Retrieve materials; leave no trash in water."
+    ],
+    "req": [
+      "Leaves, bark, or cork for hulls",
+      "Stream, gutter, or basin",
+      "Twig masts optional"
+    ],
+    "participants": "2+ people",
+    "category": "Outdoor Folk"
+  },
+  "snow_or_sand": {
+    "title": "Sand / snow figure play",
+    "descTemplate": "Sculpting temporary figures in sand or snow is elemental construction play wherever {civ} landscapes in {country} provide the medium. Castles, animals, and ancestral forms appear and erode—architecture as ephemeral toy.",
+    "steps": [
+      "Gather moist sand or packable snow.",
+      "Pile, carve, and mold figures or forts.",
+      "Optional contests: tallest tower or best likeness.",
+      "Photograph if you wish; enjoy the collapse too.",
+      "Respect sacred or protected dunes and sites."
+    ],
+    "req": [
+      "Sand or snow",
+      "Hands or simple molds",
+      "Water optional for sand"
+    ],
+    "participants": "Alone or group",
+    "category": "Construction"
+  },
+  "knuckle_football": {
+    "title": "Table flick football / paper soccer",
+    "descTemplate": "Flick games that simulate football/soccer on a tabletop spread through schools in {country}, layered onto older finger-flicking toy habits in {civ} childhood. Goals are books or drawn posts; tournaments can be fierce.",
+    "steps": [
+      "Mark goals at each end of a table.",
+      "Place the ball (coin/paper) at center.",
+      "Alternate flicks; no covering the ball with a palm.",
+      "Score by sending the ball between goal markers.",
+      "Play to an agreed number of goals."
+    ],
+    "req": [
+      "Coin, button, or paper ball",
+      "Table with goal marks"
+    ],
+    "participants": "2 people",
+    "category": "Hand & Gesture"
+  },
+  "riddle_local": {
+    "title": "Local riddle exchange",
+    "descTemplate": "Riddle exchanges in {country} preserve {civ} metaphor, ecology, and humor. Posing and solving under time pressure is a mind toy requiring no manufactured equipment.",
+    "steps": [
+      "One player poses a riddle.",
+      "Others guess within a turn limit.",
+      "Solver scores a point or becomes the next poser.",
+      "Optional playful forfeits for wrong guesses.",
+      "Play to an agreed score."
+    ],
+    "req": [
+      "Shared language",
+      "Optional elder judge"
+    ],
+    "participants": "2+ people",
+    "category": "Memory & Word"
+  },
+  "ceremonial_toy": {
+    "title": "Festival noisemaker toy",
+    "descTemplate": "Festival noisemakers—ratchets, clappers, bell-sticks—let children join {civ} public rites in {country}. Volume and rhythm mark calendar time; some toys are seasonal and stored afterward like ritual gear.",
+    "steps": [
+      "Learn when and where the noisemaker is appropriate.",
+      "Play pulses that match the procession or song.",
+      "Stop when ceremony leaders signal silence.",
+      "Do not mock restricted sacred forms.",
+      "Store the toy clean until the next festival."
+    ],
+    "req": [
+      "Ratchet, bell stick, clapper, or drum toy",
+      "Festival context respect"
+    ],
+    "participants": "Alone or parade group",
+    "category": "Ritual & Ceremony"
+  },
+  "puzzle_knot": {
+    "title": "Cord & knot puzzle toy",
+    "descTemplate": "Disentanglement puzzles of cord, rings, and wood appear as market toys and blacksmith curiosities around {country}. {civ} players learn topology by touch—release a ring without forcing, then reassemble.",
+    "steps": [
+      "Study how loops pass through openings.",
+      "Manipulate without bending rigid parts.",
+      "Free the target piece by a legal path.",
+      "Reassemble to the starting state.",
+      "Time yourself or challenge a friend to match your method."
+    ],
+    "req": [
+      "Cord, rings, or wire puzzle",
+      "Patience"
+    ],
+    "participants": "Alone",
+    "category": "Puzzles & Skill"
+  },
+  "mini_house": {
+    "title": "Miniature household play set",
+    "descTemplate": "Tiny household tools—clay pans, woven mats, doll furniture—support role-play of adult domestic life in {civ} childhoods in {country}. Archaeology and ethnography both find these teaching toys.",
+    "steps": [
+      "Arrange a miniature hearth or room.",
+      "Assign roles to dolls or players.",
+      "Act out cooking, market, or visiting scenes.",
+      "Swap stories and add new props over time.",
+      "Pack pieces together so sets stay complete."
+    ],
+    "req": [
+      "Miniature pots, mats, or dolls",
+      "Small play space"
+    ],
+    "participants": "Alone or 2 people",
+    "category": "Dolls & Figures"
+  }
+}

@@ -7,25 +7,34 @@ import {
 import { GameCard } from "../components/GameCard";
 import { Footer } from "../components/Footer";
 import { useI18n } from "../i18n";
+import {
+  loadContentI18n,
+  localizeGame,
+  localizeCategory,
+  type ContentI18nCatalog,
+} from "../lib/localizeContent";
 
 const PAGE_SIZE = 30;
 
 export function CollectionPage() {
   const [data, setData] = useState<CollectionData | null>(null);
+  const [catalog, setCatalog] = useState<ContentI18nCatalog | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
   const [region, setRegion] = useState("all");
   const [page, setPage] = useState(1);
   const deferredQuery = useDeferredValue(query);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   useEffect(() => {
     let alive = true;
     const refresh = () => {
-      loadCollection()
-        .then((d) => {
-          if (alive) setData(d);
+      Promise.all([loadCollection(), loadContentI18n().catch(() => null)])
+        .then(([d, i18n]) => {
+          if (!alive) return;
+          setData(d);
+          setCatalog(i18n);
         })
         .catch((e: Error) => {
           if (alive) setError(e.message);
@@ -51,10 +60,15 @@ export function CollectionPage() {
       if (category !== "all" && g.category !== category) return false;
       if (region !== "all" && g.originCountry !== region) return false;
       if (!q) return true;
+      const localized = localizeGame(g, locale, catalog);
       const hay = [
+        localized.name,
+        localized.originCountry,
+        localized.civilization,
+        localized.description,
+        localized.category,
         g.name,
         g.originCountry,
-        g.civilization,
         g.description,
         g.category,
         ...g.variations.map((v) => v.name),
@@ -63,15 +77,17 @@ export function CollectionPage() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [data, deferredQuery, category, region]);
+  }, [data, deferredQuery, category, region, locale, catalog]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
-  const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const pageItems = filtered
+    .slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+    .map((g) => localizeGame(g, locale, catalog));
 
   useEffect(() => {
     setPage(1);
-  }, [deferredQuery, category, region]);
+  }, [deferredQuery, category, region, locale]);
 
   if (error) {
     return (
@@ -116,7 +132,7 @@ export function CollectionPage() {
                 <option value="all">{t("collection.allCategories")}</option>
                 {data.meta.categories.map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {localizeCategory(c, locale, catalog)}
                   </option>
                 ))}
               </select>
@@ -131,7 +147,7 @@ export function CollectionPage() {
                 <option value="all">{t("collection.allOrigins")}</option>
                 {countries.map((c) => (
                   <option key={c} value={c}>
-                    {c}
+                    {catalog?.locales[locale]?.countries[c] ?? c}
                   </option>
                 ))}
               </select>

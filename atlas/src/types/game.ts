@@ -27,6 +27,8 @@ export type Game = {
   idealParticipants: string;
   variations: GameVariation[];
   tags: string[];
+  /** Present on matrix-expanded regional craft/play entries; omitted for curated seeds. */
+  archetypeKey?: string;
 };
 
 export type CollectionMeta = {
