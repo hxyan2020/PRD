@@ -8,6 +8,7 @@ import { UseCases } from './pages/UseCases'
 import { OpsPlaybook } from './pages/OpsPlaybook'
 import { Career } from './pages/Career'
 import { Tracker } from './pages/Tracker'
+import { Notebook } from './pages/Notebook'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="curriculum" element={<Curriculum />} />
           <Route path="tracker" element={<Tracker />} />
+          <Route path="notebook" element={<Notebook />} />
           <Route path="day/:day" element={<DayLessonPage />} />
           <Route path="glossary" element={<Glossary />} />
           <Route path="use-cases" element={<UseCases />} />

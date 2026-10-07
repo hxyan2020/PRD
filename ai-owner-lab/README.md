@@ -32,7 +32,10 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | Ops playbook | Incident patterns + maintenance calendar |
 | Career | Skills portfolio + personal tech radar |
 | Tracker | Mark days complete, ring + week progress, 30-day board |
+| Notebook | Select text → save clip or Explain with AI; chronological timestamps |
 
 Each day lesson includes a **From production** case (real products/incidents/patterns) plus an **interactive diagram** — click nodes to inspect details.
 
-Progress and notes are stored in `localStorage` in your browser. Open **Tracker** in the nav (shows `n/30`) to toggle any day and see overall progress.
+**Notebook / AI tutor:** highlight text → floating toolbar → **Add to notebook** or **Explain with AI**. The drawer can use the built-in local tutor, or an OpenAI-compatible API key (browser-only). Saved replies appear on **Notebook**, newest first with timestamps.
+
+Progress and notebook data are stored in `localStorage` in your browser.
