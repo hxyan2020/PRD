@@ -22,7 +22,7 @@
       <p class="hero__sub">Choose any tradition, follow its ritual process, and receive a generated reading.</p>
       <div class="hero__cta">
         <a class="btn btn--primary" href="#featured">Try 八卦 / MBTI / 塔罗</a>
-        <a class="btn btn--ghost" href="#catalog">Browse all methods</a>
+        <a class="btn btn--ghost" href="#journal">Open journal</a>
       </div>
     </div>
     <div class="hero__scroll" aria-hidden="true">Scroll</div>
@@ -142,6 +142,35 @@
       </div>
     </section>
 
+    <section class="journal" id="journal" aria-labelledby="journal-title">
+      <div class="section">
+        <p class="section__eyebrow">Personal record</p>
+        <h2 class="section__title" id="journal-title">Fate journal</h2>
+        <p class="section__copy">
+          Save any reading into your journal. Each entry gets a timestamp and an auto-generated title.
+          Entries stay in this browser (local storage).
+        </p>
+        <div class="journal-toolbar">
+          <p class="journal-toolbar__count"><span id="journal-count">0</span> saved</p>
+          <button type="button" class="btn btn--ghost begin__random" id="journal-clear" style="border-color:var(--line);color:var(--ink);">Clear journal</button>
+        </div>
+        <div id="journal-list" class="journal-list"></div>
+      </div>
+    </section>
+
+    <div class="studio" id="journal-detail" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="journal-detail-title">
+      <div class="studio__panel">
+        <header class="studio__header">
+          <div>
+            <p class="studio__kicker">Journal</p>
+            <h2 class="studio__method" id="journal-detail-title">Entry</h2>
+          </div>
+          <button type="button" class="studio__close" id="journal-detail-close" aria-label="Close">×</button>
+        </header>
+        <div class="studio__body" id="journal-detail-body"></div>
+      </div>
+    </div>
+
     <section class="sources" id="sources" aria-labelledby="sources-title">
       <div class="section">
         <p class="section__eyebrow">Provenance</p>
@@ -188,7 +217,9 @@
   <script src="data/methods.js"></script>
   <script src="data/processes.js"></script>
   <script src="data/guided.js"></script>
+  <script src="journal.js"></script>
   <script src="app.js"></script>
   <script src="reading.js"></script>
+  <script src="journal-ui.js"></script>
 </body>
 </html>

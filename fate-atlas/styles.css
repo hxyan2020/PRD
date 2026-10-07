@@ -877,6 +877,117 @@ body.studio-open {
   margin-bottom: 0.5rem;
 }
 
+/* Journal */
+.journal {
+  background: linear-gradient(180deg, #f4f7fa, #e8eef2);
+  border-top: 1px solid var(--line);
+}
+
+.journal-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.journal-toolbar__count {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+.journal-toolbar__count span {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--teal-deep);
+  margin-right: 0.25rem;
+}
+
+.journal-list {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.journal-empty {
+  margin: 0;
+  padding: 2rem 0;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+}
+
+.journal-entry {
+  background: white;
+  border: 1px solid var(--line);
+  padding: 1.15rem 1.2rem;
+}
+
+.journal-entry__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.journal-entry__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.journal-entry__time {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.journal-entry__method {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--teal-deep);
+  font-weight: 600;
+}
+
+.journal-entry__q {
+  margin: 0 0 0.45rem;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.journal-entry__verdict {
+  margin: 0 0 0.85rem;
+  color: var(--ink);
+}
+
+.journal-entry__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.journal-saved-note {
+  margin: 1rem 0 0;
+  padding: 0.75rem 0.9rem;
+  background: rgba(15, 92, 86, 0.08);
+  border: 1px solid rgba(15, 92, 86, 0.25);
+  color: var(--teal-deep);
+  font-size: 0.92rem;
+}
+
+.journal-saved-note a {
+  color: var(--teal-deep);
+  font-weight: 600;
+}
+
+.journal-saved-note.is-flash {
+  animation: rise-in 0.4s var(--ease);
+}
+
 .hero__scroll {
   position: absolute;
   left: 50%;

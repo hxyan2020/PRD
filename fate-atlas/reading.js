@@ -469,6 +469,22 @@
     render();
   }
 
+  function journalActionsHTML(saved, againLabel) {
+    const again = againLabel || "Start over";
+    if (saved) {
+      return `<p class="journal-saved-note" role="status">Saved as “${escapeHTML(state.journalTitle || "entry")}” · <a href="#journal" data-action="goto-journal">View journal</a></p>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">${escapeHTML(again)}</button>
+          <button type="button" class="btn btn--primary" data-action="close">Done</button>
+        </div>`;
+    }
+    return `<div class="studio__actions">
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">${escapeHTML(again)}</button>
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="save-journal">Save to journal</button>
+        <button type="button" class="btn btn--primary" data-action="close">Done</button>
+      </div>`;
+  }
+
   function renderGuidedResult(r, allowAgain) {
     const extra =
       r.kind === "bagua" && r.hex
@@ -492,10 +508,7 @@
         <div class="reading__block"><h4>Timing / Next</h4><p>${escapeHTML(r.timing)}</p></div>
         <p class="reading__disclaimer">${escapeHTML(r.disclaimer)}</p>
       </div>
-      <div class="studio__actions">
-        ${allowAgain ? `<button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">Start over</button>` : ""}
-        <button type="button" class="btn btn--primary" data-action="close">Done</button>
-      </div>`;
+      ${journalActionsHTML(!!state.journalSaved, allowAgain ? "Start over" : "Done")}`;
   }
 
   // ——— Generic (existing) ———
@@ -582,11 +595,26 @@
           <div class="reading__block"><h4>Timing</h4><p>${escapeHTML(r.timing)}</p></div>
           <p class="reading__disclaimer">${escapeHTML(r.disclaimer)}</p>
         </div>
-        <div class="studio__actions">
-          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">Read again</button>
-          <button type="button" class="btn btn--primary" data-action="close">Done</button>
-        </div>`;
+        ${journalActionsHTML(!!state.journalSaved, "Read again")}`;
     }
+  }
+
+  function saveCurrentToJournal() {
+    if (!state?.reading || state.journalSaved) return null;
+    if (!window.FatumJournal) return null;
+    const entry = window.FatumJournal.collect({
+      methodId: state.method.id,
+      methodName: state.method.name,
+      kind: state.reading.kind || state.kind || "generic",
+      question: state.question || state.input?.question || "",
+      focus: state.focus || state.input?.formFocus || state.input?.dayPurpose || "",
+      reading: state.reading,
+    });
+    state.journalSaved = true;
+    state.journalEntryId = entry.id;
+    state.journalTitle = entry.title;
+    render();
+    return entry;
   }
 
   function captureGeneric() {
@@ -689,11 +717,18 @@
     if (action === "close") return closeStudio();
     if (action === "next") return goNext();
     if (action === "back") return goBack();
+    if (action === "save-journal") return saveCurrentToJournal();
+    if (action === "goto-journal") {
+      closeStudio();
+      document.getElementById("journal")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
     if (action === "again") {
       if (state.mode === "guided") state = makeGuidedState(state.method, state.kind);
       else {
         state.stepIndex = 0;
         state.reading = null;
+        state.journalSaved = false;
         state.input.nonce = Date.now() % 100000;
       }
       return render();
