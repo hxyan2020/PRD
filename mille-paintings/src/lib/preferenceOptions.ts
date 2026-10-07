@@ -400,13 +400,29 @@ export function countrySearchTerms(label: string): string[] {
 export function genreSearchTerms(label: string): string[] {
   const key = label.trim().toLowerCase()
   const map: Record<string, string[]> = {
-    'ink wash painting': ['ink wash', 'shuimo', 'sumi-e', 'ink painting'],
-    'shan shui': ['shan shui', 'landscape'],
-    'literati painting': ['literati', 'wenren'],
+    'ink wash painting': ['ink wash', 'shuimo', 'sumi-e', 'ink painting', '水墨'],
+    'shan shui': [
+      'shan shui',
+      'shanshui',
+      'chinese landscape',
+      'ink landscape',
+      '山水',
+      '山水画',
+    ],
+    'literati painting': ['literati', 'wenren', '文人', '文人画'],
+    'chinese painting': [
+      'chinese painting',
+      'chinese art',
+      'hanging scroll',
+      'handscroll',
+      '国画',
+    ],
+    'bird-and-flower painting': ['bird-and-flower', 'flower and bird', '花鸟', '花鳥'],
+    handscroll: ['handscroll', '手卷'],
+    'hanging scroll': ['hanging scroll', '立轴', '立軸'],
     'ukiyo-e': ['ukiyo-e', 'ukiyo'],
     nihonga: ['nihonga'],
     'yamato-e': ['yamato-e'],
-    'chinese painting': ['chinese painting', 'china'],
     'japanese painting': ['japanese painting', 'japan'],
     'korean painting': ['korean painting', 'korea'],
     'mughal miniature': ['mughal', 'miniature'],

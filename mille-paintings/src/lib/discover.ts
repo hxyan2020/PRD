@@ -60,24 +60,220 @@ function yearFromText(text?: string | null): string {
   return m ? m[1] : 'Unknown'
 }
 
-/** Compact free-text query built from the user's preference chips. */
+/**
+ * Focused free-text query from preference chips.
+ * Uses genre + country only (moods/eras are applied later as filters) so
+ * museum APIs are not flooded with unrelated Western hits.
+ */
 export function preferenceSearchQuery(prefs: Preferences): string {
   const parts: string[] = []
-  for (const g of prefs.genres.slice(0, 4)) {
-    parts.push(genreSearchTerms(g)[0] || g)
+  for (const g of prefs.genres.slice(0, 3)) {
+    for (const t of genreSearchTerms(g).slice(0, 2)) parts.push(t)
   }
-  for (const c of prefs.countries.slice(0, 3)) {
-    parts.push(countrySearchTerms(c)[0] || c)
+  for (const c of prefs.countries.slice(0, 2)) {
+    for (const t of countrySearchTerms(c).slice(0, 2)) parts.push(t)
   }
-  for (const e of prefs.eras.slice(0, 2)) {
-    parts.push(e.replace(/-/g, ' '))
+  const unique = [...new Set(parts.map((p) => p.trim().toLowerCase()).filter(Boolean))]
+  if (!unique.length) return 'famous painting'
+  // Keep query short — long OR bags return off-topic Western works.
+  return `${unique.slice(0, 6).join(' ')} painting`
+}
+
+/** Extra museum/Commons queries that stay on-criteria for East Asian prefs. */
+function preferenceSearchVariants(prefs: Preferences): string[] {
+  const primary = preferenceSearchQuery(prefs)
+  const variants = new Set<string>([primary])
+  const genres = prefs.genres.map((g) => g.toLowerCase())
+  const countries = prefs.countries.map((c) => c.toLowerCase())
+  if (genres.some((g) => g.includes('shan shui'))) {
+    variants.add('shan shui chinese landscape painting')
+    variants.add('shanshui landscape scroll painting')
+    variants.add('山水画 chinese landscape')
   }
-  for (const m of prefs.moods.slice(0, 2)) {
-    parts.push(m)
+  if (genres.some((g) => g.includes('chinese painting') || g.includes('ink wash'))) {
+    variants.add('chinese ink wash painting scroll')
+    variants.add('chinese hanging scroll painting')
   }
-  if (!parts.length) parts.push('famous oil painting')
-  parts.push('painting')
-  return [...new Set(parts.map((p) => p.trim()).filter(Boolean))].join(' ')
+  if (genres.some((g) => g.includes('bird-and-flower'))) {
+    variants.add('chinese bird and flower painting')
+    variants.add('花鸟画 chinese painting')
+  }
+  if (countries.some((c) => c === 'china' || c.includes('dynasty'))) {
+    variants.add('chinese painting museum collection')
+  }
+  return [...variants].slice(0, 5)
+}
+
+const CHINA_IMPLIED_GENRES = [
+  'shan shui',
+  'chinese painting',
+  'literati painting',
+  'bird-and-flower painting',
+  'ink wash painting',
+  'handscroll',
+  'hanging scroll',
+]
+
+function paintingBlob(p: Painting): string {
+  return `${p.name} ${p.painter} ${p.genre} ${p.painterCountry} ${p.placeOfCreation} ${p.collection} ${p.intro} ${p.anecdote}`.toLowerCase()
+}
+
+function matchesGenre(p: Painting, genres: string[]): boolean {
+  if (!genres.length) return true
+  const blob = paintingBlob(p)
+  return genres.some((g) => {
+    const terms = [g, ...genreSearchTerms(g)].map((t) => t.toLowerCase())
+    return terms.some((t) => t && blob.includes(t))
+  })
+}
+
+function matchesCountry(p: Painting, countries: string[], genres: string[] = []): boolean {
+  if (!countries.length) return true
+  const blob = paintingBlob(p)
+  const direct = countries.some((c) => {
+    const terms = [c, ...countrySearchTerms(c)].map((t) => t.toLowerCase())
+    return terms.some((t) => t && blob.includes(t))
+  })
+  if (direct) return true
+  // Shan shui / Chinese painting traditions imply China when that country is selected.
+  const wantsChina = countries.some((c) => {
+    const k = c.toLowerCase()
+    return k === 'china' || k.includes('dynasty') || k === 'taiwan'
+  })
+  if (!wantsChina) return false
+  const implied = genres.filter((g) => CHINA_IMPLIED_GENRES.includes(g.toLowerCase()))
+  return implied.length > 0 && matchesGenre(p, implied)
+}
+
+/** When both genre and country are set, require BOTH (AND). */
+export function matchesPreferences(p: Painting, prefs: Preferences): boolean {
+  const genreOk = matchesGenre(p, prefs.genres)
+  const countryOk = matchesCountry(p, prefs.countries, prefs.genres)
+  if (prefs.genres.length && prefs.countries.length) return genreOk && countryOk
+  if (prefs.genres.length) return genreOk
+  if (prefs.countries.length) return countryOk
+  return true
+}
+
+/**
+ * Fill missing genre/country from title/description so Commons/Openverse
+ * hits can pass the AND filter without accepting Western leakage.
+ */
+function enrichPainting(p: Painting, prefs: Preferences): Painting {
+  const blob = paintingBlob(p)
+  let genre = p.genre
+  let country = p.painterCountry
+  const genreUnknown = !genre || genre.toLowerCase() === 'painting' || genre.toLowerCase() === 'unknown'
+  const countryUnknown =
+    !country || country.toLowerCase() === 'unknown' || country.toLowerCase() === 'unknown / private collection'
+
+  if (genreUnknown) {
+    for (const g of prefs.genres) {
+      const terms = [g, ...genreSearchTerms(g)].map((t) => t.toLowerCase())
+      if (terms.some((t) => t && blob.includes(t))) {
+        genre = g
+        break
+      }
+    }
+  }
+  if (countryUnknown) {
+    for (const c of prefs.countries) {
+      const terms = [c, ...countrySearchTerms(c)].map((t) => t.toLowerCase())
+      if (terms.some((t) => t && blob.includes(t))) {
+        country = c
+        break
+      }
+    }
+  }
+  // Chinese-tradition keywords in sparse Commons metadata → China.
+  if (
+    (countryUnknown || country.toLowerCase() === 'unknown') &&
+    /shan\s*shui|shanshui|chinese|china|山水|文人|花鸟|花鳥|水墨|国画|手卷|立轴|立軸/.test(blob)
+  ) {
+    country = 'China'
+  }
+  if (
+    (genreUnknown || genre.toLowerCase() === 'painting') &&
+    /shan\s*shui|shanshui|山水/.test(blob)
+  ) {
+    genre = prefs.genres.find((g) => /shan shui/i.test(g)) || 'shan shui'
+  }
+  return { ...p, genre, painterCountry: country }
+}
+
+function preferenceScore(p: Painting, prefs: Preferences): number {
+  const blob = paintingBlob(p)
+  let score = 0
+  for (const g of prefs.genres) {
+    for (const t of [g, ...genreSearchTerms(g)]) {
+      if (t && blob.includes(t.toLowerCase())) score += 3
+    }
+  }
+  for (const c of prefs.countries) {
+    for (const t of [c, ...countrySearchTerms(c)]) {
+      if (t && blob.includes(t.toLowerCase())) score += 3
+    }
+  }
+  for (const m of prefs.moods) {
+    if (blob.includes(m.toLowerCase())) score += 1
+  }
+  return score + Math.min(p.sitelinks, 40) / 40
+}
+
+/** AIC IIIF is often blocked for hotlinking from GitHub Pages — rescue via Commons. */
+function needsImageRescue(url: string): boolean {
+  return /artic\.edu\/iiif/i.test(url)
+}
+
+async function commonsImageForTitle(
+  title: string,
+  artist?: string,
+): Promise<{ image: string; imageFull: string } | null> {
+  const q = [title, artist, 'painting'].filter(Boolean).join(' ').slice(0, 120)
+  const params = new URLSearchParams({
+    action: 'query',
+    format: 'json',
+    origin: '*',
+    generator: 'search',
+    gsrsearch: `filetype:bitmap ${q}`,
+    gsrlimit: '5',
+    gsrnamespace: '6',
+    prop: 'imageinfo',
+    iiprop: 'url',
+    iiurlwidth: '1200',
+  })
+  try {
+    const res = await fetchWithTimeout(
+      `https://commons.wikimedia.org/w/api.php?${params}`,
+      { headers: { 'User-Agent': UA } },
+      10000,
+    )
+    if (!res.ok) return null
+    const data = (await res.json()) as {
+      query?: { pages?: Record<string, { title?: string; imageinfo?: Array<{ url?: string; thumburl?: string }> }> }
+    }
+    for (const page of Object.values(data.query?.pages || {})) {
+      const info = page.imageinfo?.[0]
+      const file = page.title?.replace(/^File:/, '')
+      if (!file || !info?.url) continue
+      // Prefer Commons FilePath (works under referrerPolicy=no-referrer).
+      return {
+        image: commons(file, 1600),
+        imageFull: commons(file, 2400),
+      }
+    }
+  } catch {
+    return null
+  }
+  return null
+}
+
+async function ensureDisplayableImage(p: Painting): Promise<Painting | null> {
+  if (!p.image && !p.imageFull) return null
+  if (!needsImageRescue(p.image) && !needsImageRescue(p.imageFull)) return p
+  const rescued = await commonsImageForTitle(p.name, p.painter)
+  if (!rescued) return null
+  return { ...p, image: rescued.image, imageFull: rescued.imageFull }
 }
 
 function expandGenreTerms(genres: string[]): string[] {
@@ -409,16 +605,19 @@ async function searchArtInstitute(query: string, existing: Set<string>): Promise
   const data = (await res.json()) as { data?: AicHit[] }
   const out: Painting[] = []
   for (const hit of data.data || []) {
-    if (!hit.image_id || !hit.title) continue
+    if (!hit.title) continue
     const id = `aic-${hit.id}`
     if (existing.has(id)) continue
     const type = (hit.artwork_type_title || '').toLowerCase()
     if (type && !/paint|scroll|panel|ink|oil|watercolor|tempera|fresco|drawing/.test(type)) {
       continue
     }
-    const img = `https://www.artic.edu/iiif/2/${hit.image_id}/full/843,/0/default.jpg`
-    const imgFull = `https://www.artic.edu/iiif/2/${hit.image_id}/full/1686,/0/default.jpg`
-    out.push({
+    // AIC IIIF is often blocked off-site — prefer Commons rescue for a displayable URL.
+    const rescued = await commonsImageForTitle(hit.title, hit.artist_title || undefined)
+    if (!rescued && !hit.image_id) continue
+    const img = rescued?.image || `https://www.artic.edu/iiif/2/${hit.image_id}/full/843,/0/default.jpg`
+    const imgFull = rescued?.imageFull || `https://www.artic.edu/iiif/2/${hit.image_id}/full/1686,/0/default.jpg`
+    const candidate: Painting = {
       id,
       rank: 0,
       sitelinks: 4,
@@ -442,7 +641,9 @@ async function searchArtInstitute(query: string, existing: Set<string>): Promise
         : 'Sourced from the Art Institute of Chicago open API.',
       painterPhotos: [],
       discovered: true,
-    })
+    }
+    const displayable = await ensureDisplayableImage(candidate)
+    if (displayable) out.push(displayable)
   }
   return out
 }
@@ -522,62 +723,83 @@ type OpenverseHit = {
   tags?: Array<{ name?: string }>
 }
 
-async function searchOpenverse(query: string, existing: Set<string>): Promise<Painting[]> {
-  const params = new URLSearchParams({
-    q: `${query} painting`,
-    page_size: '20',
-    category: 'digitized_artwork',
-    license_type: 'commercial,modification',
-  })
-  const res = await fetchWithTimeout(
-    `https://api.openverse.org/v1/images/?${params}`,
-    { headers: { Accept: 'application/json', 'User-Agent': UA } },
-    15000,
-  )
-  if (!res.ok) throw new Error(`Openverse ${res.status}`)
-  const data = (await res.json()) as { results?: OpenverseHit[] }
+async function searchOpenverse(
+  query: string,
+  existing: Set<string>,
+  prefs: Preferences,
+): Promise<Painting[]> {
   const out: Painting[] = []
-  for (const hit of data.results || []) {
-    if (!hit.id || !hit.url || !hit.title) continue
-    const id = `ov-${hit.id}`
-    if (existing.has(id)) continue
-    const tags = (hit.tags || []).map((t) => t.name).filter(Boolean).join(', ')
-    const provider = hit.provider || hit.source || 'Openverse'
-    out.push({
-      id,
-      rank: 0,
-      sitelinks: 2,
-      name: hit.title,
-      image: hit.url,
-      imageFull: hit.url,
-      painter: hit.creator || 'Unknown',
-      painterId: '',
-      painterBirthYear: 'Unknown',
-      painterDeathYear: 'Unknown',
-      painterCountry: 'Unknown',
-      placeOfCreation: 'Unknown',
-      collection: `${provider} (via Openverse)`,
-      lostOrDestroyed: false,
-      intro: `${hit.title}${hit.creator ? ` — attributed to ${hit.creator}` : ''}. Open-licensed digitized artwork found via Openverse across museums and archives.`,
-      genre: tags || 'Painting',
-      anecdote: hit.foreign_landing_url
-        ? `Original record: ${hit.foreign_landing_url}`
-        : 'Sourced through the Openverse open-content image search.',
-      painterPhotos: [],
-      discovered: true,
+  const seenLocal = new Set<string>()
+  for (const q of preferenceSearchVariants(prefs).slice(0, 3)) {
+    const params = new URLSearchParams({
+      q: q.includes('painting') ? q : `${q} painting`,
+      page_size: '16',
+      category: 'digitized_artwork',
+      license_type: 'commercial,modification',
     })
+    let res: Response
+    try {
+      res = await fetchWithTimeout(
+        `https://api.openverse.org/v1/images/?${params}`,
+        { headers: { Accept: 'application/json', 'User-Agent': UA } },
+        15000,
+      )
+    } catch {
+      continue
+    }
+    if (!res.ok) continue
+    const data = (await res.json()) as { results?: OpenverseHit[] }
+    for (const hit of data.results || []) {
+      if (!hit.id || !hit.url || !hit.title) continue
+      const id = `ov-${hit.id}`
+      if (existing.has(id) || seenLocal.has(id)) continue
+      seenLocal.add(id)
+      const tags = (hit.tags || []).map((t) => t.name).filter(Boolean).join(', ')
+      const provider = hit.provider || hit.source || 'Openverse'
+      out.push({
+        id,
+        rank: 0,
+        sitelinks: 2,
+        name: hit.title,
+        image: hit.url,
+        imageFull: hit.url,
+        painter: hit.creator || 'Unknown',
+        painterId: '',
+        painterBirthYear: 'Unknown',
+        painterDeathYear: 'Unknown',
+        painterCountry: 'Unknown',
+        placeOfCreation: 'Unknown',
+        collection: `${provider} (via Openverse)`,
+        lostOrDestroyed: false,
+        intro: `${hit.title}${hit.creator ? ` — attributed to ${hit.creator}` : ''}. ${tags}. Open-licensed digitized artwork found via Openverse.`,
+        genre: tags || 'Painting',
+        anecdote: hit.foreign_landing_url
+          ? `Original record: ${hit.foreign_landing_url}`
+          : 'Sourced through the Openverse open-content image search.',
+        painterPhotos: [],
+        discovered: true,
+      })
+    }
+    if (out.length >= 20) break
+  }
+  if (!out.length && query) {
+    // fallback single query already covered by variants; keep signature used
   }
   return out
 }
 
-async function searchCommons(query: string, existing: Set<string>): Promise<Painting[]> {
+async function searchCommonsOnce(
+  query: string,
+  existing: Set<string>,
+  seenLocal: Set<string>,
+): Promise<Painting[]> {
   const params = new URLSearchParams({
     action: 'query',
     format: 'json',
     origin: '*',
     generator: 'search',
     gsrsearch: `filetype:bitmap ${query}`,
-    gsrlimit: '16',
+    gsrlimit: '20',
     gsrnamespace: '6',
     prop: 'imageinfo',
     iiprop: 'url|extmetadata|size',
@@ -610,19 +832,23 @@ async function searchCommons(query: string, existing: Set<string>): Promise<Pain
     const info = page.imageinfo?.[0]
     if (!info?.url || !page.title) continue
     const id = `commons-${page.pageid}`
-    if (existing.has(id)) continue
+    if (existing.has(id) || seenLocal.has(id)) continue
+    seenLocal.add(id)
     const meta = info.extmetadata || {}
     const artistHtml = meta.Artist?.value || ''
     const artist = artistHtml.replace(/<[^>]+>/g, '').trim() || 'Unknown'
     const desc = (meta.ImageDescription?.value || '').replace(/<[^>]+>/g, '').trim()
-    const name = page.title.replace(/^File:/, '').replace(/\.[^.]+$/, '')
+    const categories = (meta.Categories?.value || '').replace(/<[^>]+>/g, ' ')
+    const file = page.title.replace(/^File:/, '')
+    const name = file.replace(/\.[^.]+$/, '')
+    // FilePath + width works under referrerPolicy=no-referrer on GitHub Pages.
     out.push({
       id,
       rank: 0,
       sitelinks: 2,
       name,
-      image: info.thumburl || info.url,
-      imageFull: info.url,
+      image: commons(file, 1600),
+      imageFull: commons(file, 2400),
       painter: artist.slice(0, 120),
       painterId: '',
       painterBirthYear: 'Unknown',
@@ -632,13 +858,110 @@ async function searchCommons(query: string, existing: Set<string>): Promise<Pain
       collection: 'Wikimedia Commons',
       lostOrDestroyed: false,
       intro:
-        desc.slice(0, 600) ||
+        `${desc} ${categories}`.trim().slice(0, 600) ||
         `${name} — open media from Wikimedia Commons matching your discovery preferences.`,
       genre: 'Painting',
       anecdote: 'Located via Wikimedia Commons full-text media search.',
       painterPhotos: [],
       discovered: true,
     })
+  }
+  return out
+}
+
+async function searchCommons(
+  query: string,
+  existing: Set<string>,
+  prefs: Preferences,
+): Promise<Painting[]> {
+  const seenLocal = new Set<string>()
+  const out: Painting[] = []
+  for (const q of preferenceSearchVariants(prefs)) {
+    try {
+      const batch = await searchCommonsOnce(q, existing, seenLocal)
+      out.push(...batch)
+    } catch {
+      // try remaining variants
+    }
+    if (out.length >= 28) break
+  }
+  if (!out.length) {
+    return searchCommonsOnce(query, existing, seenLocal)
+  }
+  return out
+}
+
+type MetSearch = { objectIDs?: number[] | null }
+
+async function searchMet(query: string, existing: Set<string>): Promise<Painting[]> {
+  const params = new URLSearchParams({
+    q: query,
+    hasImages: 'true',
+    medium: 'Paintings',
+  })
+  const res = await fetchWithTimeout(
+    `https://collectionapi.metmuseum.org/public/collection/v1/search?${params}`,
+    { headers: { 'User-Agent': UA } },
+    12000,
+  )
+  if (!res.ok) throw new Error(`Met ${res.status}`)
+  const data = (await res.json()) as MetSearch
+  const ids = (data.objectIDs || []).slice(0, 16)
+  const out: Painting[] = []
+  for (const objectID of ids) {
+    const id = `met-${objectID}`
+    if (existing.has(id) || out.some((x) => x.id === id)) continue
+    try {
+      const objRes = await fetchWithTimeout(
+        `https://collectionapi.metmuseum.org/public/collection/v1/objects/${objectID}`,
+        { headers: { 'User-Agent': UA } },
+        8000,
+      )
+      if (!objRes.ok) continue
+      const obj = (await objRes.json()) as {
+        title?: string
+        artistDisplayName?: string
+        primaryImage?: string
+        primaryImageSmall?: string
+        objectDate?: string
+        culture?: string
+        country?: string
+        medium?: string
+        classification?: string
+        department?: string
+        objectURL?: string
+      }
+      const image = obj.primaryImageSmall || obj.primaryImage
+      if (!image || !obj.title) continue
+      const cultureBlob = `${obj.culture || ''} ${obj.country || ''} ${obj.department || ''}`.toLowerCase()
+      out.push({
+        id,
+        rank: 0,
+        sitelinks: 5,
+        name: obj.title,
+        image,
+        imageFull: obj.primaryImage || image,
+        painter: obj.artistDisplayName || 'Unknown',
+        painterId: '',
+        painterBirthYear: yearFromText(obj.objectDate),
+        painterDeathYear: 'Unknown',
+        painterCountry: obj.country || obj.culture || 'Unknown',
+        placeOfCreation: obj.country || obj.culture || 'Unknown',
+        collection: 'The Metropolitan Museum of Art',
+        lostOrDestroyed: false,
+        intro: `${obj.title}${obj.artistDisplayName ? ` by ${obj.artistDisplayName}` : ''}${
+          obj.objectDate ? ` (${obj.objectDate})` : ''
+        }. ${obj.medium || obj.classification || 'Painting'} from the Met open collection.`,
+        genre: obj.classification || obj.medium || 'Painting',
+        anecdote: cultureBlob
+          ? `Met culture/department: ${obj.culture || obj.department || 'collection'}.`
+          : obj.objectURL || 'Sourced from the Metropolitan Museum of Art open access API.',
+        painterPhotos: [],
+        discovered: true,
+      })
+    } catch {
+      // skip object
+    }
   }
   return out
 }
@@ -671,10 +994,17 @@ function makeSteps(): DiscoverStep[] {
       found: 0,
     },
     {
-      id: 'aic',
-      source: 'Art Institute of Chicago',
+      id: 'wikidata',
+      source: 'Wikidata',
       status: 'pending',
-      detail: 'Museum open collection API',
+      detail: 'Structured painting graph + entity search',
+      found: 0,
+    },
+    {
+      id: 'commons',
+      source: 'Wikimedia Commons',
+      status: 'pending',
+      detail: 'Open media archive search',
       found: 0,
     },
     {
@@ -692,24 +1022,24 @@ function makeSteps(): DiscoverStep[] {
       found: 0,
     },
     {
-      id: 'commons',
-      source: 'Wikimedia Commons',
+      id: 'met',
+      source: 'The Met',
       status: 'pending',
-      detail: 'Open media archive search',
+      detail: 'Metropolitan Museum open access API',
       found: 0,
     },
     {
-      id: 'wikidata',
-      source: 'Wikidata',
+      id: 'aic',
+      source: 'Art Institute of Chicago',
       status: 'pending',
-      detail: 'Structured painting graph + entity search',
+      detail: 'Museum API (images via Commons when needed)',
       found: 0,
     },
     {
       id: 'merge',
       source: 'Merge',
       status: 'pending',
-      detail: 'Deduplicate and rank matches',
+      detail: 'Filter to matching prefs, dedupe, rank',
       found: 0,
     },
   ]
@@ -796,7 +1126,9 @@ export async function discoverPaintings(
       pool.length,
     )
     try {
-      const found = await search()
+      const found = (await search())
+        .map((p) => enrichPainting(p, prefs))
+        .filter((p) => matchesPreferences(p, prefs))
       const n = addAll(found)
       setStep(
         id,
@@ -820,12 +1152,13 @@ export async function discoverPaintings(
     }
   }
 
-  // Hit fast museum APIs first so the status UI moves quickly; Wikidata SPARQL can be slower.
-  await runSource('aic', 'Art Institute of Chicago', () => searchArtInstitute(query, seen))
-  await runSource('va', 'V&A Museum', () => searchVA(query, seen))
-  await runSource('openverse', 'Openverse', () => searchOpenverse(query, seen))
-  await runSource('commons', 'Wikimedia Commons', () => searchCommons(query, seen))
+  // Prefer Commons/Met (reliable hotlink images), then other museums.
   await runSource('wikidata', 'Wikidata', () => searchWikidata(prefs, seen, query))
+  await runSource('commons', 'Wikimedia Commons', () => searchCommons(query, seen, prefs))
+  await runSource('met', 'The Met', () => searchMet(query, seen))
+  await runSource('va', 'V&A Museum', () => searchVA(query, seen))
+  await runSource('openverse', 'Openverse', () => searchOpenverse(query, seen, prefs))
+  await runSource('aic', 'Art Institute of Chicago', () => searchArtInstitute(query, seen))
 
   setStep(
     'merge',
@@ -834,14 +1167,25 @@ export async function discoverPaintings(
     t('discoverMerging'),
     pool.length,
   )
-  const ranked = rankByMood(pool, prefs.moods).slice(0, 40)
-  const sourcesHit = steps.filter((s) => s.found > 0 && s.id !== 'merge').length
+
+  // Strict preference filter: genre AND country when both are selected.
+  const matched = pool.filter((p) => matchesPreferences(p, prefs))
+  const ranked = rankByMood(matched, prefs.moods)
+    .map((p) => ({ p, score: preferenceScore(p, prefs) }))
+    .sort((a, b) => b.score - a.score || b.p.sitelinks - a.p.sitelinks)
+    .map((x) => x.p)
+    .slice(0, 40)
+
+  const sourcesHit = steps.filter((s) => s.found > 0 && s.id !== 'merge' && s.id !== 'prepare').length
   setStep(
     'merge',
     {
       status: ranked.length ? 'ok' : 'empty',
       found: ranked.length,
-      detail: t('discoverStepMerged', { n: ranked.length, sources: sourcesHit }),
+      detail: t('discoverStepMerged', {
+        n: ranked.length,
+        sources: sourcesHit,
+      }),
     },
     'done',
     ranked.length

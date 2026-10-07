@@ -29,6 +29,21 @@
   box-sizing: border-box;
 }
 
+.safe-image-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 8rem;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(160deg, rgba(214, 167, 86, 0.12), rgba(23, 32, 27, 0.9));
+  color: var(--paper-dim);
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
 html {
   scroll-behavior: smooth;
 }
