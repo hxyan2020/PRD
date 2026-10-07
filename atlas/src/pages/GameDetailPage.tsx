@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { loadCollection } from "../lib/collection";
 import type { Game } from "../types/game";
 import { Footer } from "../components/Footer";
+import { JournalActions } from "../components/JournalActions";
 
 export function GameDetailPage() {
   const { slug } = useParams();
@@ -71,6 +72,12 @@ export function GameDetailPage() {
               <strong style={{ color: "var(--mist)" }}>Players:</strong>{" "}
               {game.idealParticipants}
             </span>
+          </div>
+          <div className="detail-journal">
+            <JournalActions game={game} />
+            <Link className="journal-link" to="/journal">
+              Open your journal →
+            </Link>
           </div>
         </div>
       </section>

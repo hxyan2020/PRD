@@ -1,6 +1,9 @@
 import { NavLink } from "react-router-dom";
+import { useJournal } from "../hooks/useJournal";
 
 export function Header() {
+  const { counts } = useJournal();
+
   return (
     <header className="site-header">
       <div className="inner">
@@ -13,6 +16,14 @@ export function Header() {
             Home
           </NavLink>
           <NavLink to="/collection">Collection</NavLink>
+          <NavLink to="/journal">
+            Journal
+            {counts.total > 0 ? (
+              <span className="nav-count" aria-label={`${counts.total} in journal`}>
+                {counts.total}
+              </span>
+            ) : null}
+          </NavLink>
         </nav>
       </div>
     </header>

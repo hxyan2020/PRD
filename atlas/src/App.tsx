@@ -3,6 +3,7 @@ import { Header } from "./components/Header";
 import { HomePage } from "./pages/HomePage";
 import { CollectionPage } from "./pages/CollectionPage";
 import { GameDetailPage } from "./pages/GameDetailPage";
+import { JournalPage } from "./pages/JournalPage";
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/collection" element={<CollectionPage />} />
+        <Route path="/journal" element={<JournalPage />} />
         <Route path="/game/:slug" element={<GameDetailPage />} />
       </Routes>
     </BrowserRouter>
