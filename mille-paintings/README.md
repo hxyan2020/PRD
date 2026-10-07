@@ -2,7 +2,8 @@
 
 A web gallery of the ~1000 most popular paintings in human history, ranked by Wikipedia/Wikidata sitelinks.
 
-**Live URL:** https://hxyan2020.github.io/PRD/mille/
+**Live URL:** https://hxyan2020.github.io/PRD/mille/  
+**Today’s pick:** https://hxyan2020.github.io/PRD/mille/#/today
 
 Each painting page includes:
 
