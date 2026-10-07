@@ -2,20 +2,8 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Painting } from '../types'
 import { useI18n } from '../i18n/I18nContext'
+import { displayImageUrl, viewerImageUrl } from '../lib/images'
 import './FullscreenViewer.css'
-
-function fullscreenSrc(painting: Painting): string {
-  const full = painting.imageFull?.trim()
-  const thumb = painting.image?.trim()
-  if (full) {
-    // Prefer a large but bounded Commons derivative — originals can fail to decode.
-    if (full.includes('Special:FilePath') && !/[?&]width=\d+/i.test(full)) {
-      return `${full}${full.includes('?') ? '&' : '?'}width=2400`
-    }
-    return full
-  }
-  return thumb || ''
-}
 
 export function FullscreenViewer({
   painting,
@@ -33,8 +21,8 @@ export function FullscreenViewer({
   onSurprise?: () => void
 }) {
   const { t } = useI18n()
-  const preferred = fullscreenSrc(painting)
-  const fallback = painting.image?.trim() || ''
+  const preferred = viewerImageUrl(painting)
+  const fallback = displayImageUrl(painting)
   const [src, setSrc] = useState(preferred)
 
   useEffect(() => {

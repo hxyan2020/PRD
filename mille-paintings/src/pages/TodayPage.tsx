@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FullscreenViewer } from '../components/FullscreenViewer'
 import { LoadingState } from '../components/LoadingState'
+import { SafeImage } from '../components/SafeImage'
 import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
+import { displayImageUrl } from '../lib/images'
 import { pickDailyPainting, pickSurprise } from '../lib/recommend'
 import type { Painting } from '../types'
 import './TodayPage.css'
@@ -47,7 +49,7 @@ export function TodayPage() {
 
       <section className="today-stage">
         <button type="button" className="today-image" onClick={() => setFullscreen(true)}>
-          <img src={current.image} alt={current.name} />
+          <SafeImage src={displayImageUrl(current)} fallbackSrc={current.image} alt={current.name} />
         </button>
         <div className="today-meta">
           <p className="rank">{t('rank', { n: current.rank || '—' })}</p>

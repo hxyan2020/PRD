@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
 import { discoverPaintings } from '../lib/discover'
+import { displayImageUrl } from '../lib/images'
 import { DEFAULT_PREFS, getPreferences, savePreferences, type Preferences } from '../lib/storage'
 import type { Painting } from '../types'
 import './PreferencesPage.css'
@@ -195,7 +197,7 @@ export function PreferencesPage() {
           <div className="discover-grid">
             {(lastBatch.length ? lastBatch : discovered).slice(0, 8).map((p) => (
               <Link key={p.id} to={`/painting/${p.id}`} className="discover-card">
-                <img src={p.image} alt={p.name} loading="lazy" />
+                <SafeImage src={displayImageUrl(p)} alt={p.name} loading="lazy" />
                 <div>
                   <h3>{p.name}</h3>
                   <p>{p.painter}</p>

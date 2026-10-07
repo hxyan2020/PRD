@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { FullscreenViewer } from '../components/FullscreenViewer'
 import { LoadingState } from '../components/LoadingState'
+import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
+import { displayImageUrl, hiResImageUrl, withCommonsWidth } from '../lib/images'
 import './PaintingPage.css'
 
 export function PaintingPage() {
@@ -56,7 +58,11 @@ export function PaintingPage() {
     <main className="painting-page">
       <section className="painting-hero">
         <button type="button" className="painting-frame" onClick={() => setFullscreen(true)}>
-          <img src={painting.imageFull || painting.image} alt={painting.name} />
+          <SafeImage
+            src={displayImageUrl(painting)}
+            fallbackSrc={painting.image}
+            alt={painting.name}
+          />
           {painting.lostOrDestroyed ? <span className="lost-pill">{t('lostDestroyed')}</span> : null}
         </button>
         <div className="painting-summary">
@@ -99,7 +105,7 @@ export function PaintingPage() {
             </button>
             <a
               className="btn ghost"
-              href={painting.imageFull || painting.image}
+              href={hiResImageUrl(painting)}
               target="_blank"
               rel="noreferrer"
             >
@@ -128,7 +134,11 @@ export function PaintingPage() {
           {painting.painterPhotos.length > 0 ? (
             painting.painterPhotos.map((src, i) => (
               <figure key={`${src}-${i}`}>
-                <img src={src} alt={`${painting.painter} portrait ${i + 1}`} loading="lazy" />
+                <SafeImage
+                  src={withCommonsWidth(src, 800)}
+                  alt={`${painting.painter} portrait ${i + 1}`}
+                  loading="lazy"
+                />
               </figure>
             ))
           ) : (
@@ -143,7 +153,7 @@ export function PaintingPage() {
           <div className="related-grid">
             {nearby.map((p) => (
               <Link key={p.id} to={`/painting/${p.id}`} className="related-card">
-                <img src={p.image} alt={p.name} loading="lazy" />
+                <SafeImage src={displayImageUrl(p)} alt={p.name} loading="lazy" />
                 <div>
                   <h3>{p.name}</h3>
                   <p>{p.painter}</p>

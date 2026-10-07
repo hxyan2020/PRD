@@ -1,13 +1,16 @@
 import { Link } from 'react-router-dom'
 import type { Painting } from '../types'
+import { displayImageUrl } from '../lib/images'
+import { SafeImage } from './SafeImage'
 import './PaintingCard.css'
 
 export function PaintingCard({ painting }: { painting: Painting }) {
   return (
     <Link to={`/painting/${painting.id}`} className="painting-card">
       <div className="painting-card-media">
-        <img
-          src={painting.image}
+        <SafeImage
+          src={displayImageUrl(painting)}
+          fallbackSrc={painting.image}
           alt={painting.name}
           loading="lazy"
           decoding="async"

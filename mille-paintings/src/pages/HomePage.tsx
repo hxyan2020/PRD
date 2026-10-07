@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { LoadingState } from '../components/LoadingState'
+import { SafeImage } from '../components/SafeImage'
 import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
+import { displayImageUrl } from '../lib/images'
 import './HomePage.css'
 
 export function HomePage() {
@@ -16,7 +18,12 @@ export function HomePage() {
       <section className="hero">
         <div className="hero-media" aria-hidden="true">
           {hero ? (
-            <img src={hero.imageFull || hero.image} alt="" className="hero-image" />
+            <SafeImage
+              src={displayImageUrl(hero)}
+              fallbackSrc={hero.image}
+              alt=""
+              className="hero-image"
+            />
           ) : (
             <div className="hero-fallback" />
           )}
@@ -84,7 +91,7 @@ export function HomePage() {
                 className="featured-item"
                 style={{ animationDelay: `${index * 80}ms` }}
               >
-                <img src={painting.image} alt={painting.name} loading="lazy" />
+                <SafeImage src={displayImageUrl(painting)} alt={painting.name} loading="lazy" />
                 <div>
                   <span>#{painting.rank}</span>
                   <h3>{painting.name}</h3>

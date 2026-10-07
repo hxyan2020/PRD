@@ -3,9 +3,9 @@ import type { Preferences } from './storage'
 
 const UA_NOTE = 'MillePaintings/1.0 (educational gallery discover)'
 
-function commons(filename: string, width?: number) {
+function commons(filename: string, width = 2400) {
   const base = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(filename)}`
-  return width ? `${base}?width=${width}` : base
+  return `${base}?width=${width}`
 }
 
 function yearOf(time?: string): string {
