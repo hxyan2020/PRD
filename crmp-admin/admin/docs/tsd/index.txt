@@ -7,38 +7,35 @@ b:I[9665,[],"MetadataBoundary"]
 d:I[6614,[],""]
 :HL["/PRD/crmp-admin/_next/static/media/692df4da22e71021-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/PRD/crmp-admin/_next/static/media/af4bf8399d1aacdf-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/PRD/crmp-admin/_next/static/css/91a0d1372728ea1d.css","style"]
-0:{"P":null,"b":"DQwACf1qsay3jn1x0Tpea","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/91a0d1372728ea1d.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","EKzMY8-S6pZlZsrQ1APMU",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
-e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","2436","static/chunks/2436-0261d9ffe9b91e7c.js","7831","static/chunks/7831-c134a95d00e96661.js","4415","static/chunks/4415-8e7aef01faf46123.js","7581","static/chunks/app/admin/layout-74f092a26a76eeb6.js"],"AdminShell"]
-4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-06 16:14:07"},"/admin/messenger":{"count":5,"latestAt":"2026-10-06 16:14:07"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-06T16:14:07.797Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":48,"latestAt":"2026-10-06 19:44:07"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-06 16:14:07"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-06 16:14:07"},"/admin/cs-desk":{"count":4,"latestAt":"2026-10-06 16:14:07"},"/admin/cs-dashboard":{"count":4,"latestAt":"2026-10-06 16:14:07"},"/admin/cs-log":{"count":10,"latestAt":"2026-10-06 16:14:07"},"/admin/cs-data":{"count":3,"latestAt":9},"/admin/lark":{"count":10,"latestAt":"2026-10-06 16:14:16"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
-f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-8e7aef01faf46123.js","2839","static/chunks/2839-a11dcc5ee2b49892.js","3353","static/chunks/3353-7863b0beafcd48b0.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
-10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-8e7aef01faf46123.js","2839","static/chunks/2839-a11dcc5ee2b49892.js","3353","static/chunks/3353-7863b0beafcd48b0.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
-11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-8e7aef01faf46123.js","2839","static/chunks/2839-a11dcc5ee2b49892.js","3353","static/chunks/3353-7863b0beafcd48b0.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
-12:Tdb15,# Vantage CRMP Plus — Technical Specification Design (TSD)
+:HL["/PRD/crmp-admin/_next/static/css/f64de9d539404d5f.css","style"]
+0:{"P":null,"b":"pqHaxTJcTFlpeV7GHF09H","p":"/PRD/crmp-admin","c":["","admin","docs","tsd",""],"i":false,"f":[[["",{"children":["admin",{"children":["docs",{"children":["tsd",{"children":["__PAGE__",{}]}]}]}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/PRD/crmp-admin/_next/static/css/f64de9d539404d5f.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","children":["$","body",null,{"className":"__variable_5918e8 __variable_45fb3a antialiased","children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}]}]]}],{"children":["admin",["$","$1","c",{"children":[null,"$L4"]}],{"children":["docs",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["tsd",["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],{"children":["__PAGE__",["$","$1","c",{"children":["$L5","$undefined",null,["$","$L6",null,{"children":["$L7","$L8",null]}]]}],{},null,false]},null,false]},null,false]},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","SmRlqRb9NCdhO02y76b9F",{"children":[["$","$L9",null,{"children":"$La"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Lb",null,{"children":"$Lc"}]]}],false]],"m":"$undefined","G":["$d","$undefined"],"s":false,"S":true}
+e:I[9653,["6874","static/chunks/6874-43f516708db7de96.js","1881","static/chunks/1881-a86c4b561ef75595.js","1184","static/chunks/1184-95ca7931b62a5e3c.js","4415","static/chunks/4415-490b8cabf5024b34.js","7581","static/chunks/app/admin/layout-56ca0e502b05799c.js"],"AdminShell"]
+4:["$","$Le",null,{"user":{"id":0,"email":"public@local","name":"Public visitor","role_code":"PUBLIC_GUEST","department_code":null,"team_id":null,"team_name":null},"permissions":["*"],"navEvents":{"/admin/alerts":{"count":5,"latestAt":"2026-10-06 04:39:06"},"/admin/messenger":{"count":5,"latestAt":"2026-10-06 04:39:06"},"/admin/market-intel":{"count":3,"latestAt":"2026-10-06T04:39:06.206Z"},"/admin/interventions":{"count":3,"latestAt":"2026-10-03 08:00:00"},"/admin/audit":{"count":31,"latestAt":"2026-10-06 08:09:06"},"/admin/monitor-2":{"count":1,"latestAt":"2026-10-06 04:39:06"},"/admin/risk-log":{"count":5,"latestAt":"2026-10-06 04:39:06"}},"children":["$","$L2",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L3",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]}]
+f:I[382,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-490b8cabf5024b34.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"Badge"]
+10:I[6874,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-490b8cabf5024b34.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],""]
+11:I[8905,["6874","static/chunks/6874-43f516708db7de96.js","4415","static/chunks/4415-490b8cabf5024b34.js","2839","static/chunks/2839-e4e456e17c78de81.js","3353","static/chunks/3353-9b1f4fa32c3e2766.js","4040","static/chunks/app/admin/docs/tsd/page-361393ad5c106c4e.js"],"DocArticleView"]
+12:T8898,# Vantage CRMP — Technical Specification Design (TSD)
 
 **Document ID:** CRMP-TSD-001  
-**Version:** 2.6  
+**Version:** 1.8  
 **Status:** Prototype / living spec  
 **Products in scope:** CFD + Crypto Exchange  
 **Primary stack:** Next.js 15 (App Router), React 19, SQLite (`better-sqlite3`), RBAC session auth  
 **Owner:** demo platform owner  
-**Companion:** [PRD](/admin/docs/prd) (G13, FR-37…48) · [User Guide](/admin/docs/user-guide) (§9.3) · [AI Use Manual](/admin/docs/ai-use) (CRMP-AIU-001) · [UAT](/admin/docs/uat) (UAT-46…53) · [URL Catalog](/admin/docs/urls)
+**Companion:** [PRD](/admin/docs/prd) · [User Guide](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
-This TSD describes the technical design of **CRMP Plus** — the upgraded Centralised Risk Management Platform (original CRMP Admin plus 24/7 CS/TR) on one control plane.  
-**§8 AI Admin**, **§9 Second-AI Challenger** and **§17 CS/TR Desk** (public `/cs`, `POST /api/cs/intake`, wait loop, dedicated SKILL.md, **dashboard + log**) are first-class module specifications. Original CRMP Admin at `/PRD/crmp-admin/` is frozen and is not overwritten by this codebase.
+This TSD describes the technical design of the Centralised Risk Management Platform (CRMP) Admin Control Plane.  
+**§8 AI Admin** and **§9 Second-AI Challenger** are first-class module specifications.
 
 ---
 
 ## 1. Purpose & scope
 
 ### 1.1 Purpose
-Provide a single admin control plane where Risk, Ops, AI, System, Customer Service (CS) and Trading (TR) operators can:
+Provide a single admin control plane where Risk, Ops, AI, and System operators can:
 - Observe Monitor 2.0 indicators / alerts
 - Run AI RCA (skills + RAG) with independent second-AI challenge on high severity
 - Triage in Demo Messenger (evidence, chat, escalate, dismiss, close, controls)
-- Staff 24/7 CS/TR intake: C1 live chat, website form and official email via public `/cs` and `POST /api/cs/intake`; AI emails the client when unclear or ID is needed and **waits for a reply** (cap 3, `CSR-XXXX` / `channel_ref` match); once facts are collected it **categorises, assigns severity, drafts a solution**, and either auto-replies or holds for a named POC
-- Stamp dedicated CS/TR SKILL.md playbooks and escalate book-risk onto Demo Messenger
-- Review CS/TR volume on a **dedicated dashboard**, CS_* history on a **dedicated log**, and BU/team/escalation/`cs.*` records on a **dedicated data page** (not Daily Performance / Risk Log)
 - Enforce human gates on high-impact actions
 - Govern AI configuration via maker/checker
 - Review home spine stage ticket counts, risk analytics, market intel, and daily performance
@@ -49,7 +46,6 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - AI Admin governance (parameters, skills, RAG, training, accuracy)
 - Risk scenario playbooks and linked timeline chains
 - Demo Messenger + Lark channel registry (mock webhooks)
-- CS / TR Desk: C1 live chat, submission form and official-email intake (`POST /api/cs/intake` + public `/cs`); inbound reply matching; auto-email wait loop (cap 3); five dedicated SKILL.md; dedicated dashboard + log; URL Catalog **CS / TR** section
 - Market Intelligence 5-minute scanner + outbox
 - Bilingual docs (EN / zh-Hant) and responsive admin shell
 
@@ -57,8 +53,6 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 - Live SSO / IdP
 - Real Lark interactive cards / oneZero / wallet write adapters
 - Production LLM billing + training cluster
-- Production IMAP / SMTP mailbox (official-email connector posts the same intake webhook)
-- Storing ID document images on `cs_requests`
 
 ---
 
@@ -66,19 +60,13 @@ Provide a single admin control plane where Risk, Ops, AI, System, Customer Servi
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0] --> Alarm[Alarms]
-  Alarm --> Rca[AI RCA]
-  Rca --> Ch[Second AI]
+  Mon[Monitor 2.0 unified registry] --> Alarm[Alarms]
+  Alarm --> Rca[AI RCA Skills or RAG]
+  Rca --> Ch[Second AI challenger]
   Ch --> Msg[Demo Messenger]
-  Portal["/cs portal"] --> Cs[CS TR desk]
-  C1[C1 live chat] --> Cs
-  Form[Website form] --> Cs
-  Mail[Official mailbox] --> Cs
-  Cs --> Msg
-  Cs --> Dash[CS TR dashboard]
-  Cs --> Log[CS TR log]
-  Msg --> Gate[Human gate]
-  Gate --> Spine[Spine Risk Log]
+  Msg --> Gate[Human intervention]
+  Gate --> Spine[Spine Risk Log Dashboard]
+  Spine --> Out[Lark plus intel outbox]
 ```
 
 **AI Admin** sits beside the runtime spine: it does **not** execute live trading actions; it governs models, playbooks, RAG corpus, and AI parameters under dual control.
@@ -89,10 +77,10 @@ graph TD
 
 | Layer | Responsibility | Key paths |
 |---|---|---|
-| UI (App Router) | RBAC-gated admin pages + public `/cs` | `platform/src/app/admin/**`, `app/cs/**` |
-| Client consoles | Interactive tabs / forms | `platform/src/components/*` (`CsClientPortal`, `CsTrDesk`, `CsDashboardView`, `CsLogView`, `UrlCatalogBoard`) |
-| API routes | JSON mutations + reads | `platform/src/app/api/**` (incl. `/api/cs`, `/api/cs/intake`) |
-| Domain libs | Business logic | `platform/src/lib/ai/*`, `lib/cs/*`, `lib/db.ts`, `lib/auth.ts` |
+| UI (App Router) | RBAC-gated admin pages | `platform/src/app/admin/**` |
+| Client consoles | Interactive tabs / forms | `platform/src/components/*` |
+| API routes | JSON mutations + reads | `platform/src/app/api/**` |
+| Domain libs | Business logic | `platform/src/lib/ai/*`, `lib/db.ts`, `lib/auth.ts` |
 | Persistence | SQLite file | `platform/data/vantage_risk.db` |
 
 ```mermaid
@@ -110,7 +98,6 @@ graph LR
 4. **Second-AI Challenger** runs when severity ≥ threshold (`crmp-challenger-v0`)
 5. **Demo Messenger / Human intervention** triage and gated controls
 6. **Home spine** records stage transitions with ticket counts on Admin Home (`/admin`; `/admin/spine` redirects — Spine Log tab removed)
-7. **CS / TR door** (parallel to Monitor): `/cs` + C1/form/mailbox → `POST /api/cs/intake` → skill stamp → wait loop or TR / Risk → `CS_*` audit on the CRMP plane
 
 ```mermaid
 graph TD
@@ -119,11 +106,8 @@ graph TD
   RCA --> Challenger[Second AI]
   Challenger --> Messenger[Messenger / intervention]
   Messenger --> Spine[Home spine + audit]
-  Portal["/cs plus connectors"] --> Intake[POST /api/cs/intake]
-  Intake --> Desk[CS TR desk]
-  Desk --> Messenger
 ```
-8. **Daily performance / Risk Log / Market Intel** aggregate outcomes
+7. **Daily performance / Risk Log / Market Intel** aggregate outcomes
 
 ---
 
@@ -153,9 +137,6 @@ graph TD
 ### 4.6 AI Admin governance
 See **§8.4** — `ai_change_requests`, `ai_training_runs`, `ai_feedback`, `ai_accuracy_snapshots`, AI keys in `platform_settings`.
 
-### 4.7 CS / TR intake
-See **§17.5**. Tables: `cs_channels`, `cs_requests` (`request_id` CSR-XXXX, `channel_ref`, `skill_code`, `ai_clarity`, `followup_count`), `cs_messages`, `cs_followups` (`status=WAITING|CLOSED`). No ID-image blob column — identity stays off the ticket.
-
 ---
 
 ## 5. Security & RBAC (summary)
@@ -182,15 +163,13 @@ Detailed AI Admin permission matrix: **§8.3**.
 | Lark | Channel registry + mock webhook / intel outbox | Severity routing |
 | Market intel feeds | Heuristic 5-min scanner | Card format i–vi |
 | LP / Bridge / Wallets | Suggested actions + admin deep-links | Human gate before real adapters |
-| C1 live chat | Webhook + `/cs` Live chat tab | `POST /api/cs/intake` (`x-cs-intake-token: demo-c1` or `portal: true`); `channel_ref` = session |
-| Website / app form | Form post + `/cs` Submission tab | Same webhook; `channel_ref` = form id |
-| Official mailbox | Gateway + `/cs` Official email tab | Same webhook; subject may carry `CSR-XXXX`; `In-Reply-To` continues |
+| Model training | Queued runs + seeded metrics | No GPU cluster in prototype |
 
 ---
 
 ## 7. Admin surface map
 
-Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§17) and has an operator how-to in the User Guide. Public `/cs` is **not** a left-nav row — it is the client door specified in **§17.8**.
+Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.ts`. Every row is specified in this TSD (this section + §8–§16) and has an operator how-to in the User Guide.
 
 ### 7.1 Shell (not a nav row)
 
@@ -200,7 +179,6 @@ Source of truth for routes: `NAV_ITEMS` + `NAV_GROUPS` in `platform/src/lib/nav.
 | Language | cookie `crmp_ui_lang` | `hooks/useUiLocale`, `lib/i18n.ts` | — |
 | Unread badges | `crmp_nav_seen_v1` / `crmp_nav_extra_v1` | `AdminShell`, `lib/nav-badges.ts` | — |
 | Demo session | `crmp_demo_session_v1` | persist named persona on Pages | — |
-| CS client portal | `/cs` | `CsClientPortal`, `POST /api/cs/intake` | public |
 | Mobile drawer | `< lg` | `AdminShell` hamburger | — |
 | Brand | Vantage logo + owner line | `VantageLogo`, `lib/platform-owner.ts` | — |
 
@@ -224,10 +202,6 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`, `/api/rag` | `rag.read` / `rag.manage` | §16.12 |
 | Response | `/admin/messenger` | `DemoMessenger`, `/api/messenger` | `lark.read` | **§11** |
-| Response | `/admin/cs-desk` | `CsTrDesk`, `/api/cs`, `/api/cs/intake` | `cs.read` / `cs.operate` | **§17** |
-| Response | `/admin/cs-dashboard` | `CsDashboardView`, `lib/cs/analytics.ts`, `GET /api/cs?view=dashboard` | `cs.read` / `lark.read` | **§17.11** |
-| Response | `/admin/cs-log` | `CsLogView`, `lib/cs/analytics.ts`, `GET /api/cs?view=log` | `cs.read` / `lark.read` | **§17.11** |
-| Response | `/admin/cs-data` | `CsOpsDataView`, `lib/cs/ops-data.ts`, `GET /api/cs?view=data` | `cs.read` / `lark.read` | **§17.12** |
 | Response | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | Response | `/admin/escalation` | `EscalationManager` | `escalation.read` / `.manage` | §16.15 |
 | Response | `/admin/lark` | `LarkManager`, `/api/lark` | `lark.read` / `lark.manage` | §16.15 |
@@ -239,11 +213,11 @@ Unread formula: `max(0, mergeNavTotals(server) + extra − seen)`. Opening a hre
 | Platform | `/admin/data-sources` | `DataSourcesManager` | `sources.read` / `.manage` | §16.17 |
 | Platform | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5 + §16.18 |
 | Platform | `/admin/audit` | `AuditBoard` — CRMP / Vantage Markets Admin tabs + Roll back | `audit.read` | §16.19 |
-| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §16.20 + **§17.12** `cs.*` |
-| Docs | `/admin/docs/user-guide` · `ai-use` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`, boards | `admin.access` | §13 + §16.21 |
+| Platform | `/admin/settings` | `SettingsManager`, `PATCH /api/settings` | `settings.manage` | §16.20 |
+| Docs | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`, boards | `admin.access` | §13 + §16.21 |
 | Shell | `SelectionChatbot` (select text → sparkle → chat) | `lib/ai/desk-chat.ts`, `POST /api/ai-chat` | public / `ai.read` | §12 |
 
-Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-plus'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`. Original CRMP Admin remains at `/PRD/crmp-admin/` (frozen; this workflow does not publish there).
+Static export: `next.config` `output: 'export'`, `basePath: '/PRD/crmp-admin'`, `trailingSlash: true`. Client detects `isPublicSnapshot()` / `NEXT_PUBLIC_STATIC_EXPORT` and uses demo fallbacks instead of `/api`.
 
 ---
 
@@ -556,7 +530,7 @@ Five-minute scan of news/social/official signals that can move LP prices; push f
 
 ### 12.3 Public snapshot (GitHub Pages)
 Pages has no Next.js API routes. `POST /api/market-intel` would return **405**. The desk therefore:
-1. Detects `github.io` / `/PRD/crmp-plus` / `NEXT_PUBLIC_STATIC_EXPORT`.
+1. Detects `github.io` / `/PRD/crmp-admin` / `NEXT_PUBLIC_STATIC_EXPORT`.
 2. Runs `runClientMarketIntelScan()` from the same `EVENT_TEMPLATES` as the live scanner.
 3. Updates Findings, outbox, scan log and `M2-MKT-INTEL` in local state (persisted in `localStorage`).
 4. Seeds three findings at SSG time so the first paint is not empty.
@@ -579,7 +553,7 @@ graph TD
 | Docs | Markdown under `platform/docs/*` rendered via `lib/docs.ts` + `DocArticlePage` |
 | Locales | `en` / `zh-Hant` query `?lang=` |
 | UI chrome i18n | Cookie `crmp_ui_lang`; nav labels in `lib/i18n.ts` |
-| Mobile | `AdminShell` drawer &lt; `lg`; messenger and CS/TR desk list→thread; dashboard/log/data card twins; `/cs` stacked tabs; safe-area CSS |
+| Mobile | `AdminShell` drawer &lt; `lg`; messenger list/thread panes; safe-area CSS |
 
 Interactive UAT board: `/admin/docs/uat` (`UatChecklistBoard` + `lib/docs/uat-cases.ts`).
 
@@ -596,8 +570,6 @@ Absent on GitHub Pages (static export). UI must degrade: demo session, client in
 | `GET/POST /api/ai` | Analyses, simulate alarm, `backfill_challenges` |
 | `GET/POST /api/ai-admin` | Propose/approve/training/feedback |
 | `GET/POST /api/messenger` | Threads + inline actions |
-| `GET/POST /api/cs` | CS/TR desk inbox + operator actions (`triage` / `analyze` / `followup` / `client_reply` / `reply` / `assign_tr` / `escalate_risk` / `resolve` / `poc_release` / `simulate_*`) |
-| `GET/POST /api/cs/intake` | Public connector catalog + ticket status; C1/form/mailbox ingest or continue (`request_id` / `in_reply_to` / `channel_ref` / `CSR-XXXX`) |
 | `GET/POST /api/lark` | Channel registry / mock notify |
 | `GET/POST /api/market-intel` | Scan / findings / outbox |
 | `GET/POST /api/monitor` | Primary Monitor hub API: `run_detectors`, `toggle_pause`, `update_thresholds`, `sync_monitor2`, `ack_alert`, `update_ticket` |
@@ -677,11 +649,11 @@ List merged into Realtime Alert (`AlertTrackerBoard`) with **grouped AI pipeline
 
 ### 16.10 Skills board + SKILL.md page
 
-`SkillsScenariosBoard`: search, skills vs chains tabs, **Enter** → `/admin/skills/[code]` (`finalizeSkill` playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: `risk-scenarios-catalog.ts` + extras + **`risk-scenarios-cs.ts`** (CS/TR 24/7 playbooks).
+`SkillsScenariosBoard`: search, skills vs chains tabs, **Enter** → `/admin/skills/[code]` (`finalizeSkill` playbook: when to use/not, prechecks, steps, evidence, stop, success). Catalog: `risk-scenarios-catalog.ts` + extras.
 
 ### 16.11 Knowledge Tree
 
-`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × N). Click domain fans skills; click skill fills inspector; `router.push` playbook. **RAG documents render as leaves** with deep links to `/admin/rag?doc=…`. `MonitorCode` chips link to `/admin/monitor-2#M2-…`. Outline mode is the same graph as a nested list. CS/TR trunks: **CS_SERVICE**, **TRADING_EXEC**; linked chain `CHAIN-CS-TR-INTAKE`; RAG category `CS_POLICY`.
+`KnowledgeTreeBoard` client SVG (`viewBox` width 1120). Trunks: `domains` | `chains` | `rag`. Product filter ALL/CFD/Crypto. Domain nodes wrap (5-col × 2). Click domain fans skills; click skill fills inspector; `router.push` playbook. **RAG documents render as leaves** with deep links to `/admin/rag?doc=…`. `MonitorCode` chips link to `/admin/monitor-2#M2-…`. Outline mode is the same graph as a nested list.
 
 ### 16.12 RAG corpus
 
@@ -697,15 +669,15 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 ### 16.15 Lark + escalation
 
-`lark_channels` + `lark_cards` + `lark.*` settings (includes `oc_cs_c1`, `oc_cs_kyc`, `oc_tr_dealing`). Prototype interactive cards (`ALERT` / `ESCALATION` / `CS_ESCALATION`) post onto `/admin/lark`; Ack / Escalate / Dismiss / Close via `POST /api/lark` `card_*` call the same CRMP messenger / CS APIs (`lib/lark/cards.ts`, `lib/lark/actions.ts`). Audit `LARK_CARD_*` is the CRMP plane; `LARK_TEST_NOTIFY` stays Vantage. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT. CS/TR skills bind `ESC-CS-24-7` / `ESC-TR-DEAL` / `ESC-CS-RISK`. Cards route by matched `lark_chat_id`.
+`lark_channels` + `lark.*` settings. `escalation_routes` defined by **dimensions** (severity, involved teams, risk scenario, pending threshold, need-human) × editable **coefficients** (`coefficients_json`). No separate Path name column — route code identifies the path. Match order: exact domain+severity → domain wild → **ESC-DEFAULT**. Skills bind one route code (`skill-escalation-map.ts`); unbound → ESC-DEFAULT.
 
 ### 16.16 Organisation
 
-**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Six BUs: Risk Control, Operations, AI, System, **Customer Service (CS)**, **Trading (TR)** — each with nested on-call teams (Lark chat, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`) include CS Lead / CS Agent / TR Lead / TR Dealer demo personas. Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
+**BU and Teams** combined hub at `/admin/departments` (`/admin/teams` redirects). Departments (responsibilities JSON) nest teams (Lark chat, on-call, mission). **Roles & Permissions** editable via `/admin/roles` + `GET/POST /api/roles` (`permissions_json` chips + charters; `users.manage`; AI actors forbidden). Users (`UsersManager`). Seed includes `PLATFORM_OWNER` (demo platform owner / `haixiang.yan@hytechc.com`).
 
 ### 16.17 Data sources
 
-`data_sources` registry. `DataSourcesManager` CRUD when `sources.manage`. Seed includes C1 live-chat gateway, website CS form and official support mailbox.
+`data_sources` registry. `DataSourcesManager` CRUD when `sources.manage`.
 
 ### 16.18 AI access blocklist
 
@@ -717,7 +689,7 @@ Dedicated Spine Log nav tab removed. Stages DETECT…DASHBOARD shown on Admin Ho
 
 | Tab | Contents |
 |---|---|
-| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger, **CS_*** |
+| **CRMP logs** | Changes inside this CRMP admin — alerts, AI, skills, escalation, interventions, messenger |
 | **Vantage Markets Admin logs** | Other admin pages — restrict user rights, pull transaction data, triggered Lark messages, BU POC risk-incident responses, settings / org / RAG |
 
 Both tabs expose **Roll back** when `details_json` holds a before-state snapshot (`POST /api/audit/rollback` with `{ audit_id }`).
@@ -728,242 +700,11 @@ Both tabs expose **Roll back** when `details_json` holds a before-state snapshot
 
 ### 16.21 Docs renderer
 
-Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12; CS/TR catalogue v1.6 on the same 20 columns, not extra bars). URL catalog: `UrlCatalogBoard` + `lib/docs/urls.ts` (`PLATFORM_URLS` category **CS / TR** = `/cs`, desk, dashboard, log, five SKILL.md, six RAG leaves, GET/POST `/api/cs/intake`, `cs_*` tables; filter; `PUBLIC_*` = CRMP Plus `/PRD/crmp-plus/` including `PUBLIC_CS_PORTAL_URL` `/cs/`, `PUBLIC_CS_DASHBOARD_URL`, `PUBLIC_CS_LOG_URL`; `ORIGINAL_CRMP_*` = frozen `/PRD/crmp-admin/`). See **§17.9**.
+Markdown `platform/docs/*.md` + `*.zh-Hant.md`. Interactive boards: UAT (`UatChecklistBoard`), Roadmap (`RoadmapBoard`), Open Issues (`OpenIssuesBoard`), Progress (`ProgressTrackerBoard` — X=issues, Y=2026-10→2027-12). URL catalog: `lib/docs/urls.ts`.
 
 ---
 
-## 17. CS / TR Desk
-
-**Page:** `/admin/cs-desk` · `CsTrDesk` · permissions `cs.read` (view) / `cs.operate` (act). Guest/static snapshot is readable via `lark.read`.
-
-### 17.1 Purpose
-Customer Service is the **24/7** frontline for live **C1** chat (platform live chat), the website **submission form**, and **official support mailboxes**. Trading (TR) takes CS-routed execution complaints (orders, fills, slippage, stop-out, MT4/MT5). CS does not arm trading controls; TR does not staff C1 around the clock.
-
-### 17.2 Intake API
-Realtime connectors share one webhook:
-
-| Channel | `channel` code | Typical actor |
-|---|---|---|
-| C1 live chat | `C1_LIVE_CHAT` | C1 webhook |
-| Website / app form | `WEB_FORM` | form post |
-| Official email | `OFFICIAL_EMAIL` | mailbox gateway |
-
-`POST /api/cs/intake` accepts session (`cs.operate`), `mock_webhook: true`, `portal: true`, or header `x-cs-intake-token: demo-c1`. Body: `client_name` / `from_name`, `client_email` / `from_email`, `client_uid`, `subject`, `body` / `text` / `message`. C1 may send `c1_id` / `channel_ref`; the mailbox gateway may send `in_reply_to` or `CSR-XXXX` in the subject. **GET** `/api/cs/intake` returns the connector catalog; `?request_id=CSR-XXXX` returns public status (no PII). Desk actions: `POST /api/cs` (`triage`, `analyze`, `followup`, `client_reply`, `reply`, `assign_tr`, `escalate_risk`, `resolve`, `poc_release`, `simulate_c1|form|email`).
-
-Inbound payloads **continue** an open ticket when they match, in order: `request_id`, `in_reply_to` (message id / channel_ref / CSR-XXXX), the same `channel_ref` on a live C1/form/mailbox thread, or `CSR-[0-9A-F]{6}` in the subject. A match that still has a WAITING follow-up is treated as the client reply — it closes the wait loop and re-triages instead of opening a duplicate.
-
-Public client UI: `/cs` (`CsClientPortal`) — tabs for C1 live chat, submission form and official email, all posting to the same webhook. Permanent URL `PUBLIC_CS_PORTAL_URL`.
-
-Tables: `cs_channels`, `cs_requests`, `cs_messages`, `cs_followups`. Audit actions `CS_*` land on the **CRMP** plane (`entity_type=cs_request`).
-
-### 17.3 AI triage and follow-up loop
-`triageText` is heuristic (prototype — no live LLM on this path):
-
-- **need_id** — KYC / passport / verify-account / 核身 keywords, or cannot-login. Status `ID_VERIFY`.
-- **unclear** — blob shorter than 48 chars or “help me / ??? / 不清楚”. Status `AWAITING_CLIENT`.
-- **trading** — order / fill / slippage / MT4 / MT5 / 成交. Desk `TR`, status `ASSIGNED_TR`.
-- **complaint** vs **question** otherwise. Book-risk complaints can `escalate_risk` onto Demo Messenger / Human Intervention (`ESCALATED_RISK`).
-
-When clarity is `unclear` or `need_id`, AI **sends an automatic email** (`EMAIL_OUT` + `cs_followups.status=WAITING`) and **waits until the client replies** (`EMAIL_IN` / C1 `CLIENT` / form `FORM` via the same intake API → re-triage). Resolve is **blocked** while a follow-up is WAITING. Loop cap **3** mails, then CS Lead follows up in person.
-
-### 17.4 Dedicated SKILL.md playbooks + Knowledge Tree
-Triage is not only a heuristic. Each request stamps `cs_requests.skill_code` to a dedicated playbook (`platform/src/lib/ai/risk-scenarios-cs.ts`):
-
-| Skill | When | Desk / status |
-|---|---|---|
-| `SKILL-CS-CLARIFY` | Thin / “help me ???” | CS · `AWAITING_CLIENT` |
-| `SKILL-CS-ID-VERIFY` | KYC / passport / cannot-login | CS · `ID_VERIFY` |
-| `SKILL-CS-ACCOUNT-FAQ` | Clear swap / hours / UID | CS · `OPEN` |
-| `SKILL-TR-EXECUTION` | Fill / slippage / MT4/MT5 | TR · `ASSIGNED_TR` |
-| `SKILL-CS-ESCALATE-RISK` | Book-risk / fraud / wallet | `ESCALATED_RISK` |
-
-Each skill has when-to-use / when-not / prechecks / evidence / stop / success, Traditional Chinese overlays (`skill-zh.ts`), one escalation route (`ESC-CS-24-7` / `ESC-TR-DEAL` / `ESC-CS-RISK`), and explicit RAG leaves (`SKILL_RAG_DOCS`). Knowledge Tree domains **CS_SERVICE** and **TRADING_EXEC** fan out these skills; linked timeline `CHAIN-CS-TR-INTAKE`. Corpus keys: `cs-24-7-intake`, `cs-id-verify-policy`, `cs-swap-faq`, `tr-dealing-handoff`, `cs-escalate-to-risk`, `cs-skill-playbooks`. Queue monitors `M2-CS-UNCLEAR`, `M2-CS-ID`, `M2-CS-FAQ`, `M2-TR-EXEC`, `M2-CS-ESC`. The CS desk chip **Enter**s `/admin/skills/{code}`.
-
-```mermaid
-graph TD
-  In[C1, form, email] --> API[POST /api/cs/intake]
-  Portal[Client portal /cs] --> In
-  Reply[Inbound reply CSR or channel_ref] --> API
-  API --> Triage[AI triage]
-  Triage -->|clear CS| Open[OPEN on CS]
-  Triage -->|trading| TR[ASSIGNED_TR]
-  Triage -->|unclear or need_id| Mail[Auto EMAIL_OUT]
-  Mail --> Wait[AWAITING_CLIENT or ID_VERIFY]
-  Wait -->|client reply| Triage
-  Wait -->|cap 3| Lead[CS Lead human]
-  Open --> Risk{Book risk?}
-  TR --> Risk
-  Risk -->|yes| Esc[ESCALATED_RISK to Messenger]
-  Risk -->|no| Done[RESOLVED]
-  Open --> Analyze[analyzeCsRequest]
-  Analyze -->|auto FAQ| Replied[AI_REPLIED]
-  Analyze -->|sensitive| Poc[POC_REVIEW]
-```
-
-Seeded demo cases: clear C1 swap question, unclear C1 “help me ???”, TR slippage form, ID-verify official email.
-
-### 17.5 Schema
-
-`ensureCsSchema` (`lib/cs/desk.ts`) creates:
-
-| Table | Key columns | Role |
-|---|---|---|
-| `cs_channels` | `code` unique, `kind`, `endpoint`, `enabled` | Seeded C1 / form / mailbox connectors |
-| `cs_requests` | `request_id` CSR-XXXX unique, `channel`, `channel_ref`, `desk`, `status`, `ai_clarity`, `followup_count`, `skill_code`, `severity`, `sensitivity`, `ai_solution`, `ai_draft`, `poc_role`, `poc_name` | Client tickets |
-| `cs_messages` | `msg_id`, `kind` (CLIENT / FORM / EMAIL_IN / EMAIL_OUT / AI / CS / TR / SYSTEM), `sender`, `body` | Transcript |
-| `cs_followups` | `email_to`, `subject`, `reason`, `status` WAITING\|CLOSED, `sent_at`, `replied_at` | Auto-email wait loop |
-
-Public `GET /api/cs/intake?request_id=` returns `request_id`, `status`, `ai_clarity`, `skill_code`, `channel`, `channel_ref` — **no** client name/email/body. There is **no** ID-image column.
-
-### 17.6 Module map
-
-| Path | Responsibility |
-|---|---|
-| `lib/cs/intake.ts` | `parseIntakePayload`, `inferIntakeChannel`, `ingestOrContinue`, `intakeConnectorCatalog`, `lookupPublicCsStatus` |
-| `lib/cs/desk.ts` | Schema, `findCsRequestMatch`, `ingestCsRequest`, `continueCsRequest`, `recordClientReply`, `applyTriage`, `applyCsAnalysis`, `releasePocDraft`, `sendFollowupEmail` |
-| `lib/cs/analyze.ts` | `analyzeCsRequest`, `scoreSeverity`, `scoreSensitivity`, `isCollectedReply` — heuristic, no live LLM |
-| `lib/cs/skills.ts` | Heuristic → `SKILL-CS-*` / `SKILL-TR-*` |
-| `lib/ai/risk-scenarios-cs.ts` | Five playbooks + `CHAIN-CS-TR-INTAKE` |
-| `lib/cs/analytics.ts` | `getCsDashboard`, `getCsLog` |
-| `lib/cs/ops-data.ts` | `getCsOpsContract`, `getCsFollowupCap`, `getCsIntakeToken` |
-| `lib/cs/params.ts` | Seed catalog: teams, POCs, Lark, sources, `cs.*` keys, hops |
-| `app/api/cs/intake/route.ts` | GET catalog/status · POST ingest |
-| `app/api/cs/route.ts` | Desk operator actions + `GET ?view=dashboard\|log\|data` |
-| `app/cs/page.tsx` + `CsClientPortal` | Public three-tab portal |
-| `components/CsTrDesk.tsx` | Operator inbox |
-| `components/CsDashboardView.tsx` | CS/TR KPIs |
-| `components/CsLogView.tsx` | CS_* timeline + resolved packs |
-| `components/CsOpsDataView.tsx` | BU / team / hop / parameter contract |
-| `lib/docs/urls.ts` + `UrlCatalogBoard` | CS / TR catalog section |
-
-Auth for POST intake: session `cs.operate`, `mock_webhook: true`, `portal: true`, or header `x-cs-intake-token: demo-c1`.
-
-### 17.7 Wait-loop state
-
-```mermaid
-graph TD
-  New[New ingest] --> Triage[triageText plus skill stamp]
-  Triage -->|clear FAQ| Open[OPEN]
-  Triage -->|trading| TR[ASSIGNED_TR]
-  Triage -->|unclear| Wait[AWAITING_CLIENT WAITING]
-  Triage -->|need_id| Id[ID_VERIFY WAITING]
-  Wait -->|CSR or channel_ref reply| Triage
-  Id -->|CSR or channel_ref reply| Triage
-  Wait -->|cap 3| Lead[CS Lead]
-  Id -->|cap 3| Lead
-  Open --> Analyze[analyzeCsRequest]
-  Analyze -->|auto| Replied[AI_REPLIED]
-  Analyze -->|poc| Poc[POC_REVIEW]
-  Open --> Hold{WAITING followup?}
-  Hold -->|yes| Block[Resolve blocked]
-  Hold -->|no| Done[RESOLVED]
-```
-
-Match order for continuation: `request_id` → `in_reply_to` → live `channel_ref` → `CSR-[0-9A-F]{6}` in subject.
-
-### 17.8 Public `/cs` portal
-
-`CsClientPortal` tabs: Live chat (`C1_LIVE_CHAT`), Submission form (`WEB_FORM`), Official email (`OFFICIAL_EMAIL`). Each POST sets `portal: true` and persists `channel_ref` in the browser so the next message continues the same `CSR-XXXX`. Status badges poll `GET /api/cs/intake?request_id=`. Permanent Pages URL: `https://hxyan2020.github.io/PRD/crmp-plus/cs/`.
-
-### 17.9 URL Catalog (technical)
-
-`PLATFORM_URLS` category **CS / TR** lists `/cs`, `/admin/cs-desk`, `/admin/cs-dashboard`, `/admin/cs-log`, `/admin/cs-data`, five `/admin/skills/SKILL-CS-*` / `SKILL-TR-*` paths, six `/admin/rag?doc=cs-*` leaves, `/api/cs`, `/api/cs?view=dashboard`, `/api/cs?view=log`, `/api/cs?view=data`, `/api/cs/intake`, `/api/cs/intake?request_id=`, and `tables:cs_*`. Board: filter, `#url-cat-cs-tr` jump, bilingual `phrase()` titles. Guard: `scripts/verify-url-catalog.ts`.
-
-### 17.10 Traceability
-
-| Product | Spec |
-|---|---|
-| PRD | G13, FR-37, FR-40, FR-41, FR-42, FR-43, FR-44, FR-45, FR-46, journeys 5.7–5.10, §6.5 |
-| User Guide | §9.3 portal / connectors / wait loop / daily roles / dashboard / log / data / analyze |
-| AI Use Manual | CRMP-AIU-001 `/admin/docs/ai-use` literacy for Risk + CS/TR (LLM, skill, agent, MCP, named function + gateway DB path, detect/correct/prevent) |
-| UAT | UAT catalogue v2.7: UAT-25 catalog; UAT-46 connectors; UAT-47 wait loop; UAT-48 TR/Risk; UAT-50 skills + tree; UAT-51 dashboard + log; UAT-52 supporting data; UAT-53 analyze / POC; support UAT-17/22/27–29/36–40; sign-off UAT-49 |
-
-### 17.11 Dedicated dashboard + log
-
-**Pages:** `/admin/cs-dashboard` (`CsDashboardView`) and `/admin/cs-log` (`CsLogView`). Permissions `cs.read` / `lark.read` (same as desk view). Guest/static snapshot readable.
-
-These surfaces are **not** Daily Performance (`/admin/dashboard`, CFD/crypto day-end) and **not** Risk Log Analytics (`/admin/risk-log`, closed Monitor tracker packs). Mixing them is a product defect.
-
-| Surface | Source | Functions |
-|---|---|---|
-| Dashboard | `getCsDashboard()` in `lib/cs/analytics.ts` from `cs_requests` + WAITING `cs_followups` | Totals, open/resolved, WAITING, cap-3 (`followup_count ≥ 3`), TR / Risk, POC review, AI replied, buckets by channel / status / skill / desk / clarity / **severity**, waiting list, recent rows |
-| Log | `getCsLog()` from `audit_logs` (`entity_type=cs_request` or `CS_*`) plus resolved request packs | Timeline of `CS_INTAKE`, `CS_INTAKE_CONTINUE`, `CS_FOLLOWUP_EMAIL`, `CS_CLIENT_REPLY`, `CS_AGENT_REPLY`, `CS_AI_ANALYZE`, `CS_AI_REPLY`, `CS_POC_REVIEW`, `CS_POC_RELEASE`, `CS_ASSIGN_TR`, `CS_ESCALATE_RISK`, `CS_RESOLVE`; filter; resolved packs |
-
-`GET /api/cs?view=dashboard` and `GET /api/cs?view=log` return the same payloads. Nav badges: dashboard uses open CS tickets; log uses CS_* audit count. Guard: `scripts/verify-cs-analytics.ts`.
-
-```mermaid
-graph TD
-  Tickets[cs_requests] --> Dash[CS TR dashboard]
-  Wait[WAITING followups] --> Dash
-  Audit[CS star audit] --> Log[CS TR log]
-  Done[RESOLVED packs] --> Log
-  Dash --> Desk[CS TR desk]
-  Log --> Desk
-```
-
-### 17.12 Supporting data (BU / team / hops / parameters)
-
-**Page:** `/admin/cs-data` (`CsOpsDataView`). **API:** `GET /api/cs?view=data`. Source: `getCsOpsContract()` in `lib/cs/ops-data.ts` over seed catalog `lib/cs/params.ts`.
-
-`ensureCsOrg` (in `db.ts`) upserts:
-
-| Kind | Records |
-|---|---|
-| BUs | `CUSTOMER_SERVICE`, `TRADING` |
-| Teams | CS 24/7 Desk (`oc_cs_c1`), **CS KYC Vault** (`oc_cs_kyc`), TR Dealing Support (`oc_tr_dealing`) |
-| POCs | Maya Santos CS_LEAD, Elena Rossi CS_AGENT, Nadia Okonkwo CS_AGENT (KYC), Kenji Watanabe TR_LEAD, Omar Haddad TR_DEALER |
-| Routes | `ESC-CS-24-7`, **`ESC-CS-KYC`**, `ESC-TR-DEAL`, `ESC-CS-RISK` with hops + SLA |
-| Settings | `cs.followup_cap`, `cs.auto_reply_max_severity`, `cs.sensitive_categories`, `cs.wait_sla_minutes`, `cs.id_verify_sla_minutes`, `cs.tr_sla_minutes`, `cs.risk_sla_minutes`, `cs.intake_token`, `cs.mailbox_support`, `cs.mailbox_complaints`, `cs.lark_cs` / `_kyc` / `_tr` |
-| Sources | C1 gateway, website form, official mailbox, support@, complaints@, CS KYC Vault (flags only), MT4/MT5 dealing tape |
-
-Desk `sendFollowupEmail` reads `getCsFollowupCap()`. Intake header matches `getCsIntakeToken()`. `cs_requests.assigned_bu` stamps CUSTOMER_SERVICE / TRADING / RISK_CONTROL. Platform Settings group **CS / TR operations**. Guard: `scripts/verify-cs-data.ts`.
-
-```mermaid
-graph LR
-  Params[cs star settings] --> Desk[CS TR desk]
-  Teams[BU and teams] --> Data[CS TR data]
-  Routes[ESC hops] --> Data
-  Sources[data sources] --> Data
-  Data --> Dash[dashboard]
-  Data --> Desk
-```
-
-### 17.13 Analyze after collected (categorize / severity / auto vs POC)
-
-**Code:** `lib/cs/analyze.ts` (`analyzeCsRequest`, `scoreSeverity`, `scoreSensitivity`, `isCollectedReply`) plus `applyCsAnalysis` / `releasePocDraft` in `lib/cs/desk.ts`. **API:** `POST /api/cs` actions `analyze` and `poc_release`. Prototype heuristic — **no live LLM** on this path (same as `triageText`). Guard: `scripts/verify-cs-analyze.ts`.
-
-`applyTriage` only calls analysis when facts are **collected**: clarity `clear`, or a wait-loop reply ≥48 characters that names a UID (`isCollectedReply`). Thin tickets stay `AWAITING_CLIENT` / `ID_VERIFY`. KYC keywords on a long UID reply no longer re-open need-ID forever.
-
-| Output | Values |
-|---|---|
-| `severity` | `LOW` / `MEDIUM` / `HIGH` / `CRITICAL` |
-| `sensitivity` | `auto` or `poc` |
-| `ai_solution` / `ai_draft` | Heuristic copy from category + skill (FAQ / KYC / complaint / trading / critical) |
-| `poc_role` / `poc_name` | From `CS_POC_SPECS` when sensitivity is `poc` |
-
-Gates: `cs.auto_reply_max_severity` (default `MEDIUM`) and `cs.sensitive_categories` (default `complaint,kyc,trading`). Skills `SKILL-CS-ID-VERIFY`, `SKILL-TR-EXECUTION`, `SKILL-CS-ESCALATE-RISK` always `poc` (or escalate).
-
-| Path | CS status | Client mail |
-|---|---|---|
-| FAQ, severity ≤ auto-max | `AI_REPLIED` | `EMAIL_OUT` immediately (`CS_AI_REPLY`) |
-| KYC / complaint | `POC_REVIEW` | Hold; POC addendum then `poc_release` (`CS_POC_RELEASE`) |
-| Trading | stays `ASSIGNED_TR` | Hold for TR Dealer addendum |
-| CRITICAL / book-risk | `ESCALATED_RISK` | No client auto-mail |
-
-Audit: `CS_AI_ANALYZE`, `CS_AI_REPLY`, `CS_POC_REVIEW`, `CS_POC_RELEASE`. Dashboard buckets `poc_review`, `ai_replied`, `by_severity`.
-
-```mermaid
-graph TD
-  Collected[isCollectedReply] --> Analyze[analyzeCsRequest]
-  Analyze -->|auto FAQ| Send[EMAIL_OUT AI_REPLIED]
-  Analyze -->|poc| Hold[POC_REVIEW]
-  Hold -->|poc_release extra| Send
-  Analyze -->|CRITICAL| Esc[escalateToRisk]
-```
-
----
-
-## 18. Document control
+## 17. Document control
 
 | Ver | Date | Notes |
 |---|---|---|
@@ -975,43 +716,31 @@ graph TD
 | 1.6 | 2026-10-05 | Home spine; BU and Teams; MonitorCode; propose_rag; ESC-DEFAULT; Open Issues / Progress |
 | 1.7 | 2026-10-05 | Audit plane split (CRMP / Vantage Markets Admin) + rollback API; editable roles; escalation dimensions × coefficients |
 | 1.8 | 2026-10-05 | Monitor hub API (`run_detectors`/`toggle_pause`/`update_thresholds`); Realtime Alert & Tracker surface labels; Key API map adds roles/org/rollback/escalation/ai-chat |
-| 1.9 | 2026-10-06 | §17 CS/TR Desk: C1/form/email intake, AI follow-up until client reply (cap 3), TR routing, escalate to Risk |
-| 2.0 | 2026-10-06 | CRMP Plus coherent platform; public `basePath` `/PRD/crmp-plus/`; original CRMP Admin frozen at `/PRD/crmp-admin/` |
-| 2.1 | 2026-10-06 | §17.4 dedicated CS/TR SKILL.md playbooks; Knowledge Tree CS_SERVICE / TRADING_EXEC; RAG cs-* leaves; UAT-50 |
-| 2.2 | 2026-10-06 | §17.2 public `/cs` portal + inbound reply matching (CSR-XXXX / channel_ref / In-Reply-To); GET intake catalog; FR-40 |
-| 2.3 | 2026-10-06 | §17.5–17.10 schema, module map, wait-loop state, `/cs` portal, URL catalog, PRD FR-37…43 traceability |
-| 2.4 | 2026-10-06 | §17.11 dedicated CS/TR dashboard + log; FR-44; UAT-51 |
-| 2.5 | 2026-10-06 | §17.12 CS/TR supporting data (BU/KYC vault/hops/`cs.*`); FR-45; UAT-52 |
-| 2.6 | 2026-10-06 | §17.13 analyze after collected (categorize / severity / auto vs POC); FR-46; UAT-53 |
-| 2.7 | 2026-10-07 | §13 mobile: CS/TR desk list→thread + dashboard/log/data card twins; FR-14; UAT-18 |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`
-13:Td671,# Vantage CRMP Plus — 技術規格設計（TSD）
+13:T8327,# Vantage CRMP — 技術規格設計（TSD）
 
 **文件編號：** CRMP-TSD-001  
-**版本：** 2.6  
+**版本：** 1.8  
 **狀態：** 原型／持續更新  
 **產品範圍：** CFD + 加密貨幣交易所  
 **主要技術棧：** Next.js 15（App Router）、React 19、SQLite（`better-sqlite3`）、RBAC Session 驗證  
 **負責人：** demo platform owner  
-**相關文件：** [PRD](/admin/docs/prd)（G13、FR-37…48）· [使用手冊](/admin/docs/user-guide)（§9.3）· [AI 使用手冊](/admin/docs/ai-use)（CRMP-AIU-001）· [UAT](/admin/docs/uat)（UAT-46…53）· [網址目錄](/admin/docs/urls)
+**相關文件：** [PRD](/admin/docs/prd) · [使用手冊](/admin/docs/user-guide) · [UAT](/admin/docs/uat)
 
-本 TSD 描述 **CRMP Plus**（原 CRMP 管理後台加上 24/7 客服與交易台）之技術設計。  
-**§8 AI Admin**、**§9 第二 AI 挑戰者**與 **§17 CS／TR 台**（公開 `/cs`、`POST /api/cs/intake`、等待迴圈、專用 SKILL.md、**儀表板＋日誌**）為一級模組規格。原 CRMP 管理後台 `/PRD/crmp-admin/` 凍結，本程式庫不覆蓋它。
+本 TSD 描述中央風險管理平台（CRMP）管理控制平面之技術設計。  
+**§8 AI Admin** 與 **§9 第二 AI 挑戰者**為一級模組規格。
 
 ---
 
 ## 1. 目的與範圍
 
 ### 1.1 目的
-提供單一管理控制平面，讓風險、營運、AI、系統、客服（CS）與交易（TR）人員可以：
+提供單一管理控制平面，讓風險、營運、AI、系統人員可以：
 - 監看 Monitor 2.0 指標／警報
 - 執行 AI 根因分析（Skills + RAG），並於高嚴重度執行獨立第二 AI 挑戰
 - 於 Demo Messenger 分流（證據、聊天、升級、排除、結案、控制）
-- 值守 24/7 CS／TR 進件：C1 即時聊天、網站表單與官方信箱經公開 `/cs` 與 `POST /api/cs/intake`；AI 在不清楚或需核身時寄信並**等待客戶回覆**（上限 3、`CSR-XXXX`／`channel_ref` 對案）；資料齊全後**分類、給嚴重度、起草方案**，並直回或交具名 POC
-- 蓋專用 CS／TR SKILL.md 劇本，帳簿風險升級至示範 Messenger
-- 在**專用儀表板**看 CS／TR 量、在**專用日誌**看 CS_* 歷史、在**專用資料頁**看 BU／團隊／升級／`cs.*` 紀錄（不是每日績效／風險日誌）
 - 對高影響動作強制人工關卡
 - 以 Maker/Checker 治理 AI 設定
 - 檢視首頁脊柱階段工單計數、風險分析、市場情報與每日績效
@@ -1022,7 +751,6 @@ graph TD
 - AI Admin 治理（參數、Skills、RAG、訓練、準確率）
 - 風險情境劇本與多指標時間鏈
 - Demo Messenger + Lark 頻道登錄（模擬 Webhook）
-- CS／TR 台：C1 即時聊天、提交表單與官方信箱進件（`POST /api/cs/intake`＋公開 `/cs`）；進件回覆對案；自動信件等待迴圈（上限 3）；五本專用 SKILL.md；專用儀表板＋日誌；網址目錄 **CS／TR** 區段
 - 市場情報 5 分鐘掃描與 outbox
 - 雙語文件（英／繁中）與響應式管理殼層
 
@@ -1030,8 +758,6 @@ graph TD
 - 正式 SSO／IdP
 - 真實 Lark 互動卡片／oneZero／錢包寫入適配
 - 正式 LLM 計費與訓練叢集
-- 正式 IMAP／SMTP 信箱（官方信箱連接器打同一進件 webhook）
-- 把證件圖存進 `cs_requests`
 
 ---
 
@@ -1039,19 +765,13 @@ graph TD
 
 ```mermaid
 graph TD
-  Mon[Monitor 2.0] --> Alarm[警報]
-  Alarm --> Rca[AI RCA]
-  Rca --> Ch[第二 AI]
+  Mon[Monitor 2.0 統一登錄] --> Alarm[警報]
+  Alarm --> Rca[AI RCA Skills 或 RAG]
+  Rca --> Ch[第二 AI 挑戰者]
   Ch --> Msg[示範 Messenger]
-  Portal["/cs 入口"] --> Cs[CS TR 台]
-  C1[C1 即時聊天] --> Cs
-  Form[網站表單] --> Cs
-  Mail[官方信箱] --> Cs
-  Cs --> Msg
-  Cs --> Dash[CS TR 儀表板]
-  Cs --> Log[CS TR 日誌]
-  Msg --> Gate[人工關卡]
-  Gate --> Spine[脊柱風險日誌]
+  Msg --> Gate[人工干預]
+  Gate --> Spine[脊柱風險日誌儀表板]
+  Spine --> Out[Lark 加情報寄件匣]
 ```
 
 **AI Admin** 位於執行期 Spine 旁側：不直接執行交易動作；在雙人管控下治理模型、劇本、RAG 語料與 AI 參數。
@@ -1062,10 +782,10 @@ graph TD
 
 | 層級 | 職責 | 主要路徑 |
 |---|---|---|
-| UI（App Router） | RBAC 控管管理頁＋公開 `/cs` | `platform/src/app/admin/**`、`app/cs/**` |
-| 前端主控台 | 互動分頁／表單 | `platform/src/components/*`（`CsClientPortal`、`CsTrDesk`、`CsDashboardView`、`CsLogView`、`UrlCatalogBoard`） |
-| API | JSON 讀寫 | `platform/src/app/api/**`（含 `/api/cs`、`/api/cs/intake`） |
-| 領域邏輯 | 業務規則 | `platform/src/lib/ai/*`、`lib/cs/*`、`lib/db.ts`、`lib/auth.ts` |
+| UI（App Router） | RBAC 控管管理頁 | `platform/src/app/admin/**` |
+| 前端主控台 | 互動分頁／表單 | `platform/src/components/*` |
+| API | JSON 讀寫 | `platform/src/app/api/**` |
+| 領域邏輯 | 業務規則 | `platform/src/lib/ai/*`、`lib/db.ts`、`lib/auth.ts` |
 | 持久化 | SQLite 檔 | `platform/data/vantage_risk.db` |
 
 ```mermaid
@@ -1083,7 +803,6 @@ graph LR
 4. **第二 AI 挑戰者** 於嚴重度達門檻時執行（`crmp-challenger-v0`）
 5. **Demo Messenger／人工介入** 分流與關卡控制
 6. **首頁脊柱** 記錄階段轉換與工單計數（`/admin`；`/admin/spine` 轉址 — 脊柱日誌分頁已移除）
-7. **CS／TR 大門**（與 Monitor 平行）：`/cs`＋C1／表單／信箱 → `POST /api/cs/intake` → 技能蓋章 → 等待迴圈或 TR／風控 → CRMP 平面 `CS_*` 稽核
 
 ```mermaid
 graph TD
@@ -1092,11 +811,8 @@ graph TD
   RCA --> Challenger[第二 AI]
   Challenger --> Messenger[Messenger 加干預]
   Messenger --> Spine[脊柱加稽核]
-  Portal["/cs 加連接器"] --> Intake[POST /api/cs/intake]
-  Intake --> Desk[CS TR 台]
-  Desk --> Messenger
 ```
-8. **每日績效／Risk Log／市場情報** 彙總結果
+7. **每日績效／Risk Log／市場情報** 彙總結果
 
 ---
 
@@ -1126,9 +842,6 @@ graph TD
 ### 4.6 AI Admin 治理
 見 **§8.4** — `ai_change_requests`、`ai_training_runs`、`ai_feedback`、`ai_accuracy_snapshots`，以及 `platform_settings` 中的 AI 鍵值。
 
-### 4.7 CS／TR 進件
-見 **§17.5**。資料表：`cs_channels`、`cs_requests`（`request_id` CSR-XXXX、`channel_ref`、`skill_code`、`ai_clarity`、`followup_count`）、`cs_messages`、`cs_followups`（`status=WAITING|CLOSED`）。沒有證件圖欄 — 身分不存工單。
-
 ---
 
 ## 5. 安全與 RBAC（摘要）
@@ -1155,15 +868,13 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | Lark | 頻道登錄 + 模擬 Webhook／情報 outbox | 依嚴重度路由 |
 | 市場情報來源 | 啟發式 5 分鐘掃描 | 卡片格式 i–vi |
 | LP／Bridge／錢包 | 建議動作 + 管理深連結 | 真實適配前需人工關卡 |
-| C1 即時聊天 | Webhook＋`/cs` 即時聊天分頁 | `POST /api/cs/intake`（`x-cs-intake-token: demo-c1` 或 `portal: true`）；`channel_ref`＝工作階段 |
-| 網站／App 表單 | 表單送出＋`/cs` 提交分頁 | 同一 webhook；`channel_ref`＝表單 id |
-| 官方信箱 | 閘道＋`/cs` 官方信箱分頁 | 同一 webhook；主旨可帶 `CSR-XXXX`；`In-Reply-To` 續辦 |
+| 模型訓練 | 排隊執行 + 種子指標 | 原型無 GPU 叢集 |
 
 ---
 
 ## 7. 管理介面地圖
 
-路由真實來源：`platform/src/lib/nav.ts` 的 `NAV_ITEMS`＋`NAV_GROUPS`。每一列都在本 TSD（本節＋§8–§17）有規格，使用手冊有操作說明。公開 `/cs` **不是**左側導覽列 — 那是 **§17.8** 規格的客戶大門。
+路由真實來源：`platform/src/lib/nav.ts` 的 `NAV_ITEMS`＋`NAV_GROUPS`。每一列都在本 TSD（本節＋§8–§16）有規格，使用手冊有操作說明。
 
 ### 7.1 殼層（不是導覽列）
 
@@ -1173,7 +884,6 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 語言 | cookie `crmp_ui_lang` | `hooks/useUiLocale`、`lib/i18n.ts` | — |
 | 未讀徽章 | `crmp_nav_seen_v1`／`crmp_nav_extra_v1` | `AdminShell`、`lib/nav-badges.ts` | — |
 | 示範工作階段 | `crmp_demo_session_v1` | Pages 上保持具名角色 | — |
-| CS 客戶入口 | `/cs` | `CsClientPortal`、`POST /api/cs/intake` | 公開 |
 | 手機抽屜 | `< lg` | `AdminShell` 漢堡 | — |
 | 品牌 | Vantage 標誌＋負責人列 | `VantageLogo`、`lib/platform-owner.ts` | — |
 
@@ -1197,10 +907,6 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | AI | `/admin/knowledge-tree` | `KnowledgeTreeBoard` | `rag.read` | §16.11 |
 | AI | `/admin/rag` | `RagManager`、`/api/rag` | `rag.read`／`rag.manage` | §16.12 |
 | 應變 | `/admin/messenger` | `DemoMessenger`、`/api/messenger` | `lark.read` | **§11** |
-| 應變 | `/admin/cs-desk` | `CsTrDesk`、`/api/cs`、`/api/cs/intake` | `cs.read`／`cs.operate` | **§17** |
-| 應變 | `/admin/cs-dashboard` | `CsDashboardView`、`lib/cs/analytics.ts`、`GET /api/cs?view=dashboard` | `cs.read`／`lark.read` | **§17.11** |
-| 應變 | `/admin/cs-log` | `CsLogView`、`lib/cs/analytics.ts`、`GET /api/cs?view=log` | `cs.read`／`lark.read` | **§17.11** |
-| 應變 | `/admin/cs-data` | `CsOpsDataView`、`lib/cs/ops-data.ts`、`GET /api/cs?view=data` | `cs.read`／`lark.read` | **§17.12** |
 | 應變 | `/admin/interventions` | `InterventionsBoard` | `intervene.operate` | §16.14 |
 | 應變 | `/admin/escalation` | `EscalationManager` | `escalation.read`／`.manage` | §16.15 |
 | 應變 | `/admin/lark` | `LarkManager`、`/api/lark` | `lark.read`／`lark.manage` | §16.15 |
@@ -1213,10 +919,10 @@ AI Admin 權限矩陣詳見 **§8.3**。
 | 平台 | `/admin/security/ai-access` | `AiAccessSecurityBoard` | `audit.read` \| `settings.manage` \| `users.read` \| `ai.admin` | §5＋§16.18 |
 | 平台 | `/admin/audit` | `AuditBoard` — CRMP／Vantage Markets 管理分頁＋回滾 | `audit.read` | §16.19 |
 | 平台 | `/admin/settings` | `SettingsManager`、`PATCH /api/settings` | `settings.manage` | §16.20 |
-| 文件 | `/admin/docs/user-guide` · `ai-use` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
+| 文件 | `/admin/docs/user-guide` · `prd` · `tsd` · `uat` · `ecosystem` · `roadmap` · `open-issues` · `progress` · `urls` | `lib/docs.ts`、看板 | `admin.access` | §13＋§16.21 |
 | 殼層 | `SelectionChatbot`（劃選文字 → 火花 → 聊天） | `lib/ai/desk-chat.ts`、`POST /api/ai-chat` | 公開／`ai.read` | §12 |
 
-靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-plus'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。原 CRMP 管理後台仍在 `/PRD/crmp-admin/`（凍結；本工作流程不發佈到該路徑）。
+靜態匯出：`next.config` `output: 'export'`、`basePath: '/PRD/crmp-admin'`、`trailingSlash: true`。用戶端偵測 `isPublicSnapshot()`／`NEXT_PUBLIC_STATIC_EXPORT`，以示範後備代替 `/api`。
 
 ---
 
@@ -1478,7 +1184,7 @@ graph TD
 ## 10. Skills 與風險情境（摘要）
 
 Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、升級路徑、BU 矯正、歷史案件。  
-`risk_scenario_chains` 連結多指標時間線。見 `/admin/skills`、`risk-scenarios-catalog.ts`、`risk-scenarios-extra.ts`、`risk-scenarios-cs.ts`。
+`risk_scenario_chains` 連結多指標時間線。見 `/admin/skills`、`risk-scenarios-catalog.ts`、`risk-scenarios-extra.ts`。
 
 ---
 
@@ -1525,7 +1231,7 @@ Skills 儲存完整 `scenario_json`：指標、門檻與理由、故障區域、
 
 ### 12.3 公開快照（GitHub Pages）
 Pages 沒有 Next.js API。`POST /api/market-intel` 會回 **405**。工作台因此：
-1. 偵測 `github.io`／`/PRD/crmp-plus`／`NEXT_PUBLIC_STATIC_EXPORT`。
+1. 偵測 `github.io`／`/PRD/crmp-admin`／`NEXT_PUBLIC_STATIC_EXPORT`。
 2. 以與正式掃描相同的 `EVENT_TEMPLATES` 執行 `runClientMarketIntelScan()`。
 3. 在本機狀態更新發現、寄件匣、掃描紀錄與 `M2-MKT-INTEL`（存 `localStorage`）。
 4. SSG 時先種三筆發現，避免第一次畫面是 0。
@@ -1548,7 +1254,7 @@ graph TD
 | 文件 | `platform/docs/*` Markdown，經 `lib/docs.ts`＋`DocArticlePage` 渲染 |
 | 語系 | `en`／`zh-Hant` 查詢參數 `?lang=` |
 | UI 語系 | Cookie `crmp_ui_lang`；導覽字串於 `lib/i18n.ts` |
-| 行動裝置 | `AdminShell` 抽屜 &lt; `lg`；messenger 與 CS／TR 台列表→案件；儀表板／日誌／資料卡片雙檔；`／cs` 分頁直向；safe-area CSS |
+| 行動裝置 | `AdminShell` 抽屜 &lt; `lg`；messenger 主從；safe-area CSS |
 
 互動 UAT 看板：`/admin/docs/uat`。
 
@@ -1565,8 +1271,6 @@ GitHub Pages（靜態匯出）沒有這些 API。UI 必須降級：示範工作�
 | `GET/POST /api/ai` | 分析、模擬警報、`backfill_challenges` |
 | `GET/POST /api/ai-admin` | 提案／核准／訓練／回饋 |
 | `GET/POST /api/messenger` | 執行緒＋內嵌動作 |
-| `GET/POST /api/cs` | CS／TR 台收件匣＋操作動作（`triage`／`analyze`／`followup`／`client_reply`／`reply`／`assign_tr`／`escalate_risk`／`resolve`／`poc_release`／`simulate_*`） |
-| `GET/POST /api/cs/intake` | 公開連接器目錄＋案件狀態；C1／表單／信箱進件或續辦（`request_id`／`in_reply_to`／`channel_ref`／`CSR-XXXX`） |
 | `GET/POST /api/lark` | 頻道登錄／模擬通知 |
 | `GET/POST /api/market-intel` | 掃描／發現／寄件匣 |
 | `GET/POST /api/monitor` | Monitor 中心主 API：`run_detectors`、`toggle_pause`、`update_thresholds`、`sync_monitor2`、`ack_alert`、`update_ticket` |
@@ -1646,11 +1350,11 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.10 技能看板＋SKILL.md 頁
 
-`SkillsScenariosBoard`：搜尋、技能 vs 鏈分頁、**進入** → `/admin/skills/[code]`（`finalizeSkill` 劇本：何時用／不用、前置、步驟、證據、停止、成功）。目錄：`risk-scenarios-catalog.ts`＋額外＋**`risk-scenarios-cs.ts`**（CS／TR 24/7 劇本）。
+`SkillsScenariosBoard`：搜尋、技能 vs 鏈分頁、**進入** → `/admin/skills/[code]`（`finalizeSkill` 劇本：何時用／不用、前置、步驟、證據、停止、成功）。目錄：`risk-scenarios-catalog.ts`＋額外。
 
 ### 16.11 Knowledge Tree（知識樹）
 
-`KnowledgeTreeBoard` 用戶端 SVG（`viewBox` 寬 1120）。樹幹：`domains`｜`chains`｜`rag`。產品篩選 ALL／CFD／Crypto。領域節點換行（5 欄 × N）。點領域展開技能；點技能填檢視器；`router.push` 劇本（不要用無效的 SVG `<Link>`）。**RAG 文件葉**深連結 `/admin/rag?doc=…`。`MonitorCode` 連到 Monitor 2.0。大綱模式是同一張圖的巢狀清單。CS／TR 樹幹：**CS_SERVICE**、**TRADING_EXEC**；連結鏈 `CHAIN-CS-TR-INTAKE`；RAG 分類 `CS_POLICY`。
+`KnowledgeTreeBoard` 用戶端 SVG（`viewBox` 寬 1120）。樹幹：`domains`｜`chains`｜`rag`。產品篩選 ALL／CFD／Crypto。領域節點換行（5 欄 × 2）。點領域展開技能；點技能填檢視器；`router.push` 劇本（不要用無效的 SVG `<Link>`）。RAG 文件依 `tags_json`＋標題計分。大綱模式是同一張圖的巢狀清單。
 
 ### 16.12 RAG 語料
 
@@ -1666,15 +1370,15 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.15 Lark＋升級
 
-`lark_channels`＋`lark_cards`＋`lark.*` 設定（含 `oc_cs_c1`、`oc_cs_kyc`、`oc_tr_dealing`）。原型互動卡片（`ALERT`／`ESCALATION`／`CS_ESCALATION`）送到 `/admin/lark`；確認／升級／排除／結案經 `POST /api/lark` `card_*` 呼叫與 Messenger／CS 同一套 CRMP API（`lib/lark/cards.ts`、`lib/lark/actions.ts`）。稽核 `LARK_CARD_*` 屬 CRMP 平面；`LARK_TEST_NOTIFY` 仍屬 Vantage。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。CS／TR 技能綁 `ESC-CS-24-7`／`ESC-TR-DEAL`／`ESC-CS-RISK`。卡片依匹配 `lark_chat_id` 路由。
+`lark_channels`＋`lark.*` 設定。`escalation_routes` 以**維度**（嚴重度、涉入團隊、風險情境、待處理門檻、需人工干預）× 可編輯**係數**（`coefficients_json`）定義。無獨立「路徑」名稱欄 — 以路徑代碼識別。比對順序：精確領域＋嚴重度 → 領域萬用 → **ESC-DEFAULT**。技能綁定一條路徑代碼；未綁定 → ESC-DEFAULT。
 
 ### 16.16 組織
 
-**BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。六個 BU：風險控管、營運、AI、系統、**客服（CS）**、**交易（TR）** — 各含嵌套值班團隊（Lark chat、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）含 CS Lead／CS Agent／TR Lead／TR Dealer 示範角色。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
+**BU 與團隊**合併中心：`/admin/departments`（`/admin/teams` 轉址）。部門（職責 JSON）嵌套團隊（Lark chat、值班、任務）。**角色與權限**可編輯：`/admin/roles`＋`GET/POST /api/roles`（`permissions_json` 晶片＋章程；`users.manage`；禁止 AI 寫入）。使用者（`UsersManager`）。種子含 `PLATFORM_OWNER`（demo platform owner／`haixiang.yan@hytechc.com`）。
 
 ### 16.17 資料來源
 
-`data_sources` 登錄。有 `sources.manage` 時 `DataSourcesManager` CRUD。種子含 C1 即時聊天閘道、網站 CS 表單與官方客服信箱。
+`data_sources` 登錄。有 `sources.manage` 時 `DataSourcesManager` CRUD。
 
 ### 16.18 AI 存取黑名單
 
@@ -1686,7 +1390,7 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 | 分頁 | 內容 |
 |---|---|
-| **CRMP 日誌** | 本 CRMP 管理介面內變更 — 警報、AI、技能、升級、干預、Messenger、**CS_*** |
+| **CRMP 日誌** | 本 CRMP 管理介面內變更 — 警報、AI、技能、升級、干預、Messenger |
 | **Vantage Markets 管理日誌** | 其他管理頁 — 限制權限、拉取交易、觸發 Lark、BU POC 風險事件回應、設定／組織／RAG |
 
 兩個分頁在有變更前快照時提供**回滾**（`POST /api/audit/rollback`，`{ audit_id }`）。
@@ -1697,242 +1401,11 @@ SSR 計數（使用者、團隊、來源、領域、未結警報／工單、Lark
 
 ### 16.21 文件渲染
 
-Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。互動看板：UAT（`UatChecklistBoard`）、路線圖、開放議題、進度（`ProgressTrackerBoard` — X＝議題、Y＝2026-10→2027-12；CS／TR 目錄 v1.6 在同一 20 欄，不是額外長條）。網址目錄：`UrlCatalogBoard`＋`lib/docs/urls.ts` 的 `PLATFORM_URLS`（**CS／TR** 區段＝`/cs`、台面、儀表板、日誌、五本 SKILL.md、六片 RAG 葉、GET／POST `/api/cs/intake`、`cs_*` 表；篩選；`PUBLIC_*`＝CRMP Plus `/PRD/crmp-plus/` 含 `PUBLIC_CS_PORTAL_URL` `/cs/`、`PUBLIC_CS_DASHBOARD_URL`、`PUBLIC_CS_LOG_URL`；`ORIGINAL_CRMP_*`＝凍結 `/PRD/crmp-admin/`）。見 **§17.9**。
+Markdown `platform/docs/*.md`＋`*.zh-Hant.md`。`markdownToHtml`：標題 h1–h4、表格、清單、mermaid `graph`／`flowchart`／`sequenceDiagram` → SVG（`.doc-diagram`，`lib/docs-mermaid.ts`）。UAT：`UatChecklistBoard`＋`UAT_CASES`（45）。網址目錄：`lib/docs/urls.ts` 的 `PLATFORM_URLS`、`PUBLIC_ADMIN_URL`、`PUBLIC_MESSENGER_URL`。
 
 ---
 
-## 17. CS／TR 台
-
-**頁面：** `/admin/cs-desk` · `CsTrDesk` · 權限 `cs.read`（檢視）／`cs.operate`（操作）。訪客／靜態快照可經 `lark.read` 閱讀。
-
-### 17.1 目的
-客服是 **24/7** 第一線：平台 **C1** 即時聊天、網站**提交表單**與**官方客服信箱**。交易（TR）承接 CS 分流的成交投訴（訂單、成交、滑點、強平、MT4／MT5）。CS 不啟動交易管制；TR 不值班 C1。
-
-### 17.2 進件 API
-即時連接器共用一個 webhook：
-
-| 渠道 | `channel` 代碼 | 典型來源 |
-|---|---|---|
-| C1 即時聊天 | `C1_LIVE_CHAT` | C1 webhook |
-| 網站／App 表單 | `WEB_FORM` | 表單送出 |
-| 官方信箱 | `OFFICIAL_EMAIL` | 信箱閘道 |
-
-`POST /api/cs/intake` 接受工作階段（`cs.operate`）、`mock_webhook: true`、`portal: true`，或標頭 `x-cs-intake-token: demo-c1`。內文：`client_name`／`from_name`、`client_email`／`from_email`、`client_uid`、`subject`、`body`／`text`／`message`。C1 可帶 `c1_id`／`channel_ref`；信箱閘道可帶 `in_reply_to` 或主旨中的 `CSR-XXXX`。**GET** `/api/cs/intake` 回傳連接器目錄；`?request_id=CSR-XXXX` 回傳公開狀態（不含個資）。台面動作：`POST /api/cs`（`triage`、`analyze`、`followup`、`client_reply`、`reply`、`assign_tr`、`escalate_risk`、`resolve`、`poc_release`、`simulate_c1|form|email`）。
-
-進件若對得上既有未結案件則**續辦**，順序：`request_id`、`in_reply_to`（訊息 id／channel_ref／CSR-XXXX）、同一個 C1／表單／信箱 `channel_ref`，或主旨中的 `CSR-[0-9A-F]{6}`。若該案仍有 WAITING 追問，視為客戶回覆 — 關閉等待迴圈並重新分流，不另開重複案件。
-
-公開客戶畫面：`/cs`（`CsClientPortal`）— C1 即時聊天、提交表單、官方信箱分頁，皆打同一 webhook。永久網址 `PUBLIC_CS_PORTAL_URL`。
-
-資料表：`cs_channels`、`cs_requests`、`cs_messages`、`cs_followups`。稽核動作 `CS_*` 落在 **CRMP** 平面（`entity_type=cs_request`）。
-
-### 17.3 AI 分流與追問迴圈
-`triageText` 為啟發式（原型 — 此路徑無正式 LLM）：
-
-- **need_id** — KYC／護照／核身／登不進去。狀態 `ID_VERIFY`。
-- **unclear** — 內文短於 48 字或「help me／???／不清楚」。狀態 `AWAITING_CLIENT`。
-- **trading** — 訂單／成交／滑點／MT4／MT5。台面 `TR`，狀態 `ASSIGNED_TR`。
-- 其餘為 **complaint** 或 **question**。帳簿風險投訴可 `escalate_risk` 進入示範 Messenger／人工干預（`ESCALATED_RISK`）。
-
-清晰度為 `unclear` 或 `need_id` 時，AI **自動寄信**（`EMAIL_OUT`＋`cs_followups.status=WAITING`）並**等待客戶回覆**（同一進件 API 的 `EMAIL_IN`／C1 `CLIENT`／表單 `FORM` → 重新分流）。追問仍為 WAITING 時**禁止結案**。迴圈上限 **3** 封，其後由 CS Lead 人工跟進。
-
-### 17.4 專用 SKILL.md 劇本＋知識樹
-分流不只是啟發式。每則請求在 `cs_requests.skill_code` 蓋上專用劇本（`platform/src/lib/ai/risk-scenarios-cs.ts`）：
-
-| 技能 | 何時 | 台面／狀態 |
-|---|---|---|
-| `SKILL-CS-CLARIFY` | 過短／「help me ???」 | CS · `AWAITING_CLIENT` |
-| `SKILL-CS-ID-VERIFY` | KYC／護照／登不進去 | CS · `ID_VERIFY` |
-| `SKILL-CS-ACCOUNT-FAQ` | 清楚的隔夜利息／時段／UID | CS · `OPEN` |
-| `SKILL-TR-EXECUTION` | 成交／滑點／MT4／MT5 | TR · `ASSIGNED_TR` |
-| `SKILL-CS-ESCALATE-RISK` | 帳簿風險／詐欺／錢包 | `ESCALATED_RISK` |
-
-每個技能含何時使用／何時不用／預檢／證據／停止／成功條件、繁中覆寫（`skill-zh.ts`）、一條升級路徑（`ESC-CS-24-7`／`ESC-TR-DEAL`／`ESC-CS-RISK`），以及明確 RAG 葉（`SKILL_RAG_DOCS`）。知識樹領域 **CS_SERVICE** 與 **TRADING_EXEC** 展開這些技能；連結時間鏈 `CHAIN-CS-TR-INTAKE`。語料鍵：`cs-24-7-intake`、`cs-id-verify-policy`、`cs-swap-faq`、`tr-dealing-handoff`、`cs-escalate-to-risk`、`cs-skill-playbooks`。佇列監控 `M2-CS-UNCLEAR`、`M2-CS-ID`、`M2-CS-FAQ`、`M2-TR-EXEC`、`M2-CS-ESC`。CS 台晶片 **進入** `/admin/skills/{code}`。
-
-```mermaid
-graph TD
-  In[C1／表單／官方信箱] --> API[POST /api/cs/intake]
-  Portal[客戶入口 /cs] --> In
-  Reply[進件回覆 CSR 或 channel_ref] --> API
-  API --> Triage[AI 分流]
-  Triage -->|清楚 CS| Open[CS 未結]
-  Triage -->|交易| TR[已派 TR]
-  Triage -->|不清楚或需核身| Mail[自動 EMAIL_OUT]
-  Mail --> Wait[待客戶／身分驗證]
-  Wait -->|客戶回覆| Triage
-  Wait -->|上限 3| Lead[CS Lead 人工]
-  Open --> Risk{帳簿風險?}
-  TR --> Risk
-  Risk -->|是| Esc[升級風控 → Messenger]
-  Risk -->|否| Done[已結案]
-  Open --> Analyze[analyzeCsRequest]
-  Analyze -->|FAQ 直回| Replied[AI_REPLIED]
-  Analyze -->|敏感| Poc[POC_REVIEW]
-```
-
-種子示範案件：清楚的 C1 隔夜利息詢問、不清楚的 C1「help me ???」、TR 滑點表單、官方信箱核身。
-
-### 17.5 資料綱要
-
-`ensureCsSchema`（`lib/cs/desk.ts`）建立：
-
-| 資料表 | 關鍵欄 | 角色 |
-|---|---|---|
-| `cs_channels` | `code` 唯一、`kind`、`endpoint`、`enabled` | 種子 C1／表單／信箱連接器 |
-| `cs_requests` | `request_id` CSR-XXXX 唯一、`channel`、`channel_ref`、`desk`、`status`、`ai_clarity`、`followup_count`、`skill_code`、`severity`、`sensitivity`、`ai_solution`、`ai_draft`、`poc_role`、`poc_name` | 客戶工單 |
-| `cs_messages` | `msg_id`、`kind`（CLIENT／FORM／EMAIL_IN／EMAIL_OUT／AI／CS／TR／SYSTEM）、`sender`、`body` | 逐字稿 |
-| `cs_followups` | `email_to`、`subject`、`reason`、`status` WAITING\|CLOSED、`sent_at`、`replied_at` | 自動信件等待迴圈 |
-
-公開 `GET /api/cs/intake?request_id=` 回傳 `request_id`、`status`、`ai_clarity`、`skill_code`、`channel`、`channel_ref` — **不含**客戶姓名／信箱／內文。**沒有**證件圖欄。
-
-### 17.6 模組地圖
-
-| 路徑 | 職責 |
-|---|---|
-| `lib/cs/intake.ts` | `parseIntakePayload`、`inferIntakeChannel`、`ingestOrContinue`、`intakeConnectorCatalog`、`lookupPublicCsStatus` |
-| `lib/cs/desk.ts` | 綱要、`findCsRequestMatch`、`ingestCsRequest`、`continueCsRequest`、`recordClientReply`、`applyTriage`、`applyCsAnalysis`、`releasePocDraft`、`sendFollowupEmail` |
-| `lib/cs/analyze.ts` | `analyzeCsRequest`、`scoreSeverity`、`scoreSensitivity`、`isCollectedReply` — 啟發式，無正式 LLM |
-| `lib/cs/skills.ts` | 啟發式 → `SKILL-CS-*`／`SKILL-TR-*` |
-| `lib/ai/risk-scenarios-cs.ts` | 五本劇本＋`CHAIN-CS-TR-INTAKE` |
-| `lib/cs/analytics.ts` | `getCsDashboard`、`getCsLog` |
-| `lib/cs/ops-data.ts` | `getCsOpsContract`、`getCsFollowupCap`、`getCsIntakeToken` |
-| `lib/cs/params.ts` | 種子目錄：團隊、POC、Lark、來源、`cs.*` 鍵、關卡 |
-| `app/api/cs/intake/route.ts` | GET 目錄／狀態 · POST 進件 |
-| `app/api/cs/route.ts` | 台面操作動作＋`GET ?view=dashboard\|log\|data` |
-| `app/cs/page.tsx`＋`CsClientPortal` | 公開三分頁入口 |
-| `components/CsTrDesk.tsx` | 操作收件匣 |
-| `components/CsDashboardView.tsx` | CS／TR 指標 |
-| `components/CsLogView.tsx` | CS_* 時間軸＋已結包 |
-| `components/CsOpsDataView.tsx` | BU／團隊／關卡／參數契約 |
-| `lib/docs/urls.ts`＋`UrlCatalogBoard` | CS／TR 目錄區段 |
-
-POST 進件驗證：工作階段 `cs.operate`、`mock_webhook: true`、`portal: true`，或標頭 `x-cs-intake-token: demo-c1`。
-
-### 17.7 等待迴圈狀態
-
-```mermaid
-graph TD
-  New[新進件] --> Triage[triageText 加技能蓋章]
-  Triage -->|清楚 FAQ| Open[未結]
-  Triage -->|交易| TR[已派 TR]
-  Triage -->|不清楚| Wait[待客戶 WAITING]
-  Triage -->|需核身| Id[身分驗證 WAITING]
-  Wait -->|CSR 或 channel_ref 回覆| Triage
-  Id -->|CSR 或 channel_ref 回覆| Triage
-  Wait -->|上限 3| Lead[客服主管]
-  Id -->|上限 3| Lead
-  Open --> Analyze[analyzeCsRequest]
-  Analyze -->|直回| Replied[AI_REPLIED]
-  Analyze -->|poc| Poc[POC_REVIEW]
-  Open --> Hold{WAITING 追問?}
-  Hold -->|是| Block[禁止結案]
-  Hold -->|否| Done[已結案]
-```
-
-續辦比對順序：`request_id` → `in_reply_to` → 進行中 `channel_ref` → 主旨 `CSR-[0-9A-F]{6}`。
-
-### 17.8 公開 `/cs` 入口
-
-`CsClientPortal` 分頁：即時聊天（`C1_LIVE_CHAT`）、提交表單（`WEB_FORM`）、官方信箱（`OFFICIAL_EMAIL`）。每次 POST 設 `portal: true`，並把 `channel_ref` 留在瀏覽器，下一則訊息續辦同一 `CSR-XXXX`。狀態徽章輪詢 `GET /api/cs/intake?request_id=`。永久 Pages 網址：`https://hxyan2020.github.io/PRD/crmp-plus/cs/`。
-
-### 17.9 網址目錄（技術）
-
-`PLATFORM_URLS` 類別 **CS／TR** 列出 `/cs`、`/admin/cs-desk`、`/admin/cs-dashboard`、`/admin/cs-log`、`/admin/cs-data`、五條 `/admin/skills/SKILL-CS-*`／`SKILL-TR-*`、六片 `/admin/rag?doc=cs-*` 葉、`/api/cs`、`/api/cs?view=dashboard`、`/api/cs?view=log`、`/api/cs?view=data`、`/api/cs/intake`、`/api/cs/intake?request_id=` 與 `tables:cs_*`。看板：篩選、`#url-cat-cs-tr` 跳轉、雙語 `phrase()` 標題。守門：`scripts/verify-url-catalog.ts`。
-
-### 17.10 可追溯性
-
-| 產品 | 規格 |
-|---|---|
-| PRD | G13、FR-37、FR-40、FR-41、FR-42、FR-43、FR-44、FR-45、FR-46、旅程 5.7–5.10、§6.5 |
-| 使用手冊 | §9.3 入口／連接器／等待迴圈／每日角色／儀表板／日誌／資料／分析 |
-| AI 使用手冊 | CRMP-AIU-001 `/admin/docs/ai-use` 風控＋CS／TR 識字（LLM、技能、代理、MCP、具名函式＋閘道資料庫路徑、偵測／改正／預防） |
-| UAT | UAT 目錄 v2.7：UAT-25 目錄；UAT-46 連接器；UAT-47 等待迴圈；UAT-48 TR／風控；UAT-50 技能＋樹；UAT-51 儀表板＋日誌；UAT-52 配套資料；UAT-53 分析／POC；支援 UAT-17／22／27–29／36–40；簽核 UAT-49 |
-
-### 17.11 專用儀表板＋日誌
-
-**頁面：** `/admin/cs-dashboard`（`CsDashboardView`）與 `/admin/cs-log`（`CsLogView`）。權限 `cs.read`／`lark.read`（與台面檢視相同）。訪客／靜態快照可讀。
-
-這些畫面**不是**每日績效（`/admin/dashboard`，CFD／加密日終）也**不是**風險日誌分析（`/admin/risk-log`，已關閉 Monitor 追蹤包）。混在一起是產品缺陷。
-
-| 畫面 | 來源 | 功能 |
-|---|---|---|
-| 儀表板 | `lib/cs/analytics.ts` 的 `getCsDashboard()`，來自 `cs_requests`＋WAITING `cs_followups` | 總數、未結／已結、WAITING、上限 3（`followup_count ≥ 3`）、TR／風控、POC 審閱、AI 已回、依渠道／狀態／技能／台面／清晰度／**嚴重度**分桶、等待清單、最近列 |
-| 日誌 | `getCsLog()` 來自 `audit_logs`（`entity_type=cs_request` 或 `CS_*`）加上已結案件包 | `CS_INTAKE`、`CS_INTAKE_CONTINUE`、`CS_FOLLOWUP_EMAIL`、`CS_CLIENT_REPLY`、`CS_AGENT_REPLY`、`CS_AI_ANALYZE`、`CS_AI_REPLY`、`CS_POC_REVIEW`、`CS_POC_RELEASE`、`CS_ASSIGN_TR`、`CS_ESCALATE_RISK`、`CS_RESOLVE` 時間軸；篩選；已結包 |
-
-`GET /api/cs?view=dashboard` 與 `GET /api/cs?view=log` 回傳相同內容。導覽徽章：儀表板用未結 CS 工單；日誌用 CS_* 稽核數。守門：`scripts/verify-cs-analytics.ts`。
-
-```mermaid
-graph TD
-  Tickets[cs_requests] --> Dash[CS TR 儀表板]
-  Wait[WAITING 追問] --> Dash
-  Audit[CS 稽核] --> Log[CS TR 日誌]
-  Done[已結包] --> Log
-  Dash --> Desk[CS TR 台]
-  Log --> Desk
-```
-
-### 17.12 配套資料（BU／團隊／關卡／參數）
-
-**頁面：** `/admin/cs-data`（`CsOpsDataView`）。**API：** `GET /api/cs?view=data`。來源：`lib/cs/ops-data.ts` 的 `getCsOpsContract()`，種子目錄 `lib/cs/params.ts`。
-
-`ensureCsOrg`（`db.ts`）會 upsert：
-
-| 種類 | 紀錄 |
-|---|---|
-| BU | `CUSTOMER_SERVICE`、`TRADING` |
-| 團隊 | CS 24/7 台（`oc_cs_c1`）、**CS 核身庫**（`oc_cs_kyc`）、TR 成交支援（`oc_tr_dealing`） |
-| POC | Maya Santos CS_LEAD、Elena Rossi CS_AGENT、Nadia Okonkwo CS_AGENT（核身）、Kenji Watanabe TR_LEAD、Omar Haddad TR_DEALER |
-| 路徑 | `ESC-CS-24-7`、**`ESC-CS-KYC`**、`ESC-TR-DEAL`、`ESC-CS-RISK` 含關卡＋SLA |
-| 設定 | `cs.followup_cap`、`cs.auto_reply_max_severity`、`cs.sensitive_categories`、`cs.wait_sla_minutes`、`cs.id_verify_sla_minutes`、`cs.tr_sla_minutes`、`cs.risk_sla_minutes`、`cs.intake_token`、`cs.mailbox_support`、`cs.mailbox_complaints`、`cs.lark_cs`／`_kyc`／`_tr` |
-| 來源 | C1 閘道、網站表單、官方信箱、support@、complaints@、CS 核身庫（僅旗標）、MT4／MT5 成交帶 |
-
-台面 `sendFollowupEmail` 讀 `getCsFollowupCap()`。進件標頭比對 `getCsIntakeToken()`。`cs_requests.assigned_bu` 蓋 CUSTOMER_SERVICE／TRADING／RISK_CONTROL。平台設定分組 **CS／TR 營運**。守門：`scripts/verify-cs-data.ts`。
-
-```mermaid
-graph LR
-  Params[cs 設定] --> Desk[CS TR 台]
-  Teams[BU 與團隊] --> Data[CS TR 資料]
-  Routes[ESC 關卡] --> Data
-  Sources[資料來源] --> Data
-  Data --> Dash[儀表板]
-  Data --> Desk
-```
-
-### 17.13 資料齊全後分析（分類／嚴重度／直回 vs POC）
-
-**程式：** `lib/cs/analyze.ts`（`analyzeCsRequest`、`scoreSeverity`、`scoreSensitivity`、`isCollectedReply`）加上 `lib/cs/desk.ts` 的 `applyCsAnalysis`／`releasePocDraft`。**API：** `POST /api/cs` 動作 `analyze` 與 `poc_release`。原型啟發式 — **此路徑無正式 LLM**（與 `triageText` 相同）。守門：`scripts/verify-cs-analyze.ts`。
-
-`applyTriage` 只在事實**齊全**時才分析：清晰度 `clear`，或等待迴圈回覆 ≥48 字且含 UID（`isCollectedReply`）。過短維持 `AWAITING_CLIENT`／`ID_VERIFY`。長 UID 回覆即使仍有核身關鍵字，也不再永遠重開 need-ID。
-
-| 輸出 | 值 |
-|---|---|
-| `severity` | `LOW`／`MEDIUM`／`HIGH`／`CRITICAL` |
-| `sensitivity` | `auto` 或 `poc` |
-| `ai_solution`／`ai_draft` | 依類別＋技能的啟發式文案（FAQ／核身／投訴／成交／CRITICAL） |
-| `poc_role`／`poc_name` | 敏感度為 `poc` 時來自 `CS_POC_SPECS` |
-
-閘道：`cs.auto_reply_max_severity`（預設 `MEDIUM`）與 `cs.sensitive_categories`（預設 `complaint,kyc,trading`）。技能 `SKILL-CS-ID-VERIFY`、`SKILL-TR-EXECUTION`、`SKILL-CS-ESCALATE-RISK` 一律 `poc`（或升級）。
-
-| 路徑 | CS 狀態 | 客戶信 |
-|---|---|---|
-| FAQ，嚴重度 ≤ 直回上限 | `AI_REPLIED` | 立刻 `EMAIL_OUT`（`CS_AI_REPLY`） |
-| 核身／投訴 | `POC_REVIEW` | 暫扣；POC 補註後 `poc_release`（`CS_POC_RELEASE`） |
-| 成交 | 維持 `ASSIGNED_TR` | 交 TR Dealer 補註 |
-| CRITICAL／帳簿風險 | `ESCALATED_RISK` | 不直寄客戶 |
-
-稽核：`CS_AI_ANALYZE`、`CS_AI_REPLY`、`CS_POC_REVIEW`、`CS_POC_RELEASE`。儀表板桶 `poc_review`、`ai_replied`、`by_severity`。
-
-```mermaid
-graph TD
-  Collected[isCollectedReply] --> Analyze[analyzeCsRequest]
-  Analyze -->|FAQ 直回| Send[EMAIL_OUT AI_REPLIED]
-  Analyze -->|poc| Hold[POC_REVIEW]
-  Hold -->|poc_release extra| Send
-  Analyze -->|CRITICAL| Esc[escalateToRisk]
-```
-
----
-
-## 18. 文件控制
+## 17. 文件控制
 
 | 版次 | 日期 | 說明 |
 |---|---|---|
@@ -1944,20 +1417,11 @@ graph TD
 | 1.6 | 2026-10-05 | 首頁脊柱、BU 與團隊、MonitorCode、propose_rag、ESC-DEFAULT、開放議題／進度 |
 | 1.7 | 2026-10-05 | 稽核平面分流（CRMP／Vantage Markets 管理）＋回滾 API；可編輯角色；升級維度 × 係數 |
 | 1.8 | 2026-10-05 | Monitor 中心 API（`run_detectors`／`toggle_pause`／`update_thresholds`）；即時警報與追蹤標籤；Key API 補 roles／org／rollback／escalation／ai-chat |
-| 1.9 | 2026-10-06 | §17 CS／TR 台：C1／表單／信箱進件、AI 追問直到客戶回覆（上限 3）、TR 分流、升級風控 |
-| 2.0 | 2026-10-06 | CRMP Plus 一體平台；公開 `basePath` `/PRD/crmp-plus/`；原 CRMP 管理後台凍結於 `/PRD/crmp-admin/` |
-| 2.1 | 2026-10-06 | §17.4 CS／TR 專用 SKILL.md；知識樹 CS_SERVICE／TRADING_EXEC；RAG cs-* 葉；UAT-50 |
-| 2.2 | 2026-10-06 | §17.2 公開 `/cs` 入口＋進件回覆對案（CSR-XXXX／channel_ref／In-Reply-To）；GET 進件目錄；FR-40 |
-| 2.3 | 2026-10-06 | §17.5–17.10 綱要、模組地圖、等待迴圈狀態、`/cs` 入口、網址目錄、PRD FR-37…43 追溯 |
-| 2.4 | 2026-10-06 | §17.11 專用 CS／TR 儀表板＋日誌；FR-44；UAT-51 |
-| 2.5 | 2026-10-06 | §17.12 CS／TR 配套資料（BU／核身庫／關卡／`cs.*`）；FR-45；UAT-52 |
-| 2.6 | 2026-10-06 | §17.13 資料齊全後分析（分類／嚴重度／直回 vs POC）；FR-46；UAT-53 |
-| 2.7 | 2026-10-07 | §13 行動：CS／TR 台列表→案件＋儀表板／日誌／資料卡片雙檔；FR-14；UAT-18 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`
-5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v2.6"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"18"}]]}],["$","div","CS / TR",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"CS / TR"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"§17.5–17.13"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec · v2.6"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/cs","children":"Client portal"}],["$","$L10",null,{"className":"btn","href":"/admin/cs-desk","children":"CS / TR Desk"}],["$","$L10",null,{"className":"btn","href":"/admin/cs-dashboard","children":"CS / TR Dashboard"}],["$","$L10",null,{"className":"btn","href":"/admin/cs-log","children":"CS / TR Log"}],["$","$L10",null,{"className":"btn","href":"/admin/cs-data","children":"CS / TR Data"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/urls","children":"URL Catalog"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"TSD","markdownEn":"$12","markdownZh":"$13"}]]}]
+5:["$","div",null,{"children":[["$","div",null,{"className":"grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mb-4","children":[["$","div","Document version",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Document version"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"v1.5"}]]}],["$","div","Sections",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Sections"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"17"}]]}],["$","div","Core modules",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Core modules"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Challenger · Messenger · Market Intel"}]]}],["$","div","Stack",{"className":"panel p-3 sm:p-4","children":[["$","div",null,{"className":"text-[10px] sm:text-xs uppercase tracking-[0.08em] text-[var(--muted)]","children":"Stack"}],["$","div",null,{"className":"mt-1 font-semibold text-sm sm:text-base break-word","children":"Next.js 15 + SQLite"}]]}]]}],["$","div",null,{"className":"panel p-3 sm:p-4 mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3","children":[["$","div",null,{"className":"flex flex-wrap gap-2 items-center","children":[["$","$Lf",null,{"className":"bg-indigo-50 text-indigo-900 border-indigo-200","children":"CRMP-TSD-001"}],["$","$Lf",null,{"className":"bg-slate-100 text-slate-700 border-slate-200","children":"Prototype / living spec"}]]}],["$","div",null,{"className":"action-row","children":[["$","$L10",null,{"className":"btn","href":"/admin/docs/prd","children":"PRD"}],["$","$L10",null,{"className":"btn","href":"/admin/docs/uat","children":"UAT"}],["$","$L10",null,{"className":"btn btn-primary","href":"/admin/docs/user-guide","children":"User Guide"}]]}]]}],["$","$L11",null,{"docId":"TSD","markdownEn":"$12","markdownZh":"$13"}]]}]
 a:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#10233a"}]]
 7:null
 8:null
-c:[["$","title","0",{"children":"Vantage CRMP Plus"}],["$","meta","1",{"name":"description","content":"Upgraded Centralised Risk Management Platform — original CRMP plus 24/7 CS/TR"}],["$","link","2",{"rel":"icon","href":"/vantage-markets-logo.png"}],["$","link","3",{"rel":"apple-touch-icon","href":"/vantage-markets-logo.png"}]]
+c:[["$","title","0",{"children":"Vantage CRMP Admin"}],["$","meta","1",{"name":"description","content":"Centralised Risk Management Platform — Admin Control Plane"}],["$","link","2",{"rel":"icon","href":"/vantage-markets-logo.png"}],["$","link","3",{"rel":"apple-touch-icon","href":"/vantage-markets-logo.png"}]]
