@@ -2,6 +2,12 @@
 
 A 30-day learning platform to become a **true AI product owner**: technical fluency, module/infra literacy, independent debugging, AI DevOps, and career-ready judgment — without becoming an AI engineer.
 
+## Permanent URL
+
+**https://hxyan2020.github.io/PRD/ownlab/**
+
+Hosted on the repo’s `gh-pages` branch under `/ownlab/` (does not overwrite the root site or other sub-apps).
+
 ## Run locally
 
 ```bash
@@ -15,9 +21,10 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 ## Scripts
 
 - `npm run dev` — local academy
-- `npm run build` — production build
+- `npm run build` — production build (`base` = `/PRD/ownlab/`)
 - `npm run check:curriculum` — assert Days 1–30 exist once
 - `npm run preview` — preview production build
+- `npm run deploy:gh-pages` — build and publish to `gh-pages` → `/ownlab/`
 
 ## What’s inside
 

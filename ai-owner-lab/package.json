@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "check:curriculum": "node scripts/check-curriculum.mjs"
+    "check:curriculum": "node scripts/check-curriculum.mjs",
+    "deploy:gh-pages": "bash scripts/deploy-gh-pages.sh"
   },
   "dependencies": {
     "react": "^19.2.8",
