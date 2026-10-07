@@ -215,6 +215,74 @@ export const en = {
   "chat.askPurchaseWhich": "Which game do you want purchase links for?",
   "chat.askAbout": "Name a game from the catalog and I’ll share its origin and story.",
   "chat.askVariations": "Name a game and I’ll list its cultural variations.",
+  "chat.askHowToPlayWhich":
+    "Which game should I teach? Name it, or ask about one of the recommendations above.",
+  "chat.askRequirements": "Which game’s requirements or player count should I check?",
+  "chat.askCompare": "Name two catalog games to compare (e.g. “compare Go and Chess”).",
+
+  "chat.players.alone": "solo play",
+  "chat.players.two": "2 people",
+  "chat.players.small": "3–4 people",
+  "chat.players.group": "larger groups",
+  "chat.players.any": "any group size",
+
+  "chat.rec.forPlayers": "for {players}",
+  "chat.rec.settingIndoor": "indoor",
+  "chat.rec.settingOutdoor": "outdoor",
+  "chat.rec.vibePlay": "{vibe} play",
+  "chat.rec.tiedTo": "tied to “{region}”",
+  "chat.rec.basedOn": " based on {bits}",
+  "chat.rec.none":
+    "I couldn’t find a strong match{prefLine}. Try broadening region to “any,” or say “start over.”",
+  "chat.rec.intro":
+    "Here are {n} catalog picks{prefLine}. Tap a title in the collection, or ask me how to play, about origins, variations, or where to buy any of them.",
+
+  "chat.vibe.strategy": "strategy",
+  "chat.vibe.casual": "casual",
+  "chat.vibe.craft": "craft",
+  "chat.vibe.sport": "sport",
+  "chat.vibe.ritual": "ritual",
+  "chat.vibe.kids": "kids",
+  "chat.vibe.puzzle": "puzzle",
+
+  "chat.answer.howToPlay":
+    "**{name}** — how to play:\n{steps}\n\nIdeal participants: {participants}. Ask about requirements, variations, or purchase links if you want.",
+  "chat.answer.purchaseNone":
+    "I don’t have store links for **{name}** yet. You can still open its catalog page for details.",
+  "chat.answer.purchase":
+    "Purchase options for **{name}** (product pages on different platforms):\n{links}\n\nCompare shipping to your region before buying.",
+  "chat.answer.about":
+    "**{name}**\nOrigin: {origin} · {civilization}\nRoughly created: {year}\nCategory: {category}\n\n{description}",
+  "chat.answer.variationsNone":
+    "**{name}** is catalogued as a distinct form without nested variations. Related games may still appear elsewhere in the collection.",
+  "chat.answer.variations":
+    "Cultural variations of **{name}** (same fundamental game/toy, different faces):\n{lines}",
+  "chat.answer.variationLine": "• **{name}** ({origin}, {year}) — {notes}",
+  "chat.answer.requirements": "Requirements for **{name}**:\n{lines}",
+  "chat.answer.participants": "Ideal participants for **{name}**: {participants}",
+  "chat.answer.aboutFollowup":
+    "{about}\n\nI can walk you through how to play, list requirements, show variations, or share purchase links.",
+  "chat.answer.compare":
+    "**{a}** vs **{b}**\n\n• Origin: {aOrigin} ({aYear}) vs {bOrigin} ({bYear})\n• Players: {aPlayers} vs {bPlayers}\n• Category: {aCategory} vs {bCategory}\n\n{a}: {aDesc}…\n\n{b}: {bDesc}…\n\nAsk how to play either one, or for purchase links.",
+  "chat.answer.fallback":
+    "I can recommend games from this catalog, explain how to play, share origins and variations, or point to purchase pages.\n\nTry: “strategy games for 2 from East Asia”, “how to play Mancala”, or “where to buy Xiangqi”. Or say “start over” for the preference interview.",
+
+  "chat.qr.startOver": "Start over",
+  "chat.qr.howToPlayFirst": "How do I play the first one?",
+  "chat.qr.whereBuyIt": "Where can I buy it?",
+  "chat.qr.tellHistory": "Tell me its history",
+  "chat.qr.moreLikeThese": "More like these",
+  "chat.qr.showVariations": "Show variations",
+  "chat.qr.howToPlayNamed": "How to play {name}?",
+  "chat.qr.buyNamed": "Buy {name}",
+  "chat.qr.recommendSomething": "Recommend something",
+  "chat.qr.howToPlayChess": "How to play Chess?",
+  "chat.qr.buyMancala": "Buy a mancala board",
+  "chat.qr.regionEastAsia": "East Asia",
+  "chat.qr.regionAfrica": "Africa",
+  "chat.qr.regionIndia": "India",
+  "chat.qr.regionEurope": "Europe",
+  "chat.qr.regionMesoamerica": "Mesoamerica",
 
   "detail.origin": "Origin:",
   "detail.civilization": "Civilization:",

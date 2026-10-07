@@ -180,13 +180,21 @@ function parseVibe(text: string, tr?: ChatTranslate): VibePref | null {
 
 function parseRegion(text: string, tr?: ChatTranslate): string | null {
   const t = normalize(text);
-  if (tr && t === normalize(tr("chat.qr.worldwide"))) return "any";
+  if (tr) {
+    if (t === normalize(tr("chat.qr.worldwide"))) return "any";
+    if (t === normalize(tr("chat.qr.regionEastAsia"))) return "east asia";
+    if (t === normalize(tr("chat.qr.regionAfrica"))) return "africa";
+    if (t === normalize(tr("chat.qr.regionIndia"))) return "india";
+    if (t === normalize(tr("chat.qr.regionEurope"))) return "europe";
+    if (t === normalize(tr("chat.qr.regionMesoamerica"))) return "mesoamerica";
+  }
   if (/\b(any|worldwide|no preference|everywhere|global)\b/.test(t)) return "any";
   if (!t) return null;
   return t.replace(/^(from|in|around|near)\s+/, "");
 }
 
-function isStartOver(text: string) {
+function isStartOver(text: string, tr?: ChatTranslate) {
+  if (tr && normalize(text) === normalize(tr("chat.qr.startOver"))) return true;
   return /\b(start over|restart|reset|new search|begin again)\b/i.test(text);
 }
 
@@ -438,65 +446,105 @@ function intent(text: string): string {
   return "general";
 }
 
-function formatRecIntro(prefs: UserPrefs, games: Game[]): string {
+function formatRecIntro(prefs: UserPrefs, games: Game[], t: ChatTranslate): string {
   const bits: string[] = [];
-  if (prefs.players && prefs.players !== "any") bits.push(`for ${labelPlayers(prefs.players)}`);
-  if (prefs.setting && prefs.setting !== "either") bits.push(prefs.setting);
-  if (prefs.vibe && prefs.vibe !== "any") bits.push(`${prefs.vibe} play`);
-  if (prefs.region && prefs.region !== "any") bits.push(`tied to “${prefs.region}”`);
-  const prefLine = bits.length ? ` based on ${bits.join(", ")}` : "";
-  if (!games.length) {
-    return `I couldn’t find a strong match${prefLine}. Try broadening region to “any,” or say “start over.”`;
+  if (prefs.players && prefs.players !== "any") {
+    bits.push(t("chat.rec.forPlayers", { players: labelPlayers(prefs.players, t) }));
   }
-  return `Here are ${games.length} catalog picks${prefLine}. Tap a title in the collection, or ask me how to play, about origins, variations, or where to buy any of them.`;
+  if (prefs.setting === "indoor") bits.push(t("chat.rec.settingIndoor"));
+  else if (prefs.setting === "outdoor") bits.push(t("chat.rec.settingOutdoor"));
+  if (prefs.vibe && prefs.vibe !== "any") {
+    const vibeKey = `chat.vibe.${prefs.vibe}` as MessageKey;
+    bits.push(t("chat.rec.vibePlay", { vibe: t(vibeKey) }));
+  }
+  if (prefs.region && prefs.region !== "any") {
+    bits.push(t("chat.rec.tiedTo", { region: prefs.region }));
+  }
+  const prefLine = bits.length ? t("chat.rec.basedOn", { bits: bits.join(", ") }) : "";
+  if (!games.length) {
+    return t("chat.rec.none", { prefLine });
+  }
+  return t("chat.rec.intro", { n: games.length, prefLine });
 }
 
-function labelPlayers(p: PlayerPref) {
+function labelPlayers(p: PlayerPref, t: ChatTranslate) {
   switch (p) {
     case "alone":
-      return "solo play";
+      return t("chat.players.alone");
     case "two":
-      return "2 people";
+      return t("chat.players.two");
     case "small":
-      return "3–4 people";
+      return t("chat.players.small");
     case "group":
-      return "larger groups";
+      return t("chat.players.group");
     default:
-      return "any group size";
+      return t("chat.players.any");
   }
 }
 
-function answerHowToPlay(game: Game): string {
+function answerHowToPlay(game: Game, t: ChatTranslate): string {
   const steps = game.howToPlay.map((s, i) => `${i + 1}. ${s}`).join("\n");
-  return `**${game.name}** — how to play:\n${steps}\n\nIdeal participants: ${game.idealParticipants}. Ask about requirements, variations, or purchase links if you want.`;
+  return t("chat.answer.howToPlay", {
+    name: game.name,
+    steps,
+    participants: game.idealParticipants,
+  });
 }
 
-function answerPurchase(game: Game): string {
+function answerPurchase(game: Game, t: ChatTranslate): string {
   if (!game.purchaseLinks.length) {
-    return `I don’t have store links for **${game.name}** yet. You can still open its catalog page for details.`;
+    return t("chat.answer.purchaseNone", { name: game.name });
   }
   const links = game.purchaseLinks
     .map((l) => `• ${l.platform}: ${l.label}\n  ${l.url}`)
     .join("\n");
-  return `Purchase options for **${game.name}** (product pages on different platforms):\n${links}\n\nCompare shipping to your region before buying.`;
+  return t("chat.answer.purchase", { name: game.name, links });
 }
 
-function answerAbout(game: Game): string {
-  return `**${game.name}**\nOrigin: ${game.originCountry} · ${game.civilization}\nRoughly created: ${game.creationYear}\nCategory: ${game.category}\n\n${game.description}`;
+function answerAbout(game: Game, t: ChatTranslate): string {
+  return t("chat.answer.about", {
+    name: game.name,
+    origin: game.originCountry,
+    civilization: game.civilization,
+    year: game.creationYear,
+    category: game.category,
+    description: game.description,
+  });
 }
 
-function answerVariations(game: Game): string {
+function answerVariations(game: Game, t: ChatTranslate): string {
   if (!game.variations.length) {
-    return `**${game.name}** is catalogued as a distinct form without nested variations. Related games may still appear elsewhere in the collection.`;
+    return t("chat.answer.variationsNone", { name: game.name });
   }
   const lines = game.variations
-    .map((v) => `• **${v.name}** (${v.originCountry}, ${v.creationYear}) — ${v.notes}`)
+    .map((v) =>
+      t("chat.answer.variationLine", {
+        name: v.name,
+        origin: v.originCountry,
+        year: v.creationYear,
+        notes: v.notes,
+      }),
+    )
     .join("\n");
-  return `Cultural variations of **${game.name}** (same fundamental game/toy, different faces):\n${lines}`;
+  return t("chat.answer.variations", { name: game.name, lines });
 }
 
-function answerRequirements(game: Game): string {
-  return `Requirements for **${game.name}**:\n${game.requirements.map((r) => `• ${r}`).join("\n")}`;
+function answerRequirements(game: Game, t: ChatTranslate): string {
+  return t("chat.answer.requirements", {
+    name: game.name,
+    lines: game.requirements.map((r) => `• ${r}`).join("\n"),
+  });
+}
+
+function followupQuickReplies(t: ChatTranslate, withVariations = false) {
+  const q = [
+    t("chat.qr.howToPlayFirst"),
+    t("chat.qr.whereBuyIt"),
+    t("chat.qr.tellHistory"),
+  ];
+  if (withVariations) q.push(t("chat.qr.showVariations"));
+  q.push(t("chat.qr.moreLikeThese"), t("chat.qr.startOver"));
+  return q;
 }
 
 function resolveFocusGame(
@@ -578,7 +626,7 @@ export function handleUserMessage(
     };
   }
 
-  if (isStartOver(text)) {
+  if (isStartOver(text, t)) {
     const fresh = initialChatState();
     fresh.phase = "ask_players";
     return {
@@ -612,15 +660,9 @@ export function handleUserMessage(
             focusGameId: recs[0]?.id,
           },
           replies: [
-            assistant(formatRecIntro(prefs, recs), {
+            assistant(formatRecIntro(prefs, recs, t), {
               recommendations: recs,
-              quickReplies: [
-                "How do I play the first one?",
-                "Where can I buy it?",
-                "Tell me its history",
-                "More like these",
-                "Start over",
-              ],
+              quickReplies: followupQuickReplies(t),
             }),
           ],
         };
@@ -696,11 +738,11 @@ export function handleUserMessage(
         assistant(t("chat.askRegion"), {
           quickReplies: [
             t("chat.qr.worldwide"),
-            "East Asia",
-            "Africa",
-            "India",
-            "Europe",
-            "Mesoamerica",
+            t("chat.qr.regionEastAsia"),
+            t("chat.qr.regionAfrica"),
+            t("chat.qr.regionIndia"),
+            t("chat.qr.regionEurope"),
+            t("chat.qr.regionMesoamerica"),
           ],
         }),
       ],
@@ -720,16 +762,9 @@ export function handleUserMessage(
         focusGameId: recs[0]?.id,
       },
       replies: [
-        assistant(formatRecIntro(prefs, recs), {
+        assistant(formatRecIntro(prefs, recs, t), {
           recommendations: recs,
-          quickReplies: [
-            "How do I play the first one?",
-            "Where can I buy it?",
-            "Tell me its history",
-            "Show variations",
-            "More like these",
-            "Start over",
-          ],
+          quickReplies: followupQuickReplies(t, true),
         }),
       ],
     };
@@ -751,19 +786,16 @@ export function handleUserMessage(
       return {
         state: { ...state, prefs },
         replies: [
-          assistant(
-            "Which game should I teach? Name it, or ask about one of the recommendations above.",
-            {
-              quickReplies: state.lastRecommendations.slice(0, 3).map((g) => g.name),
-            },
-          ),
+          assistant(t("chat.askHowToPlayWhich"), {
+            quickReplies: state.lastRecommendations.slice(0, 3).map((g) => g.name),
+          }),
         ],
       };
     }
     return {
       state: { ...state, prefs, focusGameId: focus.id, phase: "followup" },
       replies: [
-        assistant(answerHowToPlay(focus), {
+        assistant(answerHowToPlay(focus, t), {
           recommendations: [focus],
           quickReplies: [
             t("chat.qr.requirements"),
@@ -782,7 +814,9 @@ export function handleUserMessage(
         state: { ...state, prefs },
         replies: [
           assistant(t("chat.askPurchaseWhich"), {
-            quickReplies: state.lastRecommendations.slice(0, 3).map((g) => `Buy ${g.name}`),
+            quickReplies: state.lastRecommendations
+              .slice(0, 3)
+              .map((g) => t("chat.qr.buyNamed", { name: g.name })),
           }),
         ],
       };
@@ -790,7 +824,7 @@ export function handleUserMessage(
     return {
       state: { ...state, prefs, focusGameId: focus.id, phase: "followup" },
       replies: [
-        assistant(answerPurchase(focus), {
+        assistant(answerPurchase(focus, t), {
           recommendations: [focus],
           quickReplies: [
             t("chat.qr.howToPlay"),
@@ -812,7 +846,7 @@ export function handleUserMessage(
     return {
       state: { ...state, prefs, focusGameId: focus.id, phase: "followup" },
       replies: [
-        assistant(answerAbout(focus), {
+        assistant(answerAbout(focus, t), {
           recommendations: [focus],
           quickReplies: [
             t("chat.qr.howToPlay"),
@@ -834,7 +868,7 @@ export function handleUserMessage(
     return {
       state: { ...state, prefs, focusGameId: focus.id, phase: "followup" },
       replies: [
-        assistant(answerVariations(focus), {
+        assistant(answerVariations(focus, t), {
           recommendations: [focus],
           quickReplies: [t("chat.qr.howToPlay"), t("chat.qr.whereBuy")],
         }),
@@ -846,13 +880,16 @@ export function handleUserMessage(
     if (!focus) {
       return {
         state: { ...state, prefs },
-        replies: [assistant("Which game’s requirements or player count should I check?")],
+        replies: [assistant(t("chat.askRequirements"))],
       };
     }
     const extra =
       i === "participants"
-        ? `Ideal participants for **${focus.name}**: ${focus.idealParticipants}`
-        : answerRequirements(focus);
+        ? t("chat.answer.participants", {
+            name: focus.name,
+            participants: focus.idealParticipants,
+          })
+        : answerRequirements(focus, t);
     return {
       state: { ...state, prefs, focusGameId: focus.id, phase: "followup" },
       replies: [
@@ -873,19 +910,34 @@ export function handleUserMessage(
     if (unique.length < 2) {
       return {
         state: { ...state, prefs },
-        replies: [
-          assistant("Name two catalog games to compare (e.g. “compare Go and Chess”)."),
-        ],
+        replies: [assistant(t("chat.askCompare"))],
       };
     }
     const [a, b] = unique;
-    const body = `**${a.name}** vs **${b.name}**\n\n• Origin: ${a.originCountry} (${a.creationYear}) vs ${b.originCountry} (${b.creationYear})\n• Players: ${a.idealParticipants} vs ${b.idealParticipants}\n• Category: ${a.category} vs ${b.category}\n\n${a.name}: ${a.description.slice(0, 180)}…\n\n${b.name}: ${b.description.slice(0, 180)}…\n\nAsk how to play either one, or for purchase links.`;
+    const body = t("chat.answer.compare", {
+      a: a.name,
+      b: b.name,
+      aOrigin: a.originCountry,
+      aYear: a.creationYear,
+      bOrigin: b.originCountry,
+      bYear: b.creationYear,
+      aPlayers: a.idealParticipants,
+      bPlayers: b.idealParticipants,
+      aCategory: a.category,
+      bCategory: b.category,
+      aDesc: a.description.slice(0, 180),
+      bDesc: b.description.slice(0, 180),
+    });
     return {
       state: { ...state, prefs, phase: "followup", lastRecommendations: unique },
       replies: [
         assistant(body, {
           recommendations: unique,
-          quickReplies: [`How to play ${a.name}?`, `How to play ${b.name}?`, "Start over"],
+          quickReplies: [
+            t("chat.qr.howToPlayNamed", { name: a.name }),
+            t("chat.qr.howToPlayNamed", { name: b.name }),
+            t("chat.qr.startOver"),
+          ],
         }),
       ],
     };
@@ -920,12 +972,12 @@ export function handleUserMessage(
         focusGameId: recs[0]?.id,
       },
       replies: [
-        assistant(formatRecIntro(nextPrefs, recs), {
+        assistant(formatRecIntro(nextPrefs, recs, t), {
           recommendations: recs,
           quickReplies: [
-            "How do I play the first one?",
-            "Where can I buy it?",
-            "Start over",
+            t("chat.qr.howToPlayFirst"),
+            t("chat.qr.whereBuyIt"),
+            t("chat.qr.startOver"),
           ],
         }),
       ],
@@ -938,15 +990,15 @@ export function handleUserMessage(
       state: { ...state, prefs, focusGameId: focus.id, phase: "followup" },
       replies: [
         assistant(
-          `${answerAbout(focus)}\n\nI can walk you through how to play, list requirements, show variations, or share purchase links.`,
+          t("chat.answer.aboutFollowup", { about: answerAbout(focus, t) }),
           {
             recommendations: [focus],
             quickReplies: [
-            t("chat.qr.howToPlay"),
-            t("chat.qr.whereBuy"),
-            t("chat.qr.variations"),
-            t("chat.qr.recommendElse"),
-          ],
+              t("chat.qr.howToPlay"),
+              t("chat.qr.whereBuy"),
+              t("chat.qr.variations"),
+              t("chat.qr.recommendElse"),
+            ],
           },
         ),
       ],
@@ -957,17 +1009,14 @@ export function handleUserMessage(
   return {
     state: { ...state, prefs, phase: "followup" },
     replies: [
-      assistant(
-        "I can recommend games from this catalog, explain how to play, share origins and variations, or point to purchase pages.\n\nTry: “strategy games for 2 from East Asia”, “how to play Mancala”, or “where to buy Xiangqi”. Or say “start over” for the preference interview.",
-        {
-          quickReplies: [
-            "Start over",
-            "Recommend something",
-            "How to play Chess?",
-            "Buy a mancala board",
-          ],
-        },
-      ),
+      assistant(t("chat.answer.fallback"), {
+        quickReplies: [
+          t("chat.qr.startOver"),
+          t("chat.qr.recommendSomething"),
+          t("chat.qr.howToPlayChess"),
+          t("chat.qr.buyMancala"),
+        ],
+      }),
     ],
   };
 }

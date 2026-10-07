@@ -491,7 +491,8 @@ export async function runDiscoverySearch(
         game,
         source: "discovery",
         score: s,
-        reason: `New AI discovery · ${reasonFor(game, prefs, s)}`,
+        // Prefix localized in PreferencesPage via prefs.badgeDiscovery / reason display
+        reason: reasonFor(game, prefs, s),
       });
       drafted += 1;
       onProgress({
