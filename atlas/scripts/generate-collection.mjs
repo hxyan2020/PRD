@@ -107,47 +107,48 @@ const CURATED_TAGS = {
   Sungka: "sungka,filipino-mancala",
 };
 
-/** Hand-picked Unsplash photos that depict the named game (used once each). */
+/**
+ * Hand-picked Unsplash photos — each ID was visually verified to depict the
+ * named game (wrong stock IDs previously mapped Mahjong→gym, Yo-yo→yoga mats,
+ * Rubik→broccoli, Marbles→amiibo, etc.). Prefer omitting a game over a bad ID.
+ */
 const CURATED_PHOTOS = {
   Chess: [
     "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=900&q=80",
     "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=900&q=80",
   ],
   "Go (Weiqi)": [
-    "https://images.unsplash.com/photo-1611195974226-a6a9be93d23b?w=900&q=80",
+    "https://images.unsplash.com/photo-1774234528903-f520d964ba13?w=900&q=80",
   ],
   Mahjong: [
-    "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=900&q=80",
+    "https://images.unsplash.com/photo-1742343886931-14ea96977531?w=900&q=80",
   ],
   "Yo-yo": [
-    "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=900&q=80",
+    "https://images.unsplash.com/photo-1556309294-98916e0aaca7?w=900&q=80",
   ],
   "Rubik's Cube": [
-    "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=900&q=80",
+    "https://images.unsplash.com/photo-1540149678796-1a36342a1372?w=900&q=80",
   ],
   Dominoes: [
-    "https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=900&q=80",
+    "https://images.unsplash.com/photo-1566694271453-390536dd1f0d?w=900&q=80",
   ],
   "Playing cards (French-suited deck)": [
     "https://images.unsplash.com/photo-1541278107931-e006523892df?w=900&q=80",
   ],
   Marbles: [
-    "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=900&q=80",
+    "https://images.unsplash.com/photo-1687499466496-590c45852352?w=900&q=80",
   ],
   "Kite flying": [
-    "https://images.unsplash.com/photo-1502086227841-98595262e576?w=900&q=80",
+    "https://images.unsplash.com/photo-1757743066599-193b467c35f1?w=900&q=80",
   ],
   Matryoshka: [
-    "https://images.unsplash.com/photo-1558060370-d644479cb6f7?w=900&q=80",
+    "https://images.unsplash.com/photo-1672092590672-3feb81f3123a?w=900&q=80",
   ],
   Jenga: [
-    "https://images.unsplash.com/photo-1606503153255-59d8b8b82176?w=900&q=80",
+    "https://images.unsplash.com/photo-1703000998518-021f436c0b03?w=900&q=80",
   ],
   Scrabble: [
-    "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=900&q=80",
-  ],
-  Backgammon: [
-    "https://images.unsplash.com/photo-1632501641765-e568d28b0015?w=900&q=80",
+    "https://images.unsplash.com/photo-1671628586515-0e4d9456f291?w=900&q=80",
   ],
   "Building blocks": [
     "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
@@ -361,20 +362,30 @@ const imageBank = {
     const { name, category, originCountry, uniqueKey, archetypeKey } = opts;
     const tags = tagsForEntry(name, archetypeKey);
     const salt = hash(uniqueKey);
-    const extraCount = 1 + (salt % 3); // 1–3 thematic photos after the title card
+    const extraCount = 1 + (salt % 3); // 1–3 extras after the title card
     /** @type {string[]} */
     const imgs = [encodeLudusCard(name, category, originCountry)];
 
-    // Prefer a verified photo of this exact game when available
-    const curated = this.takeCuratedPhoto(name);
-    if (curated) imgs.push(curated);
-
+    // Prefer verified photos of this exact game. When any curated photo is
+    // available, do not pad with tag-search stock images (those often depict
+    // the wrong toy despite matching keywords).
+    let usedCurated = false;
     while (imgs.length < extraCount + 1) {
-      imgs.push(this.takeThematic(tags, `${uniqueKey}#${imgs.length}`));
+      const curated = this.takeCuratedPhoto(name);
+      if (!curated) break;
+      imgs.push(curated);
+      usedCurated = true;
+    }
+
+    if (!usedCurated) {
+      while (imgs.length < extraCount + 1) {
+        imgs.push(this.takeThematic(tags, `${uniqueKey}#${imgs.length}`));
+      }
     }
 
     const sig = JSON.stringify(imgs);
     if (this.usedSets.has(sig)) {
+      // Extremely rare; keep sets unique without inventing a wrong title.
       imgs.push(this.takeThematic(tags, `${uniqueKey}#uniq`));
     }
     this.usedSets.add(JSON.stringify(imgs));
