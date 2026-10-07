@@ -36,7 +36,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
   Greece: "🇬🇷",
   Greenland: "🇬🇱",
   Guatemala: "🇬🇹",
-  "Hawaiʻi": "ハワイ",
+  "Hawaiʻi": "🇺🇸",
   Hungary: "🇭🇺",
   India: "🇮🇳",
   Indonesia: "🇮🇩",
@@ -135,9 +135,6 @@ const COUNTRY_FLAGS: Record<string, string> = {
   "United States / global; older Asian footbags": "🇺🇸",
   global: "🌍",
 };
-
-/** Fix Hawaiʻi — use US flag (Unicode regional). */
-COUNTRY_FLAGS["Hawaiʻi"] = "🇺🇸";
 
 const TOKEN_FLAGS: [RegExp, string][] = [
   [/\bUnited States\b/i, "🇺🇸"],
