@@ -86,6 +86,9 @@
   }
 
   function processLabelFor(m) {
+    if (m.guided === "bagua" || m.id === "bagua" || m.id === "iching") return "Guided · 铜钱起卦";
+    if (m.guided === "tarot" || m.id === "tarot") return "Guided · 塔罗牌";
+    if (m.guided === "mbti" || m.id === "mbti") return "Guided · MBTI";
     try {
       return window.fateProcessForMethod ? window.fateProcessForMethod(m).label : m.type;
     } catch (_) {

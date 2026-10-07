@@ -227,6 +227,58 @@ select {
   align-items: center;
 }
 
+/* ── Featured guides ──────────────────────────────────── */
+.featured {
+  background: linear-gradient(180deg, #e4ecef, #edf3f6);
+  border-top: 1px solid var(--line);
+}
+
+.feature-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.feature-card {
+  background: white;
+  border: 1px solid var(--line);
+  padding: 1.35rem 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.feature-card:hover {
+  border-color: var(--teal);
+  transform: translateY(-2px);
+}
+
+.feature-card__eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.feature-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.feature-card__copy {
+  margin: 0;
+  flex: 1;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
 /* ── Begin reading ────────────────────────────────────── */
 .begin {
   background:
@@ -577,6 +629,252 @@ body.studio-open {
 @keyframes ritual-swing {
   0%, 100% { transform: rotate(-18deg); }
   50% { transform: rotate(18deg); }
+}
+
+/* Guided rite extras */
+.guide-list {
+  margin: 0 0 1.25rem;
+  padding-left: 1.15rem;
+  color: var(--ink-soft);
+}
+
+.guide-list li + li {
+  margin-top: 0.4rem;
+}
+
+.guide-list--numbered {
+  list-style: decimal;
+}
+
+.bagua-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.bagua-strip span {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 2.6rem;
+  padding: 0.4rem 0.35rem;
+  border: 1px solid var(--line);
+  background: white;
+  font-size: 1.25rem;
+}
+
+.bagua-strip small {
+  font-size: 0.65rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+.coin-stage {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0.75rem;
+}
+
+.coin {
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  border: 2px solid var(--copper);
+  background: radial-gradient(circle at 35% 30%, var(--copper-soft), var(--copper));
+  color: #1a1208;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.coin.is-spinning {
+  animation: ritual-spin 0.35s linear infinite;
+}
+
+.coin-sum {
+  text-align: center;
+  color: var(--ink-soft);
+  margin: 0 0 1rem;
+}
+
+.yao-stack {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  background: white;
+}
+
+.yao {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.45rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.92rem;
+}
+
+.yao:last-child {
+  border-bottom: 0;
+}
+
+.yao--move {
+  background: rgba(193, 122, 47, 0.08);
+}
+
+.yao--empty {
+  color: var(--ink-soft);
+  justify-content: center;
+}
+
+.hex-display {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.hex-display__gua {
+  font-size: 2.8rem;
+  line-height: 1;
+  color: var(--teal-deep);
+}
+
+.yao-final {
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.yao-line {
+  margin: 0.15rem 0;
+}
+
+.yao-line.is-move {
+  color: var(--copper);
+  font-weight: 700;
+}
+
+.deck-stage {
+  text-align: center;
+  margin: 1.25rem 0;
+}
+
+.deck-pile {
+  width: 4.5rem;
+  height: 6.5rem;
+  margin: 0 auto 0.85rem;
+  border-radius: 0.35rem;
+  background:
+    linear-gradient(145deg, #0f5c56, #083d39);
+  border: 1px solid rgba(232, 184, 106, 0.45);
+  box-shadow: 4px 4px 0 rgba(15, 92, 86, 0.25), 8px 8px 0 rgba(15, 92, 86, 0.12);
+}
+
+.deck-pile.is-shuffling {
+  animation: ritual-flip 0.55s ease-in-out infinite;
+}
+
+.deck-pile.is-ready {
+  box-shadow: 0 10px 24px rgba(15, 92, 86, 0.25);
+}
+
+.tarot-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+  margin: 1rem 0 1.25rem;
+}
+
+.tarot-card {
+  width: 5.6rem;
+  min-height: 7.4rem;
+  border-radius: 0.35rem;
+  border: 1px solid var(--line);
+  background: white;
+  padding: 0.55rem 0.4rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.tarot-card.is-back {
+  background: linear-gradient(145deg, #0f5c56, #083d39);
+  border-color: rgba(232, 184, 106, 0.4);
+}
+
+.tarot-card__name {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  line-height: 1.25;
+}
+
+.tarot-card__pos {
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.tarot-card__rx {
+  font-size: 0.7rem;
+  color: var(--copper);
+  font-weight: 600;
+}
+
+.choice-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.choice-btn {
+  appearance: none;
+  text-align: left;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.4;
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
+}
+
+.choice-btn:hover {
+  border-color: var(--teal);
+  background: var(--glow);
+  transform: translateY(-1px);
+}
+
+.quiz-bar {
+  height: 4px;
+  background: var(--line);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.quiz-bar span {
+  display: block;
+  height: 100%;
+  background: var(--teal);
+  transition: width 0.35s var(--ease);
+}
+
+.mbti-badge {
+  display: inline-flex;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.08em;
+  color: var(--teal-deep);
+  margin-bottom: 0.5rem;
 }
 
 .hero__scroll {
