@@ -27,7 +27,8 @@ COMMONS = "https://commons.wikimedia.org/wiki/Special:FilePath/"
 
 RANK_QUERY = """
 SELECT ?painting ?sitelinks WHERE {
-  ?painting wdt:P31 wd:Q3305213;
+  VALUES ?type { wd:Q3305213 wd:Q134307 wd:Q860861 wd:Q18573970 wd:Q22669139 wd:Q29586328 }
+  ?painting wdt:P31 ?type;
             wikibase:sitelinks ?sitelinks;
             wdt:P18 ?image;
             wdt:P170 ?creator.
@@ -36,6 +37,12 @@ SELECT ?painting ?sitelinks WHERE {
 ORDER BY DESC(?sitelinks)
 LIMIT 1800
 """
+
+# Always force-include these QIDs after ranking (fresco/pastel/etc. edge cases).
+MUST_INCLUDE = [
+    "Q471379",  # The Scream
+    "Q500242",  # The Creation of Adam
+]
 
 
 def http_get(url: str, retries: int = 8) -> bytes:
