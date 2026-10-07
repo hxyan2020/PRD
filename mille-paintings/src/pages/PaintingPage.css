@@ -16,6 +16,10 @@
   position: relative;
   background: #070908;
   box-shadow: var(--shadow);
+  border: 0;
+  padding: 0;
+  cursor: zoom-in;
+  width: 100%;
 }
 
 .painting-frame img {
@@ -189,6 +193,17 @@
   margin: 0.2rem 0 0;
   color: var(--paper-dim);
   font-size: 0.9rem;
+}
+
+.summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+
+.btn.active {
+  border-color: var(--brass);
+  color: var(--brass-soft);
 }
 
 .back-row {

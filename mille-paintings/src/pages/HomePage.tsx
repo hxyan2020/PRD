@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom'
 import { LoadingState } from '../components/LoadingState'
-import { usePaintings } from '../data/usePaintings'
+import { usePaintingsStore } from '../data/PaintingsProvider'
+import { useI18n } from '../i18n/I18nContext'
 import './HomePage.css'
 
 export function HomePage() {
-  const state = usePaintings()
-  const hero = state.status === 'ready' ? state.paintings[0] : null
-  const featured = state.status === 'ready' ? state.paintings.slice(1, 7) : []
+  const { t } = useI18n()
+  const store = usePaintingsStore()
+  const hero = store.status === 'ready' ? store.paintings[0] : null
+  const featured = store.status === 'ready' ? store.paintings.slice(1, 7) : []
 
   return (
     <main className="home">
@@ -20,46 +22,46 @@ export function HomePage() {
           <div className="hero-veil" />
         </div>
         <div className="hero-copy">
-          <p className="brand-hero">Mille</p>
-          <h1>One thousand paintings that shaped human vision</h1>
-          <p className="lede">
-            A living atlas of the most widely known works in history — images, makers, museums, and
-            the stories that still travel with them.
-          </p>
+          <p className="brand-hero">{t('brand')}</p>
+          <h1>{t('heroTitle')}</h1>
+          <p className="lede">{t('heroLede')}</p>
           <div className="hero-actions">
-            <Link to="/gallery" className="btn primary">
-              Enter the gallery
+            <Link to="/today" className="btn primary">
+              {t('navToday')}
+            </Link>
+            <Link to="/gallery" className="btn ghost">
+              {t('enterGallery')}
             </Link>
             {hero ? (
               <Link to={`/painting/${hero.id}`} className="btn ghost">
-                Begin with {hero.name}
+                {t('beginWith', { name: hero.name })}
               </Link>
             ) : null}
           </div>
+          <p className="hero-stats">
+            {t('statsLine', { viewed: store.stats.viewed, collected: store.stats.collected })}
+          </p>
         </div>
       </section>
 
       <section className="home-strip">
         <div className="home-strip-inner">
           <div>
-            <h2>Curated by cultural reach</h2>
-            <p>
-              Ranked by Wikipedia sitelinks across languages — a practical proxy for which paintings
-              have traveled farthest through human memory.
-            </p>
+            <h2>{t('curatedBy')}</h2>
+            <p>{t('curatedBody')}</p>
           </div>
           <ul className="facts">
             <li>
-              <strong>{state.status === 'ready' ? state.paintings.length : '—'}</strong>
-              <span>works</span>
+              <strong>{store.status === 'ready' ? store.coreCount : '—'}</strong>
+              <span>{t('works')}</span>
             </li>
             <li>
               <strong>11</strong>
-              <span>fields each</span>
+              <span>{t('fieldsEach')}</span>
             </li>
             <li>
               <strong>HD</strong>
-              <span>Commons images</span>
+              <span>{t('hdImages')}</span>
             </li>
           </ul>
         </div>
@@ -67,12 +69,12 @@ export function HomePage() {
 
       <section className="featured">
         <div className="section-head">
-          <h2>Featured from the thousand</h2>
-          <p>Step into a handful of the highest-ranked works, then open the full collection.</p>
+          <h2>{t('featured')}</h2>
+          <p>{t('featuredBody')}</p>
         </div>
-        {state.status === 'loading' ? <LoadingState /> : null}
-        {state.status === 'error' ? <p className="error">{state.message}</p> : null}
-        {state.status === 'ready' ? (
+        {store.status === 'loading' ? <LoadingState label={t('opening')} /> : null}
+        {store.status === 'error' ? <p className="error">{store.message}</p> : null}
+        {store.status === 'ready' ? (
           <div className="featured-grid">
             {featured.map((painting, index) => (
               <Link
@@ -93,7 +95,7 @@ export function HomePage() {
         ) : null}
         <div className="featured-cta">
           <Link to="/gallery" className="btn primary">
-            Browse all {state.status === 'ready' ? state.paintings.length : '1000'}
+            {t('browseAll', { n: store.status === 'ready' ? store.coreCount : 1000 })}
           </Link>
         </div>
       </section>

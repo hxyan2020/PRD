@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "data:fetch": "python3 scripts/fetch_paintings.py"
+    "data:fetch": "python3 scripts/fetch_paintings.py",
+    "deploy:pages": "npm run build && python3 scripts/deploy_gh_pages.py"
   },
   "dependencies": {
     "react": "^19.2.8",

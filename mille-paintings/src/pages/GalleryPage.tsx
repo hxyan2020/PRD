@@ -1,13 +1,15 @@
 import { startTransition, useDeferredValue, useMemo, useState } from 'react'
 import { LoadingState } from '../components/LoadingState'
 import { PaintingCard } from '../components/PaintingCard'
-import { usePaintings } from '../data/usePaintings'
+import { usePaintingsStore } from '../data/PaintingsProvider'
+import { useI18n } from '../i18n/I18nContext'
 import './GalleryPage.css'
 
 const PAGE_SIZE = 48
 
 export function GalleryPage() {
-  const state = usePaintings()
+  const { t } = useI18n()
+  const store = usePaintingsStore()
   const [query, setQuery] = useState('')
   const [genre, setGenre] = useState('all')
   const [country, setCountry] = useState('all')
@@ -16,26 +18,21 @@ export function GalleryPage() {
   const deferredQuery = useDeferredValue(query)
 
   const genres = useMemo(() => {
-    if (state.status !== 'ready') return []
     const set = new Set<string>()
-    for (const p of state.paintings) {
-      for (const g of p.genre.split(',').map((x) => x.trim())) {
-        if (g) set.add(g)
-      }
+    for (const p of store.paintings) {
+      for (const g of p.genre.split(',').map((x) => x.trim())) if (g) set.add(g)
     }
     return [...set].sort((a, b) => a.localeCompare(b))
-  }, [state])
+  }, [store.paintings])
 
   const countries = useMemo(() => {
-    if (state.status !== 'ready') return []
-    const set = new Set(state.paintings.map((p) => p.painterCountry).filter(Boolean))
+    const set = new Set(store.paintings.map((p) => p.painterCountry).filter(Boolean))
     return [...set].sort((a, b) => a.localeCompare(b))
-  }, [state])
+  }, [store.paintings])
 
   const filtered = useMemo(() => {
-    if (state.status !== 'ready') return []
     const q = deferredQuery.trim().toLowerCase()
-    return state.paintings.filter((p) => {
+    return store.paintings.filter((p) => {
       if (lostOnly && !p.lostOrDestroyed) return false
       if (genre !== 'all' && !p.genre.toLowerCase().includes(genre.toLowerCase())) return false
       if (country !== 'all' && p.painterCountry !== country) return false
@@ -48,24 +45,22 @@ export function GalleryPage() {
         p.genre.toLowerCase().includes(q)
       )
     })
-  }, [state, deferredQuery, genre, country, lostOnly])
+  }, [store.paintings, deferredQuery, genre, country, lostOnly])
 
   const shown = filtered.slice(0, visible)
 
   return (
     <main className="gallery-page">
       <header className="gallery-hero">
-        <p className="eyebrow">The collection</p>
-        <h1>Browse the thousand</h1>
-        <p>
-          Search by title, painter, museum, or place. Each entry carries the painting image, artist
-          life dates, creation place, current collection, genre, story, and painter portraits.
-        </p>
+        <p className="eyebrow">{t('theCollection')}</p>
+        <h1>{t('browseThousand')}</h1>
+        <p>{t('galleryIntro')}</p>
+        <p className="stats">{t('statsLine', { viewed: store.stats.viewed, collected: store.stats.collected })}</p>
       </header>
 
       <div className="filters">
         <label className="search">
-          <span>Search</span>
+          <span>{t('search')}</span>
           <input
             value={query}
             onChange={(e) => {
@@ -79,7 +74,7 @@ export function GalleryPage() {
           />
         </label>
         <label>
-          <span>Genre</span>
+          <span>{t('genre')}</span>
           <select
             value={genre}
             onChange={(e) => {
@@ -87,7 +82,7 @@ export function GalleryPage() {
               setVisible(PAGE_SIZE)
             }}
           >
-            <option value="all">All genres</option>
+            <option value="all">{t('allGenres')}</option>
             {genres.map((g) => (
               <option key={g} value={g}>
                 {g}
@@ -96,7 +91,7 @@ export function GalleryPage() {
           </select>
         </label>
         <label>
-          <span>Painter country</span>
+          <span>{t('painterCountry')}</span>
           <select
             value={country}
             onChange={(e) => {
@@ -104,7 +99,7 @@ export function GalleryPage() {
               setVisible(PAGE_SIZE)
             }}
           >
-            <option value="all">All countries</option>
+            <option value="all">{t('allCountries')}</option>
             {countries.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -121,18 +116,16 @@ export function GalleryPage() {
               setVisible(PAGE_SIZE)
             }}
           />
-          <span>Lost / destroyed only</span>
+          <span>{t('lostOnly')}</span>
         </label>
       </div>
 
-      {state.status === 'loading' ? <LoadingState /> : null}
-      {state.status === 'error' ? <p className="error">{state.message}</p> : null}
+      {store.status === 'loading' ? <LoadingState label={t('opening')} /> : null}
+      {store.status === 'error' ? <p className="error">{store.message}</p> : null}
 
-      {state.status === 'ready' ? (
+      {store.status === 'ready' ? (
         <>
-          <p className="result-count">
-            Showing {shown.length} of {filtered.length} paintings
-          </p>
+          <p className="result-count">{t('showing', { shown: shown.length, total: filtered.length })}</p>
           <div className="gallery-masonry">
             {shown.map((painting) => (
               <PaintingCard key={painting.id} painting={painting} />
@@ -141,11 +134,11 @@ export function GalleryPage() {
           {visible < filtered.length ? (
             <div className="load-more">
               <button type="button" className="btn primary" onClick={() => setVisible((v) => v + PAGE_SIZE)}>
-                Load more
+                {t('loadMore')}
               </button>
             </div>
           ) : null}
-          {filtered.length === 0 ? <p className="empty">No paintings match these filters.</p> : null}
+          {filtered.length === 0 ? <p className="empty">{t('noMatch')}</p> : null}
         </>
       ) : null}
     </main>

@@ -1,29 +1,44 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { SiteHeader } from './components/SiteHeader'
+import { PaintingsProvider } from './data/PaintingsProvider'
+import { I18nProvider, useI18n } from './i18n/I18nContext'
+import { CollectionPage } from './pages/CollectionPage'
 import { GalleryPage } from './pages/GalleryPage'
 import { HomePage } from './pages/HomePage'
 import { PaintingPage } from './pages/PaintingPage'
+import { PreferencesPage } from './pages/PreferencesPage'
+import { TodayPage } from './pages/TodayPage'
 import './App.css'
+
+function Footer() {
+  const { t } = useI18n()
+  return (
+    <footer className="site-footer">
+      <p>{t('footer')}</p>
+    </footer>
+  )
+}
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <div className="app-shell">
-        <SiteHeader />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route path="/painting/:id" element={<PaintingPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-        <footer className="site-footer">
-          <p>
-            Mille sources painting metadata and images from Wikidata and Wikimedia Commons, with
-            introductions drawn from Wikipedia. Works are ranked by multilingual sitelink count as a
-            popularity proxy.
-          </p>
-        </footer>
-      </div>
-    </BrowserRouter>
+    <I18nProvider>
+      <PaintingsProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}>
+          <div className="app-shell">
+            <SiteHeader />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/today" element={<TodayPage />} />
+              <Route path="/gallery" element={<GalleryPage />} />
+              <Route path="/collection" element={<CollectionPage />} />
+              <Route path="/preferences" element={<PreferencesPage />} />
+              <Route path="/painting/:id" element={<PaintingPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </PaintingsProvider>
+    </I18nProvider>
   )
 }

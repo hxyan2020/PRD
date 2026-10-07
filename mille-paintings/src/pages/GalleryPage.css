@@ -31,6 +31,10 @@
   line-height: 1.55;
 }
 
+.gallery-hero .stats {
+  color: var(--brass);
+}
+
 .filters {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr auto;
