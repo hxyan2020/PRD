@@ -1686,6 +1686,35 @@ body.studio-open {
   color: var(--copper-soft);
 }
 
+.hud__aside {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.hud__lang select {
+  appearance: none;
+  background: rgba(242, 246, 248, 0.08);
+  border: 1px solid rgba(242, 246, 248, 0.22);
+  color: #f2f6f8;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.35rem 1.6rem 0.35rem 0.55rem;
+  max-width: 9.5rem;
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--copper-soft) 50%),
+    linear-gradient(135deg, var(--copper-soft) 50%, transparent 50%);
+  background-position: calc(100% - 12px) 55%, calc(100% - 8px) 55%;
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+
+.hud__lang select option {
+  color: var(--ink);
+  background: white;
+}
+
 .hud__link {
   font-size: 0.85rem;
   font-weight: 600;
@@ -1696,6 +1725,69 @@ body.studio-open {
 
 .hud__link:hover {
   text-decoration: underline;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.country-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.55rem;
+  vertical-align: middle;
+}
+
+.country-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.2;
+}
+
+.country-chip__flag {
+  font-size: 1.15rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.2));
+}
+
+.country-chip__name {
+  color: var(--ink);
+}
+
+html[dir="rtl"] .hud,
+html[dir="rtl"] .howto__steps,
+html[dir="rtl"] .begin__row,
+html[dir="rtl"] .controls,
+html[dir="rtl"] .method__meta,
+html[dir="rtl"] .country-chips {
+  direction: rtl;
+}
+
+html[dir="rtl"] .hud__lang select {
+  padding: 0.35rem 0.55rem 0.35rem 1.6rem;
+  background-position: 12px 55%, 8px 55%;
+}
+
+@media (max-width: 640px) {
+  .hud__stats {
+    display: none;
+  }
+
+  .hud__lang select {
+    max-width: 7.5rem;
+    font-size: 0.72rem;
+  }
 }
 
 body:not(.studio-open) .hero__content {

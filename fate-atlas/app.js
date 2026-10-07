@@ -22,6 +22,14 @@
     statCountries: document.getElementById("stat-countries"),
   };
 
+  function t(key, vars) {
+    return window.FatumI18n ? window.FatumI18n.t(key, vars) : key;
+  }
+
+  function locale() {
+    return window.FatumI18n ? window.FatumI18n.getLocale() : "en";
+  }
+
   function uniqueCountries(list) {
     const set = new Set();
     list.forEach((m) => (m.countries || []).forEach((c) => set.add(c)));
@@ -36,10 +44,22 @@
     return counts;
   }
 
-  function fillSelect(select, options) {
+  function continentLabel(id) {
+    if (id === "all") return t("continent.all");
+    return t(`continent.${id}`) || id;
+  }
+
+  function typeLabel(id) {
+    if (id === "all") return t("type.all");
+    return t(`type.${id}`) || id;
+  }
+
+  function fillSelect(select, options, labelFn) {
+    const current = select.value;
     select.innerHTML = options
-      .map((o) => `<option value="${o.id}">${o.label}</option>`)
+      .map((o) => `<option value="${o.id}">${labelFn(o.id)}</option>`)
       .join("");
+    if (options.some((o) => o.id === current)) select.value = current;
   }
 
   function renderContinentNav() {
@@ -49,36 +69,31 @@
       .map((c) => {
         const n = counts[c.id] || 0;
         return `<button type="button" class="continent-btn" data-continent="${c.id}">
-          <span class="continent-btn__name">${c.label}</span>
-          <span class="continent-btn__count">${n} rites</span>
+          <span class="continent-btn__name">${continentLabel(c.id)}</span>
+          <span class="continent-btn__count">${t("catalog.ritesCount", { n })}</span>
         </button>`;
       })
       .join("");
-
-    els.continentNav.addEventListener("click", (e) => {
-      const btn = e.target.closest(".continent-btn");
-      if (!btn) return;
-      const id = btn.dataset.continent;
-      els.continent.value = id;
-      document.querySelectorAll(".continent-btn").forEach((b) => {
-        b.classList.toggle("is-active", b === btn);
-      });
-      renderList();
-      document.getElementById("catalog").scrollIntoView({ behavior: "smooth" });
-    });
   }
 
   function methodMatches(m, q, continent, type) {
     if (continent !== "all" && m.continent !== continent) return false;
     if (type !== "all" && m.type !== type) return false;
     if (!q) return true;
+    const loc = locale();
+    const countryNames = (m.countries || []).map((c) =>
+      window.FatumCountries ? window.FatumCountries.localizedCountryName(c, loc) : c
+    );
     const hay = [
       m.name,
       m.region,
       m.summary,
       m.continent,
+      continentLabel(m.continent),
       m.type,
+      typeLabel(m.type),
       ...(m.countries || []),
+      ...countryNames,
     ]
       .join(" ")
       .toLowerCase();
@@ -106,16 +121,22 @@
     }
   }
 
+  function countriesMarkup(list) {
+    if (window.FatumCountries) {
+      return window.FatumCountries.countriesHTML(list, locale());
+    }
+    return escapeHTML((list || []).join(", "));
+  }
+
   function methodHTML(m) {
-    const countries = (m.countries || []).join(", ");
     const processLabel = processLabelFor(m);
     const sci = scienceFor(m);
     return `<li class="method" id="method-${m.id}">
       <div>
         <h3 class="method__name">${escapeHTML(m.name)}</h3>
         <div class="method__meta">
-          <span class="tag tag--type">${escapeHTML(m.type)}</span>
-          <span class="tag">${escapeHTML(m.continent)}</span>
+          <span class="tag tag--type">${escapeHTML(typeLabel(m.type))}</span>
+          <span class="tag">${escapeHTML(continentLabel(m.continent))}</span>
           <span class="tag tag--process">${escapeHTML(processLabel)}</span>
           ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
         </div>
@@ -126,15 +147,15 @@
         ${
           sci
             ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}">
-                <p class="science-box__label">Scientific reasoning</p>
+                <p class="science-box__label">${escapeHTML(t("science.label"))}</p>
                 <p class="science-box__text">${escapeHTML(sci.reasoning)}</p>
               </div>`
             : ""
         }
-        <p class="method__countries"><strong>Countries:</strong> ${escapeHTML(countries)}</p>
-        <p class="method__source"><strong>Source:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
+        <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries)}</span></p>
+        <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
         <p class="method__actions">
-          <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ Play</button>
+          <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
         </p>
       </div>
     </li>`;
@@ -154,7 +175,8 @@
     const type = els.type.value;
     const filtered = methods.filter((m) => methodMatches(m, q, continent, type));
 
-    els.count.textContent = `Showing ${filtered.length} rite${filtered.length === 1 ? "" : "s"}`;
+    const key = filtered.length === 1 ? "catalog.showing" : "catalog.showingPlural";
+    els.count.textContent = t(key, { n: filtered.length });
     els.list.innerHTML = filtered.map(methodHTML).join("");
     els.empty.hidden = filtered.length > 0;
     els.list.hidden = filtered.length === 0;
@@ -170,19 +192,20 @@
     const sci = scienceFor(pick);
     els.oracleResult.hidden = false;
     els.oracleResult.innerHTML = `
-      <p class="section__eyebrow" style="margin-bottom:0.5rem">Your lot</p>
+      <p class="section__eyebrow" style="margin-bottom:0.5rem">${escapeHTML(t("oracle.lot"))}</p>
       <h3 class="method__name">${escapeHTML(pick.name)}</h3>
       <div class="method__meta" style="margin:0.5rem 0 1rem">
-        <span class="tag tag--type">${escapeHTML(pick.type)}</span>
-        <span class="tag">${escapeHTML(pick.continent)}</span>
+        <span class="tag tag--type">${escapeHTML(typeLabel(pick.type))}</span>
+        <span class="tag">${escapeHTML(continentLabel(pick.continent))}</span>
         <span class="tag tag--process">${escapeHTML(processLabel)}</span>
         ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
       </div>
       <p class="method__summary">${escapeHTML(pick.summary)}</p>
-      ${sci ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">Scientific reasoning</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>` : ""}
+      <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(pick.countries)}</span></p>
+      ${sci ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">${escapeHTML(t("science.label"))}</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>` : ""}
       <p class="method__actions" style="margin-top:1rem">
-        <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(pick.id)}">▶ Play</button>
-        <a class="btn btn--ghost btn--small studio__btn-muted" href="#method-${pick.id}">View in atlas</a>
+        <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(pick.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
+        <a class="btn btn--ghost btn--small studio__btn-muted" href="#method-${pick.id}">${escapeHTML(t("oracle.view"))}</a>
       </p>
     `;
   }
@@ -194,12 +217,29 @@
     if (hudMethods) hudMethods.textContent = String(methods.length);
   }
 
-  function init() {
-    fillSelect(els.continent, continents);
-    fillSelect(els.type, types);
+  function refreshLocalizedChrome() {
+    fillSelect(els.continent, continents, continentLabel);
+    fillSelect(els.type, types, typeLabel);
     renderContinentNav();
-    initStats();
     renderList();
+  }
+
+  function init() {
+    refreshLocalizedChrome();
+    initStats();
+
+    // Continent nav click (once)
+    els.continentNav.addEventListener("click", (e) => {
+      const btn = e.target.closest(".continent-btn");
+      if (!btn) return;
+      const id = btn.dataset.continent;
+      els.continent.value = id;
+      document.querySelectorAll(".continent-btn").forEach((b) => {
+        b.classList.toggle("is-active", b === btn);
+      });
+      renderList();
+      document.getElementById("catalog").scrollIntoView({ behavior: "smooth" });
+    });
 
     ["input", "change"].forEach((evt) => {
       els.search.addEventListener(evt, renderList);
@@ -215,6 +255,13 @@
     });
 
     els.drawBtn.addEventListener("click", drawLot);
+
+    document.addEventListener("fatum:locale-changed", () => {
+      refreshLocalizedChrome();
+      if (!els.oracleResult.hidden && els.oracleResult.innerHTML.trim()) {
+        // Keep oracle result language in sync if visible — leave as-is until redraw
+      }
+    });
   }
 
   if (document.readyState === "loading") {

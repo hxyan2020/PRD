@@ -51,6 +51,10 @@
     }, ms);
   }
 
+  function t(key, vars) {
+    return window.FatumI18n ? window.FatumI18n.t(key, vars) : key;
+  }
+
   function celebrate(title) {
     const el = celebrateEl();
     if (!el) return;
@@ -59,9 +63,9 @@
     el.innerHTML = `
       <div class="celebrate__burst" aria-hidden="true"></div>
       <div class="celebrate__card">
-        <p class="celebrate__eyebrow">Seal collected</p>
+        <p class="celebrate__eyebrow">${escapeHTML(t("celebrate.eyebrow"))}</p>
         <p class="celebrate__title">${escapeHTML(title || "Reading saved")}</p>
-        <p class="celebrate__hint">Added to your journal</p>
+        <p class="celebrate__hint">${escapeHTML(t("celebrate.hint"))}</p>
       </div>`;
     el.classList.add("is-on");
     clearTimeout(celebrateTimer);
@@ -87,7 +91,7 @@
     const methods = window.FATE_METHODS || [];
     if (!methods.length) return;
     const pick = methods[Math.floor(Math.random() * methods.length)];
-    showToast(`Surprise: ${pick.name}`);
+    showToast(t("toast.surprise", { name: pick.name }));
     if (window.FatumReading?.open) {
       window.FatumReading.open(pick.id);
     } else {
@@ -110,7 +114,7 @@
       updateHud();
       const title = e.detail?.title || "Seal collected";
       celebrate(title);
-      showToast(`Seal locked · ${title}`, { ms: 3200 });
+      showToast(t("toast.seal", { title }), { ms: 3200 });
     });
   }
 

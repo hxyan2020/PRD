@@ -89,7 +89,10 @@
     document.body.classList.add("studio-open");
     studio.setAttribute("aria-hidden", "false");
     window.FatumPlay?.setQuestProgress?.(0);
-    window.FatumPlay?.showToast?.(`Quest started · ${method.name}`, { ms: 1800 });
+    window.FatumPlay?.showToast?.(
+      (window.FatumI18n ? window.FatumI18n.t("toast.questStarted", { name: method.name }) : `Quest started · ${method.name}`),
+      { ms: 1800 }
+    );
     render();
     studio.querySelector(".studio__close")?.focus();
   }
@@ -548,19 +551,23 @@
     return `<p class="reading__disclaimer">${escapeHTML(parts.join(" "))}</p>`;
   }
 
+  function ti(key, vars) {
+    return window.FatumI18n ? window.FatumI18n.t(key, vars) : key;
+  }
+
   function journalActionsHTML(saved, againLabel) {
-    const again = againLabel || "Play again";
+    const again = againLabel || ti("action.playAgain");
     if (saved) {
-      return `<p class="journal-saved-note" role="status">Seal locked · “${escapeHTML(state.journalTitle || "entry")}” · <a href="#journal" data-action="goto-journal">Open collection</a></p>
+      return `<p class="journal-saved-note" role="status">${escapeHTML(ti("seal.locked", { title: state.journalTitle || "entry" }))} · <a href="#journal" data-action="goto-journal">${escapeHTML(ti("journal.title"))}</a></p>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">${escapeHTML(again)}</button>
-          <button type="button" class="btn btn--primary" data-action="close">Done</button>
+          <button type="button" class="btn btn--primary" data-action="close">${escapeHTML(ti("action.done"))}</button>
         </div>`;
     }
     return `<div class="studio__actions studio__actions--reward">
         <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">${escapeHTML(again)}</button>
-        <button type="button" class="btn btn--primary btn--seal" data-action="save-journal">◎ Collect seal</button>
-        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">Skip</button>
+        <button type="button" class="btn btn--primary btn--seal" data-action="save-journal">◎ ${escapeHTML(ti("action.collectSeal"))}</button>
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("action.skip"))}</button>
       </div>`;
   }
 
@@ -968,20 +975,26 @@
         if (af !== bf) return af - bf;
         return a.name.localeCompare(b.name);
       });
-      picker.innerHTML =
-        `<option value="">Choose a rite…</option>` +
-        `<optgroup label="Starter quests">` +
-        sorted
-          .filter((m) => m.featured)
-          .map((m) => `<option value="${m.id}">${escapeHTML(m.name)}</option>`)
-          .join("") +
-        `</optgroup>` +
-        `<optgroup label="All rites">` +
-        sorted
-          .filter((m) => !m.featured)
-          .map((m) => `<option value="${m.id}">${escapeHTML(m.name)} (${escapeHTML(m.continent)})</option>`)
-          .join("") +
-        `</optgroup>`;
+      function fillPicker() {
+        const contLabel = (id) =>
+          window.FatumI18n ? window.FatumI18n.t(`continent.${id}`) : id;
+        picker.innerHTML =
+          `<option value="">${escapeHTML(ti("begin.placeholder"))}</option>` +
+          `<optgroup label="${escapeHTML(ti("begin.featuredGroup"))}">` +
+          sorted
+            .filter((m) => m.featured)
+            .map((m) => `<option value="${m.id}">${escapeHTML(m.name)}</option>`)
+            .join("") +
+          `</optgroup>` +
+          `<optgroup label="${escapeHTML(ti("begin.allGroup"))}">` +
+          sorted
+            .filter((m) => !m.featured)
+            .map((m) => `<option value="${m.id}">${escapeHTML(m.name)} (${escapeHTML(contLabel(m.continent))})</option>`)
+            .join("") +
+          `</optgroup>`;
+      }
+      fillPicker();
+      document.addEventListener("fatum:locale-changed", fillPicker);
       startBtn.addEventListener("click", () => {
         if (!picker.value) {
           picker.focus();
@@ -996,27 +1009,32 @@
     // Featured quest cards
     const featuredEl = document.getElementById("featured-guides");
     if (featuredEl) {
-      const questMeta = {
-        bagua: { badge: "Quest · 八卦", moves: "4 moves · coins", icon: "☰" },
-        tarot: { badge: "Quest · 塔罗", moves: "5 moves · cards", icon: "✦" },
-        mbti: { badge: "Quest · MBTI", moves: "Quiz · type", icon: "◎" },
-      };
-      featuredEl.innerHTML = (window.FATE_FEATURED_METHODS || [])
-        .map((m) => {
-          const meta = questMeta[m.guided] || { badge: "Quest", moves: "Guided", icon: "◇" };
-          const sci = window.fateScienceStatusFor?.(m);
-          return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="Play ${escapeHTML(m.name)}">
-          <div class="feature-card__top">
-            <span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>
-            <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
-          </div>
-          <h3 class="feature-card__title">${escapeHTML(m.name)}</h3>
-          <p class="feature-card__copy">${escapeHTML(m.summary)}</p>
-          <p class="feature-card__moves">${escapeHTML(meta.moves)}${sci ? ` · ${escapeHTML(sci.tag)}` : ""}</p>
-          <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ Play quest</button>
-        </article>`;
-        })
-        .join("");
+      function renderFeatured() {
+        const questMeta = {
+          bagua: { badge: ti("feature.badge.bagua"), moves: ti("feature.moves.bagua"), icon: "☰" },
+          tarot: { badge: ti("feature.badge.tarot"), moves: ti("feature.moves.tarot"), icon: "✦" },
+          mbti: { badge: ti("feature.badge.mbti"), moves: ti("feature.moves.mbti"), icon: "◎" },
+        };
+        featuredEl.innerHTML = (window.FATE_FEATURED_METHODS || [])
+          .map((m) => {
+            const meta = questMeta[m.guided] || { badge: ti("studio.quest"), moves: "Guided", icon: "◇" };
+            const sci = window.fateScienceStatusFor?.(m);
+            return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(ti("play.quest"))} ${escapeHTML(m.name)}">
+            <div class="feature-card__top">
+              <span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>
+              <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
+            </div>
+            <h3 class="feature-card__title">${escapeHTML(m.name)}</h3>
+            <p class="feature-card__copy">${escapeHTML(m.summary)}</p>
+            <p class="feature-card__moves">${escapeHTML(meta.moves)}${sci ? ` · ${escapeHTML(sci.tag)}` : ""}</p>
+            <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(ti("play.quest"))}</button>
+          </article>`;
+          })
+          .join("");
+      }
+
+      renderFeatured();
+      document.addEventListener("fatum:locale-changed", renderFeatured);
 
       featuredEl.addEventListener("keydown", (e) => {
         const card = e.target.closest(".feature-card--quest");

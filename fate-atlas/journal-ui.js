@@ -41,10 +41,14 @@
     refresh();
 
     document.addEventListener("fatum:journal-changed", refresh);
+    document.addEventListener("fatum:locale-changed", refresh);
 
     document.getElementById("journal-clear")?.addEventListener("click", () => {
       if (!J().loadAll().length) return;
-      if (confirm("Clear all seals from this browser?")) {
+      const msg = window.FatumI18n
+        ? window.FatumI18n.t("journal.clearConfirm")
+        : "Clear all seals from this browser?";
+      if (confirm(msg)) {
         J().clearAll();
         refresh();
       }
@@ -58,7 +62,10 @@
       }
       if (del) {
         const id = del.getAttribute("data-journal-delete");
-        if (confirm("Remove this seal?")) {
+        const msg = window.FatumI18n
+          ? window.FatumI18n.t("journal.removeConfirm")
+          : "Remove this seal?";
+        if (confirm(msg)) {
           J().remove(id);
           refresh();
         }

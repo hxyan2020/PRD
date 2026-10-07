@@ -166,11 +166,16 @@
 
     if (!list.length) {
       container.innerHTML = `
-        <p class="journal-empty">
-          No seals yet. Finish a quest and press <strong>Collect seal</strong> to lock it here.
-        </p>`;
+        <p class="journal-empty">${
+          window.FatumI18n
+            ? window.FatumI18n.t("journal.empty")
+            : "No seals yet. Finish a quest and press Collect seal to lock it here."
+        }</p>`;
       return;
     }
+
+    const openLabel = window.FatumI18n ? window.FatumI18n.t("journal.open") : "Open seal";
+    const discardLabel = window.FatumI18n ? window.FatumI18n.t("journal.discard") : "Discard";
 
     container.innerHTML = list
       .map((e) => {
@@ -190,8 +195,8 @@
               ${e.question ? `<p class="journal-entry__q">Q: ${escapeHTML(e.question)}</p>` : ""}
               <p class="journal-entry__verdict">${escapeHTML(verdict)}</p>
               <div class="journal-entry__actions">
-                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-view="${escapeHTML(e.id)}">Open seal</button>
-                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-delete="${escapeHTML(e.id)}">Discard</button>
+                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-view="${escapeHTML(e.id)}">${escapeHTML(openLabel)}</button>
+                <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-journal-delete="${escapeHTML(e.id)}">${escapeHTML(discardLabel)}</button>
               </div>
             </div>
           </div>
