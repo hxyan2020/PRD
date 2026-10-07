@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { LANGUAGES } from '../i18n/translations'
 import { useI18n } from '../i18n/I18nContext'
+import { LanguagePicker } from './LanguagePicker'
 import { StatsCounter } from './StatsCounter'
 import './SiteHeader.css'
 
 export function SiteHeader() {
-  const { t, lang, setLang } = useI18n()
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -52,16 +52,7 @@ export function SiteHeader() {
           <NavLink to="/collection">{t('navCollection')}</NavLink>
           <NavLink to="/preferences">{t('navPrefs')}</NavLink>
         </nav>
-        <label className="lang-picker">
-          <span className="sr-only">{t('language')}</span>
-          <select value={lang} onChange={(e) => setLang(e.target.value)} aria-label={t('language')}>
-            {LANGUAGES.map((l) => (
-              <option key={l.code} value={l.code}>
-                {l.flag} {l.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <LanguagePicker />
       </div>
     </header>
   )

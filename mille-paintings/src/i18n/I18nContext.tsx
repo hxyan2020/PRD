@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { LANGUAGES, translate } from './translations'
+import { detectBrowserLang, resolveLang } from './languages'
+import { translate } from './translations'
 
 type I18nValue = {
   lang: string
@@ -11,15 +12,23 @@ type I18nValue = {
 const I18nContext = createContext<I18nValue | null>(null)
 const LANG_KEY = 'mille.lang'
 
+function initialLang(): string {
+  try {
+    return localStorage.getItem(LANG_KEY) || detectBrowserLang()
+  } catch {
+    return 'en'
+  }
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState(() => localStorage.getItem(LANG_KEY) || 'en')
+  const [lang, setLangState] = useState(initialLang)
 
   const setLang = (code: string) => {
     setLangState(code)
     localStorage.setItem(LANG_KEY, code)
   }
 
-  const dir = LANGUAGES.find((l) => l.code === lang)?.dir || 'ltr'
+  const dir = resolveLang(lang).dir || 'ltr'
 
   useEffect(() => {
     document.documentElement.lang = lang

@@ -114,24 +114,6 @@
   transform: scaleX(1);
 }
 
-.lang-picker select {
-  max-width: 12rem;
-  padding: 0.45rem 0.55rem;
-  border: 1px solid rgba(214, 167, 86, 0.28);
-  background: rgba(23, 32, 27, 0.9);
-  color: var(--paper);
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
-}
 
 @media (max-width: 860px) {
   .menu-toggle {
@@ -166,8 +148,4 @@
     gap: 0.85rem;
   }
 
-  .lang-picker select {
-    width: 100%;
-    max-width: none;
-  }
 }
