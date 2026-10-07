@@ -45,8 +45,12 @@ export const LANGUAGES: Lang[] = [
   { code: 'he', name: 'עברית', flagCode: 'il', dir: 'rtl' },
 ]
 
-export function flagUrl(flagCode: string, width = 24): string {
-  return `https://flagcdn.com/w${width}/${flagCode}.png`
+export function flagUrl(flagCode: string, _width = 24): string {
+  // Served from public/flags so icons work offline and without third-party CDN delays.
+  const base = import.meta.env.BASE_URL.endsWith('/')
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`
+  return `${base}flags/${flagCode}.png`
 }
 
 export function resolveLang(code: string): Lang {
