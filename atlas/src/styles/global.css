@@ -1205,6 +1205,22 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .prefs-hit-main {
+    grid-template-columns: 72px 1fr;
+    gap: 0.7rem;
+  }
+
+  .prefs-hit-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .chat-quick button {
+    flex: 0 0 auto;
+    min-height: 2.4rem;
+    white-space: nowrap;
+  }
+
   .journal-item-main {
     grid-template-columns: 72px 1fr;
     gap: 0.75rem;
