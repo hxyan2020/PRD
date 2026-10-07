@@ -1,11 +1,19 @@
 import { Link } from 'react-router-dom'
 import type { Painting } from '../types'
+import { useI18n } from '../i18n/I18nContext'
 import { displayImageUrl } from '../lib/images'
 import { CountryFlags } from './CountryFlags'
 import { SafeImage } from './SafeImage'
 import './PaintingCard.css'
 
-export function PaintingCard({ painting }: { painting: Painting }) {
+export function PaintingCard({
+  painting,
+  collected = false,
+}: {
+  painting: Painting
+  collected?: boolean
+}) {
+  const { t } = useI18n()
   return (
     <Link to={`/painting/${painting.id}`} className="painting-card">
       <div className="painting-card-media">
@@ -16,8 +24,9 @@ export function PaintingCard({ painting }: { painting: Painting }) {
           loading="lazy"
           decoding="async"
         />
-        {painting.lostOrDestroyed ? <span className="lost-badge">Lost / Destroyed</span> : null}
-        <span className="rank-badge">#{painting.rank}</span>
+        {painting.lostOrDestroyed ? <span className="lost-badge">{t('lostDestroyed')}</span> : null}
+        {collected ? <span className="collected-badge">{t('collected')}</span> : null}
+        <span className="rank-badge">#{painting.rank || '—'}</span>
       </div>
       <div className="painting-card-meta">
         <h2>{painting.name}</h2>

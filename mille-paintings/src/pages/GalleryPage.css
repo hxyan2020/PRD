@@ -37,12 +37,16 @@
 
 .filters {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr auto;
-  gap: 0.9rem;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
   align-items: end;
   margin-bottom: 1.4rem;
   padding: 1rem 0;
   border-block: 1px solid var(--line);
+}
+
+.filters .search {
+  grid-column: 1 / -1;
 }
 
 .filters label {
@@ -105,9 +109,13 @@
   color: var(--paper-dim);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .filters {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .filters .search {
+    grid-column: 1 / -1;
   }
 }
 

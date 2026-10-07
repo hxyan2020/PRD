@@ -25,7 +25,8 @@
 }
 
 .rank-badge,
-.lost-badge {
+.lost-badge,
+.collected-badge {
   position: absolute;
   top: 0.75rem;
   font-size: 0.7rem;
@@ -46,6 +47,16 @@
   right: 0.75rem;
   background: rgba(196, 92, 72, 0.88);
   color: #fff;
+}
+
+.collected-badge {
+  right: 0.75rem;
+  background: rgba(143, 191, 138, 0.9);
+  color: #102014;
+}
+
+.lost-badge + .collected-badge {
+  top: 2.55rem;
 }
 
 .painting-card-meta {
