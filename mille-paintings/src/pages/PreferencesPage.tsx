@@ -5,7 +5,12 @@ import { GenreIcon } from '../components/GenreIcon'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
-import { discoverPaintings } from '../lib/discover'
+import {
+  discoverPaintings,
+  preferenceSearchQuery,
+  type DiscoverProgress,
+  type DiscoverStep,
+} from '../lib/discover'
 import { displayImageUrl } from '../lib/images'
 import { optionLabel } from '../lib/optionLabels'
 import {
@@ -22,6 +27,23 @@ function toggleIn(list: string[], value: string) {
   return list.includes(value) ? list.filter((x) => x !== value) : [...list, value]
 }
 
+function stepIcon(status: DiscoverStep['status']): string {
+  switch (status) {
+    case 'running':
+      return '…'
+    case 'ok':
+      return '✓'
+    case 'empty':
+      return '○'
+    case 'error':
+      return '!'
+    case 'skipped':
+      return '–'
+    default:
+      return '·'
+  }
+}
+
 export function PreferencesPage() {
   const { t, lang } = useI18n()
   const store = usePaintingsStore()
@@ -30,6 +52,7 @@ export function PreferencesPage() {
   const [busy, setBusy] = useState(false)
   const [genMsg, setGenMsg] = useState('')
   const [lastBatch, setLastBatch] = useState<Painting[]>([])
+  const [progress, setProgress] = useState<DiscoverProgress | null>(null)
 
   const collectionGenres = useMemo(() => {
     const curated = new Set(GENRE_GROUPS.flatMap((g) => g.options.map((x) => x.toLowerCase())))
@@ -192,6 +215,9 @@ export function PreferencesPage() {
       <section className="prefs-block generate">
         <h2>{t('generateMore')}</h2>
         <p>{t('generateHint')}</p>
+        <p className="discover-query-preview">
+          {t('discoverQueryPreview', { q: preferenceSearchQuery(prefs) })}
+        </p>
         <button
           type="button"
           className="btn primary"
@@ -200,15 +226,30 @@ export function PreferencesPage() {
             setBusy(true)
             setGenMsg(t('generating'))
             setLastBatch([])
+            setProgress({
+              steps: [],
+              totalFound: 0,
+              phase: 'preparing',
+              message: t('generating'),
+            })
             try {
               savePreferences(prefs)
               const existing = new Set(store.paintings.map((p) => p.id))
-              const found = await discoverPaintings(prefs, existing)
+              const found = await discoverPaintings(prefs, existing, (p) => {
+                setProgress(p)
+                setGenMsg(p.message)
+              })
               store.mergeExtras(found)
               setLastBatch(found)
               setGenMsg(t('generated', { n: found.length }))
             } catch (err) {
-              setGenMsg(err instanceof Error ? err.message : 'Failed')
+              const message = err instanceof Error ? err.message : 'Failed'
+              setGenMsg(message)
+              setProgress((prev) =>
+                prev
+                  ? { ...prev, phase: 'error', message }
+                  : { steps: [], totalFound: 0, phase: 'error', message },
+              )
             } finally {
               setBusy(false)
             }
@@ -216,7 +257,72 @@ export function PreferencesPage() {
         >
           {busy ? t('generating') : t('generateMore')}
         </button>
-        {genMsg ? <p className="msg">{genMsg}</p> : null}
+
+        {progress ? (
+          <div className="discover-status" aria-live="polite">
+            <div className="discover-status-head">
+              <p className="discover-status-msg">{progress.message}</p>
+              <p className="discover-status-count">
+                {t('discoverFoundSoFar', { n: progress.totalFound })}
+              </p>
+            </div>
+            <div
+              className="discover-progress-bar"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={
+                progress.phase === 'done' || progress.phase === 'error'
+                  ? 100
+                  : Math.min(
+                      95,
+                      Math.round(
+                        (progress.steps.filter((s) => s.status !== 'pending' && s.status !== 'running')
+                          .length /
+                          Math.max(progress.steps.length, 1)) *
+                          100,
+                      ),
+                    )
+              }
+            >
+              <span
+                style={{
+                  width:
+                    progress.phase === 'done' || progress.phase === 'error'
+                      ? '100%'
+                      : `${Math.min(
+                          95,
+                          Math.round(
+                            (progress.steps.filter(
+                              (s) => s.status !== 'pending' && s.status !== 'running',
+                            ).length /
+                              Math.max(progress.steps.length, 1)) *
+                              100,
+                          ),
+                        )}%`,
+                }}
+              />
+            </div>
+            <ol className="discover-steps">
+              {progress.steps.map((step) => (
+                <li key={step.id} className={`discover-step status-${step.status}`}>
+                  <span className="discover-step-icon" aria-hidden="true">
+                    {stepIcon(step.status)}
+                  </span>
+                  <div>
+                    <strong>{step.source}</strong>
+                    <span>{step.detail}</span>
+                  </div>
+                  {step.found > 0 ? <em>+{step.found}</em> : null}
+                </li>
+              ))}
+            </ol>
+            <p className="discover-sources-note">{t('discoverSourcesNote')}</p>
+          </div>
+        ) : null}
+
+        {genMsg && !progress ? <p className="msg">{genMsg}</p> : null}
+        {genMsg && progress?.phase === 'done' ? <p className="msg">{genMsg}</p> : null}
         <p className="hint-daily">{t('discoverFeedsDaily')}</p>
       </section>
 

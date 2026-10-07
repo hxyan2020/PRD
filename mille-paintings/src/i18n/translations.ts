@@ -84,17 +84,21 @@ const en: Dict = {
   prefsRegionEurope: 'Europe',
   savePrefs: 'Save preferences',
   generateMore: 'Discover more paintings',
-  generating: 'Searching Wikidata…',
+  generating: 'Searching art databases…',
   generateHint:
-    'Pull additional works matching your taste and add them to your personal pool (beyond the core 1000). They join daily recommendations immediately.',
+    'Search live museum and archive APIs for works matching your taste, then add them to your personal pool (beyond the core 1000). They join daily recommendations immediately.',
   generated: 'Added {n} new works to your pool.',
+  discoverQueryPreview: 'Live search query: {q}',
+  discoverFoundSoFar: '{n} found so far',
+  discoverSourcesNote:
+    'Sources: Wikidata · Art Institute of Chicago · V&A Museum · Openverse · Wikimedia Commons (not Wikipedia alone).',
   eras: 'Eras',
   moods: 'Moods',
   language: 'Language',
   menu: 'Menu',
   close: 'Close',
   footer:
-    'Mille sources painting metadata and images from Wikidata and Wikimedia Commons, with introductions drawn from Wikipedia. Works are ranked by multilingual sitelink count as a popularity proxy.',
+    'Mille sources core rankings from Wikidata sitelinks, images from Wikimedia Commons and museum open APIs, and introductions from Wikipedia plus museum records. Discovery also searches the Art Institute of Chicago, the V&A, and Openverse.',
   liveUrlLabel: 'Permanent site',
   collectionTitle: 'Your collection',
   collectionEmpty: 'You have not collected any paintings yet.',
@@ -194,15 +198,21 @@ const zh = pack({
   prefsRegionEurope: '欧洲',
   savePrefs: '保存偏好',
   generateMore: '发现更多画作',
-  generating: '正在检索维基数据…',
-  generateHint: '按偏好拉取更多作品，加入你的个人扩充池（在核心 1000 之外），并立刻进入每日推荐。',
+  generating: '正在检索艺术数据库…',
+  generateHint:
+    '按你的偏好实时检索多家博物馆与开放档案 API，将匹配作品加入个人扩充池（在核心 1000 之外），并立刻进入每日推荐。',
   generated: '已向你的收藏池加入 {n} 幅新作。',
+  discoverQueryPreview: '实时检索词：{q}',
+  discoverFoundSoFar: '已找到 {n} 幅',
+  discoverSourcesNote:
+    '数据来源：维基数据 · 芝加哥艺术博物馆 · V&A 博物馆 · Openverse · 维基共享资源（不止维基百科）。',
   eras: '时代',
   moods: '气质',
   language: '语言',
   menu: '菜单',
   close: '关闭',
-  footer: 'Mille 的元数据与图像来自维基数据与维基共享资源，简介来自维基百科。作品按多语言链接数排序。',
+  footer:
+    'Mille 核心排序来自维基多语言链接，图像来自维基共享资源与博物馆开放接口，简介来自维基百科与馆方记录。发现功能还会检索芝加哥艺术博物馆、V&A 与 Openverse。',
   liveUrlLabel: '永久地址',
   collectionTitle: '我的收藏',
   collectionEmpty: '你还没有收藏任何画作。',
@@ -269,6 +279,13 @@ const zhTW = pack({
   loadingTranslation: '正在載入譯文…',
   searchPlaceholder: '蒙娜麗莎、維梅爾、羅浮宮…',
   liveUrlLabel: '永久網址',
+  generating: '正在檢索藝術資料庫…',
+  generateHint:
+    '依你的偏好即時檢索多家博物館與開放檔案 API，將匹配作品加入個人擴充池（在核心 1000 之外），並立刻進入每日推薦。',
+  discoverQueryPreview: '即時檢索詞：{q}',
+  discoverFoundSoFar: '已找到 {n} 幅',
+  discoverSourcesNote:
+    '資料來源：維基數據 · 芝加哥藝術博物館 · V&A 博物館 · Openverse · 維基共享資源（不止維基百科）。',
 })
 
 const es = pack({
@@ -339,8 +356,14 @@ const es = pack({
   prefsRegionEurope: 'Europa',
   savePrefs: 'Guardar preferencias',
   generateMore: 'Descubrir más pinturas',
-  generating: 'Buscando en Wikidata…',
+  generating: 'Buscando en bases de arte…',
+  generateHint:
+    'Busca en APIs de museos y archivos obras que coincidan con tu gusto y añádelas a tu fondo personal (más allá de las 1000 centrales).',
   generated: 'Se añadieron {n} obras a tu colección.',
+  discoverQueryPreview: 'Consulta en vivo: {q}',
+  discoverFoundSoFar: '{n} encontradas',
+  discoverSourcesNote:
+    'Fuentes: Wikidata · Art Institute of Chicago · V&A · Openverse · Wikimedia Commons.',
   eras: 'Épocas',
   moods: 'Ambientes',
   language: 'Idioma',
@@ -429,8 +452,14 @@ const fr = pack({
   prefsRegionEurope: 'Europe',
   savePrefs: 'Enregistrer',
   generateMore: 'Découvrir d’autres œuvres',
-  generating: 'Recherche Wikidata…',
+  generating: 'Recherche dans les bases d’art…',
+  generateHint:
+    'Interroge en direct des API de musées et d’archives selon vos goûts, puis ajoute les œuvres à votre fonds personnel (au-delà des 1000 œuvres centrales).',
   generated: '{n} œuvres ajoutées à votre fonds.',
+  discoverQueryPreview: 'Requête en direct : {q}',
+  discoverFoundSoFar: '{n} trouvées',
+  discoverSourcesNote:
+    'Sources : Wikidata · Art Institute of Chicago · V&A · Openverse · Wikimedia Commons.',
   eras: 'Époques',
   moods: 'Ambiances',
   language: 'Langue',
@@ -519,8 +548,14 @@ const de = pack({
   prefsRegionEurope: 'Europa',
   savePrefs: 'Speichern',
   generateMore: 'Weitere Werke entdecken',
-  generating: 'Suche in Wikidata…',
+  generating: 'Suche in Kunstdatenbanken…',
+  generateHint:
+    'Durchsucht live Museums- und Archiv-APIs nach Werken passend zu Ihrem Geschmack und fügt sie Ihrem persönlichen Pool hinzu (jenseits der 1000 Kernwerke).',
   generated: '{n} Werke zu Ihrem Pool hinzugefügt.',
+  discoverQueryPreview: 'Live-Suche: {q}',
+  discoverFoundSoFar: '{n} bisher gefunden',
+  discoverSourcesNote:
+    'Quellen: Wikidata · Art Institute of Chicago · V&A · Openverse · Wikimedia Commons.',
   eras: 'Epochen',
   moods: 'Stimmungen',
   language: 'Sprache',
@@ -609,8 +644,14 @@ const ja = pack({
   prefsRegionEurope: 'ヨーロッパ',
   savePrefs: '保存',
   generateMore: 'さらに発見',
-  generating: 'Wikidataを検索中…',
+  generating: '美術データベースを検索中…',
+  generateHint:
+    '好みに合う作品を美術館・アーカイブのAPIからリアルタイム検索し、個人プール（コア1000点の外）に追加します。',
   generated: '{n}点をプールに追加しました。',
+  discoverQueryPreview: '検索クエリ：{q}',
+  discoverFoundSoFar: 'これまでに{n}点',
+  discoverSourcesNote:
+    '出典：Wikidata · シカゴ美術館 · V&A · Openverse · Wikimedia Commons。',
   eras: '時代',
   moods: '雰囲気',
   language: '言語',
@@ -699,8 +740,14 @@ const ko = pack({
   prefsRegionEurope: '유럽',
   savePrefs: '저장',
   generateMore: '더 발견하기',
-  generating: 'Wikidata 검색 중…',
+  generating: '미술 데이터베이스 검색 중…',
+  generateHint:
+    '취향에 맞는 작품을 박물관·아카이브 API에서 실시간 검색해 개인 풀(핵심 1000점 밖)에 추가합니다.',
   generated: '{n}점을 풀에 추가했습니다.',
+  discoverQueryPreview: '실시간 검색어: {q}',
+  discoverFoundSoFar: '지금까지 {n}점',
+  discoverSourcesNote:
+    '출처: Wikidata · Art Institute of Chicago · V&A · Openverse · Wikimedia Commons.',
   eras: '시대',
   moods: '분위기',
   language: '언어',
@@ -789,8 +836,14 @@ const ar = pack({
   prefsRegionEurope: 'أوروبا',
   savePrefs: 'حفظ',
   generateMore: 'اكتشف المزيد',
-  generating: 'جارٍ البحث في ويكيداتا…',
+  generating: 'جارٍ البحث في قواعد الفن…',
+  generateHint:
+    'ابحث مباشرة في واجهات المتاحف والأرشيف عن أعمال تطابق ذوقك وأضفها إلى مجموعتك الشخصية (خارج الألف الأساسية).',
   generated: 'أُضيفت {n} أعمال إلى مجموعتك.',
+  discoverQueryPreview: 'استعلام مباشر: {q}',
+  discoverFoundSoFar: '{n} حتى الآن',
+  discoverSourcesNote:
+    'المصادر: Wikidata · معهد شيكاغو الفني · V&A · Openverse · ويكيميديا كومنز.',
   eras: 'الحقَب',
   moods: 'الأجواء',
   language: 'اللغة',
