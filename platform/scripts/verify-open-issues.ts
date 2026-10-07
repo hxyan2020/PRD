@@ -102,7 +102,7 @@ assert(board.includes('href="/admin/cs-data"'), "board data link");
 assert(board.includes('href="/admin/docs/uat"'), "board UAT link");
 
 const stamp = fs.readFileSync(path.join(root, "src/lib/build-stamp.ts"), "utf8");
-assert(stamp.includes("2026-10-07T03:00:00.000Z"), "FINISHED_AT 03:00");
+assert(stamp.includes("2026-10-07T04:00:00.000Z"), "FINISHED_AT 04:00");
 
 console.log("verify-open-issues: ok");
 console.log(

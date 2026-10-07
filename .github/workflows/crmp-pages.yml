@@ -1,14 +1,15 @@
 name: Publish CRMP Admin to GitHub Pages
 
-# Frozen original CRMP Admin at /PRD/crmp-admin/. Do not add CRMP Plus
-# branches here — the upgraded platform publishes via crmp-plus-pages.yml.
+# Frozen original CRMP Admin at /PRD/crmp-admin/ — no CS/TR.
+# Do not build this codebase into crmp-admin (that overwrote Plus onto it).
+# Republish the pinned snapshot from .github/frozen-crmp-admin.sha.
 
 on:
   push:
-    branches: [cursor/crmp-admin-pages-a935, cursor/public-urls-a935, main]
+    branches: [cursor/crmp-admin-pages-a935, cursor/public-urls-a935, cursor/restore-crmp-admin-a935, main]
     paths:
-      - "platform/**"
       - ".github/workflows/crmp-pages.yml"
+      - ".github/frozen-crmp-admin.sha"
   workflow_dispatch:
 
 permissions:
@@ -23,24 +24,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-          cache-dependency-path: platform/package-lock.json
-      - name: Build static admin snapshot
-        working-directory: platform
+      - name: Restore frozen original CRMP Admin (no CS/TR)
         env:
-          NEXT_PUBLIC_STATIC_EXPORT: "1"
-          NEXT_PUBLIC_BASE_PATH: /PRD/crmp-admin
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          npm ci
-          npm run build:pages
-      - name: Stage nested Pages folder
-        run: |
+          set -euo pipefail
+          FROZEN_SHA="$(tr -d '[:space:]' < .github/frozen-crmp-admin.sha)"
+          test -n "$FROZEN_SHA"
+          rm -rf .frozen-gh-pages publish/crmp-admin
+          git clone --filter=blob:none --no-checkout \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" .frozen-gh-pages
+          git -C .frozen-gh-pages fetch --depth=1 origin "$FROZEN_SHA"
+          git -C .frozen-gh-pages checkout "$FROZEN_SHA" -- crmp-admin
           mkdir -p publish/crmp-admin
-          cp -a platform/out/. publish/crmp-admin/
+          cp -a .frozen-gh-pages/crmp-admin/. publish/crmp-admin/
           touch publish/crmp-admin/.nojekyll
+          if [ -e publish/crmp-admin/admin/cs-desk ] || [ -e publish/crmp-admin/admin/cs-dashboard ] || [ -e publish/crmp-admin/admin/cs-log ] || [ -e publish/crmp-admin/cs ]; then
+            echo "Refusing to publish CS/TR onto original CRMP Admin" >&2
+            exit 1
+          fi
+          test -f publish/crmp-admin/admin/index.html
+          test -f publish/crmp-admin/admin/messenger/index.html
+          rm -rf .frozen-gh-pages
       - name: Publish gh-pages (keep sibling sites)
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -51,7 +56,7 @@ jobs:
       - name: Public URL
         run: |
           {
-            echo "Permanent CRMP Admin URL"
+            echo "Frozen original CRMP Admin (no CS/TR)"
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/admin/"
             echo "- https://hxyan2020.github.io/PRD/crmp-admin/"
           } >> "$GITHUB_STEP_SUMMARY"

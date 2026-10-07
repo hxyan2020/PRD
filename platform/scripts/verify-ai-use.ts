@@ -148,8 +148,8 @@ const docs: [string, string[]][] = [
   ["docs/OPEN_ISSUES.zh-Hant.md", ["CRMP-AIU-001", "AI 使用手冊"]],
   ["docs/PROGRESS.md", ["CRMP-AIU-001"]],
   ["docs/PROGRESS.zh-Hant.md", ["CRMP-AIU-001"]],
-  ["docs/CHANGELOG.md", ["2026-10-07T03:00:00.000Z"]],
-  ["docs/CHANGELOG.zh-Hant.md", ["2026-10-07T03:00:00.000Z"]],
+  ["docs/CHANGELOG.md", ["2026-10-07T04:00:00.000Z"]],
+  ["docs/CHANGELOG.zh-Hant.md", ["2026-10-07T04:00:00.000Z"]],
 ];
 for (const [file, needles] of docs) {
   const body = read(file);
@@ -159,7 +159,9 @@ for (const [file, needles] of docs) {
 }
 
 const stamp = read("src/lib/build-stamp.ts");
-assert(stamp.includes("2026-10-07T03:00:00.000Z"), "FINISHED_AT 03:00");
+assert(stamp.includes("2026-10-07T04:00:00.000Z"), "FINISHED_AT 04:00");
+assert(en.includes("no CS/TR"), "EN notes frozen admin has no CS/TR");
+assert(zh.includes("沒有 CS／TR"), "zh notes frozen admin has no CS/TR");
 
 const pkg = read("package.json");
 assert(pkg.includes("test:ai-use"), "package.json test:ai-use");

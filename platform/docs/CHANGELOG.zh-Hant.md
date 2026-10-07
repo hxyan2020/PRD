@@ -2,6 +2,7 @@
 
 | 時間（ISO） | 說明 |
 |---|---|
+| 2026-10-07T04:00:00.000Z | 還原凍結原 CRMP 管理後台／PRD/crmp-admin／（無 CS／TR）；Plus 工作流程不再用本程式庫重建它；釘選 .github/frozen-crmp-admin.sha |
 | 2026-10-07T03:00:00.000Z | AI 使用手冊 §6：LLM 問資料庫走具名函式 `get_client_exposure()` → 閘道檢查權限 → API → DB（不是 LLM → SQL → Production DB）；mermaid 英／繁中；FR-48 |
 | 2026-10-07T02:00:00.000Z | AI 使用手冊 CRMP-AIU-001 於／admin/docs/ai-use，給風控＋CS／TR（LLM、技能、代理、MCP、失效、偵測／改正／預防、mermaid）；FR-48；UAT-17；OI-15；英／繁中 |
 | 2026-10-07T01:00:00.000Z | Lark 即時通訊卡片：Monitor 警報＋CS／TR 風控關卡在／admin/lark 確認／升級／排除／結案（與示範 Messenger 同一套 CRMP API）；OI-08 已啟動；UAT-36；FR-47；英／繁中 || 2026-10-07T00:00:00.000Z | 手機 UI：CS／TR 台列表→案件；儀表板／日誌／資料卡片雙檔；／cs 分頁直向；OI-11 手機寬已勾；UAT-18；FR-14；英／繁中 |

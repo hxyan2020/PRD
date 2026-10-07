@@ -6,9 +6,8 @@
 
 This is the literacy handbook for AI on this desk. It is not a replacement for the [User Guide](/admin/docs/user-guide) (how each page works) or the [PRD](/admin/docs/prd) (what we are building). Read this when you need to know **what AI is, how to use it here, where it goes wrong, and how to catch it**.
 
-**CRMP Plus (upgraded admin):** [https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/](https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/)  
-**Original CRMP Admin:** [https://hxyan2020.github.io/PRD/crmp-admin/admin/docs/ai-use/](https://hxyan2020.github.io/PRD/crmp-admin/admin/docs/ai-use/)  
-Left nav **Docs → AI Use Manual** on both admins.
+**CRMP Plus (upgraded admin):** [https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/](https://hxyan2020.github.io/PRD/crmp-plus/admin/docs/ai-use/) — left nav **Docs → AI Use Manual**.  
+**Original CRMP Admin** stays frozen at [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/) with **no CS/TR**; open this handbook on CRMP Plus.
 
 ---
 
