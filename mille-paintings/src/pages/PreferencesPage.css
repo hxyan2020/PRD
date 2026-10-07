@@ -50,14 +50,16 @@
   cursor: pointer;
 }
 
-.chip-country {
+.chip-country,
+.chip-genre {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   max-width: 100%;
 }
 
-.chip-country > span {
+.chip-country > span,
+.chip-genre > span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

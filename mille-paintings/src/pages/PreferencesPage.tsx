@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { CountryFlags } from '../components/CountryFlags'
+import { GenreIcon } from '../components/GenreIcon'
 import { SafeImage } from '../components/SafeImage'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useI18n } from '../i18n/I18nContext'
@@ -75,10 +76,11 @@ export function PreferencesPage() {
             <button
               key={g}
               type="button"
-              className={`chip ${prefs.genres.includes(g) ? 'on' : ''}`}
+              className={`chip chip-genre ${prefs.genres.includes(g) ? 'on' : ''}`}
               onClick={() => setPrefs((p) => ({ ...p, genres: toggleIn(p.genres, g) }))}
             >
-              {g}
+              <GenreIcon genre={g} />
+              <span>{g}</span>
             </button>
           ))}
         </div>
