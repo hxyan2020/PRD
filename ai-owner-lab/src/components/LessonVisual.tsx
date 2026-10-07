@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { getProductionExample } from '../data/productionExamples'
 import type { LessonVisual as VisualSpec, VisualNode } from '../data/visualTypes'
 
 interface Props {
@@ -21,6 +22,7 @@ function NodeDetail({ node }: { node: VisualNode | null }) {
 export function LessonVisual({ visual }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [sliderValue, setSliderValue] = useState(visual.slider?.initial ?? 0)
+  const production = getProductionExample(visual.day)
 
   const allNodes = useMemo(() => {
     const list: VisualNode[] = []
@@ -45,6 +47,11 @@ export function LessonVisual({ visual }: Props) {
         <p className="eyebrow">Interactive diagram</p>
         <h2>{visual.title}</h2>
         <p>{visual.caption}</p>
+        {production ? (
+          <p className="visual-prod-hook">
+            Production lens: <strong>{production.source}</strong> — {production.setting}
+          </p>
+        ) : null}
       </div>
 
       {visual.kind === 'flow' || visual.kind === 'pipeline' ? (

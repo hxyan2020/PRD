@@ -33,6 +33,6 @@ Open the URL Vite prints (usually `http://localhost:5173`).
 | Career | Skills portfolio + personal tech radar |
 | Tracker | Mark days complete, ring + week progress, 30-day board |
 
-Each day lesson includes an **interactive diagram** (flow, stack, cycle, matrix, slider, etc.) — click nodes to inspect details.
+Each day lesson includes a **From production** case (real products/incidents/patterns) plus an **interactive diagram** — click nodes to inspect details.
 
 Progress and notes are stored in `localStorage` in your browser. Open **Tracker** in the nav (shows `n/30`) to toggle any day and see overall progress.

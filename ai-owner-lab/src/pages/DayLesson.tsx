@@ -64,6 +64,25 @@ export function DayLessonPage() {
             </ul>
           </div>
 
+          {lesson.production ? (
+            <aside className="production-example">
+              <p className="eyebrow">From production</p>
+              <h2>{lesson.production.source}</h2>
+              <p className="production-setting">{lesson.production.setting}</p>
+              <p>
+                <strong>What happened.</strong> {lesson.production.whatHappened}
+              </p>
+              <p>
+                <strong>PO lesson.</strong> {lesson.production.poLesson}
+              </p>
+              <ul>
+                {lesson.production.watchFor.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </aside>
+          ) : null}
+
           {visual ? <LessonVisual visual={visual} /> : null}
 
           {lesson.sections.map((section) => (

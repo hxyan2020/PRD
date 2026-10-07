@@ -15,6 +15,15 @@ export interface LessonSection {
   bullets?: string[]
 }
 
+export interface ProductionExample {
+  /** Real product, company, or well-documented industry pattern */
+  source: string
+  setting: string
+  whatHappened: string
+  poLesson: string
+  watchFor: string[]
+}
+
 export interface DayLesson {
   day: number
   phase: PhaseId
@@ -27,6 +36,7 @@ export interface DayLesson {
   poMoves: string[]
   check: string[]
   debugTip?: string
+  production?: ProductionExample
 }
 
 export interface GlossaryTerm {

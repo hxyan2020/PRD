@@ -1015,6 +1015,40 @@ textarea {
   }
 }
 
+.production-example {
+  margin: 1.5rem 0;
+  padding: 1.15rem 1.2rem;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  border-left: 4px solid var(--amber);
+  background: rgba(255, 251, 235, 0.65);
+  animation: rise 0.5s ease both;
+}
+
+.production-example h2 {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  margin: 0 0 0.35rem;
+}
+
+.production-setting {
+  margin: 0 0 0.75rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.production-example p {
+  margin: 0 0 0.65rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+.production-example ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
 .lesson-visual {
   margin: 1.5rem 0 2rem;
   padding: 1.2rem 1.25rem 1.35rem;
@@ -1035,6 +1069,14 @@ textarea {
   margin: 0 0 1rem;
   color: var(--ink-soft);
   line-height: 1.5;
+}
+
+.visual-prod-hook {
+  margin-top: -0.35rem !important;
+  padding: 0.55rem 0.7rem;
+  background: rgba(217, 119, 6, 0.1);
+  border-radius: 0.35rem;
+  font-size: 0.92rem;
 }
 
 .visual-flow {

@@ -35,3 +35,7 @@ const curriculumDays = [
 
 assertThirty('Curriculum', curriculumDays)
 assertThirty('Visuals', collectDays('src/data/visuals.ts'))
+
+const prodText = readFileSync(join(root, 'src/data/productionExamples.ts'), 'utf8')
+const prodDays = [...prodText.matchAll(/^\s*(\d+)\s*:\s*\{/gm)].map((m) => Number(m[1]))
+assertThirty('Production examples', prodDays)
