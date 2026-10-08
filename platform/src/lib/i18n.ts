@@ -25,6 +25,7 @@ export const NAV_I18N: Record<string, Pair> = {
   "/admin/docs/prd": { en: "PRD", "zh-Hant": "產品需求 PRD" },
   "/admin/docs/user-guide": { en: "User Guide", "zh-Hant": "使用手冊" },
   "/admin/docs/ai-use": { en: "AI Use Manual", "zh-Hant": "AI 使用手冊" },
+  "/admin/docs/risk-scenarios": { en: "Risk scenarios", "zh-Hant": "風險情境" },
   "/admin/docs/uat": { en: "UAT Checklist", "zh-Hant": "UAT 清單" },
   "/admin/docs/ecosystem": { en: "Ecosystem Eval", "zh-Hant": "生態導入評估" },
   "/admin/docs/roadmap": { en: "Improvement Roadmap", "zh-Hant": "改進路線圖" },
