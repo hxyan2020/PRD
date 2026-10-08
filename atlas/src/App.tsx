@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import {
   BrowserRouter,
   HashRouter,
   Route,
   Routes,
+  useLocation,
 } from "react-router-dom";
 import { Header } from "./components/Header";
 import { HomePage } from "./pages/HomePage";
@@ -18,9 +20,18 @@ import { PreferencesPage } from "./pages/PreferencesPage";
 const useHashRouter = import.meta.env.BASE_URL !== "/";
 const Router = useHashRouter ? HashRouter : BrowserRouter;
 
+function ScrollToTop() {
+  const { pathname, search, hash } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname, search, hash]);
+  return null;
+}
+
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
