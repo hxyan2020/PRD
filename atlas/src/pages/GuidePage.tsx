@@ -93,6 +93,11 @@ type PendingReply = {
   nextState: ChatState;
 };
 
+function prefersReducedMotion(): boolean {
+  if (typeof window === "undefined" || !window.matchMedia) return false;
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 export function GuidePage() {
   const [rawGames, setRawGames] = useState<Game[]>([]);
   const [contentI18n, setContentI18n] = useState<ContentI18nCatalog | null>(null);
@@ -101,12 +106,22 @@ export function GuidePage() {
   const [input, setInput] = useState("");
   const [ready, setReady] = useState(false);
   const [status, setStatus] = useState<"idle" | "thinking" | "typing">("idle");
+  const [thinkStep, setThinkStep] = useState(0);
   const [typedContent, setTypedContent] = useState("");
   const [typingMsg, setTypingMsg] = useState<ChatMessage | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef<PendingReply | null>(null);
   const timersRef = useRef<number[]>([]);
   const { t, locale } = useI18n();
+
+  const thinkSteps = useMemo(
+    () => [
+      t("guide.think.step1"),
+      t("guide.think.step2"),
+      t("guide.think.step3"),
+    ],
+    [t],
+  );
 
   const games = useMemo(
     () => rawGames.map((g) => localizeGame(g, locale, contentI18n)),
@@ -130,6 +145,7 @@ export function GuidePage() {
     timersRef.current = [];
     pendingRef.current = null;
     setStatus("idle");
+    setThinkStep(0);
     setTypingMsg(null);
     setTypedContent("");
     setMessages([welcomeMessage(t)]);
@@ -139,7 +155,7 @@ export function GuidePage() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, status, typedContent]);
+  }, [messages, status, typedContent, thinkStep]);
 
   useEffect(() => {
     return () => {
@@ -162,8 +178,23 @@ export function GuidePage() {
     setState(batch.nextState);
     setTypingMsg(null);
     setTypedContent("");
+    setThinkStep(0);
     setStatus("idle");
     pendingRef.current = null;
+  }
+
+  function commitReply(msg: ChatMessage, rest: ChatMessage[], nextState: ChatState) {
+    setMessages((prev) => [...prev, { ...msg, content: msg.content }]);
+    setTypingMsg(null);
+    setTypedContent("");
+    setThinkStep(0);
+    if (rest.length) {
+      schedule(() => finishBatch({ replies: rest, nextState }), 220);
+    } else {
+      setState(nextState);
+      setStatus("idle");
+      pendingRef.current = null;
+    }
   }
 
   function typeReply(msg: ChatMessage, rest: ChatMessage[], nextState: ChatState) {
@@ -171,27 +202,47 @@ export function GuidePage() {
     setTypingMsg(msg);
     setTypedContent("");
     const full = msg.content;
+    if (prefersReducedMotion()) {
+      commitReply(msg, rest, nextState);
+      return;
+    }
     let i = 0;
     const step = () => {
-      i = Math.min(full.length, i + Math.max(1, Math.round(full.length / 48)));
+      // Type ~1–3 characters so short replies still feel written out.
+      const chunk = full.length > 280 ? 3 : full.length > 120 ? 2 : 1;
+      i = Math.min(full.length, i + chunk);
       setTypedContent(full.slice(0, i));
       if (i < full.length) {
-        schedule(step, 18 + (i % 5));
+        const ch = full[i - 1] ?? "";
+        const pause =
+          ch === "\n" ? 90 : /[.!?]/.test(ch) ? 70 : /[,;:]/.test(ch) ? 40 : 22;
+        schedule(step, pause);
         return;
       }
-      // Commit typed message, then reveal remaining replies (e.g. recs already in msg).
-      setMessages((prev) => [...prev, { ...msg, content: full }]);
-      setTypingMsg(null);
-      setTypedContent("");
-      if (rest.length) {
-        schedule(() => finishBatch({ replies: rest, nextState }), 220);
-      } else {
-        setState(nextState);
-        setStatus("idle");
-        pendingRef.current = null;
-      }
+      commitReply(msg, rest, nextState);
     };
-    schedule(step, 40);
+    schedule(step, 50);
+  }
+
+  function runThinkingThenType(
+    first: ChatMessage,
+    rest: ChatMessage[],
+    nextState: ChatState,
+  ) {
+    setStatus("thinking");
+    setThinkStep(0);
+    if (prefersReducedMotion()) {
+      typeReply(first, rest, nextState);
+      return;
+    }
+    const stepMs = 700;
+    thinkSteps.forEach((_, idx) => {
+      schedule(() => setThinkStep(idx), idx * stepMs);
+    });
+    schedule(
+      () => typeReply(first, rest, nextState),
+      thinkSteps.length * stepMs + 280,
+    );
   }
 
   function deliverReplies(replies: ChatMessage[], nextState: ChatState) {
@@ -202,9 +253,7 @@ export function GuidePage() {
     }
     const [first, ...rest] = replies;
     pendingRef.current = { replies, nextState };
-    setStatus("thinking");
-    const thinkMs = 450 + Math.min(900, first.content.length * 4);
-    schedule(() => typeReply(first, rest, nextState), thinkMs);
+    runThinkingThenType(first, rest, nextState);
   }
 
   function send(text: string) {
@@ -262,13 +311,36 @@ export function GuidePage() {
                 </div>
               ))}
               {status === "thinking" ? (
-                <div className="chat-status" role="status">
-                  <span className="chat-status-dots" aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                  </span>
-                  {t("guide.thinking")}
+                <div
+                  className="chat-think"
+                  role="status"
+                  aria-label={t("guide.thinkingLabel")}
+                >
+                  <div className="chat-think-head">
+                    <span className="chat-status-dots" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
+                    <strong>{t("guide.thinking")}</strong>
+                  </div>
+                  <ol className="chat-think-steps">
+                    {thinkSteps.map((step, idx) => (
+                      <li
+                        key={step}
+                        className={
+                          idx < thinkStep
+                            ? "is-done"
+                            : idx === thinkStep
+                              ? "is-active"
+                              : "is-pending"
+                        }
+                      >
+                        <span className="chat-think-mark" aria-hidden="true" />
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               ) : null}
               {status === "typing" && typingMsg ? (
@@ -279,7 +351,12 @@ export function GuidePage() {
                       |
                     </span>
                   </div>
-                  <div className="chat-status" role="status">
+                  <div className="chat-status chat-status-inline" role="status">
+                    <span className="chat-status-dots" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </span>
                     {t("guide.typing")}
                   </div>
                 </div>

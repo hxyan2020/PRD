@@ -61,6 +61,10 @@ export const en = {
     "Scoped to Ludus Atlas: browse games & toys, understand them, learn how to play, and find purchase options.",
   "guide.inputLabel": "Message Surprise me",
   "guide.thinking": "Thinking…",
+  "guide.thinkingLabel": "Thinking process",
+  "guide.think.step1": "Reading your message…",
+  "guide.think.step2": "Matching catalog cues…",
+  "guide.think.step3": "Shaping a helpful reply…",
   "guide.typing": "Writing a reply…",
 
   "prefs.title": "Preferences & AI search",

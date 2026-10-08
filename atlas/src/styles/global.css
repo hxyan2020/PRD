@@ -2329,6 +2329,11 @@ select {
   font-size: 0.9rem;
 }
 
+.chat-status-inline {
+  padding: 0.45rem 0 0;
+  margin: 0;
+}
+
 .chat-status-dots {
   display: inline-flex;
   gap: 0.22rem;
@@ -2364,6 +2369,113 @@ select {
   }
 }
 
+.chat-think {
+  margin: 0.45rem 0 0.75rem;
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--brand) 35%, var(--line));
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--brand) 12%, transparent),
+      transparent 55%
+    ),
+    var(--surface);
+  animation: chat-think-in 0.35s ease-out;
+}
+
+@keyframes chat-think-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-think-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.65rem;
+  color: var(--mist);
+  font-size: 0.92rem;
+}
+
+.chat-think-head strong {
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.chat-think-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.chat-think-steps li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.9rem;
+  color: var(--mist-dim);
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.chat-think-steps li.is-pending {
+  opacity: 0.45;
+}
+
+.chat-think-steps li.is-active {
+  color: var(--mist);
+  opacity: 1;
+}
+
+.chat-think-steps li.is-done {
+  color: color-mix(in srgb, var(--brand) 55%, var(--mist));
+  opacity: 0.85;
+}
+
+.chat-think-mark {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--mist-dim);
+  flex: 0 0 auto;
+  background: transparent;
+}
+
+.chat-think-steps li.is-active .chat-think-mark {
+  border-color: var(--brand);
+  background: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent);
+  animation: chat-think-pulse 1s ease-in-out infinite;
+}
+
+.chat-think-steps li.is-done .chat-think-mark {
+  border-color: var(--brand);
+  background: var(--brand);
+}
+
+@keyframes chat-think-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 18%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand) 10%, transparent);
+  }
+}
+
+.chat-bubble-typing {
+  animation: chat-think-in 0.28s ease-out;
+}
+
 .chat-bubble-typing .chat-bubble-text {
   min-height: 1.2em;
 }
@@ -2379,6 +2491,16 @@ select {
 @keyframes chat-caret {
   50% {
     opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-think,
+  .chat-bubble-typing,
+  .chat-status-dots span,
+  .chat-caret,
+  .chat-think-steps li.is-active .chat-think-mark {
+    animation: none !important;
   }
 }
 
