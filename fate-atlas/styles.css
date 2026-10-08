@@ -1,17 +1,18 @@
 :root {
-  --ink: #142033;
-  --ink-soft: #3a4a63;
-  --mist: #e7eef4;
-  --paper: #f4f7fa;
-  --teal: #0f5c56;
-  --teal-deep: #083d39;
-  --copper: #c17a2f;
-  --copper-soft: #e8b86a;
-  --line: rgba(20, 32, 51, 0.12);
-  --glow: rgba(15, 92, 86, 0.14);
-  --radius: 2px;
+  /* Base tokens — refined further in theme-ritual.css */
+  --ink: #f2e8d8;
+  --ink-soft: #b5a48f;
+  --mist: #241e19;
+  --paper: #100e0c;
+  --teal: #7eb8b0;
+  --teal-deep: #a8d4ce;
+  --copper: #e0a84a;
+  --copper-soft: #f3d08a;
+  --line: rgba(242, 232, 216, 0.14);
+  --glow: rgba(224, 168, 74, 0.16);
+  --radius: 0;
   --font-display: "Fraunces", "Times New Roman", serif;
-  --font-body: "Outfit", sans-serif;
+  --font-body: "Figtree", "Segoe UI", sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -33,6 +34,7 @@ body {
   font-weight: 400;
   line-height: 1.55;
   overflow-x: hidden;
+  color-scheme: dark;
 }
 
 img {
@@ -2308,8 +2310,9 @@ body.studio-open {
 /* ── Atlas AI recommendation / draw oracle ─────────────── */
 .oracle.recommend {
   background:
-    radial-gradient(ellipse at 18% 0%, rgba(193, 122, 47, 0.14), transparent 48%),
-    linear-gradient(180deg, #edf3f6, #e8eef1);
+    radial-gradient(ellipse at 18% 0%, rgba(224, 168, 74, 0.16), transparent 48%),
+    radial-gradient(ellipse at 88% 20%, rgba(61, 95, 138, 0.18), transparent 45%),
+    linear-gradient(180deg, rgba(26, 21, 17, 0.9), rgba(16, 14, 12, 0.4));
   border-bottom: 1px solid var(--line);
   padding-top: 5.5rem;
   padding-bottom: 0.5rem;
