@@ -16,8 +16,9 @@ export function hashSeed(input: string): number {
 }
 
 /**
- * Pick `count` games for the given day. Order is stable within a day and
- * changes when the day (or seedTag) changes.
+ * Pick `count` games for the given day.
+ * Uses a day-seeded start + stride so picks spread across the catalog
+ * (avoids six near-duplicate sequential archetypes) and change each UTC day.
  */
 export function dailyPickGames(
   games: Game[],
@@ -28,11 +29,19 @@ export function dailyPickGames(
   if (!games.length || count <= 0) return [];
   const n = games.length;
   const take = Math.min(count, n);
-  const start = hashSeed(`${day}:${seedTag}`) % n;
+  const seed = hashSeed(`${day}:${seedTag}`);
+  const start = seed % n;
+
+  // Odd stride near n/take so we walk the ring without clustering neighbors.
+  let stride = Math.max(1, Math.floor(n / take));
+  stride += seed % Math.max(1, take);
+  if (stride % 2 === 0) stride += 1;
+  if (stride % n === 0) stride = 1;
+
   const out: Game[] = [];
   const seen = new Set<string>();
   for (let i = 0; i < n && out.length < take; i++) {
-    const g = games[(start + i) % n];
+    const g = games[(start + i * stride) % n];
     if (seen.has(g.id)) continue;
     seen.add(g.id);
     out.push(g);

@@ -21,6 +21,7 @@ export const en = {
   "home.featuredTitle": "Today’s featured lineages",
   "home.featuredSub":
     "A fresh daily rotation of games with cultural variations—same catalog, new faces each day.",
+  "home.featuredDay": "Showing picks for {date} (UTC). Back tomorrow for a new set.",
   "home.catalogSize": "Catalog size:",
   "home.nestedVariations": "Nested variations:",
   "home.categories": "Categories:",
@@ -33,6 +34,7 @@ export const en = {
   "collection.dailyTitle": "Today’s picks",
   "collection.dailySub":
     "A daily rotation from the catalog—come back tomorrow for a new set at the top.",
+  "collection.dailyDay": "Showing picks for {date} (UTC).",
   "collection.search": "Search",
   "collection.searchPlaceholder": "Name, country, civilization, variation…",
   "collection.category": "Category",

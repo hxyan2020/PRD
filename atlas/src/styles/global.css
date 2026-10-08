@@ -2313,6 +2313,12 @@ select {
   border-bottom: 1px solid var(--line);
 }
 
+.daily-day-note {
+  margin: 0.35rem 0 0;
+  color: var(--mist-dim);
+  font-size: 0.88rem;
+}
+
 .chat-status {
   display: flex;
   align-items: center;

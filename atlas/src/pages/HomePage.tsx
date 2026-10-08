@@ -9,7 +9,7 @@ import {
   localizeGame,
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
-import { dailyPickGames } from "../lib/dailyRotate";
+import { dailyPickGames, todayKey } from "../lib/dailyRotate";
 
 export function HomePage() {
   const [data, setData] = useState<CollectionData | null>(null);
@@ -29,13 +29,14 @@ export function HomePage() {
     document.title = t("home.docTitle");
   }, [t, locale]);
 
+  const day = todayKey();
   const featured = useMemo(() => {
     if (!data) return [];
     const withVariations = data.games.filter((g) => g.variations.length > 0);
-    return dailyPickGames(withVariations, 6, "home-featured").map((g) =>
+    return dailyPickGames(withVariations, 6, "home-featured", day).map((g) =>
       localizeGame(g, locale, contentI18n),
     );
-  }, [data, locale, contentI18n]);
+  }, [data, locale, contentI18n, day]);
 
   return (
     <>
@@ -81,6 +82,7 @@ export function HomePage() {
           <div className="section-head">
             <h2>{t("home.featuredTitle")}</h2>
             <p>{t("home.featuredSub")}</p>
+            <p className="daily-day-note">{t("home.featuredDay", { date: day })}</p>
           </div>
           {data ? (
             <>
