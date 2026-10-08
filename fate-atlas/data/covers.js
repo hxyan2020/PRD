@@ -114,7 +114,11 @@
     if (/feng shui|vastu|kasō|kaso|ba zhai|flying star|xuan kong|onmyō|onmyo|rokuyō|rokuyo|seimei|name divin/.test(s))
       return "eastasia";
     if (/mbti|personality|myers|briggs|enneagram|temperament|blood type/.test(s)) return "personality";
-    if (/day name|weekday|birth.?day|soul name|akan day|weton|pawukon/.test(s)) return "astrology";
+    if (
+      id === "akan-day" ||
+      /day name|weekday|soul name|akan day|weton|pawukon|birth calendar|day selection/.test(s)
+    )
+      return "astrology";
     if (/bird|augur|omen|weather|cloud|lightning|thunder|auspice|fox|benge/.test(s)) return "omens";
     if (/chinese|japan|korea|shinto/.test(s)) return "eastasia";
     if (method.type === "Form") return "form";
