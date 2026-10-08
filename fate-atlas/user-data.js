@@ -1,6 +1,6 @@
 /**
  * Per-user Fatum data: journal seals, rite collection, browsing history.
- * Guest (signed-out) data uses legacy keys; signed-in users get email-scoped bags.
+ * Guest (signed-out) uses legacy keys; signed-in users get email-scoped keys.
  */
 (function () {
   "use strict";
@@ -8,16 +8,31 @@
   const GUEST_JOURNAL = "fatum-atlas-journal-v1";
   const GUEST_COLLECTION = "fatum-atlas-collection-v1";
   const GUEST_HISTORY = "fatum-atlas-history-v1";
-  const USER_PREFIX = "fatum-atlas-user-v1:";
   const HISTORY_LIMIT = 80;
-
-  function emailKey(email) {
-    return USER_PREFIX + String(email || "").toLowerCase();
-  }
 
   function activeEmail() {
     const u = window.FatumAuth && window.FatumAuth.currentUser();
     return u ? u.email : null;
+  }
+
+  function keysFor(email) {
+    if (!email) {
+      return {
+        journal: GUEST_JOURNAL,
+        collection: GUEST_COLLECTION,
+        history: GUEST_HISTORY,
+      };
+    }
+    const id = String(email).toLowerCase();
+    return {
+      journal: `fatum-atlas-journal-v1:${id}`,
+      collection: `fatum-atlas-collection-v1:${id}`,
+      history: `fatum-atlas-history-v1:${id}`,
+    };
+  }
+
+  function activeKeys() {
+    return keysFor(activeEmail());
   }
 
   function readJSON(key, fallback) {
@@ -35,70 +50,29 @@
     localStorage.setItem(key, JSON.stringify(value));
   }
 
-  function bagKey() {
-    const email = activeEmail();
-    return email ? emailKey(email) : null;
-  }
-
-  function loadBag() {
-    const key = bagKey();
-    if (!key) {
-      return {
-        journal: readJSON(GUEST_JOURNAL, []),
-        collection: readJSON(GUEST_COLLECTION, []),
-        history: readJSON(GUEST_HISTORY, []),
-      };
-    }
-    const bag = readJSON(key, null);
-    if (bag && typeof bag === "object") {
-      return {
-        journal: Array.isArray(bag.journal) ? bag.journal : [],
-        collection: Array.isArray(bag.collection) ? bag.collection : [],
-        history: Array.isArray(bag.history) ? bag.history : [],
-      };
-    }
-    return { journal: [], collection: [], history: [] };
-  }
-
-  function saveBag(bag) {
-    const key = bagKey();
-    if (!key) {
-      writeJSON(GUEST_JOURNAL, bag.journal || []);
-      writeJSON(GUEST_COLLECTION, bag.collection || []);
-      writeJSON(GUEST_HISTORY, bag.history || []);
-      return;
-    }
-    writeJSON(key, {
-      journal: bag.journal || [],
-      collection: bag.collection || [],
-      history: bag.history || [],
-      updatedAt: new Date().toISOString(),
-    });
-  }
-
   function getJournal() {
-    return loadBag().journal;
+    const list = readJSON(activeKeys().journal, []);
+    return Array.isArray(list) ? list : [];
   }
 
   function setJournal(list) {
-    const bag = loadBag();
-    bag.journal = Array.isArray(list) ? list : [];
-    saveBag(bag);
+    const next = Array.isArray(list) ? list : [];
+    writeJSON(activeKeys().journal, next);
     document.dispatchEvent(
-      new CustomEvent("fatum:journal-changed", { detail: { count: bag.journal.length } })
+      new CustomEvent("fatum:journal-changed", { detail: { count: next.length } })
     );
   }
 
   function getCollection() {
-    return loadBag().collection;
+    const list = readJSON(activeKeys().collection, []);
+    return Array.isArray(list) ? list : [];
   }
 
   function setCollection(ids) {
-    const bag = loadBag();
-    bag.collection = Array.isArray(ids) ? ids : [];
-    saveBag(bag);
+    const next = Array.isArray(ids) ? ids : [];
+    writeJSON(activeKeys().collection, next);
     document.dispatchEvent(
-      new CustomEvent("fatum:collection-changed", { detail: { count: bag.collection.length } })
+      new CustomEvent("fatum:collection-changed", { detail: { count: next.length } })
     );
   }
 
@@ -117,57 +91,51 @@
   }
 
   function getHistory() {
-    return loadBag().history;
+    const list = readJSON(activeKeys().history, []);
+    return Array.isArray(list) ? list : [];
   }
 
   function recordHistory(methodId, meta) {
     if (!methodId) return;
-    const bag = loadBag();
     const next = {
       methodId: String(methodId),
       at: new Date().toISOString(),
       name: (meta && meta.name) || "",
     };
-    const filtered = (bag.history || []).filter((h) => h.methodId !== methodId);
+    const filtered = getHistory().filter((h) => h.methodId !== methodId);
     filtered.unshift(next);
-    bag.history = filtered.slice(0, HISTORY_LIMIT);
-    saveBag(bag);
+    writeJSON(activeKeys().history, filtered.slice(0, HISTORY_LIMIT));
     document.dispatchEvent(
-      new CustomEvent("fatum:history-changed", { detail: { count: bag.history.length } })
+      new CustomEvent("fatum:history-changed", {
+        detail: { count: Math.min(filtered.length, HISTORY_LIMIT) },
+      })
     );
   }
 
   function migrateGuestInto(email) {
-    const key = emailKey(email);
-    const existing = readJSON(key, null);
+    if (!email) return false;
+    const userKeys = keysFor(email);
+    const existingJournal = readJSON(userKeys.journal, []);
+    const existingCollection = readJSON(userKeys.collection, []);
+    const existingHistory = readJSON(userKeys.history, []);
     const hasUserData =
-      existing &&
-      ((Array.isArray(existing.journal) && existing.journal.length) ||
-        (Array.isArray(existing.collection) && existing.collection.length) ||
-        (Array.isArray(existing.history) && existing.history.length));
+      (Array.isArray(existingJournal) && existingJournal.length) ||
+      (Array.isArray(existingCollection) && existingCollection.length) ||
+      (Array.isArray(existingHistory) && existingHistory.length);
     if (hasUserData) return false;
 
-    const guest = {
-      journal: readJSON(GUEST_JOURNAL, []),
-      collection: readJSON(GUEST_COLLECTION, []),
-      history: readJSON(GUEST_HISTORY, []),
-    };
+    const guestJournal = readJSON(GUEST_JOURNAL, []);
+    const guestCollection = readJSON(GUEST_COLLECTION, []);
+    const guestHistory = readJSON(GUEST_HISTORY, []);
     const empty =
-      !guest.journal.length && !guest.collection.length && !guest.history.length;
-    if (empty) {
-      writeJSON(key, {
-        journal: [],
-        collection: [],
-        history: [],
-        updatedAt: new Date().toISOString(),
-      });
-      return false;
-    }
-    writeJSON(key, {
-      ...guest,
-      updatedAt: new Date().toISOString(),
-      migratedFromGuestAt: new Date().toISOString(),
-    });
+      !(Array.isArray(guestJournal) && guestJournal.length) &&
+      !(Array.isArray(guestCollection) && guestCollection.length) &&
+      !(Array.isArray(guestHistory) && guestHistory.length);
+    if (empty) return false;
+
+    writeJSON(userKeys.journal, guestJournal);
+    writeJSON(userKeys.collection, guestCollection);
+    writeJSON(userKeys.history, guestHistory);
     return true;
   }
 
@@ -192,6 +160,7 @@
     onSignedIn,
     onSignedOut,
     migrateGuestInto,
+    keysFor,
     GUEST_JOURNAL,
   };
 })();
