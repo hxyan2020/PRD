@@ -2678,6 +2678,7 @@ body.nav-open .nav-toggle__bars::after {
   html { scroll-behavior: auto; }
   .hero__sky::before,
   .hero__map,
+  .hero__banner,
   .hero__scroll,
   .brand,
   .hero__lead,
@@ -2685,6 +2686,10 @@ body.nav-open .nav-toggle__bars::after {
   .hero__cta,
   .method {
     animation: none !important;
+  }
+
+  .hero__banner {
+    transform: none;
   }
 }
 
