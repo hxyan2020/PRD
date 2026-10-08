@@ -1,11 +1,11 @@
 /**
  * Hash router — splits Fatum Atlas into focused pages.
- * Routes: home | play | atlas | journal | about
+ * Routes: home | play | atlas | journal | about | terms
  */
 (function () {
   "use strict";
 
-  const ROUTES = ["home", "play", "atlas", "journal", "about"];
+  const ROUTES = ["home", "play", "atlas", "journal", "about", "terms"];
   let current = "home";
   const listeners = new Set();
 
@@ -21,6 +21,7 @@
     journal: "journal",
     howto: "about",
     sources: "about",
+    terms: "terms",
     top: "home",
   };
 

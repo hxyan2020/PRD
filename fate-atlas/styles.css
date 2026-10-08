@@ -2185,6 +2185,51 @@ body.studio-open {
   text-decoration: underline;
 }
 
+.footer__legal {
+  max-width: 36rem;
+  margin: 0.65rem auto 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.terms {
+  padding-top: 5.5rem;
+  padding-bottom: 3rem;
+}
+
+.terms__updated {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.terms__blocks {
+  display: grid;
+  gap: 1.15rem;
+  margin-top: 1.5rem;
+  max-width: 42rem;
+}
+
+.terms__block {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
+.terms__block h3 {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--teal-deep);
+}
+
+.terms__block p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
 /* ── Multi-page shell ─────────────────────────────────── */
 .page[hidden] {
   display: none !important;
