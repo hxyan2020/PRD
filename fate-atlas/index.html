@@ -15,14 +15,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <a class="skip-link" href="#play" data-i18n="skip">Skip to play</a>
+<body data-page="home">
+  <a class="skip-link" href="#/play" data-nav="play" data-i18n="skip">Skip to play</a>
 
   <div class="hud" id="player-hud" data-i18n-aria="hud.ritesTitle" aria-label="Player progress">
-    <a class="hud__brand" href="#top" aria-label="Fatum Atlas">
+    <a class="hud__brand" href="#/home" data-nav="home" aria-label="Fatum Atlas">
       <img class="hud__logo" src="assets/brand/logo-light.png" width="72" height="40" alt="" decoding="async" />
       <span class="hud__brand-text">Fatum</span>
     </a>
+
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="site-nav" aria-expanded="false" data-i18n-aria="nav.menu">
+      <span class="nav-toggle__bars" aria-hidden="true"></span>
+      <span class="visually-hidden" data-i18n="nav.menu">Menu</span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <a class="site-nav__link" href="#/play" data-nav="play" data-i18n="nav.play">Play</a>
+      <a class="site-nav__link" href="#/atlas" data-nav="atlas" data-i18n="nav.atlas">Atlas</a>
+      <a class="site-nav__link" href="#/journal" data-nav="journal" data-i18n="nav.journal">Journal</a>
+      <a class="site-nav__link" href="#/about" data-nav="about" data-i18n="nav.about">About</a>
+    </nav>
+
     <div class="hud__stats">
       <span class="hud__pill" data-i18n-title="hud.ritesTitle" title="Methods in the atlas"><em id="hud-methods">0</em> <span data-i18n="hud.rites">rites</span></span>
       <span class="hud__pill hud__pill--seal" data-i18n-title="hud.sealsTitle" title="Saved readings"><em id="hud-seals">0</em> <span data-i18n="hud.seals">seals</span></span>
@@ -32,190 +45,238 @@
         <span class="visually-hidden" data-i18n="hud.lang">Language</span>
         <select id="lang-select" aria-label="Language"></select>
       </label>
-      <a class="hud__link" href="#journal" data-i18n="hud.journal">Journal</a>
     </div>
   </div>
-
-  <header class="hero" id="top">
-    <div class="hero__sky" aria-hidden="true"></div>
-    <div class="hero__map" aria-hidden="true"></div>
-    <div class="hero__content">
-      <div class="brand-mark" aria-hidden="true">
-        <img class="brand-mark__logo" src="assets/brand/logo-light.png" width="280" height="154" alt="" decoding="async" />
-      </div>
-      <h1 class="brand">Fatum <span>Atlas</span></h1>
-      <p class="hero__lead" data-i18n="hero.lead">Play the world’s fate rites.</p>
-      <p class="hero__sub" data-i18n="hero.sub">Pick a method → follow the steps → reveal your reading. Optional: collect it as a seal in your journal.</p>
-      <div class="hero__cta">
-        <a class="btn btn--primary" href="#play" data-i18n="hero.start">Start playing</a>
-        <button type="button" class="btn btn--ghost" id="hero-surprise" data-i18n="hero.surprise">Random rite</button>
-      </div>
-    </div>
-    <div class="hero__scroll" aria-hidden="true" data-i18n="hero.scroll">How to play ↓</div>
-  </header>
+  <div class="nav-backdrop" id="nav-backdrop" hidden></div>
 
   <main>
-    <section class="howto" id="howto" aria-labelledby="howto-title">
-      <div class="section">
-        <p class="section__eyebrow" data-i18n="howto.eyebrow">How to play</p>
-        <h2 class="section__title" id="howto-title" data-i18n="howto.title">Three moves</h2>
-        <ol class="howto__steps">
-          <li class="howto__step">
-            <span class="howto__num" aria-hidden="true">1</span>
-            <h3 data-i18n="howto.1.title">Pick a rite</h3>
-            <p data-i18n="howto.1.body">Choose a featured quest or any method from the atlas.</p>
-          </li>
-          <li class="howto__step">
-            <span class="howto__num" aria-hidden="true">2</span>
-            <h3 data-i18n="howto.2.title">Play the steps</h3>
-            <p data-i18n="howto.2.body">Answer prompts, cast lots, flip cards, or upload a photo when asked.</p>
-          </li>
-          <li class="howto__step">
-            <span class="howto__num" aria-hidden="true">3</span>
-            <h3 data-i18n="howto.3.title">Collect a seal</h3>
-            <p data-i18n="howto.3.body">Save the reading to your journal with an auto title and time stamp.</p>
-          </li>
-        </ol>
-        <aside class="advisory advisory--inline" id="accuracy-advisory" data-i18n-aria="advisory.eyebrow" aria-label="Fair play notice">
-          <p class="advisory__eyebrow" data-i18n="advisory.eyebrow">Fair play notice</p>
-          <p class="advisory__body" data-i18n="advisory.body">
-            Readings may not be accurate. Reality is stochastic. Fun and reflection only — no rite predicts black swan events that can change everything at once.
-          </p>
-        </aside>
-      </div>
-    </section>
-
-    <section class="featured" id="play" aria-labelledby="featured-title">
-      <div class="section">
-        <p class="section__eyebrow" data-i18n="play.eyebrow">Starter quests</p>
-        <h2 class="section__title" id="featured-title" data-i18n="play.title">Play these first</h2>
-        <p class="section__copy" data-i18n="play.copy">Three guided games with clear rules. Tap a card to begin.</p>
-        <div class="feature-grid" id="featured-guides"></div>
-      </div>
-    </section>
-
-    <section class="begin" id="begin" aria-labelledby="begin-title">
-      <div class="section">
-        <p class="section__eyebrow" data-i18n="begin.eyebrow">Quick match</p>
-        <h2 class="section__title" id="begin-title" data-i18n="begin.title">Or jump straight in</h2>
-        <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list, or roll a surprise.</p>
-        <div class="begin__row">
-          <div class="field begin__picker">
-            <label id="method-picker-label" for="method-picker-trigger" data-i18n="begin.choose">Choose a rite</label>
-            <div class="rite-picker" id="rite-picker">
-              <button type="button" class="rite-picker__trigger" id="method-picker-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="method-picker-label">
-                <span class="rite-picker__flags" id="method-picker-flags" aria-hidden="true"></span>
-                <span class="rite-picker__label" id="method-picker-label-text" data-i18n="begin.placeholder">Choose a rite…</span>
-                <span class="rite-picker__chevron" aria-hidden="true">▾</span>
-              </button>
-              <div class="rite-picker__panel" id="method-picker-panel" hidden>
-                <input type="search" class="rite-picker__search" id="method-picker-search" data-i18n-placeholder="catalog.searchPh" placeholder="Try Ifá, palm, Korea, tarot…" autocomplete="off" />
-                <ul class="rite-picker__list" id="method-picker-list" role="listbox" aria-labelledby="method-picker-label"></ul>
-              </div>
-              <select id="method-picker" class="rite-picker__native" tabindex="-1" aria-hidden="true"></select>
-            </div>
+    <!-- HOME -->
+    <div class="page page--home" data-page="home" id="page-home">
+      <header class="hero" id="top">
+        <div class="hero__sky" aria-hidden="true"></div>
+        <div class="hero__map" aria-hidden="true"></div>
+        <div class="hero__content">
+          <div class="brand-mark" aria-hidden="true">
+            <img class="brand-mark__logo" src="assets/brand/logo-light.png" width="280" height="154" alt="" decoding="async" />
           </div>
-          <div class="field">
-            <label>&nbsp;</label>
-            <button type="button" class="btn btn--primary" id="start-reading-btn" data-i18n="begin.play">Play</button>
+          <h1 class="brand">Fatum <span>Atlas</span></h1>
+          <p class="hero__lead" data-i18n="hero.lead">Play the world’s fate rites.</p>
+          <p class="hero__sub" data-i18n="hero.sub">Pick a method → follow the steps → reveal your reading. Optional: collect it as a seal in your journal.</p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#/play" data-nav="play" data-i18n="hero.start">Start playing</a>
+            <button type="button" class="btn btn--ghost" id="hero-surprise" data-i18n="hero.surprise">Random rite</button>
           </div>
         </div>
-        <div class="quick-actions">
-          <button type="button" class="btn btn--play-secondary" id="draw-btn"><span aria-hidden="true">🎲 </span><span data-i18n="begin.surprise">Surprise me</span></button>
+      </header>
+
+      <section class="home-paths section" aria-labelledby="paths-title">
+        <p class="section__eyebrow" data-i18n="paths.eyebrow">Choose a path</p>
+        <h2 class="section__title" id="paths-title" data-i18n="paths.title">Where next?</h2>
+        <div class="path-grid">
+          <a class="path-card" href="#/play" data-nav="play">
+            <span class="path-card__glyph" aria-hidden="true">▶</span>
+            <h3 data-i18n="nav.play">Play</h3>
+            <p data-i18n="paths.play">Guided quests and a quick match picker.</p>
+          </a>
+          <a class="path-card" href="#/atlas" data-nav="atlas">
+            <span class="path-card__glyph" aria-hidden="true">◎</span>
+            <h3 data-i18n="nav.atlas">Atlas</h3>
+            <p data-i18n="paths.atlas">Browse all 187 rites by continent and type.</p>
+          </a>
+          <a class="path-card" href="#/journal" data-nav="journal">
+            <span class="path-card__glyph" aria-hidden="true">◈</span>
+            <h3 data-i18n="nav.journal">Journal</h3>
+            <p data-i18n="paths.journal">Your collected seals, titles, and timestamps.</p>
+          </a>
+          <a class="path-card" href="#/about" data-nav="about">
+            <span class="path-card__glyph" aria-hidden="true">?</span>
+            <h3 data-i18n="nav.about">About</h3>
+            <p data-i18n="paths.about">How it works, fair play, and sources.</p>
+          </a>
         </div>
-        <div class="oracle__result" id="oracle-result" hidden></div>
-      </div>
-    </section>
-
-    <section class="section regions-wrap" id="regions" aria-labelledby="regions-title">
-      <p class="section__eyebrow" data-i18n="regions.eyebrow">World map</p>
-      <h2 class="section__title" id="regions-title" data-i18n="regions.title">Browse by continent</h2>
-      <p class="section__copy" data-i18n="regions.copy">Filter the atlas, then hit Play on any card.</p>
-      <div class="continents" id="continent-nav" role="group" data-i18n-aria="regions.aria" aria-label="Filter by continent"></div>
-      <div class="stats stats--inline" aria-label="Collection statistics">
-        <div><div class="stat__value" id="stat-methods">0</div><div class="stat__label" data-i18n="stat.rites">rites</div></div>
-        <div><div class="stat__value" id="stat-countries">0</div><div class="stat__label" data-i18n="stat.places">places named</div></div>
-        <div><div class="stat__value" id="stat-continents">6</div><div class="stat__label" data-i18n="stat.continents">continents</div></div>
-      </div>
-    </section>
-
-    <section class="catalog" id="catalog" aria-labelledby="catalog-title">
-      <div class="section">
-        <p class="section__eyebrow" data-i18n="catalog.eyebrow">Atlas</p>
-        <h2 class="section__title" id="catalog-title" data-i18n="catalog.title">All rites</h2>
-        <p class="section__copy" data-i18n="catalog.copy">Search or filter, then press Play.</p>
-
-        <div class="controls">
-          <div class="field">
-            <label for="search" data-i18n="catalog.search">Search</label>
-            <input type="search" id="search" data-i18n-placeholder="catalog.searchPh" placeholder="Try Ifá, palm, Korea, tarot…" autocomplete="off" />
-          </div>
-          <div class="field">
-            <label for="continent-filter" data-i18n="catalog.continent">Continent</label>
-            <select id="continent-filter"></select>
-          </div>
-          <div class="field">
-            <label for="type-filter" data-i18n="catalog.type">Type</label>
-            <select id="type-filter"></select>
-          </div>
-          <div class="field">
-            <label>&nbsp;</label>
-            <button type="button" class="btn btn--play-secondary" id="reset-filters" style="width:100%" data-i18n="catalog.reset">Reset filters</button>
-          </div>
-        </div>
-
-        <div class="results-meta">
-          <span id="results-count">Showing 0 rites</span>
-          <span class="results-meta__hint" data-i18n="catalog.hint">Each card shows science status</span>
-        </div>
-
-        <ul class="method-list" id="method-list"></ul>
-        <p class="empty" id="empty-state" hidden data-i18n="catalog.empty">No rites match. Try another search.</p>
-      </div>
-    </section>
-
-    <section class="journal" id="journal" aria-labelledby="journal-title">
-      <div class="section">
-        <p class="section__eyebrow" data-i18n="journal.eyebrow">Collection</p>
-        <h2 class="section__title" id="journal-title" data-i18n="journal.title">Your seals</h2>
-        <p class="section__copy" data-i18n="journal.copy">
-          Saved readings live here as seals — auto title + timestamp. Kept only in this browser.
-        </p>
-        <div class="journal-toolbar">
-          <p class="journal-toolbar__count"><span id="journal-count">0</span> <span data-i18n="journal.count">seals collected</span></p>
-          <button type="button" class="btn btn--play-secondary" id="journal-clear" data-i18n="journal.clear">Clear all</button>
-        </div>
-        <div id="journal-list" class="journal-list"></div>
-      </div>
-    </section>
-
-    <div class="studio" id="journal-detail" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="journal-detail-title">
-      <div class="studio__panel">
-        <header class="studio__header">
-          <div>
-            <p class="studio__kicker" data-i18n="studio.seal">Seal</p>
-            <h2 class="studio__method" id="journal-detail-title">Entry</h2>
-          </div>
-          <button type="button" class="studio__close" id="journal-detail-close" data-i18n-aria="studio.close" aria-label="Close">×</button>
-        </header>
-        <div class="studio__body" id="journal-detail-body"></div>
-      </div>
+      </section>
     </div>
 
-    <section class="sources" id="sources" aria-labelledby="sources-title">
-      <div class="section">
-        <p class="section__eyebrow" data-i18n="sources.eyebrow">Credits</p>
-        <h2 class="section__title" id="sources-title" data-i18n="sources.title">Where rites were sourced</h2>
-        <p class="section__copy" data-i18n="sources.copy">Cultural references for learning — not manuals for sacred initiation.</p>
-        <ul>
-          <li><a href="https://en.wikipedia.org/wiki/Methods_of_divination" target="_blank" rel="noopener">Wikipedia — Methods of divination</a></li>
-          <li><a href="https://sekaifortune.com/en" target="_blank" rel="noopener">Sekai Fortune</a></li>
-          <li><a href="https://plutto.space/traditions" target="_blank" rel="noopener">Plutto Traditions</a></li>
-          <li><a href="https://www.anthroencyclopedia.com/entry/divination" target="_blank" rel="noopener">Open Encyclopedia of Anthropology</a></li>
-        </ul>
-      </div>
-    </section>
+    <!-- PLAY -->
+    <div class="page page--play" data-page="play" id="page-play" hidden>
+      <section class="featured" id="play" aria-labelledby="featured-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="play.eyebrow">Starter quests</p>
+          <h2 class="section__title" id="featured-title" data-i18n="play.title">Play these first</h2>
+          <p class="section__copy" data-i18n="play.copy">Three guided games with clear rules. Tap a card to begin.</p>
+          <div class="feature-grid" id="featured-guides"></div>
+        </div>
+      </section>
+
+      <section class="begin" id="begin" aria-labelledby="begin-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="begin.eyebrow">Quick match</p>
+          <h2 class="section__title" id="begin-title" data-i18n="begin.title">Or jump straight in</h2>
+          <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list, or roll a surprise.</p>
+          <div class="begin__row">
+            <div class="field begin__picker">
+              <label id="method-picker-label" for="method-picker-trigger" data-i18n="begin.choose">Choose a rite</label>
+              <div class="rite-picker" id="rite-picker">
+                <button type="button" class="rite-picker__trigger" id="method-picker-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="method-picker-label">
+                  <span class="rite-picker__flags" id="method-picker-flags" aria-hidden="true"></span>
+                  <span class="rite-picker__label" id="method-picker-label-text" data-i18n="begin.placeholder">Choose a rite…</span>
+                  <span class="rite-picker__chevron" aria-hidden="true">▾</span>
+                </button>
+                <div class="rite-picker__panel" id="method-picker-panel" hidden>
+                  <input type="search" class="rite-picker__search" id="method-picker-search" data-i18n-placeholder="catalog.searchPh" placeholder="Try Ifá, palm, Korea, tarot…" autocomplete="off" />
+                  <ul class="rite-picker__list" id="method-picker-list" role="listbox" aria-labelledby="method-picker-label"></ul>
+                </div>
+                <select id="method-picker" class="rite-picker__native" tabindex="-1" aria-hidden="true"></select>
+              </div>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn--primary" id="start-reading-btn" data-i18n="begin.play">Play</button>
+            </div>
+          </div>
+          <div class="quick-actions">
+            <button type="button" class="btn btn--play-secondary" id="draw-btn"><span aria-hidden="true">🎲 </span><span data-i18n="begin.surprise">Surprise me</span></button>
+            <a class="btn btn--ghost" href="#/atlas" data-nav="atlas" data-i18n="paths.toAtlas">Browse full atlas</a>
+          </div>
+          <div class="oracle__result" id="oracle-result" hidden></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ATLAS -->
+    <div class="page page--atlas" data-page="atlas" id="page-atlas" hidden>
+      <section class="section regions-wrap" id="regions" aria-labelledby="regions-title">
+        <p class="section__eyebrow" data-i18n="regions.eyebrow">World map</p>
+        <h2 class="section__title" id="regions-title" data-i18n="regions.title">Browse by continent</h2>
+        <p class="section__copy" data-i18n="regions.copy">Filter the atlas, then hit Play on any card.</p>
+        <div class="continents" id="continent-nav" role="group" data-i18n-aria="regions.aria" aria-label="Filter by continent"></div>
+        <div class="stats stats--inline" aria-label="Collection statistics">
+          <div><div class="stat__value" id="stat-methods">0</div><div class="stat__label" data-i18n="stat.rites">rites</div></div>
+          <div><div class="stat__value" id="stat-countries">0</div><div class="stat__label" data-i18n="stat.places">places named</div></div>
+          <div><div class="stat__value" id="stat-continents">6</div><div class="stat__label" data-i18n="stat.continents">continents</div></div>
+        </div>
+      </section>
+
+      <section class="catalog" id="catalog" aria-labelledby="catalog-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="catalog.eyebrow">Atlas</p>
+          <h2 class="section__title" id="catalog-title" data-i18n="catalog.title">All rites</h2>
+          <p class="section__copy" data-i18n="catalog.copy">Search or filter, then press Play.</p>
+
+          <div class="controls">
+            <div class="field">
+              <label for="search" data-i18n="catalog.search">Search</label>
+              <input type="search" id="search" data-i18n-placeholder="catalog.searchPh" placeholder="Try Ifá, palm, Korea, tarot…" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="continent-filter" data-i18n="catalog.continent">Continent</label>
+              <select id="continent-filter"></select>
+            </div>
+            <div class="field">
+              <label for="type-filter" data-i18n="catalog.type">Type</label>
+              <select id="type-filter"></select>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <button type="button" class="btn btn--play-secondary" id="reset-filters" style="width:100%" data-i18n="catalog.reset">Reset filters</button>
+            </div>
+          </div>
+
+          <div class="results-meta">
+            <span id="results-count">Showing 0 rites</span>
+            <span class="results-meta__hint" data-i18n="catalog.hint">Each card shows science status</span>
+          </div>
+
+          <ul class="method-list" id="method-list"></ul>
+          <p class="empty" id="empty-state" hidden data-i18n="catalog.empty">No rites match. Try another search.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- JOURNAL -->
+    <div class="page page--journal" data-page="journal" id="page-journal" hidden>
+      <section class="journal" id="journal" aria-labelledby="journal-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="journal.eyebrow">Collection</p>
+          <h2 class="section__title" id="journal-title" data-i18n="journal.title">Your seals</h2>
+          <p class="section__copy" data-i18n="journal.copy">
+            Saved readings live here as seals — auto title + timestamp. Kept only in this browser.
+          </p>
+          <div class="journal-toolbar">
+            <p class="journal-toolbar__count"><span id="journal-count">0</span> <span data-i18n="journal.count">seals collected</span></p>
+            <button type="button" class="btn btn--play-secondary" id="journal-clear" data-i18n="journal.clear">Clear all</button>
+          </div>
+          <div id="journal-list" class="journal-list"></div>
+          <p class="page-links">
+            <a href="#/play" data-nav="play" data-i18n="paths.toPlay">Play another rite</a>
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="page page--about" data-page="about" id="page-about" hidden>
+      <section class="howto" id="howto" aria-labelledby="howto-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="howto.eyebrow">How to play</p>
+          <h2 class="section__title" id="howto-title" data-i18n="howto.title">Three moves</h2>
+          <ol class="howto__steps">
+            <li class="howto__step">
+              <span class="howto__num" aria-hidden="true">1</span>
+              <h3 data-i18n="howto.1.title">Pick a rite</h3>
+              <p data-i18n="howto.1.body">Choose a featured quest or any method from the atlas.</p>
+            </li>
+            <li class="howto__step">
+              <span class="howto__num" aria-hidden="true">2</span>
+              <h3 data-i18n="howto.2.title">Play the steps</h3>
+              <p data-i18n="howto.2.body">Answer prompts, cast lots, flip cards, or upload a photo when asked.</p>
+            </li>
+            <li class="howto__step">
+              <span class="howto__num" aria-hidden="true">3</span>
+              <h3 data-i18n="howto.3.title">Collect a seal</h3>
+              <p data-i18n="howto.3.body">Save the reading to your journal with an auto title and time stamp.</p>
+            </li>
+          </ol>
+          <aside class="advisory advisory--inline" id="accuracy-advisory" data-i18n-aria="advisory.eyebrow" aria-label="Fair play notice">
+            <p class="advisory__eyebrow" data-i18n="advisory.eyebrow">Fair play notice</p>
+            <p class="advisory__body" data-i18n="advisory.body">
+              Readings may not be accurate. Reality is stochastic. Fun and reflection only — no rite predicts black swan events that can change everything at once.
+            </p>
+          </aside>
+          <p class="page-links">
+            <a class="btn btn--primary" href="#/play" data-nav="play" data-i18n="hero.start">Start playing</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="sources" id="sources" aria-labelledby="sources-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="sources.eyebrow">Credits</p>
+          <h2 class="section__title" id="sources-title" data-i18n="sources.title">Where rites were sourced</h2>
+          <p class="section__copy" data-i18n="sources.copy">Cultural references for learning — not manuals for sacred initiation.</p>
+          <ul>
+            <li><a href="https://en.wikipedia.org/wiki/Methods_of_divination" target="_blank" rel="noopener">Wikipedia — Methods of divination</a></li>
+            <li><a href="https://sekaifortune.com/en" target="_blank" rel="noopener">Sekai Fortune</a></li>
+            <li><a href="https://plutto.space/traditions" target="_blank" rel="noopener">Plutto Traditions</a></li>
+            <li><a href="https://www.anthroencyclopedia.com/entry/divination" target="_blank" rel="noopener">Open Encyclopedia of Anthropology</a></li>
+          </ul>
+        </div>
+      </section>
+    </div>
   </main>
+
+  <div class="studio" id="journal-detail" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="journal-detail-title">
+    <div class="studio__panel">
+      <header class="studio__header">
+        <div>
+          <p class="studio__kicker" data-i18n="studio.seal">Seal</p>
+          <h2 class="studio__method" id="journal-detail-title">Entry</h2>
+        </div>
+        <button type="button" class="studio__close" id="journal-detail-close" data-i18n-aria="studio.close" aria-label="Close">×</button>
+      </header>
+      <div class="studio__body" id="journal-detail-body"></div>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="brand-mini">
@@ -223,6 +284,12 @@
       <span>Fatum Atlas</span>
     </div>
     <p data-i18n="footer.tag">Play · reflect · collect — not predict. No black swans in the deck.</p>
+    <nav class="footer__nav" aria-label="Footer">
+      <a href="#/play" data-nav="play" data-i18n="nav.play">Play</a>
+      <a href="#/atlas" data-nav="atlas" data-i18n="nav.atlas">Atlas</a>
+      <a href="#/journal" data-nav="journal" data-i18n="nav.journal">Journal</a>
+      <a href="#/about" data-nav="about" data-i18n="nav.about">About</a>
+    </nav>
   </footer>
 
   <div class="studio" id="reading-studio" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="reading-title">
@@ -255,6 +322,7 @@
   <script src="data/science.js"></script>
   <script src="i18n/strings.js"></script>
   <script src="i18n/i18n.js"></script>
+  <script src="router.js"></script>
   <script src="journal.js"></script>
   <script src="app.js"></script>
   <script src="reading.js"></script>

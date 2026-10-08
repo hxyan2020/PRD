@@ -232,7 +232,7 @@
       ${sci ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">${escapeHTML(t("science.label"))}</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>` : ""}
       <p class="method__actions" style="margin-top:1rem">
         <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(pick.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
-        <a class="btn btn--ghost btn--small studio__btn-muted" href="#method-${pick.id}">${escapeHTML(t("oracle.view"))}</a>
+        <a class="btn btn--ghost btn--small studio__btn-muted" href="#/atlas?method=${escapeHTML(pick.id)}" data-nav="atlas">${escapeHTML(t("oracle.view"))}</a>
       </p>
     `;
   }
@@ -265,7 +265,11 @@
         b.classList.toggle("is-active", b === btn);
       });
       renderList();
-      document.getElementById("catalog").scrollIntoView({ behavior: "smooth" });
+      if (window.FatumRouter) {
+        window.FatumRouter.navigate("atlas", { continent: id });
+      } else {
+        document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
+      }
     });
 
     ["input", "change"].forEach((evt) => {

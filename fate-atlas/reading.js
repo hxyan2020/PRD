@@ -591,7 +591,7 @@
   function journalActionsHTML(saved, againLabel) {
     const again = againLabel || ti("action.playAgain");
     if (saved) {
-      return `<p class="journal-saved-note" role="status">${escapeHTML(ti("seal.locked", { title: state.journalTitle || "entry" }))} · <a href="#journal" data-action="goto-journal">${escapeHTML(ti("journal.title"))}</a></p>
+      return `<p class="journal-saved-note" role="status">${escapeHTML(ti("seal.locked", { title: state.journalTitle || "entry" }))} · <a href="#/journal" data-nav="journal" data-action="goto-journal">${escapeHTML(ti("journal.title"))}</a></p>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="again">${escapeHTML(again)}</button>
           <button type="button" class="btn btn--primary" data-action="close">${escapeHTML(ti("action.done"))}</button>
@@ -972,7 +972,8 @@
     }
     if (action === "goto-journal") {
       closeStudio();
-      document.getElementById("journal")?.scrollIntoView({ behavior: "smooth" });
+      if (window.FatumRouter) window.FatumRouter.navigate("journal");
+      else document.getElementById("journal")?.scrollIntoView({ behavior: "smooth" });
       return;
     }
     if (action === "again") {
