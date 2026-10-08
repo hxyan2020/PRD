@@ -1,8 +1,10 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { ScrollToTop } from './components/ScrollToTop'
 import { SiteHeader } from './components/SiteHeader'
+import { AuthProvider } from './data/AuthProvider'
 import { PaintingsProvider } from './data/PaintingsProvider'
 import { I18nProvider, useI18n } from './i18n/I18nContext'
+import { AuthPage } from './pages/AuthPage'
 import { CollectionPage } from './pages/CollectionPage'
 import { GalleryPage } from './pages/GalleryPage'
 import { HomePage } from './pages/HomePage'
@@ -23,24 +25,27 @@ function Footer() {
 export default function App() {
   return (
     <I18nProvider>
-      <PaintingsProvider>
-        <HashRouter>
-          <ScrollToTop />
-          <div className="app-shell">
-            <SiteHeader />
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/today" element={<TodayPage />} />
-              <Route path="/gallery" element={<GalleryPage />} />
-              <Route path="/collection" element={<CollectionPage />} />
-              <Route path="/preferences" element={<PreferencesPage />} />
-              <Route path="/painting/:id" element={<PaintingPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-            <Footer />
-          </div>
-        </HashRouter>
-      </PaintingsProvider>
+      <AuthProvider>
+        <PaintingsProvider>
+          <HashRouter>
+            <ScrollToTop />
+            <div className="app-shell">
+              <SiteHeader />
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/today" element={<TodayPage />} />
+                <Route path="/gallery" element={<GalleryPage />} />
+                <Route path="/collection" element={<CollectionPage />} />
+                <Route path="/preferences" element={<PreferencesPage />} />
+                <Route path="/account" element={<AuthPage />} />
+                <Route path="/painting/:id" element={<PaintingPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+              <Footer />
+            </div>
+          </HashRouter>
+        </PaintingsProvider>
+      </AuthProvider>
     </I18nProvider>
   )
 }

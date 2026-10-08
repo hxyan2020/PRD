@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { CountryFlags } from '../components/CountryFlags'
 import { GenreIcon } from '../components/GenreIcon'
 import { SafeImage } from '../components/SafeImage'
+import { useAuth } from '../data/AuthProvider'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
@@ -48,6 +49,7 @@ function stepIcon(status: DiscoverStep['status']): string {
 export function PreferencesPage() {
   const { t, lang } = useI18n()
   const store = usePaintingsStore()
+  const { persistLibrary } = useAuth()
   const [prefs, setPrefs] = useState<Preferences>(() => getPreferences())
   const [savedMsg, setSavedMsg] = useState('')
   const [busy, setBusy] = useState(false)
@@ -192,6 +194,7 @@ export function PreferencesPage() {
           className="btn primary"
           onClick={() => {
             savePreferences(prefs)
+            void persistLibrary()
             setSavedMsg(t('prefsSaved'))
             setTimeout(() => setSavedMsg(''), 2500)
           }}
@@ -204,6 +207,7 @@ export function PreferencesPage() {
           onClick={() => {
             setPrefs(DEFAULT_PREFS)
             savePreferences(DEFAULT_PREFS)
+            void persistLibrary()
             setSavedMsg(t('prefsReset'))
           }}
         >
@@ -237,6 +241,7 @@ export function PreferencesPage() {
             })
             try {
               savePreferences(prefs)
+              void persistLibrary()
               // Pass the full owned pool (core 1000 + prior discoveries) so
               // cross-source duplicates are skipped by title/painter/image, not only id.
               const found = await discoverPaintings(

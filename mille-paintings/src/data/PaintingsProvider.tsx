@@ -1,6 +1,14 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Painting, PaintingsPayload } from '../types'
-import { addExtraPaintings, getExtraPaintings, getStats, markViewed, toggleCollected, isCollected } from '../lib/storage'
+import {
+  addExtraPaintings,
+  getExtraPaintings,
+  getStats,
+  markViewed,
+  toggleCollected,
+  isCollected,
+} from '../lib/storage'
+import { useAuth } from './AuthProvider'
 
 type Ctx = {
   status: 'loading' | 'error' | 'ready'
@@ -19,13 +27,15 @@ type Ctx = {
 const PaintingsContext = createContext<Ctx | null>(null)
 
 export function PaintingsProvider({ children }: { children: ReactNode }) {
+  const { user, ready: authReady, persistLibrary } = useAuth()
   const [status, setStatus] = useState<'loading' | 'error' | 'ready'>('loading')
   const [message, setMessage] = useState<string>()
   const [core, setCore] = useState<Painting[]>([])
   const [extras, setExtras] = useState<Painting[]>([])
   const [source, setSource] = useState<string>()
-  const [stats, setStats] = useState(getStats())
+  const [stats, setStats] = useState(() => getStats())
 
+  // Load core catalog once.
   useEffect(() => {
     let cancelled = false
     fetch(`${import.meta.env.BASE_URL}data/paintings.json`)
@@ -37,9 +47,7 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
         if (cancelled) return
         setCore(data.paintings)
         setSource(data.source)
-        setExtras(getExtraPaintings().map((p) => ({ ...p, discovered: true })))
         setStatus('ready')
-        setStats(getStats())
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -51,6 +59,23 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
       cancelled = true
     }
   }, [])
+
+  // Reload per-user extras/stats when auth session changes.
+  const reloadUserLibrary = useCallback(() => {
+    setExtras(getExtraPaintings().map((p) => ({ ...p, discovered: true })))
+    setStats(getStats())
+  }, [])
+
+  useEffect(() => {
+    if (!authReady) return
+    reloadUserLibrary()
+  }, [authReady, user?.id, reloadUserLibrary])
+
+  useEffect(() => {
+    const onAuth = () => reloadUserLibrary()
+    window.addEventListener('mille:auth-changed', onAuth)
+    return () => window.removeEventListener('mille:auth-changed', onAuth)
+  }, [reloadUserLibrary])
 
   const paintings = useMemo(() => {
     const byId = new Map<string, Painting>()
@@ -72,10 +97,12 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
     trackView: (id) => {
       markViewed(id)
       setStats(getStats())
+      void persistLibrary()
     },
     toggleCollect: (id) => {
       toggleCollected(id)
       setStats(getStats())
+      void persistLibrary()
       return isCollected(id)
     },
     collected: (id) => isCollected(id),
@@ -84,6 +111,7 @@ export function PaintingsProvider({ children }: { children: ReactNode }) {
       const next = addExtraPaintings(tagged).map((p) => ({ ...p, discovered: true }))
       setExtras(next)
       setStats(getStats())
+      void persistLibrary()
     },
   }
 
