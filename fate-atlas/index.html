@@ -46,6 +46,11 @@
         <span class="visually-hidden" data-i18n="hud.lang">Language</span>
         <select id="lang-select" aria-label="Language"></select>
       </label>
+      <button type="button" class="hud__auth-btn" id="auth-open" data-i18n="auth.signIn">Sign in</button>
+      <div class="hud__account" id="auth-account" hidden>
+        <span class="hud__account-email" id="auth-account-email"></span>
+        <button type="button" class="hud__auth-btn hud__auth-btn--ghost" id="auth-logout" data-i18n="auth.signOut">Sign out</button>
+      </div>
     </div>
   </div>
   <div class="nav-backdrop" id="nav-backdrop" hidden></div>
@@ -201,13 +206,32 @@
           <p class="section__eyebrow" data-i18n="journal.eyebrow">Collection</p>
           <h2 class="section__title" id="journal-title" data-i18n="journal.title">Your seals</h2>
           <p class="section__copy" data-i18n="journal.copy">
-            Saved readings live here as seals — auto title + timestamp. Kept only in this browser.
+            Saved readings live here as seals — auto title + timestamp. Sign in to keep seals, collection, and browsing history across visits.
+          </p>
+          <p class="auth-inline" id="journal-auth-hint">
+            <button type="button" class="btn btn--ghost btn--small" id="journal-auth-open" data-i18n="auth.signInToSave">Sign in to save your journal</button>
           </p>
           <div class="journal-toolbar">
             <p class="journal-toolbar__count"><span id="journal-count">0</span> <span data-i18n="journal.count">seals collected</span></p>
             <button type="button" class="btn btn--play-secondary" id="journal-clear" data-i18n="journal.clear">Clear all</button>
           </div>
           <div id="journal-list" class="journal-list"></div>
+
+          <div class="user-panes">
+            <section class="user-pane" aria-labelledby="collection-title">
+              <h3 class="user-pane__title" id="collection-title" data-i18n="collection.title">Saved rites</h3>
+              <p class="user-pane__copy" data-i18n="collection.copy">Rites you bookmark from the atlas.</p>
+              <ul class="user-pane__list" id="collection-list"></ul>
+              <p class="user-pane__empty" id="collection-empty" data-i18n="collection.empty">No saved rites yet. Tap Save on any atlas card.</p>
+            </section>
+            <section class="user-pane" aria-labelledby="history-title">
+              <h3 class="user-pane__title" id="history-title" data-i18n="history.title">Browsing history</h3>
+              <p class="user-pane__copy" data-i18n="history.copy">Rites you recently opened or played.</p>
+              <ul class="user-pane__list" id="history-list"></ul>
+              <p class="user-pane__empty" id="history-empty" data-i18n="history.empty">No history yet. Open a rite to start the trail.</p>
+            </section>
+          </div>
+
           <p class="page-links">
             <a href="#/play" data-nav="play" data-i18n="paths.toPlay">Play another rite</a>
           </p>
@@ -383,6 +407,38 @@
   <div class="toast" id="toast" hidden role="status"></div>
   <div class="celebrate" id="celebrate" hidden aria-hidden="true"></div>
 
+  <div class="auth-modal" id="auth-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+    <div class="auth-modal__backdrop" id="auth-backdrop"></div>
+    <div class="auth-modal__panel">
+      <header class="auth-modal__header">
+        <div class="auth-modal__tabs" role="tablist">
+          <button type="button" class="auth-modal__tab is-active" id="auth-mode-login" role="tab" data-i18n="auth.login">Sign in</button>
+          <button type="button" class="auth-modal__tab" id="auth-mode-register" role="tab" data-i18n="auth.register">Create account</button>
+        </div>
+        <button type="button" class="auth-modal__close" id="auth-close" data-i18n-aria="studio.close" aria-label="Close">×</button>
+      </header>
+      <h2 class="auth-modal__title" id="auth-title" data-i18n="auth.loginTitle">Sign in to Fatum Atlas</h2>
+      <p class="auth-modal__lead" data-i18n="auth.lead">Save seals, bookmarked rites, and browsing history. You stay signed in until you sign out.</p>
+      <form class="auth-modal__form" id="auth-form" novalidate>
+        <label class="field">
+          <span data-i18n="auth.email">Email</span>
+          <input id="auth-email" name="email" type="email" autocomplete="username" required placeholder="you@example.com" />
+        </label>
+        <label class="field">
+          <span data-i18n="auth.password">Password</span>
+          <input id="auth-password" name="password" type="password" autocomplete="current-password" required minlength="8" placeholder="At least 8 characters" />
+        </label>
+        <p class="auth-modal__error" id="auth-error" hidden></p>
+        <button type="submit" class="btn btn--primary" id="auth-submit" data-i18n="auth.login">Sign in</button>
+      </form>
+      <p class="auth-modal__switch">
+        <span id="auth-switch-hint" data-i18n="auth.needAccount">New here?</span>
+        <button type="button" class="auth-modal__switch-btn" id="auth-switch" data-i18n="auth.createOne">Create an account</button>
+      </p>
+      <p class="auth-modal__note" data-i18n="auth.note">Accounts stay on this device. Clearing browser data signs you out and removes saved seals.</p>
+    </div>
+  </div>
+
   <script src="data/methods.js"></script>
   <script src="data/countries.js"></script>
   <script src="data/covers.js"></script>
@@ -395,11 +451,15 @@
   <script src="data/science.js"></script>
   <script src="i18n/strings.js"></script>
   <script src="i18n/i18n.js"></script>
-  <script src="router.js"></script>
-  <script src="journal.js"></script>
-  <script src="app.js"></script>
-  <script src="reading.js"></script>
-  <script src="journal-ui.js"></script>
-  <script src="play-ui.js"></script>
+  <script src="auth.js?v=20261008a"></script>
+  <script src="user-data.js?v=20261008a"></script>
+  <script src="router.js?v=20261008a"></script>
+  <script src="journal.js?v=20261008a"></script>
+  <script src="app.js?v=20261008a"></script>
+  <script src="reading.js?v=20261008a"></script>
+  <script src="journal-ui.js?v=20261008a"></script>
+  <script src="play-ui.js?v=20261008a"></script>
+  <script src="auth-ui.js?v=20261008a"></script>
+  <script src="account-ui.js?v=20261008a"></script>
 </body>
 </html>

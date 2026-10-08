@@ -145,6 +145,15 @@
           setTimeout(() => target.classList.remove("is-route-focus"), 1800);
         }
       });
+      if (window.FatumUserData && window.FATE_METHODS) {
+        const m = window.FATE_METHODS.find((x) => x.id === params.method);
+        if (m) {
+          const name = window.FatumMethodText
+            ? window.FatumMethodText.localize(m).name
+            : m.name;
+          window.FatumUserData.recordHistory(m.id, { name });
+        }
+      }
     }
     if (page === "play" && params.surprise === "1") {
       document.getElementById("draw-btn")?.click();
