@@ -21,7 +21,7 @@ export function HomePage() {
           src={`${import.meta.env.BASE_URL}banner-seen.png`}
           alt=""
           width={1199}
-          height={672}
+          height={932}
         />
         <div className="hero__veil" aria-hidden="true" />
         <div className="hero__content">

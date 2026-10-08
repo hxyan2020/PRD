@@ -488,8 +488,11 @@ img {
   }
 
   .hero {
-    min-height: min(72vh, 560px);
-    border-radius: 0 0 22px 22px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
     margin-bottom: 1.4rem;
   }
 
@@ -666,11 +669,15 @@ img {
 
 .hero {
   position: relative;
-  min-height: min(88vh, 760px);
+  /* Fill the first screen below the sticky header; image uses cover (no stretch). */
+  min-height: calc(100vh - 4.75rem);
+  min-height: calc(100dvh - 4.75rem);
+  height: calc(100vh - 4.75rem);
+  height: calc(100dvh - 4.75rem);
   display: grid;
   align-items: end;
   overflow: hidden;
-  border-radius: 0 0 36px 36px;
+  border-radius: 0;
   margin-bottom: 2.5rem;
   color: var(--paper);
   background: #1a1a1a;
@@ -682,7 +689,7 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 35%;
+  object-position: center 42%;
   transform: scale(1.02);
   animation: heroKen 22s ease-in-out infinite alternate;
 }
