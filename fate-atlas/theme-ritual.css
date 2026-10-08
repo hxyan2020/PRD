@@ -237,12 +237,20 @@ body > * {
 .home-paths,
 .sources,
 .page--terms .terms,
-.catalog {
+.catalog,
+.oracle.recommend,
+.regions-wrap {
   background:
-    linear-gradient(180deg, rgba(26, 21, 17, 0.55), rgba(16, 14, 12, 0.2));
+    linear-gradient(180deg, rgba(26, 21, 17, 0.72), rgba(16, 14, 12, 0.35)) !important;
   border-top: 1px solid var(--line);
   border-bottom: none;
   position: relative;
+}
+
+.oracle__panel,
+.oracle__result {
+  background: transparent;
+  color: var(--ink);
 }
 
 .featured::before,
