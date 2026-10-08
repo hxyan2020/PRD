@@ -1,4 +1,4 @@
-export type DepartmentCode = "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM";
+export type DepartmentCode = "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM" | "CUSTOMER_SERVICE" | "TRADING";
 
 export type RoleCode =
   | "SUPER_ADMIN"
@@ -8,7 +8,12 @@ export type RoleCode =
   | "OPS_ANALYST"
   | "AI_ENGINEER"
   | "SYSTEM_ADMIN"
-  | "VIEWER";
+  | "VIEWER"
+  | "PUBLIC_GUEST"
+  | "CS_LEAD"
+  | "CS_AGENT"
+  | "TR_LEAD"
+  | "TR_DEALER";
 
 export type SourceCategory =
   | "MARKET_DATA"

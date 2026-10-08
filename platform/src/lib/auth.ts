@@ -1,10 +1,26 @@
 import { cookies } from "next/headers";
 import { randomBytes } from "crypto";
 import { getDb, writeAudit } from "./db";
+import { isStaticExport } from "./static-export";
 import type { SessionUser } from "./types";
 
 const COOKIE = "crmp_session";
 const TTL_HOURS = 24;
+
+/** Unauthenticated prototype visitor — every admin URL is reachable without login. */
+export const PUBLIC_GUEST: SessionUser = {
+  id: 0,
+  email: "public@local",
+  name: "Public visitor",
+  role_code: "PUBLIC_GUEST",
+  department_code: null,
+  team_id: null,
+  team_name: null,
+};
+
+export function isPublicGuest(user: SessionUser | null | undefined) {
+  return !user || user.role_code === "PUBLIC_GUEST" || user.id === 0;
+}
 
 export async function createSession(userId: number) {
   const db = getDb();
@@ -36,9 +52,10 @@ export async function destroySession() {
 }
 
 export async function getCurrentUser(): Promise<SessionUser | null> {
+  if (isStaticExport()) return PUBLIC_GUEST;
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE)?.value;
-  if (!token) return null;
+  if (!token) return PUBLIC_GUEST;
 
   const row = getDb()
     .prepare(
@@ -53,10 +70,10 @@ export async function getCurrentUser(): Promise<SessionUser | null> {
     | (SessionUser & { expires_at: string })
     | undefined;
 
-  if (!row) return null;
+  if (!row) return PUBLIC_GUEST;
   if (new Date(row.expires_at).getTime() < Date.now()) {
     getDb().prepare(`DELETE FROM sessions WHERE token = ?`).run(token);
-    return null;
+    return PUBLIC_GUEST;
   }
 
   return {
@@ -95,6 +112,7 @@ export function loginWithCredentials(email: string, password: string) {
 }
 
 export function rolePermissions(roleCode: string): string[] {
+  if (roleCode === "PUBLIC_GUEST") return ["*"];
   const row = getDb()
     .prepare(`SELECT permissions_json FROM roles WHERE code = ?`)
     .get(roleCode) as { permissions_json: string } | undefined;

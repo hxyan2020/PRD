@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useT } from "@/hooks/useUiLocale";
 
 export function MonitorActions({
   mode,
@@ -17,6 +18,7 @@ export function MonitorActions({
   label?: string;
 }) {
   const router = useRouter();
+  const { t } = useT();
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -35,17 +37,24 @@ export function MonitorActions({
     const data = await res.json();
     setBusy(false);
     if (!res.ok) {
-      setMsg(data.error || "Action failed");
+      setMsg(data.error || t("common.actionFailed"));
       return;
     }
-    setMsg(mode === "sync" ? data.message || "Synced" : "Updated");
+    setMsg(mode === "sync" ? data.message || t("common.synced") : t("common.updated"));
     router.refresh();
   }
 
   return (
     <div className="inline-flex flex-col items-start gap-1">
       <button type="button" className={`btn ${mode === "sync" ? "btn-primary" : ""}`} disabled={busy} onClick={run}>
-        {busy ? "Working…" : label || (mode === "sync" ? "Sync now (prototype)" : mode === "ack" ? "Acknowledge" : "Update")}
+        {busy
+          ? t("common.working")
+          : label === "Progress"
+            ? t("common.progress")
+            : label === "Resolve"
+              ? t("common.resolve")
+              : label ||
+                (mode === "sync" ? t("m2.syncNow") : mode === "ack" ? t("common.acknowledge") : t("common.updated"))}
       </button>
       {msg && <span className="text-xs text-teal-800">{msg}</span>}
     </div>

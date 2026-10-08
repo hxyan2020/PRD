@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb, writeAudit } from "@/lib/db";
 import { analyzeOpenAlerts } from "@/lib/ai/analyze";
+import { markLarkCardsForAlert } from "@/lib/lark/cards";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
       )
       .run(user.id, body.alert_id);
     writeAudit(user, "ACK_ALERT", "monitor_alert", String(body.alert_id));
+    markLarkCardsForAlert(Number(body.alert_id), "ACKED");
     return NextResponse.json({ ok: true });
   }
 
@@ -61,6 +63,79 @@ export async function POST(req: Request) {
       )
       .run(body.status ?? null, body.assignee_user_id ?? null, body.status ?? "", body.ticket_id);
     writeAudit(user, "UPDATE_TICKET", "monitor_ticket", String(body.ticket_id), body);
+    return NextResponse.json({ ok: true });
+  }
+
+  if (action === "toggle_pause") {
+    const indicatorId = Number(body.indicator_id);
+    const paused = body.paused ? 1 : 0;
+    if (!Number.isFinite(indicatorId)) {
+      return NextResponse.json({ error: "Invalid indicator" }, { status: 400 });
+    }
+    const db = getDb();
+    const row = db
+      .prepare(`SELECT id, monitor_id, paused FROM monitor_indicators WHERE id = ?`)
+      .get(indicatorId) as { id: number; monitor_id: string; paused: number } | undefined;
+    if (!row) {
+      return NextResponse.json({ error: "Indicator not found" }, { status: 404 });
+    }
+    db.prepare(`UPDATE monitor_indicators SET paused = ? WHERE id = ?`).run(paused, indicatorId);
+    db.prepare(`UPDATE detectors SET enabled = ? WHERE monitor_id = ?`).run(paused ? 0 : 1, row.monitor_id);
+    writeAudit(user, paused ? "PAUSE_INDICATOR" : "RESUME_INDICATOR", "monitor_indicator", row.monitor_id, {
+      indicator_id: indicatorId,
+      before: { paused: row.paused },
+      after: { paused },
+      paused: !!paused,
+    });
+    return NextResponse.json({ ok: true, paused: !!paused });
+  }
+
+  if (action === "run_detectors") {
+    const { runDetectors } = await import("@/lib/ai/run-detectors");
+    const results = runDetectors({
+      raiseAlarms: body.raiseAlarms !== false,
+      actor: user.name,
+    });
+    writeAudit(user, "RUN_DETECTORS", "monitor", "all", { count: results.length });
+    return NextResponse.json({ ok: true, results });
+  }
+
+  if (action === "update_thresholds") {
+    const indicatorId = Number(body.indicator_id);
+    const warn = Number(body.threshold_warn);
+    const breach = Number(body.threshold_breach);
+    if (!Number.isFinite(indicatorId) || !Number.isFinite(warn) || !Number.isFinite(breach)) {
+      return NextResponse.json({ error: "Invalid thresholds" }, { status: 400 });
+    }
+    const db = getDb();
+    const row = db
+      .prepare(
+        `SELECT id, monitor_id, threshold_warn, threshold_breach FROM monitor_indicators WHERE id = ?`
+      )
+      .get(indicatorId) as
+      | { id: number; monitor_id: string; threshold_warn: number; threshold_breach: number }
+      | undefined;
+    if (!row) {
+      return NextResponse.json({ error: "Indicator not found" }, { status: 404 });
+    }
+    db.prepare(
+      `UPDATE monitor_indicators
+       SET threshold_warn = ?, threshold_breach = ?, last_checked_at = datetime('now')
+       WHERE id = ?`
+    ).run(warn, breach, indicatorId);
+    // Keep linked detector thresholds in sync when present
+    db.prepare(
+      `UPDATE detectors
+       SET warn_threshold = ?, breach_threshold = ?
+       WHERE monitor_id = ?`
+    ).run(warn, breach, row.monitor_id);
+    writeAudit(user, "UPDATE_THRESHOLDS", "monitor_indicator", row.monitor_id, {
+      indicator_id: indicatorId,
+      before: { threshold_warn: row.threshold_warn, threshold_breach: row.threshold_breach },
+      after: { threshold_warn: warn, threshold_breach: breach },
+      threshold_warn: warn,
+      threshold_breach: breach,
+    });
     return NextResponse.json({ ok: true });
   }
 

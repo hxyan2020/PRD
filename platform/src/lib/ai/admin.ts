@@ -9,6 +9,12 @@ export const AI_PARAM_KEYS = [
   "ai.min_confidence",
   "ai.rag_top_k",
   "ai.second_opinion_severity",
+  "ai.primary.vendor",
+  "ai.line1.model",
+  "ai.line2.model",
+  "ai.challenger.mode",
+  "ai.token.alert_daily",
+  "ai.token.soft_only",
   "ai.maker_checker_required",
   "detectors.auto_raise_alarms",
 ] as const;
@@ -27,6 +33,36 @@ export function seedAiAdminIfEmpty(db = getDb()) {
   upsert.run("ai.min_confidence", "0.55", "Minimum confidence before auto-complete without human gate");
   upsert.run("ai.rag_top_k", "6", "Top-K RAG documents retrieved per RCA");
   upsert.run("ai.second_opinion_severity", "BREACH", "Severities that trigger a second AI challenger (CRITICAL/BREACH)");
+  upsert.run(
+    "ai.primary.vendor",
+    "claude",
+    "Prototype LLM vendor switch: claude | gpt | gemini (self-host evaluation later; no live call yet)"
+  );
+  upsert.run(
+    "ai.line1.model",
+    "claude-3-7-sonnet",
+    "First-line model label — claude-3-7-sonnet | gpt-4o | gemini-2-0-flash (prototype; heuristic RCA still)"
+  );
+  upsert.run(
+    "ai.line2.model",
+    "gpt-4o",
+    "Second-line / challenger model label (prototype; heuristic challenger still)"
+  );
+  upsert.run(
+    "ai.challenger.mode",
+    "heuristic",
+    "Challenger mode: heuristic (today) | vendor (independent model) | subagent (primary sub-agent validator)"
+  );
+  upsert.run(
+    "ai.token.alert_daily",
+    "500000",
+    "Soft daily token threshold — page AI + Infra when exceeded (prototype flag)"
+  );
+  upsert.run(
+    "ai.token.soft_only",
+    "true",
+    "When true, token/spend alerts never hard-stop RCA or CS analyze"
+  );
   upsert.run("ai.maker_checker_required", "true", "Skill/RAG/param changes require maker ≠ checker approval");
 
   const trainCount = (db.prepare(`SELECT COUNT(*) AS c FROM ai_training_runs`).get() as { c: number }).c;
@@ -181,6 +217,8 @@ export function getAiAdminOverview() {
       `SELECT
          COUNT(*) AS total,
          SUM(CASE WHEN mode='SKILL_MATCH' THEN 1 ELSE 0 END) AS skill_matches,
+         SUM(CASE WHEN mode='RAG_REASONING' THEN 1 ELSE 0 END) AS rag_reasoning,
+         SUM(CASE WHEN challenged=1 THEN 1 ELSE 0 END) AS challenged,
          SUM(CASE WHEN needs_human=1 THEN 1 ELSE 0 END) AS needs_human,
          AVG(confidence) AS avg_confidence
        FROM ai_analyses`
@@ -188,8 +226,37 @@ export function getAiAdminOverview() {
     .get() as {
     total: number;
     skill_matches: number;
+    rag_reasoning: number;
+    challenged: number;
     needs_human: number;
     avg_confidence: number | null;
+  };
+
+  const challengeVerdicts = db
+    .prepare(
+      `SELECT
+         SUM(CASE WHEN verdict='AGREE' THEN 1 ELSE 0 END) AS agree,
+         SUM(CASE WHEN verdict='PARTIAL' THEN 1 ELSE 0 END) AS partial,
+         SUM(CASE WHEN verdict='DISAGREE' THEN 1 ELSE 0 END) AS disagree,
+         COUNT(*) AS total
+       FROM ai_analysis_challenges`
+    )
+    .get() as { agree: number; partial: number; disagree: number; total: number };
+
+  const settingRow = (key: string, fallback: string) => {
+    const row = db.prepare(`SELECT value FROM platform_settings WHERE key = ?`).get(key) as
+      | { value: string }
+      | undefined;
+    return row?.value ?? fallback;
+  };
+  const lineSettings = {
+    primary_vendor: settingRow("ai.primary.vendor", "claude"),
+    line1_model: settingRow("ai.line1.model", "claude-3-7-sonnet"),
+    line2_model: settingRow("ai.line2.model", "gpt-4o"),
+    challenger_mode: settingRow("ai.challenger.mode", "heuristic"),
+    token_alert_daily: settingRow("ai.token.alert_daily", "500000"),
+    token_soft_only: settingRow("ai.token.soft_only", "true"),
+    second_opinion_severity: settingRow("ai.second_opinion_severity", "BREACH"),
   };
 
   const interventions = db
@@ -259,10 +326,15 @@ export function getAiAdminOverview() {
     )
     .all();
 
+  const challengedCount = analyses.challenged || challengeVerdicts.total || 0;
+  const challengeRate = analyses.total ? challengedCount / analyses.total : 0;
+
   return {
     kpis: {
       analyses_total: analyses.total || 0,
       skill_match_rate: skillMatchRate,
+      skill_match_count: analyses.skill_matches || 0,
+      rag_count: analyses.rag_reasoning || 0,
       avg_confidence: analyses.avg_confidence ?? 0,
       needs_human: analyses.needs_human || 0,
       interventions_pending: interventions.pending || 0,
@@ -270,7 +342,13 @@ export function getAiAdminOverview() {
       feedback_correct_rate: feedbackCorrectRate,
       feedback_total: feedback.total || 0,
       pending_change_requests: pendingChanges,
+      challenged_count: challengedCount,
+      challenge_rate: challengeRate,
+      challenge_agree: challengeVerdicts.agree || 0,
+      challenge_partial: challengeVerdicts.partial || 0,
+      challenge_disagree: challengeVerdicts.disagree || 0,
     },
+    line_settings: lineSettings,
     accuracy_history: history,
     recent_analyses: recentAnalyses,
     feedback_breakdown: feedback,

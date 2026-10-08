@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Badge, SeverityBadge, StatCard, StatusBadge } from "@/components/ui";
+import { MonitorCode } from "@/components/MonitorCode";
+import { navLabel } from "@/lib/i18n";
+import { useT } from "@/hooks/useUiLocale";
 
 type Roles = {
   can_propose: boolean;
@@ -18,6 +21,8 @@ type Overview = {
   kpis: {
     analyses_total: number;
     skill_match_rate: number;
+    skill_match_count?: number;
+    rag_count?: number;
     avg_confidence: number;
     needs_human: number;
     interventions_pending: number;
@@ -25,6 +30,20 @@ type Overview = {
     feedback_correct_rate: number;
     feedback_total: number;
     pending_change_requests: number;
+    challenged_count?: number;
+    challenge_rate?: number;
+    challenge_agree?: number;
+    challenge_partial?: number;
+    challenge_disagree?: number;
+  };
+  line_settings?: {
+    primary_vendor?: string;
+    line1_model: string;
+    line2_model: string;
+    challenger_mode?: string;
+    token_alert_daily?: string;
+    token_soft_only?: string;
+    second_opinion_severity: string;
   };
   accuracy_history: Array<{
     snapshot_date: string;
@@ -105,13 +124,13 @@ type TrainingRun = {
 };
 
 const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "params", label: "Parameters" },
-  { id: "changes", label: "Maker / Checker" },
-  { id: "skills", label: "Skills" },
-  { id: "rag", label: "RAG" },
-  { id: "training", label: "Training" },
-  { id: "history", label: "History & accuracy" },
+  { id: "overview", labelKey: "adm.overview" },
+  { id: "params", labelKey: "adm.params" },
+  { id: "changes", labelKey: "adm.changes" },
+  { id: "skills", labelKey: "adm.skills" },
+  { id: "rag", labelKey: "adm.rag" },
+  { id: "training", labelKey: "adm.training" },
+  { id: "history", labelKey: "adm.history" },
 ] as const;
 
 function pct(n: number) {
@@ -132,6 +151,7 @@ export function AiAdminConsole({
   };
 }) {
   const router = useRouter();
+  const { t, locale, phrase } = useT();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("overview");
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -177,10 +197,14 @@ export function AiAdminConsole({
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setErr(data.error || `Failed (${res.status})`);
+      setErr(data.error || t("adm.failedDetail", { err: String(res.status) }));
       return null;
     }
-    setMsg(data.request_id ? `Submitted ${data.request_id}` : data.status || "OK");
+    setMsg(
+      data.request_id
+        ? t("adm.submitted", { what: String(data.request_id) })
+        : data.status || t("common.ok")
+    );
     router.refresh();
     return data;
   }
@@ -189,12 +213,11 @@ export function AiAdminConsole({
     <div className="space-y-4">
       <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">Governance</div>
+          <div className="text-xs uppercase tracking-[0.12em] text-[var(--muted)]">{t("adm.governance")}</div>
           <p className="text-sm mt-1 max-w-3xl">
-            Maker proposes AI config / skills / RAG / training. Checker (different user) approves before
-            apply. Runtime interventions stay on{" "}
+            {t("adm.govHint")}{" "}
             <Link className="underline" href="/admin/interventions">
-              Human Intervention
+              {navLabel("/admin/interventions", locale, "Human Intervention")}
             </Link>
             .
           </p>
@@ -202,24 +225,24 @@ export function AiAdminConsole({
         <div className="flex flex-wrap gap-2 text-xs">
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">{initial.roles.role_code}</Badge>
           {initial.roles.can_propose && (
-            <Badge className="bg-amber-50 text-amber-900 border-amber-200">Maker</Badge>
+            <Badge className="bg-amber-50 text-amber-900 border-amber-200">{t("adm.maker")}</Badge>
           )}
           {initial.roles.can_approve && (
-            <Badge className="bg-teal-50 text-teal-900 border-teal-200">Checker</Badge>
+            <Badge className="bg-teal-50 text-teal-900 border-teal-200">{t("adm.checker")}</Badge>
           )}
         </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {TABS.map((t) => (
+        {TABS.map((tabBtn) => (
           <button
-            key={t.id}
+            key={tabBtn.id}
             type="button"
-            className={`btn ${tab === t.id ? "btn-primary" : ""}`}
-            onClick={() => setTab(t.id)}
+            className={`btn ${tab === tabBtn.id ? "btn-primary" : ""}`}
+            onClick={() => setTab(tabBtn.id)}
           >
-            {t.label}
-            {t.id === "changes" && pendingChanges.length > 0 ? ` (${pendingChanges.length})` : ""}
+            {t(tabBtn.labelKey)}
+            {tabBtn.id === "changes" && pendingChanges.length > 0 ? ` (${pendingChanges.length})` : ""}
           </button>
         ))}
       </div>
@@ -239,46 +262,155 @@ export function AiAdminConsole({
 
       {tab === "overview" && (
         <div className="space-y-4">
+          <div
+            className="rounded-xl border border-teal-200 bg-gradient-to-r from-teal-50 to-amber-50 px-4 py-3"
+            data-testid="ai-dual-arch-banner"
+          >
+            <div className="text-xs font-semibold uppercase tracking-[0.12em] text-teal-900">
+              {t("adm.dualArchTitle")}
+            </div>
+            <p className="mt-1 text-sm font-medium text-slate-800">{t("adm.dualArchFlow")}</p>
+          </div>
+          <div className="grid lg:grid-cols-2 gap-3">
+            <section
+              className="panel p-4 space-y-3 border-teal-200 ring-1 ring-teal-100"
+              data-testid="ai-line1-card"
+            >
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className="bg-teal-600 text-white border-teal-700">L1</Badge>
+                  <div className="text-xs uppercase tracking-[0.12em] text-teal-800">{t("adm.line1")}</div>
+                </div>
+                <h3 className="font-semibold text-lg mt-1">{t("adm.line1Title")}</h3>
+                <p className="text-sm text-[var(--muted)] mt-1">{t("adm.line1Hint")}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                  vendor: {initial.overview.line_settings?.primary_vendor ?? "claude"}
+                </Badge>
+                <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                  {t("adm.model")}: {initial.overview.line_settings?.line1_model ?? "claude-3-7-sonnet"}
+                </Badge>
+                <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                  soft token: {initial.overview.line_settings?.token_alert_daily ?? "500000"}
+                  {initial.overview.line_settings?.token_soft_only === "false" ? "" : " (soft-only)"}
+                </Badge>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <StatCard
+                  label={t("adm.skillMatchCount")}
+                  value={initial.overview.kpis.skill_match_count ?? 0}
+                  hint={t("adm.skillMatchHint")}
+                />
+                <StatCard
+                  label={t("adm.ragCount")}
+                  value={initial.overview.kpis.rag_count ?? 0}
+                  hint={t("adm.ragCountHint")}
+                />
+                <StatCard
+                  label={t("adm.skillMatch")}
+                  value={pct(initial.overview.kpis.skill_match_rate)}
+                />
+                <StatCard
+                  label={t("adm.avgConf")}
+                  value={(initial.overview.kpis.avg_confidence || 0).toFixed(2)}
+                />
+              </div>
+            </section>
+            <section
+              className="panel p-4 space-y-3 border-amber-200 ring-1 ring-amber-100"
+              data-testid="ai-line2-card"
+            >
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className="bg-amber-600 text-white border-amber-700">L2</Badge>
+                  <div className="text-xs uppercase tracking-[0.12em] text-amber-900">{t("adm.line2")}</div>
+                </div>
+                <h3 className="font-semibold text-lg mt-1">{t("adm.line2Title")}</h3>
+                <p className="text-sm text-[var(--muted)] mt-1">{t("adm.line2Hint")}</p>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <Badge className="bg-amber-50 text-amber-900 border-amber-200">
+                  {t("adm.model")}: {initial.overview.line_settings?.line2_model ?? "gpt-4o"}
+                </Badge>
+                <Badge className="bg-amber-50 text-amber-900 border-amber-200">
+                  mode: {initial.overview.line_settings?.challenger_mode ?? "heuristic"}
+                </Badge>
+                <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                  {t("adm.secondOpinionSev")}:{" "}
+                  {initial.overview.line_settings?.second_opinion_severity ?? "BREACH"}
+                </Badge>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <StatCard
+                  label={t("adm.challengeRate")}
+                  value={pct(initial.overview.kpis.challenge_rate ?? 0)}
+                  hint={t("adm.challengeRateHint", {
+                    n: initial.overview.kpis.challenged_count ?? 0,
+                  })}
+                />
+                <StatCard label={t("adm.verdictAgree")} value={initial.overview.kpis.challenge_agree ?? 0} />
+                <StatCard label={t("adm.verdictPartial")} value={initial.overview.kpis.challenge_partial ?? 0} />
+                <StatCard label={t("adm.verdictDisagree")} value={initial.overview.kpis.challenge_disagree ?? 0} />
+              </div>
+            </section>
+          </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-            <StatCard label="Analyses" value={initial.overview.kpis.analyses_total} hint="Historical RCA records" />
+            <StatCard label={t("adm.analyses")} value={initial.overview.kpis.analyses_total} hint={t("adm.histRca")} />
             <StatCard
-              label="Skill-match rate"
-              value={pct(initial.overview.kpis.skill_match_rate)}
-              hint="Share of analyses with certainty skill"
-            />
-            <StatCard
-              label="Human agree rate"
+              label={t("adm.humanAgree")}
               value={pct(initial.overview.kpis.human_agree_rate)}
-              hint="Approved ÷ decided interventions"
+              hint={t("adm.humanAgreeHint")}
             />
             <StatCard
-              label="Feedback accuracy"
+              label={t("adm.feedbackAcc")}
               value={pct(initial.overview.kpis.feedback_correct_rate)}
-              hint={`${initial.overview.kpis.feedback_total} ratings`}
+              hint={t("adm.ratings", { n: initial.overview.kpis.feedback_total })}
             />
+            <StatCard label={t("common.needsHuman")} value={initial.overview.kpis.needs_human} />
+            <StatCard label={t("adm.pendingInt")} value={initial.overview.kpis.interventions_pending} />
             <StatCard
-              label="Avg confidence"
-              value={(initial.overview.kpis.avg_confidence || 0).toFixed(2)}
-            />
-            <StatCard label="Needs human" value={initial.overview.kpis.needs_human} />
-            <StatCard label="Pending interventions" value={initial.overview.kpis.interventions_pending} />
-            <StatCard
-              label="Pending change requests"
+              label={t("adm.pendingCr")}
               value={initial.overview.kpis.pending_change_requests}
-              hint="Maker/checker queue"
+              hint={t("adm.mcQueue")}
             />
           </div>
           <div className="panel p-4">
-            <h3 className="font-semibold">Accuracy trend (14d)</h3>
-            <div className="table-wrap mt-3">
+            <h3 className="font-semibold">{t("adm.accTrend")}</h3>
+            <ul className="mt-3 space-y-2 sm:hidden" data-testid="ai-admin-acc-mobile">
+              {initial.overview.accuracy_history.map((h) => (
+                <li key={h.snapshot_date} className="rounded-lg border border-[var(--line)] p-3 space-y-1">
+                  <div className="font-semibold text-sm tabular-nums">{h.snapshot_date}</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.skillMatch")}</span>
+                      <div className="tabular-nums font-semibold">{pct(h.skill_match_rate)}</div>
+                    </div>
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.humanAgree")}</span>
+                      <div className="tabular-nums font-semibold">{pct(h.human_agree_rate)}</div>
+                    </div>
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.feedbackAcc")}</span>
+                      <div className="tabular-nums font-semibold">{pct(h.feedback_correct_rate)}</div>
+                    </div>
+                    <div>
+                      <span className="text-[var(--muted)]">{t("adm.analyses")}</span>
+                      <div className="tabular-nums font-semibold">{h.analyses_total}</div>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="table-wrap mt-3 hidden sm:block overflow-x-auto">
               <table className="data">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Skill match</th>
-                    <th>Human agree</th>
-                    <th>Feedback correct</th>
-                    <th>Analyses</th>
+                    <th>{t("adm.date")}</th>
+                    <th>{t("adm.skillMatch")}</th>
+                    <th>{t("adm.humanAgree")}</th>
+                    <th>{t("adm.feedbackAcc")}</th>
+                    <th>{t("adm.analyses")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -300,15 +432,42 @@ export function AiAdminConsole({
 
       {tab === "params" && (
         <div className="space-y-3">
+          <div className="grid md:grid-cols-2 gap-3">
+            <div className="panel p-3 text-sm border-teal-200">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-teal-600 text-white border-teal-700">L1</Badge>
+                <div className="font-semibold">{t("adm.line1")}</div>
+              </div>
+              <p className="text-[var(--muted)] mt-1">{t("adm.line1ParamsHint")}</p>
+              <ul className="mt-2 space-y-1 text-xs font-mono">
+                <li>ai.primary.vendor</li>
+                <li>ai.line1.model</li>
+                <li>ai.token.alert_daily · ai.token.soft_only</li>
+                <li>ai.min_confidence · ai.rag_top_k · ai.skill_certainty_only</li>
+              </ul>
+            </div>
+            <div className="panel p-3 text-sm border-amber-200">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-amber-600 text-white border-amber-700">L2</Badge>
+                <div className="font-semibold">{t("adm.line2")}</div>
+              </div>
+              <p className="text-[var(--muted)] mt-1">{t("adm.line2ParamsHint")}</p>
+              <ul className="mt-2 space-y-1 text-xs font-mono">
+                <li>ai.line2.model</li>
+                <li>ai.challenger.mode</li>
+                <li>ai.second_opinion_severity</li>
+              </ul>
+            </div>
+          </div>
           {initial.params.map((p) => (
             <div key={p.key} className="panel p-4 grid md:grid-cols-[1fr_220px_auto] gap-3 items-end">
               <div>
                 <div className="font-semibold">{p.key}</div>
-                <div className="text-sm text-[var(--muted)] mt-1">{p.description}</div>
-                <div className="text-xs text-[var(--muted)] mt-1">Live: {p.value}</div>
+                <div className="text-sm text-[var(--muted)] mt-1">{phrase(p.description)}</div>
+                <div className="text-xs text-[var(--muted)] mt-1">{t("adm.live", { v: p.value })}</div>
               </div>
               <div>
-                <label className="label">Proposed value</label>
+                <label className="label">{t("adm.proposedVal")}</label>
                 <input
                   className="input"
                   value={paramDrafts[p.key] ?? p.value}
@@ -329,7 +488,7 @@ export function AiAdminConsole({
                   })
                 }
               >
-                Propose change
+                {t("adm.proposeChange")}
               </button>
             </div>
           ))}
@@ -362,12 +521,12 @@ export function AiAdminConsole({
               {c.status === "PENDING" && initial.roles.can_approve && (
                 <div className="mt-3 grid md:grid-cols-[1fr_auto_auto] gap-2 items-end">
                   <div>
-                    <label className="label">Checker note</label>
+                    <label className="label">{t("adm.checkerNote")}</label>
                     <input
                       className="input"
                       value={note[c.id] || ""}
                       onChange={(e) => setNote({ ...note, [c.id]: e.target.value })}
-                      placeholder="Approval / rejection rationale"
+                      placeholder={t("adm.checkerPh")}
                       disabled={c.proposed_by === initial.roles.user_id}
                     />
                   </div>
@@ -377,8 +536,8 @@ export function AiAdminConsole({
                     disabled={c.proposed_by === initial.roles.user_id}
                     title={
                       c.proposed_by === initial.roles.user_id
-                        ? "Maker cannot approve own change"
-                        : "Approve & apply"
+                        ? t("adm.cannotOwn")
+                        : t("adm.approveApply")
                     }
                     onClick={() =>
                       void post({
@@ -389,7 +548,7 @@ export function AiAdminConsole({
                       })
                     }
                   >
-                    Approve & apply
+                    {t("adm.approveApply")}
                   </button>
                   <button
                     type="button"
@@ -404,19 +563,19 @@ export function AiAdminConsole({
                       })
                     }
                   >
-                    Reject
+                    {t("common.reject")}
                   </button>
                 </div>
               )}
               {c.status === "PENDING" && c.proposed_by === initial.roles.user_id && (
                 <div className="mt-3 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-                  Waiting for a different Checker (Risk Owner). You proposed this change.
+                  {t("adm.waitChecker")}
                 </div>
               )}
             </article>
           ))}
           {!initial.changes.length && (
-            <div className="panel p-6 text-sm text-[var(--muted)]">No change requests yet.</div>
+            <div className="panel p-6 text-sm text-[var(--muted)]">{t("adm.noChanges")}</div>
           )}
         </div>
       )}
@@ -425,10 +584,10 @@ export function AiAdminConsole({
         <div className="space-y-4">
           {initial.roles.can_manage_skills || initial.roles.can_propose ? (
             <div className="panel p-4 space-y-3">
-              <h3 className="font-semibold">Propose new skill (maker)</h3>
+              <h3 className="font-semibold">{t("adm.proposeSkill")}</h3>
               <div className="grid md:grid-cols-2 gap-3">
                 <div>
-                  <label className="label">Code</label>
+                  <label className="label">{t("adm.code")}</label>
                   <input
                     className="input"
                     value={skillForm.code}
@@ -436,7 +595,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Name</label>
+                  <label className="label">{t("common.name")}</label>
                   <input
                     className="input"
                     value={skillForm.name}
@@ -444,7 +603,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="label">Description</label>
+                  <label className="label">{t("src.description")}</label>
                   <input
                     className="input"
                     value={skillForm.description}
@@ -452,7 +611,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Indicator patterns (comma)</label>
+                  <label className="label">{t("adm.indPatterns")}</label>
                   <input
                     className="input"
                     value={skillForm.indicator_patterns}
@@ -460,7 +619,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Owner department</label>
+                  <label className="label">{t("common.department")}</label>
                   <input
                     className="input"
                     value={skillForm.owner_department}
@@ -500,7 +659,7 @@ export function AiAdminConsole({
                   })
                 }
               >
-                Submit skill proposal
+                {t("adm.submitSkill")}
               </button>
             </div>
           ) : null}
@@ -510,8 +669,8 @@ export function AiAdminConsole({
               <article key={s.id} className="panel p-4 flex flex-wrap justify-between gap-3">
                 <div>
                   <div className="text-xs text-[var(--muted)]">{s.code}</div>
-                  <div className="font-semibold">{s.name}</div>
-                  <div className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{s.description}</div>
+                  <div className="font-semibold">{phrase(s.name)}</div>
+                  <div className="text-sm text-[var(--muted)] mt-1 max-w-3xl">{phrase(s.description)}</div>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {(JSON.parse(s.indicator_patterns_json || "[]") as string[]).map((p) => (
                       <Badge key={p} className="bg-orange-50 text-orange-900 border-orange-200">
@@ -536,7 +695,7 @@ export function AiAdminConsole({
                         })
                       }
                     >
-                      Propose disable
+                      {t("adm.proposeDisable")}
                     </button>
                   )}
                 </div>
@@ -553,10 +712,10 @@ export function AiAdminConsole({
         <div className="space-y-4">
           {(initial.roles.can_manage_rag || initial.roles.can_propose) && (
             <div className="panel p-4 space-y-3">
-              <h3 className="font-semibold">Propose RAG document (maker)</h3>
+              <h3 className="font-semibold">{t("adm.proposeRag")}</h3>
               <div className="grid md:grid-cols-2 gap-3">
                 <div>
-                  <label className="label">Doc key</label>
+                  <label className="label">{t("rag.docKey")}</label>
                   <input
                     className="input"
                     value={ragForm.doc_key}
@@ -564,7 +723,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Title</label>
+                  <label className="label">{t("common.title")}</label>
                   <input
                     className="input"
                     value={ragForm.title}
@@ -572,7 +731,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Category</label>
+                  <label className="label">{t("common.category")}</label>
                   <input
                     className="input"
                     value={ragForm.category}
@@ -580,7 +739,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Product scope</label>
+                  <label className="label">{t("adm.productScope")}</label>
                   <input
                     className="input"
                     value={ragForm.product_scope}
@@ -588,7 +747,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="label">Content</label>
+                  <label className="label">{t("common.content")}</label>
                   <textarea
                     className="input min-h-28"
                     value={ragForm.content}
@@ -612,7 +771,7 @@ export function AiAdminConsole({
                   })
                 }
               >
-                Submit RAG proposal
+                {t("adm.submitRag")}
               </button>
             </div>
           )}
@@ -643,7 +802,7 @@ export function AiAdminConsole({
                       })
                     }
                   >
-                    Propose retire
+                    {t("adm.proposeRetire")}
                   </button>
                 )}
               </article>
@@ -660,10 +819,10 @@ export function AiAdminConsole({
         <div className="space-y-4">
           {initial.roles.can_propose && (
             <div className="panel p-4 space-y-3">
-              <h3 className="font-semibold">Queue training run (maker → checker)</h3>
+              <h3 className="font-semibold">{t("adm.queueTrain")}</h3>
               <div className="grid md:grid-cols-2 gap-3">
                 <div>
-                  <label className="label">Name</label>
+                  <label className="label">{t("common.name")}</label>
                   <input
                     className="input"
                     value={trainForm.name}
@@ -671,7 +830,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Model</label>
+                  <label className="label">{t("adm.model")}</label>
                   <input
                     className="input"
                     value={trainForm.model_name}
@@ -679,7 +838,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Dataset</label>
+                  <label className="label">{t("adm.dataset")}</label>
                   <input
                     className="input"
                     value={trainForm.dataset_label}
@@ -687,7 +846,7 @@ export function AiAdminConsole({
                   />
                 </div>
                 <div>
-                  <label className="label">Notes</label>
+                  <label className="label">{t("common.notes")}</label>
                   <input
                     className="input"
                     value={trainForm.notes}
@@ -700,40 +859,77 @@ export function AiAdminConsole({
                 className="btn btn-primary"
                 onClick={() => void post({ action: "queue_training", ...trainForm })}
               >
-                Propose training run
+                {t("adm.proposeTrain")}
               </button>
             </div>
           )}
-          <div className="panel table-wrap">
+          <ul className="space-y-2 sm:hidden" data-testid="ai-admin-train-mobile">
+            {initial.training.map((tr) => (
+              <li key={tr.id} className="panel p-3 space-y-2">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="font-semibold break-words">{tr.name}</div>
+                    <div className="text-xs text-[var(--muted)] break-all">{tr.run_id}</div>
+                  </div>
+                  <StatusBadge value={tr.status} />
+                </div>
+                <div className="text-xs text-[var(--muted)]">
+                  {tr.model_name} · {tr.dataset_label}
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div>
+                    <span className="text-[var(--muted)]">{t("adm.accuracy")}</span>
+                    <div className="tabular-nums font-semibold">
+                      {tr.accuracy != null ? pct(tr.accuracy) : "—"}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)]">F1</span>
+                    <div className="tabular-nums font-semibold">
+                      {tr.f1_score != null ? pct(tr.f1_score) : "—"}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-[var(--muted)]">{t("adm.samples")}</span>
+                    <div className="tabular-nums font-semibold">{tr.samples}</div>
+                  </div>
+                </div>
+                <div className="text-xs text-[var(--muted)]">
+                  {t("common.owner")}: {tr.created_by_name ?? "—"}
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="panel table-wrap hidden sm:block overflow-x-auto">
             <table className="data">
               <thead>
                 <tr>
                   <th>Run</th>
-                  <th>Model</th>
-                  <th>Dataset</th>
-                  <th>Status</th>
-                  <th>Accuracy</th>
+                  <th>{t("adm.model")}</th>
+                  <th>{t("adm.dataset")}</th>
+                  <th>{t("common.status")}</th>
+                  <th>{t("adm.accuracy")}</th>
                   <th>F1</th>
-                  <th>Samples</th>
-                  <th>Owner</th>
+                  <th>{t("adm.samples")}</th>
+                  <th>{t("common.owner")}</th>
                 </tr>
               </thead>
               <tbody>
-                {initial.training.map((t) => (
-                  <tr key={t.id}>
+                {initial.training.map((tr) => (
+                  <tr key={tr.id}>
                     <td>
-                      <div className="font-semibold">{t.name}</div>
-                      <div className="text-xs text-[var(--muted)]">{t.run_id}</div>
+                      <div className="font-semibold">{tr.name}</div>
+                      <div className="text-xs text-[var(--muted)]">{tr.run_id}</div>
                     </td>
-                    <td>{t.model_name}</td>
-                    <td className="text-sm">{t.dataset_label}</td>
+                    <td>{tr.model_name}</td>
+                    <td className="text-sm">{tr.dataset_label}</td>
                     <td>
-                      <StatusBadge value={t.status} />
+                      <StatusBadge value={tr.status} />
                     </td>
-                    <td className="tabular-nums">{t.accuracy != null ? pct(t.accuracy) : "—"}</td>
-                    <td className="tabular-nums">{t.f1_score != null ? pct(t.f1_score) : "—"}</td>
-                    <td className="tabular-nums">{t.samples}</td>
-                    <td className="text-sm">{t.created_by_name ?? "—"}</td>
+                    <td className="tabular-nums">{tr.accuracy != null ? pct(tr.accuracy) : "—"}</td>
+                    <td className="tabular-nums">{tr.f1_score != null ? pct(tr.f1_score) : "—"}</td>
+                    <td className="tabular-nums">{tr.samples}</td>
+                    <td className="text-sm">{tr.created_by_name ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -758,8 +954,10 @@ export function AiAdminConsole({
                       </Badge>
                     )}
                   </div>
-                  <h3 className="mt-2 font-semibold">
-                    {a.analysis_id} · {a.indicator_monitor_id}
+                  <h3 className="mt-2 font-semibold flex flex-wrap items-center gap-x-1 gap-y-1">
+                    <span>{a.analysis_id}</span>
+                    <span>·</span>
+                    <MonitorCode id={a.indicator_monitor_id} tone="inline" />
                   </h3>
                   <div className="text-xs text-[var(--muted)]">
                     conf {(a.confidence ?? 0).toFixed(2)} · {a.created_at}
@@ -768,7 +966,7 @@ export function AiAdminConsole({
                 </div>
                 <div className="flex flex-col gap-2">
                   <Link className="btn" href={`/admin/ai-analyses/${a.id}`}>
-                    Open record
+                    {t("adm.openRecord")}
                   </Link>
                   <div className="flex flex-wrap gap-1">
                     {(["CORRECT", "INCORRECT", "PARTIAL"] as const).map((label) => (

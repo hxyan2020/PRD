@@ -1,33 +1,9 @@
 import { redirect } from "next/navigation";
-import { getCurrentUser, hasPermission } from "@/lib/auth";
-import { getDb } from "@/lib/db";
-import { AdminPageHeader } from "@/components/AdminPageHeader";
-import { DetectorsBoard } from "@/components/DetectorsBoard";
+import { ClientRedirect } from "@/components/ClientRedirect";
+import { isStaticExport } from "@/lib/static-export";
 
-export default async function DetectorsPage() {
-  const user = await getCurrentUser();
-  if (!user || !hasPermission(user.role_code, "detectors.read")) redirect("/admin");
-
-  const detectors = getDb().prepare(`SELECT * FROM detectors ORDER BY product, code`).all() as React.ComponentProps<
-    typeof DetectorsBoard
-  >["detectors"];
-  const runs = getDb()
-    .prepare(
-      `SELECT r.*, d.code AS detector_code
-       FROM detector_runs r
-       JOIN detectors d ON d.id = r.detector_id
-       ORDER BY r.id DESC LIMIT 50`
-    )
-    .all() as React.ComponentProps<typeof DetectorsBoard>["runs"];
-
-  return (
-    <div>
-      <AdminPageHeader pageKey="detectors" />
-      <DetectorsBoard
-        detectors={detectors}
-        runs={runs}
-        canOperate={hasPermission(user.role_code, "detectors.operate")}
-      />
-    </div>
-  );
+/** Detectors merged into Monitor 2.0 — keep URL for bookmarks. */
+export default function DetectorsPage() {
+  if (isStaticExport()) return <ClientRedirect href="/admin/monitor-2" />;
+  redirect("/admin/monitor-2");
 }

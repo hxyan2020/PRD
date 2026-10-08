@@ -1,28 +1,62 @@
 import Link from "next/link";
 import { MonitorActions } from "@/components/MonitorActions";
+import { MonitorCode } from "@/components/MonitorCode";
+import { IndicatorThresholdEditor } from "@/components/IndicatorThresholdEditor";
+import { IndicatorPauseToggle, MonitorRunAllButton } from "@/components/MonitorEngineActions";
 import { getCurrentUser, hasPermission } from "@/lib/auth";
 import { getDb } from "@/lib/db";
-import { SeverityBadge, StatusBadge, DeptBadge } from "@/components/ui";
+import { StatusBadge, Badge, SeverityBadge } from "@/components/ui";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { T } from "@/components/T";
+import { Phrase } from "@/components/Phrase";
+import { EnZh } from "@/components/EnZh";
 import { redirect } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { readSearchParams } from "@/lib/static-export";
+import { getIndicatorMeta } from "@/lib/monitor-indicator-meta";
 
-type Tab = "indicators" | "alerts" | "tickets";
+type DetectorJoin = {
+  detector_id: number | null;
+  detector_code: string | null;
+  comparator: string | null;
+  detector_enabled: number | null;
+  detector_last_run_at: string | null;
+  detector_last_status: string | null;
+};
 
 export default async function Monitor2Page({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; monitor_id?: string }>;
 }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "monitor.read")) redirect("/admin");
 
-  const sp = await searchParams;
-  const tab = (["indicators", "alerts", "tickets"].includes(sp.tab ?? "") ? sp.tab : "indicators") as Tab;
-  const canOperate = hasPermission(user.role_code, "monitor.operate");
+  const sp = await readSearchParams(searchParams);
+  // Alerts / tickets live on Realtime Alert & Tracker — bounce legacy tab deep-links.
+  if (sp.tab === "alerts" || sp.tab === "tickets") {
+    const mid = (sp.monitor_id || "").trim();
+    redirect(mid ? `/admin/alerts?monitor_id=${encodeURIComponent(mid)}` : "/admin/alerts");
+  }
+
+  const canOperate =
+    hasPermission(user.role_code, "monitor.operate") ||
+    hasPermission(user.role_code, "detectors.operate");
 
   const db = getDb();
-  const indicators = db.prepare(`SELECT * FROM monitor_indicators ORDER BY status DESC, name`).all() as Array<{
+  const indicators = db
+    .prepare(
+      `SELECT i.*,
+              d.id AS detector_id,
+              d.code AS detector_code,
+              d.comparator AS comparator,
+              d.enabled AS detector_enabled,
+              d.last_run_at AS detector_last_run_at,
+              d.last_status AS detector_last_status
+       FROM monitor_indicators i
+       LEFT JOIN detectors d ON d.monitor_id = i.monitor_id
+       ORDER BY i.paused ASC, i.status DESC, i.name`
+    )
+    .all() as Array<{
     id: number;
     monitor_id: string;
     name: string;
@@ -33,53 +67,33 @@ export default async function Monitor2Page({
     unit: string | null;
     status: string;
     last_value: number | null;
+    last_checked_at: string | null;
     ticket_open_count: number;
-  }>;
-  const alerts = db
+    paused: number;
+  } & DetectorJoin>;
+
+  const runs = db
     .prepare(
-      `SELECT a.*, i.name AS indicator_name, i.monitor_id
-       FROM monitor_alerts a
-       JOIN monitor_indicators i ON i.id = a.indicator_id
-       ORDER BY a.created_at DESC`
+      `SELECT r.*, d.code AS detector_code, d.monitor_id AS monitor_id
+       FROM detector_runs r
+       JOIN detectors d ON d.id = r.detector_id
+       ORDER BY r.id DESC LIMIT 40`
     )
     .all() as Array<{
     id: number;
-    alert_id: string;
-    severity: string;
-    title: string;
-    message: string;
-    observed_value: number | null;
-    status: string;
-    monitor20_ticket_id: string | null;
-    indicator_name: string;
+    detector_code: string;
     monitor_id: string;
-  }>;
-  const tickets = db
-    .prepare(
-      `SELECT t.*, u.name AS assignee_name
-       FROM monitor_tickets t
-       LEFT JOIN users u ON u.id = t.assignee_user_id
-       ORDER BY t.updated_at DESC`
-    )
-    .all() as Array<{
-    id: number;
-    ticket_id: string;
-    title: string;
+    observed_value: number;
     status: string;
     severity: string;
-    department_code: string | null;
-    assignee_name: string | null;
-    lark_message_id: string | null;
+    created_at: string;
+    alert_id: number | null;
+    analysis_id: number | null;
   }>;
+
   const setting = db
     .prepare(`SELECT value FROM platform_settings WHERE key = 'monitor2.base_url'`)
     .get() as { value: string } | undefined;
-
-  const tabs: Array<{ key: Tab; label: string }> = [
-    { key: "indicators", label: "Indicators" },
-    { key: "alerts", label: "Alerts" },
-    { key: "tickets", label: "Tickets" },
-  ];
 
   return (
     <div>
@@ -88,7 +102,9 @@ export default async function Monitor2Page({
       <div className="space-y-4">
         <div className="panel p-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">Upstream platform</div>
+            <div className="text-xs uppercase tracking-wide text-[var(--muted)]">
+              <T k="m2.upstream" />
+            </div>
             <a
               href={setting?.value ?? "#"}
               className="font-semibold text-teal-800 break-all"
@@ -98,155 +114,325 @@ export default async function Monitor2Page({
               {setting?.value}
             </a>
             <p className="text-sm text-[var(--muted)] mt-1">
-              Bi-directional sync of indicators, alerts and tickets. Human actions in CRMP write back acknowledgements.
+              <T k="m2.hint" />
+            </p>
+            <p className="text-sm text-[var(--muted)] mt-1">
+              <T k="m2.mergedDetectors" />
+            </p>
+            <p className="text-sm text-[var(--muted)] mt-1">
+              <T k="m2.pauseHint" />
+            </p>
+            <p className="text-sm text-[var(--muted)] mt-1">
+              <T k="m2.alertsTicketsMoved" />{" "}
+              <Link href="/admin/alerts" className="font-semibold text-teal-800 underline">
+                <T k="m2.gotoRealtimeAlerts" />
+              </Link>
             </p>
           </div>
-          {canOperate && <MonitorActions mode="sync" />}
+          {canOperate && (
+            <div className="flex flex-wrap items-start gap-2">
+              <MonitorRunAllButton />
+              <MonitorActions mode="sync" />
+            </div>
+          )}
         </div>
 
-        <div className="flex gap-2" role="tablist" aria-label="Monitor 2.0 sections">
-          {tabs.map((t) => (
-            <Link
-              key={t.key}
-              href={`/admin/monitor-2?tab=${t.key}`}
-              role="tab"
-              aria-selected={tab === t.key}
-              data-testid={`monitor-tab-${t.key}`}
-              className={cn("btn", tab === t.key && "btn-primary")}
-            >
-              {t.label}
-            </Link>
-          ))}
-        </div>
+        <ul className="space-y-2 sm:hidden" data-testid="monitor-indicators-mobile">
+          {indicators.map((i) => {
+            const meta = getIndicatorMeta(i.monitor_id, { unit: i.unit, name: i.name });
+            const unit = i.unit ? ` ${i.unit}` : "";
+            const paused = !!i.paused;
+            return (
+              <li
+                key={i.id}
+                id={`${i.monitor_id}-mobile`}
+                className={`panel p-3 space-y-2 ${paused ? "opacity-60" : ""}`}
+                data-testid={`monitor-indicator-mobile-${i.monitor_id}`}
+              >
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium">
+                      <Phrase>{i.name}</Phrase>
+                    </div>
+                    <MonitorCode id={i.monitor_id} name={i.name} unit={i.unit} />
+                  </div>
+                  <StatusBadge value={paused ? "IDLE" : i.status} />
+                </div>
+                <p className="text-sm text-[var(--muted)]">
+                  <Phrase>{meta.description}</Phrase>
+                </p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                    <Phrase>{i.domain_code}</Phrase>
+                  </Badge>
+                  <Badge className="bg-orange-50 text-orange-900 border-orange-200">{i.product}</Badge>
+                  {paused ? (
+                    <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                      <T k="m2.pausedNoAi" />
+                    </Badge>
+                  ) : null}
+                </div>
+                <div className="text-xs tabular-nums">
+                  <T k="m2.currentValue" />: {i.last_value}
+                  {unit}
+                </div>
+                <IndicatorThresholdEditor
+                  indicatorId={i.id}
+                  monitorId={i.monitor_id}
+                  warn={i.threshold_warn}
+                  breach={i.threshold_breach}
+                  unit={i.unit}
+                  canOperate={canOperate}
+                />
+                <div className="text-xs text-[var(--muted)]">
+                  <EnZh en={meta.frequency} zh={meta.frequency_zh} />
+                  {i.last_checked_at || i.detector_last_run_at ? (
+                    <>
+                      {" · "}
+                      <T k="m2.lastRefreshed" />: {i.last_checked_at || i.detector_last_run_at}
+                    </>
+                  ) : null}
+                </div>
+                {i.ticket_open_count > 0 ? (
+                  <Link
+                    href={`/admin/alerts?monitor_id=${encodeURIComponent(i.monitor_id)}`}
+                    className="text-sm font-semibold text-teal-800 underline tabular-nums"
+                  >
+                    <T k="common.openTickets" />: {i.ticket_open_count}
+                  </Link>
+                ) : (
+                  <span className="text-xs text-[var(--muted)]">
+                    <T k="common.openTickets" />: 0
+                  </span>
+                )}
+                {canOperate ? (
+                  <IndicatorPauseToggle indicatorId={i.id} monitorId={i.monitor_id} paused={paused} />
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
 
-        {tab === "indicators" && (
-          <div className="panel table-wrap">
-            <table className="data">
-              <thead>
-                <tr>
-                  <th>Indicator</th>
-                  <th>Domain</th>
-                  <th>Product</th>
-                  <th>Last</th>
-                  <th>Warn / Breach</th>
-                  <th>Status</th>
-                  <th>Open tickets</th>
-                </tr>
-              </thead>
-              <tbody>
-                {indicators.map((i) => (
-                  <tr key={i.id}>
-                    <td>
-                      <div className="font-medium">{i.name}</div>
-                      <div className="text-xs text-[var(--muted)]">{i.monitor_id}</div>
-                    </td>
-                    <td className="text-sm">{i.domain_code}</td>
-                    <td>{i.product}</td>
-                    <td className="tabular-nums">
-                      {i.last_value}
-                      {i.unit ? ` ${i.unit}` : ""}
-                    </td>
-                    <td className="text-sm tabular-nums">
-                      {i.threshold_warn} / {i.threshold_breach}
-                    </td>
-                    <td>
-                      <StatusBadge value={i.status} />
-                    </td>
-                    <td>{i.ticket_open_count}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {tab === "alerts" && (
-          <div className="panel table-wrap">
-            <table className="data">
-              <thead>
-                <tr>
-                  <th>Alert</th>
-                  <th>Severity</th>
-                  <th>Status</th>
-                  <th>Monitor ticket</th>
-                  {canOperate && <th />}
-                </tr>
-              </thead>
-              <tbody>
-                {alerts.map((a) => (
-                  <tr key={a.id}>
-                    <td>
-                      <div className="font-medium">{a.title}</div>
-                      <div className="text-xs text-[var(--muted)]">
-                        {a.alert_id} · {a.monitor_id} · {a.indicator_name}
+        <div className="panel table-wrap hidden sm:block overflow-x-auto" data-testid="monitor-indicators-table">
+          <table className="data">
+            <thead>
+              <tr>
+                <th><T k="common.indicator" /></th>
+                <th><T k="m2.description" /></th>
+                <th><T k="common.domain" /></th>
+                <th><T k="common.product" /></th>
+                <th><T k="m2.warnBreach" /></th>
+                <th><T k="m2.frequency" /></th>
+                <th><T k="m2.riskScenarios" /></th>
+                <th><T k="m2.combinations" /></th>
+                <th><T k="common.status" /></th>
+                <th><T k="m2.lastRefreshed" /></th>
+                <th><T k="common.openTickets" /></th>
+                {canOperate && <th><T k="common.actions" /></th>}
+              </tr>
+            </thead>
+            <tbody>
+              {indicators.map((i) => {
+                const meta = getIndicatorMeta(i.monitor_id, { unit: i.unit, name: i.name });
+                const unit = i.unit ? ` ${i.unit}` : "";
+                const paused = !!i.paused;
+                return (
+                  <tr
+                    key={i.id}
+                    id={i.monitor_id}
+                    data-testid={`monitor-indicator-${i.monitor_id}`}
+                    className={paused ? "opacity-60" : undefined}
+                  >
+                    <td className="min-w-[11rem]">
+                      <div className="font-medium"><Phrase>{i.name}</Phrase></div>
+                      <div className="mt-0.5">
+                        <MonitorCode id={i.monitor_id} name={i.name} unit={i.unit} />
                       </div>
-                      <div className="text-sm mt-1">{a.message}</div>
+                      {i.detector_code ? (
+                        <div className="text-[11px] text-[var(--muted)] mt-0.5">
+                          <T k="m2.detectorCode" /> · {i.detector_code}
+                          {i.comparator ? ` · ${i.comparator}` : ""}
+                        </div>
+                      ) : null}
+                      <div className="text-xs text-[var(--muted)] mt-1 tabular-nums">
+                        <T k="m2.currentValue" />: {i.last_value}
+                        {unit}
+                      </div>
+                      {paused ? (
+                        <div className="mt-1">
+                          <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                            <T k="m2.pausedNoAi" />
+                          </Badge>
+                        </div>
+                      ) : null}
+                    </td>
+                    <td className="text-sm max-w-[14rem]">
+                      <Phrase>{meta.description}</Phrase>
+                    </td>
+                    <td className="text-sm whitespace-nowrap"><Phrase>{i.domain_code}</Phrase></td>
+                    <td className="whitespace-nowrap">{i.product}</td>
+                    <td>
+                      <IndicatorThresholdEditor
+                        indicatorId={i.id}
+                        monitorId={i.monitor_id}
+                        warn={i.threshold_warn}
+                        breach={i.threshold_breach}
+                        unit={i.unit}
+                        canOperate={canOperate}
+                      />
+                    </td>
+                    <td className="text-sm whitespace-nowrap">
+                      <EnZh en={meta.frequency} zh={meta.frequency_zh} />
+                    </td>
+                    <td className="text-sm min-w-[12rem]">
+                      {meta.risk_scenarios.length ? (
+                        <ul className="list-disc pl-4 space-y-0.5">
+                          {meta.risk_scenarios.map((s) => (
+                            <li key={s}><Phrase>{s}</Phrase></li>
+                          ))}
+                        </ul>
+                      ) : (
+                        "—"
+                      )}
+                    </td>
+                    <td className="text-sm min-w-[13rem]">
+                      {meta.combinations.length ? (
+                        <div className="space-y-2">
+                          {meta.combinations.map((c) => (
+                            <div key={c.code} className="rounded-lg border border-[var(--line)] bg-slate-50/80 px-2 py-1.5">
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                <Badge
+                                  className={
+                                    c.mode === "sequence"
+                                      ? "bg-teal-50 text-teal-900 border-teal-200"
+                                      : "bg-amber-50 text-amber-900 border-amber-200"
+                                  }
+                                >
+                                  {c.mode === "sequence" ? (
+                                    <T k="m2.comboSequence" />
+                                  ) : (
+                                    <T k="m2.comboTogether" />
+                                  )}
+                                </Badge>
+                                <span className="font-medium text-xs"><Phrase>{c.name}</Phrase></span>
+                              </div>
+                              <div className="mt-1 flex flex-wrap gap-1">
+                                {c.partners.map((p) => (
+                                  <MonitorCode key={p} id={p} />
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-[var(--muted)]"><T k="m2.noCombo" /></span>
+                      )}
                     </td>
                     <td>
-                      <SeverityBadge value={a.severity} />
+                      <StatusBadge value={paused ? "IDLE" : i.status} />
+                    </td>
+                    <td className="text-xs whitespace-nowrap tabular-nums">
+                      <div>{i.last_checked_at || i.detector_last_run_at || "—"}</div>
+                      {i.detector_last_status && i.detector_last_status !== i.status ? (
+                        <div className="text-[var(--muted)]">{i.detector_last_status}</div>
+                      ) : null}
                     </td>
                     <td>
-                      <StatusBadge value={a.status} />
+                      {i.ticket_open_count > 0 ? (
+                        <Link
+                          href={`/admin/alerts?monitor_id=${encodeURIComponent(i.monitor_id)}`}
+                          className="font-semibold text-teal-800 underline tabular-nums"
+                          data-testid={`monitor-tickets-link-${i.monitor_id}`}
+                        >
+                          {i.ticket_open_count}
+                        </Link>
+                      ) : (
+                        <span className="tabular-nums text-[var(--muted)]">0</span>
+                      )}
                     </td>
-                    <td className="text-sm">{a.monitor20_ticket_id}</td>
                     {canOperate && (
-                      <td>{a.status === "OPEN" && <MonitorActions mode="ack" alertId={a.id} />}</td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {tab === "tickets" && (
-          <div className="panel table-wrap">
-            <table className="data">
-              <thead>
-                <tr>
-                  <th>Ticket</th>
-                  <th>Severity</th>
-                  <th>Status</th>
-                  <th>Assignee</th>
-                  <th>Dept</th>
-                  <th>Lark msg</th>
-                  {canOperate && <th />}
-                </tr>
-              </thead>
-              <tbody>
-                {tickets.map((t) => (
-                  <tr key={t.id}>
-                    <td>
-                      <div className="font-medium">{t.title}</div>
-                      <div className="text-xs text-[var(--muted)]">{t.ticket_id}</div>
-                    </td>
-                    <td>
-                      <SeverityBadge value={t.severity} />
-                    </td>
-                    <td>
-                      <StatusBadge value={t.status} />
-                    </td>
-                    <td>{t.assignee_name ?? "Unassigned"}</td>
-                    <td>
-                      <DeptBadge code={t.department_code} />
-                    </td>
-                    <td className="text-xs">{t.lark_message_id ?? "—"}</td>
-                    {canOperate && (
-                      <td className="space-x-1">
-                        {t.status !== "RESOLVED" && (
-                          <MonitorActions mode="ticket" ticketId={t.id} status="IN_PROGRESS" label="Progress" />
-                        )}
-                        {t.status !== "RESOLVED" && (
-                          <MonitorActions mode="ticket" ticketId={t.id} status="RESOLVED" label="Resolve" />
-                        )}
+                      <td>
+                        <IndicatorPauseToggle
+                          indicatorId={i.id}
+                          monitorId={i.monitor_id}
+                          paused={paused}
+                        />
                       </td>
                     )}
                   </tr>
-                ))}
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="panel p-4" data-testid="monitor-recent-runs">
+          <h3 className="font-semibold"><T k="m2.recentRuns" /></h3>
+          <ul className="mt-3 space-y-2 sm:hidden" data-testid="monitor-runs-mobile">
+            {runs.length === 0 ? (
+              <li className="text-sm text-[var(--muted)] py-2">
+                <T k="common.none" />
+              </li>
+            ) : (
+              runs.map((r) => (
+                <li key={r.id} className="rounded-lg border border-[var(--line)] bg-slate-50/80 px-3 py-2 text-sm space-y-1">
+                  <div className="text-xs text-[var(--muted)]">{r.created_at}</div>
+                  <MonitorCode id={r.monitor_id} tone="inline" />
+                  <div className="text-xs">{r.detector_code}</div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="tabular-nums">
+                      <T k="common.observed" />: {r.observed_value}
+                    </span>
+                    <SeverityBadge value={r.severity || r.status} />
+                  </div>
+                  <div className="text-xs">
+                    <T k="det.alertLine" vars={{ alert: r.alert_id ?? "—", analysis: r.analysis_id ?? "—" }} />
+                  </div>
+                </li>
+              ))
+            )}
+          </ul>
+          <div className="table-wrap mt-3 hidden sm:block overflow-x-auto">
+            <table className="data">
+              <thead>
+                <tr>
+                  <th><T k="common.when" /></th>
+                  <th><T k="common.indicator" /></th>
+                  <th><T k="m2.detectorCode" /></th>
+                  <th><T k="common.observed" /></th>
+                  <th><T k="common.status" /></th>
+                  <th><T k="det.alertAnalysis" /></th>
+                </tr>
+              </thead>
+              <tbody>
+                {runs.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="text-sm text-[var(--muted)] py-4">
+                      <T k="common.none" />
+                    </td>
+                  </tr>
+                ) : (
+                  runs.map((r) => (
+                    <tr key={r.id}>
+                      <td className="text-sm whitespace-nowrap">{r.created_at}</td>
+                      <td className="text-xs font-semibold">
+                        <MonitorCode id={r.monitor_id} tone="inline" />
+                      </td>
+                      <td className="text-sm">{r.detector_code}</td>
+                      <td className="tabular-nums">{r.observed_value}</td>
+                      <td>
+                        <SeverityBadge value={r.severity || r.status} />
+                      </td>
+                      <td className="text-xs">
+                        <T k="det.alertLine" vars={{ alert: r.alert_id ?? "—", analysis: r.analysis_id ?? "—" }} />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

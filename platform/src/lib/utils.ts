@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { deptLabelI18n, type UiLocale } from "@/lib/i18n";
 
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
@@ -27,26 +28,29 @@ export function statusClass(status: string) {
     case "WARN":
     case "ACKNOWLEDGED":
     case "IN_PROGRESS":
+    case "DEGRADED":
       return "bg-amber-50 text-amber-900 border-amber-200";
     case "BREACH":
     case "ESCALATED":
     case "OPEN":
+    case "DOWN":
       return "bg-orange-50 text-orange-800 border-orange-200";
     case "DISABLED":
     case "INACTIVE":
+    case "UNKNOWN":
       return "bg-slate-100 text-slate-600 border-slate-200";
+    case "PENDING_ADMIN":
+    case "AWAITING_CHECKER":
+    case "PENDING":
+      return "bg-amber-50 text-amber-900 border-amber-200";
+    case "PENDING_RO":
+    case "AWAITING_HUMAN":
+      return "bg-rose-50 text-rose-800 border-rose-200";
     default:
       return "bg-slate-100 text-slate-700 border-slate-200";
   }
 }
 
-export function deptLabel(code: string | null | undefined) {
-  const map: Record<string, string> = {
-    RISK_CONTROL: "Risk Control",
-    OPERATIONS: "Operations",
-    AI: "AI",
-    SYSTEM: "System",
-    EXEC: "Exec",
-  };
-  return code ? map[code] ?? code : "—";
+export function deptLabel(code: string | null | undefined, locale: UiLocale = "en") {
+  return deptLabelI18n(code, locale);
 }

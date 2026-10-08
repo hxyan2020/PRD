@@ -9,6 +9,7 @@ import {
   ensureChallengerSchema,
   getChallengeForAnalysis,
 } from "@/lib/ai/challenger";
+import { ensureImprovementSchema, reviewAnalysisIfNeeded, getImprovementForAnalysis } from "@/lib/ai/improvement";
 
 type AlertRow = {
   id: number;
@@ -31,6 +32,7 @@ type IndicatorRow = {
   threshold_breach: number | null;
   unit: string | null;
   last_value: number | null;
+  paused?: number;
 };
 
 function newAnalysisId() {
@@ -104,7 +106,7 @@ function relatedMacroEvents(domain: string, product: string, title: string, mess
     .slice(0, 3);
 }
 
-export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
+export function analyzeAlert(alertId: number, opts: { force?: boolean; prefer_rag?: boolean } = {}) {
   const db = getDb();
   const alert = db.prepare(`SELECT * FROM monitor_alerts WHERE id = ?`).get(alertId) as AlertRow | undefined;
   if (!alert) throw new Error(`Alert ${alertId} not found`);
@@ -120,7 +122,15 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
     .prepare(`SELECT * FROM monitor_indicators WHERE id = ?`)
     .get(alert.indicator_id) as IndicatorRow;
 
-  const skillMatch = matchSkill(db, indicator.monitor_id, alert.severity, alert.observed_value);
+  // Paused indicators are never used in AI analysis (force cannot override).
+  if (indicator?.paused) {
+    return null;
+  }
+
+  // Demo "RAG path" buttons can skip skill match so the RAG branch is always exercised.
+  const skillMatch = opts.prefer_rag
+    ? null
+    : matchSkill(db, indicator.monitor_id, alert.severity, alert.observed_value);
   const analysisId = newAnalysisId();
 
   if (skillMatch) {
@@ -206,6 +216,7 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
     });
     syncInterventionsFromSkillRuns();
     challengeAnalysisIfNeeded(dbId);
+    reviewAnalysisIfNeeded(dbId);
 
     return getAnalysisBundle(dbId);
   }
@@ -345,6 +356,7 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
   });
   syncInterventionsFromSkillRuns();
   challengeAnalysisIfNeeded(dbId);
+  reviewAnalysisIfNeeded(dbId);
 
   return getAnalysisBundle(dbId);
 }
@@ -352,8 +364,11 @@ export function analyzeAlert(alertId: number, opts: { force?: boolean } = {}) {
 export function getAnalysisBundle(id: number) {
   const db = getDb();
   ensureChallengerSchema(db);
+  ensureImprovementSchema(db);
   // Lazy second-opinion for high-severity analyses created before challenger shipped
   challengeAnalysisIfNeeded(id);
+  // Always-on system-improvement review (all severities)
+  reviewAnalysisIfNeeded(id);
   const analysis = db.prepare(`SELECT * FROM ai_analyses WHERE id = ?`).get(id);
   const evidence = db
     .prepare(`SELECT * FROM ai_analysis_evidence WHERE analysis_id = ? ORDER BY score DESC, id`)
@@ -362,19 +377,120 @@ export function getAnalysisBundle(id: number) {
     .prepare(`SELECT * FROM ai_skill_runs WHERE analysis_id = ? ORDER BY step_index`)
     .all(id);
   const challenge = getChallengeForAnalysis(id) ?? null;
-  return { analysis, evidence, skillRuns, challenge };
+  const improvement = getImprovementForAnalysis(id) ?? null;
+  return { analysis, evidence, skillRuns, challenge, improvement };
 }
 
-export function analyzeOpenAlerts(opts: { force?: boolean } = {}) {
+export type AnalyzeOpenSummary = {
+  analysis_id: string;
+  analysis_db_id: number;
+  alert_id: number;
+  mode: string;
+  created: boolean;
+};
+
+/** Ensure every open alert has an AI pack. Returns slim summaries (not full evidence blobs). */
+export function analyzeOpenAlerts(opts: { force?: boolean } = {}): AnalyzeOpenSummary[] {
   const db = getDb();
+  // Skip alerts whose indicator is paused — they must not enter AI analysis.
   const alerts = db
-    .prepare(`SELECT id FROM monitor_alerts WHERE status IN ('OPEN','ACKNOWLEDGED','ESCALATED') ORDER BY id`)
+    .prepare(
+      `SELECT a.id
+       FROM monitor_alerts a
+       JOIN monitor_indicators i ON i.id = a.indicator_id
+       WHERE a.status IN ('OPEN','ACKNOWLEDGED','ESCALATED')
+         AND COALESCE(i.paused, 0) = 0
+       ORDER BY a.id`
+    )
     .all() as Array<{ id: number }>;
-  const results = [];
+  const results: AnalyzeOpenSummary[] = [];
   for (const a of alerts) {
-    results.push(analyzeAlert(a.id, opts));
+    const existing = db
+      .prepare(`SELECT id, analysis_id, mode FROM ai_analyses WHERE alert_id = ? ORDER BY id DESC LIMIT 1`)
+      .get(a.id) as { id: number; analysis_id: string; mode: string } | undefined;
+    if (existing && !opts.force) {
+      results.push({
+        analysis_id: existing.analysis_id,
+        analysis_db_id: existing.id,
+        alert_id: a.id,
+        mode: existing.mode,
+        created: false,
+      });
+      continue;
+    }
+    const bundle = analyzeAlert(a.id, opts);
+    if (bundle?.analysis) {
+      results.push({
+        analysis_id: String(bundle.analysis.analysis_id),
+        analysis_db_id: Number(bundle.analysis.id),
+        alert_id: a.id,
+        mode: String(bundle.analysis.mode),
+        created: true,
+      });
+    }
   }
   return results;
+}
+
+export type RaisedAlarm = {
+  alert_db_id: number;
+  alert_id: string;
+  ticket_id: string;
+  monitor_id: string;
+  product: string;
+  severity: string;
+};
+
+export function raiseMonitorAlarm(input: {
+  monitor_id: string;
+  severity: string;
+  title: string;
+  message: string;
+  observed_value: number;
+}): RaisedAlarm {
+  const db = getDb();
+  const ind = db
+    .prepare(`SELECT * FROM monitor_indicators WHERE monitor_id = ?`)
+    .get(input.monitor_id) as IndicatorRow | undefined;
+  if (!ind) throw new Error(`Unknown indicator ${input.monitor_id}`);
+  if (ind.paused) throw new Error(`Indicator ${input.monitor_id} is paused`);
+
+  const alertIdStr = `ALT-${randomBytes(3).toString("hex").toUpperCase()}`;
+  const ticketId = `TKT-${randomBytes(3).toString("hex").toUpperCase()}`;
+  const info = db
+    .prepare(
+      `INSERT INTO monitor_alerts (alert_id, indicator_id, severity, title, message, observed_value, status, monitor20_ticket_id)
+       VALUES (?, ?, ?, ?, ?, ?, 'OPEN', ?)`
+    )
+    .run(alertIdStr, ind.id, input.severity, input.title, input.message, input.observed_value, ticketId);
+
+  db.prepare(
+    `UPDATE monitor_indicators SET status = ?, last_value = ?, last_checked_at = datetime('now'), ticket_open_count = ticket_open_count + 1 WHERE id = ?`
+  ).run(input.severity === "INFO" ? "HEALTHY" : input.severity, input.observed_value, ind.id);
+
+  const alertDbId = Number(info.lastInsertRowid);
+  const assignee = db
+    .prepare(
+      `SELECT id, department_code FROM users
+       WHERE status = 'ACTIVE' AND role_code IN ('RISK_ANALYST','RISK_OWNER','OPS_LEAD')
+       ORDER BY CASE role_code WHEN 'RISK_ANALYST' THEN 0 WHEN 'RISK_OWNER' THEN 1 ELSE 2 END, id
+       LIMIT 1`
+    )
+    .get() as { id: number; department_code: string | null } | undefined;
+  db.prepare(
+    `INSERT INTO monitor_tickets (ticket_id, alert_id, title, status, severity, assignee_user_id, department_code)
+     VALUES (?, ?, ?, 'OPEN', ?, ?, ?)`
+  ).run(ticketId, alertDbId, input.title, input.severity, assignee?.id ?? null, assignee?.department_code ?? null);
+
+  writeAudit({ name: "Monitor 2.0" }, "ALARM_RAISED", "monitor_alert", alertIdStr, input);
+  return {
+    alert_db_id: alertDbId,
+    alert_id: alertIdStr,
+    ticket_id: ticketId,
+    monitor_id: ind.monitor_id,
+    product: ind.product,
+    severity: input.severity,
+  };
 }
 
 export function createAlarmAndAnalyze(input: {
@@ -383,26 +499,13 @@ export function createAlarmAndAnalyze(input: {
   title: string;
   message: string;
   observed_value: number;
+  prefer_rag?: boolean;
 }) {
-  const db = getDb();
-  const ind = db
-    .prepare(`SELECT * FROM monitor_indicators WHERE monitor_id = ?`)
-    .get(input.monitor_id) as IndicatorRow | undefined;
-  if (!ind) throw new Error(`Unknown indicator ${input.monitor_id}`);
-
-  const alertIdStr = `ALT-${Date.now().toString().slice(-6)}`;
-  const info = db
-    .prepare(
-      `INSERT INTO monitor_alerts (alert_id, indicator_id, severity, title, message, observed_value, status, monitor20_ticket_id)
-       VALUES (?, ?, ?, ?, ?, ?, 'OPEN', ?)`
-    )
-    .run(alertIdStr, ind.id, input.severity, input.title, input.message, input.observed_value, `TKT-${Date.now().toString().slice(-5)}`);
-
-  db.prepare(
-    `UPDATE monitor_indicators SET status = ?, last_value = ?, last_checked_at = datetime('now'), ticket_open_count = ticket_open_count + 1 WHERE id = ?`
-  ).run(input.severity === "INFO" ? "HEALTHY" : input.severity, input.observed_value, ind.id);
-
-  const alertDbId = Number(info.lastInsertRowid);
-  writeAudit({ name: "Monitor 2.0" }, "ALARM_RAISED", "monitor_alert", alertIdStr, input);
-  return analyzeAlert(alertDbId, { force: true });
+  const raised = raiseMonitorAlarm(input);
+  return {
+    ...analyzeAlert(raised.alert_db_id, { force: true, prefer_rag: !!input.prefer_rag }),
+    monitor_alert_id: raised.alert_id,
+    alert_db_id: raised.alert_db_id,
+    ticket_id: raised.ticket_id,
+  };
 }

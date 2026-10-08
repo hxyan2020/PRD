@@ -20,13 +20,19 @@ export async function PATCH(req: Request) {
   if (!body.key || body.value === undefined) {
     return NextResponse.json({ error: "key and value required" }, { status: 400 });
   }
-  getDb()
-    .prepare(
-      `UPDATE platform_settings
-       SET value = ?, updated_at = datetime('now'), updated_by = ?
-       WHERE key = ?`
-    )
-    .run(String(body.value), user.id, body.key);
-  writeAudit(user, "UPDATE_SETTING", "platform_settings", body.key, { value: body.value });
+  const db = getDb();
+  const prev = db
+    .prepare(`SELECT key, value, description FROM platform_settings WHERE key = ?`)
+    .get(body.key) as { key: string; value: string; description: string | null } | undefined;
+  db.prepare(
+    `UPDATE platform_settings
+     SET value = ?, updated_at = datetime('now'), updated_by = ?
+     WHERE key = ?`
+  ).run(String(body.value), user.id, body.key);
+  writeAudit(user, "UPDATE_SETTING", "platform_settings", body.key, {
+    before: prev ? { value: prev.value } : null,
+    after: { value: String(body.value) },
+    value: body.value,
+  });
   return NextResponse.json({ ok: true });
 }

@@ -1,12 +1,14 @@
 # Vantage 生態導入評估
 
-**文件編號：** CRMP-ECO-001 · **狀態：** 高階規劃包 · **範圍：** CFD + Crypto CRMP 原型 → 正式環境
+**文件編號：** CRMP-ECO-001 · **版本：** 2.0 · **狀態：** 高階規劃包 · **範圍：** CFD + Crypto CRMP 原型 → 正式環境
 
 ## 1. 總覽
 
 CRMP 示範已驗證端到端脊柱：
 
-**Monitor 2.0 警報 → AI RCA（Skill/RAG）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核／脊柱。**
+**Monitor 2.0 警報 → 即時警報與追蹤 → AI RCA（Skill/RAG）→ 獨立第二 AI 挑戰 → Messenger 操作 → Maker/Checker 干預 → 稽核（CRMP／Vantage Markets 管理平面分流＋回滾）／首頁脊柱階段計數。** 並行客戶入口：**C1 即時聊天／網頁表單／官方信箱 → CS／TR 台 → AI 追問直到回覆 → TR 成交或風控 Messenger。**
+
+計畫缺口與暫定 ETA 見 [開放議題](/admin/docs/open-issues) 與 [進度追蹤](/admin/docs/progress)（Monitor 仍在加指標；CRMP 初始設計；技術／資源規劃仍開放）。平台負責人：demo platform owner／`haixiang.yan@hytechc.com`。
 
 正式導入既有 **Vantage Markets 生態** 不是重寫交易平台，而是打造可接上身分、Monitor 2.0、Lark、LP／橋接控制與後台雙重控制的**風險控制平面**——先影子模式，後寫入路徑。
 
@@ -26,24 +28,31 @@ CRMP 示範已驗證端到端脊柱：
 | # | 基礎 | 原因 | 原型現況 | 目標成熟度 |
 |---|---|---|---|---|
 | F1 | **SSO / IdP + SCIM** | 企業目錄、淘汰示範密碼、職責分離 | 本機帳密 | 正式 |
-| F2 | **Monitor 2.0 雙向 API** | 即時警報＋工單回寫 | SQLite 種子／模擬警報 | 正式 |
+| F2 | **Monitor 2.0 雙向 API** | 即時警報與追蹤入站＋工單回寫 | 種子 SQLite Monitor 登錄＋`/admin/alerts` 未結佇列；本機模擬／同步（無真實 Monitor HTTP） | 正式 |
 | F3 | **LP／橋接／交易控制匯流排** | 真實停牌、槓桿、擴點、暫停跟單、封鎖 | 深連結＋模擬 admin ref | 正式＋雙重控制 |
 | F4 | **Lark／Teams 互動應用** | 取代示範 Messenger | 站內 Demo Messenger | 正式 |
 | F5 | **Secrets 與環境隔離** | Webhook、模型金鑰、DB、LP 憑證 | 本機／環境變數 | 正式 |
 | F6 | **託管資料庫＋高可用** | 多實例、備份、災備 | SQLite 單檔 | Postgres＋HA |
-| F7 | **可觀測性** | Spine SLO、AI 延遲、誤報率、成本 | Console＋脊柱表 | 正式 APM |
+| F7 | **可觀測性** | Spine SLO、AI 延遲、誤報率、成本 | Console＋首頁脊柱階段計數 | 正式 APM |
 | F8 | **資料駐留與保存** | 證據庫可能含客戶識別 | 無正式保存政策 | 法遵＋排程作業 |
 | F9 | **IAM Maker ≠ Checker** | AI Admin 與不可逆干預 | 應用層 M/C | IAM＋應用 |
 | F10 | **AI 存取黑名單強制執行** | 僅限人類頁面／功能／欄位 | 文件化黑名單 UI | AI 主體執行期強制 |
 | F11 | **市場情報資料契約** | 5 分鐘掃描需授權來源 | 啟發式掃描 | 供應源＋評分 |
 | F12 | **緊急開關** | 立即關閉自動技能、情報推送、寫入適配 | 部分設定旗標 | 全域＋逐適配 |
+| F13 | **簽章 C1／表單／信箱連接器** | 24/7 CS 必須在 CRMP 收到即時聊天、網站表單與官方信件，不能只留在個人收件匣 | 模擬 `POST /api/cs/intake`（`x-cs-intake-token: demo-c1`）＋種子台面 | 正式簽章 webhook＋信箱閘道 |
+| F14 | **風控 AI 工作區＋隔離** | 各 BU 提示／RAG／日誌隔離；風控獨立代理實例 | 單一示範 SQLite | AI 團隊提供的風控工作區 |
+| F15 | **公司多 LLM＋軟性花費** | Claude／GPT／Gemini 切換；永不停止 RCA 的軟性 token 告警；模型使用日誌約 1 個月（可延長） | 原型設定旗標 | 正式計量＋軟告警 |
+| F16 | **具名函式＋RBAC（尚無中央 AI→DB 閘道）** | 公司尚無 AI 閘道／單一 MCP 控內部庫 — 以 RBAC 與具名工具限制 | AI 使用手冊 §6 已文件化 | 公司閘道出現前維持 |
+| F17 | **重用公司 Lark AI 機器人** | 他 BU 已建互動卡片＋回呼；可選 JIRA | 模擬 Lark 整合＋示範 Messenger | 正式重用機器人（RM-01） |
 
 ### 目標整合路徑
 
-1. Monitor 2.0 → CRMP（警報）→ 雙 AI 包  
-2. CRMP → Lark 卡片（通知＋內嵌操作）  
+1. Monitor 2.0 → CRMP 即時警報與追蹤（`/admin/alerts`）→ 雙 AI 包（主 LLM＋供應商／子代理挑戰者）  
+2. CRMP → **公司 Lark AI 機器人**卡片（通知＋內嵌操作）；可選 JIRA  
 3. 人工確認 → Vantage 管理／控制匯流排（Maker）→ Checker 核准  
-4. 狀態回寫 → Monitor 工單＋稽核＋脊柱  
+4. 狀態回寫 → Monitor 工單＋稽核（CRMP／Vantage Markets 管理）＋首頁脊柱階段計數  
+5. C1／表單／官方信箱 → CS／TR 台（`/admin/cs-desk`）→ AI 自動寄信直到客戶回覆 → TR 成交或風控 Messenger  
+6. AI 團隊 **dev／UAT** → 風控**正式工作區**（隔離提示／RAG／日誌）；花費走軟性 token 告警
 
 ---
 
@@ -72,7 +81,7 @@ CRMP 示範已驗證端到端脊柱：
 | 階段 | 範圍 | 區間 | 說明 |
 |---|---|---|---|
 | **A 強化原型** | 認證／託管／稽核匯出／UAT／基本監控 | **$80k – $150k** | 可部署、可審查 |
-| **B 生態接駁（讀路徑）** | Monitor API、Lark 卡片、只讀 LP、Postgres | **$250k – $450k** | 僅通知；無自動交易 |
+| **B 生態接駁（讀路徑）** | Monitor API → 即時警報串流、Lark 卡片、只讀 LP、Postgres | **$250k – $450k** | 僅通知；無自動交易 |
 | **C 監督寫入** | 雙重控制適配、災備、緊急開關 | **$400k – $700k** | 最高風險；門控上線 |
 | **D 模型營運（年）** | 評測、挑戰多樣化、漂移／成本、情報授權 | **$150k – $300k／年** | B/C 之後運轉成本 |
 
@@ -94,7 +103,7 @@ CRMP 示範已驗證端到端脊柱：
 - 風險負責人 UAT 基線  
 
 ### 階段 B — 讀路徑上線
-- 即時 Monitor 警報進 CRMP  
+- 即時 Monitor 警報進**即時警報與追蹤**  
 - 雙 AI RCA（主模型＋**獨立挑戰者**）用於 BREACH／CRITICAL  
 - Lark 通知＋「開啟管理後台」  
 - 影子儀表板：AI 建議、人類在寫入匯流排外操作  
@@ -102,7 +111,7 @@ CRMP 示範已驗證端到端脊柱：
 ### 階段 C — 監督寫入
 - Messenger／Admin Maker 確認 → 控制匯流排  
 - 不可逆控制需 Checker  
-- 工單回寫＋完整稽核／脊柱  
+- 工單回寫＋完整稽核（CRMP／Vantage Markets 管理平面）／首頁脊柱  
 - 緊急開關演練  
 
 ### 階段 D — 優化
@@ -122,11 +131,13 @@ CRMP 示範已驗證端到端脊柱：
 | 資料 | SQLite 單機 | 無高可用 |
 | Messenger | 站內示範；Lark 模擬 | 長期無法只靠站內聊天 |
 | 控制 | Admin ref／深連結，非真實交易匯流排 | 無法作為真實風控手段 |
+| Monitor | 種子登錄＋本機同步；偵測器已併入 Monitor 2.0；未結佇列在即時警報與追蹤 | 無雙向 API 則正式台面會分叉 |
 | 身分 | 示範密碼 | SoD／稽核失敗 |
 | 租戶 | 多品牌隔離有限 | 阻擋集團級推廣 |
 | 情報 | 啟發式掃描 | 需授權來源 |
 | 強制 | AI 黑名單偏文件化 | 須綁定 AI 服務主體 |
-| 行動 | 已改善，非原生 App 級 | Web 響應式可接受 |
+| 行動 | Monitor 2.0／升級／資料來源／風險日誌／稽核已有響應式卡片；確認表仍偏桌面 | Web 響應式可接受，非原生 App 級 |
+| CS／TR | 啟發式分流＋模擬進件 token；無簽章 C1／表單／信箱；無核身庫 | 真實 24/7 請求可能只留在個人收件匣；核身／不清楚迴圈僅示範 |
 
 ---
 
@@ -149,10 +160,26 @@ CRMP 示範已驗證端到端脊柱：
 
 - [ ] 核准階段 A 預算帶並指派 PM＋工程負責人  
 - [ ] 確認 Monitor 2.0 API 契約負責人  
-- [ ] 確認企業即時通訊：Lark 或 Teams  
-- [ ] 指派風險負責人負責 UAT 退出標準  
+- [ ] 確認重用**公司 Lark AI 機器人**（卡片＋回呼）vs 從零新建 Lark 應用  
+- [ ] 指派風險負責人／風控主管負責 UAT 退出與 PoC→正式（公司流程）  
 - [ ] 同意階段 C 前影子模式期間  
-- [ ] 資安簽核 AI 黑名單＋SoD 模型  
+- [ ] 確認即使風控組長可上線提示／技能，CRMP AI 黑名單＋SoD 仍保留  
+- [ ] 確認軟性 token 告警門檻（永不硬停 RCA）＋模型使用日誌保存（≥1 個月）  
+- [ ] 確認 AI 團隊 **dev／UAT**＋風控獨立工作區  
 - [ ] 法遵簽核證據保存政策  
+- [ ] 確認 CS 24/7 的 C1／表單／信箱負責人與 AI 追問 SLA（等到客戶回覆，上限 3 封）  
 
-**示範連結：** 本頁 · [網址目錄](/admin/docs/urls) · [UAT 清單](/admin/docs/uat) · [改進路線圖](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger)
+**示範連結：** 本頁 · [開放議題](/admin/docs/open-issues) · [進度追蹤](/admin/docs/progress) · [網址目錄](/admin/docs/urls) · [UAT 清單](/admin/docs/uat) · [改進路線圖](/admin/docs/roadmap) · [Demo Messenger](/admin/messenger) · [CS／TR 台](/admin/cs-desk)
+
+---
+
+## 9. 文件控制
+
+| 版本 | 日期 | 說明 |
+|---|---|---|
+| 1.7 | 2026-10-05 | 稽核 CRMP／Vantage Markets 管理＋回滾；首頁脊柱；開放議題／進度連結 |
+| 1.8 | 2026-10-05 | 選單真相：即時警報與追蹤；偵測器→Monitor 2.0；F2／階段 B／Monitor 不足；手機卡片；示範連結 |
+| 1.9 | 2026-10-06 | F13 簽章 C1／表單／信箱；脊柱加上 CS／TR 台；OI-19／OI-20 |
+| 2.0 | 2026-10-08 | F14–F17 風控隔離、多 LLM 軟性花費、具名函式 RBAC、重用公司 Lark 機器人 |
+
+**負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

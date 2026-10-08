@@ -5,19 +5,20 @@ import { DocArticlePage } from "@/components/DocArticlePage";
 import { Badge } from "@/components/ui";
 import { resolveDocLocale } from "@/lib/docs";
 import { getUiLocale } from "@/lib/i18n-server";
+import { readSearchParams } from "@/lib/static-export";
 
 export default async function TsdPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
-  const sp = await searchParams;
+  const sp = await readSearchParams(searchParams);
   const ui = await getUiLocale();
   const lang = sp.lang ? resolveDocLocale(sp.lang) : ui;
   const zh = lang === "zh-Hant";
 
   const cards = [
-    { label: zh ? "文件版次" : "Document version", value: "v1.2" },
-    { label: zh ? "章節" : "Sections", value: "16" },
-    { label: zh ? "核心模組" : "Core modules", value: zh ? "挑戰者 · Messenger · 市場情報" : "Challenger · Messenger · Market Intel" },
+    { label: zh ? "文件版次" : "Document version", value: "v2.6" },
+    { label: zh ? "章節" : "Sections", value: "18" },
+    { label: zh ? "CS／TR" : "CS / TR", value: "§17.5–17.13" },
     { label: zh ? "技術棧" : "Stack", value: "Next.js 15 + SQLite" },
   ];
 
@@ -36,10 +37,28 @@ export default async function TsdPage({ searchParams }: { searchParams: Promise<
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-indigo-50 text-indigo-900 border-indigo-200">CRMP-TSD-001</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-            {zh ? "原型／活規格" : "Prototype / living spec"}
+            {zh ? "原型／活規格 · v2.6" : "Prototype / living spec · v2.6"}
           </Badge>
         </div>
         <div className="action-row">
+          <Link className="btn" href="/cs">
+            {zh ? "客戶入口" : "Client portal"}
+          </Link>
+          <Link className="btn" href="/admin/cs-desk">
+            {zh ? "CS／TR 台" : "CS / TR Desk"}
+          </Link>
+          <Link className="btn" href="/admin/cs-dashboard">
+            {zh ? "CS／TR 儀表板" : "CS / TR Dashboard"}
+          </Link>
+          <Link className="btn" href="/admin/cs-log">
+            {zh ? "CS／TR 日誌" : "CS / TR Log"}
+          </Link>
+          <Link className="btn" href="/admin/cs-data">
+            {zh ? "CS／TR 資料" : "CS / TR Data"}
+          </Link>
+          <Link className="btn" href="/admin/docs/urls">
+            {zh ? "網址目錄" : "URL Catalog"}
+          </Link>
           <Link className="btn" href="/admin/docs/prd">
             PRD
           </Link>

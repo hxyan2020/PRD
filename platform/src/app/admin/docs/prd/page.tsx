@@ -5,20 +5,21 @@ import { DocArticlePage } from "@/components/DocArticlePage";
 import { Badge } from "@/components/ui";
 import { resolveDocLocale } from "@/lib/docs";
 import { getUiLocale } from "@/lib/i18n-server";
+import { readSearchParams } from "@/lib/static-export";
 
 export default async function PrdPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
   const user = await getCurrentUser();
   if (!user || !hasPermission(user.role_code, "admin.access")) redirect("/admin");
-  const sp = await searchParams;
+  const sp = await readSearchParams(searchParams);
   const ui = await getUiLocale();
   const lang = sp.lang ? resolveDocLocale(sp.lang) : ui;
   const zh = lang === "zh-Hant";
 
   const cards = [
     { label: zh ? "P0 需求" : "P0 requirements", value: "10" },
-    { label: zh ? "P1 需求" : "P1 requirements", value: "6" },
-    { label: zh ? "產品範圍" : "Product scope", value: "CFD + Crypto" },
-    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…20" },
+    { label: zh ? "P1 需求" : "P1 requirements", value: "31" },
+    { label: zh ? "CS／TR" : "CS / TR", value: "FR-37…46" },
+    { label: zh ? "驗收入口" : "Acceptance", value: "UAT-01…53" },
   ];
 
   return (
@@ -36,10 +37,28 @@ export default async function PrdPage({ searchParams }: { searchParams: Promise<
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-PRD-001</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-            {zh ? "原型／可示範" : "Prototype / demo-ready"}
+            {zh ? "原型／可示範 · v2.6" : "Prototype / demo-ready · v2.6"}
           </Badge>
         </div>
         <div className="action-row">
+          <Link className="btn" href="/cs">
+            {zh ? "客戶入口" : "Client portal"}
+          </Link>
+          <Link className="btn" href="/admin/cs-desk">
+            {zh ? "CS／TR 台" : "CS / TR Desk"}
+          </Link>
+          <Link className="btn" href="/admin/cs-dashboard">
+            {zh ? "CS／TR 儀表板" : "CS / TR Dashboard"}
+          </Link>
+          <Link className="btn" href="/admin/cs-log">
+            {zh ? "CS／TR 日誌" : "CS / TR Log"}
+          </Link>
+          <Link className="btn" href="/admin/cs-data">
+            {zh ? "CS／TR 資料" : "CS / TR Data"}
+          </Link>
+          <Link className="btn" href="/admin/docs/urls">
+            {zh ? "網址目錄" : "URL Catalog"}
+          </Link>
           <Link className="btn" href="/admin/docs/tsd">
             TSD
           </Link>

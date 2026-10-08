@@ -1,5 +1,233 @@
+import type Database from "better-sqlite3";
 import { getDb, writeAudit } from "@/lib/db";
 import { logSpineEvent } from "@/lib/ai/spine";
+import { INTERVENTION_DEMO_SAMPLES } from "@/lib/ai/intervention-samples";
+
+/** Seed sample human interventions (PENDING + decided) when the queue is empty. */
+export function seedInterventionsIfEmpty(db: Database.Database = getDb()) {
+  const count = (db.prepare(`SELECT COUNT(*) AS c FROM interventions`).get() as { c: number }).c;
+  if (count > 0) return;
+
+  // Prefer materialising real AWAITING_HUMAN skill runs first
+  const pendingRuns = db
+    .prepare(
+      `SELECT r.id AS skill_run_id, r.analysis_id, r.action_code
+       FROM ai_skill_runs r
+       WHERE r.status = 'AWAITING_HUMAN'
+         AND NOT EXISTS (SELECT 1 FROM interventions i WHERE i.skill_run_id = r.id)
+       LIMIT 8`
+    )
+    .all() as Array<{ skill_run_id: number; analysis_id: number; action_code: string }>;
+
+  const insertInt = db.prepare(
+    `INSERT INTO interventions (skill_run_id, analysis_id, action_code, status, requested_at, decided_at, decided_by, decision_note)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+
+  if (pendingRuns.length > 0) {
+    const owner = db.prepare(`SELECT id FROM users WHERE email=?`).get("risk.owner@vantagemarkets.com") as
+      | { id: number }
+      | undefined;
+    const ownerId = owner?.id ?? 1;
+    pendingRuns.forEach((r, idx) => {
+      if (idx === 0) {
+        insertInt.run(
+          r.skill_run_id,
+          r.analysis_id,
+          r.action_code,
+          "APPROVED",
+          "2026-10-02 09:15:00",
+          "2026-10-02 09:40:00",
+          ownerId,
+          "Seed sample: approved after desk review."
+        );
+        db.prepare(
+          `UPDATE ai_skill_runs SET status='EXECUTED_AFTER_APPROVAL', decided_by=?, decided_at=?, decision_note=? WHERE id=?`
+        ).run(ownerId, "2026-10-02 09:40:00", "Seed sample: approved after desk review.", r.skill_run_id);
+      } else if (idx === 1) {
+        insertInt.run(
+          r.skill_run_id,
+          r.analysis_id,
+          r.action_code,
+          "REJECTED",
+          "2026-10-02 10:00:00",
+          "2026-10-02 10:22:00",
+          ownerId,
+          "Seed sample: rejected — cohort slice incomplete."
+        );
+        db.prepare(
+          `UPDATE ai_skill_runs SET status='REJECTED_BY_HUMAN', decided_by=?, decided_at=?, decision_note=? WHERE id=?`
+        ).run(ownerId, "2026-10-02 10:22:00", "Seed sample: rejected — cohort slice incomplete.", r.skill_run_id);
+      } else {
+        insertInt.run(r.skill_run_id, r.analysis_id, r.action_code, "PENDING", "2026-10-03 08:00:00", null, null, null);
+      }
+    });
+    return;
+  }
+
+  const analyses = db
+    .prepare(
+      `SELECT a.id, a.analysis_id, a.indicator_monitor_id, a.summary
+       FROM ai_analyses a
+       ORDER BY a.id DESC
+       LIMIT 4`
+    )
+    .all() as Array<{ id: number; analysis_id: string; indicator_monitor_id: string; summary: string }>;
+  if (!analyses.length) return;
+
+  const skill = db.prepare(`SELECT id FROM ai_skills WHERE status='ACTIVE' ORDER BY id LIMIT 1`).get() as
+    | { id: number }
+    | undefined;
+  if (!skill) return;
+
+  const owner = db.prepare(`SELECT id FROM users WHERE email=?`).get("risk.owner@vantagemarkets.com") as
+    | { id: number }
+    | undefined;
+  const analyst = db.prepare(`SELECT id FROM users WHERE email=?`).get("risk.analyst@vantagemarkets.com") as
+    | { id: number }
+    | undefined;
+  const ownerId = owner?.id ?? 1;
+  const analystId = analyst?.id ?? ownerId;
+
+  const insertRun = db.prepare(
+    `INSERT INTO ai_skill_runs (analysis_id, skill_id, step_index, action_code, status, detail_json, decided_by, decided_at, decision_note)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+
+  const samples: Array<{
+    action: string;
+    status: "PENDING" | "APPROVED" | "REJECTED";
+    decidedBy: number | null;
+    note: string | null;
+    requestedAt: string;
+    decidedAt: string | null;
+    runStatus: string;
+  }> = [
+    {
+      action: "flag_for_human_review",
+      status: "PENDING",
+      decidedBy: null,
+      note: null,
+      requestedAt: "2026-10-03 08:12:00",
+      decidedAt: null,
+      runStatus: "AWAITING_HUMAN",
+    },
+    {
+      action: "suggest_leverage_cut",
+      status: "PENDING",
+      decidedBy: null,
+      note: null,
+      requestedAt: "2026-10-03 08:45:00",
+      decidedAt: null,
+      runStatus: "AWAITING_HUMAN",
+    },
+    {
+      action: "pause_new_copies",
+      status: "APPROVED",
+      decidedBy: ownerId,
+      note: "Seed sample: Risk Owner approved pause after copy cascade confirmation.",
+      requestedAt: "2026-10-02 11:00:00",
+      decidedAt: "2026-10-02 11:28:00",
+      runStatus: "EXECUTED_AFTER_APPROVAL",
+    },
+    {
+      action: "suggest_symbol_halt",
+      status: "REJECTED",
+      decidedBy: analystId,
+      note: "Seed sample: rejected — feed stale print, not book risk.",
+      requestedAt: "2026-10-01 16:20:00",
+      decidedAt: "2026-10-01 16:55:00",
+      runStatus: "REJECTED_BY_HUMAN",
+    },
+  ];
+
+  analyses.forEach((a, idx) => {
+    const sample = samples[idx] ?? samples[0];
+    const detail = JSON.stringify({
+      description: `Human gate for ${sample.action} on ${a.indicator_monitor_id}`,
+      params: { analysis: a.analysis_id },
+      mock: true,
+      note: sample.status === "PENDING" ? "Requires human approval before real execution." : sample.note,
+    });
+    const runInfo = insertRun.run(
+      a.id,
+      skill.id,
+      0,
+      sample.action,
+      sample.runStatus,
+      detail,
+      sample.decidedBy,
+      sample.decidedAt,
+      sample.note
+    );
+    insertInt.run(
+      Number(runInfo.lastInsertRowid),
+      a.id,
+      sample.action,
+      sample.status,
+      sample.requestedAt,
+      sample.decidedAt,
+      sample.decidedBy,
+      sample.note
+    );
+  });
+}
+
+/** Ensure at least two decided interventions exist with actioner emails for the samples UI. */
+export function ensureDecidedInterventionSamples(db: Database.Database = getDb()) {
+  const withEmail = db
+    .prepare(
+      `SELECT COUNT(*) AS c
+       FROM interventions i
+       JOIN users u ON u.id = i.decided_by
+       WHERE i.status IN ('APPROVED','REJECTED') AND u.email IS NOT NULL`
+    )
+    .get() as { c: number };
+  if (withEmail.c >= 2) return;
+
+  const owner = db.prepare(`SELECT id FROM users WHERE email=?`).get("risk.owner@vantagemarkets.com") as
+    | { id: number }
+    | undefined;
+  const analyst = db.prepare(`SELECT id FROM users WHERE email=?`).get("risk.analyst@vantagemarkets.com") as
+    | { id: number }
+    | undefined;
+  if (!owner) return;
+
+  const pending = db
+    .prepare(`SELECT id, skill_run_id FROM interventions WHERE status='PENDING' ORDER BY id DESC LIMIT 2`)
+    .all() as Array<{ id: number; skill_run_id: number }>;
+
+  if (pending[0]) {
+    db.prepare(
+      `UPDATE interventions
+       SET status='APPROVED', decided_by=?, decided_at=?, decision_note=?
+       WHERE id=?`
+    ).run(
+      owner.id,
+      "2026-10-04 14:48:00",
+      "Sample: Risk Owner approved after desk review.",
+      pending[0].id
+    );
+    db.prepare(
+      `UPDATE ai_skill_runs SET status='EXECUTED_AFTER_APPROVAL', decided_by=?, decided_at=?, decision_note=? WHERE id=?`
+    ).run(owner.id, "2026-10-04 14:48:00", "Sample: Risk Owner approved after desk review.", pending[0].skill_run_id);
+  }
+  if (pending[1] && analyst) {
+    db.prepare(
+      `UPDATE interventions
+       SET status='REJECTED', decided_by=?, decided_at=?, decision_note=?
+       WHERE id=?`
+    ).run(
+      analyst.id,
+      "2026-10-03 16:35:00",
+      "Sample: rejected — stale feed, not book risk.",
+      pending[1].id
+    );
+    db.prepare(
+      `UPDATE ai_skill_runs SET status='REJECTED_BY_HUMAN', decided_by=?, decided_at=?, decision_note=? WHERE id=?`
+    ).run(analyst.id, "2026-10-03 16:35:00", "Sample: rejected — stale feed, not book risk.", pending[1].skill_run_id);
+  }
+}
 
 export function syncInterventionsFromSkillRuns() {
   const db = getDb();
@@ -39,10 +267,7 @@ export function syncInterventionsFromSkillRuns() {
   return pending.length;
 }
 
-export function listInterventions(status?: string) {
-  const db = getDb();
-  syncInterventionsFromSkillRuns();
-  let sql = `
+const INTERVENTION_SELECT = `
     SELECT i.*,
            a.analysis_id AS analysis_code,
            a.indicator_monitor_id,
@@ -51,26 +276,77 @@ export function listInterventions(status?: string) {
            r.detail_json AS skill_detail,
            r.step_index,
            u.name AS decided_by_name,
-           al.title AS alert_title,
-           al.severity AS alert_severity,
+           u.email AS decided_by_email,
+           COALESCE(al.title, a.summary, i.action_code) AS alert_title,
+           COALESCE(al.severity, 'WARN') AS alert_severity,
+           COALESCE(al.alert_id, a.analysis_id) AS alert_id,
+           COALESCE(t.ticket_id, al.monitor20_ticket_id, '—') AS ticket_id,
            m.name AS indicator_name,
-           m.product AS product_hint
+           COALESCE(m.product, 'CFD') AS product_hint
     FROM interventions i
     JOIN ai_analyses a ON a.id = i.analysis_id
     JOIN ai_skill_runs r ON r.id = i.skill_run_id
-    JOIN monitor_alerts al ON al.id = a.alert_id
-    JOIN monitor_indicators m ON m.id = al.indicator_id
+    LEFT JOIN monitor_alerts al ON al.id = a.alert_id
+    LEFT JOIN monitor_tickets t ON t.alert_id = al.id
+    LEFT JOIN monitor_indicators m ON m.id = al.indicator_id
     LEFT JOIN users u ON u.id = i.decided_by
-  `;
-  const params: string[] = [];
+`;
+
+export function listInterventions(status?: string) {
+  const db = getDb();
+  seedInterventionsIfEmpty(db);
+  syncInterventionsFromSkillRuns();
+  ensureDecidedInterventionSamples(db);
+
   if (status) {
-    sql += ` WHERE i.status = ?`;
-    params.push(status);
+    const rows = db
+      .prepare(`${INTERVENTION_SELECT} WHERE i.status = ? ORDER BY i.id DESC LIMIT 40`)
+      .all(status) as Array<Record<string, unknown>>;
+    if (rows.length) return rows;
+    return INTERVENTION_DEMO_SAMPLES.filter((s) => s.status === status);
   }
-  sql += ` ORDER BY
-    CASE i.status WHEN 'PENDING' THEN 0 WHEN 'APPROVED' THEN 1 ELSE 2 END,
-    i.id DESC`;
-  return db.prepare(sql).all(...params);
+
+  // Surface pending gates + decided samples with actioner email (not buried under backlog)
+  const pending = db
+    .prepare(`${INTERVENTION_SELECT} WHERE i.status = 'PENDING' ORDER BY i.id DESC LIMIT 12`)
+    .all() as Array<Record<string, unknown>>;
+  const decided = db
+    .prepare(
+      `${INTERVENTION_SELECT}
+       WHERE i.status IN ('APPROVED','REJECTED') AND u.email IS NOT NULL
+       ORDER BY i.id DESC LIMIT 8`
+    )
+    .all() as Array<Record<string, unknown>>;
+  const decidedNoEmail = db
+    .prepare(
+      `${INTERVENTION_SELECT}
+       WHERE i.status IN ('APPROVED','REJECTED') AND u.email IS NULL
+       ORDER BY i.id DESC LIMIT 4`
+    )
+    .all() as Array<Record<string, unknown>>;
+
+  const seen = new Set<number>();
+  const merged: Array<Record<string, unknown>> = [];
+  for (const row of [...pending, ...decided, ...decidedNoEmail]) {
+    const id = Number(row.id);
+    if (seen.has(id)) continue;
+    seen.add(id);
+    merged.push(row);
+  }
+
+  if (merged.length > 0) {
+    // If DB has no decided+email samples yet, prepend curated decided demos so actioner email is visible
+    const hasEmail = merged.some((r) => r.decided_by_email);
+    if (!hasEmail) {
+      return [
+        ...INTERVENTION_DEMO_SAMPLES.filter((s) => s.status !== "PENDING"),
+        ...merged,
+      ];
+    }
+    return merged;
+  }
+
+  return INTERVENTION_DEMO_SAMPLES;
 }
 
 export function decideIntervention(input: {

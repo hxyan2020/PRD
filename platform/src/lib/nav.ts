@@ -1,65 +1,106 @@
 import {
   Activity,
+  BarChart3,
   Bell,
   BookOpen,
-  Brain,
   Building2,
-  CircuitBoard,
   ClipboardCheck,
+  ClipboardList,
   Compass,
   Database,
   FileText,
   GitBranch,
+  GraduationCap,
   Globe2,
+  Headphones,
   LayoutDashboard,
   Library,
   LineChart,
+  ListChecks,
   ListTree,
+  Lock,
   MessageSquare,
   MessagesSquare,
+  Network,
   Radio,
   ScrollText,
   Settings,
   Shield,
   SlidersHorizontal,
   Sparkles,
+  TableProperties,
   UserCheck,
   Users,
   Waypoints,
-  Workflow,
 } from "lucide-react";
 
+export type NavGroupId =
+  | "overview"
+  | "monitor"
+  | "ai"
+  | "response"
+  | "org"
+  | "platform"
+  | "docs";
+
+export const NAV_GROUPS: Array<{ id: NavGroupId; en: string; "zh-Hant": string }> = [
+  { id: "overview", en: "Overview", "zh-Hant": "總覽" },
+  { id: "monitor", en: "Monitor & risk", "zh-Hant": "監控與風險" },
+  { id: "ai", en: "AI & knowledge", "zh-Hant": "AI 與知識" },
+  { id: "response", en: "Response", "zh-Hant": "應變" },
+  { id: "org", en: "Organisation", "zh-Hant": "組織" },
+  { id: "platform", en: "Platform", "zh-Hant": "平台" },
+  { id: "docs", en: "Docs", "zh-Hant": "文件" },
+];
+
+/**
+ * Left-pane order follows the desk workflow:
+ * see the day → detect → understand → act → org → platform → docs.
+ */
 export const NAV_ITEMS = [
-  { href: "/admin", label: "Admin Home", icon: LayoutDashboard, permission: "admin.access" },
-  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read" },
-  { href: "/admin/risk-log", label: "Risk Log Analytics", icon: ScrollText, permission: "monitor.read" },
-  { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read" },
-  { href: "/admin/detectors", label: "Detectors", icon: CircuitBoard, permission: "detectors.read" },
-  { href: "/admin/alerts", label: "Live Alerts", icon: Bell, permission: "monitor.read" },
-  { href: "/admin/ai-analyses", label: "AI Analyses", icon: Brain, permission: "ai.read" },
-  { href: "/admin/ai-admin", label: "AI Admin", icon: SlidersHorizontal, permission: "ai.admin" },
-  { href: "/admin/interventions", label: "Human Intervention", icon: UserCheck, permission: "intervene.operate" },
-  { href: "/admin/spine", label: "Spine Log", icon: Workflow, permission: "spine.read" },
-  { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read" },
-  { href: "/admin/skills", label: "AI Skills", icon: Sparkles, permission: "skills.read" },
-  { href: "/admin/messenger", label: "Demo Messenger", icon: MessagesSquare, permission: "lark.read" },
-  { href: "/admin/docs/urls", label: "URL Catalog", icon: ListTree, permission: "admin.access" },
-  { href: "/admin/docs/user-guide", label: "User Guide", icon: BookOpen, permission: "admin.access" },
-  { href: "/admin/docs/prd", label: "PRD", icon: FileText, permission: "admin.access" },
-  { href: "/admin/docs/tsd", label: "TSD", icon: FileText, permission: "admin.access" },
-  { href: "/admin/docs/uat", label: "UAT Checklist", icon: ClipboardCheck, permission: "admin.access" },
-  { href: "/admin/docs/ecosystem", label: "Ecosystem Eval", icon: Globe2, permission: "admin.access" },
-  { href: "/admin/docs/roadmap", label: "Improvement Roadmap", icon: Compass, permission: "admin.access" },
-  { href: "/admin/security/ai-access", label: "AI Access Security", icon: Shield, permission: "audit.read" },
-  { href: "/admin/departments", label: "Departments", icon: Building2, permission: "teams.read" },
-  { href: "/admin/teams", label: "Teams", icon: Users, permission: "teams.read" },
-  { href: "/admin/roles", label: "Roles & Permissions", icon: Shield, permission: "users.read" },
-  { href: "/admin/users", label: "Users", icon: Users, permission: "users.read" },
-  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read" },
-  { href: "/admin/data-sources", label: "Data Sources", icon: Database, permission: "sources.read" },
-  { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read" },
-  { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read" },
-  { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read" },
-  { href: "/admin/audit", label: "Audit Log", icon: BookOpen, permission: "audit.read" },
-  { href: "/admin/settings", label: "Platform Settings", icon: Settings, permission: "settings.manage" },
+  { href: "/admin", label: "Admin Home", icon: LayoutDashboard, permission: "admin.access", group: "overview" },
+
+  { href: "/admin/dashboard", label: "Daily Performance", icon: LineChart, permission: "dashboard.read", group: "monitor" },
+  { href: "/admin/monitor-2", label: "Monitor 2.0", icon: Activity, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/alerts", label: "Realtime Alert & Tracker", icon: Bell, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/market-intel", label: "Market Intelligence", icon: Radio, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/risk-log", label: "Risk Log Analytics", icon: ScrollText, permission: "monitor.read", group: "monitor" },
+  { href: "/admin/risk-domains", label: "Risk Domains", icon: Waypoints, permission: "monitor.read", group: "monitor" },
+
+  { href: "/admin/skills", label: "AI Skills", icon: Sparkles, permission: "skills.read", group: "ai" },
+  { href: "/admin/knowledge-tree", label: "Knowledge Tree", icon: Network, permission: "rag.read", group: "ai" },
+  { href: "/admin/rag", label: "RAG Knowledge Base", icon: Library, permission: "rag.read", group: "ai" },
+  { href: "/admin/ai-admin", label: "AI Admin", icon: SlidersHorizontal, permission: "ai.admin", group: "ai" },
+
+  { href: "/admin/messenger", label: "Demo Messenger", icon: MessagesSquare, permission: "lark.read", group: "response" },
+  { href: "/admin/cs-desk", label: "CS / TR Desk", icon: Headphones, permission: "lark.read", group: "response" },
+  { href: "/admin/cs-dashboard", label: "CS / TR Dashboard", icon: BarChart3, permission: "lark.read", group: "response" },
+  { href: "/admin/cs-log", label: "CS / TR Log", icon: ClipboardList, permission: "lark.read", group: "response" },
+  { href: "/admin/cs-data", label: "CS / TR Data", icon: TableProperties, permission: "lark.read", group: "response" },
+  { href: "/admin/interventions", label: "Human Intervention", icon: UserCheck, permission: "intervene.operate", group: "response" },
+  { href: "/admin/escalation", label: "Escalation Routes", icon: GitBranch, permission: "escalation.read", group: "response" },
+  { href: "/admin/lark", label: "Lark Integration", icon: MessageSquare, permission: "lark.read", group: "response" },
+
+  /** Combined former Departments + Teams pages. */
+  { href: "/admin/departments", label: "BU and Teams", icon: Building2, permission: "teams.read", group: "org" },
+  { href: "/admin/users", label: "Users", icon: Users, permission: "users.read", group: "org" },
+  { href: "/admin/roles", label: "Roles & Permissions", icon: Shield, permission: "users.read", group: "org" },
+
+  { href: "/admin/data-sources", label: "Data Sources", icon: Database, permission: "sources.read", group: "platform" },
+  { href: "/admin/settings", label: "Platform Settings", icon: Settings, permission: "settings.manage", group: "platform" },
+  { href: "/admin/audit", label: "Audit Log", icon: BookOpen, permission: "audit.read", group: "platform" },
+  { href: "/admin/security/ai-access", label: "AI Access Security", icon: Lock, permission: "audit.read", group: "platform" },
+
+  { href: "/admin/docs/user-guide", label: "User Guide", icon: BookOpen, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/ai-use", label: "AI Use Manual", icon: GraduationCap, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/risk-scenarios", label: "Risk scenarios", icon: TableProperties, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/templates", label: "Skill & KT templates", icon: Sparkles, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/urls", label: "URL Catalog", icon: ListTree, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/uat", label: "UAT Checklist", icon: ClipboardCheck, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/prd", label: "PRD", icon: FileText, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/tsd", label: "TSD", icon: FileText, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/roadmap", label: "Improvement Roadmap", icon: Compass, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/ecosystem", label: "Ecosystem Eval", icon: Globe2, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/open-issues", label: "Open Issues", icon: ListChecks, permission: "admin.access", group: "docs" },
+  { href: "/admin/docs/progress", label: "Progress Tracker", icon: LineChart, permission: "admin.access", group: "docs" },
 ] as const;

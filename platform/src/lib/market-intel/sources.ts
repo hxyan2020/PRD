@@ -1,3 +1,5 @@
+import { EVENT_ARTICLE_LINKS } from "@/lib/market-intel/article-links";
+
 export type AssetClass = "FOREX" | "INDEX" | "COMMODITY" | "FUTURES" | "CRYPTO";
 
 export type IntelSource = {
@@ -166,10 +168,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["FOREX", "INDEX", "COMMODITY"],
     source_keys: ["fed_press", "reuters_markets", "x_fxhedge"],
-    source_urls: [
-      { name: "Federal Reserve", url: "https://www.federalreserve.gov/newsevents.htm" },
-      { name: "Reuters Markets", url: "https://www.reuters.com/markets/" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["fomc-hawkish"],
     fingerprint_seed: "fomc-hawkish",
   },
   {
@@ -184,10 +183,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["FOREX", "INDEX"],
     source_keys: ["ecb_press", "bloomberg_fx"],
-    source_urls: [
-      { name: "ECB Press", url: "https://www.ecb.europa.eu/press/pr/html/index.en.html" },
-      { name: "Bloomberg FX", url: "https://www.bloomberg.com/markets/currencies" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["ecb-cut-odds"],
     fingerprint_seed: "ecb-cut-odds",
   },
   {
@@ -203,10 +199,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["COMMODITY", "FUTURES", "FOREX"],
     source_keys: ["opec_press", "reuters_markets", "geopol_wire"],
-    source_urls: [
-      { name: "OPEC Press", url: "https://www.opec.org/opec_web/en/press_room/274.htm" },
-      { name: "Reuters", url: "https://www.reuters.com/markets/" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["opec-cuts"],
     fingerprint_seed: "opec-cuts",
   },
   {
@@ -220,10 +213,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["COMMODITY", "FUTURES"],
     source_keys: ["eia_petroleum", "cmegroup_alerts"],
-    source_urls: [
-      { name: "EIA Petroleum", url: "https://www.eia.gov/petroleum/" },
-      { name: "CME Group", url: "https://www.cmegroup.com/market-data.html" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["eia-draw"],
     fingerprint_seed: "eia-draw",
   },
   {
@@ -239,10 +229,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["COMMODITY", "FOREX"],
     source_keys: ["kitco_gold", "geopol_wire", "reuters_markets"],
-    source_urls: [
-      { name: "Kitco", url: "https://www.kitco.com/news/" },
-      { name: "Reuters World", url: "https://www.reuters.com/world/" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["gold-geopol"],
     fingerprint_seed: "gold-geopol",
   },
   {
@@ -258,10 +245,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["FOREX", "INDEX", "FUTURES"],
     source_keys: ["bloomberg_fx", "x_fxhedge", "reuters_markets"],
-    source_urls: [
-      { name: "Bloomberg FX", url: "https://www.bloomberg.com/markets/currencies" },
-      { name: "X FX search", url: "https://twitter.com/search?q=CPI%20OR%20FOMC" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["cpi-preview"],
     fingerprint_seed: "cpi-preview",
   },
   {
@@ -276,10 +260,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["CRYPTO"],
     source_keys: ["coindesk", "x_crypto", "binance_ann"],
-    source_urls: [
-      { name: "CoinDesk", url: "https://www.coindesk.com/" },
-      { name: "Binance Announcements", url: "https://www.binance.com/en/support/announcement" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["sec-crypto"],
     fingerprint_seed: "sec-crypto",
   },
   {
@@ -293,10 +274,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["CRYPTO"],
     source_keys: ["binance_ann", "coinbase_blog"],
-    source_urls: [
-      { name: "Binance Announcements", url: "https://www.binance.com/en/support/announcement" },
-      { name: "Coinbase Blog", url: "https://www.coinbase.com/blog" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["exchange-leverage"],
     fingerprint_seed: "exchange-leverage",
   },
   {
@@ -311,10 +289,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["FOREX", "INDEX"],
     source_keys: ["boe_news", "reuters_markets"],
-    source_urls: [
-      { name: "Bank of England", url: "https://www.bankofengland.co.uk/news" },
-      { name: "Reuters Markets", url: "https://www.reuters.com/markets/" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["boe-labour"],
     fingerprint_seed: "boe-labour",
   },
   {
@@ -330,10 +305,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["FOREX", "INDEX", "COMMODITY"],
     source_keys: ["pboc_en", "bloomberg_fx"],
-    source_urls: [
-      { name: "PBOC EN", url: "http://www.pbc.gov.cn/en/" },
-      { name: "Bloomberg FX", url: "https://www.bloomberg.com/markets/currencies" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["pboc-fix"],
     fingerprint_seed: "pboc-fix",
   },
   {
@@ -348,16 +320,13 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["INDEX", "FUTURES"],
     source_keys: ["cmegroup_alerts", "cftc_cot"],
-    source_urls: [
-      { name: "CME Group", url: "https://www.cmegroup.com/market-data.html" },
-      { name: "CFTC COT", url: "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["cme-margin"],
     fingerprint_seed: "cme-margin",
   },
   {
     event_title: "Middle East shipping disruption headline",
     event_summary: "Freight / energy risk premium rises; oil and gold bid, risk FX soft.",
-    geography: "Global",
+    geography: "Middle East",
     severity: "CRITICAL",
     products: [
       { product: "USOIL", asset_class: "COMMODITY", direction: "UP" },
@@ -368,10 +337,7 @@ export const EVENT_TEMPLATES: ScrapedCandidate[] = [
     ],
     asset_classes: ["COMMODITY", "FOREX", "INDEX"],
     source_keys: ["geopol_wire", "reuters_markets", "opec_press"],
-    source_urls: [
-      { name: "Reuters World", url: "https://www.reuters.com/world/" },
-      { name: "OPEC Press", url: "https://www.opec.org/opec_web/en/press_room/274.htm" },
-    ],
+    source_urls: EVENT_ARTICLE_LINKS["shipping-disruption"],
     fingerprint_seed: "shipping-disruption",
   },
 ];

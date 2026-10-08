@@ -1,8 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Badge, StatusBadge } from "@/components/ui";
+import { RagAiHumanGatePanel } from "@/components/RagAiHumanGatePanel";
+import type { AiBlockItem } from "@/lib/security/ai-access-blocklist";
+import { useT } from "@/hooks/useUiLocale";
 
 type Doc = {
   id: number;
@@ -21,18 +24,33 @@ export function RagManager({
   initialDocs,
   categories,
   canManage,
+  highlightDocKey,
+  escalateItems = [],
 }: {
   initialDocs: Doc[];
   categories: string[];
   canManage: boolean;
+  highlightDocKey?: string | null;
+  /** Admin pages/functions AI cannot edit — must escalate to authorised humans. */
+  escalateItems?: AiBlockItem[];
 }) {
   const router = useRouter();
+  const { t } = useT();
   const [docs, setDocs] = useState(initialDocs);
   const [category, setCategory] = useState("ALL");
-  const [q, setQ] = useState("");
+  const [q, setQ] = useState(highlightDocKey || "");
   const [retrieveQ, setRetrieveQ] = useState("copy trading concentration gold margin");
   const [hits, setHits] = useState<Doc[] | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [focusKey, setFocusKey] = useState(highlightDocKey || "");
+
+  useEffect(() => {
+    if (!highlightDocKey) return;
+    setFocusKey(highlightDocKey);
+    setQ(highlightDocKey);
+    const el = document.getElementById(`rag-doc-${highlightDocKey}`);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [highlightDocKey]);
   const [form, setForm] = useState({
     doc_key: "",
     title: "",
@@ -81,10 +99,10 @@ export function RagManager({
     });
     const data = await res.json();
     if (!res.ok) {
-      setMsg(data.error || "Create failed");
+      setMsg(data.error || t("rag.createFailed"));
       return;
     }
-    setMsg(`Created document #${data.id}`);
+    setMsg(t("rag.created", { id: data.id }));
     setForm({ ...form, doc_key: "", title: "", content: "", source_ref: "", tags: "" });
     await refresh();
     router.refresh();
@@ -115,24 +133,41 @@ export function RagManager({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "reindex" }),
     });
-    setMsg("FTS reindex complete");
+    setMsg(t("rag.reindexed"));
   }
 
   return (
     <div className="space-y-4">
+      <div className="panel p-4 border-amber-200 bg-amber-50/50">
+        <div className="text-xs uppercase tracking-[0.12em] text-amber-950">
+          {t("rag.aiBlockTitle")}
+        </div>
+        <p className="text-sm mt-1 text-amber-950">{t("rag.aiBlockBody")}</p>
+        <div className="mt-2 flex flex-wrap gap-2 text-xs">
+          <Badge className="bg-rose-50 text-rose-900 border-rose-200">PAGE-RAG · PROPOSE_ONLY</Badge>
+          <Badge className="bg-rose-50 text-rose-900 border-rose-200">FN-RAG-WRITE · FORBIDDEN</Badge>
+          <a className="underline text-amber-950" href="/admin/ai-admin">
+            {t("rag.aiAdminLink")}
+          </a>
+          <a className="underline text-amber-950" href="/admin/security/ai-access">
+            {t("rag.securityLink")}
+          </a>
+        </div>
+      </div>
+
+      {escalateItems.length > 0 ? <RagAiHumanGatePanel items={escalateItems} /> : null}
+
       <div className="panel p-4">
-        <h3 className="font-semibold">Retrieve (RAG query)</h3>
-        <p className="text-sm text-[var(--muted)] mt-1">
-          Hybrid FTS5 + keyword retrieval over static Vantage business knowledge used by AI RCA when no skill matches with certainty.
-        </p>
+        <h3 className="font-semibold">{t("rag.retrieve")}</h3>
+        <p className="text-sm text-[var(--muted)] mt-1">{t("rag.intro")}</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <input className="input flex-1 min-w-[240px]" value={retrieveQ} onChange={(e) => setRetrieveQ(e.target.value)} />
           <button type="button" className="btn btn-primary" onClick={retrieve}>
-            Retrieve
+            {t("rag.go")}
           </button>
           {canManage && (
             <button type="button" className="btn" onClick={reindex}>
-              Reindex FTS
+              {t("rag.reindex")}
             </button>
           )}
         </div>
@@ -144,7 +179,7 @@ export function RagManager({
                   <div className="font-semibold">{h.title}</div>
                   <Badge className="bg-teal-50 text-teal-900 border-teal-200">{h.category}</Badge>
                   <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-                    score {(h.score ?? 0).toFixed(2)}
+                    {t("common.score")} {(h.score ?? 0).toFixed(2)}
                   </Badge>
                 </div>
                 <p className="text-sm text-[var(--muted)] mt-1">{h.content.slice(0, 280)}…</p>
@@ -155,7 +190,7 @@ export function RagManager({
                 )}
               </div>
             ))}
-            {!hits.length && <div className="text-sm text-[var(--muted)]">No hits</div>}
+            {!hits.length && <div className="text-sm text-[var(--muted)]">{t("rag.noHits")}</div>}
           </div>
         )}
       </div>
@@ -164,26 +199,26 @@ export function RagManager({
 
       {canManage && (
         <div className="panel p-4">
-          <h3 className="font-semibold">Add knowledge document</h3>
+          <h3 className="font-semibold">{t("rag.add")}</h3>
           <div className="mt-3 grid md:grid-cols-2 gap-3">
             <div>
-              <label className="label">Doc key</label>
+              <label className="label">{t("rag.docKey")}</label>
               <input className="input" value={form.doc_key} onChange={(e) => setForm({ ...form, doc_key: e.target.value })} />
             </div>
             <div>
-              <label className="label">Title</label>
+              <label className="label">{t("common.title")}</label>
               <input className="input" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
             </div>
             <div>
-              <label className="label">Category</label>
+              <label className="label">{t("common.category")}</label>
               <input className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
             </div>
             <div>
-              <label className="label">Tags (comma)</label>
+              <label className="label">{t("common.tags")}</label>
               <input className="input" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} />
             </div>
             <div className="md:col-span-2">
-              <label className="label">Source ref</label>
+              <label className="label">{t("rag.sourceRef")}</label>
               <input
                 className="input"
                 value={form.source_ref}
@@ -191,7 +226,7 @@ export function RagManager({
               />
             </div>
             <div className="md:col-span-2">
-              <label className="label">Content</label>
+              <label className="label">{t("common.content")}</label>
               <textarea
                 className="textarea"
                 value={form.content}
@@ -200,14 +235,14 @@ export function RagManager({
             </div>
           </div>
           <button type="button" className="btn btn-primary mt-3" onClick={createDoc}>
-            Publish to RAG
+            {t("rag.publish")}
           </button>
         </div>
       )}
 
       <div className="panel p-4 flex flex-wrap gap-3 items-end">
         <div className="min-w-[160px]">
-          <label className="label">Category</label>
+          <label className="label">{t("common.category")}</label>
           <select className="select" value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="ALL">ALL</option>
             {categories.map((c) => (
@@ -218,17 +253,23 @@ export function RagManager({
           </select>
         </div>
         <div className="flex-1 min-w-[200px]">
-          <label className="label">Filter</label>
-          <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search corpus…" />
+          <label className="label">{t("common.filter")}</label>
+          <input className="input" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("rag.searchPh")} />
         </div>
-        <div className="text-sm text-[var(--muted)] pb-2">{filtered.length} docs</div>
+        <div className="text-sm text-[var(--muted)] pb-2">{t("common.docs", { n: filtered.length })}</div>
       </div>
 
       <div className="space-y-3">
         {filtered.map((d) => {
           const tags = JSON.parse(d.tags_json || "[]") as string[];
+          const focused = focusKey === d.doc_key;
           return (
-            <article key={d.id} className="panel p-4">
+            <article
+              key={d.id}
+              id={`rag-doc-${d.doc_key}`}
+              className={`panel p-4 ${focused ? "ring-2 ring-teal-500 border-teal-300" : ""}`}
+              data-testid={focused ? "rag-doc-highlight" : undefined}
+            >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <div className="flex flex-wrap gap-2 items-center">
@@ -236,6 +277,11 @@ export function RagManager({
                     <Badge className="bg-teal-50 text-teal-900 border-teal-200">{d.category}</Badge>
                     <Badge className="bg-slate-100 text-slate-700 border-slate-200">{d.product_scope}</Badge>
                     <StatusBadge value={d.status} />
+                    {focused ? (
+                      <Badge className="bg-amber-50 text-amber-950 border-amber-200">
+                        {t("rag.fromTree")}
+                      </Badge>
+                    ) : null}
                   </div>
                   <div className="text-xs text-[var(--muted)] mt-1">
                     {d.doc_key}
@@ -252,10 +298,10 @@ export function RagManager({
                         setEditContent(d.content);
                       }}
                     >
-                      Edit
+                      {t("common.edit")}
                     </button>
                     <button type="button" className="btn" onClick={() => toggleStatus(d)}>
-                      {d.status === "ACTIVE" ? "Disable" : "Enable"}
+                      {d.status === "ACTIVE" ? t("common.disable") : t("common.enable")}
                     </button>
                   </div>
                 )}
@@ -265,10 +311,10 @@ export function RagManager({
                   <textarea className="textarea" value={editContent} onChange={(e) => setEditContent(e.target.value)} />
                   <div className="mt-2 flex gap-2">
                     <button type="button" className="btn btn-primary" onClick={() => saveEdit(d.id)}>
-                      Save
+                      {t("common.save")}
                     </button>
                     <button type="button" className="btn" onClick={() => setEditId(null)}>
-                      Cancel
+                      {t("common.cancel")}
                     </button>
                   </div>
                 </div>

@@ -56,8 +56,19 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
 
   if (body.action === "scan_now") {
-    const result = await runMarketIntelScan({ trigger: "MANUAL", actor: user.name });
-    return NextResponse.json(result);
+    try {
+      const result = await runMarketIntelScan({ trigger: "MANUAL", actor: user.name });
+      if (!result.ok) {
+        return NextResponse.json(
+          { error: "reason" in result ? result.reason : "error" in result ? result.error : "Scan failed", ...result },
+          { status: "skipped" in result && result.skipped ? 409 : 500 }
+        );
+      }
+      return NextResponse.json(result);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
   }
 
   if (body.action === "toggle_enabled") {

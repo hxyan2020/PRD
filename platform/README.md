@@ -1,15 +1,16 @@
-# Vantage CRMP Admin (Prototype)
+# Vantage CRMP Plus (Prototype)
 
-Centralised Risk Management Platform — **Admin Control Plane** for Vantage Markets.
+Upgraded **Centralised Risk Management Platform** — original CRMP Admin (Monitor → AI RCA → messenger → human gates → spine) plus **24/7 CS / TR intake** on one desk.
 
 This phase delivers:
 - Internal SQLite database (roles, teams, departments, users, data sources, Monitor 2.0 mirrors, Lark channels, escalation routes, audit log, settings)
 - Admin UI with RBAC
 - Data sources repository (internal + external)
-- Team / role division across Risk Control, Operations, AI, System
+- Team / role division across Risk Control, Operations, AI, System, Customer Service, Trading
 - Monitor 2.0 integration hub (indicators, alerts, tickets)
 - Lark messenger integration (channels, test notify, severity routing)
 - Escalation routes with SLA + auto-actions + human gate
+- CS / TR Desk: C1 live chat, web form, official email via public `/cs` and `POST /api/cs/intake`; AI follow-up until the client replies
 
 ## Quick start
 
@@ -19,7 +20,19 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000
+Open http://localhost:3000/admin
+
+Permanent public URL for **this upgraded platform** (GitHub Pages): [https://hxyan2020.github.io/PRD/crmp-plus/admin/](https://hxyan2020.github.io/PRD/crmp-plus/admin/)
+
+Lark-style messenger demo: [https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/](https://hxyan2020.github.io/PRD/crmp-plus/admin/messenger/)
+
+CS / TR desk: [https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/](https://hxyan2020.github.io/PRD/crmp-plus/admin/cs-desk/)
+
+CS client portal: [https://hxyan2020.github.io/PRD/crmp-plus/cs/](https://hxyan2020.github.io/PRD/crmp-plus/cs/)
+
+**Original CRMP Admin (frozen, left intact):** [https://hxyan2020.github.io/PRD/crmp-admin/admin/](https://hxyan2020.github.io/PRD/crmp-admin/admin/)
+
+The Pages snapshot is a static export of the admin UI (browseable without login). Local `npm run dev` still serves the live SQLite APIs at http://localhost:3000/admin. Future requirements apply only to CRMP Plus.
 
 ### Demo logins
 

@@ -1,6 +1,6 @@
 export type CorrectionAction = {
   action: string;
-  bu: "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM" | "EXEC";
+  bu: "RISK_CONTROL" | "OPERATIONS" | "AI" | "SYSTEM" | "EXEC" | "CUSTOMER_SERVICE" | "TRADING";
   description: string;
   requires_human?: boolean;
 };
@@ -49,6 +49,8 @@ export type SkillScenario = {
   escalation: {
     sla_minutes: number;
     path: EscalationHop[];
+    /** Bound escalation_routes.route_code — exactly one path per skill */
+    route_code?: string;
   };
   corrections: CorrectionAction[];
   past_cases: PastCase[];
@@ -61,6 +63,14 @@ export type SkillScenario = {
   }>;
   owner_department: string;
   auto_execute?: boolean;
+  /** Optional SKILL.md-style sections; filled by finalizeSkill when omitted. */
+  when_to_use?: string[];
+  when_not_to_use?: string[];
+  prechecks?: string[];
+  evidence_to_collect?: string[];
+  stop_conditions?: string[];
+  success_criteria?: string[];
+  owner_role?: string;
 };
 
 export type TimelineEvent = {
