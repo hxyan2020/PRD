@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { LoadingState } from '../components/LoadingState'
 import { SafeImage } from '../components/SafeImage'
@@ -5,14 +6,22 @@ import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
+import { dailyHomeSelection } from '../lib/dailyRotation'
 import { displayImageUrl } from '../lib/images'
+import { todayKey } from '../lib/storage'
 import './HomePage.css'
 
 export function HomePage() {
   const { t } = useI18n()
   const store = usePaintingsStore()
-  const hero = store.status === 'ready' ? store.paintings[0] : null
-  const featured = store.status === 'ready' ? store.paintings.slice(1, 7) : []
+  const day = todayKey()
+  const { hero, featured } = useMemo(
+    () =>
+      store.status === 'ready'
+        ? dailyHomeSelection(store.paintings, day)
+        : { hero: null, featured: [] },
+    [store.status, store.paintings, day],
+  )
   const { paintings: localizedFeatured } = useLocalizedPaintings(featured)
   const { paintings: localizedHero } = useLocalizedPaintings(hero ? [hero] : [])
   const heroLocalized = localizedHero[0] || hero

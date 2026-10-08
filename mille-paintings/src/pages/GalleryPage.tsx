@@ -6,8 +6,9 @@ import { StatsCounter } from '../components/StatsCounter'
 import { usePaintingsStore } from '../data/PaintingsProvider'
 import { useLocalizedPaintings } from '../hooks/useLocalizedPaintings'
 import { useI18n } from '../i18n/I18nContext'
+import { rotateByDay } from '../lib/dailyRotation'
 import { optionLabel } from '../lib/optionLabels'
-import { getCollectedIds, getViewedIds } from '../lib/storage'
+import { getCollectedIds, getViewedIds, todayKey } from '../lib/storage'
 import type { Painting } from '../types'
 import './GalleryPage.css'
 
@@ -16,14 +17,14 @@ const PAGE_SIZE = 48
 type CollectionFilter = 'all' | 'uncollected' | 'collected'
 type ViewedFilter = 'all' | 'unviewed' | 'viewed'
 type PoolFilter = 'all' | 'core' | 'discovered'
-type SortKey = 'rank' | 'name' | 'painter' | 'year' | 'museum' | 'sitelinks'
+type SortKey = 'daily' | 'rank' | 'name' | 'painter' | 'year' | 'museum' | 'sitelinks'
 
 function yearNum(value: string): number {
   const n = parseInt(value, 10)
   return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY
 }
 
-function sortPaintings(list: Painting[], sort: SortKey): Painting[] {
+function sortPaintings(list: Painting[], sort: SortKey, day = todayKey()): Painting[] {
   const copy = [...list]
   copy.sort((a, b) => {
     switch (sort) {
@@ -48,10 +49,17 @@ function sortPaintings(list: Painting[], sort: SortKey): Painting[] {
       case 'sitelinks':
         return b.sitelinks - a.sitelinks || (a.rank || 9999) - (b.rank || 9999)
       case 'rank':
-      default:
         return (a.rank || 9999) - (b.rank || 9999) || b.sitelinks - a.sitelinks
+      case 'daily':
+      default: {
+        // Popularity order, then rotate the whole list so the top of the gallery changes daily.
+        const byRank =
+          (a.rank || 9999) - (b.rank || 9999) || b.sitelinks - a.sitelinks
+        return byRank
+      }
     }
   })
+  if (sort === 'daily') return rotateByDay(copy, day)
   return copy
 }
 
@@ -64,10 +72,11 @@ export function GalleryPage() {
   const [collectionFilter, setCollectionFilter] = useState<CollectionFilter>('all')
   const [viewedFilter, setViewedFilter] = useState<ViewedFilter>('all')
   const [poolFilter, setPoolFilter] = useState<PoolFilter>('all')
-  const [sort, setSort] = useState<SortKey>('rank')
+  const [sort, setSort] = useState<SortKey>('daily')
   const [lostOnly, setLostOnly] = useState(false)
   const [visible, setVisible] = useState(PAGE_SIZE)
   const deferredQuery = useDeferredValue(query)
+  const day = todayKey()
 
   // Recompute when collect/view stats change.
   const collectedIds = useMemo(
@@ -115,9 +124,10 @@ export function GalleryPage() {
         p.genre.toLowerCase().includes(q)
       )
     })
-    return sortPaintings(list, sort)
+    return sortPaintings(list, sort, day)
   }, [
     store.paintings,
+    day,
     deferredQuery,
     genre,
     country,
@@ -254,6 +264,7 @@ export function GalleryPage() {
               resetVisible()
             }}
           >
+            <option value="daily">{t('sortDaily')}</option>
             <option value="rank">{t('sortRank')}</option>
             <option value="sitelinks">{t('sortSitelinks')}</option>
             <option value="name">{t('sortName')}</option>
