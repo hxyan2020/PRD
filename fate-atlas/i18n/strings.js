@@ -636,7 +636,7 @@
     "advisory.hide": "收起",
     "play.eyebrow": "推薦",
     "play.title": "為你挑選的儀式",
-    "play.copy": "每隔幾秒從圖鑑換一批三張推薦。懸停可暫停，也可隨時點「換一批」。",
+    "play.copy": "每隔幾秒換一批三張推薦。懸停或按住可暫停，也可點「換一批」。",
     "play.refresh": "換一批",
     "play.refreshToast": "已換上新的推薦",
     "play.quest": "開始任務",
