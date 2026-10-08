@@ -1381,134 +1381,127 @@
       "title": "婴儿响铃",
       "descTemplate": "老鼠是最古老的音效玩具之一. 在{country},{civ}的照顾者长期将种子或卵石封在瓜、粘土、篮子或木材中,以奖励婴儿的抓住和节奏。 响尾蛇既是感官玩具,在有些地方也是保护魅力的声音（{country}，{civ}）",
       "steps": [
-        "In {country}, offer a sealed {civ} rattle (gourd, clay, wood, or basketry with seeds or pebbles) within the infant’s supervised reach.",
-        "Shake once slowly so the child hears a clear cause-and-effect sound, then pause for them to grasp.",
-        "Allow grasping, gentle shaking, and dropping onto a soft mat; block mouthing if the shell cracks or finishes flake.",
-        "Sing or speak a short {civ} lullaby or counting rhyme from {country} in time with three to five shakes.",
-        "After each session, check seams, plugs, and loose bits; retire the toy if seeds can spill."
+        "把来自 {country} 的密封摇铃放在婴儿够得到的地方，并始终待在近旁。",
+        "慢慢摇一下让他们听见声音，然后停顿，好让他们去抓。",
+        "让他们在软垫上摇、丢下再试。若外壳裂开，阻止啃咬。",
+        "他们摇几下时，可哼唱或说一句来自 {country} 的短摇篮曲。",
+        "玩后检查塞子与接缝。若种子可能漏出，就收起来。"
       ],
       "req": [
         "用种子、卵石或铃声响起",
         "安全无毒材料"
       ],
-      "participants": "独自一人(有照料者的婴儿)",
-      "fallbackEn": true
+      "participants": "独自一人(有照料者的婴儿)"
     },
     "whistle_toy": {
       "title": "克莱或木哨玩具",
       "descTemplate": "小型哨子——鸟形粘土、木雕、芦苇——出现在{country}与{civ}生活相连的市场和考古层。 儿童使用它们作为声音复制玩具;有些是节日噪声制作人的双倍. 音响游戏教气息和音响游戏（{country}，{civ}）",
       "steps": [
-        "Hold a clay, wood, or reed whistle made in the {civ} craft style of {country}; keep finger holes and the windway clear.",
-        "Blow a steady stream for two seconds to find one clear tone before trying short chirps.",
-        "Alternate three short calls and one long note; count successful clear tones aloud.",
-        "Play call-and-response with a partner: one player blows a rhythm from {country} street or festival play, the other copies it.",
-        "Wash or wipe the mouthpiece between players; do not share if anyone is ill."
+        "拿起 {country} 本地风格的陶、木或芦苇哨子。保持风道与指孔畅通。",
+        "稳定吹气两秒，直到发出一个清晰音调。",
+        "再试三个短啁啾和一个长音。每发出一个清晰音就数一下。",
+        "与伙伴轮流模仿一小段节奏。",
+        "轮换时擦拭吹嘴。有人生病时不要共用。"
       ],
       "req": [
         "口哨玩具",
         "呼吸控制",
         "大声打开空气"
       ],
-      "participants": "一个人",
-      "fallbackEn": true
+      "participants": "一个人"
     },
     "pull_toy": {
       "title": "动物牵引玩具",
       "descTemplate": "轮式动物和拉长的人物通过{country}中的乡村木制工艺从古典古典的记载. {civ}工匠塑造马,鸟,或牛,教徒步幼儿运动时的牵引和陪伴.",
       "steps": [
-        "Tie a short cord to the nose or yoke of a wheeled {civ} animal figure from {country}; leave enough slack for a toddler’s stride.",
-        "Walk five to ten steps on a clear floor so wheels or runners follow without tipping.",
-        "Make one gentle left turn and one right turn; stop if the axle binds or the cord jerks the toy airborne.",
-        "Narrate a short parade or market delivery story using animals familiar in {country} (horse, ox, bird, or camel as fits the figure).",
-        "Coil the cord after play and store the toy upright so wheels stay round."
+        "给来自 {country} 的带轮动物玩具系一根短绳，留出适合小步走的余量。",
+        "在空旷地面走五到十步，让玩具跟随且不翻倒。",
+        "试一次轻柔左转和一次右转。若绳子猛拽玩具翘起就停下。",
+        "一边走一边编一小段游行或集市故事。",
+        "把绳子盘好，玩具直立存放，以免轮子变形。"
       ],
       "req": [
         "轮式或滑动的动物体型",
         "拉绳",
         "面积"
       ],
-      "participants": "一个人",
-      "fallbackEn": true
+      "participants": "一个人"
     },
     "mini_weapons_toy": {
       "title": "玩具弓或飞镖游戏集",
       "descTemplate": "缩放的狩猎玩具让参加{country}的儿童用更安全的材料排练由{civ}成人庆祝的技能——箭术、长矛角镖或吹管瞄准器。 目标在稻草,木头上,或者仍处于画圈中,把武术变成打分游戏.",
       "steps": [
-        "Outdoors in {country}, set a straw, wood, or chalk target with a backstop; clear people and animals for at least five paces downrange.",
-        "Nock a soft arrow or load a foam/cork dart; keep the tip pointed at the ground until ready.",
-        "Use a calm {civ} stance—feet apart, eyes on the center ring—and release one shot at a time.",
-        "Score 3 points for the center, 2 for the middle ring, 1 for the outer; first to 15 points wins a round.",
-        "Never aim at people or animals; collect every projectile before the next turn."
+        "在 {country} 户外支起带挡背的靶子。人和动物至少保持五步距离。",
+        "装上软箭或泡沫镖。射击前始终让尖端朝地。",
+        "双脚分开站立，瞄准中心，一次只射一发。",
+        "中心 3 分，中环 2 分，外环 1 分。先到 15 分者胜。",
+        "切勿瞄准人或动物。下一回合前捡回每一支镖。"
       ],
       "req": [
         "软或低功率玩具弓/镖",
         "目标",
         "清除下游区域"
       ],
-      "participants": "1-2人",
-      "fallbackEn": true
+      "participants": "1-2人"
     },
     "jacks_local": {
       "title": "口袋技艺石头",
       "descTemplate": "{country}除了共有的关节家族之外,还有由{civ}童年时期塑造的本地石质和种子技能序列——不同的投掷、高呼和困难阶梯,它们都以同样的皮卡原则为基础,记录下来,当高呼和顺序是当地特有的时,作为区域实践条目。",
       "steps": [
-        "Sit on flat ground in {country} with five small stones or seeds used in {civ} children’s pickup play.",
-        "Scatter all five lightly, then toss one skyward and pick up exactly one stone before catching the tossed stone.",
-        "On the next turns, pick up two, then three, then the last group of remaining stones in one sweep while the toss is aloft.",
-        "Drop or fail to catch ends your turn; the next player restarts at ones.",
-        "First player to finish the ones–twos–threes–fours ladder while saying a short {civ} count or chant from {country} wins."
+        "坐在平地上，用 {country} 儿童常用的五颗小石或种子。",
+        "撒开，抛起一颗，在接住抛起的那颗之前正好捡起一颗。",
+        "后续回合：抛起期间一次扫起两颗、三颗，再扫起剩余的。",
+        "掉落或没接住则回合结束。下一位从捡一颗重新开始。",
+        "边说短数数边先完成从一到四者获胜。"
       ],
       "req": [
         "五块小石头或种子",
         "平地"
       ],
-      "participants": "1 - 4人 Member.",
-      "fallbackEn": true
+      "participants": "1 - 4人 Member."
     },
     "story_dice_oral": {
       "title": "故事数/ 抽签游戏",
       "descTemplate": "在{country}的集会中,出现了为转弯、没收或故事提示而投放土地的情况。 无论是竹棍、棍棒、骰子, ({civ})",
       "steps": [
-        "Put three to six marked sticks, shells, or dice in a cup—marks can be colors or short {civ} prompt words used in {country}.",
-        "Shake once and cast onto a cloth; read the uppermost mark as this turn’s prompt.",
-        "The indicated player has thirty seconds to tell a short story, sing one verse, or perform a playful forfeit named by the mark.",
-        "Return all lots to the cup and pass clockwise until each player has had at least two turns.",
-        "Before starting, list which marks are playful only—never use sacred {civ} divination lots from {country} as party toys."
+        "把三到六根有标记的小棒、贝壳或骰子放进杯中。标记可以是 {country} 常用的颜色或短提示词。",
+        "摇匀后投到布上。大声读出朝上的一面。",
+        "投出结果决定谁要讲短故事、拍一段节奏，或回答一个好笑的问题。",
+        "轮流投掷，直到每人至少得到一次提示。",
+        "只用游戏性标记。不要把神圣卜具当派对玩具。"
       ],
       "req": [
         "标记的棍子,很多,或者骰子",
         "共同语言"
       ],
-      "participants": "2人以上人员",
-      "fallbackEn": true
+      "participants": "2人以上人员"
     },
     "shadow_play": {
       "title": "暗影人物游戏",
       "descTemplate": "影子游戏——手动动物或皮木偶——在{country}故事中夜里娱乐。 光线和光线将手势变成戏剧 一些地区将此提升为正式的傀儡艺术;儿童的手影仍然是玩具形式（{country}，{civ}）",
       "steps": [
-        "In a dim room in {country}, place a lamp or candle so hands cast sharp shadows on a blank wall about one arm’s length away.",
-        "Form one animal or person with fingers; move slowly for three seconds so the outline stays readable.",
-        "Narrate a one-minute {civ} folk scene (market, animal chase, or hero greeting) while the shadow acts.",
-        "Optional: cut a cardboard figure, tape it to a stick, and replay the same scene with crisper edges.",
-        "End by letting each child invent one new creature and name it before the lamp is put out."
+        "在较暗的房间里摆好灯，使双手在约一臂远的白墙上投下清晰影子。",
+        "用手指做一种动物或人物。静止三秒，让别人辨认形状。",
+        "一边让影子动起来，一边讲述一分钟来自 {country} 的民俗小场景（集市、追动物或打招呼）。",
+        "可选：剪硬纸板形象贴在棍上，用更清晰的轮廓重演。",
+        "注意火源安全，切勿让蜡烛无人看管。"
       ],
       "req": [
         "灯光或火光",
         "空墙",
         "手或木偶"
       ],
-      "participants": "1人 - 许多人",
-      "fallbackEn": true
+      "participants": "1人 - 许多人"
     },
     "kite_local": {
       "title": "当地风筝工艺",
       "descTemplate": "虽然风筝飞行是一个全球大家庭,但{country}的{civ}制造者开发了独特的形状、纸张、绞盘和节日用途。 本条目突出介绍当地工艺传统,在更广泛的风筝天空下作为区域风筝练习 ({civ})",
       "steps": [
-        "Build or buy a paper or cloth kite in a shape used by {civ} makers in {country} (diamond, box, bird, or fighter flat).",
-        "Check that both bridle legs are equal and the spar joints are tight before you walk to the field.",
-        "Stand with the wind at your back in open ground; have a helper release the kite as you take three steps and feed five to ten meters of line.",
-        "Steer by tension: pull to climb, ease to dive; land by walking toward the kite while reeling.",
-        "Never fly near power lines, airports, or storms—common safety rules for festival kite days in {country}."
+        "制作或购买 {country} 常见造型的纸或布风筝（菱形、箱形、鸟形或斗筝平面）。",
+        "选择有稳风的开阔场地。远离树木与人群。",
+        "请助手托住风筝，你向后退并放线。",
+        "用轻拉操控方向。风停前缓慢收回。",
+        "切勿靠近电线、机场或暴风雨放飞。"
       ],
       "req": [
         "纸张或布风筝",
@@ -1516,323 +1509,304 @@
         "飞行线",
         "打开风"
       ],
-      "participants": "一个人或两个人",
-      "fallbackEn": true
+      "participants": "一个人或两个人"
     },
     "cloth_doll_local": {
       "title": "本地布娃娃",
       "descTemplate": "穿着当地纺织图案的软娃娃在{country}全家出现. 刺绣,包衣,发型都小化成人服饰. 照料游戏传授社会角色;手工艺技巧世代相传。 ({civ})",
       "steps": [
-        "Sew or tie a simple cloth body and stuff it firmly with fiber so the head and torso hold shape.",
-        "Dress the doll in miniature wraps, sash, or embroidered scraps that echo everyday {civ} clothing in {country}.",
-        "Act out at least three caregiving scenes: wake, feed, and put to sleep.",
-        "Repair tears with needle and thread as part of play rather than discarding the doll.",
-        "No points are scored—nurture play ends when the child packs the doll into a small basket or box used in {country} households."
+        "缝或捆一个简单布身，填充使头与躯干定型。",
+        "给玩偶穿上像 {country} 日常服饰的微型裹布或绣片碎料。",
+        "至少表演三个照料场景：醒来、喂食、哄睡。",
+        "用针线修补破损，不要扔掉玩偶。",
+        "结束后把玩偶收进小篮或小盒。"
       ],
       "req": [
         "水泥瓦斯",
         "纤维填充",
         "线索或领带"
       ],
-      "participants": "一个人",
-      "fallbackEn": true
+      "participants": "一个人"
     },
     "ball_sewn": {
       "title": "缝布或藏球",
       "descTemplate": "在工业橡胶之前,{country}中的{civ}社区从藏物、布或植物纤维上塞入和缝合球。 捕捉,踢,和圆形游戏 围绕这些物体。 球的制作与规则一样文化化 ({civ})",
       "steps": [
-        "Form a circle of four or more players in a clear yard in {country}; use one sewn cloth, palm-fiber, or hide ball.",
-        "Toss underhand to the neighbor on your right; {civ} circle play scores one point for each clean catch.",
-        "A drop removes that player from the circle (or gives the thrower one point if you play pairs).",
-        "When three players remain, speed up to a one-second hold before passing.",
-        "Last player in the circle wins; restart with everyone after one champion round."
+        "在空旷院子里围成四人或以上的圈。使用一颗缝制的布、纤维或皮球。",
+        "下手抛给右侧邻人。每次干净接住得 1 分。",
+        "有人掉球则从零重计——或改成轻轻对踢。",
+        "打到 10 分，或直到每人开过一轮。",
+        "若缝线裂开，下一局前重新填充并缝好。"
       ],
       "req": [
         "缝布、棕榈或藏球",
         "打开游戏空间"
       ],
-      "participants": "2 - 10人以上人员",
-      "fallbackEn": true
+      "participants": "2 - 10人以上人员"
     },
     "top_local": {
       "title": "本地旋转顶部工艺",
       "descTemplate": "本条目记录了{country}的{civ}雕刻风格、小费材料和竞技礼仪,作为共享物理玩具中一种独特的工艺技巧和游戏练习。",
       "steps": [
-        "Wind a cord clockwise around a carved {civ} top from {country}, or ready a short whip cord if the tip is meant for whipping.",
-        "Plant your feet on hard earth or stone; pull the cord smooth and level so the tip bites and spins.",
-        "For whip tops, tap the shoulder of the top lightly to keep it upright for a timed spin.",
-        "In a contest, longest continuous spin wins; or play combat where the first top knocked flat loses.",
-        "Sand a dull tip and re-point it before the next match so launches stay true."
+        "把线绕在来自 {country} 的雕陀螺上；若是鞭陀螺则备好短鞭绳。",
+        "站在硬土或石地上。平稳水平地拉线，使尖端咬地旋转。",
+        "鞭陀螺可轻抽肩部，保持直立以计时旋转。",
+        "比赛中连续转得最久者胜——或玩对撞，先被打平者负。",
+        "打磨或更换磨损尖端，好让下一转干净起步。"
       ],
       "req": [
         "本地雕刻的顶部",
         "绳子或鞭子",
         "坚硬的地面"
       ],
-      "participants": "1人 - 许多人",
-      "fallbackEn": true
+      "participants": "1人 - 许多人"
     },
     "string_local": {
       "title": "本地字符串数字",
       "descTemplate": "与{country}相关的{civ}弦图 携带着当地的名字,动物和神话,即使开口像猫的摇篮在别处. 数字是可移植的故事图和手记忆图 ({civ})",
       "steps": [
-        "Make a loop of cord about the span of your outstretched arms so it fits both hands with slight slack.",
-        "Open on both thumbs and little fingers in the starting position taught for {civ} figures in {country}.",
-        "Pick, drop, and transfer strings until you hold one named figure (animal, tool, or star) for three seconds.",
-        "Say the figure’s {civ} name or a one-sentence story tied to {country} while holding the shape.",
-        "Teach that single figure to a partner before starting a second pattern."
+        "用一段够在双手间拉开的绳环。",
+        "按 {country} 传授翻花绳的起手式，用双手拇指与小指张开。",
+        "慢慢做每一个勾与放，直到出现具名图形。",
+        "保持形状时说出图形名称或一句小故事。",
+        "教下一个图形前先恢复成干净绳环。"
       ],
       "req": [
         "旋转 36 或正弦环",
         "故事知识可选"
       ],
-      "participants": "一个人或两个人",
-      "fallbackEn": true
+      "participants": "一个人或两个人"
     },
     "board_race_folk": {
       "title": "民俗比赛委员会(地方)",
       "descTemplate": "交叉圈和路径赛板出现在很多土地上. 在{country}G中,{civ}的玩家使用贝壳,棍棒或关节骨来进行家乡的赛车标记——cousins用于类似帕奇西的结构,但当地的赛道形状和安全空间风俗记录为地区民间赛车委员会（{country}，{civ}）",
       "steps": [
-        "Seat 2–4 players at a path or cross-and-circle board used in {country}; each gets four markers in a starting nest.",
-        "Throw two casting sticks, four cowrie shells, or one die—whatever {civ} sets use—and total the pips or “mouth-up” shells.",
-        "Enter a marker only on a throw of the highest single result (for example 4 sticks or a 6); then advance that many spaces.",
-        "Landing on an opponent’s single marker sends it back to its nest; stacked markers are safe.",
-        "First player to move all four markers around the track and into the home column wins."
+        "2–4 人坐在 {country} 使用的路径或十字圆盘旁。每人四枚棋子放在起始巢中。",
+        "投两根卜棒、四枚贝壳或一枚骰子。合计点数或开口朝上的贝壳数。",
+        "仅在最高单次结果时入场（例如 4 棒或 6 点），然后前进相应格数。",
+        "落到对方单独棋子上将其送回巢。叠子安全。",
+        "先把四枚棋子全部送回家者获胜。"
       ],
       "req": [
         "轨迹板或布料",
         "标记",
         "虱子、棍子或炮弹"
       ],
-      "participants": "2至4人数",
-      "fallbackEn": true
+      "participants": "2至4人数"
     },
     "sowing_local": {
       "title": "当地的坑种子播种",
       "descTemplate": "在播种游戏扎根于{country}的地方,{civ}板上显示有特色的杯数,接力规则和木质形状. 它们属于Mancala家族,但在当地标准化的棋盘几何和捕捉习俗时,它们理应成为区域条目。",
       "steps": [
-        "Use a 2×6 board (twelve small pits plus one store per side) common in {civ} sowing play in {country}; place four seeds in each small pit.",
-        "On your turn, scoop every seed from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
-        "If the last seed lands in your empty pit and the opposite pit holds seeds, capture those opposite seeds into your store.",
-        "If the last seed lands in your store, take another turn; otherwise play passes.",
-        "When one side’s pits are empty, the opponent puts remaining seeds in their store; most seeds in store wins."
+        "使用 {country} 常见的 2×6 棋盘（十二小坑加每侧一大仓）。每小坑放四粒种子。",
+        "轮到你时，舀起己方一坑，向随后各坑各播一粒，包括己方大仓，跳过对方大仓。",
+        "若最后一粒落入己方大仓，再走一手。",
+        "若最后一粒落入己方空坑，则把该粒与对面坑中的种子收进己方大仓。",
+        "一侧清空后，剩余种子归各自主人的大仓。种子最多者胜。"
       ],
       "req": [
         "杯板或土坑",
         "种子或卵石"
       ],
-      "participants": "2个人",
-      "fallbackEn": true
+      "participants": "2个人"
     },
     "jump_rope": {
       "title": "跳过绳子游戏",
       "descTemplate": "在{country}的校园和{civ}童年文化的街道中,跳跃和跳跃的韵律蓬勃发展。 独奏速度步和组长绳游戏分享弹跳节奏;高呼玩具本地化（{country}，{civ}）",
       "steps": [
-        "For solo play: hold both ends, swing the rope over your head, and jump once per pass; count consecutive jumps.",
-        "For group play: two turners swing a long rope; a jumper runs in, jumps five times, and runs out.",
-        "Add a short {civ} schoolyard chant from {country}; a missed jump or broken rhythm rotates the jumper to turner.",
-        "Try pepper (fast turns) or one double-under after you can clear twenty steady jumps.",
-        "Keep the rope away from roads, wet floors, and low branches."
+        "单人玩时，把短绳从头上抡过，每次落地跳起。",
+        "集体玩时，两人摇长绳，一名跳绳者踩节拍进入。",
+        "加入一句来自 {country} 的短童谣。跳空则跳绳者与摇绳者轮换。",
+        "数干净跳跃次数。挑战个人最好成绩 20 次，再冲 50 次。",
+        "地面湿滑或绳子断裂就停下；续玩前重新系好。"
       ],
       "req": [
         "塑料或藤蔓绳索",
         "平地",
         "可选转盘"
       ],
-      "participants": "1人 - 许多人",
-      "fallbackEn": true
+      "participants": "1人 - 许多人"
     },
     "blindfold_tag": {
       "title": "盲人标签/呼叫游戏",
       "descTemplate": "在{civ}聚会和儿童聚会上出现。 声音,静态,和同情 盲目玩家结构的乐趣（{country}，{civ}）",
       "steps": [
-        "Clear toys and furniture from a bounded room or yard in {country}; mark walls or chalk lines as out-of-bounds.",
-        "Blindfold one seeker and spin them twice; sighted players must stay inside the bounds.",
-        "Sighted players may call a short {civ} nickname or clap once every five seconds so the seeker has sound cues.",
-        "The seeker tags by touch; the tagged player becomes the next seeker.",
-        "Stop the round immediately if anyone near stairs or hard edges; remove the blindfold before leaving the space."
+        "清空有界房间或院子里的玩具与家具。标出界外线。",
+        "蒙住一名寻找者的眼睛并转两圈。明眼玩家必须留在界内。",
+        "明眼玩家可每五秒叫一次短昵称或拍一次手，给寻找者声音线索。",
+        "寻找者以触摸抓人。被抓者成为下一任寻找者。",
+        "每轮前清除硬障碍。禁止推搡。"
       ],
       "req": [
         "软眼罩",
         "确实是安全的空地",
         "商定的边界"
       ],
-      "participants": "4人以上人员",
-      "fallbackEn": true
+      "participants": "4人以上人员"
     },
     "wrestling_play": {
       "title": "青少年摔跤比赛",
       "descTemplate": "青年摔跤比赛为{civ}社区在{country}庆祝的成人民间风格做准备. 游戏版本强调安全抛球,圈圈界限,以及嘲笑伤害——体育作为社会玩具.",
       "steps": [
-        "Mark a circle about three paces across on sand or soft ground used for youth bouts in {country}.",
-        "Forbid headlocks, joint twists, and strikes; wrestlers may grip belts, sashes, or shoulders as in {civ} play wrestling.",
-        "A referee starts each exchange; first to make the opponent’s knee or back touch outside or flat wins that exchange.",
-        "Best of three exchanges decides the bout; rest thirty seconds between exchanges.",
-        "Handshake or salute after the bout; the referee ends play at the first sign of pain."
+        "在沙地或软地上标出直径约三步的圆。",
+        "禁止锁头、拧关节与击打。只能抓腰带、饰带或肩膀。",
+        "先握手。裁判发开始与停止口令。",
+        "使对方双肩或髋着地，或把对方推出圈外即胜——开局前先约定规则。",
+        "有人疼痛立即停止。复位后再试。"
       ],
       "req": [
         "软地或沙子",
         "商定持有规则",
         "裁判人"
       ],
-      "participants": "2人(加上裁判)",
-      "fallbackEn": true
+      "participants": "2人(加上裁判)"
     },
     "memory_song": {
       "title": "记忆歌曲/ 消除高呼",
       "descTemplate": "在{country}的口腔文化中, 错误的字句或错过的节拍将玩家消灭,直到有一个人留下（{country}，{civ}）",
       "steps": [
-        "Stand or sit in a circle so every player can see the leader’s hands.",
-        "The leader starts a {civ} elimination chant or clapping song known in {country}, with one word or beat per player.",
-        "Each player must say the next word or clap on the next beat without pausing more than one second.",
-        "A wrong word, late beat, or broken gesture eliminates that player, who steps back one pace.",
-        "Last remaining player wins and leads the next round’s chant."
+        "站成或坐成一圈，好看见彼此的手。",
+        "领唱者以每人一词或一拍开始一首 {country} 熟悉的拍手歌或淘汰歌谣。",
+        "按时绕圈传递。说错词或拍手晚了的人出局。",
+        "最后留下的人开始下一首歌。",
+        "对年幼玩家保持友好节奏；大家同意后再加速。"
       ],
       "req": [
         "共享歌曲或高音",
         "玩家的的关键要素"
       ],
-      "participants": "3人以上人员",
-      "fallbackEn": true
+      "participants": "3人以上人员"
     },
     "balance_stilts": {
       "title": "平板或平衡杆",
       "descTemplate": "在{country}中,Stilts作为节日工具和儿童平衡玩具出现. {civ}厂商在竹子,木材或回收罐上饲养行尸. 赛跑和诡计 将高地变成游戏（{country}，{civ}）",
       "steps": [
-        "Mount bamboo, wood, or tin-can stilts built in the {civ} style of {country} with a spotter holding your elbow.",
-        "Take ten small steps on level ground while looking forward, not down at the footrests.",
-        "Race a marked ten-meter line, or walk a chalk zigzag without a footrest touching the ground.",
-        "Dismount by stepping backward onto clear ground with the spotter ready.",
-        "Check cords, cans, and footrest bindings before every session; replace frayed ties."
+        "踩上 {country} 本地样式的竹、木或铁罐高跷，由保护者扶着你的肘。",
+        "先在平地慢走五步，再试转弯。",
+        "双方都能安全停下后，再比短程标线竞走。",
+        "蹲姿下车；切勿从全高跳下。",
+        "每次开玩前检查脚踏与绳子。"
       ],
       "req": [
         "一对石砖或锡罐石砖",
         "水平地面",
         "初学者的监视器"
       ],
-      "participants": "单独或赛车配对",
-      "fallbackEn": true
+      "participants": "单独或赛车配对"
     },
     "leaf_boat": {
       "title": "树叶或树皮船赛",
       "descTemplate": "迷你船用ẳ梨树叶、树皮或玉米棒在{country}附近游玩, {civ}游戏将电流变成轨道,而工艺则变成工程实验（{country}，{civ}）",
       "steps": [
-        "Fold a broad leaf or carve a bark/cork hull that floats—materials children gather near water in {country}.",
-        "Mark a start and finish about two meters apart in a basin or gentle gutter current.",
-        "On a shared count of three in any {civ} counting words, release all boats together; no pushing after release.",
-        "First boat to touch the finish line wins the heat; run best of three heats.",
-        "Retrieve every leaf, twig, and cork; leave the water clear of trash."
+        "折叠阔叶，或雕刻能浮起的树皮/软木船身。",
+        "在缓流、水沟或宽盆上标出起点与终点。",
+        "一起数到三后同时松船。松手后不得再推。",
+        "先到终点且未沉者胜。翻船的重新做。",
+        "远离深水或急流。溪流比赛须有成人看护。"
       ],
       "req": [
         "树叶、树皮或船体的软木",
         "流、沟或盆地",
         "Twig 桅杆可选"
       ],
-      "participants": "2人以上人员",
-      "fallbackEn": true
+      "participants": "2人以上人员"
     },
     "snow_or_sand": {
       "title": "沙子/ 积雪人物游戏",
       "descTemplate": "在沙或雪中雕刻临时人物是元素构造游戏,只要{country}的景观提供了介质。 城堡、动物和祖传形态出现并如何能够被侵蚀——建筑是麻风玩具（{country}，{civ}）",
       "steps": [
-        "Gather moist sand or packable snow from a safe open patch in {country}—never dig undercut cliffs.",
-        "Pile a base, then carve one figure or fort wall with hands or a simple mold.",
-        "Optional contest: tallest free-standing tower in five minutes, or best likeness of an animal known in {civ} stories.",
-        "Photograph if you wish, then watch or gently collapse the build as part of play.",
-        "Stay off sacred dunes, marked ruins, and protected sites; fill holes you dig on public beaches."
+        "从安全开阔处取湿沙或可塑雪。切勿在掏空的悬崖下挖掘。",
+        "底座宽于顶部，使造型站稳。",
+        "可选比赛：五分钟内最高自立塔，或最像动物的造型。",
+        "喜欢的可拍照留念；离开时整理岸边或院子。",
+        "玩雪后暖手并换下湿衣服。"
       ],
       "req": [
         "沙子或 他妈的",
         "手或简单的模具",
         "沙水可选"
       ],
-      "participants": "单独或集体",
-      "fallbackEn": true
+      "participants": "单独或集体"
     },
     "knuckle_football": {
       "title": "表闪足球/纸球",
       "descTemplate": "在{country}的学校里, 目标为书本或标卿职位楷模;锦标赛会很激烈 ({civ})",
       "steps": [
-        "On a clear table in {country}, mark each goal with two small gaps about three finger-widths wide (books or tape posts).",
-        "Place a coin, button, or crumpled paper ball on the center line.",
-        "Players alternate one finger-flick; no covering the ball with a palm—common {civ} school-desk rule.",
-        "A goal scores when the ball fully crosses between the posts; play to five goals.",
-        "If the ball leaves the table, the opponent places it back one hand-span from the edge and flicks next."
+        "在干净桌面上用约三指宽的缺口标出各方球门。",
+        "用卷纸球或光滑纽扣作球，放在中央。",
+        "双方轮流用一根手指弹一次。不可用手掌罩住球。",
+        "弹进缺口得 1 分。先到 5 分者胜。",
+        "每进一球重置。桌上勿放饮料。"
       ],
       "req": [
         "硬币、按钮或纸球",
         "Table with goal marks"
       ],
-      "participants": "2个人",
-      "fallbackEn": true
+      "participants": "2个人"
     },
     "riddle_local": {
       "title": "本地谜题交换",
       "descTemplate": "{country}的中枢交流保留了{civ}的比喻,生态学和幽默. 在时间压力下使用和解决是不需要制造设备的思维玩具。 ({civ})",
       "steps": [
-        "One player poses a riddle drawn from {civ} oral tradition in {country} (animals, tools, weather, or food metaphors).",
-        "Others have one minute and up to three guesses.",
-        "A correct solver scores one point and poses the next riddle; if no one solves, the poser scores one point and chooses the next poser.",
-        "Optional playful forfeit for three wrong guesses: clap a rhythm or name five animals from ${c}.",
-        "First to five points wins the exchange."
+        "一人出一道来自 {country} 的谜语（动物、工具、天气或食物）。",
+        "其他人有一分钟、最多三次猜测。",
+        "猜对得 1 分并由其出下一题。无人猜中则出题者得 1 分并指定下一位出题者。",
+        "可选：猜错三次的趣味惩罚——拍一段节奏或说出五种 {country} 的动物。",
+        "先到 5 分者赢下这场问答。"
       ],
       "req": [
         "共同语言",
         "高级法官"
       ],
-      "participants": "2人以上人员",
-      "fallbackEn": true
+      "participants": "2人以上人员"
     },
     "ceremonial_toy": {
       "title": "节日噪音制造玩具",
       "descTemplate": "节日的噪音制作者——剪刀、拍手、钟棒——让儿童参加{civ}的{country}公共仪式帘。 音量和节奏标记日历时间;一些玩具是季节性的,在之后 doctoratey,就像仪式用具一样储存（{country}，{civ}）",
       "steps": [
-        "Ask an adult when ratchets, clappers, or bell-sticks are welcome in the {civ} festival calendar of {country}.",
-        "Play short pulses that match the procession drum or sung phrase—typically two or four beats per measure.",
-        "Stop instantly when ceremony leaders raise a hand or the song falls silent.",
-        "Do not imitate restricted sacred instruments or mock prayer gestures with the toy.",
-        "Wipe the handle clean and store the noisemaker until the next public festival day."
+        "向成人询问：在 {country} 的节庆中何时适合用棘轮、拍板或铃棍。",
+        "用短促脉冲配合鼓点或歌声——通常每次两拍或四拍。",
+        "带领者举手或歌声安静时立刻停止。",
+        "勿用玩具模仿受限的神圣乐器，或嘲弄祈祷姿势。",
+        "游行结束后收好发声玩具。"
       ],
       "req": [
         "弹夹、钟杆、圆筒或鼓点",
         "节日背景尊重"
       ],
-      "participants": "单独或阅兵团体",
-      "fallbackEn": true
+      "participants": "单独或阅兵团体"
     },
     "puzzle_knot": {
       "title": "Cord 拼图玩具( T)",
       "descTemplate": "绳子、戒指和木头的分离谜题作为{country}周围的市场玩具和铁匠奇才出现。 {civ}玩家通过触摸来学习地形学——不强迫地释放一个戒指,然后重新组装（{country}，{civ}）",
       "steps": [
-        "Study a cord-and-ring or wire puzzle sold or forged around {country}; note which loop is the piece you must free.",
-        "Move loops only through openings that already exist—do not bend metal or force wood.",
-        "Free the target ring or block by a legal path; {civ} market puzzles are solved when that piece separates cleanly.",
-        "Reassemble every loop to the exact starting state before claiming the solve.",
-        "Time your solve, then challenge a friend to beat that time with the same path."
+        "观察来自 {country} 的绳环或铁丝谜题。弄清必须解脱哪一环。",
+        "环只能穿过已有开口移动。勿弯金属或硬掰木头。",
+        "沿合法路径解脱目标件。该件干净脱出即算解开。",
+        "宣称解开前，把每一环恢复到精确起始状态。",
+        "为自己计时，再请朋友挑战更短时间。"
       ],
       "req": [
         "圈、环或线谜",
         "耐心点"
       ],
-      "participants": "一个人",
-      "fallbackEn": true
+      "participants": "一个人"
     },
     "mini_house": {
       "title": "小型家庭游戏",
       "descTemplate": "小型家庭工具——桶、编织的垫子、娃娃家具——支持{civ}在{country}的童年中成人家庭生活的角色扮演。 考古学和人种学都发现了这些教学玩具.",
       "steps": [
-        "Arrange miniature pots, mats, and dolls into a small hearth or room layout familiar in {country}.",
-        "Assign roles (cook, guest, child) to dolls or players before the scene starts.",
-        "Act out one cooking scene, one market or visiting scene, and one bedtime scene drawn from {civ} daily life.",
-        "Add one new prop each week (ladle, basket, or stool) and reuse it in the next story.",
-        "Pack all pieces into one box after play so the set stays complete."
+        "把微型锅、席与玩偶摆成 {country} 熟悉的小炉边或房间布局。",
+        "开场前分配角色（厨子、客人、孩子）。",
+        "演出一个做饭场景、一个做客场景和一个就寝场景。",
+        "每周加一件新道具（勺子、篮子或凳子），下次继续用。",
+        "玩后把所有零件收进同一盒，保持套装完整。"
       ],
       "req": [
         "迷你锅、垫子或娃娃",
         "小游戏空间"
       ],
-      "participants": "一个人或两个人",
-      "fallbackEn": true
+      "participants": "一个人或两个人"
     }
   },
   "zh-Hant": {
@@ -1840,134 +1814,127 @@
       "title": "幼蟲響",
       "descTemplate": "老鼠是最古老的音效玩具之一 在{country}中,{civ}的照料者長期封存种子或卵石,用古德、黏土、籃子或木頭來獎勵嬰兒的抓住和節奏。 響響是感官玩具 在某些地方是保護性的魅力 ({civ})",
       "steps": [
-        "In {country}, offer a sealed {civ} rattle (gourd, clay, wood, or basketry with seeds or pebbles) within the infant’s supervised reach.",
-        "Shake once slowly so the child hears a clear cause-and-effect sound, then pause for them to grasp.",
-        "Allow grasping, gentle shaking, and dropping onto a soft mat; block mouthing if the shell cracks or finishes flake.",
-        "Sing or speak a short {civ} lullaby or counting rhyme from {country} in time with three to five shakes.",
-        "After each session, check seams, plugs, and loose bits; retire the toy if seeds can spill."
+        "把來自 {country} 的密封搖鈴放在嬰兒夠得到的地方，並始終待在近旁。",
+        "慢慢搖一下讓他們聽見聲音，然後停頓，好讓他們去抓。",
+        "讓他們在軟墊上搖、丟下再試。若外殼裂開，阻止啃咬。",
+        "他們搖幾下時，可哼唱或說一句來自 {country} 的短搖籃曲。",
+        "玩後檢查塞子與接縫。若種子可能漏出，就收起來。"
       ],
       "req": [
         "Hollow rattle with seeds, pebbles, or bells",
         "安全的非毒材料"
       ],
-      "participants": "獨自一人(有照料者的孩子)",
-      "fallbackEn": true
+      "participants": "獨自一人(有照料者的孩子)"
     },
     "whistle_toy": {
       "title": "Clay 苟且是木哨玩具",
       "descTemplate": "小哨子——鳥形黏土、木雕、苇子——出現在市場和與{civ}生活相關的考古地區。 有些是節日噪音制造者, 音效演奏教人呼吸和投球（{country}，{civ}）",
       "steps": [
-        "Hold a clay, wood, or reed whistle made in the {civ} craft style of {country}; keep finger holes and the windway clear.",
-        "Blow a steady stream for two seconds to find one clear tone before trying short chirps.",
-        "Alternate three short calls and one long note; count successful clear tones aloud.",
-        "Play call-and-response with a partner: one player blows a rhythm from {country} street or festival play, the other copies it.",
-        "Wash or wipe the mouthpiece between players; do not share if anyone is ill."
+        "拿起 {country} 本地風格的陶、木或蘆葦哨子。保持風道與指孔暢通。",
+        "穩定吹氣兩秒，直到發出一個清晰音調。",
+        "再試三個短啁啾和一個長音。每發出一個清晰音就數一下。",
+        "與夥伴輪流模仿一小段節奏。",
+        "輪換時擦拭吹嘴。有人生病時不要共用。"
       ],
       "req": [
         "口哨玩具",
         "呼吸控制",
         "大聲放空"
       ],
-      "participants": "獨自一人",
-      "fallbackEn": true
+      "participants": "獨自一人"
     },
     "pull_toy": {
       "title": "動物拉玩具",
       "descTemplate": "Wheeled animals and pull-along figures are documented from classical antiquity through village woodcrafts in {country}. {civ} artisans shape horses, birds, or oxen that teach walking toddlers about traction and companionship in motion.",
       "steps": [
-        "Tie a short cord to the nose or yoke of a wheeled {civ} animal figure from {country}; leave enough slack for a toddler’s stride.",
-        "Walk five to ten steps on a clear floor so wheels or runners follow without tipping.",
-        "Make one gentle left turn and one right turn; stop if the axle binds or the cord jerks the toy airborne.",
-        "Narrate a short parade or market delivery story using animals familiar in {country} (horse, ox, bird, or camel as fits the figure).",
-        "Coil the cord after play and store the toy upright so wheels stay round."
+        "給來自 {country} 的帶輪動物玩具系一根短繩，留出適合小步走的餘量。",
+        "在空曠地面走五到十步，讓玩具跟隨且不翻倒。",
+        "試一次輕柔左轉和一次右轉。若繩子猛拽玩具翹起就停下。",
+        "一邊走一邊編一小段遊行或集市故事。",
+        "把繩子盤好，玩具直立存放，以免輪子變形。"
       ],
       "req": [
         "旋轉或滑動的動物身材",
         "拉繩",
         "地面面积"
       ],
-      "participants": "獨自一人",
-      "fallbackEn": true
+      "participants": "獨自一人"
     },
     "mini_weapons_toy": {
       "title": "玩具弓或飛镖遊戲設定",
       "descTemplate": "使用更安全的材料, 稻草、木頭或圈子上的目標 把武術變成打分（{country}，{civ}）",
       "steps": [
-        "Outdoors in {country}, set a straw, wood, or chalk target with a backstop; clear people and animals for at least five paces downrange.",
-        "Nock a soft arrow or load a foam/cork dart; keep the tip pointed at the ground until ready.",
-        "Use a calm {civ} stance—feet apart, eyes on the center ring—and release one shot at a time.",
-        "Score 3 points for the center, 2 for the middle ring, 1 for the outer; first to 15 points wins a round.",
-        "Never aim at people or animals; collect every projectile before the next turn."
+        "在 {country} 戶外支起帶擋背的靶子。人和動物至少保持五步距離。",
+        "裝上軟箭或泡沫鏢。射擊前始終讓尖端朝地。",
+        "雙腳分開站立，瞄準中心，一次只射一發。",
+        "中心 3 分，中環 2 分，外環 1 分。先到 15 分者勝。",
+        "切勿瞄準人或動物。下一回合前撿回每一支鏢。"
       ],
       "req": [
         "軟或低功率玩具弓/",
         "目標",
         "清除下游區域"
       ],
-      "participants": "1至2人",
-      "fallbackEn": true
+      "participants": "1至2人"
     },
     "jacks_local": {
       "title": "口袋技術石",
       "descTemplate": "Beyond the shared knucklebones family, {country} has local stone-and-seed skill sequences shaped by {civ} childhood—different throws, chants, and difficulty ladders on the same pickup principle, recorded here as a regional practice entry when chants and sequences are locally distinct.",
       "steps": [
-        "Sit on flat ground in {country} with five small stones or seeds used in {civ} children’s pickup play.",
-        "Scatter all five lightly, then toss one skyward and pick up exactly one stone before catching the tossed stone.",
-        "On the next turns, pick up two, then three, then the last group of remaining stones in one sweep while the toss is aloft.",
-        "Drop or fail to catch ends your turn; the next player restarts at ones.",
-        "First player to finish the ones–twos–threes–fours ladder while saying a short {civ} count or chant from {country} wins."
+        "坐在平地上，用 {country} 兒童常用的五顆小石或種子。",
+        "撒開，拋起一顆，在接住拋起的那顆之前正好撿起一顆。",
+        "後續回合：拋起期間一次掃起兩顆、三顆，再掃起剩餘的。",
+        "掉落或沒接住則回合結束。下一位從撿一顆重新開始。",
+        "邊說短數數邊先完成從一到四者獲勝。"
       ],
       "req": [
         "五塊小石頭或种子",
         "平地"
       ],
-      "participants": "1-4人",
-      "fallbackEn": true
+      "participants": "1-4人"
     },
     "story_dice_oral": {
       "title": "故事數量/ 抽签遊戲",
       "descTemplate": "在{country}的聚會上出現了轉折、失業或故事提示。 不管是竹棍、指骨或骰子,（{country}，{civ}）",
       "steps": [
-        "Put three to six marked sticks, shells, or dice in a cup—marks can be colors or short {civ} prompt words used in {country}.",
-        "Shake once and cast onto a cloth; read the uppermost mark as this turn’s prompt.",
-        "The indicated player has thirty seconds to tell a short story, sing one verse, or perform a playful forfeit named by the mark.",
-        "Return all lots to the cup and pass clockwise until each player has had at least two turns.",
-        "Before starting, list which marks are playful only—never use sacred {civ} divination lots from {country} as party toys."
+        "把三到六根有標記的小棒、貝殼或骰子放進杯中。標記可以是 {country} 常用的顏色或短提示詞。",
+        "搖勻後投到布上。大聲讀出朝上的一面。",
+        "投出結果決定誰要講短故事、拍一段節奏，或回答一個好笑的問題。",
+        "輪流投擲，直到每人至少得到一次提示。",
+        "只用遊戲性標記。不要把神聖卜具當派對玩具。"
       ],
       "req": [
         "持久的解决办法",
         "共同語言"
       ],
-      "participants": "2人以上",
-      "fallbackEn": true
+      "participants": "2人以上"
     },
     "shadow_play": {
       "title": "影象播放",
       "descTemplate": "影劇「手動動物或皮木偶」, 燈光和光線把手勢變成戲劇 有些地區將這提升為正式的木偶藝術;（{country}，{civ}）",
       "steps": [
-        "In a dim room in {country}, place a lamp or candle so hands cast sharp shadows on a blank wall about one arm’s length away.",
-        "Form one animal or person with fingers; move slowly for three seconds so the outline stays readable.",
-        "Narrate a one-minute {civ} folk scene (market, animal chase, or hero greeting) while the shadow acts.",
-        "Optional: cut a cardboard figure, tape it to a stick, and replay the same scene with crisper edges.",
-        "End by letting each child invent one new creature and name it before the lamp is put out."
+        "在較暗的房間裡擺好燈，使雙手在約一臂遠的白牆上投下清晰影子。",
+        "用手指做一種動物或人物。靜止三秒，讓別人辨認形狀。",
+        "一邊讓影子動起來，一邊講述一分鐘來自 {country} 的民俗小場景（集市、追動物或打招呼）。",
+        "可選：剪硬紙板形象貼在棍上，用更清晰的輪廓重演。",
+        "注意火源安全，切勿讓蠟燭無人看管。"
       ],
       "req": [
         "燈光或火光",
         "空白牆",
         "手或木偶"
       ],
-      "participants": "1 - 多人",
-      "fallbackEn": true
+      "participants": "1 - 多人"
     },
     "kite_local": {
       "title": "本地風筝技術",
       "descTemplate": "{country}的{civ}製作人發展出獨特的形狀、紙、 bri和節日用法。 這項項項目突出了當地技術傳統, ({civ})",
       "steps": [
-        "Build or buy a paper or cloth kite in a shape used by {civ} makers in {country} (diamond, box, bird, or fighter flat).",
-        "Check that both bridle legs are equal and the spar joints are tight before you walk to the field.",
-        "Stand with the wind at your back in open ground; have a helper release the kite as you take three steps and feed five to ten meters of line.",
-        "Steer by tension: pull to climb, ease to dive; land by walking toward the kite while reeling.",
-        "Never fly near power lines, airports, or storms—common safety rules for festival kite days in {country}."
+        "製作或購買 {country} 常見造型的紙或布風箏（菱形、箱形、鳥形或鬥箏平面）。",
+        "選擇有穩風的開闊場地。遠離樹木與人群。",
+        "請助手托住風箏，你向後退並放線。",
+        "用輕拉操控方向。風停前緩慢收回。",
+        "切勿靠近電線、機場或暴風雨放飛。"
       ],
       "req": [
         "纸或布",
@@ -1975,323 +1942,304 @@
         "飛行",
         "開啟風"
       ],
-      "participants": "一個人或兩個人",
-      "fallbackEn": true
+      "participants": "一個人或兩個人"
     },
     "cloth_doll_local": {
       "title": "本地布娃娃",
       "descTemplate": "在{country}, 裝飾 包裝 髮型 小型化成人服裝 關注遊戲教人社會角色,（{country}，{civ}）",
       "steps": [
-        "Sew or tie a simple cloth body and stuff it firmly with fiber so the head and torso hold shape.",
-        "Dress the doll in miniature wraps, sash, or embroidered scraps that echo everyday {civ} clothing in {country}.",
-        "Act out at least three caregiving scenes: wake, feed, and put to sleep.",
-        "Repair tears with needle and thread as part of play rather than discarding the doll.",
-        "No points are scored—nurture play ends when the child packs the doll into a small basket or box used in {country} households."
+        "縫或捆一個簡單布身，填充使頭與軀幹定型。",
+        "給玩偶穿上像 {country} 日常服飾的微型裹布或繡片碎料。",
+        "至少表演三個照料場景：醒來、餵食、哄睡。",
+        "用針線修補破損，不要扔掉玩偶。",
+        "結束後把玩偶收進小籃或小盒。"
       ],
       "req": [
         "衣服碎片",
         "纤维填充",
         "串或領帶"
       ],
-      "participants": "獨自一人",
-      "fallbackEn": true
+      "participants": "獨自一人"
     },
     "ball_sewn": {
       "title": "衣服或藏球",
       "descTemplate": "在工業橡皮之前,{country}的{civ}群落, 抓住 踢 圍繞著這些物件的圓圈遊戲 球的制作和規矩一樣文化 ({civ})",
       "steps": [
-        "Form a circle of four or more players in a clear yard in {country}; use one sewn cloth, palm-fiber, or hide ball.",
-        "Toss underhand to the neighbor on your right; {civ} circle play scores one point for each clean catch.",
-        "A drop removes that player from the circle (or gives the thrower one point if you play pairs).",
-        "When three players remain, speed up to a one-second hold before passing.",
-        "Last player in the circle wins; restart with everyone after one champion round."
+        "在空曠院子裡圍成四人或以上的圈。使用一顆縫製的布、纖維或皮球。",
+        "下手拋給右側鄰人。每次乾淨接住得 1 分。",
+        "有人掉球則從零重計——或改成輕輕對踢。",
+        "打到 10 分，或直到每人開過一輪。",
+        "若縫線裂開，下一局前重新填充並縫好。"
       ],
       "req": [
         "剪布也对手掌或藏球",
         "開啟播放區域"
       ],
-      "participants": "2至10人以上",
-      "fallbackEn": true
+      "participants": "2至10人以上"
     },
     "top_local": {
       "title": "本地旋轉的頂端手術",
       "descTemplate": "Top play is ancient and global; this entry records {country}'s {civ} carving styles, tip materials, and contest etiquette as a distinct craft-and-play practice within that shared physics toy.",
       "steps": [
-        "Wind a cord clockwise around a carved {civ} top from {country}, or ready a short whip cord if the tip is meant for whipping.",
-        "Plant your feet on hard earth or stone; pull the cord smooth and level so the tip bites and spins.",
-        "For whip tops, tap the shoulder of the top lightly to keep it upright for a timed spin.",
-        "In a contest, longest continuous spin wins; or play combat where the first top knocked flat loses.",
-        "Sand a dull tip and re-point it before the next match so launches stay true."
+        "把線繞在來自 {country} 的雕陀螺上；若是鞭陀螺則備好短鞭繩。",
+        "站在硬土或石地上。平穩水平地拉線，使尖端咬地旋轉。",
+        "鞭陀螺可輕抽肩部，保持直立以計時旋轉。",
+        "比賽中連續轉得最久者勝——或玩對撞，先被打平者負。",
+        "打磨或更換磨損尖端，好讓下一轉幹淨起步。"
       ],
       "req": [
         "本地雕刻的頂端",
         "弦或鞭",
         "硬地"
       ],
-      "participants": "1 - 多人",
-      "fallbackEn": true
+      "participants": "1 - 多人"
     },
     "string_local": {
       "title": "本地字串數字",
       "descTemplate": "{civ}與{country}相關的字串數字, 數字是可移植的故事圖和手記憶圖。",
       "steps": [
-        "Make a loop of cord about the span of your outstretched arms so it fits both hands with slight slack.",
-        "Open on both thumbs and little fingers in the starting position taught for {civ} figures in {country}.",
-        "Pick, drop, and transfer strings until you hold one named figure (animal, tool, or star) for three seconds.",
-        "Say the figure’s {civ} name or a one-sentence story tied to {country} while holding the shape.",
-        "Teach that single figure to a partner before starting a second pattern."
+        "用一段夠在雙手間拉開的繩環。",
+        "按 {country} 傳授翻花繩的起手式，用雙手拇指與小指張開。",
+        "慢慢做每一個勾與放，直到出現具名圖形。",
+        "保持形狀時說出圖形名稱或一句小故事。",
+        "教下一個圖形前先恢復成乾淨繩環。"
       ],
       "req": [
         "旋轉或正弦旋轉",
         "故事知識選擇性"
       ],
-      "participants": "一個人或兩個人",
-      "fallbackEn": true
+      "participants": "一個人或兩個人"
     },
     "board_race_folk": {
       "title": "民俗比賽(地方)",
       "descTemplate": "跨圈和路徑賽車板出現在許多土地. 在{country}, {civ}的玩家使用彈殼、棍棒或指骨來比賽,（{country}，{civ}）",
       "steps": [
-        "Seat 2–4 players at a path or cross-and-circle board used in {country}; each gets four markers in a starting nest.",
-        "Throw two casting sticks, four cowrie shells, or one die—whatever {civ} sets use—and total the pips or “mouth-up” shells.",
-        "Enter a marker only on a throw of the highest single result (for example 4 sticks or a 6); then advance that many spaces.",
-        "Landing on an opponent’s single marker sends it back to its nest; stacked markers are safe.",
-        "First player to move all four markers around the track and into the home column wins."
+        "2–4 人坐在 {country} 使用的路徑或十字圓盤旁。每人四枚棋子放在起始巢中。",
+        "投兩根卜棒、四枚貝殼或一枚骰子。合計點數或開口朝上的貝殼數。",
+        "僅在最高單次結果時入場（例如 4 棒或 6 點），然後前進相應格數。",
+        "落到對方單獨棋子上將其送回巢。疊子安全。",
+        "先把四枚棋子全部送回家者獲勝。"
       ],
       "req": [
         "音軌板或布料",
         "標示",
         "虱子、棍子或貝殼"
       ],
-      "participants": "2-4人",
-      "fallbackEn": true
+      "participants": "2-4人"
     },
     "sowing_local": {
       "title": "本地的土豆栽培",
       "descTemplate": "在ZZCOUNTRY ZHZ中播種遊戲, 他們屬於曼卡拉家族,（{country}，{civ}）",
       "steps": [
-        "Use a 2×6 board (twelve small pits plus one store per side) common in {civ} sowing play in {country}; place four seeds in each small pit.",
-        "On your turn, scoop every seed from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
-        "If the last seed lands in your empty pit and the opposite pit holds seeds, capture those opposite seeds into your store.",
-        "If the last seed lands in your store, take another turn; otherwise play passes.",
-        "When one side’s pits are empty, the opponent puts remaining seeds in their store; most seeds in store wins."
+        "使用 {country} 常見的 2×6 棋盤（十二小坑加每側一大倉）。每小坑放四粒種子。",
+        "輪到你時，舀起己方一坑，向隨後各坑各播一粒，包括己方大倉，跳過對方大倉。",
+        "若最後一粒落入己方大倉，再走一手。",
+        "若最後一粒落入己方空坑，則把該粒與對面坑中的種子收進己方大倉。",
+        "一側清空後，剩餘種子歸各自主人的大倉。種子最多者勝。"
       ],
       "req": [
         "杯板或土坑",
         "种子或卵石"
       ],
-      "participants": "2人",
-      "fallbackEn": true
+      "participants": "2人"
     },
     "jump_rope": {
       "title": "跳過繩子遊戲",
       "descTemplate": "在{country}的學院和街道上, 單曲速度步調與群組長曲游戲分享跳動的節奏;（{country}，{civ}）",
       "steps": [
-        "For solo play: hold both ends, swing the rope over your head, and jump once per pass; count consecutive jumps.",
-        "For group play: two turners swing a long rope; a jumper runs in, jumps five times, and runs out.",
-        "Add a short {civ} schoolyard chant from {country}; a missed jump or broken rhythm rotates the jumper to turner.",
-        "Try pepper (fast turns) or one double-under after you can clear twenty steady jumps.",
-        "Keep the rope away from roads, wet floors, and low branches."
+        "單人玩時，把短繩從頭上掄過，每次落地跳起。",
+        "集體玩時，兩人搖長繩，一名跳繩者踩節拍進入。",
+        "加入一句來自 {country} 的短童謠。跳空則跳繩者與搖繩者輪換。",
+        "數乾淨跳躍次數。挑戰個人最好成績 20 次，再衝 50 次。",
+        "地面溼滑或繩子斷裂就停下；續玩前重新系好。"
       ],
       "req": [
         "大麻、塑料或葡萄藤的绳索",
         "平地",
         "可選擇的轉移器"
       ],
-      "participants": "1 - 多人",
-      "fallbackEn": true
+      "participants": "1 - 多人"
     },
     "blindfold_tag": {
       "title": "盲人標籤/呼叫遊戲",
       "descTemplate": "在{civ}的派對上, 聲音 靜靜 同情 盲目 Olympiaable 的玩家（{country}，{civ}）",
       "steps": [
-        "Clear toys and furniture from a bounded room or yard in {country}; mark walls or chalk lines as out-of-bounds.",
-        "Blindfold one seeker and spin them twice; sighted players must stay inside the bounds.",
-        "Sighted players may call a short {civ} nickname or clap once every five seconds so the seeker has sound cues.",
-        "The seeker tags by touch; the tagged player becomes the next seeker.",
-        "Stop the round immediately if anyone near stairs or hard edges; remove the blindfold before leaving the space."
+        "清空有界房間或院子裡的玩具與傢俱。標出界外線。",
+        "矇住一名尋找者的眼睛並轉兩圈。明眼玩家必須留在界內。",
+        "明眼玩家可每五秒叫一次短暱稱或拍一次手，給尋找者聲音線索。",
+        "尋找者以觸摸抓人。被抓者成為下一任尋找者。",
+        "每輪前清除硬障礙。禁止推搡。"
       ],
       "req": [
         "軟眼罩",
         "安全空間",
         "商定界限"
       ],
-      "participants": "4+ people",
-      "fallbackEn": true
+      "participants": "4+ people"
     },
     "wrestling_play": {
       "title": "青少年摔跤",
       "descTemplate": "年輕的摔跤比賽, 遊戲版本强调安全投球、圓圈邊界,（{country}，{civ}）",
       "steps": [
-        "Mark a circle about three paces across on sand or soft ground used for youth bouts in {country}.",
-        "Forbid headlocks, joint twists, and strikes; wrestlers may grip belts, sashes, or shoulders as in {civ} play wrestling.",
-        "A referee starts each exchange; first to make the opponent’s knee or back touch outside or flat wins that exchange.",
-        "Best of three exchanges decides the bout; rest thirty seconds between exchanges.",
-        "Handshake or salute after the bout; the referee ends play at the first sign of pain."
+        "在沙地或軟地上標出直徑約三步的圓。",
+        "禁止鎖頭、擰關節與擊打。只能抓腰帶、飾帶或肩膀。",
+        "先握手。裁判發開始與停止口令。",
+        "使對方雙肩或髖著地，或把對方推出圈外即勝——開局前先約定規則。",
+        "有人疼痛立即停止。復位後再試。"
       ],
       "req": [
         "軟土或沙子",
         "商定的持續規定",
         "裁判者"
       ],
-      "participants": "2人(加上裁判)",
-      "fallbackEn": true
+      "participants": "2人(加上裁判)"
     },
     "memory_song": {
       "title": "記憶歌曲/ 消除高音",
       "descTemplate": "在{civ}的口語文化中, 錯誤的字眼或錯誤的打擊使玩家消失所掌握的,直到留下一個（{country}，{civ}）",
       "steps": [
-        "Stand or sit in a circle so every player can see the leader’s hands.",
-        "The leader starts a {civ} elimination chant or clapping song known in {country}, with one word or beat per player.",
-        "Each player must say the next word or clap on the next beat without pausing more than one second.",
-        "A wrong word, late beat, or broken gesture eliminates that player, who steps back one pace.",
-        "Last remaining player wins and leads the next round’s chant."
+        "站成或坐成一圈，好看見彼此的手。",
+        "領唱者以每人一詞或一拍開始一首 {country} 熟悉的拍手歌或淘汰歌謠。",
+        "按時繞圈傳遞。說錯詞或拍手晚了的人出局。",
+        "最後留下的人開始下一首歌。",
+        "對年幼玩家保持友好節奏；大家同意後再加速。"
       ],
       "req": [
         "分享歌曲或高呼",
         "玩家圈"
       ],
-      "participants": "3人以上",
-      "fallbackEn": true
+      "participants": "3人以上"
     },
     "balance_stilts": {
       "title": "平面或平衡柱",
       "descTemplate": "在{country}, {civ}製造商在竹子、木頭或回收罐上養活行尸。 跑步和耍花招 把高處變成游戲（{country}，{civ}）",
       "steps": [
-        "Mount bamboo, wood, or tin-can stilts built in the {civ} style of {country} with a spotter holding your elbow.",
-        "Take ten small steps on level ground while looking forward, not down at the footrests.",
-        "Race a marked ten-meter line, or walk a chalk zigzag without a footrest touching the ground.",
-        "Dismount by stepping backward onto clear ground with the spotter ready.",
-        "Check cords, cans, and footrest bindings before every session; replace frayed ties."
+        "踩上 {country} 本地樣式的竹、木或鐵罐高蹺，由保護者扶著你的肘。",
+        "先在平地慢走五步，再試轉彎。",
+        "雙方都能安全停下後，再比短程標線競走。",
+        "蹲姿下車；切勿從全高跳下。",
+        "每次開玩前檢查腳踏與繩子。"
       ],
       "req": [
         "一對til或锡罐til",
         "平面",
         "初学者的觀察器"
       ],
-      "participants": "單獨或賽車",
-      "fallbackEn": true
+      "participants": "單獨或賽車"
     },
     "leaf_boat": {
       "title": "樹葉或樹皮賽艇",
       "descTemplate": "迷你船在{country}裡用樹葉、樹皮或玉米棒 取悅靠近水的孩子們 {civ} 游戲把水流變成軌道 和工業實驗",
       "steps": [
-        "Fold a broad leaf or carve a bark/cork hull that floats—materials children gather near water in {country}.",
-        "Mark a start and finish about two meters apart in a basin or gentle gutter current.",
-        "On a shared count of three in any {civ} counting words, release all boats together; no pushing after release.",
-        "First boat to touch the finish line wins the heat; run best of three heats.",
-        "Retrieve every leaf, twig, and cork; leave the water clear of trash."
+        "摺疊闊葉，或雕刻能浮起的樹皮/軟木船身。",
+        "在緩流、水溝或寬盆上標出起點與終點。",
+        "一起數到三後同時松船。鬆手後不得再推。",
+        "先到終點且未沉者勝。翻船的重新做。",
+        "遠離深水或急流。溪流比賽須有成人看護。"
       ],
       "req": [
         "樹葉、樹皮或船身的軟木",
         "溪流、沟渠或盆地",
         "搖滾桅杆可選擇"
       ],
-      "participants": "2人以上",
-      "fallbackEn": true
+      "participants": "2人以上"
     },
     "snow_or_sand": {
       "title": "沙子/ 雪數播放",
       "descTemplate": "在沙子或雪中雕刻临时人物, 城堡、動物、祖傳形式都出現,（{country}，{civ}）",
       "steps": [
-        "Gather moist sand or packable snow from a safe open patch in {country}—never dig undercut cliffs.",
-        "Pile a base, then carve one figure or fort wall with hands or a simple mold.",
-        "Optional contest: tallest free-standing tower in five minutes, or best likeness of an animal known in {civ} stories.",
-        "Photograph if you wish, then watch or gently collapse the build as part of play.",
-        "Stay off sacred dunes, marked ruins, and protected sites; fill holes you dig on public beaches."
+        "從安全開闊處取溼沙或可塑雪。切勿在掏空的懸崖下挖掘。",
+        "底座寬於頂部，使造型站穩。",
+        "可選比賽：五分鐘內最高自立塔，或最像動物的造型。",
+        "喜歡的可拍照留念；離開時整理岸邊或院子。",
+        "玩雪後暖手並換下溼衣服。"
       ],
       "req": [
         "沙子或雪",
         "手或小模具",
         "沙子的可選水"
       ],
-      "participants": "單獨或群組",
-      "fallbackEn": true
+      "participants": "單獨或群組"
     },
     "knuckle_football": {
       "title": "表格 flip 足球/ 紙式足球",
       "descTemplate": "在{country}的學校中, 比賽會很激烈（{country}，{civ}）",
       "steps": [
-        "On a clear table in {country}, mark each goal with two small gaps about three finger-widths wide (books or tape posts).",
-        "Place a coin, button, or crumpled paper ball on the center line.",
-        "Players alternate one finger-flick; no covering the ball with a palm—common {civ} school-desk rule.",
-        "A goal scores when the ball fully crosses between the posts; play to five goals.",
-        "If the ball leaves the table, the opponent places it back one hand-span from the edge and flicks next."
+        "在乾淨桌面上用約三指寬的缺口標出各方球門。",
+        "用捲紙球或光滑紐扣作球，放在中央。",
+        "雙方輪流用一根手指彈一次。不可用手掌罩住球。",
+        "彈進缺口得 1 分。先到 5 分者勝。",
+        "每進一球重置。桌上勿放飲料。"
       ],
       "req": [
         "硬幣、按鈕或紙球",
         "有目標的表格"
       ],
-      "participants": "2人",
-      "fallbackEn": true
+      "participants": "2人"
     },
     "riddle_local": {
       "title": "本地谜字交换",
       "descTemplate": "在{country}的中間交流 保留特别是那些比喻、生态和幽默 在時間壓力下發揮和解答 需要的问题上不需要正在开展的設備 ({civ})",
       "steps": [
-        "One player poses a riddle drawn from {civ} oral tradition in {country} (animals, tools, weather, or food metaphors).",
-        "Others have one minute and up to three guesses.",
-        "A correct solver scores one point and poses the next riddle; if no one solves, the poser scores one point and chooses the next poser.",
-        "Optional playful forfeit for three wrong guesses: clap a rhythm or name five animals from ${c}.",
-        "First to five points wins the exchange."
+        "一人出一道來自 {country} 的謎語（動物、工具、天氣或食物）。",
+        "其他人有一分鐘、最多三次猜測。",
+        "猜對得 1 分並由其出下一題。無人猜中則出題者得 1 分並指定下一位出題者。",
+        "可選：猜錯三次的趣味懲罰——拍一段節奏或說出五種 {country} 的動物。",
+        "先到 5 分者贏下這場問答。"
       ],
       "req": [
         "共享語言",
         "任法官"
       ],
-      "participants": "2人以上",
-      "fallbackEn": true
+      "participants": "2人以上"
     },
     "ceremonial_toy": {
       "title": "節日製造噪音玩具",
       "descTemplate": "讓孩子加入{civ}的公祭。 有些玩具是季节性的,（{country}，{civ}）",
       "steps": [
-        "Ask an adult when ratchets, clappers, or bell-sticks are welcome in the {civ} festival calendar of {country}.",
-        "Play short pulses that match the procession drum or sung phrase—typically two or four beats per measure.",
-        "Stop instantly when ceremony leaders raise a hand or the song falls silent.",
-        "Do not imitate restricted sacred instruments or mock prayer gestures with the toy.",
-        "Wipe the handle clean and store the noisemaker until the next public festival day."
+        "向成人詢問：在 {country} 的節慶中何時適合用棘輪、拍板或鈴棍。",
+        "用短促脈衝配合鼓點或歌聲——通常每次兩拍或四拍。",
+        "帶領者舉手或歌聲安靜時立刻停止。",
+        "勿用玩具模仿受限的神聖樂器，或嘲弄祈禱姿勢。",
+        "遊行結束後收好發聲玩具。"
       ],
       "req": [
         "雷切特、鐘棒、鼓或鼓玩具",
         "節日背景尊重"
       ],
-      "participants": "單身或游行團體",
-      "fallbackEn": true
+      "participants": "單身或游行團體"
     },
     "puzzle_knot": {
       "title": "Cord 拼圖玩具( T)",
       "descTemplate": "在{country}附近, {civ}玩家學習地形學用触摸法——不強硬釋放戒指,然后重新組裝.",
       "steps": [
-        "Study a cord-and-ring or wire puzzle sold or forged around {country}; note which loop is the piece you must free.",
-        "Move loops only through openings that already exist—do not bend metal or force wood.",
-        "Free the target ring or block by a legal path; {civ} market puzzles are solved when that piece separates cleanly.",
-        "Reassemble every loop to the exact starting state before claiming the solve.",
-        "Time your solve, then challenge a friend to beat that time with the same path."
+        "觀察來自 {country} 的繩環或鐵絲謎題。弄清必須解脫哪一環。",
+        "環只能穿過已有開口移動。勿彎金屬或硬掰木頭。",
+        "沿合法路徑解脫目標件。該件乾淨脫出即算解開。",
+        "宣稱解開前，把每一環恢復到精確起始狀態。",
+        "為自己計時，再請朋友挑戰更短時間。"
       ],
       "req": [
         "Cord, 戒指, 或是電線拼圖",
         "耐心"
       ],
-      "participants": "獨自一人",
-      "fallbackEn": true
+      "participants": "獨自一人"
     },
     "mini_house": {
       "title": "小型家庭遊戲集",
       "descTemplate": "在{country}的童年, 考古學靓女學家都找到了這些教書的玩具（{country}，{civ}）",
       "steps": [
-        "Arrange miniature pots, mats, and dolls into a small hearth or room layout familiar in {country}.",
-        "Assign roles (cook, guest, child) to dolls or players before the scene starts.",
-        "Act out one cooking scene, one market or visiting scene, and one bedtime scene drawn from {civ} daily life.",
-        "Add one new prop each week (ladle, basket, or stool) and reuse it in the next story.",
-        "Pack all pieces into one box after play so the set stays complete."
+        "把微型鍋、席與玩偶擺成 {country} 熟悉的小爐邊或房間佈局。",
+        "開場前分配角色（廚子、客人、孩子）。",
+        "演出一個做飯場景、一個做客場景和一個就寢場景。",
+        "每週加一件新道具（勺子、籃子或凳子），下次繼續用。",
+        "玩後把所有零件收進同一盒，保持套裝完整。"
       ],
       "req": [
         "آ  mat  mat",
         "小游戲區域"
       ],
-      "participants": "一個人或兩個人",
-      "fallbackEn": true
+      "participants": "一個人或兩個人"
     }
   },
   "hi": {

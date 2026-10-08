@@ -3,11 +3,11 @@
     "game-0001": {
       "description": "象棋是从Chaturanga演化而来的,是一支以步兵,骑兵,大象,战车为主的模拟战车. 当它穿越波斯(沙特兰日)进入伊斯兰世界和中世纪欧洲时,碎片成为宫廷军衔. 现代女王和主教的权力在中世纪晚期的欧洲结晶. 在各种文化中,它代表着智慧、远见和受过教育的休闲。",
       "howToPlay": [
-        "Orient the board so each player has a light square on the right-hand corner.",
-        "Place pieces on the back rank (rook, knight, bishop, queen on her color, king, bishop, knight, rook) with pawns on the second rank.",
-        "White moves first; players alternate moving one piece (except when castling).",
-        "Capture by landing on an opponent's piece. Win by checkmating the king.",
-        "Use special moves when legal: castling, en passant, and pawn promotion."
+        "将棋盘摆正，使每位棋手右侧角格为浅色格。",
+        "把棋子放在底线（车、马、象、后在本色格、王、象、马、车），兵放在第二横排。",
+        "白方先行；双方轮流走一枚棋子（王车易位除外）。",
+        "走到对方棋子所在格即可吃子。将死对方的王即获胜。",
+        "在规则允许时使用特殊着法：王车易位、吃过路兵与兵的升变。"
       ],
       "requirements": [
         "棋盘( 8×8)",
@@ -22,17 +22,16 @@
         "泰国棋手表弟拥有不同的棋手能力和晋级规则.",
         "缅甸围棋在棋子后面有自由设置."
       ],
-      "name": "国际象棋",
-      "fallbackEn": true
+      "name": "国际象棋"
     },
     "game-0002": {
       "description": "Go是一个包围领地的游戏. 石头一放置就永远不动;被俘团体被清除. 中国学者四艺之一,传播到韩国(巴都克)和日本(igo). 游戏编码平衡,影响,和活体形状,而不是直接捕获一个国王.",
       "howToPlay": [
-        "Black places the first stone on a grid intersection.",
-        "Players alternate placing one stone; stones do not move after placement.",
-        "A group without liberties (empty adjacent intersections) is captured and removed.",
-        "Do not recreate the previous full-board position (ko) or play suicidal moves unless they capture.",
-        "When both pass, score territory plus captives (rules vary by country); higher score wins."
+        "黑方先在交叉点落第一子。",
+        "双方轮流各下一子；落子后棋子不再移动。",
+        "没有气（相邻空交叉点）的棋块被提吃并拿走。",
+        "不得再现上一手的全盘局面（劫），也不得下自杀棋，除非能提吃对方。",
+        "双方都停着后，按地域加死子计分（各国规则略有不同）；分高者胜。"
       ],
       "requirements": [
         "19×19板(或13×13 / 9×9).",
@@ -44,17 +43,16 @@
         "韩国传统具有相同的核心规则和独特的教学文化.",
         "日本职业排名和地区评分大会."
       ],
-      "name": "围棋",
-      "fallbackEn": true
+      "name": "围棋"
     },
     "game-0003": {
       "description": "X奇 (中国围棋) 阵列将领,顾问,大象,马匹,战车,大炮,以及排队的棋盘上的士兵被一条河渡过. 炮台的跳跃捕捉和宫殿禁闭使其具有不同于国际象棋的战术风味. 它仍然是中国各地喜爱的公园和街头游戏.",
       "howToPlay": [
-        "Arrange pieces on starting points on opposite sides of the river.",
-        "Red moves first; pieces move on points according to their type.",
-        "Cannons slide like chariots but capture only by jumping over exactly one screen.",
-        "Generals stay in the palace; opposing generals may not face on an open file.",
-        "Checkmate or stalemate the opposing general to win."
+        "将棋子按开局摆在河界两侧的起点上。",
+        "红方先行；各子按自身走法在点上移动。",
+        "炮像车一样走直线，但吃子时必须隔正好一个炮架翻打。",
+        "将/帅不出九宫；双方将帅不得在同一直线上照面。",
+        "将死或困毙对方将/帅即获胜。"
       ],
       "requirements": [
         "香琪带着河水和宫殿",
@@ -64,17 +62,16 @@
       "variationNotes": [
         "韩国表亲没有河流,有不同的象/马动作."
       ],
-      "name": "中国象棋",
-      "fallbackEn": true
+      "name": "中国象棋"
     },
     "game-0004": {
       "description": "肖gi是日本围棋以滴水区分:被俘的棋子作为自己的棋子返回. 楔形碎片指向对手. 物质摆动和密集的中场游戏定义了它的剧情;专业的shogi仍然是日本主要的心灵运动.",
       "howToPlay": [
-        "Set pieces with pointed ends facing the opponent.",
-        "Sente moves first—move or drop one piece per turn.",
-        "Captured pieces go to your stand and may be dropped later on empty squares (with pawn/check restrictions).",
-        "Promote eligible pieces in the last three ranks.",
-        "Checkmate the opposing king to win."
+        "将棋子尖端朝向对方摆好。",
+        "先手先行——每回合移动或打入一枚棋子。",
+        "吃掉的棋子进入持駒台，之后可打入空格（受步兵与王手等限制）。",
+        "可升变的棋子进入敌阵后三排可升变。",
+        "将死对方的王即获胜。"
       ],
       "requirements": [
         "9×9 shogi 板块",
@@ -85,17 +82,16 @@
       "variationNotes": [
         "较大的历史变体,具有许多独特的作品类型."
       ],
-      "name": "将棋",
-      "fallbackEn": true
+      "name": "将棋"
     },
     "game-0005": {
       "description": "曼卡拉是一个播种游戏的家族:玩家在木刻,石刻,或土刻的坑周围分发种子. 各理事会在非洲、中东和南亚都有。 区域名称和坑名不尽相同,但是,独家和独家的手势将它们作为一个性别平等和增强妇女权能的基本游戏。",
       "howToPlay": [
-        "Default to a Kalah-style 2×6 board: place four seeds in each of the twelve small pits; leave both end stores empty.",
-        "On your turn, scoop all seeds from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
-        "If the last seed lands in your store, take another turn; if it lands in an empty pit on your side, capture that seed plus any seeds in the opposite pit into your store.",
-        "When one player’s six pits are empty, the opponent moves all remaining seeds into their store and the game ends.",
-        "Count seeds in each store; the higher total wins (ties are draws)."
+        "默认用卡拉（Kalah）式 2×6 棋盘：十二个小坑各放四粒种子，两端大仓留空。",
+        "轮到你时，舀起己方某一坑的全部种子，逆时针逐坑播一粒，包括己方大仓，跳过对方大仓。",
+        "若最后一粒落入己方大仓，可再走一手；若落入己方空坑，则把该粒连同对面坑中的种子一并收进己方大仓。",
+        "当一方六个小坑皆空时，对方把剩余种子全部收进自己的大仓，对局结束。",
+        "比较双方大仓中的种子数，多者胜（相等为和）。"
       ],
       "requirements": [
         "带有两行或多行坑的板",
@@ -111,17 +107,16 @@
         "约鲁巴播种形式 用节奏的勺子演奏。",
         "曼卡拉现代商业教学形式."
       ],
-      "name": "曼卡拉播种类游戏",
-      "fallbackEn": true
+      "name": "曼卡拉播种类游戏"
     },
     "game-0006": {
       "description": "竞速和命中骰子游戏从乌尔的皇家游戏一直延伸到波斯纳德和欧洲桌. 双陆棋混合了运气和技巧,因为玩家在击打blot时会承受15个跳棋. 加倍立方体是一个现代战略层.",
       "howToPlay": [
-        "Set checkers in the standard opening formation on the 24 points.",
-        "Roll two dice and move checkers forward using both numbers.",
-        "Hit a lone opposing blot to the bar; it must re-enter before other moves.",
-        "Stack your own checkers for safety; six consecutive points form a prime.",
-        "When all fifteen are home, bear off; first to bear off all wins."
+        "按标准开局在 24 个点上摆好棋子。",
+        "掷两枚骰子，用两个点数把棋子向前移动。",
+        "打到对方单独的闲子送上栏；对方须先重入再走其他着。",
+        "叠起己方棋子以求安全；连续六个点形成封锁（prime）。",
+        "十五子全部归位后开始回棋；先全部回完者胜。"
       ],
       "requirements": [
         "双陆棋板",
@@ -136,17 +131,16 @@
         "区域咖啡馆文化名 类似双陆棋游戏.",
         "古老的种族祖先有着独特的赛道."
       ],
-      "name": "双陆棋",
-      "fallbackEn": true
+      "name": "双陆棋"
     },
     "game-0007": {
       "description": "Senet出现在埃及各地的墓 pedestrians和埋葬物中. 它具有宗教意义,作为穿越 pedestrianster的通道。 精确规则由埃及学者从后来的文本和棋盘几何学中重建.",
       "howToPlay": [
-        "在30平方径的开口广场上放置棋子.",
-        "扔棍子或关节 移动长度。",
-        "沿着蛇道前进,当心特殊广场(安全、水、复活)。",
-        "在你们之后的重建中 解决降落对手的问题",
-        "First to bear all pawns off the final squares wins."
+        "把棋子放在 30 格赛道的起始格上。",
+        "投掷小棒或距骨决定前进格数。",
+        "沿蜿蜒路径前进；注意特殊格（安全、水域、重生）。",
+        "落到对方棋子上时，按你所采用的复原规则处理。",
+        "先把全部棋子从终点格移出者获胜。"
       ],
       "requirements": [
         "30平方块的塞网板",
@@ -154,8 +148,7 @@
         "扔棍子或关节骨"
       ],
       "idealParticipants": "2个人",
-      "name": "塞尼特",
-      "fallbackEn": true
+      "name": "塞尼特"
     },
     "game-0008": {
       "description": "Patolli是一款使用豆子作为骰子的X形赛道上的神圣的阿兹特克赛车游戏. 赌博和仪式祭品相互交织;游戏在codices和西班牙的账户中出现,因为宇宙风险变得可以玩耍.",
@@ -180,11 +173,11 @@
     "game-0009": {
       "description": "Pachisi – 印度的国产游戏 – 传统上是用奶牛玩的跨圈比赛。 绍帕是宫廷亲戚 英国的卢多和美国的帕切西是同一根本种族的商业后裔.",
       "howToPlay": [
-        "Each player sits at an arm of the cross with four pieces in nest.",
-        "Throw cowries or dice; enter pieces when the throw allows.",
-        "Move around the track; safe squares protect stacks.",
-        "Landing on a lone opponent sends them home.",
-        "First to bring all four pieces into the center wins."
+        "每位玩家坐在十字棋盘的一臂，四枚棋子放在巢中。",
+        "投掷贝壳或骰子；点数允许时把棋子进入赛道。",
+        "沿轨道前进；安全格可保护叠子。",
+        "落到对方单独的棋子上，将其送回巢中。",
+        "先把四枚棋子全部送入中央者获胜。"
       ],
       "requirements": [
         "横纹板或布",
@@ -198,17 +191,16 @@
         "美国商业改造.",
         "同一血统的德国家庭种族比赛."
       ],
-      "name": "帕奇西",
-      "fallbackEn": true
+      "name": "帕奇西"
     },
     "game-0010": {
       "description": "麻将借鉴了早期的中 1 牌和赌牌传统. 4名玩家在读取 1 个弃物时, 向着一个完整的手建立连接 。",
       "howToPlay": [
-        "建造并加入四块瓦墙;用骰子打破.",
-        "交易手(通常是13块瓷砖;14块). 东方弃先.",
-        "绘制或主张一个熔体的丢弃物,然后丢弃物。",
-        "形 c, p, k,一对.",
-        "完全手宣布麻将;按区域规则计分."
+        "砌好并拼合四面牌墙，用骰子定庄与开门。",
+        "发牌（通常每人 13 张；庄家 14 张）。东家先打出第一张。",
+        "摸牌或吃/碰/杠别人打出的牌组成面子，然后打出一张。",
+        "组成顺子、刻子、杠子与一对将。",
+        "凑成听牌后的和牌即宣告胡牌；按地方规则计分。"
       ],
       "requirements": [
         "144个瓦",
@@ -221,17 +213,16 @@
         "快速,面向乒乓球的流行风格.",
         "NMJL牌手和小丑."
       ],
-      "name": "麻将",
-      "fallbackEn": true
+      "name": "麻将"
     },
     "game-0011": {
       "description": "中国多米诺斯与骰子面对有关;欧洲双六套通过意大利和法国传播. 封锁、打分和训练游戏都共享匹配的 pip 端点——一个工具,许多表格文化。",
       "howToPlay": [
-        "Shuffle face-down and draw hands.",
-        "Lead with a double or highest tile per the variant.",
-        "Play a tile matching an open end, or draw/pass if you cannot.",
-        "Place doubles crosswise in most styles.",
-        "Win by emptying your hand or reaching a pip score."
+        "牌面朝下洗匀后抓起手牌。",
+        "按变体规则以双牌或点数最高的牌先出。",
+        "打出能接上开放端的牌；接不上则摸牌或过。",
+        "多数打法中双牌横置。",
+        "打空手牌或达到点数目标即获胜。"
       ],
       "requirements": [
         "ủر ال ال ال ال ال ال ال ال .",
@@ -242,17 +233,16 @@
         "与个人列车的双十二派对游戏.",
         "常见的客厅阻塞/拖动规则。"
       ],
-      "name": "多米诺",
-      "fallbackEn": true
+      "name": "多米诺"
     },
     "game-0012": {
       "description": "米尔斯游戏形成三连拍以捕捉. 中世纪欧洲的板块被切成板凳。",
       "howToPlay": [
-        "Place pieces alternately on empty points until all nine are down.",
-        "Move along lines to adjacent points.",
-        "Form a mill (three in a row) to remove an opposing piece not in a mill if possible.",
-        "When down to three pieces, flying jumps to any empty point are often allowed.",
-        "Win by reducing the opponent to two pieces or blocking all moves."
+        "双方轮流在空点放子，直到各放满九枚。",
+        "沿连线移到相邻空点。",
+        "排成三连（磨坊）时，可吃掉对方一枚未成磨坊的子（若可能）。",
+        "只剩三子时，常允许飞跳到任意空点。",
+        "把对方减到两子或封死其全部走法即获胜。"
       ],
       "requirements": [
         "24分的磨坊板",
@@ -264,17 +254,16 @@
         "同厂游戏的祖鲁名字.",
         "较大片点磨坊变型."
       ],
-      "name": "九子棋",
-      "fallbackEn": true
+      "name": "九子棋"
     },
     "game-0013": {
       "description": "Alquerque在排行板上的跳跃捕捉记录在Alf应给予QQs Games书中。 欧洲的拖放/检查器将这个想法移动到一个检查板上. 撒哈拉的khabaga和相关的马格里布游戏属于同一跃进家族——一种狩猎缔造和平几何。",
       "howToPlay": [
-        "Array pieces on opposing sides.",
-        "Move to an adjacent empty point along a line (or dark square in checkers).",
-        "Leap an adjacent enemy into an empty landing square to capture.",
-        "Continue multi-jumps when allowed.",
-        "Capture all enemies or immobilize them to win."
+        "将棋子分列双方阵营。",
+        "沿连线（或跳棋的深色格）移到相邻空点。",
+        "跳过相邻敌子落到空格即吃子。",
+        "规则允许时可连续多跳。",
+        "吃光或困死全部敌子即获胜。"
       ],
       "requirements": [
         "线形 Alquerque 板或检查的 draughts 板",
@@ -286,8 +275,7 @@
         "10×10 板与飞王.",
         "撒哈拉跳跃捕捉相对。"
       ],
-      "name": "阿尔克尔克 / 跳棋族",
-      "fallbackEn": true
+      "name": "阿尔克尔克 / 跳棋族"
     },
     "game-0014": {
       "description": "Fanorona是马达加斯加国家棋盘游戏, 连线捕捉产生锐利的战术. 口头历史将董事会与皇家政治和社区竞争联系起来。",
@@ -308,11 +296,11 @@
     "game-0015": {
       "description": "Carrom是南亚各地和海外侨民喜爱的一款台式游戏。 玩家们用击球手打动卡罗马人 女王需要掩护 它把台球几何学和坐椅的溶质融合在一起.",
       "howToPlay": [
-        "Powder the board lightly; place pieces in the center with the queen in the middle.",
-        "Flick the striker from your base line to hit your color into pockets.",
-        "Pocket the queen, then cover it by pocketing one of your pieces immediately after.",
-        "Fouls return pieces or cost turns per rule set.",
-        "Clear your pieces (with queen covered) to win."
+        "棋盘上薄薄撒粉；把棋子摆在中央，皇后在正中。",
+        "从己方底线弹击母子，把己方颜色打进袋口。",
+        "先打进皇后，接着立刻打进一枚己方棋子为其“盖后”。",
+        "犯规按规则退回棋子或失去回合。",
+        "在皇后已盖后的前提下清空己方棋子即获胜。"
       ],
       "requirements": [
         "有口袋的卡罗姆板",
@@ -324,17 +312,16 @@
       "variationNotes": [
         "本地的犯规和得分规则 在同一板上。"
       ],
-      "name": "卡罗姆",
-      "fallbackEn": true
+      "name": "卡罗姆"
     },
     "game-0016": {
       "description": "玩牌可能来自中国的货币卡想法,然后通过Mamluk甲板进入欧洲. 法国西装成为了数千场游戏的全球标准工具. 区域甲板是同一个便携式游戏平台的变体,而不是完全独立的玩具。",
       "howToPlay": [
-        "Use a 52-card French-suited deck; shuffle, then deal thirteen cards to each of four players for a Hearts-style starter game.",
-        "Play proceeds clockwise; lead any suit except hearts until hearts are broken; players must follow suit if able.",
-        "Highest card of the led suit wins the trick; hearts score 1 penalty point each and the queen of spades scores 13.",
-        "After all thirteen tricks, tally penalty points; rotate the dealer clockwise for the next hand.",
-        "Play hands until one player reaches 100 penalty points; the lowest score wins (or switch later to whist, rummy, or another named game)."
+        "使用一副 52 张法式花色牌；洗牌后发给四人各十三张，先玩红心类入门局。",
+        "顺时针进行；红心未破门前不可首出红心；能跟花色必须跟。",
+        "所出花色最大者赢墩；红心各计 1 罚分，黑桃皇后计 13 罚分。",
+        "十三墩打完后累计罚分；庄家顺时针轮换进入下一手。",
+        "打到有人达到 100 罚分；分最低者胜（之后也可改打惠斯特、拉米等其他牌戏）。"
       ],
       "requirements": [
         "52张法国甲板(或区域甲板)",
@@ -346,17 +333,16 @@
         "心,钟,橡,叶.",
         "40-或48-卡牌甲板用于Mus,tute等."
       ],
-      "name": "法式扑克牌",
-      "fallbackEn": true
+      "name": "法式扑克牌"
     },
     "game-0017": {
       "description": "日本的karuta传统包括季节性的hanafuda和文学的uta-garuta. 竞技诗歌卡鲁塔要求闪电识别;哈纳富达支持koi-koi. 卡片的引信季节,诗歌, 和速度进入一个家庭的玩物。",
       "howToPlay": [
-        "对于uta-garuta:一个读者高呼诗歌的前半部分.",
-        "玩家竞相打出匹配的结局牌.",
-        "拿着牌,继续走",
-        "对于hanafuda/koi-koi:交易,通过匹配的月份抓住,并宣布yaku。",
-        "同意你交易前在玩哪个卡鲁塔家族"
+        "歌留多玩法：读牌者吟出和歌的上句。",
+        "玩家竞速拍中对应的下句牌。",
+        "取走该牌，继续打完整套。",
+        "花札/こいこい玩法：发牌，按月份配对收牌，并宣告役。",
+        "发牌前先约定要玩哪一种歌留多/花札体系。"
       ],
       "requirements": [
         "花发达或uta-garuta套装",
@@ -372,11 +358,11 @@
     "game-0018": {
       "description": "甘吉法(英語:Ganjifa)是莫卧儿和地区印度法院的圆形彩绘卡片,后来在奥迪沙等地民间制作. 服饰系统(Mughal, Dashavatara)不同,但诡计的宫廷等级将它们联合起来,成为一种绘卡传统.",
       "howToPlay": [
-        "Use an 8-suit Mughal ganjifa set (96 circular cards) or a 10-suit Dashavatara set; shuffle gently without bending paint layers.",
-        "For a four-player Mughal session, deal twelve cards each; decide trump by the first suit led or a declared trump suit before play.",
-        "Players must follow the led suit if able; otherwise they may play trump or discard.",
-        "Highest trump wins the trick if any trump is played; otherwise the highest card of the led suit wins.",
-        "Each won trick scores one point (or count face cards if using a court-heavy house tally); highest trick total after all cards are played wins. Store cards flat."
+        "使用八门莫卧儿甘吉法套牌（96 张圆牌）或十门化身套牌；轻柔洗牌，勿折损漆层。",
+        "四人莫卧儿局各发十二张；以首出花色或开局前声明的将牌定将。",
+        "能跟所出花色必须跟；否则可出将或垫牌。",
+        "有将则以最大将赢墩；否则以所出花色最大者赢墩。",
+        "每赢一墩计 1 分（若用重宫廷计分则可计人像牌）；全部打完后墩分最高者胜。牌宜平放保存。"
       ],
       "requirements": [
         "圆环 ganjifa 套装",
@@ -386,17 +372,16 @@
       "variationNotes": [
         "十华达服系."
       ],
-      "name": "甘吉法",
-      "fallbackEn": true
+      "name": "甘吉法"
     },
     "game-0019": {
       "description": "羊或山羊的骨骼是无处不在的古老骰子,用于游戏和占卜. 儿童扔下并抓住他们;成年人在脸上打赌。 现代的JJ是同一种皮卡传统的技能后裔.",
       "howToPlay": [
-        "Start with five astragali (or five jacks plus a small bounce ball if using modern replicas).",
-        "Scatter the pieces, toss one aloft (or bounce the ball once), and pick up one piece before catching the tossed piece or ball.",
-        "On later turns in the same round, pick up two, then three, then four pieces in one sweep while the toss or bounce is airborne.",
-        "Failing to catch or disturbing the remaining pile ends your turn; the next player restarts at picking up ones.",
-        "First player to complete the ones–twos–threes–fours sequence scores one point; play to five points. Use plastic or wooden replicas when real bones are unavailable."
+        "准备五枚距骨（或用现代仿品：五枚小件加一颗小弹跳球）。",
+        "撒开小件，抛起一枚（或弹球一次），在接住抛起物前捡起一枚。",
+        "同一轮后续回合中，抛起期间一次扫起两枚、三枚，再四枚。",
+        "没接住或弄乱剩余堆则回合结束；下一位从捡一枚重新开始。",
+        "先完成“一—二—三—四”序列者得 1 分；先到 5 分者胜。没有真骨时可用塑料或木制仿品。"
       ],
       "requirements": [
         "[zh-Hans] Four astragali or replicas",
@@ -408,8 +393,7 @@
         "韩国五石皮卡技巧游戏.",
         "斯通斯皮卡系列游戏."
       ],
-      "name": "羊拐骨",
-      "fallbackEn": true
+      "name": "羊拐骨"
     },
     "game-0020": {
       "description": "Disk-on-string玩具出现在古代艺术中;现代的yo-yo繁荣通过菲律宾制作人和美国品牌旅行. 睡眠,循环,和弦乐技巧将一个简单的转子变成一个技能词汇. 比赛评选难度和风格.",
@@ -433,11 +417,11 @@
     "game-0021": {
       "description": "Kites可能开始于中国, 阿富汗,印度,巴西和日本的战斗机-吻合文化增加了切割线和空战. 玩具结合了工艺,天气阅读,以及公众的场景.",
       "howToPlay": [
-        "Assemble the kite; check spars and bridle balance.",
-        "With back to the wind, have a helper hold or launch as you reel tension.",
-        "Steer with line angle; climb in steady wind.",
-        "In fighter variants, maneuver to cut an opponent’s line.",
-        "Reel in before storms; never fly near power lines."
+        "组装风筝；检查骨架与笼头线的平衡。",
+        "背对风，请助手托住或放飞，同时你收线建立张力。",
+        "用线角操控方向；在稳风中爬升。",
+        "斗筝变体中，机动切割对方的线。",
+        "暴风雨前收线；切勿靠近电线放飞。"
       ],
       "requirements": [
         "基特语Name",
@@ -450,17 +434,16 @@
         "大型社区风筝和战斗事件。",
         "巴西拳击手-基特街文化."
       ],
-      "name": "放风筝",
-      "fallbackEn": true
+      "name": "放风筝"
     },
     "game-0022": {
       "description": "Cat的摇篮和相关的弦数从北极地区到大洋洲都出现了惊人的相似性. 数字按顺序在手间传递,训练空间记忆与合作. 人类学家记录了数百种与故事相关的命名图案.",
       "howToPlay": [
-        "Loop a 1–2 meter cord; Player A opens Cat’s Cradle: palms facing, strings across both hands with the palmar string crossed once.",
-        "Player B pinches the two crossed X’s, pulls them out and down, then up through the center, taking the figure onto their own hands as Soldier’s Bed (or Mattress).",
-        "Player A next takes the side strings to form Candles, then Player B takes again to form the Manger (or Cradle reverse).",
-        "If any loop slips off a finger and the figure collapses, both players restart from Player A’s opening cradle.",
-        "After one clean four-step pass (Cradle → Bed → Candles → Manger), try the sequence again or learn a solo figure such as Cup and Saucer."
+        "取 1–2 米线绕成环；玩家 A 开“猫的摇篮”：掌心相对，线跨双手，掌侧线交叉一次。",
+        "玩家 B 捏住两处交叉的 X，向外向下再向上从中心穿出，把图形接到自己手上成为“士兵床”（或褥子）。",
+        "玩家 A 再取侧线做成“蜡烛”，玩家 B 再接成“马槽”（或反向摇篮）。",
+        "若任一环从手指滑脱导致图形崩塌，双方从玩家 A 的开局摇篮重来。",
+        "干净完成四步传递（摇篮→床→蜡烛→马槽）后，可再练一遍，或学单独图形如“杯碟”。"
       ],
       "requirements": [
         "串圈约 1–2米",
@@ -471,17 +454,16 @@
         "日本弦图传统.",
         "以地方名称和叙事来串连故事."
       ],
-      "name": "翻花绳",
-      "fallbackEn": true
+      "name": "翻花绳"
     },
     "game-0023": {
       "description": "Jianzi保留着羽毛穿梭雀高空, 圆圈游戏构建节奏;独奏游戏构建 Navable记录. 韩国的jegichagi和越南的QQ cầu是同一种基本的脚步小鸟游戏.",
       "howToPlay": [
-        "Toss the shuttlecock onto your foot.",
-        "Kick with inner foot, outer foot, or knee to keep it airborne.",
-        "Count consecutive kicks; restart on a drop.",
-        "In a circle, pass to neighbors without using hands.",
-        "Agree whether hand saves are allowed (usually not)."
+        "把毽子抛到脚上。",
+        "用脚内侧、外侧或膝盖踢起，保持腾空。",
+        "数连续踢数；落地则重计。",
+        "围成圈时传给邻人，不可用手。",
+        "事先约定是否允许用手救球（通常不允许）。"
       ],
       "requirements": [
         "羽毛穿梭雀",
@@ -492,17 +474,16 @@
         "韩国蕙皮穿梭雀踢.",
         "越南穿梭雀踢运动。"
       ],
-      "name": "毽子",
-      "fallbackEn": true
+      "name": "毽子"
     },
     "game-0024": {
       "description": "Sepak takraw将排球般的网球玩法与脚,膝盖,胸部,以及头部接触方式混合. 根部位于马来-世界圈踢(sepak raga). 超头自行车踢打定义了现代的场景.",
       "howToPlay": [
-        "Mark a court about 13.4 × 6.1 m with a net 1.52 m high (men’s sport height) and use a rattan or synthetic takraw ball.",
-        "Each team of three stands on its side; the server’s teammate tosses the ball for a foot serve over the net into the opponent’s court.",
-        "A side may use at most three touches with foot, knee, chest, or head before sending the ball back; hands and arms are faults.",
-        "Score one point when the ball grounds in the opponent’s court or the opponent faults (net touch with hand, four touches, out of bounds).",
-        "Play to 21 points per set (must win by 2); best of three sets decides the match."
+        "标出约 13.4×6.1 m 的场地，网高 1.52 m（男子比赛高度），使用藤制或合成藤球。",
+        "每队三人各站一边；发球方队友抛球，用脚把球发过网进入对方半场。",
+        "一方最多用脚、膝、胸或头触球三次再回击；用手或臂为犯规。",
+        "球落在对方场内或对方犯规（手触网、四次触球、出界）得 1 分。",
+        "每局 21 分（须净胜 2 分）；三局两胜定胜负。"
       ],
       "requirements": [
         "拉坦或合成球",
@@ -512,17 +493,16 @@
       "variationNotes": [
         "合作圈保持无网."
       ],
-      "name": "藤球",
-      "fallbackEn": true
+      "name": "藤球"
     },
     "game-0025": {
       "description": "东北原住民民族的 limetball具有精神和外交的份量, 法国观察家将其命名为曲棍球. 现代法典将体育规则正式化,但用网棍摇摆和打分,仍然是深厚的传统.",
       "howToPlay": [
-        "Form two teams and set goals.",
-        "Face off at center.",
-        "Carry, pass, and shoot using the stick pocket (no hand on ball in field rules).",
-        "Score by sending the ball into the goal.",
-        "Highest score at the end wins."
+        "分成两队并设立球门。",
+        "在中场争球开局。",
+        "用球棍网兜带球、传球与射门（场地规则下不可用手持球）。",
+        "把球送入球门得分。",
+        "终场得分高者胜。"
       ],
       "requirements": [
         "曲棍球棒",
@@ -533,17 +513,16 @@
       "variationNotes": [
         "Double-stick ball games with distinct ritual contexts."
       ],
-      "name": "长曲棍球",
-      "fallbackEn": true
+      "name": "长曲棍球"
     },
     "game-0026": {
       "description": "中美球会使用重橡胶球,主要是在正规球场上用臀部击球. 礼仪、政治和体育相互交织。 现代乌拉玛在锡那罗亚作为活生生的后代继续嘻哈球演奏.",
       "howToPlay": [
-        "Play ulama de cadera on a long packed-earth alley about 65 m; two teams of three to five wear hip pads and use a solid rubber ball.",
-        "Serve by bouncing the ball to a teammate who strikes it forward with the hip only—no hands, feet, or heads.",
-        "Teams volley the ball back and forth across the midline; a bounce must stay within the alley sidelines.",
-        "Score one point when the opposing team fails to return, lets the ball stop, or sends it out of the alley.",
-        "First team to 8 points wins the game (common Sinaloa street tally); rest and switch ends after each game."
+        "在约 65 m 的夯土长巷玩髋击乌拉马（ulama de cadera）；两队各三至五人穿护髋，使用实心橡胶球。",
+        "发球时把球弹给队友，队友只用髋部向前击球——不可用手、脚或头。",
+        "两队隔中线对打；球反弹须留在巷道边线内。",
+        "对方未能回球、让球停下或打出巷道外时得 1 分。",
+        "先到 8 分者胜（锡那罗亚街头常见计法）；每局后休息并交换场地。"
       ],
       "requirements": [
         "固有悖于橡胶球",
@@ -554,8 +533,7 @@
       "variationNotes": [
         "锡那罗亚嘻哈-乌拉玛续作."
       ],
-      "name": "中美洲球戏 / 乌拉马",
-      "fallbackEn": true
+      "name": "中美洲球戏 / 乌拉马"
     },
     "game-0027": {
       "description": "Kokeshi是来自北部Honshu的木偶, 地区学校(纳鲁科,鹤yu等)在头部关节和花卉绘画上存在差异.",
@@ -612,11 +590,11 @@
     "game-0030": {
       "description": "玉米壳娃娃是几个土著民族和后来的农村定居者的传统。 脸部常是空白的,带有社区特有的关于原因的教义. 做娃娃是一半的戏。",
       "howToPlay": [
-        "Soak husks; fold and tie a head, arms, and body or skirt.",
-        "Air-dry the finished doll.",
-        "Invent caregiving play or display the figure.",
-        "Follow community protocols when learning inside a living tradition.",
-        "Keep dolls dry to prevent mold."
+        "浸泡玉米苞叶；折叠并捆扎出头、手臂与身体或裙摆。",
+        "做好的玩偶晾干。",
+        "编造照料游戏，或把玩偶陈列起来。",
+        "在仍在传承的社区中学习时，遵守当地礼仪与规范。",
+        "保持干燥以防发霉。"
       ],
       "requirements": [
         "干玉米壳",
@@ -624,17 +602,16 @@
         "可选的玉米丝毛"
       ],
       "idealParticipants": "一个人",
-      "name": "玉米壳娃娃",
-      "fallbackEn": true
+      "name": "玉米壳娃娃"
     },
     "game-0031": {
       "description": "杯球玩具挑战手眼计时:将捆绑的球摆到杯子上或摆到钉子上. 法式的bilboquet,墨西哥的balero,和日式的kendama,是一个技能家族的变体,有着不同的花招词汇.",
       "howToPlay": [
-        "Hold the handle with the ball hanging on its cord.",
-        "Swing upward and catch the ball in a cup or on the spike.",
-        "Progress to flips and named trick sequences.",
-        "Count consecutive catches.",
-        "Practice over a soft area while learning."
+        "握住手柄，让球吊在绳上。",
+        "向上甩起，用杯口或尖钉接住球。",
+        "进阶到翻转与具名技巧序列。",
+        "数连续接住的次数。",
+        "初学时在柔软地面上练习。"
       ],
       "requirements": [
         "球杯或球杆玩具"
@@ -645,8 +622,7 @@
         "多杯尖端玩具 和广泛的诡计词典。",
         "欧洲客厅杯球。"
       ],
-      "name": "杯与球 / 剑玉族",
-      "fallbackEn": true
+      "name": "杯与球 / 剑玉族"
     },
     "game-0032": {
       "description": "方格gram将一个方格分解成七色,用来形成硅胶. 它从中国传播到19世纪的客厅狂热. 几何转换和负空间是玩具安静的教训。",
@@ -667,11 +643,11 @@
     "game-0033": {
       "description": "Ernő Rubik的立方体普及三维组合谜题, 层-转力学将群脾气理论隐藏在多彩的玩具中.",
       "howToPlay": [
-        "Scramble by turning faces randomly.",
-        "Restore each face to a solid color using layer methods or intuition.",
-        "Beginners often solve the white cross, then corners, middle edges, and last layer.",
-        "Advanced solvers memorize algorithms for speed.",
-        "Optional: time solves with a stackmat or phone timer."
+        "随意拧转各面打乱魔方。",
+        "用层先法或直觉把每一面还原为纯色。",
+        "初学者常先做白十字，再角块、中层棱块，最后一层。",
+        "进阶玩家背公式以追求速度。",
+        "可选：用计时垫或手机计时。"
       ],
       "requirements": [
         "3×3 立方体拼图"
@@ -681,8 +657,7 @@
         "同一机制的更小的顺序.",
         "具有还原方法的更高序立方体."
       ],
-      "name": "魔方",
-      "fallbackEn": true
+      "name": "魔方"
     },
     "game-0034": {
       "description": "堆积块是最古老的建筑玩具之一——石头、粘土和木材堆积物出现在不同文明之间。 弗罗贝勒礼物在19世纪将教育街区剧正式化. 基本行为是从模块化固体组装形式。",
@@ -741,11 +716,11 @@
     "game-0037": {
       "description": "在世界范围内的收获仪式、学校体育和乡村节日中都出现了战争的牵引。 一些东亚和太平洋形式带有季节性平衡的宇宙意义。 两支队伍,一支绳子——元素协调比赛.",
       "howToPlay": [
-        "Mark a center line and team foul lines.",
-        "Teams grip evenly; avoid wrapping the rope around limbs in sport rules.",
-        "On a signal, pull with short coordinated heaves.",
-        "Win by pulling the center marker across your line.",
-        "Stop immediately if someone slips dangerously."
+        "标出中线与双方犯规线。",
+        "双方均匀握绳；竞技规则下勿把绳缠绕肢体。",
+        "发令后以短促协调的发力拉动。",
+        "把中线标记拉过己方线即获胜。",
+        "有人危险滑倒时立即停止。"
       ],
       "requirements": [
         "强绳",
@@ -757,17 +732,16 @@
         "仪式历事中的社区绳索.",
         "在节日周围举行乡村拖拉仪式."
       ],
-      "name": "拔河",
-      "fallbackEn": true
+      "name": "拔河"
     },
     "game-0038": {
       "description": "捉迷藏是一款近乎普遍的儿童游戏, 它排练了隐形的,空间的记忆, 和被找到的社会刺激。 建筑——从Kasbah巷道到公寓楼梯间——重新塑造战略。",
       "howToPlay": [
-        "Pick one seeker and a home base (tree, wall, or stoop); set hard bounds—no street, no locked rooms.",
-        "The seeker faces the base and counts aloud to 50 while others hide inside the bounds.",
-        "The seeker shouts “Ready or not, here I come,” then tags hiders by touch; tagged players walk to a jail spot beside home base.",
-        "A free hider may dash to base, touch it, and call “Free [name]!” to release one jailed player; if the seeker tags them on the way, they go to jail.",
-        "When all hiders are jailed, or after five minutes, the first player tagged becomes the next seeker."
+        "选出一名寻找者与一个大本营（树、墙或台阶）；划定硬边界——不上街、不进上锁房间。",
+        "寻找者面向大本营大声数到 50，其他人在界内躲藏。",
+        "寻找者喊“准备好了没有，我来啦”，再以触摸抓人；被抓者走到大本营旁的“监狱”。",
+        "仍自由的躲藏者可冲到大本营触摸并喊“释放某某！”解救一名被囚者；途中被抓则自己入狱。",
+        "全部入狱或满五分钟后，第一个被抓者成为下一轮寻找者。"
       ],
       "requirements": [
         "安全地带",
@@ -777,17 +751,16 @@
       "variationNotes": [
         "反向隐藏:一个隐藏,另一个加入隐藏点."
       ],
-      "name": "捉迷藏",
-      "fallbackEn": true
+      "name": "捉迷藏"
     },
     "game-0039": {
       "description": "丢弃标记的跳动网格出现于各大洲,带有局部形状和韵律. 平衡 旋转 和人行道 粉笔艺术在一个简单的种族中通过编号的细胞相遇。",
       "howToPlay": [
-        "Draw a numbered hopscotch grid.",
-        "Toss a marker into the next square; it must land cleanly inside.",
-        "Hop through on one foot, skipping the occupied square.",
-        "Retrieve the marker on the return without faults.",
-        "First to complete all numbers wins."
+        "画出标有数字的跳房子格子。",
+        "把标记物投进下一格；须干净落在格内。",
+        "单脚跳过，跳过被占的格子。",
+        "回程无失误地捡回标记物。",
+        "先完成全部数字者获胜。"
       ],
       "requirements": [
         "粉笔或划痕网格",
@@ -798,17 +771,16 @@
         "西班牙语hop这项倡议命名和网格变体.",
         "法国的霍斯科奇网格和学园规则."
       ],
-      "name": "跳房子",
-      "fallbackEn": true
+      "name": "跳房子"
     },
     "game-0040": {
       "description": "大理石戒指几乎是全球儿童游戏。 克莱,石头, 和后来的玻璃球体 被指针击打目标 从一个圆。 \" 保持\"和\"友人\"决定胜者是否保留俘获的大理石.",
       "howToPlay": [
-        "Draw a circle and place target marbles inside.",
-        "Knuckle-shoot from the edge to knock targets out.",
-        "Captured marbles score or are kept depending on agreed stakes.",
-        "If your shooter remains in-ring, many rules allow another shot from there.",
-        "Clear the ring or reach a point goal to win."
+        "画一个圆，把目标弹珠放在圈内。",
+        "从边缘用指节弹出击球，把目标打出圈外。",
+        "打出的弹珠计分或归己，视约定赌注而定。",
+        "若射击珠仍留在圈内，许多规则允许从该处再射一杆。",
+        "清空圆圈或达到目标分数即获胜。"
       ],
       "requirements": [
         "玻璃、粘土或石头大理石",
@@ -818,17 +790,16 @@
       "variationNotes": [
         "正式的大理石旅游圈规则."
       ],
-      "name": "弹珠",
-      "fallbackEn": true
+      "name": "弹珠"
     },
     "game-0041": {
       "description": "顶部是人类最古老的机械玩具, 弦乐发射和鞭击持续形式支持耐力比赛和战斗. 地方名称不同;物理课共享.",
       "howToPlay": [
-        "Wind string around the body or prepare a whip.",
-        "Launch with a smooth pull so the tip spins on hard ground.",
-        "Optionally whip to add energy.",
-        "Compete for longest spin or for knocking out rivals.",
-        "Repair worn tips as needed."
+        "把线绕在陀螺身，或准备好鞭绳。",
+        "平稳一拉放出，使尖端在硬地上旋转。",
+        "可选：用鞭轻抽补充动能。",
+        "比谁转得最久，或比撞倒对手。",
+        "尖端磨损时及时修理或更换。"
       ],
       "requirements": [
         "木头 粘土 或 金属",
@@ -842,17 +813,16 @@
         "南亚鞭打/弦乐顶.",
         "韩鞭顶."
       ],
-      "name": "陀螺",
-      "fallbackEn": true
+      "name": "陀螺"
     },
     "game-0042": {
       "description": "Hnefatafl是诺斯不对称狩猎:国王和维权者试图在网格上躲避攻击者. 变体遍布维京世界. 力量平衡和王位方块定义了紧张的终局.",
       "howToPlay": [
-        "Play Copenhagen Hnefatafl on an 11×11 board: place the king on the center throne with 12 defenders in a cross; place 24 attackers in the four edge camps.",
-        "Attackers move first. Every piece slides any number of empty squares like a rook; none may jump.",
-        "Capture an enemy by sandwiching it between two of your pieces on a rank or file (custodial capture); the throne and corner squares can help bracket.",
-        "Attackers win by capturing the king on two opposite sides (or against the throne/edge as a second side). Defenders win if the king reaches any of the four corner sanctuary squares.",
-        "Pieces may not stop on the throne except the king; attackers may not occupy the corners."
+        "在 11×11 哥本哈根塔夫棋盘上：国王放中央王座，12 名卫士呈十字；24 名攻方放在四边营地。",
+        "攻方先行。每子可像国际象棋车一样沿空格滑任意格；不可跳跃。",
+        "在同一行或列用两子夹住敌子即吃（监管吃法）；王座与角格可协助夹击。",
+        "攻方从相对两侧夹住国王（或以王座/边线为第二侧）即胜；卫方国王到达四角任一庇护格即胜。",
+        "除国王外棋子不可停在王座；攻方不可占据角格。"
       ],
       "requirements": [
         "纹章板",
@@ -863,17 +833,16 @@
         "Linnaeus记录了萨米塔弗尔家族。",
         "我应该在更小的板子上看到爱尔兰塔夫尔的亲戚"
       ],
-      "name": "王桌棋",
-      "fallbackEn": true
+      "name": "王桌棋"
     },
     "game-0043": {
       "description": "十字架上的不对称猎杀:鹅试图拐弯一只跳跃捕捉的狐狸. 与世界各地许多食肉动物捕食板有关——这里的欧洲食堂形式以表亲为单位编目为变体.",
       "howToPlay": [
-        "Place geese on one end and the fox centrally or opposite per rules.",
-        "Geese move first or second by agreement; they walk without jumping.",
-        "Fox may jump adjacent geese to capture.",
-        "Geese win by immobilizing the fox; fox wins by capturing enough geese.",
-        "Use a modern printed fox-and-geese board if historic boards are unavailable."
+        "按规则把鹅放在一端，狐狸放中央或对面。",
+        "事先约定鹅先走或后走；鹅只能走步不能跳。",
+        "狐狸可跳过相邻的鹅来吃子。",
+        "鹅困住狐狸则鹅胜；狐狸吃到足够多的鹅则狐狸胜。",
+        "没有历史棋盘时，可用现代印刷的狐狸与鹅棋盘。"
       ],
       "requirements": [
         "交叉",
@@ -884,8 +853,7 @@
         "猎兔不对称相对.",
         "螺旋捕食者-猎物种族表弟."
       ],
-      "name": "狐狸与鹅",
-      "fallbackEn": true
+      "name": "狐狸与鹅"
     },
     "game-0044": {
       "description": "类似Go的网格上的五进一排是古代东亚的消遣,形式为gomoku和renju. 区别于吴的领地得分——进球为直五.",
@@ -909,11 +877,11 @@
     "game-0045": {
       "description": "Reversi翻翻三明治盘 声称多数颜色。 奥赛罗将现代品牌标准化并开放. 一场纯粹的布置与滑翔比赛 与爆炸性终局摇摆。",
       "howToPlay": [
-        "Place four discs in the center in the standard Othello opening.",
-        "Black places first on a square that flips at least one white disc.",
-        "Flip all sandwiched opponent discs in every direction.",
-        "A player unable to flip passes; when both cannot move, count discs.",
-        "Majority color wins."
+        "按标准奥赛罗开局在中央放四枚碟片。",
+        "黑方先在至少能翻转一枚白碟的格子落子。",
+        "沿各个方向翻转所有被夹住的对方碟片。",
+        "无法翻转则过；双方都不能走时数碟。",
+        "颜色多者获胜。"
       ],
       "requirements": [
         "8×8 编写关于",
@@ -923,17 +891,16 @@
       "variationNotes": [
         "具有商标意义的\"反向游戏\"现代标准化."
       ],
-      "name": "黑白棋 / 奥赛罗",
-      "fallbackEn": true
+      "name": "黑白棋 / 奥赛罗"
     },
     "game-0046": {
       "description": "在带有溢价方格的网格上,从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"到\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"到\"从\"从\"从\"从\"从\"有一定的\"到\"从\"从\"从\"从\"从\"\"\"从\"\"从\"从\"\"从\"从\"从\"\"从\"从\"从\"从\"从\"从\"从\"\"\"从\"从\"从\"从\"从\"\"\"从\"从\"从\"从\"从\"从\"从\"从\"从\"\"从\"从\"从\"从\"从\"从\"从\"从\"从\"从\"\"\"从\"\"从\"向他们\"从\"从\"从\"从\"从\"从\"从\"\"从\"\"从\"\"从\"从\"从\"\"从\"从\"从\"\"从\"从\"\"从\" 起源于美国填字文化,它成为带有语言特有组合的全球单词运动.",
       "howToPlay": [
-        "Draw seven tiles; place first word through the center star.",
-        "Build new words connecting to existing letters crossword-style.",
-        "Score letter values times premiums; tally each turn.",
-        "Draw back to seven tiles after each play.",
-        "Highest score when tiles run out and one player empties their rack wins."
+        "抽七张字母牌；第一个词须经过中央星格。",
+        "以填字方式接在已有字母上组成新词。",
+        "按字母分乘以奖励格计分；每回合累计。",
+        "每次出牌后补回七张。",
+        "牌袋用尽且有人打空手架时，总分最高者胜。"
       ],
       "requirements": [
         "拼字板",
@@ -942,17 +909,16 @@
         "挑战词典"
       ],
       "idealParticipants": "2 - 4人",
-      "name": "拼字游戏",
-      "fallbackEn": true
+      "name": "拼字游戏"
     },
     "game-0047": {
       "description": "Paramapada sopanam / gyan chaupar)以功德教因果报应如梯子,恶习如蛇. 英国的蛇队和梯队将儿童竞赛世俗化——同样是基本的上下道德轨道。",
       "howToPlay": [
-        "Place tokens off the board; roll to enter.",
-        "Move forward by the die.",
-        "Land at a ladder base to climb; land on a snake head to slide down.",
-        "Exact roll may be required to finish.",
-        "First to the final square wins."
+        "把棋子放在盘外；掷骰进入赛道。",
+        "按骰点前进。",
+        "落到梯脚则爬上；落到蛇头则滑下。",
+        "到达终点可能需要正好的点数。",
+        "先到最后一格者获胜。"
       ],
       "requirements": [
         "带蛇和梯子的网格板",
@@ -964,17 +930,16 @@
         "具有美德和恶习的教父",
         "美国密尔顿 布拉德利的品牌 相同的种族。"
       ],
-      "name": "蛇梯棋",
-      "fallbackEn": true
+      "name": "蛇梯棋"
     },
     "game-0048": {
       "description": "地产交易种族游戏批评或庆祝地产资本主义. Magie's Landlord's Game 之前的帕克兄弟独占游戏. 本地版将世界城市映射到相同的购房-租房-银行破产环路.",
       "howToPlay": [
-        "每个玩家从分配的现金开始,在Go处有一个符号.",
-        "Roll dice, move, and buy unowned properties you land on—or pay rent.",
-        "在完整的彩色套装上建造房屋/酒店",
-        "管理抵押贷款和交易。",
-        "最后一个没有破产的玩家获胜 。"
+        "每位玩家从分配的现金开始，棋子放在“出发”（Go）处。",
+        "掷骰前进，可购买落到的无主地产——或支付租金。",
+        "集齐同色组后可建房屋/旅馆。",
+        "管理抵押与交易。",
+        "最后未破产的玩家获胜。"
       ],
       "requirements": [
         "垄断套装",
@@ -985,25 +950,23 @@
       "variationNotes": [
         "伊丽莎白·马吉执教祖先."
       ],
-      "name": "大富翁",
-      "fallbackEn": true
+      "name": "大富翁"
     },
     "game-0049": {
       "description": "Jenga 将古老的兴奋 清除碎块 从堆堆而不塌。 Leslie Scott在全球营销了塔游戏;物理谜题是所有玩家共享的堆栈.",
       "howToPlay": [
-        "Build the tower in alternating crosswise layers of three.",
-        "On your turn, remove one block below the incomplete top layer using one hand.",
-        "Place it on the top to complete or continue layers.",
-        "The player who topples the tower loses (or the prior player wins).",
-        "Rebuild to play again."
+        "以每层三块、交叉叠放的方式搭塔。",
+        "轮到你时，用一只手从尚未完成的顶层以下抽出一块。",
+        "把抽出的块放到塔顶，完成或继续叠层。",
+        "推倒塔的人输（或前一位玩家胜）。",
+        "重新搭建再玩一局。"
       ],
       "requirements": [
         "54精觅区块",
         "稳定表"
       ],
       "idealParticipants": "1–8 people",
-      "name": "叠叠乐",
-      "fallbackEn": true
+      "name": "叠叠乐"
     },
     "game-0050": {
       "description": "汉语Kongzhu / diabolo在棍子之间旋转, 欧洲的马戏团鸠养并更名为diabolo.",
@@ -1063,11 +1026,11 @@
     "game-0053": {
       "description": "铸造或印刷的微型士兵支持战争游戏和后来的战役。 德国的制锡厂和英国的空心广播 在全世界传播 游戏范围从简单的线战到规则重的模拟.",
       "howToPlay": [
-        "Array two equal forces of at least ten figures each on opposite ends of a table or sand tray; place one flag token behind each line.",
-        "On a turn, move up to three of your figures up to one hand-span forward, sideways, or diagonally.",
-        "If a figure ends within one finger-width of an enemy, roll one six-sided die: 4–6 removes the enemy; 1–3 misses. Remove casualties to a dead pile.",
-        "Capture the opponent’s flag by ending a move on its square, or eliminate every enemy figure, to win.",
-        "Store figures upright in a box with tissue so paint and bayonets do not chip."
+        "在桌面或沙盘两端各摆至少十个等量兵人；各方战线后方放一面旗标。",
+        "每回合最多移动三枚己方人偶，各前进至多一掌宽，可前、侧或斜向。",
+        "若人偶停在距敌人一指宽内，掷一枚六面骰：4–6 击退敌人；1–3 未中。伤亡移到死堆。",
+        "移动结束落在对方旗格上夺旗，或消灭全部敌方人偶，即获胜。",
+        "人偶直立收纳于垫有软纸的盒中，以免油漆与刺刀磕损。"
       ],
       "requirements": [
         "迷你士兵",
@@ -1077,17 +1040,16 @@
       "variationNotes": [
         "早期大规模涂装的平 我们正在用平板锡兵"
       ],
-      "name": "玩具士兵",
-      "fallbackEn": true
+      "name": "玩具士兵"
     },
     "game-0054": {
       "description": "小型茶具让孩子们排练招待仪式. 瓷器和锡的版本追踪了从英国到日本的成人茶文化.",
       "howToPlay": [
-        "为娃娃曙光或朋友设定位置.",
-        "倒(真或假想的)茶不尖杯.",
-        "练习服务于秩序和礼貌的短语.",
-        "清洗和收放作为游戏的一部分。",
-        "没有记分游戏 。"
+        "为玩偶或朋友摆好座位。",
+        "倒茶（真茶或想象）且不碰倒杯子。",
+        "练习上茶顺序与礼貌用语。",
+        "清洗与收纳也算游戏的一部分。",
+        "不计分——礼仪角色扮演。"
       ],
       "requirements": [
         "迷你杯和锅",
@@ -1167,11 +1129,11 @@
     "game-0059": {
       "description": "毛利波依在舞蹈火车手腕节奏和故事讲述中摇摆. 现代的火灾和性能并未将玩具扩展到全球;传统环境仍然是文化习俗。",
       "howToPlay": [
-        "持绳以重清人.",
-        "以简单的侧 但我们的圈子旋转一拍",
-        "随着技能的增长,添加图案.",
-        "在文化表演方面,受制于歌曲和舞蹈.",
-        "使用消防小便时,只 39."
+        "握住带重锤的绳，远离旁人。",
+        "按节拍做简单的侧向圆周摆动。",
+        "技术提升后再加入花样。",
+        "在文化表演中，跟随歌曲与编舞。",
+        "火流球仅可在专业安全规范下使用。"
       ],
       "requirements": [
         "Poi(松动或现代电线重量)",
@@ -1199,11 +1161,11 @@
     "game-0061": {
       "description": "D 我以为 我请她去参加婚礼 它作为曼卡拉的一个区域标准提出,同时仍是一个播种家庭。",
       "howToPlay": [
-        "Use a boat board with seven small cups per side plus one large store (lumbung) at each end; place seven seeds in every small cup.",
-        "On your turn, scoop one of your cups and sow one seed clockwise into each following cup, including your store but skipping the opponent’s store.",
-        "If the last seed lands in your store, sow again immediately from any of your cups that still hold seeds (relay turn).",
-        "If the last seed lands in an empty cup on your side, capture that seed and all seeds in the opposite cup into your store.",
-        "When one player cannot move, remaining seeds go to the owner of those cups; most seeds in store wins."
+        "使用船形棋盘：每侧七个小杯，两端各一个大仓（lumbung）；每个小杯放七粒种子。",
+        "轮到你时，舀起己方一杯，顺时针逐杯播一粒，包括己方大仓，跳过对方大仓。",
+        "若最后一粒落入己方大仓，可立刻从仍有种子的己方杯再播（接力回合）。",
+        "若最后一粒落入己方空杯，则把该粒与对面杯中全部种子收进己方大仓。",
+        "一方无法走动时，剩余种子归各杯主人；大仓种子最多者胜。"
       ],
       "requirements": [
         "Dakon 船板",
@@ -1213,17 +1175,16 @@
       "variationNotes": [
         "密切相关的马来船板播种游戏——同一家人."
       ],
-      "name": "达孔",
-      "fallbackEn": true
+      "name": "达孔"
     },
     "game-0062": {
       "description": "成卡(英語:Sungka)是菲律宾船形的播种游戏,表妹为康格卡克. 棋盘是传家宝;游戏混合播音速度和捕获时间。",
       "howToPlay": [
-        "Seat two players at a sungka board with seven small cups (bahay) per side and one head store (ulo) each; place seven cowries or seeds in every bahay.",
-        "Scoop all seeds from one of your bahay and sow counterclockwise one-by-one into each following cup, including your ulo but skipping the opponent’s ulo.",
-        "If the last seed lands in your ulo, take another turn; if it lands in an empty bahay on your side, capture the opposite bahay’s seeds into your ulo.",
-        "A player who empties their side early waits while the opponent may still sow; continue until neither side has seeds left in bahay.",
-        "Count cowries in each ulo; the higher store wins."
+        "两人坐在双六棋（sungka）旁：每侧七个小杯（bahay）、各一端仓（ulo）；每个 bahay 放七枚贝壳或种子。",
+        "舀起己方一个 bahay 的全部种子，逆时针逐杯播一粒，包括己方 ulo，跳过对方 ulo。",
+        "若最后一粒落入己方 ulo，再走一手；若落入己方空 bahay，则把对面 bahay 的种子收进己方 ulo。",
+        "较早清空己侧的一方等待，对方仍可继续播；直到两侧 bahay 都无种子。",
+        "数各方 ulo 中的贝壳，多者胜。"
       ],
       "requirements": [
         "成卡板",
@@ -1233,19 +1194,18 @@
       "variationNotes": [
         "播种船板内的马来语相对变化."
       ],
-      "name": "松卡",
-      "fallbackEn": true
+      "name": "松卡"
     }
   },
   "zh-Hant": {
     "game-0001": {
       "description": "Chess evolved from chaturanga, a war-simulation of infantry, cavalry, elephants, and chariots. As it traveled through Persia (shatranj) into the Islamic world and medieval Europe, pieces became court ranks. The modern queen and bishop powers crystallized in late medieval Europe. Across cultures it has stood for intellect, foresight, and educated leisure.",
       "howToPlay": [
-        "Orient the board so each player has a light square on the right-hand corner.",
-        "Place pieces on the back rank (rook, knight, bishop, queen on her color, king, bishop, knight, rook) with pawns on the second rank.",
-        "White moves first; players alternate moving one piece (except when castling).",
-        "Capture by landing on an opponent's piece. Win by checkmating the king.",
-        "Use special moves when legal: castling, en passant, and pawn promotion."
+        "將棋盤擺正，使每位棋手右側角格為淺色格。",
+        "把棋子放在底線（車、馬、象、後在本色格、王、象、馬、車），兵放在第二橫排。",
+        "白方先行；雙方輪流走一枚棋子（王車易位除外）。",
+        "走到對方棋子所在格即可吃子。將死對方的王即獲勝。",
+        "在規則允許時使用特殊著法：王車易位、吃過路兵與兵的升變。"
       ],
       "requirements": [
         "国际象棋( 8×8)",
@@ -1260,17 +1220,16 @@
         "Thai chess cousin with different piece powers and promotion rules.",
         "Burmese chess with free setup behind the pawns."
       ],
-      "name": "國際象棋",
-      "fallbackEn": true
+      "name": "國際象棋"
     },
     "game-0002": {
       "description": "Go is an encirclement game of territory. Stones never move once placed; captured groups are removed. One of the Four Arts of the Chinese scholar, it spread to Korea (baduk) and Japan (igo). Play encodes balance, influence, and living shape rather than direct capture of a king.",
       "howToPlay": [
-        "Black places the first stone on a grid intersection.",
-        "Players alternate placing one stone; stones do not move after placement.",
-        "A group without liberties (empty adjacent intersections) is captured and removed.",
-        "Do not recreate the previous full-board position (ko) or play suicidal moves unless they capture.",
-        "When both pass, score territory plus captives (rules vary by country); higher score wins."
+        "黑方先在交叉點落第一子。",
+        "雙方輪流各下一子；落子後棋子不再移動。",
+        "沒有氣（相鄰空交叉點）的棋塊被提吃並拿走。",
+        "不得再現上一手的全盤局面（劫），也不得下自殺棋，除非能提吃對方。",
+        "雙方都停著後，按地域加死子計分（各國規則略有不同）；分高者勝。"
       ],
       "requirements": [
         "19×19板(或13×被指定为13/9×9).",
@@ -1282,17 +1241,16 @@
         "Korean tradition with the same core rules and distinct teaching culture.",
         "日本專業名單和地區得分會議"
       ],
-      "name": "圍棋",
-      "fallbackEn": true
+      "name": "圍棋"
     },
     "game-0003": {
       "description": "包括將軍、顧問、大象、馬匹、戰車、大炮、軍人, 火炮的跳樓捕捉與宮殿禁閉, 這仍是中國各地最受歡迎的公園街游戲。",
       "howToPlay": [
-        "Arrange pieces on starting points on opposite sides of the river.",
-        "Red moves first; pieces move on points according to their type.",
-        "Cannons slide like chariots but capture only by jumping over exactly one screen.",
-        "Generals stay in the palace; opposing generals may not face on an open file.",
-        "Checkmate or stalemate the opposing general to win."
+        "將棋子按開局擺在河界兩側的起點上。",
+        "紅方先行；各子按自身走法在點上移動。",
+        "炮像車一樣走直線，但吃子時必須隔正好一個炮架翻打。",
+        "將/帥不出九宮；雙方將帥不得在同一直線上照面。",
+        "將死或困斃對方將/帥即獲勝。"
       ],
       "requirements": [
         "香琪有河和宮殿",
@@ -1302,17 +1260,16 @@
       "variationNotes": [
         "Korean cousin without a river and with different elephant/horse moves."
       ],
-      "name": "中國象棋",
-      "fallbackEn": true
+      "name": "中國象棋"
     },
     "game-0004": {
       "description": "Shogi是日本的棋子, 楔形碎片指向對手 專業的Shogi仍然是日本主要的智障運動。",
       "howToPlay": [
-        "以尖端對付對手",
-        "傳送先移動 – 移動或每轉移一塊 。",
-        "Captured pieces go to your stand and may be dropped later on empty squares (with pawn/check restrictions).",
-        "在最后3名中提升合格棋子。",
-        "贏定在此方面的對手"
+        "將棋子尖端朝向對方擺好。",
+        "先手先行——每回合移動或打入一枚棋子。",
+        "吃掉的棋子進入持駒臺，之後可打入空格（受步兵與王手等限制）。",
+        "可升變的棋子進入敵陣後三排可升變。",
+        "將死對方的王即獲勝。"
       ],
       "requirements": [
         "9×9 shogi 板",
@@ -1323,17 +1280,16 @@
       "variationNotes": [
         "更大的歷史變體 有很多獨特的作品類型"
       ],
-      "name": "將棋",
-      "fallbackEn": true
+      "name": "將棋"
     },
     "game-0005": {
       "description": "玩家在木頭、石頭或土上雕刻的坑裡放種。 包括非洲、中東和南亞。",
       "howToPlay": [
-        "Default to a Kalah-style 2×6 board: place four seeds in each of the twelve small pits; leave both end stores empty.",
-        "On your turn, scoop all seeds from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
-        "If the last seed lands in your store, take another turn; if it lands in an empty pit on your side, capture that seed plus any seeds in the opposite pit into your store.",
-        "When one player’s six pits are empty, the opponent moves all remaining seeds into their store and the game ends.",
-        "Count seeds in each store; the higher total wins (ties are draws)."
+        "默認用卡拉（Kalah）式 2×6 棋盤：十二個小坑各放四粒種子，兩端大倉留空。",
+        "輪到你時，舀起己方某一坑的全部種子，逆時針逐坑播一粒，包括己方大倉，跳過對方大倉。",
+        "若最後一粒落入己方大倉，可再走一手；若落入己方空坑，則把該粒連同對面坑中的種子一併收進己方大倉。",
+        "當一方六個小坑皆空時，對方把剩餘種子全部收進自己的大倉，對局結束。",
+        "比較雙方大倉中的種子數，多者勝（相等為和）。"
       ],
       "requirements": [
         "有兩排或多排坑的棋盤",
@@ -1349,17 +1305,16 @@
         "Yoruba播送有節奏的曲子。",
         "曼卡拉的現代商業教學形式"
       ],
-      "name": "曼卡拉播種類遊戲",
-      "fallbackEn": true
+      "name": "曼卡拉播種類遊戲"
     },
     "game-0006": {
       "description": "從厄爾的皇家遊戲到波斯納德和歐洲的桌子, 雙陸棋混合了運氣和技術, 雙倍立方體是現代戰略層",
       "howToPlay": [
-        "Set checkers in the standard opening formation on the 24 points.",
-        "Roll two dice and move checkers forward using both numbers.",
-        "Hit a lone opposing blot to the bar; it must re-enter before other moves.",
-        "Stack your own checkers for safety; six consecutive points form a prime.",
-        "When all fifteen are home, bear off; first to bear off all wins."
+        "按標準開局在 24 個點上擺好棋子。",
+        "擲兩枚骰子，用兩個點數把棋子向前移動。",
+        "打到對方單獨的閒子送上欄；對方須先重入再走其他著。",
+        "疊起己方棋子以求安全；連續六個點形成封鎖（prime）。",
+        "十五子全部歸位後開始回棋；先全部回完者勝。"
       ],
       "requirements": [
         "雙陆棋板",
@@ -1374,17 +1329,16 @@
         "Regional café culture name for backgammon-like play.",
         "古老的種族祖先 和獨特的賽道"
       ],
-      "name": "雙陸棋",
-      "fallbackEn": true
+      "name": "雙陸棋"
     },
     "game-0007": {
       "description": "塞內特出現在古埃及的墓志和葬品中。 它具有宗教意義 作為穿越來世的通道 埃及學者從後世的文字和棋盤几何學中 没问题",
       "howToPlay": [
-        "在30平方碼的開放方位上安置棋子",
-        "扔棍子或指骨做移動 快去",
-        "Advance along the serpentine path; heed special squares (safe, water, rebirth).",
-        "Resolve landings on opponents per the reconstruction you follow.",
-        "首先讓所有棋子從最後的方塊上贏"
+        "把棋子放在 30 格賽道的起始格上。",
+        "投擲小棒或距骨決定前進格數。",
+        "沿蜿蜒路徑前進；注意特殊格（安全、水域、重生）。",
+        "落到對方棋子上時，按你所採用的復原規則處理。",
+        "先把全部棋子從終點格移出者獲勝。"
       ],
       "requirements": [
         "30平方",
@@ -1392,8 +1346,7 @@
         "扔棍在现有资源范围内"
       ],
       "idealParticipants": "2人",
-      "name": "塞尼特",
-      "fallbackEn": true
+      "name": "塞尼特"
     },
     "game-0008": {
       "description": "Patolli was a sacred Aztec race game on an X-shaped track using beans as dice. Gambling and ritual offerings intertwined; the game appears in codices and Spanish accounts as cosmic risk made playable.",
@@ -1419,11 +1372,11 @@
     "game-0009": {
       "description": "Pachisi – 「印度的國家遊戲」, 喬帕是親戚 英國的盧多和美國的帕切西 是同一個根本种族的商業后代",
       "howToPlay": [
-        "Each player sits at an arm of the cross with four pieces in nest.",
-        "Throw cowries or dice; enter pieces when the throw allows.",
-        "Move around the track; safe squares protect stacks.",
-        "Landing on a lone opponent sends them home.",
-        "First to bring all four pieces into the center wins."
+        "每位玩家坐在十字棋盤的一臂，四枚棋子放在巢中。",
+        "投擲貝殼或骰子；點數允許時把棋子進入賽道。",
+        "沿軌道前進；安全格可保護疊子。",
+        "落到對方單獨的棋子上，將其送回巢中。",
+        "先把四枚棋子全部送入中央者獲勝。"
       ],
       "requirements": [
         "跨形板或布",
@@ -1437,17 +1390,16 @@
         "美國廣告改編",
         "德國家族的賽車比賽"
       ],
-      "name": "帕奇西",
-      "fallbackEn": true
+      "name": "帕奇西"
     },
     "game-0010": {
       "description": "麻將借鉴了早期的中式牌和賭牌傳統. 四個玩家在讀取丟棄物時, 向著完整的手建立焊接。",
       "howToPlay": [
-        "建築並加入四乍牆; 用骰子打破 。",
-        "交易手(通常是13塊瓦;14塊) 東方先丟棄物",
-        "畫或要求丟棄 。",
-        "形 c,委员会将s, k,并一对.",
-        "Declare mahjong on a complete hand; score by regional rules."
+        "砌好並拼合四面牌牆，用骰子定莊與開門。",
+        "發牌（通常每人 13 張；莊家 14 張）。東家先打出第一張。",
+        "摸牌或吃/碰/槓別人打出的牌組成面子，然後打出一張。",
+        "組成順子、刻子、槓子與一對將。",
+        "湊成聽牌後的和牌即宣告胡牌；按地方規則計分。"
       ],
       "requirements": [
         "144瓦",
@@ -1460,17 +1412,16 @@
         "快速的,面向流行的风格。",
         "NMJL牌手和小丑。"
       ],
-      "name": "麻將",
-      "fallbackEn": true
+      "name": "麻將"
     },
     "game-0011": {
       "description": "Chinese dominoes relate to dice face pairs; European double-six sets spread via Italy and France. Blocking, scoring, and train games all share matching pip ends—one tool, many table cultures.",
       "howToPlay": [
-        "Shuffle face-down and draw hands.",
-        "Lead with a double or highest tile per the variant.",
-        "Play a tile matching an open end, or draw/pass if you cannot.",
-        "Place doubles crosswise in most styles.",
-        "Win by emptying your hand or reaching a pip score."
+        "牌面朝下洗勻後抓起手牌。",
+        "按變體規則以雙牌或點數最高的牌先出。",
+        "打出能接上開放端的牌；接不上則摸牌或過。",
+        "多數打法中雙牌橫置。",
+        "打空手牌或達到點數目標即獲勝。"
       ],
       "requirements": [
         "雙六或更多套件",
@@ -1481,17 +1432,16 @@
         "雙进行必要的派對",
         "普通的客廳封鎖/拖動規則。"
       ],
-      "name": "多米諾",
-      "fallbackEn": true
+      "name": "多米諾"
     },
     "game-0012": {
       "description": "Mills games form three-in-a-row to capture. Boards are cut into cloister benches across medieval Europe. Southern African morabaraba is the same fundamental mills contest with pastoral ‘cow’ metaphors—catalogued here as variations, not separate inventions.",
       "howToPlay": [
-        "Place pieces alternately on empty points until all nine are down.",
-        "Move along lines to adjacent points.",
-        "Form a mill (three in a row) to remove an opposing piece not in a mill if possible.",
-        "When down to three pieces, flying jumps to any empty point are often allowed.",
-        "Win by reducing the opponent to two pieces or blocking all moves."
+        "雙方輪流在空點放子，直到各放滿九枚。",
+        "沿連線移到相鄰空點。",
+        "排成三連（磨坊）時，可吃掉對方一枚未成磨坊的子（若可能）。",
+        "只剩三子時，常允許飛跳到任意空點。",
+        "把對方減到兩子或封死其全部走法即獲勝。"
       ],
       "requirements": [
         "印有24分的磨坊板",
@@ -1503,17 +1453,16 @@
         "同樣的磨坊遊戲的祖魯名字.",
         "大片數磨坊的變型."
       ],
-      "name": "九子棋",
-      "fallbackEn": true
+      "name": "九子棋"
     },
     "game-0013": {
       "description": "Alquerque’s leaping captures on a lined board are documented in Alfonso X’s Book of Games. European draughts/checkers moved the idea onto a checkered board. Saharan kharbaga and related Maghreb games belong to the same leap-capture family—variations of one hunting geometry.",
       "howToPlay": [
-        "Array pieces on opposing sides.",
-        "Move to an adjacent empty point along a line (or dark square in checkers).",
-        "Leap an adjacent enemy into an empty landing square to capture.",
-        "Continue multi-jumps when allowed.",
-        "Capture all enemies or immobilize them to win."
+        "將棋子分列雙方陣營。",
+        "沿連線（或跳棋的深色格）移到相鄰空點。",
+        "跳過相鄰敵子落到空格即吃子。",
+        "規則允許時可連續多跳。",
+        "吃光或困死全部敵子即獲勝。"
       ],
       "requirements": [
         "排班 Alquerque 棋盤或檢查的拖曳棋盤",
@@ -1525,8 +1474,7 @@
         "10×10 与飛王板.",
         "撒哈拉人跳樓的親戚"
       ],
-      "name": "阿爾克爾克 / 跳棋族",
-      "fallbackEn": true
+      "name": "阿爾克爾克 / 跳棋族"
     },
     "game-0014": {
       "description": "Fanorona是馬達加斯加國際棋盤遊戲, 混亂的線索捕捉會 產生尖锐的策略。 口述歷史與王室政治與",
@@ -1547,11 +1495,11 @@
     "game-0015": {
       "description": "卡羅姆是全南亞和散居地所愛玩的一款餐桌游戲。 玩家們點擊擊手 給卡羅姆人口袋 女王需要掩護 它能把台球几何和坐椅相融合",
       "howToPlay": [
-        "Powder the board lightly; place pieces in the center with the queen in the middle.",
-        "Flick the striker from your base line to hit your color into pockets.",
-        "Pocket the queen, then cover it by pocketing one of your pieces immediately after.",
-        "Fouls return pieces or cost turns per rule set.",
-        "Clear your pieces (with queen covered) to win."
+        "棋盤上薄薄撒粉；把棋子擺在中央，皇后在正中。",
+        "從己方底線彈擊母子，把己方顏色打進袋口。",
+        "先打進皇后，接著立刻打進一枚己方棋子為其“蓋後”。",
+        "犯規按規則退回棋子或失去回合。",
+        "在皇后已蓋後的前提下清空己方棋子即獲勝。"
       ],
       "requirements": [
         "有口袋的卡羅姆板",
@@ -1563,17 +1511,16 @@
       "variationNotes": [
         "本地的犯規和得分規定在同一板子上"
       ],
-      "name": "卡羅姆",
-      "fallbackEn": true
+      "name": "卡羅姆"
     },
     "game-0016": {
       "description": "玩牌可能來自中國的錢卡想法, 法國服裝成為全球數以千計的遊戲標準工具。",
       "howToPlay": [
-        "Use a 52-card French-suited deck; shuffle, then deal thirteen cards to each of four players for a Hearts-style starter game.",
-        "Play proceeds clockwise; lead any suit except hearts until hearts are broken; players must follow suit if able.",
-        "Highest card of the led suit wins the trick; hearts score 1 penalty point each and the queen of spades scores 13.",
-        "After all thirteen tricks, tally penalty points; rotate the dealer clockwise for the next hand.",
-        "Play hands until one player reaches 100 penalty points; the lowest score wins (or switch later to whist, rummy, or another named game)."
+        "使用一副 52 張法式花色牌；洗牌後發給四人各十三張，先玩紅心類入門局。",
+        "順時針進行；紅心未破門前不可首出紅心；能跟花色必須跟。",
+        "所出花色最大者贏墩；紅心各計 1 罰分，黑桃皇后計 13 罰分。",
+        "十三墩打完後累計罰分；莊家順時針輪換進入下一手。",
+        "打到有人達到 100 罰分；分最低者勝（之後也可改打惠斯特、拉米等其他牌戲）。"
       ],
       "requirements": [
         "52卡法文甲板(或区域甲板)",
@@ -1585,17 +1532,16 @@
         "心,鐘,橡,叶.",
         "40... 或48..."
       ],
-      "name": "法式撲克牌",
-      "fallbackEn": true
+      "name": "法式撲克牌"
     },
     "game-0017": {
       "description": "日本的卡魯塔傳統包括季节性的哈納富達和文學的uta-garuta。 相爭的媲美詩歌卡魯塔需要閃電识别; 卡片的熔化季節 詩歌 和快速進入一個玩物家族",
       "howToPlay": [
-        "讀者呼喊詩歌的前半部分。",
-        "玩家竞相打出相對的結局牌 。",
-        "拿好牌,繼續拍攝",
-        "For hanafuda/koi-koi: deal, capture by matching months, and declare yaku.",
-        "同意你交易前扮演的 卡洛塔家族"
+        "歌留多玩法：讀牌者吟出和歌的上句。",
+        "玩家競速拍中對應的下句牌。",
+        "取走該牌，繼續打完整套。",
+        "花札/こいこい玩法：發牌，按月份配對收牌，並宣告役。",
+        "發牌前先約定要玩哪一種歌留多/花札體系。"
       ],
       "requirements": [
         "花果或uta",
@@ -1606,17 +1552,16 @@
         "12個月的花卡",
         "一百个诗歌卡比比赛"
       ],
-      "name": "花札 / 歌留多",
-      "fallbackEn": true
+      "name": "花札 / 歌留多"
     },
     "game-0018": {
       "description": "Ganjifa are circular painted cards of Mughal and regional Indian courts, later folk-crafted in places such as Odisha. Suit systems (Mughal, Dashavatara) differ, but trick-taking court hierarchies unite them as one painted-card tradition.",
       "howToPlay": [
-        "Use an 8-suit Mughal ganjifa set (96 circular cards) or a 10-suit Dashavatara set; shuffle gently without bending paint layers.",
-        "For a four-player Mughal session, deal twelve cards each; decide trump by the first suit led or a declared trump suit before play.",
-        "Players must follow the led suit if able; otherwise they may play trump or discard.",
-        "Highest trump wins the trick if any trump is played; otherwise the highest card of the led suit wins.",
-        "Each won trick scores one point (or count face cards if using a court-heavy house tally); highest trick total after all cards are played wins. Store cards flat."
+        "使用八門莫臥兒甘吉法套牌（96 張圓牌）或十門化身套牌；輕柔洗牌，勿折損漆層。",
+        "四人莫臥兒局各發十二張；以首出花色或開局前聲明的將牌定將。",
+        "能跟所出花色必須跟；否則可出將或墊牌。",
+        "有將則以最大將贏墩；否則以所出花色最大者贏墩。",
+        "每贏一墩計 1 分（若用重宮廷計分則可計人像牌）；全部打完後墩分最高者勝。牌宜平放保存。"
       ],
       "requirements": [
         "通知 ganjifa 集",
@@ -1626,17 +1571,16 @@
       "variationNotes": [
         "10瓦塔服裝系統"
       ],
-      "name": "甘吉法",
-      "fallbackEn": true
+      "name": "甘吉法"
     },
     "game-0019": {
       "description": "羊或山羊的骨頭是無處不在的古老骰子 用于玩耍和占卜 孩童拋棄並抓获, 現代JJ是同樣傳統的技術後裔",
       "howToPlay": [
-        "Start with five astragali (or five jacks plus a small bounce ball if using modern replicas).",
-        "Scatter the pieces, toss one aloft (or bounce the ball once), and pick up one piece before catching the tossed piece or ball.",
-        "On later turns in the same round, pick up two, then three, then four pieces in one sweep while the toss or bounce is airborne.",
-        "Failing to catch or disturbing the remaining pile ends your turn; the next player restarts at picking up ones.",
-        "First player to complete the ones–twos–threes–fours sequence scores one point; play to five points. Use plastic or wooden replicas when real bones are unavailable."
+        "準備五枚距骨（或用現代仿品：五枚小件加一顆小彈跳球）。",
+        "撒開小件，拋起一枚（或彈球一次），在接住拋起物前撿起一枚。",
+        "同一輪後續回合中，拋起期間一次掃起兩枚、三枚，再四枚。",
+        "沒接住或弄亂剩餘堆則回合結束；下一位從撿一枚重新開始。",
+        "先完成“一—二—三—四”序列者得 1 分；先到 5 分者勝。沒有真骨時可用塑料或木製仿品。"
       ],
       "requirements": [
         "4 支Astragali或复制品",
@@ -1648,8 +1592,7 @@
         "韓國五石皮卡技術賽",
         "斯通托斯接力賽"
       ],
-      "name": "羊拐骨",
-      "fallbackEn": true
+      "name": "羊拐骨"
     },
     "game-0020": {
       "description": "現代的yo-yo興起穿梭在菲律賓製造商和美國品牌。 睡眠、旋轉和弦樂把一個簡單的旋轉器變成一個技術語言 比賽判斷难度和風格",
@@ -1673,11 +1616,11 @@
     "game-0021": {
       "description": "Kites可能從中國開始發號施令, 阿富汗、印度、巴西、日本等地的戰鬥族文化, 玩具加入手術、天氣讀物、公眾觀眾。",
       "howToPlay": [
-        "Assemble the kite; check spars and bridle balance.",
-        "With back to the wind, have a helper hold or launch as you reel tension.",
-        "Steer with line angle; climb in steady wind.",
-        "In fighter variants, maneuver to cut an opponent’s line.",
-        "Reel in before storms; never fly near power lines."
+        "組裝風箏；檢查骨架與籠頭線的平衡。",
+        "背對風，請助手托住或放飛，同時你收線建立張力。",
+        "用線角操控方向；在穩風中爬升。",
+        "鬥箏變體中，機動切割對方的線。",
+        "暴風雨前收線；切勿靠近電線放飛。"
       ],
       "requirements": [
         "基特",
@@ -1690,17 +1633,16 @@
         "巨大的公園風筝和戰事.",
         "巴西拳擊街文化."
       ],
-      "name": "放風箏",
-      "fallbackEn": true
+      "name": "放風箏"
     },
     "game-0022": {
       "description": "3 人 近 近 近 人 近 近 人 近  不行 3 人 近 近 人 近 人 近 近 人 近 人 近 人 近 人 近 近 人 近 人 近 近 人 近 人 近 近 人 近 人 近 近 人 近 近 人 近 近 人 人 近 人 近 人 近 人 近 人 近 人 、 、 、 、 、 ( 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、 、体现了 、 、 、 、 、 、 、 、 、 、 、 程序 、 、 、 、 、 、 、 程序 、 、 程序 程序 、 程序 、的了解 、 程序 程序 程序 程序 程序 程序 程序 程序  數目依次交換, 人類學家記錄了數百種與故事相關的命名模式。",
       "howToPlay": [
-        "Loop a 1–2 meter cord; Player A opens Cat’s Cradle: palms facing, strings across both hands with the palmar string crossed once.",
-        "Player B pinches the two crossed X’s, pulls them out and down, then up through the center, taking the figure onto their own hands as Soldier’s Bed (or Mattress).",
-        "Player A next takes the side strings to form Candles, then Player B takes again to form the Manger (or Cradle reverse).",
-        "If any loop slips off a finger and the figure collapses, both players restart from Player A’s opening cradle.",
-        "After one clean four-step pass (Cradle → Bed → Candles → Manger), try the sequence again or learn a solo figure such as Cup and Saucer."
+        "取 1–2 米線繞成環；玩家 A 開“貓的搖籃”：掌心相對，線跨雙手，掌側線交叉一次。",
+        "玩家 B 捏住兩處交叉的 X，向外向下再向上從中心穿出，把圖形接到自己手上成為“士兵床”（或褥子）。",
+        "玩家 A 再取側線做成“蠟燭”，玩家 B 再接成“馬槽”（或反向搖籃）。",
+        "若任一環從手指滑脫導致圖形崩塌，雙方從玩家 A 的開局搖籃重來。",
+        "乾淨完成四步傳遞（搖籃→床→蠟燭→馬槽）後，可再練一遍，或學單獨圖形如“杯碟”。"
       ],
       "requirements": [
         "串圈約 1 - 2米",
@@ -1711,17 +1653,16 @@
         "日本字串形狀傳統 。",
         "使用本地名稱和敘述的字串故事。"
       ],
-      "name": "翻花繩",
-      "fallbackEn": true
+      "name": "翻花繩"
     },
     "game-0023": {
       "description": "Jianzi 保留了羽毛穿梭雀高空, Circle play 建立節奏; 獨奏 play 建立十分重视的數目記錄 。",
       "howToPlay": [
-        "Toss the shuttlecock onto your foot.",
-        "Kick with inner foot, outer foot, or knee to keep it airborne.",
-        "Count consecutive kicks; restart on a drop.",
-        "In a circle, pass to neighbors without using hands.",
-        "Agree whether hand saves are allowed (usually not)."
+        "把毽子拋到腳上。",
+        "用腳內側、外側或膝蓋踢起，保持騰空。",
+        "數連續踢數；落地則重計。",
+        "圍成圈時傳給鄰人，不可用手。",
+        "事先約定是否允許用手救球（通常不允許）。"
       ],
       "requirements": [
         "羽毛穿梭雀",
@@ -1732,17 +1673,16 @@
         "韓國包紙的穿梭雀踢。",
         "越南穿梭雀踢球运动。"
       ],
-      "name": "毽子",
-      "fallbackEn": true
+      "name": "毽子"
     },
     "game-0024": {
       "description": "Sepak Takraw只用腳、膝蓋、胸部和頭部接触, 根部位于馬來語世界圈踢(sepak raga). 超級單車踢擊是現代風景的定義",
       "howToPlay": [
-        "Mark a court about 13.4 × 6.1 m with a net 1.52 m high (men’s sport height) and use a rattan or synthetic takraw ball.",
-        "Each team of three stands on its side; the server’s teammate tosses the ball for a foot serve over the net into the opponent’s court.",
-        "A side may use at most three touches with foot, knee, chest, or head before sending the ball back; hands and arms are faults.",
-        "Score one point when the ball grounds in the opponent’s court or the opponent faults (net touch with hand, four touches, out of bounds).",
-        "Play to 21 points per set (must win by 2); best of three sets decides the match."
+        "標出約 13.4×6.1 m 的場地，網高 1.52 m（男子比賽高度），使用藤製或合成藤球。",
+        "每隊三人各站一邊；發球方隊友拋球，用腳把球發過網進入對方半場。",
+        "一方最多用腳、膝、胸或頭觸球三次再回擊；用手或臂為犯規。",
+        "球落在對方場內或對方犯規（手觸網、四次觸球、出界）得 1 分。",
+        "每局 21 分（須淨勝 2 分）；三局兩勝定勝負。"
       ],
       "requirements": [
         "拉坦或合成球",
@@ -1752,17 +1692,16 @@
       "variationNotes": [
         "合作圈保持無網."
       ],
-      "name": "藤球",
-      "fallbackEn": true
+      "name": "藤球"
     },
     "game-0025": {
       "description": "Stickball among northeastern Indigenous nations held spiritual and diplomatic weight—the Creator’s game. French observers named it lacrosse. Modern codes formalized sport rules, but cradling and scoring with a netted stick continue a deep tradition.",
       "howToPlay": [
-        "組成兩支球隊并設下目標",
-        "面朝中間",
-        "Carry, pass, and shoot using the stick pocket (no hand on ball in field rules).",
-        "把球打進球門",
-        "最終得分最高"
+        "分成兩隊並設立球門。",
+        "在中場爭球開局。",
+        "用球棍網兜帶球、傳球與射門（場地規則下不可用手持球）。",
+        "把球送入球門得分。",
+        "終場得分高者勝。"
       ],
       "requirements": [
         "曲棍球棒",
@@ -1773,17 +1712,16 @@
       "variationNotes": [
         "雙棒球比賽 不同儀式背景"
       ],
-      "name": "長曲棍球",
-      "fallbackEn": true
+      "name": "長曲棍球"
     },
     "game-0026": {
       "description": "中美球會使用重橡皮球, 宗教、政治、體育相互交织 現代烏拉瑪在西納羅亞以活生生的後裔身份繼續嘻哈球演奏.",
       "howToPlay": [
-        "Play ulama de cadera on a long packed-earth alley about 65 m; two teams of three to five wear hip pads and use a solid rubber ball.",
-        "Serve by bouncing the ball to a teammate who strikes it forward with the hip only—no hands, feet, or heads.",
-        "Teams volley the ball back and forth across the midline; a bounce must stay within the alley sidelines.",
-        "Score one point when the opposing team fails to return, lets the ball stop, or sends it out of the alley.",
-        "First team to 8 points wins the game (common Sinaloa street tally); rest and switch ends after each game."
+        "在約 65 m 的夯土長巷玩髖擊烏拉馬（ulama de cadera）；兩隊各三至五人穿護髖，使用實心橡膠球。",
+        "發球時把球彈給隊友，隊友只用髖部向前擊球——不可用手、腳或頭。",
+        "兩隊隔中線對打；球反彈須留在巷道邊線內。",
+        "對方未能回球、讓球停下或打出巷道外時得 1 分。",
+        "先到 8 分者勝（錫那羅亞街頭常見計法）；每局後休息並交換場地。"
       ],
       "requirements": [
         "固体橡皮球",
@@ -1794,8 +1732,7 @@
       "variationNotes": [
         "Sinaloa himp -ulama续作。"
       ],
-      "name": "中美洲球戲 / 烏拉馬",
-      "fallbackEn": true
+      "name": "中美洲球戲 / 烏拉馬"
     },
     "game-0027": {
       "description": "Kokeshi are limbless lathe-turned wooden dolls from northern Honshu onsen towns—first souvenirs and children’s toys, now collected art. Regional schools (Naruko, Tsuchiyu, and others) differ in head joints and floral painting.",
@@ -1852,11 +1789,11 @@
     "game-0030": {
       "description": "玉米壳娃娃在多個原住民國家及後來鄉村定居者中傳統存在。 臉部常空白, 做娃娃是一半的玩法。",
       "howToPlay": [
-        "Soak husks; fold and tie a head, arms, and body or skirt.",
-        "Air-dry the finished doll.",
-        "Invent caregiving play or display the figure.",
-        "Follow community protocols when learning inside a living tradition.",
-        "Keep dolls dry to prevent mold."
+        "浸泡玉米苞葉；摺疊並捆紮出頭、手臂與身體或裙襬。",
+        "做好的玩偶晾乾。",
+        "編造照料遊戲，或把玩偶陳列起來。",
+        "在仍在傳承的社區中學習時，遵守當地禮儀與規範。",
+        "保持乾燥以防發黴。"
       ],
       "requirements": [
         "干玉米皮",
@@ -1864,17 +1801,16 @@
         "可選擇的玉米卷毛"
       ],
       "idealParticipants": "獨自一人",
-      "name": "玉米殼娃娃",
-      "fallbackEn": true
+      "name": "玉米殼娃娃"
     },
     "game-0031": {
       "description": "Cup-and-ball toys challenge hand-eye timing: swing a tethered ball into a cup or onto a spike. French bilboquet, Mexican balero, and Japanese kendama are variations of one skill family with different vocabularies of tricks.",
       "howToPlay": [
-        "Hold the handle with the ball hanging on its cord.",
-        "Swing upward and catch the ball in a cup or on the spike.",
-        "Progress to flips and named trick sequences.",
-        "Count consecutive catches.",
-        "Practice over a soft area while learning."
+        "握住手柄，讓球吊在繩上。",
+        "向上甩起，用杯口或尖釘接住球。",
+        "進階到翻轉與具名技巧序列。",
+        "數連續接住的次數。",
+        "初學時在柔軟地面上練習。"
       ],
       "requirements": [
         "球杯或球棒玩具"
@@ -1885,8 +1821,7 @@
         "多杯尖端玩具 和大把的字典。",
         "歐洲客廳依旧是杯球"
       ],
-      "name": "杯與球 / 劍玉族",
-      "fallbackEn": true
+      "name": "杯與球 / 劍玉族"
     },
     "game-0032": {
       "description": "棕色把一個方形分解成七個棕色 用来形成 s 在19世紀, 幾何變化與負面 但这正是玩具的安靜課程。",
@@ -1907,11 +1842,11 @@
     "game-0033": {
       "description": "Ernő Rubik’s cube popularized three-dimensional combination puzzles worldwide. Layer-turn mechanics hide group theory inside a colorful toy. Speedcubing culture added algorithms, hardware, and sport timing—still one puzzle at heart.",
       "howToPlay": [
-        "Scramble by turning faces randomly.",
-        "Restore each face to a solid color using layer methods or intuition.",
-        "Beginners often solve the white cross, then corners, middle edges, and last layer.",
-        "Advanced solvers memorize algorithms for speed.",
-        "Optional: time solves with a stackmat or phone timer."
+        "隨意擰轉各面打亂魔方。",
+        "用層先法或直覺把每一面還原為純色。",
+        "初學者常先做白十字，再角塊、中層稜塊，最後一層。",
+        "進階玩家背公式以追求速度。",
+        "可選：用計時墊或手機計時。"
       ],
       "requirements": [
         "3×3 立方體拼圖"
@@ -1921,8 +1856,7 @@
         "相同的機制的更小的排序.",
         "具有还原方法的高序立方体。"
       ],
-      "name": "魔術方塊",
-      "fallbackEn": true
+      "name": "魔術方塊"
     },
     "game-0034": {
       "description": "堆積物是最古老的建築玩具之一, 弗羅貝爾的禮物在19世紀正式化的 教育街區演出 其根本作用是從模組固件組合成形",
@@ -1981,11 +1915,11 @@
     "game-0037": {
       "description": "戰爭的屠殺出現在世界各地的收割儀式、學校運動和村莊節日中。 有些東亞和太平洋形式带有季节平衡的宇宙涵義。 兩支球隊,一支繩子... 元素协调賽",
       "howToPlay": [
-        "Mark a center line and team foul lines.",
-        "Teams grip evenly; avoid wrapping the rope around limbs in sport rules.",
-        "On a signal, pull with short coordinated heaves.",
-        "Win by pulling the center marker across your line.",
-        "Stop immediately if someone slips dangerously."
+        "標出中線與雙方犯規線。",
+        "雙方均勻握繩；競技規則下勿把繩纏繞肢體。",
+        "發令後以短促協調的發力拉動。",
+        "把中線標記拉過己方線即獲勝。",
+        "有人危險滑倒時立即停止。"
       ],
       "requirements": [
         "強繩",
@@ -1997,17 +1931,16 @@
         "Communal ropes in ritual calendar events.",
         "節日的村莊拖拉儀式"
       ],
-      "name": "拔河",
-      "fallbackEn": true
+      "name": "拔河"
     },
     "game-0038": {
       "description": "Hide-and-seek is a near-universal children’s game with countless local names and counting rhymes. It rehearses stealth, spatial memory, and the social thrill of being found. Architecture—from kasbah alleys to apartment stairwells—reshapes strategy.",
       "howToPlay": [
-        "Pick one seeker and a home base (tree, wall, or stoop); set hard bounds—no street, no locked rooms.",
-        "The seeker faces the base and counts aloud to 50 while others hide inside the bounds.",
-        "The seeker shouts “Ready or not, here I come,” then tags hiders by touch; tagged players walk to a jail spot beside home base.",
-        "A free hider may dash to base, touch it, and call “Free [name]!” to release one jailed player; if the seeker tags them on the way, they go to jail.",
-        "When all hiders are jailed, or after five minutes, the first player tagged becomes the next seeker."
+        "選出一名尋找者與一個大本營（樹、牆或臺階）；劃定硬邊界——不上街、不進上鎖房間。",
+        "尋找者面向大本營大聲數到 50，其他人在界內躲藏。",
+        "尋找者喊“準備好了沒有，我來啦”，再以觸摸抓人；被抓者走到大本營旁的“監獄”。",
+        "仍自由的躲藏者可衝到大本營觸摸並喊“釋放某某！”解救一名被囚者；途中被抓則自己入獄。",
+        "全部入獄或滿五分鐘後，第一個被抓者成為下一輪尋找者。"
       ],
       "requirements": [
         "安全邊界隱藏區域",
@@ -2017,17 +1950,16 @@
       "variationNotes": [
         "反向躲藏:一藏,二藏加入藏地."
       ],
-      "name": "捉迷藏",
-      "fallbackEn": true
+      "name": "捉迷藏"
     },
     "game-0039": {
       "description": "隨著地區的形狀與韵律, 平衡 轉身 和人行道 粉筆藝術在一個簡單的比賽中 穿過數字的細胞",
       "howToPlay": [
-        "Draw a numbered hopscotch grid.",
-        "Toss a marker into the next square; it must land cleanly inside.",
-        "Hop through on one foot, skipping the occupied square.",
-        "Retrieve the marker on the return without faults.",
-        "First to complete all numbers wins."
+        "畫出標有數字的跳房子格子。",
+        "把標記物投進下一格；須乾淨落在格內。",
+        "單腳跳過，跳過被佔的格子。",
+        "回程無失誤地撿回標記物。",
+        "先完成全部數字者獲勝。"
       ],
       "requirements": [
         "彩色或抓取的網格",
@@ -2038,17 +1970,16 @@
         "西班牙語hopscotch命名與格子變體.",
         "法國的霍斯克格和學院規矩。"
       ],
-      "name": "跳房子",
-      "fallbackEn": true
+      "name": "跳房子"
     },
     "game-0040": {
       "description": "大理石戒指幾乎是世界性的兒童遊戲。 Clay 石頭 以及後來玻璃球體 被用手指擊擊中目標 贏家是否保留著大理石?",
       "howToPlay": [
-        "Draw a circle and place target marbles inside.",
-        "Knuckle-shoot from the edge to knock targets out.",
-        "Captured marbles score or are kept depending on agreed stakes.",
-        "If your shooter remains in-ring, many rules allow another shot from there.",
-        "Clear the ring or reach a point goal to win."
+        "畫一個圓，把目標彈珠放在圈內。",
+        "從邊緣用指節彈出擊球，把目標打出圈外。",
+        "打出的彈珠計分或歸己，視約定賭注而定。",
+        "若射擊珠仍留在圈內，許多規則允許從該處再射一杆。",
+        "清空圓圈或達到目標分數即獲勝。"
       ],
       "requirements": [
         "玻璃、粘土或石頭大理石",
@@ -2058,17 +1989,16 @@
       "variationNotes": [
         "正式的大理石游戲圈規矩"
       ],
-      "name": "彈珠",
-      "fallbackEn": true
+      "name": "彈珠"
     },
     "game-0041": {
       "description": "上面是人類最古老的机械玩具, 鞭子發射和鞭子耐力 支持耐力比賽和戰鬥 本地名稱 图示 物理課程",
       "howToPlay": [
-        "Wind string around the body or prepare a whip.",
-        "Launch with a smooth pull so the tip spins on hard ground.",
-        "Optionally whip to add energy.",
-        "Compete for longest spin or for knocking out rivals.",
-        "Repair worn tips as needed."
+        "把線繞在陀螺身，或準備好鞭繩。",
+        "平穩一拉放出，使尖端在硬地上旋轉。",
+        "可選：用鞭輕抽補充動能。",
+        "比誰轉得最久，或比撞倒對手。",
+        "尖端磨損時及時修理或更換。"
       ],
       "requirements": [
         "木頭、粘土或金屬",
@@ -2082,17 +2012,16 @@
         "南亞鞭打 / 弦上.",
         "韓國的鞭打"
       ],
-      "name": "陀螺",
-      "fallbackEn": true
+      "name": "陀螺"
     },
     "game-0042": {
       "description": "Hnefatafl是諾斯非對稱獵殺:國王和衛士試圖在網格上躲避攻擊者。 在維京人的世界中流傳著變體 力量的平衡和王位的平面 定下了緊張的結局",
       "howToPlay": [
-        "Play Copenhagen Hnefatafl on an 11×11 board: place the king on the center throne with 12 defenders in a cross; place 24 attackers in the four edge camps.",
-        "Attackers move first. Every piece slides any number of empty squares like a rook; none may jump.",
-        "Capture an enemy by sandwiching it between two of your pieces on a rank or file (custodial capture); the throne and corner squares can help bracket.",
-        "Attackers win by capturing the king on two opposite sides (or against the throne/edge as a second side). Defenders win if the king reaches any of the four corner sanctuary squares.",
-        "Pieces may not stop on the throne except the king; attackers may not occupy the corners."
+        "在 11×11 哥本哈根塔夫棋盤上：國王放中央王座，12 名衛士呈十字；24 名攻方放在四邊營地。",
+        "攻方先行。每子可像國際象棋車一樣沿空格滑任意格；不可跳躍。",
+        "在同一行或列用兩子夾住敵子即吃（監管吃法）；王座與角格可協助夾擊。",
+        "攻方從相對兩側夾住國王（或以王座/邊線為第二側）即勝；衛方國王到達四角任一庇護格即勝。",
+        "除國王外棋子不可停在王座；攻方不可佔據角格。"
       ],
       "requirements": [
         "触摸板",
@@ -2103,17 +2032,16 @@
         "Linnaeus recorded Sámi tablut—same tafl family.",
         "愛爾蘭的塔弗爾親戚在小板上"
       ],
-      "name": "王桌棋",
-      "fallbackEn": true
+      "name": "王桌棋"
     },
     "game-0043": {
       "description": "十字架上的非對稱獵: 雁要抓住一只跳跃的狐狸。 歐洲的客廳表單以表兄弟為單位。",
       "howToPlay": [
-        "Place geese on one end and the fox centrally or opposite per rules.",
-        "Geese move first or second by agreement; they walk without jumping.",
-        "Fox may jump adjacent geese to capture.",
-        "Geese win by immobilizing the fox; fox wins by capturing enough geese.",
-        "Use a modern printed fox-and-geese board if historic boards are unavailable."
+        "按規則把鵝放在一端，狐狸放中央或對面。",
+        "事先約定鵝先走或後走；鵝只能走步不能跳。",
+        "狐狸可跳過相鄰的鵝來吃子。",
+        "鵝困住狐狸則鵝勝；狐狸吃到足夠多的鵝則狐狸勝。",
+        "沒有歷史棋盤時，可用現代印刷的狐狸與鵝棋盤。"
       ],
       "requirements": [
         "交叉",
@@ -2124,8 +2052,7 @@
         "獵兔的對比",
         "螺旋掠食者-掠食者族表弟."
       ],
-      "name": "狐狸與鵝",
-      "fallbackEn": true
+      "name": "狐狸與鵝"
     },
     "game-0044": {
       "description": "Five-in-a-row on a Go-like grid is an ancient East Asian pastime formalized as gomoku and renju. Distinct from Go's territory scoring—the goal is a straight five.",
@@ -2150,11 +2077,11 @@
     "game-0045": {
       "description": "Reversi翻過三明治碟片, 奧塞羅將現代品牌和開發标准化 一個純粹的布置和飛行比賽 和爆炸性的比賽",
       "howToPlay": [
-        "Place four discs in the center in the standard Othello opening.",
-        "Black places first on a square that flips at least one white disc.",
-        "Flip all sandwiched opponent discs in every direction.",
-        "A player unable to flip passes; when both cannot move, count discs.",
-        "Majority color wins."
+        "按標準奧賽羅開局在中央放四枚碟片。",
+        "黑方先在至少能翻轉一枚白碟的格子落子。",
+        "沿各個方向翻轉所有被夾住的對方碟片。",
+        "無法翻轉則過；雙方都不能走時數碟。",
+        "顏色多者獲勝。"
       ],
       "requirements": [
         "8×8 面板",
@@ -2164,17 +2091,16 @@
       "variationNotes": [
         "具有標記的現代復古游戲标准化。"
       ],
-      "name": "黑白棋 / 奧賽羅",
-      "fallbackEn": true
+      "name": "黑白棋 / 奧賽羅"
     },
     "game-0046": {
       "description": "拼字遊戲為字面字樣格上的字母分配點數值, 上面有溢价方塊 。",
       "howToPlay": [
-        "畫出 7 塊; 在中星中排第一個字 。",
-        "建立連接现有字母填字型的新單字 。",
-        "分數字母值乘以溢价; 每轉 怎么了 ?",
-        "每次玩完就抽回七塊牌子",
-        "Highest score when tiles run out and one player empties their rack wins."
+        "抽七張字母牌；第一個詞須經過中央星格。",
+        "以填字方式接在已有字母上組成新詞。",
+        "按字母分乘以獎勵格計分；每回合累計。",
+        "每次出牌後補回七張。",
+        "牌袋用盡且有人打空手架時，總分最高者勝。"
       ],
       "requirements": [
         "拼字板",
@@ -2183,17 +2109,16 @@
         "挑戰字典"
       ],
       "idealParticipants": "2-4人",
-      "name": "拼字遊戲",
-      "fallbackEn": true
+      "name": "拼字遊戲"
     },
     "game-0047": {
       "description": "Paramapada sopanam / gyan chaupar taught karma with virtues as ladders and vices as snakes. British Snakes and Ladders secularized the race for children—same fundamental up-and-down morality track.",
       "howToPlay": [
-        "Place tokens off the board; roll to enter.",
-        "Move forward by the die.",
-        "Land at a ladder base to climb; land on a snake head to slide down.",
-        "Exact roll may be required to finish.",
-        "First to the final square wins."
+        "把棋子放在盤外；擲骰進入賽道。",
+        "按骰點前進。",
+        "落到梯腳則爬上；落到蛇頭則滑下。",
+        "到達終點可能需要正好的點數。",
+        "先到最後一格者獲勝。"
       ],
       "requirements": [
         "有蛇和梯子的网格板",
@@ -2205,17 +2130,16 @@
         "教父有美德和惡習",
         "美國密爾頓 布拉德利的品牌 同一種种族。"
       ],
-      "name": "蛇梯棋",
-      "fallbackEn": true
+      "name": "蛇梯棋"
     },
     "game-0048": {
       "description": "地產交易種族遊戲批評或慶祝地產資本主義。 Magie's Landlord's Game 之前帕克兄弟的垄断。 本地版將世界城市映射到同一套買租銀行環路上。",
       "howToPlay": [
-        "Each player starts with allotted cash and a token at Go.",
-        "Roll dice, move, and buy unowned properties you land on—or pay rent.",
-        "Build houses/hotels on complete color sets.",
-        "Manage mortgages and trades.",
-        "Last player not bankrupt wins."
+        "每位玩家從分配的現金開始，棋子放在“出發”（Go）處。",
+        "擲骰前進，可購買落到的無主地產——或支付租金。",
+        "集齊同色組後可建房屋/旅館。",
+        "管理抵押與交易。",
+        "最後未破產的玩家獲勝。"
       ],
       "requirements": [
         "垄断集",
@@ -2226,25 +2150,23 @@
       "variationNotes": [
         "伊麗莎白·瑪吉教祖師"
       ],
-      "name": "大富翁",
-      "fallbackEn": true
+      "name": "大富翁"
     },
     "game-0049": {
       "description": "Jenga formalizes the ancient thrill of removing pieces from a stack without collapse. Leslie Scott marketed the tower game globally; the physical puzzle is one shared stack for all players.",
       "howToPlay": [
-        "Build the tower in alternating crosswise layers of three.",
-        "On your turn, remove one block below the incomplete top layer using one hand.",
-        "Place it on the top to complete or continue layers.",
-        "The player who topples the tower loses (or the prior player wins).",
-        "Rebuild to play again."
+        "以每層三塊、交叉疊放的方式搭塔。",
+        "輪到你時，用一隻手從尚未完成的頂層以下抽出一塊。",
+        "把抽出的塊放到塔頂，完成或繼續疊層。",
+        "推倒塔的人輸（或前一位玩家勝）。",
+        "重新搭建再玩一局。"
       ],
       "requirements": [
         "54 精密區塊",
         "俨然表"
       ],
       "idealParticipants": "1-8人",
-      "name": "疊疊樂",
-      "fallbackEn": true
+      "name": "疊疊樂"
     },
     "game-0050": {
       "description": "中國的Kongzhu / diabolo在棍棒、加速與自殺之間旋轉, 歐洲馬戲團收養并更名為迪亞博洛",
@@ -2305,11 +2227,11 @@
     "game-0053": {
       "description": "也支持戰爭, 德國的制锡商和英國的空心播客 散佈在世界各地 從",
       "howToPlay": [
-        "Array two equal forces of at least ten figures each on opposite ends of a table or sand tray; place one flag token behind each line.",
-        "On a turn, move up to three of your figures up to one hand-span forward, sideways, or diagonally.",
-        "If a figure ends within one finger-width of an enemy, roll one six-sided die: 4–6 removes the enemy; 1–3 misses. Remove casualties to a dead pile.",
-        "Capture the opponent’s flag by ending a move on its square, or eliminate every enemy figure, to win.",
-        "Store figures upright in a box with tissue so paint and bayonets do not chip."
+        "在桌面或沙盤兩端各擺至少十個等量兵人；各方戰線後方放一面旗標。",
+        "每回合最多移動三枚己方人偶，各前進至多一掌寬，可前、側或斜向。",
+        "若人偶停在距敵人一指寬內，擲一枚六面骰：4–6 擊退敵人；1–3 未中。傷亡移到死堆。",
+        "移動結束落在對方旗格上奪旗，或消滅全部敵方人偶，即獲勝。",
+        "人偶直立收納於墊有軟紙的盒中，以免油漆與刺刀磕損。"
       ],
       "requirements": [
         "迷你士兵",
@@ -2319,25 +2241,23 @@
       "variationNotes": [
         "早期大量涂料的平板锡兵."
       ],
-      "name": "玩具士兵",
-      "fallbackEn": true
+      "name": "玩具士兵"
     },
     "game-0054": {
       "description": "Miniature tea sets let children rehearse hospitality rituals. Porcelain and tin versions tracked adult tea cultures from Britain to Japan. Social scripts—pouring, offering, thanking—are the real ruleset.",
       "howToPlay": [
-        "為玩偶或朋友設定位置。",
-        "倒杯茶(真杯或假杯)",
-        "Practice serving order and polite phrases.",
-        "清洗和收放 玩的一部分。",
-        "沒有得分 – 角色扮演遊戲 。"
+        "為玩偶或朋友擺好座位。",
+        "倒茶（真茶或想像）且不碰倒杯子。",
+        "練習上茶順序與禮貌用語。",
+        "清洗與收納也算遊戲的一部分。",
+        "不計分——禮儀角色扮演。"
       ],
       "requirements": [
         "迷你杯和大麻",
         "可選擇的水/沙子"
       ],
       "idealParticipants": "1-4人",
-      "name": "玩具茶具",
-      "fallbackEn": true
+      "name": "玩具茶具"
     },
     "game-0055": {
       "description": "斯林基人會把潜在的能量轉換成末端的樓梯步行 海軍春天工程的意外 成為了全球的桌子和樓梯玩具",
@@ -2412,19 +2332,18 @@
     "game-0059": {
       "description": "毛利波依在舞蹈鐵車手腕節奏和故事說法裡 傳統背景仍是文化習慣。",
       "howToPlay": [
-        "持戒有重者免人.",
-        "旋轉在簡單的邊圈 跳到一拍",
-        "隨技能增長而加入模式 。",
-        "In cultural performance, follow song and choreography.",
-        "只有專業安全專業才能使用火藥"
+        "握住帶重錘的繩，遠離旁人。",
+        "按節拍做簡單的側向圓周擺動。",
+        "技術提升後再加入花樣。",
+        "在文化表演中，跟隨歌曲與編舞。",
+        "火流球僅可在專業安全規範下使用。"
       ],
       "requirements": [
         "Poi(松弛或现代的绳索重量)",
         "清除旋轉半徑"
       ],
       "idealParticipants": "單獨或群組",
-      "name": "火舞球",
-      "fallbackEn": true
+      "name": "火舞球"
     },
     "game-0060": {
       "description": "Surakarta is a Javanese capture game where pieces travel circuits around colored loops. Captures follow the loops rather than simple jumps—an elegant regional strategy toy.",
@@ -2446,11 +2365,11 @@
     "game-0061": {
       "description": "Dakon is a Javanese congkak-family sowing board, often elaborately carved. It is presented as a named regional standard within mancala while remaining one sowing family.",
       "howToPlay": [
-        "Use a boat board with seven small cups per side plus one large store (lumbung) at each end; place seven seeds in every small cup.",
-        "On your turn, scoop one of your cups and sow one seed clockwise into each following cup, including your store but skipping the opponent’s store.",
-        "If the last seed lands in your store, sow again immediately from any of your cups that still hold seeds (relay turn).",
-        "If the last seed lands in an empty cup on your side, capture that seed and all seeds in the opposite cup into your store.",
-        "When one player cannot move, remaining seeds go to the owner of those cups; most seeds in store wins."
+        "使用船形棋盤：每側七個小杯，兩端各一個大倉（lumbung）；每個小杯放七粒種子。",
+        "輪到你時，舀起己方一杯，順時針逐杯播一粒，包括己方大倉，跳過對方大倉。",
+        "若最後一粒落入己方大倉，可立刻從仍有種子的己方杯再播（接力回合）。",
+        "若最後一粒落入己方空杯，則把該粒與對面杯中全部種子收進己方大倉。",
+        "一方無法走動時，剩餘種子歸各杯主人；大倉種子最多者勝。"
       ],
       "requirements": [
         "Dakon 船板",
@@ -2460,17 +2379,16 @@
       "variationNotes": [
         "Closely related Malay boat-board sowing game—same family."
       ],
-      "name": "達孔",
-      "fallbackEn": true
+      "name": "達孔"
     },
     "game-0062": {
       "description": "Sungka is the Filipino boat-shaped sowing game, cousin to congkak. Boards are household heirlooms; play mixes speed sowing with capture timing.",
       "howToPlay": [
-        "Seat two players at a sungka board with seven small cups (bahay) per side and one head store (ulo) each; place seven cowries or seeds in every bahay.",
-        "Scoop all seeds from one of your bahay and sow counterclockwise one-by-one into each following cup, including your ulo but skipping the opponent’s ulo.",
-        "If the last seed lands in your ulo, take another turn; if it lands in an empty bahay on your side, capture the opposite bahay’s seeds into your ulo.",
-        "A player who empties their side early waits while the opponent may still sow; continue until neither side has seeds left in bahay.",
-        "Count cowries in each ulo; the higher store wins."
+        "兩人坐在雙六棋（sungka）旁：每側七個小杯（bahay）、各一端倉（ulo）；每個 bahay 放七枚貝殼或種子。",
+        "舀起己方一個 bahay 的全部種子，逆時針逐杯播一粒，包括己方 ulo，跳過對方 ulo。",
+        "若最後一粒落入己方 ulo，再走一手；若落入己方空 bahay，則把對面 bahay 的種子收進己方 ulo。",
+        "較早清空己側的一方等待，對方仍可繼續播；直到兩側 bahay 都無種子。",
+        "數各方 ulo 中的貝殼，多者勝。"
       ],
       "requirements": [
         "成卡板",
@@ -2480,8 +2398,7 @@
       "variationNotes": [
         "Malay relative—variation within sowing boat boards."
       ],
-      "name": "松卡",
-      "fallbackEn": true
+      "name": "松卡"
     }
   },
   "es": {
