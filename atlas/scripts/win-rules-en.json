@@ -259,6 +259,66 @@
         "Pack the full set into one box after play.",
         "Do not break props to “force” a story ending."
       ]
+    },
+    "hand_drum": {
+      "howToWin": [
+        "Hold a soft sixteen-count pulse, then finish a call-and-copy pattern with a partner."
+      ],
+      "rulesNotToBreak": [
+        "Keep volume kind to ears and neighbors.",
+        "Stop when an elder or song leader raises a hand.",
+        "Do not strike drums hard enough to crack skins or pots."
+      ]
+    },
+    "clapping_rhyme": {
+      "howToWin": [
+        "Finish the full rhyme once cleanly with your partner before speeding up."
+      ],
+      "rulesNotToBreak": [
+        "Restart together after any miss—do not blame.",
+        "Keep claps gentle enough not to sting.",
+        "Take turns choosing the next rhyme."
+      ]
+    },
+    "nesting_cups": {
+      "howToWin": [
+        "Nest smallest into largest, then rebuild a tower taller than the first try."
+      ],
+      "rulesNotToBreak": [
+        "Knock towers only on a soft mat, never toward faces.",
+        "Wash cups that went in a mouth before storing.",
+        "Store nested so pieces stay together."
+      ]
+    },
+    "fortune_fold": {
+      "howToWin": [
+        "Complete one full color-and-number fortune reading, then swap roles."
+      ],
+      "rulesNotToBreak": [
+        "Keep fortunes kind—no mean predictions.",
+        "Do not tear someone else’s fold without asking.",
+        "Open and close only the agreed number of times."
+      ]
+    },
+    "ribbon_wand": {
+      "howToWin": [
+        "Complete eight slow overhead circles and a figure-eight without hitting anyone."
+      ],
+      "rulesNotToBreak": [
+        "Keep a clear swing radius around you.",
+        "Keep the ribbon off the ground and away from faces.",
+        "Roll the ribbon for storage so it does not knot."
+      ]
+    },
+    "button_spinner": {
+      "howToWin": [
+        "Wind the loop and keep a continuous hum for several pulls before the string snarls."
+      ],
+      "rulesNotToBreak": [
+        "Keep the spinning button away from eyes.",
+        "Use sturdy string that will not snap into faces.",
+        "Stop and untangle snarls instead of yanking harder."
+      ]
     }
   },
   "curatedByName": {
