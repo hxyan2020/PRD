@@ -13,17 +13,35 @@
     return window.FatumI18n ? window.FatumI18n.t(key, vars) : key;
   }
 
+  const LEGACY = {
+    play: "play",
+    begin: "play",
+    catalog: "atlas",
+    regions: "atlas",
+    journal: "journal",
+    howto: "about",
+    sources: "about",
+    top: "home",
+  };
+
   function parseHash() {
     const raw = (location.hash || "#/home").replace(/^#\/?/, "");
     const [path, query = ""] = raw.split("?");
-    const page = ROUTES.includes(path) ? path : "home";
+    const normalized = ROUTES.includes(path)
+      ? path
+      : LEGACY[path] || "home";
+    const page = ROUTES.includes(normalized) ? normalized : "home";
     const params = {};
     query.split("&").forEach((pair) => {
       if (!pair) return;
       const [k, v] = pair.split("=");
-      params[decodeURIComponent(k)] = decodeURIComponent(v || "");
+      try {
+        params[decodeURIComponent(k)] = decodeURIComponent(v || "");
+      } catch (_) {
+        params[k] = v || "";
+      }
     });
-    return { page, params };
+    return { page, params, legacy: Boolean(LEGACY[path]) && !ROUTES.includes(path) };
   }
 
   function setHash(page, params, replace) {
@@ -36,9 +54,15 @@
           .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
           .join("&");
     }
-    if (replace) history.replaceState(null, "", hash);
-    else if (location.hash !== hash) location.hash = hash;
-    else apply();
+    if (replace) {
+      // replaceState does not fire hashchange — apply immediately
+      if (location.hash !== hash) history.replaceState(null, "", hash);
+      apply();
+    } else if (location.hash !== hash) {
+      location.hash = hash;
+    } else {
+      apply();
+    }
   }
 
   function navigate(page, params, opts) {
@@ -65,7 +89,13 @@
   }
 
   function apply() {
-    const { page, params } = parseHash();
+    const parsed = parseHash();
+    const { page, params } = parsed;
+    // Rewrite legacy anchors (#catalog → #/atlas) so the URL stays clean
+    if (parsed.legacy) {
+      navigate(page, params, { replace: true });
+      return;
+    }
     current = page;
     document.body.dataset.page = page;
 
@@ -118,6 +148,7 @@
     if (page === "play" && params.surprise === "1") {
       document.getElementById("draw-btn")?.click();
       navigate("play", {}, { replace: true });
+      return;
     }
 
     window.scrollTo(0, 0);
@@ -170,23 +201,10 @@
   function init() {
     bindNav();
     window.addEventListener("hashchange", apply);
-    if (!location.hash || location.hash === "#" || location.hash === "#top") {
+    if (!location.hash || location.hash === "#") {
       navigate("home", {}, { replace: true });
     } else {
-      // Legacy anchors → pages
-      const legacy = {
-        "#play": "play",
-        "#begin": "play",
-        "#catalog": "atlas",
-        "#regions": "atlas",
-        "#journal": "journal",
-        "#howto": "about",
-        "#sources": "about",
-        "#top": "home",
-      };
-      const hit = legacy[location.hash.split("?")[0]];
-      if (hit) navigate(hit, {}, { replace: true });
-      else apply();
+      apply();
     }
   }
 
