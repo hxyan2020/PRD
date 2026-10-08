@@ -237,12 +237,17 @@
               <p data-i18n="howto.3.body">Save the reading to your journal with an auto title and time stamp.</p>
             </li>
           </ol>
-          <aside class="advisory advisory--inline" id="accuracy-advisory" data-i18n-aria="advisory.eyebrow" aria-label="Fair play notice">
-            <p class="advisory__eyebrow" data-i18n="advisory.eyebrow">Fair play notice</p>
-            <p class="advisory__body" data-i18n="advisory.body">
-              Readings may not be accurate. Reality is stochastic. Fun and reflection only — no rite predicts black swan events that can change everything at once.
-            </p>
-          </aside>
+          <details class="advisory advisory--inline advisory--collapse" id="accuracy-advisory">
+            <summary class="advisory__summary">
+              <span class="advisory__eyebrow" data-i18n="advisory.eyebrow">Fair play notice</span>
+              <span class="advisory__hint" data-closed="Show" data-open="Hide" data-i18n-closed="advisory.show" data-i18n-open="advisory.hide"></span>
+            </summary>
+            <div class="advisory__panel">
+              <p class="advisory__body" data-i18n="advisory.body">
+                Readings may not be accurate. Reality is stochastic. Fun and reflection only — no rite predicts black swan events that can change everything at once.
+              </p>
+            </div>
+          </details>
           <p class="page-links">
             <a class="btn btn--primary" href="#/play" data-nav="play" data-i18n="hero.start">Start playing</a>
           </p>
