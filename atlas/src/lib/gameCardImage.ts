@@ -223,6 +223,19 @@ export function isPhotographicSrc(src: string | undefined): boolean {
   return !isFragileRemoteSrc(src);
 }
 
+/** Photographic covers first; title-card refs only as a last resort. */
+export function listDisplayImages(images: string[] | undefined): string[] {
+  const list = images ?? [];
+  const photos = list.filter(isPhotographicSrc);
+  if (photos.length) return photos;
+  return list.filter(Boolean);
+}
+
+/** Best single cover for cards / variation heroes. */
+export function primaryCoverSrc(images: string[] | undefined): string | undefined {
+  return listDisplayImages(images)[0];
+}
+
 /**
  * Resolve a collection image src for use in <img>.
  * Title-card refs become SVG data URIs bearing the correct game name.

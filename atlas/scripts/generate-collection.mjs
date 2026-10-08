@@ -221,6 +221,19 @@ const CURATED_PHOTOS = {
   Chess: [
     unsplash("1528819622765-d6bcf132f793"),
     unsplash("1586165368502-1bad197a6461"),
+    commons("Chess_game_Staunton_No._6_perfil_view_8.jpg"),
+    commons("Wooden_Chess_Board.jpg"),
+    commons("Opening_chess_position_from_black_side.jpg"),
+  ],
+  Chaturanga: [
+    commons("Chathurangam-1.jpg"),
+    commons("Chaturanga_board_and_pins.png"),
+    unsplash("1528819622765-d6bcf132f793"),
+  ],
+  Shatranj: [
+    commons("Persian_Tamerlane_Chess_Set.png"),
+    commons("A_treatise_on_chess_2.jpg"),
+    unsplash("1586165368502-1bad197a6461"),
   ],
   "Go (Weiqi)": [
     unsplash("1774234528903-f520d964ba13"),
@@ -344,6 +357,50 @@ const PHOTO_ALIASES = {
   dominoes: "Dominoes",
   "playing cards": "Playing cards",
   chess: "Chess",
+  chaturanga: "Chaturanga",
+  "catur-anga": "Chaturanga",
+  shatranj: "Shatranj",
+  // Regional / nested names → nearest curated photo pool
+  baduk: "Go (Weiqi)",
+  igo: "Go (Weiqi)",
+  "chu shogi": "Shogi",
+  "english draughts / checkers": "Checkers",
+  "international draughts": "Draughts",
+  kharbaga: "Alquerque",
+  "twelve men's morris": "Nine Men's Morris",
+  umlabalaba: "Nine Men's Morris",
+  morabaraba: "Nine Men's Morris",
+  nard: "Backgammon",
+  tavli: "Backgammon",
+  "shesh besh": "Backgammon",
+  "royal game of ur": "Senet",
+  "american mahjong": "Mahjong",
+  "hong kong mahjong": "Mahjong",
+  "riichi mahjong": "Mahjong",
+  "draw dominoes": "Dominoes",
+  "mexican train": "Dominoes",
+  "german-suited deck": "Playing cards",
+  "italian-suited deck": "Playing cards",
+  "spanish baraja": "Playing cards",
+  jacks: "Knucklebones",
+  gonggi: "Knucklebones",
+  trompo: "Spinning top",
+  lattoo: "Spinning top",
+  ttoli: "Spinning top",
+  koma: "Spinning top",
+  "đá cầu": "Jianzi",
+  jegichagi: "Jianzi",
+  bandalore: "Yo-yo",
+  "pocket cube (2×2)": "Rubik's Cube",
+  "revenge cube (4×4)": "Rubik's Cube",
+  othello: "Othello",
+  renju: "Gomoku",
+  "mensch ärgere dich nicht": "Ludo",
+  bao: "Mancala",
+  kalah: "Mancala",
+  ayoayo: "Oware",
+  gebeta: "Mancala",
+  pallanguzhi: "Mancala",
   draughts: "Draughts",
   checkers: "Checkers",
   "english draughts": "Draughts",
@@ -694,23 +751,30 @@ const imageBank = {
   },
 
   /**
-   * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string }} opts
+   * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string, parentName?: string }} opts
    */
   allocate(opts) {
-    const { name, category, originCountry, uniqueKey } = opts;
-    const salt = hash(uniqueKey);
+    const { name, category, originCountry, uniqueKey, parentName } = opts;
     /** @type {string[]} */
     const imgs = [encodeLudusCard(name, category, originCountry)];
 
-    // Prefer a title-matched photo, then a category cover — never loremflickr/picsum.
-    const cover =
-      this.takeCuratedPhoto(name) || this.takeCategoryPhoto(category, uniqueKey);
-    if (cover) imgs.push(cover);
-
-    // Optional second curated view when the pool still has unused URLs.
-    if ((salt & 1) === 0) {
-      const extra = this.takeCuratedPhoto(name);
-      if (extra && extra !== cover) imgs.push(extra);
+    // Prefer title-matched photos, then the parent game's pool (for variations),
+    // then a category cover — never loremflickr/picsum.
+    const subjectNames = [name, parentName].filter(Boolean);
+    const seen = new Set();
+    for (const subject of subjectNames) {
+      // Pull several curated views when the pool is rich (detail gallery).
+      for (let n = 0; n < 3; n++) {
+        const url = this.takeCuratedPhoto(subject);
+        if (!url || seen.has(url)) break;
+        seen.add(url);
+        imgs.push(url);
+      }
+      if (imgs.length > 1) break;
+    }
+    if (imgs.length === 1) {
+      const cover = this.takeCategoryPhoto(category, uniqueKey);
+      if (cover) imgs.push(cover);
     }
 
     const sig = JSON.stringify(imgs);
@@ -1823,6 +1887,7 @@ function toGame(seed, index) {
         originCountry: v.originCountry,
         uniqueKey: varKey,
         archetypeKey: seed.archetypeKey,
+        parentName: seed.name,
       }),
     };
   });

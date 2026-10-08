@@ -10,7 +10,14 @@ import { GameImage } from "../components/GameImage";
 import { GameAssistant } from "../components/GameAssistant";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
-import { isLudusCardSrc, isFragileRemoteSrc, resolveImageSrc } from "../lib/gameCardImage";
+import {
+  isLudusCardSrc,
+  isFragileRemoteSrc,
+  isPhotographicSrc,
+  listDisplayImages,
+  primaryCoverSrc,
+  resolveImageSrc,
+} from "../lib/gameCardImage";
 
 export function GameDetailPage() {
   const { slug } = useParams();
@@ -52,10 +59,17 @@ export function GameDetailPage() {
     );
   }
 
-  const activeSrc = game.images[activeImg] ?? game.images[0];
+  // Prefer real photos in the gallery — circular thumbs crop title-card SVGs
+  // into unreadable fragments (e.g. “…ss” from “Chess”).
+  const galleryImages = listDisplayImages(game.images);
+  const activeSrc =
+    galleryImages[Math.min(activeImg, Math.max(galleryImages.length - 1, 0))] ??
+    game.images[0];
   // Title-card SVGs repeat the game name — using them as the hero background
   // creates a ghost double of the headline. Prefer a plain brand wash instead.
   const heroPhoto =
+    activeSrc &&
+    isPhotographicSrc(activeSrc) &&
     !isLudusCardSrc(activeSrc) &&
     !isFragileRemoteSrc(activeSrc) &&
     !activeSrc.startsWith("data:")
@@ -126,12 +140,19 @@ export function GameDetailPage() {
               <h2>{t("detail.variations")}</h2>
               <p style={{ color: "var(--mist-dim)" }}>{t("detail.variationsIntro")}</p>
               <div className="variations">
-                {game.variations.map((v) => (
+                {game.variations.map((v) => {
+                  const varPhotos = listDisplayImages(v.images).filter(isPhotographicSrc);
+                  const varCover =
+                    primaryCoverSrc(v.images) ??
+                    primaryCoverSrc(game.images) ??
+                    v.images?.[0];
+                  const varThumbs = varPhotos.filter((src) => src !== varCover).slice(0, 3);
+                  return (
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
-                    {v.images?.[0] ? (
+                    {varCover ? (
                       <div className="variation-media">
                         <GameImage
-                          src={v.images[0]}
+                          src={varCover}
                           alt={v.name}
                           loading="lazy"
                           label={{
@@ -140,9 +161,9 @@ export function GameDetailPage() {
                             originCountry: v.originCountry,
                           }}
                         />
-                        {v.images.length > 1 ? (
+                        {varThumbs.length ? (
                           <div className="variation-thumbs">
-                            {v.images.slice(1, 4).map((src) => (
+                            {varThumbs.map((src) => (
                               <GameImage
                                 key={src}
                                 src={src}
@@ -169,7 +190,8 @@ export function GameDetailPage() {
                     </div>
                     <p>{v.notes}</p>
                   </article>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ) : null}
@@ -190,28 +212,30 @@ export function GameDetailPage() {
                 originCountry: game.originCountry,
               }}
             />
-            <div className="gallery">
-              {game.images.map((src, i) => (
-                <button
-                  type="button"
-                  key={`${src}-${i}`}
-                  className={i === activeImg ? "active" : undefined}
-                  onClick={() => setActiveImg(i)}
-                  aria-label={t("detail.showImage", { n: i + 1 })}
-                >
-                  <GameImage
-                    src={src}
-                    alt=""
-                    loading="lazy"
-                    label={{
-                      name: game.name,
-                      category: game.category,
-                      originCountry: game.originCountry,
-                    }}
-                  />
-                </button>
-              ))}
-            </div>
+            {galleryImages.length > 1 ? (
+              <div className="gallery">
+                {galleryImages.map((src, i) => (
+                  <button
+                    type="button"
+                    key={`${src}-${i}`}
+                    className={i === activeImg ? "active" : undefined}
+                    onClick={() => setActiveImg(i)}
+                    aria-label={t("detail.showImage", { n: i + 1 })}
+                  >
+                    <GameImage
+                      src={src}
+                      alt=""
+                      loading="lazy"
+                      label={{
+                        name: game.name,
+                        category: game.category,
+                        originCountry: game.originCountry,
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="panel">
