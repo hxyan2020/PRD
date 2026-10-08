@@ -45,6 +45,9 @@
     }
     if (e.modeLogin) e.modeLogin.classList.toggle("is-active", mode === "login");
     if (e.modeRegister) e.modeRegister.classList.toggle("is-active", mode === "register");
+    if (e.password) {
+      e.password.autocomplete = mode === "register" ? "new-password" : "current-password";
+    }
     if (e.error) {
       e.error.hidden = true;
       e.error.textContent = "";
