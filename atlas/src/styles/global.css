@@ -2292,17 +2292,19 @@ select {
   color: #b7d0c2;
 }
 
-.journal-btn-enter {
+.journal-btn.journal-btn-enter {
   text-decoration: none;
   border-color: var(--brand);
   background: var(--brand);
   color: #fff8f6;
+  font-weight: 700;
 }
 
-.journal-btn-enter:hover {
+.journal-btn.journal-btn-enter:hover {
   border-color: var(--brand-bright);
   background: var(--brand-bright);
   color: #fff;
+  transform: translateY(-1px);
 }
 
 .daily-picks {
