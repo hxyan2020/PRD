@@ -250,7 +250,7 @@ function isInsideUiChrome(node: Node): boolean {
   if (!el) return false
   return Boolean(
     el.closest(
-      'input, textarea, button, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch, .menu-toggle',
+      'input, textarea, button, [contenteditable="true"], .rte, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch, .menu-toggle',
     ),
   )
 }
