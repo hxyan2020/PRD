@@ -2453,23 +2453,12 @@ select {
 .chat-think-steps li.is-active .chat-think-mark {
   border-color: var(--brand);
   background: var(--brand);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 22%, transparent);
-  animation: chat-think-pulse 1s ease-in-out infinite;
+  transform: scale(1.15);
 }
 
 .chat-think-steps li.is-done .chat-think-mark {
   border-color: var(--brand);
   background: var(--brand);
-}
-
-@keyframes chat-think-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand) 18%, transparent);
-  }
-  50% {
-    box-shadow: 0 0 0 5px color-mix(in srgb, var(--brand) 10%, transparent);
-  }
 }
 
 .chat-bubble-typing {
@@ -2498,8 +2487,7 @@ select {
   .chat-think,
   .chat-bubble-typing,
   .chat-status-dots span,
-  .chat-caret,
-  .chat-think-steps li.is-active .chat-think-mark {
+  .chat-caret {
     animation: none !important;
   }
 }
