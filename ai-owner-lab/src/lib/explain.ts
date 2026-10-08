@@ -386,15 +386,17 @@ export async function explainSelection(input: {
     headers.Authorization = `Bearer ${settings.apiKey}`
   }
 
-  try {
+  const body = JSON.stringify({
+    model: settings.model,
+    messages,
+    temperature: 0.5,
+  })
+
+  const attemptRemote = async (): Promise<{ content: string; model: string }> => {
     const response = await fetch(settings.endpoint, {
       method: 'POST',
       headers,
-      body: JSON.stringify({
-        model: settings.model,
-        messages,
-        temperature: 0.5,
-      }),
+      body,
     })
 
     if (!response.ok) {
@@ -423,8 +425,18 @@ export async function explainSelection(input: {
       throw new Error('Empty or bad model response')
     }
     return { content, model: settings.model }
-  } catch {
-    // Public bot endpoints can rate-limit; keep the lesson usable offline.
-    return localReply()
   }
+
+  // Public ChatGPT-compatible bots can flap; retry briefly before offline tutor.
+  let lastError: unknown
+  for (let i = 0; i < 3; i += 1) {
+    try {
+      return await attemptRemote()
+    } catch (err) {
+      lastError = err
+      await new Promise((resolve) => window.setTimeout(resolve, 400 * (i + 1)))
+    }
+  }
+  console.warn('OWNLAB chat API unavailable, using local tutor', lastError)
+  return localReply()
 }
