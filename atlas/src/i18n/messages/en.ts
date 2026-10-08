@@ -334,6 +334,8 @@ export const en = {
   "detail.variations": "Cultural variations",
   "detail.variationsIntro":
     "These are fundamentally the same game or toy, expressed in different places and eras—not separate catalog inventions.",
+  "detail.variationsToggle": "{n} related forms — show",
+  "detail.variationsToggleOpen": "{n} related forms — hide",
   "detail.images": "Images",
   "detail.tutorial": "Tutorial video",
   "detail.tutorialIntro":

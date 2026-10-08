@@ -216,9 +216,22 @@ export function GameDetailPage() {
           ) : null}
 
           {game.variations.length > 0 ? (
-            <div className="panel">
-              <h2>{t("detail.variations")}</h2>
-              <p style={{ color: "var(--mist-dim)" }}>{t("detail.variationsIntro")}</p>
+            <details className="panel variations-panel" key={`variations-${game.slug}`}>
+              <summary className="variations-summary">
+                <span className="variations-summary-text">
+                  <h2>{t("detail.variations")}</h2>
+                  <span className="variations-summary-meta" data-closed="">
+                    {t("detail.variationsToggle", { n: game.variations.length })}
+                  </span>
+                  <span className="variations-summary-meta" data-open="">
+                    {t("detail.variationsToggleOpen", {
+                      n: game.variations.length,
+                    })}
+                  </span>
+                </span>
+                <span className="variations-chevron" aria-hidden="true" />
+              </summary>
+              <p className="variations-intro">{t("detail.variationsIntro")}</p>
               <div className="variations">
                 {game.variations.map((v) => {
                   const varPhotos = listDisplayImages(v.images).filter(isPhotographicSrc);
@@ -273,7 +286,7 @@ export function GameDetailPage() {
                   );
                 })}
               </div>
-            </div>
+            </details>
           ) : null}
 
           <GameAssistant game={game} />
