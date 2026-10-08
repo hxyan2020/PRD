@@ -246,19 +246,28 @@ export async function validateCategoryRelevance(input: {
     score -= 3;
   }
 
-  // Nature visual cues — required soft gate for trees/flowers
+  // Nature visual cues — soft gate for trees/flowers (never block on hung decode)
   if (input.file && rule.natureCue) {
-    const cues = await imageCues(input.file);
-    if (rule.natureCue === "green") {
-      if (cues.greenness >= 0.08) score += 1.5;
-      else score -= 1.2;
-    }
-    if (rule.natureCue === "floral") {
-      if (cues.warmness >= 0.08 || cues.greenness >= 0.05) score += 1;
-      else score -= 0.8;
-    }
-    if (rule.natureCue === "animal") {
-      if (cues.contrast >= 0.15) score += 0.6;
+    try {
+      const cues = await Promise.race([
+        imageCues(input.file),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 2500)),
+      ]);
+      if (cues) {
+        if (rule.natureCue === "green") {
+          if (cues.greenness >= 0.08) score += 1.5;
+          else score -= 1.2;
+        }
+        if (rule.natureCue === "floral") {
+          if (cues.warmness >= 0.08 || cues.greenness >= 0.05) score += 1;
+          else score -= 0.8;
+        }
+        if (rule.natureCue === "animal") {
+          if (cues.contrast >= 0.15) score += 0.6;
+        }
+      }
+    } catch {
+      // ignore cue failures; Wikipedia evidence still decides
     }
   }
 
