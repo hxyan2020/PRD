@@ -62,7 +62,7 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
           <p className="excerpt">{excerpt(game.description)}</p>
         </div>
       </Link>
-      <JournalActions game={game} compact />
+      <JournalActions game={game} compact showPlayed={false} showEnter />
     </article>
   );
 }
