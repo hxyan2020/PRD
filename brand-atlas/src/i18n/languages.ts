@@ -28,8 +28,13 @@ export const LANGUAGES: Language[] = [
   { code: "nl", label: "Nederlands", flag: "nl" },
   { code: "pl", label: "Polski", flag: "pl" },
   { code: "sv", label: "Svenska", flag: "se" },
+  { code: "uk", label: "Українська", flag: "ua" },
+  { code: "ms", label: "Bahasa Melayu", flag: "my" },
+  { code: "bn", label: "বাংলা", flag: "bd" },
+  { code: "fa", label: "فارسی", flag: "ir", dir: "rtl" },
+  { code: "he", label: "עברית", flag: "il", dir: "rtl" },
 ];
 
 export function flagUrl(code: string): string {
-  return `https://flagcdn.com/24x18/${code}.png`;
+  return `https://flagcdn.com/w40/${code}.png`;
 }
