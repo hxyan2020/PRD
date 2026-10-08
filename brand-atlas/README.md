@@ -1,4 +1,4 @@
-# Seen — Unlock the Catalogue
+# Seen — Explore the world's diversity. Collect what you've seen.
 
 Photograph or upload brands and living things. AI identifies them against a living catalogue. Confirm a match to lift greyscale covers and unlock colour entries.
 
