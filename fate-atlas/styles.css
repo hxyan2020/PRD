@@ -2199,6 +2199,18 @@ body.studio-open {
   justify-content: center;
 }
 
+.footer__cta.btn--ghost {
+  color: var(--teal-deep);
+  border-color: rgba(15, 92, 86, 0.35);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.footer__cta.btn--ghost:hover {
+  color: var(--teal-deep);
+  border-color: var(--teal-deep);
+  background: rgba(15, 92, 86, 0.08);
+}
+
 .footer__nav {
   display: flex;
   flex-wrap: wrap;
