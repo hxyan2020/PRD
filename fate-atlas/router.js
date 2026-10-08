@@ -126,7 +126,6 @@
     if (backdrop) backdrop.hidden = true;
     if (document.body.classList.contains("studio-open")) {
       window.FatumReading?.close?.();
-      window.FatumJournalUI?.closeDetail?.();
       document.querySelectorAll(".studio").forEach((el) => {
         el.hidden = true;
         el.setAttribute("aria-hidden", "true");
