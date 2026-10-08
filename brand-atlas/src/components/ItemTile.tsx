@@ -1,4 +1,5 @@
 import { coverGradient } from "../lib/catalog";
+import { markUrl } from "../lib/marks";
 import { getUnlock } from "../lib/unlocks";
 import type { CatalogItem, RevealMode } from "../types/catalog";
 import { useI18n } from "../i18n/I18nProvider";
@@ -14,6 +15,7 @@ export function ItemTile({ item, mode, onClick }: Props) {
   const lit = mode === "unlocked" || mode === "sneak";
   const unlock = mode === "unlocked" ? getUnlock(item.id) : undefined;
   const hasPhoto = Boolean(unlock?.photoDataUrl);
+  const mark = markUrl(item);
 
   return (
     <button
@@ -38,7 +40,17 @@ export function ItemTile({ item, mode, onClick }: Props) {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-      />
+      >
+        {!hasPhoto && mark && (
+          <img
+            className="item-tile__mark"
+            src={mark}
+            alt=""
+            draggable={false}
+            loading="lazy"
+          />
+        )}
+      </div>
       <span className="item-tile__badge">
         {mode === "unlocked"
           ? t("catalog.unlocked")

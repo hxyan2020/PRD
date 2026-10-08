@@ -286,10 +286,7 @@ img {
   overflow: auto;
 }
 
-.detail-cover {
-  height: 140px;
-  border-radius: 16px;
-}
+/* base detail-cover sizing; mark layout rules appear with item-tile styles */
 
 .fact-list {
   display: grid;
@@ -915,11 +912,34 @@ img {
 .item-tile__cover {
   position: absolute;
   inset: 0;
+  display: grid;
+  place-items: center;
   transition: filter 0.55s ease, transform 0.55s ease;
 }
 
-.item-tile.is-locked .item-tile__cover {
-  filter: grayscale(1) brightness(0.55) contrast(0.9);
+.item-tile__mark {
+  width: 58%;
+  height: 48%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 0;
+  transition: filter 0.55s ease, opacity 0.55s ease, transform 0.55s ease;
+}
+
+/* Locked / sneak: real logo shape stays visible, fully greyed out */
+.item-tile.is-locked .item-tile__cover,
+.item-tile.is-sneak .item-tile__cover {
+  filter: none;
+}
+
+.item-tile.is-locked .item-tile__mark {
+  filter: grayscale(1) contrast(1.15) brightness(0.72);
+  opacity: 0.92;
+}
+
+.item-tile.is-sneak .item-tile__mark {
+  filter: grayscale(0.35) brightness(1.05);
+  opacity: 1;
 }
 
 .item-tile.is-unlocked .item-tile__cover {
@@ -927,15 +947,52 @@ img {
   animation: unlockBloom 0.8s ease;
 }
 
+.item-tile.is-unlocked .item-tile__mark {
+  filter: none;
+  opacity: 1;
+}
+
 @keyframes unlockBloom {
   from {
-    filter: grayscale(1) brightness(0.55);
     transform: scale(1.04);
   }
   to {
-    filter: none;
     transform: none;
   }
+}
+
+.detail-cover {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 140px;
+  min-height: 140px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.detail-cover__mark {
+  width: min(46%, 160px);
+  height: 72%;
+  object-fit: contain;
+}
+
+.detail-cover__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-cover.is-locked .detail-cover__mark {
+  filter: grayscale(1) contrast(1.15) brightness(0.7);
+}
+
+.detail-cover.is-sneak .detail-cover__mark {
+  filter: grayscale(0.3);
+}
+
+.detail-cover.is-unlocked .detail-cover__mark {
+  filter: none;
 }
 
 .item-tile__body {

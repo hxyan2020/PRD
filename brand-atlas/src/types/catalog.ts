@@ -19,6 +19,10 @@ export interface CatalogItem {
   summary: string;
   facts: Record<string, string>;
   coverHue: number;
+  /** Local relative path under site base, e.g. marks/cars__toyota.svg */
+  mark?: string | null;
+  /** Simple Icons slug when a public brand mark exists */
+  markIcon?: string | null;
   sort: number;
   status: string;
 }
