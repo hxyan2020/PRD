@@ -1,6 +1,7 @@
 /**
  * Hash router — splits Fatum Atlas into focused pages.
  * Routes: home | play | atlas | journal | about | terms
+ * Note: home and play share one combined page (hero + play content).
  */
 (function () {
   "use strict";
@@ -100,8 +101,10 @@
     current = page;
     document.body.dataset.page = page;
 
+    // Home and Play share one combined page (hero + play content).
     document.querySelectorAll(".page[data-page]").forEach((el) => {
-      const on = el.getAttribute("data-page") === page;
+      const pageId = el.getAttribute("data-page");
+      const on = pageId === page || (pageId === "home" && page === "play");
       el.hidden = !on;
       el.classList.toggle("is-active-page", on);
       if (on) el.removeAttribute("aria-hidden");
@@ -146,13 +149,24 @@
         }
       });
     }
-    if (page === "play" && params.surprise === "1") {
-      document.getElementById("draw-btn")?.click();
-      navigate("play", {}, { replace: true });
+    if ((page === "play" || page === "atlas" || page === "home") && params.surprise === "1") {
+      navigate("atlas", {}, { replace: true });
+      requestAnimationFrame(() => {
+        document.getElementById("recommend")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("draw-btn")?.click();
+      });
       return;
     }
 
-    window.scrollTo(0, 0);
+    if (page === "play") {
+      // Keep #/play in the URL, but land on the play block under the hero.
+      requestAnimationFrame(() => {
+        document.getElementById("play")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    } else {
+      window.scrollTo(0, 0);
+    }
+
     listeners.forEach((fn) => {
       try {
         fn(page, params);

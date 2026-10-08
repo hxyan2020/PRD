@@ -51,8 +51,8 @@
   <div class="nav-backdrop" id="nav-backdrop" hidden></div>
 
   <main>
-    <!-- HOME -->
-    <div class="page page--home" data-page="home" id="page-home">
+    <!-- HOME + PLAY (combined) -->
+    <div class="page page--home page--play" data-page="home" id="page-home">
       <header class="hero" id="top">
         <div class="hero__media" aria-hidden="true">
           <img
@@ -80,41 +80,16 @@
         </div>
       </header>
 
-      <section class="home-paths section" aria-labelledby="paths-title">
-        <p class="section__eyebrow" data-i18n="paths.eyebrow">Choose a path</p>
-        <h2 class="section__title" id="paths-title" data-i18n="paths.title">Where next?</h2>
-        <div class="path-grid">
-          <a class="path-card" href="#/play" data-nav="play">
-            <span class="path-card__glyph" aria-hidden="true">▶</span>
-            <h3 data-i18n="nav.play">Play</h3>
-            <p data-i18n="paths.play">Guided quests and a quick match picker.</p>
-          </a>
-          <a class="path-card" href="#/atlas" data-nav="atlas">
-            <span class="path-card__glyph" aria-hidden="true">◎</span>
-            <h3 data-i18n="nav.atlas">Atlas</h3>
-            <p data-i18n="paths.atlas">Browse all 187 rites by continent and type.</p>
-          </a>
-          <a class="path-card" href="#/journal" data-nav="journal">
-            <span class="path-card__glyph" aria-hidden="true">◈</span>
-            <h3 data-i18n="nav.journal">Journal</h3>
-            <p data-i18n="paths.journal">Your collected seals, titles, and timestamps.</p>
-          </a>
-          <a class="path-card" href="#/about" data-nav="about">
-            <span class="path-card__glyph" aria-hidden="true">?</span>
-            <h3 data-i18n="nav.about">About</h3>
-            <p data-i18n="paths.about">How it works, fair play, and sources.</p>
-          </a>
-        </div>
-      </section>
-    </div>
-
-    <!-- PLAY -->
-    <div class="page page--play" data-page="play" id="page-play" hidden>
       <section class="featured" id="play" aria-labelledby="featured-title">
         <div class="section">
-          <p class="section__eyebrow" data-i18n="play.eyebrow">Starter quests</p>
-          <h2 class="section__title" id="featured-title" data-i18n="play.title">Play these first</h2>
-          <p class="section__copy" data-i18n="play.copy">Three guided games with clear rules. Tap a card to begin.</p>
+          <div class="featured__head">
+            <div>
+              <p class="section__eyebrow" data-i18n="play.eyebrow">Recommended</p>
+              <h2 class="section__title" id="featured-title" data-i18n="play.title">Rites for you</h2>
+              <p class="section__copy" data-i18n="play.copy">A rotating trio from the atlas. Come back later — or sign in again — for a fresh set.</p>
+            </div>
+            <button type="button" class="btn btn--play-secondary" id="play-recs-refresh" data-i18n="play.refresh">New picks</button>
+          </div>
           <div class="feature-grid" id="featured-guides"></div>
         </div>
       </section>
@@ -123,7 +98,7 @@
         <div class="section">
           <p class="section__eyebrow" data-i18n="begin.eyebrow">Quick match</p>
           <h2 class="section__title" id="begin-title" data-i18n="begin.title">Or jump straight in</h2>
-          <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list, or roll a surprise.</p>
+          <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list to begin.</p>
           <div class="begin__row">
             <div class="field begin__picker">
               <label id="method-picker-label" for="method-picker-trigger" data-i18n="begin.choose">Choose a rite</label>
@@ -146,16 +121,26 @@
             </div>
           </div>
           <div class="quick-actions">
-            <button type="button" class="btn btn--play-secondary" id="draw-btn"><span aria-hidden="true">🎲 </span><span data-i18n="begin.surprise">Surprise me</span></button>
             <a class="btn btn--ghost" href="#/atlas" data-nav="atlas" data-i18n="paths.toAtlas">Browse full atlas</a>
           </div>
-          <div class="oracle__result" id="oracle-result" hidden></div>
         </div>
       </section>
     </div>
 
     <!-- ATLAS -->
     <div class="page page--atlas" data-page="atlas" id="page-atlas" hidden>
+      <section class="oracle recommend" id="recommend" aria-labelledby="recommend-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="recommend.eyebrow">AI recommendation</p>
+          <h2 class="section__title" id="recommend-title" data-i18n="recommend.title">Not sure where to start?</h2>
+          <p class="section__copy" data-i18n="recommend.copy">Draw a rite from the full atlas — a chance pick for exploration, not a prediction.</p>
+          <div class="oracle__panel">
+            <button type="button" class="btn btn--primary" id="draw-btn"><span aria-hidden="true">✦ </span><span data-i18n="recommend.draw">Recommend a rite</span></button>
+            <div class="oracle__result" id="oracle-result" hidden></div>
+          </div>
+        </div>
+      </section>
+
       <section class="section regions-wrap" id="regions" aria-labelledby="regions-title">
         <p class="section__eyebrow" data-i18n="regions.eyebrow">World map</p>
         <h2 class="section__title" id="regions-title" data-i18n="regions.title">Browse by continent</h2>
@@ -195,8 +180,11 @@
 
           <div class="results-meta">
             <span id="results-count">Showing 0 rites</span>
-            <span class="results-meta__hint" data-i18n="catalog.hint">Each card shows science status</span>
+            <span class="results-meta__hint" data-i18n="catalog.hint">Corner mark = rite symbol · tags show science status</span>
           </div>
+          <p class="catalog-legend" data-i18n="catalog.legend">
+            The small mark on each cover is that rite’s symbol — a quick visual ID, not a rating.
+          </p>
 
           <ul class="method-list" id="method-list"></ul>
           <p class="empty" id="empty-state" hidden data-i18n="catalog.empty">No rites match. Try another search.</p>
@@ -407,6 +395,7 @@
   <script src="i18n/i18n.js"></script>
   <script src="router.js"></script>
   <script src="journal.js"></script>
+  <script src="play-recs.js"></script>
   <script src="app.js"></script>
   <script src="reading.js"></script>
   <script src="journal-ui.js"></script>
