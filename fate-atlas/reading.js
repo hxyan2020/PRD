@@ -1055,7 +1055,12 @@
 
       function renderList(filter) {
         if (!listEl) return;
-        const q = (filter || "").trim().toLowerCase();
+        const fold = (s) =>
+          String(s || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+        const q = fold(filter || "").trim();
         const cont = contLabel;
         const groups = [
           { label: ti("begin.featuredGroup"), items: sorted.filter((m) => m.featured) },
@@ -1082,16 +1087,16 @@
           .map((g) => {
             const items = g.items.filter((m) => {
               if (!q) return true;
-              const hay = [
-                m.name,
-                m.region,
-                m.summary,
-                m.continent,
-                cont(m.continent),
-                ...(m.countries || []),
-              ]
-                .join(" ")
-                .toLowerCase();
+              const hay = fold(
+                [
+                  m.name,
+                  m.region,
+                  m.summary,
+                  m.continent,
+                  cont(m.continent),
+                  ...(m.countries || []),
+                ].join(" ")
+              );
               return hay.includes(q);
             });
             if (!items.length) return "";
