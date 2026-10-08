@@ -70,7 +70,9 @@ export function CelebrateModal({ item, categoryLabel, onClose }: Props) {
           <div className="permalink-box">
             <strong>Permanent link</strong>
             <p className="muted" style={{ margin: "0.25rem 0 0.5rem", fontSize: "0.85rem" }}>
-              {copied ? "Pushed to your clipboard." : "Stable URL for this unlock — copy or open anytime."}
+              {copied
+                ? "Pushed to your clipboard (GitHub Pages link)."
+                : "Stable GitHub Pages URL for this unlock — copy or open anytime."}
             </p>
             <code className="permalink-url">{link}</code>
             <div className="cta-row" style={{ justifyContent: "center", marginTop: "0.7rem" }}>

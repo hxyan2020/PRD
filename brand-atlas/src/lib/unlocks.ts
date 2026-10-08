@@ -124,14 +124,17 @@ export function updateUnlockPhoto(
   return map[itemId];
 }
 
+/** Canonical public site on GitHub Pages */
+export const PUBLIC_SITE_URL = "https://hxyan2020.github.io/PRD/brand-atlas/";
+
+/**
+ * Permanent unlock link — always points at the published GitHub Pages URL
+ * so it stays shareable outside localhost.
+ * Example: https://hxyan2020.github.io/PRD/brand-atlas/#/u/cars-toyota-abc123
+ */
 export function permanentLink(shareId: string): string {
-  const origin = window.location.origin;
-  const basePath = import.meta.env.BASE_URL.replace(/\/?$/, "/");
-  const useHash = import.meta.env.BASE_URL !== "/";
-  if (useHash) {
-    return `${origin}${basePath}#/u/${encodeURIComponent(shareId)}`;
-  }
-  return `${origin}${basePath}u/${encodeURIComponent(shareId)}`;
+  const base = PUBLIC_SITE_URL.replace(/\/?$/, "/");
+  return `${base}#/u/${encodeURIComponent(shareId)}`;
 }
 
 export function subscribeUnlocks(cb: () => void): () => void {
