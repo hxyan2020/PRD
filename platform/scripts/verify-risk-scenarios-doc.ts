@@ -73,16 +73,25 @@ assert(plus.total >= 110, "expanded catalogue size");
 
 const requiredCols = [
   "name_en",
+  "name_zh",
   "description_en",
+  "description_zh",
   "indicators",
   "dimensions",
+  "dimensions_zh",
   "warn",
+  "warn_zh",
   "breach",
+  "breach_zh",
   "frequency_en",
+  "frequency_zh",
   "severity",
   "escalation_en",
+  "escalation_zh",
   "investigation_en",
+  "investigation_zh",
   "solution_en",
+  "solution_zh",
 ] as const;
 for (const col of requiredCols) {
   assert(
@@ -93,6 +102,22 @@ for (const col of requiredCols) {
     `every plus row has ${col}`
   );
 }
+
+let enEqualsZhSol = 0;
+let enEqualsZhEsc = 0;
+let enEqualsZhInv = 0;
+for (const r of rows) {
+  if (r.solution_en.join("|") === r.solution_zh.join("|")) enEqualsZhSol++;
+  if (r.escalation_en === r.escalation_zh) enEqualsZhEsc++;
+  if (r.investigation_en.join("|") === r.investigation_zh.join("|")) enEqualsZhInv++;
+  assert(r.name_en !== r.name_zh || /M2-|SKILL-|CORR-|DOC-|CHAIN-/.test(r.name_en), `${r.id} name bilingual or code`);
+}
+assert(enEqualsZhSol === 0, `solutions must differ EN vs ZH (had ${enEqualsZhSol})`);
+assert(enEqualsZhEsc === 0, `escalation must differ EN vs ZH (had ${enEqualsZhEsc})`);
+assert(enEqualsZhInv === 0, `investigation must differ EN vs ZH (had ${enEqualsZhInv})`);
+assert(rows.every((r) => /[\u4e00-\u9fff]/.test(r.name_zh)), "every name_zh has CJK");
+assert(rows.every((r) => /[\u4e00-\u9fff]/.test(r.description_zh)), "every description_zh has CJK");
+assert(rows.every((r) => r.solution_zh.some((s) => /[\u4e00-\u9fff]/.test(s))), "every solution_zh has CJK");
 
 assert(
   NAV_ITEMS.some((n) => n.href === "/admin/docs/risk-scenarios"),

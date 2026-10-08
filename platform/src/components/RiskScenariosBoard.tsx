@@ -13,7 +13,8 @@ import {
   type RiskScenarioKind,
 } from "@/lib/docs/risk-scenario-rows";
 import { correlationPatternLabel } from "@/lib/docs/risk-scenario-correlations";
-import { useUiLocale } from "@/hooks/useUiLocale";
+
+export type RiskScenarioLang = "en" | "zh-Hant" | "both";
 
 const BUCKETS: Array<RiskScenarioBucket | "ALL"> = [
   "ALL",
@@ -57,9 +58,65 @@ function sevTone(p: DocPriority) {
   return "bg-slate-100 text-slate-700 border-slate-200";
 }
 
-export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition?: RiskScenarioEdition }) {
-  const { locale } = useUiLocale();
-  const zh = locale === "zh-Hant";
+function BiText({
+  lang,
+  en,
+  zh,
+  className,
+}: {
+  lang: RiskScenarioLang;
+  en: string;
+  zh: string;
+  className?: string;
+}) {
+  if (lang === "en") return <span className={className}>{en}</span>;
+  if (lang === "zh-Hant") return <span className={className}>{zh}</span>;
+  return (
+    <span className={className}>
+      <span className="block">{en}</span>
+      <span className="block mt-0.5 text-[var(--muted)] border-t border-dashed border-[var(--line)] pt-0.5">{zh}</span>
+    </span>
+  );
+}
+
+function BiList({ lang, en, zh, ordered }: { lang: RiskScenarioLang; en: string[]; zh: string[]; ordered?: boolean }) {
+  const Tag = ordered ? "ol" : "ul";
+  const cls = ordered ? "list-decimal pl-4 space-y-0.5 text-[11px]" : "list-disc pl-4 space-y-0.5 text-[11px]";
+  if (lang === "both") {
+    return (
+      <div className="space-y-2">
+        <Tag className={cls}>
+          {en.map((step, i) => (
+            <li key={`en-${i}`}>{step}</li>
+          ))}
+        </Tag>
+        <Tag className={`${cls} text-[var(--muted)] border-t border-dashed border-[var(--line)] pt-1`}>
+          {zh.map((step, i) => (
+            <li key={`zh-${i}`}>{step}</li>
+          ))}
+        </Tag>
+      </div>
+    );
+  }
+  const list = lang === "zh-Hant" ? zh : en;
+  return (
+    <Tag className={cls}>
+      {list.map((step, i) => (
+        <li key={i}>{step}</li>
+      ))}
+    </Tag>
+  );
+}
+
+export function RiskScenariosBoard({
+  initialEdition = "plus",
+  lang = "en",
+}: {
+  initialEdition?: RiskScenarioEdition;
+  lang?: RiskScenarioLang;
+}) {
+  const uiZh = lang === "zh-Hant";
+  const labelsZh = lang !== "en";
   const [edition, setEdition] = useState<RiskScenarioEdition>(initialEdition);
   const [bucket, setBucket] = useState<RiskScenarioBucket | "ALL">("ALL");
   const [kind, setKind] = useState<RiskScenarioKind | "ALL">("ALL");
@@ -94,14 +151,17 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
     });
   }, [edition, bucket, kind, sev, pattern, q]);
 
+  const zh = labelsZh;
+
   return (
     <div className="space-y-4">
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-RS-001</Badge>
-          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.1</Badge>
+          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.2</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
-            {zh ? `${summary.total} 列` : `${summary.total} rows`}
+            {uiZh ? `${summary.total} 列` : `${summary.total} rows`}
+            {lang === "both" ? " · EN+繁中" : ""}
           </Badge>
           <Badge className="bg-rose-50 text-rose-900 border-rose-200">P0 × {summary.bySev.P0}</Badge>
           <Badge className="bg-orange-50 text-orange-950 border-orange-200">P1 × {summary.bySev.P1}</Badge>
@@ -120,9 +180,11 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
         </div>
 
         <p className="text-sm text-[var(--muted)] max-w-4xl">
-          {zh
-            ? "彙整 AI Skills、多指標連結鏈，以及明確的指標相關型態（一帳戶多警報、一警報多使用者、跨團隊、跨帳簿、KYC 叢集、供應商連鎖）。CRMP Plus 含 CS／TR；Classic 對齊凍結原版 Admin。"
-            : "Summarises AI Skills, multi-indicator chains, and explicit correlation shapes (one account→many alerts, one alert→many users, cross-team, cross-book, KYC cluster, vendor cascade). CRMP Plus includes CS/TR; Classic matches frozen original Admin."}
+          {lang === "zh-Hant"
+            ? "彙整 AI Skills、多指標連結鏈，以及明確的指標相關型態（一帳戶多警報、一警報多使用者、跨團隊、跨帳簿、KYC 叢集、供應商連鎖）。每列含完整英文與繁中欄位；可用 English／繁體中文／Both 檢視。"
+            : lang === "both"
+              ? "Each row carries full English and Traditional Chinese fields. View mode Both stacks EN then 繁中 in every cell."
+              : "Summarises AI Skills, multi-indicator chains, and correlation shapes. Every row has EN + 繁中 copy — switch English / 繁體中文 / Both above."}
         </p>
 
         <div className="flex flex-wrap gap-2 items-center">
@@ -208,32 +270,43 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
         <table className="min-w-[1100px] w-full text-left text-xs sm:text-sm">
           <thead className="bg-slate-50 border-b border-[var(--line)] sticky top-0 z-10">
             <tr className="text-[var(--muted)]">
-              <th className="p-2 font-medium whitespace-nowrap">{zh ? "情境名稱" : "Risk scenario"}</th>
-              <th className="p-2 font-medium">{zh ? "描述（發生什麼）" : "Description"}</th>
+              <th className="p-2 font-medium whitespace-nowrap">
+                {lang === "both" ? "Risk scenario / 情境名稱" : zh ? "情境名稱" : "Risk scenario"}
+              </th>
+              <th className="p-2 font-medium">
+                {lang === "both" ? "Description / 描述" : zh ? "描述（發生什麼）" : "Description"}
+              </th>
               <th className="p-2 font-medium whitespace-nowrap">{zh ? "指標" : "Indicators"}</th>
-              <th className="p-2 font-medium">{zh ? "維度" : "Dimensions"}</th>
+              <th className="p-2 font-medium">
+                {lang === "both" ? "Dimensions / 維度" : zh ? "維度" : "Dimensions"}
+              </th>
               <th className="p-2 font-medium whitespace-nowrap">{zh ? "預警" : "Warn"}</th>
               <th className="p-2 font-medium whitespace-nowrap">{zh ? "違規" : "Breach"}</th>
               <th className="p-2 font-medium whitespace-nowrap">{zh ? "頻率" : "Frequency"}</th>
-              <th className="p-2 font-medium whitespace-nowrap">{zh ? "嚴重度／升級" : "Severity / escalation"}</th>
-              <th className="p-2 font-medium">{zh ? "調查順序" : "Investigation"}</th>
-              <th className="p-2 font-medium">{zh ? "建議處置" : "Solution"}</th>
+              <th className="p-2 font-medium whitespace-nowrap">
+                {lang === "both" ? "Severity / 嚴重度與升級" : zh ? "嚴重度／升級" : "Severity / escalation"}
+              </th>
+              <th className="p-2 font-medium">
+                {lang === "both" ? "Investigation / 調查" : zh ? "調查順序" : "Investigation"}
+              </th>
+              <th className="p-2 font-medium">
+                {lang === "both" ? "Solution / 處置" : zh ? "建議處置" : "Solution"}
+              </th>
             </tr>
           </thead>
           <tbody>
             {rows.map((r) => {
               const open = openId === r.id;
-              const name = zh ? r.name_zh : r.name_en;
-              const desc = zh ? r.description_zh : r.description_en;
-              const dims = zh ? r.dimensions_zh : r.dimensions;
-              const freq = zh ? r.frequency_zh : r.frequency_en;
-              const esc = zh ? r.escalation_zh : r.escalation_en;
-              const inv = zh ? r.investigation_zh : r.investigation_en;
-              const sol = zh ? r.solution_zh : r.solution_en;
+              const invShow = open ? r.investigation_en : r.investigation_en.slice(0, 3);
+              const invZhShow = open ? r.investigation_zh : r.investigation_zh.slice(0, 3);
+              const solShow = open ? r.solution_en : r.solution_en.slice(0, 3);
+              const solZhShow = open ? r.solution_zh : r.solution_zh.slice(0, 3);
               return (
                 <tr key={r.id} className="border-b border-[var(--line)] align-top hover:bg-orange-50/30">
                   <td className="p-2 min-w-[12rem]">
-                    <div className="font-medium text-[var(--ink)]">{name}</div>
+                    <div className="font-medium text-[var(--ink)]">
+                      <BiText lang={lang} en={r.name_en} zh={r.name_zh} />
+                    </div>
                     <div className="text-[11px] text-[var(--muted)] mt-0.5">{r.id}</div>
                     <div className="flex flex-wrap gap-1 mt-1">
                       <Badge className="!text-[10px] bg-slate-50">{kindLabel(r.kind, zh)}</Badge>
@@ -251,7 +324,9 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
                     </div>
                   </td>
                   <td className="p-2 max-w-[16rem]">
-                    <p className={open ? "" : "line-clamp-3"}>{desc}</p>
+                    <div className={open ? "" : "line-clamp-4"}>
+                      <BiText lang={lang} en={r.description_en} zh={r.description_zh} />
+                    </div>
                     <button
                       type="button"
                       className="text-[11px] text-teal-800 underline mt-1"
@@ -273,27 +348,29 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
                       ))}
                     </div>
                   </td>
-                  <td className="p-2 max-w-[10rem]">{dims}</td>
-                  <td className="p-2 whitespace-nowrap font-mono text-[11px]">{r.warn}</td>
-                  <td className="p-2 whitespace-nowrap font-mono text-[11px]">{r.breach}</td>
-                  <td className="p-2 whitespace-nowrap">{freq}</td>
+                  <td className="p-2 max-w-[10rem]">
+                    <BiText lang={lang} en={r.dimensions} zh={r.dimensions_zh} />
+                  </td>
+                  <td className="p-2 whitespace-nowrap font-mono text-[11px]">
+                    <BiText lang={lang} en={r.warn} zh={r.warn_zh} />
+                  </td>
+                  <td className="p-2 whitespace-nowrap font-mono text-[11px]">
+                    <BiText lang={lang} en={r.breach} zh={r.breach_zh} />
+                  </td>
+                  <td className="p-2 whitespace-nowrap">
+                    <BiText lang={lang} en={r.frequency_en} zh={r.frequency_zh} />
+                  </td>
                   <td className="p-2 max-w-[14rem]">
                     <Badge className={`mb-1 ${sevTone(r.severity)}`}>{r.severity}</Badge>
-                    <p className={open ? "text-[11px]" : "text-[11px] line-clamp-3"}>{esc}</p>
+                    <div className={open ? "text-[11px]" : "text-[11px] line-clamp-4"}>
+                      <BiText lang={lang} en={r.escalation_en} zh={r.escalation_zh} />
+                    </div>
                   </td>
                   <td className="p-2 max-w-[14rem]">
-                    <ol className="list-decimal pl-4 space-y-0.5 text-[11px]">
-                      {(open ? inv : inv.slice(0, 3)).map((step, i) => (
-                        <li key={`${r.id}-inv-${i}`}>{step}</li>
-                      ))}
-                    </ol>
+                    <BiList lang={lang} en={invShow} zh={invZhShow} ordered />
                   </td>
                   <td className="p-2 max-w-[14rem]">
-                    <ul className="list-disc pl-4 space-y-0.5 text-[11px]">
-                      {(open ? sol : sol.slice(0, 3)).map((step, i) => (
-                        <li key={`${r.id}-sol-${i}`}>{step}</li>
-                      ))}
-                    </ul>
+                    <BiList lang={lang} en={solShow} zh={solZhShow} />
                   </td>
                 </tr>
               );

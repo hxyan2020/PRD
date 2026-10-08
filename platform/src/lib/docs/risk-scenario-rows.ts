@@ -8,6 +8,14 @@ import {
   type CorrelationDoc,
   type CorrelationPattern,
 } from "@/lib/docs/risk-scenario-correlations";
+import {
+  coalesceZh,
+  zhCorrections,
+  zhDeskLine,
+  zhEscalationHops,
+  zhLines,
+  zhTimeline,
+} from "@/lib/docs/risk-scenario-i18n";
 
 export type RiskScenarioBucket = "admin_system" | "pricing" | "risk_ops" | "cs_tr";
 export type RiskScenarioKind = "skill" | "chain" | "doc_extra" | "correlation";
@@ -31,7 +39,9 @@ export type RiskScenarioDocRow = {
   dimensions: string;
   dimensions_zh: string;
   warn: string;
+  warn_zh: string;
   breach: string;
+  breach_zh: string;
   frequency_en: string;
   frequency_zh: string;
   severity: DocPriority;
@@ -60,7 +70,9 @@ type DocExtra = {
   dimensions: string;
   dimensions_zh: string;
   warn: string;
+  warn_zh?: string;
   breach: string;
+  breach_zh?: string;
   frequency_en: string;
   frequency_zh: string;
   severity: DocPriority;
@@ -519,7 +531,7 @@ function formatEscalation(s: SkillScenario): { en: string; zh: string } {
     .map((h) => `T+${h.after_minutes}m ${h.team}/${h.channel}: ${h.action}`)
     .join(" → ");
   const en = `${route} (SLA ${s.escalation.sla_minutes}m): ${hops || "desk default"}`;
-  const zh = `${route}（SLA ${s.escalation.sla_minutes} 分）：${hops || "台面預設"}`;
+  const zh = zhEscalationHops(s.escalation.path, s.escalation.sla_minutes, route);
   return { en, zh };
 }
 
@@ -536,10 +548,16 @@ function skillRow(s: SkillScenario): RiskScenarioDocRow {
   const invEn =
     (s.prechecks?.length ? s.prechecks : []).concat(s.steps.map((st) => st.description)).slice(0, 8) ||
     [s.indicator.why];
-  const invZh =
-    (zh?.prechecks?.length ? zh.prechecks : zh?.steps?.length ? zh.steps : invEn).slice(0, 8);
+  const invZh = coalesceZh(
+    zh?.prechecks?.length ? zh.prechecks : zh?.steps,
+    invEn
+  ).slice(0, 8);
   const solEn = s.corrections.map((c) => `${c.action} (${c.bu}): ${c.description}`).slice(0, 6);
-  const solZh = (zh?.corrections?.length ? zh.corrections : solEn).slice(0, 6);
+  const solZh = (
+    zh?.corrections?.length ? zh.corrections : zhCorrections(s.corrections)
+  ).slice(0, 6);
+  const solEnFinal = solEn.length ? solEn : s.steps.filter((x) => x.requires_human).map((x) => x.description);
+  const solZhFinal = solZh.length ? solZh : zhLines(solEnFinal);
 
   return {
     id: s.code,
@@ -549,14 +567,16 @@ function skillRow(s: SkillScenario): RiskScenarioDocRow {
     domain: s.indicator.domain,
     product: s.indicator.product,
     name_en: s.name,
-    name_zh: zh?.name || s.name,
+    name_zh: zh?.name || zhDeskLine(s.name),
     description_en: s.description,
-    description_zh: zh?.description || s.description,
+    description_zh: zh?.description || zhDeskLine(s.description),
     indicators,
     dimensions: `${dim.en}; primary=${s.indicator.name}`,
-    dimensions_zh: `${dim.zh}；主指標=${zh?.indicator_name || s.indicator.name}`,
+    dimensions_zh: `${dim.zh}；主指標=${zh?.indicator_name || zhDeskLine(s.indicator.name)}`,
     warn: `${s.indicator.comparator === "lte" ? "≤" : "≥"} ${s.indicator.warn} ${s.indicator.unit}`,
+    warn_zh: `${s.indicator.comparator === "lte" ? "≤" : "≥"} ${s.indicator.warn} ${s.indicator.unit}`,
     breach: `${s.indicator.comparator === "lte" ? "≤" : "≥"} ${s.indicator.breach} ${s.indicator.unit}`,
+    breach_zh: `${s.indicator.comparator === "lte" ? "≤" : "≥"} ${s.indicator.breach} ${s.indicator.unit}`,
     frequency_en: meta.frequency,
     frequency_zh: meta.frequency_zh,
     severity: sev,
@@ -564,8 +584,8 @@ function skillRow(s: SkillScenario): RiskScenarioDocRow {
     escalation_zh: esc.zh,
     investigation_en: invEn,
     investigation_zh: invZh,
-    solution_en: solEn.length ? solEn : s.steps.filter((x) => x.requires_human).map((x) => x.description),
-    solution_zh: solZh.length ? solZh : solEn,
+    solution_en: solEnFinal,
+    solution_zh: solZhFinal,
     skill_href: `/admin/skills/${s.code}`,
   };
 }
@@ -580,10 +600,13 @@ function chainRow(c: LinkedScenario): RiskScenarioDocRow {
   const hops = c.escalation_plan
     .map((h) => `T+${h.after_minutes}m ${h.team}/${h.channel}: ${h.action}`)
     .join(" → ");
+  const hopsZh = zhEscalationHops(c.escalation_plan);
   const invEn = c.sequence.map(
     (e) => `T+${e.t_minutes}m ${e.monitor_id} ${e.severity}: ${e.signal}`
   );
+  const invZh = zhTimeline(c.sequence).concat(c.causes.map((x) => `原因：${zhDeskLine(x)}`));
   const solEn = c.corrections.map((x) => `${x.action} (${x.bu}): ${x.description}`);
+  const solZh = zhCorrections(c.corrections);
 
   return {
     id: c.code,
@@ -593,23 +616,25 @@ function chainRow(c: LinkedScenario): RiskScenarioDocRow {
     domain: c.domain,
     product: c.product,
     name_en: c.name,
-    name_zh: zh?.name || c.name,
+    name_zh: zh?.name || zhDeskLine(c.name),
     description_en: c.description,
-    description_zh: zh?.description || c.description,
+    description_zh: zh?.description || zhDeskLine(c.description),
     indicators,
     dimensions: "multi-indicator correlation (sequence / co-fire)",
     dimensions_zh: "多指標相關（時序／共鳴）",
     warn: c.severity === "WARN" ? "Chain WARN path active" : "See first WARN in timeline",
+    warn_zh: c.severity === "WARN" ? "連結鏈 WARN 路徑啟動" : "見時序中第一個 WARN",
     breach: c.severity === "WARN" ? "n/a (WARN chain)" : `${c.severity} chain armed`,
+    breach_zh: c.severity === "WARN" ? "不適用（WARN 鏈）" : `${c.severity} 連結鏈已武裝`,
     frequency_en: meta.frequency,
     frequency_zh: meta.frequency_zh,
     severity: severityForChain(c),
     escalation_en: hops || `Linked skills: ${c.linked_skills.join(", ")}`,
-    escalation_zh: hops || `連結技能：${c.linked_skills.join(", ")}`,
+    escalation_zh: hopsZh || `連結技能：${c.linked_skills.join(", ")}`,
     investigation_en: invEn.concat(c.causes.map((x) => `Cause: ${x}`)).slice(0, 10),
-    investigation_zh: invEn.concat(c.causes.map((x) => `原因：${x}`)).slice(0, 10),
+    investigation_zh: invZh.slice(0, 10),
     solution_en: solEn.slice(0, 6),
-    solution_zh: solEn.slice(0, 6),
+    solution_zh: solZh.slice(0, 6),
     skill_href: c.linked_skills[0] ? `/admin/skills/${c.linked_skills[0]}` : "/admin/skills",
     correlation_pattern: "multi_indicator_sequence",
   };
@@ -631,7 +656,9 @@ function extraRow(e: DocExtra): RiskScenarioDocRow {
     dimensions: e.dimensions,
     dimensions_zh: e.dimensions_zh,
     warn: e.warn,
+    warn_zh: e.warn_zh || zhDeskLine(e.warn),
     breach: e.breach,
+    breach_zh: e.breach_zh || zhDeskLine(e.breach),
     frequency_en: e.frequency_en,
     frequency_zh: e.frequency_zh,
     severity: e.severity,
@@ -660,7 +687,9 @@ function correlationRow(c: CorrelationDoc): RiskScenarioDocRow {
     dimensions: c.dimensions,
     dimensions_zh: c.dimensions_zh,
     warn: c.warn,
+    warn_zh: zhDeskLine(c.warn),
     breach: c.breach,
+    breach_zh: zhDeskLine(c.breach),
     frequency_en: c.frequency_en,
     frequency_zh: c.frequency_zh,
     severity: c.severity,

@@ -162,7 +162,7 @@ export const PLATFORM_URLS: UrlEntry[] = [
     title: "Risk scenarios",
     path: "/admin/docs/risk-scenarios",
     description:
-      "v1.1 catalogue: AI skills + linked chains + correlation patterns (one account→many alerts, one alert→many users, cross-team/book, KYC cluster, vendor cascade) + admin/pricing/ops extras — columns: name, description, indicators, dimensions, warn/breach, frequency, P0–P3 + escalation, investigation, solution. Edition=plus includes CS/TR; classic matches frozen original Admin",
+      "v1.2 bilingual catalogue (English / 繁中 / Both): AI skills + linked chains + correlation patterns + admin/pricing/ops extras — full EN+ZH on every column. Edition=plus includes CS/TR; classic matches frozen original Admin",
     permission: "admin.access",
   },
   { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack v2.7 — CS/TR feature catalogue: UAT-25 + UAT-46…53 (desk, /cs, wait loop, skills, dashboard, log, data, analyze/POC) plus support UAT-17/22/27–29/36–40", permission: "admin.access" },
