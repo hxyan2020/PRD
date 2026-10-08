@@ -2310,8 +2310,9 @@ body.studio-open {
 /* ── Atlas AI recommendation / draw oracle ─────────────── */
 .oracle.recommend {
   background:
-    radial-gradient(ellipse at 18% 0%, rgba(193, 122, 47, 0.14), transparent 48%),
-    linear-gradient(180deg, #edf3f6, #e8eef1);
+    radial-gradient(ellipse at 18% 0%, rgba(224, 168, 74, 0.16), transparent 48%),
+    radial-gradient(ellipse at 88% 20%, rgba(61, 95, 138, 0.18), transparent 45%),
+    linear-gradient(180deg, rgba(26, 21, 17, 0.9), rgba(16, 14, 12, 0.4));
   border-bottom: 1px solid var(--line);
   padding-top: 5.5rem;
   padding-bottom: 0.5rem;
