@@ -225,21 +225,22 @@
 
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540">
   <defs>
-    <linearGradient id="${gid}" x1="0%" y1="100%" x2="80%" y2="0%">
-      <stop offset="0%" stop-color="hsl(${h} 30% 8%)" stop-opacity="0.72"/>
-      <stop offset="55%" stop-color="hsl(${(h + 24) % 360} 28% 14%)" stop-opacity="0.28"/>
-      <stop offset="100%" stop-color="hsl(${(h + 48) % 360} 35% 18%)" stop-opacity="0.12"/>
+    <linearGradient id="${gid}" x1="0%" y1="100%" x2="85%" y2="0%">
+      <stop offset="0%" stop-color="hsl(${h} 32% 7%)" stop-opacity="0.82"/>
+      <stop offset="42%" stop-color="hsl(${(h + 24) % 360} 28% 12%)" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="hsl(${(h + 48) % 360} 35% 16%)" stop-opacity="0.18"/>
     </linearGradient>
-    <radialGradient id="${gid}-spot" cx="70%" cy="30%" r="45%">
-      <stop offset="0%" stop-color="${accent}" stop-opacity="0.35"/>
+    <radialGradient id="${gid}-spot" cx="72%" cy="28%" r="48%">
+      <stop offset="0%" stop-color="${accent}" stop-opacity="0.42"/>
       <stop offset="100%" stop-color="${accent}" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="960" height="540" fill="url(#${gid})"/>
   <rect width="960" height="540" fill="url(#${gid}-spot)"/>
   ${motif}
-  <text x="72" y="430" font-family="Georgia, 'Times New Roman', serif" font-size="118" fill="${ink}" opacity="0.92">${glyph}</text>
-  <text x="72" y="490" font-family="system-ui, sans-serif" font-size="22" letter-spacing="4" fill="${soft}" opacity="0.55">${escapeXml((method && method.name) || id).slice(0, 28).toUpperCase()}</text>
+  <rect x="48" y="338" width="280" height="150" rx="10" fill="hsl(${h} 25% 6%)" opacity="0.45"/>
+  <text x="72" y="430" font-family="Georgia, 'Times New Roman', serif" font-size="118" fill="${ink}" opacity="0.95">${glyph}</text>
+  <text x="72" y="490" font-family="system-ui, sans-serif" font-size="22" letter-spacing="4" fill="${soft}" opacity="0.7">${escapeXml((method && method.name) || id).slice(0, 28).toUpperCase()}</text>
 </svg>`;
 
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
@@ -262,6 +263,16 @@
     return uniqueOverlayDataUrl(method, themeFor(method));
   }
 
+  function photoStyleFor(method) {
+    const seed = hashId(method && method.id);
+    const x = 20 + (seed % 60);
+    const y = 25 + ((seed >>> 6) % 50);
+    const hue = (seed % 24) - 12;
+    const sat = 92 + (seed % 18);
+    const contrast = 100 + (seed % 12);
+    return `object-position:${x}% ${y}%;filter:hue-rotate(${hue}deg) saturate(${sat}%) contrast(${contrast}%)`;
+  }
+
   function coverHTML(method, className) {
     const theme = themeFor(method);
     const photo = photoUrlFor(method);
@@ -279,8 +290,9 @@
     }
 
     const overlay = uniqueOverlayDataUrl(method, theme);
+    const photoStyle = photoStyleFor(method);
     return `<div class="${cls} ${cls}--hybrid" aria-hidden="true">
-      <img class="${cls}__photo" src="${photo}" alt="" width="960" height="540" loading="lazy" decoding="async" />
+      <img class="${cls}__photo" src="${photo}" alt="" width="960" height="540" loading="lazy" decoding="async" style="${photoStyle}" />
       <img class="${cls}__art" src="${overlay}" alt="${safeAlt}" width="960" height="540" loading="lazy" decoding="async" />
     </div>`;
   }
