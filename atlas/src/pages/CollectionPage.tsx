@@ -13,7 +13,7 @@ import {
   localizeCategory,
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
-import { flagForCountry } from "../lib/countryFlags";
+import { flagForCountry, isoForCountry } from "../lib/countryFlags";
 import { FlagIcon } from "../components/FlagIcon";
 import { dailyPickGames } from "../lib/dailyRotate";
 
@@ -95,8 +95,8 @@ export function CollectionPage() {
     .slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
     .map((g) => localizeGame(g, locale, catalog));
 
-  const regionFlag =
-    region === "all" ? "🌍" : flagForCountry(region);
+  const regionIso = region === "all" ? null : isoForCountry(region);
+  const regionFlag = region === "all" ? "🌍" : flagForCountry(region);
 
   useEffect(() => {
     setPage(1);
@@ -173,7 +173,11 @@ export function CollectionPage() {
             <div className="field">
               <label htmlFor="region">{t("collection.origin")}</label>
               <div className="select-with-flag">
-                <FlagIcon flag={regionFlag} className="select-flag" />
+                <FlagIcon
+                  iso={regionIso}
+                  flag={regionFlag}
+                  className="select-flag"
+                />
                 <select
                   id="region"
                   value={region}
@@ -185,7 +189,7 @@ export function CollectionPage() {
                       catalog?.locales[locale]?.countries[c] ?? c;
                     return (
                       <option key={c} value={c}>
-                        {`${flagForCountry(c)} ${label}`}
+                        {label}
                       </option>
                     );
                   })}

@@ -11,7 +11,12 @@ export function LanguageSwitcher() {
   return (
     <label className="lang-switcher">
       <span className="sr-only">{t("lang.choose")}</span>
-      <FlagIcon flag={current.flag} className="lang-flag" title={current.englishLabel} />
+      <FlagIcon
+        iso={current.iso}
+        flag={current.flag}
+        className="lang-flag"
+        title={current.englishLabel}
+      />
       <select
         className="lang-select"
         value={locale}
@@ -22,14 +27,14 @@ export function LanguageSwitcher() {
         <optgroup label={`${t("lang.modern")}`}>
           {modern.map((lang) => (
             <option key={lang.code} value={lang.code}>
-              {lang.flag} {lang.nativeLabel}
+              {lang.nativeLabel}
             </option>
           ))}
         </optgroup>
         <optgroup label={`${t("lang.ancient")}`}>
           {ancient.map((lang) => (
             <option key={lang.code} value={lang.code}>
-              {lang.flag} {lang.nativeLabel}
+              {lang.nativeLabel}
             </option>
           ))}
         </optgroup>
