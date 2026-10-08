@@ -259,6 +259,7 @@
       });
     }
     const seenCodes = new Set();
+    if (ancient && ancient.code) seenCodes.add(ancient.code);
     (countries || []).forEach((name) => {
       const code = countryCode(name);
       if (!code || seenCodes.has(code)) return;
