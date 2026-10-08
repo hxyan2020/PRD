@@ -132,7 +132,7 @@ function cleanWikiTitle(raw: string): string | null {
     return null;
   }
   if (
-    /state-owned|administration|commission|civil service|automotive industry|reform and opening/i.test(
+    /state-owned|administration|commission|civil service|automotive industry|reform and opening|ministry of|government of/i.test(
       name,
     )
   ) {
