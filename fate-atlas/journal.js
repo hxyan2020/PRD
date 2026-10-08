@@ -116,6 +116,11 @@
     const leanReading = {
       kind: base.reading.kind,
       title: base.reading.title,
+      result: base.reading.result,
+      explain: base.reading.explain,
+      interpret: base.reading.interpret,
+      doList: base.reading.doList || [],
+      dontList: base.reading.dontList || [],
       omen: base.reading.omen,
       verdict: base.reading.verdict,
       counsel: base.reading.counsel,
@@ -221,11 +226,12 @@
       ${entry.photoDataUrl ? `<div class="reading-photo"><img src="${entry.photoDataUrl}" alt="Saved photo for this reading" /></div>` : ""}
       ${entry.question ? `<p class="studio__copy"><strong>Question:</strong> ${escapeHTML(entry.question)}</p>` : ""}
       ${entry.focus ? `<p class="studio__copy"><strong>Focus:</strong> ${escapeHTML(entry.focus)}</p>` : ""}
-      <p class="reading__verdict">${escapeHTML(r.verdict || "")}</p>
-      <p class="reading__omen">${escapeHTML(r.omen || "")}</p>
-      <ul class="reading__details">${(r.details || []).map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
-      ${r.counsel ? `<div class="reading__block"><h4>Counsel</h4><p>${escapeHTML(r.counsel)}</p></div>` : ""}
-      ${r.timing ? `<div class="reading__block"><h4>Timing</h4><p>${escapeHTML(r.timing)}</p></div>` : ""}
+      ${r.result || r.omen ? `<div class="reading__block"><h4>Your result</h4><p class="reading__result">${escapeHTML(r.result || r.omen || "")}</p></div>` : ""}
+      ${(r.details || []).length ? `<div class="reading__block"><h4>What was cast</h4><ul class="reading__details">${(r.details || []).map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul></div>` : ""}
+      ${r.explain || r.verdict ? `<div class="reading__block"><h4>What it means</h4><p>${escapeHTML(r.explain || r.verdict || "")}</p></div>` : ""}
+      ${r.interpret ? `<div class="reading__block"><h4>For your input</h4><p>${escapeHTML(r.interpret)}</p></div>` : ""}
+      ${(r.doList || []).length ? `<div class="reading__block"><h4>Consider doing</h4><ul class="reading__guide">${r.doList.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul></div>` : r.counsel ? `<div class="reading__block"><h4>Counsel</h4><p>${escapeHTML(r.counsel)}</p></div>` : ""}
+      ${(r.dontList || []).length ? `<div class="reading__block"><h4>Consider not doing</h4><ul class="reading__guide">${r.dontList.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul></div>` : r.timing && !(r.doList || []).length ? `<div class="reading__block"><h4>Next</h4><p>${escapeHTML(r.timing)}</p></div>` : ""}
       <details class="advisory advisory--compact advisory--collapse">
         <summary class="advisory__summary">
           <span class="advisory__eyebrow">Accuracy advisory</span>

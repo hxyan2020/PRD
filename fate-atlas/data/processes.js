@@ -5,56 +5,29 @@
 (function () {
   "use strict";
 
-  const VERDICTS = {
+  /** Reflective frames — symbolic prompts, not event forecasts. */
+  const EXPLAIN_FRAMES = {
     bright: [
-      "A clear path opens sooner than expected.",
-      "Favor gathers around a choice you already know.",
-      "What you tend carefully will return abundance.",
-      "Allies appear when you speak the need plainly.",
-      "Momentum favors beginnings made with clean intent.",
+      "In many omen traditions, a bright lean invites clarity and forward motion — as a mirror, not a guarantee.",
+      "The pattern reads as supportive of beginnings already forming in your own judgment.",
+      "The symbolic field leans open: favor the step you can explain without superstition.",
     ],
     mixed: [
-      "Progress comes, but only through a deliberate pause.",
-      "Two currents pull—choose one before the tide turns.",
-      "Gain is real, yet it asks for something small in return.",
-      "The answer is yes if you adjust the timing.",
-      "A door opens; another must close first.",
+      "The pattern is mixed: two pulls are visible. Traditions often treat this as a call to choose one current deliberately.",
+      "Ambiguity here is the message — not a hidden yes waiting to be decoded into certainty.",
+      "Mixed signs usually ask for a trade-off you can name in plain language.",
     ],
     caution: [
-      "Hold still. The sign advises against haste.",
-      "Protect what is already working before expanding.",
-      "A charming offer hides uneven ground.",
-      "Wait one more cycle before binding yourself.",
-      "Silence serves you better than persuasion today.",
+      "The lean is cautious: slow the binding decision; protect what already works.",
+      "Caution in omen language means ‘do not rush the knot,’ not ‘never act again.’",
+      "The pattern warns against haste and charming shortcuts — verify before you commit.",
     ],
     deep: [
-      "The question points inward more than outward.",
-      "An old pattern wants rewriting—listen to the first whisper.",
-      "Fate here is less prediction than invitation.",
-      "What returns now is unfinished, not unfinished forever.",
-      "Guidance arrives as a feeling before it becomes a fact.",
+      "The pattern turns inward: the useful work may be clarifying the question itself.",
+      "Deep leanings invite revision of an old pattern — reflection before spectacle.",
+      "This draw behaves like a mirror more than a map; notice the feeling under the ask.",
     ],
   };
-
-  const COUNSELS = [
-    "Write the question once, then act on the first honest answer.",
-    "Offer thanks before you ask for more.",
-    "Move at the pace of breath, not of fear.",
-    "Tell one trusted person what you intend.",
-    "Clear a small space—desk, doorway, or calendar—and begin there.",
-    "Do the next kind thing without announcing it.",
-    "Keep a promise you made only to yourself.",
-    "Walk outdoors and name three things that are already enough.",
-  ];
-
-  const TIMINGS = [
-    "Within three days, a sign will confirm the reading.",
-    "The next new moon marks a useful checkpoint.",
-    "Expect clarity around the end of this week.",
-    "A full turning of seven days settles the matter.",
-    "Watch the second opportunity—not the first.",
-    "Before the month closes, the path names itself.",
-  ];
 
   const SYMBOLS = {
     Fate: ["☉", "☾", "★", "✦", "子午", "甲", "☽"],
@@ -367,6 +340,7 @@
   }
 
   function generateReading(method, process, input) {
+    const RM = window.FatumResultModel;
     const seedStr = [
       method.id,
       process.id,
@@ -378,11 +352,9 @@
       String(input.nonce || 0),
     ].join("|");
     const rng = mulberry32(hashSeed(seedStr));
-    const tone = toneFromRng(rng);
+    let tone = toneFromRng(rng);
     const symbol = pick(rng, SYMBOLS[method.type] || SYMBOLS.Omen);
-    const verdict = pick(rng, VERDICTS[tone]);
-    const counsel = pick(rng, COUNSELS);
-    const timing = pick(rng, TIMINGS);
+    const q = RM ? RM.focusLabel(input) : (input.question || input.focus || "");
 
     const reading = {
       methodId: method.id,
@@ -392,13 +364,15 @@
       tone,
       symbol,
       title: "",
-      omen: "",
-      verdict,
-      counsel,
-      timing,
+      result: "",
+      explain: "",
+      interpret: "",
+      doList: [],
+      dontList: [],
       details: [],
-      disclaimer:
-        "Simulated reading in the style of this tradition—for reflection and learning, not authentic initiatory practice or medical/legal/financial advice. May be inaccurate; cannot predict black swan events.",
+      disclaimer: RM
+        ? RM.honestyFooter(method.name)
+        : "Simulated reading in the style of this tradition—for reflection and learning, not authentic initiatory practice or medical/legal/financial advice. May be inaccurate; cannot predict black swan events.",
     };
 
     if (process.id === "birth") {
@@ -406,16 +380,21 @@
       const month = d.getMonth() + 1;
       const day = d.getDate();
       const year = d.getFullYear();
-      const animal = ANIMALS[(year - 4) % 12];
-      const element = ELEMENTS[Math.floor(((year - 4) % 10) / 2)];
+      const animal = ANIMALS[(year - 4 + 12 * 10) % 12];
+      const element = ELEMENTS[Math.floor((((year - 4) % 10) + 10) % 10 / 2)];
       const sign = zodiacWestern(month, day);
       const path = lifePath(input.birthDate || d.toISOString().slice(0, 10));
       reading.title = `${element} ${animal} · ${sign}`;
-      reading.omen = `Life path ${path}`;
+      reading.result = `Birth signature: ${element} ${animal}, western-style sign ${sign}, life-path number ${path}.`;
+      reading.explain = [
+        `Computed from the date you entered (${input.birthDate || "today"}), in a simplified calendrical / zodiac style used for education — not a full traditional chart.`,
+        `Animal: ${animal}; element cycle tag: ${element}; tropical sign band: ${sign}; digit-reduced life-path: ${path}.`,
+        "These labels are cultural mnemonics. They do not prove personality or destiny.",
+      ].join(" ");
       reading.details = [
         `Birth signature styled after ${method.name}.`,
-        `Celestial lean: ${sign}; calendrical animal: ${animal} (${element}).`,
-        `Core number current: ${path}.`,
+        `Sign band: ${sign}; animal: ${animal} (${element}).`,
+        `Life-path number (digit reduction): ${path}.`,
       ];
     } else if (process.id === "cards") {
       const deck = TAROT_LIKE.slice();
@@ -424,39 +403,43 @@
         const idx = Math.floor(rng() * deck.length);
         cards.push(deck.splice(idx, 1)[0]);
       }
+      const labels = ["Past", "Present", "Path"];
       reading.title = cards.map((c) => c.name).join(" · ");
-      reading.omen = "Past · Present · Path";
-      reading.details = cards.map((c, i) => `${["Past", "Present", "Path"][i]} — ${c.name}: ${c.upright}`);
+      reading.result = cards.map((c, i) => `${labels[i]}: ${c.name}`).join(" · ");
+      reading.explain = cards.map((c, i) => `${labels[i]} — ${c.name}: ${c.upright}`).join(" ");
+      reading.details = cards.map((c, i) => `${labels[i]} — ${c.name}: ${c.upright}`);
     } else if (process.id === "cast" && /i ching|zhou|hexagram|liu yao|plum|qimen|liu ren/i.test(method.name + method.summary)) {
       const hx = pick(rng, HEXAGRAMS);
       reading.title = `${hx.lines} ${hx.name}`;
-      reading.omen = "Hexagram counsel";
-      reading.details = [hx.meaning, `Read in the spirit of ${method.name}.`];
+      reading.result = `Hexagram-style figure: ${hx.lines} ${hx.name}`;
+      reading.explain = `${hx.meaning} Drawn in the educational spirit of ${method.name} — a symbolic counsel line, not a classical full-text Yì reading.`;
+      reading.details = [hx.meaning, `Method frame: ${method.name}.`];
     } else if (process.id === "cast" && /if[aá]|odu|cowrie|búzio|dilogg|mérìnd|obi|afa|sikidy/i.test(method.name + method.summary)) {
       const odu = pick(rng, ODU_LIKE);
       reading.title = odu.name;
-      reading.omen = "Oracular figure";
+      reading.result = `Oracular figure (simulated): ${odu.name}`;
+      reading.explain = `${odu.verse} This is a teaching-style lot figure inspired by ${method.name}, not an initiatory Odu determination by a trained priest.`;
       reading.details = [odu.verse, `Styled after ${method.name} lot-casting.`];
     } else if (process.id === "cast" && /rune|ogham|futhorc|futhark/i.test(method.name + method.summary)) {
       const r1 = pick(rng, RUNES);
       const r2 = pick(rng, RUNES);
       reading.title = `${r1.name} · ${r2.name}`;
-      reading.omen = "Cast staves";
+      reading.result = `Cast staves: ${r1.name} and ${r2.name}`;
+      reading.explain = `${r1.name}: ${r1.gloss}. ${r2.name}: ${r2.gloss}. Gloss meanings are common modern study keywords — not guaranteed historical one-word translations.`;
       reading.details = [`${r1.name}: ${r1.gloss}`, `${r2.name}: ${r2.gloss}`];
     } else if (process.id === "cast") {
       const faces = Math.floor(rng() * 8) + 1;
       reading.title = `Pattern ${faces}`;
-      reading.omen = "Lots settled";
-      reading.details = [
-        `The cast resolved into pattern ${faces}.`,
-        `In the manner of ${method.name}, this pattern leans ${tone}.`,
-      ];
+      reading.result = `Lots settled on pattern ${faces}`;
+      reading.explain = `In this simulation of ${method.name}, pattern ${faces} is assigned a ${tone} reflective lean. The number itself carries no scientific predictive power.`;
+      reading.details = [`Pattern ${faces}.`, `Reflective lean: ${tone}.`];
     } else if (process.id === "dice") {
       const a = 1 + Math.floor(rng() * 6);
       const b = 1 + Math.floor(rng() * 6);
       reading.title = `${a} + ${b} = ${a + b}`;
-      reading.omen = "Thrown faces";
-      reading.details = [`Sum ${a + b} colors the reading ${tone}.`, `Thrown in the style of ${method.name}.`];
+      reading.result = `Thrown faces: ${a} and ${b} (sum ${a + b})`;
+      reading.explain = `Sum ${a + b} is mapped to a ${tone} reflective frame for ${method.name}. Dice faces are random; the mapping is educational symbolism only.`;
+      reading.details = [`Faces ${a} and ${b}.`, `Sum ${a + b} → reflective lean “${tone}”.`];
     } else if (process.id === "book") {
       const verses = [
         "Wherever the river bends, the boat that listens arrives.",
@@ -467,19 +450,26 @@
       ];
       const v = pick(rng, verses);
       reading.title = "Opened verse";
-      reading.omen = v;
-      reading.details = [`Interpreted through ${method.name}.`, "Let the line sit beside your question without forcing fit."];
+      reading.result = `Verse drawn: “${v}”`;
+      reading.explain = `Bibliomancy-style line for ${method.name}. Let the sentence sit beside your question; do not force a literal prophecy out of poetry.`;
+      reading.details = [v, `Interpreted through ${method.name}.`];
     } else if (process.id === "form") {
       const photo = input.photoMeta;
       reading.title = `Form of ${input.formTrait || "the seeker"}`;
-      reading.omen = input.formFocus || "General fortune";
+      reading.result = `Observation noted: “${input.formTrait || "unspecified"}” · focus “${input.formFocus || "overall path"}”${photo ? " · photo attached" : ""}`;
+      reading.explain = [
+        `Form rites in the spirit of ${method.name} treat visible traits as conversation starters.`,
+        photo
+          ? `A photo (${photo.subjectLabel}) was held locally as reference — the app does not run biometric prediction on it.`
+          : "No photo was uploaded; only your written notes are used.",
+        "Any counsel below is reflective framing from your notes, not a medical or character diagnosis.",
+      ].join(" ");
       reading.details = [
         `Trait noted: ${input.formTrait || "unspecified"}.`,
         `Focus: ${input.formFocus || "overall path"}.`,
         photo
-          ? `Photo received (${photo.subjectLabel}): image held as the form under study.`
-          : "No photo uploaded — reading from your written notes alone.",
-        `Read in the observational style of ${method.name}.`,
+          ? `Photo received (${photo.subjectLabel}) — kept in this browser only.`
+          : "No photo uploaded — reading from written notes alone.",
       ];
       reading.photoDataUrl = input.photoDataUrl || null;
       reading.photoSubject = photo?.subjectId || null;
@@ -487,44 +477,82 @@
       const ans = rng() < 0.5 ? "Yes" : "No";
       const lean = rng() < 0.35 ? "strongly" : rng() < 0.7 ? "clearly" : "softly";
       reading.title = ans;
-      reading.omen = `Pendulum swings ${lean}`;
+      reading.result = `Pendulum simulation: ${ans} (${lean})`;
+      reading.explain = `A random swing was generated for teaching the yes/no pendulum format used with ${method.name}. The ${lean} ${ans} is not evidence about the real world — only a prompt to notice how you react to ${ans}.`;
       reading.details = [
-        `Answer: ${ans} (${lean}).`,
-        `Ask again only if the question changes—not if you dislike the answer.`,
+        `Answer shown: ${ans} (${lean}).`,
+        "Ask again only if the question changed — not if you dislike the answer.",
       ];
-      if (ans === "No") reading.tone = "caution";
-      if (ans === "Yes") reading.tone = "bright";
+      tone = ans === "No" ? "caution" : "bright";
+      reading.tone = tone;
     } else if (process.id === "day") {
       const score = Math.floor(rng() * 5);
       const labels = ["Inauspicious", "Mixed — caution", "Neutral", "Favorable", "Highly auspicious"];
       reading.title = labels[score];
-      reading.omen = input.dayPurpose || "General day reading";
+      reading.result = `Almanac lean for ${input.dayDate || "today"} / “${input.dayPurpose || "general affairs"}”: ${labels[score]}`;
+      reading.explain = `This is a simulated day-selection lean in the style of ${method.name}. Traditional almanacs use calendar rules; here the lean is generated for education and is not an astronomical or statistical claim about that date.`;
       reading.details = [
         `Date: ${input.dayDate || "today"} for “${input.dayPurpose || "general affairs"}”.`,
-        `Almanac lean via ${method.name}: ${labels[score]}.`,
+        `Shown lean: ${labels[score]}.`,
       ];
-      reading.tone = score >= 3 ? "bright" : score <= 1 ? "caution" : "mixed";
+      tone = score >= 3 ? "bright" : score <= 1 ? "caution" : "mixed";
+      reading.tone = tone;
     } else {
       const omens = [
-        "A bird crosses left to right—movement favored.",
-        "Smoke rises straight—integrity in the ask.",
-        "Clouds thin at the center—clarity after fog.",
-        "A sudden stillness—listen before speaking.",
-        "Warmth without wind—support without spectacle.",
+        "Symbolic sign: movement across the field (left → right).",
+        "Symbolic sign: vertical rise (smoke / vapor standing).",
+        "Symbolic sign: thinning at the center (fog lifting).",
+        "Symbolic sign: a sudden stillness.",
+        "Symbolic sign: warmth without wind.",
       ];
+      const omen = pick(rng, omens);
       reading.title = "Sign received";
-      reading.omen = pick(rng, omens);
-      reading.details = [`Watched in the symbolic field of ${method.name}.`];
+      reading.result = omen;
+      reading.explain = `An omen-watching simulation for ${method.name}. The sign is generated symbolically so you can practice interpretation — it is not a report of something that happened outdoors.`;
+      reading.details = [omen, `Symbolic field of ${method.name}.`];
     }
 
-    if (input.question) {
-      reading.details.unshift(`Question held: “${input.question}”`);
+    const frame = pick(rng, EXPLAIN_FRAMES[tone] || EXPLAIN_FRAMES.mixed);
+    reading.explain = `${reading.explain} ${frame}`.trim();
+    const interpretBody =
+      process.id === "pendulum"
+        ? `Notice your body's reaction to “${reading.title}”. If you immediately want a redo, the useful data may be that urge — not the swing.`
+        : process.id === "form"
+          ? `Relate the noted trait to your focus without leaping to fixed character claims. Ask: what behavior would make this reading useful even if the symbols are wrong?`
+          : `Use the ${tone} lean as a lens on the matter you named — then test any action against ordinary evidence.`;
+
+    reading.interpret = RM ? RM.interpretWithQuestion(q, interpretBody) : interpretBody;
+    const guide = RM ? RM.reflectiveGuidance(tone) : { doList: [], dontList: [] };
+    reading.doList = guide.doList.slice();
+    reading.dontList = guide.dontList.slice();
+
+    // Process-specific do/don't overlays (still non-predictive)
+    if (process.id === "pendulum") {
+      reading.doList = [
+        `If you keep the “${reading.title}”, write one reversible next step that would still make sense without the pendulum.`,
+        "Rephrase the question once so it is truly binary and about something you control.",
+      ];
+      reading.dontList = [
+        "Do not re-ask the same question hoping for the opposite swing.",
+        "Do not let a simulated yes/no override medical, legal, financial, or safety judgment.",
+      ];
+    } else if (process.id === "day") {
+      reading.doList.unshift(
+        reading.tone === "caution" || reading.tone === "mixed"
+          ? "If the day matters, keep plans flexible and verify logistics independently of the almanac lean."
+          : "If you proceed, still confirm times, travel, and commitments with ordinary sources."
+      );
+      reading.dontList.unshift("Do not cancel necessary care or obligations solely because a simulated lean looks inauspicious.");
+    } else if (process.id === "cards") {
+      reading.doList.unshift("Name one real fact from your life that matches each card’s theme before acting.");
+      reading.dontList.unshift("Do not treat the Path card as a dated prediction.");
     }
 
-    reading.verdict = verdict;
-    reading.counsel = counsel;
-    reading.timing = timing;
-    return reading;
+    if (q) {
+      reading.details.unshift(`Your input: “${q}”`);
+    }
+
+    return RM ? RM.structuredReading(reading) : reading;
   }
 
   window.FATE_PROCESSES = PROCESSES;

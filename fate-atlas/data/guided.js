@@ -217,32 +217,64 @@
       ? input.lines
       : Array.from({ length: 6 }, () => lineFromCoins(tossThreeCoins(rng)));
     const hex = interpretHexagram(lines);
+    const RM = window.FatumResultModel;
+    const q = RM ? RM.questionOf(input) : (input.question || "");
     const changingNote =
       hex.changingIdx.length === 0
-        ? "No changing lines—read the primary hexagram as a stable counsel."
+        ? "No changing lines — the primary figure is stable; read it as one counsel."
         : hex.changingIdx.length === 1
-          ? `One changing line at position ${hex.changingIdx[0] + 1} (from the bottom). Weight that line’s movement.`
-          : `${hex.changingIdx.length} changing lines—read the primary hexagram, then the transformed one.`;
+          ? `One changing line at position ${hex.changingIdx[0] + 1} (counting from the bottom). In classical coin practice, that line marks where the situation is already turning.`
+          : `${hex.changingIdx.length} changing lines — read the primary hexagram first (present condition), then the transformed hexagram (direction of change).`;
 
-    return {
+    const result = `${hex.upper.symbol}${hex.lower.symbol} ${hex.primary.title}`;
+    const explain = [
+      `Lower trigram (inner / beginning): ${hex.lower.symbol} ${hex.lower.name} — ${hex.lower.nature}. Theme: ${hex.lower.trait}.`,
+      `Upper trigram (outer / unfolding): ${hex.upper.symbol} ${hex.upper.name} — ${hex.upper.nature}. Theme: ${hex.upper.trait}.`,
+      `Primary reading: ${hex.primary.meaning}`,
+      changingNote,
+      hex.changed
+        ? `Transformed figure: ${hex.changed.title}. ${hex.changed.meaning}`
+        : "No transformation — stay with the primary figure.",
+    ].join(" ");
+
+    const interpretBody = q
+      ? `For your question, the lower trigram speaks to the ground you stand on; the upper trigram speaks to what meets you. Together they suggest working with “${hex.lower.trait.toLowerCase()}” below and “${hex.upper.trait.toLowerCase()}” above — not as a guarantee, but as a mirror for how you might approach the matter.`
+      : `Read the pair as a mirror: ground = ${hex.lower.trait.toLowerCase()}; unfolding = ${hex.upper.trait.toLowerCase()}.`;
+
+    const doList = [
+      hex.lower.advice.replace(/\.$/, ""),
+      hex.changed ? "Re-read the transformed figure after you take one small real-world step." : "Sit with the primary figure for a day before acting on it.",
+    ];
+    const dontList = [
+      hex.upper.advice.includes("avoid") || hex.upper.advice.includes("do not") || hex.upper.advice.includes("Do not")
+        ? hex.upper.advice
+        : `Do not force the opposite of ${hex.upper.nature.split(" ").slice(1).join(" ") || hex.upper.nature} — forcing against the outer trigram often creates noise.`,
+      "Do not treat this cast as a yes/no forecast or a financial/medical/legal instruction.",
+    ];
+
+    const details = [
+      q ? `Question held: “${q}”` : "Open reading — no specific question",
+      `Lower trigram: ${hex.lower.symbol} ${hex.lower.name} — ${hex.lower.nature}`,
+      `Upper trigram: ${hex.upper.symbol} ${hex.upper.name} — ${hex.upper.nature}`,
+      changingNote,
+      hex.changed ? `Changed hexagram: ${hex.changed.title}` : "Stable hexagram (no changing lines)",
+    ];
+
+    const reading = {
       kind: "bagua",
       title: hex.primary.title,
-      omen: `${hex.upper.symbol} over ${hex.lower.symbol}`,
-      verdict: hex.primary.meaning,
-      counsel: hex.upper.advice,
-      timing: hex.changed ? hex.changed.meaning : hex.lower.advice,
-      details: [
-        input.question ? `Question / 所问：${input.question}` : "Open reading / 无特定问题",
-        `Lower trigram 下卦：${hex.lower.symbol} ${hex.lower.name} — ${hex.lower.nature}`,
-        `Upper trigram 上卦：${hex.upper.symbol} ${hex.upper.name} — ${hex.upper.nature}`,
-        changingNote,
-        hex.changed ? `Changed hexagram 变卦：${hex.changed.title}` : "Stable hexagram 静卦",
-      ],
+      result,
+      explain,
+      interpret: RM ? RM.interpretWithQuestion(q, interpretBody) : interpretBody,
+      doList,
+      dontList,
+      details,
       hex,
       lines,
       disclaimer:
         "Educational simulation of the three-coin Yì method (铜钱起卦). Reflective only—not a validated forecast. May be inaccurate; cannot predict black swan events.",
     };
+    return RM ? RM.structuredReading(reading) : reading;
   }
 
   function tarotCardMeaning(c) {
@@ -293,41 +325,83 @@
         )
       : [0, 1, 2].map((i) => drawTarotCard(deck[i], rng() < 0.3));
     const positions = TAROT_POSITIONS;
-    return {
+    const RM = window.FatumResultModel;
+    const q = RM ? RM.questionOf(input) : (input.question || "");
+    const cardLine = (c, i) => {
+      const mean = tarotCardMeaning(c);
+      const rx = tarotIsReversed(c);
+      return `${positions[i].label} — ${c.name} / ${c.nameZh}${rx ? " (reversed)" : ""}: ${mean}`;
+    };
+    const result = drawn
+      .map((c, i) => `${positions[i].label}: ${c.name}${tarotIsReversed(c) ? " (Rx)" : ""}`)
+      .join(" · ");
+    const explain = drawn.map(cardLine).join(" ");
+    const interpretBody = q
+      ? `Past (${drawn[0].name}) sketches what already shaped the matter; Present (${drawn[1].name}) names the pressure now; Path (${drawn[2].name}) is a reflective prompt for how you might meet it — not a scheduled event.`
+      : `Read Past → Present → Path as a storyboard for reflection. The Path card is a prompt, not a calendar promise.`;
+
+    const pathMean = tarotCardMeaning(drawn[2]);
+    const presentMean = tarotCardMeaning(drawn[1]);
+    const doList = [
+      `From the Path card: ${pathMean}`,
+      "Write one sentence linking each card to a real fact you already know (not a hoped-for future).",
+    ];
+    const dontList = [
+      `From the Present card’s caution: do not ignore “${presentMean}” while chasing a prettier Path.`,
+      "Do not reverse-shop the deck until you like the answer; ask a new question only if the question itself changed.",
+    ];
+
+    const reading = {
       kind: "tarot",
       title: drawn.map((c) => `${c.nameZh} ${c.name}${tarotIsReversed(c) ? " (Rx)" : ""}`).join(" · "),
-      omen: "Past · Present · Path / 过去 · 现在 · 指引",
-      verdict: tarotCardMeaning(drawn[1]),
-      counsel: tarotCardMeaning(drawn[2]),
-      timing: "Let the Path card set the next seven days’ tone.",
-      details: drawn.map((c, i) => {
-        const mean = tarotCardMeaning(c);
-        const rx = tarotIsReversed(c);
-        return `${positions[i].label} — ${c.name} / ${c.nameZh}${rx ? " (reversed)" : ""}: ${mean}`;
-      }),
+      result,
+      explain,
+      interpret: RM ? RM.interpretWithQuestion(q, interpretBody) : interpretBody,
+      doList,
+      dontList,
+      details: drawn.map(cardLine),
       drawn,
       positions,
       disclaimer:
         "Major Arcana three-card spread for reflection. Simulated shuffle—not a validated forecast. May be inaccurate; cannot predict black swan events.",
     };
+    return RM ? RM.structuredReading(reading) : reading;
   }
 
   function generateMbtiReading(input) {
     const { type, score, meta } = scoreMbti(input.answers || {});
-    return {
+    const RM = window.FatumResultModel;
+    const q = RM ? RM.focusLabel(input) : (input.focus || "");
+    const result = `${type} — ${meta.title}`;
+    const explain = [
+      `Preference tallies from your answers: E${score.E}/I${score.I}, S${score.S}/N${score.N}, T${score.T}/F${score.F}, J${score.J}/P${score.P}.`,
+      `Letter code ${type} is a shorthand for those majority sides — a preference pattern, not a measure of ability or destiny.`,
+      meta.fate,
+    ].join(" ");
+    const interpretBody = q
+      ? `Against your focus (“${q}”), this pattern suggests leaning on your reported strengths (${meta.title}) while watching the blind side of the opposite letters. That is self-description, not a prediction that a particular outcome will occur.`
+      : "Use the type as a mirror for how you prefer to decide — not as a fate sentence.";
+
+    const reading = {
       kind: "mbti",
-      title: `${type} — ${meta.title}`,
-      omen: `E${score.E}/I${score.I} · S${score.S}/N${score.N} · T${score.T}/F${score.F} · J${score.J}/P${score.P}`,
-      verdict: meta.fate,
-      counsel: meta.path,
-      timing: "Revisit this map when a life choice presses—type is preference, not prison.",
+      title: result,
+      result,
+      explain,
+      interpret: RM ? RM.interpretWithQuestion(input.focus || "", interpretBody) : interpretBody,
+      doList: [
+        meta.path,
+        "When a choice presses, name which letter-pair is driving you (e.g. J vs P) before you decide.",
+      ],
+      dontList: [
+        "Do not treat type as a prison, a hiring filter, or a medical/psychological diagnosis.",
+        "Do not claim the future is fixed because of four letters.",
+      ],
       details: [
-        input.focus ? `Focus held：${input.focus}` : "General path reading",
+        input.focus ? `Focus held: ${input.focus}` : "General preference reading",
         `Extraversion ${score.E} vs Introversion ${score.I}`,
         `Sensing ${score.S} vs Intuition ${score.N}`,
         `Thinking ${score.T} vs Feeling ${score.F}`,
         `Judging ${score.J} vs Perceiving ${score.P}`,
-        "MBTI describes preference patterns; use it as a mirror, not a verdict on worth.",
       ],
       type,
       score,
@@ -335,6 +409,7 @@
       disclaimer:
         "Simplified MBTI-style preference quiz for self-reflection—not a clinical assessment or fate forecast. Preferences ≠ destiny; cannot predict black swan events.",
     };
+    return RM ? RM.structuredReading(reading) : reading;
   }
 
   window.FATE_GUIDED = {
