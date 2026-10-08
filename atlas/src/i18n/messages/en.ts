@@ -239,7 +239,9 @@ export const en = {
   "chat.rec.exhausted":
     "That’s all the strong matches I have for these preferences. Say “start over” to try a different mix, or ask about any title above.",
   "chat.rec.intro":
-    "Here are {n} catalog picks{prefLine}. Tap a title in the collection, or ask me how to play, about origins, variations, or where to buy any of them.",
+    "Here are {n} catalog picks{prefLine}. Tap a title in the collection, or ask me how to play, about origins, variations, or where to buy any of them. Tap “More recommendations” for another set of three.",
+  "chat.rec.moreIntro":
+    "Here are {n} more catalog picks{prefLine}. Tap “More recommendations” again for the next set, or ask about any title above.",
 
   "chat.vibe.strategy": "strategy",
   "chat.vibe.casual": "casual",

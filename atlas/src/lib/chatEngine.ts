@@ -461,11 +461,14 @@ function intent(text: string): string {
   if (/\b(requirement|need|equipment|materials|what do i need)\b/.test(t)) return "requirements";
   if (/\b(players?|how many|participants|alone|people)\b/.test(t) && /\b(need|for|ideal|many)\b/.test(t))
     return "participants";
+  // Paginate the current preference pool (Guide “More recommendations” button).
   if (
-    /\b(more like|similar|another|other recommendation|else|different|more recommendations?|more picks?|generate more|show more)\b/.test(
+    /\b(more recommendations?|more picks?|generate more|show more|more please)\b/.test(
       t,
     )
   )
+    return "more_recs";
+  if (/\b(more like|similar|another|other recommendation|else|different)\b/.test(t))
     return "more_like";
   if (/\b(recommend|suggest|what should|help me (find|choose)|looking for)\b/.test(t))
     return "recommend";
@@ -473,7 +476,12 @@ function intent(text: string): string {
   return "general";
 }
 
-function formatRecIntro(prefs: UserPrefs, games: Game[], t: ChatTranslate): string {
+function formatRecIntro(
+  prefs: UserPrefs,
+  games: Game[],
+  t: ChatTranslate,
+  opts?: { more?: boolean; moreAvailable?: boolean },
+): string {
   const bits: string[] = [];
   if (prefs.players && prefs.players !== "any") {
     bits.push(t("chat.rec.forPlayers", { players: labelPlayers(prefs.players, t) }));
@@ -491,7 +499,13 @@ function formatRecIntro(prefs: UserPrefs, games: Game[], t: ChatTranslate): stri
   if (!games.length) {
     return t("chat.rec.none", { prefLine });
   }
-  return t("chat.rec.intro", { n: games.length, prefLine });
+  const intro = opts?.more
+    ? t("chat.rec.moreIntro", { n: games.length, prefLine })
+    : t("chat.rec.intro", { n: games.length, prefLine });
+  if (opts?.moreAvailable === false) {
+    return `${intro}\n\n${t("chat.rec.exhausted")}`;
+  }
+  return intro;
 }
 
 function labelPlayers(p: PlayerPref, t: ChatTranslate) {
@@ -567,15 +581,42 @@ function followupQuickReplies(
   t: ChatTranslate,
   opts?: { withVariations?: boolean; moreAvailable?: boolean },
 ) {
-  const q = [
+  const q: string[] = [];
+  // Lead with pagination so “generate more” is one tap after each batch of 3.
+  if (opts?.moreAvailable !== false) q.push(t("chat.qr.moreRecs"));
+  q.push(
     t("chat.qr.howToPlayFirst"),
     t("chat.qr.whereBuyIt"),
     t("chat.qr.tellHistory"),
-  ];
+  );
   if (opts?.withVariations) q.push(t("chat.qr.showVariations"));
-  if (opts?.moreAvailable !== false) q.push(t("chat.qr.moreRecs"));
   q.push(t("chat.qr.startOver"));
   return q;
+}
+
+function nextRecommendationBatch(
+  games: Game[],
+  prefs: UserPrefs,
+  seenIds: Iterable<string>,
+): { recs: Game[]; moreAvailable: boolean } {
+  const exclude = new Set(seenIds);
+  let recs = recommendExcluding(games, prefs, exclude);
+  let workingPrefs = prefs;
+  if (!recs.length && prefs.region && prefs.region !== "any") {
+    workingPrefs = { ...prefs, region: "any" };
+    recs = recommendExcluding(games, workingPrefs, exclude);
+  }
+  const seenAfter = mergeSeen([...exclude], recs);
+  const moreAvailable =
+    recommendExcluding(games, workingPrefs, seenAfter, 1).length > 0 ||
+    (!!(workingPrefs.region && workingPrefs.region !== "any") &&
+      recommendExcluding(
+        games,
+        { ...workingPrefs, region: "any" },
+        seenAfter,
+        1,
+      ).length > 0);
+  return { recs, moreAvailable };
 }
 
 function resolveFocusGame(
@@ -681,10 +722,12 @@ export function handleUserMessage(
       // maybe they jumped ahead with a full ask
       if (intent(text) === "recommend" || parseVibe(text, t) || parseSetting(text, t)) {
         const prefs = applyFreeformPrefs(text, state.prefs, t);
-        const recs = recommendExcluding(games, prefs, state.seenRecommendedIds);
+        const { recs, moreAvailable } = nextRecommendationBatch(
+          games,
+          prefs,
+          state.seenRecommendedIds,
+        );
         const seenRecommendedIds = mergeSeen(state.seenRecommendedIds, recs);
-        const moreAvailable =
-          recommendExcluding(games, prefs, seenRecommendedIds, 1).length > 0;
         return {
           state: {
             ...state,
@@ -695,7 +738,7 @@ export function handleUserMessage(
             focusGameId: recs[0]?.id,
           },
           replies: [
-            assistant(formatRecIntro(prefs, recs, t), {
+            assistant(formatRecIntro(prefs, recs, t, { moreAvailable }), {
               recommendations: recs,
               quickReplies: followupQuickReplies(t, { moreAvailable }),
             }),
@@ -787,10 +830,12 @@ export function handleUserMessage(
   if (state.phase === "ask_region") {
     const region = parseRegion(text, t) || normalize(text) || "any";
     const prefs = { ...state.prefs, region };
-    const recs = recommendExcluding(games, prefs, state.seenRecommendedIds);
+    const { recs, moreAvailable } = nextRecommendationBatch(
+      games,
+      prefs,
+      state.seenRecommendedIds,
+    );
     const seenRecommendedIds = mergeSeen(state.seenRecommendedIds, recs);
-    const moreAvailable =
-      recommendExcluding(games, prefs, seenRecommendedIds, 1).length > 0;
     return {
       state: {
         ...state,
@@ -801,7 +846,7 @@ export function handleUserMessage(
         focusGameId: recs[0]?.id,
       },
       replies: [
-        assistant(formatRecIntro(prefs, recs, t), {
+        assistant(formatRecIntro(prefs, recs, t, { moreAvailable }), {
           recommendations: recs,
           quickReplies: followupQuickReplies(t, {
             withVariations: true,
@@ -985,26 +1030,30 @@ export function handleUserMessage(
     };
   }
 
-  if (i === "more_like" || i === "recommend") {
+  if (i === "more_recs" || i === "more_like" || i === "recommend") {
     const seed = focus || state.lastRecommendations[0];
     let nextPrefs = { ...prefs };
+    // “More like these” may tilt vibe/setting from a seed title.
+    // “More recommendations” keeps the interview prefs and only pages forward.
     if (seed && i === "more_like") {
       nextPrefs = {
         ...nextPrefs,
         vibe: nextPrefs.vibe || guessVibeFromGame(seed),
-        setting: nextPrefs.setting || (OUTDOOR_CATS.has(seed.category) ? "outdoor" : "indoor"),
-        region: nextPrefs.region || seed.originCountry,
+        setting:
+          nextPrefs.setting ||
+          (OUTDOOR_CATS.has(seed.category) ? "outdoor" : "indoor"),
       };
     }
+
     const exclude = new Set(state.seenRecommendedIds);
     for (const g of state.lastRecommendations) exclude.add(g.id);
-    if (seed) exclude.add(seed.id);
+    if (seed && i === "more_like") exclude.add(seed.id);
 
-    let recs = recommendExcluding(games, nextPrefs, exclude);
-    // Soften region once before declaring the pool exhausted
-    if (!recs.length && nextPrefs.region && nextPrefs.region !== "any") {
-      recs = recommendExcluding(games, { ...nextPrefs, region: "any" }, exclude);
-    }
+    const { recs, moreAvailable } = nextRecommendationBatch(
+      games,
+      nextPrefs,
+      exclude,
+    );
 
     if (!recs.length) {
       return {
@@ -1017,16 +1066,8 @@ export function handleUserMessage(
       };
     }
 
-    const seenRecommendedIds = mergeSeen(state.seenRecommendedIds, recs);
-    const moreAvailable =
-      recommendExcluding(games, nextPrefs, seenRecommendedIds, 1).length > 0 ||
-      (!!(nextPrefs.region && nextPrefs.region !== "any") &&
-        recommendExcluding(
-          games,
-          { ...nextPrefs, region: "any" },
-          seenRecommendedIds,
-          1,
-        ).length > 0);
+    const seenRecommendedIds = mergeSeen([...exclude], recs);
+    const isMore = i === "more_recs" || i === "more_like";
 
     return {
       state: {
@@ -1038,10 +1079,16 @@ export function handleUserMessage(
         focusGameId: recs[0]?.id,
       },
       replies: [
-        assistant(formatRecIntro(nextPrefs, recs, t), {
-          recommendations: recs,
-          quickReplies: followupQuickReplies(t, { moreAvailable }),
-        }),
+        assistant(
+          formatRecIntro(nextPrefs, recs, t, {
+            more: isMore,
+            moreAvailable,
+          }),
+          {
+            recommendations: recs,
+            quickReplies: followupQuickReplies(t, { moreAvailable }),
+          },
+        ),
       ],
     };
   }
