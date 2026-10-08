@@ -1,12 +1,12 @@
-/** Category accent colors aligned with Ludus Atlas palette. */
+/** Category accent colors aligned with Ludus Atlas brand palette. */
 const CATEGORY_ACCENT: Record<string, string> = {
-  "Strategy & War": "#c9a227",
-  "Board & Race": "#7d9b8a",
-  "Mancala & Sowing": "#a8841a",
-  "Cards & Tiles": "#8eb4a3",
-  "Dice & Chance": "#c9a227",
-  "String & Finger": "#7d9b8a",
-  "Dolls & Figures": "#d4b56a",
+  "Strategy & War": "#bc0234",
+  "Board & Race": "#8a6a72",
+  "Mancala & Sowing": "#8e0126",
+  "Cards & Tiles": "#c45a72",
+  "Dice & Chance": "#bc0234",
+  "String & Finger": "#8a6a72",
+  "Dolls & Figures": "#d4784a",
   "Ball & Sport": "#6a9bc3",
   "Spinning & Tops": "#c97b4a",
   "Puzzles & Skill": "#9b7d9b",
@@ -101,9 +101,9 @@ export function ludusCardDataUri(
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0a1f23"/>
-      <stop offset="55%" stop-color="#0c2428"/>
-      <stop offset="100%" stop-color="#14353b"/>
+      <stop offset="0%" stop-color="#12080a"/>
+      <stop offset="55%" stop-color="#0c0c0c"/>
+      <stop offset="100%" stop-color="#1a1214"/>
     </linearGradient>
     <pattern id="grain" width="40" height="40" patternUnits="userSpaceOnUse">
       <circle cx="4" cy="8" r="1" fill="${accent}" opacity="0.12"/>

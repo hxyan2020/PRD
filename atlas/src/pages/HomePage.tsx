@@ -42,7 +42,18 @@ export function HomePage() {
         <div className="hero-media" aria-hidden="true" />
         <div className="container hero-content">
           <p className="hero-brand">
-            Ludus <span>Atlas</span>
+            <img
+              className="hero-brand-mark"
+              src={`${import.meta.env.BASE_URL}logo-cat.png`}
+              alt=""
+              width={72}
+              height={72}
+              aria-hidden="true"
+            />
+            <span className="hero-brand-wordmark">
+              <span>Ludus</span>
+              <span>Atlas</span>
+            </span>
           </p>
           <h1>{t("home.headline")}</h1>
           <p>{t("home.sub")}</p>
