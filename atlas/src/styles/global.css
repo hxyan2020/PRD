@@ -533,36 +533,60 @@ select {
 }
 
 .game-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   color: inherit;
-  border-top: 1px solid var(--line);
-  padding-top: 1rem;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  overflow: hidden;
+  min-height: 18.5rem;
+  border: 1px solid var(--line);
+  background: var(--ink-soft);
+  transition: transform 0.25s ease, opacity 0.25s ease, border-color 0.25s ease;
   animation: riseIn 0.6s ease-out both;
 }
 
 .game-card-link {
+  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   text-decoration: none;
   color: inherit;
   flex: 1;
+  min-height: 18.5rem;
+  z-index: 1;
 }
 
 .game-card:hover {
   transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
 }
 
 .game-card:hover .game-card-img img {
-  transform: scale(1.04);
+  transform: scale(1.06);
 }
 
 .game-card-img {
-  aspect-ratio: 16 / 10;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-  margin-bottom: 0.9rem;
+  margin: 0;
   background: var(--ink-soft);
+  z-index: 0;
+}
+
+.game-card-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(10, 6, 8, 0.2) 0%,
+    rgba(10, 6, 8, 0.45) 38%,
+    rgba(10, 6, 8, 0.88) 72%,
+    rgba(10, 6, 8, 0.96) 100%
+  );
+  pointer-events: none;
 }
 
 .game-card-img img {
@@ -572,23 +596,36 @@ select {
   transition: transform 0.5s ease;
 }
 
+.game-card-body {
+  position: relative;
+  z-index: 1;
+  padding: 1.15rem 1.05rem 0.35rem;
+}
+
 .game-card h3 {
   font-size: 1.2rem;
   margin-bottom: 0.35rem;
   color: var(--mist);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.45);
 }
 
 .game-card .meta {
-  color: var(--mist-dim);
+  color: color-mix(in srgb, var(--mist) 78%, transparent);
   font-size: 0.9rem;
   margin-bottom: 0.55rem;
 }
 
 .game-card .excerpt {
-  color: var(--mist-dim);
+  color: color-mix(in srgb, var(--mist) 72%, transparent);
   font-size: 0.92rem;
   margin: 0;
   /* Full sentences from excerpt(); do not CSS-clamp mid-word */
+}
+
+.game-card .journal-actions-compact {
+  position: relative;
+  z-index: 2;
+  margin: 0.35rem 1.05rem 1rem;
 }
 
 .pill {
@@ -1397,6 +1434,7 @@ select {
 }
 
 .chat-rec-card {
+  position: relative;
   display: grid;
   grid-template-columns: 72px 1fr;
   gap: 0.65rem;
@@ -1405,6 +1443,8 @@ select {
   border-radius: var(--radius);
   text-decoration: none;
   color: inherit;
+  overflow: hidden;
+  isolation: isolate;
   background: var(--surface);
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
@@ -1415,15 +1455,34 @@ select {
 }
 
 .chat-rec-img {
+  position: relative;
   aspect-ratio: 1;
   overflow: hidden;
   background: var(--ink-soft);
+  z-index: 1;
+}
+
+.chat-rec-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(10, 6, 8, 0.05),
+    rgba(10, 6, 8, 0.35)
+  );
+  pointer-events: none;
 }
 
 .chat-rec-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.chat-rec-card > div:last-child {
+  position: relative;
+  z-index: 1;
 }
 
 .chat-rec-card h4 {
@@ -1653,9 +1712,22 @@ select {
 }
 
 .prefs-hit-img {
+  position: relative;
   aspect-ratio: 1;
   overflow: hidden;
   background: var(--ink-soft);
+}
+
+.prefs-hit-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(10, 6, 8, 0.08),
+    rgba(10, 6, 8, 0.42)
+  );
+  pointer-events: none;
 }
 
 .prefs-hit-img img {
