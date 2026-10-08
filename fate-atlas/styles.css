@@ -2039,12 +2039,16 @@ body.studio-open {
   display: none;
   width: 2.5rem;
   height: 2.5rem;
+  min-width: 2.5rem;
+  flex-shrink: 0;
   border: 1px solid rgba(242, 246, 248, 0.2);
   background: rgba(242, 246, 248, 0.06);
   color: #f2f6f8;
   cursor: pointer;
   place-items: center;
   padding: 0;
+  z-index: 61;
+  position: relative;
 }
 
 .nav-toggle__bars,
