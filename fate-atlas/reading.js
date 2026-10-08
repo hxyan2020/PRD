@@ -88,19 +88,7 @@
     document.body.classList.add("studio-open");
     studio.setAttribute("aria-hidden", "false");
     window.FatumPlay?.setQuestProgress?.(0);
-    // Skip toast on phones — full-screen studio is enough feedback and toast overlaps the sheet.
-    if (!window.matchMedia("(max-width: 720px)").matches) {
-      window.FatumPlay?.showToast?.(
-        window.FatumI18n
-          ? window.FatumI18n.t("toast.questStarted", {
-              name: window.FatumMethodText
-                ? window.FatumMethodText.localize(method).name
-                : method.name,
-            })
-          : `Quest started · ${method.name}`,
-        { ms: 1800 }
-      );
-    }
+    // Studio open is enough feedback; toast sits over the sheet on phones and short landscape.
     render();
     studio.querySelector(".studio__close")?.focus();
   }

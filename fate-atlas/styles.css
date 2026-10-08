@@ -2877,6 +2877,11 @@ body:not(.studio-open) .hero__content {
   text-align: center;
 }
 
+/* Never cover the reading studio sheet */
+body.studio-open .toast {
+  display: none !important;
+}
+
 .toast.is-in {
   animation: toast-in 0.35s var(--ease) forwards;
 }
@@ -3068,7 +3073,7 @@ body:not(.studio-open) .hero__content {
   }
 
   .terms {
-    padding-top: calc(var(--hud-h) + env(safe-area-inset-top, 0px) + 1.25rem);
+    padding-top: calc(var(--hud-h) + env(safe-area-inset-top, 0px) + 1.75rem);
   }
 
   .hero {
@@ -3437,6 +3442,11 @@ body:not(.studio-open) .hero__content {
   .studio__actions--reward .btn {
     width: 100%;
     min-height: var(--touch);
+    white-space: normal;
+    line-height: 1.2;
+    text-align: center;
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
   }
 
   .bagua-strip {
@@ -3490,10 +3500,6 @@ body:not(.studio-open) .hero__content {
     width: min(92vw, 28rem);
     padding: 0.7rem 1rem;
     font-size: 0.85rem;
-  }
-
-  body.studio-open .toast {
-    display: none;
   }
 
   .celebrate__card {
@@ -3579,9 +3585,152 @@ body:not(.studio-open) .hero__content {
     grid-template-columns: 1fr;
     text-align: left;
   }
+}
+
+/* Phone landscape / short windows: keep studio CTAs on-screen */
+@media (max-height: 560px) {
+  .hero {
+    min-height: 100svh;
+    align-items: end;
+  }
+
+  .hero__content {
+    width: min(1120px, calc(100% - 1.5rem));
+    margin: 0 auto max(1.5vh, env(safe-area-inset-bottom, 0px));
+    padding-top: calc(var(--hud-h, 3.6rem) + env(safe-area-inset-top, 0px) + 0.5rem);
+    padding-bottom: 0.35rem;
+  }
+
+  .brand-mark {
+    margin-bottom: 0.35rem;
+  }
+
+  .brand-mark__logo {
+    width: min(5.5rem, 18vw);
+  }
+
+  .brand {
+    font-size: clamp(1.85rem, 7vh, 2.75rem);
+    margin-bottom: 0.4rem;
+  }
+
+  .hero__lead {
+    font-size: 0.98rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .hero__sub {
+    display: none;
+  }
+
+  .hero__cta {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .hero__cta .btn {
+    width: auto;
+    min-height: 2.5rem;
+  }
+
+  .hero__scroll {
+    display: none;
+  }
+
+  .studio {
+    padding: 0;
+    align-items: stretch;
+    place-items: stretch;
+  }
+
+  .studio__panel {
+    width: 100%;
+    max-height: none;
+    height: 100%;
+    height: 100dvh;
+    min-height: 100%;
+    min-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: none;
+  }
+
+  .studio__header {
+    padding: max(0.45rem, env(safe-area-inset-top)) 0.85rem 0.4rem;
+    flex-shrink: 0;
+    z-index: 2;
+    background: linear-gradient(180deg, #e8f0f2, var(--paper));
+  }
+
+  .studio__method {
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  .studio__close {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+  }
+
+  .studio__progress {
+    padding: 0 0.85rem 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .studio__body {
+    padding: 0.55rem 0.9rem calc(4.75rem + env(safe-area-inset-bottom));
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .studio__heading {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
 
   .studio__actions:not(.studio__actions--reward) {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+  }
+
+  .studio__actions--reward {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem;
+  }
+
+  .studio__actions,
+  .studio__actions--reward {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0.55rem 0.9rem calc(0.55rem + env(safe-area-inset-bottom));
+    background: rgba(244, 247, 250, 0.97);
+    border-top: 1px solid var(--line);
+    backdrop-filter: blur(8px);
+    z-index: 90;
+  }
+
+  .studio__actions .btn,
+  .studio__actions--reward .btn {
+    width: 100%;
+    min-height: 2.5rem;
+    white-space: normal;
+    line-height: 1.2;
+    text-align: center;
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
   }
 }
 
