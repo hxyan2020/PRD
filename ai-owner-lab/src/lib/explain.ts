@@ -438,5 +438,10 @@ export async function explainSelection(input: {
     }
   }
   console.warn('OWNLAB chat API unavailable, using local tutor', lastError)
-  return localReply()
+  const fallback = await localReply()
+  const notice =
+    lang === 'zh'
+      ? '\n\n_（远程 ChatGPT 兼容接口暂时不可用，已切换本地导师。）_'
+      : '\n\n_(Remote ChatGPT-compatible API unavailable — switched to local tutor.)_'
+  return { ...fallback, content: fallback.content + notice }
 }
