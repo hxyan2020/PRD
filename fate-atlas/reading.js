@@ -1416,11 +1416,11 @@
         }
       });
 
-      // Auto-rotate recommended rites on the home page every ~3 seconds.
+      // Auto-rotate recommended rites on the home page every ~5 seconds.
       let autoRotateTimer = null;
       let featuredInView = true;
       let featuredHovered = false;
-      const AUTO_ROTATE_MS = 3000;
+      const AUTO_ROTATE_MS = 5000;
       const featuredSection = document.getElementById("play") || featuredEl;
       function shouldAutoRotate() {
         if (document.hidden) return false;
