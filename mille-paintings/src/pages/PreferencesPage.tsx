@@ -237,10 +237,11 @@ export function PreferencesPage() {
             })
             try {
               savePreferences(prefs)
-              const existing = new Set(store.paintings.map((p) => p.id))
+              // Pass the full owned pool (core 1000 + prior discoveries) so
+              // cross-source duplicates are skipped by title/painter/image, not only id.
               const found = await discoverPaintings(
                 prefs,
-                existing,
+                store.paintings,
                 (p) => {
                   setProgress(p)
                   setGenMsg(p.message)

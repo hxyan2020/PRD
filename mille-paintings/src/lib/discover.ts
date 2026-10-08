@@ -1,4 +1,5 @@
 import type { Painting } from '../types'
+import { commonsFileName } from './images'
 import {
   countrySearchTerms,
   eraYearRanges,
@@ -58,6 +59,97 @@ function yearFromText(text?: string | null): string {
   if (!text) return 'Unknown'
   const m = text.match(/\b(\d{3,4})\b/)
   return m ? m[1] : 'Unknown'
+}
+
+/** Normalize titles/painters for cross-source duplicate detection. */
+export function normalizeDiscoverKey(text: string): string {
+  return text
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\[[^\]]*\]/g, ' ')
+    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, ' ')
+    .replace(/\b(the|a|an|of|and|de|la|le|les|el|los|van|der|von|di|da|del)\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function painterKey(painter: string): string {
+  const n = normalizeDiscoverKey(painter)
+  if (!n || n === 'unknown') return ''
+  const parts = n.split(' ').filter(Boolean)
+  // Prefer surname token; keep full string too via caller.
+  return parts[parts.length - 1] || n
+}
+
+function titlePainterKeys(name: string, painter: string): string[] {
+  const title = normalizeDiscoverKey(name)
+  if (!title || title.length < 3) return []
+  const keys = new Set<string>([`t:${title}`])
+  const painterFull = normalizeDiscoverKey(painter)
+  const surname = painterKey(painter)
+  if (painterFull && painterFull !== 'unknown') keys.add(`tp:${title}::${painterFull}`)
+  if (surname) keys.add(`ts:${title}::${surname}`)
+  return [...keys]
+}
+
+function imageKeys(image?: string, imageFull?: string): string[] {
+  const keys = new Set<string>()
+  for (const url of [image, imageFull]) {
+    if (!url) continue
+    const file = commonsFileName(url)
+    if (file) {
+      const base = normalizeDiscoverKey(file.replace(/\.[a-z0-9]+$/i, ''))
+      if (base) keys.add(`img:${base}`)
+    }
+    const met = url.match(/\/(\d{3,})(?:\/|$)/)
+    if (/metmuseum\.org/i.test(url) && met?.[1]) keys.add(`met:${met[1]}`)
+    const aic = url.match(/artic\.edu\/iiif\/2\/([^/]+)/i)
+    if (aic?.[1]) keys.add(`aic:${aic[1].toLowerCase()}`)
+  }
+  return [...keys]
+}
+
+export type ExistingCatalogue = {
+  ids: Set<string>
+  keys: Set<string>
+}
+
+/** Build a lookup of already-owned works (core 1000 + prior discoveries). */
+export function buildExistingCatalogue(paintings: Painting[]): ExistingCatalogue {
+  const ids = new Set<string>()
+  const keys = new Set<string>()
+  for (const p of paintings) {
+    if (p.id) ids.add(p.id)
+    if (p.painterId) ids.add(p.painterId)
+    for (const k of titlePainterKeys(p.name, p.painter)) keys.add(k)
+    for (const k of imageKeys(p.image, p.imageFull)) keys.add(k)
+  }
+  return { ids, keys }
+}
+
+function catalogueHas(catalogue: ExistingCatalogue, p: Painting): boolean {
+  if (p.id && catalogue.ids.has(p.id)) return true
+  for (const k of imageKeys(p.image, p.imageFull)) {
+    if (catalogue.keys.has(k)) return true
+  }
+  for (const k of titlePainterKeys(p.name, p.painter)) {
+    // Prefer title+painter keys; plain title keys are only used as fallback below.
+    if ((k.startsWith('tp:') || k.startsWith('ts:')) && catalogue.keys.has(k)) return true
+  }
+  // Commons/Openverse often lack a reliable painter — fall back to exact title.
+  const title = normalizeDiscoverKey(p.name)
+  const painter = normalizeDiscoverKey(p.painter)
+  const painterMissing = !painter || painter === 'unknown'
+  if (painterMissing && title && catalogue.keys.has(`t:${title}`)) return true
+  return false
+}
+
+function catalogueRemember(catalogue: ExistingCatalogue, p: Painting) {
+  if (p.id) catalogue.ids.add(p.id)
+  for (const k of titlePainterKeys(p.name, p.painter)) catalogue.keys.add(k)
+  for (const k of imageKeys(p.image, p.imageFull)) catalogue.keys.add(k)
 }
 
 /**
@@ -1070,7 +1162,7 @@ function makeSteps(): DiscoverStep[] {
  */
 export async function discoverPaintings(
   prefs: Preferences,
-  existingIds: Set<string>,
+  existing: Painting[] | Set<string>,
   onProgress?: ProgressFn,
   t: DiscoverI18n = (_key, vars) => {
     if (vars && 'source' in vars) return `Searching ${vars.source}…`
@@ -1095,13 +1187,18 @@ export async function discoverPaintings(
     emit(phase, message, totalFound)
   }
 
-  const seen = new Set(existingIds)
+  // Accept legacy Set<id> or the full owned pool (core 1000 + extras).
+  const catalogue: ExistingCatalogue =
+    existing instanceof Set
+      ? { ids: new Set(existing), keys: new Set() }
+      : buildExistingCatalogue(existing)
+  const seen = catalogue.ids
   const pool: Painting[] = []
   const addAll = (items: Painting[]) => {
     let n = 0
     for (const p of items) {
-      if (seen.has(p.id)) continue
-      seen.add(p.id)
+      if (catalogueHas(catalogue, p)) continue
+      catalogueRemember(catalogue, p)
       pool.push(p)
       n++
     }
@@ -1187,8 +1284,14 @@ export async function discoverPaintings(
     pool.length,
   )
 
-  // Strict preference filter: genre AND country when both are selected.
-  const matched = pool.filter((p) => matchesPreferences(p, prefs))
+  // Strict preference filter + final owned-pool dedupe (id / title+painter / image).
+  const ownedOnly: ExistingCatalogue =
+    existing instanceof Set
+      ? { ids: new Set(existing), keys: new Set() }
+      : buildExistingCatalogue(existing)
+  const matched = pool
+    .filter((p) => matchesPreferences(p, prefs))
+    .filter((p) => !catalogueHas(ownedOnly, p))
   const ranked = rankByMood(matched, prefs.moods)
     .map((p) => ({ p, score: preferenceScore(p, prefs) }))
     .sort((a, b) => b.score - a.score || b.p.sitelinks - a.p.sitelinks)
