@@ -1,7 +1,7 @@
 export const en = {
   "nav.home": "Home",
   "nav.collection": "Collection",
-  "nav.guide": "Guide",
+  "nav.guide": "Surprise me",
   "nav.preferences": "Preferences",
   "nav.journal": "Journal",
   "nav.login": "Log in",
@@ -17,10 +17,11 @@ export const en = {
   "home.sub":
     "One catalog of play across human history—board, ball, string, doll, and festival—where the same game wears many cultural faces as variations, not duplicates.",
   "home.ctaBrowse": "Browse the full collection",
-  "home.ctaGuide": "Ask Atlas Guide",
-  "home.featuredTitle": "Lineages with many faces",
+  "home.ctaGuide": "Surprise me",
+  "home.featuredTitle": "Today’s featured lineages",
   "home.featuredSub":
-    "Mancala, chess, mills, shuttlecocks, and more—fundamentally one game, presented with cultural variations side by side.",
+    "A fresh daily rotation of games with cultural variations—same catalog, new faces each day.",
+  "home.featuredDay": "Showing picks for {date} (UTC). Back tomorrow for a new set.",
   "home.catalogSize": "Catalog size:",
   "home.nestedVariations": "Nested variations:",
   "home.categories": "Categories:",
@@ -30,6 +31,10 @@ export const en = {
   "collection.title": "Full collection",
   "collection.sub":
     "{n} toys and games. Same fundamental games are grouped with cultural variations—not split into duplicate entries.",
+  "collection.dailyTitle": "Today’s picks",
+  "collection.dailySub":
+    "A daily rotation from the catalog—come back tomorrow for a new set at the top.",
+  "collection.dailyDay": "Showing picks for {date} (UTC).",
   "collection.search": "Search",
   "collection.searchPlaceholder": "Name, country, civilization, variation…",
   "collection.category": "Category",
@@ -46,15 +51,24 @@ export const en = {
   "collection.error": "Could not load collection: {error}",
   "collection.variations": "{n} variations",
 
-  "guide.title": "Atlas Guide",
+  "guide.title": "Surprise me",
   "guide.sub":
-    "Tell me what you like to play—I’ll recommend from this catalog and answer follow-ups about rules, origins, variations, and buying.",
+    "Chat with me about what you like to play—I’ll guide you step by step, then recommend from this catalog and answer follow-ups about rules, origins, variations, and buying.",
+  "guide.botName": "Surprise me",
+  "guide.botStatus": "Online · catalog guide",
+  "guide.you": "You",
   "guide.placeholder":
     "Ask for recommendations, how to play, origins, or where to buy…",
   "guide.send": "Send",
   "guide.scope":
     "Scoped to Ludus Atlas: browse games & toys, understand them, learn how to play, and find purchase options.",
-  "guide.inputLabel": "Message Atlas Guide",
+  "guide.inputLabel": "Message Surprise me",
+  "guide.thinking": "Thinking…",
+  "guide.thinkingLabel": "Thinking process",
+  "guide.think.step1": "Reading your message…",
+  "guide.think.step2": "Matching catalog cues…",
+  "guide.think.step3": "Shaping a helpful reply…",
+  "guide.typing": "Writing a reply…",
 
   "prefs.title": "Preferences & AI search",
   "prefs.sub":
@@ -181,9 +195,23 @@ export const en = {
   "prefs.flash.addedMany": "Added {n} discoveries to the collection pool.",
 
   "chat.welcome":
-    "I’m Atlas Guide—your helper for this catalog of historical toys and games. I’ll ask a few preference questions, then recommend matches. You can also ask how to play, where a game comes from, cultural variations, or purchase options.\n\nHow many people will usually play?",
+    "Hey—I’m here to surprise you with historical toys and games from this catalog. We’ll chat a little so I learn what you like, then I’ll suggest matches. You can also ask how to play, where a game comes from, cultural variations, or purchase options.\n\nTo start: how many people will usually play?",
   "chat.outOfScope":
     "I stay focused on Ludus Atlas—finding toys and games, how they work, cultural background, how to play, and where to buy them. Ask me anything in that lane, or say “start over” to redo preferences.",
+  "chat.greet.reply":
+    "Hi! Glad you’re here. I’m happy to chat—and when you’re ready, knowing how many people usually play helps me surprise you. Alone, 2, 3–4, a larger group, or any size?",
+  "chat.greet.again":
+    "Hey again—still here with you. No rush. Whenever it feels easy, pick a group size so I can aim the catalog: alone, 2, 3–4, a larger group, or any?",
+  "chat.ack.soft":
+    "Thanks for chatting with me. Let’s take the next step together when you’re ready.",
+  "chat.ack.chatty":
+    "I hear you—{snippet}. Let’s keep narrowing it so I can surprise you with a good match.",
+  "chat.smalltalk.well":
+    "I’m doing well—thanks for asking! Happy to keep chatting while we find something fun.",
+  "chat.smalltalk.thanks":
+    "You’re welcome. Glad you’re here—there’s a whole catalog of play waiting.",
+  "chat.followup.chatty":
+    "Happy to keep chatting! I can recommend something from the catalog, explain how a game works, or walk through a few preference questions again. What sounds good?",
   "chat.qr.alone": "Alone",
   "chat.qr.two": "2 people",
   "chat.qr.small": "3–4 people",
@@ -210,10 +238,15 @@ export const en = {
   "chat.qr.requirements": "Requirements?",
   "chat.qr.moreRecs": "More recommendations",
   "chat.qr.recommendElse": "Recommend something else",
-  "chat.hint.preference": "Say a preference, ask about a game, or tap a quick reply.",
-  "chat.hint.players": "I didn’t catch the group size. Alone, 2, 3–4, a larger group, or any?",
-  "chat.hint.setting": "Choose indoor, outdoor, or either—and we’ll keep going.",
-  "chat.hint.vibe": "Pick a vibe—or say “surprise me.”",
+  "chat.hint.preference": "Say a preference, ask about a game, or tap a quick reply—I’ll guide you from there.",
+  "chat.hint.players":
+    "When you’re ready: how many people will usually play? Alone, 2, 3–4, a larger group, or any size—tap a reply or type it.",
+  "chat.hint.setting":
+    "Nice. Next easy step: indoor table play, outdoor/active play, or either? Tap a reply or tell me in your own words.",
+  "chat.hint.vibe":
+    "Almost there—what vibe fits you best? Strategy, casual, craft, sport, puzzle… or just say “surprise me.”",
+  "chat.hint.region":
+    "One more gentle nudge: any region or civilization you lean toward? Or say “worldwide” and I’ll mix it up.",
   "chat.askPurchaseWhich": "Which game do you want purchase links for?",
   "chat.askAbout": "Name a game from the catalog and I’ll share its origin and story.",
   "chat.askVariations": "Name a game and I’ll list its cultural variations.",
@@ -236,8 +269,12 @@ export const en = {
   "chat.rec.basedOn": " based on {bits}",
   "chat.rec.none":
     "I couldn’t find a strong match{prefLine}. Try broadening region to “any,” or say “start over.”",
+  "chat.rec.exhausted":
+    "That’s all the strong matches I have for these preferences. Say “start over” to try a different mix, or ask about any title above.",
   "chat.rec.intro":
-    "Here are {n} catalog picks{prefLine}. Tap a title in the collection, or ask me how to play, about origins, variations, or where to buy any of them.",
+    "Here are {n} catalog picks{prefLine}. Tap a title in the collection, or ask me how to play, about origins, variations, or where to buy any of them. Tap “More recommendations” for another set of three.",
+  "chat.rec.moreIntro":
+    "Here are {n} more catalog picks{prefLine}. Tap “More recommendations” again for the next set, or ask about any title above.",
 
   "chat.vibe.strategy": "strategy",
   "chat.vibe.casual": "casual",
@@ -248,7 +285,7 @@ export const en = {
   "chat.vibe.puzzle": "puzzle",
 
   "chat.answer.howToPlay":
-    "**{name}** — how to play:\n{steps}\n\nIdeal participants: {participants}. Ask about requirements, variations, or purchase links if you want.",
+    "**{name}** — how to play:\n{steps}\n\n**How to win**\n{howToWin}\n\n**Rules not to break**\n{rules}\n\nIdeal participants: {participants}. Ask about requirements, variations, or purchase links if you want.",
   "chat.answer.purchaseNone":
     "I don’t have store links for **{name}** yet. You can still open its catalog page for details.",
   "chat.answer.purchase":
@@ -292,10 +329,33 @@ export const en = {
   "detail.players": "Players:",
   "detail.about": "About this game / toy",
   "detail.howToPlay": "How to play",
+  "detail.howToWin": "How to win",
+  "detail.rulesNotToBreak": "Rules not to break",
   "detail.variations": "Cultural variations",
   "detail.variationsIntro":
     "These are fundamentally the same game or toy, expressed in different places and eras—not separate catalog inventions.",
   "detail.images": "Images",
+  "detail.tutorial": "Tutorial video",
+  "detail.tutorialIntro":
+    "Selected from at least five YouTube how-to videos for this title—favoring recent uploads with strong viewership and likes.",
+  "detail.tutorialWatch": "Watch on YouTube",
+  "detail.tutorialMeta": "{views} views · {likes} likes · {age}",
+  "detail.tutorialMetaNoLikes": "{views} views · {age}",
+  "detail.viewCaption.atmosphere": "Atmosphere",
+  "detail.viewCaption.play": "How it’s played",
+  "detail.viewCaption.materials": "Pieces & materials",
+  "detail.viewCaption.culture": "Cultural setting",
+  "detail.cardFooter": "Catalog reference card",
+  "era.ancientPresent": "ancient–present",
+  "era.centuriesOld": "centuries old",
+  "era.prehistoricPresent": "prehistoric–present",
+  "era.oralAntiquity": "oral antiquity",
+  "era.modernSchoolFlick": "modern school spread; older flick roots",
+  "era.unknownAntiquity": "unknown antiquity",
+  "era.preColumbian": "pre-Columbian",
+  "era.medieval": "medieval",
+  "era.medievalModern": "medieval–modern",
+  "era.centuriesOldShort": "centuries old",
   "detail.requirements": "Requirements",
   "detail.idealParticipants": "Ideal participants",
   "detail.whereToBuy": "Where to buy",
@@ -307,10 +367,32 @@ export const en = {
   "detail.notFound": "Game not found.",
   "detail.showImage": "Show image {n}",
 
+  "detail.assistant.title": "Ask about this game",
+  "detail.assistant.sub":
+    "Ask how to play {name}, where it comes from, what you need, cultural variations, or where to buy it.",
+  "detail.assistant.welcome":
+    "I’m here to help with **{name}**—rules, history, requirements, variations, and purchase links from this catalog. What would you like to know?",
+  "detail.assistant.hint": "Ask me anything about {name} in this catalog—rules, origin, gear, variations, or buying.",
+  "detail.assistant.outOfScope":
+    "I stay with Ludus Atlas and this page’s game, **{name}**. I can explain how to play it, its background, what you need, variations, or where to buy it—ask in that lane.",
+  "detail.assistant.otherGame":
+    "This page is about **{name}**. I can answer questions on this entry; for another title, open its page or try Surprise me.",
+  "detail.assistant.useGuide":
+    "For finding other toys and games, use Surprise me. Here I only cover **{name}**—rules, history, gear, variations, and buying.",
+  "detail.assistant.default":
+    "{about}\n\nAsk how to play {name}, what you need, variations, or where to buy it.",
+  "detail.assistant.placeholder": "Ask about {name}…",
+  "detail.assistant.inputLabel": "Question about {name}",
+  "detail.assistant.send": "Ask",
+  "detail.assistant.suggestions": "Suggested questions",
+  "detail.assistant.scopeNote": "Scoped to this catalog entry.",
+  "detail.assistant.guideLink": "Browse with Surprise me →",
+
   "actions.collect": "Collect",
   "actions.collected": "Collected",
   "actions.markPlayed": "Mark played",
   "actions.played": "Played",
+  "actions.enter": "Enter",
 
   "footer.blurb":
     "Ludus Atlas catalogs toys and games across civilizations. Fundamentally identical forms appear as variations under one entry.",

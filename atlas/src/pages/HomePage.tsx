@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { loadCollection, type CollectionData } from "../lib/collection";
 import { GameCard } from "../components/GameCard";
 import { Footer } from "../components/Footer";
@@ -9,6 +9,7 @@ import {
   localizeGame,
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
+import { dailyPickGames, todayKey } from "../lib/dailyRotate";
 
 export function HomePage() {
   const [data, setData] = useState<CollectionData | null>(null);
@@ -28,21 +29,40 @@ export function HomePage() {
     document.title = t("home.docTitle");
   }, [t, locale]);
 
+  const day = todayKey();
   const featured = useMemo(() => {
     if (!data) return [];
-    return data.games
-      .filter((g) => g.variations.length > 0)
-      .slice(0, 6)
-      .map((g) => localizeGame(g, locale, contentI18n));
-  }, [data, locale, contentI18n]);
+    const withVariations = data.games.filter((g) => g.variations.length > 0);
+    return dailyPickGames(withVariations, 6, "home-featured", day).map((g) =>
+      localizeGame(g, locale, contentI18n, t),
+    );
+  }, [data, locale, contentI18n, day, t]);
 
   return (
     <>
-      <section className="hero">
+      <section
+        className="hero"
+        style={
+          {
+            "--hero-banner": `url(${import.meta.env.BASE_URL}hero-banner-wide.jpg)`,
+          } as CSSProperties
+        }
+      >
         <div className="hero-media" aria-hidden="true" />
         <div className="container hero-content">
           <p className="hero-brand">
-            Ludus <span>Atlas</span>
+            <img
+              className="hero-brand-mark"
+              src={`${import.meta.env.BASE_URL}logo-cat.png`}
+              alt=""
+              width={72}
+              height={72}
+              aria-hidden="true"
+            />
+            <span className="hero-brand-wordmark">
+              <span>Ludus</span>
+              <span>Atlas</span>
+            </span>
           </p>
           <h1>{t("home.headline")}</h1>
           <p>{t("home.sub")}</p>
@@ -50,7 +70,7 @@ export function HomePage() {
             <Link className="btn btn-primary" to="/collection">
               {t("home.ctaBrowse")}
             </Link>
-            <Link className="btn btn-ghost" to="/guide">
+            <Link className="btn btn-ghost" to="/surprise-me">
               {t("home.ctaGuide")}
             </Link>
           </div>
@@ -62,6 +82,7 @@ export function HomePage() {
           <div className="section-head">
             <h2>{t("home.featuredTitle")}</h2>
             <p>{t("home.featuredSub")}</p>
+            <p className="daily-day-note">{t("home.featuredDay", { date: day })}</p>
           </div>
           {data ? (
             <>

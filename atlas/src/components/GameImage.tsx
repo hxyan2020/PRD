@@ -1,8 +1,9 @@
-import type { ReactEventHandler } from "react";
+import { useState, type ReactEventHandler } from "react";
 import {
-  isLudusCardSrc,
+  isLudusSyntheticSrc,
   ludusCardDataUri,
-  resolveImageSrc,
+  stableImageSrc,
+  type ImageLabel,
 } from "../lib/gameCardImage";
 
 type Props = {
@@ -11,8 +12,8 @@ type Props = {
   className?: string;
   loading?: "lazy" | "eager";
   onError?: ReactEventHandler<HTMLImageElement>;
-  /** When set, title cards redraw with the live (possibly localized) name. */
-  label?: { name: string; category: string; originCountry: string };
+  /** When set, title cards / views redraw with live (possibly localized) text. */
+  label?: ImageLabel;
 };
 
 /** <img> wrapper that resolves Ludus title-card refs to correctly named SVGs. */
@@ -24,17 +25,39 @@ export function GameImage({
   onError,
   label,
 }: Props) {
-  const resolved =
-    label && isLudusCardSrc(src)
-      ? ludusCardDataUri(label.name, label.category, label.originCountry)
-      : resolveImageSrc(src);
+  const resolved = stableImageSrc(src, label);
+  const [failedFor, setFailedFor] = useState<string | null>(null);
+  const failed = failedFor === src;
+
+  const fallback = label
+    ? ludusCardDataUri(label.name, label.category, label.originCountry, {
+        categoryKey: label.categoryKey,
+        cardFooter: label.cardFooter,
+      })
+    : null;
+
+  // Already on a title card / data URI — no second network hop to fail.
+  const displaySrc =
+    failed && fallback && displayNeedsFallback(resolved)
+      ? fallback
+      : resolved;
+
   return (
     <img
-      src={resolved}
+      src={displaySrc}
       alt={alt}
       className={className}
       loading={loading}
-      onError={onError}
+      onError={(e) => {
+        if (!failed && fallback && displayNeedsFallback(resolved)) {
+          setFailedFor(src);
+        }
+        onError?.(e);
+      }}
     />
   );
+}
+
+function displayNeedsFallback(resolved: string): boolean {
+  return !resolved.startsWith("data:") && !isLudusSyntheticSrc(resolved);
 }

@@ -1,7 +1,8 @@
-import type { CollectionMeta, Game } from "../types/game";
+import type { CollectionMeta, Game, TutorialVideo } from "../types/game";
 import { readPool, POOL_EVENT } from "./pool";
 import { AUTH_EVENT } from "./auth";
 import { readStaging, STAGING_EVENT } from "./staging";
+import { sanitizeImageList } from "./gameCardImage";
 
 export type CollectionData = {
   meta: CollectionMeta & { brand?: string };
@@ -11,12 +12,59 @@ export type CollectionData = {
 export const COLLECTION_EVENT = "ludus-atlas-collection-change";
 
 let baseCache: CollectionData | null = null;
+let tutorialsCache: Record<string, TutorialVideo> | null = null;
+
+async function loadTutorials(): Promise<Record<string, TutorialVideo>> {
+  if (tutorialsCache) return tutorialsCache;
+  try {
+    const res = await fetch(`${import.meta.env.BASE_URL}data/tutorials.json`);
+    if (!res.ok) {
+      tutorialsCache = {};
+      return tutorialsCache;
+    }
+    tutorialsCache = (await res.json()) as Record<string, TutorialVideo>;
+  } catch {
+    tutorialsCache = {};
+  }
+  return tutorialsCache;
+}
+
+function sanitizeGame(game: Game): Game {
+  const label = {
+    name: game.name,
+    category: game.category,
+    originCountry: game.originCountry,
+  };
+  return {
+    ...game,
+    images: sanitizeImageList(game.images, label),
+    variations: (game.variations ?? []).map((v) => ({
+      ...v,
+      images: sanitizeImageList(v.images, {
+        name: v.name,
+        category: game.category,
+        originCountry: v.originCountry,
+      }),
+    })),
+  };
+}
 
 async function loadBase(): Promise<CollectionData> {
   if (baseCache) return baseCache;
-  const res = await fetch(`${import.meta.env.BASE_URL}data/collection.json`);
+  const [res, tutorials] = await Promise.all([
+    fetch(`${import.meta.env.BASE_URL}data/collection.json`),
+    loadTutorials(),
+  ]);
   if (!res.ok) throw new Error(`Failed to load collection (${res.status})`);
-  baseCache = (await res.json()) as CollectionData;
+  const raw = (await res.json()) as CollectionData;
+  baseCache = {
+    ...raw,
+    games: raw.games.map((g) => {
+      const cleaned = sanitizeGame(g);
+      const tutorial = tutorials[cleaned.id];
+      return tutorial ? { ...cleaned, tutorialVideo: tutorial } : cleaned;
+    }),
+  };
   return baseCache;
 }
 
@@ -34,7 +82,10 @@ function mergeGames(baseGames: Game[], extras: Game[]): Game[] {
 }
 
 function mergeCollection(base: CollectionData, pool: Game[], staging: Game[]): CollectionData {
-  const games = mergeGames(mergeGames(base.games, pool), staging);
+  const games = mergeGames(
+    mergeGames(base.games, pool.map(sanitizeGame)),
+    staging.map(sanitizeGame),
+  );
   const categories = [...new Set(games.map((g) => g.category))].sort();
   const civilizations = [...new Set(games.map((g) => g.civilization))].sort();
   // Staging previews should not inflate the public catalog total

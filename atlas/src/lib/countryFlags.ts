@@ -1,8 +1,137 @@
 /**
  * Flag / emblem for catalog origin-country strings (modern flags + a few
  * civilizational stand-ins for historical / multi-region labels).
+ *
+ * Prefer ISO2 codes + self-hosted SVG under /flags/{iso}.svg so browsers
+ * without color-emoji fonts never show letter fallbacks like “IN”.
  */
 
+/** Country / label → ISO 3166-1 alpha-2 (lowercase). Empty = non-flag emblem. */
+const COUNTRY_ISO: Record<string, string> = {
+  Afghanistan: "af",
+  Algeria: "dz",
+  Argentina: "ar",
+  Armenia: "am",
+  Australia: "au",
+  Bangladesh: "bd",
+  Belgium: "be",
+  Belize: "bz",
+  Bolivia: "bo",
+  Brazil: "br",
+  Bulgaria: "bg",
+  Cambodia: "kh",
+  Canada: "ca",
+  Chile: "cl",
+  China: "cn",
+  Colombia: "co",
+  Croatia: "hr",
+  Cuba: "cu",
+  Czechia: "cz",
+  Denmark: "dk",
+  Ecuador: "ec",
+  Egypt: "eg",
+  Ethiopia: "et",
+  Fiji: "fj",
+  Finland: "fi",
+  France: "fr",
+  Georgia: "ge",
+  Germany: "de",
+  Ghana: "gh",
+  Greece: "gr",
+  Greenland: "gl",
+  Guatemala: "gt",
+  "Hawaiʻi": "us",
+  Hungary: "hu",
+  India: "in",
+  Indonesia: "id",
+  Iran: "ir",
+  Iraq: "iq",
+  "Iraq (Sumer)": "iq",
+  Ireland: "ie",
+  Israel: "il",
+  Italy: "it",
+  Japan: "jp",
+  Kazakhstan: "kz",
+  Kenya: "ke",
+  Korea: "kr",
+  Laos: "la",
+  Lebanon: "lb",
+  Madagascar: "mg",
+  Malaysia: "my",
+  Mali: "ml",
+  Mauritania: "mr",
+  Mexico: "mx",
+  "Mexico (Maya region)": "mx",
+  Mongolia: "mn",
+  Morocco: "ma",
+  Myanmar: "mm",
+  Nepal: "np",
+  Netherlands: "nl",
+  "New Zealand": "nz",
+  Nigeria: "ng",
+  Norway: "no",
+  Pakistan: "pk",
+  "Papua New Guinea": "pg",
+  "Persia / Iran": "ir",
+  Peru: "pe",
+  Philippines: "ph",
+  Poland: "pl",
+  Portugal: "pt",
+  Romania: "ro",
+  Russia: "ru",
+  Samoa: "ws",
+  "Saudi Arabia": "sa",
+  Senegal: "sn",
+  Serbia: "rs",
+  "Solomon Islands": "sb",
+  "South Africa": "za",
+  Spain: "es",
+  "Sri Lanka": "lk",
+  Sudan: "sd",
+  Sweden: "se",
+  Tanzania: "tz",
+  Thailand: "th",
+  Tonga: "to",
+  Turkey: "tr",
+  Ukraine: "ua",
+  "United Kingdom": "gb",
+  "United States": "us",
+  Uzbekistan: "uz",
+  Venezuela: "ve",
+  Vietnam: "vn",
+  Yemen: "ye",
+  // Multi-region / historical — primary modern flag when one exists
+  "Canada / United States": "ca",
+  "China / Greece (disputed antiquity); Philippines popularization": "cn",
+  "China / Hong Kong": "hk",
+  "Egypt / China origins; Europe standardized": "eg",
+  "Ethiopia / Eritrea": "et",
+  Europe: "eu",
+  "France / Mexico / Japan": "fr",
+  "France / Netherlands": "fr",
+  "Germany / United Kingdom": "de",
+  "India / Pakistan": "in",
+  "Japan / China": "jp",
+  "Malaysia / Indonesia": "my",
+  "Malaysia / Sri Lanka": "my",
+  "Mauritania / Morocco": "mr",
+  "Persia / Mesopotamia region": "ir",
+  "Spain / Islamic Spain": "es",
+  "Spain / Latin America": "es",
+  "Sweden / Sápmi": "se",
+  "Thailand / Malaysia": "th",
+  "Turkey / Levant": "tr",
+  "United Kingdom / Europe / East Asia porcelain play": "gb",
+  "United Kingdom / Japan": "gb",
+  "United Kingdom / United States": "gb",
+  "United Kingdom / global": "gb",
+  "United States / Canada": "us",
+  "United States / Mexico": "us",
+  "United States / global": "us",
+  "United States / global; older Asian footbags": "us",
+};
+
+/** Emoji (or emblem) for plain-text contexts / select option labels. */
 const COUNTRY_FLAGS: Record<string, string> = {
   Afghanistan: "🇦🇫",
   Algeria: "🇩🇿",
@@ -97,7 +226,6 @@ const COUNTRY_FLAGS: Record<string, string> = {
   Venezuela: "🇻🇪",
   Vietnam: "🇻🇳",
   Yemen: "🇾🇪",
-  // Multi-region / historical labels — primary emblem
   "Africa / Middle East": "🌍",
   "Canada / United States": "🇨🇦",
   "China / Greece (disputed antiquity); Philippines popularization": "🇨🇳",
@@ -136,6 +264,21 @@ const COUNTRY_FLAGS: Record<string, string> = {
   global: "🌍",
 };
 
+const TOKEN_ISO: [RegExp, string][] = [
+  [/\bUnited States\b/i, "us"],
+  [/\bUnited Kingdom\b/i, "gb"],
+  [/\bChina\b/i, "cn"],
+  [/\bJapan\b/i, "jp"],
+  [/\bIndia\b/i, "in"],
+  [/\bEgypt\b/i, "eg"],
+  [/\bIran\b|\bPersia\b/i, "ir"],
+  [/\bIraq\b|\bSumer\b|\bMesopotamia\b/i, "iq"],
+  [/\bMexico\b|\bMaya\b/i, "mx"],
+  [/\bKorea\b/i, "kr"],
+  [/\bGreece\b/i, "gr"],
+  [/\bEurope\b/i, "eu"],
+];
+
 const TOKEN_FLAGS: [RegExp, string][] = [
   [/\bUnited States\b/i, "🇺🇸"],
   [/\bUnited Kingdom\b/i, "🇬🇧"],
@@ -153,13 +296,25 @@ const TOKEN_FLAGS: [RegExp, string][] = [
   [/\bglobal\b|\bMultiple\b|\bAfrica\b/i, "🌍"],
 ];
 
+/** Resolve ISO2 (lowercase) for an origin-country label, or null for emblems. */
+export function isoForCountry(country: string | undefined | null): string | null {
+  if (!country) return null;
+  const trimmed = country.trim();
+  if (COUNTRY_ISO[trimmed]) return COUNTRY_ISO[trimmed];
+  const primary = trimmed.split(/\s*\/\s*/)[0]?.trim();
+  if (primary && COUNTRY_ISO[primary]) return COUNTRY_ISO[primary];
+  for (const [re, iso] of TOKEN_ISO) {
+    if (re.test(trimmed)) return iso;
+  }
+  return null;
+}
+
 /** Resolve a flag emoji for an English (or compound) origin-country label. */
 export function flagForCountry(country: string | undefined | null): string {
   if (!country) return "🌍";
   const trimmed = country.trim();
   if (COUNTRY_FLAGS[trimmed]) return COUNTRY_FLAGS[trimmed];
 
-  // Exact segment before " / " often is the primary origin
   const primary = trimmed.split(/\s*\/\s*/)[0]?.trim();
   if (primary && COUNTRY_FLAGS[primary]) return COUNTRY_FLAGS[primary];
 

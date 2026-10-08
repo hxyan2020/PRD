@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+scripts/.tutorial-cache.json
+scripts/.tutorial-cache.json.tmp
 
 # Editor
 .vscode/*

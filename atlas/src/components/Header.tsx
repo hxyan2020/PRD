@@ -35,8 +35,18 @@ export function Header() {
     <header className={`site-header${menuOpen ? " is-open" : ""}`}>
       <div className="inner">
         <NavLink to="/" className="brand" end>
-          <span className="brand-mark" aria-hidden="true" />
-          Ludus Atlas
+          <img
+            className="brand-mark"
+            src={`${import.meta.env.BASE_URL}logo-cat.png`}
+            alt=""
+            width={36}
+            height={36}
+            aria-hidden="true"
+          />
+          <span className="brand-wordmark">
+            <span>Ludus</span>
+            <span>Atlas</span>
+          </span>
         </NavLink>
 
         <button
@@ -59,7 +69,7 @@ export function Header() {
             {t("nav.home")}
           </NavLink>
           <NavLink to="/collection">{t("nav.collection")}</NavLink>
-          <NavLink to="/guide">{t("nav.guide")}</NavLink>
+          <NavLink to="/surprise-me">{t("nav.guide")}</NavLink>
           <NavLink to="/preferences">{t("nav.preferences")}</NavLink>
           <NavLink to="/journal">
             {t("nav.journal")}

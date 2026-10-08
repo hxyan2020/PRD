@@ -93,7 +93,14 @@ const INDOOR_CATS = new Set([
 
 const VIBE_CATEGORIES: Record<Exclude<VibePref, "any">, string[]> = {
   strategy: ["Strategy & War", "Mancala & Sowing", "Board & Race"],
-  casual: ["Cards & Tiles", "Dice & Chance", "Outdoor Folk", "Spinning & Tops"],
+  // Include Ball & Sport so outdoor + light/social still finds active folk play.
+  casual: [
+    "Cards & Tiles",
+    "Dice & Chance",
+    "Outdoor Folk",
+    "Spinning & Tops",
+    "Ball & Sport",
+  ],
   craft: ["Dolls & Figures", "Construction", "Musical Play"],
   sport: ["Ball & Sport", "Outdoor Folk"],
   ritual: ["Ritual & Ceremony", "Memory & Word"],
@@ -101,12 +108,43 @@ const VIBE_CATEGORIES: Record<Exclude<VibePref, "any">, string[]> = {
   puzzle: ["Puzzles & Skill", "String & Finger", "Memory & Word"],
 };
 
+/** English catalog category — localized `category` labels must not drive matching. */
+function categoryKeyOf(game: Game): string {
+  return game.categoryKey ?? game.category;
+}
+
+/** English origin country key for region matching. */
+function originKeyOf(game: Game): string {
+  return game.originCountryKey ?? game.originCountry;
+}
+
 export function initialChatState(): ChatState {
   return {
     phase: "welcome",
     prefs: {},
     lastRecommendations: [],
+    seenRecommendedIds: [],
   };
+}
+
+const REC_BATCH = 3;
+
+function mergeSeen(prev: string[], games: Game[]): string[] {
+  const next = new Set(prev);
+  for (const g of games) next.add(g.id);
+  return [...next];
+}
+
+function recommendExcluding(
+  games: Game[],
+  prefs: UserPrefs,
+  excludeIds: Iterable<string>,
+  limit = REC_BATCH,
+): Game[] {
+  const exclude = new Set(excludeIds);
+  return recommendGames(games, prefs, Math.max(limit * 4, 12))
+    .filter((g) => !exclude.has(g.id))
+    .slice(0, limit);
 }
 
 export function welcomeMessage(t: ChatTranslate): ChatMessage {
@@ -190,7 +228,16 @@ function parseRegion(text: string, tr?: ChatTranslate): string | null {
     if (t === normalize(tr("chat.qr.regionEurope"))) return "europe";
     if (t === normalize(tr("chat.qr.regionMesoamerica"))) return "mesoamerica";
   }
-  if (/\b(any|worldwide|no preference|everywhere|global)\b/.test(t)) return "any";
+  // Locale-agnostic “any region” (incl. zh 全世界 / 任意) so we never treat
+  // a worldwide chip as a literal country filter that matches nothing.
+  if (
+    /\b(any|worldwide|no preference|everywhere|global|world)\b/.test(t) ||
+    /全世界|世界中|全球|任意|哪儿都行|哪裡都行|どこでも|전\s*세계|weltweit|mondial|mundial/.test(
+      t,
+    )
+  ) {
+    return "any";
+  }
   if (!t) return null;
   return t.replace(/^(from|in|around|near)\s+/, "");
 }
@@ -200,12 +247,91 @@ function isStartOver(text: string, tr?: ChatTranslate) {
   return /\b(start over|restart|reset|new search|begin again)\b/i.test(text);
 }
 
+function isGreeting(text: string): boolean {
+  const t = normalize(text);
+  if (!t) return false;
+  if (
+    /^(hi+|h[ei]+y+|hello+|howdy|yo+|sup|greetings|hola|bonjour|hallo|你好|안녕)([\s!,.]*| there[!.,]*)?$/.test(
+      t,
+    )
+  ) {
+    return true;
+  }
+  if (/^(good\s*(morning|afternoon|evening|day))([\s!,.]*)?$/.test(t)) return true;
+  // Short social opener that isn't asking about a game yet
+  if (
+    /^(hi|hello|hey)\b/.test(t) &&
+    t.length < 48 &&
+    !/\b(play|game|games|toy|recommend|buy|mancala|chess)\b/.test(t)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function isSmallTalk(text: string): boolean {
+  const t = normalize(text);
+  if (!t || isGreeting(text)) return false;
+  if (/\b(play|game|games|toy|recommend|buy|mancala|chess|how to)\b/.test(t)) {
+    return false;
+  }
+  return /\b(how are you|how're you|how's it going|whats? up|what is up|thanks|thank you|thx|nice to meet|good to (meet|see)|i('m| am) (fine|good|great|ok|okay)|cool|awesome|lol|haha|love (this|it)|nice)\b/.test(
+    t,
+  );
+}
+
+/**
+ * Chat back first, then gently steer toward the unanswered interview step.
+ * Stronger nudges after repeated soft redirects.
+ */
+function chattyGuide(
+  t: ChatTranslate,
+  userText: string,
+  hintKey: MessageKey,
+  quickReplies: string[] | undefined,
+  nudge: number,
+): ChatMessage {
+  const opts = quickReplies ? { quickReplies } : undefined;
+  if (isGreeting(userText)) {
+    const key: MessageKey =
+      nudge <= 0 ? "chat.greet.reply" : "chat.greet.again";
+    return assistant(t(key), opts);
+  }
+  if (isSmallTalk(userText)) {
+    const n = normalize(userText);
+    if (/\b(how are you|how're you|how's it going|whats? up|what is up)\b/.test(n)) {
+      return assistant(`${t("chat.smalltalk.well")}\n\n${t(hintKey)}`, opts);
+    }
+    if (/\b(thanks|thank you|thx)\b/.test(n)) {
+      return assistant(`${t("chat.smalltalk.thanks")}\n\n${t(hintKey)}`, opts);
+    }
+    const snippet = charExcerpt(userText.replace(/\s+/g, " ").trim(), 72)
+      .replace(/[.?!…]+$/u, "")
+      .trim();
+    const lead =
+      snippet.length >= 2
+        ? `${t("chat.ack.chatty", { snippet })}\n\n${t(hintKey)}`
+        : `${t("chat.ack.soft")}\n\n${t(hintKey)}`;
+    return assistant(lead, opts);
+  }
+  const snippet = charExcerpt(userText.replace(/\s+/g, " ").trim(), 72)
+    .replace(/[.?!…]+$/u, "")
+    .trim();
+  if (snippet.length >= 2 && nudge <= 1) {
+    return assistant(
+      `${t("chat.ack.chatty", { snippet })}\n\n${t(hintKey)}`,
+      opts,
+    );
+  }
+  return assistant(`${t("chat.ack.soft")}\n\n${t(hintKey)}`, opts);
+}
+
 function isOffTopic(text: string) {
   const t = normalize(text);
   if (!t) return false;
   // Clearly unrelated domains
   const off =
-    /\b(weather|stock|crypto|bitcoin|medical advice|diagnose|homework essay|write code for me|political election|dating advice)\b/.test(
+    /\b(weather|stock|crypto|bitcoin|nfl scores|movie times|recipe|cook dinner|medical advice|diagnose|homework essay|write code for me|programming help|political election|dating advice)\b/.test(
       t,
     );
   if (!off) return false;
@@ -216,27 +342,60 @@ function isOffTopic(text: string) {
   return true;
 }
 
+function isCatalogScopedAsk(text: string): boolean {
+  const t = normalize(text);
+  // Explicit catalog topics, or short follow-ups about the page’s game (“tell me more”, “explain it”).
+  return /\b(play|plays|playing|rule|rules|step|steps|how|origin|history|civilization|culture|variation|variations|variant|variants|buy|purchase|shop|require|required|requirement|requirements|equipment|material|materials|player|players|participant|participants|score|win|capture|board|toy|toys|game|games|catalog|ludus|where|when|what|who|why|explain|summarize|summary|tell|more|about|need|needs|gear|piece|pieces|setup|start|begin|learn|recommend|recommendation|recommendations)\b/.test(
+    t,
+  );
+}
+
 function playersMatch(game: Game, pref?: PlayerPref): number {
   if (!pref || pref === "any") return 1;
   const p = normalize(game.idealParticipants);
+  // Compact digits for localized strings like "2 - 4人" / "2至4人数".
+  const compact = p.replace(/\s+/g, "");
   if (pref === "alone") {
-    if (/\balone\b|1–|1-|n\/a|display|caregiver|solo/.test(p)) return 3;
-    if (/\b1–|1-/.test(p)) return 2;
+    if (
+      /\balone\b|1–|1-|n\/a|display|caregiver|solo|一个人|獨自|独自|一人|혼자/.test(p)
+    )
+      return 3;
+    if (/\b1–|1-|1人/.test(p) || /^1[-–~]/.test(compact)) return 2;
     return 0;
   }
   if (pref === "two") {
-    if (/\b2 people\b|^2\b|2 teams|1–2|1-2|2\+/.test(p)) return 3;
-    if (/\b2–|2-/.test(p)) return 2;
+    if (
+      /\b2 people\b|^2\b|2 teams|1–2|1-2|2\+|两人|兩人|2个人|2個人|2人\b/.test(p) ||
+      /1[-–~]2|二人/.test(compact)
+    )
+      return 3;
+    if (/\b2–|2-|2人/.test(p)) return 2;
     return 0;
   }
   if (pref === "small") {
-    if (/\b2–4|2-4|3–4|3-4|1–4|2–6|4 people/.test(p)) return 3;
-    if (/\b2\+|3\+|people/.test(p)) return 1;
+    if (
+      /\b2–4|2-4|3–4|3-4|1–4|2–6|4 people|2\s*[-–~至到]\s*4|3\s*[-–~至到]\s*4|1\s*[-–~至到]\s*4|2\s*[-–~至到]\s*6/.test(
+        p,
+      ) ||
+      /2[-–~至到]4|3[-–~至到]4|1[-–~至到]4|2[-–~至到]6|2至4|3至4/.test(compact)
+    )
+      return 3;
+    // Flexible group sizes that still work for a table of 3–4.
+    if (
+      /\b2\+|3\+|people|2人以上|3人以上|小组|小組|小團體|소규모/.test(p) ||
+      /2\+|3\+|3\+人|2\+人/.test(compact)
+    )
+      return 2;
+    if (/人|people|players|명|คน/.test(p)) return 1;
     return 0;
   }
   if (pref === "group") {
-    if (/\bteam|group|many|10\+|2 teams|circle|parade/.test(p)) return 3;
-    if (/\b4\+|6\+|8\+|2–10|3\+/.test(p)) return 2;
+    if (
+      /\bteam|group|many|10\+|2 teams|circle|parade|组|組|团体|團體|集体|集體/.test(p)
+    )
+      return 3;
+    if (/\b4\+|6\+|8\+|2–10|3\+|4人以上|多人/.test(p)) return 2;
+    if (/人|people|players/.test(p)) return 1;
     return 0;
   }
   return 1;
@@ -244,20 +403,25 @@ function playersMatch(game: Game, pref?: PlayerPref): number {
 
 function settingMatch(game: Game, pref?: SettingPref): number {
   if (!pref || pref === "either") return 1;
-  const outdoor = OUTDOOR_CATS.has(game.category);
+  const cat = categoryKeyOf(game);
+  const outdoor = OUTDOOR_CATS.has(cat);
   if (pref === "outdoor") return outdoor ? 3 : 0;
-  return outdoor ? 0 : INDOOR_CATS.has(game.category) ? 2 : 1;
+  return outdoor ? 0 : INDOOR_CATS.has(cat) ? 2 : 1;
 }
 
 function vibeMatch(game: Game, pref?: VibePref): number {
   if (!pref || pref === "any") return 1;
   const cats = VIBE_CATEGORIES[pref] || [];
-  if (cats.includes(game.category)) return 3;
-  // soft keyword boosts
-  const blob = `${game.name} ${game.description} ${game.tags.join(" ")}`.toLowerCase();
-  if (pref === "strategy" && /strategy|chess|capture|territory/.test(blob)) return 2;
-  if (pref === "kids" && /child|children|infant|nurtur/.test(blob)) return 2;
-  if (pref === "sport" && /kick|ball|field|court|race/.test(blob)) return 2;
+  const cat = categoryKeyOf(game);
+  if (cats.includes(cat)) return 3;
+  // soft keyword boosts (tags stay English; description may be localized)
+  const blob = `${game.name} ${game.description} ${game.tags.join(" ")} ${cat}`.toLowerCase();
+  if (pref === "strategy" && /strategy|chess|capture|territory|策略|战略/.test(blob))
+    return 2;
+  if (pref === "kids" && /child|children|infant|nurtur|儿童|孩子/.test(blob)) return 2;
+  if (pref === "sport" && /kick|ball|field|court|race|球|运动|戶外|户外/.test(blob))
+    return 2;
+  if (pref === "casual" && /social|folk|party|社交|民俗|轻松/.test(blob)) return 2;
   return 0;
 }
 
@@ -273,8 +437,10 @@ const REGION_ALIASES: Record<string, string[]> = {
 
 function regionMatch(game: Game, region?: string): number {
   if (!region || region === "any" || region === "worldwide") return 1;
-  const blob = `${game.originCountry} ${game.civilization} ${game.name} ${game.variations
-    .map((v) => `${v.name} ${v.originCountry}`)
+  // Match against English keys so localized country labels don't zero the pool.
+  const origin = originKeyOf(game);
+  const blob = `${origin} ${game.civilization} ${game.name} ${game.variations
+    .map((v) => `${v.name} ${v.originCountryKey ?? v.originCountry}`)
     .join(" ")}`.toLowerCase();
   const key = region.toLowerCase();
   const aliases = REGION_ALIASES[key];
@@ -312,26 +478,67 @@ export function scoreGame(game: Game, prefs: UserPrefs): number {
   return total;
 }
 
-export function recommendGames(games: Game[], prefs: UserPrefs, limit = 5): Game[] {
-  const ranked = [...games]
-    .map((g) => ({ g, s: scoreGame(g, prefs) }))
-    .filter((x) => x.s > 1.5)
-    .sort((a, b) => b.s - a.s || a.g.name.localeCompare(b.g.name));
+/** Progressively loosen prefs when a strict combo would return nothing. */
+function relaxedPrefPasses(prefs: UserPrefs): UserPrefs[] {
+  const passes: UserPrefs[] = [prefs];
+  if (prefs.region && prefs.region !== "any") {
+    passes.push({ ...prefs, region: "any" });
+  }
+  if (prefs.players && prefs.players !== "any") {
+    passes.push({ ...prefs, players: "any" });
+    passes.push({ ...prefs, players: "any", region: "any" });
+  }
+  if (prefs.vibe && prefs.vibe !== "any") {
+    passes.push({ ...prefs, vibe: "any" });
+    passes.push({ ...prefs, vibe: "any", players: "any", region: "any" });
+  }
+  if (prefs.setting && prefs.setting !== "either") {
+    passes.push({
+      ...prefs,
+      setting: "either",
+      vibe: prefs.vibe === "any" ? "any" : prefs.vibe,
+      players: "any",
+      region: "any",
+    });
+  }
+  // Dedupe by JSON key order of known fields
+  const seen = new Set<string>();
+  return passes.filter((p) => {
+    const key = `${p.players}|${p.setting}|${p.vibe}|${p.region}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
-  // Prefer diversity of categories in top results
-  const picked: Game[] = [];
-  const seenCats = new Set<string>();
-  for (const { g } of ranked) {
-    if (picked.length >= limit) break;
-    if (seenCats.has(g.category) && picked.length < limit - 1) continue;
-    picked.push(g);
-    seenCats.add(g.category);
-  }
-  // fill if diversity skipped too many
-  for (const { g } of ranked) {
-    if (picked.length >= limit) break;
-    if (!picked.some((p) => p.id === g.id)) picked.push(g);
-  }
+export function recommendGames(games: Game[], prefs: UserPrefs, limit = 5): Game[] {
+  const pickFrom = (threshold: number) => {
+    const ranked = [...games]
+      .map((g) => ({ g, s: scoreGame(g, prefs) }))
+      .filter((x) => x.s > threshold)
+      .sort((a, b) => b.s - a.s || a.g.name.localeCompare(b.g.name));
+
+    // Prefer diversity of English categories in top results
+    const picked: Game[] = [];
+    const seenCats = new Set<string>();
+    for (const { g } of ranked) {
+      if (picked.length >= limit) break;
+      const cat = categoryKeyOf(g);
+      if (seenCats.has(cat) && picked.length < limit - 1) continue;
+      picked.push(g);
+      seenCats.add(cat);
+    }
+    for (const { g } of ranked) {
+      if (picked.length >= limit) break;
+      if (!picked.some((p) => p.id === g.id)) picked.push(g);
+    }
+    return picked;
+  };
+
+  let picked = pickFrom(1.5);
+  // Soft retry: keep ranking but accept lower scores before giving up.
+  if (!picked.length) picked = pickFrom(0.4);
+  if (!picked.length) picked = pickFrom(0);
   return picked;
 }
 
@@ -440,7 +647,18 @@ function intent(text: string): string {
   if (/\b(requirement|need|equipment|materials|what do i need)\b/.test(t)) return "requirements";
   if (/\b(players?|how many|participants|alone|people)\b/.test(t) && /\b(need|for|ideal|many)\b/.test(t))
     return "participants";
-  if (/\b(more like|similar|another|other recommendation|else|different)\b/.test(t))
+  // Paginate the current preference pool (Guide “More recommendations” button).
+  // Avoid matching “tell me more please” — that is a follow-up, not pagination.
+  if (
+    /\b(more recommendations?|more picks?|generate more|show more)\b/.test(t) ||
+    (/^more please\.?$/.test(t) && !/\btell me more\b/.test(t))
+  )
+    return "more_recs";
+  if (
+    /\b(more like|similar games?|another game|other recommendation|recommend (something )?else|different game)\b/.test(
+      t,
+    )
+  )
     return "more_like";
   if (/\b(recommend|suggest|what should|help me (find|choose)|looking for)\b/.test(t))
     return "recommend";
@@ -448,7 +666,12 @@ function intent(text: string): string {
   return "general";
 }
 
-function formatRecIntro(prefs: UserPrefs, games: Game[], t: ChatTranslate): string {
+function formatRecIntro(
+  prefs: UserPrefs,
+  games: Game[],
+  t: ChatTranslate,
+  opts?: { more?: boolean; moreAvailable?: boolean },
+): string {
   const bits: string[] = [];
   if (prefs.players && prefs.players !== "any") {
     bits.push(t("chat.rec.forPlayers", { players: labelPlayers(prefs.players, t) }));
@@ -466,7 +689,13 @@ function formatRecIntro(prefs: UserPrefs, games: Game[], t: ChatTranslate): stri
   if (!games.length) {
     return t("chat.rec.none", { prefLine });
   }
-  return t("chat.rec.intro", { n: games.length, prefLine });
+  const intro = opts?.more
+    ? t("chat.rec.moreIntro", { n: games.length, prefLine })
+    : t("chat.rec.intro", { n: games.length, prefLine });
+  if (opts?.moreAvailable === false) {
+    return `${intro}\n\n${t("chat.rec.exhausted")}`;
+  }
+  return intro;
 }
 
 function labelPlayers(p: PlayerPref, t: ChatTranslate) {
@@ -486,9 +715,19 @@ function labelPlayers(p: PlayerPref, t: ChatTranslate) {
 
 function answerHowToPlay(game: Game, t: ChatTranslate): string {
   const steps = game.howToPlay.map((s, i) => `${i + 1}. ${s}`).join("\n");
+  const howToWin = (game.howToWin?.length ? game.howToWin : ["See the how-to-play steps for the win condition."])
+    .map((s) => `• ${s}`)
+    .join("\n");
+  const rules = (game.rulesNotToBreak?.length
+    ? game.rulesNotToBreak
+    : ["Follow turn order and stop if anyone risks injury."])
+    .map((s) => `• ${s}`)
+    .join("\n");
   return t("chat.answer.howToPlay", {
     name: game.name,
     steps,
+    howToWin,
+    rules,
     participants: game.idealParticipants,
   });
 }
@@ -538,15 +777,43 @@ function answerRequirements(game: Game, t: ChatTranslate): string {
   });
 }
 
-function followupQuickReplies(t: ChatTranslate, withVariations = false) {
-  const q = [
+function followupQuickReplies(
+  t: ChatTranslate,
+  opts?: { withVariations?: boolean; moreAvailable?: boolean },
+) {
+  const q: string[] = [];
+  // Lead with pagination so “generate more” is one tap after each batch of 3.
+  if (opts?.moreAvailable !== false) q.push(t("chat.qr.moreRecs"));
+  q.push(
     t("chat.qr.howToPlayFirst"),
     t("chat.qr.whereBuyIt"),
     t("chat.qr.tellHistory"),
-  ];
-  if (withVariations) q.push(t("chat.qr.showVariations"));
-  q.push(t("chat.qr.moreLikeThese"), t("chat.qr.startOver"));
+  );
+  if (opts?.withVariations) q.push(t("chat.qr.showVariations"));
+  q.push(t("chat.qr.startOver"));
   return q;
+}
+
+function nextRecommendationBatch(
+  games: Game[],
+  prefs: UserPrefs,
+  seenIds: Iterable<string>,
+): { recs: Game[]; moreAvailable: boolean } {
+  const exclude = new Set(seenIds);
+  let recs: Game[] = [];
+  let workingPrefs = prefs;
+  for (const pass of relaxedPrefPasses(prefs)) {
+    recs = recommendExcluding(games, pass, exclude);
+    if (recs.length) {
+      workingPrefs = pass;
+      break;
+    }
+  }
+  const seenAfter = mergeSeen([...exclude], recs);
+  const moreAvailable = relaxedPrefPasses(workingPrefs).some(
+    (pass) => recommendExcluding(games, pass, seenAfter, 1).length > 0,
+  );
+  return { recs, moreAvailable };
 }
 
 function resolveFocusGame(
@@ -652,29 +919,41 @@ export function handleUserMessage(
       // maybe they jumped ahead with a full ask
       if (intent(text) === "recommend" || parseVibe(text, t) || parseSetting(text, t)) {
         const prefs = applyFreeformPrefs(text, state.prefs, t);
-        const recs = recommendGames(games, prefs);
+        const { recs, moreAvailable } = nextRecommendationBatch(
+          games,
+          prefs,
+          state.seenRecommendedIds,
+        );
+        const seenRecommendedIds = mergeSeen(state.seenRecommendedIds, recs);
         return {
           state: {
             ...state,
             phase: "followup",
             prefs,
             lastRecommendations: recs,
+            seenRecommendedIds,
             focusGameId: recs[0]?.id,
+            chatNudge: 0,
           },
           replies: [
-            assistant(formatRecIntro(prefs, recs, t), {
+            assistant(formatRecIntro(prefs, recs, t, { moreAvailable }), {
               recommendations: recs,
-              quickReplies: followupQuickReplies(t),
+              quickReplies: followupQuickReplies(t, { moreAvailable }),
             }),
           ],
         };
       }
+      const nudge = state.chatNudge ?? 0;
       return {
-        state: { ...state, phase: "ask_players" },
+        state: { ...state, phase: "ask_players", chatNudge: nudge + 1 },
         replies: [
-          assistant(t("chat.hint.players"), {
-            quickReplies: playerQuickReplies(t),
-          }),
+          chattyGuide(
+            t,
+            text,
+            "chat.hint.players",
+            playerQuickReplies(t),
+            nudge,
+          ),
         ],
       };
     }
@@ -683,6 +962,7 @@ export function handleUserMessage(
         ...state,
         phase: "ask_setting",
         prefs: { ...state.prefs, players },
+        chatNudge: 0,
       },
       replies: [
         assistant(t("chat.askSetting"), {
@@ -695,12 +975,17 @@ export function handleUserMessage(
   if (state.phase === "ask_setting") {
     const setting = parseSetting(text, t);
     if (!setting) {
+      const nudge = state.chatNudge ?? 0;
       return {
-        state,
+        state: { ...state, chatNudge: nudge + 1 },
         replies: [
-          assistant(t("chat.hint.setting"), {
-            quickReplies: settingQuickReplies(t),
-          }),
+          chattyGuide(
+            t,
+            text,
+            "chat.hint.setting",
+            settingQuickReplies(t),
+            nudge,
+          ),
         ],
       };
     }
@@ -709,6 +994,7 @@ export function handleUserMessage(
         ...state,
         phase: "ask_vibe",
         prefs: { ...state.prefs, setting },
+        chatNudge: 0,
       },
       replies: [
         assistant(t("chat.askVibe"), {
@@ -721,12 +1007,17 @@ export function handleUserMessage(
   if (state.phase === "ask_vibe") {
     const vibe = parseVibe(text, t) || (normalize(text).includes("surprise") ? "any" : null);
     if (!vibe) {
+      const nudge = state.chatNudge ?? 0;
       return {
-        state,
+        state: { ...state, chatNudge: nudge + 1 },
         replies: [
-          assistant(t("chat.hint.vibe"), {
-            quickReplies: vibeQuickReplies(t, false),
-          }),
+          chattyGuide(
+            t,
+            text,
+            "chat.hint.vibe",
+            vibeQuickReplies(t, false),
+            nudge,
+          ),
         ],
       };
     }
@@ -735,6 +1026,7 @@ export function handleUserMessage(
         ...state,
         phase: "ask_region",
         prefs: { ...state.prefs, vibe },
+        chatNudge: 0,
       },
       replies: [
         assistant(t("chat.askRegion"), {
@@ -754,19 +1046,28 @@ export function handleUserMessage(
   if (state.phase === "ask_region") {
     const region = parseRegion(text, t) || normalize(text) || "any";
     const prefs = { ...state.prefs, region };
-    const recs = recommendGames(games, prefs);
+    const { recs, moreAvailable } = nextRecommendationBatch(
+      games,
+      prefs,
+      state.seenRecommendedIds,
+    );
+    const seenRecommendedIds = mergeSeen(state.seenRecommendedIds, recs);
     return {
       state: {
         ...state,
         phase: "followup",
         prefs,
         lastRecommendations: recs,
+        seenRecommendedIds,
         focusGameId: recs[0]?.id,
       },
       replies: [
-        assistant(formatRecIntro(prefs, recs, t), {
+        assistant(formatRecIntro(prefs, recs, t, { moreAvailable }), {
           recommendations: recs,
-          quickReplies: followupQuickReplies(t, true),
+          quickReplies: followupQuickReplies(t, {
+            withVariations: true,
+            moreAvailable,
+          }),
         }),
       ],
     };
@@ -945,43 +1246,65 @@ export function handleUserMessage(
     };
   }
 
-  if (i === "more_like" || i === "recommend") {
+  if (i === "more_recs" || i === "more_like" || i === "recommend") {
     const seed = focus || state.lastRecommendations[0];
     let nextPrefs = { ...prefs };
+    // “More like these” may tilt vibe/setting from a seed title.
+    // “More recommendations” keeps the interview prefs and only pages forward.
     if (seed && i === "more_like") {
       nextPrefs = {
         ...nextPrefs,
         vibe: nextPrefs.vibe || guessVibeFromGame(seed),
-        setting: nextPrefs.setting || (OUTDOOR_CATS.has(seed.category) ? "outdoor" : "indoor"),
-        region: nextPrefs.region || seed.originCountry,
+        setting:
+          nextPrefs.setting ||
+          (OUTDOOR_CATS.has(categoryKeyOf(seed)) ? "outdoor" : "indoor"),
       };
     }
-    const exclude = new Set(state.lastRecommendations.map((g) => g.id));
-    let recs = recommendGames(games, nextPrefs, 8).filter((g) => !exclude.has(g.id));
-    if (seed) {
-      recs = recs.filter((g) => g.id !== seed.id);
-    }
-    recs = recs.slice(0, 5);
+
+    const exclude = new Set(state.seenRecommendedIds);
+    for (const g of state.lastRecommendations) exclude.add(g.id);
+    if (seed && i === "more_like") exclude.add(seed.id);
+
+    const { recs, moreAvailable } = nextRecommendationBatch(
+      games,
+      nextPrefs,
+      exclude,
+    );
+
     if (!recs.length) {
-      recs = recommendGames(games, { ...nextPrefs, region: "any" }, 5);
+      return {
+        state: { ...state, prefs: nextPrefs, phase: "followup" },
+        replies: [
+          assistant(t("chat.rec.exhausted"), {
+            quickReplies: [t("chat.qr.startOver")],
+          }),
+        ],
+      };
     }
+
+    const seenRecommendedIds = mergeSeen([...exclude], recs);
+    const isMore = i === "more_recs" || i === "more_like";
+
     return {
       state: {
         ...state,
         prefs: nextPrefs,
         phase: "followup",
         lastRecommendations: recs,
+        seenRecommendedIds,
         focusGameId: recs[0]?.id,
       },
       replies: [
-        assistant(formatRecIntro(nextPrefs, recs, t), {
-          recommendations: recs,
-          quickReplies: [
-            t("chat.qr.howToPlayFirst"),
-            t("chat.qr.whereBuyIt"),
-            t("chat.qr.startOver"),
-          ],
-        }),
+        assistant(
+          formatRecIntro(nextPrefs, recs, t, {
+            more: isMore,
+            moreAvailable,
+          }),
+          {
+            recommendations: recs,
+            quickReplies: followupQuickReplies(t, { moreAvailable }),
+          },
+        ),
       ],
     };
   }
@@ -1007,6 +1330,23 @@ export function handleUserMessage(
     };
   }
 
+  // Keep chatting in follow-up when the user is just being social
+  if (i === "general" && (isGreeting(text) || isSmallTalk(text))) {
+    return {
+      state: { ...state, prefs, phase: "followup" },
+      replies: [
+        assistant(t("chat.followup.chatty"), {
+          quickReplies: [
+            t("chat.qr.startOver"),
+            t("chat.qr.recommendSomething"),
+            t("chat.qr.howToPlayChess"),
+            t("chat.qr.buyMancala"),
+          ],
+        }),
+      ],
+    };
+  }
+
   // Fallback guidance within scope
   return {
     state: { ...state, prefs, phase: "followup" },
@@ -1024,15 +1364,152 @@ export function handleUserMessage(
 }
 
 function guessVibeFromGame(game: Game): VibePref {
+  const cat = categoryKeyOf(game);
   for (const [vibe, cats] of Object.entries(VIBE_CATEGORIES) as [
     Exclude<VibePref, "any">,
     string[],
   ][]) {
-    if (cats.includes(game.category)) return vibe;
+    if (cats.includes(cat)) return vibe;
   }
   return "any";
 }
 
 export function phaseAfterWelcome(): ChatPhase {
   return "ask_players";
+}
+
+function gameAssistantQuickReplies(t: ChatTranslate, game: Game) {
+  const q = [
+    t("chat.qr.howToPlay"),
+    t("chat.qr.tellHistory"),
+    t("chat.qr.requirements"),
+    t("chat.qr.whereBuy"),
+  ];
+  if (game.variations.length) q.splice(2, 0, t("chat.qr.variations"));
+  return q;
+}
+
+/** Welcome bubble for the per-game assistant on detail pages. */
+export function gameAssistantWelcome(game: Game, t: ChatTranslate): ChatMessage {
+  return assistant(t("detail.assistant.welcome", { name: game.name }), {
+    quickReplies: gameAssistantQuickReplies(t, game),
+  });
+}
+
+/**
+ * Answer questions scoped to one catalog game on its detail page.
+ * Gently refuses off-topic asks and redirects catalog-wide browsing to Guide.
+ */
+export function handleGameAssistantMessage(
+  game: Game,
+  rawText: string,
+  t: ChatTranslate,
+): ChatMessage[] {
+  const text = rawText.trim();
+  if (!text) {
+    return [
+      assistant(t("detail.assistant.hint", { name: game.name }), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+
+  if (isOffTopic(text) || (!isCatalogScopedAsk(text) && text.length > 12)) {
+    return [
+      assistant(t("detail.assistant.outOfScope", { name: game.name }), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+
+  const i = intent(text);
+
+  // Catalog-wide discovery belongs in Atlas Guide; keep this panel on `game`.
+  if (i === "recommend" || i === "more_recs" || i === "more_like") {
+    // “Tell me more” about this entry should not bounce to Guide.
+    const wantsOther =
+      i === "recommend" ||
+      i === "more_recs" ||
+      /\b(similar|another|other|else|different)\b/i.test(text);
+    if (wantsOther && !/\btell me more\b/i.test(text)) {
+      return [
+        assistant(t("detail.assistant.useGuide", { name: game.name }), {
+          quickReplies: gameAssistantQuickReplies(t, game),
+        }),
+      ];
+    }
+  }
+
+  // Named a well-known different title? Keep this page focused on `game`.
+  const otherTitle = text.match(
+    /\b(chess|go|weiqi|mancala|xiangqi|mahjong|backgammon|ludo|pachisi|shogi|janggi)\b/i,
+  )?.[1];
+  if (otherTitle) {
+    const other = normalize(otherTitle);
+    const self = normalize(game.name);
+    const varHit = game.variations.some((v) => normalize(v.name).includes(other));
+    if (!self.includes(other) && !varHit) {
+      return [
+        assistant(t("detail.assistant.otherGame", { name: game.name }), {
+          quickReplies: gameAssistantQuickReplies(t, game),
+        }),
+      ];
+    }
+  }
+
+  if (i === "how_to_play") {
+    return [
+      assistant(answerHowToPlay(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "purchase") {
+    return [
+      assistant(answerPurchase(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "about") {
+    return [
+      assistant(answerAbout(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "variations") {
+    return [
+      assistant(answerVariations(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "requirements" || i === "participants") {
+    const body =
+      i === "participants"
+        ? t("chat.answer.participants", {
+            name: game.name,
+            participants: game.idealParticipants,
+          })
+        : answerRequirements(game, t);
+    return [
+      assistant(body, {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+
+  // Default: short about + invite to ask about rules / buy / variations
+  return [
+    assistant(
+      t("detail.assistant.default", {
+        about: answerAbout(game, t),
+        name: game.name,
+      }),
+      {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      },
+    ),
+  ];
 }

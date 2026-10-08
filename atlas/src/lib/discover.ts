@@ -56,8 +56,8 @@ const PURCHASE = [
   },
   {
     platform: "Etsy",
-    label: "Folk Craft Toy (Etsy)",
-    url: "https://www.etsy.com/market/folk_toy",
+    label: "Bilboquet Cup and Ball (Etsy)",
+    url: "https://www.etsy.com/listing/4478059814/bilboquet-cup-and-ball-game",
   },
   {
     platform: "Amazon UK",
@@ -382,6 +382,12 @@ function draftDiscovery(
         : seed.year;
 
   const slug = `${slugify(name)}-${String(idNum).padStart(4, "0")}`;
+  const winHints = seed.howToPlay.filter((s) =>
+    /\b(win|wins|score|first to|highest|majority)\b/i.test(s),
+  );
+  const ruleHints = seed.howToPlay.filter((s) =>
+    /\b(never|do not|don't|avoid|no |stop|must not|forbid)\b/i.test(s),
+  );
   return {
     id: `game-${String(idNum).padStart(4, "0")}`,
     slug,
@@ -391,8 +397,19 @@ function draftDiscovery(
     creationYear: year,
     category: seed.category,
     images: draftImages(name, seed.category, country, slug, salt),
-    description: `${seed.description} Atlas Guide drafted this discovery to match your preference profile (${prefs.vibe}, ${prefs.setting}, ${prefs.players}).`,
+    description: `${seed.description} Surprise me drafted this discovery to match your preference profile (${prefs.vibe}, ${prefs.setting}, ${prefs.players}).`,
     howToPlay: seed.howToPlay,
+    howToWin: winHints.length
+      ? winHints.slice(0, 3)
+      : [
+          "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps.",
+        ],
+    rulesNotToBreak: ruleHints.length
+      ? ruleHints.slice(0, 4)
+      : [
+          "Follow turn order and any house rules everyone agreed before play.",
+          "Stop immediately if equipment breaks or anyone risks injury.",
+        ],
     purchaseLinks: [...PURCHASE],
     requirements: seed.requirements,
     idealParticipants: participants,
