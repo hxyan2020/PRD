@@ -1,17 +1,18 @@
 :root {
-  --ink: #142033;
-  --ink-soft: #3a4a63;
-  --mist: #e7eef4;
-  --paper: #f4f7fa;
-  --teal: #0f5c56;
-  --teal-deep: #083d39;
-  --copper: #c17a2f;
-  --copper-soft: #e8b86a;
-  --line: rgba(20, 32, 51, 0.12);
-  --glow: rgba(15, 92, 86, 0.14);
-  --radius: 2px;
+  /* Base tokens — refined further in theme-ritual.css */
+  --ink: #f2e8d8;
+  --ink-soft: #b5a48f;
+  --mist: #241e19;
+  --paper: #100e0c;
+  --teal: #7eb8b0;
+  --teal-deep: #a8d4ce;
+  --copper: #e0a84a;
+  --copper-soft: #f3d08a;
+  --line: rgba(242, 232, 216, 0.14);
+  --glow: rgba(224, 168, 74, 0.16);
+  --radius: 0;
   --font-display: "Fraunces", "Times New Roman", serif;
-  --font-body: "Outfit", sans-serif;
+  --font-body: "Figtree", "Segoe UI", sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -33,6 +34,7 @@ body {
   font-weight: 400;
   line-height: 1.55;
   overflow-x: hidden;
+  color-scheme: dark;
 }
 
 img {
