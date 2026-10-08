@@ -419,12 +419,12 @@
       const cardsHtml = shown
         .map((c, i) => {
           const p = G().TAROT_POSITIONS[i];
-          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(p.label)}</div>${c.reversed ? '<div class="tarot-card__rx">Reversed</div>' : ""}</div>`;
+          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(tarotPosLabel(p))}</div>${c.reversed ? `<div class="tarot-card__rx">${escapeHTML(ti("studio.tarot.reversed"))}</div>` : ""}</div>`;
         })
         .join("");
       body.innerHTML = `
-        <h3 class="studio__heading">Reveal: ${escapeHTML(pos.label)}</h3>
-        <p class="studio__copy">${escapeHTML(pos.hint)}</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.reveal"))}: ${escapeHTML(tarotPosLabel(pos))}</h3>
+        <p class="studio__copy">${escapeHTML(tarotPosHint(pos))}</p>
         <div class="tarot-row">${cardsHtml}<div class="tarot-card is-back" aria-hidden="true"></div></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--primary" data-action="reveal-one">${escapeHTML(ti("studio.flipCard", { n: state.revealIndex + 1 }))}</button>
@@ -518,10 +518,10 @@
       body.innerHTML = `
         <div class="quiz-bar"><span style="width:${progress}%"></span></div>
         <p class="studio__eyebrow">${escapeHTML(q.dim)} · ${state.quizIndex + 1}/${G().MBTI_QUESTIONS.length}</p>
-        <h3 class="studio__heading">${escapeHTML(q.text)}</h3>
+        <h3 class="studio__heading">${escapeHTML(mbtiQuestionText(q))}</h3>
         <div class="choice-grid">
-          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.a.side}">${escapeHTML(q.a.label)}</button>
-          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.b.side}">${escapeHTML(q.b.label)}</button>
+          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.a.side}">${escapeHTML(mbtiChoiceLabel(q.a))}</button>
+          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.b.side}">${escapeHTML(mbtiChoiceLabel(q.b))}</button>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -638,6 +638,29 @@
   function tarotCardLabel(c) {
     if (!c) return "";
     return localePrefersZh() ? c.nameZh || c.name : c.name || c.nameZh;
+  }
+
+  function tarotPosLabel(pos) {
+    if (!pos) return "";
+    return monoText(pos.label || "");
+  }
+
+  function tarotPosHint(pos) {
+    if (!pos) return "";
+    if (localePrefersZh() && pos.hintZh) return pos.hintZh;
+    return pos.hint || "";
+  }
+
+  function mbtiQuestionText(q) {
+    if (!q) return "";
+    if (localePrefersZh() && q.textZh) return q.textZh;
+    return q.text || "";
+  }
+
+  function mbtiChoiceLabel(choice) {
+    if (!choice) return "";
+    if (localePrefersZh() && choice.labelZh) return choice.labelZh;
+    return choice.label || "";
   }
 
   function readingBlock(titleKey, fallback, bodyHtml) {
@@ -1360,6 +1383,30 @@
           window.FatumPlay.showToast(ti("play.refreshToast"));
         }
       });
+
+      // Auto-rotate recommended rites on the home page every few seconds.
+      let autoRotateTimer = null;
+      const AUTO_ROTATE_MS = 3000;
+      function shouldAutoRotate() {
+        if (document.hidden) return false;
+        if (document.body.classList.contains("studio-open")) return false;
+        const page = document.body.dataset.page || window.FatumRouter?.getPage?.();
+        return page === "home" || page === "play";
+      }
+      function tickAutoRotate() {
+        if (!shouldAutoRotate()) return;
+        renderFeatured({ forceRotate: true });
+      }
+      function startAutoRotate() {
+        if (autoRotateTimer) clearInterval(autoRotateTimer);
+        autoRotateTimer = setInterval(tickAutoRotate, AUTO_ROTATE_MS);
+      }
+      startAutoRotate();
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && shouldAutoRotate()) startAutoRotate();
+      });
+      document.addEventListener("fatum:route", () => startAutoRotate());
+      window.FatumRouter?.onChange?.(() => startAutoRotate());
 
       featuredEl.addEventListener("keydown", (e) => {
         const card = e.target.closest(".feature-card--quest");
