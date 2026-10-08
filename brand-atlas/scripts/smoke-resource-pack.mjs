@@ -55,15 +55,25 @@ const parsed = await wiki({
 const wt = parsed.parse.wikitext["*"];
 const links = [...wt.matchAll(/\[\[([^\]|#]+)(?:\|[^\]]+)?\]\]/g)].map((m) => m[1]);
 const skip =
-  /^(list of|category:|file:|china|japan|state-owned|administration|commission|automotive industry)/i;
+  /^(list of|category:|file:|china|japan|state-owned|administration|commission|civil service|automotive industry|ministry of|government of)/i;
+function covered(name) {
+  const lower = name.toLowerCase();
+  const slug = slugify(name);
+  if (existing.has(lower) || existing.has(slug)) return true;
+  for (const ex of existing) {
+    if (ex.length < 3) continue;
+    if (lower.startsWith(`${ex} `) || lower.startsWith(`${ex}-`)) return true;
+    if (ex.startsWith(`${lower} `) || ex.startsWith(`${lower}-`)) return true;
+  }
+  return false;
+}
 const brands = [];
 const seen = new Set();
 for (const raw of links) {
   let name = raw.replace(/\s+\((automobile|marque|automobiles|company)\)$/i, "").trim();
   if (!name || skip.test(name) || name.length > 48) continue;
   const key = name.toLowerCase();
-  const slug = slugify(name);
-  if (seen.has(key) || existing.has(key) || existing.has(slug)) continue;
+  if (seen.has(key) || covered(name)) continue;
   seen.add(key);
   brands.push(name);
   if (brands.length >= 12) break;
