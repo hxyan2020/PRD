@@ -349,10 +349,13 @@ select {
   inset: 0;
   background: linear-gradient(180deg, transparent 55%, rgba(7, 19, 31, 0.28));
   pointer-events: none;
+  z-index: 1;
 }
 
 .feature-card__cover__img,
-.feature-card__cover img {
+.feature-card__cover img,
+.feature-card__cover__photo,
+.feature-card__cover__art {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -361,10 +364,22 @@ select {
   transition: transform 0.45s var(--ease);
 }
 
+.feature-card__cover--hybrid {
+  display: grid;
+}
+
+.feature-card__cover--hybrid > * {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+}
+
 .feature-card:hover .feature-card__cover__img,
 .feature-card:hover .feature-card__cover img,
+.feature-card:hover .feature-card__cover__photo,
 .feature-card:focus-visible .feature-card__cover__img,
-.feature-card:focus-visible .feature-card__cover img {
+.feature-card:focus-visible .feature-card__cover img,
+.feature-card:focus-visible .feature-card__cover__photo {
   transform: scale(1.06);
 }
 
@@ -2131,7 +2146,9 @@ body.studio-open {
 }
 
 .method__cover__img,
-.method__cover img {
+.method__cover img,
+.method__cover__photo,
+.method__cover__art {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2139,11 +2156,33 @@ body.studio-open {
   transition: transform 0.55s var(--ease);
 }
 
+.method__cover--hybrid {
+  display: grid;
+}
+
+.method__cover--hybrid > * {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+}
+
+.method__cover__photo {
+  transform: scale(1.06);
+  filter: saturate(0.92) contrast(1.05);
+}
+
+.method__cover__art {
+  object-fit: cover;
+  mix-blend-mode: normal;
+}
+
 .method:hover .method__cover__img,
 .method:hover .method__cover img,
+.method:hover .method__cover__photo,
 .method:focus-within .method__cover__img,
-.method:focus-within .method__cover img {
-  transform: scale(1.04);
+.method:focus-within .method__cover img,
+.method:focus-within .method__cover__photo {
+  transform: scale(1.08);
 }
 
 .method__content {
@@ -2311,11 +2350,23 @@ body.studio-open {
 }
 
 .oracle__cover__img,
-.oracle__cover img {
+.oracle__cover img,
+.oracle__cover__photo,
+.oracle__cover__art {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.oracle__cover--hybrid {
+  display: grid;
+}
+
+.oracle__cover--hybrid > * {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
 }
 
 .oracle__result .method__name {
