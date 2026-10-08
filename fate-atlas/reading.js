@@ -88,16 +88,7 @@
     document.body.classList.add("studio-open");
     studio.setAttribute("aria-hidden", "false");
     window.FatumPlay?.setQuestProgress?.(0);
-    window.FatumPlay?.showToast?.(
-      (window.FatumI18n
-        ? window.FatumI18n.t("toast.questStarted", {
-            name: window.FatumMethodText
-              ? window.FatumMethodText.localize(method).name
-              : method.name,
-          })
-        : `Quest started · ${method.name}`),
-      { ms: window.matchMedia("(max-width: 720px)").matches ? 1200 : 1800 }
-    );
+    // Studio open is enough feedback; toast sits over the sheet on phones and short landscape.
     render();
     studio.querySelector(".studio__close")?.focus();
   }
