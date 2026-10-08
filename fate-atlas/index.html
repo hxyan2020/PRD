@@ -9,14 +9,15 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/favicon-16.png" />
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
-  <meta name="theme-color" content="#0f282c" />
+  <meta name="theme-color" content="#100e0c" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Syne:wght@600;700;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=20261008j" />
+  <link rel="stylesheet" href="theme-ritual.css?v=20261008j" />
 </head>
 <body data-page="home">
-  <a class="skip-link" href="#/play" data-nav="play" data-i18n="skip">Skip to play</a>
+  <a class="skip-link" href="#/home?focus=play" data-nav="home" data-scroll="play" data-i18n="skip">Skip to rites</a>
 
   <div class="hud" id="player-hud" data-i18n-aria="hud.ritesTitle" aria-label="Player progress">
     <a class="hud__brand" href="#/home" data-nav="home" aria-label="Fatum Atlas">
@@ -31,7 +32,6 @@
 
     <nav class="site-nav" id="site-nav" aria-label="Primary">
       <a class="site-nav__link" href="#/home" data-nav="home" data-i18n="nav.home">Home</a>
-      <a class="site-nav__link" href="#/play" data-nav="play" data-i18n="nav.play">Play</a>
       <a class="site-nav__link" href="#/atlas" data-nav="atlas" data-i18n="nav.atlas">Atlas</a>
       <a class="site-nav__link" href="#/journal" data-nav="journal" data-i18n="nav.journal">Journal</a>
       <a class="site-nav__link" href="#/about" data-nav="about" data-i18n="nav.about">About</a>
@@ -42,20 +42,36 @@
       <span class="hud__pill hud__pill--seal" data-i18n-title="hud.sealsTitle" title="Saved readings"><em id="hud-seals">0</em> <span data-i18n="hud.seals">seals</span></span>
     </div>
     <div class="hud__aside">
-      <label class="hud__lang" for="lang-select">
-        <span class="visually-hidden" data-i18n="hud.lang">Language</span>
-        <select id="lang-select" aria-label="Language"></select>
-      </label>
+      <div class="hud__lang lang-picker" id="lang-picker">
+        <span class="visually-hidden" data-i18n="hud.lang" id="lang-picker-legend">Language</span>
+        <button type="button" class="lang-picker__btn" id="lang-picker-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="lang-picker-menu">
+          <img class="lang-picker__flag" id="lang-picker-flag" src="assets/flags/gb.png" srcset="assets/flags/gb-2x.png 2x" width="24" height="18" alt="" decoding="async" />
+          <span class="lang-picker__label" id="lang-picker-label">English</span>
+          <span class="lang-picker__chevron" aria-hidden="true">▾</span>
+        </button>
+        <ul class="lang-picker__menu" id="lang-picker-menu" role="listbox" aria-labelledby="lang-picker-legend" hidden></ul>
+        <select id="lang-select" class="visually-hidden" tabindex="-1" aria-hidden="true"></select>
+      </div>
     </div>
   </div>
   <div class="nav-backdrop" id="nav-backdrop" hidden></div>
 
   <main>
-    <!-- HOME -->
+    <!-- HOME (hero + recommended rites) -->
     <div class="page page--home" data-page="home" id="page-home">
       <header class="hero" id="top">
-        <div class="hero__sky" aria-hidden="true"></div>
-        <div class="hero__map" aria-hidden="true"></div>
+        <div class="hero__media" aria-hidden="true">
+          <img
+            class="hero__banner"
+            src="assets/brand/hero-banner.jpg"
+            alt=""
+            width="1200"
+            height="685"
+            decoding="async"
+            fetchpriority="high"
+          />
+        </div>
+        <div class="hero__scrim" aria-hidden="true"></div>
         <div class="hero__content">
           <div class="brand-mark" aria-hidden="true">
             <img class="brand-mark__logo" src="assets/brand/logo-light.png" width="280" height="154" alt="" decoding="async" />
@@ -64,47 +80,22 @@
           <p class="hero__lead" data-i18n="hero.lead">Play the world’s fate rites.</p>
           <p class="hero__sub" data-i18n="hero.sub">Pick a method → follow the steps → reveal your reading. Optional: collect it as a seal in your journal.</p>
           <div class="hero__cta">
-            <a class="btn btn--primary" href="#/play" data-nav="play" data-i18n="hero.start">Start playing</a>
+            <a class="btn btn--primary" href="#/home?focus=play" data-nav="home" data-scroll="play" data-i18n="hero.start">Start playing</a>
             <button type="button" class="btn btn--ghost" id="hero-surprise" data-i18n="hero.surprise">Random rite</button>
           </div>
         </div>
       </header>
 
-      <section class="home-paths section" aria-labelledby="paths-title">
-        <p class="section__eyebrow" data-i18n="paths.eyebrow">Choose a path</p>
-        <h2 class="section__title" id="paths-title" data-i18n="paths.title">Where next?</h2>
-        <div class="path-grid">
-          <a class="path-card" href="#/play" data-nav="play">
-            <span class="path-card__glyph" aria-hidden="true">▶</span>
-            <h3 data-i18n="nav.play">Play</h3>
-            <p data-i18n="paths.play">Guided quests and a quick match picker.</p>
-          </a>
-          <a class="path-card" href="#/atlas" data-nav="atlas">
-            <span class="path-card__glyph" aria-hidden="true">◎</span>
-            <h3 data-i18n="nav.atlas">Atlas</h3>
-            <p data-i18n="paths.atlas">Browse all 187 rites by continent and type.</p>
-          </a>
-          <a class="path-card" href="#/journal" data-nav="journal">
-            <span class="path-card__glyph" aria-hidden="true">◈</span>
-            <h3 data-i18n="nav.journal">Journal</h3>
-            <p data-i18n="paths.journal">Your collected seals, titles, and timestamps.</p>
-          </a>
-          <a class="path-card" href="#/about" data-nav="about">
-            <span class="path-card__glyph" aria-hidden="true">?</span>
-            <h3 data-i18n="nav.about">About</h3>
-            <p data-i18n="paths.about">How it works, fair play, and sources.</p>
-          </a>
-        </div>
-      </section>
-    </div>
-
-    <!-- PLAY -->
-    <div class="page page--play" data-page="play" id="page-play" hidden>
       <section class="featured" id="play" aria-labelledby="featured-title">
         <div class="section">
-          <p class="section__eyebrow" data-i18n="play.eyebrow">Starter quests</p>
-          <h2 class="section__title" id="featured-title" data-i18n="play.title">Play these first</h2>
-          <p class="section__copy" data-i18n="play.copy">Three guided games with clear rules. Tap a card to begin.</p>
+          <div class="featured__head">
+            <div>
+              <p class="section__eyebrow" data-i18n="play.eyebrow">Recommended</p>
+              <h2 class="section__title" id="featured-title" data-i18n="play.title">Rites for you</h2>
+              <p class="section__copy" data-i18n="play.copy">A rotating trio from the atlas. Come back later — or sign in again — for a fresh set.</p>
+            </div>
+            <button type="button" class="btn btn--play-secondary" id="play-recs-refresh" data-i18n="play.refresh">New picks</button>
+          </div>
           <div class="feature-grid" id="featured-guides"></div>
         </div>
       </section>
@@ -113,7 +104,7 @@
         <div class="section">
           <p class="section__eyebrow" data-i18n="begin.eyebrow">Quick match</p>
           <h2 class="section__title" id="begin-title" data-i18n="begin.title">Or jump straight in</h2>
-          <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list, or roll a surprise.</p>
+          <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list to begin.</p>
           <div class="begin__row">
             <div class="field begin__picker">
               <label id="method-picker-label" for="method-picker-trigger" data-i18n="begin.choose">Choose a rite</label>
@@ -136,16 +127,26 @@
             </div>
           </div>
           <div class="quick-actions">
-            <button type="button" class="btn btn--play-secondary" id="draw-btn"><span aria-hidden="true">🎲 </span><span data-i18n="begin.surprise">Surprise me</span></button>
             <a class="btn btn--ghost" href="#/atlas" data-nav="atlas" data-i18n="paths.toAtlas">Browse full atlas</a>
           </div>
-          <div class="oracle__result" id="oracle-result" hidden></div>
         </div>
       </section>
     </div>
 
     <!-- ATLAS -->
     <div class="page page--atlas" data-page="atlas" id="page-atlas" hidden>
+      <section class="oracle recommend" id="recommend" aria-labelledby="recommend-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="recommend.eyebrow">AI recommendation</p>
+          <h2 class="section__title" id="recommend-title" data-i18n="recommend.title">Not sure where to start?</h2>
+          <p class="section__copy" data-i18n="recommend.copy">Draw a rite from the full atlas — a chance pick for exploration, not a prediction.</p>
+          <div class="oracle__panel">
+            <button type="button" class="btn btn--primary" id="draw-btn"><span aria-hidden="true">✦ </span><span data-i18n="recommend.draw">Recommend a rite</span></button>
+            <div class="oracle__result" id="oracle-result" hidden></div>
+          </div>
+        </div>
+      </section>
+
       <section class="section regions-wrap" id="regions" aria-labelledby="regions-title">
         <p class="section__eyebrow" data-i18n="regions.eyebrow">World map</p>
         <h2 class="section__title" id="regions-title" data-i18n="regions.title">Browse by continent</h2>
@@ -185,7 +186,7 @@
 
           <div class="results-meta">
             <span id="results-count">Showing 0 rites</span>
-            <span class="results-meta__hint" data-i18n="catalog.hint">Each card shows science status</span>
+            <span class="results-meta__hint" data-i18n="catalog.hint">Tags show science status</span>
           </div>
 
           <ul class="method-list" id="method-list"></ul>
@@ -209,7 +210,7 @@
           </div>
           <div id="journal-list" class="journal-list"></div>
           <p class="page-links">
-            <a href="#/play" data-nav="play" data-i18n="paths.toPlay">Play another rite</a>
+            <a href="#/home?focus=play" data-nav="home" data-scroll="play" data-i18n="paths.toPlay">Play another rite</a>
           </p>
         </div>
       </section>
@@ -250,7 +251,7 @@
             </div>
           </details>
           <p class="page-links">
-            <a class="btn btn--primary" href="#/play" data-nav="play" data-i18n="hero.start">Start playing</a>
+            <a class="btn btn--primary" href="#/home?focus=play" data-nav="home" data-scroll="play" data-i18n="hero.start">Start playing</a>
             <a class="btn btn--ghost" href="#/terms" data-nav="terms" data-i18n="nav.terms">Terms of use</a>
           </p>
         </div>
@@ -327,7 +328,7 @@
         <p class="page-links">
           <a href="#/about" data-nav="about" data-i18n="nav.about">About</a>
           ·
-          <a href="#/play" data-nav="play" data-i18n="hero.start">Start playing</a>
+          <a href="#/home?focus=play" data-nav="home" data-scroll="play" data-i18n="hero.start">Start playing</a>
         </p>
       </section>
     </div>
@@ -355,7 +356,6 @@
     <p class="footer__legal" data-i18n="footer.legal">You make your own decisions. We are not liable for rite results or for actions you take after a reading.</p>
     <nav class="footer__nav" aria-label="Footer">
       <a href="#/home" data-nav="home" data-i18n="nav.home">Home</a>
-      <a href="#/play" data-nav="play" data-i18n="nav.play">Play</a>
       <a href="#/atlas" data-nav="atlas" data-i18n="nav.atlas">Atlas</a>
       <a href="#/journal" data-nav="journal" data-i18n="nav.journal">Journal</a>
       <a href="#/about" data-nav="about" data-i18n="nav.about">About</a>
@@ -383,23 +383,26 @@
   <div class="toast" id="toast" hidden role="status"></div>
   <div class="celebrate" id="celebrate" hidden aria-hidden="true"></div>
 
-  <script src="data/methods.js"></script>
-  <script src="data/countries.js"></script>
-  <script src="data/covers.js"></script>
-  <script src="data/method-text.js"></script>
-  <script src="data/rite-icons.js"></script>
-  <script src="data/result-model.js"></script>
-  <script src="data/processes.js"></script>
-  <script src="data/how-it-works.js"></script>
-  <script src="data/guided.js"></script>
-  <script src="data/science.js"></script>
-  <script src="i18n/strings.js"></script>
-  <script src="i18n/i18n.js"></script>
-  <script src="router.js"></script>
-  <script src="journal.js"></script>
-  <script src="app.js"></script>
-  <script src="reading.js"></script>
-  <script src="journal-ui.js"></script>
-  <script src="play-ui.js"></script>
+  <script src="data/methods.js?v=20261008j"></script>
+  <script src="data/flag-data.js?v=20261008j"></script>
+  <script src="data/countries.js?v=20261008j"></script>
+  <script src="data/covers.js?v=20261008j"></script>
+  <script src="data/method-i18n-zh.js?v=20261008j"></script>
+  <script src="data/method-text.js?v=20261008j"></script>
+  <script src="data/rite-icons.js?v=20261008j"></script>
+  <script src="data/result-model.js?v=20261008j"></script>
+  <script src="data/processes.js?v=20261008j"></script>
+  <script src="data/how-it-works.js?v=20261008j"></script>
+  <script src="data/guided.js?v=20261008j"></script>
+  <script src="data/science.js?v=20261008j"></script>
+  <script src="i18n/strings.js?v=20261008j"></script>
+  <script src="i18n/i18n.js?v=20261008j"></script>
+  <script src="router.js?v=20261008j"></script>
+  <script src="journal.js?v=20261008j"></script>
+  <script src="play-recs.js?v=20261008j"></script>
+  <script src="app.js?v=20261008j"></script>
+  <script src="reading.js?v=20261008j"></script>
+  <script src="journal-ui.js?v=20261008j"></script>
+  <script src="play-ui.js?v=20261008j"></script>
 </body>
 </html>

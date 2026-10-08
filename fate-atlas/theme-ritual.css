@@ -1,0 +1,871 @@
+/**
+ * Ritual Atlas theme — ink, ember, and lapis.
+ * Unified with the home hero banner (wood, candlelight, blue/gold cards).
+ */
+:root {
+  --ink: #f2e8d8;
+  --ink-soft: #b5a48f;
+  --mist: #241e19;
+  --paper: #100e0c;
+  --surface: #1a1511;
+  --surface-2: #221c17;
+  --teal: #7eb8b0;
+  --teal-deep: #a8d4ce;
+  --copper: #e0a84a;
+  --copper-soft: #f3d08a;
+  --lapis: #3d5f8a;
+  --lapis-bright: #7aa0c8;
+  --ember: #c45c2a;
+  --line: rgba(242, 232, 216, 0.14);
+  --line-strong: rgba(224, 168, 74, 0.45);
+  --glow: rgba(224, 168, 74, 0.16);
+  --glow-lapis: rgba(61, 95, 138, 0.28);
+  --radius: 0;
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --font-ui: "Syne", "Figtree", sans-serif;
+  --font-body: "Figtree", "Segoe UI", sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --frame: linear-gradient(var(--surface-2), var(--surface-2)) padding-box,
+    linear-gradient(135deg, rgba(224, 168, 74, 0.55), rgba(61, 95, 138, 0.45), rgba(224, 168, 74, 0.35)) border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse 90% 55% at 12% -10%, rgba(196, 92, 42, 0.18), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 92% 8%, rgba(61, 95, 138, 0.22), transparent 50%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(15, 92, 86, 0.12), transparent 55%),
+    linear-gradient(180deg, #14110e 0%, #100e0c 40%, #0c0a09 100%);
+  font-family: var(--font-body);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+  background-image:
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+.skip-link {
+  background: var(--copper);
+  color: #1a1208;
+  font-family: var(--font-ui);
+  font-weight: 700;
+}
+
+/* ── Type & sections ──────────────────────────────────── */
+.section__eyebrow {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--copper);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.section__eyebrow::before {
+  content: "";
+  width: 1.35rem;
+  height: 1px;
+  background: linear-gradient(90deg, var(--copper), transparent);
+}
+
+.section__title {
+  font-size: clamp(2.35rem, 6vw, 3.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  background: linear-gradient(180deg, #fff6e8 0%, var(--ink) 55%, var(--copper-soft) 140%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.section__copy {
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.brand {
+  letter-spacing: -0.04em;
+}
+
+.brand span {
+  color: var(--copper-soft);
+  text-shadow: 0 0 40px rgba(224, 168, 74, 0.25);
+}
+
+/* ── Buttons ──────────────────────────────────────────── */
+.btn {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  border-radius: 0;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, var(--copper-soft), var(--copper) 45%, var(--ember));
+  color: #1a1006;
+  border: none;
+  box-shadow: 0 8px 28px rgba(196, 92, 42, 0.28);
+}
+
+.btn--primary:hover {
+  background: linear-gradient(135deg, #fff0c8, var(--copper-soft) 40%, var(--copper));
+  filter: brightness(1.04);
+}
+
+.btn--ghost {
+  border-color: rgba(242, 232, 216, 0.4);
+  color: var(--ink);
+  background: rgba(242, 232, 216, 0.04);
+}
+
+.btn--ghost:hover {
+  border-color: var(--copper-soft);
+  background: rgba(224, 168, 74, 0.1);
+  color: var(--copper-soft);
+}
+
+.btn--play-secondary {
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  color: var(--copper-soft);
+  clip-path: none;
+}
+
+.btn--play-secondary:hover {
+  background: rgba(224, 168, 74, 0.1);
+  border-color: var(--copper);
+}
+
+.btn--seal {
+  background: linear-gradient(135deg, var(--copper-soft), var(--ember));
+  color: #1a1006;
+  box-shadow: 0 6px 22px rgba(196, 92, 42, 0.4);
+}
+
+.btn--play {
+  clip-path: none;
+  border-radius: 0;
+}
+
+/* ── HUD ──────────────────────────────────────────────── */
+.hud {
+  background:
+    linear-gradient(180deg, rgba(16, 12, 10, 0.92), rgba(16, 12, 10, 0.78));
+  border-bottom: 1px solid rgba(224, 168, 74, 0.22);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.hud__brand {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+}
+
+.site-nav__link {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  opacity: 0.72;
+  border-bottom: 2px solid transparent;
+  padding: 0.35rem 0.1rem;
+}
+
+.site-nav__link:hover,
+.site-nav__link.is-active {
+  opacity: 1;
+  color: var(--copper-soft);
+  border-bottom-color: var(--copper);
+}
+
+.hud__pill {
+  font-family: var(--font-ui);
+  border-color: rgba(224, 168, 74, 0.28);
+  background: rgba(224, 168, 74, 0.08);
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+.hud__pill em {
+  color: var(--copper-soft);
+}
+
+.hud__lang select {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-color: rgba(224, 168, 74, 0.3);
+  background-color: rgba(224, 168, 74, 0.08);
+}
+
+.hud__lang select option {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+
+/* ── Home featured / begin ────────────────────────────── */
+.featured,
+.begin,
+.howto,
+.journal,
+.atlas-intro,
+.home-paths,
+.sources,
+.page--terms .terms,
+.catalog,
+.oracle.recommend,
+.regions-wrap {
+  background:
+    linear-gradient(180deg, rgba(26, 21, 17, 0.72), rgba(16, 14, 12, 0.35)) !important;
+  border-top: 1px solid var(--line);
+  border-bottom: none;
+  position: relative;
+}
+
+/* Hero → recommended: soft fade, no hard rule */
+.page--home .featured {
+  border-top: none !important;
+  margin-top: -5.5rem;
+  padding-top: 5.5rem;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(16, 14, 12, 0) 0%,
+      rgba(16, 14, 12, 0.55) 28%,
+      rgba(26, 21, 17, 0.88) 58%,
+      rgba(16, 14, 12, 0.55) 100%
+    ) !important;
+}
+
+.page--home .featured::before {
+  display: none;
+}
+
+.oracle__panel,
+.oracle__result {
+  background: transparent;
+  color: var(--ink);
+}
+
+.featured::before,
+.begin::before,
+.atlas-intro::before,
+.journal::before,
+.howto::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--copper), var(--lapis-bright), transparent);
+  opacity: 0.55;
+}
+
+.feature-card,
+.method,
+.journal-entry,
+.continent-btn,
+.path-card,
+.legend-chip,
+.howto__step,
+.terms__block {
+  background: var(--frame);
+  border: 1px solid transparent;
+  color: var(--ink);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+.feature-card {
+  background:
+    linear-gradient(180deg, rgba(34, 28, 23, 0.98), rgba(22, 18, 14, 0.98)) padding-box,
+    linear-gradient(145deg, rgba(224, 168, 74, 0.55), rgba(61, 95, 138, 0.35), rgba(224, 168, 74, 0.2)) border-box;
+  border: 1px solid transparent;
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), filter 0.35s var(--ease);
+}
+
+.feature-card:hover,
+.feature-card:focus-visible {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(224, 168, 74, 0.25);
+  border-color: transparent;
+  filter: saturate(1.05);
+}
+
+.feature-card--quest::before {
+  background: linear-gradient(180deg, var(--copper), var(--lapis-bright));
+  width: 3px;
+  opacity: 1;
+}
+
+.feature-card__body {
+  background: transparent;
+}
+
+.feature-card__eyebrow {
+  font-family: var(--font-ui);
+  color: var(--copper);
+  letter-spacing: 0.18em;
+}
+
+.feature-card__title {
+  color: var(--ink);
+  font-size: 1.45rem;
+}
+
+.feature-card__copy {
+  color: var(--ink-soft);
+}
+
+.feature-card__moves {
+  color: var(--copper-soft);
+  font-family: var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.feature-card__icon,
+.rite-icon {
+  background: linear-gradient(145deg, rgba(224, 168, 74, 0.2), rgba(61, 95, 138, 0.25));
+  color: var(--copper-soft);
+  border: 1px solid rgba(224, 168, 74, 0.28);
+  border-radius: 0;
+}
+
+.rite-icon--method {
+  border-color: rgba(224, 168, 74, 0.45);
+}
+
+/* ── Pickers / fields ─────────────────────────────────── */
+.rite-picker__trigger,
+.rite-picker__panel,
+.rite-picker__option,
+.field input,
+.field select,
+.studio__body .field textarea,
+.legend-chip,
+.lang-picker__menu {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+
+.lang-picker__btn {
+  font-family: var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rite-picker__trigger:hover,
+.rite-picker__trigger:focus-visible,
+.field input:focus,
+.field select:focus,
+.studio__body .field textarea:focus {
+  border-color: var(--copper) !important;
+  box-shadow: 0 0 0 3px var(--glow) !important;
+}
+
+.rite-picker__option:hover,
+.rite-picker__option.is-active {
+  background: rgba(224, 168, 74, 0.12) !important;
+}
+
+.field label {
+  font-family: var(--font-ui);
+  letter-spacing: 0.14em;
+  color: var(--copper);
+}
+
+/* ── Atlas continents & methods ───────────────────────── */
+.continent-btn {
+  background:
+    linear-gradient(160deg, rgba(34, 28, 23, 0.95), rgba(20, 16, 13, 0.98)) padding-box,
+    linear-gradient(135deg, rgba(61, 95, 138, 0.55), rgba(224, 168, 74, 0.35)) border-box;
+  border: 1px solid transparent;
+  min-height: 5rem;
+}
+
+.continent-btn:hover,
+.continent-btn.is-active {
+  background:
+    linear-gradient(160deg, rgba(50, 38, 28, 0.98), rgba(28, 22, 16, 0.98)) padding-box,
+    linear-gradient(135deg, var(--copper), var(--lapis-bright)) border-box;
+  color: var(--ink);
+  transform: translateY(-3px);
+}
+
+.continent-btn__name {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+}
+
+.continent-btn__count,
+.stat__value,
+.results-meta__hint,
+.journal-toolbar__count span,
+.journal-entry__method,
+.terms__block h3 {
+  color: var(--copper-soft);
+}
+
+.method {
+  --method-accent: var(--copper);
+  background:
+    linear-gradient(180deg, rgba(30, 24, 20, 0.98), rgba(18, 14, 12, 0.98)) padding-box,
+    linear-gradient(120deg, rgba(224, 168, 74, 0.4), rgba(61, 95, 138, 0.3)) border-box;
+  border: 1px solid transparent;
+  box-shadow:
+    inset 4px 0 0 var(--method-accent),
+    0 16px 36px rgba(0, 0, 0, 0.3);
+}
+
+.method:hover,
+.method:focus-within,
+.method.is-route-focus {
+  border-color: transparent;
+  box-shadow:
+    inset 4px 0 0 var(--copper-soft),
+    0 20px 44px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(224, 168, 74, 0.28);
+  transform: translateY(-3px);
+}
+
+.method__name,
+.method__title,
+.journal-entry__title {
+  color: var(--ink);
+}
+
+.method__meta,
+.method__blurb,
+.catalog-legend,
+.results-meta {
+  color: var(--ink-soft);
+}
+
+.catalog-legend {
+  border-inline-start-color: var(--copper);
+}
+
+.tag,
+.tag--process,
+.tag--science,
+.tag--science-reflective,
+.tag--science-cultural,
+.tag--science-contested,
+.tag--science-env {
+  background: rgba(224, 168, 74, 0.08);
+  border-color: rgba(224, 168, 74, 0.28);
+  color: var(--copper-soft);
+  font-family: var(--font-ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+}
+
+.tag--science {
+  border-color: rgba(196, 92, 42, 0.4);
+  color: #f0a888;
+  background: rgba(196, 92, 42, 0.1);
+}
+
+.tag--science-env {
+  border-color: rgba(122, 160, 200, 0.4);
+  color: var(--lapis-bright);
+  background: var(--glow-lapis);
+}
+
+/* ── Journal / about / terms ──────────────────────────── */
+.journal-entry {
+  background:
+    linear-gradient(180deg, rgba(30, 24, 20, 0.96), rgba(18, 14, 12, 0.98)) padding-box,
+    linear-gradient(135deg, rgba(224, 168, 74, 0.35), rgba(61, 95, 138, 0.25)) border-box;
+  border: 1px solid transparent;
+}
+
+.howto__step {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.howto__step::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4rem;
+  height: 4rem;
+  background: radial-gradient(circle at 100% 0%, rgba(224, 168, 74, 0.18), transparent 70%);
+  pointer-events: none;
+}
+
+.howto__num {
+  font-family: var(--font-display);
+  color: var(--copper);
+}
+
+.terms__block {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: none;
+  padding: 1.15rem 1.2rem;
+}
+
+.advisory,
+.advisory--inline {
+  border-color: rgba(224, 168, 74, 0.3);
+  background: rgba(224, 168, 74, 0.08);
+}
+
+.advisory__eyebrow {
+  color: var(--copper-soft);
+  font-family: var(--font-ui);
+}
+
+.photo-drop {
+  border-color: rgba(224, 168, 74, 0.35);
+  background: rgba(224, 168, 74, 0.06);
+}
+
+.science-box,
+.reading-card,
+.oracle-card,
+.tone-deep {
+  background: var(--surface-2) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+.tone-deep .reading__symbol,
+.science-box--env .science-box__label {
+  color: var(--lapis-bright);
+}
+
+/* ── Studio / reading modal ───────────────────────────── */
+.studio {
+  background: rgba(8, 6, 5, 0.72);
+  backdrop-filter: blur(10px);
+}
+
+.studio__panel {
+  background:
+    linear-gradient(180deg, #221c17, #14110e);
+  border: 1px solid rgba(224, 168, 74, 0.35);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(243, 208, 138, 0.12);
+  color: var(--ink);
+}
+
+.studio__header {
+  background: linear-gradient(180deg, rgba(224, 168, 74, 0.12), transparent);
+  border-bottom-color: rgba(224, 168, 74, 0.22);
+}
+
+.studio__kicker,
+.studio__eyebrow {
+  color: var(--copper);
+  font-family: var(--font-ui);
+  letter-spacing: 0.16em;
+}
+
+.studio__method,
+.studio__heading {
+  color: var(--ink);
+}
+
+.studio__close {
+  background: rgba(242, 232, 216, 0.06);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.studio__close:hover {
+  border-color: var(--copper);
+  background: rgba(224, 168, 74, 0.12);
+}
+
+.prog-dot {
+  background: rgba(242, 232, 216, 0.18);
+  border-radius: 0;
+  width: 0.65rem;
+  height: 0.2rem;
+}
+
+.prog-dot.is-on {
+  background: var(--teal);
+}
+
+.prog-dot.is-pulse {
+  background: var(--copper);
+}
+
+.quest-bar {
+  background: rgba(242, 232, 216, 0.1);
+}
+
+.quest-bar__fill {
+  background: linear-gradient(90deg, var(--lapis-bright), var(--copper), var(--ember));
+}
+
+.ritual__orb {
+  background:
+    radial-gradient(circle at 35% 30%, var(--copper-soft), transparent 45%),
+    radial-gradient(circle at 70% 70%, rgba(61, 95, 138, 0.9), #1a100c 70%);
+  box-shadow: 0 0 0 1px rgba(224, 168, 74, 0.3), 0 16px 48px rgba(196, 92, 42, 0.35);
+}
+
+/* ── Footer ───────────────────────────────────────────── */
+.footer {
+  /* Keep z-index auto so the rite-picker panel (fixed, z-index 400)
+     can paint above the footer. A positive z-index here was stacking
+     the footer over in-page dropdowns. */
+  position: relative;
+  z-index: auto;
+  background:
+    linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.45)),
+    #0a0807;
+  border-top: 1px solid rgba(224, 168, 74, 0.25);
+  color: var(--ink-soft);
+  padding: 3rem 1.25rem 2.5rem;
+  text-align: center;
+}
+
+.footer .brand-mini {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem 1.35rem;
+  margin-top: 1.25rem;
+}
+
+.footer__nav a {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-soft);
+  border-bottom: 1px solid transparent;
+}
+
+.footer__nav a:hover {
+  color: var(--copper-soft);
+  border-bottom-color: var(--copper);
+}
+
+/* ── Motion ───────────────────────────────────────────── */
+@keyframes ember-sheen {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes frame-breathe {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.06); }
+}
+
+.section__title {
+  background-size: 180% 100%;
+  animation: ember-sheen 8s ease-in-out infinite;
+}
+
+.feature-card:hover,
+.method:hover {
+  animation: frame-breathe 2.4s ease-in-out infinite;
+}
+
+.hero__cta .btn--primary {
+  animation: rise-in 1s var(--ease) 0.28s both, frame-breathe 3.2s ease-in-out 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section__title,
+  .feature-card:hover,
+  .method:hover,
+  .hero__cta .btn--primary {
+    animation: none !important;
+  }
+}
+
+/* ── Mobile nav drawer on dark theme ──────────────────── */
+@media (max-width: 860px) {
+  .site-nav {
+    background: rgba(16, 12, 10, 0.97);
+    border-right: 1px solid rgba(224, 168, 74, 0.28);
+    border-left: none;
+  }
+
+  .nav-toggle {
+    border-color: rgba(224, 168, 74, 0.4);
+    background: rgba(224, 168, 74, 0.12);
+  }
+}
+
+/* Reading / celebrate surfaces that stayed light */
+.reading,
+.reading__card,
+.celebrate__card,
+.hex-display,
+.pick-grid button,
+.card-fan__card,
+.lot-chip,
+.step-card,
+.oracle-line,
+.reveal-panel,
+.studio__btn-muted {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+
+.celebrate {
+  color: var(--ink);
+}
+
+.results-meta__hint,
+.stat__value {
+  color: var(--copper-soft) !important;
+}
+
+/* Toast already dark — tune accent */
+.toast {
+  background: #1a1410;
+  border-color: rgba(224, 168, 74, 0.45);
+  font-family: var(--font-ui);
+  letter-spacing: 0.04em;
+}
+
+.country-chip__name,
+.country-chip {
+  color: var(--ink-soft);
+}
+
+.method.is-route-focus {
+  outline-color: var(--copper);
+}
+
+.path-card:hover,
+.path-card:focus-visible {
+  border-color: var(--copper);
+}
+
+/* Keep featured isolated for watermark layering — never isolate .begin,
+   or the rite-picker dropdown cannot stack above the footer. */
+.featured {
+  isolation: isolate;
+}
+
+/* Bold section stage — sigil watermark behind titles */
+.page--home .featured .section,
+.page--atlas .regions-wrap,
+.page--atlas .oracle .section,
+.page--about .howto .section,
+.page--journal .journal .section {
+  position: relative;
+}
+
+.page--home .featured .section::before,
+.page--atlas .regions-wrap::before,
+.page--atlas .oracle .section::before {
+  content: "";
+  position: absolute;
+  right: -2rem;
+  top: 1.5rem;
+  width: min(18rem, 42vw);
+  height: min(18rem, 42vw);
+  pointer-events: none;
+  opacity: 0.14;
+  background:
+    radial-gradient(circle at center, transparent 34%, rgba(224, 168, 74, 0.55) 35%, transparent 36%),
+    conic-gradient(from 20deg, transparent 0 20deg, rgba(224, 168, 74, 0.35) 0 22deg, transparent 0 60deg, rgba(122, 160, 200, 0.3) 0 62deg, transparent 0);
+  mask-image: radial-gradient(circle, #000 0 55%, transparent 72%);
+  animation: sigil-spin 48s linear infinite;
+}
+
+@keyframes sigil-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page--home .featured .section::before,
+  .page--atlas .regions-wrap::before,
+  .page--atlas .oracle .section::before {
+    animation: none;
+  }
+}
+
+.continent-btn__count {
+  font-size: 0.78rem !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--font-ui) !important;
+  color: var(--ink-soft) !important;
+}
+
+.continent-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.continent-btn::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -40% auto;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 1px solid rgba(224, 168, 74, 0.18);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero__lead {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+}
+
+.brand {
+  text-transform: none;
+  font-weight: 700;
+}
