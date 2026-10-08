@@ -58,16 +58,6 @@ export const opsZh = {
 }
 
 export const careerZh = {
-  skills: [
-    { name: 'AI 问题框架', proof: '带错误预算的绿灯一页纸' },
-    { name: '评估素养', proof: '金标集、量表、发布门禁' },
-    { name: '技术栈流利度', proof: '点名每一层的架构素描' },
-    { name: 'RAG 与智能体设计', proof: '模块规格 + 工具权限矩阵' },
-    { name: '独立排障', proof: '基于链路的工单与故障模板' },
-    { name: 'LLMOps 所有权', proof: '维护日历 + 回滚钉' },
-    { name: '安全与治理', proof: '数据分类、红队笔记、拒答 UX' },
-    { name: '作品集叙事', proof: 'AI PRD + 复盘 + 对比备忘' },
-  ],
   radar: [
     { label: '采纳', text: '评估工具链、提示词注册表、混合检索、引用 UX' },
     { label: '试点', text: '带写审批的有界智能体、模型路由、Skill 包' },

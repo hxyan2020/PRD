@@ -531,6 +531,106 @@ body.menu-open {
 .glossary-item h2,
 .usecase h2,
 .playbook h3,
+.skill-expandable {
+  padding: 0;
+  overflow: hidden;
+}
+
+.skill-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  list-style: none;
+  cursor: pointer;
+  padding: 1.1rem 1.15rem;
+  min-height: 3.25rem;
+  touch-action: manipulation;
+}
+
+.skill-summary::-webkit-details-marker {
+  display: none;
+}
+
+.skill-summary-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.skill-summary-text h3 {
+  margin: 0 0 0.35rem;
+}
+
+.skill-summary-text p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.45;
+}
+
+.skill-chevron {
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(var(--ink), var(--ink)) center / 0.65rem 1.5px no-repeat,
+    linear-gradient(var(--ink), var(--ink)) center / 1.5px 0.65rem no-repeat,
+    rgba(245, 248, 250, 0.9);
+  transition: transform 0.18s ease, background-color 0.18s ease;
+}
+
+.skill-expandable[open] .skill-chevron {
+  transform: rotate(45deg);
+  background-color: rgba(13, 148, 136, 0.12);
+}
+
+.skill-detail {
+  padding: 0 1.15rem 1.15rem;
+  border-top: 1px solid var(--line);
+  animation: rise 0.16s ease both;
+}
+
+.skill-detail-block {
+  margin-top: 0.85rem;
+}
+
+.skill-detail-block h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.skill-detail-block p,
+.skill-detail-block li {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.skill-detail-block ol,
+.skill-detail-block ul {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.skill-related {
+  display: inline-flex;
+  margin-top: 0.95rem;
+  font-weight: 700;
+  color: var(--teal);
+  text-decoration: none;
+}
+
+.skill-related:hover {
+  text-decoration: underline;
+}
+
 .skill h3,
 .radar-item h3 {
   font-family: var(--font-display);
