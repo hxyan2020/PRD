@@ -1,0 +1,827 @@
+{
+  "archetypes": {
+    "rattle": {
+      "howToWin": [
+        "There is no score—play succeeds when the baby explores a clear, safe rattle sound with a caregiver close by."
+      ],
+      "rulesNotToBreak": [
+        "Stay within arm’s reach the whole time.",
+        "Stop play if the shell cracks or seeds can spill.",
+        "Do not let the infant chew through plugs or seams."
+      ]
+    },
+    "whistle_toy": {
+      "howToWin": [
+        "Make one clear long tone, then a short rhythm of three chirps that a partner can copy."
+      ],
+      "rulesNotToBreak": [
+        "Wipe the mouthpiece between players.",
+        "Do not share the whistle if anyone is sick.",
+        "Keep finger holes and the windway clear—never force objects into them."
+      ]
+    },
+    "pull_toy": {
+      "howToWin": [
+        "Walk a short clear path so the toy follows upright for five to ten steps without tipping."
+      ],
+      "rulesNotToBreak": [
+        "Do not yank the cord hard enough to lift or throw the toy.",
+        "Keep the floor clear of trip hazards before parade play.",
+        "Store the toy upright so wheels are not left bent under weight."
+      ]
+    },
+    "mini_weapons_toy": {
+      "howToWin": [
+        "First player to 15 points wins (3 center, 2 middle ring, 1 outer)."
+      ],
+      "rulesNotToBreak": [
+        "Never aim at people or animals.",
+        "Keep a clear downrange area with a backstop.",
+        "Pick up every dart or arrow before the next turn."
+      ]
+    },
+    "jacks_local": {
+      "howToWin": [
+        "First player to finish the ones–twos–threes–fours sequence while saying the count wins."
+      ],
+      "rulesNotToBreak": [
+        "Pick up only the allowed number of stones on that turn.",
+        "A drop or missed catch ends your turn—restart at ones next time.",
+        "Do not disturb the remaining pile while catching."
+      ]
+    },
+    "story_dice_oral": {
+      "howToWin": [
+        "Everyone completes at least one prompted story, clap, or answer; optionally race who finishes a lively round first."
+      ],
+      "rulesNotToBreak": [
+        "Use only playful marks—never sacred lots as party toys.",
+        "Keep prompts kind; no humiliating dares.",
+        "Take turns casting so nobody is skipped."
+      ]
+    },
+    "shadow_play": {
+      "howToWin": [
+        "Hold a readable shadow shape for three seconds, then finish a one-minute scene others can follow."
+      ],
+      "rulesNotToBreak": [
+        "Keep flames safe and never leave a candle alone.",
+        "Keep hands and figures a safe distance from hot lamps.",
+        "Do not block exits or crowd the light source."
+      ]
+    },
+    "kite_local": {
+      "howToWin": [
+        "Launch, keep the kite stable in wind, and bring it down under control before the wind dies."
+      ],
+      "rulesNotToBreak": [
+        "Never fly near power lines, airports, or storms.",
+        "Keep clear of trees and crowds.",
+        "Do not snatch a diving kite blindly—let it land if unsure."
+      ]
+    },
+    "cloth_doll_local": {
+      "howToWin": [
+        "Complete at least three care scenes (wake, feed, sleep) with the doll dressed and intact."
+      ],
+      "rulesNotToBreak": [
+        "Repair tears instead of discarding the doll.",
+        "Do not leave needles or pins in the play area.",
+        "Pack the doll away so clothing and stuffing stay together."
+      ]
+    },
+    "ball_sewn": {
+      "howToWin": [
+        "First circle to ten clean catches wins, or play until everyone has started a round."
+      ],
+      "rulesNotToBreak": [
+        "Toss underhand unless the group agrees on kicks.",
+        "Restitch a split seam before continuing.",
+        "Keep the yard clear of glass and hard obstacles."
+      ]
+    },
+    "top_local": {
+      "howToWin": [
+        "Longest continuous spin wins, or in combat play the first top knocked flat loses."
+      ],
+      "rulesNotToBreak": [
+        "Pull the cord level—do not whip toward faces.",
+        "Stand on hard ground clear of feet and pets.",
+        "Sand or replace a worn tip before the next contest."
+      ]
+    },
+    "string_local": {
+      "howToWin": [
+        "Form the named figure cleanly and hold it while saying its name or a one-sentence story."
+      ],
+      "rulesNotToBreak": [
+        "Do not yank loops so hard that cord cuts into fingers.",
+        "Return to a clean loop before teaching the next figure.",
+        "Keep the cord away from necks during partner passes."
+      ]
+    },
+    "board_race_folk": {
+      "howToWin": [
+        "First player to bring all four markers home wins."
+      ],
+      "rulesNotToBreak": [
+        "Enter a marker only on the agreed high throw.",
+        "Stacked markers are safe—do not capture them.",
+        "Move only the number shown by the cast; no silent extra steps."
+      ]
+    },
+    "sowing_local": {
+      "howToWin": [
+        "When one side is empty, count stores—the higher seed total wins."
+      ],
+      "rulesNotToBreak": [
+        "Sow one seed per pit in order; do not skip or double-drop.",
+        "Skip the opponent’s store when sowing.",
+        "Captures only apply when the last seed lands in an empty pit on your side."
+      ]
+    },
+    "jump_rope": {
+      "howToWin": [
+        "Beat a personal best (try 20, then 50 clean jumps) or outlast others in a group chant round."
+      ],
+      "rulesNotToBreak": [
+        "Stop if the ground is wet or the rope snaps.",
+        "Enter a long rope only on the beat—do not shove the jumper.",
+        "Give turners space; do not stand in the rope arc."
+      ]
+    },
+    "blindfold_tag": {
+      "howToWin": [
+        "The seeker wins the round by tagging a sighted player by touch; that player becomes the next seeker."
+      ],
+      "rulesNotToBreak": [
+        "No shoving or running the seeker into hard obstacles.",
+        "Sighted players must stay inside the marked bounds.",
+        "Remove hard objects before each round."
+      ]
+    },
+    "wrestling_play": {
+      "howToWin": [
+        "Win by making both of the opponent’s shoulders or hips touch the ground, or by pushing them outside the circle—agree which rule before you start."
+      ],
+      "rulesNotToBreak": [
+        "No headlocks, joint twists, or strikes.",
+        "Grip only belts, sashes, or shoulders as agreed.",
+        "Stop at once if anyone feels pain."
+      ]
+    },
+    "memory_song": {
+      "howToWin": [
+        "Last player remaining after elimination starts the next song and is the round winner."
+      ],
+      "rulesNotToBreak": [
+        "A wrong word or late clap removes that player—no restarts mid-pass.",
+        "Keep tempos friendly unless everyone agrees to speed up.",
+        "Do not shove players out of the circle."
+      ]
+    },
+    "balance_stilts": {
+      "howToWin": [
+        "Complete five controlled steps, then a short marked path race only after both walkers can stop safely."
+      ],
+      "rulesNotToBreak": [
+        "Always use a spotter when mounting.",
+        "Never jump off from full height—dismount into a crouch.",
+        "Check foot pegs and cords before each session."
+      ]
+    },
+    "leaf_boat": {
+      "howToWin": [
+        "First boat to the finish without sinking wins."
+      ],
+      "rulesNotToBreak": [
+        "No pushing boats after the shared release count.",
+        "Stay out of deep or fast water.",
+        "An adult must watch stream races."
+      ]
+    },
+    "snow_or_sand": {
+      "howToWin": [
+        "Optional contest: tallest free-standing tower in five minutes, or the best animal likeness by group vote."
+      ],
+      "rulesNotToBreak": [
+        "Never dig undercut cliffs or tunnels that can collapse.",
+        "Build a base wider than the top.",
+        "Leave the shore or yard tidy when you finish."
+      ]
+    },
+    "knuckle_football": {
+      "howToWin": [
+        "First player to five goals wins."
+      ],
+      "rulesNotToBreak": [
+        "One finger-flick per turn—no covering the ball with a palm.",
+        "Keep drinks off the table.",
+        "Reset to center after each goal."
+      ]
+    },
+    "riddle_local": {
+      "howToWin": [
+        "First player to five points wins the exchange."
+      ],
+      "rulesNotToBreak": [
+        "At most three guesses and one minute per riddle.",
+        "Keep forfeits playful—never cruel.",
+        "The asker reveals the answer only after guesses are done."
+      ]
+    },
+    "ceremonial_toy": {
+      "howToWin": [
+        "Join the festival pulse: play short matching beats and stop cleanly when leaders signal silence."
+      ],
+      "rulesNotToBreak": [
+        "Only use noisemakers when adults say they are welcome.",
+        "Do not copy restricted sacred instruments or mock prayer gestures.",
+        "Put the toy away when the procession ends."
+      ]
+    },
+    "puzzle_knot": {
+      "howToWin": [
+        "Free the target piece by a legal path, then restore the exact starting state; optionally beat a timed solve."
+      ],
+      "rulesNotToBreak": [
+        "Do not bend metal or force wood.",
+        "Move loops only through openings that already exist.",
+        "Do not claim a solve until the puzzle is fully reset."
+      ]
+    },
+    "mini_house": {
+      "howToWin": [
+        "Finish one cooking scene, one visiting scene, and one bedtime scene with roles assigned."
+      ],
+      "rulesNotToBreak": [
+        "Keep miniature pieces out of real mouths and heat sources.",
+        "Pack the full set into one box after play.",
+        "Do not break props to “force” a story ending."
+      ]
+    }
+  },
+  "curatedByName": {
+    "Chess": {
+      "howToWin": [
+        "Checkmate the opponent’s king: it is under attack and has no legal escape, block, or capture."
+      ],
+      "rulesNotToBreak": [
+        "Do not leave your own king in check.",
+        "Move each piece only as its rules allow (including castling and en passant conditions).",
+        "Players alternate turns; White moves first."
+      ]
+    },
+    "Go (Weiqi)": {
+      "howToWin": [
+        "After both players pass, the higher score of territory plus captives wins (scoring rules vary by country)."
+      ],
+      "rulesNotToBreak": [
+        "Do not recreate the previous full-board position (ko).",
+        "Do not play suicidal moves unless they capture.",
+        "Stones do not move after placement—only place or pass."
+      ]
+    },
+    "Xiangqi": {
+      "howToWin": [
+        "Checkmate the opposing general (jiang/shuai)."
+      ],
+      "rulesNotToBreak": [
+        "Generals may not face each other on an open file.",
+        "Pieces must follow xiangqi move and river rules.",
+        "Do not leave your general in check."
+      ]
+    },
+    "Shogi": {
+      "howToWin": [
+        "Checkmate or forcibly impasse the opposing king under shogi rules; drops are part of legal play."
+      ],
+      "rulesNotToBreak": [
+        "Captured pieces may be dropped later—respect nifu and other drop bans.",
+        "Do not leave your king in check.",
+        "Promote only when entering, leaving, or moving inside the promotion zone as rules allow."
+      ]
+    },
+    "Mancala sowing games": {
+      "howToWin": [
+        "When one player’s pits are empty, count stores—the higher seed total wins (ties are draws)."
+      ],
+      "rulesNotToBreak": [
+        "Sow counterclockwise one seed per pit; skip the opponent’s store.",
+        "Take an extra turn only when the last seed lands in your store.",
+        "Capture only from the empty-pit-on-your-side case defined for the variant."
+      ]
+    },
+    "Backgammon": {
+      "howToWin": [
+        "First player to bear all fifteen checkers off the board wins."
+      ],
+      "rulesNotToBreak": [
+        "Enter from the bar before moving other checkers when you have one on the bar.",
+        "Do not land on a point with two or more opposing checkers.",
+        "Bear off only when all of your checkers are in your home board."
+      ]
+    },
+    "Senet": {
+      "howToWin": [
+        "First to bear all pawns off the final squares wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Patolli": {
+      "howToWin": [
+        "First to complete the circuit with all markers wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Pachisi": {
+      "howToWin": [
+        "First to bring all four pieces into the center wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Mahjong": {
+      "howToWin": [
+        "Declare mahjong on a complete hand; score by regional rules."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Dominoes": {
+      "howToWin": [
+        "Win by emptying your hand or reaching a pip score."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Nine Men's Morris": {
+      "howToWin": [
+        "Win by reducing the opponent to two pieces or blocking all moves."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Alquerque / Draughts family": {
+      "howToWin": [
+        "Capture all enemies or immobilize them to win."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Fanorona": {
+      "howToWin": [
+        "Capture all opposing pieces to win."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Carrom": {
+      "howToWin": [
+        "Clear your pieces (with queen covered) to win."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Playing cards (French-suited deck)": {
+      "howToWin": [
+        "Highest card of the led suit wins the trick; hearts score 1 penalty point each and the queen of spades scores 13.",
+        "Play hands until one player reaches 100 penalty points; the lowest score wins (or switch later to whist, rummy, or another named game)."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Hanafuda / Karuta": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Ganjifa": {
+      "howToWin": [
+        "Highest trump wins the trick if any trump is played; otherwise the highest card of the led suit wins.",
+        "Each won trick scores one point (or count face cards if using a court-heavy house tally); highest trick total after all cards are played wins. Store cards flat."
+      ],
+      "rulesNotToBreak": [
+        "Use an 8-suit Mughal ganjifa set (96 circular cards) or a 10-suit Dashavatara set; shuffle gently without bending paint layers."
+      ]
+    },
+    "Knucklebones": {
+      "howToWin": [
+        "First player to complete the ones–twos–threes–fours sequence scores one point; play to five points. Use plastic or wooden replicas when real bones are unavailable."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Yo-yo": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Kite flying": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Reel in before storms; never fly near power lines."
+      ]
+    },
+    "Cat's cradle": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Jianzi (shuttlecock kicking)": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "In a circle, pass to neighbors without using hands."
+      ]
+    },
+    "Sepak takraw": {
+      "howToWin": [
+        "Score one point when the ball grounds in the opponent’s court or the opponent faults (net touch with hand, four touches, out of bounds).",
+        "Play to 21 points per set (must win by 2); best of three sets decides the match."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Lacrosse": {
+      "howToWin": [
+        "Score by sending the ball into the goal.",
+        "Highest score at the end wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Mesoamerican ballgame / Ulama": {
+      "howToWin": [
+        "Score one point when the opposing team fails to return, lets the ball stop, or sends it out of the alley.",
+        "First team to 8 points wins the game (common Sinaloa street tally); rest and switch ends after each game."
+      ],
+      "rulesNotToBreak": [
+        "Serve by bouncing the ball to a teammate who strikes it forward with the hip only—no hands, feet, or heads."
+      ]
+    },
+    "Kokeshi": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Matryoshka": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Do not force tight seams."
+      ]
+    },
+    "Worry dolls": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Corn husk doll": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Bilboquet / Balero / Kendama family": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Tangram": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Rearrange all seven pieces to match the outline without overlaps."
+      ]
+    },
+    "Rubik's Cube": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Building blocks": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Chunkey": {
+      "howToWin": [
+        "Score by closeness when the stone rests."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Palín": {
+      "howToWin": [
+        "Score when the ball crosses the goal space."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Tug of war": {
+      "howToWin": [
+        "Pull the center marker across your team’s line."
+      ],
+      "rulesNotToBreak": [
+        "Do not wrap the rope around limbs under sport rules.",
+        "Stay behind your foul line.",
+        "Stop immediately if someone slips dangerously."
+      ]
+    },
+    "Hide-and-seek": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Hopscotch": {
+      "howToWin": [
+        "First to complete all numbers wins."
+      ],
+      "rulesNotToBreak": [
+        "Retrieve the marker on the return without faults."
+      ]
+    },
+    "Marbles": {
+      "howToWin": [
+        "Captured marbles score or are kept depending on agreed stakes.",
+        "Clear the ring or reach a point goal to win."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Spinning top": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Hnefatafl": {
+      "howToWin": [
+        "Attackers win by capturing the king on two opposite sides (or against the throne/edge as a second side). Defenders win if the king reaches any of the four corner sanctuary squares."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Fox and Geese": {
+      "howToWin": [
+        "Geese win by immobilizing the fox; fox wins by capturing enough geese."
+      ],
+      "rulesNotToBreak": [
+        "Geese move first or second by agreement; they walk without jumping."
+      ]
+    },
+    "Go Bang / Gomoku": {
+      "howToWin": [
+        "First to form five consecutive stones in a line wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Reversi / Othello": {
+      "howToWin": [
+        "Majority color wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Scrabble": {
+      "howToWin": [
+        "Score letter values times premiums; tally each turn.",
+        "Highest score when tiles run out and one player empties their rack wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Snakes and Ladders": {
+      "howToWin": [
+        "First to the final square wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Monopoly": {
+      "howToWin": [
+        "Be the last player who is not bankrupt."
+      ],
+      "rulesNotToBreak": [
+        "Pay rent when you land on an owned property you do not own.",
+        "Build houses only on complete color sets as the rules allow.",
+        "Resolve debts honestly—no hiding cash from the bank."
+      ]
+    },
+    "Jenga": {
+      "howToWin": [
+        "The player who topples the tower loses (or the previous player wins, by house rule)."
+      ],
+      "rulesNotToBreak": [
+        "Remove only one block per turn, below the incomplete top layer.",
+        "Use one hand only when removing and stacking.",
+        "Do not steady the tower with your other hand."
+      ]
+    },
+    "Diabolo": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Kapu kuapu / Jackstraws / Spillikins": {
+      "howToWin": [
+        "Score by stick colors/values.",
+        "Highest score when the pile is cleared wins."
+      ],
+      "rulesNotToBreak": [
+        "Players alternately pull one stick without wiggling others."
+      ]
+    },
+    "Mehen": {
+      "howToWin": [
+        "First to complete the journey wins in most reconstructions."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Buckingham Palace toy soldiers aside: Toy soldiers": {
+      "howToWin": [
+        "Capture the opponent’s flag by ending a move on its square, or eliminate every enemy figure, to win."
+      ],
+      "rulesNotToBreak": [
+        "Store figures upright in a box with tissue so paint and bayonets do not chip."
+      ]
+    },
+    "Tea set toy": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Pour (real or imaginary) tea without tipping cups."
+      ]
+    },
+    "Slinky": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Avoid overstretching coils permanently."
+      ]
+    },
+    "Frisbee / flying disc": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Hacky sack / footbag": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Use feet, knees, and thighs—no hands."
+      ]
+    },
+    "Boomerang": {
+      "howToWin": [
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+      ],
+      "rulesNotToBreak": [
+        "Watch the return path; do not snatch blindly."
+      ]
+    },
+    "Poi": {
+      "howToWin": [
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Surakarta": {
+      "howToWin": [
+        "Capture all enemies to win."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Dakon": {
+      "howToWin": [
+        "When one player cannot move, remaining seeds go to the owner of those cups; most seeds in store wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    },
+    "Sungka": {
+      "howToWin": [
+        "Count cowries in each ulo; the higher store wins."
+      ],
+      "rulesNotToBreak": [
+        "Follow turn order and any house rules everyone agreed before play.",
+        "Stop immediately if equipment breaks or anyone risks injury."
+      ]
+    }
+  }
+}

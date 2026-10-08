@@ -1,4 +1,5 @@
-import { countryWithFlag, flagForCountry } from "../lib/countryFlags";
+import { countryWithFlag, flagForCountry, isoForCountry } from "../lib/countryFlags";
+import { FlagIcon } from "./FlagIcon";
 
 type Props = {
   /** Display label (may be localized). */
@@ -10,15 +11,14 @@ type Props = {
 
 /** Flag + origin country label for meta rows. */
 export function OriginCountry({ country, countryKey, className }: Props) {
-  const flag = flagForCountry(countryKey ?? country);
+  const key = countryKey ?? country;
+  const iso = isoForCountry(key);
   return (
     <span className={className ? `origin-country ${className}` : "origin-country"}>
-      <span className="country-flag" aria-hidden="true">
-        {flag}
-      </span>
-      {country}
+      <FlagIcon iso={iso} flag={flagForCountry(key)} className="country-flag" title={country} />
+      <span className="origin-country-name">{country}</span>
     </span>
   );
 }
 
-export { countryWithFlag, flagForCountry };
+export { countryWithFlag, flagForCountry, isoForCountry };

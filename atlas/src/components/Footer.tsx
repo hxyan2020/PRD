@@ -7,7 +7,14 @@ export function Footer({ total }: { total?: number }) {
     <footer className="site-footer">
       <div className="container">
         <p>
-          <strong style={{ color: "var(--mist)", fontFamily: "var(--font-display)" }}>
+          <strong
+            style={{
+              color: "var(--brand)",
+              fontFamily: "var(--font-brand)",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
             Ludus Atlas
           </strong>{" "}
           {t("footer.blurb")}

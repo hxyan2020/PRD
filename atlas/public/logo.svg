@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none" role="img" aria-label="Ludus Atlas">
+  <!-- Flat-topped cat/controller head matching the brand mark -->
+  <path
+    fill="#BC0234"
+    d="
+      M54 8 H84 V36 H116 V8 H146
+      C170 18 186 48 186 88
+      C186 144 150 188 100 188
+      C50 188 14 144 14 88
+      C14 48 30 18 54 8
+      Z
+    "
+  />
+  <!-- D-pad -->
+  <rect x="44" y="82" width="42" height="15" rx="2.5" fill="#0a0a0a"/>
+  <rect x="57.5" y="68.5" width="15" height="42" rx="2.5" fill="#0a0a0a"/>
+  <!-- Face buttons -->
+  <circle cx="134" cy="74" r="8.5" fill="#0a0a0a"/>
+  <circle cx="117" cy="91" r="8.5" fill="#0a0a0a"/>
+  <circle cx="151" cy="91" r="8.5" fill="#0a0a0a"/>
+  <circle cx="134" cy="108" r="8.5" fill="#0a0a0a"/>
+  <!-- Nose -->
+  <path d="M100 126 L116 150 L84 150 Z" fill="#0a0a0a"/>
+</svg>

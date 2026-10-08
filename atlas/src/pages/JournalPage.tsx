@@ -81,7 +81,7 @@ export function JournalPage() {
       display.map((entry) => {
         const game = gamesById.get(entry.gameId);
         if (!game) return { ...entry, originCountryKey: entry.originCountry };
-        const localized = localizeGame(game, locale, contentI18n);
+        const localized = localizeGame(game, locale, contentI18n, t);
         return {
           ...entry,
           name: localized.name,
@@ -91,7 +91,7 @@ export function JournalPage() {
           image: localized.images[0] ?? entry.image,
         };
       }),
-    [display, gamesById, locale, contentI18n],
+    [display, gamesById, locale, contentI18n, t],
   );
 
   if (!isLoggedIn) {

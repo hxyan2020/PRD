@@ -2,12 +2,185 @@
  * Generates 1000+ historical toys & games.
  * Fundamentally identical cultural forms are nested as variations.
  */
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { PLAIN_ARCHETYPES } from "./plain-archetypes.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, "../public/data/collection.json");
+
+/** Short culture label for prose (drop slash alternatives). */
+function folkName(civ) {
+  return String(civ || "")
+    .split(/\s*\/\s*/)[0]
+    .replace(/\s+peoples$/i, "")
+    .trim() || "local";
+}
+
+function escapeReg(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Plain-language cleanup for descriptions and steps.
+ * Fixes leftover template tokens and stiff catalog wording.
+ */
+function polishLine(text, country = "", civ = "") {
+  if (typeof text !== "string" || !text) return text;
+  const folk = folkName(civ);
+  let s = text
+    .replace(/\$\{c\}/g, country)
+    .replace(/\$\{civ\}/g, folk)
+    .replace(/\barchaeological layers\b/gi, "old finds")
+    .replace(/\bmaterial culture\b/gi, "everyday life")
+    .replace(/\bArchaeology and ethnography both find\b/gi, "Old finds and family stories also show")
+    .replace(/\bethnography\b/gi, "family stories")
+    .replace(/\bminiaturize\b/gi, "copy in tiny form")
+    .replace(/\bcrystallized\b/gi, "settled")
+    .replace(/\brehearse skills celebrated by\b/gi, "practice skills used by")
+    .replace(/\belevated this into formal\b/gi, "grew into")
+    .replace(/\bstructure the fun\b/gi, "make the game work")
+    .replace(/\bwithin that shared physics toy\b/gi, "of the same spinning toy")
+    .replace(/\brecorded here as a regional practice entry when\b/gi, "listed here when")
+    .replace(/\bdeserve regional entries when\b/gi, "are listed separately when")
+    .replace(/\bportable diagrams of story and hand memory\b/gi, "hand stories you can carry anywhere")
+    .replace(/\bephemeral toy\b/gi, "short-lived toy")
+    .replace(/\bdidactic\b/gi, "teaching")
+    .replace(/\bwar-simulation\b/gi, "war game")
+    .replace(/\bformalized as\b/gi, "turned into")
+    .replace(/\bcustodial capture\b/gi, "capture by sandwiching")
+    .replace(/\basymmetric hunt\b/gi, "hunt game with unequal sides");
+
+  if (country) {
+    const c = escapeReg(country);
+    const f = escapeReg(folk);
+    s = s.replace(new RegExp(`\\b${f} life in ${c}\\b`, "gi"), `life in ${country}`);
+    s = s.replace(new RegExp(`\\bin ${c} within ${f}\\b`, "gi"), `in ${country}`);
+    s = s.replace(
+      new RegExp(`\\bin the ${f} craft style of ${c}\\b`, "gi"),
+      `in a local style from ${country}`,
+    );
+    s = s.replace(
+      new RegExp(`\\b${f} craft style of ${c}\\b`, "gi"),
+      `local style from ${country}`,
+    );
+    s = s.replace(
+      new RegExp(`\\b${c}'s ${f}\\b`, "gi"),
+      `${country}'s`,
+    );
+    s = s.replace(
+      new RegExp(`\\bacross ${f} households in ${c}\\b`, "gi"),
+      `in households across ${country}`,
+    );
+    s = s.replace(
+      new RegExp(`\\b${f} oral tradition in ${c}\\b`, "gi"),
+      `local riddles from ${country}`,
+    );
+    s = s.replace(
+      new RegExp(`\\ba carved ${f} top from ${c}\\b`, "gi"),
+      `a carved top from ${country}`,
+    );
+    s = s.replace(
+      new RegExp(`\\bfrom ${c} street or festival play\\b`, "gi"),
+      "from street or festival play",
+    );
+    // Drop a second identical country mention in one sentence when redundant:
+    // "… in Egypt … in Egypt" → keep first
+    s = s.replace(
+      new RegExp(`\\bin ${c}([^.]{0,80})\\bin ${c}\\b`, "gi"),
+      `in ${country}$1`,
+    );
+  }
+
+  return s.replace(/\s{2,}/g, " ").replace(/\s+([,.])/g, "$1").trim();
+}
+
+function polishSeedCopy(seed) {
+  const country = seed.originCountry || "";
+  const civ = seed.civilization || "";
+  return {
+    ...seed,
+    description: polishLine(seed.description, country, civ),
+    howToPlay: (seed.howToPlay || []).map((step) => polishLine(step, country, civ)),
+    howToWin: (seed.howToWin || []).map((step) => polishLine(step, country, civ)),
+    rulesNotToBreak: (seed.rulesNotToBreak || []).map((step) =>
+      polishLine(step, country, civ),
+    ),
+  };
+}
+
+/** English win/rules authored by scripts/build-win-rules.mjs */
+const WIN_RULES_EN = JSON.parse(
+  readFileSync(new URL("./win-rules-en.json", import.meta.url), "utf8"),
+);
+
+function uniqLines(list) {
+  const out = [];
+  const seen = new Set();
+  for (const s of list || []) {
+    const t = String(s || "").trim();
+    if (!t || seen.has(t)) continue;
+    seen.add(t);
+    out.push(t);
+  }
+  return out;
+}
+
+function deriveWinRules(howToPlay, { name = "", category = "" } = {}) {
+  const win = [];
+  const rules = [];
+  for (const s of howToPlay || []) {
+    if (
+      /\b(win|wins|winner|checkmate|majority|highest score|first to|score one|scores? |bear off|bankrupt|topples?|last player|most seeds|higher (total|score|store))\b/i.test(
+        s,
+      )
+    ) {
+      win.push(s);
+    }
+    if (
+      /\b(never|do not|don't|avoid|must not|illegal|foul|no shoving|no hands|stop (at once|immediately)|not aim|not share|not leave|forbid)\b/i.test(
+        s,
+      )
+    ) {
+      rules.push(s);
+    }
+  }
+  if (!win.length) {
+    if (/Dolls|Musical|Construction|Ritual/i.test(category)) {
+      win.push(
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps.",
+      );
+    } else {
+      win.push(
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps.",
+      );
+    }
+  }
+  if (!rules.length) {
+    rules.push("Follow turn order and any house rules everyone agreed before play.");
+    rules.push("Stop immediately if equipment breaks or anyone risks injury.");
+  }
+  return {
+    howToWin: uniqLines(win).slice(0, 3),
+    rulesNotToBreak: uniqLines(rules).slice(0, 4),
+  };
+}
+
+function attachWinRules(seed) {
+  if (seed.howToWin?.length && seed.rulesNotToBreak?.length) return seed;
+  const fromArch =
+    seed.archetypeKey && WIN_RULES_EN.archetypes?.[seed.archetypeKey];
+  const fromName = WIN_RULES_EN.curatedByName?.[seed.name];
+  const pack = fromArch || fromName || deriveWinRules(seed.howToPlay, seed);
+  return {
+    ...seed,
+    howToWin: seed.howToWin?.length ? seed.howToWin : pack.howToWin,
+    rulesNotToBreak: seed.rulesNotToBreak?.length
+      ? seed.rulesNotToBreak
+      : pack.rulesNotToBreak,
+  };
+}
 
 /**
  * Per-toy search tags — never use a sibling game’s name (e.g. Go must not
@@ -107,53 +280,738 @@ const CURATED_TAGS = {
   Sungka: "sungka,filipino-mancala",
 };
 
+/** Stable Wikimedia Commons thumbnail (follows redirect in browsers). */
+function commons(file) {
+  // Decode any pre-escaped sequences so we never produce %2527-style URLs.
+  let decoded = String(file || "");
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch {
+    /* keep raw */
+  }
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(decoded)}?width=900`;
+}
+
+function unsplash(id) {
+  return `https://images.unsplash.com/photo-${id}?w=900&q=80`;
+}
+
 /**
- * Hand-picked Unsplash photos — each ID was visually verified to depict the
- * named game (wrong stock IDs previously mapped Mahjong→gym, Yo-yo→yoga mats,
- * Rubik→broccoli, Marbles→amiibo, etc.). Prefer omitting a game over a bad ID.
+ * Hand-picked cover photos (Commons + verified Unsplash). Prefer a correct
+ * subject over a pretty wrong one. Keys are primary English catalog names.
  */
 const CURATED_PHOTOS = {
   Chess: [
-    "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=900&q=80",
-    "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=900&q=80",
+    unsplash("1528819622765-d6bcf132f793"),
+    unsplash("1586165368502-1bad197a6461"),
+    commons("Chess_game_Staunton_No._6_perfil_view_8.jpg"),
+    commons("Wooden_Chess_Board.jpg"),
+    commons("Opening_chess_position_from_black_side.jpg"),
+  ],
+  Chaturanga: [
+    commons("Chathurangam-1.jpg"),
+    commons("Chaturanga_board_and_pins.png"),
+    unsplash("1528819622765-d6bcf132f793"),
+  ],
+  Shatranj: [
+    commons("Persian_Tamerlane_Chess_Set.png"),
+    commons("A_treatise_on_chess_2.jpg"),
+    unsplash("1586165368502-1bad197a6461"),
   ],
   "Go (Weiqi)": [
-    "https://images.unsplash.com/photo-1774234528903-f520d964ba13?w=900&q=80",
+    unsplash("1774234528903-f520d964ba13"),
+    commons("Go_(13×13)_--_2021_--_6741.jpg"),
+    commons("Go_--_2021_--_6732.jpg"),
   ],
+  Xiangqi: [
+    unsplash("1771588330614-2ce1d77588ca"),
+    unsplash("1763901682710-a18f6a7d9531"),
+    commons("Xiangqi-Chinese-chess.jpg"),
+    commons("Xiangqi_01.jpg"),
+  ],
+  Shogi: [commons("Shogi-Set-06.JPG"), commons("Shogi_ban.jpg")],
+  Mancala: [
+    commons("Mancala.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+    commons("Brooklyn_Museum_22.239_Mancala_Game_Board.jpg"),
+  ],
+  "Mancala sowing games": [
+    commons("Mancala.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+    commons("Oware.jpg"),
+  ],
+  Oware: [commons("Oware.jpg")],
+  Congkak: [commons("Congkak.jpg")],
+  Backgammon: [commons("Backgammon_board_-_01.jpg")],
+  Senet: [
+    commons("Senet_(47429946982).jpg"),
+    commons("Senet_game_pieces_(Tutankhamun).jpg"),
+  ],
+  "Royal Game of Ur": [
+    commons("British_Museum_Royal_Game_of_Ur.jpg"),
+    commons("Royal_game_of_Ur,_2010-08-03.jpg"),
+  ],
+  Patolli: [commons("Patolli.jpg")],
+  Pachisi: [commons("Pachisi-real.jpg")],
+  Ludo: [commons("Ludo_board.svg")],
   Mahjong: [
-    "https://images.unsplash.com/photo-1742343886931-14ea96977531?w=900&q=80",
-  ],
-  "Yo-yo": [
-    "https://images.unsplash.com/photo-1556309294-98916e0aaca7?w=900&q=80",
-  ],
-  "Rubik's Cube": [
-    "https://images.unsplash.com/photo-1540149678796-1a36342a1372?w=900&q=80",
+    unsplash("1742343886931-14ea96977531"),
+    commons("UCB_Mahjong_Tiles.png"),
+    commons("Western_mahjong_tiles_eg.jpg"),
   ],
   Dominoes: [
-    "https://images.unsplash.com/photo-1566694271453-390536dd1f0d?w=900&q=80",
+    unsplash("1566694271453-390536dd1f0d"),
+    commons("Domino_--_2021_--_6766.jpg"),
   ],
   "Playing cards (French-suited deck)": [
-    "https://images.unsplash.com/photo-1541278107931-e006523892df?w=900&q=80",
+    unsplash("1541278107931-e006523892df"),
+    commons("Cards_-Deck_Playing.jpg"),
   ],
-  Marbles: [
-    "https://images.unsplash.com/photo-1687499466496-590c45852352?w=900&q=80",
+  "Playing cards": [commons("Playing_cards.jpg"), commons("Cards_-Deck_Playing.jpg")],
+  "Hanafuda / Karuta": [
+    commons("Hanafuda_Koi-Koi_Setup_1.jpg"),
+    commons("Nintendo_Hanafuda.jpg"),
+    commons("Karuta.jpg"),
   ],
-  "Kite flying": [
-    "https://images.unsplash.com/photo-1757743066599-193b467c35f1?w=900&q=80",
+  Hanafuda: [commons("Hanafuda_Koi-Koi_Setup_1.jpg"), commons("Nintendo_Hanafuda.jpg")],
+  "Uta-garuta": [commons("Karuta.jpg")],
+  Ganjifa: [
+    commons("Ganjifa_Cards,_Medieval_India_at_National_Musuem,_New_Delhi.jpg"),
   ],
+  "Dashavatara ganjifa": [
+    commons("Ganjifa_Cards,_Medieval_India_at_National_Musuem,_New_Delhi.jpg"),
+  ],
+  "Yo-yo": [
+    unsplash("1556309294-98916e0aaca7"),
+    commons("Yo_yo_toy.jpg"),
+    commons("Wooden_yo-yo.jpg"),
+  ],
+  "Rubik's Cube": [
+    unsplash("1540149678796-1a36342a1372"),
+    commons("Rubiks_cube_by_keqs.jpg"),
+  ],
+  Marbles: [unsplash("1687499466496-590c45852352"), commons("Glass_Marbles.jpg")],
+  "Kite flying": [unsplash("1757743066599-193b467c35f1"), commons("Kite.jpg")],
   Matryoshka: [
-    "https://images.unsplash.com/photo-1672092590672-3feb81f3123a?w=900&q=80",
+    unsplash("1672092590672-3feb81f3123a"),
+    commons("Matryoshka_dolls.jpg"),
   ],
-  Jenga: [
-    "https://images.unsplash.com/photo-1703000998518-021f436c0b03?w=900&q=80",
-  ],
-  Scrabble: [
-    "https://images.unsplash.com/photo-1671628586515-0e4d9456f291?w=900&q=80",
-  ],
+  Jenga: [unsplash("1703000998518-021f436c0b03"), commons("Jenga_distorted.jpg")],
+  Scrabble: [unsplash("1671628586515-0e4d9456f291"), commons("Scrabble_game.jpg")],
   "Building blocks": [
-    "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
+    unsplash("1587654780291-39c9404d746b"),
+    commons("A_pile_of_alphabet_wooden_blocks.jpg"),
+  ],
+  "Nine Men's Morris": [commons("Nine_Men's_Morris.svg")],
+  Morabaraba: [commons("Morabaraba.jpg"), commons("Nine_Men's_Morris.svg")],
+  Carrom: [commons("Carrom.jpg")],
+  Janggi: [commons("Janggi.jpg")],
+  Sittuyin: [commons("Sittuyin_PI.png")],
+  Makruk: [commons("Makruk_Thai_2.JPG")],
+  Dice: [commons("Dice.jpg")],
+  "Spinning top": [commons("Spinning_top.jpg")],
+  Tops: [commons("Spinning_top.jpg")],
+  Surakarta: [
+    commons("Board_game.jpg"),
+    commons("International_draughts.jpg"),
+    commons("Reversi.jpg"),
+  ],
+  Ganjifa: [
+    commons("Ganjifa_Cards,_Medieval_India_at_National_Musuem,_New_Delhi.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+    commons("Mahjong.jpg"),
+  ],
+  "Worry dolls": [commons("Kokeshi_dolls.jpg"), commons("Tin_soldier.jpg"), commons("Dollhouse.jpg")],
+  "Corn husk doll": [commons("Kokeshi_dolls.jpg"), commons("Hobby_horse.jpg"), commons("Tin_soldier.jpg")],
+  Chunkey: [
+    commons(
+      "George Catlin - Tchung-kee, a Mandan Game Played with a Ring and Pole - 1985.66.431 - Smithsonian American Art Museum.jpg",
+    ),
+    commons("Catlin Tchung-kee, a Mandan Game Played with a Ring and Pole 01.jpg"),
+    commons(
+      "Two young Yuma Indian men playing the pole and hoop game, ca.1900 (CHS-3509).jpg",
+    ),
+    commons("Stone discoidals Winterville HRoe 2010.jpg"),
+  ],
+  "Tea set toy": [commons("Dollhouse.jpg"), commons("Cup-and-ball.jpg"), commons("Maracas.jpg")],
+  "Frisbee / flying disc": [
+    commons("Frisbee-1.jpg"),
+    commons("Flying Disc - Ultimate Frisbee - World Games 2005 (1).jpg"),
+    commons("Frisbee Wurf Badeplatz.JPG"),
+  ],
+  "Hacky sack / footbag": [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Hacky_Sack.jpg")],
+  Knucklebones: [
+    commons("Knucklebones.jpg"),
+    commons("Astragaloi.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
+  Jacks: [
+    commons("Knucklebones.jpg"),
+    commons("Astragaloi.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
+  Shuttlecock: [commons("Shuttlecock.jpg")],
+  Jianzi: [commons("Jianzi.jpg")],
+  "Rag doll": [commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg")],
+  "Jump rope": [
+    commons("Ghanaian kid (skipping rope) 02.jpg"),
+    commons("Ghanaian kid (skipping rope) 01.jpg"),
+    commons("Ghanaian kid (skipping rope) 03.jpg"),
+  ],
+  Hnefatafl: [commons("Nefatafl_fra_Trondheim_(19896084560).jpg")],
+  "Fox and geese": [commons("The_fox_game.jpg")],
+  Alquerque: [commons("Alquerque_game_board.jpg")],
+  Gomoku: [commons("Gomoku-game-1.svg")],
+  Reversi: [commons("Reversi.jpg")],
+  Othello: [commons("Othello_board.jpg")],
+  Halma: [commons("Halma_board.jpg")],
+  "Chinese checkers": [commons("Chinese_checkers.jpg")],
+  "Peg solitaire": [commons("PegSolitaire.jpg")],
+  Tangram: [commons("Tangram-1.JPG")],
+  Draughts: [commons("International_draughts.jpg")],
+  Checkers: [commons("Checkers_board_in_a_cell_at_Alcatraz.jpg")],
+  // Parents / variations that previously fell through to wrong category photos
+  "Cat's cradle": [
+    commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
+  ],
+  Ayatori: [
+    commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
+  ],
+  "Sepak takraw": [commons("Sepak_takraw.jpg")],
+  "Sepak raga": [commons("Sepak_takraw.jpg")],
+  // Note: Commons File:Lacrosse.jpg is the MGM-18 missile — never use that name.
+  Lacrosse: [
+    commons("Lacrosse-Faceoff.jpg"),
+    commons("Mens Lax 1.jpg"),
+    commons("High School Lacrosse.jpg"),
+    commons("Lacrosse match.jpg"),
+    commons("Cornwall Ontario.jpg"),
+  ],
+  "Southeastern stickball": [
+    commons(
+      "George Catlin - Ball-play of the Choctaw--Ball Up - Google Art Project.jpg",
+    ),
+    commons("Ball players.jpg"),
+    commons("Ball play dance.jpg"),
+  ],
+  "Mesoamerican ballgame / Ulama": [
+    commons("Pok_ta_pok_ballgame_maya_indians_mexico_3.JPG"),
+  ],
+  "Ulama de cadera": [commons("Pok_ta_pok_ballgame_maya_indians_mexico_3.JPG")],
+  Kokeshi: [commons("Kokeshi_dolls.jpg")],
+  "Naruko kokeshi": [commons("Kokeshi_dolls.jpg")],
+  "Bilboquet / Balero / Kendama family": [
+    commons("Kendama.jpg"),
+    commons("Balero.jpg"),
+    commons("Bilboquet.jpg"),
+  ],
+  Kendama: [commons("Kendama.jpg")],
+  Balero: [commons("Balero.jpg")],
+  Bilboquet: [commons("Bilboquet.jpg")],
+  "Tug of war": [
+    commons("Tug_of_war.jpg"),
+    commons("Tug_of_war_competition.jpg"),
+    commons("Tug_of_war_2.jpg"),
+  ],
+  "Hide-and-seek": [commons("Children_playing_hide_and_seek.jpg")],
+  Sardines: [commons("Children_playing_hide_and_seek.jpg")],
+  Hopscotch: [commons("Hopscotch.jpg"), commons("Hopscotch_game.jpg")],
+  Rayuela: [commons("Hopscotch.jpg")],
+  Marelle: [commons("Hopscotch.jpg")],
+  "Snakes and Ladders": [
+    commons("Snakes_and_Ladders.jpg"),
+    commons("Gyan_Chaupar.jpg"),
+  ],
+  "Gyan Chaupar": [commons("Gyan_Chaupar.jpg"), commons("Jain_gyan_chaupar.JPG")],
+  "Chutes and Ladders": [commons("Snakes_and_Ladders.jpg")],
+  Monopoly: [
+    commons("Monopoly_board_game.jpg"),
+    commons("German_Monopoly_board_in_the_middle_of_a_game.jpg"),
+  ],
+  "The Landlord's Game": [commons("Monopoly_board_game.jpg")],
+  Diabolo: [commons("Diabolo.jpg"), commons("Chinese_yo-yo.jpg")],
+  Kongzhu: [commons("Chinese_yo-yo.jpg"), commons("Diabolo.jpg")],
+  "Kapu kuapu / Jackstraws / Spillikins": [commons("Pick-up_sticks.jpg")],
+  Mikado: [commons("Pick-up_sticks.jpg")],
+  "Buckingham Palace toy soldiers aside: Toy soldiers": [
+    commons("Tin_soldier.jpg"),
+    commons("Artig_Tin_Soldiers_Historical_miniatures_soldier_toy_figurine.jpg"),
+  ],
+  "Tin flats": [
+    commons("Tin_soldier.jpg"),
+    commons("Artig_Tin_Soldiers_Historical_miniatures_soldier_toy_figurine.jpg"),
+  ],
+  "Hacky sack / footbag": [commons("Footbag.jpg")],
+  "Chinese shuttlecock/footbag relatives": [
+    commons("Footbag.jpg"),
+    commons("Shuttlecock.jpg"),
   ],
 };
+
+/** Map catalog titles / stems onto CURATED_PHOTOS keys. */
+const PHOTO_ALIASES = {
+  "mancala sowing games": "Mancala sowing games",
+  mancala: "Mancala",
+  oware: "Oware",
+  congkak: "Congkak",
+  dakon: "Congkak",
+  sungka: "Congkak",
+  weiqi: "Go (Weiqi)",
+  go: "Go (Weiqi)",
+  "chinese chess": "Xiangqi",
+  xiangqi: "Xiangqi",
+  shogi: "Shogi",
+  janggi: "Janggi",
+  sittuyin: "Sittuyin",
+  makruk: "Makruk",
+  backgammon: "Backgammon",
+  senet: "Senet",
+  patolli: "Patolli",
+  pachisi: "Pachisi",
+  chaupar: "Pachisi",
+  ludo: "Ludo",
+  "parcheesi": "Pachisi",
+  mahjong: "Mahjong",
+  dominoes: "Dominoes",
+  "playing cards": "Playing cards",
+  chess: "Chess",
+  chaturanga: "Chaturanga",
+  "catur-anga": "Chaturanga",
+  shatranj: "Shatranj",
+  // Regional / nested names → nearest curated photo pool
+  baduk: "Go (Weiqi)",
+  igo: "Go (Weiqi)",
+  "chu shogi": "Shogi",
+  "english draughts / checkers": "Checkers",
+  "international draughts": "Draughts",
+  kharbaga: "Alquerque",
+  "twelve men's morris": "Nine Men's Morris",
+  nard: "Backgammon",
+  tavli: "Backgammon",
+  "shesh besh": "Backgammon",
+  "royal game of ur": "Royal Game of Ur",
+  "american mahjong": "Mahjong",
+  "hong kong mahjong": "Mahjong",
+  "riichi mahjong": "Mahjong",
+  "draw dominoes": "Dominoes",
+  "mexican train": "Dominoes",
+  "german-suited deck": "Playing cards",
+  "italian-suited deck": "Playing cards",
+  "spanish baraja": "Playing cards",
+  "hanafuda / karuta": "Hanafuda / Karuta",
+  hanafuda: "Hanafuda",
+  "uta-garuta": "Uta-garuta",
+  karuta: "Uta-garuta",
+  ganjifa: "Ganjifa",
+  "dashavatara ganjifa": "Dashavatara ganjifa",
+  jacks: "Knucklebones",
+  gonggi: "Knucklebones",
+  "five stones (otjinori relatives)": "Knucklebones",
+  trompo: "Spinning top",
+  lattoo: "Spinning top",
+  ttoli: "Spinning top",
+  koma: "Spinning top",
+  "đá cầu": "Jianzi",
+  jegichagi: "Jianzi",
+  bandalore: "Yo-yo",
+  "pocket cube (2×2)": "Rubik's Cube",
+  "revenge cube (4×4)": "Rubik's Cube",
+  othello: "Othello",
+  renju: "Gomoku",
+  "mensch ärgere dich nicht": "Ludo",
+  bao: "Mancala",
+  kalah: "Mancala",
+  ayoayo: "Oware",
+  gebeta: "Mancala",
+  pallanguzhi: "Mancala",
+  draughts: "Draughts",
+  checkers: "Checkers",
+  "english draughts": "Draughts",
+  carrom: "Carrom",
+  "karrom variant rules (southeast asia)": "Carrom",
+  "nine men's morris": "Nine Men's Morris",
+  mills: "Nine Men's Morris",
+  morabaraba: "Morabaraba",
+  umlabalaba: "Morabaraba",
+  "yo-yo": "Yo-yo",
+  yoyo: "Yo-yo",
+  "rubik's cube": "Rubik's Cube",
+  rubik: "Rubik's Cube",
+  marbles: "Marbles",
+  ringer: "Marbles",
+  kite: "Kite flying",
+  "kite flying": "Kite flying",
+  "patang fighter kites": "Kite flying",
+  "hamamatsu festival kites": "Kite flying",
+  pipas: "Kite flying",
+  matryoshka: "Matryoshka",
+  "nesting dolls": "Matryoshka",
+  jenga: "Jenga",
+  scrabble: "Scrabble",
+  "building blocks": "Building blocks",
+  blocks: "Building blocks",
+  "froebel gifts": "Building blocks",
+  "unit blocks": "Building blocks",
+  dice: "Dice",
+  "spinning top": "Spinning top",
+  top: "Spinning top",
+  tops: "Tops",
+  knucklebones: "Knucklebones",
+  shuttlecock: "Shuttlecock",
+  jianzi: "Jianzi",
+  "jianzi (shuttlecock kicking)": "Jianzi",
+  "rag doll": "Rag doll",
+  doll: "Rag doll",
+  "jump rope": "Jump rope",
+  "skipping rope": "Jump rope",
+  hnefatafl: "Hnefatafl",
+  tafl: "Hnefatafl",
+  tablut: "Hnefatafl",
+  brandub: "Hnefatafl",
+  "fox and geese": "Fox and geese",
+  "cercar la liebre": "Fox and geese",
+  "hyena game": "Fox and geese",
+  alquerque: "Alquerque",
+  gomoku: "Gomoku",
+  "go bang / gomoku": "Gomoku",
+  reversi: "Reversi",
+  "reversi / othello": "Reversi",
+  halma: "Halma",
+  "chinese checkers": "Chinese checkers",
+  "peg solitaire": "Peg solitaire",
+  tangram: "Tangram",
+  "cat's cradle": "Cat's cradle",
+  ayatori: "Ayatori",
+  "hawaiian / polynesian figures": "Cat's cradle",
+  "sepak takraw": "Sepak takraw",
+  "sepak raga": "Sepak raga",
+  lacrosse: "Lacrosse",
+  "southeastern stickball": "Southeastern stickball",
+  "mesoamerican ballgame / ulama": "Mesoamerican ballgame / Ulama",
+  ulama: "Mesoamerican ballgame / Ulama",
+  "ulama de cadera": "Ulama de cadera",
+  kokeshi: "Kokeshi",
+  "naruko kokeshi": "Naruko kokeshi",
+  "bilboquet / balero / kendama family": "Bilboquet / Balero / Kendama family",
+  kendama: "Kendama",
+  balero: "Balero",
+  bilboquet: "Bilboquet",
+  "tug of war": "Tug of war",
+  "japanese tsunahiki festival forms": "Tug of war",
+  "korean juldarigi": "Tug of war",
+  "hide-and-seek": "Hide-and-seek",
+  sardines: "Sardines",
+  hopscotch: "Hopscotch",
+  rayuela: "Rayuela",
+  marelle: "Marelle",
+  "snakes and ladders": "Snakes and Ladders",
+  "gyan chaupar": "Gyan Chaupar",
+  "chutes and ladders": "Chutes and Ladders",
+  monopoly: "Monopoly",
+  "the landlord's game": "The Landlord's Game",
+  diabolo: "Diabolo",
+  kongzhu: "Kongzhu",
+  "kapu kuapu / jackstraws / spillikins": "Kapu kuapu / Jackstraws / Spillikins",
+  mikado: "Mikado",
+  jackstraws: "Kapu kuapu / Jackstraws / Spillikins",
+  spillikins: "Kapu kuapu / Jackstraws / Spillikins",
+  "buckingham palace toy soldiers aside: toy soldiers":
+    "Buckingham Palace toy soldiers aside: Toy soldiers",
+  "toy soldiers": "Buckingham Palace toy soldiers aside: Toy soldiers",
+  "tin flats": "Tin flats",
+  "hacky sack / footbag": "Hacky sack / footbag",
+  "hacky sack": "Hacky sack / footbag",
+  footbag: "Hacky sack / footbag",
+  "chinese shuttlecock/footbag relatives": "Chinese shuttlecock/footbag relatives",
+  bul: "Patolli",
+};
+
+/**
+ * Category cover pools — reused across many catalog entries so cards never
+ * fall back to an empty gradient when a title-specific photo is missing.
+ */
+const CATEGORY_PHOTOS = {
+  "Strategy & War": [
+    unsplash("1528819622765-d6bcf132f793"),
+    commons("Xiangqi_01.jpg"),
+    commons("Shogi-Set-06.JPG"),
+    commons("International_draughts.jpg"),
+    commons("Alquerque_game_board.jpg"),
+  ],
+  "Board & Race": [
+    commons("Backgammon_board_-_01.jpg"),
+    commons("Pachisi-real.jpg"),
+    commons("Ludo_board.svg"),
+    commons("Senet_(47429946982).jpg"),
+    commons("Patolli.jpg"),
+  ],
+  "Mancala & Sowing": [
+    commons("Mancala.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+    commons("Oware.jpg"),
+    commons("Congkak.jpg"),
+    commons("Brooklyn_Museum_22.239_Mancala_Game_Board.jpg"),
+  ],
+  "Cards & Tiles": [
+    unsplash("1742343886931-14ea96977531"),
+    unsplash("1541278107931-e006523892df"),
+    commons("Domino_--_2021_--_6766.jpg"),
+    commons("UCB_Mahjong_Tiles.png"),
+    commons("Cards_-Deck_Playing.jpg"),
+  ],
+  "Dice & Chance": [
+    commons("Dice.jpg"),
+    commons("Backgammon_board_-_01.jpg"),
+    unsplash("1566694271453-390536dd1f0d"),
+  ],
+  "String & Finger": [
+    commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+    unsplash("1556309294-98916e0aaca7"),
+  ],
+  "Dolls & Figures": [
+    commons("Matryoshka_dolls.jpg"),
+    commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+  ],
+  "Ball & Sport": [
+    commons("Jianzi.jpg"),
+    commons("Shuttlecock.jpg"),
+    commons("Glass_Marbles.jpg"),
+  ],
+  "Spinning & Tops": [
+    commons("Spinning_top.jpg"),
+    commons("Yo_yo_toy.jpg"),
+    unsplash("1556309294-98916e0aaca7"),
+  ],
+  "Puzzles & Skill": [
+    commons("Tangram-1.JPG"),
+    commons("Rubiks_cube_by_keqs.jpg"),
+    commons("PegSolitaire.jpg"),
+    unsplash("1540149678796-1a36342a1372"),
+  ],
+  "Outdoor Folk": [
+    commons("Kite.jpg"),
+    commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+    commons("Jianzi.jpg"),
+  ],
+  "Musical Play": [commons("Dice.jpg"), commons("Knucklebones.jpg")],
+  Construction: [
+    commons("A_pile_of_alphabet_wooden_blocks.jpg"),
+    commons("Jenga_distorted.jpg"),
+    unsplash("1587654780291-39c9404d746b"),
+  ],
+  "Ritual & Ceremony": [
+    commons("Senet_game_pieces_(Tutankhamun).jpg"),
+    commons("Patolli.jpg"),
+  ],
+  "Memory & Word": [commons("Scrabble_game.jpg"), commons("Cards_-Deck_Playing.jpg")],
+};
+
+/**
+ * Extra exclusive photos for regional matrix entries. Each URL is claimed at
+ * most once — never shared across two games or variations.
+ */
+const EXTRA_UNIQUE_PHOTOS = [
+  commons("Hopscotch.jpg"),
+  commons("Tug_of_war.jpg"),
+  commons("Boomerang.jpg"),
+  commons("Kokeshi.jpg"),
+  commons("Corn_husk_doll.jpg"),
+  commons("Sepak_takraw.jpg"),
+  commons("Diabolo.jpg"),
+  commons("Soma_cube.jpg"),
+  commons("Tower_of_Hanoi.jpg"),
+  commons("Maracas.jpg"),
+  commons("Rattle_(percussion).jpg"),
+  commons("Lego_bricks.jpg"),
+  commons("Rock-paper-scissors.jpg"),
+  commons("Nine_Men%27s_Morris.jpg"),
+  commons("Royal_Game_of_Ur.jpg"),
+  commons("Snakes_and_ladders.jpg"),
+  commons("Chinese_checkers.jpg"),
+  commons("Gomoku.jpg"),
+  commons("Reversi.jpg"),
+  commons("Mahjong.jpg"),
+  commons("Playing_cards.jpg"),
+  commons("Jigsaw_puzzle.jpg"),
+  commons("Cup-and-ball.jpg"),
+  commons("Kendama.jpg"),
+  commons("Origami.jpg"),
+  commons("Paper_airplane.jpg"),
+  commons("Stilts.jpg"),
+  commons("Hula_hoop.jpg"),
+  commons("Pinwheel_(toy).jpg"),
+  commons("Soap_bubbles.jpg"),
+  commons("Teddy_bear.jpg"),
+  commons("Rocking_horse.jpg"),
+  commons("Hobby_horse.jpg"),
+  commons("Toy_soldiers.jpg"),
+  commons("Dollhouse.jpg"),
+  commons("Wayang_kulit.jpg"),
+  commons("Shadow_puppet.jpg"),
+  commons("Hand_puppet.jpg"),
+  commons("Frisbee.jpg"),
+  commons("Darts.jpg"),
+  commons("Croquet.jpg"),
+  commons("Boules.jpg"),
+  commons("Pétanque.jpg"),
+  commons("Bocce.jpg"),
+  commons("Table_tennis.jpg"),
+  commons("Badminton.jpg"),
+  commons("Archery.jpg"),
+  commons("Slingshot.jpg"),
+  commons("Hacky_sack.jpg"),
+  commons("Bean_bag.jpg"),
+  commons("Pogo_stick.jpg"),
+  commons("Unicycle.jpg"),
+  commons("Juggler.jpg"),
+  commons("Piñata.jpg"),
+  commons("Musical_chairs.jpg"),
+  commons("Tag_(game).jpg"),
+  commons("Dodgeball.jpg"),
+  commons("Sack_race.jpg"),
+  commons("Board_game.jpg"),
+  commons("Connect_Four.jpg"),
+  commons("Battleship_(game).jpg"),
+  commons("Twister_(game).jpg"),
+  commons("Yahtzee.jpg"),
+  commons("Bingo_(game).jpg"),
+  commons("Crossword.jpg"),
+  commons("Sudoku.jpg"),
+  commons("Kaleidoscope.jpg"),
+  commons("Whistle.jpg"),
+  commons("Drum_(musical_instrument).jpg"),
+  commons("Flute.jpg"),
+  commons("Toy_car.jpg"),
+  commons("Toy_train.jpg"),
+  commons("Pull_toy.jpg"),
+  commons("Balloon.jpg"),
+  commons("Carousel.jpg"),
+  commons("Seesaw.jpg"),
+  commons("Swing_(seat).jpg"),
+  commons("Sandbox.jpg"),
+  commons("Snowman.jpg"),
+  commons("Sandcastle.jpg"),
+  commons("Cat%27s_cradle.jpg"),
+  commons("Jump_rope.jpg"),
+  commons("Skipping_rope.jpg"),
+  commons("Children_playing_marbles.jpg"),
+  commons("Children_with_kites.jpg"),
+  commons("Wooden_toys.jpg"),
+  commons("Fox_and_geese.jpg"),
+  commons("Halma.jpg"),
+  commons("Hnefatafl.jpg"),
+  commons("Makruk.jpg"),
+  commons("Janggi.jpg"),
+  commons("Sittuyin.jpg"),
+  commons("Chaturaji.jpg"),
+  commons("Mehen_(game).jpg"),
+  commons("Aseb.jpg"),
+  commons("Tabula_(game).jpg"),
+  commons("Latrunculi.jpg"),
+  commons("Abalone_(board_game).jpg"),
+  commons("Blokus.jpg"),
+  commons("Rummikub.jpg"),
+  commons("Cribbage.jpg"),
+  commons("Euchre.jpg"),
+  commons("Canasta.jpg"),
+  commons("Gin_rummy.jpg"),
+  commons("Liar%27s_dice.jpg"),
+  commons("Farkle.jpg"),
+  commons("Bunco.jpg"),
+  commons("Foosball.jpg"),
+  commons("Air_hockey.jpg"),
+  commons("Pinball.jpg"),
+  commons("Claw_crane.jpg"),
+  commons("Arcade_game.jpg"),
+  commons("Carnival_game.jpg"),
+  commons("Ring_toss.jpg"),
+  commons("Horseshoes_(game).jpg"),
+  commons("Quoits.jpg"),
+  commons("Lawn_bowls.jpg"),
+  commons("Curling.jpg"),
+  commons("Hurling.jpg"),
+  commons("Polo.jpg"),
+  commons("Chinlone.jpg"),
+  commons("Cuju.jpg"),
+  commons("Space_hopper.jpg"),
+  commons("Trampoline.jpg"),
+  commons("Skateboard.jpg"),
+  commons("Roller_skates.jpg"),
+  commons("Sled.jpg"),
+  commons("Wagon.jpg"),
+  commons("Xylophone.jpg"),
+  commons("Wind_chime.jpg"),
+  commons("Jumping_jack_(toy).jpg"),
+  commons("Bilboquet.jpg"),
+  commons("Paper_boat.jpg"),
+  commons("Hide_and_seek.jpg"),
+  commons("Red_rover.jpg"),
+  commons("Simon_Says.jpg"),
+  commons("Capture_the_flag.jpg"),
+  commons("Three-legged_race.jpg"),
+  commons("Egg_and_spoon_race.jpg"),
+  commons("Memory_(game).jpg"),
+  commons("PegSolitaire.jpg"),
+  commons("International_draughts.jpg"),
+  commons("Alquerque_game_board.jpg"),
+  commons("Bao_la_mjini_board.jpg"),
+  commons("Sungka.jpg"),
+  commons("Oware.jpg"),
+  commons("Wooden_Mancala_board.jpg"),
+  commons("Pachisi-real.jpg"),
+  commons("Ludo_board.svg"),
+  commons("Senet_(47429946982).jpg"),
+  commons("Shogi_ban.jpg"),
+  commons("Xiangqi-Chinese-chess.jpg"),
+  commons("Go_(13×13)_--_2021_--_6741.jpg"),
+  commons("Wooden_Chess_Board.jpg"),
+  commons("Opening_chess_position_from_black_side.jpg"),
+  commons("Chathurangam-1.jpg"),
+  commons("Persian_Tamerlane_Chess_Set.png"),
+  commons("Matryoshka_dolls.jpg"),
+  commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+  commons("Spinning_top.jpg"),
+  commons("Yo_yo_toy.jpg"),
+  commons("Glass_Marbles.jpg"),
+  commons("Shuttlecock.jpg"),
+  commons("Jianzi.jpg"),
+  commons("Kite.jpg"),
+  commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+  commons("Knucklebones.jpg"),
+  commons("Dice.jpg"),
+  commons("Scrabble_game.jpg"),
+  commons("Cards_-Deck_Playing.jpg"),
+  commons("UCB_Mahjong_Tiles.png"),
+  commons("Domino_--_2021_--_6766.jpg"),
+  commons("A_pile_of_alphabet_wooden_blocks.jpg"),
+  commons("Jenga_distorted.jpg"),
+  commons("Tangram-1.JPG"),
+  commons("Rubiks_cube_by_keqs.jpg"),
+  commons("Senet_game_pieces_(Tutankhamun).jpg"),
+  commons("Patolli.jpg"),
+  commons("Backgammon_board_-_01.jpg"),
+  commons("Mancala.jpg"),
+  commons("Congkak.jpg"),
+  commons("Brooklyn_Museum_22.239_Mancala_Game_Board.jpg"),
+  commons("Xiangqi_01.jpg"),
+  commons("Shogi-Set-06.JPG"),
+  unsplash("1528819622765-d6bcf132f793"),
+  unsplash("1586165368502-1bad197a6461"),
+  unsplash("1774234528903-f520d964ba13"),
+  unsplash("1771588330614-2ce1d77588ca"),
+  unsplash("1763901682710-a18f6a7d9531"),
+  unsplash("1742343886931-14ea96977531"),
+  unsplash("1541278107931-e006523892df"),
+  unsplash("1566694271453-390536dd1f0d"),
+  unsplash("1556309294-98916e0aaca7"),
+  unsplash("1540149678796-1a36342a1372"),
+  unsplash("1587654780291-39c9404d746b"),
+  unsplash("1687499466496-590c45852352"),
+  unsplash("1757743066599-193b467c35f1"),
+  unsplash("1672092590672-3feb81f3123a"),
+  unsplash("1703000998518-021f436c0b03"),
+  unsplash("1671628586515-0e4d9456f291"),
+];
 
 const PURCHASE = {
   chess: [
@@ -164,7 +1022,7 @@ const PURCHASE = {
   go: [
     { platform: "Amazon", label: "Go Set with Stones (Amazon US)", url: "https://www.amazon.com/dp/B00004D2Q2" },
     { platform: "Amazon JP", label: "Go Board Set (Amazon Japan)", url: "https://www.amazon.co.jp/dp/B00GQZQZ6Y" },
-    { platform: "Yellow Mountain Imports", label: "Melamine Go Stones Set", url: "https://www.ymimports.com/products/go-set-melamine-stones" },
+    { platform: "Yellow Mountain Imports", label: "Melamine Go Stones Set", url: "https://www.ymimports.com/products/us-sf002-a" },
   ],
   mancala: [
     { platform: "Amazon", label: "Folding Mancala Board (Amazon US)", url: "https://www.amazon.com/dp/B00004YOXI" },
@@ -184,7 +1042,7 @@ const PURCHASE = {
   dice: [
     { platform: "Amazon", label: "Polyhedral Dice Set (Amazon US)", url: "https://www.amazon.com/dp/B00U26V4VQ" },
     { platform: "Amazon UK", label: "Wooden Dice Set (Amazon UK)", url: "https://www.amazon.co.uk/dp/B01N5OKH1N" },
-    { platform: "Etsy", label: "Handcrafted Wooden Dice (Etsy)", url: "https://www.etsy.com/market/wooden_dice_set" },
+    { platform: "Etsy", label: "Handcrafted Olive Wooden Dice (Etsy)", url: "https://www.etsy.com/listing/4332612285/olive-wooden-dice-for-root-board-game" },
   ],
   backgammon: [
     { platform: "Amazon", label: "Backgammon Set (Amazon US)", url: "https://www.amazon.com/dp/B00004TKSX" },
@@ -203,7 +1061,7 @@ const PURCHASE = {
   ],
   top: [
     { platform: "Amazon", label: "Wooden Spinning Tops Set (Amazon US)", url: "https://www.amazon.com/dp/B01N4VCZXF" },
-    { platform: "Etsy", label: "Hand-Turned Wooden Top (Etsy)", url: "https://www.etsy.com/market/wooden_spinning_top" },
+    { platform: "Etsy", label: "Mexican Mesquite Trompos (Etsy)", url: "https://www.etsy.com/listing/4358886269/mexican-trompos-mesquite-wood-2-pack" },
     { platform: "Amazon JP", label: "Traditional Japanese Top (Amazon JP)", url: "https://www.amazon.co.jp/dp/B00B1M0Y0I" },
   ],
   kite: [
@@ -213,7 +1071,7 @@ const PURCHASE = {
   ],
   doll: [
     { platform: "Amazon", label: "Waldorf-Style Cloth Doll (Amazon US)", url: "https://www.amazon.com/dp/B07D7X5Z8K" },
-    { platform: "Etsy", label: "Handcrafted Folk Doll (Etsy)", url: "https://www.etsy.com/market/handmade_rag_doll" },
+    { platform: "Etsy", label: "Handmade African Print Rag Doll (Etsy)", url: "https://www.etsy.com/listing/1555427246/handmade-african-print-rag-doll" },
     { platform: "Amazon UK", label: "Traditional Rag Doll (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00E8JQY6Y" },
   ],
   marbles: [
@@ -239,17 +1097,17 @@ const PURCHASE = {
   shuttlecock: [
     { platform: "Amazon", label: "Jianzi Shuttlecock (Amazon US)", url: "https://www.amazon.com/dp/B07B4QXK8R" },
     { platform: "Amazon UK", label: "Chinese Feather Shuttlecock (Amazon UK)", url: "https://www.amazon.co.uk/dp/B07B4QXK8R" },
-    { platform: "AliExpress", label: "Traditional Feather Jianzi", url: "https://www.aliexpress.com/w/wholesale-jianzi.html" },
+    { platform: "Amazon", label: "Feather Kick Shuttlecock Jianzi 5-Pack (Amazon US)", url: "https://www.amazon.com/dp/B094N7H92L" },
   ],
   xiangqi: [
     { platform: "Amazon", label: "Xiangqi Chinese Chess Set (Amazon US)", url: "https://www.amazon.com/dp/B000WQZ6YI" },
     { platform: "Amazon UK", label: "Xiangqi Folding Board (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0013L1Y0E" },
-    { platform: "Yellow Mountain Imports", label: "Xiangqi Magnetic Travel Set", url: "https://www.ymimports.com/collections/xiangqi" },
+    { platform: "Yellow Mountain Imports", label: "Xiangqi Magnetic Travel Set", url: "https://www.ymimports.com/products/ub-cc002-a" },
   ],
   shogi: [
     { platform: "Amazon", label: "Shogi Set (Amazon US)", url: "https://www.amazon.com/dp/B000P0Z6YI" },
     { platform: "Amazon JP", label: "Shogi Set (Amazon JP)", url: "https://www.amazon.co.jp/dp/B000FQJQZQ" },
-    { platform: "Yellow Mountain Imports", label: "Shogi Pieces Set", url: "https://www.ymimports.com/collections/shogi" },
+    { platform: "Yellow Mountain Imports", label: "Shogi Magnetic Travel Set", url: "https://www.ymimports.com/products/ub-sh004-a" },
   ],
   carrom: [
     { platform: "Amazon", label: "Carrom Board (Amazon US)", url: "https://www.amazon.com/dp/B00KQK8Z0Y" },
@@ -258,12 +1116,12 @@ const PURCHASE = {
   ],
   generic_board: [
     { platform: "Amazon", label: "Classic Wooden Board Game (Amazon US)", url: "https://www.amazon.com/dp/B07YRJF3S7" },
-    { platform: "Etsy", label: "Artisan Handcrafted Board Game (Etsy)", url: "https://www.etsy.com/market/handmade_board_game" },
+    { platform: "Etsy", label: "Walnut Mancala Board (Etsy)", url: "https://www.etsy.com/listing/1695550412/walnut-stained-mancala-board-everyday" },
     { platform: "Amazon UK", label: "Traditional Board Game (Amazon UK)", url: "https://www.amazon.co.uk/dp/B000P99X7G" },
   ],
   generic_toy: [
     { platform: "Amazon", label: "Traditional Wooden Toy (Amazon US)", url: "https://www.amazon.com/dp/B01N4VCZXF" },
-    { platform: "Etsy", label: "Folk Craft Toy (Etsy)", url: "https://www.etsy.com/market/folk_toy" },
+    { platform: "Etsy", label: "Bilboquet Cup and Ball (Etsy)", url: "https://www.etsy.com/listing/4478059814/bilboquet-cup-and-ball-game" },
     { platform: "Amazon UK", label: "Heritage Wooden Toy (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0000C9Z8T" },
   ],
   outdoor: [
@@ -274,7 +1132,7 @@ const PURCHASE = {
   music: [
     { platform: "Amazon", label: "Children's Percussion Toy (Amazon US)", url: "https://www.amazon.com/dp/B00005ML7Q" },
     { platform: "Amazon UK", label: "Wooden Musical Toy (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00005ML7Q" },
-    { platform: "Etsy", label: "Handcrafted Folk Rattle (Etsy)", url: "https://www.etsy.com/market/wooden_rattle" },
+    { platform: "Etsy", label: "Wooden Animal Baby Rattles (Etsy)", url: "https://www.etsy.com/listing/773722828/animal-baby-rattles-set-of-2-3-or-4" },
   ],
 };
 
@@ -302,6 +1160,16 @@ function encodeLudusCard(name, category, originCountry) {
   return `ludus-card:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}`;
 }
 
+/** Unique gallery panel ref — one visual per game×view, never shared. */
+function encodeLudusView(name, category, originCountry, viewIndex, seed) {
+  return `ludus-view:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}|${viewIndex}|${encodeURIComponent(seed)}`;
+}
+
+/** Total images per entry (title card + photos + unique views). */
+const GALLERY_TARGET = 6;
+/** Cap exclusive stock photos so room remains for unique gallery views. */
+const PHOTO_TARGET = 3;
+
 function tagsForEntry(name, archetypeKey) {
   if (archetypeKey && ARCHETYPE_TAGS[archetypeKey]) return ARCHETYPE_TAGS[archetypeKey];
   // Strip regional suffix from matrix-style titles
@@ -317,80 +1185,361 @@ function tagsForEntry(name, archetypeKey) {
  * Global image bank: unique sets per entry; primary image is a named title card;
  * follow-on photos use toy-specific tags (never a wrong sibling game’s keywords).
  */
-const imageBank = {
-  /** @type {Set<string>} */
-  usedUrls: new Set(),
-  /** @type {Set<string>} */
-  usedSets: new Set(),
-  serial: 0,
+/** Resolve a catalog name to a CURATED_PHOTOS key (exact, alias, or stem). */
+function resolvePhotoKey(name) {
+  if (!name) return null;
+  if (CURATED_PHOTOS[name]?.length) return name;
+  const lower = name.toLowerCase().trim();
+  if (PHOTO_ALIASES[lower] && CURATED_PHOTOS[PHOTO_ALIASES[lower]]?.length) {
+    return PHOTO_ALIASES[lower];
+  }
+  // Strip regional / parenthetical suffixes: "Go (Weiqi)", "Chess — Persian"
+  const stem = lower
+    .replace(/\s+[—–-]\s+.*$/, "")
+    .replace(/\s*\([^)]*\)\s*/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (PHOTO_ALIASES[stem] && CURATED_PHOTOS[PHOTO_ALIASES[stem]]?.length) {
+    return PHOTO_ALIASES[stem];
+  }
+  for (const [alias, key] of Object.entries(PHOTO_ALIASES)) {
+    if (stem.includes(alias) && CURATED_PHOTOS[key]?.length) return key;
+  }
+  // Title-case stem match against curated keys
+  for (const key of Object.keys(CURATED_PHOTOS)) {
+    if (key.toLowerCase() === stem) return key;
+  }
+  return null;
+}
 
-  takeCuratedPhoto(gameName) {
-    const pool = CURATED_PHOTOS[gameName];
+/** Map matrix archetypes onto curated photo keys so they share one lineage. */
+const ARCHETYPE_CURATED_ALIAS = {
+  jump_rope: "Jump rope",
+  jacks_local: "Knucklebones",
+  kite_local: "Kite flying",
+  top_local: "Spinning top",
+  ball_sewn: "Hacky sack / footbag",
+};
+
+/** Lineage key so regional variants of the same toy may share photos. */
+function photoLineage(name, archetypeKey, parentName) {
+  const curated =
+    resolvePhotoKey(name) ||
+    (parentName ? resolvePhotoKey(parentName) : null) ||
+    (archetypeKey && ARCHETYPE_CURATED_ALIAS[archetypeKey]
+      ? resolvePhotoKey(ARCHETYPE_CURATED_ALIAS[archetypeKey])
+      : null) ||
+    (archetypeKey ? resolvePhotoKey(archetypeKey) : null);
+  if (curated) return `curated:${curated}`;
+  if (archetypeKey) return `arch:${archetypeKey}`;
+  const stem = String(name || "")
+    .replace(/\s+[—–-]\s+.*$/, "")
+    .replace(/\s*\([^)]*\)\s*/g, " ")
+    .trim()
+    .toLowerCase();
+  return `stem:${stem || "unknown"}`;
+}
+
+/**
+ * Thematic photo banks for regional matrix archetypes.
+ * Only verified-live Commons / Unsplash URLs (checked in generate).
+ */
+const ARCHETYPE_PHOTOS = {
+  rattle: [commons("Maracas.jpg"), commons("Xylophone.jpg"), commons("Cup-and-ball.jpg")],
+  whistle_toy: [commons("Flute.jpg"), commons("Xylophone.jpg"), commons("Maracas.jpg")],
+  pull_toy: [commons("Wagon.jpg"), commons("Hobby_horse.jpg"), commons("Lego_bricks.jpg")],
+  mini_weapons_toy: [commons("Archery.jpg"), commons("Slingshot.jpg"), commons("Quoits.jpg")],
+  jacks_local: [
+    commons("Knucklebones.jpg"),
+    commons("Astragaloi.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
+  story_dice_oral: [
+    commons("Domino_--_2021_--_6766.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+    commons("Scrabble_game.jpg"),
+  ],
+  shadow_play: [commons("Wayang_kulit.jpg"), commons("Bilboquet.jpg"), commons("Kendama.jpg")],
+  kite_local: [
+    commons("Kite.jpg"),
+    unsplash("1757743066599-193b467c35f1"),
+    commons("Paper_boat.jpg"),
+  ],
+  cloth_doll_local: [
+    commons("Kokeshi_dolls.jpg"),
+    commons("Tin_soldier.jpg"),
+    commons("Hobby_horse.jpg"),
+  ],
+  ball_sewn: [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Seesaw.jpg")],
+  top_local: [commons("Spinning_top.jpg"), commons("Yo_yo_toy.jpg"), commons("Diabolo.jpg")],
+  string_local: [
+    commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
+    commons("Cup-and-ball.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
+  board_race_folk: [
+    commons("Board_game.jpg"),
+    commons("Pachisi-real.jpg"),
+    commons("Snakes_and_Ladders.jpg"),
+  ],
+  sowing_local: [
+    commons("Mancala.jpg"),
+    commons("Oware.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+  ],
+  jump_rope: [
+    commons("Ghanaian kid (skipping rope) 04.jpg"),
+    commons("Ghanaian kid (skipping rope) 05.jpg"),
+    commons("Ghanaian kid (skipping rope) 06.jpg"),
+  ],
+  blindfold_tag: [
+    commons("Blind_man's_bluff.jpg"),
+    commons("Children_playing_hide_and_seek.jpg"),
+    commons("Hide_and_seek.jpg"),
+  ],
+  wrestling_play: [
+    commons("Wrestling.jpg"),
+    commons("Traditional_wrestling.jpg"),
+    commons("Tug_of_war.jpg"),
+  ],
+  memory_song: [
+    commons("Circle_game.jpg"),
+    commons("Scrabble_game.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+  ],
+  balance_stilts: [commons("Stilts.jpg"), commons("Unicycle.jpg"), commons("Seesaw.jpg")],
+  leaf_boat: [commons("Paper_boat.jpg"), commons("Kite.jpg"), commons("Seesaw.jpg")],
+  snow_or_sand: [commons("Sandcastle.jpg"), commons("Seesaw.jpg"), commons("Board_game.jpg")],
+  knuckle_football: [
+    commons("Sepak_takraw.jpg"),
+    commons("Jianzi.jpg"),
+    commons("International_draughts.jpg"),
+  ],
+  riddle_local: [
+    commons("Circle_game.jpg"),
+    commons("Scrabble_game.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+  ],
+  ceremonial_toy: [commons("Maracas.jpg"), commons("Wayang_kulit.jpg"), commons("Patolli.jpg")],
+  puzzle_knot: [
+    commons("Pick-up_sticks.jpg"),
+    commons("Jenga_distorted.jpg"),
+    commons("Lego_bricks.jpg"),
+  ],
+  mini_house: [commons("Dollhouse.jpg"), commons("Hobby_horse.jpg"), commons("Tin_soldier.jpg")],
+};
+
+/** All hand-curated photo URLs — kept out of the spillover bank. */
+const CURATED_URL_SET = new Set(
+  Object.values(CURATED_PHOTOS).flatMap((pool) => pool || []),
+);
+
+/** Archetype thematic URLs — also reserved from anonymous spillover. */
+const ARCHETYPE_URL_SET = new Set(
+  Object.values(ARCHETYPE_PHOTOS).flatMap((pool) => pool || []),
+);
+
+/** Spillover bank with curated + archetype URLs removed. */
+const EXTRA_PHOTOS = EXTRA_UNIQUE_PHOTOS.filter(
+  (u) => !CURATED_URL_SET.has(u) && !ARCHETYPE_URL_SET.has(u),
+);
+
+const imageBank = {
+  /** Synthetic card/view refs already issued. */
+  usedRefs: new Set(),
+  /** @type {Map<string, string>} photo URL → lineage that owns it */
+  urlOwner: new Map(),
+  /** @type {Map<string, number>} */
+  poolCursor: new Map(),
+  /** @type {number} */
+  extraCursor: 0,
+
+  /**
+   * Stem-scoped claim: prefer exclusive ownership per lineage. When `soft` is
+   * set, allow visual reuse so galleries stay filled after the stock is gone.
+   */
+  claimForLineage(url, lineage, soft = false) {
+    if (!url || !lineage) return null;
+    const owner = this.urlOwner.get(url);
+    if (owner && owner !== lineage) {
+      return soft ? url : null;
+    }
+    this.urlOwner.set(url, lineage);
+    return url;
+  },
+
+  pickUnusedFromPool(pool, lineage, avoid, cursorKey, salt = "0") {
     if (!pool?.length) return null;
-    while (pool.length) {
-      const url = pool.shift();
-      if (!this.usedUrls.has(url)) {
-        this.usedUrls.add(url);
-        return url;
+    const start = (this.poolCursor.get(cursorKey) || hash(salt)) % pool.length;
+    const tryPass = (soft) => {
+      for (let i = 0; i < pool.length; i++) {
+        const url = pool[(start + i) % pool.length];
+        if (avoid.has(url)) continue;
+        const lineageOk =
+          String(lineage).startsWith("curated:") ||
+          String(lineage).startsWith("arch:");
+        if (
+          CURATED_URL_SET.has(url) &&
+          !cursorKey.startsWith("curated:") &&
+          !lineageOk
+        ) {
+          continue;
+        }
+        if (
+          ARCHETYPE_URL_SET.has(url) &&
+          !cursorKey.startsWith("arch:") &&
+          !cursorKey.startsWith("curated:") &&
+          !lineageOk
+        ) {
+          continue;
+        }
+        const claimed = this.claimForLineage(url, lineage, soft);
+        if (claimed) {
+          this.poolCursor.set(cursorKey, (start + i + 1) % pool.length);
+          return claimed;
+        }
+      }
+      return null;
+    };
+    return tryPass(false) || tryPass(true);
+  },
+
+  takeCuratedPhoto(gameName, lineage, avoid) {
+    const key = resolvePhotoKey(gameName);
+    if (!key) return null;
+    return this.pickUnusedFromPool(
+      CURATED_PHOTOS[key],
+      lineage,
+      avoid,
+      `curated:${key}`,
+      key,
+    );
+  },
+
+  takeArchetypePhoto(archetypeKey, lineage, avoid) {
+    if (!archetypeKey) return null;
+    return this.pickUnusedFromPool(
+      ARCHETYPE_PHOTOS[archetypeKey],
+      lineage,
+      avoid,
+      `arch:${archetypeKey}`,
+      archetypeKey,
+    );
+  },
+
+  takeCategoryPhoto(category, lineage, avoid, salt) {
+    return this.pickUnusedFromPool(
+      CATEGORY_PHOTOS[category],
+      lineage,
+      avoid,
+      `cat:${category}`,
+      salt,
+    );
+  },
+
+  takeExtraPhoto(lineage, avoid, salt) {
+    if (!EXTRA_PHOTOS.length) return null;
+    const start = (this.extraCursor + hash(salt)) % EXTRA_PHOTOS.length;
+    for (let i = 0; i < EXTRA_PHOTOS.length; i++) {
+      const url = EXTRA_PHOTOS[(start + i) % EXTRA_PHOTOS.length];
+      if (avoid.has(url)) continue;
+      const claimed = this.claimForLineage(url, lineage);
+      if (claimed) {
+        this.extraCursor = (start + i + 1) % EXTRA_PHOTOS.length;
+        return claimed;
       }
     }
     return null;
   },
 
-  thematicUrl(tags, token) {
-    this.serial += 1;
-    return `https://loremflickr.com/900/600/${tags}?lock=${hash(`${token}:${this.serial}`)}`;
-  },
-
-  takeThematic(tags, token) {
-    for (let attempt = 0; attempt < 12; attempt++) {
-      const url = this.thematicUrl(tags, `${token}:t${attempt}`);
-      if (!this.usedUrls.has(url)) {
-        this.usedUrls.add(url);
-        return url;
-      }
-    }
-    const url = `https://picsum.photos/seed/${slugify(token)}-${this.serial}/900/600`;
-    this.usedUrls.add(url);
-    return url;
-  },
-
   /**
-   * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string }} opts
+   * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string, parentName?: string }} opts
    */
   allocate(opts) {
-    const { name, category, originCountry, uniqueKey, archetypeKey } = opts;
-    const tags = tagsForEntry(name, archetypeKey);
-    const salt = hash(uniqueKey);
-    const extraCount = 1 + (salt % 3); // 1–3 extras after the title card
-    /** @type {string[]} */
-    const imgs = [encodeLudusCard(name, category, originCountry)];
+    const { name, category, originCountry, uniqueKey, parentName, archetypeKey } =
+      opts;
+    const lineage = photoLineage(name, archetypeKey, parentName);
 
-    // Prefer verified photos of this exact game. When any curated photo is
-    // available, do not pad with tag-search stock images (those often depict
-    // the wrong toy despite matching keywords).
-    let usedCurated = false;
-    while (imgs.length < extraCount + 1) {
-      const curated = this.takeCuratedPhoto(name);
-      if (!curated) break;
-      imgs.push(curated);
-      usedCurated = true;
+    let card = encodeLudusCard(name, category, originCountry);
+    if (this.usedRefs.has(card)) {
+      const disambig = parentName
+        ? `${originCountry} · via ${parentName}`
+        : `${originCountry} · ${uniqueKey.split(":").slice(-2).join(" ")}`;
+      card = encodeLudusCard(name, category, disambig);
     }
+    if (this.usedRefs.has(card)) {
+      card = encodeLudusCard(name, category, `${originCountry} · ${uniqueKey}`);
+    }
+    this.usedRefs.add(card);
 
-    if (!usedCurated) {
-      while (imgs.length < extraCount + 1) {
-        imgs.push(this.takeThematic(tags, `${uniqueKey}#${imgs.length}`));
+    /** @type {string[]} */
+    const imgs = [card];
+    const avoid = new Set();
+
+    let photoCount = 0;
+    const pushPhoto = (url) => {
+      if (!url || avoid.has(url) || photoCount >= PHOTO_TARGET) return false;
+      imgs.push(url);
+      avoid.add(url);
+      photoCount += 1;
+      return true;
+    };
+
+    const hasNamedPool =
+      !!resolvePhotoKey(name) ||
+      !!(parentName && resolvePhotoKey(parentName)) ||
+      !!(archetypeKey && ARCHETYPE_PHOTOS[archetypeKey]?.length);
+
+    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+      if (!pushPhoto(this.takeCuratedPhoto(name, lineage, avoid))) break;
+    }
+    if (photoCount < PHOTO_TARGET && parentName) {
+      pushPhoto(this.takeCuratedPhoto(parentName, lineage, avoid));
+    }
+    const aliasCurated =
+      archetypeKey && ARCHETYPE_CURATED_ALIAS[archetypeKey]
+        ? ARCHETYPE_CURATED_ALIAS[archetypeKey]
+        : null;
+    if (photoCount < PHOTO_TARGET && aliasCurated) {
+      while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+        if (!pushPhoto(this.takeCuratedPhoto(aliasCurated, lineage, avoid)))
+          break;
+      }
+    }
+    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+      if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
+        break;
+    }
+    // Only borrow generic category/extra stock when there is no named pool —
+    // otherwise we risk wrong subjects (e.g. air hockey on knucklebones).
+    if (!hasNamedPool || photoCount === 0) {
+      while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+        const url =
+          this.takeCategoryPhoto(
+            category,
+            lineage,
+            avoid,
+            `${uniqueKey}:${imgs.length}`,
+          ) ||
+          this.takeExtraPhoto(lineage, avoid, `${uniqueKey}:${imgs.length}`);
+        if (!pushPhoto(url)) break;
       }
     }
 
-    const sig = JSON.stringify(imgs);
-    if (this.usedSets.has(sig)) {
-      // Extremely rare; keep sets unique without inventing a wrong title.
-      imgs.push(this.takeThematic(tags, `${uniqueKey}#uniq`));
+    let view = 0;
+    while (imgs.length < GALLERY_TARGET) {
+      const panel = encodeLudusView(
+        name,
+        category,
+        originCountry,
+        view,
+        uniqueKey,
+      );
+      imgs.push(panel);
+      this.usedRefs.add(panel);
+      view += 1;
     }
-    this.usedSets.add(JSON.stringify(imgs));
-    // Title cards are unique per name/country but still mark them used
-    this.usedUrls.add(imgs[0]);
+
     return imgs;
   },
 };
@@ -1431,488 +2580,8 @@ const REGIONS = [
   ["Solomon Islands", "Melanesian"],
 ];
 
-/**
- * Distinct toy/game archetypes that are NOT the same fundamental game.
- * (Universal forms like hopscotch already seeded once with variations.)
- * These expand per-region only when the archetype is region-flavored craft/play,
- * producing distinct catalog entries (e.g. local musical toys, local dolls).
- */
-const ARCHETYPES = [
-  {
-    key: "rattle",
-    title: "Infant rattle",
-    category: "Musical Play",
-    purchase: "music",
-    participants: "Alone (infant with caregiver)",
-    year: "prehistoric–present",
-    req: ["Hollow rattle with seeds, pebbles, or bells", "Safe non-toxic materials"],
-    desc: (c, civ) =>
-      `Rattles are among the oldest sound toys. In ${c}, ${civ} caregivers have long sealed seeds or pebbles in gourd, clay, basketry, or wood to reward infant grasping and rhythm. The rattle is both sensory toy and, in some places, a protective charm sound.`,
-    steps: (c, civ) => [
-      `In ${c}, offer a sealed ${civ} rattle (gourd, clay, wood, or basketry with seeds or pebbles) within the infant’s supervised reach.`,
-      "Shake once slowly so the child hears a clear cause-and-effect sound, then pause for them to grasp.",
-      "Allow grasping, gentle shaking, and dropping onto a soft mat; block mouthing if the shell cracks or finishes flake.",
-      `Sing or speak a short ${civ} lullaby or counting rhyme from ${c} in time with three to five shakes.`,
-      "After each session, check seams, plugs, and loose bits; retire the toy if seeds can spill.",
-    ],
-  },
-  {
-    key: "whistle_toy",
-    title: "Clay or wood whistle toy",
-    category: "Musical Play",
-    purchase: "music",
-    participants: "Alone",
-    year: "ancient–present",
-    req: ["Whistle toy", "Breath control", "Open air if loud"],
-    desc: (c, civ) =>
-      `Small whistles—bird-shaped clay, carved wood, reed—appear in markets and archaeological layers tied to ${civ} life in ${c}. Children use them as voice-amplifying toys; some double as festival noisemakers. Sound play teaches breath and pitch playfully.`,
-    steps: (c, civ) => [
-      `Hold a clay, wood, or reed whistle made in the ${civ} craft style of ${c}; keep finger holes and the windway clear.`,
-      "Blow a steady stream for two seconds to find one clear tone before trying short chirps.",
-      "Alternate three short calls and one long note; count successful clear tones aloud.",
-      `Play call-and-response with a partner: one player blows a rhythm from ${c} street or festival play, the other copies it.`,
-      "Wash or wipe the mouthpiece between players; do not share if anyone is ill.",
-    ],
-  },
-  {
-    key: "pull_toy",
-    title: "Animal pull toy",
-    category: "Construction",
-    purchase: "generic_toy",
-    participants: "Alone",
-    year: "ancient–present",
-    req: ["Wheeled or sliding animal figure", "Pull cord", "Floor space"],
-    desc: (c, civ) =>
-      `Wheeled animals and pull-along figures are documented from classical antiquity through village woodcrafts in ${c}. ${civ} artisans shape horses, birds, or oxen that teach walking toddlers about traction and companionship in motion.`,
-    steps: (c, civ) => [
-      `Tie a short cord to the nose or yoke of a wheeled ${civ} animal figure from ${c}; leave enough slack for a toddler’s stride.`,
-      "Walk five to ten steps on a clear floor so wheels or runners follow without tipping.",
-      "Make one gentle left turn and one right turn; stop if the axle binds or the cord jerks the toy airborne.",
-      `Narrate a short parade or market delivery story using animals familiar in ${c} (horse, ox, bird, or camel as fits the figure).`,
-      "Coil the cord after play and store the toy upright so wheels stay round.",
-    ],
-  },
-  {
-    key: "mini_weapons_toy",
-    title: "Toy bow or dart play set",
-    category: "Outdoor Folk",
-    purchase: "outdoor",
-    participants: "1–2 people",
-    year: "ancient–present",
-    req: ["Soft or low-power toy bow/darts", "Target", "Clear downrange area"],
-    desc: (c, civ) =>
-      `Scaled hunting toys let children in ${c} rehearse skills celebrated by ${civ} adults—archery, spear-thorn darts, or blowpipe aim—using safer materials. Targets on straw, wood, or drawn circles turn martial technique into scored play.`,
-    steps: (c, civ) => [
-      `Outdoors in ${c}, set a straw, wood, or chalk target with a backstop; clear people and animals for at least five paces downrange.`,
-      "Nock a soft arrow or load a foam/cork dart; keep the tip pointed at the ground until ready.",
-      `Use a calm ${civ} stance—feet apart, eyes on the center ring—and release one shot at a time.`,
-      "Score 3 points for the center, 2 for the middle ring, 1 for the outer; first to 15 points wins a round.",
-      "Never aim at people or animals; collect every projectile before the next turn.",
-    ],
-  },
-  {
-    key: "jacks_local",
-    title: "Pocket skill stones",
-    category: "Puzzles & Skill",
-    purchase: "jacks",
-    participants: "1–4 people",
-    year: "centuries old",
-    req: ["Five small stones or seeds", "Flat ground"],
-    desc: (c, civ) =>
-      `Beyond the shared knucklebones family, ${c} has local stone-and-seed skill sequences shaped by ${civ} childhood—different throws, chants, and difficulty ladders on the same pickup principle, recorded here as a regional practice entry when chants and sequences are locally distinct.`,
-    steps: (c, civ) => [
-      `Sit on flat ground in ${c} with five small stones or seeds used in ${civ} children’s pickup play.`,
-      "Scatter all five lightly, then toss one skyward and pick up exactly one stone before catching the tossed stone.",
-      "On the next turns, pick up two, then three, then the last group of remaining stones in one sweep while the toss is aloft.",
-      "Drop or fail to catch ends your turn; the next player restarts at ones.",
-      `First player to finish the ones–twos–threes–fours ladder while saying a short ${civ} count or chant from ${c} wins.`,
-    ],
-  },
-  {
-    key: "story_dice_oral",
-    title: "Story lots / drawing lots game",
-    category: "Memory & Word",
-    purchase: "dice",
-    participants: "2+ people",
-    year: "ancient–present",
-    req: ["Marked sticks, lots, or dice", "Shared language"],
-    desc: (c, civ) =>
-      `Casting lots for turns, forfeits, or story prompts appears in ${civ} gatherings in ${c}. Whether bamboo sticks, knucklebones, or painted dice, chance chooses who speaks, dances, or answers—a social toy at the edge of divination and party game.`,
-    steps: (c, civ) => [
-      `Put three to six marked sticks, shells, or dice in a cup—marks can be colors or short ${civ} prompt words used in ${c}.`,
-      "Shake once and cast onto a cloth; read the uppermost mark as this turn’s prompt.",
-      "The indicated player has thirty seconds to tell a short story, sing one verse, or perform a playful forfeit named by the mark.",
-      "Return all lots to the cup and pass clockwise until each player has had at least two turns.",
-      `Before starting, list which marks are playful only—never use sacred ${civ} divination lots from ${c} as party toys.`,
-    ],
-  }
-];
-
-// Additional archetypes appended for coverage
-const MORE_ARCHETYPES = [
-  {
-    key: "shadow_play",
-    title: "Shadow figures play",
-    category: "Hand & Gesture",
-    purchase: "generic_toy",
-    participants: "1–many people",
-    year: "ancient–present",
-    req: ["Lamp or firelight", "Blank wall", "Hands or cut-out puppets"],
-    desc: (c, civ) =>
-      `Shadow play—hand animals or leather puppets—has entertained nights in ${c} within ${civ} storytelling. Light and silhouette turn gesture into theater. Some regions elevated this into formal puppet arts; children's hand shadows remain the toy form.`,
-    steps: (c, civ) => [
-      `In a dim room in ${c}, place a lamp or candle so hands cast sharp shadows on a blank wall about one arm’s length away.`,
-      "Form one animal or person with fingers; move slowly for three seconds so the outline stays readable.",
-      `Narrate a one-minute ${civ} folk scene (market, animal chase, or hero greeting) while the shadow acts.`,
-      "Optional: cut a cardboard figure, tape it to a stick, and replay the same scene with crisper edges.",
-      "End by letting each child invent one new creature and name it before the lamp is put out.",
-    ],
-  },
-  {
-    key: "kite_local",
-    title: "Local kite craft",
-    category: "Outdoor Folk",
-    purchase: "kite",
-    participants: "Alone or 2 people",
-    year: "centuries old",
-    req: ["Paper or cloth kite", "Spar materials", "Flying line", "Open wind"],
-    desc: (c, civ) =>
-      `While kite flying is one global family, ${c}'s ${civ} makers developed distinctive shapes, papers, bridles, and festival uses. This entry highlights that local craft tradition as a regional kite practice under the wider kite sky.`,
-    steps: (c, civ) => [
-      `Build or buy a paper or cloth kite in a shape used by ${civ} makers in ${c} (diamond, box, bird, or fighter flat).`,
-      "Check that both bridle legs are equal and the spar joints are tight before you walk to the field.",
-      "Stand with the wind at your back in open ground; have a helper release the kite as you take three steps and feed five to ten meters of line.",
-      "Steer by tension: pull to climb, ease to dive; land by walking toward the kite while reeling.",
-      `Never fly near power lines, airports, or storms—common safety rules for festival kite days in ${c}.`,
-    ],
-  },
-  {
-    key: "cloth_doll_local",
-    title: "Local cloth doll",
-    category: "Dolls & Figures",
-    purchase: "doll",
-    participants: "Alone",
-    year: "centuries old",
-    req: ["Cloth scraps", "Fiber stuffing", "Thread or ties"],
-    desc: (c, civ) =>
-      `Soft dolls dressed in local textile patterns appear across ${civ} households in ${c}. Embroidery, wrap clothing, and hairstyles miniaturize adult dress. Caregiving play teaches social roles; craft techniques pass between generations.`,
-    steps: (c, civ) => [
-      "Sew or tie a simple cloth body and stuff it firmly with fiber so the head and torso hold shape.",
-      `Dress the doll in miniature wraps, sash, or embroidered scraps that echo everyday ${civ} clothing in ${c}.`,
-      "Act out at least three caregiving scenes: wake, feed, and put to sleep.",
-      "Repair tears with needle and thread as part of play rather than discarding the doll.",
-      `No points are scored—nurture play ends when the child packs the doll into a small basket or box used in ${c} households.`,
-    ],
-  },
-  {
-    key: "ball_sewn",
-    title: "Sewn cloth or hide ball",
-    category: "Ball & Sport",
-    purchase: "ball",
-    participants: "2–10+ people",
-    year: "ancient–present",
-    req: ["Sewn cloth, palm, or hide ball", "Open play space"],
-    desc: (c, civ) =>
-      `Before industrial rubber, ${civ} communities in ${c} stuffed and sewed balls from hide, cloth, or plant fiber. Catch, kick, and circle games grew around these objects. The ball's make is as cultural as the rules.`,
-    steps: (c, civ) => [
-      `Form a circle of four or more players in a clear yard in ${c}; use one sewn cloth, palm-fiber, or hide ball.`,
-      `Toss underhand to the neighbor on your right; ${civ} circle play scores one point for each clean catch.`,
-      "A drop removes that player from the circle (or gives the thrower one point if you play pairs).",
-      "When three players remain, speed up to a one-second hold before passing.",
-      "Last player in the circle wins; restart with everyone after one champion round.",
-    ],
-  },
-  {
-    key: "top_local",
-    title: "Local spinning top craft",
-    category: "Spinning & Tops",
-    purchase: "top",
-    participants: "1–many people",
-    year: "centuries old",
-    req: ["Locally carved top", "String or whip", "Hard ground"],
-    desc: (c, civ) =>
-      `Top play is ancient and global; this entry records ${c}'s ${civ} carving styles, tip materials, and contest etiquette as a distinct craft-and-play practice within that shared physics toy.`,
-    steps: (c, civ) => [
-      `Wind a cord clockwise around a carved ${civ} top from ${c}, or ready a short whip cord if the tip is meant for whipping.`,
-      "Plant your feet on hard earth or stone; pull the cord smooth and level so the tip bites and spins.",
-      "For whip tops, tap the shoulder of the top lightly to keep it upright for a timed spin.",
-      "In a contest, longest continuous spin wins; or play combat where the first top knocked flat loses.",
-      "Sand a dull tip and re-point it before the next match so launches stay true.",
-    ],
-  },
-  {
-    key: "string_local",
-    title: "Local string figures",
-    category: "String & Finger",
-    purchase: "generic_toy",
-    participants: "Alone or 2 people",
-    year: "unknown antiquity",
-    req: ["Cord or sinew loop", "Story knowledge optional"],
-    desc: (c, civ) =>
-      `${civ} string figures linked to ${c} carry local names, animals, and myths even when openings resemble cat's cradle elsewhere. The figures are portable diagrams of story and hand memory.`,
-    steps: (c, civ) => [
-      "Make a loop of cord about the span of your outstretched arms so it fits both hands with slight slack.",
-      `Open on both thumbs and little fingers in the starting position taught for ${civ} figures in ${c}.`,
-      "Pick, drop, and transfer strings until you hold one named figure (animal, tool, or star) for three seconds.",
-      `Say the figure’s ${civ} name or a one-sentence story tied to ${c} while holding the shape.`,
-      "Teach that single figure to a partner before starting a second pattern.",
-    ],
-  },
-  {
-    key: "board_race_folk",
-    title: "Folk race board (local)",
-    category: "Board & Race",
-    purchase: "generic_board",
-    participants: "2–4 people",
-    year: "centuries old",
-    req: ["Track board or cloth", "Markers", "Dice, sticks, or shells"],
-    desc: (c, civ) =>
-      `Cross-and-circle and path race boards appear in many lands. In ${c}, ${civ} players used shells, sticks, or knucklebones to race markers home—cousins to pachisi-like structures but with local track shapes and safe-space customs recorded as a regional folk race board.`,
-    steps: (c, civ) => [
-      `Seat 2–4 players at a path or cross-and-circle board used in ${c}; each gets four markers in a starting nest.`,
-      `Throw two casting sticks, four cowrie shells, or one die—whatever ${civ} sets use—and total the pips or “mouth-up” shells.`,
-      "Enter a marker only on a throw of the highest single result (for example 4 sticks or a 6); then advance that many spaces.",
-      "Landing on an opponent’s single marker sends it back to its nest; stacked markers are safe.",
-      "First player to move all four markers around the track and into the home column wins.",
-    ],
-  },
-  {
-    key: "sowing_local",
-    title: "Local pit-and-seed sowing",
-    category: "Mancala & Sowing",
-    purchase: "mancala",
-    participants: "2 people",
-    year: "centuries old",
-    req: ["Cup board or pits in earth", "Seeds or pebbles"],
-    desc: (c, civ) =>
-      `Where sowing games took root in ${c}, ${civ} boards show distinctive cup counts, relay rules, and wood shapes. They belong to the mancala family yet deserve regional entries when board geometry and capture customs are locally standardized.`,
-    steps: (c, civ) => [
-      `Use a 2×6 board (twelve small pits plus one store per side) common in ${civ} sowing play in ${c}; place four seeds in each small pit.`,
-      "On your turn, scoop every seed from one pit on your side and sow one seed into each following pit counterclockwise, including your store but skipping the opponent’s store.",
-      "If the last seed lands in your empty pit and the opposite pit holds seeds, capture those opposite seeds into your store.",
-      "If the last seed lands in your store, take another turn; otherwise play passes.",
-      "When one side’s pits are empty, the opponent puts remaining seeds in their store; most seeds in store wins.",
-    ],
-  },
-  {
-    key: "jump_rope",
-    title: "Skipping rope games",
-    category: "Outdoor Folk",
-    purchase: "outdoor",
-    participants: "1–many people",
-    year: "centuries old",
-    req: ["Rope of hemp, plastic, or vine", "Flat ground", "Optional turners"],
-    desc: (c, civ) =>
-      `Skipping and jump-rope rhymes thrive in ${c}'s schoolyards and streets within ${civ} childhood culture. Solo speed steps and group long-rope games share the bouncing rhythm; chants localize the toy.`,
-    steps: (c, civ) => [
-      "For solo play: hold both ends, swing the rope over your head, and jump once per pass; count consecutive jumps.",
-      "For group play: two turners swing a long rope; a jumper runs in, jumps five times, and runs out.",
-      `Add a short ${civ} schoolyard chant from ${c}; a missed jump or broken rhythm rotates the jumper to turner.`,
-      "Try pepper (fast turns) or one double-under after you can clear twenty steady jumps.",
-      "Keep the rope away from roads, wet floors, and low branches.",
-    ],
-  },
-  {
-    key: "blindfold_tag",
-    title: "Blind man's tag / call games",
-    category: "Outdoor Folk",
-    purchase: "outdoor",
-    participants: "4+ people",
-    year: "centuries old",
-    req: ["Soft blindfold", "Safe clear space", "Agreed boundaries"],
-    desc: (c, civ) =>
-      `Blindfolded seeking games—call-and-dodge variants—appear across ${civ} parties and children's gatherings in ${c}. Sound, stillness, and empathy for the blinded player structure the fun.`,
-    steps: (c, civ) => [
-      `Clear toys and furniture from a bounded room or yard in ${c}; mark walls or chalk lines as out-of-bounds.`,
-      "Blindfold one seeker and spin them twice; sighted players must stay inside the bounds.",
-      `Sighted players may call a short ${civ} nickname or clap once every five seconds so the seeker has sound cues.`,
-      "The seeker tags by touch; the tagged player becomes the next seeker.",
-      "Stop the round immediately if anyone near stairs or hard edges; remove the blindfold before leaving the space.",
-    ],
-  },
-  {
-    key: "wrestling_play",
-    title: "Folk wrestling play for youth",
-    category: "Outdoor Folk",
-    purchase: "outdoor",
-    participants: "2 people (plus referee)",
-    year: "ancient–present",
-    req: ["Soft ground or sand", "Agreed hold rules", "Referee"],
-    desc: (c, civ) =>
-      `Youth wrestling games prepare for adult folk styles celebrated by ${civ} communities in ${c}. Play versions emphasize safe throws, circle boundaries, and laughter over injury—sport as social toy.`,
-    steps: (c, civ) => [
-      `Mark a circle about three paces across on sand or soft ground used for youth bouts in ${c}.`,
-      `Forbid headlocks, joint twists, and strikes; wrestlers may grip belts, sashes, or shoulders as in ${civ} play wrestling.`,
-      "A referee starts each exchange; first to make the opponent’s knee or back touch outside or flat wins that exchange.",
-      "Best of three exchanges decides the bout; rest thirty seconds between exchanges.",
-      "Handshake or salute after the bout; the referee ends play at the first sign of pain.",
-    ],
-  },
-  {
-    key: "memory_song",
-    title: "Memory song / elimination chant",
-    category: "Memory & Word",
-    purchase: "generic_toy",
-    participants: "3+ people",
-    year: "oral antiquity",
-    req: ["Shared song or chant", "Circle of players"],
-    desc: (c, civ) =>
-      `Elimination chants and memory songs—akin to 'who remains' circle games—are toys of rhythm and attention in ${civ} oral culture in ${c}. Wrong words or missed beats eliminate players until one remains.`,
-    steps: (c, civ) => [
-      "Stand or sit in a circle so every player can see the leader’s hands.",
-      `The leader starts a ${civ} elimination chant or clapping song known in ${c}, with one word or beat per player.`,
-      "Each player must say the next word or clap on the next beat without pausing more than one second.",
-      "A wrong word, late beat, or broken gesture eliminates that player, who steps back one pace.",
-      "Last remaining player wins and leads the next round’s chant.",
-    ],
-  },
-  {
-    key: "balance_stilts",
-    title: "Stilts or balance poles",
-    category: "Outdoor Folk",
-    purchase: "outdoor",
-    participants: "Alone or racing pairs",
-    year: "centuries old",
-    req: ["Pair of stilts or tin-can stilts", "Level ground", "Spotter for beginners"],
-    desc: (c, civ) =>
-      `Stilts appear as festival tools and children's balance toys in ${c}. ${civ} makers raise walkers on bamboo, wood, or recycled cans. Racing and trick-stepping turn elevation into play.`,
-    steps: (c, civ) => [
-      `Mount bamboo, wood, or tin-can stilts built in the ${civ} style of ${c} with a spotter holding your elbow.`,
-      "Take ten small steps on level ground while looking forward, not down at the footrests.",
-      "Race a marked ten-meter line, or walk a chalk zigzag without a footrest touching the ground.",
-      "Dismount by stepping backward onto clear ground with the spotter ready.",
-      "Check cords, cans, and footrest bindings before every session; replace frayed ties.",
-    ],
-  },
-  {
-    key: "leaf_boat",
-    title: "Leaf or bark boat racing",
-    category: "Outdoor Folk",
-    purchase: "outdoor",
-    participants: "2+ people",
-    year: "centuries old",
-    req: ["Leaves, bark, or cork for hulls", "Stream, gutter, or basin", "Twig masts optional"],
-    desc: (c, civ) =>
-      `Miniature boat races using leaves, bark, or corncobs delight children near water in ${c}. ${civ} play turns currents into tracks and craft into engineering experiments.`,
-    steps: (c, civ) => [
-      `Fold a broad leaf or carve a bark/cork hull that floats—materials children gather near water in ${c}.`,
-      "Mark a start and finish about two meters apart in a basin or gentle gutter current.",
-      `On a shared count of three in any ${civ} counting words, release all boats together; no pushing after release.`,
-      "First boat to touch the finish line wins the heat; run best of three heats.",
-      "Retrieve every leaf, twig, and cork; leave the water clear of trash.",
-    ],
-  },
-  {
-    key: "snow_or_sand",
-    title: "Sand / snow figure play",
-    category: "Construction",
-    purchase: "outdoor",
-    participants: "Alone or group",
-    year: "ancient–present",
-    req: ["Sand or snow", "Hands or simple molds", "Water optional for sand"],
-    desc: (c, civ) =>
-      `Sculpting temporary figures in sand or snow is elemental construction play wherever ${civ} landscapes in ${c} provide the medium. Castles, animals, and ancestral forms appear and erode—architecture as ephemeral toy.`,
-    steps: (c, civ) => [
-      `Gather moist sand or packable snow from a safe open patch in ${c}—never dig undercut cliffs.`,
-      "Pile a base, then carve one figure or fort wall with hands or a simple mold.",
-      `Optional contest: tallest free-standing tower in five minutes, or best likeness of an animal known in ${civ} stories.`,
-      "Photograph if you wish, then watch or gently collapse the build as part of play.",
-      "Stay off sacred dunes, marked ruins, and protected sites; fill holes you dig on public beaches.",
-    ],
-  },
-  {
-    key: "knuckle_football",
-    title: "Table flick football / paper soccer",
-    category: "Hand & Gesture",
-    purchase: "generic_toy",
-    participants: "2 people",
-    year: "20th century folk / older flick ancestors",
-    req: ["Coin, button, or paper ball", "Table with goal marks"],
-    desc: (c, civ) =>
-      `Flick games that simulate football/soccer on a tabletop spread through schools in ${c}, layered onto older finger-flicking toy habits in ${civ} childhood. Goals are books or drawn posts; tournaments can be fierce.`,
-    steps: (c, civ) => [
-      `On a clear table in ${c}, mark each goal with two small gaps about three finger-widths wide (books or tape posts).`,
-      "Place a coin, button, or crumpled paper ball on the center line.",
-      `Players alternate one finger-flick; no covering the ball with a palm—common ${civ} school-desk rule.`,
-      "A goal scores when the ball fully crosses between the posts; play to five goals.",
-      "If the ball leaves the table, the opponent places it back one hand-span from the edge and flicks next.",
-    ],
-  },
-  {
-    key: "riddle_local",
-    title: "Local riddle exchange",
-    category: "Memory & Word",
-    purchase: "generic_toy",
-    participants: "2+ people",
-    year: "oral antiquity",
-    req: ["Shared language", "Optional elder judge"],
-    desc: (c, civ) =>
-      `Riddle exchanges in ${c} preserve ${civ} metaphor, ecology, and humor. Posing and solving under time pressure is a mind toy requiring no manufactured equipment.`,
-    steps: (c, civ) => [
-      `One player poses a riddle drawn from ${civ} oral tradition in ${c} (animals, tools, weather, or food metaphors).`,
-      "Others have one minute and up to three guesses.",
-      "A correct solver scores one point and poses the next riddle; if no one solves, the poser scores one point and chooses the next poser.",
-      "Optional playful forfeit for three wrong guesses: clap a rhythm or name five animals from ${c}.",
-      "First to five points wins the exchange.",
-    ],
-  },
-  {
-    key: "ceremonial_toy",
-    title: "Festival noisemaker toy",
-    category: "Ritual & Ceremony",
-    purchase: "music",
-    participants: "Alone or parade group",
-    year: "centuries old",
-    req: ["Ratchet, bell stick, clapper, or drum toy", "Festival context respect"],
-    desc: (c, civ) =>
-      `Festival noisemakers—ratchets, clappers, bell-sticks—let children join ${civ} public rites in ${c}. Volume and rhythm mark calendar time; some toys are seasonal and stored afterward like ritual gear.`,
-    steps: (c, civ) => [
-      `Ask an adult when ratchets, clappers, or bell-sticks are welcome in the ${civ} festival calendar of ${c}.`,
-      "Play short pulses that match the procession drum or sung phrase—typically two or four beats per measure.",
-      "Stop instantly when ceremony leaders raise a hand or the song falls silent.",
-      "Do not imitate restricted sacred instruments or mock prayer gestures with the toy.",
-      "Wipe the handle clean and store the noisemaker until the next public festival day.",
-    ],
-  },
-  {
-    key: "puzzle_knot",
-    title: "Cord & knot puzzle toy",
-    category: "Puzzles & Skill",
-    purchase: "puzzle",
-    participants: "Alone",
-    year: "centuries old",
-    req: ["Cord, rings, or wire puzzle", "Patience"],
-    desc: (c, civ) =>
-      `Disentanglement puzzles of cord, rings, and wood appear as market toys and blacksmith curiosities around ${c}. ${civ} players learn topology by touch—release a ring without forcing, then reassemble.`,
-    steps: (c, civ) => [
-      `Study a cord-and-ring or wire puzzle sold or forged around ${c}; note which loop is the piece you must free.`,
-      "Move loops only through openings that already exist—do not bend metal or force wood.",
-      `Free the target ring or block by a legal path; ${civ} market puzzles are solved when that piece separates cleanly.`,
-      "Reassemble every loop to the exact starting state before claiming the solve.",
-      "Time your solve, then challenge a friend to beat that time with the same path.",
-    ],
-  },
-  {
-    key: "mini_house",
-    title: "Miniature household play set",
-    category: "Dolls & Figures",
-    purchase: "doll",
-    participants: "Alone or 2 people",
-    year: "ancient–present",
-    req: ["Miniature pots, mats, or dolls", "Small play space"],
-    desc: (c, civ) =>
-      `Tiny household tools—clay pans, woven mats, doll furniture—support role-play of adult domestic life in ${civ} childhoods in ${c}. Archaeology and ethnography both find these teaching toys.`,
-    steps: (c, civ) => [
-      `Arrange miniature pots, mats, and dolls into a small hearth or room layout familiar in ${c}.`,
-      "Assign roles (cook, guest, child) to dolls or players before the scene starts.",
-      `Act out one cooking scene, one market or visiting scene, and one bedtime scene drawn from ${civ} daily life.`,
-      "Add one new prop each week (ladle, basket, or stool) and reuse it in the next story.",
-      "Pack all pieces into one box after play so the set stays complete.",
-    ],
-  },
-];
-
-const ALL_ARCHETYPES = [...ARCHETYPES, ...MORE_ARCHETYPES];
+/** Regional craft/play archetypes — plain-language copy in plain-archetypes.mjs */
+const ALL_ARCHETYPES = PLAIN_ARCHETYPES;
 
 /** Extra unique named games to enrich beyond the matrix */
 const EXTRA_NAMED = [
@@ -1965,6 +2634,14 @@ function toGame(seed, index) {
   const slugBase = slugify(seed.name);
   const slug = `${slugBase}-${String(index).padStart(4, "0")}`;
   const imageKey = `game:${slug}`;
+  // Parent gallery first so cornerstone titles keep their curated photos.
+  const images = pickImages({
+    name: seed.name,
+    category: seed.category,
+    originCountry: seed.originCountry,
+    uniqueKey: imageKey,
+    archetypeKey: seed.archetypeKey,
+  });
   const variations = (seed.variations || []).map((v, vi) => {
     const varKey = `var:${slug}:${slugify(v.name)}:${slugify(v.originCountry)}:${vi}`;
     return {
@@ -1975,6 +2652,7 @@ function toGame(seed, index) {
         originCountry: v.originCountry,
         uniqueKey: varKey,
         archetypeKey: seed.archetypeKey,
+        parentName: seed.name,
       }),
     };
   });
@@ -1987,15 +2665,11 @@ function toGame(seed, index) {
     civilization: seed.civilization,
     creationYear: seed.creationYear,
     category: seed.category,
-    images: pickImages({
-      name: seed.name,
-      category: seed.category,
-      originCountry: seed.originCountry,
-      uniqueKey: imageKey,
-      archetypeKey: seed.archetypeKey,
-    }),
+    images,
     description: seed.description,
     howToPlay: seed.howToPlay,
+    howToWin: seed.howToWin || [],
+    rulesNotToBreak: seed.rulesNotToBreak || [],
     purchaseLinks: pickPurchase(seed.purchase, salt),
     requirements: seed.requirements,
     idealParticipants: seed.idealParticipants,
@@ -2008,7 +2682,7 @@ function toGame(seed, index) {
   return game;
 }
 
-function main() {
+async function main() {
   const games = [];
   const seen = new Set();
 
@@ -2017,7 +2691,7 @@ function main() {
     // Allow region-qualified names; block exact duplicates
     if (seen.has(key)) return false;
     seen.add(key);
-    games.push(toGame(seed, games.length + 1));
+    games.push(toGame(polishSeedCopy(attachWinRules(seed)), games.length + 1));
     return true;
   }
 
@@ -2077,13 +2751,13 @@ function main() {
       purchase,
       idealParticipants: participants,
       requirements: req,
-      description: `This ${blurb} is documented as a children's play object in ${country} within ${civ} material culture. Making, decorating, and using it teaches craft motor skills and local aesthetics. Symbolic meanings range from simple joy to charms for growth, depending on household tradition.`,
+      description: `This ${blurb} is a children’s play object known in ${country}. Making it, decorating it, and using it builds hand skill and shows local style. Families may treat it as simple fun or as a small good-luck charm.`,
       howToPlay: [
-        `In ${country}, gather the materials for a ${title.toLowerCase()} used in ${civ} children's play and check for sharp edges before starting.`,
-        `Show one full use of the ${title.toLowerCase()}—blow, float, trap, model, track, roll, jingle, fold, spin, or count—then hand it to the child.`,
-        `Let the child repeat that action five times, then invent one new use that still fits ${civ} play in ${country}.`,
+        `In ${country}, gather materials for a ${title.toLowerCase()} and check for sharp edges before play.`,
+        `Show one full use—blow, float, trap, model, track, roll, jingle, fold, spin, or count—then hand it to the child.`,
+        "Let the child repeat that action five times, then invent one new safe use.",
         "If two or more players are present, take turns of thirty seconds each until everyone has had two turns.",
-        `Wipe or air-dry the ${title.toLowerCase()} and store it flat or upright so it stays intact for the next session.`,
+        `Wipe or air-dry the ${title.toLowerCase()} and store it flat or upright for next time.`,
       ],
       variations: [],
     });
@@ -2094,6 +2768,54 @@ function main() {
   const categories = [...new Set(games.map((g) => g.category))].sort();
   const civilizations = [...new Set(games.map((g) => g.civilization))].sort();
   const totalVariations = games.reduce((a, g) => a + (g.variations?.length || 0), 0);
+
+  console.log("Validating remote photo URLs…");
+  const remoteUrls = new Set();
+  for (const g of games) {
+    for (const u of g.images || []) {
+      if (typeof u === "string" && /^https?:\/\//.test(u)) remoteUrls.add(u);
+    }
+    for (const v of g.variations || []) {
+      for (const u of v.images || []) {
+        if (typeof u === "string" && /^https?:\/\//.test(u)) remoteUrls.add(u);
+      }
+    }
+  }
+  const alive = await filterAliveUrls([...remoteUrls]);
+  let stripped = 0;
+  const scrub = (entry) => {
+    const keep = (entry.images || []).filter((u) => {
+      if (typeof u !== "string" || !/^https?:\/\//.test(u)) return true;
+      const ok = alive.has(u);
+      if (!ok) stripped += 1;
+      return ok;
+    });
+    // Re-pad with unique views if photos were dropped.
+    let view = 0;
+    const key = entry.slug || entry.name || "entry";
+    while (keep.length < GALLERY_TARGET) {
+      keep.push(
+        encodeLudusView(
+          entry.name,
+          entry.category || "Toy & Game",
+          entry.originCountry || "",
+          view,
+          `pad:${key}:${view}`,
+        ),
+      );
+      view += 1;
+    }
+    entry.images = keep.slice(0, GALLERY_TARGET);
+  };
+  for (const g of games) {
+    scrub(g);
+    for (const v of g.variations || []) {
+      v.category = g.category;
+      scrub(v);
+      delete v.category;
+    }
+  }
+  console.log(`Photo URL check: ${alive.size}/${remoteUrls.size} alive, stripped ${stripped}`);
 
   const payload = {
     meta: {
@@ -2112,4 +2834,48 @@ function main() {
   console.log(`Wrote ${games.length} games with ${totalVariations} nested variations → ${outPath}`);
 }
 
-main();
+/**
+ * Probe remote photos. Only drop explicit HTTP 404/410 responses.
+ * Network blips keep the URL (browsers may still load them).
+ */
+async function filterAliveUrls(urls) {
+  const alive = new Set(urls);
+  const concurrency = 12;
+  let i = 0;
+  async function worker() {
+    while (i < urls.length) {
+      const idx = i++;
+      const url = urls[idx];
+      let status = 0;
+      try {
+        const res = await fetch(url, {
+          method: "HEAD",
+          redirect: "follow",
+          headers: { "User-Agent": "LudusAtlasBot/1.0" },
+        });
+        status = res.status;
+        if (res.ok) continue;
+        if (status !== 404 && status !== 410) {
+          const res2 = await fetch(url, {
+            method: "GET",
+            redirect: "follow",
+            headers: { "User-Agent": "LudusAtlasBot/1.0" },
+          });
+          status = res2.status;
+          if (res2.ok) continue;
+        }
+      } catch {
+        // Transient network error — keep URL.
+        continue;
+      }
+      if (status === 404 || status === 410) alive.delete(url);
+    }
+  }
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+  return alive;
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -7,13 +7,26 @@ import { JournalActions } from "../components/JournalActions";
 import { PlatformLogo } from "../components/PlatformLogo";
 import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
+import { GameAssistant } from "../components/GameAssistant";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
 import {
-  isLudusCardSrc,
-  ludusCardDataUri,
+  isFragileRemoteSrc,
+  isLudusSyntheticSrc,
+  isPhotographicSrc,
+  listDisplayImages,
+  primaryCoverSrc,
   resolveImageSrc,
+  VIEW_CAPTION_KEYS,
+  type ImageLabel,
 } from "../lib/gameCardImage";
+
+function formatCount(n: number): string {
+  if (!Number.isFinite(n) || n < 0) return "0";
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(n >= 10_000 ? 0 : 1)}K`;
+  return String(Math.round(n));
+}
 
 export function GameDetailPage() {
   const { slug } = useParams();
@@ -29,14 +42,14 @@ export function GameDetailPage() {
         if (!alive) return;
         setTotal(data.meta.totalGames);
         const found = data.games.find((g) => g.slug === slug) ?? null;
-        setGame(found ? localizeGame(found, locale, catalog) : null);
+        setGame(found ? localizeGame(found, locale, catalog, t) : null);
         setActiveImg(0);
       },
     );
     return () => {
       alive = false;
     };
-  }, [slug, locale]);
+  }, [slug, locale, t]);
 
   if (game === undefined) {
     return <div className="loading">{t("detail.loading")}</div>;
@@ -55,17 +68,37 @@ export function GameDetailPage() {
     );
   }
 
-  const activeSrc = game.images[activeImg] ?? game.images[0];
-  const shot = isLudusCardSrc(activeSrc)
-    ? ludusCardDataUri(game.name, game.category, game.originCountry)
-    : resolveImageSrc(activeSrc);
+  // Prefer real photos in the gallery — circular thumbs crop title-card SVGs
+  // into unreadable fragments (e.g. “…ss” from “Chess”).
+  const galleryImages = listDisplayImages(game.images);
+  const activeSrc =
+    galleryImages[Math.min(activeImg, Math.max(galleryImages.length - 1, 0))] ??
+    game.images[0];
+  const imageLabel: ImageLabel = {
+    name: game.name,
+    category: game.category,
+    originCountry: game.originCountry,
+    categoryKey: game.categoryKey ?? game.category,
+    viewCaptions: VIEW_CAPTION_KEYS.map((key) => t(key)),
+    cardFooter: t("detail.cardFooter"),
+  };
+  // Title-card SVGs repeat the game name — using them as the hero background
+  // creates a ghost double of the headline. Prefer a plain brand wash instead.
+  const heroPhoto =
+    activeSrc &&
+    isPhotographicSrc(activeSrc) &&
+    !isLudusSyntheticSrc(activeSrc) &&
+    !isFragileRemoteSrc(activeSrc) &&
+    !activeSrc.startsWith("data:")
+      ? resolveImageSrc(activeSrc, imageLabel)
+      : "";
 
   return (
     <>
       <section className="detail-hero">
         <div
-          className="detail-hero-media"
-          style={{ backgroundImage: `url("${shot}")` }}
+          className={`detail-hero-media${heroPhoto ? "" : " detail-hero-media--wash"}`}
+          style={heroPhoto ? { backgroundImage: `url("${heroPhoto}")` } : undefined}
           aria-hidden="true"
         />
         <div className="container">
@@ -104,32 +137,102 @@ export function GameDetailPage() {
       </section>
 
       <div className="container detail-layout">
-        <div>
+        <div className="detail-main">
           <div className="panel">
             <h2>{t("detail.about")}</h2>
             <p style={{ color: "var(--mist-dim)" }}>{game.description}</p>
           </div>
 
-          <div className="panel">
+          <div className="panel detail-howto">
             <h2>{t("detail.howToPlay")}</h2>
             <ol>
               {game.howToPlay.map((step) => (
                 <li key={step}>{step}</li>
               ))}
             </ol>
+            {game.howToWin?.length ? (
+              <div className="detail-howto-sub">
+                <h3>{t("detail.howToWin")}</h3>
+                <ul>
+                  {game.howToWin.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {game.rulesNotToBreak?.length ? (
+              <div className="detail-howto-sub">
+                <h3>{t("detail.rulesNotToBreak")}</h3>
+                <ul>
+                  {game.rulesNotToBreak.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
+
+          {game.tutorialVideo?.videoId ? (
+            <div className="panel detail-tutorial">
+              <h2>{t("detail.tutorial")}</h2>
+              <p className="detail-tutorial-intro">{t("detail.tutorialIntro")}</p>
+              <div className="detail-tutorial-frame">
+                <iframe
+                  title={game.tutorialVideo.title || t("detail.tutorial")}
+                  src={`https://www.youtube-nocookie.com/embed/${game.tutorialVideo.videoId}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+              <div className="detail-tutorial-caption">
+                <a
+                  href={game.tutorialVideo.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  {game.tutorialVideo.title || t("detail.tutorialWatch")}
+                </a>
+                {game.tutorialVideo.channelTitle ? (
+                  <span className="detail-tutorial-channel">
+                    {game.tutorialVideo.channelTitle}
+                  </span>
+                ) : null}
+                <span className="detail-tutorial-meta">
+                  {game.tutorialVideo.likeCount != null
+                    ? t("detail.tutorialMeta", {
+                        views: formatCount(game.tutorialVideo.viewCount ?? 0),
+                        likes: formatCount(game.tutorialVideo.likeCount),
+                        age: game.tutorialVideo.publishedText || "—",
+                      })
+                    : t("detail.tutorialMetaNoLikes", {
+                        views: formatCount(game.tutorialVideo.viewCount ?? 0),
+                        age: game.tutorialVideo.publishedText || "—",
+                      })}
+                </span>
+              </div>
+            </div>
+          ) : null}
 
           {game.variations.length > 0 ? (
             <div className="panel">
               <h2>{t("detail.variations")}</h2>
               <p style={{ color: "var(--mist-dim)" }}>{t("detail.variationsIntro")}</p>
               <div className="variations">
-                {game.variations.map((v) => (
+                {game.variations.map((v) => {
+                  const varPhotos = listDisplayImages(v.images).filter(isPhotographicSrc);
+                  const varCover =
+                    primaryCoverSrc(v.images) ??
+                    primaryCoverSrc(game.images) ??
+                    v.images?.[0];
+                  const varThumbs = varPhotos.filter((src) => src !== varCover).slice(0, 3);
+                  return (
                   <article className="variation" key={`${v.name}-${v.originCountry}`}>
-                    {v.images?.[0] ? (
+                    {varCover ? (
                       <div className="variation-media">
                         <GameImage
-                          src={v.images[0]}
+                          src={varCover}
                           alt={v.name}
                           loading="lazy"
                           label={{
@@ -138,17 +241,17 @@ export function GameDetailPage() {
                             originCountry: v.originCountry,
                           }}
                         />
-                        {v.images.length > 1 ? (
+                        {varThumbs.length ? (
                           <div className="variation-thumbs">
-                            {v.images.slice(1, 4).map((src) => (
+                            {varThumbs.map((src) => (
                               <GameImage
                                 key={src}
                                 src={src}
                                 alt=""
                                 loading="lazy"
                                 label={{
+                                  ...imageLabel,
                                   name: v.name,
-                                  category: game.category,
                                   originCountry: v.originCountry,
                                 }}
                               />
@@ -167,47 +270,44 @@ export function GameDetailPage() {
                     </div>
                     <p>{v.notes}</p>
                   </article>
-                ))}
+                  );
+                })}
               </div>
             </div>
           ) : null}
+
+          <GameAssistant game={game} />
         </div>
 
-        <aside>
+        <aside className="detail-aside">
           <div className="panel">
             <h2>{t("detail.images")}</h2>
             <GameImage
               className="main-shot"
               src={activeSrc}
               alt={`${game.name} reference`}
-              label={{
-                name: game.name,
-                category: game.category,
-                originCountry: game.originCountry,
-              }}
+              label={imageLabel}
             />
-            <div className="gallery">
-              {game.images.map((src, i) => (
-                <button
-                  type="button"
-                  key={`${src}-${i}`}
-                  className={i === activeImg ? "active" : undefined}
-                  onClick={() => setActiveImg(i)}
-                  aria-label={t("detail.showImage", { n: i + 1 })}
-                >
-                  <GameImage
-                    src={src}
-                    alt=""
-                    loading="lazy"
-                    label={{
-                      name: game.name,
-                      category: game.category,
-                      originCountry: game.originCountry,
-                    }}
-                  />
-                </button>
-              ))}
-            </div>
+            {galleryImages.length > 1 ? (
+              <div className="gallery">
+                {galleryImages.map((src, i) => (
+                  <button
+                    type="button"
+                    key={`${src}-${i}`}
+                    className={i === activeImg ? "active" : undefined}
+                    onClick={() => setActiveImg(i)}
+                    aria-label={t("detail.showImage", { n: i + 1 })}
+                  >
+                    <GameImage
+                      src={src}
+                      alt=""
+                      loading="lazy"
+                      label={imageLabel}
+                    />
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="panel">

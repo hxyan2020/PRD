@@ -81,8 +81,11 @@ for (const loc of LOCALES) {
     if (!a?.title || !a?.descTemplate || !a?.steps?.length || !a?.req?.length || !a?.participants) {
       throw new Error(`Incomplete archetype ${key} in ${loc}`);
     }
-    if (!a.descTemplate.includes("{country}") || !a.descTemplate.includes("{civ}")) {
-      throw new Error(`Archetype ${key} in ${loc} missing placeholders`);
+    if (!a.howToWin?.length || !a.rulesNotToBreak?.length) {
+      throw new Error(`Incomplete archetype win/rules ${key} in ${loc}`);
+    }
+    if (!a.descTemplate.includes("{country}")) {
+      throw new Error(`Archetype ${key} in ${loc} missing {country} placeholder`);
     }
     if (a.descTemplate === enArch[key].descTemplate && !a.fallbackEn) {
       throw new Error(`English-copy archetype desc ${key} in ${loc}`);
@@ -93,6 +96,9 @@ for (const loc of LOCALES) {
     const c = curI18n[loc][id];
     if (!c?.description || !c?.howToPlay?.length || !c?.requirements?.length || !c?.idealParticipants) {
       throw new Error(`Incomplete curated ${id} in ${loc}`);
+    }
+    if (!c.howToWin?.length || !c.rulesNotToBreak?.length) {
+      throw new Error(`Incomplete curated win/rules ${id} in ${loc}`);
     }
     if (c.description === enCur[id].description && !c.fallbackEn) {
       throw new Error(`English-copy curated ${id} in ${loc}`);
@@ -108,6 +114,8 @@ for (const loc of LOCALES) {
     const entry = {
       description: c.description,
       howToPlay: c.howToPlay,
+      howToWin: c.howToWin,
+      rulesNotToBreak: c.rulesNotToBreak,
       requirements: c.requirements,
       idealParticipants: c.idealParticipants,
     };
@@ -124,6 +132,8 @@ for (const loc of LOCALES) {
       title: a.title,
       descTemplate: a.descTemplate,
       steps: a.steps,
+      howToWin: a.howToWin,
+      rulesNotToBreak: a.rulesNotToBreak,
       req: a.req,
       participants: a.participants,
     };
