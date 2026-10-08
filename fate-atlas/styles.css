@@ -133,6 +133,18 @@ select {
   padding-top: 6rem;
 }
 
+.brand-mark {
+  margin: 0 0 1rem;
+  animation: rise-in 1s var(--ease) both;
+}
+
+.brand-mark__logo {
+  display: block;
+  width: min(14rem, 42vw);
+  height: auto;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.35));
+}
+
 .brand {
   font-family: var(--font-display);
   font-size: clamp(3.5rem, 12vw, 8.5rem);
@@ -140,7 +152,7 @@ select {
   letter-spacing: -0.03em;
   line-height: 0.9;
   margin: 0 0 1.25rem;
-  animation: rise-in 1s var(--ease) both;
+  animation: rise-in 1s var(--ease) 0.06s both;
 }
 
 .brand span {
@@ -1848,9 +1860,19 @@ body.studio-open {
 }
 
 .footer .brand-mini {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
   font-family: var(--font-display);
   color: var(--teal-deep);
   font-size: 1.15rem;
+}
+
+.brand-mini__logo {
+  width: 2.4rem;
+  height: auto;
+  display: block;
 }
 
 /* ── Motion ───────────────────────────────────────────── */
@@ -1915,16 +1937,36 @@ body.studio-open {
 }
 
 .hud__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 500;
   text-decoration: none;
   letter-spacing: -0.02em;
   color: #f2f6f8;
+  min-width: 0;
+}
+
+.hud__logo {
+  width: 2.15rem;
+  height: auto;
+  flex-shrink: 0;
+  display: block;
+}
+
+.hud__brand-text {
+  line-height: 1;
 }
 
 .hud__brand:hover {
   color: var(--copper-soft);
+}
+
+.hud__brand:hover .hud__logo {
+  opacity: 0.9;
+  filter: brightness(1.08);
 }
 
 .hud__stats {
