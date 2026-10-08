@@ -102,9 +102,14 @@
     <div class="page page--play" data-page="play" id="page-play" hidden>
       <section class="featured" id="play" aria-labelledby="featured-title">
         <div class="section">
-          <p class="section__eyebrow" data-i18n="play.eyebrow">Starter quests</p>
-          <h2 class="section__title" id="featured-title" data-i18n="play.title">Play these first</h2>
-          <p class="section__copy" data-i18n="play.copy">Three guided games with clear rules. Tap a card to begin.</p>
+          <div class="featured__head">
+            <div>
+              <p class="section__eyebrow" data-i18n="play.eyebrow">Recommended</p>
+              <h2 class="section__title" id="featured-title" data-i18n="play.title">Rites for you</h2>
+              <p class="section__copy" data-i18n="play.copy">A rotating trio from the atlas. Come back later — or sign in again — for a fresh set.</p>
+            </div>
+            <button type="button" class="btn btn--play-secondary" id="play-recs-refresh" data-i18n="play.refresh">New picks</button>
+          </div>
           <div class="feature-grid" id="featured-guides"></div>
         </div>
       </section>
@@ -407,6 +412,7 @@
   <script src="i18n/i18n.js"></script>
   <script src="router.js"></script>
   <script src="journal.js"></script>
+  <script src="play-recs.js"></script>
   <script src="app.js"></script>
   <script src="reading.js"></script>
   <script src="journal-ui.js"></script>
