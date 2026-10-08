@@ -221,6 +221,21 @@ function isStartOver(text: string, tr?: ChatTranslate) {
   return /\b(start over|restart|reset|new search|begin again)\b/i.test(text);
 }
 
+/** Short conversational acknowledgment before guiding back to the interview. */
+function chattyGuide(
+  t: ChatTranslate,
+  userText: string,
+  hintKey: MessageKey,
+  quickReplies?: string[],
+): ChatMessage {
+  const snippet = charExcerpt(userText.replace(/\s+/g, " ").trim(), 72);
+  const lead =
+    snippet.length > 2
+      ? `${t("chat.ack.chatty", { snippet })}\n\n${t(hintKey)}`
+      : t(hintKey);
+  return assistant(lead, quickReplies ? { quickReplies } : undefined);
+}
+
 function isOffTopic(text: string) {
   const t = normalize(text);
   if (!t) return false;
@@ -760,9 +775,7 @@ export function handleUserMessage(
       return {
         state: { ...state, phase: "ask_players" },
         replies: [
-          assistant(t("chat.hint.players"), {
-            quickReplies: playerQuickReplies(t),
-          }),
+          chattyGuide(t, text, "chat.hint.players", playerQuickReplies(t)),
         ],
       };
     }
@@ -786,9 +799,7 @@ export function handleUserMessage(
       return {
         state,
         replies: [
-          assistant(t("chat.hint.setting"), {
-            quickReplies: settingQuickReplies(t),
-          }),
+          chattyGuide(t, text, "chat.hint.setting", settingQuickReplies(t)),
         ],
       };
     }
@@ -812,9 +823,7 @@ export function handleUserMessage(
       return {
         state,
         replies: [
-          assistant(t("chat.hint.vibe"), {
-            quickReplies: vibeQuickReplies(t, false),
-          }),
+          chattyGuide(t, text, "chat.hint.vibe", vibeQuickReplies(t, false)),
         ],
       };
     }

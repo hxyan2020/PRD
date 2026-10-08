@@ -88,6 +88,11 @@ function RecCards({ games }: { games: Game[] }) {
   );
 }
 
+type PendingReply = {
+  replies: ChatMessage[];
+  nextState: ChatState;
+};
+
 export function GuidePage() {
   const [rawGames, setRawGames] = useState<Game[]>([]);
   const [contentI18n, setContentI18n] = useState<ContentI18nCatalog | null>(null);
@@ -95,7 +100,12 @@ export function GuidePage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [ready, setReady] = useState(false);
+  const [status, setStatus] = useState<"idle" | "thinking" | "typing">("idle");
+  const [typedContent, setTypedContent] = useState("");
+  const [typingMsg, setTypingMsg] = useState<ChatMessage | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const pendingRef = useRef<PendingReply | null>(null);
+  const timersRef = useRef<number[]>([]);
   const { t, locale } = useI18n();
 
   const games = useMemo(
@@ -116,6 +126,12 @@ export function GuidePage() {
   // Re-init welcome when locale changes (or after catalog first loads).
   useEffect(() => {
     if (!ready) return;
+    timersRef.current.forEach((id) => window.clearTimeout(id));
+    timersRef.current = [];
+    pendingRef.current = null;
+    setStatus("idle");
+    setTypingMsg(null);
+    setTypedContent("");
     setMessages([welcomeMessage(t)]);
     setState({ ...initialChatState(), phase: phaseAfterWelcome() });
     setInput("");
@@ -123,20 +139,87 @@ export function GuidePage() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, status, typedContent]);
+
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach((id) => window.clearTimeout(id));
+    };
+  }, []);
+
+  function clearTimers() {
+    timersRef.current.forEach((id) => window.clearTimeout(id));
+    timersRef.current = [];
+  }
+
+  function schedule(fn: () => void, ms: number) {
+    const id = window.setTimeout(fn, ms);
+    timersRef.current.push(id);
+  }
+
+  function finishBatch(batch: PendingReply) {
+    setMessages((prev) => [...prev, ...batch.replies]);
+    setState(batch.nextState);
+    setTypingMsg(null);
+    setTypedContent("");
+    setStatus("idle");
+    pendingRef.current = null;
+  }
+
+  function typeReply(msg: ChatMessage, rest: ChatMessage[], nextState: ChatState) {
+    setStatus("typing");
+    setTypingMsg(msg);
+    setTypedContent("");
+    const full = msg.content;
+    let i = 0;
+    const step = () => {
+      i = Math.min(full.length, i + Math.max(1, Math.round(full.length / 48)));
+      setTypedContent(full.slice(0, i));
+      if (i < full.length) {
+        schedule(step, 18 + (i % 5));
+        return;
+      }
+      // Commit typed message, then reveal remaining replies (e.g. recs already in msg).
+      setMessages((prev) => [...prev, { ...msg, content: full }]);
+      setTypingMsg(null);
+      setTypedContent("");
+      if (rest.length) {
+        schedule(() => finishBatch({ replies: rest, nextState }), 220);
+      } else {
+        setState(nextState);
+        setStatus("idle");
+        pendingRef.current = null;
+      }
+    };
+    schedule(step, 40);
+  }
+
+  function deliverReplies(replies: ChatMessage[], nextState: ChatState) {
+    if (!replies.length) {
+      setState(nextState);
+      setStatus("idle");
+      return;
+    }
+    const [first, ...rest] = replies;
+    pendingRef.current = { replies, nextState };
+    setStatus("thinking");
+    const thinkMs = 450 + Math.min(900, first.content.length * 4);
+    schedule(() => typeReply(first, rest, nextState), thinkMs);
+  }
 
   function send(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || !ready) return;
+    if (!trimmed || !ready || status !== "idle") return;
+    clearTimers();
     const userMsg: ChatMessage = {
       id: `u_${Date.now()}`,
       role: "user",
       content: trimmed,
     };
     const result = handleUserMessage(games, state, trimmed, t);
-    setMessages((prev) => [...prev, userMsg, ...result.replies]);
-    setState(result.state);
+    setMessages((prev) => [...prev, userMsg]);
     setInput("");
+    deliverReplies(result.replies, result.state);
   }
 
   function onSubmit(e: FormEvent) {
@@ -152,10 +235,12 @@ export function GuidePage() {
   }
 
   const lastQuick =
-    [...messages]
-      .reverse()
-      .find((m) => m.role === "assistant" && m.quickReplies?.length)?.quickReplies ??
-    [];
+    status === "idle"
+      ? [...messages]
+          .reverse()
+          .find((m) => m.role === "assistant" && m.quickReplies?.length)
+          ?.quickReplies ?? []
+      : [];
 
   return (
     <>
@@ -176,6 +261,29 @@ export function GuidePage() {
                   {m.recommendations ? <RecCards games={m.recommendations} /> : null}
                 </div>
               ))}
+              {status === "thinking" ? (
+                <div className="chat-status" role="status">
+                  <span className="chat-status-dots" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </span>
+                  {t("guide.thinking")}
+                </div>
+              ) : null}
+              {status === "typing" && typingMsg ? (
+                <div className="chat-bubble chat-assistant chat-bubble-typing">
+                  <div className="chat-bubble-text">
+                    <RichText text={typedContent} />
+                    <span className="chat-caret" aria-hidden="true">
+                      |
+                    </span>
+                  </div>
+                  <div className="chat-status" role="status">
+                    {t("guide.typing")}
+                  </div>
+                </div>
+              ) : null}
               <div ref={bottomRef} />
             </div>
 
@@ -200,12 +308,12 @@ export function GuidePage() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
                 placeholder={t("guide.placeholder")}
-                disabled={!ready}
+                disabled={!ready || status !== "idle"}
               />
               <button
                 className="btn btn-primary"
                 type="submit"
-                disabled={!ready || !input.trim()}
+                disabled={!ready || status !== "idle" || !input.trim()}
               >
                 {t("guide.send")}
               </button>
