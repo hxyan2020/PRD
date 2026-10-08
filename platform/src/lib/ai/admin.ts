@@ -9,8 +9,12 @@ export const AI_PARAM_KEYS = [
   "ai.min_confidence",
   "ai.rag_top_k",
   "ai.second_opinion_severity",
+  "ai.primary.vendor",
   "ai.line1.model",
   "ai.line2.model",
+  "ai.challenger.mode",
+  "ai.token.alert_daily",
+  "ai.token.soft_only",
   "ai.maker_checker_required",
   "detectors.auto_raise_alarms",
 ] as const;
@@ -29,8 +33,36 @@ export function seedAiAdminIfEmpty(db = getDb()) {
   upsert.run("ai.min_confidence", "0.55", "Minimum confidence before auto-complete without human gate");
   upsert.run("ai.rag_top_k", "6", "Top-K RAG documents retrieved per RCA");
   upsert.run("ai.second_opinion_severity", "BREACH", "Severities that trigger a second AI challenger (CRITICAL/BREACH)");
-  upsert.run("ai.line1.model", "crmp-rca-v0", "First-line AI model for RCA / skill match / RAG reasoning");
-  upsert.run("ai.line2.model", "crmp-challenger-v0", "Second-line AI challenger model that challenges first-line output");
+  upsert.run(
+    "ai.primary.vendor",
+    "claude",
+    "Prototype LLM vendor switch: claude | gpt | gemini (self-host evaluation later; no live call yet)"
+  );
+  upsert.run(
+    "ai.line1.model",
+    "claude-3-7-sonnet",
+    "First-line model label — claude-3-7-sonnet | gpt-4o | gemini-2-0-flash (prototype; heuristic RCA still)"
+  );
+  upsert.run(
+    "ai.line2.model",
+    "gpt-4o",
+    "Second-line / challenger model label (prototype; heuristic challenger still)"
+  );
+  upsert.run(
+    "ai.challenger.mode",
+    "heuristic",
+    "Challenger mode: heuristic (today) | vendor (independent model) | subagent (primary sub-agent validator)"
+  );
+  upsert.run(
+    "ai.token.alert_daily",
+    "500000",
+    "Soft daily token threshold — page AI + Infra when exceeded (prototype flag)"
+  );
+  upsert.run(
+    "ai.token.soft_only",
+    "true",
+    "When true, token/spend alerts never hard-stop RCA or CS analyze"
+  );
   upsert.run("ai.maker_checker_required", "true", "Skill/RAG/param changes require maker ≠ checker approval");
 
   const trainCount = (db.prepare(`SELECT COUNT(*) AS c FROM ai_training_runs`).get() as { c: number }).c;
@@ -218,8 +250,12 @@ export function getAiAdminOverview() {
     return row?.value ?? fallback;
   };
   const lineSettings = {
-    line1_model: settingRow("ai.line1.model", "crmp-rca-v0"),
-    line2_model: settingRow("ai.line2.model", "crmp-challenger-v0"),
+    primary_vendor: settingRow("ai.primary.vendor", "claude"),
+    line1_model: settingRow("ai.line1.model", "claude-3-7-sonnet"),
+    line2_model: settingRow("ai.line2.model", "gpt-4o"),
+    challenger_mode: settingRow("ai.challenger.mode", "heuristic"),
+    token_alert_daily: settingRow("ai.token.alert_daily", "500000"),
+    token_soft_only: settingRow("ai.token.soft_only", "true"),
     second_opinion_severity: settingRow("ai.second_opinion_severity", "BREACH"),
   };
 

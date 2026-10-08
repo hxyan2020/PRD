@@ -37,8 +37,12 @@ type Overview = {
     challenge_disagree?: number;
   };
   line_settings?: {
+    primary_vendor?: string;
     line1_model: string;
     line2_model: string;
+    challenger_mode?: string;
+    token_alert_daily?: string;
+    token_soft_only?: string;
     second_opinion_severity: string;
   };
   accuracy_history: Array<{
@@ -282,7 +286,14 @@ export function AiAdminConsole({
               </div>
               <div className="flex flex-wrap gap-2 text-xs">
                 <Badge className="bg-teal-50 text-teal-900 border-teal-200">
-                  {t("adm.model")}: {initial.overview.line_settings?.line1_model ?? "crmp-rca-v0"}
+                  vendor: {initial.overview.line_settings?.primary_vendor ?? "claude"}
+                </Badge>
+                <Badge className="bg-teal-50 text-teal-900 border-teal-200">
+                  {t("adm.model")}: {initial.overview.line_settings?.line1_model ?? "claude-3-7-sonnet"}
+                </Badge>
+                <Badge className="bg-slate-100 text-slate-700 border-slate-200">
+                  soft token: {initial.overview.line_settings?.token_alert_daily ?? "500000"}
+                  {initial.overview.line_settings?.token_soft_only === "false" ? "" : " (soft-only)"}
                 </Badge>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -320,7 +331,10 @@ export function AiAdminConsole({
               </div>
               <div className="flex flex-wrap gap-2 text-xs">
                 <Badge className="bg-amber-50 text-amber-900 border-amber-200">
-                  {t("adm.model")}: {initial.overview.line_settings?.line2_model ?? "crmp-challenger-v0"}
+                  {t("adm.model")}: {initial.overview.line_settings?.line2_model ?? "gpt-4o"}
+                </Badge>
+                <Badge className="bg-amber-50 text-amber-900 border-amber-200">
+                  mode: {initial.overview.line_settings?.challenger_mode ?? "heuristic"}
                 </Badge>
                 <Badge className="bg-slate-100 text-slate-700 border-slate-200">
                   {t("adm.secondOpinionSev")}:{" "}
@@ -426,7 +440,9 @@ export function AiAdminConsole({
               </div>
               <p className="text-[var(--muted)] mt-1">{t("adm.line1ParamsHint")}</p>
               <ul className="mt-2 space-y-1 text-xs font-mono">
+                <li>ai.primary.vendor</li>
                 <li>ai.line1.model</li>
+                <li>ai.token.alert_daily · ai.token.soft_only</li>
                 <li>ai.min_confidence · ai.rag_top_k · ai.skill_certainty_only</li>
               </ul>
             </div>
@@ -438,6 +454,7 @@ export function AiAdminConsole({
               <p className="text-[var(--muted)] mt-1">{t("adm.line2ParamsHint")}</p>
               <ul className="mt-2 space-y-1 text-xs font-mono">
                 <li>ai.line2.model</li>
+                <li>ai.challenger.mode</li>
                 <li>ai.second_opinion_severity</li>
               </ul>
             </div>

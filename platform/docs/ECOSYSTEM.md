@@ -1,6 +1,6 @@
 # Vantage Ecosystem Adoption Evaluation
 
-**Document ID:** CRMP-ECO-001 · **Version:** 1.9 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
+**Document ID:** CRMP-ECO-001 · **Version:** 2.0 · **Status:** Executive planning pack · **Scope:** CFD + Crypto CRMP prototype → production
 
 ## 1. Executive view
 
@@ -40,14 +40,19 @@ Fully implementing this into the **existing Vantage Markets ecosystem** is not a
 | F11 | **Market-intel feed contracts** | 5-min scan needs licensed/news APIs | Heuristic scanner | Vendor feeds + scoring |
 | F12 | **Kill-switches** | Disable auto-skills, intel push, write adapters instantly | Settings flags (partial) | Global + per-adapter |
 | F13 | **Signed C1 / form / mailbox connectors** | 24/7 CS must receive live chat, website forms and official mail in CRMP, not only in personal inboxes | Mock `POST /api/cs/intake` (`x-cs-intake-token: demo-c1`) + seeded desk | Production signed webhooks + mailbox gateway |
+| F14 | **RC AI workspace + silo** | Prompts / RAG / logs isolated per BU; RC independent agent instance | Single demo SQLite | AI-team-provided RC workspace |
+| F15 | **Company multi-LLM + soft spend** | Claude / GPT / Gemini switch; soft token alerts that never stop RCA; ~1 month model-use logs (extensible) | Prototype settings flags | Production metering + soft alerts |
+| F16 | **Named functions + RBAC (no central AI DB gateway yet)** | Company has no AI gateway / single MCP to internal DB — restrict via RBAC and named tools | Documented in AI Use Manual §6 | Keep until company gateway exists |
+| F17 | **Reuse company Lark AI bot** | Interactive cards + callback already built for another BU; optional JIRA | Mock Lark Integration + Demo Messenger | Production bot reuse (RM-01) |
 
 ### Integration map (target)
 
-1. Monitor 2.0 → CRMP Realtime Alert & Tracker (`/admin/alerts`) → dual-AI pack  
-2. CRMP → Lark cards (notify + inline actions)  
+1. Monitor 2.0 → CRMP Realtime Alert & Tracker (`/admin/alerts`) → dual-AI pack (primary LLM + vendor/sub-agent challenger)  
+2. CRMP → **company Lark AI bot** cards (notify + inline actions); optional JIRA  
 3. Human confirm → Vantage admin / control bus (maker) → Checker approve  
 4. Status write-back → Monitor ticket + Audit (CRMP / Vantage Markets Admin) + home spine stage counts  
 5. C1 / form / official email → CS/TR desk (`/admin/cs-desk`) → AI auto-email until client reply → TR dealing or Risk messenger  
+6. AI team **dev / UAT** → RC **prod workspace** (siloed prompts/RAG/logs); soft token alerts on spend
 
 ---
 
@@ -157,10 +162,12 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 
 - [ ] Approve Phase A budget band and name PM + Eng lead  
 - [ ] Confirm Monitor 2.0 API contract owner  
-- [ ] Confirm Lark vs Teams as corporate messenger  
-- [ ] Appoint Risk Owner for UAT exit criteria  
+- [ ] Confirm reuse of **company Lark AI bot** (cards + callback) vs greenfield Lark app  
+- [ ] Appoint Risk Owner / RC head for UAT exit and PoC→prod (company process)  
 - [ ] Agree shadow-mode duration before Phase C  
-- [ ] Security sign-off on AI blocklist + SoD model  
+- [ ] Confirm CRMP AI blocklist + SoD remain even when RC lead ships prompts/skills  
+- [ ] Confirm soft token alert thresholds (never hard-stop RCA) + model-use log retention (≥1 month)  
+- [ ] Confirm AI team **dev / UAT** + RC independent workspace  
 - [ ] Legal sign-off on evidence retention  
 - [ ] Confirm CS 24/7 C1 / form / mailbox owners and the AI follow-up SLA (wait until client reply, cap 3)  
 
@@ -175,5 +182,6 @@ Cloud agents and vendors should plan by **dependency phase**, not by fixed week 
 | 1.7 | 2026-10-05 | Audit CRMP / Vantage Markets Admin + Roll back; home spine; Open Issues / Progress links |
 | 1.8 | 2026-10-05 | Nav truth: Realtime Alert & Tracker; Detectors→Monitor 2.0; F2/Phase B/Monitor shortcoming; mobile card lists; demo links |
 | 1.9 | 2026-10-06 | F13 signed C1/form/mailbox; CS/TR desk on the spine; OI-19/OI-20 |
+| 2.0 | 2026-10-08 | F14–F17 RC silo, multi-LLM soft spend, named-function RBAC, company Lark bot reuse |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

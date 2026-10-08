@@ -698,12 +698,12 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "Open User Guide. Use the English / 繁體中文 buttons on the article (and the left-pane EN / 繁中 if you want chrome translated too).",
         "In the User Guide, open §9.3 CS/TR door. Confirm desk, /cs portal, dashboard, log, data, wait loop and skills are described in both languages.",
-        "Open AI Use Manual (/admin/docs/ai-use). Confirm Risk + CS/TR sections, glossary (agent, skill, MCP, hallucination, named function, gateway), the get_client_exposure mermaid (not LLM → SQL → Production DB), and diagrams switch language — not only the title.",
-        "Repeat for PRD (§6.5 / FR-37…48), TSD (§17), Ecosystem Eval, and this UAT page — including the CS/TR feature catalogue table above the case list.",
+        "Open AI Use Manual (/admin/docs/ai-use). Confirm Risk + CS/TR sections, glossary (agent, skill, MCP, hallucination, named function, gateway), the get_client_exposure mermaid (not LLM → SQL → Production DB), §10.1 company AI POC table (LLM switch, soft token alerts, RC silo, Lark bot reuse, challenger vendor/sub-agent), and diagrams switch language — not only the title.",
+        "Repeat for PRD (§6.5 / FR-37…48 + NFR-13…15 / §12.1), TSD (§9 challenger modes + §15.1 envs), Ecosystem Eval (F14–F17), and this UAT page — including the CS/TR feature catalogue table above the case list.",
         "Body text must actually switch — not only the page title. A missing-file stub fails the case.",
       ],
-      pass: "Both languages render for each listed doc; UG §9.3, AI Use Manual diagrams, and this UAT CS/TR catalogue switch for real; no missing-file stub.",
-      evidence: "Tick-list of URLs tested in EN and ZH, including UG §9.3, /admin/docs/ai-use, and the UAT CS/TR catalogue.",
+      pass: "Both languages render for each listed doc; UG §9.3, AI Use Manual §10.1, and this UAT CS/TR catalogue switch for real; no missing-file stub.",
+      evidence: "Tick-list of URLs tested in EN and ZH, including UG §9.3, /admin/docs/ai-use §10.1, and the UAT CS/TR catalogue.",
     },
     zh: {
       title: "英文與繁中文件都能顯示",
@@ -712,12 +712,12 @@ export const UAT_CASES: UatCase[] = [
       steps: [
         "開啟使用手冊，點文章上的 English／繁體中文（左側 EN／繁中可一併翻譯介面）。",
         "在使用手冊打開 §9.3 CS／TR 大門。確認台面、/cs 入口、儀表板、日誌、資料、等待迴圈與技能兩語都有。",
-        "開啟 AI 使用手冊（/admin/docs/ai-use）。確認風控＋CS／TR 章節、詞彙（代理、技能、MCP、幻覺、具名函式、閘道）、get_client_exposure mermaid（不是 LLM → SQL → Production DB）與圖會切語言 — 不能只有標題變。",
-        "對 PRD（§6.5／FR-37…48）、TSD（§17）、生態評估、本 UAT 頁重複 — 含案例列表上方的 CS／TR 功能目錄表。",
+        "開啟 AI 使用手冊（/admin/docs/ai-use）。確認風控＋CS／TR 章節、詞彙（代理、技能、MCP、幻覺、具名函式、閘道）、get_client_exposure mermaid（不是 LLM → SQL → Production DB）、§10.1 公司 AI POC 表（LLM 切換、軟性 token 告警、風控隔離、重用 Lark 機器人、挑戰者供應商／子代理）與圖會切語言 — 不能只有標題變。",
+        "對 PRD（§6.5／FR-37…48＋NFR-13…15／§12.1）、TSD（§9 挑戰者模式＋§15.1 環境）、生態評估（F14–F17）、本 UAT 頁重複 — 含案例列表上方的 CS／TR 功能目錄表。",
         "內文必須真的切換，不能只有標題變。缺檔 stub 算失敗。",
       ],
-      pass: "所列文件兩語皆可渲染；使用手冊 §9.3、AI 使用手冊圖解與本 UAT 的 CS／TR 目錄真的切換；非缺檔 stub。",
-      evidence: "已測 URL 清單（含使用手冊 §9.3、/admin/docs/ai-use 與 UAT CS／TR 目錄）。",
+      pass: "所列文件兩語皆可渲染；使用手冊 §9.3、AI 使用手冊 §10.1 與本 UAT 的 CS／TR 目錄真的切換；非缺檔 stub。",
+      evidence: "已測 URL 清單（含使用手冊 §9.3、/admin/docs/ai-use §10.1 與 UAT CS／TR 目錄）。",
     },
   },
   {

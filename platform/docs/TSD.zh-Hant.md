@@ -442,7 +442,15 @@ sequenceDiagram
 ## 9. 獨立第二 AI 挑戰者
 
 ### 9.1 目的
-當警報嚴重度達到或超過 `ai.second_opinion_severity`（預設 **BREACH**）時，平台在主要 Skill/RAG RCA 之後執行獨立挑戰模型（`crmp-challenger-v0`）。挑戰者**不得**重用主要決策路徑。
+當警報嚴重度達到或超過 `ai.second_opinion_severity`（預設 **BREACH**）時，平台在主要 Skill/RAG RCA 之後執行挑戰者。正式模式（AI 部門 POC）：
+
+| 模式 | 設定 | 規則 |
+|---|---|---|
+| **供應商／獨立模型** | `ai.challenger.mode=vendor` | 不同供應商或隔離端點＋提示；不與主路徑共用工具結果快取 |
+| **子代理驗證** | `ai.challenger.mode=subagent` | 主堆疊下獨立代理工作流，重核證據／不安全動作 |
+| **原型啟發式**（今日） | `crmp-challenger-v0` | 庫內規則 — 非線上模型 |
+
+兩種正式模式仍輸出 `AGREE`／`PARTIAL`／`DISAGREE`。`PARTIAL`／`DISAGREE` 強制人工干預。
 
 **程式：** `platform/src/lib/ai/challenger.ts` · 於 `analyze.ts` 持久化後掛接。
 
@@ -450,13 +458,19 @@ sequenceDiagram
 | 設定 | 預設 | 行為 |
 |---|---|---|
 | `ai.second_opinion_severity` | `BREACH` | 警報嚴重度等級 ≥ 設定時執行（`WARN` &lt; `BREACH` &lt; `CRITICAL`） |
+| `ai.challenger.mode` | `heuristic`（原型） | `heuristic`｜`vendor`｜`subagent` |
 
 ```mermaid
 graph TD
   Rca[主 RCA 已寫入] --> Cmp{嚴重度達門檻?}
   Cmp -->|否| Skip[略過挑戰者]
-  Cmp -->|是| Run[crmp-challenger-v0]
-  Run --> V{結論}
+  Cmp -->|是| Mode{挑戰者模式}
+  Mode -->|heuristic| RunH[crmp-challenger-v0]
+  Mode -->|vendor| RunV[獨立模型]
+  Mode -->|subagent| RunS[主路徑子代理]
+  RunH --> V{結論}
+  RunV --> V
+  RunS --> V
   V -->|AGREE| Pack[附上挑戰包]
   V -->|PARTIAL 或 DISAGREE| Human[needs human 等於 1]
   Human --> Pack
@@ -608,6 +622,31 @@ SQLite：`platform/data/vantage_risk.db`。
 重置：`npm run db:reset` 後重啟。
 
 示範帳號見使用手冊 §1（例如 `admin@vantagemarkets.com`／`admin123`）。
+
+### 15.1 公司 AI 環境與租戶（正式目標）
+
+風險控制 ↔ AI 部門 POC。原型仍是單一 SQLite；正式必須遵守：
+
+| 主題 | 目標 |
+|---|---|
+| **風控工作區** | 獨立風控 AI 工作區／代理實例 — 提示、RAG、日誌與他 BU **隔離** |
+| **環境** | AI 團隊提供分離的 **dev** 與 **UAT**（模型 API、向量庫、git）。UAT 代理絕不指正式庫 |
+| **LLM 切換** | `ai.line1.model`／`ai.primary.vendor` ∈ `{claude, gpt, gemini}`；自架僅在公司評估確認後 |
+| **軟性 token 告警** | `ai.token.alert_daily`＋`ai.token.soft_only=true` — 超限叫應；**不停** RCA |
+| **日誌保存** | 公司模型使用／回覆日誌預設 **約 1 個月**；風控可請 AI 團隊延長 |
+| **提示／技能上線** | 風控組長／風險負責人可上線（不必 AI BU 核准）。**CRMP 仍要求** AI 管理 Maker≠Checker、黑名單、不可逆控制人工閘道 |
+| **資料庫存取** | 尚無公司 AI 閘道／單一 MCP 控內部庫 — **具名函式＋RBAC**（見 AI 使用手冊 §6） |
+| **Lark** | 優先**重用**公司 Lark AI 機器人（他 BU 已建互動卡片＋回呼）— RM-01 |
+| **RAG 來源** | 公司 RAG 範本；Lark wiki／JIRA 列於資料來源 |
+
+```mermaid
+flowchart LR
+  Dev[AI 團隊 DEV] --> Uat[AI 團隊 UAT]
+  Uat --> Prod[風控正式工作區]
+  Prod --> Silo[隔離提示 RAG 日誌]
+  Prod --> Soft[軟性 token 告警]
+  Soft --> Gates[CRMP 人工閘道]
+```
 
 ---
 
@@ -964,6 +1003,7 @@ graph TD
 | 2.5 | 2026-10-06 | §17.12 CS／TR 配套資料（BU／核身庫／關卡／`cs.*`）；FR-45；UAT-52 |
 | 2.6 | 2026-10-06 | §17.13 資料齊全後分析（分類／嚴重度／直回 vs POC）；FR-46；UAT-53 |
 | 2.7 | 2026-10-07 | §13 行動：CS／TR 台列表→案件＋儀表板／日誌／資料卡片雙檔；FR-14；UAT-18 |
+| 2.8 | 2026-10-08 | §9 挑戰者供應商／子代理模式；§15.1 公司 AI 環境／隔離／LLM 切換／軟性 token／重用 Lark／風控上線 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）  
 **對應文件：** [English TSD](./TSD.md) · 渲染於 `/admin/docs/tsd`

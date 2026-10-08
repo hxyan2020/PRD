@@ -445,6 +445,9 @@ CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已
 | NFR-10 | CS 等待迴圈 | 自動信上限來自 `cs.followup_cap`（預設 3）；WAITING 時禁止結案；進件對案必須續辦、不得重複 |
 | NFR-11 | CS 隱私 | `cs_requests` 不存證件圖；`/cs` 與公開 GET 狀態保持低個資 |
 | NFR-12 | CS 敏感度閘道 | 僅當嚴重度 ≤ `cs.auto_reply_max_severity` 且類別不在 `cs.sensitive_categories` 時直回；否則需 POC 補註 |
+| NFR-13 | 軟性 AI 花費 | Token／美元門檻告警會叫應值班；超限時**不得**硬停 RCA／CS 分析 |
+| NFR-14 | BU 隔離 | 風控提示、RAG 語料與模型使用日誌留在風控工作區 — 不與他 BU 共用 |
+| NFR-15 | LLM 切換 | 正式主模型可在公司支援供應商間切換（Claude／GPT／Gemini）；自架僅在公司確認後可選 |
 
 ---
 
@@ -523,11 +526,22 @@ CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已
 
 | 階段 | 成果 |
 |---|---|
-| 原型（現在） | 完整管理地圖、雙 AI、messenger、**CS／TR 大門**（`/cs`、進件、等待迴圈、分析／POC、技能、資料契約）、文件、UAT-01…53、公開 Pages 快照 |
-| A 階段 | 強化驗證／託管／可觀測 |
-| B 階段 | 即時 Monitor＋Lark 通知（讀路徑） |
-| C 階段 | 受監督寫入路徑＋緊急開關 |
-| D 階段 | 模型營運／挑戰者多樣 |
+| 原型（現在） | 完整管理地圖、雙 AI、messenger、**CS／TR 大門**（`/cs`、進件、等待迴圈、分析／POC、技能、資料契約）、文件、UAT-01…53、公開 Pages 快照；AI 管理原型旗標（模型切換＋軟性 token 告警） |
+| A 階段 | 強化驗證／託管／可觀測；確認 AI 團隊 **dev／UAT**＋風控工作區 |
+| B 階段 | 即時 Monitor＋**重用公司 Lark AI 機器人**卡片（讀路徑）；JIRA 可選 |
+| C 階段 | 受監督寫入路徑＋緊急開關（CRMP 人工閘道保留） |
+| D 階段 | 模型營運：Claude／GPT／Gemini 切換、挑戰者供應商**或**子代理、軟性花費告警、評測架 |
+
+### 12.1 公司流程備註（AI 部門 POC）
+
+公司 AI 流程：PoC→正式需 **風控主管**核准（POC 未另設合規／資安關）。**在 CRMP 內這不免除：**
+
+- AI 存取安全黑名單  
+- AI 管理變更與不可逆干預的 Maker ≠ Checker  
+- 停商品／LP／出金控制的人工閘道  
+- 永不停止 RCA 的軟性 token 告警  
+
+風控組長可上線**提示與技能**而不必 AI BU 核准；不可逆交易控制仍走 CRMP 雙重控制。
 
 ---
 
@@ -575,5 +589,6 @@ CS／TR 量與等待迴圈健康在 `/admin/cs-dashboard`。CS_* 稽核加上已
 | 2.8 | 2026-10-07 | FR-48 AI 使用手冊 `/admin/docs/ai-use`（風控＋CS／TR 識字、mermaid、英／繁中）；UAT-17 |
 | 2.9 | 2026-10-07 | FR-48：具名函式＋閘道資料庫路徑（`get_client_exposure` → 閘道檢查權限 → API → DB） |
 | 2.7 | 2026-10-07 | FR-14 CS／TR 台列表→案件＋儀表板／日誌／資料卡片（390px）；UAT-18 |
+| 3.0 | 2026-10-08 | NFR-13…15 軟性花費／隔離／LLM 切換；§12＋§12.1 公司 AI POC（風控上線、重用 Lark、挑戰者模式） |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

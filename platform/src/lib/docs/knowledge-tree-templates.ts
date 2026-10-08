@@ -4,7 +4,15 @@
  * - Skill ↔ RAG bind (SKILL_RAG_DOCS) — creates edges on the Domains trunk
  * - Domain trunk checklist
  * - Chain node (already a LinkedScenario; listed for KT authors)
+ *
+ * RAG template picker (AI POC): company offers multiple RAG templates — pick one, then
+ * bind leaves (including Lark wiki as a source). RC corpus stays siloed from other BUs.
  */
+
+export const KT_TEMPLATE_OWNERSHIP = {
+  en: "Pick a company RAG template first, then bind leaves (Lark wiki allowed). RC corpus/logs stay BU-siloed.",
+  zh: "先選公司 RAG 範本，再綁葉（可含 Lark wiki）。風控語料／日誌維持 BU 隔離。",
+} as const;
 
 export type KtTemplateKind = "rag_leaf" | "skill_rag_bind" | "domain_trunk" | "chain_node" | "full_pack";
 

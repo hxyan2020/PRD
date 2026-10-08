@@ -446,7 +446,15 @@ sequenceDiagram
 ## 9. Independent Second-AI Challenger
 
 ### 9.1 Purpose
-For alert severities at or above `ai.second_opinion_severity` (default **BREACH**), the platform runs an independent challenger model (`crmp-challenger-v0`) after the primary skill/RAG RCA. The challenger **must not** reuse the primary decision path (separate heuristics / future separate vendor).
+For alert severities at or above `ai.second_opinion_severity` (default **BREACH**), the platform runs a challenger after the primary skill/RAG RCA. Production modes (AI department POC):
+
+| Mode | Setting | Rule |
+|---|---|---|
+| **Vendor / independent model** | `ai.challenger.mode=vendor` | Separate vendor or isolated endpoint + prompt; no shared tool-result cache with primary |
+| **Sub-agent validator** | `ai.challenger.mode=subagent` | Separate agent workflow under the primary stack that re-checks evidence / unsafe actions |
+| **Prototype heuristic** (today) | `crmp-challenger-v0` | In-repo rules — not a live model |
+
+Both production modes still emit `AGREE` / `PARTIAL` / `DISAGREE`. `PARTIAL` / `DISAGREE` force human intervention.
 
 **Code:** `platform/src/lib/ai/challenger.ts` · wired from `analyze.ts` after skill/RAG persist.
 
@@ -454,13 +462,19 @@ For alert severities at or above `ai.second_opinion_severity` (default **BREACH*
 | Setting | Default | Behaviour |
 |---|---|---|
 | `ai.second_opinion_severity` | `BREACH` | Run when alert severity rank ≥ setting (`WARN` &lt; `BREACH` &lt; `CRITICAL`) |
+| `ai.challenger.mode` | `heuristic` (prototype) | `heuristic` \| `vendor` \| `subagent` |
 
 ```mermaid
 graph TD
   Rca[Primary RCA persisted] --> Cmp{Severity at threshold?}
   Cmp -->|No| Skip[Skip challenger]
-  Cmp -->|Yes| Run[crmp-challenger-v0]
-  Run --> V{Verdict}
+  Cmp -->|Yes| Mode{Challenger mode}
+  Mode -->|heuristic| RunH[crmp-challenger-v0]
+  Mode -->|vendor| RunV[Independent model]
+  Mode -->|subagent| RunS[Primary sub-agent]
+  RunH --> V{Verdict}
+  RunV --> V
+  RunS --> V
   V -->|AGREE| Pack[Attach challenge pack]
   V -->|PARTIAL or DISAGREE| Human[needs human equals 1]
   Human --> Pack
@@ -612,6 +626,31 @@ SQLite path: `platform/data/vantage_risk.db`.
 Reset: `npm run db:reset` then restart.
 
 Demo logins: see User Guide §1 (e.g. `admin@vantagemarkets.com` / `admin123`).
+
+### 15.1 Company AI environments & tenancy (production target)
+
+From Risk Control ↔ AI department POC. Prototype remains single SQLite; production must honour:
+
+| Topic | Target |
+|---|---|
+| **RC workspace** | Independent RC AI workspace / agent instance — prompts, RAG, logs **siloed** from other BUs |
+| **Envs** | AI team provides separated **dev** and **UAT** (model API, vector DB, git). Never point UAT agents at prod DB |
+| **LLM switch** | `ai.line1.model` / `ai.primary.vendor` ∈ `{claude, gpt, gemini}`; self-host only if company evaluation confirms |
+| **Soft token alerts** | `ai.token.alert_daily` + `ai.token.soft_only=true` — page when exceeded; **do not** stop RCA |
+| **Log retention** | Company model-use / response logs default **~1 month**; RC may ask AI team to prolong |
+| **Release of prompts/skills** | RC team lead / Risk Owner can ship to prod (no AI BU approval). **CRMP still requires** maker≠checker on AI Admin CRs, blocklist, and human gates on irreversible controls |
+| **DB access** | No company AI gateway / single MCP to internal DB yet — **named functions + RBAC** (see AI Use Manual §6) |
+| **Lark** | Prefer **reuse** of company Lark AI bot (interactive cards + callback already built for another BU) — RM-01 |
+| **RAG sources** | Company RAG templates; Lark wiki / JIRA catalogued under Data Sources |
+
+```mermaid
+flowchart LR
+  Dev[AI team DEV] --> Uat[AI team UAT]
+  Uat --> Prod[RC prod workspace]
+  Prod --> Silo[Siloed prompts RAG logs]
+  Prod --> Soft[Soft token alerts]
+  Soft --> Gates[CRMP human gates]
+```
 
 ---
 
@@ -968,6 +1007,7 @@ graph TD
 | 2.5 | 2026-10-06 | §17.12 CS/TR supporting data (BU/KYC vault/hops/`cs.*`); FR-45; UAT-52 |
 | 2.6 | 2026-10-06 | §17.13 analyze after collected (categorize / severity / auto vs POC); FR-46; UAT-53 |
 | 2.7 | 2026-10-07 | §13 mobile: CS/TR desk list→thread + dashboard/log/data card twins; FR-14; UAT-18 |
+| 2.8 | 2026-10-08 | §9 challenger vendor/sub-agent modes; §15.1 company AI env/silo/LLM switch/soft tokens/Lark reuse/RC release |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)  
 **Companion:** [繁體中文版 TSD](./TSD.zh-Hant.md) · rendered at `/admin/docs/tsd`

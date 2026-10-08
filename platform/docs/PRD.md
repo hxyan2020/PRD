@@ -445,6 +445,9 @@ After the wait loop has enough facts, AI **must** categorise, assign severity, a
 | NFR-10 | CS wait loop | Auto-mail cap from `cs.followup_cap` (default 3); Resolve blocked while WAITING; inbound match must continue, not duplicate |
 | NFR-11 | CS privacy | No ID images on `cs_requests`; `/cs` and public GET status stay PII-light |
 | NFR-12 | CS sensitivity gate | Auto-reply only when severity ≤ `cs.auto_reply_max_severity` and category is not in `cs.sensitive_categories`; POC addendum required otherwise |
+| NFR-13 | Soft AI spend | Token / $ threshold alerts page on-call; **must not** hard-stop RCA / CS analyze when exceeded |
+| NFR-14 | BU silo | RC prompts, RAG corpus, and model-use logs stay in the RC workspace — not shared with other BUs |
+| NFR-15 | LLM switch | Production primary model selectable among company-supported vendors (Claude / GPT / Gemini); self-host optional only after company confirmation |
 
 ---
 
@@ -523,11 +526,22 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-53). The pack
 
 | Stage | Outcome |
 |---|---|
-| Prototype (now) | Full admin map, dual-AI, messenger, **CS/TR door** (`/cs`, intake, wait loop, analyze/POC, skills, data contract), docs, UAT-01…53, public Pages snapshot |
-| Phase A | Harden auth/hosting/observability |
-| Phase B | Live Monitor + Lark notify (read path) |
-| Phase C | Supervised write path + kill-switches |
-| Phase D | Model ops / challenger diversity |
+| Prototype (now) | Full admin map, dual-AI, messenger, **CS/TR door** (`/cs`, intake, wait loop, analyze/POC, skills, data contract), docs, UAT-01…53, public Pages snapshot; AI Admin prototype flags for model switch + soft token alerts |
+| Phase A | Harden auth/hosting/observability; confirm AI team **dev / UAT** + RC workspace |
+| Phase B | Live Monitor + **reuse company Lark AI bot** cards (read path); JIRA optional |
+| Phase C | Supervised write path + kill-switches (CRMP human gates stay) |
+| Phase D | Model ops: Claude/GPT/Gemini switch, challenger vendor **or** sub-agent, soft spend alerts, eval harness |
+
+### 12.1 Company process note (AI department POC)
+
+Company AI process: PoC → production needs **RC head** approval (no separate company compliance/security gate called out in the POC). **Inside CRMP this does not waive:**
+
+- AI Access Security blocklist  
+- Maker ≠ checker on AI Admin change requests and irreversible interventions  
+- Human gates on halt / LP / withdrawal / WD controls  
+- Soft token alerts that never stop RCA  
+
+RC team lead may ship **prompts and skills** without AI BU approval; irreversible trading controls still need the CRMP dual-control path.
 
 ---
 
@@ -575,5 +589,6 @@ Formal execution: [UAT Checklist](/admin/docs/uat) (UAT-01 … UAT-53). The pack
 | 2.8 | 2026-10-07 | FR-48 AI Use Manual `/admin/docs/ai-use` (Risk + CS/TR literacy, mermaid, EN/zh-Hant); UAT-17 |
 | 2.9 | 2026-10-07 | FR-48: named-function + gateway DB path (`get_client_exposure` → Gateway permission → API → DB) |
 | 2.7 | 2026-10-07 | FR-14 CS/TR desk list→thread + dashboard/log/data cards at 390px; UAT-18 |
+| 3.0 | 2026-10-08 | NFR-13…15 soft spend / silo / LLM switch; §12 + §12.1 company AI POC (RC release, Lark reuse, challenger modes) |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

@@ -95,7 +95,7 @@ graph TD
 | 工具呼叫 | 模型請平台跑技能、檢索 RAG 或讀警報 — 再依結果書寫。規劃於 RM-03。 |
 | 接地 | 答案必須引用技能代碼、RAG 葉或證據 id。沒有根據的散文只是草稿，不是事實。 |
 
-**本原型不呼叫線上 LLM。** `POST /api/ai` 分析是匹配技能或檢索 RAG。種子包看起來已完整，方便 UAT 走畫面。正式 LLM＋評測架是 **RM-03**；挑戰者放在**另一家供應商**是 **RM-04**。在那之前，把每一句流暢的話當成 **啟發式草稿**。
+**本原型不呼叫線上 LLM。** `POST /api/ai` 分析是匹配技能或檢索 RAG。種子包看起來已完整，方便 UAT 走畫面。正式 LLM＋模型切換＋評測架是 **RM-03**；挑戰者用**獨立供應商或子代理驗證**是 **RM-04**。在那之前，把每一句流暢的話當成 **啟發式草稿**。
 
 ```mermaid
 sequenceDiagram
@@ -309,25 +309,65 @@ sequenceDiagram
 
 | 現在（原型） | 下一步（正式） | 單號 |
 |---|---|---|
-| 技能匹配＋RAG 檢索；無線上 LLM | LLM 主根因＋工具呼叫＋評測架 | RM-03／FR-20／OI-04 |
-| 第二 AI＝庫內啟發式 | 挑戰者放在**另一家供應商或另一套提示** | RM-04 |
+| 技能匹配＋RAG 檢索；無線上 LLM | LLM 主根因＋**模型切換**（Claude／GPT／Gemini；自架僅在日後確認）＋工具呼叫＋評測架 | RM-03／FR-20／OI-04 |
+| 第二 AI＝庫內啟發式 | 挑戰者＝**獨立模型／供應商** *或* 主模型的**子代理驗證**（BREACH／CRITICAL 仍強制 AGREE／PARTIAL／DISAGREE） | RM-04 |
+| Token／美元未計量 | 超過門檻發**軟性** token／花費告警 — **呼叫 AI＋基礎設施；不停 RCA 服務** | RM-14／OI-16 |
 | `EXECUTED_MOCK`／`EXECUTED_AFTER_APPROVAL` 無券商呼叫 | 真實控制匯流排加 dry-run | RM-02／FR-19 |
-| Lark **模擬**互動卡片在 `/admin/lark` | 正式 Lark 應用／webhook／SSO | RM-01／FR-17／OI-08 |
+| Lark **模擬**互動卡片在 `/admin/lark` | **重用公司 Lark AI 機器人**（他 BU 已建好互動卡片＋回呼）＋必要時 JIRA | RM-01／FR-17／OI-08 |
 | 劃選聊天＝接地詞彙 | 同一介面，可選線上模型，仍要引用 | RM-03 |
 | CS 分類／嚴重度＝啟發式 | 同一閘道（`cs.auto_reply_max_severity`、`cs.sensitive_categories`）擋在真模型前面 | FR-46 保留；換模型是 RM-03 |
-| MCP 未接線 | 以 MCP 風格伺服器提供技能、RAG、警報，且同一套黑名單 | 本手冊＋RM-03 |
+| 無公司 AI→內部庫閘道／單一 MCP | 維持**具名函式＋RBAC**（公司確認：尚無中央 AI→DB 閘道） | 本手冊 §6 |
+| MCP 未接線 | 之後可選 MCP 風格伺服器（技能／RAG／警報）— 仍受同一黑名單 | 本手冊＋RM-03 |
 | LLM 不可產出 SQL | 具名函式（`get_client_exposure`）＋閘道權限＋API → DB | 本手冊 §6 |
 
 ```mermaid
 graph LR
-  Today[啟發式加 RAG] --> Llm[RM-03 線上 LLM]
+  Today[啟發式加 RAG] --> Llm[RM-03 線上 LLM 切換]
   Llm --> Eval[評測架]
-  Today --> Chal[RM-04 獨立供應商]
+  Today --> Chal[RM-04 供應商或子代理]
+  Today --> Soft[RM-14 軟性 token 告警]
   Today --> Bus[RM-02 控制匯流排]
-  Today --> Lark[RM-01 正式 Lark]
+  Today --> Lark[RM-01 公司 Lark 機器人]
 ```
 
 **不做的風險：** 若不交付 RM-03／04，台面聽起來「AI 已齊」其實仍是腳本。把 `EXECUTED_MOCK` 當成圍堵的人，有一天會真的送出暫停。這就是為什麼要有本手冊。
+
+### 10.1 公司 AI 平台（AI 部門 POC — 背景）
+
+風險控制與公司 AI 部門會談紀要。這些塑造**正式**設計；在 RM-03 前原型仍走啟發式。
+
+| 公司事實 | CRMP／風控怎麼用 |
+|---|---|
+| 公司支援 **Claude、GPT、Gemini** 等 | AI 管理 `ai.line1.model`／切換（RM-03）。原型可只顯示供應商標籤設定。 |
+| **自架**模型評估中 — **未確認** | 路線圖僅作可選路徑；不以自架擋 Claude／GPT／Gemini。 |
+| 支援 **LLM 切換** | 操作員／風控組長經 AI 管理（Maker）＋風控 Checker 選定主模型 — 不可靜默翻轉。 |
+| 追蹤 token；**超限告警；服務不停** | 軟上限（`ai.token.alert_*`）。不可因花費自動殺 RCA。 |
+| **風控 BU** 可開發代理（RAG、技能、工具、工作流）；AI BU 必要時協助 | 風控擁有 CRMP 代理內容；AI BU 是可選協助。 |
+| 有多種 **RAG 範本**可選 | 先選公司範本，再綁葉（知識樹／技能與 KT 範本）。 |
+| RAG 可指向 **Lark／Lark wiki** | 資料來源＋RAG `source_ref`（攝取屬正式工作）。 |
+| 各 BU 的 **提示、RAG、日誌隔離** | 風控獨立工作區／代理實例；不與他 BU 共用提示庫。 |
+| 風控可在 **風控組長**同意下自行上線提示／技能（**不必** AI BU 核准） | AI 管理 Checker＝風控組長／風險負責人。**不**拿掉 CRMP 停商品／LP／出金人工閘道或 AI 寫入黑名單。 |
+| **尚無**公司 AI 閘道／單一 MCP 控內部庫 — 今日用 **RBAC** | 維持具名函式路徑（§6）。不要假裝已有 MCP→DB。 |
+| 公司 AI 已整合 **Lark＋JIRA** | 卡片／工單重用（RM-01）；JIRA 列為資料來源類型。 |
+| 他 BU 已建 **Lark AI 機器人＋互動卡片＋回呼** | 優先重用，勿從零另建 Lark 應用（RM-01）。 |
+| 模型使用／回覆 **日誌約 1 個月**（可請 AI 團隊延長） | TSD 保存期；上線前若風控需更久，先問 AI 團隊。 |
+| 風控有**獨立 AI 工作區**；AI 團隊提供 **dev／UAT**、模型 API、向量庫、git | TSD／生態寫明分離環境；UAT 代理絕不指正式庫。 |
+| 可用第二 AI **或** 第一 AI 的子代理驗證 | RM-04 接受兩種；裁決仍閘控自動執行。 |
+| PoC→正式：公司流程只需 **風控主管**（無另設合規／資安關） | 寫入 PRD。**CRMP 控制面仍要求**黑名單、干預 Maker≠Checker、不可逆控制的人工閘道。 |
+
+```mermaid
+flowchart TD
+  Rc[風險控制 BU] --> Agent[風控代理工作區]
+  Agent --> Skills[技能與提示]
+  Agent --> Rag[RAG 葉加 Lark wiki]
+  Agent --> Tools[具名函式加 RBAC]
+  AiBu[AI BU 協助] -.-> Agent
+  Agent --> Primary[主 LLM Claude 或 GPT 或 Gemini]
+  Primary --> Chal{挑戰者}
+  Chal -->|供應商或子代理| Verdict[AGREE PARTIAL DISAGREE]
+  Verdict --> SoftTok[超限則 token 告警]
+  SoftTok --> Human[控制仍走人工閘道]
+```
 
 ---
 
@@ -468,9 +508,10 @@ flowchart TD
 | [PRD](/admin/docs/prd) | FR-04 挑戰者、FR-07 Maker／Checker、FR-08 黑名單、FR-46 直回 vs POC、FR-48 本手冊 |
 | [TSD](/admin/docs/tsd) | §8 AI 管理、§9 挑戰者、`EXECUTED_MOCK`、CS 分析 |
 | [UAT 清單](/admin/docs/uat) | UAT-03 技能、UAT-04／05／19 挑戰者、UAT-06 RAG、UAT-13 雙重控制、UAT-15 黑名單、UAT-17 本文件、UAT-47 等待迴圈、UAT-53 直回 vs POC |
-| [改進路線圖](/admin/docs/roadmap) | RM-03 LLM、RM-04 供應商挑戰者、RM-02 控制匯流排 |
-| [開放議題](/admin/docs/open-issues) | OI-04 LLM、OI-05 語料、OI-15 文件日常 |
+| [改進路線圖](/admin/docs/roadmap) | RM-01 公司 Lark 機器人、RM-03 LLM 切換、RM-04 供應商／子代理挑戰者、RM-14 軟性 token 告警、RM-02 控制匯流排 |
+| [開放議題](/admin/docs/open-issues) | OI-04 LLM、OI-05 語料、OI-16 可觀測性／token 保存、OI-15 文件日常 |
 | [AI 存取安全](/admin/security/ai-access) | 僅限人類清單 |
+| [技能與 KT 範本](/admin/docs/templates) | 可複製骨架；風控擁有上線；RAG 範本選擇備註 |
 | [網址目錄](/admin/docs/urls) | 每一條路徑，含本頁 |
 
 ---
@@ -481,5 +522,6 @@ flowchart TD
 |---|---|---|
 | 1.0 | 2026-10-07 | 首份風控＋CS／TR 的 AI 識字手冊；英／繁中；mermaid 圖；FR-48 |
 | 1.1 | 2026-10-07 | §6 具名函式＋閘道資料庫路徑（`get_client_exposure` → 權限 → API → DB）；不是 LLM → SQL → Production DB |
+| 1.2 | 2026-10-08 | §10＋§10.1 公司 AI POC：多 LLM 切換、軟性 token 告警、風控擁有／隔離、重用 Lark 機器人、挑戰者供應商或子代理、無中央 AI→DB 閘道 |
 
 **負責人：** demo platform owner（`haixiang.yan@hytechc.com`）

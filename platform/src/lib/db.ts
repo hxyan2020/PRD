@@ -659,6 +659,8 @@ function seedIfEmpty(db: Database.Database) {
     ["Vantage Help Center", "REFERENCE", "https://global.vantagehelpcenter.com/hc/en-us", "Internal/external support articles.", "OPERATIONS", "NONE", "On-demand", '["support"]', null as unknown as string],
     ["Scuderia Ferrari Partnership Page", "REFERENCE", "https://www.vantagemarkets.com/en/partnership/ferrari/", "Brand context — not a risk feed.", "OPERATIONS", "NONE", "Static", '["brand"]', "Reference only."],
     ["XAUUSD247 Specs", "REFERENCE", "https://www.vantagemarkets.com/en/commodities-trading/gold-trading/xauusd24-7/", "24/7 gold product rules, exposure limits.", "RISK_CONTROL", "NONE", "On change", '["product","gold247"]', "Net 15k / gross 30k lot limits."],
+    ["Lark Wiki / Docs", "KNOWLEDGE", "lark://wiki/rc-risk-control", "Company Lark wiki spaces usable as RAG source (RC silo). Ingest wiring is production work.", "RISK_CONTROL", "APP_SECRET", "On change", '["rag","lark","wiki"]', "AI POC: RAG may point at Lark / Lark wiki; prompts/RAG/logs stay BU-siloed."],
+    ["JIRA (company AI)", "TICKETING", "https://jira.company.internal/", "Company JIRA integrated with AI platform — optional durable tickets from BREACH packs / RM-01.", "SYSTEM", "API_KEY", "Event-driven", '["jira","tickets","ai"]', "Catalog only until wired; pairs with company Lark AI bot reuse."],
   ];
 
   for (const s of sources) {
@@ -1182,6 +1184,49 @@ function ensureEscalationSchema(db: Database.Database) {
   upsert.run("escalation.default_route_code", "ESC-DEFAULT", "Catch-all escalation path for unmatched / exotic events");
 }
 
+function ensureCompanyAiDataSources(db: Database.Database) {
+  const srcByName = db.prepare(`SELECT id FROM data_sources WHERE name = ?`);
+  const insertSrc = db.prepare(
+    `INSERT INTO data_sources (name, category, url, description, owner_department, auth_type, refresh_cadence, status, tags_json, notes)
+     VALUES (?, ?, ?, ?, ?, ?, ?, 'ACTIVE', ?, ?)`
+  );
+  const updateSrc = db.prepare(
+    `UPDATE data_sources SET category = ?, url = ?, description = ?, owner_department = ?, auth_type = ?, refresh_cadence = ?, tags_json = ?, notes = ?, status = 'ACTIVE' WHERE id = ?`
+  );
+  const specs: Array<[string, string, string, string, string, string, string, string, string]> = [
+    [
+      "Lark Wiki / Docs",
+      "KNOWLEDGE",
+      "lark://wiki/rc-risk-control",
+      "Company Lark wiki spaces usable as RAG source (RC silo). Ingest wiring is production work.",
+      "RISK_CONTROL",
+      "APP_SECRET",
+      "On change",
+      '["rag","lark","wiki"]',
+      "AI POC: RAG may point at Lark / Lark wiki; prompts/RAG/logs stay BU-siloed.",
+    ],
+    [
+      "JIRA (company AI)",
+      "TICKETING",
+      "https://jira.company.internal/",
+      "Company JIRA integrated with AI platform — optional durable tickets from BREACH packs / RM-01.",
+      "SYSTEM",
+      "API_KEY",
+      "Event-driven",
+      '["jira","tickets","ai"]',
+      "Catalog only until wired; pairs with company Lark AI bot reuse.",
+    ],
+  ];
+  for (const s of specs) {
+    const existing = srcByName.get(s[0]) as { id: number } | undefined;
+    if (!existing) {
+      insertSrc.run(s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8]);
+    } else {
+      updateSrc.run(s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], existing.id);
+    }
+  }
+}
+
 function ensureCsPermissions(db: Database.Database) {
   const extras: Record<string, string[]> = {
     RISK_OWNER: ["cs.read", "cs.operate"],
@@ -1495,9 +1540,51 @@ function runEnsureAiLayer(db: Database.Database) {
     "BREACH",
     "Minimum alert severity that triggers independent second AI challenger (WARN|BREACH|CRITICAL)"
   );
-  upsert.run("ai.line1.model", "crmp-rca-v0", "First-line AI model for RCA / skill match / RAG reasoning");
-  upsert.run("ai.line2.model", "crmp-challenger-v0", "Second-line AI challenger model that challenges first-line output");
+  upsert.run(
+    "ai.primary.vendor",
+    "claude",
+    "Prototype LLM vendor switch: claude | gpt | gemini (self-host evaluation later; no live call yet)"
+  );
+  upsert.run(
+    "ai.line1.model",
+    "claude-3-7-sonnet",
+    "First-line model label — claude-3-7-sonnet | gpt-4o | gemini-2-0-flash (prototype; heuristic RCA still)"
+  );
+  upsert.run(
+    "ai.line2.model",
+    "gpt-4o",
+    "Second-line / challenger model label (prototype; heuristic challenger still)"
+  );
+  upsert.run(
+    "ai.challenger.mode",
+    "heuristic",
+    "Challenger mode: heuristic (today) | vendor (independent model) | subagent (primary sub-agent validator)"
+  );
+  upsert.run(
+    "ai.token.alert_daily",
+    "500000",
+    "Soft daily token threshold — page AI + Infra when exceeded (prototype flag)"
+  );
+  upsert.run(
+    "ai.token.soft_only",
+    "true",
+    "When true, token/spend alerts never hard-stop RCA or CS analyze"
+  );
+  // Migrate legacy heuristic model labels to company multi-LLM prototype labels
+  db.prepare(
+    `UPDATE platform_settings SET value = 'claude-3-7-sonnet',
+       description = 'First-line model label — claude-3-7-sonnet | gpt-4o | gemini-2-0-flash (prototype; heuristic RCA still)',
+       updated_at = datetime('now')
+     WHERE key = 'ai.line1.model' AND value IN ('crmp-rca-v0')`
+  ).run();
+  db.prepare(
+    `UPDATE platform_settings SET value = 'gpt-4o',
+       description = 'Second-line / challenger model label (prototype; heuristic challenger still)',
+       updated_at = datetime('now')
+     WHERE key = 'ai.line2.model' AND value IN ('crmp-challenger-v0')`
+  ).run();
   upsert.run("detectors.auto_raise_alarms", "true", "Detectors raise Monitor alarms when warn/breach");
+  ensureCompanyAiDataSources(db);
   upsert.run("market_intel.enabled", "true", "Enable 5-minute market intelligence scanner");
   upsert.run("market_intel.interval_minutes", "5", "Scan cadence in minutes");
   upsert.run("market_intel.lark_chat_id", "oc_market_intelligence", "Dedicated messenger group for intel pushes");

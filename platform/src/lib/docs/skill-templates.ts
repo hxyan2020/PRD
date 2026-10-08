@@ -2,7 +2,15 @@
  * Copy-paste templates for authoring new AI skills / linked chains.
  * Wire into: risk-scenarios-*.ts, skill-zh.ts, skill-escalation-map.ts, skill-rag-map.ts,
  * then seed via skills.ts / restart so /admin/skills and Knowledge Tree pick them up.
+ *
+ * RC ownership (AI POC): Risk Control BU ships prompts/skills with RC team-lead agreement
+ * (no AI BU approval). CRMP human gates on irreversible controls and AI write blocklist still apply.
  */
+
+export const SKILL_TEMPLATE_OWNERSHIP = {
+  en: "RC owns ship: RC team lead can release prompts/skills to prod (no AI BU approval). Halt / LP / WD still need CRMP human gates.",
+  zh: "風控擁有上線：風控組長可上線提示／技能（不必 AI BU 核准）。停商品／LP／出金仍需 CRMP 人工閘道。",
+} as const;
 
 export type SkillTemplateKind =
   | "skeleton"

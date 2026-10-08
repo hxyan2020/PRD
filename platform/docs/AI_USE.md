@@ -309,25 +309,65 @@ Keep this map in your head so a demo never gets mistaken for go-live.
 
 | Now (prototype) | Next (production) | Ticket |
 |---|---|---|
-| Skill match + RAG retrieve; no live LLM | LLM primary RCA with tool-calling + eval harness | RM-03 / FR-20 / OI-04 |
-| Second AI = in-repo heuristic | Challenger on a **separate vendor or prompt** | RM-04 |
+| Skill match + RAG retrieve; no live LLM | LLM primary RCA with **model switch** (Claude / GPT / Gemini; self-host only if confirmed later) + tool-calling + eval harness | RM-03 / FR-20 / OI-04 |
+| Second AI = in-repo heuristic | Challenger = **independent model/vendor** *or* **sub-agent validator** of the primary (AGREE / PARTIAL / DISAGREE still mandatory on BREACH/CRITICAL) | RM-04 |
+| Token / $ not metered | Soft token / $ alerts when above threshold — **page AI + Infra; do not stop RCA service** | RM-14 / OI-16 |
 | `EXECUTED_MOCK` / `EXECUTED_AFTER_APPROVAL` with no broker | Real control bus with dry-run | RM-02 / FR-19 |
-| Lark **mock** interactive cards on `/admin/lark` | Production Lark app / webhooks / SSO | RM-01 / FR-17 / OI-08 |
+| Lark **mock** interactive cards on `/admin/lark` | **Reuse company Lark AI bot** (interactive cards + callback already built for another BU) + JIRA where useful | RM-01 / FR-17 / OI-08 |
 | Selection chatbot = grounded glossary | Same UX, optional live model behind the same citations | RM-03 |
 | CS categorize / severity = heuristic | Same gates (`cs.auto_reply_max_severity`, `cs.sensitive_categories`) in front of a real model | FR-46 stays; model swap is RM-03 |
-| MCP not wired | Tool access via MCP-style servers (skills, RAG, alerts) with the same blocklist | This handbook + RM-03 |
+| No company AI DB gateway / single MCP to internal DB | Keep **named functions + RBAC** (company confirmed: no central AI→DB gateway yet) | This handbook §6 |
+| MCP not wired for desk tools | Optional MCP-style servers for skills/RAG/alerts later — still behind the same blocklist | This handbook + RM-03 |
 | LLM must not emit SQL | Named functions (`get_client_exposure`) + gateway permission + API → DB | This handbook §6 |
 
 ```mermaid
 graph LR
-  Today[Heuristic plus RAG] --> Llm[RM-03 live LLM]
+  Today[Heuristic plus RAG] --> Llm[RM-03 live LLM switch]
   Llm --> Eval[Eval harness]
-  Today --> Chal[RM-04 separate vendor]
+  Today --> Chal[RM-04 vendor or sub-agent]
+  Today --> Soft[RM-14 soft token alerts]
   Today --> Bus[RM-02 control bus]
-  Today --> Lark[RM-01 live Lark]
+  Today --> Lark[RM-01 company Lark bot]
 ```
 
 **Skip risk:** if we never ship RM-03/04, the desk keeps sounding “AI-complete” while still being a script. Operators who believe `EXECUTED_MOCK` is containment will send a real halt someday. That is why this manual exists.
+
+### 10.1 Company AI platform (AI department POC — background)
+
+Notes from Risk Control’s conversation with the company AI department. These shape **production** design; the prototype stays heuristic until RM-03.
+
+| Company fact | What CRMP / RC does with it |
+|---|---|
+| Company supports **Claude, GPT, Gemini**, etc. | AI Admin `ai.line1.model` / switch (RM-03). Prototype may show vendor labels as settings only. |
+| **Self-hosted** models under evaluation — **not confirmed** | Roadmap optional path only; do not block Claude/GPT/Gemini. |
+| **LLM switch** supported | Operators / RC lead pick primary via AI Admin (maker) + RC checker — not a silent flip. |
+| Token usage tracked; **alert on exceed; service keeps running** | Soft caps (`ai.token.alert_*`). Never auto-kill RCA on spend. |
+| **Risk Control BU** develops agents (RAG, skills, tool calling, workflows); AI BU assists | RC owns CRMP agent content; AI BU is optional help. |
+| Multiple **RAG templates** available | Pick a company template, then bind leaves (Knowledge Tree / Skill & KT templates). |
+| RAG may point to **Lark / Lark wiki** | Data Sources + RAG `source_ref` for Lark wiki (ingest is production work). |
+| Different BUs’ **prompts, RAG, logs are siloed** | RC independent workspace / agent instance; no shared prompt store with other BUs. |
+| RC can release **own prompts/skills to prod** with **RC team lead** agreement (no AI BU approval) | AI Admin checker = RC lead / Risk Owner. **Does not** remove CRMP halt/LP/WD human gates or AI write blocklist. |
+| **No** company AI gateway / single MCP to internal DB — **RBAC** today | Keep named-function path (§6). Do not invent a fake MCP-to-DB. |
+| Company AI integrated **Lark + JIRA** | Reuse for cards / tickets (RM-01); JIRA as Data Source type. |
+| Lark **AI bot + interactive cards + callback** already built for another BU | Prefer reuse over a greenfield Lark app (RM-01). |
+| Model-use / response **logs ~1 month** (AI team can prolong) | TSD retention; ask AI team before go-live if RC needs longer. |
+| RC gets **independent AI workspace** + AI-provided **dev / UAT**, model API, vector DB, git | Separate envs in TSD / Ecosystem; never point UAT agent at prod DB. |
+| 2nd AI **or** sub-agent of the 1st can validate | RM-04 accepts either pattern; verdict still gates auto-execute. |
+| PoC→prod: company process needs **RC head** (no separate compliance/security gate) | Document in PRD. **CRMP control plane still requires** blocklist, maker≠checker on interventions, human gates on irreversible controls. |
+
+```mermaid
+flowchart TD
+  Rc[Risk Control BU] --> Agent[RC agent workspace]
+  Agent --> Skills[Skills and prompts]
+  Agent --> Rag[RAG leaves plus Lark wiki]
+  Agent --> Tools[Named functions plus RBAC]
+  AiBu[AI BU assists] -.-> Agent
+  Agent --> Primary[Primary LLM Claude or GPT or Gemini]
+  Primary --> Chal{Challenger}
+  Chal -->|Vendor or sub-agent| Verdict[AGREE PARTIAL DISAGREE]
+  Verdict --> SoftTok[Token alert if over cap]
+  SoftTok --> Human[Human gate on controls]
+```
 
 ---
 
@@ -468,9 +508,10 @@ If a button would do one of these and you are signed in as an AI-shaped service 
 | [PRD](/admin/docs/prd) | FR-04 challenger, FR-07 maker/checker, FR-08 blocklist, FR-46 auto vs POC, FR-48 this handbook |
 | [TSD](/admin/docs/tsd) | §8 AI Admin, §9 challenger, `EXECUTED_MOCK`, CS analyze |
 | [UAT Checklist](/admin/docs/uat) | UAT-03 skill, UAT-04/05/19 challenger, UAT-06 RAG, UAT-13 dual control, UAT-15 blocklist, UAT-17 this doc, UAT-47 wait loop, UAT-53 auto vs POC |
-| [Improvement Roadmap](/admin/docs/roadmap) | RM-03 LLM, RM-04 vendor challenger, RM-02 control bus |
-| [Open Issues](/admin/docs/open-issues) | OI-04 LLM, OI-05 corpus, OI-15 docs BAU |
+| [Improvement Roadmap](/admin/docs/roadmap) | RM-01 company Lark bot, RM-03 LLM switch, RM-04 vendor/sub-agent challenger, RM-14 soft token alerts, RM-02 control bus |
+| [Open Issues](/admin/docs/open-issues) | OI-04 LLM, OI-05 corpus, OI-16 observability/token retention, OI-15 docs BAU |
 | [AI Access Security](/admin/security/ai-access) | Human-only inventory |
+| [Skill & KT templates](/admin/docs/templates) | Copy-paste stubs; RC owns ship; RAG template picker note |
 | [URL Catalog](/admin/docs/urls) | Every path, including this one |
 
 ---
@@ -481,5 +522,6 @@ If a button would do one of these and you are signed in as an AI-shaped service 
 |---|---|---|
 | 1.0 | 2026-10-07 | First AI literacy handbook for Risk + CS/TR; EN / zh-Hant; mermaid visuals; FR-48 |
 | 1.1 | 2026-10-07 | §6 named-function + gateway DB path (`get_client_exposure` → permission → API → DB); not LLM → SQL → Production DB |
+| 1.2 | 2026-10-08 | §10 + §10.1 company AI POC: multi-LLM switch, soft token alerts, RC ownership/silos, Lark bot reuse, challenger vendor or sub-agent, no central AI DB gateway |
 
 **Owner:** demo platform owner (`haixiang.yan@hytechc.com`)

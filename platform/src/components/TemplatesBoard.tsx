@@ -2,7 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui";
-import { SKILL_TEMPLATES, type SkillTemplate } from "@/lib/docs/skill-templates";
+import {
+  SKILL_TEMPLATES,
+  SKILL_TEMPLATE_OWNERSHIP,
+  type SkillTemplate,
+} from "@/lib/docs/skill-templates";
+import { KT_TEMPLATE_OWNERSHIP } from "@/lib/docs/knowledge-tree-templates";
 import { KNOWLEDGE_TREE_TEMPLATES, type KtTemplate } from "@/lib/docs/knowledge-tree-templates";
 import { useUiLocale } from "@/hooks/useUiLocale";
 
@@ -142,6 +147,10 @@ export function TemplatesBoard() {
           {zh
             ? "複製 TypeScript 範本以新增 AI 技能或知識樹節點（RAG 葉、技能↔RAG 邊、領域主幹、連結鏈）。填滿 YOUR_* 後接到 catalog／rag-corpus／skill-rag-map，重啟後即可在 Skills 與 Knowledge Tree 看到。"
             : "Copy TypeScript templates to author new AI skills or Knowledge Tree nodes (RAG leaf, skill↔RAG edge, domain trunk, chain). Fill YOUR_* placeholders, wire catalog / rag-corpus / skill-rag-map, restart to see them on Skills and Knowledge Tree."}
+        </p>
+        <p className="text-sm text-teal-900 max-w-4xl">
+          {zh ? SKILL_TEMPLATE_OWNERSHIP.zh : SKILL_TEMPLATE_OWNERSHIP.en}{" "}
+          {zh ? KT_TEMPLATE_OWNERSHIP.zh : KT_TEMPLATE_OWNERSHIP.en}
         </p>
         <div className="flex flex-wrap gap-2 items-center">
           <button

@@ -430,12 +430,12 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 
 1. Open User Guide. Use the English / 繁體中文 buttons on the article (and the left-pane EN / 繁中 if you want chrome translated too).
 2. In the User Guide, open §9.3 CS/TR door. Confirm desk, /cs portal, dashboard, log, data, wait loop and skills are described in both languages.
-3. Open AI Use Manual (`/admin/docs/ai-use`). Confirm Risk + CS/TR sections, glossary (agent, skill, MCP, hallucination, named function, gateway), the get_client_exposure mermaid (not LLM → SQL → Production DB), and diagrams switch language — not only the title.
-4. Repeat for PRD (§6.5 / FR-37…48), TSD (§17), Ecosystem Eval, and this UAT page — including the CS/TR feature catalogue table above the case list.
+3. Open AI Use Manual (`/admin/docs/ai-use`). Confirm Risk + CS/TR sections, glossary (agent, skill, MCP, hallucination, named function, gateway), the get_client_exposure mermaid (not LLM → SQL → Production DB), §10.1 company AI POC table (LLM switch, soft token alerts, RC silo, Lark bot reuse, challenger vendor/sub-agent), and diagrams switch language — not only the title.
+4. Repeat for PRD (§6.5 / FR-37…48 + NFR-13…15 / §12.1), TSD (§9 challenger modes + §15.1 envs), Ecosystem Eval (F14–F17), and this UAT page — including the CS/TR feature catalogue table above the case list.
 5. Body text must actually switch — not only the page title. A missing-file stub fails the case.
 
-**Pass:** Both languages render for each listed doc; UG §9.3, AI Use Manual diagrams, and this UAT CS/TR catalogue switch for real; no missing-file stub.
-**Evidence:** Tick-list of URLs tested in EN and ZH, including UG §9.3, `/admin/docs/ai-use`, and the UAT CS/TR catalogue.
+**Pass:** Both languages render for each listed doc; UG §9.3, AI Use Manual §10.1, and this UAT CS/TR catalogue switch for real; no missing-file stub.
+**Evidence:** Tick-list of URLs tested in EN and ZH, including UG §9.3, `/admin/docs/ai-use` §10.1, and the UAT CS/TR catalogue.
 
 ### UAT-18 — Phone-width smoke test (~390px)
 
@@ -1086,3 +1086,4 @@ Permanent Pages origin: `https://hxyan2020.github.io/PRD/crmp-plus/`.
 |---|---|---|
 | 2.6 | 2026-10-06 | CS/TR feature catalogue: desk, /cs, wait loop, skills, dashboard, log, data, hops, cs.*; interactive CS/TR filter; EN/zh-Hant |
 | 2.7 | 2026-10-06 | UAT-53 categorize / severity / AI solution / auto vs named POC; pack 52 cases; catalogue primary 8; FR-46 |
+| 2.8 | 2026-10-08 | UAT-17 steps cover AI Use §10.1, PRD NFR-13…15 / §12.1, TSD §9/§15.1, Ecosystem F14–F17 |

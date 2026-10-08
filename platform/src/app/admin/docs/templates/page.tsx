@@ -21,8 +21,8 @@ export default async function TemplatesDocPage() {
         title={zh ? "技能與知識樹範本" : "Skill & Knowledge Tree templates"}
         subtitle={
           zh
-            ? `${SKILL_TEMPLATES.length} 種技能範本 · ${KNOWLEDGE_TREE_TEMPLATES.length} 種知識樹節點範本 — 複製後填 YOUR_* 即可上架。`
-            : `${SKILL_TEMPLATES.length} skill templates · ${KNOWLEDGE_TREE_TEMPLATES.length} Knowledge Tree node templates — copy, fill YOUR_*, ship.`
+            ? `${SKILL_TEMPLATES.length} 種技能範本 · ${KNOWLEDGE_TREE_TEMPLATES.length} 種知識樹節點範本 — 複製後填 YOUR_* 即可上架。風控組長可上線提示／技能（不必 AI BU）；先選公司 RAG 範本再綁葉（可含 Lark wiki）。`
+            : `${SKILL_TEMPLATES.length} skill templates · ${KNOWLEDGE_TREE_TEMPLATES.length} Knowledge Tree node templates — copy, fill YOUR_*, ship. RC team lead ships prompts/skills (no AI BU approval); pick a company RAG template, then bind leaves (Lark wiki OK).`
         }
         actions={
           <>
