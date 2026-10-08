@@ -2082,24 +2082,29 @@ body.studio-open {
   color: var(--ink-soft);
 }
 
-/* ── Draw oracle ──────────────────────────────────────── */
-.oracle {
+/* ── Atlas AI recommendation / draw oracle ─────────────── */
+.oracle.recommend {
   background:
-    radial-gradient(ellipse at 20% 0%, rgba(193, 122, 47, 0.12), transparent 45%),
-    linear-gradient(180deg, #edf3f6, #e4ecef);
-  border-top: 1px solid var(--line);
+    radial-gradient(ellipse at 18% 0%, rgba(193, 122, 47, 0.14), transparent 48%),
+    linear-gradient(180deg, #edf3f6, #e8eef1);
   border-bottom: 1px solid var(--line);
+  padding-top: 5.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .oracle__panel {
   max-width: 40rem;
-  padding: 1.75rem 0 0;
+  padding: 0.35rem 0 1.25rem;
+}
+
+.oracle__panel > .btn {
+  min-width: 12rem;
 }
 
 .oracle__result {
   min-height: 8rem;
   margin-top: 1.5rem;
-  padding-top: 0;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--line);
 }
 

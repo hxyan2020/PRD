@@ -146,9 +146,12 @@
         }
       });
     }
-    if (page === "play" && params.surprise === "1") {
-      document.getElementById("draw-btn")?.click();
-      navigate("play", {}, { replace: true });
+    if ((page === "play" || page === "atlas") && params.surprise === "1") {
+      navigate("atlas", {}, { replace: true });
+      requestAnimationFrame(() => {
+        document.getElementById("recommend")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("draw-btn")?.click();
+      });
       return;
     }
 
