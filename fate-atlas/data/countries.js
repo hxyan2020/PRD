@@ -1,10 +1,36 @@
 /**
  * Country catalog keys → ISO 3166-1 alpha-2 for flags & Intl.DisplayNames.
  * Ancient regions map to successor-state flags + an emblem glyph.
- * Flag images: flagcdn.com (with emoji fallback).
+ * Flag images: self-hosted PNGs under assets/flags/ (emoji fallback only).
  */
 (function () {
   "use strict";
+
+  function flagAssetBase() {
+    try {
+      const scripts = document.getElementsByTagName("script");
+      for (let i = scripts.length - 1; i >= 0; i--) {
+        const src = scripts[i].src || "";
+        if (/\/data\/countries\.js(\?|$)/.test(src)) {
+          return src.replace(/data\/countries\.js(\?.*)?$/, "assets/flags/");
+        }
+      }
+    } catch (_) {}
+    try {
+      return new URL("assets/flags/", window.location.href).href;
+    } catch (_) {
+      return "assets/flags/";
+    }
+  }
+
+  function flagUrls(code) {
+    const cc = String(code || "").toLowerCase().replace(/[^a-z]/g, "");
+    const base = flagAssetBase();
+    return {
+      src: `${base}${cc}.png`,
+      srcset: `${base}${cc}-2x.png 2x`,
+    };
+  }
 
   const COUNTRY_ISO = {
     Algeria: "DZ",
@@ -166,10 +192,9 @@
       return `<span class="flag-icon" title="${safeAlt}"><span class="flag-emoji" aria-hidden="true">🏳️</span></span>`;
     }
     const emoji = flagEmoji(cc);
-    const src = `https://flagcdn.com/24x18/${cc.toLowerCase()}.png`;
-    const src2x = `https://flagcdn.com/48x36/${cc.toLowerCase()}.png`;
-    // Prefer raster flags — emoji regional indicators render as "US"/"CA" on many systems.
-    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${src}" srcset="${src2x} 2x" width="24" height="18" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.hidden=false)" /><span class="flag-emoji" hidden aria-hidden="true">${emoji}</span></span>`;
+    const u = flagUrls(cc);
+    // Prefer local raster flags — emoji regional indicators render as "US"/"CA" on many systems.
+    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${u.src}" srcset="${u.srcset}" width="24" height="18" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.hidden=false)" /><span class="flag-emoji" hidden aria-hidden="true">${emoji}</span></span>`;
   }
 
   function localizedCountryName(name, locale) {
