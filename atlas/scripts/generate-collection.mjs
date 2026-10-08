@@ -423,10 +423,23 @@ const CURATED_PHOTOS = {
   ],
   "Worry dolls": [commons("Kokeshi_dolls.jpg"), commons("Tin_soldier.jpg"), commons("Dollhouse.jpg")],
   "Corn husk doll": [commons("Kokeshi_dolls.jpg"), commons("Hobby_horse.jpg"), commons("Tin_soldier.jpg")],
-  Chunkey: [commons("Lacrosse.jpg"), commons("Sepak_takraw.jpg"), commons("Quoits.jpg")],
+  Chunkey: [
+    commons(
+      "George Catlin - Tchung-kee, a Mandan Game Played with a Ring and Pole - 1985.66.431 - Smithsonian American Art Museum.jpg",
+    ),
+    commons("Catlin Tchung-kee, a Mandan Game Played with a Ring and Pole 01.jpg"),
+    commons(
+      "Two young Yuma Indian men playing the pole and hoop game, ca.1900 (CHS-3509).jpg",
+    ),
+    commons("Stone discoidals Winterville HRoe 2010.jpg"),
+  ],
   "Tea set toy": [commons("Dollhouse.jpg"), commons("Cup-and-ball.jpg"), commons("Maracas.jpg")],
-  "Frisbee / flying disc": [commons("Seesaw.jpg"), commons("Jianzi.jpg"), commons("Sepak_takraw.jpg")],
-  "Hacky sack / footbag": [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Seesaw.jpg")],
+  "Frisbee / flying disc": [
+    commons("Frisbee-1.jpg"),
+    commons("Flying Disc - Ultimate Frisbee - World Games 2005 (1).jpg"),
+    commons("Frisbee Wurf Badeplatz.JPG"),
+  ],
+  "Hacky sack / footbag": [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Hacky_Sack.jpg")],
   Knucklebones: [
     commons("Knucklebones.jpg"),
     commons("Astragaloi.jpg"),
@@ -440,7 +453,11 @@ const CURATED_PHOTOS = {
   Shuttlecock: [commons("Shuttlecock.jpg")],
   Jianzi: [commons("Jianzi.jpg")],
   "Rag doll": [commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg")],
-  "Jump rope": [commons("Stilts.jpg"), commons("Seesaw.jpg"), commons("Unicycle.jpg")],
+  "Jump rope": [
+    commons("Ghanaian kid (skipping rope) 02.jpg"),
+    commons("Ghanaian kid (skipping rope) 01.jpg"),
+    commons("Ghanaian kid (skipping rope) 03.jpg"),
+  ],
   Hnefatafl: [commons("Nefatafl_fra_Trondheim_(19896084560).jpg")],
   "Fox and geese": [commons("The_fox_game.jpg")],
   Alquerque: [commons("Alquerque_game_board.jpg")],
@@ -462,8 +479,21 @@ const CURATED_PHOTOS = {
   ],
   "Sepak takraw": [commons("Sepak_takraw.jpg")],
   "Sepak raga": [commons("Sepak_takraw.jpg")],
-  Lacrosse: [commons("Lacrosse.jpg")],
-  "Southeastern stickball": [commons("Lacrosse.jpg")],
+  // Note: Commons File:Lacrosse.jpg is the MGM-18 missile — never use that name.
+  Lacrosse: [
+    commons("Lacrosse-Faceoff.jpg"),
+    commons("Mens Lax 1.jpg"),
+    commons("High School Lacrosse.jpg"),
+    commons("Lacrosse match.jpg"),
+    commons("Cornwall Ontario.jpg"),
+  ],
+  "Southeastern stickball": [
+    commons(
+      "George Catlin - Ball-play of the Choctaw--Ball Up - Google Art Project.jpg",
+    ),
+    commons("Ball players.jpg"),
+    commons("Ball play dance.jpg"),
+  ],
   "Mesoamerican ballgame / Ulama": [
     commons("Pok_ta_pok_ballgame_maya_indians_mexico_3.JPG"),
   ],
@@ -1257,7 +1287,11 @@ const ARCHETYPE_PHOTOS = {
     commons("Oware.jpg"),
     commons("Wooden_Mancala_board.jpg"),
   ],
-  jump_rope: [commons("Stilts.jpg"), commons("Seesaw.jpg"), commons("Unicycle.jpg")],
+  jump_rope: [
+    commons("Ghanaian kid (skipping rope) 04.jpg"),
+    commons("Ghanaian kid (skipping rope) 05.jpg"),
+    commons("Ghanaian kid (skipping rope) 06.jpg"),
+  ],
   blindfold_tag: [
     commons("Blind_man's_bluff.jpg"),
     commons("Children_playing_hide_and_seek.jpg"),
