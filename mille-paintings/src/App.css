@@ -17,14 +17,3 @@
   margin: 0;
   max-width: 70ch;
 }
-
-.site-footer .live-url {
-  margin-bottom: 0.65rem;
-  color: var(--brass-soft);
-}
-
-.site-footer .live-url a {
-  color: var(--brass);
-  text-decoration: underline;
-  word-break: break-all;
-}
