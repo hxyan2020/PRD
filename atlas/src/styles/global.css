@@ -581,10 +581,10 @@ select {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(10, 6, 8, 0.2) 0%,
-    rgba(10, 6, 8, 0.45) 38%,
-    rgba(10, 6, 8, 0.88) 72%,
-    rgba(10, 6, 8, 0.96) 100%
+    rgba(10, 6, 8, 0.35) 0%,
+    rgba(10, 6, 8, 0.55) 32%,
+    rgba(10, 6, 8, 0.9) 68%,
+    rgba(10, 6, 8, 0.97) 100%
   );
   pointer-events: none;
 }

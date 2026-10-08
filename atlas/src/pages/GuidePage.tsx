@@ -4,6 +4,10 @@ import { Footer } from "../components/Footer";
 import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
 import { loadCollection } from "../lib/collection";
+import {
+  isPhotographicSrc,
+  ludusBackdropDataUri,
+} from "../lib/gameCardImage";
 import type { Game } from "../types/game";
 import type { ChatMessage, ChatState } from "../types/chat";
 import {
@@ -45,33 +49,41 @@ function RecCards({ games }: { games: Game[] }) {
   if (!games.length) return null;
   return (
     <div className="chat-recs">
-      {games.map((g) => (
-        <Link key={g.id} to={`/game/${g.slug}`} className="chat-rec-card">
-          <div className="chat-rec-img">
-            <GameImage
-              src={g.images[0]}
-              alt={g.name}
-              loading="lazy"
-              label={{
-                name: g.name,
-                category: g.category,
-                originCountry: g.originCountry,
-              }}
-            />
-          </div>
-          <div>
-            <div className="pill">{g.category}</div>
-            <h4>{g.name}</h4>
-            <p>
-              <OriginCountry
-                country={g.originCountry}
-                countryKey={g.originCountryKey}
-              />{" "}
-              · {g.creationYear}
-            </p>
-          </div>
-        </Link>
-      ))}
+      {games.map((g) => {
+        const photo = g.images.find(isPhotographicSrc);
+        const backdrop = ludusBackdropDataUri(g.category, g.id || g.slug);
+        return (
+          <Link key={g.id} to={`/game/${g.slug}`} className="chat-rec-card">
+            <div className="chat-rec-img" aria-hidden="true">
+              {photo ? (
+                <GameImage
+                  src={photo}
+                  alt=""
+                  loading="lazy"
+                  label={{
+                    name: g.name,
+                    category: g.category,
+                    originCountry: g.originCountry,
+                  }}
+                />
+              ) : (
+                <img src={backdrop} alt="" loading="lazy" />
+              )}
+            </div>
+            <div>
+              <div className="pill">{g.category}</div>
+              <h4>{g.name}</h4>
+              <p>
+                <OriginCountry
+                  country={g.originCountry}
+                  countryKey={g.originCountryKey}
+                />{" "}
+                · {g.creationYear}
+              </p>
+            </div>
+          </Link>
+        );
+      })}
     </div>
   );
 }

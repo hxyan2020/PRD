@@ -20,6 +20,10 @@ import {
 } from "../lib/localizeContent";
 import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
+import {
+  isPhotographicSrc,
+  ludusBackdropDataUri,
+} from "../lib/gameCardImage";
 
 export function PreferencesPage() {
   const { isLoggedIn, user } = useAuth();
@@ -387,20 +391,32 @@ export function PreferencesPage() {
                     baseSlugs.has(hit.game.slug);
                   const inPool = addedIds.has(hit.game.id) || isInPool(hit.game.id);
                   const already = inBase || inPool;
+                  const photo = display.images.find(isPhotographicSrc);
                   return (
                     <li key={hit.game.id} className="prefs-hit">
                       <div className="prefs-hit-main">
-                        <div className="prefs-hit-img">
-                          <GameImage
-                            src={display.images[0]}
-                            alt={display.name}
-                            loading="lazy"
-                            label={{
-                              name: display.name,
-                              category: display.category,
-                              originCountry: display.originCountry,
-                            }}
-                          />
+                        <div className="prefs-hit-img" aria-hidden="true">
+                          {photo ? (
+                            <GameImage
+                              src={photo}
+                              alt=""
+                              loading="lazy"
+                              label={{
+                                name: display.name,
+                                category: display.category,
+                                originCountry: display.originCountry,
+                              }}
+                            />
+                          ) : (
+                            <img
+                              src={ludusBackdropDataUri(
+                                display.category,
+                                display.id || display.slug,
+                              )}
+                              alt=""
+                              loading="lazy"
+                            />
+                          )}
                         </div>
                         <div>
                           <div className="prefs-hit-tags">
