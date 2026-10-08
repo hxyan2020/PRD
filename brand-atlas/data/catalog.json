@@ -2,7 +2,7 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-08T16:16:55.635Z",
+    "generatedAt": "2026-10-08T16:42:54.354Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
@@ -133,6 +133,7 @@
       },
       "coverHue": 52,
       "mark": "marks/cars__toyota.svg",
+      "cover": "covers/cars__toyota.jpg",
       "markIcon": "toyota",
       "sort": 0,
       "status": "active"
@@ -159,6 +160,7 @@
       },
       "coverHue": 22,
       "mark": "marks/cars__honda.svg",
+      "cover": "covers/cars__honda.jpg",
       "markIcon": "honda",
       "sort": 1,
       "status": "active"
@@ -183,6 +185,7 @@
       },
       "coverHue": 62,
       "mark": "marks/cars__nissan.svg",
+      "cover": "covers/cars__nissan.jpg",
       "markIcon": "nissan",
       "sort": 2,
       "status": "active"
@@ -206,6 +209,7 @@
       },
       "coverHue": 85,
       "mark": "marks/cars__mazda.svg",
+      "cover": "covers/cars__mazda.jpg",
       "markIcon": "mazda",
       "sort": 3,
       "status": "active"
@@ -229,6 +233,7 @@
       },
       "coverHue": 338,
       "mark": "marks/cars__subaru.svg",
+      "cover": "covers/cars__subaru.jpg",
       "markIcon": "subaru",
       "sort": 4,
       "status": "active"
@@ -250,6 +255,7 @@
       },
       "coverHue": 105,
       "mark": "marks/cars__mitsubishi.svg",
+      "cover": "covers/cars__mitsubishi.jpg",
       "markIcon": "mitsubishi",
       "sort": 5,
       "status": "active"
@@ -271,6 +277,7 @@
       },
       "coverHue": 273,
       "mark": "marks/cars__suzuki.svg",
+      "cover": "covers/cars__suzuki.jpg",
       "markIcon": "suzuki",
       "sort": 6,
       "status": "active"
@@ -294,6 +301,7 @@
       },
       "coverHue": 31,
       "mark": "marks/cars__lexus.svg",
+      "cover": "covers/cars__lexus.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -317,6 +325,7 @@
       },
       "coverHue": 204,
       "mark": "marks/cars__acura.svg",
+      "cover": "covers/cars__acura.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -340,6 +349,7 @@
       },
       "coverHue": 62,
       "mark": "marks/cars__infiniti.svg",
+      "cover": "covers/cars__infiniti.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -364,6 +374,7 @@
       },
       "coverHue": 137,
       "mark": "marks/cars__ford.svg",
+      "cover": "covers/cars__ford.jpg",
       "markIcon": "ford",
       "sort": 10,
       "status": "active"
@@ -388,6 +399,7 @@
       },
       "coverHue": 2,
       "mark": "marks/cars__chevrolet.svg",
+      "cover": "covers/cars__chevrolet.jpg",
       "markIcon": "chevrolet",
       "sort": 11,
       "status": "active"
@@ -412,6 +424,7 @@
       },
       "coverHue": 217,
       "mark": "marks/cars__tesla.svg",
+      "cover": "covers/cars__tesla.jpg",
       "markIcon": "tesla",
       "sort": 12,
       "status": "active"
@@ -435,6 +448,7 @@
       },
       "coverHue": 220,
       "mark": "marks/cars__jeep.svg",
+      "cover": "covers/cars__jeep.jpg",
       "markIcon": "jeep",
       "sort": 13,
       "status": "active"
@@ -456,6 +470,7 @@
       },
       "coverHue": 283,
       "mark": "marks/cars__cadillac.svg",
+      "cover": "covers/cars__cadillac.jpg",
       "markIcon": "cadillac",
       "sort": 14,
       "status": "active"
@@ -479,6 +494,7 @@
       },
       "coverHue": 329,
       "mark": "marks/cars__lincoln.svg",
+      "cover": "covers/cars__lincoln.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -500,6 +516,7 @@
       },
       "coverHue": 105,
       "mark": "marks/cars__dodge.svg",
+      "cover": "covers/cars__dodge.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -524,6 +541,7 @@
       },
       "coverHue": 149,
       "mark": "marks/cars__rivian.svg",
+      "cover": "covers/cars__rivian.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -549,6 +567,7 @@
       },
       "coverHue": 359,
       "mark": "marks/cars__lucid.svg",
+      "cover": "covers/cars__lucid.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -572,6 +591,7 @@
       },
       "coverHue": 246,
       "mark": "marks/cars__bmw.svg",
+      "cover": "covers/cars__bmw.jpg",
       "markIcon": "bmw",
       "sort": 19,
       "status": "active"
@@ -596,6 +616,7 @@
       },
       "coverHue": 136,
       "mark": "marks/cars__mercedes-benz.svg",
+      "cover": "covers/cars__mercedes-benz.jpg",
       "markIcon": "mercedes",
       "sort": 20,
       "status": "active"
@@ -619,6 +640,7 @@
       },
       "coverHue": 159,
       "mark": "marks/cars__audi.svg",
+      "cover": "covers/cars__audi.jpg",
       "markIcon": "audi",
       "sort": 21,
       "status": "active"
@@ -643,6 +665,7 @@
       },
       "coverHue": 233,
       "mark": "marks/cars__volkswagen.svg",
+      "cover": "covers/cars__volkswagen.jpg",
       "markIcon": "volkswagen",
       "sort": 22,
       "status": "active"
@@ -664,6 +687,7 @@
       },
       "coverHue": 154,
       "mark": "marks/cars__porsche.svg",
+      "cover": "covers/cars__porsche.jpg",
       "markIcon": "porsche",
       "sort": 23,
       "status": "active"
@@ -685,6 +709,7 @@
       },
       "coverHue": 262,
       "mark": "marks/cars__opel.svg",
+      "cover": "covers/cars__opel.jpg",
       "markIcon": "opel",
       "sort": 24,
       "status": "active"
@@ -708,6 +733,7 @@
       },
       "coverHue": 147,
       "mark": "marks/cars__ferrari.svg",
+      "cover": "covers/cars__ferrari.jpg",
       "markIcon": "ferrari",
       "sort": 25,
       "status": "active"
@@ -729,6 +755,7 @@
       },
       "coverHue": 288,
       "mark": "marks/cars__lamborghini.svg",
+      "cover": "covers/cars__lamborghini.jpg",
       "markIcon": "lamborghini",
       "sort": 26,
       "status": "active"
@@ -750,6 +777,7 @@
       },
       "coverHue": 340,
       "mark": "marks/cars__fiat.svg",
+      "cover": "covers/cars__fiat.jpg",
       "markIcon": "fiat",
       "sort": 27,
       "status": "active"
@@ -771,6 +799,7 @@
       },
       "coverHue": 345,
       "mark": "marks/cars__alfa-romeo.svg",
+      "cover": "covers/cars__alfa-romeo.jpg",
       "markIcon": "alfaromeo",
       "sort": 28,
       "status": "active"
@@ -792,6 +821,7 @@
       },
       "coverHue": 320,
       "mark": "marks/cars__maserati.svg",
+      "cover": "covers/cars__maserati.jpg",
       "markIcon": "maserati",
       "sort": 29,
       "status": "active"
@@ -813,6 +843,7 @@
       },
       "coverHue": 6,
       "mark": "marks/cars__volvo.svg",
+      "cover": "covers/cars__volvo.jpg",
       "markIcon": "volvo",
       "sort": 30,
       "status": "active"
@@ -836,6 +867,7 @@
       },
       "coverHue": 168,
       "mark": "marks/cars__polestar.svg",
+      "cover": "covers/cars__polestar.jpg",
       "markIcon": null,
       "sort": 31,
       "status": "active"
@@ -859,6 +891,7 @@
       },
       "coverHue": 150,
       "mark": "marks/cars__skoda.svg",
+      "cover": "covers/cars__skoda.jpg",
       "markIcon": "skoda",
       "sort": 32,
       "status": "active"
@@ -880,6 +913,7 @@
       },
       "coverHue": 228,
       "mark": "marks/cars__hyundai.svg",
+      "cover": "covers/cars__hyundai.jpg",
       "markIcon": "hyundai",
       "sort": 33,
       "status": "active"
@@ -901,6 +935,7 @@
       },
       "coverHue": 109,
       "mark": "marks/cars__kia.svg",
+      "cover": "covers/cars__kia.jpg",
       "markIcon": "kia",
       "sort": 34,
       "status": "active"
@@ -922,6 +957,7 @@
       },
       "coverHue": 314,
       "mark": "marks/cars__genesis.svg",
+      "cover": "covers/cars__genesis.jpg",
       "markIcon": null,
       "sort": 35,
       "status": "active"
@@ -943,6 +979,7 @@
       },
       "coverHue": 69,
       "mark": "marks/cars__peugeot.svg",
+      "cover": "covers/cars__peugeot.jpg",
       "markIcon": "peugeot",
       "sort": 36,
       "status": "active"
@@ -964,6 +1001,7 @@
       },
       "coverHue": 25,
       "mark": "marks/cars__renault.svg",
+      "cover": "covers/cars__renault.jpg",
       "markIcon": "renault",
       "sort": 37,
       "status": "active"
@@ -987,6 +1025,7 @@
       },
       "coverHue": 6,
       "mark": "marks/cars__citroen.svg",
+      "cover": "covers/cars__citroen.jpg",
       "markIcon": "citroen",
       "sort": 38,
       "status": "active"
@@ -1008,6 +1047,7 @@
       },
       "coverHue": 44,
       "mark": "marks/cars__jaguar.svg",
+      "cover": "covers/cars__jaguar.jpg",
       "markIcon": "jaguar",
       "sort": 39,
       "status": "active"
@@ -1031,6 +1071,7 @@
       },
       "coverHue": 290,
       "mark": "marks/cars__land-rover.svg",
+      "cover": "covers/cars__land-rover.jpg",
       "markIcon": "landrover",
       "sort": 40,
       "status": "active"
@@ -1052,6 +1093,7 @@
       },
       "coverHue": 109,
       "mark": "marks/cars__mini.svg",
+      "cover": "covers/cars__mini.jpg",
       "markIcon": "mini",
       "sort": 41,
       "status": "active"
@@ -1073,6 +1115,7 @@
       },
       "coverHue": 9,
       "mark": "marks/cars__rolls-royce.svg",
+      "cover": "covers/cars__rolls-royce.jpg",
       "markIcon": "rollsroyce",
       "sort": 42,
       "status": "active"
@@ -1094,6 +1137,7 @@
       },
       "coverHue": 201,
       "mark": "marks/cars__bentley.svg",
+      "cover": "covers/cars__bentley.jpg",
       "markIcon": "bentley",
       "sort": 43,
       "status": "active"
@@ -1115,6 +1159,7 @@
       },
       "coverHue": 301,
       "mark": "marks/cars__aston-martin.svg",
+      "cover": "covers/cars__aston-martin.jpg",
       "markIcon": "astonmartin",
       "sort": 44,
       "status": "active"
@@ -1136,6 +1181,7 @@
       },
       "coverHue": 337,
       "mark": "marks/cars__lotus.svg",
+      "cover": "covers/cars__lotus.jpg",
       "markIcon": null,
       "sort": 45,
       "status": "active"
@@ -1159,6 +1205,7 @@
       },
       "coverHue": 226,
       "mark": "marks/cars__mclaren.svg",
+      "cover": "covers/cars__mclaren.jpg",
       "markIcon": "mclaren",
       "sort": 46,
       "status": "active"
@@ -1182,6 +1229,7 @@
       },
       "coverHue": 182,
       "mark": "marks/cars__bugatti.svg",
+      "cover": "covers/cars__bugatti.jpg",
       "markIcon": "bugatti",
       "sort": 47,
       "status": "active"
@@ -1203,6 +1251,7 @@
       },
       "coverHue": 19,
       "mark": "marks/cars__seat.svg",
+      "cover": "covers/cars__seat.jpg",
       "markIcon": "seat",
       "sort": 48,
       "status": "active"
@@ -1224,6 +1273,7 @@
       },
       "coverHue": 159,
       "mark": "marks/cars__cupra.svg",
+      "cover": "covers/cars__cupra.jpg",
       "markIcon": null,
       "sort": 49,
       "status": "active"
@@ -1249,6 +1299,7 @@
       },
       "coverHue": 256,
       "mark": "marks/cars__mg.svg",
+      "cover": "covers/cars__mg.jpg",
       "markIcon": null,
       "sort": 50,
       "status": "active"
@@ -1272,6 +1323,7 @@
       },
       "coverHue": 239,
       "mark": "marks/cars__byd.svg",
+      "cover": "covers/cars__byd.jpg",
       "markIcon": null,
       "sort": 51,
       "status": "active"
@@ -1293,6 +1345,7 @@
       },
       "coverHue": 334,
       "mark": "marks/cars__geely.svg",
+      "cover": "covers/cars__geely.jpg",
       "markIcon": null,
       "sort": 52,
       "status": "active"
@@ -1321,6 +1374,7 @@
       },
       "coverHue": 57,
       "mark": "marks/cars__xiaomi.svg",
+      "cover": "covers/cars__xiaomi.jpg",
       "markIcon": "xiaomi",
       "sort": 53,
       "status": "active"
@@ -1347,6 +1401,7 @@
       },
       "coverHue": 126,
       "mark": "marks/cars__nio.svg",
+      "cover": "covers/cars__nio.jpg",
       "markIcon": null,
       "sort": 54,
       "status": "active"
@@ -1374,6 +1429,7 @@
       },
       "coverHue": 16,
       "mark": "marks/cars__xpeng.svg",
+      "cover": "covers/cars__xpeng.jpg",
       "markIcon": null,
       "sort": 55,
       "status": "active"
@@ -1401,6 +1457,7 @@
       },
       "coverHue": 97,
       "mark": "marks/cars__li-auto.svg",
+      "cover": "covers/cars__li-auto.jpg",
       "markIcon": null,
       "sort": 56,
       "status": "active"
@@ -1427,6 +1484,7 @@
       },
       "coverHue": 75,
       "mark": "marks/cars__zeekr.svg",
+      "cover": "covers/cars__zeekr.jpg",
       "markIcon": null,
       "sort": 57,
       "status": "active"
@@ -1456,6 +1514,7 @@
       },
       "coverHue": 311,
       "mark": "marks/cars__gwm.svg",
+      "cover": "covers/cars__gwm.jpg",
       "markIcon": null,
       "sort": 58,
       "status": "active"
@@ -1482,6 +1541,7 @@
       },
       "coverHue": 79,
       "mark": "marks/cars__baic.svg",
+      "cover": "covers/cars__baic.jpg",
       "markIcon": null,
       "sort": 59,
       "status": "active"
@@ -1509,6 +1569,7 @@
       },
       "coverHue": 129,
       "mark": "marks/cars__chery.svg",
+      "cover": "covers/cars__chery.jpg",
       "markIcon": null,
       "sort": 60,
       "status": "active"
@@ -1533,6 +1594,7 @@
       },
       "coverHue": 9,
       "mark": "marks/cars__vinfast.svg",
+      "cover": "covers/cars__vinfast.jpg",
       "markIcon": null,
       "sort": 61,
       "status": "active"
@@ -1556,6 +1618,7 @@
       },
       "coverHue": 236,
       "mark": "marks/cigarettes__marlboro.svg",
+      "cover": "covers/cigarettes__marlboro.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -1579,6 +1642,7 @@
       },
       "coverHue": 218,
       "mark": "marks/cigarettes__camel.svg",
+      "cover": "covers/cigarettes__camel.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -1600,6 +1664,7 @@
       },
       "coverHue": 107,
       "mark": "marks/cigarettes__lucky-strike.svg",
+      "cover": "covers/cigarettes__lucky-strike.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -1621,6 +1686,7 @@
       },
       "coverHue": 352,
       "mark": "marks/cigarettes__winston.svg",
+      "cover": "covers/cigarettes__winston.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -1642,6 +1708,7 @@
       },
       "coverHue": 260,
       "mark": "marks/cigarettes__pall-mall.svg",
+      "cover": "covers/cigarettes__pall-mall.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -1663,6 +1730,7 @@
       },
       "coverHue": 157,
       "mark": "marks/cigarettes__parliament.svg",
+      "cover": "covers/cigarettes__parliament.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -1684,6 +1752,7 @@
       },
       "coverHue": 296,
       "mark": "marks/cigarettes__chesterfield.svg",
+      "cover": "covers/cigarettes__chesterfield.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -1705,6 +1774,7 @@
       },
       "coverHue": 284,
       "mark": "marks/cigarettes__kent.svg",
+      "cover": "covers/cigarettes__kent.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -1726,6 +1796,7 @@
       },
       "coverHue": 322,
       "mark": "marks/cigarettes__dunhill.svg",
+      "cover": "covers/cigarettes__dunhill.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -1749,6 +1820,7 @@
       },
       "coverHue": 168,
       "mark": "marks/cigarettes__benson-hedges.svg",
+      "cover": "covers/cigarettes__benson-hedges.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -1770,6 +1842,7 @@
       },
       "coverHue": 87,
       "mark": "marks/cigarettes__davidoff.svg",
+      "cover": "covers/cigarettes__davidoff.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -1791,6 +1864,7 @@
       },
       "coverHue": 146,
       "mark": "marks/cigarettes__gauloises.svg",
+      "cover": "covers/cigarettes__gauloises.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -1812,6 +1886,7 @@
       },
       "coverHue": 137,
       "mark": "marks/cigarettes__gitanes.svg",
+      "cover": "covers/cigarettes__gitanes.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -1835,6 +1910,7 @@
       },
       "coverHue": 325,
       "mark": "marks/cigarettes__mevius.svg",
+      "cover": "covers/cigarettes__mevius.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -1856,6 +1932,7 @@
       },
       "coverHue": 128,
       "mark": "marks/cigarettes__hope.svg",
+      "cover": "covers/cigarettes__hope.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -1877,6 +1954,7 @@
       },
       "coverHue": 13,
       "mark": "marks/cigarettes__seven-stars.svg",
+      "cover": "covers/cigarettes__seven-stars.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -1900,6 +1978,7 @@
       },
       "coverHue": 66,
       "mark": "marks/cigarettes__lark.svg",
+      "cover": "covers/cigarettes__lark.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -1921,6 +2000,7 @@
       },
       "coverHue": 110,
       "mark": "marks/cigarettes__rothmans.svg",
+      "cover": "covers/cigarettes__rothmans.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -1942,6 +2022,7 @@
       },
       "coverHue": 206,
       "mark": "marks/cigarettes__embassy.svg",
+      "cover": "covers/cigarettes__embassy.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -1963,6 +2044,7 @@
       },
       "coverHue": 84,
       "mark": "marks/cigarettes__gold-flake.svg",
+      "cover": "covers/cigarettes__gold-flake.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -1986,6 +2068,7 @@
       },
       "coverHue": 0,
       "mark": "marks/cigarettes__state-express-555.svg",
+      "cover": "covers/cigarettes__state-express-555.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -2007,6 +2090,7 @@
       },
       "coverHue": 12,
       "mark": "marks/cigarettes__esse.svg",
+      "cover": "covers/cigarettes__esse.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -2030,6 +2114,7 @@
       },
       "coverHue": 227,
       "mark": "marks/cigarettes__zhongnanhai.svg",
+      "cover": "covers/cigarettes__zhongnanhai.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -2053,6 +2138,7 @@
       },
       "coverHue": 140,
       "mark": "marks/cigarettes__huanghelou.svg",
+      "cover": "covers/cigarettes__huanghelou.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -2076,6 +2162,7 @@
       },
       "coverHue": 313,
       "mark": "marks/cigarettes__yuxi.svg",
+      "cover": "covers/cigarettes__yuxi.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -2099,6 +2186,7 @@
       },
       "coverHue": 55,
       "mark": "marks/cigarettes__double-happiness.svg",
+      "cover": "covers/cigarettes__double-happiness.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -2120,6 +2208,7 @@
       },
       "coverHue": 98,
       "mark": "marks/cigarettes__sampoerna.svg",
+      "cover": "covers/cigarettes__sampoerna.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -2146,6 +2235,7 @@
       },
       "coverHue": 357,
       "mark": "marks/liquor__johnnie-walker.svg",
+      "cover": "covers/liquor__johnnie-walker.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -2173,6 +2263,7 @@
       },
       "coverHue": 183,
       "mark": "marks/liquor__jack-daniels.svg",
+      "cover": "covers/liquor__jack-daniels.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -2197,6 +2288,7 @@
       },
       "coverHue": 314,
       "mark": "marks/liquor__jameson.svg",
+      "cover": "covers/liquor__jameson.jpg",
       "markIcon": "jameson",
       "sort": 2,
       "status": "active"
@@ -2221,6 +2313,7 @@
       },
       "coverHue": 16,
       "mark": "marks/liquor__macallan.svg",
+      "cover": "covers/liquor__macallan.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -2245,6 +2338,7 @@
       },
       "coverHue": 225,
       "mark": "marks/liquor__glenlivet.svg",
+      "cover": "covers/liquor__glenlivet.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -2267,6 +2361,7 @@
       },
       "coverHue": 28,
       "mark": "marks/liquor__glenfiddich.svg",
+      "cover": "covers/liquor__glenfiddich.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -2291,6 +2386,7 @@
       },
       "coverHue": 29,
       "mark": "marks/liquor__absolut.svg",
+      "cover": "covers/liquor__absolut.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -2315,6 +2411,7 @@
       },
       "coverHue": 213,
       "mark": "marks/liquor__smirnoff.svg",
+      "cover": "covers/liquor__smirnoff.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -2339,6 +2436,7 @@
       },
       "coverHue": 124,
       "mark": "marks/liquor__grey-goose.svg",
+      "cover": "covers/liquor__grey-goose.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -2363,6 +2461,7 @@
       },
       "coverHue": 123,
       "mark": "marks/liquor__belvedere.svg",
+      "cover": "covers/liquor__belvedere.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -2387,6 +2486,7 @@
       },
       "coverHue": 97,
       "mark": "marks/liquor__bacardi.svg",
+      "cover": "covers/liquor__bacardi.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -2411,6 +2511,7 @@
       },
       "coverHue": 118,
       "mark": "marks/liquor__captain-morgan.svg",
+      "cover": "covers/liquor__captain-morgan.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -2435,6 +2536,7 @@
       },
       "coverHue": 243,
       "mark": "marks/liquor__havana-club.svg",
+      "cover": "covers/liquor__havana-club.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -2459,6 +2561,7 @@
       },
       "coverHue": 234,
       "mark": "marks/liquor__hennessy.svg",
+      "cover": "covers/liquor__hennessy.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -2485,6 +2588,7 @@
       },
       "coverHue": 296,
       "mark": "marks/liquor__remy-martin.svg",
+      "cover": "covers/liquor__remy-martin.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -2509,6 +2613,7 @@
       },
       "coverHue": 1,
       "mark": "marks/liquor__courvoisier.svg",
+      "cover": "covers/liquor__courvoisier.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -2535,6 +2640,7 @@
       },
       "coverHue": 7,
       "mark": "marks/liquor__patron.svg",
+      "cover": "covers/liquor__patron.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -2562,6 +2668,7 @@
       },
       "coverHue": 197,
       "mark": "marks/liquor__jose-cuervo.svg",
+      "cover": "covers/liquor__jose-cuervo.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -2586,6 +2693,7 @@
       },
       "coverHue": 188,
       "mark": "marks/liquor__don-julio.svg",
+      "cover": "covers/liquor__don-julio.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -2610,6 +2718,7 @@
       },
       "coverHue": 233,
       "mark": "marks/liquor__tanqueray.svg",
+      "cover": "covers/liquor__tanqueray.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -2634,6 +2743,7 @@
       },
       "coverHue": 180,
       "mark": "marks/liquor__bombay-sapphire.svg",
+      "cover": "covers/liquor__bombay-sapphire.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -2660,6 +2770,7 @@
       },
       "coverHue": 40,
       "mark": "marks/liquor__hendricks.svg",
+      "cover": "covers/liquor__hendricks.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -2686,6 +2797,7 @@
       },
       "coverHue": 339,
       "mark": "marks/liquor__jagermeister.svg",
+      "cover": "covers/liquor__jagermeister.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -2710,6 +2822,7 @@
       },
       "coverHue": 252,
       "mark": "marks/liquor__baileys.svg",
+      "cover": "covers/liquor__baileys.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -2734,6 +2847,7 @@
       },
       "coverHue": 270,
       "mark": "marks/liquor__campari.svg",
+      "cover": "covers/liquor__campari.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -2758,6 +2872,7 @@
       },
       "coverHue": 170,
       "mark": "marks/liquor__aperol.svg",
+      "cover": "covers/liquor__aperol.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -2782,6 +2897,7 @@
       },
       "coverHue": 37,
       "mark": "marks/liquor__suntory.svg",
+      "cover": "covers/liquor__suntory.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -2808,6 +2924,7 @@
       },
       "coverHue": 138,
       "mark": "marks/liquor__makers-mark.svg",
+      "cover": "covers/liquor__makers-mark.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -2832,6 +2949,7 @@
       },
       "coverHue": 48,
       "mark": "marks/liquor__crown-royal.svg",
+      "cover": "covers/liquor__crown-royal.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -2856,6 +2974,7 @@
       },
       "coverHue": 45,
       "mark": "marks/liquor__chivas.svg",
+      "cover": "covers/liquor__chivas.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -2882,6 +3001,7 @@
       },
       "coverHue": 194,
       "mark": "marks/liquor__yamazaki.svg",
+      "cover": "covers/liquor__yamazaki.jpg",
       "markIcon": null,
       "sort": 30,
       "status": "active"
@@ -2908,6 +3028,7 @@
       },
       "coverHue": 151,
       "mark": "marks/liquor__hibiki.svg",
+      "cover": "covers/liquor__hibiki.jpg",
       "markIcon": null,
       "sort": 31,
       "status": "active"
@@ -2934,6 +3055,7 @@
       },
       "coverHue": 333,
       "mark": "marks/liquor__nikka.svg",
+      "cover": "covers/liquor__nikka.jpg",
       "markIcon": null,
       "sort": 32,
       "status": "active"
@@ -2960,6 +3082,7 @@
       },
       "coverHue": 169,
       "mark": "marks/liquor__tito.svg",
+      "cover": "covers/liquor__tito.jpg",
       "markIcon": null,
       "sort": 33,
       "status": "active"
@@ -2984,6 +3107,7 @@
       },
       "coverHue": 258,
       "mark": "marks/liquor__casamigos.svg",
+      "cover": "covers/liquor__casamigos.jpg",
       "markIcon": null,
       "sort": 34,
       "status": "active"
@@ -3008,6 +3132,7 @@
       },
       "coverHue": 180,
       "mark": "marks/liquor__clase-azul.svg",
+      "cover": "covers/liquor__clase-azul.jpg",
       "markIcon": null,
       "sort": 35,
       "status": "active"
@@ -3032,6 +3157,7 @@
       },
       "coverHue": 129,
       "mark": "marks/liquor__cointreau.svg",
+      "cover": "covers/liquor__cointreau.jpg",
       "markIcon": null,
       "sort": 36,
       "status": "active"
@@ -3056,6 +3182,7 @@
       },
       "coverHue": 340,
       "mark": "marks/liquor__grand-marnier.svg",
+      "cover": "covers/liquor__grand-marnier.jpg",
       "markIcon": null,
       "sort": 37,
       "status": "active"
@@ -3083,6 +3210,7 @@
       },
       "coverHue": 141,
       "mark": "marks/wine__moet.svg",
+      "cover": "covers/wine__moet.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -3107,6 +3235,7 @@
       },
       "coverHue": 264,
       "mark": "marks/wine__veuve-clicquot.svg",
+      "cover": "covers/wine__veuve-clicquot.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -3131,6 +3260,7 @@
       },
       "coverHue": 252,
       "mark": "marks/wine__freixenet.svg",
+      "cover": "covers/wine__freixenet.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -3153,6 +3283,7 @@
       },
       "coverHue": 37,
       "mark": "marks/wine__penfolds.svg",
+      "cover": "covers/wine__penfolds.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -3175,6 +3306,7 @@
       },
       "coverHue": 317,
       "mark": "marks/wine__yellow-tail.svg",
+      "cover": "covers/wine__yellow-tail.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -3197,6 +3329,7 @@
       },
       "coverHue": 148,
       "mark": "marks/wine__barefoot.svg",
+      "cover": "covers/wine__barefoot.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -3221,6 +3354,7 @@
       },
       "coverHue": 97,
       "mark": "marks/wine__gallo.svg",
+      "cover": "covers/wine__gallo.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -3243,6 +3377,7 @@
       },
       "coverHue": 325,
       "mark": "marks/wine__robert-mondavi.svg",
+      "cover": "covers/wine__robert-mondavi.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -3265,6 +3400,7 @@
       },
       "coverHue": 124,
       "mark": "marks/wine__opus-one.svg",
+      "cover": "covers/wine__opus-one.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -3289,6 +3425,7 @@
       },
       "coverHue": 27,
       "mark": "marks/wine__chateau-margaux.svg",
+      "cover": "covers/wine__chateau-margaux.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -3313,6 +3450,7 @@
       },
       "coverHue": 133,
       "mark": "marks/wine__lafite.svg",
+      "cover": "covers/wine__lafite.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -3337,6 +3475,7 @@
       },
       "coverHue": 17,
       "mark": "marks/wine__latour.svg",
+      "cover": "covers/wine__latour.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -3359,6 +3498,7 @@
       },
       "coverHue": 230,
       "mark": "marks/wine__antinori.svg",
+      "cover": "covers/wine__antinori.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -3381,6 +3521,7 @@
       },
       "coverHue": 317,
       "mark": "marks/wine__gaja.svg",
+      "cover": "covers/wine__gaja.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -3403,6 +3544,7 @@
       },
       "coverHue": 85,
       "mark": "marks/wine__torres.svg",
+      "cover": "covers/wine__torres.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -3425,6 +3567,7 @@
       },
       "coverHue": 32,
       "mark": "marks/wine__vega-sicilia.svg",
+      "cover": "covers/wine__vega-sicilia.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -3447,6 +3590,7 @@
       },
       "coverHue": 155,
       "mark": "marks/wine__concha-y-toro.svg",
+      "cover": "covers/wine__concha-y-toro.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -3469,6 +3613,7 @@
       },
       "coverHue": 0,
       "mark": "marks/wine__santa-rita.svg",
+      "cover": "covers/wine__santa-rita.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -3491,6 +3636,7 @@
       },
       "coverHue": 150,
       "mark": "marks/wine__cloud-bay.svg",
+      "cover": "covers/wine__cloud-bay.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -3513,6 +3659,7 @@
       },
       "coverHue": 130,
       "mark": "marks/wine__kim-crawford.svg",
+      "cover": "covers/wine__kim-crawford.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -3538,6 +3685,7 @@
       },
       "coverHue": 95,
       "mark": "marks/wine__jacobs-creek.svg",
+      "cover": "covers/wine__jacobs-creek.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -3562,6 +3710,7 @@
       },
       "coverHue": 99,
       "mark": "marks/wine__kendall-jackson.svg",
+      "cover": "covers/wine__kendall-jackson.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -3584,6 +3733,7 @@
       },
       "coverHue": 279,
       "mark": "marks/wine__mateus.svg",
+      "cover": "covers/wine__mateus.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -3608,6 +3758,7 @@
       },
       "coverHue": 269,
       "mark": "marks/wine__sandeman.svg",
+      "cover": "covers/wine__sandeman.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -3632,6 +3783,7 @@
       },
       "coverHue": 2,
       "mark": "marks/wine__taylor-fladgate.svg",
+      "cover": "covers/wine__taylor-fladgate.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -3658,6 +3810,7 @@
       },
       "coverHue": 65,
       "mark": "marks/wine__dom-perignon.svg",
+      "cover": "covers/wine__dom-perignon.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -3682,6 +3835,7 @@
       },
       "coverHue": 287,
       "mark": "marks/wine__ruinart.svg",
+      "cover": "covers/wine__ruinart.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -3706,6 +3860,7 @@
       },
       "coverHue": 182,
       "mark": "marks/wine__bollinger.svg",
+      "cover": "covers/wine__bollinger.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -3728,6 +3883,7 @@
       },
       "coverHue": 252,
       "mark": "marks/wine__caymus.svg",
+      "cover": "covers/wine__caymus.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -3750,6 +3906,7 @@
       },
       "coverHue": 293,
       "mark": "marks/wine__silver-oak.svg",
+      "cover": "covers/wine__silver-oak.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -3774,6 +3931,7 @@
       },
       "coverHue": 133,
       "mark": "marks/wine__changyu.svg",
+      "cover": "covers/wine__changyu.jpg",
       "markIcon": null,
       "sort": 30,
       "status": "active"
@@ -3798,6 +3956,7 @@
       },
       "coverHue": 90,
       "mark": "marks/sake__dassai.svg",
+      "cover": "covers/sake__dassai.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -3822,6 +3981,7 @@
       },
       "coverHue": 17,
       "mark": "marks/sake__kubota.svg",
+      "cover": "covers/sake__kubota.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -3846,6 +4006,7 @@
       },
       "coverHue": 89,
       "mark": "marks/sake__hakutsuru.svg",
+      "cover": "covers/sake__hakutsuru.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -3870,6 +4031,7 @@
       },
       "coverHue": 1,
       "mark": "marks/sake__gekkeikan.svg",
+      "cover": "covers/sake__gekkeikan.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -3894,6 +4056,7 @@
       },
       "coverHue": 83,
       "mark": "marks/sake__ozeki.svg",
+      "cover": "covers/sake__ozeki.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -3918,6 +4081,7 @@
       },
       "coverHue": 119,
       "mark": "marks/sake__takara.svg",
+      "cover": "covers/sake__takara.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -3942,6 +4106,7 @@
       },
       "coverHue": 92,
       "mark": "marks/sake__juyondai.svg",
+      "cover": "covers/sake__juyondai.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -3966,6 +4131,7 @@
       },
       "coverHue": 158,
       "mark": "marks/sake__born.svg",
+      "cover": "covers/sake__born.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -3988,6 +4154,7 @@
       },
       "coverHue": 318,
       "mark": "marks/sake__sake-one.svg",
+      "cover": "covers/sake__sake-one.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -4012,6 +4179,7 @@
       },
       "coverHue": 26,
       "mark": "marks/sake__kikusui.svg",
+      "cover": "covers/sake__kikusui.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -4036,6 +4204,7 @@
       },
       "coverHue": 56,
       "mark": "marks/sake__dewazakura.svg",
+      "cover": "covers/sake__dewazakura.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -4060,6 +4229,7 @@
       },
       "coverHue": 228,
       "mark": "marks/sake__nanbu-bijin.svg",
+      "cover": "covers/sake__nanbu-bijin.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -4084,6 +4254,7 @@
       },
       "coverHue": 17,
       "mark": "marks/sake__suigei.svg",
+      "cover": "covers/sake__suigei.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -4108,6 +4279,7 @@
       },
       "coverHue": 114,
       "mark": "marks/sake__hakkaisan.svg",
+      "cover": "covers/sake__hakkaisan.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -4132,6 +4304,7 @@
       },
       "coverHue": 268,
       "mark": "marks/sake__koshi-no-kanbai.svg",
+      "cover": "covers/sake__koshi-no-kanbai.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -4156,6 +4329,7 @@
       },
       "coverHue": 188,
       "mark": "marks/sake__tatenokawa.svg",
+      "cover": "covers/sake__tatenokawa.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -4180,6 +4354,7 @@
       },
       "coverHue": 334,
       "mark": "marks/sake__mutsu-hassen.svg",
+      "cover": "covers/sake__mutsu-hassen.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -4204,6 +4379,7 @@
       },
       "coverHue": 327,
       "mark": "marks/sake__shichiken.svg",
+      "cover": "covers/sake__shichiken.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -4228,6 +4404,7 @@
       },
       "coverHue": 315,
       "mark": "marks/sake__urakasumi.svg",
+      "cover": "covers/sake__urakasumi.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -4252,6 +4429,7 @@
       },
       "coverHue": 195,
       "mark": "marks/sake__isojiman.svg",
+      "cover": "covers/sake__isojiman.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -4276,6 +4454,7 @@
       },
       "coverHue": 143,
       "mark": "marks/sake__masumi.svg",
+      "cover": "covers/sake__masumi.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -4300,6 +4479,7 @@
       },
       "coverHue": 229,
       "mark": "marks/sake__kudoki-jozu.svg",
+      "cover": "covers/sake__kudoki-jozu.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -4324,6 +4504,7 @@
       },
       "coverHue": 17,
       "mark": "marks/sake__hiroki.svg",
+      "cover": "covers/sake__hiroki.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -4348,6 +4529,7 @@
       },
       "coverHue": 74,
       "mark": "marks/sake__denshin.svg",
+      "cover": "covers/sake__denshin.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -4372,6 +4554,7 @@
       },
       "coverHue": 356,
       "mark": "marks/sake__tedorigawa.svg",
+      "cover": "covers/sake__tedorigawa.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -4394,6 +4577,7 @@
       },
       "coverHue": 86,
       "mark": "marks/beer__heineken.svg",
+      "cover": "covers/beer__heineken.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -4418,6 +4602,7 @@
       },
       "coverHue": 145,
       "mark": "marks/beer__budweiser.svg",
+      "cover": "covers/beer__budweiser.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -4440,6 +4625,7 @@
       },
       "coverHue": 89,
       "mark": "marks/beer__corona.svg",
+      "cover": "covers/beer__corona.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -4464,6 +4650,7 @@
       },
       "coverHue": 137,
       "mark": "marks/beer__stella-artois.svg",
+      "cover": "covers/beer__stella-artois.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -4486,6 +4673,7 @@
       },
       "coverHue": 111,
       "mark": "marks/beer__guinness.svg",
+      "cover": "covers/beer__guinness.jpg",
       "markIcon": "guinness",
       "sort": 4,
       "status": "active"
@@ -4508,6 +4696,7 @@
       },
       "coverHue": 6,
       "mark": "marks/beer__carlsberg.svg",
+      "cover": "covers/beer__carlsberg.jpg",
       "markIcon": "carlsberggroup",
       "sort": 5,
       "status": "active"
@@ -4530,6 +4719,7 @@
       },
       "coverHue": 67,
       "mark": "marks/beer__asahi.svg",
+      "cover": "covers/beer__asahi.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -4552,6 +4742,7 @@
       },
       "coverHue": 180,
       "mark": "marks/beer__kirin.svg",
+      "cover": "covers/beer__kirin.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -4574,6 +4765,7 @@
       },
       "coverHue": 33,
       "mark": "marks/beer__sapporo.svg",
+      "cover": "covers/beer__sapporo.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -4598,6 +4790,7 @@
       },
       "coverHue": 284,
       "mark": "marks/beer__suntory-beer.svg",
+      "cover": "covers/beer__suntory-beer.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -4620,6 +4813,7 @@
       },
       "coverHue": 220,
       "mark": "marks/beer__tsingtao.svg",
+      "cover": "covers/beer__tsingtao.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -4642,6 +4836,7 @@
       },
       "coverHue": 195,
       "mark": "marks/beer__harbin.svg",
+      "cover": "covers/beer__harbin.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -4664,6 +4859,7 @@
       },
       "coverHue": 298,
       "mark": "marks/beer__tiger.svg",
+      "cover": "covers/beer__tiger.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -4686,6 +4882,7 @@
       },
       "coverHue": 21,
       "mark": "marks/beer__singha.svg",
+      "cover": "covers/beer__singha.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -4708,6 +4905,7 @@
       },
       "coverHue": 32,
       "mark": "marks/beer__chang.svg",
+      "cover": "covers/beer__chang.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -4730,6 +4928,7 @@
       },
       "coverHue": 130,
       "mark": "marks/beer__peroni.svg",
+      "cover": "covers/beer__peroni.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -4754,6 +4953,7 @@
       },
       "coverHue": 199,
       "mark": "marks/beer__moretti.svg",
+      "cover": "covers/beer__moretti.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -4778,6 +4978,7 @@
       },
       "coverHue": 219,
       "mark": "marks/beer__becks.svg",
+      "cover": "covers/beer__becks.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -4800,6 +5001,7 @@
       },
       "coverHue": 7,
       "mark": "marks/beer__paulaner.svg",
+      "cover": "covers/beer__paulaner.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -4822,6 +5024,7 @@
       },
       "coverHue": 261,
       "mark": "marks/beer__erdinger.svg",
+      "cover": "covers/beer__erdinger.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -4844,6 +5047,7 @@
       },
       "coverHue": 27,
       "mark": "marks/beer__modelo.svg",
+      "cover": "covers/beer__modelo.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -4866,6 +5070,7 @@
       },
       "coverHue": 81,
       "mark": "marks/beer__dos-equis.svg",
+      "cover": "covers/beer__dos-equis.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -4888,6 +5093,7 @@
       },
       "coverHue": 333,
       "mark": "marks/beer__sierra-nevada.svg",
+      "cover": "covers/beer__sierra-nevada.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -4910,6 +5116,7 @@
       },
       "coverHue": 319,
       "mark": "marks/beer__blue-moon.svg",
+      "cover": "covers/beer__blue-moon.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -4932,6 +5139,7 @@
       },
       "coverHue": 89,
       "mark": "marks/beer__hoegaarden.svg",
+      "cover": "covers/beer__hoegaarden.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -4954,6 +5162,7 @@
       },
       "coverHue": 183,
       "mark": "marks/beer__duvel.svg",
+      "cover": "covers/beer__duvel.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -4976,6 +5185,7 @@
       },
       "coverHue": 262,
       "mark": "marks/beer__chimay.svg",
+      "cover": "covers/beer__chimay.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -5000,6 +5210,7 @@
       },
       "coverHue": 316,
       "mark": "marks/beer__foster.svg",
+      "cover": "covers/beer__foster.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -5024,6 +5235,7 @@
       },
       "coverHue": 181,
       "mark": "marks/beer__victoria-bitter.svg",
+      "cover": "covers/beer__victoria-bitter.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -5046,6 +5258,7 @@
       },
       "coverHue": 197,
       "mark": "marks/beer__pilsner-urquell.svg",
+      "cover": "covers/beer__pilsner-urquell.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -5070,6 +5283,7 @@
       },
       "coverHue": 39,
       "mark": "marks/beer__coors.svg",
+      "cover": "covers/beer__coors.jpg",
       "markIcon": null,
       "sort": 30,
       "status": "active"
@@ -5094,6 +5308,7 @@
       },
       "coverHue": 62,
       "mark": "marks/beer__miller.svg",
+      "cover": "covers/beer__miller.jpg",
       "markIcon": null,
       "sort": 31,
       "status": "active"
@@ -5116,6 +5331,7 @@
       },
       "coverHue": 235,
       "mark": "marks/beer__lagunitas.svg",
+      "cover": "covers/beer__lagunitas.jpg",
       "markIcon": null,
       "sort": 32,
       "status": "active"
@@ -5140,6 +5356,7 @@
       },
       "coverHue": 147,
       "mark": "marks/beer__brooklyn.svg",
+      "cover": "covers/beer__brooklyn.jpg",
       "markIcon": null,
       "sort": 33,
       "status": "active"
@@ -5164,6 +5381,7 @@
       },
       "coverHue": 41,
       "mark": "marks/beer__yanjing.svg",
+      "cover": "covers/beer__yanjing.jpg",
       "markIcon": null,
       "sort": 34,
       "status": "active"
@@ -5188,6 +5406,7 @@
       },
       "coverHue": 240,
       "mark": "marks/beer__snow.svg",
+      "cover": "covers/beer__snow.jpg",
       "markIcon": null,
       "sort": 35,
       "status": "active"
@@ -5212,6 +5431,7 @@
       },
       "coverHue": 298,
       "mark": "marks/beer__hitachino.svg",
+      "cover": "covers/beer__hitachino.jpg",
       "markIcon": null,
       "sort": 36,
       "status": "active"
@@ -5237,6 +5457,7 @@
       },
       "coverHue": 218,
       "mark": "marks/beer__orchid-island.svg",
+      "cover": "covers/beer__orchid-island.jpg",
       "markIcon": null,
       "sort": 37,
       "status": "active"
@@ -5258,6 +5479,7 @@
       },
       "coverHue": 173,
       "mark": "marks/coffee__starbucks.svg",
+      "cover": "covers/coffee__starbucks.jpg",
       "markIcon": "starbucks",
       "sort": 0,
       "status": "active"
@@ -5282,6 +5504,7 @@
       },
       "coverHue": 292,
       "mark": "marks/coffee__dunkin.svg",
+      "cover": "covers/coffee__dunkin.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -5305,6 +5528,7 @@
       },
       "coverHue": 86,
       "mark": "marks/coffee__peets.svg",
+      "cover": "covers/coffee__peets.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -5328,6 +5552,7 @@
       },
       "coverHue": 160,
       "mark": "marks/coffee__blue-bottle.svg",
+      "cover": "covers/coffee__blue-bottle.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -5349,6 +5574,7 @@
       },
       "coverHue": 329,
       "mark": "marks/coffee__illy.svg",
+      "cover": "covers/coffee__illy.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -5370,6 +5596,7 @@
       },
       "coverHue": 96,
       "mark": "marks/coffee__lavazza.svg",
+      "cover": "covers/coffee__lavazza.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -5391,6 +5618,7 @@
       },
       "coverHue": 119,
       "mark": "marks/coffee__nespresso.svg",
+      "cover": "covers/coffee__nespresso.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -5414,6 +5642,7 @@
       },
       "coverHue": 0,
       "mark": "marks/coffee__nescafe.svg",
+      "cover": "covers/coffee__nescafe.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -5435,6 +5664,7 @@
       },
       "coverHue": 105,
       "mark": "marks/coffee__folgers.svg",
+      "cover": "covers/coffee__folgers.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -5456,6 +5686,7 @@
       },
       "coverHue": 228,
       "mark": "marks/coffee__maxwell-house.svg",
+      "cover": "covers/coffee__maxwell-house.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -5477,6 +5708,7 @@
       },
       "coverHue": 13,
       "mark": "marks/coffee__tim-hortons.svg",
+      "cover": "covers/coffee__tim-hortons.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -5500,6 +5732,7 @@
       },
       "coverHue": 259,
       "mark": "marks/coffee__costa.svg",
+      "cover": "covers/coffee__costa.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -5523,6 +5756,7 @@
       },
       "coverHue": 210,
       "mark": "marks/coffee__pret.svg",
+      "cover": "covers/coffee__pret.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -5544,6 +5778,7 @@
       },
       "coverHue": 20,
       "mark": "marks/coffee__ucc.svg",
+      "cover": "covers/coffee__ucc.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -5565,6 +5800,7 @@
       },
       "coverHue": 222,
       "mark": "marks/coffee__doutor.svg",
+      "cover": "covers/coffee__doutor.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -5588,6 +5824,7 @@
       },
       "coverHue": 178,
       "mark": "marks/coffee__komeda.svg",
+      "cover": "covers/coffee__komeda.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -5611,6 +5848,7 @@
       },
       "coverHue": 319,
       "mark": "marks/coffee__luckin.svg",
+      "cover": "covers/coffee__luckin.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -5634,6 +5872,7 @@
       },
       "coverHue": 100,
       "mark": "marks/coffee__mccafe.svg",
+      "cover": "covers/coffee__mccafe.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -5655,6 +5894,7 @@
       },
       "coverHue": 216,
       "mark": "marks/coffee__stumptown.svg",
+      "cover": "covers/coffee__stumptown.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -5676,6 +5916,7 @@
       },
       "coverHue": 261,
       "mark": "marks/coffee__intelligentsia.svg",
+      "cover": "covers/coffee__intelligentsia.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -5697,6 +5938,7 @@
       },
       "coverHue": 140,
       "mark": "marks/coffee__counter-culture.svg",
+      "cover": "covers/coffee__counter-culture.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -5720,6 +5962,7 @@
       },
       "coverHue": 62,
       "mark": "marks/coffee__davidoff-cafe.svg",
+      "cover": "covers/coffee__davidoff-cafe.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -5741,6 +5984,7 @@
       },
       "coverHue": 159,
       "mark": "marks/coffee__segafredo.svg",
+      "cover": "covers/coffee__segafredo.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -5762,6 +6006,7 @@
       },
       "coverHue": 131,
       "mark": "marks/coffee__kimbo.svg",
+      "cover": "covers/coffee__kimbo.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -5785,6 +6030,7 @@
       },
       "coverHue": 258,
       "mark": "marks/coffee__dutch-bros.svg",
+      "cover": "covers/coffee__dutch-bros.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -5806,6 +6052,7 @@
       },
       "coverHue": 281,
       "mark": "marks/coffee__pacific-coffee.svg",
+      "cover": "covers/coffee__pacific-coffee.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -5829,6 +6076,7 @@
       },
       "coverHue": 194,
       "mark": "marks/coffee__manner.svg",
+      "cover": "covers/coffee__manner.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -5854,6 +6102,7 @@
       },
       "coverHue": 108,
       "mark": "marks/coffee__percent-arabica.svg",
+      "cover": "covers/coffee__percent-arabica.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -5875,6 +6124,7 @@
       },
       "coverHue": 342,
       "mark": "marks/coffee__blue-tokai.svg",
+      "cover": "covers/coffee__blue-tokai.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -5898,6 +6148,7 @@
       },
       "coverHue": 148,
       "mark": "marks/coffee__cotti.svg",
+      "cover": "covers/coffee__cotti.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -5919,6 +6170,7 @@
       },
       "coverHue": 13,
       "mark": "marks/tea__lipton.svg",
+      "cover": "covers/tea__lipton.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -5940,6 +6192,7 @@
       },
       "coverHue": 302,
       "mark": "marks/tea__twinings.svg",
+      "cover": "covers/tea__twinings.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -5961,6 +6214,7 @@
       },
       "coverHue": 265,
       "mark": "marks/tea__pg-tips.svg",
+      "cover": "covers/tea__pg-tips.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -5982,6 +6236,7 @@
       },
       "coverHue": 91,
       "mark": "marks/tea__yorkshire.svg",
+      "cover": "covers/tea__yorkshire.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -6003,6 +6258,7 @@
       },
       "coverHue": 314,
       "mark": "marks/tea__tetley.svg",
+      "cover": "covers/tea__tetley.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -6026,6 +6282,7 @@
       },
       "coverHue": 118,
       "mark": "marks/tea__harney.svg",
+      "cover": "covers/tea__harney.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -6047,6 +6304,7 @@
       },
       "coverHue": 311,
       "mark": "marks/tea__tazo.svg",
+      "cover": "covers/tea__tazo.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -6068,6 +6326,7 @@
       },
       "coverHue": 244,
       "mark": "marks/tea__mighty-leaf.svg",
+      "cover": "covers/tea__mighty-leaf.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -6089,6 +6348,7 @@
       },
       "coverHue": 274,
       "mark": "marks/tea__dilmah.svg",
+      "cover": "covers/tea__dilmah.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -6112,6 +6372,7 @@
       },
       "coverHue": 84,
       "mark": "marks/tea__ahmad.svg",
+      "cover": "covers/tea__ahmad.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -6135,6 +6396,7 @@
       },
       "coverHue": 103,
       "mark": "marks/tea__twg.svg",
+      "cover": "covers/tea__twg.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -6156,6 +6418,7 @@
       },
       "coverHue": 316,
       "mark": "marks/tea__lupicia.svg",
+      "cover": "covers/tea__lupicia.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -6180,6 +6443,7 @@
       },
       "coverHue": 119,
       "mark": "marks/tea__ito-en.svg",
+      "cover": "covers/tea__ito-en.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -6201,6 +6465,7 @@
       },
       "coverHue": 2,
       "mark": "marks/tea__yamamotoyama.svg",
+      "cover": "covers/tea__yamamotoyama.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -6222,6 +6487,7 @@
       },
       "coverHue": 296,
       "mark": "marks/tea__clipper.svg",
+      "cover": "covers/tea__clipper.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -6243,6 +6509,7 @@
       },
       "coverHue": 207,
       "mark": "marks/tea__pukka.svg",
+      "cover": "covers/tea__pukka.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -6266,6 +6533,7 @@
       },
       "coverHue": 125,
       "mark": "marks/tea__yogi.svg",
+      "cover": "covers/tea__yogi.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -6287,6 +6555,7 @@
       },
       "coverHue": 283,
       "mark": "marks/tea__celestial.svg",
+      "cover": "covers/tea__celestial.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -6308,6 +6577,7 @@
       },
       "coverHue": 290,
       "mark": "marks/tea__bigelow.svg",
+      "cover": "covers/tea__bigelow.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -6329,6 +6599,7 @@
       },
       "coverHue": 216,
       "mark": "marks/tea__numi.svg",
+      "cover": "covers/tea__numi.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -6352,6 +6623,7 @@
       },
       "coverHue": 231,
       "mark": "marks/tea__davids-tea.svg",
+      "cover": "covers/tea__davids-tea.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -6375,6 +6647,7 @@
       },
       "coverHue": 13,
       "mark": "marks/tea__cha-tra-mue.svg",
+      "cover": "covers/tea__cha-tra-mue.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -6398,6 +6671,7 @@
       },
       "coverHue": 123,
       "mark": "marks/tea__tenren.svg",
+      "cover": "covers/tea__tenren.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -6422,6 +6696,7 @@
       },
       "coverHue": 216,
       "mark": "marks/tea__teapigs.svg",
+      "cover": "covers/tea__teapigs.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -6445,6 +6720,7 @@
       },
       "coverHue": 64,
       "mark": "marks/tea__whittard.svg",
+      "cover": "covers/tea__whittard.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -6470,6 +6746,7 @@
       },
       "coverHue": 16,
       "mark": "marks/tea__chagee.svg",
+      "cover": "covers/tea__chagee.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -6495,6 +6772,7 @@
       },
       "coverHue": 321,
       "mark": "marks/tea__heytea.svg",
+      "cover": "covers/tea__heytea.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -6520,6 +6798,7 @@
       },
       "coverHue": 98,
       "mark": "marks/tea__nayuki.svg",
+      "cover": "covers/tea__nayuki.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -6543,6 +6822,7 @@
       },
       "coverHue": 141,
       "mark": "marks/tea__gong-cha.svg",
+      "cover": "covers/tea__gong-cha.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -6566,6 +6846,7 @@
       },
       "coverHue": 156,
       "mark": "marks/tea__chatime.svg",
+      "cover": "covers/tea__chatime.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -6589,6 +6870,7 @@
       },
       "coverHue": 98,
       "mark": "marks/clothes__nike.svg",
+      "cover": "covers/clothes__nike.jpg",
       "markIcon": "nike",
       "sort": 0,
       "status": "active"
@@ -6612,6 +6894,7 @@
       },
       "coverHue": 85,
       "mark": "marks/clothes__adidas.svg",
+      "cover": "covers/clothes__adidas.jpg",
       "markIcon": "adidas",
       "sort": 1,
       "status": "active"
@@ -6633,6 +6916,7 @@
       },
       "coverHue": 350,
       "mark": "marks/clothes__puma.svg",
+      "cover": "covers/clothes__puma.jpg",
       "markIcon": "puma",
       "sort": 2,
       "status": "active"
@@ -6654,6 +6938,7 @@
       },
       "coverHue": 226,
       "mark": "marks/clothes__under-armour.svg",
+      "cover": "covers/clothes__under-armour.jpg",
       "markIcon": "underarmour",
       "sort": 3,
       "status": "active"
@@ -6675,6 +6960,7 @@
       },
       "coverHue": 225,
       "mark": "marks/clothes__uniqlo.svg",
+      "cover": "covers/clothes__uniqlo.jpg",
       "markIcon": "uniqlo",
       "sort": 4,
       "status": "active"
@@ -6696,6 +6982,7 @@
       },
       "coverHue": 195,
       "mark": "marks/clothes__zara.svg",
+      "cover": "covers/clothes__zara.jpg",
       "markIcon": "zara",
       "sort": 5,
       "status": "active"
@@ -6720,6 +7007,7 @@
       },
       "coverHue": 301,
       "mark": "marks/clothes__h-and-m.svg",
+      "cover": "covers/clothes__h-and-m.jpg",
       "markIcon": "handm",
       "sort": 6,
       "status": "active"
@@ -6741,6 +7029,7 @@
       },
       "coverHue": 97,
       "mark": "marks/clothes__gap.svg",
+      "cover": "covers/clothes__gap.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -6765,6 +7054,7 @@
       },
       "coverHue": 17,
       "mark": "marks/clothes__levi.svg",
+      "cover": "covers/clothes__levi.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -6788,6 +7078,7 @@
       },
       "coverHue": 232,
       "mark": "marks/clothes__ralph-lauren.svg",
+      "cover": "covers/clothes__ralph-lauren.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -6811,6 +7102,7 @@
       },
       "coverHue": 353,
       "mark": "marks/clothes__tommy.svg",
+      "cover": "covers/clothes__tommy.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -6834,6 +7126,7 @@
       },
       "coverHue": 342,
       "mark": "marks/clothes__calvin-klein.svg",
+      "cover": "covers/clothes__calvin-klein.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -6857,6 +7150,7 @@
       },
       "coverHue": 218,
       "mark": "marks/clothes__new-balance.svg",
+      "cover": "covers/clothes__new-balance.jpg",
       "markIcon": "newbalance",
       "sort": 12,
       "status": "active"
@@ -6878,6 +7172,7 @@
       },
       "coverHue": 85,
       "mark": "marks/clothes__vans.svg",
+      "cover": "covers/clothes__vans.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -6899,6 +7194,7 @@
       },
       "coverHue": 144,
       "mark": "marks/clothes__converse.svg",
+      "cover": "covers/clothes__converse.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -6920,6 +7216,7 @@
       },
       "coverHue": 239,
       "mark": "marks/clothes__columbia.svg",
+      "cover": "covers/clothes__columbia.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -6941,6 +7238,7 @@
       },
       "coverHue": 292,
       "mark": "marks/clothes__burberry.svg",
+      "cover": "covers/clothes__burberry.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -6962,6 +7260,7 @@
       },
       "coverHue": 188,
       "mark": "marks/clothes__lululemon.svg",
+      "cover": "covers/clothes__lululemon.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -6983,6 +7282,7 @@
       },
       "coverHue": 19,
       "mark": "marks/clothes__patagonia.svg",
+      "cover": "covers/clothes__patagonia.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -7007,6 +7307,7 @@
       },
       "coverHue": 2,
       "mark": "marks/clothes__north-face.svg",
+      "cover": "covers/clothes__north-face.jpg",
       "markIcon": "thenorthface",
       "sort": 19,
       "status": "active"
@@ -7028,6 +7329,7 @@
       },
       "coverHue": 52,
       "mark": "marks/clothes__supreme.svg",
+      "cover": "covers/clothes__supreme.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -7049,6 +7351,7 @@
       },
       "coverHue": 206,
       "mark": "marks/clothes__off-white.svg",
+      "cover": "covers/clothes__off-white.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -7070,6 +7373,7 @@
       },
       "coverHue": 193,
       "mark": "marks/clothes__aritzia.svg",
+      "cover": "covers/clothes__aritzia.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -7091,6 +7395,7 @@
       },
       "coverHue": 172,
       "mark": "marks/clothes__muji.svg",
+      "cover": "covers/clothes__muji.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -7112,6 +7417,7 @@
       },
       "coverHue": 163,
       "mark": "marks/clothes__gu.svg",
+      "cover": "covers/clothes__gu.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -7133,6 +7439,7 @@
       },
       "coverHue": 290,
       "mark": "marks/clothes__cos.svg",
+      "cover": "covers/clothes__cos.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -7154,6 +7461,7 @@
       },
       "coverHue": 351,
       "mark": "marks/clothes__everlane.svg",
+      "cover": "covers/clothes__everlane.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -7175,6 +7483,7 @@
       },
       "coverHue": 210,
       "mark": "marks/clothes__carhartt.svg",
+      "cover": "covers/clothes__carhartt.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -7196,6 +7505,7 @@
       },
       "coverHue": 213,
       "mark": "marks/clothes__dickies.svg",
+      "cover": "covers/clothes__dickies.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -7217,6 +7527,7 @@
       },
       "coverHue": 198,
       "mark": "marks/clothes__champion.svg",
+      "cover": "covers/clothes__champion.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -7242,6 +7553,7 @@
       },
       "coverHue": 232,
       "mark": "marks/clothes__shein.svg",
+      "cover": "covers/clothes__shein.jpg",
       "markIcon": null,
       "sort": 30,
       "status": "active"
@@ -7265,6 +7577,7 @@
       },
       "coverHue": 87,
       "mark": "marks/clothes__gymshark.svg",
+      "cover": "covers/clothes__gymshark.jpg",
       "markIcon": null,
       "sort": 31,
       "status": "active"
@@ -7286,6 +7599,7 @@
       },
       "coverHue": 203,
       "mark": "marks/clothes__asos.svg",
+      "cover": "covers/clothes__asos.jpg",
       "markIcon": null,
       "sort": 32,
       "status": "active"
@@ -7309,6 +7623,7 @@
       },
       "coverHue": 338,
       "mark": "marks/clothes__skims.svg",
+      "cover": "covers/clothes__skims.jpg",
       "markIcon": null,
       "sort": 33,
       "status": "active"
@@ -7334,6 +7649,7 @@
       },
       "coverHue": 71,
       "mark": "marks/clothes__alo.svg",
+      "cover": "covers/clothes__alo.jpg",
       "markIcon": null,
       "sort": 34,
       "status": "active"
@@ -7357,6 +7673,7 @@
       },
       "coverHue": 19,
       "mark": "marks/clothes__arcteryx.svg",
+      "cover": "covers/clothes__arcteryx.jpg",
       "markIcon": null,
       "sort": 35,
       "status": "active"
@@ -7378,6 +7695,7 @@
       },
       "coverHue": 143,
       "mark": "marks/clothes__canada-goose.svg",
+      "cover": "covers/clothes__canada-goose.jpg",
       "markIcon": null,
       "sort": 36,
       "status": "active"
@@ -7399,6 +7717,7 @@
       },
       "coverHue": 2,
       "mark": "marks/clothes__stone-island.svg",
+      "cover": "covers/clothes__stone-island.jpg",
       "markIcon": null,
       "sort": 37,
       "status": "active"
@@ -7423,6 +7742,7 @@
       },
       "coverHue": 280,
       "mark": "marks/luxury__louis-vuitton.svg",
+      "cover": "covers/luxury__louis-vuitton.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -7444,6 +7764,7 @@
       },
       "coverHue": 153,
       "mark": "marks/luxury__chanel.svg",
+      "cover": "covers/luxury__chanel.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -7467,6 +7788,7 @@
       },
       "coverHue": 238,
       "mark": "marks/luxury__hermes.svg",
+      "cover": "covers/luxury__hermes.jpg",
       "markIcon": "hermes",
       "sort": 2,
       "status": "active"
@@ -7490,6 +7812,7 @@
       },
       "coverHue": 8,
       "mark": "marks/luxury__dior.svg",
+      "cover": "covers/luxury__dior.jpg",
       "markIcon": "dior",
       "sort": 3,
       "status": "active"
@@ -7511,6 +7834,7 @@
       },
       "coverHue": 334,
       "mark": "marks/luxury__cartier.svg",
+      "cover": "covers/luxury__cartier.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -7534,6 +7858,7 @@
       },
       "coverHue": 23,
       "mark": "marks/luxury__tiffany.svg",
+      "cover": "covers/luxury__tiffany.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -7555,6 +7880,7 @@
       },
       "coverHue": 122,
       "mark": "marks/luxury__rolex.svg",
+      "cover": "covers/luxury__rolex.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -7576,6 +7902,7 @@
       },
       "coverHue": 89,
       "mark": "marks/luxury__omega.svg",
+      "cover": "covers/luxury__omega.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -7599,6 +7926,7 @@
       },
       "coverHue": 161,
       "mark": "marks/luxury__patek.svg",
+      "cover": "covers/luxury__patek.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -7622,6 +7950,7 @@
       },
       "coverHue": 186,
       "mark": "marks/luxury__audemars.svg",
+      "cover": "covers/luxury__audemars.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -7645,6 +7974,7 @@
       },
       "coverHue": 241,
       "mark": "marks/luxury__bvlgari.svg",
+      "cover": "covers/luxury__bvlgari.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -7666,6 +7996,7 @@
       },
       "coverHue": 283,
       "mark": "marks/luxury__van-cleef.svg",
+      "cover": "covers/luxury__van-cleef.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -7687,6 +8018,7 @@
       },
       "coverHue": 356,
       "mark": "marks/luxury__fendi.svg",
+      "cover": "covers/luxury__fendi.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -7710,6 +8042,7 @@
       },
       "coverHue": 330,
       "mark": "marks/luxury__bottega.svg",
+      "cover": "covers/luxury__bottega.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -7733,6 +8066,7 @@
       },
       "coverHue": 38,
       "mark": "marks/luxury__celine.svg",
+      "cover": "covers/luxury__celine.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -7754,6 +8088,7 @@
       },
       "coverHue": 71,
       "mark": "marks/luxury__givenchy.svg",
+      "cover": "covers/luxury__givenchy.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -7778,6 +8113,7 @@
       },
       "coverHue": 266,
       "mark": "marks/luxury__ysl.svg",
+      "cover": "covers/luxury__ysl.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -7799,6 +8135,7 @@
       },
       "coverHue": 92,
       "mark": "marks/luxury__montblanc.svg",
+      "cover": "covers/luxury__montblanc.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -7820,6 +8157,7 @@
       },
       "coverHue": 99,
       "mark": "marks/luxury__rimowa.svg",
+      "cover": "covers/luxury__rimowa.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -7841,6 +8179,7 @@
       },
       "coverHue": 104,
       "mark": "marks/luxury__asprey.svg",
+      "cover": "covers/luxury__asprey.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -7862,6 +8201,7 @@
       },
       "coverHue": 351,
       "mark": "marks/luxury__harry-winston.svg",
+      "cover": "covers/luxury__harry-winston.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -7883,6 +8223,7 @@
       },
       "coverHue": 206,
       "mark": "marks/luxury__graff.svg",
+      "cover": "covers/luxury__graff.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -7904,6 +8245,7 @@
       },
       "coverHue": 205,
       "mark": "marks/luxury__chopard.svg",
+      "cover": "covers/luxury__chopard.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -7925,6 +8267,7 @@
       },
       "coverHue": 331,
       "mark": "marks/luxury__gucci.svg",
+      "cover": "covers/luxury__gucci.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -7946,6 +8289,7 @@
       },
       "coverHue": 148,
       "mark": "marks/luxury__prada.svg",
+      "cover": "covers/luxury__prada.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -7967,6 +8311,7 @@
       },
       "coverHue": 279,
       "mark": "marks/luxury__balenciaga.svg",
+      "cover": "covers/luxury__balenciaga.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -7988,6 +8333,7 @@
       },
       "coverHue": 48,
       "mark": "marks/luxury__loewe.svg",
+      "cover": "covers/luxury__loewe.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -8009,6 +8355,7 @@
       },
       "coverHue": 98,
       "mark": "marks/luxury__moncler.svg",
+      "cover": "covers/luxury__moncler.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -8030,6 +8377,7 @@
       },
       "coverHue": 326,
       "mark": "marks/luxury__breitling.svg",
+      "cover": "covers/luxury__breitling.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -8053,6 +8401,7 @@
       },
       "coverHue": 218,
       "mark": "marks/luxury__tag-heuer.svg",
+      "cover": "covers/luxury__tag-heuer.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -8076,6 +8425,7 @@
       },
       "coverHue": 292,
       "mark": "marks/luxury__jaeger-lecoultre.svg",
+      "cover": "covers/luxury__jaeger-lecoultre.jpg",
       "markIcon": null,
       "sort": 30,
       "status": "active"
@@ -8099,6 +8449,7 @@
       },
       "coverHue": 180,
       "mark": "marks/luxury__vacheron.svg",
+      "cover": "covers/luxury__vacheron.jpg",
       "markIcon": null,
       "sort": 31,
       "status": "active"
@@ -8124,6 +8475,7 @@
       },
       "coverHue": 145,
       "mark": "marks/trees__oak.svg",
+      "cover": "covers/trees__oak.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -8149,6 +8501,7 @@
       },
       "coverHue": 77,
       "mark": "marks/trees__maple.svg",
+      "cover": "covers/trees__maple.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -8174,6 +8527,7 @@
       },
       "coverHue": 48,
       "mark": "marks/trees__pine.svg",
+      "cover": "covers/trees__pine.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -8199,6 +8553,7 @@
       },
       "coverHue": 331,
       "mark": "marks/trees__cedar.svg",
+      "cover": "covers/trees__cedar.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -8222,6 +8577,7 @@
       },
       "coverHue": 40,
       "mark": "marks/trees__birch.svg",
+      "cover": "covers/trees__birch.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -8245,6 +8601,7 @@
       },
       "coverHue": 330,
       "mark": "marks/trees__willow.svg",
+      "cover": "covers/trees__willow.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -8269,6 +8626,7 @@
       },
       "coverHue": 303,
       "mark": "marks/trees__cherry-blossom.svg",
+      "cover": "covers/trees__cherry-blossom.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -8292,6 +8650,7 @@
       },
       "coverHue": 119,
       "mark": "marks/trees__ginkgo.svg",
+      "cover": "covers/trees__ginkgo.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -8313,6 +8672,7 @@
       },
       "coverHue": 259,
       "mark": "marks/trees__baobab.svg",
+      "cover": "covers/trees__baobab.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -8336,6 +8696,7 @@
       },
       "coverHue": 257,
       "mark": "marks/trees__sequoia.svg",
+      "cover": "covers/trees__sequoia.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -8359,6 +8720,7 @@
       },
       "coverHue": 134,
       "mark": "marks/trees__redwood.svg",
+      "cover": "covers/trees__redwood.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -8382,6 +8744,7 @@
       },
       "coverHue": 226,
       "mark": "marks/trees__palm.svg",
+      "cover": "covers/trees__palm.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -8405,6 +8768,7 @@
       },
       "coverHue": 123,
       "mark": "marks/trees__olive.svg",
+      "cover": "covers/trees__olive.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -8428,6 +8792,7 @@
       },
       "coverHue": 20,
       "mark": "marks/trees__fig.svg",
+      "cover": "covers/trees__fig.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -8449,6 +8814,7 @@
       },
       "coverHue": 213,
       "mark": "marks/trees__eucalyptus.svg",
+      "cover": "covers/trees__eucalyptus.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -8472,6 +8838,7 @@
       },
       "coverHue": 293,
       "mark": "marks/trees__cypress.svg",
+      "cover": "covers/trees__cypress.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -8495,6 +8862,7 @@
       },
       "coverHue": 238,
       "mark": "marks/trees__elm.svg",
+      "cover": "covers/trees__elm.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -8518,6 +8886,7 @@
       },
       "coverHue": 206,
       "mark": "marks/trees__ash.svg",
+      "cover": "covers/trees__ash.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -8541,6 +8910,7 @@
       },
       "coverHue": 143,
       "mark": "marks/trees__beech.svg",
+      "cover": "covers/trees__beech.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -8564,6 +8934,7 @@
       },
       "coverHue": 18,
       "mark": "marks/trees__spruce.svg",
+      "cover": "covers/trees__spruce.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -8587,6 +8958,7 @@
       },
       "coverHue": 31,
       "mark": "marks/trees__fir.svg",
+      "cover": "covers/trees__fir.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -8608,6 +8980,7 @@
       },
       "coverHue": 343,
       "mark": "marks/trees__jacaranda.svg",
+      "cover": "covers/trees__jacaranda.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -8631,6 +9004,7 @@
       },
       "coverHue": 48,
       "mark": "marks/trees__magnolia.svg",
+      "cover": "covers/trees__magnolia.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -8654,6 +9028,7 @@
       },
       "coverHue": 284,
       "mark": "marks/trees__poplar.svg",
+      "cover": "covers/trees__poplar.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -8678,6 +9053,7 @@
       },
       "coverHue": 228,
       "mark": "marks/trees__plane.svg",
+      "cover": "covers/trees__plane.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -8701,6 +9077,7 @@
       },
       "coverHue": 164,
       "mark": "marks/trees__bamboo.svg",
+      "cover": "covers/trees__bamboo.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -8724,6 +9101,7 @@
       },
       "coverHue": 131,
       "mark": "marks/trees__teak.svg",
+      "cover": "covers/trees__teak.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -8747,6 +9125,7 @@
       },
       "coverHue": 0,
       "mark": "marks/trees__mahogany.svg",
+      "cover": "covers/trees__mahogany.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -8770,6 +9149,7 @@
       },
       "coverHue": 284,
       "mark": "marks/trees__acacia.svg",
+      "cover": "covers/trees__acacia.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -8793,6 +9173,7 @@
       },
       "coverHue": 235,
       "mark": "marks/trees__douglas-fir.svg",
+      "cover": "covers/trees__douglas-fir.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -8816,6 +9197,7 @@
       },
       "coverHue": 236,
       "mark": "marks/flowers__rose.svg",
+      "cover": "covers/flowers__rose.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -8839,6 +9221,7 @@
       },
       "coverHue": 277,
       "mark": "marks/flowers__tulip.svg",
+      "cover": "covers/flowers__tulip.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -8862,6 +9245,7 @@
       },
       "coverHue": 58,
       "mark": "marks/flowers__sunflower.svg",
+      "cover": "covers/flowers__sunflower.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -8885,6 +9269,7 @@
       },
       "coverHue": 0,
       "mark": "marks/flowers__orchid.svg",
+      "cover": "covers/flowers__orchid.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -8908,6 +9293,7 @@
       },
       "coverHue": 207,
       "mark": "marks/flowers__lily.svg",
+      "cover": "covers/flowers__lily.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -8931,6 +9317,7 @@
       },
       "coverHue": 44,
       "mark": "marks/flowers__lavender.svg",
+      "cover": "covers/flowers__lavender.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -8954,6 +9341,7 @@
       },
       "coverHue": 77,
       "mark": "marks/flowers__daisy.svg",
+      "cover": "covers/flowers__daisy.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -8977,6 +9365,7 @@
       },
       "coverHue": 219,
       "mark": "marks/flowers__chrysanthemum.svg",
+      "cover": "covers/flowers__chrysanthemum.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -9000,6 +9389,7 @@
       },
       "coverHue": 304,
       "mark": "marks/flowers__peony.svg",
+      "cover": "covers/flowers__peony.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -9021,6 +9411,7 @@
       },
       "coverHue": 234,
       "mark": "marks/flowers__hydrangea.svg",
+      "cover": "covers/flowers__hydrangea.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -9044,6 +9435,7 @@
       },
       "coverHue": 162,
       "mark": "marks/flowers__jasmine.svg",
+      "cover": "covers/flowers__jasmine.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -9067,6 +9459,7 @@
       },
       "coverHue": 346,
       "mark": "marks/flowers__lotus.svg",
+      "cover": "covers/flowers__lotus.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -9088,6 +9481,7 @@
       },
       "coverHue": 107,
       "mark": "marks/flowers__hibiscus.svg",
+      "cover": "covers/flowers__hibiscus.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -9111,6 +9505,7 @@
       },
       "coverHue": 96,
       "mark": "marks/flowers__marigold.svg",
+      "cover": "covers/flowers__marigold.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -9132,6 +9527,7 @@
       },
       "coverHue": 24,
       "mark": "marks/flowers__iris.svg",
+      "cover": "covers/flowers__iris.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -9155,6 +9551,7 @@
       },
       "coverHue": 77,
       "mark": "marks/flowers__poppy.svg",
+      "cover": "covers/flowers__poppy.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -9178,6 +9575,7 @@
       },
       "coverHue": 116,
       "mark": "marks/flowers__violet.svg",
+      "cover": "covers/flowers__violet.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -9201,6 +9599,7 @@
       },
       "coverHue": 310,
       "mark": "marks/flowers__carnation.svg",
+      "cover": "covers/flowers__carnation.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -9224,6 +9623,7 @@
       },
       "coverHue": 146,
       "mark": "marks/flowers__daffodil.svg",
+      "cover": "covers/flowers__daffodil.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -9245,6 +9645,7 @@
       },
       "coverHue": 347,
       "mark": "marks/flowers__camellia.svg",
+      "cover": "covers/flowers__camellia.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -9268,6 +9669,7 @@
       },
       "coverHue": 229,
       "mark": "marks/flowers__azalea.svg",
+      "cover": "covers/flowers__azalea.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -9289,6 +9691,7 @@
       },
       "coverHue": 97,
       "mark": "marks/flowers__bougainvillea.svg",
+      "cover": "covers/flowers__bougainvillea.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -9312,6 +9715,7 @@
       },
       "coverHue": 270,
       "mark": "marks/flowers__plumeria.svg",
+      "cover": "covers/flowers__plumeria.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -9333,6 +9737,7 @@
       },
       "coverHue": 48,
       "mark": "marks/flowers__protea.svg",
+      "cover": "covers/flowers__protea.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -9354,6 +9759,7 @@
       },
       "coverHue": 38,
       "mark": "marks/flowers__dahlia.svg",
+      "cover": "covers/flowers__dahlia.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -9377,6 +9783,7 @@
       },
       "coverHue": 164,
       "mark": "marks/flowers__sakura.svg",
+      "cover": "covers/flowers__sakura.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -9398,6 +9805,7 @@
       },
       "coverHue": 205,
       "mark": "marks/flowers__wisteria.svg",
+      "cover": "covers/flowers__wisteria.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -9421,6 +9829,7 @@
       },
       "coverHue": 43,
       "mark": "marks/flowers__magnolia-flower.svg",
+      "cover": "covers/flowers__magnolia-flower.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -9442,6 +9851,7 @@
       },
       "coverHue": 158,
       "mark": "marks/flowers__anthurium.svg",
+      "cover": "covers/flowers__anthurium.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -9465,6 +9875,7 @@
       },
       "coverHue": 70,
       "mark": "marks/flowers__bird-of-paradise.svg",
+      "cover": "covers/flowers__bird-of-paradise.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -9489,6 +9900,7 @@
       },
       "coverHue": 286,
       "mark": "marks/animals__dog.svg",
+      "cover": "covers/animals__dog.jpg",
       "markIcon": null,
       "sort": 0,
       "status": "active"
@@ -9513,6 +9925,7 @@
       },
       "coverHue": 344,
       "mark": "marks/animals__cat.svg",
+      "cover": "covers/animals__cat.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -9536,6 +9949,7 @@
       },
       "coverHue": 311,
       "mark": "marks/animals__horse.svg",
+      "cover": "covers/animals__horse.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -9560,6 +9974,7 @@
       },
       "coverHue": 61,
       "mark": "marks/animals__cow.svg",
+      "cover": "covers/animals__cow.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -9581,6 +9996,7 @@
       },
       "coverHue": 63,
       "mark": "marks/animals__elephant.svg",
+      "cover": "covers/animals__elephant.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -9602,6 +10018,7 @@
       },
       "coverHue": 130,
       "mark": "marks/animals__lion.svg",
+      "cover": "covers/animals__lion.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -9623,6 +10040,7 @@
       },
       "coverHue": 305,
       "mark": "marks/animals__tiger.svg",
+      "cover": "covers/animals__tiger.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -9646,6 +10064,7 @@
       },
       "coverHue": 12,
       "mark": "marks/animals__panda.svg",
+      "cover": "covers/animals__panda.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -9667,6 +10086,7 @@
       },
       "coverHue": 104,
       "mark": "marks/animals__dolphin.svg",
+      "cover": "covers/animals__dolphin.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -9688,6 +10108,7 @@
       },
       "coverHue": 235,
       "mark": "marks/animals__whale.svg",
+      "cover": "covers/animals__whale.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -9709,6 +10130,7 @@
       },
       "coverHue": 126,
       "mark": "marks/animals__eagle.svg",
+      "cover": "covers/animals__eagle.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -9730,6 +10152,7 @@
       },
       "coverHue": 310,
       "mark": "marks/animals__owl.svg",
+      "cover": "covers/animals__owl.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -9751,6 +10174,7 @@
       },
       "coverHue": 214,
       "mark": "marks/animals__penguin.svg",
+      "cover": "covers/animals__penguin.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -9776,6 +10200,7 @@
       },
       "coverHue": 133,
       "mark": "marks/animals__butterfly.svg",
+      "cover": "covers/animals__butterfly.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -9802,6 +10227,7 @@
       },
       "coverHue": 212,
       "mark": "marks/animals__bee.svg",
+      "cover": "covers/animals__bee.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -9827,6 +10253,7 @@
       },
       "coverHue": 265,
       "mark": "marks/animals__ant.svg",
+      "cover": "covers/animals__ant.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -9850,6 +10277,7 @@
       },
       "coverHue": 122,
       "mark": "marks/animals__dragonfly.svg",
+      "cover": "covers/animals__dragonfly.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -9876,6 +10304,7 @@
       },
       "coverHue": 36,
       "mark": "marks/animals__ladybug.svg",
+      "cover": "covers/animals__ladybug.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -9901,6 +10330,7 @@
       },
       "coverHue": 2,
       "mark": "marks/animals__mantis.svg",
+      "cover": "covers/animals__mantis.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -9926,6 +10356,7 @@
       },
       "coverHue": 65,
       "mark": "marks/animals__beetle.svg",
+      "cover": "covers/animals__beetle.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -9949,6 +10380,7 @@
       },
       "coverHue": 267,
       "mark": "marks/animals__spider.svg",
+      "cover": "covers/animals__spider.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -9972,6 +10404,7 @@
       },
       "coverHue": 306,
       "mark": "marks/animals__frog.svg",
+      "cover": "covers/animals__frog.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -9995,6 +10428,7 @@
       },
       "coverHue": 266,
       "mark": "marks/animals__snake.svg",
+      "cover": "covers/animals__snake.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -10018,6 +10452,7 @@
       },
       "coverHue": 322,
       "mark": "marks/animals__turtle.svg",
+      "cover": "covers/animals__turtle.jpg",
       "markIcon": null,
       "sort": 23,
       "status": "active"
@@ -10039,6 +10474,7 @@
       },
       "coverHue": 65,
       "mark": "marks/animals__fox.svg",
+      "cover": "covers/animals__fox.jpg",
       "markIcon": null,
       "sort": 24,
       "status": "active"
@@ -10060,6 +10496,7 @@
       },
       "coverHue": 136,
       "mark": "marks/animals__wolf.svg",
+      "cover": "covers/animals__wolf.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -10081,6 +10518,7 @@
       },
       "coverHue": 346,
       "mark": "marks/animals__bear.svg",
+      "cover": "covers/animals__bear.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -10102,6 +10540,7 @@
       },
       "coverHue": 292,
       "mark": "marks/animals__deer.svg",
+      "cover": "covers/animals__deer.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -10125,6 +10564,7 @@
       },
       "coverHue": 8,
       "mark": "marks/animals__rabbit.svg",
+      "cover": "covers/animals__rabbit.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -10146,6 +10586,7 @@
       },
       "coverHue": 177,
       "mark": "marks/animals__octopus.svg",
+      "cover": "covers/animals__octopus.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -10167,6 +10608,7 @@
       },
       "coverHue": 316,
       "mark": "marks/animals__koala.svg",
+      "cover": "covers/animals__koala.jpg",
       "markIcon": null,
       "sort": 30,
       "status": "active"
@@ -10188,6 +10630,7 @@
       },
       "coverHue": 102,
       "mark": "marks/animals__kangaroo.svg",
+      "cover": "covers/animals__kangaroo.jpg",
       "markIcon": null,
       "sort": 31,
       "status": "active"
@@ -10209,6 +10652,7 @@
       },
       "coverHue": 62,
       "mark": "marks/animals__giraffe.svg",
+      "cover": "covers/animals__giraffe.jpg",
       "markIcon": null,
       "sort": 32,
       "status": "active"
@@ -10230,6 +10674,7 @@
       },
       "coverHue": 208,
       "mark": "marks/animals__zebra.svg",
+      "cover": "covers/animals__zebra.jpg",
       "markIcon": null,
       "sort": 33,
       "status": "active"
@@ -10251,6 +10696,7 @@
       },
       "coverHue": 303,
       "mark": "marks/animals__shark.svg",
+      "cover": "covers/animals__shark.jpg",
       "markIcon": null,
       "sort": 34,
       "status": "active"
@@ -10272,6 +10718,7 @@
       },
       "coverHue": 157,
       "mark": "marks/animals__flamingo.svg",
+      "cover": "covers/animals__flamingo.jpg",
       "markIcon": null,
       "sort": 35,
       "status": "active"
@@ -10293,6 +10740,7 @@
       },
       "coverHue": 164,
       "mark": "marks/animals__parrot.svg",
+      "cover": "covers/animals__parrot.jpg",
       "markIcon": null,
       "sort": 36,
       "status": "active"
@@ -10316,6 +10764,7 @@
       },
       "coverHue": 155,
       "mark": "marks/animals__cricket.svg",
+      "cover": "covers/animals__cricket.jpg",
       "markIcon": null,
       "sort": 37,
       "status": "active"
@@ -10342,6 +10791,7 @@
       },
       "coverHue": 277,
       "mark": "marks/food__coca-cola.svg",
+      "cover": "covers/food__coca-cola.jpg",
       "markIcon": "cocacola",
       "sort": 0,
       "status": "active"
@@ -10365,6 +10815,7 @@
       },
       "coverHue": 58,
       "mark": "marks/food__pepsi.svg",
+      "cover": "covers/food__pepsi.jpg",
       "markIcon": null,
       "sort": 1,
       "status": "active"
@@ -10386,6 +10837,7 @@
       },
       "coverHue": 170,
       "mark": "marks/food__nutella.svg",
+      "cover": "covers/food__nutella.jpg",
       "markIcon": null,
       "sort": 2,
       "status": "active"
@@ -10407,6 +10859,7 @@
       },
       "coverHue": 212,
       "mark": "marks/food__oreo.svg",
+      "cover": "covers/food__oreo.jpg",
       "markIcon": null,
       "sort": 3,
       "status": "active"
@@ -10430,6 +10883,7 @@
       },
       "coverHue": 111,
       "mark": "marks/food__kitkat.svg",
+      "cover": "covers/food__kitkat.jpg",
       "markIcon": null,
       "sort": 4,
       "status": "active"
@@ -10451,6 +10905,7 @@
       },
       "coverHue": 31,
       "mark": "marks/food__snickers.svg",
+      "cover": "covers/food__snickers.jpg",
       "markIcon": null,
       "sort": 5,
       "status": "active"
@@ -10472,6 +10927,7 @@
       },
       "coverHue": 125,
       "mark": "marks/food__toblerone.svg",
+      "cover": "covers/food__toblerone.jpg",
       "markIcon": null,
       "sort": 6,
       "status": "active"
@@ -10493,6 +10949,7 @@
       },
       "coverHue": 212,
       "mark": "marks/food__haribo.svg",
+      "cover": "covers/food__haribo.jpg",
       "markIcon": null,
       "sort": 7,
       "status": "active"
@@ -10514,6 +10971,7 @@
       },
       "coverHue": 321,
       "mark": "marks/food__pringles.svg",
+      "cover": "covers/food__pringles.jpg",
       "markIcon": null,
       "sort": 8,
       "status": "active"
@@ -10537,6 +10995,7 @@
       },
       "coverHue": 253,
       "mark": "marks/food__lay.svg",
+      "cover": "covers/food__lay.jpg",
       "markIcon": null,
       "sort": 9,
       "status": "active"
@@ -10558,6 +11017,7 @@
       },
       "coverHue": 127,
       "mark": "marks/food__doritos.svg",
+      "cover": "covers/food__doritos.jpg",
       "markIcon": null,
       "sort": 10,
       "status": "active"
@@ -10581,6 +11041,7 @@
       },
       "coverHue": 145,
       "mark": "marks/food__heinz.svg",
+      "cover": "covers/food__heinz.jpg",
       "markIcon": null,
       "sort": 11,
       "status": "active"
@@ -10604,6 +11065,7 @@
       },
       "coverHue": 269,
       "mark": "marks/food__kelloggs.svg",
+      "cover": "covers/food__kelloggs.jpg",
       "markIcon": null,
       "sort": 12,
       "status": "active"
@@ -10627,6 +11089,7 @@
       },
       "coverHue": 144,
       "mark": "marks/food__nestle.svg",
+      "cover": "covers/food__nestle.jpg",
       "markIcon": null,
       "sort": 13,
       "status": "active"
@@ -10648,6 +11111,7 @@
       },
       "coverHue": 49,
       "mark": "marks/food__kraft.svg",
+      "cover": "covers/food__kraft.jpg",
       "markIcon": null,
       "sort": 14,
       "status": "active"
@@ -10671,6 +11135,7 @@
       },
       "coverHue": 27,
       "mark": "marks/food__campbell.svg",
+      "cover": "covers/food__campbell.jpg",
       "markIcon": null,
       "sort": 15,
       "status": "active"
@@ -10692,6 +11157,7 @@
       },
       "coverHue": 100,
       "mark": "marks/food__tabasco.svg",
+      "cover": "covers/food__tabasco.jpg",
       "markIcon": null,
       "sort": 16,
       "status": "active"
@@ -10713,6 +11179,7 @@
       },
       "coverHue": 30,
       "mark": "marks/food__maggi.svg",
+      "cover": "covers/food__maggi.jpg",
       "markIcon": null,
       "sort": 17,
       "status": "active"
@@ -10734,6 +11201,7 @@
       },
       "coverHue": 189,
       "mark": "marks/food__knorr.svg",
+      "cover": "covers/food__knorr.jpg",
       "markIcon": null,
       "sort": 18,
       "status": "active"
@@ -10757,6 +11225,7 @@
       },
       "coverHue": 147,
       "mark": "marks/food__hellmanns.svg",
+      "cover": "covers/food__hellmanns.jpg",
       "markIcon": null,
       "sort": 19,
       "status": "active"
@@ -10780,6 +11249,7 @@
       },
       "coverHue": 108,
       "mark": "marks/food__philadelphia.svg",
+      "cover": "covers/food__philadelphia.jpg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
@@ -10803,6 +11273,7 @@
       },
       "coverHue": 182,
       "mark": "marks/food__ben-jerrys.svg",
+      "cover": "covers/food__ben-jerrys.jpg",
       "markIcon": null,
       "sort": 21,
       "status": "active"
@@ -10826,6 +11297,7 @@
       },
       "coverHue": 116,
       "mark": "marks/food__haagen-dazs.svg",
+      "cover": "covers/food__haagen-dazs.jpg",
       "markIcon": null,
       "sort": 22,
       "status": "active"
@@ -10849,6 +11321,7 @@
       },
       "coverHue": 294,
       "mark": "marks/food__red-bull.svg",
+      "cover": "covers/food__red-bull.jpg",
       "markIcon": "redbull",
       "sort": 23,
       "status": "active"
@@ -10874,6 +11347,7 @@
       },
       "coverHue": 99,
       "mark": "marks/food__monster.svg",
+      "cover": "covers/food__monster.jpg",
       "markIcon": "monster",
       "sort": 24,
       "status": "active"
@@ -10897,6 +11371,7 @@
       },
       "coverHue": 51,
       "mark": "marks/food__san-pellegrino.svg",
+      "cover": "covers/food__san-pellegrino.jpg",
       "markIcon": null,
       "sort": 25,
       "status": "active"
@@ -10920,6 +11395,7 @@
       },
       "coverHue": 14,
       "mark": "marks/food__evian.svg",
+      "cover": "covers/food__evian.jpg",
       "markIcon": null,
       "sort": 26,
       "status": "active"
@@ -10941,6 +11417,7 @@
       },
       "coverHue": 249,
       "mark": "marks/food__meiji.svg",
+      "cover": "covers/food__meiji.jpg",
       "markIcon": null,
       "sort": 27,
       "status": "active"
@@ -10962,6 +11439,7 @@
       },
       "coverHue": 187,
       "mark": "marks/food__calbee.svg",
+      "cover": "covers/food__calbee.jpg",
       "markIcon": null,
       "sort": 28,
       "status": "active"
@@ -10985,6 +11463,7 @@
       },
       "coverHue": 303,
       "mark": "marks/food__nissin.svg",
+      "cover": "covers/food__nissin.jpg",
       "markIcon": null,
       "sort": 29,
       "status": "active"
@@ -11009,6 +11488,7 @@
       },
       "coverHue": 345,
       "mark": "marks/food__koala-march.svg",
+      "cover": "covers/food__koala-march.jpg",
       "markIcon": null,
       "sort": 30,
       "status": "active"
@@ -11030,6 +11510,7 @@
       },
       "coverHue": 35,
       "mark": "marks/food__lotte.svg",
+      "cover": "covers/food__lotte.jpg",
       "markIcon": null,
       "sort": 31,
       "status": "active"
@@ -11051,6 +11532,7 @@
       },
       "coverHue": 214,
       "mark": "marks/food__orion.svg",
+      "cover": "covers/food__orion.jpg",
       "markIcon": null,
       "sort": 32,
       "status": "active"
@@ -11074,6 +11556,7 @@
       },
       "coverHue": 326,
       "mark": "marks/food__want-want.svg",
+      "cover": "covers/food__want-want.jpg",
       "markIcon": null,
       "sort": 33,
       "status": "active"
@@ -11099,6 +11582,7 @@
       },
       "coverHue": 316,
       "mark": "marks/food__three-squirrels.svg",
+      "cover": "covers/food__three-squirrels.jpg",
       "markIcon": null,
       "sort": 34,
       "status": "active"
@@ -11123,6 +11607,7 @@
       },
       "coverHue": 34,
       "mark": "marks/food__nongshim.svg",
+      "cover": "covers/food__nongshim.jpg",
       "markIcon": null,
       "sort": 35,
       "status": "active"
@@ -11146,6 +11631,7 @@
       },
       "coverHue": 68,
       "mark": "marks/food__gatorade.svg",
+      "cover": "covers/food__gatorade.jpg",
       "markIcon": null,
       "sort": 36,
       "status": "active"
@@ -11169,6 +11655,7 @@
       },
       "coverHue": 276,
       "mark": "marks/food__sprite.svg",
+      "cover": "covers/food__sprite.jpg",
       "markIcon": null,
       "sort": 37,
       "status": "active"
