@@ -762,3 +762,78 @@ body > * {
 .featured {
   isolation: isolate;
 }
+
+/* Bold section stage — sigil watermark behind titles */
+.page--home .featured .section,
+.page--atlas .regions-wrap,
+.page--atlas .oracle .section,
+.page--about .howto .section,
+.page--journal .journal .section {
+  position: relative;
+}
+
+.page--home .featured .section::before,
+.page--atlas .regions-wrap::before,
+.page--atlas .oracle .section::before {
+  content: "";
+  position: absolute;
+  right: -2rem;
+  top: 1.5rem;
+  width: min(18rem, 42vw);
+  height: min(18rem, 42vw);
+  pointer-events: none;
+  opacity: 0.14;
+  background:
+    radial-gradient(circle at center, transparent 34%, rgba(224, 168, 74, 0.55) 35%, transparent 36%),
+    conic-gradient(from 20deg, transparent 0 20deg, rgba(224, 168, 74, 0.35) 0 22deg, transparent 0 60deg, rgba(122, 160, 200, 0.3) 0 62deg, transparent 0);
+  mask-image: radial-gradient(circle, #000 0 55%, transparent 72%);
+  animation: sigil-spin 48s linear infinite;
+}
+
+@keyframes sigil-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page--home .featured .section::before,
+  .page--atlas .regions-wrap::before,
+  .page--atlas .oracle .section::before {
+    animation: none;
+  }
+}
+
+.continent-btn__count {
+  font-size: 0.78rem !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--font-ui) !important;
+  color: var(--ink-soft) !important;
+}
+
+.continent-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.continent-btn::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -40% auto;
+  width: 5.5rem;
+  height: 5.5rem;
+  border: 1px solid rgba(224, 168, 74, 0.18);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero__lead {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.15rem, 2.4vw, 1.45rem);
+}
+
+.brand {
+  text-transform: none;
+  font-weight: 700;
+}
