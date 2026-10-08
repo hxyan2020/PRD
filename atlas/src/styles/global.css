@@ -2285,3 +2285,35 @@ select {
     transition: none !important;
   }
 }
+
+/* Mobile overrides placed after component rules so they win the cascade */
+@media (max-width: 960px) {
+  .chat-quick {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .chat-quick button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .chat-composer {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-composer .btn {
+    width: 100%;
+  }
+
+  .detail-aside {
+    order: -1;
+  }
+
+  .game-assistant-messages {
+    min-height: 11rem;
+    max-height: min(36dvh, 280px);
+  }
+}
