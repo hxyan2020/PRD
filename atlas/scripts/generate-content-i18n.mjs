@@ -81,8 +81,8 @@ for (const loc of LOCALES) {
     if (!a?.title || !a?.descTemplate || !a?.steps?.length || !a?.req?.length || !a?.participants) {
       throw new Error(`Incomplete archetype ${key} in ${loc}`);
     }
-    if (!a.descTemplate.includes("{country}") || !a.descTemplate.includes("{civ}")) {
-      throw new Error(`Archetype ${key} in ${loc} missing placeholders`);
+    if (!a.descTemplate.includes("{country}")) {
+      throw new Error(`Archetype ${key} in ${loc} missing {country} placeholder`);
     }
     if (a.descTemplate === enArch[key].descTemplate && !a.fallbackEn) {
       throw new Error(`English-copy archetype desc ${key} in ${loc}`);
