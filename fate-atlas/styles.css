@@ -3371,6 +3371,56 @@ body:not(.studio-open) .hero__content {
     min-height: 2.1rem;
   }
 
+  .lang-picker__btn {
+    max-width: 8.5rem;
+    min-height: var(--touch);
+    padding: 0.35rem 0.45rem;
+    font-size: 0.68rem;
+  }
+
+  .lang-picker__label {
+    max-width: 4.5rem;
+  }
+
+  .lang-picker__menu {
+    position: fixed;
+    right: max(0.75rem, env(safe-area-inset-right));
+    top: calc(3.6rem + env(safe-area-inset-top, 0px));
+    left: auto;
+    width: min(18rem, calc(100vw - 1.5rem));
+    max-height: min(70vh, 28rem);
+    z-index: 140;
+  }
+
+  .lang-picker__option {
+    min-height: var(--touch);
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured__head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rite-picker__panel {
+    max-height: min(50vh, 20rem);
+  }
+
+  .begin__row {
+    grid-template-columns: 1fr;
+  }
+
+  .continent-btn {
+    min-height: var(--touch);
+  }
+
+  .method {
+    grid-template-columns: 1fr;
+  }
+
   .hud__link {
     font-size: 0.78rem;
     padding: 0.35rem 0.15rem;
