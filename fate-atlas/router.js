@@ -1,11 +1,11 @@
 /**
  * Hash router — splits Fatum Atlas into focused pages.
- * Routes: home | play | atlas | journal | about | terms
+ * Routes: home | play | atlas | journal | about | contact | terms
  */
 (function () {
   "use strict";
 
-  const ROUTES = ["home", "play", "atlas", "journal", "about", "terms"];
+  const ROUTES = ["home", "play", "atlas", "journal", "about", "contact", "terms"];
   let current = "home";
   const listeners = new Set();
 
@@ -21,6 +21,7 @@
     journal: "journal",
     howto: "about",
     sources: "about",
+    contact: "contact",
     terms: "terms",
     top: "home",
   };
@@ -145,6 +146,15 @@
           setTimeout(() => target.classList.remove("is-route-focus"), 1800);
         }
       });
+      if (window.FatumUserData && window.FATE_METHODS) {
+        const m = window.FATE_METHODS.find((x) => x.id === params.method);
+        if (m) {
+          const name = window.FatumMethodText
+            ? window.FatumMethodText.localize(m).name
+            : m.name;
+          window.FatumUserData.recordHistory(m.id, { name });
+        }
+      }
     }
     if (page === "play" && params.surprise === "1") {
       document.getElementById("draw-btn")?.click();

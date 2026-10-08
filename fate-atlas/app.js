@@ -174,6 +174,7 @@
           <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(text.source || "Compiled research")}</p>
           <p class="method__actions">
             <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
+            <button type="button" class="btn btn--ghost btn--small btn--save${window.FatumUserData && window.FatumUserData.inCollection(m.id) ? " is-saved" : ""}" data-save="${escapeHTML(m.id)}" aria-pressed="${window.FatumUserData && window.FatumUserData.inCollection(m.id) ? "true" : "false"}">${escapeHTML(window.FatumUserData && window.FatumUserData.inCollection(m.id) ? t("collection.saved") : t("collection.save"))}</button>
           </p>
         </div>
       </div>
@@ -287,12 +288,29 @@
 
     els.drawBtn.addEventListener("click", drawLot);
 
+    document.addEventListener("click", (e) => {
+      const saveBtn = e.target.closest("[data-save]");
+      if (!saveBtn || !window.FatumUserData) return;
+      const id = saveBtn.getAttribute("data-save");
+      const saved = window.FatumUserData.toggleCollection(id);
+      saveBtn.classList.toggle("is-saved", saved);
+      saveBtn.setAttribute("aria-pressed", saved ? "true" : "false");
+      saveBtn.textContent = saved ? t("collection.saved") : t("collection.save");
+      window.FatumPlay?.showToast?.(
+        saved ? t("collection.toastSaved") : t("collection.toastRemoved"),
+        { ms: 1800 }
+      );
+    });
+
     document.addEventListener("fatum:locale-changed", () => {
       refreshLocalizedChrome();
       if (!els.oracleResult.hidden && els.oracleResult.innerHTML.trim()) {
         // Keep oracle result language in sync if visible — leave as-is until redraw
       }
     });
+
+    document.addEventListener("fatum:auth-changed", () => renderList());
+    document.addEventListener("fatum:collection-changed", () => renderList());
   }
 
   if (document.readyState === "loading") {

@@ -88,12 +88,16 @@
     document.body.classList.add("studio-open");
     studio.setAttribute("aria-hidden", "false");
     window.FatumPlay?.setQuestProgress?.(0);
+    const displayName = window.FatumMethodText
+      ? window.FatumMethodText.localize(method).name
+      : method.name;
+    if (window.FatumUserData) {
+      window.FatumUserData.recordHistory(method.id, { name: displayName });
+    }
     window.FatumPlay?.showToast?.(
       (window.FatumI18n
         ? window.FatumI18n.t("toast.questStarted", {
-            name: window.FatumMethodText
-              ? window.FatumMethodText.localize(method).name
-              : method.name,
+            name: displayName,
           })
         : `Quest started · ${method.name}`),
       { ms: window.matchMedia("(max-width: 720px)").matches ? 1200 : 1800 }
