@@ -75,62 +75,57 @@ select {
   color: #f2f6f8;
   overflow: hidden;
   isolation: isolate;
+  background: #0a1210;
 }
 
-.hero__sky {
+.hero__media {
   position: absolute;
   inset: 0;
   z-index: -2;
-  background:
-    radial-gradient(ellipse 80% 55% at 70% 15%, rgba(193, 122, 47, 0.35), transparent 55%),
-    radial-gradient(ellipse 60% 50% at 15% 70%, rgba(15, 92, 86, 0.55), transparent 50%),
-    linear-gradient(165deg, #07131f 0%, #0d2b34 42%, #163a3a 72%, #1d3f2f 100%);
 }
 
-.hero__sky::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255, 255, 255, 0.85), transparent),
-    radial-gradient(1px 1px at 28% 42%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(1.5px 1.5px at 45% 12%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(1px 1px at 61% 33%, rgba(255, 255, 255, 0.65), transparent),
-    radial-gradient(2px 2px at 78% 22%, rgba(232, 184, 106, 0.95), transparent),
-    radial-gradient(1px 1px at 88% 48%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(1.5px 1.5px at 18% 68%, rgba(255, 255, 255, 0.55), transparent),
-    radial-gradient(1px 1px at 52% 72%, rgba(255, 255, 255, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 70% 58%, rgba(255, 255, 255, 0.75), transparent),
-    radial-gradient(1px 1px at 92% 78%, rgba(255, 255, 255, 0.6), transparent);
-  animation: drift-stars 28s linear infinite;
-  opacity: 0.9;
+.hero__banner {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  display: block;
+  transform: scale(1.02);
+  animation: hero-banner-in 1.4s var(--ease) both;
 }
 
-.hero__sky::after {
-  content: "";
-  position: absolute;
-  inset: auto -10% -20% -10%;
-  height: 55%;
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(231, 238, 244, 0.08), transparent 55%),
-    linear-gradient(to top, rgba(7, 19, 31, 0.85), transparent);
-}
-
-.hero__map {
+.hero__scrim {
   position: absolute;
   inset: 0;
   z-index: -1;
-  opacity: 0.28;
-  background-image: url("assets/world-lines.svg");
-  background-size: cover;
-  background-position: center 40%;
-  animation: breathe-map 12s var(--ease) infinite alternate;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(6, 12, 14, 0.78) 0%, rgba(6, 12, 14, 0.42) 38%, rgba(6, 12, 14, 0.12) 68%, rgba(6, 12, 14, 0.28) 100%),
+    linear-gradient(180deg, rgba(6, 12, 14, 0.45) 0%, transparent 28%, transparent 52%, rgba(6, 12, 14, 0.78) 100%);
+}
+
+/* Keep legacy hooks inert if referenced elsewhere */
+.hero__sky,
+.hero__map {
+  display: none;
+}
+
+@keyframes hero-banner-in {
+  from {
+    opacity: 0.65;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.02);
+  }
 }
 
 .hero__content {
   width: min(1120px, calc(100% - 2.5rem));
-  margin: 0 auto 12vh;
+  margin: 0 auto 10vh;
   padding-top: 6rem;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
 }
 
 .brand-mark {
