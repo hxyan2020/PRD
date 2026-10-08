@@ -303,19 +303,9 @@
     return `<span class="picker-flags">${html}</span>`;
   }
 
-  function optionFlagsPrefix(countries, region) {
-    // Plain-text emoji prefix for native <option> elements
-    const ancient = ancientForRegion(region);
-    const codes = [];
-    if (ancient?.code) codes.push(ancient.code);
-    (countries || []).forEach((n) => {
-      const c = countryCode(n);
-      if (c && !codes.includes(c)) codes.push(c);
-    });
-    return codes
-      .slice(0, 3)
-      .map((c) => flagEmoji(c))
-      .join("");
+  /** @deprecated Never use emoji flags in UI — they become "US"/"CA" letters. */
+  function optionFlagsPrefix() {
+    return "";
   }
 
   window.FatumCountries = {

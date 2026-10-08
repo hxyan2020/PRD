@@ -1134,12 +1134,6 @@
           : "";
       }
 
-      function emojiPrefix(m) {
-        return window.FatumCountries
-          ? window.FatumCountries.optionFlagsPrefix(m.countries, m.region)
-          : "";
-      }
-
       function setTrigger(method) {
         if (!labelText) return;
         if (!method) {
@@ -1208,11 +1202,11 @@
                 `<optgroup label="${escapeHTML(g.label)}">` +
                 g.items
                   .map((m) => {
-                    const prefix = emojiPrefix(m);
                     const text = window.FatumMethodText
                       ? window.FatumMethodText.localize(m)
                       : m;
-                    return `<option value="${escapeHTML(m.id)}">${prefix} ${escapeHTML(text.name)}</option>`;
+                    // Never prefix with flag emoji — regional indicators render as "US"/"CA" on many OSes.
+                    return `<option value="${escapeHTML(m.id)}">${escapeHTML(text.name)}</option>`;
                   })
                   .join("") +
                 `</optgroup>`
