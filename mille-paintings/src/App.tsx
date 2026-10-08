@@ -1,4 +1,5 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { ScrollToTop } from './components/ScrollToTop'
 import { SiteHeader } from './components/SiteHeader'
 import { PaintingsProvider } from './data/PaintingsProvider'
 import { I18nProvider, useI18n } from './i18n/I18nContext'
@@ -32,6 +33,7 @@ export default function App() {
     <I18nProvider>
       <PaintingsProvider>
         <HashRouter>
+          <ScrollToTop />
           <div className="app-shell">
             <SiteHeader />
             <Routes>
