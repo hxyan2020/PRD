@@ -647,8 +647,11 @@ body > * {
 
 /* ── Footer ───────────────────────────────────────────── */
 .footer {
+  /* Keep z-index auto so the rite-picker panel (fixed, z-index 400)
+     can paint above the footer. A positive z-index here was stacking
+     the footer over in-page dropdowns. */
   position: relative;
-  z-index: 1;
+  z-index: auto;
   background:
     linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.45)),
     #0a0807;
