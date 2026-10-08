@@ -979,18 +979,48 @@ img {
   transition: filter 0.55s ease, transform 0.55s ease;
 }
 
+.item-tile__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  z-index: 0;
+  transition: filter 0.55s ease, transform 0.55s ease;
+}
+
 .item-tile__mark {
   width: 58%;
   height: 48%;
   object-fit: contain;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   transition: filter 0.55s ease, opacity 0.55s ease, transform 0.55s ease;
 }
 
-/* Locked / sneak: real logo shape stays visible, fully greyed out */
+.item-tile__mark--overlay {
+  width: 42%;
+  height: 36%;
+  opacity: 0.85;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.45));
+}
+
+/* Locked: greyscale realistic cover; grey logo mark */
 .item-tile.is-locked .item-tile__cover,
 .item-tile.is-sneak .item-tile__cover {
+  filter: none;
+}
+
+.item-tile.is-locked .item-tile__photo {
+  filter: grayscale(1) contrast(1.1) brightness(0.82);
+}
+
+.item-tile.is-sneak .item-tile__photo {
+  filter: grayscale(0.35) brightness(1.05);
+}
+
+.item-tile.is-unlocked .item-tile__photo {
   filter: none;
 }
 
@@ -998,6 +1028,11 @@ img {
   /* Lift grey marks so logo silhouettes read on dark locked covers */
   filter: grayscale(1) contrast(1.25) brightness(1.65);
   opacity: 0.9;
+}
+
+.item-tile.is-locked .item-tile__mark--overlay {
+  filter: grayscale(1) contrast(1.2) brightness(1.5) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+  opacity: 0.92;
 }
 
 .item-tile.is-sneak .item-tile__mark {
@@ -1013,6 +1048,10 @@ img {
 .item-tile.is-unlocked .item-tile__mark {
   filter: none;
   opacity: 1;
+}
+
+.item-tile.is-unlocked .item-tile__mark--overlay {
+  display: none;
 }
 
 @keyframes unlockBloom {
@@ -1035,15 +1074,37 @@ img {
 }
 
 .detail-cover__mark {
+  position: relative;
+  z-index: 1;
   width: min(46%, 160px);
   height: 72%;
   object-fit: contain;
 }
 
+.detail-cover__mark--overlay {
+  width: min(34%, 120px);
+  height: 56%;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.45));
+}
+
 .detail-cover__photo {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.detail-cover.is-locked .detail-cover__photo {
+  filter: grayscale(1) contrast(1.1) brightness(0.85);
+}
+
+.detail-cover.is-sneak .detail-cover__photo {
+  filter: grayscale(0.35);
+}
+
+.detail-cover.is-unlocked .detail-cover__photo {
+  filter: none;
 }
 
 .detail-cover.is-locked .detail-cover__mark {
@@ -1056,6 +1117,10 @@ img {
 
 .detail-cover.is-unlocked .detail-cover__mark {
   filter: none;
+}
+
+.detail-cover.is-unlocked .detail-cover__mark--overlay {
+  display: none;
 }
 
 .item-tile__body {

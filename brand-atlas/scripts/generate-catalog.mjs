@@ -824,6 +824,15 @@ function writeMarkSvg(itemId, name, categoryId, hue) {
   return `marks/${itemId}.svg`;
 }
 
+function resolveCoverPath(itemId) {
+  const coversDir = join(root, "public", "covers");
+  for (const ext of [".jpg", ".jpeg", ".png", ".webp"]) {
+    const rel = `covers/${itemId}${ext}`;
+    if (existsSync(join(coversDir, `${itemId}${ext}`))) return rel;
+  }
+  return null;
+}
+
 function buildItem(cat, seed, index) {
   const id = seed.id || slugify(seed.name);
   const facts = buildFacts(cat, seed);
@@ -831,6 +840,7 @@ function buildItem(cat, seed, index) {
   const hue = coverHue(`${cat.id}-${id}`);
   const markPath = writeMarkSvg(itemId, seed.name, cat.id, hue);
   const markIcon = MARK_ICONS[itemId] ?? null;
+  const coverPath = resolveCoverPath(itemId);
   return {
     id: itemId,
     slug: id,
@@ -845,6 +855,7 @@ function buildItem(cat, seed, index) {
     facts,
     coverHue: hue,
     mark: markPath,
+    cover: coverPath,
     markIcon,
     sort: index,
     status: "active",

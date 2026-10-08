@@ -21,6 +21,8 @@ export interface CatalogItem {
   coverHue: number;
   /** Local relative path under site base, e.g. marks/cars__toyota.svg */
   mark?: string | null;
+  /** Realistic cover photo under site base, e.g. covers/cars__toyota.jpg */
+  cover?: string | null;
   /** Simple Icons slug when a public brand mark exists */
   markIcon?: string | null;
   sort: number;

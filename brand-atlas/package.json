@@ -10,6 +10,7 @@
     "marks:nature": "node scripts/nature-silhouettes.mjs",
     "marks:emblems": "node scripts/emblem-fallbacks.mjs",
     "marks:all": "npm run marks && npm run marks:nature && npm run marks:enrich && npm run marks:emblems && npm run data",
+    "covers": "node scripts/fetch-covers.mjs && npm run data",
     "refresh": "node scripts/weekly-refresh.mjs",
     "prebuild": "npm run data",
     "predev": "npm run data",
