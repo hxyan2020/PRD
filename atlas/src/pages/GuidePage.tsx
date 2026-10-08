@@ -291,111 +291,145 @@ export function GuidePage() {
           ?.quickReplies ?? []
       : [];
 
+  const logoSrc = `${import.meta.env.BASE_URL}logo-cat.png`;
+
   return (
     <>
       <section className="section chat-page">
         <div className="container chat-layout">
-          <div className="section-head chat-head">
-            <h2>{t("guide.title")}</h2>
-            <p>{t("guide.sub")}</p>
-          </div>
+          <div className="chat-app" role="region" aria-label={t("guide.title")}>
+            <header className="chat-app-header">
+              <div className="chat-app-identity">
+                <span className="chat-avatar" aria-hidden="true">
+                  <img src={logoSrc} alt="" width={44} height={44} />
+                  <span className="chat-online-dot" />
+                </span>
+                <div className="chat-app-titles">
+                  <h2>{t("guide.botName")}</h2>
+                  <p>{t("guide.botStatus")}</p>
+                </div>
+              </div>
+              <p className="chat-app-blurb">{t("guide.sub")}</p>
+            </header>
 
-          <div className="chat-shell">
             <div className="chat-messages" aria-live="polite">
               {messages.map((m) => (
-                <div key={m.id} className={`chat-bubble chat-${m.role}`}>
-                  <div className="chat-bubble-text">
-                    <RichText text={m.content} />
+                <div key={m.id} className={`chat-row chat-row-${m.role}`}>
+                  {m.role === "assistant" ? (
+                    <span className="chat-avatar chat-avatar-sm" aria-hidden="true">
+                      <img src={logoSrc} alt="" width={32} height={32} />
+                    </span>
+                  ) : null}
+                  <div className={`chat-bubble chat-${m.role}`}>
+                    <div className="chat-bubble-meta">
+                      {m.role === "assistant" ? t("guide.botName") : t("guide.you")}
+                    </div>
+                    <div className="chat-bubble-text">
+                      <RichText text={m.content} />
+                    </div>
+                    {m.recommendations ? <RecCards games={m.recommendations} /> : null}
                   </div>
-                  {m.recommendations ? <RecCards games={m.recommendations} /> : null}
                 </div>
               ))}
               {status === "thinking" ? (
-                <div
-                  className="chat-think"
-                  role="status"
-                  aria-label={t("guide.thinkingLabel")}
-                >
-                  <div className="chat-think-head">
-                    <span className="chat-status-dots" aria-hidden="true">
-                      <span />
-                      <span />
-                      <span />
-                    </span>
-                    <strong>{t("guide.thinking")}</strong>
+                <div className="chat-row chat-row-assistant">
+                  <span className="chat-avatar chat-avatar-sm" aria-hidden="true">
+                    <img src={logoSrc} alt="" width={32} height={32} />
+                  </span>
+                  <div
+                    className="chat-think"
+                    role="status"
+                    aria-label={t("guide.thinkingLabel")}
+                  >
+                    <div className="chat-think-head">
+                      <span className="chat-status-dots" aria-hidden="true">
+                        <span />
+                        <span />
+                        <span />
+                      </span>
+                      <strong>{t("guide.thinking")}</strong>
+                    </div>
+                    <ol className="chat-think-steps">
+                      {thinkSteps.map((step, idx) => (
+                        <li
+                          key={step}
+                          className={
+                            idx < thinkStep
+                              ? "is-done"
+                              : idx === thinkStep
+                                ? "is-active"
+                                : "is-pending"
+                          }
+                        >
+                          <span className="chat-think-mark" aria-hidden="true" />
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
                   </div>
-                  <ol className="chat-think-steps">
-                    {thinkSteps.map((step, idx) => (
-                      <li
-                        key={step}
-                        className={
-                          idx < thinkStep
-                            ? "is-done"
-                            : idx === thinkStep
-                              ? "is-active"
-                              : "is-pending"
-                        }
-                      >
-                        <span className="chat-think-mark" aria-hidden="true" />
-                        {step}
-                      </li>
-                    ))}
-                  </ol>
                 </div>
               ) : null}
               {status === "typing" && typingMsg ? (
-                <div className="chat-bubble chat-assistant chat-bubble-typing">
-                  <div className="chat-bubble-text">
-                    <RichText text={typedContent} />
-                    <span className="chat-caret" aria-hidden="true">
-                      |
-                    </span>
-                  </div>
-                  <div className="chat-status chat-status-inline" role="status">
-                    <span className="chat-status-dots" aria-hidden="true">
-                      <span />
-                      <span />
-                      <span />
-                    </span>
-                    {t("guide.typing")}
+                <div className="chat-row chat-row-assistant">
+                  <span className="chat-avatar chat-avatar-sm" aria-hidden="true">
+                    <img src={logoSrc} alt="" width={32} height={32} />
+                  </span>
+                  <div className="chat-bubble chat-assistant chat-bubble-typing">
+                    <div className="chat-bubble-meta">{t("guide.botName")}</div>
+                    <div className="chat-bubble-text">
+                      <RichText text={typedContent} />
+                      <span className="chat-caret" aria-hidden="true">
+                        |
+                      </span>
+                    </div>
+                    <div className="chat-status chat-status-inline" role="status">
+                      <span className="chat-status-dots" aria-hidden="true">
+                        <span />
+                        <span />
+                        <span />
+                      </span>
+                      {t("guide.typing")}
+                    </div>
                   </div>
                 </div>
               ) : null}
               <div ref={bottomRef} />
             </div>
 
-            {lastQuick.length ? (
-              <div className="chat-quick" aria-label="Suggested replies">
-                {lastQuick.map((q) => (
-                  <button key={q} type="button" onClick={() => send(q)}>
-                    {q}
-                  </button>
-                ))}
-              </div>
-            ) : null}
+            <div className="chat-dock">
+              {lastQuick.length ? (
+                <div className="chat-quick" aria-label="Suggested replies">
+                  {lastQuick.map((q) => (
+                    <button key={q} type="button" onClick={() => send(q)}>
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
 
-            <form className="chat-composer" onSubmit={onSubmit}>
-              <label className="sr-only" htmlFor="chat-input">
-                {t("guide.inputLabel")}
-              </label>
-              <textarea
-                id="chat-input"
-                rows={2}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={onKeyDown}
-                placeholder={t("guide.placeholder")}
-                disabled={!ready || status !== "idle"}
-              />
-              <button
-                className="btn btn-primary"
-                type="submit"
-                disabled={!ready || status !== "idle" || !input.trim()}
-              >
-                {t("guide.send")}
-              </button>
-            </form>
-            <p className="chat-scope-note">{t("guide.scope")}</p>
+              <form className="chat-composer" onSubmit={onSubmit}>
+                <label className="sr-only" htmlFor="chat-input">
+                  {t("guide.inputLabel")}
+                </label>
+                <textarea
+                  id="chat-input"
+                  rows={2}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={onKeyDown}
+                  placeholder={t("guide.placeholder")}
+                  disabled={!ready || status !== "idle"}
+                />
+                <button
+                  className="btn btn-primary chat-send"
+                  type="submit"
+                  disabled={!ready || status !== "idle" || !input.trim()}
+                >
+                  {t("guide.send")}
+                </button>
+              </form>
+              <p className="chat-scope-note">{t("guide.scope")}</p>
+            </div>
           </div>
         </div>
       </section>

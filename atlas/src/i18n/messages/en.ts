@@ -54,6 +54,9 @@ export const en = {
   "guide.title": "Surprise me",
   "guide.sub":
     "Chat with me about what you like to play—I’ll guide you step by step, then recommend from this catalog and answer follow-ups about rules, origins, variations, and buying.",
+  "guide.botName": "Surprise me",
+  "guide.botStatus": "Online · catalog guide",
+  "guide.you": "You",
   "guide.placeholder":
     "Ask for recommendations, how to play, origins, or where to buy…",
   "guide.send": "Send",
