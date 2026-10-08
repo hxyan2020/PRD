@@ -70,7 +70,7 @@ export function HomePage() {
             <Link className="btn btn-primary" to="/collection">
               {t("home.ctaBrowse")}
             </Link>
-            <Link className="btn btn-ghost" to="/guide">
+            <Link className="btn btn-ghost" to="/surprise-me">
               {t("home.ctaGuide")}
             </Link>
           </div>

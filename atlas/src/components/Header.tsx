@@ -69,7 +69,7 @@ export function Header() {
             {t("nav.home")}
           </NavLink>
           <NavLink to="/collection">{t("nav.collection")}</NavLink>
-          <NavLink to="/guide">{t("nav.guide")}</NavLink>
+          <NavLink to="/surprise-me">{t("nav.guide")}</NavLink>
           <NavLink to="/preferences">{t("nav.preferences")}</NavLink>
           <NavLink to="/journal">
             {t("nav.journal")}

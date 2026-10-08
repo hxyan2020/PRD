@@ -391,7 +391,7 @@ function draftDiscovery(
     creationYear: year,
     category: seed.category,
     images: draftImages(name, seed.category, country, slug, salt),
-    description: `${seed.description} Atlas Guide drafted this discovery to match your preference profile (${prefs.vibe}, ${prefs.setting}, ${prefs.players}).`,
+    description: `${seed.description} Surprise me drafted this discovery to match your preference profile (${prefs.vibe}, ${prefs.setting}, ${prefs.players}).`,
     howToPlay: seed.howToPlay,
     purchaseLinks: [...PURCHASE],
     requirements: seed.requirements,

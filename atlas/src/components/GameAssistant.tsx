@@ -124,7 +124,7 @@ export function GameAssistant({ game }: { game: Game }) {
 
         <p className="chat-scope-note">
           {t("detail.assistant.scopeNote")}{" "}
-          <Link to="/guide">{t("detail.assistant.guideLink")}</Link>
+          <Link to="/surprise-me">{t("detail.assistant.guideLink")}</Link>
         </p>
       </div>
     </div>

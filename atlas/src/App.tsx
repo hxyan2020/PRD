@@ -53,6 +53,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/collection" element={<CollectionPage />} />
+        <Route path="/surprise-me" element={<GuidePage />} />
         <Route path="/guide" element={<GuidePage />} />
         <Route path="/preferences" element={<PreferencesPage />} />
         <Route path="/journal" element={<JournalPage />} />
