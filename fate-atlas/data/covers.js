@@ -120,6 +120,12 @@
       return "form";
     if (/feng shui|vastu|kasō|kaso|ba zhai|flying star|xuan kong|onmyō|onmyo|rokuyō|rokuyo|seimei|name divin/.test(s))
       return "eastasia";
+    // Almanac / zeri before generic "day selection" so Tongshu keeps East-Asia art
+    if (
+      id === "tongshu" ||
+      /almanac|tongshu|zeri|huangli|day select|吉日|择日/.test(s)
+    )
+      return "eastasia";
     if (
       id === "akan-day" ||
       /day name|weekday|soul name|akan day|weton|pawukon|birth calendar|day selection/.test(s)
@@ -127,7 +133,6 @@
       return "astrology";
     if (/spider|crab|nggam|mambila|leaf card/.test(s)) return "omens";
     if (/apple.?peel|folk.?shape|wax|lead pour|egg.?divin/.test(s)) return "cups";
-    if (/almanac|tongshu|zeri|huangli|day select|吉日|择日/.test(s)) return "eastasia";
     if (/bird|augur|omen|weather|cloud|lightning|thunder|auspice|fox|benge/.test(s)) return "omens";
     if (/chinese|japan|korea|shinto/.test(s)) return "eastasia";
     if (method.type === "Form") return "form";
