@@ -1024,7 +1024,10 @@ function encodeLudusView(name, category, originCountry, viewIndex, seed) {
   return `ludus-view:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}|${viewIndex}|${encodeURIComponent(seed)}`;
 }
 
-const GALLERY_TARGET = 5;
+/** Total images per entry (title card + photos + unique views). */
+const GALLERY_TARGET = 6;
+/** Cap exclusive stock photos so room remains for unique gallery views. */
+const PHOTO_TARGET = 3;
 
 function tagsForEntry(name, archetypeKey) {
   if (archetypeKey && ARCHETYPE_TAGS[archetypeKey]) return ARCHETYPE_TAGS[archetypeKey];
@@ -1159,24 +1162,32 @@ const imageBank = {
     /** @type {string[]} */
     const imgs = [card];
 
-    // Claim as many exclusive photos as we can (curated → category → extra).
-    const subjectNames = [name, parentName].filter(Boolean);
-    for (const subject of subjectNames) {
-      while (imgs.length < GALLERY_TARGET) {
-        const url = this.takeCuratedPhoto(subject);
-        if (!url) break;
+    // Claim exclusive photos for THIS title first. Variations may take at most
+    // one parent photo as fallback so they don’t drain the parent’s gallery.
+    let photoCount = 0;
+    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+      const url = this.takeCuratedPhoto(name);
+      if (!url) break;
+      imgs.push(url);
+      photoCount += 1;
+    }
+    if (photoCount === 0 && parentName) {
+      const url = this.takeCuratedPhoto(parentName);
+      if (url) {
         imgs.push(url);
+        photoCount += 1;
       }
     }
-    while (imgs.length < GALLERY_TARGET) {
+    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
       const url =
         this.takeCategoryPhoto(category, `${uniqueKey}:${imgs.length}`) ||
         this.takeExtraPhoto(`${uniqueKey}:${imgs.length}`);
       if (!url) break;
       imgs.push(url);
+      photoCount += 1;
     }
 
-    // Pad remaining slots with unique per-game gallery views (never shared).
+    // Always finish with unique gallery views so every entry has multiple looks.
     let view = 0;
     while (imgs.length < GALLERY_TARGET) {
       const panel = encodeLudusView(
@@ -2286,6 +2297,14 @@ function toGame(seed, index) {
   const slugBase = slugify(seed.name);
   const slug = `${slugBase}-${String(index).padStart(4, "0")}`;
   const imageKey = `game:${slug}`;
+  // Parent gallery first so cornerstone titles keep their curated photos.
+  const images = pickImages({
+    name: seed.name,
+    category: seed.category,
+    originCountry: seed.originCountry,
+    uniqueKey: imageKey,
+    archetypeKey: seed.archetypeKey,
+  });
   const variations = (seed.variations || []).map((v, vi) => {
     const varKey = `var:${slug}:${slugify(v.name)}:${slugify(v.originCountry)}:${vi}`;
     return {
@@ -2309,13 +2328,7 @@ function toGame(seed, index) {
     civilization: seed.civilization,
     creationYear: seed.creationYear,
     category: seed.category,
-    images: pickImages({
-      name: seed.name,
-      category: seed.category,
-      originCountry: seed.originCountry,
-      uniqueKey: imageKey,
-      archetypeKey: seed.archetypeKey,
-    }),
+    images,
     description: seed.description,
     howToPlay: seed.howToPlay,
     purchaseLinks: pickPurchase(seed.purchase, salt),

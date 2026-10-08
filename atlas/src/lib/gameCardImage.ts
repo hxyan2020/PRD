@@ -346,17 +346,15 @@ export function isPhotographicSrc(src: string | undefined): boolean {
 }
 
 /**
- * Gallery order: exclusive photos first, then unique per-game views / title cards.
- * Always keeps multiple distinct images when the catalog provides them.
+ * Gallery order: exclusive photos first, then unique per-game views.
+ * Title cards are included only when no photo/view exists yet.
  */
 export function listDisplayImages(images: string[] | undefined): string[] {
   const list = (images ?? []).filter(Boolean);
   const photos = list.filter(isPhotographicSrc);
   const views = list.filter(isLudusViewSrc);
   const cards = list.filter(isLudusCardSrc);
-  if (photos.length || views.length) {
-    return [...photos, ...views, ...(photos.length ? [] : cards)];
-  }
+  if (photos.length || views.length) return [...photos, ...views];
   return cards.length ? cards : list;
 }
 
