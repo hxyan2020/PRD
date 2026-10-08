@@ -1,9 +1,11 @@
+import { useEffect, useState } from "react";
 import {
   BrowserRouter,
   HashRouter,
   NavLink,
   Route,
   Routes,
+  useLocation,
 } from "react-router-dom";
 import { LanguagePicker } from "./components/LanguagePicker";
 import { useAuth } from "./hooks/useAuth";
@@ -31,14 +33,70 @@ function Header() {
   const { catalog } = useCatalog();
   const { isLoggedIn, email } = useAuth();
   const pct = catalog ? overallProgress(catalog).pct : 0;
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    document.body.classList.toggle("nav-open", menuOpen);
+    return () => document.body.classList.remove("nav-open");
+  }, [menuOpen]);
 
   return (
     <header className="site-header">
       <div className="shell site-header__inner">
-        <NavLink to="/" className="brand" end>
+        <NavLink to="/" className="brand" end onClick={() => setMenuOpen(false)}>
           Seen <span>catalogue</span>
         </NavLink>
-        <nav className="nav" aria-label="Primary">
+
+        <div className="header-tools header-tools--compact">
+          <div className="muted mono header-progress" title="Overall unlock progress">
+            {count} · {formatPct(pct)}
+          </div>
+          <LanguagePicker />
+          <div className="header-auth-desktop">
+            {isLoggedIn ? (
+              <div className="auth-chip">
+                <span className="auth-chip__email" title={email ?? undefined}>
+                  {email}
+                </span>
+                <button type="button" className="btn btn--quiet btn--tiny" onClick={() => logOut()}>
+                  {t("nav.logout")}
+                </button>
+              </div>
+            ) : (
+              <>
+                <NavLink className="btn btn--quiet btn--tiny" to="/login">
+                  {t("nav.login")}
+                </NavLink>
+                <NavLink className="btn btn--forest btn--tiny" to="/signup">
+                  {t("nav.signup")}
+                </NavLink>
+              </>
+            )}
+          </div>
+          <button
+            type="button"
+            className={`nav-toggle ${menuOpen ? "is-open" : ""}`}
+            aria-expanded={menuOpen}
+            aria-controls="primary-nav"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+        </div>
+
+        <nav
+          id="primary-nav"
+          className={`nav ${menuOpen ? "is-open" : ""}`}
+          aria-label="Primary"
+        >
           <NavLink to="/" end>
             {t("nav.home")}
           </NavLink>
@@ -47,33 +105,44 @@ function Header() {
           <NavLink to="/about">{t("nav.about")}</NavLink>
           <NavLink to="/contact">{t("nav.contact")}</NavLink>
           <NavLink to="/terms">{t("nav.terms")}</NavLink>
-        </nav>
-        <div className="header-tools">
-          <LanguagePicker />
-          <div className="muted mono header-progress" title="Overall unlock progress">
-            {count} · {formatPct(pct)}
+          <div className="nav-auth">
+            {isLoggedIn ? (
+              <>
+                <span className="auth-chip__email" title={email ?? undefined}>
+                  {email}
+                </span>
+                <button
+                  type="button"
+                  className="btn btn--quiet btn--tiny"
+                  onClick={() => {
+                    logOut();
+                    setMenuOpen(false);
+                  }}
+                >
+                  {t("nav.logout")}
+                </button>
+              </>
+            ) : (
+              <>
+                <NavLink className="btn btn--quiet btn--tiny" to="/login">
+                  {t("nav.login")}
+                </NavLink>
+                <NavLink className="btn btn--forest btn--tiny" to="/signup">
+                  {t("nav.signup")}
+                </NavLink>
+              </>
+            )}
           </div>
-          {isLoggedIn ? (
-            <div className="auth-chip">
-              <span className="auth-chip__email" title={email ?? undefined}>
-                {email}
-              </span>
-              <button type="button" className="btn btn--quiet btn--tiny" onClick={() => logOut()}>
-                {t("nav.logout")}
-              </button>
-            </div>
-          ) : (
-            <>
-              <NavLink className="btn btn--quiet btn--tiny" to="/login">
-                {t("nav.login")}
-              </NavLink>
-              <NavLink className="btn btn--forest btn--tiny" to="/signup">
-                {t("nav.signup")}
-              </NavLink>
-            </>
-          )}
-        </div>
+        </nav>
       </div>
+      {menuOpen && (
+        <button
+          type="button"
+          className="nav-backdrop"
+          aria-label="Close menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
     </header>
   );
 }
