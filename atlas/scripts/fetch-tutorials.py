@@ -256,7 +256,17 @@ PROCESS_RE = re.compile(
 NOISE_RE = re.compile(
     r"\b(unity|unreal|godot|blender|coding|programming|javascript|python|"
     r"react|c\+\+|game\s*dev|game\s*maker|roblox|minecraft|fortnite|"
-    r"speedrun|asmr|music\s+video|trailer|ost|soundtrack)\b",
+    r"speedrun|asmr|music\s+video|trailer|ost|soundtrack|"
+    r"pokemon|pokémon|tcg|cult of the lamb|disc golf|"
+    r"drinking game|drunk|alcohol|beer pong|"
+    r"gardening|vegetable|agriculture|farming|plant(ing)?\s+seeds|"
+    r"sowing\s+seeds|seed\s+starting|start(ing)?\s+your\s+first\s+seeds|"
+    r"first\s+seeds|grow(ing)?\s+(tomatoes|vegetables|flowers)|"
+    r"nfl|fifa|premier league|flag football|"
+    r"kinetic sand|dandy.?s?\s*world|dandysworld|squid game|boat race\s*\||"
+    r"flames\s+game|etheria|wingspan|missouri star|quilt|"
+    r"sink\s*n[’']?\s*sand|kokeshi\??\s*official how to play|"
+    r"gotquestions|bible|biblical|casting lots\s*\?)\b",
     re.I,
 )
 
@@ -271,13 +281,49 @@ SEARCH_ALIASES = {
     "snap": "snap card game",
     "race": "racing board game traditional",
     "yo-yo": "yo-yo tricks beginner tutorial",
-    "poi": "poi spinning beginner tutorial",
+    "poi": "poi spinning beginner tutorial maori",
     "dakon": "dakon congklak how to play",
-    "palín": "juego del palín mapuche",
+    "palín": "palín mapuche juego tradicional chile",
     "hide-and-seek": "how to play hide and seek kids",
-    "tea set toy": "kids tea party toy playset",
-    "jump-rope & skipping rhymes": "jump rope skipping rhymes how to",
-    "kapu kuapu / jackstraws / spillikins": "how to play pick up sticks jackstraws",
+    "tea set toy": "children pretend tea party playset how to play",
+    "kapu kuapu / jackstraws / spillikins": "how to play pick up sticks jackstraws mikado",
+    "local pit-and-seed sowing": "how to play mancala board game rules oware",
+    "infant rattle": "DIY baby rattle toy how to make",
+    "animal pull toy": "wooden animal pull toy for toddlers",
+    "clay or wood whistle toy": "how to make wooden whistle toy",
+    "sewn cloth or hide ball": "how to play hacky sack footbag beginner",
+    "local cloth doll": "how to make a rag doll traditional",
+    "local festival kite": "how to fly a kite beginner tutorial",
+    "local spinning top craft": "how to play wooden spinning top trompo",
+    "local string figures": "cats cradle string figures how to",
+    "folk race board (local)": "how to play ludo pachisi board game",
+    "pocket skill stones": "how to play jacks knucklebones game",
+    "story lots / casting sticks": "story dice cubes how to play storytelling",
+    "shadow figures play": "hand shadow puppets tutorial for kids",
+    "blind man's tag / call games": "how to play blind mans bluff kids party game",
+    "elimination chant game": "eeny meeny miny moe counting out rhyme kids",
+    "youth wrestling play": "olympic wrestling rules for beginners kids",
+    "play stilts": "how to walk on stilts beginner tutorial",
+    "leaf or bark boat race": "how to make paper boat kids race",
+    "sand or snow figure play": "how to build a sandcastle step by step",
+    "finger-flick football": "how to play paper football finger flick",
+    "local riddle exchange": "fun riddles to ask kids back and forth",
+    "festival noisemaker toy": "how to make maracas DIY kids instrument",
+    "cord & knot puzzle toy": "string disentanglement puzzle how to solve",
+    "miniature household play set": "dollhouse pretend play for kids",
+    "toy bow or dart play set": "kids toy bow and arrow how to use safely",
+    "frisbee / flying disc": "how to throw a frisbee beginner tutorial",
+    "knucklebones": "how to play jacks knucklebones real game",
+    "spinning top": "wooden spinning top how to spin tutorial",
+    "building blocks": "wooden building blocks toddlers play ideas",
+    "playing cards (french-suited deck)": "how to play simple card games beginners",
+    "slinky": "how to make a slinky walk down stairs",
+    "kokeshi": "what are kokeshi dolls japanese wooden doll",
+    "buckingham palace toy soldiers aside: toy soldiers": (
+        "tin toy soldiers miniature figures collecting play"
+    ),
+    "tug of war": "tug of war rules how to play kids",
+    "jump-rope & skipping rhymes": "jump rope skipping rhymes kids playground",
 }
 
 
@@ -288,6 +334,87 @@ def _norm_text(s: str) -> str:
     s = re.sub(r"[^\w\s]+", " ", s, flags=re.UNICODE)
     s = re.sub(r"\s+", " ", s).strip()
     return s
+
+
+# Extra title tokens accepted as “mentions the game” when the catalog name
+# is a generic archetype (so mancala videos can match “Local pit-and-seed…”).
+RELATED_TITLE_TOKENS = {
+    "local pit-and-seed sowing": [
+        "mancala",
+        "oware",
+        "congkak",
+        "congklak",
+        "sungka",
+        "bao",
+        "gabata",
+        "sowing game",
+    ],
+    "pocket skill stones": ["knucklebones", "jacks", "astragali", "gonggi"],
+    "sewn cloth or hide ball": ["hacky", "footbag", "jianzi", "shuttlecock", "takraw"],
+    "folk race board (local)": ["pachisi", "ludo", "snakes and ladders", "parcheesi"],
+    "local string figures": ["string figure", "cat's cradle", "cats cradle", "ayatori"],
+    "jump-rope & skipping rhymes": ["jump rope", "skipping rope", "skip rope"],
+    "blind man's tag / call games": ["blind man", "blindmans", "blind man's bluff"],
+    "shadow figures play": ["shadow puppet", "hand shadow", "wayang"],
+    "finger-flick football": ["paper football", "finger football", "flick football"],
+    "festival noisemaker toy": ["maracas", "rattle", "noisemaker"],
+    "infant rattle": ["rattle", "baby toy"],
+    "animal pull toy": ["pull toy", "pull-along"],
+    "clay or wood whistle toy": ["whistle", "toy flute"],
+    "local spinning top craft": ["spinning top", "spin top", "dreidel", "trompo"],
+    "local festival kite": ["kite"],
+    "local cloth doll": ["rag doll", "cloth doll", "corn husk"],
+    "play stilts": ["stilts"],
+    "leaf or bark boat race": ["paper boat", "leaf boat"],
+    "sand or snow figure play": ["sandcastle", "sand castle", "snowman"],
+    "story lots / casting sticks": [
+        "story dice",
+        "storytelling dice",
+        " Rory's story cubes",
+        "story cubes",
+    ],
+    "elimination chant game": ["eeny meeny", "elimination", "counting out"],
+    "cord & knot puzzle toy": ["knot puzzle", "string puzzle", "tangled"],
+    "miniature household play set": ["dollhouse", "doll house", "tea party", "tea set"],
+    "toy bow or dart play set": ["toy bow", "bow and arrow", "toy dart"],
+    "youth wrestling play": ["wrestling"],
+    "local riddle exchange": ["riddle"],
+    "knucklebones": ["knucklebones", "jacks", "astragali"],
+    "kapu kuapu / jackstraws / spillikins": [
+        "jackstraws",
+        "pick up sticks",
+        "pickup sticks",
+        "mikado",
+        "spillikins",
+    ],
+    "frisbee / flying disc": ["frisbee", "flying disc", "throw a disc"],
+    "bilboquet / balero / kendama family": ["kendama", "balero", "bilboquet", "cup and ball"],
+    "hanafuda / karuta": ["hanafuda", "koi-koi", "karuta"],
+    "mesoamerican ballgame / ulama": ["ulama", "pok ta", "mesoamerican ball"],
+    "alquerque / draughts family": ["alquerque", "draughts", "checkers"],
+    "go bang / gomoku": ["gomoku", "five in a row", "renju"],
+    "reversi / othello": ["othello", "reversi"],
+    "jianzi (shuttlecock kicking)": ["jianzi", "shuttlecock"],
+    "hacky sack / footbag": ["hacky", "footbag"],
+    "tea set toy": ["tea set", "tea party"],
+    # Never match bare "palin" (hits unrelated video-game characters).
+    "palín": [
+        "palín",
+        "palin",
+        "chueca",
+        "mapuche",
+    ],
+    "building blocks": ["building blocks", "wooden blocks", "unit blocks"],
+    "kokeshi": ["kokeshi doll", "kokeshi dolls", "wooden doll"],
+    "poi": ["poi spinning", "poi spin", "fire poi", "poi beginner", "maori poi"],
+}
+
+# Titles that need an extra context word besides the bare name token.
+AMBIGUOUS_CONTEXT = {
+    "palín": ("mapuche", "chile", "chueca", "tradicional", "traditional", "hockey", "stick"),
+    "palin": ("mapuche", "chile", "chueca", "tradicional", "traditional", "hockey", "stick"),
+    "kokeshi": ("doll", "wooden", "japan", "japanese", "tohoku", "souvenir"),
+}
 
 
 def game_stems(game_name: str) -> list[str]:
@@ -307,18 +434,120 @@ def game_stems(game_name: str) -> list[str]:
         for part in nt.split():
             if len(part) >= 3 or part in {"go", "yi", "om", "ot", "poi"}:
                 extras.append(part)
+    related = RELATED_TITLE_TOKENS.get(stem.lower())
+    if related:
+        extras.extend(_norm_text(r) for r in related)
     out = []
     seen = set()
     for t in extras:
-        t = t.strip()
+        t = _norm_text(t).strip()
         if t and t not in seen:
             seen.add(t)
             out.append(t)
     return out
 
 
+# Catalog filler words that must not alone prove title relevance.
+GENERIC_STEM_WORDS = {
+    "local",
+    "folk",
+    "play",
+    "toy",
+    "toys",
+    "craft",
+    "game",
+    "games",
+    "set",
+    "figure",
+    "figures",
+    "cloth",
+    "hide",
+    "seed",
+    "seeds",
+    "sowing",
+    "pit",
+    "and",
+    "or",
+    "the",
+    "race",
+    "board",
+    "skill",
+    "stones",
+    "lots",
+    "casting",
+    "sticks",
+    "story",
+    "exchange",
+    "riddle",
+    "festival",
+    "noisemaker",
+    "miniature",
+    "household",
+    "animal",
+    "pull",
+    "clay",
+    "wood",
+    "whistle",
+    "sewn",
+    "ball",
+    "pocket",
+    "youth",
+    "wrestling",
+    "elimination",
+    "chant",
+    "cord",
+    "knot",
+    "puzzle",
+    "leaf",
+    "bark",
+    "boat",
+    "sand",
+    "snow",
+    "finger",
+    "flick",
+    "football",
+    "blind",
+    "man",
+    "mans",
+    "tag",
+    "call",
+    "shadow",
+    "infant",
+    "jump",
+    "rope",
+    "skipping",
+    "rhymes",
+}
+
+
 def title_mentions_game(title: str, game_name: str) -> bool:
     tl = _norm_text(title)
+    stem = re.split(r"\s+[—–-]\s+", game_name or "")[0].strip()
+    related = RELATED_TITLE_TOKENS.get(stem.lower()) or []
+    related_norm = [_norm_text(r) for r in related if r]
+    # For archetype / aliased titles, require a concrete related token so
+    # "seed"/"sowing" cannot match gardening videos, etc.
+    if related_norm:
+        tl_compact = tl.replace(" ", "")
+        hit = False
+        matched = ""
+        for s in related_norm:
+            if len(s) < 3:
+                continue
+            if s in tl or (
+                len(s.replace(" ", "")) >= 4 and s.replace(" ", "") in tl_compact
+            ):
+                hit = True
+                matched = s
+                break
+        if not hit:
+            return False
+        # Ambiguous short names need a second context cue in the title.
+        ctx = AMBIGUOUS_CONTEXT.get(matched) or AMBIGUOUS_CONTEXT.get(stem.lower())
+        if ctx and not any(c in tl for c in ctx):
+            return False
+        return True
+
     stems = game_stems(game_name)
     if not stems:
         return False
@@ -340,13 +569,14 @@ def title_mentions_game(title: str, game_name: str) -> bool:
                     "beginner",
                     "maori",
                     "māori",
+                    "mapuche",
                 )
             ):
                 return True
         return any(len(s) > 3 and s in tl for s in stems[1:])
     tl_compact = tl.replace(" ", "")
     for s in stems:
-        if len(s) < 3:
+        if len(s) < 3 or s in GENERIC_STEM_WORDS:
             continue
         if s in tl:
             return True
@@ -388,6 +618,9 @@ def search_query_for(game: dict) -> str:
     if "/" in base:
         base = base.split("/")[0].strip()
     category = (game.get("category") or "").lower()
+    # Generic “Local …” matrix titles need a concrete toy/game keyword.
+    if base.lower().startswith("local ") or base.lower().startswith("folk "):
+        return f"{base} traditional children's game how to play"
     if any(
         x in category
         for x in ("doll", "construction", "musical", "spinning", "string")
@@ -490,22 +723,35 @@ def pick_tutorial(game: dict) -> dict | None:
             if c["videoId"] not in {x["videoId"] for x in filtered}:
                 filtered.append(c)
 
+    # Rare cultural games may not yield 5 clean candidates; accept ≥1 strong
+    # title match rather than leaving the entry blank.
+    min_needed = MIN_CANDIDATES
     if len(filtered) < MIN_CANDIDATES:
-        with _lock:
-            _cache[pick_key] = "__none__"
-        return None
+        strong = [
+            c
+            for c in filtered
+            if title_mentions_game(c.get("title") or "", name)
+            and (PROCESS_RE.search(c.get("title") or "") or TUTORIAL_RE.search(c.get("title") or "") or CRAFT_RE.search(c.get("title") or ""))
+        ]
+        if strong:
+            filtered = strong
+            min_needed = 1
+        else:
+            with _lock:
+                _cache[pick_key] = "__none__"
+            return None
 
     def key(c: dict) -> float:
         return score_candidate(c, name)
 
-    prelim = sorted(filtered, key=key, reverse=True)[: max(MIN_CANDIDATES, 8)]
+    prelim = sorted(filtered, key=key, reverse=True)[: max(min_needed, 8)]
     for c in prelim:
         likes = fetch_likes(c["videoId"])
         if likes is not None:
             c["likeCount"] = likes
 
     ranked = sorted(prelim, key=key, reverse=True)
-    considered = ranked[: max(MIN_CANDIDATES, len(ranked))]
+    considered = ranked[: max(min_needed, len(ranked))]
     winner = considered[0]
     result = {
         "videoId": winner["videoId"],
@@ -568,6 +814,11 @@ def main() -> None:
     by_query: dict[str, list] = {}
     for g in todo:
         by_query.setdefault(search_query_for(g), []).append(g)
+
+    # Drop stale pickquery cache entries for queries we are about to re-resolve
+    # so prior false positives (gardening-as-mancala, etc.) cannot win again.
+    for query in by_query:
+        _cache.pop(f"pickquery::{query.lower()}", None)
 
     print(
         f"games={len(games)} todo={len(todo)} unique_queries={len(by_query)} "
