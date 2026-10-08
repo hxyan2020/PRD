@@ -2,7 +2,7 @@ import { useState, type ReactEventHandler } from "react";
 import {
   isLudusCardSrc,
   ludusCardDataUri,
-  resolveImageSrc,
+  stableImageSrc,
 } from "../lib/gameCardImage";
 
 type Props = {
@@ -24,20 +24,19 @@ export function GameImage({
   onError,
   label,
 }: Props) {
-  const resolved =
-    label && isLudusCardSrc(src)
-      ? ludusCardDataUri(label.name, label.category, label.originCountry)
-      : resolveImageSrc(src);
-
+  const resolved = stableImageSrc(src, label);
   const [failedFor, setFailedFor] = useState<string | null>(null);
   const failed = failedFor === src;
 
-  const fallback =
-    label && !isLudusCardSrc(src)
-      ? ludusCardDataUri(label.name, label.category, label.originCountry)
-      : null;
+  const fallback = label
+    ? ludusCardDataUri(label.name, label.category, label.originCountry)
+    : null;
 
-  const displaySrc = failed && fallback ? fallback : resolved;
+  // Already on a title card / data URI — no second network hop to fail.
+  const displaySrc =
+    failed && fallback && displayNeedsFallback(resolved)
+      ? fallback
+      : resolved;
 
   return (
     <img
@@ -46,11 +45,15 @@ export function GameImage({
       className={className}
       loading={loading}
       onError={(e) => {
-        if (!failed && fallback) {
+        if (!failed && fallback && displayNeedsFallback(resolved)) {
           setFailedFor(src);
         }
         onError?.(e);
       }}
     />
   );
+}
+
+function displayNeedsFallback(resolved: string): boolean {
+  return !resolved.startsWith("data:") && !isLudusCardSrc(resolved);
 }

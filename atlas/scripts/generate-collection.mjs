@@ -337,59 +337,30 @@ const imageBank = {
     return null;
   },
 
-  thematicUrl(tags, token) {
-    this.serial += 1;
-    return `https://loremflickr.com/900/600/${tags}?lock=${hash(`${token}:${this.serial}`)}`;
-  },
-
-  takeThematic(tags, token) {
-    for (let attempt = 0; attempt < 12; attempt++) {
-      const url = this.thematicUrl(tags, `${token}:t${attempt}`);
-      if (!this.usedUrls.has(url)) {
-        this.usedUrls.add(url);
-        return url;
-      }
-    }
-    const url = `https://picsum.photos/seed/${slugify(token)}-${this.serial}/900/600`;
-    this.usedUrls.add(url);
-    return url;
-  },
-
   /**
    * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string }} opts
    */
   allocate(opts) {
-    const { name, category, originCountry, uniqueKey, archetypeKey } = opts;
-    const tags = tagsForEntry(name, archetypeKey);
+    const { name, category, originCountry, uniqueKey } = opts;
     const salt = hash(uniqueKey);
     const extraCount = 1 + (salt % 3); // 1–3 extras after the title card
     /** @type {string[]} */
     const imgs = [encodeLudusCard(name, category, originCountry)];
 
-    // Prefer verified photos of this exact game. When any curated photo is
-    // available, do not pad with tag-search stock images (those often depict
-    // the wrong toy despite matching keywords).
-    let usedCurated = false;
+    // Only attach verified Unsplash photos. Never pad with loremflickr/picsum —
+    // those hosts routinely break or show the wrong subject in production.
     while (imgs.length < extraCount + 1) {
       const curated = this.takeCuratedPhoto(name);
       if (!curated) break;
       imgs.push(curated);
-      usedCurated = true;
-    }
-
-    if (!usedCurated) {
-      while (imgs.length < extraCount + 1) {
-        imgs.push(this.takeThematic(tags, `${uniqueKey}#${imgs.length}`));
-      }
     }
 
     const sig = JSON.stringify(imgs);
     if (this.usedSets.has(sig)) {
-      // Extremely rare; keep sets unique without inventing a wrong title.
-      imgs.push(this.takeThematic(tags, `${uniqueKey}#uniq`));
+      // Keep set signatures unique without inventing fragile remote URLs.
+      imgs.push(encodeLudusCard(`${name} · view`, category, originCountry));
     }
     this.usedSets.add(JSON.stringify(imgs));
-    // Title cards are unique per name/country but still mark them used
     this.usedUrls.add(imgs[0]);
     return imgs;
   },

@@ -9,11 +9,7 @@ import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
-import {
-  isLudusCardSrc,
-  ludusCardDataUri,
-  resolveImageSrc,
-} from "../lib/gameCardImage";
+import { isLudusCardSrc, isFragileRemoteSrc, resolveImageSrc } from "../lib/gameCardImage";
 
 export function GameDetailPage() {
   const { slug } = useParams();
@@ -56,16 +52,21 @@ export function GameDetailPage() {
   }
 
   const activeSrc = game.images[activeImg] ?? game.images[0];
-  const shot = isLudusCardSrc(activeSrc)
-    ? ludusCardDataUri(game.name, game.category, game.originCountry)
-    : resolveImageSrc(activeSrc);
+  // Title-card SVGs repeat the game name — using them as the hero background
+  // creates a ghost double of the headline. Prefer a plain brand wash instead.
+  const heroPhoto =
+    !isLudusCardSrc(activeSrc) &&
+    !isFragileRemoteSrc(activeSrc) &&
+    !activeSrc.startsWith("data:")
+      ? resolveImageSrc(activeSrc)
+      : "";
 
   return (
     <>
       <section className="detail-hero">
         <div
-          className="detail-hero-media"
-          style={{ backgroundImage: `url("${shot}")` }}
+          className={`detail-hero-media${heroPhoto ? "" : " detail-hero-media--wash"}`}
+          style={heroPhoto ? { backgroundImage: `url("${heroPhoto}")` } : undefined}
           aria-hidden="true"
         />
         <div className="container">

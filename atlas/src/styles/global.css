@@ -685,11 +685,33 @@ select {
   animation: heroDrift 16s ease-in-out infinite alternate;
 }
 
+.detail-hero-media--wash {
+  background-image: none;
+  background-color: #12080a;
+  background-image: radial-gradient(
+      ellipse 80% 60% at 20% 30%,
+      color-mix(in srgb, var(--brand) 28%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 85% 70%,
+      color-mix(in srgb, var(--brass) 14%, transparent),
+      transparent 65%
+    ),
+    linear-gradient(160deg, #1a0c10 0%, #0c0c0c 55%, #140a0e 100%);
+  transform: none;
+  animation: none;
+}
+
 .detail-hero-media::after {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg, rgba(8, 4, 6, 0.2), rgba(8, 4, 6, 0.92));
+}
+
+.detail-hero-media--wash::after {
+  background: linear-gradient(180deg, rgba(8, 4, 6, 0.15), rgba(8, 4, 6, 0.88));
 }
 
 .detail-hero .container {

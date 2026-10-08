@@ -122,6 +122,23 @@ export function ludusCardDataUri(
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
+/** Hosts that frequently 404 / block empty in browsers (hotlink blocks, flaky CDN). */
+const FRAGILE_HOSTS = new Set([
+  "loremflickr.com",
+  "www.loremflickr.com",
+  "picsum.photos",
+  "fastly.picsum.photos",
+]);
+
+export function isFragileRemoteSrc(src: string): boolean {
+  if (!src || isLudusCardSrc(src) || src.startsWith("data:")) return false;
+  try {
+    return FRAGILE_HOSTS.has(new URL(src).hostname);
+  } catch {
+    return true;
+  }
+}
+
 /**
  * Resolve a collection image src for use in <img>.
  * Title-card refs become SVG data URIs bearing the correct game name.
@@ -130,4 +147,43 @@ export function resolveImageSrc(src: string): string {
   const parsed = parseLudusCard(src);
   if (!parsed) return src;
   return ludusCardDataUri(parsed.name, parsed.category, parsed.originCountry);
+}
+
+/**
+ * Prefer a named title card over fragile stock-photo hosts so galleries never
+ * show the browser’s broken-image icon.
+ */
+export function stableImageSrc(
+  src: string,
+  label?: { name: string; category: string; originCountry: string },
+): string {
+  if (label && (isLudusCardSrc(src) || isFragileRemoteSrc(src))) {
+    return ludusCardDataUri(label.name, label.category, label.originCountry);
+  }
+  if (isFragileRemoteSrc(src)) {
+    const parsed = parseLudusCard(src);
+    if (parsed) {
+      return ludusCardDataUri(parsed.name, parsed.category, parsed.originCountry);
+    }
+  }
+  return resolveImageSrc(src);
+}
+
+/** Rewrite fragile remote URLs to ludus-card refs and drop duplicates. */
+export function sanitizeImageList(
+  images: string[] | undefined,
+  label: { name: string; category: string; originCountry: string },
+): string[] {
+  const card = encodeLudusCard(label.name, label.category, label.originCountry);
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of images ?? []) {
+    const next = !raw || isFragileRemoteSrc(raw) ? card : raw;
+    const key = isLudusCardSrc(next) ? card : next;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(isLudusCardSrc(next) ? card : next);
+  }
+  if (!out.length) out.push(card);
+  return out;
 }
