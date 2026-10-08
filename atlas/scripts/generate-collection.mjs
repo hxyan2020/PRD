@@ -1205,11 +1205,13 @@ function encodeLudusView(name, category, originCountry, viewIndex, seed) {
   return `ludus-view:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}|${viewIndex}|${encodeURIComponent(seed)}`;
 }
 
-/** Total images per entry (title card + photos + unique views). */
-/** Max images per entry (card + real photos). Do not pad with synthetic placeholders. */
-const GALLERY_TARGET = 4;
-/** Cap exclusive stock photos; fewer correct photos beats padded wrong ones. */
-const PHOTO_TARGET = 3;
+/**
+ * Soft caps only — never invent fillers to hit a count.
+ * Fewer correct photos beats padded wrong / placeholder panels.
+ */
+const GALLERY_MAX = 4;
+/** Prefer up to this many exclusive stock photos when they match the toy. */
+const PHOTO_MAX = 3;
 
 function tagsForEntry(name, archetypeKey) {
   if (archetypeKey && ARCHETYPE_TAGS[archetypeKey]) return ARCHETYPE_TAGS[archetypeKey];
@@ -1525,7 +1527,8 @@ const imageBank = {
 
     let photoCount = 0;
     const pushPhoto = (url) => {
-      if (!url || avoid.has(url) || photoCount >= PHOTO_TARGET) return false;
+      if (!url || avoid.has(url) || photoCount >= PHOTO_MAX) return false;
+      if (imgs.length >= GALLERY_MAX) return false;
       imgs.push(url);
       avoid.add(url);
       photoCount += 1;
@@ -1537,31 +1540,31 @@ const imageBank = {
       !!(parentName && resolvePhotoKey(parentName)) ||
       !!(archetypeKey && ARCHETYPE_PHOTOS[archetypeKey]?.length);
 
-    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+    while (photoCount < PHOTO_MAX && imgs.length < GALLERY_MAX) {
       if (!pushPhoto(this.takeCuratedPhoto(name, lineage, avoid))) break;
     }
-    if (photoCount < PHOTO_TARGET && parentName) {
+    if (photoCount < PHOTO_MAX && parentName) {
       pushPhoto(this.takeCuratedPhoto(parentName, lineage, avoid));
     }
     const aliasCurated =
       archetypeKey && ARCHETYPE_CURATED_ALIAS[archetypeKey]
         ? ARCHETYPE_CURATED_ALIAS[archetypeKey]
         : null;
-    if (photoCount < PHOTO_TARGET && aliasCurated) {
-      while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+    if (photoCount < PHOTO_MAX && aliasCurated) {
+      while (photoCount < PHOTO_MAX && imgs.length < GALLERY_MAX) {
         if (!pushPhoto(this.takeCuratedPhoto(aliasCurated, lineage, avoid)))
           break;
       }
     }
-    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+    while (photoCount < PHOTO_MAX && imgs.length < GALLERY_MAX) {
       if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
         break;
     }
-      // Only borrow generic category stock when there is no named/archetype
+    // Only borrow generic category stock when there is no named/archetype
     // pool — never spill random EXTRA photos onto catalog titles (that
     // produced skateboards on Mehen, cribbage on Fanorona, etc.).
     if (!hasNamedPool && photoCount === 0) {
-      while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+      while (photoCount < PHOTO_MAX && imgs.length < GALLERY_MAX) {
         const url = this.takeCategoryPhoto(
           category,
           lineage,
@@ -1572,9 +1575,9 @@ const imageBank = {
       }
     }
 
-    // Do not pad with synthetic ludus-view placeholders — only real photos
-    // (plus the named title card). Fewer correct images beats wrong fillers.
-    return imgs.slice(0, GALLERY_TARGET);
+    // Stop with whatever real photos we found — never pad with ludus-view
+    // (Atmosphere / How it’s played / …) synthetic panels.
+    return imgs.slice(0, GALLERY_MAX);
   },
 };
 
@@ -2819,12 +2822,16 @@ async function main() {
   let stripped = 0;
   const scrub = (entry) => {
     const keep = (entry.images || []).filter((u) => {
-      if (typeof u !== "string" || !/^https?:\/\//.test(u)) return true;
+      if (typeof u !== "string") return false;
+      // Drop synthetic gallery placeholders if any remain from older builds.
+      if (u.startsWith("ludus-view:")) return false;
+      if (!/^https?:\/\//.test(u)) return true; // keep title cards
       const ok = alive.has(u);
       if (!ok) stripped += 1;
       return ok;
     });
-    // Keep surviving photos/cards only — never invent placeholder panels.
+    // Keep surviving photos/cards only — never invent placeholder panels
+    // to pad toward a fixed count (e.g. 5).
     if (!keep.length) {
       keep.push(
         encodeLudusCard(
@@ -2834,7 +2841,7 @@ async function main() {
         ),
       );
     }
-    entry.images = keep.slice(0, GALLERY_TARGET);
+    entry.images = keep.slice(0, GALLERY_MAX);
   };
   for (const g of games) {
     scrub(g);

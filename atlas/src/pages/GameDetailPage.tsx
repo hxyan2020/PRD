@@ -68,11 +68,11 @@ export function GameDetailPage() {
     );
   }
 
-  // Prefer real photos in the gallery — circular thumbs crop title-card SVGs
-  // into unreadable fragments (e.g. “…ss” from “Chess”).
+  // Real photos only (variable length). No synthetic placeholder panels.
   const galleryImages = listDisplayImages(game.images);
   const activeSrc =
     galleryImages[Math.min(activeImg, Math.max(galleryImages.length - 1, 0))] ??
+    primaryCoverSrc(game.images) ??
     game.images[0];
   const imageLabel: ImageLabel = {
     name: game.name,
