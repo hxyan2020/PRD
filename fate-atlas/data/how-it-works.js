@@ -158,6 +158,24 @@
         },
       ],
     },
+    "blood-type": {
+      intro:
+        "Blood-type personality (ketsueki-gata) maps ABO groups onto popular character stereotypes. Medicine uses ABO for transfusion; fate claims are unsupported.",
+      steps: [
+        {
+          title: "Choose A, B, O, or AB",
+          body: "Pick the antigen type you know from a medical test or donor card. Optional: name a focus (work, love, self-image).",
+        },
+        {
+          title: "See the folklore lean",
+          body: "We show the common stereotype tags linked to that type in East Asian pop culture — not a lab report about your character.",
+        },
+        {
+          title: "Keep medicine and folklore apart",
+          body: "Use any resonance as optional reflection. Do not hire, date, or exclude people by ABO type.",
+        },
+      ],
+    },
   };
 
   const BY_ID_ZH = {
@@ -237,6 +255,24 @@
         {
           title: "白话读图",
           body: "我们说明出现了什么、如何作问题之镜，以及反思性可做／慎做——并标明为教育用途。",
+        },
+      ],
+    },
+    "blood-type": {
+      intro:
+        "血型性格把 ABO 血型对应到流行的性格刻板印象。医学用血型做输血匹配；命运说法并无可靠证据。",
+      steps: [
+        {
+          title: "选择 A、B、O 或 AB",
+          body: "选择你从化验或献血卡得知的抗原型。可选：写一个关注点（工作、感情、自我形象）。",
+        },
+        {
+          title: "查看民俗倾向",
+          body: "我们展示东亚流行文化里该血型的常见标签——不是关于你性格的化验报告。",
+        },
+        {
+          title: "把医学与民俗分开",
+          body: "若有共鸣，仅作可选反思。不要用血型来招聘、相亲或排斥他人。",
         },
       ],
     },
@@ -322,6 +358,24 @@
         },
       ],
     },
+    "blood-type": {
+      intro:
+        "血型性格把 ABO 血型對應到流行的性格刻板印象。醫學用血型做輸血匹配；命運說法並無可靠證據。",
+      steps: [
+        {
+          title: "選擇 A、B、O 或 AB",
+          body: "選擇你從化驗或獻血卡得知的抗原型。可選：寫一個關注點（工作、感情、自我形象）。",
+        },
+        {
+          title: "查看民俗傾向",
+          body: "我們展示東亞流行文化裡該血型的常見標籤——不是關於你性格的化驗報告。",
+        },
+        {
+          title: "把醫學與民俗分開",
+          body: "若有共鳴，僅作可選反思。不要用血型來招聘、相親或排斥他人。",
+        },
+      ],
+    },
   };
 
   function stepsForProcessEn(method, process) {
@@ -347,6 +401,42 @@
             {
               title: "Read as a mirror",
               body: "You get what was computed, what it traditionally suggests as symbolism, and reflective do / don’t notes — not a scientific forecast.",
+            },
+          ],
+        };
+      case "blood":
+        return {
+          intro: `${name}${where} maps an ABO blood type onto popular personality folklore. ${bit}`,
+          steps: [
+            {
+              title: "Choose your blood type",
+              body: "Pick A, B, O, or AB — the antigen group used in transfusion medicine. Optional: add a focus (work, relationship, self-image).",
+            },
+            {
+              title: "See the folklore tags",
+              body: "We show the common East Asian stereotype lean for that type. This is cultural pop lore, not a lab result about character.",
+            },
+            {
+              title: "Read as a mirror — not medicine",
+              body: "ABO type is medically real; personality and fate claims are not validated. Use any resonance as optional reflection only.",
+            },
+          ],
+        };
+      case "name":
+        return {
+          intro: `${name}${where} weighs a name’s letters or strokes as a symbolic signature. ${bit}`,
+          steps: [
+            {
+              title: "Enter a name",
+              body: "Use your own name (or another you have permission to explore). Optional: add a focus for the reading.",
+            },
+            {
+              title: "Derive name-style labels",
+              body: "We compute simple counts and a reduced “name number” in the spirit of this method — not a professional onomantic chart.",
+            },
+            {
+              title: "Read as a mirror",
+              body: "You get symbolic tags and reflective do / don’t notes — not a guarantee about marriage, career, or destiny.",
             },
           ],
         };
@@ -502,6 +592,40 @@
               },
             ],
           },
+          blood: {
+            intro: `${name}${where}把 ABO 血型對應到流行的性格說法。${bit}`,
+            steps: [
+              {
+                title: "選擇你的血型",
+                body: "選擇 A、B、O 或 AB——醫學輸血用的抗原分型。可選：加上關注點（工作、關係、自我形象）。",
+              },
+              {
+                title: "查看民俗標籤",
+                body: "我們展示該血型在東亞流行文化中的常見刻板印象。這是民俗流行說法，不是性格化驗單。",
+              },
+              {
+                title: "當作鏡子來讀——不是醫學",
+                body: "血型在醫學上真實；性格／命運說法並無可靠證據。若有共鳴，僅作可選反思。",
+              },
+            ],
+          },
+          name: {
+            intro: `${name}${where}以姓名的字音、筆畫或字母作象徵簽名。${bit}`,
+            steps: [
+              {
+                title: "輸入姓名",
+                body: "使用你自己的名字（或你有權探索的名字）。可選：加上解讀焦點。",
+              },
+              {
+                title: "推導姓名風格標籤",
+                body: "我們計算簡化的字數／字母計數與「姓名數」，取其精神——非專業姓名學命盤。",
+              },
+              {
+                title: "當作鏡子來讀",
+                body: "你會得到象徵標籤與反思性可做／慎做——不是婚配、事業或命運的保證。",
+              },
+            ],
+          },
           cards: {
             intro: `${name}${where}抽出象徵紙牌並一起解讀。${bit}`,
             steps: [
@@ -620,6 +744,40 @@
               {
                 title: "当作镜子来读",
                 body: "你会看到计算结果、传统象征含义，以及反思性可做／慎做——不是科学预报。",
+              },
+            ],
+          },
+          blood: {
+            intro: `${name}${where}把 ABO 血型对应到流行的性格说法。${bit}`,
+            steps: [
+              {
+                title: "选择你的血型",
+                body: "选择 A、B、O 或 AB——医学输血用的抗原分型。可选：加上关注点（工作、关系、自我形象）。",
+              },
+              {
+                title: "查看民俗标签",
+                body: "我们展示该血型在东亚流行文化中的常见刻板印象。这是民俗流行说法，不是性格化验单。",
+              },
+              {
+                title: "当作镜子来读——不是医学",
+                body: "血型在医学上真实；性格／命运说法并无可靠证据。若有共鸣，仅作可选反思。",
+              },
+            ],
+          },
+          name: {
+            intro: `${name}${where}以姓名的字音、笔画或字母作象征签名。${bit}`,
+            steps: [
+              {
+                title: "输入姓名",
+                body: "使用你自己的名字（或你有权探索的名字）。可选：加上解读焦点。",
+              },
+              {
+                title: "推导姓名风格标签",
+                body: "我们计算简化的字数／字母计数与「姓名数」，取其精神——非专业姓名学命盘。",
+              },
+              {
+                title: "当作镜子来读",
+                body: "你会得到象征标签与反思性可做／慎做——不是婚配、事业或命运的保证。",
               },
             ],
           },
