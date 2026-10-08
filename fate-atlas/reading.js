@@ -492,7 +492,7 @@
     const step = state.steps[state.stepIndex];
     if (step === "intent") {
       body.innerHTML = `
-        <p class="studio__eyebrow">MBTI · Preference map</p>
+        <p class="studio__eyebrow">${escapeHTML(ti("studio.mbti.eyebrow") || "MBTI · Preference map")}</p>
         <h3 class="studio__heading">Four letters, four choices</h3>
         ${howItWorksHTML(state.method, { id: "form" })}
         ${sciencePanelHTML(state.method)}
@@ -568,8 +568,15 @@
   function accuracyAdvisoryHTML() {
     const adv = window.FATE_GLOBAL_ADVISORY;
     const title = ti("advisory.eyebrow") || adv?.title || "Accuracy advisory";
-    const body = adv?.body || ti("advisory.body") || "";
-    const bullets = Array.isArray(adv?.bullets) ? adv.bullets : [];
+    const body = ti("advisory.body") || adv?.body || "";
+    const i18nBullets = [1, 2, 3, 4]
+      .map((n) => ti(`advisory.bullet${n}`))
+      .filter((b) => b && !/^advisory\.bullet/.test(b));
+    const bullets = i18nBullets.length
+      ? i18nBullets
+      : Array.isArray(adv?.bullets)
+        ? adv.bullets
+        : [];
     const list = bullets.length
       ? `<ul class="advisory__list">${bullets.map((b) => `<li>${escapeHTML(b)}</li>`).join("")}</ul>`
       : "";
@@ -759,7 +766,7 @@
       state.photoConfig = photo;
       const text = window.FatumMethodText ? window.FatumMethodText.localize(method) : method;
       body.innerHTML = `
-        <p class="studio__eyebrow">${escapeHTML(method.continent)} · ${escapeHTML(method.type)}</p>
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${method.continent}`) || method.continent)} · ${escapeHTML(ti(`type.${method.type}`) || method.type)}</p>
         <h3 class="studio__heading">${escapeHTML(text.name || method.name)}</h3>
         <p class="studio__copy">${escapeHTML(text.summary || method.summary || "")}</p>
         ${howItWorksHTML(method, process)}

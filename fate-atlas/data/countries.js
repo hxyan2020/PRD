@@ -191,9 +191,14 @@
     if (!cc || cc.length !== 2) {
       return `<span class="flag-icon flag-icon--empty" title="${safeAlt}" aria-hidden="true"></span>`;
     }
+    const key = cc.toLowerCase();
+    const inline = (window.FATE_FLAG_DATA && window.FATE_FLAG_DATA[key]) || "";
     const u = flagUrls(cc);
-    // Local PNGs only — never emoji regional indicators (they render as "US"/"NG"/"CA").
-    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${u.src}" srcset="${u.srcset}" width="24" height="18" alt="" decoding="async" /></span>`;
+    // Prefer inline data-URI (no network); fall back to same-origin PNG assets.
+    // Never use emoji regional indicators — they render as "US"/"NG"/"CA" letters.
+    const src = inline || u.src;
+    const srcset = inline ? "" : ` srcset="${u.srcset}"`;
+    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${src}"${srcset} width="28" height="21" alt="" decoding="async" /></span>`;
   }
 
   function localizedCountryName(name, locale) {
