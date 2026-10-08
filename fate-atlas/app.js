@@ -158,17 +158,9 @@
     const cover = window.FatumCovers
       ? window.FatumCovers.coverHTML(m, "method__cover")
       : "";
-    const icon = window.FatumRiteIcons
-      ? window.FatumRiteIcons.iconHTML(m, "rite-icon rite-icon--method")
-      : "";
-    const markTitle = t("catalog.riteMarkTitle", { name: text.name, process: processLabel });
     return `<li class="method" id="method-${m.id}">
       <div class="method__media">
         ${cover}
-        <div class="method__mark" title="${escapeHTML(markTitle)}">
-          ${icon}
-          <span class="method__mark-label">${escapeHTML(t("catalog.riteMark"))}</span>
-        </div>
       </div>
       <div class="method__content">
         <div class="method__lead">
@@ -251,13 +243,10 @@
     const cover = window.FatumCovers
       ? window.FatumCovers.coverHTML(pick, "oracle__cover")
       : "";
-    const icon = window.FatumRiteIcons
-      ? window.FatumRiteIcons.iconHTML(pick, "rite-icon rite-icon--oracle")
-      : "";
     els.oracleResult.innerHTML = `
       ${cover}
       <p class="section__eyebrow" style="margin-bottom:0.5rem">${escapeHTML(t("oracle.lot"))}</p>
-      <h3 class="method__name">${icon} ${escapeHTML(text.name)}</h3>
+      <h3 class="method__name">${escapeHTML(text.name)}</h3>
       <div class="method__meta" style="margin:0.5rem 0 1rem">
         <span class="tag tag--type">${escapeHTML(typeLabel(pick.type))}</span>
         <span class="tag">${escapeHTML(continentLabel(pick.continent))}</span>

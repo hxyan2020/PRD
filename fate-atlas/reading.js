@@ -246,10 +246,7 @@
       const name = window.FatumMethodText
         ? window.FatumMethodText.localize(state.method).name
         : state.method.name;
-      const icon = window.FatumRiteIcons
-        ? window.FatumRiteIcons.iconHTML(state.method, "rite-icon rite-icon--oracle")
-        : "";
-      titleEl.innerHTML = `${icon}<span>${escapeHTML(name)}</span>`;
+      titleEl.textContent = name;
     }
     stepEl.textContent = ti("studio.questStep", {
       label: meta.label,
@@ -1331,15 +1328,11 @@
             const text = window.FatumMethodText
               ? window.FatumMethodText.localize(m)
               : { name: m.name, summary: m.summary };
-            const icon = window.FatumRiteIcons
-              ? window.FatumRiteIcons.iconHTML(m, "rite-icon rite-icon--feature")
-              : `<span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>`;
             const playLabel = m.guided ? ti("play.quest") : ti("catalog.play");
             return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(playLabel)} ${escapeHTML(text.name)}">
             ${cover}
             <div class="feature-card__body">
               <div class="feature-card__top">
-                ${icon}
                 <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
               </div>
               <h3 class="feature-card__title">${escapeHTML(text.name)}</h3>

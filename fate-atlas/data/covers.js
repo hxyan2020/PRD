@@ -210,7 +210,7 @@
     }
   }
 
-  /** Unique translucent SVG overlay — relevant motif + rite glyph. */
+  /** Unique translucent SVG overlay — thematic motif only (no rite-symbol glyph). */
   function uniqueOverlayDataUrl(method, theme) {
     const id = (method && method.id) || "rite";
     const e = iconEntry(method);
@@ -218,8 +218,6 @@
     const seed = hashId(id);
     const accent = `hsl(${(h + 40) % 360} 62% 62%)`;
     const soft = `hsl(${h} 28% 88%)`;
-    const ink = `hsl(${h} 20% 96%)`;
-    const glyph = escapeXml(e.glyph || "✦");
     const gid = `ov-${id.replace(/[^a-zA-Z0-9_-]/g, "")}`;
     const motif = themeMotif(theme === "tarot" ? "cards" : theme === "bagua" ? "coins" : theme === "mbti" ? "personality" : theme, accent, soft, seed);
 
@@ -238,9 +236,6 @@
   <rect width="960" height="540" fill="url(#${gid})"/>
   <rect width="960" height="540" fill="url(#${gid}-spot)"/>
   ${motif}
-  <rect x="40" y="36" width="300" height="168" rx="12" fill="hsl(${h} 28% 6%)" opacity="0.55"/>
-  <text x="64" y="140" font-family="Georgia, 'Times New Roman', serif" font-size="108" fill="${ink}" opacity="0.96">${glyph}</text>
-  <text x="64" y="178" font-family="system-ui, sans-serif" font-size="20" letter-spacing="3.5" fill="${soft}" opacity="0.78">${escapeXml((method && method.name) || id).slice(0, 26).toUpperCase()}</text>
 </svg>`;
 
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
