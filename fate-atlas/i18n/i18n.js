@@ -91,6 +91,14 @@
       const key = el.getAttribute("data-i18n-aria");
       if (key) el.setAttribute("aria-label", t(key));
     });
+    document.querySelectorAll("[data-i18n-closed]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-closed");
+      if (key) el.setAttribute("data-closed", t(key));
+    });
+    document.querySelectorAll("[data-i18n-open]").forEach((el) => {
+      const key = el.getAttribute("data-i18n-open");
+      if (key) el.setAttribute("data-open", t(key));
+    });
   }
 
   function setLocale(next) {

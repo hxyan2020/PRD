@@ -563,29 +563,40 @@
     render();
   }
 
+  function accuracyAdvisoryHTML() {
+    const adv = window.FATE_GLOBAL_ADVISORY;
+    const title = ti("advisory.eyebrow") || adv?.title || "Accuracy advisory";
+    const body = adv?.body || ti("advisory.body") || "";
+    const bullets = Array.isArray(adv?.bullets) ? adv.bullets : [];
+    const list = bullets.length
+      ? `<ul class="advisory__list">${bullets.map((b) => `<li>${escapeHTML(b)}</li>`).join("")}</ul>`
+      : "";
+    return `<details class="advisory advisory--compact advisory--collapse">
+        <summary class="advisory__summary">
+          <span class="advisory__eyebrow">${escapeHTML(title)}</span>
+          <span class="advisory__hint" data-closed="${escapeHTML(ti("advisory.show") || "Show")}" data-open="${escapeHTML(ti("advisory.hide") || "Hide")}"></span>
+        </summary>
+        <div class="advisory__panel">
+          <p class="advisory__body">${escapeHTML(body)}</p>
+          ${list}
+        </div>
+      </details>`;
+  }
+
   function sciencePanelHTML(method) {
     const sci = window.fateScienceStatusFor?.(method);
-    const adv = window.FATE_GLOBAL_ADVISORY;
-    if (!sci) return "";
+    if (!sci) return accuracyAdvisoryHTML();
     return `<div class="science-box science-box--${escapeHTML(sci.levelId)}">
-        <p class="science-box__label">Scientific reasoning · ${escapeHTML(sci.label)}</p>
+        <p class="science-box__label">${escapeHTML(ti("science.label") || "Scientific reasoning")} · ${escapeHTML(sci.label)}</p>
         <p class="science-box__text">${escapeHTML(sci.reasoning)}</p>
       </div>
-      <div class="advisory advisory--compact">
-        <p class="advisory__eyebrow">${escapeHTML(adv?.title || "Accuracy advisory")}</p>
-        <p class="advisory__body">${escapeHTML(adv?.body || "")}</p>
-      </div>`;
+      ${accuracyAdvisoryHTML()}`;
   }
 
   function resultDisclaimerHTML(method, custom) {
-    const sci = window.fateScienceStatusFor?.(method);
-    const adv = window.FATE_GLOBAL_ADVISORY?.body || "";
-    const parts = [
-      custom || "",
-      sci ? `Scientific status: ${sci.label}. ${sci.reasoning}` : "",
-      adv,
-    ].filter(Boolean);
-    return `<p class="reading__disclaimer">${escapeHTML(parts.join(" "))}</p>`;
+    // Accuracy advisory lives in the collapsed panel — only show rite-specific disclaimer here
+    if (!custom) return "";
+    return `<p class="reading__disclaimer">${escapeHTML(custom)}</p>`;
   }
 
   function journalActionsHTML(saved, againLabel) {
