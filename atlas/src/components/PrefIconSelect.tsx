@@ -27,6 +27,8 @@ export type PrefIconName =
   | "traditional"
   | "modern";
 
+const PREF_SELECT_OPEN = "ludus:pref-select-open";
+
 function PrefIcon({ name }: { name: PrefIconName }) {
   const common = {
     viewBox: "0 0 24 24",
@@ -124,63 +126,58 @@ function PrefIcon({ name }: { name: PrefIconName }) {
     case "craft":
       return (
         <svg {...common}>
-          <path d="M8 20c0-4 1.5-7 4-9 2.5 2 4 5 4 9" />
-          <path d="M9.5 11.5c.8-2.2 1.6-3.8 2.5-5.5.9 1.7 1.7 3.3 2.5 5.5" />
-          <circle cx="12" cy="8" r="1.2" />
+          <path d="M8 20h8" />
+          <path d="M10 20V11l2-3 2 3v9" />
+          <path d="M7 8.5c0-2.5 2.2-4.5 5-4.5s5 2 5 4.5" />
         </svg>
       );
     case "sport":
       return (
         <svg {...common}>
           <circle cx="12" cy="12" r="8" />
-          <path d="M4.8 9.5h14.4M4.8 14.5h14.4" />
-          <path d="M12 4c2.2 2.4 3.3 5 3.3 8s-1.1 5.6-3.3 8c-2.2-2.4-3.3-5-3.3-8s1.1-5.6 3.3-8z" />
+          <path d="M12 4v16M4.5 9.5h15M4.5 14.5h15" />
         </svg>
       );
     case "puzzle":
       return (
         <svg {...common}>
-          <path d="M10 4h4v3.2a1.8 1.8 0 1 1 0 3.6V14H9.2A1.8 1.8 0 1 0 5.6 14V9.2A1.8 1.8 0 1 1 5.6 5.6H10V4z" />
-          <path d="M14 14h5v5h-5v-2.2a1.5 1.5 0 1 0 0-3V14z" />
+          <path d="M8 4h3.2a2 2 0 0 1 4 0H18v3.2a2 2 0 0 1 0 4V14H14.8a2 2 0 0 0-4 0H8v-2.8a2 2 0 0 1 0-4V4z" />
         </svg>
       );
     case "kids":
       return (
         <svg {...common}>
-          <circle cx="12" cy="9" r="3.4" />
-          <path d="M7 20c1-3.4 2.8-5 5-5s4 1.6 5 5" />
-          <path d="M8.2 7.2 6.5 5.8M15.8 7.2l1.7-1.4" />
+          <circle cx="12" cy="7.5" r="3" />
+          <path d="M6.5 20c1-3.5 3-5.2 5.5-5.2S17 16.5 18 20" />
+          <path d="M8 11.5c-.8.4-1.4 1.2-1.6 2.2M16 11.5c.8.4 1.4 1.2 1.6 2.2" />
         </svg>
       );
     case "ritual":
       return (
         <svg {...common}>
-          <path d="M8 20h8" />
-          <path d="M9.5 20c0-3.5.8-6 2.5-9 1.7 3 2.5 5.5 2.5 9" />
-          <path d="M12 7.5c1.2-1.6 1.8-2.8 1.8-4.2 0 0-2.2.6-3.6 2.4C8.8 7.3 9.8 9 12 11" />
+          <path d="M12 3.5 14.2 9H20l-4.4 3.4L17.2 18 12 14.7 6.8 18l1.6-5.6L4 9h5.8L12 3.5z" />
         </svg>
       );
     case "ancient":
       return (
         <svg {...common}>
-          <path d="M5 19h14" />
-          <path d="M7 19V9l5-4 5 4v10" />
+          <path d="M4 19h16" />
+          <path d="M6 19V10l6-5 6 5v9" />
           <path d="M10 19v-5h4v5" />
         </svg>
       );
     case "traditional":
       return (
         <svg {...common}>
-          <path d="M6 5h12v14H6z" />
-          <path d="M9 9h6M9 12.5h6M9 16h4" />
+          <circle cx="12" cy="12" r="7.5" />
+          <path d="M12 7.5v9M8.5 12h7" />
         </svg>
       );
     case "modern":
       return (
         <svg {...common}>
           <rect x="5" y="6" width="14" height="12" rx="2" />
-          <path d="M9 18.5h6" />
-          <path d="M8 10h8M8 13h5" />
+          <path d="M9 18h6M12 6V4" />
         </svg>
       );
     default:
@@ -210,10 +207,21 @@ export function PrefIconSelect<T extends string>({
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const listId = useId();
+  const instanceId = useId();
   const selected = options.find((o) => o.value === value) ?? options[0];
 
   useEffect(() => {
+    const onPeerOpen = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail !== instanceId) setOpen(false);
+    };
+    window.addEventListener(PREF_SELECT_OPEN, onPeerOpen);
+    return () => window.removeEventListener(PREF_SELECT_OPEN, onPeerOpen);
+  }, [instanceId]);
+
+  useEffect(() => {
     if (!open) return;
+    window.dispatchEvent(new CustomEvent(PREF_SELECT_OPEN, { detail: instanceId }));
     const onDoc = (e: MouseEvent) => {
       if (!rootRef.current?.contains(e.target as Node)) setOpen(false);
     };
@@ -226,10 +234,13 @@ export function PrefIconSelect<T extends string>({
       document.removeEventListener("mousedown", onDoc);
       document.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [open, instanceId]);
 
   return (
-    <div className="field pref-icon-field" ref={rootRef}>
+    <div
+      className={`field pref-icon-field${open ? " is-open" : ""}`}
+      ref={rootRef}
+    >
       <label id={`${id}-label`} htmlFor={id}>
         {label}
       </label>

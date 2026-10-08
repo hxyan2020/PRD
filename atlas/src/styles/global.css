@@ -1943,11 +1943,21 @@ select {
 
 .prefs-form {
   display: grid;
-  gap: 0.85rem;
+  gap: 1rem;
 }
 
 .pref-icon-field {
   position: relative;
+  z-index: 1;
+}
+
+.pref-icon-field.is-open {
+  z-index: 30;
+}
+
+.pref-icon-field > label {
+  display: block;
+  margin-bottom: 0.4rem;
 }
 
 .pref-icon-trigger,
@@ -1958,22 +1968,27 @@ select {
   width: 100%;
   text-align: start;
   color: var(--mist);
-  font: inherit;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 500;
   cursor: pointer;
 }
 
 .pref-icon-trigger {
-  padding: 0.7rem 0.85rem;
+  min-height: 2.65rem;
+  padding: 0.65rem 0.9rem;
   border-radius: var(--radius);
   border: 1px solid var(--line);
-  background: var(--surface-strong);
+  background: #12080a;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .pref-icon-trigger:hover,
 .pref-icon-trigger:focus-visible,
 .pref-icon-trigger.is-open {
-  border-color: var(--brass);
+  border-color: var(--brand);
   outline: none;
+  background: #1a0c10;
 }
 
 .pref-icon-glyph {
@@ -1983,7 +1998,7 @@ select {
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  color: var(--brass);
+  color: var(--brand);
 }
 
 .pref-icon-label {
@@ -1992,13 +2007,14 @@ select {
 }
 
 .pref-icon-chevron {
-  width: 0.55rem;
-  height: 0.55rem;
-  border-right: 2px solid var(--mist-dim);
-  border-bottom: 2px solid var(--mist-dim);
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 1.5px solid var(--mist-dim);
+  border-bottom: 1.5px solid var(--mist-dim);
   transform: rotate(45deg);
-  margin-top: -0.2rem;
+  margin-top: -0.15rem;
   transition: transform 0.15s ease;
+  flex: 0 0 auto;
 }
 
 .pref-icon-trigger.is-open .pref-icon-chevron {
@@ -2008,37 +2024,39 @@ select {
 
 .pref-icon-menu {
   position: absolute;
-  z-index: 20;
+  z-index: 40;
   top: calc(100% + 0.35rem);
   left: 0;
   right: 0;
   margin: 0;
-  padding: 0.35rem;
+  padding: 0.4rem;
   list-style: none;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface-strong);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  border-radius: calc(var(--radius) + 2px);
+  background: #12080a;
+  box-shadow: var(--shadow);
   max-height: min(18rem, 50vh);
   overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .pref-icon-option {
   padding: 0.65rem 0.7rem;
   border: 0;
-  border-radius: calc(var(--radius) - 2px);
+  border-radius: var(--radius);
   background: transparent;
+  min-height: 2.4rem;
 }
 
 .pref-icon-option:hover,
 .pref-icon-option:focus-visible {
-  background: color-mix(in srgb, var(--brand) 16%, transparent);
+  background: rgba(242, 232, 234, 0.08);
   outline: none;
 }
 
 .pref-icon-option.is-active {
   background: color-mix(in srgb, var(--brand) 22%, transparent);
-  color: var(--mist);
+  color: #fff;
 }
 
 .pref-icon-option.is-active .pref-icon-glyph {
