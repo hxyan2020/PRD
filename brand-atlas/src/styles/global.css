@@ -488,10 +488,10 @@ img {
   }
 
   .hero {
-    min-height: 100vh;
-    min-height: 100dvh;
-    height: 100vh;
-    height: 100dvh;
+    min-height: calc(100vh - 5.5rem);
+    min-height: calc(100dvh - 5.5rem);
+    height: calc(100vh - 5.5rem);
+    height: calc(100dvh - 5.5rem);
     border-radius: 0;
     margin-bottom: 1.4rem;
   }
