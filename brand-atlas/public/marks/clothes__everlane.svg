@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <defs>
-    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
-  </defs>
-  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB6ElEQVRYhe2XS47iMBCGPzsRATTiIcQVOAYX4SaIayBOwB1YZAsCwQkQC3asISEBhO1Z0GEGNWHsHmBm0SWVokgV11+vv2IBRMAPwACC90jmayff5DBXvgH8cwC+i7EQdj1qjHkNAJeDXwKg0WgghEBrnWsjhCCKIk6nk/W5EZe51B/Pu+p5npnP5yZNU5MkiUnT9JPGcWyMMabT6Vy/yTkv87W1zoBSilarRRiG9Pt96vU6SqkbG2MMhUKB8XgM8DBTmTiVQErJbDZjNBpZ2dv0jBMAgHK5DEAQBJzP57s2WmvrhnUGkB2stf5Ugq+IExEJIa4AnuEcvsADnucB+SVwzYzAch1LKVmv1zSbTTabDb5/i10pRa1WYzAY0O12kVI+moLrOrbOgNaaUqnEZDJhOBxSrVZvIjXGUCwWWSwW13dbsSIiwOz3e9Pr9R7aWKo7EWVZ+NMYuowg/MUYKqWeMgnOAKS8TK7nebmRvpSI4jgG4Hg8PrT7nTOeBkBrTbvdZrlcUqvV7i6jIAgIw5DVamUNwnodT6dTE8exSZLkrkZR5LyOrYkIoFKpAI9pWAjB4XDIXVQf4k5EALvdzsXcSr5/Sv+Le0EW1vPDy5esCY3PrzK8MxtZM/k+sOUyl4r3Xs99YPsTXplwF05vIiMAAAAASUVORK5CYII=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img">
+  <text x="80" y="92" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600" fill="#C4C4C4" letter-spacing="0.35em">EVERLANE</text>
 </svg>

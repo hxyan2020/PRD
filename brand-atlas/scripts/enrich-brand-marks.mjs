@@ -110,10 +110,10 @@ async function fetchLogoPng(domain) {
       });
       if (!res.ok) continue;
       const buf = Buffer.from(await res.arrayBuffer());
-      // Skip tiny placeholder / 404 stub icons
-      if (buf.length < 350) continue;
-      // Google's generic globe favicon is a small indexed PNG ~300-330B; keep real logos
-      if (url.includes("google.com") && buf.length < 500) continue;
+      // Skip tiny placeholder / 404 stub / letter-favicon icons
+      if (buf.length < 700) continue;
+      // Google favicons under ~1KB are often generic or 16–32px letters
+      if (url.includes("google.com") && buf.length < 1200) continue;
       // Trust magic bytes — some CDNs mislabel PNGs (e.g. application/x-msdos-program)
       const mime = sniffMime(buf);
       if (!mime) continue;
