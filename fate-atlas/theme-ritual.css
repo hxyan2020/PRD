@@ -348,10 +348,17 @@ body > * {
 .field input,
 .field select,
 .studio__body .field textarea,
-.legend-chip {
+.legend-chip,
+.lang-picker__menu {
   background: var(--surface) !important;
   color: var(--ink) !important;
   border-color: var(--line) !important;
+}
+
+.lang-picker__btn {
+  font-family: var(--font-ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .rite-picker__trigger:hover,

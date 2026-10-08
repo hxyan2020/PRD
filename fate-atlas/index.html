@@ -42,10 +42,16 @@
       <span class="hud__pill hud__pill--seal" data-i18n-title="hud.sealsTitle" title="Saved readings"><em id="hud-seals">0</em> <span data-i18n="hud.seals">seals</span></span>
     </div>
     <div class="hud__aside">
-      <label class="hud__lang" for="lang-select">
-        <span class="visually-hidden" data-i18n="hud.lang">Language</span>
-        <select id="lang-select" aria-label="Language"></select>
-      </label>
+      <div class="hud__lang lang-picker" id="lang-picker">
+        <span class="visually-hidden" data-i18n="hud.lang" id="lang-picker-legend">Language</span>
+        <button type="button" class="lang-picker__btn" id="lang-picker-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="lang-picker-menu">
+          <img class="lang-picker__flag" id="lang-picker-flag" src="https://flagcdn.com/24x18/gb.png" srcset="https://flagcdn.com/48x36/gb.png 2x" width="24" height="18" alt="" />
+          <span class="lang-picker__label" id="lang-picker-label">English</span>
+          <span class="lang-picker__chevron" aria-hidden="true">▾</span>
+        </button>
+        <ul class="lang-picker__menu" id="lang-picker-menu" role="listbox" aria-labelledby="lang-picker-legend" hidden></ul>
+        <select id="lang-select" class="visually-hidden" tabindex="-1" aria-hidden="true"></select>
+      </div>
     </div>
   </div>
   <div class="nav-backdrop" id="nav-backdrop" hidden></div>

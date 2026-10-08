@@ -241,14 +241,48 @@
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   }
 
+  const THEME_TAGS = {
+    cards: "tarot,playing-cards,fortune-teller",
+    coins: "chinese-coins,i-ching,bronze-coin",
+    astrology: "astrology,zodiac,star-chart",
+    palmistry: "palmistry,hand-reading,palm",
+    runes: "runes,nordic,stones",
+    lots: "cowrie,dice,bones,divination",
+    omens: "birds,omen,sky",
+    dreams: "dream,night,moon",
+    scrying: "crystal-ball,mirror,smoke",
+    cups: "tea-cup,coffee,ceramic",
+    numbers: "numerology,numbers,abacus",
+    form: "portrait,face,sculpture",
+    mesoamerica: "maya,aztec,temple",
+    fate: "ritual,candle,altar",
+    egypt: "egypt,hieroglyph,scarab",
+    personality: "psychology,silhouette,identity",
+    eastasia: "temple,ink,east-asia",
+    bagua: "bagua,yin-yang,temple",
+    tarot: "tarot,major-arcana,cards",
+    mbti: "personality,portrait,mind",
+  };
+
   function photoFileFor(method) {
     const theme = themeFor(method);
     if (FEATURED[theme]) return FEATURED[theme];
     return THEME_FILES[theme] || THEME_FILES.fate;
   }
 
+  /** Unique, theme-relevant stock photo per rite (local featured photos kept). */
+  function remotePhotoUrl(method, theme) {
+    const tags = THEME_TAGS[theme] || THEME_TAGS.fate;
+    const lock = hashId(method && method.id);
+    return `https://loremflickr.com/960/540/${tags}?lock=${lock}`;
+  }
+
   function photoUrlFor(method) {
-    return `${BASE}/${photoFileFor(method)}`;
+    const theme = themeFor(method);
+    if (method && method.id && FEATURED[method.id]) return `${BASE}/${FEATURED[method.id]}`;
+    if (method && method.guided && FEATURED[method.guided]) return `${BASE}/${FEATURED[method.guided]}`;
+    if (FEATURED[theme]) return `${BASE}/${FEATURED[theme]}`;
+    return remotePhotoUrl(method, theme);
   }
 
   function urlFor(method) {
@@ -277,6 +311,7 @@
     const alt = method && method.name ? String(method.name) : "Rite cover";
     const safeAlt = escapeXml(alt);
     const cls = className || "rite-cover";
+    const localFallback = `${BASE}/${THEME_FILES[theme] || THEME_FILES.fate}`;
 
     if (featured) {
       return `<div class="${cls}" aria-hidden="true">
@@ -287,8 +322,9 @@
     const overlay = uniqueOverlayDataUrl(method, theme);
     const photoStyle = photoStyleFor(method);
     return `<div class="${cls} ${cls}--hybrid" aria-hidden="true">
-      <img class="${cls}__photo" src="${photo}" alt="" width="960" height="540" loading="lazy" decoding="async" style="${photoStyle}" />
+      <img class="${cls}__photo" src="${photo}" alt="" width="960" height="540" loading="lazy" decoding="async" style="${photoStyle}" onerror="this.onerror=null;this.src='${localFallback}'" />
       <img class="${cls}__art" src="${overlay}" alt="${safeAlt}" width="960" height="540" loading="lazy" decoding="async" />
+      <span class="${cls}__caption">${safeAlt}</span>
     </div>`;
   }
 

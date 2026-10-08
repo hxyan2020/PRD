@@ -161,12 +161,15 @@
 
   function flagImgHTML(code, alt) {
     const cc = (code || "").toUpperCase();
+    const safeAlt = escapeHTML(alt || cc || "");
     if (!cc || cc.length !== 2) {
-      return `<span class="flag-icon" title="${escapeHTML(alt || "")}"><span class="flag-emoji" aria-hidden="true">🏳️</span></span>`;
+      return `<span class="flag-icon" title="${safeAlt}"><span class="flag-emoji" aria-hidden="true">🏳️</span></span>`;
     }
     const emoji = flagEmoji(cc);
-    const safeAlt = escapeHTML(alt || cc);
-    return `<span class="flag-icon" title="${safeAlt}"><span class="flag-emoji" aria-hidden="true">${emoji}</span></span>`;
+    const src = `https://flagcdn.com/24x18/${cc.toLowerCase()}.png`;
+    const src2x = `https://flagcdn.com/48x36/${cc.toLowerCase()}.png`;
+    // Prefer raster flags — emoji regional indicators render as "US"/"CA" on many systems.
+    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${src}" srcset="${src2x} 2x" width="24" height="18" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.hidden=false)" /><span class="flag-emoji" hidden aria-hidden="true">${emoji}</span></span>`;
   }
 
   function localizedCountryName(name, locale) {
