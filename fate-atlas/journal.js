@@ -16,6 +16,7 @@
   }
 
   function loadAll() {
+    if (window.FatumUserData) return window.FatumUserData.getJournal();
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       const list = raw ? JSON.parse(raw) : [];
@@ -26,6 +27,10 @@
   }
 
   function saveAll(list) {
+    if (window.FatumUserData) {
+      window.FatumUserData.setJournal(list);
+      return;
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
     document.dispatchEvent(new CustomEvent("fatum:journal-changed", { detail: { count: list.length } }));
   }
