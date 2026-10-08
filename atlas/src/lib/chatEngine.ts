@@ -240,7 +240,7 @@ function isOffTopic(text: string) {
 function isCatalogScopedAsk(text: string): boolean {
   const t = normalize(text);
   // Explicit catalog topics, or short follow-ups about the page’s game (“tell me more”, “explain it”).
-  return /\b(play|rule|step|how|origin|history|civilization|culture|variation|variant|buy|purchase|shop|require|equipment|material|player|participant|score|win|capture|board|toy|game|catalog|ludus|where|when|what|who|why|explain|summarize|summary|tell|more|about|need|gear|piece|pieces|setup|start|begin|learn)\b/.test(
+  return /\b(play|plays|playing|rule|rules|step|steps|how|origin|history|civilization|culture|variation|variations|variant|variants|buy|purchase|shop|require|required|requirement|requirements|equipment|material|materials|player|players|participant|participants|score|win|capture|board|toy|toys|game|games|catalog|ludus|where|when|what|who|why|explain|summarize|summary|tell|more|about|need|needs|gear|piece|pieces|setup|start|begin|learn|recommend|recommendation|recommendations)\b/.test(
     t,
   );
 }
