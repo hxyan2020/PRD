@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "siður",
   "chat.vibe.kids": "börn",
   "chat.vibe.puzzle": "ráðgáta",
-  "chat.answer.howToPlay": "**{name}** — hvernig á að leika:\n{steps}\n\nKjörnir þátttakendur: {participants}. Spyrðu um kröfur, afbrigði eða kauphlekkji.",
+  "chat.answer.howToPlay": "**{name}** — hvernig á að leika:\n{steps}\n\n**Hvernig á að vinna**\n{howToWin}\n\n**Reglur sem má ekki brjóta**\n{rules}\n\nKjörnir þátttakendur: {participants}. Spyrðu um kröfur, afbrigði eða kauphlekkji.",
   "chat.answer.purchaseNone": "Ég hef enga búðartengla fyrir **{name}** enn. Þú getur opnað skráarsíðuna.",
   "chat.answer.purchase": "Kaupkostir fyrir **{name}** (vörusíður á mismunandi kerfum):\n{links}\n\nBerðu saman sendingu til þíns svæðis áður en þú kaupir.",
   "chat.answer.about": "**{name}**\nUppruni: {origin} · {civilization}\nUm það bil skapað: {year}\nFlokkur: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Í lagi, skráð.",
   "chat.smalltalk.well": "Mér líður vel—mikilvægara að finna passandi leik. Hvaða lína?",
   "chat.smalltalk.thanks": "Gerðu svo vel. Önnur skráarvísbending?",
-  "chat.followup.chatty": "Við getum þrengt meira, eða sagt „komdu mér á óvart“."
+  "chat.followup.chatty": "Við getum þrengt meira, eða sagt „komdu mér á óvart“.",
+  "detail.howToWin": "Hvernig á að vinna",
+  "detail.rulesNotToBreak": "Reglur sem má ekki brjóta"
 }

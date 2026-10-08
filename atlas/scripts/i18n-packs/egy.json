@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ı͗rı͗t nṯr",
   "chat.vibe.kids": "msw",
   "chat.vibe.puzzle": "ṯnı͗",
-  "chat.answer.howToPlay": "**{name}** — sbꜣyt hbʿ:\n{steps}\n\nı͗nw rmt mtr: {participants}. ḳı͗s ı͗ḫt, ḫprw, ḫsf ı͗sw.",
+  "chat.answer.howToPlay": "**{name}** — sbꜣyt hbʿ:\n{steps}\n\n**How to win**\n{howToWin}\n\n**Rules not to break**\n{rules}\n\nı͗nw rmt mtr: {participants}. ḳı͗s ı͗ḫt, ḫprw, ḫsf ı͗sw.",
   "chat.answer.purchaseNone": "nn wn ḫsf ḥwt n **{name}** ı͗w.tı͗. wn.k r wn ḥr sšmw.",
   "chat.answer.purchase": "stp ı͗sw n **{name}** (ḥr n ḫt ḥr ḥwt šbn):\n{links}\n\nṯnw šdı͗t r tꜣ.k ḫft ı͗sw.",
   "chat.answer.about": "**{name}**\nḫpr: {origin} · {civilization}\nḳmꜣ ḳı͗b: {year}\ndnit: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Alright, noted.",
   "chat.smalltalk.well": "I’m fine—finding a good match matters more. Which thread?",
   "chat.smalltalk.thanks": "You’re welcome. Another catalog cue?",
-  "chat.followup.chatty": "We can narrow further, or say “Surprise me”."
+  "chat.followup.chatty": "We can narrow further, or say “Surprise me”.",
+  "detail.howToWin": "How to win (nḫt)",
+  "detail.rulesNotToBreak": "Rules not to break (tp-rd)"
 }

@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "طقوسي",
   "chat.vibe.kids": "للأطفال",
   "chat.vibe.puzzle": "ألغاز",
-  "chat.answer.howToPlay": "**{name}** — طريقة اللعب:\n{steps}\n\nالمشاركون المثاليون: {participants}. اسأل عن المتطلبات أو التنويعات أو روابط الشراء.",
+  "chat.answer.howToPlay": "**{name}** — طريقة اللعب:\n{steps}\n\n**كيف تفوز**\n{howToWin}\n\n**قواعد لا تُكسر**\n{rules}\n\nالمشاركون المثاليون: {participants}. اسأل عن المتطلبات أو التنويعات أو روابط الشراء.",
   "chat.answer.purchaseNone": "ليست لدي روابط متاجر لـ **{name}** بعد. يمكنك فتح صفحة الفهرس للتفاصيل.",
   "chat.answer.purchase": "خيارات شراء **{name}** (صفحات منتجات على منصات مختلفة):\n{links}\n\nقارن الشحن إلى منطقتك قبل الشراء.",
   "chat.answer.about": "**{name}**\nالأصل: {origin} · {civilization}\nأُنشئ تقريبًا: {year}\nالفئة: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "حسنًا، سجّلت.",
   "chat.smalltalk.well": "بخير — الأهم أن نجد لعبة مناسبة. أي مسار تفضّل؟",
   "chat.smalltalk.thanks": "على الرحب. هل نتابع إشارة أخرى من الفهرس؟",
-  "chat.followup.chatty": "يمكن التضييق أكثر، أو قل «فاجئني»."
+  "chat.followup.chatty": "يمكن التضييق أكثر، أو قل «فاجئني».",
+  "detail.howToWin": "كيف تفوز",
+  "detail.rulesNotToBreak": "قواعد لا تُكسر"
 }

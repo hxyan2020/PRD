@@ -616,9 +616,19 @@ function labelPlayers(p: PlayerPref, t: ChatTranslate) {
 
 function answerHowToPlay(game: Game, t: ChatTranslate): string {
   const steps = game.howToPlay.map((s, i) => `${i + 1}. ${s}`).join("\n");
+  const howToWin = (game.howToWin?.length ? game.howToWin : ["See the how-to-play steps for the win condition."])
+    .map((s) => `• ${s}`)
+    .join("\n");
+  const rules = (game.rulesNotToBreak?.length
+    ? game.rulesNotToBreak
+    : ["Follow turn order and stop if anyone risks injury."])
+    .map((s) => `• ${s}`)
+    .join("\n");
   return t("chat.answer.howToPlay", {
     name: game.name,
     steps,
+    howToWin,
+    rules,
     participants: game.idealParticipants,
   });
 }

@@ -143,13 +143,33 @@ export function GameDetailPage() {
             <p style={{ color: "var(--mist-dim)" }}>{game.description}</p>
           </div>
 
-          <div className="panel">
+          <div className="panel detail-howto">
             <h2>{t("detail.howToPlay")}</h2>
             <ol>
               {game.howToPlay.map((step) => (
                 <li key={step}>{step}</li>
               ))}
             </ol>
+            {game.howToWin?.length ? (
+              <div className="detail-howto-sub">
+                <h3>{t("detail.howToWin")}</h3>
+                <ul>
+                  {game.howToWin.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {game.rulesNotToBreak?.length ? (
+              <div className="detail-howto-sub">
+                <h3>{t("detail.rulesNotToBreak")}</h3>
+                <ul>
+                  {game.rulesNotToBreak.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
 
           {game.tutorialVideo?.videoId ? (

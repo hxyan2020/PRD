@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "अनुष्ठान",
   "chat.vibe.kids": "बाल",
   "chat.vibe.puzzle": "प्रहेलिका",
-  "chat.answer.howToPlay": "**{name}** — कथं क्रीड्यते:\n{steps}\n\nआदर्शसहभागिनः: {participants}. आवश्यकताः, भेदान्, क्रयसूत्रं वा पृच्छ।",
+  "chat.answer.howToPlay": "**{name}** — कथं क्रीड्यते:\n{steps}\n\n**कथं जयः**\n{howToWin}\n\n**अभेद्यनियमाः**\n{rules}\n\nआदर्शसहभागिनः: {participants}. आवश्यकताः, भेदान्, क्रयसङ्केतान् वा पृच्छतु।",
   "chat.answer.purchaseNone": "**{name}** कृते आपणसूत्राणि अधुना न सन्ति। विवरणाय सूचीपृष्ठं उद्घाटयितुं शक्नोषि।",
   "chat.answer.purchase": "**{name}** क्रयविकल्पाः (विभिन्नेषु मञ्चेषु उत्पादपृष्ठानि):\n{links}\n\nक्रयात् पूर्वं स्वप्रदेशं प्रति प्रेषणं तूलय।",
   "chat.answer.about": "**{name}**\nउत्पत्तिः: {origin} · {civilization}\nलगभग निर्मितम्: {year}\nवर्गः: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "अस्तु, लिखितम्।",
   "chat.smalltalk.well": "अहं कुशलः—योग्यां क्रीडां अन्वेष्टुं महत्त्वपूर्णम्। का पङ्क्तिः?",
   "chat.smalltalk.thanks": "स्वागतम्। सूचीतः अपरः संकेतः?",
-  "chat.followup.chatty": "अधिकं सङ्कोचयितुं शक्यम्, अथवा “Surprise me” इति ब्रूहि।"
+  "chat.followup.chatty": "अधिकं सङ्कोचयितुं शक्यम्, अथवा “Surprise me” इति ब्रूहि।",
+  "detail.howToWin": "कथं जयः",
+  "detail.rulesNotToBreak": "अभेद्यनियमाः"
 }

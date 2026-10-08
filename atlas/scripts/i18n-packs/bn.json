@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "আচার",
   "chat.vibe.kids": "শিশু",
   "chat.vibe.puzzle": "ধাঁধা",
-  "chat.answer.howToPlay": "**{name}** — কীভাবে খেলবেন:\n{steps}\n\nআদর্শ অংশগ্রহণকারী: {participants}. প্রয়োজনীয়তা, রূপভেদ বা কেনার লিঙ্ক জিজ্ঞাসা করতে পারেন।",
+  "chat.answer.howToPlay": "**{name}** — কীভাবে খেলবেন:\n{steps}\n\n**কীভাবে জিতবেন**\n{howToWin}\n\n**ভাঙা যাবে না এমন নিয়ম**\n{rules}\n\nআদর্শ অংশগ্রহণকারী: {participants}. প্রয়োজনীয়তা, রূপভেদ বা কেনার লিঙ্ক জিজ্ঞাসা করতে পারেন।",
   "chat.answer.purchaseNone": "**{name}**-এর দোকানের লিঙ্ক এখনো নেই। বিস্তারিত জানতে তালিকার পৃষ্ঠা খুলতে পারেন।",
   "chat.answer.purchase": "**{name}**-এর কেনার বিকল্প (বিভিন্ন প্ল্যাটফর্মের পণ্য পৃষ্ঠা):\n{links}\n\nকেনার আগে আপনার অঞ্চলে শিপিং তুলনা করুন।",
   "chat.answer.about": "**{name}**\nউৎস: {origin} · {civilization}\nপ্রায় তৈরি: {year}\nশ্রেণি: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "ঠিক আছে, নোট করলাম।",
   "chat.smalltalk.well": "আমি ভালো—উপযুক্ত খেলা খোঁজাই বেশি জরুরি। কোন লাইন?",
   "chat.smalltalk.thanks": "স্বাগতম। তালিকার আরও একটি ইঙ্গিত?",
-  "chat.followup.chatty": "আরও সঙ্কুচিত করা যায়, বা বলুন “অবাক করো”."
+  "chat.followup.chatty": "আরও সঙ্কুচিত করা যায়, বা বলুন “অবাক করো”.",
+  "detail.howToWin": "কীভাবে জিতবেন",
+  "detail.rulesNotToBreak": "ভাঙা যাবে না এমন নিয়ম"
 }

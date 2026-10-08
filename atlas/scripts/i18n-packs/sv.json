@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ritual",
   "chat.vibe.kids": "barn",
   "chat.vibe.puzzle": "pussel",
-  "chat.answer.howToPlay": "**{name}** — hur man spelar:\n{steps}\n\nIdeala deltagare: {participants}. Fråga om krav, varianter eller köplänkar.",
+  "chat.answer.howToPlay": "**{name}** — hur man spelar:\n{steps}\n\n**Hur man vinner**\n{howToWin}\n\n**Regler som inte får brytas**\n{rules}\n\nIdeala deltagare: {participants}. Fråga om krav, varianter eller köplänkar.",
   "chat.answer.purchaseNone": "Jag har inga butikslänkar för **{name}** än. Öppna katalogsidan för detaljer.",
   "chat.answer.purchase": "Köpalternativ för **{name}** (produktsidor på olika plattformar):\n{links}\n\nJämför frakt till din region före köp.",
   "chat.answer.about": "**{name}**\nUrsprung: {origin} · {civilization}\nUngefär skapat: {year}\nKategori: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Okej, noterat.",
   "chat.smalltalk.well": "Jag mår bra—viktigare att hitta rätt spel. Vilken linje?",
   "chat.smalltalk.thanks": "Varsågod. En katalogledtråd till?",
-  "chat.followup.chatty": "Vi kan snäva in mer, eller säg “överraska mig”."
+  "chat.followup.chatty": "Vi kan snäva in mer, eller säg “överraska mig”.",
+  "detail.howToWin": "Hur man vinner",
+  "detail.rulesNotToBreak": "Regler som inte får brytas"
 }

@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "tamaduni",
   "chat.vibe.kids": "watoto",
   "chat.vibe.puzzle": "fumbo",
-  "chat.answer.howToPlay": "**{name}** — jinsi ya kucheza:\n{steps}\n\nWashiriki bora: {participants}. Uliza mahitaji, tofauti, au viungo vya ununuzi.",
+  "chat.answer.howToPlay": "**{name}** — jinsi ya kucheza:\n{steps}\n\n**Jinsi ya kushinda**\n{howToWin}\n\n**Sheria zisizovunjwa**\n{rules}\n\nWashiriki wanaofaa: {participants}. Uliza mahitaji, tofauti, au viungo vya ununuzi.",
   "chat.answer.purchaseNone": "Bado sina viungo vya duka kwa **{name}**. Unaweza kufungua ukurasa wa katalogi.",
   "chat.answer.purchase": "Chaguo za ununuzi kwa **{name}** (kurasa za bidhaa kwenye majukwaa tofauti):\n{links}\n\nLinganisha usafekishaji kwa eneo lako kabla ya kununua.",
   "chat.answer.about": "**{name}**\nAsili: {origin} · {civilization}\nIliundwa takriban: {year}\nAina: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Sawa, nimeandika.",
   "chat.smalltalk.well": "Niko sawa—muhimu zaidi kupata mchezo unaofaa. Njia gani?",
   "chat.smalltalk.thanks": "Karibu. Dalili nyingine kutoka katalogi?",
-  "chat.followup.chatty": "Tunaweza kubana zaidi, au sema “nishangaze”."
+  "chat.followup.chatty": "Tunaweza kubana zaidi, au sema “nishangaze”.",
+  "detail.howToWin": "Jinsi ya kushinda",
+  "detail.rulesNotToBreak": "Sheria zisizovunjwa"
 }

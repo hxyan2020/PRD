@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "τελετουργικόν",
   "chat.vibe.kids": "παίδων",
   "chat.vibe.puzzle": "αἴνιγμα",
-  "chat.answer.howToPlay": "**{name}** — πῶς παίζειν:\n{steps}\n\nἸδανικοὶ μετέχοντες: {participants}. Ἐρώτα ἀπαιτήσεις, παραλλαγάς, ἢ συνδέσμους ὠνῆς.",
+  "chat.answer.howToPlay": "**{name}** — πῶς παίζειν:\n{steps}\n\n**Πῶς νικᾶν**\n{howToWin}\n\n**Νόμοι μὴ παραβατέοι**\n{rules}\n\nἸδανικοὶ μετέχοντες: {participants}. Ἐρώτα ἀπαιτήσεις, παραλλαγάς, ἢ συνδέσμους ὠνῆς.",
   "chat.answer.purchaseNone": "Οὔπω ἔχω συνδέσμους καταστημάτων ὑπὲρ **{name}**. Δύνασαι ἀνοῖξαι τὴν τοῦ καταλόγου σελίδα.",
   "chat.answer.purchase": "Αἱρέσεις ὠνῆς ὑπὲρ **{name}** (σελίδες προϊόντων ἐπὶ διαφόρων βάσεων):\n{links}\n\nΣύγκρινε τὴν ἀποστολὴν πρὸς τὴν σὴν χώραν πρὸ τῆς ὠνῆς.",
   "chat.answer.about": "**{name}**\nἈρχή: {origin} · {civilization}\nΠερίπου ἐγένετο: {year}\nΓένος: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Εὖ γε, ἐσημειωσάμην.",
   "chat.smalltalk.well": "Εὖ ἔχω—κυριώτερον εὑρεῖν ἁρμόζον παίγνιον. Ποία γραμμή;",
   "chat.smalltalk.thanks": "Ἡδέως. Ἄλλη ἔνδειξις ἐκ καταλόγου;",
-  "chat.followup.chatty": "Δυνάμεθα στενῶσαι, ἢ εἰπὲ «Surprise me»."
+  "chat.followup.chatty": "Δυνάμεθα στενῶσαι, ἢ εἰπὲ «Surprise me».",
+  "detail.howToWin": "Πῶς νικᾶν",
+  "detail.rulesNotToBreak": "Νόμοι μὴ παραβατέοι"
 }

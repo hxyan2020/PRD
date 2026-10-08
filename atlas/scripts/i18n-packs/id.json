@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ritual",
   "chat.vibe.kids": "anak-anak",
   "chat.vibe.puzzle": "teka-teki",
-  "chat.answer.howToPlay": "**{name}** — cara bermain:\n{steps}\n\nPeserta ideal: {participants}. Tanya persyaratan, variasi, atau tautan pembelian jika mau.",
+  "chat.answer.howToPlay": "**{name}** — cara bermain:\n{steps}\n\n**Cara menang**\n{howToWin}\n\n**Aturan yang tidak boleh dilanggar**\n{rules}\n\nPeserta ideal: {participants}. Tanya persyaratan, variasi, atau tautan pembelian jika mau.",
   "chat.answer.purchaseNone": "Saya belum punya tautan toko untuk **{name}**. Anda masih bisa membuka halaman katalog.",
   "chat.answer.purchase": "Opsi pembelian untuk **{name}** (halaman produk di berbagai platform):\n{links}\n\nBandingkan pengiriman ke wilayah Anda sebelum membeli.",
   "chat.answer.about": "**{name}**\nAsal: {origin} · {civilization}\nKurang lebih dibuat: {year}\nKategori: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Baik, dicatat.",
   "chat.smalltalk.well": "Saya baik—lebih penting menemukan permainan yang cocok. Jalur mana?",
   "chat.smalltalk.thanks": "Sama-sama. Petunjuk katalog lagi?",
-  "chat.followup.chatty": "Bisa dipersempit lagi, atau bilang “kejutkan saya”."
+  "chat.followup.chatty": "Bisa dipersempit lagi, atau bilang “kejutkan saya”.",
+  "detail.howToWin": "Cara menang",
+  "detail.rulesNotToBreak": "Aturan yang tidak boleh dilanggar"
 }

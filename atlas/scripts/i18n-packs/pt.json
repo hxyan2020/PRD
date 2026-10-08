@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ritual",
   "chat.vibe.kids": "infantil",
   "chat.vibe.puzzle": "de puzzles",
-  "chat.answer.howToPlay": "**{name}** — como jogar:\n{steps}\n\nParticipantes ideais: {participants}. Pergunte por requisitos, variações ou ligações de compra se quiser.",
+  "chat.answer.howToPlay": "**{name}** — como jogar:\n{steps}\n\n**Como vencer**\n{howToWin}\n\n**Regras que não se podem quebrar**\n{rules}\n\nParticipantes ideais: {participants}. Pergunte por requisitos, variações ou ligações de compra se quiser.",
   "chat.answer.purchaseNone": "Ainda não tenho ligações de loja para **{name}**. Pode abrir a página do catálogo para detalhes.",
   "chat.answer.purchase": "Opções de compra para **{name}** (páginas de produto em plataformas diferentes):\n{links}\n\nCompare o envio para a sua região antes de comprar.",
   "chat.answer.about": "**{name}**\nOrigem: {origin} · {civilization}\nCriado aproximadamente: {year}\nCategoria: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Certo, anotado.",
   "chat.smalltalk.well": "Estou bem — importa mais ajudar a encontrar um bom jogo. Que fio prefere?",
   "chat.smalltalk.thanks": "De nada. Quer outra pista do catálogo?",
-  "chat.followup.chatty": "Podemos afinar mais, ou diga “surpreenda-me”."
+  "chat.followup.chatty": "Podemos afinar mais, ou diga “surpreenda-me”.",
+  "detail.howToWin": "Como vencer",
+  "detail.rulesNotToBreak": "Regras que não se podem quebrar"
 }

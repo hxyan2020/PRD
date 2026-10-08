@@ -39,6 +39,10 @@ export type Game = {
   images: string[];
   description: string;
   howToPlay: string[];
+  /** Win conditions shown under How to play. */
+  howToWin: string[];
+  /** Hard rules / fouls / safety limits shown under How to play. */
+  rulesNotToBreak: string[];
   purchaseLinks: PurchaseLink[];
   requirements: string[];
   idealParticipants: string;

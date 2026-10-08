@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ritüel",
   "chat.vibe.kids": "çocuk",
   "chat.vibe.puzzle": "bulmaca",
-  "chat.answer.howToPlay": "**{name}** — nasıl oynanır:\n{steps}\n\nİdeal katılımcılar: {participants}. Gereksinim, çeşit veya satın alma bağlantısı sorabilirsiniz.",
+  "chat.answer.howToPlay": "**{name}** — nasıl oynanır:\n{steps}\n\n**Nasıl kazanılır**\n{howToWin}\n\n**Çiğnenmemesi gereken kurallar**\n{rules}\n\nİdeal katılımcılar: {participants}. Gereksinimler, çeşitler veya satın alma bağlantıları sorun.",
   "chat.answer.purchaseNone": "**{name}** için henüz mağaza bağlantım yok. Ayrıntılar için katalog sayfasını açabilirsiniz.",
   "chat.answer.purchase": "**{name}** satın alma seçenekleri (farklı platformlardaki ürün sayfaları):\n{links}\n\nSatın almadan önce bölgenize kargoyu karşılaştırın.",
   "chat.answer.about": "**{name}**\nKöken: {origin} · {civilization}\nYaklaşık oluşum: {year}\nKategori: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Tamam, not ettim.",
   "chat.smalltalk.well": "İyiyim—uygun oyunu bulmak daha önemli. Hangi çizgi?",
   "chat.smalltalk.thanks": "Rica ederim. Katalogdan başka bir ipucu?",
-  "chat.followup.chatty": "Daha da daraltabiliriz, ya da “şaşırt beni” deyin."
+  "chat.followup.chatty": "Daha da daraltabiliriz, ya da “şaşırt beni” deyin.",
+  "detail.howToWin": "Nasıl kazanılır",
+  "detail.rulesNotToBreak": "Çiğnenmemesi gereken kurallar"
 }

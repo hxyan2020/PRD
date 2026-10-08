@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "טקס",
   "chat.vibe.kids": "ילדים",
   "chat.vibe.puzzle": "חידות",
-  "chat.answer.howToPlay": "**{name}** — איך משחקים:\n{steps}\n\nמשתתפים אידיאליים: {participants}. שאלו על דרישות, וריאציות או קישורי רכישה.",
+  "chat.answer.howToPlay": "**{name}** — איך משחקים:\n{steps}\n\n**איך לנצח**\n{howToWin}\n\n**כללים שאסור לשבור**\n{rules}\n\nמשתתפים אידיאליים: {participants}. שאלו על דרישות, וריאציות או קישורי רכישה.",
   "chat.answer.purchaseNone": "אין לי עדיין קישורי חנות ל־**{name}**. אפשר לפתוח את דף הקטלוג לפרטים.",
   "chat.answer.purchase": "אפשרויות רכישה ל־**{name}** (דפי מוצר בפלטפורמות שונות):\n{links}\n\nהשוו משלוח לאזור שלכם לפני הקנייה.",
   "chat.answer.about": "**{name}**\nמקור: {origin} · {civilization}\nנוצר בערך: {year}\nקטגוריה: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "בסדר, רשמתי.",
   "chat.smalltalk.well": "אני בסדר—חשוב יותר למצוא משחק מתאים. איזה קו?",
   "chat.smalltalk.thanks": "בשמחה. עוד רמז מהקטלוג?",
-  "chat.followup.chatty": "אפשר לצמצם עוד, או אמרו “הפתיעו אותי”."
+  "chat.followup.chatty": "אפשר לצמצם עוד, או אמרו “הפתיעו אותי”.",
+  "detail.howToWin": "איך לנצח",
+  "detail.rulesNotToBreak": "כללים שאסור לשבור"
 }

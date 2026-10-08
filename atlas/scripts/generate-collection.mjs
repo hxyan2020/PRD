@@ -2,7 +2,7 @@
  * Generates 1000+ historical toys & games.
  * Fundamentally identical cultural forms are nested as variations.
  */
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PLAIN_ARCHETYPES } from "./plain-archetypes.mjs";
@@ -103,6 +103,82 @@ function polishSeedCopy(seed) {
     ...seed,
     description: polishLine(seed.description, country, civ),
     howToPlay: (seed.howToPlay || []).map((step) => polishLine(step, country, civ)),
+    howToWin: (seed.howToWin || []).map((step) => polishLine(step, country, civ)),
+    rulesNotToBreak: (seed.rulesNotToBreak || []).map((step) =>
+      polishLine(step, country, civ),
+    ),
+  };
+}
+
+/** English win/rules authored by scripts/build-win-rules.mjs */
+const WIN_RULES_EN = JSON.parse(
+  readFileSync(new URL("./win-rules-en.json", import.meta.url), "utf8"),
+);
+
+function uniqLines(list) {
+  const out = [];
+  const seen = new Set();
+  for (const s of list || []) {
+    const t = String(s || "").trim();
+    if (!t || seen.has(t)) continue;
+    seen.add(t);
+    out.push(t);
+  }
+  return out;
+}
+
+function deriveWinRules(howToPlay, { name = "", category = "" } = {}) {
+  const win = [];
+  const rules = [];
+  for (const s of howToPlay || []) {
+    if (
+      /\b(win|wins|winner|checkmate|majority|highest score|first to|score one|scores? |bear off|bankrupt|topples?|last player|most seeds|higher (total|score|store))\b/i.test(
+        s,
+      )
+    ) {
+      win.push(s);
+    }
+    if (
+      /\b(never|do not|don't|avoid|must not|illegal|foul|no shoving|no hands|stop (at once|immediately)|not aim|not share|not leave|forbid)\b/i.test(
+        s,
+      )
+    ) {
+      rules.push(s);
+    }
+  }
+  if (!win.length) {
+    if (/Dolls|Musical|Construction|Ritual/i.test(category)) {
+      win.push(
+        "There is no competitive score—succeed by completing the intended play safely and as described in the steps.",
+      );
+    } else {
+      win.push(
+        "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps.",
+      );
+    }
+  }
+  if (!rules.length) {
+    rules.push("Follow turn order and any house rules everyone agreed before play.");
+    rules.push("Stop immediately if equipment breaks or anyone risks injury.");
+  }
+  return {
+    howToWin: uniqLines(win).slice(0, 3),
+    rulesNotToBreak: uniqLines(rules).slice(0, 4),
+  };
+}
+
+function attachWinRules(seed) {
+  if (seed.howToWin?.length && seed.rulesNotToBreak?.length) return seed;
+  const fromArch =
+    seed.archetypeKey && WIN_RULES_EN.archetypes?.[seed.archetypeKey];
+  const fromName = WIN_RULES_EN.curatedByName?.[seed.name];
+  const pack = fromArch || fromName || deriveWinRules(seed.howToPlay, seed);
+  return {
+    ...seed,
+    howToWin: seed.howToWin?.length ? seed.howToWin : pack.howToWin,
+    rulesNotToBreak: seed.rulesNotToBreak?.length
+      ? seed.rulesNotToBreak
+      : pack.rulesNotToBreak,
   };
 }
 
@@ -2558,6 +2634,8 @@ function toGame(seed, index) {
     images,
     description: seed.description,
     howToPlay: seed.howToPlay,
+    howToWin: seed.howToWin || [],
+    rulesNotToBreak: seed.rulesNotToBreak || [],
     purchaseLinks: pickPurchase(seed.purchase, salt),
     requirements: seed.requirements,
     idealParticipants: seed.idealParticipants,
@@ -2579,7 +2657,7 @@ async function main() {
     // Allow region-qualified names; block exact duplicates
     if (seen.has(key)) return false;
     seen.add(key);
-    games.push(toGame(polishSeedCopy(seed), games.length + 1));
+    games.push(toGame(polishSeedCopy(attachWinRules(seed)), games.length + 1));
     return true;
   }
 

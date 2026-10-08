@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "rytualna",
   "chat.vibe.kids": "dziecięca",
   "chat.vibe.puzzle": "łamigłówka",
-  "chat.answer.howToPlay": "**{name}** — jak grać:\n{steps}\n\nIdealni uczestnicy: {participants}. Zapytaj o wymagania, warianty lub linki zakupu.",
+  "chat.answer.howToPlay": "**{name}** — jak grać:\n{steps}\n\n**Jak wygrać**\n{howToWin}\n\n**Zasady, których nie wolno łamać**\n{rules}\n\nIdealni uczestnicy: {participants}. Zapytaj o wymagania, warianty lub linki zakupu.",
   "chat.answer.purchaseNone": "Nie mam jeszcze linków sklepowych dla **{name}**. Możesz otworzyć stronę katalogu.",
   "chat.answer.purchase": "Opcje zakupu **{name}** (strony produktów na różnych platformach):\n{links}\n\nPorównaj wysyłkę do swojego regionu przed zakupem.",
   "chat.answer.about": "**{name}**\nPochodzenie: {origin} · {civilization}\nW przybliżeniu powstało: {year}\nKategoria: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Dobrze, zanotowane.",
   "chat.smalltalk.well": "U mnie w porządku—ważniejsze znaleźć dobrą grę. Jaka linia?",
   "chat.smalltalk.thanks": "Proszę. Jeszcze wskazówka z katalogu?",
-  "chat.followup.chatty": "Możemy zawęzić albo powiedz „zaskocz mnie”."
+  "chat.followup.chatty": "Możemy zawęzić albo powiedz „zaskocz mnie”.",
+  "detail.howToWin": "Jak wygrać",
+  "detail.rulesNotToBreak": "Zasady, których nie wolno łamać"
 }

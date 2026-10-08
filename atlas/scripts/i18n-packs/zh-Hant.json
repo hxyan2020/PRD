@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "儀式",
   "chat.vibe.kids": "親子",
   "chat.vibe.puzzle": "益智",
-  "chat.answer.howToPlay": "**{name}** — 玩法：\n{steps}\n\n理想參與者：{participants}。也可詢問所需物品、變體或購買連結。",
+  "chat.answer.howToPlay": "**{name}** — 玩法：\n{steps}\n\n**如何獲勝**\n{howToWin}\n\n**不可違反的規則**\n{rules}\n\n理想參與者：{participants}。也可詢問所需物品、變體或購買連結。",
   "chat.answer.purchaseNone": "我還沒有 **{name}** 的商店連結。仍可打開其目錄頁查看詳情。",
   "chat.answer.purchase": "**{name}** 的購買選項（不同平台的商品頁）：\n{links}\n\n購買前請比較寄往你所在地區的運費。",
   "chat.answer.about": "**{name}**\n起源：{origin} · {civilization}\n大約創於：{year}\n類別：{category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "好的，記下了。",
   "chat.smalltalk.well": "我還好——更關心幫你找到合適的玩法。想看哪一類？",
   "chat.smalltalk.thanks": "不客氣。還想再挖一條目錄線索嗎？",
-  "chat.followup.chatty": "還可以再收窄一點，或直接說「驚喜一下」。"
+  "chat.followup.chatty": "還可以再收窄一點，或直接說「驚喜一下」。",
+  "detail.howToWin": "如何獲勝",
+  "detail.rulesNotToBreak": "不可違反的規則"
 }

@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "Ritual",
   "chat.vibe.kids": "Kinder",
   "chat.vibe.puzzle": "Rätsel",
-  "chat.answer.howToPlay": "**{name}** — so spielt man:\n{steps}\n\nIdeale Teilnehmer: {participants}. Frag nach Voraussetzungen, Varianten oder Kauf-Links.",
+  "chat.answer.howToPlay": "**{name}** — so spielt man:\n{steps}\n\n**So gewinnt man**\n{howToWin}\n\n**Regeln, die man nicht brechen darf**\n{rules}\n\nIdeale Teilnehmer: {participants}. Frag nach Voraussetzungen, Varianten oder Kauf-Links.",
   "chat.answer.purchaseNone": "Für **{name}** habe ich noch keine Shop-Links. Die Katalogseite hat trotzdem Details.",
   "chat.answer.purchase": "Kaufoptionen für **{name}** (Produktseiten auf verschiedenen Plattformen):\n{links}\n\nVergleiche den Versand in deine Region vor dem Kauf.",
   "chat.answer.about": "**{name}**\nHerkunft: {origin} · {civilization}\nEtwa entstanden: {year}\nKategorie: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Alles klar, notiert.",
   "chat.smalltalk.well": "Mir geht’s gut — wichtiger ist, das passende Spiel zu finden. Welche Richtung?",
   "chat.smalltalk.thanks": "Gern geschehen. Noch eine Katalogspur?",
-  "chat.followup.chatty": "Wir können noch eingrenzen — oder sag „überrasche mich“."
+  "chat.followup.chatty": "Wir können noch eingrenzen — oder sag „überrasche mich“.",
+  "detail.howToWin": "So gewinnt man",
+  "detail.rulesNotToBreak": "Regeln, die man nicht brechen darf"
 }

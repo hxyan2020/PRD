@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ritus",
   "chat.vibe.kids": "puerilis",
   "chat.vibe.puzzle": "aenigma",
-  "chat.answer.howToPlay": "**{name}** — quomodo ludatur:\n{steps}\n\nParticipes ideales: {participants}. De requisitis, variationibus, nexus emptionis roga.",
+  "chat.answer.howToPlay": "**{name}** — quomodo ludatur:\n{steps}\n\n**Quomodo vincatur**\n{howToWin}\n\n**Leges non frangendae**\n{rules}\n\nParticipes ideales: {participants}. De requisitis, variationibus, nexus emptionis roga.",
   "chat.answer.purchaseNone": "Nondum nexus tabernarum pro **{name}** habeo. Paginam catalogi aperire potes.",
   "chat.answer.purchase": "Optiones emptionis pro **{name}** (paginae productorum in variis suggestis):\n{links}\n\nMissiones ad regionem tuam ante emptionem compara.",
   "chat.answer.about": "**{name}**\nOrigo: {origin} · {civilization}\nFere creatum: {year}\nGenus: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Bene, notavi.",
   "chat.smalltalk.well": "Bene valeo—magis interest ludum aptum invenire. Quae linea?",
   "chat.smalltalk.thanks": "Libenter. Aliud indicium e catalogo?",
-  "chat.followup.chatty": "Possumus angustius, aut dic “Surprise me”."
+  "chat.followup.chatty": "Possumus angustius, aut dic “Surprise me”.",
+  "detail.howToWin": "Quomodo vincatur",
+  "detail.rulesNotToBreak": "Leges non frangendae"
 }

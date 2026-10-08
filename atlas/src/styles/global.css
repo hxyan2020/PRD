@@ -911,6 +911,24 @@ select {
   margin-bottom: 0.55rem;
 }
 
+.detail-howto-sub {
+  margin-top: 1.35rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
+}
+
+.detail-howto-sub h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: var(--mist);
+  letter-spacing: 0.01em;
+}
+
+.detail-howto-sub ul {
+  margin: 0;
+}
+
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));

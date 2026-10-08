@@ -217,7 +217,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "parṣu",
     "chat.vibe.kids": "ṣeḫru",
     "chat.vibe.puzzle": "ḫidûtu",
-    "chat.answer.howToPlay": "**{name}** — akī mēlulti:\n{steps}\n\nṢābū namrūtu: {participants}. Šâl ḫišīḫti, šanâti, ū lū rikis šîmi.",
+    "chat.answer.howToPlay": "**{name}** — akī mēlulti:\n{steps}\n\n**How to win**\n{howToWin}\n\n**Rules not to break**\n{rules}\n\nṢābū namrūtu: {participants}. Šâl ḫišīḫti, šanâti, ū lū rikis šîmi.",
     "chat.answer.purchaseNone": "Adīni rikis bītātīya ana **{name}** ul ibašši. Ṭuppa kisri petê têleʾʾe.",
     "chat.answer.purchase": "Nigût šîmi ana **{name}** (ṭuppāt šīmī ina nērebēti šanâti):\n{links}\n\nLām šâmi našparta ana mātika muḫḫir.",
     "chat.answer.about": "**{name}**\nAṣû: {origin} · {civilization}\nEpešu qerbu: {year}\nIsqu: {category}\n\n{description}",
@@ -331,7 +331,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Alright, noted.",
     "chat.smalltalk.well": "I’m fine—finding a good match matters more. Which thread?",
     "chat.smalltalk.thanks": "You’re welcome. Another catalog cue?",
-    "chat.followup.chatty": "We can narrow further, or say “Surprise me”."
+    "chat.followup.chatty": "We can narrow further, or say “Surprise me”.",
+    "detail.howToWin": "How to win",
+    "detail.rulesNotToBreak": "Rules not to break"
   },
   "ar": {
     "nav.home": "الرئيسية",
@@ -547,7 +549,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "طقوسي",
     "chat.vibe.kids": "للأطفال",
     "chat.vibe.puzzle": "ألغاز",
-    "chat.answer.howToPlay": "**{name}** — طريقة اللعب:\n{steps}\n\nالمشاركون المثاليون: {participants}. اسأل عن المتطلبات أو التنويعات أو روابط الشراء.",
+    "chat.answer.howToPlay": "**{name}** — طريقة اللعب:\n{steps}\n\n**كيف تفوز**\n{howToWin}\n\n**قواعد لا تُكسر**\n{rules}\n\nالمشاركون المثاليون: {participants}. اسأل عن المتطلبات أو التنويعات أو روابط الشراء.",
     "chat.answer.purchaseNone": "ليست لدي روابط متاجر لـ **{name}** بعد. يمكنك فتح صفحة الفهرس للتفاصيل.",
     "chat.answer.purchase": "خيارات شراء **{name}** (صفحات منتجات على منصات مختلفة):\n{links}\n\nقارن الشحن إلى منطقتك قبل الشراء.",
     "chat.answer.about": "**{name}**\nالأصل: {origin} · {civilization}\nأُنشئ تقريبًا: {year}\nالفئة: {category}\n\n{description}",
@@ -661,7 +663,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "حسنًا، سجّلت.",
     "chat.smalltalk.well": "بخير — الأهم أن نجد لعبة مناسبة. أي مسار تفضّل؟",
     "chat.smalltalk.thanks": "على الرحب. هل نتابع إشارة أخرى من الفهرس؟",
-    "chat.followup.chatty": "يمكن التضييق أكثر، أو قل «فاجئني»."
+    "chat.followup.chatty": "يمكن التضييق أكثر، أو قل «فاجئني».",
+    "detail.howToWin": "كيف تفوز",
+    "detail.rulesNotToBreak": "قواعد لا تُكسر"
   },
   "bn": {
     "nav.home": "হোম",
@@ -877,7 +881,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "আচার",
     "chat.vibe.kids": "শিশু",
     "chat.vibe.puzzle": "ধাঁধা",
-    "chat.answer.howToPlay": "**{name}** — কীভাবে খেলবেন:\n{steps}\n\nআদর্শ অংশগ্রহণকারী: {participants}. প্রয়োজনীয়তা, রূপভেদ বা কেনার লিঙ্ক জিজ্ঞাসা করতে পারেন।",
+    "chat.answer.howToPlay": "**{name}** — কীভাবে খেলবেন:\n{steps}\n\n**কীভাবে জিতবেন**\n{howToWin}\n\n**ভাঙা যাবে না এমন নিয়ম**\n{rules}\n\nআদর্শ অংশগ্রহণকারী: {participants}. প্রয়োজনীয়তা, রূপভেদ বা কেনার লিঙ্ক জিজ্ঞাসা করতে পারেন।",
     "chat.answer.purchaseNone": "**{name}**-এর দোকানের লিঙ্ক এখনো নেই। বিস্তারিত জানতে তালিকার পৃষ্ঠা খুলতে পারেন।",
     "chat.answer.purchase": "**{name}**-এর কেনার বিকল্প (বিভিন্ন প্ল্যাটফর্মের পণ্য পৃষ্ঠা):\n{links}\n\nকেনার আগে আপনার অঞ্চলে শিপিং তুলনা করুন।",
     "chat.answer.about": "**{name}**\nউৎস: {origin} · {civilization}\nপ্রায় তৈরি: {year}\nশ্রেণি: {category}\n\n{description}",
@@ -991,7 +995,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "ঠিক আছে, নোট করলাম।",
     "chat.smalltalk.well": "আমি ভালো—উপযুক্ত খেলা খোঁজাই বেশি জরুরি। কোন লাইন?",
     "chat.smalltalk.thanks": "স্বাগতম। তালিকার আরও একটি ইঙ্গিত?",
-    "chat.followup.chatty": "আরও সঙ্কুচিত করা যায়, বা বলুন “অবাক করো”."
+    "chat.followup.chatty": "আরও সঙ্কুচিত করা যায়, বা বলুন “অবাক করো”.",
+    "detail.howToWin": "কীভাবে জিতবেন",
+    "detail.rulesNotToBreak": "ভাঙা যাবে না এমন নিয়ম"
   },
   "de": {
     "nav.home": "Start",
@@ -1207,7 +1213,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "Ritual",
     "chat.vibe.kids": "Kinder",
     "chat.vibe.puzzle": "Rätsel",
-    "chat.answer.howToPlay": "**{name}** — so spielt man:\n{steps}\n\nIdeale Teilnehmer: {participants}. Frag nach Voraussetzungen, Varianten oder Kauf-Links.",
+    "chat.answer.howToPlay": "**{name}** — so spielt man:\n{steps}\n\n**So gewinnt man**\n{howToWin}\n\n**Regeln, die man nicht brechen darf**\n{rules}\n\nIdeale Teilnehmer: {participants}. Frag nach Voraussetzungen, Varianten oder Kauf-Links.",
     "chat.answer.purchaseNone": "Für **{name}** habe ich noch keine Shop-Links. Die Katalogseite hat trotzdem Details.",
     "chat.answer.purchase": "Kaufoptionen für **{name}** (Produktseiten auf verschiedenen Plattformen):\n{links}\n\nVergleiche den Versand in deine Region vor dem Kauf.",
     "chat.answer.about": "**{name}**\nHerkunft: {origin} · {civilization}\nEtwa entstanden: {year}\nKategorie: {category}\n\n{description}",
@@ -1321,7 +1327,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Alles klar, notiert.",
     "chat.smalltalk.well": "Mir geht’s gut — wichtiger ist, das passende Spiel zu finden. Welche Richtung?",
     "chat.smalltalk.thanks": "Gern geschehen. Noch eine Katalogspur?",
-    "chat.followup.chatty": "Wir können noch eingrenzen — oder sag „überrasche mich“."
+    "chat.followup.chatty": "Wir können noch eingrenzen — oder sag „überrasche mich“.",
+    "detail.howToWin": "So gewinnt man",
+    "detail.rulesNotToBreak": "Regeln, die man nicht brechen darf"
   },
   "egy": {
     "nav.home": "pr",
@@ -1537,7 +1545,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ı͗rı͗t nṯr",
     "chat.vibe.kids": "msw",
     "chat.vibe.puzzle": "ṯnı͗",
-    "chat.answer.howToPlay": "**{name}** — sbꜣyt hbʿ:\n{steps}\n\nı͗nw rmt mtr: {participants}. ḳı͗s ı͗ḫt, ḫprw, ḫsf ı͗sw.",
+    "chat.answer.howToPlay": "**{name}** — sbꜣyt hbʿ:\n{steps}\n\n**How to win**\n{howToWin}\n\n**Rules not to break**\n{rules}\n\nı͗nw rmt mtr: {participants}. ḳı͗s ı͗ḫt, ḫprw, ḫsf ı͗sw.",
     "chat.answer.purchaseNone": "nn wn ḫsf ḥwt n **{name}** ı͗w.tı͗. wn.k r wn ḥr sšmw.",
     "chat.answer.purchase": "stp ı͗sw n **{name}** (ḥr n ḫt ḥr ḥwt šbn):\n{links}\n\nṯnw šdı͗t r tꜣ.k ḫft ı͗sw.",
     "chat.answer.about": "**{name}**\nḫpr: {origin} · {civilization}\nḳmꜣ ḳı͗b: {year}\ndnit: {category}\n\n{description}",
@@ -1651,7 +1659,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Alright, noted.",
     "chat.smalltalk.well": "I’m fine—finding a good match matters more. Which thread?",
     "chat.smalltalk.thanks": "You’re welcome. Another catalog cue?",
-    "chat.followup.chatty": "We can narrow further, or say “Surprise me”."
+    "chat.followup.chatty": "We can narrow further, or say “Surprise me”.",
+    "detail.howToWin": "How to win (nḫt)",
+    "detail.rulesNotToBreak": "Rules not to break (tp-rd)"
   },
   "el": {
     "nav.home": "Αρχική",
@@ -1867,7 +1877,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "τελετουργικό",
     "chat.vibe.kids": "παιδιών",
     "chat.vibe.puzzle": "γρίφων",
-    "chat.answer.howToPlay": "**{name}** — πώς παίζεται:\n{steps}\n\nΙδανικοί συμμετέχοντες: {participants}. Ρωτήστε για απαιτήσεις, παραλλαγές ή συνδέσμους αγοράς.",
+    "chat.answer.howToPlay": "**{name}** — πώς παίζεται:\n{steps}\n\n**Πώς κερδίζεις**\n{howToWin}\n\n**Κανόνες που δεν πρέπει να σπάσεις**\n{rules}\n\nΙδανικοί συμμετέχοντες: {participants}. Ρωτήστε για απαιτήσεις, παραλλαγές ή συνδέσμους αγοράς.",
     "chat.answer.purchaseNone": "Δεν έχω ακόμη συνδέσμους καταστημάτων για **{name}**. Μπορείτε να ανοίξετε τη σελίδα καταλόγου.",
     "chat.answer.purchase": "Επιλογές αγοράς για **{name}** (σελίδες προϊόντων σε διαφορετικές πλατφόρμες):\n{links}\n\nΣυγκρίνετε την αποστολή στην περιοχή σας πριν αγοράσετε.",
     "chat.answer.about": "**{name}**\nΚαταγωγή: {origin} · {civilization}\nΠερίπου δημιουργήθηκε: {year}\nΚατηγορία: {category}\n\n{description}",
@@ -1981,7 +1991,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Εντάξει, το σημείωσα.",
     "chat.smalltalk.well": "Είμαι καλά—πιο σημαντικό να βρούμε κατάλληλο παιχνίδι. Ποια γραμμή;",
     "chat.smalltalk.thanks": "Παρακαλώ. Άλλη ένδειξη από τον κατάλογο;",
-    "chat.followup.chatty": "Μπορούμε να στενέψουμε ή πες «έκπληξέ με»."
+    "chat.followup.chatty": "Μπορούμε να στενέψουμε ή πες «έκπληξέ με».",
+    "detail.howToWin": "Πώς κερδίζεις",
+    "detail.rulesNotToBreak": "Κανόνες που δεν πρέπει να σπάσεις"
   },
   "es": {
     "nav.home": "Inicio",
@@ -2197,7 +2209,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ritual",
     "chat.vibe.kids": "infantil",
     "chat.vibe.puzzle": "de puzles",
-    "chat.answer.howToPlay": "**{name}** — cómo jugar:\n{steps}\n\nParticipantes ideales: {participants}. Pregunta por requisitos, variaciones o enlaces de compra si quieres.",
+    "chat.answer.howToPlay": "**{name}** — cómo jugar:\n{steps}\n\n**Cómo ganar**\n{howToWin}\n\n**Reglas que no se deben romper**\n{rules}\n\nParticipantes ideales: {participants}. Pregunta por requisitos, variaciones o enlaces de compra si quieres.",
     "chat.answer.purchaseNone": "Aún no tengo enlaces de tienda para **{name}**. Puedes abrir su página del catálogo para más detalles.",
     "chat.answer.purchase": "Opciones de compra para **{name}** (páginas de producto en distintas plataformas):\n{links}\n\nCompara el envío a tu región antes de comprar.",
     "chat.answer.about": "**{name}**\nOrigen: {origin} · {civilization}\nCreado aproximadamente: {year}\nCategoría: {category}\n\n{description}",
@@ -2311,7 +2323,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "De acuerdo, anotado.",
     "chat.smalltalk.well": "Estoy bien—me importa más ayudarte a encontrar un buen juego. ¿Qué tipo te apetece?",
     "chat.smalltalk.thanks": "De nada. ¿Seguimos con otra pista del catálogo?",
-    "chat.followup.chatty": "Podemos afinar un poco más, o di “sorpréndeme”."
+    "chat.followup.chatty": "Podemos afinar un poco más, o di “sorpréndeme”.",
+    "detail.howToWin": "Cómo ganar",
+    "detail.rulesNotToBreak": "Reglas que no se deben romper"
   },
   "fa": {
     "nav.home": "خانه",
@@ -2527,7 +2541,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "آیینی",
     "chat.vibe.kids": "کودکان",
     "chat.vibe.puzzle": "معمایی",
-    "chat.answer.howToPlay": "**{name}** — نحوهٔ بازی:\n{steps}\n\nشرکت‌کنندگان ایدئال: {participants}. دربارهٔ الزامات، گونه‌ها یا پیوندهای خرید بپرسید.",
+    "chat.answer.howToPlay": "**{name}** — نحوهٔ بازی:\n{steps}\n\n**چگونه برنده شوید**\n{howToWin}\n\n**قواعدی که نباید شکست**\n{rules}\n\nشرکت‌کنندگان ایدئال: {participants}. دربارهٔ الزامات، گونه‌ها یا پیوندهای خرید بپرسید.",
     "chat.answer.purchaseNone": "هنوز پیوند فروشگاهی برای **{name}** ندارم. می‌توانید صفحهٔ فهرست را باز کنید.",
     "chat.answer.purchase": "گزینه‌های خرید **{name}** (صفحات محصول در سکوهای مختلف):\n{links}\n\nپیش از خرید ارسال به منطقهٔ خود را مقایسه کنید.",
     "chat.answer.about": "**{name}**\nخاستگاه: {origin} · {civilization}\nتقریباً ساخته‌شده: {year}\nدسته: {category}\n\n{description}",
@@ -2641,7 +2655,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "باشه، یادداشت شد.",
     "chat.smalltalk.well": "خوبم—مهم‌تر پیدا کردن بازی مناسب است. کدام خط؟",
     "chat.smalltalk.thanks": "خواهش می‌کنم. نشانهٔ دیگری از فهرست؟",
-    "chat.followup.chatty": "می‌توان تنگ‌تر کرد، یا بگویید «غافلگیرم کن»."
+    "chat.followup.chatty": "می‌توان تنگ‌تر کرد، یا بگویید «غافلگیرم کن».",
+    "detail.howToWin": "چگونه برنده شوید",
+    "detail.rulesNotToBreak": "قواعدی که نباید شکست"
   },
   "fr": {
     "nav.home": "Accueil",
@@ -2857,7 +2873,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "rituel",
     "chat.vibe.kids": "enfants",
     "chat.vibe.puzzle": "casse-tête",
-    "chat.answer.howToPlay": "**{name}** — comment jouer :\n{steps}\n\nParticipants idéaux : {participants}. Demandez exigences, variantes ou liens d’achat si vous voulez.",
+    "chat.answer.howToPlay": "**{name}** — comment jouer :\n{steps}\n\n**Comment gagner**\n{howToWin}\n\n**Règles à ne pas enfreindre**\n{rules}\n\nParticipants idéaux : {participants}. Demandez exigences, variantes ou liens d’achat si vous voulez.",
     "chat.answer.purchaseNone": "Je n’ai pas encore de liens de magasin pour **{name}**. Vous pouvez ouvrir sa page catalogue pour les détails.",
     "chat.answer.purchase": "Options d’achat pour **{name}** (pages produit sur différentes plateformes) :\n{links}\n\nComparez la livraison vers votre région avant d’acheter.",
     "chat.answer.about": "**{name}**\nOrigine : {origin} · {civilization}\nCréé environ : {year}\nCatégorie : {category}\n\n{description}",
@@ -2971,7 +2987,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "D’accord, noté.",
     "chat.smalltalk.well": "Ça va — je préfère vous aider à trouver un bon jeu. Quel fil vous tente ?",
     "chat.smalltalk.thanks": "Avec plaisir. On creuse une autre piste du catalogue ?",
-    "chat.followup.chatty": "On peut encore affiner, ou dites « surprenez-moi »."
+    "chat.followup.chatty": "On peut encore affiner, ou dites « surprenez-moi ».",
+    "detail.howToWin": "Comment gagner",
+    "detail.rulesNotToBreak": "Règles à ne pas enfreindre"
   },
   "grc": {
     "nav.home": "Οἶκος",
@@ -3187,7 +3205,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "τελετουργικόν",
     "chat.vibe.kids": "παίδων",
     "chat.vibe.puzzle": "αἴνιγμα",
-    "chat.answer.howToPlay": "**{name}** — πῶς παίζειν:\n{steps}\n\nἸδανικοὶ μετέχοντες: {participants}. Ἐρώτα ἀπαιτήσεις, παραλλαγάς, ἢ συνδέσμους ὠνῆς.",
+    "chat.answer.howToPlay": "**{name}** — πῶς παίζειν:\n{steps}\n\n**Πῶς νικᾶν**\n{howToWin}\n\n**Νόμοι μὴ παραβατέοι**\n{rules}\n\nἸδανικοὶ μετέχοντες: {participants}. Ἐρώτα ἀπαιτήσεις, παραλλαγάς, ἢ συνδέσμους ὠνῆς.",
     "chat.answer.purchaseNone": "Οὔπω ἔχω συνδέσμους καταστημάτων ὑπὲρ **{name}**. Δύνασαι ἀνοῖξαι τὴν τοῦ καταλόγου σελίδα.",
     "chat.answer.purchase": "Αἱρέσεις ὠνῆς ὑπὲρ **{name}** (σελίδες προϊόντων ἐπὶ διαφόρων βάσεων):\n{links}\n\nΣύγκρινε τὴν ἀποστολὴν πρὸς τὴν σὴν χώραν πρὸ τῆς ὠνῆς.",
     "chat.answer.about": "**{name}**\nἈρχή: {origin} · {civilization}\nΠερίπου ἐγένετο: {year}\nΓένος: {category}\n\n{description}",
@@ -3301,7 +3319,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Εὖ γε, ἐσημειωσάμην.",
     "chat.smalltalk.well": "Εὖ ἔχω—κυριώτερον εὑρεῖν ἁρμόζον παίγνιον. Ποία γραμμή;",
     "chat.smalltalk.thanks": "Ἡδέως. Ἄλλη ἔνδειξις ἐκ καταλόγου;",
-    "chat.followup.chatty": "Δυνάμεθα στενῶσαι, ἢ εἰπὲ «Surprise me»."
+    "chat.followup.chatty": "Δυνάμεθα στενῶσαι, ἢ εἰπὲ «Surprise me».",
+    "detail.howToWin": "Πῶς νικᾶν",
+    "detail.rulesNotToBreak": "Νόμοι μὴ παραβατέοι"
   },
   "he": {
     "nav.home": "בית",
@@ -3517,7 +3537,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "טקס",
     "chat.vibe.kids": "ילדים",
     "chat.vibe.puzzle": "חידות",
-    "chat.answer.howToPlay": "**{name}** — איך משחקים:\n{steps}\n\nמשתתפים אידיאליים: {participants}. שאלו על דרישות, וריאציות או קישורי רכישה.",
+    "chat.answer.howToPlay": "**{name}** — איך משחקים:\n{steps}\n\n**איך לנצח**\n{howToWin}\n\n**כללים שאסור לשבור**\n{rules}\n\nמשתתפים אידיאליים: {participants}. שאלו על דרישות, וריאציות או קישורי רכישה.",
     "chat.answer.purchaseNone": "אין לי עדיין קישורי חנות ל־**{name}**. אפשר לפתוח את דף הקטלוג לפרטים.",
     "chat.answer.purchase": "אפשרויות רכישה ל־**{name}** (דפי מוצר בפלטפורמות שונות):\n{links}\n\nהשוו משלוח לאזור שלכם לפני הקנייה.",
     "chat.answer.about": "**{name}**\nמקור: {origin} · {civilization}\nנוצר בערך: {year}\nקטגוריה: {category}\n\n{description}",
@@ -3631,7 +3651,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "בסדר, רשמתי.",
     "chat.smalltalk.well": "אני בסדר—חשוב יותר למצוא משחק מתאים. איזה קו?",
     "chat.smalltalk.thanks": "בשמחה. עוד רמז מהקטלוג?",
-    "chat.followup.chatty": "אפשר לצמצם עוד, או אמרו “הפתיעו אותי”."
+    "chat.followup.chatty": "אפשר לצמצם עוד, או אמרו “הפתיעו אותי”.",
+    "detail.howToWin": "איך לנצח",
+    "detail.rulesNotToBreak": "כללים שאסור לשבור"
   },
   "hi": {
     "nav.home": "होम",
@@ -3847,7 +3869,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "अनुष्ठान",
     "chat.vibe.kids": "बच्चों का",
     "chat.vibe.puzzle": "पहेली",
-    "chat.answer.howToPlay": "**{name}** — कैसे खेलें:\n{steps}\n\nआदर्श प्रतिभागी: {participants}. आवश्यकताएँ, रूप या खरीद लिंक पूछ सकते हैं।",
+    "chat.answer.howToPlay": "**{name}** — कैसे खेलें:\n{steps}\n\n**कैसे जीतें**\n{howToWin}\n\n**न तोड़ने वाले नियम**\n{rules}\n\nआदर्श प्रतिभागी: {participants}. आवश्यकताएँ, रूप या खरीद लिंक पूछ सकते हैं।",
     "chat.answer.purchaseNone": "**{name}** के स्टोर लिंक अभी नहीं हैं। विवरण के लिए कैटलॉग पृष्ठ खोल सकते हैं।",
     "chat.answer.purchase": "**{name}** के खरीद विकल्प (विभिन्न प्लेटफ़ॉर्म पर उत्पाद पृष्ठ):\n{links}\n\nखरीदने से पहले अपने क्षेत्र की शिपिंग तुलना करें।",
     "chat.answer.about": "**{name}**\nउत्पत्ति: {origin} · {civilization}\nलगभग बना: {year}\nश्रेणी: {category}\n\n{description}",
@@ -3961,7 +3983,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "ठीक है, नोट किया।",
     "chat.smalltalk.well": "मैं ठीक हूँ—सही खेल ढूँढना ज़्यादा ज़रूरी है। कौन-सी लाइन?",
     "chat.smalltalk.thanks": "स्वागत है। सूची की एक और कड़ी?",
-    "chat.followup.chatty": "और सिकोड़ सकते हैं, या कहें “सरप्राइज़”."
+    "chat.followup.chatty": "और सिकोड़ सकते हैं, या कहें “सरप्राइज़”.",
+    "detail.howToWin": "कैसे जीतें",
+    "detail.rulesNotToBreak": "न तोड़ने वाले नियम"
   },
   "id": {
     "nav.home": "Beranda",
@@ -4177,7 +4201,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ritual",
     "chat.vibe.kids": "anak-anak",
     "chat.vibe.puzzle": "teka-teki",
-    "chat.answer.howToPlay": "**{name}** — cara bermain:\n{steps}\n\nPeserta ideal: {participants}. Tanya persyaratan, variasi, atau tautan pembelian jika mau.",
+    "chat.answer.howToPlay": "**{name}** — cara bermain:\n{steps}\n\n**Cara menang**\n{howToWin}\n\n**Aturan yang tidak boleh dilanggar**\n{rules}\n\nPeserta ideal: {participants}. Tanya persyaratan, variasi, atau tautan pembelian jika mau.",
     "chat.answer.purchaseNone": "Saya belum punya tautan toko untuk **{name}**. Anda masih bisa membuka halaman katalog.",
     "chat.answer.purchase": "Opsi pembelian untuk **{name}** (halaman produk di berbagai platform):\n{links}\n\nBandingkan pengiriman ke wilayah Anda sebelum membeli.",
     "chat.answer.about": "**{name}**\nAsal: {origin} · {civilization}\nKurang lebih dibuat: {year}\nKategori: {category}\n\n{description}",
@@ -4291,7 +4315,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Baik, dicatat.",
     "chat.smalltalk.well": "Saya baik—lebih penting menemukan permainan yang cocok. Jalur mana?",
     "chat.smalltalk.thanks": "Sama-sama. Petunjuk katalog lagi?",
-    "chat.followup.chatty": "Bisa dipersempit lagi, atau bilang “kejutkan saya”."
+    "chat.followup.chatty": "Bisa dipersempit lagi, atau bilang “kejutkan saya”.",
+    "detail.howToWin": "Cara menang",
+    "detail.rulesNotToBreak": "Aturan yang tidak boleh dilanggar"
   },
   "it": {
     "nav.home": "Home",
@@ -4507,7 +4533,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "rituale",
     "chat.vibe.kids": "per bambini",
     "chat.vibe.puzzle": "di puzzle",
-    "chat.answer.howToPlay": "**{name}** — come si gioca:\n{steps}\n\nPartecipanti ideali: {participants}. Chiedi requisiti, varianti o link di acquisto se vuoi.",
+    "chat.answer.howToPlay": "**{name}** — come si gioca:\n{steps}\n\n**Come si vince**\n{howToWin}\n\n**Regole da non infrangere**\n{rules}\n\nPartecipanti ideali: {participants}. Chiedi requisiti, varianti o link d’acquisto se vuoi.",
     "chat.answer.purchaseNone": "Non ho ancora link di negozio per **{name}**. Puoi aprire la sua pagina del catalogo per i dettagli.",
     "chat.answer.purchase": "Opzioni di acquisto per **{name}** (pagine prodotto su piattaforme diverse):\n{links}\n\nConfronta la spedizione nella tua regione prima di comprare.",
     "chat.answer.about": "**{name}**\nOrigine: {origin} · {civilization}\nCreato circa: {year}\nCategoria: {category}\n\n{description}",
@@ -4621,7 +4647,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Va bene, annotato.",
     "chat.smalltalk.well": "Sto bene — conta di più trovare un gioco adatto. Che filone ti interessa?",
     "chat.smalltalk.thanks": "Prego. Un altro indizio dal catalogo?",
-    "chat.followup.chatty": "Possiamo restringere ancora, o di’ “sorprendimi”."
+    "chat.followup.chatty": "Possiamo restringere ancora, o di’ “sorprendimi”.",
+    "detail.howToWin": "Come si vince",
+    "detail.rulesNotToBreak": "Regole da non infrangere"
   },
   "ja": {
     "nav.home": "ホーム",
@@ -4837,7 +4865,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "儀礼",
     "chat.vibe.kids": "子ども向け",
     "chat.vibe.puzzle": "パズル",
-    "chat.answer.howToPlay": "**{name}** — 遊び方：\n{steps}\n\n理想の参加者：{participants}。必要な物・変種・購入リンクも聞けます。",
+    "chat.answer.howToPlay": "**{name}** — 遊び方：\n{steps}\n\n**勝ち方**\n{howToWin}\n\n**守るべきルール**\n{rules}\n\n理想の参加者：{participants}。必要な物・変種・購入リンクも聞けます。",
     "chat.answer.purchaseNone": "**{name}** の店舗リンクはまだありません。カタログページで詳細を確認できます。",
     "chat.answer.purchase": "**{name}** の購入オプション（各プラットフォームの商品ページ）：\n{links}\n\n購入前に地域への配送を比較してください。",
     "chat.answer.about": "**{name}**\n起源：{origin} · {civilization}\nおおよその成立：{year}\nカテゴリ：{category}\n\n{description}",
@@ -4951,7 +4979,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "了解しました。",
     "chat.smalltalk.well": "元気です——合う遊びを見つける方が大事ですね。どの系統がいいですか？",
     "chat.smalltalk.thanks": "どういたしまして。もう一つカタログの手がかりを掘りますか？",
-    "chat.followup.chatty": "もう少し絞るか、「サプライズ」と言ってください。"
+    "chat.followup.chatty": "もう少し絞るか、「サプライズ」と言ってください。",
+    "detail.howToWin": "勝ち方",
+    "detail.rulesNotToBreak": "守るべきルール"
   },
   "ko": {
     "nav.home": "홈",
@@ -5167,7 +5197,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "의례",
     "chat.vibe.kids": "어린이",
     "chat.vibe.puzzle": "퍼즐",
-    "chat.answer.howToPlay": "**{name}** — 플레이 방법:\n{steps}\n\n이상적인 참가자: {participants}. 준비물·변형·구매 링크도 물어보세요.",
+    "chat.answer.howToPlay": "**{name}** — 플레이 방법:\n{steps}\n\n**이기는 방법**\n{howToWin}\n\n**지켜야 할 규칙**\n{rules}\n\n이상적인 참가자: {participants}. 준비물·변형·구매 링크도 물어보세요.",
     "chat.answer.purchaseNone": "**{name}**의 상점 링크는 아직 없습니다. 목록 페이지에서 자세한 내용을 볼 수 있습니다.",
     "chat.answer.purchase": "**{name}** 구매 옵션(여러 플랫폼의 상품 페이지):\n{links}\n\n구매 전 해당 지역 배송을 비교하세요.",
     "chat.answer.about": "**{name}**\n기원: {origin} · {civilization}\n대략 성립: {year}\n범주: {category}\n\n{description}",
@@ -5281,7 +5311,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "알겠어요.",
     "chat.smalltalk.well": "저는 괜찮아요—맞는 놀이를 찾는 게 더 중요하죠. 어떤 계열이 좋으세요?",
     "chat.smalltalk.thanks": "천만에요. 목록 단서를 하나 더 파볼까요?",
-    "chat.followup.chatty": "조금 더 좁히거나 “서프라이즈”라고 말해 보세요."
+    "chat.followup.chatty": "조금 더 좁히거나 “서프라이즈”라고 말해 보세요.",
+    "detail.howToWin": "이기는 방법",
+    "detail.rulesNotToBreak": "지켜야 할 규칙"
   },
   "la": {
     "nav.home": "Domus",
@@ -5497,7 +5529,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ritus",
     "chat.vibe.kids": "puerilis",
     "chat.vibe.puzzle": "aenigma",
-    "chat.answer.howToPlay": "**{name}** — quomodo ludatur:\n{steps}\n\nParticipes ideales: {participants}. De requisitis, variationibus, nexus emptionis roga.",
+    "chat.answer.howToPlay": "**{name}** — quomodo ludatur:\n{steps}\n\n**Quomodo vincatur**\n{howToWin}\n\n**Leges non frangendae**\n{rules}\n\nParticipes ideales: {participants}. De requisitis, variationibus, nexus emptionis roga.",
     "chat.answer.purchaseNone": "Nondum nexus tabernarum pro **{name}** habeo. Paginam catalogi aperire potes.",
     "chat.answer.purchase": "Optiones emptionis pro **{name}** (paginae productorum in variis suggestis):\n{links}\n\nMissiones ad regionem tuam ante emptionem compara.",
     "chat.answer.about": "**{name}**\nOrigo: {origin} · {civilization}\nFere creatum: {year}\nGenus: {category}\n\n{description}",
@@ -5611,7 +5643,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Bene, notavi.",
     "chat.smalltalk.well": "Bene valeo—magis interest ludum aptum invenire. Quae linea?",
     "chat.smalltalk.thanks": "Libenter. Aliud indicium e catalogo?",
-    "chat.followup.chatty": "Possumus angustius, aut dic “Surprise me”."
+    "chat.followup.chatty": "Possumus angustius, aut dic “Surprise me”.",
+    "detail.howToWin": "Quomodo vincatur",
+    "detail.rulesNotToBreak": "Leges non frangendae"
   },
   "nl": {
     "nav.home": "Home",
@@ -5827,7 +5861,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ritueel",
     "chat.vibe.kids": "kinderen",
     "chat.vibe.puzzle": "puzzel",
-    "chat.answer.howToPlay": "**{name}** — hoe te spelen:\n{steps}\n\nIdeale deelnemers: {participants}. Vraag om eisen, varianten of koopkoppelingen.",
+    "chat.answer.howToPlay": "**{name}** — hoe te spelen:\n{steps}\n\n**Hoe te winnen**\n{howToWin}\n\n**Regels die je niet mag breken**\n{rules}\n\nIdeale deelnemers: {participants}. Vraag om eisen, varianten of koopkoppelingen.",
     "chat.answer.purchaseNone": "Ik heb nog geen winkellinks voor **{name}**. Open de cataloguspagina voor details.",
     "chat.answer.purchase": "Koopopties voor **{name}** (productpagina’s op verschillende platforms):\n{links}\n\nVergelijk verzending naar jouw regio voor aankoop.",
     "chat.answer.about": "**{name}**\nHerkomst: {origin} · {civilization}\nRuwweg ontstaan: {year}\nCategorie: {category}\n\n{description}",
@@ -5941,7 +5975,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Oké, genoteerd.",
     "chat.smalltalk.well": "Het gaat goed—belangrijker is een passend spel vinden. Welke lijn?",
     "chat.smalltalk.thanks": "Graag gedaan. Nog een catalogustip?",
-    "chat.followup.chatty": "We kunnen nog vernauwen, of zeg “verras me”."
+    "chat.followup.chatty": "We kunnen nog vernauwen, of zeg “verras me”.",
+    "detail.howToWin": "Hoe te winnen",
+    "detail.rulesNotToBreak": "Regels die je niet mag breken"
   },
   "non": {
     "nav.home": "Heim",
@@ -6157,7 +6193,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "siður",
     "chat.vibe.kids": "börn",
     "chat.vibe.puzzle": "ráðgáta",
-    "chat.answer.howToPlay": "**{name}** — hvernig á að leika:\n{steps}\n\nKjörnir þátttakendur: {participants}. Spyrðu um kröfur, afbrigði eða kauphlekkji.",
+    "chat.answer.howToPlay": "**{name}** — hvernig á að leika:\n{steps}\n\n**Hvernig á að vinna**\n{howToWin}\n\n**Reglur sem má ekki brjóta**\n{rules}\n\nKjörnir þátttakendur: {participants}. Spyrðu um kröfur, afbrigði eða kauphlekkji.",
     "chat.answer.purchaseNone": "Ég hef enga búðartengla fyrir **{name}** enn. Þú getur opnað skráarsíðuna.",
     "chat.answer.purchase": "Kaupkostir fyrir **{name}** (vörusíður á mismunandi kerfum):\n{links}\n\nBerðu saman sendingu til þíns svæðis áður en þú kaupir.",
     "chat.answer.about": "**{name}**\nUppruni: {origin} · {civilization}\nUm það bil skapað: {year}\nFlokkur: {category}\n\n{description}",
@@ -6271,7 +6307,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Í lagi, skráð.",
     "chat.smalltalk.well": "Mér líður vel—mikilvægara að finna passandi leik. Hvaða lína?",
     "chat.smalltalk.thanks": "Gerðu svo vel. Önnur skráarvísbending?",
-    "chat.followup.chatty": "Við getum þrengt meira, eða sagt „komdu mér á óvart“."
+    "chat.followup.chatty": "Við getum þrengt meira, eða sagt „komdu mér á óvart“.",
+    "detail.howToWin": "Hvernig á að vinna",
+    "detail.rulesNotToBreak": "Reglur sem má ekki brjóta"
   },
   "pl": {
     "nav.home": "Start",
@@ -6487,7 +6525,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "rytualna",
     "chat.vibe.kids": "dziecięca",
     "chat.vibe.puzzle": "łamigłówka",
-    "chat.answer.howToPlay": "**{name}** — jak grać:\n{steps}\n\nIdealni uczestnicy: {participants}. Zapytaj o wymagania, warianty lub linki zakupu.",
+    "chat.answer.howToPlay": "**{name}** — jak grać:\n{steps}\n\n**Jak wygrać**\n{howToWin}\n\n**Zasady, których nie wolno łamać**\n{rules}\n\nIdealni uczestnicy: {participants}. Zapytaj o wymagania, warianty lub linki zakupu.",
     "chat.answer.purchaseNone": "Nie mam jeszcze linków sklepowych dla **{name}**. Możesz otworzyć stronę katalogu.",
     "chat.answer.purchase": "Opcje zakupu **{name}** (strony produktów na różnych platformach):\n{links}\n\nPorównaj wysyłkę do swojego regionu przed zakupem.",
     "chat.answer.about": "**{name}**\nPochodzenie: {origin} · {civilization}\nW przybliżeniu powstało: {year}\nKategoria: {category}\n\n{description}",
@@ -6601,7 +6639,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Dobrze, zanotowane.",
     "chat.smalltalk.well": "U mnie w porządku—ważniejsze znaleźć dobrą grę. Jaka linia?",
     "chat.smalltalk.thanks": "Proszę. Jeszcze wskazówka z katalogu?",
-    "chat.followup.chatty": "Możemy zawęzić albo powiedz „zaskocz mnie”."
+    "chat.followup.chatty": "Możemy zawęzić albo powiedz „zaskocz mnie”.",
+    "detail.howToWin": "Jak wygrać",
+    "detail.rulesNotToBreak": "Zasady, których nie wolno łamać"
   },
   "pt": {
     "nav.home": "Início",
@@ -6817,7 +6857,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ritual",
     "chat.vibe.kids": "infantil",
     "chat.vibe.puzzle": "de puzzles",
-    "chat.answer.howToPlay": "**{name}** — como jogar:\n{steps}\n\nParticipantes ideais: {participants}. Pergunte por requisitos, variações ou ligações de compra se quiser.",
+    "chat.answer.howToPlay": "**{name}** — como jogar:\n{steps}\n\n**Como vencer**\n{howToWin}\n\n**Regras que não se podem quebrar**\n{rules}\n\nParticipantes ideais: {participants}. Pergunte por requisitos, variações ou ligações de compra se quiser.",
     "chat.answer.purchaseNone": "Ainda não tenho ligações de loja para **{name}**. Pode abrir a página do catálogo para detalhes.",
     "chat.answer.purchase": "Opções de compra para **{name}** (páginas de produto em plataformas diferentes):\n{links}\n\nCompare o envio para a sua região antes de comprar.",
     "chat.answer.about": "**{name}**\nOrigem: {origin} · {civilization}\nCriado aproximadamente: {year}\nCategoria: {category}\n\n{description}",
@@ -6931,7 +6971,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Certo, anotado.",
     "chat.smalltalk.well": "Estou bem — importa mais ajudar a encontrar um bom jogo. Que fio prefere?",
     "chat.smalltalk.thanks": "De nada. Quer outra pista do catálogo?",
-    "chat.followup.chatty": "Podemos afinar mais, ou diga “surpreenda-me”."
+    "chat.followup.chatty": "Podemos afinar mais, ou diga “surpreenda-me”.",
+    "detail.howToWin": "Como vencer",
+    "detail.rulesNotToBreak": "Regras que não se podem quebrar"
   },
   "ru": {
     "nav.home": "Главная",
@@ -7147,7 +7189,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ритуальная",
     "chat.vibe.kids": "детская",
     "chat.vibe.puzzle": "головоломка",
-    "chat.answer.howToPlay": "**{name}** — как играть:\n{steps}\n\nИдеальные участники: {participants}. Спросите о требованиях, вариантах или ссылках на покупку.",
+    "chat.answer.howToPlay": "**{name}** — как играть:\n{steps}\n\n**Как победить**\n{howToWin}\n\n**Правила, которые нельзя нарушать**\n{rules}\n\nИдеальные участники: {participants}. Спросите о требованиях, вариантах или ссылках на покупку.",
     "chat.answer.purchaseNone": "Пока нет ссылок магазинов для **{name}**. Можно открыть страницу каталога.",
     "chat.answer.purchase": "Варианты покупки **{name}** (страницы товаров на разных платформах):\n{links}\n\nСравните доставку в ваш регион перед покупкой.",
     "chat.answer.about": "**{name}**\nПроисхождение: {origin} · {civilization}\nПримерно создано: {year}\nКатегория: {category}\n\n{description}",
@@ -7261,7 +7303,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Хорошо, записал.",
     "chat.smalltalk.well": "У меня всё в порядке — важнее найти подходящую игру. Какая линия?",
     "chat.smalltalk.thanks": "Пожалуйста. Ещё одна подсказка из каталога?",
-    "chat.followup.chatty": "Можно сузить ещё или скажите «удиви меня»."
+    "chat.followup.chatty": "Можно сузить ещё или скажите «удиви меня».",
+    "detail.howToWin": "Как победить",
+    "detail.rulesNotToBreak": "Правила, которые нельзя нарушать"
   },
   "sa": {
     "nav.home": "गृहम्",
@@ -7477,7 +7521,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "अनुष्ठान",
     "chat.vibe.kids": "बाल",
     "chat.vibe.puzzle": "प्रहेलिका",
-    "chat.answer.howToPlay": "**{name}** — कथं क्रीड्यते:\n{steps}\n\nआदर्शसहभागिनः: {participants}. आवश्यकताः, भेदान्, क्रयसूत्रं वा पृच्छ।",
+    "chat.answer.howToPlay": "**{name}** — कथं क्रीड्यते:\n{steps}\n\n**कथं जयः**\n{howToWin}\n\n**अभेद्यनियमाः**\n{rules}\n\nआदर्शसहभागिनः: {participants}. आवश्यकताः, भेदान्, क्रयसङ्केतान् वा पृच्छतु।",
     "chat.answer.purchaseNone": "**{name}** कृते आपणसूत्राणि अधुना न सन्ति। विवरणाय सूचीपृष्ठं उद्घाटयितुं शक्नोषि।",
     "chat.answer.purchase": "**{name}** क्रयविकल्पाः (विभिन्नेषु मञ्चेषु उत्पादपृष्ठानि):\n{links}\n\nक्रयात् पूर्वं स्वप्रदेशं प्रति प्रेषणं तूलय।",
     "chat.answer.about": "**{name}**\nउत्पत्तिः: {origin} · {civilization}\nलगभग निर्मितम्: {year}\nवर्गः: {category}\n\n{description}",
@@ -7591,7 +7635,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "अस्तु, लिखितम्।",
     "chat.smalltalk.well": "अहं कुशलः—योग्यां क्रीडां अन्वेष्टुं महत्त्वपूर्णम्। का पङ्क्तिः?",
     "chat.smalltalk.thanks": "स्वागतम्। सूचीतः अपरः संकेतः?",
-    "chat.followup.chatty": "अधिकं सङ्कोचयितुं शक्यम्, अथवा “Surprise me” इति ब्रूहि।"
+    "chat.followup.chatty": "अधिकं सङ्कोचयितुं शक्यम्, अथवा “Surprise me” इति ब्रूहि।",
+    "detail.howToWin": "कथं जयः",
+    "detail.rulesNotToBreak": "अभेद्यनियमाः"
   },
   "sv": {
     "nav.home": "Hem",
@@ -7807,7 +7853,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ritual",
     "chat.vibe.kids": "barn",
     "chat.vibe.puzzle": "pussel",
-    "chat.answer.howToPlay": "**{name}** — hur man spelar:\n{steps}\n\nIdeala deltagare: {participants}. Fråga om krav, varianter eller köplänkar.",
+    "chat.answer.howToPlay": "**{name}** — hur man spelar:\n{steps}\n\n**Hur man vinner**\n{howToWin}\n\n**Regler som inte får brytas**\n{rules}\n\nIdeala deltagare: {participants}. Fråga om krav, varianter eller köplänkar.",
     "chat.answer.purchaseNone": "Jag har inga butikslänkar för **{name}** än. Öppna katalogsidan för detaljer.",
     "chat.answer.purchase": "Köpalternativ för **{name}** (produktsidor på olika plattformar):\n{links}\n\nJämför frakt till din region före köp.",
     "chat.answer.about": "**{name}**\nUrsprung: {origin} · {civilization}\nUngefär skapat: {year}\nKategori: {category}\n\n{description}",
@@ -7921,7 +7967,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Okej, noterat.",
     "chat.smalltalk.well": "Jag mår bra—viktigare att hitta rätt spel. Vilken linje?",
     "chat.smalltalk.thanks": "Varsågod. En katalogledtråd till?",
-    "chat.followup.chatty": "Vi kan snäva in mer, eller säg “överraska mig”."
+    "chat.followup.chatty": "Vi kan snäva in mer, eller säg “överraska mig”.",
+    "detail.howToWin": "Hur man vinner",
+    "detail.rulesNotToBreak": "Regler som inte får brytas"
   },
   "sw": {
     "nav.home": "Nyumbani",
@@ -8137,7 +8185,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "tamaduni",
     "chat.vibe.kids": "watoto",
     "chat.vibe.puzzle": "fumbo",
-    "chat.answer.howToPlay": "**{name}** — jinsi ya kucheza:\n{steps}\n\nWashiriki bora: {participants}. Uliza mahitaji, tofauti, au viungo vya ununuzi.",
+    "chat.answer.howToPlay": "**{name}** — jinsi ya kucheza:\n{steps}\n\n**Jinsi ya kushinda**\n{howToWin}\n\n**Sheria zisizovunjwa**\n{rules}\n\nWashiriki wanaofaa: {participants}. Uliza mahitaji, tofauti, au viungo vya ununuzi.",
     "chat.answer.purchaseNone": "Bado sina viungo vya duka kwa **{name}**. Unaweza kufungua ukurasa wa katalogi.",
     "chat.answer.purchase": "Chaguo za ununuzi kwa **{name}** (kurasa za bidhaa kwenye majukwaa tofauti):\n{links}\n\nLinganisha usafekishaji kwa eneo lako kabla ya kununua.",
     "chat.answer.about": "**{name}**\nAsili: {origin} · {civilization}\nIliundwa takriban: {year}\nAina: {category}\n\n{description}",
@@ -8251,7 +8299,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Sawa, nimeandika.",
     "chat.smalltalk.well": "Niko sawa—muhimu zaidi kupata mchezo unaofaa. Njia gani?",
     "chat.smalltalk.thanks": "Karibu. Dalili nyingine kutoka katalogi?",
-    "chat.followup.chatty": "Tunaweza kubana zaidi, au sema “nishangaze”."
+    "chat.followup.chatty": "Tunaweza kubana zaidi, au sema “nishangaze”.",
+    "detail.howToWin": "Jinsi ya kushinda",
+    "detail.rulesNotToBreak": "Sheria zisizovunjwa"
   },
   "th": {
     "nav.home": "หน้าแรก",
@@ -8467,7 +8517,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "พิธี",
     "chat.vibe.kids": "เด็ก",
     "chat.vibe.puzzle": "ปริศนา",
-    "chat.answer.howToPlay": "**{name}** — วิธีเล่น:\n{steps}\n\nผู้เข้าร่วมที่เหมาะ: {participants} ถามอุปกรณ์ รูปแบบ หรือลิงก์ซื้อได้",
+    "chat.answer.howToPlay": "**{name}** — วิธีเล่น:\n{steps}\n\n**วิธีชนะ**\n{howToWin}\n\n**กฎที่ห้ามละเมิด**\n{rules}\n\nผู้เล่นที่เหมาะ: {participants} ถามของที่ต้องใช้ รูปแบบ หรือลิงก์ซื้อได้",
     "chat.answer.purchaseNone": "ยังไม่มีลิงก์ร้านสำหรับ **{name}** เปิดหน้าแคตตาล็อกเพื่อดูรายละเอียดได้",
     "chat.answer.purchase": "ตัวเลือกการซื้อ **{name}** (หน้ารสินค้าบนแพลตฟอร์มต่าง ๆ):\n{links}\n\nเปรียบเทียบการจัดส่งไปยังภูมิภาคของคุณก่อนซื้อ",
     "chat.answer.about": "**{name}**\nที่มา: {origin} · {civilization}\nสร้างประมาณ: {year}\nหมวด: {category}\n\n{description}",
@@ -8581,7 +8631,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "ได้ บันทึกแล้ว",
     "chat.smalltalk.well": "ฉันสบายดี—สำคัญกว่าคือหาเกมที่เหมาะ คุณสนใจสายไหน?",
     "chat.smalltalk.thanks": "ด้วยความยินดี อยากได้เบาะแสแคตตาล็อกอีกไหม?",
-    "chat.followup.chatty": "แคบลงได้อีก หรือพูดว่า “เซอร์ไพรส์ฉัน”"
+    "chat.followup.chatty": "แคบลงได้อีก หรือพูดว่า “เซอร์ไพรส์ฉัน”",
+    "detail.howToWin": "วิธีชนะ",
+    "detail.rulesNotToBreak": "กฎที่ห้ามละเมิด"
   },
   "tr": {
     "nav.home": "Ana sayfa",
@@ -8797,7 +8849,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ritüel",
     "chat.vibe.kids": "çocuk",
     "chat.vibe.puzzle": "bulmaca",
-    "chat.answer.howToPlay": "**{name}** — nasıl oynanır:\n{steps}\n\nİdeal katılımcılar: {participants}. Gereksinim, çeşit veya satın alma bağlantısı sorabilirsiniz.",
+    "chat.answer.howToPlay": "**{name}** — nasıl oynanır:\n{steps}\n\n**Nasıl kazanılır**\n{howToWin}\n\n**Çiğnenmemesi gereken kurallar**\n{rules}\n\nİdeal katılımcılar: {participants}. Gereksinimler, çeşitler veya satın alma bağlantıları sorun.",
     "chat.answer.purchaseNone": "**{name}** için henüz mağaza bağlantım yok. Ayrıntılar için katalog sayfasını açabilirsiniz.",
     "chat.answer.purchase": "**{name}** satın alma seçenekleri (farklı platformlardaki ürün sayfaları):\n{links}\n\nSatın almadan önce bölgenize kargoyu karşılaştırın.",
     "chat.answer.about": "**{name}**\nKöken: {origin} · {civilization}\nYaklaşık oluşum: {year}\nKategori: {category}\n\n{description}",
@@ -8911,7 +8963,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Tamam, not ettim.",
     "chat.smalltalk.well": "İyiyim—uygun oyunu bulmak daha önemli. Hangi çizgi?",
     "chat.smalltalk.thanks": "Rica ederim. Katalogdan başka bir ipucu?",
-    "chat.followup.chatty": "Daha da daraltabiliriz, ya da “şaşırt beni” deyin."
+    "chat.followup.chatty": "Daha da daraltabiliriz, ya da “şaşırt beni” deyin.",
+    "detail.howToWin": "Nasıl kazanılır",
+    "detail.rulesNotToBreak": "Çiğnenmemesi gereken kurallar"
   },
   "uk": {
     "nav.home": "Головна",
@@ -9127,7 +9181,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "ритуальна",
     "chat.vibe.kids": "дитяча",
     "chat.vibe.puzzle": "головоломка",
-    "chat.answer.howToPlay": "**{name}** — як грати:\n{steps}\n\nІдеальні учасники: {participants}. Запитайте про вимоги, варіанти чи посилання на купівлю.",
+    "chat.answer.howToPlay": "**{name}** — як грати:\n{steps}\n\n**Як перемогти**\n{howToWin}\n\n**Правила, які не можна порушувати**\n{rules}\n\nІдеальні учасники: {participants}. Запитайте про вимоги, варіанти або посилання на купівлю.",
     "chat.answer.purchaseNone": "Поки немає посилань магазинів для **{name}**. Можна відкрити сторінку каталогу.",
     "chat.answer.purchase": "Варіанти купівлі **{name}** (сторінки товарів на різних платформах):\n{links}\n\nПорівняйте доставку у ваш регіон перед купівлею.",
     "chat.answer.about": "**{name}**\nПоходження: {origin} · {civilization}\nПриблизно створено: {year}\nКатегорія: {category}\n\n{description}",
@@ -9241,7 +9295,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Гаразд, записав.",
     "chat.smalltalk.well": "У мене все гаразд — важливіше знайти влучну гру. Яка лінія?",
     "chat.smalltalk.thanks": "Будь ласка. Ще підказка з каталогу?",
-    "chat.followup.chatty": "Можна звузити або скажіть «здивуй мене»."
+    "chat.followup.chatty": "Можна звузити або скажіть «здивуй мене».",
+    "detail.howToWin": "Як перемогти",
+    "detail.rulesNotToBreak": "Правила, які не можна порушувати"
   },
   "vi": {
     "nav.home": "Trang chủ",
@@ -9457,7 +9513,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "nghi lễ",
     "chat.vibe.kids": "trẻ em",
     "chat.vibe.puzzle": "đố vui",
-    "chat.answer.howToPlay": "**{name}** — cách chơi:\n{steps}\n\nNgười tham gia lý tưởng: {participants}. Hỏi về yêu cầu, biến thể hoặc liên kết mua nếu muốn.",
+    "chat.answer.howToPlay": "**{name}** — cách chơi:\n{steps}\n\n**Cách thắng**\n{howToWin}\n\n**Luật không được phá**\n{rules}\n\nNgười chơi lý tưởng: {participants}. Hỏi về yêu cầu, biến thể hoặc liên kết mua.",
     "chat.answer.purchaseNone": "Tôi chưa có liên kết cửa hàng cho **{name}**. Bạn vẫn có thể mở trang danh mục để xem chi tiết.",
     "chat.answer.purchase": "Tùy chọn mua cho **{name}** (trang sản phẩm trên các nền tảng khác nhau):\n{links}\n\nSo sánh phí vận chuyển đến khu vực của bạn trước khi mua.",
     "chat.answer.about": "**{name}**\nNguồn gốc: {origin} · {civilization}\nKhoảng thời gian tạo: {year}\nDanh mục: {category}\n\n{description}",
@@ -9571,7 +9627,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "Được, đã ghi nhận.",
     "chat.smalltalk.well": "Tôi ổn—quan trọng hơn là tìm trò phù hợp. Bạn muốn hướng nào?",
     "chat.smalltalk.thanks": "Không có gì. Thêm một gợi ý từ danh mục?",
-    "chat.followup.chatty": "Có thể thu hẹp thêm, hoặc nói “bất ngờ đi”."
+    "chat.followup.chatty": "Có thể thu hẹp thêm, hoặc nói “bất ngờ đi”.",
+    "detail.howToWin": "Cách thắng",
+    "detail.rulesNotToBreak": "Luật không được phá"
   },
   "zh-Hans": {
     "nav.home": "首页",
@@ -9787,7 +9845,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "仪式",
     "chat.vibe.kids": "亲子",
     "chat.vibe.puzzle": "益智",
-    "chat.answer.howToPlay": "**{name}** — 玩法：\n{steps}\n\n理想参与者：{participants}。也可询问所需物品、变体或购买链接。",
+    "chat.answer.howToPlay": "**{name}** — 玩法：\n{steps}\n\n**如何获胜**\n{howToWin}\n\n**不可违反的规则**\n{rules}\n\n理想参与者：{participants}。也可询问所需物品、变体或购买链接。",
     "chat.answer.purchaseNone": "我还没有 **{name}** 的商店链接。仍可打开其目录页查看详情。",
     "chat.answer.purchase": "**{name}** 的购买选项（不同平台的商品页）：\n{links}\n\n购买前请比较寄往你所在地区的运费。",
     "chat.answer.about": "**{name}**\n起源：{origin} · {civilization}\n大约创于：{year}\n类别：{category}\n\n{description}",
@@ -9901,7 +9959,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "好的，记下了。",
     "chat.smalltalk.well": "我还好——更关心帮你找到合适的玩法。想看哪一类？",
     "chat.smalltalk.thanks": "不客气。还想再挖一条目录线索吗？",
-    "chat.followup.chatty": "还可以再收窄一点，或直接说“惊喜一下”。"
+    "chat.followup.chatty": "还可以再收窄一点，或直接说“惊喜一下”。",
+    "detail.howToWin": "如何获胜",
+    "detail.rulesNotToBreak": "不可违反的规则"
   },
   "zh-Hant": {
     "nav.home": "首頁",
@@ -10117,7 +10177,7 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.vibe.ritual": "儀式",
     "chat.vibe.kids": "親子",
     "chat.vibe.puzzle": "益智",
-    "chat.answer.howToPlay": "**{name}** — 玩法：\n{steps}\n\n理想參與者：{participants}。也可詢問所需物品、變體或購買連結。",
+    "chat.answer.howToPlay": "**{name}** — 玩法：\n{steps}\n\n**如何獲勝**\n{howToWin}\n\n**不可違反的規則**\n{rules}\n\n理想參與者：{participants}。也可詢問所需物品、變體或購買連結。",
     "chat.answer.purchaseNone": "我還沒有 **{name}** 的商店連結。仍可打開其目錄頁查看詳情。",
     "chat.answer.purchase": "**{name}** 的購買選項（不同平台的商品頁）：\n{links}\n\n購買前請比較寄往你所在地區的運費。",
     "chat.answer.about": "**{name}**\n起源：{origin} · {civilization}\n大約創於：{year}\n類別：{category}\n\n{description}",
@@ -10231,7 +10291,9 @@ export const dictionaries: Partial<Record<LocaleCode, Partial<MessageDict>>> = {
     "chat.ack.soft": "好的，記下了。",
     "chat.smalltalk.well": "我還好——更關心幫你找到合適的玩法。想看哪一類？",
     "chat.smalltalk.thanks": "不客氣。還想再挖一條目錄線索嗎？",
-    "chat.followup.chatty": "還可以再收窄一點，或直接說「驚喜一下」。"
+    "chat.followup.chatty": "還可以再收窄一點，或直接說「驚喜一下」。",
+    "detail.howToWin": "如何獲勝",
+    "detail.rulesNotToBreak": "不可違反的規則"
   }
 };
 

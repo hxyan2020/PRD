@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ritueel",
   "chat.vibe.kids": "kinderen",
   "chat.vibe.puzzle": "puzzel",
-  "chat.answer.howToPlay": "**{name}** — hoe te spelen:\n{steps}\n\nIdeale deelnemers: {participants}. Vraag om eisen, varianten of koopkoppelingen.",
+  "chat.answer.howToPlay": "**{name}** — hoe te spelen:\n{steps}\n\n**Hoe te winnen**\n{howToWin}\n\n**Regels die je niet mag breken**\n{rules}\n\nIdeale deelnemers: {participants}. Vraag om eisen, varianten of koopkoppelingen.",
   "chat.answer.purchaseNone": "Ik heb nog geen winkellinks voor **{name}**. Open de cataloguspagina voor details.",
   "chat.answer.purchase": "Koopopties voor **{name}** (productpagina’s op verschillende platforms):\n{links}\n\nVergelijk verzending naar jouw regio voor aankoop.",
   "chat.answer.about": "**{name}**\nHerkomst: {origin} · {civilization}\nRuwweg ontstaan: {year}\nCategorie: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Oké, genoteerd.",
   "chat.smalltalk.well": "Het gaat goed—belangrijker is een passend spel vinden. Welke lijn?",
   "chat.smalltalk.thanks": "Graag gedaan. Nog een catalogustip?",
-  "chat.followup.chatty": "We kunnen nog vernauwen, of zeg “verras me”."
+  "chat.followup.chatty": "We kunnen nog vernauwen, of zeg “verras me”.",
+  "detail.howToWin": "Hoe te winnen",
+  "detail.rulesNotToBreak": "Regels die je niet mag breken"
 }

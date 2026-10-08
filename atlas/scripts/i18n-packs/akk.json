@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "parṣu",
   "chat.vibe.kids": "ṣeḫru",
   "chat.vibe.puzzle": "ḫidûtu",
-  "chat.answer.howToPlay": "**{name}** — akī mēlulti:\n{steps}\n\nṢābū namrūtu: {participants}. Šâl ḫišīḫti, šanâti, ū lū rikis šîmi.",
+  "chat.answer.howToPlay": "**{name}** — akī mēlulti:\n{steps}\n\n**How to win**\n{howToWin}\n\n**Rules not to break**\n{rules}\n\nṢābū namrūtu: {participants}. Šâl ḫišīḫti, šanâti, ū lū rikis šîmi.",
   "chat.answer.purchaseNone": "Adīni rikis bītātīya ana **{name}** ul ibašši. Ṭuppa kisri petê têleʾʾe.",
   "chat.answer.purchase": "Nigût šîmi ana **{name}** (ṭuppāt šīmī ina nērebēti šanâti):\n{links}\n\nLām šâmi našparta ana mātika muḫḫir.",
   "chat.answer.about": "**{name}**\nAṣû: {origin} · {civilization}\nEpešu qerbu: {year}\nIsqu: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Alright, noted.",
   "chat.smalltalk.well": "I’m fine—finding a good match matters more. Which thread?",
   "chat.smalltalk.thanks": "You’re welcome. Another catalog cue?",
-  "chat.followup.chatty": "We can narrow further, or say “Surprise me”."
+  "chat.followup.chatty": "We can narrow further, or say “Surprise me”.",
+  "detail.howToWin": "How to win",
+  "detail.rulesNotToBreak": "Rules not to break"
 }

@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "儀礼",
   "chat.vibe.kids": "子ども向け",
   "chat.vibe.puzzle": "パズル",
-  "chat.answer.howToPlay": "**{name}** — 遊び方：\n{steps}\n\n理想の参加者：{participants}。必要な物・変種・購入リンクも聞けます。",
+  "chat.answer.howToPlay": "**{name}** — 遊び方：\n{steps}\n\n**勝ち方**\n{howToWin}\n\n**守るべきルール**\n{rules}\n\n理想の参加者：{participants}。必要な物・変種・購入リンクも聞けます。",
   "chat.answer.purchaseNone": "**{name}** の店舗リンクはまだありません。カタログページで詳細を確認できます。",
   "chat.answer.purchase": "**{name}** の購入オプション（各プラットフォームの商品ページ）：\n{links}\n\n購入前に地域への配送を比較してください。",
   "chat.answer.about": "**{name}**\n起源：{origin} · {civilization}\nおおよその成立：{year}\nカテゴリ：{category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "了解しました。",
   "chat.smalltalk.well": "元気です——合う遊びを見つける方が大事ですね。どの系統がいいですか？",
   "chat.smalltalk.thanks": "どういたしまして。もう一つカタログの手がかりを掘りますか？",
-  "chat.followup.chatty": "もう少し絞るか、「サプライズ」と言ってください。"
+  "chat.followup.chatty": "もう少し絞るか、「サプライズ」と言ってください。",
+  "detail.howToWin": "勝ち方",
+  "detail.rulesNotToBreak": "守るべきルール"
 }

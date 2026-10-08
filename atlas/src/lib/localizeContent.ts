@@ -7,6 +7,8 @@ export type ArchetypeI18n = {
   title: string;
   descTemplate: string;
   steps: string[];
+  howToWin: string[];
+  rulesNotToBreak: string[];
   req: string[];
   participants: string;
 };
@@ -15,6 +17,8 @@ export type CuratedI18n = {
   name?: string;
   description: string;
   howToPlay: string[];
+  howToWin: string[];
+  rulesNotToBreak: string[];
   requirements: string[];
   idealParticipants: string;
   variationNotes?: string[];
@@ -247,6 +251,24 @@ export function localizeGame(
         game.howToPlay[i] ?? step,
       ),
     );
+    const howToWin = (arch.howToWin || []).map((step, i) =>
+      preferCompleteText(
+        fillTemplate(step, {
+          country: countryForTemplate,
+          civ: civilization,
+        }),
+        game.howToWin[i] ?? step,
+      ),
+    );
+    const rulesNotToBreak = (arch.rulesNotToBreak || []).map((step, i) =>
+      preferCompleteText(
+        fillTemplate(step, {
+          country: countryForTemplate,
+          civ: civilization,
+        }),
+        game.rulesNotToBreak[i] ?? step,
+      ),
+    );
     const requirements = arch.req.map((r, i) =>
       preferCompleteText(r, game.requirements[i] ?? r),
     );
@@ -261,6 +283,10 @@ export function localizeGame(
       creationYear,
       description,
       howToPlay,
+      howToWin: howToWin.length ? howToWin : game.howToWin,
+      rulesNotToBreak: rulesNotToBreak.length
+        ? rulesNotToBreak
+        : game.rulesNotToBreak,
       requirements,
       idealParticipants: arch.participants || game.idealParticipants,
     };
@@ -313,6 +339,12 @@ export function localizeGame(
     description: preferCompleteText(curated.description, game.description),
     howToPlay: curated.howToPlay.map((step, i) =>
       preferCompleteText(step, game.howToPlay[i] ?? step),
+    ),
+    howToWin: (curated.howToWin || []).map((step, i) =>
+      preferCompleteText(step, game.howToWin[i] ?? step),
+    ),
+    rulesNotToBreak: (curated.rulesNotToBreak || []).map((step, i) =>
+      preferCompleteText(step, game.rulesNotToBreak[i] ?? step),
     ),
     requirements: curated.requirements.map((r, i) =>
       preferCompleteText(r, game.requirements[i] ?? r),

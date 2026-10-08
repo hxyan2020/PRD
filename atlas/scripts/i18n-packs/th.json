@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "พิธี",
   "chat.vibe.kids": "เด็ก",
   "chat.vibe.puzzle": "ปริศนา",
-  "chat.answer.howToPlay": "**{name}** — วิธีเล่น:\n{steps}\n\nผู้เข้าร่วมที่เหมาะ: {participants} ถามอุปกรณ์ รูปแบบ หรือลิงก์ซื้อได้",
+  "chat.answer.howToPlay": "**{name}** — วิธีเล่น:\n{steps}\n\n**วิธีชนะ**\n{howToWin}\n\n**กฎที่ห้ามละเมิด**\n{rules}\n\nผู้เล่นที่เหมาะ: {participants} ถามของที่ต้องใช้ รูปแบบ หรือลิงก์ซื้อได้",
   "chat.answer.purchaseNone": "ยังไม่มีลิงก์ร้านสำหรับ **{name}** เปิดหน้าแคตตาล็อกเพื่อดูรายละเอียดได้",
   "chat.answer.purchase": "ตัวเลือกการซื้อ **{name}** (หน้ารสินค้าบนแพลตฟอร์มต่าง ๆ):\n{links}\n\nเปรียบเทียบการจัดส่งไปยังภูมิภาคของคุณก่อนซื้อ",
   "chat.answer.about": "**{name}**\nที่มา: {origin} · {civilization}\nสร้างประมาณ: {year}\nหมวด: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "ได้ บันทึกแล้ว",
   "chat.smalltalk.well": "ฉันสบายดี—สำคัญกว่าคือหาเกมที่เหมาะ คุณสนใจสายไหน?",
   "chat.smalltalk.thanks": "ด้วยความยินดี อยากได้เบาะแสแคตตาล็อกอีกไหม?",
-  "chat.followup.chatty": "แคบลงได้อีก หรือพูดว่า “เซอร์ไพรส์ฉัน”"
+  "chat.followup.chatty": "แคบลงได้อีก หรือพูดว่า “เซอร์ไพรส์ฉัน”",
+  "detail.howToWin": "วิธีชนะ",
+  "detail.rulesNotToBreak": "กฎที่ห้ามละเมิด"
 }

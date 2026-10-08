@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "nghi lễ",
   "chat.vibe.kids": "trẻ em",
   "chat.vibe.puzzle": "đố vui",
-  "chat.answer.howToPlay": "**{name}** — cách chơi:\n{steps}\n\nNgười tham gia lý tưởng: {participants}. Hỏi về yêu cầu, biến thể hoặc liên kết mua nếu muốn.",
+  "chat.answer.howToPlay": "**{name}** — cách chơi:\n{steps}\n\n**Cách thắng**\n{howToWin}\n\n**Luật không được phá**\n{rules}\n\nNgười chơi lý tưởng: {participants}. Hỏi về yêu cầu, biến thể hoặc liên kết mua.",
   "chat.answer.purchaseNone": "Tôi chưa có liên kết cửa hàng cho **{name}**. Bạn vẫn có thể mở trang danh mục để xem chi tiết.",
   "chat.answer.purchase": "Tùy chọn mua cho **{name}** (trang sản phẩm trên các nền tảng khác nhau):\n{links}\n\nSo sánh phí vận chuyển đến khu vực của bạn trước khi mua.",
   "chat.answer.about": "**{name}**\nNguồn gốc: {origin} · {civilization}\nKhoảng thời gian tạo: {year}\nDanh mục: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Được, đã ghi nhận.",
   "chat.smalltalk.well": "Tôi ổn—quan trọng hơn là tìm trò phù hợp. Bạn muốn hướng nào?",
   "chat.smalltalk.thanks": "Không có gì. Thêm một gợi ý từ danh mục?",
-  "chat.followup.chatty": "Có thể thu hẹp thêm, hoặc nói “bất ngờ đi”."
+  "chat.followup.chatty": "Có thể thu hẹp thêm, hoặc nói “bất ngờ đi”.",
+  "detail.howToWin": "Cách thắng",
+  "detail.rulesNotToBreak": "Luật không được phá"
 }

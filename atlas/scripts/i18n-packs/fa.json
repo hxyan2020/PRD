@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "آیینی",
   "chat.vibe.kids": "کودکان",
   "chat.vibe.puzzle": "معمایی",
-  "chat.answer.howToPlay": "**{name}** — نحوهٔ بازی:\n{steps}\n\nشرکت‌کنندگان ایدئال: {participants}. دربارهٔ الزامات، گونه‌ها یا پیوندهای خرید بپرسید.",
+  "chat.answer.howToPlay": "**{name}** — نحوهٔ بازی:\n{steps}\n\n**چگونه برنده شوید**\n{howToWin}\n\n**قواعدی که نباید شکست**\n{rules}\n\nشرکت‌کنندگان ایدئال: {participants}. دربارهٔ الزامات، گونه‌ها یا پیوندهای خرید بپرسید.",
   "chat.answer.purchaseNone": "هنوز پیوند فروشگاهی برای **{name}** ندارم. می‌توانید صفحهٔ فهرست را باز کنید.",
   "chat.answer.purchase": "گزینه‌های خرید **{name}** (صفحات محصول در سکوهای مختلف):\n{links}\n\nپیش از خرید ارسال به منطقهٔ خود را مقایسه کنید.",
   "chat.answer.about": "**{name}**\nخاستگاه: {origin} · {civilization}\nتقریباً ساخته‌شده: {year}\nدسته: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "باشه، یادداشت شد.",
   "chat.smalltalk.well": "خوبم—مهم‌تر پیدا کردن بازی مناسب است. کدام خط؟",
   "chat.smalltalk.thanks": "خواهش می‌کنم. نشانهٔ دیگری از فهرست؟",
-  "chat.followup.chatty": "می‌توان تنگ‌تر کرد، یا بگویید «غافلگیرم کن»."
+  "chat.followup.chatty": "می‌توان تنگ‌تر کرد، یا بگویید «غافلگیرم کن».",
+  "detail.howToWin": "چگونه برنده شوید",
+  "detail.rulesNotToBreak": "قواعدی که نباید شکست"
 }

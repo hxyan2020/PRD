@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "ритуальна",
   "chat.vibe.kids": "дитяча",
   "chat.vibe.puzzle": "головоломка",
-  "chat.answer.howToPlay": "**{name}** — як грати:\n{steps}\n\nІдеальні учасники: {participants}. Запитайте про вимоги, варіанти чи посилання на купівлю.",
+  "chat.answer.howToPlay": "**{name}** — як грати:\n{steps}\n\n**Як перемогти**\n{howToWin}\n\n**Правила, які не можна порушувати**\n{rules}\n\nІдеальні учасники: {participants}. Запитайте про вимоги, варіанти або посилання на купівлю.",
   "chat.answer.purchaseNone": "Поки немає посилань магазинів для **{name}**. Можна відкрити сторінку каталогу.",
   "chat.answer.purchase": "Варіанти купівлі **{name}** (сторінки товарів на різних платформах):\n{links}\n\nПорівняйте доставку у ваш регіон перед купівлею.",
   "chat.answer.about": "**{name}**\nПоходження: {origin} · {civilization}\nПриблизно створено: {year}\nКатегорія: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Гаразд, записав.",
   "chat.smalltalk.well": "У мене все гаразд — важливіше знайти влучну гру. Яка лінія?",
   "chat.smalltalk.thanks": "Будь ласка. Ще підказка з каталогу?",
-  "chat.followup.chatty": "Можна звузити або скажіть «здивуй мене»."
+  "chat.followup.chatty": "Можна звузити або скажіть «здивуй мене».",
+  "detail.howToWin": "Як перемогти",
+  "detail.rulesNotToBreak": "Правила, які не можна порушувати"
 }

@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "rituel",
   "chat.vibe.kids": "enfants",
   "chat.vibe.puzzle": "casse-tête",
-  "chat.answer.howToPlay": "**{name}** — comment jouer :\n{steps}\n\nParticipants idéaux : {participants}. Demandez exigences, variantes ou liens d’achat si vous voulez.",
+  "chat.answer.howToPlay": "**{name}** — comment jouer :\n{steps}\n\n**Comment gagner**\n{howToWin}\n\n**Règles à ne pas enfreindre**\n{rules}\n\nParticipants idéaux : {participants}. Demandez exigences, variantes ou liens d’achat si vous voulez.",
   "chat.answer.purchaseNone": "Je n’ai pas encore de liens de magasin pour **{name}**. Vous pouvez ouvrir sa page catalogue pour les détails.",
   "chat.answer.purchase": "Options d’achat pour **{name}** (pages produit sur différentes plateformes) :\n{links}\n\nComparez la livraison vers votre région avant d’acheter.",
   "chat.answer.about": "**{name}**\nOrigine : {origin} · {civilization}\nCréé environ : {year}\nCatégorie : {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "D’accord, noté.",
   "chat.smalltalk.well": "Ça va — je préfère vous aider à trouver un bon jeu. Quel fil vous tente ?",
   "chat.smalltalk.thanks": "Avec plaisir. On creuse une autre piste du catalogue ?",
-  "chat.followup.chatty": "On peut encore affiner, ou dites « surprenez-moi »."
+  "chat.followup.chatty": "On peut encore affiner, ou dites « surprenez-moi ».",
+  "detail.howToWin": "Comment gagner",
+  "detail.rulesNotToBreak": "Règles à ne pas enfreindre"
 }

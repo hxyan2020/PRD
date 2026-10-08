@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "rituale",
   "chat.vibe.kids": "per bambini",
   "chat.vibe.puzzle": "di puzzle",
-  "chat.answer.howToPlay": "**{name}** — come si gioca:\n{steps}\n\nPartecipanti ideali: {participants}. Chiedi requisiti, varianti o link di acquisto se vuoi.",
+  "chat.answer.howToPlay": "**{name}** — come si gioca:\n{steps}\n\n**Come si vince**\n{howToWin}\n\n**Regole da non infrangere**\n{rules}\n\nPartecipanti ideali: {participants}. Chiedi requisiti, varianti o link d’acquisto se vuoi.",
   "chat.answer.purchaseNone": "Non ho ancora link di negozio per **{name}**. Puoi aprire la sua pagina del catalogo per i dettagli.",
   "chat.answer.purchase": "Opzioni di acquisto per **{name}** (pagine prodotto su piattaforme diverse):\n{links}\n\nConfronta la spedizione nella tua regione prima di comprare.",
   "chat.answer.about": "**{name}**\nOrigine: {origin} · {civilization}\nCreato circa: {year}\nCategoria: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "Va bene, annotato.",
   "chat.smalltalk.well": "Sto bene — conta di più trovare un gioco adatto. Che filone ti interessa?",
   "chat.smalltalk.thanks": "Prego. Un altro indizio dal catalogo?",
-  "chat.followup.chatty": "Possiamo restringere ancora, o di’ “sorprendimi”."
+  "chat.followup.chatty": "Possiamo restringere ancora, o di’ “sorprendimi”.",
+  "detail.howToWin": "Come si vince",
+  "detail.rulesNotToBreak": "Regole da non infrangere"
 }

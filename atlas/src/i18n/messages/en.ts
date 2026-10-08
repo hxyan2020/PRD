@@ -285,7 +285,7 @@ export const en = {
   "chat.vibe.puzzle": "puzzle",
 
   "chat.answer.howToPlay":
-    "**{name}** — how to play:\n{steps}\n\nIdeal participants: {participants}. Ask about requirements, variations, or purchase links if you want.",
+    "**{name}** — how to play:\n{steps}\n\n**How to win**\n{howToWin}\n\n**Rules not to break**\n{rules}\n\nIdeal participants: {participants}. Ask about requirements, variations, or purchase links if you want.",
   "chat.answer.purchaseNone":
     "I don’t have store links for **{name}** yet. You can still open its catalog page for details.",
   "chat.answer.purchase":
@@ -329,6 +329,8 @@ export const en = {
   "detail.players": "Players:",
   "detail.about": "About this game / toy",
   "detail.howToPlay": "How to play",
+  "detail.howToWin": "How to win",
+  "detail.rulesNotToBreak": "Rules not to break",
   "detail.variations": "Cultural variations",
   "detail.variationsIntro":
     "These are fundamentally the same game or toy, expressed in different places and eras—not separate catalog inventions.",

@@ -212,7 +212,7 @@
   "chat.vibe.ritual": "अनुष्ठान",
   "chat.vibe.kids": "बच्चों का",
   "chat.vibe.puzzle": "पहेली",
-  "chat.answer.howToPlay": "**{name}** — कैसे खेलें:\n{steps}\n\nआदर्श प्रतिभागी: {participants}. आवश्यकताएँ, रूप या खरीद लिंक पूछ सकते हैं।",
+  "chat.answer.howToPlay": "**{name}** — कैसे खेलें:\n{steps}\n\n**कैसे जीतें**\n{howToWin}\n\n**न तोड़ने वाले नियम**\n{rules}\n\nआदर्श प्रतिभागी: {participants}. आवश्यकताएँ, रूप या खरीद लिंक पूछ सकते हैं।",
   "chat.answer.purchaseNone": "**{name}** के स्टोर लिंक अभी नहीं हैं। विवरण के लिए कैटलॉग पृष्ठ खोल सकते हैं।",
   "chat.answer.purchase": "**{name}** के खरीद विकल्प (विभिन्न प्लेटफ़ॉर्म पर उत्पाद पृष्ठ):\n{links}\n\nखरीदने से पहले अपने क्षेत्र की शिपिंग तुलना करें।",
   "chat.answer.about": "**{name}**\nउत्पत्ति: {origin} · {civilization}\nलगभग बना: {year}\nश्रेणी: {category}\n\n{description}",
@@ -326,5 +326,7 @@
   "chat.ack.soft": "ठीक है, नोट किया।",
   "chat.smalltalk.well": "मैं ठीक हूँ—सही खेल ढूँढना ज़्यादा ज़रूरी है। कौन-सी लाइन?",
   "chat.smalltalk.thanks": "स्वागत है। सूची की एक और कड़ी?",
-  "chat.followup.chatty": "और सिकोड़ सकते हैं, या कहें “सरप्राइज़”."
+  "chat.followup.chatty": "और सिकोड़ सकते हैं, या कहें “सरप्राइज़”.",
+  "detail.howToWin": "कैसे जीतें",
+  "detail.rulesNotToBreak": "न तोड़ने वाले नियम"
 }
