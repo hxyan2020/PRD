@@ -2324,7 +2324,6 @@ body.nav-open .nav-toggle__bars::after {
 @media (max-width: 860px) {
   .nav-toggle {
     display: grid;
-    order: 2;
   }
 
   .site-nav {
@@ -2334,12 +2333,13 @@ body.nav-open .nav-toggle__bars::after {
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 4.5rem 1.1rem 1.5rem;
+    padding: 4.75rem 1.1rem 1.5rem;
     background: #0c1e22;
     border-right: 1px solid rgba(242, 246, 248, 0.1);
     transform: translateX(-105%);
     transition: transform 0.25s var(--ease);
-    z-index: 60;
+    z-index: 70;
+    overflow-y: auto;
   }
 
   body.nav-open .site-nav {
@@ -2347,10 +2347,10 @@ body.nav-open .nav-toggle__bars::after {
   }
 
   .site-nav__link {
-    padding: 0.85rem 0.5rem;
+    padding: 0.95rem 0.55rem;
     border-bottom: 1px solid rgba(242, 246, 248, 0.08);
-    font-size: 1rem;
-    min-height: 2.75rem;
+    font-size: 1.05rem;
+    min-height: 3rem;
   }
 
   .nav-backdrop:not([hidden]) {
@@ -2358,15 +2358,7 @@ body.nav-open .nav-toggle__bars::after {
     position: fixed;
     inset: 0;
     background: rgba(4, 12, 16, 0.55);
-    z-index: 55;
-  }
-
-  .hud__stats {
-    order: 3;
-  }
-
-  .hud__aside {
-    order: 4;
+    z-index: 65;
   }
 }
 
@@ -2435,6 +2427,53 @@ body.nav-open .nav-toggle__bars::after {
   flex: 1;
   justify-content: center;
   min-width: 0;
+}
+
+@media (min-width: 861px) {
+  .site-nav__link[data-nav="home"] {
+    opacity: 0.72;
+  }
+}
+
+/* Mobile menu bar: brand · stats · lang · hamburger */
+@media (max-width: 860px) {
+  .hud {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "brand stats aside toggle";
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+  }
+
+  .hud .site-nav {
+    flex: unset;
+    justify-content: flex-start;
+  }
+
+  .hud__brand {
+    grid-area: brand;
+  }
+
+  .hud__stats {
+    grid-area: stats;
+    justify-content: flex-end;
+    flex: unset;
+    min-width: 0;
+  }
+
+  .hud__aside {
+    grid-area: aside;
+  }
+
+  .nav-toggle {
+    grid-area: toggle;
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    min-width: 2.75rem;
+    border-color: rgba(242, 246, 248, 0.35);
+    background: rgba(242, 246, 248, 0.1);
+  }
 }
 
 .method.is-route-focus {
@@ -3227,19 +3266,24 @@ body:not(.studio-open) .hero__content {
 
   @media (max-width: 480px) {
     .hud {
-      flex-wrap: wrap;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        "brand aside toggle"
+        "stats stats stats";
       row-gap: 0.35rem;
     }
 
     .hud__stats {
-      order: 3;
-      flex: 1 1 100%;
       justify-content: flex-start;
     }
 
     .hud__pill {
       flex: 1;
       justify-content: center;
+    }
+
+    .hud__lang select {
+      max-width: 5.75rem;
     }
   }
 
