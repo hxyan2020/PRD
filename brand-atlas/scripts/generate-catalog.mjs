@@ -159,7 +159,7 @@ const CATEGORIES = {
       { id: "santa-rita", name: "Santa Rita", origin: "Chile" },
       { id: "cloud-bay", name: "Cloudy Bay", origin: "New Zealand" },
       { id: "kim-crawford", name: "Kim Crawford", origin: "New Zealand" },
-      { id: "jacob's-creek", name: "Jacob's Creek", aliases: ["jacobs creek"], origin: "Australia" },
+      { id: "jacobs-creek", name: "Jacob's Creek", aliases: ["jacobs creek", "jacob's creek"], origin: "Australia" },
       { id: "kendall-jackson", name: "Kendall-Jackson", aliases: ["kj"], origin: "USA" },
       { id: "mateus", name: "Mateus", origin: "Portugal" },
       { id: "sandeman", name: "Sandeman", origin: "Portugal", tags: ["port"] },

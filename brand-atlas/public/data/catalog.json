@@ -2,7 +2,7 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-08T15:15:40.860Z",
+    "generatedAt": "2026-10-08T15:16:03.460Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
@@ -2625,25 +2625,26 @@
       "status": "active"
     },
     {
-      "id": "wine__jacob's-creek",
-      "slug": "jacob's-creek",
+      "id": "wine__jacobs-creek",
+      "slug": "jacobs-creek",
       "name": "Jacob's Creek",
       "aliases": [
-        "jacobs creek"
+        "jacobs creek",
+        "jacob's creek"
       ],
       "categoryId": "wine",
       "origin": "Australia",
       "tags": [],
       "summary": "Jacob's Creek — catalogued in wine brands · Australia.",
       "facts": {
-        "established": "1631",
+        "established": "1727",
         "house": "Jacob's Creek",
         "origin": "Australia",
         "style": "Wine",
         "story": "Jacob's Creek is still poured from Australia."
       },
-      "coverHue": 310,
-      "mark": "marks/wine__jacob's-creek.svg",
+      "coverHue": 95,
+      "mark": "marks/wine__jacobs-creek.svg",
       "markIcon": null,
       "sort": 20,
       "status": "active"
