@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
+import { categoryIcon } from "../lib/categoryIcons";
 import { overallProgress } from "../lib/progress";
 import { formatPct } from "../lib/unlocks";
 
@@ -54,9 +55,12 @@ export function HomePage() {
             <div className="category-grid">
               {catalog.categories.map((cat) => (
                 <Link key={cat.id} className="category-chip" to={`/catalog/${cat.id}`}>
-                  <strong>{cat.label}</strong>
-                  <span>
-                    {cat.itemCount} entries · {cat.kind}
+                  <span className="category-chip__icon">{categoryIcon(cat.id)}</span>
+                  <span className="category-chip__text">
+                    <strong>{cat.label}</strong>
+                    <span>
+                      {cat.itemCount} entries · {cat.kind}
+                    </span>
                   </span>
                 </Link>
               ))}

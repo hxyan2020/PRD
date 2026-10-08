@@ -832,9 +832,10 @@ img {
 
 .category-chip {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 1rem 1.05rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
   border-radius: var(--radius);
   background: color-mix(in oklab, white 70%, transparent);
   border: 1px solid var(--line);
@@ -847,11 +848,34 @@ img {
   box-shadow: var(--shadow);
 }
 
+.category-chip__icon {
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  flex-shrink: 0;
+  border-radius: 12px;
+  color: var(--forest);
+  background: color-mix(in oklab, var(--forest) 10%, white);
+}
+
+.category-chip__icon svg {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.category-chip__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
 .category-chip strong {
   font-size: 1rem;
 }
 
-.category-chip span {
+.category-chip__text > span {
   color: var(--ink-soft);
   font-size: 0.85rem;
 }
