@@ -1173,15 +1173,21 @@
           .map((m) => {
             const meta = questMeta[m.guided] || { badge: ti("studio.quest"), moves: "Guided", icon: "◇" };
             const sci = window.fateScienceStatusFor?.(m);
+            const cover = window.FatumCovers
+              ? window.FatumCovers.coverHTML(m, "feature-card__cover")
+              : "";
             return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(ti("play.quest"))} ${escapeHTML(m.name)}">
-            <div class="feature-card__top">
-              <span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>
-              <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
+            ${cover}
+            <div class="feature-card__body">
+              <div class="feature-card__top">
+                <span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>
+                <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
+              </div>
+              <h3 class="feature-card__title">${escapeHTML(m.name)}</h3>
+              <p class="feature-card__copy">${escapeHTML(m.summary)}</p>
+              <p class="feature-card__moves">${escapeHTML(meta.moves)}${sci ? ` · ${escapeHTML(sci.tag)}` : ""}</p>
+              <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(ti("play.quest"))}</button>
             </div>
-            <h3 class="feature-card__title">${escapeHTML(m.name)}</h3>
-            <p class="feature-card__copy">${escapeHTML(m.summary)}</p>
-            <p class="feature-card__moves">${escapeHTML(meta.moves)}${sci ? ` · ${escapeHTML(sci.tag)}` : ""}</p>
-            <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(ti("play.quest"))}</button>
           </article>`;
           })
           .join("");

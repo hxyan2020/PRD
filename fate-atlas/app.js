@@ -131,32 +131,38 @@
   function methodHTML(m) {
     const processLabel = processLabelFor(m);
     const sci = scienceFor(m);
+    const cover = window.FatumCovers
+      ? window.FatumCovers.coverHTML(m, "method__cover")
+      : "";
     return `<li class="method" id="method-${m.id}">
-      <div>
-        <h3 class="method__name">${escapeHTML(m.name)}</h3>
-        <div class="method__meta">
-          <span class="tag tag--type">${escapeHTML(typeLabel(m.type))}</span>
-          <span class="tag">${escapeHTML(continentLabel(m.continent))}</span>
-          <span class="tag tag--process">${escapeHTML(processLabel)}</span>
-          ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
+      ${cover}
+      <div class="method__content">
+        <div>
+          <h3 class="method__name">${escapeHTML(m.name)}</h3>
+          <div class="method__meta">
+            <span class="tag tag--type">${escapeHTML(typeLabel(m.type))}</span>
+            <span class="tag">${escapeHTML(continentLabel(m.continent))}</span>
+            <span class="tag tag--process">${escapeHTML(processLabel)}</span>
+            ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
+          </div>
+          <p class="method__region">${escapeHTML(m.region || "")}</p>
         </div>
-        <p class="method__region">${escapeHTML(m.region || "")}</p>
-      </div>
-      <div>
-        <p class="method__summary">${escapeHTML(m.summary)}</p>
-        ${
-          sci
-            ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}">
-                <p class="science-box__label">${escapeHTML(t("science.label"))}</p>
-                <p class="science-box__text">${escapeHTML(sci.reasoning)}</p>
-              </div>`
-            : ""
-        }
-        <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries, m.region)}</span></p>
-        <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
-        <p class="method__actions">
-          <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
-        </p>
+        <div>
+          <p class="method__summary">${escapeHTML(m.summary)}</p>
+          ${
+            sci
+              ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}">
+                  <p class="science-box__label">${escapeHTML(t("science.label"))}</p>
+                  <p class="science-box__text">${escapeHTML(sci.reasoning)}</p>
+                </div>`
+              : ""
+          }
+          <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries, m.region)}</span></p>
+          <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
+          <p class="method__actions">
+            <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
+          </p>
+        </div>
       </div>
     </li>`;
   }
@@ -191,7 +197,11 @@
     const processLabel = processLabelFor(pick);
     const sci = scienceFor(pick);
     els.oracleResult.hidden = false;
+    const cover = window.FatumCovers
+      ? window.FatumCovers.coverHTML(pick, "oracle__cover")
+      : "";
     els.oracleResult.innerHTML = `
+      ${cover}
       <p class="section__eyebrow" style="margin-bottom:0.5rem">${escapeHTML(t("oracle.lot"))}</p>
       <h3 class="method__name">${escapeHTML(pick.name)}</h3>
       <div class="method__meta" style="margin:0.5rem 0 1rem">
