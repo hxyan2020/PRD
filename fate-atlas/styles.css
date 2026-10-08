@@ -609,21 +609,35 @@ select {
   z-index: 45;
 }
 
+/* Lift the whole begin block above the footer while the list is open */
+.begin:has(.rite-picker.is-open) {
+  position: relative;
+  z-index: 80;
+}
+
 .rite-picker.is-open {
-  z-index: 120;
+  z-index: 200;
 }
 
 .rite-picker__panel {
   position: absolute;
-  z-index: 120;
+  z-index: 200;
   inset-inline: 0;
   top: calc(100% + 0.35rem);
+  bottom: auto;
   max-height: min(22rem, 55vh);
   display: flex;
   flex-direction: column;
   border: 1px solid var(--line);
   background: #fffdf8;
   box-shadow: 0 12px 32px rgba(40, 24, 8, 0.18);
+}
+
+/* Drop upward when there is more room above the trigger than below */
+.rite-picker--drop-up .rite-picker__panel {
+  top: auto;
+  bottom: calc(100% + 0.35rem);
+  box-shadow: 0 -12px 32px rgba(40, 24, 8, 0.18);
 }
 
 .rite-picker__search {

@@ -1164,7 +1164,22 @@
         if (!panel || !trigger) return;
         panel.hidden = true;
         trigger.setAttribute("aria-expanded", "false");
-        document.getElementById("rite-picker")?.classList.remove("is-open");
+        const root = document.getElementById("rite-picker");
+        root?.classList.remove("is-open", "rite-picker--drop-up");
+        panel.style.maxHeight = "";
+      }
+
+      function positionPanel() {
+        const root = document.getElementById("rite-picker");
+        if (!panel || !trigger || !root) return;
+        const rect = trigger.getBoundingClientRect();
+        const gap = 8;
+        const spaceBelow = Math.max(0, window.innerHeight - rect.bottom - gap - 12);
+        const spaceAbove = Math.max(0, rect.top - gap - 12);
+        const preferUp = spaceBelow < 220 && spaceAbove > spaceBelow;
+        root.classList.toggle("rite-picker--drop-up", preferUp);
+        const room = Math.max(160, preferUp ? spaceAbove : spaceBelow);
+        panel.style.maxHeight = `${Math.min(room, window.innerHeight * 0.55, 22 * 16)}px`;
       }
 
       function openPanel() {
@@ -1172,8 +1187,10 @@
         panel.hidden = false;
         trigger.setAttribute("aria-expanded", "true");
         document.getElementById("rite-picker")?.classList.add("is-open");
-        // Keep the open list above the footer / later page chrome
+        positionPanel();
+        // Keep the open list in view above the footer
         panel.scrollIntoView({ block: "nearest", inline: "nearest" });
+        positionPanel();
         searchEl?.focus();
       }
 
@@ -1305,6 +1322,20 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && panel && !panel.hidden) closePanel();
       });
+      window.addEventListener(
+        "resize",
+        () => {
+          if (panel && !panel.hidden) positionPanel();
+        },
+        { passive: true }
+      );
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (panel && !panel.hidden) positionPanel();
+        },
+        { passive: true }
+      );
 
       startBtn.addEventListener("click", () => {
         if (!picker.value) {
