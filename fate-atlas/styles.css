@@ -347,6 +347,61 @@ select {
   flex-shrink: 0;
 }
 
+.rite-icon {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 0.35rem;
+  background: var(--rite-icon-tint, rgba(15, 92, 86, 0.1));
+  color: var(--rite-icon-ink, var(--teal-deep));
+  line-height: 0;
+}
+
+.rite-icon__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rite-icon--feature {
+  width: 2.35rem;
+  height: 2.35rem;
+}
+
+.rite-icon--picker {
+  width: 1.85rem;
+  height: 1.85rem;
+}
+
+.rite-icon--oracle {
+  width: 2rem;
+  height: 2rem;
+  vertical-align: -0.35rem;
+  margin-inline-end: 0.35rem;
+}
+
+.rite-icon--method {
+  position: absolute;
+  inset-inline-start: 0.55rem;
+  bottom: 0.55rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  box-shadow: 0 4px 14px rgba(7, 19, 31, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  z-index: 2;
+}
+
+.method__media {
+  position: relative;
+}
+
+.method__name .rite-icon {
+  margin-inline-end: 0.4rem;
+  vertical-align: -0.45rem;
+}
+
 .feature-card__eyebrow {
   margin: 0;
   font-size: 0.75rem;
@@ -1695,6 +1750,10 @@ body.studio-open {
   overflow: hidden;
   background: #1a2a2e;
   border: 1px solid var(--line);
+}
+
+.method__media .method__cover {
+  width: 100%;
 }
 
 .method__cover__img,
