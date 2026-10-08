@@ -740,23 +740,37 @@ select {
 }
 
 .flag-img {
-  display: block !important;
-  width: 24px !important;
-  height: 18px !important;
-  min-width: 24px;
-  min-height: 18px;
+  display: inline-block !important;
+  width: 28px !important;
+  height: 21px !important;
+  min-width: 28px;
+  min-height: 21px;
   object-fit: cover;
   border-radius: 2px;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
   background: #2a2420;
+  vertical-align: middle;
+}
+
+.flag-icon {
+  display: inline-flex !important;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .flag-icon--empty {
   display: inline-block;
-  width: 24px;
-  height: 18px;
+  width: 28px;
+  height: 21px;
   border-radius: 2px;
   background: rgba(242, 232, 216, 0.12);
+}
+
+/* Never show letter-style emoji fallbacks in chips / pickers */
+.country-chip .flag-emoji,
+.picker-flag .flag-emoji,
+.rite-picker__flags .flag-emoji {
+  display: none !important;
 }
 
 .flag-emoji {
@@ -3024,10 +3038,15 @@ body.nav-open .nav-toggle__bars::after {
 .country-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.4rem;
   font-size: 0.88rem;
   color: var(--ink-soft);
   line-height: 1.2;
+}
+
+.country-chip .flag-img {
+  width: 28px !important;
+  height: 21px !important;
 }
 
 .country-chip--ancient {
