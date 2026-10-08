@@ -411,18 +411,22 @@ const CURATED_PHOTOS = {
   Dice: [commons("Dice.jpg")],
   "Spinning top": [commons("Spinning_top.jpg")],
   Tops: [commons("Spinning_top.jpg")],
-  Surakarta: [
-    commons("Board_game.jpg"),
-    commons("International_draughts.jpg"),
-    commons("Reversi.jpg"),
-  ],
+  Surakarta: [commons("Surakarta.jpg"), commons("Board_game.jpg")],
+  Fanorona: [commons("Fanorona.jpg")],
+  Mehen: [commons("Mehen.jpg")],
   Ganjifa: [
     commons("Ganjifa_Cards,_Medieval_India_at_National_Musuem,_New_Delhi.jpg"),
     commons("Cards_-Deck_Playing.jpg"),
-    commons("Mahjong.jpg"),
   ],
-  "Worry dolls": [commons("Kokeshi_dolls.jpg"), commons("Tin_soldier.jpg"), commons("Dollhouse.jpg")],
-  "Corn husk doll": [commons("Kokeshi_dolls.jpg"), commons("Hobby_horse.jpg"), commons("Tin_soldier.jpg")],
+  "Worry dolls": [
+    commons("Worry_dolls.jpg"),
+    commons("Wayuunkeera_with_the_colors_of_the_Venezuelan_flag.jpg"),
+    commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+  ],
+  "Corn husk doll": [
+    commons("Corn_husk_doll.jpg"),
+    commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+  ],
   Chunkey: [
     commons(
       "George Catlin - Tchung-kee, a Mandan Game Played with a Ring and Pole - 1985.66.431 - Smithsonian American Art Museum.jpg",
@@ -433,22 +437,27 @@ const CURATED_PHOTOS = {
     ),
     commons("Stone discoidals Winterville HRoe 2010.jpg"),
   ],
-  "Tea set toy": [commons("Dollhouse.jpg"), commons("Cup-and-ball.jpg"), commons("Maracas.jpg")],
+  "Tea set toy": [commons("Tea_set.jpg"), commons("Dollhouse.jpg")],
+  Boomerang: [commons("Boomerang.jpg")],
+  Palín: [commons("Palin.jpg"), commons("Chueca.jpg")],
+  Slinky: [commons("Slinky_toy.jpg")],
+  Poi: [
+    commons("Long_exposure_shot_of_fire_poi_ball_dance.jpg"),
+    commons("Poi_awhiowhio_pahu_11.jpg"),
+  ],
   "Frisbee / flying disc": [
     commons("Frisbee-1.jpg"),
     commons("Flying Disc - Ultimate Frisbee - World Games 2005 (1).jpg"),
     commons("Frisbee Wurf Badeplatz.JPG"),
   ],
-  "Hacky sack / footbag": [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Hacky_Sack.jpg")],
+  "Hacky sack / footbag": [commons("Footbag.jpg"), commons("Hacky_Sack.jpg"), commons("Jianzi.jpg")],
   Knucklebones: [
     commons("Knucklebones.jpg"),
     commons("Astragaloi.jpg"),
-    commons("Pick-up_sticks.jpg"),
   ],
   Jacks: [
     commons("Knucklebones.jpg"),
     commons("Astragaloi.jpg"),
-    commons("Pick-up_sticks.jpg"),
   ],
   Shuttlecock: [commons("Shuttlecock.jpg")],
   Jianzi: [commons("Jianzi.jpg")],
@@ -541,7 +550,6 @@ const CURATED_PHOTOS = {
     commons("Tin_soldier.jpg"),
     commons("Artig_Tin_Soldiers_Historical_miniatures_soldier_toy_figurine.jpg"),
   ],
-  "Hacky sack / footbag": [commons("Footbag.jpg")],
   "Chinese shuttlecock/footbag relatives": [
     commons("Footbag.jpg"),
     commons("Shuttlecock.jpg"),
@@ -724,6 +732,22 @@ const PHOTO_ALIASES = {
   footbag: "Hacky sack / footbag",
   "chinese shuttlecock/footbag relatives": "Chinese shuttlecock/footbag relatives",
   bul: "Patolli",
+  boomerang: "Boomerang",
+  palín: "Palín",
+  palin: "Palín",
+  chueca: "Palín",
+  slinky: "Slinky",
+  poi: "Poi",
+  "worry dolls": "Worry dolls",
+  "tea set toy": "Tea set toy",
+  "tea set": "Tea set toy",
+  surakarta: "Surakarta",
+  fanorona: "Fanorona",
+  mehen: "Mehen",
+  "alquerque / draughts family": "Alquerque",
+  "go bang / gomoku": "Gomoku",
+  "reversi / othello": "Reversi",
+  "jianzi (shuttlecock kicking)": "Jianzi",
 };
 
 /**
@@ -765,7 +789,8 @@ const CATEGORY_PHOTOS = {
     unsplash("1566694271453-390536dd1f0d"),
   ],
   "String & Finger": [
-    commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+    commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
+    commons("Cup-and-ball.jpg"),
     unsplash("1556309294-98916e0aaca7"),
   ],
   "Dolls & Figures": [
@@ -790,10 +815,14 @@ const CATEGORY_PHOTOS = {
   ],
   "Outdoor Folk": [
     commons("Kite.jpg"),
-    commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
-    commons("Jianzi.jpg"),
+    commons("Hopscotch.jpg"),
+    commons("Tug_of_war.jpg"),
   ],
-  "Musical Play": [commons("Dice.jpg"), commons("Knucklebones.jpg")],
+  "Musical Play": [
+    commons("Maracas.jpg"),
+    commons("Xylophone.jpg"),
+    commons("Flute.jpg"),
+  ],
   Construction: [
     commons("A_pile_of_alphabet_wooden_blocks.jpg"),
     commons("Jenga_distorted.jpg"),
@@ -1166,8 +1195,9 @@ function encodeLudusView(name, category, originCountry, viewIndex, seed) {
 }
 
 /** Total images per entry (title card + photos + unique views). */
-const GALLERY_TARGET = 6;
-/** Cap exclusive stock photos so room remains for unique gallery views. */
+/** Max images per entry (card + real photos). Do not pad with synthetic placeholders. */
+const GALLERY_TARGET = 4;
+/** Cap exclusive stock photos; fewer correct photos beats padded wrong ones. */
 const PHOTO_TARGET = 3;
 
 function tagsForEntry(name, archetypeKey) {
@@ -1185,6 +1215,15 @@ function tagsForEntry(name, archetypeKey) {
  * Global image bank: unique sets per entry; primary image is a named title card;
  * follow-on photos use toy-specific tags (never a wrong sibling game’s keywords).
  */
+/** True when `alias` appears as a whole word/phrase in `stem` (not a substring). */
+function stemHasAlias(stem, alias) {
+  if (!stem || !alias) return false;
+  if (stem === alias) return true;
+  // Require phrase boundaries so "top" never matches "boomerang", etc.
+  const escaped = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`).test(stem);
+}
+
 /** Resolve a catalog name to a CURATED_PHOTOS key (exact, alias, or stem). */
 function resolvePhotoKey(name) {
   if (!name) return null;
@@ -1202,8 +1241,13 @@ function resolvePhotoKey(name) {
   if (PHOTO_ALIASES[stem] && CURATED_PHOTOS[PHOTO_ALIASES[stem]]?.length) {
     return PHOTO_ALIASES[stem];
   }
-  for (const [alias, key] of Object.entries(PHOTO_ALIASES)) {
-    if (stem.includes(alias) && CURATED_PHOTOS[key]?.length) return key;
+  // Prefer longer aliases first so "spinning top" wins over "top".
+  const aliases = Object.entries(PHOTO_ALIASES).sort(
+    (a, b) => b[0].length - a[0].length,
+  );
+  for (const [alias, key] of aliases) {
+    if (alias.length < 3) continue;
+    if (stemHasAlias(stem, alias) && CURATED_PHOTOS[key]?.length) return key;
   }
   // Title-case stem match against curated keys
   for (const key of Object.keys(CURATED_PHOTOS)) {
@@ -1245,42 +1289,41 @@ function photoLineage(name, archetypeKey, parentName) {
  * Only verified-live Commons / Unsplash URLs (checked in generate).
  */
 const ARCHETYPE_PHOTOS = {
-  rattle: [commons("Maracas.jpg"), commons("Xylophone.jpg"), commons("Cup-and-ball.jpg")],
-  whistle_toy: [commons("Flute.jpg"), commons("Xylophone.jpg"), commons("Maracas.jpg")],
-  pull_toy: [commons("Wagon.jpg"), commons("Hobby_horse.jpg"), commons("Lego_bricks.jpg")],
-  mini_weapons_toy: [commons("Archery.jpg"), commons("Slingshot.jpg"), commons("Quoits.jpg")],
+  rattle: [commons("Maracas.jpg"), commons("Rattle.jpg")],
+  whistle_toy: [commons("Flute.jpg"), commons("Whistle.jpg")],
+  pull_toy: [commons("Wagon.jpg"), commons("Hobby_horse.jpg"), commons("Rocking_horse.jpg")],
+  mini_weapons_toy: [commons("Archery.jpg"), commons("Slingshot.jpg")],
   jacks_local: [
     commons("Knucklebones.jpg"),
     commons("Astragaloi.jpg"),
-    commons("Pick-up_sticks.jpg"),
   ],
   story_dice_oral: [
+    commons("Dice.jpg"),
     commons("Domino_--_2021_--_6766.jpg"),
-    commons("Cards_-Deck_Playing.jpg"),
-    commons("Scrabble_game.jpg"),
   ],
-  shadow_play: [commons("Wayang_kulit.jpg"), commons("Bilboquet.jpg"), commons("Kendama.jpg")],
+  shadow_play: [
+    commons("Wayang_kulit.jpg"),
+    commons("Shadow_puppet.jpg"),
+    commons("Hand_puppet.jpg"),
+  ],
   kite_local: [
     commons("Kite.jpg"),
     unsplash("1757743066599-193b467c35f1"),
-    commons("Paper_boat.jpg"),
   ],
   cloth_doll_local: [
-    commons("Kokeshi_dolls.jpg"),
-    commons("Tin_soldier.jpg"),
-    commons("Hobby_horse.jpg"),
+    commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+    commons("Worry_dolls.jpg"),
+    commons("Corn_husk_doll.jpg"),
   ],
-  ball_sewn: [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Seesaw.jpg")],
-  top_local: [commons("Spinning_top.jpg"), commons("Yo_yo_toy.jpg"), commons("Diabolo.jpg")],
+  ball_sewn: [commons("Footbag.jpg"), commons("Sepak_takraw.jpg"), commons("Jianzi.jpg")],
+  top_local: [commons("Spinning_top.jpg")],
   string_local: [
     commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
-    commons("Cup-and-ball.jpg"),
-    commons("Pick-up_sticks.jpg"),
   ],
   board_race_folk: [
-    commons("Board_game.jpg"),
     commons("Pachisi-real.jpg"),
     commons("Snakes_and_Ladders.jpg"),
+    commons("Ludo_board.svg"),
   ],
   sowing_local: [
     commons("Mancala.jpg"),
@@ -1300,33 +1343,26 @@ const ARCHETYPE_PHOTOS = {
   wrestling_play: [
     commons("Wrestling.jpg"),
     commons("Traditional_wrestling.jpg"),
-    commons("Tug_of_war.jpg"),
   ],
   memory_song: [
     commons("Circle_game.jpg"),
-    commons("Scrabble_game.jpg"),
-    commons("Cards_-Deck_Playing.jpg"),
+    commons("Musical_chairs.jpg"),
   ],
-  balance_stilts: [commons("Stilts.jpg"), commons("Unicycle.jpg"), commons("Seesaw.jpg")],
-  leaf_boat: [commons("Paper_boat.jpg"), commons("Kite.jpg"), commons("Seesaw.jpg")],
-  snow_or_sand: [commons("Sandcastle.jpg"), commons("Seesaw.jpg"), commons("Board_game.jpg")],
+  balance_stilts: [commons("Stilts.jpg")],
+  leaf_boat: [commons("Paper_boat.jpg")],
+  snow_or_sand: [commons("Sandcastle.jpg"), commons("Snowman.jpg")],
   knuckle_football: [
-    commons("Sepak_takraw.jpg"),
+    commons("Footbag.jpg"),
     commons("Jianzi.jpg"),
-    commons("International_draughts.jpg"),
   ],
   riddle_local: [
     commons("Circle_game.jpg"),
-    commons("Scrabble_game.jpg"),
-    commons("Cards_-Deck_Playing.jpg"),
   ],
-  ceremonial_toy: [commons("Maracas.jpg"), commons("Wayang_kulit.jpg"), commons("Patolli.jpg")],
+  ceremonial_toy: [commons("Maracas.jpg"), commons("Rattle.jpg")],
   puzzle_knot: [
     commons("Pick-up_sticks.jpg"),
-    commons("Jenga_distorted.jpg"),
-    commons("Lego_bricks.jpg"),
   ],
-  mini_house: [commons("Dollhouse.jpg"), commons("Hobby_horse.jpg"), commons("Tin_soldier.jpg")],
+  mini_house: [commons("Dollhouse.jpg"), commons("Tea_set.jpg")],
 };
 
 /** All hand-curated photo URLs — kept out of the spillover bank. */
@@ -1510,37 +1546,24 @@ const imageBank = {
       if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
         break;
     }
-    // Only borrow generic category/extra stock when there is no named pool —
-    // otherwise we risk wrong subjects (e.g. air hockey on knucklebones).
-    if (!hasNamedPool || photoCount === 0) {
+      // Only borrow generic category stock when there is no named/archetype
+    // pool — never spill random EXTRA photos onto catalog titles (that
+    // produced skateboards on Mehen, cribbage on Fanorona, etc.).
+    if (!hasNamedPool && photoCount === 0) {
       while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
-        const url =
-          this.takeCategoryPhoto(
-            category,
-            lineage,
-            avoid,
-            `${uniqueKey}:${imgs.length}`,
-          ) ||
-          this.takeExtraPhoto(lineage, avoid, `${uniqueKey}:${imgs.length}`);
+        const url = this.takeCategoryPhoto(
+          category,
+          lineage,
+          avoid,
+          `${uniqueKey}:${imgs.length}`,
+        );
         if (!pushPhoto(url)) break;
       }
     }
 
-    let view = 0;
-    while (imgs.length < GALLERY_TARGET) {
-      const panel = encodeLudusView(
-        name,
-        category,
-        originCountry,
-        view,
-        uniqueKey,
-      );
-      imgs.push(panel);
-      this.usedRefs.add(panel);
-      view += 1;
-    }
-
-    return imgs;
+    // Do not pad with synthetic ludus-view placeholders — only real photos
+    // (plus the named title card). Fewer correct images beats wrong fillers.
+    return imgs.slice(0, GALLERY_TARGET);
   },
 };
 
@@ -2790,20 +2813,15 @@ async function main() {
       if (!ok) stripped += 1;
       return ok;
     });
-    // Re-pad with unique views if photos were dropped.
-    let view = 0;
-    const key = entry.slug || entry.name || "entry";
-    while (keep.length < GALLERY_TARGET) {
+    // Keep surviving photos/cards only — never invent placeholder panels.
+    if (!keep.length) {
       keep.push(
-        encodeLudusView(
+        encodeLudusCard(
           entry.name,
           entry.category || "Toy & Game",
           entry.originCountry || "",
-          view,
-          `pad:${key}:${view}`,
         ),
       );
-      view += 1;
     }
     entry.images = keep.slice(0, GALLERY_TARGET);
   };
