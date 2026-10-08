@@ -672,26 +672,52 @@ img {
   border-radius: 0 0 36px 36px;
   margin-bottom: 2.5rem;
   color: var(--paper);
-  background:
-    linear-gradient(180deg, transparent 20%, #0f2822ee 92%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23c8e08a' stroke-opacity='.18'%3E%3Ccircle cx='80' cy='80' r='48'/%3E%3Ccircle cx='80' cy='80' r='22'/%3E%3Cpath d='M80 8v24M80 128v24M8 80h24M128 80h24'/%3E%3C/g%3E%3C/svg%3E"),
-    linear-gradient(135deg, #1a3c34, #244a3f 40%, #3a2a22);
-  background-size: cover, 160px 160px, cover;
-  animation: heroDrift 18s ease-in-out infinite alternate;
+  background: #1a1a1a;
 }
 
-@keyframes heroDrift {
+.hero__banner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  transform: scale(1.02);
+  animation: heroKen 22s ease-in-out infinite alternate;
+}
+
+@keyframes heroKen {
   from {
-    background-position: center, 0 0, center;
+    transform: scale(1.02) translate3d(0, 0, 0);
   }
   to {
-    background-position: center, 40px 28px, center;
+    transform: scale(1.08) translate3d(-1.5%, 1%, 0);
+  }
+}
+
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 28%, #0b0b0bcc 78%, #0b0b0be8 100%),
+    linear-gradient(90deg, #0b0b0b66 0%, transparent 42%);
+  animation: veilPulse 10s ease-in-out infinite alternate;
+}
+
+@keyframes veilPulse {
+  from {
+    opacity: 0.92;
+  }
+  to {
+    opacity: 1;
   }
 }
 
 .hero__content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   padding: clamp(2rem, 6vw, 4.5rem);
   max-width: 38rem;
 }

@@ -16,6 +16,14 @@ export function HomePage() {
   return (
     <main>
       <section className="hero">
+        <img
+          className="hero__banner"
+          src={`${import.meta.env.BASE_URL}banner-seen.png`}
+          alt=""
+          width={1199}
+          height={672}
+        />
+        <div className="hero__veil" aria-hidden="true" />
         <div className="hero__content">
           <p className="hero__brand">
             <img
