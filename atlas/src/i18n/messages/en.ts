@@ -236,6 +236,8 @@ export const en = {
   "chat.rec.basedOn": " based on {bits}",
   "chat.rec.none":
     "I couldn’t find a strong match{prefLine}. Try broadening region to “any,” or say “start over.”",
+  "chat.rec.exhausted":
+    "That’s all the strong matches I have for these preferences. Say “start over” to try a different mix, or ask about any title above.",
   "chat.rec.intro":
     "Here are {n} catalog picks{prefLine}. Tap a title in the collection, or ask me how to play, about origins, variations, or where to buy any of them.",
 
