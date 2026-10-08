@@ -22,8 +22,8 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Desktop: keep Mona Lisa’s face in frame on wide crops (mobile overrides below). */
-  object-position: center 22%;
+  /* Desktop: face in frame, biased right so copy on the left stays clear (mobile overrides). */
+  object-position: 62% 20%;
   animation: heroKenBurnsDesktop 26s ease-in-out alternate infinite;
 }
 
