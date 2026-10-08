@@ -273,6 +273,117 @@ img {
   border: 1px solid var(--line);
 }
 
+.resource-pack {
+  margin-bottom: 1.6rem;
+  padding: 1.1rem 1.15rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--lime) 18%, white), transparent 55%),
+    color-mix(in oklab, white 82%, transparent);
+}
+
+.resource-pack__head h3 {
+  font-family: var(--font-display);
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+}
+
+.resource-pack__head p {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+  max-width: 46rem;
+}
+
+.resource-pack__fields {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.resource-pack__field-label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.75rem;
+  align-items: baseline;
+  margin-bottom: 0.45rem;
+}
+
+.resource-pack__field-label strong {
+  font-size: 0.92rem;
+}
+
+.resource-pack__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+}
+
+.resource-pack__queries {
+  margin: 0 0 0.8rem;
+  font-size: 0.85rem;
+}
+
+.resource-pack__preview,
+.resource-pack__installed {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.resource-pack__preview h4,
+.resource-pack__installed h4 {
+  margin: 0 0 0.55rem;
+  font-size: 0.95rem;
+}
+
+.resource-pack__preview ul,
+.resource-pack__installed ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.resource-pack__preview li label {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.55rem 0.65rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: color-mix(in oklab, white 88%, transparent);
+  cursor: pointer;
+}
+
+.resource-pack__preview li strong {
+  display: inline;
+}
+
+.resource-pack__preview li em {
+  font-style: normal;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.resource-pack__preview li small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+.resource-pack__installed li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.45rem 0;
+}
+
 .item-tile.is-sneak .item-tile__badge {
   background: var(--leaf);
 }

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ItemDetail } from "../components/ItemDetail";
 import { ItemTile } from "../components/ItemTile";
+import { ResourcePackPanel } from "../components/ResourcePackPanel";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
@@ -15,7 +16,7 @@ import { formatPct } from "../lib/unlocks";
 
 export function CatalogPage() {
   const { categoryId } = useParams();
-  const { catalog, loading, error } = useCatalog();
+  const { catalog, loading, error, refresh } = useCatalog();
   const { version, isUnlocked, getUnlock, updateNote, updatePhoto } = useUnlocks();
   const { t } = useI18n();
   const [query, setQuery] = useState("");
@@ -116,6 +117,14 @@ export function CatalogPage() {
             </p>
           )}
         </div>
+      )}
+
+      {activeCategory && catalog && (
+        <ResourcePackPanel
+          catalog={catalog}
+          category={activeCategory}
+          onChanged={refresh}
+        />
       )}
 
       <div className="pill-group" style={{ marginBottom: "1rem" }}>

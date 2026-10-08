@@ -1,31 +1,42 @@
 import { useEffect, useState } from "react";
-import { loadCatalog } from "../lib/catalog";
+import { loadCatalog, clearCatalogCache } from "../lib/catalog";
+import {
+  mergeCatalogWithPacks,
+  subscribeResourcePacks,
+} from "../lib/resourcePacks";
 import type { Catalog } from "../types/catalog";
 
 export function useCatalog() {
   const [catalog, setCatalog] = useState<Catalog | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [packVersion, setPackVersion] = useState(0);
+
+  useEffect(() => subscribeResourcePacks(() => setPackVersion((v) => v + 1)), []);
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
     loadCatalog()
-      .then((c) => {
-        if (!cancelled) {
-          setCatalog(c);
-          setLoading(false);
-        }
+      .then((base) => {
+        if (cancelled) return;
+        setCatalog(mergeCatalogWithPacks(base));
+        setLoading(false);
       })
       .catch((e: unknown) => {
-        if (!cancelled) {
-          setError(e instanceof Error ? e.message : "Failed to load catalogue");
-          setLoading(false);
-        }
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : "Failed to load catalogue");
+        setLoading(false);
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [packVersion]);
 
-  return { catalog, error, loading };
+  const refresh = () => {
+    clearCatalogCache();
+    setPackVersion((v) => v + 1);
+  };
+
+  return { catalog, error, loading, refresh, packVersion };
 }
