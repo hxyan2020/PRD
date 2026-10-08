@@ -119,8 +119,8 @@ const en = {
   close: 'Close',
   api: 'API',
   apiHelp:
-    'Optional OpenAI-compatible key (stored only in this browser). Leave empty to use the built-in OWNLAB local tutor.',
-  apiKey: 'API key',
+    'ChatGPT-compatible bot is on by default (Pollinations OpenAI endpoint, no key). Paste your own OpenAI key + api.openai.com endpoint for a private model. Settings stay in this browser only.',
+  apiKey: 'API key (optional)',
   endpoint: 'Endpoint',
   model: 'Model',
   saveApi: 'Save API settings',
@@ -291,8 +291,9 @@ const zh: Record<UiKey, string> = {
   aiTutor: 'AI 导师',
   close: '关闭',
   api: 'API',
-  apiHelp: '可选的 OpenAI 兼容密钥（仅存本浏览器）。留空则使用内置 OWNLAB 本地导师。',
-  apiKey: 'API 密钥',
+  apiHelp:
+    '默认已接通 ChatGPT 兼容接口（Pollinations OpenAI 端点，无需密钥）。也可填入你自己的 OpenAI 密钥并改用 api.openai.com。设置仅保存在本浏览器。',
+  apiKey: 'API 密钥（可选）',
   endpoint: '接口地址',
   model: '模型',
   saveApi: '保存 API 设置',

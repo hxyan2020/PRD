@@ -5,15 +5,26 @@ const KEY_STORAGE = 'ownlab-openai-key'
 const ENDPOINT_STORAGE = 'ownlab-openai-endpoint'
 const MODEL_STORAGE = 'ownlab-openai-model'
 
+/** Same OpenAI-compatible ChatGPT bot endpoint used by risk-handbook (no key required). */
+export const DEFAULT_CHAT_ENDPOINT = 'https://text.pollinations.ai/openai'
+export const DEFAULT_CHAT_MODEL = 'openai'
+
 export type ChatMessage = { role: 'system' | 'user' | 'assistant'; content: string }
+
+function requiresApiKey(endpoint: string) {
+  try {
+    const host = new URL(endpoint).hostname
+    return host === 'api.openai.com' || host.endsWith('.openai.azure.com')
+  } catch {
+    return true
+  }
+}
 
 export function getApiSettings() {
   return {
     apiKey: localStorage.getItem(KEY_STORAGE)?.trim() ?? '',
-    endpoint:
-      localStorage.getItem(ENDPOINT_STORAGE)?.trim() ||
-      'https://api.openai.com/v1/chat/completions',
-    model: localStorage.getItem(MODEL_STORAGE)?.trim() || 'gpt-4o-mini',
+    endpoint: localStorage.getItem(ENDPOINT_STORAGE)?.trim() || DEFAULT_CHAT_ENDPOINT,
+    model: localStorage.getItem(MODEL_STORAGE)?.trim() || DEFAULT_CHAT_MODEL,
   }
 }
 
@@ -66,7 +77,7 @@ function localTutorExplain(selectedText: string, sourcePath: string | undefined,
       )
     }
     parts.push('**产品动作：** 把这个想法改写成 PRD 里的决策、指标或风险——而不是工程任务清单。')
-    parts.push('_本地导师可继续对话。想更强的模型回复，可在设置里添加 OpenAI 兼容密钥。_')
+    parts.push('_本地导师离线回复（远程 ChatGPT 兼容接口暂不可用时可继续追问）。_')
     return parts.join('\n\n')
   }
 
@@ -91,9 +102,7 @@ function localTutorExplain(selectedText: string, sourcePath: string | undefined,
   parts.push(
     '**PO move:** Rewrite this idea as a decision, metric, or risk in your PRD — not as an eng task list.',
   )
-  parts.push(
-    '_Local tutor can keep chatting. Add an OpenAI-compatible API key in settings for a stronger model._',
-  )
+  parts.push('_Local tutor offline reply (remote ChatGPT-compatible API unavailable — keep chatting)._')
   return parts.join('\n\n')
 }
 
@@ -172,13 +181,11 @@ function localTutorChat(input: {
       return [
         `你好！我是 OWNLAB 本地导师。我们在聊你选中的「${selection.slice(0, 80)}${selection.length > 80 ? '…' : ''}」${lesson ? `（第 ${lesson.day} 天）` : ''}。`,
         '你可以直接问我：这是什么意思、产品负责人该怎么用、该盯什么指标、或要一个生产案例。',
-        '_想要更强的对话模型，可在设置里添加 API 密钥。_',
       ].join('\n\n')
     }
     return [
       `Hi — I’m the OWNLAB local tutor. We’re talking about “${selection.slice(0, 100)}${selection.length > 100 ? '…' : ''}”${lesson ? ` from Day ${lesson.day}` : ''}.`,
       'Ask me anything: what it means, how a PO should use it, which metric to watch, or a production example.',
-      '_Add an API key in settings if you want a stronger live model._',
     ].join('\n\n')
   }
 
@@ -316,8 +323,9 @@ export async function explainSelection(input: {
           .filter(Boolean)
           .join(' ')
 
-  // Local tutor path (no API key)
-  if (!settings.apiKey) {
+  const useLocalOnly = requiresApiKey(settings.endpoint) && !settings.apiKey
+
+  const localReply = async (): Promise<{ content: string; model: string }> => {
     // Brief pause so the UI typing indicator is visible before the typewriter starts.
     await new Promise((resolve) => window.setTimeout(resolve, input.userMessage?.trim() ? 450 : 320))
     if (input.userMessage?.trim()) {
@@ -337,6 +345,10 @@ export async function explainSelection(input: {
       model: 'local-tutor',
       content: localTutorExplain(input.selectedText, input.sourcePath, lang),
     }
+  }
+
+  if (useLocalOnly) {
+    return localReply()
   }
 
   const promptUser =
@@ -366,28 +378,53 @@ export async function explainSelection(input: {
     messages.push({ role: 'user', content: promptUser })
   }
 
-  const response = await fetch(settings.endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${settings.apiKey}`,
-    },
-    body: JSON.stringify({
-      model: settings.model,
-      messages,
-      temperature: 0.5,
-    }),
-  })
-
-  if (!response.ok) {
-    const errText = await response.text()
-    throw new Error(`API error ${response.status}: ${errText.slice(0, 280)}`)
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json, text/plain',
+  }
+  if (settings.apiKey) {
+    headers.Authorization = `Bearer ${settings.apiKey}`
   }
 
-  const data = (await response.json()) as {
-    choices?: { message?: { content?: string } }[]
+  try {
+    const response = await fetch(settings.endpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        model: settings.model,
+        messages,
+        temperature: 0.5,
+      }),
+    })
+
+    if (!response.ok) {
+      const errText = await response.text()
+      throw new Error(`API error ${response.status}: ${errText.slice(0, 280)}`)
+    }
+
+    const ct = response.headers.get('content-type') || ''
+    let content = ''
+    if (ct.includes('application/json')) {
+      const data = (await response.json()) as {
+        choices?: { message?: { content?: string }; content?: string }[]
+        content?: string
+        error?: string
+      }
+      if (data.error) throw new Error(String(data.error))
+      content =
+        data.choices?.[0]?.message?.content?.trim() ||
+        (typeof data.choices?.[0]?.content === 'string' ? data.choices[0].content.trim() : '') ||
+        (typeof data.content === 'string' ? data.content.trim() : '')
+    } else {
+      content = (await response.text()).trim()
+    }
+
+    if (!content || /no space left|status"\s*:\s*500/i.test(content)) {
+      throw new Error('Empty or bad model response')
+    }
+    return { content, model: settings.model }
+  } catch {
+    // Public bot endpoints can rate-limit; keep the lesson usable offline.
+    return localReply()
   }
-  const content = data.choices?.[0]?.message?.content?.trim()
-  if (!content) throw new Error('Empty model response')
-  return { content, model: settings.model }
 }
