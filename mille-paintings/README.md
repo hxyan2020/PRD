@@ -22,10 +22,16 @@ Each painting page includes:
 Also included:
 
 - Daily recommendation (`/today`) with fullscreen view, collect, and surprise-me
-- Viewed / collected counters (localStorage)
-- Preferences + Wikidata discovery to expand beyond the core 1000
+- Email/password accounts (`/#/account`) that save collection, browse history, preferences, and discoveries per user
+- Preferences + multi-source discovery to expand beyond the core 1000
 - UI translations for major languages with flag language picker
 - Mobile hamburger navigation
+
+## Accounts
+
+Sign up / sign in from **Account** in the nav. Library data is stored under your account in the browser (PBKDF2-hashed password).
+
+Optional cross-device sync: copy `.env.example` to `.env`, set Supabase URL + anon key, create the `mille_user_library` table from the SQL comment in `src/lib/auth/cloud.ts`, then rebuild.
 
 ## Develop
 
