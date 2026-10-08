@@ -3,6 +3,7 @@ import {
   isLudusSyntheticSrc,
   ludusCardDataUri,
   stableImageSrc,
+  type ImageLabel,
 } from "../lib/gameCardImage";
 
 type Props = {
@@ -11,8 +12,8 @@ type Props = {
   className?: string;
   loading?: "lazy" | "eager";
   onError?: ReactEventHandler<HTMLImageElement>;
-  /** When set, title cards redraw with the live (possibly localized) name. */
-  label?: { name: string; category: string; originCountry: string };
+  /** When set, title cards / views redraw with live (possibly localized) text. */
+  label?: ImageLabel;
 };
 
 /** <img> wrapper that resolves Ludus title-card refs to correctly named SVGs. */
@@ -29,7 +30,10 @@ export function GameImage({
   const failed = failedFor === src;
 
   const fallback = label
-    ? ludusCardDataUri(label.name, label.category, label.originCountry)
+    ? ludusCardDataUri(label.name, label.category, label.originCountry, {
+        categoryKey: label.categoryKey,
+        cardFooter: label.cardFooter,
+      })
     : null;
 
   // Already on a title card / data URI — no second network hop to fail.

@@ -17,6 +17,8 @@ import {
   listDisplayImages,
   primaryCoverSrc,
   resolveImageSrc,
+  VIEW_CAPTION_KEYS,
+  type ImageLabel,
 } from "../lib/gameCardImage";
 
 function formatCount(n: number): string {
@@ -40,14 +42,14 @@ export function GameDetailPage() {
         if (!alive) return;
         setTotal(data.meta.totalGames);
         const found = data.games.find((g) => g.slug === slug) ?? null;
-        setGame(found ? localizeGame(found, locale, catalog) : null);
+        setGame(found ? localizeGame(found, locale, catalog, t) : null);
         setActiveImg(0);
       },
     );
     return () => {
       alive = false;
     };
-  }, [slug, locale]);
+  }, [slug, locale, t]);
 
   if (game === undefined) {
     return <div className="loading">{t("detail.loading")}</div>;
@@ -72,6 +74,14 @@ export function GameDetailPage() {
   const activeSrc =
     galleryImages[Math.min(activeImg, Math.max(galleryImages.length - 1, 0))] ??
     game.images[0];
+  const imageLabel: ImageLabel = {
+    name: game.name,
+    category: game.category,
+    originCountry: game.originCountry,
+    categoryKey: game.categoryKey ?? game.category,
+    viewCaptions: VIEW_CAPTION_KEYS.map((key) => t(key)),
+    cardFooter: t("detail.cardFooter"),
+  };
   // Title-card SVGs repeat the game name — using them as the hero background
   // creates a ghost double of the headline. Prefer a plain brand wash instead.
   const heroPhoto =
@@ -80,7 +90,7 @@ export function GameDetailPage() {
     !isLudusSyntheticSrc(activeSrc) &&
     !isFragileRemoteSrc(activeSrc) &&
     !activeSrc.startsWith("data:")
-      ? resolveImageSrc(activeSrc)
+      ? resolveImageSrc(activeSrc, imageLabel)
       : "";
 
   return (
@@ -220,8 +230,8 @@ export function GameDetailPage() {
                                 alt=""
                                 loading="lazy"
                                 label={{
+                                  ...imageLabel,
                                   name: v.name,
-                                  category: game.category,
                                   originCountry: v.originCountry,
                                 }}
                               />
@@ -256,11 +266,7 @@ export function GameDetailPage() {
               className="main-shot"
               src={activeSrc}
               alt={`${game.name} reference`}
-              label={{
-                name: game.name,
-                category: game.category,
-                originCountry: game.originCountry,
-              }}
+              label={imageLabel}
             />
             {galleryImages.length > 1 ? (
               <div className="gallery">
@@ -276,11 +282,7 @@ export function GameDetailPage() {
                       src={src}
                       alt=""
                       loading="lazy"
-                      label={{
-                        name: game.name,
-                        category: game.category,
-                        originCountry: game.originCountry,
-                      }}
+                      label={imageLabel}
                     />
                   </button>
                 ))}

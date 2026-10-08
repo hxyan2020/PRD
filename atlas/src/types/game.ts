@@ -48,6 +48,8 @@ export type Game = {
   archetypeKey?: string;
   /** English catalog key for flag lookup when `originCountry` is localized. */
   originCountryKey?: string;
+  /** English catalog category key when `category` is localized. */
+  categoryKey?: string;
   /** Best-matching YouTube process / tutorial video for this entry. */
   tutorialVideo?: TutorialVideo;
 };

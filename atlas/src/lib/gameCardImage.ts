@@ -21,12 +21,45 @@ const CATEGORY_ACCENT: Record<string, string> = {
 const CARD_PREFIX = "ludus-card:";
 const VIEW_PREFIX = "ludus-view:";
 
+/** Default English gallery-panel captions (override via i18n at render time). */
+export const VIEW_CAPTION_KEYS: readonly [
+  "detail.viewCaption.atmosphere",
+  "detail.viewCaption.play",
+  "detail.viewCaption.materials",
+  "detail.viewCaption.culture",
+] = [
+  "detail.viewCaption.atmosphere",
+  "detail.viewCaption.play",
+  "detail.viewCaption.materials",
+  "detail.viewCaption.culture",
+];
+
 const VIEW_CAPTIONS = [
   "Atmosphere",
   "How it’s played",
   "Pieces & materials",
   "Cultural setting",
 ];
+
+export type ImageLabel = {
+  name: string;
+  category: string;
+  originCountry: string;
+  /** English category key for accent colors when `category` is localized. */
+  categoryKey?: string;
+  /** Localized view captions (length 4); falls back to English defaults. */
+  viewCaptions?: string[];
+  /** Localized title-card footer line. */
+  cardFooter?: string;
+};
+
+function accentForCategory(category: string, categoryKey?: string): string {
+  return (
+    CATEGORY_ACCENT[categoryKey || ""] ||
+    CATEGORY_ACCENT[category] ||
+    "#bc0234"
+  );
+}
 
 export function isLudusCardSrc(src: string): boolean {
   return src.startsWith(CARD_PREFIX);
@@ -113,7 +146,21 @@ function escapeXml(s: string): string {
 }
 
 function wrapLines(text: string, maxChars: number, maxLines: number): string[] {
-  const words = text.split(/\s+/).filter(Boolean);
+  const trimmed = text.trim();
+  if (!trimmed) return [""];
+  // CJK / no-space scripts: break by character count.
+  if (!/\s/.test(trimmed) && /[^\u0000-\u00ff]/.test(trimmed)) {
+    const lines: string[] = [];
+    for (let i = 0; i < trimmed.length && lines.length < maxLines; i += maxChars) {
+      lines.push(trimmed.slice(i, i + maxChars));
+    }
+    if (trimmed.length > maxChars * maxLines && lines.length) {
+      const last = lines[lines.length - 1]!;
+      lines[lines.length - 1] = `${last.slice(0, Math.max(1, last.length - 1))}…`;
+    }
+    return lines;
+  }
+  const words = trimmed.split(/\s+/).filter(Boolean);
   const lines: string[] = [];
   let cur = "";
   for (const w of words) {
@@ -131,7 +178,7 @@ function wrapLines(text: string, maxChars: number, maxLines: number): string[] {
     const last = lines[lines.length - 1] ?? "";
     lines[lines.length - 1] = `${last.replace(/\s+\S*$/, "")}…`;
   }
-  return lines.length ? lines : [text.slice(0, maxChars)];
+  return lines.length ? lines : [trimmed.slice(0, maxChars)];
 }
 
 function hashSeed(s: string): number {
@@ -217,8 +264,10 @@ export function ludusCardDataUri(
   name: string,
   category: string,
   originCountry: string,
+  options?: { categoryKey?: string; cardFooter?: string },
 ): string {
-  const accent = CATEGORY_ACCENT[category] || "#7d9b8a";
+  const accent = accentForCategory(category, options?.categoryKey);
+  const footer = options?.cardFooter || "Catalog reference card";
   const titleLines = wrapLines(name, 22, 3);
   const titleFont =
     titleLines.length >= 3 ? 42 : titleLines.length === 2 ? 48 : 56;
@@ -248,7 +297,7 @@ export function ludusCardDataUri(
   <text x="60" y="150" fill="#b7c9c0" font-family="system-ui, sans-serif" font-size="20">${escapeXml(category || "Toy & Game")}</text>
   ${titleBlock}
   <text x="60" y="520" fill="#b7c9c0" font-family="system-ui, sans-serif" font-size="22">${escapeXml(originCountry || "")}</text>
-  <text x="60" y="560" fill="#7d9b8a" font-family="system-ui, sans-serif" font-size="14">Catalog reference card</text>
+  <text x="60" y="560" fill="#7d9b8a" font-family="system-ui, sans-serif" font-size="14">${escapeXml(footer)}</text>
 </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
@@ -260,10 +309,14 @@ export function ludusViewDataUri(
   originCountry: string,
   viewIndex: number,
   seed: string,
+  options?: { categoryKey?: string; viewCaptions?: string[] },
 ): string {
-  const accent = CATEGORY_ACCENT[category] || "#bc0234";
+  const accent = accentForCategory(category, options?.categoryKey);
   const h = hashSeed(`${seed}|view|${viewIndex}|${name}`);
-  const caption = VIEW_CAPTIONS[viewIndex % VIEW_CAPTIONS.length];
+  const captions = options?.viewCaptions?.length
+    ? options.viewCaptions
+    : VIEW_CAPTIONS;
+  const caption = captions[viewIndex % captions.length] || VIEW_CAPTIONS[0]!;
   const motif = (h + viewIndex * 3) % 5;
   const shift = ((h >> 3) % 40) - 20;
   let shapes = "";
@@ -384,42 +437,61 @@ export function primaryCoverSrc(images: string[] | undefined): string | undefine
 /**
  * Resolve a collection image src for use in <img>.
  * Title-card / gallery-view refs become SVG data URIs.
+ * When `label` is set, localized name/category/origin/captions override the
+ * English strings baked into collection.json refs.
  */
-export function resolveImageSrc(src: string): string {
+export function resolveImageSrc(src: string, label?: ImageLabel): string {
   const view = parseLudusView(src);
   if (view) {
     return ludusViewDataUri(
-      view.name,
-      view.category,
-      view.originCountry,
+      label?.name || view.name,
+      label?.category || view.category,
+      label?.originCountry || view.originCountry,
       view.viewIndex,
       view.seed,
+      {
+        categoryKey: label?.categoryKey || view.category,
+        viewCaptions: label?.viewCaptions,
+      },
     );
   }
   const parsed = parseLudusCard(src);
   if (!parsed) return src;
-  return ludusCardDataUri(parsed.name, parsed.category, parsed.originCountry);
+  return ludusCardDataUri(
+    label?.name || parsed.name,
+    label?.category || parsed.category,
+    label?.originCountry || parsed.originCountry,
+    {
+      categoryKey: label?.categoryKey || parsed.category,
+      cardFooter: label?.cardFooter,
+    },
+  );
 }
 
 /**
  * Prefer a named title card over fragile stock-photo hosts so galleries never
  * show the browser’s broken-image icon. Unique gallery views keep their own art.
  */
-export function stableImageSrc(
-  src: string,
-  label?: { name: string; category: string; originCountry: string },
-): string {
-  if (isLudusViewSrc(src)) return resolveImageSrc(src);
+export function stableImageSrc(src: string, label?: ImageLabel): string {
+  if (isLudusViewSrc(src)) return resolveImageSrc(src, label);
   if (label && (isLudusCardSrc(src) || isFragileRemoteSrc(src))) {
-    return ludusCardDataUri(label.name, label.category, label.originCountry);
+    return ludusCardDataUri(label.name, label.category, label.originCountry, {
+      categoryKey: label.categoryKey,
+      cardFooter: label.cardFooter,
+    });
   }
   if (isFragileRemoteSrc(src)) {
     const parsed = parseLudusCard(src);
     if (parsed) {
-      return ludusCardDataUri(parsed.name, parsed.category, parsed.originCountry);
+      return ludusCardDataUri(
+        parsed.name,
+        parsed.category,
+        parsed.originCountry,
+        { categoryKey: parsed.category, cardFooter: label?.cardFooter },
+      );
     }
   }
-  return resolveImageSrc(src);
+  return resolveImageSrc(src, label);
 }
 
 /** Rewrite fragile remote URLs to ludus-card refs and drop duplicates. */

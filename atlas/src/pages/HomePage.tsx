@@ -34,9 +34,9 @@ export function HomePage() {
     if (!data) return [];
     const withVariations = data.games.filter((g) => g.variations.length > 0);
     return dailyPickGames(withVariations, 6, "home-featured", day).map((g) =>
-      localizeGame(g, locale, contentI18n),
+      localizeGame(g, locale, contentI18n, t),
     );
-  }, [data, locale, contentI18n, day]);
+  }, [data, locale, contentI18n, day, t]);
 
   return (
     <>

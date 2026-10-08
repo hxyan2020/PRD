@@ -132,7 +132,7 @@ export function PreferencesPage() {
 
   function addOne(game: Game, source: DiscoverHit["source"]) {
     if (!requireLogin()) return;
-    const display = localizeGame(game, locale, contentI18n);
+    const display = localizeGame(game, locale, contentI18n, t);
     if (source === "catalog" || baseIds.has(game.id) || baseSlugs.has(game.slug)) {
       showFlash(t("prefs.flash.alreadyCatalog", { name: display.name }));
       return;
@@ -385,7 +385,7 @@ export function PreferencesPage() {
 
               <ul className="prefs-hit-list">
                 {hits.map((hit) => {
-                  const display = localizeGame(hit.game, locale, contentI18n);
+                  const display = localizeGame(hit.game, locale, contentI18n, t);
                   const inBase =
                     hit.source === "catalog" ||
                     baseIds.has(hit.game.id) ||

@@ -714,7 +714,7 @@
       "name": "帕林"
     },
     "game-0037": {
-      "description": "在世界范围内的收获仪式、学校体育和乡村节日中都出现了战争的牵引。 一些东亚和太平洋形式带有季节性平衡的宇宙意义。 两支队伍,一支绳子——元素协调比赛.",
+      "description": "拔河常见于世界各地的收获仪式、学校体育与乡村节日。部分东亚与太平洋形式还带有季节平衡的宇宙象征意义。两队一绳——比的是齐心协力的协调发力。",
       "howToPlay": [
         "标出中线与双方犯规线。",
         "双方均匀握绳；竞技规则下勿把绳缠绕肢体。",
@@ -723,14 +723,14 @@
         "有人危险滑倒时立即停止。"
       ],
       "requirements": [
-        "强绳",
+        "结实的绳子",
         "中心地面标记",
-        "清除拉带"
+        "清理出的拉扯地带"
       ],
-      "idealParticipants": "2个小组",
+      "idealParticipants": "两组人",
       "variationNotes": [
-        "仪式历事中的社区绳索.",
-        "在节日周围举行乡村拖拉仪式."
+        "仪式历法中的社区拔河。",
+        "节日期间的乡村拔河仪式。"
       ],
       "name": "拔河"
     },
@@ -1199,7 +1199,7 @@
   },
   "zh-Hant": {
     "game-0001": {
-      "description": "Chess evolved from chaturanga, a war-simulation of infantry, cavalry, elephants, and chariots. As it traveled through Persia (shatranj) into the Islamic world and medieval Europe, pieces became court ranks. The modern queen and bishop powers crystallized in late medieval Europe. Across cultures it has stood for intellect, foresight, and educated leisure.",
+      "description": "象棋是從Chaturanga演化而來的,是一支以步兵,骑兵,大象,戰車為主的模拟戰車. 當它穿越波斯(沙特兰日)進入伊斯兰世界和中世紀歐洲時,碎片成為宫廷軍衔. 現代女王和主教的權力在中世紀晚期的歐洲結晶. 在各種文化中,它代表著智慧、遠見和受過教育的休闲。",
       "howToPlay": [
         "將棋盤擺正，使每位棋手右側角格為淺色格。",
         "把棋子放在底線（車、馬、象、後在本色格、王、象、馬、車），兵放在第二橫排。",
@@ -1223,7 +1223,7 @@
       "name": "國際象棋"
     },
     "game-0002": {
-      "description": "Go is an encirclement game of territory. Stones never move once placed; captured groups are removed. One of the Four Arts of the Chinese scholar, it spread to Korea (baduk) and Japan (igo). Play encodes balance, influence, and living shape rather than direct capture of a king.",
+      "description": "Go是一個包圍领地的遊戲. 石頭一放置就永遠不動;被俘团體被清除. 中國學者四藝之一,傳播到韩國(巴都克)和日本(igo). 遊戲编碼平衡,影響,和活體形狀,而不是直接捕獲一個國王.",
       "howToPlay": [
         "黑方先在交叉點落第一子。",
         "雙方輪流各下一子；落子後棋子不再移動。",
@@ -1349,7 +1349,7 @@
       "name": "塞尼特"
     },
     "game-0008": {
-      "description": "Patolli was a sacred Aztec race game on an X-shaped track using beans as dice. Gambling and ritual offerings intertwined; the game appears in codices and Spanish accounts as cosmic risk made playable.",
+      "description": "Patolli是一款使用豆子作為骰子的X形赛道上的神圣的阿兹特克赛車遊戲. 赌博和儀式祭品相互交织;遊戲在codices和西班牙的账户中出現,因為宇宙風險變得可以玩耍.",
       "howToPlay": [
         "把X形的板子放好,在開始時加注",
         "扔一個有標記的豆子來做移動值 。",
@@ -1366,8 +1366,7 @@
       "variationNotes": [
         "相關的中美洲人種/水稻傳統。"
       ],
-      "name": "帕托利",
-      "fallbackEn": true
+      "name": "帕托利"
     },
     "game-0009": {
       "description": "Pachisi – 「印度的國家遊戲」, 喬帕是親戚 英國的盧多和美國的帕切西 是同一個根本种族的商業后代",
@@ -1415,7 +1414,7 @@
       "name": "麻將"
     },
     "game-0011": {
-      "description": "Chinese dominoes relate to dice face pairs; European double-six sets spread via Italy and France. Blocking, scoring, and train games all share matching pip ends—one tool, many table cultures.",
+      "description": "中國多米诺斯與骰子面對有關;歐洲双六套通過意大利和法國傳播. 封锁、打分和训练遊戲都共享匹配的 pip 端點——一個工具,许多表格文化。",
       "howToPlay": [
         "牌面朝下洗勻後抓起手牌。",
         "按變體規則以雙牌或點數最高的牌先出。",
@@ -1435,7 +1434,7 @@
       "name": "多米諾"
     },
     "game-0012": {
-      "description": "Mills games form three-in-a-row to capture. Boards are cut into cloister benches across medieval Europe. Southern African morabaraba is the same fundamental mills contest with pastoral ‘cow’ metaphors—catalogued here as variations, not separate inventions.",
+      "description": "米爾斯遊戲形成三连拍以捕捉. 中世紀歐洲的板块被切成板凳。",
       "howToPlay": [
         "雙方輪流在空點放子，直到各放滿九枚。",
         "沿連線移到相鄰空點。",
@@ -1456,7 +1455,7 @@
       "name": "九子棋"
     },
     "game-0013": {
-      "description": "Alquerque’s leaping captures on a lined board are documented in Alfonso X’s Book of Games. European draughts/checkers moved the idea onto a checkered board. Saharan kharbaga and related Maghreb games belong to the same leap-capture family—variations of one hunting geometry.",
+      "description": "Alquerque在排行板上的跳跃捕捉記錄在Alf應給予QQs Games書中。 歐洲的拖放/检查器將這個想法移動到一個检查板上. 撒哈拉的khabaga和相關的馬格裡布遊戲属於同一跃進家族——一種狩猎缔造和平几何。",
       "howToPlay": [
         "將棋子分列雙方陣營。",
         "沿連線（或跳棋的深色格）移到相鄰空點。",
@@ -1555,7 +1554,7 @@
       "name": "花札 / 歌留多"
     },
     "game-0018": {
-      "description": "Ganjifa are circular painted cards of Mughal and regional Indian courts, later folk-crafted in places such as Odisha. Suit systems (Mughal, Dashavatara) differ, but trick-taking court hierarchies unite them as one painted-card tradition.",
+      "description": "甘吉法(英語:Ganjifa)是莫卧兒和地區印度法院的圆形彩绘卡片,後來在奥迪沙等地民间制作. 服饰系統(Mughal, Dashavatara)不同,但诡計的宫廷等级將它們聯合起來,成為一種绘卡傳統.",
       "howToPlay": [
         "使用八門莫臥兒甘吉法套牌（96 張圓牌）或十門化身套牌；輕柔洗牌，勿折損漆層。",
         "四人莫臥兒局各發十二張；以首出花色或開局前聲明的將牌定將。",
@@ -1695,7 +1694,7 @@
       "name": "藤球"
     },
     "game-0025": {
-      "description": "Stickball among northeastern Indigenous nations held spiritual and diplomatic weight—the Creator’s game. French observers named it lacrosse. Modern codes formalized sport rules, but cradling and scoring with a netted stick continue a deep tradition.",
+      "description": "東北原住民民族的 limetball具有精神和外交的份量, 法國觀察家將其命名為曲棍球. 現代法典將體育規則正式化,但用網棍摇擺和打分,仍然是深厚的傳統.",
       "howToPlay": [
         "分成兩隊並設立球門。",
         "在中場爭球開局。",
@@ -1735,7 +1734,7 @@
       "name": "中美洲球戲 / 烏拉馬"
     },
     "game-0027": {
-      "description": "Kokeshi are limbless lathe-turned wooden dolls from northern Honshu onsen towns—first souvenirs and children’s toys, now collected art. Regional schools (Naruko, Tsuchiyu, and others) differ in head joints and floral painting.",
+      "description": "Kokeshi是來自北部Honshu的木偶, 地區學校(納鲁科,鹤yu等)在頭部關節和花卉绘畫上存在差异.",
       "howToPlay": [
         "顯示或持有此玩偶; 沒有競爭的分數 。",
         "孩童可能會在Kokeshi周圍發明培育故事。",
@@ -1751,8 +1750,7 @@
       "variationNotes": [
         "點擊主校園風格 。"
       ],
-      "name": "小芥子",
-      "fallbackEn": true
+      "name": "小芥子"
     },
     "game-0028": {
       "description": "馬特羅什卡筑巢娃娃下列各项, 並成為全球藝術偶像。",
@@ -1804,7 +1802,7 @@
       "name": "玉米殼娃娃"
     },
     "game-0031": {
-      "description": "Cup-and-ball toys challenge hand-eye timing: swing a tethered ball into a cup or onto a spike. French bilboquet, Mexican balero, and Japanese kendama are variations of one skill family with different vocabularies of tricks.",
+      "description": "杯球玩具挑戰手眼計時:將捆绑的球擺到杯子上或擺到钉子上. 法式的bilboquet,墨西哥的balero,和日式的kendama,是一個技能家族的變體,有著不同的花招词汇.",
       "howToPlay": [
         "握住手柄，讓球吊在繩上。",
         "向上甩起，用杯口或尖釘接住球。",
@@ -1840,7 +1838,7 @@
       "name": "七巧板"
     },
     "game-0033": {
-      "description": "Ernő Rubik’s cube popularized three-dimensional combination puzzles worldwide. Layer-turn mechanics hide group theory inside a colorful toy. Speedcubing culture added algorithms, hardware, and sport timing—still one puzzle at heart.",
+      "description": "Ernő Rubik的立方體普及三维组合谜題, 层-转力學將群脾氣理論隐藏在多彩的玩具中.",
       "howToPlay": [
         "隨意擰轉各面打亂魔方。",
         "用層先法或直覺把每一面還原為純色。",
@@ -1913,7 +1911,7 @@
       "name": "帕林"
     },
     "game-0037": {
-      "description": "戰爭的屠殺出現在世界各地的收割儀式、學校運動和村莊節日中。 有些東亞和太平洋形式带有季节平衡的宇宙涵義。 兩支球隊,一支繩子... 元素协调賽",
+      "description": "拔河常見於世界各地的收穫儀式、學校體育與鄉村節日。部分東亞與太平洋形式還帶有季節平衡的宇宙象徵意義。兩隊一繩——比的是齊心協力的協調發力。",
       "howToPlay": [
         "標出中線與雙方犯規線。",
         "雙方均勻握繩；競技規則下勿把繩纏繞肢體。",
@@ -1922,19 +1920,19 @@
         "有人危險滑倒時立即停止。"
       ],
       "requirements": [
-        "強繩",
-        "中心地面標示",
-        "清除拉帶"
+        "結實的繩子",
+        "中心地面標記",
+        "清理出的拉扯地帶"
       ],
-      "idealParticipants": "2支工作队",
+      "idealParticipants": "兩組人",
       "variationNotes": [
-        "Communal ropes in ritual calendar events.",
-        "節日的村莊拖拉儀式"
+        "儀式曆法中的社區拔河。",
+        "節日期間的鄉村拔河儀式。"
       ],
       "name": "拔河"
     },
     "game-0038": {
-      "description": "Hide-and-seek is a near-universal children’s game with countless local names and counting rhymes. It rehearses stealth, spatial memory, and the social thrill of being found. Architecture—from kasbah alleys to apartment stairwells—reshapes strategy.",
+      "description": "捉迷藏是一款近乎普遍的兒童遊戲, 它排练了隐形的,空间的記忆, 和被找到的社會刺激。 建筑——從Kasbah巷道到公寓樓梯间——重新塑造戰略。",
       "howToPlay": [
         "選出一名尋找者與一個大本營（樹、牆或臺階）；劃定硬邊界——不上街、不進上鎖房間。",
         "尋找者面向大本營大聲數到 50，其他人在界內躲藏。",
@@ -2055,7 +2053,7 @@
       "name": "狐狸與鵝"
     },
     "game-0044": {
-      "description": "Five-in-a-row on a Go-like grid is an ancient East Asian pastime formalized as gomoku and renju. Distinct from Go's territory scoring—the goal is a straight five.",
+      "description": "類似Go的網格上的五進一排是古代東亞的消遣,形式為gomoku和renju. 區别於吴的领地得分——進球為直五.",
       "howToPlay": [
         "黑色的位置先在十字路口",
         "玩家另置一塊石頭",
@@ -2071,8 +2069,7 @@
       "variationNotes": [
         "平衡的競爭規矩"
       ],
-      "name": "五子棋",
-      "fallbackEn": true
+      "name": "五子棋"
     },
     "game-0045": {
       "description": "Reversi翻過三明治碟片, 奧塞羅將現代品牌和開發标准化 一個純粹的布置和飛行比賽 和爆炸性的比賽",
@@ -2112,7 +2109,7 @@
       "name": "拼字遊戲"
     },
     "game-0047": {
-      "description": "Paramapada sopanam / gyan chaupar taught karma with virtues as ladders and vices as snakes. British Snakes and Ladders secularized the race for children—same fundamental up-and-down morality track.",
+      "description": "Paramapada sopanam / gyan chaupar)以功德教因果报應如梯子,恶習如蛇. 英國的蛇隊和梯隊將兒童竞赛世俗化——同樣是基本的上下道德轨道。",
       "howToPlay": [
         "把棋子放在盤外；擲骰進入賽道。",
         "按骰點前進。",
@@ -2153,7 +2150,7 @@
       "name": "大富翁"
     },
     "game-0049": {
-      "description": "Jenga formalizes the ancient thrill of removing pieces from a stack without collapse. Leslie Scott marketed the tower game globally; the physical puzzle is one shared stack for all players.",
+      "description": "Jenga 將古老的興奋 清除碎块 從堆堆而不塌。 Leslie Scott在全球营销了塔遊戲;物理谜題是所有玩家共享的堆栈.",
       "howToPlay": [
         "以每層三塊、交叉疊放的方式搭塔。",
         "輪到你時，用一隻手從尚未完成的頂層以下抽出一塊。",
@@ -2244,7 +2241,7 @@
       "name": "玩具士兵"
     },
     "game-0054": {
-      "description": "Miniature tea sets let children rehearse hospitality rituals. Porcelain and tin versions tracked adult tea cultures from Britain to Japan. Social scripts—pouring, offering, thanking—are the real ruleset.",
+      "description": "小型茶具讓孩子們排练招待儀式. 瓷器和锡的版本追蹤了從英國到日本的成人茶文化.",
       "howToPlay": [
         "為玩偶或朋友擺好座位。",
         "倒茶（真茶或想像）且不碰倒杯子。",
@@ -2292,7 +2289,7 @@
       "name": "飛盤"
     },
     "game-0057": {
-      "description": "Keeping a small bag aloft with feet echoes older Eurasian kickbag play. Circle 'sunny' sessions emphasize style and sharing over scoring.",
+      "description": "保持一個小袋高跟鞋與脚 呼應更古老的歐亞踢球遊戲。 圆形的“ Sunny” 會ẹ風格和分享大於评分。",
       "howToPlay": [
         "把袋子扔到腳上 輕輕地往上踢",
         "用腳 膝蓋 和大腿 不要手",
@@ -2308,11 +2305,10 @@
       "variationNotes": [
         "古老的踢球傳統與精神相關"
       ],
-      "name": "踢沙包",
-      "fallbackEn": true
+      "name": "踢沙包"
     },
     "game-0058": {
-      "description": "Returning boomerangs are precision-carved throwing sticks from Aboriginal Australian traditions, also used in hunting forms that do not return. Tourist sport boomerangs simplify the returning toy; cultural knowledge of designs remains with communities.",
+      "description": "返回的潮流是來自澳大利亞原住民傳統的精密雕刻的投掷棒,也用於不返回的狩猎形式. 旅遊體育潮流簡化了回归的玩具;關於設計的文化知識仍留在社區。",
       "howToPlay": [
         "只能用在大清澈的田地上 沒有人能下游",
         "扔到那個形狀所學到的角度",
@@ -2326,8 +2322,7 @@
         "建议监测器"
       ],
       "idealParticipants": "獨自一人",
-      "name": "回力鏢",
-      "fallbackEn": true
+      "name": "回力鏢"
     },
     "game-0059": {
       "description": "毛利波依在舞蹈鐵車手腕節奏和故事說法裡 傳統背景仍是文化習慣。",
@@ -2346,7 +2341,7 @@
       "name": "火舞球"
     },
     "game-0060": {
-      "description": "Surakarta is a Javanese capture game where pieces travel circuits around colored loops. Captures follow the loops rather than simple jumps—an elegant regional strategy toy.",
+      "description": "蘇拉卡塔(Surakarta)是一款爪哇語捕捉遊戲,其中片段绕著彩色环路行走.",
       "howToPlay": [
         "板子上有數據",
         "移至相邻的空點 。",
@@ -2359,11 +2354,10 @@
         "每邊12件"
       ],
       "idealParticipants": "2人",
-      "name": "蘇拉卡爾塔",
-      "fallbackEn": true
+      "name": "蘇拉卡爾塔"
     },
     "game-0061": {
-      "description": "Dakon is a Javanese congkak-family sowing board, often elaborately carved. It is presented as a named regional standard within mancala while remaining one sowing family.",
+      "description": "D 我以為 我請她去参加婚礼 它作為曼卡拉的一個區域標準提出,同時仍是一個播種家庭。",
       "howToPlay": [
         "使用船形棋盤：每側七個小杯，兩端各一個大倉（lumbung）；每個小杯放七粒種子。",
         "輪到你時，舀起己方一杯，順時針逐杯播一粒，包括己方大倉，跳過對方大倉。",
@@ -2382,7 +2376,7 @@
       "name": "達孔"
     },
     "game-0062": {
-      "description": "Sungka is the Filipino boat-shaped sowing game, cousin to congkak. Boards are household heirlooms; play mixes speed sowing with capture timing.",
+      "description": "成卡(英語:Sungka)是菲律宾船形的播種遊戲,表妹為康格卡克. 棋盤是傳家宝;遊戲混合播音速度和捕獲時间。",
       "howToPlay": [
         "兩人坐在雙六棋（sungka）旁：每側七個小杯（bahay）、各一端倉（ulo）；每個 bahay 放七枚貝殼或種子。",
         "舀起己方一個 bahay 的全部種子，逆時針逐杯播一粒，包括己方 ulo，跳過對方 ulo。",

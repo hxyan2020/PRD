@@ -124,8 +124,8 @@ export function GuidePage() {
   );
 
   const games = useMemo(
-    () => rawGames.map((g) => localizeGame(g, locale, contentI18n)),
-    [rawGames, locale, contentI18n],
+    () => rawGames.map((g) => localizeGame(g, locale, contentI18n, t)),
+    [rawGames, locale, contentI18n, t],
   );
 
   useEffect(() => {

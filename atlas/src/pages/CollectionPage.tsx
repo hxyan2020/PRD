@@ -63,7 +63,7 @@ export function CollectionPage() {
       if (category !== "all" && g.category !== category) return false;
       if (region !== "all" && g.originCountry !== region) return false;
       if (!q) return true;
-      const localized = localizeGame(g, locale, catalog);
+      const localized = localizeGame(g, locale, catalog, t);
       const hay = [
         localized.name,
         localized.originCountry,
@@ -80,21 +80,21 @@ export function CollectionPage() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [data, deferredQuery, category, region, locale, catalog]);
+  }, [data, deferredQuery, category, region, locale, catalog, t]);
 
   const day = todayKey();
   const dailyPicks = useMemo(() => {
     if (!data) return [];
     return dailyPickGames(data.games, 6, "collection-top", day).map((g) =>
-      localizeGame(g, locale, catalog),
+      localizeGame(g, locale, catalog, t),
     );
-  }, [data, locale, catalog, day]);
+  }, [data, locale, catalog, day, t]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
   const pageItems = filtered
     .slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
-    .map((g) => localizeGame(g, locale, catalog));
+    .map((g) => localizeGame(g, locale, catalog, t));
 
   const regionIso = region === "all" ? null : isoForCountry(region);
   const regionFlag = region === "all" ? "🌍" : flagForCountry(region);
