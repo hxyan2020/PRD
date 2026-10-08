@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <defs>
-    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
-  </defs>
-  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAD6SURBVDhPfVPbEcMwCHN7nSOjdIp+d5SM0gkyQ0foCJ2EO4KIiWXi5MOXxyEhJFxU9XZ15C8qz5fK/aHyWax0q5dp+1cuwd9FZTIgwHgamYPflfCMwLtSEXeHCv+up1PgwLmx74U2gneGIgJD1U7gzCGXi/AO4gyGL/bfCXaTAjgTGRQl2RgvvCtHMAGgKBIII00JG1+6mWDcz+SGEgZT154g5gYYs3JsLN3GGkXeTPSFafEIfGDjzhS4iZCdEsgLw8b1IwzAvgtQxHHSGo89iGJT4t3zQiX3W4x5aWqnHN/ZnTnE2G4bGVpXeZiCm4djkrkgrqv7cEGwAqJcn+79N/vHAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Kellogg's">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Kellogg's</text>
 </svg>
