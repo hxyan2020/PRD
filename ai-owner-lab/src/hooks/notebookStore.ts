@@ -77,6 +77,7 @@ export const notebookStore = {
     return entry
   },
   addNote(input: { text: string }) {
+    // Caller may pass sanitized HTML; empty check is done upstream via plain text.
     const text = input.text.trim()
     if (!text) return null
     const entry: NotebookEntry = {

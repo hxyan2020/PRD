@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { RichTextEditor } from '../components/RichTextEditor'
 import { formatTimestamp, useNotebook, type NotebookEntry } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
+import { isBlankHtml, sanitizeHtml } from '../lib/sanitizeHtml'
 
 function typeLabel(
   type: NotebookEntry['type'],
@@ -10,6 +12,19 @@ function typeLabel(
   if (type === 'explanation') return t('aiExplanation')
   if (type === 'note') return t('freeNote')
   return t('clip')
+}
+
+function NoteBody({ html, className }: { html: string; className?: string }) {
+  const looksLikeHtml = /<\/?[a-z][\s\S]*>/i.test(html)
+  if (!looksLikeHtml) {
+    return <blockquote className={className}>{html}</blockquote>
+  }
+  return (
+    <blockquote
+      className={`${className ?? ''} notebook-rich`.trim()}
+      dangerouslySetInnerHTML={{ __html: sanitizeHtml(html) }}
+    />
+  )
 }
 
 export function Notebook() {
@@ -34,8 +49,9 @@ export function Notebook() {
   }
 
   function saveEdit(entry: NotebookEntry) {
-    const selectedText = draftText.trim()
-    if (!selectedText) return
+    const selectedText =
+      entry.type === 'note' ? sanitizeHtml(draftText).trim() : draftText.trim()
+    if (entry.type === 'note' ? isBlankHtml(selectedText) : !selectedText) return
     const patch =
       entry.type === 'explanation'
         ? { selectedText, explanation: draftExplanation }
@@ -45,11 +61,15 @@ export function Notebook() {
   }
 
   function createNote() {
-    const created = addNote({ text: newNote })
+    const html = sanitizeHtml(newNote).trim()
+    if (isBlankHtml(html)) return
+    const created = addNote({ text: html })
     if (!created) return
     setNewNote('')
     setComposerOpen(true)
   }
+
+  const canCreate = !isBlankHtml(newNote)
 
   return (
     <div className="page">
@@ -73,21 +93,21 @@ export function Notebook() {
         </div>
         {composerOpen ? (
           <div className="notebook-edit-form">
-            <label>
-              {t('noteBodyLabel')}
-              <textarea
+            <div className="notebook-field">
+              <span className="notebook-field-label">{t('noteBodyLabel')}</span>
+              <RichTextEditor
                 value={newNote}
-                onChange={(e) => setNewNote(e.target.value)}
-                rows={4}
+                onChange={setNewNote}
                 placeholder={t('newNotePlaceholder')}
                 autoFocus={entries.length === 0}
+                ariaLabel={t('noteBodyLabel')}
               />
-            </label>
+            </div>
             <div className="notebook-actions">
               <button
                 type="button"
                 className="btn primary"
-                disabled={!newNote.trim()}
+                disabled={!canCreate}
                 onClick={createNote}
               >
                 {t('createNote')}
@@ -123,6 +143,8 @@ export function Notebook() {
         <ol className="notebook-timeline">
           {entries.map((entry) => {
             const editing = editingId === entry.id
+            const editBlank =
+              entry.type === 'note' ? isBlankHtml(draftText) : !draftText.trim()
             return (
               <li key={entry.id} className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}`}>
                 <div className="notebook-meta">
@@ -145,15 +167,29 @@ export function Notebook() {
 
                 {editing ? (
                   <div className="notebook-edit-form">
-                    <label>
-                      {entry.type === 'note' ? t('noteBodyLabel') : t('selectedTextLabel')}
-                      <textarea
-                        value={draftText}
-                        onChange={(e) => setDraftText(e.target.value)}
-                        rows={entry.type === 'note' ? 6 : 3}
-                        autoFocus
-                      />
-                    </label>
+                    {entry.type === 'note' ? (
+                      <div className="notebook-field">
+                        <span className="notebook-field-label">{t('noteBodyLabel')}</span>
+                        <RichTextEditor
+                          value={draftText}
+                          onChange={setDraftText}
+                          placeholder={t('newNotePlaceholder')}
+                          autoFocus
+                          minHeight="10rem"
+                          ariaLabel={t('noteBodyLabel')}
+                        />
+                      </div>
+                    ) : (
+                      <label>
+                        {t('selectedTextLabel')}
+                        <textarea
+                          value={draftText}
+                          onChange={(e) => setDraftText(e.target.value)}
+                          rows={3}
+                          autoFocus
+                        />
+                      </label>
+                    )}
                     {entry.type === 'explanation' ? (
                       <label>
                         {t('explanationLabel')}
@@ -168,7 +204,7 @@ export function Notebook() {
                       <button
                         type="button"
                         className="btn primary"
-                        disabled={!draftText.trim()}
+                        disabled={editBlank}
                         onClick={() => saveEdit(entry)}
                       >
                         {t('saveEdits')}
@@ -180,7 +216,7 @@ export function Notebook() {
                   </div>
                 ) : (
                   <>
-                    <blockquote className="notebook-quote">{entry.selectedText}</blockquote>
+                    <NoteBody html={entry.selectedText} className="notebook-quote" />
                     {entry.explanation ? (
                       <div className="notebook-explanation">
                         {entry.explanation.split(/\n\n+/).map((block, index) => (

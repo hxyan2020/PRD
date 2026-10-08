@@ -2332,6 +2332,137 @@ body.menu-open {
   font-size: 1.05rem;
 }
 
+.notebook-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.notebook-field-label {
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--ink);
+}
+
+.rte {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.rte-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.rte-btn {
+  min-width: 2.1rem;
+  height: 2.1rem;
+  padding: 0 0.45rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rte-btn:hover {
+  background: rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 148, 136, 0.25);
+}
+
+.rte-u {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rte-sep {
+  width: 1px;
+  height: 1.35rem;
+  background: var(--line);
+  margin: 0 0.15rem;
+}
+
+.rte-select-wrap {
+  display: inline-flex;
+}
+
+.rte-select {
+  height: 2.1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  padding: 0 0.4rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: #fff;
+}
+
+.rte-shell {
+  position: relative;
+}
+
+.rte-placeholder {
+  position: absolute;
+  inset: 0.75rem 0.85rem auto;
+  color: var(--ink-soft);
+  opacity: 0.75;
+  pointer-events: none;
+  line-height: 1.45;
+}
+
+.rte-editor {
+  width: 100%;
+  resize: vertical;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  padding: 0.75rem 0.85rem;
+  font: inherit;
+  line-height: 1.5;
+  color: var(--ink);
+  background: #fff;
+}
+
+.rte-editor:focus {
+  outline: 2px solid rgba(13, 148, 136, 0.35);
+  border-color: var(--teal);
+}
+
+.rte-editor ul,
+.notebook-rich ul {
+  margin: 0.35rem 0 0.35rem 1.2rem;
+  padding: 0;
+  list-style: disc;
+}
+
+.rte-editor ol,
+.notebook-rich ol {
+  margin: 0.35rem 0 0.35rem 1.2rem;
+  padding: 0;
+  list-style: decimal;
+}
+
+.rte-editor li,
+.notebook-rich li {
+  margin: 0.15rem 0;
+}
+
+.rte-editor p,
+.notebook-rich p {
+  margin: 0 0 0.45rem;
+}
+
+.notebook-rich {
+  white-space: normal;
+}
+
 .notebook-timeline {
   list-style: none;
   margin: 0;
