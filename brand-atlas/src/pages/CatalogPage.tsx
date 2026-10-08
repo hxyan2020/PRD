@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ItemDetail } from "../components/ItemDetail";
 import { ItemTile } from "../components/ItemTile";
+import { ContributeUploadPanel } from "../components/ContributeUploadPanel";
 import { ResourcePackPanel } from "../components/ResourcePackPanel";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
@@ -120,11 +121,18 @@ export function CatalogPage() {
       )}
 
       {activeCategory && catalog && (
-        <ResourcePackPanel
-          catalog={catalog}
-          category={activeCategory}
-          onChanged={refresh}
-        />
+        <>
+          <ContributeUploadPanel
+            catalog={catalog}
+            category={activeCategory}
+            onChanged={refresh}
+          />
+          <ResourcePackPanel
+            catalog={catalog}
+            category={activeCategory}
+            onChanged={refresh}
+          />
+        </>
       )}
 
       <div className="pill-group" style={{ marginBottom: "1rem" }}>

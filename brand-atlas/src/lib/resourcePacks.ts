@@ -185,16 +185,22 @@ export function removeResourcePack(packId: string) {
   writeAll(readAll().filter((p) => p.id !== packId));
 }
 
-/** Merge base catalogue with all installed resource packs. */
-export function mergeCatalogWithPacks(base: Catalog): Catalog {
+/** Merge base catalogue with installed resource packs (+ optional extra items). */
+export function mergeCatalogWithPacks(
+  base: Catalog,
+  extraItems: CatalogItem[] = [],
+): Catalog {
   const packs = readAll();
-  if (!packs.length) return base;
+  if (!packs.length && !extraItems.length) return base;
 
   const byId = new Map(base.items.map((i) => [i.id, i]));
   for (const pack of packs) {
     for (const item of pack.items) {
       if (!byId.has(item.id)) byId.set(item.id, item);
     }
+  }
+  for (const item of extraItems) {
+    if (!byId.has(item.id)) byId.set(item.id, item);
   }
 
   const items = [...byId.values()];
@@ -205,6 +211,10 @@ export function mergeCatalogWithPacks(base: Catalog): Catalog {
     ).length,
   }));
 
+  const bits: string[] = [];
+  if (packs.length) bits.push(`Resource packs: ${packs.length}`);
+  if (extraItems.length) bits.push(`Contributions: ${extraItems.length}`);
+
   return {
     ...base,
     categories,
@@ -212,7 +222,7 @@ export function mergeCatalogWithPacks(base: Catalog): Catalog {
     meta: {
       ...base.meta,
       itemCount: items.filter((i) => i.status !== "removed").length,
-      note: `${base.meta.note} Resource packs: ${packs.length}.`,
+      note: bits.length ? `${base.meta.note} ${bits.join(". ")}.` : base.meta.note,
     },
   };
 }

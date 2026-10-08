@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { loadCatalog, clearCatalogCache } from "../lib/catalog";
 import {
+  contributionItems,
+  subscribeContributions,
+} from "../lib/contributions";
+import {
   mergeCatalogWithPacks,
   subscribeResourcePacks,
 } from "../lib/resourcePacks";
@@ -12,7 +16,14 @@ export function useCatalog() {
   const [loading, setLoading] = useState(true);
   const [packVersion, setPackVersion] = useState(0);
 
-  useEffect(() => subscribeResourcePacks(() => setPackVersion((v) => v + 1)), []);
+  useEffect(() => {
+    const unsubPacks = subscribeResourcePacks(() => setPackVersion((v) => v + 1));
+    const unsubContrib = subscribeContributions(() => setPackVersion((v) => v + 1));
+    return () => {
+      unsubPacks();
+      unsubContrib();
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -20,7 +31,7 @@ export function useCatalog() {
     loadCatalog()
       .then((base) => {
         if (cancelled) return;
-        setCatalog(mergeCatalogWithPacks(base));
+        setCatalog(mergeCatalogWithPacks(base, contributionItems()));
         setLoading(false);
       })
       .catch((e: unknown) => {
