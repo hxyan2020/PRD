@@ -318,6 +318,8 @@ export async function explainSelection(input: {
 
   // Local tutor path (no API key)
   if (!settings.apiKey) {
+    // Brief pause so the UI typing indicator is visible before the typewriter starts.
+    await new Promise((resolve) => window.setTimeout(resolve, input.userMessage?.trim() ? 450 : 320))
     if (input.userMessage?.trim()) {
       return {
         model: 'local-tutor',
