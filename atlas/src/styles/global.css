@@ -269,9 +269,9 @@ select {
 .lang-switcher {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
   margin-left: 0.15rem;
   position: relative;
+  z-index: 40;
 }
 
 .flag-icon {
@@ -304,14 +304,11 @@ select {
   font: inherit;
 }
 
-.lang-flag {
-  pointer-events: none;
-}
-
-.lang-flag.flag-icon-img,
-.lang-flag.flag-icon-globe {
+.lang-menu-flag.flag-icon-img,
+.lang-menu-flag.flag-icon-globe {
   width: 1.35rem;
   height: 1rem;
+  flex-shrink: 0;
 }
 
 .country-flag.flag-icon-img,
@@ -337,50 +334,117 @@ select {
   min-width: 0;
 }
 
-.lang-select {
-  appearance: none;
-  -webkit-appearance: none;
+.lang-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.15rem;
+  max-width: 13.5rem;
+  padding: 0.35rem 1.7rem 0.35rem 0.55rem;
   border: 1px solid var(--line);
+  border-radius: var(--radius);
   background: var(--surface);
   color: var(--mist);
   font-family: var(--font-display);
   font-size: 0.82rem;
   font-weight: 500;
-  padding: 0.4rem 1.75rem 0.4rem 0.65rem;
-  border-radius: var(--radius);
-  cursor: pointer;
-  max-width: 12rem;
-  min-height: 2.1rem;
   line-height: 1.2;
-  background-image: linear-gradient(45deg, transparent 50%, var(--mist-dim) 50%),
-    linear-gradient(135deg, var(--mist-dim) 50%, transparent 50%);
-  background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%;
-  background-size: 5px 5px, 5px 5px;
-  background-repeat: no-repeat;
+  cursor: pointer;
+  position: relative;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.lang-select:hover,
-.lang-select:focus-visible {
+.lang-trigger:hover,
+.lang-trigger:focus-visible,
+.lang-switcher.is-open .lang-trigger {
   border-color: var(--brand);
   outline: none;
+  background: var(--surface-strong);
 }
 
-.lang-switcher:focus-within .lang-flag.flag-icon-img {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 55%, transparent);
+.lang-menu-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
-.lang-select:hover,
-.lang-select:focus {
-  border-color: var(--brass);
-  outline: none;
-  color: var(--mist);
+.lang-chevron {
+  position: absolute;
+  right: 0.55rem;
+  top: 50%;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-right: 1.5px solid var(--mist-dim);
+  border-bottom: 1.5px solid var(--mist-dim);
+  transform: translateY(-65%) rotate(45deg);
+  transition: transform 0.15s ease;
 }
 
-.lang-select option,
-.lang-select optgroup {
+.lang-switcher.is-open .lang-chevron {
+  transform: translateY(-25%) rotate(225deg);
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 50;
+  min-width: 14.5rem;
+  max-width: min(18rem, 92vw);
+  max-height: min(22rem, 70dvh);
+  overflow: auto;
+  padding: 0.4rem;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 2px);
   background: #12080a;
+  box-shadow: var(--shadow);
+  overscroll-behavior: contain;
+}
+
+.lang-menu-heading {
+  padding: 0.45rem 0.55rem 0.3rem;
+  color: var(--mist-dim);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lang-menu-group + .lang-menu-group {
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.lang-menu-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 2.35rem;
+  padding: 0.4rem 0.55rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
   color: var(--mist);
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
+
+.lang-menu-option:hover,
+.lang-menu-option:focus-visible {
+  background: rgba(242, 232, 234, 0.08);
+  outline: none;
+}
+
+.lang-menu-option.is-active {
+  background: color-mix(in srgb, var(--brand) 22%, transparent);
+  color: #fff;
 }
 
 /* Hero — one composition, brand first, full-bleed */
@@ -1250,12 +1314,19 @@ select {
     margin: 0;
   }
 
-  .nav-lang .lang-select {
+  .nav-lang .lang-trigger {
     flex: 1;
     max-width: none;
     width: 100%;
     min-height: 2.75rem;
     font-size: 0.95rem;
+  }
+
+  .nav-lang .lang-menu {
+    left: 0;
+    right: 0;
+    min-width: 0;
+    max-width: none;
   }
 
   .nav-backdrop {
@@ -1271,10 +1342,6 @@ select {
     margin: 0;
     background: rgba(0, 0, 0, 0.45);
     cursor: pointer;
-  }
-
-  .lang-select {
-    max-width: 9.5rem;
   }
 
   .container {
@@ -1558,10 +1625,6 @@ select {
   .brand-mark {
     width: 24px;
     height: 24px;
-  }
-
-  .lang-flag {
-    display: none;
   }
 
   .container {
