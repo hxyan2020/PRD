@@ -383,11 +383,11 @@
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
-        <h3 class="studio__heading">What do you seek?</h3>
-        <p class="studio__copy">Open questions work better than yes/no for tarot (“What surrounds…”, “How can I…” ).</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.seekTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.tarot.seekCopy"))}</p>
         <div class="field">
           <label for="r-question">${escapeHTML(ti("studio.bagua.qLabel"))}</label>
-          <textarea id="r-question" rows="3" maxlength="280" placeholder="What energy surrounds my next decision?">${escapeHTML(state.question)}</textarea>
+          <textarea id="r-question" rows="3" maxlength="280" placeholder="${escapeHTML(ti("studio.tarot.qPh"))}">${escapeHTML(state.question)}</textarea>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -395,11 +395,11 @@
         </div>`;
     } else if (step === "shuffle") {
       body.innerHTML = `
-        <h3 class="studio__heading">Shuffle &amp; cut</h3>
-        <p class="studio__copy">Hold your question. When ready, shuffle. Then cut the deck once.</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.shuffleTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.tarot.shuffleCopy"))}</p>
         <div class="deck-stage">
           <div class="deck-pile ${state.deck ? "is-ready" : "is-shuffling"}" id="deck-pile"></div>
-          <p class="coin-sum">${state.deck ? "Deck ready. Cut to draw." : "Shuffling Major Arcana…"}</p>
+          <p class="coin-sum">${state.deck ? escapeHTML(ti("studio.tarot.deckReady")) : escapeHTML(ti("studio.tarot.shuffling"))}</p>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -747,8 +747,8 @@
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
-        <h3 class="studio__heading">Hold your question</h3>
-        <div class="field"><label for="r-question">Your question</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.holdTitle"))}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
         <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.input.question)}</textarea></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -756,10 +756,10 @@
         </div>`;
     } else if (step === "birth") {
       body.innerHTML = `
-        <h3 class="studio__heading">Birth moment</h3>
-        <div class="field"><label for="r-birth">Birth date</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.birthTitle"))}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthDate"))}</label>
         <input type="date" id="r-birth" value="${escapeHTML(state.input.birthDate)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-question">Optional focus</label>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(ti("studio.generic.focusOptional"))}</label>
         <input type="text" id="r-question" value="${escapeHTML(state.input.question)}" /></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -767,10 +767,10 @@
         </div>`;
     } else if (step === "day") {
       body.innerHTML = `
-        <h3 class="studio__heading">Choose the day</h3>
-        <div class="field"><label for="r-day">Date</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.dayTitle"))}</h3>
+        <div class="field"><label for="r-day">${escapeHTML(ti("studio.generic.date"))}</label>
         <input type="date" id="r-day" value="${escapeHTML(state.input.dayDate)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-purpose">Purpose</label>
+        <div class="field" style="margin-top:1rem"><label for="r-purpose">${escapeHTML(ti("studio.generic.purpose"))}</label>
         <input type="text" id="r-purpose" value="${escapeHTML(state.input.dayPurpose)}" /></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -1140,12 +1140,16 @@
         if (!panel || !trigger) return;
         panel.hidden = true;
         trigger.setAttribute("aria-expanded", "false");
+        document.getElementById("rite-picker")?.classList.remove("is-open");
       }
 
       function openPanel() {
         if (!panel || !trigger) return;
         panel.hidden = false;
         trigger.setAttribute("aria-expanded", "true");
+        document.getElementById("rite-picker")?.classList.add("is-open");
+        // Keep the open list above the footer / later page chrome
+        panel.scrollIntoView({ block: "nearest", inline: "nearest" });
         searchEl?.focus();
       }
 
