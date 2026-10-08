@@ -270,14 +270,69 @@
     grid-template-columns: 1fr;
   }
 
+  /* Keep Mona Lisa’s face/torso clear: copy at top, CTAs pinned to bottom. */
+  .hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+  }
+
+  .hero-image,
+  .hero-fallback {
+    object-position: center 18%;
+  }
+
+  .hero-veil {
+    background:
+      linear-gradient(180deg, rgba(10, 12, 11, 0.45) 0%, rgba(10, 12, 11, 0.12) 28%, rgba(10, 12, 11, 0.2) 55%, rgba(10, 12, 11, 0.88) 100%),
+      linear-gradient(90deg, rgba(10, 12, 11, 0.35), transparent 70%);
+  }
+
+  .hero-copy {
+    width: 100%;
+    margin: 0;
+    padding:
+      calc(env(safe-area-inset-top, 0px) + 4.75rem)
+      1rem
+      calc(env(safe-area-inset-bottom, 0px) + 0.85rem);
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  .brand-hero {
+    font-size: clamp(2.6rem, 13vw, 3.6rem);
+    margin-bottom: 0.35rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(1.35rem, 5.2vw, 1.75rem);
+    max-width: 18ch;
+  }
+
+  .lede {
+    margin-top: 0.65rem;
+    font-size: 0.95rem;
+    max-width: 34ch;
+  }
+
   .hero-actions {
     flex-direction: column;
     align-items: stretch;
+    margin-top: auto;
+    padding-top: 1.25rem;
+    gap: 0.65rem;
   }
 
   .hero-actions .btn {
     width: 100%;
     min-height: 48px;
+  }
+
+  .hero-stats {
+    margin: 0.65rem 0 0;
   }
 
   .facts {
