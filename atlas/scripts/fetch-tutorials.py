@@ -273,7 +273,7 @@ SEARCH_ALIASES = {
     "yo-yo": "yo-yo tricks beginner tutorial",
     "poi": "poi spinning beginner tutorial",
     "dakon": "dakon congklak how to play",
-    "palín": "palín mapuche sport chile how to play",
+    "palín": "juego del palín mapuche",
     "hide-and-seek": "how to play hide and seek kids",
     "tea set toy": "kids tea party toy playset",
     "jump-rope & skipping rhymes": "jump rope skipping rhymes how to",
