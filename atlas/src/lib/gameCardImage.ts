@@ -415,18 +415,18 @@ export function isPhotographicSrc(src: string | undefined): boolean {
 }
 
 /**
- * Gallery order: real photos first, then unique views.
- * Title cards are only used when no photo exists (circular thumbs crop
- * text-heavy cards into unreadable fragments).
+ * Gallery images for the detail page.
+ * Real photos only — never pad with synthetic `ludus-view` panels.
+ * A title card is used only when the entry has no photographic URLs.
+ * Length is whatever we have (1–N); there is no fixed 5-image quota.
  */
 export function listDisplayImages(images: string[] | undefined): string[] {
   const list = (images ?? []).filter(Boolean);
   const photos = list.filter(isPhotographicSrc);
-  const views = list.filter(isLudusViewSrc);
+  if (photos.length) return photos;
   const cards = list.filter(isLudusCardSrc);
-  if (photos.length) return [...photos, ...views];
-  if (cards.length || views.length) return [...cards, ...views];
-  return list;
+  if (cards.length) return cards.slice(0, 1);
+  return [];
 }
 
 /** Best single cover for cards / variation heroes. */
@@ -494,7 +494,11 @@ export function stableImageSrc(src: string, label?: ImageLabel): string {
   return resolveImageSrc(src, label);
 }
 
-/** Rewrite fragile remote URLs to ludus-card refs and drop duplicates. */
+/**
+ * Keep real photos; drop synthetic gallery placeholders (`ludus-view`).
+ * Fragile remotes collapse to a single title card. Never invent filler panels
+ * to hit a count.
+ */
 export function sanitizeImageList(
   images: string[] | undefined,
   label: { name: string; category: string; originCountry: string },
@@ -503,18 +507,17 @@ export function sanitizeImageList(
   const out: string[] = [];
   const seen = new Set<string>();
   for (const raw of images ?? []) {
-    if (isLudusViewSrc(raw)) {
-      if (seen.has(raw)) continue;
-      seen.add(raw);
-      out.push(raw);
-      continue;
-    }
+    // Numbered atmosphere/play/materials panels are placeholders — omit them.
+    if (isLudusViewSrc(raw)) continue;
     const next = !raw || isFragileRemoteSrc(raw) ? card : raw;
-    const key = isLudusCardSrc(next) ? `card:${next}` : next;
+    const key = isLudusCardSrc(next) ? "card" : next;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(isLudusCardSrc(next) ? next : next);
+    out.push(next);
   }
   if (!out.length) out.push(card);
-  return out;
+  // At most one title card, and only when we have no photos.
+  const photos = out.filter(isPhotographicSrc);
+  if (photos.length) return photos;
+  return out.filter(isLudusCardSrc).slice(0, 1);
 }
