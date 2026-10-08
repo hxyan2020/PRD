@@ -1,4 +1,4 @@
-import type { ReactEventHandler } from "react";
+import { useState, type ReactEventHandler } from "react";
 import {
   isLudusCardSrc,
   ludusCardDataUri,
@@ -28,13 +28,29 @@ export function GameImage({
     label && isLudusCardSrc(src)
       ? ludusCardDataUri(label.name, label.category, label.originCountry)
       : resolveImageSrc(src);
+
+  const [failedFor, setFailedFor] = useState<string | null>(null);
+  const failed = failedFor === src;
+
+  const fallback =
+    label && !isLudusCardSrc(src)
+      ? ludusCardDataUri(label.name, label.category, label.originCountry)
+      : null;
+
+  const displaySrc = failed && fallback ? fallback : resolved;
+
   return (
     <img
-      src={resolved}
+      src={displaySrc}
       alt={alt}
       className={className}
       loading={loading}
-      onError={onError}
+      onError={(e) => {
+        if (!failed && fallback) {
+          setFailedFor(src);
+        }
+        onError?.(e);
+      }}
     />
   );
 }
