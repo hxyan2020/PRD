@@ -20,6 +20,7 @@ import {
 } from "../lib/localizeContent";
 import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
+import { PrefIconSelect } from "../components/PrefIconSelect";
 import {
   isPhotographicSrc,
   ludusBackdropDataUri,
@@ -211,65 +212,65 @@ export function PreferencesPage() {
             >
               <h3>{t("prefs.yourPrefs")}</h3>
 
-              <div className="field">
-                <label htmlFor="players">{t("prefs.players")}</label>
-                <select
-                  id="players"
-                  value={prefs.players}
-                  onChange={(e) => update("players", e.target.value as DiscoverPreferences["players"])}
-                >
-                  <option value="any">✦ {t("prefs.any")}</option>
-                  <option value="alone">👤 {t("prefs.alone")}</option>
-                  <option value="two">👥 {t("prefs.two")}</option>
-                  <option value="small">👨‍👩‍👧 {t("prefs.small")}</option>
-                  <option value="group">👪 {t("prefs.group")}</option>
-                </select>
-              </div>
+              <PrefIconSelect
+                id="players"
+                label={t("prefs.players")}
+                value={prefs.players}
+                onChange={(value) => update("players", value)}
+                options={[
+                  { value: "any", label: t("prefs.any"), icon: "any" },
+                  { value: "alone", label: t("prefs.alone"), icon: "alone" },
+                  { value: "two", label: t("prefs.two"), icon: "two" },
+                  { value: "small", label: t("prefs.small"), icon: "small" },
+                  { value: "group", label: t("prefs.group"), icon: "group" },
+                ]}
+              />
 
-              <div className="field">
-                <label htmlFor="setting">{t("prefs.setting")}</label>
-                <select
-                  id="setting"
-                  value={prefs.setting}
-                  onChange={(e) => update("setting", e.target.value as DiscoverPreferences["setting"])}
-                >
-                  <option value="either">⇄ {t("prefs.either")}</option>
-                  <option value="indoor">⌂ {t("prefs.indoor")}</option>
-                  <option value="outdoor">☀ {t("prefs.outdoor")}</option>
-                </select>
-              </div>
+              <PrefIconSelect
+                id="setting"
+                label={t("prefs.setting")}
+                value={prefs.setting}
+                onChange={(value) => update("setting", value)}
+                options={[
+                  { value: "either", label: t("prefs.either"), icon: "either" },
+                  { value: "indoor", label: t("prefs.indoor"), icon: "indoor" },
+                  { value: "outdoor", label: t("prefs.outdoor"), icon: "outdoor" },
+                ]}
+              />
 
-              <div className="field">
-                <label htmlFor="vibe">{t("prefs.vibe")}</label>
-                <select
-                  id="vibe"
-                  value={prefs.vibe}
-                  onChange={(e) => update("vibe", e.target.value as DiscoverPreferences["vibe"])}
-                >
-                  <option value="any">✦ {t("prefs.any")}</option>
-                  <option value="strategy">♟ {t("prefs.strategy")}</option>
-                  <option value="casual">🎲 {t("prefs.casual")}</option>
-                  <option value="craft">🪆 {t("prefs.craft")}</option>
-                  <option value="sport">⚽ {t("prefs.sport")}</option>
-                  <option value="puzzle">🧩 {t("prefs.puzzle")}</option>
-                  <option value="kids">🧸 {t("prefs.kids")}</option>
-                  <option value="ritual">🪔 {t("prefs.ritual")}</option>
-                </select>
-              </div>
+              <PrefIconSelect
+                id="vibe"
+                label={t("prefs.vibe")}
+                value={prefs.vibe}
+                onChange={(value) => update("vibe", value)}
+                options={[
+                  { value: "any", label: t("prefs.any"), icon: "any" },
+                  { value: "strategy", label: t("prefs.strategy"), icon: "strategy" },
+                  { value: "casual", label: t("prefs.casual"), icon: "casual" },
+                  { value: "craft", label: t("prefs.craft"), icon: "craft" },
+                  { value: "sport", label: t("prefs.sport"), icon: "sport" },
+                  { value: "puzzle", label: t("prefs.puzzle"), icon: "puzzle" },
+                  { value: "kids", label: t("prefs.kids"), icon: "kids" },
+                  { value: "ritual", label: t("prefs.ritual"), icon: "ritual" },
+                ]}
+              />
 
-              <div className="field">
-                <label htmlFor="era">{t("prefs.era")}</label>
-                <select
-                  id="era"
-                  value={prefs.era}
-                  onChange={(e) => update("era", e.target.value as DiscoverPreferences["era"])}
-                >
-                  <option value="any">⏳ {t("prefs.eraAny")}</option>
-                  <option value="ancient">🏺 {t("prefs.eraAncient")}</option>
-                  <option value="traditional">📜 {t("prefs.eraTraditional")}</option>
-                  <option value="modern">◎ {t("prefs.eraModern")}</option>
-                </select>
-              </div>
+              <PrefIconSelect
+                id="era"
+                label={t("prefs.era")}
+                value={prefs.era}
+                onChange={(value) => update("era", value)}
+                options={[
+                  { value: "any", label: t("prefs.eraAny"), icon: "eraAny" },
+                  { value: "ancient", label: t("prefs.eraAncient"), icon: "ancient" },
+                  {
+                    value: "traditional",
+                    label: t("prefs.eraTraditional"),
+                    icon: "traditional",
+                  },
+                  { value: "modern", label: t("prefs.eraModern"), icon: "modern" },
+                ]}
+              />
 
               <div className="field">
                 <label htmlFor="region">{t("prefs.region")}</label>
