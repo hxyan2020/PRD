@@ -74,8 +74,16 @@ export function unlockItem(
 ): UnlockRecord {
   const map = readAll();
   if (map[itemId]) {
-    if (opts.photoDataUrl && !map[itemId].photoDataUrl) {
+    let dirty = false;
+    if (opts.photoDataUrl) {
       map[itemId].photoDataUrl = opts.photoDataUrl;
+      dirty = true;
+    }
+    if (opts.note != null && opts.note !== "") {
+      map[itemId].note = opts.note;
+      dirty = true;
+    }
+    if (dirty) {
       writeAll(map);
       window.dispatchEvent(new CustomEvent("seen:unlocks"));
     }
@@ -134,4 +142,12 @@ export function subscribeUnlocks(cb: () => void): () => void {
 
 export function formatPct(n: number): string {
   return `${n.toFixed(2)}%`;
+}
+
+/** Display ISO timestamp as explicit UTC, e.g. 2026-10-08 14:30:00 UTC */
+export function formatUtc(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
 }

@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useCatalog } from "../hooks/useCatalog";
 import { coverGradient, findItem, getCategory } from "../lib/catalog";
-import { getUnlockByShareId } from "../lib/unlocks";
+import { formatUtc, getUnlockByShareId } from "../lib/unlocks";
 
 export function SharePage() {
   const { shareId } = useParams();
@@ -45,7 +45,8 @@ export function SharePage() {
           ))}
         </dl>
         <p>
-          <strong>Seen at (UTC):</strong> <span className="mono">{unlock.unlockedAt}</span>
+          <strong>Seen at (UTC):</strong>{" "}
+          <span className="mono">{formatUtc(unlock.unlockedAt)}</span>
         </p>
         {unlock.note && (
           <p>

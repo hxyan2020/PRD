@@ -313,18 +313,27 @@ img {
   margin: 0;
 }
 
+.sighting-block {
+  margin-top: 0.75rem;
+}
+
 .sighting-photo {
   width: 100%;
-  max-height: 220px;
+  max-height: 240px;
   object-fit: cover;
   border-radius: 12px;
-  margin: 0.6rem 0;
+  margin: 0.55rem 0 0;
+  border: 1px solid var(--line);
 }
 
 .unlock-meta {
   margin-top: 0.8rem;
   padding-top: 0.8rem;
   border-top: 1px solid var(--line);
+}
+
+.item-tile__cover[style*="background-image"] {
+  filter: none;
 }
 
 .auth-page {

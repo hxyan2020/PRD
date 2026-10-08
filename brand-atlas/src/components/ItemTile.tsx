@@ -1,4 +1,5 @@
 import { coverGradient } from "../lib/catalog";
+import { getUnlock } from "../lib/unlocks";
 import type { CatalogItem, RevealMode } from "../types/catalog";
 import { useI18n } from "../i18n/I18nProvider";
 
@@ -11,6 +12,8 @@ interface Props {
 export function ItemTile({ item, mode, onClick }: Props) {
   const { t } = useI18n();
   const lit = mode === "unlocked" || mode === "sneak";
+  const unlock = mode === "unlocked" ? getUnlock(item.id) : undefined;
+  const hasPhoto = Boolean(unlock?.photoDataUrl);
 
   return (
     <button
@@ -27,7 +30,14 @@ export function ItemTile({ item, mode, onClick }: Props) {
     >
       <div
         className="item-tile__cover"
-        style={{ background: coverGradient(item.coverHue, lit) }}
+        style={{
+          background: hasPhoto
+            ? undefined
+            : coverGradient(item.coverHue, lit),
+          backgroundImage: hasPhoto ? `url(${unlock?.photoDataUrl})` : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       />
       <span className="item-tile__badge">
         {mode === "unlocked"

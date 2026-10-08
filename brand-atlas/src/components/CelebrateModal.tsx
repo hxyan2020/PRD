@@ -1,7 +1,7 @@
 import type { CatalogItem } from "../types/catalog";
 import { coverGradient } from "../lib/catalog";
 import { useI18n } from "../i18n/I18nProvider";
-import { getUnlock, permanentLink } from "../lib/unlocks";
+import { formatUtc, getUnlock, permanentLink } from "../lib/unlocks";
 import { useState } from "react";
 
 interface Props {
@@ -41,7 +41,7 @@ export function CelebrateModal({ item, categoryLabel, onClose }: Props) {
         <p style={{ margin: "0.8rem 0 0.6rem" }}>{t("bingo.body")}</p>
         {unlock && (
           <p className="muted mono" style={{ fontSize: "0.85rem" }}>
-            UTC {unlock.unlockedAt}
+            {formatUtc(unlock.unlockedAt)}
           </p>
         )}
         <div className="cta-row" style={{ justifyContent: "center", marginTop: "0.8rem" }}>

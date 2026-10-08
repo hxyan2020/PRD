@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { coverGradient } from "../lib/catalog";
 import {
   formatPct,
+  formatUtc,
   permanentLink,
   type UnlockRecord,
 } from "../lib/unlocks";
@@ -53,6 +54,7 @@ export function ItemDetail({
   const { t } = useI18n();
   const [note, setNote] = useState(unlock?.note ?? "");
   const [copied, setCopied] = useState(false);
+  const [savedFlash, setSavedFlash] = useState(false);
 
   useEffect(() => {
     setNote(unlock?.note ?? "");
@@ -71,6 +73,12 @@ export function ItemDetail({
     const reader = new FileReader();
     reader.onload = () => onSavePhoto(String(reader.result));
     reader.readAsDataURL(file);
+  };
+
+  const saveNote = () => {
+    onSaveNote?.(note);
+    setSavedFlash(true);
+    setTimeout(() => setSavedFlash(false), 1600);
   };
 
   return (
@@ -126,46 +134,62 @@ export function ItemDetail({
               <div className="unlock-meta">
                 <p>
                   <strong>{t("unlocked.seenAt")}:</strong>{" "}
-                  <span className="mono">{unlock.unlockedAt}</span>
+                  <span className="mono">{formatUtc(unlock.unlockedAt)}</span>
                 </p>
 
-                {unlock.photoDataUrl ? (
-                  <img
-                    className="sighting-photo"
-                    src={unlock.photoDataUrl}
-                    alt="Your sighting"
-                  />
-                ) : (
-                  <p className="muted">No sighting photo attached yet.</p>
-                )}
+                <div className="sighting-block">
+                  <strong>Your sighting photo</strong>
+                  {unlock.photoDataUrl ? (
+                    <img
+                      className="sighting-photo"
+                      src={unlock.photoDataUrl}
+                      alt="Your sighting"
+                    />
+                  ) : (
+                    <p className="muted">No sighting photo attached yet.</p>
+                  )}
+                  <div className="cta-row" style={{ marginTop: "0.5rem" }}>
+                    <label className="btn btn--quiet" style={{ display: "inline-flex" }}>
+                      {unlock.photoDataUrl ? "Replace photo" : "Attach photo"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        hidden
+                        onChange={(e) => onPhotoFile(e.target.files?.[0] ?? null)}
+                      />
+                    </label>
+                    {unlock.photoDataUrl && (
+                      <button
+                        type="button"
+                        className="btn btn--quiet"
+                        onClick={() => onSavePhoto?.(null)}
+                      >
+                        Remove photo
+                      </button>
+                    )}
+                  </div>
+                </div>
 
-                <label className="btn btn--quiet" style={{ display: "inline-flex" }}>
-                  Attach / replace photo
-                  <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={(e) => onPhotoFile(e.target.files?.[0] ?? null)}
-                  />
-                </label>
-
-                <div className="field" style={{ marginTop: "0.8rem" }}>
+                <div className="field" style={{ marginTop: "0.9rem" }}>
                   <label htmlFor="note">{t("unlocked.note")}</label>
                   <textarea
                     id="note"
-                    rows={3}
+                    rows={4}
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
-                    placeholder="Where you saw it, what stood out…"
+                    onBlur={() => {
+                      if (note !== (unlock.note ?? "")) saveNote();
+                    }}
+                    placeholder="Where you took the photo, what stood out, who you were with…"
                   />
+                  <p className="muted" style={{ margin: "0.35rem 0 0", fontSize: "0.85rem" }}>
+                    Edit anytime — saves when you leave the field or tap Save.
+                  </p>
                 </div>
                 <div className="cta-row" style={{ justifyContent: "center" }}>
-                  <button
-                    type="button"
-                    className="btn btn--forest"
-                    onClick={() => onSaveNote?.(note)}
-                  >
-                    {t("unlocked.saveNote")}
+                  <button type="button" className="btn btn--forest" onClick={saveNote}>
+                    {savedFlash ? "Saved" : t("unlocked.saveNote")}
                   </button>
                   <button type="button" className="btn btn--quiet" onClick={() => void copyLink()}>
                     {copied ? "Copied!" : t("unlocked.share")}
