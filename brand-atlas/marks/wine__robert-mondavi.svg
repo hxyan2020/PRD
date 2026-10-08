@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Robert Mondavi">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(325 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(5 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">♤</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">RM</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAaVBMVEWhGhb////oxsXHdnSjIBz37OvDbGqrNDCzRkP9+vr68vKvPTq1S0j15eWkIh/57++nKSWpLSry3t7ht7XNhILVmZfTk5GtODWqMS25VVK+YF7u1tXZoaDPiojbp6bAZmPrz87kvr3KfXtAgGdPAAABNUlEQVQ4jXWT2ZaDMAiGwZjGxD1utXacdt7/ISch1rogFx5O+EzgBwBX080tUUWhklujv6fwccq2gNWqtjwAuqtgZ1Wnt4AZ4WQP8wVseo4DpPYDyIGLO0IGQGd8HCDTBPRcrE78t/eALDgAqKpCOkCwF7xM5H8UCCbmgJvV6O+IDTTsA2qSBLgw+wIME2LtHQF8jYMT6e6dDBQLeBVJPgVsjpDmiKR/fADU84dyGxyQBGDzRCpmK3PZ/N5hkAug1iRT8ZY52r6TaGzUul5nIclQZvZyUcTZqVd7R+e2HEOZQShBwyHJfyzDRsB7kbqjo4iAagPEOjQrYo1udu3mlSCLfbvx7xpoaaJMchVfRg5zvh+kVhj7iZ26eh17t3dM08dyt5tzffj9eVxes19ec9ruq/X/BxATC+klQ8tCAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

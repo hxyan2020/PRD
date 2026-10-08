@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Tatenokawa">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(188 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(228 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">☆</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">T</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABfUlEQVQ4jZWSMc/xUBiGr1KVaEWkpBEJHSUSCSYDBrPBICz4N138B5vBP7CIf8Bs7WYSS9Oinm/4PkXyed+4k5NzhnNdeXKfowCUSiU5n898k0wmg+u6CgC6rgvw1frHEAOIx+OROZlMMplMyGazNBoN+v0+iUSC8XhMuVyO7r0yWJYVmU3TFM/zpFarieM4stvtxDAMOR6PMhgMonv5fP45gWVZkUxE8H2f+/3O7XYjCAIAgiAgDMO3DiJBsVh8K0hEov31/BrTNJ+CSqXyue4PKRQKT0G9Xv9aYNv2U9DpdNB1/StBq9V6CmzbVtrtNgCKomAYBrFYDE3TSKVSKIqCruuoqgr8Lb3X6wGgPoyz2Yz1ek0QBCyXS06nE/v9njAMuV6vrFYrXNcFYDgcksvllLeRfN+XZrP56w9Mp9NyOBzen+SRzWYjqqr+KHAc5//wI/P5/CM8Go3kcrn8LHhINE17g6fTqXie9zv8yHa7lW63K9VqVRaLxUfwD4uKuKZmtHQiAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Nescafé">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(0 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(40 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">☕</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">N</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACGklEQVRYhd3XMWgUQRTG8d9IkEMsghtELDauoEhKCWghFiKWFmKdThFEGyvLVBYpUtgI2loJ2liIhYgEC7EQRLDQrFkOi5A9gohIODIWUTniXZLdEQS/bmfem+/P483sDP9Y4W8uVmXFAZzHEUxsFx/pj/0l4wnMYgZ7G6QuJgNUWTGO2ciVwK4muYFuo4QRuoHLTc0h8iEJoMqK/biCVpVMqkCVFbsiV+2g2bbQx9YAkYnA6QTzb+i1BggcE00lAPSwktIDh6WVfxWrKQAnhOadP6AViRVIKf8GQGxZgSorduN4IsDbvFf2WwFEjmp25A5b5A0tTi8InEsyZ02w0AqgyoqO6EQiwPu8LnutAGw033SC+Toe/PpoAzAtyBMAVvCyFcDP7r+m5c/npxbwuhUA8Yz0/X8/r8svjQGqrDhIuNkkZ7Miz/K6fDg41mSx8xKaL7IcmN88viOAKiumcAt7WvqvB+bwpDHAwIVzvKU5PMedvC77jQCq7FAHt3EhwfxJ5FJel1+HTY4EWMqKjhiu4+J2oFvoDa5N1uXiqICh+3kpK8ZDNCeYGRWzjVaJ96IwN1mXy1sF/vEyWsqKPDArmmlz4Yg8DdzF47wuv28X/xugyop9orMxmA8c3KFfH118Jr4gPMrr8lUT4FBlRQcnbTwwThne7d+xGukFltEVvcMnwSK6eV1+bmI8CDCG3SPm14Ztnf9KPwC695EdTiytAwAAAABJRU5ErkJggg==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

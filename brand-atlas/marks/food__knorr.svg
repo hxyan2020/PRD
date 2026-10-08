@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Knorr">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(189 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(229 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">◎</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">K</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAGFBMVEVHcEwCeTMCeTMCeTMCeTMCeTMCeTMCeTNU7dGZAAAAB3RSTlMAH2dB4r6YgapSnQAAAfpJREFUeJzt28GWwiAMRmEgIXn/Nx7UcawVW+uU3A1Z6/k/AikuakqzZs2aNYutDOeLs/nZWUDLRwHiLMAcBYg6CZDqDgKKunMAMV9WbHgu1VcVGW66Tg8CZOlnjwbkFlysvo0+AZAfJVlalVZmVqvuxP4DcFvWgYTzALLfz2GANj7nR38K6MxuICC/n58AwPj0TcDYzu8CSsDiNwC2/8WRgBIX3wNIVPP7gBxz9N4CQrvfAUQvfwXIsbv/AhAgfgmI3/5nAJTvbP8fgEzl3wHE+V8CAi+fLgA7AHcAtwE3ADWBfwCyAQ6fgCsAuAKfAWi+wkfwAmB3QOEZ8ApeQ78Adgjd4DPohbwILyXwEHiGh8DpKVT4QdymEAYUGiA0gL6MKw0oNCDDAE0woNCABAOMBmQYcGsACEgwoMAATTAgw4D7BlAASyygJhawzCcAT/kAwBILKAkF6Mvrc7H5to6PBdTe24Nx8Sqd+DhA7ccHAXR99EMBtWy+ODo43N51fjhAq22vfBBAW7AVOfC27pcpLcbKtaTItXL+7h3hI7mtq3JkcecBtB7q6qkA/fAsDQGoDVv3B4Cd58dYgO4/P0YCAtM7gK17IwDQ/ckQBzDi/w6LeCB9AQCa/wQIPfivgLr/uaGA6MlbA7j23wBsfqLz8f9azZo1a9asH6fz9qPn4HMeAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

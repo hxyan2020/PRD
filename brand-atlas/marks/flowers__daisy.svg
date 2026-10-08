@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Daisy">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(77 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(117 48% 38%)"/>
-    </linearGradient>
-  </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">❀</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">D</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <circle cx="64" cy="48" r="12" fill="#C4C4C4"/>
+  <path fill="#C4C4C4" d="M64 20c0 0 4 16 0 28-4-12 0-28 0-28z M64 76c0 0 4-16 0-28-4 12 0 28 0 28z M36 48c0 0 16 4 28 0-12-4-28 0-28 0z M92 48c0 0-16 4-28 0 12-4 28 0 28 0z M44 28c0 0 14 10 20 20-14-6-20-20-20-20z M84 28c0 0-14 10-20 20 14-6 20-20 20-20z M44 68c0 0 14-10 20-20-14 6-20 20-20 20z M84 68c0 0-14-10-20-20 14 6 20 20 20 20z M60 76h8v44h-8z"/>
 </svg>

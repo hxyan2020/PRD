@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Graff">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(206 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(246 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">✦</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">G</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAYFBMVEX///8AAADo6OjOzs5TU1PAwMD4+Pjz8/MqKiqfn582NjZycnK6uro8PDx1dXVubm6YmJjW1tZmZmaxsbGCgoJBQUHHx8ciIiLd3d2SkpKmpqZbW1t8fHxMTEwYGBgQEBB9QlEIAAACpUlEQVR4nO2a65riIAxAS6cXa6u2ijNW7cz7v+Xa9bLtCIWEBPYH5wUOHwESAkkSiUQikUgkEnGgSG+UpX9xmrfX7EtMGHb9oSt8uMtGHoWO1bVJWe1ppZc/+ZYfTPbyvDbaH9Sf9Ppub2u/09MuiGYF049IuuWQf5l1KmqaIXQbnH5k635GFDu8fqR19Ddu+htHpzgAl76aCq0/UehvDMgt6T79L04Yf0/nFyKH+7eUfiEOUD/J8ptyhvkdd7/zCK70flAUWg6/ENaFQs7jF8LyUEy5/OLHbgDfbAMQFxt/zee32gpsC+COcRkUvH6xNg2A4QSaY0jOHbdfiOUqzbr0x7O4EwhLAD3dwgCQ9TeMTeAJWKpOEPcfDNqt+OnHr0+Lg68BZGo/VRVugfpAlv4G0CsH4M8vhMrPnAbnqFoo5IX4EnXgCKhi4DUCqhgQX8VMyMARUMSgb9te7h36Qbb8DPutbPXXpLSRfEn5Utk1lG1asnBgPdyU+H64RXSQc7JpWDdw+1+6C4X+6NI+P2Wu+pVr5/zDrVLHTv6UM16vzvtgCmSizOies1DlKsXsvyjAi3Ggfs2rYH58h1oL6OK8dP9DU1inyg3XE6blblAVfERYXR1cX2kWsciR4L44DOOxiHgZgGHYjgyPtr9ZfEkhPf10LKxE5vg/0ZYpRMnPjKaVs/flT0qlf+XNfyuTVAPg/b3xC8VWYD8A5rxViowJQMnbu45n/1tW8ByAkdkVVtP5Y2W2E7zugCeTA3EXwj9dh0EmYPLA5+8MnvOaApYa2IbMfxKY87ixAf8mUHIfgJePjGpkyCU40gU6hf8RJA1NqcNGIEkOnipxLanpMZod84cAZjbvjX+/1J4uQ1pksET0oAq8BhPUV8VIJBKJRCL/FX8AyawhPPvkbGAAAAAASUVORK5CYII=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img"><title>Genesis</title>
-<path fill="#9A9A9A" d="M12 3.2c-1.2 1.6-3.6 2.8-6.4 3.2 1.1 4.8 3.6 8.4 6.4 11.2 2.8-2.8 5.3-6.4 6.4-11.2-2.8-.4-5.2-1.6-6.4-3.2z"/>
-<path fill="#6E6E6E" d="M12 6.4c-.7.9-2 1.6-3.6 1.9.7 2.8 2.1 4.9 3.6 6.6 1.5-1.7 2.9-3.8 3.6-6.6-1.6-.3-2.9-1-3.6-1.9z"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <defs>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
+  </defs>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAOVBMVEX////9/f3+/v7S0tLNzc3GxsbZ2dnd3t5bW1xGR0g+Pj81Njfx8fG2traQkZFeX1/l5eWGhodvcHGTVv39AAAAUUlEQVQYla2MzQ6AIAyDJ90YDJCf939YRRMPctTv0KZNU6If2F6sCxZ4VYhA1UOYOESz1IGezGLgc5PLXofqqHvJ89RNaUCbf+6Wq3yclvCZA/nBAc+ftDcQAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

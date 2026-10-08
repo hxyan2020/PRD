@@ -2,7 +2,7 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-08T15:47:38.560Z",
+    "generatedAt": "2026-10-08T16:09:24.936Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
@@ -294,7 +294,7 @@
       },
       "coverHue": 31,
       "mark": "marks/cars__lexus.svg",
-      "markIcon": "lexus",
+      "markIcon": null,
       "sort": 7,
       "status": "active"
     },
@@ -760,7 +760,7 @@
       },
       "coverHue": 314,
       "mark": "marks/cars__genesis.svg",
-      "markIcon": "genesis",
+      "markIcon": null,
       "sort": 28,
       "status": "active"
     },
@@ -976,7 +976,7 @@
       },
       "coverHue": 239,
       "mark": "marks/cars__byd.svg",
-      "markIcon": "byd",
+      "markIcon": null,
       "sort": 38,
       "status": "active"
     },
@@ -997,7 +997,7 @@
       },
       "coverHue": 334,
       "mark": "marks/cars__geely.svg",
-      "markIcon": "geely",
+      "markIcon": null,
       "sort": 39,
       "status": "active"
     },
@@ -1480,7 +1480,7 @@
       },
       "coverHue": 183,
       "mark": "marks/liquor__jack-daniels.svg",
-      "markIcon": "jackdaniels",
+      "markIcon": null,
       "sort": 1,
       "status": "active"
     },
@@ -1504,7 +1504,7 @@
       },
       "coverHue": 314,
       "mark": "marks/liquor__jameson.svg",
-      "markIcon": null,
+      "markIcon": "jameson",
       "sort": 2,
       "status": "active"
     },
@@ -3263,7 +3263,7 @@
       },
       "coverHue": 86,
       "mark": "marks/beer__heineken.svg",
-      "markIcon": "heineken",
+      "markIcon": null,
       "sort": 0,
       "status": "active"
     },
@@ -3377,7 +3377,7 @@
       },
       "coverHue": 6,
       "mark": "marks/beer__carlsberg.svg",
-      "markIcon": "carlsberg",
+      "markIcon": "carlsberggroup",
       "sort": 5,
       "status": "active"
     },
@@ -3960,7 +3960,7 @@
       },
       "coverHue": 292,
       "mark": "marks/coffee__dunkin.svg",
-      "markIcon": "dunkindonuts",
+      "markIcon": null,
       "sort": 1,
       "status": "active"
     },
@@ -4069,7 +4069,7 @@
       },
       "coverHue": 119,
       "mark": "marks/coffee__nespresso.svg",
-      "markIcon": "nespresso",
+      "markIcon": null,
       "sort": 6,
       "status": "active"
     },
@@ -4484,7 +4484,7 @@
       },
       "coverHue": 13,
       "mark": "marks/tea__lipton.svg",
-      "markIcon": "lipton",
+      "markIcon": null,
       "sort": 0,
       "status": "active"
     },
@@ -5164,7 +5164,7 @@
       },
       "coverHue": 301,
       "mark": "marks/clothes__h-and-m.svg",
-      "markIcon": "hm",
+      "markIcon": "handm",
       "sort": 6,
       "status": "active"
     },
@@ -5322,7 +5322,7 @@
       },
       "coverHue": 85,
       "mark": "marks/clothes__vans.svg",
-      "markIcon": "vans",
+      "markIcon": null,
       "sort": 13,
       "status": "active"
     },
@@ -5343,7 +5343,7 @@
       },
       "coverHue": 144,
       "mark": "marks/clothes__converse.svg",
-      "markIcon": "converse",
+      "markIcon": null,
       "sort": 14,
       "status": "active"
     },
@@ -5406,7 +5406,7 @@
       },
       "coverHue": 188,
       "mark": "marks/clothes__lululemon.svg",
-      "markIcon": "lululemon",
+      "markIcon": null,
       "sort": 17,
       "status": "active"
     },
@@ -5427,7 +5427,7 @@
       },
       "coverHue": 19,
       "mark": "marks/clothes__patagonia.svg",
-      "markIcon": "patagonia",
+      "markIcon": null,
       "sort": 18,
       "status": "active"
     },
@@ -5685,7 +5685,7 @@
       },
       "coverHue": 280,
       "mark": "marks/luxury__louis-vuitton.svg",
-      "markIcon": "louisvuitton",
+      "markIcon": null,
       "sort": 0,
       "status": "active"
     },
@@ -5706,7 +5706,7 @@
       },
       "coverHue": 153,
       "mark": "marks/luxury__chanel.svg",
-      "markIcon": "chanel",
+      "markIcon": null,
       "sort": 1,
       "status": "active"
     },
@@ -5773,7 +5773,7 @@
       },
       "coverHue": 334,
       "mark": "marks/luxury__cartier.svg",
-      "markIcon": "cartier",
+      "markIcon": null,
       "sort": 4,
       "status": "active"
     },
@@ -5796,7 +5796,7 @@
       },
       "coverHue": 23,
       "mark": "marks/luxury__tiffany.svg",
-      "markIcon": "tiffany",
+      "markIcon": null,
       "sort": 5,
       "status": "active"
     },
@@ -5817,7 +5817,7 @@
       },
       "coverHue": 122,
       "mark": "marks/luxury__rolex.svg",
-      "markIcon": "rolex",
+      "markIcon": null,
       "sort": 6,
       "status": "active"
     },
@@ -6187,7 +6187,7 @@
       },
       "coverHue": 331,
       "mark": "marks/luxury__gucci.svg",
-      "markIcon": "gucci",
+      "markIcon": null,
       "sort": 23,
       "status": "active"
     },
@@ -6208,7 +6208,7 @@
       },
       "coverHue": 148,
       "mark": "marks/luxury__prada.svg",
-      "markIcon": "prada",
+      "markIcon": null,
       "sort": 24,
       "status": "active"
     },
@@ -8078,7 +8078,7 @@
       },
       "coverHue": 58,
       "mark": "marks/food__pepsi.svg",
-      "markIcon": "pepsi",
+      "markIcon": null,
       "sort": 1,
       "status": "active"
     },
@@ -8340,7 +8340,7 @@
       },
       "coverHue": 144,
       "mark": "marks/food__nestle.svg",
-      "markIcon": "nestle",
+      "markIcon": null,
       "sort": 13,
       "status": "active"
     },
@@ -8587,7 +8587,7 @@
       },
       "coverHue": 99,
       "mark": "marks/food__monster.svg",
-      "markIcon": null,
+      "markIcon": "monster",
       "sort": 24,
       "status": "active"
     },

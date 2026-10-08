@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Foster's">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(316 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(356 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">▢</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">FS</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAY1BMVEX///8wMDBISEiRkZF1dXWenp7y8vJQUFCLi4s8PDxqampDQ0OampqFhYVMTEz5+fnAwMCAgIDNzc1jY2Ovr69ubm7f39+kpKQ2NjZdXV3b29uUlJTo6Oirq6tVVVW0tLTFxcVgZochAAAA/klEQVQ4jdWSQXeDIBCEGcAIAipiFGMM/f+/sltf89oXN9566By4zMfuzoIQ/1OXUPdCTIvi7ZuxAKxE3Ji7xdT4VqMuB39wcKnf7dqr4VigjkhGAK5Xq78z3aGQFAGy4sfbXMASTgAtDR47wAW8eJWdh201kKXW/hWIX7OPz4zI8TVkozegwF6pAkxVDluaotIYkKqZgLn0xy0JMRPwWGlIvEmxyhFL1dFDvAFSXJDmOwGHCLtulpIYPwAtX8GbDBuGAOrD2J2RLoXxQ9GMemaAiB8F5iX7LPPTb0emgB7Xbqqa1to6Mj9FiOvKre53i7ajYzohila+nBf5M30CsesKstnNBMgAAAAASUVORK5CYII=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>
