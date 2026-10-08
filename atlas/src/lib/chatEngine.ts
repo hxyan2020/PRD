@@ -93,13 +93,30 @@ const INDOOR_CATS = new Set([
 
 const VIBE_CATEGORIES: Record<Exclude<VibePref, "any">, string[]> = {
   strategy: ["Strategy & War", "Mancala & Sowing", "Board & Race"],
-  casual: ["Cards & Tiles", "Dice & Chance", "Outdoor Folk", "Spinning & Tops"],
+  // Include Ball & Sport so outdoor + light/social still finds active folk play.
+  casual: [
+    "Cards & Tiles",
+    "Dice & Chance",
+    "Outdoor Folk",
+    "Spinning & Tops",
+    "Ball & Sport",
+  ],
   craft: ["Dolls & Figures", "Construction", "Musical Play"],
   sport: ["Ball & Sport", "Outdoor Folk"],
   ritual: ["Ritual & Ceremony", "Memory & Word"],
   kids: ["Dolls & Figures", "Spinning & Tops", "Outdoor Folk", "Construction", "String & Finger"],
   puzzle: ["Puzzles & Skill", "String & Finger", "Memory & Word"],
 };
+
+/** English catalog category — localized `category` labels must not drive matching. */
+function categoryKeyOf(game: Game): string {
+  return game.categoryKey ?? game.category;
+}
+
+/** English origin country key for region matching. */
+function originKeyOf(game: Game): string {
+  return game.originCountryKey ?? game.originCountry;
+}
 
 export function initialChatState(): ChatState {
   return {
@@ -211,7 +228,16 @@ function parseRegion(text: string, tr?: ChatTranslate): string | null {
     if (t === normalize(tr("chat.qr.regionEurope"))) return "europe";
     if (t === normalize(tr("chat.qr.regionMesoamerica"))) return "mesoamerica";
   }
-  if (/\b(any|worldwide|no preference|everywhere|global)\b/.test(t)) return "any";
+  // Locale-agnostic “any region” (incl. zh 全世界 / 任意) so we never treat
+  // a worldwide chip as a literal country filter that matches nothing.
+  if (
+    /\b(any|worldwide|no preference|everywhere|global|world)\b/.test(t) ||
+    /全世界|世界中|全球|任意|哪儿都行|哪裡都行|どこでも|전\s*세계|weltweit|mondial|mundial/.test(
+      t,
+    )
+  ) {
+    return "any";
+  }
   if (!t) return null;
   return t.replace(/^(from|in|around|near)\s+/, "");
 }
@@ -327,24 +353,49 @@ function isCatalogScopedAsk(text: string): boolean {
 function playersMatch(game: Game, pref?: PlayerPref): number {
   if (!pref || pref === "any") return 1;
   const p = normalize(game.idealParticipants);
+  // Compact digits for localized strings like "2 - 4人" / "2至4人数".
+  const compact = p.replace(/\s+/g, "");
   if (pref === "alone") {
-    if (/\balone\b|1–|1-|n\/a|display|caregiver|solo/.test(p)) return 3;
-    if (/\b1–|1-/.test(p)) return 2;
+    if (
+      /\balone\b|1–|1-|n\/a|display|caregiver|solo|一个人|獨自|独自|一人|혼자/.test(p)
+    )
+      return 3;
+    if (/\b1–|1-|1人/.test(p) || /^1[-–~]/.test(compact)) return 2;
     return 0;
   }
   if (pref === "two") {
-    if (/\b2 people\b|^2\b|2 teams|1–2|1-2|2\+/.test(p)) return 3;
-    if (/\b2–|2-/.test(p)) return 2;
+    if (
+      /\b2 people\b|^2\b|2 teams|1–2|1-2|2\+|两人|兩人|2个人|2個人|2人\b/.test(p) ||
+      /1[-–~]2|二人/.test(compact)
+    )
+      return 3;
+    if (/\b2–|2-|2人/.test(p)) return 2;
     return 0;
   }
   if (pref === "small") {
-    if (/\b2–4|2-4|3–4|3-4|1–4|2–6|4 people/.test(p)) return 3;
-    if (/\b2\+|3\+|people/.test(p)) return 1;
+    if (
+      /\b2–4|2-4|3–4|3-4|1–4|2–6|4 people|2\s*[-–~至到]\s*4|3\s*[-–~至到]\s*4|1\s*[-–~至到]\s*4|2\s*[-–~至到]\s*6/.test(
+        p,
+      ) ||
+      /2[-–~至到]4|3[-–~至到]4|1[-–~至到]4|2[-–~至到]6|2至4|3至4/.test(compact)
+    )
+      return 3;
+    // Flexible group sizes that still work for a table of 3–4.
+    if (
+      /\b2\+|3\+|people|2人以上|3人以上|小组|小組|小團體|소규모/.test(p) ||
+      /2\+|3\+|3\+人|2\+人/.test(compact)
+    )
+      return 2;
+    if (/人|people|players|명|คน/.test(p)) return 1;
     return 0;
   }
   if (pref === "group") {
-    if (/\bteam|group|many|10\+|2 teams|circle|parade/.test(p)) return 3;
-    if (/\b4\+|6\+|8\+|2–10|3\+/.test(p)) return 2;
+    if (
+      /\bteam|group|many|10\+|2 teams|circle|parade|组|組|团体|團體|集体|集體/.test(p)
+    )
+      return 3;
+    if (/\b4\+|6\+|8\+|2–10|3\+|4人以上|多人/.test(p)) return 2;
+    if (/人|people|players/.test(p)) return 1;
     return 0;
   }
   return 1;
@@ -352,20 +403,25 @@ function playersMatch(game: Game, pref?: PlayerPref): number {
 
 function settingMatch(game: Game, pref?: SettingPref): number {
   if (!pref || pref === "either") return 1;
-  const outdoor = OUTDOOR_CATS.has(game.category);
+  const cat = categoryKeyOf(game);
+  const outdoor = OUTDOOR_CATS.has(cat);
   if (pref === "outdoor") return outdoor ? 3 : 0;
-  return outdoor ? 0 : INDOOR_CATS.has(game.category) ? 2 : 1;
+  return outdoor ? 0 : INDOOR_CATS.has(cat) ? 2 : 1;
 }
 
 function vibeMatch(game: Game, pref?: VibePref): number {
   if (!pref || pref === "any") return 1;
   const cats = VIBE_CATEGORIES[pref] || [];
-  if (cats.includes(game.category)) return 3;
-  // soft keyword boosts
-  const blob = `${game.name} ${game.description} ${game.tags.join(" ")}`.toLowerCase();
-  if (pref === "strategy" && /strategy|chess|capture|territory/.test(blob)) return 2;
-  if (pref === "kids" && /child|children|infant|nurtur/.test(blob)) return 2;
-  if (pref === "sport" && /kick|ball|field|court|race/.test(blob)) return 2;
+  const cat = categoryKeyOf(game);
+  if (cats.includes(cat)) return 3;
+  // soft keyword boosts (tags stay English; description may be localized)
+  const blob = `${game.name} ${game.description} ${game.tags.join(" ")} ${cat}`.toLowerCase();
+  if (pref === "strategy" && /strategy|chess|capture|territory|策略|战略/.test(blob))
+    return 2;
+  if (pref === "kids" && /child|children|infant|nurtur|儿童|孩子/.test(blob)) return 2;
+  if (pref === "sport" && /kick|ball|field|court|race|球|运动|戶外|户外/.test(blob))
+    return 2;
+  if (pref === "casual" && /social|folk|party|社交|民俗|轻松/.test(blob)) return 2;
   return 0;
 }
 
@@ -381,8 +437,10 @@ const REGION_ALIASES: Record<string, string[]> = {
 
 function regionMatch(game: Game, region?: string): number {
   if (!region || region === "any" || region === "worldwide") return 1;
-  const blob = `${game.originCountry} ${game.civilization} ${game.name} ${game.variations
-    .map((v) => `${v.name} ${v.originCountry}`)
+  // Match against English keys so localized country labels don't zero the pool.
+  const origin = originKeyOf(game);
+  const blob = `${origin} ${game.civilization} ${game.name} ${game.variations
+    .map((v) => `${v.name} ${v.originCountryKey ?? v.originCountry}`)
     .join(" ")}`.toLowerCase();
   const key = region.toLowerCase();
   const aliases = REGION_ALIASES[key];
@@ -420,26 +478,67 @@ export function scoreGame(game: Game, prefs: UserPrefs): number {
   return total;
 }
 
-export function recommendGames(games: Game[], prefs: UserPrefs, limit = 5): Game[] {
-  const ranked = [...games]
-    .map((g) => ({ g, s: scoreGame(g, prefs) }))
-    .filter((x) => x.s > 1.5)
-    .sort((a, b) => b.s - a.s || a.g.name.localeCompare(b.g.name));
+/** Progressively loosen prefs when a strict combo would return nothing. */
+function relaxedPrefPasses(prefs: UserPrefs): UserPrefs[] {
+  const passes: UserPrefs[] = [prefs];
+  if (prefs.region && prefs.region !== "any") {
+    passes.push({ ...prefs, region: "any" });
+  }
+  if (prefs.players && prefs.players !== "any") {
+    passes.push({ ...prefs, players: "any" });
+    passes.push({ ...prefs, players: "any", region: "any" });
+  }
+  if (prefs.vibe && prefs.vibe !== "any") {
+    passes.push({ ...prefs, vibe: "any" });
+    passes.push({ ...prefs, vibe: "any", players: "any", region: "any" });
+  }
+  if (prefs.setting && prefs.setting !== "either") {
+    passes.push({
+      ...prefs,
+      setting: "either",
+      vibe: prefs.vibe === "any" ? "any" : prefs.vibe,
+      players: "any",
+      region: "any",
+    });
+  }
+  // Dedupe by JSON key order of known fields
+  const seen = new Set<string>();
+  return passes.filter((p) => {
+    const key = `${p.players}|${p.setting}|${p.vibe}|${p.region}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
-  // Prefer diversity of categories in top results
-  const picked: Game[] = [];
-  const seenCats = new Set<string>();
-  for (const { g } of ranked) {
-    if (picked.length >= limit) break;
-    if (seenCats.has(g.category) && picked.length < limit - 1) continue;
-    picked.push(g);
-    seenCats.add(g.category);
-  }
-  // fill if diversity skipped too many
-  for (const { g } of ranked) {
-    if (picked.length >= limit) break;
-    if (!picked.some((p) => p.id === g.id)) picked.push(g);
-  }
+export function recommendGames(games: Game[], prefs: UserPrefs, limit = 5): Game[] {
+  const pickFrom = (threshold: number) => {
+    const ranked = [...games]
+      .map((g) => ({ g, s: scoreGame(g, prefs) }))
+      .filter((x) => x.s > threshold)
+      .sort((a, b) => b.s - a.s || a.g.name.localeCompare(b.g.name));
+
+    // Prefer diversity of English categories in top results
+    const picked: Game[] = [];
+    const seenCats = new Set<string>();
+    for (const { g } of ranked) {
+      if (picked.length >= limit) break;
+      const cat = categoryKeyOf(g);
+      if (seenCats.has(cat) && picked.length < limit - 1) continue;
+      picked.push(g);
+      seenCats.add(cat);
+    }
+    for (const { g } of ranked) {
+      if (picked.length >= limit) break;
+      if (!picked.some((p) => p.id === g.id)) picked.push(g);
+    }
+    return picked;
+  };
+
+  let picked = pickFrom(1.5);
+  // Soft retry: keep ranking but accept lower scores before giving up.
+  if (!picked.length) picked = pickFrom(0.4);
+  if (!picked.length) picked = pickFrom(0);
   return picked;
 }
 
@@ -701,22 +800,19 @@ function nextRecommendationBatch(
   seenIds: Iterable<string>,
 ): { recs: Game[]; moreAvailable: boolean } {
   const exclude = new Set(seenIds);
-  let recs = recommendExcluding(games, prefs, exclude);
+  let recs: Game[] = [];
   let workingPrefs = prefs;
-  if (!recs.length && prefs.region && prefs.region !== "any") {
-    workingPrefs = { ...prefs, region: "any" };
-    recs = recommendExcluding(games, workingPrefs, exclude);
+  for (const pass of relaxedPrefPasses(prefs)) {
+    recs = recommendExcluding(games, pass, exclude);
+    if (recs.length) {
+      workingPrefs = pass;
+      break;
+    }
   }
   const seenAfter = mergeSeen([...exclude], recs);
-  const moreAvailable =
-    recommendExcluding(games, workingPrefs, seenAfter, 1).length > 0 ||
-    (!!(workingPrefs.region && workingPrefs.region !== "any") &&
-      recommendExcluding(
-        games,
-        { ...workingPrefs, region: "any" },
-        seenAfter,
-        1,
-      ).length > 0);
+  const moreAvailable = relaxedPrefPasses(workingPrefs).some(
+    (pass) => recommendExcluding(games, pass, seenAfter, 1).length > 0,
+  );
   return { recs, moreAvailable };
 }
 
@@ -1161,7 +1257,7 @@ export function handleUserMessage(
         vibe: nextPrefs.vibe || guessVibeFromGame(seed),
         setting:
           nextPrefs.setting ||
-          (OUTDOOR_CATS.has(seed.category) ? "outdoor" : "indoor"),
+          (OUTDOOR_CATS.has(categoryKeyOf(seed)) ? "outdoor" : "indoor"),
       };
     }
 
@@ -1268,11 +1364,12 @@ export function handleUserMessage(
 }
 
 function guessVibeFromGame(game: Game): VibePref {
+  const cat = categoryKeyOf(game);
   for (const [vibe, cats] of Object.entries(VIBE_CATEGORIES) as [
     Exclude<VibePref, "any">,
     string[],
   ][]) {
-    if (cats.includes(game.category)) return vibe;
+    if (cats.includes(cat)) return vibe;
   }
   return "any";
 }
