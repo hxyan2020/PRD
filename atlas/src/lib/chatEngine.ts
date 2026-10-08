@@ -470,13 +470,17 @@ function intent(text: string): string {
   if (/\b(players?|how many|participants|alone|people)\b/.test(t) && /\b(need|for|ideal|many)\b/.test(t))
     return "participants";
   // Paginate the current preference pool (Guide “More recommendations” button).
+  // Avoid matching “tell me more please” — that is a follow-up, not pagination.
   if (
-    /\b(more recommendations?|more picks?|generate more|show more|more please)\b/.test(
+    /\b(more recommendations?|more picks?|generate more|show more)\b/.test(t) ||
+    (/^more please\.?$/.test(t) && !/\btell me more\b/.test(t))
+  )
+    return "more_recs";
+  if (
+    /\b(more like|similar games?|another game|other recommendation|recommend (something )?else|different game)\b/.test(
       t,
     )
   )
-    return "more_recs";
-  if (/\b(more like|similar|another|other recommendation|else|different)\b/.test(t))
     return "more_like";
   if (/\b(recommend|suggest|what should|help me (find|choose)|looking for)\b/.test(t))
     return "recommend";
@@ -1198,12 +1202,20 @@ export function handleGameAssistantMessage(
 
   const i = intent(text);
 
+  // Catalog-wide discovery belongs in Atlas Guide; keep this panel on `game`.
   if (i === "recommend" || i === "more_recs" || i === "more_like") {
-    return [
-      assistant(t("detail.assistant.useGuide", { name: game.name }), {
-        quickReplies: gameAssistantQuickReplies(t, game),
-      }),
-    ];
+    // “Tell me more” about this entry should not bounce to Guide.
+    const wantsOther =
+      i === "recommend" ||
+      i === "more_recs" ||
+      /\b(similar|another|other|else|different)\b/i.test(text);
+    if (wantsOther && !/\btell me more\b/i.test(text)) {
+      return [
+        assistant(t("detail.assistant.useGuide", { name: game.name }), {
+          quickReplies: gameAssistantQuickReplies(t, game),
+        }),
+      ];
+    }
   }
 
   // Named a well-known different title? Keep this page focused on `game`.
