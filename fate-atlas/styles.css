@@ -242,6 +242,11 @@ select {
 }
 
 /* ── Featured guides ──────────────────────────────────── */
+.page--home .featured {
+  /* Sit directly under the hero banner on the combined home/play page */
+  scroll-margin-top: 4.5rem;
+}
+
 .featured {
   background: linear-gradient(180deg, #e4ecef, #edf3f6);
   border-top: 1px solid var(--line);
