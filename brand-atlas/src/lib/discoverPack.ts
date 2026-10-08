@@ -335,10 +335,22 @@ export async function discoverResourcePack(input: {
   }
 
   const existing = existingNames(input.catalog, input.categoryId);
-  const unique = [...new Set(rawNames.map((n) => n.trim()))].filter((n) => {
-    const slug = slugify(n);
-    return !existing.has(n.toLowerCase()) && !existing.has(slug);
-  });
+  function alreadyCovered(name: string): boolean {
+    const lower = name.toLowerCase();
+    const slug = slugify(name);
+    if (existing.has(lower) || existing.has(slug)) return true;
+    // Treat "BYD Auto" / "Geely Auto" as covered when BYD / Geely already exist
+    for (const ex of existing) {
+      if (ex.length < 3) continue;
+      if (lower === ex) return true;
+      if (lower.startsWith(`${ex} `) || lower.startsWith(`${ex}-`)) return true;
+      if (ex.startsWith(`${lower} `) || ex.startsWith(`${lower}-`)) return true;
+    }
+    return false;
+  }
+  const unique = [...new Set(rawNames.map((n) => n.trim()))].filter(
+    (n) => !alreadyCovered(n),
+  );
 
   // Enrich top pool
   const enrichMap = await enrichPages(unique.slice(0, 40));
