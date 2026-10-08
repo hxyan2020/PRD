@@ -22,8 +22,8 @@ import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
 import { PrefIconSelect } from "../components/PrefIconSelect";
 import {
-  isPhotographicSrc,
   ludusBackdropDataUri,
+  primaryCoverSrc,
 } from "../lib/gameCardImage";
 
 export function PreferencesPage() {
@@ -392,14 +392,14 @@ export function PreferencesPage() {
                     baseSlugs.has(hit.game.slug);
                   const inPool = addedIds.has(hit.game.id) || isInPool(hit.game.id);
                   const already = inBase || inPool;
-                  const photo = display.images.find(isPhotographicSrc);
+                  const cover = primaryCoverSrc(display.images);
                   return (
                     <li key={hit.game.id} className="prefs-hit">
                       <div className="prefs-hit-main">
                         <div className="prefs-hit-img" aria-hidden="true">
-                          {photo ? (
+                          {cover ? (
                             <GameImage
-                              src={photo}
+                              src={cover}
                               alt=""
                               loading="lazy"
                               label={{

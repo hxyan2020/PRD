@@ -665,6 +665,213 @@ const CATEGORY_PHOTOS = {
   "Memory & Word": [commons("Scrabble_game.jpg"), commons("Cards_-Deck_Playing.jpg")],
 };
 
+/**
+ * Extra exclusive photos for regional matrix entries. Each URL is claimed at
+ * most once — never shared across two games or variations.
+ */
+const EXTRA_UNIQUE_PHOTOS = [
+  commons("Hopscotch.jpg"),
+  commons("Tug_of_war.jpg"),
+  commons("Boomerang.jpg"),
+  commons("Kokeshi.jpg"),
+  commons("Corn_husk_doll.jpg"),
+  commons("Sepak_takraw.jpg"),
+  commons("Diabolo.jpg"),
+  commons("Soma_cube.jpg"),
+  commons("Tower_of_Hanoi.jpg"),
+  commons("Maracas.jpg"),
+  commons("Rattle_(percussion).jpg"),
+  commons("Lego_bricks.jpg"),
+  commons("Rock-paper-scissors.jpg"),
+  commons("Nine_Men%27s_Morris.jpg"),
+  commons("Royal_Game_of_Ur.jpg"),
+  commons("Snakes_and_ladders.jpg"),
+  commons("Chinese_checkers.jpg"),
+  commons("Gomoku.jpg"),
+  commons("Reversi.jpg"),
+  commons("Mahjong.jpg"),
+  commons("Playing_cards.jpg"),
+  commons("Jigsaw_puzzle.jpg"),
+  commons("Cup-and-ball.jpg"),
+  commons("Kendama.jpg"),
+  commons("Origami.jpg"),
+  commons("Paper_airplane.jpg"),
+  commons("Stilts.jpg"),
+  commons("Hula_hoop.jpg"),
+  commons("Pinwheel_(toy).jpg"),
+  commons("Soap_bubbles.jpg"),
+  commons("Teddy_bear.jpg"),
+  commons("Rocking_horse.jpg"),
+  commons("Hobby_horse.jpg"),
+  commons("Toy_soldiers.jpg"),
+  commons("Dollhouse.jpg"),
+  commons("Wayang_kulit.jpg"),
+  commons("Shadow_puppet.jpg"),
+  commons("Hand_puppet.jpg"),
+  commons("Frisbee.jpg"),
+  commons("Darts.jpg"),
+  commons("Croquet.jpg"),
+  commons("Boules.jpg"),
+  commons("Pétanque.jpg"),
+  commons("Bocce.jpg"),
+  commons("Table_tennis.jpg"),
+  commons("Badminton.jpg"),
+  commons("Archery.jpg"),
+  commons("Slingshot.jpg"),
+  commons("Hacky_sack.jpg"),
+  commons("Bean_bag.jpg"),
+  commons("Pogo_stick.jpg"),
+  commons("Unicycle.jpg"),
+  commons("Juggler.jpg"),
+  commons("Piñata.jpg"),
+  commons("Musical_chairs.jpg"),
+  commons("Tag_(game).jpg"),
+  commons("Dodgeball.jpg"),
+  commons("Sack_race.jpg"),
+  commons("Board_game.jpg"),
+  commons("Connect_Four.jpg"),
+  commons("Battleship_(game).jpg"),
+  commons("Twister_(game).jpg"),
+  commons("Yahtzee.jpg"),
+  commons("Bingo_(game).jpg"),
+  commons("Crossword.jpg"),
+  commons("Sudoku.jpg"),
+  commons("Kaleidoscope.jpg"),
+  commons("Whistle.jpg"),
+  commons("Drum_(musical_instrument).jpg"),
+  commons("Flute.jpg"),
+  commons("Toy_car.jpg"),
+  commons("Toy_train.jpg"),
+  commons("Pull_toy.jpg"),
+  commons("Balloon.jpg"),
+  commons("Carousel.jpg"),
+  commons("Seesaw.jpg"),
+  commons("Swing_(seat).jpg"),
+  commons("Sandbox.jpg"),
+  commons("Snowman.jpg"),
+  commons("Sandcastle.jpg"),
+  commons("Cat%27s_cradle.jpg"),
+  commons("Jump_rope.jpg"),
+  commons("Skipping_rope.jpg"),
+  commons("Children_playing_marbles.jpg"),
+  commons("Children_with_kites.jpg"),
+  commons("Wooden_toys.jpg"),
+  commons("Fox_and_geese.jpg"),
+  commons("Halma.jpg"),
+  commons("Hnefatafl.jpg"),
+  commons("Makruk.jpg"),
+  commons("Janggi.jpg"),
+  commons("Sittuyin.jpg"),
+  commons("Chaturaji.jpg"),
+  commons("Mehen_(game).jpg"),
+  commons("Aseb.jpg"),
+  commons("Tabula_(game).jpg"),
+  commons("Latrunculi.jpg"),
+  commons("Abalone_(board_game).jpg"),
+  commons("Blokus.jpg"),
+  commons("Rummikub.jpg"),
+  commons("Cribbage.jpg"),
+  commons("Euchre.jpg"),
+  commons("Canasta.jpg"),
+  commons("Gin_rummy.jpg"),
+  commons("Liar%27s_dice.jpg"),
+  commons("Farkle.jpg"),
+  commons("Bunco.jpg"),
+  commons("Foosball.jpg"),
+  commons("Air_hockey.jpg"),
+  commons("Pinball.jpg"),
+  commons("Claw_crane.jpg"),
+  commons("Arcade_game.jpg"),
+  commons("Carnival_game.jpg"),
+  commons("Ring_toss.jpg"),
+  commons("Horseshoes_(game).jpg"),
+  commons("Quoits.jpg"),
+  commons("Lawn_bowls.jpg"),
+  commons("Curling.jpg"),
+  commons("Hurling.jpg"),
+  commons("Polo.jpg"),
+  commons("Chinlone.jpg"),
+  commons("Cuju.jpg"),
+  commons("Space_hopper.jpg"),
+  commons("Trampoline.jpg"),
+  commons("Skateboard.jpg"),
+  commons("Roller_skates.jpg"),
+  commons("Sled.jpg"),
+  commons("Wagon.jpg"),
+  commons("Xylophone.jpg"),
+  commons("Wind_chime.jpg"),
+  commons("Jumping_jack_(toy).jpg"),
+  commons("Bilboquet.jpg"),
+  commons("Paper_boat.jpg"),
+  commons("Hide_and_seek.jpg"),
+  commons("Red_rover.jpg"),
+  commons("Simon_Says.jpg"),
+  commons("Capture_the_flag.jpg"),
+  commons("Three-legged_race.jpg"),
+  commons("Egg_and_spoon_race.jpg"),
+  commons("Memory_(game).jpg"),
+  commons("PegSolitaire.jpg"),
+  commons("International_draughts.jpg"),
+  commons("Alquerque_game_board.jpg"),
+  commons("Bao_la_mjini_board.jpg"),
+  commons("Sungka.jpg"),
+  commons("Oware.jpg"),
+  commons("Wooden_Mancala_board.jpg"),
+  commons("Pachisi-real.jpg"),
+  commons("Ludo_board.svg"),
+  commons("Senet_(47429946982).jpg"),
+  commons("Shogi_ban.jpg"),
+  commons("Xiangqi-Chinese-chess.jpg"),
+  commons("Go_(13×13)_--_2021_--_6741.jpg"),
+  commons("Wooden_Chess_Board.jpg"),
+  commons("Opening_chess_position_from_black_side.jpg"),
+  commons("Chathurangam-1.jpg"),
+  commons("Persian_Tamerlane_Chess_Set.png"),
+  commons("Matryoshka_dolls.jpg"),
+  commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+  commons("Spinning_top.jpg"),
+  commons("Yo_yo_toy.jpg"),
+  commons("Glass_Marbles.jpg"),
+  commons("Shuttlecock.jpg"),
+  commons("Jianzi.jpg"),
+  commons("Kite.jpg"),
+  commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+  commons("Knucklebones.jpg"),
+  commons("Dice.jpg"),
+  commons("Scrabble_game.jpg"),
+  commons("Cards_-Deck_Playing.jpg"),
+  commons("UCB_Mahjong_Tiles.png"),
+  commons("Domino_--_2021_--_6766.jpg"),
+  commons("A_pile_of_alphabet_wooden_blocks.jpg"),
+  commons("Jenga_distorted.jpg"),
+  commons("Tangram-1.JPG"),
+  commons("Rubiks_cube_by_keqs.jpg"),
+  commons("Senet_game_pieces_(Tutankhamun).jpg"),
+  commons("Patolli.jpg"),
+  commons("Backgammon_board_-_01.jpg"),
+  commons("Mancala.jpg"),
+  commons("Congkak.jpg"),
+  commons("Brooklyn_Museum_22.239_Mancala_Game_Board.jpg"),
+  commons("Xiangqi_01.jpg"),
+  commons("Shogi-Set-06.JPG"),
+  unsplash("1528819622765-d6bcf132f793"),
+  unsplash("1586165368502-1bad197a6461"),
+  unsplash("1774234528903-f520d964ba13"),
+  unsplash("1771588330614-2ce1d77588ca"),
+  unsplash("1763901682710-a18f6a7d9531"),
+  unsplash("1742343886931-14ea96977531"),
+  unsplash("1541278107931-e006523892df"),
+  unsplash("1566694271453-390536dd1f0d"),
+  unsplash("1556309294-98916e0aaca7"),
+  unsplash("1540149678796-1a36342a1372"),
+  unsplash("1587654780291-39c9404d746b"),
+  unsplash("1687499466496-590c45852352"),
+  unsplash("1757743066599-193b467c35f1"),
+  unsplash("1672092590672-3feb81f3123a"),
+  unsplash("1703000998518-021f436c0b03"),
+  unsplash("1671628586515-0e4d9456f291"),
+];
+
 const PURCHASE = {
   chess: [
     { platform: "Amazon", label: "Wooden Chess Set (Amazon US)", url: "https://www.amazon.com/dp/B07YRJF3S7" },
@@ -861,9 +1068,18 @@ const imageBank = {
   usedSets: new Set(),
   /** @type {Map<string, number>} */
   curatedCursor: new Map(),
+  /** @type {number} */
+  extraCursor: 0,
   serial: 0,
 
-  /** Exclusive take from a named curated pool (unique URLs preferred). */
+  /** Claim `url` if unused; returns url or null. */
+  claim(url) {
+    if (!url || this.usedUrls.has(url)) return null;
+    this.usedUrls.add(url);
+    return url;
+  },
+
+  /** Exclusive take from a named curated pool — never reuses a claimed URL. */
   takeCuratedPhoto(gameName) {
     const key = resolvePhotoKey(gameName);
     if (!key) return null;
@@ -872,21 +1088,46 @@ const imageBank = {
     const start = this.curatedCursor.get(key) || 0;
     for (let i = 0; i < pool.length; i++) {
       const url = pool[(start + i) % pool.length];
-      if (!this.usedUrls.has(url)) {
-        this.usedUrls.add(url);
+      const claimed = this.claim(url);
+      if (claimed) {
         this.curatedCursor.set(key, (start + i + 1) % pool.length);
-        return url;
+        return claimed;
       }
     }
-    // All unique slots taken — still return a correct subject photo (reuse OK).
-    return pool[start % pool.length];
+    return null;
   },
 
-  /** Category atmosphere photo; reusable so every card can have a cover. */
-  takeCategoryPhoto(category, uniqueKey) {
-    const pool = CATEGORY_PHOTOS[category];
+  /** First unused photo from a pool, starting at a deterministic offset. */
+  takeFromPool(pool, uniqueKey) {
     if (!pool?.length) return null;
-    return pool[hash(uniqueKey) % pool.length];
+    const start = hash(uniqueKey) % pool.length;
+    for (let i = 0; i < pool.length; i++) {
+      const claimed = this.claim(pool[(start + i) % pool.length]);
+      if (claimed) return claimed;
+    }
+    return null;
+  },
+
+  /** Category photo only if still exclusive. */
+  takeCategoryPhoto(category, uniqueKey) {
+    return this.takeFromPool(CATEGORY_PHOTOS[category], uniqueKey);
+  },
+
+  /** Spillover unique bank for regional matrix entries. */
+  takeExtraPhoto(uniqueKey) {
+    if (!EXTRA_UNIQUE_PHOTOS.length) return null;
+    const start = (this.extraCursor + hash(uniqueKey)) % EXTRA_UNIQUE_PHOTOS.length;
+    for (let i = 0; i < EXTRA_UNIQUE_PHOTOS.length; i++) {
+      const claimed = this.claim(
+        EXTRA_UNIQUE_PHOTOS[(start + i) % EXTRA_UNIQUE_PHOTOS.length],
+      );
+      if (claimed) {
+        this.extraCursor =
+          (start + i + 1) % EXTRA_UNIQUE_PHOTOS.length;
+        return claimed;
+      }
+    }
+    return null;
   },
 
   /**
@@ -894,15 +1135,28 @@ const imageBank = {
    */
   allocate(opts) {
     const { name, category, originCountry, uniqueKey, parentName } = opts;
-    /** @type {string[]} */
-    const imgs = [encodeLudusCard(name, category, originCountry)];
+    // Prefer a clean title card; if that exact card was already claimed
+    // (e.g. two Congkak variations), disambiguate with parent / region.
+    let card = encodeLudusCard(name, category, originCountry);
+    if (this.usedUrls.has(card)) {
+      const disambig = parentName
+        ? `${originCountry} · via ${parentName}`
+        : `${originCountry} · ${uniqueKey.split(":").slice(-2).join(" ")}`;
+      card = encodeLudusCard(name, category, disambig);
+    }
+    if (this.usedUrls.has(card)) {
+      card = encodeLudusCard(name, category, `${originCountry} · ${uniqueKey}`);
+    }
+    this.usedUrls.add(card);
 
-    // Prefer title-matched photos, then the parent game's pool (for variations),
-    // then a category cover — never loremflickr/picsum.
+    /** @type {string[]} */
+    const imgs = [card];
+
+    // Prefer title-matched photos, then parent pool, then category, then extra.
+    // Every photographic URL is exclusive — never shared across games.
     const subjectNames = [name, parentName].filter(Boolean);
     const seen = new Set();
     for (const subject of subjectNames) {
-      // Pull several curated views when the pool is rich (detail gallery).
       for (let n = 0; n < 3; n++) {
         const url = this.takeCuratedPhoto(subject);
         if (!url || seen.has(url)) break;
@@ -912,16 +1166,13 @@ const imageBank = {
       if (imgs.length > 1) break;
     }
     if (imgs.length === 1) {
-      const cover = this.takeCategoryPhoto(category, uniqueKey);
+      const cover =
+        this.takeCategoryPhoto(category, uniqueKey) ||
+        this.takeExtraPhoto(uniqueKey);
       if (cover) imgs.push(cover);
     }
 
-    const sig = JSON.stringify(imgs);
-    if (this.usedSets.has(sig)) {
-      imgs.push(encodeLudusCard(`${name} · view`, category, originCountry));
-    }
     this.usedSets.add(JSON.stringify(imgs));
-    this.usedUrls.add(imgs[0]);
     return imgs;
   },
 };

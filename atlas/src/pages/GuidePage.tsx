@@ -5,8 +5,8 @@ import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
 import { loadCollection } from "../lib/collection";
 import {
-  isPhotographicSrc,
   ludusBackdropDataUri,
+  primaryCoverSrc,
 } from "../lib/gameCardImage";
 import type { Game } from "../types/game";
 import type { ChatMessage, ChatState } from "../types/chat";
@@ -50,14 +50,14 @@ function RecCards({ games }: { games: Game[] }) {
   return (
     <div className="chat-recs">
       {games.map((g) => {
-        const photo = g.images.find(isPhotographicSrc);
+        const cover = primaryCoverSrc(g.images);
         const backdrop = ludusBackdropDataUri(g.category, g.id || g.slug);
         return (
           <Link key={g.id} to={`/game/${g.slug}`} className="chat-rec-card">
             <div className="chat-rec-img" aria-hidden="true">
-              {photo ? (
+              {cover ? (
                 <GameImage
-                  src={photo}
+                  src={cover}
                   alt=""
                   loading="lazy"
                   label={{
