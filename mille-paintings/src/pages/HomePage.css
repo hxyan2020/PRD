@@ -22,7 +22,19 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  animation: kenBurns 22s ease-in-out alternate infinite;
+  /* Desktop: keep Mona Lisa’s face in frame on wide crops (mobile overrides below). */
+  object-position: center 22%;
+  animation: heroKenBurnsDesktop 26s ease-in-out alternate infinite;
+}
+
+@keyframes heroKenBurnsDesktop {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    /* Mild zoom; slight downward bias so the face does not drift out of frame. */
+    transform: scale(1.06) translate3d(-0.8%, 0.6%, 0);
+  }
 }
 
 .hero-fallback {
@@ -287,6 +299,8 @@
   .hero-image,
   .hero-fallback {
     object-position: center 12%;
+    /* Keep the existing mobile motion — desktop-only framing/zoom above. */
+    animation: kenBurns 22s ease-in-out alternate infinite;
   }
 
   .hero-veil {
