@@ -326,10 +326,17 @@ select {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(8, 4, 6, 0.25) 0%, rgba(8, 4, 6, 0.55) 45%, rgba(8, 4, 6, 0.92) 100%),
-    url("https://images.unsplash.com/photo-1553481187-be93c21490a9?w=1800&q=80") center/cover no-repeat;
-  transform: scale(1.04);
-  animation: heroDrift 18s ease-in-out infinite alternate;
+    linear-gradient(
+      105deg,
+      rgba(8, 4, 6, 0.78) 0%,
+      rgba(8, 4, 6, 0.45) 42%,
+      rgba(8, 4, 6, 0.2) 68%,
+      rgba(8, 4, 6, 0.55) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 4, 6, 0.15) 0%, rgba(8, 4, 6, 0.35) 55%, rgba(8, 4, 6, 0.88) 100%),
+    var(--hero-banner) center 42% / cover no-repeat;
+  transform: scale(1.03);
+  animation: heroDrift 22s ease-in-out infinite alternate;
 }
 
 .hero-content {

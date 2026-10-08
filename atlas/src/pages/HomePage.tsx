@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { loadCollection, type CollectionData } from "../lib/collection";
 import { GameCard } from "../components/GameCard";
 import { Footer } from "../components/Footer";
@@ -38,7 +38,14 @@ export function HomePage() {
 
   return (
     <>
-      <section className="hero">
+      <section
+        className="hero"
+        style={
+          {
+            "--hero-banner": `url(${import.meta.env.BASE_URL}hero-banner-wide.jpg)`,
+          } as CSSProperties
+        }
+      >
         <div className="hero-media" aria-hidden="true" />
         <div className="container hero-content">
           <p className="hero-brand">
