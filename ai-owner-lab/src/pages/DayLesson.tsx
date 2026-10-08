@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { getDayLesson, getPhaseForDayLang, getVisualLang, TOTAL_DAYS } from '../data/content'
+import { getDayLesson, getPhaseForDayLang, getVisualsLang, TOTAL_DAYS } from '../data/content'
 import { LessonVisual } from '../components/LessonVisual'
 import { useProgress } from '../hooks/useProgress'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -11,7 +11,7 @@ export function DayLessonPage() {
   const lesson = getDayLesson(lang, dayNum)
   const phase = getPhaseForDayLang(lang, dayNum)
   const progress = useProgress()
-  const visual = getVisualLang(lang, dayNum)
+  const visuals = getVisualsLang(lang, dayNum)
 
   if (!lesson || Number.isNaN(dayNum)) {
     return (
@@ -87,7 +87,7 @@ export function DayLessonPage() {
             </aside>
           ) : null}
 
-          {visual ? <LessonVisual visual={visual} /> : null}
+          {visuals[0] ? <LessonVisual visual={visuals[0]} /> : null}
 
           {lesson.sections.map((section) => (
             <section key={section.heading} className="content-block">
@@ -101,6 +101,10 @@ export function DayLessonPage() {
                 </ul>
               ) : null}
             </section>
+          ))}
+
+          {visuals.slice(1).map((visual) => (
+            <LessonVisual key={visual.id ?? `${visual.day}-${visual.kind}`} visual={visual} />
           ))}
 
           {lesson.debugTip ? (

@@ -9,11 +9,13 @@ export type VisualKind =
   | 'pipeline'
   | 'cards'
   | 'balance'
+  | 'flowchart'
 
 export interface VisualNode {
   id: string
   label: string
   detail: string
+  /** For flowcharts: start | process | decision | terminal */
   tag?: string
 }
 
@@ -25,6 +27,8 @@ export interface MatrixCell {
 
 export interface LessonVisual {
   day: number
+  /** Stable id when a day has multiple diagrams */
+  id?: string
   title: string
   caption: string
   kind: VisualKind

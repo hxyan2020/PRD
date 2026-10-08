@@ -35,6 +35,12 @@ const curriculumDays = [
 
 assertThirty('Curriculum', curriculumDays)
 assertThirty('Visuals', collectDays('src/data/visuals.ts'))
+assertThirty('Visual flowcharts', collectDays('src/data/visualFlowcharts.ts'))
+const flowchartZh = readFileSync(join(root, 'src/data/zh/visualFlowcharts.ts'), 'utf8')
+assertThirty(
+  'Visual flowcharts ZH',
+  [...flowchartZh.matchAll(/^\s*(\d+)\s*:\s*\{/gm)].map((m) => Number(m[1])),
+)
 
 const prodText = readFileSync(join(root, 'src/data/productionExamples.ts'), 'utf8')
 const prodDays = [...prodText.matchAll(/^\s*(\d+)\s*:\s*\{/gm)].map((m) => Number(m[1]))

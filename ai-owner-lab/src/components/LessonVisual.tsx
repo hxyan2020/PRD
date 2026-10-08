@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { getProductionLang } from '../data/content'
 import type { LessonVisual as VisualSpec, VisualNode } from '../data/visualTypes'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -7,13 +7,16 @@ interface Props {
   visual: VisualSpec
 }
 
+const FLOW_TAGS = new Set(['start', 'process', 'decision', 'terminal'])
+
 function NodeDetail({ node, hint }: { node: VisualNode | null; hint: string }) {
   if (!node) {
     return <p className="visual-hint">{hint}</p>
   }
+  const showTag = node.tag && !FLOW_TAGS.has(node.tag)
   return (
     <div className="visual-detail">
-      {node.tag ? <span className="visual-tag">{node.tag}</span> : null}
+      {showTag ? <span className="visual-tag">{node.tag}</span> : null}
       <strong>{node.label}</strong>
       <p>{node.detail}</p>
     </div>
@@ -24,7 +27,7 @@ export function LessonVisual({ visual }: Props) {
   const { lang, t } = useLanguage()
   const [activeId, setActiveId] = useState<string | null>(null)
   const [sliderValue, setSliderValue] = useState(visual.slider?.initial ?? 0)
-  const production = getProductionLang(lang, visual.day)
+  const production = visual.kind === 'flowchart' ? undefined : getProductionLang(lang, visual.day)
 
   const allNodes = useMemo(() => {
     const list: VisualNode[] = []
@@ -36,6 +39,11 @@ export function LessonVisual({ visual }: Props) {
     return list
   }, [visual])
 
+  useEffect(() => {
+    setActiveId(allNodes[0]?.id ?? null)
+    setSliderValue(visual.slider?.initial ?? 0)
+  }, [visual.day, visual.id, visual.kind, allNodes])
+
   const active = allNodes.find((n) => n.id === activeId) ?? null
 
   const activeBand = useMemo(() => {
@@ -43,10 +51,17 @@ export function LessonVisual({ visual }: Props) {
     return visual.slider.bands.find((b) => sliderValue <= b.max) ?? visual.slider.bands.at(-1) ?? null
   }, [sliderValue, visual.slider])
 
+  const eyebrow =
+    visual.kind === 'flowchart'
+      ? t('interactiveFlowchart')
+      : visual.kind === 'pipeline' || visual.kind === 'flow'
+        ? t('interactiveFlow')
+        : t('interactiveDiagram')
+
   return (
-    <section className="lesson-visual" aria-label={visual.title}>
+    <section className={`lesson-visual kind-${visual.kind}`} aria-label={visual.title}>
       <div className="visual-head">
-        <p className="eyebrow">{t('interactiveDiagram')}</p>
+        <p className="eyebrow">{eyebrow}</p>
         <h2>{visual.title}</h2>
         <p>{visual.caption}</p>
         {production ? (
@@ -68,7 +83,42 @@ export function LessonVisual({ visual }: Props) {
                 <span className="node-index">{index + 1}</span>
                 <span>{node.label}</span>
               </button>
-              {index < (visual.nodes?.length ?? 0) - 1 ? <span className="flow-arrow" aria-hidden="true">→</span> : null}
+              {index < (visual.nodes?.length ?? 0) - 1 ? (
+                <span className="flow-arrow" aria-hidden="true">
+                  →
+                </span>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {visual.kind === 'flowchart' ? (
+        <div className="visual-flowchart" role="list">
+          {(visual.nodes ?? []).map((node, index) => (
+            <div key={node.id} className="flowchart-step" role="listitem">
+              <button
+                type="button"
+                className={`flowchart-node tag-${node.tag ?? 'process'} ${activeId === node.id ? 'active' : ''}`}
+                onClick={() => setActiveId(node.id)}
+              >
+                <span className="flowchart-kind">
+                  {node.tag === 'decision'
+                    ? t('flowDecision')
+                    : node.tag === 'start'
+                      ? t('flowStart')
+                      : node.tag === 'terminal'
+                        ? t('flowEnd')
+                        : t('flowStep')}
+                </span>
+                <span className="flowchart-label">{node.label}</span>
+              </button>
+              {index < (visual.nodes?.length ?? 0) - 1 ? (
+                <div className="flowchart-connector" aria-hidden="true">
+                  <span className="flowchart-line" />
+                  <span className="flowchart-chevron">↓</span>
+                </div>
+              ) : null}
             </div>
           ))}
         </div>
@@ -145,7 +195,7 @@ export function LessonVisual({ visual }: Props) {
               </button>
             )
           })}
-          <div className="cycle-core">Loop</div>
+          <div className="cycle-core">{t('cycleLoop')}</div>
         </div>
       ) : null}
 
@@ -198,7 +248,11 @@ export function LessonVisual({ visual }: Props) {
         <div className="visual-slider">
           <label>
             <span>
-              {visual.slider.label}: <strong>{sliderValue}{visual.slider.unit ?? ''}</strong>
+              {visual.slider.label}:{' '}
+              <strong>
+                {sliderValue}
+                {visual.slider.unit ?? ''}
+              </strong>
             </span>
             <input
               type="range"
@@ -244,10 +298,10 @@ export function LessonVisual({ visual }: Props) {
         </div>
       ) : null}
 
-      {visual.kind !== 'slider' && visual.kind !== 'cards' && visual.kind !== 'balance' ? (
+      {visual.kind !== 'slider' && visual.kind !== 'balance' ? (
         <NodeDetail node={active} hint={t('clickNode')} />
       ) : null}
-      {(visual.kind === 'cards' || visual.kind === 'balance') && visual.nodes?.length ? (
+      {visual.kind === 'balance' && visual.nodes?.length ? (
         <NodeDetail node={active} hint={t('clickNode')} />
       ) : null}
     </section>

@@ -4,12 +4,14 @@ import { phases as phasesEn } from './phases'
 import { glossary as glossaryEn, searchGlossary as searchGlossaryEn } from './glossary'
 import { useCases as useCasesEn } from './useCases'
 import { visuals as visualsEn, getVisual as getVisualEn } from './visuals'
+import { getVisualFlowchart } from './visualFlowcharts'
 import { productionExamples as productionEn, getProductionExample as getProdEn } from './productionExamples'
 import { curriculumZh } from './zh/curriculum'
 import { phasesZh } from './zh/phases'
 import { glossaryZh } from './zh/glossary'
 import { useCasesZh } from './zh/useCases'
 import { visualsZh } from './zh/visuals'
+import { visualFlowchartsZh } from './zh/visualFlowcharts'
 import { productionExamplesZh } from './zh/productionExamples'
 import type { DayLesson, GlossaryTerm, Phase, ProductionExample, UseCase } from './types'
 import type { LessonVisual } from './visualTypes'
@@ -58,6 +60,15 @@ export function getUseCases(lang: Lang): UseCase[] {
 export function getVisualLang(lang: Lang, day: number): LessonVisual | undefined {
   if (lang === 'zh') return visualsZh.find((v) => v.day === day)
   return getVisualEn(day)
+}
+
+export function getVisualsLang(lang: Lang, day: number): LessonVisual[] {
+  const primary = getVisualLang(lang, day)
+  const flowchart =
+    lang === 'zh'
+      ? visualFlowchartsZh.find((v) => v.day === day)
+      : getVisualFlowchart(day)
+  return [primary, flowchart].filter((v): v is LessonVisual => Boolean(v))
 }
 
 export function getProductionLang(lang: Lang, day: number): ProductionExample | undefined {
