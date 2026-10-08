@@ -19,6 +19,7 @@
   --font-brand: "Russo One", "Syne", sans-serif;
   --font-body: "Literata", Georgia, serif;
   --radius: 4px;
+  --radius-btn: 999px;
   --max: 1180px;
   --header-h: 72px;
 }
@@ -129,7 +130,7 @@ select {
   width: 2.6rem;
   height: 2.6rem;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-btn);
   background: var(--surface);
   color: var(--mist);
   cursor: pointer;
@@ -406,8 +407,8 @@ select {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.35rem;
-  border-radius: var(--radius);
+  padding: 0.85rem 1.45rem;
+  border-radius: var(--radius-btn);
   border: 1px solid transparent;
   font-family: var(--font-display);
   font-weight: 700;
@@ -619,7 +620,7 @@ select {
   border: 1px solid var(--line);
   background: var(--surface);
   color: var(--mist);
-  border-radius: var(--radius);
+  border-radius: var(--radius-btn);
   cursor: pointer;
 }
 
@@ -723,6 +724,7 @@ select {
 .gallery button {
   padding: 0;
   border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
   background: none;
   cursor: pointer;
   overflow: hidden;
@@ -952,8 +954,8 @@ select {
   font-family: var(--font-display);
   font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.35rem 0.7rem;
-  border-radius: var(--radius);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-btn);
   cursor: pointer;
 }
 
@@ -1449,8 +1451,8 @@ select {
   font-family: var(--font-display);
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.45rem 0.75rem;
-  border-radius: var(--radius);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-btn);
   cursor: pointer;
 }
 
@@ -1726,8 +1728,8 @@ select {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.55rem 0.9rem;
-  border-radius: var(--radius);
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-btn);
   border: 1px solid var(--line);
   background: var(--surface-strong);
   color: var(--mist);
@@ -1764,11 +1766,11 @@ select {
 }
 
 .journal-tabs button {
-  padding: 0.55rem 1rem;
+  padding: 0.55rem 1.1rem;
   border: 1px solid var(--line);
   background: var(--surface);
   color: var(--mist-dim);
-  border-radius: var(--radius);
+  border-radius: var(--radius-btn);
   font-family: var(--font-display);
   font-weight: 600;
   cursor: pointer;
