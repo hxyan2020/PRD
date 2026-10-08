@@ -1,0 +1,128 @@
+{
+  "appliedAt": "2026-10-08T14:26:57.548Z",
+  "applied": [
+    {
+      "op": "add",
+      "item": {
+        "id": "sake__isoijiman",
+        "slug": "isoijiman",
+        "name": "Isojiman",
+        "aliases": [
+          "磯自慢"
+        ],
+        "categoryId": "sake",
+        "origin": "Japan",
+        "tags": [],
+        "summary": "Isojiman — Shizuoka sake brewery.",
+        "coverHue": 113,
+        "sort": 9999,
+        "status": "active"
+      }
+    },
+    {
+      "op": "add",
+      "item": {
+        "id": "trees__dragon-blood",
+        "slug": "dragon-blood",
+        "name": "Dragon blood tree",
+        "aliases": [
+          "dracaena cinnabari"
+        ],
+        "categoryId": "trees",
+        "origin": "Socotra",
+        "tags": [],
+        "summary": "Dragon blood tree — umbrella-shaped Socotra endemic.",
+        "coverHue": 164,
+        "sort": 9999,
+        "status": "active"
+      }
+    },
+    {
+      "op": "modify",
+      "id": "tea__clipper",
+      "patch": {
+        "summary": "Clipper — refreshed 2026-10-08. Still present in the living catalogue."
+      }
+    },
+    {
+      "op": "modify",
+      "id": "animals__penguin",
+      "patch": {
+        "summary": "Penguin — refreshed 2026-10-08. Still present in the living catalogue."
+      }
+    },
+    {
+      "op": "modify",
+      "id": "beer__suntory-beer",
+      "patch": {
+        "summary": "Suntory Beer — refreshed 2026-10-08. Still present in the living catalogue."
+      }
+    }
+  ],
+  "pending": [],
+  "ledger": [
+    {
+      "op": "add",
+      "item": {
+        "id": "sake__isoijiman",
+        "slug": "isoijiman",
+        "name": "Isojiman",
+        "aliases": [
+          "磯自慢"
+        ],
+        "categoryId": "sake",
+        "origin": "Japan",
+        "tags": [],
+        "summary": "Isojiman — Shizuoka sake brewery.",
+        "coverHue": 113,
+        "sort": 9999,
+        "status": "active"
+      }
+    },
+    {
+      "op": "add",
+      "item": {
+        "id": "trees__dragon-blood",
+        "slug": "dragon-blood",
+        "name": "Dragon blood tree",
+        "aliases": [
+          "dracaena cinnabari"
+        ],
+        "categoryId": "trees",
+        "origin": "Socotra",
+        "tags": [],
+        "summary": "Dragon blood tree — umbrella-shaped Socotra endemic.",
+        "coverHue": 164,
+        "sort": 9999,
+        "status": "active"
+      }
+    },
+    {
+      "op": "modify",
+      "id": "tea__clipper",
+      "patch": {
+        "summary": "Clipper — refreshed 2026-10-08. Still present in the living catalogue."
+      }
+    },
+    {
+      "op": "modify",
+      "id": "animals__penguin",
+      "patch": {
+        "summary": "Penguin — refreshed 2026-10-08. Still present in the living catalogue."
+      }
+    },
+    {
+      "op": "modify",
+      "id": "beer__suntory-beer",
+      "patch": {
+        "summary": "Suntory Beer — refreshed 2026-10-08. Still present in the living catalogue."
+      }
+    }
+  ],
+  "history": [
+    {
+      "at": "2026-10-08T14:26:57.548Z",
+      "count": 5
+    }
+  ]
+}
