@@ -1416,12 +1416,17 @@
         }
       });
 
-      // Auto-rotate recommended rites on the home page every few seconds.
+      // Auto-rotate recommended rites on the home page every ~3 seconds.
       let autoRotateTimer = null;
+      let featuredInView = true;
+      let featuredHovered = false;
       const AUTO_ROTATE_MS = 3000;
+      const featuredSection = document.getElementById("play") || featuredEl;
       function shouldAutoRotate() {
         if (document.hidden) return false;
         if (document.body.classList.contains("studio-open")) return false;
+        if (featuredHovered) return false;
+        if (!featuredInView) return false;
         const page = document.body.dataset.page || window.FatumRouter?.getPage?.();
         return page === "home" || page === "play";
       }
@@ -1434,8 +1439,40 @@
         autoRotateTimer = setInterval(tickAutoRotate, AUTO_ROTATE_MS);
       }
       startAutoRotate();
+      featuredEl.addEventListener("mouseenter", () => {
+        featuredHovered = true;
+      });
+      featuredEl.addEventListener("mouseleave", () => {
+        featuredHovered = false;
+      });
+      featuredEl.addEventListener(
+        "focusin",
+        () => {
+          featuredHovered = true;
+        },
+        true
+      );
+      featuredEl.addEventListener(
+        "focusout",
+        () => {
+          // Defer so focus moving between cards inside the grid does not resume early
+          setTimeout(() => {
+            featuredHovered = featuredEl.contains(document.activeElement);
+          }, 0);
+        },
+        true
+      );
+      if ("IntersectionObserver" in window && featuredSection) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            featuredInView = entries.some((e) => e.isIntersecting && e.intersectionRatio > 0.15);
+          },
+          { threshold: [0, 0.15, 0.4] }
+        );
+        io.observe(featuredSection);
+      }
       document.addEventListener("visibilitychange", () => {
-        if (!document.hidden && shouldAutoRotate()) startAutoRotate();
+        if (!document.hidden) startAutoRotate();
       });
       document.addEventListener("fatum:route", () => startAutoRotate());
       window.FatumRouter?.onChange?.(() => startAutoRotate());
