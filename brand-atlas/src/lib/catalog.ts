@@ -52,7 +52,7 @@ export function searchItems(
 
 export function coverGradient(hue: number, unlocked: boolean): string {
   if (!unlocked) {
-    return `linear-gradient(145deg, hsl(${hue} 8% 32%), hsl(${hue} 6% 18%))`;
+    return `linear-gradient(145deg, hsl(${hue} 6% 28%), hsl(${hue} 4% 14%))`;
   }
-  return `linear-gradient(145deg, hsl(${hue} 55% 48%), hsl(${(hue + 40) % 360} 60% 36%))`;
+  return `linear-gradient(145deg, hsl(${hue} 72% 52%), hsl(${(hue + 48) % 360} 68% 38%), hsl(${(hue + 20) % 360} 55% 28%))`;
 }
