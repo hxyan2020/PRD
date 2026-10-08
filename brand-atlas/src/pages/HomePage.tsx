@@ -15,7 +15,16 @@ export function HomePage() {
     <main>
       <section className="hero">
         <div className="hero__content">
-          <p className="hero__brand">{t("hero.brand")}</p>
+          <p className="hero__brand">
+            <img
+              className="hero__logo"
+              src={`${import.meta.env.BASE_URL}logo-seen.png`}
+              alt=""
+              width={72}
+              height={72}
+            />
+            {t("hero.brand")}
+          </p>
           <h1>{t("hero.headline")}</h1>
           <p>{t("hero.blurb")}</p>
           <div className="cta-row">

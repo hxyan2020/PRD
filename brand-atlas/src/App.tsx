@@ -49,7 +49,16 @@ function Header() {
     <header className="site-header">
       <div className="shell site-header__inner">
         <NavLink to="/" className="brand" end onClick={() => setMenuOpen(false)}>
-          Seen <span>catalogue</span>
+          <img
+            className="brand__logo"
+            src={`${import.meta.env.BASE_URL}logo-seen.png`}
+            alt=""
+            width={40}
+            height={40}
+          />
+          <span className="brand__text">
+            Seen <span>catalogue</span>
+          </span>
         </NavLink>
 
         <div className="header-tools header-tools--compact">
