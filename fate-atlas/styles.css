@@ -347,7 +347,7 @@ select {
   inset: 0;
   background: linear-gradient(180deg, transparent 55%, rgba(7, 19, 31, 0.28));
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
 .feature-card__cover__img,
@@ -362,14 +362,38 @@ select {
   transition: transform 0.45s var(--ease);
 }
 
-.feature-card__cover--hybrid {
+.feature-card__cover--hybrid,
+.method__cover--hybrid,
+.oracle__cover--hybrid,
+.rite-cover--hybrid {
   display: grid;
 }
 
-.feature-card__cover--hybrid > * {
+.feature-card__cover--hybrid > *,
+.method__cover--hybrid > *,
+.oracle__cover--hybrid > *,
+.rite-cover--hybrid > * {
   grid-area: 1 / 1;
   width: 100%;
   height: 100%;
+}
+
+.feature-card__cover__photo,
+.method__cover__photo,
+.oracle__cover__photo,
+.rite-cover__photo {
+  z-index: 0;
+}
+
+.feature-card__cover__art,
+.method__cover__art,
+.oracle__cover__art,
+.rite-cover__art {
+  z-index: 1;
+  object-fit: cover;
+  pointer-events: none;
+  /* Photo must read as the cover; motif is only a light signature */
+  opacity: 0.22;
 }
 
 .feature-card__cover__caption,
@@ -2243,6 +2267,7 @@ body.studio-open {
 .method__cover__art {
   object-fit: cover;
   mix-blend-mode: normal;
+  opacity: 0.22;
 }
 
 .method:hover .method__cover__img,

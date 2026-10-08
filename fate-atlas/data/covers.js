@@ -1,8 +1,8 @@
 /**
  * Cover art for rite cards.
- * Non-featured rites use unique, self-hosted SVG illustrations keyed to the
- * rite's tools/region — no external photo CDN (loremflickr often fails and
- * collapses many rites onto the same local theme JPG).
+ * Every card uses a local realistic theme photo as the base, plus a light
+ * unique SVG motif overlay (and a per-rite color/crop grade) so rites stay
+ * distinct without relying on external photo CDNs.
  */
 (function () {
   "use strict";
@@ -85,10 +85,17 @@
     if (/beloman|arrow lot/.test(s)) return "arrows";
     if (/cowrie|shell/.test(s)) return "cowrie";
 
+    // Modern / Western systems before generic coin/hexagram keywords
+    if (/human.?design|enneagram|myers|briggs|\bmbti\b|temperament|blood type/.test(s))
+      return "personality";
+
     // Cards / coins / runes
     if (/tarot|cartoman|lenormand|kipper|sibilla|playing.?card|oracle card|baraja|parrot card/.test(s))
       return "cards";
-    if (/coin|bagua|i ching|iching|hexagram|yarrow|六爻|liu yao|qimen|na jia|zhou yi|meihua|plum blossom/.test(s))
+    if (
+      /bagua|六爻|liu yao|qimen|na jia|zhou yi|meihua|plum blossom|yarrow/.test(s) ||
+      ((/\bcoin|\bcoins\b|i ching|iching|hexagram/.test(s)) && !/human.?design|kabbalah|chakra/.test(s))
+    )
       return "coins";
     if (/rune|futhark|ogham/.test(s)) return "runes";
 
@@ -113,12 +120,14 @@
       return "form";
     if (/feng shui|vastu|kasō|kaso|ba zhai|flying star|xuan kong|onmyō|onmyo|rokuyō|rokuyo|seimei|name divin/.test(s))
       return "eastasia";
-    if (/mbti|personality|myers|briggs|enneagram|temperament|blood type/.test(s)) return "personality";
     if (
       id === "akan-day" ||
       /day name|weekday|soul name|akan day|weton|pawukon|birth calendar|day selection/.test(s)
     )
       return "astrology";
+    if (/spider|crab|nggam|mambila|leaf card/.test(s)) return "omens";
+    if (/apple.?peel|folk.?shape|wax|lead pour|egg.?divin/.test(s)) return "cups";
+    if (/almanac|tongshu|zeri|huangli|day select|吉日|择日/.test(s)) return "eastasia";
     if (/bird|augur|omen|weather|cloud|lightning|thunder|auspice|fox|benge/.test(s)) return "omens";
     if (/chinese|japan|korea|shinto/.test(s)) return "eastasia";
     if (method.type === "Form") return "form";
@@ -540,7 +549,7 @@
     }
   }
 
-  /** Unique full-bleed SVG cover — primary visual for each non-featured rite. */
+  /** Full-bleed SVG (legacy / fallback). */
   function uniqueCoverDataUrl(method) {
     const id = (method && method.id) || "rite";
     const name = (method && method.name) || "Rite";
@@ -553,7 +562,6 @@
     const label = escapeXml(name.length > 42 ? name.slice(0, 40) + "…" : name);
     const sub = escapeXml(region.length > 48 ? region.slice(0, 46) + "…" : region);
 
-    // Distinct layout offset per rite so even same-motif rites differ.
     const shiftX = ((seed % 60) - 30);
     const shiftY = (((seed >>> 8) % 50) - 25);
     const scale = 0.92 + ((seed >>> 16) % 20) / 100;
@@ -585,9 +593,39 @@
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   }
 
-  // Back-compat alias used by older callers
-  function uniqueOverlayDataUrl(method, theme) {
-    return uniqueCoverDataUrl(method);
+  /**
+   * Transparent motif overlay — sits on top of a realistic theme photo so
+   * every rite keeps a photographic base while staying visually unique.
+   */
+  function uniqueOverlayDataUrl(method) {
+    const id = (method && method.id) || "rite";
+    const motif = motifFor(method);
+    const seed = hashId(id);
+    const p = palette(seed, motif);
+    const gid = `o-${id.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40)}`;
+    const art = motifDrawing(motif, p, seed);
+    const shiftX = ((seed % 60) - 30);
+    const shiftY = (((seed >>> 8) % 50) - 25);
+    const scale = 0.88 + ((seed >>> 16) % 22) / 100;
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540">
+  <defs>
+    <linearGradient id="${gid}-veil" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="${p.ink}" stop-opacity="0.08"/>
+      <stop offset="50%" stop-color="${p.ink}" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="${p.ink}" stop-opacity="0.28"/>
+    </linearGradient>
+    <radialGradient id="${gid}-spot" cx="72%" cy="22%" r="50%">
+      <stop offset="0%" stop-color="${p.accent}" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="${p.accent}" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#${gid}-veil)"/>
+  <rect width="960" height="540" fill="url(#${gid}-spot)"/>
+  <g opacity="0.28" transform="translate(480 270) scale(${scale}) translate(${-480 + shiftX} ${-270 + shiftY})">${art}</g>
+</svg>`;
+
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
   }
 
   function photoFileFor(method) {
@@ -596,36 +634,44 @@
     return THEME_FILES[theme] || THEME_FILES.fate;
   }
 
-  function photoUrlFor(method) {
-    const theme = themeFor(method);
+  /** Always a local realistic JPG — never an abstract SVG as the photo layer. */
+  function photoSrcFor(method) {
     if (method && method.id && FEATURED[method.id]) return `${BASE}/${FEATURED[method.id]}`;
     if (method && method.guided && FEATURED[method.guided]) return `${BASE}/${FEATURED[method.guided]}`;
-    if (FEATURED[theme]) return `${BASE}/${FEATURED[theme]}`;
-    // Unique SVG — never share a single JPG across dozens of rites.
-    return uniqueCoverDataUrl(method);
+    return `${BASE}/${photoFileFor(method)}`;
+  }
+
+  function photoUrlFor(method) {
+    return photoSrcFor(method);
+  }
+
+  /** Per-rite crop / grade so rites sharing a theme JPG still look different. */
+  function photoStyleFor(method) {
+    const seed = hashId(method && method.id);
+    const hue = seed % 42;
+    const sat = 95 + (seed % 24);
+    const bright = 96 + ((seed >>> 6) % 12);
+    const contrast = 102 + ((seed >>> 12) % 14);
+    const x = 18 + (seed % 64);
+    const y = 18 + ((seed >>> 8) % 64);
+    return `filter:hue-rotate(${hue}deg) saturate(${sat}%) brightness(${bright}%) contrast(${contrast}%);object-position:${x}% ${y}%`;
   }
 
   function urlFor(method) {
-    return photoUrlFor(method);
+    return photoSrcFor(method);
   }
 
   function coverHTML(method, className) {
-    const photo = photoUrlFor(method);
-    const featured =
-      (method && method.id && FEATURED[method.id]) ||
-      (method && method.guided && FEATURED[method.guided]);
+    const photo = photoSrcFor(method);
+    const overlay = uniqueOverlayDataUrl(method);
     const alt = method && method.name ? String(method.name) : "Rite cover";
     const safeAlt = escapeXml(alt);
     const cls = className || "rite-cover";
+    const style = photoStyleFor(method);
 
-    if (featured) {
-      return `<div class="${cls}" aria-hidden="true">
-      <img class="${cls}__img" src="${photo}" alt="${safeAlt}" width="960" height="540" loading="lazy" decoding="async" />
-    </div>`;
-    }
-
-    return `<div class="${cls} ${cls}--illustrated" aria-hidden="true">
-      <img class="${cls}__img ${cls}__art" src="${photo}" alt="${safeAlt}" width="960" height="540" loading="lazy" decoding="async" />
+    return `<div class="${cls} ${cls}--hybrid" aria-hidden="true">
+      <img class="${cls}__img ${cls}__photo" src="${photo}" alt="${safeAlt}" width="960" height="540" loading="lazy" decoding="async" style="${style}" />
+      <img class="${cls}__img ${cls}__art" src="${overlay}" alt="" width="960" height="540" loading="lazy" decoding="async" />
     </div>`;
   }
 
