@@ -37,7 +37,9 @@ export async function POST(req: Request) {
 
   let ragSnippets: Array<{ title: string; content: string }> = [];
   try {
-    const q = `${selection} ${question}`.trim();
+    // Prefer the latest question so drill-downs are not drowned by the original highlight.
+    const priorAssistant = history.some((m) => m.role === "assistant");
+    const q = (priorAssistant ? question : `${selection} ${question}`).trim() || question || selection;
     ragSnippets = retrieveRag(getDb(), q, 3).map((h) => ({ title: h.title, content: h.content }));
   } catch {
     ragSnippets = [];
