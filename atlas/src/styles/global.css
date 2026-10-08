@@ -966,7 +966,7 @@ select {
   aspect-ratio: 16 / 9;
   background: var(--ink-soft);
   border: 1px solid var(--line);
-  border-radius: var(--radius-btn);
+  border-radius: calc(var(--radius) + 2px);
   overflow: hidden;
   animation: riseIn 0.75s ease-out both;
 }
