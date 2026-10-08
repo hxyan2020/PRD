@@ -155,6 +155,16 @@
     return window.FatumI18n ? window.FatumI18n.t(key, vars) : key;
   }
 
+  function processCta(process) {
+    if (!process) return ti("studio.continue");
+    return ti(`process.cta.${process.id}`);
+  }
+
+  function processRitual(process) {
+    if (!process) return "";
+    return ti(`process.ritual.${process.id}`);
+  }
+
   function stepMeta() {
     if (!state) return { label: "", total: 0, idx: 0 };
     if (state.mode === "guided") {
@@ -316,19 +326,21 @@
     } else if (step === "cast") {
       const i = state.castingIndex;
       const built = state.lines
-        .map((l, idx) => `<li class="yao${l.changing ? " yao--move" : ""}"><span>Line ${idx + 1}</span><strong>${l.symbol}</strong> <em>${l.sum}</em></li>`)
+        .map((l, idx) => `<li class="yao${l.changing ? " yao--move" : ""}"><span>${escapeHTML(ti("studio.bagua.lineN", { n: idx + 1 }))}</span><strong>${l.symbol}</strong> <em>${l.sum}</em></li>`)
         .reverse()
         .join("");
+      const tossCopy =
+        i === 0 ? ti("studio.bagua.firstToss") : i < 5 ? ti("studio.bagua.building") : ti("studio.bagua.finalToss");
       body.innerHTML = `
-        <h3 class="studio__heading">Cast line ${i + 1} of 6</h3>
-        <p class="studio__copy">${i === 0 ? "First toss becomes the <strong>bottom</strong> line." : i < 5 ? "Building upward…" : "Final toss — the top line."}</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.step.castLine", { n: i + 1 }))}</h3>
+        <p class="studio__copy">${escapeHTML(tossCopy)}</p>
         <div class="coin-stage" id="coin-stage">
           <div class="coin" data-face="?"></div>
           <div class="coin" data-face="?"></div>
           <div class="coin" data-face="?"></div>
         </div>
-        <p class="coin-sum" id="coin-sum">Ready when you are.</p>
-        <ol class="yao-stack">${built || "<li class='yao yao--empty'>No lines yet</li>"}</ol>
+        <p class="coin-sum" id="coin-sum">${escapeHTML(ti("studio.bagua.ready"))}</p>
+        <ol class="yao-stack">${built || `<li class='yao yao--empty'>${escapeHTML(ti("studio.bagua.noLines"))}</li>`}</ol>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back" ${i > 0 ? "" : ""}>${escapeHTML(ti("studio.back"))}</button>
           <button type="button" class="btn btn--primary" data-action="toss-coins">${escapeHTML(ti("studio.tossCoins"))}</button>
@@ -354,7 +366,11 @@
       }, 280 + i * 120);
     });
     const sum = coins.reduce((a, b) => a + b, 0);
-    if (sumEl) sumEl.textContent = `Sum ${sum} → ${line.yang ? "yang" : "yin"}${line.changing ? " (changing)" : ""}`;
+    if (sumEl) {
+      const face = line.yang ? ti("studio.bagua.yang") : ti("studio.bagua.yin");
+      const changing = line.changing ? ti("studio.bagua.changingMark") : "";
+      sumEl.textContent = ti("studio.bagua.sumLine", { sum, face, changing });
+    }
 
     setTimeout(() => {
       state.lines.push(line);
@@ -386,11 +402,11 @@
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
-        <h3 class="studio__heading">What do you seek?</h3>
-        <p class="studio__copy">Open questions work better than yes/no for tarot (“What surrounds…”, “How can I…” ).</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.qTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.tarot.qBody"))}</p>
         <div class="field">
           <label for="r-question">${escapeHTML(ti("studio.bagua.qLabel"))}</label>
-          <textarea id="r-question" rows="3" maxlength="280" placeholder="What energy surrounds my next decision?">${escapeHTML(state.question)}</textarea>
+          <textarea id="r-question" rows="3" maxlength="280" placeholder="${escapeHTML(ti("studio.tarot.qPh"))}">${escapeHTML(state.question)}</textarea>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -398,11 +414,11 @@
         </div>`;
     } else if (step === "shuffle") {
       body.innerHTML = `
-        <h3 class="studio__heading">Shuffle &amp; cut</h3>
-        <p class="studio__copy">Hold your question. When ready, shuffle. Then cut the deck once.</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.shuffleTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.tarot.shuffleBody"))}</p>
         <div class="deck-stage">
           <div class="deck-pile ${state.deck ? "is-ready" : "is-shuffling"}" id="deck-pile"></div>
-          <p class="coin-sum">${state.deck ? "Deck ready. Cut to draw." : "Shuffling Major Arcana…"}</p>
+          <p class="coin-sum">${escapeHTML(state.deck ? ti("studio.tarot.deckReady") : ti("studio.tarot.shuffling"))}</p>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -422,11 +438,11 @@
       const cardsHtml = shown
         .map((c, i) => {
           const p = G().TAROT_POSITIONS[i];
-          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(p.label)}</div>${c.reversed ? '<div class="tarot-card__rx">Reversed</div>' : ""}</div>`;
+          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(p.label)}</div>${c.reversed ? `<div class="tarot-card__rx">${escapeHTML(ti("studio.tarot.reversed"))}</div>` : ""}</div>`;
         })
         .join("");
       body.innerHTML = `
-        <h3 class="studio__heading">Reveal: ${escapeHTML(pos.label)}</h3>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.revealTitle", { label: pos.label }))}</h3>
         <p class="studio__copy">${escapeHTML(pos.hint)}</p>
         <div class="tarot-row">${cardsHtml}<div class="tarot-card is-back" aria-hidden="true"></div></div>
         <div class="studio__actions">
@@ -483,7 +499,7 @@
       });
       // prepend question to details
       if (state.question) {
-        state.reading.details.unshift(`Question held: “${state.question}”`);
+        state.reading.details.unshift(ti("studio.tarot.questionHeld", { q: state.question }));
       }
       state.stepIndex = state.steps.indexOf("result");
     }
@@ -495,8 +511,8 @@
     const step = state.steps[state.stepIndex];
     if (step === "intent") {
       body.innerHTML = `
-        <p class="studio__eyebrow">MBTI · Preference map</p>
-        <h3 class="studio__heading">Four letters, four choices</h3>
+        <p class="studio__eyebrow">${escapeHTML(ti("studio.mbti.eyebrow"))}</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.mbti.howTitle"))}</h3>
         ${howItWorksHTML(state.method, { id: "form" })}
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
@@ -505,11 +521,11 @@
         </div>`;
     } else if (step === "focus") {
       body.innerHTML = `
-        <h3 class="studio__heading">Optional focus</h3>
-        <p class="studio__copy">What area should the fate-style counsel speak to?</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.mbti.focusTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.mbti.focusBody"))}</p>
         <div class="field">
-          <label for="r-focus">Focus</label>
-          <input type="text" id="r-focus" maxlength="120" placeholder="Career, love, creative work, leadership…" value="${escapeHTML(state.focus)}" />
+          <label for="r-focus">${escapeHTML(ti("studio.mbti.focusLabel"))}</label>
+          <input type="text" id="r-focus" maxlength="120" placeholder="${escapeHTML(ti("studio.mbti.focusPh"))}" value="${escapeHTML(state.focus)}" />
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -688,7 +704,7 @@
           : ""
       }
       ${readingBlock("result.explain", "What it means", `<p>${escapeHTML(explainText)}</p>`)}
-      ${readingBlock("result.interpret", "For your input", `<p>${escapeHTML(interpretText)}</p>`)}
+      ${readingBlock("result.interpret", "For your question", `<p>${escapeHTML(interpretText)}</p>`)}
       ${
         doList.length || dontList.length
           ? `<div class="reading__guidance">
@@ -750,67 +766,67 @@
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
-        <h3 class="studio__heading">Hold your question</h3>
-        <div class="field"><label for="r-question">Your question</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.holdQuestion"))}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.bagua.qLabel"))}</label>
         <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.input.question)}</textarea></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
-          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(processCta(process))}</button>
         </div>`;
     } else if (step === "birth") {
       body.innerHTML = `
-        <h3 class="studio__heading">Birth moment</h3>
-        <div class="field"><label for="r-birth">Birth date</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.birthTitle"))}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthLabel"))}</label>
         <input type="date" id="r-birth" value="${escapeHTML(state.input.birthDate)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-question">Optional focus</label>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(ti("studio.generic.optionalFocus"))}</label>
         <input type="text" id="r-question" value="${escapeHTML(state.input.question)}" /></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
-          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(processCta(process))}</button>
         </div>`;
     } else if (step === "day") {
       body.innerHTML = `
-        <h3 class="studio__heading">Choose the day</h3>
-        <div class="field"><label for="r-day">Date</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.chooseDay"))}</h3>
+        <div class="field"><label for="r-day">${escapeHTML(ti("studio.generic.date"))}</label>
         <input type="date" id="r-day" value="${escapeHTML(state.input.dayDate)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-purpose">Purpose</label>
+        <div class="field" style="margin-top:1rem"><label for="r-purpose">${escapeHTML(ti("studio.generic.purpose"))}</label>
         <input type="text" id="r-purpose" value="${escapeHTML(state.input.dayPurpose)}" /></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
-          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(processCta(process))}</button>
         </div>`;
     } else if (step === "form") {
       const photo = state.photoConfig || window.fatePhotoSubjectFor?.(method);
       state.photoConfig = photo;
       const preview = state.input.photoDataUrl
-        ? `<div class="photo-preview"><img src="${state.input.photoDataUrl}" alt="Upload preview" /><button type="button" class="photo-preview__clear" data-action="clear-photo" aria-label="Remove photo">×</button></div>`
+        ? `<div class="photo-preview"><img src="${state.input.photoDataUrl}" alt="${escapeHTML(ti("studio.form.uploadPreview"))}" /><button type="button" class="photo-preview__clear" data-action="clear-photo" aria-label="${escapeHTML(ti("studio.form.removePhoto"))}">×</button></div>`
         : `<div class="photo-drop" id="photo-drop">
-            <p class="photo-drop__label">${escapeHTML(photo ? photo.label : "Upload a photo")}</p>
-            <p class="photo-drop__hint">${escapeHTML(photo ? photo.hint : "Optional reference image")}</p>
+            <p class="photo-drop__label">${escapeHTML(photo ? photo.label : ti("studio.form.uploadPhoto"))}</p>
+            <p class="photo-drop__hint">${escapeHTML(photo ? photo.hint : ti("studio.form.optionalRef"))}</p>
             <label class="btn btn--ghost studio__btn-muted photo-drop__btn">
-              Choose image
+              ${escapeHTML(ti("studio.form.chooseImage"))}
               <input type="file" id="r-photo" accept="${escapeHTML(photo?.accept || "image/*")}" hidden />
             </label>
           </div>`;
       body.innerHTML = `
-        <h3 class="studio__heading">${escapeHTML(photo ? photo.label.replace(/^Upload a photo of your /i, "Your ").replace(/^Upload /i, "") : "Describe the form")}</h3>
-        <p class="studio__copy">${escapeHTML(photo ? photo.hint : "Note the trait you want read.")}</p>
+        <h3 class="studio__heading">${escapeHTML(photo ? photo.label : ti("studio.form.describe"))}</h3>
+        <p class="studio__copy">${escapeHTML(photo ? photo.hint : ti("studio.form.noteTrait"))}</p>
         <div class="photo-field" data-required="${photo && photo.required ? "true" : "false"}">
           ${preview}
-          ${state.input.photoDataUrl ? `<p class="photo-filename">${escapeHTML(state.input.photoName || "Photo attached")}</p><label class="btn btn--ghost btn--small studio__btn-muted">Replace<input type="file" id="r-photo" accept="image/*" hidden /></label>` : ""}
+          ${state.input.photoDataUrl ? `<p class="photo-filename">${escapeHTML(state.input.photoName || ti("studio.form.photoAttached"))}</p><label class="btn btn--ghost btn--small studio__btn-muted">${escapeHTML(ti("studio.form.replace"))}<input type="file" id="r-photo" accept="image/*" hidden /></label>` : ""}
         </div>
-        <div class="field" style="margin-top:1rem"><label for="r-trait">Trait / observation ${photo?.required ? "" : "(required)"}</label>
-        <input type="text" id="r-trait" maxlength="120" placeholder="${escapeHTML(photo?.placeholderTrait || "Describe the main trait…")}" value="${escapeHTML(state.input.formTrait)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-focus">Reading focus</label>
-        <input type="text" id="r-focus" maxlength="80" placeholder="Character, career, love, health…" value="${escapeHTML(state.input.formFocus)}" /></div>
-        <p class="photo-privacy">Photos stay in this browser only (compressed for the reading &amp; journal). Nothing is uploaded to a server.</p>
+        <div class="field" style="margin-top:1rem"><label for="r-trait">${escapeHTML(photo?.required ? ti("studio.form.traitLabel") : ti("studio.form.traitRequired"))}</label>
+        <input type="text" id="r-trait" maxlength="120" placeholder="${escapeHTML(photo?.placeholderTrait || ti("studio.form.traitPh"))}" value="${escapeHTML(state.input.formTrait)}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-focus">${escapeHTML(ti("studio.form.focusLabel"))}</label>
+        <input type="text" id="r-focus" maxlength="80" placeholder="${escapeHTML(ti("studio.form.focusPh"))}" value="${escapeHTML(state.input.formFocus)}" /></div>
+        <p class="photo-privacy">${escapeHTML(ti("studio.form.privacy"))}</p>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
-          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(processCta(process))}</button>
         </div>`;
       bindPhotoInput();
     } else if (step === "ritual") {
-      body.innerHTML = `<div class="ritual"><div class="ritual__orb" data-process="${escapeHTML(process.id)}"></div><p class="ritual__label">${escapeHTML(process.ritualLabel)}</p></div>`;
+      body.innerHTML = `<div class="ritual"><div class="ritual__orb" data-process="${escapeHTML(process.id)}"></div><p class="ritual__label">${escapeHTML(processRitual(process))}</p></div>`;
       setTimeout(() => {
         state.input.nonce += 1;
         state.reading = window.fateGenerateReading(state.method, state.process, state.input);
@@ -820,7 +836,7 @@
     } else if (step === "result" && state.reading) {
       const r = state.reading;
       const photoHtml = r.photoDataUrl
-        ? `<div class="reading-photo"><img src="${r.photoDataUrl}" alt="Submitted photo for this reading" /></div>`
+        ? `<div class="reading-photo"><img src="${r.photoDataUrl}" alt="${escapeHTML(ti("studio.form.submittedPhoto"))}" /></div>`
         : "";
       body.innerHTML = `
         <div class="reading tone-${escapeHTML(r.tone || "mixed")}">
@@ -843,7 +859,7 @@
       const file = input.files && input.files[0];
       if (!file) return;
       if (!file.type.startsWith("image/")) {
-        alert("Please choose an image file (JPG, PNG, WEBP, etc.).");
+        alert(ti("studio.form.needImage"));
         return;
       }
       try {
@@ -853,11 +869,11 @@
         const cfg = state.photoConfig;
         state.input.photoMeta = cfg
           ? { subjectId: cfg.id, subjectLabel: cfg.label }
-          : { subjectId: "form", subjectLabel: "Reference photo" };
+          : { subjectId: "form", subjectLabel: ti("studio.form.refPhoto") };
         render();
       } catch (err) {
         console.error(err);
-        alert("Could not read that image. Try another photo.");
+        alert(ti("studio.form.readFail"));
       }
     });
   }
