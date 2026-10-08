@@ -7,6 +7,7 @@ import { JournalActions } from "../components/JournalActions";
 import { PlatformLogo } from "../components/PlatformLogo";
 import { OriginCountry } from "../components/OriginCountry";
 import { GameImage } from "../components/GameImage";
+import { GameAssistant } from "../components/GameAssistant";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
 import { isLudusCardSrc, isFragileRemoteSrc, resolveImageSrc } from "../lib/gameCardImage";
@@ -172,6 +173,8 @@ export function GameDetailPage() {
               </div>
             </div>
           ) : null}
+
+          <GameAssistant game={game} />
         </div>
 
         <aside>

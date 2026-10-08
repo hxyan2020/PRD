@@ -226,7 +226,7 @@ function isOffTopic(text: string) {
   if (!t) return false;
   // Clearly unrelated domains
   const off =
-    /\b(weather|stock|crypto|bitcoin|medical advice|diagnose|homework essay|write code for me|political election|dating advice)\b/.test(
+    /\b(weather|stock|crypto|bitcoin|nfl scores|movie times|recipe|cook dinner|medical advice|diagnose|homework essay|write code for me|programming help|political election|dating advice)\b/.test(
       t,
     );
   if (!off) return false;
@@ -235,6 +235,14 @@ function isOffTopic(text: string) {
     return false;
   }
   return true;
+}
+
+function isCatalogScopedAsk(text: string): boolean {
+  const t = normalize(text);
+  // Explicit catalog topics, or short follow-ups about the page’s game (“tell me more”, “explain it”).
+  return /\b(play|rule|step|how|origin|history|civilization|culture|variation|variant|buy|purchase|shop|require|equipment|material|player|participant|score|win|capture|board|toy|game|catalog|ludus|where|when|what|who|why|explain|summarize|summary|tell|more|about|need|gear|piece|pieces|setup|start|begin|learn)\b/.test(
+    t,
+  );
 }
 
 function playersMatch(game: Game, pref?: PlayerPref): number {
@@ -1142,4 +1150,132 @@ function guessVibeFromGame(game: Game): VibePref {
 
 export function phaseAfterWelcome(): ChatPhase {
   return "ask_players";
+}
+
+function gameAssistantQuickReplies(t: ChatTranslate, game: Game) {
+  const q = [
+    t("chat.qr.howToPlay"),
+    t("chat.qr.tellHistory"),
+    t("chat.qr.requirements"),
+    t("chat.qr.whereBuy"),
+  ];
+  if (game.variations.length) q.splice(2, 0, t("chat.qr.variations"));
+  return q;
+}
+
+/** Welcome bubble for the per-game assistant on detail pages. */
+export function gameAssistantWelcome(game: Game, t: ChatTranslate): ChatMessage {
+  return assistant(t("detail.assistant.welcome", { name: game.name }), {
+    quickReplies: gameAssistantQuickReplies(t, game),
+  });
+}
+
+/**
+ * Answer questions scoped to one catalog game on its detail page.
+ * Gently refuses off-topic asks and redirects catalog-wide browsing to Guide.
+ */
+export function handleGameAssistantMessage(
+  game: Game,
+  rawText: string,
+  t: ChatTranslate,
+): ChatMessage[] {
+  const text = rawText.trim();
+  if (!text) {
+    return [
+      assistant(t("detail.assistant.hint", { name: game.name }), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+
+  if (isOffTopic(text) || (!isCatalogScopedAsk(text) && text.length > 12)) {
+    return [
+      assistant(t("detail.assistant.outOfScope", { name: game.name }), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+
+  const i = intent(text);
+
+  if (i === "recommend" || i === "more_recs" || i === "more_like") {
+    return [
+      assistant(t("detail.assistant.useGuide", { name: game.name }), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+
+  // Named a well-known different title? Keep this page focused on `game`.
+  const otherTitle = text.match(
+    /\b(chess|go|weiqi|mancala|xiangqi|mahjong|backgammon|ludo|pachisi|shogi|janggi)\b/i,
+  )?.[1];
+  if (otherTitle) {
+    const other = normalize(otherTitle);
+    const self = normalize(game.name);
+    const varHit = game.variations.some((v) => normalize(v.name).includes(other));
+    if (!self.includes(other) && !varHit) {
+      return [
+        assistant(t("detail.assistant.otherGame", { name: game.name }), {
+          quickReplies: gameAssistantQuickReplies(t, game),
+        }),
+      ];
+    }
+  }
+
+  if (i === "how_to_play") {
+    return [
+      assistant(answerHowToPlay(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "purchase") {
+    return [
+      assistant(answerPurchase(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "about") {
+    return [
+      assistant(answerAbout(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "variations") {
+    return [
+      assistant(answerVariations(game, t), {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+  if (i === "requirements" || i === "participants") {
+    const body =
+      i === "participants"
+        ? t("chat.answer.participants", {
+            name: game.name,
+            participants: game.idealParticipants,
+          })
+        : answerRequirements(game, t);
+    return [
+      assistant(body, {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      }),
+    ];
+  }
+
+  // Default: short about + invite to ask about rules / buy / variations
+  return [
+    assistant(
+      t("detail.assistant.default", {
+        about: answerAbout(game, t),
+        name: game.name,
+      }),
+      {
+        quickReplies: gameAssistantQuickReplies(t, game),
+      },
+    ),
+  ];
 }

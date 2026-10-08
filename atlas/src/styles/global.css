@@ -1398,6 +1398,26 @@ select {
   margin-bottom: 1.25rem;
 }
 
+.game-assistant-head h2 {
+  margin-bottom: 0.35rem;
+}
+
+.game-assistant-head p {
+  color: var(--mist-dim);
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+
+.game-assistant-shell {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.game-assistant-messages {
+  min-height: 14rem;
+  max-height: min(42vh, 360px);
+}
+
 .chat-shell {
   display: grid;
   gap: 0.85rem;

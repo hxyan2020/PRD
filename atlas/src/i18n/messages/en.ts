@@ -311,6 +311,27 @@ export const en = {
   "detail.notFound": "Game not found.",
   "detail.showImage": "Show image {n}",
 
+  "detail.assistant.title": "Ask about this game",
+  "detail.assistant.sub":
+    "Ask how to play {name}, where it comes from, what you need, cultural variations, or where to buy it.",
+  "detail.assistant.welcome":
+    "I’m here to help with **{name}**—rules, history, requirements, variations, and purchase links from this catalog. What would you like to know?",
+  "detail.assistant.hint": "Ask me anything about {name} in this catalog—rules, origin, gear, variations, or buying.",
+  "detail.assistant.outOfScope":
+    "I stay with Ludus Atlas and this page’s game, **{name}**. I can explain how to play it, its background, what you need, variations, or where to buy it—ask in that lane.",
+  "detail.assistant.otherGame":
+    "This page is about **{name}**. I can answer questions on this entry; for another title, open its page or visit Atlas Guide.",
+  "detail.assistant.useGuide":
+    "For finding other toys and games, use Atlas Guide. Here I only cover **{name}**—rules, history, gear, variations, and buying.",
+  "detail.assistant.default":
+    "{about}\n\nAsk how to play {name}, what you need, variations, or where to buy it.",
+  "detail.assistant.placeholder": "Ask about {name}…",
+  "detail.assistant.inputLabel": "Question about {name}",
+  "detail.assistant.send": "Ask",
+  "detail.assistant.suggestions": "Suggested questions",
+  "detail.assistant.scopeNote": "Scoped to this catalog entry.",
+  "detail.assistant.guideLink": "Browse with Atlas Guide →",
+
   "actions.collect": "Collect",
   "actions.collected": "Collected",
   "actions.markPlayed": "Mark played",
