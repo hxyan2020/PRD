@@ -238,7 +238,7 @@ select {
 
 /* ── Featured guides ──────────────────────────────────── */
 .page--home .featured {
-  /* Sit directly under the hero banner on the combined home/play page */
+  /* Sit directly under the hero banner on the home page */
   scroll-margin-top: 4.5rem;
 }
 

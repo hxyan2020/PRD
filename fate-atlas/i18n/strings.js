@@ -7,7 +7,7 @@
   "en": {
     "meta.title": "Fatum Atlas — Play a fate rite",
     "meta.description": "Pick a fate-telling method, play its ritual step by step, collect the reading in your journal.",
-    "skip": "Skip to play",
+    "skip": "Skip to rites",
     "hud.rites": "rites",
     "hud.seals": "seals",
     "hud.ritesTitle": "Methods in the atlas",
