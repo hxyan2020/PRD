@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   explainSelection,
   getApiSettings,
@@ -35,6 +35,7 @@ export function ExplainDrawer({
   const [apiKey, setApiKey] = useState('')
   const [endpoint, setEndpoint] = useState('')
   const [modelName, setModelName] = useState('')
+  const chatEndRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (!open || !selectedText) return
@@ -57,6 +58,10 @@ export function ExplainDrawer({
       })
       .finally(() => setBusy(false))
   }, [open, selectedText, sourceLabel, sourcePath, lang])
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }, [messages, busy])
 
   if (!open) return null
 
@@ -176,7 +181,9 @@ export function ExplainDrawer({
               <div className="chat-content">{renderLightMarkdown(m.content)}</div>
             </div>
           ))}
+          {busy && messages.length > 0 ? <p className="chat-status">{t('thinking')}</p> : null}
           {error ? <p className="chat-error">{error}</p> : null}
+          <div ref={chatEndRef} />
         </div>
 
         <footer className="drawer-foot">
