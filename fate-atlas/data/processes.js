@@ -78,6 +78,29 @@
 
   const ANIMALS = ["Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"];
   const ELEMENTS = ["Wood", "Fire", "Earth", "Metal", "Water"];
+  /** Popular East Asian blood-type stereotype tags — cultural folklore only. */
+  const BLOOD_TYPE_TRAITS = {
+    A: {
+      title: "Type A",
+      lean: "careful · orderly · considerate",
+      note: "Popular stereotype: conscientious, reserved under stress, values harmony.",
+    },
+    B: {
+      title: "Type B",
+      lean: "curious · independent · flexible",
+      note: "Popular stereotype: creative, goes own way, dislikes rigid rules.",
+    },
+    O: {
+      title: "Type O",
+      lean: "outgoing · decisive · energetic",
+      note: "Popular stereotype: goal-driven, sociable, sometimes impatient.",
+    },
+    AB: {
+      title: "Type AB",
+      lean: "complex · dual · analytical",
+      note: "Popular stereotype: mixes A and B traits; thoughtful and hard to categorize.",
+    },
+  };
   const RUNES = [
     { name: "Fehu", gloss: "movable wealth, beginning energy" },
     { name: "Uruz", gloss: "vital strength, recovery" },
@@ -97,6 +120,22 @@
       steps: ["intent", "birth", "ritual", "result"],
       ritualLabel: "Charting the heavens…",
       cta: "Read my fate",
+    },
+    blood: {
+      id: "blood",
+      label: "Blood type reading",
+      blurb: "Choose an ABO blood type. Popular East Asian personality tags are shown as cultural stereotypes — not medical fate.",
+      steps: ["intent", "blood", "ritual", "result"],
+      ritualLabel: "Reading the type…",
+      cta: "Read my type",
+    },
+    name: {
+      id: "name",
+      label: "Name reading",
+      blurb: "Enter a name. Letters and stroke-style counts become a symbolic signature in this tradition’s spirit.",
+      steps: ["intent", "name", "ritual", "result"],
+      ritualLabel: "Weighing the name…",
+      cta: "Read the name",
     },
     cast: {
       id: "cast",
@@ -164,8 +203,21 @@
     },
   };
 
+  /** Hard overrides by method id (beats keyword heuristics). */
+  const ID_PROCESS = {
+    "blood-type": "blood",
+    seimei: "name",
+    sanmeigaku: "name",
+    taksa: "name",
+    abjad: "name",
+    "kabbalah-numerology": "name",
+    jafr: "name",
+  };
+
   /** Keyword → process id (first match wins). */
   const KEYWORD_MAP = [
+    [/blood type|ketsueki|abo blood/i, "blood"],
+    [/name divination|seimei|sanmei|naming astrology|abjad|gematria|jafr/i, "name"],
     [/tarot|lenormand|kipper|sibilla|cartomancy|baraja|oracle card|parrot/i, "cards"],
     [/rune|ogham|futhorc|futhark/i, "cast"],
     [/i ching|zhou yi|hexagram|liu yao|plum blossom|qimen|liu ren|ling qi/i, "cast"],
@@ -175,7 +227,7 @@
     [/pendulum|dowsing|istikh/i, "pendulum"],
     [/almanac|rokuy|zeri|day select|weekday|tongshu|nekath|weton|pawukon|maramataka|moon night|ben ming|tojeong/i, "day"],
     [/palm|face|physiognom|mian xiang|shou xiang|samudrika|grapholog|mole|nail|vastu|feng shui|kasō|kaso|house|grave|aura|handwriting|seal|metoposcop|bone palm|form/i, "form"],
-    [/bazi|zi wei|astrology|jyotish|vedic|saju|horary|zodiac|numerolog|abjad|gematria|birth|pillar|hora|mahabote|taksa|decan|firdaria|human design|astrocart|biorhythm|blood type|name divination|seimei|sanmei|nine star|sukuy|panchanga|manazil|mazalot|tonalpohualli|tzolk|wata|zurhai|tibetan astro/i, "birth"],
+    [/bazi|zi wei|astrology|jyotish|vedic|saju|horary|zodiac|numerolog|birth|pillar|hora|mahabote|decan|firdaria|human design|astrocart|biorhythm|nine star|sukuy|panchanga|manazil|mazalot|tonalpohualli|tzolk|wata|zurhai|tibetan astro/i, "birth"],
     [/dream|scry|smoke|cloud|fire|water|wax|lead|egg|apple|augur|haruspic|scapul|crab|spider|fox|star twinkl|scintill|vision|shaman|tent|incub/i, "omen"],
   ];
 
@@ -201,12 +253,17 @@
   }
 
   function processForMethod(method) {
-    const hay = `${method.name} ${method.summary} ${method.region || ""}`;
     let proc = null;
-    for (const [re, id] of KEYWORD_MAP) {
-      if (re.test(hay)) {
-        proc = PROCESSES[id];
-        break;
+    if (method && method.id && ID_PROCESS[method.id]) {
+      proc = PROCESSES[ID_PROCESS[method.id]];
+    }
+    if (!proc) {
+      const hay = `${method.name} ${method.summary} ${method.region || ""}`;
+      for (const [re, id] of KEYWORD_MAP) {
+        if (re.test(hay)) {
+          proc = PROCESSES[id];
+          break;
+        }
       }
     }
     if (!proc) {
@@ -513,6 +570,52 @@
         `Sign band: ${sign}; animal: ${animal} (${element}).`,
         `Life-path number (digit reduction): ${path}.`,
       ];
+    } else if (process.id === "blood") {
+      const raw = String(input.bloodType || "A").toUpperCase();
+      const key = BLOOD_TYPE_TRAITS[raw] ? raw : "A";
+      const trait = BLOOD_TYPE_TRAITS[key];
+      const focus = String(input.question || "").trim();
+      reading.title = trait.title;
+      reading.result = `ABO type selected: ${key} · popular lean “${trait.lean}”`;
+      reading.explain = [
+        `In the popular East Asian blood-type personality frame used with ${method.name}, type ${key} is stereotyped as ${trait.lean}.`,
+        trait.note,
+        "ABO type is a real antigen system for medicine; it is not a validated determinant of personality or destiny. This reading is cultural folklore for reflection only.",
+        focus ? `You asked the counsel to speak to: “${focus}”.` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      reading.details = [
+        `Blood type chosen: ${key}.`,
+        `Stereotype lean (folklore): ${trait.lean}.`,
+        "Not a medical or psychological assessment.",
+      ];
+      tone = key === "A" ? "caution" : key === "O" ? "bright" : key === "B" ? "mixed" : "deep";
+      reading.tone = tone;
+    } else if (process.id === "name") {
+      const nameIn = String(input.personName || input.question || "Seeker").trim() || "Seeker";
+      const letters = nameIn.replace(/[^\p{L}\p{N}]/gu, "");
+      const count = [...letters].length || nameIn.length;
+      const vowelish = (letters.match(/[aeiouａｅｉｏｕあいうえお]/gi) || []).length;
+      const path = ((count % 9) || 9);
+      const focus = String(input.question || "").trim();
+      reading.title = `${nameIn} · name number ${path}`;
+      reading.result = `Name signature: “${nameIn}” · letter/character count ${count} · reduced number ${path}`;
+      reading.explain = [
+        `Name rites in the spirit of ${method.name} weigh sounds, strokes, or letter totals as symbolic tags.`,
+        `Here “${nameIn}” yields count ${count} and a digit-style name number ${path} (with ${vowelish} vowel-like marks noted).`,
+        "This is an educational name-weighing toy — not a guarantee about character, marriage, or fortune.",
+        focus && focus !== nameIn ? `Focus held: “${focus}”.` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      reading.details = [
+        `Name entered: ${nameIn}.`,
+        `Count: ${count}; name number: ${path}.`,
+        `Styled after ${method.name}.`,
+      ];
+      tone = path <= 3 ? "bright" : path >= 7 ? "deep" : "mixed";
+      reading.tone = tone;
     } else if (process.id === "cards") {
       const deck = TAROT_LIKE.slice();
       const cards = [];
@@ -652,6 +755,22 @@
       reading.dontList = [
         "Do not re-ask the same question hoping for the opposite swing.",
         "Do not let a simulated yes/no override medical, legal, financial, or safety judgment.",
+      ];
+    } else if (process.id === "blood") {
+      reading.doList = [
+        "If a stereotype resonates, name the behavior you already choose — not the antigen — that makes it useful.",
+        "Keep medical blood-type facts separate from personality folklore.",
+      ];
+      reading.dontList = [
+        "Do not use ABO type to hire, date, or exclude people.",
+        "Do not treat this as a medical, genetic, or psychological diagnosis.",
+      ];
+    } else if (process.id === "name") {
+      reading.doList = [
+        "If the name number sparks an idea, translate it into one concrete habit you can test this week.",
+      ];
+      reading.dontList = [
+        "Do not rename yourself or others solely because a toy calculation looked unlucky.",
       ];
     } else if (process.id === "day") {
       reading.doList.unshift(
