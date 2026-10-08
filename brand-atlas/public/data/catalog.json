@@ -2,11 +2,11 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-08T16:09:24.936Z",
+    "generatedAt": "2026-10-08T16:15:24.170Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
-    "itemCount": 381,
+    "itemCount": 487,
     "categoryCount": 14,
     "note": "Curated living catalogue of human-made brands and still-present nature. Refreshed weekly."
   },
@@ -14,100 +14,100 @@
     {
       "id": "cars",
       "label": "Car brands",
-      "blurb": "Forty major automakers still building cars you can spot.",
+      "blurb": "Major and rising automakers still building cars you can spot.",
       "kind": "brand",
-      "itemCount": 40
+      "itemCount": 62
     },
     {
       "id": "cigarettes",
       "label": "Cigarette brands",
       "blurb": "Tobacco marks still in circulation (18+).",
       "kind": "brand",
-      "itemCount": 20
+      "itemCount": 27
     },
     {
       "id": "liquor",
       "label": "Liquor brands",
       "blurb": "Major spirits houses still pouring today.",
       "kind": "brand",
-      "itemCount": 30
+      "itemCount": 38
     },
     {
       "id": "wine",
       "label": "Wine brands",
       "blurb": "Houses and labels still on shelves.",
       "kind": "brand",
-      "itemCount": 25
+      "itemCount": 31
     },
     {
       "id": "sake",
       "label": "Sake brands",
       "blurb": "Brewers and labels still pouring nihonshu.",
       "kind": "brand",
-      "itemCount": 21
+      "itemCount": 25
     },
     {
       "id": "beer",
       "label": "Beer brands",
       "blurb": "Breweries and labels still in glasses.",
       "kind": "brand",
-      "itemCount": 30
+      "itemCount": 38
     },
     {
       "id": "coffee",
       "label": "Coffee",
       "blurb": "Roasters, chains, and bean houses still brewing.",
       "kind": "brand",
-      "itemCount": 25
+      "itemCount": 30
     },
     {
       "id": "tea",
       "label": "Tea",
       "blurb": "Tea houses and bags still steeping.",
       "kind": "brand",
-      "itemCount": 25
+      "itemCount": 30
     },
     {
       "id": "clothes",
       "label": "Clothes brands",
       "blurb": "Everyday fashion and streetwear still worn.",
       "kind": "brand",
-      "itemCount": 30
+      "itemCount": 38
     },
     {
       "id": "luxury",
       "label": "Luxury brands",
       "blurb": "Maisons and houses still coveted.",
       "kind": "brand",
-      "itemCount": 25
+      "itemCount": 32
     },
     {
       "id": "trees",
       "label": "Trees",
       "blurb": "Common living trees still rooted on Earth.",
       "kind": "nature",
-      "itemCount": 25
+      "itemCount": 30
     },
     {
       "id": "flowers",
       "label": "Flowers",
       "blurb": "Blooms still opening around the world.",
       "kind": "nature",
-      "itemCount": 25
+      "itemCount": 30
     },
     {
       "id": "animals",
       "label": "Animals & insects",
       "blurb": "Creatures still living with us — mammals to insects.",
       "kind": "nature",
-      "itemCount": 30
+      "itemCount": 38
     },
     {
       "id": "food",
       "label": "Food",
       "blurb": "Packaged foods and iconic edibles still on tables.",
       "kind": "food",
-      "itemCount": 30
+      "itemCount": 38
     }
   ],
   "items": [
@@ -299,6 +299,52 @@
       "status": "active"
     },
     {
+      "id": "cars__acura",
+      "slug": "acura",
+      "name": "Acura",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "Japan",
+      "tags": [
+        "luxury"
+      ],
+      "summary": "Acura — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1922",
+        "headquarters": "Japan",
+        "knownFor": "luxury",
+        "story": "Acura remains an active automaker from Japan, still building vehicles people drive today."
+      },
+      "coverHue": 204,
+      "mark": "marks/cars__acura.svg",
+      "markIcon": null,
+      "sort": 8,
+      "status": "active"
+    },
+    {
+      "id": "cars__infiniti",
+      "slug": "infiniti",
+      "name": "Infiniti",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "Japan",
+      "tags": [
+        "luxury"
+      ],
+      "summary": "Infiniti — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1926",
+        "headquarters": "Japan",
+        "knownFor": "luxury",
+        "story": "Infiniti remains an active automaker from Japan, still building vehicles people drive today."
+      },
+      "coverHue": 62,
+      "mark": "marks/cars__infiniti.svg",
+      "markIcon": null,
+      "sort": 9,
+      "status": "active"
+    },
+    {
       "id": "cars__ford",
       "slug": "ford",
       "name": "Ford",
@@ -319,7 +365,7 @@
       "coverHue": 137,
       "mark": "marks/cars__ford.svg",
       "markIcon": "ford",
-      "sort": 8,
+      "sort": 10,
       "status": "active"
     },
     {
@@ -343,7 +389,7 @@
       "coverHue": 2,
       "mark": "marks/cars__chevrolet.svg",
       "markIcon": "chevrolet",
-      "sort": 9,
+      "sort": 11,
       "status": "active"
     },
     {
@@ -367,7 +413,7 @@
       "coverHue": 217,
       "mark": "marks/cars__tesla.svg",
       "markIcon": "tesla",
-      "sort": 10,
+      "sort": 12,
       "status": "active"
     },
     {
@@ -390,7 +436,7 @@
       "coverHue": 220,
       "mark": "marks/cars__jeep.svg",
       "markIcon": "jeep",
-      "sort": 11,
+      "sort": 13,
       "status": "active"
     },
     {
@@ -411,7 +457,100 @@
       "coverHue": 283,
       "mark": "marks/cars__cadillac.svg",
       "markIcon": "cadillac",
-      "sort": 12,
+      "sort": 14,
+      "status": "active"
+    },
+    {
+      "id": "cars__lincoln",
+      "slug": "lincoln",
+      "name": "Lincoln",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "USA",
+      "tags": [
+        "luxury"
+      ],
+      "summary": "Lincoln — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1989",
+        "headquarters": "USA",
+        "knownFor": "luxury",
+        "story": "Lincoln remains an active automaker from USA, still building vehicles people drive today."
+      },
+      "coverHue": 329,
+      "mark": "marks/cars__lincoln.svg",
+      "markIcon": null,
+      "sort": 15,
+      "status": "active"
+    },
+    {
+      "id": "cars__dodge",
+      "slug": "dodge",
+      "name": "Dodge",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "USA",
+      "tags": [],
+      "summary": "Dodge — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1971",
+        "headquarters": "USA",
+        "knownFor": "Automobiles still in production",
+        "story": "Dodge remains an active automaker from USA, still building vehicles people drive today."
+      },
+      "coverHue": 105,
+      "mark": "marks/cars__dodge.svg",
+      "markIcon": null,
+      "sort": 16,
+      "status": "active"
+    },
+    {
+      "id": "cars__rivian",
+      "slug": "rivian",
+      "name": "Rivian",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "USA",
+      "tags": [
+        "ev",
+        "truck"
+      ],
+      "summary": "Rivian — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1958",
+        "headquarters": "USA",
+        "knownFor": "ev, truck",
+        "story": "Rivian remains an active automaker from USA, still building vehicles people drive today."
+      },
+      "coverHue": 149,
+      "mark": "marks/cars__rivian.svg",
+      "markIcon": null,
+      "sort": 17,
+      "status": "active"
+    },
+    {
+      "id": "cars__lucid",
+      "slug": "lucid",
+      "name": "Lucid",
+      "aliases": [
+        "lucid motors"
+      ],
+      "categoryId": "cars",
+      "origin": "USA",
+      "tags": [
+        "ev"
+      ],
+      "summary": "Lucid — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1946",
+        "headquarters": "USA",
+        "knownFor": "ev",
+        "story": "Lucid remains an active automaker from USA, still building vehicles people drive today."
+      },
+      "coverHue": 359,
+      "mark": "marks/cars__lucid.svg",
+      "markIcon": null,
+      "sort": 18,
       "status": "active"
     },
     {
@@ -434,7 +573,7 @@
       "coverHue": 246,
       "mark": "marks/cars__bmw.svg",
       "markIcon": "bmw",
-      "sort": 13,
+      "sort": 19,
       "status": "active"
     },
     {
@@ -458,7 +597,7 @@
       "coverHue": 136,
       "mark": "marks/cars__mercedes-benz.svg",
       "markIcon": "mercedes",
-      "sort": 14,
+      "sort": 20,
       "status": "active"
     },
     {
@@ -481,7 +620,7 @@
       "coverHue": 159,
       "mark": "marks/cars__audi.svg",
       "markIcon": "audi",
-      "sort": 15,
+      "sort": 21,
       "status": "active"
     },
     {
@@ -505,7 +644,7 @@
       "coverHue": 233,
       "mark": "marks/cars__volkswagen.svg",
       "markIcon": "volkswagen",
-      "sort": 16,
+      "sort": 22,
       "status": "active"
     },
     {
@@ -526,7 +665,7 @@
       "coverHue": 154,
       "mark": "marks/cars__porsche.svg",
       "markIcon": "porsche",
-      "sort": 17,
+      "sort": 23,
       "status": "active"
     },
     {
@@ -547,7 +686,7 @@
       "coverHue": 262,
       "mark": "marks/cars__opel.svg",
       "markIcon": "opel",
-      "sort": 18,
+      "sort": 24,
       "status": "active"
     },
     {
@@ -570,7 +709,7 @@
       "coverHue": 147,
       "mark": "marks/cars__ferrari.svg",
       "markIcon": "ferrari",
-      "sort": 19,
+      "sort": 25,
       "status": "active"
     },
     {
@@ -591,7 +730,7 @@
       "coverHue": 288,
       "mark": "marks/cars__lamborghini.svg",
       "markIcon": "lamborghini",
-      "sort": 20,
+      "sort": 26,
       "status": "active"
     },
     {
@@ -612,7 +751,7 @@
       "coverHue": 340,
       "mark": "marks/cars__fiat.svg",
       "markIcon": "fiat",
-      "sort": 21,
+      "sort": 27,
       "status": "active"
     },
     {
@@ -633,7 +772,7 @@
       "coverHue": 345,
       "mark": "marks/cars__alfa-romeo.svg",
       "markIcon": "alfaromeo",
-      "sort": 22,
+      "sort": 28,
       "status": "active"
     },
     {
@@ -654,7 +793,7 @@
       "coverHue": 320,
       "mark": "marks/cars__maserati.svg",
       "markIcon": "maserati",
-      "sort": 23,
+      "sort": 29,
       "status": "active"
     },
     {
@@ -675,7 +814,30 @@
       "coverHue": 6,
       "mark": "marks/cars__volvo.svg",
       "markIcon": "volvo",
-      "sort": 24,
+      "sort": 30,
+      "status": "active"
+    },
+    {
+      "id": "cars__polestar",
+      "slug": "polestar",
+      "name": "Polestar",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "Sweden",
+      "tags": [
+        "ev"
+      ],
+      "summary": "Polestar — catalogued in car brands · Sweden.",
+      "facts": {
+        "established": "1904",
+        "headquarters": "Sweden",
+        "knownFor": "ev",
+        "story": "Polestar remains an active automaker from Sweden, still building vehicles people drive today."
+      },
+      "coverHue": 168,
+      "mark": "marks/cars__polestar.svg",
+      "markIcon": null,
+      "sort": 31,
       "status": "active"
     },
     {
@@ -698,7 +860,7 @@
       "coverHue": 150,
       "mark": "marks/cars__skoda.svg",
       "markIcon": "skoda",
-      "sort": 25,
+      "sort": 32,
       "status": "active"
     },
     {
@@ -719,7 +881,7 @@
       "coverHue": 228,
       "mark": "marks/cars__hyundai.svg",
       "markIcon": "hyundai",
-      "sort": 26,
+      "sort": 33,
       "status": "active"
     },
     {
@@ -740,7 +902,7 @@
       "coverHue": 109,
       "mark": "marks/cars__kia.svg",
       "markIcon": "kia",
-      "sort": 27,
+      "sort": 34,
       "status": "active"
     },
     {
@@ -761,7 +923,7 @@
       "coverHue": 314,
       "mark": "marks/cars__genesis.svg",
       "markIcon": null,
-      "sort": 28,
+      "sort": 35,
       "status": "active"
     },
     {
@@ -782,7 +944,7 @@
       "coverHue": 69,
       "mark": "marks/cars__peugeot.svg",
       "markIcon": "peugeot",
-      "sort": 29,
+      "sort": 36,
       "status": "active"
     },
     {
@@ -803,7 +965,7 @@
       "coverHue": 25,
       "mark": "marks/cars__renault.svg",
       "markIcon": "renault",
-      "sort": 30,
+      "sort": 37,
       "status": "active"
     },
     {
@@ -826,7 +988,7 @@
       "coverHue": 6,
       "mark": "marks/cars__citroen.svg",
       "markIcon": "citroen",
-      "sort": 31,
+      "sort": 38,
       "status": "active"
     },
     {
@@ -847,7 +1009,7 @@
       "coverHue": 44,
       "mark": "marks/cars__jaguar.svg",
       "markIcon": "jaguar",
-      "sort": 32,
+      "sort": 39,
       "status": "active"
     },
     {
@@ -870,7 +1032,7 @@
       "coverHue": 290,
       "mark": "marks/cars__land-rover.svg",
       "markIcon": "landrover",
-      "sort": 33,
+      "sort": 40,
       "status": "active"
     },
     {
@@ -891,7 +1053,7 @@
       "coverHue": 109,
       "mark": "marks/cars__mini.svg",
       "markIcon": "mini",
-      "sort": 34,
+      "sort": 41,
       "status": "active"
     },
     {
@@ -912,7 +1074,7 @@
       "coverHue": 9,
       "mark": "marks/cars__rolls-royce.svg",
       "markIcon": "rollsroyce",
-      "sort": 35,
+      "sort": 42,
       "status": "active"
     },
     {
@@ -933,7 +1095,7 @@
       "coverHue": 201,
       "mark": "marks/cars__bentley.svg",
       "markIcon": "bentley",
-      "sort": 36,
+      "sort": 43,
       "status": "active"
     },
     {
@@ -954,7 +1116,141 @@
       "coverHue": 301,
       "mark": "marks/cars__aston-martin.svg",
       "markIcon": "astonmartin",
-      "sort": 37,
+      "sort": 44,
+      "status": "active"
+    },
+    {
+      "id": "cars__lotus",
+      "slug": "lotus",
+      "name": "Lotus",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "UK",
+      "tags": [],
+      "summary": "Lotus — catalogued in car brands · UK.",
+      "facts": {
+        "established": "2010",
+        "headquarters": "UK",
+        "knownFor": "Automobiles still in production",
+        "story": "Lotus remains an active automaker from UK, still building vehicles people drive today."
+      },
+      "coverHue": 337,
+      "mark": "marks/cars__lotus.svg",
+      "markIcon": null,
+      "sort": 45,
+      "status": "active"
+    },
+    {
+      "id": "cars__mclaren",
+      "slug": "mclaren",
+      "name": "McLaren",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "UK",
+      "tags": [
+        "supercar"
+      ],
+      "summary": "McLaren — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1887",
+        "headquarters": "UK",
+        "knownFor": "supercar",
+        "story": "McLaren remains an active automaker from UK, still building vehicles people drive today."
+      },
+      "coverHue": 226,
+      "mark": "marks/cars__mclaren.svg",
+      "markIcon": "mclaren",
+      "sort": 46,
+      "status": "active"
+    },
+    {
+      "id": "cars__bugatti",
+      "slug": "bugatti",
+      "name": "Bugatti",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "France",
+      "tags": [
+        "supercar"
+      ],
+      "summary": "Bugatti — catalogued in car brands · France.",
+      "facts": {
+        "established": "2001",
+        "headquarters": "France",
+        "knownFor": "supercar",
+        "story": "Bugatti remains an active automaker from France, still building vehicles people drive today."
+      },
+      "coverHue": 182,
+      "mark": "marks/cars__bugatti.svg",
+      "markIcon": "bugatti",
+      "sort": 47,
+      "status": "active"
+    },
+    {
+      "id": "cars__seat",
+      "slug": "seat",
+      "name": "SEAT",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "Spain",
+      "tags": [],
+      "summary": "SEAT — catalogued in car brands · Spain.",
+      "facts": {
+        "established": "1974",
+        "headquarters": "Spain",
+        "knownFor": "Automobiles still in production",
+        "story": "SEAT remains an active automaker from Spain, still building vehicles people drive today."
+      },
+      "coverHue": 19,
+      "mark": "marks/cars__seat.svg",
+      "markIcon": "seat",
+      "sort": 48,
+      "status": "active"
+    },
+    {
+      "id": "cars__cupra",
+      "slug": "cupra",
+      "name": "Cupra",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "Spain",
+      "tags": [],
+      "summary": "Cupra — catalogued in car brands · Spain.",
+      "facts": {
+        "established": "1923",
+        "headquarters": "Spain",
+        "knownFor": "Automobiles still in production",
+        "story": "Cupra remains an active automaker from Spain, still building vehicles people drive today."
+      },
+      "coverHue": 159,
+      "mark": "marks/cars__cupra.svg",
+      "markIcon": null,
+      "sort": 49,
+      "status": "active"
+    },
+    {
+      "id": "cars__mg",
+      "slug": "mg",
+      "name": "MG",
+      "aliases": [
+        "morris garages"
+      ],
+      "categoryId": "cars",
+      "origin": "UK",
+      "tags": [
+        "ev"
+      ],
+      "summary": "MG — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1917",
+        "headquarters": "UK",
+        "knownFor": "ev",
+        "story": "MG remains an active automaker from UK, still building vehicles people drive today."
+      },
+      "coverHue": 256,
+      "mark": "marks/cars__mg.svg",
+      "markIcon": null,
+      "sort": 50,
       "status": "active"
     },
     {
@@ -977,7 +1273,7 @@
       "coverHue": 239,
       "mark": "marks/cars__byd.svg",
       "markIcon": null,
-      "sort": 38,
+      "sort": 51,
       "status": "active"
     },
     {
@@ -998,7 +1294,247 @@
       "coverHue": 334,
       "mark": "marks/cars__geely.svg",
       "markIcon": null,
-      "sort": 39,
+      "sort": 52,
+      "status": "active"
+    },
+    {
+      "id": "cars__xiaomi",
+      "slug": "xiaomi",
+      "name": "Xiaomi",
+      "aliases": [
+        "小米",
+        "xiaomi auto",
+        "su7"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "ev",
+        "rising"
+      ],
+      "summary": "Xiaomi — catalogued in car brands · China.",
+      "facts": {
+        "established": "1921",
+        "headquarters": "China",
+        "knownFor": "ev, rising",
+        "story": "Xiaomi remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 57,
+      "mark": "marks/cars__xiaomi.svg",
+      "markIcon": "xiaomi",
+      "sort": 53,
+      "status": "active"
+    },
+    {
+      "id": "cars__nio",
+      "slug": "nio",
+      "name": "NIO",
+      "aliases": [
+        "蔚来"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "ev",
+        "rising"
+      ],
+      "summary": "NIO — catalogued in car brands · China.",
+      "facts": {
+        "established": "1980",
+        "headquarters": "China",
+        "knownFor": "ev, rising",
+        "story": "NIO remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 126,
+      "mark": "marks/cars__nio.svg",
+      "markIcon": null,
+      "sort": 54,
+      "status": "active"
+    },
+    {
+      "id": "cars__xpeng",
+      "slug": "xpeng",
+      "name": "XPeng",
+      "aliases": [
+        "小鹏",
+        "xpeng"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "ev",
+        "rising"
+      ],
+      "summary": "XPeng — catalogued in car brands · China.",
+      "facts": {
+        "established": "1979",
+        "headquarters": "China",
+        "knownFor": "ev, rising",
+        "story": "XPeng remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 16,
+      "mark": "marks/cars__xpeng.svg",
+      "markIcon": null,
+      "sort": 55,
+      "status": "active"
+    },
+    {
+      "id": "cars__li-auto",
+      "slug": "li-auto",
+      "name": "Li Auto",
+      "aliases": [
+        "理想",
+        "li xiang"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "ev",
+        "rising"
+      ],
+      "summary": "Li Auto — catalogued in car brands · China.",
+      "facts": {
+        "established": "2010",
+        "headquarters": "China",
+        "knownFor": "ev, rising",
+        "story": "Li Auto remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 97,
+      "mark": "marks/cars__li-auto.svg",
+      "markIcon": null,
+      "sort": 56,
+      "status": "active"
+    },
+    {
+      "id": "cars__zeekr",
+      "slug": "zeekr",
+      "name": "Zeekr",
+      "aliases": [
+        "极氪"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "ev",
+        "rising"
+      ],
+      "summary": "Zeekr — catalogued in car brands · China.",
+      "facts": {
+        "established": "1898",
+        "headquarters": "China",
+        "knownFor": "ev, rising",
+        "story": "Zeekr remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 75,
+      "mark": "marks/cars__zeekr.svg",
+      "markIcon": null,
+      "sort": 57,
+      "status": "active"
+    },
+    {
+      "id": "cars__gwm",
+      "slug": "gwm",
+      "name": "GWM",
+      "aliases": [
+        "great wall",
+        "haval",
+        "坦克",
+        "tank"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "suv",
+        "rising"
+      ],
+      "summary": "GWM — catalogued in car brands · China.",
+      "facts": {
+        "established": "1891",
+        "headquarters": "China",
+        "knownFor": "suv, rising",
+        "story": "GWM remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 311,
+      "mark": "marks/cars__gwm.svg",
+      "markIcon": null,
+      "sort": 58,
+      "status": "active"
+    },
+    {
+      "id": "cars__baic",
+      "slug": "baic",
+      "name": "BAIC",
+      "aliases": [
+        "北京汽车",
+        "beijing auto"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "rising"
+      ],
+      "summary": "BAIC — catalogued in car brands · China.",
+      "facts": {
+        "established": "1981",
+        "headquarters": "China",
+        "knownFor": "rising",
+        "story": "BAIC remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 79,
+      "mark": "marks/cars__baic.svg",
+      "markIcon": null,
+      "sort": 59,
+      "status": "active"
+    },
+    {
+      "id": "cars__chery",
+      "slug": "chery",
+      "name": "Chery",
+      "aliases": [
+        "奇瑞",
+        "omoda",
+        "jaecoo"
+      ],
+      "categoryId": "cars",
+      "origin": "China",
+      "tags": [
+        "rising"
+      ],
+      "summary": "Chery — catalogued in car brands · China.",
+      "facts": {
+        "established": "1985",
+        "headquarters": "China",
+        "knownFor": "rising",
+        "story": "Chery remains an active automaker from China, still building vehicles people drive today."
+      },
+      "coverHue": 129,
+      "mark": "marks/cars__chery.svg",
+      "markIcon": null,
+      "sort": 60,
+      "status": "active"
+    },
+    {
+      "id": "cars__vinfast",
+      "slug": "vinfast",
+      "name": "VinFast",
+      "aliases": [],
+      "categoryId": "cars",
+      "origin": "Vietnam",
+      "tags": [
+        "ev",
+        "rising"
+      ],
+      "summary": "VinFast — catalogued in car brands · Vietnam.",
+      "facts": {
+        "established": "1973",
+        "headquarters": "Vietnam",
+        "knownFor": "ev, rising",
+        "story": "VinFast remains an active automaker from Vietnam, still building vehicles people drive today."
+      },
+      "coverHue": 9,
+      "mark": "marks/cars__vinfast.svg",
+      "markIcon": null,
+      "sort": 61,
       "status": "active"
     },
     {
@@ -1429,6 +1965,163 @@
       "mark": "marks/cigarettes__gold-flake.svg",
       "markIcon": null,
       "sort": 19,
+      "status": "active"
+    },
+    {
+      "id": "cigarettes__state-express-555",
+      "slug": "state-express-555",
+      "name": "State Express 555",
+      "aliases": [
+        "555"
+      ],
+      "categoryId": "cigarettes",
+      "origin": "UK",
+      "tags": [],
+      "summary": "State Express 555 — catalogued in cigarette brands · UK.",
+      "facts": {
+        "introduced": "1948",
+        "origin": "UK",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
+      "coverHue": 0,
+      "mark": "marks/cigarettes__state-express-555.svg",
+      "markIcon": null,
+      "sort": 20,
+      "status": "active"
+    },
+    {
+      "id": "cigarettes__esse",
+      "slug": "esse",
+      "name": "Esse",
+      "aliases": [],
+      "categoryId": "cigarettes",
+      "origin": "South Korea",
+      "tags": [],
+      "summary": "Esse — catalogued in cigarette brands · South Korea.",
+      "facts": {
+        "introduced": "1956",
+        "origin": "South Korea",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
+      "coverHue": 12,
+      "mark": "marks/cigarettes__esse.svg",
+      "markIcon": null,
+      "sort": 21,
+      "status": "active"
+    },
+    {
+      "id": "cigarettes__zhongnanhai",
+      "slug": "zhongnanhai",
+      "name": "Zhongnanhai",
+      "aliases": [
+        "中南海"
+      ],
+      "categoryId": "cigarettes",
+      "origin": "China",
+      "tags": [],
+      "summary": "Zhongnanhai — catalogued in cigarette brands · China.",
+      "facts": {
+        "introduced": "1891",
+        "origin": "China",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
+      "coverHue": 227,
+      "mark": "marks/cigarettes__zhongnanhai.svg",
+      "markIcon": null,
+      "sort": 22,
+      "status": "active"
+    },
+    {
+      "id": "cigarettes__huanghelou",
+      "slug": "huanghelou",
+      "name": "Huanghelou",
+      "aliases": [
+        "黄鹤楼"
+      ],
+      "categoryId": "cigarettes",
+      "origin": "China",
+      "tags": [],
+      "summary": "Huanghelou — catalogued in cigarette brands · China.",
+      "facts": {
+        "introduced": "1932",
+        "origin": "China",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
+      "coverHue": 140,
+      "mark": "marks/cigarettes__huanghelou.svg",
+      "markIcon": null,
+      "sort": 23,
+      "status": "active"
+    },
+    {
+      "id": "cigarettes__yuxi",
+      "slug": "yuxi",
+      "name": "Yuxi",
+      "aliases": [
+        "玉溪"
+      ],
+      "categoryId": "cigarettes",
+      "origin": "China",
+      "tags": [],
+      "summary": "Yuxi — catalogued in cigarette brands · China.",
+      "facts": {
+        "introduced": "1876",
+        "origin": "China",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
+      "coverHue": 313,
+      "mark": "marks/cigarettes__yuxi.svg",
+      "markIcon": null,
+      "sort": 24,
+      "status": "active"
+    },
+    {
+      "id": "cigarettes__double-happiness",
+      "slug": "double-happiness",
+      "name": "Double Happiness",
+      "aliases": [
+        "红双喜"
+      ],
+      "categoryId": "cigarettes",
+      "origin": "China",
+      "tags": [],
+      "summary": "Double Happiness — catalogued in cigarette brands · China.",
+      "facts": {
+        "introduced": "1964",
+        "origin": "China",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
+      "coverHue": 55,
+      "mark": "marks/cigarettes__double-happiness.svg",
+      "markIcon": null,
+      "sort": 25,
+      "status": "active"
+    },
+    {
+      "id": "cigarettes__sampoerna",
+      "slug": "sampoerna",
+      "name": "Sampoerna",
+      "aliases": [],
+      "categoryId": "cigarettes",
+      "origin": "Indonesia",
+      "tags": [],
+      "summary": "Sampoerna — catalogued in cigarette brands · Indonesia.",
+      "facts": {
+        "introduced": "1975",
+        "origin": "Indonesia",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
+      "coverHue": 98,
+      "mark": "marks/cigarettes__sampoerna.svg",
+      "markIcon": null,
+      "sort": 26,
       "status": "active"
     },
     {
@@ -2168,6 +2861,206 @@
       "status": "active"
     },
     {
+      "id": "liquor__yamazaki",
+      "slug": "yamazaki",
+      "name": "Yamazaki",
+      "aliases": [
+        "山崎"
+      ],
+      "categoryId": "liquor",
+      "origin": "Japan",
+      "tags": [
+        "whisky"
+      ],
+      "summary": "Yamazaki — catalogued in liquor brands · Japan.",
+      "facts": {
+        "established": "1769",
+        "house": "Yamazaki",
+        "origin": "Japan",
+        "style": "whisky",
+        "story": "Yamazaki is still poured from Japan."
+      },
+      "coverHue": 194,
+      "mark": "marks/liquor__yamazaki.svg",
+      "markIcon": null,
+      "sort": 30,
+      "status": "active"
+    },
+    {
+      "id": "liquor__hibiki",
+      "slug": "hibiki",
+      "name": "Hibiki",
+      "aliases": [
+        "響"
+      ],
+      "categoryId": "liquor",
+      "origin": "Japan",
+      "tags": [
+        "whisky"
+      ],
+      "summary": "Hibiki — catalogued in liquor brands · Japan.",
+      "facts": {
+        "established": "1912",
+        "house": "Hibiki",
+        "origin": "Japan",
+        "style": "whisky",
+        "story": "Hibiki is still poured from Japan."
+      },
+      "coverHue": 151,
+      "mark": "marks/liquor__hibiki.svg",
+      "markIcon": null,
+      "sort": 31,
+      "status": "active"
+    },
+    {
+      "id": "liquor__nikka",
+      "slug": "nikka",
+      "name": "Nikka",
+      "aliases": [
+        "ニッカ"
+      ],
+      "categoryId": "liquor",
+      "origin": "Japan",
+      "tags": [
+        "whisky"
+      ],
+      "summary": "Nikka — catalogued in liquor brands · Japan.",
+      "facts": {
+        "established": "1974",
+        "house": "Nikka",
+        "origin": "Japan",
+        "style": "whisky",
+        "story": "Nikka is still poured from Japan."
+      },
+      "coverHue": 333,
+      "mark": "marks/liquor__nikka.svg",
+      "markIcon": null,
+      "sort": 32,
+      "status": "active"
+    },
+    {
+      "id": "liquor__tito",
+      "slug": "tito",
+      "name": "Tito's",
+      "aliases": [
+        "titos"
+      ],
+      "categoryId": "liquor",
+      "origin": "USA",
+      "tags": [
+        "vodka"
+      ],
+      "summary": "Tito's — catalogued in liquor brands · USA.",
+      "facts": {
+        "established": "1652",
+        "house": "Tito's",
+        "origin": "USA",
+        "style": "vodka",
+        "story": "Tito's is still poured from USA."
+      },
+      "coverHue": 169,
+      "mark": "marks/liquor__tito.svg",
+      "markIcon": null,
+      "sort": 33,
+      "status": "active"
+    },
+    {
+      "id": "liquor__casamigos",
+      "slug": "casamigos",
+      "name": "Casamigos",
+      "aliases": [],
+      "categoryId": "liquor",
+      "origin": "Mexico",
+      "tags": [
+        "tequila"
+      ],
+      "summary": "Casamigos — catalogued in liquor brands · Mexico.",
+      "facts": {
+        "established": "1737",
+        "house": "Casamigos",
+        "origin": "Mexico",
+        "style": "tequila",
+        "story": "Casamigos is still poured from Mexico."
+      },
+      "coverHue": 258,
+      "mark": "marks/liquor__casamigos.svg",
+      "markIcon": null,
+      "sort": 34,
+      "status": "active"
+    },
+    {
+      "id": "liquor__clase-azul",
+      "slug": "clase-azul",
+      "name": "Clase Azul",
+      "aliases": [],
+      "categoryId": "liquor",
+      "origin": "Mexico",
+      "tags": [
+        "tequila"
+      ],
+      "summary": "Clase Azul — catalogued in liquor brands · Mexico.",
+      "facts": {
+        "established": "1891",
+        "house": "Clase Azul",
+        "origin": "Mexico",
+        "style": "tequila",
+        "story": "Clase Azul is still poured from Mexico."
+      },
+      "coverHue": 180,
+      "mark": "marks/liquor__clase-azul.svg",
+      "markIcon": null,
+      "sort": 35,
+      "status": "active"
+    },
+    {
+      "id": "liquor__cointreau",
+      "slug": "cointreau",
+      "name": "Cointreau",
+      "aliases": [],
+      "categoryId": "liquor",
+      "origin": "France",
+      "tags": [
+        "liqueur"
+      ],
+      "summary": "Cointreau — catalogued in liquor brands · France.",
+      "facts": {
+        "established": "1916",
+        "house": "Cointreau",
+        "origin": "France",
+        "style": "liqueur",
+        "story": "Cointreau is still poured from France."
+      },
+      "coverHue": 129,
+      "mark": "marks/liquor__cointreau.svg",
+      "markIcon": null,
+      "sort": 36,
+      "status": "active"
+    },
+    {
+      "id": "liquor__grand-marnier",
+      "slug": "grand-marnier",
+      "name": "Grand Marnier",
+      "aliases": [],
+      "categoryId": "liquor",
+      "origin": "France",
+      "tags": [
+        "liqueur"
+      ],
+      "summary": "Grand Marnier — catalogued in liquor brands · France.",
+      "facts": {
+        "established": "1892",
+        "house": "Grand Marnier",
+        "origin": "France",
+        "style": "liqueur",
+        "story": "Grand Marnier is still poured from France."
+      },
+      "coverHue": 340,
+      "mark": "marks/liquor__grand-marnier.svg",
+      "markIcon": null,
+      "sort": 37,
+      "status": "active"
+    },
+    {
       "id": "wine__moet",
       "slug": "moet",
       "name": "Moët & Chandon",
@@ -2744,6 +3637,148 @@
       "status": "active"
     },
     {
+      "id": "wine__dom-perignon",
+      "slug": "dom-perignon",
+      "name": "Dom Pérignon",
+      "aliases": [
+        "dom perignon"
+      ],
+      "categoryId": "wine",
+      "origin": "France",
+      "tags": [
+        "champagne"
+      ],
+      "summary": "Dom Pérignon — catalogued in wine brands · France.",
+      "facts": {
+        "established": "1686",
+        "house": "Dom Pérignon",
+        "origin": "France",
+        "style": "champagne",
+        "story": "Dom Pérignon is still poured from France."
+      },
+      "coverHue": 65,
+      "mark": "marks/wine__dom-perignon.svg",
+      "markIcon": null,
+      "sort": 25,
+      "status": "active"
+    },
+    {
+      "id": "wine__ruinart",
+      "slug": "ruinart",
+      "name": "Ruinart",
+      "aliases": [],
+      "categoryId": "wine",
+      "origin": "France",
+      "tags": [
+        "champagne"
+      ],
+      "summary": "Ruinart — catalogued in wine brands · France.",
+      "facts": {
+        "established": "1928",
+        "house": "Ruinart",
+        "origin": "France",
+        "style": "champagne",
+        "story": "Ruinart is still poured from France."
+      },
+      "coverHue": 287,
+      "mark": "marks/wine__ruinart.svg",
+      "markIcon": null,
+      "sort": 26,
+      "status": "active"
+    },
+    {
+      "id": "wine__bollinger",
+      "slug": "bollinger",
+      "name": "Bollinger",
+      "aliases": [],
+      "categoryId": "wine",
+      "origin": "France",
+      "tags": [
+        "champagne"
+      ],
+      "summary": "Bollinger — catalogued in wine brands · France.",
+      "facts": {
+        "established": "1742",
+        "house": "Bollinger",
+        "origin": "France",
+        "style": "champagne",
+        "story": "Bollinger is still poured from France."
+      },
+      "coverHue": 182,
+      "mark": "marks/wine__bollinger.svg",
+      "markIcon": null,
+      "sort": 27,
+      "status": "active"
+    },
+    {
+      "id": "wine__caymus",
+      "slug": "caymus",
+      "name": "Caymus",
+      "aliases": [],
+      "categoryId": "wine",
+      "origin": "USA",
+      "tags": [],
+      "summary": "Caymus — catalogued in wine brands · USA.",
+      "facts": {
+        "established": "1907",
+        "house": "Caymus",
+        "origin": "USA",
+        "style": "Wine",
+        "story": "Caymus is still poured from USA."
+      },
+      "coverHue": 252,
+      "mark": "marks/wine__caymus.svg",
+      "markIcon": null,
+      "sort": 28,
+      "status": "active"
+    },
+    {
+      "id": "wine__silver-oak",
+      "slug": "silver-oak",
+      "name": "Silver Oak",
+      "aliases": [],
+      "categoryId": "wine",
+      "origin": "USA",
+      "tags": [],
+      "summary": "Silver Oak — catalogued in wine brands · USA.",
+      "facts": {
+        "established": "1754",
+        "house": "Silver Oak",
+        "origin": "USA",
+        "style": "Wine",
+        "story": "Silver Oak is still poured from USA."
+      },
+      "coverHue": 293,
+      "mark": "marks/wine__silver-oak.svg",
+      "markIcon": null,
+      "sort": 29,
+      "status": "active"
+    },
+    {
+      "id": "wine__changyu",
+      "slug": "changyu",
+      "name": "Changyu",
+      "aliases": [
+        "张裕"
+      ],
+      "categoryId": "wine",
+      "origin": "China",
+      "tags": [],
+      "summary": "Changyu — catalogued in wine brands · China.",
+      "facts": {
+        "established": "1787",
+        "house": "Changyu",
+        "origin": "China",
+        "style": "Wine",
+        "story": "Changyu is still poured from China."
+      },
+      "coverHue": 133,
+      "mark": "marks/wine__changyu.svg",
+      "markIcon": null,
+      "sort": 30,
+      "status": "active"
+    },
+    {
       "id": "sake__dassai",
       "slug": "dassai",
       "name": "Dassai",
@@ -3243,6 +4278,102 @@
       "mark": "marks/sake__masumi.svg",
       "markIcon": null,
       "sort": 20,
+      "status": "active"
+    },
+    {
+      "id": "sake__kudoki-jozu",
+      "slug": "kudoki-jozu",
+      "name": "Kudoki Jozu",
+      "aliases": [
+        "くどき上手"
+      ],
+      "categoryId": "sake",
+      "origin": "Japan",
+      "tags": [],
+      "summary": "Kudoki Jozu — catalogued in sake brands · Japan.",
+      "facts": {
+        "established": "1800",
+        "house": "Kudoki Jozu",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Kudoki Jozu is still poured from Japan."
+      },
+      "coverHue": 229,
+      "mark": "marks/sake__kudoki-jozu.svg",
+      "markIcon": null,
+      "sort": 21,
+      "status": "active"
+    },
+    {
+      "id": "sake__hiroki",
+      "slug": "hiroki",
+      "name": "Hiroki",
+      "aliases": [
+        "飛良喜"
+      ],
+      "categoryId": "sake",
+      "origin": "Japan",
+      "tags": [],
+      "summary": "Hiroki — catalogued in sake brands · Japan.",
+      "facts": {
+        "established": "1630",
+        "house": "Hiroki",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Hiroki is still poured from Japan."
+      },
+      "coverHue": 17,
+      "mark": "marks/sake__hiroki.svg",
+      "markIcon": null,
+      "sort": 22,
+      "status": "active"
+    },
+    {
+      "id": "sake__denshin",
+      "slug": "denshin",
+      "name": "Denshin",
+      "aliases": [
+        "伝心"
+      ],
+      "categoryId": "sake",
+      "origin": "Japan",
+      "tags": [],
+      "summary": "Denshin — catalogued in sake brands · Japan.",
+      "facts": {
+        "established": "1808",
+        "house": "Denshin",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Denshin is still poured from Japan."
+      },
+      "coverHue": 74,
+      "mark": "marks/sake__denshin.svg",
+      "markIcon": null,
+      "sort": 23,
+      "status": "active"
+    },
+    {
+      "id": "sake__tedorigawa",
+      "slug": "tedorigawa",
+      "name": "Tedorigawa",
+      "aliases": [
+        "手取川"
+      ],
+      "categoryId": "sake",
+      "origin": "Japan",
+      "tags": [],
+      "summary": "Tedorigawa — catalogued in sake brands · Japan.",
+      "facts": {
+        "established": "1831",
+        "house": "Tedorigawa",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Tedorigawa is still poured from Japan."
+      },
+      "coverHue": 356,
+      "mark": "marks/sake__tedorigawa.svg",
+      "markIcon": null,
+      "sort": 24,
       "status": "active"
     },
     {
@@ -3920,6 +5051,197 @@
       "status": "active"
     },
     {
+      "id": "beer__coors",
+      "slug": "coors",
+      "name": "Coors",
+      "aliases": [
+        "coors light"
+      ],
+      "categoryId": "beer",
+      "origin": "USA",
+      "tags": [],
+      "summary": "Coors — catalogued in beer brands · USA.",
+      "facts": {
+        "established": "1870",
+        "house": "Coors",
+        "origin": "USA",
+        "style": "Beer",
+        "story": "Coors is still poured from USA."
+      },
+      "coverHue": 39,
+      "mark": "marks/beer__coors.svg",
+      "markIcon": null,
+      "sort": 30,
+      "status": "active"
+    },
+    {
+      "id": "beer__miller",
+      "slug": "miller",
+      "name": "Miller",
+      "aliases": [
+        "miller lite"
+      ],
+      "categoryId": "beer",
+      "origin": "USA",
+      "tags": [],
+      "summary": "Miller — catalogued in beer brands · USA.",
+      "facts": {
+        "established": "1710",
+        "house": "Miller",
+        "origin": "USA",
+        "style": "Beer",
+        "story": "Miller is still poured from USA."
+      },
+      "coverHue": 62,
+      "mark": "marks/beer__miller.svg",
+      "markIcon": null,
+      "sort": 31,
+      "status": "active"
+    },
+    {
+      "id": "beer__lagunitas",
+      "slug": "lagunitas",
+      "name": "Lagunitas",
+      "aliases": [],
+      "categoryId": "beer",
+      "origin": "USA",
+      "tags": [],
+      "summary": "Lagunitas — catalogued in beer brands · USA.",
+      "facts": {
+        "established": "1689",
+        "house": "Lagunitas",
+        "origin": "USA",
+        "style": "Beer",
+        "story": "Lagunitas is still poured from USA."
+      },
+      "coverHue": 235,
+      "mark": "marks/beer__lagunitas.svg",
+      "markIcon": null,
+      "sort": 32,
+      "status": "active"
+    },
+    {
+      "id": "beer__brooklyn",
+      "slug": "brooklyn",
+      "name": "Brooklyn Brewery",
+      "aliases": [
+        "brooklyn"
+      ],
+      "categoryId": "beer",
+      "origin": "USA",
+      "tags": [],
+      "summary": "Brooklyn Brewery — catalogued in beer brands · USA.",
+      "facts": {
+        "established": "1823",
+        "house": "Brooklyn Brewery",
+        "origin": "USA",
+        "style": "Beer",
+        "story": "Brooklyn Brewery is still poured from USA."
+      },
+      "coverHue": 147,
+      "mark": "marks/beer__brooklyn.svg",
+      "markIcon": null,
+      "sort": 33,
+      "status": "active"
+    },
+    {
+      "id": "beer__yanjing",
+      "slug": "yanjing",
+      "name": "Yanjing",
+      "aliases": [
+        "燕京"
+      ],
+      "categoryId": "beer",
+      "origin": "China",
+      "tags": [],
+      "summary": "Yanjing — catalogued in beer brands · China.",
+      "facts": {
+        "established": "1876",
+        "house": "Yanjing",
+        "origin": "China",
+        "style": "Beer",
+        "story": "Yanjing is still poured from China."
+      },
+      "coverHue": 41,
+      "mark": "marks/beer__yanjing.svg",
+      "markIcon": null,
+      "sort": 34,
+      "status": "active"
+    },
+    {
+      "id": "beer__snow",
+      "slug": "snow",
+      "name": "Snow Beer",
+      "aliases": [
+        "雪花"
+      ],
+      "categoryId": "beer",
+      "origin": "China",
+      "tags": [],
+      "summary": "Snow Beer — catalogued in beer brands · China.",
+      "facts": {
+        "established": "1892",
+        "house": "Snow Beer",
+        "origin": "China",
+        "style": "Beer",
+        "story": "Snow Beer is still poured from China."
+      },
+      "coverHue": 240,
+      "mark": "marks/beer__snow.svg",
+      "markIcon": null,
+      "sort": 35,
+      "status": "active"
+    },
+    {
+      "id": "beer__hitachino",
+      "slug": "hitachino",
+      "name": "Hitachino Nest",
+      "aliases": [
+        "hitachino"
+      ],
+      "categoryId": "beer",
+      "origin": "Japan",
+      "tags": [],
+      "summary": "Hitachino Nest — catalogued in beer brands · Japan.",
+      "facts": {
+        "established": "1657",
+        "house": "Hitachino Nest",
+        "origin": "Japan",
+        "style": "Beer",
+        "story": "Hitachino Nest is still poured from Japan."
+      },
+      "coverHue": 298,
+      "mark": "marks/beer__hitachino.svg",
+      "markIcon": null,
+      "sort": 36,
+      "status": "active"
+    },
+    {
+      "id": "beer__orchid-island",
+      "slug": "orchid-island",
+      "name": "Orchid Island",
+      "aliases": [
+        "金车",
+        "kaoliang beer"
+      ],
+      "categoryId": "beer",
+      "origin": "Taiwan",
+      "tags": [],
+      "summary": "Orchid Island — catalogued in beer brands · Taiwan.",
+      "facts": {
+        "established": "1639",
+        "house": "Orchid Island",
+        "origin": "Taiwan",
+        "style": "Beer",
+        "story": "Orchid Island is still poured from Taiwan."
+      },
+      "coverHue": 218,
+      "mark": "marks/beer__orchid-island.svg",
+      "markIcon": null,
+      "sort": 37,
+      "status": "active"
+    },
+    {
       "id": "coffee__starbucks",
       "slug": "starbucks",
       "name": "Starbucks",
@@ -4468,6 +5790,119 @@
       "status": "active"
     },
     {
+      "id": "coffee__pacific-coffee",
+      "slug": "pacific-coffee",
+      "name": "Pacific Coffee",
+      "aliases": [],
+      "categoryId": "coffee",
+      "origin": "Hong Kong",
+      "tags": [],
+      "summary": "Pacific Coffee — catalogued in coffee · Hong Kong.",
+      "facts": {
+        "founded": "1874",
+        "origin": "Hong Kong",
+        "specialty": "Coffee",
+        "story": "Pacific Coffee is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 281,
+      "mark": "marks/coffee__pacific-coffee.svg",
+      "markIcon": null,
+      "sort": 25,
+      "status": "active"
+    },
+    {
+      "id": "coffee__manner",
+      "slug": "manner",
+      "name": "Manner Coffee",
+      "aliases": [
+        "manner"
+      ],
+      "categoryId": "coffee",
+      "origin": "China",
+      "tags": [],
+      "summary": "Manner Coffee — catalogued in coffee · China.",
+      "facts": {
+        "founded": "1923",
+        "origin": "China",
+        "specialty": "Coffee",
+        "story": "Manner Coffee is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 194,
+      "mark": "marks/coffee__manner.svg",
+      "markIcon": null,
+      "sort": 26,
+      "status": "active"
+    },
+    {
+      "id": "coffee__percent-arabica",
+      "slug": "percent-arabica",
+      "name": "% Arabica",
+      "aliases": [
+        "percent arabica",
+        "arabica",
+        "%arabica"
+      ],
+      "categoryId": "coffee",
+      "origin": "Japan",
+      "tags": [],
+      "summary": "% Arabica — catalogued in coffee · Japan.",
+      "facts": {
+        "founded": "1954",
+        "origin": "Japan",
+        "specialty": "Coffee",
+        "story": "% Arabica is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 108,
+      "mark": "marks/coffee__percent-arabica.svg",
+      "markIcon": null,
+      "sort": 27,
+      "status": "active"
+    },
+    {
+      "id": "coffee__blue-tokai",
+      "slug": "blue-tokai",
+      "name": "Blue Tokai",
+      "aliases": [],
+      "categoryId": "coffee",
+      "origin": "India",
+      "tags": [],
+      "summary": "Blue Tokai — catalogued in coffee · India.",
+      "facts": {
+        "founded": "1895",
+        "origin": "India",
+        "specialty": "Coffee",
+        "story": "Blue Tokai is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 342,
+      "mark": "marks/coffee__blue-tokai.svg",
+      "markIcon": null,
+      "sort": 28,
+      "status": "active"
+    },
+    {
+      "id": "coffee__cotti",
+      "slug": "cotti",
+      "name": "Cotti Coffee",
+      "aliases": [
+        "库迪"
+      ],
+      "categoryId": "coffee",
+      "origin": "China",
+      "tags": [],
+      "summary": "Cotti Coffee — catalogued in coffee · China.",
+      "facts": {
+        "founded": "1917",
+        "origin": "China",
+        "specialty": "Coffee",
+        "story": "Cotti Coffee is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 148,
+      "mark": "marks/coffee__cotti.svg",
+      "markIcon": null,
+      "sort": 29,
+      "status": "active"
+    },
+    {
       "id": "tea__lipton",
       "slug": "lipton",
       "name": "Lipton",
@@ -5012,6 +6447,127 @@
       "mark": "marks/tea__whittard.svg",
       "markIcon": null,
       "sort": 24,
+      "status": "active"
+    },
+    {
+      "id": "tea__chagee",
+      "slug": "chagee",
+      "name": "CHAGEE",
+      "aliases": [
+        "霸王茶姬"
+      ],
+      "categoryId": "tea",
+      "origin": "China",
+      "tags": [
+        "rising"
+      ],
+      "summary": "CHAGEE — catalogued in tea · China.",
+      "facts": {
+        "founded": "1981",
+        "origin": "China",
+        "specialty": "rising",
+        "story": "CHAGEE is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 16,
+      "mark": "marks/tea__chagee.svg",
+      "markIcon": null,
+      "sort": 25,
+      "status": "active"
+    },
+    {
+      "id": "tea__heytea",
+      "slug": "heytea",
+      "name": "HEYTEA",
+      "aliases": [
+        "喜茶"
+      ],
+      "categoryId": "tea",
+      "origin": "China",
+      "tags": [
+        "rising"
+      ],
+      "summary": "HEYTEA — catalogued in tea · China.",
+      "facts": {
+        "founded": "1972",
+        "origin": "China",
+        "specialty": "rising",
+        "story": "HEYTEA is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 321,
+      "mark": "marks/tea__heytea.svg",
+      "markIcon": null,
+      "sort": 26,
+      "status": "active"
+    },
+    {
+      "id": "tea__nayuki",
+      "slug": "nayuki",
+      "name": "Nayuki",
+      "aliases": [
+        "奈雪"
+      ],
+      "categoryId": "tea",
+      "origin": "China",
+      "tags": [
+        "rising"
+      ],
+      "summary": "Nayuki — catalogued in tea · China.",
+      "facts": {
+        "founded": "1894",
+        "origin": "China",
+        "specialty": "rising",
+        "story": "Nayuki is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 98,
+      "mark": "marks/tea__nayuki.svg",
+      "markIcon": null,
+      "sort": 27,
+      "status": "active"
+    },
+    {
+      "id": "tea__gong-cha",
+      "slug": "gong-cha",
+      "name": "Gong Cha",
+      "aliases": [
+        "贡茶"
+      ],
+      "categoryId": "tea",
+      "origin": "Taiwan",
+      "tags": [],
+      "summary": "Gong Cha — catalogued in tea · Taiwan.",
+      "facts": {
+        "founded": "1863",
+        "origin": "Taiwan",
+        "specialty": "Tea",
+        "story": "Gong Cha is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 141,
+      "mark": "marks/tea__gong-cha.svg",
+      "markIcon": null,
+      "sort": 28,
+      "status": "active"
+    },
+    {
+      "id": "tea__chatime",
+      "slug": "chatime",
+      "name": "Chatime",
+      "aliases": [
+        "日出茶太"
+      ],
+      "categoryId": "tea",
+      "origin": "Taiwan",
+      "tags": [],
+      "summary": "Chatime — catalogued in tea · Taiwan.",
+      "facts": {
+        "founded": "1983",
+        "origin": "Taiwan",
+        "specialty": "Tea",
+        "story": "Chatime is still steeping or brewing on shelves and in cafés."
+      },
+      "coverHue": 156,
+      "mark": "marks/tea__chatime.svg",
+      "markIcon": null,
+      "sort": 29,
       "status": "active"
     },
     {
@@ -5666,6 +7222,188 @@
       "status": "active"
     },
     {
+      "id": "clothes__shein",
+      "slug": "shein",
+      "name": "SHEIN",
+      "aliases": [
+        "shein"
+      ],
+      "categoryId": "clothes",
+      "origin": "China",
+      "tags": [
+        "rising"
+      ],
+      "summary": "SHEIN — catalogued in clothes brands · China.",
+      "facts": {
+        "founded": "1861",
+        "origin": "China",
+        "signature": "rising",
+        "story": "SHEIN remains a living house from China."
+      },
+      "coverHue": 232,
+      "mark": "marks/clothes__shein.svg",
+      "markIcon": null,
+      "sort": 30,
+      "status": "active"
+    },
+    {
+      "id": "clothes__gymshark",
+      "slug": "gymshark",
+      "name": "Gymshark",
+      "aliases": [],
+      "categoryId": "clothes",
+      "origin": "UK",
+      "tags": [
+        "rising"
+      ],
+      "summary": "Gymshark — catalogued in clothes brands · UK.",
+      "facts": {
+        "founded": "1893",
+        "origin": "UK",
+        "signature": "rising",
+        "story": "Gymshark remains a living house from UK."
+      },
+      "coverHue": 87,
+      "mark": "marks/clothes__gymshark.svg",
+      "markIcon": null,
+      "sort": 31,
+      "status": "active"
+    },
+    {
+      "id": "clothes__asos",
+      "slug": "asos",
+      "name": "ASOS",
+      "aliases": [],
+      "categoryId": "clothes",
+      "origin": "UK",
+      "tags": [],
+      "summary": "ASOS — catalogued in clothes brands · UK.",
+      "facts": {
+        "founded": "1850",
+        "origin": "UK",
+        "signature": "House style",
+        "story": "ASOS remains a living house from UK."
+      },
+      "coverHue": 203,
+      "mark": "marks/clothes__asos.svg",
+      "markIcon": null,
+      "sort": 32,
+      "status": "active"
+    },
+    {
+      "id": "clothes__skims",
+      "slug": "skims",
+      "name": "SKIMS",
+      "aliases": [],
+      "categoryId": "clothes",
+      "origin": "USA",
+      "tags": [
+        "rising"
+      ],
+      "summary": "SKIMS — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1913",
+        "origin": "USA",
+        "signature": "rising",
+        "story": "SKIMS remains a living house from USA."
+      },
+      "coverHue": 338,
+      "mark": "marks/clothes__skims.svg",
+      "markIcon": null,
+      "sort": 33,
+      "status": "active"
+    },
+    {
+      "id": "clothes__alo",
+      "slug": "alo",
+      "name": "Alo Yoga",
+      "aliases": [
+        "alo"
+      ],
+      "categoryId": "clothes",
+      "origin": "USA",
+      "tags": [
+        "rising"
+      ],
+      "summary": "Alo Yoga — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1810",
+        "origin": "USA",
+        "signature": "rising",
+        "story": "Alo Yoga remains a living house from USA."
+      },
+      "coverHue": 71,
+      "mark": "marks/clothes__alo.svg",
+      "markIcon": null,
+      "sort": 34,
+      "status": "active"
+    },
+    {
+      "id": "clothes__arcteryx",
+      "slug": "arcteryx",
+      "name": "Arc'teryx",
+      "aliases": [
+        "arcteryx"
+      ],
+      "categoryId": "clothes",
+      "origin": "Canada",
+      "tags": [],
+      "summary": "Arc'teryx — catalogued in clothes brands · Canada.",
+      "facts": {
+        "founded": "1913",
+        "origin": "Canada",
+        "signature": "House style",
+        "story": "Arc'teryx remains a living house from Canada."
+      },
+      "coverHue": 19,
+      "mark": "marks/clothes__arcteryx.svg",
+      "markIcon": null,
+      "sort": 35,
+      "status": "active"
+    },
+    {
+      "id": "clothes__canada-goose",
+      "slug": "canada-goose",
+      "name": "Canada Goose",
+      "aliases": [],
+      "categoryId": "clothes",
+      "origin": "Canada",
+      "tags": [],
+      "summary": "Canada Goose — catalogued in clothes brands · Canada.",
+      "facts": {
+        "founded": "1853",
+        "origin": "Canada",
+        "signature": "House style",
+        "story": "Canada Goose remains a living house from Canada."
+      },
+      "coverHue": 143,
+      "mark": "marks/clothes__canada-goose.svg",
+      "markIcon": null,
+      "sort": 36,
+      "status": "active"
+    },
+    {
+      "id": "clothes__stone-island",
+      "slug": "stone-island",
+      "name": "Stone Island",
+      "aliases": [],
+      "categoryId": "clothes",
+      "origin": "Italy",
+      "tags": [],
+      "summary": "Stone Island — catalogued in clothes brands · Italy.",
+      "facts": {
+        "founded": "1986",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Stone Island remains a living house from Italy."
+      },
+      "coverHue": 2,
+      "mark": "marks/clothes__stone-island.svg",
+      "markIcon": null,
+      "sort": 37,
+      "status": "active"
+    },
+    {
       "id": "luxury__louis-vuitton",
       "slug": "louis-vuitton",
       "name": "Louis Vuitton",
@@ -6210,6 +7948,159 @@
       "mark": "marks/luxury__prada.svg",
       "markIcon": null,
       "sort": 24,
+      "status": "active"
+    },
+    {
+      "id": "luxury__balenciaga",
+      "slug": "balenciaga",
+      "name": "Balenciaga",
+      "aliases": [],
+      "categoryId": "luxury",
+      "origin": "Spain",
+      "tags": [],
+      "summary": "Balenciaga — catalogued in luxury brands · Spain.",
+      "facts": {
+        "founded": "1864",
+        "origin": "Spain",
+        "signature": "House style",
+        "story": "Balenciaga remains a living house from Spain."
+      },
+      "coverHue": 279,
+      "mark": "marks/luxury__balenciaga.svg",
+      "markIcon": null,
+      "sort": 25,
+      "status": "active"
+    },
+    {
+      "id": "luxury__loewe",
+      "slug": "loewe",
+      "name": "Loewe",
+      "aliases": [],
+      "categoryId": "luxury",
+      "origin": "Spain",
+      "tags": [],
+      "summary": "Loewe — catalogued in luxury brands · Spain.",
+      "facts": {
+        "founded": "1865",
+        "origin": "Spain",
+        "signature": "House style",
+        "story": "Loewe remains a living house from Spain."
+      },
+      "coverHue": 48,
+      "mark": "marks/luxury__loewe.svg",
+      "markIcon": null,
+      "sort": 26,
+      "status": "active"
+    },
+    {
+      "id": "luxury__moncler",
+      "slug": "moncler",
+      "name": "Moncler",
+      "aliases": [],
+      "categoryId": "luxury",
+      "origin": "Italy",
+      "tags": [],
+      "summary": "Moncler — catalogued in luxury brands · Italy.",
+      "facts": {
+        "founded": "1841",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Moncler remains a living house from Italy."
+      },
+      "coverHue": 98,
+      "mark": "marks/luxury__moncler.svg",
+      "markIcon": null,
+      "sort": 27,
+      "status": "active"
+    },
+    {
+      "id": "luxury__breitling",
+      "slug": "breitling",
+      "name": "Breitling",
+      "aliases": [],
+      "categoryId": "luxury",
+      "origin": "Switzerland",
+      "tags": [],
+      "summary": "Breitling — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "1874",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Breitling remains a living house from Switzerland."
+      },
+      "coverHue": 326,
+      "mark": "marks/luxury__breitling.svg",
+      "markIcon": null,
+      "sort": 28,
+      "status": "active"
+    },
+    {
+      "id": "luxury__tag-heuer",
+      "slug": "tag-heuer",
+      "name": "TAG Heuer",
+      "aliases": [
+        "tag heuer"
+      ],
+      "categoryId": "luxury",
+      "origin": "Switzerland",
+      "tags": [],
+      "summary": "TAG Heuer — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "2009",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "TAG Heuer remains a living house from Switzerland."
+      },
+      "coverHue": 218,
+      "mark": "marks/luxury__tag-heuer.svg",
+      "markIcon": null,
+      "sort": 29,
+      "status": "active"
+    },
+    {
+      "id": "luxury__jaeger-lecoultre",
+      "slug": "jaeger-lecoultre",
+      "name": "Jaeger-LeCoultre",
+      "aliases": [
+        "jlc"
+      ],
+      "categoryId": "luxury",
+      "origin": "Switzerland",
+      "tags": [],
+      "summary": "Jaeger-LeCoultre — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "2005",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Jaeger-LeCoultre remains a living house from Switzerland."
+      },
+      "coverHue": 292,
+      "mark": "marks/luxury__jaeger-lecoultre.svg",
+      "markIcon": null,
+      "sort": 30,
+      "status": "active"
+    },
+    {
+      "id": "luxury__vacheron",
+      "slug": "vacheron",
+      "name": "Vacheron Constantin",
+      "aliases": [
+        "vacheron"
+      ],
+      "categoryId": "luxury",
+      "origin": "Switzerland",
+      "tags": [],
+      "summary": "Vacheron Constantin — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "1997",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Vacheron Constantin remains a living house from Switzerland."
+      },
+      "coverHue": 180,
+      "mark": "marks/luxury__vacheron.svg",
+      "markIcon": null,
+      "sort": 31,
       "status": "active"
     },
     {
@@ -6792,6 +8683,121 @@
       "status": "active"
     },
     {
+      "id": "trees__bamboo",
+      "slug": "bamboo",
+      "name": "Bamboo",
+      "aliases": [
+        "bambusoideae"
+      ],
+      "categoryId": "trees",
+      "origin": null,
+      "tags": [],
+      "summary": "Bamboo — catalogued in trees.",
+      "facts": {
+        "species": "bambusoideae",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Bamboo is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
+      },
+      "coverHue": 164,
+      "mark": "marks/trees__bamboo.svg",
+      "markIcon": null,
+      "sort": 25,
+      "status": "active"
+    },
+    {
+      "id": "trees__teak",
+      "slug": "teak",
+      "name": "Teak",
+      "aliases": [
+        "tectona"
+      ],
+      "categoryId": "trees",
+      "origin": null,
+      "tags": [],
+      "summary": "Teak — catalogued in trees.",
+      "facts": {
+        "species": "tectona",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Teak is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
+      },
+      "coverHue": 131,
+      "mark": "marks/trees__teak.svg",
+      "markIcon": null,
+      "sort": 26,
+      "status": "active"
+    },
+    {
+      "id": "trees__mahogany",
+      "slug": "mahogany",
+      "name": "Mahogany",
+      "aliases": [
+        "swietenia"
+      ],
+      "categoryId": "trees",
+      "origin": null,
+      "tags": [],
+      "summary": "Mahogany — catalogued in trees.",
+      "facts": {
+        "species": "swietenia",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Mahogany is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
+      },
+      "coverHue": 0,
+      "mark": "marks/trees__mahogany.svg",
+      "markIcon": null,
+      "sort": 27,
+      "status": "active"
+    },
+    {
+      "id": "trees__acacia",
+      "slug": "acacia",
+      "name": "Acacia",
+      "aliases": [
+        "wattle"
+      ],
+      "categoryId": "trees",
+      "origin": null,
+      "tags": [],
+      "summary": "Acacia — catalogued in trees.",
+      "facts": {
+        "species": "wattle",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Acacia is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
+      },
+      "coverHue": 284,
+      "mark": "marks/trees__acacia.svg",
+      "markIcon": null,
+      "sort": 28,
+      "status": "active"
+    },
+    {
+      "id": "trees__douglas-fir",
+      "slug": "douglas-fir",
+      "name": "Douglas fir",
+      "aliases": [
+        "pseudotsuga"
+      ],
+      "categoryId": "trees",
+      "origin": null,
+      "tags": [],
+      "summary": "Douglas fir — catalogued in trees.",
+      "facts": {
+        "species": "pseudotsuga",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Douglas fir is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
+      },
+      "coverHue": 235,
+      "mark": "marks/trees__douglas-fir.svg",
+      "markIcon": null,
+      "sort": 29,
+      "status": "active"
+    },
+    {
       "id": "flowers__rose",
       "slug": "rose",
       "name": "Rose",
@@ -7350,6 +9356,117 @@
       "mark": "marks/flowers__dahlia.svg",
       "markIcon": null,
       "sort": 24,
+      "status": "active"
+    },
+    {
+      "id": "flowers__sakura",
+      "slug": "sakura",
+      "name": "Cherry blossom flower",
+      "aliases": [
+        "sakura bloom"
+      ],
+      "categoryId": "flowers",
+      "origin": null,
+      "tags": [],
+      "summary": "Cherry blossom flower — catalogued in flowers.",
+      "facts": {
+        "species": "sakura bloom",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Cherry blossom flower still opens in gardens and wild places."
+      },
+      "coverHue": 164,
+      "mark": "marks/flowers__sakura.svg",
+      "markIcon": null,
+      "sort": 25,
+      "status": "active"
+    },
+    {
+      "id": "flowers__wisteria",
+      "slug": "wisteria",
+      "name": "Wisteria",
+      "aliases": [],
+      "categoryId": "flowers",
+      "origin": null,
+      "tags": [],
+      "summary": "Wisteria — catalogued in flowers.",
+      "facts": {
+        "species": "Wisteria",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Wisteria still opens in gardens and wild places."
+      },
+      "coverHue": 205,
+      "mark": "marks/flowers__wisteria.svg",
+      "markIcon": null,
+      "sort": 26,
+      "status": "active"
+    },
+    {
+      "id": "flowers__magnolia-flower",
+      "slug": "magnolia-flower",
+      "name": "Magnolia blossom",
+      "aliases": [
+        "magnolia flower"
+      ],
+      "categoryId": "flowers",
+      "origin": null,
+      "tags": [],
+      "summary": "Magnolia blossom — catalogued in flowers.",
+      "facts": {
+        "species": "magnolia flower",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Magnolia blossom still opens in gardens and wild places."
+      },
+      "coverHue": 43,
+      "mark": "marks/flowers__magnolia-flower.svg",
+      "markIcon": null,
+      "sort": 27,
+      "status": "active"
+    },
+    {
+      "id": "flowers__anthurium",
+      "slug": "anthurium",
+      "name": "Anthurium",
+      "aliases": [],
+      "categoryId": "flowers",
+      "origin": null,
+      "tags": [],
+      "summary": "Anthurium — catalogued in flowers.",
+      "facts": {
+        "species": "Anthurium",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Anthurium still opens in gardens and wild places."
+      },
+      "coverHue": 158,
+      "mark": "marks/flowers__anthurium.svg",
+      "markIcon": null,
+      "sort": 28,
+      "status": "active"
+    },
+    {
+      "id": "flowers__bird-of-paradise",
+      "slug": "bird-of-paradise",
+      "name": "Bird of paradise",
+      "aliases": [
+        "strelitzia"
+      ],
+      "categoryId": "flowers",
+      "origin": null,
+      "tags": [],
+      "summary": "Bird of paradise — catalogued in flowers.",
+      "facts": {
+        "species": "strelitzia",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Bird of paradise still opens in gardens and wild places."
+      },
+      "coverHue": 70,
+      "mark": "marks/flowers__bird-of-paradise.svg",
+      "markIcon": null,
+      "sort": 29,
       "status": "active"
     },
     {
@@ -8034,6 +10151,176 @@
       "status": "active"
     },
     {
+      "id": "animals__koala",
+      "slug": "koala",
+      "name": "Koala",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": "Australia",
+      "tags": [],
+      "summary": "Koala — catalogued in animals & insects · Australia.",
+      "facts": {
+        "species": "Koala",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Koala is still alive on Earth today."
+      },
+      "coverHue": 316,
+      "mark": "marks/animals__koala.svg",
+      "markIcon": null,
+      "sort": 30,
+      "status": "active"
+    },
+    {
+      "id": "animals__kangaroo",
+      "slug": "kangaroo",
+      "name": "Kangaroo",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": "Australia",
+      "tags": [],
+      "summary": "Kangaroo — catalogued in animals & insects · Australia.",
+      "facts": {
+        "species": "Kangaroo",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Kangaroo is still alive on Earth today."
+      },
+      "coverHue": 102,
+      "mark": "marks/animals__kangaroo.svg",
+      "markIcon": null,
+      "sort": 31,
+      "status": "active"
+    },
+    {
+      "id": "animals__giraffe",
+      "slug": "giraffe",
+      "name": "Giraffe",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": null,
+      "tags": [],
+      "summary": "Giraffe — catalogued in animals & insects.",
+      "facts": {
+        "species": "Giraffe",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Giraffe is still alive on Earth today."
+      },
+      "coverHue": 62,
+      "mark": "marks/animals__giraffe.svg",
+      "markIcon": null,
+      "sort": 32,
+      "status": "active"
+    },
+    {
+      "id": "animals__zebra",
+      "slug": "zebra",
+      "name": "Zebra",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": null,
+      "tags": [],
+      "summary": "Zebra — catalogued in animals & insects.",
+      "facts": {
+        "species": "Zebra",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Zebra is still alive on Earth today."
+      },
+      "coverHue": 208,
+      "mark": "marks/animals__zebra.svg",
+      "markIcon": null,
+      "sort": 33,
+      "status": "active"
+    },
+    {
+      "id": "animals__shark",
+      "slug": "shark",
+      "name": "Shark",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": null,
+      "tags": [],
+      "summary": "Shark — catalogued in animals & insects.",
+      "facts": {
+        "species": "Shark",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Shark is still alive on Earth today."
+      },
+      "coverHue": 303,
+      "mark": "marks/animals__shark.svg",
+      "markIcon": null,
+      "sort": 34,
+      "status": "active"
+    },
+    {
+      "id": "animals__flamingo",
+      "slug": "flamingo",
+      "name": "Flamingo",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": null,
+      "tags": [],
+      "summary": "Flamingo — catalogued in animals & insects.",
+      "facts": {
+        "species": "Flamingo",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Flamingo is still alive on Earth today."
+      },
+      "coverHue": 157,
+      "mark": "marks/animals__flamingo.svg",
+      "markIcon": null,
+      "sort": 35,
+      "status": "active"
+    },
+    {
+      "id": "animals__parrot",
+      "slug": "parrot",
+      "name": "Parrot",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": null,
+      "tags": [],
+      "summary": "Parrot — catalogued in animals & insects.",
+      "facts": {
+        "species": "Parrot",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Parrot is still alive on Earth today."
+      },
+      "coverHue": 164,
+      "mark": "marks/animals__parrot.svg",
+      "markIcon": null,
+      "sort": 36,
+      "status": "active"
+    },
+    {
+      "id": "animals__cricket",
+      "slug": "cricket",
+      "name": "Cricket",
+      "aliases": [],
+      "categoryId": "animals",
+      "origin": null,
+      "tags": [
+        "insect"
+      ],
+      "summary": "Cricket — catalogued in animals & insects.",
+      "facts": {
+        "species": "Cricket",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Cricket is still alive on Earth today."
+      },
+      "coverHue": 155,
+      "mark": "marks/animals__cricket.svg",
+      "markIcon": null,
+      "sort": 37,
+      "status": "active"
+    },
+    {
       "id": "food__coca-cola",
       "slug": "coca-cola",
       "name": "Coca-Cola",
@@ -8700,6 +10987,190 @@
       "mark": "marks/food__nissin.svg",
       "markIcon": null,
       "sort": 29,
+      "status": "active"
+    },
+    {
+      "id": "food__koala-march",
+      "slug": "koala-march",
+      "name": "Koala's March",
+      "aliases": [
+        "koala no march",
+        "コアラのマーチ"
+      ],
+      "categoryId": "food",
+      "origin": "Japan",
+      "tags": [],
+      "summary": "Koala's March — catalogued in food · Japan.",
+      "facts": {
+        "introduced": "1970",
+        "origin": "Japan",
+        "category": "Packaged food",
+        "story": "Koala's March is still on tables and shelves."
+      },
+      "coverHue": 345,
+      "mark": "marks/food__koala-march.svg",
+      "markIcon": null,
+      "sort": 30,
+      "status": "active"
+    },
+    {
+      "id": "food__lotte",
+      "slug": "lotte",
+      "name": "Lotte",
+      "aliases": [],
+      "categoryId": "food",
+      "origin": "South Korea",
+      "tags": [],
+      "summary": "Lotte — catalogued in food · South Korea.",
+      "facts": {
+        "introduced": "1966",
+        "origin": "South Korea",
+        "category": "Packaged food",
+        "story": "Lotte is still on tables and shelves."
+      },
+      "coverHue": 35,
+      "mark": "marks/food__lotte.svg",
+      "markIcon": null,
+      "sort": 31,
+      "status": "active"
+    },
+    {
+      "id": "food__orion",
+      "slug": "orion",
+      "name": "Orion",
+      "aliases": [],
+      "categoryId": "food",
+      "origin": "South Korea",
+      "tags": [],
+      "summary": "Orion — catalogued in food · South Korea.",
+      "facts": {
+        "introduced": "1885",
+        "origin": "South Korea",
+        "category": "Packaged food",
+        "story": "Orion is still on tables and shelves."
+      },
+      "coverHue": 214,
+      "mark": "marks/food__orion.svg",
+      "markIcon": null,
+      "sort": 32,
+      "status": "active"
+    },
+    {
+      "id": "food__want-want",
+      "slug": "want-want",
+      "name": "Want Want",
+      "aliases": [
+        "旺旺"
+      ],
+      "categoryId": "food",
+      "origin": "China",
+      "tags": [],
+      "summary": "Want Want — catalogued in food · China.",
+      "facts": {
+        "introduced": "1927",
+        "origin": "China",
+        "category": "Packaged food",
+        "story": "Want Want is still on tables and shelves."
+      },
+      "coverHue": 326,
+      "mark": "marks/food__want-want.svg",
+      "markIcon": null,
+      "sort": 33,
+      "status": "active"
+    },
+    {
+      "id": "food__three-squirrels",
+      "slug": "three-squirrels",
+      "name": "Three Squirrels",
+      "aliases": [
+        "三只松鼠"
+      ],
+      "categoryId": "food",
+      "origin": "China",
+      "tags": [
+        "rising"
+      ],
+      "summary": "Three Squirrels — catalogued in food · China.",
+      "facts": {
+        "introduced": "1961",
+        "origin": "China",
+        "category": "rising",
+        "story": "Three Squirrels is still on tables and shelves."
+      },
+      "coverHue": 316,
+      "mark": "marks/food__three-squirrels.svg",
+      "markIcon": null,
+      "sort": 34,
+      "status": "active"
+    },
+    {
+      "id": "food__nongshim",
+      "slug": "nongshim",
+      "name": "Nongshim",
+      "aliases": [
+        "농심",
+        "shin ramyun"
+      ],
+      "categoryId": "food",
+      "origin": "South Korea",
+      "tags": [],
+      "summary": "Nongshim — catalogued in food · South Korea.",
+      "facts": {
+        "introduced": "1953",
+        "origin": "South Korea",
+        "category": "Packaged food",
+        "story": "Nongshim is still on tables and shelves."
+      },
+      "coverHue": 34,
+      "mark": "marks/food__nongshim.svg",
+      "markIcon": null,
+      "sort": 35,
+      "status": "active"
+    },
+    {
+      "id": "food__gatorade",
+      "slug": "gatorade",
+      "name": "Gatorade",
+      "aliases": [],
+      "categoryId": "food",
+      "origin": "USA",
+      "tags": [
+        "drink"
+      ],
+      "summary": "Gatorade — catalogued in food · USA.",
+      "facts": {
+        "introduced": "1913",
+        "origin": "USA",
+        "category": "drink",
+        "story": "Gatorade is still on tables and shelves."
+      },
+      "coverHue": 68,
+      "mark": "marks/food__gatorade.svg",
+      "markIcon": null,
+      "sort": 36,
+      "status": "active"
+    },
+    {
+      "id": "food__sprite",
+      "slug": "sprite",
+      "name": "Sprite",
+      "aliases": [],
+      "categoryId": "food",
+      "origin": "USA",
+      "tags": [
+        "drink"
+      ],
+      "summary": "Sprite — catalogued in food · USA.",
+      "facts": {
+        "introduced": "1941",
+        "origin": "USA",
+        "category": "drink",
+        "story": "Sprite is still on tables and shelves."
+      },
+      "coverHue": 276,
+      "mark": "marks/food__sprite.svg",
+      "markIcon": null,
+      "sort": 37,
       "status": "active"
     }
   ]

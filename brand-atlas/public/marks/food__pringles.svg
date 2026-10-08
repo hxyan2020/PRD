@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <defs>
-    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
-  </defs>
-  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAA21BMVEXqACr///8cHBrqACgZGRfqACcYGBbtACogIB75+fntIkbm5ub09PT94+f96u7+7/H7z9coKCZ+fn0xMS/mASrSAyjeAikfHBpWFB+6BybuLU/yZX76vcj1g5j4p7brETjxVnLyXnipqajGxsbY2NhCQkA6OjnPz85bW1pubm1lZWSPj47wRmS6urlZWVjzbYWqCSWeCiSEDiI1GRwpGhtqESBDFx14DyFhEx9JFh2QDCO2BybsFjygCiTuNVf2l6jHBSf6yNH0d42enp36tcL0f5T2jaCGhoX7zdXR5wmlAAAC6ElEQVRIic1VW3uiQAxlmIECAwiCtuIFb2hBwN5brbWttdL//4s2gFhQcN/22zwMt3NykpkkMMw/tguw4xdnCY2btw8zB2ncLltmNbx5d3/JPjw2Du5bTyz78NyswpuP7OXT1dXTc+bTfFncLR/vnys0Lm4vFzcN02wcFMxWE1JoXb2W59FcvDSSL7BgjDkO4/SxtSwXeF0keEAy9kqy1mtLsk3MYXBVTnhbXgAa2+v2e0dT1FpNVbRtty+ZMafMPhqYs/3dZw3lTVR6fbuCwtn9bRGdMJDYGdglDGz2O+IJHA29EZC26xMGlt4T7zQY5/HU4UMZrsqAKVKwr6UBuKyTZ9AJ0afxTW2eZ2BmoB4AfJTPwONTAqq18wLtLFnqEP46n8r4ui6nd6rPHQQGv5tT53m3uEsHeme1D4pbK7mg3XBUwMt7wpSieUrAq04RkfMqDz0nrAdxUF+u/JkeB94UQkByEHmhN5sCSa4LPCFED4dUjoShmGSBJaUgEIQ64XmeGHWKhgKbGBEmjg6b0cUnArSuE3aPCqfXPJs9wFtjvIVWwjZkMM7OahSyv0Ycg82bMIqT4CwV0TBIo/8yCFttQqDFhD5sAJnF0U894Rye1aeJwgaJIW/MgqF71n0cIY1z4L7j+gE99jwcCBHawS6BAq10LUzyAmPUh3Pg2qlCedSBR/bf+MkIKVKs4ItyWEEgE0ojg42PUfegyHfM/qCjCkJct+L4y/Xc2QjKSbGSUjJ7aGqUE/RC3aLvfXH7NRSVE6ICPmsHDBKyVxIU8Wgerx0GB4b+od7xMRDBLeAV/3cGYOhoeWaQHIUQYyZX4SGoDfT0uO4IJG4XWAQnKkwn9FMcZNicx1OGxq3mOKEXBYVokNiTjgYfZvyffUODHQ9MbWCejlYsdRVUZqK2kXDZ8MaM1dVOhrG6bZfDEwpe9XefakYSVa03tyr/JikF/j+W3/7u7rqbtm+tzqMzGQ4sXf6O/j/sD6tyRPxykZp9AAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Pringles">
+  <circle cx="80" cy="80" r="62" fill="none" stroke="#C4C4C4" stroke-width="3" opacity="0.55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="#C4C4C4" stroke-width="1.5" opacity="0.35"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-size="34" font-weight="800" letter-spacing="0.06em" fill="#C4C4C4">Pringles</text>
 </svg>
