@@ -453,19 +453,7 @@ select {
 }
 
 .method__mark {
-  position: absolute;
-  inset-inline-start: 0.65rem;
-  bottom: 0.65rem;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.28rem 0.5rem 0.28rem 0.28rem;
-  background: rgba(10, 22, 28, 0.72);
-  color: #f4f7f8;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(6px);
-  max-width: calc(100% - 1.3rem);
+  display: none !important;
 }
 
 .method__mark-label {
