@@ -411,9 +411,15 @@ const CURATED_PHOTOS = {
   Dice: [commons("Dice.jpg")],
   "Spinning top": [commons("Spinning_top.jpg")],
   Tops: [commons("Spinning_top.jpg")],
-  Surakarta: [commons("Surakarta.jpg"), commons("Board_game.jpg")],
+  Surakarta: [commons("Surakarta.jpg")],
   Fanorona: [commons("Fanorona.jpg")],
-  Mehen: [commons("Mehen.jpg")],
+  // Commons File:Mehen.jpg is a modern snake tattoo — never use that name.
+  Mehen: [
+    commons("British Museum Mehen Board.jpg"),
+    commons(
+      "Mehen, egyptian snake game - rmo leiden, 5th-6th dynasty 2575-2150bc.jpg",
+    ),
+  ],
   Ganjifa: [
     commons("Ganjifa_Cards,_Medieval_India_at_National_Musuem,_New_Delhi.jpg"),
     commons("Cards_-Deck_Playing.jpg"),
@@ -439,7 +445,12 @@ const CURATED_PHOTOS = {
   ],
   "Tea set toy": [commons("Tea_set.jpg"), commons("Dollhouse.jpg")],
   Boomerang: [commons("Boomerang.jpg")],
-  Palín: [commons("Palin.jpg"), commons("Chueca.jpg")],
+  // Commons File:Chueca.jpg / Palin.jpg are Madrid metro / unrelated — use Mapuche sport art.
+  Palín: [
+    commons("Palin_mapuche.jpg"),
+    commons("Mapuche Chueca-Alonso Ovalle.jpg"),
+    commons("Escena Mapuche durante juego de la Chueca por Claudio Gay.jpg"),
+  ],
   Slinky: [commons("Slinky_toy.jpg")],
   Poi: [
     commons("Long_exposure_shot_of_fire_poi_ball_dance.jpg"),
