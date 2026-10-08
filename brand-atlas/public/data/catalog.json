@@ -2,7 +2,7 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-08T14:37:34.671Z",
+    "generatedAt": "2026-10-08T14:39:47.981Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
@@ -126,7 +126,7 @@
       ],
       "summary": "Toyota — catalogued in car brands · Japan.",
       "facts": {
-        "established": "1764",
+        "established": "1937",
         "headquarters": "Japan",
         "knownFor": "sedan, hybrid",
         "story": "Toyota remains an active automaker from Japan, still building vehicles people drive today."
@@ -150,7 +150,7 @@
       ],
       "summary": "Honda — catalogued in car brands · Japan.",
       "facts": {
-        "established": "2018",
+        "established": "1948",
         "headquarters": "Japan",
         "knownFor": "civic, accord",
         "story": "Honda remains an active automaker from Japan, still building vehicles people drive today."
@@ -172,7 +172,7 @@
       "tags": [],
       "summary": "Nissan — catalogued in car brands · Japan.",
       "facts": {
-        "established": "1840",
+        "established": "1933",
         "headquarters": "Japan",
         "knownFor": "Automobiles still in production",
         "story": "Nissan remains an active automaker from Japan, still building vehicles people drive today."
@@ -193,7 +193,7 @@
       "tags": [],
       "summary": "Mazda — catalogued in car brands · Japan.",
       "facts": {
-        "established": "1913",
+        "established": "1920",
         "headquarters": "Japan",
         "knownFor": "Automobiles still in production",
         "story": "Mazda remains an active automaker from Japan, still building vehicles people drive today."
@@ -214,7 +214,7 @@
       "tags": [],
       "summary": "Subaru — catalogued in car brands · Japan.",
       "facts": {
-        "established": "1734",
+        "established": "1953",
         "headquarters": "Japan",
         "knownFor": "Automobiles still in production",
         "story": "Subaru remains an active automaker from Japan, still building vehicles people drive today."
@@ -233,7 +233,7 @@
       "tags": [],
       "summary": "Mitsubishi — catalogued in car brands · Japan.",
       "facts": {
-        "established": "1685",
+        "established": "1977",
         "headquarters": "Japan",
         "knownFor": "Automobiles still in production",
         "story": "Mitsubishi remains an active automaker from Japan, still building vehicles people drive today."
@@ -252,7 +252,7 @@
       "tags": [],
       "summary": "Suzuki — catalogued in car brands · Japan.",
       "facts": {
-        "established": "1759",
+        "established": "1957",
         "headquarters": "Japan",
         "knownFor": "Automobiles still in production",
         "story": "Suzuki remains an active automaker from Japan, still building vehicles people drive today."
@@ -273,7 +273,7 @@
       ],
       "summary": "Lexus — catalogued in car brands · Japan.",
       "facts": {
-        "established": "1941",
+        "established": "2006",
         "headquarters": "Japan",
         "knownFor": "luxury",
         "story": "Lexus remains an active automaker from Japan, still building vehicles people drive today."
@@ -295,7 +295,7 @@
       ],
       "summary": "Ford — catalogued in car brands · USA.",
       "facts": {
-        "established": "2015",
+        "established": "1903",
         "headquarters": "USA",
         "knownFor": "mustang, f-150",
         "story": "Ford remains an active automaker from USA, still building vehicles people drive today."
@@ -317,7 +317,7 @@
       "tags": [],
       "summary": "Chevrolet — catalogued in car brands · USA.",
       "facts": {
-        "established": "1776",
+        "established": "1911",
         "headquarters": "USA",
         "knownFor": "Automobiles still in production",
         "story": "Chevrolet remains an active automaker from USA, still building vehicles people drive today."
@@ -339,7 +339,7 @@
       ],
       "summary": "Tesla — catalogued in car brands · USA.",
       "facts": {
-        "established": "1969",
+        "established": "2003",
         "headquarters": "USA",
         "knownFor": "ev, electric",
         "story": "Tesla remains an active automaker from USA, still building vehicles people drive today."
@@ -360,7 +360,7 @@
       ],
       "summary": "Jeep — catalogued in car brands · USA.",
       "facts": {
-        "established": "1856",
+        "established": "1977",
         "headquarters": "USA",
         "knownFor": "suv",
         "story": "Jeep remains an active automaker from USA, still building vehicles people drive today."
@@ -379,7 +379,7 @@
       "tags": [],
       "summary": "Cadillac — catalogued in car brands · USA.",
       "facts": {
-        "established": "1897",
+        "established": "2010",
         "headquarters": "USA",
         "knownFor": "Automobiles still in production",
         "story": "Cadillac remains an active automaker from USA, still building vehicles people drive today."
@@ -400,7 +400,7 @@
       "tags": [],
       "summary": "BMW — catalogued in car brands · Germany.",
       "facts": {
-        "established": "1958",
+        "established": "1916",
         "headquarters": "Germany",
         "knownFor": "Automobiles still in production",
         "story": "BMW remains an active automaker from Germany, still building vehicles people drive today."
@@ -422,7 +422,7 @@
       "tags": [],
       "summary": "Mercedes-Benz — catalogued in car brands · Germany.",
       "facts": {
-        "established": "1768",
+        "established": "1926",
         "headquarters": "Germany",
         "knownFor": "Automobiles still in production",
         "story": "Mercedes-Benz remains an active automaker from Germany, still building vehicles people drive today."
@@ -443,7 +443,7 @@
       ],
       "summary": "Audi — catalogued in car brands · Germany.",
       "facts": {
-        "established": "1807",
+        "established": "1909",
         "headquarters": "Germany",
         "knownFor": "rings",
         "story": "Audi remains an active automaker from Germany, still building vehicles people drive today."
@@ -465,7 +465,7 @@
       "tags": [],
       "summary": "Volkswagen — catalogued in car brands · Germany.",
       "facts": {
-        "established": "2005",
+        "established": "1937",
         "headquarters": "Germany",
         "knownFor": "Automobiles still in production",
         "story": "Volkswagen remains an active automaker from Germany, still building vehicles people drive today."
@@ -484,7 +484,7 @@
       "tags": [],
       "summary": "Porsche — catalogued in car brands · Germany.",
       "facts": {
-        "established": "1980",
+        "established": "1931",
         "headquarters": "Germany",
         "knownFor": "Automobiles still in production",
         "story": "Porsche remains an active automaker from Germany, still building vehicles people drive today."
@@ -503,7 +503,7 @@
       "tags": [],
       "summary": "Opel — catalogued in car brands · Germany.",
       "facts": {
-        "established": "1756",
+        "established": "1984",
         "headquarters": "Germany",
         "knownFor": "Automobiles still in production",
         "story": "Opel remains an active automaker from Germany, still building vehicles people drive today."
@@ -524,7 +524,7 @@
       ],
       "summary": "Ferrari — catalogued in car brands · Italy.",
       "facts": {
-        "established": "1687",
+        "established": "1947",
         "headquarters": "Italy",
         "knownFor": "supercar",
         "story": "Ferrari remains an active automaker from Italy, still building vehicles people drive today."
@@ -543,7 +543,7 @@
       "tags": [],
       "summary": "Lamborghini — catalogued in car brands · Italy.",
       "facts": {
-        "established": "1712",
+        "established": "1963",
         "headquarters": "Italy",
         "knownFor": "Automobiles still in production",
         "story": "Lamborghini remains an active automaker from Italy, still building vehicles people drive today."
@@ -562,7 +562,7 @@
       "tags": [],
       "summary": "Fiat — catalogued in car brands · Italy.",
       "facts": {
-        "established": "1736",
+        "established": "1972",
         "headquarters": "Italy",
         "knownFor": "Automobiles still in production",
         "story": "Fiat remains an active automaker from Italy, still building vehicles people drive today."
@@ -581,7 +581,7 @@
       "tags": [],
       "summary": "Alfa Romeo — catalogued in car brands · Italy.",
       "facts": {
-        "established": "1807",
+        "established": "1994",
         "headquarters": "Italy",
         "knownFor": "Automobiles still in production",
         "story": "Alfa Romeo remains an active automaker from Italy, still building vehicles people drive today."
@@ -600,7 +600,7 @@
       "tags": [],
       "summary": "Maserati — catalogued in car brands · Italy.",
       "facts": {
-        "established": "1790",
+        "established": "1914",
         "headquarters": "Italy",
         "knownFor": "Automobiles still in production",
         "story": "Maserati remains an active automaker from Italy, still building vehicles people drive today."
@@ -619,7 +619,7 @@
       "tags": [],
       "summary": "Volvo — catalogued in car brands · Sweden.",
       "facts": {
-        "established": "1822",
+        "established": "1927",
         "headquarters": "Sweden",
         "knownFor": "Automobiles still in production",
         "story": "Volvo remains an active automaker from Sweden, still building vehicles people drive today."
@@ -638,7 +638,7 @@
       "tags": [],
       "summary": "Saab — catalogued in car brands · Sweden.",
       "facts": {
-        "established": "1867",
+        "established": "1923",
         "headquarters": "Sweden",
         "knownFor": "Automobiles still in production",
         "story": "Saab remains an active automaker from Sweden, still building vehicles people drive today."
@@ -657,7 +657,7 @@
       "tags": [],
       "summary": "Hyundai — catalogued in car brands · South Korea.",
       "facts": {
-        "established": "1950",
+        "established": "1967",
         "headquarters": "South Korea",
         "knownFor": "Automobiles still in production",
         "story": "Hyundai remains an active automaker from South Korea, still building vehicles people drive today."
@@ -676,7 +676,7 @@
       "tags": [],
       "summary": "Kia — catalogued in car brands · South Korea.",
       "facts": {
-        "established": "1745",
+        "established": "1944",
         "headquarters": "South Korea",
         "knownFor": "Automobiles still in production",
         "story": "Kia remains an active automaker from South Korea, still building vehicles people drive today."
@@ -695,7 +695,7 @@
       "tags": [],
       "summary": "Genesis — catalogued in car brands · South Korea.",
       "facts": {
-        "established": "2006",
+        "established": "1933",
         "headquarters": "South Korea",
         "knownFor": "Automobiles still in production",
         "story": "Genesis remains an active automaker from South Korea, still building vehicles people drive today."
@@ -714,7 +714,7 @@
       "tags": [],
       "summary": "Peugeot — catalogued in car brands · France.",
       "facts": {
-        "established": "1913",
+        "established": "1810",
         "headquarters": "France",
         "knownFor": "Automobiles still in production",
         "story": "Peugeot remains an active automaker from France, still building vehicles people drive today."
@@ -733,7 +733,7 @@
       "tags": [],
       "summary": "Renault — catalogued in car brands · France.",
       "facts": {
-        "established": "1711",
+        "established": "1899",
         "headquarters": "France",
         "knownFor": "Automobiles still in production",
         "story": "Renault remains an active automaker from France, still building vehicles people drive today."
@@ -754,7 +754,7 @@
       "tags": [],
       "summary": "Citroën — catalogued in car brands · France.",
       "facts": {
-        "established": "1732",
+        "established": "1963",
         "headquarters": "France",
         "knownFor": "Automobiles still in production",
         "story": "Citroën remains an active automaker from France, still building vehicles people drive today."
@@ -773,7 +773,7 @@
       "tags": [],
       "summary": "Jaguar — catalogued in car brands · UK.",
       "facts": {
-        "established": "1974",
+        "established": "1922",
         "headquarters": "UK",
         "knownFor": "Automobiles still in production",
         "story": "Jaguar remains an active automaker from UK, still building vehicles people drive today."
@@ -794,7 +794,7 @@
       "tags": [],
       "summary": "Land Rover — catalogued in car brands · UK.",
       "facts": {
-        "established": "1742",
+        "established": "1964",
         "headquarters": "UK",
         "knownFor": "Automobiles still in production",
         "story": "Land Rover remains an active automaker from UK, still building vehicles people drive today."
@@ -813,7 +813,7 @@
       "tags": [],
       "summary": "MINI — catalogued in car brands · UK.",
       "facts": {
-        "established": "1773",
+        "established": "1905",
         "headquarters": "UK",
         "knownFor": "Automobiles still in production",
         "story": "MINI remains an active automaker from UK, still building vehicles people drive today."
@@ -832,7 +832,7 @@
       "tags": [],
       "summary": "Rolls-Royce — catalogued in car brands · UK.",
       "facts": {
-        "established": "1811",
+        "established": "1904",
         "headquarters": "UK",
         "knownFor": "Automobiles still in production",
         "story": "Rolls-Royce remains an active automaker from UK, still building vehicles people drive today."
@@ -851,7 +851,7 @@
       "tags": [],
       "summary": "Bentley — catalogued in car brands · UK.",
       "facts": {
-        "established": "1803",
+        "established": "1919",
         "headquarters": "UK",
         "knownFor": "Automobiles still in production",
         "story": "Bentley remains an active automaker from UK, still building vehicles people drive today."
@@ -870,7 +870,7 @@
       "tags": [],
       "summary": "Aston Martin — catalogued in car brands · UK.",
       "facts": {
-        "established": "1993",
+        "established": "1913",
         "headquarters": "UK",
         "knownFor": "Automobiles still in production",
         "story": "Aston Martin remains an active automaker from UK, still building vehicles people drive today."
@@ -910,7 +910,7 @@
       "tags": [],
       "summary": "Geely — catalogued in car brands · China.",
       "facts": {
-        "established": "1694",
+        "established": "1963",
         "headquarters": "China",
         "knownFor": "Automobiles still in production",
         "story": "Geely remains an active automaker from China, still building vehicles people drive today."
@@ -931,7 +931,7 @@
       ],
       "summary": "Marlboro — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "1938",
+        "introduced": "1924",
         "origin": "USA",
         "house": "philip morris",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -952,7 +952,7 @@
       ],
       "summary": "Camel — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "1730",
+        "introduced": "1882",
         "origin": "USA",
         "house": "rj reynolds",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -971,7 +971,7 @@
       "tags": [],
       "summary": "Lucky Strike — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "1987",
+        "introduced": "1929",
         "origin": "USA",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -990,7 +990,7 @@
       "tags": [],
       "summary": "Winston — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "1802",
+        "introduced": "1950",
         "origin": "USA",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1009,7 +1009,7 @@
       "tags": [],
       "summary": "Pall Mall — catalogued in cigarette brands · UK.",
       "facts": {
-        "introduced": "1900",
+        "introduced": "1898",
         "origin": "UK",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1028,7 +1028,7 @@
       "tags": [],
       "summary": "Parliament — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "1777",
+        "introduced": "1961",
         "origin": "USA",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1047,7 +1047,7 @@
       "tags": [],
       "summary": "Chesterfield — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "2014",
+        "introduced": "1918",
         "origin": "USA",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1066,7 +1066,7 @@
       "tags": [],
       "summary": "Kent — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "1714",
+        "introduced": "1938",
         "origin": "USA",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1085,7 +1085,7 @@
       "tags": [],
       "summary": "Dunhill — catalogued in cigarette brands · UK.",
       "facts": {
-        "introduced": "1760",
+        "introduced": "1914",
         "origin": "UK",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1106,7 +1106,7 @@
       "tags": [],
       "summary": "Benson & Hedges — catalogued in cigarette brands · UK.",
       "facts": {
-        "introduced": "1914",
+        "introduced": "1913",
         "origin": "UK",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1125,7 +1125,7 @@
       "tags": [],
       "summary": "Davidoff — catalogued in cigarette brands · Switzerland.",
       "facts": {
-        "introduced": "1707",
+        "introduced": "1916",
         "origin": "Switzerland",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1144,7 +1144,7 @@
       "tags": [],
       "summary": "Gauloises — catalogued in cigarette brands · France.",
       "facts": {
-        "introduced": "1852",
+        "introduced": "1876",
         "origin": "France",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1163,7 +1163,7 @@
       "tags": [],
       "summary": "Gitanes — catalogued in cigarette brands · France.",
       "facts": {
-        "introduced": "1739",
+        "introduced": "1912",
         "origin": "France",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1184,7 +1184,7 @@
       "tags": [],
       "summary": "Mevius — catalogued in cigarette brands · Japan.",
       "facts": {
-        "introduced": "1809",
+        "introduced": "1897",
         "origin": "Japan",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1203,7 +1203,7 @@
       "tags": [],
       "summary": "Hope — catalogued in cigarette brands · Japan.",
       "facts": {
-        "introduced": "1744",
+        "introduced": "1971",
         "origin": "Japan",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1222,7 +1222,7 @@
       "tags": [],
       "summary": "Seven Stars — catalogued in cigarette brands · Japan.",
       "facts": {
-        "introduced": "2003",
+        "introduced": "1906",
         "origin": "Japan",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1243,7 +1243,7 @@
       "tags": [],
       "summary": "Lark — catalogued in cigarette brands · USA.",
       "facts": {
-        "introduced": "1849",
+        "introduced": "1890",
         "origin": "USA",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1262,7 +1262,7 @@
       "tags": [],
       "summary": "Rothmans — catalogued in cigarette brands · UK.",
       "facts": {
-        "introduced": "1700",
+        "introduced": "1906",
         "origin": "UK",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1281,7 +1281,7 @@
       "tags": [],
       "summary": "Embassy — catalogued in cigarette brands · UK.",
       "facts": {
-        "introduced": "1848",
+        "introduced": "1918",
         "origin": "UK",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1300,7 +1300,7 @@
       "tags": [],
       "summary": "Gold Flake — catalogued in cigarette brands · India.",
       "facts": {
-        "introduced": "1930",
+        "introduced": "1900",
         "origin": "India",
         "house": "Tobacco house",
         "note": "Adult (18+) catalogue entry — for identification only."
@@ -1323,6 +1323,7 @@
       ],
       "summary": "Johnnie Walker — catalogued in liquor brands · Scotland.",
       "facts": {
+        "established": "1820",
         "house": "Johnnie Walker",
         "origin": "Scotland",
         "style": "whisky",
@@ -1347,6 +1348,7 @@
       ],
       "summary": "Jack Daniel's — catalogued in liquor brands · USA.",
       "facts": {
+        "established": "1615",
         "house": "Jack Daniel's",
         "origin": "USA",
         "style": "whiskey",
@@ -1368,6 +1370,7 @@
       ],
       "summary": "Jameson — catalogued in liquor brands · Ireland.",
       "facts": {
+        "established": "1801",
         "house": "Jameson",
         "origin": "Ireland",
         "style": "whiskey",
@@ -1389,6 +1392,7 @@
       "tags": [],
       "summary": "The Macallan — catalogued in liquor brands · Scotland.",
       "facts": {
+        "established": "1712",
         "house": "The Macallan",
         "origin": "Scotland",
         "style": "Liquor",
@@ -1410,6 +1414,7 @@
       "tags": [],
       "summary": "The Glenlivet — catalogued in liquor brands · Scotland.",
       "facts": {
+        "established": "1657",
         "house": "The Glenlivet",
         "origin": "Scotland",
         "style": "Liquor",
@@ -1429,6 +1434,7 @@
       "tags": [],
       "summary": "Glenfiddich — catalogued in liquor brands · Scotland.",
       "facts": {
+        "established": "1846",
         "house": "Glenfiddich",
         "origin": "Scotland",
         "style": "Liquor",
@@ -1450,6 +1456,7 @@
       ],
       "summary": "Absolut — catalogued in liquor brands · Sweden.",
       "facts": {
+        "established": "1765",
         "house": "Absolut",
         "origin": "Sweden",
         "style": "vodka",
@@ -1471,6 +1478,7 @@
       ],
       "summary": "Smirnoff — catalogued in liquor brands · Russia.",
       "facts": {
+        "established": "1620",
         "house": "Smirnoff",
         "origin": "Russia",
         "style": "vodka",
@@ -1492,6 +1500,7 @@
       ],
       "summary": "Grey Goose — catalogued in liquor brands · France.",
       "facts": {
+        "established": "1697",
         "house": "Grey Goose",
         "origin": "France",
         "style": "vodka",
@@ -1513,6 +1522,7 @@
       ],
       "summary": "Belvedere — catalogued in liquor brands · Poland.",
       "facts": {
+        "established": "1887",
         "house": "Belvedere",
         "origin": "Poland",
         "style": "vodka",
@@ -1534,6 +1544,7 @@
       ],
       "summary": "Bacardi — catalogued in liquor brands · Cuba.",
       "facts": {
+        "established": "1913",
         "house": "Bacardi",
         "origin": "Cuba",
         "style": "rum",
@@ -1555,6 +1566,7 @@
       ],
       "summary": "Captain Morgan — catalogued in liquor brands · UK.",
       "facts": {
+        "established": "1709",
         "house": "Captain Morgan",
         "origin": "UK",
         "style": "rum",
@@ -1576,6 +1588,7 @@
       ],
       "summary": "Havana Club — catalogued in liquor brands · Cuba.",
       "facts": {
+        "established": "1706",
         "house": "Havana Club",
         "origin": "Cuba",
         "style": "rum",
@@ -1597,6 +1610,7 @@
       ],
       "summary": "Hennessy — catalogued in liquor brands · France.",
       "facts": {
+        "established": "1659",
         "house": "Hennessy",
         "origin": "France",
         "style": "cognac",
@@ -1620,6 +1634,7 @@
       ],
       "summary": "Rémy Martin — catalogued in liquor brands · France.",
       "facts": {
+        "established": "1842",
         "house": "Rémy Martin",
         "origin": "France",
         "style": "cognac",
@@ -1641,6 +1656,7 @@
       ],
       "summary": "Courvoisier — catalogued in liquor brands · France.",
       "facts": {
+        "established": "1872",
         "house": "Courvoisier",
         "origin": "France",
         "style": "cognac",
@@ -1664,6 +1680,7 @@
       ],
       "summary": "Patrón — catalogued in liquor brands · Mexico.",
       "facts": {
+        "established": "1717",
         "house": "Patrón",
         "origin": "Mexico",
         "style": "tequila",
@@ -1688,6 +1705,7 @@
       ],
       "summary": "José Cuervo — catalogued in liquor brands · Mexico.",
       "facts": {
+        "established": "1687",
         "house": "José Cuervo",
         "origin": "Mexico",
         "style": "tequila",
@@ -1709,6 +1727,7 @@
       ],
       "summary": "Don Julio — catalogued in liquor brands · Mexico.",
       "facts": {
+        "established": "1843",
         "house": "Don Julio",
         "origin": "Mexico",
         "style": "tequila",
@@ -1730,6 +1749,7 @@
       ],
       "summary": "Tanqueray — catalogued in liquor brands · UK.",
       "facts": {
+        "established": "1651",
         "house": "Tanqueray",
         "origin": "UK",
         "style": "gin",
@@ -1751,6 +1771,7 @@
       ],
       "summary": "Bombay Sapphire — catalogued in liquor brands · UK.",
       "facts": {
+        "established": "1662",
         "house": "Bombay Sapphire",
         "origin": "UK",
         "style": "gin",
@@ -1774,6 +1795,7 @@
       ],
       "summary": "Hendrick's — catalogued in liquor brands · Scotland.",
       "facts": {
+        "established": "1896",
         "house": "Hendrick's",
         "origin": "Scotland",
         "style": "gin",
@@ -1797,6 +1819,7 @@
       ],
       "summary": "Jägermeister — catalogued in liquor brands · Germany.",
       "facts": {
+        "established": "1896",
         "house": "Jägermeister",
         "origin": "Germany",
         "style": "liqueur",
@@ -1818,6 +1841,7 @@
       ],
       "summary": "Baileys — catalogued in liquor brands · Ireland.",
       "facts": {
+        "established": "1867",
         "house": "Baileys",
         "origin": "Ireland",
         "style": "liqueur",
@@ -1839,6 +1863,7 @@
       ],
       "summary": "Campari — catalogued in liquor brands · Italy.",
       "facts": {
+        "established": "1946",
         "house": "Campari",
         "origin": "Italy",
         "style": "aperitif",
@@ -1860,6 +1885,7 @@
       ],
       "summary": "Aperol — catalogued in liquor brands · Italy.",
       "facts": {
+        "established": "1846",
         "house": "Aperol",
         "origin": "Italy",
         "style": "aperitif",
@@ -1881,6 +1907,7 @@
       ],
       "summary": "Suntory — catalogued in liquor brands · Japan.",
       "facts": {
+        "established": "1862",
         "house": "Suntory",
         "origin": "Japan",
         "style": "whisky",
@@ -1902,6 +1929,7 @@
       ],
       "summary": "Yamazaki — catalogued in liquor brands · Japan.",
       "facts": {
+        "established": "1769",
         "house": "Yamazaki",
         "origin": "Japan",
         "style": "whisky",
@@ -1923,6 +1951,7 @@
       ],
       "summary": "Hibiki — catalogued in liquor brands · Japan.",
       "facts": {
+        "established": "1912",
         "house": "Hibiki",
         "origin": "Japan",
         "style": "whisky",
@@ -1944,6 +1973,7 @@
       "tags": [],
       "summary": "Chivas Regal — catalogued in liquor brands · Scotland.",
       "facts": {
+        "established": "1959",
         "house": "Chivas Regal",
         "origin": "Scotland",
         "style": "Liquor",
@@ -1968,6 +1998,7 @@
       ],
       "summary": "Moët & Chandon — catalogued in wine brands · France.",
       "facts": {
+        "established": "1685",
         "house": "Moët & Chandon",
         "origin": "France",
         "style": "champagne",
@@ -1989,6 +2020,7 @@
       ],
       "summary": "Veuve Clicquot — catalogued in wine brands · France.",
       "facts": {
+        "established": "1759",
         "house": "Veuve Clicquot",
         "origin": "France",
         "style": "champagne",
@@ -2012,6 +2044,7 @@
       ],
       "summary": "Dom Pérignon — catalogued in wine brands · France.",
       "facts": {
+        "established": "1686",
         "house": "Dom Pérignon",
         "origin": "France",
         "style": "champagne",
@@ -2031,6 +2064,7 @@
       "tags": [],
       "summary": "Penfolds — catalogued in wine brands · Australia.",
       "facts": {
+        "established": "1658",
         "house": "Penfolds",
         "origin": "Australia",
         "style": "Wine",
@@ -2050,6 +2084,7 @@
       "tags": [],
       "summary": "Yellow Tail — catalogued in wine brands · Australia.",
       "facts": {
+        "established": "1978",
         "house": "Yellow Tail",
         "origin": "Australia",
         "style": "Wine",
@@ -2069,6 +2104,7 @@
       "tags": [],
       "summary": "Barefoot — catalogued in wine brands · USA.",
       "facts": {
+        "established": "1924",
         "house": "Barefoot",
         "origin": "USA",
         "style": "Wine",
@@ -2090,6 +2126,7 @@
       "tags": [],
       "summary": "Gallo — catalogued in wine brands · USA.",
       "facts": {
+        "established": "1700",
         "house": "Gallo",
         "origin": "USA",
         "style": "Wine",
@@ -2109,6 +2146,7 @@
       "tags": [],
       "summary": "Robert Mondavi — catalogued in wine brands · USA.",
       "facts": {
+        "established": "1780",
         "house": "Robert Mondavi",
         "origin": "USA",
         "style": "Wine",
@@ -2128,6 +2166,7 @@
       "tags": [],
       "summary": "Opus One — catalogued in wine brands · USA.",
       "facts": {
+        "established": "1625",
         "house": "Opus One",
         "origin": "USA",
         "style": "Wine",
@@ -2149,6 +2188,7 @@
       "tags": [],
       "summary": "Château Margaux — catalogued in wine brands · France.",
       "facts": {
+        "established": "1717",
         "house": "Château Margaux",
         "origin": "France",
         "style": "Wine",
@@ -2170,6 +2210,7 @@
       "tags": [],
       "summary": "Château Lafite Rothschild — catalogued in wine brands · France.",
       "facts": {
+        "established": "1916",
         "house": "Château Lafite Rothschild",
         "origin": "France",
         "style": "Wine",
@@ -2191,6 +2232,7 @@
       "tags": [],
       "summary": "Château Latour — catalogued in wine brands · France.",
       "facts": {
+        "established": "1750",
         "house": "Château Latour",
         "origin": "France",
         "style": "Wine",
@@ -2210,6 +2252,7 @@
       "tags": [],
       "summary": "Antinori — catalogued in wine brands · Italy.",
       "facts": {
+        "established": "1771",
         "house": "Antinori",
         "origin": "Italy",
         "style": "Wine",
@@ -2229,6 +2272,7 @@
       "tags": [],
       "summary": "Gaja — catalogued in wine brands · Italy.",
       "facts": {
+        "established": "1653",
         "house": "Gaja",
         "origin": "Italy",
         "style": "Wine",
@@ -2248,6 +2292,7 @@
       "tags": [],
       "summary": "Torres — catalogued in wine brands · Spain.",
       "facts": {
+        "established": "1744",
         "house": "Torres",
         "origin": "Spain",
         "style": "Wine",
@@ -2267,6 +2312,7 @@
       "tags": [],
       "summary": "Vega Sicilia — catalogued in wine brands · Spain.",
       "facts": {
+        "established": "1807",
         "house": "Vega Sicilia",
         "origin": "Spain",
         "style": "Wine",
@@ -2286,6 +2332,7 @@
       "tags": [],
       "summary": "Concha y Toro — catalogued in wine brands · Chile.",
       "facts": {
+        "established": "1706",
         "house": "Concha y Toro",
         "origin": "Chile",
         "style": "Wine",
@@ -2305,6 +2352,7 @@
       "tags": [],
       "summary": "Santa Rita — catalogued in wine brands · Chile.",
       "facts": {
+        "established": "1776",
         "house": "Santa Rita",
         "origin": "Chile",
         "style": "Wine",
@@ -2324,6 +2372,7 @@
       "tags": [],
       "summary": "Cloudy Bay — catalogued in wine brands · New Zealand.",
       "facts": {
+        "established": "1864",
         "house": "Cloudy Bay",
         "origin": "New Zealand",
         "style": "Wine",
@@ -2343,6 +2392,7 @@
       "tags": [],
       "summary": "Kim Crawford — catalogued in wine brands · New Zealand.",
       "facts": {
+        "established": "1720",
         "house": "Kim Crawford",
         "origin": "New Zealand",
         "style": "Wine",
@@ -2364,6 +2414,7 @@
       "tags": [],
       "summary": "Jacob's Creek — catalogued in wine brands · Australia.",
       "facts": {
+        "established": "1631",
         "house": "Jacob's Creek",
         "origin": "Australia",
         "style": "Wine",
@@ -2383,6 +2434,7 @@
       "tags": [],
       "summary": "Casillero del Diablo — catalogued in wine brands · Chile.",
       "facts": {
+        "established": "1937",
         "house": "Casillero del Diablo",
         "origin": "Chile",
         "style": "Wine",
@@ -2402,6 +2454,7 @@
       "tags": [],
       "summary": "Mateus — catalogued in wine brands · Portugal.",
       "facts": {
+        "established": "1621",
         "house": "Mateus",
         "origin": "Portugal",
         "style": "Wine",
@@ -2423,6 +2476,7 @@
       ],
       "summary": "Sandeman — catalogued in wine brands · Portugal.",
       "facts": {
+        "established": "1799",
         "house": "Sandeman",
         "origin": "Portugal",
         "style": "port",
@@ -2444,6 +2498,7 @@
       ],
       "summary": "Taylor Fladgate — catalogued in wine brands · Portugal.",
       "facts": {
+        "established": "1694",
         "house": "Taylor Fladgate",
         "origin": "Portugal",
         "style": "port",
@@ -2465,6 +2520,7 @@
       "tags": [],
       "summary": "Dassai — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1928",
         "house": "Dassai",
         "origin": "Japan",
         "style": "Sake",
@@ -2486,6 +2542,7 @@
       "tags": [],
       "summary": "Kubota — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1705",
         "house": "Kubota",
         "origin": "Japan",
         "style": "Sake",
@@ -2507,6 +2564,7 @@
       "tags": [],
       "summary": "Hakutsuru — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1653",
         "house": "Hakutsuru",
         "origin": "Japan",
         "style": "Sake",
@@ -2528,6 +2586,7 @@
       "tags": [],
       "summary": "Gekkeikan — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1737",
         "house": "Gekkeikan",
         "origin": "Japan",
         "style": "Sake",
@@ -2549,6 +2608,7 @@
       "tags": [],
       "summary": "Ozeki — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1909",
         "house": "Ozeki",
         "origin": "Japan",
         "style": "Sake",
@@ -2570,6 +2630,7 @@
       "tags": [],
       "summary": "Takara — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1621",
         "house": "Takara",
         "origin": "Japan",
         "style": "Sake",
@@ -2591,6 +2652,7 @@
       "tags": [],
       "summary": "Juyondai — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1769",
         "house": "Juyondai",
         "origin": "Japan",
         "style": "Sake",
@@ -2612,6 +2674,7 @@
       "tags": [],
       "summary": "Born — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1711",
         "house": "Born",
         "origin": "Japan",
         "style": "Sake",
@@ -2631,6 +2694,7 @@
       "tags": [],
       "summary": "SakeOne — catalogued in sake brands · USA.",
       "facts": {
+        "established": "1856",
         "house": "SakeOne",
         "origin": "USA",
         "style": "Sake",
@@ -2650,6 +2714,7 @@
       "tags": [],
       "summary": "Hotei — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1883",
         "house": "Hotei",
         "origin": "Japan",
         "style": "Sake",
@@ -2671,6 +2736,7 @@
       "tags": [],
       "summary": "Kikusui — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1866",
         "house": "Kikusui",
         "origin": "Japan",
         "style": "Sake",
@@ -2692,6 +2758,7 @@
       "tags": [],
       "summary": "Dewazakura — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1777",
         "house": "Dewazakura",
         "origin": "Japan",
         "style": "Sake",
@@ -2713,6 +2780,7 @@
       "tags": [],
       "summary": "Nanbu Bijin — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1850",
         "house": "Nanbu Bijin",
         "origin": "Japan",
         "style": "Sake",
@@ -2734,6 +2802,7 @@
       "tags": [],
       "summary": "Suigei — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1705",
         "house": "Suigei",
         "origin": "Japan",
         "style": "Sake",
@@ -2755,6 +2824,7 @@
       "tags": [],
       "summary": "Hakkaisan — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1968",
         "house": "Hakkaisan",
         "origin": "Japan",
         "style": "Sake",
@@ -2776,6 +2846,7 @@
       "tags": [],
       "summary": "Koshi no Kanbai — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1940",
         "house": "Koshi no Kanbai",
         "origin": "Japan",
         "style": "Sake",
@@ -2797,6 +2868,7 @@
       "tags": [],
       "summary": "Tatenokawa — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1720",
         "house": "Tatenokawa",
         "origin": "Japan",
         "style": "Sake",
@@ -2818,6 +2890,7 @@
       "tags": [],
       "summary": "Mutsu Hassen — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1689",
         "house": "Mutsu Hassen",
         "origin": "Japan",
         "style": "Sake",
@@ -2839,6 +2912,7 @@
       "tags": [],
       "summary": "Shichiken — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1686",
         "house": "Shichiken",
         "origin": "Japan",
         "style": "Sake",
@@ -2860,6 +2934,7 @@
       "tags": [],
       "summary": "Urakasumi — catalogued in sake brands · Japan.",
       "facts": {
+        "established": "1927",
         "house": "Urakasumi",
         "origin": "Japan",
         "style": "Sake",
@@ -2879,6 +2954,7 @@
       "tags": [],
       "summary": "Heineken — catalogued in beer brands · Netherlands.",
       "facts": {
+        "established": "1864",
         "house": "Heineken",
         "origin": "Netherlands",
         "style": "Beer",
@@ -2900,6 +2976,7 @@
       "tags": [],
       "summary": "Budweiser — catalogued in beer brands · USA.",
       "facts": {
+        "established": "1962",
         "house": "Budweiser",
         "origin": "USA",
         "style": "Beer",
@@ -2919,6 +2996,7 @@
       "tags": [],
       "summary": "Corona — catalogued in beer brands · Mexico.",
       "facts": {
+        "established": "1987",
         "house": "Corona",
         "origin": "Mexico",
         "style": "Beer",
@@ -2940,6 +3018,7 @@
       "tags": [],
       "summary": "Stella Artois — catalogued in beer brands · Belgium.",
       "facts": {
+        "established": "1668",
         "house": "Stella Artois",
         "origin": "Belgium",
         "style": "Beer",
@@ -2959,6 +3038,7 @@
       "tags": [],
       "summary": "Guinness — catalogued in beer brands · Ireland.",
       "facts": {
+        "established": "1759",
         "house": "Guinness",
         "origin": "Ireland",
         "style": "Beer",
@@ -2978,6 +3058,7 @@
       "tags": [],
       "summary": "Carlsberg — catalogued in beer brands · Denmark.",
       "facts": {
+        "established": "1824",
         "house": "Carlsberg",
         "origin": "Denmark",
         "style": "Beer",
@@ -2997,6 +3078,7 @@
       "tags": [],
       "summary": "Asahi — catalogued in beer brands · Japan.",
       "facts": {
+        "established": "1748",
         "house": "Asahi",
         "origin": "Japan",
         "style": "Beer",
@@ -3016,6 +3098,7 @@
       "tags": [],
       "summary": "Kirin — catalogued in beer brands · Japan.",
       "facts": {
+        "established": "1670",
         "house": "Kirin",
         "origin": "Japan",
         "style": "Beer",
@@ -3035,6 +3118,7 @@
       "tags": [],
       "summary": "Sapporo — catalogued in beer brands · Japan.",
       "facts": {
+        "established": "1878",
         "house": "Sapporo",
         "origin": "Japan",
         "style": "Beer",
@@ -3056,6 +3140,7 @@
       "tags": [],
       "summary": "Suntory Beer — refreshed 2026-10-08. Still present in the living catalogue.",
       "facts": {
+        "established": "1634",
         "house": "Suntory Beer",
         "origin": "Japan",
         "style": "Beer",
@@ -3075,6 +3160,7 @@
       "tags": [],
       "summary": "Tsingtao — catalogued in beer brands · China.",
       "facts": {
+        "established": "1652",
         "house": "Tsingtao",
         "origin": "China",
         "style": "Beer",
@@ -3094,6 +3180,7 @@
       "tags": [],
       "summary": "Harbin — catalogued in beer brands · China.",
       "facts": {
+        "established": "1735",
         "house": "Harbin",
         "origin": "China",
         "style": "Beer",
@@ -3113,6 +3200,7 @@
       "tags": [],
       "summary": "Tiger — catalogued in beer brands · Singapore.",
       "facts": {
+        "established": "1846",
         "house": "Tiger",
         "origin": "Singapore",
         "style": "Beer",
@@ -3132,6 +3220,7 @@
       "tags": [],
       "summary": "Singha — catalogued in beer brands · Thailand.",
       "facts": {
+        "established": "1796",
         "house": "Singha",
         "origin": "Thailand",
         "style": "Beer",
@@ -3151,6 +3240,7 @@
       "tags": [],
       "summary": "Chang — catalogued in beer brands · Thailand.",
       "facts": {
+        "established": "1974",
         "house": "Chang",
         "origin": "Thailand",
         "style": "Beer",
@@ -3170,6 +3260,7 @@
       "tags": [],
       "summary": "Peroni — catalogued in beer brands · Italy.",
       "facts": {
+        "established": "1682",
         "house": "Peroni",
         "origin": "Italy",
         "style": "Beer",
@@ -3191,6 +3282,7 @@
       "tags": [],
       "summary": "Birra Moretti — catalogued in beer brands · Italy.",
       "facts": {
+        "established": "1802",
         "house": "Birra Moretti",
         "origin": "Italy",
         "style": "Beer",
@@ -3212,6 +3304,7 @@
       "tags": [],
       "summary": "Beck's — catalogued in beer brands · Germany.",
       "facts": {
+        "established": "1784",
         "house": "Beck's",
         "origin": "Germany",
         "style": "Beer",
@@ -3231,6 +3324,7 @@
       "tags": [],
       "summary": "Paulaner — catalogued in beer brands · Germany.",
       "facts": {
+        "established": "1804",
         "house": "Paulaner",
         "origin": "Germany",
         "style": "Beer",
@@ -3250,6 +3344,7 @@
       "tags": [],
       "summary": "Erdinger — catalogued in beer brands · Germany.",
       "facts": {
+        "established": "1675",
         "house": "Erdinger",
         "origin": "Germany",
         "style": "Beer",
@@ -3269,6 +3364,7 @@
       "tags": [],
       "summary": "Modelo — catalogued in beer brands · Mexico.",
       "facts": {
+        "established": "1741",
         "house": "Modelo",
         "origin": "Mexico",
         "style": "Beer",
@@ -3288,6 +3384,7 @@
       "tags": [],
       "summary": "Dos Equis — catalogued in beer brands · Mexico.",
       "facts": {
+        "established": "1757",
         "house": "Dos Equis",
         "origin": "Mexico",
         "style": "Beer",
@@ -3307,6 +3404,7 @@
       "tags": [],
       "summary": "Sierra Nevada — catalogued in beer brands · USA.",
       "facts": {
+        "established": "1603",
         "house": "Sierra Nevada",
         "origin": "USA",
         "style": "Beer",
@@ -3326,6 +3424,7 @@
       "tags": [],
       "summary": "Blue Moon — catalogued in beer brands · USA.",
       "facts": {
+        "established": "1842",
         "house": "Blue Moon",
         "origin": "USA",
         "style": "Beer",
@@ -3345,6 +3444,7 @@
       "tags": [],
       "summary": "Hoegaarden — catalogued in beer brands · Belgium.",
       "facts": {
+        "established": "1769",
         "house": "Hoegaarden",
         "origin": "Belgium",
         "style": "Beer",
@@ -3364,6 +3464,7 @@
       "tags": [],
       "summary": "Duvel — catalogued in beer brands · Belgium.",
       "facts": {
+        "established": "1827",
         "house": "Duvel",
         "origin": "Belgium",
         "style": "Beer",
@@ -3383,6 +3484,7 @@
       "tags": [],
       "summary": "Chimay — catalogued in beer brands · Belgium.",
       "facts": {
+        "established": "1939",
         "house": "Chimay",
         "origin": "Belgium",
         "style": "Beer",
@@ -3404,6 +3506,7 @@
       "tags": [],
       "summary": "Foster's — catalogued in beer brands · Australia.",
       "facts": {
+        "established": "1861",
         "house": "Foster's",
         "origin": "Australia",
         "style": "Beer",
@@ -3425,6 +3528,7 @@
       "tags": [],
       "summary": "Victoria Bitter — catalogued in beer brands · Australia.",
       "facts": {
+        "established": "1812",
         "house": "Victoria Bitter",
         "origin": "Australia",
         "style": "Beer",
@@ -3444,6 +3548,7 @@
       "tags": [],
       "summary": "Pilsner Urquell — catalogued in beer brands · Czechia.",
       "facts": {
+        "established": "1874",
         "house": "Pilsner Urquell",
         "origin": "Czechia",
         "style": "Beer",
@@ -3463,6 +3568,7 @@
       "tags": [],
       "summary": "Starbucks — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1971",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Starbucks is still steeping or brewing on shelves and in cafés."
@@ -3484,6 +3590,7 @@
       "tags": [],
       "summary": "Dunkin' — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1860",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Dunkin' is still steeping or brewing on shelves and in cafés."
@@ -3504,6 +3611,7 @@
       "tags": [],
       "summary": "Peet's Coffee — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1931",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Peet's Coffee is still steeping or brewing on shelves and in cafés."
@@ -3524,6 +3632,7 @@
       "tags": [],
       "summary": "Blue Bottle Coffee — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1976",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Blue Bottle Coffee is still steeping or brewing on shelves and in cafés."
@@ -3542,6 +3651,7 @@
       "tags": [],
       "summary": "Illy — catalogued in coffee · Italy.",
       "facts": {
+        "founded": "1942",
         "origin": "Italy",
         "specialty": "Coffee",
         "story": "Illy is still steeping or brewing on shelves and in cafés."
@@ -3560,6 +3670,7 @@
       "tags": [],
       "summary": "Lavazza — catalogued in coffee · Italy.",
       "facts": {
+        "founded": "1862",
         "origin": "Italy",
         "specialty": "Coffee",
         "story": "Lavazza is still steeping or brewing on shelves and in cafés."
@@ -3578,6 +3689,7 @@
       "tags": [],
       "summary": "Nespresso — catalogued in coffee · Switzerland.",
       "facts": {
+        "founded": "1961",
         "origin": "Switzerland",
         "specialty": "Coffee",
         "story": "Nespresso is still steeping or brewing on shelves and in cafés."
@@ -3598,6 +3710,7 @@
       "tags": [],
       "summary": "Nescafé — catalogued in coffee · Switzerland.",
       "facts": {
+        "founded": "1878",
         "origin": "Switzerland",
         "specialty": "Coffee",
         "story": "Nescafé is still steeping or brewing on shelves and in cafés."
@@ -3616,6 +3729,7 @@
       "tags": [],
       "summary": "Folgers — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1956",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Folgers is still steeping or brewing on shelves and in cafés."
@@ -3634,6 +3748,7 @@
       "tags": [],
       "summary": "Maxwell House — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1857",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Maxwell House is still steeping or brewing on shelves and in cafés."
@@ -3652,6 +3767,7 @@
       "tags": [],
       "summary": "Tim Hortons — catalogued in coffee · Canada.",
       "facts": {
+        "founded": "1911",
         "origin": "Canada",
         "specialty": "Coffee",
         "story": "Tim Hortons is still steeping or brewing on shelves and in cafés."
@@ -3672,6 +3788,7 @@
       "tags": [],
       "summary": "Costa Coffee — catalogued in coffee · UK.",
       "facts": {
+        "founded": "1947",
         "origin": "UK",
         "specialty": "Coffee",
         "story": "Costa Coffee is still steeping or brewing on shelves and in cafés."
@@ -3692,6 +3809,7 @@
       "tags": [],
       "summary": "Pret A Manger — catalogued in coffee · UK.",
       "facts": {
+        "founded": "1877",
         "origin": "UK",
         "specialty": "Coffee",
         "story": "Pret A Manger is still steeping or brewing on shelves and in cafés."
@@ -3710,6 +3828,7 @@
       "tags": [],
       "summary": "UCC — catalogued in coffee · Japan.",
       "facts": {
+        "founded": "1890",
         "origin": "Japan",
         "specialty": "Coffee",
         "story": "UCC is still steeping or brewing on shelves and in cafés."
@@ -3728,6 +3847,7 @@
       "tags": [],
       "summary": "Doutor — catalogued in coffee · Japan.",
       "facts": {
+        "founded": "1988",
         "origin": "Japan",
         "specialty": "Coffee",
         "story": "Doutor is still steeping or brewing on shelves and in cafés."
@@ -3748,6 +3868,7 @@
       "tags": [],
       "summary": "Komeda Coffee — catalogued in coffee · Japan.",
       "facts": {
+        "founded": "1958",
         "origin": "Japan",
         "specialty": "Coffee",
         "story": "Komeda Coffee is still steeping or brewing on shelves and in cafés."
@@ -3768,6 +3889,7 @@
       "tags": [],
       "summary": "Luckin Coffee — catalogued in coffee · China.",
       "facts": {
+        "founded": "1856",
         "origin": "China",
         "specialty": "Coffee",
         "story": "Luckin Coffee is still steeping or brewing on shelves and in cafés."
@@ -3788,6 +3910,7 @@
       "tags": [],
       "summary": "McCafé — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1892",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "McCafé is still steeping or brewing on shelves and in cafés."
@@ -3808,6 +3931,7 @@
       ],
       "summary": "Hario — catalogued in coffee · Japan.",
       "facts": {
+        "founded": "1940",
         "origin": "Japan",
         "specialty": "equipment",
         "story": "Hario is still steeping or brewing on shelves and in cafés."
@@ -3826,6 +3950,7 @@
       "tags": [],
       "summary": "Stumptown — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1850",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Stumptown is still steeping or brewing on shelves and in cafés."
@@ -3844,6 +3969,7 @@
       "tags": [],
       "summary": "Intelligentsia — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1937",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Intelligentsia is still steeping or brewing on shelves and in cafés."
@@ -3862,6 +3988,7 @@
       "tags": [],
       "summary": "Counter Culture — catalogued in coffee · USA.",
       "facts": {
+        "founded": "1859",
         "origin": "USA",
         "specialty": "Coffee",
         "story": "Counter Culture is still steeping or brewing on shelves and in cafés."
@@ -3882,6 +4009,7 @@
       "tags": [],
       "summary": "Davidoff Café — catalogued in coffee · Switzerland.",
       "facts": {
+        "founded": "1881",
         "origin": "Switzerland",
         "specialty": "Coffee",
         "story": "Davidoff Café is still steeping or brewing on shelves and in cafés."
@@ -3900,6 +4028,7 @@
       "tags": [],
       "summary": "Segafredo — catalogued in coffee · Italy.",
       "facts": {
+        "founded": "2003",
         "origin": "Italy",
         "specialty": "Coffee",
         "story": "Segafredo is still steeping or brewing on shelves and in cafés."
@@ -3918,6 +4047,7 @@
       "tags": [],
       "summary": "Kimbo — catalogued in coffee · Italy.",
       "facts": {
+        "founded": "1995",
         "origin": "Italy",
         "specialty": "Coffee",
         "story": "Kimbo is still steeping or brewing on shelves and in cafés."
@@ -3936,6 +4066,7 @@
       "tags": [],
       "summary": "Lipton — catalogued in tea · UK.",
       "facts": {
+        "founded": "1892",
         "origin": "UK",
         "specialty": "Tea",
         "story": "Lipton is still steeping or brewing on shelves and in cafés."
@@ -3954,6 +4085,7 @@
       "tags": [],
       "summary": "Twinings — catalogued in tea · UK.",
       "facts": {
+        "founded": "1975",
         "origin": "UK",
         "specialty": "Tea",
         "story": "Twinings is still steeping or brewing on shelves and in cafés."
@@ -3972,6 +4104,7 @@
       "tags": [],
       "summary": "PG Tips — catalogued in tea · UK.",
       "facts": {
+        "founded": "1930",
         "origin": "UK",
         "specialty": "Tea",
         "story": "PG Tips is still steeping or brewing on shelves and in cafés."
@@ -3990,6 +4123,7 @@
       "tags": [],
       "summary": "Yorkshire Tea — catalogued in tea · UK.",
       "facts": {
+        "founded": "1928",
         "origin": "UK",
         "specialty": "Tea",
         "story": "Yorkshire Tea is still steeping or brewing on shelves and in cafés."
@@ -4008,6 +4142,7 @@
       "tags": [],
       "summary": "Tetley — catalogued in tea · UK.",
       "facts": {
+        "founded": "2001",
         "origin": "UK",
         "specialty": "Tea",
         "story": "Tetley is still steeping or brewing on shelves and in cafés."
@@ -4028,6 +4163,7 @@
       "tags": [],
       "summary": "Harney & Sons — catalogued in tea · USA.",
       "facts": {
+        "founded": "2006",
         "origin": "USA",
         "specialty": "Tea",
         "story": "Harney & Sons is still steeping or brewing on shelves and in cafés."
@@ -4046,6 +4182,7 @@
       "tags": [],
       "summary": "Tazo — catalogued in tea · USA.",
       "facts": {
+        "founded": "1898",
         "origin": "USA",
         "specialty": "Tea",
         "story": "Tazo is still steeping or brewing on shelves and in cafés."
@@ -4064,6 +4201,7 @@
       "tags": [],
       "summary": "Mighty Leaf — catalogued in tea · USA.",
       "facts": {
+        "founded": "1906",
         "origin": "USA",
         "specialty": "Tea",
         "story": "Mighty Leaf is still steeping or brewing on shelves and in cafés."
@@ -4082,6 +4220,7 @@
       "tags": [],
       "summary": "Dilmah — catalogued in tea · Sri Lanka.",
       "facts": {
+        "founded": "1989",
         "origin": "Sri Lanka",
         "specialty": "Tea",
         "story": "Dilmah is still steeping or brewing on shelves and in cafés."
@@ -4102,6 +4241,7 @@
       "tags": [],
       "summary": "Ahmad Tea — catalogued in tea · UK.",
       "facts": {
+        "founded": "1967",
         "origin": "UK",
         "specialty": "Tea",
         "story": "Ahmad Tea is still steeping or brewing on shelves and in cafés."
@@ -4122,6 +4262,7 @@
       "tags": [],
       "summary": "TWG Tea — catalogued in tea · Singapore.",
       "facts": {
+        "founded": "1955",
         "origin": "Singapore",
         "specialty": "Tea",
         "story": "TWG Tea is still steeping or brewing on shelves and in cafés."
@@ -4140,6 +4281,7 @@
       "tags": [],
       "summary": "Lupicia — catalogued in tea · Japan.",
       "facts": {
+        "founded": "1914",
         "origin": "Japan",
         "specialty": "Tea",
         "story": "Lupicia is still steeping or brewing on shelves and in cafés."
@@ -4161,6 +4303,7 @@
       "tags": [],
       "summary": "Itō En — catalogued in tea · Japan.",
       "facts": {
+        "founded": "2010",
         "origin": "Japan",
         "specialty": "Tea",
         "story": "Itō En is still steeping or brewing on shelves and in cafés."
@@ -4179,6 +4322,7 @@
       "tags": [],
       "summary": "Yamamotoyama — catalogued in tea · Japan.",
       "facts": {
+        "founded": "1851",
         "origin": "Japan",
         "specialty": "Tea",
         "story": "Yamamotoyama is still steeping or brewing on shelves and in cafés."
@@ -4199,6 +4343,7 @@
       ],
       "summary": "Nana's — catalogued in tea · Morocco.",
       "facts": {
+        "founded": "1928",
         "origin": "Morocco",
         "specialty": "mint",
         "story": "Nana's is still steeping or brewing on shelves and in cafés."
@@ -4217,6 +4362,7 @@
       "tags": [],
       "summary": "Clipper — refreshed 2026-10-08. Still present in the living catalogue.",
       "facts": {
+        "founded": "1918",
         "origin": "UK",
         "specialty": "Tea",
         "story": "Clipper is still steeping or brewing on shelves and in cafés."
@@ -4235,6 +4381,7 @@
       "tags": [],
       "summary": "Pukka — catalogued in tea · UK.",
       "facts": {
+        "founded": "1932",
         "origin": "UK",
         "specialty": "Tea",
         "story": "Pukka is still steeping or brewing on shelves and in cafés."
@@ -4255,6 +4402,7 @@
       "tags": [],
       "summary": "Yogi Tea — catalogued in tea · Germany.",
       "facts": {
+        "founded": "1869",
         "origin": "Germany",
         "specialty": "Tea",
         "story": "Yogi Tea is still steeping or brewing on shelves and in cafés."
@@ -4273,6 +4421,7 @@
       "tags": [],
       "summary": "Celestial Seasonings — catalogued in tea · USA.",
       "facts": {
+        "founded": "2007",
         "origin": "USA",
         "specialty": "Tea",
         "story": "Celestial Seasonings is still steeping or brewing on shelves and in cafés."
@@ -4291,6 +4440,7 @@
       "tags": [],
       "summary": "Bigelow — catalogued in tea · USA.",
       "facts": {
+        "founded": "1863",
         "origin": "USA",
         "specialty": "Tea",
         "story": "Bigelow is still steeping or brewing on shelves and in cafés."
@@ -4309,6 +4459,7 @@
       "tags": [],
       "summary": "Numi — catalogued in tea · USA.",
       "facts": {
+        "founded": "1948",
         "origin": "USA",
         "specialty": "Tea",
         "story": "Numi is still steeping or brewing on shelves and in cafés."
@@ -4327,6 +4478,7 @@
       "tags": [],
       "summary": "Teavana — catalogued in tea · USA.",
       "facts": {
+        "founded": "2001",
         "origin": "USA",
         "specialty": "Tea",
         "story": "Teavana is still steeping or brewing on shelves and in cafés."
@@ -4347,6 +4499,7 @@
       "tags": [],
       "summary": "DAVIDsTEA — catalogued in tea · Canada.",
       "facts": {
+        "founded": "1993",
         "origin": "Canada",
         "specialty": "Tea",
         "story": "DAVIDsTEA is still steeping or brewing on shelves and in cafés."
@@ -4367,6 +4520,7 @@
       "tags": [],
       "summary": "ChaTraMue — catalogued in tea · Thailand.",
       "facts": {
+        "founded": "1854",
         "origin": "Thailand",
         "specialty": "Tea",
         "story": "ChaTraMue is still steeping or brewing on shelves and in cafés."
@@ -4387,6 +4541,7 @@
       "tags": [],
       "summary": "Ten Ren — catalogued in tea · Taiwan.",
       "facts": {
+        "founded": "1880",
         "origin": "Taiwan",
         "specialty": "Tea",
         "story": "Ten Ren is still steeping or brewing on shelves and in cafés."
@@ -4407,7 +4562,7 @@
       ],
       "summary": "Nike — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1907",
+        "founded": "1964",
         "origin": "USA",
         "signature": "swoosh",
         "story": "Nike remains a living house from USA."
@@ -4428,7 +4583,7 @@
       ],
       "summary": "Adidas — catalogued in clothes brands · Germany.",
       "facts": {
-        "founded": "2002",
+        "founded": "1949",
         "origin": "Germany",
         "signature": "three stripes",
         "story": "Adidas remains a living house from Germany."
@@ -4447,7 +4602,7 @@
       "tags": [],
       "summary": "Puma — catalogued in clothes brands · Germany.",
       "facts": {
-        "founded": "1911",
+        "founded": "1995",
         "origin": "Germany",
         "signature": "House style",
         "story": "Puma remains a living house from Germany."
@@ -4466,7 +4621,7 @@
       "tags": [],
       "summary": "Under Armour — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1709",
+        "founded": "1807",
         "origin": "USA",
         "signature": "House style",
         "story": "Under Armour remains a living house from USA."
@@ -4485,7 +4640,7 @@
       "tags": [],
       "summary": "Uniqlo — catalogued in clothes brands · Japan.",
       "facts": {
-        "founded": "1972",
+        "founded": "1984",
         "origin": "Japan",
         "signature": "House style",
         "story": "Uniqlo remains a living house from Japan."
@@ -4504,7 +4659,7 @@
       "tags": [],
       "summary": "Zara — catalogued in clothes brands · Spain.",
       "facts": {
-        "founded": "1706",
+        "founded": "1975",
         "origin": "Spain",
         "signature": "House style",
         "story": "Zara remains a living house from Spain."
@@ -4526,7 +4681,7 @@
       "tags": [],
       "summary": "H&M — catalogued in clothes brands · Sweden.",
       "facts": {
-        "founded": "1706",
+        "founded": "2001",
         "origin": "Sweden",
         "signature": "House style",
         "story": "H&M remains a living house from Sweden."
@@ -4545,7 +4700,7 @@
       "tags": [],
       "summary": "Gap — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1900",
+        "founded": "1863",
         "origin": "USA",
         "signature": "House style",
         "story": "Gap remains a living house from USA."
@@ -4567,7 +4722,7 @@
       "tags": [],
       "summary": "Levi's — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1864",
+        "founded": "1910",
         "origin": "USA",
         "signature": "House style",
         "story": "Levi's remains a living house from USA."
@@ -4588,7 +4743,7 @@
       "tags": [],
       "summary": "Ralph Lauren — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1771",
+        "founded": "1801",
         "origin": "USA",
         "signature": "House style",
         "story": "Ralph Lauren remains a living house from USA."
@@ -4609,7 +4764,7 @@
       "tags": [],
       "summary": "Tommy Hilfiger — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1942",
+        "founded": "2002",
         "origin": "USA",
         "signature": "House style",
         "story": "Tommy Hilfiger remains a living house from USA."
@@ -4630,7 +4785,7 @@
       "tags": [],
       "summary": "Calvin Klein — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1761",
+        "founded": "1836",
         "origin": "USA",
         "signature": "House style",
         "story": "Calvin Klein remains a living house from USA."
@@ -4649,7 +4804,7 @@
       "tags": [],
       "summary": "Gucci — catalogued in clothes brands · Italy.",
       "facts": {
-        "founded": "1975",
+        "founded": "1921",
         "origin": "Italy",
         "signature": "House style",
         "story": "Gucci remains a living house from Italy."
@@ -4668,7 +4823,7 @@
       "tags": [],
       "summary": "Prada — catalogued in clothes brands · Italy.",
       "facts": {
-        "founded": "1840",
+        "founded": "1914",
         "origin": "Italy",
         "signature": "House style",
         "story": "Prada remains a living house from Italy."
@@ -4687,7 +4842,7 @@
       "tags": [],
       "summary": "Versace — catalogued in clothes brands · Italy.",
       "facts": {
-        "founded": "1929",
+        "founded": "1975",
         "origin": "Italy",
         "signature": "House style",
         "story": "Versace remains a living house from Italy."
@@ -4708,7 +4863,7 @@
       "tags": [],
       "summary": "Armani — catalogued in clothes brands · Italy.",
       "facts": {
-        "founded": "1816",
+        "founded": "1957",
         "origin": "Italy",
         "signature": "House style",
         "story": "Armani remains a living house from Italy."
@@ -4727,7 +4882,7 @@
       "tags": [],
       "summary": "Burberry — catalogued in clothes brands · UK.",
       "facts": {
-        "founded": "1817",
+        "founded": "1802",
         "origin": "UK",
         "signature": "House style",
         "story": "Burberry remains a living house from UK."
@@ -4746,7 +4901,7 @@
       "tags": [],
       "summary": "Lululemon — catalogued in clothes brands · Canada.",
       "facts": {
-        "founded": "1785",
+        "founded": "1843",
         "origin": "Canada",
         "signature": "House style",
         "story": "Lululemon remains a living house from Canada."
@@ -4765,7 +4920,7 @@
       "tags": [],
       "summary": "Patagonia — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1960",
+        "founded": "1826",
         "origin": "USA",
         "signature": "House style",
         "story": "Patagonia remains a living house from USA."
@@ -4787,7 +4942,7 @@
       "tags": [],
       "summary": "The North Face — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1859",
+        "founded": "1864",
         "origin": "USA",
         "signature": "House style",
         "story": "The North Face remains a living house from USA."
@@ -4806,7 +4961,7 @@
       "tags": [],
       "summary": "Supreme — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1853",
+        "founded": "1994",
         "origin": "USA",
         "signature": "House style",
         "story": "Supreme remains a living house from USA."
@@ -4825,7 +4980,7 @@
       "tags": [],
       "summary": "Off-White — catalogued in clothes brands · Italy.",
       "facts": {
-        "founded": "1929",
+        "founded": "1938",
         "origin": "Italy",
         "signature": "House style",
         "story": "Off-White remains a living house from Italy."
@@ -4844,7 +4999,7 @@
       "tags": [],
       "summary": "Balenciaga — catalogued in clothes brands · Spain.",
       "facts": {
-        "founded": "1719",
+        "founded": "1864",
         "origin": "Spain",
         "signature": "House style",
         "story": "Balenciaga remains a living house from Spain."
@@ -4863,7 +5018,7 @@
       "tags": [],
       "summary": "MUJI — catalogued in clothes brands · Japan.",
       "facts": {
-        "founded": "1789",
+        "founded": "1914",
         "origin": "Japan",
         "signature": "House style",
         "story": "MUJI remains a living house from Japan."
@@ -4882,7 +5037,7 @@
       "tags": [],
       "summary": "GU — catalogued in clothes brands · Japan.",
       "facts": {
-        "founded": "1796",
+        "founded": "1940",
         "origin": "Japan",
         "signature": "House style",
         "story": "GU remains a living house from Japan."
@@ -4901,7 +5056,7 @@
       "tags": [],
       "summary": "COS — catalogued in clothes brands · Sweden.",
       "facts": {
-        "founded": "1749",
+        "founded": "1981",
         "origin": "Sweden",
         "signature": "House style",
         "story": "COS remains a living house from Sweden."
@@ -4920,7 +5075,7 @@
       "tags": [],
       "summary": "Everlane — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1978",
+        "founded": "1867",
         "origin": "USA",
         "signature": "House style",
         "story": "Everlane remains a living house from USA."
@@ -4939,7 +5094,7 @@
       "tags": [],
       "summary": "Carhartt — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1829",
+        "founded": "1907",
         "origin": "USA",
         "signature": "House style",
         "story": "Carhartt remains a living house from USA."
@@ -4958,7 +5113,7 @@
       "tags": [],
       "summary": "Dickies — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1840",
+        "founded": "1847",
         "origin": "USA",
         "signature": "House style",
         "story": "Dickies remains a living house from USA."
@@ -4977,7 +5132,7 @@
       "tags": [],
       "summary": "Champion — catalogued in clothes brands · USA.",
       "facts": {
-        "founded": "1967",
+        "founded": "1865",
         "origin": "USA",
         "signature": "House style",
         "story": "Champion remains a living house from USA."
@@ -4999,7 +5154,7 @@
       "tags": [],
       "summary": "Louis Vuitton — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1954",
+        "founded": "1854",
         "origin": "France",
         "signature": "House style",
         "story": "Louis Vuitton remains a living house from France."
@@ -5018,7 +5173,7 @@
       "tags": [],
       "summary": "Chanel — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "2011",
+        "founded": "1910",
         "origin": "France",
         "signature": "House style",
         "story": "Chanel remains a living house from France."
@@ -5039,7 +5194,7 @@
       "tags": [],
       "summary": "Hermès — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1720",
+        "founded": "1837",
         "origin": "France",
         "signature": "House style",
         "story": "Hermès remains a living house from France."
@@ -5060,7 +5215,7 @@
       "tags": [],
       "summary": "Dior — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1722",
+        "founded": "1946",
         "origin": "France",
         "signature": "House style",
         "story": "Dior remains a living house from France."
@@ -5079,7 +5234,7 @@
       "tags": [],
       "summary": "Cartier — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1870",
+        "founded": "1980",
         "origin": "France",
         "signature": "House style",
         "story": "Cartier remains a living house from France."
@@ -5100,7 +5255,7 @@
       "tags": [],
       "summary": "Tiffany & Co. — catalogued in luxury brands · USA.",
       "facts": {
-        "founded": "1849",
+        "founded": "1937",
         "origin": "USA",
         "signature": "House style",
         "story": "Tiffany & Co. remains a living house from USA."
@@ -5119,7 +5274,7 @@
       "tags": [],
       "summary": "Rolex — catalogued in luxury brands · Switzerland.",
       "facts": {
-        "founded": "1946",
+        "founded": "1905",
         "origin": "Switzerland",
         "signature": "House style",
         "story": "Rolex remains a living house from Switzerland."
@@ -5138,7 +5293,7 @@
       "tags": [],
       "summary": "Omega — catalogued in luxury brands · Switzerland.",
       "facts": {
-        "founded": "1709",
+        "founded": "1924",
         "origin": "Switzerland",
         "signature": "House style",
         "story": "Omega remains a living house from Switzerland."
@@ -5159,7 +5314,7 @@
       "tags": [],
       "summary": "Patek Philippe — catalogued in luxury brands · Switzerland.",
       "facts": {
-        "founded": "1885",
+        "founded": "1886",
         "origin": "Switzerland",
         "signature": "House style",
         "story": "Patek Philippe remains a living house from Switzerland."
@@ -5180,7 +5335,7 @@
       "tags": [],
       "summary": "Audemars Piguet — catalogued in luxury brands · Switzerland.",
       "facts": {
-        "founded": "2018",
+        "founded": "1888",
         "origin": "Switzerland",
         "signature": "House style",
         "story": "Audemars Piguet remains a living house from Switzerland."
@@ -5201,7 +5356,7 @@
       "tags": [],
       "summary": "Bulgari — catalogued in luxury brands · Italy.",
       "facts": {
-        "founded": "1995",
+        "founded": "1800",
         "origin": "Italy",
         "signature": "House style",
         "story": "Bulgari remains a living house from Italy."
@@ -5220,7 +5375,7 @@
       "tags": [],
       "summary": "Van Cleef & Arpels — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1681",
+        "founded": "1800",
         "origin": "France",
         "signature": "House style",
         "story": "Van Cleef & Arpels remains a living house from France."
@@ -5239,7 +5394,7 @@
       "tags": [],
       "summary": "Fendi — catalogued in luxury brands · Italy.",
       "facts": {
-        "founded": "1694",
+        "founded": "1960",
         "origin": "Italy",
         "signature": "House style",
         "story": "Fendi remains a living house from Italy."
@@ -5260,7 +5415,7 @@
       "tags": [],
       "summary": "Bottega Veneta — catalogued in luxury brands · Italy.",
       "facts": {
-        "founded": "1698",
+        "founded": "1857",
         "origin": "Italy",
         "signature": "House style",
         "story": "Bottega Veneta remains a living house from Italy."
@@ -5281,7 +5436,7 @@
       "tags": [],
       "summary": "Celine — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1840",
+        "founded": "1814",
         "origin": "France",
         "signature": "House style",
         "story": "Celine remains a living house from France."
@@ -5300,7 +5455,7 @@
       "tags": [],
       "summary": "Givenchy — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1841",
+        "founded": "1894",
         "origin": "France",
         "signature": "House style",
         "story": "Givenchy remains a living house from France."
@@ -5322,7 +5477,7 @@
       "tags": [],
       "summary": "Yves Saint Laurent — catalogued in luxury brands · France.",
       "facts": {
-        "founded": "1692",
+        "founded": "2010",
         "origin": "France",
         "signature": "House style",
         "story": "Yves Saint Laurent remains a living house from France."
@@ -5341,7 +5496,7 @@
       "tags": [],
       "summary": "Montblanc — catalogued in luxury brands · Germany.",
       "facts": {
-        "founded": "1742",
+        "founded": "1832",
         "origin": "Germany",
         "signature": "House style",
         "story": "Montblanc remains a living house from Germany."
@@ -5360,7 +5515,7 @@
       "tags": [],
       "summary": "Rimowa — catalogued in luxury brands · Germany.",
       "facts": {
-        "founded": "2007",
+        "founded": "1875",
         "origin": "Germany",
         "signature": "House style",
         "story": "Rimowa remains a living house from Germany."
@@ -5381,7 +5536,7 @@
       ],
       "summary": "Ferrari Style — catalogued in luxury brands · Italy.",
       "facts": {
-        "founded": "1732",
+        "founded": "1986",
         "origin": "Italy",
         "signature": "lifestyle",
         "story": "Ferrari Style remains a living house from Italy."
@@ -5400,7 +5555,7 @@
       "tags": [],
       "summary": "Bentley Home — catalogued in luxury brands · UK.",
       "facts": {
-        "founded": "1897",
+        "founded": "1838",
         "origin": "UK",
         "signature": "House style",
         "story": "Bentley Home remains a living house from UK."
@@ -5419,7 +5574,7 @@
       "tags": [],
       "summary": "Asprey — catalogued in luxury brands · UK.",
       "facts": {
-        "founded": "1720",
+        "founded": "1923",
         "origin": "UK",
         "signature": "House style",
         "story": "Asprey remains a living house from UK."
@@ -5438,7 +5593,7 @@
       "tags": [],
       "summary": "Harry Winston — catalogued in luxury brands · USA.",
       "facts": {
-        "founded": "1889",
+        "founded": "1931",
         "origin": "USA",
         "signature": "House style",
         "story": "Harry Winston remains a living house from USA."
@@ -5457,7 +5612,7 @@
       "tags": [],
       "summary": "Graff — catalogued in luxury brands · UK.",
       "facts": {
-        "founded": "1902",
+        "founded": "1920",
         "origin": "UK",
         "signature": "House style",
         "story": "Graff remains a living house from UK."
@@ -5476,7 +5631,7 @@
       "tags": [],
       "summary": "Chopard — catalogued in luxury brands · Switzerland.",
       "facts": {
-        "founded": "1693",
+        "founded": "1884",
         "origin": "Switzerland",
         "signature": "House style",
         "story": "Chopard remains a living house from Switzerland."
@@ -5502,7 +5657,7 @@
         "species": "quercus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Leaf fall · autumn",
-        "story": "Oak is still rooted and living on Earth."
+        "story": "Oak is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 145,
       "sort": 0,
@@ -5525,7 +5680,7 @@
         "species": "acer",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Leaf fall · autumn",
-        "story": "Maple is still rooted and living on Earth."
+        "story": "Maple is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 77,
       "sort": 1,
@@ -5548,7 +5703,7 @@
         "species": "pinus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Cone season · autumn–winter",
-        "story": "Pine is still rooted and living on Earth."
+        "story": "Pine is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 48,
       "sort": 2,
@@ -5571,7 +5726,7 @@
         "species": "cedrus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Cone season · autumn–winter",
-        "story": "Cedar is still rooted and living on Earth."
+        "story": "Cedar is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 331,
       "sort": 3,
@@ -5592,7 +5747,7 @@
         "species": "betula",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Birch is still rooted and living on Earth."
+        "story": "Birch is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 40,
       "sort": 4,
@@ -5613,7 +5768,7 @@
         "species": "salix",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Willow is still rooted and living on Earth."
+        "story": "Willow is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 330,
       "sort": 5,
@@ -5635,7 +5790,7 @@
         "species": "sakura",
         "habitat": "Japan",
         "harvest": "Varies by climate",
-        "story": "Cherry blossom is still rooted and living on Earth."
+        "story": "Cherry blossom is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 303,
       "sort": 6,
@@ -5656,7 +5811,7 @@
         "species": "ginkgo biloba",
         "habitat": "China",
         "harvest": "Varies by climate",
-        "story": "Ginkgo is still rooted and living on Earth."
+        "story": "Ginkgo is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 119,
       "sort": 7,
@@ -5675,7 +5830,7 @@
         "species": "Baobab",
         "habitat": "Africa",
         "harvest": "Varies by climate",
-        "story": "Baobab is still rooted and living on Earth."
+        "story": "Baobab is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 259,
       "sort": 8,
@@ -5696,7 +5851,7 @@
         "species": "sequoiadendron",
         "habitat": "USA",
         "harvest": "Varies by climate",
-        "story": "Giant sequoia is still rooted and living on Earth."
+        "story": "Giant sequoia is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 257,
       "sort": 9,
@@ -5717,7 +5872,7 @@
         "species": "sequoia sempervirens",
         "habitat": "USA",
         "harvest": "Varies by climate",
-        "story": "Coast redwood is still rooted and living on Earth."
+        "story": "Coast redwood is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 134,
       "sort": 10,
@@ -5740,7 +5895,7 @@
         "species": "bambusoideae",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Bamboo is still rooted and living on Earth."
+        "story": "Bamboo is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 164,
       "sort": 11,
@@ -5761,7 +5916,7 @@
         "species": "arecaceae",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Palm is still rooted and living on Earth."
+        "story": "Palm is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 226,
       "sort": 12,
@@ -5782,7 +5937,7 @@
         "species": "olea europaea",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Olive tree is still rooted and living on Earth."
+        "story": "Olive tree is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 123,
       "sort": 13,
@@ -5803,7 +5958,7 @@
         "species": "ficus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Fig tree is still rooted and living on Earth."
+        "story": "Fig tree is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 20,
       "sort": 14,
@@ -5822,7 +5977,7 @@
         "species": "Eucalyptus",
         "habitat": "Australia",
         "harvest": "Varies by climate",
-        "story": "Eucalyptus is still rooted and living on Earth."
+        "story": "Eucalyptus is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 213,
       "sort": 15,
@@ -5843,7 +5998,7 @@
         "species": "cupressus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Cypress is still rooted and living on Earth."
+        "story": "Cypress is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 293,
       "sort": 16,
@@ -5864,7 +6019,7 @@
         "species": "ulmus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Elm is still rooted and living on Earth."
+        "story": "Elm is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 238,
       "sort": 17,
@@ -5885,7 +6040,7 @@
         "species": "fraxinus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Ash is still rooted and living on Earth."
+        "story": "Ash is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 206,
       "sort": 18,
@@ -5906,7 +6061,7 @@
         "species": "fagus",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Beech is still rooted and living on Earth."
+        "story": "Beech is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 143,
       "sort": 19,
@@ -5927,7 +6082,7 @@
         "species": "picea",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Spruce is still rooted and living on Earth."
+        "story": "Spruce is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 18,
       "sort": 20,
@@ -5948,7 +6103,7 @@
         "species": "abies",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Fir is still rooted and living on Earth."
+        "story": "Fir is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 31,
       "sort": 21,
@@ -5967,7 +6122,7 @@
         "species": "Jacaranda",
         "habitat": "South America",
         "harvest": "Varies by climate",
-        "story": "Jacaranda is still rooted and living on Earth."
+        "story": "Jacaranda is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 343,
       "sort": 22,
@@ -5988,7 +6143,7 @@
         "species": "magnolia",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Magnolia tree is still rooted and living on Earth."
+        "story": "Magnolia tree is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 48,
       "sort": 23,
@@ -6009,7 +6164,7 @@
         "species": "wisteria",
         "habitat": "Temperate to tropical ranges",
         "harvest": "Varies by climate",
-        "story": "Wisteria is still rooted and living on Earth."
+        "story": "Wisteria is still rooted and living on Earth — look for bark, leaf shape, and canopy silhouette."
       },
       "coverHue": 267,
       "sort": 24,
@@ -7164,6 +7319,7 @@
       ],
       "summary": "Coca-Cola — catalogued in food · USA.",
       "facts": {
+        "introduced": "1886",
         "origin": "USA",
         "category": "drink",
         "story": "Coca-Cola is still on tables and shelves."
@@ -7184,6 +7340,7 @@
       ],
       "summary": "Pepsi — catalogued in food · USA.",
       "facts": {
+        "introduced": "1893",
         "origin": "USA",
         "category": "drink",
         "story": "Pepsi is still on tables and shelves."
@@ -7202,6 +7359,7 @@
       "tags": [],
       "summary": "Nutella — catalogued in food · Italy.",
       "facts": {
+        "introduced": "1991",
         "origin": "Italy",
         "category": "Packaged food",
         "story": "Nutella is still on tables and shelves."
@@ -7220,6 +7378,7 @@
       "tags": [],
       "summary": "Oreo — catalogued in food · USA.",
       "facts": {
+        "introduced": "1919",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Oreo is still on tables and shelves."
@@ -7240,6 +7399,7 @@
       "tags": [],
       "summary": "KitKat — catalogued in food · UK.",
       "facts": {
+        "introduced": "1962",
         "origin": "UK",
         "category": "Packaged food",
         "story": "KitKat is still on tables and shelves."
@@ -7258,6 +7418,7 @@
       "tags": [],
       "summary": "Snickers — catalogued in food · USA.",
       "facts": {
+        "introduced": "1936",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Snickers is still on tables and shelves."
@@ -7276,6 +7437,7 @@
       "tags": [],
       "summary": "Toblerone — catalogued in food · Switzerland.",
       "facts": {
+        "introduced": "1976",
         "origin": "Switzerland",
         "category": "Packaged food",
         "story": "Toblerone is still on tables and shelves."
@@ -7294,6 +7456,7 @@
       "tags": [],
       "summary": "Haribo — catalogued in food · Germany.",
       "facts": {
+        "introduced": "1955",
         "origin": "Germany",
         "category": "Packaged food",
         "story": "Haribo is still on tables and shelves."
@@ -7312,6 +7475,7 @@
       "tags": [],
       "summary": "Pringles — catalogued in food · USA.",
       "facts": {
+        "introduced": "1986",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Pringles is still on tables and shelves."
@@ -7332,6 +7496,7 @@
       "tags": [],
       "summary": "Lay's — catalogued in food · USA.",
       "facts": {
+        "introduced": "1884",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Lay's is still on tables and shelves."
@@ -7350,6 +7515,7 @@
       "tags": [],
       "summary": "Doritos — catalogued in food · USA.",
       "facts": {
+        "introduced": "1862",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Doritos is still on tables and shelves."
@@ -7370,6 +7536,7 @@
       ],
       "summary": "Heinz — catalogued in food · USA.",
       "facts": {
+        "introduced": "1996",
         "origin": "USA",
         "category": "ketchup",
         "story": "Heinz is still on tables and shelves."
@@ -7390,6 +7557,7 @@
       "tags": [],
       "summary": "Kellogg's — catalogued in food · USA.",
       "facts": {
+        "introduced": "1958",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Kellogg's is still on tables and shelves."
@@ -7410,6 +7578,7 @@
       "tags": [],
       "summary": "Nestlé — catalogued in food · Switzerland.",
       "facts": {
+        "introduced": "1866",
         "origin": "Switzerland",
         "category": "Packaged food",
         "story": "Nestlé is still on tables and shelves."
@@ -7428,6 +7597,7 @@
       "tags": [],
       "summary": "Kraft — catalogued in food · USA.",
       "facts": {
+        "introduced": "1894",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Kraft is still on tables and shelves."
@@ -7448,6 +7618,7 @@
       "tags": [],
       "summary": "Campbell's — catalogued in food · USA.",
       "facts": {
+        "introduced": "1918",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Campbell's is still on tables and shelves."
@@ -7466,6 +7637,7 @@
       "tags": [],
       "summary": "Tabasco — catalogued in food · USA.",
       "facts": {
+        "introduced": "1959",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Tabasco is still on tables and shelves."
@@ -7484,6 +7656,7 @@
       "tags": [],
       "summary": "Maggi — catalogued in food · Switzerland.",
       "facts": {
+        "introduced": "1883",
         "origin": "Switzerland",
         "category": "Packaged food",
         "story": "Maggi is still on tables and shelves."
@@ -7502,6 +7675,7 @@
       "tags": [],
       "summary": "Knorr — catalogued in food · Germany.",
       "facts": {
+        "introduced": "1862",
         "origin": "Germany",
         "category": "Packaged food",
         "story": "Knorr is still on tables and shelves."
@@ -7522,6 +7696,7 @@
       "tags": [],
       "summary": "Hellmann's — catalogued in food · USA.",
       "facts": {
+        "introduced": "1920",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Hellmann's is still on tables and shelves."
@@ -7542,6 +7717,7 @@
       ],
       "summary": "Philadelphia — catalogued in food · USA.",
       "facts": {
+        "introduced": "1987",
         "origin": "USA",
         "category": "cream cheese",
         "story": "Philadelphia is still on tables and shelves."
@@ -7562,6 +7738,7 @@
       "tags": [],
       "summary": "Ben & Jerry's — catalogued in food · USA.",
       "facts": {
+        "introduced": "1895",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Ben & Jerry's is still on tables and shelves."
@@ -7582,6 +7759,7 @@
       "tags": [],
       "summary": "Häagen-Dazs — catalogued in food · USA.",
       "facts": {
+        "introduced": "1937",
         "origin": "USA",
         "category": "Packaged food",
         "story": "Häagen-Dazs is still on tables and shelves."
@@ -7602,6 +7780,7 @@
       ],
       "summary": "Red Bull — catalogued in food · Austria.",
       "facts": {
+        "introduced": "1945",
         "origin": "Austria",
         "category": "drink",
         "story": "Red Bull is still on tables and shelves."
@@ -7624,6 +7803,7 @@
       ],
       "summary": "Monster Energy — catalogued in food · USA.",
       "facts": {
+        "introduced": "1934",
         "origin": "USA",
         "category": "drink",
         "story": "Monster Energy is still on tables and shelves."
@@ -7644,6 +7824,7 @@
       "tags": [],
       "summary": "S.Pellegrino — catalogued in food · Italy.",
       "facts": {
+        "introduced": "1966",
         "origin": "Italy",
         "category": "Packaged food",
         "story": "S.Pellegrino is still on tables and shelves."
@@ -7664,6 +7845,7 @@
       "tags": [],
       "summary": "Évian — catalogued in food · France.",
       "facts": {
+        "introduced": "1873",
         "origin": "France",
         "category": "Packaged food",
         "story": "Évian is still on tables and shelves."
@@ -7682,6 +7864,7 @@
       "tags": [],
       "summary": "Meiji — catalogued in food · Japan.",
       "facts": {
+        "introduced": "1892",
         "origin": "Japan",
         "category": "Packaged food",
         "story": "Meiji is still on tables and shelves."
@@ -7700,6 +7883,7 @@
       "tags": [],
       "summary": "Calbee — catalogued in food · Japan.",
       "facts": {
+        "introduced": "1954",
         "origin": "Japan",
         "category": "Packaged food",
         "story": "Calbee is still on tables and shelves."
@@ -7720,6 +7904,7 @@
       "tags": [],
       "summary": "Nissin — catalogued in food · Japan.",
       "facts": {
+        "introduced": "1938",
         "origin": "Japan",
         "category": "Packaged food",
         "story": "Nissin is still on tables and shelves."
