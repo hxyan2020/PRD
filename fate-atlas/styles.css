@@ -365,7 +365,11 @@ select {
 .feature-card__cover--hybrid,
 .method__cover--hybrid,
 .oracle__cover--hybrid,
-.rite-cover--hybrid {
+.rite-cover--hybrid,
+.feature-card__cover--photo,
+.method__cover--photo,
+.oracle__cover--photo,
+.rite-cover--photo {
   display: grid;
 }
 
