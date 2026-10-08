@@ -712,8 +712,8 @@ img {
   width: clamp(52px, 10vw, 72px);
   height: clamp(52px, 10vw, 72px);
   object-fit: contain;
-  border-radius: 16px;
-  background: color-mix(in oklab, white 18%, transparent);
+  border-radius: 0;
+  background: transparent;
   flex-shrink: 0;
 }
 

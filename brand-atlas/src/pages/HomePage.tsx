@@ -18,7 +18,7 @@ export function HomePage() {
           <p className="hero__brand">
             <img
               className="hero__logo"
-              src={`${import.meta.env.BASE_URL}logo-seen.png`}
+              src={`${import.meta.env.BASE_URL}logo-seen-white.png`}
               alt=""
               width={72}
               height={72}
