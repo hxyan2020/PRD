@@ -1258,6 +1258,30 @@ body.studio-open {
   list-style: decimal;
 }
 
+.rite-explain {
+  margin: 0.85rem 0 1rem;
+  padding: 0.9rem 0.95rem 1rem;
+  border: 1px solid rgba(224, 168, 74, 0.28);
+  background: rgba(224, 168, 74, 0.06);
+}
+
+.rite-explain__title {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--copper);
+}
+
+.rite-explain__body {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
 .how-rite {
   margin: 1rem 0 1.25rem;
   padding: 1rem 1.05rem;

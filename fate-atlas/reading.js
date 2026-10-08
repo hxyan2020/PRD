@@ -288,6 +288,7 @@
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(ti("studio.bagua.eyebrow"))}</p>
         <h3 class="studio__heading">${escapeHTML(ti("studio.bagua.howTitle"))}</h3>
+        ${riteExplanationHTML(state.method)}
         ${howItWorksHTML(state.method, { id: "cast" })}
         <div class="bagua-strip" aria-hidden="true">
           ${Object.values(G().TRIGRAMS).map((t) => `<span title="${escapeHTML(t.name)}">${t.symbol}<small>${escapeHTML(t.name.split(" ")[0])}</small></span>`).join("")}
@@ -375,6 +376,7 @@
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(ti("studio.tarot.eyebrow"))}</p>
         <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.howTitle"))}</h3>
+        ${riteExplanationHTML(state.method)}
         ${howItWorksHTML(state.method, { id: "cards" })}
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
@@ -494,6 +496,7 @@
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(ti("studio.mbti.eyebrow") || "MBTI · Preference map")}</p>
         <h3 class="studio__heading">Four letters, four choices</h3>
+        ${riteExplanationHTML(state.method)}
         ${howItWorksHTML(state.method, { id: "form" })}
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
@@ -540,6 +543,22 @@
       state.stepIndex = state.steps.indexOf("result");
     }
     render();
+  }
+
+  function riteExplanationHTML(method, text) {
+    const t = text || (window.FatumMethodText ? window.FatumMethodText.localize(method) : method) || {};
+    const explain =
+      t.explanation ||
+      (window.FatumExplanations && window.FatumExplanations.for(method)) ||
+      t.summary ||
+      method?.summary ||
+      "";
+    if (!explain) return "";
+    const title = ti("rite.explainTitle") || "About this rite";
+    return `<section class="rite-explain" aria-label="${escapeHTML(title)}">
+        <h4 class="rite-explain__title">${escapeHTML(title)}</h4>
+        <p class="rite-explain__body">${escapeHTML(explain)}</p>
+      </section>`;
   }
 
   function howItWorksHTML(method, process) {
@@ -769,6 +788,7 @@
         <p class="studio__eyebrow">${escapeHTML(ti(`continent.${method.continent}`) || method.continent)} · ${escapeHTML(ti(`type.${method.type}`) || method.type)}</p>
         <h3 class="studio__heading">${escapeHTML(text.name || method.name)}</h3>
         <p class="studio__copy">${escapeHTML(text.summary || method.summary || "")}</p>
+        ${riteExplanationHTML(method, text)}
         ${howItWorksHTML(method, process)}
         ${sciencePanelHTML(method)}
         <div class="studio__actions">
