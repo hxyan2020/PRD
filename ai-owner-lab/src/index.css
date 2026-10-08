@@ -2310,6 +2310,28 @@ body.menu-open {
   color: var(--teal-deep);
 }
 
+.notebook-composer {
+  margin: 0 0 1.25rem;
+  padding: 1.1rem 1.15rem;
+  background: rgba(245, 248, 250, 0.92);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--teal);
+}
+
+.notebook-composer-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.notebook-composer-head h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
 .notebook-timeline {
   list-style: none;
   margin: 0;
@@ -2327,6 +2349,10 @@ body.menu-open {
 
 .notebook-entry.explanation {
   border-left-color: var(--teal);
+}
+
+.notebook-entry.note {
+  border-left-color: var(--teal-deep);
 }
 
 .notebook-meta {

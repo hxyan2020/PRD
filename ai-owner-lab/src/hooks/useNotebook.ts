@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { notebookStore } from './notebookStore'
 
-export type NotebookEntryType = 'clip' | 'explanation'
+export type NotebookEntryType = 'clip' | 'explanation' | 'note'
 
 export interface NotebookEntry {
   id: string
@@ -27,6 +27,7 @@ export function useNotebook() {
     count: entries.length,
     addClip: notebookStore.addClip,
     addExplanation: notebookStore.addExplanation,
+    addNote: notebookStore.addNote,
     updateEntry: notebookStore.update,
     removeEntry: notebookStore.remove,
     clearAll: notebookStore.clear,

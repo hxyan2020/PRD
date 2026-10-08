@@ -76,6 +76,19 @@ export const notebookStore = {
     write([entry, ...read()])
     return entry
   },
+  addNote(input: { text: string }) {
+    const text = input.text.trim()
+    if (!text) return null
+    const entry: NotebookEntry = {
+      id: uid(),
+      createdAt: new Date().toISOString(),
+      type: 'note',
+      selectedText: text,
+      sourceLabel: 'Notebook',
+    }
+    write([entry, ...read()])
+    return entry
+  },
   update(
     id: string,
     patch: {

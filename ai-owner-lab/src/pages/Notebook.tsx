@@ -3,12 +3,23 @@ import { Link } from 'react-router-dom'
 import { formatTimestamp, useNotebook, type NotebookEntry } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
 
+function typeLabel(
+  type: NotebookEntry['type'],
+  t: (key: 'aiExplanation' | 'clip' | 'freeNote') => string,
+) {
+  if (type === 'explanation') return t('aiExplanation')
+  if (type === 'note') return t('freeNote')
+  return t('clip')
+}
+
 export function Notebook() {
-  const { entries, count, updateEntry, removeEntry, clearAll } = useNotebook()
+  const { entries, count, addNote, updateEntry, removeEntry, clearAll } = useNotebook()
   const { lang, t } = useLanguage()
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftText, setDraftText] = useState('')
   const [draftExplanation, setDraftExplanation] = useState('')
+  const [newNote, setNewNote] = useState('')
+  const [composerOpen, setComposerOpen] = useState(true)
 
   function startEdit(entry: NotebookEntry) {
     setEditingId(entry.id)
@@ -33,6 +44,13 @@ export function Notebook() {
     if (updated) cancelEdit()
   }
 
+  function createNote() {
+    const created = addNote({ text: newNote })
+    if (!created) return
+    setNewNote('')
+    setComposerOpen(true)
+  }
+
   return (
     <div className="page">
       <header className="page-header">
@@ -43,6 +61,53 @@ export function Notebook() {
           {count} {count === 1 ? t('note') : t('notes')}
         </p>
       </header>
+
+      <section className="notebook-composer" aria-label={t('newNote')}>
+        <div className="notebook-composer-head">
+          <h2>{t('newNote')}</h2>
+          {!composerOpen ? (
+            <button type="button" className="btn primary" onClick={() => setComposerOpen(true)}>
+              {t('newNote')}
+            </button>
+          ) : null}
+        </div>
+        {composerOpen ? (
+          <div className="notebook-edit-form">
+            <label>
+              {t('noteBodyLabel')}
+              <textarea
+                value={newNote}
+                onChange={(e) => setNewNote(e.target.value)}
+                rows={4}
+                placeholder={t('newNotePlaceholder')}
+                autoFocus={entries.length === 0}
+              />
+            </label>
+            <div className="notebook-actions">
+              <button
+                type="button"
+                className="btn primary"
+                disabled={!newNote.trim()}
+                onClick={createNote}
+              >
+                {t('createNote')}
+              </button>
+              {entries.length > 0 ? (
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={() => {
+                    setComposerOpen(false)
+                    setNewNote('')
+                  }}
+                >
+                  {t('cancelEdit')}
+                </button>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+      </section>
 
       {entries.length === 0 ? (
         <div className="callout">
@@ -67,10 +132,8 @@ export function Notebook() {
                       {t('edited')}
                     </span>
                   ) : null}
-                  <span className="notebook-type">
-                    {entry.type === 'explanation' ? t('aiExplanation') : t('clip')}
-                  </span>
-                  {entry.sourceLabel ? (
+                  <span className="notebook-type">{typeLabel(entry.type, t)}</span>
+                  {entry.sourceLabel && entry.type !== 'note' ? (
                     entry.sourcePath ? (
                       <Link to={entry.sourcePath}>{entry.sourceLabel}</Link>
                     ) : (
@@ -83,11 +146,11 @@ export function Notebook() {
                 {editing ? (
                   <div className="notebook-edit-form">
                     <label>
-                      {t('selectedTextLabel')}
+                      {entry.type === 'note' ? t('noteBodyLabel') : t('selectedTextLabel')}
                       <textarea
                         value={draftText}
                         onChange={(e) => setDraftText(e.target.value)}
-                        rows={3}
+                        rows={entry.type === 'note' ? 6 : 3}
                         autoFocus
                       />
                     </label>
