@@ -1,0 +1,19 @@
+.loading-state {
+  min-height: 50vh;
+  display: grid;
+  place-content: center;
+  gap: 1rem;
+  text-align: center;
+  color: var(--paper-dim);
+  animation: fadeIn 400ms ease;
+}
+
+.loading-bar {
+  width: min(220px, 60vw);
+  height: 2px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--brass), var(--sage), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}

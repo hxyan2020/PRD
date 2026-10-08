@@ -1,0 +1,12 @@
+.genre-icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  color: var(--brass-soft);
+  opacity: 0.92;
+}
+
+.chip.on .genre-icon {
+  color: var(--brass);
+  opacity: 1;
+}

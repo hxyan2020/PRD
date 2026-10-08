@@ -1,0 +1,398 @@
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-items: end;
+  overflow: hidden;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-image,
+.hero-fallback {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Desktop: face in frame, biased right so copy on the left stays clear (mobile overrides). */
+  object-position: 62% 20%;
+  animation: heroKenBurnsDesktop 26s ease-in-out alternate infinite;
+}
+
+@keyframes heroKenBurnsDesktop {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    /* Mild zoom; slight downward bias so the face does not drift out of frame. */
+    transform: scale(1.06) translate3d(-0.8%, 0.6%, 0);
+  }
+}
+
+.hero-fallback {
+  background:
+    linear-gradient(135deg, #243028, #101412 55%, #3a2a16),
+    radial-gradient(circle at 30% 40%, rgba(214, 167, 86, 0.25), transparent 40%);
+}
+
+.hero-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 12, 11, 0.25) 0%, rgba(10, 12, 11, 0.55) 45%, rgba(10, 12, 11, 0.92) 100%),
+    linear-gradient(90deg, rgba(10, 12, 11, 0.55), transparent 55%);
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  width: min(var(--max), calc(100% - 2.5rem));
+  margin: 0 auto 12vh;
+  animation: rise 800ms ease both;
+}
+
+.brand-hero {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: clamp(3.8rem, 12vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: 0.04em;
+  color: var(--brass);
+}
+
+.hero-copy h1 {
+  margin: 0;
+  max-width: 14ch;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 4.4vw, 3rem);
+  line-height: 1.15;
+}
+
+.lede {
+  max-width: 38ch;
+  margin: 1rem 0 0;
+  color: var(--paper-dim);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+}
+
+.hero-stats {
+  margin: 1rem 0 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.25rem;
+  border: 1px solid transparent;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background: var(--brass);
+  color: #1a1408;
+}
+
+.btn.primary:hover {
+  background: var(--brass-soft);
+}
+
+.btn.ghost {
+  border-color: rgba(243, 239, 228, 0.35);
+  color: var(--paper);
+  background: rgba(16, 20, 18, 0.35);
+}
+
+.btn.ghost:hover {
+  border-color: var(--brass);
+}
+
+.home-strip {
+  border-block: 1px solid var(--line);
+  background: rgba(23, 32, 27, 0.65);
+}
+
+.home-strip-inner {
+  width: min(var(--max), calc(100% - 2.5rem));
+  margin: 0 auto;
+  padding: 2.4rem 0;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1.4fr 1fr;
+  align-items: center;
+}
+
+.home-strip h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 400;
+}
+
+.home-strip p {
+  margin: 0.7rem 0 0;
+  color: var(--paper-dim);
+  max-width: 46ch;
+  line-height: 1.55;
+}
+
+.facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+}
+
+.facts li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.facts strong {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--brass);
+  font-weight: 400;
+}
+
+.facts span {
+  color: var(--paper-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.featured {
+  width: min(var(--max), calc(100% - 2.5rem));
+  margin: 0 auto;
+  padding: 3.5rem 0 4.5rem;
+}
+
+.section-head {
+  margin-bottom: 1.8rem;
+  max-width: 42ch;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-weight: 400;
+}
+
+.section-head p {
+  margin: 0.65rem 0 0;
+  color: var(--paper-dim);
+  line-height: 1.5;
+}
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.featured-item {
+  display: grid;
+  gap: 0.75rem;
+  animation: rise 600ms ease both;
+}
+
+.featured-item img {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+  transition: transform 500ms ease;
+}
+
+.featured-item:hover img {
+  transform: scale(1.02);
+}
+
+.featured-item span {
+  color: var(--brass);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+}
+
+.featured-item h3 {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+}
+
+.featured-item p {
+  margin: 0.25rem 0 0;
+  color: var(--paper-dim);
+}
+
+.featured-cta {
+  margin-top: 2.2rem;
+}
+
+.error {
+  color: var(--danger);
+}
+
+@media (max-width: 900px) {
+  .home-strip-inner,
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .facts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hero-copy {
+    margin-bottom: 8vh;
+    width: min(var(--max), calc(100% - 1.5rem));
+  }
+}
+
+@media (max-width: 640px) {
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /*
+   * Hero fills the viewport under the sticky header. Brand/title stay high;
+   * CTAs dock to the bottom so Mona Lisa’s face and hands stay clear.
+   */
+  .hero {
+    --home-header-offset: 4.55rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: stretch;
+    min-height: calc(100svh - var(--home-header-offset));
+    height: calc(100svh - var(--home-header-offset));
+  }
+
+  .hero-image,
+  .hero-fallback {
+    object-position: center 12%;
+    /* Keep the existing mobile motion — desktop-only framing/zoom above. */
+    animation: kenBurns 22s ease-in-out alternate infinite;
+  }
+
+  .hero-veil {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(10, 12, 11, 0.5) 0%,
+        rgba(10, 12, 11, 0.1) 22%,
+        rgba(10, 12, 11, 0.05) 48%,
+        rgba(10, 12, 11, 0.35) 72%,
+        rgba(10, 12, 11, 0.92) 100%
+      ),
+      linear-gradient(90deg, rgba(10, 12, 11, 0.28), transparent 72%);
+  }
+
+  .hero-copy {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    padding: 1rem 0.9rem 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .brand-hero {
+    font-size: clamp(2.4rem, 12vw, 3.2rem);
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(1.25rem, 4.8vw, 1.6rem);
+    max-width: 18ch;
+  }
+
+  .lede {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    max-width: 32ch;
+  }
+
+  .hero-actions {
+    position: absolute;
+    left: 0.9rem;
+    right: 0.9rem;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 0.65rem);
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 0;
+    padding-top: 0;
+    gap: 0.45rem;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Header already shows viewed/collected on mobile. */
+  .hero-stats {
+    display: none;
+  }
+
+  .facts {
+    gap: 0.5rem;
+  }
+
+  .facts strong {
+    font-size: 1.55rem;
+  }
+
+  .home-strip-inner,
+  .featured {
+    width: min(var(--max), calc(100% - 1.5rem));
+  }
+}
+
+@media (max-width: 640px) and (max-height: 700px) {
+  .lede {
+    display: none;
+  }
+
+  .brand-hero {
+    font-size: clamp(2.1rem, 11vw, 2.8rem);
+  }
+
+  .hero-actions .btn {
+    min-height: 40px;
+    padding: 0.55rem 0.9rem;
+  }
+}

@@ -1,0 +1,321 @@
+.prefs-page {
+  width: min(var(--max), calc(100% - 2.5rem));
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+.prefs-page header {
+  max-width: 46ch;
+  margin-bottom: 1.5rem;
+}
+
+.prefs-page h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+}
+
+.prefs-page header p {
+  margin: 0.6rem 0 0;
+  color: var(--paper-dim);
+  line-height: 1.5;
+}
+
+.prefs-block {
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+}
+
+.prefs-block h2 {
+  margin: 0 0 0.8rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+.prefs-world-note,
+.prefs-section-lede {
+  margin: 0.35rem 0 0.9rem;
+  color: var(--paper-dim);
+  line-height: 1.5;
+  max-width: 62ch;
+  font-size: 0.95rem;
+}
+
+.prefs-subgroup {
+  margin-top: 1rem;
+}
+
+.prefs-subgroup h3 {
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sage);
+  font-weight: 600;
+}
+
+.chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  border: 1px solid rgba(214, 167, 86, 0.28);
+  background: transparent;
+  color: var(--paper-dim);
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+}
+
+.chip-country,
+.chip-genre {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: 100%;
+}
+
+.chip-country > span,
+.chip-genre > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip.on {
+  background: rgba(214, 167, 86, 0.18);
+  border-color: var(--brass);
+  color: var(--paper);
+}
+
+.prefs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.prefs-block.generate p {
+  color: var(--paper-dim);
+  line-height: 1.5;
+  max-width: 55ch;
+}
+
+.discover-query-preview {
+  margin: 0.65rem 0 1rem;
+  padding: 0.65rem 0.8rem;
+  border-left: 2px solid var(--brass);
+  background: rgba(214, 167, 86, 0.06);
+  color: var(--paper-dim);
+  font-size: 0.9rem;
+  max-width: 70ch;
+  word-break: break-word;
+}
+
+.discover-status {
+  margin-top: 1.1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.22);
+  max-width: 52rem;
+}
+
+.discover-status-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.discover-status-msg {
+  margin: 0;
+  color: var(--paper);
+  font-size: 0.95rem;
+}
+
+.discover-status-count {
+  margin: 0;
+  color: var(--brass);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.discover-progress-bar {
+  margin: 0.85rem 0 1rem;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.discover-progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--sage), var(--brass));
+  transition: width 280ms ease;
+}
+
+.discover-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.discover-step {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr auto;
+  gap: 0.55rem;
+  align-items: start;
+  padding: 0.45rem 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.88rem;
+}
+
+.discover-step:last-child {
+  border-bottom: 0;
+}
+
+.discover-step-icon {
+  color: var(--sage);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.discover-step.status-running .discover-step-icon {
+  color: var(--brass);
+  animation: pulse-dot 1s ease infinite;
+}
+
+.discover-step.status-ok .discover-step-icon {
+  color: #8fbf8a;
+}
+
+.discover-step.status-error .discover-step-icon {
+  color: #d27a6a;
+}
+
+.discover-step strong {
+  display: block;
+  font-weight: 560;
+  color: var(--paper);
+}
+
+.discover-step span {
+  display: block;
+  margin-top: 0.12rem;
+  color: var(--paper-dim);
+  line-height: 1.35;
+}
+
+.discover-step em {
+  font-style: normal;
+  color: var(--brass);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.discover-sources-note {
+  margin: 0.9rem 0 0;
+  font-size: 0.82rem;
+  color: var(--sage);
+  max-width: 60ch;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.msg {
+  color: var(--sage);
+}
+
+.pool-line,
+.hint-daily {
+  margin: 0.75rem 0 0;
+  color: var(--sage);
+  font-size: 0.92rem;
+}
+
+.discover-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.9rem;
+  margin-top: 0.9rem;
+}
+
+.discover-card {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.discover-card img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.discover-card h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+.discover-card p {
+  margin: 0.15rem 0 0;
+  color: var(--paper-dim);
+  font-size: 0.88rem;
+}
+
+.discover-card span {
+  display: inline-block;
+  margin-top: 0.25rem;
+  color: var(--brass);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.prefs-block.results .prefs-actions {
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 640px) {
+  .prefs-page {
+    width: min(var(--max), calc(100% - 1.5rem));
+    padding-top: 1.35rem;
+  }
+
+  .chip {
+    min-height: 40px;
+  }
+
+  .prefs-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .prefs-actions .btn {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+  }
+
+  .discover-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
