@@ -3,11 +3,17 @@ import { escalationRouteForSkill } from "@/lib/ai/skill-escalation-map";
 import { CHAIN_ZH, SKILL_ZH } from "@/lib/ai/skill-zh";
 import type { LinkedScenario, SkillScenario } from "@/lib/ai/scenario-types";
 import { getIndicatorMeta } from "@/lib/monitor-indicator-meta";
+import {
+  CORRELATION_SCENARIOS,
+  type CorrelationDoc,
+  type CorrelationPattern,
+} from "@/lib/docs/risk-scenario-correlations";
 
 export type RiskScenarioBucket = "admin_system" | "pricing" | "risk_ops" | "cs_tr";
-export type RiskScenarioKind = "skill" | "chain" | "doc_extra";
+export type RiskScenarioKind = "skill" | "chain" | "doc_extra" | "correlation";
 export type RiskScenarioEdition = "plus" | "classic";
 export type DocPriority = "P0" | "P1" | "P2" | "P3";
+export type { CorrelationPattern };
 
 export type RiskScenarioDocRow = {
   id: string;
@@ -36,6 +42,8 @@ export type RiskScenarioDocRow = {
   solution_en: string[];
   solution_zh: string[];
   skill_href?: string;
+  /** Multi-alert / multi-party shape when kind is correlation or chain. */
+  correlation_pattern?: CorrelationPattern;
 };
 
 type DocExtra = {
@@ -373,6 +381,84 @@ const DOC_EXTRA_SCENARIOS: DocExtra[] = [
     ],
     solution_zh: ["營運以銀行證據清算破口", "風險監看 M2-SEG-025 — AI 不得作為唯一回應", "客戶溝通由營運負責，勿洗版風險 Lark"],
   },
+  {
+    id: "DOC-OPS-IB-REBATE-RING",
+    bucket: "risk_ops",
+    domain: "FRAUD_CONDUCT",
+    product: "CFD",
+    editions: ["plus", "classic"],
+    name_en: "IB rebate anomaly without linked client trading",
+    name_zh: "IB 返佣異常但無關聯客戶真實交易",
+    description_en:
+      "M2-IB-PAYOUT spikes while referred volume or KYC graph looks synthetic — introducing-broker payout fraud path.",
+    description_zh: "M2-IB-PAYOUT 暴衝但推薦量或 KYC 圖看起來合成 — 介紹經紀商出金詐欺路徑。",
+    indicators: ["M2-IB-PAYOUT", "M2-FRAUD-011", "M2-BONUS-013"],
+    dimensions: "anomaly score + payout USD + referred UID count",
+    dimensions_zh: "異常分數＋出金美元＋推薦 UID 數",
+    warn: "IB anomaly score ≥0.6",
+    breach: "Score ≥0.8 or payout without matched volume",
+    frequency_en: "Hourly",
+    frequency_zh: "每小時",
+    severity: "P2",
+    escalation_en: "Ops Lead + Risk; freeze IB payout (human)",
+    escalation_zh: "營運主管＋風險；凍結 IB 出金（人工）",
+    investigation_en: ["Match payout to closed trades", "KYC graph on IB + clients", "See CHAIN-IB-FRAUD-RING"],
+    investigation_zh: ["出金與已平倉成交對帳", "IB 與客戶 KYC 圖", "見 CHAIN-IB-FRAUD-RING"],
+    solution_en: ["Freeze IB payout", "Do not auto-ban clients", "Audit trail for compliance"],
+    solution_zh: ["凍結 IB 出金", "勿自動封禁客戶", "合規稽核軌跡"],
+  },
+  {
+    id: "DOC-PRICING-SESSION-CALENDAR",
+    bucket: "pricing",
+    domain: "PRODUCT_CONFIG",
+    product: "CFD",
+    editions: ["plus", "classic"],
+    name_en: "Trading session / rollover calendar mismatch",
+    name_zh: "交易時段／轉倉日曆錯配",
+    description_en:
+      "Symbol session or triple-swap weekday wrong after DST or entity calendar change — swap complaints and gap risk mispriced.",
+    description_zh: "夏令時間或實體日曆變更後商品時段或三重利息日錯誤 — 隔夜利息投訴與缺口定價失真。",
+    indicators: ["M2-SWAP-027", "M2-COMPLAINT", "M2-GAP-012", "session.calendar_hash"],
+    dimensions: "on/off calendar mismatch + swap Δ symbols + complaints",
+    dimensions_zh: "日曆錯配開關＋利息偏差商品數＋投訴",
+    warn: "≥3 symbols swap Δ WARN",
+    breach: "Calendar mismatch on majors or ≥10 swap Δ",
+    frequency_en: "Daily pre-open + on calendar publish",
+    frequency_zh: "每日開盤前＋日曆發布時",
+    severity: "P2",
+    escalation_en: "Product + Pricing; CS FAQ update; Risk if gap mispriced",
+    escalation_zh: "產品＋報價；更新 CS FAQ；缺口定價失真交風險",
+    investigation_en: ["Diff entity calendars", "Check DST tables", "XAUUSD247 weekend vs weekday swap"],
+    investigation_zh: ["比對實體日曆", "檢查夏令時間表", "XAUUSD247 週末與平日利息"],
+    solution_en: ["Publish corrected calendar", "Refresh RAG swap FAQ", "Comp via Ops not Risk Lark"],
+    solution_zh: ["發布更正日曆", "刷新 RAG 利息 FAQ", "補償走營運而非風險 Lark"],
+  },
+  {
+    id: "DOC-ADMIN-RAG-POISON",
+    bucket: "admin_system",
+    domain: "MODEL_AI",
+    product: "CFD+Crypto",
+    editions: ["plus", "classic"],
+    name_en: "RAG / knowledge-tree leaf drift or poison",
+    name_zh: "RAG／知識樹葉節點漂移或污染",
+    description_en:
+      "propose_rag or manual edit introduces wrong policy into corpus — CS FAQ or RCA cites bad leverage/entity facts.",
+    description_zh: "propose_rag 或人工編輯把錯誤政策寫入語料 — CS FAQ 或 RCA 引用錯誤槓桿／實體事實。",
+    indicators: ["rag.doc_version", "propose_rag.pending", "M2-MODEL-006"],
+    dimensions: "pending proposals + unverified leaf count",
+    dimensions_zh: "待審提案＋未驗證葉節點數",
+    warn: "≥1 pending propose_rag >24h",
+    breach: "Live leaf contradicts entity pack or skill stop-condition",
+    frequency_en: "On RAG write + daily drift job",
+    frequency_zh: "RAG 寫入時＋每日漂移作業",
+    severity: "P1",
+    escalation_en: "AI Engineer maker → Risk Owner checker; AI blocked from direct RAG write",
+    escalation_zh: "AI 工程 Maker → 風險負責人 Checker；AI 不得直接寫 RAG",
+    investigation_en: ["Diff leaf vs source_ref URL", "Disable bad leaf", "Retrain citations"],
+    investigation_zh: ["比對葉節點與 source_ref", "停用壞葉", "重訓引用"],
+    solution_en: ["Roll back leaf", "Maker/checker only", "UAT cite-check on FAQ skills"],
+    solution_zh: ["回滾葉節點", "僅 Maker／Checker", "FAQ 技能 UAT 引用檢查"],
+  },
 ];
 
 function bucketForDomain(domain: string): RiskScenarioBucket {
@@ -525,6 +611,7 @@ function chainRow(c: LinkedScenario): RiskScenarioDocRow {
     solution_en: solEn.slice(0, 6),
     solution_zh: solEn.slice(0, 6),
     skill_href: c.linked_skills[0] ? `/admin/skills/${c.linked_skills[0]}` : "/admin/skills",
+    correlation_pattern: "multi_indicator_sequence",
   };
 }
 
@@ -557,6 +644,37 @@ function extraRow(e: DocExtra): RiskScenarioDocRow {
   };
 }
 
+function correlationRow(c: CorrelationDoc): RiskScenarioDocRow {
+  return {
+    id: c.id,
+    kind: "correlation",
+    editions: c.editions,
+    bucket: c.bucket,
+    domain: c.domain,
+    product: c.product,
+    name_en: c.name_en,
+    name_zh: c.name_zh,
+    description_en: c.description_en,
+    description_zh: c.description_zh,
+    indicators: c.indicators,
+    dimensions: c.dimensions,
+    dimensions_zh: c.dimensions_zh,
+    warn: c.warn,
+    breach: c.breach,
+    frequency_en: c.frequency_en,
+    frequency_zh: c.frequency_zh,
+    severity: c.severity,
+    escalation_en: c.escalation_en,
+    escalation_zh: c.escalation_zh,
+    investigation_en: c.investigation_en,
+    investigation_zh: c.investigation_zh,
+    solution_en: c.solution_en,
+    solution_zh: c.solution_zh,
+    skill_href: c.skill_href,
+    correlation_pattern: c.pattern,
+  };
+}
+
 let _cache: RiskScenarioDocRow[] | null = null;
 
 export function allRiskScenarioRows(): RiskScenarioDocRow[] {
@@ -565,6 +683,7 @@ export function allRiskScenarioRows(): RiskScenarioDocRow[] {
     ...SKILL_SCENARIOS.map(skillRow),
     ...LINKED_SCENARIOS.map(chainRow),
     ...DOC_EXTRA_SCENARIOS.map(extraRow),
+    ...CORRELATION_SCENARIOS.map(correlationRow),
   ];
   return _cache;
 }
@@ -577,11 +696,15 @@ export function riskScenarioSummary(edition: RiskScenarioEdition = "plus") {
   const rows = riskScenarioRowsForEdition(edition);
   const byBucket = { admin_system: 0, pricing: 0, risk_ops: 0, cs_tr: 0 };
   const bySev = { P0: 0, P1: 0, P2: 0, P3: 0 };
-  const byKind = { skill: 0, chain: 0, doc_extra: 0 };
+  const byKind = { skill: 0, chain: 0, doc_extra: 0, correlation: 0 };
+  const byPattern: Partial<Record<CorrelationPattern, number>> = {};
   for (const r of rows) {
     byBucket[r.bucket]++;
     bySev[r.severity]++;
     byKind[r.kind]++;
+    if (r.correlation_pattern) {
+      byPattern[r.correlation_pattern] = (byPattern[r.correlation_pattern] || 0) + 1;
+    }
   }
-  return { total: rows.length, byBucket, bySev, byKind };
+  return { total: rows.length, byBucket, bySev, byKind, byPattern };
 }

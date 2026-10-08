@@ -56,7 +56,7 @@ export default async function RiskScenariosDocPage({
         <div className="flex flex-wrap gap-2 items-center">
           <VantageMark className="h-8 w-8" />
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-RS-001</Badge>
-          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.0</Badge>
+          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.1</Badge>
           <OwnerBadge />
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
             {edition === "classic" ? (zh ? "原版範圍" : "Classic scope") : "CRMP Plus"}

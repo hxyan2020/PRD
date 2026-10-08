@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui";
 import {
   riskScenarioRowsForEdition,
   riskScenarioSummary,
+  type CorrelationPattern,
   type DocPriority,
   type RiskScenarioBucket,
   type RiskScenarioEdition,
   type RiskScenarioKind,
 } from "@/lib/docs/risk-scenario-rows";
+import { correlationPatternLabel } from "@/lib/docs/risk-scenario-correlations";
 import { useUiLocale } from "@/hooks/useUiLocale";
 
 const BUCKETS: Array<RiskScenarioBucket | "ALL"> = [
@@ -21,8 +23,18 @@ const BUCKETS: Array<RiskScenarioBucket | "ALL"> = [
   "cs_tr",
 ];
 
-const KINDS: Array<RiskScenarioKind | "ALL"> = ["ALL", "skill", "chain", "doc_extra"];
+const KINDS: Array<RiskScenarioKind | "ALL"> = ["ALL", "skill", "chain", "correlation", "doc_extra"];
 const SEVS: Array<DocPriority | "ALL"> = ["ALL", "P0", "P1", "P2", "P3"];
+const PATTERNS: Array<CorrelationPattern | "ALL"> = [
+  "ALL",
+  "one_account_many_alerts",
+  "one_alert_many_users",
+  "cross_team",
+  "cross_book",
+  "multi_indicator_sequence",
+  "kyc_cluster",
+  "vendor_cascade",
+];
 
 function bucketLabel(b: RiskScenarioBucket, zh: boolean) {
   if (b === "admin_system") return zh ? "後台／系統" : "Admin system";
@@ -34,6 +46,7 @@ function bucketLabel(b: RiskScenarioBucket, zh: boolean) {
 function kindLabel(k: RiskScenarioKind, zh: boolean) {
   if (k === "skill") return zh ? "技能" : "Skill";
   if (k === "chain") return zh ? "連結鏈" : "Chain";
+  if (k === "correlation") return zh ? "相關／共鳴" : "Correlation";
   return zh ? "擴充" : "Doc extra";
 }
 
@@ -51,6 +64,7 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
   const [bucket, setBucket] = useState<RiskScenarioBucket | "ALL">("ALL");
   const [kind, setKind] = useState<RiskScenarioKind | "ALL">("ALL");
   const [sev, setSev] = useState<DocPriority | "ALL">("ALL");
+  const [pattern, setPattern] = useState<CorrelationPattern | "ALL">("ALL");
   const [q, setQ] = useState("");
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -61,6 +75,7 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
       if (bucket !== "ALL" && r.bucket !== bucket) return false;
       if (kind !== "ALL" && r.kind !== kind) return false;
       if (sev !== "ALL" && r.severity !== sev) return false;
+      if (pattern !== "ALL" && r.correlation_pattern !== pattern) return false;
       if (!needle) return true;
       const hay = [
         r.id,
@@ -71,19 +86,20 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
         r.domain,
         r.indicators.join(" "),
         r.escalation_en,
+        r.correlation_pattern || "",
       ]
         .join(" ")
         .toLowerCase();
       return hay.includes(needle);
     });
-  }, [edition, bucket, kind, sev, q]);
+  }, [edition, bucket, kind, sev, pattern, q]);
 
   return (
     <div className="space-y-4">
       <div className="panel p-3 sm:p-4 space-y-3">
         <div className="flex flex-wrap gap-2 items-center">
           <Badge className="bg-teal-50 text-teal-900 border-teal-200">CRMP-RS-001</Badge>
-          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.0</Badge>
+          <Badge className="bg-cyan-50 text-cyan-900 border-cyan-200">v1.1</Badge>
           <Badge className="bg-slate-100 text-slate-700 border-slate-200">
             {zh ? `${summary.total} 列` : `${summary.total} rows`}
           </Badge>
@@ -95,6 +111,9 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
           <Badge className="bg-slate-50 text-slate-800 border-slate-200">
             {zh ? `連結鏈 ${summary.byKind.chain}` : `Chains ${summary.byKind.chain}`}
           </Badge>
+          <Badge className="bg-violet-50 text-violet-900 border-violet-200">
+            {zh ? `相關 ${summary.byKind.correlation}` : `Corr ${summary.byKind.correlation}`}
+          </Badge>
           <Badge className="bg-slate-50 text-slate-800 border-slate-200">
             {zh ? `擴充 ${summary.byKind.doc_extra}` : `Extras ${summary.byKind.doc_extra}`}
           </Badge>
@@ -102,8 +121,8 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
 
         <p className="text-sm text-[var(--muted)] max-w-4xl">
           {zh
-            ? "彙整 AI Skills 頁的風險情境、指標門檻、升級路徑與處置；另含後台／報價／營運擴充列。CRMP Plus 含 CS／TR；Classic 對齊凍結的原版 CRMP Admin（不含 CS／TR）。"
-            : "Summarises AI Skills risk scenarios — indicators, thresholds, escalation, investigation, and solutions — plus expanded admin/pricing/ops rows. CRMP Plus includes CS/TR; Classic matches frozen original CRMP Admin (no CS/TR)."}
+            ? "彙整 AI Skills、多指標連結鏈，以及明確的指標相關型態（一帳戶多警報、一警報多使用者、跨團隊、跨帳簿、KYC 叢集、供應商連鎖）。CRMP Plus 含 CS／TR；Classic 對齊凍結原版 Admin。"
+            : "Summarises AI Skills, multi-indicator chains, and explicit correlation shapes (one account→many alerts, one alert→many users, cross-team, cross-book, KYC cluster, vendor cascade). CRMP Plus includes CS/TR; Classic matches frozen original Admin."}
         </p>
 
         <div className="flex flex-wrap gap-2 items-center">
@@ -164,6 +183,21 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
               </option>
             ))}
           </select>
+          <select
+            className="input text-sm !w-auto"
+            value={pattern}
+            onChange={(e) => setPattern(e.target.value as CorrelationPattern | "ALL")}
+          >
+            {PATTERNS.map((p) => (
+              <option key={p} value={p}>
+                {p === "ALL"
+                  ? zh
+                    ? "全部相關型態"
+                    : "All correlation patterns"
+                  : correlationPatternLabel(p, zh)}
+              </option>
+            ))}
+          </select>
           <Badge className="bg-white text-slate-700 border-slate-200">
             {zh ? `顯示 ${rows.length}` : `Showing ${rows.length}`}
           </Badge>
@@ -204,6 +238,11 @@ export function RiskScenariosBoard({ initialEdition = "plus" }: { initialEdition
                     <div className="flex flex-wrap gap-1 mt-1">
                       <Badge className="!text-[10px] bg-slate-50">{kindLabel(r.kind, zh)}</Badge>
                       <Badge className="!text-[10px] bg-slate-50">{bucketLabel(r.bucket, zh)}</Badge>
+                      {r.correlation_pattern ? (
+                        <Badge className="!text-[10px] bg-violet-50 text-violet-900 border-violet-200">
+                          {correlationPatternLabel(r.correlation_pattern, zh)}
+                        </Badge>
+                      ) : null}
                       {r.skill_href ? (
                         <Link className="btn !text-[10px] !min-h-6 !px-1.5" href={r.skill_href}>
                           {zh ? "技能" : "Skill"}

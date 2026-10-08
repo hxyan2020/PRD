@@ -1,4 +1,5 @@
 import { SKILL_SCENARIOS, LINKED_SCENARIOS } from "../src/lib/ai/risk-scenarios-catalog";
+import { CORRELATION_SCENARIOS } from "../src/lib/docs/risk-scenario-correlations";
 import {
   allRiskScenarioRows,
   riskScenarioRowsForEdition,
@@ -47,6 +48,28 @@ assert(plus.byBucket.admin_system >= 5, "admin system coverage");
 assert(plus.byBucket.pricing >= 5, "pricing coverage");
 assert(plus.byBucket.risk_ops >= 10, "risk ops coverage");
 assert(rows.some((r) => r.kind === "doc_extra" && r.bucket === "admin_system"), "doc extras for admin");
+
+assert(plus.byKind.correlation >= CORRELATION_SCENARIOS.length, "correlation rows present");
+for (const c of CORRELATION_SCENARIOS) {
+  assert(rows.some((r) => r.id === c.id && r.kind === "correlation"), `correlation ${c.id}`);
+}
+assert(
+  rows.some((r) => r.correlation_pattern === "one_account_many_alerts"),
+  "one account → many alerts pattern"
+);
+assert(
+  rows.some((r) => r.correlation_pattern === "one_alert_many_users"),
+  "one alert → many users pattern"
+);
+assert(rows.some((r) => r.correlation_pattern === "cross_team"), "cross-team pattern");
+assert(rows.some((r) => r.correlation_pattern === "cross_book"), "cross-book pattern");
+assert(rows.some((r) => r.correlation_pattern === "kyc_cluster"), "KYC cluster pattern");
+assert(rows.some((r) => r.correlation_pattern === "vendor_cascade"), "vendor cascade pattern");
+assert(
+  LINKED_SCENARIOS.every((c) => rows.find((r) => r.id === c.code)?.correlation_pattern === "multi_indicator_sequence"),
+  "chains tagged as multi-indicator sequence"
+);
+assert(plus.total >= 110, "expanded catalogue size");
 
 const requiredCols = [
   "name_en",
