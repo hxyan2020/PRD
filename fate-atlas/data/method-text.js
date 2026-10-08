@@ -133,10 +133,20 @@
     return value || method[fieldName] || "";
   }
 
+  function explanation(method) {
+    if (!method) return "";
+    if (window.FatumExplanations && typeof window.FatumExplanations.for === "function") {
+      const text = window.FatumExplanations.for(method, locale());
+      if (text) return scrubForeignScripts(String(text), locale());
+    }
+    return field(method, "summary") || method.summary || "";
+  }
+
   function localize(method) {
     return {
       name: field(method, "name"),
       summary: field(method, "summary"),
+      explanation: explanation(method),
       region: field(method, "region") || method.region || "",
       source: scrubForeignScripts(pickBilingual(method.source || "", locale()), locale()) || method.source || "",
     };
@@ -171,6 +181,7 @@
   window.FatumMethodText = {
     localize,
     field,
+    explanation,
     processLabel,
     pickBilingual,
     scrubForeignScripts,
