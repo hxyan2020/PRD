@@ -52,7 +52,6 @@
     const kind = method.id === "iching" ? "bagua" : guidedKind(method);
     if (kind === "bagua" && method.id === "iching") {
       method = Object.assign({}, method, {
-        name: "I Ching / 周易 · 铜钱起卦",
         guided: "bagua",
       });
     }
@@ -90,7 +89,13 @@
     studio.setAttribute("aria-hidden", "false");
     window.FatumPlay?.setQuestProgress?.(0);
     window.FatumPlay?.showToast?.(
-      (window.FatumI18n ? window.FatumI18n.t("toast.questStarted", { name: method.name }) : `Quest started · ${method.name}`),
+      (window.FatumI18n
+        ? window.FatumI18n.t("toast.questStarted", {
+            name: window.FatumMethodText
+              ? window.FatumMethodText.localize(method).name
+              : method.name,
+          })
+        : `Quest started · ${method.name}`),
       { ms: window.matchMedia("(max-width: 720px)").matches ? 1200 : 1800 }
     );
     render();
@@ -237,7 +242,9 @@
   function render() {
     if (!state) return;
     const meta = stepMeta();
-    titleEl.textContent = state.method.name;
+    titleEl.textContent = window.FatumMethodText
+      ? window.FatumMethodText.localize(state.method).name
+      : state.method.name;
     stepEl.textContent = ti("studio.questStep", {
       label: meta.label,
       idx: meta.idx,
@@ -276,14 +283,14 @@
     const step = state.steps[state.stepIndex];
     if (step === "intent") {
       body.innerHTML = `
-        <p class="studio__eyebrow">八卦 · Eight Trigrams</p>
-        <h3 class="studio__heading">How 铜钱起卦 works</h3>
-        <p class="studio__copy">The Yijing builds a hexagram from <strong>six lines</strong>, drawn <strong>bottom → top</strong>. Each line comes from tossing <strong>three coins</strong> once.</p>
+        <p class="studio__eyebrow">${escapeHTML(ti("studio.bagua.eyebrow"))}</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.bagua.howTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.bagua.howBody"))}</p>
         <ul class="guide-list">
-          <li><strong>Heads = 3</strong>, <strong>Tails = 2</strong>. Sum is 6, 7, 8, or 9.</li>
-          <li><strong>7</strong> young yang ⚊ · <strong>8</strong> young yin ⚋ (stable)</li>
-          <li><strong>9</strong> old yang · <strong>6</strong> old yin (changing lines → 变卦)</li>
-          <li>Lower three lines = 下卦 · Upper three = 上卦 · together one of 64 hexagrams</li>
+          <li><strong>${escapeHTML(ti("studio.headsWord"))} = 3</strong>, <strong>${escapeHTML(ti("studio.tailsWord"))} = 2</strong>. 6 / 7 / 8 / 9</li>
+          <li><strong>7</strong> ⚊ · <strong>8</strong> ⚋</li>
+          <li><strong>9</strong> / <strong>6</strong> →</li>
+          <li>6 → 64</li>
         </ul>
         <div class="bagua-strip" aria-hidden="true">
           ${Object.values(G().TRIGRAMS).map((t) => `<span title="${escapeHTML(t.name)}">${t.symbol}<small>${escapeHTML(t.name.split(" ")[0])}</small></span>`).join("")}
@@ -295,11 +302,11 @@
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
-        <h3 class="studio__heading">Hold one clear question</h3>
-        <p class="studio__copy">Classical advice: one matter per hexagram. Focus while the coins are cast.</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.bagua.qTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.bagua.qBody"))}</p>
         <div class="field">
-          <label for="r-question">Your question / 所问之事</label>
-          <textarea id="r-question" rows="3" maxlength="280" placeholder="e.g. Is this the right time to change roles?">${escapeHTML(state.question)}</textarea>
+          <label for="r-question">${escapeHTML(ti("studio.bagua.qLabel"))}</label>
+          <textarea id="r-question" rows="3" maxlength="280" placeholder="${escapeHTML(ti("studio.bagua.qPh"))}">${escapeHTML(state.question)}</textarea>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -308,12 +315,12 @@
     } else if (step === "cast") {
       const i = state.castingIndex;
       const built = state.lines
-        .map((l, idx) => `<li class="yao${l.changing ? " yao--move" : ""}"><span>Line ${idx + 1}${idx === 0 ? " 初" : idx === 5 ? " 上" : ""}</span><strong>${l.symbol}</strong> <em>${l.sum}</em></li>`)
+        .map((l, idx) => `<li class="yao${l.changing ? " yao--move" : ""}"><span>Line ${idx + 1}</span><strong>${l.symbol}</strong> <em>${l.sum}</em></li>`)
         .reverse()
         .join("");
       body.innerHTML = `
         <h3 class="studio__heading">Cast line ${i + 1} of 6</h3>
-        <p class="studio__copy">${i === 0 ? "First toss becomes the <strong>bottom</strong> line (初爻)." : i < 5 ? "Building upward…" : "Final toss — the top line (上爻)."}</p>
+        <p class="studio__copy">${i === 0 ? "First toss becomes the <strong>bottom</strong> line." : i < 5 ? "Building upward…" : "Final toss — the top line."}</p>
         <div class="coin-stage" id="coin-stage">
           <div class="coin" data-face="?"></div>
           <div class="coin" data-face="?"></div>
@@ -342,7 +349,7 @@
       setTimeout(() => {
         el.classList.remove("is-spinning");
         el.dataset.face = coins[i] === 3 ? "H" : "T";
-        el.textContent = coins[i] === 3 ? "正" : "反";
+        el.textContent = coins[i] === 3 ? ti("studio.heads") : ti("studio.tails");
       }, 280 + i * 120);
     });
     const sum = coins.reduce((a, b) => a + b, 0);
@@ -368,8 +375,8 @@
     const step = state.steps[state.stepIndex];
     if (step === "intent") {
       body.innerHTML = `
-        <p class="studio__eyebrow">塔罗牌 · Major Arcana</p>
-        <h3 class="studio__heading">Three-card path spread</h3>
+        <p class="studio__eyebrow">${escapeHTML(ti("studio.tarot.eyebrow"))}</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.howTitle"))}</h3>
         <p class="studio__copy">We use the <strong>22 Major Arcana</strong>—archetypal cards from The Fool (0) to The World (21). You will:</p>
         <ol class="guide-list guide-list--numbered">
           <li>Name a question</li>
@@ -387,7 +394,7 @@
         <h3 class="studio__heading">What do you seek?</h3>
         <p class="studio__copy">Open questions work better than yes/no for tarot (“What surrounds…”, “How can I…” ).</p>
         <div class="field">
-          <label for="r-question">Question / 问题</label>
+          <label for="r-question">${escapeHTML(ti("studio.bagua.qLabel"))}</label>
           <textarea id="r-question" rows="3" maxlength="280" placeholder="What energy surrounds my next decision?">${escapeHTML(state.question)}</textarea>
         </div>
         <div class="studio__actions">
@@ -420,7 +427,7 @@
       const cardsHtml = shown
         .map((c, i) => {
           const p = G().TAROT_POSITIONS[i];
-          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(c.nameZh)}<br>${escapeHTML(c.name)}</div><div class="tarot-card__pos">${escapeHTML(p.label)}</div>${c.reversed ? '<div class="tarot-card__rx">Reversed</div>' : ""}</div>`;
+          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(p.label)}</div>${c.reversed ? '<div class="tarot-card__rx">Reversed</div>' : ""}</div>`;
         })
         .join("");
       body.innerHTML = `
@@ -591,12 +598,32 @@
       </div>`;
   }
 
+  function localePrefersZh() {
+    const loc = window.FatumI18n ? window.FatumI18n.getLocale() : "en";
+    return String(loc).startsWith("zh");
+  }
+
+  function monoText(text) {
+    if (window.FatumMethodText) {
+      return window.FatumMethodText.scrubForeignScripts(
+        window.FatumMethodText.pickBilingual(text, window.FatumI18n ? window.FatumI18n.getLocale() : "en"),
+        window.FatumI18n ? window.FatumI18n.getLocale() : "en"
+      );
+    }
+    return text || "";
+  }
+
+  function tarotCardLabel(c) {
+    if (!c) return "";
+    return localePrefersZh() ? c.nameZh || c.name : c.name || c.nameZh;
+  }
+
   function renderGuidedResult(r, allowAgain) {
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
         : r.kind === "tarot" && r.drawn
-          ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(c.nameZh)}<br>${escapeHTML(c.name)}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
+          ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
             : "";
@@ -606,7 +633,7 @@
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
         <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : "◎"}</div>
-        <h3 class="studio__heading">${escapeHTML(r.title)}</h3>
+        <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         <p class="reading__omen">${escapeHTML(r.omen)}</p>
         <p class="reading__verdict">${escapeHTML(r.verdict)}</p>
         <ul class="reading__details">${r.details.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
@@ -633,7 +660,7 @@
       state.photoConfig = photo;
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(method.continent)} · ${escapeHTML(method.type)}</p>
-        <h3 class="studio__heading">Begin with ${escapeHTML(method.name)}</h3>
+        <h3 class="studio__heading">Begin with ${escapeHTML(window.FatumMethodText ? window.FatumMethodText.localize(method).name : method.name)}</h3>
         <p class="studio__copy">${escapeHTML(method.summary)}</p>
         <p class="studio__copy studio__copy--soft">${escapeHTML(process.blurb)}</p>
         ${sciencePanelHTML(method)}
@@ -798,7 +825,9 @@
     }
     const entry = window.FatumJournal.collect({
       methodId: state.method.id,
-      methodName: state.method.name,
+      methodName: window.FatumMethodText
+        ? window.FatumMethodText.localize(state.method).name
+        : state.method.name,
       kind: state.reading.kind || state.kind || "generic",
       question: state.question || state.input?.question || "",
       focus: state.focus || state.input?.formFocus || state.input?.dayPurpose || "",
@@ -1026,7 +1055,10 @@
           if (flagsEl) flagsEl.innerHTML = "";
           return;
         }
-        labelText.textContent = method.name;
+        const text = window.FatumMethodText
+          ? window.FatumMethodText.localize(method)
+          : method;
+        labelText.textContent = text.name;
         if (flagsEl) flagsEl.innerHTML = flagsFor(method);
       }
 
@@ -1076,7 +1108,10 @@
                 g.items
                   .map((m) => {
                     const prefix = emojiPrefix(m);
-                    return `<option value="${escapeHTML(m.id)}">${prefix} ${escapeHTML(m.name)}</option>`;
+                    const text = window.FatumMethodText
+                      ? window.FatumMethodText.localize(m)
+                      : m;
+                    return `<option value="${escapeHTML(m.id)}">${prefix} ${escapeHTML(text.name)}</option>`;
                   })
                   .join("") +
                 `</optgroup>`
@@ -1087,8 +1122,14 @@
           .map((g) => {
             const items = g.items.filter((m) => {
               if (!q) return true;
+              const text = window.FatumMethodText
+                ? window.FatumMethodText.localize(m)
+                : m;
               const hay = fold(
                 [
+                  text.name,
+                  text.region,
+                  text.summary,
                   m.name,
                   m.region,
                   m.summary,
@@ -1103,11 +1144,22 @@
             return `<li class="rite-picker__group" role="presentation"><div class="rite-picker__group-label">${escapeHTML(g.label)}</div><ul>${items
               .map((m) => {
                 const selected = picker.value === m.id;
+                const text = window.FatumMethodText
+                  ? window.FatumMethodText.localize(m)
+                  : m;
+                const countryBits = (m.countries || [])
+                  .slice(0, 3)
+                  .map((c) =>
+                    window.FatumCountries
+                      ? window.FatumCountries.localizedCountryName(c)
+                      : c
+                  )
+                  .join(", ");
                 return `<li class="rite-picker__option${selected ? " is-selected" : ""}" role="option" tabindex="-1" data-id="${escapeHTML(m.id)}" aria-selected="${selected ? "true" : "false"}">
                   ${flagsFor(m)}
                   <span class="rite-picker__option-main">
-                    <span class="rite-picker__option-name">${escapeHTML(m.name)}</span>
-                    <span class="rite-picker__option-meta">${escapeHTML(cont(m.continent))}${(m.countries || []).length ? " · " + escapeHTML((m.countries || []).slice(0, 3).join(", ")) : ""}</span>
+                    <span class="rite-picker__option-name">${escapeHTML(text.name)}</span>
+                    <span class="rite-picker__option-meta">${escapeHTML(cont(m.continent))}${countryBits ? " · " + escapeHTML(countryBits) : ""}</span>
                   </span>
                 </li>`;
               })
@@ -1176,15 +1228,18 @@
             const cover = window.FatumCovers
               ? window.FatumCovers.coverHTML(m, "feature-card__cover")
               : "";
-            return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(ti("play.quest"))} ${escapeHTML(m.name)}">
+            const text = window.FatumMethodText
+              ? window.FatumMethodText.localize(m)
+              : { name: m.name, summary: m.summary };
+            return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(ti("play.quest"))} ${escapeHTML(text.name)}">
             ${cover}
             <div class="feature-card__body">
               <div class="feature-card__top">
                 <span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>
                 <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
               </div>
-              <h3 class="feature-card__title">${escapeHTML(m.name)}</h3>
-              <p class="feature-card__copy">${escapeHTML(m.summary)}</p>
+              <h3 class="feature-card__title">${escapeHTML(text.name)}</h3>
+              <p class="feature-card__copy">${escapeHTML(text.summary)}</p>
               <p class="feature-card__moves">${escapeHTML(meta.moves)}${sci ? ` · ${escapeHTML(sci.tag)}` : ""}</p>
               <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(ti("play.quest"))}</button>
             </div>

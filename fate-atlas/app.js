@@ -84,7 +84,11 @@
     const countryNames = (m.countries || []).map((c) =>
       window.FatumCountries ? window.FatumCountries.localizedCountryName(c, loc) : c
     );
+    const text = methodText(m);
     const hay = [
+      text.name,
+      text.region,
+      text.summary,
       m.name,
       m.region,
       m.summary,
@@ -101,9 +105,7 @@
   }
 
   function processLabelFor(m) {
-    if (m.guided === "bagua" || m.id === "bagua" || m.id === "iching") return "Guided · 铜钱起卦";
-    if (m.guided === "tarot" || m.id === "tarot") return "Guided · 塔罗牌";
-    if (m.guided === "mbti" || m.id === "mbti") return "Guided · MBTI";
+    if (window.FatumMethodText) return window.FatumMethodText.processLabel(m);
     try {
       const photo = window.fatePhotoSubjectFor ? window.fatePhotoSubjectFor(m) : null;
       if (photo) return photo.required ? "Photo · form reading" : "Form (+ optional photo)";
@@ -111,6 +113,10 @@
     } catch (_) {
       return m.type;
     }
+  }
+
+  function methodText(m) {
+    return window.FatumMethodText ? window.FatumMethodText.localize(m) : m;
   }
 
   function scienceFor(m) {
@@ -131,6 +137,7 @@
   function methodHTML(m) {
     const processLabel = processLabelFor(m);
     const sci = scienceFor(m);
+    const text = methodText(m);
     const cover = window.FatumCovers
       ? window.FatumCovers.coverHTML(m, "method__cover")
       : "";
@@ -138,17 +145,17 @@
       ${cover}
       <div class="method__content">
         <div>
-          <h3 class="method__name">${escapeHTML(m.name)}</h3>
+          <h3 class="method__name">${escapeHTML(text.name)}</h3>
           <div class="method__meta">
             <span class="tag tag--type">${escapeHTML(typeLabel(m.type))}</span>
             <span class="tag">${escapeHTML(continentLabel(m.continent))}</span>
             <span class="tag tag--process">${escapeHTML(processLabel)}</span>
             ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
           </div>
-          <p class="method__region">${escapeHTML(m.region || "")}</p>
+          <p class="method__region">${escapeHTML(text.region || "")}</p>
         </div>
         <div>
-          <p class="method__summary">${escapeHTML(m.summary)}</p>
+          <p class="method__summary">${escapeHTML(text.summary)}</p>
           ${
             sci
               ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}">
@@ -158,7 +165,7 @@
               : ""
           }
           <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries, m.region)}</span></p>
-          <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
+          <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(text.source || "Compiled research")}</p>
           <p class="method__actions">
             <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
           </p>
@@ -196,6 +203,7 @@
     const pick = methods[Math.floor(Math.random() * methods.length)];
     const processLabel = processLabelFor(pick);
     const sci = scienceFor(pick);
+    const text = methodText(pick);
     els.oracleResult.hidden = false;
     const cover = window.FatumCovers
       ? window.FatumCovers.coverHTML(pick, "oracle__cover")
@@ -203,14 +211,14 @@
     els.oracleResult.innerHTML = `
       ${cover}
       <p class="section__eyebrow" style="margin-bottom:0.5rem">${escapeHTML(t("oracle.lot"))}</p>
-      <h3 class="method__name">${escapeHTML(pick.name)}</h3>
+      <h3 class="method__name">${escapeHTML(text.name)}</h3>
       <div class="method__meta" style="margin:0.5rem 0 1rem">
         <span class="tag tag--type">${escapeHTML(typeLabel(pick.type))}</span>
         <span class="tag">${escapeHTML(continentLabel(pick.continent))}</span>
         <span class="tag tag--process">${escapeHTML(processLabel)}</span>
         ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
       </div>
-      <p class="method__summary">${escapeHTML(pick.summary)}</p>
+      <p class="method__summary">${escapeHTML(text.summary)}</p>
       <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(pick.countries, pick.region)}</span></p>
       ${sci ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">${escapeHTML(t("science.label"))}</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>` : ""}
       <p class="method__actions" style="margin-top:1rem">

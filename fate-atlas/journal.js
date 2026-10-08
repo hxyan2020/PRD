@@ -69,15 +69,21 @@
 
     if (kind === "bagua") {
       const core = clip(r.title || "Hexagram", 36);
-      return `${core} · 八卦 · ${when}`;
+      const label =
+        window.FatumI18n ? window.FatumI18n.t("journal.kind.bagua") : "Bagua";
+      return `${core} · ${label} · ${when}`;
     }
     if (kind === "tarot") {
+      const loc = window.FatumI18n ? window.FatumI18n.getLocale() : "en";
+      const preferZh = String(loc).startsWith("zh");
       const names = (r.drawn || [])
-        .map((c) => c.nameZh || c.name)
+        .map((c) => (preferZh ? c.nameZh || c.name : c.name || c.nameZh))
         .filter(Boolean)
         .slice(0, 3);
       const core = names.length ? names.join(" · ") : clip(r.title, 40);
-      return `${core} · 塔罗 · ${when}`;
+      const label =
+        window.FatumI18n ? window.FatumI18n.t("journal.kind.tarot") : "Tarot";
+      return `${core} · ${label} · ${when}`;
     }
     if (kind === "mbti") {
       const type = (r.title || "").split("—")[0].trim() || "MBTI";
