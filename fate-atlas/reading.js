@@ -1293,18 +1293,37 @@
       });
     }
 
-    // Featured quest cards
+    // Rotating recommended rites
     const featuredEl = document.getElementById("featured-guides");
     if (featuredEl) {
-      function renderFeatured() {
+      function renderFeatured(opts) {
+        const forceRotate = !!(opts && opts.forceRotate);
         const questMeta = {
           bagua: { badge: ti("feature.badge.bagua"), moves: ti("feature.moves.bagua"), icon: "☰" },
           tarot: { badge: ti("feature.badge.tarot"), moves: ti("feature.moves.tarot"), icon: "✦" },
           mbti: { badge: ti("feature.badge.mbti"), moves: ti("feature.moves.mbti"), icon: "◎" },
         };
-        featuredEl.innerHTML = (window.FATE_FEATURED_METHODS || [])
+        const recs = window.FatumPlayRecs
+          ? forceRotate
+            ? window.FatumPlayRecs.rotate()
+            : window.FatumPlayRecs.current()
+          : window.FATE_FEATURED_METHODS || [];
+        featuredEl.classList.remove("is-rotating");
+        void featuredEl.offsetWidth;
+        featuredEl.classList.add("is-rotating");
+        featuredEl.innerHTML = recs
           .map((m) => {
-            const meta = questMeta[m.guided] || { badge: ti("studio.quest"), moves: "Guided", icon: "◇" };
+            const continent =
+              window.FatumI18n?.t?.(`continent.${m.continent}`) || m.continent || ti("play.eyebrow");
+            const typeKey = m.type ? `type.${m.type}` : "";
+            const typeLabel = typeKey ? window.FatumI18n?.t?.(typeKey) : "";
+            const movesFallback =
+              typeLabel && typeLabel !== typeKey ? typeLabel : m.type || ti("studio.quest");
+            const meta = questMeta[m.guided] || {
+              badge: continent,
+              moves: movesFallback,
+              icon: "◇",
+            };
             const sci = window.fateScienceStatusFor?.(m);
             const cover = window.FatumCovers
               ? window.FatumCovers.coverHTML(m, "feature-card__cover")
@@ -1315,7 +1334,8 @@
             const icon = window.FatumRiteIcons
               ? window.FatumRiteIcons.iconHTML(m, "rite-icon rite-icon--feature")
               : `<span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>`;
-            return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(ti("play.quest"))} ${escapeHTML(text.name)}">
+            const playLabel = m.guided ? ti("play.quest") : ti("catalog.play");
+            return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(playLabel)} ${escapeHTML(text.name)}">
             ${cover}
             <div class="feature-card__body">
               <div class="feature-card__top">
@@ -1325,7 +1345,7 @@
               <h3 class="feature-card__title">${escapeHTML(text.name)}</h3>
               <p class="feature-card__copy">${escapeHTML(text.summary)}</p>
               <p class="feature-card__moves">${escapeHTML(meta.moves)}${sci ? ` · ${escapeHTML(sci.tag)}` : ""}</p>
-              <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(ti("play.quest"))}</button>
+              <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(playLabel)}</button>
             </div>
           </article>`;
           })
@@ -1333,7 +1353,16 @@
       }
 
       renderFeatured();
-      document.addEventListener("fatum:locale-changed", renderFeatured);
+      document.addEventListener("fatum:locale-changed", () => renderFeatured());
+      document.addEventListener("fatum:play-recs-changed", () => renderFeatured());
+      document.addEventListener("fatum:auth-changed", () => renderFeatured());
+
+      document.getElementById("play-recs-refresh")?.addEventListener("click", () => {
+        renderFeatured({ forceRotate: true });
+        if (window.FatumPlay?.showToast) {
+          window.FatumPlay.showToast(ti("play.refreshToast"));
+        }
+      });
 
       featuredEl.addEventListener("keydown", (e) => {
         const card = e.target.closest(".feature-card--quest");
