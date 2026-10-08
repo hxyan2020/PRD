@@ -15,7 +15,6 @@ import {
 } from "../lib/localizeContent";
 import { flagForCountry, isoForCountry } from "../lib/countryFlags";
 import { FlagIcon } from "../components/FlagIcon";
-import { dailyPickGames, todayKey } from "../lib/dailyRotate";
 
 const PAGE_SIZE = 30;
 
@@ -82,14 +81,6 @@ export function CollectionPage() {
     });
   }, [data, deferredQuery, category, region, locale, catalog, t]);
 
-  const day = todayKey();
-  const dailyPicks = useMemo(() => {
-    if (!data) return [];
-    return dailyPickGames(data.games, 6, "collection-top", day).map((g) =>
-      localizeGame(g, locale, catalog, t),
-    );
-  }, [data, locale, catalog, day, t]);
-
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
   const pageItems = filtered
@@ -125,25 +116,6 @@ export function CollectionPage() {
               })}
             </p>
           </div>
-
-          {dailyPicks.length &&
-          !deferredQuery.trim() &&
-          category === "all" &&
-          region === "all" &&
-          safePage === 1 ? (
-            <div className="daily-picks">
-              <div className="section-head" style={{ marginBottom: "1rem" }}>
-                <h3 style={{ margin: 0 }}>{t("collection.dailyTitle")}</h3>
-                <p style={{ margin: "0.35rem 0 0" }}>{t("collection.dailySub")}</p>
-                <p className="daily-day-note">{t("collection.dailyDay", { date: day })}</p>
-              </div>
-              <div className="game-grid">
-                {dailyPicks.map((g, i) => (
-                  <GameCard key={`daily-${g.id}`} game={g} index={i} />
-                ))}
-              </div>
-            </div>
-          ) : null}
 
           <div className="filters">
             <div className="field">

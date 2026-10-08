@@ -2513,12 +2513,6 @@ select {
   transform: translateY(-1px);
 }
 
-.daily-picks {
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--line);
-}
-
 .daily-day-note {
   margin: 0.35rem 0 0;
   color: var(--mist-dim);
