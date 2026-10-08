@@ -291,16 +291,11 @@
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(ti("studio.bagua.eyebrow"))}</p>
         <h3 class="studio__heading">${escapeHTML(ti("studio.bagua.howTitle"))}</h3>
-        <p class="studio__copy">${escapeHTML(ti("studio.bagua.howBody"))}</p>
-        <ul class="guide-list">
-          <li><strong>${escapeHTML(ti("studio.headsWord"))} = 3</strong>, <strong>${escapeHTML(ti("studio.tailsWord"))} = 2</strong>. 6 / 7 / 8 / 9</li>
-          <li><strong>7</strong> ⚊ · <strong>8</strong> ⚋</li>
-          <li><strong>9</strong> / <strong>6</strong> →</li>
-          <li>6 → 64</li>
-        </ul>
+        ${howItWorksHTML(state.method, { id: "cast" })}
         <div class="bagua-strip" aria-hidden="true">
           ${Object.values(G().TRIGRAMS).map((t) => `<span title="${escapeHTML(t.name)}">${t.symbol}<small>${escapeHTML(t.name.split(" ")[0])}</small></span>`).join("")}
         </div>
+        <p class="studio__copy studio__copy--soft"><strong>${escapeHTML(ti("studio.headsWord"))} = 3</strong> · <strong>${escapeHTML(ti("studio.tailsWord"))} = 2</strong> · sums <strong>6 / 7 / 8 / 9</strong></p>
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
@@ -383,13 +378,7 @@
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(ti("studio.tarot.eyebrow"))}</p>
         <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.howTitle"))}</h3>
-        <p class="studio__copy">We use the <strong>22 Major Arcana</strong>—archetypal cards from The Fool (0) to The World (21). You will:</p>
-        <ol class="guide-list guide-list--numbered">
-          <li>Name a question</li>
-          <li>Shuffle &amp; cut the deck</li>
-          <li>Reveal <strong>Past · Present · Path</strong> one card at a time</li>
-          <li>Read upright or reversed meanings together</li>
-        </ol>
+        ${howItWorksHTML(state.method, { id: "cards" })}
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
@@ -508,14 +497,7 @@
       body.innerHTML = `
         <p class="studio__eyebrow">MBTI · Preference map</p>
         <h3 class="studio__heading">Four letters, four choices</h3>
-        <p class="studio__copy">MBTI describes <strong>preferred</strong> ways of attending to the world—not ability or destiny in a fatal sense. You will answer 12 forced-choice items:</p>
-        <ul class="guide-list">
-          <li><strong>E / I</strong> — Extraversion · Introversion (energy source)</li>
-          <li><strong>S / N</strong> — Sensing · Intuition (information)</li>
-          <li><strong>T / F</strong> — Thinking · Feeling (decisions)</li>
-          <li><strong>J / P</strong> — Judging · Perceiving (lifestyle)</li>
-        </ul>
-        <p class="studio__copy studio__copy--soft">Then we map your type to a reflective “path” reading—not a forecast of events.</p>
+        ${howItWorksHTML(state.method, { id: "form" })}
         ${sciencePanelHTML(state.method)}
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
@@ -561,6 +543,29 @@
       state.stepIndex = state.steps.indexOf("result");
     }
     render();
+  }
+
+  function howItWorksHTML(method, process) {
+    const how = window.FatumHowItWorks?.for(method, process);
+    if (!how || !how.steps?.length) return "";
+    const title = ti("howrite.title") || how.title || "How this rite works";
+    const steps = how.steps
+      .map(
+        (s, i) => `<li class="how-rite__step">
+          <span class="how-rite__num" aria-hidden="true">${i + 1}</span>
+          <div>
+            <strong class="how-rite__step-title">${escapeHTML(s.title)}</strong>
+            <p class="how-rite__step-body">${escapeHTML(s.body)}</p>
+          </div>
+        </li>`
+      )
+      .join("");
+    return `<section class="how-rite" aria-label="${escapeHTML(title)}">
+        <h4 class="how-rite__title">${escapeHTML(title)}</h4>
+        ${how.intro ? `<p class="how-rite__intro">${escapeHTML(how.intro)}</p>` : ""}
+        <ol class="how-rite__steps">${steps}</ol>
+        ${how.note ? `<p class="how-rite__note">${escapeHTML(how.note)}</p>` : ""}
+      </section>`;
   }
 
   function accuracyAdvisoryHTML() {
@@ -732,17 +737,13 @@
     if (step === "intent") {
       const photo = state.photoConfig || window.fatePhotoSubjectFor?.(method);
       state.photoConfig = photo;
+      const text = window.FatumMethodText ? window.FatumMethodText.localize(method) : method;
       body.innerHTML = `
         <p class="studio__eyebrow">${escapeHTML(method.continent)} · ${escapeHTML(method.type)}</p>
-        <h3 class="studio__heading">Begin with ${escapeHTML(window.FatumMethodText ? window.FatumMethodText.localize(method).name : method.name)}</h3>
-        <p class="studio__copy">${escapeHTML(method.summary)}</p>
-        <p class="studio__copy studio__copy--soft">${escapeHTML(process.blurb)}</p>
+        <h3 class="studio__heading">${escapeHTML(text.name || method.name)}</h3>
+        <p class="studio__copy">${escapeHTML(text.summary || method.summary || "")}</p>
+        ${howItWorksHTML(method, process)}
         ${sciencePanelHTML(method)}
-        ${
-          photo
-            ? `<p class="studio__copy"><strong>Photo step:</strong> ${escapeHTML(photo.label)}. ${photo.required ? "A clear image is required." : "A photo is optional but helpful."}</p>`
-            : ""
-        }
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.startProcess"))}</button>
