@@ -84,44 +84,61 @@ export async function contributeSighting(input: {
   const { file, categoryId, catalog } = input;
   input.onProgress?.("Reading the image…", 0.05);
 
-  // First: try matching existing catalogue items in this category
-  const identified = await identifyImage(file, catalog, [categoryId], (phase, p) => {
-    input.onProgress?.(phase, 0.05 + p * 0.45);
-  });
+  // Prefer the typed name — avoids a slow OCR pass when the user already named it.
+  let name = input.name?.trim() || "";
+  let ocrText = "";
 
-  if (identified.status === "guesses" && identified.guesses[0]?.confidence >= 55) {
-    const top = identified.guesses[0];
-    if (top.categoryId === categoryId) {
-      const item = catalog.items.find((i) => i.id === top.itemId);
-      if (item) {
-        const photoDataUrl = await fileToDataUrl(file);
-        const unlock = unlockItem(item.id, {
-          method: "contribute",
-          photoDataUrl,
-          note: "Unlocked from contribution upload",
-        });
-        return {
-          status: "unlocked-existing",
-          item,
-          unlock,
-          message: `“${item.name}” is already on this shelf — unlocked with your photo.`,
-        };
+  if (name) {
+    const existingEarly = findExistingMatch(catalog, categoryId, name);
+    if (existingEarly) {
+      const photoDataUrl = await fileToDataUrl(file);
+      const unlock = unlockItem(existingEarly.id, {
+        method: "contribute",
+        photoDataUrl,
+        note: "Unlocked from contribution upload",
+      });
+      return {
+        status: "unlocked-existing",
+        item: existingEarly,
+        unlock,
+        message: `“${existingEarly.name}” is already on this shelf — unlocked with your photo.`,
+      };
+    }
+  } else {
+    // No typed name: identify against the shelf, then OCR for a label.
+    const identified = await identifyImage(file, catalog, [categoryId], (phase, p) => {
+      input.onProgress?.(phase, 0.05 + p * 0.45);
+    });
+
+    if (identified.status === "guesses" && identified.guesses[0]?.confidence >= 55) {
+      const top = identified.guesses[0];
+      if (top.categoryId === categoryId) {
+        const item = catalog.items.find((i) => i.id === top.itemId);
+        if (item) {
+          const photoDataUrl = await fileToDataUrl(file);
+          const unlock = unlockItem(item.id, {
+            method: "contribute",
+            photoDataUrl,
+            note: "Unlocked from contribution upload",
+          });
+          return {
+            status: "unlocked-existing",
+            item,
+            unlock,
+            message: `“${item.name}” is already on this shelf — unlocked with your photo.`,
+          };
+        }
       }
     }
-  }
 
-  input.onProgress?.("Reading labels…", 0.55);
-  let ocrText = "";
-  try {
-    ocrText = await runOcr(file, (p) => input.onProgress?.("Reading labels…", 0.55 + p * 0.2));
-  } catch {
-    ocrText = "";
+    input.onProgress?.("Reading labels…", 0.55);
+    try {
+      ocrText = await runOcr(file, (p) => input.onProgress?.("Reading labels…", 0.55 + p * 0.2));
+    } catch {
+      ocrText = "";
+    }
+    name = guessNameFromText(ocrText, file.name) || "";
   }
-
-  const name =
-    input.name?.trim() ||
-    guessNameFromText(ocrText, file.name) ||
-    "";
 
   if (!name) {
     return {

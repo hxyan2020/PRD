@@ -58,8 +58,16 @@ export function buildSearchQueries(
   const queries: string[] = [];
   if (origin) {
     queries.push(`List of ${origin} ${spec.listQuery}`);
+    if (spec.kind === "brand" && spec.categoryId === "cars") {
+      queries.push(`Automotive industry in ${origin}`);
+    }
+    if (spec.kind === "nature") {
+      queries.push(`List of ${origin} ${spec.subject}s`);
+      queries.push(`${origin} flora ${spec.listQuery}`);
+    }
     queries.push(`${origin} ${spec.listQuery}`);
     queries.push(`${origin} ${spec.subject}`);
+    queries.push(`List of ${spec.subject}s of ${origin}`);
   } else {
     queries.push(`List of ${spec.listQuery}`);
   }
@@ -305,20 +313,19 @@ export async function discoverResourcePack(input: {
   const pagesSearched: string[] = [];
   const rawNames: string[] = [];
 
-  for (const query of queries.slice(0, 5)) {
-    const found = await openSearch(query, 5);
-    // Prefer list pages
+  for (const query of queries.slice(0, 6)) {
+    const found = await openSearch(query, 6);
+    // Prefer list / industry pages that usually contain many brand links
     const ordered = [...found.titles].sort((a, b) => {
-      const as = /^list of/i.test(a) ? 0 : 1;
-      const bs = /^list of/i.test(b) ? 0 : 1;
-      return as - bs;
+      const score = (t: string) =>
+        /^list of/i.test(t) ? 0 : /industry|manufacturers|brands|companies/i.test(t) ? 1 : 2;
+      return score(a) - score(b);
     });
-    for (const title of ordered.slice(0, 2)) {
+    for (const title of ordered.slice(0, 3)) {
       if (pagesSearched.includes(title)) continue;
       pagesSearched.push(title);
       const wt = await fetchWikitext(title);
       if (!wt) continue;
-      // Follow single redirect manually if needed (parse usually resolves)
       rawNames.push(...extractNamesFromWikitext(wt));
     }
   }
