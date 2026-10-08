@@ -15,10 +15,24 @@
       .replace(/"/g, "&quot;");
   }
 
+  function storageKey() {
+    if (window.FatumUserData && typeof window.FatumUserData.keysFor === "function") {
+      const email =
+        window.FatumAuth && window.FatumAuth.currentUser
+          ? (window.FatumAuth.currentUser() || {}).email
+          : null;
+      return window.FatumUserData.keysFor(email).journal;
+    }
+    const email =
+      window.FatumAuth && window.FatumAuth.currentUser
+        ? (window.FatumAuth.currentUser() || {}).email
+        : null;
+    return email ? `${STORAGE_KEY}:${String(email).toLowerCase()}` : STORAGE_KEY;
+  }
+
   function loadAll() {
-    if (window.FatumUserData) return window.FatumUserData.getJournal();
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(storageKey());
       const list = raw ? JSON.parse(raw) : [];
       return Array.isArray(list) ? list : [];
     } catch (_) {
@@ -27,12 +41,9 @@
   }
 
   function saveAll(list) {
-    if (window.FatumUserData) {
-      window.FatumUserData.setJournal(list);
-      return;
-    }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    document.dispatchEvent(new CustomEvent("fatum:journal-changed", { detail: { count: list.length } }));
+    const next = Array.isArray(list) ? list : [];
+    localStorage.setItem(storageKey(), JSON.stringify(next));
+    document.dispatchEvent(new CustomEvent("fatum:journal-changed", { detail: { count: next.length } }));
   }
 
   function formatStamp(iso) {
