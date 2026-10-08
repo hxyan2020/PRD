@@ -15,6 +15,7 @@ import {
 } from "../lib/localizeContent";
 import { flagForCountry, isoForCountry } from "../lib/countryFlags";
 import { FlagIcon } from "../components/FlagIcon";
+import { FilterSelect } from "../components/FilterSelect";
 
 const PAGE_SIZE = 30;
 
@@ -87,8 +88,51 @@ export function CollectionPage() {
     .slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
     .map((g) => localizeGame(g, locale, catalog, t));
 
-  const regionIso = region === "all" ? null : isoForCountry(region);
-  const regionFlag = region === "all" ? "🌍" : flagForCountry(region);
+  const categoryOptions = useMemo(
+    () => [
+      { value: "all", label: t("collection.allCategories") },
+      ...(data?.meta.categories ?? []).map((c) => ({
+        value: c,
+        label: localizeCategory(c, locale, catalog),
+      })),
+    ],
+    [data, locale, catalog, t],
+  );
+
+  const regionOptions = useMemo(
+    () => [
+      {
+        value: "all",
+        label: t("collection.allOrigins"),
+        leading: (
+          <FlagIcon iso={null} flag="🌍" className="select-flag" />
+        ),
+      },
+      ...countries.map((c) => ({
+        value: c,
+        label: catalog?.locales[locale]?.countries[c] ?? c,
+        leading: (
+          <FlagIcon
+            iso={isoForCountry(c)}
+            flag={flagForCountry(c)}
+            className="select-flag"
+          />
+        ),
+      })),
+    ],
+    [countries, catalog, locale, t],
+  );
+
+  const regionLeading =
+    region === "all" ? (
+      <FlagIcon iso={null} flag="🌍" className="select-flag" />
+    ) : (
+      <FlagIcon
+        iso={isoForCountry(region)}
+        flag={flagForCountry(region)}
+        className="select-flag"
+      />
+    );
 
   useEffect(() => {
     setPage(1);
@@ -127,49 +171,21 @@ export function CollectionPage() {
                 placeholder={t("collection.searchPlaceholder")}
               />
             </div>
-            <div className="field">
-              <label htmlFor="cat">{t("collection.category")}</label>
-              <div className="select-with-flag">
-                <select
-                  id="cat"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option value="all">{t("collection.allCategories")}</option>
-                  {data.meta.categories.map((c) => (
-                    <option key={c} value={c}>
-                      {localizeCategory(c, locale, catalog)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="field">
-              <label htmlFor="region">{t("collection.origin")}</label>
-              <div className="select-with-flag">
-                <FlagIcon
-                  iso={regionIso}
-                  flag={regionFlag}
-                  className="select-flag"
-                />
-                <select
-                  id="region"
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                >
-                  <option value="all">{t("collection.allOrigins")}</option>
-                  {countries.map((c) => {
-                    const label =
-                      catalog?.locales[locale]?.countries[c] ?? c;
-                    return (
-                      <option key={c} value={c}>
-                        {label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
+            <FilterSelect
+              id="cat"
+              label={t("collection.category")}
+              value={category}
+              options={categoryOptions}
+              onChange={setCategory}
+            />
+            <FilterSelect
+              id="region"
+              label={t("collection.origin")}
+              value={region}
+              options={regionOptions}
+              onChange={setRegion}
+              triggerLeading={regionLeading}
+            />
             <button
               type="button"
               className="btn btn-ghost"
