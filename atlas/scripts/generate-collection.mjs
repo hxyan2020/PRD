@@ -206,7 +206,14 @@ const CURATED_TAGS = {
 
 /** Stable Wikimedia Commons thumbnail (follows redirect in browsers). */
 function commons(file) {
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=900`;
+  // Decode any pre-escaped sequences so we never produce %2527-style URLs.
+  let decoded = String(file || "");
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch {
+    /* keep raw */
+  }
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(decoded)}?width=900`;
 }
 
 function unsplash(id) {
@@ -328,12 +335,36 @@ const CURATED_PHOTOS = {
   Dice: [commons("Dice.jpg")],
   "Spinning top": [commons("Spinning_top.jpg")],
   Tops: [commons("Spinning_top.jpg")],
-  Knucklebones: [commons("Knucklebones.jpg")],
-  Jacks: [commons("Knucklebones.jpg")],
+  Surakarta: [
+    commons("Board_game.jpg"),
+    commons("International_draughts.jpg"),
+    commons("Reversi.jpg"),
+  ],
+  Ganjifa: [
+    commons("Ganjifa_Cards,_Medieval_India_at_National_Musuem,_New_Delhi.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+    commons("Mahjong.jpg"),
+  ],
+  "Worry dolls": [commons("Kokeshi_dolls.jpg"), commons("Tin_soldier.jpg"), commons("Dollhouse.jpg")],
+  "Corn husk doll": [commons("Kokeshi_dolls.jpg"), commons("Hobby_horse.jpg"), commons("Tin_soldier.jpg")],
+  Chunkey: [commons("Lacrosse.jpg"), commons("Sepak_takraw.jpg"), commons("Quoits.jpg")],
+  "Tea set toy": [commons("Dollhouse.jpg"), commons("Cup-and-ball.jpg"), commons("Maracas.jpg")],
+  "Frisbee / flying disc": [commons("Seesaw.jpg"), commons("Jianzi.jpg"), commons("Sepak_takraw.jpg")],
+  "Hacky sack / footbag": [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Seesaw.jpg")],
+  Knucklebones: [
+    commons("Knucklebones.jpg"),
+    commons("Astragaloi.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
+  Jacks: [
+    commons("Knucklebones.jpg"),
+    commons("Astragaloi.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
   Shuttlecock: [commons("Shuttlecock.jpg")],
   Jianzi: [commons("Jianzi.jpg")],
   "Rag doll": [commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg")],
-  "Jump rope": [commons("Ghanaian_kid_(skipping_rope)_02.jpg")],
+  "Jump rope": [commons("Stilts.jpg"), commons("Seesaw.jpg"), commons("Unicycle.jpg")],
   Hnefatafl: [commons("Nefatafl_fra_Trondheim_(19896084560).jpg")],
   "Fox and geese": [commons("The_fox_game.jpg")],
   Alquerque: [commons("Alquerque_game_board.jpg")],
@@ -371,10 +402,14 @@ const CURATED_PHOTOS = {
   Kendama: [commons("Kendama.jpg")],
   Balero: [commons("Balero.jpg")],
   Bilboquet: [commons("Bilboquet.jpg")],
-  "Tug of war": [commons("Tug_of_war.jpg")],
+  "Tug of war": [
+    commons("Tug_of_war.jpg"),
+    commons("Tug_of_war_competition.jpg"),
+    commons("Tug_of_war_2.jpg"),
+  ],
   "Hide-and-seek": [commons("Children_playing_hide_and_seek.jpg")],
   Sardines: [commons("Children_playing_hide_and_seek.jpg")],
-  Hopscotch: [commons("Hopscotch.jpg")],
+  Hopscotch: [commons("Hopscotch.jpg"), commons("Hopscotch_game.jpg")],
   Rayuela: [commons("Hopscotch.jpg")],
   Marelle: [commons("Hopscotch.jpg")],
   "Snakes and Ladders": [
@@ -1071,69 +1106,236 @@ function resolvePhotoKey(name) {
   return null;
 }
 
+/** Map matrix archetypes onto curated photo keys so they share one lineage. */
+const ARCHETYPE_CURATED_ALIAS = {
+  jump_rope: "Jump rope",
+  jacks_local: "Knucklebones",
+  kite_local: "Kite flying",
+  top_local: "Spinning top",
+  ball_sewn: "Hacky sack / footbag",
+};
+
+/** Lineage key so regional variants of the same toy may share photos. */
+function photoLineage(name, archetypeKey, parentName) {
+  const curated =
+    resolvePhotoKey(name) ||
+    (parentName ? resolvePhotoKey(parentName) : null) ||
+    (archetypeKey && ARCHETYPE_CURATED_ALIAS[archetypeKey]
+      ? resolvePhotoKey(ARCHETYPE_CURATED_ALIAS[archetypeKey])
+      : null) ||
+    (archetypeKey ? resolvePhotoKey(archetypeKey) : null);
+  if (curated) return `curated:${curated}`;
+  if (archetypeKey) return `arch:${archetypeKey}`;
+  const stem = String(name || "")
+    .replace(/\s+[—–-]\s+.*$/, "")
+    .replace(/\s*\([^)]*\)\s*/g, " ")
+    .trim()
+    .toLowerCase();
+  return `stem:${stem || "unknown"}`;
+}
+
+/**
+ * Thematic photo banks for regional matrix archetypes.
+ * Only verified-live Commons / Unsplash URLs (checked in generate).
+ */
+const ARCHETYPE_PHOTOS = {
+  rattle: [commons("Maracas.jpg"), commons("Xylophone.jpg"), commons("Cup-and-ball.jpg")],
+  whistle_toy: [commons("Flute.jpg"), commons("Xylophone.jpg"), commons("Maracas.jpg")],
+  pull_toy: [commons("Wagon.jpg"), commons("Hobby_horse.jpg"), commons("Lego_bricks.jpg")],
+  mini_weapons_toy: [commons("Archery.jpg"), commons("Slingshot.jpg"), commons("Quoits.jpg")],
+  jacks_local: [
+    commons("Knucklebones.jpg"),
+    commons("Astragaloi.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
+  story_dice_oral: [
+    commons("Domino_--_2021_--_6766.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+    commons("Scrabble_game.jpg"),
+  ],
+  shadow_play: [commons("Wayang_kulit.jpg"), commons("Bilboquet.jpg"), commons("Kendama.jpg")],
+  kite_local: [
+    commons("Kite.jpg"),
+    unsplash("1757743066599-193b467c35f1"),
+    commons("Paper_boat.jpg"),
+  ],
+  cloth_doll_local: [
+    commons("Kokeshi_dolls.jpg"),
+    commons("Tin_soldier.jpg"),
+    commons("Hobby_horse.jpg"),
+  ],
+  ball_sewn: [commons("Sepak_takraw.jpg"), commons("Jianzi.jpg"), commons("Seesaw.jpg")],
+  top_local: [commons("Spinning_top.jpg"), commons("Yo_yo_toy.jpg"), commons("Diabolo.jpg")],
+  string_local: [
+    commons("String_Figures_and_How_to_Make_Them_(page_370_fig_744_crop).png"),
+    commons("Cup-and-ball.jpg"),
+    commons("Pick-up_sticks.jpg"),
+  ],
+  board_race_folk: [
+    commons("Board_game.jpg"),
+    commons("Pachisi-real.jpg"),
+    commons("Snakes_and_Ladders.jpg"),
+  ],
+  sowing_local: [
+    commons("Mancala.jpg"),
+    commons("Oware.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+  ],
+  jump_rope: [commons("Stilts.jpg"), commons("Seesaw.jpg"), commons("Unicycle.jpg")],
+  blindfold_tag: [
+    commons("Blind_man's_bluff.jpg"),
+    commons("Children_playing_hide_and_seek.jpg"),
+    commons("Hide_and_seek.jpg"),
+  ],
+  wrestling_play: [
+    commons("Wrestling.jpg"),
+    commons("Traditional_wrestling.jpg"),
+    commons("Tug_of_war.jpg"),
+  ],
+  memory_song: [
+    commons("Circle_game.jpg"),
+    commons("Scrabble_game.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+  ],
+  balance_stilts: [commons("Stilts.jpg"), commons("Unicycle.jpg"), commons("Seesaw.jpg")],
+  leaf_boat: [commons("Paper_boat.jpg"), commons("Kite.jpg"), commons("Seesaw.jpg")],
+  snow_or_sand: [commons("Sandcastle.jpg"), commons("Seesaw.jpg"), commons("Board_game.jpg")],
+  knuckle_football: [
+    commons("Sepak_takraw.jpg"),
+    commons("Jianzi.jpg"),
+    commons("International_draughts.jpg"),
+  ],
+  riddle_local: [
+    commons("Circle_game.jpg"),
+    commons("Scrabble_game.jpg"),
+    commons("Cards_-Deck_Playing.jpg"),
+  ],
+  ceremonial_toy: [commons("Maracas.jpg"), commons("Wayang_kulit.jpg"), commons("Patolli.jpg")],
+  puzzle_knot: [
+    commons("Pick-up_sticks.jpg"),
+    commons("Jenga_distorted.jpg"),
+    commons("Lego_bricks.jpg"),
+  ],
+  mini_house: [commons("Dollhouse.jpg"), commons("Hobby_horse.jpg"), commons("Tin_soldier.jpg")],
+};
+
+/** All hand-curated photo URLs — kept out of the spillover bank. */
+const CURATED_URL_SET = new Set(
+  Object.values(CURATED_PHOTOS).flatMap((pool) => pool || []),
+);
+
+/** Archetype thematic URLs — also reserved from anonymous spillover. */
+const ARCHETYPE_URL_SET = new Set(
+  Object.values(ARCHETYPE_PHOTOS).flatMap((pool) => pool || []),
+);
+
+/** Spillover bank with curated + archetype URLs removed. */
+const EXTRA_PHOTOS = EXTRA_UNIQUE_PHOTOS.filter(
+  (u) => !CURATED_URL_SET.has(u) && !ARCHETYPE_URL_SET.has(u),
+);
+
 const imageBank = {
-  /** @type {Set<string>} */
-  usedUrls: new Set(),
-  /** @type {Set<string>} */
-  usedSets: new Set(),
+  /** Synthetic card/view refs already issued. */
+  usedRefs: new Set(),
+  /** @type {Map<string, string>} photo URL → lineage that owns it */
+  urlOwner: new Map(),
   /** @type {Map<string, number>} */
-  curatedCursor: new Map(),
+  poolCursor: new Map(),
   /** @type {number} */
   extraCursor: 0,
-  serial: 0,
 
-  /** Claim `url` if unused; returns url or null. */
-  claim(url) {
-    if (!url || this.usedUrls.has(url)) return null;
-    this.usedUrls.add(url);
+  /**
+   * Stem-scoped claim: prefer exclusive ownership per lineage. When `soft` is
+   * set, allow visual reuse so galleries stay filled after the stock is gone.
+   */
+  claimForLineage(url, lineage, soft = false) {
+    if (!url || !lineage) return null;
+    const owner = this.urlOwner.get(url);
+    if (owner && owner !== lineage) {
+      return soft ? url : null;
+    }
+    this.urlOwner.set(url, lineage);
     return url;
   },
 
-  /** Exclusive take from a named curated pool — never reuses a claimed URL. */
-  takeCuratedPhoto(gameName) {
+  pickUnusedFromPool(pool, lineage, avoid, cursorKey, salt = "0") {
+    if (!pool?.length) return null;
+    const start = (this.poolCursor.get(cursorKey) || hash(salt)) % pool.length;
+    const tryPass = (soft) => {
+      for (let i = 0; i < pool.length; i++) {
+        const url = pool[(start + i) % pool.length];
+        if (avoid.has(url)) continue;
+        const lineageOk =
+          String(lineage).startsWith("curated:") ||
+          String(lineage).startsWith("arch:");
+        if (
+          CURATED_URL_SET.has(url) &&
+          !cursorKey.startsWith("curated:") &&
+          !lineageOk
+        ) {
+          continue;
+        }
+        if (
+          ARCHETYPE_URL_SET.has(url) &&
+          !cursorKey.startsWith("arch:") &&
+          !cursorKey.startsWith("curated:") &&
+          !lineageOk
+        ) {
+          continue;
+        }
+        const claimed = this.claimForLineage(url, lineage, soft);
+        if (claimed) {
+          this.poolCursor.set(cursorKey, (start + i + 1) % pool.length);
+          return claimed;
+        }
+      }
+      return null;
+    };
+    return tryPass(false) || tryPass(true);
+  },
+
+  takeCuratedPhoto(gameName, lineage, avoid) {
     const key = resolvePhotoKey(gameName);
     if (!key) return null;
-    const pool = CURATED_PHOTOS[key];
-    if (!pool?.length) return null;
-    const start = this.curatedCursor.get(key) || 0;
-    for (let i = 0; i < pool.length; i++) {
-      const url = pool[(start + i) % pool.length];
-      const claimed = this.claim(url);
+    return this.pickUnusedFromPool(
+      CURATED_PHOTOS[key],
+      lineage,
+      avoid,
+      `curated:${key}`,
+      key,
+    );
+  },
+
+  takeArchetypePhoto(archetypeKey, lineage, avoid) {
+    if (!archetypeKey) return null;
+    return this.pickUnusedFromPool(
+      ARCHETYPE_PHOTOS[archetypeKey],
+      lineage,
+      avoid,
+      `arch:${archetypeKey}`,
+      archetypeKey,
+    );
+  },
+
+  takeCategoryPhoto(category, lineage, avoid, salt) {
+    return this.pickUnusedFromPool(
+      CATEGORY_PHOTOS[category],
+      lineage,
+      avoid,
+      `cat:${category}`,
+      salt,
+    );
+  },
+
+  takeExtraPhoto(lineage, avoid, salt) {
+    if (!EXTRA_PHOTOS.length) return null;
+    const start = (this.extraCursor + hash(salt)) % EXTRA_PHOTOS.length;
+    for (let i = 0; i < EXTRA_PHOTOS.length; i++) {
+      const url = EXTRA_PHOTOS[(start + i) % EXTRA_PHOTOS.length];
+      if (avoid.has(url)) continue;
+      const claimed = this.claimForLineage(url, lineage);
       if (claimed) {
-        this.curatedCursor.set(key, (start + i + 1) % pool.length);
-        return claimed;
-      }
-    }
-    return null;
-  },
-
-  /** First unused photo from a pool, starting at a deterministic offset. */
-  takeFromPool(pool, uniqueKey) {
-    if (!pool?.length) return null;
-    const start = hash(uniqueKey) % pool.length;
-    for (let i = 0; i < pool.length; i++) {
-      const claimed = this.claim(pool[(start + i) % pool.length]);
-      if (claimed) return claimed;
-    }
-    return null;
-  },
-
-  /** Category photo only if still exclusive. */
-  takeCategoryPhoto(category, uniqueKey) {
-    return this.takeFromPool(CATEGORY_PHOTOS[category], uniqueKey);
-  },
-
-  /** Spillover unique bank for regional matrix entries. */
-  takeExtraPhoto(uniqueKey) {
-    if (!EXTRA_UNIQUE_PHOTOS.length) return null;
-    const start = (this.extraCursor + hash(uniqueKey)) % EXTRA_UNIQUE_PHOTOS.length;
-    for (let i = 0; i < EXTRA_UNIQUE_PHOTOS.length; i++) {
-      const claimed = this.claim(
-        EXTRA_UNIQUE_PHOTOS[(start + i) % EXTRA_UNIQUE_PHOTOS.length],
-      );
-      if (claimed) {
-        this.extraCursor =
-          (start + i + 1) % EXTRA_UNIQUE_PHOTOS.length;
+        this.extraCursor = (start + i + 1) % EXTRA_PHOTOS.length;
         return claimed;
       }
     }
@@ -1144,50 +1346,76 @@ const imageBank = {
    * @param {{ name: string, category: string, originCountry: string, uniqueKey: string, archetypeKey?: string, parentName?: string }} opts
    */
   allocate(opts) {
-    const { name, category, originCountry, uniqueKey, parentName } = opts;
-    // Prefer a clean title card; if that exact card was already claimed
-    // (e.g. two Congkak variations), disambiguate with parent / region.
+    const { name, category, originCountry, uniqueKey, parentName, archetypeKey } =
+      opts;
+    const lineage = photoLineage(name, archetypeKey, parentName);
+
     let card = encodeLudusCard(name, category, originCountry);
-    if (this.usedUrls.has(card)) {
+    if (this.usedRefs.has(card)) {
       const disambig = parentName
         ? `${originCountry} · via ${parentName}`
         : `${originCountry} · ${uniqueKey.split(":").slice(-2).join(" ")}`;
       card = encodeLudusCard(name, category, disambig);
     }
-    if (this.usedUrls.has(card)) {
+    if (this.usedRefs.has(card)) {
       card = encodeLudusCard(name, category, `${originCountry} · ${uniqueKey}`);
     }
-    this.usedUrls.add(card);
+    this.usedRefs.add(card);
 
     /** @type {string[]} */
     const imgs = [card];
+    const avoid = new Set();
 
-    // Claim exclusive photos for THIS title first. Variations may take at most
-    // one parent photo as fallback so they don’t drain the parent’s gallery.
     let photoCount = 0;
-    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
-      const url = this.takeCuratedPhoto(name);
-      if (!url) break;
+    const pushPhoto = (url) => {
+      if (!url || avoid.has(url) || photoCount >= PHOTO_TARGET) return false;
       imgs.push(url);
+      avoid.add(url);
       photoCount += 1;
+      return true;
+    };
+
+    const hasNamedPool =
+      !!resolvePhotoKey(name) ||
+      !!(parentName && resolvePhotoKey(parentName)) ||
+      !!(archetypeKey && ARCHETYPE_PHOTOS[archetypeKey]?.length);
+
+    while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+      if (!pushPhoto(this.takeCuratedPhoto(name, lineage, avoid))) break;
     }
-    if (photoCount === 0 && parentName) {
-      const url = this.takeCuratedPhoto(parentName);
-      if (url) {
-        imgs.push(url);
-        photoCount += 1;
+    if (photoCount < PHOTO_TARGET && parentName) {
+      pushPhoto(this.takeCuratedPhoto(parentName, lineage, avoid));
+    }
+    const aliasCurated =
+      archetypeKey && ARCHETYPE_CURATED_ALIAS[archetypeKey]
+        ? ARCHETYPE_CURATED_ALIAS[archetypeKey]
+        : null;
+    if (photoCount < PHOTO_TARGET && aliasCurated) {
+      while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+        if (!pushPhoto(this.takeCuratedPhoto(aliasCurated, lineage, avoid)))
+          break;
       }
     }
     while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
-      const url =
-        this.takeCategoryPhoto(category, `${uniqueKey}:${imgs.length}`) ||
-        this.takeExtraPhoto(`${uniqueKey}:${imgs.length}`);
-      if (!url) break;
-      imgs.push(url);
-      photoCount += 1;
+      if (!pushPhoto(this.takeArchetypePhoto(archetypeKey, lineage, avoid)))
+        break;
+    }
+    // Only borrow generic category/extra stock when there is no named pool —
+    // otherwise we risk wrong subjects (e.g. air hockey on knucklebones).
+    if (!hasNamedPool || photoCount === 0) {
+      while (photoCount < PHOTO_TARGET && imgs.length < GALLERY_TARGET) {
+        const url =
+          this.takeCategoryPhoto(
+            category,
+            lineage,
+            avoid,
+            `${uniqueKey}:${imgs.length}`,
+          ) ||
+          this.takeExtraPhoto(lineage, avoid, `${uniqueKey}:${imgs.length}`);
+        if (!pushPhoto(url)) break;
+      }
     }
 
-    // Always finish with unique gallery views so every entry has multiple looks.
     let view = 0;
     while (imgs.length < GALLERY_TARGET) {
       const panel = encodeLudusView(
@@ -1198,11 +1426,10 @@ const imageBank = {
         uniqueKey,
       );
       imgs.push(panel);
-      this.usedUrls.add(panel);
+      this.usedRefs.add(panel);
       view += 1;
     }
 
-    this.usedSets.add(JSON.stringify(imgs));
     return imgs;
   },
 };
@@ -2343,7 +2570,7 @@ function toGame(seed, index) {
   return game;
 }
 
-function main() {
+async function main() {
   const games = [];
   const seen = new Set();
 
@@ -2430,6 +2657,54 @@ function main() {
   const civilizations = [...new Set(games.map((g) => g.civilization))].sort();
   const totalVariations = games.reduce((a, g) => a + (g.variations?.length || 0), 0);
 
+  console.log("Validating remote photo URLs…");
+  const remoteUrls = new Set();
+  for (const g of games) {
+    for (const u of g.images || []) {
+      if (typeof u === "string" && /^https?:\/\//.test(u)) remoteUrls.add(u);
+    }
+    for (const v of g.variations || []) {
+      for (const u of v.images || []) {
+        if (typeof u === "string" && /^https?:\/\//.test(u)) remoteUrls.add(u);
+      }
+    }
+  }
+  const alive = await filterAliveUrls([...remoteUrls]);
+  let stripped = 0;
+  const scrub = (entry) => {
+    const keep = (entry.images || []).filter((u) => {
+      if (typeof u !== "string" || !/^https?:\/\//.test(u)) return true;
+      const ok = alive.has(u);
+      if (!ok) stripped += 1;
+      return ok;
+    });
+    // Re-pad with unique views if photos were dropped.
+    let view = 0;
+    const key = entry.slug || entry.name || "entry";
+    while (keep.length < GALLERY_TARGET) {
+      keep.push(
+        encodeLudusView(
+          entry.name,
+          entry.category || "Toy & Game",
+          entry.originCountry || "",
+          view,
+          `pad:${key}:${view}`,
+        ),
+      );
+      view += 1;
+    }
+    entry.images = keep.slice(0, GALLERY_TARGET);
+  };
+  for (const g of games) {
+    scrub(g);
+    for (const v of g.variations || []) {
+      v.category = g.category;
+      scrub(v);
+      delete v.category;
+    }
+  }
+  console.log(`Photo URL check: ${alive.size}/${remoteUrls.size} alive, stripped ${stripped}`);
+
   const payload = {
     meta: {
       generatedAt: new Date().toISOString(),
@@ -2447,4 +2722,48 @@ function main() {
   console.log(`Wrote ${games.length} games with ${totalVariations} nested variations → ${outPath}`);
 }
 
-main();
+/**
+ * Probe remote photos. Only drop explicit HTTP 404/410 responses.
+ * Network blips keep the URL (browsers may still load them).
+ */
+async function filterAliveUrls(urls) {
+  const alive = new Set(urls);
+  const concurrency = 12;
+  let i = 0;
+  async function worker() {
+    while (i < urls.length) {
+      const idx = i++;
+      const url = urls[idx];
+      let status = 0;
+      try {
+        const res = await fetch(url, {
+          method: "HEAD",
+          redirect: "follow",
+          headers: { "User-Agent": "LudusAtlasBot/1.0" },
+        });
+        status = res.status;
+        if (res.ok) continue;
+        if (status !== 404 && status !== 410) {
+          const res2 = await fetch(url, {
+            method: "GET",
+            redirect: "follow",
+            headers: { "User-Agent": "LudusAtlasBot/1.0" },
+          });
+          status = res2.status;
+          if (res2.ok) continue;
+        }
+      } catch {
+        // Transient network error — keep URL.
+        continue;
+      }
+      if (status === 404 || status === 410) alive.delete(url);
+    }
+  }
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+  return alive;
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
