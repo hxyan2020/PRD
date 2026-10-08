@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import {
   BrowserRouter,
   HashRouter,
@@ -20,11 +20,28 @@ import { PreferencesPage } from "./pages/PreferencesPage";
 const useHashRouter = import.meta.env.BASE_URL !== "/";
 const Router = useHashRouter ? HashRouter : BrowserRouter;
 
+function scrollWindowToTop() {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+}
+
 function ScrollToTop() {
-  const { pathname, search, hash } = useLocation();
+  const { pathname, search } = useLocation();
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname, search, hash]);
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    scrollWindowToTop();
+    // Re-assert after paint in case late layout (images/fonts) nudges the viewport.
+    const id = window.requestAnimationFrame(() => scrollWindowToTop());
+    return () => window.cancelAnimationFrame(id);
+  }, [pathname, search]);
+
   return null;
 }
 
