@@ -14,6 +14,8 @@ import {
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
 import { flagForCountry } from "../lib/countryFlags";
+import { FlagIcon } from "../components/FlagIcon";
+import { dailyPickGames } from "../lib/dailyRotate";
 
 const PAGE_SIZE = 30;
 
@@ -80,11 +82,21 @@ export function CollectionPage() {
     });
   }, [data, deferredQuery, category, region, locale, catalog]);
 
+  const dailyPicks = useMemo(() => {
+    if (!data) return [];
+    return dailyPickGames(data.games, 6, "collection-top").map((g) =>
+      localizeGame(g, locale, catalog),
+    );
+  }, [data, locale, catalog]);
+
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount);
   const pageItems = filtered
     .slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
     .map((g) => localizeGame(g, locale, catalog));
+
+  const regionFlag =
+    region === "all" ? "🌍" : flagForCountry(region);
 
   useEffect(() => {
     setPage(1);
@@ -113,6 +125,24 @@ export function CollectionPage() {
             </p>
           </div>
 
+          {dailyPicks.length &&
+          !deferredQuery.trim() &&
+          category === "all" &&
+          region === "all" &&
+          safePage === 1 ? (
+            <div className="daily-picks">
+              <div className="section-head" style={{ marginBottom: "1rem" }}>
+                <h3 style={{ margin: 0 }}>{t("collection.dailyTitle")}</h3>
+                <p style={{ margin: "0.35rem 0 0" }}>{t("collection.dailySub")}</p>
+              </div>
+              <div className="game-grid">
+                {dailyPicks.map((g, i) => (
+                  <GameCard key={`daily-${g.id}`} game={g} index={i} />
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           <div className="filters">
             <div className="field">
               <label htmlFor="q">{t("collection.search")}</label>
@@ -125,37 +155,42 @@ export function CollectionPage() {
             </div>
             <div className="field">
               <label htmlFor="cat">{t("collection.category")}</label>
-              <select
-                id="cat"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              >
-                <option value="all">{t("collection.allCategories")}</option>
-                {data.meta.categories.map((c) => (
-                  <option key={c} value={c}>
-                    {localizeCategory(c, locale, catalog)}
-                  </option>
-                ))}
-              </select>
+              <div className="select-with-flag">
+                <select
+                  id="cat"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                >
+                  <option value="all">{t("collection.allCategories")}</option>
+                  {data.meta.categories.map((c) => (
+                    <option key={c} value={c}>
+                      {localizeCategory(c, locale, catalog)}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="field">
               <label htmlFor="region">{t("collection.origin")}</label>
-              <select
-                id="region"
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-              >
-                <option value="all">{t("collection.allOrigins")}</option>
-                {countries.map((c) => {
-                  const label =
-                    catalog?.locales[locale]?.countries[c] ?? c;
-                  return (
-                    <option key={c} value={c}>
-                      {`${flagForCountry(c)} ${label}`}
-                    </option>
-                  );
-                })}
-              </select>
+              <div className="select-with-flag">
+                <FlagIcon flag={regionFlag} className="select-flag" />
+                <select
+                  id="region"
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value)}
+                >
+                  <option value="all">{t("collection.allOrigins")}</option>
+                  {countries.map((c) => {
+                    const label =
+                      catalog?.locales[locale]?.countries[c] ?? c;
+                    return (
+                      <option key={c} value={c}>
+                        {`${flagForCountry(c)} ${label}`}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
             </div>
             <button
               type="button"

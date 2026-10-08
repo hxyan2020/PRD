@@ -1,4 +1,5 @@
 import { countryWithFlag, flagForCountry } from "../lib/countryFlags";
+import { FlagIcon } from "./FlagIcon";
 
 type Props = {
   /** Display label (may be localized). */
@@ -13,9 +14,7 @@ export function OriginCountry({ country, countryKey, className }: Props) {
   const flag = flagForCountry(countryKey ?? country);
   return (
     <span className={className ? `origin-country ${className}` : "origin-country"}>
-      <span className="country-flag" aria-hidden="true">
-        {flag}
-      </span>
+      <FlagIcon flag={flag} className="country-flag" />
       {country}
     </span>
   );

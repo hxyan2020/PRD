@@ -1,5 +1,6 @@
 import { LANGUAGES, type LocaleCode } from "./languages";
 import { useI18n } from "./I18nProvider";
+import { FlagIcon } from "../components/FlagIcon";
 
 export function LanguageSwitcher() {
   const { locale, setLocale, t } = useI18n();
@@ -10,9 +11,7 @@ export function LanguageSwitcher() {
   return (
     <label className="lang-switcher">
       <span className="sr-only">{t("lang.choose")}</span>
-      <span className="lang-flag" aria-hidden="true">
-        {current.flag}
-      </span>
+      <FlagIcon flag={current.flag} className="lang-flag" title={current.englishLabel} />
       <select
         className="lang-select"
         value={locale}
