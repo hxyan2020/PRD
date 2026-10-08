@@ -9,6 +9,7 @@ import {
   localizeGame,
   type ContentI18nCatalog,
 } from "../lib/localizeContent";
+import { dailyPickGames } from "../lib/dailyRotate";
 
 export function HomePage() {
   const [data, setData] = useState<CollectionData | null>(null);
@@ -30,10 +31,10 @@ export function HomePage() {
 
   const featured = useMemo(() => {
     if (!data) return [];
-    return data.games
-      .filter((g) => g.variations.length > 0)
-      .slice(0, 6)
-      .map((g) => localizeGame(g, locale, contentI18n));
+    const withVariations = data.games.filter((g) => g.variations.length > 0);
+    return dailyPickGames(withVariations, 6, "home-featured").map((g) =>
+      localizeGame(g, locale, contentI18n),
+    );
   }, [data, locale, contentI18n]);
 
   return (
