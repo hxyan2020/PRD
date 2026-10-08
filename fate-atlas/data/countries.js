@@ -189,12 +189,11 @@
     const cc = (code || "").toUpperCase();
     const safeAlt = escapeHTML(alt || cc || "");
     if (!cc || cc.length !== 2) {
-      return `<span class="flag-icon" title="${safeAlt}"><span class="flag-emoji" aria-hidden="true">🏳️</span></span>`;
+      return `<span class="flag-icon flag-icon--empty" title="${safeAlt}" aria-hidden="true"></span>`;
     }
-    const emoji = flagEmoji(cc);
     const u = flagUrls(cc);
-    // Prefer local raster flags — emoji regional indicators render as "US"/"CA" on many systems.
-    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${u.src}" srcset="${u.srcset}" width="24" height="18" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.hidden=false)" /><span class="flag-emoji" hidden aria-hidden="true">${emoji}</span></span>`;
+    // Local PNGs only — never emoji regional indicators (they render as "US"/"NG"/"CA").
+    return `<span class="flag-icon" title="${safeAlt}"><img class="flag-img" src="${u.src}" srcset="${u.srcset}" width="24" height="18" alt="" decoding="async" /></span>`;
   }
 
   function localizedCountryName(name, locale) {
