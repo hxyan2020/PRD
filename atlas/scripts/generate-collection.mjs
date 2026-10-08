@@ -204,52 +204,269 @@ const CURATED_TAGS = {
   Sungka: "sungka,filipino-mancala",
 };
 
+/** Stable Wikimedia Commons thumbnail (follows redirect in browsers). */
+function commons(file) {
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(file)}?width=900`;
+}
+
+function unsplash(id) {
+  return `https://images.unsplash.com/photo-${id}?w=900&q=80`;
+}
+
 /**
- * Hand-picked Unsplash photos — each ID was visually verified to depict the
- * named game (wrong stock IDs previously mapped Mahjong→gym, Yo-yo→yoga mats,
- * Rubik→broccoli, Marbles→amiibo, etc.). Prefer omitting a game over a bad ID.
+ * Hand-picked cover photos (Commons + verified Unsplash). Prefer a correct
+ * subject over a pretty wrong one. Keys are primary English catalog names.
  */
 const CURATED_PHOTOS = {
   Chess: [
-    "https://images.unsplash.com/photo-1528819622765-d6bcf132f793?w=900&q=80",
-    "https://images.unsplash.com/photo-1586165368502-1bad197a6461?w=900&q=80",
+    unsplash("1528819622765-d6bcf132f793"),
+    unsplash("1586165368502-1bad197a6461"),
   ],
   "Go (Weiqi)": [
-    "https://images.unsplash.com/photo-1774234528903-f520d964ba13?w=900&q=80",
+    unsplash("1774234528903-f520d964ba13"),
+    commons("Go_(13×13)_--_2021_--_6741.jpg"),
+    commons("Go_--_2021_--_6732.jpg"),
   ],
+  Xiangqi: [
+    unsplash("1771588330614-2ce1d77588ca"),
+    unsplash("1763901682710-a18f6a7d9531"),
+    commons("Xiangqi-Chinese-chess.jpg"),
+    commons("Xiangqi_01.jpg"),
+  ],
+  Shogi: [commons("Shogi-Set-06.JPG"), commons("Shogi_ban.jpg")],
+  Mancala: [
+    commons("Mancala.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+    commons("Brooklyn_Museum_22.239_Mancala_Game_Board.jpg"),
+  ],
+  "Mancala sowing games": [
+    commons("Mancala.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+    commons("Oware.jpg"),
+  ],
+  Oware: [commons("Oware.jpg")],
+  Congkak: [commons("Congkak.jpg")],
+  Backgammon: [commons("Backgammon_board_-_01.jpg")],
+  Senet: [
+    commons("Senet_(47429946982).jpg"),
+    commons("Senet_game_pieces_(Tutankhamun).jpg"),
+  ],
+  Patolli: [commons("Patolli.jpg")],
+  Pachisi: [commons("Pachisi-real.jpg")],
+  Ludo: [commons("Ludo_board.svg")],
   Mahjong: [
-    "https://images.unsplash.com/photo-1742343886931-14ea96977531?w=900&q=80",
-  ],
-  "Yo-yo": [
-    "https://images.unsplash.com/photo-1556309294-98916e0aaca7?w=900&q=80",
-  ],
-  "Rubik's Cube": [
-    "https://images.unsplash.com/photo-1540149678796-1a36342a1372?w=900&q=80",
+    unsplash("1742343886931-14ea96977531"),
+    commons("UCB_Mahjong_Tiles.png"),
+    commons("Western_mahjong_tiles_eg.jpg"),
   ],
   Dominoes: [
-    "https://images.unsplash.com/photo-1566694271453-390536dd1f0d?w=900&q=80",
+    unsplash("1566694271453-390536dd1f0d"),
+    commons("Domino_--_2021_--_6766.jpg"),
   ],
   "Playing cards (French-suited deck)": [
-    "https://images.unsplash.com/photo-1541278107931-e006523892df?w=900&q=80",
+    unsplash("1541278107931-e006523892df"),
+    commons("Cards_-Deck_Playing.jpg"),
   ],
-  Marbles: [
-    "https://images.unsplash.com/photo-1687499466496-590c45852352?w=900&q=80",
+  "Playing cards": [commons("Playing_cards.jpg"), commons("Cards_-Deck_Playing.jpg")],
+  "Yo-yo": [
+    unsplash("1556309294-98916e0aaca7"),
+    commons("Yo_yo_toy.jpg"),
+    commons("Wooden_yo-yo.jpg"),
   ],
-  "Kite flying": [
-    "https://images.unsplash.com/photo-1757743066599-193b467c35f1?w=900&q=80",
+  "Rubik's Cube": [
+    unsplash("1540149678796-1a36342a1372"),
+    commons("Rubiks_cube_by_keqs.jpg"),
   ],
+  Marbles: [unsplash("1687499466496-590c45852352"), commons("Glass_Marbles.jpg")],
+  "Kite flying": [unsplash("1757743066599-193b467c35f1"), commons("Kite.jpg")],
   Matryoshka: [
-    "https://images.unsplash.com/photo-1672092590672-3feb81f3123a?w=900&q=80",
+    unsplash("1672092590672-3feb81f3123a"),
+    commons("Matryoshka_dolls.jpg"),
   ],
-  Jenga: [
-    "https://images.unsplash.com/photo-1703000998518-021f436c0b03?w=900&q=80",
-  ],
-  Scrabble: [
-    "https://images.unsplash.com/photo-1671628586515-0e4d9456f291?w=900&q=80",
-  ],
+  Jenga: [unsplash("1703000998518-021f436c0b03"), commons("Jenga_distorted.jpg")],
+  Scrabble: [unsplash("1671628586515-0e4d9456f291"), commons("Scrabble_game.jpg")],
   "Building blocks": [
-    "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=900&q=80",
+    unsplash("1587654780291-39c9404d746b"),
+    commons("A_pile_of_alphabet_wooden_blocks.jpg"),
   ],
+  "Nine Men's Morris": [commons("Nine_Men's_Morris.svg")],
+  Carrom: [commons("Carrom.jpg")],
+  Janggi: [commons("Janggi.jpg")],
+  Sittuyin: [commons("Sittuyin_PI.png")],
+  Makruk: [commons("Makruk_Thai_2.JPG")],
+  Dice: [commons("Dice.jpg")],
+  "Spinning top": [commons("Spinning_top.jpg")],
+  Tops: [commons("Spinning_top.jpg")],
+  Knucklebones: [commons("Knucklebones.jpg")],
+  Jacks: [commons("Knucklebones.jpg")],
+  Shuttlecock: [commons("Shuttlecock.jpg")],
+  Jianzi: [commons("Jianzi.jpg")],
+  "Rag doll": [commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg")],
+  "Jump rope": [commons("Ghanaian_kid_(skipping_rope)_02.jpg")],
+  Hnefatafl: [commons("Nefatafl_fra_Trondheim_(19896084560).jpg")],
+  "Fox and geese": [commons("The_fox_game.jpg")],
+  Alquerque: [commons("Alquerque_game_board.jpg")],
+  Gomoku: [commons("Gomoku-game-1.svg")],
+  Reversi: [commons("Reversi.jpg")],
+  Othello: [commons("Othello_board.jpg")],
+  Halma: [commons("Halma_board.jpg")],
+  "Chinese checkers": [commons("Chinese_checkers.jpg")],
+  "Peg solitaire": [commons("PegSolitaire.jpg")],
+  Tangram: [commons("Tangram-1.JPG")],
+  Draughts: [commons("International_draughts.jpg")],
+  Checkers: [commons("Checkers_board_in_a_cell_at_Alcatraz.jpg")],
+};
+
+/** Map catalog titles / stems onto CURATED_PHOTOS keys. */
+const PHOTO_ALIASES = {
+  "mancala sowing games": "Mancala sowing games",
+  mancala: "Mancala",
+  oware: "Oware",
+  congkak: "Congkak",
+  dakon: "Congkak",
+  sungka: "Congkak",
+  weiqi: "Go (Weiqi)",
+  go: "Go (Weiqi)",
+  "chinese chess": "Xiangqi",
+  xiangqi: "Xiangqi",
+  shogi: "Shogi",
+  janggi: "Janggi",
+  sittuyin: "Sittuyin",
+  makruk: "Makruk",
+  backgammon: "Backgammon",
+  senet: "Senet",
+  patolli: "Patolli",
+  pachisi: "Pachisi",
+  chaupar: "Pachisi",
+  ludo: "Ludo",
+  "parcheesi": "Pachisi",
+  mahjong: "Mahjong",
+  dominoes: "Dominoes",
+  "playing cards": "Playing cards",
+  chess: "Chess",
+  draughts: "Draughts",
+  checkers: "Checkers",
+  "english draughts": "Draughts",
+  carrom: "Carrom",
+  "nine men's morris": "Nine Men's Morris",
+  mills: "Nine Men's Morris",
+  "yo-yo": "Yo-yo",
+  yoyo: "Yo-yo",
+  "rubik's cube": "Rubik's Cube",
+  rubik: "Rubik's Cube",
+  marbles: "Marbles",
+  kite: "Kite flying",
+  "kite flying": "Kite flying",
+  matryoshka: "Matryoshka",
+  "nesting dolls": "Matryoshka",
+  jenga: "Jenga",
+  scrabble: "Scrabble",
+  "building blocks": "Building blocks",
+  blocks: "Building blocks",
+  dice: "Dice",
+  "spinning top": "Spinning top",
+  top: "Spinning top",
+  tops: "Tops",
+  knucklebones: "Knucklebones",
+  jacks: "Jacks",
+  shuttlecock: "Shuttlecock",
+  jianzi: "Jianzi",
+  "rag doll": "Rag doll",
+  doll: "Rag doll",
+  "jump rope": "Jump rope",
+  "skipping rope": "Jump rope",
+  hnefatafl: "Hnefatafl",
+  tafl: "Hnefatafl",
+  "fox and geese": "Fox and geese",
+  alquerque: "Alquerque",
+  gomoku: "Gomoku",
+  renju: "Gomoku",
+  reversi: "Reversi",
+  othello: "Othello",
+  halma: "Halma",
+  "chinese checkers": "Chinese checkers",
+  "peg solitaire": "Peg solitaire",
+  tangram: "Tangram",
+};
+
+/**
+ * Category cover pools — reused across many catalog entries so cards never
+ * fall back to an empty gradient when a title-specific photo is missing.
+ */
+const CATEGORY_PHOTOS = {
+  "Strategy & War": [
+    unsplash("1528819622765-d6bcf132f793"),
+    commons("Xiangqi_01.jpg"),
+    commons("Shogi-Set-06.JPG"),
+    commons("International_draughts.jpg"),
+    commons("Alquerque_game_board.jpg"),
+  ],
+  "Board & Race": [
+    commons("Backgammon_board_-_01.jpg"),
+    commons("Pachisi-real.jpg"),
+    commons("Ludo_board.svg"),
+    commons("Senet_(47429946982).jpg"),
+    commons("Patolli.jpg"),
+  ],
+  "Mancala & Sowing": [
+    commons("Mancala.jpg"),
+    commons("Wooden_Mancala_board.jpg"),
+    commons("Oware.jpg"),
+    commons("Congkak.jpg"),
+    commons("Brooklyn_Museum_22.239_Mancala_Game_Board.jpg"),
+  ],
+  "Cards & Tiles": [
+    unsplash("1742343886931-14ea96977531"),
+    unsplash("1541278107931-e006523892df"),
+    commons("Domino_--_2021_--_6766.jpg"),
+    commons("UCB_Mahjong_Tiles.png"),
+    commons("Cards_-Deck_Playing.jpg"),
+  ],
+  "Dice & Chance": [
+    commons("Dice.jpg"),
+    commons("Backgammon_board_-_01.jpg"),
+    unsplash("1566694271453-390536dd1f0d"),
+  ],
+  "String & Finger": [
+    commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+    unsplash("1556309294-98916e0aaca7"),
+  ],
+  "Dolls & Figures": [
+    commons("Matryoshka_dolls.jpg"),
+    commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg"),
+  ],
+  "Ball & Sport": [
+    commons("Jianzi.jpg"),
+    commons("Shuttlecock.jpg"),
+    commons("Glass_Marbles.jpg"),
+  ],
+  "Spinning & Tops": [
+    commons("Spinning_top.jpg"),
+    commons("Yo_yo_toy.jpg"),
+    unsplash("1556309294-98916e0aaca7"),
+  ],
+  "Puzzles & Skill": [
+    commons("Tangram-1.JPG"),
+    commons("Rubiks_cube_by_keqs.jpg"),
+    commons("PegSolitaire.jpg"),
+    unsplash("1540149678796-1a36342a1372"),
+  ],
+  "Outdoor Folk": [
+    commons("Kite.jpg"),
+    commons("Ghanaian_kid_(skipping_rope)_02.jpg"),
+    commons("Jianzi.jpg"),
+  ],
+  "Musical Play": [commons("Dice.jpg"), commons("Knucklebones.jpg")],
+  Construction: [
+    commons("A_pile_of_alphabet_wooden_blocks.jpg"),
+    commons("Jenga_distorted.jpg"),
+    unsplash("1587654780291-39c9404d746b"),
+  ],
+  "Ritual & Ceremony": [
+    commons("Senet_game_pieces_(Tutankhamun).jpg"),
+    commons("Patolli.jpg"),
+  ],
+  "Memory & Word": [commons("Scrabble_game.jpg"), commons("Cards_-Deck_Playing.jpg")],
 };
 
 const PURCHASE = {
@@ -414,24 +631,66 @@ function tagsForEntry(name, archetypeKey) {
  * Global image bank: unique sets per entry; primary image is a named title card;
  * follow-on photos use toy-specific tags (never a wrong sibling game’s keywords).
  */
+/** Resolve a catalog name to a CURATED_PHOTOS key (exact, alias, or stem). */
+function resolvePhotoKey(name) {
+  if (!name) return null;
+  if (CURATED_PHOTOS[name]?.length) return name;
+  const lower = name.toLowerCase().trim();
+  if (PHOTO_ALIASES[lower] && CURATED_PHOTOS[PHOTO_ALIASES[lower]]?.length) {
+    return PHOTO_ALIASES[lower];
+  }
+  // Strip regional / parenthetical suffixes: "Go (Weiqi)", "Chess — Persian"
+  const stem = lower
+    .replace(/\s+[—–-]\s+.*$/, "")
+    .replace(/\s*\([^)]*\)\s*/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (PHOTO_ALIASES[stem] && CURATED_PHOTOS[PHOTO_ALIASES[stem]]?.length) {
+    return PHOTO_ALIASES[stem];
+  }
+  for (const [alias, key] of Object.entries(PHOTO_ALIASES)) {
+    if (stem.includes(alias) && CURATED_PHOTOS[key]?.length) return key;
+  }
+  // Title-case stem match against curated keys
+  for (const key of Object.keys(CURATED_PHOTOS)) {
+    if (key.toLowerCase() === stem) return key;
+  }
+  return null;
+}
+
 const imageBank = {
   /** @type {Set<string>} */
   usedUrls: new Set(),
   /** @type {Set<string>} */
   usedSets: new Set(),
+  /** @type {Map<string, number>} */
+  curatedCursor: new Map(),
   serial: 0,
 
+  /** Exclusive take from a named curated pool (unique URLs preferred). */
   takeCuratedPhoto(gameName) {
-    const pool = CURATED_PHOTOS[gameName];
+    const key = resolvePhotoKey(gameName);
+    if (!key) return null;
+    const pool = CURATED_PHOTOS[key];
     if (!pool?.length) return null;
-    while (pool.length) {
-      const url = pool.shift();
+    const start = this.curatedCursor.get(key) || 0;
+    for (let i = 0; i < pool.length; i++) {
+      const url = pool[(start + i) % pool.length];
       if (!this.usedUrls.has(url)) {
         this.usedUrls.add(url);
+        this.curatedCursor.set(key, (start + i + 1) % pool.length);
         return url;
       }
     }
-    return null;
+    // All unique slots taken — still return a correct subject photo (reuse OK).
+    return pool[start % pool.length];
+  },
+
+  /** Category atmosphere photo; reusable so every card can have a cover. */
+  takeCategoryPhoto(category, uniqueKey) {
+    const pool = CATEGORY_PHOTOS[category];
+    if (!pool?.length) return null;
+    return pool[hash(uniqueKey) % pool.length];
   },
 
   /**
@@ -440,21 +699,22 @@ const imageBank = {
   allocate(opts) {
     const { name, category, originCountry, uniqueKey } = opts;
     const salt = hash(uniqueKey);
-    const extraCount = 1 + (salt % 3); // 1–3 extras after the title card
     /** @type {string[]} */
     const imgs = [encodeLudusCard(name, category, originCountry)];
 
-    // Only attach verified Unsplash photos. Never pad with loremflickr/picsum —
-    // those hosts routinely break or show the wrong subject in production.
-    while (imgs.length < extraCount + 1) {
-      const curated = this.takeCuratedPhoto(name);
-      if (!curated) break;
-      imgs.push(curated);
+    // Prefer a title-matched photo, then a category cover — never loremflickr/picsum.
+    const cover =
+      this.takeCuratedPhoto(name) || this.takeCategoryPhoto(category, uniqueKey);
+    if (cover) imgs.push(cover);
+
+    // Optional second curated view when the pool still has unused URLs.
+    if ((salt & 1) === 0) {
+      const extra = this.takeCuratedPhoto(name);
+      if (extra && extra !== cover) imgs.push(extra);
     }
 
     const sig = JSON.stringify(imgs);
     if (this.usedSets.has(sig)) {
-      // Keep set signatures unique without inventing fragile remote URLs.
       imgs.push(encodeLudusCard(`${name} · view`, category, originCountry));
     }
     this.usedSets.add(JSON.stringify(imgs));

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import type { Game } from "../types/game";
 import { excerpt } from "../lib/collection";
@@ -14,6 +15,7 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
   const { t } = useI18n();
   const photo = game.images.find(isPhotographicSrc);
   const backdrop = ludusBackdropDataUri(game.category, game.id || game.slug);
+  const [photoFailed, setPhotoFailed] = useState(false);
 
   return (
     <article
@@ -22,7 +24,7 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
     >
       <Link to={`/game/${game.slug}`} className="game-card-link">
         <div className="game-card-img" aria-hidden="true">
-          {photo ? (
+          {photo && !photoFailed ? (
             <GameImage
               src={photo}
               alt=""
@@ -32,6 +34,7 @@ export function GameCard({ game, index }: { game: Game; index: number }) {
                 category: game.category,
                 originCountry: game.originCountry,
               }}
+              onError={() => setPhotoFailed(true)}
             />
           ) : (
             <img src={backdrop} alt="" loading="lazy" />
