@@ -89,6 +89,22 @@ img {
   flex-wrap: wrap;
 }
 
+.auth-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 14rem;
+}
+
+.auth-chip__email {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 8.5rem;
+}
+
 .header-progress {
   font-size: 0.8rem;
 }

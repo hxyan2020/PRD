@@ -54,10 +54,14 @@ function Header() {
             {count} · {formatPct(pct)}
           </div>
           {isLoggedIn ? (
-            <button type="button" className="btn btn--quiet btn--tiny" onClick={() => logOut()}>
-              {t("nav.logout")}
-              <span className="sr-only"> ({email})</span>
-            </button>
+            <div className="auth-chip">
+              <span className="auth-chip__email" title={email ?? undefined}>
+                {email}
+              </span>
+              <button type="button" className="btn btn--quiet btn--tiny" onClick={() => logOut()}>
+                {t("nav.logout")}
+              </button>
+            </div>
           ) : (
             <>
               <NavLink className="btn btn--quiet btn--tiny" to="/login">
