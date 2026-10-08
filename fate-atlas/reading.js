@@ -246,10 +246,7 @@
       const name = window.FatumMethodText
         ? window.FatumMethodText.localize(state.method).name
         : state.method.name;
-      const icon = window.FatumRiteIcons
-        ? window.FatumRiteIcons.iconHTML(state.method, "rite-icon rite-icon--oracle")
-        : "";
-      titleEl.innerHTML = `${icon}<span>${escapeHTML(name)}</span>`;
+      titleEl.textContent = name;
     }
     stepEl.textContent = ti("studio.questStep", {
       label: meta.label,
