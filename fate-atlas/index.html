@@ -90,8 +90,19 @@
         <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list, or roll a surprise.</p>
         <div class="begin__row">
           <div class="field begin__picker">
-            <label for="method-picker" data-i18n="begin.choose">Choose a rite</label>
-            <select id="method-picker"></select>
+            <label id="method-picker-label" for="method-picker-trigger" data-i18n="begin.choose">Choose a rite</label>
+            <div class="rite-picker" id="rite-picker">
+              <button type="button" class="rite-picker__trigger" id="method-picker-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="method-picker-label">
+                <span class="rite-picker__flags" id="method-picker-flags" aria-hidden="true"></span>
+                <span class="rite-picker__label" id="method-picker-label-text" data-i18n="begin.placeholder">Choose a rite…</span>
+                <span class="rite-picker__chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="rite-picker__panel" id="method-picker-panel" hidden>
+                <input type="search" class="rite-picker__search" id="method-picker-search" data-i18n-placeholder="catalog.searchPh" placeholder="Try Ifá, palm, Korea, tarot…" autocomplete="off" />
+                <ul class="rite-picker__list" id="method-picker-list" role="listbox" aria-labelledby="method-picker-label"></ul>
+              </div>
+              <select id="method-picker" class="rite-picker__native" tabindex="-1" aria-hidden="true"></select>
+            </div>
           </div>
           <div class="field">
             <label>&nbsp;</label>

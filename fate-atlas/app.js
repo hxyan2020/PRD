@@ -121,9 +121,9 @@
     }
   }
 
-  function countriesMarkup(list) {
+  function countriesMarkup(list, region) {
     if (window.FatumCountries) {
-      return window.FatumCountries.countriesHTML(list, locale());
+      return window.FatumCountries.countriesHTML(list, locale(), region);
     }
     return escapeHTML((list || []).join(", "));
   }
@@ -152,7 +152,7 @@
               </div>`
             : ""
         }
-        <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries)}</span></p>
+        <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries, m.region)}</span></p>
         <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(m.source || "Compiled research")}</p>
         <p class="method__actions">
           <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
@@ -201,7 +201,7 @@
         ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
       </div>
       <p class="method__summary">${escapeHTML(pick.summary)}</p>
-      <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(pick.countries)}</span></p>
+      <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(pick.countries, pick.region)}</span></p>
       ${sci ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">${escapeHTML(t("science.label"))}</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>` : ""}
       <p class="method__actions" style="margin-top:1rem">
         <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(pick.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>

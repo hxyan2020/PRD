@@ -988,6 +988,13 @@
 
     const picker = document.getElementById("method-picker");
     const startBtn = document.getElementById("start-reading-btn");
+    const trigger = document.getElementById("method-picker-trigger");
+    const panel = document.getElementById("method-picker-panel");
+    const listEl = document.getElementById("method-picker-list");
+    const searchEl = document.getElementById("method-picker-search");
+    const labelText = document.getElementById("method-picker-label-text");
+    const flagsEl = document.getElementById("method-picker-flags");
+
     if (picker && startBtn) {
       const sorted = (window.FATE_METHODS || []).slice().sort((a, b) => {
         const af = a.featured ? 0 : 1;
@@ -995,31 +1002,158 @@
         if (af !== bf) return af - bf;
         return a.name.localeCompare(b.name);
       });
-      function fillPicker() {
-        const contLabel = (id) =>
-          window.FatumI18n ? window.FatumI18n.t(`continent.${id}`) : id;
+
+      function contLabel(id) {
+        return window.FatumI18n ? window.FatumI18n.t(`continent.${id}`) : id;
+      }
+
+      function flagsFor(m) {
+        return window.FatumCountries
+          ? window.FatumCountries.flagsStripHTML(m.countries, m.region, 4)
+          : "";
+      }
+
+      function emojiPrefix(m) {
+        return window.FatumCountries
+          ? window.FatumCountries.optionFlagsPrefix(m.countries, m.region)
+          : "";
+      }
+
+      function setTrigger(method) {
+        if (!labelText) return;
+        if (!method) {
+          labelText.textContent = ti("begin.placeholder");
+          if (flagsEl) flagsEl.innerHTML = "";
+          return;
+        }
+        labelText.textContent = method.name;
+        if (flagsEl) flagsEl.innerHTML = flagsFor(method);
+      }
+
+      function closePanel() {
+        if (!panel || !trigger) return;
+        panel.hidden = true;
+        trigger.setAttribute("aria-expanded", "false");
+      }
+
+      function openPanel() {
+        if (!panel || !trigger) return;
+        panel.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+        searchEl?.focus();
+      }
+
+      function selectMethod(id) {
+        picker.value = id;
+        const method = sorted.find((m) => m.id === id) || null;
+        setTrigger(method);
+        listEl?.querySelectorAll(".rite-picker__option").forEach((li) => {
+          li.setAttribute("aria-selected", li.dataset.id === id ? "true" : "false");
+        });
+        closePanel();
+      }
+
+      function renderList(filter) {
+        if (!listEl) return;
+        const fold = (s) =>
+          String(s || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+        const q = fold(filter || "").trim();
+        const cont = contLabel;
+        const groups = [
+          { label: ti("begin.featuredGroup"), items: sorted.filter((m) => m.featured) },
+          { label: ti("begin.allGroup"), items: sorted.filter((m) => !m.featured) },
+        ];
+        // Keep native select in sync for accessibility / form value
         picker.innerHTML =
           `<option value="">${escapeHTML(ti("begin.placeholder"))}</option>` +
-          `<optgroup label="${escapeHTML(ti("begin.featuredGroup"))}">` +
-          sorted
-            .filter((m) => m.featured)
-            .map((m) => `<option value="${m.id}">${escapeHTML(m.name)}</option>`)
-            .join("") +
-          `</optgroup>` +
-          `<optgroup label="${escapeHTML(ti("begin.allGroup"))}">` +
-          sorted
-            .filter((m) => !m.featured)
-            .map((m) => `<option value="${m.id}">${escapeHTML(m.name)} (${escapeHTML(contLabel(m.continent))})</option>`)
-            .join("") +
-          `</optgroup>`;
+          groups
+            .map(
+              (g) =>
+                `<optgroup label="${escapeHTML(g.label)}">` +
+                g.items
+                  .map((m) => {
+                    const prefix = emojiPrefix(m);
+                    return `<option value="${escapeHTML(m.id)}">${prefix} ${escapeHTML(m.name)}</option>`;
+                  })
+                  .join("") +
+                `</optgroup>`
+            )
+            .join("");
+
+        listEl.innerHTML = groups
+          .map((g) => {
+            const items = g.items.filter((m) => {
+              if (!q) return true;
+              const hay = fold(
+                [
+                  m.name,
+                  m.region,
+                  m.summary,
+                  m.continent,
+                  cont(m.continent),
+                  ...(m.countries || []),
+                ].join(" ")
+              );
+              return hay.includes(q);
+            });
+            if (!items.length) return "";
+            return `<li class="rite-picker__group" role="presentation"><div class="rite-picker__group-label">${escapeHTML(g.label)}</div><ul>${items
+              .map((m) => {
+                const selected = picker.value === m.id;
+                return `<li class="rite-picker__option${selected ? " is-selected" : ""}" role="option" tabindex="-1" data-id="${escapeHTML(m.id)}" aria-selected="${selected ? "true" : "false"}">
+                  ${flagsFor(m)}
+                  <span class="rite-picker__option-main">
+                    <span class="rite-picker__option-name">${escapeHTML(m.name)}</span>
+                    <span class="rite-picker__option-meta">${escapeHTML(cont(m.continent))}${(m.countries || []).length ? " · " + escapeHTML((m.countries || []).slice(0, 3).join(", ")) : ""}</span>
+                  </span>
+                </li>`;
+              })
+              .join("")}</ul></li>`;
+          })
+          .join("");
       }
+
+      function fillPicker() {
+        const prev = picker.value;
+        renderList(searchEl?.value || "");
+        if (prev) {
+          picker.value = prev;
+          const method = sorted.find((m) => m.id === prev);
+          setTrigger(method || null);
+        } else {
+          setTrigger(null);
+        }
+      }
+
       fillPicker();
       document.addEventListener("fatum:locale-changed", fillPicker);
+
+      trigger?.addEventListener("click", () => {
+        if (panel?.hidden) openPanel();
+        else closePanel();
+      });
+      searchEl?.addEventListener("input", () => renderList(searchEl.value));
+      listEl?.addEventListener("click", (e) => {
+        const opt = e.target.closest(".rite-picker__option");
+        if (!opt) return;
+        selectMethod(opt.dataset.id);
+      });
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest("#rite-picker")) closePanel();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && panel && !panel.hidden) closePanel();
+      });
+
       startBtn.addEventListener("click", () => {
         if (!picker.value) {
-          picker.focus();
-          picker.classList.add("field-error");
-          setTimeout(() => picker.classList.remove("field-error"), 600);
+          trigger?.focus();
+          trigger?.classList.add("field-error");
+          setTimeout(() => trigger?.classList.remove("field-error"), 600);
+          openPanel();
           return;
         }
         openStudio(picker.value);
