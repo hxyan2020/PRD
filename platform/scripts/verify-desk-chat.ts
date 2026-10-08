@@ -72,6 +72,61 @@ const hits = retrieveDeskCorpus("hot wallet float crypto exchange", 3);
 assert(hits.some((h) => /wallet/i.test(h.title) || /wallet/i.test(h.content)), "corpus retrieves wallet doc");
 assert(hits.length > 0, "corpus returns hits");
 
+// Drill-down must answer the clicked question — not repeat the first highlight match.
+const highlight =
+  "Purpose of CRMP Plus. CRMP is the control plane for a forex CFD broker and a crypto exchange risk desk.";
+const firstTurn = answerDeskChat({
+  selection: highlight,
+  question: `Explain this: ${highlight}`,
+  pagePath: "/admin",
+  locale: "en",
+});
+assert(/Purpose of CRMP/i.test(firstTurn.reply), "first turn explains the highlight purpose");
+assert(firstTurn.suggestions.some((s) => /built/i.test(s)), "first turn offers built drill-down");
+
+const drillBuilt = answerDeskChat({
+  selection: highlight,
+  question: "What has been built in this admin?",
+  pagePath: "/admin",
+  locale: "en",
+  history: [
+    { role: "user", content: `Explain this: ${highlight}` },
+    { role: "assistant", content: firstTurn.reply },
+  ],
+});
+const builtTitles = [...drillBuilt.reply.matchAll(/\*\*([^*]+)\.\*\*/g)].map((m) => m[1]);
+assert(/What has been built/i.test(builtTitles[0] || ""), "built drill-down leads with built card");
+assert(/Demo Messenger|Monitor 2\.0/i.test(drillBuilt.reply), "built drill-down lists shipped surfaces");
+assert(/Answering your follow-up/i.test(drillBuilt.reply), "follow-up names the new question");
+assert(!/^You selected:/i.test(drillBuilt.reply), "follow-up does not reopen the highlight blurb");
+
+const drillWallet = answerDeskChat({
+  selection: highlight,
+  question: "How is hot-wallet float controlled?",
+  pagePath: "/admin",
+  locale: "en",
+  history: [
+    { role: "user", content: `Explain this: ${highlight}` },
+    { role: "assistant", content: firstTurn.reply },
+  ],
+});
+const walletTitles = [...drillWallet.reply.matchAll(/\*\*([^*]+)\.\*\*/g)].map((m) => m[1]);
+assert(/hot-wallet|Hot wallet|CRYPTO-WALLET/i.test(drillWallet.reply), "wallet drill-down answers float control");
+assert(!/Purpose of CRMP/i.test(walletTitles[0] || ""), "wallet drill-down does not lead with purpose");
+
+const zhDrill = answerDeskChat({
+  selection: "CRMP 是外匯 CFD 與加密交易所風控的控制面",
+  question: "目前後台建了什麼？",
+  pagePath: "/admin",
+  locale: "zh-Hant",
+  history: [
+    { role: "user", content: "請解釋這段：CRMP 是外匯 CFD 與加密交易所風控的控制面" },
+    { role: "assistant", content: "先前用途說明" },
+  ],
+});
+assert(/目前已建置|示範 Messenger|Monitor 2\.0/.test(zhDrill.reply), "zh drill-down answers built");
+assert(/針對你的追問/.test(zhDrill.reply), "zh follow-up labels the new question");
+
 if (process.exitCode) {
   console.error("desk-chat verification failed");
   process.exit(1);

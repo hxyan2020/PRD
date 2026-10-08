@@ -22,6 +22,7 @@
     "test:cs-mobile": "npx tsx scripts/verify-cs-mobile.ts",
     "test:lark-cards": "npx tsx scripts/verify-lark-cards.ts",
     "test:ai-use": "npx tsx scripts/verify-ai-use.ts",
+    "test:desk-chat": "npx tsx scripts/verify-desk-chat.ts",
     "test:url-catalog": "npx tsx scripts/verify-url-catalog.ts",
     "test:prd": "npx tsx scripts/verify-prd.ts",
     "test:tsd": "npx tsx scripts/verify-tsd.ts",

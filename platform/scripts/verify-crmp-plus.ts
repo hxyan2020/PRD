@@ -53,6 +53,7 @@ assert.match(plusWf, /NEXT_PUBLIC_BASE_PATH: \/PRD\/crmp-plus/);
 assert.match(plusWf, /publish\/crmp-plus/);
 assert.match(plusWf, /cursor\/crmp-plus-a935/);
 assert.match(plusWf, /cursor\/restore-crmp-admin-a935/);
+assert.match(plusWf, /cursor\/desk-chat-followup-a935/);
 assert.match(plusWf, /frozen-crmp-admin\.sha/);
 assert.match(plusWf, /Stage frozen original CRMP Admin/);
 assert.match(plusWf, /replace crmp-plus and crmp-admin folders/);

@@ -617,6 +617,40 @@ function suggestionsFor(intent: Intent, zh: boolean): string[] {
   return ["What is the purpose of this admin?", "What has been built so far?", "How do CFD vs crypto-exchange risks differ?"];
 }
 
+/** First turn after highlight: "Explain this: …" / "請解釋這段：…" */
+function isInitialExplain(question: string, selection: string): boolean {
+  const q = question.trim();
+  const s = selection.trim();
+  if (!q) return false;
+  if (/^(explain this\s*:|請解釋這段\s*[:：])/i.test(q)) return true;
+  if (!s) return false;
+  // Question is essentially just restating the selection.
+  const qNorm = q.toLowerCase();
+  const sNorm = s.toLowerCase();
+  if (qNorm === sNorm) return true;
+  if (qNorm.includes(sNorm.slice(0, Math.min(60, sNorm.length))) && q.length <= s.length + 48) {
+    return /explain|解釋|what is this|這是什麼/i.test(q);
+  }
+  return false;
+}
+
+/**
+ * Drill-down / typed follow-ups must answer the new question.
+ * Do not let the original highlight keep winning knowledge ranking.
+ */
+function isFollowUpTurn(input: {
+  selection: string;
+  question: string;
+  history?: DeskChatMessage[];
+}): boolean {
+  if (input.history && input.history.some((m) => m.role === "assistant")) return true;
+  if (input.history && input.history.length > 0 && !isInitialExplain(input.question, input.selection)) return true;
+  if (input.selection.trim() && input.question.trim() && !isInitialExplain(input.question, input.selection)) {
+    return true;
+  }
+  return false;
+}
+
 export function answerDeskChat(input: {
   selection: string;
   question: string;
@@ -629,9 +663,19 @@ export function answerDeskChat(input: {
   const selection = input.selection.trim().slice(0, 1200);
   const question = input.question.trim().slice(0, 1200);
   const pagePath = input.pagePath || "/admin";
-  const hay = `${selection} ${question}`.toLowerCase();
-  const intent = detectIntent(`${selection} ${question}`);
-  const ranked = KNOWLEDGE.map((e) => ({ e, s: scoreEntry(hay, pagePath, e, intent) }))
+  const followUp = isFollowUpTurn({ selection, question, history: input.history });
+  // Follow-ups: rank and intent from the new question only so drill-downs do not
+  // repeat the first highlight match (e.g. Purpose) forever.
+  const intent = detectIntent(followUp ? question : `${selection} ${question}`);
+  const primaryHay = (followUp ? question : `${selection} ${question}`).toLowerCase();
+  const ranked = KNOWLEDGE.map((e) => {
+    let s = scoreEntry(primaryHay, pagePath, e, intent);
+    // Light selection boost on follow-ups only when the question already matched.
+    if (followUp && s > 0 && selection) {
+      s += Math.min(0.5, scoreEntry(selection.toLowerCase(), pagePath, e, intent) * 0.15);
+    }
+    return { e, s };
+  })
     .filter((x) => x.s > 0)
     .sort((a, b) => b.s - a.s);
   const top = ranked.slice(0, 3).map((x) => x.e);
@@ -639,7 +683,9 @@ export function answerDeskChat(input: {
   const sources: DeskChatSource[] = [];
   const bits: string[] = [];
 
-  if (selection) {
+  if (followUp && question) {
+    bits.push(zh ? `針對你的追問：\n「${question}」` : `Answering your follow-up:\n“${question}”`);
+  } else if (selection) {
     const q = selection.length > 220 ? `${selection.slice(0, 220)}…` : selection;
     bits.push(zh ? `你劃選的是：\n「${q}」` : `You selected:\n“${q}”`);
   }
@@ -670,7 +716,8 @@ export function answerDeskChat(input: {
 
   let rag = input.ragSnippets;
   if (!rag?.length) {
-    const local = retrieveDeskCorpus(`${selection} ${question}`.trim() || "crmp admin purpose", 2);
+    const ragQuery = (followUp ? question : `${selection} ${question}`).trim() || "crmp admin purpose";
+    const local = retrieveDeskCorpus(ragQuery, 2);
     rag = local.map((h) => ({ title: h.title, content: h.content }));
   }
   if (rag.length && (intent === "purpose" || intent === "built" || intent === "domain" || !top.length)) {

@@ -40,6 +40,8 @@ export function SelectionChatbot() {
   const [busy, setBusy] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const pending = useRef<Fab | null>(null);
+  const messagesRef = useRef<UiMsg[]>([]);
+  messagesRef.current = messages;
 
   const capture = useCallback(() => {
     if (open) return;
@@ -102,12 +104,15 @@ export function SelectionChatbot() {
     if (!q) return;
     if (busy && !opts?.reset) return;
     const userMsg: UiMsg = { role: "user", content: q };
-    const base = opts?.reset ? [] : messages;
+    // Use ref so drill-down clicks see the latest thread, not a stale closure.
+    const base = opts?.reset ? [] : messagesRef.current;
     const nextHistory = [...base, userMsg];
     if (opts?.hideUser) {
       setMessages(base);
+      messagesRef.current = base;
     } else {
       setMessages(nextHistory);
+      messagesRef.current = nextHistory;
     }
     setDraft("");
     setBusy(true);
@@ -136,10 +141,14 @@ export function SelectionChatbot() {
         });
         if (res.ok) {
           const data = (await res.json()) as { reply: string; sources?: DeskChatSource[]; suggestions?: string[] };
-          setMessages((prev) => [
-            ...prev,
-            { role: "assistant", content: data.reply, sources: data.sources, suggestions: data.suggestions },
-          ]);
+          setMessages((prev) => {
+            const next = [
+              ...prev,
+              { role: "assistant" as const, content: data.reply, sources: data.sources, suggestions: data.suggestions },
+            ];
+            messagesRef.current = next;
+            return next;
+          });
           setBusy(false);
           return;
         }
@@ -149,10 +158,14 @@ export function SelectionChatbot() {
     }
 
     const local = fallback();
-    setMessages((prev) => [
-      ...prev,
-      { role: "assistant", content: local.reply, sources: local.sources, suggestions: local.suggestions },
-    ]);
+    setMessages((prev) => {
+      const next = [
+        ...prev,
+        { role: "assistant" as const, content: local.reply, sources: local.sources, suggestions: local.suggestions },
+      ];
+      messagesRef.current = next;
+      return next;
+    });
     setBusy(false);
   }
 
@@ -254,7 +267,7 @@ export function SelectionChatbot() {
                       )}
                     </div>
                   ) : null}
-                  {m.suggestions?.length ? (
+                  {m.role === "assistant" && m.suggestions?.length && i === messages.length - 1 ? (
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {m.suggestions.map((s) => (
                         <button
