@@ -141,8 +141,14 @@
     const cover = window.FatumCovers
       ? window.FatumCovers.coverHTML(m, "method__cover")
       : "";
+    const icon = window.FatumRiteIcons
+      ? window.FatumRiteIcons.iconHTML(m, "rite-icon rite-icon--method")
+      : "";
     return `<li class="method" id="method-${m.id}">
-      ${cover}
+      <div class="method__media">
+        ${cover}
+        ${icon}
+      </div>
       <div class="method__content">
         <div>
           <h3 class="method__name">${escapeHTML(text.name)}</h3>
@@ -208,10 +214,13 @@
     const cover = window.FatumCovers
       ? window.FatumCovers.coverHTML(pick, "oracle__cover")
       : "";
+    const icon = window.FatumRiteIcons
+      ? window.FatumRiteIcons.iconHTML(pick, "rite-icon rite-icon--oracle")
+      : "";
     els.oracleResult.innerHTML = `
       ${cover}
       <p class="section__eyebrow" style="margin-bottom:0.5rem">${escapeHTML(t("oracle.lot"))}</p>
-      <h3 class="method__name">${escapeHTML(text.name)}</h3>
+      <h3 class="method__name">${icon} ${escapeHTML(text.name)}</h3>
       <div class="method__meta" style="margin:0.5rem 0 1rem">
         <span class="tag tag--type">${escapeHTML(typeLabel(pick.type))}</span>
         <span class="tag">${escapeHTML(continentLabel(pick.continent))}</span>

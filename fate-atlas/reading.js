@@ -242,9 +242,15 @@
   function render() {
     if (!state) return;
     const meta = stepMeta();
-    titleEl.textContent = window.FatumMethodText
-      ? window.FatumMethodText.localize(state.method).name
-      : state.method.name;
+    {
+      const name = window.FatumMethodText
+        ? window.FatumMethodText.localize(state.method).name
+        : state.method.name;
+      const icon = window.FatumRiteIcons
+        ? window.FatumRiteIcons.iconHTML(state.method, "rite-icon rite-icon--oracle")
+        : "";
+      titleEl.innerHTML = `${icon}<span>${escapeHTML(name)}</span>`;
+    }
     stepEl.textContent = ti("studio.questStep", {
       label: meta.label,
       idx: meta.idx,
@@ -1059,7 +1065,12 @@
           ? window.FatumMethodText.localize(method)
           : method;
         labelText.textContent = text.name;
-        if (flagsEl) flagsEl.innerHTML = flagsFor(method);
+        if (flagsEl) {
+          const icon = window.FatumRiteIcons
+            ? window.FatumRiteIcons.iconHTML(method, "rite-icon rite-icon--picker")
+            : "";
+          flagsEl.innerHTML = icon + flagsFor(method);
+        }
       }
 
       function closePanel() {
@@ -1155,7 +1166,11 @@
                       : c
                   )
                   .join(", ");
+                const icon = window.FatumRiteIcons
+                  ? window.FatumRiteIcons.iconHTML(m, "rite-icon rite-icon--picker")
+                  : "";
                 return `<li class="rite-picker__option${selected ? " is-selected" : ""}" role="option" tabindex="-1" data-id="${escapeHTML(m.id)}" aria-selected="${selected ? "true" : "false"}">
+                  ${icon}
                   ${flagsFor(m)}
                   <span class="rite-picker__option-main">
                     <span class="rite-picker__option-name">${escapeHTML(text.name)}</span>
@@ -1231,11 +1246,14 @@
             const text = window.FatumMethodText
               ? window.FatumMethodText.localize(m)
               : { name: m.name, summary: m.summary };
+            const icon = window.FatumRiteIcons
+              ? window.FatumRiteIcons.iconHTML(m, "rite-icon rite-icon--feature")
+              : `<span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>`;
             return `<article class="feature-card feature-card--quest" data-read="${escapeHTML(m.id)}" tabindex="0" role="button" aria-label="${escapeHTML(ti("play.quest"))} ${escapeHTML(text.name)}">
             ${cover}
             <div class="feature-card__body">
               <div class="feature-card__top">
-                <span class="feature-card__icon" aria-hidden="true">${meta.icon}</span>
+                ${icon}
                 <p class="feature-card__eyebrow">${escapeHTML(meta.badge)}</p>
               </div>
               <h3 class="feature-card__title">${escapeHTML(text.name)}</h3>
