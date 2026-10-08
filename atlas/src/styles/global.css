@@ -32,11 +32,14 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: var(--font-body);
   color: var(--mist);
   background:
@@ -45,6 +48,8 @@ body {
     linear-gradient(180deg, #12080a 0%, var(--ink) 40%, #080406 100%);
   background-attachment: fixed;
   line-height: 1.55;
+  overflow-x: clip;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 body::before {
@@ -99,15 +104,20 @@ select {
 }
 
 .container {
-  width: min(100% - 2rem, var(--max));
+  width: min(
+    100% - 2rem - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px),
+    var(--max)
+  );
   margin-inline: auto;
+  padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
 }
 
 .site-header {
   position: sticky;
   top: 0;
   z-index: 50;
-  height: var(--header-h);
+  height: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
   display: flex;
   align-items: center;
   backdrop-filter: blur(14px);
@@ -123,6 +133,7 @@ select {
   width: min(100% - 2rem, var(--max));
   margin-inline: auto;
   position: relative;
+  padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
 }
 
 .nav-toggle {
@@ -557,13 +568,15 @@ select {
   z-index: 1;
 }
 
-.game-card:hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
-}
+@media (hover: hover) and (pointer: fine) {
+  .game-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--brand) 45%, var(--line));
+  }
 
-.game-card:hover .game-card-img img {
-  transform: scale(1.06);
+  .game-card:hover .game-card-img img {
+    transform: scale(1.06);
+  }
 }
 
 .game-card-img {
@@ -728,6 +741,8 @@ select {
 .detail-hero h1 {
   font-size: clamp(2rem, 5vw, 3.4rem);
   max-width: 18ch;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .detail-facts {
@@ -788,6 +803,8 @@ select {
   cursor: pointer;
   overflow: hidden;
   aspect-ratio: 1;
+  min-height: 2.75rem;
+  touch-action: manipulation;
 }
 
 .gallery button img {
@@ -863,6 +880,8 @@ select {
   font-size: 0.92rem;
   line-height: 1.35;
   color: var(--mist);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .platform-logo {
@@ -939,7 +958,7 @@ select {
 
 .site-footer {
   border-top: 1px solid var(--line);
-  padding: 2rem 0 3rem;
+  padding: 2rem 0 calc(3rem + env(safe-area-inset-bottom, 0px));
   color: var(--mist-dim);
   font-size: 0.9rem;
 }
@@ -1062,46 +1081,64 @@ select {
     --header-h: 64px;
   }
 
+  body {
+    background-attachment: scroll;
+  }
+
   body.nav-open {
     overflow: hidden;
   }
 
   .site-header {
-    height: var(--header-h);
+    height: calc(var(--header-h) + env(safe-area-inset-top, 0px));
   }
 
   .site-header .inner {
     flex-wrap: nowrap;
     min-height: var(--header-h);
+    width: min(100% - 1.25rem, var(--max));
   }
 
   .brand {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     z-index: 60;
+    min-width: 0;
+  }
+
+  .brand-wordmark {
+    min-width: 0;
   }
 
   .brand-mark {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   .nav-toggle {
     display: inline-grid;
+    touch-action: manipulation;
   }
 
   .nav {
     position: fixed;
-    inset: var(--header-h) 0 auto 0;
+    top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+    right: 0;
+    left: 0;
+    bottom: auto;
     z-index: 55;
     display: none;
     flex-direction: column;
     align-items: stretch;
     gap: 0.1rem;
-    padding: 0.85rem 1rem 1.25rem;
+    padding: 0.85rem max(1rem, env(safe-area-inset-right, 0px))
+      calc(1.25rem + env(safe-area-inset-bottom, 0px))
+      max(1rem, env(safe-area-inset-left, 0px));
     background: rgba(12, 6, 8, 0.97);
     border-bottom: 1px solid var(--line);
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-    max-height: calc(100dvh - var(--header-h));
+    max-height: calc(
+      100dvh - var(--header-h) - env(safe-area-inset-top, 0px)
+    );
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
@@ -1166,7 +1203,10 @@ select {
   .nav-backdrop {
     display: block;
     position: fixed;
-    inset: var(--header-h) 0 0 0;
+    top: calc(var(--header-h) + env(safe-area-inset-top, 0px));
+    right: 0;
+    bottom: 0;
+    left: 0;
     z-index: 40;
     border: 0;
     padding: 0;
@@ -1180,7 +1220,11 @@ select {
   }
 
   .container {
-    width: min(100% - 1.25rem, var(--max));
+    width: min(
+      100% - 1.25rem - env(safe-area-inset-left, 0px) -
+        env(safe-area-inset-right, 0px),
+      var(--max)
+    );
   }
 
   .hero {
@@ -1254,8 +1298,17 @@ select {
     min-height: 2.5rem;
   }
 
+  .detail-hero {
+    min-height: min(42vh, 22rem);
+  }
+
   .detail-hero .container {
-    padding: 2rem 0 1.75rem;
+    padding: 1.75rem 0 1.5rem;
+  }
+
+  .detail-hero h1 {
+    max-width: none;
+    font-size: clamp(1.75rem, 8vw, 2.6rem);
   }
 
   .detail-facts {
@@ -1264,8 +1317,38 @@ select {
   }
 
   .detail-layout {
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
-    padding: 1.75rem 0 3rem;
+    padding: 1.5rem 0 3rem;
+  }
+
+  /* Images / buy first on small screens so the entry is scannable after the hero */
+  .detail-aside {
+    order: -1;
+  }
+
+  .detail-main .panel h2,
+  .detail-aside .panel h2 {
+    font-size: 1.2rem;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .game-card,
+  .game-card-link {
+    min-height: 16rem;
+  }
+
+  .game-card-body {
+    padding: 1rem 0.9rem 0.3rem;
+  }
+
+  .game-card .journal-actions-compact {
+    margin: 0.25rem 0.9rem 0.9rem;
   }
 
   .detail-journal {
@@ -1304,19 +1387,60 @@ select {
   }
 
   .chat-messages {
-    min-height: 42vh;
-    max-height: min(58dvh, 520px);
+    min-height: 36vh;
+    max-height: min(50dvh, 420px);
+    overscroll-behavior: contain;
+  }
+
+  .game-assistant-messages {
+    min-height: 11rem;
+    max-height: min(36dvh, 280px);
   }
 
   .chat-quick {
+    display: flex;
     overflow-x: auto;
     flex-wrap: nowrap;
+    gap: 0.45rem;
     padding-bottom: 0.2rem;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  .chat-composer textarea {
+    min-height: 2.9rem;
+    font-size: 1rem;
   }
 
   .chat-composer .btn {
     min-height: 2.9rem;
+    width: 100%;
+  }
+
+  .chat-bubble {
+    max-width: 100%;
+  }
+
+  .chat-rec-card {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .pref-icon-menu {
+    max-height: min(16rem, 42dvh);
+  }
+
+  .pref-icon-trigger,
+  .pref-icon-option {
+    min-height: 2.75rem;
+  }
+
+  .field textarea {
+    min-height: 6rem;
+    font-size: 1rem;
+  }
+
+  .btn {
+    touch-action: manipulation;
   }
 
   .prefs-results-head {
@@ -1369,10 +1493,56 @@ select {
 @media (max-width: 420px) {
   .brand {
     letter-spacing: 0;
+    gap: 0.45rem;
+    font-size: 0.98rem;
+  }
+
+  .brand-mark {
+    width: 24px;
+    height: 24px;
   }
 
   .lang-flag {
     display: none;
+  }
+
+  .container {
+    width: min(
+      100% - 1rem - env(safe-area-inset-left, 0px) -
+        env(safe-area-inset-right, 0px),
+      var(--max)
+    );
+  }
+
+  .site-header .inner {
+    width: min(
+      100% - 1rem - env(safe-area-inset-left, 0px) -
+        env(safe-area-inset-right, 0px),
+      var(--max)
+    );
+  }
+
+  .hero-brand {
+    gap: 0.65rem;
+    font-size: clamp(2.1rem, 13vw, 3rem);
+  }
+
+  .hero-brand-mark {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .game-card .excerpt {
+    font-size: 0.88rem;
+  }
+
+  .chat-quick button {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.7rem;
   }
 }
 
@@ -1595,6 +1765,18 @@ select {
 @media (max-width: 560px) {
   .chat-composer {
     grid-template-columns: 1fr;
+  }
+
+  .journal-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.15rem;
+  }
+
+  .journal-tabs button {
+    flex: 0 0 auto;
+    min-height: 2.5rem;
   }
 }
 

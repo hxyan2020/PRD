@@ -106,7 +106,7 @@ export function GameDetailPage() {
       </section>
 
       <div className="container detail-layout">
-        <div>
+        <div className="detail-main">
           <div className="panel">
             <h2>{t("detail.about")}</h2>
             <p style={{ color: "var(--mist-dim)" }}>{game.description}</p>
@@ -177,7 +177,7 @@ export function GameDetailPage() {
           <GameAssistant game={game} />
         </div>
 
-        <aside>
+        <aside className="detail-aside">
           <div className="panel">
             <h2>{t("detail.images")}</h2>
             <GameImage
