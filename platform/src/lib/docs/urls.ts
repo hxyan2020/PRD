@@ -165,6 +165,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
       "v1.2 bilingual catalogue (English / 繁中 / Both): AI skills + linked chains + correlation patterns + admin/pricing/ops extras — full EN+ZH on every column. Edition=plus includes CS/TR; classic matches frozen original Admin",
     permission: "admin.access",
   },
+  {
+    category: "Docs",
+    title: "Skill & Knowledge Tree templates",
+    path: "/admin/docs/templates",
+    description:
+      "Copy-paste TypeScript templates to author new AI skills (credit/LP/crypto/pricing/fraud/admin/ops/CS/TR/chain) and Knowledge Tree nodes (RAG leaf, skill↔RAG bind, domain trunk, full pack)",
+    permission: "admin.access",
+  },
   { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack v2.7 — CS/TR feature catalogue: UAT-25 + UAT-46…53 (desk, /cs, wait loop, skills, dashboard, log, data, analyze/POC) plus support UAT-17/22/27–29/36–40", permission: "admin.access" },
   { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
   { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
