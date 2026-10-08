@@ -35,12 +35,16 @@ export async function POST(req: Request) {
   const locale = parseUiLocale(body.locale);
   const pagePath = String(body.pagePath || "/admin");
 
-  let ragSnippets: Array<{ title: string; content: string }> = [];
+  let ragSnippets: Array<{ title: string; content: string; source_ref?: string }> = [];
   try {
     // Prefer the latest question so drill-downs are not drowned by the original highlight.
     const priorAssistant = history.some((m) => m.role === "assistant");
     const q = (priorAssistant ? question : `${selection} ${question}`).trim() || question || selection;
-    ragSnippets = retrieveRag(getDb(), q, 3).map((h) => ({ title: h.title, content: h.content }));
+    ragSnippets = retrieveRag(getDb(), q, 5).map((h) => ({
+      title: h.title,
+      content: h.content,
+      source_ref: h.source_ref || undefined,
+    }));
   } catch {
     ragSnippets = [];
   }

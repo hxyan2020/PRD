@@ -282,6 +282,33 @@ export const SEED_RAG_DOCS: RagCorpusDoc[] = [
     tags: ["skill", "playbook", "knowledge-tree", "rag", "技能", "知識樹"],
     content: `Five dedicated playbooks live in risk-scenarios-cs.ts and seed into ai_skills: SKILL-CS-CLARIFY, SKILL-CS-ID-VERIFY, SKILL-CS-ACCOUNT-FAQ, SKILL-TR-EXECUTION, SKILL-CS-ESCALATE-RISK. Each has when-to-use / when-not / prechecks / evidence / stop / success like other SKILL.md cards, Traditional Chinese overlays in skill-zh.ts, one escalation route (ESC-CS-24-7 / ESC-TR-DEAL / ESC-CS-RISK), and explicit SKILL_RAG_DOCS leaves. Knowledge Tree grows two trunks: CS_SERVICE (teal-cyan) and TRADING_EXEC (amber). Linked timeline CHAIN-CS-TR-INTAKE walks unclear → ID → TR tape → Risk. CS/TR Desk stamps skill_code on every request so operators can Enter the playbook from the inbox chip. Monitors M2-CS-UNCLEAR, M2-CS-ID, M2-CS-FAQ, M2-TR-EXEC, M2-CS-ESC are staffing/queue hooks — they do not replace C1 intake.`,
   },
+  {
+    doc_key: "admin-surface-map",
+    title: "CRMP Plus — Admin page map",
+    category: "OPS",
+    product_scope: "PLATFORM",
+    source_ref: "internal://crmp/url-catalog",
+    tags: ["admin", "pages", "settings", "data sources", "audit", "spine", "後台", "設定", "資料來源", "稽核"],
+    content: `Named admin surfaces on CRMP Plus: /admin (Home RACI+spine+CS/TR), /admin/daily, /admin/monitor + /admin/alerts + /admin/detectors, /admin/market-intel, /admin/risk-log, /admin/risk-domains, /admin/ai-analyses (+ challenger + improve chatbot), /admin/skills + /admin/knowledge-tree + /admin/rag, /admin/ai-admin (maker/checker), /admin/interventions, /admin/messenger, /admin/escalation + Lark registry, /admin/spine + /admin/audit, /admin/departments /teams /roles /users, /admin/data-sources, /admin/settings (grouped), /admin/ai-access, /admin/cs-desk (+ intake connectors), docs under /admin/docs (TSD, PRD, User Guide, UAT, Ecosystem, Roadmap, Open Issues, URL catalog). Selection chatbot may cite any of these plus seeded RAG leaves and external product/news URLs. Original CRMP Admin at /PRD/crmp-admin/ stays frozen without CS/TR.`,
+  },
+  {
+    doc_key: "docs-roadmap-uat",
+    title: "Docs — Roadmap, Open Issues, UAT, TSD/PRD",
+    category: "OPS",
+    product_scope: "PLATFORM",
+    source_ref: "internal://crmp/docs",
+    tags: ["roadmap", "uat", "tsd", "prd", "open issues", "rm-01", "路線圖", "驗收", "議題"],
+    content: `Operator docs live under Admin → Docs. TSD covers architecture (SQLite→Postgres RM-06, Monitor ingest, dual-AI, messenger). PRD covers scope and non-goals. User Guide walks Ack→Escalate→Intervention. UAT catalogue lists pass/fail scripts for this prototype. Roadmap / Open Issues track RM-01 Lark cards, RM-02 Monitor write-back, RM-03 billed LLM RCA, RM-04 independent challenger vendor, RM-05 SSO/SCIM, RM-09 live halt/LP/wallet adapters, RM-14 SLOs, RM-15 licensed market feeds. Selection answers about “what is missing / not live” should point here rather than inventing ship dates.`,
+  },
+  {
+    doc_key: "external-macro-feeds",
+    title: "External macro & market-intel channels",
+    category: "MARKET",
+    product_scope: "CFD+CRYPTO",
+    source_ref: "https://www.federalreserve.gov/newsevents.htm",
+    tags: ["reuters", "bloomberg", "fed", "ecb", "opec", "eia", "cftc", "binance", "外部", "新聞"],
+    content: `Market Intelligence polls a prototype catalogue every 5 minutes: Reuters Markets, Bloomberg FX, Fed / ECB / BoE / PBOC press, OPEC, EIA petroleum, CFTC COT, CME alerts, Binance announcements, and social FX hedges. Findings rotate EVENT_TEMPLATES when live scrape is empty; cards carry article URLs (not channel homepages alone), region flags, and impact labels. Desk chatbot may cite the same templates and channel URLs when operators ask about FOMC, NFP, CPI, oil inventories, or crypto exchange notices. Licensed scored vendor feeds remain RM-15. Always check ±60 minutes of macro before calling flow toxic.`,
+  },
 ];
 
 function tokenize(query: string): string[] {
@@ -301,15 +328,21 @@ function tokenize(query: string): string[] {
   return [...new Set([...latin, ...grams])];
 }
 
-export function retrieveDeskCorpus(
-  query: string,
-  limit = 3
-): Array<{ title: string; content: string; doc_key: string }> {
+export type DeskCorpusHit = {
+  title: string;
+  content: string;
+  doc_key: string;
+  category: string;
+  source_ref: string;
+  external: boolean;
+};
+
+export function retrieveDeskCorpus(query: string, limit = 3): DeskCorpusHit[] {
   const tokens = tokenize(query);
   if (!tokens.length) return [];
   const q = query.toLowerCase();
   const scored = SEED_RAG_DOCS.map((d) => {
-    const hay = `${d.title} ${d.content} ${d.tags.join(" ")}`.toLowerCase();
+    const hay = `${d.title} ${d.content} ${d.tags.join(" ")} ${d.category} ${d.source_ref}`.toLowerCase();
     let hits = 0;
     for (const t of tokens) {
       if (hay.includes(t)) hits += t.length > 8 ? 2 : 1;
@@ -317,10 +350,19 @@ export function retrieveDeskCorpus(
     for (const tag of d.tags) {
       if (q.includes(tag.toLowerCase())) hits += 2;
     }
+    // Prefer docs that cite a public product / news URL when equally relevant.
+    if (d.source_ref.startsWith("http") && hits > 0) hits += 0.35;
     return { d, hits };
   })
     .filter((x) => x.hits > 0)
     .sort((a, b) => b.hits - a.hits)
     .slice(0, limit);
-  return scored.map((x) => ({ title: x.d.title, content: x.d.content, doc_key: x.d.doc_key }));
+  return scored.map((x) => ({
+    title: x.d.title,
+    content: x.d.content,
+    doc_key: x.d.doc_key,
+    category: x.d.category,
+    source_ref: x.d.source_ref,
+    external: x.d.source_ref.startsWith("http"),
+  }));
 }
