@@ -333,6 +333,12 @@ export const en = {
   "detail.variationsIntro":
     "These are fundamentally the same game or toy, expressed in different places and eras—not separate catalog inventions.",
   "detail.images": "Images",
+  "detail.tutorial": "Tutorial video",
+  "detail.tutorialIntro":
+    "Selected from at least five YouTube how-to videos for this title—favoring recent uploads with strong viewership and likes.",
+  "detail.tutorialWatch": "Watch on YouTube",
+  "detail.tutorialMeta": "{views} views · {likes} likes · {age}",
+  "detail.tutorialMetaNoLikes": "{views} views · {age}",
   "detail.requirements": "Requirements",
   "detail.idealParticipants": "Ideal participants",
   "detail.whereToBuy": "Where to buy",

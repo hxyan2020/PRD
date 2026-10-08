@@ -19,6 +19,13 @@ import {
   resolveImageSrc,
 } from "../lib/gameCardImage";
 
+function formatCount(n: number): string {
+  if (!Number.isFinite(n) || n < 0) return "0";
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(n >= 10_000 ? 0 : 1)}K`;
+  return String(Math.round(n));
+}
+
 export function GameDetailPage() {
   const { slug } = useParams();
   const [game, setGame] = useState<Game | null | undefined>(undefined);
@@ -134,6 +141,49 @@ export function GameDetailPage() {
               ))}
             </ol>
           </div>
+
+          {game.tutorialVideo?.videoId ? (
+            <div className="panel detail-tutorial">
+              <h2>{t("detail.tutorial")}</h2>
+              <p className="detail-tutorial-intro">{t("detail.tutorialIntro")}</p>
+              <div className="detail-tutorial-frame">
+                <iframe
+                  title={game.tutorialVideo.title || t("detail.tutorial")}
+                  src={`https://www.youtube-nocookie.com/embed/${game.tutorialVideo.videoId}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+              <div className="detail-tutorial-caption">
+                <a
+                  href={game.tutorialVideo.url}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  {game.tutorialVideo.title || t("detail.tutorialWatch")}
+                </a>
+                {game.tutorialVideo.channelTitle ? (
+                  <span className="detail-tutorial-channel">
+                    {game.tutorialVideo.channelTitle}
+                  </span>
+                ) : null}
+                <span className="detail-tutorial-meta">
+                  {game.tutorialVideo.likeCount != null
+                    ? t("detail.tutorialMeta", {
+                        views: formatCount(game.tutorialVideo.viewCount ?? 0),
+                        likes: formatCount(game.tutorialVideo.likeCount),
+                        age: game.tutorialVideo.publishedText || "—",
+                      })
+                    : t("detail.tutorialMetaNoLikes", {
+                        views: formatCount(game.tutorialVideo.viewCount ?? 0),
+                        age: game.tutorialVideo.publishedText || "—",
+                      })}
+                </span>
+              </div>
+            </div>
+          ) : null}
 
           {game.variations.length > 0 ? (
             <div className="panel">

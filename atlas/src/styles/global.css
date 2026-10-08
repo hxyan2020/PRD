@@ -953,6 +953,59 @@ select {
   background: var(--ink-soft);
 }
 
+.detail-tutorial-intro {
+  color: var(--mist-dim);
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  max-width: 42rem;
+}
+
+.detail-tutorial-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-btn);
+  overflow: hidden;
+  animation: riseIn 0.75s ease-out both;
+}
+
+.detail-tutorial-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.detail-tutorial-caption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+}
+
+.detail-tutorial-caption a {
+  color: var(--brass);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.detail-tutorial-caption a:hover {
+  text-decoration: underline;
+}
+
+.detail-tutorial-channel {
+  color: var(--mist);
+  font-size: 0.92rem;
+}
+
+.detail-tutorial-meta {
+  color: var(--mist-dim);
+  font-size: 0.85rem;
+}
+
 .buy-list {
   list-style: none;
   padding: 0;

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "data": "node scripts/generate-collection.mjs",
+    "tutorials": "python3 scripts/fetch-tutorials.py",
     "prebuild": "npm run data",
     "dev": "vite",
     "build": "tsc -b && vite build",

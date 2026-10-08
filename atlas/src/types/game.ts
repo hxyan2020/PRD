@@ -4,6 +4,19 @@ export type PurchaseLink = {
   url: string;
 };
 
+/** Selected YouTube tutorial for a catalog entry (best of ≥5 candidates). */
+export type TutorialVideo = {
+  videoId: string;
+  title: string;
+  url: string;
+  channelTitle?: string;
+  publishedText?: string | null;
+  viewCount?: number;
+  likeCount?: number | null;
+  candidatesConsidered?: number;
+  query?: string;
+};
+
 export type GameVariation = {
   name: string;
   originCountry: string;
@@ -35,6 +48,8 @@ export type Game = {
   archetypeKey?: string;
   /** English catalog key for flag lookup when `originCountry` is localized. */
   originCountryKey?: string;
+  /** Best-matching YouTube process / tutorial video for this entry. */
+  tutorialVideo?: TutorialVideo;
 };
 
 export type CollectionMeta = {
