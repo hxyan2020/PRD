@@ -256,9 +256,21 @@ export function SelectionChatbot() {
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {m.sources.map((s) =>
                         s.href ? (
-                          <Link key={`${s.href}-${s.title}`} href={s.href} className="btn text-[11px] !min-h-8 !px-2">
-                            {s.title}
-                          </Link>
+                          s.external || /^https?:\/\//i.test(s.href) ? (
+                            <a
+                              key={`${s.href}-${s.title}`}
+                              href={s.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn text-[11px] !min-h-8 !px-2"
+                            >
+                              {s.title}
+                            </a>
+                          ) : (
+                            <Link key={`${s.href}-${s.title}`} href={s.href} className="btn text-[11px] !min-h-8 !px-2">
+                              {s.title}
+                            </Link>
+                          )
                         ) : (
                           <span key={s.title} className="text-[11px] text-[var(--muted)]">
                             {s.title}

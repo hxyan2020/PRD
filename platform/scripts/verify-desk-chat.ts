@@ -127,6 +127,43 @@ const zhDrill = answerDeskChat({
 assert(/目前已建置|示範 Messenger|Monitor 2\.0/.test(zhDrill.reply), "zh drill-down answers built");
 assert(/針對你的追問/.test(zhDrill.reply), "zh follow-up labels the new question");
 
+// Grounding: admin corpus + external product/news must surface in answers.
+const accounts = answerDeskChat({
+  selection: "",
+  question: "What account types and pricing does Vantage offer?",
+  pagePath: "/admin",
+  locale: "en",
+});
+assert(/Knowledge excerpt|Raw ECN|Standard STP|Pro ECN/i.test(accounts.reply), "accounts uses corpus excerpt");
+assert(
+  accounts.sources.some((s) => s.external || /vantagemarkets\.com/i.test(s.href || "")),
+  "accounts cites external product URL"
+);
+
+const fomc = answerDeskChat({
+  selection: "",
+  question: "How should we treat FOMC hawkish speakers for EURUSD risk?",
+  pagePath: "/admin/market-intel",
+  locale: "en",
+});
+assert(/External market intel|FOMC|higher-for-longer/i.test(fomc.reply), "FOMC pulls market-intel template");
+assert(
+  fomc.sources.some((s) => s.external || /^https?:\/\//i.test(s.href || "")),
+  "FOMC cites external article or channel"
+);
+
+const adminMap = answerDeskChat({
+  selection: "",
+  question: "Where is the data sources page and platform settings?",
+  pagePath: "/admin",
+  locale: "en",
+});
+assert(
+  adminMap.sources.some((s) => /data-sources|settings|資料|設定/i.test(`${s.title} ${s.href || ""}`)) ||
+    /data sources|settings|\/admin\/data-sources|\/admin\/settings/i.test(adminMap.reply),
+  "admin map points at data sources or settings"
+);
+
 if (process.exitCode) {
   console.error("desk-chat verification failed");
   process.exit(1);

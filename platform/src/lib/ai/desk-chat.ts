@@ -1,11 +1,11 @@
 import { PLATFORM_URLS } from "../docs/urls";
-import { retrieveDeskCorpus } from "./rag-corpus";
+import { groundDeskQuery } from "./desk-grounding";
 
 type UiLocale = "en" | "zh-Hant";
 
 export type DeskChatMessage = { role: "user" | "assistant"; content: string };
 
-export type DeskChatSource = { title: string; href?: string };
+export type DeskChatSource = { title: string; href?: string; external?: boolean };
 
 export type DeskChatResult = {
   reply: string;
@@ -651,12 +651,20 @@ function isFollowUpTurn(input: {
   return false;
 }
 
+function pushSource(sources: DeskChatSource[], next: DeskChatSource) {
+  if (!next.href) {
+    if (!sources.some((s) => s.title === next.title && !s.href)) sources.push(next);
+    return;
+  }
+  if (!sources.some((s) => s.href === next.href)) sources.push(next);
+}
+
 export function answerDeskChat(input: {
   selection: string;
   question: string;
   pagePath: string;
   locale: UiLocale;
-  ragSnippets?: Array<{ title: string; content: string }>;
+  ragSnippets?: Array<{ title: string; content: string; source_ref?: string }>;
   history?: DeskChatMessage[];
 }): DeskChatResult {
   const zh = input.locale === "zh-Hant";
@@ -668,6 +676,8 @@ export function answerDeskChat(input: {
   // repeat the first highlight match (e.g. Purpose) forever.
   const intent = detectIntent(followUp ? question : `${selection} ${question}`);
   const primaryHay = (followUp ? question : `${selection} ${question}`).toLowerCase();
+  const ragQuery = (followUp ? question : `${selection} ${question}`).trim() || "crmp admin purpose";
+  const grounding = groundDeskQuery(ragQuery, input.ragSnippets);
   const ranked = KNOWLEDGE.map((e) => {
     let s = scoreEntry(primaryHay, pagePath, e, intent);
     // Light selection boost on follow-ups only when the question already matched.
@@ -698,37 +708,70 @@ export function answerDeskChat(input: {
     );
   }
 
-  const grounded = Boolean(top.length || intent === "purpose" || intent === "built" || intent === "domain");
+  const grounded = Boolean(
+    top.length ||
+      grounding.corpus.length ||
+      grounding.marketIntel.length ||
+      intent === "purpose" ||
+      intent === "built" ||
+      intent === "domain"
+  );
 
   if (top.length) {
     for (const e of top) {
       const copy = zh ? e.zh : e.en;
       bits.push(`**${copy.title}.** ${copy.body}`);
-      if (e.href) sources.push({ title: copy.title, href: e.href });
+      if (e.href) pushSource(sources, { title: copy.title, href: e.href });
     }
   } else if (!grounded) {
     bits.push(
       zh
-        ? "我沒有對到具名指標或設定鍵。下面用這一頁與內建風控語料說明；也可以改劃選一個代碼（例如 M2-MRG-014、EXECUTED_MOCK、RM-01）或問「這個後台的用途／已建什麼／CFD 與加密風控」。"
-        : "I did not match a named indicator or setting key. I will use this page plus the built-in risk corpus. You can also select a code (e.g. M2-MRG-014, EXECUTED_MOCK, RM-01) or ask what this admin is for, what has been built, or how CFD vs crypto-exchange risk works."
+        ? "我沒有對到具名指標或設定鍵。下面用這一頁、後台知識庫與外部市場／產品來源說明；也可以改劃選一個代碼（例如 M2-MRG-014、EXECUTED_MOCK、RM-01）或問「這個後台的用途／已建什麼／CFD 與加密風控／FOMC」。"
+        : "I did not match a named indicator or setting key. I will use this page, the admin knowledge corpus, and external market/product sources. You can also select a code (e.g. M2-MRG-014, EXECUTED_MOCK, RM-01) or ask what this admin is for, what has been built, CFD vs crypto risk, or FOMC."
     );
   }
 
-  let rag = input.ragSnippets;
-  if (!rag?.length) {
-    const ragQuery = (followUp ? question : `${selection} ${question}`).trim() || "crmp admin purpose";
-    const local = retrieveDeskCorpus(ragQuery, 2);
-    rag = local.map((h) => ({ title: h.title, content: h.content }));
-  }
-  if (rag.length && (intent === "purpose" || intent === "built" || intent === "domain" || !top.length)) {
-    const snip = rag[0];
+  // Always weave admin-relevant RAG leaves (not only purpose/built/unmatched).
+  const knowledgeTitles = new Set(
+    top.map((e) => (zh ? e.zh.title : e.en.title).toLowerCase())
+  );
+  const corpusExtras = grounding.corpus
+    .filter((h) => !knowledgeTitles.has(h.title.toLowerCase()))
+    .slice(0, top.length ? 2 : 3);
+  for (const snip of corpusExtras) {
     const text = snip.content.replace(/\s+/g, " ").slice(0, 420);
     bits.push(zh ? `知識庫摘錄（${snip.title}）：${text}` : `Knowledge excerpt (${snip.title}): ${text}`);
-    if (!sources.some((s) => s.href === "/admin/rag")) sources.push({ title: snip.title, href: "/admin/rag" });
+    if (snip.external) {
+      pushSource(sources, { title: snip.title, href: snip.source_ref, external: true });
+    } else {
+      pushSource(sources, { title: snip.title, href: "/admin/rag" });
+    }
+  }
+  for (const ext of grounding.externalProduct.slice(0, 3)) {
+    pushSource(sources, ext);
   }
 
-  if (intent === "where" && (top[0]?.href || page)) {
-    const href = top[0]?.href || page?.href;
+  // External macro / news rotation when the question touches market events.
+  if (grounding.marketIntel.length) {
+    const hit = grounding.marketIntel[0];
+    bits.push(
+      zh
+        ? `外部市場情報（原型輪替／${hit.severity}）：${hit.title} — ${hit.summary}`
+        : `External market intel (prototype rotation / ${hit.severity}): ${hit.title} — ${hit.summary}`
+    );
+    for (const s of hit.sources) pushSource(sources, s);
+  }
+  for (const ch of grounding.intelChannels.slice(0, 2)) {
+    pushSource(sources, ch);
+  }
+
+  // Admin URL catalogue — every desk surface is fair game as a next-step link.
+  for (const admin of grounding.adminPages.slice(0, 2)) {
+    pushSource(sources, admin);
+  }
+
+  if (intent === "where" && (top[0]?.href || page || grounding.adminPages[0])) {
+    const href = top[0]?.href || page?.href || grounding.adminPages[0]?.href;
     bits.push(zh ? `下一步：打開 ${href}。` : `Next: open ${href}.`);
   }
 
@@ -738,7 +781,7 @@ export function answerDeskChat(input: {
         ? "操作順序通常是：Monitor／警報 → AI 分析 → Messenger 卡片上 Ack 或升級 → 若需人工關卡則到人工干預核准（Maker）→ 必要時另一人 Checker。示範 Messenger 可在本頁完成這些按鈕。"
         : "Typical path: Monitor/alert → AI analysis → Ack or Escalate on the Messenger card → Human Intervention if gated (maker) → a different checker if required. Demo Messenger can complete those buttons on this desk."
     );
-    sources.push({ title: zh ? "示範 Messenger" : "Demo Messenger", href: "/admin/messenger" });
+    pushSource(sources, { title: zh ? "示範 Messenger" : "Demo Messenger", href: "/admin/messenger" });
   }
 
   if (intent === "who") {
@@ -747,19 +790,19 @@ export function answerDeskChat(input: {
         ? "示範平台負責人：demo platform owner（haixiang.yan@hytechc.com／yan123）。風險負責人：risk.owner@vantagemarkets.com／risk123。Checker 應是另一個角色，不要同一人自核。"
         : "Demo platform owner: demo platform owner (haixiang.yan@hytechc.com / yan123). Risk Owner: risk.owner@vantagemarkets.com / risk123. Checker should be a different persona — do not self-approve."
     );
-    sources.push({ title: zh ? "使用者" : "Users", href: "/admin/users" });
+    pushSource(sources, { title: zh ? "使用者" : "Users", href: "/admin/users" });
   }
 
   if (page) {
     bits.push(page.blurb);
-    if (!sources.some((s) => s.href === page.href)) sources.push({ title: page.title, href: page.href });
+    pushSource(sources, { title: page.title, href: page.href });
   }
 
   bits.push(
     zh
-      ? "我是 CRMP 劃選助理，具備此後台用途／已建功能，以及外匯 CFD 券商與加密交易所風控語料。只能解釋，不能核准干預或改設定。"
-      : "I am the CRMP selection assistant. I know this admin’s purpose and what has been built, plus forex CFD broker and crypto-exchange risk-management practice. I explain only — I cannot approve interventions or change settings."
+      ? "我是 CRMP 劃選助理：會用後台知識庫、URL 目錄、產品／監管公開頁與市場情報來源回答。只能解釋，不能核准干預或改設定。"
+      : "I am the CRMP selection assistant. I answer from the admin knowledge corpus, URL catalogue, public product/regulatory pages, and market-intel sources. I explain only — I cannot approve interventions or change settings."
   );
 
-  return { reply: bits.join("\n\n"), sources: sources.slice(0, 6), suggestions: suggestionsFor(intent, zh) };
+  return { reply: bits.join("\n\n"), sources: sources.slice(0, 10), suggestions: suggestionsFor(intent, zh) };
 }
