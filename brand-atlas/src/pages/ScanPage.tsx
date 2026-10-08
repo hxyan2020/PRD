@@ -9,7 +9,7 @@ import type { CatalogItem, Guess, IdentifyResult } from "../types/catalog";
 
 export function ScanPage() {
   const { catalog, loading, error } = useCatalog();
-  const { unlock, isUnlocked } = useUnlocks();
+  const { unlock } = useUnlocks();
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -130,16 +130,28 @@ export function ScanPage() {
     }
   };
 
-  const confirmGuess = () => {
+  const fileToDataUrl = (f: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(f);
+    });
+
+  const confirmGuess = async () => {
     if (!catalog || !picked) return;
     const item = findItem(catalog, picked);
     if (!item) return;
-    const already = isUnlocked(item.id);
-    unlock(item.id, "scan");
-    setCelebrating(item);
-    if (already) {
-      // still celebrate lightly — user confirmed again
+    let photoDataUrl: string | null = null;
+    if (file) {
+      try {
+        photoDataUrl = await fileToDataUrl(file);
+      } catch {
+        photoDataUrl = null;
+      }
     }
+    unlock(item.id, { method: "scan", photoDataUrl });
+    setCelebrating(item);
   };
 
   const guesses: Guess[] = useMemo(
@@ -289,7 +301,7 @@ export function ScanPage() {
                 className="btn btn--forest"
                 style={{ marginTop: "0.9rem", width: "100%" }}
                 disabled={!picked}
-                onClick={confirmGuess}
+                onClick={() => void confirmGuess()}
               >
                 Confirm selection
               </button>

@@ -2,7 +2,7 @@
   "meta": {
     "name": "Seen Catalogue",
     "version": 1,
-    "generatedAt": "2026-10-08T14:27:36.724Z",
+    "generatedAt": "2026-10-08T14:37:34.671Z",
     "lastRefreshAt": "2026-10-08T14:26:57.548Z",
     "nextRefreshAt": "2026-10-12T06:00:00.000Z",
     "refreshCadence": "weekly",
@@ -125,6 +125,12 @@
         "hybrid"
       ],
       "summary": "Toyota — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1764",
+        "headquarters": "Japan",
+        "knownFor": "sedan, hybrid",
+        "story": "Toyota remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 52,
       "sort": 0,
       "status": "active"
@@ -143,6 +149,12 @@
         "accord"
       ],
       "summary": "Honda — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "2018",
+        "headquarters": "Japan",
+        "knownFor": "civic, accord",
+        "story": "Honda remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 22,
       "sort": 1,
       "status": "active"
@@ -159,6 +171,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Nissan — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1840",
+        "headquarters": "Japan",
+        "knownFor": "Automobiles still in production",
+        "story": "Nissan remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 62,
       "sort": 2,
       "status": "active"
@@ -174,6 +192,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Mazda — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1913",
+        "headquarters": "Japan",
+        "knownFor": "Automobiles still in production",
+        "story": "Mazda remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 85,
       "sort": 3,
       "status": "active"
@@ -189,6 +213,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Subaru — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1734",
+        "headquarters": "Japan",
+        "knownFor": "Automobiles still in production",
+        "story": "Subaru remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 338,
       "sort": 4,
       "status": "active"
@@ -202,6 +232,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Mitsubishi — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1685",
+        "headquarters": "Japan",
+        "knownFor": "Automobiles still in production",
+        "story": "Mitsubishi remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 105,
       "sort": 5,
       "status": "active"
@@ -215,6 +251,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Suzuki — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1759",
+        "headquarters": "Japan",
+        "knownFor": "Automobiles still in production",
+        "story": "Suzuki remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 273,
       "sort": 6,
       "status": "active"
@@ -230,6 +272,12 @@
         "luxury"
       ],
       "summary": "Lexus — catalogued in car brands · Japan.",
+      "facts": {
+        "established": "1941",
+        "headquarters": "Japan",
+        "knownFor": "luxury",
+        "story": "Lexus remains an active automaker from Japan, still building vehicles people drive today."
+      },
       "coverHue": 31,
       "sort": 7,
       "status": "active"
@@ -246,6 +294,12 @@
         "f-150"
       ],
       "summary": "Ford — catalogued in car brands · USA.",
+      "facts": {
+        "established": "2015",
+        "headquarters": "USA",
+        "knownFor": "mustang, f-150",
+        "story": "Ford remains an active automaker from USA, still building vehicles people drive today."
+      },
       "coverHue": 137,
       "sort": 8,
       "status": "active"
@@ -262,6 +316,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Chevrolet — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1776",
+        "headquarters": "USA",
+        "knownFor": "Automobiles still in production",
+        "story": "Chevrolet remains an active automaker from USA, still building vehicles people drive today."
+      },
       "coverHue": 2,
       "sort": 9,
       "status": "active"
@@ -278,6 +338,12 @@
         "electric"
       ],
       "summary": "Tesla — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1969",
+        "headquarters": "USA",
+        "knownFor": "ev, electric",
+        "story": "Tesla remains an active automaker from USA, still building vehicles people drive today."
+      },
       "coverHue": 217,
       "sort": 10,
       "status": "active"
@@ -293,6 +359,12 @@
         "suv"
       ],
       "summary": "Jeep — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1856",
+        "headquarters": "USA",
+        "knownFor": "suv",
+        "story": "Jeep remains an active automaker from USA, still building vehicles people drive today."
+      },
       "coverHue": 220,
       "sort": 11,
       "status": "active"
@@ -306,6 +378,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Cadillac — catalogued in car brands · USA.",
+      "facts": {
+        "established": "1897",
+        "headquarters": "USA",
+        "knownFor": "Automobiles still in production",
+        "story": "Cadillac remains an active automaker from USA, still building vehicles people drive today."
+      },
       "coverHue": 283,
       "sort": 12,
       "status": "active"
@@ -321,6 +399,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "BMW — catalogued in car brands · Germany.",
+      "facts": {
+        "established": "1958",
+        "headquarters": "Germany",
+        "knownFor": "Automobiles still in production",
+        "story": "BMW remains an active automaker from Germany, still building vehicles people drive today."
+      },
       "coverHue": 246,
       "sort": 13,
       "status": "active"
@@ -337,6 +421,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Mercedes-Benz — catalogued in car brands · Germany.",
+      "facts": {
+        "established": "1768",
+        "headquarters": "Germany",
+        "knownFor": "Automobiles still in production",
+        "story": "Mercedes-Benz remains an active automaker from Germany, still building vehicles people drive today."
+      },
       "coverHue": 136,
       "sort": 14,
       "status": "active"
@@ -352,6 +442,12 @@
         "rings"
       ],
       "summary": "Audi — catalogued in car brands · Germany.",
+      "facts": {
+        "established": "1807",
+        "headquarters": "Germany",
+        "knownFor": "rings",
+        "story": "Audi remains an active automaker from Germany, still building vehicles people drive today."
+      },
       "coverHue": 159,
       "sort": 15,
       "status": "active"
@@ -368,6 +464,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Volkswagen — catalogued in car brands · Germany.",
+      "facts": {
+        "established": "2005",
+        "headquarters": "Germany",
+        "knownFor": "Automobiles still in production",
+        "story": "Volkswagen remains an active automaker from Germany, still building vehicles people drive today."
+      },
       "coverHue": 233,
       "sort": 16,
       "status": "active"
@@ -381,6 +483,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Porsche — catalogued in car brands · Germany.",
+      "facts": {
+        "established": "1980",
+        "headquarters": "Germany",
+        "knownFor": "Automobiles still in production",
+        "story": "Porsche remains an active automaker from Germany, still building vehicles people drive today."
+      },
       "coverHue": 154,
       "sort": 17,
       "status": "active"
@@ -394,6 +502,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Opel — catalogued in car brands · Germany.",
+      "facts": {
+        "established": "1756",
+        "headquarters": "Germany",
+        "knownFor": "Automobiles still in production",
+        "story": "Opel remains an active automaker from Germany, still building vehicles people drive today."
+      },
       "coverHue": 262,
       "sort": 18,
       "status": "active"
@@ -409,6 +523,12 @@
         "supercar"
       ],
       "summary": "Ferrari — catalogued in car brands · Italy.",
+      "facts": {
+        "established": "1687",
+        "headquarters": "Italy",
+        "knownFor": "supercar",
+        "story": "Ferrari remains an active automaker from Italy, still building vehicles people drive today."
+      },
       "coverHue": 147,
       "sort": 19,
       "status": "active"
@@ -422,6 +542,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Lamborghini — catalogued in car brands · Italy.",
+      "facts": {
+        "established": "1712",
+        "headquarters": "Italy",
+        "knownFor": "Automobiles still in production",
+        "story": "Lamborghini remains an active automaker from Italy, still building vehicles people drive today."
+      },
       "coverHue": 288,
       "sort": 20,
       "status": "active"
@@ -435,6 +561,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Fiat — catalogued in car brands · Italy.",
+      "facts": {
+        "established": "1736",
+        "headquarters": "Italy",
+        "knownFor": "Automobiles still in production",
+        "story": "Fiat remains an active automaker from Italy, still building vehicles people drive today."
+      },
       "coverHue": 340,
       "sort": 21,
       "status": "active"
@@ -448,6 +580,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Alfa Romeo — catalogued in car brands · Italy.",
+      "facts": {
+        "established": "1807",
+        "headquarters": "Italy",
+        "knownFor": "Automobiles still in production",
+        "story": "Alfa Romeo remains an active automaker from Italy, still building vehicles people drive today."
+      },
       "coverHue": 345,
       "sort": 22,
       "status": "active"
@@ -461,6 +599,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Maserati — catalogued in car brands · Italy.",
+      "facts": {
+        "established": "1790",
+        "headquarters": "Italy",
+        "knownFor": "Automobiles still in production",
+        "story": "Maserati remains an active automaker from Italy, still building vehicles people drive today."
+      },
       "coverHue": 320,
       "sort": 23,
       "status": "active"
@@ -474,6 +618,12 @@
       "origin": "Sweden",
       "tags": [],
       "summary": "Volvo — catalogued in car brands · Sweden.",
+      "facts": {
+        "established": "1822",
+        "headquarters": "Sweden",
+        "knownFor": "Automobiles still in production",
+        "story": "Volvo remains an active automaker from Sweden, still building vehicles people drive today."
+      },
       "coverHue": 6,
       "sort": 24,
       "status": "active"
@@ -487,6 +637,12 @@
       "origin": "Sweden",
       "tags": [],
       "summary": "Saab — catalogued in car brands · Sweden.",
+      "facts": {
+        "established": "1867",
+        "headquarters": "Sweden",
+        "knownFor": "Automobiles still in production",
+        "story": "Saab remains an active automaker from Sweden, still building vehicles people drive today."
+      },
       "coverHue": 117,
       "sort": 25,
       "status": "active"
@@ -500,6 +656,12 @@
       "origin": "South Korea",
       "tags": [],
       "summary": "Hyundai — catalogued in car brands · South Korea.",
+      "facts": {
+        "established": "1950",
+        "headquarters": "South Korea",
+        "knownFor": "Automobiles still in production",
+        "story": "Hyundai remains an active automaker from South Korea, still building vehicles people drive today."
+      },
       "coverHue": 228,
       "sort": 26,
       "status": "active"
@@ -513,6 +675,12 @@
       "origin": "South Korea",
       "tags": [],
       "summary": "Kia — catalogued in car brands · South Korea.",
+      "facts": {
+        "established": "1745",
+        "headquarters": "South Korea",
+        "knownFor": "Automobiles still in production",
+        "story": "Kia remains an active automaker from South Korea, still building vehicles people drive today."
+      },
       "coverHue": 109,
       "sort": 27,
       "status": "active"
@@ -526,6 +694,12 @@
       "origin": "South Korea",
       "tags": [],
       "summary": "Genesis — catalogued in car brands · South Korea.",
+      "facts": {
+        "established": "2006",
+        "headquarters": "South Korea",
+        "knownFor": "Automobiles still in production",
+        "story": "Genesis remains an active automaker from South Korea, still building vehicles people drive today."
+      },
       "coverHue": 314,
       "sort": 28,
       "status": "active"
@@ -539,6 +713,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Peugeot — catalogued in car brands · France.",
+      "facts": {
+        "established": "1913",
+        "headquarters": "France",
+        "knownFor": "Automobiles still in production",
+        "story": "Peugeot remains an active automaker from France, still building vehicles people drive today."
+      },
       "coverHue": 69,
       "sort": 29,
       "status": "active"
@@ -552,6 +732,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Renault — catalogued in car brands · France.",
+      "facts": {
+        "established": "1711",
+        "headquarters": "France",
+        "knownFor": "Automobiles still in production",
+        "story": "Renault remains an active automaker from France, still building vehicles people drive today."
+      },
       "coverHue": 25,
       "sort": 30,
       "status": "active"
@@ -567,6 +753,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Citroën — catalogued in car brands · France.",
+      "facts": {
+        "established": "1732",
+        "headquarters": "France",
+        "knownFor": "Automobiles still in production",
+        "story": "Citroën remains an active automaker from France, still building vehicles people drive today."
+      },
       "coverHue": 6,
       "sort": 31,
       "status": "active"
@@ -580,6 +772,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Jaguar — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1974",
+        "headquarters": "UK",
+        "knownFor": "Automobiles still in production",
+        "story": "Jaguar remains an active automaker from UK, still building vehicles people drive today."
+      },
       "coverHue": 44,
       "sort": 32,
       "status": "active"
@@ -595,6 +793,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Land Rover — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1742",
+        "headquarters": "UK",
+        "knownFor": "Automobiles still in production",
+        "story": "Land Rover remains an active automaker from UK, still building vehicles people drive today."
+      },
       "coverHue": 290,
       "sort": 33,
       "status": "active"
@@ -608,6 +812,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "MINI — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1773",
+        "headquarters": "UK",
+        "knownFor": "Automobiles still in production",
+        "story": "MINI remains an active automaker from UK, still building vehicles people drive today."
+      },
       "coverHue": 109,
       "sort": 34,
       "status": "active"
@@ -621,6 +831,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Rolls-Royce — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1811",
+        "headquarters": "UK",
+        "knownFor": "Automobiles still in production",
+        "story": "Rolls-Royce remains an active automaker from UK, still building vehicles people drive today."
+      },
       "coverHue": 9,
       "sort": 35,
       "status": "active"
@@ -634,6 +850,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Bentley — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1803",
+        "headquarters": "UK",
+        "knownFor": "Automobiles still in production",
+        "story": "Bentley remains an active automaker from UK, still building vehicles people drive today."
+      },
       "coverHue": 201,
       "sort": 36,
       "status": "active"
@@ -647,6 +869,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Aston Martin — catalogued in car brands · UK.",
+      "facts": {
+        "established": "1993",
+        "headquarters": "UK",
+        "knownFor": "Automobiles still in production",
+        "story": "Aston Martin remains an active automaker from UK, still building vehicles people drive today."
+      },
       "coverHue": 301,
       "sort": 37,
       "status": "active"
@@ -662,6 +890,12 @@
         "ev"
       ],
       "summary": "BYD — catalogued in car brands · China.",
+      "facts": {
+        "established": "1995",
+        "headquarters": "China",
+        "knownFor": "ev",
+        "story": "BYD remains an active automaker from China, still building vehicles people drive today."
+      },
       "coverHue": 239,
       "sort": 38,
       "status": "active"
@@ -675,6 +909,12 @@
       "origin": "China",
       "tags": [],
       "summary": "Geely — catalogued in car brands · China.",
+      "facts": {
+        "established": "1694",
+        "headquarters": "China",
+        "knownFor": "Automobiles still in production",
+        "story": "Geely remains an active automaker from China, still building vehicles people drive today."
+      },
       "coverHue": 334,
       "sort": 39,
       "status": "active"
@@ -690,6 +930,12 @@
         "philip morris"
       ],
       "summary": "Marlboro — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "1938",
+        "origin": "USA",
+        "house": "philip morris",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 236,
       "sort": 0,
       "status": "active"
@@ -705,6 +951,12 @@
         "rj reynolds"
       ],
       "summary": "Camel — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "1730",
+        "origin": "USA",
+        "house": "rj reynolds",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 218,
       "sort": 1,
       "status": "active"
@@ -718,6 +970,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Lucky Strike — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "1987",
+        "origin": "USA",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 107,
       "sort": 2,
       "status": "active"
@@ -731,6 +989,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Winston — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "1802",
+        "origin": "USA",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 352,
       "sort": 3,
       "status": "active"
@@ -744,6 +1008,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Pall Mall — catalogued in cigarette brands · UK.",
+      "facts": {
+        "introduced": "1900",
+        "origin": "UK",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 260,
       "sort": 4,
       "status": "active"
@@ -757,6 +1027,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Parliament — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "1777",
+        "origin": "USA",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 157,
       "sort": 5,
       "status": "active"
@@ -770,6 +1046,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Chesterfield — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "2014",
+        "origin": "USA",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 296,
       "sort": 6,
       "status": "active"
@@ -783,6 +1065,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Kent — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "1714",
+        "origin": "USA",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 284,
       "sort": 7,
       "status": "active"
@@ -796,6 +1084,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Dunhill — catalogued in cigarette brands · UK.",
+      "facts": {
+        "introduced": "1760",
+        "origin": "UK",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 322,
       "sort": 8,
       "status": "active"
@@ -811,6 +1105,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Benson & Hedges — catalogued in cigarette brands · UK.",
+      "facts": {
+        "introduced": "1914",
+        "origin": "UK",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 168,
       "sort": 9,
       "status": "active"
@@ -824,6 +1124,12 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Davidoff — catalogued in cigarette brands · Switzerland.",
+      "facts": {
+        "introduced": "1707",
+        "origin": "Switzerland",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 87,
       "sort": 10,
       "status": "active"
@@ -837,6 +1143,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Gauloises — catalogued in cigarette brands · France.",
+      "facts": {
+        "introduced": "1852",
+        "origin": "France",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 146,
       "sort": 11,
       "status": "active"
@@ -850,6 +1162,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Gitanes — catalogued in cigarette brands · France.",
+      "facts": {
+        "introduced": "1739",
+        "origin": "France",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 137,
       "sort": 12,
       "status": "active"
@@ -865,6 +1183,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Mevius — catalogued in cigarette brands · Japan.",
+      "facts": {
+        "introduced": "1809",
+        "origin": "Japan",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 325,
       "sort": 13,
       "status": "active"
@@ -878,6 +1202,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Hope — catalogued in cigarette brands · Japan.",
+      "facts": {
+        "introduced": "1744",
+        "origin": "Japan",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 128,
       "sort": 14,
       "status": "active"
@@ -891,6 +1221,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Seven Stars — catalogued in cigarette brands · Japan.",
+      "facts": {
+        "introduced": "2003",
+        "origin": "Japan",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 13,
       "sort": 15,
       "status": "active"
@@ -906,6 +1242,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Lark — catalogued in cigarette brands · USA.",
+      "facts": {
+        "introduced": "1849",
+        "origin": "USA",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 79,
       "sort": 16,
       "status": "active"
@@ -919,6 +1261,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Rothmans — catalogued in cigarette brands · UK.",
+      "facts": {
+        "introduced": "1700",
+        "origin": "UK",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 110,
       "sort": 17,
       "status": "active"
@@ -932,6 +1280,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Embassy — catalogued in cigarette brands · UK.",
+      "facts": {
+        "introduced": "1848",
+        "origin": "UK",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 206,
       "sort": 18,
       "status": "active"
@@ -945,6 +1299,12 @@
       "origin": "India",
       "tags": [],
       "summary": "Gold Flake — catalogued in cigarette brands · India.",
+      "facts": {
+        "introduced": "1930",
+        "origin": "India",
+        "house": "Tobacco house",
+        "note": "Adult (18+) catalogue entry — for identification only."
+      },
       "coverHue": 84,
       "sort": 19,
       "status": "active"
@@ -962,6 +1322,12 @@
         "whisky"
       ],
       "summary": "Johnnie Walker — catalogued in liquor brands · Scotland.",
+      "facts": {
+        "house": "Johnnie Walker",
+        "origin": "Scotland",
+        "style": "whisky",
+        "story": "Johnnie Walker is still poured worldwide from Scotland."
+      },
       "coverHue": 357,
       "sort": 0,
       "status": "active"
@@ -980,6 +1346,12 @@
         "whiskey"
       ],
       "summary": "Jack Daniel's — catalogued in liquor brands · USA.",
+      "facts": {
+        "house": "Jack Daniel's",
+        "origin": "USA",
+        "style": "whiskey",
+        "story": "Jack Daniel's is still poured worldwide from USA."
+      },
       "coverHue": 183,
       "sort": 1,
       "status": "active"
@@ -995,6 +1367,12 @@
         "whiskey"
       ],
       "summary": "Jameson — catalogued in liquor brands · Ireland.",
+      "facts": {
+        "house": "Jameson",
+        "origin": "Ireland",
+        "style": "whiskey",
+        "story": "Jameson is still poured worldwide from Ireland."
+      },
       "coverHue": 314,
       "sort": 2,
       "status": "active"
@@ -1010,6 +1388,12 @@
       "origin": "Scotland",
       "tags": [],
       "summary": "The Macallan — catalogued in liquor brands · Scotland.",
+      "facts": {
+        "house": "The Macallan",
+        "origin": "Scotland",
+        "style": "Liquor",
+        "story": "The Macallan is still poured worldwide from Scotland."
+      },
       "coverHue": 16,
       "sort": 3,
       "status": "active"
@@ -1025,6 +1409,12 @@
       "origin": "Scotland",
       "tags": [],
       "summary": "The Glenlivet — catalogued in liquor brands · Scotland.",
+      "facts": {
+        "house": "The Glenlivet",
+        "origin": "Scotland",
+        "style": "Liquor",
+        "story": "The Glenlivet is still poured worldwide from Scotland."
+      },
       "coverHue": 225,
       "sort": 4,
       "status": "active"
@@ -1038,6 +1428,12 @@
       "origin": "Scotland",
       "tags": [],
       "summary": "Glenfiddich — catalogued in liquor brands · Scotland.",
+      "facts": {
+        "house": "Glenfiddich",
+        "origin": "Scotland",
+        "style": "Liquor",
+        "story": "Glenfiddich is still poured worldwide from Scotland."
+      },
       "coverHue": 28,
       "sort": 5,
       "status": "active"
@@ -1053,6 +1449,12 @@
         "vodka"
       ],
       "summary": "Absolut — catalogued in liquor brands · Sweden.",
+      "facts": {
+        "house": "Absolut",
+        "origin": "Sweden",
+        "style": "vodka",
+        "story": "Absolut is still poured worldwide from Sweden."
+      },
       "coverHue": 29,
       "sort": 6,
       "status": "active"
@@ -1068,6 +1470,12 @@
         "vodka"
       ],
       "summary": "Smirnoff — catalogued in liquor brands · Russia.",
+      "facts": {
+        "house": "Smirnoff",
+        "origin": "Russia",
+        "style": "vodka",
+        "story": "Smirnoff is still poured worldwide from Russia."
+      },
       "coverHue": 213,
       "sort": 7,
       "status": "active"
@@ -1083,6 +1491,12 @@
         "vodka"
       ],
       "summary": "Grey Goose — catalogued in liquor brands · France.",
+      "facts": {
+        "house": "Grey Goose",
+        "origin": "France",
+        "style": "vodka",
+        "story": "Grey Goose is still poured worldwide from France."
+      },
       "coverHue": 124,
       "sort": 8,
       "status": "active"
@@ -1098,6 +1512,12 @@
         "vodka"
       ],
       "summary": "Belvedere — catalogued in liquor brands · Poland.",
+      "facts": {
+        "house": "Belvedere",
+        "origin": "Poland",
+        "style": "vodka",
+        "story": "Belvedere is still poured worldwide from Poland."
+      },
       "coverHue": 123,
       "sort": 9,
       "status": "active"
@@ -1113,6 +1533,12 @@
         "rum"
       ],
       "summary": "Bacardi — catalogued in liquor brands · Cuba.",
+      "facts": {
+        "house": "Bacardi",
+        "origin": "Cuba",
+        "style": "rum",
+        "story": "Bacardi is still poured worldwide from Cuba."
+      },
       "coverHue": 97,
       "sort": 10,
       "status": "active"
@@ -1128,6 +1554,12 @@
         "rum"
       ],
       "summary": "Captain Morgan — catalogued in liquor brands · UK.",
+      "facts": {
+        "house": "Captain Morgan",
+        "origin": "UK",
+        "style": "rum",
+        "story": "Captain Morgan is still poured worldwide from UK."
+      },
       "coverHue": 118,
       "sort": 11,
       "status": "active"
@@ -1143,6 +1575,12 @@
         "rum"
       ],
       "summary": "Havana Club — catalogued in liquor brands · Cuba.",
+      "facts": {
+        "house": "Havana Club",
+        "origin": "Cuba",
+        "style": "rum",
+        "story": "Havana Club is still poured worldwide from Cuba."
+      },
       "coverHue": 243,
       "sort": 12,
       "status": "active"
@@ -1158,6 +1596,12 @@
         "cognac"
       ],
       "summary": "Hennessy — catalogued in liquor brands · France.",
+      "facts": {
+        "house": "Hennessy",
+        "origin": "France",
+        "style": "cognac",
+        "story": "Hennessy is still poured worldwide from France."
+      },
       "coverHue": 234,
       "sort": 13,
       "status": "active"
@@ -1175,6 +1619,12 @@
         "cognac"
       ],
       "summary": "Rémy Martin — catalogued in liquor brands · France.",
+      "facts": {
+        "house": "Rémy Martin",
+        "origin": "France",
+        "style": "cognac",
+        "story": "Rémy Martin is still poured worldwide from France."
+      },
       "coverHue": 296,
       "sort": 14,
       "status": "active"
@@ -1190,6 +1640,12 @@
         "cognac"
       ],
       "summary": "Courvoisier — catalogued in liquor brands · France.",
+      "facts": {
+        "house": "Courvoisier",
+        "origin": "France",
+        "style": "cognac",
+        "story": "Courvoisier is still poured worldwide from France."
+      },
       "coverHue": 1,
       "sort": 15,
       "status": "active"
@@ -1207,6 +1663,12 @@
         "tequila"
       ],
       "summary": "Patrón — catalogued in liquor brands · Mexico.",
+      "facts": {
+        "house": "Patrón",
+        "origin": "Mexico",
+        "style": "tequila",
+        "story": "Patrón is still poured worldwide from Mexico."
+      },
       "coverHue": 7,
       "sort": 16,
       "status": "active"
@@ -1225,6 +1687,12 @@
         "tequila"
       ],
       "summary": "José Cuervo — catalogued in liquor brands · Mexico.",
+      "facts": {
+        "house": "José Cuervo",
+        "origin": "Mexico",
+        "style": "tequila",
+        "story": "José Cuervo is still poured worldwide from Mexico."
+      },
       "coverHue": 197,
       "sort": 17,
       "status": "active"
@@ -1240,6 +1708,12 @@
         "tequila"
       ],
       "summary": "Don Julio — catalogued in liquor brands · Mexico.",
+      "facts": {
+        "house": "Don Julio",
+        "origin": "Mexico",
+        "style": "tequila",
+        "story": "Don Julio is still poured worldwide from Mexico."
+      },
       "coverHue": 188,
       "sort": 18,
       "status": "active"
@@ -1255,6 +1729,12 @@
         "gin"
       ],
       "summary": "Tanqueray — catalogued in liquor brands · UK.",
+      "facts": {
+        "house": "Tanqueray",
+        "origin": "UK",
+        "style": "gin",
+        "story": "Tanqueray is still poured worldwide from UK."
+      },
       "coverHue": 233,
       "sort": 19,
       "status": "active"
@@ -1270,6 +1750,12 @@
         "gin"
       ],
       "summary": "Bombay Sapphire — catalogued in liquor brands · UK.",
+      "facts": {
+        "house": "Bombay Sapphire",
+        "origin": "UK",
+        "style": "gin",
+        "story": "Bombay Sapphire is still poured worldwide from UK."
+      },
       "coverHue": 180,
       "sort": 20,
       "status": "active"
@@ -1287,6 +1773,12 @@
         "gin"
       ],
       "summary": "Hendrick's — catalogued in liquor brands · Scotland.",
+      "facts": {
+        "house": "Hendrick's",
+        "origin": "Scotland",
+        "style": "gin",
+        "story": "Hendrick's is still poured worldwide from Scotland."
+      },
       "coverHue": 40,
       "sort": 21,
       "status": "active"
@@ -1304,6 +1796,12 @@
         "liqueur"
       ],
       "summary": "Jägermeister — catalogued in liquor brands · Germany.",
+      "facts": {
+        "house": "Jägermeister",
+        "origin": "Germany",
+        "style": "liqueur",
+        "story": "Jägermeister is still poured worldwide from Germany."
+      },
       "coverHue": 339,
       "sort": 22,
       "status": "active"
@@ -1319,6 +1817,12 @@
         "liqueur"
       ],
       "summary": "Baileys — catalogued in liquor brands · Ireland.",
+      "facts": {
+        "house": "Baileys",
+        "origin": "Ireland",
+        "style": "liqueur",
+        "story": "Baileys is still poured worldwide from Ireland."
+      },
       "coverHue": 252,
       "sort": 23,
       "status": "active"
@@ -1334,6 +1838,12 @@
         "aperitif"
       ],
       "summary": "Campari — catalogued in liquor brands · Italy.",
+      "facts": {
+        "house": "Campari",
+        "origin": "Italy",
+        "style": "aperitif",
+        "story": "Campari is still poured worldwide from Italy."
+      },
       "coverHue": 270,
       "sort": 24,
       "status": "active"
@@ -1349,6 +1859,12 @@
         "aperitif"
       ],
       "summary": "Aperol — catalogued in liquor brands · Italy.",
+      "facts": {
+        "house": "Aperol",
+        "origin": "Italy",
+        "style": "aperitif",
+        "story": "Aperol is still poured worldwide from Italy."
+      },
       "coverHue": 170,
       "sort": 25,
       "status": "active"
@@ -1364,6 +1880,12 @@
         "whisky"
       ],
       "summary": "Suntory — catalogued in liquor brands · Japan.",
+      "facts": {
+        "house": "Suntory",
+        "origin": "Japan",
+        "style": "whisky",
+        "story": "Suntory is still poured worldwide from Japan."
+      },
       "coverHue": 37,
       "sort": 26,
       "status": "active"
@@ -1379,6 +1901,12 @@
         "whisky"
       ],
       "summary": "Yamazaki — catalogued in liquor brands · Japan.",
+      "facts": {
+        "house": "Yamazaki",
+        "origin": "Japan",
+        "style": "whisky",
+        "story": "Yamazaki is still poured worldwide from Japan."
+      },
       "coverHue": 194,
       "sort": 27,
       "status": "active"
@@ -1394,6 +1922,12 @@
         "whisky"
       ],
       "summary": "Hibiki — catalogued in liquor brands · Japan.",
+      "facts": {
+        "house": "Hibiki",
+        "origin": "Japan",
+        "style": "whisky",
+        "story": "Hibiki is still poured worldwide from Japan."
+      },
       "coverHue": 151,
       "sort": 28,
       "status": "active"
@@ -1409,6 +1943,12 @@
       "origin": "Scotland",
       "tags": [],
       "summary": "Chivas Regal — catalogued in liquor brands · Scotland.",
+      "facts": {
+        "house": "Chivas Regal",
+        "origin": "Scotland",
+        "style": "Liquor",
+        "story": "Chivas Regal is still poured worldwide from Scotland."
+      },
       "coverHue": 45,
       "sort": 29,
       "status": "active"
@@ -1427,6 +1967,12 @@
         "champagne"
       ],
       "summary": "Moët & Chandon — catalogued in wine brands · France.",
+      "facts": {
+        "house": "Moët & Chandon",
+        "origin": "France",
+        "style": "champagne",
+        "story": "Moët & Chandon is still poured worldwide from France."
+      },
       "coverHue": 141,
       "sort": 0,
       "status": "active"
@@ -1442,6 +1988,12 @@
         "champagne"
       ],
       "summary": "Veuve Clicquot — catalogued in wine brands · France.",
+      "facts": {
+        "house": "Veuve Clicquot",
+        "origin": "France",
+        "style": "champagne",
+        "story": "Veuve Clicquot is still poured worldwide from France."
+      },
       "coverHue": 264,
       "sort": 1,
       "status": "active"
@@ -1459,6 +2011,12 @@
         "champagne"
       ],
       "summary": "Dom Pérignon — catalogued in wine brands · France.",
+      "facts": {
+        "house": "Dom Pérignon",
+        "origin": "France",
+        "style": "champagne",
+        "story": "Dom Pérignon is still poured worldwide from France."
+      },
       "coverHue": 65,
       "sort": 2,
       "status": "active"
@@ -1472,6 +2030,12 @@
       "origin": "Australia",
       "tags": [],
       "summary": "Penfolds — catalogued in wine brands · Australia.",
+      "facts": {
+        "house": "Penfolds",
+        "origin": "Australia",
+        "style": "Wine",
+        "story": "Penfolds is still poured worldwide from Australia."
+      },
       "coverHue": 37,
       "sort": 3,
       "status": "active"
@@ -1485,6 +2049,12 @@
       "origin": "Australia",
       "tags": [],
       "summary": "Yellow Tail — catalogued in wine brands · Australia.",
+      "facts": {
+        "house": "Yellow Tail",
+        "origin": "Australia",
+        "style": "Wine",
+        "story": "Yellow Tail is still poured worldwide from Australia."
+      },
       "coverHue": 317,
       "sort": 4,
       "status": "active"
@@ -1498,6 +2068,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Barefoot — catalogued in wine brands · USA.",
+      "facts": {
+        "house": "Barefoot",
+        "origin": "USA",
+        "style": "Wine",
+        "story": "Barefoot is still poured worldwide from USA."
+      },
       "coverHue": 148,
       "sort": 5,
       "status": "active"
@@ -1513,6 +2089,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Gallo — catalogued in wine brands · USA.",
+      "facts": {
+        "house": "Gallo",
+        "origin": "USA",
+        "style": "Wine",
+        "story": "Gallo is still poured worldwide from USA."
+      },
       "coverHue": 97,
       "sort": 6,
       "status": "active"
@@ -1526,6 +2108,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Robert Mondavi — catalogued in wine brands · USA.",
+      "facts": {
+        "house": "Robert Mondavi",
+        "origin": "USA",
+        "style": "Wine",
+        "story": "Robert Mondavi is still poured worldwide from USA."
+      },
       "coverHue": 325,
       "sort": 7,
       "status": "active"
@@ -1539,6 +2127,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Opus One — catalogued in wine brands · USA.",
+      "facts": {
+        "house": "Opus One",
+        "origin": "USA",
+        "style": "Wine",
+        "story": "Opus One is still poured worldwide from USA."
+      },
       "coverHue": 124,
       "sort": 8,
       "status": "active"
@@ -1554,6 +2148,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Château Margaux — catalogued in wine brands · France.",
+      "facts": {
+        "house": "Château Margaux",
+        "origin": "France",
+        "style": "Wine",
+        "story": "Château Margaux is still poured worldwide from France."
+      },
       "coverHue": 27,
       "sort": 9,
       "status": "active"
@@ -1569,6 +2169,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Château Lafite Rothschild — catalogued in wine brands · France.",
+      "facts": {
+        "house": "Château Lafite Rothschild",
+        "origin": "France",
+        "style": "Wine",
+        "story": "Château Lafite Rothschild is still poured worldwide from France."
+      },
       "coverHue": 133,
       "sort": 10,
       "status": "active"
@@ -1584,6 +2190,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Château Latour — catalogued in wine brands · France.",
+      "facts": {
+        "house": "Château Latour",
+        "origin": "France",
+        "style": "Wine",
+        "story": "Château Latour is still poured worldwide from France."
+      },
       "coverHue": 17,
       "sort": 11,
       "status": "active"
@@ -1597,6 +2209,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Antinori — catalogued in wine brands · Italy.",
+      "facts": {
+        "house": "Antinori",
+        "origin": "Italy",
+        "style": "Wine",
+        "story": "Antinori is still poured worldwide from Italy."
+      },
       "coverHue": 230,
       "sort": 12,
       "status": "active"
@@ -1610,6 +2228,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Gaja — catalogued in wine brands · Italy.",
+      "facts": {
+        "house": "Gaja",
+        "origin": "Italy",
+        "style": "Wine",
+        "story": "Gaja is still poured worldwide from Italy."
+      },
       "coverHue": 317,
       "sort": 13,
       "status": "active"
@@ -1623,6 +2247,12 @@
       "origin": "Spain",
       "tags": [],
       "summary": "Torres — catalogued in wine brands · Spain.",
+      "facts": {
+        "house": "Torres",
+        "origin": "Spain",
+        "style": "Wine",
+        "story": "Torres is still poured worldwide from Spain."
+      },
       "coverHue": 85,
       "sort": 14,
       "status": "active"
@@ -1636,6 +2266,12 @@
       "origin": "Spain",
       "tags": [],
       "summary": "Vega Sicilia — catalogued in wine brands · Spain.",
+      "facts": {
+        "house": "Vega Sicilia",
+        "origin": "Spain",
+        "style": "Wine",
+        "story": "Vega Sicilia is still poured worldwide from Spain."
+      },
       "coverHue": 32,
       "sort": 15,
       "status": "active"
@@ -1649,6 +2285,12 @@
       "origin": "Chile",
       "tags": [],
       "summary": "Concha y Toro — catalogued in wine brands · Chile.",
+      "facts": {
+        "house": "Concha y Toro",
+        "origin": "Chile",
+        "style": "Wine",
+        "story": "Concha y Toro is still poured worldwide from Chile."
+      },
       "coverHue": 155,
       "sort": 16,
       "status": "active"
@@ -1662,6 +2304,12 @@
       "origin": "Chile",
       "tags": [],
       "summary": "Santa Rita — catalogued in wine brands · Chile.",
+      "facts": {
+        "house": "Santa Rita",
+        "origin": "Chile",
+        "style": "Wine",
+        "story": "Santa Rita is still poured worldwide from Chile."
+      },
       "coverHue": 0,
       "sort": 17,
       "status": "active"
@@ -1675,6 +2323,12 @@
       "origin": "New Zealand",
       "tags": [],
       "summary": "Cloudy Bay — catalogued in wine brands · New Zealand.",
+      "facts": {
+        "house": "Cloudy Bay",
+        "origin": "New Zealand",
+        "style": "Wine",
+        "story": "Cloudy Bay is still poured worldwide from New Zealand."
+      },
       "coverHue": 150,
       "sort": 18,
       "status": "active"
@@ -1688,6 +2342,12 @@
       "origin": "New Zealand",
       "tags": [],
       "summary": "Kim Crawford — catalogued in wine brands · New Zealand.",
+      "facts": {
+        "house": "Kim Crawford",
+        "origin": "New Zealand",
+        "style": "Wine",
+        "story": "Kim Crawford is still poured worldwide from New Zealand."
+      },
       "coverHue": 130,
       "sort": 19,
       "status": "active"
@@ -1703,6 +2363,12 @@
       "origin": "Australia",
       "tags": [],
       "summary": "Jacob's Creek — catalogued in wine brands · Australia.",
+      "facts": {
+        "house": "Jacob's Creek",
+        "origin": "Australia",
+        "style": "Wine",
+        "story": "Jacob's Creek is still poured worldwide from Australia."
+      },
       "coverHue": 310,
       "sort": 20,
       "status": "active"
@@ -1716,6 +2382,12 @@
       "origin": "Chile",
       "tags": [],
       "summary": "Casillero del Diablo — catalogued in wine brands · Chile.",
+      "facts": {
+        "house": "Casillero del Diablo",
+        "origin": "Chile",
+        "style": "Wine",
+        "story": "Casillero del Diablo is still poured worldwide from Chile."
+      },
       "coverHue": 282,
       "sort": 21,
       "status": "active"
@@ -1729,6 +2401,12 @@
       "origin": "Portugal",
       "tags": [],
       "summary": "Mateus — catalogued in wine brands · Portugal.",
+      "facts": {
+        "house": "Mateus",
+        "origin": "Portugal",
+        "style": "Wine",
+        "story": "Mateus is still poured worldwide from Portugal."
+      },
       "coverHue": 279,
       "sort": 22,
       "status": "active"
@@ -1744,6 +2422,12 @@
         "port"
       ],
       "summary": "Sandeman — catalogued in wine brands · Portugal.",
+      "facts": {
+        "house": "Sandeman",
+        "origin": "Portugal",
+        "style": "port",
+        "story": "Sandeman is still poured worldwide from Portugal."
+      },
       "coverHue": 269,
       "sort": 23,
       "status": "active"
@@ -1759,6 +2443,12 @@
         "port"
       ],
       "summary": "Taylor Fladgate — catalogued in wine brands · Portugal.",
+      "facts": {
+        "house": "Taylor Fladgate",
+        "origin": "Portugal",
+        "style": "port",
+        "story": "Taylor Fladgate is still poured worldwide from Portugal."
+      },
       "coverHue": 2,
       "sort": 24,
       "status": "active"
@@ -1774,6 +2464,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Dassai — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Dassai",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Dassai is still poured worldwide from Japan."
+      },
       "coverHue": 90,
       "sort": 0,
       "status": "active"
@@ -1789,6 +2485,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Kubota — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Kubota",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Kubota is still poured worldwide from Japan."
+      },
       "coverHue": 17,
       "sort": 1,
       "status": "active"
@@ -1804,6 +2506,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Hakutsuru — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Hakutsuru",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Hakutsuru is still poured worldwide from Japan."
+      },
       "coverHue": 89,
       "sort": 2,
       "status": "active"
@@ -1819,6 +2527,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Gekkeikan — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Gekkeikan",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Gekkeikan is still poured worldwide from Japan."
+      },
       "coverHue": 1,
       "sort": 3,
       "status": "active"
@@ -1834,6 +2548,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Ozeki — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Ozeki",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Ozeki is still poured worldwide from Japan."
+      },
       "coverHue": 83,
       "sort": 4,
       "status": "active"
@@ -1849,6 +2569,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Takara — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Takara",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Takara is still poured worldwide from Japan."
+      },
       "coverHue": 119,
       "sort": 5,
       "status": "active"
@@ -1864,6 +2590,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Juyondai — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Juyondai",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Juyondai is still poured worldwide from Japan."
+      },
       "coverHue": 92,
       "sort": 6,
       "status": "active"
@@ -1879,6 +2611,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Born — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Born",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Born is still poured worldwide from Japan."
+      },
       "coverHue": 158,
       "sort": 7,
       "status": "active"
@@ -1892,6 +2630,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "SakeOne — catalogued in sake brands · USA.",
+      "facts": {
+        "house": "SakeOne",
+        "origin": "USA",
+        "style": "Sake",
+        "story": "SakeOne is still poured worldwide from USA."
+      },
       "coverHue": 318,
       "sort": 8,
       "status": "active"
@@ -1905,6 +2649,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Hotei — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Hotei",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Hotei is still poured worldwide from Japan."
+      },
       "coverHue": 44,
       "sort": 9,
       "status": "active"
@@ -1920,6 +2670,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Kikusui — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Kikusui",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Kikusui is still poured worldwide from Japan."
+      },
       "coverHue": 26,
       "sort": 10,
       "status": "active"
@@ -1935,6 +2691,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Dewazakura — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Dewazakura",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Dewazakura is still poured worldwide from Japan."
+      },
       "coverHue": 56,
       "sort": 11,
       "status": "active"
@@ -1950,6 +2712,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Nanbu Bijin — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Nanbu Bijin",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Nanbu Bijin is still poured worldwide from Japan."
+      },
       "coverHue": 228,
       "sort": 12,
       "status": "active"
@@ -1965,6 +2733,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Suigei — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Suigei",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Suigei is still poured worldwide from Japan."
+      },
       "coverHue": 17,
       "sort": 13,
       "status": "active"
@@ -1980,6 +2754,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Hakkaisan — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Hakkaisan",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Hakkaisan is still poured worldwide from Japan."
+      },
       "coverHue": 114,
       "sort": 14,
       "status": "active"
@@ -1995,6 +2775,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Koshi no Kanbai — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Koshi no Kanbai",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Koshi no Kanbai is still poured worldwide from Japan."
+      },
       "coverHue": 268,
       "sort": 15,
       "status": "active"
@@ -2010,6 +2796,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Tatenokawa — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Tatenokawa",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Tatenokawa is still poured worldwide from Japan."
+      },
       "coverHue": 188,
       "sort": 16,
       "status": "active"
@@ -2025,6 +2817,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Mutsu Hassen — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Mutsu Hassen",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Mutsu Hassen is still poured worldwide from Japan."
+      },
       "coverHue": 334,
       "sort": 17,
       "status": "active"
@@ -2040,6 +2838,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Shichiken — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Shichiken",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Shichiken is still poured worldwide from Japan."
+      },
       "coverHue": 327,
       "sort": 18,
       "status": "active"
@@ -2055,6 +2859,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Urakasumi — catalogued in sake brands · Japan.",
+      "facts": {
+        "house": "Urakasumi",
+        "origin": "Japan",
+        "style": "Sake",
+        "story": "Urakasumi is still poured worldwide from Japan."
+      },
       "coverHue": 315,
       "sort": 19,
       "status": "active"
@@ -2068,6 +2878,12 @@
       "origin": "Netherlands",
       "tags": [],
       "summary": "Heineken — catalogued in beer brands · Netherlands.",
+      "facts": {
+        "house": "Heineken",
+        "origin": "Netherlands",
+        "style": "Beer",
+        "story": "Heineken is still poured worldwide from Netherlands."
+      },
       "coverHue": 86,
       "sort": 0,
       "status": "active"
@@ -2083,6 +2899,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Budweiser — catalogued in beer brands · USA.",
+      "facts": {
+        "house": "Budweiser",
+        "origin": "USA",
+        "style": "Beer",
+        "story": "Budweiser is still poured worldwide from USA."
+      },
       "coverHue": 145,
       "sort": 1,
       "status": "active"
@@ -2096,6 +2918,12 @@
       "origin": "Mexico",
       "tags": [],
       "summary": "Corona — catalogued in beer brands · Mexico.",
+      "facts": {
+        "house": "Corona",
+        "origin": "Mexico",
+        "style": "Beer",
+        "story": "Corona is still poured worldwide from Mexico."
+      },
       "coverHue": 89,
       "sort": 2,
       "status": "active"
@@ -2111,6 +2939,12 @@
       "origin": "Belgium",
       "tags": [],
       "summary": "Stella Artois — catalogued in beer brands · Belgium.",
+      "facts": {
+        "house": "Stella Artois",
+        "origin": "Belgium",
+        "style": "Beer",
+        "story": "Stella Artois is still poured worldwide from Belgium."
+      },
       "coverHue": 137,
       "sort": 3,
       "status": "active"
@@ -2124,6 +2958,12 @@
       "origin": "Ireland",
       "tags": [],
       "summary": "Guinness — catalogued in beer brands · Ireland.",
+      "facts": {
+        "house": "Guinness",
+        "origin": "Ireland",
+        "style": "Beer",
+        "story": "Guinness is still poured worldwide from Ireland."
+      },
       "coverHue": 111,
       "sort": 4,
       "status": "active"
@@ -2137,6 +2977,12 @@
       "origin": "Denmark",
       "tags": [],
       "summary": "Carlsberg — catalogued in beer brands · Denmark.",
+      "facts": {
+        "house": "Carlsberg",
+        "origin": "Denmark",
+        "style": "Beer",
+        "story": "Carlsberg is still poured worldwide from Denmark."
+      },
       "coverHue": 6,
       "sort": 5,
       "status": "active"
@@ -2150,6 +2996,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Asahi — catalogued in beer brands · Japan.",
+      "facts": {
+        "house": "Asahi",
+        "origin": "Japan",
+        "style": "Beer",
+        "story": "Asahi is still poured worldwide from Japan."
+      },
       "coverHue": 67,
       "sort": 6,
       "status": "active"
@@ -2163,6 +3015,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Kirin — catalogued in beer brands · Japan.",
+      "facts": {
+        "house": "Kirin",
+        "origin": "Japan",
+        "style": "Beer",
+        "story": "Kirin is still poured worldwide from Japan."
+      },
       "coverHue": 180,
       "sort": 7,
       "status": "active"
@@ -2176,6 +3034,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Sapporo — catalogued in beer brands · Japan.",
+      "facts": {
+        "house": "Sapporo",
+        "origin": "Japan",
+        "style": "Beer",
+        "story": "Sapporo is still poured worldwide from Japan."
+      },
       "coverHue": 33,
       "sort": 8,
       "status": "active"
@@ -2191,6 +3055,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Suntory Beer — refreshed 2026-10-08. Still present in the living catalogue.",
+      "facts": {
+        "house": "Suntory Beer",
+        "origin": "Japan",
+        "style": "Beer",
+        "story": "Suntory Beer is still poured worldwide from Japan."
+      },
       "coverHue": 284,
       "sort": 9,
       "status": "active"
@@ -2204,6 +3074,12 @@
       "origin": "China",
       "tags": [],
       "summary": "Tsingtao — catalogued in beer brands · China.",
+      "facts": {
+        "house": "Tsingtao",
+        "origin": "China",
+        "style": "Beer",
+        "story": "Tsingtao is still poured worldwide from China."
+      },
       "coverHue": 220,
       "sort": 10,
       "status": "active"
@@ -2217,6 +3093,12 @@
       "origin": "China",
       "tags": [],
       "summary": "Harbin — catalogued in beer brands · China.",
+      "facts": {
+        "house": "Harbin",
+        "origin": "China",
+        "style": "Beer",
+        "story": "Harbin is still poured worldwide from China."
+      },
       "coverHue": 195,
       "sort": 11,
       "status": "active"
@@ -2230,6 +3112,12 @@
       "origin": "Singapore",
       "tags": [],
       "summary": "Tiger — catalogued in beer brands · Singapore.",
+      "facts": {
+        "house": "Tiger",
+        "origin": "Singapore",
+        "style": "Beer",
+        "story": "Tiger is still poured worldwide from Singapore."
+      },
       "coverHue": 298,
       "sort": 12,
       "status": "active"
@@ -2243,6 +3131,12 @@
       "origin": "Thailand",
       "tags": [],
       "summary": "Singha — catalogued in beer brands · Thailand.",
+      "facts": {
+        "house": "Singha",
+        "origin": "Thailand",
+        "style": "Beer",
+        "story": "Singha is still poured worldwide from Thailand."
+      },
       "coverHue": 21,
       "sort": 13,
       "status": "active"
@@ -2256,6 +3150,12 @@
       "origin": "Thailand",
       "tags": [],
       "summary": "Chang — catalogued in beer brands · Thailand.",
+      "facts": {
+        "house": "Chang",
+        "origin": "Thailand",
+        "style": "Beer",
+        "story": "Chang is still poured worldwide from Thailand."
+      },
       "coverHue": 32,
       "sort": 14,
       "status": "active"
@@ -2269,6 +3169,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Peroni — catalogued in beer brands · Italy.",
+      "facts": {
+        "house": "Peroni",
+        "origin": "Italy",
+        "style": "Beer",
+        "story": "Peroni is still poured worldwide from Italy."
+      },
       "coverHue": 130,
       "sort": 15,
       "status": "active"
@@ -2284,6 +3190,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Birra Moretti — catalogued in beer brands · Italy.",
+      "facts": {
+        "house": "Birra Moretti",
+        "origin": "Italy",
+        "style": "Beer",
+        "story": "Birra Moretti is still poured worldwide from Italy."
+      },
       "coverHue": 199,
       "sort": 16,
       "status": "active"
@@ -2299,6 +3211,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Beck's — catalogued in beer brands · Germany.",
+      "facts": {
+        "house": "Beck's",
+        "origin": "Germany",
+        "style": "Beer",
+        "story": "Beck's is still poured worldwide from Germany."
+      },
       "coverHue": 130,
       "sort": 17,
       "status": "active"
@@ -2312,6 +3230,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Paulaner — catalogued in beer brands · Germany.",
+      "facts": {
+        "house": "Paulaner",
+        "origin": "Germany",
+        "style": "Beer",
+        "story": "Paulaner is still poured worldwide from Germany."
+      },
       "coverHue": 7,
       "sort": 18,
       "status": "active"
@@ -2325,6 +3249,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Erdinger — catalogued in beer brands · Germany.",
+      "facts": {
+        "house": "Erdinger",
+        "origin": "Germany",
+        "style": "Beer",
+        "story": "Erdinger is still poured worldwide from Germany."
+      },
       "coverHue": 261,
       "sort": 19,
       "status": "active"
@@ -2338,6 +3268,12 @@
       "origin": "Mexico",
       "tags": [],
       "summary": "Modelo — catalogued in beer brands · Mexico.",
+      "facts": {
+        "house": "Modelo",
+        "origin": "Mexico",
+        "style": "Beer",
+        "story": "Modelo is still poured worldwide from Mexico."
+      },
       "coverHue": 27,
       "sort": 20,
       "status": "active"
@@ -2351,6 +3287,12 @@
       "origin": "Mexico",
       "tags": [],
       "summary": "Dos Equis — catalogued in beer brands · Mexico.",
+      "facts": {
+        "house": "Dos Equis",
+        "origin": "Mexico",
+        "style": "Beer",
+        "story": "Dos Equis is still poured worldwide from Mexico."
+      },
       "coverHue": 81,
       "sort": 21,
       "status": "active"
@@ -2364,6 +3306,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Sierra Nevada — catalogued in beer brands · USA.",
+      "facts": {
+        "house": "Sierra Nevada",
+        "origin": "USA",
+        "style": "Beer",
+        "story": "Sierra Nevada is still poured worldwide from USA."
+      },
       "coverHue": 333,
       "sort": 22,
       "status": "active"
@@ -2377,6 +3325,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Blue Moon — catalogued in beer brands · USA.",
+      "facts": {
+        "house": "Blue Moon",
+        "origin": "USA",
+        "style": "Beer",
+        "story": "Blue Moon is still poured worldwide from USA."
+      },
       "coverHue": 319,
       "sort": 23,
       "status": "active"
@@ -2390,6 +3344,12 @@
       "origin": "Belgium",
       "tags": [],
       "summary": "Hoegaarden — catalogued in beer brands · Belgium.",
+      "facts": {
+        "house": "Hoegaarden",
+        "origin": "Belgium",
+        "style": "Beer",
+        "story": "Hoegaarden is still poured worldwide from Belgium."
+      },
       "coverHue": 89,
       "sort": 24,
       "status": "active"
@@ -2403,6 +3363,12 @@
       "origin": "Belgium",
       "tags": [],
       "summary": "Duvel — catalogued in beer brands · Belgium.",
+      "facts": {
+        "house": "Duvel",
+        "origin": "Belgium",
+        "style": "Beer",
+        "story": "Duvel is still poured worldwide from Belgium."
+      },
       "coverHue": 183,
       "sort": 25,
       "status": "active"
@@ -2416,6 +3382,12 @@
       "origin": "Belgium",
       "tags": [],
       "summary": "Chimay — catalogued in beer brands · Belgium.",
+      "facts": {
+        "house": "Chimay",
+        "origin": "Belgium",
+        "style": "Beer",
+        "story": "Chimay is still poured worldwide from Belgium."
+      },
       "coverHue": 262,
       "sort": 26,
       "status": "active"
@@ -2431,6 +3403,12 @@
       "origin": "Australia",
       "tags": [],
       "summary": "Foster's — catalogued in beer brands · Australia.",
+      "facts": {
+        "house": "Foster's",
+        "origin": "Australia",
+        "style": "Beer",
+        "story": "Foster's is still poured worldwide from Australia."
+      },
       "coverHue": 316,
       "sort": 27,
       "status": "active"
@@ -2446,6 +3424,12 @@
       "origin": "Australia",
       "tags": [],
       "summary": "Victoria Bitter — catalogued in beer brands · Australia.",
+      "facts": {
+        "house": "Victoria Bitter",
+        "origin": "Australia",
+        "style": "Beer",
+        "story": "Victoria Bitter is still poured worldwide from Australia."
+      },
       "coverHue": 181,
       "sort": 28,
       "status": "active"
@@ -2459,6 +3443,12 @@
       "origin": "Czechia",
       "tags": [],
       "summary": "Pilsner Urquell — catalogued in beer brands · Czechia.",
+      "facts": {
+        "house": "Pilsner Urquell",
+        "origin": "Czechia",
+        "style": "Beer",
+        "story": "Pilsner Urquell is still poured worldwide from Czechia."
+      },
       "coverHue": 197,
       "sort": 29,
       "status": "active"
@@ -2472,6 +3462,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Starbucks — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Starbucks is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 173,
       "sort": 0,
       "status": "active"
@@ -2488,6 +3483,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Dunkin' — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Dunkin' is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 292,
       "sort": 1,
       "status": "active"
@@ -2503,6 +3503,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Peet's Coffee — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Peet's Coffee is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 86,
       "sort": 2,
       "status": "active"
@@ -2518,6 +3523,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Blue Bottle Coffee — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Blue Bottle Coffee is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 160,
       "sort": 3,
       "status": "active"
@@ -2531,6 +3541,11 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Illy — catalogued in coffee · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "specialty": "Coffee",
+        "story": "Illy is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 329,
       "sort": 4,
       "status": "active"
@@ -2544,6 +3559,11 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Lavazza — catalogued in coffee · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "specialty": "Coffee",
+        "story": "Lavazza is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 96,
       "sort": 5,
       "status": "active"
@@ -2557,6 +3577,11 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Nespresso — catalogued in coffee · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "specialty": "Coffee",
+        "story": "Nespresso is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 119,
       "sort": 6,
       "status": "active"
@@ -2572,6 +3597,11 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Nescafé — catalogued in coffee · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "specialty": "Coffee",
+        "story": "Nescafé is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 0,
       "sort": 7,
       "status": "active"
@@ -2585,6 +3615,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Folgers — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Folgers is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 105,
       "sort": 8,
       "status": "active"
@@ -2598,6 +3633,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Maxwell House — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Maxwell House is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 228,
       "sort": 9,
       "status": "active"
@@ -2611,6 +3651,11 @@
       "origin": "Canada",
       "tags": [],
       "summary": "Tim Hortons — catalogued in coffee · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "specialty": "Coffee",
+        "story": "Tim Hortons is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 13,
       "sort": 10,
       "status": "active"
@@ -2626,6 +3671,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Costa Coffee — catalogued in coffee · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Coffee",
+        "story": "Costa Coffee is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 259,
       "sort": 11,
       "status": "active"
@@ -2641,6 +3691,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Pret A Manger — catalogued in coffee · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Coffee",
+        "story": "Pret A Manger is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 210,
       "sort": 12,
       "status": "active"
@@ -2654,6 +3709,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "UCC — catalogued in coffee · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "specialty": "Coffee",
+        "story": "UCC is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 31,
       "sort": 13,
       "status": "active"
@@ -2667,6 +3727,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Doutor — catalogued in coffee · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "specialty": "Coffee",
+        "story": "Doutor is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 222,
       "sort": 14,
       "status": "active"
@@ -2682,6 +3747,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Komeda Coffee — catalogued in coffee · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "specialty": "Coffee",
+        "story": "Komeda Coffee is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 178,
       "sort": 15,
       "status": "active"
@@ -2697,6 +3767,11 @@
       "origin": "China",
       "tags": [],
       "summary": "Luckin Coffee — catalogued in coffee · China.",
+      "facts": {
+        "origin": "China",
+        "specialty": "Coffee",
+        "story": "Luckin Coffee is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 319,
       "sort": 16,
       "status": "active"
@@ -2712,6 +3787,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "McCafé — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "McCafé is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 100,
       "sort": 17,
       "status": "active"
@@ -2727,6 +3807,11 @@
         "equipment"
       ],
       "summary": "Hario — catalogued in coffee · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "specialty": "equipment",
+        "story": "Hario is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 102,
       "sort": 18,
       "status": "active"
@@ -2740,6 +3825,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Stumptown — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Stumptown is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 216,
       "sort": 19,
       "status": "active"
@@ -2753,6 +3843,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Intelligentsia — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Intelligentsia is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 261,
       "sort": 20,
       "status": "active"
@@ -2766,6 +3861,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Counter Culture — catalogued in coffee · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Coffee",
+        "story": "Counter Culture is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 140,
       "sort": 21,
       "status": "active"
@@ -2781,6 +3881,11 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Davidoff Café — catalogued in coffee · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "specialty": "Coffee",
+        "story": "Davidoff Café is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 62,
       "sort": 22,
       "status": "active"
@@ -2794,6 +3899,11 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Segafredo — catalogued in coffee · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "specialty": "Coffee",
+        "story": "Segafredo is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 159,
       "sort": 23,
       "status": "active"
@@ -2807,6 +3917,11 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Kimbo — catalogued in coffee · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "specialty": "Coffee",
+        "story": "Kimbo is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 131,
       "sort": 24,
       "status": "active"
@@ -2820,6 +3935,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Lipton — catalogued in tea · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "Lipton is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 13,
       "sort": 0,
       "status": "active"
@@ -2833,6 +3953,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Twinings — catalogued in tea · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "Twinings is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 302,
       "sort": 1,
       "status": "active"
@@ -2846,6 +3971,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "PG Tips — catalogued in tea · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "PG Tips is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 265,
       "sort": 2,
       "status": "active"
@@ -2859,6 +3989,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Yorkshire Tea — catalogued in tea · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "Yorkshire Tea is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 91,
       "sort": 3,
       "status": "active"
@@ -2872,6 +4007,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Tetley — catalogued in tea · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "Tetley is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 314,
       "sort": 4,
       "status": "active"
@@ -2887,6 +4027,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Harney & Sons — catalogued in tea · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Tea",
+        "story": "Harney & Sons is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 118,
       "sort": 5,
       "status": "active"
@@ -2900,6 +4045,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Tazo — catalogued in tea · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Tea",
+        "story": "Tazo is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 311,
       "sort": 6,
       "status": "active"
@@ -2913,6 +4063,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Mighty Leaf — catalogued in tea · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Tea",
+        "story": "Mighty Leaf is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 244,
       "sort": 7,
       "status": "active"
@@ -2926,6 +4081,11 @@
       "origin": "Sri Lanka",
       "tags": [],
       "summary": "Dilmah — catalogued in tea · Sri Lanka.",
+      "facts": {
+        "origin": "Sri Lanka",
+        "specialty": "Tea",
+        "story": "Dilmah is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 274,
       "sort": 8,
       "status": "active"
@@ -2941,6 +4101,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Ahmad Tea — catalogued in tea · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "Ahmad Tea is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 84,
       "sort": 9,
       "status": "active"
@@ -2956,6 +4121,11 @@
       "origin": "Singapore",
       "tags": [],
       "summary": "TWG Tea — catalogued in tea · Singapore.",
+      "facts": {
+        "origin": "Singapore",
+        "specialty": "Tea",
+        "story": "TWG Tea is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 103,
       "sort": 10,
       "status": "active"
@@ -2969,6 +4139,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Lupicia — catalogued in tea · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "specialty": "Tea",
+        "story": "Lupicia is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 316,
       "sort": 11,
       "status": "active"
@@ -2985,6 +4160,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Itō En — catalogued in tea · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "specialty": "Tea",
+        "story": "Itō En is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 119,
       "sort": 12,
       "status": "active"
@@ -2998,6 +4178,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Yamamotoyama — catalogued in tea · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "specialty": "Tea",
+        "story": "Yamamotoyama is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 2,
       "sort": 13,
       "status": "active"
@@ -3013,6 +4198,11 @@
         "mint"
       ],
       "summary": "Nana's — catalogued in tea · Morocco.",
+      "facts": {
+        "origin": "Morocco",
+        "specialty": "mint",
+        "story": "Nana's is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 99,
       "sort": 14,
       "status": "active"
@@ -3026,6 +4216,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Clipper — refreshed 2026-10-08. Still present in the living catalogue.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "Clipper is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 296,
       "sort": 15,
       "status": "active"
@@ -3039,6 +4234,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "Pukka — catalogued in tea · UK.",
+      "facts": {
+        "origin": "UK",
+        "specialty": "Tea",
+        "story": "Pukka is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 207,
       "sort": 16,
       "status": "active"
@@ -3054,6 +4254,11 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Yogi Tea — catalogued in tea · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "specialty": "Tea",
+        "story": "Yogi Tea is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 125,
       "sort": 17,
       "status": "active"
@@ -3067,6 +4272,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Celestial Seasonings — catalogued in tea · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Tea",
+        "story": "Celestial Seasonings is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 283,
       "sort": 18,
       "status": "active"
@@ -3080,6 +4290,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Bigelow — catalogued in tea · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Tea",
+        "story": "Bigelow is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 290,
       "sort": 19,
       "status": "active"
@@ -3093,6 +4308,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Numi — catalogued in tea · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Tea",
+        "story": "Numi is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 216,
       "sort": 20,
       "status": "active"
@@ -3106,6 +4326,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Teavana — catalogued in tea · USA.",
+      "facts": {
+        "origin": "USA",
+        "specialty": "Tea",
+        "story": "Teavana is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 113,
       "sort": 21,
       "status": "active"
@@ -3121,6 +4346,11 @@
       "origin": "Canada",
       "tags": [],
       "summary": "DAVIDsTEA — catalogued in tea · Canada.",
+      "facts": {
+        "origin": "Canada",
+        "specialty": "Tea",
+        "story": "DAVIDsTEA is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 231,
       "sort": 22,
       "status": "active"
@@ -3136,6 +4366,11 @@
       "origin": "Thailand",
       "tags": [],
       "summary": "ChaTraMue — catalogued in tea · Thailand.",
+      "facts": {
+        "origin": "Thailand",
+        "specialty": "Tea",
+        "story": "ChaTraMue is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 13,
       "sort": 23,
       "status": "active"
@@ -3151,6 +4386,11 @@
       "origin": "Taiwan",
       "tags": [],
       "summary": "Ten Ren — catalogued in tea · Taiwan.",
+      "facts": {
+        "origin": "Taiwan",
+        "specialty": "Tea",
+        "story": "Ten Ren is still steeping or brewing on shelves and in cafés."
+      },
       "coverHue": 123,
       "sort": 24,
       "status": "active"
@@ -3166,6 +4406,12 @@
         "swoosh"
       ],
       "summary": "Nike — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1907",
+        "origin": "USA",
+        "signature": "swoosh",
+        "story": "Nike remains a living house from USA."
+      },
       "coverHue": 98,
       "sort": 0,
       "status": "active"
@@ -3181,6 +4427,12 @@
         "three stripes"
       ],
       "summary": "Adidas — catalogued in clothes brands · Germany.",
+      "facts": {
+        "founded": "2002",
+        "origin": "Germany",
+        "signature": "three stripes",
+        "story": "Adidas remains a living house from Germany."
+      },
       "coverHue": 85,
       "sort": 1,
       "status": "active"
@@ -3194,6 +4446,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Puma — catalogued in clothes brands · Germany.",
+      "facts": {
+        "founded": "1911",
+        "origin": "Germany",
+        "signature": "House style",
+        "story": "Puma remains a living house from Germany."
+      },
       "coverHue": 350,
       "sort": 2,
       "status": "active"
@@ -3207,6 +4465,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Under Armour — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1709",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Under Armour remains a living house from USA."
+      },
       "coverHue": 226,
       "sort": 3,
       "status": "active"
@@ -3220,6 +4484,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Uniqlo — catalogued in clothes brands · Japan.",
+      "facts": {
+        "founded": "1972",
+        "origin": "Japan",
+        "signature": "House style",
+        "story": "Uniqlo remains a living house from Japan."
+      },
       "coverHue": 225,
       "sort": 4,
       "status": "active"
@@ -3233,6 +4503,12 @@
       "origin": "Spain",
       "tags": [],
       "summary": "Zara — catalogued in clothes brands · Spain.",
+      "facts": {
+        "founded": "1706",
+        "origin": "Spain",
+        "signature": "House style",
+        "story": "Zara remains a living house from Spain."
+      },
       "coverHue": 195,
       "sort": 5,
       "status": "active"
@@ -3249,6 +4525,12 @@
       "origin": "Sweden",
       "tags": [],
       "summary": "H&M — catalogued in clothes brands · Sweden.",
+      "facts": {
+        "founded": "1706",
+        "origin": "Sweden",
+        "signature": "House style",
+        "story": "H&M remains a living house from Sweden."
+      },
       "coverHue": 301,
       "sort": 6,
       "status": "active"
@@ -3262,6 +4544,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Gap — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1900",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Gap remains a living house from USA."
+      },
       "coverHue": 97,
       "sort": 7,
       "status": "active"
@@ -3278,6 +4566,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Levi's — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1864",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Levi's remains a living house from USA."
+      },
       "coverHue": 17,
       "sort": 8,
       "status": "active"
@@ -3293,6 +4587,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Ralph Lauren — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1771",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Ralph Lauren remains a living house from USA."
+      },
       "coverHue": 232,
       "sort": 9,
       "status": "active"
@@ -3308,6 +4608,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Tommy Hilfiger — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1942",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Tommy Hilfiger remains a living house from USA."
+      },
       "coverHue": 353,
       "sort": 10,
       "status": "active"
@@ -3323,6 +4629,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Calvin Klein — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1761",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Calvin Klein remains a living house from USA."
+      },
       "coverHue": 342,
       "sort": 11,
       "status": "active"
@@ -3336,6 +4648,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Gucci — catalogued in clothes brands · Italy.",
+      "facts": {
+        "founded": "1975",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Gucci remains a living house from Italy."
+      },
       "coverHue": 190,
       "sort": 12,
       "status": "active"
@@ -3349,6 +4667,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Prada — catalogued in clothes brands · Italy.",
+      "facts": {
+        "founded": "1840",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Prada remains a living house from Italy."
+      },
       "coverHue": 7,
       "sort": 13,
       "status": "active"
@@ -3362,6 +4686,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Versace — catalogued in clothes brands · Italy.",
+      "facts": {
+        "founded": "1929",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Versace remains a living house from Italy."
+      },
       "coverHue": 118,
       "sort": 14,
       "status": "active"
@@ -3377,6 +4707,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Armani — catalogued in clothes brands · Italy.",
+      "facts": {
+        "founded": "1816",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Armani remains a living house from Italy."
+      },
       "coverHue": 13,
       "sort": 15,
       "status": "active"
@@ -3390,6 +4726,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Burberry — catalogued in clothes brands · UK.",
+      "facts": {
+        "founded": "1817",
+        "origin": "UK",
+        "signature": "House style",
+        "story": "Burberry remains a living house from UK."
+      },
       "coverHue": 292,
       "sort": 16,
       "status": "active"
@@ -3403,6 +4745,12 @@
       "origin": "Canada",
       "tags": [],
       "summary": "Lululemon — catalogued in clothes brands · Canada.",
+      "facts": {
+        "founded": "1785",
+        "origin": "Canada",
+        "signature": "House style",
+        "story": "Lululemon remains a living house from Canada."
+      },
       "coverHue": 188,
       "sort": 17,
       "status": "active"
@@ -3416,6 +4764,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Patagonia — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1960",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Patagonia remains a living house from USA."
+      },
       "coverHue": 19,
       "sort": 18,
       "status": "active"
@@ -3432,6 +4786,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "The North Face — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1859",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "The North Face remains a living house from USA."
+      },
       "coverHue": 2,
       "sort": 19,
       "status": "active"
@@ -3445,6 +4805,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Supreme — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1853",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Supreme remains a living house from USA."
+      },
       "coverHue": 52,
       "sort": 20,
       "status": "active"
@@ -3458,6 +4824,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Off-White — catalogued in clothes brands · Italy.",
+      "facts": {
+        "founded": "1929",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Off-White remains a living house from Italy."
+      },
       "coverHue": 206,
       "sort": 21,
       "status": "active"
@@ -3471,6 +4843,12 @@
       "origin": "Spain",
       "tags": [],
       "summary": "Balenciaga — catalogued in clothes brands · Spain.",
+      "facts": {
+        "founded": "1719",
+        "origin": "Spain",
+        "signature": "House style",
+        "story": "Balenciaga remains a living house from Spain."
+      },
       "coverHue": 196,
       "sort": 22,
       "status": "active"
@@ -3484,6 +4862,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "MUJI — catalogued in clothes brands · Japan.",
+      "facts": {
+        "founded": "1789",
+        "origin": "Japan",
+        "signature": "House style",
+        "story": "MUJI remains a living house from Japan."
+      },
       "coverHue": 172,
       "sort": 23,
       "status": "active"
@@ -3497,6 +4881,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "GU — catalogued in clothes brands · Japan.",
+      "facts": {
+        "founded": "1796",
+        "origin": "Japan",
+        "signature": "House style",
+        "story": "GU remains a living house from Japan."
+      },
       "coverHue": 163,
       "sort": 24,
       "status": "active"
@@ -3510,6 +4900,12 @@
       "origin": "Sweden",
       "tags": [],
       "summary": "COS — catalogued in clothes brands · Sweden.",
+      "facts": {
+        "founded": "1749",
+        "origin": "Sweden",
+        "signature": "House style",
+        "story": "COS remains a living house from Sweden."
+      },
       "coverHue": 290,
       "sort": 25,
       "status": "active"
@@ -3523,6 +4919,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Everlane — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1978",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Everlane remains a living house from USA."
+      },
       "coverHue": 351,
       "sort": 26,
       "status": "active"
@@ -3536,6 +4938,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Carhartt — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1829",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Carhartt remains a living house from USA."
+      },
       "coverHue": 210,
       "sort": 27,
       "status": "active"
@@ -3549,6 +4957,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Dickies — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1840",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Dickies remains a living house from USA."
+      },
       "coverHue": 213,
       "sort": 28,
       "status": "active"
@@ -3562,6 +4976,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Champion — catalogued in clothes brands · USA.",
+      "facts": {
+        "founded": "1967",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Champion remains a living house from USA."
+      },
       "coverHue": 198,
       "sort": 29,
       "status": "active"
@@ -3578,6 +4998,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Louis Vuitton — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1954",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Louis Vuitton remains a living house from France."
+      },
       "coverHue": 280,
       "sort": 0,
       "status": "active"
@@ -3591,6 +5017,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Chanel — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "2011",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Chanel remains a living house from France."
+      },
       "coverHue": 153,
       "sort": 1,
       "status": "active"
@@ -3606,6 +5038,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Hermès — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1720",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Hermès remains a living house from France."
+      },
       "coverHue": 238,
       "sort": 2,
       "status": "active"
@@ -3621,6 +5059,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Dior — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1722",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Dior remains a living house from France."
+      },
       "coverHue": 8,
       "sort": 3,
       "status": "active"
@@ -3634,6 +5078,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Cartier — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1870",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Cartier remains a living house from France."
+      },
       "coverHue": 334,
       "sort": 4,
       "status": "active"
@@ -3649,6 +5099,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Tiffany & Co. — catalogued in luxury brands · USA.",
+      "facts": {
+        "founded": "1849",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Tiffany & Co. remains a living house from USA."
+      },
       "coverHue": 23,
       "sort": 5,
       "status": "active"
@@ -3662,6 +5118,12 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Rolex — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "1946",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Rolex remains a living house from Switzerland."
+      },
       "coverHue": 122,
       "sort": 6,
       "status": "active"
@@ -3675,6 +5137,12 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Omega — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "1709",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Omega remains a living house from Switzerland."
+      },
       "coverHue": 89,
       "sort": 7,
       "status": "active"
@@ -3690,6 +5158,12 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Patek Philippe — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "1885",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Patek Philippe remains a living house from Switzerland."
+      },
       "coverHue": 161,
       "sort": 8,
       "status": "active"
@@ -3705,6 +5179,12 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Audemars Piguet — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "2018",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Audemars Piguet remains a living house from Switzerland."
+      },
       "coverHue": 186,
       "sort": 9,
       "status": "active"
@@ -3720,6 +5200,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Bulgari — catalogued in luxury brands · Italy.",
+      "facts": {
+        "founded": "1995",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Bulgari remains a living house from Italy."
+      },
       "coverHue": 241,
       "sort": 10,
       "status": "active"
@@ -3733,6 +5219,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Van Cleef & Arpels — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1681",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Van Cleef & Arpels remains a living house from France."
+      },
       "coverHue": 283,
       "sort": 11,
       "status": "active"
@@ -3746,6 +5238,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Fendi — catalogued in luxury brands · Italy.",
+      "facts": {
+        "founded": "1694",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Fendi remains a living house from Italy."
+      },
       "coverHue": 356,
       "sort": 12,
       "status": "active"
@@ -3761,6 +5259,12 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Bottega Veneta — catalogued in luxury brands · Italy.",
+      "facts": {
+        "founded": "1698",
+        "origin": "Italy",
+        "signature": "House style",
+        "story": "Bottega Veneta remains a living house from Italy."
+      },
       "coverHue": 330,
       "sort": 13,
       "status": "active"
@@ -3776,6 +5280,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Celine — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1840",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Celine remains a living house from France."
+      },
       "coverHue": 38,
       "sort": 14,
       "status": "active"
@@ -3789,6 +5299,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Givenchy — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1841",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Givenchy remains a living house from France."
+      },
       "coverHue": 71,
       "sort": 15,
       "status": "active"
@@ -3805,6 +5321,12 @@
       "origin": "France",
       "tags": [],
       "summary": "Yves Saint Laurent — catalogued in luxury brands · France.",
+      "facts": {
+        "founded": "1692",
+        "origin": "France",
+        "signature": "House style",
+        "story": "Yves Saint Laurent remains a living house from France."
+      },
       "coverHue": 266,
       "sort": 16,
       "status": "active"
@@ -3818,6 +5340,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Montblanc — catalogued in luxury brands · Germany.",
+      "facts": {
+        "founded": "1742",
+        "origin": "Germany",
+        "signature": "House style",
+        "story": "Montblanc remains a living house from Germany."
+      },
       "coverHue": 92,
       "sort": 17,
       "status": "active"
@@ -3831,6 +5359,12 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Rimowa — catalogued in luxury brands · Germany.",
+      "facts": {
+        "founded": "2007",
+        "origin": "Germany",
+        "signature": "House style",
+        "story": "Rimowa remains a living house from Germany."
+      },
       "coverHue": 99,
       "sort": 18,
       "status": "active"
@@ -3846,6 +5380,12 @@
         "lifestyle"
       ],
       "summary": "Ferrari Style — catalogued in luxury brands · Italy.",
+      "facts": {
+        "founded": "1732",
+        "origin": "Italy",
+        "signature": "lifestyle",
+        "story": "Ferrari Style remains a living house from Italy."
+      },
       "coverHue": 44,
       "sort": 19,
       "status": "active"
@@ -3859,6 +5399,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Bentley Home — catalogued in luxury brands · UK.",
+      "facts": {
+        "founded": "1897",
+        "origin": "UK",
+        "signature": "House style",
+        "story": "Bentley Home remains a living house from UK."
+      },
       "coverHue": 45,
       "sort": 20,
       "status": "active"
@@ -3872,6 +5418,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Asprey — catalogued in luxury brands · UK.",
+      "facts": {
+        "founded": "1720",
+        "origin": "UK",
+        "signature": "House style",
+        "story": "Asprey remains a living house from UK."
+      },
       "coverHue": 104,
       "sort": 21,
       "status": "active"
@@ -3885,6 +5437,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Harry Winston — catalogued in luxury brands · USA.",
+      "facts": {
+        "founded": "1889",
+        "origin": "USA",
+        "signature": "House style",
+        "story": "Harry Winston remains a living house from USA."
+      },
       "coverHue": 351,
       "sort": 22,
       "status": "active"
@@ -3898,6 +5456,12 @@
       "origin": "UK",
       "tags": [],
       "summary": "Graff — catalogued in luxury brands · UK.",
+      "facts": {
+        "founded": "1902",
+        "origin": "UK",
+        "signature": "House style",
+        "story": "Graff remains a living house from UK."
+      },
       "coverHue": 206,
       "sort": 23,
       "status": "active"
@@ -3911,6 +5475,12 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Chopard — catalogued in luxury brands · Switzerland.",
+      "facts": {
+        "founded": "1693",
+        "origin": "Switzerland",
+        "signature": "House style",
+        "story": "Chopard remains a living house from Switzerland."
+      },
       "coverHue": 205,
       "sort": 24,
       "status": "active"
@@ -3928,6 +5498,12 @@
         "deciduous"
       ],
       "summary": "Oak — catalogued in trees.",
+      "facts": {
+        "species": "quercus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Leaf fall · autumn",
+        "story": "Oak is still rooted and living on Earth."
+      },
       "coverHue": 145,
       "sort": 0,
       "status": "active"
@@ -3945,6 +5521,12 @@
         "deciduous"
       ],
       "summary": "Maple — catalogued in trees.",
+      "facts": {
+        "species": "acer",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Leaf fall · autumn",
+        "story": "Maple is still rooted and living on Earth."
+      },
       "coverHue": 77,
       "sort": 1,
       "status": "active"
@@ -3962,6 +5544,12 @@
         "conifer"
       ],
       "summary": "Pine — catalogued in trees.",
+      "facts": {
+        "species": "pinus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Cone season · autumn–winter",
+        "story": "Pine is still rooted and living on Earth."
+      },
       "coverHue": 48,
       "sort": 2,
       "status": "active"
@@ -3979,6 +5567,12 @@
         "conifer"
       ],
       "summary": "Cedar — catalogued in trees.",
+      "facts": {
+        "species": "cedrus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Cone season · autumn–winter",
+        "story": "Cedar is still rooted and living on Earth."
+      },
       "coverHue": 331,
       "sort": 3,
       "status": "active"
@@ -3994,6 +5588,12 @@
       "origin": null,
       "tags": [],
       "summary": "Birch — catalogued in trees.",
+      "facts": {
+        "species": "betula",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Birch is still rooted and living on Earth."
+      },
       "coverHue": 40,
       "sort": 4,
       "status": "active"
@@ -4009,6 +5609,12 @@
       "origin": null,
       "tags": [],
       "summary": "Willow — catalogued in trees.",
+      "facts": {
+        "species": "salix",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Willow is still rooted and living on Earth."
+      },
       "coverHue": 330,
       "sort": 5,
       "status": "active"
@@ -4025,6 +5631,12 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Cherry blossom — catalogued in trees · Japan.",
+      "facts": {
+        "species": "sakura",
+        "habitat": "Japan",
+        "harvest": "Varies by climate",
+        "story": "Cherry blossom is still rooted and living on Earth."
+      },
       "coverHue": 303,
       "sort": 6,
       "status": "active"
@@ -4040,6 +5652,12 @@
       "origin": "China",
       "tags": [],
       "summary": "Ginkgo — catalogued in trees · China.",
+      "facts": {
+        "species": "ginkgo biloba",
+        "habitat": "China",
+        "harvest": "Varies by climate",
+        "story": "Ginkgo is still rooted and living on Earth."
+      },
       "coverHue": 119,
       "sort": 7,
       "status": "active"
@@ -4053,6 +5671,12 @@
       "origin": "Africa",
       "tags": [],
       "summary": "Baobab — catalogued in trees · Africa.",
+      "facts": {
+        "species": "Baobab",
+        "habitat": "Africa",
+        "harvest": "Varies by climate",
+        "story": "Baobab is still rooted and living on Earth."
+      },
       "coverHue": 259,
       "sort": 8,
       "status": "active"
@@ -4068,6 +5692,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Giant sequoia — catalogued in trees · USA.",
+      "facts": {
+        "species": "sequoiadendron",
+        "habitat": "USA",
+        "harvest": "Varies by climate",
+        "story": "Giant sequoia is still rooted and living on Earth."
+      },
       "coverHue": 257,
       "sort": 9,
       "status": "active"
@@ -4083,6 +5713,12 @@
       "origin": "USA",
       "tags": [],
       "summary": "Coast redwood — catalogued in trees · USA.",
+      "facts": {
+        "species": "sequoia sempervirens",
+        "habitat": "USA",
+        "harvest": "Varies by climate",
+        "story": "Coast redwood is still rooted and living on Earth."
+      },
       "coverHue": 134,
       "sort": 10,
       "status": "active"
@@ -4100,6 +5736,12 @@
         "grass"
       ],
       "summary": "Bamboo — catalogued in trees.",
+      "facts": {
+        "species": "bambusoideae",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Bamboo is still rooted and living on Earth."
+      },
       "coverHue": 164,
       "sort": 11,
       "status": "active"
@@ -4115,6 +5757,12 @@
       "origin": null,
       "tags": [],
       "summary": "Palm — catalogued in trees.",
+      "facts": {
+        "species": "arecaceae",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Palm is still rooted and living on Earth."
+      },
       "coverHue": 226,
       "sort": 12,
       "status": "active"
@@ -4130,6 +5778,12 @@
       "origin": null,
       "tags": [],
       "summary": "Olive tree — catalogued in trees.",
+      "facts": {
+        "species": "olea europaea",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Olive tree is still rooted and living on Earth."
+      },
       "coverHue": 123,
       "sort": 13,
       "status": "active"
@@ -4145,6 +5799,12 @@
       "origin": null,
       "tags": [],
       "summary": "Fig tree — catalogued in trees.",
+      "facts": {
+        "species": "ficus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Fig tree is still rooted and living on Earth."
+      },
       "coverHue": 20,
       "sort": 14,
       "status": "active"
@@ -4158,6 +5818,12 @@
       "origin": "Australia",
       "tags": [],
       "summary": "Eucalyptus — catalogued in trees · Australia.",
+      "facts": {
+        "species": "Eucalyptus",
+        "habitat": "Australia",
+        "harvest": "Varies by climate",
+        "story": "Eucalyptus is still rooted and living on Earth."
+      },
       "coverHue": 213,
       "sort": 15,
       "status": "active"
@@ -4173,6 +5839,12 @@
       "origin": null,
       "tags": [],
       "summary": "Cypress — catalogued in trees.",
+      "facts": {
+        "species": "cupressus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Cypress is still rooted and living on Earth."
+      },
       "coverHue": 293,
       "sort": 16,
       "status": "active"
@@ -4188,6 +5860,12 @@
       "origin": null,
       "tags": [],
       "summary": "Elm — catalogued in trees.",
+      "facts": {
+        "species": "ulmus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Elm is still rooted and living on Earth."
+      },
       "coverHue": 238,
       "sort": 17,
       "status": "active"
@@ -4203,6 +5881,12 @@
       "origin": null,
       "tags": [],
       "summary": "Ash — catalogued in trees.",
+      "facts": {
+        "species": "fraxinus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Ash is still rooted and living on Earth."
+      },
       "coverHue": 206,
       "sort": 18,
       "status": "active"
@@ -4218,6 +5902,12 @@
       "origin": null,
       "tags": [],
       "summary": "Beech — catalogued in trees.",
+      "facts": {
+        "species": "fagus",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Beech is still rooted and living on Earth."
+      },
       "coverHue": 143,
       "sort": 19,
       "status": "active"
@@ -4233,6 +5923,12 @@
       "origin": null,
       "tags": [],
       "summary": "Spruce — catalogued in trees.",
+      "facts": {
+        "species": "picea",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Spruce is still rooted and living on Earth."
+      },
       "coverHue": 18,
       "sort": 20,
       "status": "active"
@@ -4248,6 +5944,12 @@
       "origin": null,
       "tags": [],
       "summary": "Fir — catalogued in trees.",
+      "facts": {
+        "species": "abies",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Fir is still rooted and living on Earth."
+      },
       "coverHue": 31,
       "sort": 21,
       "status": "active"
@@ -4261,6 +5963,12 @@
       "origin": "South America",
       "tags": [],
       "summary": "Jacaranda — catalogued in trees · South America.",
+      "facts": {
+        "species": "Jacaranda",
+        "habitat": "South America",
+        "harvest": "Varies by climate",
+        "story": "Jacaranda is still rooted and living on Earth."
+      },
       "coverHue": 343,
       "sort": 22,
       "status": "active"
@@ -4276,6 +5984,12 @@
       "origin": null,
       "tags": [],
       "summary": "Magnolia tree — catalogued in trees.",
+      "facts": {
+        "species": "magnolia",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Magnolia tree is still rooted and living on Earth."
+      },
       "coverHue": 48,
       "sort": 23,
       "status": "active"
@@ -4291,6 +6005,12 @@
       "origin": null,
       "tags": [],
       "summary": "Wisteria — catalogued in trees.",
+      "facts": {
+        "species": "wisteria",
+        "habitat": "Temperate to tropical ranges",
+        "harvest": "Varies by climate",
+        "story": "Wisteria is still rooted and living on Earth."
+      },
       "coverHue": 267,
       "sort": 24,
       "status": "active"
@@ -4306,6 +6026,12 @@
       "origin": null,
       "tags": [],
       "summary": "Rose — catalogued in flowers.",
+      "facts": {
+        "species": "rosa",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Rose still opens in gardens and wild places."
+      },
       "coverHue": 236,
       "sort": 0,
       "status": "active"
@@ -4321,6 +6047,12 @@
       "origin": null,
       "tags": [],
       "summary": "Tulip — catalogued in flowers.",
+      "facts": {
+        "species": "tulipa",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Tulip still opens in gardens and wild places."
+      },
       "coverHue": 277,
       "sort": 1,
       "status": "active"
@@ -4336,6 +6068,12 @@
       "origin": null,
       "tags": [],
       "summary": "Sunflower — catalogued in flowers.",
+      "facts": {
+        "species": "helianthus",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Sunflower still opens in gardens and wild places."
+      },
       "coverHue": 58,
       "sort": 2,
       "status": "active"
@@ -4351,6 +6089,12 @@
       "origin": null,
       "tags": [],
       "summary": "Orchid — catalogued in flowers.",
+      "facts": {
+        "species": "orchidaceae",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Orchid still opens in gardens and wild places."
+      },
       "coverHue": 0,
       "sort": 3,
       "status": "active"
@@ -4366,6 +6110,12 @@
       "origin": null,
       "tags": [],
       "summary": "Lily — catalogued in flowers.",
+      "facts": {
+        "species": "lilium",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Lily still opens in gardens and wild places."
+      },
       "coverHue": 207,
       "sort": 4,
       "status": "active"
@@ -4381,6 +6131,12 @@
       "origin": null,
       "tags": [],
       "summary": "Lavender — catalogued in flowers.",
+      "facts": {
+        "species": "lavandula",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Lavender still opens in gardens and wild places."
+      },
       "coverHue": 44,
       "sort": 5,
       "status": "active"
@@ -4396,6 +6152,12 @@
       "origin": null,
       "tags": [],
       "summary": "Daisy — catalogued in flowers.",
+      "facts": {
+        "species": "bellis",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Daisy still opens in gardens and wild places."
+      },
       "coverHue": 77,
       "sort": 6,
       "status": "active"
@@ -4411,6 +6173,12 @@
       "origin": null,
       "tags": [],
       "summary": "Chrysanthemum — catalogued in flowers.",
+      "facts": {
+        "species": "mums",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Chrysanthemum still opens in gardens and wild places."
+      },
       "coverHue": 219,
       "sort": 7,
       "status": "active"
@@ -4426,6 +6194,12 @@
       "origin": null,
       "tags": [],
       "summary": "Peony — catalogued in flowers.",
+      "facts": {
+        "species": "paeonia",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Peony still opens in gardens and wild places."
+      },
       "coverHue": 304,
       "sort": 8,
       "status": "active"
@@ -4439,6 +6213,12 @@
       "origin": null,
       "tags": [],
       "summary": "Hydrangea — catalogued in flowers.",
+      "facts": {
+        "species": "Hydrangea",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Hydrangea still opens in gardens and wild places."
+      },
       "coverHue": 234,
       "sort": 9,
       "status": "active"
@@ -4454,6 +6234,12 @@
       "origin": null,
       "tags": [],
       "summary": "Jasmine — catalogued in flowers.",
+      "facts": {
+        "species": "jasminum",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Jasmine still opens in gardens and wild places."
+      },
       "coverHue": 162,
       "sort": 10,
       "status": "active"
@@ -4469,6 +6255,12 @@
       "origin": null,
       "tags": [],
       "summary": "Lotus — catalogued in flowers.",
+      "facts": {
+        "species": "nelumbo",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Lotus still opens in gardens and wild places."
+      },
       "coverHue": 346,
       "sort": 11,
       "status": "active"
@@ -4484,6 +6276,12 @@
       "origin": null,
       "tags": [],
       "summary": "Cherry blossom flower — catalogued in flowers.",
+      "facts": {
+        "species": "sakura flower",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Cherry blossom flower still opens in gardens and wild places."
+      },
       "coverHue": 346,
       "sort": 12,
       "status": "active"
@@ -4497,6 +6295,12 @@
       "origin": null,
       "tags": [],
       "summary": "Hibiscus — catalogued in flowers.",
+      "facts": {
+        "species": "Hibiscus",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Hibiscus still opens in gardens and wild places."
+      },
       "coverHue": 107,
       "sort": 13,
       "status": "active"
@@ -4512,6 +6316,12 @@
       "origin": null,
       "tags": [],
       "summary": "Marigold — catalogued in flowers.",
+      "facts": {
+        "species": "tagetes",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Marigold still opens in gardens and wild places."
+      },
       "coverHue": 96,
       "sort": 14,
       "status": "active"
@@ -4525,6 +6335,12 @@
       "origin": null,
       "tags": [],
       "summary": "Iris — catalogued in flowers.",
+      "facts": {
+        "species": "Iris",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Iris still opens in gardens and wild places."
+      },
       "coverHue": 24,
       "sort": 15,
       "status": "active"
@@ -4540,6 +6356,12 @@
       "origin": null,
       "tags": [],
       "summary": "Poppy — catalogued in flowers.",
+      "facts": {
+        "species": "papaver",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Poppy still opens in gardens and wild places."
+      },
       "coverHue": 77,
       "sort": 16,
       "status": "active"
@@ -4555,6 +6377,12 @@
       "origin": null,
       "tags": [],
       "summary": "Violet — catalogued in flowers.",
+      "facts": {
+        "species": "viola",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Violet still opens in gardens and wild places."
+      },
       "coverHue": 116,
       "sort": 17,
       "status": "active"
@@ -4570,6 +6398,12 @@
       "origin": null,
       "tags": [],
       "summary": "Carnation — catalogued in flowers.",
+      "facts": {
+        "species": "dianthus",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Carnation still opens in gardens and wild places."
+      },
       "coverHue": 310,
       "sort": 18,
       "status": "active"
@@ -4585,6 +6419,12 @@
       "origin": null,
       "tags": [],
       "summary": "Daffodil — catalogued in flowers.",
+      "facts": {
+        "species": "narcissus",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Daffodil still opens in gardens and wild places."
+      },
       "coverHue": 146,
       "sort": 19,
       "status": "active"
@@ -4598,6 +6438,12 @@
       "origin": null,
       "tags": [],
       "summary": "Camellia — catalogued in flowers.",
+      "facts": {
+        "species": "Camellia",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Camellia still opens in gardens and wild places."
+      },
       "coverHue": 347,
       "sort": 20,
       "status": "active"
@@ -4613,6 +6459,12 @@
       "origin": null,
       "tags": [],
       "summary": "Azalea — catalogued in flowers.",
+      "facts": {
+        "species": "rhododendron",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Azalea still opens in gardens and wild places."
+      },
       "coverHue": 229,
       "sort": 21,
       "status": "active"
@@ -4626,6 +6478,12 @@
       "origin": null,
       "tags": [],
       "summary": "Bougainvillea — catalogued in flowers.",
+      "facts": {
+        "species": "Bougainvillea",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Bougainvillea still opens in gardens and wild places."
+      },
       "coverHue": 97,
       "sort": 22,
       "status": "active"
@@ -4641,6 +6499,12 @@
       "origin": null,
       "tags": [],
       "summary": "Plumeria — catalogued in flowers.",
+      "facts": {
+        "species": "frangipani",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "Gardens & wild ranges",
+        "story": "Plumeria still opens in gardens and wild places."
+      },
       "coverHue": 270,
       "sort": 23,
       "status": "active"
@@ -4654,6 +6518,12 @@
       "origin": "South Africa",
       "tags": [],
       "summary": "Protea — catalogued in flowers · South Africa.",
+      "facts": {
+        "species": "Protea",
+        "bloom": "Seasonal · climate dependent",
+        "habitat": "South Africa",
+        "story": "Protea still opens in gardens and wild places."
+      },
       "coverHue": 48,
       "sort": 24,
       "status": "active"
@@ -4670,6 +6540,12 @@
       "origin": null,
       "tags": [],
       "summary": "Dog — catalogued in animals & insects.",
+      "facts": {
+        "species": "canis familiaris",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Dog is still alive on Earth today."
+      },
       "coverHue": 286,
       "sort": 0,
       "status": "active"
@@ -4686,6 +6562,12 @@
       "origin": null,
       "tags": [],
       "summary": "Cat — catalogued in animals & insects.",
+      "facts": {
+        "species": "feline",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Cat is still alive on Earth today."
+      },
       "coverHue": 344,
       "sort": 1,
       "status": "active"
@@ -4701,6 +6583,12 @@
       "origin": null,
       "tags": [],
       "summary": "Horse — catalogued in animals & insects.",
+      "facts": {
+        "species": "equus",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Horse is still alive on Earth today."
+      },
       "coverHue": 311,
       "sort": 2,
       "status": "active"
@@ -4717,6 +6605,12 @@
       "origin": null,
       "tags": [],
       "summary": "Cow — catalogued in animals & insects.",
+      "facts": {
+        "species": "cattle",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Cow is still alive on Earth today."
+      },
       "coverHue": 61,
       "sort": 3,
       "status": "active"
@@ -4730,6 +6624,12 @@
       "origin": null,
       "tags": [],
       "summary": "Elephant — catalogued in animals & insects.",
+      "facts": {
+        "species": "Elephant",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Elephant is still alive on Earth today."
+      },
       "coverHue": 63,
       "sort": 4,
       "status": "active"
@@ -4743,6 +6643,12 @@
       "origin": null,
       "tags": [],
       "summary": "Lion — catalogued in animals & insects.",
+      "facts": {
+        "species": "Lion",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Lion is still alive on Earth today."
+      },
       "coverHue": 130,
       "sort": 5,
       "status": "active"
@@ -4756,6 +6662,12 @@
       "origin": null,
       "tags": [],
       "summary": "Tiger — catalogued in animals & insects.",
+      "facts": {
+        "species": "Tiger",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Tiger is still alive on Earth today."
+      },
       "coverHue": 305,
       "sort": 6,
       "status": "active"
@@ -4771,6 +6683,12 @@
       "origin": null,
       "tags": [],
       "summary": "Giant panda — catalogued in animals & insects.",
+      "facts": {
+        "species": "panda",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Giant panda is still alive on Earth today."
+      },
       "coverHue": 12,
       "sort": 7,
       "status": "active"
@@ -4784,6 +6702,12 @@
       "origin": null,
       "tags": [],
       "summary": "Dolphin — catalogued in animals & insects.",
+      "facts": {
+        "species": "Dolphin",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Dolphin is still alive on Earth today."
+      },
       "coverHue": 104,
       "sort": 8,
       "status": "active"
@@ -4797,6 +6721,12 @@
       "origin": null,
       "tags": [],
       "summary": "Whale — catalogued in animals & insects.",
+      "facts": {
+        "species": "Whale",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Whale is still alive on Earth today."
+      },
       "coverHue": 235,
       "sort": 9,
       "status": "active"
@@ -4810,6 +6740,12 @@
       "origin": null,
       "tags": [],
       "summary": "Eagle — catalogued in animals & insects.",
+      "facts": {
+        "species": "Eagle",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Eagle is still alive on Earth today."
+      },
       "coverHue": 126,
       "sort": 10,
       "status": "active"
@@ -4823,6 +6759,12 @@
       "origin": null,
       "tags": [],
       "summary": "Owl — catalogued in animals & insects.",
+      "facts": {
+        "species": "Owl",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Owl is still alive on Earth today."
+      },
       "coverHue": 310,
       "sort": 11,
       "status": "active"
@@ -4836,6 +6778,12 @@
       "origin": null,
       "tags": [],
       "summary": "Penguin — refreshed 2026-10-08. Still present in the living catalogue.",
+      "facts": {
+        "species": "Penguin",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Penguin is still alive on Earth today."
+      },
       "coverHue": 214,
       "sort": 12,
       "status": "active"
@@ -4853,6 +6801,12 @@
         "insect"
       ],
       "summary": "Butterfly — catalogued in animals & insects.",
+      "facts": {
+        "species": "lepidoptera",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Butterfly is still alive on Earth today."
+      },
       "coverHue": 133,
       "sort": 13,
       "status": "active"
@@ -4871,6 +6825,12 @@
         "insect"
       ],
       "summary": "Honey bee — catalogued in animals & insects.",
+      "facts": {
+        "species": "bee",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Honey bee is still alive on Earth today."
+      },
       "coverHue": 212,
       "sort": 14,
       "status": "active"
@@ -4888,6 +6848,12 @@
         "insect"
       ],
       "summary": "Ant — catalogued in animals & insects.",
+      "facts": {
+        "species": "formicidae",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Ant is still alive on Earth today."
+      },
       "coverHue": 265,
       "sort": 15,
       "status": "active"
@@ -4903,6 +6869,12 @@
         "insect"
       ],
       "summary": "Dragonfly — catalogued in animals & insects.",
+      "facts": {
+        "species": "Dragonfly",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Dragonfly is still alive on Earth today."
+      },
       "coverHue": 122,
       "sort": 16,
       "status": "active"
@@ -4921,6 +6893,12 @@
         "insect"
       ],
       "summary": "Ladybug — catalogued in animals & insects.",
+      "facts": {
+        "species": "ladybird",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Ladybug is still alive on Earth today."
+      },
       "coverHue": 36,
       "sort": 17,
       "status": "active"
@@ -4938,6 +6916,12 @@
         "insect"
       ],
       "summary": "Praying mantis — catalogued in animals & insects.",
+      "facts": {
+        "species": "mantis",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Praying mantis is still alive on Earth today."
+      },
       "coverHue": 2,
       "sort": 18,
       "status": "active"
@@ -4955,6 +6939,12 @@
         "insect"
       ],
       "summary": "Beetle — catalogued in animals & insects.",
+      "facts": {
+        "species": "coleoptera",
+        "class": "Insect",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Beetle is still alive on Earth today."
+      },
       "coverHue": 65,
       "sort": 19,
       "status": "active"
@@ -4970,6 +6960,12 @@
       "origin": null,
       "tags": [],
       "summary": "Spider — catalogued in animals & insects.",
+      "facts": {
+        "species": "arachnid",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Spider is still alive on Earth today."
+      },
       "coverHue": 267,
       "sort": 20,
       "status": "active"
@@ -4985,6 +6981,12 @@
       "origin": null,
       "tags": [],
       "summary": "Frog — catalogued in animals & insects.",
+      "facts": {
+        "species": "anura",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Frog is still alive on Earth today."
+      },
       "coverHue": 306,
       "sort": 21,
       "status": "active"
@@ -5000,6 +7002,12 @@
       "origin": null,
       "tags": [],
       "summary": "Snake — catalogued in animals & insects.",
+      "facts": {
+        "species": "serpent",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Snake is still alive on Earth today."
+      },
       "coverHue": 266,
       "sort": 22,
       "status": "active"
@@ -5015,6 +7023,12 @@
       "origin": null,
       "tags": [],
       "summary": "Turtle — catalogued in animals & insects.",
+      "facts": {
+        "species": "tortoise",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Turtle is still alive on Earth today."
+      },
       "coverHue": 322,
       "sort": 23,
       "status": "active"
@@ -5028,6 +7042,12 @@
       "origin": null,
       "tags": [],
       "summary": "Fox — catalogued in animals & insects.",
+      "facts": {
+        "species": "Fox",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Fox is still alive on Earth today."
+      },
       "coverHue": 65,
       "sort": 24,
       "status": "active"
@@ -5041,6 +7061,12 @@
       "origin": null,
       "tags": [],
       "summary": "Wolf — catalogued in animals & insects.",
+      "facts": {
+        "species": "Wolf",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Wolf is still alive on Earth today."
+      },
       "coverHue": 136,
       "sort": 25,
       "status": "active"
@@ -5054,6 +7080,12 @@
       "origin": null,
       "tags": [],
       "summary": "Bear — catalogued in animals & insects.",
+      "facts": {
+        "species": "Bear",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Bear is still alive on Earth today."
+      },
       "coverHue": 346,
       "sort": 26,
       "status": "active"
@@ -5067,6 +7099,12 @@
       "origin": null,
       "tags": [],
       "summary": "Deer — catalogued in animals & insects.",
+      "facts": {
+        "species": "Deer",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Deer is still alive on Earth today."
+      },
       "coverHue": 292,
       "sort": 27,
       "status": "active"
@@ -5082,6 +7120,12 @@
       "origin": null,
       "tags": [],
       "summary": "Rabbit — catalogued in animals & insects.",
+      "facts": {
+        "species": "bunny",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Rabbit is still alive on Earth today."
+      },
       "coverHue": 8,
       "sort": 28,
       "status": "active"
@@ -5095,6 +7139,12 @@
       "origin": null,
       "tags": [],
       "summary": "Octopus — catalogued in animals & insects.",
+      "facts": {
+        "species": "Octopus",
+        "class": "Animal",
+        "habitat": "Still living in the wild or alongside humans",
+        "story": "Octopus is still alive on Earth today."
+      },
       "coverHue": 177,
       "sort": 29,
       "status": "active"
@@ -5113,6 +7163,11 @@
         "drink"
       ],
       "summary": "Coca-Cola — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "drink",
+        "story": "Coca-Cola is still on tables and shelves."
+      },
       "coverHue": 277,
       "sort": 0,
       "status": "active"
@@ -5128,6 +7183,11 @@
         "drink"
       ],
       "summary": "Pepsi — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "drink",
+        "story": "Pepsi is still on tables and shelves."
+      },
       "coverHue": 58,
       "sort": 1,
       "status": "active"
@@ -5141,6 +7201,11 @@
       "origin": "Italy",
       "tags": [],
       "summary": "Nutella — catalogued in food · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "category": "Packaged food",
+        "story": "Nutella is still on tables and shelves."
+      },
       "coverHue": 170,
       "sort": 2,
       "status": "active"
@@ -5154,6 +7219,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Oreo — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Oreo is still on tables and shelves."
+      },
       "coverHue": 212,
       "sort": 3,
       "status": "active"
@@ -5169,6 +7239,11 @@
       "origin": "UK",
       "tags": [],
       "summary": "KitKat — catalogued in food · UK.",
+      "facts": {
+        "origin": "UK",
+        "category": "Packaged food",
+        "story": "KitKat is still on tables and shelves."
+      },
       "coverHue": 111,
       "sort": 4,
       "status": "active"
@@ -5182,6 +7257,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Snickers — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Snickers is still on tables and shelves."
+      },
       "coverHue": 31,
       "sort": 5,
       "status": "active"
@@ -5195,6 +7275,11 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Toblerone — catalogued in food · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "category": "Packaged food",
+        "story": "Toblerone is still on tables and shelves."
+      },
       "coverHue": 125,
       "sort": 6,
       "status": "active"
@@ -5208,6 +7293,11 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Haribo — catalogued in food · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "category": "Packaged food",
+        "story": "Haribo is still on tables and shelves."
+      },
       "coverHue": 212,
       "sort": 7,
       "status": "active"
@@ -5221,6 +7311,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Pringles — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Pringles is still on tables and shelves."
+      },
       "coverHue": 321,
       "sort": 8,
       "status": "active"
@@ -5236,6 +7331,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Lay's — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Lay's is still on tables and shelves."
+      },
       "coverHue": 253,
       "sort": 9,
       "status": "active"
@@ -5249,6 +7349,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Doritos — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Doritos is still on tables and shelves."
+      },
       "coverHue": 127,
       "sort": 10,
       "status": "active"
@@ -5264,6 +7369,11 @@
         "ketchup"
       ],
       "summary": "Heinz — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "ketchup",
+        "story": "Heinz is still on tables and shelves."
+      },
       "coverHue": 145,
       "sort": 11,
       "status": "active"
@@ -5279,6 +7389,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Kellogg's — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Kellogg's is still on tables and shelves."
+      },
       "coverHue": 269,
       "sort": 12,
       "status": "active"
@@ -5294,6 +7409,11 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Nestlé — catalogued in food · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "category": "Packaged food",
+        "story": "Nestlé is still on tables and shelves."
+      },
       "coverHue": 144,
       "sort": 13,
       "status": "active"
@@ -5307,6 +7427,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Kraft — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Kraft is still on tables and shelves."
+      },
       "coverHue": 49,
       "sort": 14,
       "status": "active"
@@ -5322,6 +7447,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Campbell's — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Campbell's is still on tables and shelves."
+      },
       "coverHue": 27,
       "sort": 15,
       "status": "active"
@@ -5335,6 +7465,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Tabasco — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Tabasco is still on tables and shelves."
+      },
       "coverHue": 100,
       "sort": 16,
       "status": "active"
@@ -5348,6 +7483,11 @@
       "origin": "Switzerland",
       "tags": [],
       "summary": "Maggi — catalogued in food · Switzerland.",
+      "facts": {
+        "origin": "Switzerland",
+        "category": "Packaged food",
+        "story": "Maggi is still on tables and shelves."
+      },
       "coverHue": 30,
       "sort": 17,
       "status": "active"
@@ -5361,6 +7501,11 @@
       "origin": "Germany",
       "tags": [],
       "summary": "Knorr — catalogued in food · Germany.",
+      "facts": {
+        "origin": "Germany",
+        "category": "Packaged food",
+        "story": "Knorr is still on tables and shelves."
+      },
       "coverHue": 189,
       "sort": 18,
       "status": "active"
@@ -5376,6 +7521,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Hellmann's — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Hellmann's is still on tables and shelves."
+      },
       "coverHue": 147,
       "sort": 19,
       "status": "active"
@@ -5391,6 +7541,11 @@
         "cream cheese"
       ],
       "summary": "Philadelphia — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "cream cheese",
+        "story": "Philadelphia is still on tables and shelves."
+      },
       "coverHue": 108,
       "sort": 20,
       "status": "active"
@@ -5406,6 +7561,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Ben & Jerry's — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Ben & Jerry's is still on tables and shelves."
+      },
       "coverHue": 182,
       "sort": 21,
       "status": "active"
@@ -5421,6 +7581,11 @@
       "origin": "USA",
       "tags": [],
       "summary": "Häagen-Dazs — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "Packaged food",
+        "story": "Häagen-Dazs is still on tables and shelves."
+      },
       "coverHue": 116,
       "sort": 22,
       "status": "active"
@@ -5436,6 +7601,11 @@
         "drink"
       ],
       "summary": "Red Bull — catalogued in food · Austria.",
+      "facts": {
+        "origin": "Austria",
+        "category": "drink",
+        "story": "Red Bull is still on tables and shelves."
+      },
       "coverHue": 294,
       "sort": 23,
       "status": "active"
@@ -5453,6 +7623,11 @@
         "drink"
       ],
       "summary": "Monster Energy — catalogued in food · USA.",
+      "facts": {
+        "origin": "USA",
+        "category": "drink",
+        "story": "Monster Energy is still on tables and shelves."
+      },
       "coverHue": 99,
       "sort": 24,
       "status": "active"
@@ -5468,6 +7643,11 @@
       "origin": "Italy",
       "tags": [],
       "summary": "S.Pellegrino — catalogued in food · Italy.",
+      "facts": {
+        "origin": "Italy",
+        "category": "Packaged food",
+        "story": "S.Pellegrino is still on tables and shelves."
+      },
       "coverHue": 51,
       "sort": 25,
       "status": "active"
@@ -5483,6 +7663,11 @@
       "origin": "France",
       "tags": [],
       "summary": "Évian — catalogued in food · France.",
+      "facts": {
+        "origin": "France",
+        "category": "Packaged food",
+        "story": "Évian is still on tables and shelves."
+      },
       "coverHue": 14,
       "sort": 26,
       "status": "active"
@@ -5496,6 +7681,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Meiji — catalogued in food · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "category": "Packaged food",
+        "story": "Meiji is still on tables and shelves."
+      },
       "coverHue": 249,
       "sort": 27,
       "status": "active"
@@ -5509,6 +7699,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Calbee — catalogued in food · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "category": "Packaged food",
+        "story": "Calbee is still on tables and shelves."
+      },
       "coverHue": 187,
       "sort": 28,
       "status": "active"
@@ -5524,6 +7719,11 @@
       "origin": "Japan",
       "tags": [],
       "summary": "Nissin — catalogued in food · Japan.",
+      "facts": {
+        "origin": "Japan",
+        "category": "Packaged food",
+        "story": "Nissin is still on tables and shelves."
+      },
       "coverHue": 303,
       "sort": 29,
       "status": "active"

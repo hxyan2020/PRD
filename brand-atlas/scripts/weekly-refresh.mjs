@@ -162,6 +162,10 @@ for (const cand of pick(addCandidates, 2, seed)) {
       origin: cand.origin ?? null,
       tags: cand.tags ?? [],
       summary: cand.summary,
+      facts: {
+        origin: cand.origin ?? "Worldwide",
+        story: cand.summary,
+      },
       coverHue: (seed + cand.slug.length * 17) % 360,
       sort: 9999,
       status: "active",

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import {
+  getUnlock,
   getUnlocks,
   isUnlocked,
   subscribeUnlocks,
   unlockCount,
   unlockItem,
+  updateUnlockNote,
+  updateUnlockPhoto,
   type UnlockRecord,
 } from "../lib/unlocks";
 
@@ -18,6 +21,16 @@ export function useUnlocks() {
     count: unlockCount(),
     unlocks: getUnlocks(),
     isUnlocked: (id: string) => isUnlocked(id),
-    unlock: (id: string, method?: UnlockRecord["method"]) => unlockItem(id, method),
+    getUnlock: (id: string) => getUnlock(id),
+    unlock: (
+      id: string,
+      opts?: {
+        method?: UnlockRecord["method"];
+        photoDataUrl?: string | null;
+        note?: string;
+      },
+    ) => unlockItem(id, opts),
+    updateNote: (id: string, note: string) => updateUnlockNote(id, note),
+    updatePhoto: (id: string, photo: string | null) => updateUnlockPhoto(id, photo),
   };
 }

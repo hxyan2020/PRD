@@ -1,28 +1,29 @@
 import { Link } from "react-router-dom";
 import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
+import { useI18n } from "../i18n/I18nProvider";
+import { overallProgress } from "../lib/progress";
+import { formatPct } from "../lib/unlocks";
 
 export function HomePage() {
   const { catalog, loading, error } = useCatalog();
   const { count } = useUnlocks();
+  const { t } = useI18n();
+  const overall = catalog ? overallProgress(catalog) : null;
 
   return (
     <main>
       <section className="hero">
         <div className="hero__content">
-          <p className="hero__brand">Seen</p>
-          <h1>Photograph the world. Unlock the catalogue.</h1>
-          <p>
-            Cars, cigarettes, spirits, wine, sake, beer, coffee, tea, clothes,
-            luxury, trees, flowers, animals, food — marks humans made and life
-            still around. Spot one, confirm it, lift the greyscale.
-          </p>
+          <p className="hero__brand">{t("hero.brand")}</p>
+          <h1>{t("hero.headline")}</h1>
+          <p>{t("hero.blurb")}</p>
           <div className="cta-row">
             <Link className="btn btn--primary" to="/scan">
-              Take a picture
+              {t("hero.ctaScan")}
             </Link>
             <Link className="btn btn--ghost" to="/catalog">
-              Browse catalogue
+              {t("hero.ctaCatalog")}
             </Link>
           </div>
         </div>
@@ -60,6 +61,10 @@ export function HomePage() {
               <div className="stat">
                 <b>{count}</b>
                 <span>unlocked by you</span>
+              </div>
+              <div className="stat">
+                <b className="mono">{overall ? formatPct(overall.pct) : "0.00%"}</b>
+                <span>overall progress</span>
               </div>
               <div className="stat">
                 <b>weekly</b>

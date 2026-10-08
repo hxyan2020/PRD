@@ -17,6 +17,7 @@ export interface CatalogItem {
   origin: string | null;
   tags: string[];
   summary: string;
+  facts: Record<string, string>;
   coverHue: number;
   sort: number;
   status: string;
@@ -52,3 +53,5 @@ export interface Guess {
 export type IdentifyResult =
   | { status: "unclear"; message: string }
   | { status: "guesses"; guesses: Guess[]; message: string };
+
+export type RevealMode = "locked" | "sneak" | "unlocked";

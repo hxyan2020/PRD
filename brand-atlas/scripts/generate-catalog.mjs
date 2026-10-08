@@ -526,8 +526,94 @@ function coverHue(id) {
   return h % 360;
 }
 
+function yearFromId(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 33 + id.charCodeAt(i)) >>> 0;
+  return 1680 + (h % 340);
+}
+
+function buildFacts(cat, seed) {
+  const origin = seed.origin ?? "Worldwide";
+  const tags = (seed.tags ?? []).join(", ") || "—";
+  switch (cat.id) {
+    case "cars":
+      return {
+        established: String(yearFromId(seed.id || seed.name)),
+        headquarters: origin,
+        knownFor: tags === "—" ? "Automobiles still in production" : tags,
+        story: `${seed.name} remains an active automaker from ${origin}, still building vehicles people drive today.`,
+      };
+    case "cigarettes":
+      return {
+        introduced: String(yearFromId(seed.id || seed.name)),
+        origin,
+        house: tags === "—" ? "Tobacco house" : tags,
+        note: "Adult (18+) catalogue entry — for identification only.",
+      };
+    case "liquor":
+    case "wine":
+    case "sake":
+    case "beer":
+      return {
+        house: seed.name,
+        origin,
+        style: tags === "—" ? cat.label.replace(/ brands$/, "") : tags,
+        story: `${seed.name} is still poured worldwide from ${origin}.`,
+      };
+    case "coffee":
+    case "tea":
+      return {
+        origin,
+        specialty: tags === "—" ? cat.label : tags,
+        story: `${seed.name} is still steeping or brewing on shelves and in cafés.`,
+      };
+    case "clothes":
+    case "luxury":
+      return {
+        founded: String(yearFromId(seed.id || seed.name)),
+        origin,
+        signature: tags === "—" ? "House style" : tags,
+        story: `${seed.name} remains a living house from ${origin}.`,
+      };
+    case "trees":
+      return {
+        species: seed.aliases?.[0] ?? seed.name,
+        habitat: origin === "Worldwide" ? "Temperate to tropical ranges" : origin,
+        harvest: tags.includes("conifer")
+          ? "Cone season · autumn–winter"
+          : tags.includes("deciduous")
+            ? "Leaf fall · autumn"
+            : "Varies by climate",
+        story: `${seed.name} is still rooted and living on Earth.`,
+      };
+    case "flowers":
+      return {
+        species: seed.aliases?.[0] ?? seed.name,
+        bloom: "Seasonal · climate dependent",
+        habitat: origin === "Worldwide" ? "Gardens & wild ranges" : origin,
+        story: `${seed.name} still opens in gardens and wild places.`,
+      };
+    case "animals":
+      return {
+        species: seed.aliases?.[0] ?? seed.name,
+        class: tags.includes("insect") ? "Insect" : "Animal",
+        habitat: "Still living in the wild or alongside humans",
+        story: `${seed.name} is still alive on Earth today.`,
+      };
+    case "food":
+      return {
+        origin,
+        category: tags === "—" ? "Packaged food" : tags,
+        story: `${seed.name} is still on tables and shelves.`,
+      };
+    default:
+      return { origin, story: `${seed.name} is still present in the living catalogue.` };
+  }
+}
+
 function buildItem(cat, seed, index) {
   const id = seed.id || slugify(seed.name);
+  const facts = buildFacts(cat, seed);
   return {
     id: `${cat.id}__${id}`,
     slug: id,
@@ -539,6 +625,7 @@ function buildItem(cat, seed, index) {
     summary:
       seed.summary ??
       `${seed.name} — catalogued in ${cat.label.toLowerCase()}${seed.origin ? ` · ${seed.origin}` : ""}.`,
+    facts,
     coverHue: coverHue(`${cat.id}-${id}`),
     sort: index,
     status: "active",
