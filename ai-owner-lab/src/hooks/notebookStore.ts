@@ -76,6 +76,38 @@ export const notebookStore = {
     write([entry, ...read()])
     return entry
   },
+  update(
+    id: string,
+    patch: {
+      selectedText?: string
+      explanation?: string
+    },
+  ) {
+    const entries = read()
+    const index = entries.findIndex((e) => e.id === id)
+    if (index < 0) return null
+    const current = entries[index]
+    const selectedText =
+      patch.selectedText !== undefined ? patch.selectedText.trim() : current.selectedText
+    if (!selectedText) return null
+
+    let explanation = current.explanation
+    if (patch.explanation !== undefined) {
+      const next = patch.explanation.trim()
+      explanation = next || undefined
+    }
+
+    const updated: NotebookEntry = {
+      ...current,
+      selectedText,
+      explanation: current.type === 'explanation' ? explanation ?? '' : explanation,
+      updatedAt: new Date().toISOString(),
+    }
+    const next = [...entries]
+    next[index] = updated
+    write(next)
+    return updated
+  },
   remove(id: string) {
     write(read().filter((e) => e.id !== id))
   },

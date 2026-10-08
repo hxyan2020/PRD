@@ -2280,8 +2280,65 @@ body.menu-open {
   line-height: 1.55;
 }
 
+.notebook-edited {
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.3rem;
+  background: rgba(217, 119, 6, 0.14);
+  color: #9a5b08;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.notebook-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+}
+
+.notebook-entry.editing {
+  background: rgba(245, 248, 250, 0.96);
+  box-shadow: 0 0 0 1px rgba(13, 148, 136, 0.2);
+}
+
+.notebook-edit-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.notebook-edit-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--ink);
+}
+
+.notebook-edit-form textarea {
+  width: 100%;
+  min-height: 4.5rem;
+  resize: vertical;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  line-height: 1.45;
+  color: var(--ink);
+  background: #fff;
+}
+
+.notebook-edit-form textarea:focus {
+  outline: 2px solid rgba(13, 148, 136, 0.35);
+  border-color: var(--teal);
+}
+
 @media (max-width: 700px) {
   .drawer-panel {
     width: 100vw;
+  }
+
+  .notebook-actions .btn {
+    flex: 1 1 auto;
+    min-height: 2.75rem;
   }
 }

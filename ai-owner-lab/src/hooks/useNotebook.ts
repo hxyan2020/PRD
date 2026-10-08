@@ -6,6 +6,7 @@ export type NotebookEntryType = 'clip' | 'explanation'
 export interface NotebookEntry {
   id: string
   createdAt: string
+  updatedAt?: string
   type: NotebookEntryType
   selectedText: string
   explanation?: string
@@ -26,6 +27,7 @@ export function useNotebook() {
     count: entries.length,
     addClip: notebookStore.addClip,
     addExplanation: notebookStore.addExplanation,
+    updateEntry: notebookStore.update,
     removeEntry: notebookStore.remove,
     clearAll: notebookStore.clear,
   }

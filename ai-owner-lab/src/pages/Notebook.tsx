@@ -1,10 +1,37 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { formatTimestamp, useNotebook } from '../hooks/useNotebook'
+import { formatTimestamp, useNotebook, type NotebookEntry } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
 
 export function Notebook() {
-  const { entries, count, removeEntry, clearAll } = useNotebook()
+  const { entries, count, updateEntry, removeEntry, clearAll } = useNotebook()
   const { lang, t } = useLanguage()
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [draftText, setDraftText] = useState('')
+  const [draftExplanation, setDraftExplanation] = useState('')
+
+  function startEdit(entry: NotebookEntry) {
+    setEditingId(entry.id)
+    setDraftText(entry.selectedText)
+    setDraftExplanation(entry.explanation ?? '')
+  }
+
+  function cancelEdit() {
+    setEditingId(null)
+    setDraftText('')
+    setDraftExplanation('')
+  }
+
+  function saveEdit(entry: NotebookEntry) {
+    const selectedText = draftText.trim()
+    if (!selectedText) return
+    const patch =
+      entry.type === 'explanation'
+        ? { selectedText, explanation: draftExplanation }
+        : { selectedText }
+    const updated = updateEntry(entry.id, patch)
+    if (updated) cancelEdit()
+  }
 
   return (
     <div className="page">
@@ -29,35 +56,88 @@ export function Notebook() {
         </div>
       ) : (
         <ol className="notebook-timeline">
-          {entries.map((entry) => (
-            <li key={entry.id} className={`notebook-entry ${entry.type}`}>
-              <div className="notebook-meta">
-                <time dateTime={entry.createdAt}>{formatTimestamp(entry.createdAt, lang)}</time>
-                <span className="notebook-type">
-                  {entry.type === 'explanation' ? t('aiExplanation') : t('clip')}
-                </span>
-                {entry.sourceLabel ? (
-                  entry.sourcePath ? (
-                    <Link to={entry.sourcePath}>{entry.sourceLabel}</Link>
-                  ) : (
-                    <span>{entry.sourceLabel}</span>
-                  )
-                ) : null}
-                {entry.model ? <span className="notebook-model">{entry.model}</span> : null}
-              </div>
-              <blockquote className="notebook-quote">{entry.selectedText}</blockquote>
-              {entry.explanation ? (
-                <div className="notebook-explanation">
-                  {entry.explanation.split(/\n\n+/).map((block) => (
-                    <p key={block.slice(0, 24)}>{block.replace(/\*\*/g, '')}</p>
-                  ))}
+          {entries.map((entry) => {
+            const editing = editingId === entry.id
+            return (
+              <li key={entry.id} className={`notebook-entry ${entry.type}${editing ? ' editing' : ''}`}>
+                <div className="notebook-meta">
+                  <time dateTime={entry.createdAt}>{formatTimestamp(entry.createdAt, lang)}</time>
+                  {entry.updatedAt ? (
+                    <span className="notebook-edited" title={formatTimestamp(entry.updatedAt, lang)}>
+                      {t('edited')}
+                    </span>
+                  ) : null}
+                  <span className="notebook-type">
+                    {entry.type === 'explanation' ? t('aiExplanation') : t('clip')}
+                  </span>
+                  {entry.sourceLabel ? (
+                    entry.sourcePath ? (
+                      <Link to={entry.sourcePath}>{entry.sourceLabel}</Link>
+                    ) : (
+                      <span>{entry.sourceLabel}</span>
+                    )
+                  ) : null}
+                  {entry.model ? <span className="notebook-model">{entry.model}</span> : null}
                 </div>
-              ) : null}
-              <button type="button" className="btn ghost" onClick={() => removeEntry(entry.id)}>
-                {t('delete')}
-              </button>
-            </li>
-          ))}
+
+                {editing ? (
+                  <div className="notebook-edit-form">
+                    <label>
+                      {t('selectedTextLabel')}
+                      <textarea
+                        value={draftText}
+                        onChange={(e) => setDraftText(e.target.value)}
+                        rows={3}
+                        autoFocus
+                      />
+                    </label>
+                    {entry.type === 'explanation' ? (
+                      <label>
+                        {t('explanationLabel')}
+                        <textarea
+                          value={draftExplanation}
+                          onChange={(e) => setDraftExplanation(e.target.value)}
+                          rows={8}
+                        />
+                      </label>
+                    ) : null}
+                    <div className="notebook-actions">
+                      <button
+                        type="button"
+                        className="btn primary"
+                        disabled={!draftText.trim()}
+                        onClick={() => saveEdit(entry)}
+                      >
+                        {t('saveEdits')}
+                      </button>
+                      <button type="button" className="btn ghost" onClick={cancelEdit}>
+                        {t('cancelEdit')}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <blockquote className="notebook-quote">{entry.selectedText}</blockquote>
+                    {entry.explanation ? (
+                      <div className="notebook-explanation">
+                        {entry.explanation.split(/\n\n+/).map((block, index) => (
+                          <p key={`${entry.id}-b-${index}`}>{block.replace(/\*\*/g, '')}</p>
+                        ))}
+                      </div>
+                    ) : null}
+                    <div className="notebook-actions">
+                      <button type="button" className="btn ghost" onClick={() => startEdit(entry)}>
+                        {t('edit')}
+                      </button>
+                      <button type="button" className="btn ghost" onClick={() => removeEntry(entry.id)}>
+                        {t('delete')}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </li>
+            )
+          })}
         </ol>
       )}
 
