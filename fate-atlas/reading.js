@@ -68,6 +68,8 @@
         input: {
           question: "",
           birthDate: "",
+          bloodType: "",
+          personName: "",
           dayDate: new Date().toISOString().slice(0, 10),
           dayPurpose: "",
           formTrait: "",
@@ -815,6 +817,47 @@
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
           <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
         </div>`;
+    } else if (step === "blood") {
+      const types = ["A", "B", "O", "AB"];
+      const selected = state.input.bloodType || "";
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.bloodTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.generic.bloodCopy"))}</p>
+        <div class="blood-type-grid" role="radiogroup" aria-label="${escapeHTML(ti("studio.generic.bloodType"))}">
+          ${types
+            .map(
+              (t) => `<button type="button" class="choice-btn blood-type-btn${selected === t ? " is-on" : ""}" data-blood="${t}" aria-pressed="${selected === t ? "true" : "false"}">${t}</button>`
+            )
+            .join("")}
+        </div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(ti("studio.generic.focusOptional"))}</label>
+        <input type="text" id="r-question" value="${escapeHTML(state.input.question)}" placeholder="${escapeHTML(ti("studio.generic.bloodFocusPh"))}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
+        </div>`;
+      body.querySelectorAll("[data-blood]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          state.input.bloodType = btn.getAttribute("data-blood") || "";
+          body.querySelectorAll("[data-blood]").forEach((b) => {
+            const on = b === btn;
+            b.classList.toggle("is-on", on);
+            b.setAttribute("aria-pressed", on ? "true" : "false");
+          });
+        });
+      });
+    } else if (step === "name") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.nameTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.generic.nameCopy"))}</p>
+        <div class="field"><label for="r-name">${escapeHTML(ti("studio.generic.personName"))}</label>
+        <input type="text" id="r-name" maxlength="80" value="${escapeHTML(state.input.personName)}" placeholder="${escapeHTML(ti("studio.generic.namePh"))}" autocomplete="name" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(ti("studio.generic.focusOptional"))}</label>
+        <input type="text" id="r-question" value="${escapeHTML(state.input.question)}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(process.cta)}</button>
+        </div>`;
     } else if (step === "day") {
       body.innerHTML = `
         <h3 class="studio__heading">${escapeHTML(ti("studio.generic.dayTitle"))}</h3>
@@ -965,12 +1008,14 @@
   function captureGeneric() {
     const q = body.querySelector("#r-question");
     const b = body.querySelector("#r-birth");
+    const n = body.querySelector("#r-name");
     const d = body.querySelector("#r-day");
     const p = body.querySelector("#r-purpose");
     const ft = body.querySelector("#r-trait");
     const ff = body.querySelector("#r-focus");
     if (q) state.input.question = q.value.trim();
     if (b) state.input.birthDate = b.value;
+    if (n) state.input.personName = n.value.trim();
     if (d) state.input.dayDate = d.value;
     if (p) state.input.dayPurpose = p.value.trim();
     if (ft) state.input.formTrait = ft.value.trim();
@@ -978,6 +1023,15 @@
     const step = currentGenericStep();
     if (step === "question" && !state.input.question) return fail(q);
     if (step === "birth" && !state.input.birthDate) return fail(b);
+    if (step === "blood" && !state.input.bloodType) {
+      const grid = body.querySelector(".blood-type-grid");
+      if (grid) {
+        grid.classList.add("field-error");
+        setTimeout(() => grid.classList.remove("field-error"), 700);
+      }
+      return false;
+    }
+    if (step === "name" && !state.input.personName) return fail(n);
     if (step === "day" && !state.input.dayDate) return fail(d);
     if (step === "form") {
       if (!state.input.formTrait) return fail(ft);

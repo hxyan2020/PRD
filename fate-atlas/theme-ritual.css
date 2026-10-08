@@ -741,6 +741,18 @@ body > * {
   }
 }
 
+.blood-type-btn {
+  background: rgba(242, 232, 216, 0.05);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.blood-type-btn:hover,
+.blood-type-btn.is-on {
+  border-color: var(--copper);
+  background: rgba(224, 168, 74, 0.14);
+}
+
 .rite-explain {
   background: rgba(224, 168, 74, 0.07);
   border-color: rgba(224, 168, 74, 0.32);
