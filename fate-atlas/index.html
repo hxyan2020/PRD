@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Fatum Atlas — Play a fate rite</title>
   <meta name="description" content="Pick a fate-telling method, play its ritual step by step, collect the reading in your journal." />
+  <link rel="icon" href="assets/brand/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/brand/favicon-16.png" />
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png" />
+  <meta name="theme-color" content="#0f282c" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -14,7 +19,10 @@
   <a class="skip-link" href="#play" data-i18n="skip">Skip to play</a>
 
   <div class="hud" id="player-hud" data-i18n-aria="hud.ritesTitle" aria-label="Player progress">
-    <a class="hud__brand" href="#top">Fatum</a>
+    <a class="hud__brand" href="#top" aria-label="Fatum Atlas">
+      <img class="hud__logo" src="assets/brand/logo-light.png" width="72" height="40" alt="" decoding="async" />
+      <span class="hud__brand-text">Fatum</span>
+    </a>
     <div class="hud__stats">
       <span class="hud__pill" data-i18n-title="hud.ritesTitle" title="Methods in the atlas"><em id="hud-methods">0</em> <span data-i18n="hud.rites">rites</span></span>
       <span class="hud__pill hud__pill--seal" data-i18n-title="hud.sealsTitle" title="Saved readings"><em id="hud-seals">0</em> <span data-i18n="hud.seals">seals</span></span>
@@ -32,6 +40,9 @@
     <div class="hero__sky" aria-hidden="true"></div>
     <div class="hero__map" aria-hidden="true"></div>
     <div class="hero__content">
+      <div class="brand-mark" aria-hidden="true">
+        <img class="brand-mark__logo" src="assets/brand/logo-light.png" width="280" height="154" alt="" decoding="async" />
+      </div>
       <h1 class="brand">Fatum <span>Atlas</span></h1>
       <p class="hero__lead" data-i18n="hero.lead">Play the world’s fate rites.</p>
       <p class="hero__sub" data-i18n="hero.sub">Pick a method → follow the steps → reveal your reading. Optional: collect it as a seal in your journal.</p>
@@ -207,7 +218,10 @@
   </main>
 
   <footer class="footer">
-    <div class="brand-mini">Fatum Atlas</div>
+    <div class="brand-mini">
+      <img class="brand-mini__logo" src="assets/brand/logo.png" width="56" height="31" alt="" decoding="async" />
+      <span>Fatum Atlas</span>
+    </div>
     <p data-i18n="footer.tag">Play · reflect · collect — not predict. No black swans in the deck.</p>
   </footer>
 
