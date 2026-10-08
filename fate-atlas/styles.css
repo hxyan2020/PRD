@@ -2874,24 +2874,36 @@ body.nav-open .nav-toggle__bars::after {
     grid-template-areas: "brand stats aside toggle";
     align-items: center;
     gap: 0.35rem 0.45rem;
+    /* backdrop-filter makes fixed descendants position against the HUD;
+       drop it on phones so the nav drawer can cover the viewport */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(16, 12, 10, 0.94);
   }
 
-  .hud .site-nav {
+  .hud .site-nav,
+  .site-nav {
     flex: unset;
     justify-content: flex-start;
-    /* Fixed drawer — do not create an extra HUD grid row */
     position: fixed;
-    grid-area: 1 / 1 / 2 / 2;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: auto;
+    grid-area: unset;
     width: min(18rem, 84vw);
     max-width: 100vw;
     height: 100dvh;
-    height: 100%;
+    max-height: none;
     margin: 0;
+    z-index: 80;
     pointer-events: none;
   }
 
-  body.nav-open .hud .site-nav {
+  body.nav-open .hud .site-nav,
+  body.nav-open .site-nav {
     pointer-events: auto;
+    transform: translateX(0);
   }
 
   .hud__brand {
@@ -3633,8 +3645,12 @@ body:not(.studio-open) .hero__content {
 
   .hero__content {
     width: min(1120px, calc(100% - 1.25rem));
-    margin: 0 auto 5vh;
+    margin: 0 auto 4vh;
     padding-top: calc(4.25rem + env(safe-area-inset-top, 0px));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: min(88dvh, 42rem);
   }
 
   .hero::after {
@@ -3652,13 +3668,14 @@ body:not(.studio-open) .hero__content {
 
   .hero__sub {
     font-size: 0.88rem;
-    margin-bottom: 1.15rem;
+    margin-bottom: 1rem;
   }
 
   .hero__cta {
     flex-direction: column;
     align-items: stretch;
     gap: 0.55rem;
+    margin-top: 0.35rem;
   }
 
   .hero__cta .btn {
@@ -4069,11 +4086,13 @@ body:not(.studio-open) .hero__content {
     width: min(92vw, 28rem);
     padding: 0.7rem 1rem;
     font-size: 0.85rem;
+    z-index: 500;
   }
 
+  /* Keep toast clear of the studio close control */
   body.studio-open .toast {
-    bottom: auto;
-    top: max(4.25rem, calc(env(safe-area-inset-top) + 3.5rem));
+    top: auto;
+    bottom: max(5.5rem, calc(env(safe-area-inset-bottom) + 4.75rem));
   }
 
   @media (max-width: 480px) {
