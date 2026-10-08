@@ -60,10 +60,11 @@ export function ItemDetail({
     setNote(unlock?.note ?? "");
   }, [unlock?.note, item.id]);
 
+  const permalink = unlock ? permanentLink(unlock.shareId) : null;
+
   const copyLink = async () => {
-    if (!unlock) return;
-    const url = permanentLink(unlock.shareId);
-    await navigator.clipboard.writeText(url);
+    if (!permalink) return;
+    await navigator.clipboard.writeText(permalink);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   };
@@ -187,6 +188,13 @@ export function ItemDetail({
                     Edit anytime — saves when you leave the field or tap Save.
                   </p>
                 </div>
+                {permalink && (
+                  <div className="permalink-box" style={{ marginTop: "0.9rem" }}>
+                    <strong>Permanent link</strong>
+                    <code className="permalink-url">{permalink}</code>
+                  </div>
+                )}
+
                 <div className="cta-row" style={{ justifyContent: "center" }}>
                   <button type="button" className="btn btn--forest" onClick={saveNote}>
                     {savedFlash ? "Saved" : t("unlocked.saveNote")}

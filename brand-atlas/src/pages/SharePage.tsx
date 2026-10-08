@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCatalog } from "../hooks/useCatalog";
 import { coverGradient, findItem, getCategory } from "../lib/catalog";
-import { formatUtc, getUnlockByShareId } from "../lib/unlocks";
+import { formatUtc, getUnlockByShareId, permanentLink } from "../lib/unlocks";
 
 export function SharePage() {
   const { shareId } = useParams();
@@ -9,6 +10,8 @@ export function SharePage() {
   const unlock = shareId ? getUnlockByShareId(shareId) : undefined;
   const item = catalog && unlock ? findItem(catalog, unlock.itemId) : undefined;
   const cat = catalog && item ? getCategory(catalog, item.categoryId) : undefined;
+  const [copied, setCopied] = useState(false);
+  const permalink = shareId ? permanentLink(shareId) : "";
 
   if (loading) return <main className="shell section">Loading…</main>;
 
@@ -56,10 +59,24 @@ export function SharePage() {
         {unlock.photoDataUrl && (
           <img className="sighting-photo" src={unlock.photoDataUrl} alt="Sighting" />
         )}
-        <p className="muted mono" style={{ fontSize: "0.8rem" }}>
-          Permanent link id: {unlock.shareId}
-        </p>
-        <Link className="btn btn--forest" to={`/catalog/${item.categoryId}`}>
+        <div className="permalink-box">
+          <strong>Permanent link</strong>
+          <code className="permalink-url">{permalink}</code>
+          <button
+            type="button"
+            className="btn btn--quiet"
+            style={{ marginTop: "0.6rem" }}
+            onClick={() => {
+              void navigator.clipboard.writeText(permalink).then(() => {
+                setCopied(true);
+                setTimeout(() => setCopied(false), 1600);
+              });
+            }}
+          >
+            {copied ? "Copied!" : "Copy permanent link"}
+          </button>
+        </div>
+        <Link className="btn btn--forest" to={`/catalog/${item.categoryId}`} style={{ marginTop: "0.8rem" }}>
           Open in catalogue
         </Link>
       </div>

@@ -125,9 +125,13 @@ export function updateUnlockPhoto(
 }
 
 export function permanentLink(shareId: string): string {
-  const base = `${window.location.origin}${import.meta.env.BASE_URL}`;
+  const origin = window.location.origin;
+  const basePath = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   const useHash = import.meta.env.BASE_URL !== "/";
-  return useHash ? `${base}#/u/${shareId}` : `${base}u/${shareId}`;
+  if (useHash) {
+    return `${origin}${basePath}#/u/${encodeURIComponent(shareId)}`;
+  }
+  return `${origin}${basePath}u/${encodeURIComponent(shareId)}`;
 }
 
 export function subscribeUnlocks(cb: () => void): () => void {

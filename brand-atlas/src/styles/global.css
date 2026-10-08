@@ -332,6 +332,27 @@ img {
   border-top: 1px solid var(--line);
 }
 
+.permalink-box {
+  margin-top: 0.85rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--leaf) 12%, white);
+  border: 1px solid color-mix(in oklab, var(--leaf) 28%, transparent);
+  text-align: left;
+}
+
+.permalink-url {
+  display: block;
+  margin-top: 0.35rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  background: color-mix(in oklab, white 80%, transparent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  word-break: break-all;
+  color: var(--forest-deep);
+}
+
 .item-tile__cover[style*="background-image"] {
   filter: none;
 }
