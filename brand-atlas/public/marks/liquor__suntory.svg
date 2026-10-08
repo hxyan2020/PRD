@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Suntory">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(37 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(77 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">◇</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">S</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAALVBMVEX///9vxsbS7+/n9/ep3t6Izs7G5+fe8/OY1ta95+d7zs5zzs6c3t6M1ta14uIdkSoSAAAAwElEQVQ4jYWT2w7DIAxDgSRAoN3/f+6oJi1XqX6sj0hsaClK0HHSqkSIrUQxVa0LrN12dZrGR28fvfkaaJmvAVkPf6s13BqAv9/lY1dAy04tkAEuewTuHJAd6uKUMCVjMsf1MONV+SZ3QNjXOP0gII8Mf8iYbkwSl5eJkwVuelJaiY4ctvBE9nIfRcBGhjiiL/VQyhWX7E9z3Ac8/84tZRogkYTIH7Xqabz4KphIr31mLOvuT6yPkejcwzr/PuuKv9ZxBAcvazuaAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

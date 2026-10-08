@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Champion">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(198 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(238 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">◇</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">C</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAolBMVEX////+/v78/P0BAV7+/v8FBWAAAFMAAWICAl7/AAP8AAkAAFUAAFn/AAhzc6bh4ey7ACDy8fbLyd2lpsaEhLFubqJ7e6uXl728vdWxrcpZWJQXHHE3N4C4tc8uL3wQAFMVFWsAAEloAz64ASHp6fFRUJBpZ5w6BE/bAhfX1+Wbm78wBFPvAQyrAyXiARIyL3egAykjBVhIA0mXBC7TAhhXV5P0RtzlAAABHElEQVQ4jd2S616DMAzF07QokI47ImxDcDCHlylO3//V5LJC2XwBPd/6yz+np0kB/psYKglxXRWIi9MlggzAD8LIieO75N7tyozp5gwwzdacbnoRGZvIBe0egbDNOT20pjGoMKgkB0ERgglH0qNn725Nzk1uBFWQ1EbNFMFgT08Hy7a8M9D09v5zBWMMhJBeXi1bBxDniJ3Nhr9Z9mrh0E9FKKAq5HG1ugQ0B7eQh9mBc8MdgclBvPOPAdjpgJgmi5BQe+xDzgD2AXycUmbUetZ0RTE4NHEyzwH3JD9PXyc1qCaMc5khqLcyAWkuZWd+lizLfAvathiCH9aFSeOu5Po7xeU6tXU7URj4Q89SDPUGvPowI6PEfqn+af0APkESGauXOdUAAAAASUVORK5CYII=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

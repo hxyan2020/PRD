@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Celestial Seasonings">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(283 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(323 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">♨</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">CS</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACjElEQVRYhb3XS4jNYRjH8c8xMwiNS4QQk8VgpkiuyQpRpGYxJcmlyUKyUES5rqwsJFFySUZKyoaVjQUNkaJEUbJBuWdmSmNmLN53+M85/5n5n+PM/Orf6X953uf7vu/zPO9zcopUd0sd5FCNNvzOLX9R7DB/NawE5zAPVzC3ZM+lAESNwRFsQM2QASRmvwMNqMD0vHeDA5BwsBT7MTzezyjZc1RliqPx2ILR+Irv+IFuHMxzWotRaO9uqVNKMOZSACbjNhbFx13oiAAj8mza8ACP8RSv8BodWWHSAGANLmNaxolAJ14K8fEmK0CvGEgY3cU+YQuyKoebeFuETWEQJiBu4CjaixhrJerJnhmpWRAhunAH7zMCwCo0Y0VWiFSAaFiBnZhdBABhBS4KqzEgRAFAwmAtdskL1IyqxXksGwiir0I0A8eEmtCjTiEVs2oOzonnRV8QlalPWRKdPxJS6zneYT229mOXrwXCRJqEmlGgguWNpKMwDq3x6oqvx+IsNgspeh+LMbUfiF9CLF1FQbXMvL+JJZyJa0J1bIj3TdiESX2YP8RGfCoZIA+iFhPQEu8rhIPqOFanjNuBbbhO71UoJcL7A5uC02hM+awZ29GZBCilISlQYsCPOIBnKZ/NF1atl8oCkAfxFhcUpuxEIbAHByAP4h4+p30yqAAJfREamaQ+49tQAVTFK6kHAtiQAMwS9rxHH3DJv4I2OACJdFwntO+EGnAKTyishGUDSDivF6oiYcYXhfLdndamZT1Usqoah4U/LB1COh5Ca189YlkA4uxHRmeNQrCdxJn+nJcFIDqvxF7sFmrAifjbOVB3XK4tqMFC7MEtsQZkac3/+zCKK1AlbMHPrI579AeHXa+uxLbY9QAAAABJRU5ErkJggg==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Captain Morgan">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(118 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(158 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">◇</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">CM</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADG0lEQVQ4jYWTXWxTdRjGf6c96zlnoxt0TgcdLKMDXQsImCzGj3jJBQkXClmMQ4wmzjuMUW800SsT2Y0JiF6YLGQDnUvYKLANllBmlIIbVMe+KHSsdGVdx1bX7/Yczt+LJo0hGt/bN7/3ed4n7wv/U4+Xrgvdv18Y/heFcb9fPNmX/ws0kwvC+PMzxNyHiI0dZJZrWRvux0wuCEt1g2TqBWGpUCTpSdBILIji1HdYk4OYzUcIhpqIdvdRN32DqqZtOA7spmrzDmTnFrSWVyTLP+Gw9ycx+8U+AB7Wfk3vsRnOv/8uYsyHlMuRnZ7gwewjMpFJ5MY9AJQdpG50i1s/nKSx7XOy1wNMnj2DnlhhvSxjKeTLIk85HNS3v0elcxO1b75dWsFMLojMhZ0Yzm9Z/KaH7Ng1cvYaHuTzpJ5103zgderdbuwWK8s9XTB4Dot7BzsHLpVCLExcxuZoI9E1WIZH02kSL73G/qOf0vq8h6JpZcM6DfueVubnQ5jhebJzIazC0EXq9Cfo5m6Wz17koSRxMZXmVDwL1dW0KlFGL/TiMgJUallIPcLnv03R48HT1o6c+ONXsjm4c20K/9oqM7kMV9cgqiu0KzlqH+t0jy+x9RmNxfQofad+weF+mXeOH5c42YU8fOZHzHw950d8RGIrhFGJ6goA2+1Wdr2gcKylFYfNZPy3OFWhBCO5WfL5vFBVVZKbK6A3WiASi6FWqESzSjnxyzcj8D3U7GrAXmWnEnjOoTFi5Ll37z6xWFxIRviu+N13hTnvOb4aGWc6VUCVbQBs1ST2tawnVJBIKE+TWoqhJVKErDZsmsqVq0PIcuO28i34/WPi0Btv4dmsMBUpMBdPAHD01S3oDU2s3rHTNTDOBrWAVmkyfMmHFSAQmBCgfel0bqS/bwCLDsmVNf4qFplfNVCMAh+fDnD77iLhIqiqRIXNimFZV1JOZ1Kis/OEUOU6ATUCaoQq14nDhz8QXu+QmJycEQcPHRFe75Do7vlZNGzaLlS5TsRi8dJ3BoMh0dl5Qrhce4XLtVd0dHwkSq7+vYLBUHn43z9Ddry93VSyAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

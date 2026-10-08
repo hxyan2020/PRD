@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Opus One">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(124 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(164 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">♤</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">OO</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAaVBMVEX///8ARHwAQnspYpHe5+7H1uJ4nLqSr8d8n7za5OwaV4mvxNYlX4+KqcMLTILA0d9pkbIwZ5Xz9vmov9Ln7vNfiq0+cpwbWIr4+vtahquctsygus48cJtIeaHO2+YSUYW2ydlPfqVwlrUy7RqZAAABV0lEQVQ4jX1T2ZKDIBAUlUu5D6MYY+T/P3LJUbsCyfYDVVa3083M0DQ5jOtp75rPMDDEZepYd1Xwo0D6qRsEAG3bsvGTwI0bS/wDLbtVdM+vO/hFi0reatCCk2AyOT8OZzrhQnN7XfClQO4FDwTOBHdRVmg7+n8FMNyzCrXFOJ94M1UOrM8jVA7qXKCRunLIEtQhhc7bUDRK6Fjwzexfgucpuk1Vw/RpCYDYdwEE2w4fSblVq06bpFmKMuhNIcIxLoq4Hh7sMiRVx5jePMFljDRyRFD0igTZm4psZmrVVU+HiggRghDPHMwNL9PmuZU32lMZ4jEt57WFy4JGap51Rk64hYWHg89vJzEiAX55Nk5yhGXvnKPwvmKe7hlCGN9JDEz/rnfLkfL+1YWw2jVwbh80xcum0g0jX+XNmTkbdDPD2LGFjynXXPk+YI9o6Ye+/IX79tbf+AG32xVllYy+NgAAAABJRU5ErkJggg==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

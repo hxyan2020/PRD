@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Maggi">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(30 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(70 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">◎</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">M</text>
+  <image href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Nzo6LTY9TT84RS05RSsBCgoKDQwNGg8PGjclHyU1NTU3Nzc3NzgxLS83NTI3LTM3MTc1NzcxNTQ1LTc3NTUtLTE1NTM1Njg1ODc1LzU1Lf/AABEIACAAIAMBEQACEQEDEQH/xAAaAAACAgMAAAAAAAAAAAAAAAAABgIHAQQF/8QAKBAAAQMDBAEDBQEAAAAAAAAAAQIDBAAFEQYSITFBImFxFjIzUYET/8QAGgEAAwEAAwAAAAAAAAAAAAAAAAEFBAIDB//EAB4RAAEFAAMBAQAAAAAAAAAAAAABAgMEEQUSIUEx/9oADAMBAAIRAxEAPwC0MV5LilUKEQApYAUAKF41VLVPk2+xR0OvR0FTrjh/WMhI8nmrtbjmdEkmUqV6MfRJJl8UX5T+sXleqQ4DsC9rZSnAIzjjzxVBkdBvwpsj49E/CLf1gzuUJjo253blheMY8c578U1bRd8GrePd5h3LZqW5QrvGtd8S24t8DDjYwUkkgZ8HqsM/HxPjV8XhOnpROiWWH4bt10imRNdnW2YuFJd/JhO4K5Bz7cgVmr8n1Z0kTTpg5Do1I5G6iC9cdO6pitlbUsSkpyR/mfWO8kAjvk9c1Shu03+OTClDepPXHNwjadLagntNuSJZhtAelKuVfO0fA75rlPfqxLjU0c/I1YlxjdGu06TjwJbcyRIdmykDhx9Wdvf2j++9SrHJOlb1amISZr7pGqxqYgwVJMIUCCnoGcmjsoYf/9k=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

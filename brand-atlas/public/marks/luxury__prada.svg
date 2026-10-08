@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Prada">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(148 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(188 48% 38%)"/>
-    </linearGradient>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
   </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">✦</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">P</text>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAHlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABaVcReAAAACXRSTlMA8kARuY4n1moV/T0GAAABbElEQVR4nO2ZW47DIBAEDZjX/S8cUPKzK1szwLSJoq4LVJlBRsbHQQghhBBCCCGEEEIIIVeE5M1JQW33MTsAOXpVQ4i5gshRURCiQ/lrdYqCAvS3giL5PWz932QvDQDrr1UYQjrRAWfaOgFxBh66BTvu2wN2j2D7JgS/hxRvIvQSSAuA3gXSi7ARkEOQjwLsNsgqP24KivX/TAFToPaD1mDEjygY89sXjPqt98Gwv6+B4TvxnPBbFsz57Qpm/VYF836bghW/xeksn7/YglX/YoFb968VWPgXCkyef6XAyt8OhqmCaOafurVwlv42heECW38v2OsfnYLmNmqUkTWwf/6Oeg00d2HIAphfWQD0qwqgfkUB2C8WwP3C57srcH8vuP1kecR/3F8gPOW/K9Bdf5hwuQ+ee/7rgkf9jf87UXv9Y8ffj6a1z585UsyfObiMOX4lgi/xbMSi+x0HaUiNbXZCCCGEEEIIIeRHeAHywnogfb4gBgAAAABJRU5ErkJggg==" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Cow">
-  <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="hsl(61 42% 62%)"/>
-      <stop offset="100%" stop-color="hsl(101 48% 38%)"/>
-    </linearGradient>
-  </defs>
-  <rect width="160" height="160" rx="28" fill="transparent"/>
-  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
-  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
-  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">◉</text>
-  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">C</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <path fill="#C4C4C4" d="M32 48c0-16 14-28 32-28s32 12 32 28v36H32z M28 44c-10 0-16 8-12 16 M100 44c10 0 16 8 12 16 M48 84v36h12V84 M68 84v36h12V84 M52 56h8v8h-8z M68 56h8v8h-8z M56 70h16v6H56z M48 24c-4-8 4-12 8-8 M80 24c4-8-4-12-8-8"/>
 </svg>

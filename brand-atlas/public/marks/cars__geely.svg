@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img"><title>Geely</title>
-<path fill="#9A9A9A" d="M12 2.5c2.4 1.2 5.2 1.8 8 1.8v7.2c0 4.6-3.2 8.4-8 10-4.8-1.6-8-5.4-8-10V4.3c2.8 0 5.6-.6 8-1.8z"/>
-<path fill="#6E6E6E" d="M12 5.2c1.6.8 3.5 1.2 5.4 1.2v5c0 3.1-2.1 5.7-5.4 6.8-3.3-1.1-5.4-3.7-5.4-6.8v-5c1.9 0 3.8-.4 5.4-1.2z"/>
-<circle cx="12" cy="11.2" r="2.2" fill="#9A9A9A"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <defs>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
+  </defs>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAACH0lEQVR4nO2Y23HbMBBFjzT6D1OB0EGUDthBkgqsTuIS3EGcCpJUEKWCsANBFZiqwP4AMAQxfIgETX/4nhkMCApYAHeXxFIghBBCCCGEEEIIIYQQQrwbNtF1ARhfhxJjemxUvv6y5MJG+Ofn/TrQp/Ylva6ia8Bt7C/wPLP8AO4zxs+d85gx/gyUAFtvrBxQ8hZs5vg5pBE6BQP8AootcFhkOeuTI0AY/2G7gCGTOX4O16UMbReyU493WZSafMcBToBqtNcwBesLEObNZgd8w73EDE04G5qjcE/7aCxoh/1bCNA1n43qcOxdfW2TOkTQZQM8AnfRD7GhS4fRuJ+JFnSgLSA48WA8r4jP6bR9pT0vwO/IXvw4GNqOSp0X/14DH3e4R+CObu/eQoWLou++bX198WVoczFDIu2TzVR+vrJjzJR1EwTI4YDbUJlpZwqxN+fyM27kZILPOO88ZdpYc75zqobxN+caLDPHTy1Fxtgnosc85AEW+EwSFhMoeJt0eCon3D7tUCeD+7j5z+2qHnGnyRreP+PeO1M8/kDPO2rXcc96Ae69GKUvn+j/bjA991+DsSywxnk6fDKfhox1CRBjcZ599O0CJ0KJE8T49pqPQHqknnDH7Qm34Unr2Ix3GSVONI40kbJIquoJiVcF/KHxanYGuoQAfYRoCfWe5uwOdSDOLi3Oo5bm3xv7iusUQgghhBBCCCGEEEII8W54AWzLTdX03KLzAAAAAElFTkSuQmCC" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
 </svg>

@@ -678,10 +678,14 @@ function escapeXml(s) {
 function writeMarkSvg(itemId, name, categoryId, hue) {
   mkdirSync(marksDir, { recursive: true });
   const out = join(marksDir, `${itemId}.svg`);
-  // Keep previously vendored brand logos (Simple Icons etc.) — do not overwrite.
+  // Keep previously vendored logos / silhouettes / Clearbit wraps / crests — do not overwrite.
   if (existsSync(out)) {
     const existing = readFileSync(out, "utf8");
-    if (existing.includes("<path") && !existing.includes("font-family")) {
+    const isMonogramBadge =
+      existing.includes("linearGradient") &&
+      existing.includes("font-family") &&
+      !existing.includes("data:image");
+    if (!isMonogramBadge) {
       return `marks/${itemId}.svg`;
     }
   }
