@@ -1022,7 +1022,7 @@ const PURCHASE = {
   go: [
     { platform: "Amazon", label: "Go Set with Stones (Amazon US)", url: "https://www.amazon.com/dp/B00004D2Q2" },
     { platform: "Amazon JP", label: "Go Board Set (Amazon Japan)", url: "https://www.amazon.co.jp/dp/B00GQZQZ6Y" },
-    { platform: "Yellow Mountain Imports", label: "Melamine Go Stones Set", url: "https://www.ymimports.com/products/go-set-melamine-stones" },
+    { platform: "Yellow Mountain Imports", label: "Melamine Go Stones Set", url: "https://www.ymimports.com/products/us-sf002-a" },
   ],
   mancala: [
     { platform: "Amazon", label: "Folding Mancala Board (Amazon US)", url: "https://www.amazon.com/dp/B00004YOXI" },
@@ -1042,7 +1042,7 @@ const PURCHASE = {
   dice: [
     { platform: "Amazon", label: "Polyhedral Dice Set (Amazon US)", url: "https://www.amazon.com/dp/B00U26V4VQ" },
     { platform: "Amazon UK", label: "Wooden Dice Set (Amazon UK)", url: "https://www.amazon.co.uk/dp/B01N5OKH1N" },
-    { platform: "Etsy", label: "Handcrafted Wooden Dice (Etsy)", url: "https://www.etsy.com/market/wooden_dice_set" },
+    { platform: "Etsy", label: "Handcrafted Olive Wooden Dice (Etsy)", url: "https://www.etsy.com/listing/4332612285/olive-wooden-dice-for-root-board-game" },
   ],
   backgammon: [
     { platform: "Amazon", label: "Backgammon Set (Amazon US)", url: "https://www.amazon.com/dp/B00004TKSX" },
@@ -1061,7 +1061,7 @@ const PURCHASE = {
   ],
   top: [
     { platform: "Amazon", label: "Wooden Spinning Tops Set (Amazon US)", url: "https://www.amazon.com/dp/B01N4VCZXF" },
-    { platform: "Etsy", label: "Hand-Turned Wooden Top (Etsy)", url: "https://www.etsy.com/market/wooden_spinning_top" },
+    { platform: "Etsy", label: "Mexican Mesquite Trompos (Etsy)", url: "https://www.etsy.com/listing/4358886269/mexican-trompos-mesquite-wood-2-pack" },
     { platform: "Amazon JP", label: "Traditional Japanese Top (Amazon JP)", url: "https://www.amazon.co.jp/dp/B00B1M0Y0I" },
   ],
   kite: [
@@ -1071,7 +1071,7 @@ const PURCHASE = {
   ],
   doll: [
     { platform: "Amazon", label: "Waldorf-Style Cloth Doll (Amazon US)", url: "https://www.amazon.com/dp/B07D7X5Z8K" },
-    { platform: "Etsy", label: "Handcrafted Folk Doll (Etsy)", url: "https://www.etsy.com/market/handmade_rag_doll" },
+    { platform: "Etsy", label: "Handmade African Print Rag Doll (Etsy)", url: "https://www.etsy.com/listing/1555427246/handmade-african-print-rag-doll" },
     { platform: "Amazon UK", label: "Traditional Rag Doll (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00E8JQY6Y" },
   ],
   marbles: [
@@ -1097,17 +1097,17 @@ const PURCHASE = {
   shuttlecock: [
     { platform: "Amazon", label: "Jianzi Shuttlecock (Amazon US)", url: "https://www.amazon.com/dp/B07B4QXK8R" },
     { platform: "Amazon UK", label: "Chinese Feather Shuttlecock (Amazon UK)", url: "https://www.amazon.co.uk/dp/B07B4QXK8R" },
-    { platform: "AliExpress", label: "Traditional Feather Jianzi", url: "https://www.aliexpress.com/w/wholesale-jianzi.html" },
+    { platform: "Amazon", label: "Feather Kick Shuttlecock Jianzi 5-Pack (Amazon US)", url: "https://www.amazon.com/dp/B094N7H92L" },
   ],
   xiangqi: [
     { platform: "Amazon", label: "Xiangqi Chinese Chess Set (Amazon US)", url: "https://www.amazon.com/dp/B000WQZ6YI" },
     { platform: "Amazon UK", label: "Xiangqi Folding Board (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0013L1Y0E" },
-    { platform: "Yellow Mountain Imports", label: "Xiangqi Magnetic Travel Set", url: "https://www.ymimports.com/collections/xiangqi" },
+    { platform: "Yellow Mountain Imports", label: "Xiangqi Magnetic Travel Set", url: "https://www.ymimports.com/products/ub-cc002-a" },
   ],
   shogi: [
     { platform: "Amazon", label: "Shogi Set (Amazon US)", url: "https://www.amazon.com/dp/B000P0Z6YI" },
     { platform: "Amazon JP", label: "Shogi Set (Amazon JP)", url: "https://www.amazon.co.jp/dp/B000FQJQZQ" },
-    { platform: "Yellow Mountain Imports", label: "Shogi Pieces Set", url: "https://www.ymimports.com/collections/shogi" },
+    { platform: "Yellow Mountain Imports", label: "Shogi Magnetic Travel Set", url: "https://www.ymimports.com/products/ub-sh004-a" },
   ],
   carrom: [
     { platform: "Amazon", label: "Carrom Board (Amazon US)", url: "https://www.amazon.com/dp/B00KQK8Z0Y" },
@@ -1116,12 +1116,12 @@ const PURCHASE = {
   ],
   generic_board: [
     { platform: "Amazon", label: "Classic Wooden Board Game (Amazon US)", url: "https://www.amazon.com/dp/B07YRJF3S7" },
-    { platform: "Etsy", label: "Artisan Handcrafted Board Game (Etsy)", url: "https://www.etsy.com/market/handmade_board_game" },
+    { platform: "Etsy", label: "Walnut Mancala Board (Etsy)", url: "https://www.etsy.com/listing/1695550412/walnut-stained-mancala-board-everyday" },
     { platform: "Amazon UK", label: "Traditional Board Game (Amazon UK)", url: "https://www.amazon.co.uk/dp/B000P99X7G" },
   ],
   generic_toy: [
     { platform: "Amazon", label: "Traditional Wooden Toy (Amazon US)", url: "https://www.amazon.com/dp/B01N4VCZXF" },
-    { platform: "Etsy", label: "Folk Craft Toy (Etsy)", url: "https://www.etsy.com/market/folk_toy" },
+    { platform: "Etsy", label: "Bilboquet Cup and Ball (Etsy)", url: "https://www.etsy.com/listing/4478059814/bilboquet-cup-and-ball-game" },
     { platform: "Amazon UK", label: "Heritage Wooden Toy (Amazon UK)", url: "https://www.amazon.co.uk/dp/B0000C9Z8T" },
   ],
   outdoor: [
@@ -1132,7 +1132,7 @@ const PURCHASE = {
   music: [
     { platform: "Amazon", label: "Children's Percussion Toy (Amazon US)", url: "https://www.amazon.com/dp/B00005ML7Q" },
     { platform: "Amazon UK", label: "Wooden Musical Toy (Amazon UK)", url: "https://www.amazon.co.uk/dp/B00005ML7Q" },
-    { platform: "Etsy", label: "Handcrafted Folk Rattle (Etsy)", url: "https://www.etsy.com/market/wooden_rattle" },
+    { platform: "Etsy", label: "Wooden Animal Baby Rattles (Etsy)", url: "https://www.etsy.com/listing/773722828/animal-baby-rattles-set-of-2-3-or-4" },
   ],
 };
 

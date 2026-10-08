@@ -56,8 +56,8 @@ const PURCHASE = [
   },
   {
     platform: "Etsy",
-    label: "Folk Craft Toy (Etsy)",
-    url: "https://www.etsy.com/market/folk_toy",
+    label: "Bilboquet Cup and Ball (Etsy)",
+    url: "https://www.etsy.com/listing/4478059814/bilboquet-cup-and-ball-game",
   },
   {
     platform: "Amazon UK",
