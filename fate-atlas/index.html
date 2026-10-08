@@ -113,7 +113,7 @@
         <div class="section">
           <p class="section__eyebrow" data-i18n="begin.eyebrow">Quick match</p>
           <h2 class="section__title" id="begin-title" data-i18n="begin.title">Or jump straight in</h2>
-          <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list, or roll a surprise.</p>
+          <p class="section__copy" data-i18n="begin.copy">Pick any rite from the list to begin.</p>
           <div class="begin__row">
             <div class="field begin__picker">
               <label id="method-picker-label" for="method-picker-trigger" data-i18n="begin.choose">Choose a rite</label>
@@ -136,16 +136,26 @@
             </div>
           </div>
           <div class="quick-actions">
-            <button type="button" class="btn btn--play-secondary" id="draw-btn"><span aria-hidden="true">🎲 </span><span data-i18n="begin.surprise">Surprise me</span></button>
             <a class="btn btn--ghost" href="#/atlas" data-nav="atlas" data-i18n="paths.toAtlas">Browse full atlas</a>
           </div>
-          <div class="oracle__result" id="oracle-result" hidden></div>
         </div>
       </section>
     </div>
 
     <!-- ATLAS -->
     <div class="page page--atlas" data-page="atlas" id="page-atlas" hidden>
+      <section class="oracle recommend" id="recommend" aria-labelledby="recommend-title">
+        <div class="section">
+          <p class="section__eyebrow" data-i18n="recommend.eyebrow">AI recommendation</p>
+          <h2 class="section__title" id="recommend-title" data-i18n="recommend.title">Not sure where to start?</h2>
+          <p class="section__copy" data-i18n="recommend.copy">Draw a rite from the full atlas — a chance pick for exploration, not a prediction.</p>
+          <div class="oracle__panel">
+            <button type="button" class="btn btn--primary" id="draw-btn"><span aria-hidden="true">✦ </span><span data-i18n="recommend.draw">Recommend a rite</span></button>
+            <div class="oracle__result" id="oracle-result" hidden></div>
+          </div>
+        </div>
+      </section>
+
       <section class="section regions-wrap" id="regions" aria-labelledby="regions-title">
         <p class="section__eyebrow" data-i18n="regions.eyebrow">World map</p>
         <h2 class="section__title" id="regions-title" data-i18n="regions.title">Browse by continent</h2>

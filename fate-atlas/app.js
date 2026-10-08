@@ -205,6 +205,21 @@
     });
   }
 
+  function showRecommendedInList(methodId) {
+    if (!methodId) return;
+    els.search.value = "";
+    els.continent.value = "all";
+    els.type.value = "all";
+    renderList();
+    requestAnimationFrame(() => {
+      const target = document.getElementById(`method-${methodId}`);
+      if (!target) return;
+      target.classList.add("is-route-focus");
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => target.classList.remove("is-route-focus"), 1800);
+    });
+  }
+
   function drawLot() {
     const pick = methods[Math.floor(Math.random() * methods.length)];
     const processLabel = processLabelFor(pick);
@@ -232,9 +247,10 @@
       ${sci ? `<div class="science-box science-box--${escapeHTML(sci.levelId)}"><p class="science-box__label">${escapeHTML(t("science.label"))}</p><p class="science-box__text">${escapeHTML(sci.reasoning)}</p></div>` : ""}
       <p class="method__actions" style="margin-top:1rem">
         <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(pick.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
-        <a class="btn btn--ghost btn--small studio__btn-muted" href="#/atlas?method=${escapeHTML(pick.id)}" data-nav="atlas">${escapeHTML(t("oracle.view"))}</a>
+        <button type="button" class="btn btn--ghost btn--small studio__btn-muted" data-recommend-show="${escapeHTML(pick.id)}">${escapeHTML(t("recommend.show"))}</button>
       </p>
     `;
+    els.oracleResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   function initStats() {
@@ -285,7 +301,13 @@
       renderList();
     });
 
-    els.drawBtn.addEventListener("click", drawLot);
+    els.drawBtn?.addEventListener("click", drawLot);
+
+    els.oracleResult?.addEventListener("click", (e) => {
+      const showBtn = e.target.closest("[data-recommend-show]");
+      if (!showBtn) return;
+      showRecommendedInList(showBtn.getAttribute("data-recommend-show"));
+    });
 
     document.addEventListener("fatum:locale-changed", () => {
       refreshLocalizedChrome();
@@ -294,6 +316,11 @@
       }
     });
   }
+
+  window.FatumAtlas = {
+    drawLot,
+    showRecommendedInList,
+  };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
