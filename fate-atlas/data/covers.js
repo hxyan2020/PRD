@@ -238,9 +238,9 @@
   <rect width="960" height="540" fill="url(#${gid})"/>
   <rect width="960" height="540" fill="url(#${gid}-spot)"/>
   ${motif}
-  <rect x="48" y="338" width="280" height="150" rx="10" fill="hsl(${h} 25% 6%)" opacity="0.45"/>
-  <text x="72" y="430" font-family="Georgia, 'Times New Roman', serif" font-size="118" fill="${ink}" opacity="0.95">${glyph}</text>
-  <text x="72" y="490" font-family="system-ui, sans-serif" font-size="22" letter-spacing="4" fill="${soft}" opacity="0.7">${escapeXml((method && method.name) || id).slice(0, 28).toUpperCase()}</text>
+  <rect x="40" y="36" width="300" height="168" rx="12" fill="hsl(${h} 28% 6%)" opacity="0.55"/>
+  <text x="64" y="140" font-family="Georgia, 'Times New Roman', serif" font-size="108" fill="${ink}" opacity="0.96">${glyph}</text>
+  <text x="64" y="178" font-family="system-ui, sans-serif" font-size="20" letter-spacing="3.5" fill="${soft}" opacity="0.78">${escapeXml((method && method.name) || id).slice(0, 26).toUpperCase()}</text>
 </svg>`;
 
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
