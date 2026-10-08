@@ -995,12 +995,13 @@ img {
 }
 
 .item-tile.is-locked .item-tile__mark {
-  filter: grayscale(1) contrast(1.15) brightness(0.72);
-  opacity: 0.92;
+  /* Lift grey marks so logo silhouettes read on dark locked covers */
+  filter: grayscale(1) contrast(1.25) brightness(1.65);
+  opacity: 0.9;
 }
 
 .item-tile.is-sneak .item-tile__mark {
-  filter: grayscale(0.35) brightness(1.05);
+  filter: grayscale(0.25) brightness(1.2);
   opacity: 1;
 }
 
@@ -1046,7 +1047,7 @@ img {
 }
 
 .detail-cover.is-locked .detail-cover__mark {
-  filter: grayscale(1) contrast(1.15) brightness(0.7);
+  filter: grayscale(1) contrast(1.25) brightness(1.55);
 }
 
 .detail-cover.is-sneak .detail-cover__mark {
