@@ -118,12 +118,21 @@
       else el.removeAttribute("aria-current");
     });
 
-    // Close mobile nav
+    // Close mobile nav + any open studio when switching pages
     document.body.classList.remove("nav-open");
     const toggle = document.getElementById("nav-toggle");
     const backdrop = document.getElementById("nav-backdrop");
     if (toggle) toggle.setAttribute("aria-expanded", "false");
     if (backdrop) backdrop.hidden = true;
+    if (document.body.classList.contains("studio-open")) {
+      window.FatumReading?.close?.();
+      window.FatumJournalUI?.closeDetail?.();
+      document.querySelectorAll(".studio").forEach((el) => {
+        el.hidden = true;
+        el.setAttribute("aria-hidden", "true");
+      });
+      document.body.classList.remove("studio-open");
+    }
 
     // Page-specific logic
     if (page === "atlas" && params.continent) {

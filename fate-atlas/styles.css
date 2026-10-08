@@ -2507,6 +2507,10 @@ body.nav-open .nav-toggle__bars::after {
     grid-area: brand;
   }
 
+  .hud__brand-text {
+    display: none;
+  }
+
   .hud__stats {
     grid-area: stats;
     justify-content: flex-end;
@@ -2531,7 +2535,8 @@ body.nav-open .nav-toggle__bars::after {
   .page--play,
   .page--atlas,
   .page--journal,
-  .page--about {
+  .page--about,
+  .page--terms {
     padding-top: 4.5rem;
   }
 }
@@ -3068,12 +3073,13 @@ body.studio-open .toast {
   .page--play,
   .page--atlas,
   .page--journal,
-  .page--about {
+  .page--about,
+  .page--terms {
     padding-top: calc(var(--hud-h) + env(safe-area-inset-top, 0px) + 0.65rem);
   }
 
-  .terms {
-    padding-top: calc(var(--hud-h) + env(safe-area-inset-top, 0px) + 1.75rem);
+  .page--terms .terms {
+    padding-top: 1.35rem;
   }
 
   .hero {
