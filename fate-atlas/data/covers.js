@@ -114,6 +114,7 @@
     if (/feng shui|vastu|kasō|kaso|ba zhai|flying star|xuan kong|onmyō|onmyo|rokuyō|rokuyo|seimei|name divin/.test(s))
       return "eastasia";
     if (/mbti|personality|myers|briggs|enneagram|temperament|blood type/.test(s)) return "personality";
+    if (/day name|weekday|birth.?day|soul name|akan day|weton|pawukon/.test(s)) return "astrology";
     if (/bird|augur|omen|weather|cloud|lightning|thunder|auspice|fox|benge/.test(s)) return "omens";
     if (/chinese|japan|korea|shinto/.test(s)) return "eastasia";
     if (method.type === "Form") return "form";
@@ -170,19 +171,57 @@
       .replace(/"/g, "&quot;");
   }
 
-  function palette(seed) {
-    const h = seed % 360;
-    const h2 = (h + 38 + (seed % 40)) % 360;
-    const h3 = (h + 180 + (seed % 60)) % 360;
+  /** Motif families get distinct base hues so similar rites don't look like the same purple plate. */
+  const MOTIF_HUE = {
+    "ugiri-strings": 28,
+    "ifa-chain": 145,
+    "ifa-board": 205,
+    "cowrie-sixteen": 42,
+    cowrie: 48,
+    kola: 12,
+    "sikidy-seeds": 88,
+    bones: 25,
+    "sand-dice": 165,
+    "lots-sticks": 35,
+    "moon-blocks": 210,
+    "oracle-bone": 40,
+    shagai: 18,
+    arrows: 5,
+    cards: 320,
+    tarot: 300,
+    coins: 45,
+    bagua: 55,
+    runes: 200,
+    astrology: 255,
+    palmistry: 350,
+    cups: 20,
+    scrying: 185,
+    dreams: 265,
+    numbers: 230,
+    egypt: 48,
+    mesoamerica: 15,
+    form: 280,
+    personality: 290,
+    eastasia: 0,
+    omens: 195,
+    fate: 32,
+    altar: 30,
+  };
+
+  function palette(seed, motif) {
+    const base = MOTIF_HUE[motif] != null ? MOTIF_HUE[motif] : seed % 360;
+    const h = (base + (seed % 24) - 12 + 360) % 360;
+    const h2 = (h + 42 + (seed % 28)) % 360;
+    const h3 = (h + 160 + (seed % 50)) % 360;
     return {
       h,
-      ink: `hsl(${h} 28% 8%)`,
-      deep: `hsl(${h} 32% 14%)`,
-      mid: `hsl(${h2} 42% 28%)`,
-      accent: `hsl(${h2} 68% 58%)`,
-      glow: `hsl(${h3} 55% 62%)`,
-      soft: `hsl(${h} 22% 88%)`,
-      line: `hsl(${h2} 40% 72%)`,
+      ink: `hsl(${h} 30% 7%)`,
+      deep: `hsl(${h} 34% 13%)`,
+      mid: `hsl(${h2} 40% 26%)`,
+      accent: `hsl(${h2} 70% 56%)`,
+      glow: `hsl(${h3} 58% 60%)`,
+      soft: `hsl(${h} 24% 90%)`,
+      line: `hsl(${h2} 42% 70%)`,
     };
   }
 
@@ -503,7 +542,7 @@
     const name = (method && method.name) || "Rite";
     const motif = motifFor(method);
     const seed = hashId(id);
-    const p = palette(seed);
+    const p = palette(seed, motif);
     const gid = `c-${id.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 40)}`;
     const region = (method && (method.region || method.continent)) || "";
     const art = motifDrawing(motif, p, seed);
