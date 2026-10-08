@@ -23,7 +23,15 @@
       "Burmese chess with free setup behind the pawns."
     ],
     "category": "Strategy & War",
-    "originCountry": "India"
+    "originCountry": "India",
+    "howToWin": [
+      "Checkmate the opponent’s king: it is under attack and has no legal escape, block, or capture."
+    ],
+    "rulesNotToBreak": [
+      "Do not leave your own king in check.",
+      "Move each piece only as its rules allow (including castling and en passant conditions).",
+      "Players alternate turns; White moves first."
+    ]
   },
   "game-0002": {
     "name": "Go (Weiqi)",
@@ -46,7 +54,15 @@
       "Japanese professional ranks and territory scoring conventions."
     ],
     "category": "Strategy & War",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "After both players pass, the higher score of territory plus captives wins (scoring rules vary by country)."
+    ],
+    "rulesNotToBreak": [
+      "Do not recreate the previous full-board position (ko).",
+      "Do not play suicidal moves unless they capture.",
+      "Stones do not move after placement—only place or pass."
+    ]
   },
   "game-0003": {
     "name": "Xiangqi",
@@ -67,7 +83,15 @@
       "Korean cousin without a river and with different elephant/horse moves."
     ],
     "category": "Strategy & War",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "Checkmate the opposing general (jiang/shuai)."
+    ],
+    "rulesNotToBreak": [
+      "Generals may not face each other on an open file.",
+      "Pieces must follow xiangqi move and river rules.",
+      "Do not leave your general in check."
+    ]
   },
   "game-0004": {
     "name": "Shogi",
@@ -89,7 +113,15 @@
       "Larger historical variant with many unique piece types."
     ],
     "category": "Strategy & War",
-    "originCountry": "Japan"
+    "originCountry": "Japan",
+    "howToWin": [
+      "Checkmate or forcibly impasse the opposing king under shogi rules; drops are part of legal play."
+    ],
+    "rulesNotToBreak": [
+      "Captured pieces may be dropped later—respect nifu and other drop bans.",
+      "Do not leave your king in check.",
+      "Promote only when entering, leaving, or moving inside the promotion zone as rules allow."
+    ]
   },
   "game-0005": {
     "name": "Mancala sowing games",
@@ -116,7 +148,15 @@
       "Modern commercial teaching form of mancala."
     ],
     "category": "Mancala & Sowing",
-    "originCountry": "Africa / Middle East"
+    "originCountry": "Africa / Middle East",
+    "howToWin": [
+      "When one player’s pits are empty, count stores—the higher seed total wins (ties are draws)."
+    ],
+    "rulesNotToBreak": [
+      "Sow counterclockwise one seed per pit; skip the opponent’s store.",
+      "Take an extra turn only when the last seed lands in your store.",
+      "Capture only from the empty-pit-on-your-side case defined for the variant."
+    ]
   },
   "game-0006": {
     "name": "Backgammon",
@@ -142,7 +182,15 @@
       "Ancient race ancestor with a unique track."
     ],
     "category": "Board & Race",
-    "originCountry": "Persia / Mesopotamia region"
+    "originCountry": "Persia / Mesopotamia region",
+    "howToWin": [
+      "First player to bear all fifteen checkers off the board wins."
+    ],
+    "rulesNotToBreak": [
+      "Enter from the bar before moving other checkers when you have one on the bar.",
+      "Do not land on a point with two or more opposing checkers.",
+      "Bear off only when all of your checkers are in your home board."
+    ]
   },
   "game-0007": {
     "name": "Senet",
@@ -162,7 +210,14 @@
     "idealParticipants": "2 people",
     "variationNotes": [],
     "category": "Board & Race",
-    "originCountry": "Egypt"
+    "originCountry": "Egypt",
+    "howToWin": [
+      "First to bear all pawns off the final squares wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0008": {
     "name": "Patolli",
@@ -184,7 +239,14 @@
       "Related Mesoamerican race/dice tradition."
     ],
     "category": "Board & Race",
-    "originCountry": "Mexico"
+    "originCountry": "Mexico",
+    "howToWin": [
+      "First to complete the circuit with all markers wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0009": {
     "name": "Pachisi",
@@ -209,7 +271,14 @@
       "German family race game in the same lineage."
     ],
     "category": "Board & Race",
-    "originCountry": "India"
+    "originCountry": "India",
+    "howToWin": [
+      "First to bring all four pieces into the center wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0010": {
     "name": "Mahjong",
@@ -233,7 +302,14 @@
       "NMJL card hands and jokers."
     ],
     "category": "Cards & Tiles",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "Declare mahjong on a complete hand; score by regional rules."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0011": {
     "name": "Dominoes",
@@ -255,7 +331,14 @@
       "Common parlor blocking/draw rules."
     ],
     "category": "Cards & Tiles",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "Win by emptying your hand or reaching a pip score."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0012": {
     "name": "Nine Men's Morris",
@@ -278,7 +361,14 @@
       "Larger piece-count mills variant."
     ],
     "category": "Strategy & War",
-    "originCountry": "Roman Empire / Europe"
+    "originCountry": "Roman Empire / Europe",
+    "howToWin": [
+      "Win by reducing the opponent to two pieces or blocking all moves."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0013": {
     "name": "Alquerque / Draughts family",
@@ -301,7 +391,14 @@
       "Saharan leap-capture relative."
     ],
     "category": "Strategy & War",
-    "originCountry": "Spain / Islamic Spain"
+    "originCountry": "Spain / Islamic Spain",
+    "howToWin": [
+      "Capture all enemies or immobilize them to win."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0014": {
     "name": "Fanorona",
@@ -320,7 +417,14 @@
     "idealParticipants": "2 people",
     "variationNotes": [],
     "category": "Strategy & War",
-    "originCountry": "Madagascar"
+    "originCountry": "Madagascar",
+    "howToWin": [
+      "Capture all opposing pieces to win."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0015": {
     "name": "Carrom",
@@ -343,7 +447,14 @@
       "Local foul and scoring house rules on the same board."
     ],
     "category": "Puzzles & Skill",
-    "originCountry": "India"
+    "originCountry": "India",
+    "howToWin": [
+      "Clear your pieces (with queen covered) to win."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0016": {
     "name": "Playing cards (French-suited deck)",
@@ -366,7 +477,15 @@
       "40- or 48-card decks for mus, tute, etc."
     ],
     "category": "Cards & Tiles",
-    "originCountry": "Egypt / China origins; Europe standardized"
+    "originCountry": "Egypt / China origins; Europe standardized",
+    "howToWin": [
+      "Highest card of the led suit wins the trick; hearts score 1 penalty point each and the queen of spades scores 13.",
+      "Play hands until one player reaches 100 penalty points; the lowest score wins (or switch later to whist, rummy, or another named game)."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0017": {
     "name": "Hanafuda / Karuta",
@@ -388,7 +507,14 @@
       "One hundred poem-card matching race."
     ],
     "category": "Cards & Tiles",
-    "originCountry": "Japan"
+    "originCountry": "Japan",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0018": {
     "name": "Ganjifa",
@@ -409,7 +535,14 @@
       "Ten-avatar suit system."
     ],
     "category": "Cards & Tiles",
-    "originCountry": "India"
+    "originCountry": "India",
+    "howToWin": [
+      "Highest trump wins the trick if any trump is played; otherwise the highest card of the led suit wins.",
+      "Each won trick scores one point (or count face cards if using a court-heavy house tally); highest trick total after all cards are played wins. Store cards flat."
+    ],
+    "rulesNotToBreak": [
+      "Use an 8-suit Mughal ganjifa set (96 circular cards) or a 10-suit Dashavatara set; shuffle gently without bending paint layers."
+    ]
   },
   "game-0019": {
     "name": "Knucklebones",
@@ -432,7 +565,14 @@
       "Stone-toss pickup sequence games."
     ],
     "category": "Dice & Chance",
-    "originCountry": "Greece"
+    "originCountry": "Greece",
+    "howToWin": [
+      "First player to complete the ones–twos–threes–fours sequence scores one point; play to five points. Use plastic or wooden replicas when real bones are unavailable."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0020": {
     "name": "Yo-yo",
@@ -453,7 +593,14 @@
       "European fashionable disk-and-string toy."
     ],
     "category": "Puzzles & Skill",
-    "originCountry": "China / Greece (disputed antiquity); Philippines popularization"
+    "originCountry": "China / Greece (disputed antiquity); Philippines popularization",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0021": {
     "name": "Kite flying",
@@ -477,7 +624,13 @@
       "Brazilian fighter-kite street culture."
     ],
     "category": "Outdoor Folk",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Reel in before storms; never fly near power lines."
+    ]
   },
   "game-0022": {
     "name": "Cat's cradle",
@@ -499,7 +652,14 @@
       "String stories with local names and narratives."
     ],
     "category": "String & Finger",
-    "originCountry": "Multiple (global)"
+    "originCountry": "Multiple (global)",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0023": {
     "name": "Jianzi (shuttlecock kicking)",
@@ -521,7 +681,13 @@
       "Vietnamese shuttlecock kicking sport."
     ],
     "category": "Ball & Sport",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "In a circle, pass to neighbors without using hands."
+    ]
   },
   "game-0024": {
     "name": "Sepak takraw",
@@ -542,7 +708,15 @@
       "Cooperative circle keeping-up without a net."
     ],
     "category": "Ball & Sport",
-    "originCountry": "Thailand / Malaysia"
+    "originCountry": "Thailand / Malaysia",
+    "howToWin": [
+      "Score one point when the ball grounds in the opponent’s court or the opponent faults (net touch with hand, four touches, out of bounds).",
+      "Play to 21 points per set (must win by 2); best of three sets decides the match."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0025": {
     "name": "Lacrosse",
@@ -564,7 +738,15 @@
       "Double-stick ball games with distinct ritual contexts."
     ],
     "category": "Ball & Sport",
-    "originCountry": "Canada / United States"
+    "originCountry": "Canada / United States",
+    "howToWin": [
+      "Score by sending the ball into the goal.",
+      "Highest score at the end wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0026": {
     "name": "Mesoamerican ballgame / Ulama",
@@ -586,7 +768,14 @@
       "Sinaloa hip-ulama continuation."
     ],
     "category": "Ball & Sport",
-    "originCountry": "Mexico"
+    "originCountry": "Mexico",
+    "howToWin": [
+      "Score one point when the opposing team fails to return, lets the ball stop, or sends it out of the alley.",
+      "First team to 8 points wins the game (common Sinaloa street tally); rest and switch ends after each game."
+    ],
+    "rulesNotToBreak": [
+      "Serve by bouncing the ball to a teammate who strikes it forward with the hip only—no hands, feet, or heads."
+    ]
   },
   "game-0027": {
     "name": "Kokeshi",
@@ -607,7 +796,14 @@
       "Clicking head joint school style."
     ],
     "category": "Dolls & Figures",
-    "originCountry": "Japan"
+    "originCountry": "Japan",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0028": {
     "name": "Matryoshka",
@@ -625,7 +821,13 @@
     "idealParticipants": "Alone",
     "variationNotes": [],
     "category": "Dolls & Figures",
-    "originCountry": "Russia"
+    "originCountry": "Russia",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Do not force tight seams."
+    ]
   },
   "game-0029": {
     "name": "Worry dolls",
@@ -644,7 +846,14 @@
     "idealParticipants": "Alone",
     "variationNotes": [],
     "category": "Dolls & Figures",
-    "originCountry": "Guatemala"
+    "originCountry": "Guatemala",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0030": {
     "name": "Corn husk doll",
@@ -664,7 +873,14 @@
     "idealParticipants": "Alone",
     "variationNotes": [],
     "category": "Dolls & Figures",
-    "originCountry": "United States / Canada"
+    "originCountry": "United States / Canada",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0031": {
     "name": "Bilboquet / Balero / Kendama family",
@@ -686,7 +902,14 @@
       "European parlor cup-and-ball."
     ],
     "category": "Puzzles & Skill",
-    "originCountry": "France / Mexico / Japan"
+    "originCountry": "France / Mexico / Japan",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0032": {
     "name": "Tangram",
@@ -705,7 +928,13 @@
     "idealParticipants": "Alone",
     "variationNotes": [],
     "category": "Puzzles & Skill",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Rearrange all seven pieces to match the outline without overlaps."
+    ]
   },
   "game-0033": {
     "name": "Rubik's Cube",
@@ -726,7 +955,14 @@
       "Higher-order cuboid with reduction methods."
     ],
     "category": "Puzzles & Skill",
-    "originCountry": "Hungary"
+    "originCountry": "Hungary",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0034": {
     "name": "Building blocks",
@@ -748,7 +984,14 @@
       "Caroline Pratt’s modular classroom blocks."
     ],
     "category": "Construction",
-    "originCountry": "Multiple (global)"
+    "originCountry": "Multiple (global)",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0035": {
     "name": "Chunkey",
@@ -768,7 +1011,14 @@
     "idealParticipants": "2+ people",
     "variationNotes": [],
     "category": "Ball & Sport",
-    "originCountry": "United States"
+    "originCountry": "United States",
+    "howToWin": [
+      "Score by closeness when the stone rests."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0036": {
     "name": "Palín",
@@ -788,7 +1038,14 @@
     "idealParticipants": "2 teams",
     "variationNotes": [],
     "category": "Ball & Sport",
-    "originCountry": "Chile"
+    "originCountry": "Chile",
+    "howToWin": [
+      "Score when the ball crosses the goal space."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0037": {
     "name": "Tug of war",
@@ -811,7 +1068,15 @@
       "Village tug rites around festivals."
     ],
     "category": "Outdoor Folk",
-    "originCountry": "Multiple (global)"
+    "originCountry": "Multiple (global)",
+    "howToWin": [
+      "Pull the center marker across your team’s line."
+    ],
+    "rulesNotToBreak": [
+      "Do not wrap the rope around limbs under sport rules.",
+      "Stay behind your foul line.",
+      "Stop immediately if someone slips dangerously."
+    ]
   },
   "game-0038": {
     "name": "Hide-and-seek",
@@ -832,7 +1097,14 @@
       "Inverse hiding: one hides, others join the hiding spot."
     ],
     "category": "Outdoor Folk",
-    "originCountry": "Multiple (global)"
+    "originCountry": "Multiple (global)",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0039": {
     "name": "Hopscotch",
@@ -854,7 +1126,13 @@
       "French hopscotch grids and schoolyard rules."
     ],
     "category": "Outdoor Folk",
-    "originCountry": "Multiple (global; Roman roots often cited)"
+    "originCountry": "Multiple (global; Roman roots often cited)",
+    "howToWin": [
+      "First to complete all numbers wins."
+    ],
+    "rulesNotToBreak": [
+      "Retrieve the marker on the return without faults."
+    ]
   },
   "game-0040": {
     "name": "Marbles",
@@ -875,7 +1153,15 @@
       "Formal marble-tournament circle rules."
     ],
     "category": "Outdoor Folk",
-    "originCountry": "Multiple (global)"
+    "originCountry": "Multiple (global)",
+    "howToWin": [
+      "Captured marbles score or are kept depending on agreed stakes.",
+      "Clear the ring or reach a point goal to win."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0041": {
     "name": "Spinning top",
@@ -900,7 +1186,14 @@
       "Korean whipping top."
     ],
     "category": "Spinning & Tops",
-    "originCountry": "Multiple (global)"
+    "originCountry": "Multiple (global)",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0042": {
     "name": "Hnefatafl",
@@ -922,7 +1215,14 @@
       "Irish tafl relative on a smaller board."
     ],
     "category": "Strategy & War",
-    "originCountry": "Norway"
+    "originCountry": "Norway",
+    "howToWin": [
+      "Attackers win by capturing the king on two opposite sides (or against the throne/edge as a second side). Defenders win if the king reaches any of the four corner sanctuary squares."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0043": {
     "name": "Fox and Geese",
@@ -944,7 +1244,13 @@
       "Spiral predator-prey race cousin."
     ],
     "category": "Strategy & War",
-    "originCountry": "United Kingdom"
+    "originCountry": "United Kingdom",
+    "howToWin": [
+      "Geese win by immobilizing the fox; fox wins by capturing enough geese."
+    ],
+    "rulesNotToBreak": [
+      "Geese move first or second by agreement; they walk without jumping."
+    ]
   },
   "game-0044": {
     "name": "Go Bang / Gomoku",
@@ -965,7 +1271,14 @@
       "Balanced competitive ruleset for five-in-a-row."
     ],
     "category": "Strategy & War",
-    "originCountry": "Japan / China"
+    "originCountry": "Japan / China",
+    "howToWin": [
+      "First to form five consecutive stones in a line wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0045": {
     "name": "Reversi / Othello",
@@ -986,7 +1299,14 @@
       "Trademarked modern standardization of reversi-like play."
     ],
     "category": "Strategy & War",
-    "originCountry": "United Kingdom / Japan"
+    "originCountry": "United Kingdom / Japan",
+    "howToWin": [
+      "Majority color wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0046": {
     "name": "Scrabble",
@@ -1007,7 +1327,15 @@
     "idealParticipants": "2–4 people",
     "variationNotes": [],
     "category": "Memory & Word",
-    "originCountry": "United States"
+    "originCountry": "United States",
+    "howToWin": [
+      "Score letter values times premiums; tally each turn.",
+      "Highest score when tiles run out and one player empties their rack wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0047": {
     "name": "Snakes and Ladders",
@@ -1030,7 +1358,14 @@
       "American Milton Bradley branding of the same race."
     ],
     "category": "Board & Race",
-    "originCountry": "India"
+    "originCountry": "India",
+    "howToWin": [
+      "First to the final square wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0048": {
     "name": "Monopoly",
@@ -1052,7 +1387,15 @@
       "Elizabeth Magie's teaching ancestor."
     ],
     "category": "Board & Race",
-    "originCountry": "United States"
+    "originCountry": "United States",
+    "howToWin": [
+      "Be the last player who is not bankrupt."
+    ],
+    "rulesNotToBreak": [
+      "Pay rent when you land on an owned property you do not own.",
+      "Build houses only on complete color sets as the rules allow.",
+      "Resolve debts honestly—no hiding cash from the bank."
+    ]
   },
   "game-0049": {
     "name": "Jenga",
@@ -1071,7 +1414,15 @@
     "idealParticipants": "1–8 people",
     "variationNotes": [],
     "category": "Puzzles & Skill",
-    "originCountry": "United Kingdom"
+    "originCountry": "United Kingdom",
+    "howToWin": [
+      "The player who topples the tower loses (or the previous player wins, by house rule)."
+    ],
+    "rulesNotToBreak": [
+      "Remove only one block per turn, below the incomplete top layer.",
+      "Use one hand only when removing and stacking.",
+      "Do not steady the tower with your other hand."
+    ]
   },
   "game-0050": {
     "name": "Diabolo",
@@ -1092,7 +1443,14 @@
       "Chinese name and folk/circus tradition for the same spool toy."
     ],
     "category": "Puzzles & Skill",
-    "originCountry": "China"
+    "originCountry": "China",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0051": {
     "name": "Kapu kuapu / Jackstraws / Spillikins",
@@ -1113,7 +1471,14 @@
       "Named commercial pick-up sticks set."
     ],
     "category": "Puzzles & Skill",
-    "originCountry": "Multiple Europe / China roots debated"
+    "originCountry": "Multiple Europe / China roots debated",
+    "howToWin": [
+      "Score by stick colors/values.",
+      "Highest score when the pile is cleared wins."
+    ],
+    "rulesNotToBreak": [
+      "Players alternately pull one stick without wiggling others."
+    ]
   },
   "game-0052": {
     "name": "Mehen",
@@ -1133,7 +1498,14 @@
     "idealParticipants": "2+ people",
     "variationNotes": [],
     "category": "Board & Race",
-    "originCountry": "Egypt"
+    "originCountry": "Egypt",
+    "howToWin": [
+      "First to complete the journey wins in most reconstructions."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0053": {
     "name": "Buckingham Palace toy soldiers aside: Toy soldiers",
@@ -1154,7 +1526,13 @@
       "Early mass-painted flat tin soldiers."
     ],
     "category": "Dolls & Figures",
-    "originCountry": "Germany / United Kingdom"
+    "originCountry": "Germany / United Kingdom",
+    "howToWin": [
+      "Capture the opponent’s flag by ending a move on its square, or eliminate every enemy figure, to win."
+    ],
+    "rulesNotToBreak": [
+      "Store figures upright in a box with tissue so paint and bayonets do not chip."
+    ]
   },
   "game-0054": {
     "name": "Tea set toy",
@@ -1173,7 +1551,13 @@
     "idealParticipants": "1–4 people",
     "variationNotes": [],
     "category": "Dolls & Figures",
-    "originCountry": "United Kingdom / Europe / East Asia porcelain play"
+    "originCountry": "United Kingdom / Europe / East Asia porcelain play",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Pour (real or imaginary) tea without tipping cups."
+    ]
   },
   "game-0055": {
     "name": "Slinky",
@@ -1192,7 +1576,13 @@
     "idealParticipants": "Alone",
     "variationNotes": [],
     "category": "Puzzles & Skill",
-    "originCountry": "United States"
+    "originCountry": "United States",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Avoid overstretching coils permanently."
+    ]
   },
   "game-0056": {
     "name": "Frisbee / flying disc",
@@ -1211,7 +1601,14 @@
     "idealParticipants": "2+ people",
     "variationNotes": [],
     "category": "Ball & Sport",
-    "originCountry": "United States"
+    "originCountry": "United States",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0057": {
     "name": "Hacky sack / footbag",
@@ -1232,7 +1629,13 @@
       "Older kick-keeping traditions related in spirit."
     ],
     "category": "Ball & Sport",
-    "originCountry": "United States / global; older Asian footbags"
+    "originCountry": "United States / global; older Asian footbags",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Use feet, knees, and thighs—no hands."
+    ]
   },
   "game-0058": {
     "name": "Boomerang",
@@ -1252,7 +1655,13 @@
     "idealParticipants": "Alone",
     "variationNotes": [],
     "category": "Outdoor Folk",
-    "originCountry": "Australia"
+    "originCountry": "Australia",
+    "howToWin": [
+      "Complete the stated goal first, or hold the best score when the round ends, as described in the how-to-play steps."
+    ],
+    "rulesNotToBreak": [
+      "Watch the return path; do not snatch blindly."
+    ]
   },
   "game-0059": {
     "name": "Poi",
@@ -1271,7 +1680,14 @@
     "idealParticipants": "Alone or group",
     "variationNotes": [],
     "category": "Musical Play",
-    "originCountry": "New Zealand"
+    "originCountry": "New Zealand",
+    "howToWin": [
+      "There is no competitive score—succeed by completing the intended play safely and as described in the steps."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0060": {
     "name": "Surakarta",
@@ -1290,7 +1706,14 @@
     "idealParticipants": "2 people",
     "variationNotes": [],
     "category": "Strategy & War",
-    "originCountry": "Indonesia"
+    "originCountry": "Indonesia",
+    "howToWin": [
+      "Capture all enemies to win."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0061": {
     "name": "Dakon",
@@ -1311,7 +1734,14 @@
       "Closely related Malay boat-board sowing game—same family."
     ],
     "category": "Mancala & Sowing",
-    "originCountry": "Indonesia"
+    "originCountry": "Indonesia",
+    "howToWin": [
+      "When one player cannot move, remaining seeds go to the owner of those cups; most seeds in store wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   },
   "game-0062": {
     "name": "Sungka",
@@ -1332,6 +1762,13 @@
       "Malay relative—variation within sowing boat boards."
     ],
     "category": "Mancala & Sowing",
-    "originCountry": "Philippines"
+    "originCountry": "Philippines",
+    "howToWin": [
+      "Count cowries in each ulo; the higher store wins."
+    ],
+    "rulesNotToBreak": [
+      "Follow turn order and any house rules everyone agreed before play.",
+      "Stop immediately if equipment breaks or anyone risks injury."
+    ]
   }
 }

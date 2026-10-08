@@ -13,7 +13,15 @@
       "Hollow rattle with seeds, pebbles, or bells",
       "Safe non-toxic materials"
     ],
-    "participants": "Alone (infant with caregiver)"
+    "participants": "Alone (infant with caregiver)",
+    "howToWin": [
+      "There is no score—play succeeds when the baby explores a clear, safe rattle sound with a caregiver close by."
+    ],
+    "rulesNotToBreak": [
+      "Stay within arm’s reach the whole time.",
+      "Stop play if the shell cracks or seeds can spill.",
+      "Do not let the infant chew through plugs or seams."
+    ]
   },
   "whistle_toy": {
     "title": "Clay or wood whistle toy",
@@ -30,7 +38,15 @@
       "Breath control",
       "Open air if loud"
     ],
-    "participants": "Alone"
+    "participants": "Alone",
+    "howToWin": [
+      "Make one clear long tone, then a short rhythm of three chirps that a partner can copy."
+    ],
+    "rulesNotToBreak": [
+      "Wipe the mouthpiece between players.",
+      "Do not share the whistle if anyone is sick.",
+      "Keep finger holes and the windway clear—never force objects into them."
+    ]
   },
   "pull_toy": {
     "title": "Animal pull toy",
@@ -47,7 +63,15 @@
       "Pull cord",
       "Floor space"
     ],
-    "participants": "Alone"
+    "participants": "Alone",
+    "howToWin": [
+      "Walk a short clear path so the toy follows upright for five to ten steps without tipping."
+    ],
+    "rulesNotToBreak": [
+      "Do not yank the cord hard enough to lift or throw the toy.",
+      "Keep the floor clear of trip hazards before parade play.",
+      "Store the toy upright so wheels are not left bent under weight."
+    ]
   },
   "mini_weapons_toy": {
     "title": "Toy bow or dart play set",
@@ -64,7 +88,15 @@
       "Target",
       "Clear downrange area"
     ],
-    "participants": "1–2 people"
+    "participants": "1–2 people",
+    "howToWin": [
+      "First player to 15 points wins (3 center, 2 middle ring, 1 outer)."
+    ],
+    "rulesNotToBreak": [
+      "Never aim at people or animals.",
+      "Keep a clear downrange area with a backstop.",
+      "Pick up every dart or arrow before the next turn."
+    ]
   },
   "jacks_local": {
     "title": "Pocket skill stones",
@@ -80,7 +112,15 @@
       "Five small stones or seeds",
       "Flat ground"
     ],
-    "participants": "1–4 people"
+    "participants": "1–4 people",
+    "howToWin": [
+      "First player to finish the ones–twos–threes–fours sequence while saying the count wins."
+    ],
+    "rulesNotToBreak": [
+      "Pick up only the allowed number of stones on that turn.",
+      "A drop or missed catch ends your turn—restart at ones next time.",
+      "Do not disturb the remaining pile while catching."
+    ]
   },
   "story_dice_oral": {
     "title": "Story lots / casting sticks",
@@ -96,7 +136,15 @@
       "Marked sticks, shells, or dice",
       "Cup or hand for casting"
     ],
-    "participants": "2+ people"
+    "participants": "2+ people",
+    "howToWin": [
+      "Everyone completes at least one prompted story, clap, or answer; optionally race who finishes a lively round first."
+    ],
+    "rulesNotToBreak": [
+      "Use only playful marks—never sacred lots as party toys.",
+      "Keep prompts kind; no humiliating dares.",
+      "Take turns casting so nobody is skipped."
+    ]
   },
   "shadow_play": {
     "title": "Shadow figures play",
@@ -113,7 +161,15 @@
       "Blank wall",
       "Hands or cut figures"
     ],
-    "participants": "1–group"
+    "participants": "1–group",
+    "howToWin": [
+      "Hold a readable shadow shape for three seconds, then finish a one-minute scene others can follow."
+    ],
+    "rulesNotToBreak": [
+      "Keep flames safe and never leave a candle alone.",
+      "Keep hands and figures a safe distance from hot lamps.",
+      "Do not block exits or crowd the light source."
+    ]
   },
   "kite_local": {
     "title": "Local festival kite",
@@ -130,7 +186,15 @@
       "Line and reel",
       "Open windy space"
     ],
-    "participants": "Alone or 2 people"
+    "participants": "Alone or 2 people",
+    "howToWin": [
+      "Launch, keep the kite stable in wind, and bring it down under control before the wind dies."
+    ],
+    "rulesNotToBreak": [
+      "Never fly near power lines, airports, or storms.",
+      "Keep clear of trees and crowds.",
+      "Do not snatch a diving kite blindly—let it land if unsure."
+    ]
   },
   "cloth_doll_local": {
     "title": "Local cloth doll",
@@ -147,7 +211,15 @@
       "Stuffing",
       "Scrap clothing"
     ],
-    "participants": "Alone"
+    "participants": "Alone",
+    "howToWin": [
+      "Complete at least three care scenes (wake, feed, sleep) with the doll dressed and intact."
+    ],
+    "rulesNotToBreak": [
+      "Repair tears instead of discarding the doll.",
+      "Do not leave needles or pins in the play area.",
+      "Pack the doll away so clothing and stuffing stay together."
+    ]
   },
   "ball_sewn": {
     "title": "Sewn cloth or hide ball",
@@ -163,7 +235,15 @@
       "Sewn cloth, fiber, or hide ball",
       "Open play space"
     ],
-    "participants": "2+ people"
+    "participants": "2+ people",
+    "howToWin": [
+      "First circle to ten clean catches wins, or play until everyone has started a round."
+    ],
+    "rulesNotToBreak": [
+      "Toss underhand unless the group agrees on kicks.",
+      "Restitch a split seam before continuing.",
+      "Keep the yard clear of glass and hard obstacles."
+    ]
   },
   "top_local": {
     "title": "Local spinning top craft",
@@ -180,7 +260,15 @@
       "Cord or whip",
       "Hard flat ground"
     ],
-    "participants": "Alone or contest group"
+    "participants": "Alone or contest group",
+    "howToWin": [
+      "Longest continuous spin wins, or in combat play the first top knocked flat loses."
+    ],
+    "rulesNotToBreak": [
+      "Pull the cord level—do not whip toward faces.",
+      "Stand on hard ground clear of feet and pets.",
+      "Sand or replace a worn tip before the next contest."
+    ]
   },
   "string_local": {
     "title": "Local string figures",
@@ -196,7 +284,15 @@
       "Loop of cord or yarn",
       "Fingers"
     ],
-    "participants": "Alone or 2 people"
+    "participants": "Alone or 2 people",
+    "howToWin": [
+      "Form the named figure cleanly and hold it while saying its name or a one-sentence story."
+    ],
+    "rulesNotToBreak": [
+      "Do not yank loops so hard that cord cuts into fingers.",
+      "Return to a clean loop before teaching the next figure.",
+      "Keep the cord away from necks during partner passes."
+    ]
   },
   "board_race_folk": {
     "title": "Folk race board (local)",
@@ -213,7 +309,15 @@
       "Markers",
       "Casting sticks, shells, or die"
     ],
-    "participants": "2–4 people"
+    "participants": "2–4 people",
+    "howToWin": [
+      "First player to bring all four markers home wins."
+    ],
+    "rulesNotToBreak": [
+      "Enter a marker only on the agreed high throw.",
+      "Stacked markers are safe—do not capture them.",
+      "Move only the number shown by the cast; no silent extra steps."
+    ]
   },
   "sowing_local": {
     "title": "Local pit-and-seed sowing",
@@ -229,7 +333,15 @@
       "Sowing board or pits in earth",
       "Seeds or stones"
     ],
-    "participants": "2 people"
+    "participants": "2 people",
+    "howToWin": [
+      "When one side is empty, count stores—the higher seed total wins."
+    ],
+    "rulesNotToBreak": [
+      "Sow one seed per pit in order; do not skip or double-drop.",
+      "Skip the opponent’s store when sowing.",
+      "Captures only apply when the last seed lands in an empty pit on your side."
+    ]
   },
   "jump_rope": {
     "title": "Jump-rope & skipping rhymes",
@@ -246,7 +358,15 @@
       "Flat ground",
       "Optional two turners"
     ],
-    "participants": "Alone or 3+ people"
+    "participants": "Alone or 3+ people",
+    "howToWin": [
+      "Beat a personal best (try 20, then 50 clean jumps) or outlast others in a group chant round."
+    ],
+    "rulesNotToBreak": [
+      "Stop if the ground is wet or the rope snaps.",
+      "Enter a long rope only on the beat—do not shove the jumper.",
+      "Give turners space; do not stand in the rope arc."
+    ]
   },
   "blindfold_tag": {
     "title": "Blind man's tag / call games",
@@ -262,7 +382,15 @@
       "Soft blindfold",
       "Clear bounded space"
     ],
-    "participants": "3+ people"
+    "participants": "3+ people",
+    "howToWin": [
+      "The seeker wins the round by tagging a sighted player by touch; that player becomes the next seeker."
+    ],
+    "rulesNotToBreak": [
+      "No shoving or running the seeker into hard obstacles.",
+      "Sighted players must stay inside the marked bounds.",
+      "Remove hard objects before each round."
+    ]
   },
   "wrestling_play": {
     "title": "Youth wrestling play",
@@ -279,7 +407,15 @@
       "Agreed safe holds",
       "Referee"
     ],
-    "participants": "2 people (+ referee)"
+    "participants": "2 people (+ referee)",
+    "howToWin": [
+      "Win by making both of the opponent’s shoulders or hips touch the ground, or by pushing them outside the circle—agree which rule before you start."
+    ],
+    "rulesNotToBreak": [
+      "No headlocks, joint twists, or strikes.",
+      "Grip only belts, sashes, or shoulders as agreed.",
+      "Stop at once if anyone feels pain."
+    ]
   },
   "memory_song": {
     "title": "Elimination chant game",
@@ -295,7 +431,15 @@
       "Shared song or clap pattern",
       "Circle of players"
     ],
-    "participants": "3+ people"
+    "participants": "3+ people",
+    "howToWin": [
+      "Last player remaining after elimination starts the next song and is the round winner."
+    ],
+    "rulesNotToBreak": [
+      "A wrong word or late clap removes that player—no restarts mid-pass.",
+      "Keep tempos friendly unless everyone agrees to speed up.",
+      "Do not shove players out of the circle."
+    ]
   },
   "balance_stilts": {
     "title": "Play stilts",
@@ -312,7 +456,15 @@
       "Spotter",
       "Flat ground"
     ],
-    "participants": "Alone (+ spotter)"
+    "participants": "Alone (+ spotter)",
+    "howToWin": [
+      "Complete five controlled steps, then a short marked path race only after both walkers can stop safely."
+    ],
+    "rulesNotToBreak": [
+      "Always use a spotter when mounting.",
+      "Never jump off from full height—dismount into a crouch.",
+      "Check foot pegs and cords before each session."
+    ]
   },
   "leaf_boat": {
     "title": "Leaf or bark boat race",
@@ -328,7 +480,15 @@
       "Leaf, bark, or cork boats",
       "Gentle stream or basin"
     ],
-    "participants": "2+ people"
+    "participants": "2+ people",
+    "howToWin": [
+      "First boat to the finish without sinking wins."
+    ],
+    "rulesNotToBreak": [
+      "No pushing boats after the shared release count.",
+      "Stay out of deep or fast water.",
+      "An adult must watch stream races."
+    ]
   },
   "snow_or_sand": {
     "title": "Sand or snow figure play",
@@ -344,7 +504,15 @@
       "Moist sand or packable snow",
       "Open safe patch"
     ],
-    "participants": "Alone or group"
+    "participants": "Alone or group",
+    "howToWin": [
+      "Optional contest: tallest free-standing tower in five minutes, or the best animal likeness by group vote."
+    ],
+    "rulesNotToBreak": [
+      "Never dig undercut cliffs or tunnels that can collapse.",
+      "Build a base wider than the top.",
+      "Leave the shore or yard tidy when you finish."
+    ]
   },
   "knuckle_football": {
     "title": "Finger-flick football",
@@ -361,7 +529,15 @@
       "Paper or coin ball",
       "Book or tape goals"
     ],
-    "participants": "2 people"
+    "participants": "2 people",
+    "howToWin": [
+      "First player to five goals wins."
+    ],
+    "rulesNotToBreak": [
+      "One finger-flick per turn—no covering the ball with a palm.",
+      "Keep drinks off the table.",
+      "Reset to center after each goal."
+    ]
   },
   "riddle_local": {
     "title": "Local riddle exchange",
@@ -377,7 +553,15 @@
       "Shared language",
       "Optional elder judge"
     ],
-    "participants": "2+ people"
+    "participants": "2+ people",
+    "howToWin": [
+      "First player to five points wins the exchange."
+    ],
+    "rulesNotToBreak": [
+      "At most three guesses and one minute per riddle.",
+      "Keep forfeits playful—never cruel.",
+      "The asker reveals the answer only after guesses are done."
+    ]
   },
   "ceremonial_toy": {
     "title": "Festival noisemaker toy",
@@ -393,7 +577,15 @@
       "Ratchet, bell stick, clapper, or drum toy",
       "Festival context respect"
     ],
-    "participants": "Alone or parade group"
+    "participants": "Alone or parade group",
+    "howToWin": [
+      "Join the festival pulse: play short matching beats and stop cleanly when leaders signal silence."
+    ],
+    "rulesNotToBreak": [
+      "Only use noisemakers when adults say they are welcome.",
+      "Do not copy restricted sacred instruments or mock prayer gestures.",
+      "Put the toy away when the procession ends."
+    ]
   },
   "puzzle_knot": {
     "title": "Cord & knot puzzle toy",
@@ -409,7 +601,15 @@
       "Cord, rings, or wire puzzle",
       "Patience"
     ],
-    "participants": "Alone"
+    "participants": "Alone",
+    "howToWin": [
+      "Free the target piece by a legal path, then restore the exact starting state; optionally beat a timed solve."
+    ],
+    "rulesNotToBreak": [
+      "Do not bend metal or force wood.",
+      "Move loops only through openings that already exist.",
+      "Do not claim a solve until the puzzle is fully reset."
+    ]
   },
   "mini_house": {
     "title": "Miniature household play set",
@@ -425,6 +625,14 @@
       "Miniature pots, mats, or dolls",
       "Small play space"
     ],
-    "participants": "Alone or 2 people"
+    "participants": "Alone or 2 people",
+    "howToWin": [
+      "Finish one cooking scene, one visiting scene, and one bedtime scene with roles assigned."
+    ],
+    "rulesNotToBreak": [
+      "Keep miniature pieces out of real mouths and heat sources.",
+      "Pack the full set into one box after play.",
+      "Do not break props to “force” a story ending."
+    ]
   }
 }
