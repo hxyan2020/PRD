@@ -184,7 +184,7 @@
           }
           <div class="method__foot">
             <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries, m.region)}</span></p>
-            <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(text.source || "Compiled research")}</p>
+            <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(text.source || t("catalog.compiled") || "Compiled research")}</p>
             <p class="method__actions">
               <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
             </p>

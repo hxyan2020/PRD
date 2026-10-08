@@ -10,33 +10,61 @@
       id: "none",
       short: "No predictive science",
       tag: "Science: none for fate claims",
+      shortKey: "science.level.none.short",
+      tagKey: "science.level.none.tag",
     },
     cultural: {
       id: "cultural",
       short: "Cultural system",
       tag: "Science: cultural · not predictive",
+      shortKey: "science.level.cultural.short",
+      tagKey: "science.level.cultural.tag",
     },
     reflective: {
       id: "reflective",
       short: "Reflective / symbolic",
       tag: "Science: reflective only",
+      shortKey: "science.level.reflective.short",
+      tagKey: "science.level.reflective.tag",
     },
     contested: {
       id: "contested",
       short: "Contested psychology",
       tag: "Science: contested · not fate",
+      shortKey: "science.level.contested.short",
+      tagKey: "science.level.contested.tag",
     },
     env: {
       id: "env",
       short: "Environmental observation",
       tag: "Science: env. observation",
+      shortKey: "science.level.env.short",
+      tagKey: "science.level.env.tag",
     },
     falsified: {
       id: "falsified",
       short: "Claims tested & unsupported",
       tag: "Science: unsupported / falsified",
+      shortKey: "science.level.falsified.short",
+      tagKey: "science.level.falsified.tag",
     },
   };
+
+  function ti(key, fallback) {
+    if (window.FatumI18n) {
+      const v = window.FatumI18n.t(key);
+      if (v && v !== key) return v;
+    }
+    return fallback;
+  }
+
+  function isZhLocale() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
 
   const GLOBAL_ADVISORY = {
     title: "Accuracy advisory",
@@ -335,15 +363,53 @@
     }
   }
 
+  function localizeReasoning(method, kind, english) {
+    if (!isZhLocale()) return english;
+    const name = window.FatumMethodText
+      ? window.FatumMethodText.localize(method).name
+      : method.name;
+    const place = method.region
+      ? (window.FatumMethodText ? window.FatumMethodText.localize(method).region : method.region)
+      : method.continent || "该传统";
+    const kindZh = {
+      lots: "以抛掷签筹、贝壳、种子或骨块等随机程序，结合经文或格局作象征解读。",
+      cards: "以洗牌后的象征纸牌作叙事投射——牌序随机，适合反思，而非事件预报。",
+      astro: "出生时刻与天体位置是天文事实；把黄道命运当作可靠预报，并无经得起检验的证据。",
+      yijing: "以铜钱、蓍草或数理起卦，再读变易文本——可作哲学反思，不是科学预报。",
+      dreams: "梦是真实的心理事件；把梦码直接映射到未来事实，并无科学验证。",
+      palm: "手是真实解剖；手相命运说缺乏可靠预测效力。",
+      face: "面容可透露情绪或健康线索；面相定命运并无科学支持。",
+      numbers: "数字系统属于文化数学；姓名／日期定命运缺乏机制与试验支持。",
+      scry: "在模糊介质中找形状属于联觉／空想投射，可作隐喻，不是预报。",
+      "folk-shape": "家户仪式中的偶然形状易引发空想性认知，不是预测证据。",
+      "fate-birth": "出生定时的命运框架是文化身份与时间记忆；不能可靠预报黑天鹅事件。",
+      form: "观察形体可展开对话；形相定命运不是成熟的预测科学。",
+      symbolic: "象征与征兆程序可支持反思与文化学习，达不到科学预报标准。",
+      "env-sky": "天空与气象线索可对应真实环境知识；延伸为个人命运预报则超出验证范围。",
+      almanac: "历书编排仪式与社会时间；“吉日决定成败”属于传统规定，不是实验验证的预测。",
+      spatial: "空间和谐观念可影响舒适感；宅运决定命运之说并无科学确立。",
+      runes: "符文抽取是随机程序加关键词释义，不是已验证的因果预报。",
+      pendulum: "摆锤运动常受意动效应影响，不能可靠预言外部事件。",
+      book: "随机翻开文本可作提示，不是验证过的预报通道。",
+      mbti: "自我报告偏好标签在心理学中具争议，不能用来预报人生事件。",
+      blood: "血型是医学抗原系统，不是性格或命运的可靠决定因素。",
+      biorhythm: "生物节律正弦曲线假说已被反复检验，不能优于随机。",
+      graphology: "以笔迹定性格／命运缺乏对照试验支持。",
+    };
+    const tip = kindZh[kind] || kindZh.symbolic;
+    return `${name}（${place}）：${tip} 本站结果仅供可选反思，请勿用于医疗、法律、财务或安全关键决策。`;
+  }
+
   function scienceStatusFor(method) {
     const { level, kind } = classify(method);
     const meta = LEVELS[level] || LEVELS.reflective;
+    const english = reasoningFor(method, kind);
     return {
       levelId: meta.id,
-      label: meta.short,
-      tag: meta.tag,
+      label: ti(meta.shortKey, meta.short),
+      tag: ti(meta.tagKey, meta.tag),
       kind,
-      reasoning: reasoningFor(method, kind),
+      reasoning: localizeReasoning(method, kind, english),
     };
   }
 

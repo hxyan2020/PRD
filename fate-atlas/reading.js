@@ -383,11 +383,11 @@
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
-        <h3 class="studio__heading">What do you seek?</h3>
-        <p class="studio__copy">Open questions work better than yes/no for tarot (“What surrounds…”, “How can I…” ).</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.seekTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.tarot.seekCopy"))}</p>
         <div class="field">
           <label for="r-question">${escapeHTML(ti("studio.bagua.qLabel"))}</label>
-          <textarea id="r-question" rows="3" maxlength="280" placeholder="What energy surrounds my next decision?">${escapeHTML(state.question)}</textarea>
+          <textarea id="r-question" rows="3" maxlength="280" placeholder="${escapeHTML(ti("studio.tarot.qPh"))}">${escapeHTML(state.question)}</textarea>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -395,11 +395,11 @@
         </div>`;
     } else if (step === "shuffle") {
       body.innerHTML = `
-        <h3 class="studio__heading">Shuffle &amp; cut</h3>
-        <p class="studio__copy">Hold your question. When ready, shuffle. Then cut the deck once.</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.shuffleTitle"))}</h3>
+        <p class="studio__copy">${escapeHTML(ti("studio.tarot.shuffleCopy"))}</p>
         <div class="deck-stage">
           <div class="deck-pile ${state.deck ? "is-ready" : "is-shuffling"}" id="deck-pile"></div>
-          <p class="coin-sum">${state.deck ? "Deck ready. Cut to draw." : "Shuffling Major Arcana…"}</p>
+          <p class="coin-sum">${state.deck ? escapeHTML(ti("studio.tarot.deckReady")) : escapeHTML(ti("studio.tarot.shuffling"))}</p>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -419,12 +419,12 @@
       const cardsHtml = shown
         .map((c, i) => {
           const p = G().TAROT_POSITIONS[i];
-          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(p.label)}</div>${c.reversed ? '<div class="tarot-card__rx">Reversed</div>' : ""}</div>`;
+          return `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(tarotPosLabel(p))}</div>${c.reversed ? `<div class="tarot-card__rx">${escapeHTML(ti("studio.tarot.reversed"))}</div>` : ""}</div>`;
         })
         .join("");
       body.innerHTML = `
-        <h3 class="studio__heading">Reveal: ${escapeHTML(pos.label)}</h3>
-        <p class="studio__copy">${escapeHTML(pos.hint)}</p>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.tarot.reveal"))}: ${escapeHTML(tarotPosLabel(pos))}</h3>
+        <p class="studio__copy">${escapeHTML(tarotPosHint(pos))}</p>
         <div class="tarot-row">${cardsHtml}<div class="tarot-card is-back" aria-hidden="true"></div></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--primary" data-action="reveal-one">${escapeHTML(ti("studio.flipCard", { n: state.revealIndex + 1 }))}</button>
@@ -492,7 +492,7 @@
     const step = state.steps[state.stepIndex];
     if (step === "intent") {
       body.innerHTML = `
-        <p class="studio__eyebrow">MBTI · Preference map</p>
+        <p class="studio__eyebrow">${escapeHTML(ti("studio.mbti.eyebrow") || "MBTI · Preference map")}</p>
         <h3 class="studio__heading">Four letters, four choices</h3>
         ${howItWorksHTML(state.method, { id: "form" })}
         ${sciencePanelHTML(state.method)}
@@ -518,10 +518,10 @@
       body.innerHTML = `
         <div class="quiz-bar"><span style="width:${progress}%"></span></div>
         <p class="studio__eyebrow">${escapeHTML(q.dim)} · ${state.quizIndex + 1}/${G().MBTI_QUESTIONS.length}</p>
-        <h3 class="studio__heading">${escapeHTML(q.text)}</h3>
+        <h3 class="studio__heading">${escapeHTML(mbtiQuestionText(q))}</h3>
         <div class="choice-grid">
-          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.a.side}">${escapeHTML(q.a.label)}</button>
-          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.b.side}">${escapeHTML(q.b.label)}</button>
+          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.a.side}">${escapeHTML(mbtiChoiceLabel(q.a))}</button>
+          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.b.side}">${escapeHTML(mbtiChoiceLabel(q.b))}</button>
         </div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -568,8 +568,15 @@
   function accuracyAdvisoryHTML() {
     const adv = window.FATE_GLOBAL_ADVISORY;
     const title = ti("advisory.eyebrow") || adv?.title || "Accuracy advisory";
-    const body = adv?.body || ti("advisory.body") || "";
-    const bullets = Array.isArray(adv?.bullets) ? adv.bullets : [];
+    const body = ti("advisory.body") || adv?.body || "";
+    const i18nBullets = [1, 2, 3, 4]
+      .map((n) => ti(`advisory.bullet${n}`))
+      .filter((b) => b && !/^advisory\.bullet/.test(b));
+    const bullets = i18nBullets.length
+      ? i18nBullets
+      : Array.isArray(adv?.bullets)
+        ? adv.bullets
+        : [];
     const list = bullets.length
       ? `<ul class="advisory__list">${bullets.map((b) => `<li>${escapeHTML(b)}</li>`).join("")}</ul>`
       : "";
@@ -638,6 +645,29 @@
   function tarotCardLabel(c) {
     if (!c) return "";
     return localePrefersZh() ? c.nameZh || c.name : c.name || c.nameZh;
+  }
+
+  function tarotPosLabel(pos) {
+    if (!pos) return "";
+    return monoText(pos.label || "");
+  }
+
+  function tarotPosHint(pos) {
+    if (!pos) return "";
+    if (localePrefersZh() && pos.hintZh) return pos.hintZh;
+    return pos.hint || "";
+  }
+
+  function mbtiQuestionText(q) {
+    if (!q) return "";
+    if (localePrefersZh() && q.textZh) return q.textZh;
+    return q.text || "";
+  }
+
+  function mbtiChoiceLabel(choice) {
+    if (!choice) return "";
+    if (localePrefersZh() && choice.labelZh) return choice.labelZh;
+    return choice.label || "";
   }
 
   function readingBlock(titleKey, fallback, bodyHtml) {
@@ -736,7 +766,7 @@
       state.photoConfig = photo;
       const text = window.FatumMethodText ? window.FatumMethodText.localize(method) : method;
       body.innerHTML = `
-        <p class="studio__eyebrow">${escapeHTML(method.continent)} · ${escapeHTML(method.type)}</p>
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${method.continent}`) || method.continent)} · ${escapeHTML(ti(`type.${method.type}`) || method.type)}</p>
         <h3 class="studio__heading">${escapeHTML(text.name || method.name)}</h3>
         <p class="studio__copy">${escapeHTML(text.summary || method.summary || "")}</p>
         ${howItWorksHTML(method, process)}
@@ -747,8 +777,8 @@
         </div>`;
     } else if (step === "question") {
       body.innerHTML = `
-        <h3 class="studio__heading">Hold your question</h3>
-        <div class="field"><label for="r-question">Your question</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.holdTitle"))}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
         <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.input.question)}</textarea></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -756,10 +786,10 @@
         </div>`;
     } else if (step === "birth") {
       body.innerHTML = `
-        <h3 class="studio__heading">Birth moment</h3>
-        <div class="field"><label for="r-birth">Birth date</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.birthTitle"))}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthDate"))}</label>
         <input type="date" id="r-birth" value="${escapeHTML(state.input.birthDate)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-question">Optional focus</label>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(ti("studio.generic.focusOptional"))}</label>
         <input type="text" id="r-question" value="${escapeHTML(state.input.question)}" /></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -767,10 +797,10 @@
         </div>`;
     } else if (step === "day") {
       body.innerHTML = `
-        <h3 class="studio__heading">Choose the day</h3>
-        <div class="field"><label for="r-day">Date</label>
+        <h3 class="studio__heading">${escapeHTML(ti("studio.generic.dayTitle"))}</h3>
+        <div class="field"><label for="r-day">${escapeHTML(ti("studio.generic.date"))}</label>
         <input type="date" id="r-day" value="${escapeHTML(state.input.dayDate)}" /></div>
-        <div class="field" style="margin-top:1rem"><label for="r-purpose">Purpose</label>
+        <div class="field" style="margin-top:1rem"><label for="r-purpose">${escapeHTML(ti("studio.generic.purpose"))}</label>
         <input type="text" id="r-purpose" value="${escapeHTML(state.input.dayPurpose)}" /></div>
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -1111,12 +1141,6 @@
           : "";
       }
 
-      function emojiPrefix(m) {
-        return window.FatumCountries
-          ? window.FatumCountries.optionFlagsPrefix(m.countries, m.region)
-          : "";
-      }
-
       function setTrigger(method) {
         if (!labelText) return;
         if (!method) {
@@ -1140,12 +1164,33 @@
         if (!panel || !trigger) return;
         panel.hidden = true;
         trigger.setAttribute("aria-expanded", "false");
+        const root = document.getElementById("rite-picker");
+        root?.classList.remove("is-open", "rite-picker--drop-up");
+        panel.style.maxHeight = "";
+      }
+
+      function positionPanel() {
+        const root = document.getElementById("rite-picker");
+        if (!panel || !trigger || !root) return;
+        const rect = trigger.getBoundingClientRect();
+        const gap = 8;
+        const spaceBelow = Math.max(0, window.innerHeight - rect.bottom - gap - 12);
+        const spaceAbove = Math.max(0, rect.top - gap - 12);
+        const preferUp = spaceBelow < 220 && spaceAbove > spaceBelow;
+        root.classList.toggle("rite-picker--drop-up", preferUp);
+        const room = Math.max(160, preferUp ? spaceAbove : spaceBelow);
+        panel.style.maxHeight = `${Math.min(room, window.innerHeight * 0.55, 22 * 16)}px`;
       }
 
       function openPanel() {
         if (!panel || !trigger) return;
         panel.hidden = false;
         trigger.setAttribute("aria-expanded", "true");
+        document.getElementById("rite-picker")?.classList.add("is-open");
+        positionPanel();
+        // Keep the open list in view above the footer
+        panel.scrollIntoView({ block: "nearest", inline: "nearest" });
+        positionPanel();
         searchEl?.focus();
       }
 
@@ -1181,11 +1226,11 @@
                 `<optgroup label="${escapeHTML(g.label)}">` +
                 g.items
                   .map((m) => {
-                    const prefix = emojiPrefix(m);
                     const text = window.FatumMethodText
                       ? window.FatumMethodText.localize(m)
                       : m;
-                    return `<option value="${escapeHTML(m.id)}">${prefix} ${escapeHTML(text.name)}</option>`;
+                    // Never prefix with flag emoji — regional indicators render as "US"/"CA" on many OSes.
+                    return `<option value="${escapeHTML(m.id)}">${escapeHTML(text.name)}</option>`;
                   })
                   .join("") +
                 `</optgroup>`
@@ -1277,6 +1322,20 @@
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && panel && !panel.hidden) closePanel();
       });
+      window.addEventListener(
+        "resize",
+        () => {
+          if (panel && !panel.hidden) positionPanel();
+        },
+        { passive: true }
+      );
+      window.addEventListener(
+        "scroll",
+        () => {
+          if (panel && !panel.hidden) positionPanel();
+        },
+        { passive: true }
+      );
 
       startBtn.addEventListener("click", () => {
         if (!picker.value) {
@@ -1356,6 +1415,84 @@
           window.FatumPlay.showToast(ti("play.refreshToast"));
         }
       });
+
+      // Auto-rotate recommended rites on the home page every ~3 seconds.
+      let autoRotateTimer = null;
+      let featuredInView = true;
+      let featuredHovered = false;
+      const AUTO_ROTATE_MS = 3000;
+      const featuredSection = document.getElementById("play") || featuredEl;
+      function shouldAutoRotate() {
+        if (document.hidden) return false;
+        if (document.body.classList.contains("studio-open")) return false;
+        if (featuredHovered) return false;
+        if (!featuredInView) return false;
+        const page = document.body.dataset.page || window.FatumRouter?.getPage?.();
+        return page === "home" || page === "play";
+      }
+      function tickAutoRotate() {
+        if (!shouldAutoRotate()) return;
+        renderFeatured({ forceRotate: true });
+      }
+      function startAutoRotate() {
+        if (autoRotateTimer) clearInterval(autoRotateTimer);
+        autoRotateTimer = setInterval(tickAutoRotate, AUTO_ROTATE_MS);
+      }
+      startAutoRotate();
+      featuredEl.addEventListener("mouseenter", () => {
+        featuredHovered = true;
+      });
+      featuredEl.addEventListener("mouseleave", () => {
+        featuredHovered = false;
+      });
+      // Touch: pause while a finger is down on the carousel
+      featuredEl.addEventListener(
+        "touchstart",
+        () => {
+          featuredHovered = true;
+        },
+        { passive: true }
+      );
+      featuredEl.addEventListener(
+        "touchend",
+        () => {
+          setTimeout(() => {
+            featuredHovered = false;
+          }, 1200);
+        },
+        { passive: true }
+      );
+      featuredEl.addEventListener(
+        "focusin",
+        () => {
+          featuredHovered = true;
+        },
+        true
+      );
+      featuredEl.addEventListener(
+        "focusout",
+        () => {
+          // Defer so focus moving between cards inside the grid does not resume early
+          setTimeout(() => {
+            featuredHovered = featuredEl.contains(document.activeElement);
+          }, 0);
+        },
+        true
+      );
+      if ("IntersectionObserver" in window && featuredSection) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            featuredInView = entries.some((e) => e.isIntersecting && e.intersectionRatio > 0.15);
+          },
+          { threshold: [0, 0.15, 0.4] }
+        );
+        io.observe(featuredSection);
+      }
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) startAutoRotate();
+      });
+      document.addEventListener("fatum:route", () => startAutoRotate());
+      window.FatumRouter?.onChange?.(() => startAutoRotate());
 
       featuredEl.addEventListener("keydown", (e) => {
         const card = e.target.closest(".feature-card--quest");
