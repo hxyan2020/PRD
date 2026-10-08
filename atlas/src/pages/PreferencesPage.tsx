@@ -214,11 +214,11 @@ export function PreferencesPage() {
                   value={prefs.players}
                   onChange={(e) => update("players", e.target.value as DiscoverPreferences["players"])}
                 >
-                  <option value="any">{t("prefs.any")}</option>
-                  <option value="alone">{t("prefs.alone")}</option>
-                  <option value="two">{t("prefs.two")}</option>
-                  <option value="small">{t("prefs.small")}</option>
-                  <option value="group">{t("prefs.group")}</option>
+                  <option value="any">✦ {t("prefs.any")}</option>
+                  <option value="alone">👤 {t("prefs.alone")}</option>
+                  <option value="two">👥 {t("prefs.two")}</option>
+                  <option value="small">👨‍👩‍👧 {t("prefs.small")}</option>
+                  <option value="group">👪 {t("prefs.group")}</option>
                 </select>
               </div>
 
@@ -229,9 +229,9 @@ export function PreferencesPage() {
                   value={prefs.setting}
                   onChange={(e) => update("setting", e.target.value as DiscoverPreferences["setting"])}
                 >
-                  <option value="either">{t("prefs.either")}</option>
-                  <option value="indoor">{t("prefs.indoor")}</option>
-                  <option value="outdoor">{t("prefs.outdoor")}</option>
+                  <option value="either">⇄ {t("prefs.either")}</option>
+                  <option value="indoor">⌂ {t("prefs.indoor")}</option>
+                  <option value="outdoor">☀ {t("prefs.outdoor")}</option>
                 </select>
               </div>
 
@@ -242,14 +242,14 @@ export function PreferencesPage() {
                   value={prefs.vibe}
                   onChange={(e) => update("vibe", e.target.value as DiscoverPreferences["vibe"])}
                 >
-                  <option value="any">{t("prefs.any")}</option>
-                  <option value="strategy">{t("prefs.strategy")}</option>
-                  <option value="casual">{t("prefs.casual")}</option>
-                  <option value="craft">{t("prefs.craft")}</option>
-                  <option value="sport">{t("prefs.sport")}</option>
-                  <option value="puzzle">{t("prefs.puzzle")}</option>
-                  <option value="kids">{t("prefs.kids")}</option>
-                  <option value="ritual">{t("prefs.ritual")}</option>
+                  <option value="any">✦ {t("prefs.any")}</option>
+                  <option value="strategy">♟ {t("prefs.strategy")}</option>
+                  <option value="casual">🎲 {t("prefs.casual")}</option>
+                  <option value="craft">🪆 {t("prefs.craft")}</option>
+                  <option value="sport">⚽ {t("prefs.sport")}</option>
+                  <option value="puzzle">🧩 {t("prefs.puzzle")}</option>
+                  <option value="kids">🧸 {t("prefs.kids")}</option>
+                  <option value="ritual">🪔 {t("prefs.ritual")}</option>
                 </select>
               </div>
 
@@ -260,10 +260,10 @@ export function PreferencesPage() {
                   value={prefs.era}
                   onChange={(e) => update("era", e.target.value as DiscoverPreferences["era"])}
                 >
-                  <option value="any">{t("prefs.eraAny")}</option>
-                  <option value="ancient">{t("prefs.eraAncient")}</option>
-                  <option value="traditional">{t("prefs.eraTraditional")}</option>
-                  <option value="modern">{t("prefs.eraModern")}</option>
+                  <option value="any">⏳ {t("prefs.eraAny")}</option>
+                  <option value="ancient">🏺 {t("prefs.eraAncient")}</option>
+                  <option value="traditional">📜 {t("prefs.eraTraditional")}</option>
+                  <option value="modern">◎ {t("prefs.eraModern")}</option>
                 </select>
               </div>
 
