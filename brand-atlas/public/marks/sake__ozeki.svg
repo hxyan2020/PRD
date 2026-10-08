@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <circle cx="64" cy="56" r="40" fill="none" stroke="#C4C4C4" stroke-width="4"/>
+  <circle cx="64" cy="56" r="28" fill="none" stroke="#C4C4C4" stroke-width="2"/>
+  <text x="64" y="64" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#C4C4C4">大関</text>
+  <text x="64" y="112" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#C4C4C4" letter-spacing="0.2em">OZEKI</text>
+</svg>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <ellipse cx="48" cy="44" rx="16" ry="22" fill="#C4C4C4"/>
+  <ellipse cx="80" cy="44" rx="16" ry="22" fill="#C4C4C4"/>
+  <ellipse cx="64" cy="40" rx="14" ry="20" fill="#C4C4C4"/>
+  <circle cx="64" cy="52" r="6" fill="#8A8A8A"/>
+  <path fill="#C4C4C4" d="M60 72h8v48h-8z"/>
+</svg>

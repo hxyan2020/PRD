@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCatalog } from "../hooks/useCatalog";
 import { coverGradient, findItem, getCategory } from "../lib/catalog";
+import { coverUrl } from "../lib/marks";
 import {
   formatUtc,
   getUnlockByShareId,
@@ -56,9 +57,21 @@ export function SharePage() {
     <main className="shell section">
       <div className="share-card">
         <div
-          className="detail-cover"
-          style={{ background: coverGradient(item.coverHue, true) }}
-        />
+          className="detail-cover has-cover"
+          style={{
+            background: unlock?.photoDataUrl || coverUrl(item)
+              ? undefined
+              : coverGradient(item.coverHue, true),
+          }}
+        >
+          {(unlock?.photoDataUrl || coverUrl(item)) && (
+            <img
+              className="detail-cover__photo"
+              src={unlock?.photoDataUrl || coverUrl(item) || undefined}
+              alt=""
+            />
+          )}
+        </div>
         <p className="muted">{cat?.label}</p>
         <h2>{item.name}</h2>
         <p>{item.summary}</p>

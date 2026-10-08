@@ -6,12 +6,14 @@
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { MARK_ICONS, MARK_GLYPHS } from "./mark-icons.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const outDir = join(root, "public", "data");
 const outFile = join(outDir, "catalog.json");
 const changelogFile = join(outDir, "changelog.json");
+const marksDir = join(root, "public", "marks");
 
 /** @typedef {{ id: string, name: string, aliases?: string[], origin?: string, tags?: string[], summary?: string }} ItemSeed */
 
@@ -20,7 +22,7 @@ const CATEGORIES = {
   cars: {
     id: "cars",
     label: "Car brands",
-    blurb: "Automakers still on the road.",
+    blurb: "Major and rising automakers still building cars you can spot.",
     kind: "brand",
     items: [
       { id: "toyota", name: "Toyota", aliases: ["トヨタ"], origin: "Japan", tags: ["sedan", "hybrid"] },
@@ -31,11 +33,17 @@ const CATEGORIES = {
       { id: "mitsubishi", name: "Mitsubishi", origin: "Japan" },
       { id: "suzuki", name: "Suzuki", origin: "Japan" },
       { id: "lexus", name: "Lexus", origin: "Japan", tags: ["luxury"] },
+      { id: "acura", name: "Acura", origin: "Japan", tags: ["luxury"] },
+      { id: "infiniti", name: "Infiniti", origin: "Japan", tags: ["luxury"] },
       { id: "ford", name: "Ford", origin: "USA", tags: ["mustang", "f-150"] },
       { id: "chevrolet", name: "Chevrolet", aliases: ["chevy", "gm"], origin: "USA" },
       { id: "tesla", name: "Tesla", origin: "USA", tags: ["ev", "electric"] },
       { id: "jeep", name: "Jeep", origin: "USA", tags: ["suv"] },
       { id: "cadillac", name: "Cadillac", origin: "USA" },
+      { id: "lincoln", name: "Lincoln", origin: "USA", tags: ["luxury"] },
+      { id: "dodge", name: "Dodge", origin: "USA" },
+      { id: "rivian", name: "Rivian", origin: "USA", tags: ["ev", "truck"] },
+      { id: "lucid", name: "Lucid", aliases: ["lucid motors"], origin: "USA", tags: ["ev"] },
       { id: "bmw", name: "BMW", aliases: ["bavarian motor works"], origin: "Germany" },
       { id: "mercedes-benz", name: "Mercedes-Benz", aliases: ["mercedes", "benz"], origin: "Germany" },
       { id: "audi", name: "Audi", origin: "Germany", tags: ["rings"] },
@@ -48,7 +56,8 @@ const CATEGORIES = {
       { id: "alfa-romeo", name: "Alfa Romeo", origin: "Italy" },
       { id: "maserati", name: "Maserati", origin: "Italy" },
       { id: "volvo", name: "Volvo", origin: "Sweden" },
-      { id: "saab", name: "Saab", origin: "Sweden" },
+      { id: "polestar", name: "Polestar", origin: "Sweden", tags: ["ev"] },
+      { id: "skoda", name: "Škoda", aliases: ["skoda"], origin: "Czechia" },
       { id: "hyundai", name: "Hyundai", origin: "South Korea" },
       { id: "kia", name: "Kia", origin: "South Korea" },
       { id: "genesis", name: "Genesis", origin: "South Korea" },
@@ -61,8 +70,23 @@ const CATEGORIES = {
       { id: "rolls-royce", name: "Rolls-Royce", origin: "UK" },
       { id: "bentley", name: "Bentley", origin: "UK" },
       { id: "aston-martin", name: "Aston Martin", origin: "UK" },
+      { id: "lotus", name: "Lotus", origin: "UK" },
+      { id: "mclaren", name: "McLaren", origin: "UK", tags: ["supercar"] },
+      { id: "bugatti", name: "Bugatti", origin: "France", tags: ["supercar"] },
+      { id: "seat", name: "SEAT", origin: "Spain" },
+      { id: "cupra", name: "Cupra", origin: "Spain" },
+      { id: "mg", name: "MG", aliases: ["morris garages"], origin: "UK", tags: ["ev"] },
       { id: "byd", name: "BYD", origin: "China", tags: ["ev"] },
       { id: "geely", name: "Geely", origin: "China" },
+      { id: "xiaomi", name: "Xiaomi", aliases: ["小米", "xiaomi auto", "su7"], origin: "China", tags: ["ev", "rising"] },
+      { id: "nio", name: "NIO", aliases: ["蔚来"], origin: "China", tags: ["ev", "rising"] },
+      { id: "xpeng", name: "XPeng", aliases: ["小鹏", "xpeng"], origin: "China", tags: ["ev", "rising"] },
+      { id: "li-auto", name: "Li Auto", aliases: ["理想", "li xiang"], origin: "China", tags: ["ev", "rising"] },
+      { id: "zeekr", name: "Zeekr", aliases: ["极氪"], origin: "China", tags: ["ev", "rising"] },
+      { id: "gwm", name: "GWM", aliases: ["great wall", "haval", "坦克", "tank"], origin: "China", tags: ["suv", "rising"] },
+      { id: "baic", name: "BAIC", aliases: ["北京汽车", "beijing auto"], origin: "China", tags: ["rising"] },
+      { id: "chery", name: "Chery", aliases: ["奇瑞", "omoda", "jaecoo"], origin: "China", tags: ["rising"] },
+      { id: "vinfast", name: "VinFast", origin: "Vietnam", tags: ["ev", "rising"] },
     ],
   },
   cigarettes: {
@@ -87,16 +111,23 @@ const CATEGORIES = {
       { id: "mevius", name: "Mevius", aliases: ["mild seven"], origin: "Japan" },
       { id: "hope", name: "Hope", origin: "Japan" },
       { id: "seven-stars", name: "Seven Stars", origin: "Japan" },
-      { id: "lawrence", name: "Lark", aliases: ["lark"], origin: "USA" },
+      { id: "lark", name: "Lark", aliases: ["lawrence"], origin: "USA" },
       { id: "rothmans", name: "Rothmans", origin: "UK" },
       { id: "embassy", name: "Embassy", origin: "UK" },
       { id: "gold-flake", name: "Gold Flake", origin: "India" },
+      { id: "state-express-555", name: "State Express 555", aliases: ["555"], origin: "UK" },
+      { id: "esse", name: "Esse", origin: "South Korea" },
+      { id: "zhongnanhai", name: "Zhongnanhai", aliases: ["中南海"], origin: "China" },
+      { id: "huanghelou", name: "Huanghelou", aliases: ["黄鹤楼"], origin: "China" },
+      { id: "yuxi", name: "Yuxi", aliases: ["玉溪"], origin: "China" },
+      { id: "double-happiness", name: "Double Happiness", aliases: ["红双喜"], origin: "China" },
+      { id: "sampoerna", name: "Sampoerna", origin: "Indonesia" },
     ],
   },
   liquor: {
     id: "liquor",
     label: "Liquor brands",
-    blurb: "Spirits houses still pouring worldwide.",
+    blurb: "Major spirits houses still pouring today.",
     kind: "brand",
     items: [
       { id: "johnnie-walker", name: "Johnnie Walker", aliases: ["johnny walker"], origin: "Scotland", tags: ["whisky"] },
@@ -126,9 +157,17 @@ const CATEGORIES = {
       { id: "campari", name: "Campari", origin: "Italy", tags: ["aperitif"] },
       { id: "aperol", name: "Aperol", origin: "Italy", tags: ["aperitif"] },
       { id: "suntory", name: "Suntory", origin: "Japan", tags: ["whisky"] },
-      { id: "yamazaki", name: "Yamazaki", origin: "Japan", tags: ["whisky"] },
-      { id: "hibiki", name: "Hibiki", origin: "Japan", tags: ["whisky"] },
+      { id: "makers-mark", name: "Maker's Mark", aliases: ["makers mark"], origin: "USA", tags: ["whiskey"] },
+      { id: "crown-royal", name: "Crown Royal", origin: "Canada", tags: ["whisky"] },
       { id: "chivas", name: "Chivas Regal", aliases: ["chivas"], origin: "Scotland" },
+      { id: "yamazaki", name: "Yamazaki", aliases: ["山崎"], origin: "Japan", tags: ["whisky"] },
+      { id: "hibiki", name: "Hibiki", aliases: ["響"], origin: "Japan", tags: ["whisky"] },
+      { id: "nikka", name: "Nikka", aliases: ["ニッカ"], origin: "Japan", tags: ["whisky"] },
+      { id: "tito", name: "Tito's", aliases: ["titos"], origin: "USA", tags: ["vodka"] },
+      { id: "casamigos", name: "Casamigos", origin: "Mexico", tags: ["tequila"] },
+      { id: "clase-azul", name: "Clase Azul", origin: "Mexico", tags: ["tequila"] },
+      { id: "cointreau", name: "Cointreau", origin: "France", tags: ["liqueur"] },
+      { id: "grand-marnier", name: "Grand Marnier", origin: "France", tags: ["liqueur"] },
     ],
   },
   wine: {
@@ -139,7 +178,7 @@ const CATEGORIES = {
     items: [
       { id: "moet", name: "Moët & Chandon", aliases: ["moet", "moët"], origin: "France", tags: ["champagne"] },
       { id: "veuve-clicquot", name: "Veuve Clicquot", origin: "France", tags: ["champagne"] },
-      { id: "dom-perignon", name: "Dom Pérignon", aliases: ["dom perignon"], origin: "France", tags: ["champagne"] },
+      { id: "freixenet", name: "Freixenet", origin: "Spain", tags: ["cava"] },
       { id: "penfolds", name: "Penfolds", origin: "Australia" },
       { id: "yellow-tail", name: "Yellow Tail", origin: "Australia" },
       { id: "barefoot", name: "Barefoot", origin: "USA" },
@@ -157,11 +196,17 @@ const CATEGORIES = {
       { id: "santa-rita", name: "Santa Rita", origin: "Chile" },
       { id: "cloud-bay", name: "Cloudy Bay", origin: "New Zealand" },
       { id: "kim-crawford", name: "Kim Crawford", origin: "New Zealand" },
-      { id: "jacob's-creek", name: "Jacob's Creek", aliases: ["jacobs creek"], origin: "Australia" },
-      { id: "casillero", name: "Casillero del Diablo", origin: "Chile" },
+      { id: "jacobs-creek", name: "Jacob's Creek", aliases: ["jacobs creek", "jacob's creek"], origin: "Australia" },
+      { id: "kendall-jackson", name: "Kendall-Jackson", aliases: ["kj"], origin: "USA" },
       { id: "mateus", name: "Mateus", origin: "Portugal" },
       { id: "sandeman", name: "Sandeman", origin: "Portugal", tags: ["port"] },
       { id: "taylor-fladgate", name: "Taylor Fladgate", origin: "Portugal", tags: ["port"] },
+      { id: "dom-perignon", name: "Dom Pérignon", aliases: ["dom perignon"], origin: "France", tags: ["champagne"] },
+      { id: "ruinart", name: "Ruinart", origin: "France", tags: ["champagne"] },
+      { id: "bollinger", name: "Bollinger", origin: "France", tags: ["champagne"] },
+      { id: "caymus", name: "Caymus", origin: "USA" },
+      { id: "silver-oak", name: "Silver Oak", origin: "USA" },
+      { id: "changyu", name: "Changyu", aliases: ["张裕"], origin: "China" },
     ],
   },
   sake: {
@@ -179,7 +224,6 @@ const CATEGORIES = {
       { id: "juyondai", name: "Juyondai", aliases: ["十四代"], origin: "Japan" },
       { id: "born", name: "Born", aliases: ["梵"], origin: "Japan" },
       { id: "sake-one", name: "SakeOne", origin: "USA" },
-      { id: "hotei", name: "Hotei", origin: "Japan" },
       { id: "kikusui", name: "Kikusui", aliases: ["菊水"], origin: "Japan" },
       { id: "dewazakura", name: "Dewazakura", aliases: ["出羽桜"], origin: "Japan" },
       { id: "nanbu-bijin", name: "Nanbu Bijin", aliases: ["南部美人"], origin: "Japan" },
@@ -190,6 +234,12 @@ const CATEGORIES = {
       { id: "mutsu-hassen", name: "Mutsu Hassen", aliases: ["陸奥八仙"], origin: "Japan" },
       { id: "shichiken", name: "Shichiken", aliases: ["七賢"], origin: "Japan" },
       { id: "urakasumi", name: "Urakasumi", aliases: ["浦霞"], origin: "Japan" },
+      { id: "isojiman", name: "Isojiman", aliases: ["磯自慢"], origin: "Japan" },
+      { id: "masumi", name: "Masumi", aliases: ["真澄"], origin: "Japan" },
+      { id: "kudoki-jozu", name: "Kudoki Jozu", aliases: ["くどき上手"], origin: "Japan" },
+      { id: "hiroki", name: "Hiroki", aliases: ["飛良喜"], origin: "Japan" },
+      { id: "denshin", name: "Denshin", aliases: ["伝心"], origin: "Japan" },
+      { id: "tedorigawa", name: "Tedorigawa", aliases: ["手取川"], origin: "Japan" },
     ],
   },
   beer: {
@@ -215,7 +265,7 @@ const CATEGORIES = {
       { id: "chang", name: "Chang", origin: "Thailand" },
       { id: "peroni", name: "Peroni", origin: "Italy" },
       { id: "moretti", name: "Birra Moretti", aliases: ["moretti"], origin: "Italy" },
-      { id: "beckoni", name: "Beck's", aliases: ["becks"], origin: "Germany" },
+      { id: "becks", name: "Beck's", aliases: ["becks"], origin: "Germany" },
       { id: "paulaner", name: "Paulaner", origin: "Germany" },
       { id: "erdinger", name: "Erdinger", origin: "Germany" },
       { id: "modelo", name: "Modelo", origin: "Mexico" },
@@ -228,6 +278,14 @@ const CATEGORIES = {
       { id: "foster", name: "Foster's", aliases: ["fosters"], origin: "Australia" },
       { id: "victoria-bitter", name: "Victoria Bitter", aliases: ["vb"], origin: "Australia" },
       { id: "pilsner-urquell", name: "Pilsner Urquell", origin: "Czechia" },
+      { id: "coors", name: "Coors", aliases: ["coors light"], origin: "USA" },
+      { id: "miller", name: "Miller", aliases: ["miller lite"], origin: "USA" },
+      { id: "lagunitas", name: "Lagunitas", origin: "USA" },
+      { id: "brooklyn", name: "Brooklyn Brewery", aliases: ["brooklyn"], origin: "USA" },
+      { id: "yanjing", name: "Yanjing", aliases: ["燕京"], origin: "China" },
+      { id: "snow", name: "Snow Beer", aliases: ["雪花"], origin: "China" },
+      { id: "hitachino", name: "Hitachino Nest", aliases: ["hitachino"], origin: "Japan" },
+      { id: "orchid-island", name: "Orchid Island", aliases: ["金车", "kaoliang beer"], origin: "Taiwan" },
     ],
   },
   coffee: {
@@ -249,18 +307,23 @@ const CATEGORIES = {
       { id: "tim-hortons", name: "Tim Hortons", origin: "Canada" },
       { id: "costa", name: "Costa Coffee", aliases: ["costa"], origin: "UK" },
       { id: "pret", name: "Pret A Manger", aliases: ["pret"], origin: "UK" },
-      { id: "uccc", name: "UCC", origin: "Japan" },
+      { id: "ucc", name: "UCC", origin: "Japan" },
       { id: "doutor", name: "Doutor", origin: "Japan" },
       { id: "komeda", name: "Komeda Coffee", aliases: ["komeda"], origin: "Japan" },
       { id: "luckin", name: "Luckin Coffee", aliases: ["luckin"], origin: "China" },
       { id: "mccafe", name: "McCafé", aliases: ["mccafe"], origin: "USA" },
-      { id: "hario", name: "Hario", origin: "Japan", tags: ["equipment"] },
       { id: "stumptown", name: "Stumptown", origin: "USA" },
       { id: "intelligentsia", name: "Intelligentsia", origin: "USA" },
       { id: "counter-culture", name: "Counter Culture", origin: "USA" },
       { id: "davidoff-cafe", name: "Davidoff Café", aliases: ["davidoff cafe"], origin: "Switzerland" },
       { id: "segafredo", name: "Segafredo", origin: "Italy" },
       { id: "kimbo", name: "Kimbo", origin: "Italy" },
+      { id: "dutch-bros", name: "Dutch Bros", aliases: ["dutchbros"], origin: "USA" },
+      { id: "pacific-coffee", name: "Pacific Coffee", origin: "Hong Kong" },
+      { id: "manner", name: "Manner Coffee", aliases: ["manner"], origin: "China" },
+      { id: "percent-arabica", name: "% Arabica", aliases: ["percent arabica", "arabica", "%arabica"], origin: "Japan" },
+      { id: "blue-tokai", name: "Blue Tokai", origin: "India" },
+      { id: "cotti", name: "Cotti Coffee", aliases: ["库迪"], origin: "China" },
     ],
   },
   tea: {
@@ -283,23 +346,28 @@ const CATEGORIES = {
       { id: "lupicia", name: "Lupicia", origin: "Japan" },
       { id: "ito-en", name: "Itō En", aliases: ["itoen", "ito en"], origin: "Japan" },
       { id: "yamamotoyama", name: "Yamamotoyama", origin: "Japan" },
-      { id: "nana", name: "Nana's", origin: "Morocco", tags: ["mint"] },
       { id: "clipper", name: "Clipper", origin: "UK" },
       { id: "pukka", name: "Pukka", origin: "UK" },
       { id: "yogi", name: "Yogi Tea", aliases: ["yogi"], origin: "Germany" },
       { id: "celestial", name: "Celestial Seasonings", origin: "USA" },
       { id: "bigelow", name: "Bigelow", origin: "USA" },
       { id: "numi", name: "Numi", origin: "USA" },
-      { id: "teavana", name: "Teavana", origin: "USA" },
       { id: "davids-tea", name: "DAVIDsTEA", aliases: ["davids tea"], origin: "Canada" },
       { id: "cha-tra-mue", name: "ChaTraMue", aliases: ["chatramue"], origin: "Thailand" },
       { id: "tenren", name: "Ten Ren", aliases: ["tenren"], origin: "Taiwan" },
+      { id: "teapigs", name: "Tea Pig", aliases: ["teapigs", "tea pigs"], origin: "UK" },
+      { id: "whittard", name: "Whittard", aliases: ["whittard of chelsea"], origin: "UK" },
+      { id: "chagee", name: "CHAGEE", aliases: ["霸王茶姬"], origin: "China", tags: ["rising"] },
+      { id: "heytea", name: "HEYTEA", aliases: ["喜茶"], origin: "China", tags: ["rising"] },
+      { id: "nayuki", name: "Nayuki", aliases: ["奈雪"], origin: "China", tags: ["rising"] },
+      { id: "gong-cha", name: "Gong Cha", aliases: ["贡茶"], origin: "Taiwan" },
+      { id: "chatime", name: "Chatime", aliases: ["日出茶太"], origin: "Taiwan" },
     ],
   },
   clothes: {
     id: "clothes",
     label: "Clothes brands",
-    blurb: "Fashion houses and streetwear still worn.",
+    blurb: "Everyday fashion and streetwear still worn.",
     kind: "brand",
     items: [
       { id: "nike", name: "Nike", origin: "USA", tags: ["swoosh"] },
@@ -314,17 +382,17 @@ const CATEGORIES = {
       { id: "ralph-lauren", name: "Ralph Lauren", aliases: ["polo"], origin: "USA" },
       { id: "tommy", name: "Tommy Hilfiger", aliases: ["tommy"], origin: "USA" },
       { id: "calvin-klein", name: "Calvin Klein", aliases: ["ck"], origin: "USA" },
-      { id: "gucci", name: "Gucci", origin: "Italy" },
-      { id: "prada", name: "Prada", origin: "Italy" },
-      { id: "versace", name: "Versace", origin: "Italy" },
-      { id: "armani", name: "Armani", aliases: ["giorgio armani"], origin: "Italy" },
+      { id: "new-balance", name: "New Balance", aliases: ["nb"], origin: "USA" },
+      { id: "vans", name: "Vans", origin: "USA" },
+      { id: "converse", name: "Converse", origin: "USA" },
+      { id: "columbia", name: "Columbia", origin: "USA" },
       { id: "burberry", name: "Burberry", origin: "UK" },
       { id: "lululemon", name: "Lululemon", origin: "Canada" },
       { id: "patagonia", name: "Patagonia", origin: "USA" },
       { id: "north-face", name: "The North Face", aliases: ["north face", "tnf"], origin: "USA" },
       { id: "supreme", name: "Supreme", origin: "USA" },
       { id: "off-white", name: "Off-White", origin: "Italy" },
-      { id: "balenciaga", name: "Balenciaga", origin: "Spain" },
+      { id: "aritzia", name: "Aritzia", origin: "Canada" },
       { id: "muji", name: "MUJI", origin: "Japan" },
       { id: "gu", name: "GU", origin: "Japan" },
       { id: "cos", name: "COS", origin: "Sweden" },
@@ -332,6 +400,14 @@ const CATEGORIES = {
       { id: "carhartt", name: "Carhartt", origin: "USA" },
       { id: "dickies", name: "Dickies", origin: "USA" },
       { id: "champion", name: "Champion", origin: "USA" },
+      { id: "shein", name: "SHEIN", aliases: ["shein"], origin: "China", tags: ["rising"] },
+      { id: "gymshark", name: "Gymshark", origin: "UK", tags: ["rising"] },
+      { id: "asos", name: "ASOS", origin: "UK" },
+      { id: "skims", name: "SKIMS", origin: "USA", tags: ["rising"] },
+      { id: "alo", name: "Alo Yoga", aliases: ["alo"], origin: "USA", tags: ["rising"] },
+      { id: "arcteryx", name: "Arc'teryx", aliases: ["arcteryx"], origin: "Canada" },
+      { id: "canada-goose", name: "Canada Goose", origin: "Canada" },
+      { id: "stone-island", name: "Stone Island", origin: "Italy" },
     ],
   },
   luxury: {
@@ -359,18 +435,25 @@ const CATEGORIES = {
       { id: "ysl", name: "Yves Saint Laurent", aliases: ["ysl", "saint laurent"], origin: "France" },
       { id: "montblanc", name: "Montblanc", origin: "Germany" },
       { id: "rimowa", name: "Rimowa", origin: "Germany" },
-      { id: "ferrari-fashion", name: "Ferrari Style", origin: "Italy", tags: ["lifestyle"] },
-      { id: "bentley-home", name: "Bentley Home", origin: "UK" },
       { id: "asprey", name: "Asprey", origin: "UK" },
       { id: "harry-winston", name: "Harry Winston", origin: "USA" },
       { id: "graff", name: "Graff", origin: "UK" },
       { id: "chopard", name: "Chopard", origin: "Switzerland" },
+      { id: "gucci", name: "Gucci", origin: "Italy" },
+      { id: "prada", name: "Prada", origin: "Italy" },
+      { id: "balenciaga", name: "Balenciaga", origin: "Spain" },
+      { id: "loewe", name: "Loewe", origin: "Spain" },
+      { id: "moncler", name: "Moncler", origin: "Italy" },
+      { id: "breitling", name: "Breitling", origin: "Switzerland" },
+      { id: "tag-heuer", name: "TAG Heuer", aliases: ["tag heuer"], origin: "Switzerland" },
+      { id: "jaeger-lecoultre", name: "Jaeger-LeCoultre", aliases: ["jlc"], origin: "Switzerland" },
+      { id: "vacheron", name: "Vacheron Constantin", aliases: ["vacheron"], origin: "Switzerland" },
     ],
   },
   trees: {
     id: "trees",
     label: "Trees",
-    blurb: "Living tree species still rooted on Earth.",
+    blurb: "Common living trees still rooted on Earth.",
     kind: "nature",
     items: [
       { id: "oak", name: "Oak", aliases: ["quercus"], tags: ["deciduous"] },
@@ -384,7 +467,6 @@ const CATEGORIES = {
       { id: "baobab", name: "Baobab", origin: "Africa" },
       { id: "sequoia", name: "Giant sequoia", aliases: ["sequoiadendron"], origin: "USA" },
       { id: "redwood", name: "Coast redwood", aliases: ["sequoia sempervirens"], origin: "USA" },
-      { id: "bamboo", name: "Bamboo", aliases: ["bambusoideae"], tags: ["grass"] },
       { id: "palm", name: "Palm", aliases: ["arecaceae"] },
       { id: "olive", name: "Olive tree", aliases: ["olea europaea"] },
       { id: "fig", name: "Fig tree", aliases: ["ficus"] },
@@ -397,7 +479,13 @@ const CATEGORIES = {
       { id: "fir", name: "Fir", aliases: ["abies"] },
       { id: "jacaranda", name: "Jacaranda", origin: "South America" },
       { id: "magnolia", name: "Magnolia tree", aliases: ["magnolia"] },
-      { id: "wisteria-tree", name: "Wisteria", aliases: ["wisteria"] },
+      { id: "poplar", name: "Poplar", aliases: ["populus"] },
+      { id: "plane", name: "London plane", aliases: ["platanus", "sycamore"] },
+      { id: "bamboo", name: "Bamboo", aliases: ["bambusoideae"] },
+      { id: "teak", name: "Teak", aliases: ["tectona"] },
+      { id: "mahogany", name: "Mahogany", aliases: ["swietenia"] },
+      { id: "acacia", name: "Acacia", aliases: ["wattle"] },
+      { id: "douglas-fir", name: "Douglas fir", aliases: ["pseudotsuga"] },
     ],
   },
   flowers: {
@@ -418,7 +506,6 @@ const CATEGORIES = {
       { id: "hydrangea", name: "Hydrangea" },
       { id: "jasmine", name: "Jasmine", aliases: ["jasminum"] },
       { id: "lotus", name: "Lotus", aliases: ["nelumbo"] },
-      { id: "cherry-flower", name: "Cherry blossom flower", aliases: ["sakura flower"] },
       { id: "hibiscus", name: "Hibiscus" },
       { id: "marigold", name: "Marigold", aliases: ["tagetes"] },
       { id: "iris", name: "Iris" },
@@ -431,6 +518,12 @@ const CATEGORIES = {
       { id: "bougainvillea", name: "Bougainvillea" },
       { id: "plumeria", name: "Plumeria", aliases: ["frangipani"] },
       { id: "protea", name: "Protea", origin: "South Africa" },
+      { id: "dahlia", name: "Dahlia" },
+      { id: "sakura", name: "Cherry blossom flower", aliases: ["sakura bloom"] },
+      { id: "wisteria", name: "Wisteria" },
+      { id: "magnolia-flower", name: "Magnolia blossom", aliases: ["magnolia flower"] },
+      { id: "anthurium", name: "Anthurium" },
+      { id: "bird-of-paradise", name: "Bird of paradise", aliases: ["strelitzia"] },
     ],
   },
   animals: {
@@ -469,6 +562,14 @@ const CATEGORIES = {
       { id: "deer", name: "Deer" },
       { id: "rabbit", name: "Rabbit", aliases: ["bunny"] },
       { id: "octopus", name: "Octopus" },
+      { id: "koala", name: "Koala", origin: "Australia" },
+      { id: "kangaroo", name: "Kangaroo", origin: "Australia" },
+      { id: "giraffe", name: "Giraffe" },
+      { id: "zebra", name: "Zebra" },
+      { id: "shark", name: "Shark" },
+      { id: "flamingo", name: "Flamingo" },
+      { id: "parrot", name: "Parrot" },
+      { id: "cricket", name: "Cricket", tags: ["insect"] },
     ],
   },
   food: {
@@ -507,6 +608,14 @@ const CATEGORIES = {
       { id: "meiji", name: "Meiji", origin: "Japan" },
       { id: "calbee", name: "Calbee", origin: "Japan" },
       { id: "nissin", name: "Nissin", aliases: ["cup noodles"], origin: "Japan" },
+      { id: "koala-march", name: "Koala's March", aliases: ["koala no march", "コアラのマーチ"], origin: "Japan" },
+      { id: "lotte", name: "Lotte", origin: "South Korea" },
+      { id: "orion", name: "Orion", origin: "South Korea" },
+      { id: "want-want", name: "Want Want", aliases: ["旺旺"], origin: "China" },
+      { id: "three-squirrels", name: "Three Squirrels", aliases: ["三只松鼠"], origin: "China", tags: ["rising"] },
+      { id: "nongshim", name: "Nongshim", aliases: ["농심", "shin ramyun"], origin: "South Korea" },
+      { id: "gatorade", name: "Gatorade", origin: "USA", tags: ["drink"] },
+      { id: "sprite", name: "Sprite", origin: "USA", tags: ["drink"] },
     ],
   },
 };
@@ -608,7 +717,7 @@ function buildFacts(cat, seed) {
         house: seed.name,
         origin,
         style: tags === "—" ? cat.label.replace(/ brands$/, "") : tags,
-        story: `${seed.name} is still poured worldwide from ${origin}.`,
+        story: `${seed.name} is still poured from ${origin}.`,
       };
     case "coffee":
     case "tea":
@@ -663,11 +772,77 @@ function buildFacts(cat, seed) {
   }
 }
 
+function escapeXml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/** Local SVG mark so locked tiles show a recognizable grey logo shape offline. */
+function writeMarkSvg(itemId, name, categoryId, hue) {
+  mkdirSync(marksDir, { recursive: true });
+  const out = join(marksDir, `${itemId}.svg`);
+  // Keep previously vendored logos / silhouettes / Clearbit wraps / crests — do not overwrite.
+  if (existsSync(out)) {
+    const existing = readFileSync(out, "utf8");
+    const isMonogramBadge =
+      existing.includes("linearGradient") &&
+      existing.includes("font-family") &&
+      !existing.includes("data:image");
+    if (!isMonogramBadge) {
+      return `marks/${itemId}.svg`;
+    }
+  }
+  const initials = name
+    .replace(/[^A-Za-z0-9\u00C0-\u024F]/g, " ")
+    .trim()
+    .split(/\s+/)
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "?";
+  const glyph = MARK_GLYPHS[categoryId] ?? "◎";
+  // Bold badge monogram — greyscale still reveals the mark silhouette.
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="${escapeXml(name)}">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="hsl(${hue} 42% 62%)"/>
+      <stop offset="100%" stop-color="hsl(${(hue + 40) % 360} 48% 38%)"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="28" fill="transparent"/>
+  <circle cx="80" cy="80" r="62" fill="url(#g)" opacity="0.22"/>
+  <circle cx="80" cy="80" r="54" fill="none" stroke="url(#g)" stroke-width="4"/>
+  <text x="80" y="78" text-anchor="middle" font-size="34" fill="url(#g)">${escapeXml(glyph)}</text>
+  <text x="80" y="118" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="url(#g)">${escapeXml(initials)}</text>
+</svg>
+`;
+  writeFileSync(out, svg);
+  return `marks/${itemId}.svg`;
+}
+
+function resolveCoverPath(itemId) {
+  const coversDir = join(root, "public", "covers");
+  for (const ext of [".jpg", ".jpeg", ".png", ".webp"]) {
+    const rel = `covers/${itemId}${ext}`;
+    if (existsSync(join(coversDir, `${itemId}${ext}`))) return rel;
+  }
+  return null;
+}
+
 function buildItem(cat, seed, index) {
   const id = seed.id || slugify(seed.name);
   const facts = buildFacts(cat, seed);
+  const itemId = `${cat.id}__${id}`;
+  const hue = coverHue(`${cat.id}-${id}`);
+  const markPath = writeMarkSvg(itemId, seed.name, cat.id, hue);
+  const markIcon = MARK_ICONS[itemId] ?? null;
+  const coverPath = resolveCoverPath(itemId);
   return {
-    id: `${cat.id}__${id}`,
+    id: itemId,
     slug: id,
     name: seed.name,
     aliases: seed.aliases ?? [],
@@ -678,7 +853,10 @@ function buildItem(cat, seed, index) {
       seed.summary ??
       `${seed.name} — catalogued in ${cat.label.toLowerCase()}${seed.origin ? ` · ${seed.origin}` : ""}.`,
     facts,
-    coverHue: coverHue(`${cat.id}-${id}`),
+    coverHue: hue,
+    mark: markPath,
+    cover: coverPath,
+    markIcon,
     sort: index,
     status: "active",
   };

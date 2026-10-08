@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <defs>
+    <filter id="g"><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncR type="linear" slope="1.15"/><feFuncG type="linear" slope="1.15"/><feFuncB type="linear" slope="1.15"/></feComponentTransfer></filter>
+  </defs>
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAV1BMVEVXUP+JhP/V0v9WT////////v/W0/9VTv+Efv9wav9eWP/t6/9oYv/Fwv/o5v9nYP9sZf+Sjf/08v/Kx/+5tf9aU/9tZ//Z1/93cv/i3/++uv+NiP9/ef+oNyZpAAAAjElEQVQ4jd3QyxZDMBCA4RCVCBEtcSnv/5ztyQSZwTkWNnzb+XNl7I4EQee2zTAy50WXY5ugTLCd4IWcD7gjDo+wpnD64QNKb15vGg1iJ637CiyBToEPtBFwaBDEgX/AWehUgKyBcmz1rYG/a7ME0nuDsYXnGjtvHmFScXT7nYB8/gWBxKZNoAg6f4YfABAMzyb8XdQAAAAASUVORK5CYII=" width="128" height="128" filter="url(#g)" preserveAspectRatio="xMidYMid meet"/>
+</svg>

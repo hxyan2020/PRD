@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
+  <circle cx="64" cy="58" r="38" fill="none" stroke="#C4C4C4" stroke-width="3"/>
+  <path fill="#C4C4C4" d="M64 30l8 18 20 2-15 13 4 20-17-12-17 12 4-20-15-13 20-2z"/>
+  <text x="64" y="112" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#C4C4C4" letter-spacing="0.15em">PALL MALL</text>
+</svg>

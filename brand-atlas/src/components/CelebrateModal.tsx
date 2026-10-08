@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { CatalogItem } from "../types/catalog";
 import { coverGradient } from "../lib/catalog";
+import { coverUrl } from "../lib/marks";
 import { useI18n } from "../i18n/I18nProvider";
 import { formatUtc, getUnlock, permanentLink } from "../lib/unlocks";
 
@@ -16,6 +17,7 @@ export function CelebrateModal({ item, categoryLabel, onClose }: Props) {
   const unlock = getUnlock(item.id);
   const link = unlock ? permanentLink(unlock.shareId) : null;
   const [copied, setCopied] = useState(false);
+  const photo = unlock?.photoDataUrl || coverUrl(item);
 
   useEffect(() => {
     if (!link) return;
@@ -48,9 +50,12 @@ export function CelebrateModal({ item, categoryLabel, onClose }: Props) {
       <div className="celebrate__card">
         <div
           style={{
-            height: 120,
+            height: 140,
             borderRadius: 16,
-            background: coverGradient(item.coverHue, true),
+            background: photo ? undefined : coverGradient(item.coverHue, true),
+            backgroundImage: photo ? `url(${photo})` : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
             animation: "unlockBloom 0.9s ease",
           }}
         />
