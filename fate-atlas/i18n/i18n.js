@@ -1,7 +1,7 @@
 /**
  * Fatum Atlas i18n — locale switcher + string lookup.
  * Country names use Intl.DisplayNames via FatumCountries.
- * Language picker uses flagcdn images (not emoji — those become "US"/"CA" on many OSes).
+ * Language picker uses self-hosted flag PNGs (flagcdn is often blocked; emoji become "US"/"CA").
  */
 (function () {
   "use strict";
@@ -30,6 +30,33 @@
   let locale = "en";
   const listeners = new Set();
 
+  /** Same-origin flag assets under fate-atlas/assets/flags/ */
+  function flagAssetBase() {
+    try {
+      const scripts = document.getElementsByTagName("script");
+      for (let i = scripts.length - 1; i >= 0; i--) {
+        const src = scripts[i].src || "";
+        if (/\/i18n\/i18n\.js(\?|$)/.test(src)) {
+          return src.replace(/i18n\/i18n\.js(\?.*)?$/, "assets/flags/");
+        }
+      }
+    } catch (_) {}
+    try {
+      return new URL("assets/flags/", window.location.href).href;
+    } catch (_) {
+      return "assets/flags/";
+    }
+  }
+
+  function flagUrls(code) {
+    const cc = String(code || "un").toLowerCase().replace(/[^a-z]/g, "") || "un";
+    const base = flagAssetBase();
+    return {
+      src: `${base}${cc}.png`,
+      srcset: `${base}${cc}-2x.png 2x`,
+    };
+  }
+
   function detect() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -55,8 +82,8 @@
   }
 
   function flagImg(code, cls) {
-    const cc = String(code || "un").toLowerCase();
-    return `<img class="${cls || "lang-picker__flag"}" src="https://flagcdn.com/24x18/${cc}.png" srcset="https://flagcdn.com/48x36/${cc}.png 2x" width="24" height="18" alt="" loading="lazy" decoding="async" />`;
+    const u = flagUrls(code);
+    return `<img class="${cls || "lang-picker__flag"}" src="${u.src}" srcset="${u.srcset}" width="24" height="18" alt="" decoding="async" />`;
   }
 
   function t(key, vars) {
@@ -114,8 +141,12 @@
     const labelEl = document.getElementById("lang-picker-label");
     const menu = document.getElementById("lang-picker-menu");
     if (flagEl) {
-      flagEl.src = `https://flagcdn.com/24x18/${m.flag}.png`;
-      flagEl.srcset = `https://flagcdn.com/48x36/${m.flag}.png 2x`;
+      const u = flagUrls(m.flag);
+      flagEl.src = u.src;
+      flagEl.srcset = u.srcset;
+      flagEl.hidden = false;
+      flagEl.removeAttribute("hidden");
+      flagEl.style.display = "";
     }
     if (labelEl) labelEl.textContent = m.native;
     if (btn) btn.setAttribute("aria-label", `${t("hud.lang")}: ${m.native}`);
@@ -162,20 +193,22 @@
 
     const menu = document.getElementById("lang-picker-menu");
     const btn = document.getElementById("lang-picker-btn");
-    if (menu && !menu.dataset.bound) {
-      menu.dataset.bound = "1";
+    if (menu) {
       menu.innerHTML = LOCALES.map(
         (l) => `<li role="option" tabindex="-1" data-locale="${l.id}" class="lang-picker__option">
           ${flagImg(l.flag)}
-          <span>${l.native}</span>
+          <span class="lang-picker__option-label">${l.native}</span>
         </li>`
       ).join("");
-      menu.addEventListener("click", (e) => {
-        const opt = e.target.closest("[data-locale]");
-        if (!opt) return;
-        setLocale(opt.getAttribute("data-locale"));
-        closeLangMenu();
-      });
+      if (!menu.dataset.bound) {
+        menu.dataset.bound = "1";
+        menu.addEventListener("click", (e) => {
+          const opt = e.target.closest("[data-locale]");
+          if (!opt) return;
+          setLocale(opt.getAttribute("data-locale"));
+          closeLangMenu();
+        });
+      }
     }
     if (btn && !btn.dataset.bound) {
       btn.dataset.bound = "1";

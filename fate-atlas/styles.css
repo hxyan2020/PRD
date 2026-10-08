@@ -2909,12 +2909,17 @@ body.nav-open .nav-toggle__bars::after {
 }
 
 .lang-picker__flag {
-  width: 24px;
-  height: 18px;
+  display: inline-block !important;
+  width: 24px !important;
+  height: 18px !important;
+  min-width: 24px;
+  min-height: 18px;
   object-fit: cover;
   border-radius: 2px;
   flex-shrink: 0;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  background: #2a2420;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22);
+  vertical-align: middle;
 }
 
 .lang-picker__label {
@@ -2954,16 +2959,21 @@ body.nav-open .nav-toggle__bars::after {
   cursor: pointer;
   color: #f2e8d8;
   font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .lang-picker__option:hover,
 .lang-picker__option.is-active {
-  background: rgba(224, 168, 74, 0.16);
+  background: rgba(224, 168, 74, 0.22);
 }
 
 .lang-picker__option .lang-picker__flag {
-  width: 24px;
-  height: 18px;
+  display: inline-block !important;
+  width: 24px !important;
+  height: 18px !important;
+  min-width: 24px;
+  flex-shrink: 0;
 }
 
 .hud__lang select {
