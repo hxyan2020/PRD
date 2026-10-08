@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNotebook } from '../hooks/useNotebook'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -8,11 +8,11 @@ interface ToolbarState {
   text: string
   x: number
   y: number
+  placeBelow: boolean
 }
 
-function isMobileViewport() {
-  return typeof window !== 'undefined' && window.matchMedia('(max-width: 760px)').matches
-}
+const TOOLBAR_W = 196
+const TOOLBAR_H = 52
 
 export function SelectionTools() {
   const location = useLocation()
@@ -22,21 +22,28 @@ export function SelectionTools() {
   const [flash, setFlash] = useState('')
   const [explainOpen, setExplainOpen] = useState(false)
   const [explainText, setExplainText] = useState('')
-  const [mobile, setMobile] = useState(isMobileViewport)
+  const hideTimer = useRef<number | null>(null)
+  const showTimer = useRef<number | null>(null)
+  const toolbarRef = useRef<HTMLDivElement | null>(null)
+  const holdingToolbar = useRef(false)
 
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 760px)')
-    const onChange = () => setMobile(mq.matches)
-    onChange()
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
+    const clearShowTimer = () => {
+      if (showTimer.current != null) {
+        window.clearTimeout(showTimer.current)
+        showTimer.current = null
+      }
+    }
 
-  useEffect(() => {
-    const showFromSelection = () => {
-      window.setTimeout(() => {
+    const syncFromSelection = () => {
+      if (holdingToolbar.current) return
+      clearShowTimer()
+      // Android finalizes the native selection after touchend; wait a beat.
+      showTimer.current = window.setTimeout(() => {
+        if (holdingToolbar.current) return
         const selection = window.getSelection()
         if (!selection || selection.isCollapsed || !selection.rangeCount) {
+          setToolbar(null)
           return
         }
         const text = selection.toString().trim()
@@ -50,32 +57,62 @@ export function SelectionTools() {
           return
         }
         const range = selection.getRangeAt(0)
-        const rect = range.getBoundingClientRect()
+        let rect = pickVisibleRect(range)
+        if (!rect) {
+          // Selection may be off-screen after long-press scroll; bring it into view.
+          const anchorEl =
+            range.startContainer.nodeType === Node.ELEMENT_NODE
+              ? (range.startContainer as Element)
+              : range.startContainer.parentElement
+          anchorEl?.scrollIntoView({ block: 'center', inline: 'nearest' })
+          rect = pickVisibleRect(range) ?? range.getBoundingClientRect()
+        }
         if (!rect.width && !rect.height) {
           setToolbar(null)
           return
         }
-        setToolbar({
-          text,
-          x: Math.min(window.innerWidth - 200, Math.max(12, rect.left + rect.width / 2 - 100)),
-          y: Math.max(12, rect.top + window.scrollY - 52),
-        })
-      }, 10)
+
+        const x = Math.min(
+          window.innerWidth - TOOLBAR_W - 12,
+          Math.max(12, rect.left + rect.width / 2 - TOOLBAR_W / 2),
+        )
+        const preferAbove = rect.top - TOOLBAR_H - 10
+        const placeBelow = preferAbove < 12
+        const rawY = placeBelow ? rect.bottom + 10 : preferAbove
+        const y = Math.min(
+          window.innerHeight - TOOLBAR_H - 12,
+          Math.max(12, rawY),
+        )
+
+        setToolbar({ text, x, y, placeBelow })
+      }, 280)
     }
 
-    const onScroll = () => {
-      if (!isMobileViewport()) setToolbar(null)
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null
+      if (target && toolbarRef.current?.contains(target)) return
+      // Don’t clear immediately — selectionchange will refresh if a new selection starts.
+      if (hideTimer.current != null) window.clearTimeout(hideTimer.current)
+      hideTimer.current = window.setTimeout(() => {
+        const selection = window.getSelection()
+        if (!selection || selection.isCollapsed) setToolbar(null)
+      }, 320)
     }
 
-    document.addEventListener('mouseup', showFromSelection)
-    document.addEventListener('touchend', showFromSelection, { passive: true })
-    document.addEventListener('keyup', showFromSelection)
-    window.addEventListener('scroll', onScroll, true)
+    document.addEventListener('selectionchange', syncFromSelection)
+    document.addEventListener('mouseup', syncFromSelection)
+    document.addEventListener('touchend', syncFromSelection, { passive: true })
+    document.addEventListener('keyup', syncFromSelection)
+    document.addEventListener('pointerdown', onPointerDown, true)
+
     return () => {
-      document.removeEventListener('mouseup', showFromSelection)
-      document.removeEventListener('touchend', showFromSelection)
-      document.removeEventListener('keyup', showFromSelection)
-      window.removeEventListener('scroll', onScroll, true)
+      clearShowTimer()
+      if (hideTimer.current != null) window.clearTimeout(hideTimer.current)
+      document.removeEventListener('selectionchange', syncFromSelection)
+      document.removeEventListener('mouseup', syncFromSelection)
+      document.removeEventListener('touchend', syncFromSelection)
+      document.removeEventListener('keyup', syncFromSelection)
+      document.removeEventListener('pointerdown', onPointerDown, true)
     }
   }, [])
 
@@ -106,18 +143,42 @@ export function SelectionTools() {
     <>
       {toolbar ? (
         <div
-          className={`selection-toolbar ${mobile ? 'mobile' : ''}`}
-          style={mobile ? undefined : { left: toolbar.x, top: toolbar.y }}
+          ref={toolbarRef}
+          className={`selection-toolbar ${toolbar.placeBelow ? 'below' : 'above'}`}
+          style={{ left: toolbar.x, top: toolbar.y }}
+          role="toolbar"
+          aria-label={t('selectionToolbar')}
         >
-          <p className="selection-preview">{toolbar.text.slice(0, 80)}{toolbar.text.length > 80 ? '…' : ''}</p>
-          <div className="selection-actions">
-            <button type="button" onClick={saveClip}>
-              {t('addToNotebook')}
-            </button>
-            <button type="button" onClick={openExplain}>
-              {t('explainWithAI')}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="selection-action"
+            onPointerDown={(event) => {
+              holdingToolbar.current = true
+              event.preventDefault()
+            }}
+            onPointerUp={() => {
+              holdingToolbar.current = false
+            }}
+            onClick={saveClip}
+          >
+            <NotebookIcon />
+            <span>{t('saveClip')}</span>
+          </button>
+          <button
+            type="button"
+            className="selection-action ai"
+            onPointerDown={(event) => {
+              holdingToolbar.current = true
+              event.preventDefault()
+            }}
+            onPointerUp={() => {
+              holdingToolbar.current = false
+            }}
+            onClick={openExplain}
+          >
+            <ChatbotIcon />
+            <span>{t('askAI')}</span>
+          </button>
         </div>
       ) : null}
       {flash ? <div className="notebook-toast">{flash}</div> : null}
@@ -129,6 +190,28 @@ export function SelectionTools() {
         onClose={() => setExplainOpen(false)}
       />
     </>
+  )
+}
+
+function NotebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M6 3.75A1.75 1.75 0 0 0 4.25 5.5v13A1.75 1.75 0 0 0 6 20.25h12A1.75 1.75 0 0 0 19.75 18.5v-13A1.75 1.75 0 0 0 18 3.75H6Zm.25 1.5h11.5v13H6.25v-13ZM8.5 8h7v1.5h-7V8Zm0 3.5h7V13h-7v-1.5Zm0 3.5h5V17h-5v-1.5Z"
+      />
+    </svg>
+  )
+}
+
+function ChatbotIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path
+        fill="currentColor"
+        d="M12 3.25c-4.56 0-8.25 3.13-8.25 7 0 2.18 1.18 4.13 3.05 5.45l-.7 3.15a.75.75 0 0 0 1.08.84l3.55-1.78c.72.14 1.47.22 2.27.22 4.56 0 8.25-3.13 8.25-7s-3.69-7-8.25-7Zm-3.1 5.6a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Zm3.1 0a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Zm3.1 0a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"
+      />
+    </svg>
   )
 }
 
@@ -170,4 +253,12 @@ function isInsideUiChrome(node: Node): boolean {
       'input, textarea, button, .selection-toolbar, .drawer-panel, .nav, .topbar, .day-check, .board-check, .lang-switch, .menu-toggle',
     ),
   )
+}
+
+function pickVisibleRect(range: Range): DOMRect | null {
+  const rects = Array.from(range.getClientRects()).filter((r) => r.width || r.height)
+  const candidates = rects.length ? rects : [range.getBoundingClientRect()]
+  const vh = window.innerHeight
+  const visible = candidates.find((r) => r.bottom > 8 && r.top < vh - 8)
+  return visible ?? null
 }
