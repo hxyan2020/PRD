@@ -349,8 +349,199 @@ select {
   }
 }
 
-.begin__picker select {
+.begin__picker {
+  position: relative;
+  min-width: 0;
+}
+
+.begin__picker .rite-picker {
+  position: relative;
+  width: 100%;
   min-width: min(100%, 28rem);
+}
+
+.rite-picker__native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rite-picker__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 2.85rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+
+.rite-picker__trigger:hover,
+.rite-picker__trigger:focus-visible {
+  border-color: var(--accent, #8b4513);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+}
+
+.rite-picker__trigger.field-error {
+  border-color: #b33;
+}
+
+.rite-picker__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rite-picker__chevron {
+  opacity: 0.55;
+  font-size: 0.85rem;
+}
+
+.rite-picker__panel {
+  position: absolute;
+  z-index: 40;
+  inset-inline: 0;
+  top: calc(100% + 0.35rem);
+  max-height: min(22rem, 60vh);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  background: #fffdf8;
+  box-shadow: 0 12px 32px rgba(40, 24, 8, 0.18);
+}
+
+.rite-picker__search {
+  margin: 0.55rem 0.55rem 0.35rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--line);
+  background: #fff;
+  font: inherit;
+  min-height: 2.75rem;
+}
+
+.rite-picker__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0 0.55rem;
+  overflow: auto;
+  flex: 1;
+}
+
+.rite-picker__group {
+  list-style: none;
+}
+
+.rite-picker__group > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rite-picker__group-label {
+  padding: 0.45rem 0.85rem 0.25rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.rite-picker__option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  cursor: pointer;
+  min-height: 2.85rem;
+}
+
+.rite-picker__option:hover,
+.rite-picker__option:focus-visible,
+.rite-picker__option.is-selected {
+  background: rgba(139, 69, 19, 0.08);
+  outline: none;
+}
+
+.rite-picker__option-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.rite-picker__option-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rite-picker__option-meta {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker-flags,
+.rite-picker__flags {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.picker-flag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.picker-flag--ancient {
+  padding: 0.05rem 0.15rem;
+  border: 1px dashed rgba(201, 162, 39, 0.7);
+  background: rgba(201, 162, 39, 0.1);
+}
+
+.picker-flag__emblem {
+  font-size: 0.62rem;
+  line-height: 1;
+  margin-inline-start: 0.1rem;
+  opacity: 0.95;
+}
+
+.picker-flag--more {
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  padding-inline-start: 0.15rem;
+}
+
+.flag-icon {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.flag-emoji {
+  font-size: 1.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.25));
+}
+
+.rite-picker__option .flag-emoji,
+.rite-picker__flags .flag-emoji {
+  font-size: 1.35rem;
 }
 
 .process-legend {
@@ -1749,10 +1940,22 @@ body.studio-open {
   line-height: 1.2;
 }
 
+.country-chip--ancient {
+  padding: 0.1rem 0.35rem 0.1rem 0.15rem;
+  border: 1px dashed rgba(201, 162, 39, 0.55);
+  background: rgba(201, 162, 39, 0.08);
+}
+
 .country-chip__flag {
   font-size: 1.15rem;
   line-height: 1;
   filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.2));
+}
+
+.country-chip__ancient {
+  font-size: 0.75rem;
+  line-height: 1;
+  opacity: 0.9;
 }
 
 .country-chip__name {
