@@ -628,6 +628,8 @@ body > * {
 
 /* ── Footer ───────────────────────────────────────────── */
 .footer {
+  position: relative;
+  z-index: 1;
   background:
     linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.45)),
     #0a0807;
@@ -765,7 +767,8 @@ body > * {
   border-color: var(--copper);
 }
 
-.begin,
+/* Keep featured isolated for watermark layering — never isolate .begin,
+   or the rite-picker dropdown cannot stack above the footer. */
 .featured {
   isolation: isolate;
 }
