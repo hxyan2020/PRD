@@ -586,10 +586,13 @@
   function sciencePanelHTML(method) {
     const sci = window.fateScienceStatusFor?.(method);
     if (!sci) return accuracyAdvisoryHTML();
-    return `<div class="science-box science-box--${escapeHTML(sci.levelId)}">
-        <p class="science-box__label">${escapeHTML(ti("science.label") || "Scientific reasoning")} · ${escapeHTML(sci.label)}</p>
+    return `<details class="science-box science-box--collapse science-box--${escapeHTML(sci.levelId)}">
+        <summary class="science-box__summary">
+          <span class="science-box__label">${escapeHTML(ti("science.label") || "Scientific reasoning")} · ${escapeHTML(sci.label)}</span>
+          <span class="advisory__hint" data-closed="${escapeHTML(ti("advisory.show") || "Show")}" data-open="${escapeHTML(ti("advisory.hide") || "Hide")}"></span>
+        </summary>
         <p class="science-box__text">${escapeHTML(sci.reasoning)}</p>
-      </div>
+      </details>
       ${accuracyAdvisoryHTML()}`;
   }
 
@@ -635,6 +638,64 @@
     return localePrefersZh() ? c.nameZh || c.name : c.name || c.nameZh;
   }
 
+  function readingBlock(titleKey, fallback, bodyHtml) {
+    if (!bodyHtml) return "";
+    return `<div class="reading__block">
+        <h4>${escapeHTML(ti(titleKey) || fallback)}</h4>
+        ${bodyHtml}
+      </div>`;
+  }
+
+  function readingList(items) {
+    if (!items || !items.length) return "";
+    return `<ul class="reading__guide">${items.map((x) => `<li>${escapeHTML(x)}</li>`).join("")}</ul>`;
+  }
+
+  function enrichedReadingHTML(r, opts) {
+    const o = opts || {};
+    const resultText = r.result || r.omen || "";
+    const explainText = r.explain || r.verdict || "";
+    const interpretText = r.interpret || "";
+    const doList = r.doList || [];
+    const dontList = r.dontList || [];
+    const details = r.details || [];
+    const hasStructured = !!(r.result || r.explain || r.interpret || doList.length || dontList.length);
+
+    if (!hasStructured) {
+      return `
+        <p class="reading__omen">${escapeHTML(r.omen || "")}</p>
+        <p class="reading__verdict">${escapeHTML(r.verdict || "")}</p>
+        <ul class="reading__details">${details.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
+        ${r.counsel ? readingBlock("result.counsel", "Counsel", `<p>${escapeHTML(r.counsel)}</p>`) : ""}
+        ${r.timing ? readingBlock("result.next", "Next", `<p>${escapeHTML(r.timing)}</p>`) : ""}
+      `;
+    }
+
+    return `
+      ${readingBlock("result.show", "Your result", `<p class="reading__result">${escapeHTML(monoText(resultText))}</p>`)}
+      ${
+        details.length
+          ? readingBlock(
+              "result.facts",
+              "What was cast",
+              `<ul class="reading__details">${details.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>`
+            )
+          : ""
+      }
+      ${readingBlock("result.explain", "What it means", `<p>${escapeHTML(explainText)}</p>`)}
+      ${readingBlock("result.interpret", "For your input", `<p>${escapeHTML(interpretText)}</p>`)}
+      ${
+        doList.length || dontList.length
+          ? `<div class="reading__guidance">
+              ${doList.length ? readingBlock("result.do", "Consider doing", readingList(doList)) : ""}
+              ${dontList.length ? readingBlock("result.dont", "Consider not doing", readingList(dontList)) : ""}
+            </div>`
+          : ""
+      }
+      ${o.extraAfter || ""}
+    `;
+  }
+
   function renderGuidedResult(r, allowAgain) {
     const extra =
       r.kind === "bagua" && r.hex
@@ -651,11 +712,7 @@
         ${extra}
         <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
-        <p class="reading__omen">${escapeHTML(r.omen)}</p>
-        <p class="reading__verdict">${escapeHTML(r.verdict)}</p>
-        <ul class="reading__details">${r.details.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
-        <div class="reading__block"><h4>Counsel</h4><p>${escapeHTML(r.counsel)}</p></div>
-        <div class="reading__block"><h4>Timing / Next</h4><p>${escapeHTML(r.timing)}</p></div>
+        ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
         ${resultDisclaimerHTML(state.method, r.disclaimer)}
       </div>
@@ -765,16 +822,12 @@
         ? `<div class="reading-photo"><img src="${r.photoDataUrl}" alt="Submitted photo for this reading" /></div>`
         : "";
       body.innerHTML = `
-        <div class="reading tone-${escapeHTML(r.tone)}">
+        <div class="reading tone-${escapeHTML(r.tone || "mixed")}">
           <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
           ${photoHtml}
-          <div class="reading__symbol">${escapeHTML(r.symbol)}</div>
+          <div class="reading__symbol">${escapeHTML(r.symbol || "◎")}</div>
           <h3 class="studio__heading">${escapeHTML(r.title)}</h3>
-          <p class="reading__omen">${escapeHTML(r.omen)}</p>
-          <p class="reading__verdict">${escapeHTML(r.verdict)}</p>
-          <ul class="reading__details">${r.details.map((d) => `<li>${escapeHTML(d)}</li>`).join("")}</ul>
-          <div class="reading__block"><h4>Counsel</h4><p>${escapeHTML(r.counsel)}</p></div>
-          <div class="reading__block"><h4>Timing</h4><p>${escapeHTML(r.timing)}</p></div>
+          ${enrichedReadingHTML(r)}
           ${sciencePanelHTML(method)}
           ${resultDisclaimerHTML(method, r.disclaimer)}
         </div>
