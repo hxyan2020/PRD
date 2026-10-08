@@ -1,19 +1,23 @@
 /**
  * Cover art for rite cards.
- * Every card uses a local realistic theme photo as the base, plus a light
- * unique SVG motif overlay (and a per-rite color/crop grade) so rites stay
- * distinct without relying on external photo CDNs.
+ * Prefer a per-rite realistic photo at assets/covers/rites/rite-{id}.jpg.
+ * Fall back to a themed local JPG (+ light motif overlay) only when a
+ * dedicated rite photo is not yet available.
  */
 (function () {
   "use strict";
 
   const BASE = "assets/covers";
+  const RITE_BASE = "assets/covers/rites";
 
   const FEATURED = {
     bagua: "cover-bagua.jpg",
     tarot: "cover-tarot.jpg",
     mbti: "cover-mbti.jpg",
   };
+
+  /** Explicit per-rite photo filenames (generated / curated). */
+  const RITE_FILES = Object.create(null);
 
   const THEME_FILES = {
     cards: "cover-cards.jpg",
@@ -639,20 +643,45 @@
     return THEME_FILES[theme] || THEME_FILES.fate;
   }
 
-  /** Always a local realistic JPG — never an abstract SVG as the photo layer. */
-  function photoSrcFor(method) {
+  function ritePhotoSrc(method) {
+    if (!method || !method.id) return null;
+    const id = String(method.id);
+    if (RITE_FILES[id]) return `${RITE_BASE}/${RITE_FILES[id]}`;
+    // Convention: every curated rite photo lives at rites/rite-{id}.jpg
+    return `${RITE_BASE}/rite-${id}.jpg`;
+  }
+
+  function hasDedicatedRitePhoto(method) {
+    // Runtime: we always point at the per-rite path; missing files fall through
+    // via onerror on the <img>. coverHTML still prefers the dedicated path.
+    return !!(method && method.id);
+  }
+
+  /** Theme fallback JPG — never an abstract SVG as the photo layer. */
+  function themePhotoSrc(method) {
     if (method && method.id && FEATURED[method.id]) return `${BASE}/${FEATURED[method.id]}`;
     if (method && method.guided && FEATURED[method.guided]) return `${BASE}/${FEATURED[method.guided]}`;
     return `${BASE}/${photoFileFor(method)}`;
+  }
+
+  function photoSrcFor(method) {
+    return ritePhotoSrc(method) || themePhotoSrc(method);
   }
 
   function photoUrlFor(method) {
     return photoSrcFor(method);
   }
 
-  /** Per-rite crop / grade so rites sharing a theme JPG still look different. */
-  function photoStyleFor(method) {
+  /** Mild grade only — dedicated photos stay recognizable; theme fallbacks get more variety. */
+  function photoStyleFor(method, dedicated) {
     const seed = hashId(method && method.id);
+    if (dedicated) {
+      const bright = 98 + ((seed >>> 6) % 6);
+      const contrast = 102 + ((seed >>> 12) % 8);
+      const x = 40 + (seed % 20);
+      const y = 40 + ((seed >>> 8) % 20);
+      return `filter:brightness(${bright}%) contrast(${contrast}%);object-position:${x}% ${y}%`;
+    }
     const hue = seed % 42;
     const sat = 95 + (seed % 24);
     const bright = 96 + ((seed >>> 6) % 12);
@@ -667,28 +696,35 @@
   }
 
   function coverHTML(method, className) {
-    const photo = photoSrcFor(method);
-    const overlay = uniqueOverlayDataUrl(method);
+    const dedicatedSrc = ritePhotoSrc(method);
+    const fallbackSrc = themePhotoSrc(method);
     const alt = method && method.name ? String(method.name) : "Rite cover";
     const safeAlt = escapeXml(alt);
     const cls = className || "rite-cover";
-    const style = photoStyleFor(method);
+    const style = photoStyleFor(method, true);
+    const fallbackStyle = photoStyleFor(method, false);
+    const fallbackEsc = fallbackSrc.replace(/'/g, "\\'");
 
-    return `<div class="${cls} ${cls}--hybrid" aria-hidden="true">
-      <img class="${cls}__img ${cls}__photo" src="${photo}" alt="${safeAlt}" width="960" height="540" loading="lazy" decoding="async" style="${style}" />
-      <img class="${cls}__img ${cls}__art" src="${overlay}" alt="" width="960" height="540" loading="lazy" decoding="async" />
+    // Dedicated realistic photo first; onerror swaps to theme JPG.
+    // No abstract SVG overlay when using a rite-specific photo.
+    return `<div class="${cls} ${cls}--photo" aria-hidden="true">
+      <img class="${cls}__img ${cls}__photo" src="${dedicatedSrc}" alt="${safeAlt}" width="960" height="540" loading="lazy" decoding="async" style="${style}" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.style.cssText='${fallbackStyle}';this.src='${fallbackEsc}';}" />
     </div>`;
   }
 
   window.FatumCovers = {
     BASE,
+    RITE_BASE,
     FEATURED,
+    RITE_FILES,
     THEME_FILES,
     themeFor,
     motifFor,
     fileFor: photoFileFor,
     urlFor,
     photoUrlFor,
+    ritePhotoSrc,
+    themePhotoSrc,
     uniqueOverlayDataUrl,
     uniqueCoverDataUrl,
     coverHTML,

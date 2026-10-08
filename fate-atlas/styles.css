@@ -347,7 +347,7 @@ select {
   inset: 0;
   background: linear-gradient(180deg, transparent 55%, rgba(7, 19, 31, 0.28));
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
 .feature-card__cover__img,
@@ -365,7 +365,11 @@ select {
 .feature-card__cover--hybrid,
 .method__cover--hybrid,
 .oracle__cover--hybrid,
-.rite-cover--hybrid {
+.rite-cover--hybrid,
+.feature-card__cover--photo,
+.method__cover--photo,
+.oracle__cover--photo,
+.rite-cover--photo {
   display: grid;
 }
 
