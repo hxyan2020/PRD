@@ -161,23 +161,26 @@
     const icon = window.FatumRiteIcons
       ? window.FatumRiteIcons.iconHTML(m, "rite-icon rite-icon--method")
       : "";
+    const markTitle = t("catalog.riteMarkTitle", { name: text.name, process: processLabel });
     return `<li class="method" id="method-${m.id}">
       <div class="method__media">
         ${cover}
-        ${icon}
+        <div class="method__mark" title="${escapeHTML(markTitle)}">
+          ${icon}
+          <span class="method__mark-label">${escapeHTML(t("catalog.riteMark"))}</span>
+        </div>
       </div>
       <div class="method__content">
-        <div>
+        <div class="method__lead">
+          <p class="method__kicker">${escapeHTML(continentLabel(m.continent))}${text.region ? ` · ${escapeHTML(text.region)}` : ""}</p>
           <h3 class="method__name">${escapeHTML(text.name)}</h3>
           <div class="method__meta">
             <span class="tag tag--type">${escapeHTML(typeLabel(m.type))}</span>
-            <span class="tag">${escapeHTML(continentLabel(m.continent))}</span>
             <span class="tag tag--process">${escapeHTML(processLabel)}</span>
             ${sci ? `<span class="tag tag--science tag--science-${escapeHTML(sci.levelId)}">${escapeHTML(sci.tag)}</span>` : ""}
           </div>
-          <p class="method__region">${escapeHTML(text.region || "")}</p>
         </div>
-        <div>
+        <div class="method__body">
           <p class="method__summary">${escapeHTML(text.summary)}</p>
           ${
             sci
@@ -187,11 +190,13 @@
                 </div>`
               : ""
           }
-          <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries, m.region)}</span></p>
-          <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(text.source || "Compiled research")}</p>
-          <p class="method__actions">
-            <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
-          </p>
+          <div class="method__foot">
+            <p class="method__countries"><strong>${escapeHTML(t("catalog.countries"))}:</strong> <span class="country-chips">${countriesMarkup(m.countries, m.region)}</span></p>
+            <p class="method__source"><strong>${escapeHTML(t("catalog.source"))}:</strong> ${escapeHTML(text.source || "Compiled research")}</p>
+            <p class="method__actions">
+              <button type="button" class="btn btn--primary btn--small btn--play" data-read="${escapeHTML(m.id)}">▶ ${escapeHTML(t("catalog.play"))}</button>
+            </p>
+          </div>
         </div>
       </div>
     </li>`;
