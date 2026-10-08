@@ -8,22 +8,22 @@
   const STORAGE_KEY = "fatum-atlas-locale-v1";
 
   const LOCALES = [
-    { id: "en", label: "English", native: "English", dir: "ltr" },
-    { id: "zh-Hans", label: "Chinese (Simplified)", native: "简体中文", dir: "ltr" },
-    { id: "zh-Hant", label: "Chinese (Traditional)", native: "繁體中文", dir: "ltr" },
-    { id: "es", label: "Spanish", native: "Español", dir: "ltr" },
-    { id: "fr", label: "French", native: "Français", dir: "ltr" },
-    { id: "ar", label: "Arabic", native: "العربية", dir: "rtl" },
-    { id: "hi", label: "Hindi", native: "हिन्दी", dir: "ltr" },
-    { id: "pt", label: "Portuguese", native: "Português", dir: "ltr" },
-    { id: "ru", label: "Russian", native: "Русский", dir: "ltr" },
-    { id: "ja", label: "Japanese", native: "日本語", dir: "ltr" },
-    { id: "de", label: "German", native: "Deutsch", dir: "ltr" },
-    { id: "ko", label: "Korean", native: "한국어", dir: "ltr" },
-    { id: "it", label: "Italian", native: "Italiano", dir: "ltr" },
-    { id: "tr", label: "Turkish", native: "Türkçe", dir: "ltr" },
-    { id: "id", label: "Indonesian", native: "Bahasa Indonesia", dir: "ltr" },
-    { id: "vi", label: "Vietnamese", native: "Tiếng Việt", dir: "ltr" },
+    { id: "en", label: "English", native: "English", flag: "🇬🇧", dir: "ltr" },
+    { id: "zh-Hans", label: "Chinese (Simplified)", native: "简体中文", flag: "🇨🇳", dir: "ltr" },
+    { id: "zh-Hant", label: "Chinese (Traditional)", native: "繁體中文", flag: "🇹🇼", dir: "ltr" },
+    { id: "es", label: "Spanish", native: "Español", flag: "🇪🇸", dir: "ltr" },
+    { id: "fr", label: "French", native: "Français", flag: "🇫🇷", dir: "ltr" },
+    { id: "ar", label: "Arabic", native: "العربية", flag: "🇸🇦", dir: "rtl" },
+    { id: "hi", label: "Hindi", native: "हिन्दी", flag: "🇮🇳", dir: "ltr" },
+    { id: "pt", label: "Portuguese", native: "Português", flag: "🇵🇹", dir: "ltr" },
+    { id: "ru", label: "Russian", native: "Русский", flag: "🇷🇺", dir: "ltr" },
+    { id: "ja", label: "Japanese", native: "日本語", flag: "🇯🇵", dir: "ltr" },
+    { id: "de", label: "German", native: "Deutsch", flag: "🇩🇪", dir: "ltr" },
+    { id: "ko", label: "Korean", native: "한국어", flag: "🇰🇷", dir: "ltr" },
+    { id: "it", label: "Italian", native: "Italiano", flag: "🇮🇹", dir: "ltr" },
+    { id: "tr", label: "Turkish", native: "Türkçe", flag: "🇹🇷", dir: "ltr" },
+    { id: "id", label: "Indonesian", native: "Bahasa Indonesia", flag: "🇮🇩", dir: "ltr" },
+    { id: "vi", label: "Vietnamese", native: "Tiếng Việt", flag: "🇻🇳", dir: "ltr" },
   ];
 
   let locale = "en";
@@ -129,10 +129,14 @@
     return () => listeners.delete(fn);
   }
 
+  function localeLabel(l) {
+    return `${l.flag || ""} ${l.native}`.trim();
+  }
+
   function fillLangSelect(select) {
     if (!select) return;
     select.innerHTML = LOCALES.map(
-      (l) => `<option value="${l.id}">${l.native}</option>`
+      (l) => `<option value="${l.id}">${localeLabel(l)}</option>`
     ).join("");
     select.value = locale;
     select.addEventListener("change", () => setLocale(select.value));
