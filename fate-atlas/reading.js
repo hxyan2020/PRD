@@ -1445,6 +1445,23 @@
       featuredEl.addEventListener("mouseleave", () => {
         featuredHovered = false;
       });
+      // Touch: pause while a finger is down on the carousel
+      featuredEl.addEventListener(
+        "touchstart",
+        () => {
+          featuredHovered = true;
+        },
+        { passive: true }
+      );
+      featuredEl.addEventListener(
+        "touchend",
+        () => {
+          setTimeout(() => {
+            featuredHovered = false;
+          }, 1200);
+        },
+        { passive: true }
+      );
       featuredEl.addEventListener(
         "focusin",
         () => {
