@@ -157,6 +157,14 @@ export const PLATFORM_URLS: UrlEntry[] = [
   { category: "Docs", title: "PRD", path: "/admin/docs/prd", description: "Product Requirements (EN/ZH) — G13 + FR-37…46: /cs portal, C1/form/mailbox, wait loop, categorize/severity/AI draft, auto vs POC, dedicated skills, CS/TR dashboard + log + data, catalog", permission: "admin.access" },
   { category: "Docs", title: "User Guide", path: "/admin/docs/user-guide", description: "Operator handbook (EN/ZH) — every left-nav page plus 24/7 CS/TR: /cs portal, desk, dashboard, log, data contract, auto-email wait loop, categorize/severity, auto-reply or POC review, dedicated skills", permission: "admin.access" },
   { category: "Docs", title: "AI Use Manual", path: "/admin/docs/ai-use", description: "AI literacy for Risk and CS/TR (EN/ZH) — LLM, skills, agents, MCP, named function get_client_exposure plus gateway permission then API then DB (not LLM to SQL to Production DB), where AI goes wrong, detect / correct / prevent, mermaid visuals", permission: "admin.access" },
+  {
+    category: "Docs",
+    title: "Risk scenarios",
+    path: "/admin/docs/risk-scenarios",
+    description:
+      "Catalogue of AI skill + linked-chain + expanded admin/pricing/ops risk scenarios — columns: name, description, indicators, dimensions, warn/breach, frequency, P0–P3 severity + escalation, investigation, solution. Edition=plus includes CS/TR; edition=classic matches frozen original CRMP Admin scope",
+    permission: "admin.access",
+  },
   { category: "Docs", title: "UAT Checklist", path: "/admin/docs/uat", description: "Risk Owner UAT pack v2.7 — CS/TR feature catalogue: UAT-25 + UAT-46…53 (desk, /cs, wait loop, skills, dashboard, log, data, analyze/POC) plus support UAT-17/22/27–29/36–40", permission: "admin.access" },
   { category: "Docs", title: "Improvement Roadmap", path: "/admin/docs/roadmap", description: "RM-01…15 cards: today / build / done-when / skip risk", permission: "admin.access" },
   { category: "Docs", title: "Ecosystem Adoption", path: "/admin/docs/ecosystem", description: "Foundations, people, budget, risks", permission: "admin.access" },
