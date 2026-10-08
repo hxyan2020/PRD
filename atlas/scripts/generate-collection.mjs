@@ -6,6 +6,10 @@ import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PLAIN_ARCHETYPES } from "./plain-archetypes.mjs";
+import {
+  ENRICHMENT_NAMED,
+  ENRICHMENT_ARCHETYPES,
+} from "./category-enrichment.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outPath = join(__dirname, "../public/data/collection.json");
@@ -213,6 +217,12 @@ const ARCHETYPE_TAGS = {
   ceremonial_toy: "festival-noisemaker,ratchet-toy,carnival-clapper",
   puzzle_knot: "rope-puzzle,disentanglement-puzzle,metal-puzzle",
   mini_house: "dollhouse,miniature-kitchen,toy-tea-set",
+  hand_drum: "hand-drum,frame-drum,toy-drum",
+  clapping_rhyme: "clapping-game,hand-clap-rhyme,patty-cake",
+  nesting_cups: "nesting-cups,stacking-cups,toy-cups",
+  fortune_fold: "paper-fortune-teller,cootie-catcher,origami-fortune",
+  ribbon_wand: "ribbon-wand,streamer-wand,ribbon-dance",
+  button_spinner: "button-spinner,whirligig,buzz-button",
 };
 
 const CURATED_TAGS = {
@@ -278,6 +288,50 @@ const CURATED_TAGS = {
   Surakarta: "surakarta,javanese-board-game",
   Dakon: "dakon,congkak",
   Sungka: "sungka,filipino-mancala",
+  Abalone: "abalone-game,abalone-board,marble-board-game",
+  Blokus: "blokus,blokus-board,polyomino-game",
+  Stratego: "stratego,stratego-board,hidden-rank-game",
+  "Sorry!": "sorry-board-game,sorry-game,parker-sorry",
+  "The Game of Life": "game-of-life-board,milton-bradley-life,life-board-game",
+  "Candy Land": "candy-land,candyland-board,children-race-game",
+  Wari: "wari-mancala,oware,sowing-game",
+  "Toguz korgool": "toguz-korgool,toguzkumalak,kazakh-mancala",
+  Cribbage: "cribbage,cribbage-board,cribbage-pegs",
+  Rummy: "rummy,card-rummy,gin-rummy",
+  Rummikub: "rummikub,rummy-tiles,tile-rummy",
+  Yahtzee: "yahtzee,yahtzee-dice,dice-poker",
+  "Liar's dice": "liars-dice,dice-bluff,perudo",
+  "Crown and Anchor": "crown-and-anchor,dice-board,chance-dice",
+  "Jacob's ladder": "jacobs-ladder-toy,wooden-jacobs-ladder,ribbon-blocks",
+  "Chinese jump rope": "chinese-jump-rope,elastics-game,skipping-elastics",
+  "String telephone": "string-telephone,tin-can-telephone,cup-and-string-phone",
+  "Paper dolls": "paper-dolls,paper-doll-clothes,cut-out-dolls",
+  "Puppet theater": "puppet-theater,hand-puppets,puppet-stage",
+  "Action figures": "action-figures,poseable-figures,toy-figures",
+  Bocce: "bocce,bocce-ball,boules",
+  Croquet: "croquet,croquet-mallet,croquet-hoops",
+  Quoits: "quoits,ring-toss,quoit-game",
+  Dreidel: "dreidel,hanukkah-dreidel,sevivon",
+  Teetotum: "teetotum,spinning-die,gambling-top",
+  "Gyroscope toy": "gyroscope-toy,toy-gyroscope,spinning-gyroscope",
+  "Tower of Hanoi": "tower-of-hanoi,hanoi-towers,disk-puzzle",
+  "Soma cube": "soma-cube,soma-puzzle,polycube-puzzle",
+  "Spot It! / Dobble": "spot-it,dobble,spot-it-cards",
+  "Capture the flag": "capture-the-flag,flag-game,outdoor-flag-game",
+  "Egg and spoon race": "egg-and-spoon-race,spoon-race,sports-day-race",
+  "Sack race": "sack-race,potato-sack-race,sports-day",
+  Kazoo: "kazoo,toy-kazoo,humming-kazoo",
+  "Thumb piano / kalimba toy": "kalimba,thumb-piano,mbira-toy",
+  Castanets: "castanets,clappers,hand-percussion",
+  "House of cards": "house-of-cards,card-stacking,card-tower",
+  "Domino toppling": "domino-toppling,domino-rally,falling-dominoes",
+  "Lincoln Logs": "lincoln-logs,log-building-toy,wooden-logs-toy",
+  "Piñata": "pinata,piñata,birthday-pinata",
+  "Daruma doll": "daruma,daruma-doll,japanese-daruma",
+  "Christmas crackers": "christmas-crackers,party-crackers,holiday-crackers",
+  Charades: "charades,party-charades,acting-game",
+  Hangman: "hangman-game,word-hangman,pencil-hangman",
+  "Twenty questions": "twenty-questions,guessing-game,yes-no-questions",
 };
 
 /** Stable Wikimedia Commons thumbnail (follows redirect in browsers). */
@@ -565,6 +619,54 @@ const CURATED_PHOTOS = {
     commons("Footbag.jpg"),
     commons("Shuttlecock.jpg"),
   ],
+  // Category enrichment named titles (prefer known-alive Commons files)
+  Abalone: [commons("Abalone_(board_game).jpg"), commons("Board_game.jpg")],
+  Blokus: [commons("Board_game.jpg"), commons("International_draughts.jpg")],
+  Stratego: [commons("Board_game.jpg"), commons("Reversi.jpg")],
+  "Sorry!": [commons("Ludo_board.svg"), commons("Pachisi-real.jpg")],
+  "The Game of Life": [commons("Board_game.jpg"), commons("Snakes_and_Ladders.jpg")],
+  "Candy Land": [commons("Snakes_and_Ladders.jpg"), commons("Ludo_board.svg")],
+  Wari: [commons("Oware.jpg"), commons("Mancala.jpg")],
+  "Toguz korgool": [commons("Mancala.jpg"), commons("Wooden_Mancala_board.jpg"), commons("Oware.jpg")],
+  Cribbage: [commons("Cards_-Deck_Playing.jpg"), commons("Playing_cards.jpg"), commons("Board_game.jpg")],
+  Rummy: [commons("Cards_-Deck_Playing.jpg"), commons("Playing_cards.jpg")],
+  Rummikub: [commons("UCB_Mahjong_Tiles.png"), commons("Domino_--_2021_--_6766.jpg")],
+  Yahtzee: [commons("Dice.jpg"), commons("Backgammon_board_-_01.jpg")],
+  "Liar's dice": [commons("Dice.jpg"), commons("Playing_cards.jpg")],
+  "Crown and Anchor": [commons("Dice.jpg"), commons("Cards_-Deck_Playing.jpg")],
+  "Jacob's ladder": [commons("A_pile_of_alphabet_wooden_blocks.jpg"), commons("Cup-and-ball.jpg")],
+  "Chinese jump rope": [
+    commons("Ghanaian kid (skipping rope) 02.jpg"),
+    commons("Ghanaian kid (skipping rope) 01.jpg"),
+  ],
+  "String telephone": [commons("Cup-and-ball.jpg"), commons("Tin_can_telephone.jpg")],
+  "Paper dolls": [commons("Kokeshi_dolls.jpg"), commons("Mexican_rag_doll_from_Chiapas_(muñeca_chiapaneca).jpg")],
+  "Puppet theater": [commons("Wayang_kulit.jpg"), commons("Bilboquet.jpg")],
+  "Action figures": [commons("Tin_soldier.jpg"), commons("Hobby_horse.jpg")],
+  Bocce: [commons("Quoits.jpg"), commons("Sepak_takraw.jpg"), commons("Footbag.jpg")],
+  Croquet: [commons("Quoits.jpg"), commons("Tug_of_war.jpg")],
+  Quoits: [commons("Quoits.jpg")],
+  Dreidel: [commons("Spinning_top.jpg"), commons("Dice.jpg")],
+  Teetotum: [commons("Spinning_top.jpg"), commons("Dice.jpg")],
+  "Gyroscope toy": [commons("Spinning_top.jpg"), commons("Yo_yo_toy.jpg")],
+  "Tower of Hanoi": [commons("Tower_of_Hanoi.jpg"), commons("Jenga_distorted.jpg")],
+  "Soma cube": [commons("Rubiks_cube_by_keqs.jpg"), commons("A_pile_of_alphabet_wooden_blocks.jpg")],
+  "Spot It! / Dobble": [commons("Cards_-Deck_Playing.jpg"), commons("Playing_cards.jpg")],
+  "Capture the flag": [commons("Children_playing_hide_and_seek.jpg"), commons("Tug_of_war.jpg")],
+  "Egg and spoon race": [commons("Seesaw.jpg"), commons("Tug_of_war.jpg")],
+  "Sack race": [commons("Seesaw.jpg"), commons("Children_playing_hide_and_seek.jpg")],
+  Kazoo: [commons("Maracas.jpg"), commons("Xylophone.jpg")],
+  "Thumb piano / kalimba toy": [commons("Xylophone.jpg"), commons("Maracas.jpg")],
+  Castanets: [commons("Maracas.jpg"), commons("Xylophone.jpg")],
+  "House of cards": [commons("Cards_-Deck_Playing.jpg"), commons("Playing_cards.jpg")],
+  "Domino toppling": [commons("Domino_--_2021_--_6766.jpg")],
+  "Lincoln Logs": [commons("A_pile_of_alphabet_wooden_blocks.jpg"), commons("Lego_bricks.jpg")],
+  "Piñata": [commons("Maracas.jpg"), commons("Circle_game.jpg")],
+  "Daruma doll": [commons("Kokeshi_dolls.jpg"), commons("Matryoshka_dolls.jpg")],
+  "Christmas crackers": [commons("Maracas.jpg"), commons("Circle_game.jpg")],
+  Charades: [commons("Circle_game.jpg"), commons("Children_playing_hide_and_seek.jpg")],
+  Hangman: [commons("Scrabble_game.jpg"), commons("Circle_game.jpg")],
+  "Twenty questions": [commons("Circle_game.jpg"), commons("Scrabble_game.jpg")],
 };
 
 /** Map catalog titles / stems onto CURATED_PHOTOS keys. */
@@ -759,6 +861,74 @@ const PHOTO_ALIASES = {
   "go bang / gomoku": "Gomoku",
   "reversi / othello": "Reversi",
   "jianzi (shuttlecock kicking)": "Jianzi",
+  // Category enrichment aliases
+  abalone: "Abalone",
+  blokus: "Blokus",
+  stratego: "Stratego",
+  "l’attaque": "Stratego",
+  "l'attaque": "Stratego",
+  sorry: "Sorry!",
+  "sorry!": "Sorry!",
+  "the game of life": "The Game of Life",
+  "game of life": "The Game of Life",
+  "candy land": "Candy Land",
+  candyland: "Candy Land",
+  wari: "Wari",
+  "toguz korgool": "Toguz korgool",
+  toguzkumalak: "Toguz korgool",
+  cribbage: "Cribbage",
+  rummy: "Rummy",
+  "gin rummy": "Rummy",
+  rummikub: "Rummikub",
+  yahtzee: "Yahtzee",
+  "liar's dice": "Liar's dice",
+  "liars dice": "Liar's dice",
+  perudo: "Liar's dice",
+  "crown and anchor": "Crown and Anchor",
+  "jacob's ladder": "Jacob's ladder",
+  "jacobs ladder": "Jacob's ladder",
+  "chinese jump rope": "Chinese jump rope",
+  elastics: "Chinese jump rope",
+  "string telephone": "String telephone",
+  "tin can telephone": "String telephone",
+  "paper dolls": "Paper dolls",
+  "puppet theater": "Puppet theater",
+  "puppet theatre": "Puppet theater",
+  "action figures": "Action figures",
+  bocce: "Bocce",
+  boules: "Bocce",
+  croquet: "Croquet",
+  quoits: "Quoits",
+  "ring toss": "Quoits",
+  dreidel: "Dreidel",
+  sevivon: "Dreidel",
+  teetotum: "Teetotum",
+  "gyroscope toy": "Gyroscope toy",
+  gyroscope: "Gyroscope toy",
+  "tower of hanoi": "Tower of Hanoi",
+  "soma cube": "Soma cube",
+  "spot it! / dobble": "Spot It! / Dobble",
+  "spot it": "Spot It! / Dobble",
+  dobble: "Spot It! / Dobble",
+  "capture the flag": "Capture the flag",
+  "egg and spoon race": "Egg and spoon race",
+  "sack race": "Sack race",
+  kazoo: "Kazoo",
+  "thumb piano / kalimba toy": "Thumb piano / kalimba toy",
+  kalimba: "Thumb piano / kalimba toy",
+  "thumb piano": "Thumb piano / kalimba toy",
+  castanets: "Castanets",
+  "house of cards": "House of cards",
+  "domino toppling": "Domino toppling",
+  "lincoln logs": "Lincoln Logs",
+  "piñata": "Piñata",
+  pinata: "Piñata",
+  "daruma doll": "Daruma doll",
+  daruma: "Daruma doll",
+  "christmas crackers": "Christmas crackers",
+  charades: "Charades",
+  hangman: "Hangman",
+  "twenty questions": "Twenty questions",
 };
 
 /**
@@ -1376,6 +1546,12 @@ const ARCHETYPE_PHOTOS = {
     commons("Pick-up_sticks.jpg"),
   ],
   mini_house: [commons("Dollhouse.jpg"), commons("Tea_set.jpg")],
+  hand_drum: [commons("Maracas.jpg"), commons("Xylophone.jpg")],
+  clapping_rhyme: [commons("Circle_game.jpg"), commons("Children_playing_hide_and_seek.jpg")],
+  nesting_cups: [commons("A_pile_of_alphabet_wooden_blocks.jpg"), commons("Cup-and-ball.jpg")],
+  fortune_fold: [commons("Paper_boat.jpg"), commons("Cards_-Deck_Playing.jpg")],
+  ribbon_wand: [commons("Kite.jpg"), commons("Maracas.jpg")],
+  button_spinner: [commons("Spinning_top.jpg"), commons("Yo_yo_toy.jpg")],
 };
 
 /** All hand-curated photo URLs — kept out of the spillover bank. */
@@ -2617,8 +2793,8 @@ const REGIONS = [
   ["Solomon Islands", "Melanesian"],
 ];
 
-/** Regional craft/play archetypes — plain-language copy in plain-archetypes.mjs */
-const ALL_ARCHETYPES = PLAIN_ARCHETYPES;
+/** Regional craft/play archetypes — plain-language copy + category enrichment */
+const ALL_ARCHETYPES = [...PLAIN_ARCHETYPES, ...ENRICHMENT_ARCHETYPES];
 
 /** Extra unique named games to enrich beyond the matrix */
 const EXTRA_NAMED = [
@@ -2735,6 +2911,11 @@ async function main() {
   for (const s of SEEDS) add(s);
 
   for (const row of EXTRA_NAMED) {
+    const s = normalizeExtra(row);
+    if (s) add(s);
+  }
+
+  for (const row of ENRICHMENT_NAMED) {
     const s = normalizeExtra(row);
     if (s) add(s);
   }
