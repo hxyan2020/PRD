@@ -1,6 +1,7 @@
 /**
  * Hash router — splits Fatum Atlas into focused pages.
  * Routes: home | play | atlas | journal | about | terms
+ * Note: home and play share one combined page (hero + play content).
  */
 (function () {
   "use strict";
