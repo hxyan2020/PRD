@@ -3,14 +3,15 @@ import { useCatalog } from "../hooks/useCatalog";
 import { useUnlocks } from "../hooks/useUnlocks";
 import { useI18n } from "../i18n/I18nProvider";
 import { categoryIcon } from "../lib/categoryIcons";
-import { overallProgress } from "../lib/progress";
+import { categoryProgress } from "../lib/progress";
+import { itemsForCategory } from "../lib/catalog";
 import { formatPct } from "../lib/unlocks";
 
 export function HomePage() {
   const { catalog, loading, error } = useCatalog();
-  const { count } = useUnlocks();
+  const { count, version } = useUnlocks();
   const { t } = useI18n();
-  const overall = catalog ? overallProgress(catalog) : null;
+  void version;
 
   return (
     <main>
@@ -53,17 +54,23 @@ export function HomePage() {
         {catalog && (
           <>
             <div className="category-grid">
-              {catalog.categories.map((cat) => (
-                <Link key={cat.id} className="category-chip" to={`/catalog/${cat.id}`}>
-                  <span className="category-chip__icon">{categoryIcon(cat.id)}</span>
-                  <span className="category-chip__text">
-                    <strong>{cat.label}</strong>
-                    <span>
-                      {cat.itemCount} entries · {cat.kind}
+              {catalog.categories.map((cat) => {
+                const prog = categoryProgress(itemsForCategory(catalog, cat.id));
+                return (
+                  <Link key={cat.id} className="category-chip" to={`/catalog/${cat.id}`}>
+                    <span className="category-chip__icon">{categoryIcon(cat.id)}</span>
+                    <span className="category-chip__text">
+                      <strong>{cat.label}</strong>
+                      <span>
+                        {prog.unlocked}/{prog.total} · {cat.kind}
+                      </span>
                     </span>
-                  </span>
-                </Link>
-              ))}
+                    <span className="category-chip__pct mono" title={`${cat.label} progress`}>
+                      {formatPct(prog.pct)}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
 
             <div className="stats">
@@ -72,12 +79,10 @@ export function HomePage() {
                 <span>items in catalogue</span>
               </div>
               <div className="stat">
-                <b>{count}</b>
+                <b>
+                  {count}/{catalog.meta.itemCount}
+                </b>
                 <span>unlocked by you</span>
-              </div>
-              <div className="stat">
-                <b className="mono">{overall ? formatPct(overall.pct) : "0.00%"}</b>
-                <span>overall progress</span>
               </div>
               <div className="stat">
                 <b>weekly</b>

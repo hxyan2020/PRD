@@ -842,6 +842,15 @@ img {
   transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.category-chip__pct {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--forest);
+  letter-spacing: 0.01em;
+}
+
 .category-chip:hover {
   transform: translateY(-2px);
   border-color: color-mix(in oklab, var(--forest) 35%, transparent);

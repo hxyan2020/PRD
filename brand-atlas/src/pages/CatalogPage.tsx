@@ -8,7 +8,6 @@ import { useI18n } from "../i18n/I18nProvider";
 import { itemsForCategory } from "../lib/catalog";
 import {
   categoryProgress,
-  overallProgress,
   revealMode,
   sneakPeekIds,
 } from "../lib/progress";
@@ -43,12 +42,8 @@ export function CatalogPage() {
   }, [catalog, version]);
 
   const progress = useMemo(() => {
-    if (!catalog) return null;
-    if (categoryId) {
-      const items = itemsForCategory(catalog, categoryId);
-      return categoryProgress(items);
-    }
-    return overallProgress(catalog);
+    if (!catalog || !categoryId) return null;
+    return categoryProgress(itemsForCategory(catalog, categoryId));
   }, [catalog, categoryId, version]);
 
   const items = useMemo(() => {

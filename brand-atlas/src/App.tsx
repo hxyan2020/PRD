@@ -12,9 +12,6 @@ import { useAuth } from "./hooks/useAuth";
 import { useUnlocks } from "./hooks/useUnlocks";
 import { useI18n } from "./i18n/I18nProvider";
 import { logOut } from "./lib/auth";
-import { formatPct } from "./lib/unlocks";
-import { useCatalog } from "./hooks/useCatalog";
-import { overallProgress } from "./lib/progress";
 import { AboutPage } from "./pages/AboutPage";
 import { AuthPage } from "./pages/AuthPage";
 import { CatalogPage } from "./pages/CatalogPage";
@@ -30,9 +27,7 @@ const Router = useHashRouter ? HashRouter : BrowserRouter;
 function Header() {
   const { t } = useI18n();
   const { count } = useUnlocks();
-  const { catalog } = useCatalog();
   const { isLoggedIn, email } = useAuth();
-  const pct = catalog ? overallProgress(catalog).pct : 0;
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -62,8 +57,8 @@ function Header() {
         </NavLink>
 
         <div className="header-tools header-tools--compact">
-          <div className="muted mono header-progress" title="Overall unlock progress">
-            {count} · {formatPct(pct)}
+          <div className="muted mono header-progress" title="Unlocked by you">
+            {count} unlocked
           </div>
           <LanguagePicker />
           <div className="header-auth-desktop">
