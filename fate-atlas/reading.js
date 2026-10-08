@@ -1167,19 +1167,39 @@
         const root = document.getElementById("rite-picker");
         root?.classList.remove("is-open", "rite-picker--drop-up");
         panel.style.maxHeight = "";
+        panel.style.top = "";
+        panel.style.bottom = "";
+        panel.style.left = "";
+        panel.style.width = "";
       }
 
       function positionPanel() {
         const root = document.getElementById("rite-picker");
-        if (!panel || !trigger || !root) return;
+        if (!panel || !trigger || !root || panel.hidden) return;
         const rect = trigger.getBoundingClientRect();
         const gap = 8;
-        const spaceBelow = Math.max(0, window.innerHeight - rect.bottom - gap - 12);
-        const spaceAbove = Math.max(0, rect.top - gap - 12);
+        const edge = 12;
+        const spaceBelow = Math.max(0, window.innerHeight - rect.bottom - gap - edge);
+        const spaceAbove = Math.max(0, rect.top - gap - edge);
         const preferUp = spaceBelow < 220 && spaceAbove > spaceBelow;
         root.classList.toggle("rite-picker--drop-up", preferUp);
         const room = Math.max(160, preferUp ? spaceAbove : spaceBelow);
-        panel.style.maxHeight = `${Math.min(room, window.innerHeight * 0.55, 22 * 16)}px`;
+        const maxH = Math.min(room, window.innerHeight * 0.55, 22 * 16);
+        panel.style.maxHeight = `${maxH}px`;
+
+        // Fixed to the viewport — escapes footer stacking contexts
+        const width = Math.min(Math.max(rect.width, 240), window.innerWidth - edge * 2);
+        let left = Math.min(Math.max(edge, rect.left), window.innerWidth - width - edge);
+        panel.style.width = `${width}px`;
+        panel.style.left = `${left}px`;
+        panel.style.right = "auto";
+        if (preferUp) {
+          panel.style.top = "auto";
+          panel.style.bottom = `${Math.max(edge, window.innerHeight - rect.top + gap)}px`;
+        } else {
+          panel.style.bottom = "auto";
+          panel.style.top = `${Math.min(rect.bottom + gap, window.innerHeight - maxH - edge)}px`;
+        }
       }
 
       function openPanel() {
@@ -1188,8 +1208,8 @@
         trigger.setAttribute("aria-expanded", "true");
         document.getElementById("rite-picker")?.classList.add("is-open");
         positionPanel();
-        // Keep the open list in view above the footer
-        panel.scrollIntoView({ block: "nearest", inline: "nearest" });
+        // Nudge the trigger into view, then re-pin the fixed panel
+        trigger.scrollIntoView({ block: "nearest", inline: "nearest" });
         positionPanel();
         searchEl?.focus();
       }

@@ -663,7 +663,7 @@ select {
   z-index: 45;
 }
 
-/* Lift the whole begin block above the footer while the list is open */
+/* Lift begin above siblings while the list is open */
 .begin:has(.rite-picker.is-open) {
   position: relative;
   z-index: 80;
@@ -673,25 +673,29 @@ select {
   z-index: 200;
 }
 
+/* Fixed to the viewport so the footer cannot cover the list */
 .rite-picker__panel {
-  position: absolute;
-  z-index: 200;
-  inset-inline: 0;
-  top: calc(100% + 0.35rem);
+  position: fixed;
+  z-index: 400;
+  left: 0;
+  right: auto;
+  top: 0;
   bottom: auto;
+  width: min(28rem, calc(100vw - 2rem));
   max-height: min(22rem, 55vh);
   display: flex;
   flex-direction: column;
   border: 1px solid var(--line);
   background: #fffdf8;
-  box-shadow: 0 12px 32px rgba(40, 24, 8, 0.18);
+  box-shadow: 0 12px 32px rgba(40, 24, 8, 0.28);
 }
 
-/* Drop upward when there is more room above the trigger than below */
 .rite-picker--drop-up .rite-picker__panel {
-  top: auto;
-  bottom: calc(100% + 0.35rem);
-  box-shadow: 0 -12px 32px rgba(40, 24, 8, 0.18);
+  box-shadow: 0 -12px 32px rgba(40, 24, 8, 0.28);
+}
+
+body:has(.rite-picker.is-open) .footer {
+  z-index: 0;
 }
 
 .rite-picker__search {
