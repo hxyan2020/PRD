@@ -221,19 +221,83 @@ function isStartOver(text: string, tr?: ChatTranslate) {
   return /\b(start over|restart|reset|new search|begin again)\b/i.test(text);
 }
 
-/** Short conversational acknowledgment before guiding back to the interview. */
+function isGreeting(text: string): boolean {
+  const t = normalize(text);
+  if (!t) return false;
+  if (
+    /^(hi+|h[ei]+y+|hello+|howdy|yo+|sup|greetings|hola|bonjour|hallo|你好|안녕)([\s!,.]*| there[!.,]*)?$/.test(
+      t,
+    )
+  ) {
+    return true;
+  }
+  if (/^(good\s*(morning|afternoon|evening|day))([\s!,.]*)?$/.test(t)) return true;
+  // Short social opener that isn't asking about a game yet
+  if (
+    /^(hi|hello|hey)\b/.test(t) &&
+    t.length < 48 &&
+    !/\b(play|game|games|toy|recommend|buy|mancala|chess)\b/.test(t)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function isSmallTalk(text: string): boolean {
+  const t = normalize(text);
+  if (!t || isGreeting(text)) return false;
+  if (/\b(play|game|games|toy|recommend|buy|mancala|chess|how to)\b/.test(t)) {
+    return false;
+  }
+  return /\b(how are you|how're you|how's it going|whats? up|what is up|thanks|thank you|thx|nice to meet|good to (meet|see)|i('m| am) (fine|good|great|ok|okay)|cool|awesome|lol|haha|love (this|it)|nice)\b/.test(
+    t,
+  );
+}
+
+/**
+ * Chat back first, then gently steer toward the unanswered interview step.
+ * Stronger nudges after repeated soft redirects.
+ */
 function chattyGuide(
   t: ChatTranslate,
   userText: string,
   hintKey: MessageKey,
-  quickReplies?: string[],
+  quickReplies: string[] | undefined,
+  nudge: number,
 ): ChatMessage {
-  const snippet = charExcerpt(userText.replace(/\s+/g, " ").trim(), 72);
-  const lead =
-    snippet.length > 2
-      ? `${t("chat.ack.chatty", { snippet })}\n\n${t(hintKey)}`
-      : t(hintKey);
-  return assistant(lead, quickReplies ? { quickReplies } : undefined);
+  const opts = quickReplies ? { quickReplies } : undefined;
+  if (isGreeting(userText)) {
+    const key: MessageKey =
+      nudge <= 0 ? "chat.greet.reply" : "chat.greet.again";
+    return assistant(t(key), opts);
+  }
+  if (isSmallTalk(userText)) {
+    const n = normalize(userText);
+    if (/\b(how are you|how're you|how's it going|whats? up|what is up)\b/.test(n)) {
+      return assistant(`${t("chat.smalltalk.well")}\n\n${t(hintKey)}`, opts);
+    }
+    if (/\b(thanks|thank you|thx)\b/.test(n)) {
+      return assistant(`${t("chat.smalltalk.thanks")}\n\n${t(hintKey)}`, opts);
+    }
+    const snippet = charExcerpt(userText.replace(/\s+/g, " ").trim(), 72)
+      .replace(/[.?!…]+$/u, "")
+      .trim();
+    const lead =
+      snippet.length >= 2
+        ? `${t("chat.ack.chatty", { snippet })}\n\n${t(hintKey)}`
+        : `${t("chat.ack.soft")}\n\n${t(hintKey)}`;
+    return assistant(lead, opts);
+  }
+  const snippet = charExcerpt(userText.replace(/\s+/g, " ").trim(), 72)
+    .replace(/[.?!…]+$/u, "")
+    .trim();
+  if (snippet.length >= 2 && nudge <= 1) {
+    return assistant(
+      `${t("chat.ack.chatty", { snippet })}\n\n${t(hintKey)}`,
+      opts,
+    );
+  }
+  return assistant(`${t("chat.ack.soft")}\n\n${t(hintKey)}`, opts);
 }
 
 function isOffTopic(text: string) {
@@ -763,6 +827,7 @@ export function handleUserMessage(
             lastRecommendations: recs,
             seenRecommendedIds,
             focusGameId: recs[0]?.id,
+            chatNudge: 0,
           },
           replies: [
             assistant(formatRecIntro(prefs, recs, t, { moreAvailable }), {
@@ -772,10 +837,17 @@ export function handleUserMessage(
           ],
         };
       }
+      const nudge = state.chatNudge ?? 0;
       return {
-        state: { ...state, phase: "ask_players" },
+        state: { ...state, phase: "ask_players", chatNudge: nudge + 1 },
         replies: [
-          chattyGuide(t, text, "chat.hint.players", playerQuickReplies(t)),
+          chattyGuide(
+            t,
+            text,
+            "chat.hint.players",
+            playerQuickReplies(t),
+            nudge,
+          ),
         ],
       };
     }
@@ -784,6 +856,7 @@ export function handleUserMessage(
         ...state,
         phase: "ask_setting",
         prefs: { ...state.prefs, players },
+        chatNudge: 0,
       },
       replies: [
         assistant(t("chat.askSetting"), {
@@ -796,10 +869,17 @@ export function handleUserMessage(
   if (state.phase === "ask_setting") {
     const setting = parseSetting(text, t);
     if (!setting) {
+      const nudge = state.chatNudge ?? 0;
       return {
-        state,
+        state: { ...state, chatNudge: nudge + 1 },
         replies: [
-          chattyGuide(t, text, "chat.hint.setting", settingQuickReplies(t)),
+          chattyGuide(
+            t,
+            text,
+            "chat.hint.setting",
+            settingQuickReplies(t),
+            nudge,
+          ),
         ],
       };
     }
@@ -808,6 +888,7 @@ export function handleUserMessage(
         ...state,
         phase: "ask_vibe",
         prefs: { ...state.prefs, setting },
+        chatNudge: 0,
       },
       replies: [
         assistant(t("chat.askVibe"), {
@@ -820,10 +901,17 @@ export function handleUserMessage(
   if (state.phase === "ask_vibe") {
     const vibe = parseVibe(text, t) || (normalize(text).includes("surprise") ? "any" : null);
     if (!vibe) {
+      const nudge = state.chatNudge ?? 0;
       return {
-        state,
+        state: { ...state, chatNudge: nudge + 1 },
         replies: [
-          chattyGuide(t, text, "chat.hint.vibe", vibeQuickReplies(t, false)),
+          chattyGuide(
+            t,
+            text,
+            "chat.hint.vibe",
+            vibeQuickReplies(t, false),
+            nudge,
+          ),
         ],
       };
     }
@@ -832,6 +920,7 @@ export function handleUserMessage(
         ...state,
         phase: "ask_region",
         prefs: { ...state.prefs, vibe },
+        chatNudge: 0,
       },
       replies: [
         assistant(t("chat.askRegion"), {
@@ -1131,6 +1220,23 @@ export function handleUserMessage(
             ],
           },
         ),
+      ],
+    };
+  }
+
+  // Keep chatting in follow-up when the user is just being social
+  if (i === "general" && (isGreeting(text) || isSmallTalk(text))) {
+    return {
+      state: { ...state, prefs, phase: "followup" },
+      replies: [
+        assistant(t("chat.followup.chatty"), {
+          quickReplies: [
+            t("chat.qr.startOver"),
+            t("chat.qr.recommendSomething"),
+            t("chat.qr.howToPlayChess"),
+            t("chat.qr.buyMancala"),
+          ],
+        }),
       ],
     };
   }

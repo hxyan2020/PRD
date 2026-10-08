@@ -191,8 +191,20 @@ export const en = {
     "Hey—I’m here to surprise you with historical toys and games from this catalog. We’ll chat a little so I learn what you like, then I’ll suggest matches. You can also ask how to play, where a game comes from, cultural variations, or purchase options.\n\nTo start: how many people will usually play?",
   "chat.outOfScope":
     "I stay focused on Ludus Atlas—finding toys and games, how they work, cultural background, how to play, and where to buy them. Ask me anything in that lane, or say “start over” to redo preferences.",
+  "chat.greet.reply":
+    "Hi! Glad you’re here. I’m happy to chat—and when you’re ready, knowing how many people usually play helps me surprise you. Alone, 2, 3–4, a larger group, or any size?",
+  "chat.greet.again":
+    "Hey again—still here with you. No rush. Whenever it feels easy, pick a group size so I can aim the catalog: alone, 2, 3–4, a larger group, or any?",
+  "chat.ack.soft":
+    "Thanks for chatting with me. Let’s take the next step together when you’re ready.",
   "chat.ack.chatty":
     "I hear you—{snippet}. Let’s keep narrowing it so I can surprise you with a good match.",
+  "chat.smalltalk.well":
+    "I’m doing well—thanks for asking! Happy to keep chatting while we find something fun.",
+  "chat.smalltalk.thanks":
+    "You’re welcome. Glad you’re here—there’s a whole catalog of play waiting.",
+  "chat.followup.chatty":
+    "Happy to keep chatting! I can recommend something from the catalog, explain how a game works, or walk through a few preference questions again. What sounds good?",
   "chat.qr.alone": "Alone",
   "chat.qr.two": "2 people",
   "chat.qr.small": "3–4 people",
@@ -221,13 +233,13 @@ export const en = {
   "chat.qr.recommendElse": "Recommend something else",
   "chat.hint.preference": "Say a preference, ask about a game, or tap a quick reply—I’ll guide you from there.",
   "chat.hint.players":
-    "Nice chatting—still need a group size so I can aim right. Alone, 2, 3–4, a larger group, or any?",
+    "When you’re ready: how many people will usually play? Alone, 2, 3–4, a larger group, or any size—tap a reply or type it.",
   "chat.hint.setting":
-    "Got it. Next step: indoor table play, outdoor/active play, or either? Tap a reply or tell me in your own words.",
+    "Nice. Next easy step: indoor table play, outdoor/active play, or either? Tap a reply or tell me in your own words.",
   "chat.hint.vibe":
     "Almost there—what vibe fits you best? Strategy, casual, craft, sport, puzzle… or just say “surprise me.”",
   "chat.hint.region":
-    "One more nudge: any region or civilization you lean toward? Or say “worldwide” and I’ll mix it up.",
+    "One more gentle nudge: any region or civilization you lean toward? Or say “worldwide” and I’ll mix it up.",
   "chat.askPurchaseWhich": "Which game do you want purchase links for?",
   "chat.askAbout": "Name a game from the catalog and I’ll share its origin and story.",
   "chat.askVariations": "Name a game and I’ll list its cultural variations.",

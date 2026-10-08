@@ -45,4 +45,6 @@ export type ChatState = {
   /** Accumulated recommendation ids so “more” can page until the pool is exhausted. */
   seenRecommendedIds: string[];
   focusGameId?: string;
+  /** Soft redirects while chatting through an unanswered interview step. */
+  chatNudge?: number;
 };
