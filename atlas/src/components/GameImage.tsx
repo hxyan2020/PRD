@@ -1,6 +1,6 @@
 import { useState, type ReactEventHandler } from "react";
 import {
-  isLudusCardSrc,
+  isLudusSyntheticSrc,
   ludusCardDataUri,
   stableImageSrc,
 } from "../lib/gameCardImage";
@@ -55,5 +55,5 @@ export function GameImage({
 }
 
 function displayNeedsFallback(resolved: string): boolean {
-  return !resolved.startsWith("data:") && !isLudusCardSrc(resolved);
+  return !resolved.startsWith("data:") && !isLudusSyntheticSrc(resolved);
 }

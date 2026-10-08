@@ -1019,6 +1019,13 @@ function encodeLudusCard(name, category, originCountry) {
   return `ludus-card:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}`;
 }
 
+/** Unique gallery panel ref — one visual per game×view, never shared. */
+function encodeLudusView(name, category, originCountry, viewIndex, seed) {
+  return `ludus-view:${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}|${viewIndex}|${encodeURIComponent(seed)}`;
+}
+
+const GALLERY_TARGET = 5;
+
 function tagsForEntry(name, archetypeKey) {
   if (archetypeKey && ARCHETYPE_TAGS[archetypeKey]) return ARCHETYPE_TAGS[archetypeKey];
   // Strip regional suffix from matrix-style titles
@@ -1152,24 +1159,36 @@ const imageBank = {
     /** @type {string[]} */
     const imgs = [card];
 
-    // Prefer title-matched photos, then parent pool, then category, then extra.
-    // Every photographic URL is exclusive — never shared across games.
+    // Claim as many exclusive photos as we can (curated → category → extra).
     const subjectNames = [name, parentName].filter(Boolean);
-    const seen = new Set();
     for (const subject of subjectNames) {
-      for (let n = 0; n < 3; n++) {
+      while (imgs.length < GALLERY_TARGET) {
         const url = this.takeCuratedPhoto(subject);
-        if (!url || seen.has(url)) break;
-        seen.add(url);
+        if (!url) break;
         imgs.push(url);
       }
-      if (imgs.length > 1) break;
     }
-    if (imgs.length === 1) {
-      const cover =
-        this.takeCategoryPhoto(category, uniqueKey) ||
-        this.takeExtraPhoto(uniqueKey);
-      if (cover) imgs.push(cover);
+    while (imgs.length < GALLERY_TARGET) {
+      const url =
+        this.takeCategoryPhoto(category, `${uniqueKey}:${imgs.length}`) ||
+        this.takeExtraPhoto(`${uniqueKey}:${imgs.length}`);
+      if (!url) break;
+      imgs.push(url);
+    }
+
+    // Pad remaining slots with unique per-game gallery views (never shared).
+    let view = 0;
+    while (imgs.length < GALLERY_TARGET) {
+      const panel = encodeLudusView(
+        name,
+        category,
+        originCountry,
+        view,
+        uniqueKey,
+      );
+      imgs.push(panel);
+      this.usedUrls.add(panel);
+      view += 1;
     }
 
     this.usedSets.add(JSON.stringify(imgs));

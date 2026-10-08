@@ -19,9 +19,25 @@ const CATEGORY_ACCENT: Record<string, string> = {
 };
 
 const CARD_PREFIX = "ludus-card:";
+const VIEW_PREFIX = "ludus-view:";
+
+const VIEW_CAPTIONS = [
+  "Atmosphere",
+  "How it’s played",
+  "Pieces & materials",
+  "Cultural setting",
+];
 
 export function isLudusCardSrc(src: string): boolean {
   return src.startsWith(CARD_PREFIX);
+}
+
+export function isLudusViewSrc(src: string): boolean {
+  return src.startsWith(VIEW_PREFIX);
+}
+
+export function isLudusSyntheticSrc(src: string): boolean {
+  return isLudusCardSrc(src) || isLudusViewSrc(src);
 }
 
 /** Encode a title card reference stored in collection.json. */
@@ -31,6 +47,17 @@ export function encodeLudusCard(
   originCountry: string,
 ): string {
   return `${CARD_PREFIX}${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}`;
+}
+
+/** Encode a unique gallery panel for one game (never shared across entries). */
+export function encodeLudusView(
+  name: string,
+  category: string,
+  originCountry: string,
+  viewIndex: number,
+  seed: string,
+): string {
+  return `${VIEW_PREFIX}${encodeURIComponent(name)}|${encodeURIComponent(category)}|${encodeURIComponent(originCountry)}|${viewIndex}|${encodeURIComponent(seed)}`;
 }
 
 function parseLudusCard(src: string): {
@@ -49,6 +76,32 @@ function parseLudusCard(src: string): {
   });
   if (!name) return null;
   return { name, category: category || "", originCountry: originCountry || "" };
+}
+
+function parseLudusView(src: string): {
+  name: string;
+  category: string;
+  originCountry: string;
+  viewIndex: number;
+  seed: string;
+} | null {
+  if (!isLudusViewSrc(src)) return null;
+  const raw = src.slice(VIEW_PREFIX.length);
+  const [name, category, originCountry, viewRaw, seed] = raw.split("|").map((p) => {
+    try {
+      return decodeURIComponent(p || "");
+    } catch {
+      return p || "";
+    }
+  });
+  if (!name) return null;
+  return {
+    name,
+    category: category || "",
+    originCountry: originCountry || "",
+    viewIndex: Number.parseInt(viewRaw || "0", 10) || 0,
+    seed: seed || name,
+  };
 }
 
 function escapeXml(s: string): string {
@@ -200,6 +253,75 @@ export function ludusCardDataUri(
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
+/** Unique gallery panel — different motif/caption per view index, keyed by seed. */
+export function ludusViewDataUri(
+  name: string,
+  category: string,
+  originCountry: string,
+  viewIndex: number,
+  seed: string,
+): string {
+  const accent = CATEGORY_ACCENT[category] || "#bc0234";
+  const h = hashSeed(`${seed}|view|${viewIndex}|${name}`);
+  const caption = VIEW_CAPTIONS[viewIndex % VIEW_CAPTIONS.length];
+  const motif = (h + viewIndex) % 4;
+  const ox = 140 + (h % 200);
+  const oy = 90 + ((h >> 7) % 180);
+  let shapes = "";
+  if (motif === 0) {
+    shapes = `<g opacity="0.28" stroke="${accent}" stroke-width="2" fill="none">
+      ${Array.from({ length: 8 }, (_, i) => {
+        const p = 90 + i * 60;
+        return `<path d="M${p} 70 V530"/><path d="M70 ${p} H830"/>`;
+      }).join("")}
+    </g>`;
+  } else if (motif === 1) {
+    shapes = `<g fill="none" stroke="${accent}" stroke-width="4">
+      <circle cx="${ox + 200}" cy="${oy + 160}" r="170" opacity="0.3"/>
+      <circle cx="${ox + 200}" cy="${oy + 160}" r="110" opacity="0.24"/>
+      <circle cx="${ox + 200}" cy="${oy + 160}" r="50" opacity="0.32"/>
+    </g>`;
+  } else if (motif === 2) {
+    shapes = `<g opacity="0.22" fill="${accent}">
+      ${Array.from({ length: 18 }, (_, i) => {
+        const x = 50 + (i % 6) * 140 + ((i * 19) % 36);
+        const y = 60 + Math.floor(i / 6) * 140 + ((i * 13) % 28);
+        return `<rect x="${x}" y="${y}" width="64" height="64" transform="rotate(45 ${x + 32} ${y + 32})"/>`;
+      }).join("")}
+    </g>`;
+  } else {
+    shapes = `<g fill="none" stroke="${accent}" stroke-width="12" stroke-linecap="round" opacity="0.3">
+      <path d="M50 400 C 240 100, 460 500, 860 180"/>
+      <path d="M40 520 C 300 180, 520 540, 880 300"/>
+    </g>`;
+  }
+  const title = wrapLines(name, 26, 2)
+    .map(
+      (line, i) =>
+        `<text x="56" y="${420 + i * 40}" fill="#e8f0ec" font-family="Georgia, 'Times New Roman', serif" font-size="34" font-weight="700">${escapeXml(line)}</text>`,
+    )
+    .join("");
+  const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="600" viewBox="0 0 900 600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#14080c"/>
+      <stop offset="55%" stop-color="#0c0c0c"/>
+      <stop offset="100%" stop-color="#1a1014"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="600" fill="url(#bg)"/>
+  ${shapes}
+  <rect x="0" y="0" width="10" height="600" fill="${accent}" opacity="0.9"/>
+  <text x="56" y="78" fill="${accent}" font-family="system-ui, sans-serif" font-size="16" font-weight="650" letter-spacing="0.16em">${escapeXml(caption.toUpperCase())}</text>
+  <text x="56" y="120" fill="#b7c9c0" font-family="system-ui, sans-serif" font-size="18">${escapeXml(category || "")}</text>
+  ${title}
+  <text x="56" y="540" fill="#b7c9c0" font-family="system-ui, sans-serif" font-size="18">${escapeXml(originCountry || "")}</text>
+  <text x="56" y="570" fill="#7d9b8a" font-family="system-ui, sans-serif" font-size="13">Gallery view ${viewIndex + 1}</text>
+</svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
+
 /** Hosts that frequently 404 / drop empty in browsers (hotlink blocks, flaky CDN). */
 const FRAGILE_HOSTS = new Set([
   "loremflickr.com",
@@ -209,7 +331,7 @@ const FRAGILE_HOSTS = new Set([
 ]);
 
 export function isFragileRemoteSrc(src: string): boolean {
-  if (!src || isLudusCardSrc(src) || src.startsWith("data:")) return false;
+  if (!src || isLudusSyntheticSrc(src) || src.startsWith("data:")) return false;
   try {
     return FRAGILE_HOSTS.has(new URL(src).hostname);
   } catch {
@@ -217,18 +339,25 @@ export function isFragileRemoteSrc(src: string): boolean {
   }
 }
 
-/** True when `src` is a real remote photo (not a Ludus title-card / fragile host). */
+/** True when `src` is a real remote photo (not a Ludus synthetic / fragile host). */
 export function isPhotographicSrc(src: string | undefined): boolean {
-  if (!src || isLudusCardSrc(src) || src.startsWith("data:")) return false;
+  if (!src || isLudusSyntheticSrc(src) || src.startsWith("data:")) return false;
   return !isFragileRemoteSrc(src);
 }
 
-/** Photographic covers first; title-card refs only as a last resort. */
+/**
+ * Gallery order: exclusive photos first, then unique per-game views / title cards.
+ * Always keeps multiple distinct images when the catalog provides them.
+ */
 export function listDisplayImages(images: string[] | undefined): string[] {
-  const list = images ?? [];
+  const list = (images ?? []).filter(Boolean);
   const photos = list.filter(isPhotographicSrc);
-  if (photos.length) return photos;
-  return list.filter(Boolean);
+  const views = list.filter(isLudusViewSrc);
+  const cards = list.filter(isLudusCardSrc);
+  if (photos.length || views.length) {
+    return [...photos, ...views, ...(photos.length ? [] : cards)];
+  }
+  return cards.length ? cards : list;
 }
 
 /** Best single cover for cards / variation heroes. */
@@ -238,9 +367,19 @@ export function primaryCoverSrc(images: string[] | undefined): string | undefine
 
 /**
  * Resolve a collection image src for use in <img>.
- * Title-card refs become SVG data URIs bearing the correct game name.
+ * Title-card / gallery-view refs become SVG data URIs.
  */
 export function resolveImageSrc(src: string): string {
+  const view = parseLudusView(src);
+  if (view) {
+    return ludusViewDataUri(
+      view.name,
+      view.category,
+      view.originCountry,
+      view.viewIndex,
+      view.seed,
+    );
+  }
   const parsed = parseLudusCard(src);
   if (!parsed) return src;
   return ludusCardDataUri(parsed.name, parsed.category, parsed.originCountry);
@@ -248,12 +387,13 @@ export function resolveImageSrc(src: string): string {
 
 /**
  * Prefer a named title card over fragile stock-photo hosts so galleries never
- * show the browser’s broken-image icon.
+ * show the browser’s broken-image icon. Unique gallery views keep their own art.
  */
 export function stableImageSrc(
   src: string,
   label?: { name: string; category: string; originCountry: string },
 ): string {
+  if (isLudusViewSrc(src)) return resolveImageSrc(src);
   if (label && (isLudusCardSrc(src) || isFragileRemoteSrc(src))) {
     return ludusCardDataUri(label.name, label.category, label.originCountry);
   }
@@ -275,11 +415,17 @@ export function sanitizeImageList(
   const out: string[] = [];
   const seen = new Set<string>();
   for (const raw of images ?? []) {
+    if (isLudusViewSrc(raw)) {
+      if (seen.has(raw)) continue;
+      seen.add(raw);
+      out.push(raw);
+      continue;
+    }
     const next = !raw || isFragileRemoteSrc(raw) ? card : raw;
-    const key = isLudusCardSrc(next) ? card : next;
+    const key = isLudusCardSrc(next) ? `card:${next}` : next;
     if (seen.has(key)) continue;
     seen.add(key);
-    out.push(isLudusCardSrc(next) ? card : next);
+    out.push(isLudusCardSrc(next) ? next : next);
   }
   if (!out.length) out.push(card);
   return out;

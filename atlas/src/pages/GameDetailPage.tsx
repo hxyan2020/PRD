@@ -11,8 +11,8 @@ import { GameAssistant } from "../components/GameAssistant";
 import { useI18n } from "../i18n";
 import { loadContentI18n, localizeGame } from "../lib/localizeContent";
 import {
-  isLudusCardSrc,
   isFragileRemoteSrc,
+  isLudusSyntheticSrc,
   isPhotographicSrc,
   listDisplayImages,
   primaryCoverSrc,
@@ -70,7 +70,7 @@ export function GameDetailPage() {
   const heroPhoto =
     activeSrc &&
     isPhotographicSrc(activeSrc) &&
-    !isLudusCardSrc(activeSrc) &&
+    !isLudusSyntheticSrc(activeSrc) &&
     !isFragileRemoteSrc(activeSrc) &&
     !activeSrc.startsWith("data:")
       ? resolveImageSrc(activeSrc)
