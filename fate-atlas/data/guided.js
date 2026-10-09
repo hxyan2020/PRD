@@ -458,9 +458,8 @@
       region: "Modern psychology-inspired",
       type: "Form",
       summary:
-        "Answer preference questions across E/I, S/N, T/F, J/P to receive your type and a path-style fate reading.",
+        "Answer preference questions across E/I, S/N, T/F, J/P, seal a four-letter type, then receive focus-aware path counsel.",
       source: "MBTI-inspired preference model (simplified)",
-      guided: "mbti",
       featured: true,
     },
     {
