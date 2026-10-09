@@ -977,43 +977,43 @@
     },
     "buzios": {
       "name": "巴西贝壳占（Búzios）",
-      "summary": "巴西坎东布雷等传统中的贝壳占，读取神祇讯息。",
+      "summary": "布齐奥斯贝占在康东布雷／乌班达中抛贝选奥杜经文——仅教育性起卦，非入门。",
       "region": "Candomblé／Umbanda",
       "source": "Wikipedia · Cowrie-shell divination; Sekai Fortune"
     },
     "andean-wata": {
       "name": "安第斯瓦塔占",
-      "summary": "安第斯瓦塔等日程与占问传统。",
+      "summary": "安第斯／印加瓦塔标记年节与农事／仪轨时机。",
       "region": "安第斯",
       "source": "Plutto"
     },
     "coca-leaves": {
       "name": "古柯叶占",
-      "summary": "抛洒或排列古柯叶，读取图案与方位讯息。",
+      "summary": "古柯叶占：paqo抛读叶作诊断、出行与供奉指引——仅教学叶。",
       "region": "安第斯",
       "source": "Andean ethnography"
     },
     "wauja-tobacco": {
       "name": "瓦乌贾烟草仪式",
-      "summary": "瓦乌贾烟草仪式中的沟通与诊断传统。",
+      "summary": "瓦乌亚烟草视象占：萨满以烟草相关视象辨疾病灵因——仅教学呼吸／视象模拟（无吸烟）。",
       "region": "Upper Xingu",
       "source": "Redalyc · Wauja tobacco visions"
     },
     "mapuche-peuma": {
       "name": "马普切梦兆",
-      "summary": "马普切传统中的梦兆与预示叙事。",
+      "summary": "马普切梦兆与马奇占：马奇解读梦与灵接触，作疗愈与社群指引。",
       "region": "马普切",
       "source": "Mapuche ethnography"
     },
     "ayahuasca-vision": {
       "name": "死藤水神视（记述）",
-      "summary": "死藤水传统中的神视记述——本站仅作文化学习，不鼓励也不指导使用。",
+      "summary": "死藤水视象诊断：希皮博等亚马逊疗愈者读视象——仅教学图案模拟（无真实药酿）。",
       "region": "亚马孙",
       "source": "Amazonian ethnography"
     },
     "quechua-despacho": {
       "name": "克丘亚祭礼包",
-      "summary": "克丘亚祭礼包裹与供奉仪式，属宗教沟通而非科学预报。",
+      "summary": "德斯帕乔／供奉兆：教学供物如何被山神受纳作答——无真实火。",
       "region": "Quechua／Aymara",
       "source": "Andean ritual studies"
     },
@@ -2101,43 +2101,43 @@
     },
     "buzios": {
       "name": "巴西貝壳占（Búzios）",
-      "summary": "巴西坎東布雷等傳統中的貝壳占，讀取神祇讯息。",
+      "summary": "布齊奧斯貝占在康東布雷／烏班達中拋貝選奧杜經文——僅教育性起卦，非入門。",
       "region": "Candomblé／Umbanda",
       "source": "Wikipedia · Cowrie-shell divination; Sekai Fortune"
     },
     "andean-wata": {
       "name": "安第斯瓦塔占",
-      "summary": "安第斯瓦塔等日程与占問傳統。",
+      "summary": "安第斯／印加瓦塔標記年節與農事／儀軌時機。",
       "region": "安第斯",
       "source": "Plutto"
     },
     "coca-leaves": {
       "name": "古柯叶占",
-      "summary": "抛洒或排列古柯叶，讀取圖案与方位讯息。",
+      "summary": "古柯葉占：paqo拋讀葉作診斷、出行與供奉指引——僅教學葉。",
       "region": "安第斯",
       "source": "Andean ethnography"
     },
     "wauja-tobacco": {
       "name": "瓦乌贾烟草儀式",
-      "summary": "瓦乌贾烟草儀式中的沟通与诊断傳統。",
+      "summary": "瓦烏亞煙草視象占：薩滿以煙草相關視象辨疾病靈因——僅教學呼吸／視象模擬（無吸煙）。",
       "region": "Upper Xingu",
       "source": "Redalyc · Wauja tobacco visions"
     },
     "mapuche-peuma": {
       "name": "馬普切夢兆",
-      "summary": "馬普切傳統中的夢兆与预示叙事。",
+      "summary": "馬普切夢兆與馬奇占：馬奇解讀夢與靈接觸，作療癒與社群指引。",
       "region": "馬普切",
       "source": "Mapuche ethnography"
     },
     "ayahuasca-vision": {
       "name": "死藤水神视（記述）",
-      "summary": "死藤水傳統中的神视記述——本站仅作文化學习，不鼓励也不指導使用。",
+      "summary": "死藤水視象診斷：希皮博等亞馬遜療癒者讀視象——僅教學圖案模擬（無真實藥釀）。",
       "region": "亚馬孙",
       "source": "Amazonian ethnography"
     },
     "quechua-despacho": {
       "name": "克丘亚祭禮包",
-      "summary": "克丘亚祭禮包裹与供奉儀式，属宗教沟通而非科學预報。",
+      "summary": "德斯帕喬／供奉兆：教學供物如何被山神受納作答——無真實火。",
       "region": "Quechua／Aymara",
       "source": "Andean ritual studies"
     },

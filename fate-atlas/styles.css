@@ -6737,3 +6737,19 @@ body:not(.studio-open) .hero__content {
 .na-cowries { display: flex; gap: 0.3rem; }
 .na-cowries i { width: 0.85rem; height: 0.7rem; border-radius: 50%; background: linear-gradient(180deg, #f0e8d8, #c4b090); border: 1px solid #8a7860; }
 .na-board { width: 3.6rem; height: 2.8rem; border-radius: 0.35rem; background: linear-gradient(160deg, #6a4830, #3a2818); border: 2px solid #c4a070; display: grid; place-items: center; font-size: 0.65rem; color: #e8d080; text-align: center; padding: 0.25rem; }
+
+/* South America stages */
+.saam-stage { margin: 0.75rem 0 1rem; min-height: 5.5rem; display: grid; place-items: center; gap: 0.35rem; }
+.saam-stage--pulse .saam-cowries i, .saam-stage--pulse .saam-sun, .saam-stage--pulse .saam-leaves i, .saam-stage--pulse .saam-vision, .saam-stage--pulse .saam-dream, .saam-stage--pulse .saam-bundle { animation: saam-pulse 0.95s ease-in-out infinite alternate; }
+@keyframes saam-pulse { from { transform: scale(1); opacity: 0.78; } to { transform: scale(1.05); opacity: 1; } }
+.saam-cowries, .saam-leaves { display: flex; gap: 0.3rem; }
+.saam-cowries i { width: 0.85rem; height: 0.7rem; border-radius: 50%; background: linear-gradient(180deg, #f0e8d8, #c4b090); border: 1px solid #8a7860; }
+.saam-leaves i { width: 0.9rem; height: 1.4rem; border-radius: 50% 50% 40% 40%; background: linear-gradient(180deg, #70a848, #3a6820); border: 1px solid #88c060; transform: rotate(-12deg); }
+.saam-leaves i:nth-child(2) { transform: rotate(8deg); }
+.saam-leaves i:nth-child(3) { transform: rotate(-4deg); }
+.saam-label { margin: 0; font-size: 0.85rem; opacity: 0.9; }
+.saam-sun { width: 3.2rem; height: 3.2rem; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #ffe08a, #d07020); border: 2px solid #e8a040; display: grid; place-items: center; font-size: 0.65rem; color: #3a2008; text-align: center; padding: 0.3rem; }
+.saam-vision, .saam-dream, .saam-bundle { width: 3.4rem; height: 3.4rem; border-radius: 50%; display: grid; place-items: center; font-size: 0.65rem; text-align: center; padding: 0.3rem; }
+.saam-vision { background: radial-gradient(circle at 40% 35%, #70c8a888, #204060); border: 1px solid #68a888; color: #e8fff4; }
+.saam-dream { background: radial-gradient(circle at 40% 35%, #a080c8, #281848); border: 1px solid #c0a0e0; color: #f0e8ff; }
+.saam-bundle { background: linear-gradient(160deg, #c4a070, #6a4830); border: 1px solid #a88850; color: #f8f0e0; border-radius: 0.6rem; }
