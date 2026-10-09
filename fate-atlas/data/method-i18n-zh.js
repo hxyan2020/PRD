@@ -281,19 +281,19 @@
     },
     "saju": {
       "name": "四柱（韩国）",
-      "summary": "韩国四柱命理：以出生四柱推演格局。",
+      "summary": "韩国四柱（四柱八字）由出生年月日时立四柱，再以日主对照其余干支论格局与时机。",
       "region": "韩国",
       "source": "Plutto; Sekai Fortune"
     },
     "tojeong": {
       "name": "土亭秘诀",
-      "summary": "土亭秘诀：韩国传统年度运势推演。",
+      "summary": "土亭秘诀相传为李之菡的数理年运书——韩国人仍常在岁首翻查年度指引。",
       "region": "韩国",
       "source": "Sekai Fortune; Plutto"
     },
     "gunghap": {
       "name": "宫合（合婚）",
-      "summary": "宫合：韩式合婚与配对推演。",
+      "summary": "宫合用双方四柱多层看合婚／配对——是干支调和的多面观察，不是单一「命定」分数。",
       "region": "韩国",
       "source": "Plutto"
     },
@@ -371,19 +371,19 @@
     },
     "tu-tru": {
       "name": "四柱（越南）",
-      "summary": "越南四柱命理。",
+      "summary": "越南四柱（Tứ Trụ）依生辰立干支四柱，在越南文化语境中论命运主题。",
       "region": "越南",
       "source": "Plutto"
     },
     "tu-vi": {
       "name": "紫微（越南）",
-      "summary": "越南紫微斗数传统。",
+      "summary": "越南紫微斗数以十二宫与主星论人生主题——与中华紫微同源而有越南传习。",
       "region": "越南",
       "source": "Plutto"
     },
     "boi-kieu": {
-      "name": "诗占／签诗（越南）",
-      "summary": "越南诗占／签诗传统。",
+      "name": "咏翘诗占",
+      "summary": "咏翘诗占（Bói Kiều）随机翻开阮攸《金云翘传》诗句，以诗行为问题之镜。",
       "region": "越南",
       "source": "Sekai Fortune"
     },
@@ -1404,21 +1404,21 @@
       "source": "Plutto"
     },
     "saju": {
-      "name": "四柱（韓国）",
-      "summary": "韓国四柱命理：以出生四柱推演格局。",
-      "region": "韓国",
+      "name": "四柱（韓國）",
+      "summary": "韓國四柱（四柱八字）由出生年月日時立四柱，再以日主對照其餘干支論格局與時機。",
+      "region": "韓國",
       "source": "Plutto; Sekai Fortune"
     },
     "tojeong": {
-      "name": "土亭秘诀",
-      "summary": "土亭秘诀：韓国傳統年度運勢推演。",
-      "region": "韓国",
+      "name": "土亭秘訣",
+      "summary": "土亭秘訣相傳為李之菡的數理年運書——韓國人仍常在歲首翻查年度指引。",
+      "region": "韓國",
       "source": "Sekai Fortune; Plutto"
     },
     "gunghap": {
-      "name": "宫合（合婚）",
-      "summary": "宫合：韓式合婚与配對推演。",
-      "region": "韓国",
+      "name": "宮合（合婚）",
+      "summary": "宮合用雙方四柱多層看合婚／配對——是干支調和的多面觀察，不是單一「命定」分數。",
+      "region": "韓國",
       "source": "Plutto"
     },
     "omikuji": {
@@ -1495,19 +1495,19 @@
     },
     "tu-tru": {
       "name": "四柱（越南）",
-      "summary": "越南四柱命理。",
+      "summary": "越南四柱（Tứ Trụ）依生辰立干支四柱，在越南文化語境中論命運主題。",
       "region": "越南",
       "source": "Plutto"
     },
     "tu-vi": {
       "name": "紫微（越南）",
-      "summary": "越南紫微斗數傳統。",
+      "summary": "越南紫微斗數以十二宮與主星論人生主題——與中華紫微同源而有越南傳習。",
       "region": "越南",
       "source": "Plutto"
     },
     "boi-kieu": {
-      "name": "诗占／籤詩（越南）",
-      "summary": "越南诗占／籤詩傳統。",
+      "name": "詠翹詩占",
+      "summary": "詠翹詩占（Bói Kiều）隨機翻開阮攸《金雲翹傳》詩句，以詩行為問題之鏡。",
       "region": "越南",
       "source": "Sekai Fortune"
     },
