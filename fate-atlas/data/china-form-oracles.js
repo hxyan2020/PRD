@@ -38,6 +38,11 @@
     return obj.en || obj.zh || "";
   }
 
+  /** Pick Hans vs Hant when both are provided. */
+  function zhText(hans, hant) {
+    return isHant() ? hant || hans : hans;
+  }
+
   function pick(rng, arr) {
     return arr[Math.floor(rng() * arr.length) % arr.length];
   }
@@ -164,10 +169,20 @@
             { title: "读场所指引", body: "朝向倾向对照你的问题。" },
           ],
         },
+        hant: {
+          intro: "風水始於地與向。你將標記場所類型、選擇朝向，再讀氣機傾向。",
+          steps: [
+            { title: "認識環境氣機", body: "形巒 · 朝向 · 氣口。" },
+            { title: "點名場所", body: "住宅、店鋪、書桌——選尺度。" },
+            { title: "設定朝向", body: "主要開口朝哪邊？" },
+            { title: "描摹氣機", body: "教學箭頭示意聚／散。" },
+            { title: "讀場所指引", body: "朝向傾向對照你的問題。" },
+          ],
+        },
       },
       steps: ["intent", "site", "facing", "qi", "result"],
       viz: "fengshui-qi",
-      castCta: { en: "Trace the qi flow", zh: "描摹气机" },
+      castCta: { en: "Trace the qi flow", zh: "描摹气机", hant: "描摹氣機" },
       buildCast(state, rng) {
         const facing = FACINGS.find((f) => f.id === state.facing) || pick(rng, FACINGS);
         const site = state.site || "home";
@@ -234,10 +249,20 @@
             { title: "读宅法指引", body: "最佳方位倾向对照所问。" },
           ],
         },
+        hant: {
+          intro: "八宅用命卦為住宅方位上色。僅教學平面圖。",
+          steps: [
+            { title: "認識八宅", body: "東四／西四命 · 四吉四凶。" },
+            { title: "選擇命卦", body: "教學用卦數 1–9（無 5）。" },
+            { title: "查看宅位", body: "平面上點亮八個方位。" },
+            { title: "標出吉凶", body: "生氣／伏位與凶位對照。" },
+            { title: "讀宅法指引", body: "最佳方位傾向對照所問。" },
+          ],
+        },
       },
       steps: ["intent", "gua", "sectors", "map", "result"],
       viz: "bazhai-map",
-      castCta: { en: "Map good vs caution", zh: "标出吉凶" },
+      castCta: { en: "Map good vs caution", zh: "标出吉凶", hant: "標出吉凶" },
       buildCast(state, rng) {
         const gua = GUAS.find((g) => g.n === Number(state.gua)) || pick(rng, GUAS);
         const best = pick(rng, ["N", "E", "S", "W", "NE", "SE", "SW", "NW"]);
@@ -300,10 +325,20 @@
             { title: "读星指引", body: "星意倾向对照问题。" },
           ],
         },
+        hant: {
+          intro: "飛星隨運而變。你將設定運局、打開星盤，再讀到訪之星。",
+          steps: [
+            { title: "認識飛星", body: "運 · 山向 · 流年星。" },
+            { title: "選擇運局視角", body: "八運／九運教學切換。" },
+            { title: "打開星盤", body: "九宮填入星數。" },
+            { title: "看星落入", body: "一星在某宮點亮。" },
+            { title: "讀星指引", body: "星意傾向對照問題。" },
+          ],
+        },
       },
       steps: ["intent", "period", "chart", "stars", "result"],
       viz: "flying-star",
-      castCta: { en: "Watch a star land", zh: "看星落入" },
+      castCta: { en: "Watch a star land", zh: "看星落入", hant: "看星落入" },
       buildCast(state, rng) {
         const star = pick(rng, STARS);
         const period = state.period || "9";
@@ -366,10 +401,20 @@
             { title: "读面相指引", body: "区域倾向对照焦点。" },
           ],
         },
+        hant: {
+          intro: "面相把面部「宮位」映射到人生主題。僅教育觀察。",
+          steps: [
+            { title: "認識面相", body: "宮位 · 部位 · 年齡帶。" },
+            { title: "說出焦點", body: "事業、親屬、健康憂慮——只留一個。" },
+            { title: "選擇面部區域", body: "額、眉、目、鼻、口…" },
+            { title: "打開宮位", body: "教學宮位點亮。" },
+            { title: "讀面相指引", body: "區域傾向對照焦點。" },
+          ],
+        },
       },
       steps: ["intent", "focus", "facezones", "palace", "result"],
       viz: "mianxiang",
-      castCta: { en: "Open the palace", zh: "打开宫位" },
+      castCta: { en: "Open the palace", zh: "打开宫位", hant: "打開宮位" },
       buildCast(state, rng) {
         const zone = FACE_ZONES.find((z) => z.id === state.faceZone) || pick(rng, FACE_ZONES);
         return { zone, lean: loc(zone.lean), focus: state.focus || state.question || "" };
@@ -425,10 +470,20 @@
             { title: "手相指引", body: "线意倾向对照问题。" },
           ],
         },
+        hant: {
+          intro: "手相看主線與丘。你將選手、點線，再讀丘位傾向。",
+          steps: [
+            { title: "認識手相", body: "紋 · 丘 · 手型。" },
+            { title: "選擇哪隻手", body: "主動／被動教學標記。" },
+            { title: "描一條主線", body: "生命、智慧、感情或事業。" },
+            { title: "讀取丘位", body: "指下某丘點亮。" },
+            { title: "手相指引", body: "線意傾向對照問題。" },
+          ],
+        },
       },
       steps: ["intent", "hand", "lines", "mounts", "result"],
       viz: "shouxiang",
-      castCta: { en: "Read the mounts", zh: "读取丘位" },
+      castCta: { en: "Read the mounts", zh: "读取丘位", hant: "讀取丘位" },
       buildCast(state, rng) {
         const line = PALM_LINES.find((l) => l.id === state.palmLine) || pick(rng, PALM_LINES);
         const mounts = isZh()
@@ -495,10 +550,20 @@
             { title: "骨法指引", body: "结构倾向对照所问。" },
           ],
         },
+        hant: {
+          intro: "摸骨看關節與骨感。僅教學結構圖——無真實施壓疼痛。",
+          steps: [
+            { title: "認識摸骨", body: "骨量 · 關節 · 間距。" },
+            { title: "出示手", body: "左或右教學選擇。" },
+            { title: "繪出骨架", body: "手輪廓上點亮關節。" },
+            { title: "衡量結構", body: "厚重／纖細／不勻教學標籤。" },
+            { title: "骨法指引", body: "結構傾向對照所問。" },
+          ],
+        },
       },
       steps: ["intent", "hand", "bones", "structure", "result"],
       viz: "mogu",
-      castCta: { en: "Weigh the structure", zh: "衡量结构" },
+      castCta: { en: "Weigh the structure", zh: "衡量结构", hant: "衡量結構" },
       buildCast(state, rng) {
         const tags = isZh()
           ? [
@@ -568,10 +633,20 @@
             { title: "痣相指引", body: "部位倾向对照问题。" },
           ],
         },
+        hant: {
+          intro: "痣相把身體區域映射到民俗義。僅教育——皮膚問題請就醫。",
+          steps: [
+            { title: "認識痣相", body: "部位 · 色澤 · 凸平民俗。" },
+            { title: "選擇身體區域", body: "面、頸、手、肩…" },
+            { title: "標記痣點", body: "在剪影上點一教學標記。" },
+            { title: "讀取兆意", body: "出現民俗傾向。" },
+            { title: "痣相指引", body: "部位傾向對照問題。" },
+          ],
+        },
       },
       steps: ["intent", "bodyzone", "molepick", "omen", "result"],
       viz: "mole",
-      castCta: { en: "Read the omen", zh: "读取兆意" },
+      castCta: { en: "Read the omen", zh: "读取兆意", hant: "讀取兆意" },
       buildCast(state, rng) {
         const zone = MOLE_ZONES.find((z) => z.id === state.bodyZone) || pick(rng, MOLE_ZONES);
         const tone = pick(rng, isZh() ? ["明痣", "暗痣", "高痣"] : ["bright mole", "hidden mole", "raised mole"]);
@@ -613,13 +688,16 @@
   function howFor(id) {
     const r = RITES[id];
     if (!r) return null;
-    const packHow = isZh() ? r.how.zh : r.how.en;
+    const packHow = isZh() ? (isHant() && r.how.hant ? r.how.hant : r.how.zh) : r.how.en;
     return {
-      title: isZh() ? "这个仪式怎么玩" : "How this rite works",
+      title: isZh() ? zhText("这个仪式怎么玩", "這個儀式怎麼玩") : "How this rite works",
       intro: packHow.intro,
       steps: packHow.steps,
       note: isZh()
-        ? "本站为教育性游玩——不能替代受训风水／相术、医疗、法律、建筑或安全判断。"
+        ? zhText(
+            "本站为教育性游玩——不能替代受训风水／相术、医疗、法律、建筑或安全判断。",
+            "本站為教育性遊玩——不能替代受訓風水／相術、醫療、法律、建築或安全判斷。"
+          )
         : "Educational play on this site — not a substitute for trained feng shui/physiognomy, medicine, law, architecture, or safety judgment.",
     };
   }
