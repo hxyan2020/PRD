@@ -785,25 +785,25 @@
     },
     "palmistry": {
       "name": "手相（西式）",
-      "summary": "由掌纹与手形解读性格或运势线索。",
+      "summary": "手相（西式）解读掌纹与掌丘论性情主题——多地独立起源；象征性，非医疗。",
       "region": "Worldwide",
       "source": "Sekai Fortune; Plutto"
     },
     "physiognomy-eu": {
       "name": "面相（欧洲）",
-      "summary": "由面相推断性格——日常感知可察觉情绪，命运体系并无科学预报效力。",
+      "summary": "西方面相由面容特征推断性格——日常情绪线索可知，命运体系并无科学预报效力。",
       "region": "欧洲",
       "source": "Sekai Fortune; Plutto"
     },
     "metoposcopy": {
       "name": "额纹相",
-      "summary": "由额纹解读性格的早期近代欧洲相法。",
+      "summary": "额纹相清点并定位额纹以论性格——文艺复兴欧洲形相术。",
       "region": "Renaissance 欧洲",
       "source": "Sekai Fortune"
     },
     "graphology": {
       "name": "笔迹性格学",
-      "summary": "由笔迹推断性格——作为命运诊断缺乏可靠科学支持。",
+      "summary": "笔迹性格学以笔迹特征论性情——文化上熟悉；作为命运诊断并不可靠。",
       "region": "欧洲",
       "source": "Sekai Fortune"
     },
@@ -1085,7 +1085,7 @@
     },
     "aura-reading": {
       "name": "灵气／气场解读",
-      "summary": "描述“气场”色彩与感受——属于象征性反思，不是仪器测量。",
+      "summary": "气场解读以身体周围的色彩意象论身心状态——神智学／现代象征游玩，不是仪器测量。",
       "region": "现代/ Theosophical",
       "source": "Sekai Fortune"
     },
@@ -1109,7 +1109,7 @@
     },
     "onychomancy": {
       "name": "指甲占",
-      "summary": "观察指甲上的斑点或形状作征兆解读。",
+      "summary": "指甲占以甲形、颜色与斑点作兆——民俗形相，不是皮肤科。",
       "region": "欧洲",
       "source": "Sekai Fortune"
     },
@@ -1909,25 +1909,25 @@
     },
     "palmistry": {
       "name": "手相（西式）",
-      "summary": "由掌纹与手形解讀性格或運勢線索。",
+      "summary": "手相（西式）解讀掌紋與掌丘論性情主題——多地獨立起源；象徵性，非醫療。",
       "region": "Worldwide",
       "source": "Sekai Fortune; Plutto"
     },
     "physiognomy-eu": {
       "name": "面相（欧洲）",
-      "summary": "由面相推断性格——日常感知可察覺情绪，命運體系并無科學预報效力。",
+      "summary": "西方面相由面容特徵推斷性格——日常情緒線索可知，命運體系並無科學預報效力。",
       "region": "欧洲",
       "source": "Sekai Fortune; Plutto"
     },
     "metoposcopy": {
       "name": "额纹相",
-      "summary": "由额纹解讀性格的早期近代欧洲相法。",
+      "summary": "額紋相清點並定位額紋以論性格——文藝復興歐洲形相術。",
       "region": "Renaissance 欧洲",
       "source": "Sekai Fortune"
     },
     "graphology": {
       "name": "笔迹性格學",
-      "summary": "由笔迹推断性格——作為命運诊断缺乏可靠科學支持。",
+      "summary": "筆跡性格學以筆跡特徵論性情——文化上熟悉；作為命運診斷並不可靠。",
       "region": "欧洲",
       "source": "Sekai Fortune"
     },
@@ -2209,7 +2209,7 @@
     },
     "aura-reading": {
       "name": "靈气／气场解讀",
-      "summary": "描述“气场”色彩与感受——属于象征性反思，不是儀器測量。",
+      "summary": "氣場解讀以身體周圍的色彩意象論身心狀態——神智學／現代象徵遊玩，不是儀器測量。",
       "region": "現代/ Theosophical",
       "source": "Sekai Fortune"
     },
@@ -2233,7 +2233,7 @@
     },
     "onychomancy": {
       "name": "指甲占",
-      "summary": "觀察指甲上的斑點或形狀作徵兆解讀。",
+      "summary": "指甲占以甲形、顏色與斑點作兆——民俗形相，不是皮膚科。",
       "region": "歐洲",
       "source": "Sekai Fortune"
     },

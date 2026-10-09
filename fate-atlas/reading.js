@@ -45,6 +45,7 @@
     if (window.FatumCartomancyOracles?.has?.(method.id)) return "cartomancy";
     if (window.FatumClassicalEuroOracles?.has?.(method.id)) return "classicaleuro";
     if (window.FatumFolkScryOracles?.has?.(method.id)) return "folkscry";
+    if (window.FatumPhysioFormOracles?.has?.(method.id)) return "physioform";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -313,6 +314,19 @@
         casting: false,
       };
     }
+    if (kind === "physioform") {
+      const rite = window.FatumPhysioFormOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "handNoteWest", "linePickWest", "mountReadWest", "palmCounselWest", "result"],
+        question: "",
+        focus: "",
+        formNote: "",
+        formPick: "",
+        cast: {},
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -500,6 +514,15 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "physioform") {
+        const how = window.FatumPhysioFormOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -635,6 +658,7 @@
       else if (state.kind === "cartomancy") renderCartomancy();
       else if (state.kind === "classicaleuro") renderClassicalEuro();
       else if (state.kind === "folkscry") renderFolkScry();
+      else if (state.kind === "physioform") renderPhysioForm();
       return;
     }
     renderGeneric();
@@ -4276,6 +4300,227 @@
     }, 900);
   }
 
+  // ——— Western physiognomy / form oracles ———
+  const PF_CAST = new Set([
+    "palmCounselWest",
+    "physioCounselWest",
+    "metopoCounsel",
+    "graphCounsel",
+    "onychCounsel",
+    "auraCounsel",
+  ]);
+  const PF_NOTE = new Set([
+    "handNoteWest",
+    "faceNoteWest",
+    "browNote",
+    "writeSample",
+    "nailNote",
+    "auraFocus",
+  ]);
+  const PF_PICK = new Set([
+    "linePickWest",
+    "featurePickWest",
+    "wrinkleCount",
+    "strokePick",
+    "nailMark",
+    "colorField",
+  ]);
+  const PF_PICKS = {
+    linePickWest: [
+      { id: "heart", en: "Heart line", zh: "感情线", hant: "感情線" },
+      { id: "head", en: "Head line", zh: "智慧线", hant: "智慧線" },
+      { id: "life", en: "Life line", zh: "生命线", hant: "生命線" },
+      { id: "fate", en: "Fate line", zh: "事业线", hant: "事業線" },
+    ],
+    featurePickWest: [
+      { id: "brow", en: "Brow", zh: "眉", hant: "眉" },
+      { id: "eye", en: "Eye", zh: "目", hant: "目" },
+      { id: "mouth", en: "Mouth", zh: "口", hant: "口" },
+      { id: "jaw", en: "Jaw", zh: "颌", hant: "頜" },
+    ],
+    wrinkleCount: [
+      { id: "one", en: "One clear line", zh: "一清晰纹", hant: "一清晰紋" },
+      { id: "three", en: "Three mid lines", zh: "三中纹", hant: "三中紋" },
+      { id: "cross", en: "High cross wrinkle", zh: "高横纹", hant: "高橫紋" },
+      { id: "clear", en: "Mostly clear", zh: "大体净额", hant: "大體淨額" },
+    ],
+    strokePick: [
+      { id: "slant", en: "Slant", zh: "斜度", hant: "斜度" },
+      { id: "space", en: "Spacing", zh: "间距", hant: "間距" },
+      { id: "press", en: "Pressure", zh: "笔压", hant: "筆壓" },
+      { id: "loop", en: "Loops", zh: "环笔", hant: "環筆" },
+    ],
+    nailMark: [
+      { id: "fleck", en: "White fleck", zh: "白点", hant: "白點" },
+      { id: "ridge", en: "Ridge", zh: "纵脊", hant: "縱脊" },
+      { id: "tip", en: "Tip shape", zh: "甲尖", hant: "甲尖" },
+      { id: "color", en: "Color tone", zh: "色调", hant: "色調" },
+    ],
+    colorField: [
+      { id: "gold", en: "Gold", zh: "金", hant: "金" },
+      { id: "blue", en: "Blue", zh: "蓝", hant: "藍" },
+      { id: "green", en: "Green", zh: "绿", hant: "綠" },
+      { id: "violet", en: "Violet", zh: "紫", hant: "紫" },
+    ],
+  };
+
+  function pfZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function pfStageHTML(viz, pulse) {
+    const F = window.FatumPhysioFormOracles;
+    const cast = state.cast || {};
+    const name = cast.item ? F.loc({ en: cast.item.en, zh: cast.item.zh }) : "";
+    const pulseCls = pulse ? " pf-stage--pulse" : "";
+    if (viz === "palmwest") {
+      return `<div class="pf-stage pf-stage--palm${pulseCls}" aria-hidden="true"><div class="pf-hand"><span>${escapeHTML(name || "✋")}</span></div></div>`;
+    }
+    if (viz === "facewest") {
+      return `<div class="pf-stage pf-stage--face${pulseCls}" aria-hidden="true"><div class="pf-face"><span>${escapeHTML(name || "◉")}</span></div></div>`;
+    }
+    if (viz === "metopo") {
+      return `<div class="pf-stage pf-stage--brow${pulseCls}" aria-hidden="true"><div class="pf-brow"><span>${escapeHTML(name || "☰")}</span></div></div>`;
+    }
+    if (viz === "graph") {
+      return `<div class="pf-stage pf-stage--graph${pulseCls}" aria-hidden="true"><div class="pf-script"><span>${escapeHTML(name || "Aa")}</span></div></div>`;
+    }
+    if (viz === "nail") {
+      return `<div class="pf-stage pf-stage--nail${pulseCls}" aria-hidden="true"><div class="pf-nail"><span>${escapeHTML(name || "◇")}</span></div></div>`;
+    }
+    if (viz === "aura") {
+      return `<div class="pf-stage pf-stage--aura${pulseCls}" aria-hidden="true"><div class="pf-aura"><span>${escapeHTML(name || "◎")}</span></div></div>`;
+    }
+    return `<div class="pf-stage${pulseCls}" aria-hidden="true"><div class="pf-face"><span>${escapeHTML(name || "✦")}</span></div></div>`;
+  }
+
+  function renderPhysioForm() {
+    const F = window.FatumPhysioFormOracles;
+    const rite = F.get(state.method.id);
+    if (!rite) return renderGeneric();
+    const step = state.steps[state.stepIndex];
+    const how = F.howFor(state.method.id);
+    const zh = pfZh();
+    const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const backNext = () => `
+      <div class="studio__actions">
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+        <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+      </div>`;
+
+    if (step === "intent") {
+      const hs = how?.steps?.[0];
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Europe")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "physioform", label: "Form · Physiognomy" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+    if (PF_NOTE.has(step)) {
+      const hs = how?.steps?.[Math.min(state.steps.indexOf(step), (how?.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "记录特征" : "Note a trait"))}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${pfStageHTML(rite.viz, true)}
+        <div class="field"><label for="r-form-note">${escapeHTML(zh ? "特征笔记" : "Trait note")}</label>
+        <textarea id="r-form-note" rows="3" maxlength="280" placeholder="${escapeHTML(zh ? "例如：左手感情线深、额中有三纹…" : "e.g. deep heart line on left hand, three mid brow lines…")}">${escapeHTML(state.formNote || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (PF_PICK.has(step)) {
+      const opts = PF_PICKS[step] || [];
+      const hs = how?.steps?.[Math.min(state.steps.indexOf(step), (how?.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "选择部位" : "Pick a feature"))}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${pfStageHTML(rite.viz, false)}
+        <div class="africa-choice-row">
+          ${opts
+            .map((o) => {
+              const label = F.loc(o);
+              const on = state.formPick === label ? " is-on" : "";
+              return `<button type="button" class="africa-choice${on}" data-action="pf-pick" data-pick="${escapeHTML(label)}">${escapeHTML(label)}</button>`;
+            })
+            .join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (
+      [
+        "mountReadWest",
+        "visageLean",
+        "browMap",
+        "scriptLean",
+        "nailLean",
+        "auraHue",
+      ].includes(step)
+    ) {
+      const hs = how?.steps?.[Math.min(state.steps.indexOf(step), (how?.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${pfStageHTML(rite.viz, true)}
+        ${backNext()}`;
+      return;
+    }
+    if (PF_CAST.has(step)) {
+      const cta = F.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(
+          state.formNote
+            ? zh
+              ? `笔记：「${state.formNote}」${state.formPick ? ` · ${state.formPick}` : ""}`
+              : `Note: “${state.formNote}”${state.formPick ? ` · ${state.formPick}` : ""}`
+            : ""
+        )}</p>
+        ${pfStageHTML(rite.viz, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="pf-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+      return;
+    }
+    renderGeneric();
+  }
+
+  function doPhysioFormCast() {
+    const rite = window.FatumPhysioFormOracles.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumPhysioFormOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        formNote: state.formNote,
+        formPick: state.formPick,
+        nonce: state.nonce,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -4654,6 +4899,13 @@
             return rite ? fsStageHTML(rite.viz, false) : "";
           })()
         : "";
+    const pfExtra =
+      r.kind === "physioform" && state.kind === "physioform"
+        ? (() => {
+            const rite = window.FatumPhysioFormOracles?.get?.(state.method.id);
+            return rite ? pfStageHTML(rite.viz, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -4661,13 +4913,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra || fsExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra || fsExtra || pfExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : r.kind === "folkscry" ? "✧" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : r.kind === "folkscry" ? "✧" : r.kind === "physioform" ? "✋" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -5289,6 +5541,20 @@
         }
         if (FS_CAST.has(step)) return;
       }
+      if (state.kind === "physioform") {
+        if (PF_NOTE.has(step)) {
+          const n = body.querySelector("#r-form-note");
+          state.formNote = (n?.value || "").trim();
+          if (!state.formNote) return fail(n);
+        }
+        if (PF_PICK.has(step)) {
+          if (!state.formPick) {
+            const first = body.querySelector("[data-action='pf-pick']");
+            return fail(first);
+          }
+        }
+        if (PF_CAST.has(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -5535,6 +5801,11 @@
     }
     if (action === "ce-cast") return doClassicalEuroCast();
     if (action === "fs-cast") return doFolkScryCast();
+    if (action === "pf-cast") return doPhysioFormCast();
+    if (action === "pf-pick") {
+      state.formPick = el.dataset.pick || "";
+      return render();
+    }
 
     if (action === "kv-hour") {
       state.hourIndex = Number(el.dataset.hour || 0);

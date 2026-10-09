@@ -6642,3 +6642,74 @@ body:not(.studio-open) .hero__content {
   padding: 0.35rem;
 }
 }
+
+/* Western physiognomy / form stages */
+.pf-stage {
+  margin: 0.75rem 0 1rem;
+  min-height: 5.5rem;
+  display: grid;
+  place-items: center;
+}
+.pf-stage--pulse .pf-hand,
+.pf-stage--pulse .pf-face,
+.pf-stage--pulse .pf-brow,
+.pf-stage--pulse .pf-script,
+.pf-stage--pulse .pf-nail,
+.pf-stage--pulse .pf-aura {
+  animation: pf-pulse 0.95s ease-in-out infinite alternate;
+}
+@keyframes pf-pulse {
+  from { transform: scale(1); opacity: 0.78; }
+  to { transform: scale(1.06); opacity: 1; }
+}
+.pf-hand, .pf-face, .pf-brow, .pf-script, .pf-nail, .pf-aura {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 0.72rem;
+  padding: 0.35rem;
+}
+.pf-hand {
+  width: 3.2rem; height: 3.6rem;
+  border-radius: 1.2rem 1.2rem 0.6rem 0.6rem;
+  background: linear-gradient(180deg, #e8c8a8, #c49870);
+  border: 1px solid #a87850;
+  color: #3a2818;
+}
+.pf-face {
+  width: 3.2rem; height: 3.6rem;
+  border-radius: 50% 50% 45% 45%;
+  background: linear-gradient(180deg, #f0d8c0, #c8a080);
+  border: 1px solid #a88868;
+  color: #3a2818;
+}
+.pf-brow {
+  width: 3.8rem; height: 2.4rem;
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(180deg, #e8d8c0, #b89878);
+  border: 1px solid #a88868;
+  color: #3a2818;
+}
+.pf-script {
+  width: 4rem; height: 2.6rem;
+  border-radius: 0.25rem;
+  background: #f4efe4;
+  border: 1px dashed #8a7860;
+  color: #3a3020;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 1.1rem;
+}
+.pf-nail {
+  width: 1.6rem; height: 2.4rem;
+  border-radius: 40% 40% 30% 30%;
+  background: linear-gradient(180deg, #f8e8e0, #d8b0a0);
+  border: 1px solid #c09080;
+  color: #4a3028;
+}
+.pf-aura {
+  width: 3.6rem; height: 3.6rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #e8d08088, #6a90c888 45%, #3a206088);
+  border: 1px solid #a8b8d8;
+  color: #e8f0ff;
+}
