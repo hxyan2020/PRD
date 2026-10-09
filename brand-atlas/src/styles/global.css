@@ -879,6 +879,13 @@ img {
   flex-wrap: wrap;
 }
 
+@media (max-width: 900px) {
+  /* Must beat the base .nav { display:flex } later in the cascade when closed. */
+  .nav:not(.is-open) {
+    display: none !important;
+  }
+}
+
 .nav a {
   padding: 0.45rem 0.8rem;
   border-radius: 999px;
