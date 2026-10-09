@@ -154,6 +154,10 @@
         offering: "water",
         domain: "kin",
         people: "self",
+        weekday: 0,
+        birthDate: "",
+        letters: "",
+        dialLetter: "A",
         casting: false,
       };
     }
@@ -625,6 +629,53 @@
         <span class="bone bone--block" data-pos="${escapeHTML(L.block || "")}">block</span>
       </div>`;
     }
+    if (viz === "weekday7") {
+      const day = typeof cast.day === "number" ? cast.day : state.weekday;
+      const name = cast.name ? (africaZh() ? cast.name.zh : cast.name.en) : "";
+      return `<div class="africa-stage africa-stage--weekday${anim}">
+        <div class="weekday-ring">${["S", "M", "T", "W", "T", "F", "S"]
+          .map((d, i) => `<span class="weekday-pip${day === i ? " is-on" : ""}" style="--i:${i}">${d}</span>`)
+          .join("")}</div>
+        ${name ? `<p class="africa-stage__hint">${escapeHTML(name)}</p>` : ""}
+      </div>`;
+    }
+    if (viz === "starcounter") {
+      const stars = cast.stars || Array.from({ length: 18 }, (_, i) => ({ x: (i * 37) % 100, y: (i * 53) % 100, bright: i % 2 }));
+      return `<div class="africa-stage africa-stage--stars${anim}"><div class="star-field">${stars
+        .map((s, i) => `<span class="sky-star${s.bright ? " is-bright" : ""}" style="--i:${i};left:${s.x}%;top:${s.y}%"></span>`)
+        .join("")}</div>
+        <p class="africa-stage__hint">${cast.count != null ? escapeHTML(String(cast.count)) : "· · ·"}</p>
+      </div>`;
+    }
+    if (viz === "falak-chart") {
+      const keys = cast.keys || ["·", "·", "·"];
+      const house = cast.house ? (africaZh() ? cast.house.zh : cast.house.en) : "";
+      return `<div class="africa-stage africa-stage--falak${anim}">
+        <div class="falak-keys">${keys.map((k, i) => `<span style="--i:${i}">${escapeHTML(k)}</span>`).join("")}</div>
+        <div class="falak-house">${escapeHTML(house || (africaZh() ? "宫位待开…" : "House pending…"))}</div>
+      </div>`;
+    }
+    if (viz === "dream-incubation") {
+      const omen = cast.omen ? (africaZh() ? cast.omen.zh : cast.omen.en) : "";
+      return `<div class="africa-stage africa-stage--dream${anim}">
+        <div class="dream-couch"><span class="dream-flame"></span><span class="dream-flame"></span></div>
+        <p class="africa-stage__hint">${escapeHTML(omen || (africaZh() ? "孵梦中…" : "Incubating…"))}</p>
+      </div>`;
+    }
+    if (viz === "decan-wheel") {
+      const title = cast.decan ? (africaZh() ? cast.decan.zh : cast.decan.en) : "";
+      return `<div class="africa-stage africa-stage--decan${anim}">
+        <div class="decan-wheel"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <p class="africa-stage__hint">${escapeHTML(title || (africaZh() ? "旬星轮…" : "Decan wheel…"))}</p>
+      </div>`;
+    }
+    if (viz === "zairja-dial") {
+      return `<div class="africa-stage africa-stage--zairja${anim}">
+        <div class="zairja-rings"><span class="z-ring z-ring--outer">${escapeHTML(cast.seed || state.dialLetter || "A")}</span>
+        <span class="z-ring z-ring--mid"></span><span class="z-ring z-ring--inner">${escapeHTML((cast.strand || "").slice(0, 3) || "···")}</span></div>
+        <p class="africa-stage__hint">${escapeHTML(cast.strand || "")}</p>
+      </div>`;
+    }
     return `<div class="africa-stage${anim}"></div>`;
   }
 
@@ -664,12 +715,82 @@
       return;
     }
 
-    if (step === "bless" || step === "lobes" || step === "strings" || step === "faces" || step === "sow" || step === "basket" || step === "sand" || step === "field" || step === "lay" || step === "table" || step === "scatter") {
+    if (
+      step === "bless" ||
+      step === "lobes" ||
+      step === "strings" ||
+      step === "faces" ||
+      step === "sow" ||
+      step === "basket" ||
+      step === "sand" ||
+      step === "field" ||
+      step === "lay" ||
+      step === "table" ||
+      step === "scatter" ||
+      step === "sky" ||
+      step === "incubate" ||
+      step === "wheel" ||
+      step === "dial"
+    ) {
       const idx = state.steps.indexOf(step);
       const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      let extra = africaStageHTML(rite, false);
+      if (step === "dial") {
+        const letters = "ABJDHWZHTYKLMN".split("");
+        extra = `
+          <div class="africa-choice-row">
+            ${letters.map((L) => `<button type="button" class="africa-choice${state.dialLetter === L ? " is-on" : ""}" data-action="africa-dial" data-letter="${L}">${L}</button>`).join("")}
+          </div>
+          ${africaStageHTML(rite, false)}`;
+      }
       body.innerHTML = `
         <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
         <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${extra}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "weekday") {
+      const days = zh
+        ? ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+        : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择出生星期" : "Pick your birth weekday")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "阿坎日名来自你进入世界的那一天。" : "Akan day-names come from the weekday you entered the world.")}</p>
+        <div class="africa-choice-row">
+          ${days.map((d, i) => `<button type="button" class="africa-choice${state.weekday === i ? " is-on" : ""}" data-action="africa-weekday" data-day="${i}">${escapeHTML(d)}</button>`).join("")}
+        </div>
+        ${africaStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "birth") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入出生标记" : "Enter a birth mark")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "日期用于教学盘的本命点——不是精确天宫图。" : "Date marks a teaching radix — not a precise natal chart.")}</p>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthDate") || "Birth date")}</label>
+        <input type="date" id="r-birth" value="${escapeHTML(state.birthDate || "")}" /></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "letters") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "推出字母键" : "Derive letter keys")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "输入姓名或短语的拉丁首字母（最多三字）。" : "Enter up to three Latin initials from a name or phrase.")}</p>
+        <div class="field"><label for="r-letters">${escapeHTML(zh ? "字母键" : "Letter keys")}</label>
+        <input type="text" id="r-letters" maxlength="3" value="${escapeHTML(state.letters || "")}" placeholder="FLK" /></div>
         ${africaStageHTML(rite, false)}
         <div class="studio__actions">
           <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
@@ -741,7 +862,7 @@
       return;
     }
 
-    if (step === "cast") {
+    if (step === "cast" || step === "count" || step === "chart" || step === "dream" || step === "rising" || step === "spin") {
       const cta = window.FatumAfricaOracles.loc(rite.castCta);
       body.innerHTML = `
         <h3 class="studio__heading">${escapeHTML(cta)}</h3>
@@ -771,6 +892,10 @@
         offering: state.offering,
         domain: state.domain,
         people: state.people,
+        weekday: state.weekday,
+        birthDate: state.birthDate,
+        letters: state.letters,
+        dialLetter: state.dialLetter,
         cast: forcedAnswer ? { answer: forcedAnswer } : {},
       });
       state.cast = reading.vizData || {};
@@ -1397,9 +1522,18 @@
         const f = body.querySelector("#r-focus");
         state.focus = (f?.value || "").trim();
       }
-      // Africa cast / bowls are user-driven — do not auto-advance into them via generic next from prior...
-      // but advancing FROM cast is via africa-cast action.
-      if (step === "cast" || step === "bowls") return;
+      if (step === "birth" && state.kind === "africa") {
+        const b = body.querySelector("#r-birth");
+        state.birthDate = (b?.value || "").trim();
+        if (!state.birthDate) return fail(b);
+      }
+      if (step === "letters" && state.kind === "africa") {
+        const L = body.querySelector("#r-letters");
+        state.letters = (L?.value || "").trim().toUpperCase();
+        if (!state.letters) return fail(L);
+      }
+      // Africa cast-like steps are user-driven
+      if (step === "cast" || step === "bowls" || step === "count" || step === "chart" || step === "dream" || step === "rising" || step === "spin") return;
       if (state.stepIndex < state.steps.length - 1) {
         state.stepIndex += 1;
         // skip auto for cast/reveal/quiz — user drives
@@ -1498,6 +1632,14 @@
     }
     if (action === "africa-people") {
       state.people = el.dataset.people || "self";
+      return render();
+    }
+    if (action === "africa-weekday") {
+      state.weekday = Number(el.dataset.day || 0);
+      return render();
+    }
+    if (action === "africa-dial") {
+      state.dialLetter = el.dataset.letter || "A";
       return render();
     }
     if (action === "mbti-pick") return mbtiPick(el.dataset.side);

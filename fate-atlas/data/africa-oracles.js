@@ -941,6 +941,11 @@
     const rng = mulberry32(seedFrom(state.question, state.nonce, id));
     let cast = { ...(state.cast || {}) };
 
+    if (typeof rite.buildCast === "function") {
+      cast = Object.assign(cast, rite.buildCast(state, rng) || {});
+      return rite.generate(state.question || "", cast, rng);
+    }
+
     switch (rite.viz) {
       case "opele": {
         const bits = [];
@@ -1117,6 +1122,13 @@
     }
   })();
 
+  function register(extraIds, extraRites) {
+    (extraIds || []).forEach((id) => {
+      if (!IDS.includes(id)) IDS.push(id);
+      if (extraRites && extraRites[id]) RITES[id] = extraRites[id];
+    });
+  }
+
   window.FatumAfricaOracles = {
     IDS,
     has,
@@ -1124,6 +1136,10 @@
     howFor,
     summaryFor,
     runCast,
+    register,
     loc,
+    pick,
+    mulberry32,
+    seedFrom,
   };
 })();

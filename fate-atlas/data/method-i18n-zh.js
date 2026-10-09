@@ -29,7 +29,7 @@
     },
     "akan-day": {
       "name": "阿坎日名宿命",
-      "summary": "从出生的星期几读取灵魂之名与性情（如 Kwadwo、Kwaku、Ama 等）。",
+      "summary": "在阿坎人中，出生的星期几对应灵魂日名（kra）——如夸乔、夸库、阿玛等——并连结性情教导。",
       "region": "阿坎",
       "source": "Sekai Fortune; Plutto"
     },
@@ -77,13 +77,13 @@
     },
     "awdunigist": {
       "name": "数星占",
-      "summary": "以夜空数星作占星—数字演算。",
+      "summary": "埃塞俄比亚阿夫杜尼吉斯特以数星作占星术数——数字格局指引时机与性情。",
       "region": "阿姆哈拉",
       "source": "Wikipedia · African divination"
     },
     "falak": {
       "name": "斯瓦希里星历占",
-      "summary": "斯瓦希里海岸承自阿拉伯星历学的文本传统。",
+      "summary": "斯瓦希里法拉克承续阿拉伯星学（ʿilm al-falak）——以字母、宫位与时机相连的占星术数盘，通行于海岸地带。",
       "region": "斯瓦希里海岸",
       "source": "Wikipedia · African divination"
     },
@@ -113,13 +113,13 @@
     },
     "egyptian-dream": {
       "name": "埃及梦占／寝庙",
-      "summary": "神庙寝梦与梦兆手册，被用来解读神祇关于健康与未来的讯息。",
+      "summary": "古埃及解梦书与神庙孵梦，在睡眠中读取神谕——符号被编目，用于健康与命运指引。",
       "region": "古埃及",
       "source": "Sekai Fortune; Oracle Traditions survey"
     },
     "egyptian-decan": {
       "name": "埃及旬星占",
-      "summary": "三十六旬星组，依每十日升起的星群解读命运。",
+      "summary": "三十六埃及旬星（德坎）——约每十日升起的星群——框定命运、夜时与守护之名。",
       "region": "古埃及",
       "source": "Sekai Fortune; Plutto"
     },
@@ -593,7 +593,7 @@
     },
     "zairja": {
       "name": "扎伊尔贾装置",
-      "summary": "中世纪字母组合装置，用于生成提示语。",
+      "summary": "扎伊尔贾是伊本·赫勒敦记述的马格里布字母装置神谕——同心转盘组合字母成神谕短句。",
       "region": "Maghreb",
       "source": "Plutto"
     },
@@ -1153,7 +1153,7 @@
     },
     "akan-day": {
       "name": "阿坎日名宿命",
-      "summary": "從出生的星期几讀取靈魂之名与性情（如 Kwadwo、Kwaku、Ama 等）。",
+      "summary": "在阿坎人中，出生的星期幾對應靈魂日名（kra）——如夸乔、夸库、阿玛等——并連結性情教導。",
       "region": "阿坎",
       "source": "Sekai Fortune; Plutto"
     },
@@ -1201,13 +1201,13 @@
     },
     "awdunigist": {
       "name": "數星占",
-      "summary": "以夜空數星作占星—數字演算。",
+      "summary": "埃塞俄比亞阿夫杜尼吉斯特以数星作占星術數——數字格局指引時機与性情。",
       "region": "阿姆哈拉",
       "source": "Wikipedia · African divination"
     },
     "falak": {
       "name": "斯瓦希裡星历占",
-      "summary": "斯瓦希裡海岸承自阿拉伯星历學的文本傳統。",
+      "summary": "斯瓦希里法拉克承續阿拉伯星學（ʿilm al-falak）——以字母、宮位与時機相連的占星術數盘，通行于海岸地帶。",
       "region": "斯瓦希裡海岸",
       "source": "Wikipedia · African divination"
     },
@@ -1237,13 +1237,13 @@
     },
     "egyptian-dream": {
       "name": "埃及夢占／寝庙",
-      "summary": "神庙寝夢与夢兆手册，被用來解讀神祇關于健康与未來的讯息。",
+      "summary": "古埃及解夢书与神廟孵夢，在睡眠中讀取神諭——符號被編目，用於健康与命運指引。",
       "region": "古埃及",
       "source": "Sekai Fortune; Oracle Traditions survey"
     },
     "egyptian-decan": {
       "name": "埃及旬星占",
-      "summary": "三十六旬星组，依每十日升起的星群解讀命運。",
+      "summary": "三十六埃及旬星（德坎）——约每十日升起的星群——框定命運、夜時与守護之名。",
       "region": "古埃及",
       "source": "Sekai Fortune; Plutto"
     },
@@ -1717,7 +1717,7 @@
     },
     "zairja": {
       "name": "扎伊尔贾装置",
-      "summary": "中世纪字母组合装置，用于生成提示語。",
+      "summary": "扎伊尔贾是伊本·赫勒敦記述的馬格里布字母裝置神諭——同心轉盤組合字母成神諭短句。",
       "region": "Maghreb",
       "source": "Plutto"
     },
