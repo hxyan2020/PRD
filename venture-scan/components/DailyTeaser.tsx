@@ -42,12 +42,12 @@ export function DailyTeaser() {
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 pb-6 sm:px-6">
-      <div className="flex flex-col gap-3 border-y border-white/10 py-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+      <div className="flex flex-col gap-3 border-y border-white/10 py-5 sm:flex-row sm:items-center sm:justify-between sm:py-6">
+        <div className="min-w-0">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
             {t("teaser.kicker")}
           </p>
-          <p className="mt-1 text-sm text-mist">
+          <p className="mt-1 text-sm leading-relaxed text-mist">
             {ready && title ? (
               <span>
                 {t("teaser.ready", {
@@ -59,7 +59,7 @@ export function DailyTeaser() {
             )}
           </p>
         </div>
-        <Link href={ready ? "/today" : "/match"} className="btn-ghost shrink-0">
+        <Link href={ready ? "/today" : "/match"} className="btn-ghost btn-block-mobile shrink-0">
           {ready ? t("teaser.open") : t("teaser.build")}
         </Link>
       </div>

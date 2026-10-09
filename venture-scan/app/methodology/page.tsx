@@ -31,6 +31,10 @@ export default function MethodologyPage() {
           <span className="text-foam">Languages</span> — switch the UI among major world languages
           with a flag icon language picker in the header.
         </li>
+        <li>
+          <span className="text-foam">Mobile</span> — sticky header + hamburger menu, larger tap
+          targets, and stacked layouts tuned for phones.
+        </li>
       </ol>
       <p className="mt-8 text-sm text-mist">
         Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal,

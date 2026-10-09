@@ -213,17 +213,17 @@ export function ProfileChatbot() {
   }
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr]">
-      <section className="flex min-h-[70vh] flex-col rounded-2xl border border-white/10 bg-ink-2/60 shadow-panel">
-        <div className="border-b border-white/10 px-5 py-4">
+    <div className="mx-auto grid w-full max-w-6xl gap-5 px-4 py-6 sm:gap-8 sm:px-6 sm:py-10 lg:grid-cols-[1.1fr_0.9fr]">
+      <section className="flex min-h-[65vh] flex-col rounded-2xl border border-white/10 bg-ink-2/60 shadow-panel sm:min-h-[70vh]">
+        <div className="border-b border-white/10 px-4 py-4 sm:px-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-celadon">
             {t("match.kicker")}
           </p>
-          <h1 className="mt-1 font-display text-3xl text-foam">{t("match.title")}</h1>
+          <h1 className="mt-1 font-display text-2xl text-foam sm:text-3xl">{t("match.title")}</h1>
           <p className="mt-2 text-sm text-mist">{t("match.body")}</p>
         </div>
 
-        <div className="flex-1 space-y-3 overflow-y-auto px-5 py-5">
+        <div className="flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5 sm:py-5">
           {messages.map((m) => (
             <div
               key={m.id}
@@ -239,7 +239,7 @@ export function ProfileChatbot() {
           <div ref={bottomRef} />
         </div>
 
-        <div className="border-t border-white/10 px-5 py-4">
+        <div className="sticky bottom-0 border-t border-white/10 bg-ink-2/95 px-4 py-3 backdrop-blur sm:static sm:bg-transparent sm:px-5 sm:py-4 sm:backdrop-blur-none">
           {!complete ? (
             <form
               className="flex gap-2"
@@ -256,20 +256,25 @@ export function ProfileChatbot() {
                 placeholder={t("match.placeholder")}
                 aria-label={t("match.placeholder")}
                 autoComplete="off"
+                enterKeyHint="send"
               />
               <button type="submit" className="btn-primary shrink-0">
                 {t("match.send")}
               </button>
             </form>
           ) : (
-            <div className="flex flex-wrap gap-2">
-              <button type="button" className="btn-primary" onClick={() => void runMatch(profile)}>
+            <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
+              <button
+                type="button"
+                className="btn-primary btn-block-mobile"
+                onClick={() => void runMatch(profile)}
+              >
                 {ranking ? t("match.scoring") : t("match.rematch")}
               </button>
-              <button type="button" className="btn-ghost" onClick={resetChat}>
+              <button type="button" className="btn-ghost btn-block-mobile" onClick={resetChat}>
                 {t("match.rebuild")}
               </button>
-              <Link href="/#ideas" className="btn-ghost">
+              <Link href="/#ideas" className="btn-ghost btn-block-mobile">
                 {t("match.viewLedger")}
               </Link>
             </div>
@@ -279,7 +284,7 @@ export function ProfileChatbot() {
       </section>
 
       <aside className="space-y-4">
-        <div className="rounded-2xl border border-white/10 bg-ink-2/60 p-5">
+        <div className="rounded-2xl border border-white/10 bg-ink-2/60 p-4 sm:p-5">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-mist">
             {t("match.profile")}
           </p>

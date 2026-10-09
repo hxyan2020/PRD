@@ -7,7 +7,7 @@ import { useI18n } from "@/lib/i18n/context";
 
 type User = { id: string; email: string };
 
-export function AuthNav() {
+export function AuthNav({ stacked = false }: { stacked?: boolean }) {
   const router = useRouter();
   const { t } = useI18n();
   const [user, setUser] = useState<User | null | undefined>(undefined);
@@ -35,34 +35,49 @@ export function AuthNav() {
     router.refresh();
   }
 
+  const linkClass = stacked
+    ? "rounded-xl px-3 py-3 text-foam hover:bg-white/5"
+    : "hover:text-foam";
+
   if (user === undefined) {
     return <span className="text-sm text-mist/50">…</span>;
   }
 
   if (!user) {
     return (
-      <>
-        <Link href="/login" className="hover:text-foam">
+      <div className={stacked ? "flex flex-col gap-1" : "contents"}>
+        <Link href="/login" className={linkClass}>
           {t("nav.login")}
         </Link>
-        <Link href="/register" className="hover:text-foam">
+        <Link href="/register" className={linkClass}>
           {t("nav.register")}
         </Link>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
-      <Link href="/collection" className="hover:text-foam">
+    <div className={stacked ? "flex flex-col gap-1" : "contents"}>
+      <Link href="/collection" className={linkClass}>
         {t("nav.collection")}
       </Link>
-      <span className="hidden max-w-[10rem] truncate text-xs text-mist/80 sm:inline" title={user.email}>
-        {user.email}
-      </span>
-      <button type="button" onClick={() => void logout()} className="hover:text-foam">
+      {!stacked ? (
+        <span
+          className="hidden max-w-[10rem] truncate text-xs text-mist/80 lg:inline"
+          title={user.email}
+        >
+          {user.email}
+        </span>
+      ) : (
+        <span className="px-3 py-1 text-xs text-mist/80">{user.email}</span>
+      )}
+      <button
+        type="button"
+        onClick={() => void logout()}
+        className={stacked ? `${linkClass} text-start` : "hover:text-foam"}
+      >
         {t("nav.logout")}
       </button>
-    </>
+    </div>
   );
 }

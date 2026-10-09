@@ -28,7 +28,7 @@ export function LanguagePicker() {
     <div className="relative" ref={rootRef}>
       <button
         type="button"
-        className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-2.5 py-1.5 text-sm text-foam hover:border-white/25 hover:bg-white/10"
+        className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-2.5 text-sm text-foam hover:border-white/25 hover:bg-white/10"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t("lang.pickerLabel")}
@@ -47,7 +47,7 @@ export function LanguagePicker() {
         <ul
           role="listbox"
           aria-label={t("lang.pickerLabel")}
-          className="absolute end-0 z-50 mt-2 max-h-72 w-56 overflow-y-auto rounded-xl border border-white/15 bg-ink-2 py-1 shadow-panel"
+          className="absolute end-0 z-50 mt-2 max-h-[min(70vh,22rem)] w-[min(calc(100vw-2rem),16rem)] overflow-y-auto overscroll-contain rounded-xl border border-white/15 bg-ink-2 py-1 shadow-panel"
         >
           {locales.map((item) => {
             const selected = item.code === locale;

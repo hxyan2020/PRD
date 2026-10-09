@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
@@ -30,6 +30,12 @@ export const metadata: Metadata = {
     "Scan worldwide startup ideas and fundraising events. Browse idea name, model, team, industry, funding, website, socials, and go-forward plays.",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
@@ -37,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <div className="grain" aria-hidden />
           <SiteHeader />
-          <main className="relative z-10">{children}</main>
+          <main className="relative z-10 min-w-0">{children}</main>
           <SiteFooter />
         </Providers>
       </body>

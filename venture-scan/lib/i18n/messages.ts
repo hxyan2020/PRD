@@ -12,6 +12,8 @@ const en = {
   "nav.collection": "Collection",
   "nav.logout": "Log out",
   "nav.language": "Language",
+  "nav.menu": "Menu",
+  "nav.close": "Close",
 
   "hero.kicker": "Worldwide startup ideas + fundraising",
   "hero.body":

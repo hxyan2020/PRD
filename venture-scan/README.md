@@ -31,6 +31,10 @@ Register / log in with email and password (`/register`, `/login`). Collect ideas
 
 UI chrome is available in 18 major languages via the header language picker (national flag icons). Choice is saved in localStorage; Arabic uses RTL.
 
+## Mobile
+
+Sticky header with hamburger menu under `md`, full-width CTAs, larger tap targets, safe-area padding, and a single-column match/chat layout on small screens.
+
 ## Run locally
 
 ```bash

@@ -99,9 +99,9 @@ export function DailyRecommendation() {
       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-celadon">
         {t("today.dateLabel", { day })}
       </p>
-      <div className="mt-3 flex flex-wrap items-end justify-between gap-3">
-        <h1 className="font-display text-4xl text-foam sm:text-5xl">{idea.name}</h1>
-        <span className="rounded-full border border-celadon/40 bg-celadon/15 px-3 py-1 font-mono text-sm text-celadon">
+      <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <h1 className="font-display text-3xl text-foam sm:text-5xl">{idea.name}</h1>
+        <span className="w-fit rounded-full border border-celadon/40 bg-celadon/15 px-3 py-1 font-mono text-sm text-celadon">
           {match.score}% match
         </span>
       </div>
@@ -157,14 +157,14 @@ export function DailyRecommendation() {
 
       <div className="mt-10 space-y-4">
         <CollectButton idea={idea} match={match} />
-        <div className="flex flex-wrap gap-3">
-          <Link href={`/ideas/${idea.slug}`} className="btn-ghost">
+        <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:gap-3">
+          <Link href={`/ideas/${idea.slug}`} className="btn-ghost btn-block-mobile">
             {t("today.dossier")}
           </Link>
-          <Link href="/match" className="btn-ghost">
+          <Link href="/match" className="btn-ghost btn-block-mobile">
             {t("today.updateProfile")}
           </Link>
-          <Link href="/collection" className="btn-ghost">
+          <Link href="/collection" className="btn-ghost btn-block-mobile">
             {t("today.collection")}
           </Link>
         </div>

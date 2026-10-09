@@ -126,15 +126,15 @@ export function IdeaExplorer({
             {hasMatches ? t("ledger.sorted") : ""}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="grid w-full grid-cols-1 gap-2 sm:flex sm:w-auto sm:flex-wrap">
           {!hasMatches ? (
-            <Link href="/match" className="btn-primary shrink-0">
+            <Link href="/match" className="btn-primary btn-block-mobile shrink-0">
               {t("ledger.buildProfile")}
             </Link>
           ) : (
             <button
               type="button"
-              className="btn-ghost shrink-0"
+              className="btn-ghost btn-block-mobile shrink-0"
               onClick={() => setSortByMatch((v) => !v)}
             >
               {sortByMatch ? t("ledger.sortMatch") : t("ledger.sortRecent")}
@@ -142,7 +142,7 @@ export function IdeaExplorer({
           )}
           <button
             type="button"
-            className="btn-ghost shrink-0"
+            className="btn-ghost btn-block-mobile shrink-0"
             onClick={rescan}
             disabled={scanning}
           >
@@ -233,7 +233,7 @@ export function IdeaExplorer({
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-display text-2xl text-foam transition group-hover:text-white">
+                      <h3 className="font-display text-xl text-foam transition group-hover:text-white sm:text-2xl">
                         {idea.name}
                       </h3>
                       <span
@@ -268,7 +268,7 @@ export function IdeaExplorer({
                       ) : null}
                     </div>
                   </div>
-                  <p className="shrink-0 max-w-xs text-xs leading-relaxed text-mist sm:text-right">
+                  <p className="shrink-0 max-w-full text-xs leading-relaxed text-mist sm:max-w-xs sm:text-right">
                     <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">
                       {t("ledger.goForward")}
                     </span>
