@@ -35,6 +35,16 @@ export default function MethodologyPage() {
           <span className="text-foam">Mobile</span> — sticky header + hamburger menu, larger tap
           targets, and stacked layouts tuned for phones.
         </li>
+        <li>
+          <span className="text-foam">Permanent URL</span> — published at{" "}
+          <a
+            className="text-celadon underline-offset-2 hover:underline"
+            href="https://hxyan2020.github.io/PRD/venture-scan/"
+          >
+            hxyan2020.github.io/PRD/venture-scan/
+          </a>
+          .
+        </li>
       </ol>
       <p className="mt-8 text-sm text-mist">
         Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal,

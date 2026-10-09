@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CollectButton } from "@/components/CollectButton";
+import { fetchDaily } from "@/lib/client-api";
 import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
@@ -33,19 +34,14 @@ export function DailyRecommendation() {
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch("/api/daily", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ profile }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Could not load today's pick");
+        const daily = await fetchDaily(profile);
+        if (!daily) throw new Error("Could not load today's pick");
         if (cancelled) return;
         setState({
           status: "ready",
-          day: data.day,
-          idea: data.recommendation.idea,
-          match: data.recommendation.match,
+          day: daily.day,
+          idea: daily.idea,
+          match: daily.match,
         });
       } catch (e) {
         if (cancelled) return;

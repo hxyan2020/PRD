@@ -1,6 +1,7 @@
 node_modules
 .next
 out
+.static-park
 data/*.sqlite
 data/*.sqlite-*
 .env*.local

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
+import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
 import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
@@ -39,19 +40,12 @@ export function IdeaExplorer({
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch("/api/match", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(profile),
-        });
-        if (!res.ok || cancelled) return;
-        const data = await res.json();
+        const data = await matchProfile(profile);
+        if (cancelled) return;
         const map: Record<string, IdeaMatch> = {};
-        for (const m of data.matches as IdeaMatch[]) map[m.slug] = m;
-        if (!cancelled) {
-          setMatches(map);
-          setSortByMatch(true);
-        }
+        for (const m of data.matches) map[m.slug] = m;
+        setMatches(map);
+        setSortByMatch(true);
       } catch {
         // Profile matching is optional on the ledger.
       }
@@ -97,14 +91,14 @@ export function IdeaExplorer({
     setScanning(true);
     setScanNote(null);
     try {
-      const res = await fetch("/api/scan", { method: "POST" });
-      const data = await res.json();
-      const listRes = await fetch("/api/ideas");
-      const listData = await listRes.json();
+      const data = await runScanClient();
+      const nextIdeas = await fetchIdeas();
       startTransition(() => {
-        setIdeas(listData.ideas);
+        setIdeas(nextIdeas);
         setScanNote(
-          `Scan complete · ${data.inserted} new · ${data.updated} refreshed · ${data.total} total`,
+          data
+            ? `Scan complete · ${data.inserted} new · ${data.updated} refreshed · ${data.total} total`
+            : `Showing ${nextIdeas.length} ideas`,
         );
       });
     } catch {

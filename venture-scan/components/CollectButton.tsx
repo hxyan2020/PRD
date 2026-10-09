@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import {
+  authMe,
+  getCollectedSlug,
+  removeFromCollection,
+  saveToCollection,
+} from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
@@ -22,18 +28,12 @@ export function CollectButton({
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const me = await fetch("/api/auth/me").then((r) => r.json());
-        if (cancelled) return;
-        setLoggedIn(Boolean(me.user));
-        if (!me.user) return;
-        const col = await fetch(`/api/collection?slug=${encodeURIComponent(idea.slug)}`).then(
-          (r) => r.json(),
-        );
-        if (!cancelled) setSaved(Boolean(col.item));
-      } catch {
-        if (!cancelled) setLoggedIn(false);
-      }
+      const me = await authMe();
+      if (cancelled) return;
+      setLoggedIn(Boolean(me));
+      if (!me) return;
+      const item = await getCollectedSlug(idea.slug);
+      if (!cancelled) setSaved(Boolean(item));
     })();
     return () => {
       cancelled = true;
@@ -45,19 +45,14 @@ export function CollectButton({
     setMessage(null);
     try {
       const profile = loadProfileFromStorage();
-      const res = await fetch("/api/collection", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slug: idea.slug,
-          match: match ?? undefined,
-          profile: profile && isProfileReady(profile) ? profile : undefined,
-        }),
+      const result = await saveToCollection({
+        idea,
+        match: match ?? null,
+        profile: profile && isProfileReady(profile) ? profile : null,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Could not save");
+      if (result.error || !result.item) throw new Error(result.error || "Could not save");
       setSaved(true);
-      setMessage(data.item?.match ? t("collect.savedBoth") : t("collect.savedIdea"));
+      setMessage(result.item.match ? t("collect.savedBoth") : t("collect.savedIdea"));
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Could not save");
     } finally {
@@ -69,13 +64,8 @@ export function CollectButton({
     setBusy(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/collection", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: idea.slug }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Could not remove");
+      const result = await removeFromCollection(idea.slug);
+      if (result.error) throw new Error(result.error);
       setSaved(false);
       setMessage(t("collect.removed"));
     } catch (e) {

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { authLogin, authRegister } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
@@ -18,13 +19,11 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`/api/auth/${mode}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Request failed");
+      const result =
+        mode === "login"
+          ? await authLogin(email, password)
+          : await authRegister(email, password);
+      if (result.error || !result.user) throw new Error(result.error || "Request failed");
       router.push("/collection");
       router.refresh();
     } catch (err) {

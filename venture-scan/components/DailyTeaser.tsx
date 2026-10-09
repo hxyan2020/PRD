@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { fetchDaily } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 
@@ -21,16 +22,10 @@ export function DailyTeaser() {
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch("/api/daily", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ profile }),
-        });
-        if (!res.ok || cancelled) return;
-        const data = await res.json();
-        if (cancelled) return;
-        setTitle(data.recommendation.idea.name);
-        setScore(data.recommendation.match.score);
+        const daily = await fetchDaily(profile);
+        if (!daily || cancelled) return;
+        setTitle(daily.idea.name);
+        setScore(daily.match.score);
       } catch {
         // Teaser is optional.
       }

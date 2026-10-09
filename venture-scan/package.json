@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --port 3000 --hostname 0.0.0.0",
     "build": "next build",
+    "build:static": "node scripts/build-static.mjs",
+    "deploy:pages": "node scripts/deploy-gh-pages.mjs",
     "start": "next start --port 3000 --hostname 0.0.0.0",
     "seed": "tsx scripts/seed.ts",
     "scan": "tsx scripts/scan.ts",

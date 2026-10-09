@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { authLogout, authMe } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 
 type User = { id: string; email: string };
@@ -15,13 +16,8 @@ export function AuthNav({ stacked = false }: { stacked?: boolean }) {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      try {
-        const res = await fetch("/api/auth/me");
-        const data = await res.json();
-        if (!cancelled) setUser(data.user ?? null);
-      } catch {
-        if (!cancelled) setUser(null);
-      }
+      const me = await authMe();
+      if (!cancelled) setUser(me);
     })();
     return () => {
       cancelled = true;
@@ -29,7 +25,7 @@ export function AuthNav({ stacked = false }: { stacked?: boolean }) {
   }, []);
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await authLogout();
     setUser(null);
     router.push("/");
     router.refresh();

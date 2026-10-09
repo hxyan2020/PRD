@@ -35,6 +35,17 @@ UI chrome is available in 18 major languages via the header language picker (nat
 
 Sticky header with hamburger menu under `md`, full-width CTAs, larger tap targets, safe-area padding, and a single-column match/chat layout on small screens.
 
+## Permanent URL
+
+**https://hxyan2020.github.io/PRD/venture-scan/**
+
+```bash
+cd venture-scan
+npm run deploy:pages
+```
+
+See `PUBLIC_URL.md`. Static export embeds the catalog; matching / auth / collections run in-browser on the public site.
+
 ## Run locally
 
 ```bash

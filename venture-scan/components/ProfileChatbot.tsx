@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { matchProfile } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 import type { MessageKey } from "@/lib/i18n/messages";
 import {
@@ -97,14 +98,8 @@ export function ProfileChatbot() {
     setRanking(true);
     setError(null);
     try {
-      const res = await fetch("/api/match", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(next),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Match failed");
-      const rows: Ranked[] = (data.ideas as (StartupIdea & { match: IdeaMatch })[])
+      const data = await matchProfile(next);
+      const rows: Ranked[] = data.ideas
         .filter((row) => row.match)
         .map((row) => ({ idea: row, match: row.match }))
         .sort((a, b) => b.match.score - a.match.score);

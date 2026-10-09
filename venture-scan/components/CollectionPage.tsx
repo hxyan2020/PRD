@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { listUserCollection, removeFromCollection } from "@/lib/client-api";
 import { useI18n } from "@/lib/i18n/context";
 import type { CollectionItem } from "@/lib/types";
 
@@ -15,13 +16,12 @@ export function CollectionPage() {
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch("/api/collection");
-        const data = await res.json();
-        if (res.status === 401) {
+        const data = await listUserCollection();
+        if (data.status === 401) {
           if (!cancelled) setNeedLogin(true);
           return;
         }
-        if (!res.ok) throw new Error(data.error || "Failed to load collection");
+        if (data.error) throw new Error(data.error);
         if (!cancelled) setItems(data.items ?? []);
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : "Failed to load");
@@ -33,12 +33,8 @@ export function CollectionPage() {
   }, []);
 
   async function remove(slug: string) {
-    const res = await fetch("/api/collection", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug }),
-    });
-    if (!res.ok) return;
+    const result = await removeFromCollection(slug);
+    if (result.error) return;
     setItems((prev) => (prev ? prev.filter((i) => i.ideaSlug !== slug) : prev));
   }
 
