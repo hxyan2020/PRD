@@ -1019,55 +1019,55 @@
     },
     "maori-moon": {
       "name": "毛利月历",
-      "summary": "依毛利月相历安排渔猎、种植与仪式时机。",
+      "summary": "毛利月历（maramataka）约三十个月夜，指引播种、渔捞与个人时机。",
       "region": "Aotearoa",
       "source": "Plutto"
     },
     "tahitian-moon": {
       "name": "塔希提月历",
-      "summary": "塔希提月相历，安排渔捞与仪式。",
+      "summary": "塔希提月夜以本地命名论活动与兆象。",
       "region": "Tahiti",
       "source": "Plutto"
     },
     "aboriginal-sky": {
       "name": "原住民天空知识",
-      "summary": "原住民天空与季节知识，用于社群时间与叙事，而非个人命运预报。",
+      "summary": "澳大利亚原住民天象知识以季节历与星辰传说论天气、食物与社交时机。",
       "region": "Central & wider Australia",
       "source": "Plutto; Indigenous astronomy research"
     },
     "torres-scintillation": {
       "name": "托雷斯海峡星闪观测",
-      "summary": "托雷斯海峡对星光闪烁的天气与航行观测。",
+      "summary": "托雷斯海峡（Meriam）星闪以星光闪烁估信风、湿季与气温变化。",
       "region": "Torres Strait (Meriam)",
       "source": "ResearchGate · Indigenous stellar scintillation"
     },
     "hawaiian-kilo": {
       "name": "夏威夷观天（Kilo）",
-      "summary": "夏威夷观天与海洋征候知识，用于航行与季节。",
+      "summary": "夏威夷 kilo 观象以云、海、鸟与梦作酋长与社群指引。",
       "region": "Hawaiʻi",
       "source": "Hawaiian ethnoastronomy"
     },
     "samoan-tofa": {
       "name": "萨摩亚托法智慧",
-      "summary": "萨摩亚酋长议事中的托法（智慧）传统。",
+      "summary": "萨摩亚 tofa／灵询向祖先与灵知识求决——仅教学指引。",
       "region": "Samoa",
       "source": "Polynesian ethnography"
     },
     "fijian-draunikau": {
       "name": "斐济草药灵术（记述）",
-      "summary": "斐济草药／精灵术的历史记述——本站仅作文化说明。",
+      "summary": "斐济 draunikau／梦兆以梦与专家仪轨论不幸与补救。",
       "region": "Fiji",
       "source": "Fijian ethnography"
     },
     "png-smoke": {
       "name": "巴布亚新几内亚烟占",
-      "summary": "烟征与精灵沟通的美拉尼西亚记述传统。",
+      "summary": "新几内亚烟／巫祝神谕以烟草烟向定位不幸之源——仅教学烟向。",
       "region": "New Guinea",
       "source": "Melanesian ethnography"
     },
     "micronesian-stars": {
       "name": "密克罗尼西亚星航",
-      "summary": "密克罗尼西亚星航路径与洋流知识。",
+      "summary": "密克罗尼西亚星路航海兆以星径与海象论出航时机与条件。",
       "region": "密克罗尼西亚",
       "source": "Pacific navigation studies"
     },
@@ -2143,55 +2143,55 @@
     },
     "maori-moon": {
       "name": "毛利月历",
-      "summary": "依毛利月相历安排渔猎、种植与儀式时机。",
+      "summary": "毛利月曆（maramataka）約三十個月夜，指引播種、漁撈與個人時機。",
       "region": "Aotearoa",
       "source": "Plutto"
     },
     "tahitian-moon": {
       "name": "塔希提月历",
-      "summary": "塔希提月相历，安排渔捞与儀式。",
+      "summary": "塔希提月夜以本地命名論活動與兆象。",
       "region": "Tahiti",
       "source": "Plutto"
     },
     "aboriginal-sky": {
       "name": "原住民天空知识",
-      "summary": "原住民天空与季節知识，用于社群時間与叙事，而非個人命運预報。",
+      "summary": "澳大利亞原住民天象知識以季節曆與星辰傳說論天氣、食物與社交時機。",
       "region": "Central & wider Australia",
       "source": "Plutto; Indigenous astronomy research"
     },
     "torres-scintillation": {
       "name": "托雷斯海峡星闪觀測",
-      "summary": "托雷斯海峡對星光闪烁的天气与航行觀測。",
+      "summary": "托雷斯海峽（Meriam）星閃以星光閃爍估信風、濕季與氣溫變化。",
       "region": "Torres Strait (Meriam)",
       "source": "ResearchGate · Indigenous stellar scintillation"
     },
     "hawaiian-kilo": {
       "name": "夏威夷觀天（Kilo）",
-      "summary": "夏威夷觀天与海洋征候知识，用于航行与季節。",
+      "summary": "夏威夷 kilo 觀象以雲、海、鳥與夢作酋長與社群指引。",
       "region": "Hawaiʻi",
       "source": "Hawaiian ethnoastronomy"
     },
     "samoan-tofa": {
       "name": "萨摩亚托法智慧",
-      "summary": "萨摩亚酋長议事中的托法（智慧）傳統。",
+      "summary": "薩摩亞 tofa／靈詢向祖先與靈知識求決——僅教學指引。",
       "region": "Samoa",
       "source": "Polynesian ethnography"
     },
     "fijian-draunikau": {
       "name": "斐济草藥靈術（記述）",
-      "summary": "斐济草藥／精靈術的历史記述——本站仅作文化說明。",
+      "summary": "斐濟 draunikau／夢兆以夢與專家儀軌論不幸與補救。",
       "region": "Fiji",
       "source": "Fijian ethnography"
     },
     "png-smoke": {
       "name": "巴布亚新几内亚烟占",
-      "summary": "烟征与精靈沟通的美拉尼西亚記述傳統。",
+      "summary": "新幾內亞煙／巫祝神諭以煙草煙向定位不幸之源——僅教學煙向。",
       "region": "New Guinea",
       "source": "Melanesian ethnography"
     },
     "micronesian-stars": {
       "name": "密克罗尼西亚星航",
-      "summary": "密克罗尼西亚星航路径与洋流知识。",
+      "summary": "密克羅尼西亞星路航海兆以星徑與海象論出航時機與條件。",
       "region": "密克罗尼西亚",
       "source": "Pacific navigation studies"
     },
