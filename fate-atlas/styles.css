@@ -6753,3 +6753,15 @@ body:not(.studio-open) .hero__content {
 .saam-vision { background: radial-gradient(circle at 40% 35%, #70c8a888, #204060); border: 1px solid #68a888; color: #e8fff4; }
 .saam-dream { background: radial-gradient(circle at 40% 35%, #a080c8, #281848); border: 1px solid #c0a0e0; color: #f0e8ff; }
 .saam-bundle { background: linear-gradient(160deg, #c4a070, #6a4830); border: 1px solid #a88850; color: #f8f0e0; border-radius: 0.6rem; }
+
+/* Oceanic stages */
+.oc-stage { margin: 0.75rem 0 1rem; min-height: 5.5rem; display: grid; place-items: center; gap: 0.35rem; }
+.oc-stage--pulse .oc-moon, .oc-stage--pulse .oc-sky i, .oc-stage--pulse .oc-smoke, .oc-stage--pulse .oc-dream, .oc-stage--pulse .oc-seat { animation: oc-pulse 0.95s ease-in-out infinite alternate; }
+@keyframes oc-pulse { from { transform: scale(1); opacity: 0.78; } to { transform: scale(1.05); opacity: 1; } }
+.oc-moon { width: 3.2rem; height: 3.2rem; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f0e8c8, #a89870); border: 1px solid #c4b890; display: grid; place-items: center; font-size: 0.65rem; color: #2a2818; text-align: center; padding: 0.3rem; }
+.oc-sky { display: flex; gap: 0.45rem; }
+.oc-sky i { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #e8d080; box-shadow: 0 0 6px #e8d08088; }
+.oc-label { margin: 0; font-size: 0.85rem; opacity: 0.9; }
+.oc-smoke { width: 1.2rem; height: 3rem; border-radius: 50% 50% 40% 40%; background: linear-gradient(180deg, transparent, #9aa0a888 40%, #6a707888); display: grid; place-items: start center; padding-top: 0.2rem; font-size: 0.6rem; color: #c8d0d8; text-align: center; }
+.oc-dream { width: 3.2rem; height: 3.2rem; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #6a7ab0, #1a2038); border: 1px solid #8a9ac8; display: grid; place-items: center; font-size: 0.65rem; color: #d8e0f8; text-align: center; padding: 0.3rem; }
+.oc-seat { width: 3.4rem; height: 2.6rem; border-radius: 0.4rem 0.4rem 0.2rem 0.2rem; background: linear-gradient(180deg, #c4a070, #6a4830); border: 1px solid #a88850; display: grid; place-items: center; font-size: 0.65rem; color: #f8f0e0; text-align: center; padding: 0.25rem; }
