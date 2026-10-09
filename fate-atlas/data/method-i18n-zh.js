@@ -5,25 +5,25 @@
   "zh-Hans": {
     "ifa": {
       "name": "伊法神谕",
-      "summary": "祭司（Babaláwo）抛掷棕榈坚果或欧佩勒链，得到二百五十六种奥杜（Odù）之一，并与口传经文与仪轨处方相对应。",
+      "summary": "祭司（Babaláwo）抛掷棕榈坚果或欧佩勒链，打开二百五十六种奥杜（Odù）之一——对应口传经文与仪轨处方。",
       "region": "西非（约鲁巴）",
       "source": "Wikipedia · African divination; Sekai Fortune"
     },
     "merindinlogun": {
       "name": "十六贝壳占（梅林丁洛贡）",
-      "summary": "抛掷十六枚贝壳；开合图案对应一种奥杜，再据经文解读。",
+      "summary": "抛掷十六枚贝壳；口朝上的数量对应一种奥杜，再据经文解读——与伊法相关的祭司贝壳体系。",
       "region": "约鲁巴",
       "source": "Plutto; Cowrie-shell divination"
     },
     "obi": {
       "name": "柯拉果占（Obi）",
-      "summary": "抛掷柯拉果（或椰子）瓣，读取是／否与方位性的回答。",
+      "summary": "抛掷四瓣柯拉果（或椰子），读取是／否与方位性回答——约鲁巴／离散社群的快捷神谕。",
       "region": "约鲁巴／非洲离散社群",
       "source": "Sekai Fortune"
     },
     "afa": {
       "name": "阿法占（Igba Afa）",
-      "summary": "迪比亚祭司抛掷四串乌吉里半壳，生成二百五十六种二元组合以作诊断与指引。",
+      "summary": "迪比亚祭司抛掷四串乌吉里半壳，生成二百五十六种二元组合，用于诊断与指引。",
       "region": "伊博地区",
       "source": "Wikipedia · African divination"
     },
@@ -35,43 +35,43 @@
     },
     "sikidy": {
       "name": "西基迪占",
-      "summary": "以种子或豆子排布生成土占图形，回答问题并开处方。",
+      "summary": "马达加斯加西基迪以种子或豆子排布出土占图形，回答问题并开仪轨处方。",
       "region": "马达加斯加",
       "source": "Sekai Fortune; Plutto"
     },
     "hakata": {
       "name": "哈卡塔骨牌",
-      "summary": "抛掷四块刻骨／骨牌，组合对应具名的神谕格局。",
+      "summary": "抛掷四块刻骨／骨牌；正反组合对应南部非洲传统中的具名神谕格局。",
       "region": "南部非洲",
       "source": "Sekai Fortune"
     },
     "ngombo": {
       "name": "恩贡博掷骨",
-      "summary": "篮、沙与掷骨传统，用于诊断与指引。",
+      "summary": "巴马纳及邻近族群在篮中或沙上抛掷骨块、贝壳与杂物——配置用于诊断与指引。",
       "region": "曼德／巴马纳",
       "source": "Plutto"
     },
     "ilm-al-raml-africa": {
       "name": "沙土占（伊尔姆·拉姆勒）",
-      "summary": "由沙上随机痕记导出十六种土占图形，自伊斯兰世界传入萨赫勒。",
+      "summary": "由沙上随机痕记导出十六种土占图形——自伊斯兰北非传入萨赫勒的学问。",
       "region": "北非／萨赫勒",
       "source": "Sekai Fortune; Noosaga"
     },
     "benin-fa": {
       "name": "丰人法占（Fá）",
-      "summary": "丰人法占：通过神圣符号与对神灵的供奉读取命运。",
+      "summary": "丰人法占（Fá）是达荷美对应伊法的体系——在 Mawu-Lisa 宇宙观中通过圣号与供奉读取命运。",
       "region": "丰人／达荷美",
       "source": "African divination ethnography"
     },
     "dlera": {
       "name": "蟹占（Dlera）",
-      "summary": "蟹在水、沙与葫芦片间移动，其路径回答所问。",
+      "summary": "卡普西基／希吉人让蟹在水、沙与葫芦片间移动；其路径回答所问。",
       "region": "卡普西基／希吉",
       "source": "Wikipedia · African divination"
     },
     "benge": {
       "name": "本格毒谕（历史记述）",
-      "summary": "阿赞德历史中的毒谕记述——本站绝不模拟伤害，只作认识论说明。",
+      "summary": "阿赞德历史中的毒谕：曾给禽类施用物品，以存活或死亡回答巫蛊等问题。本站绝不模拟伤害——只作文认识论说明。",
       "region": "阿赞德",
       "source": "Wikipedia · African divination (Evans-Pritchard)"
     },
@@ -89,25 +89,25 @@
     },
     "giriama": {
       "name": "吉里亚马灵诊",
-      "summary": "卡亚长老与仪式专家结合灵诊与社群政治伦理。",
+      "summary": "吉里亚马卡亚长老与仪式专家结合灵诊与社群伦理、实务建议。",
       "region": "吉里亚马",
       "source": "Wikipedia · African divination"
     },
     "mambila-nggam": {
       "name": "蜘蛛／蟹叶牌占（Nggàm）",
-      "summary": "为蜘蛛或蟹铺设叶牌，扰动图案即为神谕。",
+      "summary": "曼比拉 nggàm 为蜘蛛或蟹铺设叶牌；被扰动的图案即为神谕。",
       "region": "曼比拉",
       "source": "African divination ethnography"
     },
     "dogon-fox": {
       "name": "多贡狐迹占",
-      "summary": "读取整理沙场上狐狸足迹，作为宇宙与人事讯息。",
+      "summary": "多贡占师读取整理沙场上的狐狸足迹，作为宇宙与人事讯息。",
       "region": "多贡",
       "source": "African divination ethnography"
     },
     "zulu-bones": {
       "name": "祖鲁骨卜（Amathambo）",
-      "summary": "桑戈马抛掷骨块、贝壳与杂物；配置用于诊断灾厄与关系。",
+      "summary": "桑戈马抛掷混杂骨块、贝壳与物件（amathambo）；配置用于诊断灾厄与关系。",
       "region": "祖鲁",
       "source": "Southern African ethnography"
     },
@@ -1129,25 +1129,25 @@
   "zh-Hant": {
     "ifa": {
       "name": "伊法神谕",
-      "summary": "祭司（Babaláwo）抛掷棕榈坚果或欧佩勒链，得到二百五十六种奥杜（Odù）之一，并与口传經文与儀轨处方相對應。",
+      "summary": "祭司（Babaláwo）拋擲棕榈堅果或欧佩勒链，打開二百五十六種奥杜（Odù）之一——對應口傳經文與儀軌處方。",
       "region": "西非（约鲁巴）",
       "source": "Wikipedia · African divination; Sekai Fortune"
     },
     "merindinlogun": {
       "name": "十六貝壳占（梅林丁洛贡）",
-      "summary": "抛掷十六枚貝壳；開合圖案對應一种奥杜，再據經文解讀。",
+      "summary": "拋擲十六枚贝壳；口朝上的数量對應一種奥杜，再據經文解讀——與伊法相关的祭司贝壳體系。",
       "region": "约鲁巴",
       "source": "Plutto; Cowrie-shell divination"
     },
     "obi": {
       "name": "柯拉果占（Obi）",
-      "summary": "抛掷柯拉果（或椰子）瓣，讀取是／否与方位性的回答。",
+      "summary": "拋擲四瓣柯拉果（或椰子），讀取是／否與方位性回答——约鲁巴／离散社群的快捷神諭。",
       "region": "约鲁巴／非洲离散社群",
       "source": "Sekai Fortune"
     },
     "afa": {
       "name": "阿法占（Igba Afa）",
-      "summary": "迪比亚祭司抛掷四串乌吉裡半壳，生成二百五十六种二元组合以作诊断与指引。",
+      "summary": "迪比亚祭司拋擲四串乌吉里半殼，生成二百五十六種二元組合，用於診斷與指引。",
       "region": "伊博地區",
       "source": "Wikipedia · African divination"
     },
@@ -1159,43 +1159,43 @@
     },
     "sikidy": {
       "name": "西基迪占",
-      "summary": "以种子或豆子排布生成土占圖形，回答問題并開处方。",
+      "summary": "马达加斯加西基迪以種子或豆子排布出土占圖形，回答問題并開儀軌處方。",
       "region": "馬达加斯加",
       "source": "Sekai Fortune; Plutto"
     },
     "hakata": {
       "name": "哈卡塔骨牌",
-      "summary": "抛掷四块刻骨／骨牌，组合對應具名的神谕格局。",
+      "summary": "拋擲四塊刻骨／骨牌；正反組合對應南部非洲傳統中的具名神諭格局。",
       "region": "南部非洲",
       "source": "Sekai Fortune"
     },
     "ngombo": {
       "name": "恩贡博掷骨",
-      "summary": "篮、沙与掷骨傳統，用于诊断与指引。",
+      "summary": "巴马纳及鄰近族群在籃中或沙上拋擲骨塊、贝壳與雜物——配置用於診斷與指引。",
       "region": "曼德／巴馬纳",
       "source": "Plutto"
     },
     "ilm-al-raml-africa": {
       "name": "沙土占（伊尔姆·拉姆勒）",
-      "summary": "由沙上随机痕記導出十六种土占圖形，自伊斯蘭世界传入萨赫勒。",
+      "summary": "由沙上隨機痕記導出十六種土占圖形——自伊斯蘭北非傳入薩赫勒的學問。",
       "region": "北非／萨赫勒",
       "source": "Sekai Fortune; Noosaga"
     },
     "benin-fa": {
       "name": "丰人法占（Fá）",
-      "summary": "丰人法占：通過神聖符号与對神靈的供奉讀取命運。",
+      "summary": "豐人法占（Fá）是達荷美對應伊法的體系——在 Mawu-Lisa 宇宙觀中通過聖號與供奉讀取命運。",
       "region": "丰人／达荷美",
       "source": "African divination ethnography"
     },
     "dlera": {
       "name": "蟹占（Dlera）",
-      "summary": "蟹在水、沙与葫芦片间移动，其路径回答所問。",
+      "summary": "卡普西基／希吉人让蟹在水、沙與葫芦片間移動；其路徑回答所問。",
       "region": "卡普西基／希吉",
       "source": "Wikipedia · African divination"
     },
     "benge": {
       "name": "本格毒谕（历史記述）",
-      "summary": "阿赞德历史中的毒谕記述——本站绝不模拟伤害，只作认识论說明。",
+      "summary": "阿赞德歷史中的毒谕：曾给禽类施用物品，以存活或死亡回答巫蛊等問題。本站絕不模擬傷害——只作文認識論說明。",
       "region": "阿赞德",
       "source": "Wikipedia · African divination (Evans-Pritchard)"
     },
@@ -1213,25 +1213,25 @@
     },
     "giriama": {
       "name": "吉裡亚馬靈诊",
-      "summary": "卡亚長老与儀式专家结合靈诊与社群政治伦理。",
+      "summary": "吉里亚马卡亚長老與仪式專家結合靈診與社群倫理、實務建議。",
       "region": "吉裡亚馬",
       "source": "Wikipedia · African divination"
     },
     "mambila-nggam": {
       "name": "蜘蛛／蟹叶牌占（Nggàm）",
-      "summary": "為蜘蛛或蟹铺设叶牌，扰动圖案即為神谕。",
+      "summary": "曼比拉 nggàm 為蜘蛛或蟹鋪設葉牌；被擾動的圖案即為神諭。",
       "region": "曼比拉",
       "source": "African divination ethnography"
     },
     "dogon-fox": {
       "name": "多贡狐迹占",
-      "summary": "讀取整理沙场上狐狸足迹，作為宇宙与人事讯息。",
+      "summary": "多贡占师讀取整理沙場上的狐狸足跡，作為宇宙與人事訊息。",
       "region": "多贡",
       "source": "African divination ethnography"
     },
     "zulu-bones": {
       "name": "祖鲁骨卜（Amathambo）",
-      "summary": "桑戈馬抛掷骨块、貝壳与杂物；配置用于诊断灾厄与關系。",
+      "summary": "桑戈馬拋擲混雜骨塊、贝壳與物件（amathambo）；配置用於診斷災厄與關係。",
       "region": "祖鲁",
       "source": "Southern African ethnography"
     },

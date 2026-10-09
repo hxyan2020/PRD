@@ -37,6 +37,7 @@
     if (method.id === "bagua" || method.id === "iching") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
+    if (window.FatumAfricaOracles?.has?.(method.id)) return "africa";
     return null;
   }
 
@@ -143,6 +144,19 @@
         quizIndex: 0,
       };
     }
+    if (kind === "africa") {
+      const rite = window.FatumAfricaOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "question", "cast", "result"],
+        question: "",
+        cast: {},
+        offering: "water",
+        domain: "kin",
+        people: "self",
+        casting: false,
+      };
+    }
     return base;
   }
 
@@ -204,6 +218,15 @@
           ti("studio.step.typeReading"),
         ];
         return { label: labels[state.stepIndex], total: 4, idx: state.stepIndex + 1 };
+      }
+      if (state.kind === "africa") {
+        const how = window.FatumAfricaOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
       }
     }
     const process = state.process;
@@ -278,6 +301,7 @@
       if (state.kind === "bagua") renderBagua();
       else if (state.kind === "tarot") renderTarot();
       else if (state.kind === "mbti") renderMbti();
+      else if (state.kind === "africa") renderAfrica();
       return;
     }
     renderGeneric();
@@ -489,6 +513,273 @@
       state.stepIndex = state.steps.indexOf("result");
     }
     render();
+  }
+
+  // ——— West & Central African oracles ———
+  function africaZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function africaStageHTML(rite, casting) {
+    const viz = rite.viz;
+    const cast = state.cast || {};
+    const anim = casting ? " is-casting" : "";
+    if (viz === "opele") {
+      const bits = cast.bits || Array(8).fill("?");
+      return `<div class="africa-stage africa-stage--opele${anim}">${bits
+        .map((b, i) => `<span class="opele-nut${b === "1" ? " is-open" : b === "0" ? " is-closed" : ""}" style="--i:${i}"></span>`)
+        .join("")}</div>`;
+    }
+    if (viz === "cowrie16") {
+      const shells = cast.shells || Array(16).fill(-1);
+      return `<div class="africa-stage africa-stage--cowrie${anim}">${shells
+        .map((s, i) => `<span class="cowrie${s === 1 ? " is-up" : s === 0 ? " is-down" : ""}" style="--i:${i}"></span>`)
+        .join("")}</div>`;
+    }
+    if (viz === "obi4") {
+      const faces = cast.faces || ["?", "?", "?", "?"];
+      return `<div class="africa-stage africa-stage--obi${anim}">${faces
+        .map((f, i) => `<span class="obi-lobe${f === "A" ? " is-a" : f === "B" ? " is-b" : ""}" style="--i:${i}">${escapeHTML(f)}</span>`)
+        .join("")}</div>`;
+    }
+    if (viz === "afa4") {
+      const rows = cast.rows || ["??", "??", "??", "??"];
+      return `<div class="africa-stage africa-stage--afa${anim}">${rows
+        .map((r, i) => `<div class="afa-string" style="--i:${i}"><span></span><span></span><em>${escapeHTML(r)}</em></div>`)
+        .join("")}</div>`;
+    }
+    if (viz === "fa-board") {
+      const cols = cast.cols || ["----", "----"];
+      return `<div class="africa-stage africa-stage--fa${anim}"><div class="fa-board">${cols
+        .map((c) => `<div class="fa-col">${c.split("").map((ch) => `<i class="${ch === "1" ? "on" : ""}"></i>`).join("")}</div>`)
+        .join("")}</div></div>`;
+    }
+    if (viz === "sikidy") {
+      const cols = cast.cols || ["??", "??", "??", "??"];
+      return `<div class="africa-stage africa-stage--sikidy${anim}">${cols
+        .map((c, i) => `<div class="sikidy-col" style="--i:${i}">${c.split("").map((ch) => `<span class="seed seed--${ch}"></span>`).join("")}</div>`)
+        .join("")}</div>`;
+    }
+    if (viz === "hakata4") {
+      const faces = cast.faces || [null, null, null, null];
+      return `<div class="africa-stage africa-stage--hakata${anim}">${faces
+        .map((f, i) => {
+          const label = f ? (africaZh() ? f.zh : f.en) : "·";
+          return `<span class="hakata-tab" style="--i:${i}">${escapeHTML(label)}</span>`;
+        })
+        .join("")}</div>`;
+    }
+    if (viz === "ngombo") {
+      const pts = cast.points || [];
+      return `<div class="africa-stage africa-stage--ngombo${anim}"><div class="ngombo-basket">${pts
+        .map((p, i) => `<span class="ngombo-bit" style="--i:${i};left:${p.x}%;top:${p.y}%"></span>`)
+        .join("")}</div></div>`;
+    }
+    if (viz === "sand") {
+      const rows = cast.rows || ["…", "…", "…", "…"];
+      return `<div class="africa-stage africa-stage--sand${anim}">${rows
+        .map((r, i) => `<div class="sand-row" style="--i:${i}"><i></i><i></i><i></i><i></i><em>${escapeHTML(r)}</em></div>`)
+        .join("")}</div>`;
+    }
+    if (viz === "crab") {
+      return `<div class="africa-stage africa-stage--crab${anim}">
+        <div class="crab-field"><span class="crab-zone" data-z="water"></span><span class="crab-zone" data-z="sand"></span><span class="crab-zone" data-z="shard"></span>
+        <span class="crab-bug"></span></div>
+        <p class="africa-stage__hint">${escapeHTML(cast.path || (africaZh() ? "路径待启…" : "Path pending…"))}</p>
+      </div>`;
+    }
+    if (viz === "benge-safe") {
+      return `<div class="africa-stage africa-stage--benge${anim}">
+        <button type="button" class="benge-bowl" data-action="africa-cast" data-bowl="affirm">${africaZh() ? "肯定碗" : "Affirm"}</button>
+        <button type="button" class="benge-bowl" data-action="africa-cast" data-bowl="deny">${africaZh() ? "否定碗" : "Deny"}</button>
+      </div>`;
+    }
+    if (viz === "council") {
+      return `<div class="africa-stage africa-stage--council${anim}"><span class="council-token">${escapeHTML(cast.token || "·")}</span></div>`;
+    }
+    if (viz === "spider") {
+      const moved = new Set(cast.moved || []);
+      return `<div class="africa-stage africa-stage--spider${anim}"><div class="leaf-grid">${Array.from({ length: 9 }, (_, i) => {
+        const n = i + 1;
+        return `<span class="leaf${moved.has(n) ? " is-moved" : ""}" style="--i:${i}">${n}</span>`;
+      }).join("")}<span class="spider-bug"></span></div></div>`;
+    }
+    if (viz === "fox") {
+      const order = cast.order || [];
+      return `<div class="africa-stage africa-stage--fox${anim}">
+        <div class="fox-table"><span data-z="village"></span><span data-z="bush"></span><span data-z="sky"></span>
+        <svg class="fox-path" viewBox="0 0 100 60" aria-hidden="true"><path d="M8 40 C 25 10, 45 50, 70 20 S 95 35, 92 28" fill="none"/></svg></div>
+        <p class="africa-stage__hint">${escapeHTML(order.join(" → ") || (africaZh() ? "夜径待揭…" : "Night path pending…"))}</p>
+      </div>`;
+    }
+    if (viz === "amathambo") {
+      const L = cast.layout || {};
+      return `<div class="africa-stage africa-stage--amathambo${anim}">
+        <span class="bone bone--me" data-pos="${escapeHTML(L.me || "")}">me</span>
+        <span class="bone bone--other" data-pos="${escapeHTML(L.other || "")}">you</span>
+        <span class="bone bone--path" data-pos="${escapeHTML(L.path || "")}">path</span>
+        <span class="bone bone--block" data-pos="${escapeHTML(L.block || "")}">block</span>
+      </div>`;
+    }
+    return `<div class="africa-stage${anim}"></div>`;
+  }
+
+  function renderAfrica() {
+    const rite = window.FatumAfricaOracles.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumAfricaOracles.howFor(state.method.id);
+    const text = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = africaZh();
+
+    if (step === "intent" || step === "learn") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Africa")} · ${escapeHTML(text.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || text.summary || "")}</p>
+        ${riteExplanationHTML(state.method, text)}
+        ${howItWorksHTML(state.method, { id: "africa", label: "Africa oracle" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "你要问什么？" : "What do you ask?")}</h3>
+        <p class="studio__copy">${escapeHTML(how?.steps?.[1]?.body || "")}</p>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "bless" || step === "lobes" || step === "strings" || step === "faces" || step === "sow" || step === "basket" || step === "sand" || step === "field" || step === "lay" || step === "table" || step === "scatter") {
+      const idx = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(idx, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${africaStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "offering") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "放一件象征供物" : "Place a token offering")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "仅教育象征——不是真实献祭。" : "Educational symbol only — not a real sacrifice.")}</p>
+        <div class="africa-choice-row">
+          ${["water", "cola", "cloth"].map((o) => `<button type="button" class="africa-choice${state.offering === o ? " is-on" : ""}" data-action="africa-offer" data-offer="${o}">${escapeHTML(o)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "domain") {
+      const domains = [
+        { id: "kin", en: "Kin", zh: "亲属" },
+        { id: "land", en: "Land", zh: "土地" },
+        { id: "work", en: "Work", zh: "工作" },
+        { id: "illness", en: "Illness worry", zh: "病忧" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择领域" : "Choose a domain")}</h3>
+        <div class="africa-choice-row">
+          ${domains.map((d) => `<button type="button" class="africa-choice${state.domain === d.id ? " is-on" : ""}" data-action="africa-domain" data-domain="${d.id}">${escapeHTML(zh ? d.zh : d.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "people") {
+      const opts = [
+        { id: "self", en: "Self", zh: "自己" },
+        { id: "family", en: "Family", zh: "家人" },
+        { id: "rival", en: "Rival", zh: "对手" },
+        { id: "ancestor", en: "Ancestor memory", zh: "祖先记忆" },
+      ];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "点名涉及谁" : "Who is involved?")}</h3>
+        <div class="africa-choice-row">
+          ${opts.map((d) => `<button type="button" class="africa-choice${state.people === d.id ? " is-on" : ""}" data-action="africa-people" data-people="${d.id}">${escapeHTML(zh ? d.zh : d.en)}</button>`).join("")}
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "bowls") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "安全思想实验" : "Safe thought-experiment")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "两个密封碗——无动物、无毒物。点选其一。" : "Two sealed bowls — no animals, no toxins. Choose one.")}</p>
+        ${africaStageHTML(rite, false)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "cast") {
+      const cta = window.FatumAfricaOracles.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(state.question ? (zh ? `问题：「${state.question}」` : `Holding: “${state.question}”`) : "")}</p>
+        ${africaStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="africa-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+    }
+  }
+
+  function doAfricaCast(forcedAnswer) {
+    const rite = window.FatumAfricaOracles.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumAfricaOracles.runCast(state.method.id, {
+        question: state.question,
+        nonce: state.nonce,
+        offering: state.offering,
+        domain: state.domain,
+        people: state.people,
+        cast: forcedAnswer ? { answer: forcedAnswer } : {},
+      });
+      state.cast = reading.vizData || {};
+      if (forcedAnswer) state.cast.answer = forcedAnswer;
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
   }
 
   // ——— MBTI ———
@@ -749,7 +1040,42 @@
     `;
   }
 
+  function runTypewriter(root) {
+    if (!root) return;
+    const targets = root.querySelectorAll(".reading__result, .reading__block p, .reading__guide li");
+    let delay = 0;
+    targets.forEach((el) => {
+      const full = el.textContent || "";
+      if (!full.trim()) return;
+      el.setAttribute("data-full", full);
+      el.textContent = "";
+      el.classList.add("is-typing");
+      const startAt = delay;
+      delay += Math.min(1200, 28 * full.length);
+      window.setTimeout(() => {
+        let i = 0;
+        const tick = () => {
+          i += 1;
+          el.textContent = full.slice(0, i);
+          if (i < full.length) {
+            window.setTimeout(tick, full.length > 180 ? 8 : 14);
+          } else {
+            el.classList.remove("is-typing");
+          }
+        };
+        tick();
+      }, startAt);
+    });
+  }
+
   function renderGuidedResult(r, allowAgain) {
+    const africaExtra =
+      r.kind === "africa" && state.kind === "africa"
+        ? (() => {
+            const rite = window.FatumAfricaOracles?.get?.(state.method.id);
+            return rite ? africaStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -757,19 +1083,20 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : "";
+            : africaExtra;
 
     body.innerHTML = `
-      <div class="reading">
+      <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
         ${resultDisclaimerHTML(state.method, r.disclaimer)}
       </div>
       ${journalActionsHTML(!!state.journalSaved, allowAgain ? ti("action.startOver") : ti("action.done"))}`;
+    runTypewriter(body);
   }
 
   // ——— Generic (existing) ———
@@ -913,7 +1240,7 @@
         ? `<div class="reading-photo"><img src="${r.photoDataUrl}" alt="Submitted photo for this reading" /></div>`
         : "";
       body.innerHTML = `
-        <div class="reading tone-${escapeHTML(r.tone || "mixed")}">
+        <div class="reading reading--typed tone-${escapeHTML(r.tone || "mixed")}">
           <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
           ${photoHtml}
           <div class="reading__symbol">${escapeHTML(r.symbol || "◎")}</div>
@@ -923,6 +1250,7 @@
           ${resultDisclaimerHTML(method, r.disclaimer)}
         </div>
         ${journalActionsHTML(!!state.journalSaved, ti("studio.readAgain"))}`;
+      runTypewriter(body);
     }
   }
 
@@ -1069,6 +1397,9 @@
         const f = body.querySelector("#r-focus");
         state.focus = (f?.value || "").trim();
       }
+      // Africa cast / bowls are user-driven — do not auto-advance into them via generic next from prior...
+      // but advancing FROM cast is via africa-cast action.
+      if (step === "cast" || step === "bowls") return;
       if (state.stepIndex < state.steps.length - 1) {
         state.stepIndex += 1;
         // skip auto for cast/reveal/quiz — user drives
@@ -1156,6 +1487,19 @@
     if (action === "do-shuffle") return doTarotShuffle();
     if (action === "cut-deck") return cutTarotDeck();
     if (action === "reveal-one") return revealTarotOne();
+    if (action === "africa-cast") return doAfricaCast(el?.dataset?.bowl || null);
+    if (action === "africa-offer") {
+      state.offering = el.dataset.offer || "water";
+      return render();
+    }
+    if (action === "africa-domain") {
+      state.domain = el.dataset.domain || "kin";
+      return render();
+    }
+    if (action === "africa-people") {
+      state.people = el.dataset.people || "self";
+      return render();
+    }
     if (action === "mbti-pick") return mbtiPick(el.dataset.side);
   }
 
