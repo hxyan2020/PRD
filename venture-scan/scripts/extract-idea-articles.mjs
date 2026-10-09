@@ -3,8 +3,13 @@
  * Match real wire articles to each seed idea, scrape article OG/content images,
  * and write public/idea-articles/{slug}/ + manifest.json for dossier galleries.
  *
- * Sources: RSS feeds from DATA_SOURCES desks. Links are specific article URLs
- * (never desk homepages). Images are downloaded locally so the UI can embed them.
+ * Matching strategy (relevance-first):
+ *  1. Prefer curated topic-locked URLs in curated-idea-articles.json
+ *  2. Optionally fill gaps from RSS only when EVERY required keyword group hits
+ *     and no exclude keyword is present (never assign off-topic solar → reef, etc.)
+ *
+ * Links are specific article URLs (never desk homepages). Images are downloaded
+ * locally so the UI can embed them.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
 import { dirname, join, extname } from "node:path";
@@ -15,6 +20,7 @@ const root = join(__dirname, "..");
 const outDir = join(root, "public", "idea-articles");
 const manifestPath = join(outDir, "manifest.json");
 const seedPath = join(root, "lib", "seed-ideas.ts");
+const curatedPath = join(__dirname, "curated-idea-articles.json");
 
 const FEEDS = [
   { sourceId: "techcrunch", feed: "https://techcrunch.com/feed/" },
@@ -31,201 +37,83 @@ const FEEDS = [
   { sourceId: "gruenderszene", feed: "https://www.gruenderszene.de/feed" },
 ];
 
-/** Explicit topic keywords per idea for tighter article matching. */
-const IDEA_TOPIC_KEYWORDS = {
-  "reef-credit-exchange": [
-    "climate",
-    "carbon",
-    "biodiversity",
-    "ocean",
-    "blue",
-    "sustainab",
-    "green",
-    "energy",
-    "asia",
-    "singapore",
-  ],
-  "nightshift-nursing-ai": [
-    "health",
-    "hospital",
-    "care",
-    "medical",
-    "ai",
-    "clinic",
-    "biotech",
-    "nurse",
-  ],
-  "kiln-microfactory": [
-    "hardware",
-    "manufactur",
-    "robot",
-    "industrial",
-    "3d",
-    "factory",
-    "europe",
-    "germany",
-  ],
-  "farmstack-coldchain": [
-    "agricult",
-    "farm",
-    "food",
-    "supply",
-    "logistics",
-    "africa",
-    "climate",
-    "cold",
-  ],
-  "elderloop-companion": [
-    "health",
-    "care",
-    "aging",
-    "elder",
-    "consumer",
-    "japan",
-    "asia",
-    "medical",
-  ],
-  "ledgerlane-freight": [
-    "logistics",
-    "trade",
-    "freight",
-    "india",
-    "supply",
-    "export",
-    "fintech",
-    "saas",
-  ],
-  "playpane-classroom": [
-    "edtech",
-    "education",
-    "school",
-    "learning",
-    "kids",
-    "uk",
-    "europe",
-  ],
-  "voltpath-depot": [
-    "ev",
-    "electric",
-    "battery",
-    "mobility",
-    "indonesia",
-    "asia",
-    "fleet",
-    "energy",
-  ],
-  "cuecraft-ads": [
-    "marketing",
-    "ads",
-    "advertis",
-    "creative",
-    "generative",
-    "ai",
-    "brand",
-  ],
-  "harbor-legal-ops": [
-    "legal",
-    "saas",
-    "software",
-    "compliance",
-    "dubai",
-    "visa",
-    "immigration",
-  ],
-  "spore-kitchen": [
-    "food",
-    "protein",
-    "climate",
-    "ferment",
-    "agricult",
-    "europe",
-    "sustainab",
-  ],
-  "meshpay-remit": [
-    "fintech",
-    "payment",
-    "remit",
-    "bank",
-    "brazil",
-    "latam",
-    "stablecoin",
-    "pay",
-  ],
-  "bushfire-mesh-sensors": [
-    "climate",
-    "australia",
-    "sensor",
-    "disaster",
-    "fire",
-    "energy",
-    "insurance",
-  ],
-  "hanok-energy-retrofit": [
-    "energy",
-    "climate",
-    "korea",
-    "housing",
-    "retrofit",
-    "green",
-    "heat",
-  ],
-  "atelier-carbon-ledger": [
-    "climate",
-    "carbon",
-    "esg",
-    "sustainab",
-    "france",
-    "europe",
-    "supply",
-  ],
-  "mercado-voice-pos": [
-    "fintech",
-    "payment",
-    "mexico",
-    "latam",
-    "pos",
-    "smb",
-    "merchant",
-    "voice",
-  ],
-  "cape-clinic-triage": [
-    "health",
-    "africa",
-    "clinic",
-    "care",
-    "mobile",
-    "south africa",
-    "hospital",
-  ],
-  "fjord-battery-secondlife": [
-    "battery",
-    "energy",
-    "europe",
-    "nordic",
-    "sweden",
-    "ev",
-    "climate",
-    "circular",
-  ],
-  "saigon-microgrid-coops": [
-    "energy",
-    "solar",
-    "vietnam",
-    "asia",
-    "grid",
-    "climate",
-    "power",
-  ],
-  "iron-dome-devsecops": [
-    "security",
-    "cyber",
-    "ai",
-    "israel",
-    "software",
-    "devsec",
-    "cloud",
-  ],
+/**
+ * Strict relevance rules for RSS fallback.
+ * Each idea must match ALL groups (at least one term per group) and none of exclude.
+ */
+const IDEA_MATCH_RULES = {
+  "reef-credit-exchange": {
+    requireGroups: [["coral", "reef", "ocean", "seagrass", "marine", "blue carbon", "biodiversity"]],
+    exclude: ["solar energy in colombia", "erco"],
+  },
+  "nightshift-nursing-ai": {
+    requireGroups: [
+      ["hospital", "nurse", "nursing", "clinician", "clinical", "doctor", "healthcare", "health care"],
+      ["ai", "ambient", "scribe", "notes", "copilot", "co-pilot"],
+    ],
+  },
+  "kiln-microfactory": {
+    requireGroups: [
+      ["microfactory", "manufactur", "3d print", "factory", "fabrication", "machining"],
+      ["robot", "hardware", "industrial", "precision"],
+    ],
+  },
+  "farmstack-coldchain": {
+    requireGroups: [["cold chain", "cold-chain", "cold storage", "refrigerat", "perishable", "spoilage"]],
+  },
+  "elderloop-companion": {
+    requireGroups: [["elder", "aging", "ageing", "senior", "older adult", "loneliness"]],
+  },
+  "ledgerlane-freight": {
+    requireGroups: [
+      ["freight", "logistics", "customs", "export", "import", "trade", "cross-border", "cross border"],
+      ["india", "indian", "msme", "sme"],
+    ],
+  },
+  "playpane-classroom": {
+    requireGroups: [["stem", "classroom", "edtech", "education", "school", "learning kit", "robotics kit"]],
+  },
+  "voltpath-depot": {
+    requireGroups: [["battery swap", "battery-swapping", "swapping", "ev", "electric scooter", "two-wheeler"]],
+  },
+  "cuecraft-ads": {
+    requireGroups: [["ad", "advertis", "creative", "marketing"], ["ai", "generat", "automat"]],
+  },
+  "harbor-legal-ops": {
+    requireGroups: [["immigration", "visa", "green card", "relocation"], ["legal", "law", "attorney", "saas"]],
+  },
+  "spore-kitchen": {
+    requireGroups: [["fermentation", "alternative protein", "animal-free", "dairy protein", "casein", "alt protein"]],
+  },
+  "meshpay-remit": {
+    requireGroups: [["remit", "cross-border", "money transfer", "stablecoin", "usdc", "payment"], ["latin", "brazil", "mexico", "latam"]],
+  },
+  "bushfire-mesh-sensors": {
+    requireGroups: [["wildfire", "bushfire", "forest fire", "fire detection"]],
+  },
+  "hanok-energy-retrofit": {
+    requireGroups: [["heat pump", "retrofit", "renovation", "building emission", "insulation", "residential energy"]],
+  },
+  "atelier-carbon-ledger": {
+    requireGroups: [["carbon", "scope 3", "esg", "emission"], ["fashion", "apparel", "supply chain", "accounting"]],
+  },
+  "mercado-voice-pos": {
+    requireGroups: [["pos", "point of sale", "merchant", "payment", "smb", "tienda"], ["mexico", "mexican", "voice", "latin"]],
+  },
+  "cape-clinic-triage": {
+    requireGroups: [["health", "clinic", "telehealth", "triage", "hospital", "care"], ["africa", "ghana", "south africa", "whatsapp"]],
+  },
+  "fjord-battery-secondlife": {
+    requireGroups: [["second-life", "second life", "battery recycling", "repurpos", "circular"], ["battery", "ev"]],
+  },
+  "saigon-microgrid-coops": {
+    requireGroups: [["solar", "mini-grid", "minigrid", "microgrid", "distributed energy", "rooftop solar"]],
+  },
+  "iron-dome-devsecops": {
+    requireGroups: [["devops", "devsecops", "supply chain", "sbom", "pbom", "pipeline", "cyber", "security"], ["code", "software", "cloud"]],
+  },
 };
+
 const UA =
   "Mozilla/5.0 (compatible; VentureScanMediaBot/1.1; +https://hxyan2020.github.io/PRD/venture-scan/)";
 
@@ -250,6 +138,18 @@ function loadIdeas() {
     }
   }
   return ideas;
+}
+
+function loadCurated() {
+  if (!existsSync(curatedPath)) return {};
+  const raw = JSON.parse(readFileSync(curatedPath, "utf8"));
+  const out = {};
+  for (const [slug, entries] of Object.entries(raw)) {
+    if (slug.startsWith("_")) continue;
+    if (!Array.isArray(entries)) continue;
+    out[slug] = entries.filter((e) => e?.url && e?.sourceId);
+  }
+  return out;
 }
 
 async function fetchText(url, timeoutMs = 20000) {
@@ -309,7 +209,7 @@ function parseFeed(xml, sourceId) {
       decodeXml(chunk.match(/<link>([\s\S]*?)<\/link>/i)?.[1] ?? "") ||
       chunk.match(/<link[^>]+href=["']([^"']+)["']/i)?.[1] ||
       "";
-    link = link.split("?")[0]; // strip tracking
+    link = link.split("?")[0];
     const summary = decodeXml(
       chunk.match(/<description[^>]*>([\s\S]*?)<\/description>/i)?.[1] ??
         chunk.match(/<summary[^>]*>([\s\S]*?)<\/summary>/i)?.[1] ??
@@ -332,24 +232,32 @@ function parseFeed(xml, sourceId) {
   return items;
 }
 
-function pickMetaImage(html, baseUrl) {
+function pickMeta(html, prop) {
   const patterns = [
-    /property=["']og:image["']\s+content=["']([^"']+)["']/i,
-    /content=["']([^"']+)["']\s+property=["']og:image["']/i,
-    /name=["']twitter:image(?::src)?["']\s+content=["']([^"']+)["']/i,
-    /content=["']([^"']+)["']\s+name=["']twitter:image(?::src)?["']/i,
+    new RegExp(`property=["']${prop}["']\\s+content=["']([^"']+)["']`, "i"),
+    new RegExp(`content=["']([^"']+)["']\\s+property=["']${prop}["']`, "i"),
+    new RegExp(`name=["']${prop}["']\\s+content=["']([^"']+)["']`, "i"),
+    new RegExp(`content=["']([^"']+)["']\\s+name=["']${prop}["']`, "i"),
   ];
   for (const re of patterns) {
     const m = html.match(re);
-    if (m?.[1]) {
-      try {
-        return new URL(m[1].replace(/&amp;/g, "&"), baseUrl).href;
-      } catch {
-        /* continue */
-      }
+    if (m?.[1]) return m[1].replace(/&amp;/g, "&").trim();
+  }
+  return null;
+}
+
+function pickMetaImage(html, baseUrl) {
+  const raw =
+    pickMeta(html, "og:image") ||
+    pickMeta(html, "twitter:image") ||
+    pickMeta(html, "twitter:image:src");
+  if (raw) {
+    try {
+      return new URL(raw, baseUrl).href;
+    } catch {
+      /* continue */
     }
   }
-  // First large-ish content image
   const imgs = [...html.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)].map((m) => m[1]);
   for (const src of imgs) {
     if (/logo|avatar|sprite|icon|emoji|1x1|pixel/i.test(src)) continue;
@@ -375,23 +283,25 @@ function extFrom(ct, url) {
   return ".jpg";
 }
 
-function ideaKeywords(idea) {
-  return IDEA_TOPIC_KEYWORDS[idea.slug] ?? [
-    idea.industry,
-    idea.sector,
-    idea.teamCountry,
-    ...idea.tags,
-  ].map((x) => String(x).toLowerCase());
+function articlePassesRules(slug, title, excerpt) {
+  const rules = IDEA_MATCH_RULES[slug];
+  if (!rules) return false;
+  const text = `${title} ${excerpt}`.toLowerCase();
+  for (const group of rules.requireGroups ?? []) {
+    if (!group.some((term) => text.includes(term.toLowerCase()))) return false;
+  }
+  for (const bad of rules.exclude ?? []) {
+    if (text.includes(bad.toLowerCase())) return false;
+  }
+  return true;
 }
 
 function scoreArticle(idea, article) {
+  if (!articlePassesRules(idea.slug, article.title, article.excerpt)) return 0;
   const text = `${article.title} ${article.excerpt}`.toLowerCase();
-  let score = 0;
-  for (const kw of ideaKeywords(idea)) {
-    if (text.includes(kw)) score += kw.length > 5 ? 4 : 2;
-  }
-  if (idea.source.includes("eu") && (article.sourceId === "sifted" || article.sourceId === "eu-startups")) {
-    score += 2;
+  let score = 10;
+  for (const tag of idea.tags) {
+    if (text.includes(String(tag).toLowerCase())) score += 2;
   }
   if (idea.source.includes("india") && (article.sourceId === "inc42" || article.sourceId === "yourstory")) {
     score += 3;
@@ -402,48 +312,168 @@ function scoreArticle(idea, article) {
   if (idea.source.includes("latam") || idea.source.includes("mx")) {
     if (article.sourceId === "contxto") score += 3;
   }
-  if (idea.source.includes("sea") || idea.source.includes("vn") || idea.source.includes("apac")) {
-    if (article.sourceId === "techinasia" || article.sourceId === "krasia") score += 2;
-  }
-  if (idea.source.includes("na") || idea.source.includes("us")) {
-    if (article.sourceId === "techcrunch" || article.sourceId === "crunchbase-news") score += 1;
-  }
   return score;
 }
 
-async function resolveArticleImage(article) {
-  if (article.rssImage) {
-    try {
-      const img = await fetchBytes(article.rssImage);
-      if (img.buf.length >= 1500 && img.buf.length <= 900_000) {
-        const head = img.buf.slice(0, 32).toString("utf8").toLowerCase();
-        if (!head.includes("<!doctype") && !head.includes("<html")) {
-          return { ...img, imageUrl: article.rssImage, kind: "rss" };
-        }
-      }
-    } catch {
-      /* fall through */
+async function hydrateFromPage(url, sourceId) {
+  const page = await fetchText(url, 20000);
+  const titleRaw =
+    pickMeta(page.text, "og:title") ||
+    decodeXml(page.text.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] ?? "") ||
+    url;
+  const title = decodeHtmlEntities(titleRaw)
+    .replace(/\s*[|–-]\s*(TechCrunch|TechCabal|Inc42).*/i, "")
+    .trim();
+  const excerpt = decodeHtmlEntities(
+    pickMeta(page.text, "og:description") ||
+      pickMeta(page.text, "description") ||
+      title,
+  )
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 220);
+  const imageUrl = pickMetaImage(page.text, page.finalUrl || url);
+  return {
+    sourceId,
+    title: title || decodeHtmlEntities(titleRaw),
+    url: (page.finalUrl || url).split("?")[0],
+    excerpt,
+    rssImage: imageUrl,
+  };
+}
+
+const MIN_IMAGE_BYTES = 12_000;
+const MAX_IMAGE_BYTES = 2_500_000;
+
+function decodeHtmlEntities(s) {
+  return String(s ?? "")
+    .replace(/&#039;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&#x27;/gi, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&#8217;/g, "'")
+    .replace(/&#8216;/g, "'")
+    .replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)));
+}
+
+function isSiteChromeImage(url) {
+  return /logo|avatar|sprite|icon|emoji|1x1|pixel|lockup|\.svg|gravatar|wp-includes|\/themes\/|disrupt\d|tc-lockup|favicon|apple-touch/i.test(
+    url,
+  );
+}
+
+function imageCandidatesFromHtml(html, baseUrl, preferred) {
+  const urls = [];
+  if (preferred && !isSiteChromeImage(preferred)) urls.push(preferred);
+  const og = pickMetaImage(html, baseUrl);
+  if (og && !isSiteChromeImage(og)) urls.push(og);
+  // Prefer WordPress resized variants when originals 404.
+  for (const u of [...urls]) {
+    if (/wp-content\/uploads/i.test(u) && !/[?&](w|resize)=/i.test(u)) {
+      urls.push(u.includes("?") ? `${u}&w=1200` : `${u}?w=1200`);
+      urls.push(u.replace(/\.(jpe?g|png|webp)(\?.*)?$/i, "-1200x675.$1"));
     }
   }
+  // Only pull in-article media from known upload CDNs — never site chrome / promo banners.
+  const imgs = [...html.matchAll(/<img[^>]+src=["']([^"']+)["']/gi)].map((m) => m[1]);
+  for (const src of imgs) {
+    if (isSiteChromeImage(src)) continue;
+    if (!/(wp-content\/uploads|mjedge\.net\/wp-content|images\.unsplash|cdn\.|cloudfront)/i.test(src)) {
+      continue;
+    }
+    if (/[?&]w=(?:1\d{2}|[1-9]\d)\b/i.test(src)) continue; // skip tiny resized thumbs
+    try {
+      urls.push(new URL(src.replace(/&amp;/g, "&"), baseUrl).href);
+    } catch {
+      /* continue */
+    }
+  }
+  return [...new Set(urls)];
+}
+
+async function tryImageUrl(imageUrl, kind) {
   try {
-    const page = await fetchText(article.url, 18000);
-    const imageUrl = pickMetaImage(page.text, page.finalUrl || article.url);
-    if (!imageUrl) return null;
     const img = await fetchBytes(imageUrl);
-    if (img.buf.length < 1500 || img.buf.length > 900_000) return null;
+    if (img.buf.length < MIN_IMAGE_BYTES || img.buf.length > MAX_IMAGE_BYTES) return null;
     const head = img.buf.slice(0, 32).toString("utf8").toLowerCase();
-    if (head.includes("<!doctype") || head.includes("<html")) return null;
-    return { ...img, imageUrl, kind: "og" };
+    if (head.includes("<!doctype") || head.includes("<html") || head.trim() === "") return null;
+    const ct = (img.contentType ?? "").toLowerCase();
+    if (ct.includes("text/html") || ct.includes("application/json")) return null;
+    return { ...img, imageUrl, kind };
   } catch {
     return null;
   }
 }
 
+async function resolveArticleImage(article) {
+  if (article.rssImage) {
+    const hit = await tryImageUrl(article.rssImage, "rss");
+    if (hit) return hit;
+  }
+  try {
+    const page = await fetchText(article.url, 18000);
+    const candidates = imageCandidatesFromHtml(page.text, page.finalUrl || article.url, article.rssImage);
+    for (const imageUrl of candidates) {
+      const hit = await tryImageUrl(imageUrl, "og");
+      if (hit) return hit;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function writeArticlesForIdea(idea, candidates) {
+  const ideaDir = join(outDir, idea.slug);
+  if (existsSync(ideaDir)) rmSync(ideaDir, { recursive: true, force: true });
+  mkdirSync(ideaDir, { recursive: true });
+
+  const articles = [];
+  let idx = 0;
+  for (const article of candidates) {
+    if (articles.length >= 3) break;
+    process.stdout.write(`  ${idea.slug} ← ${article.sourceId}: ${article.title.slice(0, 56)}… `);
+    try {
+      const media = await resolveArticleImage(article);
+      if (!media) {
+        console.log("no image, skip");
+        continue;
+      }
+      const ext = extFrom(media.contentType, media.imageUrl);
+      const file = `${String(idx).padStart(2, "0")}${ext}`;
+      writeFileSync(join(ideaDir, file), media.buf);
+      articles.push({
+        id: `${idea.slug}-${idx}`,
+        title: article.title,
+        url: article.url,
+        sourceId: article.sourceId,
+        excerpt: article.excerpt || article.title,
+        imageFile: file,
+        imagePath: `/idea-articles/${idea.slug}/${file}`,
+        imageKind: media.kind,
+        bytes: media.buf.length,
+      });
+      console.log(`${media.kind} ${media.buf.length}b`);
+      idx += 1;
+    } catch (err) {
+      console.log(`ERR ${err.message}`);
+    }
+  }
+  return articles;
+}
+
 async function main() {
   mkdirSync(outDir, { recursive: true });
   const ideas = loadIdeas();
-  console.log(`Loaded ${ideas.length} ideas`);
+  const curated = loadCurated();
+  console.log(`Loaded ${ideas.length} ideas; curated catalogs for ${Object.keys(curated).length}`);
 
+  // RSS pool only used as strict fallback when curated yields < 1 image.
   const pool = [];
   for (const feed of FEEDS) {
     process.stdout.write(`Feed ${feed.sourceId}… `);
@@ -458,7 +488,6 @@ async function main() {
   }
   console.log(`Article pool: ${pool.length}`);
 
-  // Deduplicate by URL
   const seen = new Set();
   const unique = [];
   for (const a of pool) {
@@ -471,63 +500,42 @@ async function main() {
   const manifest = {};
 
   for (const idea of ideas) {
-    const ranked = unique
-      .map((a) => ({ a, score: scoreArticle(idea, a) }))
-      .filter((x) => x.score > 0)
-      .sort((x, y) => y.score - x.score || x.a.title.localeCompare(y.a.title));
+    const candidates = [];
+    const curatedEntries = curated[idea.slug] ?? [];
 
-    // Prefer unused URLs, but allow reuse if pool is thin
-    const picks = [];
-    for (const row of ranked) {
-      if (picks.length >= 3) break;
-      if (usedUrls.has(row.a.url) && picks.length < 2) continue;
-      picks.push(row.a);
-      usedUrls.add(row.a.url);
-    }
-    // Ensure at least 2 by relaxing uniqueness
-    if (picks.length < 2) {
-      for (const row of ranked) {
-        if (picks.length >= 2) break;
-        if (picks.some((p) => p.url === row.a.url)) continue;
-        picks.push(row.a);
-      }
-    }
-
-    const ideaDir = join(outDir, idea.slug);
-    if (existsSync(ideaDir)) rmSync(ideaDir, { recursive: true, force: true });
-    mkdirSync(ideaDir, { recursive: true });
-
-    const articles = [];
-    let idx = 0;
-    for (const article of picks) {
-      process.stdout.write(`  ${idea.slug} ← ${article.sourceId}: ${article.title.slice(0, 48)}… `);
+    for (const entry of curatedEntries) {
+      if (candidates.length >= 3) break;
+      process.stdout.write(`  hydrate ${idea.slug} ← ${entry.url.slice(0, 70)}… `);
       try {
-        const media = await resolveArticleImage(article);
-        if (!media) {
-          console.log("no image, skip");
+        const article = await hydrateFromPage(entry.url, entry.sourceId);
+        // Curated URLs are trusted; still reject empty titles.
+        if (!article.title) {
+          console.log("empty title, skip");
           continue;
         }
-        const ext = extFrom(media.contentType, media.imageUrl);
-        const file = `${String(idx).padStart(2, "0")}${ext}`;
-        writeFileSync(join(ideaDir, file), media.buf);
-        articles.push({
-          id: `${idea.slug}-${idx}`,
-          title: article.title,
-          url: article.url,
-          sourceId: article.sourceId,
-          excerpt: article.excerpt || article.title,
-          imageFile: file,
-          imagePath: `/idea-articles/${idea.slug}/${file}`,
-          imageKind: media.kind,
-          bytes: media.buf.length,
-        });
-        console.log(`${media.kind} ${media.buf.length}b`);
-        idx += 1;
-        if (articles.length >= 3) break;
+        candidates.push(article);
+        usedUrls.add(article.url);
+        console.log("ok");
       } catch (err) {
-        console.log(`ERR ${err.message}`);
+        console.log(`FAIL ${err.message}`);
       }
     }
+
+    // Strict RSS fill only if curated produced nothing usable yet (or <2 and we want more).
+    if (candidates.length < 2) {
+      const ranked = unique
+        .map((a) => ({ a, score: scoreArticle(idea, a) }))
+        .filter((x) => x.score > 0 && !usedUrls.has(x.a.url))
+        .sort((x, y) => y.score - x.score || x.a.title.localeCompare(y.a.title));
+
+      for (const row of ranked) {
+        if (candidates.length >= 3) break;
+        candidates.push(row.a);
+        usedUrls.add(row.a.url);
+      }
+    }
+
+    const articles = await writeArticlesForIdea(idea, candidates);
     manifest[idea.slug] = articles;
     console.log(`  → ${articles.length} articles for ${idea.slug}`);
   }
@@ -535,6 +543,16 @@ async function main() {
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + "\n");
   const total = Object.values(manifest).reduce((n, a) => n + a.length, 0);
   console.log(`Wrote manifest with ${total} articles → ${manifestPath}`);
+
+  // Relevance sanity: reef must not mention Erco/Colombia solar; titles should pass rules when possible.
+  const reef = manifest["reef-credit-exchange"] ?? [];
+  for (const a of reef) {
+    const blob = `${a.title} ${a.excerpt}`.toLowerCase();
+    if (blob.includes("erco") || blob.includes("colombia")) {
+      console.error("RELEVANCE FAIL: reef-credit-exchange matched Erco/Colombia solar");
+      process.exitCode = 3;
+    }
+  }
 
   const thin = Object.entries(manifest).filter(([, a]) => a.length < 1);
   if (thin.length) {
