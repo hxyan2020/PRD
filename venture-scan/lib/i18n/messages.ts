@@ -114,6 +114,13 @@ const en = {
   "ideaChat.sources": "Data sources",
   "ideaChat.loading": "Loading idea chatbot…",
 
+  "ideaMedia.kicker": "Provenance media",
+  "ideaMedia.title": "From related data sources",
+  "ideaMedia.body":
+    "Brand and cover images extracted from the desks that cover this market—open any tile to visit the source.",
+  "ideaMedia.allSources": "All sources →",
+  "ideaMedia.extracted": "Extracted",
+
   "today.kicker": "Today's recommendation",
   "today.needTitle": "Build a profile first",
   "today.needBody":
@@ -310,6 +317,11 @@ const zhCN: Dict = {
   "ideaChat.send": "提问",
   "ideaChat.sources": "数据来源",
   "ideaChat.loading": "加载创意问答…",
+  "ideaMedia.kicker": "来源影像",
+  "ideaMedia.title": "相关数据源图片",
+  "ideaMedia.body": "从覆盖该市场的信源站点提取的品牌/封面图——点击即可打开原文。",
+  "ideaMedia.allSources": "全部数据源 →",
+  "ideaMedia.extracted": "已提取",
   "today.kicker": "今日推荐",
   "today.needTitle": "请先建立画像",
   "today.needBody": "每日推荐需要你的技能、专业、当前业务与兴趣领域，才能打分并展示匹配与差距。",

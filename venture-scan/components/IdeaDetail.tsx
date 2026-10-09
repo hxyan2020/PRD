@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CollectButton } from "@/components/CollectButton";
 import { Flag } from "@/components/Flag";
 import { IdeaChatbot } from "@/components/IdeaChatbot";
+import { IdeaSourceMedia } from "@/components/IdeaSourceMedia";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { formatMoney, socialLabel, strategyLabel } from "@/lib/format";
 import type { StartupIdea } from "@/lib/types";
@@ -110,6 +111,8 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
       <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-mist/70">
         Source {idea.source} · scanned {new Date(idea.scannedAt).toLocaleString()}
       </p>
+
+      <IdeaSourceMedia idea={idea} />
 
       <IdeaChatbot idea={idea} />
     </article>

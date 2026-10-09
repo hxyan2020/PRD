@@ -15,8 +15,8 @@ export default function MethodologyPage() {
         </li>
         <li>
           <span className="text-foam">Surface</span> — browse and filter on the frontend; open any
-          entry for the full dossier, including an idea chatbot that answers follow-ups and cites
-          data sources on every reply.
+          entry for the full dossier with brand/cover images extracted from related data sources,
+          plus an idea chatbot that answers follow-ups and cites those desks on every reply.
         </li>
         <li>
           <span className="text-foam">Match</span> — a chatbot collects skills, major, current
