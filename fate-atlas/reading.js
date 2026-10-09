@@ -41,6 +41,7 @@
     if (window.FatumSouthAsiaOracles?.has?.(method.id)) return "southasia";
     if (window.FatumHimalayaSeaOracles?.has?.(method.id)) return "himalayasea";
     if (window.FatumNearEastOracles?.has?.(method.id)) return "neareast";
+    if (window.FatumWestAstroOracles?.has?.(method.id)) return "westastro";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -257,6 +258,22 @@
         casting: false,
       };
     }
+    if (kind === "westastro") {
+      const rite = window.FatumWestAstroOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "birth", "sunSignPick", "westChart", "result"],
+        question: "",
+        focus: "",
+        cast: {},
+        birthDate: "",
+        personName: "",
+        sunSign: "Aries",
+        celticTree: "Oak",
+        askMoment: "",
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -408,6 +425,15 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "westastro") {
+        const how = window.FatumWestAstroOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -539,6 +565,7 @@
       else if (state.kind === "southasia") renderSouthAsia();
       else if (state.kind === "himalayasea") renderHimalayaSea();
       else if (state.kind === "neareast") renderNearEast();
+      else if (state.kind === "westastro") renderWestAstro();
       return;
     }
     renderGeneric();
@@ -3533,6 +3560,186 @@
     }, 900);
   }
 
+  // ——— Western astrology / Hellenic numbers ———
+  function waZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function waStageHTML(rite, casting) {
+    const cast = state.cast || {};
+    const zh = waZh();
+    const anim = casting ? " is-casting" : "";
+    const viz = rite?.viz || "";
+    if (viz === "westchart" || viz === "horary") {
+      const label = cast.sign
+        ? zh
+          ? cast.sign.zh
+          : cast.sign.en
+        : cast.figure
+          ? zh
+            ? cast.figure.zh
+            : cast.figure.en
+          : zh
+            ? "星盘…"
+            : "Chart…";
+      return `<div class="wa-stage wa-stage--chart${anim}"><div class="wa-wheel"><i></i><i></i><i></i><i></i></div>
+        <p class="wa-stage__hint">${escapeHTML(label)}</p></div>`;
+    }
+    if (viz === "tree") {
+      return `<div class="wa-stage wa-stage--tree${anim}"><div class="wa-tree"><span></span><span></span></div>
+        <p class="wa-stage__hint">${escapeHTML(cast.tree ? (zh ? cast.tree.zh : cast.tree.en) : zh ? "圣树…" : "Tree…")}</p></div>`;
+    }
+    if (viz === "lifepath") {
+      return `<div class="wa-stage wa-stage--path${anim}"><div class="wa-path">${escapeHTML(String(cast.pathN || "·"))}</div>
+        <p class="wa-stage__hint">${escapeHTML(cast.path ? (zh ? cast.path.zh : cast.path.en) : zh ? "生命数…" : "Path…")}</p></div>`;
+    }
+    if (viz === "isop") {
+      return `<div class="wa-stage wa-stage--isop${anim}"><div class="wa-isop">${escapeHTML(String(cast.total || "·"))}</div>
+        <p class="wa-stage__hint">${escapeHTML(cast.band ? (zh ? cast.band.zh : cast.band.en) : cast.name || (zh ? "数值…" : "Sum…"))}</p></div>`;
+    }
+    return `<div class="wa-stage${anim}"></div>`;
+  }
+
+  function renderWestAstro() {
+    const rite = window.FatumWestAstroOracles.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumWestAstroOracles.howFor(state.method.id);
+    const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = waZh();
+    const backNext = () => `
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+    if (step === "intent") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Europe")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "westastro", label: "Western Astrology" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "抱定问题" : "Hold your question")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "birth") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入出生日期" : "Enter birth date")}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthDate") || "Birth date")}</label>
+        <input type="date" id="r-birth" value="${escapeHTML(state.birthDate || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "焦点（可选）" : "Focus (optional)")}</label>
+        <input type="text" id="r-question" maxlength="120" value="${escapeHTML(state.question || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "askMoment") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "记录提问时刻" : "Note the ask moment")}</h3>
+        ${waStageHTML(rite, false)}
+        <div class="field"><label for="r-moment">${escapeHTML(zh ? "提问日期时间" : "Ask date & time")}</label>
+        <input type="datetime-local" id="r-moment" value="${escapeHTML(state.askMoment || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "sunSignPick") {
+      const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio"];
+      const zhS = { Aries: "白羊", Taurus: "金牛", Gemini: "双子", Cancer: "巨蟹", Leo: "狮子", Virgo: "处女", Libra: "天秤", Scorpio: "天蝎" };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择太阳星座" : "Pick a sun-sign lens")}</h3>
+        ${waStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${signs.map((s) => `<button type="button" class="africa-choice${state.sunSign === s ? " is-on" : ""}" data-action="wa-sign" data-sign="${s}">${escapeHTML(zh ? zhS[s] : s)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "treePick") {
+      const trees = ["Birch", "Rowan", "Ash", "Alder", "Willow", "Oak", "Holly", "Hazel"];
+      const zhT = { Birch: "桦树", Rowan: "花楸", Ash: "梣树", Alder: "赤杨", Willow: "柳树", Oak: "橡树", Holly: "冬青", Hazel: "榛树" };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择圣树" : "Pick a tree")}</h3>
+        ${waStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${trees.map((t) => `<button type="button" class="africa-choice${state.celticTree === t ? " is-on" : ""}" data-action="wa-tree" data-tree="${t}">${escapeHTML(zh ? zhT[t] : t)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "nameInGreek") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入姓名或词语" : "Enter a name or word")}</h3>
+        <div class="field"><label for="r-name">${escapeHTML(zh ? "姓名／词语" : "Name / word")}</label>
+        <input type="text" id="r-name" maxlength="80" value="${escapeHTML(state.personName || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "焦点（可选）" : "Focus (optional)")}</label>
+        <input type="text" id="r-question" maxlength="120" value="${escapeHTML(state.question || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "lifePathSum" || step === "isopSum") {
+      const i = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${waStageHTML(rite, false)}
+        ${backNext()}`;
+      return;
+    }
+    if (step === "westChart" || step === "horaryChart" || step === "treeCounsel" || step === "lifePathLean" || step === "isopLean") {
+      const cta = window.FatumWestAstroOracles.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(state.question ? (zh ? `持念：「${state.question}」` : `Holding: “${state.question}”`) : "")}</p>
+        ${waStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="wa-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+    if (step === "result" && state.reading) renderGuidedResult(state.reading, true);
+  }
+
+  function doWestAstroCast() {
+    const rite = window.FatumWestAstroOracles.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumWestAstroOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        nonce: state.nonce,
+        birthDate: state.birthDate,
+        personName: state.personName,
+        sunSign: state.sunSign,
+        celticTree: state.celticTree,
+        askMoment: state.askMoment,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -3883,6 +4090,13 @@
             return rite ? neStageHTML(rite, false) : "";
           })()
         : "";
+    const waExtra =
+      r.kind === "westastro" && state.kind === "westastro"
+        ? (() => {
+            const rite = window.FatumWestAstroOracles?.get?.(state.method.id);
+            return rite ? waStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -3890,13 +4104,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -4480,6 +4694,29 @@
         ];
         if (neCast.includes(step)) return;
       }
+      if (state.kind === "westastro") {
+        if (step === "birth") {
+          const b = body.querySelector("#r-birth");
+          state.birthDate = (b?.value || "").trim();
+          if (!state.birthDate) return fail(b);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        if (step === "askMoment") {
+          const m = body.querySelector("#r-moment");
+          state.askMoment = (m?.value || "").trim().replace("T", " ");
+          if (!state.askMoment) return fail(m);
+        }
+        if (step === "nameInGreek") {
+          const n = body.querySelector("#r-name");
+          state.personName = (n?.value || "").trim();
+          if (!state.personName) return fail(n);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        const waCast = ["westChart", "horaryChart", "treeCounsel", "lifePathLean", "isopLean"];
+        if (waCast.includes(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -4704,6 +4941,15 @@
     }
     if (action === "ne-mazal") {
       state.mazalSign = el.dataset.sign || "Ṭaleh (Aries)";
+      return render();
+    }
+    if (action === "wa-cast") return doWestAstroCast();
+    if (action === "wa-sign") {
+      state.sunSign = el.dataset.sign || "Aries";
+      return render();
+    }
+    if (action === "wa-tree") {
+      state.celticTree = el.dataset.tree || "Oak";
       return render();
     }
 
