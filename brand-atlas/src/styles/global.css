@@ -119,6 +119,8 @@ img {
 
 .nav-toggle {
   display: none;
+  position: relative;
+  z-index: 60;
   width: 44px;
   height: 44px;
   border: 1px solid var(--line);
@@ -128,7 +130,6 @@ img {
   cursor: pointer;
   place-items: center;
   gap: 5px;
-  flex-direction: column;
 }
 
 .nav-toggle span {
@@ -138,6 +139,7 @@ img {
   background: var(--forest);
   border-radius: 2px;
   transition: transform 0.2s ease, opacity 0.2s ease;
+  transform-origin: center;
 }
 
 .nav-toggle.is-open span:nth-child(1) {
@@ -152,12 +154,37 @@ img {
   transform: translateY(-7px) rotate(-45deg);
 }
 
+/* Outside the blurred header so fixed covers the full viewport and receives taps. */
 .nav-backdrop {
   position: fixed;
   inset: 0;
   border: 0;
-  background: color-mix(in oklab, var(--forest-deep) 35%, transparent);
-  z-index: 35;
+  padding: 0;
+  margin: 0;
+  background: color-mix(in oklab, var(--forest-deep) 42%, transparent);
+  z-index: 45;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav__mobile-head {
+  display: none;
+}
+
+.nav-close {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  color: var(--forest);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .nav-auth {
@@ -605,7 +632,7 @@ img {
     top: calc(100% + 0.35rem);
     left: 0;
     right: 0;
-    z-index: 45;
+    z-index: 55;
     flex-direction: column;
     gap: 0.25rem;
     padding: 0.75rem;
@@ -621,6 +648,26 @@ img {
     display: flex;
   }
 
+  .nav__mobile-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.15rem 0.25rem 0.55rem;
+    margin-bottom: 0.15rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav__mobile-title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+
+  .nav-close {
+    display: inline-flex;
+  }
+
   .nav a {
     padding: 0.75rem 0.9rem;
     min-height: 44px;
@@ -629,6 +676,10 @@ img {
 
   .nav-auth {
     display: flex;
+  }
+
+  .site-header {
+    z-index: 50;
   }
 
   .lang-picker__btn {
