@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
+import { Flag } from "@/components/Flag";
 import { fetchIdeas, matchProfile, runScanClient } from "@/lib/client-api";
-import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
+import { countryToFlagCode } from "@/lib/flag-codes";
+import { formatMoney, strategyLabel } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { IdeaMatch, StartupIdea } from "@/lib/types";
@@ -249,8 +251,13 @@ export function IdeaExplorer({
                       {idea.description}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist/90">
-                      <span>
-                        {countryFlag(idea.teamCountry)} {idea.teamCountry}
+                      <span className="inline-flex items-center gap-1.5">
+                        <Flag
+                          code={countryToFlagCode(idea.teamCountry) ?? ""}
+                          title={idea.teamCountry}
+                          size="sm"
+                        />
+                        {idea.teamCountry}
                         {idea.teamCity ? ` · ${idea.teamCity}` : ""}
                       </span>
                       <span>{idea.teamSize} people</span>

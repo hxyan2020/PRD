@@ -24,30 +24,30 @@ export type LocaleMeta = {
   label: string;
   /** English label for accessibility */
   labelEn: string;
-  /** National / regional flag emoji used in the picker */
-  flag: string;
+  /** ISO 3166-1 alpha-2 code for the national / regional flag image */
+  flagCode: string;
   dir: "ltr" | "rtl";
 };
 
 export const LOCALES: LocaleMeta[] = [
-  { code: "en", label: "English", labelEn: "English", flag: "🇺🇸", dir: "ltr" },
-  { code: "zh-CN", label: "简体中文", labelEn: "Chinese (Simplified)", flag: "🇨🇳", dir: "ltr" },
-  { code: "zh-TW", label: "繁體中文", labelEn: "Chinese (Traditional)", flag: "🇹🇼", dir: "ltr" },
-  { code: "ja", label: "日本語", labelEn: "Japanese", flag: "🇯🇵", dir: "ltr" },
-  { code: "ko", label: "한국어", labelEn: "Korean", flag: "🇰🇷", dir: "ltr" },
-  { code: "es", label: "Español", labelEn: "Spanish", flag: "🇪🇸", dir: "ltr" },
-  { code: "fr", label: "Français", labelEn: "French", flag: "🇫🇷", dir: "ltr" },
-  { code: "de", label: "Deutsch", labelEn: "German", flag: "🇩🇪", dir: "ltr" },
-  { code: "pt-BR", label: "Português", labelEn: "Portuguese (Brazil)", flag: "🇧🇷", dir: "ltr" },
-  { code: "ar", label: "العربية", labelEn: "Arabic", flag: "🇸🇦", dir: "rtl" },
-  { code: "hi", label: "हिन्दी", labelEn: "Hindi", flag: "🇮🇳", dir: "ltr" },
-  { code: "id", label: "Bahasa Indonesia", labelEn: "Indonesian", flag: "🇮🇩", dir: "ltr" },
-  { code: "ru", label: "Русский", labelEn: "Russian", flag: "🇷🇺", dir: "ltr" },
-  { code: "it", label: "Italiano", labelEn: "Italian", flag: "🇮🇹", dir: "ltr" },
-  { code: "tr", label: "Türkçe", labelEn: "Turkish", flag: "🇹🇷", dir: "ltr" },
-  { code: "vi", label: "Tiếng Việt", labelEn: "Vietnamese", flag: "🇻🇳", dir: "ltr" },
-  { code: "th", label: "ไทย", labelEn: "Thai", flag: "🇹🇭", dir: "ltr" },
-  { code: "nl", label: "Nederlands", labelEn: "Dutch", flag: "🇳🇱", dir: "ltr" },
+  { code: "en", label: "English", labelEn: "English", flagCode: "us", dir: "ltr" },
+  { code: "zh-CN", label: "简体中文", labelEn: "Chinese (Simplified)", flagCode: "cn", dir: "ltr" },
+  { code: "zh-TW", label: "繁體中文", labelEn: "Chinese (Traditional)", flagCode: "tw", dir: "ltr" },
+  { code: "ja", label: "日本語", labelEn: "Japanese", flagCode: "jp", dir: "ltr" },
+  { code: "ko", label: "한국어", labelEn: "Korean", flagCode: "kr", dir: "ltr" },
+  { code: "es", label: "Español", labelEn: "Spanish", flagCode: "es", dir: "ltr" },
+  { code: "fr", label: "Français", labelEn: "French", flagCode: "fr", dir: "ltr" },
+  { code: "de", label: "Deutsch", labelEn: "German", flagCode: "de", dir: "ltr" },
+  { code: "pt-BR", label: "Português", labelEn: "Portuguese (Brazil)", flagCode: "br", dir: "ltr" },
+  { code: "ar", label: "العربية", labelEn: "Arabic", flagCode: "sa", dir: "rtl" },
+  { code: "hi", label: "हिन्दी", labelEn: "Hindi", flagCode: "in", dir: "ltr" },
+  { code: "id", label: "Bahasa Indonesia", labelEn: "Indonesian", flagCode: "id", dir: "ltr" },
+  { code: "ru", label: "Русский", labelEn: "Russian", flagCode: "ru", dir: "ltr" },
+  { code: "it", label: "Italiano", labelEn: "Italian", flagCode: "it", dir: "ltr" },
+  { code: "tr", label: "Türkçe", labelEn: "Turkish", flagCode: "tr", dir: "ltr" },
+  { code: "vi", label: "Tiếng Việt", labelEn: "Vietnamese", flagCode: "vn", dir: "ltr" },
+  { code: "th", label: "ไทย", labelEn: "Thai", flagCode: "th", dir: "ltr" },
+  { code: "nl", label: "Nederlands", labelEn: "Dutch", flagCode: "nl", dir: "ltr" },
 ];
 
 export const DEFAULT_LOCALE: LocaleCode = "en";

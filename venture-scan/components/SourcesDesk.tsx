@@ -9,7 +9,9 @@ import {
   type DataSource,
   type SourceHealth,
 } from "@/lib/data-sources";
-import { countryFlag, relativeTime } from "@/lib/format";
+import { Flag } from "@/components/Flag";
+import { relativeTime } from "@/lib/format";
+import { countryToFlagCode } from "@/lib/flag-codes";
 import { useI18n } from "@/lib/i18n/context";
 
 const HEALTH_ORDER: SourceHealth[] = ["healthy", "degraded", "stale", "offline"];
@@ -105,7 +107,7 @@ export function SourcesDesk() {
               key={country}
               className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-xs text-foam"
             >
-              <span aria-hidden>{countryFlag(country)}</span>
+              <Flag code={countryToFlagCode(country) ?? ""} title={country} size="sm" />
               {country}
             </li>
           ))}
@@ -197,7 +199,7 @@ export function SourcesDesk() {
                             key={c}
                             className="inline-flex items-center gap-1 rounded-md bg-white/5 px-2 py-0.5 text-foam"
                           >
-                            <span aria-hidden>{countryFlag(c)}</span>
+                            <Flag code={countryToFlagCode(c) ?? ""} title={c} size="sm" />
                             {c}
                           </span>
                         ))}

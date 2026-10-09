@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CollectButton } from "@/components/CollectButton";
+import { Flag } from "@/components/Flag";
 import { fetchDaily } from "@/lib/client-api";
-import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
+import { countryToFlagCode } from "@/lib/flag-codes";
+import { formatMoney, strategyLabel } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/context";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
@@ -104,8 +106,13 @@ export function DailyRecommendation() {
       <p className="mt-4 text-base leading-relaxed text-mist">{idea.description}</p>
 
       <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist">
-        <span>
-          {countryFlag(idea.teamCountry)} {idea.teamCountry}
+        <span className="inline-flex items-center gap-1.5">
+          <Flag
+            code={countryToFlagCode(idea.teamCountry) ?? ""}
+            title={idea.teamCountry}
+            size="sm"
+          />
+          {idea.teamCountry}
           {idea.teamCity ? ` · ${idea.teamCity}` : ""}
         </span>
         <span>

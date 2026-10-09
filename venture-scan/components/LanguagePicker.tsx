@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Flag } from "@/components/Flag";
 import { useI18n } from "@/lib/i18n/context";
 import type { LocaleCode } from "@/lib/i18n/locales";
 
@@ -28,15 +29,13 @@ export function LanguagePicker() {
     <div className="relative" ref={rootRef}>
       <button
         type="button"
-        className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-2.5 text-sm text-foam hover:border-white/25 hover:bg-white/10"
+        className="inline-flex h-10 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-2.5 text-sm text-foam hover:border-white/25 hover:bg-white/10"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t("lang.pickerLabel")}
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="text-base leading-none" aria-hidden>
-          {meta.flag}
-        </span>
+        <Flag code={meta.flagCode} title={meta.labelEn} size="md" />
         <span className="hidden sm:inline">{meta.label}</span>
         <span className="text-[10px] text-mist" aria-hidden>
           ▾
@@ -55,7 +54,7 @@ export function LanguagePicker() {
               <li key={item.code} role="option" aria-selected={selected}>
                 <button
                   type="button"
-                  className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-white/10 ${
+                  className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left text-sm hover:bg-white/10 ${
                     selected ? "bg-celadon/15 text-foam" : "text-mist"
                   }`}
                   onClick={() => {
@@ -63,9 +62,7 @@ export function LanguagePicker() {
                     setOpen(false);
                   }}
                 >
-                  <span className="text-base leading-none" aria-hidden>
-                    {item.flag}
-                  </span>
+                  <Flag code={item.flagCode} title={item.labelEn} size="md" />
                   <span className="flex min-w-0 flex-col">
                     <span className="truncate text-foam">{item.label}</span>
                     <span className="truncate font-mono text-[10px] uppercase tracking-[0.12em] text-mist/80">

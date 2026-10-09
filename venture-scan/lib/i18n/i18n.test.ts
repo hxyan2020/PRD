@@ -3,10 +3,10 @@ import { LOCALES } from "./locales";
 import { MESSAGES, translate } from "./messages";
 
 describe("i18n", () => {
-  it("covers major locales with flag icons", () => {
+  it("covers major locales with national flag codes", () => {
     expect(LOCALES.length).toBeGreaterThanOrEqual(12);
     for (const locale of LOCALES) {
-      expect(locale.flag.length).toBeGreaterThan(0);
+      expect(locale.flagCode).toMatch(/^[a-z]{2}$/);
       expect(MESSAGES[locale.code]).toBeTruthy();
       expect(MESSAGES[locale.code]["nav.language"]).toBeTruthy();
       expect(MESSAGES[locale.code]["lang.pickerLabel"]).toBeTruthy();

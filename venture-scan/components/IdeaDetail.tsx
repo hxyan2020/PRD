@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { CollectButton } from "@/components/CollectButton";
-import { countryFlag, formatMoney, socialLabel, strategyLabel } from "@/lib/format";
+import { Flag } from "@/components/Flag";
+import { countryToFlagCode } from "@/lib/flag-codes";
+import { formatMoney, socialLabel, strategyLabel } from "@/lib/format";
 import type { StartupIdea } from "@/lib/types";
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
@@ -37,8 +39,15 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
           </p>
         </Row>
         <Row label="(iii) Team location">
-          {countryFlag(idea.teamCountry)} {idea.teamCountry}
-          {idea.teamCity ? ` · ${idea.teamCity}` : ""}
+          <span className="inline-flex items-center gap-1.5">
+            <Flag
+              code={countryToFlagCode(idea.teamCountry) ?? ""}
+              title={idea.teamCountry}
+              size="sm"
+            />
+            {idea.teamCountry}
+            {idea.teamCity ? ` · ${idea.teamCity}` : ""}
+          </span>
         </Row>
         <Row label="(iv) Team size">{idea.teamSize} people</Row>
         <Row label="(v) Industry">{idea.industry}</Row>
