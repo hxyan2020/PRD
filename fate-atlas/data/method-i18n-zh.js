@@ -389,80 +389,80 @@
     },
     "jyotish": {
       "name": "吠陀占星（乔蒂什）",
-      "summary": "印度吠陀占星：以出生盘与行星周期解读业力倾向与时机。",
-      "region": "South 亚洲",
+      "summary": "以恒星黄道、月宿与行星周期（达沙）解读出生星盘主题。",
+      "region": "南亚",
       "source": "Sekai Fortune; Plutto"
     },
     "kp-astrology": {
       "name": "KP占星",
-      "summary": "克里希纳穆提占星：细分星座与催运星规则。",
-      "region": "South 印度",
+      "summary": "以次主星细分宫头，精细化吠陀时机推演的南印度流派。",
+      "region": "南印度",
       "source": "Plutto"
     },
     "panchanga": {
       "name": "五历（Panchanga）",
-      "summary": "印度五历要素：用于择日与仪轨时机。",
-      "region": "South 亚洲",
+      "summary": "月相日、星期、月宿、瑜伽与羯腊那——用于择日与仪轨时机。",
+      "region": "南亚",
       "source": "Sekai Fortune"
     },
     "ashtamangala": {
       "name": "八吉祥占",
-      "summary": "八吉祥象征占问。",
-      "region": "Kerala",
+      "summary": "喀拉拉神庙问事：环绕八种吉祥物与复杂占盘。",
+      "region": "喀拉拉",
       "source": "Plutto"
     },
     "ramala": {
       "name": "拉玛拉土占",
-      "summary": "印度拉玛拉土占图形传统。",
-      "region": "North 印度",
+      "summary": "阿拉伯土占在北印度苏丹宫廷的梵语化传统——点阵成十六象。",
+      "region": "北印度",
       "source": "Plutto"
     },
     "samudrika": {
       "name": "相学（萨穆德里卡）",
-      "summary": "印度相学：身相与掌相体系。",
+      "summary": "依手、面、足与体态纹记论性情主题——不是医学诊断。",
       "region": "印度",
       "source": "Sekai Fortune; Plutto"
     },
     "svarasastra": {
-      "name": "声相学",
-      "summary": "依声音／气息方位作占问的印度传统。",
+      "name": "息相学",
+      "summary": "以左右鼻息主导（日／月／中脉）作为行动时机的活体占问。",
       "region": "印度",
       "source": "Plutto"
     },
     "tamil-numerology": {
       "name": "泰米尔数字命理",
-      "summary": "泰米尔姓名与数字命理。",
-      "region": "Tamil",
+      "summary": "依乌伊尔／梅伊字母数值论姓名——有别于北印数字占星。",
+      "region": "泰米尔",
       "source": "Plutto"
     },
     "anka-jyotisha": {
       "name": "数字占星",
-      "summary": "印度数字与占星结合的演算。",
-      "region": "Varanasi 传统",
+      "summary": "将1–9与行星对应，用于北印出生与姓名分析。",
+      "region": "瓦拉纳西传统",
       "source": "Plutto"
     },
     "vastu": {
-      "name": "梵宅学（Vastu）",
-      "summary": "印度传统空间布局与方位宜忌。",
+      "name": "梵宅学",
+      "summary": "依建筑朝向与布局论家运与事业气场——与风水相关而自成系统。",
       "region": "印度",
       "source": "Sekai Fortune"
     },
     "parrot-astrology": {
       "name": "鹦鹉占星",
-      "summary": "训练鹦鹉叼出占卡片的南亚街头／庙会传统。",
-      "region": "South 印度",
+      "summary": "南印度街头／庙会传统——训练鹦鹉叼出签卡或贝壳。",
+      "region": "南印度",
       "source": "Sekai Fortune; Wikipedia Methods of divination"
     },
     "sinhala-nekath": {
       "name": "僧伽罗择时",
-      "summary": "僧伽罗择时与吉时传统。",
+      "summary": "斯里兰卡吉时通书——用于开事、出行与婚嫁择时。",
       "region": "斯里兰卡",
       "source": "Plutto"
     },
     "sarvatobhadra": {
       "name": "全方位吉凶盘",
-      "summary": "印度全方位吉凶星盘装置。",
-      "region": "North 印度",
+      "summary": "北印择日星盘——辐条与字母论开事与出行日质。",
+      "region": "北印度",
       "source": "Plutto"
     },
     "tibetan-astro": {
@@ -1512,81 +1512,81 @@
       "source": "Sekai Fortune"
     },
     "jyotish": {
-      "name": "吠陀占星（乔蒂什）",
-      "summary": "印度吠陀占星：以出生盘与行星周期解讀業力倾向与时机。",
-      "region": "South 亚洲",
+      "name": "吠陀占星（喬蒂什）",
+      "summary": "以恆星黃道、月宿與行星週期（達沙）解讀出生星盤主題。",
+      "region": "南亞",
       "source": "Sekai Fortune; Plutto"
     },
     "kp-astrology": {
       "name": "KP占星",
-      "summary": "克裡希纳穆提占星：细分星座与催运星规則。",
-      "region": "South 印度",
+      "summary": "以次主星細分宮頭，精細化吠陀時機推演的南印度流派。",
+      "region": "南印度",
       "source": "Plutto"
     },
     "panchanga": {
-      "name": "五历（Panchanga）",
-      "summary": "印度五历要素：用于择日与儀轨时机。",
-      "region": "South 亚洲",
+      "name": "五曆（Panchanga）",
+      "summary": "月相日、星期、月宿、瑜伽與羯臘那——用於擇日與儀軌時機。",
+      "region": "南亞",
       "source": "Sekai Fortune"
     },
     "ashtamangala": {
       "name": "八吉祥占",
-      "summary": "八吉祥象征占問。",
-      "region": "Kerala",
+      "summary": "喀拉拉神廟問事：環繞八種吉祥物與複雜占盤。",
+      "region": "喀拉拉",
       "source": "Plutto"
     },
     "ramala": {
-      "name": "拉玛拉土占",
-      "summary": "印度拉玛拉土占圖形傳統。",
-      "region": "North 印度",
+      "name": "拉瑪拉土占",
+      "summary": "阿拉伯土占在北印度蘇丹宮廷的梵語化傳統——點陣成十六象。",
+      "region": "北印度",
       "source": "Plutto"
     },
     "samudrika": {
-      "name": "相學（萨穆德裡卡）",
-      "summary": "印度相學：身相与掌相體系。",
+      "name": "相學（薩穆德里卡）",
+      "summary": "依手、面、足與體態紋記論性情主題——不是醫學診斷。",
       "region": "印度",
       "source": "Sekai Fortune; Plutto"
     },
     "svarasastra": {
-      "name": "声相學",
-      "summary": "依声音／气息方位作占問的印度傳統。",
+      "name": "息相學",
+      "summary": "以左右鼻息主導（日／月／中脈）作為行動時機的活體占問。",
       "region": "印度",
       "source": "Plutto"
     },
     "tamil-numerology": {
-      "name": "泰米尔數字命理",
-      "summary": "泰米尔姓名与數字命理。",
-      "region": "Tamil",
+      "name": "泰米爾數字命理",
+      "summary": "依烏伊爾／梅伊字母數值論姓名——有別於北印數字占星。",
+      "region": "泰米爾",
       "source": "Plutto"
     },
     "anka-jyotisha": {
       "name": "數字占星",
-      "summary": "印度數字与占星结合的演算。",
-      "region": "Varanasi 傳統",
+      "summary": "將1–9與行星對應，用於北印出生與姓名分析。",
+      "region": "瓦拉納西傳統",
       "source": "Plutto"
     },
     "vastu": {
-      "name": "梵宅學（Vastu）",
-      "summary": "印度傳統空间布局与方位宜忌。",
+      "name": "梵宅學",
+      "summary": "依建築朝向與佈局論家運與事業氣場——與風水相關而自成系統。",
       "region": "印度",
       "source": "Sekai Fortune"
     },
     "parrot-astrology": {
-      "name": "鹦鹉占星",
-      "summary": "训练鹦鹉叼出占卡片的南亚街头／庙會傳統。",
-      "region": "South 印度",
+      "name": "鸚鵡占星",
+      "summary": "南印度街頭／廟會傳統——訓練鸚鵡叼出簽卡或貝殼。",
+      "region": "南印度",
       "source": "Sekai Fortune; Wikipedia Methods of divination"
     },
     "sinhala-nekath": {
-      "name": "僧伽罗择时",
-      "summary": "僧伽罗择时与吉时傳統。",
-      "region": "斯裡蘭卡",
+      "name": "僧伽羅擇時",
+      "summary": "斯里蘭卡吉時通書——用於開事、出行與婚嫁擇時。",
+      "region": "斯里蘭卡",
       "source": "Plutto"
     },
     "sarvatobhadra": {
-      "name": "全方位吉凶盘",
-      "summary": "印度全方位吉凶星盘装置。",
-      "region": "North 印度",
+      "name": "全方位吉凶盤",
+      "summary": "北印擇日星盤——輻條與字母論開事與出行日質。",
+      "region": "北印度",
       "source": "Plutto"
     },
     "tibetan-astro": {
