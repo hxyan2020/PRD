@@ -899,31 +899,31 @@
     },
     "aztec-tonalpohualli": {
       "name": "阿兹特克神历",
-      "summary": "阿兹特克二百六十日神历，用于命名、仪式与命运日签。",
+      "summary": "托纳尔波瓦利是墨西卡二百六十日圣历——日符塑造命运与仪轨时机。",
       "region": "Mexica／Nahua",
       "source": "Sekai Fortune; Plutto"
     },
     "mayan-tzolkin": {
       "name": "玛雅卓尔金历",
-      "summary": "玛雅卓尔金历循环，用于仪式时间与日符解读。",
+      "summary": "卓尔金是玛雅二百六十日计数，高原日守仍用于命运与仪典。",
       "region": "玛雅",
       "source": "Sekai Fortune; Plutto"
     },
     "zapotec-mixtec": {
       "name": "萨波特克／米斯特克历占",
-      "summary": "萨波特克／米斯特克历日与礼仪时间。",
+      "summary": "萨波特克／米斯特克日计数是南墨西哥（瓦哈卡）相关的二百六十日命运体系。",
       "region": "Oaxaca",
       "source": "Plutto"
     },
     "maize-casting": {
       "name": "玉米粒占",
-      "summary": "抛掷玉米粒，读取格局与方位。",
+      "summary": "玉米粒占结合二百六十日历作诊断与指引（米赫／中美洲）。",
       "region": "Mixe／Mesoamerica",
       "source": "Ancient Mesoamerica · Ayöök study"
     },
     "mazatec-curandero": {
       "name": "马萨特克疗愈神视",
-      "summary": "马萨特克疗愈师传统中的神视与诊断记述。",
+      "summary": "马萨特克占卜治愈以仪轨、草木与梦召作神谕——仅教学模拟。",
       "region": "Mazatec",
       "source": "Fulcrum · Diviners and Divination"
     },
@@ -2023,31 +2023,31 @@
     },
     "aztec-tonalpohualli": {
       "name": "阿兹特克神历",
-      "summary": "阿兹特克二百六十日神历，用于命名、儀式与命運日签。",
+      "summary": "托納爾波瓦利是墨西卡二百六十日聖曆——日符塑造命運與儀軌時機。",
       "region": "Mexica／Nahua",
       "source": "Sekai Fortune; Plutto"
     },
     "mayan-tzolkin": {
       "name": "玛雅卓尔金历",
-      "summary": "玛雅卓尔金历循环，用于儀式時間与日符解讀。",
+      "summary": "卓爾金是瑪雅二百六十日計數，高原日守仍用於命運與儀典。",
       "region": "玛雅",
       "source": "Sekai Fortune; Plutto"
     },
     "zapotec-mixtec": {
       "name": "萨波特克／米斯特克历占",
-      "summary": "萨波特克／米斯特克历日与禮儀時間。",
+      "summary": "薩波特克／米斯特克日計數是南墨西哥（瓦哈卡）相關的二百六十日命運體系。",
       "region": "Oaxaca",
       "source": "Plutto"
     },
     "maize-casting": {
       "name": "玉米粒占",
-      "summary": "抛掷玉米粒，讀取格局与方位。",
+      "summary": "玉米粒占結合二百六十日曆作診斷與指引（米赫／中美洲）。",
       "region": "Mixe／Mesoamerica",
       "source": "Ancient Mesoamerica · Ayöök study"
     },
     "mazatec-curandero": {
       "name": "馬萨特克療愈神视",
-      "summary": "馬萨特克療愈師傳統中的神视与诊断記述。",
+      "summary": "馬薩特克占卜治癒以儀軌、草木與夢召作神諭——僅教學模擬。",
       "region": "Mazatec",
       "source": "Fulcrum · Diviners and Divination"
     },
