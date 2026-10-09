@@ -121,9 +121,9 @@
   "ideaChat.send": "Demander",
   "ideaChat.sources": "Sources de données",
   "ideaChat.loading": "Chargement du chatbot idée…",
-  "ideaMedia.kicker": "Médias de provenance",
-  "ideaMedia.title": "Depuis les sources liées",
-  "ideaMedia.body": "Images de marque et couvertures extraites des desks qui couvrent ce marché — ouvrez une tuile pour visiter la source.",
+  "ideaMedia.kicker": "Couverture associée",
+  "ideaMedia.title": "Articles des sources",
+  "ideaMedia.body": "Liens vers des articles précis ; les images de l'article sont affichées ici.",
   "ideaMedia.allSources": "Toutes les sources →",
   "ideaMedia.extracted": "Extrait",
   "today.kicker": "Recommandation du jour",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "Dégradée",
   "sources.health.stale": "Périmée",
   "sources.health.offline": "Hors ligne",
-  "lang.pickerLabel": "Choisir la langue"
+  "lang.pickerLabel": "Choisir la langue",
+  "ideaMedia.openArticle": "Ouvrir l'article →"
 }

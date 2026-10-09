@@ -121,9 +121,9 @@
   "ideaChat.send": "Chiedi",
   "ideaChat.sources": "Fonti dati",
   "ideaChat.loading": "Caricamento idea chatbot...",
-  "ideaMedia.kicker": "Provenienza media",
-  "ideaMedia.title": "Da fonti di dati correlate",
-  "ideaMedia.body": "Marcare e coprire le immagini estratte dalle scrivanie che coprono questo mercato – aprire qualsiasi piastrella a vi sedetevi alla fonte.",
+  "ideaMedia.kicker": "Copertura correlata",
+  "ideaMedia.title": "Articoli dalle fonti",
+  "ideaMedia.body": "Link ad articoli specifici; le immagini dell'articolo sono mostrate qui.",
   "ideaMedia.allSources": "Tutte le fonti",
   "ideaMedia.extracted": "Estratto",
   "today.kicker": "Raccomandazione di oggi",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "Degrado",
   "sources.health.stale": "Obsoleta",
   "sources.health.offline": "Non in linea",
-  "lang.pickerLabel": "Scegli la lingua"
+  "lang.pickerLabel": "Scegli la lingua",
+  "ideaMedia.openArticle": "Apri articolo →"
 }

@@ -121,9 +121,9 @@
   "ideaChat.send": "Спроси",
   "ideaChat.sources": "Источники данных",
   "ideaChat.loading": "Загрузка идеи чат-бота...",
-  "ideaMedia.kicker": "Провансовые СМИ",
-  "ideaMedia.title": "Из связанных источников данных",
-  "ideaMedia.body": "Изображения бренда и обложки, извлеченные из столов, которые охватывают этот рынок, открывают любую плитку, чтобы посетить источник.",
+  "ideaMedia.kicker": "Связанные материалы",
+  "ideaMedia.title": "Статьи из источников данных",
+  "ideaMedia.body": "Ссылки на конкретные статьи; изображения показаны здесь.",
   "ideaMedia.allSources": "Все источники →",
   "ideaMedia.extracted": "извлеченный",
   "today.kicker": "Сегодняшняя рекомендация",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "униженный",
   "sources.health.stale": "устаревший",
   "sources.health.offline": "Оффлайн",
-  "lang.pickerLabel": "Выберите язык"
+  "lang.pickerLabel": "Выберите язык",
+  "ideaMedia.openArticle": "Открыть статью →"
 }

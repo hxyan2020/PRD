@@ -121,9 +121,9 @@
   "ideaChat.send": "お問い合わせ",
   "ideaChat.sources": "データソース",
   "ideaChat.loading": "アイデアチャットボットを読み込む...",
-  "ideaMedia.kicker": "プロヴァンス・メディア",
-  "ideaMedia.title": "関連するデータソースから",
-  "ideaMedia.body": "この市場を覆うデスクから抽出されたブランドとカバー画像 - 任意のタイルを開いて、ソースを訪問します。",
+  "ideaMedia.kicker": "関連報道",
+  "ideaMedia.title": "データソースの記事と画像",
+  "ideaMedia.body": "この市場を扱う具体的な記事へのリンクです。記事内の画像を取得してここに表示するため、情報源のトップページを開く必要はありません。",
   "ideaMedia.allSources": "すべてのソース →",
   "ideaMedia.extracted": "抽出物",
   "today.kicker": "今日の推薦",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "分解された",
   "sources.health.stale": "スタトル",
   "sources.health.offline": "オフライン",
-  "lang.pickerLabel": "言語を選択"
+  "lang.pickerLabel": "言語を選択",
+  "ideaMedia.openArticle": "記事を開く →"
 }

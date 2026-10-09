@@ -1,5 +1,6 @@
 import type { DataSource } from "./data-sources";
 import { formatMoney, strategyLabel } from "./format";
+import { articleCitationsForIdea } from "./idea-articles";
 import { relatedSourcesForIdea } from "./idea-sources";
 import type { StartupIdea } from "./types";
 
@@ -226,9 +227,11 @@ export function answerIdeaQuestion(idea: StartupIdea, question: string): IdeaQaR
     intent === "sources" ? 4 : 3,
   );
 
+  const articleWires = articleCitationsForIdea(idea.slug, intent === "sources" ? 4 : 3);
   const citations: IdeaQaCitation[] = [
     ...primaryCitations(idea),
-    ...wireCitations(wires),
+    // Prefer specific article URLs (with embedded images on the dossier) over desk homepages.
+    ...(articleWires.length ? articleWires : wireCitations(wires)),
   ];
 
   // Deduplicate by url

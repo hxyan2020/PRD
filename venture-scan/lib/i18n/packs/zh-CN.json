@@ -121,9 +121,9 @@
   "ideaChat.send": "提问",
   "ideaChat.sources": "数据来源",
   "ideaChat.loading": "加载创意问答…",
-  "ideaMedia.kicker": "来源影像",
-  "ideaMedia.title": "相关数据源图片",
-  "ideaMedia.body": "从覆盖该市场的信源站点提取的品牌/封面图——点击即可打开原文。",
+  "ideaMedia.kicker": "相关报道",
+  "ideaMedia.title": "数据源文章与配图",
+  "ideaMedia.body": "来自覆盖该市场的具体文章链接；文章内图片已抓取并展示在此，无需点开数据源首页。",
   "ideaMedia.allSources": "全部数据源 →",
   "ideaMedia.extracted": "已提取",
   "today.kicker": "今日推荐",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "降级",
   "sources.health.stale": "过期",
   "sources.health.offline": "离线",
-  "lang.pickerLabel": "选择语言"
+  "lang.pickerLabel": "选择语言",
+  "ideaMedia.openArticle": "打开原文 →"
 }

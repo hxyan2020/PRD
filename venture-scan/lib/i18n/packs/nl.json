@@ -121,9 +121,9 @@
   "ideaChat.send": "Vragen",
   "ideaChat.sources": "Gegevensbronnen",
   "ideaChat.loading": "Idee-chatbot laden...",
-  "ideaMedia.kicker": "Bewijsmiddelen",
-  "ideaMedia.title": "Uit verwante gegevensbronnen",
-  "ideaMedia.body": "Merk en dekafbeeldingen gewonnen uit de bureaus die deze markt te dekken Zet Stand op de bron.",
+  "ideaMedia.kicker": "Gerelateerde dekking",
+  "ideaMedia.title": "Artikelen uit databronnen",
+  "ideaMedia.body": "Specifieke artikellinks; afbeeldingen uit het artikel staan hier.",
   "ideaMedia.allSources": "Alle bronnen",
   "ideaMedia.extracted": "Uitgepakt",
   "today.kicker": "Aanbeveling van vandaag",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "Gedegradeerd",
   "sources.health.stale": "Staat",
   "sources.health.offline": "Niet bereikbaar",
-  "lang.pickerLabel": "Taal kiezen"
+  "lang.pickerLabel": "Taal kiezen",
+  "ideaMedia.openArticle": "Artikel openen →"
 }

@@ -1,35 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Flag } from "@/components/Flag";
 import { withBase } from "@/lib/base-path";
-import { countryToFlagCode } from "@/lib/flag-codes";
-import { relativeTime } from "@/lib/format";
-// relativeTime uses optional t() for localized ages
-import { relatedSourcesForIdea } from "@/lib/idea-sources";
+import { articleCardsForIdea } from "@/lib/idea-articles";
 import { useI18n } from "@/lib/i18n/context";
-import { attachMediaToSources } from "@/lib/source-media";
 import type { StartupIdea } from "@/lib/types";
 
 export function IdeaSourceMedia({ idea }: { idea: StartupIdea }) {
   const { t } = useI18n();
-  const items = attachMediaToSources(relatedSourcesForIdea(idea, "overview", 6));
-  const kindLabel = (kind: string) => {
-    const key = `sourceKind.${kind}` as
-      | "sourceKind.news"
-      | "sourceKind.registry"
-      | "sourceKind.fundraising"
-      | "sourceKind.community"
-      | "sourceKind.government"
-      | "sourceKind.aggregator";
-    try {
-      return t(key);
-    } catch {
-      return kind;
-    }
-  };
+  const articles = articleCardsForIdea(idea.slug, 6);
 
-  if (items.length === 0) return null;
+  if (articles.length === 0) return null;
 
   return (
     <section className="mt-12 animate-rise [animation-delay:120ms]">
@@ -51,66 +32,41 @@ export function IdeaSourceMedia({ idea }: { idea: StartupIdea }) {
         </Link>
       </div>
 
-      <ul className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {items.map(({ source, mediaPath, mediaKind }) => (
-          <li key={source.id}>
+      <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {articles.map((article) => (
+          <li key={article.id}>
             <a
-              href={source.url}
+              href={article.url}
               target="_blank"
               rel="noreferrer"
-              className="group flex gap-3 overflow-hidden rounded-2xl border border-white/10 bg-ink-2/50 p-3 transition hover:border-celadon/40 hover:bg-ink-2/80"
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-ink-2/50 transition hover:border-celadon/40 hover:bg-ink-2/80"
             >
-              <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-white sm:h-24 sm:w-24">
+              <span className="relative aspect-[16/10] w-full overflow-hidden bg-ink">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={withBase(mediaPath)}
+                  src={withBase(article.imagePath)}
                   alt=""
-                  width={96}
-                  height={96}
+                  width={640}
+                  height={400}
                   loading="lazy"
                   decoding="async"
-                  className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]"
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    const fallback = withBase(`/logos/${source.id}.png`);
-                    if (img.dataset.fallback === "1") {
-                      img.style.display = "none";
-                      return;
-                    }
-                    img.dataset.fallback = "1";
-                    img.src = fallback;
-                    img.className =
-                      "h-full w-full object-contain p-3 transition duration-300 group-hover:scale-[1.04]";
-                  }}
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                 />
+                <span className="absolute left-3 top-3 rounded-md border border-white/20 bg-ink/70 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-foam backdrop-blur">
+                  {article.sourceName}
+                </span>
               </span>
-              <span className="min-w-0 flex-1 py-0.5">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span className="truncate font-medium text-foam">{source.name}</span>
-                  <span className="rounded-md border border-white/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-mist">
-                    {kindLabel(source.kind)}
-                  </span>
+              <span className="flex flex-1 flex-col gap-2 p-4">
+                <span className="font-display text-lg leading-snug text-foam transition group-hover:text-white">
+                  {article.title}
                 </span>
-                <span className="mt-1 line-clamp-2 text-xs leading-relaxed text-mist">
-                  {source.description}
-                </span>
-                <span className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-mist/80">
-                  <span className="inline-flex items-center gap-1">
-                    <Flag
-                      code={countryToFlagCode(source.countries[0] ?? "") ?? ""}
-                      title={source.countries[0]}
-                      size="sm"
-                    />
-                    <span className="truncate">{source.region}</span>
+                {article.excerpt ? (
+                  <span className="line-clamp-3 text-xs leading-relaxed text-mist">
+                    {article.excerpt}
                   </span>
-                  <span aria-hidden>·</span>
-                  <span>
-                    {t("ideaMedia.extracted")} · {mediaKind}
-                  </span>
-                  <span aria-hidden>·</span>
-                  <span>
-                    {t("sources.lastSourced")} {relativeTime(source.lastSourcedAt, Date.now(), t)}
-                  </span>
+                ) : null}
+                <span className="mt-auto pt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-celadon">
+                  {t("ideaMedia.openArticle")}
                 </span>
               </span>
             </a>

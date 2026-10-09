@@ -121,9 +121,9 @@
   "ideaChat.send": "Hỏi",
   "ideaChat.sources": "Nguồn dữ liệu",
   "ideaChat.loading": "Đang nạp ý tưởng chatbot...",
-  "ideaMedia.kicker": "Phương tiện chứng minh",
-  "ideaMedia.title": "Từ các nguồn dữ liệu liên quan",
-  "ideaMedia.body": "Đóng dấu và trang bìa hình ảnh chiết xuất từ các bàn làm việc bao gồm thị trường này - mở bất kỳ gạch để vi Ngồi xuống đi.",
+  "ideaMedia.kicker": "Tin liên quan",
+  "ideaMedia.title": "Bài viết từ nguồn dữ liệu",
+  "ideaMedia.body": "Liên kết bài viết cụ thể—ảnh trong bài hiện tại đây.",
   "ideaMedia.allSources": "Tất cả nguồn →",
   "ideaMedia.extracted": "Đã lấy ra",
   "today.kicker": "Lời giới thiệu hôm nay",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "Hạ cấp",
   "sources.health.stale": "Comment",
   "sources.health.offline": "Ngoại tuyến",
-  "lang.pickerLabel": "Chọn ngôn ngữ"
+  "lang.pickerLabel": "Chọn ngôn ngữ",
+  "ideaMedia.openArticle": "Mở bài viết →"
 }

@@ -121,9 +121,9 @@
   "ideaChat.send": "ถาม",
   "ideaChat.sources": "ข้อมูล",
   "ideaChat.loading": "เรียกไอเดีย แชตบอท...",
-  "ideaMedia.kicker": "สื่อพิสูจน์",
-  "ideaMedia.title": "จากแหล่งข้อมูลที่เกี่ยวข้อง",
-  "ideaMedia.body": "แบรนด์และปกภาพที่สกัดออกมาจากโต๊ะที่ครอบคลุมตลาดนี้ -- เปิดกระเบื้องใด ๆ ไปยัง i นั่งลงซะ",
+  "ideaMedia.kicker": "ความครอบคลุมที่เกี่ยวข้อง",
+  "ideaMedia.title": "บทความจากแหล่งข้อมูล",
+  "ideaMedia.body": "ลิงก์บทความเฉพาะ—ดึงรูปจากในบทความมาแสดงที่นี่",
   "ideaMedia.allSources": "แหล่งข้อมูลทั้งหมด →",
   "ideaMedia.extracted": "คลาย",
   "today.kicker": "วันนี้แนะนํา",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "ปรับรุ่นแล้ว",
   "sources.health.stale": "จุด",
   "sources.health.offline": "ออฟไลน์",
-  "lang.pickerLabel": "เลือกภาษา"
+  "lang.pickerLabel": "เลือกภาษา",
+  "ideaMedia.openArticle": "เปิดบทความ →"
 }

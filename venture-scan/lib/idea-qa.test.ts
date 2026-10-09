@@ -13,13 +13,19 @@ describe("idea Q&A", () => {
     expect(detectIdeaIntent("Hi")).toBe("off_track");
   });
 
-  it("answers with citations that include official and wire sources", () => {
+  it("answers with citations that include official and article wire links", () => {
     const reply = answerIdeaQuestion(idea, "Have they raised funding?");
     expect(reply.intent).toBe("funding");
     expect(reply.answer.toLowerCase()).toMatch(/fund|series|raised|secur/);
     expect(reply.citations.length).toBeGreaterThanOrEqual(2);
     expect(reply.citations.some((c) => c.url === idea.website)).toBe(true);
-    expect(reply.citations.some((c) => c.kind === "wire" || c.kind === "primary")).toBe(true);
+    const wires = reply.citations.filter((c) => c.kind === "wire");
+    expect(wires.length).toBeGreaterThan(0);
+    for (const c of wires) {
+      // Prefer deep article URLs over bare desk homepages.
+      const path = new URL(c.url).pathname.replace(/\/+$/, "");
+      expect(path.length).toBeGreaterThan(1);
+    }
     for (const c of reply.citations) {
       expect(c.label).toBeTruthy();
       expect(c.url).toBeTruthy();

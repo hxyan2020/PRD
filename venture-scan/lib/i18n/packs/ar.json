@@ -121,9 +121,9 @@
   "ideaChat.send": "إسأل",
   "ideaChat.sources": "مصادر البيانات",
   "ideaChat.loading": "فكرة التسكع",
-  "ideaMedia.kicker": "وسائل الإعلام",
-  "ideaMedia.title": "من مصادر البيانات ذات الصلة",
-  "ideaMedia.body": "براند وتغطية الصور المستخرجة من المكاتب التي تغطي هذه السوق المفتوحة أجلس المصدر",
+  "ideaMedia.kicker": "تغطية ذات صلة",
+  "ideaMedia.title": "مقالات من مصادر البيانات",
+  "ideaMedia.body": "روابط مقالات محددة—تُعرض صور المقال هنا دون فتح الصفحة الرئيسية للمصدر.",
   "ideaMedia.allSources": "جميع المصادر →",
   "ideaMedia.extracted": "مقتطفات",
   "today.kicker": "توصية اليوم",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "متدهور",
   "sources.health.stale": "قديم",
   "sources.health.offline": "غير متصل",
-  "lang.pickerLabel": "لغة الاختيار"
+  "lang.pickerLabel": "لغة الاختيار",
+  "ideaMedia.openArticle": "فتح المقال ←"
 }

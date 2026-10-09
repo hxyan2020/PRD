@@ -121,9 +121,9 @@
   "ideaChat.send": "질문",
   "ideaChat.sources": "데이터 소스",
   "ideaChat.loading": "아이디어 챗봇 로딩…",
-  "ideaMedia.kicker": "출처 미디어",
-  "ideaMedia.title": "관련 데이터 소스에서",
-  "ideaMedia.body": "이 시장을 다루는 데스크에서 추출한 브랜드/커버 이미지 — 타일을 열어 소스로 이동.",
+  "ideaMedia.kicker": "관련 보도",
+  "ideaMedia.title": "데이터 소스 기사와 이미지",
+  "ideaMedia.body": "이 시장을 다루는 구체적 기사 링크입니다. 기사 속 이미지를 가져와 여기에 보여 주므로 데이터 소스 홈페이지를 열 필요가 없습니다.",
   "ideaMedia.allSources": "모든 소스 →",
   "ideaMedia.extracted": "추출됨",
   "today.kicker": "오늘의 추천",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "저하",
   "sources.health.stale": "오래됨",
   "sources.health.offline": "오프라인",
-  "lang.pickerLabel": "언어 선택"
+  "lang.pickerLabel": "언어 선택",
+  "ideaMedia.openArticle": "원문 열기 →"
 }

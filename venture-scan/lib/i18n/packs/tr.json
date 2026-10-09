@@ -121,9 +121,9 @@
   "ideaChat.send": "Sor",
   "ideaChat.sources": "Veri kaynakları",
   "ideaChat.loading": "Fikir chatbot yükleniyor...",
-  "ideaMedia.kicker": "Kaynak medyası",
-  "ideaMedia.title": "İlgili veri kaynaklarından",
-  "ideaMedia.body": "Marka ve kapak görüntüleri bu piyasayı kaplayan masalardan çıkardı - herhangi bir karo açın kaynağı otur.",
+  "ideaMedia.kicker": "İlgili haberler",
+  "ideaMedia.title": "Veri kaynaklarından makaleler",
+  "ideaMedia.body": "Somut makale bağlantıları; görseller burada gösterilir.",
   "ideaMedia.allSources": "Tüm kaynaklar →",
   "ideaMedia.extracted": "Türlü",
   "today.kicker": "Bugünün önerisi",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "Bozulmuş",
   "sources.health.stale": "Eski",
   "sources.health.offline": "Çevrimdışı",
-  "lang.pickerLabel": "Dil seçin"
+  "lang.pickerLabel": "Dil seçin",
+  "ideaMedia.openArticle": "Makaleyi aç →"
 }

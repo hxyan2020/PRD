@@ -121,9 +121,9 @@
   "ideaChat.send": "Tanya",
   "ideaChat.sources": "Sumber data",
   "ideaChat.loading": "Memuat ide chatbot...",
-  "ideaMedia.kicker": "Media provenance",
-  "ideaMedia.title": "Dari sumber data terkait",
-  "ideaMedia.body": "Brand dan cover gambar yang diekstrak dari meja yang menutupi pasar ini - membuka ubin apapun untuk mengunjungi sumber.",
+  "ideaMedia.kicker": "Liputan terkait",
+  "ideaMedia.title": "Artikel dari sumber data",
+  "ideaMedia.body": "Tautan artikel spesifik—gambar dari artikel ditampilkan di sini.",
   "ideaMedia.allSources": "Semua sumber →",
   "ideaMedia.extracted": "Diekstrak",
   "today.kicker": "Hari ini rekomendasi",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "Dikurangi",
   "sources.health.stale": "Usang",
   "sources.health.offline": "Luring",
-  "lang.pickerLabel": "Pilih bahasa"
+  "lang.pickerLabel": "Pilih bahasa",
+  "ideaMedia.openArticle": "Buka artikel →"
 }

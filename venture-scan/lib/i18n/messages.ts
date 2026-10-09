@@ -171,12 +171,13 @@ const en = {
   "ideaChat.sources": "Data sources",
   "ideaChat.loading": "Loading idea chatbot…",
 
-  "ideaMedia.kicker": "Provenance media",
-  "ideaMedia.title": "From related data sources",
+  "ideaMedia.kicker": "Related coverage",
+  "ideaMedia.title": "Articles from data sources",
   "ideaMedia.body":
-    "Brand and cover images extracted from the desks that cover this market—open any tile to visit the source.",
+    "Specific articles from the desks covering this market—images are pulled from each article and shown here so you can skim without leaving VentureScan.",
   "ideaMedia.allSources": "All sources →",
   "ideaMedia.extracted": "Extracted",
+  "ideaMedia.openArticle": "Open full article →",
 
   "today.kicker": "Today's recommendation",
   "today.needTitle": "Build a profile first",

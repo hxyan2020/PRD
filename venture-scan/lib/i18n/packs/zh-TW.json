@@ -121,9 +121,9 @@
   "ideaChat.send": "提問",
   "ideaChat.sources": "資料來源",
   "ideaChat.loading": "載入構想問答…",
-  "ideaMedia.kicker": "來源影像",
-  "ideaMedia.title": "相關資料源圖片",
-  "ideaMedia.body": "從覆蓋該市場的信源站點提取的品牌／封面圖——點擊即可開啟原文。",
+  "ideaMedia.kicker": "相關報導",
+  "ideaMedia.title": "資料源文章與配圖",
+  "ideaMedia.body": "來自涵蓋該市場的具體文章連結；文章內圖片已擷取並顯示於此，無需點開資料源首頁。",
   "ideaMedia.allSources": "全部資料源 →",
   "ideaMedia.extracted": "已提取",
   "today.kicker": "今日推薦",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "降級",
   "sources.health.stale": "過期",
   "sources.health.offline": "離線",
-  "lang.pickerLabel": "選擇語言"
+  "lang.pickerLabel": "選擇語言",
+  "ideaMedia.openArticle": "開啟原文 →"
 }

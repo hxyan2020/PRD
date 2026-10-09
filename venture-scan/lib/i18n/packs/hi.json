@@ -121,9 +121,9 @@
   "ideaChat.send": "पूछो",
   "ideaChat.sources": "डेटा स्रोत",
   "ideaChat.loading": "Discovery chatbots.",
-  "ideaMedia.kicker": "निगरानी मीडिया",
-  "ideaMedia.title": "संबंधित डेटा स्रोतों से",
-  "ideaMedia.body": "इस बाजार को कवर करने वाले डेस्क से निकाली गई ब्रांड और कवर छवियां - स्रोत पर जाने के लिए किसी भी टाइल को खोलें।",
+  "ideaMedia.kicker": "संबंधित कवरेज",
+  "ideaMedia.title": "डेटा स्रोतों के लेख",
+  "ideaMedia.body": "ठोस लेख लिंक—लेख की तस्वीरें यहाँ दिखाई जाती हैं।",
   "ideaMedia.allSources": "सभी स्रोत →",
   "ideaMedia.extracted": "निकाला",
   "today.kicker": "आज की सिफारिश",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "क्षीण",
   "sources.health.stale": "कहानी",
   "sources.health.offline": "ऑफलाइन",
-  "lang.pickerLabel": "भाषा चुनें"
+  "lang.pickerLabel": "भाषा चुनें",
+  "ideaMedia.openArticle": "पूरा लेख खोलें →"
 }

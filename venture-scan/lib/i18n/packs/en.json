@@ -121,9 +121,9 @@
   "ideaChat.send": "Ask",
   "ideaChat.sources": "Data sources",
   "ideaChat.loading": "Loading idea chatbot…",
-  "ideaMedia.kicker": "Provenance media",
-  "ideaMedia.title": "From related data sources",
-  "ideaMedia.body": "Brand and cover images extracted from the desks that cover this market—open any tile to visit the source.",
+  "ideaMedia.kicker": "Related coverage",
+  "ideaMedia.title": "Articles from data sources",
+  "ideaMedia.body": "Specific articles from the desks covering this market—images are pulled from each article and shown here so you can skim without leaving VentureScan.",
   "ideaMedia.allSources": "All sources →",
   "ideaMedia.extracted": "Extracted",
   "today.kicker": "Today's recommendation",
@@ -215,5 +215,6 @@
   "sources.health.degraded": "Degraded",
   "sources.health.stale": "Stale",
   "sources.health.offline": "Offline",
-  "lang.pickerLabel": "Choose language"
+  "lang.pickerLabel": "Choose language",
+  "ideaMedia.openArticle": "Open full article →"
 }
