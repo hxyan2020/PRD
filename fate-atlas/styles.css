@@ -6285,3 +6285,48 @@ body:not(.studio-open) .hero__content {
   font-weight: 600;
   color: #7aa7c7;
 }
+
+/* ——— Cartomancy deck stages ——— */
+.cm-stage {
+  margin: 0.75rem 0 1rem;
+  min-height: 5.5rem;
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+}
+.cm-stage__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  text-align: center;
+  max-width: 22rem;
+}
+.cm-stage.is-casting .cm-fan span {
+  animation: cm-pulse 0.9s ease-in-out infinite alternate;
+}
+@keyframes cm-pulse {
+  from { transform: translateY(0) rotate(var(--r, 0deg)); opacity: 0.75; }
+  to { transform: translateY(-4px) rotate(var(--r, 0deg)); opacity: 1; }
+}
+.cm-fan {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.2rem;
+  height: 3.4rem;
+}
+.cm-fan span {
+  width: 1.6rem;
+  height: 2.4rem;
+  border-radius: 0.25rem;
+  background: linear-gradient(160deg, #2a2438, #14101c);
+  border: 2px solid #a890c0;
+  transform: rotate(calc((var(--i, 0) - 1) * 6deg));
+}
+.cm-fan span:nth-child(1) { --i: 0; }
+.cm-fan span:nth-child(2) { --i: 1; }
+.cm-fan span:nth-child(3) { --i: 2; }
+.cm-fan span:nth-child(4) { --i: 3; }
+.cm-fan span.is-on {
+  background: linear-gradient(160deg, #3a3050, #e8c98a33);
+  border-color: #e8c98a;
+}

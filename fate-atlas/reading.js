@@ -42,6 +42,7 @@
     if (window.FatumHimalayaSeaOracles?.has?.(method.id)) return "himalayasea";
     if (window.FatumNearEastOracles?.has?.(method.id)) return "neareast";
     if (window.FatumWestAstroOracles?.has?.(method.id)) return "westastro";
+    if (window.FatumCartomancyOracles?.has?.(method.id)) return "cartomancy";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -274,6 +275,19 @@
         casting: false,
       };
     }
+    if (kind === "cartomancy") {
+      const rite = window.FatumCartomancyOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "question", "shuffleLenormand", "drawThreeLen", "lenormandSpread", "result"],
+        question: "",
+        focus: "",
+        cast: {},
+        suitFocus: "Hearts focus",
+        paloFocus: "Oros",
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -434,6 +448,15 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "cartomancy") {
+        const how = window.FatumCartomancyOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -566,6 +589,7 @@
       else if (state.kind === "himalayasea") renderHimalayaSea();
       else if (state.kind === "neareast") renderNearEast();
       else if (state.kind === "westastro") renderWestAstro();
+      else if (state.kind === "cartomancy") renderCartomancy();
       return;
     }
     renderGeneric();
@@ -3740,6 +3764,148 @@
     }, 900);
   }
 
+  // ——— Cartomancy decks (non-tarot) ———
+  function cmZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function cmStageHTML(rite, casting) {
+    const cast = state.cast || {};
+    const zh = cmZh();
+    const anim = casting ? " is-casting" : "";
+    const cards = cast.cards || (cast.card ? [cast.card] : []);
+    const labels = cards.map((c) => (zh ? c.zh : c.en)).join(" · ") || (zh ? "洗牌…" : "Cards…");
+    const viz = rite?.viz || "cards";
+    return `<div class="cm-stage cm-stage--${escapeHTML(viz)}${anim}"><div class="cm-fan">${Array.from({ length: Math.max(3, cards.length || 3) }, (_, i) => `<span class="${i < (cards.length || 0) ? "is-on" : ""}"></span>`).join("")}</div>
+      <p class="cm-stage__hint">${escapeHTML(labels)}</p></div>`;
+  }
+
+  function renderCartomancy() {
+    const rite = window.FatumCartomancyOracles.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumCartomancyOracles.howFor(state.method.id);
+    const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = cmZh();
+    const backNext = () => `
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+    if (step === "intent") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Europe")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "cartomancy", label: "Cartomancy" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "抱定问题" : "Hold your question")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "suitFocus") {
+      const suits = ["Hearts focus", "Clubs focus", "Diamonds focus", "Spades focus"];
+      const zhS = { "Hearts focus": "红心焦点", "Clubs focus": "梅花焦点", "Diamonds focus": "方块焦点", "Spades focus": "黑桃焦点" };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择花色焦点" : "Pick a suit focus")}</h3>
+        ${cmStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${suits.map((s) => `<button type="button" class="africa-choice${state.suitFocus === s ? " is-on" : ""}" data-action="cm-suit" data-suit="${escapeHTML(s)}">${escapeHTML(zh ? zhS[s] : s)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "paloPick") {
+      const palos = ["Oros", "Copas", "Espadas", "Bastos"];
+      const zhP = { Oros: "金币", Copas: "金杯", Espadas: "宝剑", Bastos: "权杖" };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择花色" : "Pick a palo")}</h3>
+        ${cmStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${palos.map((p) => `<button type="button" class="africa-choice${state.paloFocus === p ? " is-on" : ""}" data-action="cm-palo" data-palo="${p}">${escapeHTML(zh ? zhP[p] : p)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (
+      step === "shuffleLenormand" ||
+      step === "shuffleKipper" ||
+      step === "cutSibilla" ||
+      step === "shufflePlaying" ||
+      step === "shuffleBaraja" ||
+      step === "breatheOracle" ||
+      step === "drawThreeLen" ||
+      step === "kipperLayout" ||
+      step === "sibillaTrio" ||
+      step === "drawOracle"
+    ) {
+      const i = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${cmStageHTML(rite, false)}
+        ${backNext()}`;
+      return;
+    }
+    if (
+      step === "lenormandSpread" ||
+      step === "kipperCounsel" ||
+      step === "sibillaCounsel" ||
+      step === "playingSpread" ||
+      step === "barajaSpread" ||
+      step === "oracleMessage"
+    ) {
+      const cta = window.FatumCartomancyOracles.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(state.question ? (zh ? `持念：「${state.question}」` : `Holding: “${state.question}”`) : "")}</p>
+        ${cmStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="cm-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+    if (step === "result" && state.reading) renderGuidedResult(state.reading, true);
+  }
+
+  function doCartomancyCast() {
+    const rite = window.FatumCartomancyOracles.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumCartomancyOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        nonce: state.nonce,
+        suitFocus: state.suitFocus,
+        paloFocus: state.paloFocus,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -4097,6 +4263,13 @@
             return rite ? waStageHTML(rite, false) : "";
           })()
         : "";
+    const cmExtra =
+      r.kind === "cartomancy" && state.kind === "cartomancy"
+        ? (() => {
+            const rite = window.FatumCartomancyOracles?.get?.(state.method.id);
+            return rite ? cmStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -4104,13 +4277,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -4717,6 +4890,10 @@
         const waCast = ["westChart", "horaryChart", "treeCounsel", "lifePathLean", "isopLean"];
         if (waCast.includes(step)) return;
       }
+      if (state.kind === "cartomancy") {
+        const cmCast = ["lenormandSpread", "kipperCounsel", "sibillaCounsel", "playingSpread", "barajaSpread", "oracleMessage"];
+        if (cmCast.includes(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -4950,6 +5127,15 @@
     }
     if (action === "wa-tree") {
       state.celticTree = el.dataset.tree || "Oak";
+      return render();
+    }
+    if (action === "cm-cast") return doCartomancyCast();
+    if (action === "cm-suit") {
+      state.suitFocus = el.dataset.suit || "Hearts focus";
+      return render();
+    }
+    if (action === "cm-palo") {
+      state.paloFocus = el.dataset.palo || "Oros";
       return render();
     }
 

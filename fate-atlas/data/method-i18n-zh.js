@@ -653,7 +653,7 @@
     },
     "tarot": {
       "name": "塔罗牌（大阿卡纳）",
-      "summary": "洗牌、切牌并抽出三张大阿卡纳：过去 · 现在 · 道路。",
+      "summary": "洗牌、切牌、抽出三张大阿卡纳：过去 · 现在 · 指引，逐步翻开解读。",
       "region": "欧洲",
       "source": "Tarot Major Arcana tradition"
     },
@@ -670,33 +670,33 @@
       "source": "MBTI-inspired preference model (simplified)"
     },
     "lenormand": {
-      "name": "勒诺曼纸牌",
-      "summary": "使用勒诺曼牌阵，按牌面组合讲述情境线索。",
+      "name": "雷诺曼牌",
+      "summary": "三十六张具象图画牌——组合论事件，不只谈模糊情绪。",
       "region": "欧洲",
       "source": "Sekai Fortune"
     },
     "kipper": {
-      "name": "基普纸牌",
-      "summary": "基普纸牌阵，强调日常情境叙事。",
-      "region": "Germany",
+      "name": "基普牌",
+      "summary": "十九世纪德国运势牌——人物、场所与情境以叙事牌阵解读。",
+      "region": "德国",
       "source": "Plutto"
     },
     "sibilla": {
-      "name": "西比拉纸牌",
-      "summary": "西比拉纸牌，意大利／欧陆民俗牌阵。",
-      "region": "Italy",
+      "name": "西比拉牌",
+      "summary": "意大利日常运势牌——短景论交谈、出行、金钱与忠信。",
+      "region": "意大利",
       "source": "Plutto"
     },
     "cartomancy": {
-      "name": "纸牌占卜",
-      "summary": "用普通扑克或地方纸牌作象征抽取与叙事。",
+      "name": "扑克牌占",
+      "summary": "依埃特伊拉与民俗体系解读标准五十二张——花色承载生活主题。",
       "region": "欧洲",
       "source": "Sekai Fortune; Plutto"
     },
     "baraja": {
       "name": "西班牙纸牌占",
-      "summary": "西班牙四十张纸牌占卜。",
-      "region": "Iberia／Latin 美洲",
+      "summary": "四十张金币、金杯、宝剑、权杖牌——伊比利亚与拉美民俗解读。",
+      "region": "伊比利亚／拉丁美洲",
       "source": "Sekai Fortune"
     },
     "runes-younger": {
@@ -1079,8 +1079,8 @@
     },
     "oracle-cards": {
       "name": "神谕卡",
-      "summary": "抽取现代神谕卡，以图像与短句作为反思提示。",
-      "region": "现代West",
+      "summary": "超越经典塔罗结构的自由插画讯息牌——一张牌映照所问。",
+      "region": "现代西方",
       "source": "Sekai Fortune"
     },
     "aura-reading": {
@@ -1776,9 +1776,9 @@
       "source": "Sekai Fortune"
     },
     "tarot": {
-      "name": "塔罗牌（大阿卡纳）",
-      "summary": "洗牌、切牌并抽出三张大阿卡纳：過去 · 現在 · 道路。",
-      "region": "欧洲",
+      "name": "塔羅牌（大阿卡納）",
+      "summary": "洗牌、切牌、抽出三張大阿卡納：過去 · 現在 · 指引，逐步翻開解讀。",
+      "region": "歐洲",
       "source": "Tarot Major Arcana tradition"
     },
     "bagua": {
@@ -1794,33 +1794,33 @@
       "source": "MBTI-inspired preference model (simplified)"
     },
     "lenormand": {
-      "name": "勒诺曼纸牌",
-      "summary": "使用勒诺曼牌阵，按牌面组合讲述情境線索。",
-      "region": "欧洲",
+      "name": "雷諾曼牌",
+      "summary": "三十六張具象圖畫牌——組合論事件，不只談模糊情緒。",
+      "region": "歐洲",
       "source": "Sekai Fortune"
     },
     "kipper": {
-      "name": "基普纸牌",
-      "summary": "基普纸牌阵，强调日常情境叙事。",
-      "region": "Germany",
+      "name": "基普牌",
+      "summary": "十九世紀德國運勢牌——人物、場所與情境以敘事牌陣解讀。",
+      "region": "德國",
       "source": "Plutto"
     },
     "sibilla": {
-      "name": "西比拉纸牌",
-      "summary": "西比拉纸牌，意大利／欧陆民俗牌阵。",
-      "region": "Italy",
+      "name": "西比拉牌",
+      "summary": "義大利日常運勢牌——短景論交談、出行、金錢與忠信。",
+      "region": "義大利",
       "source": "Plutto"
     },
     "cartomancy": {
-      "name": "纸牌占卜",
-      "summary": "用普通扑克或地方纸牌作象征抽取与叙事。",
-      "region": "欧洲",
+      "name": "撲克牌占",
+      "summary": "依埃特伊拉與民俗體系解讀標準五十二張——花色承載生活主題。",
+      "region": "歐洲",
       "source": "Sekai Fortune; Plutto"
     },
     "baraja": {
-      "name": "西班牙纸牌占",
-      "summary": "西班牙四十张纸牌占卜。",
-      "region": "Iberia／Latin 美洲",
+      "name": "西班牙紙牌占",
+      "summary": "四十張金幣、金杯、寶劍、權杖牌——伊比利亞與拉美民俗解讀。",
+      "region": "伊比利亞／拉丁美洲",
       "source": "Sekai Fortune"
     },
     "runes-younger": {
@@ -2202,9 +2202,9 @@
       "source": "Sekai Fortune; Plutto"
     },
     "oracle-cards": {
-      "name": "神谕卡",
-      "summary": "抽取現代神谕卡，以圖像与短句作為反思提示。",
-      "region": "現代West",
+      "name": "神諭卡",
+      "summary": "超越經典塔羅結構的自由插畫訊息牌——一張牌映照所問。",
+      "region": "現代西方",
       "source": "Sekai Fortune"
     },
     "aura-reading": {
