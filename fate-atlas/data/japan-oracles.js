@@ -397,11 +397,9 @@
         const grades = [
           { en: "Daikichi band", zh: "大吉带", lean: { en: "name supports clarity", zh: "姓名助力清晰", hant: "姓名助力清晰" } },
           { en: "Kichi band", zh: "吉带", lean: { en: "steady name weather", zh: "姓名气象平稳", hant: "姓名氣象平穩" } },
-          { en: "Hankichi band", zh: "半吉带", lean: { en: "mixed · refine spelling use", zh: "驳杂·可 refining 用法", hant: "駁雜·可精煉用法" } },
+          { en: "Hankichi band", zh: "半吉带", lean: { en: "mixed · refine how you sign", zh: "驳杂·精炼署名方式", hant: "駁雜·精煉署名方式" } },
           { en: "Kyō caution", zh: "凶慎", lean: { en: "soften how the name is used", zh: "柔化姓名使用方式", hant: "柔化姓名使用方式" } },
         ];
-        // fix half-english lean
-        grades[2].lean = { en: "mixed · refine how you sign", zh: "驳杂·精炼署名方式", hant: "駁雜·精煉署名方式" };
         const grade = pick(rng, grades);
         return { name, strokes, grade, lean: loc(grade.lean) };
       },
