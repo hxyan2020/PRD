@@ -48,6 +48,7 @@
     if (window.FatumPhysioFormOracles?.has?.(method.id)) return "physioform";
     if (window.FatumMesoamericaOracles?.has?.(method.id)) return "mesoamerica";
     if (window.FatumNorthAmericaOracles?.has?.(method.id)) return "northamerica";
+    if (window.FatumSouthAmericaOracles?.has?.(method.id)) return "southamerica";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -352,6 +353,19 @@
         casting: false,
       };
     }
+    if (kind === "southamerica") {
+      const rite = window.FatumSouthAmericaOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "question", "castBuzios", "oduBuzios", "buziosCounsel", "result"],
+        question: "",
+        focus: "",
+        dayDate: "",
+        dreamNote: "",
+        cast: {},
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -566,6 +580,15 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "southamerica") {
+        const how = window.FatumSouthAmericaOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -704,6 +727,7 @@
       else if (state.kind === "physioform") renderPhysioForm();
       else if (state.kind === "mesoamerica") renderMesoamerica();
       else if (state.kind === "northamerica") renderNorthAmerica();
+      else if (state.kind === "southamerica") renderSouthAmerica();
       return;
     }
     renderGeneric();
@@ -4789,6 +4813,138 @@
     }, 900);
   }
 
+  // ——— South American oracles ———
+  const SA_CAST = new Set([
+    "buziosCounsel",
+    "wataCounsel",
+    "cocaCounsel",
+    "waujaCounsel",
+    "peumaCounsel",
+    "ayaCounsel",
+    "despachoCounsel",
+  ]);
+
+  function saAmStageHTML(viz, pulse) {
+    const F = window.FatumSouthAmericaOracles;
+    const cast = state.cast || {};
+    const name = cast.item ? F.loc({ en: cast.item.en, zh: cast.item.zh }) : "";
+    const pulseCls = pulse ? " saam-stage--pulse" : "";
+    if (viz === "buzios") {
+      return `<div class="saam-stage${pulseCls}" aria-hidden="true"><div class="saam-cowries">${[0,1,2,3].map(()=>"<i></i>").join("")}</div><p class="saam-label">${escapeHTML(name || "Odú")}</p></div>`;
+    }
+    if (viz === "wata") {
+      return `<div class="saam-stage${pulseCls}" aria-hidden="true"><div class="saam-sun"><span>${escapeHTML(name || "☀")}</span></div></div>`;
+    }
+    if (viz === "coca") {
+      return `<div class="saam-stage${pulseCls}" aria-hidden="true"><div class="saam-leaves">${[0,1,2].map(()=>"<i></i>").join("")}</div><p class="saam-label">${escapeHTML(name || "···")}</p></div>`;
+    }
+    if (viz === "wauja" || viz === "ayahuasca") {
+      return `<div class="saam-stage${pulseCls}" aria-hidden="true"><div class="saam-vision"><span>${escapeHTML(name || "◈")}</span></div></div>`;
+    }
+    if (viz === "peuma") {
+      return `<div class="saam-stage${pulseCls}" aria-hidden="true"><div class="saam-dream"><span>${escapeHTML(name || "☾")}</span></div></div>`;
+    }
+    return `<div class="saam-stage${pulseCls}" aria-hidden="true"><div class="saam-bundle"><span>${escapeHTML(name || "✧")}</span></div></div>`;
+  }
+
+  function renderSouthAmerica() {
+    const F = window.FatumSouthAmericaOracles;
+    const rite = F.get(state.method.id);
+    if (!rite) return renderGeneric();
+    const step = state.steps[state.stepIndex];
+    const how = F.howFor(state.method.id);
+    const zh = String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const backNext = () => `
+      <div class="studio__actions">
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+        <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+      </div>`;
+    if (step === "intent") {
+      const hs = how?.steps?.[0];
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "South America")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "southamerica", label: "South America" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "抱定问题" : "Hold your question")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "dayDate") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择日期" : "Pick a day")}</h3>
+        <div class="field"><label for="r-day">${escapeHTML(zh ? "日期" : "Date")}</label>
+        <input type="date" id="r-day" value="${escapeHTML(state.dayDate || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "dreamNoteMapuche") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "记录梦象" : "Note a dream image")}</h3>
+        <div class="field"><label for="r-dream-mapuche">${escapeHTML(zh ? "梦象" : "Dream image")}</label>
+        <textarea id="r-dream-mapuche" rows="3" maxlength="280">${escapeHTML(state.dreamNote || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (SA_CAST.has(step)) {
+      const cta = F.loc(rite.castCta);
+      const hold = state.question || state.dayDate || state.dreamNote || "";
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(hold ? (zh ? `持念：「${hold}」` : `Holding: “${hold}”`) : "")}</p>
+        ${saAmStageHTML(rite.viz, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="saam-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+      return;
+    }
+    const i = state.steps.indexOf(step);
+    const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+    body.innerHTML = `
+      <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+      <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+      ${saAmStageHTML(rite.viz, true)}
+      ${backNext()}`;
+  }
+
+  function doSouthAmericaCast() {
+    if (!window.FatumSouthAmericaOracles.get(state.method.id)) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumSouthAmericaOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        dayDate: state.dayDate,
+        dreamNote: state.dreamNote,
+        nonce: state.nonce,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -5188,6 +5344,13 @@
             return rite ? naStageHTML(rite.viz, false) : "";
           })()
         : "";
+    const saAmExtra =
+      r.kind === "southamerica" && state.kind === "southamerica"
+        ? (() => {
+            const rite = window.FatumSouthAmericaOracles?.get?.(state.method.id);
+            return rite ? saAmStageHTML(rite.viz, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -5195,13 +5358,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra || fsExtra || pfExtra || maExtra || naExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra || fsExtra || pfExtra || maExtra || naExtra || saAmExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : r.kind === "folkscry" ? "✧" : r.kind === "physioform" ? "✋" : r.kind === "mesoamerica" ? "☀" : r.kind === "northamerica" ? "✧" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : r.kind === "folkscry" ? "✧" : r.kind === "physioform" ? "✋" : r.kind === "mesoamerica" ? "☀" : r.kind === "northamerica" ? "✧" : r.kind === "southamerica" ? "☘" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -5843,6 +6006,19 @@
       if (state.kind === "northamerica") {
         if (NA_CAST.has(step)) return;
       }
+      if (state.kind === "southamerica") {
+        if (step === "dayDate") {
+          const d = body.querySelector("#r-day");
+          state.dayDate = (d?.value || "").trim();
+          if (!state.dayDate) return fail(d);
+        }
+        if (step === "dreamNoteMapuche") {
+          const d = body.querySelector("#r-dream-mapuche");
+          state.dreamNote = (d?.value || "").trim();
+          if (!state.dreamNote) return fail(d);
+        }
+        if (SA_CAST.has(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -6096,6 +6272,7 @@
     }
     if (action === "ma-cast") return doMesoamericaCast();
     if (action === "na-cast") return doNorthAmericaCast();
+    if (action === "saam-cast") return doSouthAmericaCast();
 
     if (action === "kv-hour") {
       state.hourIndex = Number(el.dataset.hour || 0);
