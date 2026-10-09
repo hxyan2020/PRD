@@ -206,10 +206,13 @@
       if (state.kind === "bagua") {
         const total = 5;
         let idx = state.stepIndex + 1;
+        const coinsLabel = String(window.FatumI18n?.getLocale?.() || "").startsWith("zh")
+          ? "备好铜钱"
+          : "Ready the coins";
         let label = [
           ti("studio.step.learn"),
           ti("studio.step.question"),
-          ti("studio.step.coins") || (String(window.FatumI18n?.getLocale?.() || "").startsWith("zh") ? "备钱" : "Ready the coins"),
+          coinsLabel,
           ti("studio.step.cast"),
           ti("studio.step.reading"),
         ][state.stepIndex] || ti("studio.step.reading");
