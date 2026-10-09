@@ -19,7 +19,8 @@ export default function MethodologyPage() {
         </li>
         <li>
           <span className="text-foam">Match</span> — a chatbot collects skills, major, current
-          business, and interested domains, then scores every idea against that profile.
+          business, and interested domains, then scores every idea against that profile. If a reply
+          drifts off the question, it gently steers you back before moving on.
         </li>
         <li>
           <span className="text-foam">Daily pick</span> — each day we recommend your

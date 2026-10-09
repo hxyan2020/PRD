@@ -88,6 +88,20 @@ const en = {
   "match.step.domains":
     "Which domains interest you most? Comma-separated (e.g. health tech, climate, fintech, edtech).",
   "match.step.markets": "Any preferred markets or countries? Comma-separated, or type skip.",
+  "match.redirect.name":
+    "Nice to hear from you — I still need a name I can call you by. What should I put down?",
+  "match.redirect.skills":
+    "Got it. To keep matching on track, list a few skills (comma-separated) — e.g. product, sales, Python.",
+  "match.redirect.major":
+    "Thanks. Could you share your major or professional background so I can score ideas fairly?",
+  "match.redirect.business":
+    "Understood. What's your current business, job, or what you're exploring right now?",
+  "match.redirect.domains":
+    "Almost there — which domains interest you most? Comma-separated is fine (health tech, climate, fintech…).",
+  "match.redirect.markets":
+    "No rush. Preferred markets or countries, comma-separated — or type skip to move on.",
+  "match.redirect.generic":
+    "I noticed we drifted a bit — let's stay on this question so I can build an accurate match profile.",
 
   "today.kicker": "Today's recommendation",
   "today.needTitle": "Build a profile first",
@@ -267,6 +281,15 @@ const zhCN: Dict = {
   "match.step.business": "你目前的业务、工作或创业方向是什么？（还没有的话，说说你在探索什么。）",
   "match.step.domains": "你最感兴趣的领域？用逗号分隔（例如：健康科技、气候、金融科技、教育科技）。",
   "match.step.markets": "有偏好的市场或国家吗？用逗号分隔，或输入 skip。",
+  "match.redirect.name": "很高兴认识你——我还需要一个可以称呼你的名字。你希望我怎么叫你？",
+  "match.redirect.skills":
+    "收到。为了继续匹配，请用逗号列出几项技能，例如：产品、销售、Python。",
+  "match.redirect.major": "谢谢。能分享一下你的专业或职业背景吗？这样评分会更准。",
+  "match.redirect.business": "明白。你目前的业务、工作，或正在探索的方向是什么？",
+  "match.redirect.domains":
+    "快完成了——你最感兴趣的领域？用逗号分隔即可（健康科技、气候、金融科技…）。",
+  "match.redirect.markets": "不着急。偏好的市场或国家，用逗号分隔——或输入 skip 跳过。",
+  "match.redirect.generic": "我们好像聊偏了一点——先回到这个问题，方便我建立准确的匹配画像。",
   "today.kicker": "今日推荐",
   "today.needTitle": "请先建立画像",
   "today.needBody": "每日推荐需要你的技能、专业、当前业务与兴趣领域，才能打分并展示匹配与差距。",

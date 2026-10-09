@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { matchProfile } from "@/lib/client-api";
+import {
+  assessAnswer,
+  redirectMessageKey,
+  type ChatStepId,
+} from "@/lib/chat-guardrails";
 import { useI18n } from "@/lib/i18n/context";
 import type { MessageKey } from "@/lib/i18n/messages";
 import {
@@ -18,16 +23,9 @@ import type { IdeaMatch, StartupIdea, UserProfile } from "@/lib/types";
 type ChatRole = "bot" | "user";
 type ChatMessage = { id: string; role: ChatRole; text: string };
 
-type StepId =
-  | "name"
-  | "skills"
-  | "major"
-  | "business"
-  | "domains"
-  | "markets"
-  | "done";
+type StepId = ChatStepId | "done";
 
-const STEP_DEFS: { id: StepId; promptKey: MessageKey }[] = [
+const STEP_DEFS: { id: ChatStepId; promptKey: MessageKey }[] = [
   { id: "name", promptKey: "match.step.name" },
   { id: "skills", promptKey: "match.step.skills" },
   { id: "major", promptKey: "match.step.major" },
@@ -112,11 +110,11 @@ export function ProfileChatbot() {
     }
   }
 
-  function applyAnswer(current: UserProfile, stepId: StepId, answer: string): UserProfile {
+  function applyAnswer(current: UserProfile, stepId: ChatStepId, answer: string): UserProfile {
     const text = answer.trim();
     switch (stepId) {
       case "name":
-        return { ...current, displayName: text === "skip" ? "" : text };
+        return { ...current, displayName: extractDisplayName(text) };
       case "skills":
         return { ...current, skills: parseListInput(text) };
       case "major":
@@ -146,6 +144,21 @@ export function ProfileChatbot() {
     };
     setInput("");
     setMessages((prev) => [...prev, userMsg]);
+
+    const assessment = assessAnswer(step.id, answer);
+    if (!assessment.ok) {
+      const redirectKey = redirectMessageKey(step.id, assessment.kind);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `b-redirect-${Date.now()}`,
+          role: "bot",
+          text: `${t(redirectKey)}\n\n${t(step.promptKey)}`,
+        },
+      ]);
+      queueMicrotask(() => inputRef.current?.focus());
+      return;
+    }
 
     const nextProfile = applyAnswer(profile, step.id, answer);
     const nextIndex = stepIndex + 1;
@@ -392,4 +405,12 @@ function summarizeProfile(p: UserProfile): string {
     p.preferredMarkets.length ? `markets: ${p.preferredMarkets.join(", ")}` : null,
   ].filter(Boolean);
   return bits.length ? `Profile locked: ${bits.join("; ")}.` : "Profile is still thin.";
+}
+
+function extractDisplayName(raw: string): string {
+  const titled = raw.match(
+    /(?:i'?m|i am|my name is|this is|call me|i'm called)\s+(.+)$/i,
+  );
+  if (titled?.[1]) return titled[1].trim().replace(/[!！.。]+$/, "");
+  return raw.trim();
 }
