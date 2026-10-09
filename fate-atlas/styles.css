@@ -6433,3 +6433,212 @@ body:not(.studio-open) .hero__content {
   border-radius: 50%;
   background: #c4a574;
 }
+
+/* Folk scrying stages */
+.fs-stage {
+  margin: 0.75rem 0 1rem;
+  min-height: 5.5rem;
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+}
+.fs-stage--pulse .fs-crystal,
+.fs-stage--pulse .fs-cup,
+.fs-stage--pulse .fs-pendulum,
+.fs-stage--pulse .fs-wax,
+.fs-stage--pulse .fs-folk-glyph,
+.fs-stage--pulse .fs-apple,
+.fs-stage--pulse .fs-egg,
+.fs-stage--pulse .fs-cloud,
+.fs-stage--pulse .fs-smoke,
+.fs-stage--pulse .fs-flame,
+.fs-stage--pulse .fs-basin,
+.fs-stage--pulse .fs-tile,
+.fs-stage--pulse .fs-dream {
+  animation: fs-pulse 0.95s ease-in-out infinite alternate;
+}
+@keyframes fs-pulse {
+  from { transform: scale(1); opacity: 0.78; }
+  to { transform: scale(1.06); opacity: 1; }
+}
+.fs-crystal {
+  width: 3.4rem;
+  height: 3.4rem;
+  clip-path: polygon(50% 0%, 90% 35%, 75% 100%, 25% 100%, 10% 35%);
+  background: linear-gradient(160deg, #9ec9e8, #3a5a78 55%, #1a2838);
+  border: 1px solid #b8d4ea;
+  display: grid;
+  place-items: center;
+  color: #e8f2fa;
+  font-size: 0.72rem;
+  text-align: center;
+  padding: 0.4rem;
+}
+.fs-cup {
+  width: 3.2rem;
+  height: 2.6rem;
+  border: 2px solid #a67c52;
+  border-radius: 0 0 1.4rem 1.4rem;
+  background: linear-gradient(180deg, #f0e0c8, #c4a078);
+  display: grid;
+  place-items: end center;
+  padding-bottom: 0.35rem;
+}
+.fs-leaves {
+  font-size: 0.7rem;
+  color: #3a2820;
+  letter-spacing: 0.05em;
+}
+.fs-pendulum {
+  width: 0.12rem;
+  height: 2.4rem;
+  background: #c4a574;
+  position: relative;
+  transform-origin: top center;
+}
+.fs-stage--pulse .fs-pendulum {
+  animation: fs-swing 1.1s ease-in-out infinite alternate;
+}
+@keyframes fs-swing {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(14deg); }
+}
+.fs-bob {
+  position: absolute;
+  bottom: -0.55rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e8c98a, #8a6340);
+  border: 1px solid #c4a574;
+}
+.fs-label {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+.fs-wax {
+  width: 3rem;
+  height: 2.4rem;
+  border-radius: 45% 55% 60% 40%;
+  background: linear-gradient(160deg, #f0e6c8, #c4a050);
+  border: 1px solid #a88840;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #3a3020;
+  text-align: center;
+  padding: 0.3rem;
+}
+.fs-folk-glyph {
+  font-size: 2.2rem;
+  color: #c4a574;
+  line-height: 1;
+  text-align: center;
+  max-width: 12rem;
+}
+.fs-apple {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50% 50% 48% 52%;
+  background: radial-gradient(circle at 35% 30%, #e07070, #8a3030);
+  border: 1px solid #c45050;
+  display: grid;
+  place-items: center;
+  font-size: 0.65rem;
+  color: #fce8e8;
+  text-align: center;
+  padding: 0.35rem;
+}
+.fs-egg {
+  width: 2.4rem;
+  height: 3.1rem;
+  border-radius: 50% 50% 48% 52% / 60% 60% 40% 40%;
+  background: linear-gradient(180deg, #f8f0e0, #d8c8a8);
+  border: 1px solid #c4b090;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #4a4030;
+  text-align: center;
+  padding: 0.3rem;
+}
+.fs-cloud {
+  width: 4.2rem;
+  height: 2.2rem;
+  border-radius: 2rem;
+  background: linear-gradient(180deg, #d8e4f0, #8aa0b8);
+  border: 1px solid #b0c4d8;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #2a3848;
+  text-align: center;
+  padding: 0.3rem;
+}
+.fs-smoke {
+  width: 1.2rem;
+  height: 3rem;
+  border-radius: 50% 50% 40% 40%;
+  background: linear-gradient(180deg, transparent, #9aa0a888 40%, #6a707888);
+  display: grid;
+  place-items: start center;
+  padding-top: 0.2rem;
+  font-size: 0.65rem;
+  color: #c8d0d8;
+  text-align: center;
+}
+.fs-flame {
+  width: 1.6rem;
+  height: 2.8rem;
+  clip-path: polygon(50% 0%, 85% 45%, 70% 100%, 30% 100%, 15% 45%);
+  background: linear-gradient(180deg, #ffe08a, #e07030 55%, #802010);
+  display: grid;
+  place-items: end center;
+  padding-bottom: 0.35rem;
+  font-size: 0.58rem;
+  color: #fff8e0;
+  text-align: center;
+}
+.fs-basin {
+  width: 3.6rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  border: 2px solid #6a90a8;
+  background: radial-gradient(ellipse at 50% 40%, #a8d0e8, #3a6078);
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #e8f4fa;
+  text-align: center;
+  padding: 0.3rem;
+}
+.fs-tile {
+  width: 2rem;
+  height: 3.4rem;
+  border-radius: 0.35rem;
+  background: #e8e0d0;
+  border: 2px solid #8a7860;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #3a3020;
+  text-align: center;
+  padding: 0.25rem;
+}
+.fs-dream {
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #6a7ab0, #1a2038);
+  border: 1px solid #8a9ac8;
+  display: grid;
+  place-items: center;
+  font-size: 0.7rem;
+  color: #d8e0f8;
+  text-align: center;
+  padding: 0.35rem;
+}
+}

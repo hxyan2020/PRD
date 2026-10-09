@@ -44,6 +44,7 @@
     if (window.FatumWestAstroOracles?.has?.(method.id)) return "westastro";
     if (window.FatumCartomancyOracles?.has?.(method.id)) return "cartomancy";
     if (window.FatumClassicalEuroOracles?.has?.(method.id)) return "classicaleuro";
+    if (window.FatumFolkScryOracles?.has?.(method.id)) return "folkscry";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -300,6 +301,18 @@
         casting: false,
       };
     }
+    if (kind === "folkscry") {
+      const rite = window.FatumFolkScryOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "question", "gazeCrystal", "scryImage", "scryCounsel", "result"],
+        question: "",
+        focus: "",
+        cast: {},
+        dreamNote: "",
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -478,6 +491,15 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "folkscry") {
+        const how = window.FatumFolkScryOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -612,6 +634,7 @@
       else if (state.kind === "westastro") renderWestAstro();
       else if (state.kind === "cartomancy") renderCartomancy();
       else if (state.kind === "classicaleuro") renderClassicalEuro();
+      else if (state.kind === "folkscry") renderFolkScry();
       return;
     }
     renderGeneric();
@@ -4078,6 +4101,181 @@
     }, 900);
   }
 
+  // ——— Folk scrying oracles ———
+  const FS_CAST = new Set([
+    "scryCounsel",
+    "teaCounsel",
+    "dowsingCounsel",
+    "waxCounsel",
+    "slavicCounsel",
+    "svyatkiCounsel",
+    "balticCounsel",
+    "mordovianCounsel",
+    "appleCounsel",
+    "oomancyCounsel",
+    "cloudCounsel",
+    "smokeCounsel",
+    "fireCounsel",
+    "waterCounsel",
+    "dominoCounsel",
+    "dreamFolkCounsel",
+  ]);
+
+  function fsStageHTML(viz, pulse) {
+    const F = window.FatumFolkScryOracles;
+    const cast = state.cast || {};
+    const name = cast.item ? F.loc({ en: cast.item.en, zh: cast.item.zh }) : "";
+    const pulseCls = pulse ? " fs-stage--pulse" : "";
+    if (viz === "scry") {
+      return `<div class="fs-stage fs-stage--scry${pulseCls}" aria-hidden="true"><div class="fs-crystal"><span>${escapeHTML(name || "◇")}</span></div></div>`;
+    }
+    if (viz === "tea") {
+      return `<div class="fs-stage fs-stage--tea${pulseCls}" aria-hidden="true"><div class="fs-cup"><span class="fs-leaves">${escapeHTML(name || "···")}</span></div></div>`;
+    }
+    if (viz === "pendulum") {
+      return `<div class="fs-stage fs-stage--pendulum${pulseCls}" aria-hidden="true"><div class="fs-pendulum"><span class="fs-bob"></span></div><p class="fs-label">${escapeHTML(name || "⋯")}</p></div>`;
+    }
+    if (viz === "wax") {
+      return `<div class="fs-stage fs-stage--wax${pulseCls}" aria-hidden="true"><div class="fs-wax"><span>${escapeHTML(name || "⬡")}</span></div></div>`;
+    }
+    if (viz === "slavic" || viz === "svyatki" || viz === "baltic" || viz === "mordovian") {
+      return `<div class="fs-stage fs-stage--folk${pulseCls}" aria-hidden="true"><div class="fs-folk-glyph">${escapeHTML(name || "✧")}</div></div>`;
+    }
+    if (viz === "apple") {
+      return `<div class="fs-stage fs-stage--apple${pulseCls}" aria-hidden="true"><div class="fs-apple"><span>${escapeHTML(name || "🍎")}</span></div></div>`;
+    }
+    if (viz === "egg") {
+      return `<div class="fs-stage fs-stage--egg${pulseCls}" aria-hidden="true"><div class="fs-egg"><span>${escapeHTML(name || "○")}</span></div></div>`;
+    }
+    if (viz === "cloud") {
+      return `<div class="fs-stage fs-stage--cloud${pulseCls}" aria-hidden="true"><div class="fs-cloud"><span>${escapeHTML(name || "☁")}</span></div></div>`;
+    }
+    if (viz === "smoke") {
+      return `<div class="fs-stage fs-stage--smoke${pulseCls}" aria-hidden="true"><div class="fs-smoke"><span>${escapeHTML(name || "〰")}</span></div></div>`;
+    }
+    if (viz === "fire") {
+      return `<div class="fs-stage fs-stage--fire${pulseCls}" aria-hidden="true"><div class="fs-flame"><span>${escapeHTML(name || "△")}</span></div></div>`;
+    }
+    if (viz === "water") {
+      return `<div class="fs-stage fs-stage--water${pulseCls}" aria-hidden="true"><div class="fs-basin"><span>${escapeHTML(name || "≈")}</span></div></div>`;
+    }
+    if (viz === "domino") {
+      return `<div class="fs-stage fs-stage--domino${pulseCls}" aria-hidden="true"><div class="fs-tile"><span>${escapeHTML(name || "⠿")}</span></div></div>`;
+    }
+    if (viz === "dreamfolk") {
+      return `<div class="fs-stage fs-stage--dream${pulseCls}" aria-hidden="true"><div class="fs-dream"><span>${escapeHTML(name || "☾")}</span></div></div>`;
+    }
+    return `<div class="fs-stage${pulseCls}" aria-hidden="true"><div class="fs-folk-glyph">${escapeHTML(name || "✦")}</div></div>`;
+  }
+
+  function fsZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function renderFolkScry() {
+    const F = window.FatumFolkScryOracles;
+    const rite = F.get(state.method.id);
+    if (!rite) return renderGeneric();
+    const step = state.steps[state.stepIndex];
+    const how = F.howFor(state.method.id);
+    const zh = fsZh();
+    const backNext = () => `
+      <div class="studio__actions">
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+        <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+      </div>`;
+
+    if (step === "intent") {
+      const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+      const hs = how?.steps?.[0];
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Europe")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "folkscry", label: "Folk · Scrying" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "抱定问题" : "Hold your question")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "dreamNoteFolk") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "记录梦象" : "Note a dream image")}</h3>
+        <div class="field"><label for="r-dream-folk">${escapeHTML(zh ? "梦象" : "Dream image")}</label>
+        <textarea id="r-dream-folk" rows="3" maxlength="280" placeholder="${escapeHTML(zh ? "例如：流水、房屋、追逐…" : "e.g. running water, a house, a chase…")}">${escapeHTML(state.dreamNote || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (FS_CAST.has(step)) {
+      const cta = F.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(
+          state.question
+            ? zh
+              ? `持念：「${state.question}」`
+              : `Holding: “${state.question}”`
+            : state.dreamNote
+              ? zh
+                ? `梦象：「${state.dreamNote}」`
+                : `Dream: “${state.dreamNote}”`
+              : ""
+        )}</p>
+        ${fsStageHTML(rite.viz, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="fs-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+      return;
+    }
+    const i = state.steps.indexOf(step);
+    const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+    body.innerHTML = `
+      <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+      <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+      ${fsStageHTML(rite.viz, true)}
+      ${backNext()}`;
+  }
+
+  function doFolkScryCast() {
+    const rite = window.FatumFolkScryOracles.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumFolkScryOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        dreamNote: state.dreamNote,
+        nonce: state.nonce,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -4449,6 +4647,13 @@
             return rite ? ceStageHTML(rite, false) : "";
           })()
         : "";
+    const fsExtra =
+      r.kind === "folkscry" && state.kind === "folkscry"
+        ? (() => {
+            const rite = window.FatumFolkScryOracles?.get?.(state.method.id);
+            return rite ? fsStageHTML(rite.viz, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -4456,13 +4661,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra || fsExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : r.kind === "folkscry" ? "✧" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -5076,6 +5281,14 @@
       if (state.kind === "classicaleuro") {
         if (CE_CAST.has(step)) return;
       }
+      if (state.kind === "folkscry") {
+        if (step === "dreamNoteFolk") {
+          const d = body.querySelector("#r-dream-folk");
+          state.dreamNote = (d?.value || "").trim();
+          if (!state.dreamNote) return fail(d);
+        }
+        if (FS_CAST.has(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -5321,6 +5534,7 @@
       return render();
     }
     if (action === "ce-cast") return doClassicalEuroCast();
+    if (action === "fs-cast") return doFolkScryCast();
 
     if (action === "kv-hour") {
       state.hourIndex = Number(el.dataset.hour || 0);
