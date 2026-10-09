@@ -152,22 +152,22 @@
   ];
 
   const MBTI_TYPES = {
-    INTJ: { title: "Architect", fate: "You build long games. Fate favors private mastery that later becomes public structure.", path: "Commit to one blueprint; finish before starting three more." },
-    INTP: { title: "Logician", fate: "Insight arrives in quiet. Your fortune grows when curiosity is given a container.", path: "Ship a small version of the idea you keep refining." },
-    ENTJ: { title: "Commander", fate: "Momentum follows decisive leadership. Watch for allies you might overlook.", path: "Delegate one control point; strength multiplies." },
-    ENTP: { title: "Debater", fate: "Opportunity loves your improvisation—ground it or it scatters.", path: "Pick one debate worth winning this month." },
-    INFJ: { title: "Advocate", fate: "You sense the hidden thread. Fate asks you to trust the vision and rest the body.", path: "Protect solitude; your counsel needs charge." },
-    INFP: { title: "Mediator", fate: "Meaning is your compass. Fortune comes when values become a craft.", path: "Make one beautiful thing that serves another person." },
-    ENFJ: { title: "Protagonist", fate: "People gather where you warm the room. Guard against carrying everyone.", path: "Ask for help once without apologizing." },
-    ENFP: { title: "Campaigner", fate: "Sparks and doors open around you. Depth keeps the flame from burning out.", path: "Finish the project that still excites your chest." },
-    ISTJ: { title: "Logistician", fate: "Reliability is rare magic. Systems you tend become quiet wealth.", path: "Allow one controlled experiment outside the manual." },
-    ISFJ: { title: "Defender", fate: "Care is your power. Fate asks you to include yourself in the circle you protect.", path: "Say no once; keep the yes that matters." },
-    ESTJ: { title: "Executive", fate: "Order creates harvest. Soften the edge so loyalty can grow.", path: "Listen fully before the next directive." },
-    ESFJ: { title: "Consul", fate: "Belonging multiplies around you. Boundaries keep the feast from emptying you.", path: "Schedule recovery as firmly as duty." },
-    ISTP: { title: "Virtuoso", fate: "Skill under pressure is your luck. Trouble teaches your hands.", path: "Teach one trick; mastery deepens when shared." },
-    ISFP: { title: "Adventurer", fate: "Beauty and freedom call you. Anchors help the art survive.", path: "Claim a gentle routine that still feels like yours." },
-    ESTP: { title: "Entrepreneur", fate: "The live moment is your arena. Reflection turns wins into wisdom.", path: "Pause one beat before the next leap." },
-    ESFP: { title: "Entertainer", fate: "Joy opens doors. Substance keeps the stage from becoming a trap.", path: "Invest in one relationship that isn’t a performance." },
+    INTJ: { title: "Architect", titleZh: "建筑师", fate: "You build long games. Fate favors private mastery that later becomes public structure.", fateZh: "你擅长长线布局。私下打磨的技艺，日后会变成公开的结构。", path: "Commit to one blueprint; finish before starting three more.", pathZh: "先认准一张蓝图；完成它，再开三张新图。" },
+    INTP: { title: "Logician", titleZh: "逻辑学家", fate: "Insight arrives in quiet. Your fortune grows when curiosity is given a container.", fateZh: "洞见在安静中到来。给好奇一个容器，运势才长得住。", path: "Ship a small version of the idea you keep refining.", pathZh: "把你反复打磨的想法，先发出一个小版本。" },
+    ENTJ: { title: "Commander", titleZh: "指挥官", fate: "Momentum follows decisive leadership. Watch for allies you might overlook.", fateZh: "果断领导带来动能。留意那些你可能忽略的盟友。", path: "Delegate one control point; strength multiplies.", pathZh: "交出一个控制点；力量会相乘。" },
+    ENTP: { title: "Debater", titleZh: "辩论家", fate: "Opportunity loves your improvisation—ground it or it scatters.", fateZh: "机会喜欢你的即兴——落地，否则会散掉。", path: "Pick one debate worth winning this month.", pathZh: "这个月只选一场值得赢的辩论。" },
+    INFJ: { title: "Advocate", titleZh: "提倡者", fate: "You sense the hidden thread. Fate asks you to trust the vision and rest the body.", fateZh: "你能感到隐线。命运要你信愿景，也让身体休息。", path: "Protect solitude; your counsel needs charge.", pathZh: "保护独处；你的指引需要充电。" },
+    INFP: { title: "Mediator", titleZh: "调停者", fate: "Meaning is your compass. Fortune comes when values become a craft.", fateZh: "意义是你的罗盘。价值变成手艺时，好运才来。", path: "Make one beautiful thing that serves another person.", pathZh: "做一件服务他人的漂亮小事。" },
+    ENFJ: { title: "Protagonist", titleZh: "主人公", fate: "People gather where you warm the room. Guard against carrying everyone.", fateZh: "人会聚到你温暖的房间。小心别把所有人扛在肩上。", path: "Ask for help once without apologizing.", pathZh: "求一次帮助，不必道歉。" },
+    ENFP: { title: "Campaigner", titleZh: "竞选者", fate: "Sparks and doors open around you. Depth keeps the flame from burning out.", fateZh: "火花与门在你身边打开。深度让火焰不至于烧尽。", path: "Finish the project that still excites your chest.", pathZh: "完成那个仍让胸口发热的项目。" },
+    ISTJ: { title: "Logistician", titleZh: "物流师", fate: "Reliability is rare magic. Systems you tend become quiet wealth.", fateZh: "可靠是稀有的魔法。你照料的系统会变成安静的财富。", path: "Allow one controlled experiment outside the manual.", pathZh: "在手册之外，允许一次受控实验。" },
+    ISFJ: { title: "Defender", titleZh: "守卫者", fate: "Care is your power. Fate asks you to include yourself in the circle you protect.", fateZh: "照料是你的力量。命运要你把自己也放进保护圈。", path: "Say no once; keep the yes that matters.", pathZh: "说一次不；留下真正重要的是。" },
+    ESTJ: { title: "Executive", titleZh: "总经理", fate: "Order creates harvest. Soften the edge so loyalty can grow.", fateZh: "秩序带来收成。软化锋芒，忠诚才能生长。", path: "Listen fully before the next directive.", pathZh: "下指令前，先完整听完。" },
+    ESFJ: { title: "Consul", titleZh: "执政官", fate: "Belonging multiplies around you. Boundaries keep the feast from emptying you.", fateZh: "归属在你身边倍增。边界让宴席不掏空你。", path: "Schedule recovery as firmly as duty.", pathZh: "像安排职责一样，安排恢复。" },
+    ISTP: { title: "Virtuoso", titleZh: "鉴赏家", fate: "Skill under pressure is your luck. Trouble teaches your hands.", fateZh: "压力下的技艺是你的运气。麻烦教你的手。", path: "Teach one trick; mastery deepens when shared.", pathZh: "教一个小招；分享时造诣更深。" },
+    ISFP: { title: "Adventurer", titleZh: "探险家", fate: "Beauty and freedom call you. Anchors help the art survive.", fateZh: "美与自由在召唤你。锚点让艺术活得久。", path: "Claim a gentle routine that still feels like yours.", pathZh: "认领一个仍像你自己的温和节律。" },
+    ESTP: { title: "Entrepreneur", titleZh: "企业家", fate: "The live moment is your arena. Reflection turns wins into wisdom.", fateZh: "现场就是你的赛场。反思把胜利变成智慧。", path: "Pause one beat before the next leap.", pathZh: "下一次跳跃前，停一拍。" },
+    ESFP: { title: "Entertainer", titleZh: "表演者", fate: "Joy opens doors. Substance keeps the stage from becoming a trap.", fateZh: "欢乐开门。实质让舞台不成陷阱。", path: "Invest in one relationship that isn’t a performance.", pathZh: "投资一段不是表演的关系。" },
   };
 
   function mulberry32(a) {
@@ -372,15 +372,30 @@
     const { type, score, meta } = scoreMbti(input.answers || {});
     const RM = window.FatumResultModel;
     const q = RM ? RM.focusLabel(input) : (input.focus || "");
-    const result = `${type} — ${meta.title}`;
-    const explain = [
-      `Preference tallies from your answers: E${score.E}/I${score.I}, S${score.S}/N${score.N}, T${score.T}/F${score.F}, J${score.J}/P${score.P}.`,
-      `Letter code ${type} is a shorthand for those majority sides — a preference pattern, not a measure of ability or destiny.`,
-      meta.fate,
-    ].join(" ");
-    const interpretBody = q
-      ? `Against your focus (“${q}”), this pattern suggests leaning on your reported strengths (${meta.title}) while watching the blind side of the opposite letters. That is self-description, not a prediction that a particular outcome will occur.`
-      : "Use the type as a mirror for how you prefer to decide — not as a fate sentence.";
+    let zh = false;
+    try {
+      zh = String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {}
+    const titleLabel = zh ? meta.titleZh || meta.title : meta.title;
+    const result = `${type} — ${titleLabel}`;
+    const explain = zh
+      ? [
+          `根据你的回答计分：E${score.E}/I${score.I}，S${score.S}/N${score.N}，T${score.T}/F${score.F}，J${score.J}/P${score.P}。`,
+          `字母代码 ${type} 只是多数侧的简称——偏好模式，不是能力或命运的度量。`,
+          meta.fateZh || meta.fate,
+        ].join("")
+      : [
+          `Preference tallies from your answers: E${score.E}/I${score.I}, S${score.S}/N${score.N}, T${score.T}/F${score.F}, J${score.J}/P${score.P}.`,
+          `Letter code ${type} is a shorthand for those majority sides — a preference pattern, not a measure of ability or destiny.`,
+          meta.fate,
+        ].join(" ");
+    const interpretBody = zh
+      ? q
+        ? `对照你的焦点（「${q}」），此模式建议倚重你报告的优势（${titleLabel}），并留意相反字母的盲区。这是自我描述，不是某一结果必将发生的预言。`
+        : "把类型当作决策偏好之镜——不是命运判决。"
+      : q
+        ? `Against your focus (“${q}”), this pattern suggests leaning on your reported strengths (${titleLabel}) while watching the blind side of the opposite letters. That is self-description, not a prediction that a particular outcome will occur.`
+        : "Use the type as a mirror for how you prefer to decide — not as a fate sentence.";
 
     const reading = {
       kind: "mbti",
@@ -388,26 +403,39 @@
       result,
       explain,
       interpret: RM ? RM.interpretWithQuestion(input.focus || "", interpretBody) : interpretBody,
-      doList: [
-        meta.path,
-        "When a choice presses, name which letter-pair is driving you (e.g. J vs P) before you decide.",
-      ],
-      dontList: [
-        "Do not treat type as a prison, a hiring filter, or a medical/psychological diagnosis.",
-        "Do not claim the future is fixed because of four letters.",
-      ],
-      details: [
-        input.focus ? `Focus held: ${input.focus}` : "General preference reading",
-        `Extraversion ${score.E} vs Introversion ${score.I}`,
-        `Sensing ${score.S} vs Intuition ${score.N}`,
-        `Thinking ${score.T} vs Feeling ${score.F}`,
-        `Judging ${score.J} vs Perceiving ${score.P}`,
-      ],
+      doList: zh
+        ? [meta.pathZh || meta.path, "做选择前，先点名驱动你的字母对（如 J 对 P）。"]
+        : [
+            meta.path,
+            "When a choice presses, name which letter-pair is driving you (e.g. J vs P) before you decide.",
+          ],
+      dontList: zh
+        ? ["不要把类型当作牢笼、招聘筛选或医学／心理诊断。", "不要声称未来因四个字母而固定。"]
+        : [
+            "Do not treat type as a prison, a hiring filter, or a medical/psychological diagnosis.",
+            "Do not claim the future is fixed because of four letters.",
+          ],
+      details: zh
+        ? [
+            input.focus ? `持定焦点：${input.focus}` : "一般偏好解读",
+            `外向 ${score.E} 对 内向 ${score.I}`,
+            `感觉 ${score.S} 对 直觉 ${score.N}`,
+            `思考 ${score.T} 对 情感 ${score.F}`,
+            `判断 ${score.J} 对 感知 ${score.P}`,
+          ]
+        : [
+            input.focus ? `Focus held: ${input.focus}` : "General preference reading",
+            `Extraversion ${score.E} vs Introversion ${score.I}`,
+            `Sensing ${score.S} vs Intuition ${score.N}`,
+            `Thinking ${score.T} vs Feeling ${score.F}`,
+            `Judging ${score.J} vs Perceiving ${score.P}`,
+          ],
       type,
       score,
       meta,
-      disclaimer:
-        "Simplified MBTI-style preference quiz for self-reflection—not a clinical assessment or fate forecast. Preferences ≠ destiny; cannot predict black swan events.",
+      disclaimer: zh
+        ? "简化的 MBTI 风格偏好测验，仅供自我反思——不是临床评估或命运预报。偏好≠命运；无法预测黑天鹅事件。"
+        : "Simplified MBTI-style preference quiz for self-reflection—not a clinical assessment or fate forecast. Preferences ≠ destiny; cannot predict black swan events.",
     };
     return RM ? RM.structuredReading(reading) : reading;
   }
