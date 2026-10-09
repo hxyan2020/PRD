@@ -4934,3 +4934,215 @@ body:not(.studio-open) .hero__content {
   from { transform: translateY(0); }
   to { transform: translateY(8px); }
 }
+
+/* ——— Classical Chinese oracle stages ——— */
+.classic-stage {
+  position: relative;
+  margin: 1.1rem 0 1.35rem;
+  min-height: 7rem;
+  border-radius: 1rem;
+  background:
+    radial-gradient(ellipse at 25% 15%, rgba(212, 175, 106, 0.16), transparent 55%),
+    linear-gradient(165deg, #241810 0%, #120c08 100%);
+  border: 1px solid rgba(212, 175, 106, 0.28);
+  padding: 1rem;
+  overflow: hidden;
+}
+.classic-stage__hint {
+  margin: 0.65rem 0 0;
+  font-size: 0.85rem;
+  text-align: center;
+  opacity: 0.9;
+}
+.yarrow-piles {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: flex-end;
+  height: 5rem;
+}
+.yarrow-piles span {
+  width: 1.1rem;
+  border-radius: 0.35rem 0.35rem 0.15rem 0.15rem;
+  background: linear-gradient(180deg, #e8c98a, #8b5a2b);
+}
+.yarrow-piles span:nth-child(1) { height: 70%; }
+.yarrow-piles span:nth-child(2) { height: 100%; }
+.yarrow-piles span:nth-child(3) { height: 45%; }
+.classic-stage--yarrow.is-casting .yarrow-piles span {
+  animation: africa-toss 0.8s ease-in-out infinite;
+}
+
+.liuyao-stack { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
+.liuyao-stack li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-family: ui-monospace, monospace;
+  color: #e8c98a;
+}
+.liuyao-stack em { font-style: normal; opacity: 0.7; min-width: 1.5rem; }
+
+.meihua-bloom {
+  width: 4.5rem;
+  height: 4.5rem;
+  margin: 0.4rem auto;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, #f5efe3 0 12%, transparent 13%),
+    repeating-conic-gradient(from 0deg, #c44 0 20deg, transparent 20deg 40deg);
+  box-shadow: inset 0 0 0 8px #3a2418;
+}
+
+.qimen-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+  max-width: 10rem;
+  margin: 0 auto;
+}
+.qimen-grid span {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: #3a2418;
+  border: 1px solid rgba(212, 175, 106, 0.3);
+  border-radius: 0.3rem;
+  color: #f3e6c8;
+}
+.qimen-grid span.is-on { background: #c9a66b; color: #1a1510; }
+
+.liu-discs { position: relative; height: 6rem; }
+.disc {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 50%;
+  border: 2px solid #c9a66b;
+  transform: translate(-50%, -50%);
+}
+.disc--h { width: 5.5rem; height: 5.5rem; }
+.disc--e { width: 3.2rem; height: 3.2rem; background: rgba(201, 166, 107, 0.15); }
+.classic-stage--daliuren.is-casting .disc--h { animation: decan-spin 1.2s linear infinite; }
+
+.finger-palaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+}
+.finger-palaces span {
+  padding: 0.45rem 0.65rem;
+  border-radius: 999px;
+  background: #3a2418;
+  border: 1px solid rgba(212, 175, 106, 0.3);
+  color: #f3e6c8;
+  font-size: 0.8rem;
+}
+.finger-palaces span.is-on { background: #c9a66b; color: #1a1510; }
+
+.taiyi-circle {
+  width: 6.5rem;
+  height: 6.5rem;
+  margin: 0.25rem auto;
+  border-radius: 50%;
+  border: 2px solid #c9a66b;
+  position: relative;
+  background: conic-gradient(from 0deg, #3a2418, #6b4a2a, #3a2418, #8b5a2b, #3a2418);
+}
+.taiyi-circle i {
+  position: absolute;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #e8c98a;
+  left: 50%;
+  top: 50%;
+  transform: rotate(calc(var(--s, 1) * 22.5deg)) translate(2.4rem) rotate(calc(var(--s, 1) * -22.5deg));
+}
+
+.lingqi-board {
+  position: relative;
+  height: 7rem;
+  border-radius: 0.5rem;
+  background: #2a1c14;
+  border: 1px dashed rgba(212, 175, 106, 0.35);
+}
+.lingqi-board span {
+  position: absolute;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 20%;
+  background: #e8c98a;
+  transform: translate(-50%, -50%);
+}
+
+.plastron {
+  max-width: 12rem;
+  margin: 0 auto;
+  background: #6b5340;
+  border-radius: 40% 40% 45% 45%;
+  padding: 0.5rem;
+}
+.plastron .crack {
+  fill: none;
+  stroke: #1a1510;
+  stroke-width: 1.6;
+  stroke-dasharray: 3 2;
+}
+.classic-stage--bone.is-casting .crack { animation: fox-dash 0.9s linear infinite; }
+
+.chim-cylinder {
+  width: 4rem;
+  height: 6rem;
+  margin: 0.25rem auto;
+  border-radius: 0.4rem 0.4rem 0.2rem 0.2rem;
+  background: #5a3a22;
+  border: 1px solid #c9a66b;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  padding: 0.35rem;
+}
+.chim-cylinder span {
+  width: 0.35rem;
+  height: 85%;
+  background: #e8c98a;
+  border-radius: 2px;
+}
+.classic-stage--kauchim.is-casting .chim-cylinder span {
+  animation: africa-toss 0.55s ease-in-out infinite;
+}
+
+.poe-row { display: flex; gap: 1.25rem; justify-content: center; }
+.poe {
+  width: 3.2rem;
+  height: 2.4rem;
+  border-radius: 50% 50% 45% 45%;
+  background: #8b5a2b;
+  border: 1px solid #e8c98a;
+}
+.poe.flat { background: #e8c98a; }
+.poe.round { background: #3a2418; }
+
+.cezi-glyph {
+  font-size: 3rem;
+  text-align: center;
+  color: #e8c98a;
+  line-height: 1.2;
+}
+.cezi-parts {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.cezi-parts span {
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.35rem;
+  background: #3a2418;
+  border: 1px solid rgba(212, 175, 106, 0.3);
+  color: #f3e6c8;
+  font-size: 0.8rem;
+}
