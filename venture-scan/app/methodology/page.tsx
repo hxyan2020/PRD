@@ -15,6 +15,10 @@ export default function MethodologyPage() {
           <span className="text-foam">Surface</span> — browse and filter on the frontend; open any
           entry for the full dossier.
         </li>
+        <li>
+          <span className="text-foam">Match</span> — a chatbot collects skills, major, current
+          business, and interested domains, then scores every idea against that profile.
+        </li>
       </ol>
       <p className="mt-8 text-sm text-mist">
         Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal,

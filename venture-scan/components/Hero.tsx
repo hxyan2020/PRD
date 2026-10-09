@@ -19,6 +19,9 @@ export function Hero({ count }: { count: number }) {
           <Link href="#ideas" className="btn-primary">
             Browse {count} ideas
           </Link>
+          <Link href="/match" className="btn-ghost">
+            Match with chatbot
+          </Link>
           <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-mist/80">
             Name · model · team · funding · play
           </span>

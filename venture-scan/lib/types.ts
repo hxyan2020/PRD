@@ -64,3 +64,34 @@ export type IdeaFilters = {
   country?: string;
   fundraising?: "yes" | "no" | "all";
 };
+
+/** Profile collected by the matching chatbot. */
+export type UserProfile = {
+  id: string;
+  displayName: string;
+  skills: string[];
+  major: string;
+  currentBusiness: string;
+  interestedDomains: string[];
+  preferredMarkets: string[];
+  notes: string;
+  updatedAt: string;
+};
+
+export type MatchBreakdown = {
+  skills: number;
+  major: number;
+  currentBusiness: number;
+  interestedDomains: number;
+  preferredMarkets: number;
+};
+
+export type IdeaMatch = {
+  ideaId: string;
+  slug: string;
+  /** 0–100 overall match */
+  score: number;
+  breakdown: MatchBreakdown;
+  matched: string[];
+  gaps: string[];
+};

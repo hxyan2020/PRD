@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
-import type { StartupIdea } from "@/lib/types";
+import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
+import type { IdeaMatch, StartupIdea } from "@/lib/types";
 
 type Meta = {
   industries: string[];
@@ -23,13 +24,43 @@ export function IdeaExplorer({
   const [sector, setSector] = useState("");
   const [country, setCountry] = useState("");
   const [fundraising, setFundraising] = useState<"all" | "yes" | "no">("all");
+  const [sortByMatch, setSortByMatch] = useState(false);
   const [ideas, setIdeas] = useState(initialIdeas);
+  const [matches, setMatches] = useState<Record<string, IdeaMatch>>({});
   const [scanning, setScanning] = useState(false);
   const [scanNote, setScanNote] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
+  useEffect(() => {
+    const profile = loadProfileFromStorage();
+    if (!profile || !isProfileReady(profile)) return;
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch("/api/match", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profile),
+        });
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        const map: Record<string, IdeaMatch> = {};
+        for (const m of data.matches as IdeaMatch[]) map[m.slug] = m;
+        if (!cancelled) {
+          setMatches(map);
+          setSortByMatch(true);
+        }
+      } catch {
+        // Profile matching is optional on the ledger.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
-    return ideas.filter((idea) => {
+    let rows = ideas.filter((idea) => {
       if (industry && idea.industry !== industry) return false;
       if (sector && idea.sector !== sector) return false;
       if (country && idea.teamCountry !== country) return false;
@@ -51,7 +82,14 @@ export function IdeaExplorer({
       }
       return true;
     });
-  }, [ideas, q, industry, sector, country, fundraising]);
+
+    if (sortByMatch && Object.keys(matches).length) {
+      rows = [...rows].sort(
+        (a, b) => (matches[b.slug]?.score ?? -1) - (matches[a.slug]?.score ?? -1),
+      );
+    }
+    return rows;
+  }, [ideas, q, industry, sector, country, fundraising, sortByMatch, matches]);
 
   async function rescan() {
     setScanning(true);
@@ -74,6 +112,8 @@ export function IdeaExplorer({
     }
   }
 
+  const hasMatches = Object.keys(matches).length > 0;
+
   return (
     <section id="ideas" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
       <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -82,16 +122,32 @@ export function IdeaExplorer({
           <p className="mt-2 max-w-xl text-sm text-mist">
             Each entry includes name, description, team, industry, sector, fundraising, website,
             socials, and a suggested go-forward play.
+            {hasMatches ? " Sorted by your chatbot profile match score." : ""}
           </p>
         </div>
-        <button
-          type="button"
-          className="btn-ghost shrink-0"
-          onClick={rescan}
-          disabled={scanning}
-        >
-          {scanning ? "Scanning…" : "Run scan"}
-        </button>
+        <div className="flex flex-wrap gap-2">
+          {!hasMatches ? (
+            <Link href="/match" className="btn-primary shrink-0">
+              Build match profile
+            </Link>
+          ) : (
+            <button
+              type="button"
+              className="btn-ghost shrink-0"
+              onClick={() => setSortByMatch((v) => !v)}
+            >
+              {sortByMatch ? "Sort: match score" : "Sort: recent scan"}
+            </button>
+          )}
+          <button
+            type="button"
+            className="btn-ghost shrink-0"
+            onClick={rescan}
+            disabled={scanning}
+          >
+            {scanning ? "Scanning…" : "Run scan"}
+          </button>
+        </div>
       </div>
 
       {scanNote ? (
@@ -164,57 +220,65 @@ export function IdeaExplorer({
       </div>
 
       <ul className="mt-8 divide-y divide-white/10 border-t border-white/10">
-        {filtered.map((idea, idx) => (
-          <li
-            key={idea.id}
-            className="animate-rise group py-6"
-            style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}
-          >
-            <Link href={`/ideas/${idea.slug}`} className="block outline-none">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-display text-2xl text-foam transition group-hover:text-white">
-                      {idea.name}
-                    </h3>
-                    <span
-                      className={`font-mono text-[10px] uppercase tracking-[0.16em] ${
-                        idea.fundraisingSecured ? "text-celadon" : "text-copper"
-                      }`}
-                    >
-                      {idea.fundraisingSecured
-                        ? `Funded · ${idea.fundingStage ?? "secured"}`
-                        : "Fundraising open"}
-                    </span>
+        {filtered.map((idea, idx) => {
+          const match = matches[idea.slug];
+          return (
+            <li
+              key={idea.id}
+              className="animate-rise group py-6"
+              style={{ animationDelay: `${Math.min(idx, 8) * 40}ms` }}
+            >
+              <Link href={`/ideas/${idea.slug}`} className="block outline-none">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-display text-2xl text-foam transition group-hover:text-white">
+                        {idea.name}
+                      </h3>
+                      <span
+                        className={`font-mono text-[10px] uppercase tracking-[0.16em] ${
+                          idea.fundraisingSecured ? "text-celadon" : "text-copper"
+                        }`}
+                      >
+                        {idea.fundraisingSecured
+                          ? `Funded · ${idea.fundingStage ?? "secured"}`
+                          : "Fundraising open"}
+                      </span>
+                      {match ? (
+                        <span className="rounded-full border border-celadon/30 bg-celadon/10 px-2 py-0.5 font-mono text-[10px] text-celadon">
+                          Match {match.score}%
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-relaxed text-mist">
+                      {idea.description}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist/90">
+                      <span>
+                        {countryFlag(idea.teamCountry)} {idea.teamCountry}
+                        {idea.teamCity ? ` · ${idea.teamCity}` : ""}
+                      </span>
+                      <span>{idea.teamSize} people</span>
+                      <span>
+                        {idea.industry} / {idea.sector}
+                      </span>
+                      {idea.fundraisingSecured ? (
+                        <span>{formatMoney(idea.fundingAmountUsd)}</span>
+                      ) : null}
+                    </div>
                   </div>
-                  <p className="mt-2 line-clamp-2 max-w-3xl text-sm leading-relaxed text-mist">
-                    {idea.description}
+                  <p className="shrink-0 max-w-xs text-xs leading-relaxed text-mist sm:text-right">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">
+                      Go forward
+                    </span>
+                    <br />
+                    {strategyLabel(idea.goForward.strategy)}
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-mist/90">
-                    <span>
-                      {countryFlag(idea.teamCountry)} {idea.teamCountry}
-                      {idea.teamCity ? ` · ${idea.teamCity}` : ""}
-                    </span>
-                    <span>{idea.teamSize} people</span>
-                    <span>
-                      {idea.industry} / {idea.sector}
-                    </span>
-                    {idea.fundraisingSecured ? (
-                      <span>{formatMoney(idea.fundingAmountUsd)}</span>
-                    ) : null}
-                  </div>
                 </div>
-                <p className="shrink-0 max-w-xs text-xs leading-relaxed text-mist sm:text-right">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-celadon">
-                    Go forward
-                  </span>
-                  <br />
-                  {strategyLabel(idea.goForward.strategy)}
-                </p>
-              </div>
-            </Link>
-          </li>
-        ))}
+              </Link>
+            </li>
+          );
+        })}
         {filtered.length === 0 ? (
           <li className="py-12 text-center text-sm text-mist">No ideas match these filters.</li>
         ) : null}

@@ -15,6 +15,10 @@ Scans curated startup + fundraising signals into SQLite and shows each entry wit
 9. Official social accounts (X, Instagram, Xiaohongshu, etc.)  
 10. Suggested go-forward play (localize, new age group, partner founders, franchise, …)
 
+## Match chatbot
+
+Visit `/match` to chat through skills, major, current business, interested domains, and preferred markets. The profile is saved in the browser and scored against every idea via `POST /api/match`.
+
 ## Run locally
 
 ```bash
@@ -35,3 +39,4 @@ npm run scan
 - Next.js 15 + React 19  
 - SQLite via `node:sqlite`  
 - Tailwind CSS  
+

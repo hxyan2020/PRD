@@ -16,6 +16,9 @@ export function SiteHeader() {
           <Link href="/#ideas" className="hover:text-foam">
             Ideas
           </Link>
+          <Link href="/match" className="hover:text-foam">
+            Match
+          </Link>
           <Link href="/methodology" className="hover:text-foam">
             Method
           </Link>
