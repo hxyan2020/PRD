@@ -6723,3 +6723,17 @@ body:not(.studio-open) .hero__content {
 .ma-kernels i { width: 0.7rem; height: 1.1rem; border-radius: 40%; background: linear-gradient(180deg, #f0e080, #c4a030); border: 1px solid #8a7030; }
 .ma-label { margin: 0; font-size: 0.85rem; opacity: 0.9; }
 .ma-plant { width: 3.2rem; height: 3.6rem; border-radius: 40% 40% 30% 30%; background: linear-gradient(180deg, #70a858, #2a4820); border: 1px solid #88c070; display: grid; place-items: center; }
+
+/* North America stages */
+.na-stage { margin: 0.75rem 0 1rem; min-height: 5.5rem; display: grid; place-items: center; gap: 0.35rem; }
+.na-stage--pulse .na-bone, .na-stage--pulse .na-tent, .na-stage--pulse .na-scroll, .na-stage--pulse .na-stars i, .na-stage--pulse .na-cowries i, .na-stage--pulse .na-board { animation: na-pulse 0.95s ease-in-out infinite alternate; }
+@keyframes na-pulse { from { transform: scale(1); opacity: 0.78; } to { transform: scale(1.05); opacity: 1; } }
+.na-bone { width: 3.6rem; height: 2.4rem; border-radius: 40% 60% 45% 55%; background: linear-gradient(160deg, #e8d8c0, #a89070); border: 1px solid #8a7050; display: grid; place-items: center; font-size: 0.65rem; color: #3a2818; text-align: center; padding: 0.25rem; }
+.na-tent { width: 3.2rem; height: 3rem; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); background: linear-gradient(180deg, #c4a070, #6a4830); border: 1px solid #8a6340; display: grid; place-items: end center; padding-bottom: 0.4rem; font-size: 0.6rem; color: #f0e0c8; }
+.na-scroll { width: 3.4rem; height: 2.6rem; border-radius: 0.2rem; background: linear-gradient(90deg, #d8c090, #b89860); border: 1px solid #8a7040; display: grid; place-items: center; font-size: 0.65rem; color: #3a2818; text-align: center; padding: 0.25rem; }
+.na-stars { display: flex; gap: 0.45rem; }
+.na-stars i { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #e8d080; box-shadow: 0 0 6px #e8d08088; }
+.na-label { margin: 0; font-size: 0.85rem; opacity: 0.9; }
+.na-cowries { display: flex; gap: 0.3rem; }
+.na-cowries i { width: 0.85rem; height: 0.7rem; border-radius: 50%; background: linear-gradient(180deg, #f0e8d8, #c4b090); border: 1px solid #8a7860; }
+.na-board { width: 3.6rem; height: 2.8rem; border-radius: 0.35rem; background: linear-gradient(160deg, #6a4830, #3a2818); border: 2px solid #c4a070; display: grid; place-items: center; font-size: 0.65rem; color: #e8d080; text-align: center; padding: 0.25rem; }

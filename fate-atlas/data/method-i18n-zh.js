@@ -929,25 +929,25 @@
     },
     "innu-scapula": {
       "name": "因努灼骨占",
-      "summary": "灼烤肩胛骨，由裂纹作狩猎与社群决策提示。",
+      "summary": "因努驯鹿胛骨占加热肩胛；裂纹论猎径（教学模拟——无真实火／骨）。",
       "region": "Innu",
       "source": "Canadian Encyclopedia · Shaman"
     },
     "shaking-tent": {
       "name": "晃帐篷仪式",
-      "summary": "仪式帐篷震动与灵媒应答，属于灵性咨询传统。",
+      "summary": "摇帐篷中占卜者入帐，帐摇如灵答狩猎与疾病之问——仅教学模拟。",
       "region": "Cree／Ojibwe／Siksika",
       "source": "Canadian Encyclopedia · Shaman"
     },
     "midewiwin": {
       "name": "米德威温医社仪式",
-      "summary": "大湖区米德威温医社的仪式与知识体系。",
+      "summary": "米德维温卷轴保存奥吉布瓦医药社桦皮知识——仅教学标记。",
       "region": "Ojibwe／Anishinaabe",
       "source": "Noosaga Divination map"
     },
     "dene-stars": {
       "name": "德内星象知识",
-      "summary": "德内民族的星象与季节叙事知识。",
+      "summary": "北部德内星闪以星光闪烁论天气与季节变化。",
       "region": "Athabaskan／Dene",
       "source": "ResearchGate · Indigenous stellar scintillation"
     },
@@ -965,13 +965,13 @@
     },
     "dilogun": {
       "name": "迪洛贡贝壳占",
-      "summary": "抛掷十六枚贝壳，按开合格局读取奥杜经文。",
+      "summary": "迪洛贡是古巴圣教贝壳奥杜解读——仅教育性起卦，非入门。",
       "region": "Caribbean Santería",
       "source": "Wikipedia · Cowrie-shell divination"
     },
     "ifa-cuba": {
       "name": "古巴伊法",
-      "summary": "巴巴劳祭司在板上抛掷棕榈坚果，依循启迪系谱读取二百五十六种奥杜。",
+      "summary": "古巴伊法：巴巴拉沃在板上抛棕榈果得二百五十六种奥杜——仅教育性板卦。",
       "region": "Cuba",
       "source": "Open Encyclopedia of Anthropology"
     },
@@ -2053,25 +2053,25 @@
     },
     "innu-scapula": {
       "name": "因努灼骨占",
-      "summary": "灼烤肩胛骨，由裂纹作狩猎与社群决策提示。",
+      "summary": "因努馴鹿胛骨占加熱肩胛；裂紋論獵徑（教學模擬——無真實火／骨）。",
       "region": "Innu",
       "source": "Canadian Encyclopedia · Shaman"
     },
     "shaking-tent": {
       "name": "晃帐篷儀式",
-      "summary": "儀式帐篷震动与靈媒應答，属于靈性咨询傳統。",
+      "summary": "搖帳篷中占卜者入帳，帳搖如靈答狩獵與疾病之問——僅教學模擬。",
       "region": "Cree／Ojibwe／Siksika",
       "source": "Canadian Encyclopedia · Shaman"
     },
     "midewiwin": {
       "name": "米德威温醫社儀式",
-      "summary": "大湖區米德威温醫社的儀式与知识體系。",
+      "summary": "米德維溫捲軸保存奧吉布瓦醫藥社樺皮知識——僅教學標記。",
       "region": "Ojibwe／Anishinaabe",
       "source": "Noosaga Divination map"
     },
     "dene-stars": {
       "name": "德内星象知识",
-      "summary": "德内民族的星象与季節叙事知识。",
+      "summary": "北部德內星閃以星光閃爍論天氣與季節變化。",
       "region": "Athabaskan／Dene",
       "source": "ResearchGate · Indigenous stellar scintillation"
     },
@@ -2089,13 +2089,13 @@
     },
     "dilogun": {
       "name": "迪洛贡貝壳占",
-      "summary": "抛掷十六枚貝壳，按開合格局讀取奥杜經文。",
+      "summary": "迪洛貢是古巴聖教貝殼奧杜解讀——僅教育性起卦，非入門。",
       "region": "Caribbean Santería",
       "source": "Wikipedia · Cowrie-shell divination"
     },
     "ifa-cuba": {
       "name": "古巴伊法",
-      "summary": "巴巴劳祭司在板上抛掷棕榈坚果，依循启迪系谱讀取二百五十六种奥杜。",
+      "summary": "古巴伊法：巴巴拉沃在板上拋棕櫚果得二百五十六種奧杜——僅教育性板卦。",
       "region": "Cuba",
       "source": "Open Encyclopedia of Anthropology"
     },
