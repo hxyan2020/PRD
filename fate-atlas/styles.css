@@ -6213,3 +6213,75 @@ body:not(.studio-open) .hero__content {
   background: #2a2418;
   border-radius: 1px;
 }
+
+/* ——— Western astrology / Hellenic number stages ——— */
+.wa-stage {
+  margin: 0.75rem 0 1rem;
+  min-height: 5.5rem;
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+}
+.wa-stage__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  text-align: center;
+}
+.wa-stage.is-casting .wa-wheel i,
+.wa-stage.is-casting .wa-tree,
+.wa-stage.is-casting .wa-path,
+.wa-stage.is-casting .wa-isop {
+  animation: wa-pulse 0.9s ease-in-out infinite alternate;
+}
+@keyframes wa-pulse {
+  from { transform: scale(1); opacity: 0.75; }
+  to { transform: scale(1.05); opacity: 1; }
+}
+.wa-wheel {
+  width: 4.2rem;
+  height: 4.2rem;
+  border-radius: 50%;
+  border: 2px solid #7aa7c7;
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, #1a2430, #0e141c);
+}
+.wa-wheel i {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: #e8c98a;
+}
+.wa-wheel i:nth-child(1) { top: 6%; left: 46%; }
+.wa-wheel i:nth-child(2) { right: 8%; top: 46%; }
+.wa-wheel i:nth-child(3) { bottom: 8%; left: 46%; }
+.wa-wheel i:nth-child(4) { left: 8%; top: 46%; }
+.wa-tree {
+  width: 2.4rem;
+  height: 3.2rem;
+  position: relative;
+}
+.wa-tree span:first-child {
+  position: absolute;
+  bottom: 0;
+  left: 45%;
+  width: 0.35rem;
+  height: 1.4rem;
+  background: #8a6a40;
+}
+.wa-tree span:last-child {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: #3a6a48;
+  border: 2px solid #7aa7c7;
+}
+.wa-path, .wa-isop {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #7aa7c7;
+}

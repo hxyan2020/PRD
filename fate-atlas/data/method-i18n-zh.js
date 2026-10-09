@@ -640,15 +640,15 @@
       "source": "Plutto"
     },
     "western-astrology": {
-      "name": "西洋占星",
-      "summary": "依出生时刻的黄道与行星位置，解读性情与时机。",
-      "region": "Hellenistic → 欧洲",
+      "name": "西方占星",
+      "summary": "西方占星以出生星盘——星座、宫位与相位——作为性情与时机的象征语言。",
+      "region": "希腊化→欧洲",
       "source": "Sekai Fortune; Plutto"
     },
     "horary": {
       "name": "问事占星（Horary）",
-      "summary": "就提问时刻起盘，专门回答当下一事。",
-      "region": "欧洲／Middle East",
+      "summary": "就提问时刻起盘——以宫位与征象星专答这一问。",
+      "region": "欧洲／中东",
       "source": "Sekai Fortune"
     },
     "tarot": {
@@ -719,8 +719,8 @@
     },
     "celtic-tree": {
       "name": "凯尔特树历",
-      "summary": "凯尔特树历月份与性格／时机联想。",
-      "region": "Celtic revival",
+      "summary": "将生日映射到现代凯尔特复兴体系中的圣树——性情主题，不是植物学。",
+      "region": "凯尔特复兴",
       "source": "Sekai Fortune; Plutto"
     },
     "augury": {
@@ -808,14 +808,14 @@
       "source": "Sekai Fortune"
     },
     "numerology-west": {
-      "name": "西洋数字命理",
-      "summary": "把姓名与生日化为数字，解读性格与周期主题。",
-      "region": "古代Greece → modern West",
+      "name": "西方数字命理",
+      "summary": "将生日（常含姓名）数字归约为生命数，论性情与时机主题。",
+      "region": "古希腊→现代西方",
       "source": "Sekai Fortune"
     },
     "isopsephy": {
-      "name": "字母数值占（希腊）",
-      "summary": "希腊字母数值总和，用于词语对应。",
+      "name": "字母数值占（Isopsephy）",
+      "summary": "希腊字母数值等价——合计相同的词语被视为命运相连。",
       "region": "古希腊",
       "source": "Plutto"
     },
@@ -1764,15 +1764,15 @@
       "source": "Plutto"
     },
     "western-astrology": {
-      "name": "西洋占星",
-      "summary": "依出生时刻的黄道与行星位置，解讀性情与时机。",
-      "region": "Hellenistic → 欧洲",
+      "name": "西方占星",
+      "summary": "西方占星以出生星盤——星座、宮位與相位——作為性情與時機的象徵語言。",
+      "region": "希臘化→歐洲",
       "source": "Sekai Fortune; Plutto"
     },
     "horary": {
       "name": "問事占星（Horary）",
-      "summary": "就提問时刻起盘，专門回答当下一事。",
-      "region": "欧洲／Middle East",
+      "summary": "就提問時刻起盤——以宮位與徵象星專答這一問。",
+      "region": "歐洲／中東",
       "source": "Sekai Fortune"
     },
     "tarot": {
@@ -1842,9 +1842,9 @@
       "source": "Sekai Fortune"
     },
     "celtic-tree": {
-      "name": "凯尔特树历",
-      "summary": "凯尔特树历月份与性格／时机联想。",
-      "region": "Celtic revival",
+      "name": "凱爾特樹曆",
+      "summary": "將生日映射到現代凱爾特復興體系中的聖樹——性情主題，不是植物學。",
+      "region": "凱爾特復興",
       "source": "Sekai Fortune; Plutto"
     },
     "augury": {
@@ -1932,15 +1932,15 @@
       "source": "Sekai Fortune"
     },
     "numerology-west": {
-      "name": "西洋數字命理",
-      "summary": "把姓名与生日化為數字，解讀性格与周期主題。",
-      "region": "古代Greece → modern West",
+      "name": "西方數字命理",
+      "summary": "將生日（常含姓名）數字歸約為生命數，論性情與時機主題。",
+      "region": "古希臘→現代西方",
       "source": "Sekai Fortune"
     },
     "isopsephy": {
-      "name": "字母數值占（希腊）",
-      "summary": "希腊字母數值总和，用于词語對應。",
-      "region": "古希腊",
+      "name": "字母數值占（Isopsephy）",
+      "summary": "希臘字母數值等價——合計相同的詞語被視為命運相連。",
+      "region": "古希臘",
       "source": "Plutto"
     },
     "geomancy-west": {
