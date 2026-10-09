@@ -6713,3 +6713,13 @@ body:not(.studio-open) .hero__content {
   border: 1px solid #a8b8d8;
   color: #e8f0ff;
 }
+
+/* Mesoamerican stages */
+.ma-stage { margin: 0.75rem 0 1rem; min-height: 5.5rem; display: grid; place-items: center; gap: 0.35rem; }
+.ma-stage--pulse .ma-glyph, .ma-stage--pulse .ma-kernels i, .ma-stage--pulse .ma-plant { animation: ma-pulse 0.95s ease-in-out infinite alternate; }
+@keyframes ma-pulse { from { transform: scale(1); opacity: 0.78; } to { transform: scale(1.06); opacity: 1; } }
+.ma-glyph { width: 3.4rem; height: 3.4rem; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #e8c070, #8a5020); border: 2px solid #c49040; display: grid; place-items: center; color: #2a1808; font-size: 0.7rem; text-align: center; padding: 0.3rem; }
+.ma-kernels { display: flex; gap: 0.35rem; }
+.ma-kernels i { width: 0.7rem; height: 1.1rem; border-radius: 40%; background: linear-gradient(180deg, #f0e080, #c4a030); border: 1px solid #8a7030; }
+.ma-label { margin: 0; font-size: 0.85rem; opacity: 0.9; }
+.ma-plant { width: 3.2rem; height: 3.6rem; border-radius: 40% 40% 30% 30%; background: linear-gradient(180deg, #70a858, #2a4820); border: 1px solid #88c070; display: grid; place-items: center; }
