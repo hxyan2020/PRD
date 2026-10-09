@@ -984,6 +984,18 @@
         ),
       };
     }
+    if (id && window.FatumHimalayaSeaOracles?.howFor?.(id)) {
+      const a = window.FatumHimalayaSeaOracles.howFor(id);
+      return {
+        title: ti("howrite.title", a.title || "How this rite works"),
+        intro: a.intro,
+        steps: a.steps,
+        note: a.note || ti(
+          "howrite.note",
+          "Educational play on this site — not a substitute for trained initiatory practice, medicine, law, or safety judgment."
+        ),
+      };
+    }
     let base;
     if (isZh() && id) {
       const pack = isHant() ? BY_ID_ZH_HANT : BY_ID_ZH;

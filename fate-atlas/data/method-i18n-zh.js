@@ -467,79 +467,79 @@
     },
     "tibetan-astro": {
       "name": "藏历占星",
-      "summary": "藏历与元素占星。",
-      "region": "Himalaya",
+      "summary": "以五行与十二生肖结合藏历体系，论性情与时机主题。",
+      "region": "喜马拉雅",
       "source": "Sekai Fortune; Plutto"
     },
     "mo-dice": {
       "name": "西藏骰占（Mo）",
-      "summary": "藏传骰占（Mo），按骰点对照经文。",
-      "region": "Himalaya",
+      "summary": "以骰点对照摩经文作指引与预后（教育模拟）。",
+      "region": "喜马拉雅",
       "source": "Sekai Fortune"
     },
     "zurhai": {
       "name": "蒙古祖尔海",
-      "summary": "蒙古祖尔海历算与占问。",
+      "summary": "与藏系相关的蒙古历算占星——年标论性情与时机。",
       "region": "蒙古",
       "source": "Plutto"
     },
     "shagai": {
       "name": "羊踝骨占（沙盖）",
-      "summary": "抛掷羊踝骨，按四面朝向作游戏与占问。",
-      "region": "Central 亚洲",
+      "summary": "抛掷四枚羊踝骨，四面论吉凶与游戏。",
+      "region": "中亚",
       "source": "Sekai Fortune"
     },
     "scapulimancy-asia": {
-      "name": "灼骨占（亚洲）",
-      "summary": "亚洲灼骨／肩胛占传统。",
-      "region": "Central 亚洲",
+      "name": "灼骨占（中亚）",
+      "summary": "加热肩胛取裂纹兆（仅教育模拟，无真实灼骨）。",
+      "region": "中亚",
       "source": "Sekai Fortune"
     },
     "mahabote": {
       "name": "缅甸星命",
-      "summary": "缅甸星命与出生星期体系。",
+      "summary": "将出生星期映射到八重行星宫位，论性情与时机。",
       "region": "缅甸",
       "source": "Sekai Fortune; Plutto"
     },
     "thai-horasat": {
       "name": "泰式占星",
-      "summary": "泰式占星与宫位解读。",
+      "summary": "源自阿瑜陀耶宫廷传统——以宫位论人生主题。",
       "region": "泰国",
       "source": "Plutto"
     },
     "thai-weekday": {
       "name": "泰式星期命运",
-      "summary": "泰式出生星期命运标签。",
+      "summary": "出生日对应守护佛主题与幸运色。",
       "region": "泰国",
       "source": "Sekai Fortune"
     },
     "taksa": {
-      "name": "印尼塔克萨",
-      "summary": "印尼塔克萨等历注／命理传统。",
+      "name": "泰式命名占星",
+      "summary": "依出生星期论姓名用字的吉凶字母倾向。",
       "region": "泰国",
       "source": "Sekai Fortune"
     },
     "khmer-hora": {
       "name": "高棉星命",
-      "summary": "高棉星命与历算。",
+      "summary": "与吴哥学问相关的柬埔寨星命传统。",
       "region": "柬埔寨",
       "source": "Plutto"
     },
     "lao-calendar": {
       "name": "老挝历算",
-      "summary": "老挝传统历算与择日。",
+      "summary": "依传统历注论仪轨与出行的吉凶倾向。",
       "region": "老挝",
       "source": "Plutto"
     },
     "weton": {
-      "name": "爪哇湿日（Weton）",
-      "summary": "爪哇湿日周期，用于合婚、命名与行事择日。",
+      "name": "爪哇湿日",
+      "summary": "五日市集周与七日星期合成，论出生重量与性情。",
       "region": "爪哇",
       "source": "Sekai Fortune; Plutto"
     },
     "pawukon": {
       "name": "巴厘帕乌贡历",
-      "summary": "巴厘二百一十日帕乌贡历，编排仪式与市集节奏。",
+      "summary": "二百一十日组合历——乌库周论命运主题与仪轨时机。",
       "region": "巴厘",
       "source": "Sekai Fortune; Plutto"
     },
@@ -1590,81 +1590,81 @@
       "source": "Plutto"
     },
     "tibetan-astro": {
-      "name": "藏历占星",
-      "summary": "藏历与元素占星。",
-      "region": "Himalaya",
+      "name": "藏曆占星",
+      "summary": "以五行與十二生肖結合藏曆體系，論性情與時機主題。",
+      "region": "喜馬拉雅",
       "source": "Sekai Fortune; Plutto"
     },
     "mo-dice": {
       "name": "西藏骰占（Mo）",
-      "summary": "藏传骰占（Mo），按骰點對照經文。",
-      "region": "Himalaya",
+      "summary": "以骰點對照摩經文作指引與預後（教育模擬）。",
+      "region": "喜馬拉雅",
       "source": "Sekai Fortune"
     },
     "zurhai": {
-      "name": "蒙古祖尔海",
-      "summary": "蒙古祖尔海历算与占問。",
+      "name": "蒙古祖爾海",
+      "summary": "與藏系相關的蒙古曆算占星——年標論性情與時機。",
       "region": "蒙古",
       "source": "Plutto"
     },
     "shagai": {
-      "name": "羊踝骨占（沙盖）",
-      "summary": "抛掷羊踝骨，按四面朝向作游戲与占問。",
-      "region": "Central 亚洲",
+      "name": "羊踝骨占（沙蓋）",
+      "summary": "拋擲四枚羊踝骨，四面論吉凶與遊戲。",
+      "region": "中亞",
       "source": "Sekai Fortune"
     },
     "scapulimancy-asia": {
-      "name": "灼骨占（亚洲）",
-      "summary": "亚洲灼骨／肩胛占傳統。",
-      "region": "Central 亚洲",
+      "name": "灼骨占（中亞）",
+      "summary": "加熱肩胛取裂紋兆（僅教育模擬，無真實灼骨）。",
+      "region": "中亞",
       "source": "Sekai Fortune"
     },
     "mahabote": {
-      "name": "缅甸星命",
-      "summary": "缅甸星命与出生星期體系。",
-      "region": "缅甸",
+      "name": "緬甸星命",
+      "summary": "將出生星期映射到八重行星宮位，論性情與時機。",
+      "region": "緬甸",
       "source": "Sekai Fortune; Plutto"
     },
     "thai-horasat": {
       "name": "泰式占星",
-      "summary": "泰式占星与宫位解讀。",
-      "region": "泰国",
+      "summary": "源自阿瑜陀耶宮廷傳統——以宮位論人生主題。",
+      "region": "泰國",
       "source": "Plutto"
     },
     "thai-weekday": {
       "name": "泰式星期命運",
-      "summary": "泰式出生星期命運標签。",
-      "region": "泰国",
+      "summary": "出生日對應守護佛主題與幸運色。",
+      "region": "泰國",
       "source": "Sekai Fortune"
     },
     "taksa": {
-      "name": "印尼塔克萨",
-      "summary": "印尼塔克萨等历注／命理傳統。",
-      "region": "泰国",
+      "name": "泰式命名占星",
+      "summary": "依出生星期論姓名用字的吉凶字母傾向。",
+      "region": "泰國",
       "source": "Sekai Fortune"
     },
     "khmer-hora": {
       "name": "高棉星命",
-      "summary": "高棉星命与历算。",
+      "summary": "與吳哥學問相關的柬埔寨星命傳統。",
       "region": "柬埔寨",
       "source": "Plutto"
     },
     "lao-calendar": {
-      "name": "老挝历算",
-      "summary": "老挝傳統历算与择日。",
-      "region": "老挝",
+      "name": "老撾曆算",
+      "summary": "依傳統曆註論儀軌與出行的吉凶傾向。",
+      "region": "老撾",
       "source": "Plutto"
     },
     "weton": {
-      "name": "爪哇濕日（Weton）",
-      "summary": "爪哇濕日周期，用于合婚、命名与行事择日。",
+      "name": "爪哇濕日",
+      "summary": "五日市集週與七日星期合成，論出生重量與性情。",
       "region": "爪哇",
       "source": "Sekai Fortune; Plutto"
     },
     "pawukon": {
-      "name": "巴厘帕乌贡历",
-      "summary": "巴厘二百一十日帕乌贡历，编排儀式与市集節奏。",
-      "region": "巴厘",
+      "name": "峇里帕烏貢曆",
+      "summary": "二百一十日組合曆——烏庫週論命運主題與儀軌時機。",
+      "region": "峇里",
       "source": "Sekai Fortune; Plutto"
     },
     "islamic-astrology": {
