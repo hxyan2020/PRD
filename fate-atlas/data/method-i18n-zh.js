@@ -545,50 +545,50 @@
     },
     "islamic-astrology": {
       "name": "伊斯兰占星",
-      "summary": "伊斯兰世界对星历与宫位的学术／民俗传统。",
-      "region": "Middle East",
+      "summary": "伊斯兰占星以天体位置论命运主题与择时，承中世纪诠释体系。",
+      "region": "中东",
       "source": "Sekai Fortune"
     },
     "manazil": {
       "name": "月宿（Manāzil）",
-      "summary": "阿拉伯月宿体系，用于择时与航运。",
-      "region": "Arabia",
+      "summary": "月宿是二十八个阿拉伯月站，用于天气、出行与生辰日质。",
+      "region": "阿拉伯半岛",
       "source": "Plutto"
     },
     "fal-hafez": {
       "name": "哈菲兹诗占",
-      "summary": "随机翻开哈菲兹诗集，以落点诗句作为提示。",
-      "region": "Iran",
+      "summary": "随机翻开《哈菲兹诗集》，以诗句作意向之镜——是指引，不是法令。",
+      "region": "伊朗",
       "source": "Sekai Fortune; Plutto"
     },
     "istikhara": {
-      "name": "伊斯提哈拉求示",
-      "summary": "伊斯兰求示祷告，寻求在抉择中的内心安静与指引。",
+      "name": "求签祈导（Istikhāra）",
+      "summary": "以祈祷求指引——借由心安、梦兆或抽签作灵性之镜，不是保证。",
       "region": "伊斯兰世界",
       "source": "Plutto"
     },
     "abjad": {
-      "name": "阿布贾德数字",
-      "summary": "阿拉伯字母数值系统，用于姓名与经文计算。",
-      "region": "Arabic world",
+      "name": "阿布贾德数字命理",
+      "summary": "依闪语字母顺序赋值，论姓名与词语倾向。",
+      "region": "阿拉伯世界",
       "source": "Plutto"
     },
     "jafr": {
-      "name": "贾弗尔字母秘术",
-      "summary": "字母与数值秘术的贾弗尔传统。",
-      "region": "Islamic esotericism",
+      "name": "贾弗尔字母学",
+      "summary": "传统上归于贾法尔·萨迪克——以表组合字母成神谕短语。",
+      "region": "伊斯兰秘学",
       "source": "Plutto"
     },
     "firdaria": {
-      "name": "菲尔达里亚周期",
-      "summary": "波斯—阿拉伯行星年期分配体系。",
-      "region": "Persia",
+      "name": "菲尔达里亚（波斯时主）",
+      "summary": "波斯行星时主体系——人生各段由行星轮值论时机主题。",
+      "region": "波斯",
       "source": "Plutto"
     },
     "ikhtiyarat": {
-      "name": "择时（Ikhtiyārāt）",
-      "summary": "伊斯兰择时学：选出行、契约等时刻。",
-      "region": "Abbasid Baghdad",
+      "name": "择时星占（Ikhtiyārāt）",
+      "summary": "选择吉利时刻，著名于阿拔斯宫廷实践。",
+      "region": "阿拔斯巴格达",
       "source": "Plutto"
     },
     "zairja": {
@@ -598,45 +598,45 @@
       "source": "Plutto"
     },
     "belomancy": {
-      "name": "箭占",
-      "summary": "抽箭或看箭落点作决定的古代方法。",
-      "region": "古代Arabia／Scythia",
+      "name": "箭卜（Belomancy）",
+      "summary": "抽取带标记的箭矢作抉择与征兆——古代阿拉伯与欧亚传统。",
+      "region": "古代阿拉伯／斯基泰",
       "source": "Sekai Fortune"
     },
     "coffee-tasseography": {
-      "name": "咖啡渣占",
-      "summary": "解读咖啡杯底咖啡渣的形状与方位。",
-      "region": "Eastern Mediterranean",
+      "name": "土耳其咖啡占",
+      "summary": "解读杯底渣形，论爱情、出行与运势主题——民俗指引，不是科学。",
+      "region": "东地中海",
       "source": "Sekai Fortune"
     },
     "molybdomancy-tr": {
-      "name": "熔铅占（土耳其）",
-      "summary": "熔铅倒入水中观形状的土耳其／欧洲民俗。",
-      "region": "Anatolia／Nordic",
+      "name": "浇铅占（Kurşun Dökme）",
+      "summary": "将熔铅倒入水中，以形状论护佑与岁首指引（仅教育模拟——无真实熔铅）。",
+      "region": "安纳托利亚／北欧",
       "source": "Sekai Fortune"
     },
     "kabbalah-numerology": {
-      "name": "卡巴拉数字",
-      "summary": "希伯来字母数值与卡巴拉演算。",
-      "region": "Judaic",
+      "name": "卡巴拉数字／字母数值",
+      "summary": "希伯来字母数值揭示姓名与词语的隐意与命运连结。",
+      "region": "犹太传统",
       "source": "Sekai Fortune; Plutto"
     },
     "mazalot": {
-      "name": "马扎洛特星座",
-      "summary": "犹太星座／马扎洛特传统。",
-      "region": "Judaic",
+      "name": "希伯来黄道（Mazalot）",
+      "summary": "希伯来黄道结合行星时，论犹太历算占星中的性情主题。",
+      "region": "犹太传统",
       "source": "Plutto"
     },
     "urim-thummim": {
       "name": "乌陵与土明",
-      "summary": "圣经传统中的乌陵土明——本站仅作文本记述。",
-      "region": "古代Israel",
+      "summary": "希伯来圣经中祭司的是／否签——此处为教育性抽签模拟。",
+      "region": "古代以色列",
       "source": "Oracle Traditions survey"
     },
     "goralot": {
-      "name": "签阄（Goralot）",
-      "summary": "犹太签阄传统。",
-      "region": "Ashkenaz／wider Jewish",
+      "name": "犹太签书（Goralot）",
+      "summary": "民俗实践中的签书与图示——翻开一页或一图作答。",
+      "region": "阿什肯纳兹／更广犹太世界",
       "source": "Plutto"
     },
     "western-astrology": {
@@ -1115,14 +1115,14 @@
     },
     "mesopotamian-extispicy": {
       "name": "美索不达米亚脏卜",
-      "summary": "通过祭牲内脏纹理作王室或公共决策的历史脏卜传统。",
-      "region": "美索不达米亚",
+      "summary": "为王室与战役读内脏兆（约前2500年）——此处仅为教育象征模拟（无动物伤害）。",
+      "region": "古代美索不达米亚",
       "source": "Oracle Traditions survey"
     },
     "mesopotamian-dream": {
       "name": "美索不达米亚梦书",
-      "summary": "泥板梦书把梦象编码为吉凶条目。",
-      "region": "美索不达米亚",
+      "summary": "泥板将梦象分类作指引——你记录梦象并对照教学泥板倾向。",
+      "region": "古代美索不达米亚",
       "source": "Oracle Traditions survey"
     }
   },
@@ -1669,50 +1669,50 @@
     },
     "islamic-astrology": {
       "name": "伊斯蘭占星",
-      "summary": "伊斯蘭世界對星历与宫位的學術／民俗傳統。",
-      "region": "Middle East",
+      "summary": "伊斯蘭占星以天體位置論命運主題與擇時，承中世紀詮釋體系。",
+      "region": "中東",
       "source": "Sekai Fortune"
     },
     "manazil": {
       "name": "月宿（Manāzil）",
-      "summary": "阿拉伯月宿體系，用于择时与航运。",
-      "region": "Arabia",
+      "summary": "月宿是二十八個阿拉伯月站，用於天氣、出行與生辰日質。",
+      "region": "阿拉伯半島",
       "source": "Plutto"
     },
     "fal-hafez": {
-      "name": "哈菲兹诗占",
-      "summary": "随机翻開哈菲兹诗集，以落點诗句作為提示。",
-      "region": "Iran",
+      "name": "哈菲茲詩占",
+      "summary": "隨機翻開《哈菲茲詩集》，以詩句作意向之鏡——是指引，不是法令。",
+      "region": "伊朗",
       "source": "Sekai Fortune; Plutto"
     },
     "istikhara": {
-      "name": "伊斯提哈拉求示",
-      "summary": "伊斯蘭求示祷告，寻求在抉择中的内心安静与指引。",
+      "name": "求籤祈導（Istikhāra）",
+      "summary": "以祈禱求指引——藉由心安、夢兆或抽籤作靈性之鏡，不是保證。",
       "region": "伊斯蘭世界",
       "source": "Plutto"
     },
     "abjad": {
-      "name": "阿布贾德數字",
-      "summary": "阿拉伯字母數值系统，用于姓名与經文計算。",
-      "region": "Arabic world",
+      "name": "阿布賈德數字命理",
+      "summary": "依閃語字母順序賦值，論姓名與詞語傾向。",
+      "region": "阿拉伯世界",
       "source": "Plutto"
     },
     "jafr": {
-      "name": "贾弗尔字母秘術",
-      "summary": "字母与數值秘術的贾弗尔傳統。",
-      "region": "Islamic esotericism",
+      "name": "賈弗爾字母學",
+      "summary": "傳統上歸於賈法爾·薩迪克——以表組合字母成神諭短語。",
+      "region": "伊斯蘭秘學",
       "source": "Plutto"
     },
     "firdaria": {
-      "name": "菲尔达裡亚周期",
-      "summary": "波斯—阿拉伯行星年期分配體系。",
-      "region": "Persia",
+      "name": "菲爾達里亞（波斯時主）",
+      "summary": "波斯行星時主體系——人生各段由行星輪值論時機主題。",
+      "region": "波斯",
       "source": "Plutto"
     },
     "ikhtiyarat": {
-      "name": "择时（Ikhtiyārāt）",
-      "summary": "伊斯蘭择时學：选出行、契约等时刻。",
-      "region": "Abbasid Baghdad",
+      "name": "擇時星占（Ikhtiyārāt）",
+      "summary": "選擇吉利時刻，著名於阿拔斯宮廷實踐。",
+      "region": "阿拔斯巴格達",
       "source": "Plutto"
     },
     "zairja": {
@@ -1722,45 +1722,45 @@
       "source": "Plutto"
     },
     "belomancy": {
-      "name": "箭占",
-      "summary": "抽箭或看箭落點作决定的古代方法。",
-      "region": "古代Arabia／Scythia",
+      "name": "箭卜（Belomancy）",
+      "summary": "抽取帶標記的箭矢作抉擇與徵兆——古代阿拉伯與歐亞傳統。",
+      "region": "古代阿拉伯／斯基泰",
       "source": "Sekai Fortune"
     },
     "coffee-tasseography": {
-      "name": "咖啡渣占",
-      "summary": "解讀咖啡杯底咖啡渣的形状与方位。",
-      "region": "Eastern Mediterranean",
+      "name": "土耳其咖啡占",
+      "summary": "解讀杯底渣形，論愛情、出行與運勢主題——民俗指引，不是科學。",
+      "region": "東地中海",
       "source": "Sekai Fortune"
     },
     "molybdomancy-tr": {
-      "name": "熔铅占（土耳其）",
-      "summary": "熔铅倒入水中觀形状的土耳其／欧洲民俗。",
-      "region": "Anatolia／Nordic",
+      "name": "澆鉛占（Kurşun Dökme）",
+      "summary": "將熔鉛倒入水中，以形狀論護佑與歲首指引（僅教育模擬——無真實熔鉛）。",
+      "region": "安納托利亞／北歐",
       "source": "Sekai Fortune"
     },
     "kabbalah-numerology": {
-      "name": "卡巴拉數字",
-      "summary": "希伯來字母數值与卡巴拉演算。",
-      "region": "Judaic",
+      "name": "卡巴拉數字／字母數值",
+      "summary": "希伯來字母數值揭示姓名與詞語的隱意與命運連結。",
+      "region": "猶太傳統",
       "source": "Sekai Fortune; Plutto"
     },
     "mazalot": {
-      "name": "馬扎洛特星座",
-      "summary": "犹太星座／馬扎洛特傳統。",
-      "region": "Judaic",
+      "name": "希伯來黃道（Mazalot）",
+      "summary": "希伯來黃道結合行星時，論猶太曆算占星中的性情主題。",
+      "region": "猶太傳統",
       "source": "Plutto"
     },
     "urim-thummim": {
-      "name": "乌陵与土明",
-      "summary": "聖经傳統中的乌陵土明——本站仅作文本記述。",
-      "region": "古代Israel",
+      "name": "烏陵與土明",
+      "summary": "希伯來聖經中祭司的是／否籤——此處為教育性抽籤模擬。",
+      "region": "古代以色列",
       "source": "Oracle Traditions survey"
     },
     "goralot": {
-      "name": "签阄（Goralot）",
-      "summary": "犹太签阄傳統。",
-      "region": "Ashkenaz／wider Jewish",
+      "name": "猶太籤書（Goralot）",
+      "summary": "民俗實踐中的籤書與圖示——翻開一頁或一圖作答。",
+      "region": "阿什肯納茲／更廣猶太世界",
       "source": "Plutto"
     },
     "western-astrology": {
@@ -2238,15 +2238,15 @@
       "source": "Sekai Fortune"
     },
     "mesopotamian-extispicy": {
-      "name": "美索不达米亚脏卜",
-      "summary": "通過祭牲内脏纹理作王室或公共决策的历史脏卜傳統。",
-      "region": "美索不达米亚",
+      "name": "美索不達米亞臟卜",
+      "summary": "為王室與戰役讀內臟兆（約前2500年）——此處僅為教育象徵模擬（無動物傷害）。",
+      "region": "古代美索不達米亞",
       "source": "Oracle Traditions survey"
     },
     "mesopotamian-dream": {
-      "name": "美索不达米亚夢書",
-      "summary": "泥板夢書把夢象编码為吉凶条目。",
-      "region": "美索不达米亚",
+      "name": "美索不達米亞夢書",
+      "summary": "泥板將夢象分類作指引——你記錄夢象並對照教學泥板傾向。",
+      "region": "古代美索不達米亞",
       "source": "Oracle Traditions survey"
     }
   }

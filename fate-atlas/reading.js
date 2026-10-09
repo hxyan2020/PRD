@@ -40,6 +40,7 @@
     if (window.FatumJapanOracles?.has?.(method.id)) return "japan";
     if (window.FatumSouthAsiaOracles?.has?.(method.id)) return "southasia";
     if (window.FatumHimalayaSeaOracles?.has?.(method.id)) return "himalayasea";
+    if (window.FatumNearEastOracles?.has?.(method.id)) return "neareast";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -237,6 +238,25 @@
         casting: false,
       };
     }
+    if (kind === "neareast") {
+      const rite = window.FatumNearEastOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "question", "openDivan", "hafezVerse", "result"],
+        question: "",
+        focus: "",
+        cast: {},
+        birthDate: "",
+        dayDate: "",
+        personName: "",
+        planetHour: "Mercury hour",
+        manzil: "Al-Sharaṭān",
+        firdariaLord: "Sun period",
+        mazalSign: "Ṭaleh (Aries)",
+        dreamNote: "",
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -379,6 +399,15 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "neareast") {
+        const how = window.FatumNearEastOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -509,6 +538,7 @@
       else if (state.kind === "japan") renderJapan();
       else if (state.kind === "southasia") renderSouthAsia();
       else if (state.kind === "himalayasea") renderHimalayaSea();
+      else if (state.kind === "neareast") renderNearEast();
       return;
     }
     renderGeneric();
@@ -3193,6 +3223,316 @@
     }, 900);
   }
 
+  // ——— Near East / Abrahamic / Mesopotamian ———
+  function neZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function neStageHTML(rite, casting) {
+    const cast = state.cast || {};
+    const zh = neZh();
+    const anim = casting ? " is-casting" : "";
+    const viz = rite?.viz || "";
+    if (viz === "islamic" || viz === "elect" || viz === "firdaria") {
+      const label =
+        cast.hour ? (zh ? cast.hour.zh : cast.hour.en) : cast.lord ? (zh ? cast.lord.zh : cast.lord.en) : zh ? "行星时…" : "Hour…";
+      return `<div class="ne-stage ne-stage--chart${anim}"><div class="ne-ring"><i></i><i></i><i></i></div>
+        <p class="ne-stage__hint">${escapeHTML(label)}</p></div>`;
+    }
+    if (viz === "manazil") {
+      return `<div class="ne-stage ne-stage--mansions${anim}"><div class="ne-mansions">${Array.from({ length: 7 }, (_, i) => `<span class="${i === 2 ? "is-on" : ""}"></span>`).join("")}</div>
+        <p class="ne-stage__hint">${escapeHTML(cast.m ? (zh ? cast.m.zh : cast.m.en) : zh ? "月宿…" : "Manzil…")}</p></div>`;
+    }
+    if (viz === "hafez") {
+      return `<div class="ne-stage ne-stage--book${anim}"><div class="ne-book"><span></span><span></span></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.verse ? (zh ? cast.verse.zh : cast.verse.en) : zh ? "诗集…" : "Divan…")}</p></div>`;
+    }
+    if (viz === "istikhara") {
+      return `<div class="ne-stage ne-stage--ease${anim}"><div class="ne-ease"></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.sign ? (zh ? cast.sign.zh : cast.sign.en) : zh ? "心安…" : "Ease…")}</p></div>`;
+    }
+    if (viz === "abjad" || viz === "gematria") {
+      return `<div class="ne-stage ne-stage--num${anim}"><div class="ne-num">${escapeHTML(String(cast.total || "·"))}</div>
+        <p class="ne-stage__hint">${escapeHTML(cast.band ? (zh ? cast.band.zh : cast.band.en) : cast.name || (zh ? "数值…" : "Sum…"))}</p></div>`;
+    }
+    if (viz === "jafr") {
+      return `<div class="ne-stage ne-stage--table${anim}"><div class="ne-grid">${Array.from({ length: 9 }, () => "<span></span>").join("")}</div>
+        <p class="ne-stage__hint">${escapeHTML(cast.phrase ? (zh ? cast.phrase.zh : cast.phrase.en) : zh ? "字母表…" : "Table…")}</p></div>`;
+    }
+    if (viz === "arrow") {
+      return `<div class="ne-stage ne-stage--arrow${anim}"><div class="ne-arrow"><i></i></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.arrow ? (zh ? cast.arrow.zh : cast.arrow.en) : zh ? "抽箭…" : "Arrow…")}</p></div>`;
+    }
+    if (viz === "mazalot") {
+      return `<div class="ne-stage ne-stage--zodiac${anim}"><div class="ne-zodiac"><span></span><span></span><span></span></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.sign ? (zh ? cast.sign.zh : cast.sign.en) : zh ? "黄道…" : "Mazal…")}</p></div>`;
+    }
+    if (viz === "urim") {
+      return `<div class="ne-stage ne-stage--lots${anim}"><div class="ne-lots"><span></span><span></span></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.reply ? (zh ? cast.reply.zh : cast.reply.en) : zh ? "签石…" : "Lots…")}</p></div>`;
+    }
+    if (viz === "goral") {
+      return `<div class="ne-stage ne-stage--goral${anim}"><div class="ne-spin"></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.page ? (zh ? cast.page.zh : cast.page.en) : zh ? "签图…" : "Goral…")}</p></div>`;
+    }
+    if (viz === "coffee") {
+      return `<div class="ne-stage ne-stage--cup${anim}"><div class="ne-cup"><i></i></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.shape ? (zh ? cast.shape.zh : cast.shape.en) : zh ? "渣形…" : "Grounds…")}</p></div>`;
+    }
+    if (viz === "lead") {
+      return `<div class="ne-stage ne-stage--lead${anim}"><div class="ne-lead"><i></i></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.shape ? (zh ? cast.shape.zh : cast.shape.en) : zh ? "铅形…" : "Lead…")}</p></div>`;
+    }
+    if (viz === "liver") {
+      return `<div class="ne-stage ne-stage--liver${anim}"><div class="ne-liver"></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.omen ? (zh ? cast.omen.zh : cast.omen.en) : zh ? "肝图…" : "Liver…")}</p></div>`;
+    }
+    if (viz === "dream") {
+      return `<div class="ne-stage ne-stage--dream${anim}"><div class="ne-tablet"><span></span><span></span></div>
+        <p class="ne-stage__hint">${escapeHTML(cast.omen ? (zh ? cast.omen.zh : cast.omen.en) : cast.note || (zh ? "泥板…" : "Tablet…"))}</p></div>`;
+    }
+    return `<div class="ne-stage${anim}"></div>`;
+  }
+
+  function renderNearEast() {
+    const rite = window.FatumNearEastOracles.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumNearEastOracles.howFor(state.method.id);
+    const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = neZh();
+    const backNext = () => `
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+    if (step === "intent") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Asia")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "neareast", label: "Near East" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "抱定问题" : "Hold your question")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "birth") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入出生日期" : "Enter birth date")}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(ti("studio.generic.birthDate") || "Birth date")}</label>
+        <input type="date" id="r-birth" value="${escapeHTML(state.birthDate || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "焦点（可选）" : "Focus (optional)")}</label>
+        <input type="text" id="r-question" maxlength="120" value="${escapeHTML(state.question || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "daypickManzil" || step === "daypickElect") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "点选日期" : "Pick a day")}</h3>
+        <div class="field"><label for="r-day">${escapeHTML(zh ? "日期" : "Date")}</label>
+        <input type="date" id="r-day" value="${escapeHTML(state.dayDate || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "目的（可选）" : "Purpose (optional)")}</label>
+        <input type="text" id="r-question" maxlength="120" value="${escapeHTML(state.question || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "planetHour" || step === "electHour") {
+      const hours = ["Saturn hour", "Jupiter hour", "Mars hour", "Sun hour", "Venus hour", "Mercury hour", "Moon hour"];
+      const zhH = {
+        "Saturn hour": "土星时",
+        "Jupiter hour": "木星时",
+        "Mars hour": "火星时",
+        "Sun hour": "太阳时",
+        "Venus hour": "金星时",
+        "Mercury hour": "水星时",
+        "Moon hour": "月亮时",
+      };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择行星时" : "Pick a planetary hour")}</h3>
+        ${neStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${hours.map((h) => `<button type="button" class="africa-choice${state.planetHour === h ? " is-on" : ""}" data-action="ne-hour" data-hour="${escapeHTML(h)}">${escapeHTML(zh ? zhH[h] : h)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "mansionManzil") {
+      const mansions = ["Al-Sharaṭān", "Al-Thurayyā", "Al-Dabarān", "Al-Haçal", "Al-Nathra", "Al-Balda"];
+      const zhM = {
+        "Al-Sharaṭān": "两角宿",
+        "Al-Thurayyā": "昴宿",
+        "Al-Dabarān": "毕宿",
+        "Al-Haçal": "觜宿意",
+        "Al-Nathra": "鬼宿意",
+        "Al-Balda": "危宿意",
+      };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "查看月宿" : "See the manzil")}</h3>
+        ${neStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${mansions.map((m) => `<button type="button" class="africa-choice${state.manzil === m ? " is-on" : ""}" data-action="ne-manzil" data-manzil="${escapeHTML(m)}">${escapeHTML(zh ? zhM[m] : m)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "nameInAbjad" || step === "nameInHebrew") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入姓名或词语" : "Enter a name or word")}</h3>
+        <div class="field"><label for="r-name">${escapeHTML(zh ? "姓名／词语" : "Name / word")}</label>
+        <input type="text" id="r-name" maxlength="80" value="${escapeHTML(state.personName || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "焦点（可选）" : "Focus (optional)")}</label>
+        <input type="text" id="r-question" maxlength="120" value="${escapeHTML(state.question || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "firdariaLord") {
+      const lords = ["Sun period", "Moon period", "Mars period", "Mercury period", "Jupiter period", "Venus period", "Saturn period"];
+      const zhL = {
+        "Sun period": "日周期",
+        "Moon period": "月周期",
+        "Mars period": "火周期",
+        "Mercury period": "水周期",
+        "Jupiter period": "木周期",
+        "Venus period": "金周期",
+        "Saturn period": "土周期",
+      };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "查看时主" : "See the firdaria lord")}</h3>
+        ${neStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${lords.map((l) => `<button type="button" class="africa-choice${state.firdariaLord === l ? " is-on" : ""}" data-action="ne-firdaria" data-lord="${escapeHTML(l)}">${escapeHTML(zh ? zhL[l] : l)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "mazalSign") {
+      const signs = ["Ṭaleh (Aries)", "Shor (Taurus)", "Teomim (Gemini)", "Sartan (Cancer)", "Aryeh (Leo)", "Betulah (Virgo)"];
+      const zhS = {
+        "Ṭaleh (Aries)": "白羊",
+        "Shor (Taurus)": "金牛",
+        "Teomim (Gemini)": "双子",
+        "Sartan (Cancer)": "巨蟹",
+        "Aryeh (Leo)": "狮子",
+        "Betulah (Virgo)": "处女",
+      };
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择希伯来星座" : "Pick a mazal sign")}</h3>
+        ${neStageHTML(rite, false)}
+        <div class="africa-choice-row">
+          ${signs.map((s) => `<button type="button" class="africa-choice${state.mazalSign === s ? " is-on" : ""}" data-action="ne-mazal" data-sign="${escapeHTML(s)}">${escapeHTML(zh ? zhS[s] : s)}</button>`).join("")}
+        </div>
+        ${backNext()}`;
+      return;
+    }
+    if (step === "dreamNote") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "记录梦象" : "Note a dream image")}</h3>
+        <div class="field"><label for="r-dream">${escapeHTML(zh ? "梦中最醒目的景象" : "What stood out in the dream?")}</label>
+        <input type="text" id="r-dream" maxlength="120" value="${escapeHTML(state.dreamNote || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-question">${escapeHTML(zh ? "焦点（可选）" : "Focus (optional)")}</label>
+        <input type="text" id="r-question" maxlength="120" value="${escapeHTML(state.question || "")}" /></div>
+        ${backNext()}`;
+      return;
+    }
+    if (
+      step === "prayEase" ||
+      step === "openDivan" ||
+      step === "jafrTable" ||
+      step === "drawArrow" ||
+      step === "holdLots" ||
+      step === "spinGoral" ||
+      step === "brewCup" ||
+      step === "pourLead" ||
+      step === "inspectLiver" ||
+      step === "tabletMatch" ||
+      step === "abjadSum" ||
+      step === "gematriaSum"
+    ) {
+      const i = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${neStageHTML(rite, false)}
+        ${backNext()}`;
+      return;
+    }
+    if (
+      step === "islamicChart" ||
+      step === "manazilCounsel" ||
+      step === "hafezVerse" ||
+      step === "istikharaSign" ||
+      step === "abjadLean" ||
+      step === "jafrPhrase" ||
+      step === "firdariaTone" ||
+      step === "electCounsel" ||
+      step === "arrowLot" ||
+      step === "gematriaLean" ||
+      step === "mazalotBoard" ||
+      step === "urimReply" ||
+      step === "goralPage" ||
+      step === "groundsRead" ||
+      step === "leadShape" ||
+      step === "liverOmen" ||
+      step === "dreamOmen"
+    ) {
+      const cta = window.FatumNearEastOracles.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(state.question ? (zh ? `持念：「${state.question}」` : `Holding: “${state.question}”`) : "")}</p>
+        ${neStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="ne-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+    if (step === "result" && state.reading) renderGuidedResult(state.reading, true);
+  }
+
+  function doNearEastCast() {
+    const rite = window.FatumNearEastOracles.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumNearEastOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        nonce: state.nonce,
+        birthDate: state.birthDate,
+        dayDate: state.dayDate,
+        personName: state.personName,
+        planetHour: state.planetHour,
+        manzil: state.manzil,
+        firdariaLord: state.firdariaLord,
+        mazalSign: state.mazalSign,
+        dreamNote: state.dreamNote,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -3536,6 +3876,13 @@
             return rite ? hsStageHTML(rite, false) : "";
           })()
         : "";
+    const neExtra =
+      r.kind === "neareast" && state.kind === "neareast"
+        ? (() => {
+            const rite = window.FatumNearEastOracles?.get?.(state.method.id);
+            return rite ? neStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -3543,13 +3890,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -4078,6 +4425,61 @@
         ];
         if (hsCast.includes(step)) return;
       }
+      if (state.kind === "neareast") {
+        if (step === "question") {
+          const q = body.querySelector("#r-question");
+          state.question = (q?.value || "").trim();
+          if (!state.question) return fail(q);
+        }
+        if (step === "birth") {
+          const b = body.querySelector("#r-birth");
+          state.birthDate = (b?.value || "").trim();
+          if (!state.birthDate) return fail(b);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        if (step === "daypickManzil" || step === "daypickElect") {
+          const d = body.querySelector("#r-day");
+          state.dayDate = (d?.value || "").trim();
+          if (!state.dayDate) return fail(d);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        if (step === "nameInAbjad" || step === "nameInHebrew") {
+          const n = body.querySelector("#r-name");
+          state.personName = (n?.value || "").trim();
+          if (!state.personName) return fail(n);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        if (step === "dreamNote") {
+          const d = body.querySelector("#r-dream");
+          state.dreamNote = (d?.value || "").trim();
+          if (!state.dreamNote) return fail(d);
+          const q = body.querySelector("#r-question");
+          if (q) state.question = (q.value || "").trim();
+        }
+        const neCast = [
+          "islamicChart",
+          "manazilCounsel",
+          "hafezVerse",
+          "istikharaSign",
+          "abjadLean",
+          "jafrPhrase",
+          "firdariaTone",
+          "electCounsel",
+          "arrowLot",
+          "gematriaLean",
+          "mazalotBoard",
+          "urimReply",
+          "goralPage",
+          "groundsRead",
+          "leadShape",
+          "liverOmen",
+          "dreamOmen",
+        ];
+        if (neCast.includes(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -4287,7 +4689,23 @@
       state.ukuWeek = el.dataset.uku || "Sinta week";
       return render();
     }
-
+    if (action === "ne-cast") return doNearEastCast();
+    if (action === "ne-hour") {
+      state.planetHour = el.dataset.hour || "Mercury hour";
+      return render();
+    }
+    if (action === "ne-manzil") {
+      state.manzil = el.dataset.manzil || "Al-Sharaṭān";
+      return render();
+    }
+    if (action === "ne-firdaria") {
+      state.firdariaLord = el.dataset.lord || "Sun period";
+      return render();
+    }
+    if (action === "ne-mazal") {
+      state.mazalSign = el.dataset.sign || "Ṭaleh (Aries)";
+      return render();
+    }
 
     if (action === "kv-hour") {
       state.hourIndex = Number(el.dataset.hour || 0);
