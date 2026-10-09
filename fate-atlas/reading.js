@@ -43,6 +43,7 @@
     if (window.FatumNearEastOracles?.has?.(method.id)) return "neareast";
     if (window.FatumWestAstroOracles?.has?.(method.id)) return "westastro";
     if (window.FatumCartomancyOracles?.has?.(method.id)) return "cartomancy";
+    if (window.FatumClassicalEuroOracles?.has?.(method.id)) return "classicaleuro";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -288,6 +289,17 @@
         casting: false,
       };
     }
+    if (kind === "classicaleuro") {
+      const rite = window.FatumClassicalEuroOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "question", "castYounger", "runeReveal", "youngerCounsel", "result"],
+        question: "",
+        focus: "",
+        cast: {},
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -457,6 +469,15 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "classicaleuro") {
+        const how = window.FatumClassicalEuroOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        return {
+          label: howStep?.title || state.steps[state.stepIndex] || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -590,6 +611,7 @@
       else if (state.kind === "neareast") renderNearEast();
       else if (state.kind === "westastro") renderWestAstro();
       else if (state.kind === "cartomancy") renderCartomancy();
+      else if (state.kind === "classicaleuro") renderClassicalEuro();
       return;
     }
     renderGeneric();
@@ -3906,6 +3928,156 @@
     }, 900);
   }
 
+  // ——— Classical European oracles ———
+  function ceZh() {
+    try {
+      return String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function ceStageHTML(rite, casting) {
+    const cast = state.cast || {};
+    const zh = ceZh();
+    const anim = casting ? " is-casting" : "";
+    const viz = rite?.viz || "";
+    const glyph =
+      cast.rune?.glyph ||
+      cast.fid?.glyph ||
+      "";
+    const hint =
+      (cast.rune && (zh ? cast.rune.zh : cast.rune.en)) ||
+      (cast.fid && (zh ? cast.fid.zh : cast.fid.en)) ||
+      (cast.bird && (zh ? cast.bird.zh : cast.bird.en)) ||
+      (cast.omen && (zh ? cast.omen.zh : cast.omen.en)) ||
+      (cast.verse && (zh ? cast.verse.zh : cast.verse.en)) ||
+      (cast.lot && (zh ? cast.lot.zh : cast.lot.en)) ||
+      (cast.face && (zh ? cast.face.zh : cast.face.en)) ||
+      (cast.figure && (zh ? cast.figure.zh : cast.figure.en)) ||
+      (zh ? "征兆…" : "Omen…");
+    if (viz === "younger" || viz === "futhorc" || viz === "ogham") {
+      return `<div class="ce-stage ce-stage--rune${anim}"><div class="ce-glyph">${escapeHTML(glyph || "ᚠ")}</div>
+        <p class="ce-stage__hint">${escapeHTML(hint)}</p></div>`;
+    }
+    if (viz === "augury") {
+      return `<div class="ce-stage ce-stage--sky${anim}"><div class="ce-sky"><i></i><i></i></div>
+        <p class="ce-stage__hint">${escapeHTML(hint)}</p></div>`;
+    }
+    if (viz === "haruspex") {
+      return `<div class="ce-stage ce-stage--liver${anim}"><div class="ce-liver"></div>
+        <p class="ce-stage__hint">${escapeHTML(hint)}</p></div>`;
+    }
+    if (viz === "delphi" || viz === "sortes") {
+      return `<div class="ce-stage ce-stage--book${anim}"><div class="ce-book"><span></span><span></span></div>
+        <p class="ce-stage__hint">${escapeHTML(hint)}</p></div>`;
+    }
+    if (viz === "lots") {
+      return `<div class="ce-stage ce-stage--lots${anim}"><div class="ce-lots"><span></span><span></span><span></span></div>
+        <p class="ce-stage__hint">${escapeHTML(hint)}</p></div>`;
+    }
+    if (viz === "astragal") {
+      return `<div class="ce-stage ce-stage--bones${anim}"><div class="ce-bones"><span></span><span></span><span></span><span></span></div>
+        <p class="ce-stage__hint">${escapeHTML(hint)}</p></div>`;
+    }
+    if (viz === "geomancy") {
+      return `<div class="ce-stage ce-stage--dots${anim}"><div class="ce-dots">${Array.from({ length: 16 }, () => "<i></i>").join("")}</div>
+        <p class="ce-stage__hint">${escapeHTML(hint)}</p></div>`;
+    }
+    return `<div class="ce-stage${anim}"></div>`;
+  }
+
+  const CE_CAST = new Set([
+    "youngerCounsel",
+    "futhorcCounsel",
+    "oghamCounsel",
+    "auguryCounsel",
+    "haruspexCounsel",
+    "pythiaVerse",
+    "bibliomancyCounsel",
+    "cleromancyCounsel",
+    "astragalCounsel",
+    "geomancyCounsel",
+  ]);
+
+  function renderClassicalEuro() {
+    const rite = window.FatumClassicalEuroOracles.get(state.method.id);
+    if (!rite) return;
+    const step = state.steps[state.stepIndex];
+    const how = window.FatumClassicalEuroOracles.howFor(state.method.id);
+    const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const zh = ceZh();
+    const backNext = () => `
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+    if (step === "intent") {
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "Europe")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(how?.steps?.[0]?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "classicaleuro", label: "Classical Europe" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+    if (step === "question") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "抱定问题" : "Hold your question")}</h3>
+        <div class="field"><label for="r-question">${escapeHTML(ti("studio.generic.qLabel"))}</label>
+        <textarea id="r-question" rows="3" maxlength="280">${escapeHTML(state.question || "")}</textarea></div>
+        ${backNext()}`;
+      return;
+    }
+    if (CE_CAST.has(step)) {
+      const cta = window.FatumClassicalEuroOracles.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(state.question ? (zh ? `持念：「${state.question}」` : `Holding: “${state.question}”`) : "")}</p>
+        ${ceStageHTML(rite, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="ce-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+      return;
+    }
+    const i = state.steps.indexOf(step);
+    const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+    body.innerHTML = `
+      <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+      <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+      ${ceStageHTML(rite, false)}
+      ${backNext()}`;
+  }
+
+  function doClassicalEuroCast() {
+    const rite = window.FatumClassicalEuroOracles.get(state.method.id);
+    if (!rite) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumClassicalEuroOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        nonce: state.nonce,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -4270,6 +4442,13 @@
             return rite ? cmStageHTML(rite, false) : "";
           })()
         : "";
+    const ceExtra =
+      r.kind === "classicaleuro" && state.kind === "classicaleuro"
+        ? (() => {
+            const rite = window.FatumClassicalEuroOracles?.get?.(state.method.id);
+            return rite ? ceStageHTML(rite, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -4277,13 +4456,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -4894,6 +5073,9 @@
         const cmCast = ["lenormandSpread", "kipperCounsel", "sibillaCounsel", "playingSpread", "barajaSpread", "oracleMessage"];
         if (cmCast.includes(step)) return;
       }
+      if (state.kind === "classicaleuro") {
+        if (CE_CAST.has(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -5138,6 +5320,7 @@
       state.paloFocus = el.dataset.palo || "Oros";
       return render();
     }
+    if (action === "ce-cast") return doClassicalEuroCast();
 
     if (action === "kv-hour") {
       state.hourIndex = Number(el.dataset.hour || 0);

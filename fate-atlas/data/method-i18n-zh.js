@@ -700,20 +700,20 @@
       "source": "Sekai Fortune"
     },
     "runes-younger": {
-      "name": "北欧卢恩（小符文）",
-      "summary": "抽取或抛掷卢恩符文，按复兴传统的释义作关键词式解读。",
-      "region": "Norse",
+      "name": "小弗萨克卢恩",
+      "summary": "十六符的维京时代卢恩字母——抽取或抛掷作指引，不是固定命运钟。",
+      "region": "北欧",
       "source": "Plutto"
     },
     "runes-futhorc": {
-      "name": "盎格鲁符文",
-      "summary": "盎格鲁—撒克逊符文抽取，按字义关键词解读。",
-      "region": "Anglo-Saxon",
+      "name": "盎格鲁－撒克逊弗索克",
+      "summary": "约三十三符的英语卢恩行——现代与重构抛掷作指引。",
+      "region": "盎格鲁－撒克逊",
       "source": "Plutto"
     },
     "ogham": {
-      "name": "欧甘文字占",
-      "summary": "爱尔兰欧甘字母占，按树木字母象征作答。",
+      "name": "欧甘占",
+      "summary": "凯尔特复兴实践中的字母棍——树木与字母论性情与时机。",
       "region": "凯尔特",
       "source": "Sekai Fortune"
     },
@@ -724,39 +724,39 @@
       "source": "Sekai Fortune; Plutto"
     },
     "augury": {
-      "name": "鸟占（Augury）",
-      "summary": "观察飞鸟或征兆，按传统码式解读公共或个人事宜。",
-      "region": "古代Rome／Greece",
+      "name": "鸟占",
+      "summary": "以鸟飞、鸣叫与取食作公共征兆——罗马与希腊国务技艺。",
+      "region": "古罗马／希腊",
       "source": "Sekai Fortune"
     },
     "haruspicy": {
-      "name": "脏卜（Haruspicy）",
-      "summary": "古罗马脏卜：由祭牲内脏形态作公共决策记述。",
-      "region": "Etruria／Rome",
+      "name": "脏卜（伊特鲁里亚／罗马）",
+      "summary": "为国务读肝脏纹记——仅教育象征模拟（无动物伤害）。",
+      "region": "伊特鲁里亚／罗马",
       "source": "Sekai Fortune; Oracle Traditions"
     },
     "delphi": {
-      "name": "德尔斐神谕（记述）",
-      "summary": "历史记述中的德尔斐女祭司神谕——本站仅作文化介绍。",
+      "name": "德尔斐神谕／皮提亚",
+      "summary": "经由皮提亚在阿波罗圣地的灵感出神传达——诗句指引，不是保证。",
       "region": "古希腊",
       "source": "Oracle Traditions survey"
     },
     "bibliomancy": {
-      "name": "开卷占卜",
-      "summary": "随机翻开经书或诗集，以落点文句作为提示。",
-      "region": "Worldwide／Greco-Roman",
+      "name": "书占（Sortes）",
+      "summary": "随机翻开圣典或文学书——维吉尔、荷马或经文作指引之镜。",
+      "region": "世界／希腊罗马",
       "source": "Sekai Fortune; Plutto"
     },
     "cleromancy": {
-      "name": "抽签／掷筊",
-      "summary": "抽签、掷筊或类似抽签程序以作决定。",
-      "region": "古代Near East → 欧洲",
+      "name": "抽签术",
+      "summary": "抛掷签、骰或带标记物件作抉择——最古老的占卜方法之一。",
+      "region": "古代近东→欧洲",
       "source": "Plutto"
     },
     "astragalomancy": {
-      "name": "距骨骰占",
-      "summary": "抛掷距骨／踝骨骰，按落点组合解读。",
-      "region": "Greece／Rome",
+      "name": "距骨占",
+      "summary": "抛掷距骨得编号神谕——希腊罗马博弈转为指引。",
+      "region": "希腊／罗马",
       "source": "Sekai Fortune"
     },
     "scrying": {
@@ -820,9 +820,9 @@
       "source": "Plutto"
     },
     "geomancy-west": {
-      "name": "欧洲土占",
-      "summary": "以点数或沙痕生成十六种土占图形并解读。",
-      "region": "Medieval 欧洲",
+      "name": "西方土占",
+      "summary": "以点行生成十六个卦象——由伊斯兰北非传入中世纪欧洲。",
+      "region": "中世纪欧洲",
       "source": "Sekai Fortune"
     },
     "slavic-folk": {
@@ -1824,21 +1824,21 @@
       "source": "Sekai Fortune"
     },
     "runes-younger": {
-      "name": "北欧卢恩（小符文）",
-      "summary": "抽取或抛掷卢恩符文，按复兴傳統的释義作關键词式解讀。",
-      "region": "Norse",
+      "name": "小弗薩克盧恩",
+      "summary": "十六符的維京時代盧恩字母——抽取或拋擲作指引，不是固定命運鐘。",
+      "region": "北歐",
       "source": "Plutto"
     },
     "runes-futhorc": {
-      "name": "盎格鲁符文",
-      "summary": "盎格鲁—撒克逊符文抽取，按字義關键词解讀。",
-      "region": "Anglo-Saxon",
+      "name": "盎格魯－撒克遜弗索克",
+      "summary": "約三十三符的英語盧恩行——現代與重構拋擲作指引。",
+      "region": "盎格魯－撒克遜",
       "source": "Plutto"
     },
     "ogham": {
-      "name": "欧甘文字占",
-      "summary": "爱尔蘭欧甘字母占，按树木字母象征作答。",
-      "region": "凯尔特",
+      "name": "歐甘占",
+      "summary": "凱爾特復興實踐中的字母棍——樹木與字母論性情與時機。",
+      "region": "凱爾特",
       "source": "Sekai Fortune"
     },
     "celtic-tree": {
@@ -1848,39 +1848,39 @@
       "source": "Sekai Fortune; Plutto"
     },
     "augury": {
-      "name": "鳥占（Augury）",
-      "summary": "觀察飞鳥或征兆，按傳統码式解讀公共或個人事宜。",
-      "region": "古代Rome／Greece",
+      "name": "鳥占",
+      "summary": "以鳥飛、鳴叫與取食作公共徵兆——羅馬與希臘國務技藝。",
+      "region": "古羅馬／希臘",
       "source": "Sekai Fortune"
     },
     "haruspicy": {
-      "name": "脏卜（Haruspicy）",
-      "summary": "古罗馬脏卜：由祭牲内脏形態作公共决策記述。",
-      "region": "Etruria／Rome",
+      "name": "臟卜（伊特魯里亞／羅馬）",
+      "summary": "為國務讀肝臟紋記——僅教育象徵模擬（無動物傷害）。",
+      "region": "伊特魯里亞／羅馬",
       "source": "Sekai Fortune; Oracle Traditions"
     },
     "delphi": {
-      "name": "德尔斐神谕（記述）",
-      "summary": "历史記述中的德尔斐女祭司神谕——本站仅作文化介绍。",
-      "region": "古希腊",
+      "name": "德爾斐神諭／皮提亞",
+      "summary": "經由皮提亞在阿波羅聖地的靈感出神傳達——詩句指引，不是保證。",
+      "region": "古希臘",
       "source": "Oracle Traditions survey"
     },
     "bibliomancy": {
-      "name": "開卷占卜",
-      "summary": "随机翻開经書或诗集，以落點文句作為提示。",
-      "region": "Worldwide／Greco-Roman",
+      "name": "書占（Sortes）",
+      "summary": "隨機翻開聖典或文學書——維吉爾、荷馬或經文作指引之鏡。",
+      "region": "世界／希臘羅馬",
       "source": "Sekai Fortune; Plutto"
     },
     "cleromancy": {
-      "name": "抽签／掷筊",
-      "summary": "抽签、掷筊或類似抽签程序以作决定。",
-      "region": "古代Near East → 欧洲",
+      "name": "抽籤術",
+      "summary": "拋擲籤、骰或帶標記物件作抉擇——最古老的占卜方法之一。",
+      "region": "古代近東→歐洲",
       "source": "Plutto"
     },
     "astragalomancy": {
-      "name": "距骨骰占",
-      "summary": "抛掷距骨／踝骨骰，按落點组合解讀。",
-      "region": "Greece／Rome",
+      "name": "距骨占",
+      "summary": "拋擲距骨得編號神諭——希臘羅馬博弈轉為指引。",
+      "region": "希臘／羅馬",
       "source": "Sekai Fortune"
     },
     "scrying": {
@@ -1944,9 +1944,9 @@
       "source": "Plutto"
     },
     "geomancy-west": {
-      "name": "欧洲土占",
-      "summary": "以點數或沙痕生成十六种土占圖形并解讀。",
-      "region": "Medieval 欧洲",
+      "name": "西方土占",
+      "summary": "以點行生成十六個卦象——由伊斯蘭北非傳入中世紀歐洲。",
+      "region": "中世紀歐洲",
       "source": "Sekai Fortune"
     },
     "slavic-folk": {
