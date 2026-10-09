@@ -62,8 +62,38 @@ describe("data sources registry", () => {
     for (const source of DATA_SOURCES) {
       expect(source.name).toBeTruthy();
       expect(source.url).toMatch(/^https?:\/\//);
+      expect(source.logoDomain).toMatch(/\./);
       expect(source.countries.length).toBeGreaterThan(0);
       expect(source.lastSourcedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    }
+  });
+});
+
+describe("self-hosted brand assets", () => {
+  it("ships a flag SVG for every covered country and locale", async () => {
+    const { existsSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const { LOCALES } = await import("./i18n/locales");
+    const { countryToFlagCode } = await import("./flag-codes");
+    const root = join(process.cwd(), "public", "flags");
+    for (const country of allCoveredCountries()) {
+      const code = countryToFlagCode(country);
+      expect(code).toBeTruthy();
+      expect(existsSync(join(root, `${code}.svg`))).toBe(true);
+    }
+    for (const locale of LOCALES) {
+      expect(existsSync(join(root, `${locale.flagCode}.svg`))).toBe(true);
+    }
+  });
+
+  it("ships a platform logo for every data source", async () => {
+    const { existsSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const root = join(process.cwd(), "public", "logos");
+    for (const source of DATA_SOURCES) {
+      const png = join(root, `${source.id}.png`);
+      const svg = join(root, `${source.id}.svg`);
+      expect(existsSync(png) || existsSync(svg)).toBe(true);
     }
   });
 });

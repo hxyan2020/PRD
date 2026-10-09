@@ -1,4 +1,6 @@
-/** ISO 3166-1 alpha-2 national / regional flags via flagcdn (reliable where emoji flags fail). */
+"use client";
+
+import { withBase } from "@/lib/base-path";
 
 type FlagProps = {
   /** ISO 3166-1 alpha-2 country code, e.g. "us", "cn", "tw" */
@@ -13,25 +15,25 @@ const SIZE = {
   md: { w: 22, h: 16, className: "h-4 w-[22px]" },
 } as const;
 
+/** National flags from self-hosted SVGs under /flags/{code}.svg */
 export function Flag({ code, title, className, size = "md" }: FlagProps) {
   const cc = code.trim().toLowerCase();
+  const dims = SIZE[size];
   if (!/^[a-z]{2}$/.test(cc)) {
     return (
       <span
-        className={`inline-flex items-center justify-center rounded-[2px] bg-white/10 text-[9px] text-mist ${SIZE[size].className} ${className ?? ""}`}
+        className={`inline-flex items-center justify-center rounded-[2px] bg-white/10 text-[9px] text-mist ${dims.className} ${className ?? ""}`}
         title={title}
         aria-hidden
       >
-        🌐
+        ··
       </span>
     );
   }
-  const dims = SIZE[size];
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- static flag assets from CDN
+    // eslint-disable-next-line @next/next/no-img-element -- local static SVGs
     <img
-      src={`https://flagcdn.com/w40/${cc}.png`}
-      srcSet={`https://flagcdn.com/w80/${cc}.png 2x`}
+      src={withBase(`/flags/${cc}.svg`)}
       width={dims.w}
       height={dims.h}
       alt=""
@@ -39,7 +41,7 @@ export function Flag({ code, title, className, size = "md" }: FlagProps) {
       aria-hidden
       loading="lazy"
       decoding="async"
-      className={`inline-block shrink-0 rounded-[2px] object-cover shadow-[0_0_0_1px_rgba(255,255,255,0.12)] ${dims.className} ${className ?? ""}`}
+      className={`inline-block shrink-0 rounded-[2px] object-cover shadow-[0_0_0_1px_rgba(255,255,255,0.14)] ${dims.className} ${className ?? ""}`}
     />
   );
 }

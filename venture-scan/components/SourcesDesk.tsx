@@ -10,6 +10,7 @@ import {
   type SourceHealth,
 } from "@/lib/data-sources";
 import { Flag } from "@/components/Flag";
+import { PlatformLogo } from "@/components/PlatformLogo";
 import { relativeTime } from "@/lib/format";
 import { countryToFlagCode } from "@/lib/flag-codes";
 import { useI18n } from "@/lib/i18n/context";
@@ -163,7 +164,8 @@ export function SourcesDesk() {
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <PlatformLogo sourceId={source.id} name={source.name} />
                     <h3 className="font-display text-xl text-foam">{source.name}</h3>
                     <HealthBadge health={status} label={t(`sources.health.${status}`)} />
                     <span className="rounded-md border border-white/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-mist">
@@ -197,10 +199,10 @@ export function SourcesDesk() {
                         {source.countries.map((c) => (
                           <span
                             key={c}
-                            className="inline-flex items-center gap-1 rounded-md bg-white/5 px-2 py-0.5 text-foam"
+                            className="inline-flex items-center gap-1.5 rounded-md bg-white/5 px-2 py-1 text-foam"
                           >
                             <Flag code={countryToFlagCode(c) ?? ""} title={c} size="sm" />
-                            {c}
+                            <span>{c}</span>
                           </span>
                         ))}
                       </dd>
