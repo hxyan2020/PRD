@@ -5146,3 +5146,208 @@ body:not(.studio-open) .hero__content {
   color: #f3e6c8;
   font-size: 0.8rem;
 }
+
+/* ——— Chinese form / feng shui / physiognomy stages ——— */
+.form-stage {
+  position: relative;
+  margin: 1.1rem 0 1.35rem;
+  min-height: 7rem;
+  border-radius: 1rem;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(90, 140, 120, 0.14), transparent 55%),
+    linear-gradient(160deg, #1c241e 0%, #0e1210 100%);
+  border: 1px solid rgba(160, 190, 170, 0.28);
+  padding: 1rem;
+  overflow: hidden;
+}
+.form-stage__hint {
+  margin: 0.65rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+  text-align: center;
+  color: #d8e8dc;
+}
+.form-stage.is-casting .fs-arrow,
+.form-stage.is-casting .bz-cell.is-best,
+.form-stage.is-casting .fly-cell.is-hit,
+.form-stage.is-casting .fz,
+.form-stage.is-casting .pl,
+.form-stage.is-casting .bone-hand i,
+.form-stage.is-casting .mole-dot {
+  animation: africa-toss 0.85s ease-in-out infinite;
+}
+
+.fs-compass {
+  position: relative;
+  width: 7rem;
+  height: 7rem;
+  margin: 0.25rem auto;
+  border-radius: 50%;
+  border: 2px solid rgba(160, 190, 170, 0.45);
+  background: radial-gradient(circle at 50% 50%, #2a3a30, #152018);
+}
+.fs-compass .fs-n,
+.fs-compass .fs-e,
+.fs-compass .fs-s,
+.fs-compass .fs-w {
+  position: absolute;
+  font-size: 0.7rem;
+  color: #b8d4c0;
+  font-weight: 600;
+}
+.fs-n { top: 0.35rem; left: 50%; transform: translateX(-50%); }
+.fs-s { bottom: 0.35rem; left: 50%; transform: translateX(-50%); }
+.fs-e { right: 0.4rem; top: 50%; transform: translateY(-50%); }
+.fs-w { left: 0.4rem; top: 50%; transform: translateY(-50%); }
+.fs-arrow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 0.45rem solid transparent;
+  border-right: 0.45rem solid transparent;
+  border-bottom: 2.2rem solid #8fc9a4;
+  transform: translate(-50%, -70%) rotate(var(--rot, 180deg));
+  transform-origin: 50% 85%;
+  filter: drop-shadow(0 0 4px rgba(143, 201, 164, 0.5));
+}
+
+.bz-grid,
+.fly-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+  max-width: 11rem;
+  margin: 0 auto;
+}
+.bz-cell,
+.fly-cell {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 0.35rem;
+  background: #243028;
+  border: 1px solid rgba(160, 190, 170, 0.25);
+  color: #d8e8dc;
+  font-size: 0.8rem;
+}
+.bz-cell.is-best,
+.fly-cell.is-hit {
+  background: #3a5a44;
+  border-color: #8fc9a4;
+  color: #e8f5ec;
+  font-weight: 700;
+}
+.bz-cell.is-caution {
+  background: #4a3028;
+  border-color: #c9a08f;
+  color: #f0d8cc;
+}
+
+.face-sil {
+  position: relative;
+  width: 5.5rem;
+  height: 7rem;
+  margin: 0.25rem auto;
+  border-radius: 45% 45% 40% 40%;
+  background: linear-gradient(180deg, #3a3228, #2a241c);
+  border: 1px solid rgba(212, 175, 106, 0.35);
+}
+.fz {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(232, 201, 138, 0.35);
+  border-radius: 0.2rem;
+  opacity: 0.35;
+  transition: opacity 0.2s, background 0.2s;
+}
+.fz-forehead { top: 0.7rem; width: 2.4rem; height: 0.55rem; }
+.fz-brows { top: 1.7rem; width: 2.8rem; height: 0.28rem; }
+.fz-eyes { top: 2.35rem; width: 2.6rem; height: 0.35rem; border-radius: 40%; }
+.fz-nose { top: 3.2rem; width: 0.7rem; height: 1.1rem; }
+.fz-mouth { top: 4.7rem; width: 1.6rem; height: 0.4rem; border-radius: 40%; }
+.form-stage--face[data-zone="forehead"] .fz-forehead,
+.form-stage--face[data-zone="brows"] .fz-brows,
+.form-stage--face[data-zone="eyes"] .fz-eyes,
+.form-stage--face[data-zone="nose"] .fz-nose,
+.form-stage--face[data-zone="mouth"] .fz-mouth {
+  opacity: 1;
+  background: #e8c98a;
+  box-shadow: 0 0 8px rgba(232, 201, 138, 0.45);
+}
+
+.palm-sil {
+  position: relative;
+  width: 5.2rem;
+  height: 7rem;
+  margin: 0.25rem auto;
+  border-radius: 40% 40% 35% 35% / 30% 30% 45% 45%;
+  background: linear-gradient(180deg, #4a3428, #2e2218);
+  border: 1px solid rgba(212, 175, 106, 0.3);
+}
+.pl {
+  position: absolute;
+  border: 1.5px solid rgba(232, 201, 138, 0.35);
+  border-radius: 50%;
+  opacity: 0.4;
+  background: transparent;
+}
+.pl-life { left: 0.6rem; top: 2.2rem; width: 2.4rem; height: 3.6rem; border-right: none; border-top: none; }
+.pl-head { left: 1rem; top: 2.6rem; width: 3.2rem; height: 1.4rem; border-bottom: none; border-left: none; border-radius: 0 60% 0 0; }
+.pl-heart { left: 1.1rem; top: 1.8rem; width: 3rem; height: 1.1rem; border-bottom: none; border-left: none; border-radius: 0 70% 0 0; }
+.pl-fate { left: 2.3rem; top: 2.4rem; width: 0; height: 3.2rem; border: none; border-left: 1.5px solid rgba(232, 201, 138, 0.35); border-radius: 0; }
+.form-stage--palm[data-line="life"] .pl-life,
+.form-stage--palm[data-line="head"] .pl-head,
+.form-stage--palm[data-line="heart"] .pl-heart,
+.form-stage--palm[data-line="fate"] .pl-fate {
+  opacity: 1;
+  border-color: #e8c98a;
+  filter: drop-shadow(0 0 3px rgba(232, 201, 138, 0.5));
+}
+
+.bone-hand {
+  display: flex;
+  gap: 0.35rem;
+  justify-content: center;
+  align-items: flex-end;
+  min-height: 5.5rem;
+  padding-top: 0.5rem;
+}
+.bone-hand i {
+  display: block;
+  width: 0.55rem;
+  border-radius: 0.25rem;
+  background: linear-gradient(180deg, #e8d4b0, #c9a66b);
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15);
+}
+.bone-hand i:nth-child(1) { height: 2.8rem; }
+.bone-hand i:nth-child(2) { height: 3.6rem; }
+.bone-hand i:nth-child(3) { height: 4rem; }
+.bone-hand i:nth-child(4) { height: 3.5rem; }
+.bone-hand i:nth-child(5) { height: 2.4rem; }
+
+.body-sil {
+  position: relative;
+  width: 3.2rem;
+  height: 6.5rem;
+  margin: 0.25rem auto;
+  background:
+    radial-gradient(circle at 50% 0.9rem, #4a3a2e 0 0.85rem, transparent 0.9rem),
+    linear-gradient(#4a3a2e, #4a3a2e) 50% 2rem / 2.2rem 3.2rem no-repeat,
+    linear-gradient(#4a3a2e, #4a3a2e) 0.1rem 5.2rem / 1.1rem 1.2rem no-repeat,
+    linear-gradient(#4a3a2e, #4a3a2e) 2rem 5.2rem / 1.1rem 1.2rem no-repeat;
+}
+.mole-dot {
+  position: absolute;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #1a120c;
+  box-shadow: 0 0 0 2px rgba(232, 201, 138, 0.5);
+}
+.form-stage--mole[data-zone="face"] .mole-dot { top: 0.7rem; left: 1.85rem; }
+.form-stage--mole[data-zone="neck"] .mole-dot { top: 1.85rem; left: 1.4rem; }
+.form-stage--mole[data-zone="hand"] .mole-dot { top: 3.6rem; left: -0.15rem; }
+.form-stage--mole[data-zone="shoulder"] .mole-dot { top: 2.15rem; left: 2.55rem; }

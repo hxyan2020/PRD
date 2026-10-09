@@ -215,37 +215,37 @@
     },
     "fengshui": {
       "name": "风水",
-      "summary": "依朝向、地形与气脉，解读环境吉凶与宜居安排。",
+      "summary": "经典风水论形势、坐向与气机流动为环境之运——先形峦与朝向，而非只谈摆设传说。",
       "region": "中国",
       "source": "Sekai Fortune; Plutto"
     },
     "bazhai": {
       "name": "八宅风水",
-      "summary": "住宅方位与本命卦数相配，取吉方。",
+      "summary": "八宅把住宅八个方位与个人卦命配对——论有利／不利的坐卧朝向。",
       "region": "中国",
       "source": "Plutto"
     },
     "flying-star": {
       "name": "玄空飞星",
-      "summary": "玄空飞星随时间飞入宅中各宫，用于流年宅运。",
+      "summary": "玄空飞星把时令星数飞入宅卦各宫，用以择时论吉凶。",
       "region": "中国",
       "source": "Plutto"
     },
     "mianxiang": {
       "name": "面相",
-      "summary": "由五官与面部“宫位”解读性情、健康与运势联想。",
+      "summary": "面相观面部特征与十二宫，论性情、健康倾向与运势主题——是观察，不是诊断。",
       "region": "东亚",
       "source": "Sekai Fortune; Plutto"
     },
     "shouxiang": {
       "name": "手相（中式）",
-      "summary": "由掌纹、丘位与骨形解读命运线索。",
+      "summary": "手相观掌纹、丘位与手型论命运主题——是象征，不是医学。",
       "region": "中国",
       "source": "Plutto"
     },
     "mogu": {
       "name": "摸骨算命",
-      "summary": "以手摸骨节形态作命运联想的民俗相法。",
+      "summary": "摸骨重手骨结构多于皮表纹路——以「摸骨」论体质与命运倾向。",
       "region": "中国",
       "source": "Sekai Fortune"
     },
@@ -1103,7 +1103,7 @@
     },
     "mole-reading": {
       "name": "痣相",
-      "summary": "依痣的位置与形状作民俗性格／运势联想。",
+      "summary": "痣相依位置与形态论性情与运势主题——是民俗象征，不是皮肤科。",
       "region": "中国／印度／欧洲",
       "source": "Sekai Fortune; Plutto"
     },
@@ -1339,37 +1339,37 @@
     },
     "fengshui": {
       "name": "風水",
-      "summary": "依朝向、地形与气脉，解讀环境吉凶与宜居安排。",
+      "summary": "經典風水論形勢、坐向與氣機流動為環境之運——先形巒與朝向，而非只談擺設傳說。",
       "region": "中國",
       "source": "Sekai Fortune; Plutto"
     },
     "bazhai": {
       "name": "八宅風水",
-      "summary": "住宅方位与本命卦數相配，取吉方。",
+      "summary": "八宅把住宅八個方位與個人卦命配對——論有利／不利的坐臥朝向。",
       "region": "中國",
       "source": "Plutto"
     },
     "flying-star": {
-      "name": "玄空飞星",
-      "summary": "玄空飞星随時間飞入宅中各宫，用于流年宅运。",
+      "name": "玄空飛星",
+      "summary": "玄空飛星把時令星數飛入宅卦各宮，用以擇時論吉凶。",
       "region": "中國",
       "source": "Plutto"
     },
     "mianxiang": {
       "name": "面相",
-      "summary": "由五官与面部“宫位”解讀性情、健康与運勢联想。",
+      "summary": "面相觀面部特徵與十二宮，論性情、健康傾向與運勢主題——是觀察，不是診斷。",
       "region": "東亞",
       "source": "Sekai Fortune; Plutto"
     },
     "shouxiang": {
       "name": "手相（中式）",
-      "summary": "由掌纹、丘位与骨形解讀命運線索。",
+      "summary": "手相觀掌紋、丘位與手型論命運主題——是象徵，不是醫學。",
       "region": "中國",
       "source": "Plutto"
     },
     "mogu": {
       "name": "摸骨算命",
-      "summary": "以手摸骨節形態作命運联想的民俗相法。",
+      "summary": "摸骨重手骨結構多於皮表紋路——以「摸骨」論體質與命運傾向。",
       "region": "中國",
       "source": "Sekai Fortune"
     },
@@ -2227,14 +2227,14 @@
     },
     "mole-reading": {
       "name": "痣相",
-      "summary": "依痣的位置与形状作民俗性格／運勢联想。",
-      "region": "中國／印度／欧洲",
+      "summary": "痣相依位置與形態論性情與運勢主題——是民俗象徵，不是皮膚科。",
+      "region": "中國／印度／歐洲",
       "source": "Sekai Fortune; Plutto"
     },
     "onychomancy": {
       "name": "指甲占",
-      "summary": "觀察指甲上的斑點或形状作征兆解讀。",
-      "region": "欧洲",
+      "summary": "觀察指甲上的斑點或形狀作徵兆解讀。",
+      "region": "歐洲",
       "source": "Sekai Fortune"
     },
     "mesopotamian-extispicy": {
