@@ -665,8 +665,8 @@
     },
     "mbti": {
       "name": "MBTI 性格命运",
-      "summary": "简化的自我报告偏好测验，整理决策风格——不是对具体事件的预测。",
-      "region": "现代psychology-inspired",
+      "summary": "回答 E/I、S/N、T/F、J/P 偏好问题，封存四字母类型，再得对照焦点的路径式指引——自我报告之镜，不是临床测验。",
+      "region": "现代心理学启发",
       "source": "MBTI-inspired preference model (simplified)"
     },
     "lenormand": {
@@ -953,14 +953,14 @@
     },
     "astrocartography": {
       "name": "星图地理（Astrocartography）",
-      "summary": "吉姆·刘易斯体系：把本命行星投射到地球地图上，寻找地点主题。",
+      "summary": "吉姆·刘易斯体系：本命行星线投射到地球地图论地点主题——迁居象征反思，不是城市保证。",
       "region": "现代美国",
       "source": "Plutto"
     },
     "human-design": {
       "name": "人类图",
-      "summary": "把占星与能量中心图叠合，生成个人“设计图”供反思——不是事件预报。",
-      "region": "现代(Ibiza origin)",
+      "summary": "1980年代伊维萨混成：占星、易经、卡巴拉与脉轮叠成类型与内在权威——反思地图，不是已验证预报。",
+      "region": "现代（伊维萨起源）",
       "source": "Plutto"
     },
     "dilogun": {
@@ -1073,7 +1073,7 @@
     },
     "angel-numbers": {
       "name": "天使数字",
-      "summary": "将重复出现的数字序列解读为“讯息”或提醒。",
+      "summary": "把重复数字序列（111、444…）读作新纪元提示——模式寻求式游玩；意义由解读者赋予。",
       "region": "现代新纪元",
       "source": "Sekai Fortune; Plutto"
     },
@@ -1091,14 +1091,14 @@
     },
     "biorhythm": {
       "name": "生物节律",
-      "summary": "宣称由出生日起算的固定生理／情绪／智力正弦周期——科学检验并不支持其预测力。",
-      "region": "Modern",
+      "summary": "宣称由出生日起算的生理／情绪／智力正弦周期（23／28／33天）——科学检验并不支持其预测力。",
+      "region": "现代",
       "source": "Sekai Fortune"
     },
     "blood-type": {
       "name": "血型性格",
-      "summary": "把 ABO 血型与性格、命运相联系——医学上血型真实，命运说法并无可靠证据。",
-      "region": "East 亚洲 modern",
+      "summary": "把 ABO 血型对应东亚流行性情刻板印象——文化民俗，不是医学性格科学。",
+      "region": "东亚现代",
       "source": "Sekai Fortune"
     },
     "mole-reading": {
@@ -1789,8 +1789,8 @@
     },
     "mbti": {
       "name": "MBTI 性格命運",
-      "summary": "简化的自我報告偏好測驗，整理决策風格——不是對具體事件的预測。",
-      "region": "現代psychology-inspired",
+      "summary": "回答 E/I、S/N、T/F、J/P 偏好問題，封存四字母類型，再得對照焦點的路徑式指引——自我報告之鏡，不是臨床測驗。",
+      "region": "現代心理學啟發",
       "source": "MBTI-inspired preference model (simplified)"
     },
     "lenormand": {
@@ -2077,14 +2077,14 @@
     },
     "astrocartography": {
       "name": "星圖地理（Astrocartography）",
-      "summary": "吉姆·刘易斯體系：把本命行星投射到地球地圖上，寻找地點主題。",
-      "region": "現代美国",
+      "summary": "吉姆·劉易斯體系：本命行星線投射到地球地圖論地點主題——遷居象徵反思，不是城市保證。",
+      "region": "現代美國",
       "source": "Plutto"
     },
     "human-design": {
       "name": "人類圖",
-      "summary": "把占星与能量中心圖叠合，生成個人“设計圖”供反思——不是事件预報。",
-      "region": "現代(Ibiza origin)",
+      "summary": "1980年代伊維薩混成：占星、易經、卡巴拉與脈輪疊成類型與內在權威——反思地圖，不是已驗證預報。",
+      "region": "現代（伊維薩起源）",
       "source": "Plutto"
     },
     "dilogun": {
@@ -2197,8 +2197,8 @@
     },
     "angel-numbers": {
       "name": "天使數字",
-      "summary": "將重复出現的數字序列解讀為“讯息”或提醒。",
-      "region": "現代新纪元",
+      "summary": "把重複數字序列（111、444…）讀作新紀元提示——模式尋求式遊玩；意義由解讀者賦予。",
+      "region": "現代新紀元",
       "source": "Sekai Fortune; Plutto"
     },
     "oracle-cards": {
@@ -2215,14 +2215,14 @@
     },
     "biorhythm": {
       "name": "生物節律",
-      "summary": "宣称由出生日起算的固定生理／情绪／智力正弦周期——科學检驗并不支持其预測力。",
-      "region": "Modern",
+      "summary": "宣稱由出生日起算的生理／情緒／智力正弦週期（23／28／33天）——科學檢驗並不支持其預測力。",
+      "region": "現代",
       "source": "Sekai Fortune"
     },
     "blood-type": {
       "name": "血型性格",
-      "summary": "把 ABO 血型与性格、命運相联系——醫學上血型真實，命運說法并無可靠證據。",
-      "region": "East 亚洲 modern",
+      "summary": "把 ABO 血型對應東亞流行性情刻板印象——文化民俗，不是醫學性格科學。",
+      "region": "東亞現代",
       "source": "Sekai Fortune"
     },
     "mole-reading": {

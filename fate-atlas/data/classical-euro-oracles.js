@@ -77,14 +77,15 @@
     return RM ? RM.structuredReading(base) : base;
   }
   function interpretQ(q, lean, mechanic) {
-    const RM = window.FatumResultModel;
-    const body = isZh()
-      ? zhText(
-          `你问的是「${q || "未写明的事"}」。以${mechanic}给出的「${lean}」倾向为镜：先改一件你能控制的安排，再用日常证据核对——不要把模拟兆当作外在命令。`,
-          `你問的是「${q || "未寫明的事"}」。以${mechanic}給出的「${lean}」傾向為鏡：先改一件你能控制的安排，再用日常證據核對——不要把模擬兆當作外在命令。`
-        )
-      : `You asked about “${q || "an unnamed matter"}”. Hold the “${lean}” lean from ${mechanic} as a mirror: change one arrangement you control, then check ordinary evidence — do not treat a simulated omen as an external order.`;
-    return RM ? RM.interpretWithQuestion(q, body) : body;
+    const f = q || (isZh() ? zhText("未写明的事", "未寫明的事") : "an unnamed matter");
+    // Single-locale paragraph — avoid mixing EN body with ZH lead from interpretWithQuestion.
+    if (isZh()) {
+      return zhText(
+        `你问的是「${f}」。${mechanic}给出「${lean}」：把这倾向译成今天能做的一步，再用日常证据核对。这不是日期预报或外在命令。`,
+        `你問的是「${f}」。${mechanic}給出「${lean}」：把這傾向譯成今天能做的一步，再用日常證據核對。這不是日期預報或外在命令。`
+      );
+    }
+    return `You asked about “${f}”. ${mechanic} gives “${lean}”: turn that lean into one step you can take today, then check ordinary evidence. This is not a date forecast or an external order.`;
   }
   function howPack(en, zh, hant) {
     return { en, zh, hant: hant || zh };
@@ -214,16 +215,33 @@
       },
       generate(q, cast) {
         const n = loc({ en: cast.rune.en, zh: cast.rune.zh });
+        const ask = q || "";
+        const result = isZh()
+          ? zhText(
+              `对照「${ask || "未写问题"}」：抽到「${n}」，意思是「${cast.lean}」——把它变成今天可做的一步，而不是索取日期。`,
+              `對照「${ask || "未寫問題"}」：抽到「${n}」，意思是「${cast.lean}」——把它變成今天可做的一步，而不是索取日期。`
+            )
+          : `For “${ask || "your question"}”: drew “${n}”, meaning “${cast.lean}” — turn it into a step today, not a request for dates.`;
         return pack({
           title: `${cast.rune.glyph} ${n}`,
-          result: cast.lean,
+          result,
           explain: isZh()
-            ? zhText(`教学小弗萨克得「${n}」，倾向「${cast.lean}」。真符需完整十六符与文化语境。`, `教學小弗薩克得「${n}」，傾向「${cast.lean}」。真符需完整十六符與文化語境。`)
-            : `Teaching Younger Futhark draws “${n}”, leaning “${cast.lean}”. Real casts need the full sixteen and cultural context.`,
+            ? zhText(`教学小弗萨克得「${n}」（${cast.rune.glyph}），倾向「${cast.lean}」。关键词是现代研习用法；真符需完整十六符与文化语境。`, `教學小弗薩克得「${n}」（${cast.rune.glyph}），傾向「${cast.lean}」。關鍵詞是現代研習用法；真符需完整十六符與文化語境。`)
+            : `Teaching Younger Futhark draws “${n}” (${cast.rune.glyph}), leaning “${cast.lean}”. Keywords are modern study glosses; real casts need the full sixteen and cultural context.`,
           interpret: interpretQ(q, cast.lean, isZh() ? "小弗萨克符" : "the Younger Futhark rune"),
-          details: [cast.rune.glyph, n],
-          doList: [isZh() ? zhText(`按「${cast.lean}」做一件今天可完成的小事。`, `按「${cast.lean}」做一件今天可完成的小事。`) : `Do one small today-action matching “${cast.lean}”.`],
-          dontList: [isZh() ? zhText("不要用符文恐吓他人。", "不要用符文恐嚇他人。") : "Do not frighten others with rune lots."],
+          details: [
+            isZh() ? zhText(`你的问题：「${ask || "未写"}」`, `你的問題：「${ask || "未寫"}」`) : `Your question: “${ask || "unnamed"}”`,
+            `${cast.rune.glyph} ${n}`,
+            cast.lean,
+          ],
+          doList: [
+            isZh()
+              ? zhText(`围绕「${ask || "问题"}」，按「${cast.lean}」做一件今天可完成的小事。`, `圍繞「${ask || "問題"}」，按「${cast.lean}」做一件今天可完成的小事。`)
+              : `Around “${ask || "your question"}”, do one small today-action matching “${cast.lean}”.`,
+          ],
+          dontList: [
+            isZh() ? zhText("不要向符文索取准确日期或恐吓他人。", "不要向符文索取準確日期或恐嚇他人。") : "Do not demand exact dates from runes or frighten others with lots.",
+          ],
           tone: /thorn|force|刺|力|界/i.test(n + cast.lean) ? "caution" : "mixed",
           vizData: cast,
         });

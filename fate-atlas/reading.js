@@ -50,6 +50,7 @@
     if (window.FatumNorthAmericaOracles?.has?.(method.id)) return "northamerica";
     if (window.FatumSouthAmericaOracles?.has?.(method.id)) return "southamerica";
     if (window.FatumOceanicOracles?.has?.(method.id)) return "oceanic";
+    if (window.FatumModernPersonalityOracles?.has?.(method.id)) return "modernpersonality";
     if (method.id === "bagua") return "bagua";
     if (method.id === "tarot") return "tarot";
     if (method.id === "mbti") return "mbti";
@@ -380,6 +381,23 @@
         casting: false,
       };
     }
+    if (kind === "modernpersonality") {
+      const rite = window.FatumModernPersonalityOracles.get(method.id);
+      return {
+        ...base,
+        steps: (rite && rite.steps) || ["intent", "focusNoteMbti", "dimQuiz", "typeSeal", "result"],
+        question: "",
+        focus: "",
+        birthDate: "",
+        bloodType: "",
+        placeFocus: "",
+        sighting: "",
+        answers: {},
+        quizIndex: 0,
+        cast: {},
+        casting: false,
+      };
+    }
     if (kind === "tarot") {
       return {
         ...base,
@@ -612,6 +630,23 @@
           idx: state.stepIndex + 1,
         };
       }
+      if (state.kind === "modernpersonality") {
+        const how = window.FatumModernPersonalityOracles?.howFor?.(state.method.id);
+        const howStep = how?.steps?.[Math.min(state.stepIndex, (how?.steps || []).length - 1)];
+        const step = state.steps[state.stepIndex];
+        if (step === "dimQuiz") {
+          return {
+            label: howStep?.title || "Quiz",
+            total: G().MBTI_QUESTIONS.length,
+            idx: Math.min(state.quizIndex + 1, G().MBTI_QUESTIONS.length),
+          };
+        }
+        return {
+          label: howStep?.title || step || ti("studio.step.learn"),
+          total: state.steps.length,
+          idx: state.stepIndex + 1,
+        };
+      }
       if (state.kind === "tarot") {
         const labels = [
           ti("studio.step.learn"),
@@ -716,14 +751,18 @@
 
     const prog = document.getElementById("reading-progress");
     if (prog) {
-      const n = state.mode === "guided" && state.kind === "mbti" && state.steps[state.stepIndex] === "quiz"
-        ? G().MBTI_QUESTIONS.length
-        : state.mode === "guided"
-          ? state.steps.length
-          : state.process.steps.length;
-      const on = state.mode === "guided" && state.kind === "mbti" && state.steps[state.stepIndex] === "quiz"
-        ? state.quizIndex
-        : state.stepIndex;
+      const n =
+        (state.mode === "guided" && state.kind === "mbti" && state.steps[state.stepIndex] === "quiz") ||
+        (state.mode === "guided" && state.kind === "modernpersonality" && state.steps[state.stepIndex] === "dimQuiz")
+          ? G().MBTI_QUESTIONS.length
+          : state.mode === "guided"
+            ? state.steps.length
+            : state.process.steps.length;
+      const on =
+        (state.mode === "guided" && state.kind === "mbti" && state.steps[state.stepIndex] === "quiz") ||
+        (state.mode === "guided" && state.kind === "modernpersonality" && state.steps[state.stepIndex] === "dimQuiz")
+          ? state.quizIndex
+          : state.stepIndex;
       prog.innerHTML = Array.from({ length: Math.min(n, 12) }, (_, i) => {
         const active = i <= on;
         return `<span class="prog-dot${active ? " is-on" : ""}"></span>`;
@@ -752,6 +791,7 @@
       else if (state.kind === "northamerica") renderNorthAmerica();
       else if (state.kind === "southamerica") renderSouthAmerica();
       else if (state.kind === "oceanic") renderOceanic();
+      else if (state.kind === "modernpersonality") renderModernPersonality();
       return;
     }
     renderGeneric();
@@ -5100,6 +5140,228 @@
     }, 900);
   }
 
+  // ——— Modern personality ———
+  const MP_CAST = new Set([
+    "typeSeal",
+    "stereotypeLens",
+    "waveRead",
+    "authorityCue",
+    "placeFocus",
+    "messageDecode",
+  ]);
+  const MP_BIRTH = new Set(["birthDateBio", "birthMomentHd", "birthMomentAc"]);
+
+  function mpStageHTML(viz, pulse) {
+    const cast = state.cast || {};
+    const pulseCls = pulse ? " mp-stage--pulse" : "";
+    if (viz === "mbti") {
+      const letters = cast.type || "????";
+      return `<div class="mp-stage${pulseCls}" aria-hidden="true"><div class="mp-letters">${escapeHTML(letters)}</div></div>`;
+    }
+    if (viz === "blood") {
+      const t = cast.bloodType || state.bloodType || "?";
+      return `<div class="mp-stage${pulseCls}" aria-hidden="true"><div class="mp-blood"><span>${escapeHTML(t)}</span></div></div>`;
+    }
+    if (viz === "bio") {
+      const p = cast.phys?.en || "·";
+      const e = cast.emo?.en || "·";
+      const i = cast.intel?.en || "·";
+      return `<div class="mp-stage${pulseCls}" aria-hidden="true"><div class="mp-waves"><i data-p="${escapeHTML(p)}"></i><i data-e="${escapeHTML(e)}"></i><i data-i="${escapeHTML(i)}"></i></div><p class="mp-label">P · E · I</p></div>`;
+    }
+    if (viz === "hd") {
+      const F = window.FatumModernPersonalityOracles;
+      const name = cast.type ? F.loc({ en: cast.type.en, zh: cast.type.zh }) : "◎";
+      return `<div class="mp-stage${pulseCls}" aria-hidden="true"><div class="mp-hd"><span>${escapeHTML(name)}</span></div></div>`;
+    }
+    if (viz === "ac") {
+      const F = window.FatumModernPersonalityOracles;
+      const name = cast.item ? F.loc({ en: cast.item.en, zh: cast.item.zh }) : "⌖";
+      return `<div class="mp-stage${pulseCls}" aria-hidden="true"><div class="mp-map"><span>${escapeHTML(name)}</span></div></div>`;
+    }
+    if (viz === "angel") {
+      const F = window.FatumModernPersonalityOracles;
+      const name = cast.item ? F.loc({ en: cast.item.en, zh: cast.item.zh }) : "111";
+      return `<div class="mp-stage${pulseCls}" aria-hidden="true"><div class="mp-angel"><span>${escapeHTML(name.split("·")[0].trim())}</span></div></div>`;
+    }
+    return `<div class="mp-stage${pulseCls}" aria-hidden="true"><div class="mp-generic">◎</div></div>`;
+  }
+
+  function renderModernPersonality() {
+    const F = window.FatumModernPersonalityOracles;
+    const rite = F.get(state.method.id);
+    if (!rite) return renderGeneric();
+    const step = state.steps[state.stepIndex];
+    const how = F.howFor(state.method.id);
+    const zh = String(window.FatumI18n?.getLocale?.() || "").startsWith("zh");
+    const textM = window.FatumMethodText ? window.FatumMethodText.localize(state.method) : state.method;
+    const backNext = (nextLabel) => `
+      <div class="studio__actions">
+        <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+        <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(nextLabel || ti("studio.continue"))}</button>
+      </div>`;
+
+    if (step === "intent") {
+      const hs = how?.steps?.[0];
+      body.innerHTML = `
+        <p class="studio__eyebrow">${escapeHTML(ti(`continent.${state.method.continent}`) || "")} · ${escapeHTML(textM.name || state.method.name)}</p>
+        <h3 class="studio__heading">${escapeHTML(hs?.title || (zh ? "认识这个仪式" : "Meet this rite"))}</h3>
+        <p class="studio__copy">${escapeHTML(how?.intro || textM.summary || "")}</p>
+        ${riteExplanationHTML(state.method, textM)}
+        ${howItWorksHTML(state.method, { id: "modernpersonality", label: "Modern" })}
+        ${sciencePanelHTML(state.method)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="close">${escapeHTML(ti("studio.cancel"))}</button>
+          <button type="button" class="btn btn--primary" data-action="next">${escapeHTML(ti("studio.continue"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "focusNoteMbti" || step === "focusNoteBlood") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "写下焦点" : "Name a focus")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "这次解读要对准哪一块？" : "What should this reading speak to?")}</p>
+        <div class="field"><label for="r-focus">${escapeHTML(zh ? "焦点" : "Focus")}</label>
+        <input type="text" id="r-focus" maxlength="120" placeholder="${escapeHTML(zh ? "事业、感情、自我形象……" : "Career, love, self-image…")}" value="${escapeHTML(state.focus || "")}" /></div>
+        ${backNext(ti("studio.continue"))}`;
+      return;
+    }
+
+    if (step === "dimQuiz") {
+      const q = G().MBTI_QUESTIONS[state.quizIndex];
+      const progress = Math.round((state.quizIndex / G().MBTI_QUESTIONS.length) * 100);
+      body.innerHTML = `
+        <div class="quiz-bar"><span style="width:${progress}%"></span></div>
+        <p class="studio__eyebrow">${escapeHTML(q.dim)} · ${state.quizIndex + 1}/${G().MBTI_QUESTIONS.length}</p>
+        <h3 class="studio__heading">${escapeHTML(mbtiQuestionText(q))}</h3>
+        ${mpStageHTML("mbti", false)}
+        <div class="choice-grid">
+          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.a.side}">${escapeHTML(mbtiChoiceLabel(q.a))}</button>
+          <button type="button" class="choice-btn" data-action="mbti-pick" data-side="${q.b.side}">${escapeHTML(mbtiChoiceLabel(q.b))}</button>
+        </div>
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "aboPick") {
+      const types = ["A", "B", "O", "AB"];
+      const selected = state.bloodType || "";
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "选择 ABO 血型" : "Pick your ABO type")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "医学抗原类型；性格说法是民俗。" : "Medical antigen type; personality claims are folklore.")}</p>
+        ${mpStageHTML("blood", false)}
+        <div class="blood-type-grid" role="radiogroup">
+          ${types
+            .map(
+              (t) =>
+                `<button type="button" class="choice-btn blood-type-btn${selected === t ? " is-on" : ""}" data-action="mp-blood" data-blood="${t}" aria-pressed="${selected === t ? "true" : "false"}">${t}</button>`
+            )
+            .join("")}
+        </div>
+        ${backNext(ti("studio.continue"))}`;
+      return;
+    }
+
+    if (MP_BIRTH.has(step)) {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "输入出生日" : "Enter birth date")}</h3>
+        <div class="field"><label for="r-birth">${escapeHTML(zh ? "出生日期" : "Birth date")}</label>
+        <input type="date" id="r-birth" value="${escapeHTML(state.birthDate || "")}" /></div>
+        <div class="field" style="margin-top:1rem"><label for="r-focus">${escapeHTML(zh ? "焦点（可选）" : "Focus (optional)")}</label>
+        <input type="text" id="r-focus" maxlength="120" value="${escapeHTML(state.focus || "")}" /></div>
+        ${mpStageHTML(rite.viz, false)}
+        ${backNext(ti("studio.continue"))}`;
+      return;
+    }
+
+    if (step === "cycleDial" || step === "typeCenter" || step === "mapLine" || step === "numberSpin") {
+      const i = state.steps.indexOf(step);
+      const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+        <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+        ${mpStageHTML(rite.viz, true)}
+        ${backNext(ti("studio.continue"))}`;
+      return;
+    }
+
+    if (step === "sightingNote") {
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "记录看见场合" : "Note the sighting")}</h3>
+        <p class="studio__copy">${escapeHTML(zh ? "时钟、收据、车牌……你在哪里看到重复数字？" : "Clock, receipt, plate… where did you see the digits?")}</p>
+        <div class="field"><label for="r-sighting">${escapeHTML(zh ? "场合笔记" : "Sighting note")}</label>
+        <textarea id="r-sighting" rows="3" maxlength="280">${escapeHTML(state.sighting || "")}</textarea></div>
+        ${mpStageHTML("angel", false)}
+        ${backNext(ti("studio.continue"))}`;
+      return;
+    }
+
+    if (step === "placeFocus") {
+      const cta = F.loc(rite.castCta);
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(zh ? "写下地点焦点" : "Name a place focus")}</h3>
+        <div class="field"><label for="r-place">${escapeHTML(zh ? "城市／地区／搬迁问题" : "City, region, or move question")}</label>
+        <input type="text" id="r-place" maxlength="120" value="${escapeHTML(state.placeFocus || "")}" /></div>
+        ${mpStageHTML("ac", !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="mp-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+
+    if (MP_CAST.has(step)) {
+      const cta = F.loc(rite.castCta);
+      const hold = state.focus || state.sighting || state.placeFocus || state.birthDate || state.bloodType || "";
+      body.innerHTML = `
+        <h3 class="studio__heading">${escapeHTML(cta)}</h3>
+        <p class="studio__copy">${escapeHTML(hold ? (zh ? `持念：「${hold}」` : `Holding: “${hold}”`) : "")}</p>
+        ${mpStageHTML(rite.viz, !!state.casting)}
+        <div class="studio__actions">
+          <button type="button" class="btn btn--ghost studio__btn-muted" data-action="back">${escapeHTML(ti("studio.back"))}</button>
+          <button type="button" class="btn btn--primary" data-action="mp-cast">${escapeHTML(cta)}</button>
+        </div>`;
+      return;
+    }
+
+    if (step === "result" && state.reading) {
+      renderGuidedResult(state.reading, true);
+      return;
+    }
+
+    const i = state.steps.indexOf(step);
+    const hs = how?.steps?.[Math.min(i, (how.steps || []).length - 1)];
+    body.innerHTML = `
+      <h3 class="studio__heading">${escapeHTML(hs?.title || step)}</h3>
+      <p class="studio__copy">${escapeHTML(hs?.body || "")}</p>
+      ${mpStageHTML(rite.viz, true)}
+      ${backNext()}`;
+  }
+
+  function doModernPersonalityCast() {
+    if (!window.FatumModernPersonalityOracles.get(state.method.id)) return;
+    state.casting = true;
+    render();
+    window.setTimeout(() => {
+      const reading = window.FatumModernPersonalityOracles.runCast(state.method.id, {
+        question: state.question,
+        focus: state.focus,
+        birthDate: state.birthDate,
+        bloodType: state.bloodType,
+        placeFocus: state.placeFocus,
+        sighting: state.sighting,
+        answers: state.answers,
+        nonce: state.nonce,
+      });
+      state.cast = reading.vizData || {};
+      state.reading = reading;
+      state.casting = false;
+      state.stepIndex = state.steps.indexOf("result");
+      render();
+    }, 900);
+  }
+
   // ——— MBTI ———
   function renderMbti() {
     const step = state.steps[state.stepIndex];
@@ -5150,8 +5412,21 @@
     state.answers[q.id] = side;
     state.quizIndex += 1;
     if (state.quizIndex >= G().MBTI_QUESTIONS.length) {
-      state.reading = G().generateMbtiReading({ answers: state.answers, focus: state.focus });
-      state.stepIndex = state.steps.indexOf("result");
+      if (state.kind === "modernpersonality") {
+        const sealIdx = state.steps.indexOf("typeSeal");
+        state.stepIndex = sealIdx >= 0 ? sealIdx : state.steps.indexOf("result");
+        if (state.stepIndex === state.steps.indexOf("result")) {
+          state.reading = window.FatumModernPersonalityOracles.runCast(state.method.id, {
+            focus: state.focus,
+            answers: state.answers,
+            nonce: state.nonce,
+          });
+          state.cast = state.reading?.vizData || {};
+        }
+      } else {
+        state.reading = G().generateMbtiReading({ answers: state.answers, focus: state.focus });
+        state.stepIndex = state.steps.indexOf("result");
+      }
     }
     render();
   }
@@ -5513,6 +5788,13 @@
             return rite ? ocStageHTML(rite.viz, false) : "";
           })()
         : "";
+    const mpExtra =
+      r.kind === "modernpersonality" && state.kind === "modernpersonality"
+        ? (() => {
+            const rite = window.FatumModernPersonalityOracles?.get?.(state.method.id);
+            return rite ? mpStageHTML(rite.viz, false) : "";
+          })()
+        : "";
     const extra =
       r.kind === "bagua" && r.hex
         ? `<div class="hex-display"><div class="hex-display__gua">${r.hex.upper.symbol}${r.hex.lower.symbol}</div><div class="yao-final">${[...r.lines].reverse().map((l) => `<div class="yao-line${l.changing ? " is-move" : ""}">${l.yang ? "━━━━━━" : "━━  ━━"}${l.changing ? " ·" : ""}</div>`).join("")}</div></div>`
@@ -5520,13 +5802,13 @@
           ? `<div class="tarot-row tarot-row--result">${r.drawn.map((c, i) => `<div class="tarot-card is-open"><div class="tarot-card__name">${escapeHTML(tarotCardLabel(c))}</div><div class="tarot-card__pos">${escapeHTML(r.positions[i].label)}</div>${c.reversed ? '<div class="tarot-card__rx">Rx</div>' : ""}</div>`).join("")}</div>`
           : r.kind === "mbti"
             ? `<div class="mbti-badge">${escapeHTML(r.title.split("—")[0].trim())}</div>`
-            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra || fsExtra || pfExtra || maExtra || naExtra || saAmExtra || ocExtra;
+            : africaExtra || chinaExtra || classicExtra || formExtra || kvExtra || japanExtra || saExtra || hsExtra || neExtra || waExtra || cmExtra || ceExtra || fsExtra || pfExtra || maExtra || naExtra || saAmExtra || ocExtra || mpExtra;
 
     body.innerHTML = `
       <div class="reading reading--typed">
         <p class="studio__eyebrow">${escapeHTML(ti("studio.yourReading"))}</p>
         ${extra}
-        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : r.kind === "folkscry" ? "✧" : r.kind === "physioform" ? "✋" : r.kind === "mesoamerica" ? "☀" : r.kind === "northamerica" ? "✧" : r.kind === "southamerica" ? "☘" : r.kind === "oceanic" ? "☾" : "◎"}</div>
+        <div class="reading__symbol" aria-hidden="true">${r.kind === "bagua" ? "☰" : r.kind === "tarot" ? "✦" : r.kind === "africa" ? "◉" : r.kind === "china" ? "☯" : r.kind === "classic" ? "☰" : r.kind === "formchina" ? "◈" : r.kind === "koreavn" ? "✧" : r.kind === "japan" ? "⛩" : r.kind === "southasia" ? "ॐ" : r.kind === "himalayasea" ? "✧" : r.kind === "neareast" ? "☪" : r.kind === "westastro" ? "☉" : r.kind === "cartomancy" ? "🂠" : r.kind === "classicaleuro" ? "ᚱ" : r.kind === "folkscry" ? "✧" : r.kind === "physioform" ? "✋" : r.kind === "mesoamerica" ? "☀" : r.kind === "northamerica" ? "✧" : r.kind === "southamerica" ? "☘" : r.kind === "oceanic" ? "☾" : r.kind === "modernpersonality" ? "◎" : "◎"}</div>
         <h3 class="studio__heading">${escapeHTML(monoText(r.title))}</h3>
         ${enrichedReadingHTML(r)}
         ${sciencePanelHTML(state.method)}
@@ -6194,6 +6476,33 @@
         }
         if (OC_CAST.has(step)) return;
       }
+      if (state.kind === "modernpersonality") {
+        if (step === "focusNoteMbti" || step === "focusNoteBlood") {
+          const f = body.querySelector("#r-focus");
+          state.focus = (f?.value || "").trim();
+          if (!state.focus) return fail(f);
+        }
+        if (step === "aboPick") {
+          if (!state.bloodType) {
+            const first = body.querySelector("[data-action='mp-blood']");
+            return fail(first);
+          }
+        }
+        if (MP_BIRTH.has(step)) {
+          const d = body.querySelector("#r-birth");
+          state.birthDate = (d?.value || "").trim();
+          if (!state.birthDate) return fail(d);
+          const f = body.querySelector("#r-focus");
+          if (f) state.focus = (f.value || "").trim();
+        }
+        if (step === "sightingNote") {
+          const s = body.querySelector("#r-sighting");
+          state.sighting = (s?.value || "").trim();
+          if (!state.sighting) return fail(s);
+        }
+        if (step === "dimQuiz") return;
+        if (step === "placeFocus" || MP_CAST.has(step)) return;
+      }
       // Africa cast-like steps are user-driven
       if (
         state.kind === "africa" &&
@@ -6231,6 +6540,13 @@
         return;
       }
       if (state.kind === "mbti" && state.steps[state.stepIndex] === "quiz" && state.quizIndex > 0) {
+        state.quizIndex -= 1;
+        const prev = G().MBTI_QUESTIONS[state.quizIndex];
+        delete state.answers[prev.id];
+        render();
+        return;
+      }
+      if (state.kind === "modernpersonality" && state.steps[state.stepIndex] === "dimQuiz" && state.quizIndex > 0) {
         state.quizIndex -= 1;
         const prev = G().MBTI_QUESTIONS[state.quizIndex];
         delete state.answers[prev.id];
@@ -6449,6 +6765,25 @@
     if (action === "na-cast") return doNorthAmericaCast();
     if (action === "saam-cast") return doSouthAmericaCast();
     if (action === "oc-cast") return doOceanicCast();
+    if (action === "mp-cast") {
+      if (state.kind === "modernpersonality") {
+        const place = body.querySelector("#r-place");
+        if (place) state.placeFocus = (place.value || "").trim();
+        const sight = body.querySelector("#r-sighting");
+        if (sight) state.sighting = (sight.value || "").trim();
+        const focus = body.querySelector("#r-focus");
+        if (focus) state.focus = (focus.value || "").trim();
+        if (state.steps[state.stepIndex] === "placeFocus" && !state.placeFocus) {
+          place?.classList.add("field-error");
+          return;
+        }
+      }
+      return doModernPersonalityCast();
+    }
+    if (action === "mp-blood") {
+      state.bloodType = el.dataset.blood || "";
+      return render();
+    }
 
     if (action === "kv-hour") {
       state.hourIndex = Number(el.dataset.hour || 0);
