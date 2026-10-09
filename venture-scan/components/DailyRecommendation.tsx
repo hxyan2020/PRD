@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CollectButton } from "@/components/CollectButton";
 import { countryFlag, formatMoney, strategyLabel } from "@/lib/format";
 import { isProfileReady, loadProfileFromStorage } from "@/lib/profile";
 import type { GapPoint, IdeaMatch, MatchPoint, StartupIdea } from "@/lib/types";
@@ -156,16 +157,19 @@ export function DailyRecommendation() {
         )}
       </section>
 
-      <div className="mt-10 flex flex-wrap gap-3">
-        <Link href={`/ideas/${idea.slug}`} className="btn-primary">
-          Open full dossier
-        </Link>
-        <Link href="/match" className="btn-ghost">
-          Update profile
-        </Link>
-        <Link href="/#ideas" className="btn-ghost">
-          All ideas
-        </Link>
+      <div className="mt-10 space-y-4">
+        <CollectButton idea={idea} match={match} />
+        <div className="flex flex-wrap gap-3">
+          <Link href={`/ideas/${idea.slug}`} className="btn-ghost">
+            Open full dossier
+          </Link>
+          <Link href="/match" className="btn-ghost">
+            Update profile
+          </Link>
+          <Link href="/collection" className="btn-ghost">
+            View collection
+          </Link>
+        </div>
       </div>
     </article>
   );

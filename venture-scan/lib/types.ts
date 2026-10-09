@@ -113,3 +113,15 @@ export type DailyRecommendation = {
   idea: StartupIdea;
   match: IdeaMatch;
 };
+
+export type CollectionItem = {
+  id: string;
+  userId: string;
+  ideaSlug: string;
+  idea: StartupIdea;
+  match: IdeaMatch | null;
+  profileSnapshot: UserProfile | null;
+  note: string;
+  createdAt: string;
+  updatedAt: string;
+};

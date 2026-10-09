@@ -23,6 +23,10 @@ export default function MethodologyPage() {
           <span className="text-foam">Daily pick</span> — each day we recommend your
           highest-matched idea and list where you matched, where the gap is, and how to close it.
         </li>
+        <li>
+          <span className="text-foam">Collect</span> — log in with email and password, then save
+          ideas plus matching analysis into your personal collection.
+        </li>
       </ol>
       <p className="mt-8 text-sm text-mist">
         Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal,

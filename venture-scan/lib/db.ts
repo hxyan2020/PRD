@@ -44,6 +44,32 @@ export function getDb(file = dbPath()): DatabaseSync {
       updated INTEGER NOT NULL,
       source TEXT NOT NULL
     );
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS sessions (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      created_at TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
+    CREATE TABLE IF NOT EXISTS collections (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      idea_slug TEXT NOT NULL,
+      idea_payload TEXT NOT NULL,
+      match_payload TEXT,
+      profile_snapshot TEXT,
+      note TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      UNIQUE(user_id, idea_slug)
+    );
+    CREATE INDEX IF NOT EXISTS idx_collections_user ON collections(user_id);
   `);
   return instance;
 }

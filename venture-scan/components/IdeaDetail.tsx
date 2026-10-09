@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CollectButton } from "@/components/CollectButton";
 import { countryFlag, formatMoney, socialLabel, strategyLabel } from "@/lib/format";
 import type { StartupIdea } from "@/lib/types";
 
@@ -92,7 +93,11 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
         </Row>
       </dl>
 
-      <p className="mt-8 font-mono text-[10px] uppercase tracking-[0.16em] text-mist/70">
+      <div className="mt-8">
+        <CollectButton idea={idea} />
+      </div>
+
+      <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-mist/70">
         Source {idea.source} · scanned {new Date(idea.scannedAt).toLocaleString()}
       </p>
     </article>

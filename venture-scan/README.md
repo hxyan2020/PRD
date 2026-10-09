@@ -23,6 +23,10 @@ Visit `/match` to chat through skills, major, current business, interested domai
 
 Visit `/today` for the most-matched idea of the day. Each pick lists matched dimensions, gaps, and a concrete action to close every gap (`POST /api/daily`).
 
+## Auth + collection
+
+Register / log in with email and password (`/register`, `/login`). Collect ideas and their matching analysis into `/collection` via `POST /api/collection`.
+
 ## Run locally
 
 ```bash
