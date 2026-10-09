@@ -80,30 +80,44 @@ export function IdeaDetail({ idea }: { idea: StartupIdea }) {
           )}
         </Row>
         <Row label={t("dossier.website")}>
-          <a
-            href={idea.website}
-            target="_blank"
-            rel="noreferrer"
-            className="text-celadon underline-offset-2 hover:underline"
-          >
-            {idea.website}
-          </a>
+          {idea.website ? (
+            <a
+              href={idea.website}
+              target="_blank"
+              rel="noreferrer"
+              className="text-celadon underline-offset-2 hover:underline break-all"
+            >
+              {(() => {
+                try {
+                  return new URL(idea.website).hostname.replace(/^www\./, "");
+                } catch {
+                  return idea.website;
+                }
+              })()}
+            </a>
+          ) : (
+            <span className="text-mist">—</span>
+          )}
         </Row>
         <Row label={t("dossier.social")}>
-          <ul className="flex flex-col gap-1.5">
-            {idea.social.map((s) => (
-              <li key={`${s.platform}-${s.handle}`}>
-                <a
-                  href={s.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-celadon underline-offset-2 hover:underline"
-                >
-                  {socialLabel(s.platform)} · {s.handle}
-                </a>
-              </li>
-            ))}
-          </ul>
+          {idea.social.length > 0 ? (
+            <ul className="flex flex-col gap-1.5">
+              {idea.social.map((s) => (
+                <li key={`${s.platform}-${s.handle}-${s.url}`}>
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-celadon underline-offset-2 hover:underline"
+                  >
+                    {socialLabel(s.platform)} · {s.handle}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <span className="text-mist">—</span>
+          )}
         </Row>
         <Row label={t("dossier.goForward")}>
           <p className="font-medium text-foam">{t(strategyMessageKey(idea.goForward.strategy))}</p>

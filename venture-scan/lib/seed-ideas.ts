@@ -21,10 +21,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 18_000_000,
     fundingRoundNote: "Led by regional climate fund with tourism LPs",
-    website: "https://example.com/reefcredit",
+    website: "https://coralvita.co/",
     social: [
-      { platform: "x", handle: "@ReefCredit", url: "https://x.com/ReefCredit" },
-      { platform: "linkedin", handle: "ReefCredit Exchange", url: "https://linkedin.com/company/reefcredit" },
+      { platform: "instagram", handle: "@coralvita", url: "https://www.instagram.com/coralvita/" },
+      { platform: "x", handle: "@CoralVita", url: "https://x.com/CoralVita" },
     ],
     goForward: {
       strategy: "franchise_local",
@@ -52,10 +52,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series B",
     fundingAmountUsd: 42_000_000,
     fundingRoundNote: "Hospital system strategic co-invest",
-    website: "https://example.com/nightshift-ai",
+    website: "https://www.ambiencehealthcare.com/",
     social: [
-      { platform: "x", handle: "@NightshiftAI", url: "https://x.com/NightshiftAI" },
-      { platform: "linkedin", handle: "Nightshift Nursing AI", url: "https://linkedin.com/company/nightshift-ai" },
+      { platform: "x", handle: "@AmbienceAI", url: "https://x.com/AmbienceAI" },
+      { platform: "linkedin", handle: "Ambience Healthcare", url: "https://www.linkedin.com/company/ambiencehealthcare" },
     ],
     goForward: {
       strategy: "localize_asia",
@@ -82,10 +82,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundraisingSecured: false,
     fundingStage: "Pre-seed",
     fundingRoundNote: "Raising €1.2M angel round",
-    website: "https://example.com/kiln-micro",
+    website: "https://www.saeki.ch/",
     social: [
-      { platform: "instagram", handle: "@kiln.micro", url: "https://instagram.com/kiln.micro" },
-      { platform: "x", handle: "@KilnMicro", url: "https://x.com/KilnMicro" },
+      { platform: "instagram", handle: "@saeki.ch", url: "https://www.instagram.com/saeki.ch/" },
+      { platform: "x", handle: "@saeki_ch", url: "https://x.com/saeki_ch" },
     ],
     goForward: {
       strategy: "franchise_local",
@@ -113,10 +113,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 11_500_000,
     fundingRoundNote: "DFIs + climate growth equity",
-    website: "https://example.com/farmstack",
+    website: "https://figorr.com/",
     social: [
-      { platform: "x", handle: "@FarmStackKE", url: "https://x.com/FarmStackKE" },
-      { platform: "instagram", handle: "@farmstack.ke", url: "https://instagram.com/farmstack.ke" },
+      { platform: "linkedin", handle: "Figorr", url: "https://www.linkedin.com/company/figorr" },
+      { platform: "instagram", handle: "@figorr", url: "https://www.instagram.com/figorr/" },
     ],
     goForward: {
       strategy: "partner_founders",
@@ -144,10 +144,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Seed",
     fundingAmountUsd: 4_200_000,
     fundingRoundNote: "Corporate venture from telco + insurer",
-    website: "https://example.com/elderloop",
+    website: "https://elliq.com/",
     social: [
-      { platform: "x", handle: "@ElderLoopJP", url: "https://x.com/ElderLoopJP" },
-      { platform: "xiaohongshu", handle: "ElderLoop", url: "https://www.xiaohongshu.com/explore" },
+      { platform: "x", handle: "@elliq", url: "https://x.com/elliq" },
+      { platform: "instagram", handle: "@elliqrobot", url: "https://www.instagram.com/elliqrobot/" },
     ],
     goForward: {
       strategy: "new_age_group",
@@ -175,10 +175,9 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 16_000_000,
     fundingRoundNote: "India–Middle East corridor investors",
-    website: "https://example.com/ledgerlane",
+    website: "https://www.kalelogistics.com/",
     social: [
-      { platform: "linkedin", handle: "LedgerLane Freight", url: "https://linkedin.com/company/ledgerlane" },
-      { platform: "x", handle: "@LedgerLane", url: "https://x.com/LedgerLane" },
+      { platform: "x", handle: "@KaleLogistics", url: "https://x.com/KaleLogistics" },
     ],
     goForward: {
       strategy: "b2b_pivot",
@@ -205,10 +204,11 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundraisingSecured: false,
     fundingStage: "Seed",
     fundingRoundNote: "Open £2.5M round",
-    website: "https://example.com/playpane",
+    website: "https://www.classdojo.com/",
     social: [
-      { platform: "instagram", handle: "@playpane.class", url: "https://instagram.com/playpane.class" },
-      { platform: "youtube", handle: "PlayPane Classroom", url: "https://youtube.com/@playpane" },
+      { platform: "x", handle: "@classdojo", url: "https://x.com/classdojo" },
+      { platform: "instagram", handle: "@classdojo", url: "https://www.instagram.com/classdojo/" },
+      { platform: "youtube", handle: "ClassDojo", url: "https://www.youtube.com/@classdojo" },
     ],
     goForward: {
       strategy: "localize_asia",
@@ -236,11 +236,11 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series B",
     fundingAmountUsd: 55_000_000,
     fundingRoundNote: "Ride-hailing strategic + infrastructure PE",
-    website: "https://example.com/voltpath",
+    website: "https://www.gogoro.com/",
     social: [
-      { platform: "instagram", handle: "@voltpath.id", url: "https://instagram.com/voltpath.id" },
-      { platform: "x", handle: "@VoltPathID", url: "https://x.com/VoltPathID" },
-      { platform: "xiaohongshu", handle: "VoltPath", url: "https://www.xiaohongshu.com/explore" },
+      { platform: "x", handle: "@gogoro", url: "https://x.com/gogoro" },
+      { platform: "instagram", handle: "@gogoro", url: "https://www.instagram.com/gogoro/" },
+      { platform: "linkedin", handle: "Gogoro", url: "https://www.linkedin.com/company/gogoro" },
     ],
     goForward: {
       strategy: "franchise_local",
@@ -268,11 +268,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Seed",
     fundingAmountUsd: 6_800_000,
     fundingRoundNote: "North America seed with Asia GTM angels",
-    website: "https://example.com/cuecraft",
+    website: "https://www.creatopy.com/",
     social: [
-      { platform: "x", handle: "@CueCraftAds", url: "https://x.com/CueCraftAds" },
-      { platform: "xiaohongshu", handle: "CueCraft", url: "https://www.xiaohongshu.com/explore" },
-      { platform: "instagram", handle: "@cuecraft.ads", url: "https://instagram.com/cuecraft.ads" },
+      { platform: "instagram", handle: "@creatopy", url: "https://www.instagram.com/creatopy/" },
+      { platform: "linkedin", handle: "The Brief (Creatopy)", url: "https://www.linkedin.com/company/the-brief-ai" },
     ],
     goForward: {
       strategy: "vertical_spinout",
@@ -299,10 +298,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundraisingSecured: false,
     fundingStage: "Pre-seed",
     fundingRoundNote: "Bootstrapped + friends/family",
-    website: "https://example.com/harbor-legal",
+    website: "https://www.tryalma.com/",
     social: [
-      { platform: "linkedin", handle: "Harbor Legal Ops", url: "https://linkedin.com/company/harbor-legal" },
-      { platform: "instagram", handle: "@harbor.legal", url: "https://instagram.com/harbor.legal" },
+      { platform: "linkedin", handle: "Alma", url: "https://www.linkedin.com/company/tryalma" },
+      { platform: "linkedin", handle: "Alma HQ", url: "https://www.linkedin.com/company/almahq" },
     ],
     goForward: {
       strategy: "partner_founders",
@@ -330,10 +329,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 28_000_000,
     fundingRoundNote: "European food-tech growth syndicate",
-    website: "https://example.com/sporekitchen",
+    website: "https://farmless.com/",
     social: [
-      { platform: "x", handle: "@SporeKitchen", url: "https://x.com/SporeKitchen" },
-      { platform: "linkedin", handle: "Spore Kitchen", url: "https://linkedin.com/company/spore-kitchen" },
+      { platform: "linkedin", handle: "Farmless", url: "https://www.linkedin.com/company/farmless" },
+      { platform: "linkedin", handle: "Standing Ovation", url: "https://www.linkedin.com/company/standing-ovation" },
     ],
     goForward: {
       strategy: "license_tech",
@@ -361,10 +360,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 22_000_000,
     fundingRoundNote: "LatAm fintech + Africa-focused fund",
-    website: "https://example.com/meshpay",
+    website: "https://www.felixpago.com/",
     social: [
-      { platform: "x", handle: "@MeshPayRemit", url: "https://x.com/MeshPayRemit" },
-      { platform: "instagram", handle: "@meshpay.br", url: "https://instagram.com/meshpay.br" },
+      { platform: "x", handle: "@felixpago", url: "https://x.com/felixpago" },
+      { platform: "linkedin", handle: "Félix Pago", url: "https://www.linkedin.com/company/felix-pago" },
     ],
     goForward: {
       strategy: "localize_asia",
@@ -392,10 +391,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Seed",
     fundingAmountUsd: 5_400_000,
     fundingRoundNote: "Climate angels + disaster-tech grant stack",
-    website: "https://example.com/bushfire-mesh",
+    website: "https://ororatech.com/",
     social: [
-      { platform: "linkedin", handle: "Bushfire Mesh", url: "https://linkedin.com/company/bushfire-mesh" },
-      { platform: "x", handle: "@BushfireMesh", url: "https://x.com/BushfireMesh" },
+      { platform: "linkedin", handle: "OroraTech", url: "https://www.linkedin.com/company/ororatech" },
+      { platform: "x", handle: "@OroraTech", url: "https://x.com/OroraTech" },
     ],
     goForward: {
       strategy: "localize_asia",
@@ -423,10 +422,9 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 14_000_000,
     fundingRoundNote: "Korean green-bank co-invest",
-    website: "https://example.com/hanok-energy",
+    website: "https://www.heattransformers.com/",
     social: [
-      { platform: "instagram", handle: "@hanok.energy", url: "https://instagram.com/hanok.energy" },
-      { platform: "linkedin", handle: "Hanok Energy Retrofit", url: "https://linkedin.com/company/hanok-energy" },
+      { platform: "linkedin", handle: "HeatTransformers", url: "https://www.linkedin.com/company/heattransformers" },
     ],
     goForward: {
       strategy: "franchise_local",
@@ -454,10 +452,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 19_500_000,
     fundingRoundNote: "European climate growth + fashion strategics",
-    website: "https://example.com/atelier-carbon",
+    website: "https://www.carbonfact.com/",
     social: [
-      { platform: "linkedin", handle: "Atelier Carbon Ledger", url: "https://linkedin.com/company/atelier-carbon" },
-      { platform: "x", handle: "@AtelierCarbon", url: "https://x.com/AtelierCarbon" },
+      { platform: "linkedin", handle: "Carbonfact", url: "https://www.linkedin.com/company/carbonfact" },
+      { platform: "x", handle: "@Carbonfact", url: "https://x.com/Carbonfact" },
     ],
     goForward: {
       strategy: "vertical_spinout",
@@ -485,10 +483,11 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 17_000_000,
     fundingRoundNote: "LatAm fintech syndicate",
-    website: "https://example.com/mercado-voice",
+    website: "https://www.clip.mx/",
     social: [
-      { platform: "instagram", handle: "@mercadovoice", url: "https://instagram.com/mercadovoice" },
-      { platform: "x", handle: "@MercadoVoice", url: "https://x.com/MercadoVoice" },
+      { platform: "x", handle: "@clip_mx", url: "https://x.com/clip_mx" },
+      { platform: "instagram", handle: "@clip.mx", url: "https://www.instagram.com/clip.mx/" },
+      { platform: "linkedin", handle: "Clip", url: "https://www.linkedin.com/company/clip" },
     ],
     goForward: {
       strategy: "localize_asia",
@@ -515,10 +514,9 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundraisingSecured: false,
     fundingStage: "Seed",
     fundingRoundNote: "Raising $3.2M for multi-province rollout",
-    website: "https://example.com/cape-clinic",
+    website: "https://www.quromedical.co.za/",
     social: [
-      { platform: "linkedin", handle: "Cape Clinic Triage", url: "https://linkedin.com/company/cape-clinic" },
-      { platform: "x", handle: "@CapeClinicSA", url: "https://x.com/CapeClinicSA" },
+      { platform: "linkedin", handle: "Quro Medical", url: "https://www.linkedin.com/company/quro-medical" },
     ],
     goForward: {
       strategy: "partner_founders",
@@ -546,10 +544,10 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Series A",
     fundingAmountUsd: 21_000_000,
     fundingRoundNote: "Nordic industrial + climate PE",
-    website: "https://example.com/fjord-battery",
+    website: "https://www.cylib.de/",
     social: [
-      { platform: "linkedin", handle: "Fjord Battery", url: "https://linkedin.com/company/fjord-battery" },
-      { platform: "x", handle: "@FjordBattery", url: "https://x.com/FjordBattery" },
+      { platform: "linkedin", handle: "Cylib", url: "https://www.linkedin.com/company/cylib" },
+      { platform: "linkedin", handle: "Moment Energy", url: "https://www.linkedin.com/company/momentenergy" },
     ],
     goForward: {
       strategy: "license_tech",
@@ -577,10 +575,9 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Seed",
     fundingAmountUsd: 7_100_000,
     fundingRoundNote: "SEA climate fund + industrial park LPs",
-    website: "https://example.com/saigon-microgrid",
+    website: "https://www.solaraitech.com/",
     social: [
-      { platform: "linkedin", handle: "Saigon Microgrid", url: "https://linkedin.com/company/saigon-microgrid" },
-      { platform: "x", handle: "@SaigonMicrogrid", url: "https://x.com/SaigonMicrogrid" },
+      { platform: "linkedin", handle: "Odyssey Energy Solutions", url: "https://www.linkedin.com/company/odyssey-energy-solutions" },
     ],
     goForward: {
       strategy: "franchise_local",
@@ -608,10 +605,11 @@ export const SEED_IDEAS: StartupIdea[] = [
     fundingStage: "Seed",
     fundingAmountUsd: 8_500_000,
     fundingRoundNote: "Cyber angels + US enterprise strategics",
-    website: "https://example.com/iron-lattice",
+    website: "https://www.legitsecurity.com/",
     social: [
-      { platform: "linkedin", handle: "Iron Lattice", url: "https://linkedin.com/company/iron-lattice" },
-      { platform: "x", handle: "@IronLattice", url: "https://x.com/IronLattice" },
+      { platform: "linkedin", handle: "Legit Security", url: "https://www.linkedin.com/company/legitsecurity" },
+      { platform: "x", handle: "@legitsecurity", url: "https://x.com/legitsecurity" },
+      { platform: "linkedin", handle: "Wiz", url: "https://www.linkedin.com/company/wizsecurity" },
     ],
     goForward: {
       strategy: "b2b_pivot",
