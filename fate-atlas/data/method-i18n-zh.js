@@ -137,55 +137,55 @@
     },
     "iching": {
       "name": "周易／易经",
-      "summary": "蓍草或铜钱成六十四卦之一；以经典传文回答所问。",
+      "summary": "周易以蓍草（或铜钱）成六十四卦之一，依经传文辞回答所问。",
       "region": "中国",
       "source": "Wikipedia · I Ching divination"
     },
     "liuyao": {
       "name": "六爻纳甲",
-      "summary": "将爻与地支、五行相配，作实务化、定时化的卦象解读。",
+      "summary": "六爻纳甲把爻位配地支与五行，用于实务与时机判断。",
       "region": "中国",
       "source": "Wikipedia · I Ching divination"
     },
     "qimen": {
       "name": "奇门遁甲",
-      "summary": "依提问时刻排布奇门局盘，用于策略与方位选择。",
+      "summary": "奇门遁甲依问事时刻排出九宫奇门盘，用于策略与择时。",
       "region": "中国",
       "source": "Sekai Fortune; Plutto"
     },
     "daliuren": {
       "name": "大六壬",
-      "summary": "三式之一：依精确问事时刻排布天盘。",
+      "summary": "大六壬为三式之一，依问事精确时刻排布天地盘。",
       "region": "中国",
       "source": "Plutto; Sekai Fortune"
     },
     "xiaoliuren": {
       "name": "小六壬",
-      "summary": "民间手掐指算法，快速得是非与方位。",
+      "summary": "小六壬是民间手诀速占，用于是否与方位的快捷判断。",
       "region": "中国",
       "source": "Plutto"
     },
     "meihua": {
       "name": "梅花易数",
-      "summary": "邵雍之法：由数字、见闻或时刻起卦，不必蓍草。",
+      "summary": "梅花易数由数字、见闻或时间起卦——邵雍一系的观物术数。",
       "region": "中国",
       "source": "Plutto"
     },
     "kau-chim": {
       "name": "求签／签诗",
-      "summary": "摇筒求一支编号签，再对照相应签诗。",
+      "summary": "求签／抽签：摇出筒中一支编号竹签，对照庙签诗作答。",
       "region": "东亚与东南亚庙宇",
       "source": "Sekai Fortune; Plutto"
     },
     "jiaobei": {
       "name": "筊杯",
-      "summary": "抛掷新月形木杯，得神示之是、否或笑杯。",
+      "summary": "筊杯（跋杯）抛掷新月形木块，得圣筊（是）、阴筊（否）或笑筊（未明）。",
       "region": "华人庙宇",
       "source": "Sekai Fortune"
     },
     "cezi": {
       "name": "测字",
-      "summary": "拆解所写汉字的部件，以部件义回答所问。",
+      "summary": "测字把书写的汉字拆成部件，以部件之义回答所问。",
       "region": "中国",
       "source": "Sekai Fortune"
     },
@@ -251,7 +251,7 @@
     },
     "oracle-bones": {
       "name": "甲骨占卜",
-      "summary": "灼烧龟甲／兽骨，由裂纹回答王室或公共问题。",
+      "summary": "商代贞人灼烧龟甲与牛骨，裂纹回答王室问事——此处为裂兆模拟。",
       "region": "古代中国",
       "source": "Oracle Traditions survey"
     },
@@ -269,13 +269,13 @@
     },
     "taiyi": {
       "name": "太乙神数",
-      "summary": "太乙神数：式盘与数理推演兵事与大事。",
+      "summary": "太乙神数属三式，论太乙巡游之国家／时代格局。",
       "region": "中国",
       "source": "Plutto"
     },
     "lingqijing": {
       "name": "灵棋经",
-      "summary": "灵棋经：十二棋子排布成卦象而断。",
+      "summary": "灵棋经是六朝南方棋式神谕，投子成象并对照卦辞。",
       "region": "中国",
       "source": "Plutto"
     },
@@ -1261,55 +1261,55 @@
     },
     "iching": {
       "name": "周易／易经",
-      "summary": "蓍草或銅錢成六十四卦之一；以经典传文回答所問。",
+      "summary": "周易以蓍草（或銅錢）成六十四卦之一，依經傳文辭回答所問。",
       "region": "中國",
       "source": "Wikipedia · I Ching divination"
     },
     "liuyao": {
       "name": "六爻纳甲",
-      "summary": "將爻与地支、五行相配，作實务化、定时化的卦象解讀。",
+      "summary": "六爻納甲把爻位配地支与五行，用於實務与時機判斷。",
       "region": "中國",
       "source": "Wikipedia · I Ching divination"
     },
     "qimen": {
       "name": "奇門遁甲",
-      "summary": "依提問时刻排布奇門局盘，用于策略与方位选择。",
+      "summary": "奇門遁甲依問事時刻排出九宮奇門盘，用於策略与擇時。",
       "region": "中國",
       "source": "Sekai Fortune; Plutto"
     },
     "daliuren": {
       "name": "大六壬",
-      "summary": "三式之一：依精确問事时刻排布天盘。",
+      "summary": "大六壬为三式之一，依問事精確時刻排布天地盤。",
       "region": "中國",
       "source": "Plutto; Sekai Fortune"
     },
     "xiaoliuren": {
       "name": "小六壬",
-      "summary": "民间手掐指算法，快速得是非与方位。",
+      "summary": "小六壬是民間手訣速占，用於是否与方位的快捷判斷。",
       "region": "中國",
       "source": "Plutto"
     },
     "meihua": {
       "name": "梅花易數",
-      "summary": "邵雍之法：由數字、見闻或时刻起卦，不必蓍草。",
+      "summary": "梅花易数由數字、見聞或時間起卦——邵雍一系的觀物術數。",
       "region": "中國",
       "source": "Plutto"
     },
     "kau-chim": {
       "name": "求签／籤詩",
-      "summary": "摇筒求一支编号签，再對照相應籤詩。",
+      "summary": "求籤／抽籤：搖出筒中一支編號竹籤，對照廟籤詩作答。",
       "region": "東亞与東南亚廟宇",
       "source": "Sekai Fortune; Plutto"
     },
     "jiaobei": {
       "name": "筊杯",
-      "summary": "抛掷新月形木杯，得神示之是、否或笑杯。",
+      "summary": "筊杯（跋杯）拋擲新月形木塊，得聖筊（是）、陰筊（否）或笑筊（未明）。",
       "region": "华人廟宇",
       "source": "Sekai Fortune"
     },
     "cezi": {
       "name": "測字",
-      "summary": "拆解所写漢字的部件，以部件義回答所問。",
+      "summary": "測字把書寫的漢字拆成部件，以部件之義回答所問。",
       "region": "中國",
       "source": "Sekai Fortune"
     },
@@ -1375,7 +1375,7 @@
     },
     "oracle-bones": {
       "name": "甲骨占卜",
-      "summary": "灼烧龟甲／兽骨，由裂纹回答王室或公共問題。",
+      "summary": "商代貞人灼燒龜甲与牛骨，裂紋回答王室问事——此处为裂兆模擬。",
       "region": "古代中國",
       "source": "Oracle Traditions survey"
     },
@@ -1393,13 +1393,13 @@
     },
     "taiyi": {
       "name": "太乙神數",
-      "summary": "太乙神數：式盘与數理推演兵事与大事。",
+      "summary": "太乙神數属三式，论太乙巡遊之國家／時代格局。",
       "region": "中國",
       "source": "Plutto"
     },
     "lingqijing": {
       "name": "靈棋经",
-      "summary": "靈棋经：十二棋子排布成卦象而断。",
+      "summary": "靈棋经是六朝南方棋式神諭，投子成象并對照卦辭。",
       "region": "中國",
       "source": "Plutto"
     },
