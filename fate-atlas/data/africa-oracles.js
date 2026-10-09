@@ -1065,6 +1065,58 @@
     return rite.generate(state.question || "", cast, rng);
   }
 
+
+  // Align how-to copy length with play steps (1:1 titles for studio chrome)
+  (function alignHowSteps() {
+    const LABEL = {
+      intent: { en: { title: "Meet the rite", body: "Learn what this oracle traditionally does." }, zh: { title: "认识仪式", body: "了解这个神谕传统上做什么。" } },
+      learn: { en: { title: "Learn the historical form", body: "Read how outcomes were historically framed — without recreating harm." }, zh: { title: "了解历史形态", body: "了解历史上如何框定结果——但不再现伤害。" } },
+      question: { en: { title: "Hold your question", body: "One clear question works best." }, zh: { title: "抱定问题", body: "一个清楚的问题效果最好。" } },
+      bless: { en: { title: "Bless the chain", body: "Touch the ọ̀pẹ̀lẹ̀ to mark intention before casting." }, zh: { title: "祝链", body: "轻触欧佩勒以标记意图，再起卦。" } },
+      scatter: { en: { title: "Prepare the cowrie cloth", body: "Sixteen shells rest on the mat before the scatter." }, zh: { title: "铺好贝壳垫", body: "十六贝先静置于垫上，再撒。" } },
+      lobes: { en: { title: "Choose your lobe set", body: "Four pieces — light/dark faces stand in for kola lobes." }, zh: { title: "选好四瓣", body: "四片明／暗面代替柯拉果瓣。" } },
+      strings: { en: { title: "Prepare four strings", body: "Four chains of half-shells ready to flip." }, zh: { title: "备好四串", body: "四条半壳链待翻转。" } },
+      offering: { en: { title: "Place a token offering", body: "Symbolic water, cola, or cloth — educational only." }, zh: { title: "放象征供物", body: "象征性的水、柯拉或布——仅教育用途。" } },
+      sow: { en: { title: "Sow four mothers", body: "Drop seeds into four columns (odd/even marks)." }, zh: { title: "播下四母", body: "把种子落入四列（奇／偶点）。" } },
+      faces: { en: { title: "Meet the four faces", body: "Old Man, Old Woman, Young Man, Young Woman." }, zh: { title: "认识四张脸", body: "老者、老妇、青年、少女。" } },
+      basket: { en: { title: "Load the basket", body: "Bones, cowries, iron bits ready to shake." }, zh: { title: "装篮", body: "骨、贝、铁片待摇散。" } },
+      sand: { en: { title: "Mark the sand", body: "Four rows of random dots become odd/even mothers." }, zh: { title: "点记沙盘", body: "四行随机点化为奇／偶母卦。" } },
+      field: { en: { title: "Prepare the field", body: "Water · sand · shard zones on the board." }, zh: { title: "准备场地", body: "水 · 沙 · 葫芦片区域。" } },
+      bowls: { en: { title: "Open a sealed bowl", body: "Affirm or deny — no animals, no toxins." }, zh: { title: "打开密封碗", body: "肯定或否定——无动物、无毒物。" } },
+      domain: { en: { title: "Choose a domain", body: "Kin · land · work · illness worry." }, zh: { title: "选择领域", body: "亲属 · 土地 · 工作 · 病忧。" } },
+      people: { en: { title: "Who is involved?", body: "Self · family · rival · ancestor memory." }, zh: { title: "点名涉及谁", body: "自己 · 家人 · 对手 · 祖先记忆。" } },
+      lay: { en: { title: "Lay the leaf cards", body: "A grid of leaf tokens is placed." }, zh: { title: "铺叶牌", body: "铺上一网格叶牌。" } },
+      table: { en: { title: "Draw the sand table", body: "Zones: village · bush · sky mark." }, zh: { title: "画沙盘", body: "区域：村落 · 野地 · 天象标记。" } },
+      cast: { en: { title: "Cast", body: "Watch the interactive stage settle." }, zh: { title: "起卦", body: "观看互动舞台落定。" } },
+      result: { en: { title: "Read the counsel", body: "A teaching reading mirrored to your question." }, zh: { title: "读指引", body: "对照你问题的教学解读。" } },
+    };
+    for (const id of IDS) {
+      const rite = RITES[id];
+      if (!rite) continue;
+      const build = (lang) =>
+        rite.steps.map((sid) => {
+          const L = LABEL[sid] || LABEL.cast;
+          const pack = L[lang] || L.en;
+          // Prefer existing how body when same title family
+          return { title: pack.title, body: pack.body };
+        });
+      // Keep intro; replace steps with 1:1 play alignment
+      rite.how.en = { intro: rite.how.en.intro, steps: build("en") };
+      rite.how.zh = { intro: rite.how.zh.intro, steps: build("zh") };
+      // Override cast label with rite castCta
+      const ci = rite.steps.indexOf("cast");
+      if (ci >= 0) {
+        rite.how.en.steps[ci] = { title: rite.castCta.en, body: rite.how.en.steps[ci].body };
+        rite.how.zh.steps[ci] = { title: rite.castCta.zh, body: rite.how.zh.steps[ci].body };
+      }
+      const bi = rite.steps.indexOf("bowls");
+      if (bi >= 0) {
+        rite.how.en.steps[bi] = { title: rite.castCta.en, body: rite.how.en.steps[bi].body };
+        rite.how.zh.steps[bi] = { title: rite.castCta.zh, body: rite.how.zh.steps[bi].body };
+      }
+    }
+  })();
+
   window.FatumAfricaOracles = {
     IDS,
     has,
