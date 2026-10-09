@@ -34,4 +34,37 @@ describe("i18n", () => {
       expect(coverage).toBeGreaterThanOrEqual(95);
     }
   });
+
+  it("preserves interpolation placeholders in every locale", () => {
+    const varRe = /\{([a-zA-Z]+)\}/g;
+    for (const [key, enValue] of Object.entries(MESSAGES.en)) {
+      const enVars = new Set([...enValue.matchAll(varRe)].map((m) => m[1]));
+      if (enVars.size === 0) continue;
+      for (const locale of LOCALES) {
+        if (locale.code === "en") continue;
+        const value = MESSAGES[locale.code][key as keyof typeof MESSAGES.en] ?? "";
+        const locVars = new Set([...value.matchAll(varRe)].map((m) => m[1]));
+        expect(locVars, `${locale.code}.${key}`).toEqual(enVars);
+      }
+    }
+  });
+
+  it("rejects corrupted machine-translation artifacts", () => {
+    const junk =
+      /_ _ [A-Z0-9_]+ _ _|ZZ?[A-Z]*PH\d+Z*|ZPH\d+ZZ|(?<!\{)\bPH[0-9]\b|\bARROW\b|\^PH\d|butterphone|ZVSZZ|SOZVS/;
+    for (const locale of LOCALES) {
+      if (locale.code === "en") continue;
+      for (const [key, value] of Object.entries(MESSAGES[locale.code])) {
+        expect(junk.test(value), `${locale.code}.${key}: ${value}`).toBe(false);
+        const words = value.split(/\s+/).filter(Boolean);
+        if (words.length >= 3) {
+          for (let i = 0; i < words.length - 2; i++) {
+            if (words[i].length > 1 && words[i] === words[i + 1] && words[i] === words[i + 2]) {
+              throw new Error(`${locale.code}.${key} has repeated token: ${value}`);
+            }
+          }
+        }
+      }
+    }
+  });
 });
