@@ -86,12 +86,30 @@ export type MatchBreakdown = {
   preferredMarkets: number;
 };
 
+export type MatchPoint = {
+  dimension: string;
+  detail: string;
+};
+
+export type GapPoint = {
+  dimension: string;
+  detail: string;
+  /** Concrete action to close this gap */
+  closeGap: string;
+};
+
 export type IdeaMatch = {
   ideaId: string;
   slug: string;
   /** 0–100 overall match */
   score: number;
   breakdown: MatchBreakdown;
-  matched: string[];
-  gaps: string[];
+  matched: MatchPoint[];
+  gaps: GapPoint[];
+};
+
+export type DailyRecommendation = {
+  day: string;
+  idea: StartupIdea;
+  match: IdeaMatch;
 };

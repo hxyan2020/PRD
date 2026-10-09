@@ -1,3 +1,4 @@
+import { DailyTeaser } from "@/components/DailyTeaser";
 import { Hero } from "@/components/Hero";
 import { IdeaExplorer } from "@/components/IdeaExplorer";
 import { distinctValues, listIdeas } from "@/lib/db";
@@ -17,6 +18,7 @@ export default function HomePage() {
   return (
     <>
       <Hero count={ideas.length} />
+      <DailyTeaser />
       <IdeaExplorer initialIdeas={ideas} meta={meta} />
     </>
   );

@@ -366,10 +366,14 @@ export function ProfileChatbot() {
                     <ScorePill score={match.score} />
                   </div>
                   {match.matched[0] ? (
-                    <p className="mt-2 text-xs text-celadon/90">{match.matched[0]}</p>
+                    <p className="mt-2 text-xs text-celadon/90">
+                      Matched · {match.matched[0].dimension}: {match.matched[0].detail}
+                    </p>
                   ) : null}
                   {match.gaps[0] ? (
-                    <p className="mt-1 text-xs text-mist">{match.gaps[0]}</p>
+                    <p className="mt-1 text-xs text-mist">
+                      Gap · {match.gaps[0].dimension}: {match.gaps[0].closeGap}
+                    </p>
                   ) : null}
                 </Link>
               </li>

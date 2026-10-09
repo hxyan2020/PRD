@@ -19,6 +19,9 @@ export function Hero({ count }: { count: number }) {
           <Link href="#ideas" className="btn-primary">
             Browse {count} ideas
           </Link>
+          <Link href="/today" className="btn-ghost">
+            Today's pick
+          </Link>
           <Link href="/match" className="btn-ghost">
             Match with chatbot
           </Link>

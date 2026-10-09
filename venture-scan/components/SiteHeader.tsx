@@ -13,6 +13,9 @@ export function SiteHeader() {
           </span>
         </Link>
         <nav className="flex items-center gap-3 text-sm text-mist">
+          <Link href="/today" className="hover:text-foam">
+            Today
+          </Link>
           <Link href="/#ideas" className="hover:text-foam">
             Ideas
           </Link>

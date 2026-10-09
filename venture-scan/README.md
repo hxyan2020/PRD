@@ -19,6 +19,10 @@ Scans curated startup + fundraising signals into SQLite and shows each entry wit
 
 Visit `/match` to chat through skills, major, current business, interested domains, and preferred markets. The profile is saved in the browser and scored against every idea via `POST /api/match`.
 
+## Daily recommendation
+
+Visit `/today` for the most-matched idea of the day. Each pick lists matched dimensions, gaps, and a concrete action to close every gap (`POST /api/daily`).
+
 ## Run locally
 
 ```bash

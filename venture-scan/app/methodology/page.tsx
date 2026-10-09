@@ -19,6 +19,10 @@ export default function MethodologyPage() {
           <span className="text-foam">Match</span> — a chatbot collects skills, major, current
           business, and interested domains, then scores every idea against that profile.
         </li>
+        <li>
+          <span className="text-foam">Daily pick</span> — each day we recommend your
+          highest-matched idea and list where you matched, where the gap is, and how to close it.
+        </li>
       </ol>
       <p className="mt-8 text-sm text-mist">
         Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal,
