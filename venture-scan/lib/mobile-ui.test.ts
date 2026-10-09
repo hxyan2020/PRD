@@ -11,6 +11,8 @@ describe("mobile UI affordances", () => {
     expect(src).toContain("mobile-nav");
     expect(src).toContain("md:hidden");
     expect(src).toContain("sticky top-0");
+    expect(src).toContain("/sources");
+    expect(src).toContain("nav.sources");
   });
 
   it("defines mobile-friendly button and field sizing", () => {

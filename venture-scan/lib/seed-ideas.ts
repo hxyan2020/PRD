@@ -375,4 +375,251 @@ export const SEED_IDEAS: StartupIdea[] = [
     scannedAt,
     tags: ["payments", "remittance", "Brazil", "fintech"],
   },
+  {
+    id: "idea_13",
+    slug: "bushfire-mesh-sensors",
+    name: "Bushfire Mesh Sensors",
+    description:
+      "Low-power mesh sensors and satellite uplinks that detect early heat signatures and smoke plumes across rural fire belts. Alerts feed into local CFA/SES dashboards and insurer loss models.",
+    businessModel:
+      "Hardware + annual monitoring SaaS sold to councils and utilities; data licensing to insurers.",
+    teamCountry: "Australia",
+    teamCity: "Melbourne",
+    teamSize: 16,
+    industry: "Climate Tech",
+    sector: "Wildfire Detection",
+    fundraisingSecured: true,
+    fundingStage: "Seed",
+    fundingAmountUsd: 5_400_000,
+    fundingRoundNote: "Climate angels + disaster-tech grant stack",
+    website: "https://example.com/bushfire-mesh",
+    social: [
+      { platform: "linkedin", handle: "Bushfire Mesh", url: "https://linkedin.com/company/bushfire-mesh" },
+      { platform: "x", handle: "@BushfireMesh", url: "https://x.com/BushfireMesh" },
+    ],
+    goForward: {
+      strategy: "localize_asia",
+      summary:
+        "Port the mesh + alert stack to Southeast Asian peat-fire corridors, pairing with local telco LoRaWAN partners.",
+    },
+    source: "seed:oceania-climate-rounds",
+    scannedAt,
+    tags: ["climate", "sensors", "Australia", "insurance"],
+  },
+  {
+    id: "idea_14",
+    slug: "hanok-energy-retrofit",
+    name: "Hanok Energy Retrofit",
+    description:
+      "Modular insulation and heat-pump kits designed for traditional Korean courtyard homes, sold with subsidized financing and municipal rebate paperwork automation.",
+    businessModel:
+      "Kit margin + installation partner take-rate + SaaS for rebate filing sold to contractors.",
+    teamCountry: "South Korea",
+    teamCity: "Seoul",
+    teamSize: 13,
+    industry: "Climate Tech",
+    sector: "Residential Retrofit",
+    fundraisingSecured: true,
+    fundingStage: "Series A",
+    fundingAmountUsd: 14_000_000,
+    fundingRoundNote: "Korean green-bank co-invest",
+    website: "https://example.com/hanok-energy",
+    social: [
+      { platform: "instagram", handle: "@hanok.energy", url: "https://instagram.com/hanok.energy" },
+      { platform: "linkedin", handle: "Hanok Energy Retrofit", url: "https://linkedin.com/company/hanok-energy" },
+    ],
+    goForward: {
+      strategy: "franchise_local",
+      summary:
+        "Franchise install crews in secondary Korean cities first, then adapt kits for Japanese wooden stock.",
+    },
+    source: "seed:kr-climate-rounds",
+    scannedAt,
+    tags: ["retrofit", "energy", "South Korea", "housing"],
+  },
+  {
+    id: "idea_15",
+    slug: "atelier-carbon-ledger",
+    name: "Atelier Carbon Ledger",
+    description:
+      "Scope-3 accounting OS for French luxury maisons that maps supplier ateliers, materials, and logistics into audit-ready carbon ledgers for CSRD reporting.",
+    businessModel:
+      "Enterprise SaaS seats + per-SKU footprint calculation credits; auditor co-sell revenue share.",
+    teamCountry: "France",
+    teamCity: "Paris",
+    teamSize: 21,
+    industry: "Climate Tech",
+    sector: "ESG / Supply Chain",
+    fundraisingSecured: true,
+    fundingStage: "Series A",
+    fundingAmountUsd: 19_500_000,
+    fundingRoundNote: "European climate growth + fashion strategics",
+    website: "https://example.com/atelier-carbon",
+    social: [
+      { platform: "linkedin", handle: "Atelier Carbon Ledger", url: "https://linkedin.com/company/atelier-carbon" },
+      { platform: "x", handle: "@AtelierCarbon", url: "https://x.com/AtelierCarbon" },
+    ],
+    goForward: {
+      strategy: "vertical_spinout",
+      summary:
+        "Spin a ready-to-wear-only SKU module and sell it to mid-market brands that cannot afford full maison deployments.",
+    },
+    source: "seed:fr-esg-rounds",
+    scannedAt,
+    tags: ["ESG", "fashion", "France", "SaaS"],
+  },
+  {
+    id: "idea_16",
+    slug: "mercado-voice-pos",
+    name: "Mercado Voice POS",
+    description:
+      "Voice-first point-of-sale for Mexican tiendas and street vendors: speak inventory and sales in Spanish, sync to WhatsApp receipts, and unlock micro-working-capital lines.",
+    businessModel:
+      "Hardware kit margin + monthly SaaS + interest share on embedded credit with bank partners.",
+    teamCountry: "Mexico",
+    teamCity: "Mexico City",
+    teamSize: 27,
+    industry: "FinTech",
+    sector: "SMB Payments / Embedded Finance",
+    fundraisingSecured: true,
+    fundingStage: "Series A",
+    fundingAmountUsd: 17_000_000,
+    fundingRoundNote: "LatAm fintech syndicate",
+    website: "https://example.com/mercado-voice",
+    social: [
+      { platform: "instagram", handle: "@mercadovoice", url: "https://instagram.com/mercadovoice" },
+      { platform: "x", handle: "@MercadoVoice", url: "https://x.com/MercadoVoice" },
+    ],
+    goForward: {
+      strategy: "localize_asia",
+      summary:
+        "Reuse the voice POS UX for Bahasa/Tagalog informal retail corridors with local telco wallets.",
+    },
+    source: "seed:mx-fintech-rounds",
+    scannedAt,
+    tags: ["fintech", "POS", "Mexico", "SMB"],
+  },
+  {
+    id: "idea_17",
+    slug: "cape-clinic-triage",
+    name: "Cape Clinic Triage",
+    description:
+      "WhatsApp + USSD triage bots that route township patients to the right clinic queue, with nurse dashboards and ambulance ETA sharing for Cape Town metro clinics.",
+    businessModel:
+      "Per-clinic SaaS + provincial health system licenses; optional telehealth upsell.",
+    teamCountry: "South Africa",
+    teamCity: "Cape Town",
+    teamSize: 18,
+    industry: "Health Tech",
+    sector: "Primary Care Access",
+    fundraisingSecured: false,
+    fundingStage: "Seed",
+    fundingRoundNote: "Raising $3.2M for multi-province rollout",
+    website: "https://example.com/cape-clinic",
+    social: [
+      { platform: "linkedin", handle: "Cape Clinic Triage", url: "https://linkedin.com/company/cape-clinic" },
+      { platform: "x", handle: "@CapeClinicSA", url: "https://x.com/CapeClinicSA" },
+    ],
+    goForward: {
+      strategy: "partner_founders",
+      summary:
+        "Partner as the East Africa deployment operator—localize USSD flows and clinic integrations while Cape Clinic owns the core engine.",
+    },
+    source: "seed:za-health-watch",
+    scannedAt,
+    tags: ["health", "access", "South Africa", "mobile"],
+  },
+  {
+    id: "idea_18",
+    slug: "fjord-battery-secondlife",
+    name: "Fjord Battery SecondLife",
+    description:
+      "Repurposes EV packs from Nordic fleets into modular home and cabin storage with remote diagnostics and grid ancillary services bidding.",
+    businessModel:
+      "Pack refurb margin + monthly energy-as-a-service; grid services revenue share.",
+    teamCountry: "Sweden",
+    teamCity: "Gothenburg",
+    teamSize: 23,
+    industry: "Energy",
+    sector: "Battery Circularity",
+    fundraisingSecured: true,
+    fundingStage: "Series A",
+    fundingAmountUsd: 21_000_000,
+    fundingRoundNote: "Nordic industrial + climate PE",
+    website: "https://example.com/fjord-battery",
+    social: [
+      { platform: "linkedin", handle: "Fjord Battery", url: "https://linkedin.com/company/fjord-battery" },
+      { platform: "x", handle: "@FjordBattery", url: "https://x.com/FjordBattery" },
+    ],
+    goForward: {
+      strategy: "license_tech",
+      summary:
+        "License the BMS + diagnostics stack to Asian EV OEMs seeking EU second-life compliance pathways.",
+    },
+    source: "seed:nordic-energy-rounds",
+    scannedAt,
+    tags: ["energy", "batteries", "Sweden", "circular"],
+  },
+  {
+    id: "idea_19",
+    slug: "saigon-microgrid-coops",
+    name: "Saigon Microgrid Co-ops",
+    description:
+      "Solar + storage co-ops for Vietnamese industrial parks that pool rooftops, settle energy credits on-chain lite, and sell surplus to the grid under DPPA rules.",
+    businessModel:
+      "Project development fees + ongoing co-op management SaaS + energy trading spread.",
+    teamCountry: "Vietnam",
+    teamCity: "Ho Chi Minh City",
+    teamSize: 20,
+    industry: "Climate Tech",
+    sector: "Distributed Energy",
+    fundraisingSecured: true,
+    fundingStage: "Seed",
+    fundingAmountUsd: 7_100_000,
+    fundingRoundNote: "SEA climate fund + industrial park LPs",
+    website: "https://example.com/saigon-microgrid",
+    social: [
+      { platform: "linkedin", handle: "Saigon Microgrid", url: "https://linkedin.com/company/saigon-microgrid" },
+      { platform: "x", handle: "@SaigonMicrogrid", url: "https://x.com/SaigonMicrogrid" },
+    ],
+    goForward: {
+      strategy: "franchise_local",
+      summary:
+        "Franchise co-op formation playbooks to secondary Vietnamese cities and Cambodian border parks.",
+    },
+    source: "seed:vn-energy-rounds",
+    scannedAt,
+    tags: ["energy", "solar", "Vietnam", "co-op"],
+  },
+  {
+    id: "idea_20",
+    slug: "iron-dome-devsecops",
+    name: "Iron Lattice DevSecOps",
+    description:
+      "Continuous security pipeline for Israeli deep-tech startups that maps SBOM, cloud misconfig, and red-team findings into board-ready risk scores for Series A diligence.",
+    businessModel:
+      "Per-engineer SaaS + premium pen-test credits; VC diligence white-label plans.",
+    teamCountry: "Israel",
+    teamCity: "Tel Aviv",
+    teamSize: 15,
+    industry: "Cybersecurity",
+    sector: "DevSecOps / GRC",
+    fundraisingSecured: true,
+    fundingStage: "Seed",
+    fundingAmountUsd: 8_500_000,
+    fundingRoundNote: "Cyber angels + US enterprise strategics",
+    website: "https://example.com/iron-lattice",
+    social: [
+      { platform: "linkedin", handle: "Iron Lattice", url: "https://linkedin.com/company/iron-lattice" },
+      { platform: "x", handle: "@IronLattice", url: "https://x.com/IronLattice" },
+    ],
+    goForward: {
+      strategy: "b2b_pivot",
+      summary:
+        "Sell the diligence white-label pack to regional VCs and corporate venture arms rather than chasing every startup logo.",
+    },
+    source: "seed:il-cyber-rounds",
+    scannedAt,
+    tags: ["cyber", "DevSecOps", "Israel", "SaaS"],
+  },
 ];

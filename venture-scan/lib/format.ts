@@ -47,14 +47,64 @@ export function countryFlag(country: string): string {
     Nigeria: "🇳🇬",
     "South Korea": "🇰🇷",
     Australia: "🇦🇺",
+    "New Zealand": "🇳🇿",
     Israel: "🇮🇱",
     Sweden: "🇸🇪",
+    Denmark: "🇩🇰",
+    Finland: "🇫🇮",
+    Norway: "🇳🇴",
+    Iceland: "🇮🇸",
     Indonesia: "🇮🇩",
     China: "🇨🇳",
+    "Hong Kong": "🇭🇰",
+    Taiwan: "🇹🇼",
     Netherlands: "🇳🇱",
     Kenya: "🇰🇪",
     Mexico: "🇲🇽",
     UAE: "🇦🇪",
+    "United Arab Emirates": "🇦🇪",
+    Spain: "🇪🇸",
+    Italy: "🇮🇹",
+    Portugal: "🇵🇹",
+    Poland: "🇵🇱",
+    Belgium: "🇧🇪",
+    Switzerland: "🇨🇭",
+    Austria: "🇦🇹",
+    Morocco: "🇲🇦",
+    Senegal: "🇸🇳",
+    "South Africa": "🇿🇦",
+    Egypt: "🇪🇬",
+    Ghana: "🇬🇭",
+    Rwanda: "🇷🇼",
+    "Saudi Arabia": "🇸🇦",
+    Jordan: "🇯🇴",
+    Lebanon: "🇱🇧",
+    Colombia: "🇨🇴",
+    Chile: "🇨🇱",
+    Argentina: "🇦🇷",
+    Peru: "🇵🇪",
+    Uruguay: "🇺🇾",
+    Turkey: "🇹🇷",
+    Romania: "🇷🇴",
+    Bulgaria: "🇧🇬",
+    Greece: "🇬🇷",
+    Vietnam: "🇻🇳",
+    Thailand: "🇹🇭",
+    Malaysia: "🇲🇾",
+    Philippines: "🇵🇭",
   };
   return flags[country] ?? "🌐";
+}
+
+export function relativeTime(iso: string, now = Date.now()): string {
+  const ageMs = now - new Date(iso).getTime();
+  if (!Number.isFinite(ageMs)) return "—";
+  const minute = 60 * 1000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+  if (ageMs < minute) return "just now";
+  if (ageMs < hour) return `${Math.floor(ageMs / minute)}m ago`;
+  if (ageMs < day) return `${Math.floor(ageMs / hour)}h ago`;
+  if (ageMs < 30 * day) return `${Math.floor(ageMs / day)}d ago`;
+  return new Date(iso).toISOString().slice(0, 10);
 }

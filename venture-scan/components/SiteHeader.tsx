@@ -5,6 +5,20 @@ import { useEffect, useState } from "react";
 import { AuthNav } from "@/components/AuthNav";
 import { LanguagePicker } from "@/components/LanguagePicker";
 import { useI18n } from "@/lib/i18n/context";
+import type { MessageKey } from "@/lib/i18n/messages";
+
+type NavKey = Extract<
+  MessageKey,
+  "nav.today" | "nav.ideas" | "nav.match" | "nav.sources" | "nav.method"
+>;
+
+const NAV_LINKS: { href: string; key: NavKey }[] = [
+  { href: "/today", key: "nav.today" },
+  { href: "/#ideas", key: "nav.ideas" },
+  { href: "/match", key: "nav.match" },
+  { href: "/sources", key: "nav.sources" },
+  { href: "/methodology", key: "nav.method" },
+];
 
 export function SiteHeader() {
   const { t } = useI18n();
@@ -74,18 +88,11 @@ export function SiteHeader() {
           className="border-t border-white/10 bg-ink-2/95 md:hidden"
         >
           <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 text-base text-mist">
-            <MobileLink href="/today" onClick={close}>
-              {t("nav.today")}
-            </MobileLink>
-            <MobileLink href="/#ideas" onClick={close}>
-              {t("nav.ideas")}
-            </MobileLink>
-            <MobileLink href="/match" onClick={close}>
-              {t("nav.match")}
-            </MobileLink>
-            <MobileLink href="/methodology" onClick={close}>
-              {t("nav.method")}
-            </MobileLink>
+            {NAV_LINKS.map((link) => (
+              <MobileLink key={link.href} href={link.href} onClick={close}>
+                {t(link.key)}
+              </MobileLink>
+            ))}
             <div className="mt-2 flex flex-col gap-2 border-t border-white/10 pt-3">
               <AuthNav stacked />
             </div>
@@ -96,16 +103,10 @@ export function SiteHeader() {
   );
 }
 
-function NavLinks({ t }: { t: (key: "nav.today" | "nav.ideas" | "nav.match" | "nav.method") => string }) {
-  const links = [
-    { href: "/today", key: "nav.today" as const },
-    { href: "/#ideas", key: "nav.ideas" as const },
-    { href: "/match", key: "nav.match" as const },
-    { href: "/methodology", key: "nav.method" as const },
-  ];
+function NavLinks({ t }: { t: (key: NavKey) => string }) {
   return (
     <>
-      {links.map((link) => (
+      {NAV_LINKS.map((link) => (
         <Link key={link.href} href={link.href} className="hover:text-foam">
           {t(link.key)}
         </Link>

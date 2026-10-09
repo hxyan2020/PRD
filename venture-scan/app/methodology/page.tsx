@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function MethodologyPage() {
   return (
     <div className="mx-auto w-full max-w-2xl px-4 py-16 sm:px-6">
@@ -36,6 +38,14 @@ export default function MethodologyPage() {
           targets, and stacked layouts tuned for phones.
         </li>
         <li>
+          <span className="text-foam">Sources</span> — the{" "}
+          <Link className="text-celadon underline-offset-2 hover:underline" href="/sources">
+            data sources desk
+          </Link>{" "}
+          lists every connector, countries covered, last sourced time, and health status
+          (including multilingual desks).
+        </li>
+        <li>
           <span className="text-foam">Permanent URL</span> — published at{" "}
           <a
             className="text-celadon underline-offset-2 hover:underline"
@@ -48,8 +58,9 @@ export default function MethodologyPage() {
       </ol>
       <p className="mt-8 text-sm text-mist">
         Seed data covers climate, health, manufacturing, agri, edtech, mobility, martech, legal,
-        food, and fintech teams across Singapore, US, Germany, Kenya, Japan, India, UK, Indonesia,
-        Canada, UAE, Netherlands, and Brazil.
+        food, energy, cyber, and fintech teams across Singapore, US, Germany, Kenya, Japan, India,
+        UK, Indonesia, Canada, UAE, Netherlands, Brazil, Australia, South Korea, France, Mexico,
+        South Africa, Sweden, Vietnam, and Israel.
       </p>
     </div>
   );
